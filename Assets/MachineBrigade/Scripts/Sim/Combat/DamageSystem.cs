@@ -1,0 +1,148 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
+using MachineBrigade.Sim.Entities;
+using MachineBrigade.Sim.Events;
+
+namespace MachineBrigade.Sim.Combat
+{
+    /// <summary>
+    /// The only place hit points change. Resolves impacts, splash and delayed explosions,
+    /// and announces each destruction exactly once, which is what makes chain reactions
+    /// terminate: an entity can only start one explosion.
+    /// </summary>
+    internal sealed class DamageSystem
+    {
+        /// <summary>Damage at the edge of a blast, relative to the centre.</summary>
+        private const float EdgeFalloff = 0.25f;
+
+        private readonly SimWorld _world;
+        private readonly List<PendingExplosion> _pending = new();
+
+        public DamageSystem(SimWorld world) => _world = world;
+
+        public int PendingCount => _pending.Count;
+
+        public void ResolveImpact(Projectile p)
+        {
+            var weapon = p.Weapon;
+            var hit = EntityId.None;
+            if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive &&
+                Vector2.Distance(target.Position, p.AimPoint) <= target.Radius + 0.5f)
+            {
+                Apply(target, weapon.Damage, weapon.DamageType);
+                hit = target.Id;
+            }
+
+            if (weapon.SplashRadius > 0f)
+                Splash(p.AimPoint, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit);
+
+            _world.Emit(SimEvent.Impact(weapon, p.AimPoint, hit, p.OwnerTeam));
+        }
+
+        /// <summary>
+        /// Area damage with linear falloff. Weapon splash spares the shooter's team; blasts
+        /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
+        /// </summary>
+        public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude)
+        {
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Id == exclude) continue;
+                if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
+                ApplyFalloff(v, at, radius, damage, type);
+            }
+            foreach (var prop in _world.PropList)
+            {
+                if (!prop.IsAlive || prop.Id == exclude) continue;
+                ApplyFalloff(prop, at, radius, damage, type);
+            }
+        }
+
+        public void Apply(IDamageable target, float amount, DamageType type)
+        {
+            if (!target.IsAlive || !(amount > 0f)) return;
+            var damage = amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
+            if (!(damage > 0f)) return;
+
+            switch (target)
+            {
+                case Vehicle vehicle:
+                    vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+                    _world.Emit(SimEvent.Damage(vehicle, damage));
+                    if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);
+                    break;
+                case Prop prop:
+                    prop.Hp = MathF.Max(0f, prop.Hp - damage);
+                    _world.Emit(SimEvent.Damage(prop, damage));
+                    if (!prop.IsAlive) OnPropDestroyed(prop);
+                    break;
+            }
+        }
+
+        /// <summary>Detonates every explosion that has come due; new ones may be queued as a result.</summary>
+        public void Step()
+        {
+            var i = 0;
+            while (i < _pending.Count)
+            {
+                var pending = _pending[i];
+                if (pending.Due > _world.Time)
+                {
+                    i++;
+                    continue;
+                }
+                _pending.RemoveAt(i);
+                _world.Emit(SimEvent.Exploded(pending.Position, pending.Explosion, pending.Source));
+                Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
+                    Teams.Environment, EntityId.None);
+            }
+        }
+
+        private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type)
+        {
+            var edgeDistance = MathF.Max(0f, Vector2.Distance(target.Position, at) - target.Radius);
+            if (edgeDistance > radius) return;
+            var scale = 1f - (1f - EdgeFalloff) * SimMath.Clamp01(edgeDistance / radius);
+            Apply(target, damage * scale, type);
+        }
+
+        private void OnVehicleDestroyed(Vehicle vehicle)
+        {
+            vehicle.ClearPath();
+            vehicle.Speed = 0f;
+            _world.Emit(SimEvent.VehicleLost(vehicle));
+            if (vehicle.Def.DeathExplosion != null) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
+        }
+
+        private void OnPropDestroyed(Prop prop)
+        {
+            if (prop.Def.BlocksMovement)
+                _world.Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, SimWorld.ObstacleClearance);
+            _world.Emit(SimEvent.PropLost(prop));
+            if (prop.Def.Explosion != null) Schedule(prop.Position, prop.Def.Explosion, prop.Id);
+        }
+
+        private void Schedule(Vector2 position, ExplosionDef explosion, EntityId source) =>
+            _pending.Add(new PendingExplosion(_world.Time + explosion.Delay, position, explosion, source));
+
+        private readonly struct PendingExplosion
+        {
+            public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source)
+            {
+                Due = due;
+                Position = position;
+                Explosion = explosion;
+                Source = source;
+            }
+
+            public double Due { get; }
+            public Vector2 Position { get; }
+            public ExplosionDef Explosion { get; }
+            public EntityId Source { get; }
+        }
+    }
+}

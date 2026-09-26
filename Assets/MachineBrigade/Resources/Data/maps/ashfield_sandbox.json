@@ -1,0 +1,93 @@
+// Sandbox version of Ashfield: a small town between two camps, with fuel depots and
+// ammo dumps placed to be blown up. Team 0 (player) starts south-west, team 1 north-east.
+{
+  "id": "ashfield_sandbox",
+  "size": 160,
+
+  "teams": [
+    { "team": 0, "x": -58, "z": -58 },
+    { "team": 1, "x": 58,  "z": 58 }
+  ],
+
+  "units": [
+    { "def": "light_tank",       "team": 0, "x": -50, "z": -58, "heading": 45 },
+    { "def": "light_tank",       "team": 0, "x": -58, "z": -50, "heading": 45 },
+    { "def": "main_battle_tank", "team": 0, "x": -53, "z": -53, "heading": 45 },
+    { "def": "scout_jeep",       "team": 0, "x": -61, "z": -46, "heading": 45 },
+    { "def": "scout_jeep",       "team": 0, "x": -46, "z": -61, "heading": 45 },
+    { "def": "artillery",        "team": 0, "x": -63, "z": -63, "heading": 45 },
+
+    { "def": "light_tank",       "team": 1, "x": 50,  "z": 58,  "heading": 225 },
+    { "def": "light_tank",       "team": 1, "x": 58,  "z": 50,  "heading": 225 },
+    { "def": "main_battle_tank", "team": 1, "x": 53,  "z": 53,  "heading": 225 },
+    { "def": "scout_jeep",       "team": 1, "x": 46,  "z": 61,  "heading": 225 }
+  ],
+
+  "props": [
+    // Town centre
+    { "def": "house_large", "x": 0,   "z": 0 },
+    { "def": "house_small", "x": -16, "z": -4 },
+    { "def": "house_small", "x": -16, "z": 12, "rot": 90 },
+    { "def": "house_small", "x": 16,  "z": 4 },
+    { "def": "house_small", "x": 16,  "z": -12, "rot": 90 },
+    { "def": "house_small", "x": -2,  "z": 17 },
+    { "def": "house_small", "x": 2,   "z": -17 },
+    { "def": "wall", "x": -30, "z": -8, "rot": 90 },
+    { "def": "wall", "x": 30,  "z": 8,  "rot": 90 },
+    { "def": "wall", "x": -8,  "z": 30 },
+    { "def": "wall", "x": 8,   "z": -30 },
+    { "def": "barrel", "x": 8,  "z": 9 },
+    { "def": "barrel", "x": 9,  "z": 10.5 },
+    { "def": "barrel", "x": 10, "z": 9 },
+    { "def": "barrel", "x": -8, "z": -9 },
+    { "def": "barrel", "x": -9.5, "z": -8 },
+
+    // South-east fuel depot
+    { "def": "fuel_tank", "x": 34, "z": -30 },
+    { "def": "fuel_tank", "x": 40, "z": -30 },
+    { "def": "fuel_tank", "x": 37, "z": -37 },
+    { "def": "barrel", "x": 30, "z": -24 },
+    { "def": "barrel", "x": 32, "z": -24 },
+    { "def": "barrel", "x": 34, "z": -24 },
+    { "def": "barrel", "x": 31, "z": -22 },
+    { "def": "barrel", "x": 44, "z": -26 },
+    { "def": "barrel", "x": 45, "z": -28 },
+
+    // North-west fuel depot
+    { "def": "fuel_tank", "x": -34, "z": 30 },
+    { "def": "fuel_tank", "x": -40, "z": 30 },
+    { "def": "fuel_tank", "x": -37, "z": 37 },
+    { "def": "barrel", "x": -30, "z": 24 },
+    { "def": "barrel", "x": -32, "z": 24 },
+    { "def": "barrel", "x": -34, "z": 24 },
+    { "def": "barrel", "x": -31, "z": 22 },
+    { "def": "barrel", "x": -44, "z": 26 },
+    { "def": "barrel", "x": -45, "z": 28 },
+
+    // Ammo dumps
+    { "def": "ammo_crate", "x": -20, "z": -26 },
+    { "def": "ammo_crate", "x": -22, "z": -27 },
+    { "def": "ammo_crate", "x": -21, "z": -29 },
+    { "def": "ammo_crate", "x": 20,  "z": 26 },
+    { "def": "ammo_crate", "x": 22,  "z": 27 },
+    { "def": "ammo_crate", "x": 21,  "z": 29 },
+
+    // Woods
+    { "def": "tree", "x": -58, "z": 8 },  { "def": "tree", "x": -54, "z": 12 }, { "def": "tree", "x": -60, "z": 16 },
+    { "def": "tree", "x": -50, "z": 6 },  { "def": "tree", "x": -52, "z": 20 }, { "def": "tree", "x": -57, "z": 24 },
+    { "def": "tree", "x": -47, "z": 14 }, { "def": "tree", "x": -62, "z": 10 }, { "def": "tree", "x": -49, "z": 24 },
+    { "def": "tree", "x": -55, "z": 18 },
+    { "def": "tree", "x": 58, "z": -8 },  { "def": "tree", "x": 54, "z": -12 }, { "def": "tree", "x": 60, "z": -16 },
+    { "def": "tree", "x": 50, "z": -6 },  { "def": "tree", "x": 52, "z": -20 }, { "def": "tree", "x": 57, "z": -24 },
+    { "def": "tree", "x": 47, "z": -14 }, { "def": "tree", "x": 62, "z": -10 }, { "def": "tree", "x": 49, "z": -24 },
+    { "def": "tree", "x": 55, "z": -18 },
+    { "def": "tree", "x": -8, "z": 52 },  { "def": "tree", "x": -3, "z": 56 },  { "def": "tree", "x": 4, "z": 53 },
+    { "def": "tree", "x": 8, "z": 58 },   { "def": "tree", "x": 0, "z": 61 },   { "def": "tree", "x": -6, "z": 60 },
+    { "def": "tree", "x": 10, "z": 51 },
+    { "def": "tree", "x": 8, "z": -52 },  { "def": "tree", "x": 3, "z": -56 },  { "def": "tree", "x": -4, "z": -53 },
+    { "def": "tree", "x": -8, "z": -58 }, { "def": "tree", "x": 0, "z": -61 },  { "def": "tree", "x": 6, "z": -60 },
+    { "def": "tree", "x": -10, "z": -51 },
+    { "def": "tree", "x": -28, "z": -40 }, { "def": "tree", "x": -24, "z": -44 }, { "def": "tree", "x": 28, "z": 40 },
+    { "def": "tree", "x": 24, "z": 44 },   { "def": "tree", "x": -40, "z": -20 }, { "def": "tree", "x": 40, "z": 20 }
+  ]
+}

@@ -1,0 +1,31 @@
+#nullable enable
+using System.Numerics;
+using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
+
+namespace MachineBrigade.Sim.Entities
+{
+    /// <summary>
+    /// A shot in flight. It lands on a fixed aim point after its travel time, so a fast
+    /// target can dodge slow shells and damage timing matches what the player sees.
+    /// </summary>
+    internal sealed class Projectile
+    {
+        public Projectile(EntityId owner, int ownerTeam, WeaponDef weapon, Vector2 aimPoint, EntityId target, float travelTime)
+        {
+            Owner = owner;
+            OwnerTeam = ownerTeam;
+            Weapon = weapon;
+            AimPoint = aimPoint;
+            Target = target;
+            TimeLeft = travelTime;
+        }
+
+        public EntityId Owner { get; }
+        public int OwnerTeam { get; }
+        public WeaponDef Weapon { get; }
+        public Vector2 AimPoint { get; }
+        public EntityId Target { get; }
+        public float TimeLeft { get; set; }
+    }
+}

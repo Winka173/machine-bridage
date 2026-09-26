@@ -1,14 +1,15 @@
 {
-    "name": "MachineBrigade.Editor",
-    "rootNamespace": "MachineBrigade.Editor",
+    "name": "MachineBrigade.Game",
+    "rootNamespace": "MachineBrigade.Game",
     "references": [
-        "MachineBrigade.Game",
+        "MachineBrigade.Sim",
+        "MachineBrigade.Voxel",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.RenderPipelines.Universal.Runtime"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
