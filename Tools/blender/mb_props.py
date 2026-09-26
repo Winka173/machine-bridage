@@ -3,6 +3,8 @@
 Footprints match balance.json (Blender X = prop width, Blender Y = prop depth, metres). Origins sit
 on the ground at the footprint centre. Trees, bushes and the crate follow 3d_astra's scenery
 builders; buildings, barriers, fuel tanks, barrels, rubble and debris are Machine Brigade's own.
+The extra tree species (pine, birch, tree_dead, tree_round) stay under 600 triangles because
+forests place thousands of them. Town buildings and civilian vehicles live in mb_town.py.
 """
 import math
 import random
@@ -159,6 +161,63 @@ def tree_broad(a):
             (r, r * .95, r * .82), loc=(x, y, z), sub=2, jitter=.18, seed=i * 2.9 + 1)
 
 
+def pine(a):
+    """Tall spruce (about 10 m): five narrow tiers of dark needles over a bare lower trunk."""
+    a.part('Trunk', 'Bark').cyl(.24, 3.2, loc=(0, 0, 1.6), r2=.1, seg=7, bevel=0)
+    tiers = ((2.0, 3.0, 3.2), (1.7, 2.7, 4.6), (1.4, 2.4, 6.0), (1.08, 2.1, 7.4), (.78, 2.2, 8.9))
+    for i, (r, h, z) in enumerate(tiers):
+        a.part('Crown', 'FoliageDark' if i % 2 == 0 else 'Foliage').tier(r, h, loc=(0, 0, z), seg=10,
+                                                                          droop=.22 - i * .025, jitter=.14,
+                                                                          seed=i * 2.3 + .7)
+
+
+def birch(a):
+    """Birch: a slim white trunk with dark marks and an airy crown of small leaf clusters."""
+    bark = a.part('Trunk', 'BarkWhite')
+    bark.cyl(.14, 4.3, loc=(0, 0, 2.15), r2=.1, seg=6, bevel=0)
+    bark.limb((0, 0, 4.1), (.22, .12, 7.7), .17, .17, bevel=0, taper=(.35, .35))
+    for p0, p1, s in (((0, 0, 3.4), (.9, .3, 5.0), .08), ((-.02, 0, 4.2), (-.8, -.35, 5.8), .07),
+                      ((.12, .06, 5.3), (.55, -.55, 6.7), .06)):
+        bark.limb(p0, p1, s, s, bevel=0, taper=(.5, .5))
+    marks = a.part('Bark_marks', 'Charred')
+    for z, turn in ((.9, .3), (1.7, 2.2), (2.6, 4.1), (3.5, 1.2)):
+        r = .14 - .04 * z / 4.3
+        marks.box((.12, .05, .05), loc=(math.cos(turn) * r, math.sin(turn) * r, z), rot=(0, 0, turn + R90), bevel=0)
+    clumps = ((.25, .1, 6.8, .95, 2), (.95, .3, 5.4, .72, 1), (-.75, -.35, 5.9, .8, 2), (.55, -.6, 6.9, .6, 1),
+              (-.15, .35, 7.8, .7, 2), (.1, -.1, 4.8, .55, 1), (-.95, .35, 4.9, .5, 1))
+    for i, (x, y, z, r, sub) in enumerate(clumps):
+        a.part('Leaves', 'FoliageLight' if i % 3 else 'Foliage', flat=True).ico(
+            (r, r * .9, r * 1.15), loc=(x, y, z), sub=sub, jitter=.2, seed=i * 1.7 + 4)
+
+
+def tree_dead(a):
+    """Burnt tree: a charred trunk snapped at the top, bare branches and root flares."""
+    wood = a.part('Trunk', 'Charred')
+    wood.cyl(.3, 3.4, loc=(0, 0, 1.7), r2=.21, seg=7, bevel=0)
+    wood.limb((0, 0, 3.3), (.3, .12, 5.7), .38, .38, bevel=0, taper=(.4, .4))
+    for p0, p1, s in (((0, 0, 2.4), (1.4, .4, 3.7), .17), ((0, 0, 3.0), (-1.2, .55, 4.4), .15),
+                      ((.1, .05, 3.9), (.95, -.85, 5.0), .12), ((.2, .08, 4.6), (-.7, -.55, 5.9), .1),
+                      ((1.4, .4, 3.7), (1.9, .2, 4.8), .08), ((-1.2, .55, 4.4), (-1.6, 1.0, 5.2), .07),
+                      ((.95, -.85, 5.0), (1.1, -1.0, 5.8), .06), ((.25, .1, 5.3), (.8, .5, 6.3), .08)):
+        wood.limb(p0, p1, s, s, bevel=0, taper=(.4, .4))
+    for t in (.4, 2.5, 4.4):
+        wood.limb((0, 0, .45), (math.cos(t) * .75, math.sin(t) * .75, .06), .2, .16, bevel=0, taper=(.4, .5))
+
+
+def tree_round(a):
+    """Round broadleaf (oak-like): short straight trunk under one dense, lumpy, dark crown."""
+    bark = a.part('Trunk', 'Bark')
+    bark.cyl(.27, 2.9, loc=(0, 0, 1.45), r2=.17, seg=7, bevel=0)
+    bark.limb((0, 0, 2.0), (.65, .3, 3.1), .15, .13, bevel=0, taper=(.6, .6))
+    bark.limb((0, 0, 2.3), (-.5, -.45, 3.3), .13, .11, bevel=0, taper=(.6, .6))
+    a.part('Leaves', 'FoliageDark', flat=True).ico((1.95, 1.9, 1.65), loc=(0, 0, 4.2), sub=2, jitter=.12, seed=3.3)
+    lumps = ((1.35, .2, 4.4, .95, 2), (-1.2, .6, 4.1, .9, 1), (.3, -1.35, 4.0, .9, 2), (-.4, 1.3, 4.6, .85, 1),
+             (-.9, -.9, 4.7, .85, 2), (.6, .5, 5.6, .9, 1), (.95, -.8, 3.4, .7, 1))
+    for i, (x, y, z, r, sub) in enumerate(lumps):
+        a.part('Leaves', 'Foliage' if i % 2 == 0 else 'FoliageDark', flat=True).ico(
+            (r, r * .95, r * .85), loc=(x, y, z), sub=sub, jitter=.2, seed=i * 2.7 + 1.5)
+
+
 def bush(a):
     """3d_astra's bush."""
     for i, (x, y, r) in enumerate(((-.38, .05, .62), (.35, .12, .56), (0, -.28, .5), (.05, .3, .44))):
@@ -209,6 +268,10 @@ def rubble_small(a):
     rubble(a, 8.0, 8.0, seed=11)
 
 
+def rubble_medium(a):
+    rubble(a, 9.0, 8.0, seed=12)
+
+
 def rubble_large(a):
     rubble(a, 12.0, 10.0, seed=13)
 
@@ -240,11 +303,16 @@ BUILDERS = {
     'ammo_crate': (ammo_crate, dict(ao_distance=.6, grime_height=.3)),
     'tree': (tree, dict(ao_distance=1.2, grime_height=.6)),
     'tree_broad': (tree_broad, dict(ao_distance=1.2, grime_height=.6)),
+    'pine': (pine, dict(ao_distance=1.2, grime_height=.6)),
+    'birch': (birch, dict(ao_distance=1.0, grime_height=.6)),
+    'tree_dead': (tree_dead, dict(ao_distance=.8, grime_height=.5)),
+    'tree_round': (tree_round, dict(ao_distance=1.2, grime_height=.6)),
     'bush': (bush, dict(ao_distance=.7, grime_height=.3)),
     'rock_a': (lambda a: rock(a, 1.3, (1.0, .9, .62)), dict(ao_distance=.9, grime_height=.3)),
     'rock_b': (lambda a: rock(a, 4.7, (.95, .82, .78)), dict(ao_distance=.9, grime_height=.3)),
     'rock_c': (lambda a: rock(a, 8.2, (.9, 1.0, .5)), dict(ao_distance=.9, grime_height=.3)),
     'rubble_small': (rubble_small, dict(ao_distance=.9, grime_height=.4)),
+    'rubble_medium': (rubble_medium, dict(ao_distance=.9, grime_height=.4)),
     'rubble_large': (rubble_large, dict(ao_distance=.9, grime_height=.4)),
     **{f'debris_{kind}': ((lambda k, s: (lambda a: debris(a, k, s)))(kind, i + 1), dict(ao_distance=.3,
                                                                                         grime_height=.1))

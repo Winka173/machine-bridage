@@ -97,6 +97,19 @@ MATERIALS = {
     'Dirt': ('#7a6448', 0.0, 0.95, 0.0),
     'Sandbag': ('#a8956a', 0.0, 0.95, 0.0),
     'Grass': ('#5f7a45', 0.0, 0.9, 0.0),
+    # Town buildings, civilian vehicles and extra tree species (mb_town.py, mb_props.py).
+    'PlasterWhite': ('#ece8dc', 0.0, 0.92, 0.0),
+    'PlasterBlue': ('#a9bfc7', 0.0, 0.92, 0.0),
+    'PlasterOchre': ('#dfb56c', 0.0, 0.92, 0.0),
+    'Brick': ('#a8553d', 0.0, 0.9, 0.0),
+    'RoofSlate': ('#5b636c', 0.0, 0.74, 0.0),
+    'RoofGreen': ('#5e8a72', 0.2, 0.62, 0.0),
+    'MetalSheet': ('#a9b0b1', 0.55, 0.5, 0.0),
+    'WoodRed': ('#9c3f2f', 0.0, 0.85, 0.0),
+    'Charred': ('#302b28', 0.0, 0.95, 0.0),
+    'CarRed': ('#c8382c', 0.35, 0.38, 0.0),     # civilian car body; recoloured per car at runtime
+    'FoliageDark': ('#3e5b35', 0.0, 0.85, 0.0),
+    'BarkWhite': ('#e4dfd2', 0.0, 0.85, 0.0),
 }
 GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
 
