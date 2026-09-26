@@ -148,6 +148,8 @@ namespace MachineBrigade.Sim
                 if (_vehicles.TryGetValue(id, out var v) && v.IsAlive && v.Team == command.Team && !_unitBuffer.Contains(v))
                     _unitBuffer.Add(v);
             if (_unitBuffer.Count == 0) return CommandResult.Rejected(CommandError.NoUnits);
+            if (command.Manual)
+                foreach (var v in _unitBuffer) v.ManualOrder = true;
 
             switch (command.Type)
             {

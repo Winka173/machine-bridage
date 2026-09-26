@@ -13,6 +13,7 @@ using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Events;
 using MachineBrigade.Sim.Modes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
@@ -44,7 +45,7 @@ namespace MachineBrigade.Game.Match
         private IGameMode _mode;
         private ConquestMode _conquest;
         private SandboxMode _survival;
-        private ConquestAi _enemyAi, _friendlyAi;
+        private ConquestAi _enemyAi, _friendlyAi, _playerAi;
         private TacticalAi _waveAi;
         private SimClock _clock;
         private MaterialLibrary _materials;
@@ -70,6 +71,10 @@ namespace MachineBrigade.Game.Match
         private Vector3 _attractFocus;
         private int _announcedWave, _kills, _losses;
         private bool _warnedAir;
+        private float _lastInput;
+
+        /// <summary>Seconds without touching the screen before the camera starts following the fighting.</summary>
+        private const float AutoCameraDelay = 8f;
 
         private void Awake()
         {
@@ -161,6 +166,12 @@ namespace MachineBrigade.Game.Match
                 var difficulty = _menu ? AiDifficulty.Normal : MatchSettings.Difficulty;
                 _enemyAi = new ConquestAi(_conquest, EnemyTeam, PlayerTeam, difficulty, seed);
                 if (_menu) _friendlyAi = new ConquestAi(_conquest, PlayerTeam, EnemyTeam, AiDifficulty.Normal, seed + 1);
+                // The player's army fights on its own; the player commands intent (see Wire).
+                else _playerAi = new ConquestAi(_conquest, PlayerTeam, EnemyTeam, AiDifficulty.Hard, seed + 2)
+                {
+                    AutoDeploy = MatchSettings.AutoDeploy,
+                    AutoStrike = MatchSettings.AutoStrike,
+                };
                 return;
             }
 
@@ -170,6 +181,15 @@ namespace MachineBrigade.Game.Match
             _world.EnableEconomy(new TeamEconomy(PlayerTeam, 16f, income: 0.8f,
                 vehicles: MatchSettings.DeckVehicles.ToArray(), supports: MatchSettings.DeckSupports.ToArray()));
             _waveAi = new TacticalAi(EnemyTeam, PlayerTeam, seed);
+            // Survival: the commander holds a line a third of the way towards the enemy.
+            _world.TryGetRally(PlayerTeam, out var home);
+            _world.TryGetRally(EnemyTeam, out var threat);
+            _playerAi = new ConquestAi(null, PlayerTeam, EnemyTeam, AiDifficulty.Hard, seed + 2)
+            {
+                DefendPoint = System.Numerics.Vector2.Lerp(home, threat, 0.33f),
+                AutoDeploy = MatchSettings.AutoDeploy,
+                AutoStrike = MatchSettings.AutoStrike,
+            };
         }
 
         private static void ApplyDebugFlags()
@@ -199,6 +219,7 @@ namespace MachineBrigade.Game.Match
                 _mode.Tick(_world, dt);
                 _enemyAi?.Tick(_world, dt);
                 _friendlyAi?.Tick(_world, dt);
+                _playerAi?.Tick(_world, dt);
                 _waveAi?.Tick(_world, dt);
                 _world.Step(dt);
                 _views.SnapshotAll();
@@ -206,6 +227,7 @@ namespace MachineBrigade.Game.Match
             }
 
             if (_menu) Attract();
+            else FollowTheFight();
             _selection.Tick();
             if (!_paused)
             {
@@ -312,6 +334,28 @@ namespace MachineBrigade.Game.Match
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
             _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+            _hud.StancePressed += defend =>
+            {
+                _playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
+                _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
+            };
+            _hud.AutoDeployToggled += () =>
+            {
+                MatchSettings.AutoDeploy = _playerAi.AutoDeploy = !_playerAi.AutoDeploy;
+                MatchSettings.Save();
+            };
+            _hud.AutoStrikeToggled += () =>
+            {
+                MatchSettings.AutoStrike = _playerAi.AutoStrike = !_playerAi.AutoStrike;
+                MatchSettings.Save();
+            };
+            _hud.PointPressed += id =>
+            {
+                _playerAi.FocusPoint = _playerAi.FocusPoint == id ? null : id;
+                _hud.Toast(_playerAi.FocusPoint != null
+                    ? Strings.Format("toast.focus", Strings.Get("point." + id))
+                    : Strings.Get("toast.focusClear"));
+            };
             _selection.Rejected += _hud.ShowError;
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
@@ -364,6 +408,33 @@ namespace MachineBrigade.Game.Match
             _camera.Glide(_attractFocus, 24f, Time.unscaledDeltaTime, 0.35f);
         }
 
+        /// <summary>
+        /// Left alone for a while, the camera drifts towards the heaviest fighting so the battle
+        /// plays out on screen; any touch hands it straight back.
+        /// </summary>
+        private void FollowTheFight()
+        {
+            var touching = (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed) ||
+                           (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed ||
+                                                      Mouse.current.scroll.ReadValue().sqrMagnitude > 0f));
+            if (touching || _commander?.ArmedSupport != null || _paused) _lastInput = Time.unscaledTime;
+            if (Time.unscaledTime - _lastInput < AutoCameraDelay) return;
+            if (Time.time >= _attractAt)
+            {
+                _attractAt = Time.time + 3f;
+                var sum = Vector3.zero;
+                var count = 0;
+                foreach (var v in _world.Vehicles)
+                {
+                    if (v.Team != PlayerTeam || !v.Target.IsValid) continue;
+                    sum += new Vector3(v.Position.X, 0f, v.Position.Y);
+                    count++;
+                }
+                if (count > 0) _attractFocus = sum / count;
+            }
+            if (_attractFocus != Vector3.zero) _camera.Glide(_attractFocus, _camera.Zoom, Time.unscaledDeltaTime, 0.5f);
+        }
+
         private void UpdateStatus()
         {
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
@@ -386,6 +457,8 @@ namespace MachineBrigade.Game.Match
                 _hud.SetScore(_conquest.Tickets(PlayerTeam), _conquest.Tickets(EnemyTeam), _conquest.MaxTickets, _pointInfo);
             }
             _hud.SetModes(_selection.AttackMoveArmed, _selection.BoxMode);
+            if (_playerAi != null)
+                _hud.SetCommander(_playerAi.Stance == CommanderStance.Defend, _playerAi.AutoDeploy, _playerAi.AutoStrike, _playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
             UpdateMinimap();
         }

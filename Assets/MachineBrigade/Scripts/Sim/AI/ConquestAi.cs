@@ -17,6 +17,16 @@ namespace MachineBrigade.Sim.AI
         Hard,
     }
 
+    /// <summary>The commander's general intent.</summary>
+    public enum CommanderStance
+    {
+        /// <summary>Take neutral and enemy objectives.</summary>
+        Attack,
+
+        /// <summary>Hold what we have: go where our objectives are threatened.</summary>
+        Defend,
+    }
+
     /// <summary>
     /// The Conquest opponent: <see cref="TacticalAi"/> fights the battle, and this layer spends
     /// Command Points and picks objectives (game plan section 9). It counter-picks against what it
@@ -29,7 +39,7 @@ namespace MachineBrigade.Sim.AI
         private const int ClusterSize = 3;
         private const float ClusterRadius = 9f;
 
-        private readonly ConquestMode _mode;
+        private readonly ConquestMode? _mode;
         private readonly int _team;
         private readonly int _enemyTeam;
         private readonly AiDifficulty _difficulty;
@@ -37,7 +47,22 @@ namespace MachineBrigade.Sim.AI
         private readonly TacticalAi _tactics;
         private float _timer;
 
-        public ConquestAi(ConquestMode mode, int team, int enemyTeam, AiDifficulty difficulty = AiDifficulty.Normal, int seed = 11)
+        /// <summary>Buy vehicles from the deck automatically.</summary>
+        public bool AutoDeploy { get; set; } = true;
+
+        /// <summary>Call fire support automatically.</summary>
+        public bool AutoStrike { get; set; } = true;
+
+        public CommanderStance Stance { get; set; } = CommanderStance.Attack;
+
+        /// <summary>Objective id the army should concentrate on; null lets the commander choose.</summary>
+        public string? FocusPoint { get; set; }
+
+        /// <summary>Where to hold when there are no objectives (Survival).</summary>
+        public Vector2? DefendPoint { get; set; }
+
+        /// <param name="mode">Null for modes without objectives: the army holds <see cref="DefendPoint"/>.</param>
+        public ConquestAi(ConquestMode? mode, int team, int enemyTeam, AiDifficulty difficulty = AiDifficulty.Normal, int seed = 11)
         {
             _mode = mode;
             _team = team;
@@ -61,8 +86,8 @@ namespace MachineBrigade.Sim.AI
             if (_timer > 0f || world.IsOver) return;
             _timer = Interval;
             if (!world.TryGetEconomy(_team, out var economy)) return;
-            if (TryStrike(world, economy)) return;
-            TryDeploy(world, economy);
+            if (AutoStrike && TryStrike(world, economy)) return;
+            if (AutoDeploy) TryDeploy(world, economy);
         }
 
         /// <summary>
@@ -71,16 +96,30 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private Vector2? ChooseObjective(SimWorld world)
         {
-            if (_mode.Points.Count == 0) return null;
+            if (_mode == null || _mode.Points.Count == 0) return DefendPoint;
+            if (FocusPoint != null)
+                foreach (var point in _mode.Points)
+                    if (point.Def.Id == FocusPoint) return point.Def.Position;
             var front = Centre(world, out var any);
             if (!any) world.TryGetRally(_team, out front);
             ObjectiveState? best = null;
             var bestScore = float.MinValue;
+            var defend = Stance == CommanderStance.Defend;
             foreach (var point in _mode.Points)
             {
-                var score = point.Owner == _team ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
-                if (point.Contested) score += 1.5f;
-                if (point.Owner == _team && !point.Contested) score -= 2f;
+                float score;
+                if (defend)
+                {
+                    // Our points first, threatened ones most; take new ground only when we hold nothing.
+                    score = point.Owner == _team ? 3f : point.Owner == -1 ? 1f : 0.5f;
+                    if (point.Contested || (point.Owner == _team && point.Progress * (_team == 0 ? 1f : -1f) < 0.99f)) score += 2f;
+                }
+                else
+                {
+                    score = point.Owner == _team ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
+                    if (point.Contested) score += 1.5f;
+                    if (point.Owner == _team && !point.Contested) score -= 2f;
+                }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
                 best = point;
@@ -129,8 +168,9 @@ namespace MachineBrigade.Sim.AI
             CountEnemies(out var air, out var heavy, out var light);
             CountOwn(world, out var ownAa, out var ownArtillery, out var ownTotal);
             var neutral = 0;
-            foreach (var p in _mode.Points)
-                if (p.Owner != _team) neutral++;
+            if (_mode != null)
+                foreach (var p in _mode.Points)
+                    if (p.Owner != _team) neutral++;
             var owned = new Dictionary<string, int>();
             foreach (var v in world.Vehicles)
                 if (v.IsAlive && v.Team == _team) owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
