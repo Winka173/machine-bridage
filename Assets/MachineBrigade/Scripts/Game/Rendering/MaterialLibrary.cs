@@ -81,6 +81,10 @@ namespace MachineBrigade.Game.Rendering
             ["RailBrown"] = ("#7a3f2c", 0.3f, 0.6f, 0f),
             // Premium trims (the Titan).
             ["Gilded"] = ("#f5c75a", 0.9f, 0.28f, 0f),
+            // Elite enemy units: dark armour and red sensor glow.
+            ["EliteBlack"] = ("#1c1e24", 0.35f, 0.5f, 0f),
+            ["Medical"] = ("#e9ece6", 0.1f, 0.4f, 0f),
+            ["EliteGlow"] = ("#ff2a1f", 0f, 0.3f, 2.4f),
         };
 
         private readonly List<Material> _owned = new();

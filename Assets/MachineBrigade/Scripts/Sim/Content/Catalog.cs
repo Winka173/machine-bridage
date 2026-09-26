@@ -24,7 +24,18 @@ namespace MachineBrigade.Sim.Content
             _weapons = Index(weapons, w => w.Id, "weapon");
             _vehicles = Index(vehicles, v => v.Id, "vehicle");
             _props = Index(props, p => p.Id, "prop");
+            foreach (var v in _vehicles.Values)
+            {
+                if (v.EliteOf == null || !_vehicles.TryGetValue(v.EliteOf, out var original)) continue;
+                v.ArmyCost = original.CpCost;
+                _elites[v.EliteOf] = v.Id;
+            }
         }
+
+        private readonly Dictionary<string, string> _elites = new();
+
+        /// <summary>The elite version of a vehicle, if it has one.</summary>
+        public string? EliteVariant(string vehicleId) => _elites.TryGetValue(vehicleId, out var elite) ? elite : null;
 
         /// <summary>Balance version, recorded with results so tuning changes stay traceable.</summary>
         public int Version { get; }
@@ -110,6 +121,8 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("model")) def.Model = v.String("model");
                     def.Boss = v.Bool("boss", false);
                     def.Elite = v.Bool("elite", false);
+                    def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
+                    def.ArmyCost = def.CpCost;
                     if (v.Has("length")) def.Length = v.Float("length");
                     if (v.Has("width")) def.Width = v.Float("width");
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);

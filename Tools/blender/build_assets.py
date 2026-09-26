@@ -27,6 +27,7 @@ import mb_themes  # noqa: E402
 import mb_town  # noqa: E402
 import mb_vehicles  # noqa: E402
 import mb_vehicles2  # noqa: E402
+import mb_vehicles3  # noqa: E402
 
 ROOT = HERE.parents[1]
 OUT = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
@@ -36,7 +37,7 @@ REPORT = ROOT / 'Docs' / 'art' / 'models.json'
 def all_builders():
     return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS,
             **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS, **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS,
-            **mb_elites.BUILDERS}
+            **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS}
 
 
 def build_all(filters=()):

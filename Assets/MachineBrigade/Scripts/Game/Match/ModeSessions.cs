@@ -145,6 +145,10 @@ namespace MachineBrigade.Game.Match
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             session.Build(world, seed);
             if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed);
+            // Elite crews turn up more often the harder the enemy (and now and then in the menu battle).
+            var elite = menu ? 0.15f : session.Difficulty switch { AiDifficulty.Hard => 0.25f, AiDifficulty.Normal => 0.1f, _ => 0f };
+            if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.EliteChance = elite;
+            if (menu && world.TryGetEconomy(PlayerTeam, out var ours)) ours.EliteChance = elite;
             return session;
         }
 

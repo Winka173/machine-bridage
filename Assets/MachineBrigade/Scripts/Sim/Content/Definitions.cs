@@ -136,6 +136,7 @@ namespace MachineBrigade.Sim.Content
             CaptureRate = Guard.NonNegative(captureRate, id, nameof(captureRate));
             FixedWing = flying && fixedWing;
             Model = Id;
+            ArmyCost = CpCost;
             Width = flying ? radius * 2f : radius * 1.6f;
             Length = flying ? radius * 2f : radius * 2.7f;
         }
@@ -179,12 +180,18 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A veteran enemy variant: bigger, tougher, with skills; shown with an elite badge.</summary>
         public bool Elite { get; internal set; }
 
+        /// <summary>For an elite: the vehicle it is a refurbished version of.</summary>
+        public string? EliteOf { get; internal set; }
+
+        /// <summary>What it counts against the army cap and pays out as a kill (an elite counts as its base unit).</summary>
+        public int ArmyCost { get; internal set; }
+
         /// <summary>
         /// Rough fighting value at full health, in CP: what the unit costs, or for units that are
         /// never bought (defences, mission units) an estimate from their toughness. Bosses count
         /// as nothing here, because the army fights them whatever the odds.
         /// </summary>
-        public float Power => Boss ? 0f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
+        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
 
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
         public string Model { get; internal set; }
