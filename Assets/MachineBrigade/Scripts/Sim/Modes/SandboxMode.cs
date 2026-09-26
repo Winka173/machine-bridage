@@ -18,7 +18,7 @@ namespace MachineBrigade.Sim.Modes
         private const float FirstWaveDelay = 20f;
         private const float WaveInterval = 30f;
         private const int MaxEnemies = 14;
-        private const float ReinforceCooldownSeconds = 12f;
+        public const float ReinforceCooldownSeconds = 12f;
 
         private static readonly string[] WaveRoster = { "light_tank", "scout_jeep", "main_battle_tank", "light_tank", "artillery" };
         private static readonly string[] ReinforceRoster = { "main_battle_tank", "light_tank", "artillery", "scout_jeep" };

@@ -23,8 +23,11 @@ namespace MachineBrigade.Game.Rendering
         private readonly Cubemap _reflection;
         private readonly UniversalRenderPipelineAsset _pipeline;
         private readonly float _originalShadowDistance;
+        private readonly float _originalDepthBias;
+        private readonly float _originalNormalBias;
+        private readonly int _originalMsaa;
 
-        public Atmosphere(float shadowDistance = 150f)
+        public Atmosphere(float shadowDistance = 110f)
         {
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = Sky * AmbientStrength;
@@ -44,17 +47,31 @@ namespace MachineBrigade.Game.Rendering
             RenderSettings.fogStartDistance = 100f;
             RenderSettings.fogEndDistance = 220f;
 
+            // Shadow and edge quality: a tight shadow range keeps texels small, extra bias stops
+            // acne flickering on hulls as they move, and MSAA stops edges crawling.
             _pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             if (_pipeline != null)
             {
                 _originalShadowDistance = _pipeline.shadowDistance;
+                _originalDepthBias = _pipeline.shadowDepthBias;
+                _originalNormalBias = _pipeline.shadowNormalBias;
+                _originalMsaa = _pipeline.msaaSampleCount;
                 _pipeline.shadowDistance = shadowDistance;
+                _pipeline.shadowDepthBias = 1.6f;
+                _pipeline.shadowNormalBias = 1.3f;
+                _pipeline.msaaSampleCount = Application.isMobilePlatform ? 2 : 4;
             }
         }
 
         public void Dispose()
         {
-            if (_pipeline != null) _pipeline.shadowDistance = _originalShadowDistance;
+            if (_pipeline != null)
+            {
+                _pipeline.shadowDistance = _originalShadowDistance;
+                _pipeline.shadowDepthBias = _originalDepthBias;
+                _pipeline.shadowNormalBias = _originalNormalBias;
+                _pipeline.msaaSampleCount = _originalMsaa;
+            }
             if (_reflection != null) Object.Destroy(_reflection);
         }
 

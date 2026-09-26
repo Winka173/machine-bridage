@@ -108,7 +108,7 @@ namespace MachineBrigade.Game.Views
             var acceleration = (_currentSpeed - _previousSpeed) * 20f;
             _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(-acceleration * 0.9f, -4f, 4f), 1f - Mathf.Exp(-Time.deltaTime * 6f));
             _bouncePhase += Time.deltaTime * (4f + _currentSpeed * 1.4f);
-            var bounce = _currentSpeed > 0.2f ? Mathf.Sin(_bouncePhase) * 0.025f * Mathf.Min(1f, _currentSpeed / 4f) : 0f;
+            var bounce = Mathf.Sin(_bouncePhase) * 0.012f * Mathf.Clamp01(_currentSpeed / 4f);
             _body.localPosition = new Vector3(0f, bounce, 0f);
             _body.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
 

@@ -18,6 +18,8 @@ namespace MachineBrigade.Sim.Movement
         private const float StuckWindow = 1.5f;
         private const float StuckDistance = 0.4f;
         private const int StuckStrikesToGiveUp = 3;
+        private const float SeparationSlack = 0.08f;
+        private const float SeparationStiffness = 0.35f;
 
         private readonly SimWorld _world;
 
@@ -126,7 +128,10 @@ namespace MachineBrigade.Sim.Movement
 
             var desired = SimMath.HeadingOf(toWaypoint);
             var misalignment = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
-            v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * dt);
+            // Close to the final point, small corrections would swing the hull back and forth:
+            // hold the heading and let the vehicle roll in.
+            if (!isFinal || distance > 2.5f || misalignment > 0.6f)
+                v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * dt);
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
@@ -206,7 +211,10 @@ namespace MachineBrigade.Sim.Movement
                         normal = delta / distance;
                     }
 
-                    var overlap = minimum - distance;
+                    // Resolve only part of the overlap per step and ignore slivers: full correction
+                    // every step makes packed groups shove each other back and forth (visible jitter).
+                    var overlap = (minimum - distance - SeparationSlack) * SeparationStiffness;
+                    if (overlap <= 0f) continue;
                     var weightA = a.HasPath ? 0.3f : 0.7f;
                     var weightB = b.HasPath ? 0.3f : 0.7f;
                     var total = weightA + weightB;

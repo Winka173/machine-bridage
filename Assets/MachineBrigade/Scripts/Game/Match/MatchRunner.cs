@@ -38,8 +38,9 @@ namespace MachineBrigade.Game.Match
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
-        private SandboxHud _hud;
+        private BattleHud _hud;
         private float _fps = 60f;
+        private int _announcedWave;
 
         private void Awake()
         {
@@ -68,9 +69,9 @@ namespace MachineBrigade.Game.Match
             _effects = new EffectsDirector(_materials, _meshes, _models, _camera, worldRoot,
                 Application.isMobilePlatform ? EffectBudget.Eco : EffectBudget.High);
 
-            _hud = new SandboxHud();
+            _hud = new BattleHud();
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
-            _gestures = new TouchGestures(_selection, _hud.IsOverUi);
+            _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
             Wire();
 
             DispatchEvents();
@@ -134,28 +135,33 @@ namespace MachineBrigade.Game.Match
             _hud.StopPressed += _selection.Stop;
             _hud.RetreatPressed += _selection.Retreat;
             _hud.AttackMovePressed += _selection.ToggleAttackMove;
+            _hud.BoxModeToggled += () => _selection.BoxMode = !_selection.BoxMode;
+            _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
             _hud.ReinforcePressed += () =>
             {
-                if (!_mode.TryReinforce(_world)) _hud.Toast("Reinforcements not ready");
+                if (!_mode.TryReinforce(_world)) _hud.Toast(Strings.Get("toast.reinforceWait"), error: true);
             };
             _hud.RestartPressed += () => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             _selection.Rejected += _hud.ShowError;
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
             _selection.BoxHidden += _hud.HideSelectionBox;
+            _hud.Toast(Strings.Get("toast.start"), seconds: 4f);
         }
 
         private void UpdateStatus()
         {
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
-            _hud.SetReinforceCooldown(_mode.ReinforceCooldown);
-            _hud.SetAttackMoveArmed(_selection.AttackMoveArmed);
-            _hud.SetStatus(
-                $"Allies {_world.CountAlive(PlayerTeam)}    Enemies {_world.CountAlive(SandboxMode.EnemyTeam)}    " +
-                $"Wave {_mode.Wave} (next in {Mathf.CeilToInt(_mode.SecondsToNextWave)} s)    {_fps:0} FPS\n" +
-                (_selection.SelectedCount > 0
-                    ? $"{_selection.SelectedCount} selected: tap ground to move, tap enemy or barrel to attack"
-                    : "Tap a vehicle to select, hold and drag to box-select, double-tap for all of a type"));
+            if (_mode.Wave != _announcedWave)
+            {
+                _announcedWave = _mode.Wave;
+                if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true);
+            }
+            _hud.SetStats(_world.CountAlive(PlayerTeam), _world.CountAlive(SandboxMode.EnemyTeam), _mode.Wave,
+                _mode.SecondsToNextWave, _fps);
+            _hud.SetReinforceCooldown(_mode.ReinforceCooldown, SandboxMode.ReinforceCooldownSeconds);
+            _hud.SetModes(_selection.AttackMoveArmed, _selection.BoxMode);
+            _hud.SetSelection(_selection.Summary());
         }
     }
 }

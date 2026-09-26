@@ -10,6 +10,26 @@ using SimVector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Game.Input
 {
+    /// <summary>What the HUD shows about the current selection.</summary>
+    public readonly struct SelectionSummary
+    {
+        public SelectionSummary(int count, string defId, float hp, float maxHp)
+        {
+            Count = count;
+            DefId = defId;
+            Hp = hp;
+            MaxHp = maxHp;
+        }
+
+        public int Count { get; }
+
+        /// <summary>Shared vehicle type, or null for a mixed group.</summary>
+        public string DefId { get; }
+
+        public float Hp { get; }
+        public float MaxHp { get; }
+    }
+
     /// <summary>
     /// The player's hands: selection, orders from taps, and camera gestures. Every order goes
     /// through <see cref="SimWorld.Submit"/>, exactly like the AI's.
@@ -46,6 +66,27 @@ namespace MachineBrigade.Game.Input
 
         /// <summary>When armed, the next ground tap issues attack-move instead of move.</summary>
         public bool AttackMoveArmed { get; private set; }
+
+        /// <summary>When on, a one-finger drag box-selects instead of panning (the HUD's Box tool).</summary>
+        public bool BoxMode { get; set; }
+
+        public SelectionSummary Summary()
+        {
+            string defId = null;
+            var mixed = false;
+            float hp = 0f, maxHp = 0f;
+            var count = 0;
+            foreach (var view in _views.All)
+            {
+                if (!_selected.Contains(view.Id)) continue;
+                count++;
+                hp += view.Sim.Hp;
+                maxHp += view.Sim.MaxHp;
+                if (defId == null) defId = view.DefId;
+                else if (defId != view.DefId) mixed = true;
+            }
+            return new SelectionSummary(count, mixed ? null : defId, hp, maxHp);
+        }
 
         public void OnTap(Vector2 screen)
         {
@@ -100,6 +141,7 @@ namespace MachineBrigade.Game.Input
         public void OnBoxEnd(Vector2 startScreen, Vector2 endScreen)
         {
             BoxHidden?.Invoke();
+            BoxMode = false;
             var rect = Rect.MinMaxRect(Mathf.Min(startScreen.x, endScreen.x), Mathf.Min(startScreen.y, endScreen.y),
                 Mathf.Max(startScreen.x, endScreen.x), Mathf.Max(startScreen.y, endScreen.y));
             var found = new List<EntityId>();
