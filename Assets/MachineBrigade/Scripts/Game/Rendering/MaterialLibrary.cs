@@ -59,6 +59,26 @@ namespace MachineBrigade.Game.Rendering
             ["CarYellow"] = ("#e0b53a", 0.35f, 0.38f, 0f),
             ["CarGreen"] = ("#4f7a54", 0.35f, 0.38f, 0f),
             ["CarGrey"] = ("#6c7176", 0.4f, 0.4f, 0f),
+            // Desert and snow maps.
+            ["Adobe"] = ("#d8ad7e", 0f, 0.95f, 0f),
+            ["AdobeTrim"] = ("#a9774f", 0f, 0.93f, 0f),
+            ["Sandstone"] = ("#d99d66", 0f, 0.92f, 0f),
+            ["SandstoneDark"] = ("#a8603b", 0f, 0.93f, 0f),
+            ["SnowCap"] = ("#f4f8fb", 0f, 0.78f, 0f),
+            ["LogWood"] = ("#7a5334", 0f, 0.88f, 0f),
+            ["Rust"] = ("#8f4e2c", 0.35f, 0.74f, 0f),
+            ["Pipe"] = ("#9ba49c", 0.55f, 0.45f, 0f),
+            // Harbour map; containers use ContainerRed and the map swaps in the others.
+            ["ContainerRed"] = ("#b8432f", 0.3f, 0.55f, 0f),
+            ["ContainerBlue"] = ("#2f6496", 0.3f, 0.55f, 0f),
+            ["ContainerGreen"] = ("#3f7a4e", 0.3f, 0.55f, 0f),
+            ["ContainerOrange"] = ("#d9782c", 0.3f, 0.55f, 0f),
+            ["ContainerGrey"] = ("#8a9095", 0.3f, 0.55f, 0f),
+            ["Corrugated"] = ("#8a9496", 0.5f, 0.58f, 0f),
+            ["CraneYellow"] = ("#f5b41e", 0.25f, 0.5f, 0f),
+            ["Asphalt"] = ("#4a4a48", 0f, 0.95f, 0f),
+            ["SafetyStripe"] = ("#f7d21c", 0.05f, 0.5f, 0f),
+            ["RailBrown"] = ("#7a3f2c", 0.3f, 0.6f, 0f),
         };
 
         private readonly List<Material> _owned = new();
@@ -90,6 +110,8 @@ namespace MachineBrigade.Game.Rendering
             foreach (var name in new[] { "Foliage", "FoliageLight", "FoliageDark" }) _surfaces[name].SetFloat("_Wind", 1f);
             CarPaints = new[] { _surfaces["CarRed"], _surfaces["CarBlue"], _surfaces["CarWhite"], _surfaces["CarYellow"],
                 _surfaces["CarGreen"], _surfaces["CarGrey"] };
+            ContainerPaints = new[] { _surfaces["ContainerRed"], _surfaces["ContainerBlue"], _surfaces["ContainerGreen"],
+                _surfaces["ContainerOrange"], _surfaces["ContainerGrey"] };
 
             SelectionRing = Unlit(unlit, "Selection", new Color(0.55f, 1.6f, 1.1f));
             MoveMarker = Unlit(unlit, "MoveMarker", new Color(0.7f, 2f, 1.3f));
@@ -117,6 +139,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Body colours for civilian cars and trucks; index 0 is the models' own CarRed.</summary>
         public Material[] CarPaints { get; }
+
+        /// <summary>Shipping container colours; index 0 is the models' own ContainerRed.</summary>
+        public Material[] ContainerPaints { get; }
 
         public Material Ground { get; }
         public Material Skirt { get; }

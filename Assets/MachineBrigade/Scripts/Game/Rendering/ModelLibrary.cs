@@ -101,8 +101,8 @@ namespace MachineBrigade.Game.Rendering
             (new Regex(@"^Propeller(\.\d+)?$"), Vector3.forward, 2200f),
         };
 
-        /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs).</summary>
-        private static readonly Regex LoosePattern = new(@"^Bombs(\.\d+)?$");
+        /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam).</summary>
+        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam)(\.\d+)?$");
 
         private readonly MaterialLibrary _materials;
         private readonly Dictionary<string, GameObject> _prefabs = new();

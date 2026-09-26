@@ -102,6 +102,12 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-rain")) MatchSettings.Weather = WeatherKind.Rain;
                 if (DebugFlags.Has("-mb-storm")) MatchSettings.Weather = WeatherKind.Storm;
                 if (DebugFlags.Has("-mb-clear")) MatchSettings.Weather = WeatherKind.Clear;
+                if (DebugFlags.Has("-mb-snow")) MatchSettings.Weather = WeatherKind.Snow;
+                if (DebugFlags.Has("-mb-sandstorm")) MatchSettings.Weather = WeatherKind.Sandstorm;
+                if (DebugFlags.Has("-mb-fog")) MatchSettings.Weather = WeatherKind.Fog;
+                if (DebugFlags.Has("-mb-night")) MatchSettings.Weather = WeatherKind.Night;
+                foreach (var info in MatchSettings.AllMaps)
+                    if (DebugFlags.Has("-mb-" + info.Id)) MatchSettings.Map = info.Id;
             }
             _atmosphere = new Atmosphere(MatchSettings.Tier);
             AudioListener.volume = MatchSettings.Volume;
@@ -120,8 +126,10 @@ namespace MachineBrigade.Game.Match
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
             _models = new ModelLibrary(_materials);
-            _map = new MapView(_world, _models, _materials, worldRoot);
-            _surroundings = new Surroundings(_world, _models, _materials, TerrainTheme.Riverlands, worldRoot);
+            var theme = MapTheme.For(map.Theme);
+            if (theme.ModelGrass.HasValue) _materials.ForModel("Grass", -1).SetColor("_BaseColor", theme.ModelGrass.Value);
+            _map = new MapView(_world, _models, _materials, theme, worldRoot, MatchSettings.Tier != GraphicsQuality.Low);
+            _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_conquest != null) _objectives = new ObjectiveView(_conquest, _meshes, _materials, worldRoot);
 
@@ -148,14 +156,17 @@ namespace MachineBrigade.Game.Match
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
-            _weather = new Weather(_menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed), _atmosphere, _materials, _camera,
-                _audio, worldRoot, MatchSettings.HighQuality);
+            var weather = _menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed);
+            // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
+            if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
+            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, MatchSettings.HighQuality);
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
             _hud = new BattleHud(_menu ? HudMode.Menu : kind == GameModeKind.Conquest ? HudMode.Conquest : HudMode.Survival, cards, catalog)
             {
                 ShowFps = MatchSettings.ShowFps,
             };
+            if (_hud.Minimap != null) _hud.Minimap.Ground = theme.Minimap;
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)
             {
@@ -291,6 +302,7 @@ namespace MachineBrigade.Game.Match
             _objectives?.Render(Time.time);
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
+            _map.Animate(Time.time);
             _perf?.End(PerfProbe.Section.Scenery);
             _perf?.EndFrame(_views.All.Count);
             if (_perf != null && !_censusDone && Time.time > 6f)

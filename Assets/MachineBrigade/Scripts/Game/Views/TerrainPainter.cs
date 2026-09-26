@@ -37,8 +37,9 @@ namespace MachineBrigade.Game.Views
     /// </summary>
     public static class TerrainPainter
     {
-        public static Texture2D Paint(SimWorld world, TerrainTheme theme, int size = 1024)
+        public static Texture2D Paint(SimWorld world, MapTheme mapTheme, int size = 1024)
         {
+            var theme = mapTheme.Palette;
             var map = world.Map;
             var pixels = new Color[size * size];
             var worldPerPixel = map.Size / size;
@@ -55,7 +56,7 @@ namespace MachineBrigade.Game.Views
             PaintRoads(pixels, size, map.HalfSize, worldPerPixel, roads, theme.Road);
             PaintFootprints(pixels, size, map.HalfSize, worldPerPixel, world, theme);
             Blur(pixels, size, 2);
-            Speckle(pixels, size, new Random(1482));
+            Speckle(pixels, size, new Random(1482), mapTheme.SpeckleLight, mapTheme.SpeckleDark);
 
             var texture = new Texture2D(size, size, TextureFormat.RGBA32, true, false)
             {
@@ -168,9 +169,13 @@ namespace MachineBrigade.Game.Views
             foreach (var prop in world.Props)
             {
                 var id = prop.Def.Id;
-                if (id is "tree" or "barrel" or "ammo_crate" or "car" or "truck" or "fence" or "hedge" or "stone_wall" or "sandbags"
-                    or "tank_trap") continue;
-                var colour = id == "fuel_tank" ? theme.Stone : Color.Lerp(theme.Dirt, theme.Road, 0.4f);
+                if (id is "tree" or "palm" or "cactus" or "barrel" or "ammo_crate" or "car" or "truck" or "fence" or "hedge" or "stone_wall"
+                    or "sandbags" or "tank_trap" or "lamp_post" or "jersey_barrier" or "dock_bollards" or "mesa" or "snow_rock"
+                    or "pipeline" or "market_stall") continue;
+                // Concrete pads under tanks and industry; trampled earth round houses.
+                var paved = id is "fuel_tank" or "storage_tank" or "refinery_tower" or "oil_pump" or "container" or "container_stack"
+                    or "gantry_crane" or "factory" or "office_block" or "rail_tanker" or "rail_boxcar" or "radar_station";
+                var colour = paved ? theme.Stone : Color.Lerp(theme.Dirt, theme.Road, 0.4f);
                 var margin = id == "wall" ? 1.2f : 2.4f;
                 var hx = prop.Width * 0.5f + margin;
                 var hz = prop.Depth * 0.5f + margin;
@@ -218,10 +223,8 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Faint light and dark dots of varied size, as in the reference's 16,000 speckles.</summary>
-        private static void Speckle(Color[] pixels, int size, Random rng)
+        private static void Speckle(Color[] pixels, int size, Random rng, Color light, Color dark)
         {
-            var light = new Color(209 / 255f, 188 / 255f, 128 / 255f);
-            var dark = new Color(31 / 255f, 58 / 255f, 40 / 255f);
             var scale = size / 1024f;
             for (var n = 0; n < 16000; n++)
             {
