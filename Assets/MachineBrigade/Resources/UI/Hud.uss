@@ -253,12 +253,13 @@
     background-color: var(--button);
     border-width: 1px; border-color: var(--panel-edge); border-radius: 6px;
 }
-.card .icon { width: 30px; height: 30px; }
+.card .icon { width: 30px; height: 30px; margin-top: 10px; }
 .card-name { font-size: 9px; margin-top: 5px; -unity-text-align: middle-center; white-space: normal; padding-left: 3px; padding-right: 3px; }
 .card-cost {
-    position: absolute; top: 4px; right: 4px;
-    padding: 1px 5px;
-    background-color: rgba(223, 183, 118, 0.2);
+    position: absolute; top: 3px; right: 3px;
+    padding: 0 4px;
+    background-color: rgba(34, 30, 22, 0.94);
+    border-width: 1px; border-color: rgba(223, 183, 118, 0.45);
     border-radius: 3px;
 }
 .card-cost-text { -unity-font: resource("Fonts/JetBrainsMono-Medium"); font-size: 11px; color: var(--amber); }

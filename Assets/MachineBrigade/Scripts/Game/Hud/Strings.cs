@@ -147,6 +147,8 @@ namespace MachineBrigade.Game.Hud
             ["toast.defend"] = ("Stance: defend", "Thế trận: phòng thủ"),
             ["hint.auto"] = ("Your army fights on its own  ·  Tap A B C to point it  ·  Tap a vehicle to take control",
                 "Quân ta tự chiến đấu  ·  Chạm A B C để chỉ hướng  ·  Chạm xe để điều khiển tay"),
+            ["hint.autoSurvival"] = ("Your army fights on its own  ·  Tap a vehicle to take control",
+                "Quân ta tự chiến đấu  ·  Chạm xe để điều khiển tay"),
             ["pause.resume"] = ("Resume", "Tiếp tục"),
         };
 

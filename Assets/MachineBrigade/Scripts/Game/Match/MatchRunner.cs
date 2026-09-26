@@ -225,6 +225,12 @@ namespace MachineBrigade.Game.Match
         private void Update()
         {
             _gestures?.Tick(Time.unscaledTime);
+            // Android's back button arrives as Escape: close a menu page, or pause and resume.
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                if (_menu) _hud.MenuBack();
+                else if (!_resultShown) SetPaused(!_paused);
+            }
             _frameRate.Tick();
             _frameRateTarget = _frameRate.Target;
 

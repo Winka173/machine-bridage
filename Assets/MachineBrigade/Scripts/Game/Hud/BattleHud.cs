@@ -51,6 +51,7 @@ namespace MachineBrigade.Game.Hud
         private readonly ResultPanel _result;
         private readonly PausePanel _pause;
         private readonly MenuScreen _menu;
+        private readonly string _autoHint = "hint.auto";
         private float _toastUntil, _bannerUntil;
         private bool _attackArmed, _boxMode;
         private Rect _appliedSafeArea;
@@ -198,7 +199,8 @@ namespace MachineBrigade.Game.Hud
             }
 
             // Overlays -----------------------------------------------------------------------------
-            _hint = UiKit.Text(Strings.Get("hint.auto"), "hint");
+            _autoHint = mode == HudMode.Survival ? "hint.autoSurvival" : "hint.auto";
+            _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
             _safe.Add(_hint);
 
             _targeting = UiKit.Box("targeting");
@@ -295,6 +297,9 @@ namespace MachineBrigade.Game.Hud
             _hint.style.display = message != null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
+        /// <summary>Closes an open menu page; false when there is none (main menu or in a match).</summary>
+        public bool MenuBack() => _menu != null && _menu.Back();
+
         public void SetPaused(bool paused)
         {
             if (_pause != null) _pause.Visible = paused;
@@ -356,7 +361,7 @@ namespace MachineBrigade.Game.Hud
             _boxMode = boxMode;
             _attackMove.EnableInClassList("armed", attackMoveArmed);
             _boxTool.EnableInClassList("on", boxMode);
-            _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : "hint.auto");
+            _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : _autoHint);
         }
 
         public void ShowError(CommandError error) => Toast(Strings.Error(error), error: true);
