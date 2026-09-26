@@ -130,6 +130,11 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
         internal double LastHitTime = double.NegativeInfinity;
 
+        /// <summary>Steering round a hull in the way: which way (+1 clockwise, -1 anticlockwise), and until when.</summary>
+        internal float AvoidSide;
+
+        internal double AvoidUntil = double.NegativeInfinity;
+
         internal Vector2 StuckSample;
         internal float StuckTimer;
         internal int StuckStrikes;

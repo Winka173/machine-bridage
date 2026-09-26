@@ -44,6 +44,19 @@ namespace MachineBrigade.Sim.Content
         public PropDef Prop(string id) =>
             _props.TryGetValue(id, out var def) ? def : throw new KeyNotFoundException($"Unknown prop '{id}'.");
 
+        /// <summary>A sensible class for vehicles whose data does not name one.</summary>
+        private static UnitClass InferClass(VehicleDef def)
+        {
+            if (def.Boss) return UnitClass.Boss;
+            if (def.Static) return UnitClass.Defense;
+            if (def.Flying) return def.FixedWing ? UnitClass.Plane : UnitClass.Helicopter;
+            var weapon = def.Weapon;
+            if (weapon.MinRange > 0f) return UnitClass.Artillery;
+            if (!weapon.CanTarget(false) || weapon.DamageType == DamageType.Flak) return UnitClass.AntiAir;
+            if (def.Armor == ArmorClass.Heavy) return def.MaxHp >= 1400f ? UnitClass.Heavy : UnitClass.Tank;
+            return def.Speed >= 11f ? UnitClass.Scout : UnitClass.Light;
+        }
+
         /// <summary>Parses <c>balance.json</c>. Throws <see cref="FormatException"/> naming the bad field.</summary>
         public static Catalog FromJson(string json)
         {
@@ -59,7 +72,7 @@ namespace MachineBrigade.Sim.Content
                     w.Float("range"), w.Float("minRange", 0f), w.Float("projectileSpeed"), w.Float("splash", 0f),
                     w.Float("spread", 0f), w.Enum<ExplosionTier>("impactTier"),
                     w.Enum("projectile", ProjectileKind.Shell), w.Int("burst", 1), w.Float("burstInterval", 0.1f),
-                    w.Enum("targets", TargetLayers.Ground)));
+                    w.Enum("targets", TargetLayers.Ground)) { Ammo = w.Int("ammo", 0) });
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
 
@@ -80,9 +93,13 @@ namespace MachineBrigade.Sim.Content
                         v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
                         v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
-                        v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false));
+                        v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false), v.Bool("static", false));
                     if (v.Has("model")) def.Model = v.String("model");
                     def.Boss = v.Bool("boss", false);
+                    def.Elite = v.Bool("elite", false);
+                    if (v.Has("length")) def.Length = v.Float("length");
+                    if (v.Has("width")) def.Width = v.Float("width");
+                    def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
                     return def;
                 }));
             }
