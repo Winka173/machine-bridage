@@ -2,8 +2,8 @@
 
 Originally written for Frontier Command (github.com/buicongnguyen/3d_astra) and reused in
 Machine Brigade with the author's permission. Machine Brigade additions: extra materials
-(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass and the desert and
-snow map set), nested pivots, lofted hulls, raw faceted meshes (terrain) and GLB export into the
+(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass, the town, harbour,
+desert and snow sets), nested pivots, lofted hulls, raw faceted meshes (terrain) and GLB export into the
 Unity project.
 
 The same code runs headless (`blender --background --python generate_assets.py`) and live
@@ -120,6 +120,15 @@ MATERIALS = {
     'LogWood': ('#7a5334', 0.0, 0.88, 0.0),
     'Rust': ('#8f4e2c', 0.35, 0.74, 0.0),
     'Pipe': ('#9ba49c', 0.55, 0.45, 0.0),        # painted process piping
+    # Harbour and industrial map (mb_harbor.py). Containers are built in ContainerRed and the map
+    # swaps in other colours; ContainerBlue is the second box of container_stack.
+    'ContainerRed': ('#b8432f', 0.3, 0.55, 0.0),
+    'ContainerBlue': ('#2f6496', 0.3, 0.55, 0.0),
+    'Corrugated': ('#8a9496', 0.5, 0.58, 0.0),    # galvanised roof sheeting
+    'CraneYellow': ('#f5b41e', 0.25, 0.5, 0.0),
+    'Asphalt': ('#4a4a48', 0.0, 0.95, 0.0),       # bitumen roof decks
+    'SafetyStripe': ('#f7d21c', 0.05, 0.5, 0.0),  # painted kerbs and leg bands, paired with Charred
+    'RailBrown': ('#7a3f2c', 0.3, 0.6, 0.0),      # oxide-red rolling stock
 }
 GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
 
