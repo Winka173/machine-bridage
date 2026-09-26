@@ -127,6 +127,8 @@ namespace MachineBrigade.Game.Match
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
             _models = new ModelLibrary(_materials);
+            ApplySkin(PlayerProfile.EquippedSkin);
+            PlayerProfile.Changed += OnProfileChanged;
             var theme = MapTheme.For(map.Theme);
             if (theme.ModelGrass.HasValue) _materials.ForModel("Grass", -1).SetColor("_BaseColor", theme.ModelGrass.Value);
             _map = new MapView(_world, _models, _materials, theme, worldRoot, options.Shadows);
@@ -314,8 +316,22 @@ namespace MachineBrigade.Game.Match
             }
         }
 
+        private string _previewSkin;
+
+        private void ApplySkin(string id)
+        {
+            var skin = Skins.Get(id);
+            _materials.ApplySkin(skin.Base, skin.Second, skin.Third, (int)skin.Pattern, skin.Scale, skin.Metallic, skin.Roughness);
+        }
+
+        private void OnProfileChanged()
+        {
+            if (_materials != null && _previewSkin == null) ApplySkin(PlayerProfile.EquippedSkin);
+        }
+
         private void OnDestroy()
         {
+            PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
             _weather?.Dispose();
@@ -378,6 +394,11 @@ namespace MachineBrigade.Game.Match
             };
             var builtInVietnamese = Strings.Vietnamese;
             _hud.VolumeChanged += () => AudioListener.volume = MatchSettings.Volume;
+            _hud.SkinPreviewed += id =>
+            {
+                _previewSkin = id;
+                ApplySkin(id ?? PlayerProfile.EquippedSkin);
+            };
             _hud.SettingsChanged += () =>
             {
                 AudioListener.volume = MatchSettings.Volume;

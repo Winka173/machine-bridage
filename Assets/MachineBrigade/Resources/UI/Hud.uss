@@ -594,3 +594,218 @@
     color: var(--amber-ink); background-color: var(--amber-light);
     padding: 2px 8px; margin-right: 10px; border-radius: 9px;
 }
+
+/* ================================================================ menu: profile, campaign banner, modes */
+.menu-brand .brand-profile { flex-direction: row; align-items: center; margin-left: auto; margin-right: 14px; }
+.rank-pill, .coin-pill {
+    flex-direction: row; align-items: center; height: 34px; padding: 0 10px; margin-left: 8px;
+    background-color: var(--n800); border-radius: 17px;
+    border-bottom-width: 2px; border-bottom-color: var(--n950);
+}
+.rank-pill .icon, .coin-pill .icon { width: 18px; height: 18px; margin-right: 6px; --icon-color: #f2a33a; }
+.rank-label { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 1px; color: var(--n100); }
+.rank-track { width: 56px; height: 4px; margin-top: 1px; background-color: var(--n950); border-radius: 2px; }
+.rank-fill { height: 100%; width: 0; background-color: var(--mint); border-radius: 2px; }
+.coin-label { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 17px; color: var(--amber); }
+
+.campaign-banner {
+    flex-direction: row; align-items: center; height: 74px; margin-top: 12px; padding: 0 14px;
+    background-color: var(--amber-deep); border-radius: 8px;
+    border-bottom-color: #7a4410; border-bottom-width: 4px;
+}
+.campaign-banner:active { border-bottom-width: 1px; translate: 0 3px; }
+.campaign-banner > .icon { width: 34px; height: 34px; margin-right: 12px; --icon-color: #fff1dc; }
+.campaign-banner-text { flex-grow: 1; }
+.campaign-banner-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 21px; letter-spacing: 3px; color: #fff4e2; }
+.campaign-banner-sub { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: #ffd9a8; margin-top: -2px; }
+.campaign-banner-next {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; color: var(--amber-ink);
+    background-color: var(--amber-light); border-radius: 12px; padding: 3px 10px; max-width: 170px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.grid-modes { flex-wrap: wrap; }
+.grid-modes .mode-card { flex-basis: 31%; flex-grow: 1; height: 58px; margin-right: 6px; margin-bottom: 6px; }
+.grid-modes .mode-card .wide-title { font-size: 16px; letter-spacing: 1px; }
+.grid-modes .mode-card .icon { width: 20px; height: 20px; margin-right: 8px; }
+.maps { flex-wrap: wrap; }
+.maps .map-card { flex-basis: 23%; margin-bottom: 6px; }
+
+.menu-note {
+    -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; color: var(--n300); white-space: normal;
+    margin-top: 2px; margin-bottom: 8px;
+}
+.menu-note.warn { color: var(--amber-light); }
+.menu-small .wide { padding-left: 8px; padding-right: 8px; }
+
+/* deck locks */
+.card-lock {
+    position: absolute; left: 0; top: 0; width: 26px; height: 22px; align-items: center; justify-content: center;
+    background-color: var(--n950); border-bottom-right-radius: 6px; display: none;
+}
+.card-lock .icon { width: 14px; height: 14px; --icon-color: #7e8f9c; }
+.card.locked .card-lock { display: flex; }
+
+/* shared */
+.dock-row { flex-direction: row; }
+.dock-row .wide { margin-top: 0; }
+.dock-row .wide.big { flex-grow: 1; margin-right: 10px; }
+.dock-row .back-button { width: 160px; height: 64px; }
+.wide.disabled { background-color: var(--n700); border-bottom-color: var(--n950); }
+.wide.disabled .wide-title { color: var(--n400); }
+.wide.disabled .icon { --icon-color: #52606d; }
+.star-on { --icon-color: #f2a33a; }
+.star-off { --icon-color: #3a4650; }
+
+/* ================================================================ campaign page */
+.campaign-columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
+.campaign-list { flex-basis: 56%; flex-grow: 0; flex-shrink: 0; padding-right: 8px; }
+.campaign-detail {
+    flex-grow: 1; margin: 12px 18px 12px 4px; padding-bottom: 12px;
+    background-color: var(--n800); border-radius: 8px; overflow: hidden;
+}
+.map-group { flex-direction: row; align-items: center; margin-top: 10px; margin-bottom: 4px; }
+.map-group-swatch { width: 18px; height: 18px; border-radius: 4px; margin-right: 8px; background-color: var(--n600); }
+.map-group-swatch.temperate { background-color: #4f6b3a; }
+.map-group-swatch.desert { background-color: #9a7440; }
+.map-group-swatch.snow { background-color: #7d93a3; }
+.map-group-swatch.harbor { background-color: #35566b; }
+.map-group-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: var(--n300); }
+.mission-row {
+    flex-direction: row; align-items: center; height: 54px; margin-bottom: 5px; padding: 0 10px;
+    background-color: var(--n750); border-radius: 6px; border-bottom-color: var(--n950); border-bottom-width: 3px;
+    border-left-width: 4px; border-left-color: var(--n750);
+}
+.mission-row:active { border-bottom-width: 1px; translate: 0 2px; }
+.mission-row.boss { border-left-color: var(--danger-dark); }
+.mission-row.chosen { background-color: var(--n700); border-left-color: var(--amber); }
+.mission-row.locked { background-color: var(--n850); }
+.mission-row.locked .mission-name, .mission-row.locked .mission-number { color: var(--n500); }
+.mission-number { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 22px; color: var(--amber); width: 34px; }
+.mission-text { flex-grow: 1; flex-shrink: 1; }
+.mission-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 16px; color: var(--n100); }
+.mission-goal-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 11px; letter-spacing: 1px; color: var(--n400); margin-top: -3px; }
+.mission-stars { flex-direction: row; }
+.mission-stars .icon { width: 15px; height: 15px; margin-left: 1px; }
+.mission-lock { width: 16px; height: 16px; margin-left: 8px; --icon-color: #7e8f9c; display: none; }
+.mission-row.locked .mission-lock { display: flex; }
+.mission-row.locked .mission-stars { display: none; }
+
+.detail-art { height: 64px; flex-direction: row; align-items: center; padding: 0 14px; background-color: var(--n700); }
+.detail-art.temperate { background-color: #4f6b3a; }
+.detail-art.desert { background-color: #9a7440; }
+.detail-art.snow { background-color: #7d93a3; }
+.detail-art.harbor { background-color: #35566b; }
+.detail-art .icon { width: 28px; height: 28px; margin-right: 10px; }
+.detail-kicker { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: #f4f7f8; }
+.detail-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 26px; letter-spacing: 1px; color: var(--n100); margin: 8px 14px 0 14px; }
+.detail-line { flex-direction: row; align-items: center; margin: 4px 14px 0 14px; }
+.detail-line .icon { width: 16px; height: 16px; margin-right: 6px; --icon-color: #f2a33a; }
+.detail-goal { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; color: var(--amber); margin-right: 14px; }
+.detail-weather { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n300); }
+.detail-brief { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; color: var(--n200); white-space: normal; margin: 8px 14px 0 14px; }
+.detail-stars { flex-direction: row; margin: 10px 14px 0 14px; }
+.detail-stars .icon { width: 22px; height: 22px; margin-right: 3px; }
+.detail-rules { -unity-font: resource("Fonts/Inter-Regular"); font-size: 11px; color: var(--n400); white-space: normal; margin: 2px 14px 0 14px; }
+.reward-line { margin-top: 10px; }
+.detail-reward { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--n100); }
+.detail-unlocks { margin: 6px 14px 0 14px; }
+.unlock-chip {
+    flex-direction: row; align-items: center; height: 28px; padding: 0 10px; margin-top: 4px;
+    background-color: var(--ally-dark); border-radius: 14px; align-self: flex-start;
+}
+.unlock-chip .icon { width: 15px; height: 15px; margin-right: 6px; }
+.unlock-chip.owned { background-color: var(--n700); }
+.unlock-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; color: #eaf5dd; }
+
+/* ================================================================ shop */
+.shop-head { padding: 10px 22px 0 22px; flex-shrink: 0; }
+.shop-tabs .segment { flex-basis: 30%; }
+.shop-grid { flex-direction: row; flex-wrap: wrap; }
+.shop-card {
+    width: 150px; height: 150px; margin: 0 8px 8px 0; align-items: center;
+    background-color: var(--n750); border-radius: 8px; overflow: hidden;
+    border-width: 3px; border-color: var(--n750); border-bottom-color: var(--n950);
+}
+.shop-card:active { translate: 0 2px; }
+.shop-card.chosen { border-color: var(--amber); }
+.shop-card.equipped { background-color: var(--ally-dark); border-color: var(--ally); }
+.shop-card.soon { background-color: var(--n850); }
+.skin-swatch { flex-direction: row; width: 100%; height: 70px; }
+.skin-band { flex-grow: 1; height: 100%; }
+.skin-swatch.metal { border-bottom-width: 3px; border-bottom-color: #ffffff; }
+.unit-art { width: 100%; height: 70px; align-items: center; justify-content: center; background-color: var(--n700); }
+.unit-art.premium { background-color: #5a3a12; }
+.unit-art .icon { width: 40px; height: 40px; }
+.unit-art.premium .icon { --icon-color: #f5b55e; }
+.shop-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--n100); margin-top: 6px; -unity-text-align: middle-center; white-space: normal; padding: 0 6px; }
+.shop-sub { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 11px; color: var(--n400); margin-top: -2px; }
+.shop-soon { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 12px; color: var(--n400); margin-top: 6px; }
+.price-tag { flex-direction: row; align-items: center; margin-top: auto; margin-bottom: 8px; }
+.price-tag .icon { width: 15px; height: 15px; margin-right: 4px; --icon-color: #f2a33a; }
+.price-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--amber); }
+.price-status { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 12px; color: var(--mint); margin-left: 6px; }
+.shop-card.owned .price-value { display: none; }
+.shop-card.owned .price-tag .icon { display: none; }
+
+/* ================================================================ result rewards, ad screen */
+.result-stars { flex-direction: row; justify-content: center; margin-top: 6px; }
+.result-stars .icon { width: 30px; height: 30px; margin: 0 3px; }
+.result-reward { flex-direction: row; justify-content: center; margin: 10px 18px 0 18px; }
+.reward-item {
+    flex-direction: row; align-items: center; height: 40px; padding: 0 14px; margin: 0 4px;
+    background-color: var(--n900); border-radius: 8px;
+}
+.reward-item .icon { width: 20px; height: 20px; margin-right: 8px; --icon-color: #f2a33a; }
+.reward-item.xp .icon { --icon-color: #8fd694; }
+.reward-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 22px; color: var(--n100); }
+.reward-doubled {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; color: var(--amber-ink);
+    background-color: var(--amber); border-radius: 9px; padding: 0 6px; margin-left: 6px;
+}
+.result-unlocks { align-items: center; margin-top: 6px; }
+.result-unlocks .unlock-chip { align-self: center; }
+.wide.ad-button { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
+.wide.ad-button .wide-sub { color: #dcebc9; }
+
+.ad-screen { background-color: var(--n950); }
+.ad-card {
+    width: 460px; align-items: stretch; padding: 22px; background-color: var(--n800); border-radius: 10px;
+    border-bottom-width: 4px; border-bottom-color: var(--n950);
+}
+.ad-card > .icon { width: 44px; height: 44px; align-self: center; --icon-color: #f2a33a; }
+.ad-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 30px; letter-spacing: 6px; color: var(--n100); -unity-text-align: middle-center; margin-top: 6px; }
+.ad-body { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; color: var(--n300); white-space: normal; -unity-text-align: middle-center; margin-top: 4px; }
+.ad-count { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 64px; color: var(--amber); -unity-text-align: middle-center; height: 80px; }
+
+/* ================================================================ in-battle: timer, mission bar, boss bar */
+.score-centre { align-items: center; }
+.score-timer {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 1px; color: var(--n200);
+    background-color: var(--n800); border-radius: 8px; padding: 0 8px; margin-top: 2px;
+}
+.score-timer.urgent { background-color: var(--danger); color: #fff1ec; }
+.mission-clock.urgent { background-color: var(--danger); color: #fff1ec; }
+.mission-bar {
+    flex-direction: row; align-items: center; height: 44px; padding: 0 12px;
+    background-color: var(--n800); border-radius: 6px;
+}
+.mission-bar-text { width: 190px; }
+.mission-goal { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; letter-spacing: 1px; color: var(--amber); }
+.mission-detail { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n200); margin-top: -3px; }
+.mission-track { width: 150px; height: 8px; background-color: var(--n950); border-radius: 2px; margin: 0 10px; }
+.mission-fill { height: 100%; width: 0; background-color: var(--amber); border-radius: 2px; }
+.mission-chips { margin-left: 0; }
+.mission-clock {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 18px; color: var(--n100);
+    background-color: var(--n900); border-radius: 6px; padding: 2px 10px; margin-left: 8px;
+}
+.boss-bar {
+    position: absolute; top: 60px; left: 30%; right: 30%; height: 38px; padding: 4px 10px;
+    background-color: var(--danger-dark); border-radius: 6px; border-bottom-width: 3px; border-bottom-color: #5c140a;
+}
+.boss-head { flex-direction: row; align-items: center; }
+.boss-head .icon { width: 16px; height: 16px; margin-right: 6px; }
+.boss-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: #ffe6e0; }
+.boss-track { height: 9px; margin-top: 2px; background-color: #3a0c05; border-radius: 3px; }
+.boss-fill { height: 100%; width: 100%; background-color: #ff6a4d; border-radius: 3px; }

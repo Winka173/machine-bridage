@@ -12,10 +12,14 @@ namespace MachineBrigade.Game.Hud
     /// The main menu, drawn over a live AI-versus-AI battle: pick a mode, difficulty and weather,
     /// edit the deck, change settings, deploy. Choices are written to <see cref="MatchSettings"/>.
     /// </summary>
-    internal sealed class MenuScreen
+    internal sealed partial class MenuScreen
     {
         private readonly Catalog _catalog;
         private readonly VisualElement _main, _deck, _settings;
+        private readonly Action _play;
+        private readonly List<Label> _coinLabels = new(), _rankLabels = new();
+        private readonly List<VisualElement> _rankFills = new();
+        private Label _deckNote, _campaignBannerSub, _campaignBannerNext;
         private readonly List<(VisualElement element, Func<bool> selected)> _choices = new();
         private readonly Label _deckTitle;
         private readonly Dictionary<string, VisualElement> _deckCards = new();
@@ -27,27 +31,50 @@ namespace MachineBrigade.Game.Hud
             _catalog = catalog;
             Root = UiKit.Box("menu", PickingMode.Ignore);
 
-            // Main page: brand strip, numbered sections, and the deploy dock ---------------------
+            _play = play;
+
+            // Main page: brand strip, the campaign, quick battle and its options, the dock ---------
             _main = UiKit.Box("menu-panel", PickingMode.Position);
             _main.Add(Brand());
-            var body = UiKit.Box("menu-body");
-            body.Add(UiKit.Text(Strings.Get("menu.tagline"), "menu-tagline"));
+            var body = Scroller();
+            _main.Add(body);
+            var content = body.contentContainer;
+            content.Add(UiKit.Text(Strings.Get("menu.tagline"), "menu-tagline"));
 
-            body.Add(Section(1, "menu.mode"));
-            var modes = UiKit.Box("menu-modes");
-            modes.Add(Choice(UiKit.WideButton("mode-card", "flag", Strings.Get("menu.conquest"), Strings.Get("menu.conquestSub"),
-                () => Set(() => MatchSettings.Mode = GameModeKind.Conquest)), () => MatchSettings.Mode == GameModeKind.Conquest));
-            modes.Add(Choice(UiKit.WideButton("mode-card last-card", "shield", Strings.Get("menu.survival"), Strings.Get("menu.survivalSub"),
-                () => Set(() => MatchSettings.Mode = GameModeKind.Survival)), () => MatchSettings.Mode == GameModeKind.Survival));
-            body.Add(modes);
+            // The campaign banner: progress and the next mission, one tap to the campaign page.
+            var banner = UiKit.Button("campaign-banner", () => Show(_campaign));
+            banner.Add(UiKit.Icon("campaign", UiKit.Ink, 1.9f));
+            var bannerText = UiKit.Box("campaign-banner-text");
+            bannerText.Add(UiKit.Text(Strings.Get("campaign.title").ToUpperInvariant(), "campaign-banner-title"));
+            _campaignBannerSub = UiKit.Text("", "campaign-banner-sub");
+            bannerText.Add(_campaignBannerSub);
+            banner.Add(bannerText);
+            _campaignBannerNext = UiKit.Text("", "campaign-banner-next");
+            banner.Add(_campaignBannerNext);
+            content.Add(banner);
 
-            body.Add(Section(2, "menu.map"));
+            content.Add(Section(1, "menu.quick"));
+            var modes = UiKit.Box("menu-modes grid-modes");
+            var modeList = new[]
+            {
+                (GameModeKind.Conquest, "flag", "mode.conquest", "mode.conquestSub"),
+                (GameModeKind.Deathmatch, "swords", "mode.deathmatch", "mode.deathmatchSub"),
+                (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
+                (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
+                (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
+            };
+            foreach (var (kind, icon, name, sub) in modeList)
+                modes.Add(Choice(UiKit.WideButton("mode-card", icon, Strings.Get(name), Strings.Get(sub), () => Set(() => MatchSettings.Mode = kind)),
+                    () => MatchSettings.Mode == kind));
+            content.Add(modes);
+
+            content.Add(Section(2, "menu.map"));
             var maps = UiKit.Box("maps");
             for (var i = 0; i < MatchSettings.AllMaps.Length; i++)
                 maps.Add(MapCard(MatchSettings.AllMaps[i], i == MatchSettings.AllMaps.Length - 1));
-            body.Add(maps);
+            content.Add(maps);
 
-            body.Add(Section(3, "menu.difficulty"));
+            content.Add(Section(3, "menu.difficulty"));
             var difficulty = UiKit.Box("segments");
             var levels = new[] { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard") };
             for (var i = 0; i < levels.Length; i++)
@@ -56,9 +83,9 @@ namespace MachineBrigade.Game.Hud
                 difficulty.Add(Choice(Segment(null, Strings.Get(key), () => Set(() => MatchSettings.Difficulty = level), i == levels.Length - 1),
                     () => MatchSettings.Difficulty == level));
             }
-            body.Add(difficulty);
+            content.Add(difficulty);
 
-            body.Add(Section(4, "menu.weather"));
+            content.Add(Section(4, "menu.weather"));
             var weather = UiKit.Box("segments grid");
             foreach (var (kind, icon, key) in new[]
                      {
@@ -70,33 +97,37 @@ namespace MachineBrigade.Game.Hud
                      })
                 weather.Add(Choice(Segment(icon, Strings.Get(key), () => Set(() => MatchSettings.Weather = kind)),
                     () => MatchSettings.Weather == kind));
-            body.Add(weather);
-            _main.Add(body);
+            content.Add(weather);
 
             var actions = UiKit.Box("menu-actions");
             actions.Add(UiKit.WideButton("wide primary big", "play", Strings.Get("menu.play"), null, () =>
             {
+                if (MatchSettings.Mode == GameModeKind.Campaign) MatchSettings.Mode = GameModeKind.Conquest;
                 MatchSettings.Save();
                 play();
             }));
             var small = UiKit.Box("menu-small");
             small.Add(UiKit.WideButton("wide", "deck", Strings.Get("menu.deck"), null, () => Show(_deck)));
+            small.Add(UiKit.WideButton("wide", "shop", Strings.Get("menu.shop"), null, () => Show(_shop)));
             small.Add(UiKit.WideButton("wide last-card", "settings", Strings.Get("menu.settings"), null, () => Show(_settings)));
             actions.Add(small);
             _main.Add(actions);
             Root.Add(_main);
 
-            // Deck page ------------------------------------------------------------------------
+            // Deck page: locked cards show how to get them ---------------------------------------
             _deck = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
             _deck.Add(Brand());
-            var deckBody = UiKit.Box("menu-body");
+            var deckScroll = Scroller();
+            var deckBody = deckScroll.contentContainer;
             _deckTitle = UiKit.Text("", "menu-caps");
             deckBody.Add(_deckTitle);
+            _deckNote = UiKit.Text(Strings.Get("deck.hint"), "menu-note");
+            deckBody.Add(_deckNote);
             var grid = UiKit.Box("deck-grid");
             foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
             foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
             deckBody.Add(grid);
-            _deck.Add(deckBody);
+            _deck.Add(deckScroll);
             var deckDock = UiKit.Box("menu-actions");
             deckDock.Add(UiKit.WideButton("wide", "retreat", Strings.Get("menu.back"), null, () =>
             {
@@ -105,6 +136,9 @@ namespace MachineBrigade.Game.Hud
             }));
             _deck.Add(deckDock);
             Root.Add(_deck);
+
+            BuildCampaignPage();
+            BuildShopPage();
 
             // Settings page: graphics, gameplay, sound and language in one scrolling list ---------
             _settings = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
@@ -224,8 +258,24 @@ namespace MachineBrigade.Game.Hud
 
         private void Show(VisualElement page)
         {
-            foreach (var p in new[] { _main, _deck, _settings }) p.style.display = p == page ? DisplayStyle.Flex : DisplayStyle.None;
+            foreach (var p in new[] { _main, _deck, _settings, _campaign, _shop })
+                if (p != null) p.style.display = p == page ? DisplayStyle.Flex : DisplayStyle.None;
             Refresh();
+        }
+
+        /// <summary>A vertical scrolling page body (touch-dragged, no scrollbars).</summary>
+        private static ScrollView Scroller(string extra = null)
+        {
+            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            {
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Hidden,
+                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
+            };
+            scroll.AddToClassList("menu-body");
+            scroll.AddToClassList("settings-scroll");
+            if (extra != null) scroll.AddToClassList(extra);
+            return scroll;
         }
 
         private void Set(Action change)
@@ -237,16 +287,31 @@ namespace MachineBrigade.Game.Hud
         private void Refresh()
         {
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
+            foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
+            foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
+            foreach (var fill in _rankFills)
+                fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));
+            if (_campaignBannerSub != null)
+            {
+                _campaignBannerSub.text = Strings.Format("campaign.progress", Campaign.Won, Campaign.All.Count, PlayerProfile.TotalStars);
+                var next = Campaign.All[Campaign.Next];
+                _campaignBannerNext.text = Strings.Format("campaign.next", Campaign.Next + 1, Strings.Get("mission." + next.Id + ".name"));
+            }
+            RefreshCampaign();
+            RefreshShop();
             if (_customTag != null)
                 _customTag.style.display = MatchSettings.Graphics == GraphicsQuality.Custom ? DisplayStyle.Flex : DisplayStyle.None;
             foreach (var (id, card) in _deckCards)
+            {
                 card.EnableInClassList("chosen", MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id));
+                card.EnableInClassList("locked", !PlayerProfile.IsUnlocked(id));
+            }
             _deckTitle.text = Strings.Format("menu.deckTitle", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
                 MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots);
         }
 
-        /// <summary>The brand strip across the top of every menu page.</summary>
-        private static VisualElement Brand()
+        /// <summary>The brand strip across the top of every menu page, with the player's rank and coins.</summary>
+        private VisualElement Brand()
         {
             var brand = UiKit.Box("menu-brand");
             brand.Add(UiKit.Icon("logo", UiKit.Ink, 2.2f));
@@ -254,6 +319,27 @@ namespace MachineBrigade.Game.Hud
             text.Add(UiKit.Text("MACHINE", "menu-title"));
             text.Add(UiKit.Text("BRIGADE", "menu-title accent"));
             brand.Add(text);
+            var profile = UiKit.Box("brand-profile");
+            var rank = UiKit.Box("rank-pill");
+            rank.Add(UiKit.Icon("rank", UiKit.Ink, 1.8f));
+            var rankText = UiKit.Box("rank-text");
+            var rankLabel = UiKit.Text("", "rank-label");
+            rankText.Add(rankLabel);
+            var track = UiKit.Box("rank-track");
+            var fill = UiKit.Box("rank-fill");
+            track.Add(fill);
+            rankText.Add(track);
+            rank.Add(rankText);
+            profile.Add(rank);
+            var coins = UiKit.Box("coin-pill");
+            coins.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
+            var coinLabel = UiKit.Text("", "coin-label");
+            coins.Add(coinLabel);
+            profile.Add(coins);
+            brand.Add(profile);
+            _rankLabels.Add(rankLabel);
+            _rankFills.Add(fill);
+            _coinLabels.Add(coinLabel);
             return brand;
         }
 
@@ -301,6 +387,13 @@ namespace MachineBrigade.Game.Hud
                 : _catalog.Vehicles.TryGetValue(id, out var v) ? v.CpCost : 0;
             var card = UiKit.Button(support ? "card support deck-card" : "card deck-card", () =>
             {
+                if (!PlayerProfile.IsUnlocked(id))
+                {
+                    _deckNote.text = LockReason(id);
+                    _deckNote.AddToClassList("warn");
+                    return;
+                }
+                _deckNote.RemoveFromClassList("warn");
                 var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
                 var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
                 if (deck.Contains(id)) deck.Remove(id);
@@ -312,6 +405,9 @@ namespace MachineBrigade.Game.Hud
             var badge = UiKit.Box("card-cost");
             badge.Add(UiKit.Text(cost.ToString(), "card-cost-text"));
             card.Add(badge);
+            var lockBadge = UiKit.Box("card-lock");
+            lockBadge.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
+            card.Add(lockBadge);
             _deckCards[id] = card;
             return card;
         }
@@ -333,6 +429,17 @@ namespace MachineBrigade.Game.Hud
             }
             row.Add(group);
             return row;
+        }
+
+        /// <summary>How to get a locked card: the mission that unlocks it, or the shop.</summary>
+        private string LockReason(string id)
+        {
+            var name = Strings.Card(id);
+            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Progression.Price(id, _catalog));
+            var mission = Progression.UnlockMission(id);
+            return mission != null
+                ? Strings.Format("deck.lockedMission", name, Campaign.IndexOf(mission.Id) + 1, Progression.Price(id, _catalog))
+                : Strings.Format("deck.lockedShop", name, Progression.Price(id, _catalog));
         }
 
         private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());

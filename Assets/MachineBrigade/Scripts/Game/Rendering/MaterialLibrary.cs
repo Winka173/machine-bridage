@@ -194,6 +194,22 @@ namespace MachineBrigade.Game.Rendering
             return _surfaces.TryGetValue(name, out var material) ? material : Fallback;
         }
 
+        /// <summary>
+        /// Paints the player's army (team 0): base colour, pattern (0 plain, 1 blotches, 2
+        /// stripes, 3 digital) with its two other colours and scale, and the finish.
+        /// </summary>
+        public void ApplySkin(Color baseColour, Color second, Color third, int pattern, float scale, float metallic, float roughness)
+        {
+            var team = TeamMaterial("Team", 0);
+            team.SetColor("_BaseColor", baseColour);
+            team.SetColor("_CamoColorB", second);
+            team.SetColor("_CamoColorC", third);
+            team.SetFloat("_CamoMode", pattern);
+            team.SetFloat("_CamoScale", scale);
+            team.SetFloat("_Metallic", metallic);
+            team.SetFloat("_Roughness", roughness);
+        }
+
         public void Dispose()
         {
             foreach (var m in _owned)

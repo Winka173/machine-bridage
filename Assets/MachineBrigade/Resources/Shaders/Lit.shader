@@ -14,6 +14,10 @@ Shader "MachineBrigade/Lit"
         [HDR] _EmissionColor ("Emission", Color) = (0, 0, 0, 1)
         _Tint ("Tint", Color) = (1, 1, 1, 1)
         _Wind ("Wind Sway", Float) = 0
+        _CamoMode ("Camo (0 plain, 1 blotches, 2 stripes, 3 digital)", Float) = 0
+        _CamoColorB ("Camo Second", Color) = (0.3, 0.3, 0.3, 1)
+        _CamoColorC ("Camo Third", Color) = (0.6, 0.6, 0.6, 1)
+        _CamoScale ("Camo Scale", Float) = 0.35
     }
 
     SubShader
@@ -34,7 +38,41 @@ Shader "MachineBrigade/Lit"
             half4 _EmissionColor;
             half4 _Tint;
             half _Wind;
+            half _CamoMode;
+            half4 _CamoColorB;
+            half4 _CamoColorC;
+            half _CamoScale;
         CBUFFER_END
+
+        // Army skins: a pattern computed from the object-space position (the models' UVs are not
+        // laid out for painting), projected at a slant so side and top faces both get it. Only
+        // the Team materials set a mode; everything else takes the first branch.
+        TEXTURE2D(_MbNoise);
+        SAMPLER(sampler_MbNoise);
+
+        half3 Camo(float3 p, half3 baseColour)
+        {
+            if (_CamoMode < 0.5) return baseColour;
+            float2 q = (p.xz + p.yy * float2(0.7, 0.45)) * _CamoScale;
+            if (_CamoMode < 1.5)
+            {
+                float a = SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, q * 0.125).r;
+                float b = SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, q * 0.22 + 0.37).r;
+                half3 c = lerp(baseColour, _CamoColorB.rgb, step(0.56, a));
+                return lerp(c, _CamoColorC.rgb, step(0.63, b));
+            }
+            if (_CamoMode < 2.5)
+            {
+                float n = SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, q * 0.09).r;
+                float stripe = sin((q.x * 1.25 + q.y * 0.4) * 3.2 + n * 7.0);
+                return lerp(baseColour, _CamoColorB.rgb, step(0.45, stripe));
+            }
+            float2 cell = floor(q * 2.2);
+            float h = frac(sin(dot(cell, float2(12.9898, 78.233))) * 43758.5453);
+            float m = SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, cell * 0.061).r;
+            half3 d = lerp(baseColour, _CamoColorB.rgb, step(0.52, m + h * 0.18));
+            return lerp(d, _CamoColorC.rgb, step(0.86, h));
+        }
 
         // Foliage sway: displacement grows with height above the ground. The phase comes from the
         // world position, so merged forests do not sway in lockstep.
@@ -99,6 +137,7 @@ Shader "MachineBrigade/Lit"
                 half4 color : COLOR;
                 half4 fogAndVertexLight : TEXCOORD2;
                 float2 uv : TEXCOORD3;
+                float3 positionOS : TEXCOORD4;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -120,6 +159,7 @@ Shader "MachineBrigade/Lit"
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 output.color = input.color;
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
+                output.positionOS = input.positionOS.xyz;
                 half3 vertexLight = VertexLighting(position.positionWS, output.normalWS);
                 output.fogAndVertexLight = half4(OrthoFog(position.positionWS), vertexLight);
                 return output;
@@ -147,7 +187,7 @@ Shader "MachineBrigade/Lit"
 
                 SurfaceData surface = (SurfaceData)0;
                 half3 map = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
-                surface.albedo = _BaseColor.rgb * map * input.color.rgb * _Tint.rgb;
+                surface.albedo = Camo(input.positionOS, _BaseColor.rgb) * map * input.color.rgb * _Tint.rgb;
                 surface.metallic = _Metallic;
                 surface.smoothness = 1.0h - SpecularAntiAliasedRoughness(_Roughness, input.normalWS);
                 surface.occlusion = lerp(0.55h, 1.0h, bakedAo);

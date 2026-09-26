@@ -100,6 +100,7 @@ namespace MachineBrigade.Game.Hud
                 _menu = new MenuScreen(catalog, () => PlayPressed?.Invoke());
                 _menu.SettingsChanged += () => SettingsChanged?.Invoke();
                 _menu.VolumeChanged += () => VolumeChanged?.Invoke();
+                _menu.SkinPreviewed += id => SkinPreviewed?.Invoke(id);
                 _safe.Add(_menu.Root);
                 _toast = UiKit.Box("toast");
                 _toastText = UiKit.Text("", "toast-text");
@@ -289,6 +290,9 @@ namespace MachineBrigade.Game.Hud
         public event Action AutoDeployToggled;
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
+
+        /// <summary>The shop is trying a skin on (null: back to the equipped one).</summary>
+        public event Action<string> SkinPreviewed;
 
         /// <summary>The result screen's "watch an ad for double coins" button.</summary>
         public event Action DoubleRewardPressed;
