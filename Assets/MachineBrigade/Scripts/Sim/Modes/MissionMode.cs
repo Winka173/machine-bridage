@@ -120,7 +120,11 @@ namespace MachineBrigade.Sim.Modes
                 }
             if (_def.Goal == MissionGoal.Destroy)
                 foreach (var prop in world.Props)
-                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id)) _targets.Add(prop.Id);
+                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id))
+                    {
+                        _targets.Add(prop.Id);
+                        if (_def.TargetHealth > 1f) prop.Harden(_def.TargetHealth);
+                    }
 
             if (_def.Boss != null)
             {
@@ -308,9 +312,15 @@ namespace MachineBrigade.Sim.Modes
             return alive;
         }
 
-        private Vector2? NearestTarget(SimWorld world)
+        /// <summary>The demolition target the player's commander should shoot at, or none.</summary>
+        public EntityId PlayerDemolish(SimWorld world) => _def.Goal == MissionGoal.Destroy ? NearestTargetId(world) : EntityId.None;
+
+        private Vector2? NearestTarget(SimWorld world) =>
+            world.TryGetProp(NearestTargetId(world), out var p) ? p.Position : null;
+
+        private EntityId NearestTargetId(SimWorld world)
         {
-            Vector2? best = null;
+            var best = EntityId.None;
             var bestDistance = float.MaxValue;
             var from = PlayerCentre(world) ?? Vector2.Zero;
             foreach (var id in _targets)
@@ -319,7 +329,7 @@ namespace MachineBrigade.Sim.Modes
                 var d = Vector2.DistanceSquared(from, p.Position);
                 if (d >= bestDistance) continue;
                 bestDistance = d;
-                best = p.Position;
+                best = id;
             }
             return best;
         }

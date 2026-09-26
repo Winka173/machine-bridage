@@ -444,7 +444,9 @@ namespace MachineBrigade.Game.Match
                     Vehicles = deck.Count > 0 ? deck.ToArray() : EnemyDeck(Difficulty, world.Catalog).vehicles, Supports = supports.ToArray(),
                 };
             }
-            _mode = new MissionMode(_def, PlayerSide(_def.PlayerCp, _def.PlayerIncome), enemy);
+            var playerSide = PlayerSide(_def.PlayerCp, _def.PlayerIncome);
+            playerSide.ArmyCap = _def.PlayerCap;
+            _mode = new MissionMode(_def, playerSide, enemy);
             Mode = _mode;
             _mode.Setup(world);
 
@@ -460,6 +462,9 @@ namespace MachineBrigade.Game.Match
             }
             var player = AddPlayerCommander(_mode, seed);
             player.Goal = w => _mode.PlayerGoal(w);
+            player.Demolish = w => _mode.PlayerDemolish(w);
+            // Holding a point: fight whatever comes at it, but never wander off and leave it open.
+            if (_def.Goal == MissionGoal.Hold) player.Leash = 32f;
             if (_def.Goal == MissionGoal.Survive)
             {
                 foreach (var p in world.Map.Points)

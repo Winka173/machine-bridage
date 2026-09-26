@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Modes;
@@ -66,6 +67,20 @@ namespace MachineBrigade.Sim.AI
         /// <see cref="FocusPoint"/> and before the objectives.
         /// </summary>
         public Func<SimWorld, Vector2?>? Goal { get; set; }
+
+        /// <summary>How far from <see cref="Goal"/> the army may chase (see <see cref="TacticalAi.Leash"/>).</summary>
+        public float? Leash
+        {
+            get => _tactics.Leash;
+            set => _tactics.Leash = value;
+        }
+
+        /// <summary>A structure to knock down (see <see cref="TacticalAi.Demolish"/>).</summary>
+        public Func<SimWorld, EntityId>? Demolish
+        {
+            get => _tactics.Demolish;
+            set => _tactics.Demolish = value;
+        }
 
         /// <summary>Where to hold when there are no objectives (Survival).</summary>
         public Vector2? DefendPoint { get; set; }

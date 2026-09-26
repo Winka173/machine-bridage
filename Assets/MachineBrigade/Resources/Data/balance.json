@@ -164,7 +164,7 @@
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 0.8, "tier": "Ultimate" } },
-    { "id": "armored_train",    "armor": "Heavy", "hp": 4200, "speed": 0.4, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "cp": 0, "vision": 50,
+    { "id": "armored_train",    "armor": "Heavy", "hp": 5400, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true,
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 0.7, "tier": "Ultimate" } },

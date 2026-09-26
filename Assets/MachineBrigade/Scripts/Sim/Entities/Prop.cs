@@ -15,7 +15,7 @@ namespace MachineBrigade.Sim.Entities
             Def = def;
             Position = position;
             Rotation = rotation;
-            Hp = def.MaxHp;
+            Hp = MaxHp = def.MaxHp;
             var sideways = rotation == 90 || rotation == 270;
             Width = sideways ? def.Depth : def.Width;
             Depth = sideways ? def.Width : def.Depth;
@@ -38,8 +38,16 @@ namespace MachineBrigade.Sim.Entities
         public float Radius => MathF.Max(Width, Depth) * 0.5f;
         public ArmorClass Armor => Def.Armor;
         public float Hp { get; internal set; }
-        public float MaxHp => Def.MaxHp;
+        /// <summary>The definition's health, unless a mission hardened this one (a demolition target).</summary>
+        public float MaxHp { get; private set; }
         public bool IsAlive => Hp > 0f;
+
+        /// <summary>Multiplies this structure's health (full health, scaled).</summary>
+        internal void Harden(float factor)
+        {
+            MaxHp = Def.MaxHp * factor;
+            Hp = MaxHp;
+        }
 
         public bool Contains(Vector2 point, float margin = 0f) =>
             MathF.Abs(point.X - Position.X) <= Width * 0.5f + margin &&

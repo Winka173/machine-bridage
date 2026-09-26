@@ -107,6 +107,15 @@ namespace MachineBrigade.Sim.Content
         public float PlayerCp { get; set; } = 16f;
         public float PlayerIncome { get; set; } = 1f;
 
+        /// <summary>
+        /// The player's army cap. Above Conquest's 24: the enemy brings waves on top of its own
+        /// commander, and units placed at the start count against the cap too.
+        /// </summary>
+        public int PlayerCap { get; set; } = 30;
+
+        /// <summary>Demolition targets are this many times tougher than the same building elsewhere.</summary>
+        public float TargetHealth { get; set; } = 1f;
+
         /// <summary>Extra units on the map when the mission starts (on top of the map's own).</summary>
         public IReadOnlyList<UnitPlacement> Units { get; set; } = Array.Empty<UnitPlacement>();
 
@@ -153,6 +162,8 @@ namespace MachineBrigade.Sim.Content
                 EnemyDeck = Strings(m, "enemyDeck"),
                 PlayerCp = m.Float("playerCp", 16f),
                 PlayerIncome = m.Float("playerIncome", 1f),
+                PlayerCap = (int)m.Float("playerCap", 30f),
+                TargetHealth = m.Float("targetHealth", 1f),
                 RewardCoins = m.Int("coins", 200),
                 RewardXp = m.Int("xp", 150),
                 Unlocks = Strings(m, "unlocks"),
