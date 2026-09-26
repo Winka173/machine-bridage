@@ -195,6 +195,8 @@ namespace MachineBrigade.Game.Hud
             settingsBody.Add(OptionRow("move", "settings.shake",
                 new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                 () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            settingsBody.Add(OptionRow("camera", "settings.cinematic", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+                () => MatchSettings.CinematicMoments ? 1 : 0, i => MatchSettings.CinematicMoments = i == 1));
             settingsBody.Add(OptionRow("camera", "settings.camera",
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));

@@ -153,6 +153,7 @@ namespace MachineBrigade.Game.Hud
             ["settings.shake"] = ("Screen shake", "Rung màn hình"),
             ["settings.full"] = ("Full", "Đầy đủ"),
             ["settings.camera"] = ("Camera speed", "Tốc độ camera"),
+            ["settings.cinematic"] = ("Cinematic moments", "Khoảnh khắc điện ảnh"),
             ["settings.slow"] = ("Slow", "Chậm"),
             ["settings.normal"] = ("Normal", "Thường"),
             ["settings.fast"] = ("Fast", "Nhanh"),

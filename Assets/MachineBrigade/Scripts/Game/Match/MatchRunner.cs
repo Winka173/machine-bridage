@@ -8,6 +8,7 @@ using MachineBrigade.Game.Rendering;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.AI;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Events;
@@ -45,6 +46,8 @@ namespace MachineBrigade.Game.Match
         private SimWorld _world;
         private ModeSession _session;
         private MatchReward _reward;
+        private readonly Cinematics _cinematics = new();
+        private float _cinematicZoom;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
@@ -109,6 +112,7 @@ namespace MachineBrigade.Game.Match
             var options = MatchSettings.Options;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
+            _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
             AudioListener.volume = MatchSettings.Volume;
 
             _menu = !MatchSettings.InMatch;
@@ -258,6 +262,9 @@ namespace MachineBrigade.Game.Match
                 (_menu || _paused) && !(Touchscreen.current?.primaryTouch.press.isPressed ?? false) &&
                 !(Mouse.current?.leftButton.isPressed ?? false) ? 2 : 1;
 
+            // A cinematic moment slows the whole battle (sim, particles) for a second.
+            if (!_paused && !_resultShown) Time.timeScale = _cinematics.TimeScale(Time.unscaledTime);
+            _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
             var steps = _paused ? 0 : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
             _perf?.CountSteps(steps);
@@ -274,7 +281,8 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
-            if (_menu) Attract();
+            if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            else if (_menu) Attract();
             else FollowTheFight();
             _selection.Tick();
             _perf?.Begin();
@@ -314,6 +322,17 @@ namespace MachineBrigade.Game.Match
                 _censusDone = true;
                 _perf.Census(_surroundings.InstancedTriangles, _surroundings.Batches);
             }
+        }
+
+        /// <summary>A slow-motion moment on a blast that is on screen.</summary>
+        private void StartCinematic(System.Numerics.Vector2 at, bool force = false)
+        {
+            var point = new Vector3(at.X, 0f, at.Y);
+            var viewport = _camera.Camera.WorldToViewportPoint(point);
+            if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+            if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
+            _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
+            _camera.AddTrauma(0.6f);
         }
 
         private string _previewSkin;
@@ -366,6 +385,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
                         else _kills++;
+                        if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
+                            StartCinematic(e.Position, force: true);
+                        break;
+                    case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
+                    case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
+                        StartCinematic(e.Position);
                         break;
                     case SimEventKind.PointCaptured when !_menu:
                         var letter = Strings.Get("point." + e.DefId);
@@ -603,9 +628,12 @@ namespace MachineBrigade.Game.Match
         private void CheckResult()
         {
             if (_menu || _resultShown || _session == null) return;
+            // Let a boss's death play out in slow motion before the result card covers it.
+            if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
             _resultShown = true;
+            Time.timeScale = 1f;
             _reward = outcome.Reward;
             RewardView view = null;
             if (_reward != null)

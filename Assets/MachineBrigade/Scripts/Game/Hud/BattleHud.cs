@@ -367,6 +367,29 @@ namespace MachineBrigade.Game.Hud
             _result?.Show(outcome, subtitle, rows, reward);
         }
 
+        private VisualElement _letterTop, _letterBottom;
+        private float _shownLetterbox = -1f;
+
+        /// <summary>Cinematic bars sliding in from the top and bottom (0 hidden, 1 fully in).</summary>
+        public void SetLetterbox(float amount)
+        {
+            if (Mathf.Abs(amount - _shownLetterbox) < 0.01f) return;
+            _shownLetterbox = amount;
+            if (_letterTop == null)
+            {
+                _letterTop = UiKit.Box("letterbox top");
+                _letterBottom = UiKit.Box("letterbox bottom");
+                _root.Add(_letterTop);
+                _root.Add(_letterBottom);
+            }
+            var height = Length.Percent(amount * 9f);
+            _letterTop.style.height = height;
+            _letterBottom.style.height = height;
+            var display = amount > 0.001f ? DisplayStyle.Flex : DisplayStyle.None;
+            _letterTop.style.display = display;
+            _letterBottom.style.display = display;
+        }
+
         private VisualElement _ad, _adClaim;
         private Label _adCount;
         private Action<bool> _adDone;

@@ -180,6 +180,9 @@ namespace MachineBrigade.Game.Match
 
         public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
 
+        /// <summary>Slow motion and letterbox for a second on the biggest blasts.</summary>
+        public static bool CinematicMoments { get; set; } = true;
+
         /// <summary>Camera drag speed: 0 slow, 1 normal, 2 fast.</summary>
         public static int CameraSpeed { get; set; } = 1;
 
@@ -233,6 +236,7 @@ namespace MachineBrigade.Game.Match
                 // Reduced motion (older saves) became the low screen-shake setting.
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
+                CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
                 UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
                 BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
@@ -267,6 +271,7 @@ namespace MachineBrigade.Game.Match
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
+                PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
                 PlayerPrefs.SetInt("mb.uiSize", UiSize);
                 PlayerPrefs.SetInt("mb.battery", BatterySaver);
                 PlayerPrefs.SetInt("mb.brightness", Brightness);

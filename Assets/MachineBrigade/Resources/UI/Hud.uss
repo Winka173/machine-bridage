@@ -809,3 +809,8 @@
 .boss-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: #ffe6e0; }
 .boss-track { height: 9px; margin-top: 2px; background-color: #3a0c05; border-radius: 3px; }
 .boss-fill { height: 100%; width: 100%; background-color: #ff6a4d; border-radius: 3px; }
+
+/* cinematic bars */
+.letterbox { position: absolute; left: 0; right: 0; height: 0; background-color: #000000; display: none; }
+.letterbox.top { top: 0; }
+.letterbox.bottom { bottom: 0; }
