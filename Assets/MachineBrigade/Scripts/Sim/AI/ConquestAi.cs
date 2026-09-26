@@ -123,18 +123,22 @@ namespace MachineBrigade.Sim.AI
         private void TryDeploy(SimWorld world, TeamEconomy economy)
         {
             var cards = Cards(world, economy.Vehicles, world.Catalog.Vehicles.Keys);
-            string? best = null;
+            string? best = null, bestAffordable = null;
             var bestScore = float.MinValue;
+            var bestAffordableScore = float.MinValue;
             CountEnemies(out var air, out var heavy, out var light);
             CountOwn(world, out var ownAa, out var ownArtillery, out var ownTotal);
             var neutral = 0;
             foreach (var p in _mode.Points)
                 if (p.Owner != _team) neutral++;
+            var owned = new Dictionary<string, int>();
+            foreach (var v in world.Vehicles)
+                if (v.IsAlive && v.Team == _team) owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
 
             foreach (var id in cards)
             {
                 var def = world.Catalog.Vehicles[id];
-                if (def.CpCost > economy.Cp || economy.ArmyCp + def.CpCost > economy.ArmyCap) continue;
+                if (economy.ArmyCp + def.CpCost > economy.ArmyCap) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
                 if (_difficulty != AiDifficulty.Easy)
                 {
@@ -146,13 +150,31 @@ namespace MachineBrigade.Sim.AI
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                 }
-                // Spend efficiently: prefer cards that use most of what we can afford.
-                score += def.CpCost / MathF.Max(6f, economy.Cp) * 0.8f;
-                if (score <= bestScore) continue;
-                best = id;
-                bestScore = score;
+                // A mixed army: each copy already fielded makes another less attractive.
+                if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
+                // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).
+                if (_difficulty != AiDifficulty.Easy) score += def.CpCost * 0.22f;
+                if (score > bestScore)
+                {
+                    best = id;
+                    bestScore = score;
+                }
+                if (def.CpCost <= economy.Cp && score > bestAffordableScore)
+                {
+                    bestAffordable = id;
+                    bestAffordableScore = score;
+                }
             }
-            if (best != null) world.Submit(Command.Deploy(_team, best));
+            if (best == null) return;
+            var bestCost = world.Catalog.Vehicles[best].CpCost;
+            if (bestCost <= economy.Cp)
+            {
+                world.Submit(Command.Deploy(_team, best));
+                return;
+            }
+            // Save up for the best card, unless the army is thin or CP is about to overflow.
+            if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
+                world.Submit(Command.Deploy(_team, bestAffordable));
         }
 
         private static bool CanHitAir(VehicleDef def)

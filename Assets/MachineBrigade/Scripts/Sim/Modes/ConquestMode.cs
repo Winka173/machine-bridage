@@ -29,7 +29,10 @@ namespace MachineBrigade.Sim.Modes
     /// <summary>Tunable Conquest rules; defaults follow the game plan.</summary>
     public sealed class ConquestRules
     {
-        public int Tickets { get; set; } = 300;
+        public int Tickets { get; set; } = 400;
+
+        /// <summary>Tickets lost per destroyed vehicle, as a fraction of its CP cost.</summary>
+        public float KillTicketFactor { get; set; } = 0.5f;
 
         /// <summary>Seconds for one capture-rate-1 vehicle alone to turn a neutral point.</summary>
         public float CaptureSeconds { get; set; } = 10f;
@@ -125,7 +128,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var id in _gone)
             {
                 var (team, cost) = _alive[id];
-                _tickets[team] -= cost;
+                _tickets[team] -= MathF.Max(1f, MathF.Ceiling(cost * _rules.KillTicketFactor));
                 _alive.Remove(id);
             }
         }
