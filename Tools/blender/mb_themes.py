@@ -413,8 +413,8 @@ def market_stall(a):
     for x, y, turn in ((-.5, .85, .2), (.2, .9, -.15), (.85, .7, .4)):
         sacks.box((.5, .38, .62), loc=(x, y, .3), rot=(0, 0, turn), bevel=.12, seg=1, taper=(.8, .8))
     jars = a.part('Jars', 'Brick')
-    pot(jars, 2.25, -.9, s=.9)
-    pot(jars, 2.3, -.25, s=.7)
+    pot(jars, 1.98, -.9, s=.8)
+    pot(jars, 1.99, -.38, s=.65)
     # Rug hanging from the back beam: red field, ochre border.
     a.part('Rug_border', 'Hazard').box((2.0, .03, 1.3), loc=(0, yb + .07, zb - .85), bevel=0)
     a.part('Rug', 'BarrelRed').box((1.8, .03, 1.1), loc=(0, yb + .055, zb - .85), bevel=0)
