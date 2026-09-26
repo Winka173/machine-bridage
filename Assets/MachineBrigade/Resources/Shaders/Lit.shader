@@ -2,12 +2,13 @@
 // worn edges, ground grime) in their vertex colours; it multiplies the material colour, exactly
 // as in the 3d_astra renderer. Lighting goes through URP's own UniversalFragmentPBR, so the sun,
 // its shadows, explosion point lights, ambient and reflections all behave like URP Lit.
-// _Tint darkens wrecks and tints rocks; _Wind sways foliage by height.
+// _BaseMap textures the ground (white elsewhere); _Tint darkens wrecks; _Wind sways foliage.
 Shader "MachineBrigade/Lit"
 {
     Properties
     {
         _BaseColor ("Base Colour", Color) = (1, 1, 1, 1)
+        _BaseMap ("Base Map", 2D) = "white" {}
         _Metallic ("Metallic", Range(0, 1)) = 0
         _Roughness ("Roughness", Range(0, 1)) = 0.8
         [HDR] _EmissionColor ("Emission", Color) = (0, 0, 0, 1)
@@ -22,7 +23,11 @@ Shader "MachineBrigade/Lit"
         HLSLINCLUDE
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
+        TEXTURE2D(_BaseMap);
+        SAMPLER(sampler_BaseMap);
+
         CBUFFER_START(UnityPerMaterial)
+            float4 _BaseMap_ST;
             half4 _BaseColor;
             half _Metallic;
             half _Roughness;
@@ -67,6 +72,7 @@ Shader "MachineBrigade/Lit"
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
                 half4 color : COLOR;
+                float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -77,6 +83,7 @@ Shader "MachineBrigade/Lit"
                 half3 normalWS : TEXCOORD1;
                 half4 color : COLOR;
                 half4 fogAndVertexLight : TEXCOORD2;
+                float2 uv : TEXCOORD3;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -90,6 +97,7 @@ Shader "MachineBrigade/Lit"
                 output.positionWS = position.positionWS;
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 output.color = input.color;
+                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 half3 vertexLight = VertexLighting(position.positionWS, output.normalWS);
                 output.fogAndVertexLight = half4(ComputeFogFactor(position.positionCS.z), vertexLight);
                 return output;
@@ -116,7 +124,8 @@ Shader "MachineBrigade/Lit"
                 half bakedAo = saturate(dot(input.color.rgb, half3(0.333, 0.333, 0.334)) * 1.25);
 
                 SurfaceData surface = (SurfaceData)0;
-                surface.albedo = _BaseColor.rgb * input.color.rgb * _Tint.rgb;
+                half3 map = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
+                surface.albedo = _BaseColor.rgb * map * input.color.rgb * _Tint.rgb;
                 surface.metallic = _Metallic;
                 surface.smoothness = 1.0h - _Roughness;
                 surface.occlusion = lerp(0.55h, 1.0h, bakedAo);

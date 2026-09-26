@@ -44,7 +44,7 @@ namespace MachineBrigade.Editor
             var sun = new GameObject("Sun").AddComponent<Light>();
             sun.type = LightType.Directional;
             sun.intensity = 1.35f;
-            sun.color = new Color(1f, 0.93f, 0.82f);
+            sun.color = new Color(1f, 0.914f, 0.792f); // #ffe9ca, Riverlands
             sun.shadows = LightShadows.Soft;
             sun.shadowStrength = 0.85f;
             sun.transform.rotation = Quaternion.LookRotation(new Vector3(25f, -55f, 20f));
@@ -79,12 +79,12 @@ namespace MachineBrigade.Editor
             bloom.scatter.Override(0.6f);
 
             var colour = Get<ColorAdjustments>(profile);
-            colour.postExposure.Override(0.2f);
+            colour.postExposure.Override(0.35f);
             colour.contrast.Override(10f);
-            colour.saturation.Override(-4f);
+            colour.saturation.Override(0f);
 
             var vignette = Get<Vignette>(profile);
-            vignette.intensity.Override(0.24f);
+            vignette.intensity.Override(0.18f);
             vignette.smoothness.Override(0.45f);
 
             EditorUtility.SetDirty(profile);

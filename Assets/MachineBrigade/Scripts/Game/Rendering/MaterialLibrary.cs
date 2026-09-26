@@ -50,6 +50,10 @@ namespace MachineBrigade.Game.Rendering
             var particle = Find("MachineBrigade/Particle");
 
             Ground = Surface("Ground", Color.white, 0f, 0.95f, 0f);
+            Skirt = Surface("Skirt", Hex("#424634"), 0f, 0.95f, 0f);
+            Pebble = Surface("Pebble", Hex("#626957"), 0f, 0.9f, 0f);
+            GrassTuft = Surface("GrassTuft", Hex("#515f40"), 0f, 0.85f, 0f);
+            GrassTuft.SetFloat("_Wind", 0.6f);
             Fallback = Surface("Fallback", new Color(0.6f, 0.6f, 0.6f), 0f, 0.8f, 0f);
             foreach (var entry in Kit)
                 _surfaces[entry.Key] = Surface(entry.Key, Hex(entry.Value.color), entry.Value.metallic, entry.Value.roughness,
@@ -71,6 +75,9 @@ namespace MachineBrigade.Game.Rendering
         }
 
         public Material Ground { get; }
+        public Material Skirt { get; }
+        public Material Pebble { get; }
+        public Material GrassTuft { get; }
         public Material Fallback { get; }
         public Material SelectionRing { get; }
         public Material MoveMarker { get; }

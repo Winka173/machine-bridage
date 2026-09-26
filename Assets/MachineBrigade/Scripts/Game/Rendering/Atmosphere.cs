@@ -14,9 +14,9 @@ namespace MachineBrigade.Game.Rendering
     /// </summary>
     public sealed class Atmosphere : IDisposable
     {
-        public static readonly Color Sky = FromHex("#c1ddd7");
+        public static readonly Color Sky = FromHex("#c0d9d8");
         public static readonly Color Earth = FromHex("#736145");
-        public static readonly Color Haze = FromHex("#2c3a33");
+        public static readonly Color Haze = FromHex("#43565b");
 
         private const float AmbientStrength = 0.72f;
 
@@ -41,8 +41,8 @@ namespace MachineBrigade.Game.Rendering
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = Haze;
-            RenderSettings.fogStartDistance = 120f;
-            RenderSettings.fogEndDistance = 260f;
+            RenderSettings.fogStartDistance = 100f;
+            RenderSettings.fogEndDistance = 220f;
 
             _pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             if (_pipeline != null)

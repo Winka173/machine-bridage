@@ -49,6 +49,8 @@ namespace MachineBrigade.Game.Views
         private readonly GameObject _root;
         private readonly SimWorld _world;
         private readonly ModelLibrary _models;
+        private readonly List<Mesh> _meshes = new();
+        private Texture2D _groundTexture;
 
         public MapView(SimWorld world, ModelLibrary models, MaterialLibrary materials, Transform parent)
         {
@@ -56,7 +58,7 @@ namespace MachineBrigade.Game.Views
             _models = models;
             _root = new GameObject("Map");
             _root.transform.SetParent(parent, false);
-            BuildGround(world.Map.Size, materials.Ground);
+            BuildGround(world, materials);
 
             var rng = new Random(17);
             foreach (var prop in world.Props)
@@ -106,6 +108,10 @@ namespace MachineBrigade.Game.Views
         public void Dispose()
         {
             if (_root != null) Object.Destroy(_root);
+            foreach (var mesh in _meshes)
+                if (mesh != null) Object.Destroy(mesh);
+            if (_groundTexture != null) Object.Destroy(_groundTexture);
+            _meshes.Clear();
             _props.Clear();
         }
 
@@ -142,57 +148,166 @@ namespace MachineBrigade.Game.Views
             }
         }
 
-        private void BuildGround(float size, Material material)
+        private void BuildGround(SimWorld world, MaterialLibrary materials)
         {
-            var ground = new GameObject("Ground");
-            ground.transform.SetParent(_root.transform, false);
-            ground.AddComponent<MeshFilter>().sharedMesh = GroundMesh(size, 64);
-            var renderer = ground.AddComponent<MeshRenderer>();
-            renderer.sharedMaterial = material;
-            renderer.shadowCastingMode = ShadowCastingMode.Off;
-            renderer.receiveShadows = true;
-            var collider = ground.AddComponent<BoxCollider>();
+            var size = world.Map.Size;
+            _groundTexture = TerrainPainter.Paint(world, TerrainTheme.Riverlands);
+            materials.Ground.SetTexture("_BaseMap", _groundTexture);
+
+            var groundObject = Place("Ground", Own(GroundMesh(size, 64)), materials.Ground, castShadows: false);
+            var collider = groundObject.AddComponent<BoxCollider>();
             collider.center = new Vector3(0f, -0.5f, 0f);
             collider.size = new Vector3(size * 3f, 1f, size * 3f);
 
-            var apron = new GameObject("Apron");
-            apron.transform.SetParent(_root.transform, false);
-            apron.transform.position = new Vector3(0f, -0.08f, 0f);
-            apron.AddComponent<MeshFilter>().sharedMesh = GroundMesh(size * 5f, 10, darken: 0.55f);
-            var apronRenderer = apron.AddComponent<MeshRenderer>();
-            apronRenderer.sharedMaterial = material;
-            apronRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            // A dark earth block under the map, as in the reference: nothing is drawn beyond the edge.
+            var skirt = Place("Skirt", Own(Primitives.Box()), materials.Skirt, castShadows: false);
+            skirt.transform.position = new Vector3(0f, -1.27f, 0f);
+            skirt.transform.localScale = new Vector3(size, 2.5f, size);
+
+            var rng = new Random(1482);
+            var spread = size - 6f;
+            var density = (size / 96f) * (size / 96f) * 0.7f;
+            Place("Pebbles", Own(Scatter(Pebble(), (int)(500 * density), spread, rng, world, 0.06f, 0.5f, 1.5f, tilt: true)),
+                materials.Pebble, castShadows: false);
+            Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
+                materials.GrassTuft, castShadows: false);
         }
 
-        /// <summary>
-        /// Flat grid tinted like the reference's varied ground: dry grass, meadow and dirt patches
-        /// from layered noise, with a subtle darkening towards the map edge.
-        /// </summary>
-        private static Mesh GroundMesh(float size, int cells, float darken = 1f)
+        private GameObject Place(string name, Mesh mesh, Material material, bool castShadows)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(_root.transform, false);
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var renderer = go.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            renderer.receiveShadows = true;
+            return go;
+        }
+
+        private Mesh Own(Mesh mesh)
+        {
+            _meshes.Add(mesh);
+            return mesh;
+        }
+
+        /// <summary>Many copies of a small mesh merged into one static mesh: one draw call for all.</summary>
+        private static Mesh Scatter(Mesh source, int count, float spread, Random rng, SimWorld world, float lift,
+            float minScale, float maxScale, bool tilt)
+        {
+            var instances = new List<CombineInstance>(count);
+            for (var i = 0; i < count; i++)
+            {
+                var p = new Vector2((float)(rng.NextDouble() - 0.5) * spread, (float)(rng.NextDouble() - 0.5) * spread);
+                var scale = minScale + (float)rng.NextDouble() * (maxScale - minScale);
+                var rotation = tilt
+                    ? Quaternion.Euler((float)rng.NextDouble() * 60f, (float)rng.NextDouble() * 360f, (float)rng.NextDouble() * 40f)
+                    : Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 8f);
+                var blocked = false;
+                foreach (var prop in world.Props)
+                    if (prop.Def.BlocksMovement && prop.Contains(p, 0.5f)) { blocked = true; break; }
+                if (blocked) continue;
+                instances.Add(new CombineInstance
+                {
+                    mesh = source,
+                    transform = Matrix4x4.TRS(new Vector3(p.X, lift * scale, p.Y), rotation, Vector3.one * scale),
+                });
+            }
+            var mesh = new Mesh { name = source.name + " scatter", indexFormat = IndexFormat.UInt32 };
+            mesh.CombineMeshes(instances.ToArray(), true, true);
+            Object.Destroy(source);
+            return mesh;
+        }
+
+        /// <summary>Faceted pebble (flat-shaded icosahedron, about 0.22 m), like the reference's dodecahedra.</summary>
+        private static Mesh Pebble()
+        {
+            var t = (1f + Mathf.Sqrt(5f)) / 2f;
+            var corners = new[]
+            {
+                new Vector3(-1, t, 0), new Vector3(1, t, 0), new Vector3(-1, -t, 0), new Vector3(1, -t, 0),
+                new Vector3(0, -1, t), new Vector3(0, 1, t), new Vector3(0, -1, -t), new Vector3(0, 1, -t),
+                new Vector3(t, 0, -1), new Vector3(t, 0, 1), new Vector3(-t, 0, -1), new Vector3(-t, 0, 1),
+            };
+            int[] faces =
+            {
+                0, 11, 5, 0, 5, 1, 0, 1, 7, 0, 7, 10, 0, 10, 11, 1, 5, 9, 5, 11, 4, 11, 10, 2, 10, 7, 6, 7, 1, 8,
+                3, 9, 4, 3, 4, 2, 3, 2, 6, 3, 6, 8, 3, 8, 9, 4, 9, 5, 2, 4, 11, 6, 2, 10, 8, 6, 7, 9, 8, 1,
+            };
+            return Faceted("Pebble", corners, faces, 0.22f / corners[0].magnitude, new Vector3(1f, 0.6f, 1f));
+        }
+
+        /// <summary>Three-sided grass cone (0.22 m wide, 0.6 m tall), like the reference's tufts.</summary>
+        private static Mesh GrassTuft()
+        {
+            var corners = new Vector3[4];
+            for (var i = 0; i < 3; i++)
+            {
+                var a = i * Mathf.PI * 2f / 3f;
+                corners[i] = new Vector3(Mathf.Cos(a) * 0.22f, 0f, Mathf.Sin(a) * 0.22f);
+            }
+            corners[3] = new Vector3(0f, 0.6f, 0f);
+            int[] faces = { 0, 3, 1, 1, 3, 2, 2, 3, 0 };
+            return Faceted("GrassTuft", corners, faces, 1f, Vector3.one);
+        }
+
+        /// <summary>Flat-shaded mesh from shared corners; each triangle is turned to face outward.</summary>
+        private static Mesh Faceted(string name, Vector3[] corners, int[] faces, float scale, Vector3 squash)
+        {
+            var vertices = new List<Vector3>();
+            var normals = new List<Vector3>();
+            var colors = new List<Color>();
+            var triangles = new List<int>();
+            var centre = Vector3.zero;
+            foreach (var c in corners) centre += c;
+            centre = Vector3.Scale(centre / corners.Length * scale, squash);
+            for (var f = 0; f < faces.Length; f += 3)
+            {
+                var a = Vector3.Scale(corners[faces[f]] * scale, squash);
+                var b = Vector3.Scale(corners[faces[f + 1]] * scale, squash);
+                var c = Vector3.Scale(corners[faces[f + 2]] * scale, squash);
+                var n = Vector3.Cross(b - a, c - a).normalized;
+                if (Vector3.Dot(n, (a + b + c) / 3f - centre) < 0f)
+                {
+                    (b, c) = (c, b);
+                    n = -n;
+                }
+                var start = vertices.Count;
+                vertices.Add(a);
+                vertices.Add(b);
+                vertices.Add(c);
+                for (var k = 0; k < 3; k++)
+                {
+                    normals.Add(n);
+                    colors.Add(Color.white);
+                    triangles.Add(start + k);
+                }
+            }
+            var mesh = new Mesh { name = name };
+            mesh.SetVertices(vertices);
+            mesh.SetNormals(normals);
+            mesh.SetColors(colors);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        /// <summary>Flat grid with UVs spanning the painted ground texture.</summary>
+        private static Mesh GroundMesh(float size, int cells)
         {
             var count = cells + 1;
             var vertices = new Vector3[count * count];
+            var uvs = new UnityEngine.Vector2[count * count];
             var colors = new Color[count * count];
             var normals = new Vector3[count * count];
-            var meadow = new Color(0.36f, 0.47f, 0.29f);
-            var dryGrass = new Color(0.55f, 0.56f, 0.38f);
-            var dirt = new Color(0.5f, 0.44f, 0.34f);
             for (var z = 0; z < count; z++)
             for (var x = 0; x < count; x++)
             {
                 var i = z * count + x;
-                var px = (x / (float)cells - 0.5f) * size;
-                var pz = (z / (float)cells - 0.5f) * size;
-                vertices[i] = new Vector3(px, 0f, pz);
+                vertices[i] = new Vector3((x / (float)cells - 0.5f) * size, 0f, (z / (float)cells - 0.5f) * size);
+                uvs[i] = new UnityEngine.Vector2(x / (float)cells, z / (float)cells);
+                colors[i] = Color.white;
                 normals[i] = Vector3.up;
-                var patches = Mathf.PerlinNoise(px * 0.022f + 17f, pz * 0.022f + 9f);
-                var detail = Mathf.PerlinNoise(px * 0.13f + 3f, pz * 0.13f + 5f);
-                var dirtMask = Mathf.SmoothStep(0.55f, 0.75f, Mathf.PerlinNoise(px * 0.035f + 41f, pz * 0.035f + 7f));
-                var grass = Color.Lerp(dryGrass, meadow, Mathf.SmoothStep(0.35f, 0.65f, patches * 0.75f + detail * 0.25f));
-                var colour = Color.Lerp(grass, dirt, dirtMask * 0.85f) * (0.93f + detail * 0.14f);
-                var edge = Mathf.Max(Mathf.Abs(px), Mathf.Abs(pz)) / (size * 0.5f);
-                colour *= Mathf.Lerp(1f, 0.82f, Mathf.SmoothStep(0.85f, 1f, edge));
-                colors[i] = Primitives.Linear(colour * darken);
             }
 
             var triangles = new int[cells * cells * 6];
@@ -207,8 +322,8 @@ namespace MachineBrigade.Game.Views
             }
 
             var mesh = new Mesh { name = "Ground" };
-            if (vertices.Length > 65535) mesh.indexFormat = IndexFormat.UInt32;
             mesh.SetVertices(vertices);
+            mesh.SetUVs(0, uvs);
             mesh.SetColors(colors);
             mesh.SetNormals(normals);
             mesh.SetTriangles(triangles, 0);
