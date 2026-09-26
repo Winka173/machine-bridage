@@ -24,7 +24,8 @@ Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
 form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
 Propeller, Radar, Mount_*, Pump_beam) move at runtime too, and an aircraft's Bombs are hidden once they
-drop, so like the rig they receive ambient occlusion but never cast it.
+drop (a supply drop's Parachute once it lands), so like the rig they receive ambient occlusion but never
+cast it.
 """
 import contextlib
 import io
@@ -43,9 +44,9 @@ BASE_TONE = 0.8
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
 # Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts) or
 # are hidden on their own (an aircraft's Bombs once they drop).
-MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs)', re.I)
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs|parachute)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
-RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|propeller|radar|mount_)', re.I)
+RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|tail_rotor|propeller|radar|mount_)', re.I)
 
 
 def lin(value):
