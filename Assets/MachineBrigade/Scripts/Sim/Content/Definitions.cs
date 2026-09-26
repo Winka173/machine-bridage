@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Content
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,
             WeaponDef weapon, ExplosionDef? deathExplosion, IReadOnlyList<WeaponMount>? secondary = null,
-            bool flying = false, float altitude = 0f, float captureRate = 1f, string mainSlot = "main")
+            bool flying = false, float altitude = 0f, float captureRate = 1f, string mainSlot = "main", bool fixedWing = false)
         {
             Id = Guard.Id(id);
             Armor = armor;
@@ -126,7 +126,14 @@ namespace MachineBrigade.Sim.Content
             Flying = flying;
             Altitude = flying ? Guard.Positive(altitude, id, nameof(altitude)) : 0f;
             CaptureRate = Guard.NonNegative(captureRate, id, nameof(captureRate));
+            FixedWing = flying && fixedWing;
         }
+
+        /// <summary>
+        /// Aeroplanes (jets, drones) cannot hover: they fly on at speed, circle their post, and
+        /// attack in strafing runs, pulling through and coming round again.
+        /// </summary>
+        public bool FixedWing { get; }
 
         /// <summary>Every weapon, main first.</summary>
         public IReadOnlyList<WeaponMount> Mounts { get; }

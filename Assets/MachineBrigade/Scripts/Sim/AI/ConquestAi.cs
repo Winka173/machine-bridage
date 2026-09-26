@@ -166,7 +166,7 @@ namespace MachineBrigade.Sim.AI
             var bestScore = float.MinValue;
             var bestAffordableScore = float.MinValue;
             CountEnemies(out var air, out var heavy, out var light);
-            CountOwn(world, out var ownAa, out var ownArtillery, out var ownTotal);
+            CountOwn(world, out var ownAa, out var ownArtillery, out var ownAir, out var ownTotal);
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -186,7 +186,9 @@ namespace MachineBrigade.Sim.AI
                     if (CanHitAir(def)) score += air * 2.2f - ownAa * 1.5f;
                     if (main.DamageType == DamageType.ArmorPiercing) score += heavy * 0.6f;
                     if (main.DamageType is DamageType.Kinetic or DamageType.Fire) score += light * 0.5f;
-                    if (def.Flying) score += heavy * 0.35f - air * 0.3f;
+                    // Keep about a fifth of the army in the air: aircraft are fast, hit hard and
+                    // make the enemy spend on anti-air.
+                    if (def.Flying) score += (ownAir * 5 < ownTotal + 3 ? 1.8f : -1.2f) + heavy * 0.35f - air * 0.25f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                 }
@@ -286,14 +288,15 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
-        private void CountOwn(SimWorld world, out int aa, out int artillery, out int total)
+        private void CountOwn(SimWorld world, out int aa, out int artillery, out int air, out int total)
         {
-            aa = artillery = total = 0;
+            aa = artillery = air = total = 0;
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive || v.Team != _team) continue;
                 total++;
-                if (CanHitAir(v.Def)) aa++;
+                if (v.Def.Flying) air++;
+                else if (CanHitAir(v.Def)) aa++;
                 if (v.Def.Weapon.MinRange > 0f) artillery++;
             }
         }

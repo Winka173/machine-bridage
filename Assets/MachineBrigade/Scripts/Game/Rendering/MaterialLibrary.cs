@@ -40,6 +40,25 @@ namespace MachineBrigade.Game.Rendering
             ["Dirt"] = ("#7a6448", 0f, 0.95f, 0f),
             ["Sandbag"] = ("#a8956a", 0f, 0.95f, 0f),
             ["Grass"] = ("#5f7a45", 0f, 0.9f, 0f),
+            // Town kit.
+            ["PlasterWhite"] = ("#ece8dc", 0f, 0.92f, 0f),
+            ["PlasterBlue"] = ("#a9bfc7", 0f, 0.92f, 0f),
+            ["PlasterOchre"] = ("#dfb56c", 0f, 0.92f, 0f),
+            ["Brick"] = ("#a8553d", 0f, 0.9f, 0f),
+            ["RoofSlate"] = ("#5b636c", 0f, 0.74f, 0f),
+            ["RoofGreen"] = ("#5e8a72", 0.2f, 0.62f, 0f),
+            ["MetalSheet"] = ("#a9b0b1", 0.55f, 0.5f, 0f),
+            ["WoodRed"] = ("#9c3f2f", 0f, 0.85f, 0f),
+            ["Charred"] = ("#302b28", 0f, 0.95f, 0f),
+            ["FoliageDark"] = ("#3e5b35", 0f, 0.85f, 0f),
+            ["BarkWhite"] = ("#e4dfd2", 0f, 0.85f, 0f),
+            // Civilian paint; models use CarRed and the map swaps in the others.
+            ["CarRed"] = ("#c8382c", 0.35f, 0.38f, 0f),
+            ["CarBlue"] = ("#3b6a9e", 0.35f, 0.38f, 0f),
+            ["CarWhite"] = ("#e6e6e0", 0.35f, 0.38f, 0f),
+            ["CarYellow"] = ("#e0b53a", 0.35f, 0.38f, 0f),
+            ["CarGreen"] = ("#4f7a54", 0.35f, 0.38f, 0f),
+            ["CarGrey"] = ("#6c7176", 0.4f, 0.4f, 0f),
         };
 
         private readonly List<Material> _owned = new();
@@ -63,11 +82,14 @@ namespace MachineBrigade.Game.Rendering
             GrassTuft.SetFloat("_Wind", 0.6f);
             Water = Surface("Water", Hex("#2f6f78"), 0.1f, 0.08f, 0f);
             OuterGround = Surface("OuterGround", Color.white, 0f, 0.95f, 0f);
+            Terrain = Surface("Terrain", Color.white, 0f, 0.92f, 0f);
             Fallback = Surface("Fallback", new Color(0.6f, 0.6f, 0.6f), 0f, 0.8f, 0f);
             foreach (var entry in Kit)
                 _surfaces[entry.Key] = Surface(entry.Key, Hex(entry.Value.color), entry.Value.metallic, entry.Value.roughness,
                     entry.Value.emission);
-            foreach (var name in new[] { "Foliage", "FoliageLight" }) _surfaces[name].SetFloat("_Wind", 1f);
+            foreach (var name in new[] { "Foliage", "FoliageLight", "FoliageDark" }) _surfaces[name].SetFloat("_Wind", 1f);
+            CarPaints = new[] { _surfaces["CarRed"], _surfaces["CarBlue"], _surfaces["CarWhite"], _surfaces["CarYellow"],
+                _surfaces["CarGreen"], _surfaces["CarGrey"] };
 
             SelectionRing = Unlit(unlit, "Selection", new Color(0.55f, 1.6f, 1.1f));
             MoveMarker = Unlit(unlit, "MoveMarker", new Color(0.7f, 2f, 1.3f));
@@ -88,12 +110,18 @@ namespace MachineBrigade.Game.Rendering
             Splash = Particle(particle, "Splash", additive: false, intensity: 1f, shape: 1f, softness: 0.8f);
         }
 
+        /// <summary>Body colours for civilian cars and trucks; index 0 is the models' own CarRed.</summary>
+        public Material[] CarPaints { get; }
+
         public Material Ground { get; }
         public Material Skirt { get; }
         public Material Pebble { get; }
         public Material GrassTuft { get; }
         public Material Water { get; }
         public Material OuterGround { get; }
+
+        /// <summary>The mountain range; its colours come from a palette texture indexed by UV.</summary>
+        public Material Terrain { get; }
         public Material Fallback { get; }
         public Material SelectionRing { get; }
         public Material MoveMarker { get; }

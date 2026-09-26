@@ -35,18 +35,22 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public static class MatchSettings
     {
-        public const int DeckVehicleSlots = 6;
+        public const int DeckVehicleSlots = 8;
         public const int DeckSupportSlots = 2;
 
         public static readonly string[] AllVehicles =
         {
-            "scout_jeep", "apc", "light_tank", "main_battle_tank", "flame_tank", "artillery", "mlrs", "aa_vehicle",
-            "attack_helicopter",
+            "scout_jeep", "armored_car", "rocket_technical", "apc", "light_tank", "main_battle_tank", "heavy_tank",
+            "tank_destroyer", "flame_tank", "mortar_carrier", "artillery", "mlrs", "aa_vehicle", "sam_launcher",
+            "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
         };
 
         public static readonly string[] AllSupports = { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop" };
 
-        private static readonly string[] DefaultVehicles = { "scout_jeep", "apc", "light_tank", "main_battle_tank", "aa_vehicle", "attack_helicopter" };
+        private static readonly string[] DefaultVehicles =
+        {
+            "apc", "light_tank", "main_battle_tank", "heavy_tank", "aa_vehicle", "attack_helicopter", "gunship_heli", "attack_jet",
+        };
         private static readonly string[] DefaultSupports = { "artillery_barrage", "airstrike" };
 
         private static bool _loaded;
@@ -160,8 +164,11 @@ namespace MachineBrigade.Game.Match
             var cards = new List<string>();
             foreach (var id in saved.Split(','))
                 if (Array.IndexOf(all, id) >= 0 && !cards.Contains(id) && cards.Count < slots) cards.Add(id);
+            // Decks saved before the deck grew are topped up from the defaults.
+            foreach (var id in defaults)
+                if (cards.Count < slots && !cards.Contains(id)) cards.Add(id);
             deck.Clear();
-            deck.AddRange(cards.Count > 0 ? cards : defaults);
+            deck.AddRange(cards);
         }
     }
 }

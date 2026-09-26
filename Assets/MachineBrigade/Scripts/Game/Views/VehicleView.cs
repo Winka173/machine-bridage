@@ -180,8 +180,17 @@ namespace MachineBrigade.Game.Views
                 var climb = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / TakeOffSeconds);
                 Altitude = Def.Altitude * climb + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * climb;
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
-                _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(_currentSpeed * 0.9f + acceleration * 1.5f, -8f, 16f), ease);
-                _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.12f, -20f, 20f), ease);
+                if (Def.FixedWing)
+                {
+                    // Aeroplanes fly level and bank hard into their turns.
+                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(acceleration * 0.5f, -4f, 4f), ease);
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f), ease);
+                }
+                else
+                {
+                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(_currentSpeed * 0.9f + acceleration * 1.5f, -8f, 16f), ease);
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.12f, -20f, 20f), ease);
+                }
                 position.y = Altitude;
                 _body.localPosition = Vector3.zero;
                 _body.localRotation = Quaternion.Euler(_pitch, 0f, _bank);
@@ -267,6 +276,17 @@ namespace MachineBrigade.Game.Views
             // Out of control: it drifts on with its momentum, spins faster and faster as the tail
             // goes, tips over and drops, the rotor winding down, until it hits the ground.
             var t = Time.time - _crashStart;
+            if (Def.FixedWing)
+            {
+                // An aeroplane dives in nose first, rolling, trailing fire.
+                var dive = Mathf.Max(0f, _crashHeight - 0.5f * 11f * t * t);
+                var glide = _crashDrift * Mathf.Clamp01(1f - t * 0.35f) * Time.deltaTime;
+                var q = Root.position + glide;
+                Root.position = new Vector3(q.x, dive, q.z);
+                _body.localRotation = Quaternion.Euler(Mathf.Min(40f, t * 30f), 0f, t * 140f);
+                Spin(1f);
+                return;
+            }
             var height = Mathf.Max(0f, _crashHeight - 0.5f * 7f * t * t);
             var drift = _crashDrift * Mathf.Clamp01(1f - t * 0.5f) * Time.deltaTime;
             var p = Root.position + drift;

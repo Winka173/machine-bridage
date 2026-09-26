@@ -22,7 +22,7 @@ namespace MachineBrigade.Game.Effects
         private readonly Emitters _emitters;
         private readonly ExplosionEffect _muzzle;
         private readonly Action<Vector3, float> _shake;
-        private readonly bool _hasMissile, _hasRocket;
+        private readonly bool _hasMissile, _hasRocket, _hasBomb;
 
         public WeaponEffects(Catalog catalog, ModelLibrary models, TracerPool tracers, ProjectilePool projectiles, Emitters emitters,
             ExplosionEffect muzzle, Action<Vector3, float> shake)
@@ -36,6 +36,7 @@ namespace MachineBrigade.Game.Effects
             _shake = shake;
             _hasMissile = models.Has("missile");
             _hasRocket = models.Has("rocket");
+            _hasBomb = models.Has("bomb");
         }
 
         public void Fired(in SimEvent e, ViewRegistry views, float now)
@@ -85,6 +86,12 @@ namespace MachineBrigade.Game.Effects
                     _emitters.MuzzleSmoke(from, forward + Vector3.up * (artillery ? 0.8f : 0.1f), artillery ? 1.4f : 0.8f);
                     _muzzle.Play(from, now, 0.55f);
                     _shake(from, artillery ? 0.06f : 0.03f);
+                    break;
+
+                case ProjectileKind.Bomb:
+                    // Released from the wing: it keeps some forward speed and falls onto the target.
+                    if (_hasBomb) _projectiles.Launch(_models.Merged("bomb"), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now);
+                    else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
 
                 case ProjectileKind.Flame:

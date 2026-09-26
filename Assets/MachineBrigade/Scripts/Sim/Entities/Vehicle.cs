@@ -100,6 +100,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
         internal Vector2 GuardPoint;
 
+        /// <summary>Aeroplanes: the target of the current strafing run, kept while they pull through and turn.</summary>
+        internal EntityId RunTarget;
+
+        /// <summary>Aeroplanes: flying on past the target before turning in for the next run.</summary>
+        internal bool RunExtending;
+
         /// <summary>Carrying out an order the player gave by hand.</summary>
         internal bool ManualOrder;
 

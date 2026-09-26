@@ -176,6 +176,11 @@ namespace MachineBrigade.Sim.Movement
         private void Drive(Vehicle v, float dt)
         {
             var def = v.Def;
+            if (def.FixedWing)
+            {
+                DriveAeroplane(v, dt);
+                return;
+            }
             if (!v.HasPath)
             {
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
@@ -213,6 +218,95 @@ namespace MachineBrigade.Sim.Movement
 
             if (!TryAdvance(v, v.Speed * dt)) v.Speed = 0f;
             if (!def.Flying) DetectStuck(v, dt);
+        }
+
+        /// <summary>
+        /// Aeroplanes never stop. With a target they fly at it, fire as it bears, pull through
+        /// past it and extend, then turn in for another run; with a destination they fly there;
+        /// otherwise they circle their post. They turn back well before the map edge.
+        /// </summary>
+        private void DriveAeroplane(Vehicle v, float dt)
+        {
+            var def = v.Def;
+            var turnRadius = def.Speed / def.TurnRate;
+            var target = RunTarget(v);
+            Vector2 goal;
+            if (target != null)
+            {
+                var range = def.Weapon.Range;
+                var toTarget = target.Position - v.Position;
+                var distance = toTarget.Length();
+                if (!v.RunExtending)
+                {
+                    // Pull through once too close to keep the nose on it, or once it slips behind.
+                    var behind = Vector2.Dot(SimMath.Forward(v.Heading), toTarget) < 0f;
+                    if (distance < MathF.Max(6f, range * 0.3f) || (behind && distance < range * 0.6f)) v.RunExtending = true;
+                }
+                else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
+                {
+                    v.RunExtending = false;
+                }
+                goal = v.RunExtending ? v.Position + SimMath.Forward(v.Heading) * 10f : target.Position;
+            }
+            else if (v.HasPath)
+            {
+                goal = v.Path[v.Path.Count - 1];
+                if (Vector2.Distance(v.Position, goal) < MathF.Max(8f, turnRadius))
+                {
+                    v.PathIndex = v.Path.Count;
+                    v.PathCompleted = true;
+                }
+            }
+            else
+            {
+                goal = OrbitPoint(v, MathF.Max(14f, turnRadius * 1.6f));
+            }
+
+            // Turn back towards the middle before running out of map.
+            var half = _world.Map.HalfSize;
+            var margin = turnRadius * 1.3f + 4f;
+            var nearEdge = MathF.Abs(v.Position.X) > half - margin || MathF.Abs(v.Position.Y) > half - margin;
+            if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
+
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed, def.Speed * 0.8f * dt);
+            v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
+        }
+
+        /// <summary>The strafing-run target: an ordered one, else the current or last engaged enemy.</summary>
+        private IDamageable? RunTarget(Vehicle v)
+        {
+            if (v.Order.Kind == OrderKind.Attack && _world.TryGetTarget(v.Order.Target, out var ordered) && ordered.IsAlive)
+                return ordered;
+            var weapon = v.Def.Weapon;
+            if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && run.IsVisibleTo(v.Team) &&
+                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f)
+                return run;
+            v.RunExtending = false;
+            if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive)
+            {
+                v.RunTarget = current.Id;
+                return current;
+            }
+            if (_world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && engaged.IsVisibleTo(v.Team))
+            {
+                v.RunTarget = engaged.Id;
+                return engaged;
+            }
+            v.RunTarget = EntityId.None;
+            return null;
+        }
+
+        /// <summary>A point ahead on a circle of <paramref name="radius"/> around the post.</summary>
+        private static Vector2 OrbitPoint(Vehicle v, float radius)
+        {
+            var from = v.Position - v.GuardPoint;
+            var distance = from.Length();
+            var outward = distance > 0.1f ? from / distance : SimMath.Forward(v.Heading);
+            var tangent = new Vector2(-outward.Y, outward.X);
+            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * 1.2f;
+            var direction = Vector2.Normalize(tangent + outward * pull);
+            return v.Position + direction * 10f;
         }
 
         private bool TryAdvance(Vehicle v, float distance)

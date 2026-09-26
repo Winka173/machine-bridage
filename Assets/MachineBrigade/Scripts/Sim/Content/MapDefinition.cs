@@ -57,13 +57,27 @@ namespace MachineBrigade.Sim.Content
     /// A battlefield as data. The map is a square of <see cref="Size"/> metres centred on the
     /// origin, so coordinates run from -HalfSize to +HalfSize on both axes.
     /// </summary>
+    /// <summary>A road drawn on the ground (presentation only; the simulation ignores it).</summary>
+    public sealed class RoadDef
+    {
+        public RoadDef(float width, IReadOnlyList<Vector2> points)
+        {
+            Width = width;
+            Points = points;
+        }
+
+        public float Width { get; }
+        public IReadOnlyList<Vector2> Points { get; }
+    }
+
     public sealed class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
-            IReadOnlyList<CapturePointDef>? points = null)
+            IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null)
         {
             Points = points ?? Array.Empty<CapturePointDef>();
+            Roads = roads ?? Array.Empty<RoadDef>();
             Id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentException("Map id must not be empty.") : id;
             Size = float.IsFinite(size) && size > 0 ? size : throw new ArgumentException($"Map '{id}': size must be positive.");
             Teams = teams;
@@ -80,6 +94,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Objectives for Conquest (may be empty for other modes).</summary>
         public IReadOnlyList<CapturePointDef> Points { get; }
+
+        /// <summary>Roads for the ground painter; empty means the painter lays its own.</summary>
+        public IReadOnlyList<RoadDef> Roads { get; }
 
         public bool Contains(Vector2 point) =>
             MathF.Abs(point.X) <= HalfSize && MathF.Abs(point.Y) <= HalfSize;
@@ -117,7 +134,20 @@ namespace MachineBrigade.Sim.Content
                         new Vector2(c.Float("x"), c.Float("z")), c.Float("radius", 10f)));
             }
 
-            return new MapDefinition(id, size, teams, props, units, points);
+            var roads = new List<RoadDef>();
+            if (root.Has("roads"))
+            {
+                foreach (var r in root.Array("roads"))
+                {
+                    var flat = r.FloatArray("points");
+                    if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($"{r.Path}.points: needs x, z pairs.");
+                    var line = new List<Vector2>();
+                    for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));
+                    roads.Add(new RoadDef(r.Float("width", 5f), line));
+                }
+            }
+
+            return new MapDefinition(id, size, teams, props, units, points, roads);
         }
     }
 }
