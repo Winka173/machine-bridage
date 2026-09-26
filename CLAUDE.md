@@ -1,0 +1,13 @@
+# Machine Brigade — notes for Claude
+
+- Specification: `Docs/GAME_PLAN.md`. Architecture rules are in section 10 and acceptance cases in section 11. `Docs/RTS_GAME_PLAN*.md` are background only; their base-building scope is dropped.
+- Unity 6000.6.3f1: `/c/Program Files/Unity/Hub/Editor/6000.6.3f1/Editor/Unity.exe`. Always launch Unity and Unity Hub with `env -u ELECTRON_RUN_AS_NODE`, because the VS Code environment sets it.
+- Always pass `-nographics` to batch-mode Unity. Without it, Unity shares the GPU with the running emulator and the NVIDIA OpenGL driver crashes the emulator (`qemu-system-x86_64.exe` kernel exception).
+- Unity builds kill the adb server when they finish; the next adb command restarts it and the emulator reconnects.
+- The emulator's Vulkan does not work under ARM translation (black screen), so emulator images are denied Vulkan through `Assets/MachineBrigade/Settings/VulkanDeviceFilters.asset` and fall back to GLES3. Unity 6.6 no longer builds Android x86_64.
+- Batch mode fails while the user has the project open in the editor. If a batch run reports that the project is locked, ask the user to close the editor.
+- `-runTests` must not be combined with `-quit`. Read the results XML rather than the log.
+- `MachineBrigade.Sim` has `noEngineReferences: true`. Never add `UnityEngine` usages there; put anything engine-facing in the Game layer.
+- Scenes stay minimal. Spawn match content from code and JSON data instead of hand-editing scene YAML.
+- For device testing, use the Android emulator AVD `Pixel_3a_API_35_extension_level_13_x86_64` (SDK at `%LOCALAPPDATA%\Android\Sdk`) with `Tools/run-android.sh`. It renders on the host RTX GPU, so emulator FPS says nothing about phone performance. Report emulator results as functional checks only.
+- The user writes in Vietnamese. Reply in Vietnamese; code, comments and docs are in English.

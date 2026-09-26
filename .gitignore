@@ -1,0 +1,51 @@
+# Unity-generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/.utmp/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# IDE and generated project files
+.vs/
+.idea/
+.vscode/
+.gradle/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pdb.meta
+*.mdb.meta
+
+# Build outputs and crash dumps
+*.apk
+*.aab
+*.app
+*.unitypackage
+sysinfo.txt
+mono_crash.*
+crashlytics-build.properties
+
+# Addressables build output (pulled in by Localization)
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Signing secrets never enter the repository
+*.keystore
+*.jks
+keystore.properties
+
+# Test runner output
+/TestResults/

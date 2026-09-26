@@ -1,0 +1,45 @@
+# Machine Brigade
+
+A 3D real-time tactics game for Android and iOS. The player commands military vehicles in short, explosive battles against AI. There is no base building. See [Docs/GAME_PLAN.md](Docs/GAME_PLAN.md) for the full specification.
+
+## Requirements
+
+- Unity **6000.6.3f1** with Android Build Support (OpenJDK, Android SDK & NDK Tools) and iOS Build Support.
+- Git with Git LFS.
+- iOS builds: a Mac with Xcode and an Apple Developer account. The Xcode project itself can be generated on Windows.
+
+## Getting started
+
+Open the project folder in Unity Hub. Project settings (bundle id, orientation, IL2CPP) are applied from code with the **Machine Brigade → Apply Project Settings** menu.
+
+## Command line
+
+Close the editor first: batch mode cannot open a project the editor already has open.
+
+```bash
+UNITY="/c/Program Files/Unity/Hub/Editor/6000.6.3f1/Editor/Unity.exe"
+
+# EditMode tests (results in TestResults/editmode.xml)
+"$UNITY" -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml
+
+# Android development APK -> Builds/Android/MachineBrigade-dev.apk
+"$UNITY" -batchmode -nographics -quit -projectPath . -buildTarget Android -executeMethod MachineBrigade.Editor.BuildScripts.BuildAndroidDevApk
+
+# Install and launch the dev APK on the first attached device or emulator, then stream the log
+Tools/run-android.sh
+
+# Re-apply player settings (builds also do this automatically)
+"$UNITY" -batchmode -nographics -quit -projectPath . -executeMethod MachineBrigade.Editor.ProjectSetup.Apply
+```
+
+When calling Unity or Unity Hub from a VS Code terminal, unset `ELECTRON_RUN_AS_NODE` first (`env -u ELECTRON_RUN_AS_NODE ...`). VS Code sets it, and it makes Unity Hub run as plain Node.
+
+## Layout
+
+| Path | Purpose |
+|---|---|
+| `Assets/MachineBrigade/Scripts/Sim` | Pure C# simulation: no `UnityEngine` reference, fixed-step, testable without a scene |
+| `Assets/MachineBrigade/Scripts/Editor` | Project setup and command-line build scripts |
+| `Assets/MachineBrigade/Tests/EditMode` | Simulation tests |
+| `Assets/Settings` | URP assets (Mobile and PC renderers) |
+| `Docs` | Game plan and the earlier RTS plans kept as reference |
