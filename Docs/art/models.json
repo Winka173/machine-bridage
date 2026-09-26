@@ -3,6 +3,14 @@
     "file": "aa_vehicle.glb",
     "triangles": 5144
   },
+  "adobe_house": {
+    "file": "adobe_house.glb",
+    "triangles": 1596
+  },
+  "adobe_large": {
+    "file": "adobe_large.glb",
+    "triangles": 3882
+  },
   "ammo_crate": {
     "file": "ammo_crate.glb",
     "triangles": 480
@@ -54,6 +62,10 @@
   "bush": {
     "file": "bush.glb",
     "triangles": 80
+  },
+  "cactus": {
+    "file": "cactus.glb",
+    "triangles": 354
   },
   "car": {
     "file": "car.glb",
@@ -147,9 +159,21 @@
     "file": "light_tank.glb",
     "triangles": 5688
   },
+  "log_cabin": {
+    "file": "log_cabin.glb",
+    "triangles": 2946
+  },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
     "triangles": 5996
+  },
+  "market_stall": {
+    "file": "market_stall.glb",
+    "triangles": 1404
+  },
+  "mesa": {
+    "file": "mesa.glb",
+    "triangles": 546
   },
   "missile": {
     "file": "missile.glb",
@@ -175,9 +199,29 @@
     "file": "mountain_c.glb",
     "triangles": 2252
   },
+  "oil_pump": {
+    "file": "oil_pump.glb",
+    "triangles": 3056
+  },
+  "palm": {
+    "file": "palm.glb",
+    "triangles": 368
+  },
   "pine": {
     "file": "pine.glb",
     "triangles": 124
+  },
+  "pipeline": {
+    "file": "pipeline.glb",
+    "triangles": 1472
+  },
+  "radar_station": {
+    "file": "radar_station.glb",
+    "triangles": 3810
+  },
+  "refinery_tower": {
+    "file": "refinery_tower.glb",
+    "triangles": 5020
   },
   "rock_a": {
     "file": "rock_a.glb",
@@ -239,9 +283,21 @@
     "file": "silo.glb",
     "triangles": 1884
   },
+  "snow_pine": {
+    "file": "snow_pine.glb",
+    "triangles": 224
+  },
+  "snow_rock": {
+    "file": "snow_rock.glb",
+    "triangles": 468
+  },
   "stone_wall": {
     "file": "stone_wall.glb",
     "triangles": 492
+  },
+  "storage_tank": {
+    "file": "storage_tank.glb",
+    "triangles": 3340
   },
   "strike_drone": {
     "file": "strike_drone.glb",
@@ -290,6 +346,10 @@
   "warehouse": {
     "file": "warehouse.glb",
     "triangles": 3864
+  },
+  "watchtower": {
+    "file": "watchtower.glb",
+    "triangles": 1494
   },
   "water_tower": {
     "file": "water_tower.glb",
