@@ -75,9 +75,9 @@ namespace MachineBrigade.Game.Rendering
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
 
-            Fire = Particle(particle, "Fire", additive: true, intensity: 2.6f, shape: 0f, softness: 1.4f);
+            Fire = Particle(particle, "Fire", additive: true, intensity: 2.1f, shape: 3f, softness: 1.4f);
             Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f);
-            Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 0f, softness: 1.2f);
+            Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 4f, softness: 1.2f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
             Rain = Particle(particle, "Rain", additive: false, intensity: 1.1f, shape: 0f, softness: 0.4f);

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -6,6 +7,19 @@ namespace MachineBrigade.Game.Effects
     /// <summary>Terse helpers for configuring particle systems from code.</summary>
     internal static class ParticleBuilder
     {
+        /// <summary>
+        /// UV plus the particle's age and a stable random value (TEXCOORD0.zw), which the
+        /// particle shader uses to shape and evolve fire and smoke puffs.
+        /// </summary>
+        private static readonly List<ParticleSystemVertexStream> Streams = new()
+        {
+            ParticleSystemVertexStream.Position,
+            ParticleSystemVertexStream.Color,
+            ParticleSystemVertexStream.UV,
+            ParticleSystemVertexStream.AgePercent,
+            ParticleSystemVertexStream.StableRandomX,
+        };
+
         /// <summary>Gentle breeze every smoke column leans into, so plumes drift off their source.</summary>
         public static readonly Vector3 Wind = new(0.9f, 0f, 0.6f);
 
@@ -40,6 +54,7 @@ namespace MachineBrigade.Game.Effects
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
             renderer.maxParticleSize = 3f;
+            renderer.SetActiveVertexStreams(Streams);
             if (mode == ParticleSystemRenderMode.Stretch)
             {
                 renderer.velocityScale = 0.05f;

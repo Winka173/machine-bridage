@@ -108,16 +108,19 @@ namespace MachineBrigade.Game.Views
         private void PlaceMountains(ModelLibrary models)
         {
             (string id, float radius)[] kinds = { ("mountain_a", 50f), ("mountain_b", 40f), ("mountain_c", 42f) };
-            const int count = 9;
+            const int count = 11;
             for (var i = 0; i < count; i++)
             {
                 var angle = (i + (float)_rng.NextDouble() * 0.5f) / count * Mathf.PI * 2f;
                 var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
                 // Push out to a square ring past the forest belt.
-                var reach = (_half + 70f + (float)_rng.NextDouble() * 55f) / Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
-                var centre = direction * reach;
+                var reach = (_half + 52f + (float)_rng.NextDouble() * 40f) / Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
                 var (id, radius) = kinds[_rng.Next(kinds.Length)];
-                var scale = 0.85f + (float)_rng.NextDouble() * 0.45f;
+                var scale = 1.05f + (float)_rng.NextDouble() * 0.5f;
+                // Keep the foot of the slope clear of the battlefield and its tree line.
+                var edge = Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+                reach = Mathf.Max(reach, (_half + 16f + radius * scale) / edge);
+                var centre = direction * reach;
                 if (NearRiver(centre, radius * scale) || Mathf.Max(Mathf.Abs(centre.x), Mathf.Abs(centre.y)) > Extent + 20f) continue;
                 var mountain = models.Spawn(id, -1, _root.transform);
                 mountain.Root.transform.SetPositionAndRotation(new Vector3(centre.x, -0.4f, centre.y),

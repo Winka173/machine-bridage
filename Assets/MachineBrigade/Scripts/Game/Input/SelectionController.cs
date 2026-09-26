@@ -128,8 +128,14 @@ namespace MachineBrigade.Game.Input
 
         public void OnDoubleTap(Vector2 screen)
         {
+            if (TapInterceptor != null && TapInterceptor(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
-            if (picked == null || picked.Team != _team) return;
+            if (picked == null || picked.Team != _team)
+            {
+                // A quick second tap on the ground or an enemy is still an order.
+                OnTap(screen);
+                return;
+            }
             _selected.Clear();
             var viewport = new Rect(0f, 0f, Screen.width, Screen.height);
             foreach (var view in _views.All)

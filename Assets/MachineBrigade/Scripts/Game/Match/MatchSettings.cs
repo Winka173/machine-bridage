@@ -93,6 +93,9 @@ namespace MachineBrigade.Game.Match
 
         public static void Save()
         {
+            // An empty deck would mean "anything" to the simulation; refill it instead.
+            if (DeckVehicles.Count == 0) DeckVehicles.AddRange(DefaultVehicles);
+            if (DeckSupports.Count == 0) DeckSupports.AddRange(DefaultSupports);
             try
             {
                 PlayerPrefs.SetFloat("mb.volume", Volume);

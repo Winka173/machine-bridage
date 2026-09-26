@@ -78,6 +78,7 @@ namespace MachineBrigade.Game.Effects
                     systems.Add(Smoke(t, m, 14, new Vector2(2.6f, 4.4f), new Vector2(3f, 5f), 0.2f));
                     systems.Add(Sparks(t, m, 30, new Vector2(9f, 22f), 0.2f));
                     systems.Add(Debris(t, m, 14, new Vector2(6f, 13f)));
+                    systems.Add(BurningDebris(t, m, 7, new Vector2(7f, 13f)));
                     systems.Add(Dirt(t, m, 12, new Vector2(5f, 12f)));
                     systems.Add(Embers(t, m, 18, 1f));
                     systems.Add(Shockwave(t, m, 18f));
@@ -96,6 +97,7 @@ namespace MachineBrigade.Game.Effects
                     systems.Add(Smoke(t, m, 22, new Vector2(4.5f, 7.5f) * s, new Vector2(5f, 8f), 0.16f));
                     systems.Add(Sparks(t, m, 48, new Vector2(12f, 30f), 0.26f));
                     systems.Add(Debris(t, m, 24, new Vector2(8f, 20f)));
+                    systems.Add(BurningDebris(t, m, 14, new Vector2(9f, 18f) * s));
                     systems.Add(Dirt(t, m, 18, new Vector2(6f, 15f)));
                     systems.Add(Embers(t, m, 40, 1.6f));
                     systems.Add(Shockwave(t, m, 34f * s));
@@ -182,6 +184,38 @@ namespace MachineBrigade.Game.Effects
             shape.shapeType = ParticleSystemShapeType.Hemisphere;
             shape.rotation = new Vector3(-90f, 0f, 0f);
             PB.Burst(ps, (0f, count));
+            return ps;
+        }
+
+        /// <summary>
+        /// Blazing chunks flung high on arcs, each trailing black smoke through a birth
+        /// sub-emitter, which sells the scale of big blasts.
+        /// </summary>
+        private static ParticleSystem BurningDebris(Transform parent, MaterialLibrary m, int count, Vector2 speed)
+        {
+            var ps = PB.Create(parent, "Burning Debris", m.Fire);
+            PB.Basics(ps, new Vector2(1.3f, 2.4f), speed, new Vector2(0.45f, 0.8f), 2.1f);
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Cone;
+            shape.angle = 38f;
+            shape.radius = 0.6f;
+            shape.rotation = new Vector3(-90f, 0f, 0f);
+            PB.Colors(ps, PB.Fade(new Color(1f, 0.85f, 0.5f), new Color(1f, 0.5f, 0.15f), new Color(0.6f, 0.18f, 0.05f)));
+            PB.Grow(ps, 1f, 0.45f);
+            PB.Burst(ps, (0f, count));
+
+            var trail = PB.Create(ps.transform, "Smoke Trail", m.Smoke);
+            var main = trail.main;
+            main.loop = true;
+            main.maxParticles = 400;
+            PB.Basics(trail, new Vector2(0.7f, 1.3f), new Vector2(0f, 0.3f), new Vector2(0.45f, 0.8f));
+            PB.Colors(trail, PB.Plume(0.08f, 0.35f, 0.7f));
+            PB.Grow(trail, 0.8f, 2.4f);
+            var emission = trail.emission;
+            emission.rateOverTime = 34f;
+            var sub = ps.subEmitters;
+            sub.enabled = true;
+            sub.AddSubEmitter(trail, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
             return ps;
         }
 

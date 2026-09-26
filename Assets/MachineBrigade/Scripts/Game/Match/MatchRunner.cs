@@ -279,7 +279,10 @@ namespace MachineBrigade.Game.Match
             _hud.SettingsChanged += () =>
             {
                 AudioListener.volume = MatchSettings.Volume;
+                var vietnamese = Strings.Vietnamese;
                 MatchSettings.ApplyLanguage();
+                // The HUD is built once; rebuild it in the new language.
+                if (Strings.Vietnamese != vietnamese) Reload();
             };
             if (_menu) return;
 
@@ -428,7 +431,7 @@ namespace MachineBrigade.Game.Match
             }
             // Survival ends when the player has nothing left on the field and cannot buy more.
             if (_survival != null && _world.Time > 5.0 && _world.CountAlive(PlayerTeam) == 0 &&
-                _world.TryGetEconomy(PlayerTeam, out var economy) && economy.Cp < 2f)
+                _world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && economy.Cp < 2f)
             {
                 _resultShown = true;
                 _world.IsOver = true;

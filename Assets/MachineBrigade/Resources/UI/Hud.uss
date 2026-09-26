@@ -194,6 +194,7 @@
 /* ---------------------------------------------------------------- minimap */
 .minimap {
     width: 176px; height: 176px;
+    overflow: hidden;
     background-color: rgba(10, 18, 16, 0.82);
     border-width: 1px; border-color: var(--panel-edge); border-radius: 6px;
 }
