@@ -91,6 +91,7 @@ namespace MachineBrigade.Game.Match
             "tank_destroyer", "flame_tank", "mortar_carrier", "artillery", "mlrs", "aa_vehicle", "sam_launcher",
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
             "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
+            "heavy_bomber", "stealth_bomber", "sky_gunship",
         };
 
         public static readonly string[] AllSupports =

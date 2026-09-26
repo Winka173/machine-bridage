@@ -167,13 +167,13 @@
     "file": "gunship_heli.glb",
     "triangles": 7894
   },
-  "heavy_bomber": {
-    "file": "heavy_bomber.glb",
-    "triangles": 10106
-  },
   "heavy_aa": {
     "file": "heavy_aa.glb",
     "triangles": 8676
+  },
+  "heavy_bomber": {
+    "file": "heavy_bomber.glb",
+    "triangles": 10106
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",

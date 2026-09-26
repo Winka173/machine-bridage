@@ -98,6 +98,7 @@ def heavy_bomber(a):
         doors.box((.04, 3.5, .72), loc=tuple(c), rot=(0, -s * tilt, 0), bevel=.01, seg=1)
     # The rack: twelve bombs in three columns, two layers and two rows, hung from steel beams.
     b = a.pivot('Bombs', (0, .25, -.3))
+    a.pivot('Muzzle_missile', (0, .25, -.9))
     bombs = _store_parts(a, b)
     rack = a.part('Bomb_rack', 'Steel')
     for x in (-.38, 0, .38):
@@ -237,6 +238,7 @@ def stealth_bomber(a):
             c = Vector((s * x, 0, zh)) + Vector((s * math.sin(tilt) * .25, 0, -math.cos(tilt) * .25))
             doors.box((.03, 1.9, .5), loc=tuple(c), rot=(0, -s * tilt, 0), bevel=0)
     b = a.pivot('Bombs', (0, 0, 0))
+    a.pivot('Muzzle_missile', (0, 0, -.5))
     bombs = _store_parts(a, b)
     for s in (-1, 1):
         for x in (.24, .57, .9):
