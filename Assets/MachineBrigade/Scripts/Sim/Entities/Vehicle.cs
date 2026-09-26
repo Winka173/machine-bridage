@@ -115,6 +115,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Until when (sim time) the commander AI keeps its hands off after a manual order.</summary>
         internal double ManualUntil = double.NegativeInfinity;
 
+        /// <summary>
+        /// Driven by the mission script (a convoy truck, the armoured train): no AI and no player
+        /// orders move it.
+        /// </summary>
+        public bool Scripted { get; internal set; }
+
         /// <summary>The player took direct control of this vehicle recently.</summary>
         public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;
 

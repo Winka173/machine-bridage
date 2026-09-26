@@ -36,15 +36,33 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _ours, _theirs;
         private readonly VisualElement _oursFill, _theirsFill;
         private readonly VisualElement _chips;
+        private readonly Label _timer;
         private readonly List<PointChip> _points = new();
+        private readonly string _label;
+        private string _shownTimer;
 
-        public ScoreBar()
+        public ScoreBar(string labelKey = "stat.tickets")
         {
+            _label = labelKey;
             Root = UiKit.Box("score");
             _ours = Side(Root, "ours", out _oursFill);
+            var centre = UiKit.Box("score-centre");
             _chips = UiKit.Box("chips");
-            Root.Add(_chips);
+            centre.Add(_chips);
+            _timer = UiKit.Text("", "score-timer");
+            _timer.style.display = DisplayStyle.None;
+            centre.Add(_timer);
+            Root.Add(centre);
             _theirs = Side(Root, "theirs", out _theirsFill);
+        }
+
+        public void SetTimer(float secondsLeft)
+        {
+            var text = secondsLeft < 0f ? "" : $"{(int)secondsLeft / 60}:{(int)secondsLeft % 60:00}";
+            if (text == _shownTimer) return;
+            _timer.text = _shownTimer = text;
+            _timer.style.display = text.Length > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _timer.EnableInClassList("urgent", secondsLeft >= 0f && secondsLeft < 60f);
         }
 
         public VisualElement Root { get; }
@@ -85,12 +103,12 @@ namespace MachineBrigade.Game.Hud
             for (var i = 0; i < points.Count; i++) _points[i].Set(points[i]);
         }
 
-        private static Label Side(VisualElement parent, string side, out VisualElement fill)
+        private Label Side(VisualElement parent, string side, out VisualElement fill)
         {
             var box = UiKit.Box("score-side " + side);
             var number = UiKit.Text("0", "score-number");
             var column = UiKit.Box("score-column");
-            column.Add(UiKit.Text(Strings.Get("stat.tickets"), "stat-label"));
+            column.Add(UiKit.Text(Strings.Get(_label), "stat-label"));
             var track = UiKit.Box("score-track");
             fill = UiKit.Box("score-fill");
             track.Add(fill);

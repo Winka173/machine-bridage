@@ -41,7 +41,14 @@
     { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 28,  "cooldown": 2.5,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "burst": 10, "burstInterval": 0.05 },
     { "id": "jet_rockets",       "damageType": "HighExplosive", "damage": 45,  "cooldown": 7,    "range": 36, "projectileSpeed": 110, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
     { "id": "jet_bombs",         "damageType": "HighExplosive", "damage": 260, "cooldown": 12,   "range": 26, "projectileSpeed": 35, "splash": 7, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "burst": 2, "burstInterval": 0.25 },
-    { "id": "drone_missile",     "damageType": "ArmorPiercing", "damage": 200, "cooldown": 4,    "range": 48, "projectileSpeed": 60, "impactTier": "Medium", "projectile": "Missile" }
+    { "id": "drone_missile",     "damageType": "ArmorPiercing", "damage": 200, "cooldown": 4,    "range": 48, "projectileSpeed": 60, "impactTier": "Medium", "projectile": "Missile" },
+    // Campaign bosses.
+    { "id": "gun_behemoth",      "damageType": "HighExplosive", "damage": 170, "cooldown": 3.6,  "range": 40, "projectileSpeed": 150, "splash": 5, "spread": 0.8, "impactTier": "Huge", "burst": 2, "burstInterval": 0.35 },
+    { "id": "boss_howitzer",     "damageType": "HighExplosive", "damage": 200, "cooldown": 4.5,  "range": 60, "projectileSpeed": 60, "splash": 9, "spread": 3, "impactTier": "Huge" },
+    { "id": "boss_rockets",      "damageType": "HighExplosive", "damage": 45,  "cooldown": 7,    "range": 45, "projectileSpeed": 80, "splash": 4, "spread": 5, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08 },
+    { "id": "boss_missiles",     "damageType": "ArmorPiercing", "damage": 180, "cooldown": 5,    "range": 45, "projectileSpeed": 60, "impactTier": "Medium", "projectile": "Missile", "targets": "All" },
+    { "id": "boss_flak",         "damageType": "Flak",          "damage": 22,  "cooldown": 0.4,  "range": 40, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 4, "burstInterval": 0.07 },
+    { "id": "train_gun",         "damageType": "ArmorPiercing", "damage": 200, "cooldown": 3.2,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -117,7 +124,30 @@
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
     { "id": "strike_drone",     "armor": "Air",  "hp": 260, "speed": 14, "turnRate": 60, "turretTurnRate": 360, "radius": 2.8, "cp": 5, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0,
-      "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } }
+      "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
+    // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
+    { "id": "supply_truck",     "armor": "Light", "hp": 650, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "cp": 0, "vision": 26,
+      "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "truck",
+      "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
+    { "id": "behemoth",         "armor": "Heavy", "hp": 8500, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "cp": 0, "vision": 50,
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true,
+      "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
+      "deathExplosion": { "damage": 400, "radius": 18, "delay": 0.8, "tier": "Ultimate" } },
+    { "id": "mobile_fortress",  "armor": "Heavy", "hp": 10500, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "cp": 0, "vision": 60,
+      "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true,
+      "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
+      "deathExplosion": { "damage": 450, "radius": 20, "delay": 0.8, "tier": "Ultimate" } },
+    { "id": "armored_train",    "armor": "Heavy", "hp": 6000, "speed": 0.75, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "cp": 0, "vision": 50,
+      "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true,
+      "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 380, "radius": 16, "delay": 0.7, "tier": "Ultimate" } },
+    { "id": "mega_gunship",     "armor": "Air",   "hp": 15000, "speed": 6, "turnRate": 50, "turretTurnRate": 360, "radius": 7, "cp": 0, "vision": 55,
+      "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "flying": true, "altitude": 20, "captureRate": 0, "boss": true,
+      "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" },
+                     { "weapon": "minigun", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 350, "radius": 15, "delay": 0.8, "tier": "Ultimate" } }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a

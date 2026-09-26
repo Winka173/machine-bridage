@@ -131,7 +131,7 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                if (v.Team != _team || v.Scripted || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);

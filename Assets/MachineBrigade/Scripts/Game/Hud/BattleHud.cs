@@ -15,8 +15,15 @@ namespace MachineBrigade.Game.Hud
     {
         /// <summary>Main menu over an AI battle; no battle controls.</summary>
         Menu,
-        Conquest,
-        Survival,
+
+        /// <summary>Both sides' score as bars round the objective chips (Conquest, Deathmatch, King of the Hill, Assault).</summary>
+        Score,
+
+        /// <summary>Army, enemies, wave and the next wave's countdown (Survival).</summary>
+        Waves,
+
+        /// <summary>A campaign mission's objective, clock and boss.</summary>
+        Mission,
     }
 
     /// <summary>
@@ -47,6 +54,8 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _targetingText;
         private readonly VisualElement _banner;
         private readonly ScoreBar _score;
+        private readonly MissionBar _missionBar;
+        private readonly BossBar _boss;
         private readonly VisualElement _attackStance, _defendStance, _autoDeploy, _autoStrike;
         private readonly DeckBar _deck;
         private readonly ResultPanel _result;
@@ -57,8 +66,9 @@ namespace MachineBrigade.Game.Hud
         private bool _attackArmed, _boxMode;
         private Rect _appliedSafeArea;
 
-        public BattleHud(HudMode mode, IReadOnlyList<CardInfo> cards, Catalog catalog)
+        public BattleHud(HudSpec spec, IReadOnlyList<CardInfo> cards, Catalog catalog)
         {
+            var mode = spec.Mode;
             Mode = mode;
             if (EventSystem.current == null)
                 _eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -109,10 +119,16 @@ namespace MachineBrigade.Game.Hud
             top.Add(brand);
 
             var stats = UiKit.Box("stats");
-            if (mode == HudMode.Conquest)
+            if (mode == HudMode.Score)
             {
-                _score = new ScoreBar();
+                _score = new ScoreBar(spec.ScoreLabel);
                 stats.Add(_score.Root);
+            }
+            else if (mode == HudMode.Mission)
+            {
+                _missionBar = new MissionBar();
+                _missionBar.PointPressed += id => PointPressed?.Invoke(id);
+                stats.Add(_missionBar.Root);
             }
             else
             {
@@ -131,6 +147,12 @@ namespace MachineBrigade.Game.Hud
             right.Add(_fps);
             right.Add(UiKit.IconButton("pause", () => PausePressed?.Invoke()));
             top.Add(right);
+
+            if (mode == HudMode.Mission)
+            {
+                _boss = new BossBar();
+                _safe.Add(_boss.Root);
+            }
 
             // Left column: minimap and tools -------------------------------------------------------
             var left = UiKit.Box("left-column");
@@ -207,7 +229,7 @@ namespace MachineBrigade.Game.Hud
             }
 
             // Overlays -----------------------------------------------------------------------------
-            _autoHint = mode == HudMode.Survival ? "hint.autoSurvival" : "hint.auto";
+            _autoHint = spec.HintKey;
             _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
             _hintBar = UiKit.Box("hint-bar");
             _hintBar.Add(_hint);
@@ -232,7 +254,8 @@ namespace MachineBrigade.Game.Hud
 
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke());
             _safe.Add(_pause.Root);
-            _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke());
+            _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
+                () => NextMissionPressed?.Invoke());
             _safe.Add(_result.Root);
 
             _selectionBox = UiKit.Box("selection-box");
@@ -267,6 +290,12 @@ namespace MachineBrigade.Game.Hud
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
 
+        /// <summary>The result screen's "watch an ad for double coins" button.</summary>
+        public event Action DoubleRewardPressed;
+
+        /// <summary>The result screen's "next mission" button (campaign).</summary>
+        public event Action NextMissionPressed;
+
         /// <summary>Shows the commander's current intent.</summary>
         public void SetCommander(bool defend, bool autoDeploy, bool autoStrike, string focus)
         {
@@ -299,6 +328,15 @@ namespace MachineBrigade.Game.Hud
 
         public void SetScore(int ours, int theirs, int max, IReadOnlyList<PointInfo> points) => _score?.Update(ours, theirs, max, points);
 
+        /// <summary>Time left under the objective chips (negative hides it).</summary>
+        public void SetTimer(float secondsLeft) => _score?.SetTimer(secondsLeft);
+
+        public void SetMission(string goal, string detail, float progress, float secondsLeft, IReadOnlyList<PointInfo> points) =>
+            _missionBar?.Update(goal, detail, progress, secondsLeft, points);
+
+        /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
+        public void SetBoss(string name, float health) => _boss?.Set(name, health);
+
         public void SetDeck(float cp, float bank, int armyCp, int armyCap, IReadOnlyList<CardState> states) =>
             _deck?.Update(cp, bank, armyCp, armyCap, states);
 
@@ -319,11 +357,63 @@ namespace MachineBrigade.Game.Hud
             if (_pause != null) _pause.Visible = paused;
         }
 
-        public void ShowResult(int outcome, string subtitle, IReadOnlyList<(string, string)> rows)
+        public void ShowResult(int outcome, string subtitle, IReadOnlyList<(string, string)> rows, RewardView reward = null)
         {
             if (_pause != null) _pause.Visible = false;
-            _result?.Show(outcome, subtitle, rows);
+            _result?.Show(outcome, subtitle, rows, reward);
         }
+
+        private VisualElement _ad, _adClaim;
+        private Label _adCount;
+        private Action<bool> _adDone;
+        private float _adUntil;
+
+        /// <summary>
+        /// The stand-in rewarded ad: a solid screen with a five-second countdown, then a claim
+        /// button. Closing it early reports false.
+        /// </summary>
+        public void ShowPlaceholderAd(Action<bool> done)
+        {
+            if (_ad == null)
+            {
+                _ad = UiKit.Box("overlay ad-screen", PickingMode.Position);
+                var card = UiKit.Box("ad-card");
+                card.Add(UiKit.Icon("ad", UiKit.Ink, 1.8f));
+                card.Add(UiKit.Text(Strings.Get("ad.title"), "ad-title"));
+                card.Add(UiKit.Text(Strings.Get("ad.body"), "ad-body"));
+                _adCount = UiKit.Text("", "ad-count");
+                card.Add(_adCount);
+                _adClaim = UiKit.WideButton("wide primary", "coin", Strings.Get("ad.claim"), null, () => CloseAd(true));
+                card.Add(_adClaim);
+                card.Add(UiKit.WideButton("wide", "close", Strings.Get("ad.close"), null, () => CloseAd(false)));
+                _ad.Add(card);
+                _safe.Add(_ad);
+            }
+            _adDone = done;
+            _adUntil = Time.unscaledTime + 5f;
+            _adClaim.style.display = DisplayStyle.None;
+            _ad.style.display = DisplayStyle.Flex;
+        }
+
+        private void CloseAd(bool watched)
+        {
+            if (_ad == null || _ad.style.display == DisplayStyle.None) return;
+            _ad.style.display = DisplayStyle.None;
+            var done = _adDone;
+            _adDone = null;
+            done?.Invoke(watched);
+        }
+
+        private void TickAd()
+        {
+            if (_ad == null || _ad.style.display == DisplayStyle.None) return;
+            var left = Mathf.CeilToInt(_adUntil - Time.unscaledTime);
+            _adCount.text = left > 0 ? left.ToString() : "";
+            if (left <= 0 && _adClaim.style.display == DisplayStyle.None) _adClaim.style.display = DisplayStyle.Flex;
+        }
+
+        /// <summary>The reward was paid (doubled after an ad): the result screen updates its numbers.</summary>
+        public void ShowRewardClaimed(int coins, bool doubled) => _result?.ShowClaimed(coins, doubled);
 
         public bool ResultVisible => _result != null && _result.Visible;
 
@@ -450,6 +540,7 @@ namespace MachineBrigade.Game.Hud
             }
             if (_banner != null && _banner.ClassListContains("visible") && Time.unscaledTime > _bannerUntil)
                 _banner.RemoveFromClassList("visible");
+            TickAd();
             if (Screen.safeArea != _appliedSafeArea) ApplySafeArea();
         }
 

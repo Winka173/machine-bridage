@@ -73,12 +73,18 @@ namespace MachineBrigade.Sim.Content
                     foreach (var m in v.Array("secondary"))
                         secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free)));
                 }
-                vehicles.Add(Wrap(v, () => new VehicleDef(
-                    v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
-                    v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
-                    v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
-                    v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
-                    v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false))));
+                vehicles.Add(Wrap(v, () =>
+                {
+                    var def = new VehicleDef(
+                        v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
+                        v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
+                        v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
+                        v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
+                        v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false));
+                    if (v.Has("model")) def.Model = v.String("model");
+                    def.Boss = v.Bool("boss", false);
+                    return def;
+                }));
             }
 
             var props = new List<PropDef>();

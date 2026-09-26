@@ -53,7 +53,7 @@ namespace MachineBrigade.Sim.Modes
     /// losing vehicles costs tickets too. The side that reaches zero loses. Both sides buy
     /// vehicles and strikes with Command Points.
     /// </summary>
-    public sealed class ConquestMode : IGameMode
+    public sealed class ConquestMode : IGameMode, IObjectiveMode
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
@@ -61,11 +61,14 @@ namespace MachineBrigade.Sim.Modes
         private readonly ConquestRules _rules;
         private readonly List<ObjectiveState> _points = new();
         private readonly float[] _tickets = new float[2];
-        private readonly Dictionary<EntityId, (int team, int cost)> _alive = new();
-        private readonly List<EntityId> _gone = new();
-        private readonly HashSet<EntityId> _seen = new();
+        private readonly KillLedger _ledger = new();
 
-        public ConquestMode(ConquestRules? rules = null) => _rules = rules ?? new ConquestRules();
+        public ConquestMode(ConquestRules? rules = null)
+        {
+            _rules = rules ?? new ConquestRules();
+            // A destroyed vehicle costs its side tickets: its CP cost times the kill ticket factor (at least one).
+            _ledger.Lost += (team, cost) => _tickets[team] -= MathF.Max(1f, MathF.Ceiling(cost * _rules.KillTicketFactor));
+        }
 
         public IReadOnlyList<ObjectiveState> Points => _points;
 
@@ -75,13 +78,7 @@ namespace MachineBrigade.Sim.Modes
 
         public int MaxTickets => _rules.Tickets;
 
-        public int Held(int team)
-        {
-            var count = 0;
-            foreach (var p in _points)
-                if (p.Owner == team) count++;
-            return count;
-        }
+        public int Held(int team) => PointCapture.Held(_points, team);
 
         public void Setup(SimWorld world)
         {
@@ -95,7 +92,7 @@ namespace MachineBrigade.Sim.Modes
         public void Tick(SimWorld world, float dt)
         {
             if (Result != null) return;
-            CountLosses(world);
+            _ledger.Update(world);
             foreach (var point in _points) Capture(world, point, dt);
 
             var held0 = Held(PlayerTeam);
@@ -112,59 +109,6 @@ namespace MachineBrigade.Sim.Modes
             world.IsOver = true;
         }
 
-        /// <summary>A destroyed vehicle costs its side tickets: its CP cost times the kill ticket factor (at least one).</summary>
-        private void CountLosses(SimWorld world)
-        {
-            _seen.Clear();
-            foreach (var v in world.VehicleList)
-            {
-                if (!v.IsAlive || v.Team < 0 || v.Team > 1) continue;
-                _seen.Add(v.Id);
-                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.CpCost);
-            }
-            _gone.Clear();
-            foreach (var id in _alive.Keys)
-                if (!_seen.Contains(id)) _gone.Add(id);
-            foreach (var id in _gone)
-            {
-                var (team, cost) = _alive[id];
-                _tickets[team] -= MathF.Max(1f, MathF.Ceiling(cost * _rules.KillTicketFactor));
-                _alive.Remove(id);
-            }
-        }
-
-        private void Capture(SimWorld world, ObjectiveState point, float dt)
-        {
-            var power0 = 0f;
-            var power1 = 0f;
-            var r = point.Def.Radius;
-            foreach (var v in world.VehicleList)
-            {
-                if (!v.IsAlive || v.Flying || Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
-                if (v.Team == PlayerTeam) power0 += v.Def.CaptureRate;
-                else if (v.Team == EnemyTeam) power1 += v.Def.CaptureRate;
-            }
-
-            point.Contested = power0 > 0f && power1 > 0f;
-            var before = point.Owner;
-            if (!point.Contested && (power0 > 0f || power1 > 0f))
-            {
-                var push = (power0 - power1) * dt / _rules.CaptureSeconds;
-                point.Progress = Math.Clamp(point.Progress + push, -1f, 1f);
-            }
-            else if (!point.Contested)
-            {
-                // Unattended points drift back to their owner's full hold (or to neutral).
-                var rest = point.Owner == PlayerTeam ? 1f : point.Owner == EnemyTeam ? -1f : 0f;
-                point.Progress = SimMath.MoveTowards(point.Progress, rest, dt / (_rules.CaptureSeconds * 3f));
-            }
-
-            // Ownership flips only at a full hold; crossing zero neutralises the point first.
-            if (point.Progress >= 1f) point.Owner = PlayerTeam;
-            else if (point.Progress <= -1f) point.Owner = EnemyTeam;
-            else if ((point.Owner == PlayerTeam && point.Progress <= 0f) || (point.Owner == EnemyTeam && point.Progress >= 0f))
-                point.Owner = -1;
-            if (point.Owner != before) world.Announce(SimEvent.Captured(point.Def.Id, point.Def.Position, point.Owner));
-        }
+        private void Capture(SimWorld world, ObjectiveState point, float dt) => PointCapture.Tick(world, point, dt, _rules.CaptureSeconds);
     }
 }

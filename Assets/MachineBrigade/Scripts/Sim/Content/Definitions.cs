@@ -127,7 +127,14 @@ namespace MachineBrigade.Sim.Content
             Altitude = flying ? Guard.Positive(altitude, id, nameof(altitude)) : 0f;
             CaptureRate = Guard.NonNegative(captureRate, id, nameof(captureRate));
             FixedWing = flying && fixedWing;
+            Model = Id;
         }
+
+        /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
+        public string Model { get; internal set; }
+
+        /// <summary>A campaign boss: counted on its own, shown with a health bar across the top.</summary>
+        public bool Boss { get; internal set; }
 
         /// <summary>
         /// Aeroplanes (jets, drones) cannot hover: they fly on at speed, circle their post, and
