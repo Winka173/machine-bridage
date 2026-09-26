@@ -55,6 +55,29 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void AeroplanesFollowMoveOrdersPastEnemies()
+        {
+            var world = TestWorlds.World();
+            var jet = world.SpawnVehicle("jet", 0, new Vector2(0f, 0f), 0f);
+            world.SpawnVehicle("decoy", 1, new Vector2(12f, 0f), 0f);
+            for (var i = 0; i < (int)(3f / TestWorlds.Step); i++)
+            {
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+            }
+            // Mid-fight, sent away: it must break off rather than keep strafing the enemy.
+            world.Submit(new Command(CommandType.Move, 0, new[] { jet.Id }, new Vector2(-35f, -35f)));
+            var reached = false;
+            for (var i = 0; i < (int)(12f / TestWorlds.Step) && !reached; i++)
+            {
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+                reached = Vector2.Distance(jet.Position, new Vector2(-35f, -35f)) < 20f;
+            }
+            Assert.IsTrue(reached, "a move order takes it away from the fight");
+        }
+
+        [Test]
         public void AeroplanesFlyToOrderedPoints()
         {
             var world = TestWorlds.World();

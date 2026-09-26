@@ -34,6 +34,10 @@ namespace MachineBrigade.Sim.AI
         private const int ClusterSize = 3;
         private const float EdgeMargin = 6f;
 
+        /// <summary>A pulled-back vehicle rejoins once repaired this far, or after this long.</summary>
+        private const float RecoveredFraction = 0.6f;
+        private const float FallBackSeconds = 30f;
+
         private readonly int _team;
         private readonly int _enemyTeam;
         private float _flankSide;
@@ -42,7 +46,11 @@ namespace MachineBrigade.Sim.AI
         private readonly List<Vehicle> _fast = new();
         private readonly List<Vehicle> _artillery = new();
         private readonly List<Vehicle> _enemies = new();
-        private readonly HashSet<EntityId> _fallingBack = new();
+        /// <summary>Vehicles pulled back to recover, with when they left the line.</summary>
+        private readonly Dictionary<EntityId, double> _fallingBack = new();
+
+        private readonly List<EntityId> _released = new();
+        private Vector2 _lastObjective;
         private readonly HashSet<EntityId> _flanked = new();
         private readonly List<EntityId> _ids = new();
         private readonly List<EntityId> _otherIds = new();
@@ -86,6 +94,9 @@ namespace MachineBrigade.Sim.AI
             else if (groundContact) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
             contact = groundContact;
+            // A new objective: every fast vehicle may be sent round a flank again.
+            if (Vector2.Distance(objective, _lastObjective) > 20f) _flanked.Clear();
+            _lastObjective = objective;
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
@@ -100,7 +111,12 @@ namespace MachineBrigade.Sim.AI
             _fast.Clear();
             _artillery.Clear();
             _enemies.Clear();
-            _fallingBack.RemoveWhere(id => !world.TryGetVehicle(id, out _));
+            // Pulled-back vehicles rejoin once repaired (or rested a while); the dead are forgotten.
+            _released.Clear();
+            foreach (var (id, since) in _fallingBack)
+                if (!world.TryGetVehicle(id, out var v) || !v.IsAlive || v.Hp / v.MaxHp >= RecoveredFraction || world.Time - since > FallBackSeconds)
+                    _released.Add(id);
+            foreach (var id in _released) _fallingBack.Remove(id);
             _flanked.RemoveWhere(id => !world.TryGetVehicle(id, out _));
             // Once a flanking group is spent, the next one swings round the other side.
             if (_hadFlankers && _flanked.Count == 0) _flankSide = -_flankSide;
@@ -115,7 +131,7 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || _fallingBack.Contains(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                if (v.Team != _team || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
@@ -133,7 +149,7 @@ namespace MachineBrigade.Sim.AI
                 if (v.Armor != ArmorClass.Heavy || v.Hp / v.MaxHp > DamagedFraction || Nearest(v.Position, out _) > v.Def.VisionRange)
                     continue;
                 _ids.Add(v.Id);
-                _fallingBack.Add(v.Id);
+                _fallingBack[v.Id] = world.Time;
                 _line.RemoveAt(i);
             }
             if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, Clamp(world, front - forward * 16f));
@@ -182,7 +198,7 @@ namespace MachineBrigade.Sim.AI
             _otherIds.Clear();
             foreach (var f in _fast)
             {
-                if (f.Order.Kind != OrderKind.Idle || f.Target.IsValid || f.Engaged.IsValid) continue;
+                if (f.Order.Kind != OrderKind.Idle || Busy(world, f)) continue;
                 if (!_flanked.Contains(f.Id) && Vector2.Distance(f.Position, flankPoint) < 9f) _flanked.Add(f.Id);
                 if (_flanked.Contains(f.Id)) _otherIds.Add(f.Id);
                 else _ids.Add(f.Id);
@@ -211,18 +227,31 @@ namespace MachineBrigade.Sim.AI
                     lead = v;
                     leadDistance = distance;
                 }
-                if (v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && !v.Engaged.IsValid) _ids.Add(v.Id);
+                if (v.Order.Kind == OrderKind.Idle && !Busy(world, v)) _ids.Add(v.Id);
             }
             if (_ids.Count == 0 || lead == null) return;
 
             if (contact)
             {
-                Issue(world, CommandType.AttackMove, _ids, Clamp(world, objective));
+                // Those already standing on the objective stay put rather than being re-sent every decision.
+                for (var i = _ids.Count - 1; i >= 0; i--)
+                    if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f) _ids.RemoveAt(i);
+                if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, Clamp(world, objective));
                 return;
             }
             if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
             var goal = leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective;
             Issue(world, CommandType.AttackMove, _ids, Clamp(world, goal));
+        }
+
+        /// <summary>
+        /// Fighting something on the ground. Shooting at an aircraft overhead does not count, or a
+        /// hovering helicopter would freeze the whole advance.
+        /// </summary>
+        private static bool Busy(SimWorld world, Vehicle v)
+        {
+            if (world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && !engaged.Flying) return true;
+            return v.Target.IsValid && !(world.TryGetVehicle(v.Target, out var target) && target.Flying);
         }
 
         /// <summary>Centre of the enemy group nearest to <paramref name="from"/>.</summary>

@@ -10,6 +10,24 @@ namespace MachineBrigade.Tests
     {
         /// <summary>T01: every hit applies its damage exactly once.</summary>
         [Test]
+        public void ArtilleryOrderedOntoACloseTargetBacksOffAndFires()
+        {
+            var world = TestWorlds.World();
+            var arty = world.SpawnVehicle("arty", 0, Vector2.Zero, 0f);
+            var target = world.SpawnVehicle("dummy", 1, new Vector2(8f, 0f), 0f);
+            world.Step(TestWorlds.Step); // sight is worked out on the first step
+            Assert.IsTrue(world.Submit(new Command(CommandType.Attack, 0, new[] { arty.Id }, target.Position, target.Id)).Accepted);
+            var fired = false;
+            for (var i = 0; i < (int)(15f / TestWorlds.Step) && !fired; i++)
+            {
+                world.Step(TestWorlds.Step);
+                fired = world.Events.Any(e => e.Kind == SimEventKind.WeaponFired && e.Entity == arty.Id);
+                world.ClearEvents();
+            }
+            Assert.IsTrue(fired, "inside its minimum range it drives off to a firing distance instead of freezing");
+        }
+
+        [Test]
         public void EachShotDamagesExactlyOnce()
         {
             var world = TestWorlds.World();

@@ -91,6 +91,13 @@ namespace MachineBrigade.Sim.Movement
         {
             var weapon = v.Def.Weapon;
             if (weapon.MinRange > 0f || weapon.Damage <= 0f) return;
+            if (v.Def.FixedWing)
+            {
+                // Aeroplanes circle their post and pick fights from there (see DriveAeroplane).
+                var nearby = GuardThreat(v);
+                v.Engaged = nearby?.Id ?? EntityId.None;
+                return;
+            }
 
             var threat = GuardThreat(v);
             var fromPost = Vector2.Distance(v.Position, v.GuardPoint);
@@ -133,6 +140,25 @@ namespace MachineBrigade.Sim.Movement
         private void UpdateAttackMove(Vehicle v)
         {
             var weapon = v.Def.Weapon;
+            if (weapon.Targets == TargetLayers.Air && !v.Flying &&
+                _world.FindNearestEnemy(v, v.Def.VisionRange * 0.7f, requireVisible: true, layers: TargetLayers.Ground) != null)
+            {
+                // Anti-aircraft missiles cannot fight tanks: hold behind the line while ground enemies
+                // are close, turning only on aircraft.
+                var aircraft = _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
+                    minRange: weapon.MinRange, layers: weapon.Targets);
+                if (aircraft != null)
+                {
+                    v.Engaged = aircraft.Id;
+                    CloseIn(v, aircraft);
+                }
+                else
+                {
+                    v.ClearPath();
+                }
+                v.ResumeRoute = true;
+                return;
+            }
             var enemy = _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
                 minRange: weapon.MinRange, layers: weapon.Targets);
             if (enemy != null)
@@ -160,6 +186,15 @@ namespace MachineBrigade.Sim.Movement
         {
             var weapon = v.Def.Weapon;
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
+            if (weapon.MinRange > 0f && distance < weapon.MinRange + 1f)
+            {
+                if (v.RepathTimer > 0f && v.HasPath) return;
+                v.RepathTimer = RepathInterval;
+                var away = v.Position - target.Position;
+                away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI);
+                _world.PathTo(v, _world.ClampToMap(target.Position + away * (weapon.MinRange + 8f)));
+                return;
+            }
             if (distance <= weapon.Range * 0.9f)
             {
                 v.ClearPath();
@@ -276,6 +311,11 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>The strafing-run target: an ordered one, else the current or last engaged enemy.</summary>
         private IDamageable? RunTarget(Vehicle v)
         {
+            if (v.Order.Kind is OrderKind.Move or OrderKind.Retreat)
+            {
+                v.RunTarget = EntityId.None;
+                return null;
+            }
             if (v.Order.Kind == OrderKind.Attack && _world.TryGetTarget(v.Order.Target, out var ordered) && ordered.IsAlive)
                 return ordered;
             var weapon = v.Def.Weapon;

@@ -122,11 +122,15 @@ namespace MachineBrigade.Sim.Economy
             }
         }
 
+        /// <summary>
+        /// Pays the side that dealt the last damage (recently), even if the shooter died with its
+        /// shell still in the air, and for strike kills.
+        /// </summary>
         public void OnVehicleDestroyed(Vehicle victim)
         {
-            if (!victim.LastAttacker.IsValid) return;
-            if (!_world.TryGetVehicle(victim.LastAttacker, out var killer) || killer.Team == victim.Team) return;
-            if (_teams.TryGetValue(killer.Team, out var economy))
+            var team = victim.LastAttackerTeam;
+            if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
+            if (_teams.TryGetValue(team, out var economy))
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.CpCost * KillReward);
         }
 

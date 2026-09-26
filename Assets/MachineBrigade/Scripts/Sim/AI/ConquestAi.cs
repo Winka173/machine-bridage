@@ -47,6 +47,9 @@ namespace MachineBrigade.Sim.AI
         private readonly TacticalAi _tactics;
         private float _timer;
 
+        /// <summary>Last seen hold on each point (1 = fully ours), to notice points being drained.</summary>
+        private readonly Dictionary<string, float> _lastHold = new();
+
         /// <summary>Buy vehicles from the deck automatically.</summary>
         public bool AutoDeploy { get; set; } = true;
 
@@ -116,9 +119,13 @@ namespace MachineBrigade.Sim.AI
                 }
                 else
                 {
-                    score = point.Owner == _team ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
+                    // Our points only matter when threatened: being drained (even by a lone scout
+                    // the capture rules do not count as contesting) or with enemies closing in.
+                    var ours = point.Owner == _team;
+                    var threatened = point.Contested || (ours && (Draining(point) || EnemyNear(world, point)));
+                    score = ours ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
                     if (point.Contested) score += 1.5f;
-                    if (point.Owner == _team && !point.Contested) score -= 2f;
+                    if (ours) score += threatened ? 2.5f : -2f;
                 }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
@@ -126,6 +133,23 @@ namespace MachineBrigade.Sim.AI
                 bestScore = score;
             }
             return best != null && bestScore > -1.5f ? best.Def.Position : null;
+        }
+
+        private bool Draining(ObjectiveState point)
+        {
+            var hold = point.Progress * (_team == 0 ? 1f : -1f);
+            var draining = _lastHold.TryGetValue(point.Def.Id, out var before) && hold < before - 0.001f;
+            _lastHold[point.Def.Id] = hold;
+            return draining;
+        }
+
+        private bool EnemyNear(SimWorld world, ObjectiveState point)
+        {
+            var reach = point.Def.Radius + 8f;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _enemyTeam && !v.Flying && v.IsVisibleTo(_team) &&
+                    Vector2.Distance(v.Position, point.Def.Position) < reach) return true;
+            return false;
         }
 
         private bool TryStrike(SimWorld world, TeamEconomy economy)

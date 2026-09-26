@@ -78,13 +78,17 @@ namespace MachineBrigade.Sim.Combat
             switch (v.Order.Kind)
             {
                 case OrderKind.Attack:
-                    return _world.TryGetTarget(v.Order.Target, out var ordered) && ordered.IsAlive ? ordered : null;
+                    // Shooting at an ordered target needs sight of it (smoke and fog stop assigned shelling).
+                    if (!_world.TryGetTarget(v.Order.Target, out var ordered) || !ordered.IsAlive) return null;
+                    return ordered is Vehicle hidden && !hidden.IsVisibleTo(v.Team) ? null : ordered;
 
                 case OrderKind.AttackMove:
+                    if (RunTargetInReach(v, weapon, out var run)) return run;
                     if (_world.TryGetVehicle(v.Engaged, out var engaged) && IsValidAutoTarget(v, engaged, weapon)) return engaged;
                     return BestInRange(v, weapon, EntityId.None);
 
                 case OrderKind.Idle:
+                    if (RunTargetInReach(v, weapon, out var runIdle)) return runIdle;
                     if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current, weapon)) return current;
                     return BestInRange(v, weapon, EntityId.None);
 
@@ -141,6 +145,13 @@ namespace MachineBrigade.Sim.Combat
             return best;
         }
 
+        /// <summary>An aeroplane's guns stay on the target of its strafing run while it is in reach.</summary>
+        private bool RunTargetInReach(Vehicle v, WeaponDef weapon, out Vehicle target)
+        {
+            target = null!;
+            return v.Def.FixedWing && _world.TryGetVehicle(v.RunTarget, out target) && IsValidAutoTarget(v, target, weapon);
+        }
+
         private static bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
             target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon);
 
@@ -160,7 +171,7 @@ namespace MachineBrigade.Sim.Combat
             var weapon = v.Def.Mounts[index].Weapon;
             if (state.BurstLeft > 0)
             {
-                // A salvo keeps going at its last aim point even if the target dies or the turret turns.
+                // A salvo keeps going at the point first aimed at even if the target dies or the turret turns.
                 state.BurstTimer -= dt;
                 while (state.BurstLeft > 0 && state.BurstTimer <= 0f)
                 {

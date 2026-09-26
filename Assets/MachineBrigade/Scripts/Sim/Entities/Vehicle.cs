@@ -100,6 +100,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
         internal Vector2 GuardPoint;
 
+        /// <summary>Team of whoever last damaged this vehicle (-1: nobody, or a blast from the environment).</summary>
+        internal int LastAttackerTeam = -1;
+
         /// <summary>Aeroplanes: the target of the current strafing run, kept while they pull through and turn.</summary>
         internal EntityId RunTarget;
 
@@ -149,6 +152,8 @@ namespace MachineBrigade.Sim.Entities
         internal void SetOrder(Order order)
         {
             Order = order;
+            RunTarget = EntityId.None;
+            RunExtending = false;
             if (order.Kind == OrderKind.Idle) GuardPoint = Position;
             Engaged = EntityId.None;
             ResumeRoute = false;

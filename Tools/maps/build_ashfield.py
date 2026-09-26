@@ -45,6 +45,7 @@ class Layout:
         self.props = []
         self.rects = []
         self.roads = []
+        self.failed = []
 
     # ------------------------------------------------------------------ geometry
     @staticmethod
@@ -98,9 +99,11 @@ class Layout:
                 return False
         return True
 
-    def add(self, def_id, x, z, rot=0, pad=1.0, road_gap=0.8, ignore_points=False):
+    def add(self, def_id, x, z, rot=0, pad=1.0, road_gap=0.8, ignore_points=False, must=False):
         x, z = round(x * 2) / 2, round(z * 2) / 2
         if not self.free(def_id, x, z, rot, pad, road_gap, ignore_points):
+            if must:
+                self.failed.append((def_id, x, z))
             return False
         w, d = self.size(def_id, rot)
         self.rects.append((x - w / 2, z - d / 2, x + w / 2, z + d / 2))
@@ -214,17 +217,37 @@ class Layout:
         self.add('warehouse', px + ox * 20, pz + oz * 20, rot, pad=1.0)
         self.add('water_tower', px + ox * 13 + oz * 12, pz + oz * 13 - ox * 12, 0, pad=1.0)
         self.add('garage', px - oz * 14 + ox * 6, pz + ox * 14 + oz * 6, 0, pad=1.0)
-        self.add('truck', px - oz * 7, pz + ox * 7, 0, pad=0.8, ignore_points=True)
-        for i in range(8):
-            ang = self.rng.random() * math.tau
-            r = self.rng.uniform(3, 9)
-            self.add('barrel', px + math.cos(ang) * r, pz + math.sin(ang) * r, 0, pad=0.3, ignore_points=True)
-        for i in range(3):
-            self.add('ammo_crate', px - ox * 8 + i * 1.5 * oz, pz - oz * 8 - i * 1.5 * ox, 0, pad=0.2, ignore_points=True)
+        self.scatter('truck', px, pz, 4, 9, 1, pad=0.8)
+        self.scatter('barrel', px, pz, 2, 9, 12, pad=0.3)
+        self.scatter('ammo_crate', px, pz, 3, 9, 5, pad=0.3)
         # Sandbag positions on the side facing the town.
         self.add('sandbags', px - ox * 10, pz - oz * 10, 90 if abs(ox) > abs(oz) else 0, pad=0.4, ignore_points=True)
 
     # ------------------------------------------------------------------ checks
+    def near(self, def_id, cx, cz, radius, rot=0, pad=1.0):
+        """One copy placed as close to a point as it fits (hand-placed features)."""
+        for attempt in range(200):
+            r = radius * math.sqrt(attempt / 200)
+            a = self.rng.random() * math.tau
+            if self.add(def_id, cx + math.cos(a) * r, cz + math.sin(a) * r, rot, pad=pad):
+                return True
+        self.failed.append((def_id, cx, cz))
+        return False
+
+    def scatter(self, def_id, cx, cz, r0, r1, count, pad):
+        """`count` copies in a ring round a point, retrying until they fit (depot clutter)."""
+        placed = 0
+        for _ in range(count * 40):
+            if placed >= count:
+                break
+            a = self.rng.random() * math.tau
+            r = self.rng.uniform(r0, r1)
+            rot = self.rng.choice([0, 90]) if def_id == 'truck' else 0
+            if self.add(def_id, cx + math.cos(a) * r, cz + math.sin(a) * r, rot, pad=pad, road_gap=None, ignore_points=True):
+                placed += 1
+        if placed < count:
+            self.failed.append((def_id, cx, cz))
+
     def reachable(self):
         """Flood fill on the nav grid from the first camp; returns unreachable targets."""
         n = int(HALF * 2 / CELL)
@@ -283,8 +306,8 @@ def ashfield(seed=11):
     L.depot(30, -46, (0.6, -0.8))
 
     # The church stands just outside town on the north lane; a second landmark faces it south.
-    L.add('church', 14, 55, 180, pad=0.5)
-    L.add('apartment', -12, -49.5, 0, pad=0.5)
+    L.add('church', 14, 55, 180, pad=0.5, must=True)
+    L.add('apartment', -12, -51.5, 0, pad=0.5, must=True)
 
     # Around the square: shops, townhouses and apartments facing it across the ring road.
     ring = {
@@ -333,14 +356,13 @@ def ashfield(seed=11):
     L.farmstead(-66, -24, 90)
     L.farmstead(66, 24, 270)
 
-    # Rock cover and earthworks along the approaches from the camps.
-    cover = (('cliff_a', -50, -30, 90), ('cliff_b', 50, 30, 90), ('cliff_a', -30, -52, 0), ('cliff_b', 30, 52, 0),
-             ('boulders', -46, -48, 0), ('boulders', 46, 48, 0), ('boulders', -70, -42, 0), ('boulders', 70, 42, 0),
-             ('dirt_mound', -36, -58, 90), ('dirt_mound', 36, 58, 90), ('dirt_mound', -58, -36, 0), ('dirt_mound', 58, 36, 0),
-             ('tank_trap', -46, -40, 0), ('tank_trap', -40, -46, 0), ('tank_trap', 46, 40, 0), ('tank_trap', 40, 46, 0),
-             ('sandbags', -38, -47, 0), ('sandbags', -47, -38, 90), ('sandbags', 38, 47, 0), ('sandbags', 47, 38, 90))
+    # Rock cover and earthworks along the approaches from the camps (clear of the camps themselves).
+    cover = (('cliff_a', -34, -62, 0), ('boulders', -30, -48, 0), ('boulders', -48, -30, 0),
+             ('dirt_mound', -24, -62, 0), ('dirt_mound', -62, -24, 90), ('tank_trap', -36, -44, 0), ('tank_trap', -44, -36, 0),
+             ('sandbags', -32, -40, 0), ('sandbags', -40, -32, 90))
     for def_id, x, z, rot in cover:
-        L.add(def_id, x, z, rot, pad=1.0)
+        L.near(def_id, x, z, 12, rot)
+        L.near(def_id, -x, -z, 12, rot)
 
     # Forests fill the two empty corners; copses and tree lines break up the fields.
     L.forest(-62, 60, 22, 0.24)
@@ -355,6 +377,8 @@ def ashfield(seed=11):
                            (6, -70, 6, -46), (-34, -54, -44, -30), (34, 54, 44, 30)):
         L.tree_line(x0, z0, x1, z1)
 
+    for def_id, x, z in L.failed:
+        print(f'warning: could not place {def_id} near ({x}, {z})')
     missing = L.reachable()
     if missing:
         raise SystemExit(f'Unreachable from the first camp: {missing}')

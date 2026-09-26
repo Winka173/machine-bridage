@@ -38,7 +38,7 @@ namespace MachineBrigade.Sim.Combat
                 if (Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
-                    if (target is Vehicle victim) Blame(victim, p.Owner);
+                    if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
                     Apply(target, weapon.Damage, weapon.DamageType);
                     hit = target.Id;
                 }
@@ -62,7 +62,7 @@ namespace MachineBrigade.Sim.Combat
                 // A blast on the ground cannot reach aircraft, and an airburst does not reach the ground.
                 if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
-                if (Reaches(v, at, radius)) Blame(v, attacker);
+                if (Reaches(v, at, radius)) Blame(v, attacker, sourceTeam);
                 ApplyFalloff(v, at, radius, damage, type);
             }
             if (airborne) return;
@@ -73,12 +73,15 @@ namespace MachineBrigade.Sim.Combat
             }
         }
 
-        /// <summary>Remembers who hit a vehicle, which lets idle vehicles turn on their attacker.</summary>
-        private void Blame(Vehicle victim, EntityId attacker)
+        /// <summary>
+        /// Remembers who hit a vehicle: the shooter lets idle vehicles turn on their attacker, the
+        /// team decides who is paid for the kill. Blasts from the environment credit nobody.
+        /// </summary>
+        private void Blame(Vehicle victim, EntityId attacker, int team)
         {
-            if (!attacker.IsValid) return;
-            victim.LastAttacker = attacker;
+            victim.LastAttackerTeam = team >= 0 ? team : -1;
             victim.LastHitTime = _world.Time;
+            if (attacker.IsValid) victim.LastAttacker = attacker;
         }
 
         public void Apply(IDamageable target, float amount, DamageType type)
