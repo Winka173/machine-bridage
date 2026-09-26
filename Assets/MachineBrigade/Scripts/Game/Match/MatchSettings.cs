@@ -128,6 +128,14 @@ namespace MachineBrigade.Game.Match
                 new[] { WeatherKind.Snow, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Night }),
             new("ironport", "harbor", "anchor",
                 new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
+            new("redrock", "desert", "dune",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Night }),
+            new("whiteout", "snow", "snow",
+                new[] { WeatherKind.Snow, WeatherKind.Snow, WeatherKind.Fog, WeatherKind.Clear, WeatherKind.Night }),
+            new("greenvale", "temperate", "pine",
+                new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
+            new("rustyard", "harbor", "anchor",
+                new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night }),
         };
 
         public static string Map { get; set; } = "ashfield";

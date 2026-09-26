@@ -108,6 +108,15 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-night")) MatchSettings.Weather = WeatherKind.Night;
                 foreach (var info in MatchSettings.AllMaps)
                     if (DebugFlags.Has("-mb-" + info.Id)) MatchSettings.Map = info.Id;
+                if (DebugFlags.Has("-mb-deathmatch")) MatchSettings.Mode = GameModeKind.Deathmatch;
+                if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
+                if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
+                foreach (var campaignMission in Campaign.All)
+                    if (DebugFlags.Has("-mb-" + campaignMission.Id))
+                    {
+                        MatchSettings.Mode = GameModeKind.Campaign;
+                        MatchSettings.Mission = campaignMission.Id;
+                    }
             }
             var options = MatchSettings.Options;
             _builtGraphics = GraphicsSignature();
