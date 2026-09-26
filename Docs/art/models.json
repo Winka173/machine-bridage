@@ -71,6 +71,14 @@
     "file": "cliff_b.glb",
     "triangles": 688
   },
+  "container": {
+    "file": "container.glb",
+    "triangles": 796
+  },
+  "container_stack": {
+    "file": "container_stack.glb",
+    "triangles": 1592
+  },
   "cottage": {
     "file": "cottage.glb",
     "triangles": 2228
@@ -107,6 +115,14 @@
     "file": "dirt_mound.glb",
     "triangles": 282
   },
+  "dock_bollards": {
+    "file": "dock_bollards.glb",
+    "triangles": 762
+  },
+  "factory": {
+    "file": "factory.glb",
+    "triangles": 4896
+  },
   "fence": {
     "file": "fence.glb",
     "triangles": 430
@@ -118,6 +134,10 @@
   "fuel_tank": {
     "file": "fuel_tank.glb",
     "triangles": 2164
+  },
+  "gantry_crane": {
+    "file": "gantry_crane.glb",
+    "triangles": 4516
   },
   "garage": {
     "file": "garage.glb",
@@ -142,6 +162,14 @@
   "house_small": {
     "file": "house_small.glb",
     "triangles": 2680
+  },
+  "jersey_barrier": {
+    "file": "jersey_barrier.glb",
+    "triangles": 356
+  },
+  "lamp_post": {
+    "file": "lamp_post.glb",
+    "triangles": 284
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -175,9 +203,21 @@
     "file": "mountain_c.glb",
     "triangles": 2252
   },
+  "office_block": {
+    "file": "office_block.glb",
+    "triangles": 3524
+  },
   "pine": {
     "file": "pine.glb",
     "triangles": 124
+  },
+  "rail_boxcar": {
+    "file": "rail_boxcar.glb",
+    "triangles": 2572
+  },
+  "rail_tanker": {
+    "file": "rail_tanker.glb",
+    "triangles": 2498
   },
   "rock_a": {
     "file": "rock_a.glb",
