@@ -39,6 +39,7 @@ namespace MachineBrigade.Game.Match
         private static void ResetStatics()
         {
             _debugStarted = false;
+            _frameRateTarget = 60;
         }
 
         private SimWorld _world;
@@ -72,17 +73,26 @@ namespace MachineBrigade.Game.Match
         private int _announcedWave, _kills, _losses;
         private bool _warnedAir;
         private float _lastInput;
+        private PerfProbe _perf;
+        private FrameRateGovernor _frameRate;
+
+        /// <summary>The rate the governor settled on carries over to the next scene load.</summary>
+        private static int _frameRateTarget = 60;
+        private bool _censusDone;
 
         /// <summary>Seconds without touching the screen before the camera starts following the fighting.</summary>
         private const float AutoCameraDelay = 8f;
 
         private void Awake()
         {
-            Application.targetFrameRate = 60;
+            _frameRate = new FrameRateGovernor(_frameRateTarget);
+            // Nothing needs PhysX: debris, turrets and wrecks move on their own kinematics.
+            Physics.simulationMode = SimulationMode.Script;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
             MatchSettings.Load();
             ApplyDebugFlags();
+            _perf = PerfProbe.Create();
             if (!_debugStarted && DebugFlags.Has("-mb-play"))
             {
                 // Device testing: skip the menu once and play straight away.
@@ -122,10 +132,7 @@ namespace MachineBrigade.Game.Match
             };
             _attractFocus = start;
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
-                MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco)
-            {
-                ReducedMotion = MatchSettings.ReducedMotion,
-            };
+                MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco);
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
@@ -211,11 +218,15 @@ namespace MachineBrigade.Game.Match
         private void Update()
         {
             _gestures?.Tick(Time.unscaledTime);
+            _frameRate.Tick();
+            _frameRateTarget = _frameRate.Target;
 
             var steps = _paused ? 0 : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
+            _perf?.CountSteps(steps);
             for (var i = 0; i < steps; i++)
             {
+                _perf?.Begin();
                 _mode.Tick(_world, dt);
                 _enemyAi?.Tick(_world, dt);
                 _friendlyAi?.Tick(_world, dt);
@@ -223,35 +234,56 @@ namespace MachineBrigade.Game.Match
                 _waveAi?.Tick(_world, dt);
                 _world.Step(dt);
                 _views.SnapshotAll();
+                _perf?.End(PerfProbe.Section.Sim);
+                _perf?.Begin();
                 DispatchEvents();
+                _perf?.End(PerfProbe.Section.Events);
             }
 
             if (_menu) Attract();
             else FollowTheFight();
             _selection.Tick();
+            _perf?.Begin();
             if (!_paused)
             {
                 _effects.Tick(_views);
                 _weather.Tick();
             }
+            _perf?.End(PerfProbe.Section.Effects);
+            _perf?.Begin();
             _audio.Tick(_views);
+            _perf?.End(PerfProbe.Section.Audio);
+            _perf?.Begin();
             _commander?.Update();
             _hud.Tick();
             UpdateStatus();
             CheckResult();
+            _perf?.End(PerfProbe.Section.Hud);
         }
 
         private void LateUpdate()
         {
             _camera.Apply(Time.unscaledDeltaTime);
+            _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            _perf?.End(PerfProbe.Section.Views);
+            _perf?.Begin();
             _objectives?.Render(Time.time);
-            _surroundings.Draw();
+            _effects.Draw();
+            if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
+            _perf?.End(PerfProbe.Section.Scenery);
+            _perf?.EndFrame(_views.All.Count);
+            if (_perf != null && !_censusDone && Time.time > 6f)
+            {
+                _censusDone = true;
+                _perf.Census(_surroundings.InstancedTriangles, _surroundings.Batches);
+            }
         }
 
         private void OnDestroy()
         {
             if (_audio != null) UiKit.Clicked -= _audio.Click;
+            _perf?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
             _audio?.Dispose();
@@ -260,6 +292,7 @@ namespace MachineBrigade.Game.Match
             _surroundings?.Dispose();
             _hud?.Dispose();
             _meshes?.Dispose();
+            _models?.Dispose();
             _materials?.Dispose();
             _atmosphere?.Dispose();
             Time.timeScale = 1f;
@@ -296,7 +329,7 @@ namespace MachineBrigade.Game.Match
                         break;
                 }
             }
-            _effects.Consume(_world.Events, _views, _map);
+            if (!DebugFlags.Has("-mb-no-fx")) _effects.Consume(_world.Events, _views, _map);
             _audio.Consume(_world.Events);
             _world.ClearEvents();
         }

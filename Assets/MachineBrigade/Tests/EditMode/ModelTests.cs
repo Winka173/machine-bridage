@@ -98,6 +98,36 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>Spawned models keep every animated part but merge the rest into a few renderers.</summary>
+        [Test]
+        public void SpawnedModelsMergeRigidPartsButKeepMovingOnes()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Spawn Test").transform;
+            try
+            {
+                var tank = models.Spawn("main_battle_tank", 0, parent);
+                var raw = Load("main_battle_tank").GetComponentsInChildren<MeshRenderer>(true).Length;
+                Assert.Less(tank.Renderers.Length, raw / 2, "far fewer renderers than the imported model");
+                Assert.IsNotNull(tank.Turret, "turret pivot kept");
+                Assert.IsNotEmpty(tank.RecoilParts, "barrel still recoils");
+                Assert.IsTrue(tank.Muzzles.ContainsKey("mg") && tank.Mounts.ContainsKey("mg"), "roof gun mount and muzzle kept");
+                Assert.IsNotNull(tank.Turret.GetComponentInChildren<MeshRenderer>(), "the turret carries its own merged mesh");
+
+                var heli = models.Spawn("attack_helicopter", 1, parent);
+                Assert.AreEqual(2, heli.Spinners.Count, "both rotors still spin");
+                foreach (var spinner in heli.Spinners)
+                    Assert.IsNotNull(spinner.Transform.GetComponentInChildren<MeshRenderer>(), $"{spinner.Transform.name} has its blades");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         private static GameObject Load(string id)
         {
             var prefab = Resources.Load<GameObject>("Models/" + id);

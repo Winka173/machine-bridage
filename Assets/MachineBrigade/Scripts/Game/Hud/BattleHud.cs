@@ -73,6 +73,7 @@ namespace MachineBrigade.Game.Hud
             var document = _host.AddComponent<UIDocument>();
             document.panelSettings = _settings;
             _root = document.rootVisualElement;
+            if (Match.DebugFlags.Has("-mb-no-hud")) _root.style.display = DisplayStyle.None;
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             _root.pickingMode = PickingMode.Ignore;
 

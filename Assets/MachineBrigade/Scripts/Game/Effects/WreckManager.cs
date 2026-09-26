@@ -1,43 +1,46 @@
 using System.Collections.Generic;
-using MachineBrigade.Game.Rendering;
 using MachineBrigade.Game.Views;
 using EntityId = MachineBrigade.Sim.Core.EntityId;
 using UnityEngine;
-using PB = MachineBrigade.Game.Effects.ParticleBuilder;
 
 namespace MachineBrigade.Game.Effects
 {
     /// <summary>
-    /// Burnt-out hulks that keep burning, then smoulder. Turrets can be blown off by the
-    /// cook-off. Capped so the oldest wreck fades out when a new one arrives.
+    /// Burnt-out hulks: they burn, cook off now and then, smoulder, and after a while sink into
+    /// the ground and disappear (sooner when there are more than the budget allows). Turrets can
+    /// be blown off, and shot-down aircraft fall burning and blow up when they hit the ground.
+    /// Everything moves on simple kinematics; no physics engine is involved.
     /// </summary>
     internal sealed class WreckManager
     {
-        private const float BurnSeconds = 40f;
-        private const float FadeSeconds = 1.5f;
-        private const float TurretSettleSeconds = 6f;
+        private const float BurnSeconds = 45f;
+        private const float LifeSeconds = 75f;
+        private const float SinkSeconds = 5f;
+        private const float SinkDepth = 2.2f;
+        private const float Gravity = 18f;
 
         private sealed class Wreck
         {
             public EntityId Id;
             public VehicleView View;
-            public ParticleSystem Fire;
-            public float Created;
-            public bool FireOut;
-            public Rigidbody TurretBody;
-            public float TurretSettleAt;
-            public float FadeStart = -1f;
+            public float Created, Expires;
+            public float SinkStart = -1f;
             public float NextPop;
             public int PopsLeft;
+            public bool WasFalling;
+            public Transform Turret;
+            public Vector3 TurretVelocity, TurretSpin;
+            public bool TurretFlying;
         }
 
         private readonly List<Wreck> _wrecks = new();
-        private readonly MaterialLibrary _materials;
+        private readonly List<(Vector3 position, float size)> _crashes = new();
+        private readonly FireSpots _fires;
         private readonly int _capacity;
 
-        public WreckManager(MaterialLibrary materials, int capacity)
+        public WreckManager(FireSpots fires, int capacity)
         {
-            _materials = materials;
+            _fires = fires;
             _capacity = capacity;
         }
 
@@ -46,19 +49,23 @@ namespace MachineBrigade.Game.Effects
             view.BecomeWreck();
             var wreck = new Wreck
             {
-                Id = view.Id, View = view, Created = now, Fire = Burn(view.Root, _materials),
-                NextPop = now + Random.Range(1.5f, 4f), PopsLeft = Random.Range(2, 6),
+                Id = view.Id, View = view, Created = now, Expires = now + LifeSeconds * Random.Range(0.85f, 1.15f),
+                NextPop = now + Random.Range(1.5f, 4f), PopsLeft = Random.Range(2, 6), WasFalling = view.Falling,
             };
             _wrecks.Add(wreck);
+            // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
+            var size = Mathf.Clamp(view.Sim.Radius / 1.6f, 0.75f, 1.6f);
+            _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
+                view.Flying ? view.Root : null);
 
             var living = 0;
             foreach (var w in _wrecks)
-                if (w.FadeStart < 0f) living++;
+                if (w.SinkStart < 0f) living++;
             if (living <= _capacity) return;
             foreach (var w in _wrecks)
             {
-                if (w.FadeStart >= 0f) continue;
-                w.FadeStart = now;
+                if (w.SinkStart >= 0f) continue;
+                w.SinkStart = now;
                 break;
             }
         }
@@ -67,19 +74,12 @@ namespace MachineBrigade.Game.Effects
         public void TossTurret(EntityId id, float now)
         {
             var wreck = _wrecks.Find(w => w.Id == id);
-            if (wreck == null || wreck.TurretBody != null) return;
-            var turret = wreck.View.Turret;
-            if (turret == null) return;
-            var collider = turret.gameObject.AddComponent<BoxCollider>();
-            var bounds = LocalBounds(turret);
-            collider.center = bounds.center;
-            collider.size = Vector3.Max(bounds.size, Vector3.one * 0.3f);
-            var body = turret.gameObject.AddComponent<Rigidbody>();
-            body.mass = 3f;
-            body.linearVelocity = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(7f, 11f), Random.Range(-2.5f, 2.5f));
-            body.angularVelocity = Random.insideUnitSphere * 5f;
-            wreck.TurretBody = body;
-            wreck.TurretSettleAt = now + TurretSettleSeconds;
+            if (wreck == null || wreck.Turret != null || wreck.View.Turret == null || wreck.View.Flying) return;
+            wreck.Turret = wreck.View.Turret;
+            wreck.Turret.SetParent(wreck.View.Root, true);
+            wreck.TurretVelocity = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(8f, 12f), Random.Range(-2.5f, 2.5f));
+            wreck.TurretSpin = Random.insideUnitSphere * 300f;
+            wreck.TurretFlying = true;
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace MachineBrigade.Game.Effects
         {
             foreach (var w in _wrecks)
             {
-                if (w.FireOut || w.FadeStart >= 0f || w.PopsLeft <= 0 || now < w.NextPop) continue;
+                if (now - w.Created > BurnSeconds || w.SinkStart >= 0f || w.WasFalling || w.PopsLeft <= 0 || now < w.NextPop) continue;
                 w.PopsLeft--;
                 w.NextPop = now + Random.Range(2f, 6f);
                 position = w.View.Root.position + new Vector3(Random.Range(-0.6f, 0.6f), 1.2f, Random.Range(-0.6f, 0.6f));
@@ -100,38 +100,47 @@ namespace MachineBrigade.Game.Effects
             return false;
         }
 
-        public void Tick(float now)
+        /// <summary>A falling aircraft that has just hit the ground: where, and how big it was.</summary>
+        public bool TryCrash(out Vector3 position, out float size)
+        {
+            if (_crashes.Count == 0)
+            {
+                position = default;
+                size = 0f;
+                return false;
+            }
+            (position, size) = _crashes[_crashes.Count - 1];
+            _crashes.RemoveAt(_crashes.Count - 1);
+            return true;
+        }
+
+        public void Tick(float now, float dt)
         {
             for (var i = _wrecks.Count - 1; i >= 0; i--)
             {
                 var w = _wrecks[i];
-                w.View.AnimateWreck();
-                if (!w.FireOut && now - w.Created > BurnSeconds)
+                if (w.SinkStart < 0f)
                 {
-                    var emission = w.Fire.emission;
-                    emission.enabled = false;
-                    w.FireOut = true;
+                    w.View.AnimateWreck();
+                    if (w.WasFalling && !w.View.Falling)
+                    {
+                        w.WasFalling = false;
+                        _crashes.Add((w.View.Root.position, w.View.Sim.Radius));
+                    }
+                    if (now >= w.Expires) w.SinkStart = now;
                 }
+                if (w.TurretFlying) FlyTurret(w, dt);
 
-                if (w.TurretBody != null && now > w.TurretSettleAt)
-                {
-                    Object.Destroy(w.TurretBody);
-                    Object.Destroy(w.TurretBody.GetComponent<BoxCollider>());
-                    w.TurretBody = null;
-                    w.TurretSettleAt = float.MaxValue;
-                }
-
-                if (w.FadeStart < 0f) continue;
-                var t = (now - w.FadeStart) / FadeSeconds;
+                if (w.SinkStart < 0f) continue;
+                var t = (now - w.SinkStart) / SinkSeconds;
                 if (t >= 1f)
                 {
                     Object.Destroy(w.View.Root.gameObject);
                     _wrecks.RemoveAt(i);
+                    continue;
                 }
-                else
-                {
-                    w.View.Root.localScale = Vector3.one * (1f - t);
-                }
+                var p = w.View.Root.position;
+                w.View.Root.position = new Vector3(p.x, -SinkDepth * t * t, p.z);
             }
         }
 
@@ -140,63 +149,39 @@ namespace MachineBrigade.Game.Effects
             foreach (var w in _wrecks)
                 if (w.View.Root != null) Object.Destroy(w.View.Root.gameObject);
             _wrecks.Clear();
+            _crashes.Clear();
         }
 
-        /// <summary>Bounds of every mesh under a transform, in that transform's space.</summary>
-        private static Bounds LocalBounds(Transform root)
+        /// <summary>The blown-off turret tumbles through the air and comes to rest on the ground.</summary>
+        private static void FlyTurret(Wreck w, float dt)
         {
-            var bounds = new Bounds(Vector3.zero, Vector3.zero);
-            var first = true;
-            foreach (var filter in root.GetComponentsInChildren<MeshFilter>())
+            var turret = w.Turret;
+            if (turret == null)
             {
-                if (filter.sharedMesh == null) continue;
-                var b = filter.sharedMesh.bounds;
-                for (var i = 0; i < 8; i++)
+                w.TurretFlying = false;
+                return;
+            }
+            w.TurretVelocity.y -= Gravity * dt;
+            var position = turret.position + w.TurretVelocity * dt;
+            turret.rotation = Quaternion.Euler(w.TurretSpin * dt) * turret.rotation;
+            const float rest = 0.35f;
+            if (position.y <= rest && w.TurretVelocity.y < 0f)
+            {
+                position.y = rest;
+                if (w.TurretVelocity.y < -4f)
                 {
-                    var corner = new Vector3((i & 1) == 0 ? b.min.x : b.max.x, (i & 2) == 0 ? b.min.y : b.max.y,
-                        (i & 4) == 0 ? b.min.z : b.max.z);
-                    var p = root.InverseTransformPoint(filter.transform.TransformPoint(corner));
-                    if (first) { bounds = new Bounds(p, Vector3.zero); first = false; }
-                    else bounds.Encapsulate(p);
+                    w.TurretVelocity = new Vector3(w.TurretVelocity.x * 0.4f, -w.TurretVelocity.y * 0.25f, w.TurretVelocity.z * 0.4f);
+                    w.TurretSpin *= 0.3f;
+                }
+                else
+                {
+                    w.TurretFlying = false;
+                    // Settle upright or upside down, whichever is nearer.
+                    var up = Vector3.Dot(turret.up, Vector3.up) >= 0f ? Vector3.up : Vector3.down;
+                    turret.rotation = Quaternion.FromToRotation(turret.up, up) * turret.rotation;
                 }
             }
-            return bounds;
-        }
-
-        /// <summary>Looping flames plus a slow smoke column, attached to the hulk.</summary>
-        private static ParticleSystem Burn(Transform parent, MaterialLibrary m)
-        {
-            var fire = PB.Create(parent, "Wreck Fire", m.Fire);
-            fire.transform.localPosition = new Vector3(0f, 1f, 0f);
-            var main = fire.main;
-            main.loop = true;
-            main.duration = 2f;
-            PB.Basics(fire, new Vector2(0.5f, 1f), new Vector2(1.2f, 2.8f), new Vector2(1.1f, 2.1f));
-            var shape = fire.shape;
-            shape.shapeType = ParticleSystemShapeType.Cone;
-            shape.angle = 14f;
-            shape.radius = 0.9f;
-            shape.rotation = new Vector3(-90f, 0f, 0f);
-            PB.Colors(fire, PB.FireGradient);
-            PB.Grow(fire, 1f, 0.3f);
-            var emission = fire.emission;
-            emission.enabled = true;
-            emission.rateOverTime = 22f;
-
-            var smoke = PB.Create(fire.transform, "Wreck Smoke", m.Smoke);
-            var smokeMain = smoke.main;
-            smokeMain.loop = true;
-            smokeMain.duration = 3f;
-            PB.Basics(smoke, new Vector2(2.4f, 4f), new Vector2(0.2f, 0.5f), new Vector2(1f, 1.8f));
-            PB.Colors(smoke, PB.Plume(0.12f, 0.42f, 0.42f));
-            PB.Grow(smoke, 0.7f, 2.3f);
-            PB.Rise(smoke, 1.6f, 2.6f);
-            var smokeEmission = smoke.emission;
-            smokeEmission.enabled = true;
-            smokeEmission.rateOverTime = 4f;
-
-            fire.Play(true);
-            return fire;
+            turret.position = position;
         }
     }
 }

@@ -20,12 +20,12 @@ namespace MachineBrigade.Game.Effects
         private readonly TracerPool _tracers;
         private readonly ProjectilePool _projectiles;
         private readonly Emitters _emitters;
-        private readonly EffectPool _muzzle;
+        private readonly ExplosionEffect _muzzle;
         private readonly Action<Vector3, float> _shake;
         private readonly bool _hasMissile, _hasRocket;
 
         public WeaponEffects(Catalog catalog, ModelLibrary models, TracerPool tracers, ProjectilePool projectiles, Emitters emitters,
-            EffectPool muzzle, Action<Vector3, float> shake)
+            ExplosionEffect muzzle, Action<Vector3, float> shake)
         {
             _catalog = catalog;
             _models = models;
@@ -73,7 +73,7 @@ namespace MachineBrigade.Game.Effects
                     if (_hasMissile) _projectiles.Launch(_models.Merged("missile"), from, to, e.Value, distance * 0.06f, 0.7f, now, homing);
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     _emitters.MuzzleSmoke(from, -forward, 0.9f); // back-blast
-                    _muzzle.Acquire(now).Play(from, now, 0.6f);
+                    _muzzle.Play(from, now, 0.6f);
                     _shake(from, 0.05f);
                     break;
 
@@ -83,7 +83,7 @@ namespace MachineBrigade.Game.Effects
                     if (_hasRocket) _projectiles.Launch(_models.Merged("rocket"), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     _emitters.MuzzleSmoke(from, forward + Vector3.up * (artillery ? 0.8f : 0.1f), artillery ? 1.4f : 0.8f);
-                    _muzzle.Acquire(now).Play(from, now, 0.55f);
+                    _muzzle.Play(from, now, 0.55f);
                     _shake(from, artillery ? 0.06f : 0.03f);
                     break;
 
@@ -117,7 +117,7 @@ namespace MachineBrigade.Game.Effects
                 var scatter = rounds > 1 ? side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f) : Vector3.zero;
                 _tracers.Launch(from, to + scatter, travel, 0f, thickness, length, now, i * 0.055f);
             }
-            _muzzle.Acquire(now).Play(from, now, Mathf.Lerp(0.4f, 0.8f, Mathf.InverseLerp(6f, 30f, damage)));
+            _muzzle.Play(from, now, Mathf.Lerp(0.4f, 0.8f, Mathf.InverseLerp(6f, 30f, damage)));
             if (damage >= 20f) _emitters.MuzzleSmoke(from, forward, 0.5f);
         }
 
@@ -128,14 +128,14 @@ namespace MachineBrigade.Game.Effects
                 var heavy = weapon != null && weapon.Damage >= 100f;
                 _tracers.Launch(from, to, e.Value, 0f, heavy ? 0.22f : 0.16f, heavy ? 3.2f : 2.6f, now, 0f, heavy ? 0.95f : 0.75f);
                 _emitters.MuzzleSmoke(from, forward, heavy ? 1.3f : 1f);
-                _muzzle.Acquire(now).Play(from, now, heavy ? 1.2f : 1f);
+                _muzzle.Play(from, now, heavy ? 1.2f : 1f);
                 _shake(from, heavy ? 0.08f : 0.05f);
                 return;
             }
             // Artillery: a high arc with a thick trail.
             _tracers.Launch(from, to, e.Value, distance * 0.3f, 0.32f, 1.1f, now, 0f, 1.2f);
             _emitters.MuzzleSmoke(from, forward + Vector3.up * 0.6f, 1.7f);
-            _muzzle.Acquire(now).Play(from, now, 1.4f);
+            _muzzle.Play(from, now, 1.4f);
             _shake(from, 0.12f);
         }
     }

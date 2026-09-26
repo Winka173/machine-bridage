@@ -78,30 +78,15 @@ Shader "MachineBrigade/Particle"
                 return output;
             }
 
-            float Hash(float2 p)
-            {
-                p = frac(p * float2(123.34, 456.21));
-                p += dot(p, p + 45.32);
-                return frac(p.x * p.y);
-            }
-
-            float ValueNoise(float2 p)
-            {
-                float2 i = floor(p);
-                float2 f = frac(p);
-                float2 u = f * f * (3.0 - 2.0 * f);
-                float a = Hash(i);
-                float b = Hash(i + float2(1, 0));
-                float c = Hash(i + float2(0, 1));
-                float d = Hash(i + float2(1, 1));
-                return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);
-            }
+            // Two octaves of tileable value noise baked into a small texture by MaterialLibrary
+            // (one tile is 8 noise cells). Sampling it costs far less than computing hash noise
+            // per pixel, which matters with big fire and smoke puffs overlapping on a phone.
+            TEXTURE2D(_MbNoise);
+            SAMPLER(sampler_MbNoise);
 
             float Fbm(float2 p)
             {
-                float sum = ValueNoise(p) * 0.6;
-                sum += ValueNoise(p * 2.03 + 17.1) * 0.4;
-                return sum;
+                return SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, p * 0.125).r;
             }
 
             // Fades to nothing well inside the quad, so noise can never push a puff out to the

@@ -42,6 +42,8 @@ namespace MachineBrigade.Game.Views
         private float _bouncePhase;
         private float _spin;
         private float _crashStart = -1f;
+        private float _crashHeight;
+        private Vector3 _crashDrift;
         private bool _wreck;
 
         public VehicleView(Vehicle vehicle, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials,
@@ -243,7 +245,11 @@ namespace MachineBrigade.Game.Views
             _wreck = true;
             if (Flying)
             {
+                // Keep some of the momentum it had when it was hit.
                 _crashStart = Time.time;
+                _crashHeight = Root.position.y;
+                _crashDrift = (_currentPosition - _previousPosition) * 20f * 0.8f;
+                _crashDrift.y = 0f;
                 return;
             }
             _body.localRotation = Quaternion.Euler(Random.Range(-3f, 3f), 0f, Random.Range(-4f, 4f));
@@ -257,18 +263,17 @@ namespace MachineBrigade.Game.Views
 
         private void RenderWreck()
         {
-            if (!Flying || _crashStart < 0f) return;
-            // Spin down out of the sky under gravity, rotor winding down, then lie on the ground.
+            if (!Flying || _crashStart < 0f || Root.position.y <= 0f) return;
+            // Out of control: it drifts on with its momentum, spins faster and faster as the tail
+            // goes, tips over and drops, the rotor winding down, until it hits the ground.
             var t = Time.time - _crashStart;
-            var height = Mathf.Max(0f, Altitude - 0.5f * 14f * t * t);
-            var p = Root.position;
+            var height = Mathf.Max(0f, _crashHeight - 0.5f * 7f * t * t);
+            var drift = _crashDrift * Mathf.Clamp01(1f - t * 0.5f) * Time.deltaTime;
+            var p = Root.position + drift;
             Root.position = new Vector3(p.x, height, p.z);
-            if (height > 0f)
-            {
-                Root.rotation *= Quaternion.Euler(0f, 260f * Time.deltaTime, 0f);
-                _body.localRotation = Quaternion.Euler(Mathf.Min(25f, t * 30f), 0f, Mathf.Min(35f, t * 45f));
-                Spin(Mathf.Clamp01(1f - t));
-            }
+            Root.rotation *= Quaternion.Euler(0f, Mathf.Lerp(150f, 560f, Mathf.Clamp01(t / 1.4f)) * Time.deltaTime, 0f);
+            _body.localRotation = Quaternion.Euler(Mathf.Min(28f, t * 24f), 0f, Mathf.Min(40f, t * 34f));
+            Spin(Mathf.Clamp01(1f - t * 0.6f));
         }
 
         private void Spin(float speed)

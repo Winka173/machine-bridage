@@ -23,8 +23,15 @@ namespace MachineBrigade.Game.Views
 
         private readonly GameObject _root;
         private readonly List<Mesh> _meshes = new();
-        private readonly Dictionary<(Mesh, int, Material), List<Matrix4x4>> _instances = new();
-        private readonly List<(Mesh mesh, int submesh, Material material, Matrix4x4[] matrices)> _draws = new();
+        /// <summary>Instances are grouped into square cells so the camera and shadow passes cull them.</summary>
+        private const float CellSize = 80f;
+
+        /// <summary>Scenery further than this outside the map edge casts no shadow (it sits in the haze).</summary>
+        private const float ShadowReach = 45f;
+
+        private readonly Dictionary<(int cell, Mesh mesh, int submesh, Material material), List<Matrix4x4>> _instances = new();
+        private readonly Dictionary<int, Bounds> _cellBounds = new();
+        private readonly List<(Mesh mesh, int submesh, Matrix4x4[] matrices, RenderParams parameters)> _draws = new();
         private readonly Texture2D _texture;
         private readonly float _half;
         private readonly Random _rng = new(97);
@@ -52,12 +59,30 @@ namespace MachineBrigade.Game.Views
             var total = 0;
             foreach (var entry in _instances)
             {
-                _draws.Add((entry.Key.Item1, entry.Key.Item2, entry.Key.Item3, entry.Value.ToArray()));
+                var (cell, mesh, submesh, material) = entry.Key;
+                var bounds = _cellBounds[cell];
+                // Room for tall trees and outcrops above the ground-level centres.
+                bounds.Expand(new Vector3(14f, 0f, 14f));
+                bounds.SetMinMax(new Vector3(bounds.min.x, -1f, bounds.min.z), new Vector3(bounds.max.x, 30f, bounds.max.z));
+                var edge = Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
+                var parameters = new RenderParams(material)
+                {
+                    shadowCastingMode = edge < ShadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
+                    receiveShadows = true,
+                    worldBounds = bounds,
+                };
+                _draws.Add((mesh, submesh, entry.Value.ToArray(), parameters));
                 total += entry.Value.Count;
+                InstancedTriangles += mesh.GetIndexCount(submesh) / 3 * entry.Value.Count;
             }
             _instances.Clear();
             Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances, instancing supported: {SystemInfo.supportsInstancing}");
         }
+
+        /// <summary>Triangles submitted per frame by the instanced scenery (for the perf probe).</summary>
+        public long InstancedTriangles { get; private set; }
+
+        public int Batches => _draws.Count;
 
         private float RiverZ => _half + 62f;
         private const float RiverWidth = 16f;
@@ -65,19 +90,11 @@ namespace MachineBrigade.Game.Views
         /// <summary>Submits the instanced scenery; call once per frame.</summary>
         public void Draw()
         {
-            foreach (var (mesh, submesh, material, matrices) in _draws)
-            {
-                // Explicit bounds: the default is tiny, so the whole batch was culled whenever the
-                // map centre left the view.
-                var parameters = new RenderParams(material)
-                {
-                    shadowCastingMode = ShadowCastingMode.On,
-                    receiveShadows = true,
-                    worldBounds = new Bounds(Vector3.zero, new Vector3(Extent * 2f, 60f, Extent * 2f)),
-                };
+            // Each batch carries its cell's bounds, so off-screen cells are culled by the engine
+            // (from the shadow pass too) instead of every tree being drawn every frame.
+            foreach (var (mesh, submesh, matrices, parameters) in _draws)
                 for (var start = 0; start < matrices.Length; start += 1023)
                     Graphics.RenderMeshInstanced(parameters, mesh, submesh, matrices, Mathf.Min(1023, matrices.Length - start), start);
-            }
         }
 
         public void Dispose()
@@ -261,10 +278,21 @@ namespace MachineBrigade.Game.Views
         private void Add(ModelLibrary models, string modelId, Vector2 position, float yaw, float scale)
         {
             var placement = Matrix4x4.TRS(new Vector3(position.x, 0f, position.y), Quaternion.Euler(0f, yaw, 0f), Vector3.one * scale);
+            var cell = Mathf.FloorToInt((position.x + Extent) / CellSize) * 64 + Mathf.FloorToInt((position.y + Extent) / CellSize);
+            var at = new Vector3(position.x, 0f, position.y);
+            if (_cellBounds.TryGetValue(cell, out var cellBounds))
+            {
+                cellBounds.Encapsulate(at);
+                _cellBounds[cell] = cellBounds;
+            }
+            else
+            {
+                _cellBounds[cell] = new Bounds(at, Vector3.zero);
+            }
             foreach (var (mesh, local, materials) in models.Parts(modelId))
             for (var sub = 0; sub < mesh.subMeshCount && sub < materials.Length; sub++)
             {
-                var key = (mesh, sub, materials[sub]);
+                var key = (cell, mesh, sub, materials[sub]);
                 if (!_instances.TryGetValue(key, out var list)) _instances[key] = list = new List<Matrix4x4>();
                 list.Add(placement * local);
             }

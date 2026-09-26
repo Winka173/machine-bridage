@@ -46,12 +46,15 @@ namespace MachineBrigade.Game.Rendering
         private readonly Dictionary<string, Material> _surfaces = new();
         private readonly Dictionary<(string, int), Material> _team = new();
         private readonly Shader _lit;
+        private readonly Texture2D _noise;
 
         public MaterialLibrary()
         {
             _lit = Find("MachineBrigade/Lit");
             var unlit = Find("MachineBrigade/Unlit");
             var particle = Find("MachineBrigade/Particle");
+            _noise = NoiseTexture(64, 8);
+            Shader.SetGlobalTexture("_MbNoise", _noise);
 
             Ground = Surface("Ground", Color.white, 0f, 0.95f, 0f);
             Skirt = Surface("Skirt", Hex("#424634"), 0f, 0.95f, 0f);
@@ -133,8 +136,17 @@ namespace MachineBrigade.Game.Rendering
         public void Dispose()
         {
             foreach (var m in _owned)
-                if (m != null) Object.Destroy(m);
+            {
+                if (m == null) continue;
+                if (Application.isPlaying) Object.Destroy(m);
+                else Object.DestroyImmediate(m);
+            }
             _owned.Clear();
+            if (_noise != null)
+            {
+                if (Application.isPlaying) Object.Destroy(_noise);
+                else Object.DestroyImmediate(_noise);
+            }
             _surfaces.Clear();
             _team.Clear();
         }
@@ -168,6 +180,55 @@ namespace MachineBrigade.Game.Rendering
             m.SetColor("_EmissionColor", emissionColor ?? (emission > 0f ? color * emission : Color.black));
             _owned.Add(m);
             return m;
+        }
+
+        /// <summary>
+        /// Tileable two-octave value noise (the particle shader's former per-pixel Fbm), with
+        /// <paramref name="cells"/> lattice cells across the texture for the first octave.
+        /// </summary>
+        private static Texture2D NoiseTexture(int size, int cells)
+        {
+            var random = new System.Random(4242);
+            float[] Lattice(int n)
+            {
+                var values = new float[n * n];
+                for (var i = 0; i < values.Length; i++) values[i] = (float)random.NextDouble();
+                return values;
+            }
+
+            float Sample(float[] lattice, int n, float x, float y)
+            {
+                var ix = Mathf.FloorToInt(x);
+                var iy = Mathf.FloorToInt(y);
+                var fx = x - ix;
+                var fy = y - iy;
+                fx = fx * fx * (3f - 2f * fx);
+                fy = fy * fy * (3f - 2f * fy);
+                float At(int cx, int cy) => lattice[(cy % n + n) % n * n + (cx % n + n) % n];
+                return Mathf.Lerp(Mathf.Lerp(At(ix, iy), At(ix + 1, iy), fx), Mathf.Lerp(At(ix, iy + 1), At(ix + 1, iy + 1), fx), fy);
+            }
+
+            var first = Lattice(cells);
+            var second = Lattice(cells * 2);
+            var pixels = new Color32[size * size];
+            for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
+            {
+                var u = (x + 0.5f) / size * cells;
+                var v = (y + 0.5f) / size * cells;
+                var n = Sample(first, cells, u, v) * 0.6f + Sample(second, cells * 2, u * 2f, v * 2f) * 0.4f;
+                var b = (byte)Mathf.Clamp(Mathf.RoundToInt(n * 255f), 0, 255);
+                pixels[y * size + x] = new Color32(b, b, b, 255);
+            }
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false, true)
+            {
+                name = "Particle Noise",
+                wrapMode = TextureWrapMode.Repeat,
+                filterMode = FilterMode.Bilinear,
+            };
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            return texture;
         }
 
         private static Color Hex(string hex) => ColorUtility.TryParseHtmlString(hex, out var c) ? c : Color.magenta;

@@ -64,12 +64,13 @@ namespace MachineBrigade.Game.Views
             foreach (var prop in world.Props)
             {
                 var (model, rubble, debris) = Describe(prop.Def.Id, rng);
-                var instance = models.Spawn(model, Teams.Neutral, _root.transform);
+                // Small clutter (barrels, crates, traps) casts no shadow: many casters, little to see.
+                var instance = Spawn(model, prop.Def.Width * prop.Def.Depth >= 3f);
                 var yaw = prop.Def.Id == "tree" ? (float)rng.NextDouble() * 360f : prop.Rotation;
-                instance.Root.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
+                instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
                     Quaternion.Euler(0f, yaw, 0f));
-                if (prop.Def.Id == "tree") instance.Root.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
-                _props.Add(prop.Id, new PropView(prop, instance.Root, rubble, debris));
+                if (prop.Def.Id == "tree") instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
             }
             ScatterBushes(world, rng);
         }
@@ -93,10 +94,10 @@ namespace MachineBrigade.Game.Views
             var transform = view.Transform;
             if (view.RubbleModel != null)
             {
-                var rubble = _models.Spawn(view.RubbleModel, Teams.Neutral, _root.transform);
-                rubble.Root.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                var rubble = Spawn(view.RubbleModel, true);
+                rubble.transform.SetPositionAndRotation(transform.position, transform.rotation);
                 view.GameObject.SetActive(false);
-                view.GameObject = rubble.Root;
+                view.GameObject = rubble;
             }
             else
             {
@@ -143,9 +144,9 @@ namespace MachineBrigade.Game.Views
                 foreach (var team in world.Map.Teams)
                     if (Vector2.Distance(team.Rally, p) < 22f) clear = false;
                 if (!clear) continue;
-                var bush = _models.Spawn("bush", Teams.Neutral, _root.transform, castShadows: false);
-                bush.Root.transform.SetPositionAndRotation(new Vector3(p.X, 0f, p.Y), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
-                bush.Root.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f);
+                var bush = Spawn("bush", false);
+                bush.transform.SetPositionAndRotation(new Vector3(p.X, 0f, p.Y), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
+                bush.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f);
                 placed++;
             }
         }
@@ -173,6 +174,24 @@ namespace MachineBrigade.Game.Views
                 materials.Pebble, castShadows: false);
             Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
                 materials.GrassTuft, castShadows: false);
+        }
+
+        /// <summary>
+        /// A static prop as one renderer: the model merged into a single mesh (one sub-mesh per
+        /// material). Props never animate, and identical props then share a mesh, so the engine
+        /// instances them: far fewer draw calls in both the camera and the shadow pass.
+        /// </summary>
+        private GameObject Spawn(string modelId, bool castShadows)
+        {
+            var merged = _models.Merged(modelId);
+            var go = new GameObject(modelId);
+            go.transform.SetParent(_root.transform, false);
+            go.AddComponent<MeshFilter>().sharedMesh = merged.Mesh;
+            var renderer = go.AddComponent<MeshRenderer>();
+            renderer.sharedMaterials = merged.Materials;
+            renderer.shadowCastingMode = castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            renderer.receiveShadows = true;
+            return go;
         }
 
         private GameObject Place(string name, Mesh mesh, Material material, bool castShadows)
