@@ -33,6 +33,7 @@ namespace MachineBrigade.Game.Match
         private ModelLibrary _models;
         private Atmosphere _atmosphere;
         private MapView _map;
+        private Surroundings _surroundings;
         private ViewRegistry _views;
         private EffectsDirector _effects;
         private RtsCamera _camera;
@@ -62,6 +63,7 @@ namespace MachineBrigade.Game.Match
             _meshes = new MeshLibrary();
             _models = new ModelLibrary(_materials);
             _map = new MapView(_world, _models, _materials, worldRoot);
+            _surroundings = new Surroundings(_world, _models, _materials, TerrainTheme.Riverlands, worldRoot);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
 
             _world.TryGetRally(PlayerTeam, out var rally);
@@ -106,6 +108,7 @@ namespace MachineBrigade.Game.Match
         {
             _camera.Apply(Time.unscaledDeltaTime);
             _views.Render(_clock.Alpha, _camera.Rotation);
+            _surroundings.Draw();
         }
 
         private void OnDestroy()
@@ -113,6 +116,7 @@ namespace MachineBrigade.Game.Match
             _effects?.Dispose();
             _views?.Dispose();
             _map?.Dispose();
+            _surroundings?.Dispose();
             _hud?.Dispose();
             _meshes?.Dispose();
             _materials?.Dispose();

@@ -91,6 +91,25 @@ namespace MachineBrigade.Game.Rendering
             return new ModelInstance(root, turret, recoil, muzzle, renderers);
         }
 
+        /// <summary>
+        /// Every mesh of a model with its transform relative to the model root and its resolved
+        /// materials, for merging many static copies into a few big meshes.
+        /// </summary>
+        public IEnumerable<(Mesh mesh, Matrix4x4 local, Material[] materials)> Parts(string modelId, int team = -1)
+        {
+            var root = Prefab(modelId).transform;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var renderer = filter.GetComponent<MeshRenderer>();
+                if (filter.sharedMesh == null || renderer == null) continue;
+                var source = renderer.sharedMaterials;
+                var materials = new Material[source.Length];
+                for (var i = 0; i < source.Length; i++)
+                    materials[i] = _materials.ForModel(source[i] != null ? source[i].name : string.Empty, team);
+                yield return (filter.sharedMesh, root.worldToLocalMatrix * filter.transform.localToWorldMatrix, materials);
+            }
+        }
+
         /// <summary>First mesh of a model, with materials resolved; used for pooled debris.</summary>
         public ChunkModel Chunk(string modelId)
         {

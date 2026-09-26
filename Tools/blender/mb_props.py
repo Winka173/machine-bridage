@@ -166,6 +166,14 @@ def bush(a):
             (r, r * .95, r * .78), loc=(x, y, r * .62), sub=1, jitter=.2, seed=i * 2.3)
 
 
+def rock(a, seed, size):
+    """Faceted boulder (3d_astra's rocks): a noisy main stone with two smaller ones at its foot."""
+    stone = a.part('Rock', 'Rock', flat=True)
+    stone.ico(size, loc=(0, 0, size[2] * .5), sub=3, jitter=.3, seed=seed)
+    stone.ico((.46, .4, .32), loc=(.78, .38, .14), sub=1, jitter=.32, seed=seed + 2)
+    stone.ico((.32, .28, .22), loc=(-.7, -.52, .08), sub=1, jitter=.32, seed=seed + 5)
+
+
 def rubble(a, w, d, seed):
     """Collapsed building: broken slabs, roof tiles and beams inside the old footprint."""
     rng = random.Random(seed)
@@ -233,6 +241,9 @@ BUILDERS = {
     'tree': (tree, dict(ao_distance=1.2, grime_height=.6)),
     'tree_broad': (tree_broad, dict(ao_distance=1.2, grime_height=.6)),
     'bush': (bush, dict(ao_distance=.7, grime_height=.3)),
+    'rock_a': (lambda a: rock(a, 1.3, (1.0, .9, .62)), dict(ao_distance=.9, grime_height=.3)),
+    'rock_b': (lambda a: rock(a, 4.7, (.95, .82, .78)), dict(ao_distance=.9, grime_height=.3)),
+    'rock_c': (lambda a: rock(a, 8.2, (.9, 1.0, .5)), dict(ao_distance=.9, grime_height=.3)),
     'rubble_small': (rubble_small, dict(ao_distance=.9, grime_height=.4)),
     'rubble_large': (rubble_large, dict(ao_distance=.9, grime_height=.4)),
     **{f'debris_{kind}': ((lambda k, s: (lambda a: debris(a, k, s)))(kind, i + 1), dict(ao_distance=.3,

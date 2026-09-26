@@ -42,9 +42,26 @@ namespace MachineBrigade.Editor
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android,
                 new[] { GraphicsDeviceType.Vulkan, GraphicsDeviceType.OpenGLES3 });
             PlayerSettings.Android.androidVulkanDeviceFilterListAsset = EmulatorVulkanDenyList();
+            KeepRuntimeShaderVariants();
 
             AssetDatabase.SaveAssets();
             Debug.Log($"[ProjectSetup] Applied player settings for {BundleId}.");
+        }
+
+        /// <summary>
+        /// Materials are created at runtime, so the build cannot see which variants they use.
+        /// Keep GPU-instancing variants (instanced scenery) and linear fog (set from code),
+        /// which the default "strip unused" settings would silently remove.
+        /// </summary>
+        private static void KeepRuntimeShaderVariants()
+        {
+            var graphics = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset");
+            if (graphics.Length == 0) return;
+            var settings = new SerializedObject(graphics[0]);
+            settings.FindProperty("m_InstancingStripping").intValue = 2; // keep all
+            settings.FindProperty("m_FogStripping").intValue = 1;        // custom
+            settings.FindProperty("m_FogKeepLinear").boolValue = true;
+            settings.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private const string VulkanFilterPath = "Assets/MachineBrigade/Settings/VulkanDeviceFilters.asset";

@@ -59,6 +59,18 @@
     "file": "main_battle_tank.glb",
     "triangles": 7220
   },
+  "rock_a": {
+    "file": "rock_a.glb",
+    "triangles": 360
+  },
+  "rock_b": {
+    "file": "rock_b.glb",
+    "triangles": 360
+  },
+  "rock_c": {
+    "file": "rock_c.glb",
+    "triangles": 360
+  },
   "rubble_large": {
     "file": "rubble_large.glb",
     "triangles": 3516

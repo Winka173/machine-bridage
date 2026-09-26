@@ -36,12 +36,13 @@ Shader "MachineBrigade/Lit"
             half _Wind;
         CBUFFER_END
 
-        // Foliage sway: displacement grows with height above the model origin.
+        // Foliage sway: displacement grows with height above the ground. The phase comes from the
+        // world position, so merged forests do not sway in lockstep.
         float3 ApplyWind(float3 positionOS)
         {
             if (_Wind <= 0.0) return positionOS;
-            float3 origin = TransformObjectToWorld(float3(0, 0, 0));
-            float phase = _Time.y * 1.7 + origin.x * 0.37 + origin.z * 0.29;
+            float3 world = TransformObjectToWorld(positionOS);
+            float phase = _Time.y * 1.7 + world.x * 0.09 + world.z * 0.07;
             float sway = sin(phase) * 0.6 + sin(phase * 2.3) * 0.25;
             float weight = saturate(positionOS.y * 0.25) * positionOS.y * 0.04 * _Wind;
             positionOS.x += sway * weight;

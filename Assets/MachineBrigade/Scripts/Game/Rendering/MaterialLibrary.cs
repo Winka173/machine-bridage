@@ -24,7 +24,7 @@ namespace MachineBrigade.Game.Rendering
             ["Lamp"] = ("#ffe7b8", 0f, 0.3f, 3.2f),
             ["Concrete"] = ("#8d8a7e", 0f, 0.9f, 0f),
             ["Hazard"] = ("#e2b64a", 0.15f, 0.5f, 0f),
-            ["Rock"] = ("#a29d92", 0f, 0.92f, 0f),
+            ["Rock"] = ("#8d958c", 0f, 0.92f, 0f),
             ["Bark"] = ("#6e5a44", 0f, 0.9f, 0f),
             ["Foliage"] = ("#56733f", 0f, 0.85f, 0f),
             ["FoliageLight"] = ("#86995a", 0f, 0.8f, 0f),
@@ -54,6 +54,8 @@ namespace MachineBrigade.Game.Rendering
             Pebble = Surface("Pebble", Hex("#626957"), 0f, 0.9f, 0f);
             GrassTuft = Surface("GrassTuft", Hex("#515f40"), 0f, 0.85f, 0f);
             GrassTuft.SetFloat("_Wind", 0.6f);
+            Water = Surface("Water", Hex("#2f6f78"), 0.1f, 0.08f, 0f);
+            OuterGround = Surface("OuterGround", Color.white, 0f, 0.95f, 0f);
             Fallback = Surface("Fallback", new Color(0.6f, 0.6f, 0.6f), 0f, 0.8f, 0f);
             foreach (var entry in Kit)
                 _surfaces[entry.Key] = Surface(entry.Key, Hex(entry.Value.color), entry.Value.metallic, entry.Value.roughness,
@@ -78,6 +80,8 @@ namespace MachineBrigade.Game.Rendering
         public Material Skirt { get; }
         public Material Pebble { get; }
         public Material GrassTuft { get; }
+        public Material Water { get; }
+        public Material OuterGround { get; }
         public Material Fallback { get; }
         public Material SelectionRing { get; }
         public Material MoveMarker { get; }
