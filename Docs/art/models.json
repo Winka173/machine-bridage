@@ -11,13 +11,21 @@
     "file": "apc.glb",
     "triangles": 5476
   },
+  "armored_car": {
+    "file": "armored_car.glb",
+    "triangles": 5100
+  },
   "artillery": {
     "file": "artillery.glb",
     "triangles": 5504
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
-    "triangles": 4956
+    "triangles": 4948
+  },
+  "attack_jet": {
+    "file": "attack_jet.glb",
+    "triangles": 3594
   },
   "barrel": {
     "file": "barrel.glb",
@@ -83,6 +91,14 @@
     "file": "fuel_tank.glb",
     "triangles": 2164
   },
+  "gunship_heli": {
+    "file": "gunship_heli.glb",
+    "triangles": 5900
+  },
+  "heavy_tank": {
+    "file": "heavy_tank.glb",
+    "triangles": 6472
+  },
   "house_large": {
     "file": "house_large.glb",
     "triangles": 6056
@@ -106,6 +122,10 @@
   "mlrs": {
     "file": "mlrs.glb",
     "triangles": 5808
+  },
+  "mortar_carrier": {
+    "file": "mortar_carrier.glb",
+    "triangles": 5196
   },
   "mountain_a": {
     "file": "mountain_a.glb",
@@ -135,6 +155,10 @@
     "file": "rocket.glb",
     "triangles": 184
   },
+  "rocket_technical": {
+    "file": "rocket_technical.glb",
+    "triangles": 6028
+  },
   "rubble_large": {
     "file": "rubble_large.glb",
     "triangles": 3516
@@ -143,17 +167,33 @@
     "file": "rubble_small.glb",
     "triangles": 2144
   },
+  "sam_launcher": {
+    "file": "sam_launcher.glb",
+    "triangles": 6092
+  },
   "sandbags": {
     "file": "sandbags.glb",
     "triangles": 1320
+  },
+  "scout_heli": {
+    "file": "scout_heli.glb",
+    "triangles": 2910
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
     "triangles": 3400
   },
+  "strike_drone": {
+    "file": "strike_drone.glb",
+    "triangles": 1606
+  },
   "strike_jet": {
     "file": "strike_jet.glb",
     "triangles": 3368
+  },
+  "tank_destroyer": {
+    "file": "tank_destroyer.glb",
+    "triangles": 6260
   },
   "tank_trap": {
     "file": "tank_trap.glb",

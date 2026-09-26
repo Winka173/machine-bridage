@@ -22,7 +22,7 @@ Look development shared by every model:
 Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary.cs): Blender -Y is the model's front, `leg_*` empties stay
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
 form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
-Radar, Mount_*) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
+Propeller, Radar, Mount_*) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
 """
 import contextlib
 import io
@@ -40,9 +40,9 @@ BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
 # Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts).
-MOVING = re.compile(r'^(rotor|tail_rotor|radar|mount_)', re.I)
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
-RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|radar|mount_)', re.I)
+RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|propeller|radar|mount_)', re.I)
 
 
 def lin(value):
@@ -222,6 +222,37 @@ class Shape:
             rings.append(ring)
         self._faces(rings)
         self._finish(rings[0] + rings[1], loc, rot, bevel, seg)
+        return self
+
+    def shell(self, outline, height, wall, loc=(0, 0, 0), rot=(0, 0, 0), taper=1.0, floor=None, bevel=0.02, seg=1):
+        """Open-topped walls `wall` thick around a convex (x, y) outline wound counter-clockwise,
+        from z = 0 up to `height`: open-top turrets, truck beds, hatch coamings. taper scales the
+        top ring (inward-sloped walls). floor gives a bottom plate that thick; without it the
+        walls stand on an open ring."""
+        pts = [Vector(p) for p in outline]
+        n = len(pts)
+        inner = []
+        for i in range(n):
+            p = pts[i]
+            e1, e2 = (p - pts[i - 1]).normalized(), (pts[(i + 1) % n] - p).normalized()
+            n1, n2 = Vector((-e1.y, e1.x)), Vector((-e2.y, e2.x))  # inward for counter-clockwise
+            inner.append(p + (n1 + n2) * (wall / (1 + n1.dot(n2))))
+        bm = self.bm
+        z0 = floor or 0.0
+        k0 = 1 + (taper - 1) * z0 / height
+
+        def ring(poly, z, k):
+            return [bm.verts.new((q.x * k, q.y * k, z)) for q in poly]
+        ob, ot, it, ib = ring(pts, 0, 1), ring(pts, height, taper), ring(inner, height, taper), ring(inner, z0, k0)
+        faces = []
+        for a, b in ((ob, ot), (ot, it), (it, ib)):
+            faces += [bm.faces.new((a[i], a[(i + 1) % n], b[(i + 1) % n], b[i])) for i in range(n)]
+        if floor:
+            faces += [bm.faces.new(list(reversed(ob))), bm.faces.new(ib)]
+        else:
+            faces += [bm.faces.new((ib[i], ib[(i + 1) % n], ob[(i + 1) % n], ob[i])) for i in range(n)]
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        self._finish(ob + ot + it + ib, loc, rot, bevel, seg)
         return self
 
     def loft(self, rings, loc=(0, 0, 0), rot=(0, 0, 0), bevel=0.0, seg=2):
