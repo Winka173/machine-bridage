@@ -47,6 +47,15 @@ namespace MachineBrigade.Sim.AI
         private readonly List<EntityId> _otherIds = new();
         private float _timer;
 
+        /// <summary>
+        /// Where to advance when no enemy is in sight (Conquest: the objective to take). Null
+        /// falls back to the enemy rally point.
+        /// </summary>
+        public Func<SimWorld, Vector2?>? Objective { get; set; }
+
+        /// <summary>Visible enemy vehicles, refreshed every decision.</summary>
+        public IReadOnlyList<Vehicle> KnownEnemies => _enemies;
+
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
             _team = team;
@@ -68,7 +77,10 @@ namespace MachineBrigade.Sim.AI
             var front = Centre(body);
             var contact = _enemies.Count > 0;
             Vector2 objective;
-            if (contact) objective = NearestCluster(front);
+            var goal = Objective?.Invoke(world);
+            if (contact && (goal == null || Nearest(front, out _) < 45f)) objective = NearestCluster(front);
+            else if (goal.HasValue) objective = goal.Value;
+            else if (contact) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
             var forward = Direction(front, objective);
 
@@ -228,11 +240,12 @@ namespace MachineBrigade.Sim.AI
             var best = ClusterSize - 1;
             foreach (var e in _enemies)
             {
+                if (!weapon.CanTarget(e.Flying)) continue;
                 var distance = Vector2.Distance(shooter.Position, e.Position);
                 if (distance < weapon.MinRange + 2f || distance > weapon.Range) continue;
                 var around = 0;
                 foreach (var other in _enemies)
-                    if (Vector2.Distance(other.Position, e.Position) <= ClusterRadius) around++;
+                    if (other.Flying == e.Flying && Vector2.Distance(other.Position, e.Position) <= ClusterRadius) around++;
                 if (around <= best) continue;
                 best = around;
                 target = e;

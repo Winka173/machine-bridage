@@ -77,6 +77,8 @@ namespace MachineBrigade.Editor
             bloom.threshold.Override(1.0f);
             bloom.intensity.Override(0.45f);
             bloom.scatter.Override(0.6f);
+            // No single pixel may carry enough energy to flash a whole vehicle.
+            bloom.clamp.Override(6f);
 
             var colour = Get<ColorAdjustments>(profile);
             colour.postExposure.Override(0.35f);

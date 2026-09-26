@@ -1,7 +1,7 @@
 // Machine Brigade balance catalog. Prototype numbers: tune through playtesting.
 // Distances in metres, times in seconds, turn rates in degrees per second.
 {
-  "version": 1,
+  "version": 2,
 
   "damageTable": {
     "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.5, "Structure": 0.3 },
@@ -11,26 +11,73 @@
     "Flak":          { "Light": 0.40, "Heavy": 0.10, "Air": 1.5, "Structure": 0.1 }
   },
 
+  // projectile: Shell (default), Bullet, Missile (guided, always follows its target), Rocket, Flame, Bomb.
+  // targets: Ground (default), Air or All. burst: shots per trigger, burstInterval apart; the cooldown follows the last.
   "weapons": [
-    { "id": "mg_jeep",   "damageType": "Kinetic",       "damage": 9,   "cooldown": 0.18, "range": 18, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small" },
-    { "id": "gun_57mm",  "damageType": "ArmorPiercing", "damage": 55,  "cooldown": 2.0,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium" },
-    { "id": "gun_120mm", "damageType": "ArmorPiercing", "damage": 140, "cooldown": 3.2,  "range": 32, "projectileSpeed": 170, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" },
-    { "id": "howitzer",  "damageType": "HighExplosive", "damage": 120, "cooldown": 5.0,  "range": 90, "minRange": 25, "projectileSpeed": 45, "splash": 7, "spread": 5, "impactTier": "Large" }
+    { "id": "mg_jeep",       "damageType": "Kinetic",       "damage": 9,   "cooldown": 0.18, "range": 18, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
+    { "id": "mg_coax",       "damageType": "Kinetic",       "damage": 6,   "cooldown": 0.16, "range": 20, "projectileSpeed": 240, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet" },
+    { "id": "hmg_roof",      "damageType": "Kinetic",       "damage": 11,  "cooldown": 0.2,  "range": 24, "projectileSpeed": 230, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
+    { "id": "autocannon_30", "damageType": "Kinetic",       "damage": 24,  "cooldown": 1.1,  "range": 24, "projectileSpeed": 200, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.12 },
+    { "id": "gun_57mm",      "damageType": "ArmorPiercing", "damage": 55,  "cooldown": 2.0,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium" },
+    { "id": "gun_120mm",     "damageType": "ArmorPiercing", "damage": 140, "cooldown": 3.2,  "range": 32, "projectileSpeed": 170, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" },
+    { "id": "atgm",          "damageType": "ArmorPiercing", "damage": 170, "cooldown": 9.0,  "range": 34, "projectileSpeed": 55, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "flamethrower",  "damageType": "Fire",          "damage": 26,  "cooldown": 0.25, "range": 13, "projectileSpeed": 36, "splash": 2.5, "spread": 1.2, "impactTier": "Small", "projectile": "Flame" },
+    { "id": "howitzer",      "damageType": "HighExplosive", "damage": 120, "cooldown": 5.0,  "range": 90, "minRange": 25, "projectileSpeed": 45, "splash": 7, "spread": 5, "impactTier": "Large" },
+    { "id": "mlrs_rockets",  "damageType": "HighExplosive", "damage": 45,  "cooldown": 14,   "range": 70, "minRange": 20, "projectileSpeed": 55, "splash": 4.5, "spread": 7, "impactTier": "Medium", "projectile": "Rocket", "burst": 12, "burstInterval": 0.16 },
+    { "id": "flak_35",       "damageType": "Flak",          "damage": 26,  "cooldown": 0.55, "range": 36, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 2, "burstInterval": 0.1 },
+    { "id": "sam",           "damageType": "Flak",          "damage": 190, "cooldown": 6.0,  "range": 50, "projectileSpeed": 80, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air" },
+    { "id": "heli_atgm",     "damageType": "ArmorPiercing", "damage": 190, "cooldown": 5.0,  "range": 32, "projectileSpeed": 65, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "heli_gun",      "damageType": "Kinetic",       "damage": 16,  "cooldown": 0.22, "range": 26, "projectileSpeed": 220, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
+    { "id": "heli_rockets",  "damageType": "HighExplosive", "damage": 40,  "cooldown": 8.0,  "range": 30, "projectileSpeed": 90, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12 }
   ],
 
+  // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
+  // slot names the model muzzle (Muzzle_<slot>); aim is Turret (coaxial), Free (own mount) or Hull (fixed forward).
   "vehicles": [
     { "id": "scout_jeep",       "armor": "Light", "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "cp": 2, "vision": 35,
-      "firesWhileMoving": true, "weapon": "mg_jeep",
+      "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
+    { "id": "apc",              "armor": "Light", "hp": 350, "speed": 8, "turnRate": 110, "turretTurnRate": 150, "radius": 1.7, "cp": 3, "vision": 32,
+      "firesWhileMoving": true, "weapon": "autocannon_30", "captureRate": 3,
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
+      "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
     { "id": "light_tank",       "armor": "Heavy", "hp": 400, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_57mm",
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     { "id": "main_battle_tank", "armor": "Heavy", "hp": 900, "speed": 6, "turnRate": 60, "turretTurnRate": 70, "radius": 2.2, "cp": 7, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_120mm",
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 150, "radius": 7, "delay": 0.45, "tier": "Huge" } },
+    { "id": "flame_tank",       "armor": "Heavy", "hp": 600, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "cp": 5, "vision": 26,
+      "firesWhileMoving": true, "weapon": "flamethrower",
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
+      "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.3, "tier": "Huge" } },
     { "id": "artillery",        "armor": "Light", "hp": 300, "speed": 5, "turnRate": 60, "turretTurnRate": 45, "radius": 2.0, "cp": 6, "vision": 20,
       "firesWhileMoving": false, "weapon": "howitzer",
-      "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Large" } }
+      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    { "id": "mlrs",             "armor": "Light", "hp": 280, "speed": 6, "turnRate": 70, "turretTurnRate": 60, "radius": 2.1, "cp": 7, "vision": 24,
+      "firesWhileMoving": false, "weapon": "mlrs_rockets",
+      "deathExplosion": { "damage": 110, "radius": 8, "delay": 0.3, "tier": "Huge" } },
+    { "id": "aa_vehicle",       "armor": "Light", "hp": 350, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "cp": 4, "vision": 42,
+      "firesWhileMoving": true, "weapon": "flak_35",
+      "secondary": [ { "weapon": "sam", "slot": "missile", "aim": "Free" } ],
+      "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
+    { "id": "attack_helicopter", "armor": "Air",  "hp": 380, "speed": 14, "turnRate": 120, "turretTurnRate": 360, "radius": 2.2, "cp": 6, "vision": 38,
+      "firesWhileMoving": true, "weapon": "heli_atgm", "flying": true, "altitude": 9, "captureRate": 0,
+      "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" } ],
+      "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.6, "tier": "Large" } }
+  ],
+
+  // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
+  // bomb line); count impacts spread over duration; blast = radius of each impact. Repair heals damage x max HP in total.
+  "supports": [
+    { "id": "artillery_barrage", "kind": "Barrage",       "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 12, "duration": 4,   "damage": 110, "blast": 5,  "tier": "Large" },
+    { "id": "airstrike",         "kind": "Airstrike",     "cp": 8,  "cooldown": 90,  "delay": 2.0, "radius": 4,  "count": 8,  "duration": 1.2, "damage": 180, "blast": 6,  "tier": "Huge", "length": 60 },
+    { "id": "cruise_missile",    "kind": "CruiseMissile", "cp": 10, "cooldown": 120, "delay": 3.0, "radius": 15, "count": 1,  "damage": 520, "blast": 15, "tier": "Ultimate" },
+    { "id": "smoke_screen",      "kind": "Smoke",         "cp": 2,  "cooldown": 30,  "delay": 1.0, "radius": 12, "count": 1,  "duration": 12, "tier": "Small" },
+    { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" }
   ],
 
   "props": [

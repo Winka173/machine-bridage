@@ -76,7 +76,11 @@ namespace MachineBrigade.Game.CameraControl
             Place();
         }
 
-        public void AddTrauma(float amount) => _trauma = Mathf.Min(1f, _trauma + amount);
+        public void AddTrauma(float amount)
+        {
+            if (Match.DebugFlags.Has("-mb-no-shake")) return;
+            _trauma = Mathf.Min(1f, _trauma + amount);
+        }
 
         /// <summary>Call once per frame after input: places the camera and applies shake.</summary>
         public void Apply(float unscaledDeltaTime)

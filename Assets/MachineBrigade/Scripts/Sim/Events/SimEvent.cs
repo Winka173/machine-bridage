@@ -15,6 +15,27 @@ namespace MachineBrigade.Sim.Events
         ProjectileImpact,
         Explosion,
         Damaged,
+
+        /// <summary>A vehicle was bought; it arrives at Position after Value seconds.</summary>
+        DeploymentQueued,
+
+        /// <summary>A strike was called: Position (and Target for lines), Value = seconds until impact.</summary>
+        StrikeWarning,
+
+        /// <summary>One shell, bomb or missile of a strike landed at Position (Value = blast radius).</summary>
+        StrikeImpact,
+
+        /// <summary>A strike aircraft or cruise missile flies from Position to Target over Value seconds.</summary>
+        AircraftPass,
+
+        /// <summary>A smoke cloud appeared at Position with radius Value.</summary>
+        SmokeDeployed,
+
+        /// <summary>A vehicle was repaired by Value hit points.</summary>
+        Repaired,
+
+        /// <summary>An objective changed hands: Team is the new owner (-1 neutral), DefId the point id.</summary>
+        PointCaptured,
     }
 
     /// <summary>
@@ -24,8 +45,11 @@ namespace MachineBrigade.Sim.Events
     public readonly struct SimEvent
     {
         private SimEvent(SimEventKind kind, EntityId entity, Vector2 position, Vector2 target, float value,
-            ExplosionTier tier, string? defId, int team)
+            ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false)
         {
+            Airborne = airborne;
+            Mount = mount;
+            Other = other;
             Kind = kind;
             Entity = entity;
             Position = position;
@@ -56,15 +80,28 @@ namespace MachineBrigade.Sim.Events
 
         public int Team { get; }
 
+        /// <summary>The impact or blast happened in the air (flak and missiles hitting aircraft).</summary>
+        public bool Airborne { get; }
+
+        /// <summary>Weapon mount index for WeaponFired (0 = main weapon), matching VehicleDef.Mounts.</summary>
+        public int Mount { get; }
+
+        /// <summary>Second entity involved: the target of a shot (guided missiles home in on it).</summary>
+        public EntityId Other { get; }
+
         internal static SimEvent Spawned(Vehicle v) =>
             new(SimEventKind.VehicleSpawned, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team);
 
-        internal static SimEvent Fired(Vehicle shooter, Vector2 origin, Vector2 aim, float travelTime) =>
-            new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, shooter.Def.Weapon.ImpactTier,
-                shooter.Def.Weapon.Id, shooter.Team);
+        internal static SimEvent Fired(Vehicle shooter, int mount, Vector2 origin, Vector2 aim, float travelTime, EntityId target)
+        {
+            var weapon = shooter.Def.Mounts[mount].Weapon;
+            return new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id,
+                shooter.Team, mount, target);
+        }
 
-        internal static SimEvent Impact(WeaponDef weapon, Vector2 at, EntityId hit, int team) =>
-            new(SimEventKind.ProjectileImpact, hit, at, default, weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team);
+        internal static SimEvent Impact(WeaponDef weapon, Vector2 at, EntityId hit, int team, bool airborne = false) =>
+            new(SimEventKind.ProjectileImpact, hit, at, default, weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team,
+                airborne: airborne);
 
         internal static SimEvent Exploded(Vector2 at, ExplosionDef explosion, EntityId source) =>
             new(SimEventKind.Explosion, source, at, default, explosion.Radius, explosion.Tier, null, Teams.Environment);
@@ -74,6 +111,27 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent VehicleLost(Vehicle v) =>
             new(SimEventKind.VehicleDestroyed, v.Id, v.Position, default, 0f, ExplosionTier.Medium, v.Def.Id, v.Team);
+
+        internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, float seconds) =>
+            new(SimEventKind.DeploymentQueued, EntityId.None, at, default, seconds, default, vehicleId, team);
+
+        internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
+            new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
+
+        internal static SimEvent StrikeImpact(int team, SupportDef support, Vector2 at) =>
+            new(SimEventKind.StrikeImpact, EntityId.None, at, default, support.BlastRadius, support.Tier, support.Id, team);
+
+        internal static SimEvent AircraftPass(int team, SupportDef support, Vector2 from, Vector2 to, float seconds) =>
+            new(SimEventKind.AircraftPass, EntityId.None, from, to, seconds, support.Tier, support.Id, team);
+
+        internal static SimEvent SmokeDeployed(int team, Vector2 at, float radius, float seconds) =>
+            new(SimEventKind.SmokeDeployed, EntityId.None, at, new Vector2(seconds, 0f), radius, default, null, team);
+
+        internal static SimEvent RepairedBy(Vehicle v, float amount) =>
+            new(SimEventKind.Repaired, v.Id, v.Position, default, amount, default, v.Def.Id, v.Team);
+
+        internal static SimEvent Captured(string pointId, Vector2 at, int owner) =>
+            new(SimEventKind.PointCaptured, EntityId.None, at, default, 0f, default, pointId, owner);
 
         internal static SimEvent PropLost(Prop p) =>
             new(SimEventKind.PropDestroyed, p.Id, p.Position, default, p.Radius, ExplosionTier.Medium, p.Def.Id, Teams.Neutral);

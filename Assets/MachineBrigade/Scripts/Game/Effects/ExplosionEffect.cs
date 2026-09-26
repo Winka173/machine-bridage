@@ -29,9 +29,10 @@ namespace MachineBrigade.Game.Effects
 
         public bool IsBusy(float now) => now - PlayedAt < Duration;
 
-        public void Play(Vector3 position, float now)
+        public void Play(Vector3 position, float now, float scale = 1f)
         {
             Root.transform.position = position;
+            Root.transform.localScale = Vector3.one * scale;
             foreach (var s in _systems)
             {
                 s.Clear(true);

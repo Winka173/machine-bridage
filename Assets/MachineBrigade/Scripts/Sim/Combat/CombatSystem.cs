@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
@@ -9,12 +10,17 @@ using MachineBrigade.Sim.Events;
 namespace MachineBrigade.Sim.Combat
 {
     /// <summary>
-    /// Target selection, turret aiming, firing and projectile flight. Explicit orders decide
-    /// what may be targeted; automatic targeting only fills in where orders allow it.
+    /// Target selection, aiming, firing and projectile flight for every weapon mount. Explicit
+    /// orders decide what the main weapon may target; automatic targeting only fills in where
+    /// orders allow it. Secondary weapons (coaxial and roof guns, missile pods) choose their own
+    /// targets, favouring the main weapon's.
     /// </summary>
     internal sealed class CombatSystem
     {
-        private static readonly float AimTolerance = SimMath.DegToRad(4f);
+        private static readonly float TurretTolerance = SimMath.DegToRad(4f);
+        private static readonly float FreeTolerance = SimMath.DegToRad(6f);
+        private static readonly float HullTolerance = SimMath.DegToRad(12f);
+        private static readonly float FreeMountTurnRate = SimMath.DegToRad(300f);
 
         private readonly SimWorld _world;
         private readonly List<Projectile> _projectiles = new();
@@ -33,38 +39,59 @@ namespace MachineBrigade.Sim.Combat
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
+                var mounts = v.Def.Mounts;
                 // Cooldowns run regardless of movement or retargeting, so micro cannot create free shots.
-                v.Cooldown = MathF.Max(0f, v.Cooldown - dt);
+                for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt);
 
                 var target = SelectTarget(v);
                 v.Target = target?.Id ?? EntityId.None;
-                var desired = target != null ? SimMath.HeadingOf(target.Position - v.Position) : v.Heading;
-                v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * dt);
+                if (mounts[0].Aim == MountAim.Turret)
+                {
+                    var desired = target != null ? SimMath.HeadingOf(target.Position - v.Position) : v.Heading;
+                    v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * dt);
+                }
+                else
+                {
+                    v.TurretHeading = v.Heading;
+                }
+                Operate(v, 0, target, dt);
 
-                if (target != null && CanFire(v, target, desired)) Fire(v, target);
+                for (var i = 1; i < mounts.Count; i++)
+                {
+                    var secondary = SelectSecondaryTarget(v, i, target);
+                    var state = v.Weapons[i];
+                    state.Target = secondary?.Id ?? EntityId.None;
+                    if (mounts[i].Aim == MountAim.Free)
+                    {
+                        var aim = secondary != null ? SimMath.HeadingOf(secondary.Position - v.Position) : v.TurretHeading;
+                        state.Heading = SimMath.RotateTowards(state.Heading, aim, FreeMountTurnRate * dt);
+                    }
+                    Operate(v, i, secondary, dt);
+                }
             }
             UpdateProjectiles(dt);
         }
 
         private IDamageable? SelectTarget(Vehicle v)
         {
+            var weapon = v.Def.Weapon;
             switch (v.Order.Kind)
             {
                 case OrderKind.Attack:
                     return _world.TryGetTarget(v.Order.Target, out var ordered) && ordered.IsAlive ? ordered : null;
 
                 case OrderKind.AttackMove:
-                    if (_world.TryGetVehicle(v.Engaged, out var engaged) && IsValidAutoTarget(v, engaged)) return engaged;
-                    return BestInRange(v);
+                    if (_world.TryGetVehicle(v.Engaged, out var engaged) && IsValidAutoTarget(v, engaged, weapon)) return engaged;
+                    return BestInRange(v, weapon, EntityId.None);
 
                 case OrderKind.Idle:
-                    if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current)) return current;
-                    return BestInRange(v);
+                    if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current, weapon)) return current;
+                    return BestInRange(v, weapon, EntityId.None);
 
                 case OrderKind.Move:
                 case OrderKind.Retreat:
                     // Targets of opportunity only: firing never changes the route (V2 R04).
-                    return v.Def.FiresWhileMoving ? BestInRange(v) : null;
+                    return v.Def.FiresWhileMoving ? BestInRange(v, weapon, EntityId.None) : null;
 
                 default:
                     return null;
@@ -72,22 +99,40 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// The most valuable enemy in range: one this weapon hurts most, one that is badly damaged
-        /// or can be finished with this shot, and one teammates are already firing on. Distance
-        /// only tips the balance between otherwise equal targets.
+        /// Coaxial and hull-fixed weapons can only hit what the vehicle is already pointed at;
+        /// free mounts keep their target, else pick the best one in reach, favouring the main
+        /// weapon's target.
         /// </summary>
-        private Vehicle? BestInRange(Vehicle v)
+        private IDamageable? SelectSecondaryTarget(Vehicle v, int index, IDamageable? primary)
         {
-            var weapon = v.Def.Weapon;
+            var mount = v.Def.Mounts[index];
+            var weapon = mount.Weapon;
+            if (mount.Aim != MountAim.Free) return primary != null && InReach(v, primary, weapon) ? primary : null;
+            if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon))
+                return current;
+            var best = BestInRange(v, weapon, primary?.Id ?? EntityId.None);
+            if (best != null) return best;
+            // An ordered attack on a building or barrel: the roof gun joins in.
+            return primary != null && primary is not Vehicle && InReach(v, primary, weapon) ? primary : null;
+        }
+
+        /// <summary>
+        /// The most valuable enemy in range: one this weapon hurts most, one that is badly damaged
+        /// or can be finished with this shot, and one teammates (or this vehicle's main gun) are
+        /// already firing on. Distance only tips the balance between otherwise equal targets.
+        /// </summary>
+        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured)
+        {
             Vehicle? best = null;
             var bestScore = 0f;
             foreach (var other in _world.VehicleList)
             {
-                if (!IsValidAutoTarget(v, other)) continue;
+                if (!IsValidAutoTarget(v, other, weapon)) continue;
                 var effect = _world.Catalog.Damage.Multiplier(weapon.DamageType, other.Armor);
+                if (effect <= 0f) continue;
                 var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
                 if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
-                if (_focus.Contains((v.Team, other.Id))) score *= 1.3f;
+                if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
                 score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
                 if (score <= bestScore) continue;
                 best = other;
@@ -96,35 +141,81 @@ namespace MachineBrigade.Sim.Combat
             return best;
         }
 
-        private static bool IsValidAutoTarget(Vehicle v, Vehicle target)
+        private static bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
+            target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon);
+
+        private static bool InReach(Vehicle v, IDamageable target, WeaponDef weapon)
         {
-            if (!target.IsAlive || target.Team == v.Team || !target.IsVisibleTo(v.Team)) return false;
+            if (!weapon.CanTarget(IsFlying(target))) return false;
             var distance = Vector2.Distance(v.Position, target.Position);
-            return distance >= v.Def.Weapon.MinRange && distance - target.Radius <= v.Def.Weapon.Range;
+            return distance >= weapon.MinRange && distance - target.Radius <= weapon.Range;
         }
 
-        private static bool CanFire(Vehicle v, IDamageable target, float desiredTurret)
+        private static bool IsFlying(IDamageable target) => target is Vehicle vehicle && vehicle.Flying;
+
+        /// <summary>Fires the mount when it can, and keeps an ongoing salvo going.</summary>
+        private void Operate(Vehicle v, int index, IDamageable? target, float dt)
         {
-            if (v.Cooldown > 0f) return false;
-            if (!v.Def.FiresWhileMoving && v.IsMoving) return false;
-            var weapon = v.Def.Weapon;
-            var distance = Vector2.Distance(v.Position, target.Position);
-            if (distance < weapon.MinRange || distance - target.Radius > weapon.Range) return false;
-            return MathF.Abs(SimMath.WrapAngle(desiredTurret - v.TurretHeading)) <= AimTolerance;
+            var state = v.Weapons[index];
+            var weapon = v.Def.Mounts[index].Weapon;
+            if (state.BurstLeft > 0)
+            {
+                // A salvo keeps going at its last aim point even if the target dies or the turret turns.
+                state.BurstTimer -= dt;
+                while (state.BurstLeft > 0 && state.BurstTimer <= 0f)
+                {
+                    var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
+                    Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, alive && IsFlying(t));
+                    state.BurstLeft--;
+                    state.BurstTimer += weapon.BurstInterval;
+                }
+                if (state.BurstLeft == 0) state.Cooldown = weapon.Cooldown;
+                return;
+            }
+
+            if (target == null || !CanFire(v, index, target)) return;
+            Launch(v, index, target.Position, target.Id, IsFlying(target));
+            if (weapon.Burst > 1)
+            {
+                state.BurstLeft = weapon.Burst - 1;
+                state.BurstTimer = weapon.BurstInterval;
+                state.BurstTarget = target.Id;
+                state.BurstAim = target.Position;
+            }
+            else
+            {
+                state.Cooldown = weapon.Cooldown;
+            }
         }
 
-        private void Fire(Vehicle shooter, IDamageable target)
+        private static bool CanFire(Vehicle v, int index, IDamageable target)
         {
-            var weapon = shooter.Def.Weapon;
-            var distance = Vector2.Distance(shooter.Position, target.Position);
-            var spread = weapon.Spread * Math.Clamp(distance / weapon.Range, 0.25f, 1f);
-            var aim = target.Position + RandomInCircle(spread);
-            var origin = shooter.Position + SimMath.Forward(shooter.TurretHeading) * shooter.Radius;
+            var mount = v.Def.Mounts[index];
+            if (v.Weapons[index].Cooldown > 0f) return false;
+            // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
+            if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
+            if (!InReach(v, target, mount.Weapon)) return false;
+            var desired = SimMath.HeadingOf(target.Position - v.Position);
+            var tolerance = mount.Aim switch
+            {
+                MountAim.Turret => TurretTolerance,
+                MountAim.Free => FreeTolerance,
+                _ => HullTolerance,
+            };
+            return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
+        }
+
+        private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying)
+        {
+            var weapon = shooter.Def.Mounts[index].Weapon;
+            var distance = Vector2.Distance(shooter.Position, aimAt);
+            var spread = weapon.Guided ? 0f : weapon.Spread * Math.Clamp(distance / weapon.Range, 0.25f, 1f);
+            var aim = aimAt + RandomInCircle(spread);
+            var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
 
-            _projectiles.Add(new Projectile(shooter.Id, shooter.Team, weapon, aim, target.Id, travel));
-            _world.Emit(SimEvent.Fired(shooter, origin, aim, travel));
-            shooter.Cooldown = weapon.Cooldown;
+            _projectiles.Add(new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying));
+            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target));
         }
 
         private void UpdateProjectiles(float dt)

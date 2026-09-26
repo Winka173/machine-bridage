@@ -17,9 +17,9 @@ namespace MachineBrigade.Game.Rendering
         private static readonly Dictionary<string, (string color, float metallic, float roughness, float emission)> Kit = new()
         {
             ["Armor"] = ("#59605f", 0.55f, 0.46f, 0f),
-            ["Steel"] = ("#c4c8c4", 0.95f, 0.28f, 0f),
+            ["Steel"] = ("#c4c8c4", 0.85f, 0.42f, 0f),
             ["Undercarriage"] = ("#23282a", 0.35f, 0.72f, 0f),
-            ["Glass"] = ("#12303a", 0.2f, 0.06f, 0.35f),
+            ["Glass"] = ("#12303a", 0.1f, 0.3f, 0.35f),
             ["Alloy"] = ("#ff9b36", 0.1f, 0.35f, 2.4f),
             ["Lamp"] = ("#ffe7b8", 0f, 0.3f, 3.2f),
             ["Concrete"] = ("#8d8a7e", 0f, 0.9f, 0f),
@@ -68,6 +68,8 @@ namespace MachineBrigade.Game.Rendering
             BarAlly = Unlit(unlit, "BarAlly", TeamColors.Ui(0));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
+            StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
+            Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
 
             Fire = Particle(particle, "Fire", additive: true, intensity: 2.6f, shape: 0f, softness: 1.4f);
             Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f);
@@ -85,6 +87,12 @@ namespace MachineBrigade.Game.Rendering
         public Material Fallback { get; }
         public Material SelectionRing { get; }
         public Material MoveMarker { get; }
+
+        /// <summary>Red telegraph circles and lines for incoming strikes.</summary>
+        public Material StrikeWarning { get; }
+
+        /// <summary>Capture point rings; tinted per owner with a property block.</summary>
+        public Material Objective { get; }
         public Material BarBack { get; }
         public Material BarAlly { get; }
         public Material BarEnemy { get; }
@@ -137,7 +145,7 @@ namespace MachineBrigade.Game.Rendering
         private Material Surface(string name, Color color, float metallic, float roughness, float emission,
             Color? emissionColor = null)
         {
-            var m = new Material(_lit) { name = name, enableInstancing = true };
+            var m = new Material(_lit) { name = name, enableInstancing = !Match.DebugFlags.Has("-mb-no-instancing") };
             m.SetColor("_BaseColor", color);
             m.SetFloat("_Metallic", metallic);
             m.SetFloat("_Roughness", roughness);

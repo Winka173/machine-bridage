@@ -30,18 +30,23 @@ namespace MachineBrigade.Sim.Combat
         {
             var weapon = p.Weapon;
             var hit = EntityId.None;
-            if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive &&
-                Vector2.Distance(target.Position, p.AimPoint) <= target.Radius + 0.5f)
+            var at = p.AimPoint;
+            if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
-                Apply(target, weapon.Damage, weapon.DamageType);
-                hit = target.Id;
-                if (target is Vehicle victim) Blame(victim, p.Owner);
+                // Guided missiles follow their target; everything else lands where it was aimed.
+                if (weapon.Guided) at = target.Position;
+                if (Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
+                {
+                    Apply(target, weapon.Damage, weapon.DamageType);
+                    hit = target.Id;
+                    if (target is Vehicle victim) Blame(victim, p.Owner);
+                }
             }
 
             if (weapon.SplashRadius > 0f)
-                Splash(p.AimPoint, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner);
+                Splash(at, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
 
-            _world.Emit(SimEvent.Impact(weapon, p.AimPoint, hit, p.OwnerTeam));
+            _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
         }
 
         /// <summary>
@@ -49,16 +54,18 @@ namespace MachineBrigade.Sim.Combat
         /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
         /// </summary>
         public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude,
-            EntityId attacker = default)
+            EntityId attacker = default, bool airborne = false)
         {
             foreach (var v in _world.VehicleList)
             {
-                if (!v.IsAlive || v.Id == exclude) continue;
+                // A blast on the ground cannot reach aircraft, and an airburst does not reach the ground.
+                if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
                 var before = v.Hp;
                 ApplyFalloff(v, at, radius, damage, type);
                 if (v.Hp < before) Blame(v, attacker);
             }
+            if (airborne) return;
             foreach (var prop in _world.PropList)
             {
                 if (!prop.IsAlive || prop.Id == exclude) continue;
@@ -127,6 +134,7 @@ namespace MachineBrigade.Sim.Combat
             vehicle.ClearPath();
             vehicle.Speed = 0f;
             _world.Emit(SimEvent.VehicleLost(vehicle));
+            _world.Economy.OnVehicleDestroyed(vehicle);
             if (vehicle.Def.DeathExplosion != null) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
         }
 

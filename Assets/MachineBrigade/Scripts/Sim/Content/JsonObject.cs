@@ -41,6 +41,9 @@ namespace MachineBrigade.Sim.Content
         public bool Bool(string key, bool fallback) =>
             !Has(key) ? fallback : _values[key] is bool b ? b : throw Invalid(key, "true or false");
 
+        public TEnum Enum<TEnum>(string key, TEnum fallback) where TEnum : struct, System.Enum =>
+            Has(key) ? Enum<TEnum>(key) : fallback;
+
         public TEnum Enum<TEnum>(string key) where TEnum : struct, System.Enum =>
             System.Enum.TryParse<TEnum>(String(key), true, out var e) && System.Enum.IsDefined(typeof(TEnum), e)
                 ? e

@@ -26,7 +26,12 @@ namespace MachineBrigade.Sim.Entities
             Order = Order.Idle;
             PathCompleted = true;
             GuardPoint = position;
+            Weapons = new WeaponState[def.Mounts.Count];
+            for (var i = 0; i < Weapons.Length; i++) Weapons[i] = new WeaponState { Heading = heading };
         }
+
+        /// <summary>Firing state per mount, parallel to <see cref="VehicleDef.Mounts"/>.</summary>
+        internal readonly WeaponState[] Weapons;
 
         public EntityId Id { get; }
         public VehicleDef Def { get; }
@@ -48,13 +53,34 @@ namespace MachineBrigade.Sim.Entities
         public ArmorClass Armor => Def.Armor;
         public bool IsAlive => Hp > 0f;
         public bool IsMoving => Speed > 0.1f;
+        public bool Flying => Def.Flying;
+
+        /// <summary>Current world heading of weapon mount <paramref name="index"/> (the turret for turret mounts).</summary>
+        public float MountHeading(int index) => Def.Mounts[index].Aim switch
+        {
+            MountAim.Turret => TurretHeading,
+            MountAim.Hull => Heading,
+            _ => Weapons[index].Heading,
+        };
+
+        /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
+        public EntityId MountTarget(int index) => Weapons[index].Target;
 
         public Order Order { get; internal set; }
 
-        /// <summary>What the weapon is aimed at this step: the ordered target or an automatic one.</summary>
-        public EntityId Target { get; internal set; }
+        /// <summary>What the main weapon is aimed at this step: the ordered target or an automatic one.</summary>
+        public EntityId Target
+        {
+            get => Weapons[0].Target;
+            internal set => Weapons[0].Target = value;
+        }
 
-        public float Cooldown { get; internal set; }
+        /// <summary>Main weapon cooldown in seconds.</summary>
+        public float Cooldown
+        {
+            get => Weapons[0].Cooldown;
+            internal set => Weapons[0].Cooldown = value;
+        }
 
         /// <summary>Bit per team that can currently see this vehicle.</summary>
         public int VisibleToMask { get; internal set; }

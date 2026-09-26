@@ -60,8 +60,10 @@ namespace MachineBrigade.Sim.Content
     public sealed class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
-            IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units)
+            IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
+            IReadOnlyList<CapturePointDef>? points = null)
         {
+            Points = points ?? Array.Empty<CapturePointDef>();
             Id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentException("Map id must not be empty.") : id;
             Size = float.IsFinite(size) && size > 0 ? size : throw new ArgumentException($"Map '{id}': size must be positive.");
             Teams = teams;
@@ -75,6 +77,9 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<TeamStart> Teams { get; }
         public IReadOnlyList<PropPlacement> Props { get; }
         public IReadOnlyList<UnitPlacement> Units { get; }
+
+        /// <summary>Objectives for Conquest (may be empty for other modes).</summary>
+        public IReadOnlyList<CapturePointDef> Points { get; }
 
         public bool Contains(Vector2 point) =>
             MathF.Abs(point.X) <= HalfSize && MathF.Abs(point.Y) <= HalfSize;
@@ -104,7 +109,15 @@ namespace MachineBrigade.Sim.Content
                     SimMath.DegToRad(u.Float("heading", 0f))));
             }
 
-            return new MapDefinition(id, size, teams, props, units);
+            var points = new List<CapturePointDef>();
+            if (root.Has("points"))
+            {
+                foreach (var c in root.Array("points"))
+                    points.Add(new CapturePointDef(c.String("id"), c.Has("name") ? c.String("name") : c.String("id"),
+                        new Vector2(c.Float("x"), c.Float("z")), c.Float("radius", 10f)));
+            }
+
+            return new MapDefinition(id, size, teams, props, units, points);
         }
     }
 }

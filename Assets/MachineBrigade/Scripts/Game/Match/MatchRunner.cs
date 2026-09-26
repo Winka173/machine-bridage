@@ -11,6 +11,8 @@ using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Events;
 using MachineBrigade.Sim.Modes;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace MachineBrigade.Game.Match
@@ -50,6 +52,7 @@ namespace MachineBrigade.Game.Match
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
+            ApplyDebugFlags();
             _atmosphere = new Atmosphere();
 
             var catalog = GameContent.LoadCatalog();
@@ -70,7 +73,7 @@ namespace MachineBrigade.Game.Match
 
             _world.TryGetRally(PlayerTeam, out var rally);
             _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 16f, 0f, rally.Y + 16f));
-            _effects = new EffectsDirector(_materials, _meshes, _models, _camera, worldRoot,
+            _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 Application.isMobilePlatform ? EffectBudget.Eco : EffectBudget.High);
             _audio = new AudioDirector(_camera, worldRoot);
 
@@ -80,6 +83,18 @@ namespace MachineBrigade.Game.Match
             Wire();
 
             DispatchEvents();
+        }
+
+        private static void ApplyDebugFlags()
+        {
+            // URP copies its asset's setting into GraphicsSettings every frame, so switch the asset.
+            if (DebugFlags.Has("-mb-no-srpbatcher") && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset urp)
+                urp.useSRPBatcher = false;
+            if (DebugFlags.Has("-mb-no-shadows"))
+                foreach (var light in FindObjectsByType<Light>())
+                    if (light.type == LightType.Directional) light.shadows = LightShadows.None;
+            if (DebugFlags.Has("-mb-no-post") && Camera.main != null)
+                Camera.main.GetUniversalAdditionalCameraData().renderPostProcessing = false;
         }
 
         private void OnEnable() => _gestures?.Enable();

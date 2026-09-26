@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using MachineBrigade.Sim.Core;
 
 namespace MachineBrigade.Sim.Content
@@ -8,7 +9,9 @@ namespace MachineBrigade.Sim.Content
     public sealed class WeaponDef
     {
         public WeaponDef(string id, DamageType damageType, float damage, float cooldown, float range,
-            float minRange, float projectileSpeed, float splashRadius, float spread, ExplosionTier impactTier)
+            float minRange, float projectileSpeed, float splashRadius, float spread, ExplosionTier impactTier,
+            ProjectileKind projectile = ProjectileKind.Shell, int burst = 1, float burstInterval = 0.1f,
+            TargetLayers targets = TargetLayers.Ground)
         {
             Id = Guard.Id(id);
             DamageType = damageType;
@@ -21,10 +24,29 @@ namespace MachineBrigade.Sim.Content
             SplashRadius = Guard.NonNegative(splashRadius, id, nameof(splashRadius));
             Spread = Guard.NonNegative(spread, id, nameof(spread));
             ImpactTier = impactTier;
+            Projectile = projectile;
+            Burst = burst >= 1 ? burst : throw new ArgumentException($"Weapon '{id}': burst must be at least 1.");
+            BurstInterval = Guard.NonNegative(burstInterval, id, nameof(burstInterval));
+            Targets = targets != TargetLayers.None ? targets : throw new ArgumentException($"Weapon '{id}': targets must not be empty.");
         }
 
         public string Id { get; }
         public DamageType DamageType { get; }
+
+        /// <summary>What the weapon fires. Missiles home in on their target; the rest land on the aim point.</summary>
+        public ProjectileKind Projectile { get; }
+
+        public bool Guided => Projectile == ProjectileKind.Missile;
+
+        /// <summary>Shots per trigger pull (rocket salvo, machine-gun burst); the cooldown starts after the last.</summary>
+        public int Burst { get; }
+
+        public float BurstInterval { get; }
+
+        /// <summary>Layers this weapon can engage: ground vehicles, aircraft or both.</summary>
+        public TargetLayers Targets { get; }
+
+        public bool CanTarget(bool flying) => (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -61,11 +83,30 @@ namespace MachineBrigade.Sim.Content
         public ExplosionTier Tier { get; }
     }
 
+    /// <summary>One weapon on a vehicle and how it is pointed. The first mount is the main weapon.</summary>
+    public sealed class WeaponMount
+    {
+        public WeaponMount(WeaponDef weapon, string slot, MountAim aim)
+        {
+            Weapon = weapon ?? throw new ArgumentNullException(nameof(weapon));
+            Slot = string.IsNullOrWhiteSpace(slot) ? "main" : slot;
+            Aim = aim;
+        }
+
+        public WeaponDef Weapon { get; }
+
+        /// <summary>Model muzzle name suffix (main, coax, mg, missile, rocket, gun).</summary>
+        public string Slot { get; }
+
+        public MountAim Aim { get; }
+    }
+
     public sealed class VehicleDef
     {
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,
-            WeaponDef weapon, ExplosionDef? deathExplosion)
+            WeaponDef weapon, ExplosionDef? deathExplosion, IReadOnlyList<WeaponMount>? secondary = null,
+            bool flying = false, float altitude = 0f, float captureRate = 1f)
         {
             Id = Guard.Id(id);
             Armor = armor;
@@ -79,7 +120,25 @@ namespace MachineBrigade.Sim.Content
             FiresWhileMoving = firesWhileMoving;
             Weapon = weapon ?? throw new ArgumentNullException(nameof(weapon));
             DeathExplosion = deathExplosion;
+            var mounts = new List<WeaponMount> { new WeaponMount(weapon, "main", flying ? MountAim.Hull : MountAim.Turret) };
+            if (secondary != null) mounts.AddRange(secondary);
+            Mounts = mounts;
+            Flying = flying;
+            Altitude = flying ? Guard.Positive(altitude, id, nameof(altitude)) : 0f;
+            CaptureRate = Guard.NonNegative(captureRate, id, nameof(captureRate));
         }
+
+        /// <summary>Every weapon, main first.</summary>
+        public IReadOnlyList<WeaponMount> Mounts { get; }
+
+        /// <summary>Aircraft ignore terrain, buildings and wrecks, and only anti-air weapons reach them.</summary>
+        public bool Flying { get; }
+
+        /// <summary>Flight height in metres (presentation and line of sight).</summary>
+        public float Altitude { get; }
+
+        /// <summary>Capture speed multiplier on objectives (scouts and APCs are faster; aircraft cannot capture).</summary>
+        public float CaptureRate { get; }
 
         public string Id { get; }
         public ArmorClass Armor { get; }
