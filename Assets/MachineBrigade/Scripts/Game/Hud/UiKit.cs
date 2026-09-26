@@ -69,5 +69,13 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Raised by every button built here, for the UI click sound.</summary>
         public static event Action Clicked;
+
+        /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Clicked = null;
+        }
+
     }
 }

@@ -37,9 +37,10 @@ namespace MachineBrigade.Sim.Combat
                 if (weapon.Guided) at = target.Position;
                 if (Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
+                    // Blame first, so a killing blow is credited to this shooter.
+                    if (target is Vehicle victim) Blame(victim, p.Owner);
                     Apply(target, weapon.Damage, weapon.DamageType);
                     hit = target.Id;
-                    if (target is Vehicle victim) Blame(victim, p.Owner);
                 }
             }
 
@@ -61,9 +62,8 @@ namespace MachineBrigade.Sim.Combat
                 // A blast on the ground cannot reach aircraft, and an airburst does not reach the ground.
                 if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
-                var before = v.Hp;
+                if (Reaches(v, at, radius)) Blame(v, attacker);
                 ApplyFalloff(v, at, radius, damage, type);
-                if (v.Hp < before) Blame(v, attacker);
             }
             if (airborne) return;
             foreach (var prop in _world.PropList)
@@ -120,6 +120,9 @@ namespace MachineBrigade.Sim.Combat
                     Teams.Environment, EntityId.None);
             }
         }
+
+        private static bool Reaches(IDamageable target, Vector2 at, float radius) =>
+            Vector2.Distance(target.Position, at) - target.Radius <= radius;
 
         private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type)
         {

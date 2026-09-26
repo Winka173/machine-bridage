@@ -33,6 +33,13 @@ namespace MachineBrigade.Game.Match
 
         private static bool _debugStarted;
 
+        /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _debugStarted = false;
+        }
+
         private SimWorld _world;
         private IGameMode _mode;
         private ConquestMode _conquest;
@@ -200,9 +207,12 @@ namespace MachineBrigade.Game.Match
 
             if (_menu) Attract();
             _selection.Tick();
-            _effects.Tick(_views);
+            if (!_paused)
+            {
+                _effects.Tick(_views);
+                _weather.Tick();
+            }
             _audio.Tick(_views);
-            _weather.Tick();
             _commander?.Update();
             _hud.Tick();
             UpdateStatus();
@@ -276,13 +286,14 @@ namespace MachineBrigade.Game.Match
                 MatchSettings.InMatch = true;
                 Reload();
             };
+            var builtInVietnamese = Strings.Vietnamese;
+            _hud.VolumeChanged += () => AudioListener.volume = MatchSettings.Volume;
             _hud.SettingsChanged += () =>
             {
                 AudioListener.volume = MatchSettings.Volume;
-                var vietnamese = Strings.Vietnamese;
                 MatchSettings.ApplyLanguage();
                 // The HUD is built once; rebuild it in the new language.
-                if (Strings.Vietnamese != vietnamese) Reload();
+                if (Strings.Vietnamese != builtInVietnamese) Reload();
             };
             if (_menu) return;
 

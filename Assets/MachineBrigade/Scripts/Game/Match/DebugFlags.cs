@@ -13,6 +13,13 @@ namespace MachineBrigade.Game.Match
     {
         private static HashSet<string> _flags;
 
+        /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _flags = null;
+        }
+
         public static bool Has(string flag)
         {
             if (_flags == null)

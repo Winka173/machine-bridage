@@ -165,7 +165,7 @@ namespace MachineBrigade.Sim.Combat
                 while (state.BurstLeft > 0 && state.BurstTimer <= 0f)
                 {
                     var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
-                    Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, alive && IsFlying(t));
+                    Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying);
                     state.BurstLeft--;
                     state.BurstTimer += weapon.BurstInterval;
                 }
@@ -181,6 +181,7 @@ namespace MachineBrigade.Sim.Combat
                 state.BurstTimer = weapon.BurstInterval;
                 state.BurstTarget = target.Id;
                 state.BurstAim = target.Position;
+                state.BurstFlying = IsFlying(target);
             }
             else
             {

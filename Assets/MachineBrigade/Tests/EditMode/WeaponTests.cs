@@ -85,6 +85,21 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void AttackOrdersOnAircraftGoOnlyToVehiclesThatCanHitThem()
+        {
+            var world = TestWorlds.World();
+            var heli = world.SpawnVehicle("heli", 1, new Vector2(12f, 0f), 0f);
+            var tank = world.SpawnVehicle("tank", 0, Vector2.Zero, 0f);
+            var aa = world.SpawnVehicle("aa", 0, new Vector2(0f, 4f), 0f);
+            TestWorlds.Run(world, TestWorlds.Step);
+
+            Assert.IsTrue(world.Submit(new Command(CommandType.Attack, 0, new[] { tank.Id, aa.Id }, default, heli.Id)).Accepted);
+            Assert.AreEqual(OrderKind.Idle, tank.Order.Kind, "a tank gun cannot chase an aircraft");
+            Assert.AreEqual(OrderKind.Attack, aa.Order.Kind);
+            Assert.IsFalse(world.Submit(new Command(CommandType.Attack, 0, new[] { tank.Id }, default, heli.Id)).Accepted);
+        }
+
+        [Test]
         public void AircraftFlyStraightOverBuildings()
         {
             var world = TestWorlds.World(TestWorlds.Prop("house", 0f, 0f));

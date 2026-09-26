@@ -177,8 +177,17 @@ namespace MachineBrigade.Sim
                         return CommandResult.Rejected(CommandError.InvalidTarget);
                     if (target is Vehicle enemy && !enemy.IsVisibleTo(command.Team))
                         return CommandResult.Rejected(CommandError.TargetNotVisible);
-                    foreach (var v in _unitBuffer) v.SetOrder(new Order(OrderKind.Attack, target.Position, target.Id));
-                    return CommandResult.Ok;
+                    if (target is Prop { Def: { Indestructible: true } }) return CommandResult.Rejected(CommandError.InvalidTarget);
+                    // Only vehicles whose main weapon can reach it (tank guns cannot hit aircraft) take the order.
+                    var flying = target is Vehicle { Flying: true };
+                    var ordered = 0;
+                    foreach (var v in _unitBuffer)
+                    {
+                        if (!v.Def.Weapon.CanTarget(flying)) continue;
+                        v.SetOrder(new Order(OrderKind.Attack, target.Position, target.Id));
+                        ordered++;
+                    }
+                    return ordered > 0 ? CommandResult.Ok : CommandResult.Rejected(CommandError.InvalidTarget);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(command), command.Type, "Unknown command type.");

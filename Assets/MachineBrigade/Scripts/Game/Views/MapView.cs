@@ -80,7 +80,7 @@ namespace MachineBrigade.Game.Views
             Prop best = null;
             foreach (var prop in _world.Props)
             {
-                if (!prop.IsAlive || !prop.Contains(point, 0.6f)) continue;
+                if (!prop.IsAlive || prop.Def.Indestructible || !prop.Contains(point, 0.6f)) continue;
                 if (best == null || prop.Width * prop.Depth < best.Width * best.Depth) best = prop;
             }
             return best;

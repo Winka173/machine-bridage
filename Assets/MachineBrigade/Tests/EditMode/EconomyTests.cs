@@ -54,6 +54,19 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void AOneShotKillStillPaysTheKillReward()
+        {
+            var world = WorldWithCp(0f);
+            world.SpawnVehicle("tank", 0, Vector2.Zero, 0f);
+            var victim = world.SpawnVehicle("boomer", 1, new Vector2(12f, 0f), 0f); // 50 HP, one hit
+            TestWorlds.Run(world, 1f);
+
+            Assert.IsFalse(victim.IsAlive);
+            world.TryGetEconomy(0, out var economy);
+            Assert.AreEqual(1f, economy.Cp, 0.001f, "a quarter of the victim's 4 CP");
+        }
+
+        [Test]
         public void BarrageLandsAfterItsTelegraphAndSparesTheCaller()
         {
             var world = WorldWithCp(10f);

@@ -114,10 +114,10 @@ namespace MachineBrigade.Game.Effects
                         if (e.Airborne)
                         {
                             // Flak and missiles bursting around an aircraft.
-                            var air = WeaponEffects.AimPoint(e, views);
-                            if (!views.TryGet(e.Entity, out _)) air.y = 9f;
-                            Explode(e.Tier, new Vector3(e.Position.X, air.y, e.Position.Y), now);
-                            _emitters.Flak(new Vector3(e.Position.X, air.y, e.Position.Y));
+                            // The hit aircraft gives the height; misses burst at flying height.
+                            var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f : 9f;
+                            Explode(e.Tier, new Vector3(e.Position.X, height, e.Position.Y), now);
+                            _emitters.Flak(new Vector3(e.Position.X, height, e.Position.Y));
                             break;
                         }
                         var impact = Ground(e.Position, 0.15f);
@@ -235,7 +235,7 @@ namespace MachineBrigade.Game.Effects
             foreach (var view in views.All)
             {
                 var speed = view.Speed;
-                if (speed < 1.2f || now < view.DustAt) continue;
+                if (view.Flying || speed < 1.2f || now < view.DustAt) continue;
                 view.DustAt = now + Mathf.Lerp(0.2f, 0.07f, Mathf.Clamp01(speed / 10f));
                 var root = view.Root;
                 var radius = view.Sim.Radius;

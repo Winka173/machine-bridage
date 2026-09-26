@@ -84,6 +84,7 @@ namespace MachineBrigade.Game.Hud
             {
                 _menu = new MenuScreen(catalog, () => PlayPressed?.Invoke());
                 _menu.SettingsChanged += () => SettingsChanged?.Invoke();
+                _menu.VolumeChanged += () => VolumeChanged?.Invoke();
                 _safe.Add(_menu.Root);
                 _toast = UiKit.Box("toast");
                 _toastText = UiKit.Text("", "toast-text");
@@ -231,6 +232,7 @@ namespace MachineBrigade.Game.Hud
         public event Action MenuPressed;
         public event Action PlayPressed;
         public event Action SettingsChanged;
+        public event Action VolumeChanged;
         public event Action<Vector2> MinimapClicked;
 
         public bool ShowFps { get; set; }

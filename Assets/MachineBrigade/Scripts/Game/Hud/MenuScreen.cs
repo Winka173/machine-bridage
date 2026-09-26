@@ -131,6 +131,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Raised when settings were changed and saved (volume, quality, language).</summary>
         public event Action SettingsChanged;
 
+        /// <summary>Raised while the volume is being adjusted, before anything is saved.</summary>
+        public event Action VolumeChanged;
+
         private void Show(VisualElement page)
         {
             foreach (var p in new[] { _main, _deck, _settings }) p.style.display = p == page ? DisplayStyle.Flex : DisplayStyle.None;
@@ -214,14 +217,14 @@ namespace MachineBrigade.Game.Hud
             {
                 step(-1);
                 text.text = value();
-                SettingsChanged?.Invoke();
+                VolumeChanged?.Invoke();
             }));
             row.Add(text);
             row.Add(UiKit.IconButton("plus", () =>
             {
                 step(1);
                 text.text = value();
-                SettingsChanged?.Invoke();
+                VolumeChanged?.Invoke();
             }));
             return row;
         }

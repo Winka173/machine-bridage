@@ -17,5 +17,8 @@ namespace MachineBrigade.Sim.Entities
         public float BurstTimer;
         public EntityId BurstTarget;
         public System.Numerics.Vector2 BurstAim;
+
+        /// <summary>The salvo was aimed at an aircraft: later rounds keep bursting in the air.</summary>
+        public bool BurstFlying;
     }
 }

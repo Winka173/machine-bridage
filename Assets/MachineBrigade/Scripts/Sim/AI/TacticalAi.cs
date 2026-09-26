@@ -78,11 +78,14 @@ namespace MachineBrigade.Sim.AI
             var front = Centre(body);
             var contact = _enemies.Count > 0;
             Vector2 objective;
+            // Aircraft do not steer the army: ground forces go for ground targets and objectives.
+            var groundContact = NearestGround(front, out _) < float.MaxValue;
             var goal = Objective?.Invoke(world);
-            if (contact && (goal == null || Nearest(front, out _) < 45f)) objective = NearestCluster(front);
+            if (groundContact && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
             else if (goal.HasValue) objective = goal.Value;
-            else if (contact) objective = NearestCluster(front);
+            else if (groundContact) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
+            contact = groundContact;
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
@@ -222,14 +225,30 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>Centre of the enemy group nearest to <paramref name="from"/>.</summary>
+        private float NearestGround(Vector2 from, out Vehicle? nearest)
+        {
+            nearest = null;
+            var best = float.MaxValue;
+            foreach (var e in _enemies)
+            {
+                if (e.Flying) continue;
+                var d = Vector2.Distance(from, e.Position);
+                if (d >= best) continue;
+                best = d;
+                nearest = e;
+            }
+            return best;
+        }
+
         private Vector2 NearestCluster(Vector2 from)
         {
-            Nearest(from, out var lead);
+            NearestGround(from, out var lead);
+            if (lead == null) return from;
             var sum = Vector2.Zero;
             var count = 0;
             foreach (var e in _enemies)
             {
-                if (Vector2.Distance(e.Position, lead!.Position) > 12f) continue;
+                if (e.Flying || Vector2.Distance(e.Position, lead.Position) > 12f) continue;
                 sum += e.Position;
                 count++;
             }

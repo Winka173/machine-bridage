@@ -188,6 +188,9 @@ namespace MachineBrigade.Sim.Content
 
         public bool BlocksMovement { get; }
 
+        /// <summary>Terrain (rock, earth) that no weapon can realistically destroy; never an attack target.</summary>
+        public bool Indestructible => MaxHp >= 100000f;
+
         /// <summary>Set for explosive props (barrels, fuel tanks) that detonate when destroyed.</summary>
         public ExplosionDef? Explosion { get; }
     }

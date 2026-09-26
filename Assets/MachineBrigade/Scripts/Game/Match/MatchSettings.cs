@@ -51,6 +51,14 @@ namespace MachineBrigade.Game.Match
 
         private static bool _loaded;
 
+        /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _loaded = false;
+            InMatch = false;
+        }
+
         /// <summary>False shows the menu over an AI-versus-AI battle; true plays the chosen match.</summary>
         public static bool InMatch { get; set; }
 
