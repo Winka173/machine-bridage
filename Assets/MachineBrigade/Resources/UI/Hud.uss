@@ -298,7 +298,8 @@
 }
 .wide .icon { width: 22px; height: 22px; margin-right: 12px; }
 .wide-title { -unity-font: resource("Fonts/Inter-SemiBold"); font-size: 15px; }
-.wide-sub { font-size: 11px; color: var(--dim); margin-top: 1px; }
+.wide-text { flex-shrink: 1; }
+.wide-sub { font-size: 11px; color: var(--dim); margin-top: 1px; white-space: normal; }
 .wide:active { background-color: var(--button-press); }
 .wide.primary { background-color: rgba(58, 104, 82, 0.8); border-color: rgba(165, 227, 191, 0.6); }
 .wide.primary:active { background-color: rgba(84, 140, 110, 0.9); }
@@ -346,7 +347,8 @@
 .menu-tagline { color: var(--dim); font-size: 12px; margin-top: 6px; margin-bottom: 8px; }
 .menu-caps { margin-top: 14px; margin-bottom: 6px; }
 .menu-modes { flex-direction: row; }
-.mode-card { flex-grow: 1; flex-basis: 0; height: 64px; margin-right: 6px; margin-top: 0; }
+.mode-card { flex-grow: 1; flex-basis: 0; height: 72px; margin-right: 6px; margin-top: 0; padding-right: 8px; }
+.mode-card .wide-sub { font-size: 10px; }
 .mode-card.chosen, .segment.chosen, .deck-card.chosen { border-color: var(--mint); background-color: rgba(165, 227, 191, 0.2); }
 .segments { flex-direction: row; }
 .segment {

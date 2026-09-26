@@ -101,7 +101,8 @@ namespace MachineBrigade.Game.Match
             {
                 ReducedMotion = MatchSettings.ReducedMotion,
             };
-            _audio = new AudioDirector(_camera, worldRoot);
+            // The menu battle has no player side, so no alarms or chimes.
+            _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
@@ -185,6 +186,7 @@ namespace MachineBrigade.Game.Match
             if (_menu) Attract();
             _selection.Tick();
             _effects.Tick(_views);
+            _audio.Tick(_views);
             _commander?.Update();
             _hud.Tick();
             UpdateStatus();
