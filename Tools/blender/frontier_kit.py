@@ -2,8 +2,9 @@
 
 Originally written for Frontier Command (github.com/buicongnguyen/3d_astra) and reused in
 Machine Brigade with the author's permission. Machine Brigade additions: extra materials
-(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass), nested pivots,
-lofted hulls, raw faceted meshes (terrain) and GLB export into the Unity project.
+(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass and the desert and
+snow map set), nested pivots, lofted hulls, raw faceted meshes (terrain) and GLB export into the
+Unity project.
 
 The same code runs headless (`blender --background --python generate_assets.py`) and live
 inside an interactive Blender driven through MCP for Blender. It never switches the window
@@ -22,7 +23,7 @@ Look development shared by every model:
 Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary.cs): Blender -Y is the model's front, `leg_*` empties stay
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
 form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
-Propeller, Radar, Mount_*) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
+Propeller, Radar, Mount_*, Pump_beam) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
 """
 import contextlib
 import io
@@ -40,7 +41,7 @@ BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
 # Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts).
-MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_)', re.I)
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
 RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|propeller|radar|mount_)', re.I)
 
@@ -110,6 +111,15 @@ MATERIALS = {
     'CarRed': ('#c8382c', 0.35, 0.38, 0.0),     # civilian car body; recoloured per car at runtime
     'FoliageDark': ('#3e5b35', 0.0, 0.85, 0.0),
     'BarkWhite': ('#e4dfd2', 0.0, 0.85, 0.0),
+    # Desert and snow maps (mb_themes.py).
+    'Adobe': ('#d8ad7e', 0.0, 0.95, 0.0),        # sun-baked mud brick
+    'AdobeTrim': ('#a9774f', 0.0, 0.93, 0.0),    # darker earth: plinths, reveals, roof decks
+    'Sandstone': ('#d99d66', 0.0, 0.92, 0.0),
+    'SandstoneDark': ('#a8603b', 0.0, 0.93, 0.0),
+    'SnowCap': ('#f4f8fb', 0.0, 0.78, 0.0),      # snow lying on trees, roofs and rocks
+    'LogWood': ('#7a5334', 0.0, 0.88, 0.0),
+    'Rust': ('#8f4e2c', 0.35, 0.74, 0.0),
+    'Pipe': ('#9ba49c', 0.55, 0.45, 0.0),        # painted process piping
 }
 GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
 
