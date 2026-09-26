@@ -18,7 +18,7 @@ namespace MachineBrigade.Tests
         {
             "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
-            "gunship_heli", "scout_heli", "attack_jet", "strike_drone",
+            "gunship_heli", "scout_heli", "attack_jet", "strike_drone", "heavy_bomber", "stealth_bomber", "sky_gunship",
             "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
         };
 

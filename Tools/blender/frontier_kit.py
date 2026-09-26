@@ -23,7 +23,8 @@ Look development shared by every model:
 Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary.cs): Blender -Y is the model's front, `leg_*` empties stay
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
 form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
-Propeller, Radar, Mount_*, Pump_beam) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
+Propeller, Radar, Mount_*, Pump_beam) move at runtime too, and an aircraft's Bombs are hidden once they
+drop, so like the rig they receive ambient occlusion but never cast it.
 """
 import contextlib
 import io
@@ -40,8 +41,9 @@ SHARP = math.radians(50)
 BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
-# Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts).
-MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam)', re.I)
+# Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts) or
+# are hidden on their own (an aircraft's Bombs once they drop).
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
 RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|propeller|radar|mount_)', re.I)
 
@@ -534,7 +536,8 @@ class Asset:
             self.collection.objects.link(ob)
             if parent:
                 ob.parent = self.pivots[parent]
-            meshes.append((ob, self._world(parent), mat, bool(RIG.match(name)) or self._moving(parent)))
+            loose = bool(RIG.match(name) or re.match(r'^bombs', name, re.I))
+            meshes.append((ob, self._world(parent), mat, loose or self._moving(parent)))
         # The runtime finds pivots and rig parts by exact name; a clash would export "Name.001".
         # Other parts may share a name across materials (a tree's two Crown parts).
         clashes = [o.name for o in self.collection.objects if '.' in o.name]
