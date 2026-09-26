@@ -2,6 +2,74 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: Campaign, bosses, free-to-play economy, new modes, eight battlefields
+
+The user asked for:
+- a campaign with vehicles unlocked gradually, and bosses with cinematic moments (no veteran units carried between missions);
+- a free game: coins after every match, a rewarded ad for double coins, skins and premium equipment bought with coins;
+- more vehicles, aircraft and artillery, better bomber models and a detail pass on every model;
+- more modes against the AI with difficulty levels (Deathmatch and others);
+- more maps, with scenery that fits the terrain (rocks and scrub in the desert, forest in the snow).
+
+### Done
+- **Campaign "Operation Steel Fire".** Twelve missions over four battlefields, defined in `Resources/Data/campaign.json` and run by `MissionMode`.
+  - Goals: capture, hold, destroy, escort a convoy, survive, kill a boss, intercept a train.
+  - Missions can add waves, scripted convoys and boss routes, placed units, hardened demolition targets and their own army cap.
+  - Each mission awards up to three stars, for winning, for speed and for losses.
+  - Vehicles unlock as the campaign advances. Any card can be bought early with coins.
+- **Bosses:**
+  - behemoth (land battleship), in m06;
+  - mobile fortress, in m09;
+  - armoured train, in m12;
+  - mega gunship (tandem rotors), in m03.
+
+  Each boss has its own model, a boss health bar and a forced cinematic when it dies. The AI focuses its fire on the boss, and repair drops do not heal it.
+- **Cinematic moments.** The biggest blasts trigger a short slow-motion moment with letterbox bars and the camera leaning in. There is at most one every 25 s, a boss death always gets one, and it can be switched off in Settings.
+- **Free-to-play economy.** `PlayerProfile` is stored as JSON in PlayerPrefs `mb.profile`.
+  - Coins and XP are paid after every match, and the result card offers a rewarded ad for double coins. `IRewardedAds` currently shows a 5 s placeholder in place of a real ad.
+  - The shop has three tabs:
+    - **Skins:** ten procedural camouflage patterns in the lit shader, previewed live on the menu battle.
+    - **Premium:** coin-only cards.
+    - **Unlocks:** campaign cards bought early.
+- **Premium equipment:**
+  - Titan super tank.
+  - Heavy bomber: carpets twelve bombs.
+  - Stealth bomber: three precision bombs with ultimate-tier blasts.
+  - Sky gunship: side-firing 105 mm, 40 mm and 25 mm guns.
+  - Napalm strike: leaves the ground burning.
+  - Carpet bombing: flown by the heavy bomber model.
+- **New vehicles:** IFV, 155 mm howitzer, thermobaric launcher (sets the impact area burning) and a twin-30 mm flak vehicle.
+- **Quick modes against the AI**, each at Easy, Normal or Hard:
+  - Conquest.
+  - Deathmatch: first to 100 kills, or 12 minutes.
+  - King of the Hill: hold the centre to 100 points.
+  - Assault: take every point from a dug-in defender within 14 minutes.
+  - Survival.
+- **Eight battlefields.** New ones:
+  - Redrock Canyon: desert canyon lanes, rock walls and an oasis market.
+  - Whiteout Pass: a snow forest pass with a frozen lake.
+  - Greenvale: hedgerowed farmland round a crossroads village.
+  - Rust Yard: ruined industry and a marshalling yard.
+
+  Dunebreak, Frostpeak and Ironport were re-dressed to fit their terrain: more boulders and cactus in the desert, more forest and snow rocks in the snow, a denser harbour.
+- **Art (Blender agents):**
+  - four boss models;
+  - the strike jet, attack jet, drone, helicopters and munitions rebuilt with a fixed-wing kit;
+  - three premium aircraft;
+  - a detail pass on all 14 ground vehicles plus the car and truck: real track runs with sprockets and idlers, skirts, stowage, hatches and muzzle devices.
+- **AI fixes found by measuring the campaign over eight seeds per mission** (94 of 96 won, up from 77):
+  - The army now shoots demolition targets. Before, shells only splashed them, so a target with no enemy beside it never fell.
+  - The main body no longer waits forever on vehicles that never finish a move: vehicles jostling for a slot, and anti-aircraft vehicles that hold short near tanks.
+  - Hold missions leash the army to the point.
+  - Missions raise the player's army cap to 30, because units placed at the start used to fill Conquest's 24 and no reinforcements ever came.
+
+### Known limitations
+- Ads are a placeholder. A real SDK (AdMob with test IDs, then the user's account) is still to be wired to `IRewardedAds`.
+- There is no screenshot or clip sharing yet. It needs a native share plugin.
+- Campaign balance is measured with a late-campaign deck (`CampaignTests`). A player still on the starter deck will find missions 5 to 12 longer.
+- m06 and m12 are each lost once in eight seeds by the auto-commander, so the player may need to step in.
+- Nothing new is measured on a real phone yet. The emulator checks were functional only.
+
 ## 2026-09-26: Command-console UI, three new battlefields, weather, settings, shadows
 
 The user asked for:

@@ -196,7 +196,7 @@ namespace MachineBrigade.Game.Hud
             ["map.redrock.sub"] = ("Canyon · Desert", "Hẻm núi · Sa mạc"),
             ["map.whiteout"] = ("Whiteout Pass", "Đèo Bão Tuyết"),
             ["map.whiteout.sub"] = ("Forest pass · Snow", "Đèo rừng · Tuyết"),
-            ["map.greenvale"] = ("Greenvale", "Thung Lũng Xanh"),
+            ["map.greenvale"] = ("Greenvale", "Lũng Xanh"),
             ["map.greenvale.sub"] = ("Farmland · Temperate", "Đồng quê · Ôn đới"),
             ["map.rustyard"] = ("Rust Yard", "Bãi Sắt Gỉ"),
             ["map.rustyard.sub"] = ("Industry · Ruins", "Khu công nghiệp · Đổ nát"),
