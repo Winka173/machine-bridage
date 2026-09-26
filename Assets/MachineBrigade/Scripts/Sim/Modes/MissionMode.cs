@@ -28,6 +28,10 @@ namespace MachineBrigade.Sim.Modes
         private readonly List<ObjectiveState> _points = new();
         private readonly List<EntityId> _targets = new();
         private readonly List<(EntityId id, int waypoint)> _convoy = new();
+        private readonly HashSet<EntityId> _halted = new();
+
+        /// <summary>A truck drives on only with a friendly vehicle this close: the army leads, the convoy follows.</summary>
+        private const float EscortReach = 22f;
         private readonly KillLedger _ledger = new();
         private readonly List<string> _single = new();
         private float _held, _waveTimer, _convoyTimer;
@@ -255,12 +259,29 @@ namespace MachineBrigade.Sim.Modes
             {
                 var (id, waypoint) = _convoy[i];
                 if (waypoint >= convoy.Route.Count || !world.TryGetVehicle(id, out var truck) || !truck.IsAlive) continue;
+                // Unescorted trucks stop and wait rather than drive alone into an ambush.
+                var escorted = Escorted(world, truck);
+                if (!escorted && !_halted.Contains(id))
+                {
+                    _halted.Add(id);
+                    world.Submit(new Command(CommandType.Stop, PlayerTeam, new[] { id }));
+                }
+                else if (escorted && _halted.Remove(id)) Drive(world, truck, convoy.Route[waypoint]);
+                if (!escorted) continue;
                 if (Vector2.Distance(truck.Position, convoy.Route[waypoint]) > WaypointReach) continue;
                 waypoint++;
                 _convoy[i] = (id, waypoint);
                 if (waypoint >= convoy.Route.Count) _arrived++;
                 else Drive(world, truck, convoy.Route[waypoint]);
             }
+        }
+
+        private static bool Escorted(SimWorld world, Vehicle truck)
+        {
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == PlayerTeam && !v.Scripted && !v.Flying &&
+                    Vector2.DistanceSquared(v.Position, truck.Position) < EscortReach * EscortReach) return true;
+            return false;
         }
 
         private void DriveBoss(SimWorld world)

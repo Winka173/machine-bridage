@@ -100,6 +100,7 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            FocusBoss(world);
             DirectArtillery(world, front, objective, forward, contact);
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
@@ -135,6 +136,44 @@ namespace MachineBrigade.Sim.AI
                 if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
+            }
+        }
+
+        /// <summary>How far past its weapon's range a vehicle turns to engage a boss.</summary>
+        private const float BossReach = 30f;
+
+        /// <summary>
+        /// A boss in sight is the priority: everything that can hurt it and is close enough gets
+        /// an attack order on it (artillery included), so the army does not trade shots with
+        /// escorts while the boss grinds through it.
+        /// </summary>
+        private void FocusBoss(SimWorld world)
+        {
+            Vehicle? boss = null;
+            foreach (var e in _enemies)
+                if (e.Def.Boss)
+                {
+                    boss = e;
+                    break;
+                }
+            if (boss == null) return;
+            FocusOn(world, boss, _line);
+            FocusOn(world, boss, _fast);
+            FocusOn(world, boss, _artillery);
+        }
+
+        private void FocusOn(SimWorld world, Vehicle boss, List<Vehicle> vehicles)
+        {
+            for (var i = vehicles.Count - 1; i >= 0; i--)
+            {
+                var v = vehicles[i];
+                var weapon = v.Def.Weapon;
+                if (!weapon.CanTarget(boss.Flying)) continue;
+                var distance = Vector2.Distance(v.Position, boss.Position);
+                if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
+                vehicles.RemoveAt(i);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == boss.Id) continue;
+                Issue(world, CommandType.Attack, v.Id, boss.Position, boss.Id);
             }
         }
 

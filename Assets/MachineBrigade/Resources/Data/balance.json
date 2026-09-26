@@ -126,7 +126,7 @@
       "firesWhileMoving": true, "weapon": "drone_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
-    { "id": "supply_truck",     "armor": "Light", "hp": 650, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "cp": 0, "vision": 26,
+    { "id": "supply_truck",     "armor": "Heavy", "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "cp": 0, "vision": 26,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "truck",
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     { "id": "behemoth",         "armor": "Heavy", "hp": 8500, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "cp": 0, "vision": 50,
@@ -139,7 +139,7 @@
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 0.8, "tier": "Ultimate" } },
-    { "id": "armored_train",    "armor": "Heavy", "hp": 6000, "speed": 0.75, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "cp": 0, "vision": 50,
+    { "id": "armored_train",    "armor": "Heavy", "hp": 4200, "speed": 0.4, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true,
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 0.7, "tier": "Ultimate" } },

@@ -175,7 +175,17 @@ namespace MachineBrigade.Sim.AI
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
-            if (!FindCluster(out var cluster, out var size)) return false;
+            var foundCluster = FindCluster(out var cluster, out var size);
+            // A boss is worth the biggest strike on its own.
+            foreach (var e in _tactics.KnownEnemies)
+                if (e.Def.Boss && !e.Flying)
+                {
+                    cluster = e.Position;
+                    size = ClusterSize + 2;
+                    foundCluster = true;
+                    break;
+                }
+            if (!foundCluster) return false;
             SupportDef? pick = null;
             foreach (var id in supports)
             {
@@ -272,14 +282,15 @@ namespace MachineBrigade.Sim.AI
         {
             centre = default;
             size = 0;
+            // Scripted convoys are left to direct fire: a column of trucks would draw every strike.
             foreach (var e in _tactics.KnownEnemies)
             {
-                if (e.Flying) continue;
+                if (e.Flying || e.Scripted) continue;
                 var around = 0;
                 var sum = Vector2.Zero;
                 foreach (var other in _tactics.KnownEnemies)
                 {
-                    if (other.Flying || Vector2.Distance(other.Position, e.Position) > ClusterRadius) continue;
+                    if (other.Flying || other.Scripted || Vector2.Distance(other.Position, e.Position) > ClusterRadius) continue;
                     around++;
                     sum += other.Position;
                 }

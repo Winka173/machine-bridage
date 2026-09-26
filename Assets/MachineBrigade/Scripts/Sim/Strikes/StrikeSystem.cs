@@ -207,7 +207,8 @@ namespace MachineBrigade.Sim.Strikes
             var fraction = support.Damage / support.Count;
             foreach (var v in _world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
+                // Bosses cannot be patched up in the field: a 40% heal would undo minutes of fighting.
+                if (!v.IsAlive || v.Team != s.Team || v.Def.Boss || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
                 var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * fraction);
                 if (amount <= 0f) continue;
                 v.Hp += amount;
