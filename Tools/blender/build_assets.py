@@ -16,12 +16,18 @@ HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import frontier_kit as kit  # noqa: E402
+import mb_air  # noqa: E402
 import mb_props  # noqa: E402
+import mb_terrain  # noqa: E402
 import mb_vehicles  # noqa: E402
 
 ROOT = HERE.parents[1]
 OUT = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
 REPORT = ROOT / 'Docs' / 'art' / 'models.json'
+
+
+def all_builders():
+    return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS}
 
 
 def build_all(filters=()):
@@ -30,7 +36,7 @@ def build_all(filters=()):
     root = kit.workspace()
     kit.clear_workspace(root)
     OUT.mkdir(parents=True, exist_ok=True)
-    builders = {**mb_vehicles.BUILDERS, **mb_props.BUILDERS}
+    builders = all_builders()
     report = json.loads(REPORT.read_text(encoding='utf-8')) if REPORT.exists() else {}
     for name, (build, options) in builders.items():
         if filters and not any(f in name for f in filters):

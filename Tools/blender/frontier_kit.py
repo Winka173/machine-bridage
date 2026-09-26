@@ -2,7 +2,8 @@
 
 Originally written for Frontier Command (github.com/buicongnguyen/3d_astra) and reused in
 Machine Brigade with the author's permission. Machine Brigade additions: extra materials
-(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas) and GLB export into the Unity project.
+(Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass), nested pivots,
+lofted hulls, raw faceted meshes (terrain) and GLB export into the Unity project.
 
 The same code runs headless (`blender --background --python generate_assets.py`) and live
 inside an interactive Blender driven through MCP for Blender. It never switches the window
@@ -20,7 +21,8 @@ Look development shared by every model:
     material without dropping any of them.
 Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary.cs): Blender -Y is the model's front, `leg_*` empties stay
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
-form the aim and recoil rig.
+form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
+Radar, Mount_*) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
 """
 import contextlib
 import io
@@ -37,6 +39,10 @@ SHARP = math.radians(50)
 BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
+# Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts).
+MOVING = re.compile(r'^(rotor|tail_rotor|radar|mount_)', re.I)
+# Names Machine Brigade's runtime looks up (pivots are always checked as well).
+RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|rotor|tail_rotor|radar|mount_)', re.I)
 
 
 def lin(value):
@@ -86,6 +92,11 @@ MATERIALS = {
     'BarrelRed': ('#c2402a', 0.35, 0.48, 0.0),
     'Fuel': ('#e4e2d8', 0.45, 0.42, 0.0),
     'Canvas': ('#8a8764', 0.0, 0.9, 0.0),
+    # Terrain and field fortifications.
+    'Snow': ('#e8eef0', 0.0, 0.85, 0.0),
+    'Dirt': ('#7a6448', 0.0, 0.95, 0.0),
+    'Sandbag': ('#a8956a', 0.0, 0.95, 0.0),
+    'Grass': ('#5f7a45', 0.0, 0.9, 0.0),
 }
 GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
 
@@ -213,6 +224,35 @@ class Shape:
         self._finish(rings[0] + rings[1], loc, rot, bevel, seg)
         return self
 
+    def loft(self, rings, loc=(0, 0, 0), rot=(0, 0, 0), bevel=0.0, seg=2):
+        """Skin 3D cross-sections [[(x, y, z)...]...] (equal point counts, same winding) into a
+        closed hull: fuselages, wedge-nosed hulls, rock strata. A one-point ring is a pointed tip."""
+        bm = self.bm
+        vr = [[bm.verts.new(p) for p in ring] for ring in rings]
+        n = max(len(r) for r in vr)
+        faces = []
+        for a, b in zip(vr, vr[1:]):
+            if len(a) == 1 or len(b) == 1:
+                tip, ring = (a[0], b) if len(a) == 1 else (b[0], a)
+                faces += [bm.faces.new((tip, ring[i], ring[(i + 1) % n])) for i in range(n)]
+            else:
+                faces += [bm.faces.new((a[i], a[(i + 1) % n], b[(i + 1) % n], b[i])) for i in range(n)]
+        if len(vr[0]) > 1:
+            faces.append(bm.faces.new(list(reversed(vr[0]))))
+        if len(vr[-1]) > 1:
+            faces.append(bm.faces.new(vr[-1]))
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        self._finish([v for r in vr for v in r], loc, rot, bevel, seg)
+        return self
+
+    def mesh(self, verts, faces):
+        """Raw polygons (terrain facets): verts [(x, y, z)...], faces [(i, j, k...)...] wound
+        counter-clockwise seen from outside. Open patches keep that winding as given."""
+        vs = [self.bm.verts.new(v) for v in verts]
+        for f in faces:
+            self.bm.faces.new([vs[i] for i in f])
+        return self
+
     def lathe(self, profile, loc=(0, 0, 0), rot=(0, 0, 0), seg=24, bevel=0.0):
         """Revolve [(radius, z)...] around local Z, bottom to top. Zero radius ends are capped."""
         rings = []
@@ -316,9 +356,9 @@ class Shape:
             self.box((width, depth, thickness), loc=m.to_translation(), rot=m.to_euler('XYZ'), bevel=0)
         return self
 
-    def bolts(self, points, r=0.035, h=0.03, rot=(0, 0, 0), seg=6):
+    def bolts(self, points, r=0.035, h=0.03, rot=(0, 0, 0), seg=6, bevel=0.008):
         for p in points:
-            self.cyl(r, h, loc=p, rot=rot, seg=seg, bevel=0.008, bseg=1)
+            self.cyl(r, h, loc=p, rot=rot, seg=seg, bevel=bevel, bseg=1)
         return self
 
 
@@ -353,7 +393,8 @@ class Asset:
     """Named parts (one Shape per part/material/parent) that finish into exportable objects."""
 
     def __init__(self, name, parent_collection, ao_distance=0.9, ao_strength=0.9, grime_height=0.5, ao_samples=40,
-                 lattice=0.0):
+                 lattice=0.0, ground=True):
+        """ground=False for models that fly (jets, munitions): no ground-plane occlusion or grime."""
         self.name = name
         self.collection = bpy.data.collections.new(f'frontier_{name}')
         parent_collection.children.link(self.collection)
@@ -366,12 +407,16 @@ class Asset:
         self.grime_height = grime_height
         self.ao_samples = ao_samples
         self.lattice = lattice
+        self.ground = ground
 
-    def pivot(self, name, loc):
+    def pivot(self, name, loc, parent=None):
+        """Empty at loc; with a parent pivot, loc is relative to it (Mount_mg on the Turret)."""
         o = bpy.data.objects.new(name, None)
         o.empty_display_size = 0.2
         o.location = loc
         self.collection.objects.link(o)
+        if parent:
+            o.parent = self.pivots[parent]
         self.pivots[name] = o
         return name
 
@@ -385,13 +430,29 @@ class Asset:
         return self.shapes[key]
 
     def _world(self, parent):
-        return Matrix.Translation(self.pivots[parent].location) if parent else Matrix.Identity(4)
+        m = Matrix.Identity(4)
+        o = self.pivots[parent] if parent else None
+        while o is not None:  # pivots only translate
+            m = Matrix.Translation(o.location) @ m
+            o = o.parent
+        return m
+
+    def _moving(self, parent):
+        o = self.pivots[parent] if parent else None
+        while o is not None:
+            if MOVING.match(o.name):
+                return True
+            o = o.parent
+        return False
 
     def finish(self):
         meshes = []
         for key in self.order:
             name, mat, parent = key
             bm = self.shapes[key].bm
+            if not bm.faces:  # declared but never filled: glTF would export a bare node
+                bm.free()
+                continue
             flat = getattr(self.shapes[key], 'flat', False)
             if self.lattice:
                 lattice_slice(bm, self._world(parent), self.lattice)
@@ -408,9 +469,15 @@ class Asset:
             self.collection.objects.link(ob)
             if parent:
                 ob.parent = self.pivots[parent]
-            meshes.append((ob, self._world(parent), mat))
+            meshes.append((ob, self._world(parent), mat, bool(RIG.match(name)) or self._moving(parent)))
+        # The runtime finds pivots and rig parts by exact name; a clash would export "Name.001".
+        # Other parts may share a name across materials (a tree's two Crown parts).
+        clashes = [o.name for o in self.collection.objects if '.' in o.name]
+        fatal = [n for n in clashes if n.split('.')[0] in self.pivots or RUNTIME.match(n)]
+        if fatal:
+            raise ValueError(f'{self.name}: duplicate runtime names {fatal}')
         self._shade(meshes)
-        for ob, _, _ in meshes:
+        for ob, _, _, _ in meshes:
             box_uv(ob.data)
             mod = ob.modifiers.new('Weighted normals', 'WEIGHTED_NORMAL')
             mod.mode = 'FACE_AREA'
@@ -422,18 +489,19 @@ class Asset:
     def _shade(self, meshes):
         def bvh(parts):
             verts, polys = [], []
-            for ob, mw, _ in parts:
+            for ob, mw, _, _ in parts:
                 base = len(verts)
                 verts += [mw @ v.co for v in ob.data.vertices]
                 polys += [tuple(base + i for i in p.vertices) for p in ob.data.polygons]
             return BVHTree.FromPolygons(verts, polys, epsilon=0.0)
-        # Aim/recoil rig parts move at runtime, so they must not bake shadows onto the body.
+        # Aim/recoil rig parts and spinning parts move at runtime, so they must not bake shadows
+        # onto the body.
         full = bvh(meshes)
-        static = bvh([m for m in meshes if not RIG.match(m[0].name)])
+        static = bvh([m for m in meshes if not m[3]])
         dirs = _hemisphere(self.ao_samples)
         dist = self.ao_distance
-        for ob, mw, mat in meshes:
-            tree = full if RIG.match(ob.name) else static
+        for ob, mw, mat, moving in meshes:
+            tree = full if moving else static
             me = ob.data
             normals = [Vector(n.vector) for n in me.vertex_normals]
             wear = me.attributes.get('wear')
@@ -458,7 +526,7 @@ class Asset:
                     # visible faces, so buried samples must not darken it.
                     if loc is not None and hit_normal.dot(ray) > 0:
                         loc = None
-                    if loc is None and ray.z < -1e-4 and origin.z >= -1e-3:
+                    if self.ground and loc is None and ray.z < -1e-4 and origin.z >= -1e-3:
                         t = -origin.z / ray.z
                         loc = t < dist or None
                     if loc is not None:
@@ -466,10 +534,10 @@ class Asset:
                 ao = 1 - hit / len(dirs)
                 k = 1 - self.ao_strength * (1 - ao)
                 edge = 1 + 0.24 * w
-                grime = 0.8 + 0.2 * smoothstep(0.0, self.grime_height, p.z)
+                grime = 0.8 + 0.2 * smoothstep(0.0, self.grime_height, p.z) if self.ground else 1.0
                 mott = 1 + 0.035 * noise.noise(p * 1.3) + 0.02 * noise.noise(p * 5.1)
                 g = max(0.0, min(1.0, BASE_TONE * k * edge * grime * mott))
-                dust = 1 - 0.05 * (1 - smoothstep(0.0, self.grime_height, p.z))
+                dust = 1 - 0.05 * (1 - smoothstep(0.0, self.grime_height, p.z)) if self.ground else 1.0
                 colors += [g, g * (0.995 * dust + 0.005), g * (0.985 * dust), 1.0]
             attr = me.color_attributes.new('Col', 'BYTE_COLOR', 'POINT')
             attr.data.foreach_set('color', colors)
