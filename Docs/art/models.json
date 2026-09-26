@@ -27,6 +27,10 @@
     "file": "armored_car.glb",
     "triangles": 5100
   },
+  "armored_train": {
+    "file": "armored_train.glb",
+    "triangles": 16798
+  },
   "artillery": {
     "file": "artillery.glb",
     "triangles": 5504
@@ -46,6 +50,10 @@
   "barrel": {
     "file": "barrel.glb",
     "triangles": 816
+  },
+  "behemoth": {
+    "file": "behemoth.glb",
+    "triangles": 17972
   },
   "birch": {
     "file": "birch.glb",
@@ -211,6 +219,10 @@
     "file": "market_stall.glb",
     "triangles": 1404
   },
+  "mega_gunship": {
+    "file": "mega_gunship.glb",
+    "triangles": 10740
+  },
   "mesa": {
     "file": "mesa.glb",
     "triangles": 546
@@ -222,6 +234,10 @@
   "mlrs": {
     "file": "mlrs.glb",
     "triangles": 5808
+  },
+  "mobile_fortress": {
+    "file": "mobile_fortress.glb",
+    "triangles": 20290
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",

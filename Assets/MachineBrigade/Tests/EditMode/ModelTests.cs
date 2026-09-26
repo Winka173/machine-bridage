@@ -19,6 +19,7 @@ namespace MachineBrigade.Tests
             "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
             "gunship_heli", "scout_heli", "attack_jet", "strike_drone",
+            "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
         };
 
         private static readonly string[] Props =
@@ -68,6 +69,10 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(Find(root, "Rotor"));
             Assert.IsNotNull(Find(root, "Tail_rotor"));
             Assert.IsNotNull(Find(root, "Mount_gun"));
+            // The tandem boss gunship spins both of its rotors.
+            var gunship = Load("mega_gunship").transform;
+            Assert.IsNotNull(Find(gunship, "Rotor"));
+            Assert.IsNotNull(Find(gunship, "Rotor_rear"));
         }
 
         /// <summary>Blender's -Y front must arrive as Unity +Z, or vehicles would drive backwards.</summary>
