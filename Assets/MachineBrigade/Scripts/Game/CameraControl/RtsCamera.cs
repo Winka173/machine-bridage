@@ -3,15 +3,19 @@ using UnityEngine;
 namespace MachineBrigade.Game.CameraControl
 {
     /// <summary>
-    /// Tilted battlefield camera. Panning is world-anchored (the ground under the finger
-    /// stays under the finger), zoom keeps the pinch centre fixed, and the focus is clamped
-    /// to the map so every corner stays reachable (V2 R03). Shake is applied on top.
+    /// Orthographic battlefield camera, as in the 3d_astra reference: a fixed tilted diagonal view
+    /// where sizes never change with depth. Yaw puts the south-west to north-east battle axis
+    /// across the screen, which suits landscape phones. Panning is world-anchored (the ground
+    /// under the finger stays under the finger), zoom keeps the pinch centre fixed, and the focus
+    /// is clamped to the map so every corner stays reachable (V2 R03). Shake is added on top.
     /// </summary>
     public sealed class RtsCamera
     {
-        private const float Pitch = 55f;
-        private const float MinDistance = 16f;
-        private const float MaxDistance = 110f;
+        private const float Pitch = 52f;
+        private const float Yaw = -45f;
+        private const float Distance = 60f; // keeps the view inside the shadow distance
+        private const float MinZoom = 9f;
+        private const float MaxZoom = 42f;
         private const float TraumaDecay = 1.4f;
 
         private readonly Camera _camera;
@@ -19,25 +23,26 @@ namespace MachineBrigade.Game.CameraControl
         private float _trauma;
         private float _noiseTime;
 
-        public RtsCamera(Camera camera, float halfSize, Vector3 focus, float distance = 55f)
+        public RtsCamera(Camera camera, float halfSize, Vector3 focus, float zoom = 19f)
         {
             _camera = camera;
             _halfSize = halfSize;
-            _camera.fieldOfView = 40f;
-            _camera.nearClipPlane = 0.5f;
-            _camera.farClipPlane = 700f;
+            _camera.orthographic = true;
+            _camera.nearClipPlane = 1f;
+            _camera.farClipPlane = 320f;
             Focus = focus;
-            Distance = Mathf.Clamp(distance, MinDistance, MaxDistance);
+            Zoom = Mathf.Clamp(zoom, MinZoom, MaxZoom);
             Clamp();
             Place();
         }
 
         public Camera Camera => _camera;
 
-        /// <summary>Point on the ground the camera orbits.</summary>
+        /// <summary>Point on the ground the camera looks at.</summary>
         public Vector3 Focus { get; private set; }
 
-        public float Distance { get; private set; }
+        /// <summary>Half the visible height in metres (the orthographic size).</summary>
+        public float Zoom { get; private set; }
 
         public Quaternion Rotation => _camera.transform.rotation;
 
@@ -59,12 +64,12 @@ namespace MachineBrigade.Game.CameraControl
             Place();
         }
 
-        public void Zoom(float factor, Vector2 anchorScreen)
+        public void ZoomBy(float factor, Vector2 anchorScreen)
         {
             if (factor <= 0f) return;
             Place();
             var hadAnchor = TryGroundPoint(anchorScreen, out var before);
-            Distance = Mathf.Clamp(Distance / factor, MinDistance, MaxDistance);
+            Zoom = Mathf.Clamp(Zoom / factor, MinZoom, MaxZoom);
             Place();
             if (hadAnchor && TryGroundPoint(anchorScreen, out var after)) Focus += before - after;
             Clamp();
@@ -81,14 +86,15 @@ namespace MachineBrigade.Game.CameraControl
             Place();
             if (_trauma <= 0f) return;
             var strength = _trauma * _trauma;
-            var offset = new Vector3(Noise(0), Noise(1), Noise(2)) * (0.9f * strength * Distance / 50f);
-            _camera.transform.position += offset;
-            _camera.transform.rotation *= Quaternion.Euler(Noise(3) * 2f * strength, Noise(4) * 2f * strength, 0f);
+            var t = _camera.transform;
+            t.position += (t.right * Noise(0) + t.up * Noise(1)) * (0.05f * strength * Zoom);
+            t.rotation *= Quaternion.Euler(0f, 0f, Noise(2) * 1.2f * strength);
         }
 
         private void Place()
         {
-            var rotation = Quaternion.Euler(Pitch, 0f, 0f);
+            var rotation = Quaternion.Euler(Pitch, Yaw, 0f);
+            _camera.orthographicSize = Zoom;
             _camera.transform.SetPositionAndRotation(Focus - rotation * Vector3.forward * Distance, rotation);
         }
 

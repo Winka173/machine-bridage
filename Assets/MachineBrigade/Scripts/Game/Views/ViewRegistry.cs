@@ -13,13 +13,15 @@ namespace MachineBrigade.Game.Views
     {
         private readonly Dictionary<EntityId, VehicleView> _views = new();
         private readonly List<VehicleView> _list = new();
+        private readonly ModelLibrary _models;
         private readonly MeshLibrary _meshes;
         private readonly MaterialLibrary _materials;
         private readonly Transform _parent;
         private readonly int _playerTeam;
 
-        public ViewRegistry(MeshLibrary meshes, MaterialLibrary materials, Transform parent, int playerTeam)
+        public ViewRegistry(ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials, Transform parent, int playerTeam)
         {
+            _models = models;
             _meshes = meshes;
             _materials = materials;
             _parent = new GameObject("Vehicles").transform;
@@ -32,7 +34,7 @@ namespace MachineBrigade.Game.Views
         public VehicleView Add(Vehicle vehicle)
         {
             if (_views.TryGetValue(vehicle.Id, out var existing)) return existing;
-            var view = new VehicleView(vehicle, _meshes, _materials, _parent, _playerTeam);
+            var view = new VehicleView(vehicle, _models, _meshes, _materials, _parent, _playerTeam);
             _views.Add(vehicle.Id, view);
             _list.Add(view);
             return view;

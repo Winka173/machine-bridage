@@ -1,0 +1,190 @@
+/* Machine Brigade HUD. Palette and typography follow the 3d_astra reference: dark teal glass
+   panels, mint accents, Inter for text, JetBrains Mono for numbers. Authored for a 1280 x 720
+   reference resolution (the panel scales with screen height). */
+
+:root {
+    --ink: #e3ece6;
+    --dim: #8b9a91;
+    --mint: #a5e3bf;
+    --amber: #dfb776;
+    --danger: #ef8a72;
+    --panel: rgba(12, 21, 19, 0.9);
+    --panel-edge: rgba(165, 227, 191, 0.16);
+    --button: rgba(24, 38, 34, 0.94);
+    --button-press: rgba(58, 92, 78, 0.96);
+}
+
+.hud {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    -unity-font: resource("Fonts/Inter-Regular");
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.safe {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+/* ---------------------------------------------------------------- top bar */
+.topbar {
+    flex-direction: row;
+    align-items: center;
+    height: 56px;
+    padding-left: 18px;
+    padding-right: 14px;
+    background-color: rgba(10, 18, 16, 0.92);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--panel-edge);
+}
+
+.brand { flex-direction: row; align-items: center; width: 220px; }
+.brand .icon { width: 30px; height: 30px; margin-right: 12px; }
+.brand-top { -unity-font: resource("Fonts/Inter-Bold"); font-size: 15px; letter-spacing: 3px; }
+.brand-bottom { font-size: 9px; letter-spacing: 1px; color: var(--dim); margin-top: -2px; }
+
+.stats { flex-grow: 1; flex-direction: row; justify-content: center; align-items: center; }
+.stat { flex-direction: row; align-items: center; padding-left: 20px; padding-right: 20px; }
+.stat .icon { width: 22px; height: 22px; margin-right: 10px; }
+.stat-number { -unity-font: resource("Fonts/JetBrainsMono-Medium"); font-size: 22px; -unity-text-align: middle-left; }
+.stat-label { font-size: 9px; letter-spacing: 2px; color: var(--dim); margin-top: -2px; }
+.stat-divider { width: 1px; height: 30px; background-color: var(--panel-edge); }
+
+.topbar-right { flex-direction: row; align-items: center; width: 220px; justify-content: flex-end; }
+.fps { -unity-font: resource("Fonts/JetBrainsMono-Medium"); font-size: 11px; color: var(--dim); margin-right: 14px; }
+
+.icon-button {
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0);
+}
+.icon-button .icon { width: 22px; height: 22px; }
+.icon-button:hover { background-color: rgba(165, 227, 191, 0.08); }
+.icon-button:active { background-color: rgba(165, 227, 191, 0.16); border-color: var(--panel-edge); }
+
+/* ---------------------------------------------------------------- mission block */
+.mission { position: absolute; left: 22px; top: 70px; }
+.kicker { font-size: 9px; letter-spacing: 3px; color: var(--mint); -unity-font: resource("Fonts/Inter-SemiBold"); }
+.mission-title {
+    -unity-font: resource("Fonts/Inter-Bold");
+    font-size: 34px;
+    margin-top: 2px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+.mission-sub { font-size: 9px; letter-spacing: 3px; color: var(--ink); opacity: 0.75; margin-top: 2px; }
+
+/* ---------------------------------------------------------------- tool column */
+.tools { position: absolute; left: 22px; top: 168px; }
+.tool {
+    width: 72px; height: 66px;
+    margin-bottom: 8px;
+    align-items: center; justify-content: center;
+    background-color: var(--button);
+    border-width: 1px; border-color: var(--panel-edge); border-radius: 5px;
+}
+.tool .icon { width: 24px; height: 24px; }
+.tool-label { font-size: 10px; margin-top: 4px; color: var(--ink); }
+.tool:active { background-color: var(--button-press); }
+.tool.on { background-color: rgba(165, 227, 191, 0.22); border-color: var(--mint); }
+
+/* ---------------------------------------------------------------- command panel */
+.command {
+    position: absolute; right: 14px; bottom: 14px;
+    width: 410px;
+    padding: 14px;
+    background-color: var(--panel);
+    border-width: 1px; border-color: var(--panel-edge); border-radius: 6px;
+}
+.command-header { flex-direction: row; justify-content: space-between; margin-bottom: 10px; }
+.caps { font-size: 9px; letter-spacing: 3px; color: var(--dim); -unity-font: resource("Fonts/Inter-SemiBold"); }
+
+.details { flex-direction: row; align-items: center; margin-bottom: 12px; }
+.portrait {
+    width: 60px; height: 60px;
+    margin-right: 14px;
+    align-items: center; justify-content: center;
+    background-color: rgba(88, 140, 110, 0.22);
+    border-width: 1px; border-color: rgba(165, 227, 191, 0.3); border-radius: 5px;
+}
+.portrait .icon { width: 34px; height: 34px; }
+.details-text { flex-grow: 1; }
+.unit-name { -unity-font: resource("Fonts/Inter-SemiBold"); font-size: 20px; }
+.unit-name.empty { font-size: 15px; color: var(--dim); }
+.hp-track { height: 5px; margin-top: 8px; background-color: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+.hp-fill { height: 100%; width: 100%; background-color: var(--mint); border-radius: 2px; }
+.hp-fill.hurt { background-color: var(--amber); }
+.hp-fill.critical { background-color: var(--danger); }
+.hp-text { -unity-font: resource("Fonts/JetBrainsMono-Medium"); font-size: 11px; color: var(--dim); margin-top: 5px; }
+.hp-text.hint-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; }
+
+.buttons { flex-direction: row; margin-bottom: 8px; }
+.cmd {
+    flex-grow: 1; flex-basis: 0;
+    height: 64px;
+    margin-right: 8px;
+    align-items: center; justify-content: center;
+    background-color: var(--button);
+    border-width: 1px; border-color: var(--panel-edge); border-radius: 5px;
+}
+.cmd.last { margin-right: 0; }
+.cmd .icon { width: 22px; height: 22px; }
+.cmd-label { font-size: 12px; margin-top: 5px; }
+.cmd:active { background-color: var(--button-press); }
+.cmd.armed { background-color: rgba(223, 183, 118, 0.26); border-color: var(--amber); }
+.cmd.disabled { opacity: 0.45; }
+
+.reinforce {
+    height: 60px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 16px;
+    overflow: hidden;
+    background-color: rgba(58, 104, 82, 0.55);
+    border-width: 1px; border-color: rgba(165, 227, 191, 0.5); border-radius: 5px;
+}
+.reinforce-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0;
+    background-color: rgba(165, 227, 191, 0.14);
+}
+.reinforce .icon { width: 26px; height: 26px; margin-right: 12px; }
+.reinforce-title { -unity-font: resource("Fonts/Inter-SemiBold"); font-size: 15px; }
+.reinforce-sub { font-size: 11px; color: var(--dim); margin-top: 1px; }
+.reinforce:active { background-color: rgba(84, 140, 110, 0.7); }
+.reinforce.waiting { background-color: rgba(30, 46, 40, 0.9); border-color: var(--panel-edge); }
+
+/* ---------------------------------------------------------------- overlays */
+.toast {
+    position: absolute; top: 68px; left: 0; right: 0;
+    align-items: center;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.25s;
+}
+.toast.visible { opacity: 1; }
+.toast-box {
+    padding: 10px 18px;
+    background-color: rgba(16, 30, 26, 0.94);
+    border-width: 1px; border-color: rgba(165, 227, 191, 0.28); border-radius: 4px;
+    font-size: 14px;
+}
+.toast-box.error { border-color: rgba(239, 138, 114, 0.6); color: #ffd9cf; }
+
+.hint {
+    position: absolute; bottom: 16px; left: 110px; right: 450px;
+    -unity-text-align: middle-center;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--dim);
+}
+
+.selection-box {
+    position: absolute;
+    background-color: rgba(165, 227, 191, 0.12);
+    border-width: 1px;
+    border-color: rgba(165, 227, 191, 0.8);
+    display: none;
+}

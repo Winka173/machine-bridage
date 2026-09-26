@@ -11,6 +11,7 @@
 *.json     text
 *.md       text
 *.sh       text eol=lf
+*.py       text eol=lf
 
 # Binary content goes through Git LFS.
 *.png   filter=lfs diff=lfs merge=lfs -text

@@ -42,6 +42,9 @@ namespace MachineBrigade.Game.Input
         private float _startTime, _pinchDistance, _lastTapTime = -10f;
         private bool _rightDragging;
 
+        /// <summary>When it returns true, a one-finger drag box-selects instead of panning.</summary>
+        public Func<bool> BoxMode { get; set; } = () => false;
+
         public TouchGestures(IGestureHandler handler, Func<Vector2, bool> isOverUi)
         {
             _handler = handler;
@@ -80,8 +83,16 @@ namespace MachineBrigade.Game.Input
                         var p = _points[0];
                         if ((p - _start).magnitude > _dragThreshold)
                         {
-                            _state = State.Pan;
-                            _handler.OnPan(_last, p);
+                            if (BoxMode())
+                            {
+                                _state = State.Box;
+                                _handler.OnBoxUpdate(_start, p);
+                            }
+                            else
+                            {
+                                _state = State.Pan;
+                                _handler.OnPan(_last, p);
+                            }
                         }
                         else if (now - _startTime >= LongPressSeconds)
                         {

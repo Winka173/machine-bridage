@@ -1,3 +1,4 @@
+using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Hud;
@@ -26,48 +27,56 @@ namespace MachineBrigade.Game.Match
 
         private SimWorld _world;
         private SandboxMode _mode;
-        private SandboxAi _ai;
+        private TacticalAi _ai;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
+        private ModelLibrary _models;
+        private Atmosphere _atmosphere;
         private MapView _map;
+        private Surroundings _surroundings;
         private ViewRegistry _views;
         private EffectsDirector _effects;
+        private AudioDirector _audio;
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
-        private SandboxHud _hud;
+        private BattleHud _hud;
         private float _fps = 60f;
+        private int _announcedWave;
 
         private void Awake()
         {
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
-            ConfigureAtmosphere();
+            _atmosphere = new Atmosphere();
 
             var catalog = GameContent.LoadCatalog();
             var map = GameContent.LoadMap(MapId);
             _world = new SimWorld(catalog, map, seed: 1234);
             _mode = new SandboxMode();
             _mode.Setup(_world);
-            _ai = new SandboxAi(SandboxMode.EnemyTeam, PlayerTeam);
+            _ai = new TacticalAi(SandboxMode.EnemyTeam, PlayerTeam, seed: 1234);
             _clock = new SimClock();
 
             var worldRoot = new GameObject("Battlefield").transform;
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
-            _map = new MapView(_world, _meshes, _materials, worldRoot);
-            _views = new ViewRegistry(_meshes, _materials, worldRoot, PlayerTeam);
+            _models = new ModelLibrary(_materials);
+            _map = new MapView(_world, _models, _materials, worldRoot);
+            _surroundings = new Surroundings(_world, _models, _materials, TerrainTheme.Riverlands, worldRoot);
+            _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
 
             _world.TryGetRally(PlayerTeam, out var rally);
-            _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 18f, 0f, rally.Y + 18f));
-            _effects = new EffectsDirector(_materials, _meshes, _camera, worldRoot,
+            _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 16f, 0f, rally.Y + 16f));
+            _effects = new EffectsDirector(_materials, _meshes, _models, _camera, worldRoot,
                 Application.isMobilePlatform ? EffectBudget.Eco : EffectBudget.High);
+            _audio = new AudioDirector(_camera, worldRoot);
 
-            _hud = new SandboxHud();
+            _hud = new BattleHud();
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
-            _gestures = new TouchGestures(_selection, _hud.IsOverUi);
+            _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
             Wire();
 
             DispatchEvents();
@@ -93,7 +102,7 @@ namespace MachineBrigade.Game.Match
             }
 
             _selection.Tick();
-            _effects.Tick();
+            _effects.Tick(_views);
             _hud.Tick();
             UpdateStatus();
         }
@@ -102,16 +111,20 @@ namespace MachineBrigade.Game.Match
         {
             _camera.Apply(Time.unscaledDeltaTime);
             _views.Render(_clock.Alpha, _camera.Rotation);
+            _surroundings.Draw();
         }
 
         private void OnDestroy()
         {
             _effects?.Dispose();
+            _audio?.Dispose();
             _views?.Dispose();
             _map?.Dispose();
+            _surroundings?.Dispose();
             _hud?.Dispose();
             _meshes?.Dispose();
             _materials?.Dispose();
+            _atmosphere?.Dispose();
             Time.timeScale = 1f;
         }
 
@@ -121,6 +134,7 @@ namespace MachineBrigade.Game.Match
                 if (e.Kind == SimEventKind.VehicleSpawned && _world.TryGetVehicle(e.Entity, out var vehicle))
                     _views.Add(vehicle);
             _effects.Consume(_world.Events, _views, _map);
+            _audio.Consume(_world.Events);
             _world.ClearEvents();
         }
 
@@ -130,43 +144,40 @@ namespace MachineBrigade.Game.Match
             _hud.StopPressed += _selection.Stop;
             _hud.RetreatPressed += _selection.Retreat;
             _hud.AttackMovePressed += _selection.ToggleAttackMove;
+            _hud.BoxModeToggled += () => _selection.BoxMode = !_selection.BoxMode;
+            _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
             _hud.ReinforcePressed += () =>
             {
-                if (!_mode.TryReinforce(_world)) _hud.Toast("Reinforcements not ready");
+                if (!_mode.TryReinforce(_world)) _hud.Toast(Strings.Get("toast.reinforceWait"), error: true);
             };
             _hud.RestartPressed += () => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            _hud.SelectAllPressed += _audio.Click;
+            _hud.StopPressed += _audio.Click;
+            _hud.RetreatPressed += _audio.Click;
+            _hud.AttackMovePressed += _audio.Click;
+            _hud.BoxModeToggled += _audio.Click;
+            _hud.ReinforcePressed += _audio.Click;
+            _hud.ZoomPressed += _ => _audio.Click();
             _selection.Rejected += _hud.ShowError;
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
             _selection.BoxHidden += _hud.HideSelectionBox;
+            _hud.Toast(Strings.Get("toast.start"), seconds: 4f);
         }
 
         private void UpdateStatus()
         {
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
-            _hud.SetReinforceCooldown(_mode.ReinforceCooldown);
-            _hud.SetAttackMoveArmed(_selection.AttackMoveArmed);
-            _hud.SetStatus(
-                $"Allies {_world.CountAlive(PlayerTeam)}    Enemies {_world.CountAlive(SandboxMode.EnemyTeam)}    " +
-                $"Wave {_mode.Wave} (next in {Mathf.CeilToInt(_mode.SecondsToNextWave)} s)    {_fps:0} FPS\n" +
-                (_selection.SelectedCount > 0
-                    ? $"{_selection.SelectedCount} selected: tap ground to move, tap enemy or barrel to attack"
-                    : "Tap a vehicle to select, hold and drag to box-select, double-tap for all of a type"));
-        }
-
-        /// <summary>
-        /// Lighting that does not depend on baked data: explicit ambient colours for the voxel
-        /// shader and linear fog to soften the horizon.
-        /// </summary>
-        private static void ConfigureAtmosphere()
-        {
-            Shader.SetGlobalColor("_MB_AmbientSky", new Color(0.46f, 0.5f, 0.6f));
-            Shader.SetGlobalColor("_MB_AmbientGround", new Color(0.24f, 0.21f, 0.18f));
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(0.66f, 0.71f, 0.76f);
-            RenderSettings.fogStartDistance = 110f;
-            RenderSettings.fogEndDistance = 380f;
+            if (_mode.Wave != _announcedWave)
+            {
+                _announcedWave = _mode.Wave;
+                if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true);
+            }
+            _hud.SetStats(_world.CountAlive(PlayerTeam), _world.CountAlive(SandboxMode.EnemyTeam), _mode.Wave,
+                _mode.SecondsToNextWave, _fps);
+            _hud.SetReinforceCooldown(_mode.ReinforceCooldown, SandboxMode.ReinforceCooldownSeconds);
+            _hud.SetModes(_selection.AttackMoveArmed, _selection.BoxMode);
+            _hud.SetSelection(_selection.Summary());
         }
     }
 }

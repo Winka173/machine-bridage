@@ -3,7 +3,7 @@
     "rootNamespace": "MachineBrigade.Tests",
     "references": [
         "MachineBrigade.Sim",
-        "MachineBrigade.Voxel",
+        "MachineBrigade.Game",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

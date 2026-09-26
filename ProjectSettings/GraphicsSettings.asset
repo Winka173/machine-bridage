@@ -53,8 +53,8 @@ GraphicsSettings:
   m_DefaultMobileRenderingPath: 1
   m_TierSettings: []
   m_LightmapStripping: 0
-  m_FogStripping: 0
-  m_InstancingStripping: 0
+  m_FogStripping: 1
+  m_InstancingStripping: 2
   m_BrgStripping: 2
   m_DefaultLightBaker: 0
   m_LightmapKeepPlain: 1

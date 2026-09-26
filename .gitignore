@@ -49,3 +49,6 @@ keystore.properties
 
 # Test runner output
 /TestResults/
+
+# Python bytecode from the Blender tools
+__pycache__/

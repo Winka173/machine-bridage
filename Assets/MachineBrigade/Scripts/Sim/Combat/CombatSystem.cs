@@ -19,10 +19,17 @@ namespace MachineBrigade.Sim.Combat
         private readonly SimWorld _world;
         private readonly List<Projectile> _projectiles = new();
 
+        /// <summary>(team, target) pairs someone was already shooting last step, for focus fire.</summary>
+        private readonly HashSet<(int team, EntityId target)> _focus = new();
+
         public CombatSystem(SimWorld world) => _world = world;
 
         public void Step(float dt)
         {
+            _focus.Clear();
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Target.IsValid) _focus.Add((v.Team, v.Target));
+
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -48,24 +55,46 @@ namespace MachineBrigade.Sim.Combat
 
                 case OrderKind.AttackMove:
                     if (_world.TryGetVehicle(v.Engaged, out var engaged) && IsValidAutoTarget(v, engaged)) return engaged;
-                    return NearestInRange(v);
+                    return BestInRange(v);
 
                 case OrderKind.Idle:
                     if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current)) return current;
-                    return NearestInRange(v);
+                    return BestInRange(v);
 
                 case OrderKind.Move:
                 case OrderKind.Retreat:
                     // Targets of opportunity only: firing never changes the route (V2 R04).
-                    return v.Def.FiresWhileMoving ? NearestInRange(v) : null;
+                    return v.Def.FiresWhileMoving ? BestInRange(v) : null;
 
                 default:
                     return null;
             }
         }
 
-        private Vehicle? NearestInRange(Vehicle v) =>
-            _world.FindNearestEnemy(v, v.Def.Weapon.Range, requireVisible: true, minRange: v.Def.Weapon.MinRange);
+        /// <summary>
+        /// The most valuable enemy in range: one this weapon hurts most, one that is badly damaged
+        /// or can be finished with this shot, and one teammates are already firing on. Distance
+        /// only tips the balance between otherwise equal targets.
+        /// </summary>
+        private Vehicle? BestInRange(Vehicle v)
+        {
+            var weapon = v.Def.Weapon;
+            Vehicle? best = null;
+            var bestScore = 0f;
+            foreach (var other in _world.VehicleList)
+            {
+                if (!IsValidAutoTarget(v, other)) continue;
+                var effect = _world.Catalog.Damage.Multiplier(weapon.DamageType, other.Armor);
+                var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+                if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
+                if (_focus.Contains((v.Team, other.Id))) score *= 1.3f;
+                score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
+                if (score <= bestScore) continue;
+                best = other;
+                bestScore = score;
+            }
+            return best;
+        }
 
         private static bool IsValidAutoTarget(Vehicle v, Vehicle target)
         {

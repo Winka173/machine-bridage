@@ -1,17 +1,23 @@
-using MachineBrigade.Voxel;
 using UnityEngine;
 
 namespace MachineBrigade.Game.Rendering
 {
     /// <summary>
-    /// Small procedural meshes. All carry vertex colours, because the project shaders
-    /// multiply by them and some graphics APIs leave a missing colour stream black.
+    /// Small procedural meshes. All carry vertex colours, because the project shaders multiply
+    /// by them and some graphics APIs leave a missing colour stream black.
     /// </summary>
     public static class Primitives
     {
+        /// <summary>
+        /// Vertex colours reach shaders unconverted. Colours authored in sRGB must be linearised
+        /// in a Linear-colour-space project or they look washed out.
+        /// </summary>
+        public static Color Linear(Color color) =>
+            QualitySettings.activeColorSpace == ColorSpace.Linear ? color.linear : color;
+
         public static Mesh Quad(Color color)
         {
-            color = VoxelMesher.ToShader(color);
+            color = Linear(color);
             var mesh = new Mesh { name = "Quad" };
             mesh.SetVertices(new[]
             {
@@ -58,13 +64,41 @@ namespace MachineBrigade.Game.Rendering
             return mesh;
         }
 
+        /// <summary>Unit cube centred on its origin, with flat normals.</summary>
         public static Mesh Box()
         {
-            var cube = new VoxelModel(1, 1, 1);
-            cube.Set(0, 0, 0, 1);
-            var palette = new Color32[256];
-            palette[1] = new Color32(255, 255, 255, 255);
-            return VoxelMesher.Build(cube, palette, 1f, new Vector3(0.5f, 0.5f, 0.5f), "Box");
+            var vertices = new Vector3[24];
+            var normals = new Vector3[24];
+            var colors = new Color[24];
+            var triangles = new int[36];
+            var faces = new[] { Vector3.right, Vector3.left, Vector3.up, Vector3.down, Vector3.forward, Vector3.back };
+            for (var f = 0; f < 6; f++)
+            {
+                var n = faces[f];
+                var u = f < 2 ? Vector3.forward : Vector3.right;
+                var v = Vector3.Cross(n, u);
+                u = Vector3.Cross(v, n); // now cross(u, v) = n
+                for (var k = 0; k < 4; k++)
+                {
+                    var su = k == 1 || k == 2 ? 0.5f : -0.5f;
+                    var sv = k >= 2 ? 0.5f : -0.5f;
+                    vertices[f * 4 + k] = n * 0.5f + u * su + v * sv;
+                    normals[f * 4 + k] = n;
+                    colors[f * 4 + k] = Color.white;
+                }
+                // Unity treats cross(v1 - v0, v2 - v0) as the front; cross(u, u + v) = n points outward.
+                var b = f * 4;
+                triangles[f * 6] = b; triangles[f * 6 + 1] = b + 1; triangles[f * 6 + 2] = b + 2;
+                triangles[f * 6 + 3] = b; triangles[f * 6 + 4] = b + 2; triangles[f * 6 + 5] = b + 3;
+            }
+
+            var mesh = new Mesh { name = "Box" };
+            mesh.SetVertices(vertices);
+            mesh.SetNormals(normals);
+            mesh.SetColors(colors);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateBounds();
+            return mesh;
         }
     }
 }

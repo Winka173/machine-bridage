@@ -56,44 +56,51 @@ namespace MachineBrigade.Game.Effects
             switch (tier)
             {
                 case ExplosionTier.Small:
-                    systems.Add(Sparks(t, m, 6, new Vector2(4f, 9f), 0.1f));
-                    systems.Add(Dust(t, m, 2, new Vector2(0.6f, 1.2f)));
-                    duration = 1f;
+                    systems.Add(Sparks(t, m, 8, new Vector2(4f, 10f), 0.12f));
+                    systems.Add(Dust(t, m, 3, new Vector2(0.8f, 1.6f)));
+                    duration = 1.2f;
                     break;
 
                 case ExplosionTier.Medium:
-                    systems.Add(Flash(t, m, 3.5f));
-                    systems.Add(Fireball(t, m, 8, new Vector2(1f, 2.2f), new Vector2(1f, 4f), 0.3f));
-                    systems.Add(Smoke(t, m, 6, new Vector2(1.2f, 2.4f), new Vector2(1.2f, 2.2f), 0.26f));
-                    systems.Add(Sparks(t, m, 10, new Vector2(6f, 14f), 0.14f));
-                    duration = 2.5f;
+                    systems.Add(Flash(t, m, 5f));
+                    systems.Add(Fireball(t, m, 12, new Vector2(1.4f, 3f), new Vector2(1.5f, 5f), 0.4f, new Vector2(0.4f, 0.85f)));
+                    systems.Add(Smoke(t, m, 8, new Vector2(1.8f, 3.4f), new Vector2(1.8f, 3.2f), 0.24f));
+                    systems.Add(Sparks(t, m, 14, new Vector2(7f, 16f), 0.16f));
+                    systems.Add(Dirt(t, m, 8, new Vector2(4f, 9f)));
+                    systems.Add(DustRing(t, m, 6f));
+                    duration = 3.5f;
                     break;
 
                 case ExplosionTier.Large:
-                    systems.Add(Flash(t, m, 7f));
-                    systems.Add(Fireball(t, m, 14, new Vector2(2f, 4f), new Vector2(2f, 6f), 0.6f));
-                    systems.Add(Smoke(t, m, 10, new Vector2(2.5f, 4.5f), new Vector2(2.5f, 4f), 0.2f));
-                    systems.Add(Sparks(t, m, 22, new Vector2(8f, 18f), 0.18f));
-                    systems.Add(Debris(t, m, 10, new Vector2(5f, 11f)));
-                    systems.Add(Shockwave(t, m, 14f));
-                    light = AddLight(t, 14f);
-                    lightIntensity = 8f;
-                    duration = 4.5f;
+                    systems.Add(Flash(t, m, 10f));
+                    systems.Add(Fireball(t, m, 20, new Vector2(3f, 5.5f), new Vector2(2.5f, 8f), 0.8f, new Vector2(0.55f, 1.1f)));
+                    systems.Add(Smoke(t, m, 14, new Vector2(2.6f, 4.4f), new Vector2(3f, 5f), 0.2f));
+                    systems.Add(Sparks(t, m, 30, new Vector2(9f, 22f), 0.2f));
+                    systems.Add(Debris(t, m, 14, new Vector2(6f, 13f)));
+                    systems.Add(Dirt(t, m, 12, new Vector2(5f, 12f)));
+                    systems.Add(Embers(t, m, 18, 1f));
+                    systems.Add(Shockwave(t, m, 18f));
+                    light = AddLight(t, 18f);
+                    lightIntensity = 10f;
+                    duration = 6f;
                     break;
 
                 default: // Huge and above
                     var s = tier == ExplosionTier.Huge ? 1f : 1.6f;
-                    systems.Add(Flash(t, m, 12f * s));
-                    var fireball = Fireball(t, m, 24, new Vector2(3f, 6f) * s, new Vector2(3f, 9f) * s, 1f * s);
-                    PB.Burst(fireball, (0f, 24), (0.15f, 10), (0.3f, 6));
+                    systems.Add(Flash(t, m, 16f * s));
+                    var fireball = Fireball(t, m, 32, new Vector2(4.5f, 8.5f) * s, new Vector2(3.5f, 11f) * s, 1.3f * s,
+                        new Vector2(0.7f, 1.4f));
+                    PB.Burst(fireball, (0f, 32), (0.15f, 14), (0.32f, 10), (0.5f, 6));
                     systems.Add(fireball);
-                    systems.Add(Smoke(t, m, 16, new Vector2(4f, 7f) * s, new Vector2(4f, 7f), 0.16f));
-                    systems.Add(Sparks(t, m, 36, new Vector2(10f, 24f), 0.22f));
-                    systems.Add(Debris(t, m, 18, new Vector2(7f, 16f)));
-                    systems.Add(Shockwave(t, m, 26f * s));
-                    light = AddLight(t, 24f * s);
-                    lightIntensity = 14f;
-                    duration = 7f;
+                    systems.Add(Smoke(t, m, 22, new Vector2(4.5f, 7.5f) * s, new Vector2(5f, 8f), 0.16f));
+                    systems.Add(Sparks(t, m, 48, new Vector2(12f, 30f), 0.26f));
+                    systems.Add(Debris(t, m, 24, new Vector2(8f, 20f)));
+                    systems.Add(Dirt(t, m, 18, new Vector2(6f, 15f)));
+                    systems.Add(Embers(t, m, 40, 1.6f));
+                    systems.Add(Shockwave(t, m, 34f * s));
+                    light = AddLight(t, 30f * s);
+                    lightIntensity = 16f;
+                    duration = 10f;
                     break;
             }
 
@@ -120,10 +127,11 @@ namespace MachineBrigade.Game.Effects
             return ps;
         }
 
-        private static ParticleSystem Fireball(Transform parent, MaterialLibrary m, int count, Vector2 size, Vector2 speed, float radius)
+        private static ParticleSystem Fireball(Transform parent, MaterialLibrary m, int count, Vector2 size, Vector2 speed, float radius,
+            Vector2 lifetime)
         {
             var ps = PB.Create(parent, "Fireball", m.Fire);
-            PB.Basics(ps, new Vector2(0.3f, 0.65f), speed, size, -0.1f);
+            PB.Basics(ps, lifetime, speed, size, -0.15f);
             var shape = ps.shape;
             shape.radius = radius;
             PB.Colors(ps, PB.FireGradient);
@@ -136,8 +144,8 @@ namespace MachineBrigade.Game.Effects
         {
             var ps = PB.Create(parent, "Smoke", m.Smoke);
             PB.Basics(ps, lifetime, new Vector2(0.5f, 1.8f), size);
-            PB.Colors(ps, PB.SmokeGradient(shade, 0.7f));
-            PB.Grow(ps, 0.8f, 2.4f);
+            PB.Colors(ps, PB.Plume(shade, Mathf.Min(0.6f, shade + 0.3f), 0.55f));
+            PB.Grow(ps, 0.8f, 2f);
             PB.Rise(ps, 1f, 2.4f);
             PB.Burst(ps, (0.05f, count));
             return ps;
@@ -173,6 +181,54 @@ namespace MachineBrigade.Game.Effects
             shape.shapeType = ParticleSystemShapeType.Hemisphere;
             shape.rotation = new Vector3(-90f, 0f, 0f);
             PB.Burst(ps, (0f, count));
+            return ps;
+        }
+
+        /// <summary>Clods of earth thrown out of the crater.</summary>
+        private static ParticleSystem Dirt(Transform parent, MaterialLibrary m, int count, Vector2 speed)
+        {
+            var ps = PB.Create(parent, "Dirt", m.Smoke);
+            PB.Basics(ps, new Vector2(0.7f, 1.3f), speed, new Vector2(0.2f, 0.5f), 2.8f);
+            var main = ps.main;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.3f, 0.25f, 0.18f), new Color(0.42f, 0.36f, 0.26f));
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Cone;
+            shape.angle = 35f;
+            shape.rotation = new Vector3(-90f, 0f, 0f);
+            PB.Burst(ps, (0f, count));
+            return ps;
+        }
+
+        /// <summary>Glowing embers that drift up and linger after the fireball.</summary>
+        private static ParticleSystem Embers(Transform parent, MaterialLibrary m, int count, float scale)
+        {
+            var ps = PB.Create(parent, "Embers", m.Sparks);
+            PB.Basics(ps, new Vector2(1.2f, 3f), new Vector2(1f, 4f) * scale, new Vector2(0.08f, 0.18f), -0.08f);
+            var main = ps.main;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.7f, 0.25f), new Color(1f, 0.45f, 0.1f));
+            var shape = ps.shape;
+            shape.radius = 1.2f * scale;
+            PB.Colors(ps, PB.Fade(new Color(1f, 0.8f, 0.4f), new Color(1f, 0.5f, 0.15f), new Color(0.6f, 0.15f, 0.05f)));
+            var noise = ps.noise;
+            noise.enabled = true;
+            noise.strength = 0.8f;
+            noise.frequency = 0.6f;
+            PB.Burst(ps, (0.05f, count));
+            return ps;
+        }
+
+        /// <summary>Low dust ring rolling outward along the ground.</summary>
+        private static ParticleSystem DustRing(Transform parent, MaterialLibrary m, float size)
+        {
+            var ps = PB.Create(parent, "Dust Ring", m.Smoke);
+            PB.Basics(ps, new Vector2(0.8f, 1.4f), new Vector2(3f, 5f), new Vector2(1.2f, 2f));
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = 0.5f;
+            shape.rotation = new Vector3(90f, 0f, 0f);
+            PB.Colors(ps, PB.Fade(new Color(0.55f, 0.5f, 0.4f), new Color(0.5f, 0.46f, 0.38f), new Color(0.45f, 0.42f, 0.36f), 0.5f));
+            PB.Grow(ps, 0.6f, 1.8f);
+            PB.Burst(ps, (0f, (int)(size * 2f)));
             return ps;
         }
 

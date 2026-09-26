@@ -1,0 +1,98 @@
+{
+  "ammo_crate": {
+    "file": "ammo_crate.glb",
+    "triangles": 480
+  },
+  "artillery": {
+    "file": "artillery.glb",
+    "triangles": 5212
+  },
+  "barrel": {
+    "file": "barrel.glb",
+    "triangles": 816
+  },
+  "bush": {
+    "file": "bush.glb",
+    "triangles": 80
+  },
+  "debris_concrete": {
+    "file": "debris_concrete.glb",
+    "triangles": 20
+  },
+  "debris_leaves": {
+    "file": "debris_leaves.glb",
+    "triangles": 20
+  },
+  "debris_metal": {
+    "file": "debris_metal.glb",
+    "triangles": 88
+  },
+  "debris_plaster": {
+    "file": "debris_plaster.glb",
+    "triangles": 20
+  },
+  "debris_roof": {
+    "file": "debris_roof.glb",
+    "triangles": 44
+  },
+  "debris_wood": {
+    "file": "debris_wood.glb",
+    "triangles": 44
+  },
+  "fuel_tank": {
+    "file": "fuel_tank.glb",
+    "triangles": 2164
+  },
+  "house_large": {
+    "file": "house_large.glb",
+    "triangles": 6056
+  },
+  "house_small": {
+    "file": "house_small.glb",
+    "triangles": 2680
+  },
+  "light_tank": {
+    "file": "light_tank.glb",
+    "triangles": 5588
+  },
+  "main_battle_tank": {
+    "file": "main_battle_tank.glb",
+    "triangles": 7220
+  },
+  "rock_a": {
+    "file": "rock_a.glb",
+    "triangles": 360
+  },
+  "rock_b": {
+    "file": "rock_b.glb",
+    "triangles": 360
+  },
+  "rock_c": {
+    "file": "rock_c.glb",
+    "triangles": 360
+  },
+  "rubble_large": {
+    "file": "rubble_large.glb",
+    "triangles": 3516
+  },
+  "rubble_small": {
+    "file": "rubble_small.glb",
+    "triangles": 2144
+  },
+  "scout_jeep": {
+    "file": "scout_jeep.glb",
+    "triangles": 3400
+  },
+  "tree": {
+    "file": "tree.glb",
+    "triangles": 124
+  },
+  "tree_broad": {
+    "file": "tree_broad.glb",
+    "triangles": 536
+  },
+  "wall": {
+    "file": "wall.glb",
+    "triangles": 832
+  }
+}
