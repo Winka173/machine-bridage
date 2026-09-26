@@ -52,7 +52,11 @@ namespace MachineBrigade.Game.Match
         {
             foreach (var c in Commanders) c.Tick(world, dt);
             Waves?.Tick(world, dt);
+            Events?.Tick(world, dt);
         }
+
+        /// <summary>Supply drops and bomber raids (every mode but the scripted campaign).</summary>
+        protected BattleEvents Events;
 
         /// <summary>Fills the top bar; called every frame.</summary>
         public abstract void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps);
@@ -140,6 +144,7 @@ namespace MachineBrigade.Game.Match
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             session.Build(world, seed);
+            if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed);
             return session;
         }
 

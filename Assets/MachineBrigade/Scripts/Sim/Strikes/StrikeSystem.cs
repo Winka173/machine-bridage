@@ -83,17 +83,23 @@ namespace MachineBrigade.Sim.Strikes
             }
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown;
 
-            var direction = command.Point2 - command.Point;
+            Launch(support, command.Team, command.Point, command.Point2);
+            return CommandResult.Ok;
+        }
+
+        /// <summary>Starts a strike with no deck, CP or cooldown checks (battle events call bombers this way).</summary>
+        internal void Launch(SupportDef support, int team, Vector2 point, Vector2 towards)
+        {
+            var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
             var strike = new Strike
             {
-                Support = support, Team = command.Team, Point = command.Point, Direction = direction,
-                Start = _world.Time + support.Delay, Scatter = _world.Abilities.Jammed(command.Point, command.Team) ? 2.2f : 1f,
+                Support = support, Team = team, Point = point, Direction = direction,
+                Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? 2.2f : 1f,
             };
             _strikes.Add(strike);
-            var end = support.IsLine ? command.Point + direction * support.Length : command.Point;
-            _world.Emit(SimEvent.StrikeWarning(command.Team, support, command.Point, end, support.Delay));
-            return CommandResult.Ok;
+            var end = support.IsLine ? point + direction * support.Length : point;
+            _world.Emit(SimEvent.StrikeWarning(team, support, point, end, support.Delay));
         }
 
         public void Step()

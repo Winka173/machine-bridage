@@ -319,7 +319,7 @@ namespace MachineBrigade.Sim.AI
             // Items are bought with coins by the player; the AI never has any.
             var cards = new List<string>();
             foreach (var id in all)
-                if (!world.Catalog.TryGetSupport(id, out var support) || !support.Consumable) cards.Add(id);
+                if (!world.Catalog.TryGetSupport(id, out var support) || !(support.Consumable || support.EventOnly)) cards.Add(id);
             return cards;
         }
 

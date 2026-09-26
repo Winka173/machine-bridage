@@ -91,6 +91,11 @@ namespace MachineBrigade.Sim
         internal StrikeSystem Strikes { get; }
         internal Abilities.AbilitySystem Abilities => _abilities;
 
+        internal readonly List<Crate> CrateList = new();
+
+        /// <summary>Supply crates falling or waiting on the field (battle events).</summary>
+        public IReadOnlyList<Crate> Crates => CrateList;
+
         /// <summary>Mines on the field (see <see cref="Mine.IsVisibleTo"/> for who can see them).</summary>
         public IReadOnlyList<Mine> Mines => _abilities.Mines;
 

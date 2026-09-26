@@ -48,6 +48,12 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A vehicle left the battle without being destroyed (a loaned escort flying home).</summary>
         VehicleRetired,
+
+        /// <summary>A supply crate is parachuting down onto Position, landing in Value seconds.</summary>
+        CrateIncoming,
+
+        /// <summary>Team claimed the supply crate at Position.</summary>
+        CrateClaimed,
     }
 
     /// <summary>
@@ -154,6 +160,12 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Retired(Vehicle v) =>
             new(SimEventKind.VehicleRetired, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team, airborne: v.Flying);
+
+        internal static SimEvent CrateIncoming(Crate c, float seconds) =>
+            new(SimEventKind.CrateIncoming, c.Id, c.Position, default, seconds, default, null, Teams.Neutral);
+
+        internal static SimEvent CrateClaimed(Crate c, int team) =>
+            new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);
 
         internal static SimEvent MineLaid(Mine m) =>
             new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);

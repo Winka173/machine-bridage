@@ -154,6 +154,7 @@ namespace MachineBrigade.Sim.Content
                         s.Float("blast", 0f))
                     {
                         Consumable = s.Bool("consumable", false),
+                        EventOnly = s.Bool("event", false),
                         Units = s.Has("units") ? s.StringArray("units") : Array.Empty<string>(),
                     }));
                 }

@@ -54,6 +54,12 @@ namespace MachineBrigade.Game.Match
         private ModelLibrary _models;
         private Atmosphere _atmosphere;
         private MapView _map;
+        private CrateViews _crates;
+        private MineViews _mineViews;
+        private Transform _worldRoot;
+        private bool _richEffects;
+        private double _nextWeatherShift = double.MaxValue;
+        private WeatherKind _weatherKind;
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private ObjectiveView _objectives;
@@ -179,6 +185,13 @@ namespace MachineBrigade.Game.Match
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
             if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
+            _weatherKind = weather;
+            _worldRoot = worldRoot;
+            _richEffects = options.MaxEffects;
+            _crates = new CrateViews(_models, worldRoot);
+            _mineViews = new MineViews(_models, worldRoot, _menu ? -1 : PlayerTeam);
+            // Quick battles sometimes turn: a storm rolls in, the fog comes down, night falls.
+            if (!_menu && mission == null) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
             ApplyPost(options.Bloom, MatchSettings.Brightness);
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
@@ -205,6 +218,27 @@ namespace MachineBrigade.Game.Match
             Wire();
 
             DispatchEvents();
+        }
+
+        /// <summary>The weather turns mid-battle, to another of this map's weathers.</summary>
+        private void ShiftWeather()
+        {
+            _nextWeatherShift = double.MaxValue;
+            var choices = MatchSettings.CurrentMap.Weathers;
+            if (choices == null || choices.Length < 2) return;
+            var next = _weatherKind;
+            var random = new System.Random((int)_world.Tick);
+            for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
+            if (next == _weatherKind) return;
+            _weather.Dispose();
+            _weatherKind = next;
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            if (next == WeatherKind.Clear)
+            {
+                var theme = MapTheme.For(_world.Map.Theme);
+                _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
+            }
+            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
         private string _builtGraphics;
@@ -306,6 +340,7 @@ namespace MachineBrigade.Game.Match
             {
                 _effects.Tick(_views);
                 _weather.Tick();
+                if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
             _perf?.End(PerfProbe.Section.Effects);
             _perf?.Begin();
@@ -331,6 +366,8 @@ namespace MachineBrigade.Game.Match
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
+            _crates?.Update(_world);
+            _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
             _perf?.EndFrame(_views.All.Count);
             if (_perf != null && !_censusDone && Time.time > 6f)
@@ -412,6 +449,18 @@ namespace MachineBrigade.Game.Match
                         var letter = Strings.Get("point." + e.DefId);
                         if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter));
                         else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true);
+                        break;
+                    case SimEventKind.CrateIncoming when !_menu:
+                        _hud.Toast(Strings.Get("toast.crate"));
+                        break;
+                    case SimEventKind.CrateClaimed when !_menu:
+                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Get("toast.crateOurs"));
+                        else _hud.Toast(Strings.Get("toast.crateTheirs"), error: true);
+                        break;
+                    case SimEventKind.StrikeWarning when !_menu && e.Team == MachineBrigade.Sim.Entities.Teams.Environment:
+                        _hud.Toast(Strings.Get("toast.raid"), error: true);
+                        if (_world.Catalog.TryGetSupport(e.DefId, out var raid))
+                            _warnings.Add((new Vector2(e.Position.X, e.Position.Y), raid.Length * 0.5f, Time.time + e.Value + raid.Duration + 0.5f));
                         break;
                     case SimEventKind.StrikeWarning:
                         if (_world.Catalog.TryGetSupport(e.DefId, out var support))

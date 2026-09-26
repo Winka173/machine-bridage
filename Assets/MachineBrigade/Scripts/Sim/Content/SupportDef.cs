@@ -96,6 +96,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A single-use item bought with coins: it costs no CP and is not in the deck.</summary>
         public bool Consumable { get; internal set; }
 
+        /// <summary>Only battle events call it (a neutral bomber raid); never a card.</summary>
+        public bool EventOnly { get; internal set; }
+
         /// <summary>Vehicles dropped (Reinforce) or flown in (Escort).</summary>
         public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
     }

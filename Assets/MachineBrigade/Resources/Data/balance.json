@@ -355,6 +355,8 @@
     // Premium (bought with coins): a line of fire, and a heavy bomber laying a carpet of bombs.
     { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 7,  "tier": "Huge", "length": 55, "damageType": "Fire" },
     { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 200, "blast": 7,  "tier": "Huge", "length": 95 },
+    // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
+    { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 160, "blast": 6, "tier": "Huge", "length": 70 },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 2200, "blast": 22, "tier": "Ultimate" },
     { "id": "cluster_strike",    "kind": "Airstrike",     "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 40, "duration": 2.2, "damage": 90, "blast": 4, "tier": "Large", "length": 60 },
