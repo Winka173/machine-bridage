@@ -159,6 +159,10 @@
     "file": "gunship_heli.glb",
     "triangles": 5900
   },
+  "heavy_aa": {
+    "file": "heavy_aa.glb",
+    "triangles": 8676
+  },
   "heavy_tank": {
     "file": "heavy_tank.glb",
     "triangles": 6472
@@ -174,6 +178,14 @@
   "house_small": {
     "file": "house_small.glb",
     "triangles": 2680
+  },
+  "howitzer": {
+    "file": "howitzer.glb",
+    "triangles": 7596
+  },
+  "ifv": {
+    "file": "ifv.glb",
+    "triangles": 6416
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -354,6 +366,14 @@
   "tank_trap": {
     "file": "tank_trap.glb",
     "triangles": 248
+  },
+  "thermobaric_launcher": {
+    "file": "thermobaric_launcher.glb",
+    "triangles": 7584
+  },
+  "titan_tank": {
+    "file": "titan_tank.glb",
+    "triangles": 9768
   },
   "townhouse": {
     "file": "townhouse.glb",
