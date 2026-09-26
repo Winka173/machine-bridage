@@ -64,9 +64,9 @@ namespace MachineBrigade.Game.Effects
 
                 case ExplosionTier.Medium:
                     systems.Add(Flash(t, m, 5f));
-                    systems.Add(Fireball(t, m, 12, new Vector2(1.4f, 3f), new Vector2(1.5f, 5f), 0.4f, new Vector2(0.4f, 0.85f)));
+                    systems.Add(Fireball(t, m, 18, new Vector2(1.6f, 3.4f), new Vector2(1.5f, 5.5f), 0.45f, new Vector2(0.45f, 0.9f)));
                     systems.Add(Smoke(t, m, 8, new Vector2(1.8f, 3.4f), new Vector2(1.8f, 3.2f), 0.24f));
-                    systems.Add(Sparks(t, m, 14, new Vector2(7f, 16f), 0.16f));
+                    systems.Add(Sparks(t, m, 20, new Vector2(7f, 16f), 0.16f));
                     systems.Add(Dirt(t, m, 8, new Vector2(4f, 9f)));
                     systems.Add(DustRing(t, m, 6f));
                     duration = 3.5f;
@@ -74,11 +74,12 @@ namespace MachineBrigade.Game.Effects
 
                 case ExplosionTier.Large:
                     systems.Add(Flash(t, m, 10f));
-                    systems.Add(Fireball(t, m, 15, new Vector2(3f, 5.5f), new Vector2(2.5f, 8f), 0.8f, new Vector2(0.55f, 1.1f)));
+                    systems.Add(Fireball(t, m, 28, new Vector2(3.2f, 6f), new Vector2(2.5f, 9f), 0.9f, new Vector2(0.6f, 1.2f)));
+                    systems.Add(Secondaries(t, m, 3.5f, 2.4f));
                     systems.Add(Smoke(t, m, 14, new Vector2(2.6f, 4.4f), new Vector2(3f, 5f), 0.2f));
-                    systems.Add(Sparks(t, m, 22, new Vector2(9f, 22f), 0.2f));
+                    systems.Add(Sparks(t, m, 44, new Vector2(9f, 22f), 0.2f));
                     systems.Add(Debris(t, m, 14, new Vector2(6f, 13f)));
-                    systems.Add(BurningDebris(t, m, 4, new Vector2(7f, 12f)));
+                    systems.Add(BurningDebris(t, m, 9, new Vector2(7f, 13f)));
                     systems.Add(Dirt(t, m, 12, new Vector2(5f, 12f)));
                     systems.Add(Embers(t, m, 18, 1f));
                     systems.Add(Shockwave(t, m, 18f));
@@ -90,14 +91,15 @@ namespace MachineBrigade.Game.Effects
                 default: // Huge and above
                     var s = tier == ExplosionTier.Huge ? 1f : 1.6f;
                     systems.Add(Flash(t, m, 16f * s));
-                    var fireball = Fireball(t, m, 22, new Vector2(4.5f, 8f) * s, new Vector2(3.5f, 10f) * s, 1.3f * s,
-                        new Vector2(0.7f, 1.4f));
-                    PB.Burst(fireball, (0f, 22), (0.15f, 9), (0.32f, 6), (0.5f, 4));
+                    var fireball = Fireball(t, m, 38, new Vector2(4.8f, 9f) * s, new Vector2(3.5f, 11f) * s, 1.4f * s,
+                        new Vector2(0.75f, 1.5f));
+                    PB.Burst(fireball, (0f, 38), (0.15f, 16), (0.32f, 12), (0.5f, 8));
+                    systems.Add(Secondaries(t, m, 6f * s, 3.4f * s));
                     systems.Add(fireball);
                     systems.Add(Smoke(t, m, 22, new Vector2(4.5f, 7.5f) * s, new Vector2(5f, 8f), 0.16f));
-                    systems.Add(Sparks(t, m, 34, new Vector2(12f, 30f), 0.26f));
+                    systems.Add(Sparks(t, m, 80, new Vector2(12f, 30f), 0.26f));
                     systems.Add(Debris(t, m, 24, new Vector2(8f, 20f)));
-                    systems.Add(BurningDebris(t, m, 7, new Vector2(8f, 15f) * s));
+                    systems.Add(BurningDebris(t, m, 18, new Vector2(9f, 18f) * s));
                     systems.Add(Dirt(t, m, 18, new Vector2(6f, 15f)));
                     systems.Add(Embers(t, m, 40, 1.6f));
                     systems.Add(Shockwave(t, m, 34f * s));
@@ -115,8 +117,8 @@ namespace MachineBrigade.Game.Effects
         {
             var root = new GameObject("Muzzle Flash");
             root.transform.SetParent(parent, false);
-            var flash = Flash(root.transform, m, 1.4f);
-            var sparks = Sparks(root.transform, m, 3, new Vector2(3f, 7f), 0.06f);
+            var flash = Flash(root.transform, m, 1.7f);
+            var sparks = Sparks(root.transform, m, 4, new Vector2(3f, 7f), 0.07f);
             return new ExplosionEffect(root, new[] { flash, sparks }, null, 0f, 0.3f);
         }
 
@@ -164,13 +166,32 @@ namespace MachineBrigade.Game.Effects
             return ps;
         }
 
+        /// <summary>
+        /// Glowing sparks thrown out and falling. Drawn as round points: stretched streaks read as
+        /// scratch marks radiating from every hit.
+        /// </summary>
         private static ParticleSystem Sparks(Transform parent, MaterialLibrary m, int count, Vector2 speed, float size)
         {
-            var ps = PB.Create(parent, "Sparks", m.Sparks, ParticleSystemRenderMode.Stretch);
-            PB.Basics(ps, new Vector2(0.15f, 0.45f), speed, new Vector2(size * 0.6f, size), 1.8f);
+            var ps = PB.Create(parent, "Sparks", m.Sparks);
+            PB.Basics(ps, new Vector2(0.3f, 0.8f), speed * 0.7f, new Vector2(size * 1.1f, size * 2f), 2.2f);
             var main = ps.main;
             main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.85f, 0.4f), new Color(1f, 0.55f, 0.15f));
+            PB.Grow(ps, 1f, 0.3f);
             PB.Burst(ps, (0f, count));
+            return ps;
+        }
+
+        /// <summary>Smaller blasts popping around a big one for a second: a chain of secondary explosions.</summary>
+        private static ParticleSystem Secondaries(Transform parent, MaterialLibrary m, float radius, float size)
+        {
+            var ps = PB.Create(parent, "Secondaries", m.Fire);
+            PB.Basics(ps, new Vector2(0.35f, 0.6f), new Vector2(0.5f, 2f), new Vector2(size * 0.7f, size * 1.2f), -0.2f);
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = radius;
+            PB.Colors(ps, PB.FireGradient);
+            PB.Grow(ps, 0.6f, 1.3f);
+            PB.Burst(ps, (0.25f, 5), (0.45f, 4), (0.7f, 5), (0.95f, 3), (1.2f, 3));
             return ps;
         }
 

@@ -81,7 +81,7 @@ namespace MachineBrigade.Game.Effects
             _muzzle = new EffectPool(() => ExplosionEffect.CreateMuzzleFlash(materials, _root), 24);
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
-            _fires = new FireSpots(materials, _root, budget.Lights + 6);
+            _fires = new FireSpots(materials, _root, budget.Lights * 2 + 12);
             _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
             _debris = new DebrisPool(_root, budget.Debris);
             _wrecks = new WreckManager(materials, budget.Wrecks);
@@ -123,7 +123,10 @@ namespace MachineBrigade.Game.Effects
                         var impact = Ground(e.Position, 0.15f);
                         Explode(e.Tier, impact, now);
                         if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
-                        if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.08f) _fires.Ignite(impact, 0.35f, 5f, now);
+                        if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.35f) _fires.Ignite(impact, 0.45f, 7f, now);
+                        // Heavy shells and rockets leave the ground burning now and then.
+                        else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.5f) _fires.Ignite(impact, 0.6f, 10f, now);
+                        else if (e.Tier == ExplosionTier.Medium && UnityEngine.Random.value < 0.15f) _fires.Ignite(impact, 0.35f, 5f, now);
                         break;
 
                     case SimEventKind.StrikeImpact:
@@ -131,7 +134,7 @@ namespace MachineBrigade.Game.Effects
                         var huge = e.Tier >= ExplosionTier.Ultimate;
                         Explode(huge ? ExplosionTier.Huge : e.Tier, hit, now, huge ? 1.8f : 1f);
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)));
-                        if (e.Tier >= ExplosionTier.Huge) _fires.Ignite(hit, huge ? 2f : 0.9f, huge ? 30f : 14f, now);
+                        if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (huge) _slowMotion.Trigger(Time.unscaledTime);
                         break;
 
@@ -155,9 +158,9 @@ namespace MachineBrigade.Game.Effects
                             _slowMotion.Trigger(Time.unscaledTime);
                             _fires.Ignite(blast, 1.4f, 30f, now);
                         }
-                        else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.35f)
+                        else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.8f)
                         {
-                            _fires.Ignite(blast, 0.7f, 12f, now);
+                            _fires.Ignite(blast, 0.9f, 18f, now);
                         }
                         break;
 

@@ -13,7 +13,7 @@ namespace MachineBrigade.Game.Effects
     /// </summary>
     internal sealed class WreckManager
     {
-        private const float BurnSeconds = 25f;
+        private const float BurnSeconds = 40f;
         private const float FadeSeconds = 1.5f;
         private const float TurretSettleSeconds = 6f;
 
@@ -171,17 +171,17 @@ namespace MachineBrigade.Game.Effects
             var main = fire.main;
             main.loop = true;
             main.duration = 2f;
-            PB.Basics(fire, new Vector2(0.4f, 0.8f), new Vector2(1f, 2.2f), new Vector2(0.8f, 1.6f));
+            PB.Basics(fire, new Vector2(0.5f, 1f), new Vector2(1.2f, 2.8f), new Vector2(1.1f, 2.1f));
             var shape = fire.shape;
             shape.shapeType = ParticleSystemShapeType.Cone;
-            shape.angle = 12f;
-            shape.radius = 0.6f;
+            shape.angle = 14f;
+            shape.radius = 0.9f;
             shape.rotation = new Vector3(-90f, 0f, 0f);
             PB.Colors(fire, PB.FireGradient);
             PB.Grow(fire, 1f, 0.3f);
             var emission = fire.emission;
             emission.enabled = true;
-            emission.rateOverTime = 14f;
+            emission.rateOverTime = 22f;
 
             var smoke = PB.Create(fire.transform, "Wreck Smoke", m.Smoke);
             var smokeMain = smoke.main;
