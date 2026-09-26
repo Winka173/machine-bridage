@@ -43,6 +43,14 @@
     "file": "attack_jet.glb",
     "triangles": 9050
   },
+  "ballistic_launcher": {
+    "file": "ballistic_launcher.glb",
+    "triangles": 8916
+  },
+  "ballistic_missile": {
+    "file": "ballistic_missile.glb",
+    "triangles": 780
+  },
   "barn": {
     "file": "barn.glb",
     "triangles": 2692
@@ -174,6 +182,14 @@
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
     "triangles": 10106
+  },
+  "heavy_rocket": {
+    "file": "heavy_rocket.glb",
+    "triangles": 424
+  },
+  "heavy_rocket_artillery": {
+    "file": "heavy_rocket_artillery.glb",
+    "triangles": 8492
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -351,6 +367,14 @@
     "file": "shop.glb",
     "triangles": 2284
   },
+  "siege_mortar": {
+    "file": "siege_mortar.glb",
+    "triangles": 7844
+  },
+  "siege_tank": {
+    "file": "siege_tank.glb",
+    "triangles": 8936
+  },
   "silo": {
     "file": "silo.glb",
     "triangles": 1884
@@ -426,6 +450,10 @@
   "truck": {
     "file": "truck.glb",
     "triangles": 2428
+  },
+  "twin_tank": {
+    "file": "twin_tank.glb",
+    "triangles": 8832
   },
   "wall": {
     "file": "wall.glb",
