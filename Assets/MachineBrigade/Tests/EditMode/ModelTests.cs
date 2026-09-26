@@ -27,6 +27,10 @@ namespace MachineBrigade.Tests
             "debris_metal", "debris_leaves",
             "cottage", "townhouse", "apartment", "shop", "church", "barn", "silo", "warehouse", "garage", "water_tower", "ruin",
             "fence", "stone_wall", "hedge", "car", "truck", "rubble_medium", "pine", "birch", "tree_dead", "tree_round",
+            // Desert, snow and harbour maps.
+            "adobe_house", "adobe_large", "market_stall", "palm", "cactus", "oil_pump", "refinery_tower", "storage_tank", "pipeline",
+            "mesa", "snow_pine", "log_cabin", "snow_rock", "radar_station", "watchtower", "container", "container_stack",
+            "gantry_crane", "factory", "rail_tanker", "rail_boxcar", "dock_bollards", "office_block", "lamp_post", "jersey_barrier",
         };
 
         [Test]

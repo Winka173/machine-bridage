@@ -63,6 +63,9 @@ namespace MachineBrigade.Game.Effects
 
         public int Burning => _fires.Count;
 
+        /// <summary>Only fires that could be seen emit particles; the rest keep burning silently.</summary>
+        public System.Func<Vector3, bool> Visible { get; set; }
+
         /// <summary>
         /// Starts a fire of <paramref name="size"/> (1 is a car-sized blaze) burning for
         /// <paramref name="seconds"/>. With an anchor it follows that transform (a falling wreck).
@@ -127,6 +130,12 @@ namespace MachineBrigade.Game.Effects
                 // Smoke thickens with the fire and thins out while it smoulders.
                 var smoke = now < f.Until ? Mathf.Max(0.4f, flame) : Mathf.Clamp01((f.SmokeUntil - now) / (f.SmokeUntil - f.Until)) * 0.55f;
                 var intensity = Mathf.Sqrt(Mathf.Max(0.2f, f.Size));
+                if (Visible != null && !Visible(f.Position))
+                {
+                    f.FlameDebt = f.EmberDebt = f.SmokeDebt = 0f;
+                    _fires[i] = f;
+                    continue;
+                }
 
                 f.FlameDebt += dt * FlameRate * intensity * flame;
                 f.EmberDebt += dt * EmberRate * intensity * flame * (f.Size >= 0.7f ? 1f : 0.3f);

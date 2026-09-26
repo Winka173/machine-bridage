@@ -44,6 +44,9 @@ namespace MachineBrigade.Editor
             // Every build starts from the canonical settings, so a stray editor change cannot ship.
             ProjectSetup.Apply();
             EditorUserBuildSettings.buildAppBundle = appBundle;
+            // Android frame pacing (Swappy) for shipping builds; it crashes the emulator, which
+            // runs the development builds.
+            PlayerSettings.Android.optimizedFramePacing = (options & BuildOptions.Development) == 0;
             Run(new BuildPlayerOptions
             {
                 scenes = EnabledScenes(),

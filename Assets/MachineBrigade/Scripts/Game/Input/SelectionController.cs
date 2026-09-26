@@ -155,7 +155,8 @@ namespace MachineBrigade.Game.Input
                 if (view.Team == _team && view.DefId == picked.DefId && OnScreen(view, viewport)) _selected.Add(view.Id);
         }
 
-        public void OnPan(Vector2 fromScreen, Vector2 toScreen) => _camera.Pan(fromScreen, toScreen);
+        public void OnPan(Vector2 fromScreen, Vector2 toScreen) =>
+            _camera.Pan(fromScreen, fromScreen + (toScreen - fromScreen) * Match.MatchSettings.PanScale);
 
         public void OnPinch(float scale, Vector2 centreScreen) => _camera.ZoomBy(scale, centreScreen);
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Sim.Content;
 using UnityEngine;
@@ -52,6 +53,25 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(160f, map.Size);
             foreach (var p in map.Props) Assert.DoesNotThrow(() => catalog.Prop(p.DefId), p.DefId);
             foreach (var u in map.Units) Assert.DoesNotThrow(() => catalog.Vehicle(u.DefId), u.DefId);
+        }
+
+        /// <summary>Every battlefield on the menu ships both versions, in its theme, with objectives A, B and C.</summary>
+        [Test]
+        public void EveryMenuMapShipsBothVersionsWithKnownDefinitions()
+        {
+            var catalog = Catalog.FromJson(File.ReadAllText(DataPath("balance.json")));
+            foreach (var info in MachineBrigade.Game.Match.MatchSettings.AllMaps)
+            foreach (var suffix in new[] { "_conquest", "_sandbox" })
+            {
+                var map = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/" + info.Id + suffix + ".json")));
+                Assert.AreEqual(info.Id + suffix, map.Id);
+                Assert.AreEqual(info.Theme, map.Theme, map.Id);
+                Assert.AreEqual(2, map.Teams.Count, map.Id);
+                foreach (var p in map.Props) Assert.DoesNotThrow(() => catalog.Prop(p.DefId), $"{map.Id}: {p.DefId}");
+                foreach (var u in map.Units) Assert.DoesNotThrow(() => catalog.Vehicle(u.DefId), $"{map.Id}: {u.DefId}");
+                if (suffix == "_conquest")
+                    CollectionAssert.AreEqual(new[] { "west", "town", "east" }, map.Points.Select(p => p.Id).ToArray(), map.Id);
+            }
         }
 
         [Test]

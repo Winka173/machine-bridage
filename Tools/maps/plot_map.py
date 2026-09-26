@@ -14,9 +14,11 @@ import matplotlib.patches as patches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_ashfield import PROPS, BUILDINGS  # noqa: E402
+from build_maps import PROPS, BUILDINGS  # noqa: E402
 
-COLOURS = {'tree': '#3f6b3a', 'car': '#c8382c', 'truck': '#c8382c', 'fence': '#86633f', 'hedge': '#4d7a3a',
+COLOURS = {'tree': '#3f6b3a', 'palm': '#5f8b3a', 'cactus': '#6f8b4a', 'mesa': '#b87444', 'snow_rock': '#9aa2a8',
+           'pipeline': '#9ba49c', 'lamp_post': '#333333', 'jersey_barrier': '#aaaaaa', 'dock_bollards': '#444444',
+           'market_stall': '#d9a060', 'car': '#c8382c', 'truck': '#c8382c', 'fence': '#86633f', 'hedge': '#4d7a3a',
            'stone_wall': '#8d958c', 'fuel_tank': '#e4e2d8', 'barrel': '#c2402a', 'ammo_crate': '#737a5c'}
 
 

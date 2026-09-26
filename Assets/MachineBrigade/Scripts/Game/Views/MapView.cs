@@ -51,7 +51,6 @@ namespace MachineBrigade.Game.Views
         private static readonly string[] MetalDebris =
             { "debris_metal", "debris_metal", "debris_concrete", "debris_metal", "debris_metal", "debris_roof", "debris_metal", "debris_metal" };
 
-        private static readonly string[] Trees = { "tree", "tree", "tree_broad", "pine", "pine", "tree_round", "birch" };
 
         /// <summary>Footprints of the rubble models, so rubble can be stretched over any building.</summary>
         private static readonly Dictionary<string, UnityEngine.Vector2> RubbleSize = new()
@@ -67,13 +66,20 @@ namespace MachineBrigade.Game.Views
         private readonly ModelLibrary _models;
         private readonly MaterialLibrary _materials;
         private readonly List<Mesh> _meshes = new();
+        private readonly MapTheme _theme;
+        private readonly List<(Transform part, Quaternion rest, Vector3 axis, float speed, float phase, bool rocks)> _moving = new();
         private Texture2D _groundTexture;
 
-        public MapView(SimWorld world, ModelLibrary models, MaterialLibrary materials, Transform parent)
+        /// <param name="shadows">The Shadows setting: trees cast shadows from Medium up, small clutter on High.</param>
+        public MapView(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
+            Match.ShadowLevel shadows = Match.ShadowLevel.High)
         {
+            var treeShadows = shadows >= Match.ShadowLevel.Medium;
+            var clutterShadows = shadows == Match.ShadowLevel.High;
             _world = world;
             _models = models;
             _materials = materials;
+            _theme = theme;
             _root = new GameObject("Map");
             _root.transform.SetParent(parent, false);
             BuildGround(world, materials);
@@ -81,17 +87,33 @@ namespace MachineBrigade.Game.Views
             var rng = new Random(17);
             foreach (var prop in world.Props)
             {
-                var (model, rubble, debris) = Describe(prop.Def.Id, rng);
-                // Small clutter (barrels, crates, traps) casts no shadow: many casters, little to see.
-                var instance = Spawn(model, prop.Def.Width * prop.Def.Depth >= 3f);
-                if (prop.Def.Id is "car" or "truck") Repaint(instance, rng);
-                var yaw = prop.Def.Id == "tree" ? (float)rng.NextDouble() * 360f : prop.Rotation;
+                var id = prop.Def.Id;
+                var (model, rubble, debris) = Describe(id, rng);
+                var vegetation = id is "tree" or "palm" or "cactus";
+                // Tiny clutter (barrels, crates, traps) casts a shadow only on High: many casters, little to see.
+                var casts = shadows != Match.ShadowLevel.Off &&
+                            (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
+                var instance = id is "oil_pump" or "radar_station" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
+                if (id is "car" or "truck") Repaint(instance, _materials.CarPaints, rng);
+                if (id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
+                var yaw = vegetation ? (float)rng.NextDouble() * 360f : prop.Rotation;
                 instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
                     Quaternion.Euler(0f, yaw, 0f));
-                if (prop.Def.Id == "tree") instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
                 _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
             }
             ScatterBushes(world, rng);
+        }
+
+        /// <summary>Turns radar dishes and rocks pumpjacks; call once per frame.</summary>
+        public void Animate(float time)
+        {
+            foreach (var (part, rest, axis, speed, phase, rocks) in _moving)
+            {
+                if (part == null || !part.gameObject.activeInHierarchy) continue;
+                var angle = rocks ? Mathf.Sin(time * speed + phase) * 14f : time * speed + phase;
+                part.localRotation = rest * Quaternion.AngleAxis(angle, axis);
+            }
         }
 
         /// <summary>Living prop under a ground point, preferring the smallest (a barrel beside a house).</summary>
@@ -138,7 +160,7 @@ namespace MachineBrigade.Game.Views
             _props.Clear();
         }
 
-        private static (string model, string rubble, string[] debris) Describe(string defId, Random rng) => defId switch
+        private (string model, string rubble, string[] debris) Describe(string defId, Random rng) => defId switch
         {
             "house_small" => ("house_small", "rubble_small", BuildingDebris),
             "house_large" => ("house_large", "rubble_large", BuildingDebris),
@@ -164,14 +186,33 @@ namespace MachineBrigade.Game.Views
             "ammo_crate" => ("ammo_crate", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
             "sandbags" => ("sandbags", null, new[] { "debris_plaster", "debris_plaster", "debris_plaster" }),
             "tank_trap" => ("tank_trap", null, new[] { "debris_metal", "debris_metal", "debris_metal" }),
-            "tree" => (rng.Next(14) == 0 ? "tree_dead" : Trees[rng.Next(Trees.Length)], null,
+            "tree" => (rng.NextDouble() < _theme.DeadTrees ? "tree_dead" : _theme.Trees[rng.Next(_theme.Trees.Length)], null,
                 new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),
+            "palm" => ("palm", null, new[] { "debris_leaves", "debris_leaves", "debris_wood", "debris_wood" }),
+            "cactus" => ("cactus", null, new[] { "debris_leaves", "debris_leaves" }),
+            "adobe_house" => ("adobe_house", "rubble_small", BuildingDebris),
+            "adobe_large" => ("adobe_large", "rubble_large", BuildingDebris),
+            "market_stall" => ("market_stall", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
+            "oil_pump" => ("oil_pump", null, MetalDebris),
+            "refinery_tower" => ("refinery_tower", "rubble_medium", MetalDebris),
+            "storage_tank" => ("storage_tank", null, MetalDebris),
+            "pipeline" => ("pipeline", null, new[] { "debris_metal", "debris_metal", "debris_metal" }),
+            "log_cabin" => ("log_cabin", "rubble_small", BarnDebris),
+            "radar_station" => ("radar_station", "rubble_medium", MetalDebris),
+            "watchtower" => ("watchtower", null, new[] { "debris_wood", "debris_metal", "debris_wood", "debris_metal" }),
+            "container" or "container_stack" => (defId, null, MetalDebris),
+            "gantry_crane" => ("gantry_crane", "rubble_large", MetalDebris),
+            "factory" => ("factory", "rubble_large", MetalDebris),
+            "office_block" => ("office_block", "rubble_large", BuildingDebris),
+            "rail_tanker" or "rail_boxcar" => (defId, null, MetalDebris),
+            "lamp_post" or "jersey_barrier" or "dock_bollards" => (defId, null, new[] { "debris_concrete", "debris_metal" }),
             _ => (defId, null, Array.Empty<string>()),
         };
 
         /// <summary>Bushes in open ground, kept clear of props and both rally areas.</summary>
         private void ScatterBushes(SimWorld world, Random rng)
         {
+            if (_theme.Bush == null) return;
             var half = world.Map.HalfSize - 4f;
             var placed = 0;
             for (var attempt = 0; attempt < 400 && placed < 70; attempt++)
@@ -183,9 +224,9 @@ namespace MachineBrigade.Game.Views
                 foreach (var team in world.Map.Teams)
                     if (Vector2.Distance(team.Rally, p) < 22f) clear = false;
                 if (!clear) continue;
-                var bush = Spawn("bush", false);
+                var bush = Spawn(_theme.Bush, false);
                 bush.transform.SetPositionAndRotation(new Vector3(p.X, 0f, p.Y), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
-                bush.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f);
+                bush.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f) * (_theme.Bush == "cactus" ? 0.6f : 1f);
                 placed++;
             }
         }
@@ -193,8 +234,10 @@ namespace MachineBrigade.Game.Views
         private void BuildGround(SimWorld world, MaterialLibrary materials)
         {
             var size = world.Map.Size;
-            _groundTexture = TerrainPainter.Paint(world, TerrainTheme.Riverlands);
+            _groundTexture = TerrainPainter.Paint(world, _theme);
             materials.Ground.SetTexture("_BaseMap", _groundTexture);
+            materials.Pebble.SetColor("_BaseColor", _theme.Pebble);
+            materials.GrassTuft.SetColor("_BaseColor", _theme.GrassTuft);
 
             var groundObject = Place("Ground", Own(GroundMesh(size, 64)), materials.Ground, castShadows: false);
             var collider = groundObject.AddComponent<BoxCollider>();
@@ -211,19 +254,36 @@ namespace MachineBrigade.Game.Views
             var density = (size / 96f) * (size / 96f) * 0.7f;
             Place("Pebbles", Own(Scatter(Pebble(), (int)(500 * density), spread, rng, world, 0.06f, 0.5f, 1.5f, tilt: true)),
                 materials.Pebble, castShadows: false);
-            Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
-                materials.GrassTuft, castShadows: false);
+            if (_theme.Tufts > 0f)
+                Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density * _theme.Tufts), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
+                    materials.GrassTuft, castShadows: false);
         }
 
-        /// <summary>Gives a civilian vehicle a random body colour.</summary>
-        private void Repaint(GameObject vehicle, Random rng)
+        /// <summary>Gives a car, truck or shipping container a random body colour from <paramref name="paints"/>.</summary>
+        private static void Repaint(GameObject prop, Material[] paints, Random rng)
         {
-            var renderer = vehicle.GetComponent<MeshRenderer>();
+            var renderer = prop.GetComponent<MeshRenderer>();
             var materials = renderer.sharedMaterials;
-            var paint = _materials.CarPaints[rng.Next(_materials.CarPaints.Length)];
+            var paint = paints[rng.Next(paints.Length)];
             for (var i = 0; i < materials.Length; i++)
-                if (materials[i] == _materials.CarPaints[0]) materials[i] = paint;
+                if (materials[i] == paints[0]) materials[i] = paint;
             renderer.sharedMaterials = materials;
+        }
+
+        /// <summary>
+        /// A prop with a moving part (radar dish, pumpjack beam): spawned whole instead of merged,
+        /// and its part registered for <see cref="Animate"/>.
+        /// </summary>
+        private GameObject SpawnMoving(string modelId, bool castShadows, Random rng)
+        {
+            var instance = _models.Spawn(modelId, -1, _root.transform, castShadows);
+            var phase = (float)rng.NextDouble() * 360f;
+            foreach (var spinner in instance.Spinners)
+                _moving.Add((spinner.Transform, spinner.Rest, spinner.Axis, spinner.DegreesPerSecond * 0.35f, phase, false));
+            foreach (var t in instance.Root.GetComponentsInChildren<Transform>(true))
+                if (t.name.StartsWith("Pump_beam"))
+                    _moving.Add((t, t.localRotation, Vector3.forward, 1.7f, phase, true));
+            return instance.Root;
         }
 
         /// <summary>

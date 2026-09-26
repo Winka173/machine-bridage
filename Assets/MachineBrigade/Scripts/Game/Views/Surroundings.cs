@@ -37,13 +37,25 @@ namespace MachineBrigade.Game.Views
         private readonly float _half;
         private readonly Random _rng = new(97);
 
-        public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, TerrainTheme theme, Transform parent)
+        public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
+            Match.GraphicsOptions options = null)
         {
             _half = world.Map.HalfSize;
+            _theme = theme;
+            options ??= Match.GraphicsOptions.For(Match.GraphicsQuality.High);
+            _density = options.RichScenery ? 1f : 0.5f;
+            // Scenery near the edge casts shadows into view; further out it sits in the haze.
+            _shadowReach = options.Shadows switch
+            {
+                Match.ShadowLevel.Off => -999f,
+                Match.ShadowLevel.Low => 20f,
+                Match.ShadowLevel.Medium => ShadowReach,
+                _ => ShadowReach + 20f,
+            };
             _root = new GameObject("Surroundings");
             _root.transform.SetParent(parent, false);
 
-            var fields = Fields();
+            var fields = theme.Fields ? Fields() : new List<Rect>();
             _texture = PaintOuter(theme, fields);
             materials.OuterGround.SetTexture("_BaseMap", _texture);
             var ground = Place("Outer Ground", Own(Plane(Extent * 2f, 16)), materials.OuterGround);
@@ -53,13 +65,26 @@ namespace MachineBrigade.Game.Views
             horizon.transform.position = new Vector3(0f, -0.3f, 0f);
 
             _palette = TerrainPalette(theme);
+            materials.Skirt.SetColor("_BaseColor", theme.Skirt);
             _rangeMaterial = materials.Terrain;
             _rangeMaterial.SetTexture("_BaseMap", _palette);
             if (!Match.DebugFlags.Has("-mb-no-range")) Place("Mountain Range", Own(MountainRange()), _rangeMaterial);
 
-            var river = Place("River", Own(Plane(1f, 1)), materials.Water);
-            river.transform.position = new Vector3(0f, -0.01f, RiverZ);
-            river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
+            materials.Water.SetColor("_BaseColor", theme.WaterColour);
+            materials.Water.SetFloat("_Roughness", theme.WaterRoughness);
+            if (theme.Water is ThemeWater.River or ThemeWater.FrozenRiver)
+            {
+                var river = Place("River", Own(Plane(1f, 1)), materials.Water);
+                river.transform.position = new Vector3(0f, -0.01f, RiverZ);
+                river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
+            }
+            else if (theme.Water == ThemeWater.Sea)
+            {
+                // The sea fills everything beyond the north edge, out past the fog.
+                var sea = Place("Sea", Own(Plane(1f, 1)), materials.Water);
+                sea.transform.position = new Vector3(0f, -0.02f, SeaShore + Extent * 1.5f);
+                sea.transform.localScale = new Vector3(Extent * 6f, 1f, Extent * 3f);
+            }
 
             ScatterForests(models, fields);
             ScatterRocks(models);
@@ -75,7 +100,7 @@ namespace MachineBrigade.Game.Views
                 var edge = Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
                 var parameters = new RenderParams(material)
                 {
-                    shadowCastingMode = edge < ShadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
+                    shadowCastingMode = edge < _shadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
                     receiveShadows = true,
                     worldBounds = bounds,
                 };
@@ -94,9 +119,18 @@ namespace MachineBrigade.Game.Views
 
         private readonly Texture2D _palette;
         private readonly Material _rangeMaterial;
+        private readonly MapTheme _theme;
+        private readonly float _density, _shadowReach;
 
         private float RiverZ => _half + 62f;
         private const float RiverWidth = 16f;
+
+        /// <summary>The quay line of a harbour map: the sea starts just past the north edge.</summary>
+        private float SeaShore => _half + 5f;
+
+        private bool HasRiver => _theme.Water is ThemeWater.River or ThemeWater.FrozenRiver;
+
+        private bool InSea(Vector2 p, float margin) => _theme.Water == ThemeWater.Sea && p.y > SeaShore - margin;
 
         /// <summary>Submits the instanced scenery; call once per frame.</summary>
         public void Draw()
@@ -119,13 +153,14 @@ namespace MachineBrigade.Game.Views
 
         private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x) > _half + margin || Mathf.Abs(p.y) > _half + margin;
 
-        private bool NearRiver(Vector2 p, float margin) => Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin;
+        private bool NearRiver(Vector2 p, float margin) =>
+            (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin);
 
         /// <summary>Rough terrain height at a ground point (0 on the flat around the map).</summary>
         private float Height(Vector2 p)
         {
             var outside = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
-            if (outside < MountainStart) return 0f;
+            if (outside < MountainStart || InSea(p, 0f)) return 0f;
             var ramp = Mathf.SmoothStep(0f, 1f, (outside - MountainStart) / 70f);
             // Tall along the far (top of the screen) sides, rolling hills on the near ones, so
             // the range frames the battle without hiding it.
@@ -134,10 +169,11 @@ namespace MachineBrigade.Game.Views
             var ridge = 1f - Mathf.Abs(n * 2f - 1f);
             ridge *= ridge;
             var detail = Mathf.PerlinNoise(p.x * 0.045f + 2.3f, p.y * 0.045f + 7.9f);
-            var peak = 5f + back * back * 52f;
+            var peak = (5f + back * back * 52f) * _theme.Peaks;
             var height = ramp * (peak * (0.3f + 0.7f * ridge) + detail * 5f);
-            // A valley for the river.
-            var valley = Mathf.SmoothStep(0f, 1f, (Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f - 3f) / 26f);
+            // A valley for the river; hills fall away to the shore on a harbour map.
+            var valley = HasRiver ? Mathf.SmoothStep(0f, 1f, (Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f - 3f) / 26f) : 1f;
+            if (_theme.Water == ThemeWater.Sea) valley *= Mathf.SmoothStep(0f, 1f, (SeaShore - p.y) / 30f);
             return height * valley;
         }
 
@@ -239,15 +275,16 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Terrain colours by height (u) and steepness (v).</summary>
-        private static Texture2D TerrainPalette(TerrainTheme theme)
+        private static Texture2D TerrainPalette(MapTheme theme)
         {
             const int width = 64, height = 16;
             var pixels = new Color[width * height];
-            var meadow = theme.Grass * 0.92f;
-            var forest = Color.Lerp(theme.Grass, new Color(0.24f, 0.33f, 0.2f), 0.6f);
-            var rock = Color.Lerp(theme.Stone, theme.Dirt, 0.35f);
-            var cliff = theme.Stone * 0.8f;
-            var snow = new Color(0.9f, 0.93f, 0.95f);
+            var meadow = theme.Meadow;
+            var forest = theme.ForestFloor;
+            var rock = theme.Rock;
+            var cliff = theme.Cliff;
+            var snow = theme.Peak;
+            var line = theme.PeakLine;
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
@@ -257,7 +294,7 @@ namespace MachineBrigade.Game.Views
                 colour = Color.Lerp(colour, rock, Edge(0.5f, 0.72f, h));
                 colour = Color.Lerp(colour, cliff, Edge(0.45f, 0.8f, steep));
                 // Snow settles on the gentler slopes of the peaks.
-                colour = Color.Lerp(colour, snow, Edge(0.8f, 0.88f, h) * (1f - Edge(0.55f, 0.85f, steep)));
+                colour = Color.Lerp(colour, snow, Edge(line, line + 0.08f, h) * (1f - Edge(0.55f, 0.85f, steep)));
                 pixels[y * width + x] = colour;
             }
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false, false)
@@ -281,7 +318,7 @@ namespace MachineBrigade.Game.Views
         private void ScatterForests(ModelLibrary models, List<Rect> fields)
         {
             var placed = 0;
-            for (var attempt = 0; attempt < 90000 && placed < 5200; attempt++)
+            for (var attempt = 0; attempt < 90000 && placed < 5200 * _density; attempt++)
             {
                 var p = RandomPoint();
                 if (!Outside(p, 4f) || NearRiver(p, 3f) || InField(p, fields)) continue;
@@ -296,20 +333,19 @@ namespace MachineBrigade.Game.Views
                     : height > 1f
                         ? (0.55f + 0.45f * Edge(0.3f, 0.6f, noise)) * (1f - Edge(TreeLine * 0.6f, TreeLine, height))
                         : 0.12f + 0.8f * Edge(0.42f, 0.68f, noise);
-                if (_rng.NextDouble() > chance) continue;
-                // Conifers take over up the mountain; broadleaves and birches in the lowlands.
-                var roll = _rng.NextDouble();
-                var model = height > 8f
-                    ? (roll < 0.75 ? "pine" : roll < 0.9 ? "tree" : "tree_dead")
-                    : (roll < 0.35 ? "tree" : roll < 0.55 ? "pine" : roll < 0.75 ? "tree_round" : roll < 0.9 ? "tree_broad" : "birch");
+                if (_rng.NextDouble() > chance * _theme.Forest) continue;
+                // Conifers take over up the mountain; the theme's lowland mix below.
+                var pool = height > 8f ? _theme.HighlandTrees : _theme.LowlandTrees;
+                var model = pool[_rng.Next(pool.Length)];
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 0.8f + (float)_rng.NextDouble() * 0.7f, height - 0.1f);
                 placed++;
             }
+            if (_theme.Bush == null) return;
             for (var i = 0; i < 700; i++)
             {
                 var p = RandomPoint();
                 if (!Outside(p, 3f) || NearRiver(p, 1f) || InField(p, fields) || OnMountain(p)) continue;
-                Add(models, "bush", p, (float)_rng.NextDouble() * 360f, 0.7f + (float)_rng.NextDouble() * 0.9f);
+                Add(models, _theme.Bush, p, (float)_rng.NextDouble() * 360f, 0.7f + (float)_rng.NextDouble() * 0.9f);
             }
         }
 
@@ -327,7 +363,7 @@ namespace MachineBrigade.Game.Views
                 var p = RandomPoint();
                 if (!Outside(p, 6f) || NearRiver(p, 2f)) continue;
                 var height = Height(p);
-                var model = "rock_" + (char)('a' + _rng.Next(3));
+                var model = _theme.Rocks[_rng.Next(_theme.Rocks.Length)];
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 1.2f + (float)_rng.NextDouble() * 2.4f + height * 0.05f, height - 0.4f);
             }
             // Crags on the heights, outcrops and boulder fields breaking up the forests below.
@@ -337,7 +373,7 @@ namespace MachineBrigade.Game.Views
                 if (!Outside(p, 10f) || NearRiver(p, 6f)) continue;
                 var height = Height(p);
                 if (height < 2f && _rng.Next(3) != 0) continue;
-                var model = _rng.Next(3) switch { 0 => "cliff_a", 1 => "cliff_b", _ => "boulders" };
+                var model = _theme.Crags[_rng.Next(_theme.Crags.Length)];
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 0.8f + (float)_rng.NextDouble() * 0.9f, height - 0.6f);
             }
         }
@@ -350,7 +386,7 @@ namespace MachineBrigade.Game.Views
                 var corner = new Vector2(field.xMax + 7f, field.center.y);
                 if (!Outside(corner, 8f) || NearRiver(corner, 8f)) continue;
                 if (OnMountain(corner)) continue;
-                var kinds = new[] { "house_large", "house_small", "cottage", "barn", "cottage" };
+                var kinds = _theme.Farmhouses;
                 var house = models.Spawn(kinds[_rng.Next(kinds.Length)], -1, _root.transform);
                 house.Root.transform.SetPositionAndRotation(new Vector3(corner.x, 0f, corner.y), Quaternion.Euler(0f, _rng.Next(4) * 90f, 0f));
             }
@@ -376,12 +412,13 @@ namespace MachineBrigade.Game.Views
             return fields;
         }
 
-        private Texture2D PaintOuter(TerrainTheme theme, List<Rect> fields)
+        private Texture2D PaintOuter(MapTheme mapTheme, List<Rect> fields)
         {
             const int size = 512;
+            var theme = mapTheme.Palette;
             var pixels = new Color[size * size];
             var worldPerPixel = Extent * 2f / size;
-            var crops = new[] { new Color(0.62f, 0.6f, 0.36f), new Color(0.46f, 0.55f, 0.32f), new Color(0.66f, 0.55f, 0.36f) };
+            var crops = mapTheme.Crops;
             var bank = Color.Lerp(theme.Dirt, theme.Sand, 0.5f);
             for (var y = 0; y < size; y++)
             for (var x = 0; x < size; x++)
@@ -395,7 +432,8 @@ namespace MachineBrigade.Game.Views
                     var rows = Mathf.Repeat(p.x * 0.9f, 1f) < 0.5f ? 0.92f : 1.04f;
                     colour = crops[f % crops.Length] * rows;
                 }
-                var riverDistance = Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f;
+                var riverDistance = HasRiver ? Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f
+                    : mapTheme.Water == ThemeWater.Sea ? SeaShore - p.y : 99f;
                 if (riverDistance < 4f) colour = Color.Lerp(colour, bank, Mathf.Clamp01(1f - riverDistance / 4f));
                 // Out of bounds reads a little darker and duller, which marks the playable edge.
                 var edge = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;

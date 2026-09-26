@@ -168,6 +168,38 @@
     { "id": "car",         "armor": "Light",     "hp": 60,   "width": 4.4, "depth": 1.9,
       "explosion": { "damage": 60, "radius": 5, "delay": 0.4, "tier": "Large" } },
     { "id": "truck",       "armor": "Light",     "hp": 120,  "width": 7.3, "depth": 2.8,
-      "explosion": { "damage": 90, "radius": 7, "delay": 0.5, "tier": "Huge" } }
+      "explosion": { "damage": 90, "radius": 7, "delay": 0.5, "tier": "Huge" } },
+    // Desert: an oasis town, an oil field and a refinery that goes up in a chain of fireballs.
+    { "id": "adobe_house",   "armor": "Structure", "hp": 700,  "width": 7.3,  "depth": 7.2,  "blocks": true },
+    { "id": "adobe_large",   "armor": "Structure", "hp": 1300, "width": 11.8, "depth": 9.3,  "blocks": true },
+    { "id": "market_stall",  "armor": "Light",     "hp": 80,   "width": 4.3,  "depth": 3 },
+    { "id": "palm",          "armor": "Light",     "hp": 45,   "width": 1.5,  "depth": 1.5 },
+    { "id": "cactus",        "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "oil_pump",      "armor": "Structure", "hp": 300,  "width": 4.9,  "depth": 2.5,  "blocks": true,
+      "explosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Large" } },
+    { "id": "refinery_tower","armor": "Structure", "hp": 900,  "width": 5.9,  "depth": 5.9,  "blocks": true,
+      "explosion": { "damage": 220, "radius": 14, "delay": 0.45, "tier": "Huge" } },
+    { "id": "storage_tank",  "armor": "Structure", "hp": 700,  "width": 9.9,  "depth": 9.9,  "blocks": true,
+      "explosion": { "damage": 320, "radius": 18, "delay": 0.5, "tier": "Ultimate" } },
+    { "id": "pipeline",      "armor": "Structure", "hp": 250,  "width": 8,    "depth": 1.2,  "blocks": true,
+      "explosion": { "damage": 70, "radius": 6, "delay": 0.25, "tier": "Large" } },
+    { "id": "mesa",          "armor": "Structure", "hp": 1000000, "width": 16, "depth": 12,  "blocks": true },
+    // Snow: a mountain village, a radar station on the heights.
+    { "id": "log_cabin",     "armor": "Structure", "hp": 700,  "width": 6.9,  "depth": 6.2,  "blocks": true },
+    { "id": "snow_rock",     "armor": "Structure", "hp": 1000000, "width": 4.6, "depth": 3.8, "blocks": true },
+    { "id": "radar_station", "armor": "Structure", "hp": 1200, "width": 7.9,  "depth": 7.8,  "blocks": true },
+    { "id": "watchtower",    "armor": "Structure", "hp": 350,  "width": 4,    "depth": 4.1,  "blocks": true },
+    // Harbour: docks, a rail yard and a factory district.
+    { "id": "container",     "armor": "Structure", "hp": 400,  "width": 6,    "depth": 2.4,  "blocks": true },
+    { "id": "container_stack","armor": "Structure","hp": 700,  "width": 6.1,  "depth": 2.4,  "blocks": true },
+    { "id": "gantry_crane",  "armor": "Structure", "hp": 2000, "width": 18.6, "depth": 10.8, "blocks": true },
+    { "id": "factory",       "armor": "Structure", "hp": 2200, "width": 16.4, "depth": 12.1, "blocks": true },
+    { "id": "office_block",  "armor": "Structure", "hp": 1700, "width": 9.8,  "depth": 10.1, "blocks": true },
+    { "id": "rail_tanker",   "armor": "Structure", "hp": 250,  "width": 11,   "depth": 3,    "blocks": true,
+      "explosion": { "damage": 240, "radius": 13, "delay": 0.4, "tier": "Huge" } },
+    { "id": "rail_boxcar",   "armor": "Structure", "hp": 400,  "width": 11,   "depth": 3.2,  "blocks": true },
+    { "id": "dock_bollards", "armor": "Heavy",     "hp": 400,  "width": 6,    "depth": 1,    "blocks": true },
+    { "id": "lamp_post",     "armor": "Light",     "hp": 40,   "width": 0.5,  "depth": 0.5 },
+    { "id": "jersey_barrier","armor": "Heavy",     "hp": 300,  "width": 4,    "depth": 0.8,  "blocks": true }
   ]
 }

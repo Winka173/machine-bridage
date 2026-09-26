@@ -26,10 +26,27 @@ namespace MachineBrigade.Game.Rendering
         private readonly float _originalDepthBias;
         private readonly float _originalNormalBias;
         private readonly int _originalMsaa;
+        private readonly float _originalScale;
+        private readonly int _originalShadowResolution;
         private readonly bool _originalSrpBatcher;
+        private readonly Match.ShadowLevel _shadows;
+        private readonly int _originalCascades;
+        private readonly float _originalBorder;
+        private readonly UpscalingFilterSelection _originalUpscaling;
+        private static readonly Vector2[] Corners = { new(0f, 0f), new(1f, 0f), new(0f, 1f), new(1f, 1f) };
 
-        public Atmosphere(float shadowDistance = 110f)
+        /// <summary>Highest thing that casts a shadow: aircraft fly up to 22 m, the flare stack is 20 m.</summary>
+        private const float CasterCeiling = 30f;
+
+        /// <summary>Fade band at the edge of the shadow range, kept just off screen.</summary>
+        private const float ShadowBorder = 0.05f;
+        private readonly Light _sun;
+        private readonly LightShadows _originalSunShadows;
+
+        public Atmosphere(Match.GraphicsOptions options = null)
         {
+            options ??= Match.GraphicsOptions.For(Match.GraphicsQuality.High);
+            _shadows = options.Shadows;
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = Sky * AmbientStrength;
             RenderSettings.ambientEquatorColor = Color.Lerp(Sky, Earth, 0.5f) * AmbientStrength;
@@ -66,11 +83,78 @@ namespace MachineBrigade.Game.Rendering
                 // stuttered. Measured on the emulator: 50-60 flashes per 14 s with it, none without.
                 // Vulkan and Metal keep it for the CPU savings.
                 if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3) _pipeline.useSRPBatcher = false;
-                _pipeline.shadowDistance = shadowDistance;
                 _pipeline.shadowDepthBias = 1.6f;
                 _pipeline.shadowNormalBias = 1.3f;
-                _pipeline.msaaSampleCount = Match.DebugFlags.Has("-mb-no-msaa") ? 1 : Application.isMobilePlatform ? 2 : 4;
+                // Resolution, anti-aliasing and shadow map size are the big GPU levers on phones.
+                _pipeline.msaaSampleCount = Match.DebugFlags.Has("-mb-no-msaa") ? 1 : options.AntiAliasing;
+                _originalScale = _pipeline.renderScale;
+                // Battery saver renders a little smaller as well as slower.
+                _pipeline.renderScale = options.RenderScale / 100f * (Match.MatchSettings.SavingBattery ? 0.85f : 1f);
+                _originalUpscaling = _pipeline.upscalingFilter;
+                // FSR 1 sharpens the upscale where the GPU supports it (it falls back to bilinear).
+                _pipeline.upscalingFilter = _pipeline.renderScale < 0.99f ? UpscalingFilterSelection.FSR : UpscalingFilterSelection.Auto;
+                _originalShadowResolution = _pipeline.mainLightShadowmapResolution;
+                _pipeline.mainLightShadowmapResolution = options.Shadows == Match.ShadowLevel.High ? 2048 : 1024;
+                // One shadow map: cascades fix perspective aliasing, which an orthographic view does not have.
+                _originalCascades = _pipeline.shadowCascadeCount;
+                _pipeline.shadowCascadeCount = 1;
+                _originalBorder = _pipeline.cascadeBorder;
+                _pipeline.cascadeBorder = ShadowBorder;
+                _pipeline.shadowDistance = 110f;
             }
+
+            // Off: no shadow pass at all. Low: hard edges. Medium and High: soft (filtered) edges.
+            foreach (var light in Object.FindObjectsByType<Light>())
+                if (light.type == LightType.Directional) _sun = light;
+            if (_sun != null)
+            {
+                _originalSunShadows = _sun.shadows;
+                _sun.shadows = options.Shadows switch
+                {
+                    Match.ShadowLevel.Off => LightShadows.None,
+                    Match.ShadowLevel.Low => LightShadows.Hard,
+                    _ => LightShadows.Soft,
+                };
+                // Four taps on phones (Unity's mobile balance); nine on desktop High.
+                var data = _sun.GetUniversalAdditionalLightData();
+                if (data != null)
+                    data.softShadowQuality = options.Shadows == Match.ShadowLevel.High && !Application.isMobilePlatform
+                        ? SoftShadowQuality.Medium
+                        : SoftShadowQuality.Low;
+            }
+        }
+
+        /// <summary>
+        /// Fits the one shadow map to what is on screen, every frame. URP wraps the shadow map
+        /// round the view between the near plane and the shadow distance, and fades shadows by
+        /// straight-line distance from the camera. With the camera 60 m back, a fixed range wasted
+        /// most of the map on empty air when zoomed in and lost the corners when zoomed out. So:
+        /// the near plane moves up to just above the highest caster at the bottom of the screen,
+        /// and the range reaches exactly the farthest visible ground corner (fade band beyond it).
+        /// Zoomed in, the same map covers far less ground and edges come out about twice as sharp.
+        /// </summary>
+        public void FitShadows(Camera camera)
+        {
+            if (_pipeline == null || camera == null || _shadows == Match.ShadowLevel.Off) return;
+            var t = camera.transform;
+            var position = t.position;
+            var forward = t.forward;
+            var farthest = 0f;
+            var nearest = float.MaxValue;
+            foreach (var corner in Corners)
+            {
+                var ray = camera.ViewportPointToRay(corner);
+                if (ray.direction.y > -0.01f) continue;
+                var ground = ray.origin + ray.direction * (-ray.origin.y / ray.direction.y);
+                farthest = Mathf.Max(farthest, (ground - position).sqrMagnitude);
+                var top = ray.origin + ray.direction * ((CasterCeiling - ray.origin.y) / ray.direction.y);
+                nearest = Mathf.Min(nearest, Vector3.Dot(top - position, forward));
+            }
+            if (nearest == float.MaxValue) return;
+            var near = Mathf.Max(0.3f, nearest - 1f);
+            if (Mathf.Abs(camera.nearClipPlane - near) > 0.25f) camera.nearClipPlane = near;
+            var distance = Mathf.Sqrt(farthest) / (1f - ShadowBorder) + 1f;
+            if (Mathf.Abs(distance - _pipeline.shadowDistance) > 0.5f) _pipeline.shadowDistance = distance;
         }
 
         public void Dispose()
@@ -81,8 +165,14 @@ namespace MachineBrigade.Game.Rendering
                 _pipeline.shadowDepthBias = _originalDepthBias;
                 _pipeline.shadowNormalBias = _originalNormalBias;
                 _pipeline.msaaSampleCount = _originalMsaa;
+                _pipeline.renderScale = _originalScale;
+                _pipeline.mainLightShadowmapResolution = _originalShadowResolution;
+                _pipeline.shadowCascadeCount = _originalCascades;
+                _pipeline.cascadeBorder = _originalBorder;
+                _pipeline.upscalingFilter = _originalUpscaling;
                 _pipeline.useSRPBatcher = _originalSrpBatcher;
             }
+            if (_sun != null) _sun.shadows = _originalSunShadows;
             if (_reflection != null) Object.Destroy(_reflection);
         }
 

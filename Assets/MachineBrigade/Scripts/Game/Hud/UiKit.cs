@@ -7,11 +7,12 @@ namespace MachineBrigade.Game.Hud
     /// <summary>Small builders shared by every HUD and menu panel, so elements are made one way.</summary>
     internal static class UiKit
     {
-        public static readonly Color Mint = new(0.647f, 0.89f, 0.749f);
-        public static readonly Color Ink = new(0.89f, 0.925f, 0.9f);
-        public static readonly Color Amber = new(0.875f, 0.718f, 0.463f);
-        public static readonly Color Danger = new(0.94f, 0.54f, 0.45f);
-        public static readonly Color Dim = new(0.545f, 0.604f, 0.569f);
+        // The command-console palette (see Hud.uss).
+        public static readonly Color Mint = new(0.561f, 0.839f, 0.580f);
+        public static readonly Color Ink = new(0.929f, 0.937f, 0.941f);
+        public static readonly Color Amber = new(0.949f, 0.639f, 0.227f);
+        public static readonly Color Danger = new(0.898f, 0.325f, 0.235f);
+        public static readonly Color Dim = new(0.663f, 0.706f, 0.729f);
 
         public static VisualElement Box(string classNames, PickingMode picking = PickingMode.Ignore)
         {
@@ -34,7 +35,13 @@ namespace MachineBrigade.Game.Hud
             foreach (var name in classNames.Split(' ', StringSplitOptions.RemoveEmptyEntries)) element.AddToClassList(name);
         }
 
-        public static IconElement Icon(string name, Color tint, float stroke = 1.7f) => new(name, stroke) { Tint = tint };
+        /// <summary>A vector icon. Ink (the default) lets the stylesheet colour it; any other tint is fixed.</summary>
+        public static IconElement Icon(string name, Color tint, float stroke = 1.7f)
+        {
+            var icon = new IconElement(name, stroke);
+            if (tint != Ink) icon.Tint = tint;
+            return icon;
+        }
 
         /// <summary>Anything tappable: a box with a click handler that also plays the UI tick.</summary>
         public static VisualElement Button(string className, Action onClick)

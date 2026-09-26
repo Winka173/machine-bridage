@@ -6,13 +6,12 @@ namespace MachineBrigade.Game.Effects
 {
     /// <summary>
     /// Shared world-space particle systems that effects emit into on demand: shell smoke trails,
-    /// muzzle smoke and tread dust. One system per kind keeps the cost to a few draw calls no
+    /// rocket motors, flame jets and tread dust. One system per kind keeps the cost to a few draw calls no
     /// matter how many vehicles are firing or driving.
     /// </summary>
     internal sealed class Emitters
     {
         private readonly ParticleSystem _trail;
-        private readonly ParticleSystem _muzzle;
         private readonly ParticleSystem _dust;
         private readonly ParticleSystem _motor;
         private readonly ParticleSystem _flame;
@@ -22,7 +21,6 @@ namespace MachineBrigade.Game.Effects
         public Emitters(MaterialLibrary m, Transform parent)
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
-            _muzzle = Continuous(parent, "Muzzle Smoke", m.Smoke, 300, PB.SmokeGradient(0.62f, 0.5f), 0.7f, 2.8f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
             _flame = Continuous(parent, "Flame Jets", m.Fire, 600, PB.FireGradient, 0.5f, 2.2f);
             _flak = Continuous(parent, "Flak Bursts", m.Smoke, 200, PB.Plume(0.08f, 0.3f, 0.8f), 0.6f, 1.8f);
@@ -68,15 +66,6 @@ namespace MachineBrigade.Game.Effects
             for (var i = 0; i < 6; i++)
                 Emit(_repair, position + Random.insideUnitSphere * 1.2f, Vector3.up * Random.Range(1.5f, 3f), Random.Range(0.15f, 0.3f),
                     Random.Range(0.6f, 1f));
-        }
-
-        public void MuzzleSmoke(Vector3 position, Vector3 forward, float scale)
-        {
-            for (var i = 0; i < 4; i++)
-            {
-                var velocity = forward * Random.Range(1.5f, 4f) * scale + Random.insideUnitSphere * 0.6f + Vector3.up * 0.4f;
-                Emit(_muzzle, position, velocity, Random.Range(0.6f, 1.2f) * scale, Random.Range(0.9f, 1.8f));
-            }
         }
 
         public void Dust(Vector3 position, float scale)

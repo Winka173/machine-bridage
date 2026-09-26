@@ -74,8 +74,9 @@ namespace MachineBrigade.Sim.Content
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
-            IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null)
+            IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate")
         {
+            Theme = string.IsNullOrWhiteSpace(theme) ? "temperate" : theme;
             Points = points ?? Array.Empty<CapturePointDef>();
             Roads = roads ?? Array.Empty<RoadDef>();
             Id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentException("Map id must not be empty.") : id;
@@ -94,6 +95,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Objectives for Conquest (may be empty for other modes).</summary>
         public IReadOnlyList<CapturePointDef> Points { get; }
+
+        /// <summary>Look of the battlefield (temperate, desert, snow, harbor); presentation only.</summary>
+        public string Theme { get; }
 
         /// <summary>Roads for the ground painter; empty means the painter lays its own.</summary>
         public IReadOnlyList<RoadDef> Roads { get; }
@@ -147,7 +151,7 @@ namespace MachineBrigade.Sim.Content
                 }
             }
 
-            return new MapDefinition(id, size, teams, props, units, points, roads);
+            return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate");
         }
     }
 }

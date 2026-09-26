@@ -3,9 +3,10 @@ using UnityEngine;
 namespace MachineBrigade.Game.Match
 {
     /// <summary>
-    /// Picks a frame rate the device can hold. Uneven frame times (33, 50, 33, 66 ms) read as
-    /// stutter far more than a steady 30 fps does, so when a device cannot stay close to 60 the
-    /// game settles at 30. When frame timing shows plenty of headroom again, it goes back to 60.
+    /// Picks a frame rate the device can hold, up to the player's cap (30, 60 or 120). Uneven
+    /// frame times (33, 50, 33, 66 ms) read as stutter far more than a steady lower rate does,
+    /// so when a device cannot stay close to its target the game steps down (120 to 60 to 30).
+    /// When frame timing shows plenty of headroom again, it steps back up towards the cap.
     /// (Lowering the render resolution was tried and dropped: on the emulator it blurred the
     /// picture without gaining a single frame.)
     /// </summary>
@@ -19,10 +20,12 @@ namespace MachineBrigade.Game.Match
         private readonly FrameTiming[] _timing = new FrameTiming[1];
 
         private readonly float _created;
+        private readonly int _cap;
 
-        public FrameRateGovernor(int start = 60)
+        public FrameRateGovernor(int start = 60, int cap = 60)
         {
-            Application.targetFrameRate = start;
+            _cap = Mathf.Max(30, cap);
+            Application.targetFrameRate = Mathf.Min(start, _cap);
             // Measured from each scene load, so the hitch of loading a match never counts.
             _created = Time.realtimeSinceStartup;
         }
@@ -37,29 +40,34 @@ namespace MachineBrigade.Game.Match
             var dt = Time.unscaledDeltaTime;
             _frames++;
             _sum += dt;
-            if (dt > (Target >= 60 ? 1f / 45f : 1f / 24f)) _slow++;
+            if (dt > 1f / (Target * 0.75f)) _slow++;
             FrameTimingManager.CaptureFrameTimings();
             if (now - _windowStart < WindowSeconds || _frames == 0) return;
 
             var fps = _frames / Mathf.Max(0.001f, _sum);
             var slowShare = _slow / (float)_frames;
-            if (Target >= 60 && (fps < 50f || slowShare > 0.15f))
+            if (Target > 30 && (fps < Target * 0.83f || slowShare > 0.15f))
             {
-                Application.targetFrameRate = 30;
-                Debug.Log($"[Perf] frame rate 60 -> 30 (measured {fps:0.0} fps, {slowShare:P0} slow frames)");
+                var lower = Target > 60 ? 60 : 30;
+                Debug.Log($"[Perf] frame rate {Target} -> {lower} (measured {fps:0.0} fps, {slowShare:P0} slow frames)");
+                Application.targetFrameRate = lower;
+                _headroomWindows = 0;
             }
-            else if (Target < 60)
+            else if (Target < _cap)
             {
-                // Only go back up when the work per frame clearly fits in 16 ms.
+                // Only go back up when the work per frame clearly fits the faster frame.
+                var higher = Target < 60 ? 60 : _cap;
                 var work = FrameTimingManager.GetLatestTimings(1, _timing) > 0
                     ? Mathf.Max((float)_timing[0].cpuFrameTime, (float)_timing[0].gpuFrameTime)
-                    : float.MaxValue;
-                _headroomWindows = work > 0f && work < 11f ? _headroomWindows + 1 : 0;
+                    : 0f;
+                // No timing data (some GPUs report none): judge by the frame time itself.
+                if (work <= 0f) work = _sum / _frames * 1000f;
+                _headroomWindows = work < 1000f / higher * 0.68f ? _headroomWindows + 1 : 0;
                 if (_headroomWindows >= 3)
                 {
-                    Application.targetFrameRate = 60;
+                    Application.targetFrameRate = higher;
                     _headroomWindows = 0;
-                    Debug.Log($"[Perf] frame rate 30 -> 60 (frame work {work:0.0} ms)");
+                    Debug.Log($"[Perf] frame rate -> {higher} (frame work {work:0.0} ms)");
                 }
             }
             _windowStart = now;

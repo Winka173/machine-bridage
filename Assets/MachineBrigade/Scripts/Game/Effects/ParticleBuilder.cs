@@ -53,7 +53,9 @@ namespace MachineBrigade.Game.Effects
             renderer.renderMode = mode;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
-            renderer.maxParticleSize = 3f;
+            // A cap on screen coverage (fraction of the view height): zoomed right in, a giant
+            // puff would otherwise fill the screen several times over, the peak of overdraw.
+            renderer.maxParticleSize = 0.75f;
             renderer.SetActiveVertexStreams(Streams);
             // Alpha-blended smoke needs a stable order, or dark young puffs pop in front of older haze.
             if (material.HasFloat("_DstBlend") && material.GetFloat("_DstBlend") > (float)BlendMode.One + 0.5f)

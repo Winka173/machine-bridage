@@ -11,7 +11,8 @@ namespace MachineBrigade.Game.Effects
     /// What a shot looks like, by what the weapon fires: machine-gun bursts and autocannon
     /// tracers, tank shells with smoke trails, arcing artillery, missiles that home in with a
     /// burning motor, rocket salvos that corkscrew out of their pods, and flamethrower streams.
-    /// Every shot starts at its own mount's muzzle (coaxial gun, roof gun, launcher).
+    /// Every shot starts at its own mount's muzzle (coaxial gun, roof gun, launcher), with fire
+    /// and smoke at the barrel (<see cref="MuzzleFx"/>) for vehicles and aircraft alike.
     /// </summary>
     internal sealed class WeaponEffects
     {
@@ -20,12 +21,12 @@ namespace MachineBrigade.Game.Effects
         private readonly TracerPool _tracers;
         private readonly ProjectilePool _projectiles;
         private readonly Emitters _emitters;
-        private readonly ExplosionEffect _muzzle;
+        private readonly MuzzleFx _muzzle;
         private readonly Action<Vector3, float> _shake;
         private readonly bool _hasMissile, _hasRocket, _hasBomb;
 
         public WeaponEffects(Catalog catalog, ModelLibrary models, TracerPool tracers, ProjectilePool projectiles, Emitters emitters,
-            ExplosionEffect muzzle, Action<Vector3, float> shake)
+            MuzzleFx muzzle, Action<Vector3, float> shake)
         {
             _catalog = catalog;
             _models = models;
@@ -43,10 +44,12 @@ namespace MachineBrigade.Game.Effects
         {
             var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
             Vector3 from;
+            float? groundY = 0f;
             if (views.TryGet(e.Entity, out var shooter))
             {
                 if (e.Mount == 0) shooter.Recoil();
                 from = shooter.MuzzleOf(e.Mount);
+                groundY = shooter.Flying ? null : shooter.Position.y;
             }
             else
             {
@@ -58,21 +61,21 @@ namespace MachineBrigade.Game.Effects
             flat.y = 0f;
             var forward = flat.sqrMagnitude > 1e-4f ? flat.normalized : Vector3.forward;
             var distance = Vector3.Distance(from, to);
+            var aim = to - from; // the barrel's direction: down from an aircraft, up at one
             var kind = weapon?.Projectile ?? (e.Tier == ExplosionTier.Small ? ProjectileKind.Bullet : ProjectileKind.Shell);
             var targetId = e.Other;
 
             switch (kind)
             {
                 case ProjectileKind.Bullet:
-                    Bullets(weapon, from, to, forward, e.Value, now);
+                    Bullets(weapon, from, to, aim, groundY, e.Value, now);
                     break;
 
                 case ProjectileKind.Missile:
                     // Guided: the missile bends towards wherever its target is now.
                     if (_hasMissile) _projectiles.Launch(_models.Merged("missile"), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId));
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
-                    _emitters.MuzzleSmoke(from, -forward, 0.9f); // back-blast
-                    _muzzle.Play(from, now, 0.6f);
+                    _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
                     _shake(from, 0.05f);
                     break;
 
@@ -81,8 +84,7 @@ namespace MachineBrigade.Game.Effects
                     var arc = artillery ? distance * 0.28f : distance * 0.02f;
                     if (_hasRocket) _projectiles.Launch(_models.Merged("rocket"), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
-                    _emitters.MuzzleSmoke(from, forward + Vector3.up * (artillery ? 0.8f : 0.1f), artillery ? 1.4f : 0.8f);
-                    _muzzle.Play(from, now, 0.55f);
+                    _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? forward + Vector3.up * 0.8f : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
                     break;
 
@@ -94,10 +96,11 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Flame:
                     _emitters.FlameJet(from, to, Mathf.Max(0.15f, e.Value));
+                    _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.8f, groundY);
                     break;
 
                 default:
-                    Shells(weapon, e, from, to, forward, distance, now);
+                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now);
                     break;
             }
         }
@@ -113,9 +116,11 @@ namespace MachineBrigade.Game.Effects
             return new Vector3(e.Target.X, height, e.Target.Y);
         }
 
-        private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 forward, float travel, float now)
+        private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now)
         {
             var damage = weapon?.Damage ?? 9f;
+            var forward = new Vector3(aim.x, 0f, aim.z);
+            forward = forward.sqrMagnitude > 1e-4f ? forward.normalized : Vector3.forward;
             var side = Vector3.Cross(Vector3.up, forward);
             // Light machine guns show a burst of three; cannons one heavier tracer per shot.
             var rounds = damage < 12f ? 3 : 1;
@@ -124,27 +129,26 @@ namespace MachineBrigade.Game.Effects
             for (var i = 0; i < rounds; i++)
             {
                 var scatter = rounds > 1 ? side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f) : Vector3.zero;
-                _tracers.Launch(from, to + scatter, travel, 0f, thickness, length, now, i * 0.055f);
+                _tracers.Launch(from, to + scatter, travel, 0f, thickness, length, now, i * MuzzleFx.RoundInterval);
             }
-            _muzzle.Play(from, now, Mathf.Lerp(0.4f, 0.8f, Mathf.InverseLerp(6f, 30f, damage)));
-            if (damage >= 20f) _emitters.MuzzleSmoke(from, forward, 0.5f);
+            if (rounds > 1) _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 1f, groundY);
+            else _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, aim, now, Mathf.Lerp(0.85f, 1.2f, Mathf.InverseLerp(12f, 30f, damage)), groundY);
         }
 
-        private void Shells(WeaponDef weapon, in SimEvent e, Vector3 from, Vector3 to, Vector3 forward, float distance, float now)
+        private void Shells(WeaponDef weapon, in SimEvent e, Vector3 from, Vector3 to, Vector3 forward, Vector3 aim, float? groundY,
+            float distance, float now)
         {
             if (e.Tier <= ExplosionTier.Medium)
             {
                 var heavy = weapon != null && weapon.Damage >= 100f;
                 _tracers.Launch(from, to, e.Value, 0f, heavy ? 0.22f : 0.16f, heavy ? 3.2f : 2.6f, now, 0f, heavy ? 0.95f : 0.75f);
-                _emitters.MuzzleSmoke(from, forward, heavy ? 1.3f : 1f);
-                _muzzle.Play(from, now, heavy ? 1.2f : 1f);
+                _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, heavy ? 1.25f : 1f, groundY);
                 _shake(from, heavy ? 0.08f : 0.05f);
                 return;
             }
             // Artillery: a high arc with a thick trail.
             _tracers.Launch(from, to, e.Value, distance * 0.3f, 0.32f, 1.1f, now, 0f, 1.2f);
-            _emitters.MuzzleSmoke(from, forward + Vector3.up * 0.6f, 1.7f);
-            _muzzle.Play(from, now, 1.4f);
+            _muzzle.Fire(MuzzleFx.Kind.Artillery, from, forward + Vector3.up * 0.9f, now, 1f, groundY);
             _shake(from, 0.12f);
         }
     }

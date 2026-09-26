@@ -85,12 +85,12 @@ namespace MachineBrigade.Game.Match
 
         private void Awake()
         {
-            _frameRate = new FrameRateGovernor(_frameRateTarget);
             // Nothing needs PhysX: debris, turrets and wrecks move on their own kinematics.
             Physics.simulationMode = SimulationMode.Script;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
             MatchSettings.Load();
+            _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);
             ApplyDebugFlags();
             _perf = PerfProbe.Create();
             if (!_debugStarted && DebugFlags.Has("-mb-play"))
@@ -102,15 +102,24 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-rain")) MatchSettings.Weather = WeatherKind.Rain;
                 if (DebugFlags.Has("-mb-storm")) MatchSettings.Weather = WeatherKind.Storm;
                 if (DebugFlags.Has("-mb-clear")) MatchSettings.Weather = WeatherKind.Clear;
+                if (DebugFlags.Has("-mb-snow")) MatchSettings.Weather = WeatherKind.Snow;
+                if (DebugFlags.Has("-mb-sandstorm")) MatchSettings.Weather = WeatherKind.Sandstorm;
+                if (DebugFlags.Has("-mb-fog")) MatchSettings.Weather = WeatherKind.Fog;
+                if (DebugFlags.Has("-mb-night")) MatchSettings.Weather = WeatherKind.Night;
+                foreach (var info in MatchSettings.AllMaps)
+                    if (DebugFlags.Has("-mb-" + info.Id)) MatchSettings.Map = info.Id;
             }
-            _atmosphere = new Atmosphere();
+            var options = MatchSettings.Options;
+            _builtGraphics = GraphicsSignature();
+            _atmosphere = new Atmosphere(options);
             AudioListener.volume = MatchSettings.Volume;
 
             _menu = !MatchSettings.InMatch;
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
             var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
-            var map = GameContent.LoadMap(kind == GameModeKind.Conquest ? "ashfield_conquest" : "ashfield_sandbox");
+            var mapInfo = MatchSettings.CurrentMap;
+            var map = GameContent.LoadMap(mapInfo.Id + (kind == GameModeKind.Conquest ? "_conquest" : "_sandbox"));
             _world = new SimWorld(catalog, map, seed);
             BuildMode(kind, seed);
             _clock = new SimClock();
@@ -119,8 +128,10 @@ namespace MachineBrigade.Game.Match
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
             _models = new ModelLibrary(_materials);
-            _map = new MapView(_world, _models, _materials, worldRoot);
-            _surroundings = new Surroundings(_world, _models, _materials, TerrainTheme.Riverlands, worldRoot);
+            var theme = MapTheme.For(map.Theme);
+            if (theme.ModelGrass.HasValue) _materials.ForModel("Grass", -1).SetColor("_BaseColor", theme.ModelGrass.Value);
+            _map = new MapView(_world, _models, _materials, theme, worldRoot, options.Shadows);
+            _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot, options);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_conquest != null) _objectives = new ObjectiveView(_conquest, _meshes, _materials, worldRoot);
 
@@ -128,7 +139,7 @@ namespace MachineBrigade.Game.Match
             var start = _menu ? Vector3.zero : new Vector3(rally.X + 16f, 0f, rally.Y + 16f);
             _camera = new RtsCamera(Camera.main, map.HalfSize, start, _menu ? 30f : 19f)
             {
-                ShakeScale = MatchSettings.ReducedMotion ? 0.35f : 1f,
+                ShakeScale = MatchSettings.ShakeScale,
             };
             _attractFocus = start;
             // Device check of the scenery: the north-west corner, zoomed right out.
@@ -139,7 +150,7 @@ namespace MachineBrigade.Game.Match
                 _lastInput = float.MaxValue;
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
-                MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco);
+                options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             foreach (var id in catalog.Vehicles.Keys) _models.Prewarm(id);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
@@ -147,14 +158,19 @@ namespace MachineBrigade.Game.Match
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
-            _weather = new Weather(_menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed), _atmosphere, _materials, _camera,
-                _audio, worldRoot, MatchSettings.HighQuality);
+            var weather = _menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed);
+            // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
+            if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
+            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
+            ApplyPost(options.Bloom, MatchSettings.Brightness);
+            _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
             _hud = new BattleHud(_menu ? HudMode.Menu : kind == GameModeKind.Conquest ? HudMode.Conquest : HudMode.Survival, cards, catalog)
             {
                 ShowFps = MatchSettings.ShowFps,
             };
+            if (_hud.Minimap != null) _hud.Minimap.Ground = theme.Minimap;
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)
             {
@@ -165,6 +181,42 @@ namespace MachineBrigade.Game.Match
             Wire();
 
             DispatchEvents();
+        }
+
+        private string _builtGraphics;
+
+        /// <summary>Everything that needs a rebuild to take effect.</summary>
+        private static string GraphicsSignature()
+        {
+            var o = MatchSettings.Options;
+            return $"{o.Shadows}|{o.RenderScale}|{o.AntiAliasing}|{o.FrameRate}|{o.Bloom}|{o.RichScenery}|{o.MaxEffects}|" +
+                   $"{MatchSettings.UiSize}|{MatchSettings.SavingBattery}|{MatchSettings.Brightness}";
+        }
+
+        /// <summary>
+        /// Glow level and brightness on this match's copy of the volume profile. Low glow starts
+        /// at quarter resolution with four passes and the cheap dual filter (the mobile recipe);
+        /// high glow at half resolution with six.
+        /// </summary>
+        private static void ApplyPost(int bloomLevel, int brightness)
+        {
+            foreach (var volume in FindObjectsByType<UnityEngine.Rendering.Volume>())
+            {
+                var profile = volume.profile;
+                if (profile.TryGet<UnityEngine.Rendering.Universal.Bloom>(out var bloom))
+                {
+                    bloom.active = bloomLevel > 0;
+                    var low = bloomLevel == 1;
+                    bloom.downscale.Override(low ? UnityEngine.Rendering.Universal.BloomDownscaleMode.Quarter
+                        : UnityEngine.Rendering.Universal.BloomDownscaleMode.Half);
+                    bloom.maxIterations.Override(low ? 4 : 6);
+                    bloom.filter.Override(low ? UnityEngine.Rendering.Universal.BloomFilterMode.Dual
+                        : UnityEngine.Rendering.Universal.BloomFilterMode.Gaussian);
+                    bloom.highQualityFiltering.Override(!low && !Application.isMobilePlatform);
+                }
+                if (brightness != 100 && profile.TryGet<UnityEngine.Rendering.Universal.ColorAdjustments>(out var colour))
+                    colour.postExposure.Override(colour.postExposure.value + Mathf.Log(brightness / 100f, 2f));
+            }
         }
 
         private void BuildMode(GameModeKind kind, int seed)
@@ -239,6 +291,11 @@ namespace MachineBrigade.Game.Match
             }
             _frameRate.Tick();
             _frameRateTarget = _frameRate.Target;
+            // Menus and pause draw every other frame until touched: the battle behind them keeps
+            // moving, the phone does half the work.
+            UnityEngine.Rendering.OnDemandRendering.renderFrameInterval =
+                (_menu || _paused) && !(Touchscreen.current?.primaryTouch.press.isPressed ?? false) &&
+                !(Mouse.current?.leftButton.isPressed ?? false) ? 2 : 1;
 
             var steps = _paused ? 0 : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
@@ -283,6 +340,7 @@ namespace MachineBrigade.Game.Match
         private void LateUpdate()
         {
             _camera.Apply(Time.unscaledDeltaTime);
+            _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
             _perf?.End(PerfProbe.Section.Views);
@@ -290,6 +348,7 @@ namespace MachineBrigade.Game.Match
             _objectives?.Render(Time.time);
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
+            _map.Animate(Time.time);
             _perf?.End(PerfProbe.Section.Scenery);
             _perf?.EndFrame(_views.All.Count);
             if (_perf != null && !_censusDone && Time.time > 6f)
@@ -367,8 +426,13 @@ namespace MachineBrigade.Game.Match
             {
                 AudioListener.volume = MatchSettings.Volume;
                 MatchSettings.ApplyLanguage();
-                // The HUD is built once; rebuild it in the new language.
-                if (Strings.Vietnamese != builtInVietnamese) Reload();
+                // The HUD is built once; rebuild it in the new language. New graphics options
+                // rebuild the scene too, so the menu battle shows them straight away.
+                if (Strings.Vietnamese != builtInVietnamese || GraphicsSignature() != _builtGraphics)
+                {
+                    _frameRateTarget = MatchSettings.Options.FrameRate;
+                    Reload();
+                }
             };
             if (_menu) return;
 

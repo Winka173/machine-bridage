@@ -12,10 +12,13 @@ namespace MachineBrigade.Tests
     /// <summary>Whole Conquest matches between two AIs with the shipped content, headless.</summary>
     public class ConquestBattleTests
     {
-        [Test]
-        public void AiVersusAiConquestUsesTheWholeRosterAndFinishes()
+        [TestCase("ashfield")]
+        [TestCase("dunebreak")]
+        [TestCase("frostpeak")]
+        [TestCase("ironport")]
+        public void AiVersusAiConquestUsesTheWholeRosterAndFinishes(string mapId)
         {
-            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("ashfield_conquest"), seed: 77);
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(mapId + "_conquest"), seed: 77);
             var mode = new ConquestMode(new ConquestRules
             {
                 PlayerVehicles = MatchSettings.AllVehicles,
@@ -49,7 +52,7 @@ namespace MachineBrigade.Tests
                 world.ClearEvents();
             }
 
-            Debug.Log($"Conquest AI match: {seconds / 60f:0.0} min, result {(mode.Result.HasValue ? mode.Result.Value.WinningTeam.ToString() : "none")}, " +
+            Debug.Log($"Conquest AI match on {mapId}: {seconds / 60f:0.0} min, result {(mode.Result.HasValue ? mode.Result.Value.WinningTeam.ToString() : "none")}, " +
                       $"tickets {mode.Tickets(0)}:{mode.Tickets(1)}, captures {captures}, destroyed {destroyed}, " +
                       $"deployed [{string.Join(",", deployed)}], strikes [{string.Join(",", strikes)}]");
             Assert.Greater(captures, 2, "objectives change hands");

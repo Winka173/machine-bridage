@@ -36,6 +36,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>World position (x, z) tapped on the minimap.</summary>
         public event Action<Vector2> Clicked;
 
+        /// <summary>Colour of the battlefield square (follows the map's ground).</summary>
+        public Color Ground { get; set; } = new(0.25f, 0.33f, 0.24f, 0.85f);
+
         public void Begin(float halfSize)
         {
             _half = halfSize;
@@ -87,7 +90,7 @@ namespace MachineBrigade.Game.Hud
             var p = context.painter2D;
 
             // Map area.
-            p.fillColor = new Color(0.25f, 0.33f, 0.24f, 0.85f);
+            p.fillColor = Ground;
             p.strokeColor = new Color(0.65f, 0.89f, 0.75f, 0.35f);
             p.lineWidth = 1.2f;
             p.BeginPath();
