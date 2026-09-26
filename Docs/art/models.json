@@ -1,19 +1,51 @@
 {
+  "aa_vehicle": {
+    "file": "aa_vehicle.glb",
+    "triangles": 5144
+  },
   "ammo_crate": {
     "file": "ammo_crate.glb",
     "triangles": 480
   },
+  "apc": {
+    "file": "apc.glb",
+    "triangles": 5476
+  },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 5212
+    "triangles": 5504
+  },
+  "attack_helicopter": {
+    "file": "attack_helicopter.glb",
+    "triangles": 4956
   },
   "barrel": {
     "file": "barrel.glb",
     "triangles": 816
   },
+  "bomb": {
+    "file": "bomb.glb",
+    "triangles": 260
+  },
+  "boulders": {
+    "file": "boulders.glb",
+    "triangles": 880
+  },
   "bush": {
     "file": "bush.glb",
     "triangles": 80
+  },
+  "cliff_a": {
+    "file": "cliff_a.glb",
+    "triangles": 688
+  },
+  "cliff_b": {
+    "file": "cliff_b.glb",
+    "triangles": 688
+  },
+  "cruise_missile": {
+    "file": "cruise_missile.glb",
+    "triangles": 280
   },
   "debris_concrete": {
     "file": "debris_concrete.glb",
@@ -39,6 +71,14 @@
     "file": "debris_wood.glb",
     "triangles": 44
   },
+  "dirt_mound": {
+    "file": "dirt_mound.glb",
+    "triangles": 282
+  },
+  "flame_tank": {
+    "file": "flame_tank.glb",
+    "triangles": 5848
+  },
   "fuel_tank": {
     "file": "fuel_tank.glb",
     "triangles": 2164
@@ -53,11 +93,31 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 5588
+    "triangles": 5688
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
-    "triangles": 7220
+    "triangles": 5996
+  },
+  "missile": {
+    "file": "missile.glb",
+    "triangles": 266
+  },
+  "mlrs": {
+    "file": "mlrs.glb",
+    "triangles": 5808
+  },
+  "mountain_a": {
+    "file": "mountain_a.glb",
+    "triangles": 2444
+  },
+  "mountain_b": {
+    "file": "mountain_b.glb",
+    "triangles": 2434
+  },
+  "mountain_c": {
+    "file": "mountain_c.glb",
+    "triangles": 2252
   },
   "rock_a": {
     "file": "rock_a.glb",
@@ -71,6 +131,10 @@
     "file": "rock_c.glb",
     "triangles": 360
   },
+  "rocket": {
+    "file": "rocket.glb",
+    "triangles": 184
+  },
   "rubble_large": {
     "file": "rubble_large.glb",
     "triangles": 3516
@@ -79,9 +143,21 @@
     "file": "rubble_small.glb",
     "triangles": 2144
   },
+  "sandbags": {
+    "file": "sandbags.glb",
+    "triangles": 1320
+  },
   "scout_jeep": {
     "file": "scout_jeep.glb",
     "triangles": 3400
+  },
+  "strike_jet": {
+    "file": "strike_jet.glb",
+    "triangles": 3368
+  },
+  "tank_trap": {
+    "file": "tank_trap.glb",
+    "triangles": 248
   },
   "tree": {
     "file": "tree.glb",
