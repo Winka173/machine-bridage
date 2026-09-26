@@ -74,11 +74,11 @@ namespace MachineBrigade.Game.Effects
 
                 case ExplosionTier.Large:
                     systems.Add(Flash(t, m, 10f));
-                    systems.Add(Fireball(t, m, 20, new Vector2(3f, 5.5f), new Vector2(2.5f, 8f), 0.8f, new Vector2(0.55f, 1.1f)));
+                    systems.Add(Fireball(t, m, 15, new Vector2(3f, 5.5f), new Vector2(2.5f, 8f), 0.8f, new Vector2(0.55f, 1.1f)));
                     systems.Add(Smoke(t, m, 14, new Vector2(2.6f, 4.4f), new Vector2(3f, 5f), 0.2f));
-                    systems.Add(Sparks(t, m, 30, new Vector2(9f, 22f), 0.2f));
+                    systems.Add(Sparks(t, m, 22, new Vector2(9f, 22f), 0.2f));
                     systems.Add(Debris(t, m, 14, new Vector2(6f, 13f)));
-                    systems.Add(BurningDebris(t, m, 7, new Vector2(7f, 13f)));
+                    systems.Add(BurningDebris(t, m, 4, new Vector2(7f, 12f)));
                     systems.Add(Dirt(t, m, 12, new Vector2(5f, 12f)));
                     systems.Add(Embers(t, m, 18, 1f));
                     systems.Add(Shockwave(t, m, 18f));
@@ -90,14 +90,14 @@ namespace MachineBrigade.Game.Effects
                 default: // Huge and above
                     var s = tier == ExplosionTier.Huge ? 1f : 1.6f;
                     systems.Add(Flash(t, m, 16f * s));
-                    var fireball = Fireball(t, m, 32, new Vector2(4.5f, 8.5f) * s, new Vector2(3.5f, 11f) * s, 1.3f * s,
+                    var fireball = Fireball(t, m, 22, new Vector2(4.5f, 8f) * s, new Vector2(3.5f, 10f) * s, 1.3f * s,
                         new Vector2(0.7f, 1.4f));
-                    PB.Burst(fireball, (0f, 32), (0.15f, 14), (0.32f, 10), (0.5f, 6));
+                    PB.Burst(fireball, (0f, 22), (0.15f, 9), (0.32f, 6), (0.5f, 4));
                     systems.Add(fireball);
                     systems.Add(Smoke(t, m, 22, new Vector2(4.5f, 7.5f) * s, new Vector2(5f, 8f), 0.16f));
-                    systems.Add(Sparks(t, m, 48, new Vector2(12f, 30f), 0.26f));
+                    systems.Add(Sparks(t, m, 34, new Vector2(12f, 30f), 0.26f));
                     systems.Add(Debris(t, m, 24, new Vector2(8f, 20f)));
-                    systems.Add(BurningDebris(t, m, 14, new Vector2(9f, 18f) * s));
+                    systems.Add(BurningDebris(t, m, 7, new Vector2(8f, 15f) * s));
                     systems.Add(Dirt(t, m, 18, new Vector2(6f, 15f)));
                     systems.Add(Embers(t, m, 40, 1.6f));
                     systems.Add(Shockwave(t, m, 34f * s));
@@ -204,15 +204,16 @@ namespace MachineBrigade.Game.Effects
             PB.Grow(ps, 1f, 0.45f);
             PB.Burst(ps, (0f, count));
 
-            var trail = PB.Create(ps.transform, "Smoke Trail", m.Smoke);
+            // Soft grey puffs, dense enough to merge into a smooth ribbon rather than a dotted scratch.
+            var trail = PB.Create(ps.transform, "Smoke Trail", m.SoftSmoke);
             var main = trail.main;
             main.loop = true;
-            main.maxParticles = 400;
-            PB.Basics(trail, new Vector2(0.7f, 1.3f), new Vector2(0f, 0.3f), new Vector2(0.45f, 0.8f));
-            PB.Colors(trail, PB.Plume(0.08f, 0.35f, 0.7f));
-            PB.Grow(trail, 0.8f, 2.4f);
+            main.maxParticles = 600;
+            PB.Basics(trail, new Vector2(0.5f, 0.8f), new Vector2(0f, 0.2f), new Vector2(0.5f, 0.8f));
+            PB.Colors(trail, PB.Plume(0.3f, 0.55f, 0.32f));
+            PB.Grow(trail, 1f, 2.6f);
             var emission = trail.emission;
-            emission.rateOverTime = 34f;
+            emission.rateOverTime = 60f;
             var sub = ps.subEmitters;
             sub.enabled = true;
             sub.AddSubEmitter(trail, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
