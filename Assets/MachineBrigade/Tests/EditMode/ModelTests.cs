@@ -11,6 +11,7 @@ namespace MachineBrigade.Tests
         {
             "scout_jeep", "light_tank", "main_battle_tank", "artillery", "apc", "mlrs", "aa_vehicle", "flame_tank",
             "armored_car", "tank_destroyer", "heavy_tank", "sam_launcher", "mortar_carrier", "rocket_technical",
+            "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
         };
 
         private static readonly string[] Others =
@@ -84,7 +85,7 @@ namespace MachineBrigade.Tests
                 var tip = turret.InverseTransformPoint(muzzle.position);
                 Assert.Greater(tip.z, 0.2f, $"{id}'s weapon points backwards (z = {tip.z})");
                 // Guns recoil; launchers (the rocket pod) have no barrel.
-                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical") continue;
+                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical" or "thermobaric_launcher") continue;
                 Assert.IsNotNull(FindPrefix(turret, "Main_cannon"), $"{id} needs a Main_cannon under its Turret");
             }
         }

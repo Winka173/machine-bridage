@@ -136,6 +136,8 @@ namespace MachineBrigade.Game.Effects
                         Explode(e.Tier, impact, now);
                         if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
                         if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.35f) _fires.Ignite(impact, 0.45f, 7f, now);
+                        // Thermobaric rockets leave the impact area burning.
+                        if (e.DefId == "thermobaric_rockets" && UnityEngine.Random.value < 0.6f) _fires.Ignite(impact, 1.1f, 14f, now);
                         // Heavy shells and rockets leave the ground burning now and then.
                         else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.5f) _fires.Ignite(impact, 0.6f, 10f, now);
                         else if (e.Tier == ExplosionTier.Medium && UnityEngine.Random.value < 0.15f) _fires.Ignite(impact, 0.35f, 5f, now);

@@ -90,6 +90,7 @@ namespace MachineBrigade.Game.Match
             "scout_jeep", "armored_car", "rocket_technical", "apc", "light_tank", "main_battle_tank", "heavy_tank",
             "tank_destroyer", "flame_tank", "mortar_carrier", "artillery", "mlrs", "aa_vehicle", "sam_launcher",
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
+            "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
         };
 
         public static readonly string[] AllSupports = { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop" };

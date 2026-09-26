@@ -79,6 +79,8 @@ namespace MachineBrigade.Game.Rendering
             ["Asphalt"] = ("#4a4a48", 0f, 0.95f, 0f),
             ["SafetyStripe"] = ("#f7d21c", 0.05f, 0.5f, 0f),
             ["RailBrown"] = ("#7a3f2c", 0.3f, 0.6f, 0f),
+            // Premium trims (the Titan).
+            ["Gilded"] = ("#f5c75a", 0.9f, 0.28f, 0f),
         };
 
         private readonly List<Material> _owned = new();
