@@ -11,6 +11,8 @@ namespace MachineBrigade.Game.Match
 
         public static MapDefinition LoadMap(string id) => MapDefinition.FromJson(Load("Data/maps/" + id));
 
+        public static System.Collections.Generic.IReadOnlyList<MissionDef> LoadCampaign() => MissionDef.ListFromJson(Load("Data/campaign"));
+
         private static string Load(string path)
         {
             var asset = Resources.Load<TextAsset>(path);

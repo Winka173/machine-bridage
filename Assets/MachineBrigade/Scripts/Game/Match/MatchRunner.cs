@@ -8,6 +8,7 @@ using MachineBrigade.Game.Rendering;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.AI;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Events;
@@ -43,11 +44,10 @@ namespace MachineBrigade.Game.Match
         }
 
         private SimWorld _world;
-        private IGameMode _mode;
-        private ConquestMode _conquest;
-        private SandboxMode _survival;
-        private ConquestAi _enemyAi, _friendlyAi, _playerAi;
-        private TacticalAi _waveAi;
+        private ModeSession _session;
+        private MatchReward _reward;
+        private readonly Cinematics _cinematics = new();
+        private float _cinematicZoom;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
@@ -108,32 +108,47 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-night")) MatchSettings.Weather = WeatherKind.Night;
                 foreach (var info in MatchSettings.AllMaps)
                     if (DebugFlags.Has("-mb-" + info.Id)) MatchSettings.Map = info.Id;
+                if (DebugFlags.Has("-mb-deathmatch")) MatchSettings.Mode = GameModeKind.Deathmatch;
+                if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
+                if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
+                foreach (var campaignMission in Campaign.All)
+                    if (DebugFlags.Has("-mb-" + campaignMission.Id))
+                    {
+                        MatchSettings.Mode = GameModeKind.Campaign;
+                        MatchSettings.Mission = campaignMission.Id;
+                    }
             }
             var options = MatchSettings.Options;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
+            _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
             AudioListener.volume = MatchSettings.Volume;
 
             _menu = !MatchSettings.InMatch;
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
             var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
-            var mapInfo = MatchSettings.CurrentMap;
-            var map = GameContent.LoadMap(mapInfo.Id + (kind == GameModeKind.Conquest ? "_conquest" : "_sandbox"));
+            // A campaign mission names its own battlefield and version of it.
+            var mission = !_menu && kind == GameModeKind.Campaign ? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0] : null;
+            var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
+            var map = GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
-            BuildMode(kind, seed);
+            _session = ModeSession.Create(kind, _menu, _world, seed);
             _clock = new SimClock();
 
             var worldRoot = new GameObject("Battlefield").transform;
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
             _models = new ModelLibrary(_materials);
+            ApplySkin(PlayerProfile.EquippedSkin);
+            PlayerProfile.Changed += OnProfileChanged;
             var theme = MapTheme.For(map.Theme);
             if (theme.ModelGrass.HasValue) _materials.ForModel("Grass", -1).SetColor("_BaseColor", theme.ModelGrass.Value);
             _map = new MapView(_world, _models, _materials, theme, worldRoot, options.Shadows);
             _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot, options);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
-            if (_conquest != null) _objectives = new ObjectiveView(_conquest, _meshes, _materials, worldRoot);
+            if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
+                _objectives = new ObjectiveView(_session.Objectives, _meshes, _materials, worldRoot);
 
             _world.TryGetRally(PlayerTeam, out var rally);
             var start = _menu ? Vector3.zero : new Vector3(rally.X + 16f, 0f, rally.Y + 16f);
@@ -152,13 +167,15 @@ namespace MachineBrigade.Game.Match
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
-            foreach (var id in catalog.Vehicles.Keys) _models.Prewarm(id);
+            foreach (var def in catalog.Vehicles.Values) _models.Prewarm(def.Model);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
-            var weather = _menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed);
+            var weather = _menu ? WeatherKind.Clear
+                : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
+                : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
             if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
@@ -166,7 +183,7 @@ namespace MachineBrigade.Game.Match
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
-            _hud = new BattleHud(_menu ? HudMode.Menu : kind == GameModeKind.Conquest ? HudMode.Conquest : HudMode.Survival, cards, catalog)
+            _hud = new BattleHud(_session.Hud, cards, catalog)
             {
                 ShowFps = MatchSettings.ShowFps,
             };
@@ -219,49 +236,6 @@ namespace MachineBrigade.Game.Match
             }
         }
 
-        private void BuildMode(GameModeKind kind, int seed)
-        {
-            if (kind == GameModeKind.Conquest)
-            {
-                var rules = new ConquestRules
-                {
-                    PlayerVehicles = _menu ? MatchSettings.AllVehicles : MatchSettings.DeckVehicles.ToArray(),
-                    PlayerSupports = _menu ? MatchSettings.AllSupports : MatchSettings.DeckSupports.ToArray(),
-                    EnemyVehicles = MatchSettings.AllVehicles,
-                    EnemySupports = MatchSettings.AllSupports,
-                };
-                _conquest = new ConquestMode(rules);
-                _mode = _conquest;
-                _mode.Setup(_world);
-                var difficulty = _menu ? AiDifficulty.Normal : MatchSettings.Difficulty;
-                _enemyAi = new ConquestAi(_conquest, EnemyTeam, PlayerTeam, difficulty, seed);
-                if (_menu) _friendlyAi = new ConquestAi(_conquest, PlayerTeam, EnemyTeam, AiDifficulty.Normal, seed + 1);
-                // The player's army fights on its own; the player commands intent (see Wire).
-                else _playerAi = new ConquestAi(_conquest, PlayerTeam, EnemyTeam, AiDifficulty.Hard, seed + 2)
-                {
-                    AutoDeploy = MatchSettings.AutoDeploy,
-                    AutoStrike = MatchSettings.AutoStrike,
-                };
-                return;
-            }
-
-            _survival = new SandboxMode();
-            _mode = _survival;
-            _mode.Setup(_world);
-            _world.EnableEconomy(new TeamEconomy(PlayerTeam, 16f, income: 0.8f,
-                vehicles: MatchSettings.DeckVehicles.ToArray(), supports: MatchSettings.DeckSupports.ToArray()));
-            _waveAi = new TacticalAi(EnemyTeam, PlayerTeam, seed);
-            // Survival: the commander holds a line a third of the way towards the enemy.
-            _world.TryGetRally(PlayerTeam, out var home);
-            _world.TryGetRally(EnemyTeam, out var threat);
-            _playerAi = new ConquestAi(null, PlayerTeam, EnemyTeam, AiDifficulty.Hard, seed + 2)
-            {
-                DefendPoint = System.Numerics.Vector2.Lerp(home, threat, 0.33f),
-                AutoDeploy = MatchSettings.AutoDeploy,
-                AutoStrike = MatchSettings.AutoStrike,
-            };
-        }
-
         private static void ApplyDebugFlags()
         {
             // URP copies its asset's setting into GraphicsSettings every frame, so switch the asset.
@@ -297,17 +271,17 @@ namespace MachineBrigade.Game.Match
                 (_menu || _paused) && !(Touchscreen.current?.primaryTouch.press.isPressed ?? false) &&
                 !(Mouse.current?.leftButton.isPressed ?? false) ? 2 : 1;
 
+            // A cinematic moment slows the whole battle (sim, particles) for a second.
+            if (!_paused && !_resultShown) Time.timeScale = _cinematics.TimeScale(Time.unscaledTime);
+            _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
             var steps = _paused ? 0 : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
             _perf?.CountSteps(steps);
             for (var i = 0; i < steps; i++)
             {
                 _perf?.Begin();
-                _mode.Tick(_world, dt);
-                _enemyAi?.Tick(_world, dt);
-                _friendlyAi?.Tick(_world, dt);
-                _playerAi?.Tick(_world, dt);
-                _waveAi?.Tick(_world, dt);
+                _session.Mode.Tick(_world, dt);
+                _session.TickAi(_world, dt);
                 _world.Step(dt);
                 _views.SnapshotAll();
                 _perf?.End(PerfProbe.Section.Sim);
@@ -316,7 +290,8 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
-            if (_menu) Attract();
+            if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            else if (_menu) Attract();
             else FollowTheFight();
             _selection.Tick();
             _perf?.Begin();
@@ -358,8 +333,33 @@ namespace MachineBrigade.Game.Match
             }
         }
 
+        /// <summary>A slow-motion moment on a blast that is on screen.</summary>
+        private void StartCinematic(System.Numerics.Vector2 at, bool force = false)
+        {
+            var point = new Vector3(at.X, 0f, at.Y);
+            var viewport = _camera.Camera.WorldToViewportPoint(point);
+            if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
+            if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
+            _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
+            _camera.AddTrauma(0.6f);
+        }
+
+        private string _previewSkin;
+
+        private void ApplySkin(string id)
+        {
+            var skin = Skins.Get(id);
+            _materials.ApplySkin(skin.Base, skin.Second, skin.Third, (int)skin.Pattern, skin.Scale, skin.Metallic, skin.Roughness);
+        }
+
+        private void OnProfileChanged()
+        {
+            if (_materials != null && _previewSkin == null) ApplySkin(PlayerProfile.EquippedSkin);
+        }
+
         private void OnDestroy()
         {
+            PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
             _weather?.Dispose();
@@ -394,6 +394,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
                         else _kills++;
+                        if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
+                            StartCinematic(e.Position, force: true);
+                        break;
+                    case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
+                    case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
+                        StartCinematic(e.Position);
                         break;
                     case SimEventKind.PointCaptured when !_menu:
                         var letter = Strings.Get("point." + e.DefId);
@@ -422,6 +428,11 @@ namespace MachineBrigade.Game.Match
             };
             var builtInVietnamese = Strings.Vietnamese;
             _hud.VolumeChanged += () => AudioListener.volume = MatchSettings.Volume;
+            _hud.SkinPreviewed += id =>
+            {
+                _previewSkin = id;
+                ApplySkin(id ?? PlayerProfile.EquippedSkin);
+            };
             _hud.SettingsChanged += () =>
             {
                 AudioListener.volume = MatchSettings.Volume;
@@ -442,34 +453,59 @@ namespace MachineBrigade.Game.Match
             _hud.AttackMovePressed += _selection.ToggleAttackMove;
             _hud.BoxModeToggled += () => _selection.BoxMode = !_selection.BoxMode;
             _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-            _hud.RestartPressed += Reload;
+            _hud.RestartPressed += () =>
+            {
+                ClaimReward();
+                Reload();
+            };
             _hud.MenuPressed += () =>
             {
+                ClaimReward();
                 MatchSettings.InMatch = false;
                 Reload();
             };
+            _hud.NextMissionPressed += () =>
+            {
+                ClaimReward();
+                var next = Campaign.IndexOf(MatchSettings.Mission) + 1;
+                if (next > 0 && next < Campaign.All.Count) MatchSettings.Mission = Campaign.All[next].Id;
+                MatchSettings.Save();
+                Reload();
+            };
+            _hud.DoubleRewardPressed += () =>
+            {
+                if (_reward == null || _reward.Claimed) return;
+                Ads.Rewarded.Show(watched =>
+                {
+                    if (_reward == null || _reward.Claimed) return;
+                    _reward.Claim(watched ? 2 : 1);
+                    _hud.ShowRewardClaimed(_reward.Coins * (watched ? 2 : 1), watched);
+                });
+            };
+            PlaceholderAds.Presenter = _hud.ShowPlaceholderAd;
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
             _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+            var playerAi = _session.PlayerAi;
             _hud.StancePressed += defend =>
             {
-                _playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
+                playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
                 _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
             };
             _hud.AutoDeployToggled += () =>
             {
-                MatchSettings.AutoDeploy = _playerAi.AutoDeploy = !_playerAi.AutoDeploy;
+                MatchSettings.AutoDeploy = playerAi.AutoDeploy = !playerAi.AutoDeploy;
                 MatchSettings.Save();
             };
             _hud.AutoStrikeToggled += () =>
             {
-                MatchSettings.AutoStrike = _playerAi.AutoStrike = !_playerAi.AutoStrike;
+                MatchSettings.AutoStrike = playerAi.AutoStrike = !playerAi.AutoStrike;
                 MatchSettings.Save();
             };
             _hud.PointPressed += id =>
             {
-                _playerAi.FocusPoint = _playerAi.FocusPoint == id ? null : id;
-                _hud.Toast(_playerAi.FocusPoint != null
+                playerAi.FocusPoint = playerAi.FocusPoint == id ? null : id;
+                _hud.Toast(playerAi.FocusPoint != null
                     ? Strings.Format("toast.focus", Strings.Get("point." + id))
                     : Strings.Get("toast.focusClear"));
             };
@@ -478,16 +514,8 @@ namespace MachineBrigade.Game.Match
             _selection.BoxChanged += _hud.ShowSelectionBox;
             _selection.BoxHidden += _hud.HideSelectionBox;
 
-            if (_conquest != null)
-            {
-                _hud.ShowBanner(Strings.Get("mission.conquest.kicker"), Strings.Get("mission.title"), Strings.Get("mission.conquest.sub"));
-                _hud.Toast(Strings.Get("toast.conquestStart"), seconds: 5f);
-            }
-            else
-            {
-                _hud.ShowBanner(Strings.Get("mission.survival.kicker"), Strings.Get("mission.title"), Strings.Get("mission.sub"));
-                _hud.Toast(Strings.Get("toast.start"), seconds: 4f);
-            }
+            _hud.ShowBanner(_session.Kicker, _session.Title, _session.Subtitle);
+            _hud.Toast(_session.StartToast, seconds: 5f);
         }
 
         private void SetPaused(bool paused)
@@ -559,25 +587,17 @@ namespace MachineBrigade.Game.Match
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
             if (_menu) return;
 
-            if (_survival != null)
+            var wave = _session is SurvivalSession survival ? survival.Survival.Wave : _session is MissionSession m ? m.Mission.Wave : 0;
+            if (wave != _announcedWave)
             {
-                if (_survival.Wave != _announcedWave)
-                {
-                    _announcedWave = _survival.Wave;
-                    if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true);
-                }
-                _hud.SetStats(_world.CountAlive(PlayerTeam), _world.CountAlive(EnemyTeam), _survival.Wave, _survival.SecondsToNextWave, _fps);
+                _announcedWave = wave;
+                if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true);
             }
-            else
-            {
-                _hud.SetStats(0, 0, 0, 0f, _fps);
-                _pointInfo.Clear();
-                foreach (var p in _conquest.Points) _pointInfo.Add(new PointInfo(p.Def.Id, p.Owner, p.Progress, p.Contested));
-                _hud.SetScore(_conquest.Tickets(PlayerTeam), _conquest.Tickets(EnemyTeam), _conquest.MaxTickets, _pointInfo);
-            }
+            _session.UpdateHud(_hud, _world, _pointInfo, _fps);
             _hud.SetModes(_selection.AttackMoveArmed, _selection.BoxMode);
-            if (_playerAi != null)
-                _hud.SetCommander(_playerAi.Stance == CommanderStance.Defend, _playerAi.AutoDeploy, _playerAi.AutoStrike, _playerAi.FocusPoint);
+            var playerAi = _session.PlayerAi;
+            if (playerAi != null)
+                _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
             UpdateMinimap();
         }
@@ -588,8 +608,8 @@ namespace MachineBrigade.Game.Match
             if (minimap == null || Time.unscaledTime < _minimapAt) return;
             _minimapAt = Time.unscaledTime + MinimapInterval;
             minimap.Begin(_world.Map.HalfSize);
-            if (_conquest != null)
-                foreach (var p in _conquest.Points)
+            if (_session.Objectives != null)
+                foreach (var p in _session.Objectives.Points)
                     minimap.Point(new Vector2(p.Def.Position.X, p.Def.Position.Y), p.Def.Radius, p.Owner, p.Progress);
             for (var i = _warnings.Count - 1; i >= 0; i--)
             {
@@ -614,61 +634,36 @@ namespace MachineBrigade.Game.Match
             minimap.Flush();
         }
 
-        private double _wipedSince = -1, _overrunSince = -1;
-
-        private bool SurvivalLost()
-        {
-            var now = _world.Time;
-            var wiped = _world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0;
-            _wipedSince = wiped ? (_wipedSince < 0 ? now : _wipedSince) : -1;
-
-            _world.TryGetRally(PlayerTeam, out var home);
-            var attackers = 0;
-            var defenders = 0;
-            foreach (var v in _world.Vehicles)
-            {
-                if (!v.IsAlive || v.Flying) continue;
-                var distance = System.Numerics.Vector2.Distance(v.Position, home);
-                if (v.Team == EnemyTeam && distance < 18f) attackers++;
-                else if (v.Team == PlayerTeam && distance < 26f) defenders++;
-            }
-            var overrun = attackers > 0 && defenders == 0;
-            _overrunSince = overrun ? (_overrunSince < 0 ? now : _overrunSince) : -1;
-            return (_wipedSince >= 0 && now - _wipedSince > 10.0) || (_overrunSince >= 0 && now - _overrunSince > 15.0);
-        }
-
         private void CheckResult()
         {
-            if (_menu || _resultShown || _mode == null) return;
-            var minutes = (int)(_world.Time / 60.0);
-            var seconds = (int)(_world.Time % 60.0);
-            if (_conquest != null && _conquest.Result is { } result)
+            if (_menu || _resultShown || _session == null) return;
+            // Let a boss's death play out in slow motion before the result card covers it.
+            if (_cinematics.Active(Time.unscaledTime)) return;
+            var outcome = _session.Outcome(_world, _kills, _losses);
+            if (outcome == null) return;
+            _resultShown = true;
+            Time.timeScale = 1f;
+            _reward = outcome.Reward;
+            RewardView view = null;
+            if (_reward != null)
             {
-                _resultShown = true;
-                var outcome = result.IsDraw ? 0 : result.WinningTeam == PlayerTeam ? 1 : -1;
-                _hud.ShowResult(outcome, Strings.Get("mission.conquest.kicker"), new[]
+                view = new RewardView
                 {
-                    (Strings.Get("result.kills"), _kills.ToString()),
-                    (Strings.Get("result.losses"), _losses.ToString()),
-                    (Strings.Get("stat.tickets"), $"{_conquest.Tickets(PlayerTeam)} : {_conquest.Tickets(EnemyTeam)}"),
-                    (Strings.Get("result.time"), $"{minutes}:{seconds:00}"),
-                });
-                return;
+                    Coins = _reward.Coins, Xp = _reward.Xp, Stars = _reward.MissionId != null ? _reward.Stars : -1,
+                    CanDouble = Ads.Rewarded.Ready,
+                };
+                foreach (var id in _reward.Unlocks) view.Unlocked.Add(Strings.Card(id));
+                var index = _session is MissionSession ? Campaign.IndexOf(MatchSettings.Mission) : -1;
+                view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
             }
-            // Survival ends when the army has been wiped out for a while (nothing alive or on the
-            // way), or the enemy has held the base unopposed. Command Points always trickle in, so
-            // "cannot afford anything right now" alone would make the ending a matter of luck.
-            if (_survival != null && _world.Time > 5.0 && SurvivalLost())
-            {
-                _resultShown = true;
-                _world.IsOver = true;
-                _hud.ShowResult(-1, Strings.Get("result.over"), new[]
-                {
-                    (Strings.Get("result.waves"), _survival.Wave.ToString()),
-                    (Strings.Get("result.kills"), _kills.ToString()),
-                    (Strings.Get("result.time"), $"{minutes}:{seconds:00}"),
-                });
-            }
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);
+        }
+
+        /// <summary>Pays the battle's reward if the player leaves without claiming it.</summary>
+        private void ClaimReward()
+        {
+            if (_reward == null || _reward.Claimed) return;
+            _reward.Claim();
         }
     }
 }

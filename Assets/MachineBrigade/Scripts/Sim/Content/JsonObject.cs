@@ -67,6 +67,14 @@ namespace MachineBrigade.Sim.Content
             return result;
         }
 
+        public IReadOnlyList<string> StringArray(string key)
+        {
+            if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of strings");
+            var result = new List<string>(list.Count);
+            foreach (var item in list) result.Add(item is string s ? s : throw Invalid(key, "an array of strings"));
+            return result;
+        }
+
         public IEnumerable<string> Keys => _values.Keys;
 
         private FormatException Invalid(string key, string expected) =>

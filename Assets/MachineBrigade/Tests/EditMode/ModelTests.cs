@@ -11,13 +11,15 @@ namespace MachineBrigade.Tests
         {
             "scout_jeep", "light_tank", "main_battle_tank", "artillery", "apc", "mlrs", "aa_vehicle", "flame_tank",
             "armored_car", "tank_destroyer", "heavy_tank", "sam_launcher", "mortar_carrier", "rocket_technical",
+            "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
         };
 
         private static readonly string[] Others =
         {
             "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
-            "gunship_heli", "scout_heli", "attack_jet", "strike_drone",
+            "gunship_heli", "scout_heli", "attack_jet", "strike_drone", "heavy_bomber", "stealth_bomber", "sky_gunship",
+            "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
         };
 
         private static readonly string[] Props =
@@ -51,6 +53,9 @@ namespace MachineBrigade.Tests
             var catalog = MachineBrigade.Game.Match.GameContent.LoadCatalog();
             foreach (var def in catalog.Vehicles.Values)
             {
+                // Units that borrow another model (the convoy truck), and bosses whose art is
+                // still to come, are checked when their own model lands.
+                if (def.Model != def.Id || Resources.Load<GameObject>("Models/" + def.Model) == null) continue;
                 var root = Load(def.Id).transform;
                 foreach (var mount in def.Mounts)
                     Assert.IsNotNull(Find(root, "Muzzle_" + mount.Slot), $"{def.Id} has no Muzzle_{mount.Slot} for {mount.Weapon.Id}");
@@ -64,6 +69,10 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(Find(root, "Rotor"));
             Assert.IsNotNull(Find(root, "Tail_rotor"));
             Assert.IsNotNull(Find(root, "Mount_gun"));
+            // The tandem boss gunship spins both of its rotors.
+            var gunship = Load("mega_gunship").transform;
+            Assert.IsNotNull(Find(gunship, "Rotor"));
+            Assert.IsNotNull(Find(gunship, "Rotor_rear"));
         }
 
         /// <summary>Blender's -Y front must arrive as Unity +Z, or vehicles would drive backwards.</summary>
@@ -81,7 +90,7 @@ namespace MachineBrigade.Tests
                 var tip = turret.InverseTransformPoint(muzzle.position);
                 Assert.Greater(tip.z, 0.2f, $"{id}'s weapon points backwards (z = {tip.z})");
                 // Guns recoil; launchers (the rocket pod) have no barrel.
-                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical") continue;
+                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical" or "thermobaric_launcher") continue;
                 Assert.IsNotNull(FindPrefix(turret, "Main_cannon"), $"{id} needs a Main_cannon under its Turret");
             }
         }

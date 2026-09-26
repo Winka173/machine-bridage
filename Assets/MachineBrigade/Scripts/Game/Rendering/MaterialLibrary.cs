@@ -79,6 +79,8 @@ namespace MachineBrigade.Game.Rendering
             ["Asphalt"] = ("#4a4a48", 0f, 0.95f, 0f),
             ["SafetyStripe"] = ("#f7d21c", 0.05f, 0.5f, 0f),
             ["RailBrown"] = ("#7a3f2c", 0.3f, 0.6f, 0f),
+            // Premium trims (the Titan).
+            ["Gilded"] = ("#f5c75a", 0.9f, 0.28f, 0f),
         };
 
         private readonly List<Material> _owned = new();
@@ -192,6 +194,22 @@ namespace MachineBrigade.Game.Rendering
             var name = BaseName(materialName);
             if (name == "Team" || name == "TeamGlow") return TeamMaterial(name, team);
             return _surfaces.TryGetValue(name, out var material) ? material : Fallback;
+        }
+
+        /// <summary>
+        /// Paints the player's army (team 0): base colour, pattern (0 plain, 1 blotches, 2
+        /// stripes, 3 digital) with its two other colours and scale, and the finish.
+        /// </summary>
+        public void ApplySkin(Color baseColour, Color second, Color third, int pattern, float scale, float metallic, float roughness)
+        {
+            var team = TeamMaterial("Team", 0);
+            team.SetColor("_BaseColor", baseColour);
+            team.SetColor("_CamoColorB", second);
+            team.SetColor("_CamoColorC", third);
+            team.SetFloat("_CamoMode", pattern);
+            team.SetFloat("_CamoScale", scale);
+            team.SetFloat("_Metallic", metallic);
+            team.SetFloat("_Roughness", roughness);
         }
 
         public void Dispose()

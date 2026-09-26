@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Views
         private readonly MaterialPropertyBlock _block = new();
         private readonly Transform _root;
 
-        public ObjectiveView(ConquestMode mode, MeshLibrary meshes, MaterialLibrary materials, Transform parent)
+        public ObjectiveView(IObjectiveMode mode, MeshLibrary meshes, MaterialLibrary materials, Transform parent)
         {
             _root = new GameObject("Objectives").transform;
             _root.SetParent(parent, false);

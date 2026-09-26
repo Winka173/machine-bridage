@@ -56,7 +56,7 @@ namespace MachineBrigade.Game.Views
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
-            _model = models.Spawn(vehicle.Def.Id, vehicle.Team, _body);
+            _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
             _spawnTime = Time.time;
 
             _recoilRest = new Vector3[_model.RecoilParts.Count];

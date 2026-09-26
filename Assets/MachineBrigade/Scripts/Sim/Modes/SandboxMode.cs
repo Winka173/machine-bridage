@@ -32,6 +32,9 @@ namespace MachineBrigade.Sim.Modes
 
         public int Wave { get; private set; }
 
+        /// <summary>Scales wave size and pace (difficulty): 0.75 easy, 1 normal, 1.35 hard.</summary>
+        public float Intensity { get; set; } = 1f;
+
         public float SecondsToNextWave => MathF.Max(0f, _waveTimer);
 
         public float ReinforceCooldown { get; private set; }
@@ -48,7 +51,7 @@ namespace MachineBrigade.Sim.Modes
             ReinforceCooldown = MathF.Max(0f, ReinforceCooldown - dt);
             _waveTimer -= dt;
             if (_waveTimer > 0f) return;
-            _waveTimer = WaveInterval;
+            _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
             if (world.CountAlive(EnemyTeam) < MaxEnemies) SpawnWave(world);
         }
 
@@ -69,7 +72,7 @@ namespace MachineBrigade.Sim.Modes
         {
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
             Wave++;
-            var count = Math.Min(2 + Wave, 6);
+            var count = Math.Max(1, (int)MathF.Round(Math.Min(2 + Wave, 6) * Intensity));
             for (var i = 0; i < count; i++)
             {
                 var def = WaveRoster[(Wave + i) % WaveRoster.Length];

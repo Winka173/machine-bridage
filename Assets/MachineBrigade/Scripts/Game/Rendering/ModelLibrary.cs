@@ -95,10 +95,12 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Spinning parts: (name, local axis, degrees per second). Blender Z (up) is Unity Y.</summary>
         private static readonly (Regex name, Vector3 axis, float speed)[] SpinnerPatterns =
         {
-            (new Regex(@"^Rotor(\.\d+)?$"), Vector3.up, 1500f),
+            // Extra copies take a fixed suffix (Rotor_rear, Propeller_2, Radar_search); parts under a
+            // pivot are named Rotor_blades and the like, and must not spin a second time.
+            (new Regex(@"^Rotor(_rear|_front|_\d+)?(\.\d+)?$"), Vector3.up, 1500f),
             (new Regex(@"^Tail_rotor(\.\d+)?$"), Vector3.right, 2400f),
-            (new Regex(@"^Radar(\.\d+)?$"), Vector3.up, 120f),
-            (new Regex(@"^Propeller(\.\d+)?$"), Vector3.forward, 2200f),
+            (new Regex(@"^Radar(_search|_\d+)?(\.\d+)?$"), Vector3.up, 120f),
+            (new Regex(@"^Propeller(_\d+)?(\.\d+)?$"), Vector3.forward, 2200f),
         };
 
         /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam).</summary>

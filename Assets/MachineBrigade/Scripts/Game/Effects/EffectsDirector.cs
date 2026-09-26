@@ -136,6 +136,8 @@ namespace MachineBrigade.Game.Effects
                         Explode(e.Tier, impact, now);
                         if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
                         if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.35f) _fires.Ignite(impact, 0.45f, 7f, now);
+                        // Thermobaric rockets leave the impact area burning.
+                        if (e.DefId == "thermobaric_rockets" && UnityEngine.Random.value < 0.6f) _fires.Ignite(impact, 1.1f, 14f, now);
                         // Heavy shells and rockets leave the ground burning now and then.
                         else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.5f) _fires.Ignite(impact, 0.6f, 10f, now);
                         else if (e.Tier == ExplosionTier.Medium && UnityEngine.Random.value < 0.15f) _fires.Ignite(impact, 0.35f, 5f, now);
@@ -147,6 +149,15 @@ namespace MachineBrigade.Game.Effects
                         Explode(e.Tier, hit, now);
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)));
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
+                        if (e.DefId == "napalm_strike")
+                        {
+                            // Napalm: the ground itself burns in a wide strip for half a minute.
+                            for (var i = 0; i < 3; i++)
+                            {
+                                var scatter = new Vector3(UnityEngine.Random.Range(-4f, 4f), 0f, UnityEngine.Random.Range(-4f, 4f));
+                                _fires.Ignite(hit + scatter, UnityEngine.Random.Range(1.2f, 1.8f), UnityEngine.Random.Range(24f, 34f), now);
+                            }
+                        }
                         if (huge)
                         {
                             // A ring of fires around the crater of the heaviest strikes.

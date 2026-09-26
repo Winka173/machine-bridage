@@ -4,14 +4,35 @@ using UnityEngine.UIElements;
 
 namespace MachineBrigade.Game.Hud
 {
-    /// <summary>End-of-match card: the result, a few numbers and where to go next.</summary>
+    /// <summary>What a finished battle pays, for the result card.</summary>
+    public sealed class RewardView
+    {
+        public int Coins { get; set; }
+        public int Xp { get; set; }
+
+        /// <summary>Stars won; negative for battles without stars.</summary>
+        public int Stars { get; set; } = -1;
+
+        public List<string> Unlocked { get; } = new();
+
+        /// <summary>A rewarded ad may double the coins.</summary>
+        public bool CanDouble { get; set; }
+
+        /// <summary>A campaign win with another mission to go to.</summary>
+        public bool HasNext { get; set; }
+    }
+
+    /// <summary>
+    /// End-of-match card: the result, a few numbers, what it paid (coins, XP, stars, unlocks),
+    /// the offer to double the coins with an ad, and where to go next.
+    /// </summary>
     internal sealed class ResultPanel
     {
-        private readonly Label _title, _subtitle;
-        private readonly VisualElement _rows, _head;
+        private readonly Label _title, _subtitle, _coins, _xp, _doubled;
+        private readonly VisualElement _rows, _head, _reward, _stars, _unlocks, _double, _next, _again;
         private readonly IconElement _icon;
 
-        public ResultPanel(Action again, Action menu)
+        public ResultPanel(Action again, Action menu, Action doubleCoins, Action next)
         {
             Root = UiKit.Box("overlay", PickingMode.Position);
             var card = UiKit.Box("result-card");
@@ -23,10 +44,36 @@ namespace MachineBrigade.Game.Hud
             card.Add(_head);
             _subtitle = UiKit.Text("", "result-sub");
             card.Add(_subtitle);
+            _stars = UiKit.Box("result-stars");
+            card.Add(_stars);
             _rows = UiKit.Box("result-rows");
             card.Add(_rows);
+
+            _reward = UiKit.Box("result-reward");
+            var coins = UiKit.Box("reward-item coins");
+            coins.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
+            _coins = UiKit.Text("", "reward-value");
+            coins.Add(_coins);
+            _doubled = UiKit.Text("x2", "reward-doubled");
+            _doubled.style.display = DisplayStyle.None;
+            coins.Add(_doubled);
+            _reward.Add(coins);
+            var xp = UiKit.Box("reward-item xp");
+            xp.Add(UiKit.Icon("rank", UiKit.Ink, 1.8f));
+            _xp = UiKit.Text("", "reward-value");
+            xp.Add(_xp);
+            _reward.Add(xp);
+            card.Add(_reward);
+            _unlocks = UiKit.Box("result-unlocks");
+            card.Add(_unlocks);
+
             var buttons = UiKit.Box("result-buttons");
-            buttons.Add(UiKit.WideButton("wide primary", "restart", Strings.Get("result.again"), null, again));
+            _double = UiKit.WideButton("wide ad-button", "ad", Strings.Get("result.double"), Strings.Get("result.doubleSub"), doubleCoins);
+            buttons.Add(_double);
+            _next = UiKit.WideButton("wide primary", "arrow", Strings.Get("result.next"), null, next);
+            buttons.Add(_next);
+            _again = UiKit.WideButton("wide primary", "restart", Strings.Get("result.again"), null, again);
+            buttons.Add(_again);
             buttons.Add(UiKit.WideButton("wide", "home", Strings.Get("result.menu"), null, menu));
             card.Add(buttons);
             Root.Add(card);
@@ -38,7 +85,7 @@ namespace MachineBrigade.Game.Hud
         public bool Visible => Root.style.display == DisplayStyle.Flex;
 
         /// <param name="outcome">1 victory, 0 draw, -1 defeat.</param>
-        public void Show(int outcome, string subtitle, IReadOnlyList<(string label, string value)> rows)
+        public void Show(int outcome, string subtitle, IReadOnlyList<(string label, string value)> rows, RewardView reward)
         {
             _title.text = Strings.Get(outcome > 0 ? "result.victory" : outcome < 0 ? "result.defeat" : "result.draw");
             _head.EnableInClassList("victory", outcome > 0);
@@ -53,7 +100,45 @@ namespace MachineBrigade.Game.Hud
                 row.Add(UiKit.Text(value, "result-value"));
                 _rows.Add(row);
             }
+
+            _stars.Clear();
+            _unlocks.Clear();
+            var hasReward = reward != null;
+            _reward.style.display = hasReward ? DisplayStyle.Flex : DisplayStyle.None;
+            _stars.style.display = hasReward && reward.Stars >= 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            if (hasReward)
+            {
+                _coins.text = "+" + reward.Coins;
+                _xp.text = $"+{reward.Xp} XP";
+                _doubled.style.display = DisplayStyle.None;
+                for (var i = 0; i < 3 && reward.Stars >= 0; i++)
+                {
+                    var star = UiKit.Icon("star", UiKit.Ink, 1.8f);
+                    star.AddToClassList(i < reward.Stars ? "star-on" : "star-off");
+                    _stars.Add(star);
+                }
+                foreach (var name in reward.Unlocked)
+                {
+                    var chip = UiKit.Box("unlock-chip");
+                    chip.Add(UiKit.Icon("lock", UiKit.Ink, 1.6f));
+                    chip.Add(UiKit.Text(Strings.Format("result.unlocked", name), "unlock-text"));
+                    _unlocks.Add(chip);
+                }
+            }
+            _unlocks.style.display = hasReward && reward.Unlocked.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _double.style.display = hasReward && reward.CanDouble && reward.Coins > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            var next = hasReward && reward.HasNext;
+            _next.style.display = next ? DisplayStyle.Flex : DisplayStyle.None;
+            _again.EnableInClassList("primary", !next);
             Root.style.display = DisplayStyle.Flex;
+        }
+
+        /// <summary>The coins were paid: shows the final amount, and "x2" after an ad.</summary>
+        public void ShowClaimed(int coins, bool doubled)
+        {
+            _coins.text = "+" + coins;
+            _doubled.style.display = doubled ? DisplayStyle.Flex : DisplayStyle.None;
+            _double.style.display = DisplayStyle.None;
         }
     }
 

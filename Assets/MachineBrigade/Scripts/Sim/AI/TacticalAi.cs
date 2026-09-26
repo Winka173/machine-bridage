@@ -62,6 +62,18 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public Func<SimWorld, Vector2?>? Objective { get; set; }
 
+        /// <summary>
+        /// A structure the army has to knock down (a mission's demolition target), or none. Shells
+        /// only splash buildings, so without an order nothing hits a target with no enemy beside it.
+        /// </summary>
+        public Func<SimWorld, EntityId>? Demolish { get; set; }
+
+        /// <summary>
+        /// With an objective set, how far from it the army may chase enemies (a point it has to
+        /// hold); null lets it go after anything in sight.
+        /// </summary>
+        public float? Leash { get; set; }
+
         /// <summary>Visible enemy vehicles, refreshed every decision.</summary>
         public IReadOnlyList<Vehicle> KnownEnemies => _enemies;
 
@@ -89,9 +101,11 @@ namespace MachineBrigade.Sim.AI
             // Aircraft do not steer the army: ground forces go for ground targets and objectives.
             var groundContact = NearestGround(front, out _) < float.MaxValue;
             var goal = Objective?.Invoke(world);
-            if (groundContact && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
+            var chase = groundContact;
+            if (chase && goal.HasValue && Leash is { } leash) chase = Vector2.Distance(NearestCluster(front), goal.Value) < leash;
+            if (chase && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
             else if (goal.HasValue) objective = goal.Value;
-            else if (groundContact) objective = NearestCluster(front);
+            else if (chase) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
             contact = groundContact;
             // A new objective: every fast vehicle may be sent round a flank again.
@@ -100,6 +114,8 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            FocusBoss(world);
+            FocusDemolition(world);
             DirectArtillery(world, front, objective, forward, contact);
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
@@ -131,10 +147,76 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                if (v.Team != _team || v.Scripted || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
+            }
+        }
+
+        /// <summary>How far past its weapon's range a vehicle turns to engage a boss.</summary>
+        private const float BossReach = 30f;
+
+        /// <summary>
+        /// A boss in sight is the priority: everything that can hurt it and is close enough gets
+        /// an attack order on it (artillery included), so the army does not trade shots with
+        /// escorts while the boss grinds through it.
+        /// </summary>
+        private void FocusBoss(SimWorld world)
+        {
+            Vehicle? boss = null;
+            foreach (var e in _enemies)
+                if (e.Def.Boss)
+                {
+                    boss = e;
+                    break;
+                }
+            if (boss == null) return;
+            FocusOn(world, boss, _line);
+            FocusOn(world, boss, _fast);
+            FocusOn(world, boss, _artillery);
+        }
+
+        private void FocusOn(SimWorld world, Vehicle boss, List<Vehicle> vehicles)
+        {
+            for (var i = vehicles.Count - 1; i >= 0; i--)
+            {
+                var v = vehicles[i];
+                var weapon = v.Def.Weapon;
+                if (!weapon.CanTarget(boss.Flying)) continue;
+                var distance = Vector2.Distance(v.Position, boss.Position);
+                if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
+                vehicles.RemoveAt(i);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == boss.Id) continue;
+                Issue(world, CommandType.Attack, v.Id, boss.Position, boss.Id);
+            }
+        }
+
+        /// <summary>
+        /// Units near the demolition target with no enemy inside their own weapon range shoot at
+        /// the structure; anything with a fight on its hands keeps fighting.
+        /// </summary>
+        private void FocusDemolition(SimWorld world)
+        {
+            if (Demolish == null || !world.TryGetProp(Demolish(world), out var target) || !target.IsAlive) return;
+            DemolishWith(world, target, _line);
+            DemolishWith(world, target, _fast);
+            DemolishWith(world, target, _artillery);
+        }
+
+        private void DemolishWith(SimWorld world, Prop target, List<Vehicle> vehicles)
+        {
+            for (var i = vehicles.Count - 1; i >= 0; i--)
+            {
+                var v = vehicles[i];
+                var weapon = v.Def.Weapon;
+                if (!weapon.CanTarget(false)) continue;
+                var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
+                if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
+                if (NearestGround(v.Position, out _) < weapon.Range) continue;
+                vehicles.RemoveAt(i);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == target.Id) continue;
+                Issue(world, CommandType.Attack, v.Id, target.Position, target.Id);
             }
         }
 
@@ -227,7 +309,7 @@ namespace MachineBrigade.Sim.AI
                     lead = v;
                     leadDistance = distance;
                 }
-                if (v.Order.Kind == OrderKind.Idle && !Busy(world, v)) _ids.Add(v.Id);
+                if (Ready(v) && !Busy(world, v)) _ids.Add(v.Id);
             }
             if (_ids.Count == 0 || lead == null) return;
 
@@ -240,9 +322,25 @@ namespace MachineBrigade.Sim.AI
                 return;
             }
             if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
-            var goal = leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective;
-            Issue(world, CommandType.AttackMove, _ids, Clamp(world, goal));
+            var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
+            // Those already on their way to this rendezvous keep their route.
+            for (var i = _ids.Count - 1; i >= 0; i--)
+                if (world.TryGetVehicle(_ids[i], out var going) && going.Order.Kind == OrderKind.AttackMove &&
+                    Vector2.Distance(going.Order.Point, goal) < SameRendezvous) _ids.RemoveAt(i);
+            if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, goal);
         }
+
+        /// <summary>Two rendezvous closer than this are the same one (group moves spread their slots).</summary>
+        private const float SameRendezvous = 12f;
+
+        /// <summary>
+        /// Free for the next bound: idle, or as good as arrived. Vehicles jostling for their slot
+        /// never finish their move, and anti-aircraft vehicles deliberately hold short while tanks
+        /// are near, so waiting for their orders to complete would stall the whole army.
+        /// </summary>
+        private static bool Ready(Vehicle v) =>
+            v.Order.Kind == OrderKind.Idle ||
+            (v.Order.Kind == OrderKind.AttackMove && Vector2.Distance(v.Position, v.Order.Point) < SameRendezvous);
 
         /// <summary>
         /// Fighting something on the ground. Shooting at an aircraft overhead does not count, or a

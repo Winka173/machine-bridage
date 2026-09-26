@@ -17,12 +17,15 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 import frontier_kit as kit  # noqa: E402
 import mb_air  # noqa: E402
+import mb_air2  # noqa: E402
+import mb_bosses  # noqa: E402
 import mb_harbor  # noqa: E402
 import mb_props  # noqa: E402
 import mb_terrain  # noqa: E402
 import mb_themes  # noqa: E402
 import mb_town  # noqa: E402
 import mb_vehicles  # noqa: E402
+import mb_vehicles2  # noqa: E402
 
 ROOT = HERE.parents[1]
 OUT = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
@@ -30,8 +33,8 @@ REPORT = ROOT / 'Docs' / 'art' / 'models.json'
 
 
 def all_builders():
-    return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS, **mb_town.BUILDERS,
-            **mb_themes.BUILDERS, **mb_harbor.BUILDERS}
+    return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS,
+            **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS, **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS}
 
 
 def build_all(filters=()):

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Modes;
@@ -39,7 +40,7 @@ namespace MachineBrigade.Sim.AI
         private const int ClusterSize = 3;
         private const float ClusterRadius = 9f;
 
-        private readonly ConquestMode? _mode;
+        private readonly IObjectiveMode? _mode;
         private readonly int _team;
         private readonly int _enemyTeam;
         private readonly AiDifficulty _difficulty;
@@ -61,11 +62,34 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Objective id the army should concentrate on; null lets the commander choose.</summary>
         public string? FocusPoint { get; set; }
 
+        /// <summary>
+        /// Where the mission wants the army (a convoy to guard, a boss to hunt); checked after
+        /// <see cref="FocusPoint"/> and before the objectives.
+        /// </summary>
+        public Func<SimWorld, Vector2?>? Goal { get; set; }
+
+        /// <summary>How far from <see cref="Goal"/> the army may chase (see <see cref="TacticalAi.Leash"/>).</summary>
+        public float? Leash
+        {
+            get => _tactics.Leash;
+            set => _tactics.Leash = value;
+        }
+
+        /// <summary>A structure to knock down (see <see cref="TacticalAi.Demolish"/>).</summary>
+        public Func<SimWorld, EntityId>? Demolish
+        {
+            get => _tactics.Demolish;
+            set => _tactics.Demolish = value;
+        }
+
         /// <summary>Where to hold when there are no objectives (Survival).</summary>
         public Vector2? DefendPoint { get; set; }
 
-        /// <param name="mode">Null for modes without objectives: the army holds <see cref="DefendPoint"/>.</param>
-        public ConquestAi(ConquestMode? mode, int team, int enemyTeam, AiDifficulty difficulty = AiDifficulty.Normal, int seed = 11)
+        /// <param name="mode">
+        /// The objectives to fight over; null for modes without them: the army holds
+        /// <see cref="DefendPoint"/>, or hunts the enemy when there is none.
+        /// </param>
+        public ConquestAi(IObjectiveMode? mode, int team, int enemyTeam, AiDifficulty difficulty = AiDifficulty.Normal, int seed = 11)
         {
             _mode = mode;
             _team = team;
@@ -99,10 +123,11 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private Vector2? ChooseObjective(SimWorld world)
         {
-            if (_mode == null || _mode.Points.Count == 0) return DefendPoint;
-            if (FocusPoint != null)
+            if (FocusPoint != null && _mode != null)
                 foreach (var point in _mode.Points)
                     if (point.Def.Id == FocusPoint) return point.Def.Position;
+            if (Goal != null && Goal(world) is { } goal) return goal;
+            if (_mode == null || _mode.Points.Count == 0) return DefendPoint;
             var front = Centre(world, out var any);
             if (!any) world.TryGetRally(_team, out front);
             ObjectiveState? best = null;
@@ -165,7 +190,17 @@ namespace MachineBrigade.Sim.AI
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
-            if (!FindCluster(out var cluster, out var size)) return false;
+            var foundCluster = FindCluster(out var cluster, out var size);
+            // A boss is worth the biggest strike on its own.
+            foreach (var e in _tactics.KnownEnemies)
+                if (e.Def.Boss && !e.Flying)
+                {
+                    cluster = e.Position;
+                    size = ClusterSize + 2;
+                    foundCluster = true;
+                    break;
+                }
+            if (!foundCluster) return false;
             SupportDef? pick = null;
             foreach (var id in supports)
             {
@@ -202,6 +237,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in cards)
             {
                 var def = world.Catalog.Vehicles[id];
+                // Bosses and mission trucks cost nothing and are never bought.
+                if (def.Boss || def.CpCost <= 0) continue;
                 if (economy.ArmyCp + def.CpCost > economy.ArmyCap) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
                 if (_difficulty != AiDifficulty.Easy)
@@ -260,14 +297,15 @@ namespace MachineBrigade.Sim.AI
         {
             centre = default;
             size = 0;
+            // Scripted convoys are left to direct fire: a column of trucks would draw every strike.
             foreach (var e in _tactics.KnownEnemies)
             {
-                if (e.Flying) continue;
+                if (e.Flying || e.Scripted) continue;
                 var around = 0;
                 var sum = Vector2.Zero;
                 foreach (var other in _tactics.KnownEnemies)
                 {
-                    if (other.Flying || Vector2.Distance(other.Position, e.Position) > ClusterRadius) continue;
+                    if (other.Flying || other.Scripted || Vector2.Distance(other.Position, e.Position) > ClusterRadius) continue;
                     around++;
                     sum += other.Position;
                 }

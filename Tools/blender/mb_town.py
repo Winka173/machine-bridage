@@ -1024,6 +1024,8 @@ def _wheels(a, positions, r, width, hub=.52):
         s = 1 if x > 0 else -1
         a.part('Hubs', 'Steel').cyl(r * hub, .03, loc=(x + s * (width / 2 + .005), y, r), rot=(0, R90, 0), seg=8,
                                     bevel=0)
+        a.part('Hub_caps', 'Armor').cyl(r * hub * .4, .03, loc=(x + s * (width / 2 + .02), y, r), rot=(0, R90, 0),
+                                        seg=6, bevel=0)
 
 
 def _arches(a, x, ys, z, r):
@@ -1059,13 +1061,33 @@ def car(a):
         a.part('Taillights', 'BarrelRed').box((.26, .05, .18), loc=(sx * .62, 2.115, .84), bevel=.02, seg=1)
     a.part('Grille', 'Armor').box((.7, .04, .1), loc=(0, -2.13, .66), bevel=0)
     a.part('Plate', 'PlasterWhite').box((.46, .03, .12), loc=(0, 2.2, .52), bevel=0)
+    a.part('Plate', 'PlasterWhite').box((.46, .03, .12), loc=(0, -2.215, .48), bevel=0)
+    dark = a.part('Trim', 'Rubber')
+    for sx in (-1, 1):
+        a.part('Indicators', 'Alloy').box((.1, .04, .06), loc=(sx * .79, -2.115, .66), bevel=0)
+        for y in (-.95, .5, 1.85):                                    # door shut lines
+            dark.box((.02, .025, .38), loc=(sx * .865, y, .77), bevel=0)
+        dark.box((.04, 1.8, .1), loc=(sx * .87, 0, .5), bevel=0)      # sills
+        for y in (-.2, 1.2):                                          # door handles
+            a.part('Handles', 'Steel').box((.03, .14, .04), loc=(sx * .875, y, .92), bevel=0)
+        a.part('Roof_rails', 'Steel').tube([(sx * .62, -.1, 1.5), (sx * .62, -.04, 1.55), (sx * .62, 1.55, 1.55),
+                                            (sx * .62, 1.61, 1.5)], .02, seg=4)
+    g0, g1 = (1.97, .96), (1.74, 1.43)                                # rear wiper lying on the hatch glass
+    gn = (.9, .44)
+
+    def on_glass(t, out=.03):
+        return g0[0] + (g1[0] - g0[0]) * t + gn[0] * out, g0[1] + (g1[1] - g0[1]) * t + gn[1] * out
+    (wy0, wz0), (wy1, wz1) = on_glass(.22), on_glass(.5)
+    dark.limb((-.28, wy0, wz0), (.18, wy1, wz1), .03, .025, bevel=0)
     _wheels(a, [(sx * .75, y) for sx in (-1, 1) for y in (-1.32, 1.32)], .31, .2)
     _arches(a, .86, (-1.32, 1.32), .42, .37)
     _turn(a, R90)
 
 
 def truck(a):
-    """Civilian box truck (7 x 2.5 m): cab-over cab (CarRed, recoloured at runtime) and a cargo box."""
+    """Civilian box truck (7 x 2.5 m): cab-over cab (CarRed, recoloured at runtime) with door lines,
+    wipers and a sun visor, and a cargo box with a cab-coloured stripe, hinged rear doors with lock
+    bars, side underrun guards and marker lights."""
     paint = a.part('Cab', 'CarRed')
     a.part('Chassis', 'Undercarriage').box((1.0, 6.6, .28), loc=(0, .05, .72), bevel=.02, seg=1)
     paint.prism([(-3.48, .82), (-1.55, .82), (-1.55, 2.95), (-3.18, 2.95), (-3.45, 2.3), (-3.5, 1.6)], 2.3, axis='X',
@@ -1078,6 +1100,12 @@ def truck(a):
                bevel=0)
     for face, x in (('-x', -1.15), ('+x', 1.15)):
         fbox(glass, face, (x, -2.6, 2.35), (1.0, .04, .72), out=.01)
+    dark = a.part('Rubber_trim', 'Rubber')
+    for t0 in (-.55, .35):                                                   # wipers
+        q0 = [c0 + (c1 - c0) * .1 + nc * .055 for c0, c1, nc in zip(p0, p1, n)]
+        q1 = [c0 + (c1 - c0) * .55 + nc * .055 for c0, c1, nc in zip(p0, p1, n)]
+        dark.limb((t0, q0[0], q0[1]), (t0 + .3, q1[0], q1[1]), .03, .02, bevel=0)
+    paint.box((2.1, .3, .05), loc=(0, -3.28, 2.92), bevel=.01, seg=1)       # sun visor
     armor = a.part('Trim', 'Armor')
     armor.box((2.4, .22, .32), loc=(0, -3.56, .86), bevel=.04, seg=1)
     fbox(armor, '-y', (0, -3.49, 1.35), (1.4, .05, .45), out=.02)
@@ -1086,6 +1114,11 @@ def truck(a):
         armor.limb((sx * 1.12, -3.15, 2.25), (sx * 1.32, -3.25, 2.25), .04, .04, bevel=0)
         armor.box((.06, .16, .36), loc=(sx * 1.33, -3.28, 2.12), bevel=.01, seg=1)
         armor.box((.14, .5, .08), loc=(sx * 1.18, -2.55, .95), bevel=0)
+        for y in (-3.15, -2.05):                                                 # door shut lines
+            dark.box((.02, .03, 1.45), loc=(sx * 1.155, y, 2.025), bevel=0)
+        a.part('Handles', 'Steel').box((.03, .14, .05), loc=(sx * 1.165, -2.2, 1.85), bevel=0)
+        a.part('Marker_lights', 'Alloy').box((.1, .05, .08), loc=(sx * 1.07, -3.51, 1.3), bevel=0)
+    a.part('Plate', 'PlasterWhite').box((.46, .03, .12), loc=(0, -3.685, .86), bevel=0)
     for x in (-.5, 0, .5):
         a.part('Marker_lights', 'Alloy').box((.12, .06, .06), loc=(x, -3.1, 2.98), bevel=0)
     # Cargo box with ribs, rails and rear doors.
@@ -1096,7 +1129,16 @@ def truck(a):
         for y in (-.9, .1, 1.1, 2.1, 3.1):
             steel.box((.04, .08, 2.34), loc=(sx * 1.235, y, 2.25), bevel=0)
         steel.box((.06, 4.95, .08), loc=(sx * 1.22, .98, 3.47), bevel=0)
-        armor.box((.04, 3.0, .1), loc=(sx * 1.18, .1, .78), bevel=0)
+        a.part('Stripe', 'CarRed').box((.055, 4.75, .2), loc=(sx * 1.2175, .98, 2.9), bevel=0)
+        for y in (-1.0, 2.6):
+            a.part('Marker_lights', 'Alloy').box((.03, .1, .06), loc=(sx * 1.235, y, 1.14), bevel=0)
+        for z in (.62, .84):                                                     # underrun guards
+            steel.box((.04, 3.7, .06), loc=(sx * 1.2, -.12, z), bevel=0)
+        for z in (1.2, 1.8, 2.4, 3.0):                                           # rear door hinges
+            steel.box((.08, .05, .12), loc=(sx * 1.17, 3.48, z), bevel=0)
+        steel.tube([(sx * .3, 3.51, 1.1), (sx * .3, 3.51, 3.3)], .025, seg=6)   # lock bars
+        steel.box((.14, .05, .04), loc=(sx * .36, 3.53, 1.9), bevel=0)
+        a.part('Mud_flaps', 'Rubber').box((.62, .03, .45), loc=(sx * .88, 2.85, .62), bevel=0)
     armor.box((2.5, 5.0, .18), loc=(0, .98, .98), bevel=.02, seg=1)
     for x in (-.6, 0, .6):
         steel.box((.05, .04, 2.5), loc=(x, 3.47, 2.2), bevel=0)
