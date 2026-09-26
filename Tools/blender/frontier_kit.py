@@ -133,8 +133,11 @@ MATERIALS = {
     'RailBrown': ('#7a3f2c', 0.3, 0.6, 0.0),      # oxide-red rolling stock
     # Second vehicle roster (mb_vehicles2.py): brass trims on the premium titan tank, used sparingly.
     'Gilded': ('#f5c75a', 0.9, 0.28, 0.0),
+    # Elite units (mb_elites.py): dark armour on the non-team panels and red sensor lights / visor slits.
+    'EliteBlack': ('#1c1e24', 0.35, 0.5, 0.0),
+    'EliteGlow': ('#ff2a1f', 0.0, 0.3, 2.4),
 }
-GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
+GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy', 'EliteGlow'}
 
 
 def material(name):

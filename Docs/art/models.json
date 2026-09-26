@@ -139,6 +139,34 @@
     "file": "dock_bollards.glb",
     "triangles": 762
   },
+  "elite_aa": {
+    "file": "elite_aa.glb",
+    "triangles": 8460
+  },
+  "elite_apc": {
+    "file": "elite_apc.glb",
+    "triangles": 7684
+  },
+  "elite_attack_helicopter": {
+    "file": "elite_attack_helicopter.glb",
+    "triangles": 9162
+  },
+  "elite_heavy_tank": {
+    "file": "elite_heavy_tank.glb",
+    "triangles": 9732
+  },
+  "elite_mbt": {
+    "file": "elite_mbt.glb",
+    "triangles": 9904
+  },
+  "elite_mlrs": {
+    "file": "elite_mlrs.glb",
+    "triangles": 8640
+  },
+  "elite_tank_destroyer": {
+    "file": "elite_tank_destroyer.glb",
+    "triangles": 9548
+  },
   "factory": {
     "file": "factory.glb",
     "triangles": 4896
