@@ -105,7 +105,7 @@ namespace MachineBrigade.Game.Input
 
             if (picked != null)
             {
-                Issue(new Command(CommandType.Attack, _team, Selection(), target: picked.Id));
+                Issue(new Command(CommandType.Attack, _team, Selection(), target: picked.Id, manual: true));
                 return;
             }
             if (!_camera.TryGroundPoint(screen, out var ground)) return;
@@ -116,14 +116,14 @@ namespace MachineBrigade.Game.Input
                 var prop = _map.PropAt(point);
                 if (prop != null)
                 {
-                    Issue(new Command(CommandType.Attack, _team, Selection(), target: prop.Id));
+                    Issue(new Command(CommandType.Attack, _team, Selection(), target: prop.Id, manual: true));
                     return;
                 }
             }
 
             var type = AttackMoveArmed ? CommandType.AttackMove : CommandType.Move;
             AttackMoveArmed = false;
-            if (Issue(new Command(type, _team, Selection(), point))) MoveOrdered?.Invoke(ground);
+            if (Issue(new Command(type, _team, Selection(), point, manual: true))) MoveOrdered?.Invoke(ground);
         }
 
         public void OnDoubleTap(Vector2 screen)
@@ -171,9 +171,9 @@ namespace MachineBrigade.Game.Input
                 if (view.Team == _team) _selected.Add(view.Id);
         }
 
-        public void Stop() => Issue(new Command(CommandType.Stop, _team, Selection()));
+        public void Stop() => Issue(new Command(CommandType.Stop, _team, Selection(), manual: true));
 
-        public void Retreat() => Issue(new Command(CommandType.Retreat, _team, Selection()));
+        public void Retreat() => Issue(new Command(CommandType.Retreat, _team, Selection(), manual: true));
 
         public void ToggleAttackMove()
         {

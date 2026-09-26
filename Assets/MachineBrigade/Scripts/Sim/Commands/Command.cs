@@ -28,8 +28,9 @@ namespace MachineBrigade.Sim.Commands
     public sealed class Command
     {
         public Command(CommandType type, int team, IReadOnlyList<EntityId> units, Vector2 point = default,
-            EntityId target = default, string? defId = null, Vector2 point2 = default)
+            EntityId target = default, string? defId = null, Vector2 point2 = default, bool manual = false)
         {
+            Manual = manual;
             Type = type;
             Team = team;
             Units = units ?? throw new ArgumentNullException(nameof(units));
@@ -50,6 +51,12 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Second point: the direction an airstrike flies in.</summary>
         public Vector2 Point2 { get; }
+
+        /// <summary>
+        /// Given by the player's own hand: the commander AI leaves these vehicles alone until a
+        /// while after they finish the order.
+        /// </summary>
+        public bool Manual { get; }
 
         public CommandType Type { get; }
         public int Team { get; }

@@ -100,6 +100,15 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
         internal Vector2 GuardPoint;
 
+        /// <summary>Carrying out an order the player gave by hand.</summary>
+        internal bool ManualOrder;
+
+        /// <summary>Until when (sim time) the commander AI keeps its hands off after a manual order.</summary>
+        internal double ManualUntil = double.NegativeInfinity;
+
+        /// <summary>The player took direct control of this vehicle recently.</summary>
+        public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;
+
         /// <summary>Last enemy vehicle that hurt this one, so idle vehicles answer fire.</summary>
         internal EntityId LastAttacker;
 

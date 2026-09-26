@@ -126,6 +126,17 @@ namespace MachineBrigade.Game.Hud
             ["settings.on"] = ("On", "Bật"),
             ["settings.off"] = ("Off", "Tắt"),
             ["pause.title"] = ("PAUSED", "TẠM DỪNG"),
+            ["panel.commander"] = ("COMMANDER", "CHỈ HUY"),
+            ["stance.attack"] = ("Attack", "Tấn công"),
+            ["stance.defend"] = ("Defend", "Phòng thủ"),
+            ["auto.deploy"] = ("Auto buy", "Tự mua xe"),
+            ["auto.strike"] = ("Auto support", "Tự yểm trợ"),
+            ["toast.focus"] = ("Army converging on point {0}", "Quân ta dồn về cứ điểm {0}"),
+            ["toast.focusClear"] = ("The commander picks targets", "Chỉ huy tự chọn mục tiêu"),
+            ["toast.attack"] = ("Stance: attack", "Thế trận: tấn công"),
+            ["toast.defend"] = ("Stance: defend", "Thế trận: phòng thủ"),
+            ["hint.auto"] = ("Your army fights on its own  ·  Tap A B C to point it  ·  Tap a vehicle to take control",
+                "Quân ta tự chiến đấu  ·  Chạm A B C để chỉ hướng  ·  Chạm xe để điều khiển tay"),
             ["pause.resume"] = ("Resume", "Tiếp tục"),
         };
 

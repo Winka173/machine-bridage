@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -48,6 +49,14 @@ namespace MachineBrigade.Game.Hud
 
         public VisualElement Root { get; }
 
+        /// <summary>An objective chip was tapped (the player points the army at it).</summary>
+        public event Action<string> PointPressed;
+
+        public void SetFocus(string id)
+        {
+            foreach (var chip in _points) chip.EnableInClassList("focus", chip.Id == id);
+        }
+
         public void Update(int ours, int theirs, int max, IReadOnlyList<PointInfo> points)
         {
             _ours.text = ours.ToString();
@@ -58,6 +67,10 @@ namespace MachineBrigade.Game.Hud
             while (_points.Count < points.Count)
             {
                 var chip = new PointChip();
+                chip.AddManipulator(new Clickable(() =>
+                {
+                    if (chip.Id != null) PointPressed?.Invoke(chip.Id);
+                }));
                 _chips.Add(chip);
                 _points.Add(chip);
             }
@@ -98,11 +111,13 @@ namespace MachineBrigade.Game.Hud
         public PointChip()
         {
             AddToClassList("point-chip");
-            pickingMode = PickingMode.Ignore;
+            pickingMode = PickingMode.Position;
             _letter = UiKit.Text("", "point-letter");
             Add(_letter);
             generateVisualContent += Draw;
         }
+
+        public string Id => _info.Id;
 
         public void Set(PointInfo info)
         {

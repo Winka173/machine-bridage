@@ -46,6 +46,7 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _targetingText;
         private readonly VisualElement _banner;
         private readonly ScoreBar _score;
+        private readonly VisualElement _attackStance, _defendStance, _autoDeploy, _autoStrike;
         private readonly DeckBar _deck;
         private readonly ResultPanel _result;
         private readonly PausePanel _pause;
@@ -141,7 +142,21 @@ namespace MachineBrigade.Game.Hud
             left.Add(tools);
             _safe.Add(left);
 
-            // Command panel ------------------------------------------------------------------------
+            // Commander panel: the army fights on its own; the player sets intent -------------------
+            var commander = UiKit.Box("commander", PickingMode.Position);
+            commander.Add(UiKit.Text(Strings.Get("panel.commander"), "caps"));
+            var stance = UiKit.Box("commander-row");
+            _attackStance = Toggle(stance, "attack", Strings.Get("stance.attack"), () => StancePressed?.Invoke(false));
+            _defendStance = Toggle(stance, "shield", Strings.Get("stance.defend"), () => StancePressed?.Invoke(true));
+            commander.Add(stance);
+            var autos = UiKit.Box("commander-row");
+            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("auto.deploy"), () => AutoDeployToggled?.Invoke());
+            _autoStrike = Toggle(autos, "barrage", Strings.Get("auto.strike"), () => AutoStrikeToggled?.Invoke());
+            commander.Add(autos);
+            _safe.Add(commander);
+            if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
+
+            // Command panel (hand orders for selected vehicles) -------------------------------------
             var command = UiKit.Box("command", PickingMode.Position);
             var header = UiKit.Box("command-header");
             header.Add(UiKit.Text(Strings.Get("panel.selection"), "caps"));
@@ -182,7 +197,7 @@ namespace MachineBrigade.Game.Hud
             }
 
             // Overlays -----------------------------------------------------------------------------
-            _hint = UiKit.Text(Strings.Get("hint"), "hint");
+            _hint = UiKit.Text(Strings.Get("hint.auto"), "hint");
             _safe.Add(_hint);
 
             _targeting = UiKit.Box("targeting");
@@ -234,6 +249,21 @@ namespace MachineBrigade.Game.Hud
         public event Action SettingsChanged;
         public event Action VolumeChanged;
         public event Action<Vector2> MinimapClicked;
+        public event Action<bool> StancePressed;
+        public event Action AutoDeployToggled;
+        public event Action AutoStrikeToggled;
+        public event Action<string> PointPressed;
+
+        /// <summary>Shows the commander's current intent.</summary>
+        public void SetCommander(bool defend, bool autoDeploy, bool autoStrike, string focus)
+        {
+            if (_attackStance == null) return;
+            _attackStance.EnableInClassList("on", !defend);
+            _defendStance.EnableInClassList("on", defend);
+            _autoDeploy.EnableInClassList("on", autoDeploy);
+            _autoStrike.EnableInClassList("on", autoStrike);
+            _score?.SetFocus(focus);
+        }
 
         public bool ShowFps { get; set; }
 
@@ -325,7 +355,7 @@ namespace MachineBrigade.Game.Hud
             _boxMode = boxMode;
             _attackMove.EnableInClassList("armed", attackMoveArmed);
             _boxTool.EnableInClassList("on", boxMode);
-            _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : "hint");
+            _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : "hint.auto");
         }
 
         public void ShowError(CommandError error) => Toast(Strings.Error(error), error: true);
@@ -411,6 +441,15 @@ namespace MachineBrigade.Game.Hud
             tool.Add(UiKit.Icon(icon, UiKit.Ink, 1.7f));
             if (!string.IsNullOrEmpty(label)) tool.Add(UiKit.Text(label, "tool-label"));
             return tool;
+        }
+
+        private static VisualElement Toggle(VisualElement parent, string icon, string label, Action onClick)
+        {
+            var toggle = UiKit.Button("toggle", onClick);
+            toggle.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
+            toggle.Add(UiKit.Text(label, "toggle-label"));
+            parent.Add(toggle);
+            return toggle;
         }
 
         private static VisualElement Command(VisualElement parent, string icon, string label, Action onClick)

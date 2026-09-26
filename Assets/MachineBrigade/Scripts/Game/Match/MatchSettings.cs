@@ -75,6 +75,12 @@ namespace MachineBrigade.Game.Match
         public static bool ShowFps { get; set; }
         public static LanguageChoice Language { get; set; } = LanguageChoice.Auto;
 
+        /// <summary>The commander AI buys vehicles from the deck.</summary>
+        public static bool AutoDeploy { get; set; } = true;
+
+        /// <summary>The commander AI calls fire support.</summary>
+        public static bool AutoStrike { get; set; } = true;
+
         public static void Load()
         {
             if (_loaded) return;
@@ -89,6 +95,8 @@ namespace MachineBrigade.Game.Match
                 Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
                 Weather = (WeatherKind)PlayerPrefs.GetInt("mb.weather", (int)WeatherKind.Random);
                 Mode = (GameModeKind)PlayerPrefs.GetInt("mb.mode", 0);
+                AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
+                AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;
                 ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots);
                 ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots);
             }
@@ -114,6 +122,8 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.difficulty", (int)Difficulty);
                 PlayerPrefs.SetInt("mb.weather", (int)Weather);
                 PlayerPrefs.SetInt("mb.mode", (int)Mode);
+                PlayerPrefs.SetInt("mb.autoDeploy", AutoDeploy ? 1 : 0);
+                PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
                 PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", DeckVehicles));
                 PlayerPrefs.SetString("mb.deck.supports", string.Join(",", DeckSupports));
                 PlayerPrefs.Save();

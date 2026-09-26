@@ -2,6 +2,27 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-26: Auto-play commander, cleaner and bigger explosions
+
+Playtest feedback: explosions still showed claw-like streaks, the fire felt reduced, and most of the game should play itself rather than be micro-managed unit by unit.
+
+### Done
+
+- **The army plays itself.**
+  - The player's side is run by the same commander AI as the enemy (Hard in Conquest). It buys vehicles, calls fire support, picks objectives and fights.
+  - In Survival it holds a line between the base and the threat.
+- **The player steers intent** from a commander panel:
+  - Attack or Defend stance.
+  - Auto buy and Auto support toggles, which are remembered between matches.
+  - Tapping an objective chip (A, B, C) sends the whole army there. Tapping it again clears the focus.
+- **Hand control is optional.** A vehicle given an order by hand is left alone until 20 s after that order finishes, then the commander takes it back.
+- **The camera follows the fight** after 8 s without a touch.
+- **Explosions:**
+  - Sparks are round glowing points instead of stretched streaks.
+  - There are more fireballs, sparks and burning debris, plus secondary pops for large and huge blasts.
+  - Fire is brighter, more wrecks and heavy hits start fires, and wrecks burn for 40 s.
+- **Tests:** 66 EditMode tests. The new `CommanderTests` cover focus points, the hand-control hold, auto buy and holding a line.
+
 ## 2026-09-26: Flicker fix, full roster, Conquest, strikes, weather and menus
 
 ### Done

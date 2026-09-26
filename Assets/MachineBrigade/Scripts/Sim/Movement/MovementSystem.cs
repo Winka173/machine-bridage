@@ -28,6 +28,9 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>How long an idle vehicle remembers who shot it.</summary>
         private const float AnswerFireSeconds = 5f;
 
+        /// <summary>After finishing a hand-given order, a vehicle stays out of the commander AI's hands this long.</summary>
+        public const float ManualHoldSeconds = 20f;
+
         private readonly SimWorld _world;
 
         public MovementSystem(SimWorld world) => _world = world;
@@ -39,6 +42,11 @@ namespace MachineBrigade.Sim.Movement
                 if (!v.IsAlive) continue;
                 v.RepathTimer -= dt;
                 UpdateOrder(v);
+                if (v.ManualOrder && v.Order.Kind == OrderKind.Idle)
+                {
+                    v.ManualOrder = false;
+                    v.ManualUntil = _world.Time + ManualHoldSeconds;
+                }
                 Drive(v, dt);
             }
             Separate();
