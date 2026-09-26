@@ -182,7 +182,10 @@
     { "id": "airstrike",         "kind": "Airstrike",     "cp": 8,  "cooldown": 90,  "delay": 2.0, "radius": 4,  "count": 8,  "duration": 1.2, "damage": 180, "blast": 6,  "tier": "Huge", "length": 60 },
     { "id": "cruise_missile",    "kind": "CruiseMissile", "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 15, "count": 1,  "damage": 520, "blast": 15, "tier": "Ultimate" },
     { "id": "smoke_screen",      "kind": "Smoke",         "cp": 2,  "cooldown": 30,  "delay": 1.0, "radius": 12, "count": 1,  "duration": 12, "tier": "Small" },
-    { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" }
+    { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
+    // Premium (bought with coins): a line of fire, and a heavy bomber laying a carpet of bombs.
+    { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 7,  "tier": "Huge", "length": 55, "damageType": "Fire" },
+    { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 200, "blast": 7,  "tier": "Huge", "length": 95 }
   ],
 
   "props": [

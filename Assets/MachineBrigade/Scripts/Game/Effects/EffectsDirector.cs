@@ -149,6 +149,15 @@ namespace MachineBrigade.Game.Effects
                         Explode(e.Tier, hit, now);
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)));
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
+                        if (e.DefId == "napalm_strike")
+                        {
+                            // Napalm: the ground itself burns in a wide strip for half a minute.
+                            for (var i = 0; i < 3; i++)
+                            {
+                                var scatter = new Vector3(UnityEngine.Random.Range(-4f, 4f), 0f, UnityEngine.Random.Range(-4f, 4f));
+                                _fires.Ignite(hit + scatter, UnityEngine.Random.Range(1.2f, 1.8f), UnityEngine.Random.Range(24f, 34f), now);
+                            }
+                        }
                         if (huge)
                         {
                             // A ring of fires around the crater of the heaviest strikes.

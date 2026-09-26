@@ -93,7 +93,8 @@ namespace MachineBrigade.Game.Match
             "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
         };
 
-        public static readonly string[] AllSupports = { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop" };
+        public static readonly string[] AllSupports =
+            { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike", "carpet_bombing" };
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;

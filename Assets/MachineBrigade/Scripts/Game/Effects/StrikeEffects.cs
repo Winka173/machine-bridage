@@ -35,6 +35,7 @@ namespace MachineBrigade.Game.Effects
         private sealed class Jet
         {
             public GameObject Root;
+            public string Model;
             public Transform Bombs;
             public Vector3 From, To;
             public float Start, Duration, NextPuff;
@@ -216,10 +217,12 @@ namespace MachineBrigade.Game.Effects
         private void LaunchJet(in SimEvent e, float now)
         {
             if (!_hasJet) return;
-            var jet = _jets.Find(j => !j.Active);
+            // Carpet bombing comes from a heavy bomber once its model is in.
+            var model = e.DefId == "carpet_bombing" && _models.Has("heavy_bomber") ? "heavy_bomber" : "strike_jet";
+            var jet = _jets.Find(j => !j.Active && j.Model == model);
             if (jet == null)
             {
-                jet = new Jet { Root = _models.Spawn("strike_jet", e.Team, _root).Root };
+                jet = new Jet { Root = _models.Spawn(model, e.Team, _root).Root, Model = model };
                 foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
                     if (t.name.StartsWith("Bombs")) jet.Bombs = t;
                 _jets.Add(jet);
