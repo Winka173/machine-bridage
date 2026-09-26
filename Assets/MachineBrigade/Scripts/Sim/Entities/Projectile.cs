@@ -11,8 +11,10 @@ namespace MachineBrigade.Sim.Entities
     /// </summary>
     internal sealed class Projectile
     {
-        public Projectile(EntityId owner, int ownerTeam, WeaponDef weapon, Vector2 aimPoint, EntityId target, float travelTime)
+        public Projectile(EntityId owner, int ownerTeam, WeaponDef weapon, Vector2 aimPoint, EntityId target, float travelTime,
+            bool targetFlying = false)
         {
+            TargetFlying = targetFlying;
             Owner = owner;
             OwnerTeam = ownerTeam;
             Weapon = weapon;
@@ -27,5 +29,8 @@ namespace MachineBrigade.Sim.Entities
         public Vector2 AimPoint { get; }
         public EntityId Target { get; }
         public float TimeLeft { get; set; }
+
+        /// <summary>Aimed at an aircraft: ground splash cannot reach it and the shot bursts in the air.</summary>
+        public bool TargetFlying { get; }
     }
 }

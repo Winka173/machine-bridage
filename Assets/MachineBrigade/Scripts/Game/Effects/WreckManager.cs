@@ -105,6 +105,7 @@ namespace MachineBrigade.Game.Effects
             for (var i = _wrecks.Count - 1; i >= 0; i--)
             {
                 var w = _wrecks[i];
+                w.View.AnimateWreck();
                 if (!w.FireOut && now - w.Created > BurnSeconds)
                 {
                     var emission = w.Fire.emission;

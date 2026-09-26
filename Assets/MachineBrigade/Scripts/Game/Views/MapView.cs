@@ -80,7 +80,7 @@ namespace MachineBrigade.Game.Views
             Prop best = null;
             foreach (var prop in _world.Props)
             {
-                if (!prop.IsAlive || !prop.Contains(point, 0.6f)) continue;
+                if (!prop.IsAlive || prop.Def.Indestructible || !prop.Contains(point, 0.6f)) continue;
                 if (best == null || prop.Width * prop.Depth < best.Width * best.Depth) best = prop;
             }
             return best;
@@ -123,6 +123,8 @@ namespace MachineBrigade.Game.Views
             "fuel_tank" => ("fuel_tank", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal" }),
             "barrel" => ("barrel", null, new[] { "debris_metal", "debris_metal" }),
             "ammo_crate" => ("ammo_crate", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
+            "sandbags" => ("sandbags", null, new[] { "debris_plaster", "debris_plaster", "debris_plaster" }),
+            "tank_trap" => ("tank_trap", null, new[] { "debris_metal", "debris_metal", "debris_metal" }),
             "tree" => (rng.Next(3) == 0 ? "tree_broad" : "tree", null, new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),
             _ => (defId, null, Array.Empty<string>()),
         };

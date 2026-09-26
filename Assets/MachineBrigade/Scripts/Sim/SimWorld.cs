@@ -6,10 +6,12 @@ using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
+using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
 using MachineBrigade.Sim.Movement;
 using MachineBrigade.Sim.Navigation;
+using MachineBrigade.Sim.Strikes;
 
 namespace MachineBrigade.Sim
 {
@@ -48,6 +50,8 @@ namespace MachineBrigade.Sim
             Damage = new DamageSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
+            Economy = new EconomySystem(this);
+            Strikes = new StrikeSystem(this);
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
@@ -81,6 +85,19 @@ namespace MachineBrigade.Sim
 
         internal Random Random { get; }
         internal DamageSystem Damage { get; }
+        internal EconomySystem Economy { get; }
+        internal StrikeSystem Strikes { get; }
+
+        /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
+        public void EnableEconomy(TeamEconomy economy) => Economy.Enable(economy);
+
+        public bool TryGetEconomy(int team, out TeamEconomy economy) => Economy.TryGet(team, out economy);
+
+        /// <summary>Smoke clouds on the field: (centre, radius).</summary>
+        public IEnumerable<(Vector2 centre, float radius)> SmokeClouds()
+        {
+            foreach (var zone in Strikes.Smoke) yield return (zone.Centre, zone.Radius);
+        }
         internal List<Vehicle> VehicleList => _vehicleList;
         internal List<Prop> PropList => _propList;
 
@@ -112,7 +129,7 @@ namespace MachineBrigade.Sim
         public Vehicle SpawnVehicle(string defId, int team, Vector2 position, float heading)
         {
             var def = Catalog.Vehicle(defId);
-            var at = Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
@@ -123,6 +140,8 @@ namespace MachineBrigade.Sim
         public CommandResult Submit(Command command)
         {
             if (IsOver) return CommandResult.Rejected(CommandError.MatchOver);
+            if (command.Type == CommandType.Deploy) return Economy.Deploy(command.Team, command.DefId);
+            if (command.Type == CommandType.Strike) return Strikes.Call(command);
 
             _unitBuffer.Clear();
             foreach (var id in command.Units)
@@ -158,8 +177,17 @@ namespace MachineBrigade.Sim
                         return CommandResult.Rejected(CommandError.InvalidTarget);
                     if (target is Vehicle enemy && !enemy.IsVisibleTo(command.Team))
                         return CommandResult.Rejected(CommandError.TargetNotVisible);
-                    foreach (var v in _unitBuffer) v.SetOrder(new Order(OrderKind.Attack, target.Position, target.Id));
-                    return CommandResult.Ok;
+                    if (target is Prop { Def: { Indestructible: true } }) return CommandResult.Rejected(CommandError.InvalidTarget);
+                    // Only vehicles whose main weapon can reach it (tank guns cannot hit aircraft) take the order.
+                    var flying = target is Vehicle { Flying: true };
+                    var ordered = 0;
+                    foreach (var v in _unitBuffer)
+                    {
+                        if (!v.Def.Weapon.CanTarget(flying)) continue;
+                        v.SetOrder(new Order(OrderKind.Attack, target.Position, target.Id));
+                        ordered++;
+                    }
+                    return ordered > 0 ? CommandResult.Ok : CommandResult.Rejected(CommandError.InvalidTarget);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(command), command.Type, "Unknown command type.");
@@ -172,18 +200,31 @@ namespace MachineBrigade.Sim
             Tick++;
             Time += dt;
             RefreshVisibility();
+            Economy.Step(dt);
             _movement.Step(dt);
             _combat.Step(dt);
+            Strikes.Step();
             Damage.Step();
             RemoveDead();
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
 
+        /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
+        public void Announce(in SimEvent e) => _events.Add(e);
+
         /// <summary>Paths a vehicle towards <paramref name="goal"/>; on failure it simply stops.</summary>
         internal bool PathTo(Vehicle vehicle, Vector2 goal)
         {
             vehicle.RepathTimer = 0.5f;
+            if (vehicle.Flying)
+            {
+                // Aircraft fly straight over buildings, wrecks and rivers.
+                _pathBuffer.Clear();
+                _pathBuffer.Add(ClampToMap(goal));
+                vehicle.SetPath(_pathBuffer, goal);
+                return true;
+            }
             if (_pathFinder.TryFindPath(vehicle.Position, goal, _pathBuffer))
             {
                 vehicle.SetPath(_pathBuffer, goal);
@@ -194,13 +235,15 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>Nearest living enemy vehicle within <paramref name="range"/> of the edge of its hull.</summary>
-        internal Vehicle? FindNearestEnemy(Vehicle from, float range, bool requireVisible, float minRange = 0f)
+        internal Vehicle? FindNearestEnemy(Vehicle from, float range, bool requireVisible, float minRange = 0f,
+            TargetLayers layers = TargetLayers.All)
         {
             Vehicle? best = null;
             var bestDistance = float.MaxValue;
             foreach (var other in _vehicleList)
             {
                 if (!other.IsAlive || other.Team == from.Team) continue;
+                if ((layers & (other.Flying ? TargetLayers.Air : TargetLayers.Ground)) == 0) continue;
                 if (requireVisible && !other.IsVisibleTo(from.Team)) continue;
                 var centre = Vector2.Distance(from.Position, other.Position);
                 if (centre < minRange || centre - other.Radius > range || centre >= bestDistance) continue;
@@ -241,7 +284,8 @@ namespace MachineBrigade.Sim
                 {
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
                     if (spotter.Team == target.Team ||
-                        Vector2.DistanceSquared(spotter.Position, target.Position) <= spotter.Def.VisionRange * spotter.Def.VisionRange)
+                        (Vector2.DistanceSquared(spotter.Position, target.Position) <= spotter.Def.VisionRange * spotter.Def.VisionRange &&
+                         !Strikes.Obscures(spotter.Position, target.Position)))
                         mask |= 1 << spotter.Team;
                 }
                 target.VisibleToMask = mask;
@@ -260,5 +304,11 @@ namespace MachineBrigade.Sim
         }
 
         private EntityId NextId() => new EntityId(_nextId++);
+
+        internal Vector2 ClampToMap(Vector2 p)
+        {
+            var limit = Map.HalfSize - 1f;
+            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
+        }
     }
 }

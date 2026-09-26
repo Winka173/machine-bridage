@@ -68,6 +68,20 @@ Shader "MachineBrigade/Lit"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
+            static const half MaxReflected = 1.6h;
+
+            // Specular anti-aliasing (Kaplanyan and Hoffman 2016): where the normal changes quickly
+            // across a pixel, widen the highlight so it cannot alias into single-pixel sparkles.
+            half SpecularAntiAliasedRoughness(half perceptualRoughness, float3 normalWS)
+            {
+                float3 du = ddx(normalWS);
+                float3 dv = ddy(normalWS);
+                float variance = 0.25 * (dot(du, du) + dot(dv, dv));
+                float kernel = min(2.0 * variance, 0.2);
+                float roughness = perceptualRoughness * perceptualRoughness;
+                return (half)sqrt(sqrt(saturate(roughness * roughness + kernel)));
+            }
+
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -128,13 +142,17 @@ Shader "MachineBrigade/Lit"
                 half3 map = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
                 surface.albedo = _BaseColor.rgb * map * input.color.rgb * _Tint.rgb;
                 surface.metallic = _Metallic;
-                surface.smoothness = 1.0h - _Roughness;
+                surface.smoothness = 1.0h - SpecularAntiAliasedRoughness(_Roughness, input.normalWS);
                 surface.occlusion = lerp(0.55h, 1.0h, bakedAo);
-                surface.emission = _EmissionColor.rgb * _Tint.rgb;
                 surface.alpha = 1.0h;
                 surface.normalTS = half3(0, 0, 1);
 
+                // Sun glints on thin, glossy parts (barrels, periscopes) cover a pixel one frame and
+                // miss it the next; with HDR values in the tens, bloom blew each one up into a flash
+                // over the whole vehicle. Reflected light is capped; emission (lamps, tracers) is
+                // added afterwards so it still blooms.
                 half4 color = UniversalFragmentPBR(inputData, surface);
+                color.rgb = min(color.rgb, MaxReflected) + _EmissionColor.rgb * _Tint.rgb;
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
                 return half4(color.rgb, 1.0h);
             }

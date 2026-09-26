@@ -36,7 +36,8 @@ namespace MachineBrigade.Sim.AI
 
         private readonly int _team;
         private readonly int _enemyTeam;
-        private readonly float _flankSide;
+        private float _flankSide;
+        private bool _hadFlankers;
         private readonly List<Vehicle> _line = new();
         private readonly List<Vehicle> _fast = new();
         private readonly List<Vehicle> _artillery = new();
@@ -46,6 +47,15 @@ namespace MachineBrigade.Sim.AI
         private readonly List<EntityId> _ids = new();
         private readonly List<EntityId> _otherIds = new();
         private float _timer;
+
+        /// <summary>
+        /// Where to advance when no enemy is in sight (Conquest: the objective to take). Null
+        /// falls back to the enemy rally point.
+        /// </summary>
+        public Func<SimWorld, Vector2?>? Objective { get; set; }
+
+        /// <summary>Visible enemy vehicles, refreshed every decision.</summary>
+        public IReadOnlyList<Vehicle> KnownEnemies => _enemies;
 
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
@@ -68,8 +78,14 @@ namespace MachineBrigade.Sim.AI
             var front = Centre(body);
             var contact = _enemies.Count > 0;
             Vector2 objective;
-            if (contact) objective = NearestCluster(front);
+            // Aircraft do not steer the army: ground forces go for ground targets and objectives.
+            var groundContact = NearestGround(front, out _) < float.MaxValue;
+            var goal = Objective?.Invoke(world);
+            if (groundContact && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
+            else if (goal.HasValue) objective = goal.Value;
+            else if (groundContact) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
+            contact = groundContact;
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
@@ -86,6 +102,9 @@ namespace MachineBrigade.Sim.AI
             _enemies.Clear();
             _fallingBack.RemoveWhere(id => !world.TryGetVehicle(id, out _));
             _flanked.RemoveWhere(id => !world.TryGetVehicle(id, out _));
+            // Once a flanking group is spent, the next one swings round the other side.
+            if (_hadFlankers && _flanked.Count == 0) _flankSide = -_flankSide;
+            _hadFlankers = _flanked.Count > 0;
 
             foreach (var v in world.Vehicles)
             {
@@ -206,14 +225,30 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>Centre of the enemy group nearest to <paramref name="from"/>.</summary>
+        private float NearestGround(Vector2 from, out Vehicle? nearest)
+        {
+            nearest = null;
+            var best = float.MaxValue;
+            foreach (var e in _enemies)
+            {
+                if (e.Flying) continue;
+                var d = Vector2.Distance(from, e.Position);
+                if (d >= best) continue;
+                best = d;
+                nearest = e;
+            }
+            return best;
+        }
+
         private Vector2 NearestCluster(Vector2 from)
         {
-            Nearest(from, out var lead);
+            NearestGround(from, out var lead);
+            if (lead == null) return from;
             var sum = Vector2.Zero;
             var count = 0;
             foreach (var e in _enemies)
             {
-                if (Vector2.Distance(e.Position, lead!.Position) > 12f) continue;
+                if (e.Flying || Vector2.Distance(e.Position, lead.Position) > 12f) continue;
                 sum += e.Position;
                 count++;
             }
@@ -228,11 +263,12 @@ namespace MachineBrigade.Sim.AI
             var best = ClusterSize - 1;
             foreach (var e in _enemies)
             {
+                if (!weapon.CanTarget(e.Flying)) continue;
                 var distance = Vector2.Distance(shooter.Position, e.Position);
                 if (distance < weapon.MinRange + 2f || distance > weapon.Range) continue;
                 var around = 0;
                 foreach (var other in _enemies)
-                    if (Vector2.Distance(other.Position, e.Position) <= ClusterRadius) around++;
+                    if (other.Flying == e.Flying && Vector2.Distance(other.Position, e.Position) <= ClusterRadius) around++;
                 if (around <= best) continue;
                 best = around;
                 target = e;

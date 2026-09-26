@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Numerics;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 
@@ -100,9 +101,10 @@ namespace MachineBrigade.Sim.Movement
         {
             // Only threats that can be fought without leaving the leash, so the vehicle never
             // swings back and forth at its edge.
-            var reach = GuardLeash + v.Def.Weapon.Range * 0.9f;
+            var weapon = v.Def.Weapon;
+            var reach = GuardLeash + weapon.Range * 0.9f;
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
-                attacker.IsAlive && attacker.IsVisibleTo(v.Team) &&
+                attacker.IsAlive && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) &&
                 Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
                 return attacker;
 
@@ -110,7 +112,7 @@ namespace MachineBrigade.Sim.Movement
             var bestDistance = float.MaxValue;
             foreach (var other in _world.VehicleList)
             {
-                if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team)) continue;
+                if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > v.Def.VisionRange || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -124,7 +126,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var weapon = v.Def.Weapon;
             var enemy = _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
-                minRange: weapon.MinRange);
+                minRange: weapon.MinRange, layers: weapon.Targets);
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;
@@ -170,6 +172,9 @@ namespace MachineBrigade.Sim.Movement
             {
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
                 TryAdvance(v, v.Speed * dt);
+                // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
+                if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target))
+                    v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * dt);
                 return;
             }
 
@@ -193,20 +198,20 @@ namespace MachineBrigade.Sim.Movement
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
-            var targetSpeed = def.Speed * MathF.Max(alignment, 0.15f);
+            var targetSpeed = def.Speed * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
             if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(1.5f, distance * 1.5f));
             var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
             v.Speed = SimMath.MoveTowards(v.Speed, targetSpeed, acceleration * dt);
 
             if (!TryAdvance(v, v.Speed * dt)) v.Speed = 0f;
-            DetectStuck(v, dt);
+            if (!def.Flying) DetectStuck(v, dt);
         }
 
         private bool TryAdvance(Vehicle v, float distance)
         {
             if (distance <= 0f) return true;
             var next = v.Position + SimMath.Forward(v.Heading) * distance;
-            if (!_world.Grid.IsWalkable(next) || !_world.Map.Contains(next)) return false;
+            if (!_world.Map.Contains(next) || (!v.Flying && !_world.Grid.IsWalkable(next))) return false;
             v.Position = next;
             return true;
         }
@@ -250,7 +255,8 @@ namespace MachineBrigade.Sim.Movement
                 for (var j = i + 1; j < list.Count; j++)
                 {
                     var b = list[j];
-                    if (!b.IsAlive) continue;
+                    // Aircraft only keep apart from each other; they fly over ground vehicles.
+                    if (!b.IsAlive || a.Flying != b.Flying) continue;
                     var delta = b.Position - a.Position;
                     var minimum = a.Radius + b.Radius;
                     var distanceSquared = delta.LengthSquared();
@@ -285,7 +291,7 @@ namespace MachineBrigade.Sim.Movement
         private void Nudge(Vehicle v, Vector2 offset)
         {
             var next = v.Position + offset;
-            if (_world.Grid.IsWalkable(next) && _world.Map.Contains(next)) v.Position = next;
+            if (_world.Map.Contains(next) && (v.Flying || _world.Grid.IsWalkable(next))) v.Position = next;
         }
     }
 }

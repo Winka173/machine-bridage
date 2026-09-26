@@ -76,7 +76,31 @@ namespace MachineBrigade.Game.CameraControl
             Place();
         }
 
-        public void AddTrauma(float amount) => _trauma = Mathf.Min(1f, _trauma + amount);
+        public void AddTrauma(float amount)
+        {
+            if (Match.DebugFlags.Has("-mb-no-shake")) return;
+            _trauma = Mathf.Min(1f, _trauma + amount * ShakeScale);
+        }
+
+        /// <summary>Scales camera shake; the Reduced motion setting lowers it.</summary>
+        public float ShakeScale { get; set; } = 1f;
+
+        /// <summary>Jumps the view to look at <paramref name="point"/> (minimap taps).</summary>
+        public void FocusOn(Vector3 point)
+        {
+            Focus = new Vector3(point.x, 0f, point.z);
+            Clamp();
+            Place();
+        }
+
+        /// <summary>Eases the view towards <paramref name="point"/>, for the menu's drifting camera.</summary>
+        public void Glide(Vector3 point, float zoom, float dt, float rate = 0.6f)
+        {
+            var k = 1f - Mathf.Exp(-dt * rate);
+            Focus = Vector3.Lerp(Focus, new Vector3(point.x, 0f, point.z), k);
+            Zoom = Mathf.Clamp(Mathf.Lerp(Zoom, zoom, k), MinZoom, MaxZoom);
+            Clamp();
+        }
 
         /// <summary>Call once per frame after input: places the camera and applies shake.</summary>
         public void Apply(float unscaledDeltaTime)

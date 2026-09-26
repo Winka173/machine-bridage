@@ -45,6 +45,7 @@ namespace MachineBrigade.Game.Views
             river.transform.position = new Vector3(0f, -0.12f, RiverZ);
             river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
 
+            PlaceMountains(models);
             ScatterForests(models, fields);
             ScatterRocks(models);
             PlaceFarmhouses(models, fields);
@@ -91,6 +92,44 @@ namespace MachineBrigade.Game.Views
 
         private bool NearRiver(Vector2 p, float margin) => Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin;
 
+        private readonly List<(Vector2 centre, float radius)> _mountains = new();
+
+        private bool OnMountain(Vector2 p)
+        {
+            foreach (var (centre, radius) in _mountains)
+                if ((p - centre).sqrMagnitude < radius * radius) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// A ring of mountains beyond the forests, so every edge of the view ends in high ground.
+        /// They are few, large, static objects; trees and rocks keep off their slopes.
+        /// </summary>
+        private void PlaceMountains(ModelLibrary models)
+        {
+            (string id, float radius)[] kinds = { ("mountain_a", 50f), ("mountain_b", 40f), ("mountain_c", 42f) };
+            const int count = 11;
+            for (var i = 0; i < count; i++)
+            {
+                var angle = (i + (float)_rng.NextDouble() * 0.5f) / count * Mathf.PI * 2f;
+                var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                // Push out to a square ring past the forest belt.
+                var reach = (_half + 52f + (float)_rng.NextDouble() * 40f) / Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+                var (id, radius) = kinds[_rng.Next(kinds.Length)];
+                var scale = 1.05f + (float)_rng.NextDouble() * 0.5f;
+                // Keep the foot of the slope clear of the battlefield and its tree line.
+                var edge = Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+                reach = Mathf.Max(reach, (_half + 16f + radius * scale) / edge);
+                var centre = direction * reach;
+                if (NearRiver(centre, radius * scale) || Mathf.Max(Mathf.Abs(centre.x), Mathf.Abs(centre.y)) > Extent + 20f) continue;
+                var mountain = models.Spawn(id, -1, _root.transform);
+                mountain.Root.transform.SetPositionAndRotation(new Vector3(centre.x, -0.4f, centre.y),
+                    Quaternion.Euler(0f, (float)_rng.NextDouble() * 360f, 0f));
+                mountain.Root.transform.localScale = Vector3.one * scale;
+                _mountains.Add((centre, radius * scale));
+            }
+        }
+
         /// <summary>
         /// A dense tree line hugging the battlefield edge (it frames the fight), then forest
         /// clusters further out with a minimum density so no side of the view is ever bare.
@@ -102,7 +141,7 @@ namespace MachineBrigade.Game.Views
             for (var attempt = 0; attempt < 40000 && placed < 2400; attempt++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 4f) || NearRiver(p, 3f) || InField(p, fields)) continue;
+                if (!Outside(p, 4f) || NearRiver(p, 3f) || InField(p, fields) || OnMountain(p)) continue;
                 var distance = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
                 var noise = Mathf.PerlinNoise(p.x * 0.035f + 5f, p.y * 0.035f + 9f);
                 var chance = distance < 26f
@@ -116,7 +155,7 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < 700; i++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 3f) || NearRiver(p, 1f) || InField(p, fields)) continue;
+                if (!Outside(p, 3f) || NearRiver(p, 1f) || InField(p, fields) || OnMountain(p)) continue;
                 Add(models, "bush", p, (float)_rng.NextDouble() * 360f, 0.7f + (float)_rng.NextDouble() * 0.9f);
             }
         }
@@ -133,9 +172,17 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < 120; i++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 6f) || NearRiver(p, 2f)) continue;
+                if (!Outside(p, 6f) || NearRiver(p, 2f) || OnMountain(p)) continue;
                 var model = "rock_" + (char)('a' + _rng.Next(3));
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 1.2f + (float)_rng.NextDouble() * 2.4f);
+            }
+            // Outcrops and boulder fields break up the forests.
+            for (var i = 0; i < 46; i++)
+            {
+                var p = RandomPoint();
+                if (!Outside(p, 10f) || NearRiver(p, 6f) || OnMountain(p)) continue;
+                var model = _rng.Next(3) switch { 0 => "cliff_a", 1 => "cliff_b", _ => "boulders" };
+                Add(models, model, p, (float)_rng.NextDouble() * 360f, 0.8f + (float)_rng.NextDouble() * 0.7f);
             }
         }
 

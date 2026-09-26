@@ -2,6 +2,46 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-26: Flicker fix, full roster, Conquest, strikes, weather and menus
+
+### Done
+
+- **Vehicle flicker fixed.** On OpenGL ES the URP SRP Batcher drew vehicles with stale transforms: turrets flashed back to an old pose and moving tanks stuttered. It was bisected on the emulator with screen recordings (single-frame brightness spikes per region, counted with OpenCV) and command-line debug switches (`Match.DebugFlags`). Before the fix there were 42–63 flashes per 14 s; after it, 0–1. The SRP Batcher is now off on GLES only. Specular anti-aliasing, a cap on reflected light and a bloom clamp remove sun glints on thin parts.
+- **Weapons:**
+  - Vehicles carry several mounts: coaxial guns, free roof guns and chin turrets, and hull-fixed pods. Each mount has its own target, cooldown and muzzle.
+  - Salvos (MLRS, helicopter rockets), guided missiles that home in, flamethrowers and airburst flak.
+- **Aircraft:**
+  - The attack helicopter flies straight over obstacles and only anti-air weapons reach it; ground blasts cannot.
+  - It banks, bobs, spins its rotors and crashes when shot down.
+- **Roster:** jeep, APC, light tank, MBT, flame tank, self-propelled artillery, MLRS, anti-air vehicle and attack helicopter. There are 15 weapons in `balance.json`.
+- **Models:** 19 new Blender models: the new vehicles, a strike jet, munitions, mountains, cliffs, boulders, sandbags, tank traps and dirt mounds. The existing tanks gained machine guns. Model tests check that every weapon mount has its muzzle.
+- **Economy:**
+  - Command Points with a bank cap and a unit cap, deployments with delivery, and kill rewards.
+  - The player buys from a deck of 6 vehicles and 2 supports in both modes.
+- **Fire support:** barrage, airstrike (jet flyover, falling bombs, one telegraph ring per bomb), cruise missile, smoke screen (blocks sight) and repair drop. All are telegraphed and friendly-safe.
+- **Conquest mode:**
+  - Three objectives on `ashfield_conquest`, capture rates (jeep ×2, APC ×3, aircraft cannot capture), contested points, ticket bleed and ticket loss per vehicle lost.
+  - Results, and a Conquest AI that counter-picks, saves for strong units, strikes clusters, repairs groups and chooses objectives by value (Easy, Normal, Hard).
+- **Menu and HUD:**
+  - The main menu runs over a live AI-versus-AI battle. It offers mode, difficulty, weather, a deck editor and settings (volume, effects quality, reduced motion, FPS, language).
+  - The in-match HUD has ticket bars and objective chips, the deck bar with CP meter and cooldowns, strike targeting, a rotated minimap (tap to jump), a mission banner, pause and results.
+- **Environment:**
+  - Weather: clear, overcast, rain and storm. Mood lighting and fog, rain streaks and splashes, wet ground, gusting foliage, lightning and thunder.
+  - A ring of mountains and outcrops around the map. Terrain props inside it shape lanes and fortify the objectives.
+- **Explosions:**
+  - A new particle shader gives noise-eroded fireballs with hot cores and lit, billowing smoke. Every puff has its own seed and evolves over its life.
+  - Burning debris flies on arcs, trailing smoke.
+- **Audio:** synthesised launches, flak, flamethrowers, jet passes, a helicopter rotor loop, strike alarms, objective chimes, rain and thunder.
+- **Tests:** 60 EditMode tests. They include headless AI-versus-AI Conquest matches with the shipped content and headless Survival waves.
+
+### Known limitations
+
+- Performance on a real phone is still unmeasured; the emulator runs on the desktop GPU.
+- The terrain is flat inside the battlefield; the relief is the mountain ring outside it.
+- There is no fog of war yet: the AI sees what its units see, but the player's view shows everything.
+- Assault mode and further maps are not started.
+- There is no background music (by request).
+
 ## 2026-09-26: Visual overhaul, battle effects, audio and tactical AI
 
 The voxel look was replaced after playtest feedback ("stiff and crude", poor font and UI). Quality target: [3d_astra](https://github.com/buicongnguyen/3d_astra), whose Blender kit is reused with the owner's permission.

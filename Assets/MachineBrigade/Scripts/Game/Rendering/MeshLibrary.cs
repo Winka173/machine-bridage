@@ -15,6 +15,7 @@ namespace MachineBrigade.Game.Rendering
             Quad = Own(Primitives.Quad(Color.white));
             ScorchQuad = Own(Primitives.Quad(new Color(0.05f, 0.04f, 0.035f, 0.85f)));
             Ring = Own(Primitives.Ring(0.82f, 1f, 48));
+            ThinRing = Own(Primitives.Ring(0.955f, 1f, 96));
             Box = Own(Primitives.Box());
         }
 
@@ -25,6 +26,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Flat ring of outer radius 1 lying on the ground.</summary>
         public Mesh Ring { get; }
+
+        /// <summary>A hairline ring for large circles (objectives, strike telegraphs).</summary>
+        public Mesh ThinRing { get; }
 
         /// <summary>Unit cube centred on its origin.</summary>
         public Mesh Box { get; }

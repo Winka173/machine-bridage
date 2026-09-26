@@ -54,12 +54,15 @@ namespace MachineBrigade.Game.Effects
         private readonly WreckManager _wrecks;
         private readonly Emitters _emitters;
         private readonly FireSpots _fires;
+        private readonly ProjectilePool _projectiles;
+        private readonly WeaponEffects _weapons;
+        private readonly StrikeEffects _strikes;
         private readonly SlowMotion _slowMotion = new();
         private readonly List<(Light light, float start, float intensity)> _lights = new();
         private readonly Transform _marker;
         private float _markerStart = -10f;
 
-        public EffectsDirector(MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
+        public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {
             _materials = materials;
@@ -82,6 +85,9 @@ namespace MachineBrigade.Game.Effects
             _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
             _debris = new DebrisPool(_root, budget.Debris);
             _wrecks = new WreckManager(materials, budget.Wrecks);
+            _projectiles = new ProjectilePool(_root, 96);
+            _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
+            _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _root);
 
             _marker = VehicleView.CreateMesh("Move Marker", _root, meshes.Ring, materials.MoveMarker, false);
             _marker.gameObject.SetActive(false);
@@ -101,13 +107,42 @@ namespace MachineBrigade.Game.Effects
                 switch (e.Kind)
                 {
                     case SimEventKind.WeaponFired:
-                        OnFired(e, views, now);
+                        _weapons.Fired(e, views, now);
                         break;
 
                     case SimEventKind.ProjectileImpact:
+                        if (e.Airborne)
+                        {
+                            // Flak and missiles bursting around an aircraft.
+                            // The hit aircraft gives the height; misses burst at flying height.
+                            var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f : 9f;
+                            Explode(e.Tier, new Vector3(e.Position.X, height, e.Position.Y), now);
+                            _emitters.Flak(new Vector3(e.Position.X, height, e.Position.Y));
+                            break;
+                        }
                         var impact = Ground(e.Position, 0.15f);
                         Explode(e.Tier, impact, now);
                         if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
+                        if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.08f) _fires.Ignite(impact, 0.35f, 5f, now);
+                        break;
+
+                    case SimEventKind.StrikeImpact:
+                        var hit = Ground(e.Position, 0.3f);
+                        var huge = e.Tier >= ExplosionTier.Ultimate;
+                        Explode(huge ? ExplosionTier.Huge : e.Tier, hit, now, huge ? 1.8f : 1f);
+                        _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)));
+                        if (e.Tier >= ExplosionTier.Huge) _fires.Ignite(hit, huge ? 2f : 0.9f, huge ? 30f : 14f, now);
+                        if (huge) _slowMotion.Trigger(Time.unscaledTime);
+                        break;
+
+                    case SimEventKind.StrikeWarning:
+                    case SimEventKind.AircraftPass:
+                    case SimEventKind.SmokeDeployed:
+                        _strikes.Consume(e, now);
+                        break;
+
+                    case SimEventKind.Repaired:
+                        if (views.TryGet(e.Entity, out var repaired)) _emitters.Repair(repaired.Position + Vector3.up * (repaired.Altitude + 1f));
                         break;
 
                     case SimEventKind.Explosion:
@@ -171,6 +206,8 @@ namespace MachineBrigade.Game.Effects
         {
             var now = Time.time;
             _tracers.Tick(now, _emitters);
+            _projectiles.Tick(now, _emitters);
+            _strikes.Tick(now);
             _debris.Tick(now);
             _wrecks.Tick(now);
             _fires.Tick(now);
@@ -192,55 +229,13 @@ namespace MachineBrigade.Game.Effects
             if (_root != null) Object.Destroy(_root.gameObject);
         }
 
-        private void OnFired(SimEvent e, ViewRegistry views, float now)
-        {
-            Vector3 from;
-            if (views.TryGet(e.Entity, out var shooter))
-            {
-                shooter.Recoil();
-                from = shooter.MuzzleWorld;
-            }
-            else
-            {
-                from = Ground(e.Position, 1.5f);
-            }
-            var to = Ground(e.Target, 0.4f);
-            var forward = to - from;
-            forward.y = 0f;
-            forward = forward.sqrMagnitude > 1e-4f ? forward.normalized : Vector3.forward;
-            var side = Vector3.Cross(Vector3.up, forward);
-            switch (e.Tier)
-            {
-                case ExplosionTier.Small:
-                    // A burst of three rounds walking around the aim point.
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var scatter = side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f);
-                        _tracers.Launch(from, to + scatter, e.Value, 0f, 0.09f, 1.7f, now, i * 0.055f);
-                    }
-                    break;
-                case ExplosionTier.Medium:
-                    var heavy = e.DefId == "gun_120mm";
-                    _tracers.Launch(from, to, e.Value, 0f, heavy ? 0.22f : 0.16f, heavy ? 3.2f : 2.6f, now, 0f, heavy ? 0.95f : 0.75f);
-                    _emitters.MuzzleSmoke(from, forward, heavy ? 1.3f : 1f);
-                    Shake(from, heavy ? 0.08f : 0.05f);
-                    break;
-                default:
-                    _tracers.Launch(from, to, e.Value, Vector3.Distance(from, to) * 0.3f, 0.32f, 1.1f, now, 0f, 1.2f);
-                    _emitters.MuzzleSmoke(from, forward + Vector3.up * 0.6f, 1.7f);
-                    Shake(from, 0.12f);
-                    break;
-            }
-            _muzzle.Acquire(now).Play(from, now);
-        }
-
         /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>
         private void KickUpDust(ViewRegistry views, float now)
         {
             foreach (var view in views.All)
             {
                 var speed = view.Speed;
-                if (speed < 1.2f || now < view.DustAt) continue;
+                if (view.Flying || speed < 1.2f || now < view.DustAt) continue;
                 view.DustAt = now + Mathf.Lerp(0.2f, 0.07f, Mathf.Clamp01(speed / 10f));
                 var root = view.Root;
                 var radius = view.Sim.Radius;
@@ -257,11 +252,11 @@ namespace MachineBrigade.Game.Effects
             return chunk;
         }
 
-        private void Explode(ExplosionTier tier, Vector3 position, float now)
+        private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
         {
             var effect = _explosions[tier].Acquire(now);
-            effect.Play(position, now);
-            if (effect.Light != null && _lights.Count < _budget.Lights)
+            effect.Play(position, now, scale);
+            if (effect.Light != null && _lights.Count < _budget.Lights && !Match.DebugFlags.Has("-mb-no-lights"))
             {
                 effect.Light.enabled = true;
                 effect.Light.intensity = effect.LightIntensity;

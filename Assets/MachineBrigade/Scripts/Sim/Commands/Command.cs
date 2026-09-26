@@ -13,6 +13,12 @@ namespace MachineBrigade.Sim.Commands
         AttackMove,
         Stop,
         Retreat,
+
+        /// <summary>Buys a vehicle (DefId) that arrives at the team's drop zone after a short delivery.</summary>
+        Deploy,
+
+        /// <summary>Calls fire support (DefId) on Point; airstrikes fly from Point towards Point2.</summary>
+        Strike,
     }
 
     /// <summary>
@@ -22,14 +28,28 @@ namespace MachineBrigade.Sim.Commands
     public sealed class Command
     {
         public Command(CommandType type, int team, IReadOnlyList<EntityId> units, Vector2 point = default,
-            EntityId target = default)
+            EntityId target = default, string? defId = null, Vector2 point2 = default)
         {
             Type = type;
             Team = team;
             Units = units ?? throw new ArgumentNullException(nameof(units));
             Point = point;
             Target = target;
+            DefId = defId;
+            Point2 = point2;
         }
+
+        public static Command Deploy(int team, string vehicleId) =>
+            new(CommandType.Deploy, team, Array.Empty<EntityId>(), defId: vehicleId);
+
+        public static Command Strike(int team, string supportId, Vector2 point, Vector2 towards = default) =>
+            new(CommandType.Strike, team, Array.Empty<EntityId>(), point, defId: supportId, point2: towards);
+
+        /// <summary>Vehicle or support definition for Deploy and Strike.</summary>
+        public string? DefId { get; }
+
+        /// <summary>Second point: the direction an airstrike flies in.</summary>
+        public Vector2 Point2 { get; }
 
         public CommandType Type { get; }
         public int Team { get; }
@@ -49,6 +69,11 @@ namespace MachineBrigade.Sim.Commands
         InvalidTarget,
         TargetNotVisible,
         NoRallyPoint,
+        UnknownCard,
+        NotEnoughCp,
+        ArmyAtCapacity,
+        OnCooldown,
+        NotAvailable,
     }
 
     public readonly struct CommandResult

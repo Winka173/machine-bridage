@@ -26,6 +26,7 @@ namespace MachineBrigade.Game.Rendering
         private readonly float _originalDepthBias;
         private readonly float _originalNormalBias;
         private readonly int _originalMsaa;
+        private readonly bool _originalSrpBatcher;
 
         public Atmosphere(float shadowDistance = 110f)
         {
@@ -37,8 +38,11 @@ namespace MachineBrigade.Game.Rendering
             RenderSettings.ambientProbe = Hemisphere(Sky.linear * AmbientStrength, Earth.linear * AmbientStrength);
 
             _reflection = BuildReflection(32);
-            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
-            RenderSettings.customReflectionTexture = _reflection;
+            if (!Match.DebugFlags.Has("-mb-no-reflection"))
+            {
+                RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
+                RenderSettings.customReflectionTexture = _reflection;
+            }
             RenderSettings.reflectionIntensity = 1f;
 
             RenderSettings.fog = true;
@@ -56,10 +60,16 @@ namespace MachineBrigade.Game.Rendering
                 _originalDepthBias = _pipeline.shadowDepthBias;
                 _originalNormalBias = _pipeline.shadowNormalBias;
                 _originalMsaa = _pipeline.msaaSampleCount;
+                _originalSrpBatcher = _pipeline.useSRPBatcher;
+                // On OpenGL ES the SRP Batcher intermittently drew vehicles with the previous frame's
+                // (or an older) transform: turrets flashed back to an old pose and moving tanks
+                // stuttered. Measured on the emulator: 50-60 flashes per 14 s with it, none without.
+                // Vulkan and Metal keep it for the CPU savings.
+                if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3) _pipeline.useSRPBatcher = false;
                 _pipeline.shadowDistance = shadowDistance;
                 _pipeline.shadowDepthBias = 1.6f;
                 _pipeline.shadowNormalBias = 1.3f;
-                _pipeline.msaaSampleCount = Application.isMobilePlatform ? 2 : 4;
+                _pipeline.msaaSampleCount = Match.DebugFlags.Has("-mb-no-msaa") ? 1 : Application.isMobilePlatform ? 2 : 4;
             }
         }
 
@@ -71,8 +81,23 @@ namespace MachineBrigade.Game.Rendering
                 _pipeline.shadowDepthBias = _originalDepthBias;
                 _pipeline.shadowNormalBias = _originalNormalBias;
                 _pipeline.msaaSampleCount = _originalMsaa;
+                _pipeline.useSRPBatcher = _originalSrpBatcher;
             }
             if (_reflection != null) Object.Destroy(_reflection);
+        }
+
+        /// <summary>
+        /// Weather mood: scales and tints the ambient light and pulls the fog in. The camera's
+        /// background follows the fog so the horizon never shows a seam.
+        /// </summary>
+        public void SetMood(float light, Color cast, Color fog, float fogStart, float fogEnd)
+        {
+            RenderSettings.ambientProbe = Hemisphere((Sky * cast).linear * AmbientStrength * light,
+                (Earth * cast).linear * AmbientStrength * light);
+            RenderSettings.fogColor = fog;
+            RenderSettings.fogStartDistance = fogStart;
+            RenderSettings.fogEndDistance = fogEnd;
+            if (Camera.main != null) Camera.main.backgroundColor = fog;
         }
 
         /// <summary>
