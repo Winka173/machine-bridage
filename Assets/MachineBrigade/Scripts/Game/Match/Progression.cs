@@ -33,6 +33,9 @@ namespace MachineBrigade.Game.Match
             ["heavy_bomber"] = 4000,
             ["sky_gunship"] = 4500,
             ["stealth_bomber"] = 5000,
+            ["siege_tank"] = 4500,
+            ["ballistic_launcher"] = 5000,
+            ["heavy_attack_heli"] = 3500,
             ["napalm_strike"] = 1500,
             ["carpet_bombing"] = 3000,
         };

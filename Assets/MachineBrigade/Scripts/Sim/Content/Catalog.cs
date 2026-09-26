@@ -44,6 +44,8 @@ namespace MachineBrigade.Sim.Content
         public PropDef Prop(string id) =>
             _props.TryGetValue(id, out var def) ? def : throw new KeyNotFoundException($"Unknown prop '{id}'.");
 
+        private static AuraDef ParseAura(JsonObject o) => new(o.Float("radius"), o.Float("rate"));
+
         /// <summary>A sensible class for vehicles whose data does not name one.</summary>
         private static UnitClass InferClass(VehicleDef def)
         {
@@ -76,6 +78,17 @@ namespace MachineBrigade.Sim.Content
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
 
+            var skills = new Dictionary<string, SkillDef>();
+            if (root.Has("skills"))
+                foreach (var k in root.Array("skills"))
+                {
+                    var skill = Wrap(k, () => new SkillDef(k.String("id"), k.Enum<SkillKind>("kind"),
+                        k.Enum("trigger", SkillTrigger.Always), k.Float("threshold", 0f), k.Float("cooldown", 0f),
+                        k.Float("duration", 0f), k.Float("amount", 0f), k.Float("radius", 0f), k.Int("count", 0),
+                        k.Has("unit") ? k.String("unit") : null, k.Bool("once", false)));
+                    if (!skills.TryAdd(skill.Id, skill)) throw new FormatException($"{k.Path}: duplicate skill '{skill.Id}'.");
+                }
+
             var vehicles = new List<VehicleDef>();
             foreach (var v in root.Array("vehicles"))
             {
@@ -100,6 +113,23 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("length")) def.Length = v.Float("length");
                     if (v.Has("width")) def.Width = v.Float("width");
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
+                    if (v.Has("skills"))
+                    {
+                        var list = new List<SkillDef>();
+                        foreach (var id in v.StringArray("skills"))
+                            list.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{v.Path}.skills: unknown skill '{id}'."));
+                        def.Skills = list;
+                    }
+                    if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
+                    if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
+                    def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("mines"))
+                    {
+                        var m = v.Object("mines");
+                        def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
+                            new ExplosionDef(m.Float("damage"), m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
+                            m.Float("trigger", 2f));
+                    }
                     return def;
                 }));
             }

@@ -354,6 +354,11 @@ namespace MachineBrigade.Sim.Movement
         private void Drive(Vehicle v, float dt)
         {
             var def = v.Def;
+            if (v.Stunned)
+            {
+                v.Speed = 0f;
+                return;
+            }
             if (def.FixedWing)
             {
                 DriveAeroplane(v, dt);
@@ -418,7 +423,7 @@ namespace MachineBrigade.Sim.Movement
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
-            var targetSpeed = def.Speed * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
+            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
             if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(1.5f, distance * 1.5f));
             targetSpeed = MathF.Min(targetSpeed, slowFor);
             var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
@@ -477,7 +482,7 @@ namespace MachineBrigade.Sim.Movement
             if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * dt);
-            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed, def.Speed * 0.8f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
 
@@ -623,8 +628,11 @@ namespace MachineBrigade.Sim.Movement
             var weightB = Yield(b);
             var total = weightA + weightB;
             if (total <= 0f) return;
-            Nudge(a, -normal * (overlap * weightA / total));
-            Nudge(b, normal * (overlap * weightB / total));
+            // Whoever cannot move (a wall behind it) passes its share to the other.
+            var movedA = weightA > 0f && Nudge(a, -normal * (overlap * weightA / total));
+            var movedB = weightB > 0f && Nudge(b, normal * (overlap * weightB / total));
+            if (!movedA && weightB > 0f) Nudge(b, normal * (overlap * weightA / total));
+            if (!movedB && weightA > 0f) Nudge(a, -normal * (overlap * weightB / total));
         }
 
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>
@@ -635,10 +643,19 @@ namespace MachineBrigade.Sim.Movement
             return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
         }
 
-        private void Nudge(Vehicle v, Vector2 offset)
+        /// <summary>Moves a vehicle by <paramref name="offset"/>, or slides it along a wall; false if it cannot move at all.</summary>
+        private bool Nudge(Vehicle v, Vector2 offset)
         {
-            var next = v.Position + offset;
-            if (_world.Map.Contains(next) && (v.Flying || _world.Grid.IsWalkable(next))) v.Position = next;
+            if (TryPlace(v, v.Position + offset)) return true;
+            // Blocked: slide along whichever axis is still free.
+            return TryPlace(v, v.Position + new Vector2(offset.X, 0f)) || TryPlace(v, v.Position + new Vector2(0f, offset.Y));
+        }
+
+        private bool TryPlace(Vehicle v, Vector2 next)
+        {
+            if (!_world.Map.Contains(next) || (!v.Flying && !_world.Grid.IsWalkable(next))) return false;
+            v.Position = next;
+            return true;
         }
     }
 }

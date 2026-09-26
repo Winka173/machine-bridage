@@ -79,10 +79,26 @@ namespace MachineBrigade.Game.Effects
                     _shake(from, 0.05f);
                     break;
 
+                case ProjectileKind.Drone:
+                    // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at.
+                    var drone = _models.Has("fpv_drone") ? "fpv_drone" : _hasMissile ? "missile" : null;
+                    if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f);
+                    else _tracers.Launch(from, to, e.Value, distance * 0.12f, 0.15f, 0.8f, now, 0f, 0.4f);
+                    _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
+                    break;
+
                 case ProjectileKind.Rocket:
                     var artillery = weapon != null && weapon.MinRange > 0f;
                     var arc = artillery ? distance * 0.28f : distance * 0.02f;
-                    if (_hasRocket) _projectiles.Launch(_models.Merged("rocket"), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
+                    // Heavy rockets and ballistic missiles fly their own models where they exist.
+                    var rocket = weapon?.Id switch
+                    {
+                        "rockets_300mm" when _models.Has("heavy_rocket") => "heavy_rocket",
+                        "ballistic_missile" when _models.Has("ballistic_missile") => "ballistic_missile",
+                        _ => "rocket",
+                    };
+                    if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
+                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? forward + Vector3.up * 0.8f : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);

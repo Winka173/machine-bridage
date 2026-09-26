@@ -37,6 +37,7 @@ namespace MachineBrigade.Sim
         private readonly Dictionary<EntityId, Vector2> _slotBuffer = new();
         private readonly MovementSystem _movement;
         private readonly CombatSystem _combat;
+        private readonly Abilities.AbilitySystem _abilities;
         private int _nextId = 1;
 
         public SimWorld(Catalog catalog, MapDefinition map, int seed = 1, int generation = 1)
@@ -50,6 +51,7 @@ namespace MachineBrigade.Sim
             Damage = new DamageSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
+            _abilities = new Abilities.AbilitySystem(this);
             Economy = new EconomySystem(this);
             Strikes = new StrikeSystem(this);
 
@@ -87,6 +89,13 @@ namespace MachineBrigade.Sim
         internal DamageSystem Damage { get; }
         internal EconomySystem Economy { get; }
         internal StrikeSystem Strikes { get; }
+        internal Abilities.AbilitySystem Abilities => _abilities;
+
+        /// <summary>Mines on the field (see <see cref="Mine.IsVisibleTo"/> for who can see them).</summary>
+        public IReadOnlyList<Mine> Mines => _abilities.Mines;
+
+        /// <summary>A guided missile or drone is flying at this vehicle.</summary>
+        internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
         public void EnableEconomy(TeamEconomy economy) => Economy.Enable(economy);
@@ -130,11 +139,39 @@ namespace MachineBrigade.Sim
         {
             var def = Catalog.Vehicle(defId);
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
             Emit(SimEvent.Spawned(vehicle));
             return vehicle;
+        }
+
+        /// <summary>
+        /// The nearest walkable spot to <paramref name="at"/> where a new hull does not land on top
+        /// of another vehicle (searching outwards in rings), or <paramref name="at"/> if none is near.
+        /// </summary>
+        private Vector2 FreeSpot(VehicleDef def, Vector2 at)
+        {
+            for (var ring = 0; ring <= 6; ring++)
+            {
+                var steps = ring == 0 ? 1 : ring * 8;
+                for (var k = 0; k < steps; k++)
+                {
+                    var angle = k * SimMath.Tau / steps;
+                    var p = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2.5f);
+                    if (!Map.Contains(p) || !Grid.IsWalkable(p)) continue;
+                    var clear = true;
+                    foreach (var other in _vehicleList)
+                    {
+                        if (!other.IsAlive || other.Flying) continue;
+                        var gap = def.HullBound * 0.8f + other.Def.HullBound * 0.8f;
+                        if (Vector2.DistanceSquared(other.Position, p) < gap * gap) { clear = false; break; }
+                    }
+                    if (clear) return p;
+                }
+            }
+            return at;
         }
 
         public CommandResult Submit(Command command)
@@ -212,6 +249,7 @@ namespace MachineBrigade.Sim
             RefreshVisibility();
             Economy.Step(dt);
             _movement.Step(dt);
+            _abilities.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();

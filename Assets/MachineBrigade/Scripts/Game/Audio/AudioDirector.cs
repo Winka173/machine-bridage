@@ -204,6 +204,7 @@ namespace MachineBrigade.Game.Audio
             {
                 case ProjectileKind.Missile:
                 case ProjectileKind.Rocket:
+                case ProjectileKind.Drone:
                     return Sound.Launch;
                 case ProjectileKind.Flame:
                     return Sound.Flame;

@@ -32,5 +32,11 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Aimed at an aircraft: ground splash cannot reach it and the shot bursts in the air.</summary>
         public bool TargetFlying { get; }
+
+        /// <summary>A guided round fired into (or out of) an enemy jammer's bubble: it loses lock and misses.</summary>
+        public bool Jammed { get; set; }
+
+        /// <summary>How far off a decoyed or jammed guided round lands from its target.</summary>
+        public Vector2 Miss { get; set; }
     }
 }

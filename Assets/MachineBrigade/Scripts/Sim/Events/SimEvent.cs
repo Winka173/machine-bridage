@@ -36,6 +36,15 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>An objective changed hands: Team is the new owner (-1 neutral), DefId the point id.</summary>
         PointCaptured,
+
+        /// <summary>A vehicle used a skill: DefId is the skill, Tier carries its kind (see <c>SkillKind</c>), Value its duration.</summary>
+        SkillUsed,
+
+        /// <summary>A mine was laid at Position (Entity: the mine).</summary>
+        MineLaid,
+
+        /// <summary>A mine went off at Position (an Explosion event follows).</summary>
+        MineDetonated,
     }
 
     /// <summary>
@@ -132,6 +141,19 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Captured(string pointId, Vector2 at, int owner) =>
             new(SimEventKind.PointCaptured, EntityId.None, at, default, 0f, default, pointId, owner);
+
+        internal static SimEvent SkillUsed(Vehicle v, SkillDef skill) =>
+            new(SimEventKind.SkillUsed, v.Id, v.Position, default, skill.Duration, (ExplosionTier)(int)skill.Kind, skill.Id, v.Team,
+                airborne: v.Flying);
+
+        /// <summary>Which skill a <see cref="SimEventKind.SkillUsed"/> event carries.</summary>
+        public SkillKind Skill => (SkillKind)(int)Tier;
+
+        internal static SimEvent MineLaid(Mine m) =>
+            new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);
+
+        internal static SimEvent MineDetonated(Mine m) =>
+            new(SimEventKind.MineDetonated, m.Id, m.Position, default, m.Def.Blast.Radius, m.Def.Blast.Tier, null, m.Team);
 
         internal static SimEvent PropLost(Prop p) =>
             new(SimEventKind.PropDestroyed, p.Id, p.Position, default, p.Radius, ExplosionTier.Medium, p.Def.Id, Teams.Neutral);

@@ -158,6 +158,21 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Radius of a circle around the whole capsule.</summary>
         public float HullBound => HullHalf + HullRadius;
 
+        /// <summary>Skills the vehicle uses on its own (elite units, boss phases).</summary>
+        public IReadOnlyList<SkillDef> Skills { get; internal set; } = Array.Empty<SkillDef>();
+
+        /// <summary>Repairs friendly vehicles around it (engineers).</summary>
+        public AuraDef? RepairAura { get; internal set; }
+
+        /// <summary>Re-arms friendly vehicles around it (engineers).</summary>
+        public AuraDef? RearmAura { get; internal set; }
+
+        /// <summary>Radius in which enemy guided weapons and fire support are scrambled (0: no jammer).</summary>
+        public float Jammer { get; internal set; }
+
+        /// <summary>Lays mines as it goes (mine layers).</summary>
+        public MineLayerDef? Mines { get; internal set; }
+
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }
 

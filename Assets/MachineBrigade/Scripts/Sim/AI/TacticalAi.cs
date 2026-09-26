@@ -46,6 +46,12 @@ namespace MachineBrigade.Sim.AI
         private readonly List<Vehicle> _fast = new();
         private readonly List<Vehicle> _artillery = new();
         private readonly List<Vehicle> _enemies = new();
+
+        /// <summary>Engineers and jammers: they follow the army and cover it.</summary>
+        private readonly List<Vehicle> _support = new();
+
+        /// <summary>Launchers out of ammunition on their way to be restocked.</summary>
+        private readonly List<Vehicle> _rearming = new();
         /// <summary>Vehicles pulled back to recover, with when they left the line.</summary>
         private readonly Dictionary<EntityId, double> _fallingBack = new();
 
@@ -150,6 +156,8 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            SendToRearm(world);
+            DirectSupport(world, front, forward);
             FocusBoss(world);
             FocusDemolition(world);
             DirectArtillery(world, front, objective, forward, contact);
@@ -200,6 +208,49 @@ namespace MachineBrigade.Sim.AI
             return _outmatched;
         }
 
+        private readonly HashSet<EntityId> _rearmIds = new();
+
+        /// <summary>
+        /// Empty launchers drive to the nearest engineer (else home) to be restocked; the ones
+        /// that are full again rejoin their role at the next decision.
+        /// </summary>
+        private void SendToRearm(SimWorld world)
+        {
+            _rearmIds.Clear();
+            foreach (var v in _rearming)
+            {
+                _rearmIds.Add(v.Id);
+                Vector2? depot = null;
+                var best = 70f;
+                foreach (var e in world.VehicleList)
+                {
+                    if (!e.IsAlive || e.Team != _team || e.Def.RearmAura == null) continue;
+                    var d = Vector2.Distance(e.Position, v.Position);
+                    if (d >= best) continue;
+                    best = d;
+                    depot = e.Position;
+                }
+                if (depot == null && world.TryGetRally(_team, out var home)) depot = home;
+                if (depot == null || Vector2.Distance(v.Position, depot.Value) < 8f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, depot.Value) < 6f) continue;
+                Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
+            }
+        }
+
+        /// <summary>Engineers and jammers keep a little behind the middle of the army.</summary>
+        private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
+        {
+            var spot = Clamp(world, front - forward * 9f);
+            _ids.Clear();
+            foreach (var v in _support)
+            {
+                if (Vector2.Distance(v.Position, spot) < 10f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
+                _ids.Add(v.Id);
+            }
+            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, spot);
+        }
+
         /// <summary>Everyone in the line drives (not attack-moves) back to the fall-back point and waits there.</summary>
         private void FallBack(SimWorld world)
         {
@@ -225,6 +276,8 @@ namespace MachineBrigade.Sim.AI
             _fast.Clear();
             _artillery.Clear();
             _enemies.Clear();
+            _support.Clear();
+            _rearming.Clear();
             // Pulled-back vehicles rejoin once repaired (or rested a while); the dead are forgotten.
             _released.Clear();
             foreach (var (id, since) in _fallingBack)
@@ -246,7 +299,14 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Vehicles the player is steering by hand are left alone.
                 if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
-                if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
+                // An empty launcher goes to be restocked, and stays until it is full again.
+                if (!v.Flying && (v.OutOfAmmo || (_rearmIds.Contains(v.Id) && v.NeedsAmmo)))
+                {
+                    _rearming.Add(v);
+                    continue;
+                }
+                if (v.Def.RepairAura != null || v.Def.Jammer > 0f) _support.Add(v);
+                else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
             }

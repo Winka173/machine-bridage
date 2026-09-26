@@ -46,6 +46,9 @@ namespace MachineBrigade.Sim.Strikes
             public double Start;
             public int Done;
             public bool Announced;
+
+            /// <summary>Spread multiplier: fire support called into an enemy jammer's bubble lands wide.</summary>
+            public float Scatter = 1f;
         }
 
         private readonly SimWorld _world;
@@ -75,7 +78,7 @@ namespace MachineBrigade.Sim.Strikes
             var strike = new Strike
             {
                 Support = support, Team = command.Team, Point = command.Point, Direction = direction,
-                Start = _world.Time + support.Delay,
+                Start = _world.Time + support.Delay, Scatter = _world.Abilities.Jammed(command.Point, command.Team) ? 2.2f : 1f,
             };
             _strikes.Add(strike);
             var end = support.IsLine ? command.Point + direction * support.Length : command.Point;
@@ -94,6 +97,13 @@ namespace MachineBrigade.Sim.Strikes
                 var strike = _strikes[i];
                 if (Advance(strike, now)) _strikes.RemoveAt(i);
             }
+        }
+
+        /// <summary>A vehicle's own smoke dischargers (a skill), announced like a smoke strike.</summary>
+        public void AddSmoke(int team, Vector2 at, float radius, float seconds)
+        {
+            _smoke.Add(new SmokeZone(at, radius, _world.Time + seconds));
+            _world.Emit(SimEvent.SmokeDeployed(team, at, radius, seconds));
         }
 
         /// <summary>Whether sight between two points is cut by smoke (either end inside a cloud, beyond arm's length).</summary>
@@ -196,6 +206,12 @@ namespace MachineBrigade.Sim.Strikes
         private void Blast(Strike s, Vector2 at)
         {
             var support = s.Support;
+            if (s.Scatter > 1f)
+            {
+                var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
+                var off = (s.Scatter - 1f) * MathF.Max(6f, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());
+                at += new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * off;
+            }
             at = _world.ClampToMap(at);
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
             _world.Damage.Splash(at, support.BlastRadius, support.Damage, support.DamageType, s.Team, EntityId.None);

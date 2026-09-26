@@ -99,6 +99,11 @@ namespace MachineBrigade.Game.Hud
             ["rain"] = "<path d=\"M5 14a4 4 0 0 1 2-7 5 5 0 0 1 9-1 4 4 0 0 1 3 8M8 17l-1 3M12 17l-1 3M16 17l-1 3\"/>",
             ["storm"] = "<path d=\"M5 13a4 4 0 0 1 2-7 5 5 0 0 1 9-1 4 4 0 0 1 3 8M13 13l-3 5h4l-3 5\"/>",
             ["dice"] = "<rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"9\" r=\"1\"/><circle cx=\"15\" cy=\"15\" r=\"1\"/><circle cx=\"15\" cy=\"9\" r=\"1\"/><circle cx=\"9\" cy=\"15\" r=\"1\"/>",
+            ["mine"] = "<circle cx=\"12\" cy=\"14\" r=\"5\"/><path d=\"M3 19h18M12 9V5M9 6l3-1 3 1\"/>",
+            ["jammer"] = "<path d=\"M12 21V11M9 21h6M12 11 9 5h6l-3 6M6 5c-2 3-2 6 0 9M18 5c2 3 2 6 0 9M3 3c-3 5-3 10 0 14M21 3c3 5 3 10 0 14\"/>",
+            ["fighter"] = "<path d=\"M12 2l2 7 7 5v2l-7-2-1 5 3 2v1H8v-1l3-2-1-5-7 2v-2l7-5Z\"/>",
+            ["elite"] = "<path d=\"M5 12l7-5 7 5M5 18l7-5 7 5M12 2l1 2h2l-1.5 1.5.5 2-2-1-2 1 .5-2L9 4h2Z\"/>",
+            ["ammo"] = "<path d=\"M6 20V10l2-5 2 5v10ZM14 20V10l2-5 2 5v10ZM6 16h4M14 16h4\"/>",
             ["skull"] = "<path d=\"M12 3a8 8 0 0 0-5 14v3h10v-3a8 8 0 0 0-5-14Z\"/><circle cx=\"9\" cy=\"11\" r=\"1.5\"/><circle cx=\"15\" cy=\"11\" r=\"1.5\"/><path d=\"M10 20v-2M14 20v-2\"/>",
         };
 

@@ -27,8 +27,74 @@ namespace MachineBrigade.Sim.Entities
             PathCompleted = true;
             GuardPoint = position;
             Weapons = new WeaponState[def.Mounts.Count];
-            for (var i = 0; i < Weapons.Length; i++) Weapons[i] = new WeaponState { Heading = heading };
+            for (var i = 0; i < Weapons.Length; i++)
+            {
+                var ammo = def.Mounts[i].Weapon.Ammo;
+                Weapons[i] = new WeaponState { Heading = heading, Ammo = ammo > 0 ? ammo : -1 };
+            }
+            SkillReadyAt = new double[def.Skills.Count];
+            SkillUsed = new bool[def.Skills.Count];
         }
+
+        /// <summary>Rounds left for mount <paramref name="index"/>, or -1 when unlimited.</summary>
+        public int Ammo(int index) => Weapons[index].Ammo;
+
+        /// <summary>Some limited weapon is not full.</summary>
+        internal bool NeedsAmmo
+        {
+            get
+            {
+                for (var i = 0; i < Weapons.Length; i++)
+                {
+                    var max = Def.Mounts[i].Weapon.Ammo;
+                    if (max > 0 && Weapons[i].Ammo < max) return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>The main weapon has limited ammunition and none left.</summary>
+        public bool OutOfAmmo => Weapons[0].Ammo == 0;
+
+        // ------------------------------------------------------------ skills and effects
+        internal readonly double[] SkillReadyAt;
+        internal readonly bool[] SkillUsed;
+        internal double ShieldUntil = double.NegativeInfinity, OverdriveUntil = double.NegativeInfinity,
+            BarrageUntil = double.NegativeInfinity, FlaresUntil = double.NegativeInfinity,
+            StunnedUntil = double.NegativeInfinity, HealUntil = double.NegativeInfinity;
+        internal float ShieldAmount, OverdriveSpeed = 1f, BarrageRate = 1f, Healing, RearmProgress;
+        internal double NextMineAt;
+
+        /// <summary>Updates the effect flags views read; called every step by the ability system.</summary>
+        internal void RefreshEffects(double now)
+        {
+            ShieldUp = ShieldUntil > now;
+            Overdriven = OverdriveUntil > now;
+            FlaresUp = FlaresUntil > now;
+            Stunned = StunnedUntil > now;
+            Barraging = BarrageUntil > now;
+        }
+
+        /// <summary>A shield skill is soaking up damage.</summary>
+        public bool ShieldUp { get; private set; }
+
+        /// <summary>Overdrive: faster and firing more often.</summary>
+        public bool Overdriven { get; private set; }
+
+        /// <summary>Flares are out: guided weapons aimed at it miss.</summary>
+        public bool FlaresUp { get; private set; }
+
+        /// <summary>Knocked out by an EMP: cannot drive or fire.</summary>
+        public bool Stunned { get; private set; }
+
+        /// <summary>A barrage skill is running: the guns fire much faster.</summary>
+        public bool Barraging { get; private set; }
+
+        /// <summary>Drive speed multiplier from skills.</summary>
+        internal float SpeedFactor => Overdriven ? OverdriveSpeed : 1f;
+
+        /// <summary>Fire-rate multiplier from skills.</summary>
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f);
 
         /// <summary>Firing state per mount, parallel to <see cref="VehicleDef.Mounts"/>.</summary>
         internal readonly WeaponState[] Weapons;
