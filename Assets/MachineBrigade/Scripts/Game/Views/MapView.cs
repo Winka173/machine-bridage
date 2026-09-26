@@ -45,10 +45,27 @@ namespace MachineBrigade.Game.Views
         private static readonly string[] BuildingDebris =
             { "debris_concrete", "debris_plaster", "debris_roof", "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_concrete" };
 
+        private static readonly string[] BarnDebris =
+            { "debris_wood", "debris_wood", "debris_roof", "debris_wood", "debris_plaster", "debris_wood", "debris_roof", "debris_wood" };
+
+        private static readonly string[] MetalDebris =
+            { "debris_metal", "debris_metal", "debris_concrete", "debris_metal", "debris_metal", "debris_roof", "debris_metal", "debris_metal" };
+
+        private static readonly string[] Trees = { "tree", "tree", "tree_broad", "pine", "pine", "tree_round", "birch" };
+
+        /// <summary>Footprints of the rubble models, so rubble can be stretched over any building.</summary>
+        private static readonly Dictionary<string, UnityEngine.Vector2> RubbleSize = new()
+        {
+            ["rubble_small"] = new UnityEngine.Vector2(8f, 8f),
+            ["rubble_medium"] = new UnityEngine.Vector2(9f, 8.3f),
+            ["rubble_large"] = new UnityEngine.Vector2(12f, 10f),
+        };
+
         private readonly Dictionary<EntityId, PropView> _props = new();
         private readonly GameObject _root;
         private readonly SimWorld _world;
         private readonly ModelLibrary _models;
+        private readonly MaterialLibrary _materials;
         private readonly List<Mesh> _meshes = new();
         private Texture2D _groundTexture;
 
@@ -56,6 +73,7 @@ namespace MachineBrigade.Game.Views
         {
             _world = world;
             _models = models;
+            _materials = materials;
             _root = new GameObject("Map");
             _root.transform.SetParent(parent, false);
             BuildGround(world, materials);
@@ -64,12 +82,14 @@ namespace MachineBrigade.Game.Views
             foreach (var prop in world.Props)
             {
                 var (model, rubble, debris) = Describe(prop.Def.Id, rng);
-                var instance = models.Spawn(model, Teams.Neutral, _root.transform);
+                // Small clutter (barrels, crates, traps) casts no shadow: many casters, little to see.
+                var instance = Spawn(model, prop.Def.Width * prop.Def.Depth >= 3f);
+                if (prop.Def.Id is "car" or "truck") Repaint(instance, rng);
                 var yaw = prop.Def.Id == "tree" ? (float)rng.NextDouble() * 360f : prop.Rotation;
-                instance.Root.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
+                instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
                     Quaternion.Euler(0f, yaw, 0f));
-                if (prop.Def.Id == "tree") instance.Root.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
-                _props.Add(prop.Id, new PropView(prop, instance.Root, rubble, debris));
+                if (prop.Def.Id == "tree") instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
             }
             ScatterBushes(world, rng);
         }
@@ -93,10 +113,13 @@ namespace MachineBrigade.Game.Views
             var transform = view.Transform;
             if (view.RubbleModel != null)
             {
-                var rubble = _models.Spawn(view.RubbleModel, Teams.Neutral, _root.transform);
-                rubble.Root.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                var rubble = Spawn(view.RubbleModel, true);
+                rubble.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                // Stretch the rubble over the whole footprint (a church leaves a long heap).
+                if (RubbleSize.TryGetValue(view.RubbleModel, out var size))
+                    rubble.transform.localScale = new Vector3(view.Prop.Def.Width / size.x, 1f, view.Prop.Def.Depth / size.y);
                 view.GameObject.SetActive(false);
-                view.GameObject = rubble.Root;
+                view.GameObject = rubble;
             }
             else
             {
@@ -119,13 +142,30 @@ namespace MachineBrigade.Game.Views
         {
             "house_small" => ("house_small", "rubble_small", BuildingDebris),
             "house_large" => ("house_large", "rubble_large", BuildingDebris),
+            "cottage" => ("cottage", "rubble_small", BuildingDebris),
+            "townhouse" => ("townhouse", "rubble_medium", BuildingDebris),
+            "apartment" => ("apartment", "rubble_large", BuildingDebris),
+            "shop" => ("shop", "rubble_medium", BuildingDebris),
+            "church" => ("church", "rubble_large", BuildingDebris),
+            "barn" => ("barn", "rubble_medium", BarnDebris),
+            "warehouse" => ("warehouse", "rubble_large", MetalDebris),
+            "garage" => ("garage", "rubble_small", BuildingDebris),
+            "ruin" => ("ruin", "rubble_small", BuildingDebris),
+            "silo" => ("silo", null, MetalDebris),
+            "water_tower" => ("water_tower", "rubble_small", MetalDebris),
+            "fence" => ("fence", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
+            "stone_wall" => ("stone_wall", null, new[] { "debris_concrete", "debris_concrete", "debris_concrete", "debris_concrete" }),
+            "hedge" => ("hedge", null, new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),
+            "car" => ("car", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal" }),
+            "truck" => ("truck", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_wood" }),
             "wall" => ("wall", null, new[] { "debris_concrete", "debris_concrete", "debris_concrete", "debris_concrete" }),
             "fuel_tank" => ("fuel_tank", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal" }),
             "barrel" => ("barrel", null, new[] { "debris_metal", "debris_metal" }),
             "ammo_crate" => ("ammo_crate", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
             "sandbags" => ("sandbags", null, new[] { "debris_plaster", "debris_plaster", "debris_plaster" }),
             "tank_trap" => ("tank_trap", null, new[] { "debris_metal", "debris_metal", "debris_metal" }),
-            "tree" => (rng.Next(3) == 0 ? "tree_broad" : "tree", null, new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),
+            "tree" => (rng.Next(14) == 0 ? "tree_dead" : Trees[rng.Next(Trees.Length)], null,
+                new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),
             _ => (defId, null, Array.Empty<string>()),
         };
 
@@ -143,9 +183,9 @@ namespace MachineBrigade.Game.Views
                 foreach (var team in world.Map.Teams)
                     if (Vector2.Distance(team.Rally, p) < 22f) clear = false;
                 if (!clear) continue;
-                var bush = _models.Spawn("bush", Teams.Neutral, _root.transform, castShadows: false);
-                bush.Root.transform.SetPositionAndRotation(new Vector3(p.X, 0f, p.Y), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
-                bush.Root.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f);
+                var bush = Spawn("bush", false);
+                bush.transform.SetPositionAndRotation(new Vector3(p.X, 0f, p.Y), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
+                bush.transform.localScale = Vector3.one * (0.7f + (float)rng.NextDouble() * 0.6f);
                 placed++;
             }
         }
@@ -173,6 +213,35 @@ namespace MachineBrigade.Game.Views
                 materials.Pebble, castShadows: false);
             Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
                 materials.GrassTuft, castShadows: false);
+        }
+
+        /// <summary>Gives a civilian vehicle a random body colour.</summary>
+        private void Repaint(GameObject vehicle, Random rng)
+        {
+            var renderer = vehicle.GetComponent<MeshRenderer>();
+            var materials = renderer.sharedMaterials;
+            var paint = _materials.CarPaints[rng.Next(_materials.CarPaints.Length)];
+            for (var i = 0; i < materials.Length; i++)
+                if (materials[i] == _materials.CarPaints[0]) materials[i] = paint;
+            renderer.sharedMaterials = materials;
+        }
+
+        /// <summary>
+        /// A static prop as one renderer: the model merged into a single mesh (one sub-mesh per
+        /// material). Props never animate, and identical props then share a mesh, so the engine
+        /// instances them: far fewer draw calls in both the camera and the shadow pass.
+        /// </summary>
+        private GameObject Spawn(string modelId, bool castShadows)
+        {
+            var merged = _models.Merged(modelId);
+            var go = new GameObject(modelId);
+            go.transform.SetParent(_root.transform, false);
+            go.AddComponent<MeshFilter>().sharedMesh = merged.Mesh;
+            var renderer = go.AddComponent<MeshRenderer>();
+            renderer.sharedMaterials = merged.Materials;
+            renderer.shadowCastingMode = castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            renderer.receiveShadows = true;
+            return go;
         }
 
         private GameObject Place(string name, Mesh mesh, Material material, bool castShadows)

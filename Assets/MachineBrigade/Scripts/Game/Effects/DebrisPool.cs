@@ -6,97 +6,136 @@ using UnityEngine.Rendering;
 namespace MachineBrigade.Game.Effects
 {
     /// <summary>
-    /// Voxel chunks thrown by destroyed props. Physics here is purely cosmetic; the pool
-    /// caps how many pieces exist, and each shrinks away after a few seconds.
+    /// Chunks thrown by destroyed props and crashing aircraft. They fly on simple ballistic arcs,
+    /// bounce once or twice and settle, then shrink away. No physics engine is involved (PhysX
+    /// stepping dozens of bodies cost up to 15 ms a frame on the device), and all pieces are drawn
+    /// with GPU instancing, a handful of draw calls however many are flying.
     /// </summary>
     internal sealed class DebrisPool
     {
         private const float ShrinkSeconds = 0.6f;
+        private const float Gravity = 18f;
 
-        private sealed class Piece
+        private struct Piece
         {
-            public GameObject GameObject;
-            public MeshFilter Filter;
-            public MeshRenderer Renderer;
-            public BoxCollider Collider;
-            public Rigidbody Body;
-            public float Expires;
-            public bool Active;
+            public Mesh Mesh;
+            public Material[] Materials;
+            public Vector3 Position, Velocity, Spin;
+            public Quaternion Rotation;
+            public float Rest, Expires;
+            public bool Settled;
         }
 
-        private readonly List<Piece> _pieces = new();
+        private readonly Piece[] _pieces;
+        private readonly Dictionary<(Mesh, int, Material), List<Matrix4x4>> _batches = new();
+        private readonly List<Matrix4x4[]> _arrays = new();
+        private int _count;
 
-        public DebrisPool(Transform parent, int capacity)
+        public DebrisPool(int capacity)
         {
-            var root = new GameObject("Debris").transform;
-            root.SetParent(parent, false);
-            for (var i = 0; i < capacity; i++)
-            {
-                var go = new GameObject("Chunk");
-                go.transform.SetParent(root, false);
-                var piece = new Piece
-                {
-                    GameObject = go,
-                    Filter = go.AddComponent<MeshFilter>(),
-                    Renderer = go.AddComponent<MeshRenderer>(),
-                    Collider = go.AddComponent<BoxCollider>(),
-                    Body = go.AddComponent<Rigidbody>(),
-                };
-                piece.Renderer.shadowCastingMode = ShadowCastingMode.On;
-                piece.Body.mass = 2f;
-                piece.Body.angularDamping = 0.5f;
-                go.SetActive(false);
-                _pieces.Add(piece);
-            }
+            _pieces = new Piece[Mathf.Max(1, capacity)];
         }
 
         public void Throw(ChunkModel chunk, Vector3 position, Quaternion rotation, Vector3 blastOrigin, float force, float now)
         {
-            var piece = Acquire();
-            piece.Filter.sharedMesh = chunk.Mesh;
-            piece.Renderer.sharedMaterials = chunk.Materials;
-            piece.Collider.center = chunk.Mesh.bounds.center;
-            piece.Collider.size = chunk.Mesh.bounds.size;
-            piece.GameObject.transform.SetPositionAndRotation(position, rotation);
-            piece.GameObject.transform.localScale = Vector3.one;
-            piece.GameObject.SetActive(true);
-
+            var index = Acquire();
             var away = position - blastOrigin;
             away.y = 0f;
             var direction = (away.normalized + Vector3.up * Random.Range(0.8f, 1.6f)).normalized;
-            piece.Body.linearVelocity = direction * Random.Range(force * 0.5f, force);
-            piece.Body.angularVelocity = Random.insideUnitSphere * 7f;
-            piece.Expires = now + Random.Range(4f, 6f);
-            piece.Active = true;
+            _pieces[index] = new Piece
+            {
+                Mesh = chunk.Mesh,
+                Materials = chunk.Materials,
+                Position = position,
+                Velocity = direction * Random.Range(force * 0.5f, force),
+                Spin = Random.insideUnitSphere * 400f,
+                Rotation = rotation,
+                // Rest with the mesh's lowest point on the ground.
+                Rest = Mathf.Max(0.02f, -chunk.Mesh.bounds.min.y * 0.8f),
+                Expires = now + Random.Range(5f, 8f),
+            };
         }
 
-        public void Tick(float now)
+        public void Tick(float now, float dt)
         {
-            foreach (var piece in _pieces)
+            for (var i = 0; i < _count; i++)
             {
-                if (!piece.Active) continue;
-                var remaining = piece.Expires - now;
-                if (remaining <= 0f)
+                ref var p = ref _pieces[i];
+                if (p.Mesh == null) continue;
+                if (now >= p.Expires)
                 {
-                    piece.Active = false;
-                    piece.GameObject.SetActive(false);
+                    p.Mesh = null;
+                    continue;
                 }
-                else if (remaining < ShrinkSeconds)
+                if (p.Settled) continue;
+                p.Velocity.y -= Gravity * dt;
+                p.Position += p.Velocity * dt;
+                p.Rotation = Quaternion.Euler(p.Spin * dt) * p.Rotation;
+                if (p.Position.y > p.Rest || p.Velocity.y > 0f) continue;
+                p.Position.y = p.Rest;
+                if (p.Velocity.y < -3f)
                 {
-                    piece.GameObject.transform.localScale = Vector3.one * (remaining / ShrinkSeconds);
+                    // Bounce, losing most of the energy.
+                    p.Velocity = new Vector3(p.Velocity.x * 0.5f, -p.Velocity.y * 0.3f, p.Velocity.z * 0.5f);
+                    p.Spin *= 0.5f;
+                }
+                else
+                {
+                    p.Settled = true;
                 }
             }
         }
 
-        private Piece Acquire()
+        public void Draw(float now)
         {
-            Piece oldest = null;
-            foreach (var piece in _pieces)
+            foreach (var list in _batches.Values) list.Clear();
+            for (var i = 0; i < _count; i++)
             {
-                if (!piece.Active) return piece;
-                if (oldest == null || piece.Expires < oldest.Expires) oldest = piece;
+                ref var p = ref _pieces[i];
+                if (p.Mesh == null) continue;
+                var remaining = p.Expires - now;
+                var scale = remaining < ShrinkSeconds ? Mathf.Max(0.01f, remaining / ShrinkSeconds) : 1f;
+                var matrix = Matrix4x4.TRS(p.Position, p.Rotation, Vector3.one * scale);
+                for (var sub = 0; sub < p.Mesh.subMeshCount && sub < p.Materials.Length; sub++)
+                {
+                    var key = (p.Mesh, sub, p.Materials[sub]);
+                    if (!_batches.TryGetValue(key, out var list)) _batches[key] = list = new List<Matrix4x4>();
+                    list.Add(matrix);
+                }
             }
-            return oldest;
+
+            var arrayIndex = 0;
+            foreach (var ((mesh, sub, material), list) in _batches)
+            {
+                if (list.Count == 0) continue;
+                if (arrayIndex >= _arrays.Count) _arrays.Add(new Matrix4x4[_pieces.Length]);
+                var array = _arrays[arrayIndex++];
+                list.CopyTo(array);
+                var parameters = new RenderParams(material)
+                {
+                    shadowCastingMode = ShadowCastingMode.Off,
+                    receiveShadows = true,
+                    worldBounds = new Bounds(Vector3.zero, Vector3.one * 2000f),
+                };
+                Graphics.RenderMeshInstanced(parameters, mesh, sub, array, list.Count);
+            }
+        }
+
+        public void Clear()
+        {
+            for (var i = 0; i < _pieces.Length; i++) _pieces[i].Mesh = null;
+            _count = 0;
+        }
+
+        private int Acquire()
+        {
+            var oldest = 0;
+            for (var i = 0; i < _count; i++)
+            {
+                if (_pieces[i].Mesh == null) return i;
+                if (_pieces[i].Expires < _pieces[oldest].Expires) oldest = i;
+            }
+            return _count < _pieces.Length ? _count++ : oldest;
         }
     }
 }

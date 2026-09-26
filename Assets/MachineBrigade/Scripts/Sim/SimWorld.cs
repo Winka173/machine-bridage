@@ -148,8 +148,16 @@ namespace MachineBrigade.Sim
                 if (_vehicles.TryGetValue(id, out var v) && v.IsAlive && v.Team == command.Team && !_unitBuffer.Contains(v))
                     _unitBuffer.Add(v);
             if (_unitBuffer.Count == 0) return CommandResult.Rejected(CommandError.NoUnits);
-            if (command.Manual)
-                foreach (var v in _unitBuffer) v.ManualOrder = true;
+            var result = Apply(command);
+            // Only units that actually took the order are kept out of the commander AI's hands.
+            if (command.Manual && result.Accepted)
+                foreach (var v in _unitBuffer)
+                    if (command.Type != CommandType.Attack || v.Order.Kind == OrderKind.Attack) v.ManualOrder = true;
+            return result;
+        }
+
+        private CommandResult Apply(Command command)
+        {
 
             switch (command.Type)
             {

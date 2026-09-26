@@ -112,11 +112,11 @@ namespace MachineBrigade.Sim.Modes
             world.IsOver = true;
         }
 
-        /// <summary>A destroyed vehicle costs its side tickets equal to its CP cost.</summary>
+        /// <summary>A destroyed vehicle costs its side tickets: its CP cost times the kill ticket factor (at least one).</summary>
         private void CountLosses(SimWorld world)
         {
             _seen.Clear();
-            foreach (var v in world.Vehicles)
+            foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Team < 0 || v.Team > 1) continue;
                 _seen.Add(v.Id);
@@ -138,7 +138,7 @@ namespace MachineBrigade.Sim.Modes
             var power0 = 0f;
             var power1 = 0f;
             var r = point.Def.Radius;
-            foreach (var v in world.Vehicles)
+            foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
                 if (v.Team == PlayerTeam) power0 += v.Def.CaptureRate;

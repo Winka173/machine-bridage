@@ -25,7 +25,8 @@ namespace MachineBrigade.Game.Views
 
         private readonly ModelInstance _model;
         private readonly Transform _body;
-        private readonly GameObject _ring;
+        private readonly GroundMark _ring;
+        private readonly GroundMark _shadowRing;
         private readonly Transform _bar;
         private readonly Transform _barFill;
         private readonly Vector3[] _recoilRest;
@@ -42,6 +43,8 @@ namespace MachineBrigade.Game.Views
         private float _bouncePhase;
         private float _spin;
         private float _crashStart = -1f;
+        private float _crashHeight;
+        private Vector3 _crashDrift;
         private bool _wreck;
 
         public VehicleView(Vehicle vehicle, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials,
@@ -71,11 +74,20 @@ namespace MachineBrigade.Game.Views
                 _model.Muzzles.TryGetValue(mounts[i].Slot, out _muzzles[i]);
             }
 
-            var ring = CreateMesh("Selection", Root, meshes.Ring, materials.SelectionRing, false);
-            ring.localPosition = new Vector3(0f, 0.05f, 0f);
-            ring.localScale = Vector3.one * (vehicle.Radius + 0.8f);
-            _ring = ring.gameObject;
-            _ring.SetActive(false);
+            _ring = new GroundMark("Selection", Root, meshes, materials, GroundMark.Style.Selection);
+            _ring.Transform.localPosition = new Vector3(0f, 0.07f, 0f);
+            _ring.Transform.localScale = Vector3.one * (vehicle.Radius + 0.9f);
+            _ring.Set(new Color(0.55f, 1.7f, 1.15f, 1f), Color.white);
+            _ring.Visible = false;
+            if (vehicle.Def.Flying)
+            {
+                // Aircraft show where they are over the ground (and whose they are) with a faint ring.
+                _shadowRing = new GroundMark("Air Ring", Root, meshes, materials, GroundMark.Style.Aircraft);
+                _shadowRing.Transform.localScale = Vector3.one * (vehicle.Radius + 1.2f);
+                var colour = (Color)TeamColors.Ui(vehicle.Team == playerTeam ? 0 : 1) * 1.2f;
+                colour.a = 0.75f;
+                _shadowRing.Set(colour, Color.white);
+            }
 
             _bar = new GameObject("HealthBar").transform;
             _bar.SetParent(Root, false);
@@ -178,8 +190,17 @@ namespace MachineBrigade.Game.Views
                 var climb = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / TakeOffSeconds);
                 Altitude = Def.Altitude * climb + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * climb;
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
-                _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(_currentSpeed * 0.9f + acceleration * 1.5f, -8f, 16f), ease);
-                _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.12f, -20f, 20f), ease);
+                if (Def.FixedWing)
+                {
+                    // Aeroplanes fly level and bank hard into their turns.
+                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(acceleration * 0.5f, -4f, 4f), ease);
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f), ease);
+                }
+                else
+                {
+                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(_currentSpeed * 0.9f + acceleration * 1.5f, -8f, 16f), ease);
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.12f, -20f, 20f), ease);
+                }
                 position.y = Altitude;
                 _body.localPosition = Vector3.zero;
                 _body.localRotation = Quaternion.Euler(_pitch, 0f, _bank);
@@ -218,7 +239,13 @@ namespace MachineBrigade.Game.Views
 
             Spin(1f);
 
-            if (_ring.activeSelf != Selected) _ring.SetActive(Selected);
+            _ring.Visible = Selected;
+            if (_shadowRing != null)
+            {
+                // Keep the air ring on the ground under the aircraft, level whatever it is doing.
+                _shadowRing.Transform.position = new Vector3(Root.position.x, 0.08f, Root.position.z);
+                _shadowRing.Transform.rotation = Quaternion.identity;
+            }
             var health = Mathf.Clamp01(Sim.Hp / Sim.MaxHp);
             var showBar = Selected || health < 0.999f;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
@@ -237,13 +264,18 @@ namespace MachineBrigade.Game.Views
                 block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
                 foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
             }
-            _ring.SetActive(false);
+            _ring.Visible = false;
+            if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
             Selected = false;
             _wreck = true;
             if (Flying)
             {
+                // Keep some of the momentum it had when it was hit.
                 _crashStart = Time.time;
+                _crashHeight = Root.position.y;
+                _crashDrift = (_currentPosition - _previousPosition) * 20f * 0.8f;
+                _crashDrift.y = 0f;
                 return;
             }
             _body.localRotation = Quaternion.Euler(Random.Range(-3f, 3f), 0f, Random.Range(-4f, 4f));
@@ -257,25 +289,37 @@ namespace MachineBrigade.Game.Views
 
         private void RenderWreck()
         {
-            if (!Flying || _crashStart < 0f) return;
-            // Spin down out of the sky under gravity, rotor winding down, then lie on the ground.
+            if (!Flying || _crashStart < 0f || Root.position.y <= 0f) return;
+            // Out of control: it drifts on with its momentum, spins faster and faster as the tail
+            // goes, tips over and drops, the rotor winding down, until it hits the ground.
             var t = Time.time - _crashStart;
-            var height = Mathf.Max(0f, Altitude - 0.5f * 14f * t * t);
-            var p = Root.position;
-            Root.position = new Vector3(p.x, height, p.z);
-            if (height > 0f)
+            if (Def.FixedWing)
             {
-                Root.rotation *= Quaternion.Euler(0f, 260f * Time.deltaTime, 0f);
-                _body.localRotation = Quaternion.Euler(Mathf.Min(25f, t * 30f), 0f, Mathf.Min(35f, t * 45f));
-                Spin(Mathf.Clamp01(1f - t));
+                // An aeroplane dives in nose first, rolling, trailing fire.
+                var dive = Mathf.Max(0f, _crashHeight - 0.5f * 11f * t * t);
+                var glide = _crashDrift * Mathf.Clamp01(1f - t * 0.35f) * Time.deltaTime;
+                var q = Root.position + glide;
+                Root.position = new Vector3(q.x, dive, q.z);
+                _body.localRotation = Quaternion.Euler(Mathf.Min(40f, t * 30f), 0f, t * 140f);
+                Spin(1f);
+                return;
             }
+            var height = Mathf.Max(0f, _crashHeight - 0.5f * 7f * t * t);
+            var drift = _crashDrift * Mathf.Clamp01(1f - t * 0.5f) * Time.deltaTime;
+            var p = Root.position + drift;
+            Root.position = new Vector3(p.x, height, p.z);
+            Root.rotation *= Quaternion.Euler(0f, Mathf.Lerp(150f, 560f, Mathf.Clamp01(t / 1.4f)) * Time.deltaTime, 0f);
+            _body.localRotation = Quaternion.Euler(Mathf.Min(28f, t * 24f), 0f, Mathf.Min(40f, t * 34f));
+            Spin(Mathf.Clamp01(1f - t * 0.6f));
         }
 
         private void Spin(float speed)
         {
+            var spinners = _model.Spinners;
+            if (spinners.Count == 0) return;
             _spin += Time.deltaTime * speed;
-            foreach (var spinner in _model.Spinners)
-                spinner.Transform.localRotation = spinner.Rest * Quaternion.AngleAxis(_spin * spinner.DegreesPerSecond, spinner.Axis);
+            for (var i = 0; i < spinners.Count; i++)
+                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spin * spinners[i].DegreesPerSecond, spinners[i].Axis);
         }
 
         internal static Transform CreateMesh(string name, Transform parent, Mesh mesh, Material material, bool castShadows)

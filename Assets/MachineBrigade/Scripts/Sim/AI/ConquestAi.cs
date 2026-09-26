@@ -47,6 +47,9 @@ namespace MachineBrigade.Sim.AI
         private readonly TacticalAi _tactics;
         private float _timer;
 
+        /// <summary>Last seen hold on each point (1 = fully ours), to notice points being drained.</summary>
+        private readonly Dictionary<string, float> _lastHold = new();
+
         /// <summary>Buy vehicles from the deck automatically.</summary>
         public bool AutoDeploy { get; set; } = true;
 
@@ -116,9 +119,13 @@ namespace MachineBrigade.Sim.AI
                 }
                 else
                 {
-                    score = point.Owner == _team ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
+                    // Our points only matter when threatened: being drained (even by a lone scout
+                    // the capture rules do not count as contesting) or with enemies closing in.
+                    var ours = point.Owner == _team;
+                    var threatened = point.Contested || (ours && (Draining(point) || EnemyNear(world, point)));
+                    score = ours ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
                     if (point.Contested) score += 1.5f;
-                    if (point.Owner == _team && !point.Contested) score -= 2f;
+                    if (ours) score += threatened ? 2.5f : -2f;
                 }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
@@ -126,6 +133,23 @@ namespace MachineBrigade.Sim.AI
                 bestScore = score;
             }
             return best != null && bestScore > -1.5f ? best.Def.Position : null;
+        }
+
+        private bool Draining(ObjectiveState point)
+        {
+            var hold = point.Progress * (_team == 0 ? 1f : -1f);
+            var draining = _lastHold.TryGetValue(point.Def.Id, out var before) && hold < before - 0.001f;
+            _lastHold[point.Def.Id] = hold;
+            return draining;
+        }
+
+        private bool EnemyNear(SimWorld world, ObjectiveState point)
+        {
+            var reach = point.Def.Radius + 8f;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _enemyTeam && !v.Flying && v.IsVisibleTo(_team) &&
+                    Vector2.Distance(v.Position, point.Def.Position) < reach) return true;
+            return false;
         }
 
         private bool TryStrike(SimWorld world, TeamEconomy economy)
@@ -166,7 +190,7 @@ namespace MachineBrigade.Sim.AI
             var bestScore = float.MinValue;
             var bestAffordableScore = float.MinValue;
             CountEnemies(out var air, out var heavy, out var light);
-            CountOwn(world, out var ownAa, out var ownArtillery, out var ownTotal);
+            CountOwn(world, out var ownAa, out var ownArtillery, out var ownAir, out var ownTotal);
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -186,7 +210,9 @@ namespace MachineBrigade.Sim.AI
                     if (CanHitAir(def)) score += air * 2.2f - ownAa * 1.5f;
                     if (main.DamageType == DamageType.ArmorPiercing) score += heavy * 0.6f;
                     if (main.DamageType is DamageType.Kinetic or DamageType.Fire) score += light * 0.5f;
-                    if (def.Flying) score += heavy * 0.35f - air * 0.3f;
+                    // Keep about a fifth of the army in the air: aircraft are fast, hit hard and
+                    // make the enemy spend on anti-air.
+                    if (def.Flying) score += (ownAir * 5 < ownTotal + 3 ? 1.8f : -1.2f) + heavy * 0.35f - air * 0.25f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                 }
@@ -286,14 +312,15 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
-        private void CountOwn(SimWorld world, out int aa, out int artillery, out int total)
+        private void CountOwn(SimWorld world, out int aa, out int artillery, out int air, out int total)
         {
-            aa = artillery = total = 0;
+            aa = artillery = air = total = 0;
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive || v.Team != _team) continue;
                 total++;
-                if (CanHitAir(v.Def)) aa++;
+                if (v.Def.Flying) air++;
+                else if (CanHitAir(v.Def)) aa++;
                 if (v.Def.Weapon.MinRange > 0f) artillery++;
             }
         }

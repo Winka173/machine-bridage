@@ -56,18 +56,21 @@ namespace MachineBrigade.Game.Hud
         {
             public VisualElement Root, Cooldown;
             public Label Cost;
+            public float ShownCooldown = -1f;
         }
 
         private readonly List<Card> _cards = new();
         private readonly Label _cp, _army;
         private readonly VisualElement _cpFill;
-        private int _shownCp = -1;
+        private int _shownCp = -1, _shownArmy = -1, _shownCap = -1;
+        private float _shownFill = -1f;
 
         public DeckBar(IReadOnlyList<CardInfo> cards)
         {
             Root = UiKit.Box("deck");
 
-            var meter = UiKit.Box("cp-meter");
+            // Solid, so a tap on the meter does not go through to the battlefield.
+            var meter = UiKit.Box("cp-meter", PickingMode.Position);
             var top = UiKit.Box("cp-top");
             top.Add(UiKit.Icon("cp", UiKit.Amber, 1.9f));
             _cp = UiKit.Text("0", "cp-value");
@@ -114,8 +117,15 @@ namespace MachineBrigade.Game.Hud
                 _shownCp = whole;
                 _cp.text = whole.ToString();
             }
-            _cpFill.style.width = Length.Percent(Mathf.Clamp01(cp / Mathf.Max(1f, bank)) * 100f);
-            _army.text = Strings.Format("stat.army", armyCp, armyCap);
+            // Styles and text only change when the shown value does: each change costs a layout pass.
+            var fill = Mathf.Round(Mathf.Clamp01(cp / Mathf.Max(1f, bank)) * 200f) / 2f;
+            if (!Mathf.Approximately(fill, _shownFill)) _cpFill.style.width = Length.Percent(_shownFill = fill);
+            if (armyCp != _shownArmy || armyCap != _shownCap)
+            {
+                _shownArmy = armyCp;
+                _shownCap = armyCap;
+                _army.text = Strings.Format("stat.army", armyCp, armyCap);
+            }
 
             for (var i = 0; i < _cards.Count && i < states.Count; i++)
             {
@@ -125,7 +135,8 @@ namespace MachineBrigade.Game.Hud
                 card.Root.EnableInClassList("locked", state.Locked);
                 card.Root.EnableInClassList("selected", state.Selected);
                 card.Root.EnableInClassList("cooling", state.Cooldown > 0f);
-                card.Cooldown.style.height = Length.Percent(Mathf.Clamp01(state.Cooldown) * 100f);
+                var cooldown = Mathf.Round(Mathf.Clamp01(state.Cooldown) * 100f);
+                if (!Mathf.Approximately(cooldown, card.ShownCooldown)) card.Cooldown.style.height = Length.Percent(card.ShownCooldown = cooldown);
             }
         }
     }

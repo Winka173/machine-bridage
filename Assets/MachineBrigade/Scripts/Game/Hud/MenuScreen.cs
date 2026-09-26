@@ -114,7 +114,13 @@ namespace MachineBrigade.Game.Hud
                     LanguageChoice.Vietnamese => "Tiếng Việt",
                     _ => Strings.Get("settings.auto"),
                 },
-                () => MatchSettings.Language = (LanguageChoice)(((int)MatchSettings.Language + 1) % 3)));
+                () =>
+                {
+                    // Applies at once: the menu is rebuilt in the new language.
+                    MatchSettings.Language = (LanguageChoice)(((int)MatchSettings.Language + 1) % 3);
+                    MatchSettings.Save();
+                    SettingsChanged?.Invoke();
+                }));
             _settings.Add(UiKit.WideButton("wide", "retreat", Strings.Get("menu.back"), null, () =>
             {
                 MatchSettings.Save();
@@ -133,6 +139,19 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Raised while the volume is being adjusted, before anything is saved.</summary>
         public event Action VolumeChanged;
+
+        /// <summary>
+        /// The Android back button: from the deck or settings page back to the main page (saving
+        /// as the Back buttons do). Returns false on the main page, where there is nothing to close.
+        /// </summary>
+        public bool Back()
+        {
+            if (_main.style.display == DisplayStyle.Flex) return false;
+            MatchSettings.Save();
+            SettingsChanged?.Invoke();
+            Show(_main);
+            return true;
+        }
 
         private void Show(VisualElement page)
         {
@@ -241,6 +260,17 @@ namespace MachineBrigade.Game.Hud
             "mlrs" => "mlrs",
             "aa_vehicle" => "aa",
             "attack_helicopter" => "helicopter",
+            "light_tank" => "lighttank",
+            "armored_car" => "armoredcar",
+            "tank_destroyer" => "destroyer",
+            "heavy_tank" => "heavytank",
+            "sam_launcher" => "sam",
+            "mortar_carrier" => "mortar",
+            "rocket_technical" => "technical",
+            "gunship_heli" => "gunship",
+            "scout_heli" => "scoutheli",
+            "attack_jet" => "jet",
+            "strike_drone" => "drone",
             "flame_tank" => "flame",
             "artillery_barrage" => "barrage",
             "airstrike" => "airstrike",

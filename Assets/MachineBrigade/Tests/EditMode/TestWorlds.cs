@@ -38,6 +38,10 @@ namespace MachineBrigade.Tests
             cooldown: 5f, range: 30f, minRange: 0f, projectileSpeed: 20f, splashRadius: 0f, spread: 0f,
             ExplosionTier.Medium, ProjectileKind.Missile);
 
+        public static readonly WeaponDef Strafe = new WeaponDef("strafe", DamageType.Kinetic, damage: 20f,
+            cooldown: 0.3f, range: 25f, minRange: 0f, projectileSpeed: 250f, splashRadius: 0f, spread: 0f,
+            ExplosionTier.Small, ProjectileKind.Bullet);
+
         /// <summary>Reaches nothing, so targets built with it never shoot back.</summary>
         public static readonly WeaponDef Stub = new WeaponDef("stub", DamageType.Kinetic, damage: 0f,
             cooldown: 1f, range: 0.5f, minRange: 0f, projectileSpeed: 100f, splashRadius: 0f, spread: 0f,
@@ -72,6 +76,9 @@ namespace MachineBrigade.Tests
             var heli = new VehicleDef("heli", ArmorClass.Air, maxHp: 300f, speed: 14f, turnRateDegrees: 180f,
                 turretTurnRateDegrees: 360f, radius: 1.5f, cpCost: 6, visionRange: 35f, firesWhileMoving: true, Missile,
                 deathExplosion: null, flying: true, altitude: 9f, captureRate: 0f);
+            var jet = new VehicleDef("jet", ArmorClass.Air, maxHp: 300f, speed: 20f, turnRateDegrees: 90f,
+                turretTurnRateDegrees: 360f, radius: 2f, cpCost: 8, visionRange: 45f, firesWhileMoving: true, Strafe,
+                deathExplosion: null, flying: true, altitude: 16f, captureRate: 0f, fixedWing: true);
             var aa = new VehicleDef("aa", ArmorClass.Light, maxHp: 300f, speed: 8f, turnRateDegrees: 180f,
                 turretTurnRateDegrees: 720f, radius: 1f, cpCost: 4, visionRange: 40f, firesWhileMoving: true, Flak,
                 deathExplosion: null);
@@ -99,8 +106,8 @@ namespace MachineBrigade.Tests
                     duration: 2f, damage: 0.5f, DamageType.HighExplosive, ExplosionTier.Small),
             };
 
-            return new Catalog(1, DamageTable.Default, new[] { Gun, Shell, Stub, Howitzer, RoofGun, Flak, Salvo, Missile },
-                new[] { tank, boomer, mortar, dummy, arty, decoy, gunner, heli, aa, launcher, hunter },
+            return new Catalog(1, DamageTable.Default, new[] { Gun, Shell, Stub, Howitzer, RoofGun, Flak, Salvo, Missile, Strafe },
+                new[] { tank, boomer, mortar, dummy, arty, decoy, gunner, heli, jet, aa, launcher, hunter },
                 new[] { barrel, house }, supports);
         }
 

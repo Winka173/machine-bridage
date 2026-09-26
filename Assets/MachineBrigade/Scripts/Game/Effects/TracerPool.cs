@@ -47,7 +47,13 @@ namespace MachineBrigade.Game.Effects
         public void Launch(Vector3 from, Vector3 to, float duration, float arc, float thickness, float length, float now,
             float delay = 0f, float trail = 0f)
         {
+            // A free slot if there is one, so a shell in flight is not snatched away.
             var tracer = _tracers[_next];
+            for (var k = 0; k < _tracers.Count && tracer.Active; k++)
+            {
+                _next = (_next + 1) % _tracers.Count;
+                tracer = _tracers[_next];
+            }
             _next = (_next + 1) % _tracers.Count;
             tracer.From = from;
             tracer.To = to;

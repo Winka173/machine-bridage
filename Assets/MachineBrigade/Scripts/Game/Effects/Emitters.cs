@@ -21,14 +21,14 @@ namespace MachineBrigade.Game.Effects
 
         public Emitters(MaterialLibrary m, Transform parent)
         {
-            _trail = Continuous(parent, "Shell Trails", m.Smoke, 1500, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
+            _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
             _muzzle = Continuous(parent, "Muzzle Smoke", m.Smoke, 300, PB.SmokeGradient(0.62f, 0.5f), 0.7f, 2.8f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
             _flame = Continuous(parent, "Flame Jets", m.Fire, 600, PB.FireGradient, 0.5f, 2.2f);
             _flak = Continuous(parent, "Flak Bursts", m.Smoke, 200, PB.Plume(0.08f, 0.3f, 0.8f), 0.6f, 1.8f);
             _repair = Continuous(parent, "Repair", m.Sparks, 200,
                 PB.Fade(new Color(0.5f, 1.6f, 0.8f), new Color(0.3f, 1.2f, 0.6f), new Color(0.2f, 0.8f, 0.4f)), 1f, 0.3f);
-            _dust = Continuous(parent, "Tread Dust", m.Smoke, 400,
+            _dust = Continuous(parent, "Tread Dust", m.Smoke, 1500,
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
         }
 

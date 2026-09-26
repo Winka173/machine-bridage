@@ -22,9 +22,10 @@ namespace MachineBrigade.Sim.Modes
 
         private static readonly string[] WaveRoster =
         {
-            "light_tank", "scout_jeep", "apc", "main_battle_tank", "attack_helicopter", "flame_tank", "artillery", "aa_vehicle", "mlrs",
+            "light_tank", "scout_jeep", "armored_car", "apc", "rocket_technical", "main_battle_tank", "attack_helicopter", "tank_destroyer",
+            "flame_tank", "scout_heli", "mortar_carrier", "artillery", "aa_vehicle", "mlrs", "gunship_heli", "heavy_tank", "attack_jet",
         };
-        private static readonly string[] ReinforceRoster = { "main_battle_tank", "light_tank", "artillery", "scout_jeep" };
+        private static readonly string[] ReinforceRoster = { "main_battle_tank", "light_tank", "aa_vehicle", "artillery", "scout_jeep" };
 
         private float _waveTimer = FirstWaveDelay;
         private int _reinforcements;

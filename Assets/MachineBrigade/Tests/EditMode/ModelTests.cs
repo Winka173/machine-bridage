@@ -10,12 +10,14 @@ namespace MachineBrigade.Tests
         private static readonly string[] Vehicles =
         {
             "scout_jeep", "light_tank", "main_battle_tank", "artillery", "apc", "mlrs", "aa_vehicle", "flame_tank",
+            "armored_car", "tank_destroyer", "heavy_tank", "sam_launcher", "mortar_carrier", "rocket_technical",
         };
 
         private static readonly string[] Others =
         {
             "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
+            "gunship_heli", "scout_heli", "attack_jet", "strike_drone",
         };
 
         private static readonly string[] Props =
@@ -23,6 +25,8 @@ namespace MachineBrigade.Tests
             "house_small", "house_large", "wall", "fuel_tank", "barrel", "ammo_crate", "tree", "tree_broad", "bush",
             "rubble_small", "rubble_large", "debris_concrete", "debris_plaster", "debris_roof", "debris_wood",
             "debris_metal", "debris_leaves",
+            "cottage", "townhouse", "apartment", "shop", "church", "barn", "silo", "warehouse", "garage", "water_tower", "ruin",
+            "fence", "stone_wall", "hedge", "car", "truck", "rubble_medium", "pine", "birch", "tree_dead", "tree_round",
         };
 
         [Test]
@@ -73,7 +77,7 @@ namespace MachineBrigade.Tests
                 var tip = turret.InverseTransformPoint(muzzle.position);
                 Assert.Greater(tip.z, 0.2f, $"{id}'s weapon points backwards (z = {tip.z})");
                 // Guns recoil; launchers (the rocket pod) have no barrel.
-                if (id == "mlrs") continue;
+                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical") continue;
                 Assert.IsNotNull(FindPrefix(turret, "Main_cannon"), $"{id} needs a Main_cannon under its Turret");
             }
         }
@@ -95,6 +99,36 @@ namespace MachineBrigade.Tests
             finally
             {
                 Object.DestroyImmediate(mesh);
+            }
+        }
+
+        /// <summary>Spawned models keep every animated part but merge the rest into a few renderers.</summary>
+        [Test]
+        public void SpawnedModelsMergeRigidPartsButKeepMovingOnes()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Spawn Test").transform;
+            try
+            {
+                var tank = models.Spawn("main_battle_tank", 0, parent);
+                var raw = Load("main_battle_tank").GetComponentsInChildren<MeshRenderer>(true).Length;
+                Assert.Less(tank.Renderers.Length, raw / 2, "far fewer renderers than the imported model");
+                Assert.IsNotNull(tank.Turret, "turret pivot kept");
+                Assert.IsNotEmpty(tank.RecoilParts, "barrel still recoils");
+                Assert.IsTrue(tank.Muzzles.ContainsKey("mg") && tank.Mounts.ContainsKey("mg"), "roof gun mount and muzzle kept");
+                Assert.IsNotNull(tank.Turret.GetComponentInChildren<MeshRenderer>(), "the turret carries its own merged mesh");
+
+                var heli = models.Spawn("attack_helicopter", 1, parent);
+                Assert.AreEqual(2, heli.Spinners.Count, "both rotors still spin");
+                foreach (var spinner in heli.Spinners)
+                    Assert.IsNotNull(spinner.Transform.GetComponentInChildren<MeshRenderer>(), $"{spinner.Transform.name} has its blades");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
             }
         }
 

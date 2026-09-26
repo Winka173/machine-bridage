@@ -40,18 +40,40 @@ namespace MachineBrigade.Game.Rendering
             ["Dirt"] = ("#7a6448", 0f, 0.95f, 0f),
             ["Sandbag"] = ("#a8956a", 0f, 0.95f, 0f),
             ["Grass"] = ("#5f7a45", 0f, 0.9f, 0f),
+            // Town kit.
+            ["PlasterWhite"] = ("#ece8dc", 0f, 0.92f, 0f),
+            ["PlasterBlue"] = ("#a9bfc7", 0f, 0.92f, 0f),
+            ["PlasterOchre"] = ("#dfb56c", 0f, 0.92f, 0f),
+            ["Brick"] = ("#a8553d", 0f, 0.9f, 0f),
+            ["RoofSlate"] = ("#5b636c", 0f, 0.74f, 0f),
+            ["RoofGreen"] = ("#5e8a72", 0.2f, 0.62f, 0f),
+            ["MetalSheet"] = ("#a9b0b1", 0.55f, 0.5f, 0f),
+            ["WoodRed"] = ("#9c3f2f", 0f, 0.85f, 0f),
+            ["Charred"] = ("#302b28", 0f, 0.95f, 0f),
+            ["FoliageDark"] = ("#3e5b35", 0f, 0.85f, 0f),
+            ["BarkWhite"] = ("#e4dfd2", 0f, 0.85f, 0f),
+            // Civilian paint; models use CarRed and the map swaps in the others.
+            ["CarRed"] = ("#c8382c", 0.35f, 0.38f, 0f),
+            ["CarBlue"] = ("#3b6a9e", 0.35f, 0.38f, 0f),
+            ["CarWhite"] = ("#e6e6e0", 0.35f, 0.38f, 0f),
+            ["CarYellow"] = ("#e0b53a", 0.35f, 0.38f, 0f),
+            ["CarGreen"] = ("#4f7a54", 0.35f, 0.38f, 0f),
+            ["CarGrey"] = ("#6c7176", 0.4f, 0.4f, 0f),
         };
 
         private readonly List<Material> _owned = new();
         private readonly Dictionary<string, Material> _surfaces = new();
         private readonly Dictionary<(string, int), Material> _team = new();
         private readonly Shader _lit;
+        private readonly Texture2D _noise;
 
         public MaterialLibrary()
         {
             _lit = Find("MachineBrigade/Lit");
             var unlit = Find("MachineBrigade/Unlit");
             var particle = Find("MachineBrigade/Particle");
+            _noise = NoiseTexture(64, 8);
+            Shader.SetGlobalTexture("_MbNoise", _noise);
 
             Ground = Surface("Ground", Color.white, 0f, 0.95f, 0f);
             Skirt = Surface("Skirt", Hex("#424634"), 0f, 0.95f, 0f);
@@ -60,11 +82,14 @@ namespace MachineBrigade.Game.Rendering
             GrassTuft.SetFloat("_Wind", 0.6f);
             Water = Surface("Water", Hex("#2f6f78"), 0.1f, 0.08f, 0f);
             OuterGround = Surface("OuterGround", Color.white, 0f, 0.95f, 0f);
+            Terrain = Surface("Terrain", Color.white, 0f, 0.92f, 0f);
             Fallback = Surface("Fallback", new Color(0.6f, 0.6f, 0.6f), 0f, 0.8f, 0f);
             foreach (var entry in Kit)
                 _surfaces[entry.Key] = Surface(entry.Key, Hex(entry.Value.color), entry.Value.metallic, entry.Value.roughness,
                     entry.Value.emission);
-            foreach (var name in new[] { "Foliage", "FoliageLight" }) _surfaces[name].SetFloat("_Wind", 1f);
+            foreach (var name in new[] { "Foliage", "FoliageLight", "FoliageDark" }) _surfaces[name].SetFloat("_Wind", 1f);
+            CarPaints = new[] { _surfaces["CarRed"], _surfaces["CarBlue"], _surfaces["CarWhite"], _surfaces["CarYellow"],
+                _surfaces["CarGreen"], _surfaces["CarGrey"] };
 
             SelectionRing = Unlit(unlit, "Selection", new Color(0.55f, 1.6f, 1.1f));
             MoveMarker = Unlit(unlit, "MoveMarker", new Color(0.7f, 2f, 1.3f));
@@ -74,6 +99,8 @@ namespace MachineBrigade.Game.Rendering
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
+            GroundMark = new Material(Find("MachineBrigade/GroundMark")) { name = "GroundMark", enableInstancing = true };
+            _owned.Add(GroundMark);
 
             Fire = Particle(particle, "Fire", additive: true, intensity: 2f, shape: 3f, softness: 1.4f, depthPull: 9f);
             Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f, depthPull: 3f);
@@ -81,9 +108,15 @@ namespace MachineBrigade.Game.Rendering
             SoftSmoke = Particle(particle, "SoftSmoke", additive: false, intensity: 1f, shape: 0f, softness: 1.6f, depthPull: 4f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
+            // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
+            Scorch.renderQueue = 2950;
+            Scorch.enableInstancing = true;
             Rain = Particle(particle, "Rain", additive: false, intensity: 1.1f, shape: 0f, softness: 0.4f);
             Splash = Particle(particle, "Splash", additive: false, intensity: 1f, shape: 1f, softness: 0.8f);
         }
+
+        /// <summary>Body colours for civilian cars and trucks; index 0 is the models' own CarRed.</summary>
+        public Material[] CarPaints { get; }
 
         public Material Ground { get; }
         public Material Skirt { get; }
@@ -91,6 +124,9 @@ namespace MachineBrigade.Game.Rendering
         public Material GrassTuft { get; }
         public Material Water { get; }
         public Material OuterGround { get; }
+
+        /// <summary>The mountain range; its colours come from a palette texture indexed by UV.</summary>
+        public Material Terrain { get; }
         public Material Fallback { get; }
         public Material SelectionRing { get; }
         public Material MoveMarker { get; }
@@ -98,7 +134,10 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Red telegraph circles and lines for incoming strikes.</summary>
         public Material StrikeWarning { get; }
 
-        /// <summary>Capture point rings; tinted per owner with a property block.</summary>
+        /// <summary>Ground markings (objectives, telegraphs, selection); see <see cref="Rendering.GroundMark"/>.</summary>
+        public Material GroundMark { get; }
+
+        /// <summary>Capture point flags; tinted per owner with a property block.</summary>
         public Material Objective { get; }
         public Material BarBack { get; }
         public Material BarAlly { get; }
@@ -133,8 +172,17 @@ namespace MachineBrigade.Game.Rendering
         public void Dispose()
         {
             foreach (var m in _owned)
-                if (m != null) Object.Destroy(m);
+            {
+                if (m == null) continue;
+                if (Application.isPlaying) Object.Destroy(m);
+                else Object.DestroyImmediate(m);
+            }
             _owned.Clear();
+            if (_noise != null)
+            {
+                if (Application.isPlaying) Object.Destroy(_noise);
+                else Object.DestroyImmediate(_noise);
+            }
             _surfaces.Clear();
             _team.Clear();
         }
@@ -170,6 +218,55 @@ namespace MachineBrigade.Game.Rendering
             return m;
         }
 
+        /// <summary>
+        /// Tileable two-octave value noise (the particle shader's former per-pixel Fbm), with
+        /// <paramref name="cells"/> lattice cells across the texture for the first octave.
+        /// </summary>
+        private static Texture2D NoiseTexture(int size, int cells)
+        {
+            var random = new System.Random(4242);
+            float[] Lattice(int n)
+            {
+                var values = new float[n * n];
+                for (var i = 0; i < values.Length; i++) values[i] = (float)random.NextDouble();
+                return values;
+            }
+
+            float Sample(float[] lattice, int n, float x, float y)
+            {
+                var ix = Mathf.FloorToInt(x);
+                var iy = Mathf.FloorToInt(y);
+                var fx = x - ix;
+                var fy = y - iy;
+                fx = fx * fx * (3f - 2f * fx);
+                fy = fy * fy * (3f - 2f * fy);
+                float At(int cx, int cy) => lattice[(cy % n + n) % n * n + (cx % n + n) % n];
+                return Mathf.Lerp(Mathf.Lerp(At(ix, iy), At(ix + 1, iy), fx), Mathf.Lerp(At(ix, iy + 1), At(ix + 1, iy + 1), fx), fy);
+            }
+
+            var first = Lattice(cells);
+            var second = Lattice(cells * 2);
+            var pixels = new Color32[size * size];
+            for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
+            {
+                var u = (x + 0.5f) / size * cells;
+                var v = (y + 0.5f) / size * cells;
+                var n = Sample(first, cells, u, v) * 0.6f + Sample(second, cells * 2, u * 2f, v * 2f) * 0.4f;
+                var b = (byte)Mathf.Clamp(Mathf.RoundToInt(n * 255f), 0, 255);
+                pixels[y * size + x] = new Color32(b, b, b, 255);
+            }
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false, true)
+            {
+                name = "Particle Noise",
+                wrapMode = TextureWrapMode.Repeat,
+                filterMode = FilterMode.Bilinear,
+            };
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            return texture;
+        }
+
         private static Color Hex(string hex) => ColorUtility.TryParseHtmlString(hex, out var c) ? c : Color.magenta;
 
         private static Shader Find(string name)
@@ -181,7 +278,8 @@ namespace MachineBrigade.Game.Rendering
 
         private Material Unlit(Shader shader, string name, Color color)
         {
-            var m = new Material(shader) { name = name };
+            // Instanced: tracers and health bars are many copies of one mesh.
+            var m = new Material(shader) { name = name, enableInstancing = true };
             m.SetColor("_Color", color);
             _owned.Add(m);
             return m;

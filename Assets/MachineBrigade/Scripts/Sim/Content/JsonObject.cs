@@ -59,6 +59,14 @@ namespace MachineBrigade.Sim.Content
             for (var i = 0; i < list.Count; i++) yield return new JsonObject(list[i], $"{Path}.{key}[{i}]");
         }
 
+        public IReadOnlyList<float> FloatArray(string key)
+        {
+            if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of numbers");
+            var result = new List<float>(list.Count);
+            foreach (var item in list) result.Add(item is double d ? (float)d : throw Invalid(key, "an array of numbers"));
+            return result;
+        }
+
         public IEnumerable<string> Keys => _values.Keys;
 
         private FormatException Invalid(string key, string expected) =>

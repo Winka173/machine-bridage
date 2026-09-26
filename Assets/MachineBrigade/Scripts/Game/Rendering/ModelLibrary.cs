@@ -98,11 +98,18 @@ namespace MachineBrigade.Game.Rendering
             (new Regex(@"^Rotor(\.\d+)?$"), Vector3.up, 1500f),
             (new Regex(@"^Tail_rotor(\.\d+)?$"), Vector3.right, 2400f),
             (new Regex(@"^Radar(\.\d+)?$"), Vector3.up, 120f),
+            (new Regex(@"^Propeller(\.\d+)?$"), Vector3.forward, 2200f),
         };
+
+        /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs).</summary>
+        private static readonly Regex LoosePattern = new(@"^Bombs(\.\d+)?$");
 
         private readonly MaterialLibrary _materials;
         private readonly Dictionary<string, GameObject> _prefabs = new();
         private readonly Dictionary<string, ChunkModel> _merged = new();
+        private readonly Dictionary<string, GameObject> _templates = new();
+        private readonly List<Mesh> _ownedMeshes = new();
+        private Transform _templateRoot;
 
         private const string FallbackModel = "light_tank";
 
@@ -110,7 +117,7 @@ namespace MachineBrigade.Game.Rendering
 
         public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true)
         {
-            var root = Object.Instantiate(Prefab(modelId), parent, false);
+            var root = Object.Instantiate(Template(modelId), parent, false);
             root.name = modelId;
             var renderers = root.GetComponentsInChildren<Renderer>(true);
             foreach (var renderer in renderers)
@@ -186,6 +193,9 @@ namespace MachineBrigade.Game.Rendering
             return new ChunkModel(filter.sharedMesh, resolved);
         }
 
+        /// <summary>Builds a model's merged template now rather than on its first spawn mid-battle.</summary>
+        public void Prewarm(string modelId) => Template(modelId);
+
         /// <summary>Whether a model exists in Resources/Models.</summary>
         public bool Has(string modelId) => _prefabs.ContainsKey(modelId) || Resources.Load<GameObject>("Models/" + modelId) != null;
 
@@ -232,6 +242,117 @@ namespace MachineBrigade.Game.Rendering
             var chunk = new ChunkModel(merged, resolved.ToArray());
             _merged[modelId] = chunk;
             return chunk;
+        }
+
+        /// <summary>Destroys the meshes this library built (merged models and templates).</summary>
+        public void Dispose()
+        {
+            foreach (var mesh in _ownedMeshes) Release(mesh);
+            foreach (var chunk in _merged.Values) Release(chunk.Mesh);
+            if (_templateRoot != null) Release(_templateRoot.gameObject);
+            _ownedMeshes.Clear();
+            _merged.Clear();
+            _templates.Clear();
+        }
+
+        /// <summary>
+        /// A copy of the model with its rigid parts merged: every mesh is combined into one per
+        /// part that moves on its own (the hull, the turret, each recoiling barrel, weapon mount,
+        /// rotor and propeller). A tank drops from about twenty renderers to four or five, which
+        /// cuts draw calls in the camera and the shadow pass alike. Built once per model.
+        /// </summary>
+        private GameObject Template(string modelId)
+        {
+            if (_templates.TryGetValue(modelId, out var cached)) return cached;
+            if (_templateRoot == null)
+            {
+                var holder = new GameObject("Model Templates");
+                holder.SetActive(false);
+                _templateRoot = holder.transform;
+            }
+            var template = Object.Instantiate(Prefab(modelId), _templateRoot, false);
+            template.name = modelId;
+            MergeRigidParts(template.transform);
+            _templates[modelId] = template;
+            return template;
+        }
+
+        private void MergeRigidParts(Transform root)
+        {
+            var anchors = new HashSet<Transform> { root };
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+                if (IsMovingPart(t)) anchors.Add(t);
+
+            var groups = new Dictionary<Transform, List<MeshFilter>>();
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null || filter.GetComponent<MeshRenderer>() == null) continue;
+                var anchor = filter.transform;
+                while (!anchors.Contains(anchor)) anchor = anchor.parent;
+                if (!groups.TryGetValue(anchor, out var list)) groups[anchor] = list = new List<MeshFilter>();
+                list.Add(filter);
+            }
+
+            foreach (var (anchor, filters) in groups)
+            {
+                if (filters.Count < 2) continue;
+                var byMaterial = new Dictionary<Material, List<CombineInstance>>();
+                var vertices = 0;
+                foreach (var filter in filters)
+                {
+                    var matrix = anchor.worldToLocalMatrix * filter.transform.localToWorldMatrix;
+                    var shared = filter.GetComponent<MeshRenderer>().sharedMaterials;
+                    vertices += filter.sharedMesh.vertexCount;
+                    for (var i = 0; i < filter.sharedMesh.subMeshCount && i < shared.Length; i++)
+                    {
+                        if (shared[i] == null) continue;
+                        if (!byMaterial.TryGetValue(shared[i], out var list)) byMaterial[shared[i]] = list = new List<CombineInstance>();
+                        list.Add(new CombineInstance { mesh = filter.sharedMesh, subMeshIndex = i, transform = matrix });
+                    }
+                }
+                var format = vertices > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
+                var parts = new List<CombineInstance>();
+                var materials = new List<Material>();
+                foreach (var (material, list) in byMaterial)
+                {
+                    var part = new Mesh { indexFormat = format };
+                    part.CombineMeshes(list.ToArray(), mergeSubMeshes: true, useMatrices: true);
+                    parts.Add(new CombineInstance { mesh = part, transform = Matrix4x4.identity });
+                    materials.Add(material);
+                }
+                var merged = new Mesh { name = $"{root.name} {anchor.name} merged", indexFormat = format };
+                merged.CombineMeshes(parts.ToArray(), mergeSubMeshes: false, useMatrices: false);
+                foreach (var p in parts) Release(p.mesh);
+                _ownedMeshes.Add(merged);
+
+                foreach (var filter in filters)
+                {
+                    // Immediate: the template is instantiated this very frame.
+                    Object.DestroyImmediate(filter.GetComponent<MeshRenderer>());
+                    Object.DestroyImmediate(filter);
+                }
+                var go = new GameObject("Merged");
+                go.transform.SetParent(anchor, false);
+                go.AddComponent<MeshFilter>().sharedMesh = merged;
+                go.AddComponent<MeshRenderer>().sharedMaterials = materials.ToArray();
+            }
+        }
+
+        private static void Release(Object o)
+        {
+            if (o == null) return;
+            if (Application.isPlaying) Object.Destroy(o);
+            else Object.DestroyImmediate(o);
+        }
+
+        private static bool IsMovingPart(Transform t)
+        {
+            var name = t.name;
+            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name)) return true;
+            if (RecoilPattern.IsMatch(name) && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
+            foreach (var (pattern, _, _) in SpinnerPatterns)
+                if (pattern.IsMatch(name)) return true;
+            return false;
         }
 
         private GameObject Prefab(string modelId)

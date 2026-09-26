@@ -65,7 +65,7 @@ namespace MachineBrigade.Game.Rendering
             {
                 var cast = new Color(0.86f, 0.92f, 1f);
                 var fog = kind == WeatherKind.Storm ? new Color(0.2f, 0.24f, 0.27f) : new Color(0.33f, 0.38f, 0.41f);
-                atmosphere.SetMood(kind == WeatherKind.Storm ? 0.75f : 0.88f, cast, fog, wet ? 60f : 80f, wet ? 170f : 200f);
+                atmosphere.SetMood(kind == WeatherKind.Storm ? 0.75f : 0.88f, cast, fog, wet ? 85f : 95f, wet ? 190f : 210f);
                 if (_sun != null)
                 {
                     _sun.intensity = _sunIntensity * dim;

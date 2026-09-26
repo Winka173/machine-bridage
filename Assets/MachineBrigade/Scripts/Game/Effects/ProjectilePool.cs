@@ -56,7 +56,13 @@ namespace MachineBrigade.Game.Effects
         public void Launch(ChunkModel model, Vector3 from, Vector3 to, float duration, float arc, float trail, float now,
             Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f)
         {
+            // A free slot if there is one, so a missile in flight does not teleport.
             var shot = _shots[_next];
+            for (var k = 0; k < _shots.Count && shot.Active; k++)
+            {
+                _next = (_next + 1) % _shots.Count;
+                shot = _shots[_next];
+            }
             _next = (_next + 1) % _shots.Count;
             shot.Filter.sharedMesh = model.Mesh;
             shot.Renderer.sharedMaterials = model.Materials;

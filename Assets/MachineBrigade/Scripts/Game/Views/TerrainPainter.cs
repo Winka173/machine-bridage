@@ -80,23 +80,42 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Main road from camp to camp through the town, plus spurs to the fuel depots.</summary>
-        private static List<Vector2[]> Roads(SimWorld world)
+        private static List<(Vector2[] points, float width)> Roads(SimWorld world)
         {
-            var roads = new List<Vector2[]>();
+            var roads = new List<(Vector2[] points, float width)>();
+            // Maps that lay out their own streets (towns) use those.
+            if (world.Map.Roads.Count > 0)
+            {
+                foreach (var road in world.Map.Roads)
+                {
+                    var points = new List<Vector2>();
+                    for (var i = 0; i < road.Points.Count - 1; i++)
+                    {
+                        var a = new Vector2(road.Points[i].X, road.Points[i].Y);
+                        var b = new Vector2(road.Points[i + 1].X, road.Points[i + 1].Y);
+                        var steps = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b) / 2f));
+                        for (var k = 0; k < steps; k++) points.Add(Vector2.Lerp(a, b, k / (float)steps));
+                    }
+                    var last = road.Points[road.Points.Count - 1];
+                    points.Add(new Vector2(last.X, last.Y));
+                    roads.Add((points.ToArray(), road.Width));
+                }
+                return roads;
+            }
             var rallies = new List<Vector2>();
             foreach (var team in world.Map.Teams) rallies.Add(new Vector2(team.Rally.X, team.Rally.Y));
             if (rallies.Count >= 2)
             {
                 var a = rallies[0];
                 var b = rallies[1];
-                roads.Add(Bezier(a, a + new Vector2(30f, 10f), b - new Vector2(30f, 10f), b));
-                roads.Add(Bezier(a, new Vector2(a.x + 10f, 20f), new Vector2(-10f, b.y - 5f), b));
+                roads.Add((Bezier(a, a + new Vector2(30f, 10f), b - new Vector2(30f, 10f), b), 5.2f));
+                roads.Add((Bezier(a, new Vector2(a.x + 10f, 20f), new Vector2(-10f, b.y - 5f), b), 5.2f));
             }
             foreach (var prop in world.Props)
                 if (prop.Def.Id == "fuel_tank")
                 {
                     var p = new Vector2(prop.Position.X, prop.Position.Y);
-                    roads.Add(Bezier(Vector2.zero, p * 0.3f + new Vector2(p.y, -p.x) * 0.15f, p * 0.7f, p));
+                    roads.Add((Bezier(Vector2.zero, p * 0.3f + new Vector2(p.y, -p.x) * 0.15f, p * 0.7f, p), 5.2f));
                 }
             return roads;
         }
@@ -113,15 +132,15 @@ namespace MachineBrigade.Game.Views
             return points;
         }
 
-        private static void PaintRoads(Color[] pixels, int size, float half, float worldPerPixel, List<Vector2[]> roads,
+        private static void PaintRoads(Color[] pixels, int size, float half, float worldPerPixel, List<(Vector2[] points, float width)> roads,
             Color road)
         {
-            const float width = 2.6f;
             const float feather = 2.2f;
-            var reach = width + feather;
-            foreach (var points in roads)
+            foreach (var (points, roadWidth) in roads)
             for (var s = 0; s < points.Length - 1; s++)
             {
+                var width = roadWidth * 0.5f;
+                var reach = width + feather;
                 var a = points[s];
                 var b = points[s + 1];
                 var minX = ToPixel(Mathf.Min(a.x, b.x) - reach, half, worldPerPixel, size);
@@ -149,7 +168,8 @@ namespace MachineBrigade.Game.Views
             foreach (var prop in world.Props)
             {
                 var id = prop.Def.Id;
-                if (id == "tree" || id == "barrel" || id == "ammo_crate") continue;
+                if (id is "tree" or "barrel" or "ammo_crate" or "car" or "truck" or "fence" or "hedge" or "stone_wall" or "sandbags"
+                    or "tank_trap") continue;
                 var colour = id == "fuel_tank" ? theme.Stone : Color.Lerp(theme.Dirt, theme.Road, 0.4f);
                 var margin = id == "wall" ? 1.2f : 2.4f;
                 var hx = prop.Width * 0.5f + margin;

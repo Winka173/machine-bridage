@@ -91,9 +91,22 @@ namespace MachineBrigade.Game.Input
         /// <summary>Gets first refusal on taps (strike targeting); returns true when it used the tap.</summary>
         public Func<Vector2, bool> TapInterceptor { get; set; }
 
+        /// <summary>After a tap is used for strike targeting, a quick second tap is not an order.</summary>
+        private float _ignoreTapsUntil;
+
+        private bool Intercepted(Vector2 screen)
+        {
+            if (TapInterceptor != null && TapInterceptor(screen))
+            {
+                _ignoreTapsUntil = Time.unscaledTime + 0.35f;
+                return true;
+            }
+            return Time.unscaledTime < _ignoreTapsUntil;
+        }
+
         public void OnTap(Vector2 screen)
         {
-            if (TapInterceptor != null && TapInterceptor(screen)) return;
+            if (Intercepted(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
             if (picked != null && picked.Team == _team)
             {
@@ -128,7 +141,7 @@ namespace MachineBrigade.Game.Input
 
         public void OnDoubleTap(Vector2 screen)
         {
-            if (TapInterceptor != null && TapInterceptor(screen)) return;
+            if (Intercepted(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
             if (picked == null || picked.Team != _team)
             {
@@ -152,6 +165,12 @@ namespace MachineBrigade.Game.Input
         {
             BoxHidden?.Invoke();
             BoxMode = false;
+            // A long press that barely moved is a slow tap (for example choosing a strike target).
+            if (Vector2.Distance(startScreen, endScreen) < Screen.dpi * 0.12f + 8f)
+            {
+                OnTap(endScreen);
+                return;
+            }
             var rect = Rect.MinMaxRect(Mathf.Min(startScreen.x, endScreen.x), Mathf.Min(startScreen.y, endScreen.y),
                 Mathf.Max(startScreen.x, endScreen.x), Mathf.Max(startScreen.y, endScreen.y));
             var found = new List<EntityId>();

@@ -30,7 +30,7 @@ namespace MachineBrigade.Game.Audio
         private readonly Catalog _catalog;
         private readonly int _playerTeam;
         private readonly AudioSource[] _voices = new AudioSource[Voices];
-        private readonly AudioSource _ambient, _rotor, _ui, _rain;
+        private readonly AudioSource _ambient, _rotor, _jetLoop, _ui, _rain;
         private readonly AudioClip[] _thunder;
         private readonly List<float> _thunderAt = new();
         private readonly AudioClip _warning, _captured, _lost;
@@ -76,6 +76,12 @@ namespace MachineBrigade.Game.Audio
             _rotor.loop = true;
             _rotor.volume = 0f;
             _rotor.Play();
+            // Aeroplanes overhead: the jet pass sound, slowed and looped as an engine drone.
+            _jetLoop = NewSource("Jet Engines");
+            _jetLoop.clip = Own(SoundSynth.JetPass(77));
+            _jetLoop.loop = true;
+            _jetLoop.pitch = 0.8f;
+            _jetLoop.volume = 0f;
             _rain = NewSource("Rain");
             _rain.clip = Own(SoundSynth.Rain(12));
             _rain.loop = true;
@@ -83,6 +89,8 @@ namespace MachineBrigade.Game.Audio
             _thunder = Make(i => SoundSynth.Thunder(40 + i), 2);
             _ui = NewSource("UI");
             _ui.clip = Own(SoundSynth.Click());
+            // Menu clicks still sound while the game (and every other source) is paused.
+            _ui.ignoreListenerPause = true;
         }
 
         /// <summary>Extra wind for rain and storms.</summary>
@@ -113,12 +121,15 @@ namespace MachineBrigade.Game.Audio
                 {
                     case SimEventKind.WeaponFired:
                         var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
+                        // Bombs are released silently; the blast is the sound.
+                        if (weapon != null && weapon.Projectile == ProjectileKind.Bomb) break;
                         var sound = WeaponSound(weapon);
                         var light = sound is Sound.MachineGun or Sound.Autocannon or Sound.Flak;
                         Play(sound, e.Position, light ? 0.5f : 0.8f, light ? 0.08f : 0.05f);
                         break;
                     case SimEventKind.ProjectileImpact when e.Tier >= ExplosionTier.Medium:
-                        Play(e.Tier >= ExplosionTier.Large ? Sound.ExplosionLarge : Sound.ExplosionSmall, e.Position, 0.7f, 0.05f);
+                        Play(e.Tier >= ExplosionTier.Huge ? Sound.ExplosionHuge : e.Tier >= ExplosionTier.Large ? Sound.ExplosionLarge : Sound.ExplosionSmall,
+                            e.Position, e.Tier >= ExplosionTier.Huge ? 1f : 0.7f, 0.05f);
                         break;
                     case SimEventKind.Explosion:
                         Play(e.Tier >= ExplosionTier.Huge ? Sound.ExplosionHuge : Sound.ExplosionLarge, e.Position, 1f, 0.03f);
@@ -136,9 +147,6 @@ namespace MachineBrigade.Game.Audio
                         if (e.Team == _playerTeam) _ui.PlayOneShot(_captured, 0.5f);
                         else if (e.Team >= 0) _ui.PlayOneShot(_lost, 0.5f);
                         break;
-                    case SimEventKind.DeploymentQueued when e.Team == _playerTeam:
-                        _ui.PlayOneShot(_ui.clip, 0.5f);
-                        break;
                     case SimEventKind.VehicleDestroyed:
                         Play(Sound.ExplosionLarge, e.Position, 0.9f, 0.03f);
                         break;
@@ -152,12 +160,25 @@ namespace MachineBrigade.Game.Audio
         /// <summary>Per frame: helicopter rotors get louder as aircraft come near the view.</summary>
         public void Tick(ViewRegistry views)
         {
+            // Helicopters drive the rotor loop, aeroplanes the jet loop.
             var nearest = float.MaxValue;
-            foreach (var view in views.All)
-                if (view.Flying) nearest = Mathf.Min(nearest, Vector3.Distance(view.Position, _camera.Focus));
+            var nearestJet = float.MaxValue;
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                if (!view.Flying) continue;
+                var distance = Vector3.Distance(view.Position, _camera.Focus);
+                if (view.Def.FixedWing) nearestJet = Mathf.Min(nearestJet, distance);
+                else nearest = Mathf.Min(nearest, distance);
+            }
             var reach = _camera.Zoom * 2.6f + 30f;
             var target = nearest < float.MaxValue ? Mathf.Clamp01(1f - nearest / reach) * 0.55f : 0f;
             _rotor.volume = Mathf.MoveTowards(_rotor.volume, target, Time.unscaledDeltaTime * 0.8f);
+            var jetTarget = nearestJet < float.MaxValue ? Mathf.Clamp01(1f - nearestJet / (reach + 20f)) * 0.4f : 0f;
+            _jetLoop.volume = Mathf.MoveTowards(_jetLoop.volume, jetTarget, Time.unscaledDeltaTime * 0.8f);
+            if (_jetLoop.volume > 0f && !_jetLoop.isPlaying) _jetLoop.Play();
+            else if (_jetLoop.volume <= 0f && _jetLoop.isPlaying) _jetLoop.Stop();
             for (var i = _thunderAt.Count - 1; i >= 0; i--)
             {
                 if (Time.unscaledTime < _thunderAt[i]) continue;
@@ -207,7 +228,13 @@ namespace MachineBrigade.Game.Audio
             if (attenuation <= 0.02f) return;
 
             var screen = _camera.Camera.WorldToViewportPoint(world);
+            // A free voice if there is one; otherwise cut the one that started longest ago.
             var voice = _voices[_next];
+            for (var k = 0; k < _voices.Length && voice.isPlaying; k++)
+            {
+                _next = (_next + 1) % _voices.Length;
+                voice = _voices[_next];
+            }
             _next = (_next + 1) % _voices.Length;
             var clips = _clips[sound];
             voice.clip = clips[_rng.Next(clips.Length)];

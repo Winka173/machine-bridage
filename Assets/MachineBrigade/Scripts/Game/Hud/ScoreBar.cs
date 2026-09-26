@@ -52,6 +52,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>An objective chip was tapped (the player points the army at it).</summary>
         public event Action<string> PointPressed;
 
+        private int _shownOurs = -1, _shownTheirs = -1, _shownMax = -1;
+
         public void SetFocus(string id)
         {
             foreach (var chip in _points) chip.EnableInClassList("focus", chip.Id == id);
@@ -59,10 +61,16 @@ namespace MachineBrigade.Game.Hud
 
         public void Update(int ours, int theirs, int max, IReadOnlyList<PointInfo> points)
         {
-            _ours.text = ours.ToString();
-            _theirs.text = theirs.ToString();
-            _oursFill.style.width = Length.Percent(Mathf.Clamp01(ours / (float)Mathf.Max(1, max)) * 100f);
-            _theirsFill.style.width = Length.Percent(Mathf.Clamp01(theirs / (float)Mathf.Max(1, max)) * 100f);
+            if (ours != _shownOurs || theirs != _shownTheirs || max != _shownMax)
+            {
+                _shownOurs = ours;
+                _shownTheirs = theirs;
+                _shownMax = max;
+                _ours.text = ours.ToString();
+                _theirs.text = theirs.ToString();
+                _oursFill.style.width = Length.Percent(Mathf.Clamp01(ours / (float)Mathf.Max(1, max)) * 100f);
+                _theirsFill.style.width = Length.Percent(Mathf.Clamp01(theirs / (float)Mathf.Max(1, max)) * 100f);
+            }
 
             while (_points.Count < points.Count)
             {
@@ -122,8 +130,8 @@ namespace MachineBrigade.Game.Hud
         public void Set(PointInfo info)
         {
             var changed = info.Owner != _info.Owner || Mathf.Abs(info.Progress - _info.Progress) > 0.005f || info.Contested != _info.Contested;
+            if (info.Id != _info.Id) _letter.text = Strings.Get("point." + info.Id);
             _info = info;
-            _letter.text = Strings.Get("point." + info.Id);
             EnableInClassList("ours", info.Owner == 0);
             EnableInClassList("theirs", info.Owner == 1);
             EnableInClassList("contested", info.Contested);

@@ -6,9 +6,10 @@ using UnityEngine;
 namespace MachineBrigade.Game.Views
 {
     /// <summary>
-    /// Conquest objectives on the battlefield: a ring on the ground in the owner's colour, an
-    /// inner ring that grows with capture progress, and a flag that changes colour when the point
-    /// changes hands.
+    /// Conquest objectives on the battlefield: a marking on the ground in the owner's colour
+    /// (a solid rim, a slowly turning dashed ring, a soft tint) with the capture progress
+    /// sweeping round it in the capturing side's colour, pulsing while contested, and a flag
+    /// that changes colour when the point changes hands.
     /// </summary>
     public sealed class ObjectiveView
     {
@@ -19,8 +20,9 @@ namespace MachineBrigade.Game.Views
         private sealed class Marker
         {
             public ObjectiveState State;
-            public Renderer Ring, Progress, Flag;
-            public Transform ProgressTransform, FlagTransform;
+            public GroundMark Mark;
+            public Renderer Flag;
+            public Transform FlagTransform;
         }
 
         private readonly List<Marker> _markers = new();
@@ -34,11 +36,9 @@ namespace MachineBrigade.Game.Views
             foreach (var point in mode.Points)
             {
                 var at = new Vector3(point.Def.Position.X, 0f, point.Def.Position.Y);
-                var ring = VehicleView.CreateMesh($"Objective {point.Def.Id}", _root, meshes.ThinRing, materials.Objective, false);
-                ring.position = at + Vector3.up * 0.1f;
-                ring.localScale = Vector3.one * point.Def.Radius;
-                var progress = VehicleView.CreateMesh("Progress", _root, meshes.ThinRing, materials.Objective, false);
-                progress.position = at + Vector3.up * 0.11f;
+                var mark = new GroundMark($"Objective {point.Def.Id}", _root, meshes, materials, GroundMark.Style.Objective);
+                mark.Transform.position = at + Vector3.up * 0.09f;
+                mark.Transform.localScale = Vector3.one * point.Def.Radius;
 
                 var pole = VehicleView.CreateMesh("Pole", _root, meshes.Box, materials.ForModel("Steel", -1), true);
                 pole.position = at + Vector3.up * 3.5f;
@@ -50,9 +50,7 @@ namespace MachineBrigade.Game.Views
                 _markers.Add(new Marker
                 {
                     State = point,
-                    Ring = ring.GetComponent<Renderer>(),
-                    Progress = progress.GetComponent<Renderer>(),
-                    ProgressTransform = progress,
+                    Mark = mark,
                     Flag = flag.GetComponent<Renderer>(),
                     FlagTransform = flag,
                 });
@@ -65,13 +63,15 @@ namespace MachineBrigade.Game.Views
             {
                 var s = m.State;
                 var owner = s.Owner == 0 ? TeamColors.Ui(0) * 1.15f : s.Owner == 1 ? TeamColors.Ui(1) * 1.15f : Neutral;
-                Tint(m.Ring, s.Contested ? Color.Lerp(owner, Contest, 0.5f + 0.5f * Mathf.Sin(time * 8f)) : owner);
                 Tint(m.Flag, owner);
 
+                // The arc shows how far the capture has got, in the colour of the side taking it;
+                // it hides once the point is fully held.
                 var amount = Mathf.Abs(s.Progress);
-                m.Progress.enabled = amount > 0.02f && amount < 0.999f;
-                m.ProgressTransform.localScale = Vector3.one * Mathf.Max(0.3f, s.Def.Radius * amount);
-                Tint(m.Progress, s.Progress > 0f ? TeamColors.Ui(0) * 0.9f : TeamColors.Ui(1) * 0.9f);
+                var capturing = s.Progress > 0f ? TeamColors.Ui(0) : TeamColors.Ui(1);
+                var rim = s.Contested ? Color.Lerp(owner, Contest, 0.5f) : owner;
+                rim.a = 1f;
+                m.Mark.Set(rim, capturing, amount < 0.999f ? amount : 0f, s.Contested ? 1f : 0f);
 
                 // The flag flutters about its pole.
                 var sway = Mathf.Sin(time * 3f + s.Def.Position.X) * 8f;

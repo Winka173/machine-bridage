@@ -78,7 +78,7 @@
 
 /* ---------------------------------------------------------------- tool column */
 .left-column { position: absolute; left: 14px; top: 66px; }
-.tools { flex-direction: row; flex-wrap: wrap; width: 176px; margin-top: 8px; }
+.tools { flex-direction: row; flex-wrap: wrap; width: 184px; margin-top: 8px; }
 .tool {
     width: 40px; height: 52px;
     margin-right: 5px;
@@ -244,21 +244,22 @@
 .cp-fill { height: 100%; width: 0; background-color: var(--amber); border-radius: 2px; }
 .cp-army { font-size: 9px; letter-spacing: 1px; color: var(--dim); margin-top: 5px; }
 .cards { flex-direction: row; align-items: flex-end; }
-.card-gap { width: 10px; }
+.card-gap { width: 10px; flex-shrink: 1; }
 .card {
-    width: 76px; height: 96px;
+    width: 70px; height: 96px; min-width: 52px; flex-shrink: 1;
     margin-left: 3px; margin-right: 3px;
     align-items: center; justify-content: center;
     overflow: hidden;
     background-color: var(--button);
     border-width: 1px; border-color: var(--panel-edge); border-radius: 6px;
 }
-.card .icon { width: 30px; height: 30px; }
+.card .icon { width: 30px; height: 30px; margin-top: 10px; }
 .card-name { font-size: 9px; margin-top: 5px; -unity-text-align: middle-center; white-space: normal; padding-left: 3px; padding-right: 3px; }
 .card-cost {
-    position: absolute; top: 4px; right: 4px;
-    padding: 1px 5px;
-    background-color: rgba(223, 183, 118, 0.2);
+    position: absolute; top: 3px; right: 3px;
+    padding: 0 4px;
+    background-color: rgba(34, 30, 22, 0.94);
+    border-width: 1px; border-color: rgba(223, 183, 118, 0.45);
     border-radius: 3px;
 }
 .card-cost-text { -unity-font: resource("Fonts/JetBrainsMono-Medium"); font-size: 11px; color: var(--amber); }
