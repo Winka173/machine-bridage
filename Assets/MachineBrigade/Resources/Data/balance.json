@@ -90,6 +90,13 @@
       "explosion": { "damage": 70, "radius": 6, "delay": 0.15, "tier": "Large" } },
     { "id": "ammo_crate",  "armor": "Light",     "hp": 35,   "width": 1.25, "depth": 1.25,
       "explosion": { "damage": 90, "radius": 7, "delay": 0.2, "tier": "Large" } },
-    { "id": "tree",        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 }
+    { "id": "tree",        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 },
+    // Terrain: rock is effectively indestructible and shapes the lanes; sandbags and tank traps can be shot away.
+    { "id": "cliff_a",     "armor": "Structure", "hp": 1000000, "width": 12, "depth": 9,  "blocks": true },
+    { "id": "cliff_b",     "armor": "Structure", "hp": 1000000, "width": 9,  "depth": 9,  "blocks": true },
+    { "id": "boulders",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,  "blocks": true },
+    { "id": "dirt_mound",  "armor": "Structure", "hp": 1000000, "width": 6,  "depth": 3 },
+    { "id": "sandbags",    "armor": "Structure", "hp": 260,  "width": 4,   "depth": 1.2, "blocks": true },
+    { "id": "tank_trap",   "armor": "Heavy",     "hp": 300,  "width": 1.6, "depth": 1.6, "blocks": true }
   ]
 }

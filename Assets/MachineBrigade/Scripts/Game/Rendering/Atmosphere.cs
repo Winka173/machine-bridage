@@ -87,6 +87,20 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>
+        /// Weather mood: scales and tints the ambient light and pulls the fog in. The camera's
+        /// background follows the fog so the horizon never shows a seam.
+        /// </summary>
+        public void SetMood(float light, Color cast, Color fog, float fogStart, float fogEnd)
+        {
+            RenderSettings.ambientProbe = Hemisphere((Sky * cast).linear * AmbientStrength * light,
+                (Earth * cast).linear * AmbientStrength * light);
+            RenderSettings.fogColor = fog;
+            RenderSettings.fogStartDistance = fogStart;
+            RenderSettings.fogEndDistance = fogEnd;
+            if (Camera.main != null) Camera.main.backgroundColor = fog;
+        }
+
+        /// <summary>
         /// Sky/ground gradient as spherical harmonics: the mean colour plus opposite lobes up and
         /// down, whose even terms cancel and leave a smooth vertical gradient.
         /// </summary>

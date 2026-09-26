@@ -243,6 +243,46 @@ namespace MachineBrigade.Game.Audio
             return Finish(rising ? "chime_up" : "chime_down", data, 0.45f);
         }
 
+        /// <summary>Rain loop: bright hiss with scattered droplet ticks.</summary>
+        public static AudioClip Rain(int seed)
+        {
+            var rng = new Random(seed);
+            var data = new float[Rate * 4];
+            var low = new OnePole(0.2f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var noise = Noise(rng);
+                var hiss = (noise - low.Next(noise)) * 0.6f;
+                var drop = rng.NextDouble() < 0.004 ? (float)(rng.NextDouble() * 2 - 1) * 0.8f : 0f;
+                data[i] = hiss + drop;
+            }
+            const int fade = Rate / 4;
+            for (var i = 0; i < fade; i++)
+            {
+                var k = i / (float)fade;
+                data[i] = data[i] * k + data[data.Length - fade + i] * (1f - k);
+            }
+            Array.Resize(ref data, data.Length - fade);
+            return Finish($"rain_{seed}", data, 0.45f);
+        }
+
+        /// <summary>Thunder: a crack, then a long rolling rumble.</summary>
+        public static AudioClip Thunder(int seed)
+        {
+            var rng = new Random(seed);
+            var data = new float[(int)(Rate * 4.5f)];
+            var low = new OnePole(0.02f);
+            var mid = new OnePole(0.1f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var noise = Noise(rng);
+                var roll = 0.6f + 0.4f * Mathf.Sin(t * 5.3f) * Mathf.Sin(t * 2.1f + 1f);
+                data[i] = mid.Next(noise) * 1.6f * Env(t, 0.005f, 0.25f) + low.Next(noise) * 6f * Env(t, 0.25f, 1.6f) * roll;
+            }
+            return Finish($"thunder_{seed}", data, 0.9f);
+        }
+
         /// <summary>Short UI tick.</summary>
         public static AudioClip Click()
         {

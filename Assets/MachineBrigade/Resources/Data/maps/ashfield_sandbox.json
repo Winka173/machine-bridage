@@ -24,6 +24,28 @@
   ],
 
   "props": [
+    // Terrain: rock outcrops shape the approaches; sandbags and tank traps fortify the objectives.
+    { "def": "cliff_a", "x": -38, "z": 4, "rot": 90 },
+    { "def": "cliff_b", "x": 40, "z": -6 },
+    { "def": "cliff_a", "x": -6, "z": 44 },
+    { "def": "cliff_b", "x": 10, "z": -44, "rot": 90 },
+    { "def": "boulders", "x": -52, "z": 30 },
+    { "def": "boulders", "x": 44, "z": -20 },
+    { "def": "boulders", "x": -18, "z": -40 },
+    { "def": "boulders", "x": 19, "z": 43 },
+    { "def": "dirt_mound", "x": -38, "z": -28 },
+    { "def": "dirt_mound", "x": 44, "z": 30, "rot": 90 },
+    { "def": "dirt_mound", "x": 36, "z": 10 },
+    { "def": "dirt_mound", "x": -26, "z": -12, "rot": 90 },
+    { "def": "sandbags", "x": -16, "z": 32, "rot": 90 },
+    { "def": "sandbags", "x": -24, "z": 24 },
+    { "def": "sandbags", "x": 18, "z": -30, "rot": 90 },
+    { "def": "sandbags", "x": 24, "z": -24 },
+    { "def": "tank_trap", "x": -22, "z": -18 },
+    { "def": "tank_trap", "x": -18, "z": -20 },
+    { "def": "tank_trap", "x": 22, "z": 18 },
+    { "def": "tank_trap", "x": 19, "z": 22 },
+
     // Town centre
     { "def": "house_large", "x": 0,   "z": 0 },
     { "def": "house_small", "x": -16, "z": -4 },

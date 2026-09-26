@@ -30,7 +30,9 @@ namespace MachineBrigade.Game.Audio
         private readonly Catalog _catalog;
         private readonly int _playerTeam;
         private readonly AudioSource[] _voices = new AudioSource[Voices];
-        private readonly AudioSource _ambient, _rotor, _ui;
+        private readonly AudioSource _ambient, _rotor, _ui, _rain;
+        private readonly AudioClip[] _thunder;
+        private readonly List<float> _thunderAt = new();
         private readonly AudioClip _warning, _captured, _lost;
         private readonly Dictionary<Sound, AudioClip[]> _clips = new();
         private readonly Dictionary<Sound, float> _lastPlayed = new();
@@ -74,6 +76,11 @@ namespace MachineBrigade.Game.Audio
             _rotor.loop = true;
             _rotor.volume = 0f;
             _rotor.Play();
+            _rain = NewSource("Rain");
+            _rain.clip = Own(SoundSynth.Rain(12));
+            _rain.loop = true;
+            _rain.volume = 0f;
+            _thunder = Make(i => SoundSynth.Thunder(40 + i), 2);
             _ui = NewSource("UI");
             _ui.clip = Own(SoundSynth.Click());
         }
@@ -83,6 +90,20 @@ namespace MachineBrigade.Game.Audio
         {
             set => _ambient.volume = value;
         }
+
+        /// <summary>Rain loop level (0 = dry).</summary>
+        public float RainLevel
+        {
+            set
+            {
+                _rain.volume = value;
+                if (value > 0f && !_rain.isPlaying) _rain.Play();
+                else if (value <= 0f && _rain.isPlaying) _rain.Stop();
+            }
+        }
+
+        /// <summary>Thunder after a lightning flash, delayed by the distance of the strike.</summary>
+        public void Thunder(float delay) => _thunderAt.Add(Time.unscaledTime + delay);
 
         public void Consume(IReadOnlyList<SimEvent> events)
         {
@@ -137,6 +158,12 @@ namespace MachineBrigade.Game.Audio
             var reach = _camera.Zoom * 2.6f + 30f;
             var target = nearest < float.MaxValue ? Mathf.Clamp01(1f - nearest / reach) * 0.55f : 0f;
             _rotor.volume = Mathf.MoveTowards(_rotor.volume, target, Time.unscaledDeltaTime * 0.8f);
+            for (var i = _thunderAt.Count - 1; i >= 0; i--)
+            {
+                if (Time.unscaledTime < _thunderAt[i]) continue;
+                _thunderAt.RemoveAt(i);
+                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], 0.9f);
+            }
         }
 
         /// <summary>UI feedback; call from button handlers.</summary>

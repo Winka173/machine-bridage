@@ -80,6 +80,8 @@ namespace MachineBrigade.Game.Rendering
             Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 0f, softness: 1.2f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
+            Rain = Particle(particle, "Rain", additive: false, intensity: 1.1f, shape: 0f, softness: 0.4f);
+            Splash = Particle(particle, "Splash", additive: false, intensity: 1f, shape: 1f, softness: 0.8f);
         }
 
         public Material Ground { get; }
@@ -103,6 +105,12 @@ namespace MachineBrigade.Game.Rendering
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }
+
+        /// <summary>Falling rain streaks (stretched billboards).</summary>
+        public Material Rain { get; }
+
+        /// <summary>Rings where raindrops hit the ground.</summary>
+        public Material Splash { get; }
         public Material Smoke { get; }
         public Material Shockwave { get; }
         public Material Scorch { get; }

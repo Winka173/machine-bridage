@@ -31,6 +31,8 @@ namespace MachineBrigade.Game.Match
         private const int EnemyTeam = 1;
         private const float MinimapInterval = 0.1f;
 
+        private static bool _debugStarted;
+
         private SimWorld _world;
         private IGameMode _mode;
         private ConquestMode _conquest;
@@ -48,6 +50,7 @@ namespace MachineBrigade.Game.Match
         private ObjectiveView _objectives;
         private EffectsDirector _effects;
         private AudioDirector _audio;
+        private Weather _weather;
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
@@ -68,6 +71,16 @@ namespace MachineBrigade.Game.Match
             Time.timeScale = 1f;
             MatchSettings.Load();
             ApplyDebugFlags();
+            if (!_debugStarted && DebugFlags.Has("-mb-play"))
+            {
+                // Device testing: skip the menu once and play straight away.
+                _debugStarted = true;
+                MatchSettings.InMatch = true;
+                if (DebugFlags.Has("-mb-survival")) MatchSettings.Mode = GameModeKind.Survival;
+                if (DebugFlags.Has("-mb-rain")) MatchSettings.Weather = WeatherKind.Rain;
+                if (DebugFlags.Has("-mb-storm")) MatchSettings.Weather = WeatherKind.Storm;
+                if (DebugFlags.Has("-mb-clear")) MatchSettings.Weather = WeatherKind.Clear;
+            }
             _atmosphere = new Atmosphere();
             AudioListener.volume = MatchSettings.Volume;
 
@@ -104,6 +117,8 @@ namespace MachineBrigade.Game.Match
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
+            _weather = new Weather(_menu ? WeatherKind.Clear : MatchSettings.ResolveWeather(seed), _atmosphere, _materials, _camera,
+                _audio, worldRoot, MatchSettings.HighQuality);
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
             _hud = new BattleHud(_menu ? HudMode.Menu : kind == GameModeKind.Conquest ? HudMode.Conquest : HudMode.Survival, cards, catalog)
@@ -187,6 +202,7 @@ namespace MachineBrigade.Game.Match
             _selection.Tick();
             _effects.Tick(_views);
             _audio.Tick(_views);
+            _weather.Tick();
             _commander?.Update();
             _hud.Tick();
             UpdateStatus();
@@ -204,6 +220,7 @@ namespace MachineBrigade.Game.Match
         private void OnDestroy()
         {
             if (_audio != null) UiKit.Clicked -= _audio.Click;
+            _weather?.Dispose();
             _effects?.Dispose();
             _audio?.Dispose();
             _views?.Dispose();
