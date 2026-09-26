@@ -131,6 +131,13 @@ namespace MachineBrigade.Game.Match
                 ShakeScale = MatchSettings.ReducedMotion ? 0.35f : 1f,
             };
             _attractFocus = start;
+            // Device check of the scenery: the north-west corner, zoomed right out.
+            if (DebugFlags.Has("-mb-far"))
+            {
+                _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                _camera.FocusOn(new Vector3(-80f, 0f, 80f));
+                _lastInput = float.MaxValue;
+            }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco);
             // The menu battle has no player side, so no alarms or chimes.

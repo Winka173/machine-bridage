@@ -25,7 +25,8 @@ namespace MachineBrigade.Game.Views
 
         private readonly ModelInstance _model;
         private readonly Transform _body;
-        private readonly GameObject _ring;
+        private readonly GroundMark _ring;
+        private readonly GroundMark _shadowRing;
         private readonly Transform _bar;
         private readonly Transform _barFill;
         private readonly Vector3[] _recoilRest;
@@ -73,11 +74,20 @@ namespace MachineBrigade.Game.Views
                 _model.Muzzles.TryGetValue(mounts[i].Slot, out _muzzles[i]);
             }
 
-            var ring = CreateMesh("Selection", Root, meshes.Ring, materials.SelectionRing, false);
-            ring.localPosition = new Vector3(0f, 0.05f, 0f);
-            ring.localScale = Vector3.one * (vehicle.Radius + 0.8f);
-            _ring = ring.gameObject;
-            _ring.SetActive(false);
+            _ring = new GroundMark("Selection", Root, meshes, materials, GroundMark.Style.Selection);
+            _ring.Transform.localPosition = new Vector3(0f, 0.07f, 0f);
+            _ring.Transform.localScale = Vector3.one * (vehicle.Radius + 0.9f);
+            _ring.Set(new Color(0.55f, 1.7f, 1.15f, 1f), Color.white);
+            _ring.Visible = false;
+            if (vehicle.Def.Flying)
+            {
+                // Aircraft show where they are over the ground (and whose they are) with a faint ring.
+                _shadowRing = new GroundMark("Air Ring", Root, meshes, materials, GroundMark.Style.Aircraft);
+                _shadowRing.Transform.localScale = Vector3.one * (vehicle.Radius + 1.2f);
+                var colour = (Color)TeamColors.Ui(vehicle.Team == playerTeam ? 0 : 1) * 1.2f;
+                colour.a = 0.75f;
+                _shadowRing.Set(colour, Color.white);
+            }
 
             _bar = new GameObject("HealthBar").transform;
             _bar.SetParent(Root, false);
@@ -229,7 +239,13 @@ namespace MachineBrigade.Game.Views
 
             Spin(1f);
 
-            if (_ring.activeSelf != Selected) _ring.SetActive(Selected);
+            _ring.Visible = Selected;
+            if (_shadowRing != null)
+            {
+                // Keep the air ring on the ground under the aircraft, level whatever it is doing.
+                _shadowRing.Transform.position = new Vector3(Root.position.x, 0.08f, Root.position.z);
+                _shadowRing.Transform.rotation = Quaternion.identity;
+            }
             var health = Mathf.Clamp01(Sim.Hp / Sim.MaxHp);
             var showBar = Selected || health < 0.999f;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
@@ -248,7 +264,8 @@ namespace MachineBrigade.Game.Views
                 block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
                 foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
             }
-            _ring.SetActive(false);
+            _ring.Visible = false;
+            if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
             Selected = false;
             _wreck = true;

@@ -55,10 +55,10 @@ namespace MachineBrigade.Game.Views
             _palette = TerrainPalette(theme);
             _rangeMaterial = materials.Terrain;
             _rangeMaterial.SetTexture("_BaseMap", _palette);
-            Place("Mountain Range", Own(MountainRange()), _rangeMaterial);
+            if (!Match.DebugFlags.Has("-mb-no-range")) Place("Mountain Range", Own(MountainRange()), _rangeMaterial);
 
             var river = Place("River", Own(Plane(1f, 1)), materials.Water);
-            river.transform.position = new Vector3(0f, -0.12f, RiverZ);
+            river.transform.position = new Vector3(0f, -0.01f, RiverZ);
             river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
 
             ScatterForests(models, fields);
@@ -147,6 +147,16 @@ namespace MachineBrigade.Game.Views
         private const float SnowLine = 40f;
 
         private static float Slope(Vector3 normal) => 1f - Mathf.Clamp01(normal.y);
+
+        /// <summary>
+        /// Shader-style smoothstep: 0 below <paramref name="from"/>, 1 above <paramref name="to"/>.
+        /// (Unity's Mathf.SmoothStep interpolates between its first two arguments instead.)
+        /// </summary>
+        private static float Edge(float from, float to, float x)
+        {
+            var t = Mathf.Clamp01((x - from) / (to - from));
+            return t * t * (3f - 2f * t);
+        }
 
         /// <summary>
         /// The range as one faceted mesh: each triangle is flat-shaded and coloured from a small
@@ -243,11 +253,11 @@ namespace MachineBrigade.Game.Views
             {
                 var h = x / (width - 1f);
                 var steep = y / (height - 1f);
-                var colour = Color.Lerp(meadow, forest, Mathf.SmoothStep(0.05f, 0.3f, h));
-                colour = Color.Lerp(colour, rock, Mathf.SmoothStep(0.5f, 0.72f, h));
-                colour = Color.Lerp(colour, cliff, Mathf.SmoothStep(0.45f, 0.8f, steep));
+                var colour = Color.Lerp(meadow, forest, Edge(0.05f, 0.3f, h));
+                colour = Color.Lerp(colour, rock, Edge(0.5f, 0.72f, h));
+                colour = Color.Lerp(colour, cliff, Edge(0.45f, 0.8f, steep));
                 // Snow settles on the gentler slopes of the peaks.
-                colour = Color.Lerp(colour, snow, Mathf.SmoothStep(0.8f, 0.88f, h) * (1f - Mathf.SmoothStep(0.55f, 0.85f, steep)));
+                colour = Color.Lerp(colour, snow, Edge(0.8f, 0.88f, h) * (1f - Edge(0.55f, 0.85f, steep)));
                 pixels[y * width + x] = colour;
             }
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false, false)
@@ -282,10 +292,10 @@ namespace MachineBrigade.Game.Views
                 // A thick tree line along the map edge, then whole forests on the lower slopes,
                 // thinning out towards the tree line.
                 var chance = distance < 26f
-                    ? 0.3f + 0.7f * Mathf.SmoothStep(0.2f, 0.55f, noise)
+                    ? 0.3f + 0.7f * Edge(0.2f, 0.55f, noise)
                     : height > 1f
-                        ? (0.55f + 0.45f * Mathf.SmoothStep(0.3f, 0.6f, noise)) * (1f - Mathf.SmoothStep(TreeLine * 0.6f, TreeLine, height))
-                        : 0.12f + 0.8f * Mathf.SmoothStep(0.42f, 0.68f, noise);
+                        ? (0.55f + 0.45f * Edge(0.3f, 0.6f, noise)) * (1f - Edge(TreeLine * 0.6f, TreeLine, height))
+                        : 0.12f + 0.8f * Edge(0.42f, 0.68f, noise);
                 if (_rng.NextDouble() > chance) continue;
                 // Conifers take over up the mountain; broadleaves and birches in the lowlands.
                 var roll = _rng.NextDouble();

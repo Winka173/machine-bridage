@@ -99,6 +99,8 @@ namespace MachineBrigade.Game.Rendering
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
+            GroundMark = new Material(Find("MachineBrigade/GroundMark")) { name = "GroundMark", enableInstancing = true };
+            _owned.Add(GroundMark);
 
             Fire = Particle(particle, "Fire", additive: true, intensity: 2f, shape: 3f, softness: 1.4f, depthPull: 9f);
             Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f, depthPull: 3f);
@@ -129,7 +131,10 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Red telegraph circles and lines for incoming strikes.</summary>
         public Material StrikeWarning { get; }
 
-        /// <summary>Capture point rings; tinted per owner with a property block.</summary>
+        /// <summary>Ground markings (objectives, telegraphs, selection); see <see cref="Rendering.GroundMark"/>.</summary>
+        public Material GroundMark { get; }
+
+        /// <summary>Capture point flags; tinted per owner with a property block.</summary>
         public Material Objective { get; }
         public Material BarBack { get; }
         public Material BarAlly { get; }

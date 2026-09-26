@@ -60,7 +60,7 @@ namespace MachineBrigade.Game.Effects
         private readonly StrikeEffects _strikes;
         private readonly Light[] _lightPool;
         private readonly float[] _lightStart, _lightIntensity;
-        private readonly Transform _marker;
+        private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
@@ -95,8 +95,9 @@ namespace MachineBrigade.Game.Effects
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _root);
 
-            _marker = VehicleView.CreateMesh("Move Marker", _root, meshes.Ring, materials.MoveMarker, false);
-            _marker.gameObject.SetActive(false);
+            _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
+            _marker.Transform.localScale = Vector3.one * 2.2f;
+            _marker.Visible = false;
         }
 
         public void Consume(IReadOnlyList<SimEvent> events, ViewRegistry views, MapView map)
@@ -225,8 +226,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Brief ring at a commanded destination, confirming the order landed.</summary>
         public void ShowMoveMarker(Vector3 point)
         {
-            _marker.position = new Vector3(point.x, 0.08f, point.z);
-            _marker.gameObject.SetActive(true);
+            _marker.Transform.position = new Vector3(point.x, 0.08f, point.z);
+            _marker.Visible = true;
             _markerStart = Time.unscaledTime;
         }
 
@@ -247,8 +248,8 @@ namespace MachineBrigade.Game.Effects
             FadeLights(Time.unscaledTime);
 
             var markerAge = Time.unscaledTime - _markerStart;
-            if (markerAge < 0.45f) _marker.localScale = Vector3.one * Mathf.Lerp(2.2f, 0.6f, markerAge / 0.45f);
-            else if (_marker.gameObject.activeSelf) _marker.gameObject.SetActive(false);
+            if (markerAge < 0.6f) _marker.Set(new Color(0.7f, 2f, 1.3f, 1f), Color.white, markerAge / 0.6f);
+            else _marker.Visible = false;
         }
 
         public void Dispose()

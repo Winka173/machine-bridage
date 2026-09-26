@@ -18,14 +18,17 @@ namespace MachineBrigade.Game.Effects
         private const float JetAltitude = 24f;
         private const float BombFall = 0.8f;
 
-        /// <summary>Red rings on the ground: one for an area strike, one per bomb for an airstrike.</summary>
+        /// <summary>Red target marks on the ground: one for an area strike, one per bomb for an airstrike.</summary>
         private sealed class Telegraph
         {
-            public Transform[] Rings;
+            public GroundMark[] Rings;
             public int Used;
-            public float Start, End, Radius;
+            public float Start, Impact, End, Radius;
             public bool Active;
         }
+
+        private static readonly Color WarningColor = new(2.4f, 0.32f, 0.18f, 0.95f);
+        private static readonly Color WarningFill = new(2.6f, 0.9f, 0.3f, 1f);
 
         private const int RingsPerTelegraph = 10;
 
@@ -65,11 +68,11 @@ namespace MachineBrigade.Game.Effects
 
             for (var i = 0; i < 6; i++)
             {
-                var t = new Telegraph { Rings = new Transform[RingsPerTelegraph] };
+                var t = new Telegraph { Rings = new GroundMark[RingsPerTelegraph] };
                 for (var r = 0; r < RingsPerTelegraph; r++)
                 {
-                    t.Rings[r] = VehicleView.CreateMesh("Strike Ring", _root, meshes.ThinRing, materials.StrikeWarning, false);
-                    t.Rings[r].gameObject.SetActive(false);
+                    t.Rings[r] = new GroundMark("Strike Mark", _root, meshes, materials, GroundMark.Style.Strike);
+                    t.Rings[r].Visible = false;
                 }
                 _telegraphs.Add(t);
             }
@@ -106,13 +109,18 @@ namespace MachineBrigade.Game.Effects
                 if (now >= t.End)
                 {
                     t.Active = false;
-                    foreach (var ring in t.Rings) ring.gameObject.SetActive(false);
+                    foreach (var ring in t.Rings) ring.Visible = false;
                     continue;
                 }
-                // Pulse faster as the impact nears.
-                var left = t.End - now;
-                var pulse = 1f + 0.08f * Mathf.Sin(now * Mathf.Lerp(18f, 6f, Mathf.Clamp01(left / 3f)));
-                for (var r = 0; r < t.Used; r++) t.Rings[r].localScale = Vector3.one * t.Radius * pulse;
+                // The fill sweeps round until impact; the mark beats faster as it nears.
+                var progress = Mathf.Clamp01((now - t.Start) / Mathf.Max(0.1f, t.Impact - t.Start));
+                var urgency = Mathf.Clamp01(1f - (t.Impact - now) / 2f);
+                var breathe = 1f + 0.05f * Mathf.Sin(now * Mathf.Lerp(6f, 20f, urgency));
+                for (var r = 0; r < t.Used; r++)
+                {
+                    t.Rings[r].Set(WarningColor, WarningFill, progress, urgency);
+                    t.Rings[r].Transform.localScale = Vector3.one * t.Radius * breathe;
+                }
             }
 
             foreach (var jet in _jets)
@@ -165,8 +173,9 @@ namespace MachineBrigade.Game.Effects
             var t = _telegraphs.Find(x => !x.Active) ?? _telegraphs[0];
             t.Active = true;
             t.Start = now;
+            t.Impact = now + delay;
             t.End = now + delay + (support.Kind is SupportKind.Barrage or SupportKind.Airstrike ? support.Duration : 0.2f);
-            foreach (var ring in t.Rings) ring.gameObject.SetActive(false);
+            foreach (var ring in t.Rings) ring.Visible = false;
             if (support.IsLine)
             {
                 // One ring per bomb, where it will land.
@@ -175,17 +184,17 @@ namespace MachineBrigade.Game.Effects
                 for (var i = 0; i < t.Used; i++)
                 {
                     var along = t.Used > 1 ? i / (float)(t.Used - 1) : 0.5f;
-                    t.Rings[i].position = Vector3.Lerp(point, end, along) + Vector3.up * 0.12f;
-                    t.Rings[i].localScale = Vector3.one * t.Radius;
-                    t.Rings[i].gameObject.SetActive(true);
+                    t.Rings[i].Transform.position = Vector3.Lerp(point, end, along) + Vector3.up * 0.1f;
+                    t.Rings[i].Transform.localScale = Vector3.one * t.Radius;
+                    t.Rings[i].Visible = true;
                 }
                 return;
             }
             t.Used = 1;
             t.Radius = support.Radius;
-            t.Rings[0].position = point + Vector3.up * 0.12f;
-            t.Rings[0].localScale = Vector3.one * support.Radius;
-            t.Rings[0].gameObject.SetActive(true);
+            t.Rings[0].Transform.position = point + Vector3.up * 0.1f;
+            t.Rings[0].Transform.localScale = Vector3.one * support.Radius;
+            t.Rings[0].Visible = true;
         }
 
         private void ScheduleBombs(SupportDef support, Vector3 start, Vector3 end, float firstImpact)
