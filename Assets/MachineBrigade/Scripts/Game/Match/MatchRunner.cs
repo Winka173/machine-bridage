@@ -1,3 +1,4 @@
+using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Hud;
@@ -26,7 +27,7 @@ namespace MachineBrigade.Game.Match
 
         private SimWorld _world;
         private SandboxMode _mode;
-        private SandboxAi _ai;
+        private TacticalAi _ai;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
@@ -36,6 +37,7 @@ namespace MachineBrigade.Game.Match
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private EffectsDirector _effects;
+        private AudioDirector _audio;
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
@@ -55,7 +57,7 @@ namespace MachineBrigade.Game.Match
             _world = new SimWorld(catalog, map, seed: 1234);
             _mode = new SandboxMode();
             _mode.Setup(_world);
-            _ai = new SandboxAi(SandboxMode.EnemyTeam, PlayerTeam);
+            _ai = new TacticalAi(SandboxMode.EnemyTeam, PlayerTeam, seed: 1234);
             _clock = new SimClock();
 
             var worldRoot = new GameObject("Battlefield").transform;
@@ -70,6 +72,7 @@ namespace MachineBrigade.Game.Match
             _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 16f, 0f, rally.Y + 16f));
             _effects = new EffectsDirector(_materials, _meshes, _models, _camera, worldRoot,
                 Application.isMobilePlatform ? EffectBudget.Eco : EffectBudget.High);
+            _audio = new AudioDirector(_camera, worldRoot);
 
             _hud = new BattleHud();
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
@@ -99,7 +102,7 @@ namespace MachineBrigade.Game.Match
             }
 
             _selection.Tick();
-            _effects.Tick();
+            _effects.Tick(_views);
             _hud.Tick();
             UpdateStatus();
         }
@@ -114,6 +117,7 @@ namespace MachineBrigade.Game.Match
         private void OnDestroy()
         {
             _effects?.Dispose();
+            _audio?.Dispose();
             _views?.Dispose();
             _map?.Dispose();
             _surroundings?.Dispose();
@@ -130,6 +134,7 @@ namespace MachineBrigade.Game.Match
                 if (e.Kind == SimEventKind.VehicleSpawned && _world.TryGetVehicle(e.Entity, out var vehicle))
                     _views.Add(vehicle);
             _effects.Consume(_world.Events, _views, _map);
+            _audio.Consume(_world.Events);
             _world.ClearEvents();
         }
 
@@ -146,6 +151,13 @@ namespace MachineBrigade.Game.Match
                 if (!_mode.TryReinforce(_world)) _hud.Toast(Strings.Get("toast.reinforceWait"), error: true);
             };
             _hud.RestartPressed += () => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            _hud.SelectAllPressed += _audio.Click;
+            _hud.StopPressed += _audio.Click;
+            _hud.RetreatPressed += _audio.Click;
+            _hud.AttackMovePressed += _audio.Click;
+            _hud.BoxModeToggled += _audio.Click;
+            _hud.ReinforcePressed += _audio.Click;
+            _hud.ZoomPressed += _ => _audio.Click();
             _selection.Rejected += _hud.ShowError;
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;

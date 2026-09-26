@@ -52,6 +52,8 @@ namespace MachineBrigade.Game.Effects
         private readonly DecalPool _decals;
         private readonly DebrisPool _debris;
         private readonly WreckManager _wrecks;
+        private readonly Emitters _emitters;
+        private readonly FireSpots _fires;
         private readonly SlowMotion _slowMotion = new();
         private readonly List<(Light light, float start, float intensity)> _lights = new();
         private readonly Transform _marker;
@@ -74,7 +76,9 @@ namespace MachineBrigade.Game.Effects
                 _explosions[tier] = new EffectPool(() => ExplosionEffect.Create(t, materials, _root), capacity);
             }
             _muzzle = new EffectPool(() => ExplosionEffect.CreateMuzzleFlash(materials, _root), 24);
-            _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 64);
+            _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
+            _emitters = new Emitters(materials, _root);
+            _fires = new FireSpots(materials, _root, budget.Lights + 6);
             _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
             _debris = new DebrisPool(_root, budget.Debris);
             _wrecks = new WreckManager(materials, budget.Wrecks);
@@ -111,7 +115,15 @@ namespace MachineBrigade.Game.Effects
                         Explode(e.Tier, blast, now);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
                         _wrecks.TossTurret(e.Entity, now);
-                        if (e.Tier >= ExplosionTier.Huge) _slowMotion.Trigger(Time.unscaledTime);
+                        if (e.Tier >= ExplosionTier.Huge)
+                        {
+                            _slowMotion.Trigger(Time.unscaledTime);
+                            _fires.Ignite(blast, 1.4f, 30f, now);
+                        }
+                        else if (e.Tier == ExplosionTier.Large && UnityEngine.Random.value < 0.35f)
+                        {
+                            _fires.Ignite(blast, 0.7f, 12f, now);
+                        }
                         break;
 
                     case SimEventKind.VehicleDestroyed:
@@ -124,7 +136,16 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.PropDestroyed:
                         if (!map.TryDestroy(e.Entity, out var prop)) break;
                         var centre = prop.Transform.position;
-                        if (prop.IsBuilding) Explode(ExplosionTier.Large, centre + Vector3.up * 2.5f, now);
+                        if (prop.IsBuilding)
+                        {
+                            Explode(ExplosionTier.Large, centre + Vector3.up * 2.5f, now);
+                            // The rubble keeps burning in a couple of places.
+                            var reach = prop.Prop.Radius * 0.4f;
+                            _fires.Ignite(centre + new Vector3(UnityEngine.Random.Range(-reach, reach), 0f, UnityEngine.Random.Range(-reach, reach)),
+                                1.1f, 35f, now);
+                            _fires.Ignite(centre + new Vector3(UnityEngine.Random.Range(-reach, reach), 0f, UnityEngine.Random.Range(-reach, reach)),
+                                0.7f, 22f, now);
+                        }
                         var spread = Mathf.Max(0.5f, prop.Prop.Radius * 0.6f);
                         var force = prop.IsBuilding ? 10f : 7f;
                         foreach (var id in prop.Debris)
@@ -146,12 +167,16 @@ namespace MachineBrigade.Game.Effects
             _markerStart = Time.unscaledTime;
         }
 
-        public void Tick()
+        public void Tick(ViewRegistry views)
         {
             var now = Time.time;
-            _tracers.Tick(now);
+            _tracers.Tick(now, _emitters);
             _debris.Tick(now);
             _wrecks.Tick(now);
+            _fires.Tick(now);
+            if (_wrecks.TryCookOff(now, out var cookOff))
+                Explode(UnityEngine.Random.value < 0.3f ? ExplosionTier.Medium : ExplosionTier.Small, cookOff, now);
+            KickUpDust(views, now);
             _slowMotion.Tick(Time.unscaledTime);
             FadeLights(Time.unscaledTime);
 
@@ -180,21 +205,50 @@ namespace MachineBrigade.Game.Effects
                 from = Ground(e.Position, 1.5f);
             }
             var to = Ground(e.Target, 0.4f);
+            var forward = to - from;
+            forward.y = 0f;
+            forward = forward.sqrMagnitude > 1e-4f ? forward.normalized : Vector3.forward;
+            var side = Vector3.Cross(Vector3.up, forward);
             switch (e.Tier)
             {
                 case ExplosionTier.Small:
-                    _tracers.Launch(from, to, e.Value, 0f, 0.05f, 1.1f, now);
+                    // A burst of three rounds walking around the aim point.
+                    for (var i = 0; i < 3; i++)
+                    {
+                        var scatter = side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f);
+                        _tracers.Launch(from, to + scatter, e.Value, 0f, 0.09f, 1.7f, now, i * 0.055f);
+                    }
                     break;
                 case ExplosionTier.Medium:
-                    _tracers.Launch(from, to, e.Value, 0f, 0.12f, 1.8f, now);
-                    Shake(from, 0.05f);
+                    var heavy = e.DefId == "gun_120mm";
+                    _tracers.Launch(from, to, e.Value, 0f, heavy ? 0.22f : 0.16f, heavy ? 3.2f : 2.6f, now, 0f, heavy ? 0.95f : 0.75f);
+                    _emitters.MuzzleSmoke(from, forward, heavy ? 1.3f : 1f);
+                    Shake(from, heavy ? 0.08f : 0.05f);
                     break;
                 default:
-                    _tracers.Launch(from, to, e.Value, Vector3.Distance(from, to) * 0.3f, 0.25f, 0.7f, now);
-                    Shake(from, 0.1f);
+                    _tracers.Launch(from, to, e.Value, Vector3.Distance(from, to) * 0.3f, 0.32f, 1.1f, now, 0f, 1.2f);
+                    _emitters.MuzzleSmoke(from, forward + Vector3.up * 0.6f, 1.7f);
+                    Shake(from, 0.12f);
                     break;
             }
             _muzzle.Acquire(now).Play(from, now);
+        }
+
+        /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>
+        private void KickUpDust(ViewRegistry views, float now)
+        {
+            foreach (var view in views.All)
+            {
+                var speed = view.Speed;
+                if (speed < 1.2f || now < view.DustAt) continue;
+                view.DustAt = now + Mathf.Lerp(0.2f, 0.07f, Mathf.Clamp01(speed / 10f));
+                var root = view.Root;
+                var radius = view.Sim.Radius;
+                var rear = root.position - root.forward * radius * 0.8f + Vector3.up * 0.3f;
+                var scale = radius * 0.75f;
+                _emitters.Dust(rear + root.right * radius * 0.55f, scale);
+                _emitters.Dust(rear - root.right * radius * 0.55f, scale);
+            }
         }
 
         private ChunkModel Chunk(string modelId)

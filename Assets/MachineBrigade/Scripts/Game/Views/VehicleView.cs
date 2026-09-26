@@ -83,6 +83,12 @@ namespace MachineBrigade.Game.Views
 
         public float MuzzleHeight => _model.Muzzle.y;
 
+        /// <summary>Latest simulated ground speed in m/s.</summary>
+        public float Speed => _currentSpeed;
+
+        /// <summary>Next time tread dust may be kicked up; owned by the effects layer.</summary>
+        public float DustAt { get; set; }
+
         public void Snapshot()
         {
             _previousPosition = _currentPosition;

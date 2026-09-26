@@ -27,6 +27,8 @@ namespace MachineBrigade.Game.Effects
             public Rigidbody TurretBody;
             public float TurretSettleAt;
             public float FadeStart = -1f;
+            public float NextPop;
+            public int PopsLeft;
         }
 
         private readonly List<Wreck> _wrecks = new();
@@ -42,7 +44,11 @@ namespace MachineBrigade.Game.Effects
         public void Add(VehicleView view, float now)
         {
             view.BecomeWreck();
-            var wreck = new Wreck { Id = view.Id, View = view, Created = now, Fire = Burn(view.Root, _materials) };
+            var wreck = new Wreck
+            {
+                Id = view.Id, View = view, Created = now, Fire = Burn(view.Root, _materials),
+                NextPop = now + Random.Range(1.5f, 4f), PopsLeft = Random.Range(2, 6),
+            };
             _wrecks.Add(wreck);
 
             var living = 0;
@@ -74,6 +80,24 @@ namespace MachineBrigade.Game.Effects
             body.angularVelocity = Random.insideUnitSphere * 5f;
             wreck.TurretBody = body;
             wreck.TurretSettleAt = now + TurretSettleSeconds;
+        }
+
+        /// <summary>
+        /// Ammunition cooking off inside a burning hulk: returns one wreck position that is due a
+        /// secondary pop, a few times per wreck while it burns.
+        /// </summary>
+        public bool TryCookOff(float now, out Vector3 position)
+        {
+            foreach (var w in _wrecks)
+            {
+                if (w.FireOut || w.FadeStart >= 0f || w.PopsLeft <= 0 || now < w.NextPop) continue;
+                w.PopsLeft--;
+                w.NextPop = now + Random.Range(2f, 6f);
+                position = w.View.Root.position + new Vector3(Random.Range(-0.6f, 0.6f), 1.2f, Random.Range(-0.6f, 0.6f));
+                return true;
+            }
+            position = default;
+            return false;
         }
 
         public void Tick(float now)
@@ -162,10 +186,10 @@ namespace MachineBrigade.Game.Effects
             var smokeMain = smoke.main;
             smokeMain.loop = true;
             smokeMain.duration = 3f;
-            PB.Basics(smoke, new Vector2(3f, 5f), new Vector2(0.2f, 0.6f), new Vector2(1.2f, 2.4f));
-            PB.Colors(smoke, PB.SmokeGradient(0.14f, 0.55f));
-            PB.Grow(smoke, 0.8f, 3f);
-            PB.Rise(smoke, 1.5f, 2.6f);
+            PB.Basics(smoke, new Vector2(2.4f, 4f), new Vector2(0.2f, 0.5f), new Vector2(1f, 1.8f));
+            PB.Colors(smoke, PB.Plume(0.12f, 0.42f, 0.42f));
+            PB.Grow(smoke, 0.7f, 2.3f);
+            PB.Rise(smoke, 1.6f, 2.6f);
             var smokeEmission = smoke.emission;
             smokeEmission.enabled = true;
             smokeEmission.rateOverTime = 4f;

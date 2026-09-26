@@ -6,6 +6,9 @@ namespace MachineBrigade.Game.Effects
     /// <summary>Terse helpers for configuring particle systems from code.</summary>
     internal static class ParticleBuilder
     {
+        /// <summary>Gentle breeze every smoke column leans into, so plumes drift off their source.</summary>
+        public static readonly Vector3 Wind = new(0.9f, 0f, 0.6f);
+
         public static ParticleSystem Create(Transform parent, string name, Material material,
             ParticleSystemRenderMode mode = ParticleSystemRenderMode.Billboard)
         {
@@ -82,9 +85,9 @@ namespace MachineBrigade.Game.Effects
             var vol = ps.velocityOverLifetime;
             vol.enabled = true;
             vol.space = ParticleSystemSimulationSpace.World;
-            vol.x = new ParticleSystem.MinMaxCurve(-0.3f, 0.3f);
+            vol.x = new ParticleSystem.MinMaxCurve(Wind.x - 0.3f, Wind.x + 0.3f);
             vol.y = new ParticleSystem.MinMaxCurve(min, max);
-            vol.z = new ParticleSystem.MinMaxCurve(-0.3f, 0.3f);
+            vol.z = new ParticleSystem.MinMaxCurve(Wind.z - 0.3f, Wind.z + 0.3f);
         }
 
         public static Gradient Fade(Color start, Color middle, Color end, float peakAlpha = 1f)
@@ -97,6 +100,23 @@ namespace MachineBrigade.Game.Effects
         }
 
         public static Gradient FireGradient => Fade(new Color(1f, 0.95f, 0.75f), new Color(1f, 0.55f, 0.12f), new Color(0.45f, 0.1f, 0.04f));
+
+        /// <summary>
+        /// Smoke column: dark and dense at the source, thinning into light grey haze. Fades in
+        /// so puffs do not pop into existence.
+        /// </summary>
+        public static Gradient Plume(float dark, float light, float alpha)
+        {
+            var g = new Gradient();
+            g.SetKeys(
+                new[] { new GradientColorKey(new Color(dark, dark, dark), 0f), new GradientColorKey(new Color(light, light, light * 0.97f), 1f) },
+                new[]
+                {
+                    new GradientAlphaKey(0f, 0f), new GradientAlphaKey(alpha, 0.12f), new GradientAlphaKey(alpha * 0.55f, 0.5f),
+                    new GradientAlphaKey(0f, 1f),
+                });
+            return g;
+        }
 
         public static Gradient SmokeGradient(float shade, float alpha) =>
             Fade(new Color(shade, shade, shade), new Color(shade * 0.9f, shade * 0.9f, shade * 0.9f), new Color(shade * 0.8f, shade * 0.8f, shade * 0.8f), alpha);

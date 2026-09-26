@@ -21,6 +21,12 @@ namespace MachineBrigade.Sim.Movement
         private const float SeparationSlack = 0.08f;
         private const float SeparationStiffness = 0.35f;
 
+        /// <summary>How far an idle vehicle will drive from its post to fight.</summary>
+        private const float GuardLeash = 16f;
+
+        /// <summary>How long an idle vehicle remembers who shot it.</summary>
+        private const float AnswerFireSeconds = 5f;
+
         private readonly SimWorld _world;
 
         public MovementSystem(SimWorld world) => _world = world;
@@ -59,7 +65,59 @@ namespace MachineBrigade.Sim.Movement
                 case OrderKind.AttackMove:
                     UpdateAttackMove(v);
                     break;
+
+                case OrderKind.Idle:
+                    UpdateGuard(v);
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Idle vehicles defend their post instead of standing still while being shot: they close
+        /// in on enemies they can see, and on whoever just hit them, within a short leash, then
+        /// drive back once the area is clear. Artillery keeps its position, since it already
+        /// out-ranges everything, and harmless vehicles have nothing to fight with.
+        /// </summary>
+        private void UpdateGuard(Vehicle v)
+        {
+            var weapon = v.Def.Weapon;
+            if (weapon.MinRange > 0f || weapon.Damage <= 0f) return;
+
+            var threat = GuardThreat(v);
+            var fromPost = Vector2.Distance(v.Position, v.GuardPoint);
+            if (threat != null && fromPost <= GuardLeash + 4f)
+            {
+                v.Engaged = threat.Id;
+                CloseIn(v, threat);
+                return;
+            }
+
+            v.Engaged = EntityId.None;
+            if (fromPost > 2f && !v.HasPath && v.RepathTimer <= 0f) _world.PathTo(v, v.GuardPoint);
+        }
+
+        private Vehicle? GuardThreat(Vehicle v)
+        {
+            // Only threats that can be fought without leaving the leash, so the vehicle never
+            // swings back and forth at its edge.
+            var reach = GuardLeash + v.Def.Weapon.Range * 0.9f;
+            if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
+                attacker.IsAlive && attacker.IsVisibleTo(v.Team) &&
+                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
+                return attacker;
+
+            Vehicle? best = null;
+            var bestDistance = float.MaxValue;
+            foreach (var other in _world.VehicleList)
+            {
+                if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team)) continue;
+                var distance = Vector2.Distance(v.Position, other.Position);
+                if (distance > v.Def.VisionRange || distance >= bestDistance) continue;
+                if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
+                best = other;
+                bestDistance = distance;
+            }
+            return best;
         }
 
         private void UpdateAttackMove(Vehicle v)

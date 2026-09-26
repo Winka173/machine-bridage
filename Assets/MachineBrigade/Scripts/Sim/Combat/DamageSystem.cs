@@ -35,10 +35,11 @@ namespace MachineBrigade.Sim.Combat
             {
                 Apply(target, weapon.Damage, weapon.DamageType);
                 hit = target.Id;
+                if (target is Vehicle victim) Blame(victim, p.Owner);
             }
 
             if (weapon.SplashRadius > 0f)
-                Splash(p.AimPoint, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit);
+                Splash(p.AimPoint, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner);
 
             _world.Emit(SimEvent.Impact(weapon, p.AimPoint, hit, p.OwnerTeam));
         }
@@ -47,19 +48,30 @@ namespace MachineBrigade.Sim.Combat
         /// Area damage with linear falloff. Weapon splash spares the shooter's team; blasts
         /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
         /// </summary>
-        public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude)
+        public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude,
+            EntityId attacker = default)
         {
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Id == exclude) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
+                var before = v.Hp;
                 ApplyFalloff(v, at, radius, damage, type);
+                if (v.Hp < before) Blame(v, attacker);
             }
             foreach (var prop in _world.PropList)
             {
                 if (!prop.IsAlive || prop.Id == exclude) continue;
                 ApplyFalloff(prop, at, radius, damage, type);
             }
+        }
+
+        /// <summary>Remembers who hit a vehicle, which lets idle vehicles turn on their attacker.</summary>
+        private void Blame(Vehicle victim, EntityId attacker)
+        {
+            if (!attacker.IsValid) return;
+            victim.LastAttacker = attacker;
+            victim.LastHitTime = _world.Time;
         }
 
         public void Apply(IDamageable target, float amount, DamageType type)

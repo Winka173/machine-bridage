@@ -25,6 +25,7 @@ namespace MachineBrigade.Sim.Entities
             Hp = def.MaxHp;
             Order = Order.Idle;
             PathCompleted = true;
+            GuardPoint = position;
         }
 
         public EntityId Id { get; }
@@ -69,6 +70,16 @@ namespace MachineBrigade.Sim.Entities
         internal EntityId Engaged;
 
         internal bool ResumeRoute;
+
+        /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
+        internal Vector2 GuardPoint;
+
+        /// <summary>Last enemy vehicle that hurt this one, so idle vehicles answer fire.</summary>
+        internal EntityId LastAttacker;
+
+        /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
+        internal double LastHitTime = double.NegativeInfinity;
+
         internal Vector2 StuckSample;
         internal float StuckTimer;
         internal int StuckStrikes;
@@ -97,6 +108,7 @@ namespace MachineBrigade.Sim.Entities
         internal void SetOrder(Order order)
         {
             Order = order;
+            if (order.Kind == OrderKind.Idle) GuardPoint = Position;
             Engaged = EntityId.None;
             ResumeRoute = false;
             RepathTimer = 0f;
