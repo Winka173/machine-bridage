@@ -63,10 +63,10 @@ MATERIALS = {
     'Team': ('#c9d6cf', 0.25, 0.42, 0.0),        # recoloured per faction at runtime
     'TeamGlow': ('#b8ffe4', 0.0, 0.3, 3.0),      # emissive recoloured per faction
     'Armor': ('#59605f', 0.55, 0.46, 0.0),       # painted gunmetal plates
-    'Steel': ('#c4c8c4', 0.95, 0.28, 0.0),       # machined bare metal
+    'Steel': ('#c4c8c4', 0.85, 0.42, 0.0),       # machined bare metal
     'Undercarriage': ('#23282a', 0.35, 0.72, 0.0),
     'Suit': ('#343a3a', 0.0, 0.82, 0.0),         # padded fabric under infantry armour
-    'Glass': ('#12303a', 0.2, 0.06, 0.35),
+    'Glass': ('#12303a', 0.1, 0.3, 0.35),
     'Alloy': ('#ff9b36', 0.1, 0.35, 2.4),        # amber cargo / hazard lights
     'Energy': ('#62c4ff', 0.05, 0.22, 2.8),
     'Lamp': ('#ffe7b8', 0.0, 0.3, 3.2),          # floodlights and windows

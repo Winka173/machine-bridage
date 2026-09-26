@@ -36,6 +36,10 @@ namespace MachineBrigade.Game.Rendering
             ["BarrelRed"] = ("#c2402a", 0.35f, 0.48f, 0f),
             ["Fuel"] = ("#e4e2d8", 0.45f, 0.42f, 0f),
             ["Canvas"] = ("#8a8764", 0f, 0.9f, 0f),
+            ["Snow"] = ("#e8eef0", 0f, 0.85f, 0f),
+            ["Dirt"] = ("#7a6448", 0f, 0.95f, 0f),
+            ["Sandbag"] = ("#a8956a", 0f, 0.95f, 0f),
+            ["Grass"] = ("#5f7a45", 0f, 0.9f, 0f),
         };
 
         private readonly List<Material> _owned = new();

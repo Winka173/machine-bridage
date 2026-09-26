@@ -77,7 +77,8 @@ namespace MachineBrigade.Sim.Content
                     v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
                     v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
                     v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
-                    v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f))));
+                    v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
+                    v.Has("mainSlot") ? v.String("mainSlot") : "main")));
             }
 
             var props = new List<PropDef>();

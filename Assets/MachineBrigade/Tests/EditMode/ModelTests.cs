@@ -7,7 +7,16 @@ namespace MachineBrigade.Tests
     /// <summary>Checks the Blender models against the runtime contract in ModelLibrary.</summary>
     public class ModelTests
     {
-        private static readonly string[] Vehicles = { "scout_jeep", "light_tank", "main_battle_tank", "artillery" };
+        private static readonly string[] Vehicles =
+        {
+            "scout_jeep", "light_tank", "main_battle_tank", "artillery", "apc", "mlrs", "aa_vehicle", "flame_tank",
+        };
+
+        private static readonly string[] Others =
+        {
+            "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
+            "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
+        };
 
         private static readonly string[] Props =
         {
@@ -23,6 +32,30 @@ namespace MachineBrigade.Tests
                 Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
             foreach (var id in Props)
                 Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
+            foreach (var id in Others)
+                Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
+        }
+
+        /// <summary>Every weapon mount in the balance data has a muzzle on its model (V: ModelLibrary contract).</summary>
+        [Test]
+        public void EveryWeaponMountHasAMuzzleOnItsModel()
+        {
+            var catalog = MachineBrigade.Game.Match.GameContent.LoadCatalog();
+            foreach (var def in catalog.Vehicles.Values)
+            {
+                var root = Load(def.Id).transform;
+                foreach (var mount in def.Mounts)
+                    Assert.IsNotNull(Find(root, "Muzzle_" + mount.Slot), $"{def.Id} has no Muzzle_{mount.Slot} for {mount.Weapon.Id}");
+            }
+        }
+
+        [Test]
+        public void HelicopterRotorsAreSeparatePivots()
+        {
+            var root = Load("attack_helicopter").transform;
+            Assert.IsNotNull(Find(root, "Rotor"));
+            Assert.IsNotNull(Find(root, "Tail_rotor"));
+            Assert.IsNotNull(Find(root, "Mount_gun"));
         }
 
         /// <summary>Blender's -Y front must arrive as Unity +Z, or vehicles would drive backwards.</summary>
@@ -34,12 +67,14 @@ namespace MachineBrigade.Tests
                 var root = Load(id).transform;
                 var turret = Find(root, "Turret");
                 Assert.IsNotNull(turret, $"{id} needs a Turret pivot");
-                var barrel = FindPrefix(turret, "Main_cannon");
-                Assert.IsNotNull(barrel, $"{id} needs a Main_cannon under its Turret");
                 // Measured from the turret pivot: the jeep's gun mount sits behind the hull centre.
-                var mesh = barrel.GetComponentInChildren<MeshFilter>().sharedMesh;
-                var tip = turret.InverseTransformPoint(barrel.TransformPoint(mesh.bounds.center));
-                Assert.Greater(tip.z, 0.2f, $"{id}'s barrel points backwards (z = {tip.z})");
+                var muzzle = Find(turret, "Muzzle_main");
+                Assert.IsNotNull(muzzle, $"{id} needs a Muzzle_main under its Turret");
+                var tip = turret.InverseTransformPoint(muzzle.position);
+                Assert.Greater(tip.z, 0.2f, $"{id}'s weapon points backwards (z = {tip.z})");
+                // Guns recoil; launchers (the rocket pod) have no barrel.
+                if (id == "mlrs") continue;
+                Assert.IsNotNull(FindPrefix(turret, "Main_cannon"), $"{id} needs a Main_cannon under its Turret");
             }
         }
 

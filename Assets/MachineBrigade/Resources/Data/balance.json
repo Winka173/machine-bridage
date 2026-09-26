@@ -65,7 +65,7 @@
       "secondary": [ { "weapon": "sam", "slot": "missile", "aim": "Free" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     { "id": "attack_helicopter", "armor": "Air",  "hp": 380, "speed": 14, "turnRate": 120, "turretTurnRate": 360, "radius": 2.2, "cp": 6, "vision": 38,
-      "firesWhileMoving": true, "weapon": "heli_atgm", "flying": true, "altitude": 9, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "heli_atgm", "mainSlot": "missile", "flying": true, "altitude": 9, "captureRate": 0,
       "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" } ],
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.6, "tier": "Large" } }
   ],

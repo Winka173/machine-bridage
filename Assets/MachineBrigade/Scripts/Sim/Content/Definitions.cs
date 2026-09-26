@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Content
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,
             WeaponDef weapon, ExplosionDef? deathExplosion, IReadOnlyList<WeaponMount>? secondary = null,
-            bool flying = false, float altitude = 0f, float captureRate = 1f)
+            bool flying = false, float altitude = 0f, float captureRate = 1f, string mainSlot = "main")
         {
             Id = Guard.Id(id);
             Armor = armor;
@@ -120,7 +120,7 @@ namespace MachineBrigade.Sim.Content
             FiresWhileMoving = firesWhileMoving;
             Weapon = weapon ?? throw new ArgumentNullException(nameof(weapon));
             DeathExplosion = deathExplosion;
-            var mounts = new List<WeaponMount> { new WeaponMount(weapon, "main", flying ? MountAim.Hull : MountAim.Turret) };
+            var mounts = new List<WeaponMount> { new WeaponMount(weapon, mainSlot, flying ? MountAim.Hull : MountAim.Turret) };
             if (secondary != null) mounts.AddRange(secondary);
             Mounts = mounts;
             Flying = flying;
