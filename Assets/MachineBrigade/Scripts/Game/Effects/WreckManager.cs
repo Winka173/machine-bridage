@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Add(VehicleView view, float now)
         {
-            view.BecomeWreck(_materials.Wreck);
+            view.BecomeWreck();
             var wreck = new Wreck { Id = view.Id, View = view, Created = now, Fire = Burn(view.Root, _materials) };
             _wrecks.Add(wreck);
 
@@ -63,13 +63,11 @@ namespace MachineBrigade.Game.Effects
             var wreck = _wrecks.Find(w => w.Id == id);
             if (wreck == null || wreck.TurretBody != null) return;
             var turret = wreck.View.Turret;
-            var filter = turret.GetComponent<MeshFilter>();
+            if (turret == null) return;
             var collider = turret.gameObject.AddComponent<BoxCollider>();
-            if (filter != null)
-            {
-                collider.center = filter.sharedMesh.bounds.center;
-                collider.size = filter.sharedMesh.bounds.size;
-            }
+            var bounds = LocalBounds(turret);
+            collider.center = bounds.center;
+            collider.size = Vector3.Max(bounds.size, Vector3.one * 0.3f);
             var body = turret.gameObject.AddComponent<Rigidbody>();
             body.mass = 3f;
             body.linearVelocity = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(7f, 11f), Random.Range(-2.5f, 2.5f));
@@ -117,6 +115,27 @@ namespace MachineBrigade.Game.Effects
             foreach (var w in _wrecks)
                 if (w.View.Root != null) Object.Destroy(w.View.Root.gameObject);
             _wrecks.Clear();
+        }
+
+        /// <summary>Bounds of every mesh under a transform, in that transform's space.</summary>
+        private static Bounds LocalBounds(Transform root)
+        {
+            var bounds = new Bounds(Vector3.zero, Vector3.zero);
+            var first = true;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>())
+            {
+                if (filter.sharedMesh == null) continue;
+                var b = filter.sharedMesh.bounds;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = new Vector3((i & 1) == 0 ? b.min.x : b.max.x, (i & 2) == 0 ? b.min.y : b.max.y,
+                        (i & 4) == 0 ? b.min.z : b.max.z);
+                    var p = root.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                    if (first) { bounds = new Bounds(p, Vector3.zero); first = false; }
+                    else bounds.Encapsulate(p);
+                }
+            }
+            return bounds;
         }
 
         /// <summary>Looping flames plus a slow smoke column, attached to the hulk.</summary>

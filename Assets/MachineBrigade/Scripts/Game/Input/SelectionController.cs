@@ -93,7 +93,7 @@ namespace MachineBrigade.Game.Input
 
         public void OnPan(Vector2 fromScreen, Vector2 toScreen) => _camera.Pan(fromScreen, toScreen);
 
-        public void OnPinch(float scale, Vector2 centreScreen) => _camera.Zoom(scale, centreScreen);
+        public void OnPinch(float scale, Vector2 centreScreen) => _camera.ZoomBy(scale, centreScreen);
 
         public void OnBoxUpdate(Vector2 startScreen, Vector2 currentScreen) => BoxChanged?.Invoke(startScreen, currentScreen);
 

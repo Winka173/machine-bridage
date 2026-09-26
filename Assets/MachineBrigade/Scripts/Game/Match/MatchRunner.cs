@@ -30,6 +30,8 @@ namespace MachineBrigade.Game.Match
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
+        private ModelLibrary _models;
+        private Atmosphere _atmosphere;
         private MapView _map;
         private ViewRegistry _views;
         private EffectsDirector _effects;
@@ -44,7 +46,7 @@ namespace MachineBrigade.Game.Match
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
-            ConfigureAtmosphere();
+            _atmosphere = new Atmosphere();
 
             var catalog = GameContent.LoadCatalog();
             var map = GameContent.LoadMap(MapId);
@@ -57,12 +59,13 @@ namespace MachineBrigade.Game.Match
             var worldRoot = new GameObject("Battlefield").transform;
             _materials = new MaterialLibrary();
             _meshes = new MeshLibrary();
-            _map = new MapView(_world, _meshes, _materials, worldRoot);
-            _views = new ViewRegistry(_meshes, _materials, worldRoot, PlayerTeam);
+            _models = new ModelLibrary(_materials);
+            _map = new MapView(_world, _models, _materials, worldRoot);
+            _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
 
             _world.TryGetRally(PlayerTeam, out var rally);
-            _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 18f, 0f, rally.Y + 18f));
-            _effects = new EffectsDirector(_materials, _meshes, _camera, worldRoot,
+            _camera = new RtsCamera(Camera.main, map.HalfSize, new Vector3(rally.X + 16f, 0f, rally.Y + 16f));
+            _effects = new EffectsDirector(_materials, _meshes, _models, _camera, worldRoot,
                 Application.isMobilePlatform ? EffectBudget.Eco : EffectBudget.High);
 
             _hud = new SandboxHud();
@@ -112,6 +115,7 @@ namespace MachineBrigade.Game.Match
             _hud?.Dispose();
             _meshes?.Dispose();
             _materials?.Dispose();
+            _atmosphere?.Dispose();
             Time.timeScale = 1f;
         }
 
@@ -152,21 +156,6 @@ namespace MachineBrigade.Game.Match
                 (_selection.SelectedCount > 0
                     ? $"{_selection.SelectedCount} selected: tap ground to move, tap enemy or barrel to attack"
                     : "Tap a vehicle to select, hold and drag to box-select, double-tap for all of a type"));
-        }
-
-        /// <summary>
-        /// Lighting that does not depend on baked data: explicit ambient colours for the voxel
-        /// shader and linear fog to soften the horizon.
-        /// </summary>
-        private static void ConfigureAtmosphere()
-        {
-            Shader.SetGlobalColor("_MB_AmbientSky", new Color(0.46f, 0.5f, 0.6f));
-            Shader.SetGlobalColor("_MB_AmbientGround", new Color(0.24f, 0.21f, 0.18f));
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(0.66f, 0.71f, 0.76f);
-            RenderSettings.fogStartDistance = 110f;
-            RenderSettings.fogEndDistance = 380f;
         }
     }
 }

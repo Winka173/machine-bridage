@@ -42,6 +42,8 @@ namespace MachineBrigade.Game.Effects
 
         private readonly Transform _root;
         private readonly MaterialLibrary _materials;
+        private readonly ModelLibrary _models;
+        private readonly Dictionary<string, ChunkModel> _chunks = new();
         private readonly RtsCamera _camera;
         private readonly EffectBudget _budget;
         private readonly Dictionary<ExplosionTier, EffectPool> _explosions = new();
@@ -55,9 +57,11 @@ namespace MachineBrigade.Game.Effects
         private readonly Transform _marker;
         private float _markerStart = -10f;
 
-        public EffectsDirector(MaterialLibrary materials, MeshLibrary meshes, RtsCamera camera, Transform parent, EffectBudget budget)
+        public EffectsDirector(MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
+            Transform parent, EffectBudget budget)
         {
             _materials = materials;
+            _models = models;
             _camera = camera;
             _budget = budget;
             _root = new GameObject("Effects").transform;
@@ -120,10 +124,15 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.PropDestroyed:
                         if (!map.TryDestroy(e.Entity, out var prop)) break;
                         var centre = prop.Transform.position;
-                        if (prop.Meshes.Rubble != null) Explode(ExplosionTier.Large, centre + Vector3.up * 2f, now);
-                        foreach (var chunk in prop.Meshes.Chunks)
-                            _debris.Throw(chunk, prop.Transform.TransformPoint(chunk.LocalCenter), prop.Transform.rotation,
-                                centre - Vector3.up, _materials.Voxel, prop.Meshes.Rubble != null ? 9f : 6f, now);
+                        if (prop.IsBuilding) Explode(ExplosionTier.Large, centre + Vector3.up * 2.5f, now);
+                        var spread = Mathf.Max(0.5f, prop.Prop.Radius * 0.6f);
+                        var force = prop.IsBuilding ? 10f : 7f;
+                        foreach (var id in prop.Debris)
+                        {
+                            var offset = new Vector3(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0.4f, 2.5f),
+                                UnityEngine.Random.Range(-spread, spread));
+                            _debris.Throw(Chunk(id), centre + offset, UnityEngine.Random.rotation, centre - Vector3.up, force, now);
+                        }
                         break;
                 }
             }
@@ -160,8 +169,16 @@ namespace MachineBrigade.Game.Effects
 
         private void OnFired(SimEvent e, ViewRegistry views, float now)
         {
-            var muzzleHeight = views.TryGet(e.Entity, out var shooter) ? shooter.Meshes.MuzzleHeight : 1.5f;
-            var from = Ground(e.Position, muzzleHeight);
+            Vector3 from;
+            if (views.TryGet(e.Entity, out var shooter))
+            {
+                shooter.Recoil();
+                from = shooter.MuzzleWorld;
+            }
+            else
+            {
+                from = Ground(e.Position, 1.5f);
+            }
             var to = Ground(e.Target, 0.4f);
             switch (e.Tier)
             {
@@ -178,6 +195,12 @@ namespace MachineBrigade.Game.Effects
                     break;
             }
             _muzzle.Acquire(now).Play(from, now);
+        }
+
+        private ChunkModel Chunk(string modelId)
+        {
+            if (!_chunks.TryGetValue(modelId, out var chunk)) _chunks[modelId] = chunk = _models.Chunk(modelId);
+            return chunk;
         }
 
         private void Explode(ExplosionTier tier, Vector3 position, float now)

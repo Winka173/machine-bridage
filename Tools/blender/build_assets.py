@@ -41,6 +41,9 @@ def build_all(filters=()):
         asset.export(OUT / f'{name}.glb')
         report[name] = {'file': f'{name}.glb', 'triangles': asset.triangles()}
         print(f'BUILT {name}: {asset.triangles()} triangles')
+        # Blender object names are global: clear this asset so the next one gets clean names
+        # ("Turret", not "Turret.001"), which the runtime looks up.
+        kit.clear_workspace(root)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(dict(sorted(report.items())), indent=2) + '\n', encoding='utf-8')
     return report

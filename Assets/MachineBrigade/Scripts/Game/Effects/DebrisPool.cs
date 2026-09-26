@@ -50,13 +50,13 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
-        public void Throw(ChunkMesh chunk, Vector3 position, Quaternion rotation, Vector3 blastOrigin, Material material,
-            float force, float now)
+        public void Throw(ChunkModel chunk, Vector3 position, Quaternion rotation, Vector3 blastOrigin, float force, float now)
         {
             var piece = Acquire();
             piece.Filter.sharedMesh = chunk.Mesh;
-            piece.Renderer.sharedMaterial = material;
-            piece.Collider.size = chunk.Size;
+            piece.Renderer.sharedMaterials = chunk.Materials;
+            piece.Collider.center = chunk.Mesh.bounds.center;
+            piece.Collider.size = chunk.Mesh.bounds.size;
             piece.GameObject.transform.SetPositionAndRotation(position, rotation);
             piece.GameObject.transform.localScale = Vector3.one;
             piece.GameObject.SetActive(true);

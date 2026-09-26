@@ -3,7 +3,6 @@
     "rootNamespace": "MachineBrigade.Game",
     "references": [
         "MachineBrigade.Sim",
-        "MachineBrigade.Voxel",
         "Unity.InputSystem",
         "UnityEngine.UI",
         "Unity.RenderPipelines.Core.Runtime",
