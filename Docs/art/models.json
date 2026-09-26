@@ -1,7 +1,7 @@
 {
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
-    "triangles": 5144
+    "triangles": 6936
   },
   "adobe_house": {
     "file": "adobe_house.glb",
@@ -21,15 +21,15 @@
   },
   "apc": {
     "file": "apc.glb",
-    "triangles": 5476
+    "triangles": 6448
   },
   "armored_car": {
     "file": "armored_car.glb",
-    "triangles": 5100
+    "triangles": 6064
   },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 5504
+    "triangles": 7052
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
@@ -69,7 +69,7 @@
   },
   "car": {
     "file": "car.glb",
-    "triangles": 1252
+    "triangles": 1580
   },
   "church": {
     "file": "church.glb",
@@ -141,7 +141,7 @@
   },
   "flame_tank": {
     "file": "flame_tank.glb",
-    "triangles": 5848
+    "triangles": 7784
   },
   "fuel_tank": {
     "file": "fuel_tank.glb",
@@ -161,7 +161,7 @@
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
-    "triangles": 6472
+    "triangles": 8328
   },
   "hedge": {
     "file": "hedge.glb",
@@ -185,7 +185,7 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 5688
+    "triangles": 7080
   },
   "log_cabin": {
     "file": "log_cabin.glb",
@@ -193,7 +193,7 @@
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
-    "triangles": 5996
+    "triangles": 8068
   },
   "market_stall": {
     "file": "market_stall.glb",
@@ -209,11 +209,11 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 5808
+    "triangles": 6876
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
-    "triangles": 5196
+    "triangles": 6448
   },
   "mountain_a": {
     "file": "mountain_a.glb",
@@ -281,7 +281,7 @@
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
-    "triangles": 6028
+    "triangles": 6344
   },
   "rubble_large": {
     "file": "rubble_large.glb",
@@ -301,7 +301,7 @@
   },
   "sam_launcher": {
     "file": "sam_launcher.glb",
-    "triangles": 6092
+    "triangles": 7912
   },
   "sandbags": {
     "file": "sandbags.glb",
@@ -313,7 +313,7 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 3400
+    "triangles": 4044
   },
   "shop": {
     "file": "shop.glb",
@@ -349,7 +349,7 @@
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
-    "triangles": 6260
+    "triangles": 7588
   },
   "tank_trap": {
     "file": "tank_trap.glb",
@@ -377,7 +377,7 @@
   },
   "truck": {
     "file": "truck.glb",
-    "triangles": 1852
+    "triangles": 2428
   },
   "wall": {
     "file": "wall.glb",
