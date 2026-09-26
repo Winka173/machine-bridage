@@ -8,7 +8,7 @@ namespace MachineBrigade.Game.Effects
 {
     /// <summary>
     /// The particle systems every blast shares, one per kind of layer (flash, fireball, smoke,
-    /// sparks...). All explosion tiers and muzzle flashes emit into these few world-space
+    /// sparks...). All explosion tiers and airbursts emit into these few world-space
     /// systems, so a battle's explosions cost about a dozen draw calls, and no blast is ever cut
     /// short to make room for another. Each system holds the look of its layer (material,
     /// colour, growth, gravity, shape); a blast recipe only supplies counts, sizes and speeds.
@@ -160,7 +160,7 @@ namespace MachineBrigade.Game.Effects
     }
 
     /// <summary>
-    /// One kind of blast (an explosion tier, or the muzzle flash): a recipe of bursts emitted
+    /// One kind of blast (an explosion tier, or an airburst): a recipe of bursts emitted
     /// into the shared <see cref="BlastLayers"/>. Bigger tiers add layers (debris, shockwave,
     /// light, a second fireball) rather than only scaling up. Later bursts (secondary pops, a
     /// rolling fireball) are scheduled and emitted by <see cref="Tick"/>.
@@ -368,15 +368,6 @@ namespace MachineBrigade.Game.Effects
             e.Embers(l, 10, 0.8f);
             e.LightRange = 14f;
             e.LightIntensity = 7f;
-            return e;
-        }
-
-        /// <summary>Barrel-mounted flash; played (scaled) for every shot.</summary>
-        public static ExplosionEffect CreateMuzzleFlash(BlastLayers l)
-        {
-            var e = new ExplosionEffect();
-            e.Flash(l, 1.7f);
-            e.Sparks(l, 4, new Vector2(3f, 7f), 0.07f);
             return e;
         }
     }

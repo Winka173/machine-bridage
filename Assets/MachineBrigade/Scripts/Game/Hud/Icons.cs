@@ -57,6 +57,13 @@ namespace MachineBrigade.Game.Hud
             ["scoutheli"] = "<path d=\"M5 6h14M12 6v3\"/><circle cx=\"10\" cy=\"13\" r=\"4\"/><path d=\"M14 13h7M19 11v4M8 17l-1 3M12 17l1 3\"/>",
             ["jet"] = "<path d=\"M12 2c1 0 1.5 2 1.5 4v12h-3V6c0-2 .5-4 1.5-4Z\"/><path d=\"M2 11h20v2H2ZM7 20h10M9 17h6\"/>",
             ["drone"] = "<path d=\"M2 10h20M12 6v12M9 18h6M10 20l2-2 2 2\"/><circle cx=\"12\" cy=\"5\" r=\"1.5\"/>",
+            ["snow"] = "<path d=\"M12 2v20M4 7l16 10M20 7 4 17M9 4l3 2 3-2M9 20l3-2 3 2\"/>",
+            ["wind"] = "<path d=\"M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8\"/>",
+            ["fog"] = "<path d=\"M4 9h16M2 13h20M5 17h14M7 21h10\"/><path d=\"M7 9a5 5 0 0 1 10 0\"/>",
+            ["moon"] = "<path d=\"M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10Z\"/>",
+            ["pine"] = "<path d=\"M12 2 6 10h3l-4 6h14l-4-6h3ZM12 16v6\"/>",
+            ["dune"] = "<path d=\"M2 19c4-6 8-6 11-2s6 3 9-1M6 9a3 3 0 1 0 0-.1\"/><path d=\"M16 4v6M13 7h6\"/>",
+            ["anchor"] = "<path d=\"M12 7v14M5 13a7 7 0 0 0 14 0M3 13h4M17 13h4\"/><circle cx=\"12\" cy=\"5\" r=\"2\"/>",
             ["flame"] = "<path d=\"M12 22a7 7 0 0 0 7-7c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 3-5 5-5 8a7 7 0 0 0 7 7Z\"/>",
             ["barrage"] = "<path d=\"M6 3v6M12 2v7M18 3v6\"/><path d=\"M4 21a8 5 0 0 1 16 0\"/><path d=\"m9 13 3 3 3-3\"/>",
             ["airstrike"] = "<path d=\"M12 2l2 7 7 3v2l-7-1-1 6 3 2v1l-4-1-4 1v-1l3-2-1-6-7 1v-2l7-3Z\"/>",
@@ -280,8 +287,12 @@ namespace MachineBrigade.Game.Hud
     /// <summary>A vector icon that takes its colour from <see cref="Tint"/>.</summary>
     public sealed class IconElement : VisualElement
     {
+        private static readonly CustomStyleProperty<Color> IconColor = new("--icon-color");
+
         private string _name;
         private Color _tint = Color.white;
+        private Color _styleColor = Color.white;
+        private bool _explicitTint, _hasStyleColor;
 
         public IconElement(string name, float strokeWidth = 1.7f)
         {
@@ -290,6 +301,17 @@ namespace MachineBrigade.Game.Hud
             pickingMode = PickingMode.Ignore;
             AddToClassList("icon");
             generateVisualContent += Draw;
+            // Unless given a colour in code, an icon follows the stylesheet's --icon-color, so a
+            // selected (amber) button can turn its icon dark.
+            RegisterCallback<CustomStyleResolvedEvent>(OnStyleResolved);
+        }
+
+        private void OnStyleResolved(CustomStyleResolvedEvent e)
+        {
+            if (!e.customStyle.TryGetValue(IconColor, out var colour) || (_hasStyleColor && colour == _styleColor)) return;
+            _styleColor = colour;
+            _hasStyleColor = true;
+            if (!_explicitTint) MarkDirtyRepaint();
         }
 
         public float StrokeWidth { get; }
@@ -310,8 +332,9 @@ namespace MachineBrigade.Game.Hud
             get => _tint;
             set
             {
-                if (_tint == value) return;
+                if (_explicitTint && _tint == value) return;
                 _tint = value;
+                _explicitTint = true;
                 MarkDirtyRepaint();
             }
         }
@@ -323,7 +346,7 @@ namespace MachineBrigade.Game.Hud
             if (scale <= 0f) return;
             var origin = rect.position + (rect.size - Vector2.one * 24f * scale) * 0.5f;
             var p = context.painter2D;
-            p.strokeColor = _tint;
+            p.strokeColor = _explicitTint || !_hasStyleColor ? _tint : _styleColor;
             p.lineWidth = StrokeWidth * scale;
             p.lineCap = LineCap.Round;
             p.lineJoin = LineJoin.Round;

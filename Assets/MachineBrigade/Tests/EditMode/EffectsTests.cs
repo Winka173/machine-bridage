@@ -65,7 +65,6 @@ namespace MachineBrigade.Tests
             var layers = new BlastLayers(_materials, _root.transform);
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
                 ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
-            ExplosionEffect.CreateMuzzleFlash(layers).Play(Vector3.zero, 0f);
             Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 12, "one system per layer kind, not per blast");
         }
 
@@ -92,6 +91,40 @@ namespace MachineBrigade.Tests
             Assert.Greater(fires.Burning, 0, "still smouldering after the flames die");
             fires.Tick(120f, 0.5f);
             Assert.AreEqual(0, fires.Burning);
+        }
+
+        [Test]
+        public void MachineGunsFlickerOncePerRound()
+        {
+            var muzzle = new MuzzleFx(_materials, _root.transform);
+            var core = Layer("Muzzle Core");
+            muzzle.Fire(MuzzleFx.Kind.MachineGun, Vector3.up, Vector3.forward, 0f);
+            core.Simulate(0.01f, false, false);
+            Assert.AreEqual(1, core.particleCount, "the first round flashes at once");
+            muzzle.Tick(MuzzleFx.RoundInterval * 2.5f);
+            core.Simulate(0.001f, false, false);
+            Assert.AreEqual(3, core.particleCount, "and each later round of the burst flashes again");
+        }
+
+        [Test]
+        public void CannonsBlowSmokeAndGroundDustButAircraftDoNot()
+        {
+            var muzzle = new MuzzleFx(_materials, _root.transform);
+            var smoke = Layer("Muzzle Puffs");
+            var dust = Layer("Muzzle Dust");
+            var flame = Layer("Muzzle Flame");
+            muzzle.Fire(MuzzleFx.Kind.Cannon, new Vector3(0f, 2f, 0f), Vector3.forward, 0f, 1f, 0f);
+            smoke.Simulate(0.01f, false, false);
+            dust.Simulate(0.01f, false, false);
+            flame.Simulate(0.01f, false, false);
+            Assert.Greater(smoke.particleCount, 5, "a thick smoke puff");
+            Assert.Greater(dust.particleCount, 0, "dust blown off the ground");
+            Assert.Greater(flame.particleCount, 2, "a tongue of flame plus the muzzle-brake jets");
+
+            var dustBefore = dust.particleCount;
+            muzzle.Fire(MuzzleFx.Kind.Autocannon, new Vector3(0f, 30f, 0f), Vector3.down, 0f, 1f, null);
+            dust.Simulate(0.001f, false, false);
+            Assert.AreEqual(dustBefore, dust.particleCount, "an aircraft's gun raises no ground dust");
         }
 
         private ParticleSystem Layer(string name) =>

@@ -48,8 +48,9 @@ namespace MachineBrigade.Game.Effects
         private readonly Dictionary<ExplosionTier, ExplosionEffect> _explosions = new();
         private readonly List<ExplosionEffect> _blasts = new();
         private readonly BlastLayers _layers;
-        private readonly ExplosionEffect _muzzle;
+        private readonly MuzzleFx _muzzle;
         private readonly ExplosionEffect _airburst;
+        private readonly ScreenCull _cull;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
         private readonly DebrisPool _debris;
@@ -74,14 +75,14 @@ namespace MachineBrigade.Game.Effects
             _root.SetParent(parent, false);
 
             // Everything is built up front: creating particle systems mid-battle hitches the frame.
+            _cull = new ScreenCull(camera.Camera);
             _layers = new BlastLayers(materials, _root);
             foreach (ExplosionTier tier in Enum.GetValues(typeof(ExplosionTier)))
             {
                 _explosions[tier] = ExplosionEffect.Create(tier, _layers);
                 _blasts.Add(_explosions[tier]);
             }
-            _muzzle = ExplosionEffect.CreateMuzzleFlash(_layers);
-            _blasts.Add(_muzzle);
+            _muzzle = new MuzzleFx(materials, _root);
             _airburst = ExplosionEffect.CreateAirburst(_layers);
             _blasts.Add(_airburst);
             _lightPool = new Light[budget.Lights];
@@ -91,6 +92,7 @@ namespace MachineBrigade.Game.Effects
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
             _fires = new FireSpots(materials, _root);
+            _fires.Visible = p => _cull.Visible(p, 0.3f);
             _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
             _wrecks = new WreckManager(_fires, budget.Wrecks);
@@ -112,7 +114,9 @@ namespace MachineBrigade.Game.Effects
                 switch (e.Kind)
                 {
                     case SimEventKind.WeaponFired:
-                        _weapons.Fired(e, views, now);
+                        // Shots entirely off screen are not drawn (the sound still plays).
+                        if (_cull.Visible(Ground(e.Position, 1f), 0.15f) || _cull.Visible(Ground(e.Target, 1f), 0.15f))
+                            _weapons.Fired(e, views, now);
                         break;
 
                     case SimEventKind.ProjectileImpact:
@@ -251,6 +255,7 @@ namespace MachineBrigade.Game.Effects
             _projectiles.Tick(now, _emitters);
             _strikes.Tick(now);
             foreach (var blast in _blasts) blast.Tick(now);
+            _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
             _fires.Tick(now, Time.deltaTime);
@@ -279,6 +284,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var view = all[i];
                 var speed = view.Speed;
+                if (!_cull.Visible(view.Position, 0.1f)) continue;
                 if (view.Flying || speed < 1.2f || now < view.DustAt) continue;
                 view.DustAt = now + Mathf.Lerp(0.2f, 0.07f, Mathf.Clamp01(speed / 10f));
                 var root = view.Root;
@@ -298,6 +304,7 @@ namespace MachineBrigade.Game.Effects
 
         private void Airburst(Vector3 position, ExplosionTier tier, float now)
         {
+            if (!_cull.Visible(position, 0.3f)) return;
             var scale = tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f;
             _airburst.Play(position, now, scale);
             Shake(position, tier >= ExplosionTier.Large ? 0.3f : 0.1f);
@@ -314,6 +321,8 @@ namespace MachineBrigade.Game.Effects
 
         private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
         {
+            // Off screen, a blast leaves its crater and fires (they persist) but no particles.
+            if (!_cull.Visible(position, tier >= ExplosionTier.Huge ? 0.4f : 0.25f)) return;
             var effect = _explosions[tier];
             effect.Play(position, now, scale);
             if (effect.LightRange > 0f && _lightPool.Length > 0 && !Match.DebugFlags.Has("-mb-no-lights"))

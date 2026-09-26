@@ -26,9 +26,11 @@ namespace MachineBrigade.Game.Rendering
         private readonly float _originalDepthBias;
         private readonly float _originalNormalBias;
         private readonly int _originalMsaa;
+        private readonly float _originalScale;
+        private readonly int _originalShadowResolution;
         private readonly bool _originalSrpBatcher;
 
-        public Atmosphere(float shadowDistance = 110f)
+        public Atmosphere(Match.GraphicsQuality tier = Match.GraphicsQuality.High, float shadowDistance = 110f)
         {
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = Sky * AmbientStrength;
@@ -66,10 +68,25 @@ namespace MachineBrigade.Game.Rendering
                 // stuttered. Measured on the emulator: 50-60 flashes per 14 s with it, none without.
                 // Vulkan and Metal keep it for the CPU savings.
                 if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3) _pipeline.useSRPBatcher = false;
-                _pipeline.shadowDistance = shadowDistance;
+                _pipeline.shadowDistance = tier == Match.GraphicsQuality.Low ? 80f : shadowDistance;
                 _pipeline.shadowDepthBias = 1.6f;
                 _pipeline.shadowNormalBias = 1.3f;
-                _pipeline.msaaSampleCount = Match.DebugFlags.Has("-mb-no-msaa") ? 1 : Application.isMobilePlatform ? 2 : 4;
+                // Tiers: resolution, anti-aliasing and shadow map size are the big GPU levers on phones.
+                _pipeline.msaaSampleCount = Match.DebugFlags.Has("-mb-no-msaa") ? 1 : tier switch
+                {
+                    Match.GraphicsQuality.Low => 1,
+                    Match.GraphicsQuality.Medium => 2,
+                    _ => Application.isMobilePlatform ? 2 : 4,
+                };
+                _originalScale = _pipeline.renderScale;
+                _pipeline.renderScale = tier switch
+                {
+                    Match.GraphicsQuality.Low => 0.7f,
+                    Match.GraphicsQuality.Medium => 0.85f,
+                    _ => 1f,
+                };
+                _originalShadowResolution = _pipeline.mainLightShadowmapResolution;
+                _pipeline.mainLightShadowmapResolution = tier == Match.GraphicsQuality.High ? 2048 : 1024;
             }
         }
 
@@ -81,6 +98,8 @@ namespace MachineBrigade.Game.Rendering
                 _pipeline.shadowDepthBias = _originalDepthBias;
                 _pipeline.shadowNormalBias = _originalNormalBias;
                 _pipeline.msaaSampleCount = _originalMsaa;
+                _pipeline.renderScale = _originalScale;
+                _pipeline.mainLightShadowmapResolution = _originalShadowResolution;
                 _pipeline.useSRPBatcher = _originalSrpBatcher;
             }
             if (_reflection != null) Object.Destroy(_reflection);

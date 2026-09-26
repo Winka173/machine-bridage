@@ -103,14 +103,15 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-storm")) MatchSettings.Weather = WeatherKind.Storm;
                 if (DebugFlags.Has("-mb-clear")) MatchSettings.Weather = WeatherKind.Clear;
             }
-            _atmosphere = new Atmosphere();
+            _atmosphere = new Atmosphere(MatchSettings.Tier);
             AudioListener.volume = MatchSettings.Volume;
 
             _menu = !MatchSettings.InMatch;
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
             var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
-            var map = GameContent.LoadMap(kind == GameModeKind.Conquest ? "ashfield_conquest" : "ashfield_sandbox");
+            var mapInfo = MatchSettings.CurrentMap;
+            var map = GameContent.LoadMap(mapInfo.Id + (kind == GameModeKind.Conquest ? "_conquest" : "_sandbox"));
             _world = new SimWorld(catalog, map, seed);
             BuildMode(kind, seed);
             _clock = new SimClock();
@@ -139,7 +140,7 @@ namespace MachineBrigade.Game.Match
                 _lastInput = float.MaxValue;
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
-                MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco);
+                MatchSettings.Tier == GraphicsQuality.Low ? EffectBudget.Eco : EffectBudget.High);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             foreach (var id in catalog.Vehicles.Keys) _models.Prewarm(id);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");

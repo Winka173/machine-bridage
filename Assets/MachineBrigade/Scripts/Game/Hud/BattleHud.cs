@@ -41,6 +41,7 @@ namespace MachineBrigade.Game.Hud
         private readonly VisualElement _toast;
         private readonly Label _toastText;
         private readonly Label _hint;
+        private readonly VisualElement _hintBar;
         private readonly VisualElement _selectionBox;
         private readonly VisualElement _targeting;
         private readonly Label _targetingText;
@@ -146,15 +147,19 @@ namespace MachineBrigade.Game.Hud
 
             // Commander panel: the army fights on its own; the player sets intent -------------------
             var commander = UiKit.Box("commander", PickingMode.Position);
-            commander.Add(UiKit.Text(Strings.Get("panel.commander"), "caps"));
+            var commanderHead = UiKit.Box("panel-header");
+            commanderHead.Add(UiKit.Text(Strings.Get("panel.commander"), "caps"));
+            commander.Add(commanderHead);
+            var commanderBody = UiKit.Box("commander-body");
             var stance = UiKit.Box("commander-row");
             _attackStance = Toggle(stance, "attack", Strings.Get("stance.attack"), () => StancePressed?.Invoke(false));
-            _defendStance = Toggle(stance, "shield", Strings.Get("stance.defend"), () => StancePressed?.Invoke(true));
-            commander.Add(stance);
-            var autos = UiKit.Box("commander-row");
-            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("auto.deploy"), () => AutoDeployToggled?.Invoke());
-            _autoStrike = Toggle(autos, "barrage", Strings.Get("auto.strike"), () => AutoStrikeToggled?.Invoke());
-            commander.Add(autos);
+            _defendStance = Toggle(stance, "shield", Strings.Get("stance.defend"), () => StancePressed?.Invoke(true), "last-toggle");
+            commanderBody.Add(stance);
+            var autos = UiKit.Box("commander-row last-row");
+            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("auto.deploy"), () => AutoDeployToggled?.Invoke(), "switch");
+            _autoStrike = Toggle(autos, "barrage", Strings.Get("auto.strike"), () => AutoStrikeToggled?.Invoke(), "switch last-toggle");
+            commanderBody.Add(autos);
+            commander.Add(commanderBody);
             _safe.Add(commander);
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
@@ -165,6 +170,8 @@ namespace MachineBrigade.Game.Hud
             _selectedCount = UiKit.Text("", "caps");
             header.Add(_selectedCount);
             command.Add(header);
+            var commandBody = UiKit.Box("command-body");
+            command.Add(commandBody);
 
             var details = UiKit.Box("details");
             var portrait = UiKit.Box("portrait");
@@ -181,13 +188,13 @@ namespace MachineBrigade.Game.Hud
             _hpText = UiKit.Text("", "hp-text");
             detailsText.Add(_hpText);
             details.Add(detailsText);
-            command.Add(details);
+            commandBody.Add(details);
 
             var buttons = UiKit.Box("buttons");
             _attackMove = Command(buttons, "crosshair", Strings.Get("cmd.attackMove"), () => AttackMovePressed?.Invoke());
             Command(buttons, "stop", Strings.Get("cmd.stop"), () => StopPressed?.Invoke());
             Command(buttons, "retreat", Strings.Get("cmd.retreat"), () => RetreatPressed?.Invoke()).AddToClassList("last");
-            command.Add(buttons);
+            commandBody.Add(buttons);
             _safe.Add(command);
 
             // Deck -------------------------------------------------------------------------------
@@ -201,7 +208,9 @@ namespace MachineBrigade.Game.Hud
             // Overlays -----------------------------------------------------------------------------
             _autoHint = mode == HudMode.Survival ? "hint.autoSurvival" : "hint.auto";
             _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
-            _safe.Add(_hint);
+            _hintBar = UiKit.Box("hint-bar");
+            _hintBar.Add(_hint);
+            _safe.Add(_hintBar);
 
             _targeting = UiKit.Box("targeting", PickingMode.Position);
             _targetingText = UiKit.Text("", "targeting-text");
@@ -298,7 +307,7 @@ namespace MachineBrigade.Game.Hud
             if (_targeting == null) return;
             _targeting.style.display = message != null ? DisplayStyle.Flex : DisplayStyle.None;
             if (message != null) _targetingText.text = message;
-            _hint.style.display = message != null ? DisplayStyle.None : DisplayStyle.Flex;
+            _hintBar.style.display = message != null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         /// <summary>Closes an open menu page; false when there is none (main menu or in a match).</summary>
@@ -322,9 +331,13 @@ namespace MachineBrigade.Game.Hud
         {
             if (_banner == null) return;
             _banner.Clear();
-            _banner.Add(UiKit.Text(kicker, "kicker"));
-            _banner.Add(UiKit.Text(title, "mission-title"));
-            _banner.Add(UiKit.Text(subtitle, "mission-sub"));
+            var strip = UiKit.Box("mission-strip");
+            strip.Add(UiKit.Text(kicker, "kicker"));
+            strip.Add(UiKit.Text(title, "mission-title"));
+            strip.Add(UiKit.Text(subtitle, "mission-sub"));
+            var mission = UiKit.Box("mission");
+            mission.Add(strip);
+            _banner.Add(mission);
             _banner.AddToClassList("visible");
             _bannerUntil = Time.unscaledTime + seconds;
         }
@@ -486,9 +499,9 @@ namespace MachineBrigade.Game.Hud
             return tool;
         }
 
-        private static VisualElement Toggle(VisualElement parent, string icon, string label, Action onClick)
+        private static VisualElement Toggle(VisualElement parent, string icon, string label, Action onClick, string extra = null)
         {
-            var toggle = UiKit.Button("toggle", onClick);
+            var toggle = UiKit.Button(extra == null ? "toggle" : "toggle " + extra, onClick);
             toggle.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
             toggle.Add(UiKit.Text(label, "toggle-label"));
             parent.Add(toggle);

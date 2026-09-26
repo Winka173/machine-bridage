@@ -1,0 +1,260 @@
+using System.Collections.Generic;
+using MachineBrigade.Game.Rendering;
+using UnityEngine;
+using PB = MachineBrigade.Game.Effects.ParticleBuilder;
+
+namespace MachineBrigade.Game.Effects
+{
+    /// <summary>
+    /// Fire and smoke at the gun whenever a weapon fires: a white-hot core, a tongue of flame
+    /// shot out along the barrel (plus side jets out of a cannon's muzzle brake), sparks, and a
+    /// smoke puff that bursts forward, slows and hangs in the air. Big guns also blow dust off the
+    /// ground, and launchers throw their back-blast behind them. Machine guns flicker once per
+    /// round of the burst. Aircraft use the same recipes, aimed down at their target. Five shared
+    /// systems draw every muzzle in the battle.
+    /// </summary>
+    internal sealed class MuzzleFx
+    {
+        public enum Kind
+        {
+            MachineGun,
+            Autocannon,
+            Cannon,
+            Artillery,
+            Rocket,
+            Missile,
+        }
+
+        private readonly struct Pending
+        {
+            public Pending(float at, Vector3 position, Vector3 direction, float scale)
+            {
+                At = at;
+                Position = position;
+                Direction = direction;
+                Scale = scale;
+            }
+
+            public float At { get; }
+            public Vector3 Position { get; }
+            public Vector3 Direction { get; }
+            public float Scale { get; }
+        }
+
+        /// <summary>Gap between machine-gun rounds; matches the tracer burst.</summary>
+        public const float RoundInterval = 0.055f;
+
+        /// <summary>Length of a flame tongue, in widths.</summary>
+        private const float FlameLength = 4.2f;
+
+        private readonly ParticleSystem _core, _tongue, _sparks, _smoke, _dust;
+        private readonly List<Pending> _pending = new();
+
+        public MuzzleFx(MaterialLibrary m, Transform parent)
+        {
+            var root = new GameObject("Muzzles").transform;
+            root.SetParent(parent, false);
+
+            _core = Shared(root, "Muzzle Core", m.Fire, 500);
+            // Orange rather than white: the fire shader doubles it and whitens the hot centre itself.
+            PB.Colors(_core, PB.Fade(new Color(1f, 0.66f, 0.28f), new Color(1f, 0.5f, 0.16f), new Color(0.9f, 0.3f, 0.08f)));
+            PB.Grow(_core, 1f, 0.7f);
+
+            // A slow particle stretched to several times its width along the barrel: a jet of flame
+            // that stays on the muzzle instead of flying off.
+            _tongue = Shared(root, "Muzzle Flame", m.Fire, 800, ParticleSystemRenderMode.Stretch);
+            PB.Colors(_tongue, PB.Fade(new Color(1f, 0.78f, 0.4f), new Color(1f, 0.55f, 0.18f), new Color(0.9f, 0.3f, 0.07f)));
+            PB.Grow(_tongue, 0.85f, 1.1f);
+            var flame = _tongue.GetComponent<ParticleSystemRenderer>();
+            flame.velocityScale = 0f;
+            flame.lengthScale = FlameLength;
+
+            _sparks = Shared(root, "Muzzle Sparks", m.Sparks, 600, gravity: 1.6f);
+            var sparks = _sparks.main;
+            sparks.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.85f, 0.45f), new Color(1f, 0.55f, 0.15f));
+            PB.Grow(_sparks, 1f, 0.3f);
+
+            // Light gunsmoke bursts out fast, is braked by the air and then drifts up with the wind.
+            _smoke = Shared(root, "Muzzle Puffs", m.SoftSmoke, 1500);
+            PB.Colors(_smoke, PB.Plume(0.6f, 0.82f, 0.78f));
+            PB.Grow(_smoke, 0.8f, 2.5f);
+            Brake(_smoke, 0.14f);
+            PB.Rise(_smoke, 0.3f, 0.8f);
+
+            _dust = Shared(root, "Muzzle Dust", m.Smoke, 700);
+            PB.Colors(_dust, PB.Fade(new Color(0.6f, 0.54f, 0.42f), new Color(0.56f, 0.51f, 0.4f), new Color(0.52f, 0.48f, 0.4f), 0.5f));
+            PB.Grow(_dust, 0.6f, 2.1f);
+            Brake(_dust, 0.1f);
+        }
+
+        /// <summary>
+        /// Plays the muzzle effect of one shot at <paramref name="from"/>, pointing along
+        /// <paramref name="direction"/>. <paramref name="groundY"/> is the height of the ground
+        /// under a vehicle, or null for aircraft (no dust).
+        /// </summary>
+        public void Fire(Kind kind, Vector3 from, Vector3 direction, float now, float scale = 1f, float? groundY = null)
+        {
+            var dir = direction.sqrMagnitude > 1e-4f ? direction.normalized : Vector3.forward;
+            switch (kind)
+            {
+                case Kind.MachineGun:
+                    // One flicker per round of the three-round burst.
+                    Round(from, dir, scale, smoke: true);
+                    _pending.Add(new Pending(now + RoundInterval, from, dir, scale));
+                    _pending.Add(new Pending(now + RoundInterval * 2f, from, dir, scale));
+                    break;
+
+                case Kind.Autocannon:
+                    Core(from, 2.1f * scale, 2.6f * scale, 0.07f, 0.1f);
+                    Tongue(from, dir, 1, 0.72f * scale, 0.11f);
+                    Sparks(from, dir, 3, 5f, 12f, scale);
+                    Puffs(from, dir, 3, new Vector2(2f, 5f), new Vector2(0.6f, 0.95f), new Vector2(0.9f, 1.5f), scale);
+                    break;
+
+                case Kind.Cannon:
+                    Cannon(from, dir, scale, groundY, artillery: false);
+                    break;
+
+                case Kind.Artillery:
+                    Cannon(from, dir, scale, groundY, artillery: true);
+                    break;
+
+                case Kind.Rocket:
+                case Kind.Missile:
+                    // Launch flash at the tube, flame and a smoke cloud thrown out behind.
+                    var s = kind == Kind.Missile ? 0.9f * scale : scale;
+                    Core(from, 2.2f * s, 2.8f * s, 0.08f, 0.12f);
+                    Tongue(from, -dir, 1, 0.8f * s, 0.15f);
+                    Tongue(from, dir, 1, 0.5f * s, 0.1f);
+                    Sparks(from, -dir, 4, 3f, 9f, s);
+                    Puffs(from, -dir, 6, new Vector2(2.5f, 6.5f), new Vector2(0.9f, 1.5f), new Vector2(1.6f, 2.6f), s);
+                    Puffs(from, dir, 2, new Vector2(1f, 3f), new Vector2(0.6f, 1f), new Vector2(1f, 1.8f), s);
+                    if (groundY.HasValue) Dust(from, groundY.Value, -dir, 4, s);
+                    break;
+            }
+        }
+
+        /// <summary>Emits the later machine-gun rounds that are due.</summary>
+        public void Tick(float now)
+        {
+            for (var i = _pending.Count - 1; i >= 0; i--)
+            {
+                var p = _pending[i];
+                if (now < p.At) continue;
+                Round(p.Position, p.Direction, p.Scale, smoke: false);
+                _pending[i] = _pending[_pending.Count - 1];
+                _pending.RemoveAt(_pending.Count - 1);
+            }
+        }
+
+        private void Round(Vector3 from, Vector3 dir, float scale, bool smoke)
+        {
+            Core(from, 1.25f * scale, 1.6f * scale, 0.05f, 0.075f);
+            Tongue(from, dir, 1, 0.48f * scale, 0.07f);
+            if (Random.value < 0.35f) Sparks(from, dir, 1, 4f, 9f, scale);
+            if (smoke) Puffs(from, dir, 2, new Vector2(1.5f, 3.5f), new Vector2(0.4f, 0.6f), new Vector2(0.6f, 1f), scale);
+        }
+
+        private void Cannon(Vector3 from, Vector3 dir, float scale, float? groundY, bool artillery)
+        {
+            var s = artillery ? 1.35f * scale : scale;
+            Core(from, 3.8f * s, 4.5f * s, 0.09f, 0.12f);
+            Tongue(from, dir, 2, 1.2f * s, 0.13f);
+            // Side jets out of the muzzle brake.
+            var side = Vector3.Cross(Vector3.up, dir);
+            if (side.sqrMagnitude < 0.01f) side = Vector3.right;
+            side.Normalize();
+            Tongue(from, side, 1, 0.65f * s, 0.1f);
+            Tongue(from, -side, 1, 0.65f * s, 0.1f);
+            Sparks(from, dir, artillery ? 12 : 8, 6f, 15f, s);
+            // A thick puff straight ahead and a ring blown out of the brake.
+            Puffs(from, dir, artillery ? 12 : 9, new Vector2(3f, 9f), new Vector2(1.1f, 1.8f), new Vector2(2f, 3.2f) * (artillery ? 1.4f : 1f), s);
+            Puffs(from, side, 2, new Vector2(2f, 5f), new Vector2(0.8f, 1.2f), new Vector2(1.4f, 2.4f), s);
+            Puffs(from, -side, 2, new Vector2(2f, 5f), new Vector2(0.8f, 1.2f), new Vector2(1.4f, 2.4f), s);
+            if (groundY.HasValue) Dust(from, groundY.Value, dir, artillery ? 12 : 7, s);
+        }
+
+        private void Core(Vector3 at, float minSize, float maxSize, float minLife, float maxLife)
+        {
+            Emit(_core, at, Vector3.zero, Random.Range(minSize, maxSize), Random.Range(minLife, maxLife));
+        }
+
+        private void Tongue(Vector3 from, Vector3 dir, int count, float size, float life)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var width = size * Random.Range(0.85f, 1.15f);
+                var axis = (dir + Random.insideUnitSphere * 0.08f).normalized;
+                // The stretched quad is centred on the particle: place it half a flame out so its
+                // base sits on the barrel. It drifts only slightly (the velocity sets its direction).
+                Emit(_tongue, from + axis * (width * FlameLength * 0.5f), axis * 1.5f, width, life * Random.Range(0.85f, 1.2f));
+            }
+        }
+
+        private void Sparks(Vector3 from, Vector3 dir, int count, float minSpeed, float maxSpeed, float scale)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var v = (dir + Random.insideUnitSphere * 0.45f).normalized * Random.Range(minSpeed, maxSpeed) * scale;
+                Emit(_sparks, from, v, Random.Range(0.08f, 0.14f) * Mathf.Sqrt(scale), Random.Range(0.2f, 0.5f));
+            }
+        }
+
+        private void Puffs(Vector3 from, Vector3 dir, int count, Vector2 speed, Vector2 size, Vector2 life, float scale)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var v = (dir + Random.insideUnitSphere * 0.3f) * Random.Range(speed.x, speed.y) * scale;
+                Emit(_smoke, from + dir * 0.3f, v, Random.Range(size.x, size.y) * scale, Random.Range(life.x, life.y));
+            }
+        }
+
+        private void Dust(Vector3 from, float groundY, Vector3 dir, int count, float scale)
+        {
+            var ground = new Vector3(from.x, groundY + 0.3f, from.z) + new Vector3(dir.x, 0f, dir.z) * 1.5f;
+            for (var i = 0; i < count; i++)
+            {
+                var out2 = Random.insideUnitCircle.normalized;
+                var outward = new Vector3(out2.x, 0f, out2.y) + new Vector3(dir.x, 0f, dir.z) * 0.8f;
+                Emit(_dust, ground, outward * Random.Range(3f, 7f) * scale + Vector3.up * 0.4f, Random.Range(1.1f, 1.9f) * scale,
+                    Random.Range(0.9f, 1.7f));
+            }
+        }
+
+        private static void Emit(ParticleSystem system, Vector3 position, Vector3 velocity, float size, float lifetime)
+        {
+            system.Emit(new ParticleSystem.EmitParams
+            {
+                position = position,
+                velocity = velocity,
+                startSize = size,
+                startLifetime = lifetime,
+                rotation = Random.Range(0f, 360f),
+                applyShapeToPosition = false,
+            }, 1);
+        }
+
+        /// <summary>Air drag: the particle shoots out and stops within a fraction of a second.</summary>
+        private static void Brake(ParticleSystem ps, float dampen)
+        {
+            var limit = ps.limitVelocityOverLifetime;
+            limit.enabled = true;
+            limit.limit = 0.3f;
+            limit.dampen = dampen;
+        }
+
+        private static ParticleSystem Shared(Transform parent, string name, Material material, int max,
+            ParticleSystemRenderMode mode = ParticleSystemRenderMode.Billboard, float gravity = 0f)
+        {
+            var ps = PB.Create(parent, name, material, mode);
+            var main = ps.main;
+            main.loop = true;
+            main.maxParticles = max;
+            main.gravityModifier = gravity;
+            var emission = ps.emission;
+            emission.enabled = false;
+            ps.Play();
+            return ps;
+        }
+    }
+}

@@ -19,6 +19,41 @@ namespace MachineBrigade.Game.Match
         Rain,
         Storm,
         Random,
+        Snow,
+        Sandstorm,
+        Fog,
+        Night,
+    }
+
+    /// <summary>A battlefield the menu offers: data files are Data/maps/{Id}_conquest and {Id}_sandbox.</summary>
+    public readonly struct MapInfo
+    {
+        public MapInfo(string id, string theme, string icon, WeatherKind[] weathers)
+        {
+            Id = id;
+            Theme = theme;
+            Icon = icon;
+            Weathers = weathers;
+        }
+
+        public string Id { get; }
+
+        /// <summary>temperate, desert, snow or harbor: picks ground, scenery and palettes.</summary>
+        public string Theme { get; }
+
+        public string Icon { get; }
+
+        /// <summary>The weather Random draws from on this map (first entries most often).</summary>
+        public WeatherKind[] Weathers { get; }
+    }
+
+    /// <summary>Graphics setting; Auto picks a tier from the device.</summary>
+    public enum GraphicsQuality
+    {
+        Auto,
+        Low,
+        Medium,
+        High,
     }
 
     public enum LanguageChoice
@@ -70,6 +105,32 @@ namespace MachineBrigade.Game.Match
         public static bool InMatch { get; set; }
 
         public static GameModeKind Mode { get; set; } = GameModeKind.Conquest;
+
+        public static readonly MapInfo[] AllMaps =
+        {
+            new("ashfield", "temperate", "pine",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
+            new("dunebreak", "desert", "dune",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Overcast, WeatherKind.Night }),
+            new("frostpeak", "snow", "snow",
+                new[] { WeatherKind.Snow, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Night }),
+            new("ironport", "harbor", "anchor",
+                new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
+        };
+
+        public static string Map { get; set; } = "ashfield";
+
+        public static MapInfo CurrentMap
+        {
+            get
+            {
+                foreach (var map in AllMaps)
+                    if (map.Id == Map && MapAvailable(map.Id)) return map;
+                return AllMaps[0];
+            }
+        }
+
+        public static bool MapAvailable(string id) => Resources.Load<TextAsset>("Data/maps/" + id + "_conquest") != null;
         public static AiDifficulty Difficulty { get; set; } = AiDifficulty.Normal;
         public static WeatherKind Weather { get; set; } = WeatherKind.Random;
 
@@ -77,7 +138,26 @@ namespace MachineBrigade.Game.Match
         public static List<string> DeckSupports { get; } = new(DefaultSupports);
 
         public static float Volume { get; set; } = 0.8f;
-        public static bool HighQuality { get; set; } = !Application.isMobilePlatform;
+        public static GraphicsQuality Graphics { get; set; } = GraphicsQuality.Auto;
+
+        /// <summary>
+        /// The tier in force: the player's choice, or one picked from the device (memory and CPU
+        /// cores, the usual proxies for GPU class on Android). Explosions and fires are never cut;
+        /// tiers change resolution, anti-aliasing, shadows, bloom and far scenery.
+        /// </summary>
+        public static GraphicsQuality Tier => Graphics != GraphicsQuality.Auto ? Graphics : DetectTier();
+
+        public static bool HighQuality => Tier == GraphicsQuality.High;
+
+        public static GraphicsQuality DetectTier()
+        {
+            if (!Application.isMobilePlatform) return GraphicsQuality.High;
+            var memory = SystemInfo.systemMemorySize;
+            var cores = SystemInfo.processorCount;
+            if (memory >= 7000 && cores >= 8) return GraphicsQuality.High;
+            if (memory >= 3500 && cores >= 6) return GraphicsQuality.Medium;
+            return GraphicsQuality.Low;
+        }
         public static bool ReducedMotion { get; set; }
         public static bool ShowFps { get; set; }
         public static LanguageChoice Language { get; set; } = LanguageChoice.Auto;
@@ -95,7 +175,8 @@ namespace MachineBrigade.Game.Match
             try
             {
                 Volume = PlayerPrefs.GetFloat("mb.volume", Volume);
-                HighQuality = PlayerPrefs.GetInt("mb.quality", HighQuality ? 1 : 0) == 1;
+                Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 3);
+                Map = PlayerPrefs.GetString("mb.map", Map);
                 ReducedMotion = PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1;
                 ShowFps = PlayerPrefs.GetInt("mb.fps", 0) == 1;
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
@@ -122,7 +203,8 @@ namespace MachineBrigade.Game.Match
             try
             {
                 PlayerPrefs.SetFloat("mb.volume", Volume);
-                PlayerPrefs.SetInt("mb.quality", HighQuality ? 1 : 0);
+                PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
+                PlayerPrefs.SetString("mb.map", Map);
                 PlayerPrefs.SetInt("mb.reducedMotion", ReducedMotion ? 1 : 0);
                 PlayerPrefs.SetInt("mb.fps", ShowFps ? 1 : 0);
                 PlayerPrefs.SetInt("mb.language", (int)Language);
@@ -147,8 +229,8 @@ namespace MachineBrigade.Game.Match
         public static WeatherKind ResolveWeather(int seed)
         {
             if (Weather != WeatherKind.Random) return Weather;
-            var roll = new System.Random(seed).Next(10);
-            return roll < 4 ? WeatherKind.Clear : roll < 6 ? WeatherKind.Overcast : roll < 9 ? WeatherKind.Rain : WeatherKind.Storm;
+            var choices = CurrentMap.Weathers;
+            return choices[new System.Random(seed).Next(choices.Length)];
         }
 
         public static void ApplyLanguage()
