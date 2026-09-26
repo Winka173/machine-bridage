@@ -33,7 +33,7 @@
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
-    "triangles": 4948
+    "triangles": 7350
   },
   "attack_jet": {
     "file": "attack_jet.glb",
@@ -53,7 +53,7 @@
   },
   "bomb": {
     "file": "bomb.glb",
-    "triangles": 260
+    "triangles": 392
   },
   "boulders": {
     "file": "boulders.glb",
@@ -157,7 +157,11 @@
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
-    "triangles": 5900
+    "triangles": 7894
+  },
+  "heavy_bomber": {
+    "file": "heavy_bomber.glb",
+    "triangles": 10106
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -205,7 +209,7 @@
   },
   "missile": {
     "file": "missile.glb",
-    "triangles": 266
+    "triangles": 398
   },
   "mlrs": {
     "file": "mlrs.glb",
@@ -309,7 +313,7 @@
   },
   "scout_heli": {
     "file": "scout_heli.glb",
-    "triangles": 2910
+    "triangles": 4266
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
@@ -331,6 +335,10 @@
     "file": "snow_rock.glb",
     "triangles": 468
   },
+  "stealth_bomber": {
+    "file": "stealth_bomber.glb",
+    "triangles": 5198
+  },
   "stone_wall": {
     "file": "stone_wall.glb",
     "triangles": 492
@@ -345,7 +353,7 @@
   },
   "strike_jet": {
     "file": "strike_jet.glb",
-    "triangles": 8740
+    "triangles": 8700
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
