@@ -36,7 +36,8 @@ namespace MachineBrigade.Sim.AI
 
         private readonly int _team;
         private readonly int _enemyTeam;
-        private readonly float _flankSide;
+        private float _flankSide;
+        private bool _hadFlankers;
         private readonly List<Vehicle> _line = new();
         private readonly List<Vehicle> _fast = new();
         private readonly List<Vehicle> _artillery = new();
@@ -98,6 +99,9 @@ namespace MachineBrigade.Sim.AI
             _enemies.Clear();
             _fallingBack.RemoveWhere(id => !world.TryGetVehicle(id, out _));
             _flanked.RemoveWhere(id => !world.TryGetVehicle(id, out _));
+            // Once a flanking group is spent, the next one swings round the other side.
+            if (_hadFlankers && _flanked.Count == 0) _flankSide = -_flankSide;
+            _hadFlankers = _flanked.Count > 0;
 
             foreach (var v in world.Vehicles)
             {
