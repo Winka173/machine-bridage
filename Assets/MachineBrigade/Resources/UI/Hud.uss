@@ -257,6 +257,7 @@
 .hp-fill.critical { background-color: var(--danger); }
 .hp-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n300); margin-top: 3px; }
 .hp-text.hint-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; }
+.counter-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 11px; color: var(--amber-light); margin-top: 3px; white-space: normal; }
 
 .buttons { flex-direction: row; }
 .cmd {

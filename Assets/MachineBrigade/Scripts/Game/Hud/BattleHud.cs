@@ -70,6 +70,7 @@ namespace MachineBrigade.Game.Hud
         {
             var mode = spec.Mode;
             Mode = mode;
+            Catalog = catalog;
             if (EventSystem.current == null)
                 _eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
 
@@ -211,6 +212,8 @@ namespace MachineBrigade.Game.Hud
             detailsText.Add(track);
             _hpText = UiKit.Text("", "hp-text");
             detailsText.Add(_hpText);
+            _counterText = UiKit.Text("", "counter-text");
+            detailsText.Add(_counterText);
             details.Add(detailsText);
             commandBody.Add(details);
 
@@ -478,6 +481,7 @@ namespace MachineBrigade.Game.Hud
                 _hpFill.style.width = Length.Percent(0f);
                 _portraitIcon.Name = "tank";
                 _portraitIcon.Tint = new Color(UiKit.Mint.r, UiKit.Mint.g, UiKit.Mint.b, 0.35f);
+                _counterText.text = "";
                 return;
             }
 
@@ -492,7 +496,15 @@ namespace MachineBrigade.Game.Hud
             _hpFill.EnableInClassList("hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("critical", health < 0.3f);
             _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
+            // What this unit is for: who it beats and who beats it.
+            _counterText.text = summary.DefId != null && Catalog != null && Catalog.Vehicles.TryGetValue(summary.DefId, out var def)
+                ? MachineBrigade.Game.Match.Counters.Line(def) : "";
         }
+
+        private Label _counterText;
+
+        /// <summary>The loaded catalog, for card and unit details.</summary>
+        private Catalog Catalog { get; }
 
         public void SetModes(bool attackMoveArmed, bool boxMode)
         {

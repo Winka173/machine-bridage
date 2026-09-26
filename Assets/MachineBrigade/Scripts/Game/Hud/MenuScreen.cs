@@ -396,6 +396,9 @@ namespace MachineBrigade.Game.Hud
                     return;
                 }
                 _deckNote.RemoveFromClassList("warn");
+                // Tapping a card also says what it is good against.
+                if (!support && _catalog.Vehicles.TryGetValue(id, out var picked))
+                    _deckNote.text = Strings.Card(id) + " — " + Counters.Line(picked);
                 var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
                 var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
                 if (deck.Contains(id)) deck.Remove(id);
