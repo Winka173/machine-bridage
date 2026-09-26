@@ -69,9 +69,7 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Missile:
                     // Guided: the missile bends towards wherever its target is now.
-                    Func<Vector3?> homing = () =>
-                        views.TryGet(targetId, out var target) ? target.Position + Vector3.up * (target.Flying ? 0.5f : 1f) : (Vector3?)null;
-                    if (_hasMissile) _projectiles.Launch(_models.Merged("missile"), from, to, e.Value, distance * 0.06f, 0.7f, now, homing);
+                    if (_hasMissile) _projectiles.Launch(_models.Merged("missile"), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId));
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     _emitters.MuzzleSmoke(from, -forward, 0.9f); // back-blast
                     _muzzle.Play(from, now, 0.6f);
@@ -103,6 +101,10 @@ namespace MachineBrigade.Game.Effects
                     break;
             }
         }
+
+        /// <summary>The live aim point of a guided missile (built only for missiles, so other shots allocate nothing).</summary>
+        private static Func<Vector3?> Homing(ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId) =>
+            () => views.TryGet(targetId, out var target) ? target.Position + Vector3.up * (target.Flying ? 0.5f : 1f) : (Vector3?)null;
 
         /// <summary>Where the shot visibly goes: aircraft are hit at their flight height.</summary>
         public static Vector3 AimPoint(in SimEvent e, ViewRegistry views)

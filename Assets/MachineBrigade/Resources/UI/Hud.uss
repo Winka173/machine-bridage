@@ -78,7 +78,7 @@
 
 /* ---------------------------------------------------------------- tool column */
 .left-column { position: absolute; left: 14px; top: 66px; }
-.tools { flex-direction: row; flex-wrap: wrap; width: 176px; margin-top: 8px; }
+.tools { flex-direction: row; flex-wrap: wrap; width: 184px; margin-top: 8px; }
 .tool {
     width: 40px; height: 52px;
     margin-right: 5px;

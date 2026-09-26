@@ -31,6 +31,7 @@ namespace MachineBrigade.Game.Effects
             public Transform Turret;
             public Vector3 TurretVelocity, TurretSpin;
             public bool TurretFlying;
+            public int Fire;
         }
 
         private readonly List<Wreck> _wrecks = new();
@@ -55,7 +56,7 @@ namespace MachineBrigade.Game.Effects
             _wrecks.Add(wreck);
             // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
             var size = Mathf.Clamp(view.Sim.Radius / 1.6f, 0.75f, 1.6f);
-            _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
+            wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
                 view.Flying ? view.Root : null);
 
             var living = 0;
@@ -65,15 +66,37 @@ namespace MachineBrigade.Game.Effects
             foreach (var w in _wrecks)
             {
                 if (w.SinkStart >= 0f) continue;
-                w.SinkStart = now;
+                Sink(w, now);
                 break;
             }
+        }
+
+        /// <summary>A falling or fallen aircraft wreck: where it is now (its death blast goes off there).</summary>
+        public bool TryGetAircraftWreck(EntityId id, out Vector3 position)
+        {
+            foreach (var w in _wrecks)
+            {
+                if (w.Id != id || !w.View.Flying) continue;
+                position = w.View.Root.position;
+                return true;
+            }
+            position = default;
+            return false;
+        }
+
+        private void Sink(Wreck w, float now)
+        {
+            w.SinkStart = now;
+            // No flames over empty ground once the hulk has gone.
+            _fires.Extinguish(w.Fire, now);
         }
 
         /// <summary>Throws the turret of a freshly destroyed vehicle into the air.</summary>
         public void TossTurret(EntityId id, float now)
         {
-            var wreck = _wrecks.Find(w => w.Id == id);
+            Wreck wreck = null;
+            foreach (var w in _wrecks)
+                if (w.Id == id) wreck = w;
             if (wreck == null || wreck.Turret != null || wreck.View.Turret == null || wreck.View.Flying) return;
             wreck.Turret = wreck.View.Turret;
             wreck.Turret.SetParent(wreck.View.Root, true);
@@ -127,7 +150,7 @@ namespace MachineBrigade.Game.Effects
                         w.WasFalling = false;
                         _crashes.Add((w.View.Root.position, w.View.Sim.Radius));
                     }
-                    if (now >= w.Expires) w.SinkStart = now;
+                    if (now >= w.Expires) Sink(w, now);
                 }
                 if (w.TurretFlying) FlyTurret(w, dt);
 

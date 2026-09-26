@@ -38,6 +38,9 @@ namespace MachineBrigade.Game.Match
         public const int DeckVehicleSlots = 8;
         public const int DeckSupportSlots = 2;
 
+        /// <summary>Saved-deck format: 2 since decks hold 8 vehicles.</summary>
+        private const int DeckVersion = 2;
+
         public static readonly string[] AllVehicles =
         {
             "scout_jeep", "armored_car", "rocket_technical", "apc", "light_tank", "main_battle_tank", "heavy_tank",
@@ -130,6 +133,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
                 PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", DeckVehicles));
                 PlayerPrefs.SetString("mb.deck.supports", string.Join(",", DeckSupports));
+                PlayerPrefs.SetInt("mb.deck.version", DeckVersion);
                 PlayerPrefs.Save();
             }
             catch (Exception e)
@@ -164,9 +168,11 @@ namespace MachineBrigade.Game.Match
             var cards = new List<string>();
             foreach (var id in saved.Split(','))
                 if (Array.IndexOf(all, id) >= 0 && !cards.Contains(id) && cards.Count < slots) cards.Add(id);
-            // Decks saved before the deck grew are topped up from the defaults.
-            foreach (var id in defaults)
-                if (cards.Count < slots && !cards.Contains(id)) cards.Add(id);
+            // Decks saved before the deck grew to 8 vehicles are topped up from the defaults once;
+            // a deck the player deliberately left short stays as it is.
+            if (PlayerPrefs.GetInt("mb.deck.version", 1) < DeckVersion)
+                foreach (var id in defaults)
+                    if (cards.Count < slots && !cards.Contains(id)) cards.Add(id);
             deck.Clear();
             deck.AddRange(cards);
         }

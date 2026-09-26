@@ -35,6 +35,7 @@ namespace MachineBrigade.Game.Effects
         private sealed class Jet
         {
             public GameObject Root;
+            public Transform Bombs;
             public Vector3 From, To;
             public float Start, Duration, NextPuff;
             public bool Active;
@@ -152,6 +153,9 @@ namespace MachineBrigade.Game.Effects
                 if (now < at) continue;
                 _bombs.RemoveAt(i);
                 if (_hasBomb) _projectiles.Launch(_models.Merged("bomb"), from, to, BombFall, 0f, 0f, now);
+                // The bombs leave the wings as they fall.
+                foreach (var jet in _jets)
+                    if (jet.Active && jet.Bombs != null) jet.Bombs.gameObject.SetActive(false);
             }
 
             for (var i = _smoke.Count - 1; i >= 0; i--)
@@ -160,7 +164,7 @@ namespace MachineBrigade.Game.Effects
                 if (now < until) continue;
                 var emission = system.emission;
                 emission.enabled = false;
-                if (now > until + 6f)
+                if (now > until + 9f)
                 {
                     Object.Destroy(system.gameObject);
                     _smoke.RemoveAt(i);
@@ -216,9 +220,12 @@ namespace MachineBrigade.Game.Effects
             if (jet == null)
             {
                 jet = new Jet { Root = _models.Spawn("strike_jet", e.Team, _root).Root };
+                foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
+                    if (t.name.StartsWith("Bombs")) jet.Bombs = t;
                 _jets.Add(jet);
             }
             jet.Root.SetActive(true);
+            if (jet.Bombs != null) jet.Bombs.gameObject.SetActive(true);
             jet.From = Ground(e.Position) + Vector3.up * JetAltitude;
             jet.To = Ground(e.Target) + Vector3.up * JetAltitude;
             jet.Start = now;

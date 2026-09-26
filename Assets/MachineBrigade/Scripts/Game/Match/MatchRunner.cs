@@ -140,6 +140,10 @@ namespace MachineBrigade.Game.Match
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 MatchSettings.HighQuality ? EffectBudget.High : EffectBudget.Eco);
+            // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
+            foreach (var id in catalog.Vehicles.Keys) _models.Prewarm(id);
+            if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
+            _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             UiKit.Clicked += _audio.Click;
@@ -224,11 +228,13 @@ namespace MachineBrigade.Game.Match
 
         private void Update()
         {
-            _gestures?.Tick(Time.unscaledTime);
+            // No battlefield input under the pause and result screens.
+            if (!_paused && !_resultShown) _gestures?.Tick(Time.unscaledTime);
             // Android's back button arrives as Escape: close a menu page, or pause and resume.
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 if (_menu) _hud.MenuBack();
+                else if (_commander?.ArmedSupport != null) _commander.Disarm();
                 else if (!_resultShown) SetPaused(!_paused);
             }
             _frameRate.Tick();
@@ -309,6 +315,7 @@ namespace MachineBrigade.Game.Match
             _materials?.Dispose();
             _atmosphere?.Dispose();
             Time.timeScale = 1f;
+            AudioListener.pause = false;
         }
 
         private void DispatchEvents()
@@ -425,11 +432,13 @@ namespace MachineBrigade.Game.Match
             _paused = paused;
             _hud.SetPaused(paused);
             Time.timeScale = paused ? 0f : 1f;
+            AudioListener.pause = paused;
         }
 
         private static void Reload()
         {
             Time.timeScale = 1f;
+            AudioListener.pause = false;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
@@ -541,6 +550,29 @@ namespace MachineBrigade.Game.Match
             minimap.Flush();
         }
 
+        private double _wipedSince = -1, _overrunSince = -1;
+
+        private bool SurvivalLost()
+        {
+            var now = _world.Time;
+            var wiped = _world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0;
+            _wipedSince = wiped ? (_wipedSince < 0 ? now : _wipedSince) : -1;
+
+            _world.TryGetRally(PlayerTeam, out var home);
+            var attackers = 0;
+            var defenders = 0;
+            foreach (var v in _world.Vehicles)
+            {
+                if (!v.IsAlive || v.Flying) continue;
+                var distance = System.Numerics.Vector2.Distance(v.Position, home);
+                if (v.Team == EnemyTeam && distance < 18f) attackers++;
+                else if (v.Team == PlayerTeam && distance < 26f) defenders++;
+            }
+            var overrun = attackers > 0 && defenders == 0;
+            _overrunSince = overrun ? (_overrunSince < 0 ? now : _overrunSince) : -1;
+            return (_wipedSince >= 0 && now - _wipedSince > 10.0) || (_overrunSince >= 0 && now - _overrunSince > 15.0);
+        }
+
         private void CheckResult()
         {
             if (_menu || _resultShown || _mode == null) return;
@@ -559,9 +591,10 @@ namespace MachineBrigade.Game.Match
                 });
                 return;
             }
-            // Survival ends when the player has nothing left on the field and cannot buy more.
-            if (_survival != null && _world.Time > 5.0 && _world.CountAlive(PlayerTeam) == 0 &&
-                _world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && economy.Cp < 2f)
+            // Survival ends when the army has been wiped out for a while (nothing alive or on the
+            // way), or the enemy has held the base unopposed. Command Points always trickle in, so
+            // "cannot afford anything right now" alone would make the ending a matter of luck.
+            if (_survival != null && _world.Time > 5.0 && SurvivalLost())
             {
                 _resultShown = true;
                 _world.IsOver = true;

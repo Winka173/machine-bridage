@@ -49,6 +49,7 @@ namespace MachineBrigade.Game.Effects
         private readonly List<ExplosionEffect> _blasts = new();
         private readonly BlastLayers _layers;
         private readonly ExplosionEffect _muzzle;
+        private readonly ExplosionEffect _airburst;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
         private readonly DebrisPool _debris;
@@ -81,6 +82,8 @@ namespace MachineBrigade.Game.Effects
             }
             _muzzle = ExplosionEffect.CreateMuzzleFlash(_layers);
             _blasts.Add(_muzzle);
+            _airburst = ExplosionEffect.CreateAirburst(_layers);
+            _blasts.Add(_airburst);
             _lightPool = new Light[budget.Lights];
             _lightStart = new float[budget.Lights];
             _lightIntensity = new float[budget.Lights];
@@ -103,8 +106,9 @@ namespace MachineBrigade.Game.Effects
         public void Consume(IReadOnlyList<SimEvent> events, ViewRegistry views, MapView map)
         {
             var now = Time.time;
-            foreach (var e in events)
+            for (var index = 0; index < events.Count; index++)
             {
+                var e = events[index];
                 switch (e.Kind)
                 {
                     case SimEventKind.WeaponFired:
@@ -114,11 +118,14 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.ProjectileImpact:
                         if (e.Airborne)
                         {
-                            // Flak and missiles bursting around an aircraft.
-                            // The hit aircraft gives the height; misses burst at flying height.
-                            var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f : 9f;
-                            Explode(e.Tier, new Vector3(e.Position.X, height, e.Position.Y), now);
-                            _emitters.Flak(new Vector3(e.Position.X, height, e.Position.Y));
+                            // Flak and missiles bursting around an aircraft, at its height (a killing
+                            // hit finds it among the wrecks); misses burst at a typical flying height.
+                            var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f
+                                : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f : 15f;
+                            var burst = new Vector3(e.Position.X, height, e.Position.Y);
+                            if (e.Tier >= ExplosionTier.Medium) Airburst(burst, e.Tier, now);
+                            else Explode(e.Tier, burst, now);
+                            _emitters.Flak(burst);
                             break;
                         }
                         var impact = Ground(e.Position, 0.15f);
@@ -156,10 +163,16 @@ namespace MachineBrigade.Game.Effects
                         break;
 
                     case SimEventKind.Repaired:
-                        if (views.TryGet(e.Entity, out var repaired)) _emitters.Repair(repaired.Position + Vector3.up * (repaired.Altitude + 1f));
+                        if (views.TryGet(e.Entity, out var repaired)) _emitters.Repair(repaired.Position + Vector3.up);
                         break;
 
                     case SimEventKind.Explosion:
+                        if (_wrecks.TryGetAircraftWreck(e.Entity, out var inAir))
+                        {
+                            // A shot-down aircraft blows up where it is, in the air; the crash follows.
+                            Airburst(inAir, ExplosionTier.Huge, now);
+                            break;
+                        }
                         var blast = Ground(e.Position, 0.3f);
                         Explode(e.Tier, blast, now);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
@@ -261,8 +274,10 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>
         private void KickUpDust(ViewRegistry views, float now)
         {
-            foreach (var view in views.All)
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
             {
+                var view = all[i];
                 var speed = view.Speed;
                 if (view.Flying || speed < 1.2f || now < view.DustAt) continue;
                 view.DustAt = now + Mathf.Lerp(0.2f, 0.07f, Mathf.Clamp01(speed / 10f));
@@ -279,6 +294,22 @@ namespace MachineBrigade.Game.Effects
         {
             if (!_chunks.TryGetValue(modelId, out var chunk)) _chunks[modelId] = chunk = _models.Chunk(modelId);
             return chunk;
+        }
+
+        private void Airburst(Vector3 position, ExplosionTier tier, float now)
+        {
+            var scale = tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f;
+            _airburst.Play(position, now, scale);
+            Shake(position, tier >= ExplosionTier.Large ? 0.3f : 0.1f);
+        }
+
+        /// <summary>Builds everything that would otherwise be created the first time it is needed mid-battle.</summary>
+        public void Prewarm()
+        {
+            foreach (var id in new[] { "missile", "rocket", "bomb", "cruise_missile" })
+                if (_models.Has(id)) _models.Merged(id);
+            foreach (var id in new[] { "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_metal", "debris_leaves" })
+                if (_models.Has(id)) Chunk(id);
         }
 
         private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)

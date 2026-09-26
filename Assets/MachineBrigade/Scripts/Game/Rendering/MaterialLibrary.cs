@@ -108,6 +108,9 @@ namespace MachineBrigade.Game.Rendering
             SoftSmoke = Particle(particle, "SoftSmoke", additive: false, intensity: 1f, shape: 0f, softness: 1.6f, depthPull: 4f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
+            // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
+            Scorch.renderQueue = 2950;
+            Scorch.enableInstancing = true;
             Rain = Particle(particle, "Rain", additive: false, intensity: 1.1f, shape: 0f, softness: 0.4f);
             Splash = Particle(particle, "Splash", additive: false, intensity: 1f, shape: 1f, softness: 0.8f);
         }
@@ -275,7 +278,8 @@ namespace MachineBrigade.Game.Rendering
 
         private Material Unlit(Shader shader, string name, Color color)
         {
-            var m = new Material(shader) { name = name };
+            // Instanced: tracers and health bars are many copies of one mesh.
+            var m = new Material(shader) { name = name, enableInstancing = true };
             m.SetColor("_Color", color);
             _owned.Add(m);
             return m;

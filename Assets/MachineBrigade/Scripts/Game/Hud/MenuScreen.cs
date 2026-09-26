@@ -260,6 +260,7 @@ namespace MachineBrigade.Game.Hud
             "mlrs" => "mlrs",
             "aa_vehicle" => "aa",
             "attack_helicopter" => "helicopter",
+            "light_tank" => "lighttank",
             "armored_car" => "armoredcar",
             "tank_destroyer" => "destroyer",
             "heavy_tank" => "heavytank",

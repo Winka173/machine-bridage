@@ -203,7 +203,7 @@ namespace MachineBrigade.Game.Hud
             _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
             _safe.Add(_hint);
 
-            _targeting = UiKit.Box("targeting");
+            _targeting = UiKit.Box("targeting", PickingMode.Position);
             _targetingText = UiKit.Text("", "targeting-text");
             _targeting.Add(_targetingText);
             _targeting.Add(UiKit.WideButton("wide small-wide", "close", Strings.Get("target.cancel"), null, () => TargetCancelled?.Invoke()));
@@ -274,14 +274,18 @@ namespace MachineBrigade.Game.Hud
         {
             if (_allies != null)
             {
-                _allies.text = allies.ToString();
-                _enemies.text = enemies.ToString();
-                _wave.text = wave.ToString();
                 var seconds = Mathf.CeilToInt(secondsToNextWave);
-                _next.text = $"{seconds / 60}:{seconds % 60:00}";
+                if (allies != _shownAllies) _allies.text = (_shownAllies = allies).ToString();
+                if (enemies != _shownEnemies) _enemies.text = (_shownEnemies = enemies).ToString();
+                if (wave != _shownWave) _wave.text = (_shownWave = wave).ToString();
+                if (seconds != _shownSeconds) _next.text = $"{(_shownSeconds = seconds) / 60}:{seconds % 60:00}";
             }
-            if (_fps != null) _fps.text = ShowFps ? $"{fps:0} FPS" : "";
+            var shownFps = ShowFps ? Mathf.RoundToInt(fps) : -1;
+            if (_fps != null && shownFps != _shownFps) _fps.text = (_shownFps = shownFps) >= 0 ? $"{shownFps} FPS" : "";
         }
+
+        private int _shownAllies = -1, _shownEnemies = -1, _shownWave = -1, _shownSeconds = -1, _shownFps = -2;
+        private SelectionSummary _shownSelection = new(-1, null, 0f, 0f);
 
         public void SetScore(int ours, int theirs, int max, IReadOnlyList<PointInfo> points) => _score?.Update(ours, theirs, max, points);
 
@@ -328,6 +332,11 @@ namespace MachineBrigade.Game.Hud
         public void SetSelection(SelectionSummary summary)
         {
             if (_unitName == null) return;
+            // Only rebuild the panel when what it shows has changed (whole hit points).
+            if (summary.Count == _shownSelection.Count && summary.DefId == _shownSelection.DefId &&
+                Mathf.CeilToInt(summary.Hp) == Mathf.CeilToInt(_shownSelection.Hp) &&
+                Mathf.CeilToInt(summary.MaxHp) == Mathf.CeilToInt(_shownSelection.MaxHp)) return;
+            _shownSelection = summary;
             if (summary.Count == 0)
             {
                 _selectedCount.text = "";
@@ -366,11 +375,30 @@ namespace MachineBrigade.Game.Hud
 
         public void ShowError(CommandError error) => Toast(Strings.Error(error), error: true);
 
+        /// <summary>
+        /// Shows a message. One that arrives while another is fresh waits its turn (a few at
+        /// most), so "point lost" is not wiped by "APC on the way"; errors go straight up.
+        /// </summary>
         public void Toast(string message, bool error = false, float seconds = 2.2f)
+        {
+            var busy = _toast.ClassListContains("visible") && Time.unscaledTime - _toastShownAt < 1.2f;
+            if (busy && !error)
+            {
+                if (_toastQueue.Count < 3 && _toastText.text != message) _toastQueue.Enqueue((message, false, seconds));
+                return;
+            }
+            ShowToast(message, error, seconds);
+        }
+
+        private readonly Queue<(string message, bool error, float seconds)> _toastQueue = new();
+        private float _toastShownAt = -10f;
+
+        private void ShowToast(string message, bool error, float seconds)
         {
             _toastText.text = message;
             _toastText.parent?.EnableInClassList("error", error);
             _toast.AddToClassList("visible");
+            _toastShownAt = Time.unscaledTime;
             _toastUntil = Time.unscaledTime + seconds;
         }
 
@@ -396,7 +424,16 @@ namespace MachineBrigade.Game.Hud
 
         public void Tick()
         {
-            if (_toast.ClassListContains("visible") && Time.unscaledTime > _toastUntil) _toast.RemoveFromClassList("visible");
+            var toastDone = Time.unscaledTime > _toastUntil || (_toastQueue.Count > 0 && Time.unscaledTime - _toastShownAt > 1.2f);
+            if (toastDone && _toastQueue.Count > 0)
+            {
+                var (message, error, seconds) = _toastQueue.Dequeue();
+                ShowToast(message, error, seconds);
+            }
+            else if (_toast.ClassListContains("visible") && Time.unscaledTime > _toastUntil)
+            {
+                _toast.RemoveFromClassList("visible");
+            }
             if (_banner != null && _banner.ClassListContains("visible") && Time.unscaledTime > _bannerUntil)
                 _banner.RemoveFromClassList("visible");
             if (Screen.safeArea != _appliedSafeArea) ApplySafeArea();

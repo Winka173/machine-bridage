@@ -29,7 +29,10 @@ namespace MachineBrigade.Game.Effects
             public Vector3 AnchorOffset;
             public float Size, Start, Until, SmokeUntil;
             public float FlameDebt, SmokeDebt, EmberDebt;
+            public int Id;
         }
+
+        private int _nextId = 1;
 
         private readonly List<Fire> _fires = new();
         private readonly ParticleSystem _flames;
@@ -64,7 +67,8 @@ namespace MachineBrigade.Game.Effects
         /// Starts a fire of <paramref name="size"/> (1 is a car-sized blaze) burning for
         /// <paramref name="seconds"/>. With an anchor it follows that transform (a falling wreck).
         /// </summary>
-        public void Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null)
+        /// <returns>A handle for <see cref="Extinguish"/>.</returns>
+        public int Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null)
         {
             if (_fires.Count >= MaxFires)
             {
@@ -83,7 +87,24 @@ namespace MachineBrigade.Game.Effects
                 Start = now,
                 Until = now + seconds,
                 SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f),
+                Id = _nextId,
             });
+            return _nextId++;
+        }
+
+        /// <summary>Puts a fire out: the flames stop and its smoke clears within a few seconds.</summary>
+        public void Extinguish(int id, float now)
+        {
+            for (var i = 0; i < _fires.Count; i++)
+            {
+                if (_fires[i].Id != id) continue;
+                var f = _fires[i];
+                f.Until = Mathf.Min(f.Until, now);
+                f.SmokeUntil = Mathf.Min(f.SmokeUntil, now + 3f);
+                f.Anchor = null;
+                _fires[i] = f;
+                return;
+            }
         }
 
         public void Tick(float now, float dt)

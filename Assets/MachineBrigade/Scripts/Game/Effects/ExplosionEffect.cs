@@ -356,6 +356,21 @@ namespace MachineBrigade.Game.Effects
             return e;
         }
 
+        /// <summary>A burst in the air (anti-aircraft hits, an aircraft blowing up): no dirt or ground dust.</summary>
+        public static ExplosionEffect CreateAirburst(BlastLayers l)
+        {
+            var e = new ExplosionEffect();
+            e.Flash(l, 6f);
+            e.Fireball(l, 16, new Vector2(1.8f, 3.6f), new Vector2(2f, 6f), 0.5f, new Vector2(0.45f, 0.9f));
+            e.Smoke(l, 6, new Vector2(1.8f, 3.2f), new Vector2(1.6f, 3f));
+            e.Sparks(l, 24, new Vector2(7f, 16f), 0.16f);
+            e.Debris(l, 8, new Vector2(4f, 9f));
+            e.Embers(l, 10, 0.8f);
+            e.LightRange = 14f;
+            e.LightIntensity = 7f;
+            return e;
+        }
+
         /// <summary>Barrel-mounted flash; played (scaled) for every shot.</summary>
         public static ExplosionEffect CreateMuzzleFlash(BlastLayers l)
         {

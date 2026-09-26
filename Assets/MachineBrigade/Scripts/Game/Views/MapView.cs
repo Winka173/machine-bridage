@@ -152,7 +152,7 @@ namespace MachineBrigade.Game.Views
             "garage" => ("garage", "rubble_small", BuildingDebris),
             "ruin" => ("ruin", "rubble_small", BuildingDebris),
             "silo" => ("silo", null, MetalDebris),
-            "water_tower" => ("water_tower", null, MetalDebris),
+            "water_tower" => ("water_tower", "rubble_small", MetalDebris),
             "fence" => ("fence", null, new[] { "debris_wood", "debris_wood", "debris_wood" }),
             "stone_wall" => ("stone_wall", null, new[] { "debris_concrete", "debris_concrete", "debris_concrete", "debris_concrete" }),
             "hedge" => ("hedge", null, new[] { "debris_leaves", "debris_leaves", "debris_leaves", "debris_wood" }),

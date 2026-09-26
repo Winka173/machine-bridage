@@ -38,6 +38,8 @@ Shader "MachineBrigade/Particle"
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment Frag
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fog
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -55,6 +57,7 @@ Shader "MachineBrigade/Particle"
                 float4 positionOS : POSITION;
                 half4 color : COLOR;
                 float4 uv : TEXCOORD0; // xy: quad UV, z: age 0..1, w: stable random 0..1
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
@@ -62,17 +65,30 @@ Shader "MachineBrigade/Particle"
                 float4 positionCS : SV_POSITION;
                 half4 color : COLOR;
                 float4 uv : TEXCOORD0;
+                float3 sun : TEXCOORD1; // sun direction in view space, for lighting smoke
+                float fog : TEXCOORD2;
             };
+
+            // Fog from view depth. URP's clip-space fog assumes a perspective camera; with this
+            // orthographic one it gave no fog at all on OpenGL ES.
+            float OrthoFog(float3 positionWS)
+            {
+                return ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
+            }
+
 
             Varyings Vert(Attributes input)
             {
                 Varyings output;
+                UNITY_SETUP_INSTANCE_ID(input);
                 // Big puffs near the ground would be sliced by it along a straight line. The camera
                 // is orthographic, so sliding a vertex towards it changes only its depth, not where
                 // it lands on screen: pulling fire and smoke forward removes the cut for free.
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 positionWS -= GetViewForwardDir() * _DepthPull;
                 output.positionCS = TransformWorldToHClip(positionWS);
+                output.sun = normalize(mul((float3x3)UNITY_MATRIX_V, _MainLightPosition.xyz));
+                output.fog = OrthoFog(positionWS);
                 output.color = input.color;
                 output.uv = input.uv;
                 return output;
@@ -125,16 +141,21 @@ Shader "MachineBrigade/Particle"
                 half mask = saturate((0.85 - edge) * 2.2) * Window(r);
                 // Light the puff as a lumpy sphere: sun from its direction in view space.
                 float3 normal = normalize(float3(p + (n - 0.5) * 0.6, sqrt(saturate(1.0 - r * r)) + 0.35));
-                float3 sun = normalize(mul((float3x3)UNITY_MATRIX_V, _MainLightPosition.xyz));
-                half lit = saturate(dot(normal, sun) * 0.5 + 0.5);
+                half lit = saturate(dot(normal, input.sun) * 0.5 + 0.5);
                 half3 colour = input.color.rgb * (0.55 + lit * 0.75 + (n - 0.5) * 0.25);
                 return half4(colour * _Intensity, input.color.a * mask);
             }
 
+            half4 Fogged(half4 colour, float fog)
+            {
+                colour.rgb = _DstBlend > 1.5h ? MixFog(colour.rgb, fog) : MixFogColor(colour.rgb, half3(0, 0, 0), fog);
+                return colour;
+            }
+
             half4 Frag(Varyings input) : SV_Target
             {
-                if (_Shape > 3.5h) return Billow(input);
-                if (_Shape > 2.5h) return Flame(input);
+                if (_Shape > 3.5h) return Fogged(Billow(input), input.fog);
+                if (_Shape > 2.5h) return Fogged(Flame(input), input.fog);
 
                 float r = length(input.uv.xy * 2.0 - 1.0);
                 half mask;
@@ -153,7 +174,7 @@ Shader "MachineBrigade/Particle"
                 half4 color = input.color;
                 color.rgb *= _Intensity;
                 color.a *= mask;
-                return color;
+                return Fogged(color, input.fog);
             }
             ENDHLSL
         }

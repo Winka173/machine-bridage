@@ -52,7 +52,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.light_tank"] = ("Light tank", "Tăng hạng nhẹ"),
             ["unit.main_battle_tank"] = ("Main battle tank", "Tăng chủ lực"),
             ["unit.artillery"] = ("Artillery", "Pháo tự hành"),
-            ["unit.apc"] = ("APC", "Xe bọc thép"),
+            ["unit.apc"] = ("APC", "Xe chở quân"),
             ["unit.flame_tank"] = ("Flame tank", "Tăng phun lửa"),
             ["unit.mlrs"] = ("Rocket launcher", "Pháo phản lực"),
             ["unit.aa_vehicle"] = ("Anti-air", "Xe phòng không"),

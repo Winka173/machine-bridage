@@ -18,14 +18,21 @@ namespace MachineBrigade.Game.Match
         private int _frames, _slow, _headroomWindows;
         private readonly FrameTiming[] _timing = new FrameTiming[1];
 
-        public FrameRateGovernor(int start = 60) => Application.targetFrameRate = start;
+        private readonly float _created;
+
+        public FrameRateGovernor(int start = 60)
+        {
+            Application.targetFrameRate = start;
+            // Measured from each scene load, so the hitch of loading a match never counts.
+            _created = Time.realtimeSinceStartup;
+        }
 
         public int Target => Application.targetFrameRate;
 
         public void Tick()
         {
             var now = Time.realtimeSinceStartup;
-            if (now < WarmUpSeconds) return;
+            if (now - _created < WarmUpSeconds) return;
             if (_windowStart < 0f) _windowStart = now;
             var dt = Time.unscaledDeltaTime;
             _frames++;

@@ -55,6 +55,9 @@ namespace MachineBrigade.Game.Effects
             renderer.receiveShadows = false;
             renderer.maxParticleSize = 3f;
             renderer.SetActiveVertexStreams(Streams);
+            // Alpha-blended smoke needs a stable order, or dark young puffs pop in front of older haze.
+            if (material.HasFloat("_DstBlend") && material.GetFloat("_DstBlend") > (float)BlendMode.One + 0.5f)
+                renderer.sortMode = ParticleSystemSortMode.OldestInFront;
             if (mode == ParticleSystemRenderMode.Stretch)
             {
                 renderer.velocityScale = 0.05f;

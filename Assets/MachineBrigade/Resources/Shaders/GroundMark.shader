@@ -34,6 +34,7 @@ Shader "MachineBrigade/GroundMark"
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma multi_compile_instancing
+            #pragma multi_compile_fog
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -57,13 +58,20 @@ Shader "MachineBrigade/GroundMark"
                 float fog : TEXCOORD1;
             };
 
+            // Fog from view depth. URP's clip-space fog assumes a perspective camera; with this
+            // orthographic one it gave no fog at all on OpenGL ES.
+            float OrthoFog(float3 positionWS)
+            {
+                return ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
+            }
+
             Varyings Vert(Attributes input)
             {
                 Varyings output;
                 UNITY_SETUP_INSTANCE_ID(input);
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 output.uv = input.uv;
-                output.fog = ComputeFogFactor(output.positionCS.z);
+                output.fog = OrthoFog(TransformObjectToWorld(input.positionOS.xyz));
                 return output;
             }
 

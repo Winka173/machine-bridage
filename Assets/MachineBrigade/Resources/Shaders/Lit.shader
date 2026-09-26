@@ -102,6 +102,13 @@ Shader "MachineBrigade/Lit"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+            // Fog from view depth. URP's clip-space fog assumes a perspective camera; with this
+            // orthographic one it gave no fog at all on OpenGL ES.
+            float OrthoFog(float3 positionWS)
+            {
+                return ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
+            }
+
             Varyings Vert(Attributes input)
             {
                 Varyings output = (Varyings)0;
@@ -114,7 +121,7 @@ Shader "MachineBrigade/Lit"
                 output.color = input.color;
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 half3 vertexLight = VertexLighting(position.positionWS, output.normalWS);
-                output.fogAndVertexLight = half4(ComputeFogFactor(position.positionCS.z), vertexLight);
+                output.fogAndVertexLight = half4(OrthoFog(position.positionWS), vertexLight);
                 return output;
             }
 

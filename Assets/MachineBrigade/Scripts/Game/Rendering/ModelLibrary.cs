@@ -193,6 +193,9 @@ namespace MachineBrigade.Game.Rendering
             return new ChunkModel(filter.sharedMesh, resolved);
         }
 
+        /// <summary>Builds a model's merged template now rather than on its first spawn mid-battle.</summary>
+        public void Prewarm(string modelId) => Template(modelId);
+
         /// <summary>Whether a model exists in Resources/Models.</summary>
         public bool Has(string modelId) => _prefabs.ContainsKey(modelId) || Resources.Load<GameObject>("Models/" + modelId) != null;
 

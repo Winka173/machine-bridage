@@ -315,9 +315,11 @@ namespace MachineBrigade.Game.Views
 
         private void Spin(float speed)
         {
+            var spinners = _model.Spinners;
+            if (spinners.Count == 0) return;
             _spin += Time.deltaTime * speed;
-            foreach (var spinner in _model.Spinners)
-                spinner.Transform.localRotation = spinner.Rest * Quaternion.AngleAxis(_spin * spinner.DegreesPerSecond, spinner.Axis);
+            for (var i = 0; i < spinners.Count; i++)
+                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spin * spinners[i].DegreesPerSecond, spinners[i].Axis);
         }
 
         internal static Transform CreateMesh(string name, Transform parent, Mesh mesh, Material material, bool castShadows)

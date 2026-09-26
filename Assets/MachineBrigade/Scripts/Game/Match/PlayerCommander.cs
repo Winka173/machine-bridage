@@ -74,6 +74,8 @@ namespace MachineBrigade.Game.Match
         public void Update()
         {
             if (!_world.TryGetEconomy(_team, out var economy)) return;
+            // Auto support can spend the CP or start the cooldown of the card being aimed.
+            if (_armed >= 0 && (economy.CooldownLeft(_cards[_armed].Id, _world.Time) > 0f || economy.Cp < _cards[_armed].Cost)) Disarm();
             for (var i = 0; i < _cards.Count; i++)
             {
                 var card = _cards[i];
@@ -123,7 +125,7 @@ namespace MachineBrigade.Game.Match
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(card.Id)));
         }
 
-        private void Disarm()
+        public void Disarm()
         {
             _armed = -1;
             _hud.SetTargeting(null);

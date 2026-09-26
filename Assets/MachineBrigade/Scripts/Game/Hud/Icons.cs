@@ -46,6 +46,7 @@ namespace MachineBrigade.Game.Hud
             ["helicopter"] = "<path d=\"M3 5h18M12 5v3\"/><path d=\"M5 12a3 3 0 0 1 3-3h7l3 3v2a2 2 0 0 1-2 2H8a3 3 0 0 1-3-3Z\"/><path d=\"M18 12h4M8 16v3m6-3v3M6 19h10\"/>",
             ["aa"] = "<rect x=\"3\" y=\"14\" width=\"16\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-3h8v3M10 11l4-7M13 11l4-6\"/>",
             ["mlrs"] = "<path d=\"M2 16v-4h4l2-3h3v7M11 16h10v-3H11ZM12 13l8-6 1 2-8 4\"/><circle cx=\"5\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/>",
+            ["lighttank"] = "<rect x=\"3\" y=\"14\" width=\"15\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-3h6v3M13 12h5\"/>",
             ["armoredcar"] = "<path d=\"M3 15v-3l3-3h10l4 3v3Z\"/><circle cx=\"6\" cy=\"17\" r=\"1.6\"/><circle cx=\"11\" cy=\"17\" r=\"1.6\"/><circle cx=\"16\" cy=\"17\" r=\"1.6\"/><path d=\"M10 9V7h4v2M14 8h6\"/>",
             ["destroyer"] = "<rect x=\"3\" y=\"14\" width=\"14\" height=\"6\" rx=\"3\"/><path d=\"M6 14v-3h7v3M13 12h9\"/>",
             ["heavytank"] = "<rect x=\"2\" y=\"13\" width=\"18\" height=\"7\" rx=\"3.5\"/><path d=\"M6 13V9h9v4M15 10.5h7M9 9V7h3\"/>",
