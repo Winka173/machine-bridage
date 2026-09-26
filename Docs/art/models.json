@@ -37,7 +37,7 @@
   },
   "attack_jet": {
     "file": "attack_jet.glb",
-    "triangles": 3594
+    "triangles": 9050
   },
   "barn": {
     "file": "barn.glb",
@@ -341,11 +341,11 @@
   },
   "strike_drone": {
     "file": "strike_drone.glb",
-    "triangles": 1606
+    "triangles": 4038
   },
   "strike_jet": {
     "file": "strike_jet.glb",
-    "triangles": 3368
+    "triangles": 8740
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
