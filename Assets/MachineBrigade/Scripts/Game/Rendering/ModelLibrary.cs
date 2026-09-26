@@ -98,7 +98,7 @@ namespace MachineBrigade.Game.Rendering
             (new Regex(@"^Rotor(\.\d+)?$"), Vector3.up, 1500f),
             (new Regex(@"^Tail_rotor(\.\d+)?$"), Vector3.right, 2400f),
             (new Regex(@"^Radar(\.\d+)?$"), Vector3.up, 120f),
-            (new Regex(@"^Propeller(\.\d+)?$"), Vector3.forward, 2200f),
+            (new Regex(@"^Propeller(_\d+)?(\.\d+)?$"), Vector3.forward, 2200f),  // Propeller, Propeller_2, ...
         };
 
         /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam).</summary>
