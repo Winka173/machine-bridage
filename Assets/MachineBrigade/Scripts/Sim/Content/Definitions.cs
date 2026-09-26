@@ -164,6 +164,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A veteran enemy variant: bigger, tougher, with skills; shown with an elite badge.</summary>
         public bool Elite { get; internal set; }
 
+        /// <summary>
+        /// Rough fighting value at full health, in CP: what the unit costs, or for units that are
+        /// never bought (defences, mission units) an estimate from their toughness. Bosses count
+        /// as nothing here, because the army fights them whatever the odds.
+        /// </summary>
+        public float Power => Boss ? 0f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
+
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
         public string Model { get; internal set; }
 

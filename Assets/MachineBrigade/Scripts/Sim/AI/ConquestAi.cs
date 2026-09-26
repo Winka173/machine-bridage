@@ -96,7 +96,7 @@ namespace MachineBrigade.Sim.AI
             _enemyTeam = enemyTeam;
             _difficulty = difficulty;
             _random = new Random(seed);
-            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective };
+            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective, FallBackTo = SafePoint };
         }
 
         private float Interval => _difficulty switch
@@ -158,6 +158,29 @@ namespace MachineBrigade.Sim.AI
                 bestScore = score;
             }
             return best != null && bestScore > -1.5f ? best.Def.Position : null;
+        }
+
+        /// <summary>
+        /// Outmatched at the front: the point we hold that lies between the front and home,
+        /// nearest the front, where the army can dig in and meet the attack together.
+        /// </summary>
+        private Vector2? SafePoint(SimWorld world, Vector2 front)
+        {
+            if (_mode == null || !world.TryGetRally(_team, out var home)) return null;
+            Vector2? best = null;
+            var bestDistance = float.MaxValue;
+            var frontToHome = Vector2.Distance(front, home);
+            foreach (var point in _mode.Points)
+            {
+                if (point.Owner != _team) continue;
+                var p = point.Def.Position;
+                var distance = Vector2.Distance(front, p);
+                if (distance < 15f || Vector2.Distance(p, home) > frontToHome) continue;
+                if (distance >= bestDistance) continue;
+                best = p;
+                bestDistance = distance;
+            }
+            return best;
         }
 
         private bool Draining(ObjectiveState point)
