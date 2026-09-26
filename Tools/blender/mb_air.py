@@ -7,12 +7,14 @@ Conventions (shared with ModelLibrary.cs): metres, +Z up, Blender -Y is the nose
     `Muzzle_missile` centred between the symmetric wing launchers.
   * gunship_heli and scout_heli follow attack_helicopter (origin on the ground, wheels or skids at
     z = 0); scout_heli's side guns are fixed, so its `Muzzle_gun` has no mount.
-  * strike_jet: origin at the fuselage centre (it flies). `Bombs` is one part holding the four
-    wing bombs (hidden once they drop); `Muzzle_gun` at the nose cannon.
+  * strike_jet: origin at the fuselage centre (it flies). `Bombs` is a pivot at the origin whose
+    children are the six wing bombs (hidden together once they drop); `Muzzle_gun` at the chin gun.
   * attack_jet and strike_drone fly like strike_jet. strike_drone's pusher `Propeller` spins about
     local Y (the fuselage axis).
   * Munitions: origin at the centre, nose at -Y, emissive `Alloy` motors at the tail.
-Team / TeamGlow parts are recoloured per army at runtime.
+Team / TeamGlow parts are recoloured per army at runtime. The fixed-wing kit below (airfoil lofts
+with control surfaces, skin panels, intakes, nozzles, turbofans, propellers, bombs, missiles and
+pylons) is shared with mb_air2.py's premium aircraft.
 """
 import math
 
@@ -137,7 +139,8 @@ def _exhaust_duct(a, loc, yaw, size=(.36, .7, .36), pitch=0.0):
     outlet = m @ Vector((0, size[1] / 2 + .012, 0))
     a.part('Exhausts', 'Undercarriage').box((size[0] * .78, .02, size[2] * .74), loc=tuple(outlet),
                                             rot=(pitch, 0, yaw), bevel=0)
-    a.part('Exhaust_vanes', 'Steel').grille(size[0] * .64, size[2] * .66, loc=tuple(m @ Vector((0, size[1] / 2 + .035, 0))),
+    a.part('Exhaust_vanes', 'Steel').grille(size[0] * .64, size[2] * .66,
+                                            loc=tuple(m @ Vector((0, size[1] / 2 + .035, 0))),
                                             rot=(pitch, 0, yaw + math.pi), slats=4, depth=.05, thickness=.025)
 
 
@@ -567,17 +570,31 @@ def _wing(box, moving, pf, frame, cs=(), gap=.035, lower=.72, bevel=.012, root=F
         _surface(moving, pf, frame, (s0 + gap / 2, s1 - gap / 2), f + gap / c, 1.0, lower, 0, (True, True))
 
 
-def _skin_panel(part, pf, frame, s0, s1, u0, u1, out=.02, inn=.012, lower=.72):
+def _skin_offsets(pts, out, inn):
+    """Offset an upper-skin polyline [(y, z)...] (running aft) along its normals: returns the outer
+    line and the inner line, so a panel stays `out` clear of steep leading-edge facets too."""
+    top, bot = [], []
+    for i, (y, z) in enumerate(pts):
+        a, b = pts[max(i - 1, 0)], pts[min(i + 1, len(pts) - 1)]
+        dy, dz = b[0] - a[0], b[1] - a[1]
+        k = math.hypot(dy, dz) or 1.0
+        ny, nz = -dz / k, dy / k
+        top.append((y + ny * out, z + nz * out))
+        bot.append((y - ny * inn, z - nz * inn))
+    return top, bot
+
+
+def _skin_panel(part, pf, frame, s0, s1, u0, u1, out=.02, inn=.012, lower=.72, stations=None):
     """Access panel standing `out` proud of a surface's upper skin between spans s0..s1 and chord
-    fractions u0..u1; its bevelled edge and baked occlusion draw the panel line."""
+    fractions u0..u1; its bevelled edge and baked occlusion draw the panel line. `stations` runs a
+    long strip through the surface loft's own stations so its facets stay parallel to the skin."""
     loops = []
-    for s in (s0, s1):
+    us = [u0] + [u for u in FOIL_U if u0 + .02 < u < u1 - .02] + [u1]
+    for s in (stations or (s0, s1)):
         le, c, t, h = pf.at(s)
         up = t / (1 + lower)
-        us = [u0] + [u for u in FOIL_U if u0 + .02 < u < u1 - .02] + [u1]
-        top = [(s, le + u * c, h + max(up * _naca(u), .007) + out) for u in us]
-        bot = [(s, le + u * c, h + max(up * _naca(u), .007) - inn) for u in reversed(us)]
-        loops.append([frame(*q) for q in top + bot])
+        top, bot = _skin_offsets([(le + u * c, h + max(up * _naca(u), .007)) for u in us], out, inn)
+        loops.append([frame(s, y, z) for y, z in top + bot[::-1]])
     part.loft(loops, bevel=.005, seg=1)
 
 
@@ -685,7 +702,8 @@ def _canopy(glass, frames, stations, bows=(), r=.024, n=9):
 
 def _squircle(w, h, n=12):
     """Rounded-rectangle outline (superellipse, exponent 4) starting at +x, counter-clockwise."""
-    return [(w * math.copysign(abs(math.cos(u)) ** .5, math.cos(u)), h * math.copysign(abs(math.sin(u)) ** .5, math.sin(u)))
+    return [(w * math.copysign(abs(math.cos(u)) ** .5, math.cos(u)),
+             h * math.copysign(abs(math.sin(u)) ** .5, math.sin(u)))
             for u in (i * math.tau / n for i in range(n))]
 
 
@@ -832,7 +850,8 @@ def strike_jet(a):
             _sec(.8, .78, -.46, .4), _sec(2.4, .84, -.44, .36), _sec(3.8, .83, -.41, .32), _sec(4.75, .78, -.38, .28)]
     body.loft(hull, bevel=.02, seg=1)
     # Dark radome; its back ring sits inside the fuselage, whose front face shows as a seam.
-    armor.loft([[(0, -5.84, -.04)], _sec(-5.6, .11, -.13, .06), _sec(-5.3, .19, -.2, .13), _sec(-4.9, .275, -.26, .205)])
+    armor.loft([[(0, -5.84, -.04)], _sec(-5.6, .11, -.13, .06), _sec(-5.3, .19, -.2, .13),
+                _sec(-4.9, .275, -.26, .205)])
     _patch(armor, hull, -4.95, -4.05, 6, 10)                                             # anti-glare panel
     # Chin gun: fairing and barrel under the radome.
     armor.box((.18, .9, .15), loc=(0, -5.0, -.24), bevel=.04, seg=1, taper=(.8, 1))
@@ -939,8 +958,8 @@ def _rocket_pod(a, x, y, z, r, length, tubes=7, part='Pods'):
                rot=BACKWARD, seg=12)
     a.part('Pod_bands', 'Hazard').cyl(r + .012, .05, loc=(x, y + length * .22, z), rot=FORWARD, seg=12, bevel=0)
     bores = a.part('Pod_tubes_bore', 'Undercarriage')
-    pts = [(0.0, 0.0)] + [(math.cos(k * math.tau / (tubes - 1)) * r * .56, math.sin(k * math.tau / (tubes - 1)) * r * .56)
-                          for k in range(tubes - 1)]
+    ring = [k * math.tau / (tubes - 1) for k in range(tubes - 1)]
+    pts = [(0.0, 0.0)] + [(math.cos(u) * r * .56, math.sin(u) * r * .56) for u in ring]
     for px, pz in pts:
         bores.cyl(r * .22, .03, loc=(x + px, y - .005, z + pz), rot=FORWARD, seg=6, bevel=0)
 
@@ -986,7 +1005,8 @@ def attack_jet(a):
     steel.cyl(.15, .3, loc=(0, -5.98, -.16), rot=FORWARD, seg=12, bevel=.02, bseg=1)
     for k in range(7):
         ang = k * math.tau / 7
-        steel.cyl(.028, .88, loc=(math.cos(ang) * .075, -6.46, -.16 + math.sin(ang) * .075), rot=FORWARD, seg=6, bevel=0)
+        steel.cyl(.028, .88, loc=(math.cos(ang) * .075, -6.46, -.16 + math.sin(ang) * .075), rot=FORWARD, seg=6,
+                  bevel=0)
     steel.cyl(.12, .06, loc=(0, -6.45, -.16), rot=FORWARD, seg=12, bevel=0)
     steel.cyl(.125, .07, loc=(0, -6.84, -.16), rot=FORWARD, seg=12, bevel=0)
     a.pivot('Muzzle_gun', (0, -6.9, -.16))
@@ -1073,7 +1093,8 @@ def _prop_blade(part, phi, r0, r1, c0, c1, t0, t1, pitch0, pitch1, axis_y=0.0, s
     def ring(r, c, t, b):
         cv, nv = e * math.cos(b) + y * math.sin(b), -e * math.sin(b) + y * math.cos(b)
         return [tuple(d * r + cv * u * c + nv * v * t + y * axis_y) for u, v in foil]
-    part.loft([ring(r0, c0, t0, pitch0), ring((r0 + r1) / 2, (c0 + c1) / 2 * 1.08, (t0 + t1) / 2, (pitch0 + pitch1) / 2),
+    part.loft([ring(r0, c0, t0, pitch0),
+               ring((r0 + r1) / 2, (c0 + c1) / 2 * 1.08, (t0 + t1) / 2, (pitch0 + pitch1) / 2),
                ring(r1, c1, t1, pitch1)], bevel=0)
 
 

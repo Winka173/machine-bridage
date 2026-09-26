@@ -23,7 +23,8 @@ Look development shared by every model:
 Runtime contract (Frontier Command's src/view.js; Machine Brigade's ModelLibrary.cs): Blender -Y is the model's front, `leg_*` empties stay
 articulated, and meshes named Main_cannon/Muzzle_brake/Barrel*/Cannon*/Muzzle*/Turret_head*
 form the aim and recoil rig. Parts under a spinning or independently aimed pivot (Rotor, Tail_rotor,
-Propeller, Radar, Mount_*, Pump_beam, Bombs) move at runtime too, so like the rig they receive ambient occlusion but never cast it.
+Propeller, Radar, Mount_*, Pump_beam) move at runtime too, and an aircraft's Bombs are hidden once they
+drop, so like the rig they receive ambient occlusion but never cast it.
 """
 import contextlib
 import io

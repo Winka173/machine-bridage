@@ -327,6 +327,10 @@
     "file": "silo.glb",
     "triangles": 1884
   },
+  "sky_gunship": {
+    "file": "sky_gunship.glb",
+    "triangles": 9204
+  },
   "snow_pine": {
     "file": "snow_pine.glb",
     "triangles": 224
