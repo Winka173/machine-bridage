@@ -88,8 +88,12 @@ namespace MachineBrigade.Game.Input
             return new SelectionSummary(count, mixed ? null : defId, hp, maxHp);
         }
 
+        /// <summary>Gets first refusal on taps (strike targeting); returns true when it used the tap.</summary>
+        public Func<Vector2, bool> TapInterceptor { get; set; }
+
         public void OnTap(Vector2 screen)
         {
+            if (TapInterceptor != null && TapInterceptor(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
             if (picked != null && picked.Team == _team)
             {

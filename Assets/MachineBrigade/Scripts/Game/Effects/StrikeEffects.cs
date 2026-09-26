@@ -64,7 +64,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var t = new Telegraph
                 {
-                    Ring = VehicleView.CreateMesh("Strike Ring", _root, meshes.Ring, materials.StrikeWarning, false),
+                    Ring = VehicleView.CreateMesh("Strike Ring", _root, meshes.ThinRing, materials.StrikeWarning, false),
                     Line = VehicleView.CreateMesh("Strike Line", _root, meshes.Quad, materials.StrikeWarning, false),
                 };
                 t.Ring.gameObject.SetActive(false);

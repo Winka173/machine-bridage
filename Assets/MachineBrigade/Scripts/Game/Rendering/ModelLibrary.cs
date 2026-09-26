@@ -104,6 +104,8 @@ namespace MachineBrigade.Game.Rendering
         private readonly Dictionary<string, GameObject> _prefabs = new();
         private readonly Dictionary<string, ChunkModel> _merged = new();
 
+        private const string FallbackModel = "light_tank";
+
         public ModelLibrary(MaterialLibrary materials) => _materials = materials;
 
         public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true)
@@ -236,6 +238,12 @@ namespace MachineBrigade.Game.Rendering
         {
             if (_prefabs.TryGetValue(modelId, out var cached)) return cached;
             var prefab = Resources.Load<GameObject>("Models/" + modelId);
+            if (prefab == null && modelId != FallbackModel)
+            {
+                // Tolerate missing art: warn once and stand in a model we always ship.
+                Debug.LogWarning($"[ModelLibrary] Missing model Resources/Models/{modelId}.glb; using {FallbackModel}.");
+                prefab = Prefab(FallbackModel);
+            }
             if (prefab == null) throw new InvalidOperationException($"Missing model Resources/Models/{modelId}.glb.");
             _prefabs[modelId] = prefab;
             return prefab;
