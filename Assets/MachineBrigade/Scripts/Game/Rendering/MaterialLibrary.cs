@@ -75,9 +75,10 @@ namespace MachineBrigade.Game.Rendering
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
 
-            Fire = Particle(particle, "Fire", additive: true, intensity: 2.1f, shape: 3f, softness: 1.4f);
-            Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f);
-            Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 4f, softness: 1.2f);
+            Fire = Particle(particle, "Fire", additive: true, intensity: 1.65f, shape: 3f, softness: 1.4f, depthPull: 9f);
+            Sparks = Particle(particle, "Sparks", additive: true, intensity: 4f, shape: 0f, softness: 0.6f, depthPull: 3f);
+            Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 4f, softness: 1.2f, depthPull: 8f);
+            SoftSmoke = Particle(particle, "SoftSmoke", additive: false, intensity: 1f, shape: 0f, softness: 1.6f, depthPull: 4f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
             Rain = Particle(particle, "Rain", additive: false, intensity: 1.1f, shape: 0f, softness: 0.4f);
@@ -105,6 +106,9 @@ namespace MachineBrigade.Game.Rendering
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }
+
+        /// <summary>Plain soft puffs for smoke trails, which read as smooth ribbons.</summary>
+        public Material SoftSmoke { get; }
 
         /// <summary>Falling rain streaks (stretched billboards).</summary>
         public Material Rain { get; }
@@ -183,9 +187,11 @@ namespace MachineBrigade.Game.Rendering
             return m;
         }
 
-        private Material Particle(Shader shader, string name, bool additive, float intensity, float shape, float softness)
+        private Material Particle(Shader shader, string name, bool additive, float intensity, float shape, float softness,
+            float depthPull = 0f)
         {
             var m = new Material(shader) { name = name };
+            m.SetFloat("_DepthPull", depthPull);
             m.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
             m.SetFloat("_DstBlend", additive ? (float)BlendMode.One : (float)BlendMode.OneMinusSrcAlpha);
             m.SetFloat("_Intensity", intensity);

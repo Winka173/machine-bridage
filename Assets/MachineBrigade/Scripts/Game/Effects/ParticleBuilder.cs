@@ -114,7 +114,7 @@ namespace MachineBrigade.Game.Effects
             return g;
         }
 
-        public static Gradient FireGradient => Fade(new Color(1f, 0.95f, 0.75f), new Color(1f, 0.55f, 0.12f), new Color(0.45f, 0.1f, 0.04f));
+        public static Gradient FireGradient => Fade(new Color(1f, 0.82f, 0.5f), new Color(1f, 0.45f, 0.1f), new Color(0.4f, 0.08f, 0.03f));
 
         /// <summary>
         /// Smoke column: dark and dense at the source, thinning into light grey haze. Fades in
