@@ -70,10 +70,12 @@ namespace MachineBrigade.Game.Views
         private readonly List<(Transform part, Quaternion rest, Vector3 axis, float speed, float phase, bool rocks)> _moving = new();
         private Texture2D _groundTexture;
 
-        /// <param name="treeShadows">Trees and other small props cast shadows too (the Shadows setting).</param>
+        /// <param name="shadows">The Shadows setting: trees cast shadows from Medium up, small clutter on High.</param>
         public MapView(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
-            bool treeShadows = true)
+            Match.ShadowLevel shadows = Match.ShadowLevel.High)
         {
+            var treeShadows = shadows >= Match.ShadowLevel.Medium;
+            var clutterShadows = shadows == Match.ShadowLevel.High;
             _world = world;
             _models = models;
             _materials = materials;
@@ -88,9 +90,10 @@ namespace MachineBrigade.Game.Views
                 var id = prop.Def.Id;
                 var (model, rubble, debris) = Describe(id, rng);
                 var vegetation = id is "tree" or "palm" or "cactus";
-                // Tiny clutter (barrels, crates, traps) casts no shadow: many casters, little to see.
-                var shadows = prop.Def.Width * prop.Def.Depth >= 3f || (vegetation && treeShadows);
-                var instance = id is "oil_pump" or "radar_station" ? SpawnMoving(model, shadows, rng) : Spawn(model, shadows);
+                // Tiny clutter (barrels, crates, traps) casts a shadow only on High: many casters, little to see.
+                var casts = shadows != Match.ShadowLevel.Off &&
+                            (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
+                var instance = id is "oil_pump" or "radar_station" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
                 if (id is "car" or "truck") Repaint(instance, _materials.CarPaints, rng);
                 if (id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
                 var yaw = vegetation ? (float)rng.NextDouble() * 360f : prop.Rotation;

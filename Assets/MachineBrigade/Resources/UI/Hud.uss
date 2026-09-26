@@ -56,10 +56,10 @@
 }
 
 /* A solid, pressable button: face plus a darker bottom edge that flattens when pressed. */
-.tool, .cmd, .wide, .segment, .toggle, .setting-row, .icon-button, .card, .point-chip {
+.tool, .cmd, .wide, .segment, .toggle, .setting-row, .icon-button, .card, .point-chip, .option {
     border-bottom-width: 3px;
 }
-.tool:active, .cmd:active, .wide:active, .segment:active, .toggle:active, .icon-button:active, .card:active {
+.tool:active, .cmd:active, .wide:active, .segment:active, .toggle:active, .icon-button:active, .card:active, .option:active {
     border-bottom-width: 1px;
     translate: 0 2px;
 }
@@ -572,3 +572,25 @@
     background-color: var(--n900); border-radius: 5px;
 }
 .setting-row .icon-button { width: 36px; height: 34px; margin-left: 4px; margin-right: 4px; background-color: var(--n600); }
+
+/* Settings list: rows with segmented choices, scrolling under the brand strip. */
+.settings-scroll { flex-grow: 1; }
+.settings-scroll > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container { padding-bottom: 14px; }
+.option-row { height: 54px; margin-top: 6px; }
+.option-row .setting-label { font-size: 16px; }
+.options { flex-direction: row; }
+.option {
+    min-width: 68px; height: 38px; margin-left: 5px; padding: 0 10px;
+    align-items: center; justify-content: center;
+    background-color: var(--n850);
+    border-radius: 5px;
+    border-bottom-color: var(--n950);
+}
+.option-label { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; letter-spacing: 1px; color: var(--n300); }
+.option.chosen { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
+.option.chosen .option-label { color: var(--amber-ink); }
+.custom-tag {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 12px; letter-spacing: 1px;
+    color: var(--amber-ink); background-color: var(--amber-light);
+    padding: 2px 8px; margin-right: 10px; border-radius: 9px;
+}

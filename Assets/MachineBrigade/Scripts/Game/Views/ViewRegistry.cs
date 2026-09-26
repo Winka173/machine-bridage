@@ -58,6 +58,51 @@ namespace MachineBrigade.Game.Views
         public void Render(float alpha, Quaternion cameraRotation)
         {
             foreach (var view in _list) view.Render(alpha, cameraRotation);
+            if (BlobShadows) DrawBlobs();
+        }
+
+        /// <summary>
+        /// With shadows off, a soft dark disc under every vehicle keeps it on the ground; an
+        /// aircraft's disc falls away from it along the sun, which also shows its height.
+        /// </summary>
+        public bool BlobShadows { get; set; }
+
+        private readonly List<Matrix4x4> _blobs = new();
+        private RenderParams _blobParams;
+        private Vector3 _sunDirection;
+        private bool _blobReady;
+
+        private void DrawBlobs()
+        {
+            if (!_blobReady)
+            {
+                _blobReady = true;
+                _sunDirection = new Vector3(0.35f, -0.8f, 0.45f).normalized;
+                foreach (var light in Object.FindObjectsByType<Light>())
+                    if (light.type == LightType.Directional) _sunDirection = light.transform.forward;
+                _blobParams = new RenderParams(_materials.Scorch)
+                {
+                    shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off,
+                    receiveShadows = false,
+                    worldBounds = new Bounds(Vector3.zero, Vector3.one * 1000f),
+                };
+            }
+            _blobs.Clear();
+            var slide = new Vector3(_sunDirection.x, 0f, _sunDirection.z) / Mathf.Max(0.2f, -_sunDirection.y);
+            foreach (var view in _list)
+            {
+                if (!view.Root.gameObject.activeInHierarchy) continue;
+                var p = view.Root.position;
+                var size = view.Sim.Radius * 2.3f;
+                var ground = new Vector3(p.x, 0.04f, p.z);
+                if (view.Flying)
+                {
+                    ground += slide * p.y;
+                    size *= 1f + p.y * 0.015f;
+                }
+                _blobs.Add(Matrix4x4.TRS(ground, Quaternion.Euler(90f, 0f, 0f), new Vector3(size, size, 1f)));
+            }
+            if (_blobs.Count > 0) Graphics.RenderMeshInstanced(_blobParams, _meshes.ScorchQuad, 0, _blobs);
         }
 
         /// <summary>

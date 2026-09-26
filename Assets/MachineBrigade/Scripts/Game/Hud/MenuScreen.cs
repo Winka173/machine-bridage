@@ -20,6 +20,7 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _deckTitle;
         private readonly Dictionary<string, VisualElement> _deckCards = new();
         private readonly Dictionary<string, Label> _settingValues = new();
+        private Label _customTag;
 
         public MenuScreen(Catalog catalog, Action play)
         {
@@ -105,41 +106,84 @@ namespace MachineBrigade.Game.Hud
             _deck.Add(deckDock);
             Root.Add(_deck);
 
-            // Settings page ----------------------------------------------------------------------
-            _settings = UiKit.Box("menu-panel", PickingMode.Position);
+            // Settings page: graphics, gameplay, sound and language in one scrolling list ---------
+            _settings = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
             _settings.Add(Brand());
-            var settingsBody = UiKit.Box("menu-body");
-            _settings.Add(settingsBody);
-            settingsBody.Add(Section(0, "menu.settings"));
+            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            {
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Hidden,
+                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
+            };
+            scroll.AddToClassList("menu-body");
+            scroll.AddToClassList("settings-scroll");
+            _settings.Add(scroll);
+            var settingsBody = scroll.contentContainer;
+
+            settingsBody.Add(Section(1, "settings.section.graphics"));
+            var presetRow = OptionRow("bolt", "settings.preset",
+                new[] { Strings.Format("settings.autoTier", Level(MatchSettings.DetectTier())), Level(GraphicsQuality.Low),
+                    Level(GraphicsQuality.Medium), Level(GraphicsQuality.High) },
+                () => MatchSettings.Graphics == GraphicsQuality.Custom ? -1 : (int)MatchSettings.Graphics,
+                i => MatchSettings.Graphics = (GraphicsQuality)i);
+            _customTag = UiKit.Text(Strings.Get("settings.custom"), "custom-tag");
+            presetRow.Insert(2, _customTag);
+            settingsBody.Add(presetRow);
+            settingsBody.Add(OptionRow("shadow", "settings.shadows",
+                new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Level(GraphicsQuality.Medium), Level(GraphicsQuality.High) },
+                () => (int)MatchSettings.Options.Shadows, i => MatchSettings.Customise(o => o.Shadows = (ShadowLevel)i)));
+            settingsBody.Add(OptionRow("resolution", "settings.resolution", Array.ConvertAll(GraphicsOptions.RenderScales, v => v + "%"),
+                () => Array.IndexOf(GraphicsOptions.RenderScales, MatchSettings.Options.RenderScale),
+                i => MatchSettings.Customise(o => o.RenderScale = GraphicsOptions.RenderScales[i])));
+            settingsBody.Add(OptionRow("edges", "settings.aa", new[] { Strings.Get("settings.off"), "2x", "4x" },
+                () => Array.IndexOf(GraphicsOptions.AntiAliasingLevels, MatchSettings.Options.AntiAliasing),
+                i => MatchSettings.Customise(o => o.AntiAliasing = GraphicsOptions.AntiAliasingLevels[i])));
+            // Only caps the screen can show, and only divisors of its refresh (frame pacing).
+            var refresh = Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value);
+            var rates = Array.FindAll(GraphicsOptions.FrameRates, r => r <= 60 || (refresh >= r && refresh % r == 0));
+            settingsBody.Add(OptionRow("gauge", "settings.framerate", Array.ConvertAll(rates, v => v.ToString()),
+                () => Array.IndexOf(rates, MatchSettings.Options.FrameRate),
+                i => MatchSettings.Customise(o => o.FrameRate = rates[i])));
+            settingsBody.Add(OptionRow("battery", "settings.battery",
+                new[] { Strings.Get("settings.off"), Strings.Get("settings.on"), Strings.Get("settings.auto") },
+                () => MatchSettings.BatterySaver, i => MatchSettings.BatterySaver = i));
+            settingsBody.Add(OptionRow("sun", "settings.bloom",
+                new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Level(GraphicsQuality.High) },
+                () => MatchSettings.Options.Bloom, i => MatchSettings.Customise(o => o.Bloom = i)));
+            settingsBody.Add(Stepper("brightness", "sun", Strings.Get("settings.brightness"), () => $"{MatchSettings.Brightness}%",
+                step => MatchSettings.Brightness = Mathf.Clamp(MatchSettings.Brightness + step * 5, 80, 120)));
+            settingsBody.Add(OptionRow("pine", "settings.scenery", new[] { Strings.Get("settings.sparse"), Strings.Get("settings.dense") },
+                () => MatchSettings.Options.RichScenery ? 1 : 0, i => MatchSettings.Customise(o => o.RichScenery = i == 1)));
+            settingsBody.Add(OptionRow("flame", "settings.effects", new[] { Strings.Get("settings.balanced"), Strings.Get("settings.max") },
+                () => MatchSettings.Options.MaxEffects ? 1 : 0, i => MatchSettings.Customise(o => o.MaxEffects = i == 1)));
+
+            settingsBody.Add(Section(2, "settings.section.game"));
+            settingsBody.Add(OptionRow("move", "settings.shake",
+                new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
+                () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            settingsBody.Add(OptionRow("camera", "settings.camera",
+                new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
+                () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));
+            settingsBody.Add(OptionRow("resize", "settings.ui",
+                new[] { Strings.Get("settings.small"), Strings.Get("settings.normal"), Strings.Get("settings.large") },
+                () => MatchSettings.UiSize, i => MatchSettings.UiSize = i));
+            settingsBody.Add(OptionRow("info", "settings.fps", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+                () => MatchSettings.ShowFps ? 1 : 0, i => MatchSettings.ShowFps = i == 1));
+
+            settingsBody.Add(Section(3, "settings.section.sound"));
             settingsBody.Add(Stepper("volume", "volume", Strings.Get("settings.volume"),
                 () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",
                 step => MatchSettings.Volume = Mathf.Clamp01(Mathf.Round((MatchSettings.Volume + step * 0.1f) * 10f) / 10f)));
-            settingsBody.Add(Toggle("quality", "bolt", Strings.Get("settings.quality"),
-                () => MatchSettings.Graphics == GraphicsQuality.Auto
-                    ? Strings.Format("settings.autoTier", Strings.Get("settings." + MatchSettings.Tier.ToString().ToLowerInvariant()))
-                    : Strings.Get("settings." + MatchSettings.Graphics.ToString().ToLowerInvariant()),
-                () => MatchSettings.Graphics = (GraphicsQuality)(((int)MatchSettings.Graphics + 1) % 4)));
-            settingsBody.Add(Toggle("motion", "move", Strings.Get("settings.motion"),
-                () => Strings.Get(MatchSettings.ReducedMotion ? "settings.on" : "settings.off"),
-                () => MatchSettings.ReducedMotion = !MatchSettings.ReducedMotion));
-            settingsBody.Add(Toggle("fps", "info", Strings.Get("settings.fps"),
-                () => Strings.Get(MatchSettings.ShowFps ? "settings.on" : "settings.off"),
-                () => MatchSettings.ShowFps = !MatchSettings.ShowFps));
-            settingsBody.Add(Toggle("language", "globe", Strings.Get("settings.language"),
-                () => MatchSettings.Language switch
+            settingsBody.Add(OptionRow("globe", "settings.language", new[] { Strings.Get("settings.auto"), "English", "Tiếng Việt" },
+                () => (int)MatchSettings.Language, i =>
                 {
-                    LanguageChoice.English => "English",
-                    LanguageChoice.Vietnamese => "Tiếng Việt",
-                    _ => Strings.Get("settings.auto"),
-                },
-                () =>
-                {
+                    if ((int)MatchSettings.Language == i) return;
                     // Applies at once: the menu is rebuilt in the new language.
-                    MatchSettings.Language = (LanguageChoice)(((int)MatchSettings.Language + 1) % 3);
+                    MatchSettings.Language = (LanguageChoice)i;
                     MatchSettings.Save();
                     _reopenSettings = true;
                     SettingsChanged?.Invoke();
-                }));
+                }, last: true));
             var settingsDock = UiKit.Box("menu-actions");
             settingsDock.Add(UiKit.WideButton("wide", "retreat", Strings.Get("menu.back"), null, () =>
             {
@@ -193,6 +237,8 @@ namespace MachineBrigade.Game.Hud
         private void Refresh()
         {
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
+            if (_customTag != null)
+                _customTag.style.display = MatchSettings.Graphics == GraphicsQuality.Custom ? DisplayStyle.Flex : DisplayStyle.None;
             foreach (var (id, card) in _deckCards)
                 card.EnableInClassList("chosen", MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id));
             _deckTitle.text = Strings.Format("menu.deckTitle", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
@@ -270,20 +316,26 @@ namespace MachineBrigade.Game.Hud
             return card;
         }
 
-        private VisualElement Toggle(string key, string icon, string label, Func<string> value, Action toggle)
+        /// <summary>A settings row: a label on the left, its choices as segments on the right.</summary>
+        private VisualElement OptionRow(string icon, string labelKey, string[] labels, Func<int> selected, Action<int> choose,
+            bool last = false)
         {
-            var row = UiKit.Button("setting-row", () =>
-            {
-                toggle();
-                _settingValues[key].text = value();
-            });
+            var row = UiKit.Box(last ? "setting-row option-row last-row" : "setting-row option-row");
             row.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
-            row.Add(UiKit.Text(label, "setting-label"));
-            var text = UiKit.Text(value(), "setting-value");
-            _settingValues[key] = text;
-            row.Add(text);
+            row.Add(UiKit.Text(Strings.Get(labelKey), "setting-label"));
+            var group = UiKit.Box("options");
+            for (var i = 0; i < labels.Length; i++)
+            {
+                var index = i;
+                var option = UiKit.Button(i == labels.Length - 1 ? "option last-option" : "option", () => Set(() => choose(index)));
+                option.Add(UiKit.Text(labels[i], "option-label"));
+                group.Add(Choice(option, () => selected() == index));
+            }
+            row.Add(group);
             return row;
         }
+
+        private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());
 
         private VisualElement Stepper(string key, string icon, string label, Func<string> value, Action<int> step)
         {

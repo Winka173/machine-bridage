@@ -37,10 +37,21 @@ namespace MachineBrigade.Game.Views
         private readonly float _half;
         private readonly Random _rng = new(97);
 
-        public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent)
+        public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
+            Match.GraphicsOptions options = null)
         {
             _half = world.Map.HalfSize;
             _theme = theme;
+            options ??= Match.GraphicsOptions.For(Match.GraphicsQuality.High);
+            _density = options.RichScenery ? 1f : 0.5f;
+            // Scenery near the edge casts shadows into view; further out it sits in the haze.
+            _shadowReach = options.Shadows switch
+            {
+                Match.ShadowLevel.Off => -999f,
+                Match.ShadowLevel.Low => 20f,
+                Match.ShadowLevel.Medium => ShadowReach,
+                _ => ShadowReach + 20f,
+            };
             _root = new GameObject("Surroundings");
             _root.transform.SetParent(parent, false);
 
@@ -89,7 +100,7 @@ namespace MachineBrigade.Game.Views
                 var edge = Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
                 var parameters = new RenderParams(material)
                 {
-                    shadowCastingMode = edge < ShadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
+                    shadowCastingMode = edge < _shadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
                     receiveShadows = true,
                     worldBounds = bounds,
                 };
@@ -109,6 +120,7 @@ namespace MachineBrigade.Game.Views
         private readonly Texture2D _palette;
         private readonly Material _rangeMaterial;
         private readonly MapTheme _theme;
+        private readonly float _density, _shadowReach;
 
         private float RiverZ => _half + 62f;
         private const float RiverWidth = 16f;
@@ -306,7 +318,7 @@ namespace MachineBrigade.Game.Views
         private void ScatterForests(ModelLibrary models, List<Rect> fields)
         {
             var placed = 0;
-            for (var attempt = 0; attempt < 90000 && placed < 5200; attempt++)
+            for (var attempt = 0; attempt < 90000 && placed < 5200 * _density; attempt++)
             {
                 var p = RandomPoint();
                 if (!Outside(p, 4f) || NearRiver(p, 3f) || InField(p, fields)) continue;

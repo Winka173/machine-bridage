@@ -54,6 +54,9 @@ namespace MachineBrigade.Game.Match
         Low,
         Medium,
         High,
+
+        /// <summary>The player changed individual options (see <see cref="MatchSettings.Options"/>).</summary>
+        Custom,
     }
 
     public enum LanguageChoice
@@ -145,9 +148,51 @@ namespace MachineBrigade.Game.Match
         /// cores, the usual proxies for GPU class on Android). Explosions and fires are never cut;
         /// tiers change resolution, anti-aliasing, shadows, bloom and far scenery.
         /// </summary>
-        public static GraphicsQuality Tier => Graphics != GraphicsQuality.Auto ? Graphics : DetectTier();
+        public static GraphicsQuality Tier => Graphics is GraphicsQuality.Auto or GraphicsQuality.Custom ? DetectTier() : Graphics;
 
-        public static bool HighQuality => Tier == GraphicsQuality.High;
+        private static GraphicsOptions _custom;
+
+        /// <summary>The graphics options in force: the preset's, or the player's own under Custom.</summary>
+        public static GraphicsOptions Options => Graphics == GraphicsQuality.Custom && _custom != null ? _custom : GraphicsOptions.For(Tier);
+
+        /// <summary>Changes one option: the current values become the Custom set.</summary>
+        public static void Customise(System.Action<GraphicsOptions> change)
+        {
+            var options = Options.Copy();
+            change(options);
+            _custom = options;
+            Graphics = GraphicsQuality.Custom;
+        }
+
+        public static bool HighQuality => Options.MaxEffects;
+
+        /// <summary>Screen shake: 0 off, 1 low, 2 full.</summary>
+        public static int ScreenShake { get; set; } = 2;
+
+        public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
+
+        /// <summary>Camera drag speed: 0 slow, 1 normal, 2 fast.</summary>
+        public static int CameraSpeed { get; set; } = 1;
+
+        public static float PanScale => CameraSpeed switch { 0 => 0.7f, 2 => 1.45f, _ => 1f };
+
+        /// <summary>Battery saver: 0 off, 1 on, 2 automatic (on when the battery is low and not charging).</summary>
+        public static int BatterySaver { get; set; } = 2;
+
+        /// <summary>
+        /// True while saving battery: 30 fps and 85% resolution. Effects are untouched. The
+        /// automatic mode starts it under 20% charge while unplugged.
+        /// </summary>
+        public static bool SavingBattery => BatterySaver == 1 || (BatterySaver == 2 && SystemInfo.batteryLevel >= 0f &&
+            SystemInfo.batteryLevel < 0.2f && SystemInfo.batteryStatus == BatteryStatus.Discharging);
+
+        /// <summary>Brightness in percent (80 to 120).</summary>
+        public static int Brightness { get; set; } = 100;
+
+        /// <summary>Interface size: 0 small, 1 normal, 2 large.</summary>
+        public static int UiSize { get; set; } = 1;
+
+        public static float UiScale => UiSize switch { 0 => 0.9f, 2 => 1.1f, _ => 1f };
 
         public static GraphicsQuality DetectTier()
         {
@@ -158,7 +203,6 @@ namespace MachineBrigade.Game.Match
             if (memory >= 3500 && cores >= 6) return GraphicsQuality.Medium;
             return GraphicsQuality.Low;
         }
-        public static bool ReducedMotion { get; set; }
         public static bool ShowFps { get; set; }
         public static LanguageChoice Language { get; set; } = LanguageChoice.Auto;
 
@@ -175,9 +219,15 @@ namespace MachineBrigade.Game.Match
             try
             {
                 Volume = PlayerPrefs.GetFloat("mb.volume", Volume);
-                Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 3);
+                Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 4);
+                if (Graphics == GraphicsQuality.Custom) _custom = GraphicsOptions.Load("mb.gfx.", GraphicsOptions.For(DetectTier()));
+                // Reduced motion (older saves) became the low screen-shake setting.
+                ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
+                CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
+                UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
+                BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
+                Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
                 Map = PlayerPrefs.GetString("mb.map", Map);
-                ReducedMotion = PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1;
                 ShowFps = PlayerPrefs.GetInt("mb.fps", 0) == 1;
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
                 Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
@@ -204,8 +254,13 @@ namespace MachineBrigade.Game.Match
             {
                 PlayerPrefs.SetFloat("mb.volume", Volume);
                 PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
+                if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
+                PlayerPrefs.SetInt("mb.shake", ScreenShake);
+                PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
+                PlayerPrefs.SetInt("mb.uiSize", UiSize);
+                PlayerPrefs.SetInt("mb.battery", BatterySaver);
+                PlayerPrefs.SetInt("mb.brightness", Brightness);
                 PlayerPrefs.SetString("mb.map", Map);
-                PlayerPrefs.SetInt("mb.reducedMotion", ReducedMotion ? 1 : 0);
                 PlayerPrefs.SetInt("mb.fps", ShowFps ? 1 : 0);
                 PlayerPrefs.SetInt("mb.language", (int)Language);
                 PlayerPrefs.SetInt("mb.difficulty", (int)Difficulty);

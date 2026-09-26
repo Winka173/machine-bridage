@@ -69,6 +69,7 @@ namespace MachineBrigade.Game.Hud
             _settings.referenceResolution = new Vector2Int(1280, 720);
             _settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
             _settings.match = 1f;
+            _settings.scale = Match.MatchSettings.UiScale;
             _settings.sortingOrder = 10;
 
             _host = new GameObject("HUD");
