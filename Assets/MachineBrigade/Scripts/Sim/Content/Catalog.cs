@@ -151,7 +151,11 @@ namespace MachineBrigade.Sim.Content
                         s.String("id"), s.Enum<SupportKind>("kind"), s.Int("cp", 0), s.Float("cooldown"), s.Float("delay", 1.5f),
                         s.Float("radius"), s.Int("count", 1), s.Float("duration", 0f), s.Float("damage", 0f),
                         s.Enum("damageType", DamageType.HighExplosive), s.Enum("tier", ExplosionTier.Large), s.Float("length", 0f),
-                        s.Float("blast", 0f))));
+                        s.Float("blast", 0f))
+                    {
+                        Consumable = s.Bool("consumable", false),
+                        Units = s.Has("units") ? s.StringArray("units") : Array.Empty<string>(),
+                    }));
                 }
             }
 

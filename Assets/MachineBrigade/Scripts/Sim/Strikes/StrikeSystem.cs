@@ -67,10 +67,20 @@ namespace MachineBrigade.Sim.Strikes
             if (!_world.Map.Contains(command.Point)) return CommandResult.Rejected(CommandError.OutOfBounds);
 
             var economy = _world.Economy.TryGet(command.Team, out var e) ? e : null;
-            if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
-                return CommandResult.Rejected(CommandError.UnknownCard);
-            if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
-            if (!_world.Economy.TrySpend(command.Team, support.CpCost)) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            if (support.Consumable)
+            {
+                // Items are not in the deck and cost no CP, but each use spends one.
+                if (economy == null || economy.ItemCount(support.Id) <= 0) return CommandResult.Rejected(CommandError.UnknownCard);
+                if (economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
+                economy.Items[support.Id] = economy.ItemCount(support.Id) - 1;
+            }
+            else
+            {
+                if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
+                    return CommandResult.Rejected(CommandError.UnknownCard);
+                if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
+                if (!_world.Economy.TrySpend(command.Team, support.CpCost)) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            }
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown;
 
             var direction = command.Point2 - command.Point;
@@ -196,6 +206,47 @@ namespace MachineBrigade.Sim.Strikes
                         s.Done++;
                     }
                     return s.Done >= support.Count;
+                }
+
+                case SupportKind.Emp:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Boss) continue;
+                        if (Vector2.Distance(v.Position, s.Point) > support.Radius + v.Def.HullRadius) continue;
+                        v.StunnedUntil = Math.Max(v.StunnedUntil, now + support.Duration);
+                        v.ClearPath();
+                        v.Speed = 0f;
+                    }
+                    return true;
+
+                case SupportKind.ShieldDome:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
+                        v.ShieldUntil = Math.Max(v.ShieldUntil, now + support.Duration);
+                        v.ShieldAmount = Math.Clamp(support.Damage, 0f, 0.9f);
+                        v.RefreshEffects(now);
+                    }
+                    return true;
+
+                case SupportKind.Reinforce:
+                case SupportKind.Escort:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var units = support.Units;
+                    for (var k = 0; k < units.Count; k++)
+                    {
+                        var angle = k * SimMath.Tau / Math.Max(1, units.Count);
+                        var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
+                        var unit = _world.SpawnVehicle(units[k], s.Team, _world.ClampToMap(at), SimMath.HeadingOf(s.Direction));
+                        if (support.Kind == SupportKind.Escort) unit.ExpiresAt = now + support.Duration;
+                    }
+                    return true;
                 }
 
                 default:

@@ -76,6 +76,13 @@ namespace MachineBrigade.Sim.Abilities
                     if (amount > 0f) v.Hp += amount;
                 }
             }
+            // Loaned escorts fly home when their time is up (no wreck, no kill).
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.ExpiresAt <= now)
+                {
+                    v.Hp = 0f;
+                    _world.Emit(SimEvent.Retired(v));
+                }
             // Summons join after the loop so the vehicle list is not changed while it is read.
             foreach (var (def, team, at, heading) in _summons) _world.SpawnVehicle(def, team, at, heading);
 

@@ -191,6 +191,13 @@ namespace MachineBrigade.Game.Match
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)
             {
+                // Items bought with coins come along into every real match.
+                if (_world.TryGetEconomy(PlayerTeam, out var economy))
+                    foreach (var item in Progression.Items)
+                    {
+                        var owned = PlayerProfile.ItemCount(item);
+                        if (owned > 0) economy.Items[item] = owned;
+                    }
                 _commander = new PlayerCommander(_world, _hud, _camera, PlayerTeam, cards);
                 _selection.TapInterceptor = _commander.TryTap;
                 _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
@@ -411,6 +418,8 @@ namespace MachineBrigade.Game.Match
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), support.IsLine ? support.Length * 0.5f : support.Radius,
                                 Time.time + e.Value + support.Duration + 0.5f));
                         if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
+                        // An item was used: it is gone from the profile too.
+                        if (!_menu && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
                         break;
                 }
             }

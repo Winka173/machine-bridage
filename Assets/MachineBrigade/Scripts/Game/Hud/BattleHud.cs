@@ -502,6 +502,21 @@ namespace MachineBrigade.Game.Hud
         }
 
         private Label _counterText;
+        private ItemBar _items;
+
+        /// <summary>An item button was tapped (index into the list given to <see cref="SetupItems"/>).</summary>
+        public event Action<int> ItemPressed;
+
+        /// <summary>Builds the item strip for the items the player brought into this match.</summary>
+        public void SetupItems(IReadOnlyList<string> items)
+        {
+            if (_items != null || items.Count == 0 || _safe == null) return;
+            _items = new ItemBar(items);
+            _items.Pressed += i => ItemPressed?.Invoke(i);
+            _safe.Add(_items.Root);
+        }
+
+        public void SetItems(IReadOnlyList<ItemState> states) => _items?.Update(states);
 
         /// <summary>The loaded catalog, for card and unit details.</summary>
         private Catalog Catalog { get; }

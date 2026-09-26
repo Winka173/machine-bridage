@@ -40,6 +40,28 @@ namespace MachineBrigade.Game.Match
             ["carpet_bombing"] = 3000,
         };
 
+        /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>
+        private static readonly Dictionary<string, int> ItemPrices = new()
+        {
+            ["moab"] = 1200,
+            ["cluster_strike"] = 600,
+            ["reinforcements"] = 900,
+            ["field_repair"] = 500,
+            ["emp_blast"] = 700,
+            ["shield_dome"] = 600,
+            ["gunship_support"] = 1000,
+        };
+
+        public static readonly string[] Items =
+            { "moab", "cluster_strike", "reinforcements", "field_repair", "emp_blast", "shield_dome", "gunship_support" };
+
+        /// <summary>Items come in packs of this many.</summary>
+        public const int ItemPack = 2;
+
+        public static int ItemPrice(string id) => ItemPrices.TryGetValue(id, out var price) ? price : 800;
+
+        public static bool IsItem(string id) => ItemPrices.ContainsKey(id);
+
         public static bool IsStarter(string id) =>
             System.Array.IndexOf(StarterVehicles, id) >= 0 || System.Array.IndexOf(StarterSupports, id) >= 0;
 

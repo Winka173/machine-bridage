@@ -16,6 +16,7 @@ namespace MachineBrigade.Game.Hud
         {
             Skins,
             Premium,
+            Items,
             Unlocks,
         }
 
@@ -36,7 +37,7 @@ namespace MachineBrigade.Game.Hud
             _shop.Add(Brand());
             var tabs = UiKit.Box("segments shop-tabs");
             foreach (var (tab, icon, key) in new[] { (ShopTab.Skins, "paint", "shop.skins"), (ShopTab.Premium, "star", "shop.premium"),
-                         (ShopTab.Unlocks, "lock", "shop.unlocks") })
+                         (ShopTab.Items, "bomb", "shop.items"), (ShopTab.Unlocks, "lock", "shop.unlocks") })
                 tabs.Add(Choice(Segment(icon, Strings.Get(key), () =>
                 {
                     _tab = tab;
@@ -79,6 +80,10 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case ShopTab.Premium:
                     foreach (var id in PremiumCards) _shopGrid.Add(UnitCard(id, premium: true));
+                    break;
+                case ShopTab.Items:
+                    _shopNote.text = Strings.Get("shop.itemsNote");
+                    foreach (var id in Progression.Items) _shopGrid.Add(ItemCard(id));
                     break;
                 default:
                     foreach (var id in MatchSettings.AllVehicles)
@@ -130,6 +135,25 @@ namespace MachineBrigade.Game.Hud
             return card;
         }
 
+        private VisualElement ItemCard(string id)
+        {
+            var card = UiKit.Button("shop-card unit-card", () =>
+            {
+                SelectShop(id);
+                _shopNote.text = Strings.Get("item." + id + ".info");
+            });
+            var art = UiKit.Box("unit-art premium");
+            art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
+            card.Add(art);
+            card.Add(UiKit.Text(Strings.Support(id), "shop-name"));
+            card.Add(UiKit.Text(Strings.Format("shop.owned", PlayerProfile.ItemCount(id)), "shop-sub item-owned"));
+            card.Add(PriceTag(Progression.ItemPrice(id)));
+            _shopCards.Add((card, id));
+            return card;
+        }
+
+        private bool IsItemTab => _tab == ShopTab.Items;
+
         private static VisualElement PriceTag(int price)
         {
             var tag = UiKit.Box("price-tag");
@@ -148,9 +172,9 @@ namespace MachineBrigade.Game.Hud
 
         private bool IsSkinTab => _tab == ShopTab.Skins;
 
-        private bool Owned(string id) => IsSkinTab ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id);
+        private bool Owned(string id) => IsItemTab ? false : IsSkinTab ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id);
 
-        private int PriceOf(string id) => IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
+        private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id) : IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
 
         private void RefreshShop()
         {
@@ -164,6 +188,8 @@ namespace MachineBrigade.Game.Hud
                 card.EnableInClassList("equipped", equipped);
                 var status = card.Q<Label>(className: "price-status");
                 if (status != null) status.text = equipped ? Strings.Get("shop.equipped") : owned ? Strings.Get("shop.owned") : "";
+                var count = card.Q<Label>(className: "item-owned");
+                if (count != null) count.text = Strings.Format("shop.owned", PlayerProfile.ItemCount(id));
             }
             var title = _shopAction.Q<Label>(className: "wide-title");
             if (_shopSelected == null)
@@ -181,6 +207,12 @@ namespace MachineBrigade.Game.Hud
                 title.text = IsSkinTab ? Strings.Get(equipped ? "shop.equipped" : "shop.equip") : Strings.Get("shop.owned");
                 _shopAction.EnableInClassList("disabled", !IsSkinTab || equipped);
             }
+            else if (IsItemTab)
+            {
+                title.text = enough ? Strings.Format("shop.buyItems", Progression.ItemPack, price.ToString("N0"))
+                    : Strings.Format("shop.short", (price - PlayerProfile.Coins).ToString("N0"));
+                _shopAction.EnableInClassList("disabled", !enough);
+            }
             else
             {
                 title.text = enough ? Strings.Format("shop.buy", price.ToString("N0")) : Strings.Format("shop.short", (price - PlayerProfile.Coins).ToString("N0"));
@@ -192,6 +224,13 @@ namespace MachineBrigade.Game.Hud
         {
             if (_shopSelected == null) return;
             var id = _shopSelected;
+            if (IsItemTab)
+            {
+                _shopNote.text = PlayerProfile.TryBuyItems(id, Progression.ItemPack, PriceOf(id))
+                    ? Strings.Format("shop.bought", Strings.Support(id)) : Strings.Get("shop.notEnough");
+                Refresh();
+                return;
+            }
             if (Owned(id))
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);

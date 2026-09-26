@@ -202,6 +202,12 @@ namespace MachineBrigade.Game.Effects
                         }
                         break;
 
+                    case SimEventKind.VehicleRetired:
+                        // A loaned escort flies home: it simply leaves, no wreck.
+                        var leaving = views.Detach(e.Entity);
+                        if (leaving != null) Object.Destroy(leaving.Root.gameObject);
+                        break;
+
                     case SimEventKind.VehicleDestroyed:
                         var view = views.Detach(e.Entity);
                         if (view == null) break;

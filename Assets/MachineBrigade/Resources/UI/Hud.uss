@@ -815,3 +815,18 @@
 .letterbox { position: absolute; left: 0; right: 0; height: 0; background-color: #000000; display: none; }
 .letterbox.top { top: 0; }
 .letterbox.bottom { bottom: 0; }
+
+/* items bought with coins: a column under the minimap tools */
+.item-strip { position: absolute; left: 16px; top: 430px; flex-direction: column; }
+.item {
+    width: 56px; height: 56px; margin-bottom: 6px; border-radius: 8px; align-items: center; justify-content: center;
+    background-color: var(--n800); border-width: 2px; border-color: var(--amber);
+}
+.item.selected { background-color: var(--amber); }
+.item.empty { opacity: 0.4; }
+.item-cooldown { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background-color: var(--n950); border-radius: 6px; }
+.item-count {
+    position: absolute; right: -4px; bottom: -4px; padding-left: 4px; padding-right: 4px; border-radius: 6px;
+    background-color: var(--amber); min-width: 22px; align-items: center;
+}
+.item-count-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n950); }

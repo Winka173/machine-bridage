@@ -51,6 +51,11 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>CP value of this side's army on the field plus deliveries on the way.</summary>
         public int ArmyCp { get; internal set; }
 
+        /// <summary>Single-use items this side carries into the match (bought with coins), by support id.</summary>
+        public Dictionary<string, int> Items { get; } = new();
+
+        public int ItemCount(string supportId) => Items.TryGetValue(supportId, out var n) ? n : 0;
+
         public float CooldownLeft(string supportId, double now) =>
             ReadyAt.TryGetValue(supportId, out var ready) ? (float)Math.Max(0.0, ready - now) : 0f;
     }

@@ -65,6 +65,9 @@ namespace MachineBrigade.Sim.Entities
         internal float ShieldAmount, OverdriveSpeed = 1f, BarrageRate = 1f, Healing, RearmProgress;
         internal double NextMineAt;
 
+        /// <summary>A loaned aircraft (an escort item) leaves the battle at this time.</summary>
+        internal double ExpiresAt = double.PositiveInfinity;
+
         /// <summary>Updates the effect flags views read; called every step by the ability system.</summary>
         internal void RefreshEffects(double now)
         {

@@ -313,8 +313,15 @@ namespace MachineBrigade.Sim.AI
         private static bool Ready(SimWorld world, TeamEconomy economy, SupportDef s) =>
             economy.Cp >= s.CpCost && economy.CooldownLeft(s.Id, world.Time) <= 0f;
 
-        private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all) =>
-            deck.Count > 0 ? deck : all;
+        private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all)
+        {
+            if (deck.Count > 0) return deck;
+            // Items are bought with coins by the player; the AI never has any.
+            var cards = new List<string>();
+            foreach (var id in all)
+                if (!world.Catalog.TryGetSupport(id, out var support) || !support.Consumable) cards.Add(id);
+            return cards;
+        }
 
         private bool FindCluster(out Vector2 centre, out int size)
         {

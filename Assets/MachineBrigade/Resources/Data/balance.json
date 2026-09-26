@@ -354,7 +354,15 @@
     { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
     // Premium (bought with coins): a line of fire, and a heavy bomber laying a carpet of bombs.
     { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 7,  "tier": "Huge", "length": 55, "damageType": "Fire" },
-    { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 200, "blast": 7,  "tier": "Huge", "length": 95 }
+    { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 200, "blast": 7,  "tier": "Huge", "length": 95 },
+    // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
+    { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 2200, "blast": 22, "tier": "Ultimate" },
+    { "id": "cluster_strike",    "kind": "Airstrike",     "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 40, "duration": 2.2, "damage": 90, "blast": 4, "tier": "Large", "length": 60 },
+    { "id": "reinforcements",    "kind": "Reinforce",     "consumable": true, "cooldown": 30, "delay": 3.0, "radius": 8,  "count": 3, "tier": "Large", "units": ["main_battle_tank", "main_battle_tank", "ifv"] },
+    { "id": "field_repair",      "kind": "Repair",        "consumable": true, "cooldown": 30, "delay": 1.0, "radius": 500, "count": 5, "duration": 5, "damage": 0.5, "tier": "Small" },
+    { "id": "emp_blast",         "kind": "Emp",           "consumable": true, "cooldown": 20, "delay": 2.0, "radius": 20, "count": 1, "duration": 6, "tier": "Huge" },
+    { "id": "shield_dome",       "kind": "ShieldDome",    "consumable": true, "cooldown": 20, "delay": 0.5, "radius": 16, "count": 1, "duration": 10, "damage": 0.7, "tier": "Medium" },
+    { "id": "gunship_support",   "kind": "Escort",        "consumable": true, "cooldown": 30, "delay": 3.0, "radius": 20, "count": 1, "duration": 30, "tier": "Large", "units": ["sky_gunship"] }
   ],
 
   "props": [

@@ -45,6 +45,9 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A mine went off at Position (an Explosion event follows).</summary>
         MineDetonated,
+
+        /// <summary>A vehicle left the battle without being destroyed (a loaned escort flying home).</summary>
+        VehicleRetired,
     }
 
     /// <summary>
@@ -148,6 +151,9 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Which skill a <see cref="SimEventKind.SkillUsed"/> event carries.</summary>
         public SkillKind Skill => (SkillKind)(int)Tier;
+
+        internal static SimEvent Retired(Vehicle v) =>
+            new(SimEventKind.VehicleRetired, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team, airborne: v.Flying);
 
         internal static SimEvent MineLaid(Mine m) =>
             new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);
