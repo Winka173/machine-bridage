@@ -80,24 +80,52 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < _recoilRest.Length; i++)
             {
                 var part = _model.RecoilParts[i];
-                var suffix = System.Text.RegularExpressions.Regex.Match(part.name, @"_(\d+)(\.\d+)?$");
-                var barrel = suffix.Success ? int.Parse(suffix.Groups[1].Value) - 1 : 0;
+                // Main_cannon_2 is the second barrel (Main_cannon_2_gilt with it); _L and _R are the left and right.
+                var suffix = System.Text.RegularExpressions.Regex.Match(part.name, @"^(?:Main_cannon|Muzzle_brake)_(\d+|L|R)(?![a-z])",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                var barrel = !suffix.Success ? 0 : suffix.Groups[1].Value.ToUpperInvariant() switch
+                {
+                    "L" => 0,
+                    "R" => 1,
+                    var n => int.Parse(n) - 1,
+                };
                 _barrelOf[i] = barrel;
                 while (tips.Count <= barrel) tips.Add(null);
                 if (tips[barrel] == null || part.name.StartsWith("Muzzle_brake")) tips[barrel] = part;
             }
-            _barrelTips = tips.Count > 1 && !tips.Contains(null) && SideBySide(tips) ? tips.ToArray() : null;
+            if (tips.Count > 1 && !tips.Contains(null))
+            {
+                // Where each barrel really is: the middle of its tip's mesh (part origins can all sit on the trunnion).
+                _barrelTipOffsets = new Vector3[tips.Count];
+                for (var i = 0; i < tips.Count; i++)
+                {
+                    var filter = tips[i].GetComponentInChildren<MeshFilter>();
+                    _barrelTipOffsets[i] = filter != null && filter.sharedMesh != null
+                        ? tips[i].InverseTransformPoint(filter.transform.TransformPoint(filter.sharedMesh.bounds.center))
+                        : Vector3.zero;
+                }
+                _barrelTips = tips.ToArray();
+                if (!SideBySide()) _barrelTips = null;
+            }
             _recoilDistance = Mathf.Clamp(vehicle.Radius * 0.18f, 0.12f, 0.45f);
 
             var mounts = Def.Mounts;
             _mounts = new Transform[mounts.Count];
             _muzzles = new Transform[mounts.Count];
+            _launchers = new List<LaunchPoint>[mounts.Count];
+            _nextLauncher = new int[mounts.Count];
             _previousMount = new float[mounts.Count];
             _currentMount = new float[mounts.Count];
             for (var i = 0; i < mounts.Count; i++)
             {
                 _model.Mounts.TryGetValue(mounts[i].Slot, out _mounts[i]);
                 _model.Muzzles.TryGetValue(mounts[i].Slot, out _muzzles[i]);
+                // Rockets, missiles and drones leave from the pods and rails on both sides in turn;
+                // twin miniguns from both guns.
+                var kind = mounts[i].Weapon.Projectile;
+                if (_model.Launchers.TryGetValue(mounts[i].Slot, out var launchers) &&
+                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || mounts[i].Slot == "gun"))
+                    _launchers[i] = launchers;
             }
 
             _ring = new GroundMark("Selection", Root, meshes, materials, GroundMark.Style.Selection);
@@ -240,6 +268,8 @@ namespace MachineBrigade.Game.Views
         {
             var t = Time.time - _hitTime;
             var flash = t < FlashHold ? 1f : Mathf.Clamp01(1f - (t - FlashHold) / FlashFade);
+            // Aircraft take hit after hit from flak; half the flash keeps them from blinking white.
+            if (Flying) flash *= 0.5f;
             if (Mathf.Abs(flash - _shownFlash) > 0.02f || (flash == 0f && _shownFlash != 0f))
             {
                 _shownFlash = flash;
@@ -261,14 +291,31 @@ namespace MachineBrigade.Game.Views
         /// World position of the muzzle of weapon mount <paramref name="index"/>. Models without that
         /// muzzle fall back to a sensible spot: a coaxial gun beside the main gun, roof weapons on top.
         /// </summary>
+        private readonly List<LaunchPoint>[] _launchers;
+        private readonly int[] _nextLauncher;
+
+        /// <summary>
+        /// Where the next round of weapon mount <paramref name="index"/> leaves from (call once a
+        /// shot): the next pod or rail of a launcher pair, a random tube of a multi-tube face, the
+        /// barrel firing now of a twin gun, else the mount's muzzle.
+        /// </summary>
         public Vector3 MuzzleOf(int index)
         {
+            if (index < _launchers.Length && _launchers[index] != null)
+            {
+                var list = _launchers[index];
+                var point = list[_nextLauncher[index]++ % list.Count];
+                var spread = point.Spread;
+                if (spread == Vector2.zero) return point.transform.position;
+                var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
+                return point.transform.position + point.transform.parent.TransformVector(jitter);
+            }
             if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
             {
                 // The barrel firing now: the main muzzle moved across to that barrel's line.
                 var centre = _muzzles[0].position;
                 var along = DirectionOf(0);
-                var offset = _barrelTips[_barrel].position - centre;
+                var offset = BarrelTip(_barrel) - centre;
                 return centre + offset - along * Vector3.Dot(offset, along);
             }
             if (index < _muzzles.Length && _muzzles[index] != null) return _muzzles[index].position;
@@ -386,20 +433,24 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Barrels that really stand apart (a twin gun), not one barrel modelled in segments.</summary>
-        private bool SideBySide(List<Transform> tips)
+        private bool SideBySide()
         {
             var spread = 0f;
-            for (var i = 0; i < tips.Count; i++)
-                for (var j = i + 1; j < tips.Count; j++)
+            for (var i = 0; i < _barrelTips.Length; i++)
+                for (var j = i + 1; j < _barrelTips.Length; j++)
                 {
-                    var d = _body.InverseTransformPoint(tips[i].position) - _body.InverseTransformPoint(tips[j].position);
+                    var d = _body.InverseTransformPoint(BarrelTip(i)) - _body.InverseTransformPoint(BarrelTip(j));
                     spread = Mathf.Max(spread, new Vector2(d.x, d.y).magnitude * Def.Scale);
                 }
             return spread > 0.25f;
         }
 
+        private Vector3[] _barrelTipOffsets;
+
+        private Vector3 BarrelTip(int i) => _barrelTips[i].TransformPoint(_barrelTipOffsets[i]);
+
         private readonly int[] _barrelOf;
-        private readonly Transform[] _barrelTips;
+        private Transform[] _barrelTips;
         private int _barrel;
 
         public void Render(float alpha, Quaternion cameraRotation)

@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Game.Rendering;
 using UnityEngine;
@@ -144,6 +145,76 @@ namespace MachineBrigade.Tests
         /// that fly high leave from a raised barrel: raising the pivot lifts the muzzle and keeps
         /// it attached. Artillery, mortars, rocket boxes and anti-aircraft guns must have one.
         /// </summary>
+        /// <summary>
+        /// Rounds leave from the launchers on both sides (pods, rails, twin guns), found from the
+        /// model's meshes, not from one muzzle on the centre line.
+        /// </summary>
+        [TestCase("attack_helicopter", "rocket", 2, 1.2f)]
+        [TestCase("heavy_aa", "missile", 4, 1f)]
+        [TestCase("titan_tank", "missile", 2, 1.5f)]
+        [TestCase("attack_helicopter", "missile", 2, 2f)]
+        [TestCase("gunship_heli", "rocket", 2, 1.5f)]
+        [TestCase("scout_heli", "gun", 2, 0.8f)]
+        [TestCase("heavy_attack_heli", "rocket", 4, 1.5f)]
+        [TestCase("fighter_jet", "missile", 4, 3f)]
+        [TestCase("attack_jet", "missile", 2, 3.5f)]
+        [TestCase("tank_buster", "rocket", 2, 3f)]
+        public void RoundsLeaveFromTheLaunchersOnBothSides(string id, string slot, int count, float offCentre)
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Launcher Test").transform;
+            try
+            {
+                var model = models.Spawn(id, 0, parent);
+                Assert.IsTrue(model.Launchers.TryGetValue(slot, out var launchers), $"{id} {slot}: launch points");
+                Assert.AreEqual(count, launchers.Count, $"{id} {slot}: one per launcher");
+                var root = model.Root.transform;
+                var xs = launchers.Select(l => root.InverseTransformPoint(l.transform.position).x).OrderBy(x => x).ToList();
+                Assert.Less(xs[0], -offCentre, $"{id} {slot}: a launcher on the left");
+                Assert.Greater(xs[xs.Count - 1], offCentre, $"{id} {slot}: and on the right");
+                Assert.AreEqual(-xs[0], xs[xs.Count - 1], 0.25f, $"{id} {slot}: mirrored");
+                model.Muzzles.TryGetValue(slot, out var muzzle);
+                foreach (var l in launchers)
+                    Assert.Less(Mathf.Abs(root.InverseTransformPoint(l.transform.position).y - root.InverseTransformPoint(muzzle.position).y), 1.2f,
+                        $"{id} {slot}: at the launcher's height");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
+        /// <summary>A box of tubes fires each round from a different spot on its face.</summary>
+        [TestCase("mlrs", "main")]
+        [TestCase("grad_truck", "main")]
+        [TestCase("elite_mlrs", "main")]
+        [TestCase("sam_launcher", "main")]
+        [TestCase("rocket_turret", "main")]
+        [TestCase("thermobaric_launcher", "rocket")]
+        public void ABoxOfTubesFiresFromAcrossItsFace(string id, string slot)
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Launcher Test").transform;
+            try
+            {
+                var model = models.Spawn(id, 0, parent);
+                Assert.IsTrue(model.Launchers.TryGetValue(slot, out var launchers), $"{id} {slot}: a launch face");
+                Assert.AreEqual(1, launchers.Count, $"{id} {slot}: one face");
+                Assert.Greater(launchers[0].Spread.x, 0.3f, $"{id} {slot}: rounds leave from across the face");
+                Assert.Less(Mathf.Abs(model.Root.transform.InverseTransformPoint(launchers[0].transform.position).x), 0.3f, $"{id} {slot}: centred on the launcher");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         [Test]
         public void BarrelsRiseOnTheirTrunnion()
         {
