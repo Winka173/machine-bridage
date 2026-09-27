@@ -42,11 +42,12 @@ SHARP = math.radians(50)
 BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
-# Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts) or
-# are hidden on their own (an aircraft's Bombs once they drop).
-MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs|parachute)', re.I)
+# Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts, the nuke
+# train's missile erector) or are hidden on their own (an aircraft's Bombs once they drop, a crate's parachute).
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs|parachute|erector)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
-RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|tail_rotor|propeller|radar|mount_)', re.I)
+RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|tail_rotor|propeller|radar|mount_|erector|icbm_payload)',
+                     re.I)
 
 
 def lin(value):
