@@ -1694,3 +1694,32 @@
 .menu .crate-button.primary.empty { background-color: var(--n700); border-bottom-color: var(--n950); }
 .menu .crate-button.primary.empty .crate-button-text { color: var(--n300); }
 .menu .crate-button.primary.empty .icon { --icon-color: #7e8f9c; }
+
+/* ==========================================================================================
+   GEAR REWORK (feature/gear): affix lines, roll bars, trait and set lines, set chips, and the
+   proc words over vehicles in battle. Appended as one block; restyle freely.
+   ========================================================================================== */
+.gear-base-line { color: #a9b4ba; }
+.gear-lines { flex-direction: column; margin: 6px 0 4px 0; padding: 8px 10px; background-color: rgba(10, 14, 17, 0.55); border-radius: 8px; }
+.gear-line-row { flex-direction: row; align-items: center; justify-content: space-between; min-height: 22px; }
+.gear-line { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 15px; color: #dfe5e8; white-space: normal; flex-shrink: 1; }
+.gear-line-main { -unity-font: resource("Fonts/BeVietnamPro-Bold"); color: #ffffff; }
+.gear-line-implicit { color: #7fc4ff; }
+.gear-line-penalty { color: #ff6b5a; }
+.gear-line-sub { color: #cfd8dc; }
+.gear-line-trait { -unity-font: resource("Fonts/BeVietnamPro-Bold"); color: #ffb35c; margin-top: 6px; }
+.gear-line-dim { color: #7e8f9c; margin-top: 6px; }
+.gear-line-set { color: #2ed3b7; margin-top: 6px; }
+.gear-roll { width: 64px; height: 7px; margin-left: 10px; flex-shrink: 0; background-color: rgba(255, 255, 255, 0.12); border-radius: 4px; overflow: hidden; }
+.gear-roll-fill { height: 100%; background-color: #5be37d; border-radius: 4px; }
+.gear-sets { flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+.gear-set-chip { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: #7e8f9c; padding: 3px 10px; margin: 2px 6px 2px 0; border-radius: 12px; border-width: 2px; border-color: #4a5a64; background-color: rgba(10, 14, 17, 0.5); }
+.gear-set-chip.active { color: #2ed3b7; border-color: #2ed3b7; }
+.gear-set-chip.full { color: #0b1a17; background-color: #2ed3b7; border-color: #2ed3b7; }
+.gear-set-none { font-size: 13px; color: #7e8f9c; white-space: normal; }
+.detail-gear-sets { margin: 8px 0 4px 0; }
+.detail-gear-piece { flex-direction: column; margin-top: 8px; }
+.detail-gear-name { font-size: 16px; }
+.trait-pop-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.trait-pop { position: absolute; -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 18px; color: #ffe08a; -unity-text-align: middle-center; white-space: nowrap; -unity-text-outline-width: 1.2px; -unity-text-outline-color: rgba(0, 0, 0, 0.9); translate: -50% -50%; }
+.trait-pop.theirs { color: #ff9a8a; }
