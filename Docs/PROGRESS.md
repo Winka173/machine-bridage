@@ -2,6 +2,82 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: No stutter, tougher vehicles, real artillery, APS, buildings that collapse
+
+The user asked for:
+- tougher vehicles (two to three times) and fewer of them;
+- artillery that looks like artillery, plus more real equipment;
+- an end to effects that stutter or seem to rewind, including in storms and when aircraft fire;
+- Unity's own features wherever they help;
+- AI tanks that no longer get stuck in the map's corners;
+- better building explosions;
+- every card unlocked for testing, with a note to lock them before release;
+- a fix for the deck page that would not scroll, and a scan for other bugs.
+
+### Done
+
+**Stutter**
+- Camera shake is off (`RtsCamera.ShakeEnabled`; its setting is hidden too).
+  - Its noise ran at about 25 Hz, so at 30 fps the view jumped to a new place every frame.
+  - Every blast, cannon, rocket and gunship shot added to it: that was the stutter in explosions, storms and aircraft attacks.
+- Blasts no longer look like they restart.
+  - Later fireballs of a blast now roll on from the middle of the sheet (new rolling-fireball layers) instead of flashing from frame 0.
+  - The secondary pops are separate small explosions on a ring beyond the main fireball.
+- Slow motion only plays when a boss dies, not for every ultimate explosion.
+- The auto camera follows the fight on a critically damped spring, so it no longer lurches when its target changes.
+- Rain streaks stretch with the frame time, so they no longer strobe at low frame rates.
+  - Storms carry fewer drops.
+  - Lightning is one flash that dies away.
+- Every effect layer is drawn once as the battle loads, so Vulkan builds its pipelines then, not the first time a napalm strike appears.
+- `AirMotionTests`: aircraft attacking ground targets fly smoothly in the simulation (no shuffling, no nose wag).
+
+**AI and movement** (`StuckTests`: whole AI battles on all 12 maps)
+- A hull that is blocked pivots towards its waypoint, then edges along the nearest free bearing, keeping to one side.
+- A hull wedged twice backs off to open ground a few metres away.
+- Anti-aircraft units stay behind their own armour instead of freezing on the spot.
+- Results:
+  - stalls fell from 1–4 per map to 0–1;
+  - deep hull overlaps in a whole battle fell from 6 to 0;
+  - heading wags fell from 261 to 104.
+
+**Toughness and economy** (`balance.json`: `toughness`, `firepower`, `economy`)
+- Vehicle health is ×2.5; bosses are ×0.85.
+- Strike damage and vehicle and mine blasts are ×2; burning props are ×1.5; the MOAB does 4000 damage.
+- Income is ×0.65 and supply ×0.8. A side may field at most 32 vehicles.
+- Peak armies are about a quarter smaller.
+- AI conquest battles destroy 17 vehicles a minute instead of 24.
+
+**Artillery and new equipment**
+- Rebuilt models:
+  - the artillery is a CAESAR-style 6x6 truck gun;
+  - the howitzer is a PzH 2000-style tracked gun with a rear turret and a long barrel;
+  - the siege tank is a 2S7 Pion-style open-mount 203 mm gun.
+- `grad_truck` (BM-21): a ripple of 20 rockets.
+- `atgm_carrier` (Stryker ATGM style): two heavy missiles per launch.
+- `aps_tank` (Merkava with Trophy): an active protection system that shoots down incoming missiles, drones and direct-fire rockets, with 2 interceptors reloading 6 s each (`ApsTests`).
+- The new vehicles unlock in campaign missions 5, 7 and 11.
+- The existing rocket vehicles stay: MLRS, Smerch-style heavy rockets, Iskander-style ballistic launcher, TOS thermobaric launcher and rocket technical.
+
+**Buildings**
+- A copy of the building shudders and sinks into the ground, leaning, while the rubble heap rises.
+- A dust skirt rolls out, and billows pour up as each floor lands.
+- Big buildings throw twice the chunks.
+- Device check: `-mb-demolish`.
+
+**Menus and testing**
+- `Progression.TestUnlockAll` unlocks every card and doctrine. `Docs/RELEASE_CHECKLIST.md` lists what to switch back before a release.
+- Menu pages scroll with a mouse drag. UI Toolkit only drag-scrolls for touch, which is why the deck page would not move in the editor.
+- Shop cards line up: two-line name boxes, and the price pinned to the bottom of the card. The items note no longer lingers on other tabs.
+
+**Balance** (five seeds, auto-commander, realistic decks)
+- 16 of 17 missions win 5/5, and m16 wins 4/5.
+- m03's three-star time is now 15 min.
+- The player gets more CP in m06, m10 and m13.
+
+### Known limitations
+- **GPU Resident Drawer:** not enabled. It needs the Forward+ path on phones and should be tried only once a real device can be measured.
+- **Real phones:** there are still no measurements on one. The camera shake and rewind fixes were found in code and in simulation measurements.
+
 ## 2026-09-27: Smooth blasts, map outlines, phone UI, line of fire, scale pass, map kit
 
 The user asked for:
