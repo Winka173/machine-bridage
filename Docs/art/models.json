@@ -175,6 +175,14 @@
     "file": "elite_tank_destroyer.glb",
     "triangles": 9548
   },
+  "engineer_vehicle": {
+    "file": "engineer_vehicle.glb",
+    "triangles": 8956
+  },
+  "ew_jammer": {
+    "file": "ew_jammer.glb",
+    "triangles": 6516
+  },
   "factory": {
     "file": "factory.glb",
     "triangles": 4896
@@ -186,6 +194,14 @@
   "flame_tank": {
     "file": "flame_tank.glb",
     "triangles": 7784
+  },
+  "fpv_carrier": {
+    "file": "fpv_carrier.glb",
+    "triangles": 8310
+  },
+  "fpv_drone": {
+    "file": "fpv_drone.glb",
+    "triangles": 404
   },
   "fuel_tank": {
     "file": "fuel_tank.glb",
@@ -275,6 +291,14 @@
     "file": "mesa.glb",
     "triangles": 546
   },
+  "mine": {
+    "file": "mine.glb",
+    "triangles": 298
+  },
+  "mine_layer": {
+    "file": "mine_layer.glb",
+    "triangles": 8164
+  },
   "missile": {
     "file": "missile.glb",
     "triangles": 398
@@ -338,6 +362,10 @@
   "refinery_tower": {
     "file": "refinery_tower.glb",
     "triangles": 5020
+  },
+  "repair_crate": {
+    "file": "repair_crate.glb",
+    "triangles": 1344
   },
   "rock_a": {
     "file": "rock_a.glb",
@@ -438,6 +466,10 @@
   "strike_jet": {
     "file": "strike_jet.glb",
     "triangles": 8700
+  },
+  "supply_crate": {
+    "file": "supply_crate.glb",
+    "triangles": 1986
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",

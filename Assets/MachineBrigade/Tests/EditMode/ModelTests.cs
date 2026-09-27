@@ -22,7 +22,8 @@ namespace MachineBrigade.Tests
             "gunship_heli", "scout_heli", "attack_jet", "strike_drone", "heavy_bomber", "stealth_bomber", "sky_gunship",
             "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
             "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer", "elite_attack_helicopter", "elite_mlrs", "elite_aa", "elite_apc",
-            "ballistic_missile", "heavy_rocket",
+            "ballistic_missile", "heavy_rocket", "mine", "fpv_drone", "supply_crate", "repair_crate",
+            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
         };
 
         private static readonly string[] Props =
