@@ -24,6 +24,9 @@ namespace MachineBrigade.Game.Effects
         private const float SinkDepth = 2.2f;
         private const float Gravity = 18f;
 
+        /// <summary>How long a destroyed defence burns before it only smoulders.</summary>
+        private const float StaticBurnSeconds = 45f;
+
         private sealed class Wreck
         {
             public EntityId Id;
@@ -67,18 +70,34 @@ namespace MachineBrigade.Game.Effects
                 NextPop = now + Random.Range(3f, 5f), PopsLeft = Random.Range(1, 3), WasFalling = view.Falling,
             };
             _wrecks.Add(wreck);
+            if (view.Def.Static)
+            {
+                // A tower, bunker or gun: its ruin stays for the rest of the battle. It burns hard
+                // from the top and at its foot, its ammunition goes up in a chain, then pops now and
+                // then while it burns, and it smoulders on after.
+                wreck.Expires = float.MaxValue;
+                wreck.ChainLeft = Random.Range(4, 7);
+                wreck.NextChain = now + Random.Range(0.3f, 0.5f);
+                wreck.PopsLeft = Random.Range(4, 7);
+                wreck.NextPop = now + Random.Range(4f, 6f);
+                var blaze = Mathf.Clamp(view.Sim.Radius / 1.4f, 1f, 2f);
+                wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * view.Top * 0.7f, blaze, StaticBurnSeconds, now);
+                _fires.Ignite(view.Root.position + Vector3.up * 0.5f + Random.insideUnitSphere * 0.8f, blaze * 0.7f, StaticBurnSeconds * 1.6f, now);
+                return;
+            }
             // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
             var size = Mathf.Clamp(view.Sim.Radius / 1.6f, 0.75f, 1.6f);
             wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
                 view.Flying ? view.Root : null);
 
+            // Ruins of fixed defences stay; only vehicle hulks make room for new ones.
             var living = 0;
             foreach (var w in _wrecks)
-                if (w.SinkStart < 0f) living++;
+                if (w.SinkStart < 0f && !w.View.Def.Static) living++;
             if (living <= _capacity) return;
             foreach (var w in _wrecks)
             {
-                if (w.SinkStart >= 0f) continue;
+                if (w.SinkStart >= 0f || w.View.Def.Static) continue;
                 Sink(w, now);
                 break;
             }
@@ -120,7 +139,8 @@ namespace MachineBrigade.Game.Effects
             var view = wreck.View;
             var radius = view.Sim.Radius;
             _chunks?.Wreck(view.Root.position, radius, view.Team, true, now);
-            wreck.HopVelocity = Random.Range(3f, 4.5f);
+            // A hull bucks in the blast; a concrete defence does not.
+            wreck.HopVelocity = view.Def.Static ? 0f : Random.Range(3f, 4.5f);
 
             // Ammunition going up: a quick chain of small pops around the hull after the big blast.
             if (radius >= 1.1f)
@@ -162,19 +182,20 @@ namespace MachineBrigade.Game.Effects
             foreach (var w in _wrecks)
             {
                 if (w.SinkStart >= 0f || w.WasFalling) continue;
+                var high = w.View.Def.Static ? w.View.Top * 0.6f : 0.8f;
                 if (w.ChainLeft > 0 && now >= w.NextChain)
                 {
                     w.ChainLeft--;
                     w.NextChain = now + Random.Range(0.22f, 0.5f);
                     pop = true;
-                    position = Around(w, 0.8f, w.View.Sim.Radius * 1.4f);
+                    position = Around(w, high, w.View.Sim.Radius * 1.4f);
                     return true;
                 }
-                if (now - w.Created > BurnSeconds || w.PopsLeft <= 0 || now < w.NextPop) continue;
+                if (now - w.Created > (w.View.Def.Static ? StaticBurnSeconds : BurnSeconds) || w.PopsLeft <= 0 || now < w.NextPop) continue;
                 w.PopsLeft--;
                 w.NextPop = now + Random.Range(2f, 4f);
                 pop = Random.value < 0.5f;
-                position = Around(w, 1.2f, 0.7f);
+                position = Around(w, w.View.Def.Static ? high : 1.2f, 0.7f);
                 return true;
             }
             position = default;

@@ -251,6 +251,7 @@ namespace MachineBrigade.Game.Effects
                         // Explosion event a moment later) shows only the killing hit now, so the
                         // big blast does not look like this one restarting.
                         var blowsUp = e.DefId != null && _catalog.Vehicles.TryGetValue(e.DefId, out var lost) && lost.DeathExplosion != null;
+                        if (view.Def.Static) FellDefence(view, now);
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
                         // Aircraft burst into flames in the air, then fall (see Crash).
                         else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
@@ -364,6 +365,11 @@ namespace MachineBrigade.Game.Effects
                 view.DamageFxAt = now + (burning ? 0.12f : Mathf.Lerp(0.18f, 0.4f, (health - 0.3f) / 0.3f));
                 var radius = sim.Radius;
                 var root = view.Root;
+                if (view.Def.Static)
+                {
+                    DefenceDamage(view, health, burning, now);
+                    continue;
+                }
                 var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
                 _emitters.DamageSmoke(top, radius * (burning ? 1.1f : 0.8f), burning ? 0f : Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
                 if (!burning) continue;
@@ -441,6 +447,46 @@ namespace MachineBrigade.Game.Effects
                 {
                     position = at, startSize = 0.005f, startLifetime = 0.05f, velocity = Vector3.zero, applyShapeToPosition = false,
                 }, 1);
+            }
+        }
+
+        /// <summary>
+        /// A damaged fixed defence: smoke pours from its top, grey and then black; badly hit, it
+        /// burns in two places, sparks spray and its ammunition pops now and then.
+        /// </summary>
+        private void DefenceDamage(VehicleView view, float health, bool burning, float now)
+        {
+            var radius = view.Sim.Radius;
+            var top = view.Position + Vector3.up * view.Top;
+            _emitters.DamageSmoke(top + UnityEngine.Random.insideUnitSphere * radius * 0.3f, radius * (burning ? 1.3f : 0.95f),
+                burning ? 0f : Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
+            if (!burning) return;
+            _emitters.DamageFire(top - Vector3.up * 0.4f + UnityEngine.Random.insideUnitSphere * radius * 0.35f, radius * 0.8f);
+            _emitters.DamageFire(view.Position + Vector3.up * view.Top * 0.4f + UnityEngine.Random.insideUnitSphere * radius * 0.5f, radius * 0.6f);
+            if (UnityEngine.Random.value < 0.12f)
+                _layers.Sparks.Emit(new ParticleSystem.EmitParams
+                {
+                    position = top, velocity = Vector3.up * 5f + UnityEngine.Random.insideUnitSphere * 4f, startSize = 0.18f,
+                    startLifetime = 0.9f, applyShapeToPosition = false,
+                }, 10);
+            if (health < 0.2f && UnityEngine.Random.value < 0.035f) Pop(_pop, top + UnityEngine.Random.insideUnitSphere * radius * 0.5f, now);
+        }
+
+        /// <summary>A fixed defence destroyed: a big blast at its top, a skirt of dust, and concrete and steel thrown out.</summary>
+        private void FellDefence(VehicleView view, float now)
+        {
+            var at = view.Position;
+            var radius = view.Sim.Radius;
+            Explode(ExplosionTier.Huge, at + Vector3.up * view.Top * 0.6f, now, Mathf.Clamp(radius / 2.5f, 0.9f, 1.5f));
+            if (_cull.Visible(at, 0.4f)) _collapse.Play(at, now, Mathf.Clamp(radius / 3f, 0.7f, 1.4f));
+            var throws = 6 + (int)(radius * 3f);
+            for (var k = 0; k < throws; k++)
+            {
+                var id = k % 3 == 0 ? "debris_metal" : "debris_concrete";
+                if (!_models.Has(id)) continue;
+                var offset = new Vector3(UnityEngine.Random.Range(-radius, radius), UnityEngine.Random.Range(0.5f, view.Top),
+                    UnityEngine.Random.Range(-radius, radius));
+                _debris.Throw(Chunk(id), at + offset, UnityEngine.Random.rotation, at - Vector3.up, 9f, now);
             }
         }
 

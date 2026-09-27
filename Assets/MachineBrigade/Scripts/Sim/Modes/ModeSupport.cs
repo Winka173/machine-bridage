@@ -108,18 +108,27 @@ namespace MachineBrigade.Sim.Modes
     }
 
     /// <summary>
-    /// Watchtowers on the capture points, after Battlefront's and PlanetSide's point turrets: a
-    /// point a side holds gets that side's tower beside it after <see cref="BuildSeconds"/>; when
-    /// the point falls the tower is blown up, and the new owner's goes up in its place. A tower
-    /// knocked down while its side still holds the point is rebuilt after
-    /// <see cref="RebuildSeconds"/>. Holding ground is worth more than standing on it, and taking
-    /// a point means breaking its tower.
+    /// Watchtowers on the capture points. Two kinds, after how other games guard their objectives:
+    /// <list type="bullet">
+    /// <item><b>Neutral</b> (Conquest, King of the Hill): each point has a tower that belongs to no
+    /// side and fires on every side, like Warcraft III's creep camps guarding expansions or the
+    /// hostile mercenaries of Sins of a Solar Empire: whoever wants the point has to pay for it,
+    /// and the side that breaks the tower opens the point for the other side too. A tower that is
+    /// knocked down stands again after <see cref="RespawnSeconds"/>, like a MOBA jungle camp, so
+    /// the points never go quiet.</item>
+    /// <item><b>Holder</b> (Assault): the defender's sectors are dug in with its own towers, as in
+    /// Battlefield's Breakthrough; a sector the attacker takes gets the attacker's tower after
+    /// <see cref="BuildSeconds"/>, and a tower knocked down while its side still holds the point is
+    /// rebuilt after <see cref="RebuildSeconds"/>.</item>
+    /// </list>
+    /// Each side's camp is guarded by its own bastions (see <see cref="BaseDefences"/>).
     /// </summary>
     public sealed class Outposts
     {
         public const string Tower = "point_tower";
         public const float BuildSeconds = 8f;
         public const float RebuildSeconds = 35f;
+        public const float RespawnSeconds = 100f;
 
         private sealed class Site
         {
@@ -133,10 +142,13 @@ namespace MachineBrigade.Sim.Modes
         }
 
         private readonly List<Site> _sites = new();
+        private readonly bool _neutral;
 
-        /// <param name="built">Points already held get their tower at once (a defender dug in).</param>
-        public Outposts(SimWorld world, IReadOnlyList<ObjectiveState> points, bool built = false)
+        /// <param name="neutral">Towers hostile to every side (else each belongs to the point's holder).</param>
+        /// <param name="built">Holder towers: points already held get their tower at once (a defender dug in).</param>
+        public Outposts(SimWorld world, IReadOnlyList<ObjectiveState> points, bool neutral = false, bool built = false)
         {
+            _neutral = neutral;
             if (!world.Catalog.Vehicles.ContainsKey(Tower)) return;
             // Towers stand to the side of the line between the camps, off the approach lanes.
             var across = Vector2.UnitX;
@@ -150,7 +162,8 @@ namespace MachineBrigade.Sim.Modes
                 var site = new Site { Point = point, Spot = SpotFor(world, point, across) };
                 site.Heading = SimMath.HeadingOf(point.Def.Position - site.Spot);
                 _sites.Add(site);
-                if (built && point.Owner >= 0) Raise(world, site, point.Owner);
+                if (neutral) Raise(world, site, Teams.Hostile);
+                else if (built && point.Owner >= 0) Raise(world, site, point.Owner);
             }
         }
 
@@ -158,40 +171,61 @@ namespace MachineBrigade.Sim.Modes
         {
             foreach (var site in _sites)
             {
-                var owner = site.Point.Owner;
-                var standing = world.TryGetVehicle(site.Tower, out var tower) && tower.IsAlive;
-                if (standing && site.Team != owner)
-                {
-                    // The point fell: its tower goes up with it.
-                    world.Damage.Apply(tower!, 1e7f, DamageType.HighExplosive);
-                    standing = false;
-                }
-                if (!standing && site.Tower.IsValid)
-                {
-                    // Lost while the point is still held: rebuilt after a while.
-                    if (site.Team == owner && owner >= 0)
-                    {
-                        site.Pending = owner;
-                        site.BuildAt = world.Time + RebuildSeconds;
-                    }
-                    site.Tower = default;
-                    site.Team = -1;
-                }
-                if (standing || owner < 0)
-                {
-                    if (owner < 0) site.Pending = -1;
-                    continue;
-                }
-                if (site.Pending != owner)
-                {
-                    site.Pending = owner;
-                    site.BuildAt = world.Time + BuildSeconds;
-                }
-                else if (world.Time >= site.BuildAt) Raise(world, site, owner);
+                if (_neutral) TickNeutral(world, site);
+                else TickHolder(world, site);
             }
         }
 
-        /// <summary>The tower standing at a point for its owner, if any.</summary>
+        private static void TickNeutral(SimWorld world, Site site)
+        {
+            if (world.TryGetVehicle(site.Tower, out var tower) && tower.IsAlive) return;
+            if (site.Tower.IsValid)
+            {
+                site.Tower = default;
+                site.BuildAt = world.Time + RespawnSeconds;
+            }
+            // It goes up again once nobody is standing on its footing.
+            if (world.Time < site.BuildAt) return;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && !v.Flying && Vector2.DistanceSquared(v.Position, site.Spot) < 36f) return;
+            Raise(world, site, Teams.Hostile);
+        }
+
+        private static void TickHolder(SimWorld world, Site site)
+        {
+            var owner = site.Point.Owner;
+            var standing = world.TryGetVehicle(site.Tower, out var tower) && tower.IsAlive;
+            if (standing && site.Team != owner)
+            {
+                // The point fell: its tower goes up with it.
+                world.Damage.Apply(tower!, 1e7f, DamageType.HighExplosive);
+                standing = false;
+            }
+            if (!standing && site.Tower.IsValid)
+            {
+                // Lost while the point is still held: rebuilt after a while.
+                if (site.Team == owner && owner >= 0)
+                {
+                    site.Pending = owner;
+                    site.BuildAt = world.Time + RebuildSeconds;
+                }
+                site.Tower = default;
+                site.Team = -1;
+            }
+            if (standing || owner < 0)
+            {
+                if (owner < 0) site.Pending = -1;
+                return;
+            }
+            if (site.Pending != owner)
+            {
+                site.Pending = owner;
+                site.BuildAt = world.Time + BuildSeconds;
+            }
+            else if (world.Time >= site.BuildAt) Raise(world, site, owner);
+        }
+
+        /// <summary>The tower standing at a point, if any.</summary>
         public bool TryGetTower(SimWorld world, ObjectiveState point, out Vehicle tower)
         {
             foreach (var site in _sites)

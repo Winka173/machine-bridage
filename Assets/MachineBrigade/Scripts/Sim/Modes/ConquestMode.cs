@@ -48,7 +48,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Spawn bastions and home zones at both camps (see <see cref="Modes.BaseDefences"/>).</summary>
         public bool BaseDefences { get; set; } = true;
 
-        /// <summary>Watchtowers on the points for whoever holds them (see <see cref="Modes.Outposts"/>).</summary>
+        /// <summary>A neutral watchtower on each point, firing on both sides (see <see cref="Modes.Outposts"/>).</summary>
         public bool Outposts { get; set; } = true;
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             if (_rules.BaseDefences) BaseDefences.Build(world, PlayerTeam, EnemyTeam);
-            if (_rules.Outposts) _outposts = new Outposts(world, _points);
+            if (_rules.Outposts) _outposts = new Outposts(world, _points, neutral: true);
         }
 
         private Outposts? _outposts;

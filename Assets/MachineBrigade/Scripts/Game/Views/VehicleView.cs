@@ -74,6 +74,19 @@ namespace MachineBrigade.Game.Views
 
             _recoilRest = new Vector3[_model.RecoilParts.Count];
             for (var i = 0; i < _recoilRest.Length; i++) _recoilRest[i] = _model.RecoilParts[i].localPosition;
+            // Several barrels (Main_cannon, Main_cannon_2...): they fire in turn, each from its own tip.
+            _barrelOf = new int[_recoilRest.Length];
+            var tips = new List<Transform>();
+            for (var i = 0; i < _recoilRest.Length; i++)
+            {
+                var part = _model.RecoilParts[i];
+                var suffix = System.Text.RegularExpressions.Regex.Match(part.name, @"_(\d+)(\.\d+)?$");
+                var barrel = suffix.Success ? int.Parse(suffix.Groups[1].Value) - 1 : 0;
+                _barrelOf[i] = barrel;
+                while (tips.Count <= barrel) tips.Add(null);
+                if (tips[barrel] == null || part.name.StartsWith("Muzzle_brake")) tips[barrel] = part;
+            }
+            _barrelTips = tips.Count > 1 && !tips.Contains(null) && SideBySide(tips) ? tips.ToArray() : null;
             _recoilDistance = Mathf.Clamp(vehicle.Radius * 0.18f, 0.12f, 0.45f);
 
             var mounts = Def.Mounts;
@@ -109,8 +122,8 @@ namespace MachineBrigade.Game.Views
             back.localScale = new Vector3(BarWidth + 0.14f, BarHeight + 0.14f, 1f);
             _barTrail = CreateMesh("Trail", _bar, meshes.Quad, materials.BarTrail, false);
             _barTrail.localPosition = new Vector3(0f, 0f, -0.01f);
-            _barFill = CreateMesh("Fill", _bar, meshes.Quad, vehicle.Team == playerTeam ? materials.BarAlly : materials.BarEnemy,
-                false);
+            _barFill = CreateMesh("Fill", _bar, meshes.Quad,
+                vehicle.Team == playerTeam ? materials.BarAlly : vehicle.Team == Teams.Hostile ? materials.BarNeutral : materials.BarEnemy, false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
             _bar.gameObject.SetActive(false);
 
@@ -146,6 +159,13 @@ namespace MachineBrigade.Game.Views
         public Vector3 MuzzleWorld => _body.TransformPoint(_model.Muzzle);
 
         public float MuzzleHeight => _model.Muzzle.y * Def.Scale;
+
+        /// <summary>Roughly how tall the model stands (where a fixed defence smokes and burns from).</summary>
+        public float Top => Mathf.Max(1.5f, MuzzleHeight + 0.4f);
+
+        private float _collapseStart = -1f;
+        private Vector2 _collapseTilt;
+        private float _collapseSink;
 
         /// <summary>Latest simulated ground speed in m/s.</summary>
         public float Speed => _currentSpeed;
@@ -183,12 +203,14 @@ namespace MachineBrigade.Game.Views
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
         }
 
-        // Hit feedback (after the usual arcade recipe): a white flash for 0.06 s fading over 0.12 s,
-        // at most every 0.15 s; heavy hits rock the hull 1.5 to 4 degrees; the health bar keeps a
-        // trail of what was just lost, which catches up after 0.4 s.
-        private const float FlashHold = 0.06f;
-        private const float FlashFade = 0.12f;
-        private const float FlashGap = 0.15f;
+        // Hit feedback: a soft white flash for a hit that takes 2 % or more at once (a shell, a
+        // missile, a blast; never the patter of machine guns from every side), at most every 0.6 s;
+        // heavy hits rock the hull 1.5 to 4 degrees; the health bar keeps a trail of what was just
+        // lost, which catches up after 0.4 s.
+        private const float FlashHold = 0.05f;
+        private const float FlashFade = 0.1f;
+        private const float FlashGap = 0.6f;
+        private const float FlashHit = 0.02f;
         private float _hitTime = -10f;
         private float _lastHealth = 1f;
         private float _trail = 1f;
@@ -204,7 +226,8 @@ namespace MachineBrigade.Game.Views
             if (health >= _trail) _trail = health;
             if (lost <= 0.004f) return;
             _trailHoldUntil = now + 0.4f;
-            if (now - _hitTime >= FlashGap) _hitTime = now;
+            // Concrete and steel emplacements do not flash; they smoke and burn instead.
+            if (lost >= FlashHit && now - _hitTime >= FlashGap && !Def.Static) _hitTime = now;
             if (lost >= 0.03f && !Flying)
             {
                 var degrees = Mathf.Clamp(lost * 60f, 1.5f, 4f);
@@ -240,6 +263,14 @@ namespace MachineBrigade.Game.Views
         /// </summary>
         public Vector3 MuzzleOf(int index)
         {
+            if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
+            {
+                // The barrel firing now: the main muzzle moved across to that barrel's line.
+                var centre = _muzzles[0].position;
+                var along = DirectionOf(0);
+                var offset = _barrelTips[_barrel].position - centre;
+                return centre + offset - along * Vector3.Dot(offset, along);
+            }
             if (index < _muzzles.Length && _muzzles[index] != null) return _muzzles[index].position;
             if (index == 0) return MuzzleWorld;
             var slot = Def.Mounts[index].Slot;
@@ -348,7 +379,28 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
-        public void Recoil() => _recoilTime = Time.time;
+        public void Recoil()
+        {
+            _recoilTime = Time.time;
+            if (_barrelTips != null) _barrel = (_barrel + 1) % _barrelTips.Length;
+        }
+
+        /// <summary>Barrels that really stand apart (a twin gun), not one barrel modelled in segments.</summary>
+        private bool SideBySide(List<Transform> tips)
+        {
+            var spread = 0f;
+            for (var i = 0; i < tips.Count; i++)
+                for (var j = i + 1; j < tips.Count; j++)
+                {
+                    var d = _body.InverseTransformPoint(tips[i].position) - _body.InverseTransformPoint(tips[j].position);
+                    spread = Mathf.Max(spread, new Vector2(d.x, d.y).magnitude * Def.Scale);
+                }
+            return spread > 0.25f;
+        }
+
+        private readonly int[] _barrelOf;
+        private readonly Transform[] _barrelTips;
+        private int _barrel;
 
         public void Render(float alpha, Quaternion cameraRotation)
         {
@@ -405,7 +457,7 @@ namespace MachineBrigade.Game.Views
                 var t = (Time.time - _recoilTime) / RecoilSeconds;
                 var kick = t is >= 0f and < 1f ? (1f - t) * (1f - t) * _recoilDistance : 0f;
                 for (var i = 0; i < _recoilRest.Length; i++)
-                    _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * kick;
+                    _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * (_barrelTips == null || _barrelOf[i] == _barrel ? kick : 0f);
             }
 
             // Free weapon mounts turn on their own; their parent may be the turret or the hull.
@@ -503,6 +555,15 @@ namespace MachineBrigade.Game.Views
                 _crashDrift.y = 0f;
                 return;
             }
+            if (Def.Static)
+            {
+                // A fixed defence does not drive off as a hulk: it slumps into a leaning, burnt ruin
+                // and stays where it stood.
+                _collapseStart = Time.time;
+                _collapseTilt = new Vector2(Random.Range(-15f, 15f), Random.Range(-15f, 15f));
+                _collapseSink = Top * 0.3f;
+                return;
+            }
             _body.localRotation = Quaternion.Euler(Random.Range(-3f, 3f), 0f, Random.Range(-4f, 4f));
         }
 
@@ -514,6 +575,15 @@ namespace MachineBrigade.Game.Views
 
         private void RenderWreck()
         {
+            if (_collapseStart >= 0f)
+            {
+                // Slumps over a second and a half: down on one side, leaning, then still.
+                var c = Mathf.Clamp01((Time.time - _collapseStart) / 1.5f);
+                var e = c * c * (3f - 2f * c);
+                _body.localPosition = Vector3.down * (_collapseSink * e);
+                _body.localRotation = Quaternion.Euler(_collapseTilt.x * e, 0f, _collapseTilt.y * e);
+                return;
+            }
             if (!Flying || _crashStart < 0f || Root.position.y <= 0f) return;
             // Out of control: it drifts on with its momentum, spins faster and faster as the tail
             // goes, tips over and drops, the rotor winding down, until it hits the ground.

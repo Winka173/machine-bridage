@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 using MachineBrigade.Game.Match;
@@ -51,14 +52,22 @@ namespace MachineBrigade.Tests
                     else if (catalog.TryGetSupport(id, out _) && !supports.Contains(id)) supports.Add(id);
                 }
             }
-            owned.Sort((a, b) => catalog.Vehicle(b).CpCost.CompareTo(catalog.Vehicle(a).CpCost));
-            var deck = owned.GetRange(0, System.Math.Min(6, owned.Count));
-            // Keep an anti-air card if there is one: skies are busy by the midgame.
-            if (!deck.Exists(v => catalog.Vehicle(v).Class == UnitClass.AntiAir))
+            // A deck a player would build: the dearest aircraft (one at most: air slots are scarce),
+            // an anti-air card, an artillery card (the answer to a dug-in enemy), then the dearest
+            // ground vehicles. Ties keep the order the cards were won in.
+            var byCost = owned.Select((id, i) => (id, i)).OrderByDescending(c => catalog.Vehicle(c.id).CpCost).ThenBy(c => c.i)
+                .Select(c => c.id).ToList();
+            var deck = new List<string>();
+            void Take(System.Func<VehicleDef, bool> fits)
             {
-                var aa = owned.Find(v => catalog.Vehicle(v).Class == UnitClass.AntiAir);
-                if (aa != null) deck[deck.Count - 1] = aa;
+                var id = byCost.Find(v => !deck.Contains(v) && fits(catalog.Vehicle(v)));
+                if (id != null && deck.Count < 6) deck.Add(id);
             }
+            Take(d => d.Flying);
+            Take(d => d.Class == UnitClass.AntiAir);
+            Take(d => d.Class == UnitClass.Artillery || d.Weapon.MinRange > 0f);
+            foreach (var id in byCost)
+                if (deck.Count < 6 && !deck.Contains(id) && !catalog.Vehicle(id).Flying) deck.Add(id);
             supports.Sort((a, b) => catalog.Supports[b].CpCost.CompareTo(catalog.Supports[a].CpCost));
             return (deck, supports.GetRange(0, System.Math.Min(2, supports.Count)));
         }

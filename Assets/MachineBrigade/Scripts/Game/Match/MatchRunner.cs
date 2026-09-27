@@ -394,6 +394,8 @@ namespace MachineBrigade.Game.Match
             }
 
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && DebugFlags.Has("-mb-towerwatch")) WatchTower();
+            if (!_menu && !_paused && DebugFlags.Has("-mb-bastion")) WatchBastion();
             if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
             {
                 // Device check: a smoke screen in the thick of the fight every few seconds.
@@ -449,6 +451,54 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+        private MachineBrigade.Sim.Entities.Vehicle _watched;
+        private float _watchHitAt, _watchUntil, _raidAt = 6f;
+
+        /// <summary>
+        /// Device check for fixed defences: the camera sits on one while it is shot down in steps
+        /// (smoke, then fire, then the blast and the ruin), then moves on to the next.
+        /// </summary>
+        private void WatchTower()
+        {
+            if (_watched == null || (!_watched.IsAlive && Time.time > _watchUntil))
+            {
+                _watched = null;
+                var focus = new System.Numerics.Vector2(_camera.Focus.x, _camera.Focus.z);
+                var nearest = float.MaxValue;
+                foreach (var v in _world.Vehicles)
+                {
+                    if (!v.IsAlive || !v.Def.Static || v.Invulnerable || v.Team == PlayerTeam) continue;
+                    var d = System.Numerics.Vector2.Distance(v.Position, focus);
+                    if (d >= nearest) continue;
+                    nearest = d;
+                    _watched = v;
+                }
+                if (_watched == null) return;
+                _watchHitAt = Time.time + 3f;
+            }
+            _camera.FocusOn(new Vector3(_watched.Position.X, 0f, _watched.Position.Y));
+            _lastInput = Time.unscaledTime;
+            if (!_watched.IsAlive || Time.time < _watchHitAt) return;
+            _watchHitAt = Time.time + 1.6f;
+            _world.DebugDamage(_watched, 0.14f);
+            if (!_watched.IsAlive) _watchUntil = Time.time + 14f;
+        }
+
+        /// <summary>Device check for the camp bastions: the camera on the player's, with an enemy raid every so often.</summary>
+        private void WatchBastion()
+        {
+            MachineBrigade.Sim.Entities.Vehicle bastion = null;
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Team == PlayerTeam && v.Def.Id == MachineBrigade.Sim.Modes.BaseDefences.Bastion) bastion = v;
+            if (bastion == null) return;
+            _camera.FocusOn(new Vector3(bastion.Position.X, 0f, bastion.Position.Y));
+            _lastInput = Time.unscaledTime;
+            if (Time.time < _raidAt) return;
+            _raidAt = Time.time + 18f;
+            var at = bastion.Position + new System.Numerics.Vector2(30f, 30f);
+            foreach (var id in new[] { "light_tank", "apc", "armored_car", "attack_helicopter" })
+                _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);
+        }
         private float _smokeAt = 10f;
 
         /// <summary>Device check for building collapses: every few seconds the building nearest the view comes down.</summary>
@@ -534,7 +584,7 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
-                        else _kills++;
+                        else if (e.Team == EnemyTeam) _kills++;
                         if (!_menu && e.Team == EnemyTeam && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var slain))
                         {
                             DailyMissions.Record("kills");
@@ -794,7 +844,7 @@ namespace MachineBrigade.Game.Match
             foreach (var v in _world.Vehicles)
             {
                 if (!v.IsAlive || (v.Team != PlayerTeam && !v.IsVisibleTo(PlayerTeam))) continue;
-                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : 1, v.Flying);
+                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying);
             }
             var cam = _camera;
             var corners = new[] { new Vector2(0f, 0f), new Vector2(Screen.width, 0f), new Vector2(Screen.width, Screen.height), new Vector2(0f, Screen.height) };

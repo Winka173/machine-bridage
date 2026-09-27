@@ -93,7 +93,7 @@
 
     { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
-      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.85,
+      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 15, "enemyIncome": 0.7, "playerCp": 26, "playerIncome": 1.85,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "sam_launcher", "mlrs", "attack_helicopter", "artillery"],
       "coins": 450, "xp": 320, "unlocks": ["attack_jet", "ifv"], "starTime": 600, "starLosses": 12 },
 

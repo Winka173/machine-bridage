@@ -269,6 +269,13 @@ namespace MachineBrigade.Sim.Movement
             if (fromPost > 2f && !v.HasPath && v.RepathTimer <= 0f) _world.PathTo(v, v.GuardPoint);
         }
 
+        /// <summary>
+        /// Only anti-aircraft vehicles go after aircraft. Everything else shoots at one that comes
+        /// into reach but never drives after it: a helicopter circling a tank would otherwise lead
+        /// it round in circles (a machine gun can hit aircraft, so it counted as a target to chase).
+        /// </summary>
+        private static bool HuntsAircraft(Vehicle v) => Combat.CombatSystem.IsAntiAir(v.Def.Weapon);
+
         private Vehicle? GuardThreat(Vehicle v)
         {
             // Only threats that can be fought without leaving the leash, so the vehicle never
@@ -276,7 +283,7 @@ namespace MachineBrigade.Sim.Movement
             var weapon = v.Def.Weapon;
             var reach = GuardLeash + weapon.Range * 0.9f;
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
-                attacker.IsAlive && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) &&
+                attacker.IsAlive && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
                 Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
                 return attacker;
 
@@ -285,6 +292,7 @@ namespace MachineBrigade.Sim.Movement
             foreach (var other in _world.VehicleList)
             {
                 if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
+                if (other.Flying && !HuntsAircraft(v)) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > v.Def.VisionRange || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -317,7 +325,7 @@ namespace MachineBrigade.Sim.Movement
                 return;
             }
             var enemy = _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
-                minRange: weapon.MinRange, layers: weapon.Targets);
+                minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;
@@ -425,7 +433,8 @@ namespace MachineBrigade.Sim.Movement
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
                 TryAdvance(v, v.Speed * dt);
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
-                if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target))
+                if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
+                    (def.Flying || target is not Vehicle { Flying: true }))
                     v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * dt);
                 return;
             }

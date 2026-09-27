@@ -134,6 +134,9 @@ namespace MachineBrigade.Sim
 
         public const float HomeRadius = 35f;
 
+        /// <summary>Device check: takes a share of a vehicle's health (a defence burning down on camera).</summary>
+        public void DebugDamage(Vehicle v, float fraction) => Damage.Apply(v, v.MaxHp * fraction, DamageType.HighExplosive);
+
         private readonly bool[] _entrench = new bool[2];
 
         /// <summary>

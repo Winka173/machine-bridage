@@ -79,6 +79,9 @@ namespace MachineBrigade.Sim.Commands
         UnknownCard,
         NotEnoughCp,
         ArmyAtCapacity,
+
+        /// <summary>The side already has its full share of aircraft up (see TeamEconomy.MaxAircraft).</summary>
+        AirAtCapacity,
         OnCooldown,
         NotAvailable,
     }

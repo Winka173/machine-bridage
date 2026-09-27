@@ -107,7 +107,13 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>After holding back this long without catching up, the army commits anyway: an enemy
         /// dug in on its objectives never comes out, and waiting forever loses on the clock.</summary>
-        private const float Patience = 40f;
+        private const float Patience = 30f;
+
+        /// <summary>
+        /// How long a committed attack presses on before the odds are weighed again: long enough to
+        /// cross open ground to a dug-in enemy and fight it out, not only to reach it and turn back.
+        /// </summary>
+        private const double CommitSeconds = 60.0;
 
         /// <summary>Enemies seen near the front: their strength then, when, and where.</summary>
         private readonly Dictionary<EntityId, (float power, double seen, Vector2 at)> _seen = new();
@@ -244,7 +250,7 @@ namespace MachineBrigade.Sim.AI
                 else if (world.Time - _outmatchedSince > Patience)
                 {
                     _outmatched = false;
-                    _committedUntil = world.Time + 35.0;
+                    _committedUntil = world.Time + CommitSeconds;
                 }
             }
             else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
@@ -403,7 +409,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive) continue;
-                if (v.Team == _enemyTeam)
+                if (v.Team == _enemyTeam || v.Team == Teams.Hostile)
                 {
                     if (v.IsVisibleTo(_team)) _enemies.Add(v);
                     continue;
@@ -453,6 +459,8 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 var weapon = v.Def.Weapon;
                 if (!weapon.CanTarget(boss.Flying)) continue;
+                // A flying boss is for anti-air and aircraft; the rest shoot it only when it comes near.
+                if (boss.Flying && !v.Flying && !Combat.CombatSystem.IsAntiAir(weapon)) continue;
                 var distance = Vector2.Distance(v.Position, boss.Position);
                 if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
                 vehicles.RemoveAt(i);

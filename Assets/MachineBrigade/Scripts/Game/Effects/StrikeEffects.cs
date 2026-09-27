@@ -208,11 +208,14 @@ namespace MachineBrigade.Game.Effects
         private void ScheduleBombs(SupportDef support, Vector3 start, Vector3 end, float firstImpact)
         {
             var interval = support.Count > 1 ? support.Duration / (support.Count - 1) : 0f;
+            // Each bomb leaves the aircraft one fall-time before it lands and keeps the aircraft's
+            // speed on the way down, so it drops out from under the aircraft and lands as it passes.
+            var speed = support.Length / Mathf.Max(0.2f, support.Duration);
             for (var i = 0; i < support.Count; i++)
             {
                 var along = support.Count > 1 ? i / (float)(support.Count - 1) : 0.5f;
                 var target = Vector3.Lerp(start, end, along);
-                var release = target - (end - start).normalized * 14f + Vector3.up * JetAltitude;
+                var release = target - (end - start).normalized * (speed * BombFall) + Vector3.up * JetAltitude;
                 _bombs.Add((firstImpact + i * interval - BombFall, release, target));
             }
         }
