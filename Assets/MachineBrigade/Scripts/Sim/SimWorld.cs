@@ -227,8 +227,6 @@ namespace MachineBrigade.Sim
             }
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
-            // A fixed defence stands on the ground like a building: routes go round it.
-            if (def.Static) Grid.AddBlocker(at, StaticFootprint(def), StaticFootprint(def), ObstacleClearance);
             Emit(SimEvent.Spawned(vehicle));
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
@@ -452,6 +450,18 @@ namespace MachineBrigade.Sim
             }
         }
 
+        /// <summary>
+        /// A defence a mode puts down (a camp bastion, a point's tower, an Assault sector's guns)
+        /// stands on the ground like a building: routes go round it. Defences a map places already
+        /// have their ground kept clear and their routes checked by the map builder.
+        /// </summary>
+        internal void AnchorDefence(Vehicle v)
+        {
+            if (!v.Def.Static || v.BlocksRoutes) return;
+            v.BlocksRoutes = true;
+            Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+        }
+
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>
         private static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
 
@@ -464,7 +474,7 @@ namespace MachineBrigade.Sim
                 _vehicleList.RemoveAt(i);
                 _vehicles.Remove(v.Id);
                 // Its ruin can be driven round or over: the ground opens again.
-                if (v.Def.Static) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+                if (v.BlocksRoutes) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
             }
         }
 
