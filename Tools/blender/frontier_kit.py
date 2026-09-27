@@ -3,7 +3,7 @@
 Originally written for Frontier Command (github.com/buicongnguyen/3d_astra) and reused in
 Machine Brigade with the author's permission. Machine Brigade additions: extra materials
 (Rubber, Plaster, Roof, Wood, BarrelRed, Fuel, Canvas, Snow, Dirt, Sandbag, Grass, the town, harbour,
-desert and snow sets), nested pivots, lofted hulls, raw faceted meshes (terrain) and GLB export into the
+desert, snow and volcanic/city sets), nested pivots, lofted hulls, raw faceted meshes (terrain) and GLB export into the
 Unity project.
 
 The same code runs headless (`blender --background --python generate_assets.py`) and live
@@ -133,8 +133,14 @@ MATERIALS = {
     'RailBrown': ('#7a3f2c', 0.3, 0.6, 0.0),      # oxide-red rolling stock
     # Second vehicle roster (mb_vehicles2.py): brass trims on the premium titan tank, used sparingly.
     'Gilded': ('#f5c75a', 0.9, 0.28, 0.0),
+    # Volcanic, jungle, airbase and city maps (mb_themes2.py). LavaGlow is molten rock in cracks,
+    # vents and embers (also the red of traffic and obstruction lights); SignalGreen is the green
+    # traffic light; Obsidian is glossy black volcanic glass.
+    'LavaGlow': ('#ff4a12', 0.0, 0.45, 2.2),
+    'SignalGreen': ('#3cf08c', 0.0, 0.3, 2.4),
+    'Obsidian': ('#1e1c26', 0.3, 0.16, 0.0),
 }
-GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy'}
+GLOWING = {'TeamGlow', 'Alloy', 'Energy', 'Lamp', 'CrystalAlloy', 'CrystalEnergy', 'LavaGlow', 'SignalGreen'}
 
 
 def material(name):
