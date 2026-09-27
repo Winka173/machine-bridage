@@ -11,7 +11,7 @@ namespace MachineBrigade.Tests
             "mg", "autocannon", "cannon", "heavy_cannon", "rocket_launch", "missile_launch", "flak", "flame",
             "explosion_small", "explosion_medium", "explosion_large", "explosion_huge", "collapse", "debris", "impact_metal",
             "jet_pass", "jet_loop", "rotor_loop", "fire_loop", "wind_loop", "rain_loop", "drums_loop", "thunder", "siren",
-            "capture", "lost", "click",
+            "click",
         };
 
         [Test]

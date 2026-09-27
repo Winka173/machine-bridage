@@ -73,6 +73,7 @@ namespace MachineBrigade.Game.Effects
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly StrikeEffects _strikes;
+        private readonly AirDrops _drops;
         private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
@@ -119,6 +120,7 @@ namespace MachineBrigade.Game.Effects
             _projectiles = new ProjectilePool(_root, 96);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
+            _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
             _marker.Transform.localScale = Vector3.one * 2.2f;
@@ -144,6 +146,10 @@ namespace MachineBrigade.Game.Effects
                                 _night.Flash(gunner.Position + gunner.Root.forward * gunner.Sim.Radius,
                                     fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
                         }
+                        break;
+
+                    case SimEventKind.DeploymentQueued:
+                        _drops.Queue(e, now);
                         break;
 
                     case SimEventKind.ProjectileImpact:
@@ -358,6 +364,7 @@ namespace MachineBrigade.Game.Effects
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _strikes.Tick(now);
+            _drops.Tick(now);
             _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);

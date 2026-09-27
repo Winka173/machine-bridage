@@ -277,6 +277,66 @@ namespace MachineBrigade.Game.Audio
             return Finish("warning", data, 0.45f);
         }
 
+        /// <summary>
+        /// An incoming shell's whistle: a falling tone with a breathy edge, swelling as it comes
+        /// down and cut off at the moment it lands (the blast is its own sound).
+        /// </summary>
+        public static AudioClip Whistle(int seed)
+        {
+            var rng = new Random(seed);
+            const float length = 1.25f;
+            var data = new float[(int)(Rate * length)];
+            var high = 1450f + 350f * (float)rng.NextDouble();
+            var low = 480f + 160f * (float)rng.NextDouble();
+            var air = new OnePole(0.45f);
+            var phase = 0f;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var k = t / length;
+                var frequency = Mathf.Lerp(high, low, k * k * 0.55f + k * 0.45f);
+                phase += 2f * Mathf.PI * frequency / Rate;
+                var tone = Mathf.Sin(phase) + 0.22f * Mathf.Sin(phase * 2f + 0.4f);
+                var breath = air.Next(Noise(rng)) * 0.3f;
+                var swell = 0.12f + 0.88f * k * k;
+                var cut = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.93f, 1f, k));
+                data[i] = (tone * 0.55f + breath) * swell * cut;
+            }
+            return Finish($"whistle_{seed}", data, 0.7f);
+        }
+
+        /// <summary>
+        /// A radio report: the squelch of the handset keying, two soft notes through a radio's
+        /// narrow band (rising for good news, falling for bad), and the squelch letting go.
+        /// </summary>
+        public static AudioClip Radio(bool good)
+        {
+            var rng = new Random(good ? 61 : 67);
+            var notes = good ? new[] { 660f, 880f } : new[] { 587f, 440f };
+            const float length = 0.66f;
+            var data = new float[(int)(Rate * length)];
+            var band = new OnePole(0.32f);
+            var floor = new OnePole(0.04f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var noise = Noise(rng);
+                var squelch = noise * (Env(t, 0.002f, 0.035f) * 0.55f + (t > 0.55f ? Env(t - 0.55f, 0.002f, 0.04f) * 0.4f : 0f));
+                var tone = 0f;
+                for (var n = 0; n < notes.Length; n++)
+                {
+                    var start = 0.08f + n * 0.17f;
+                    if (t < start) continue;
+                    var local = t - start;
+                    tone += (Mathf.Sin(2f * Mathf.PI * notes[n] * local) + 0.3f * Mathf.Sin(4f * Mathf.PI * notes[n] * local)) * Env(local, 0.01f, 0.16f);
+                }
+                // A crude band-pass: a radio has no deep bass and no sparkle.
+                var x = band.Next(squelch + tone * 0.4f);
+                data[i] = x - floor.Next(x);
+            }
+            return Finish(good ? "radio_good" : "radio_bad", data, 0.6f);
+        }
+
         /// <summary>Radio chime: rising notes for good news (captured), falling for bad (lost).</summary>
         public static AudioClip Chime(bool rising)
         {

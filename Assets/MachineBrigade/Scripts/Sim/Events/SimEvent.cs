@@ -145,8 +145,9 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent VehicleLost(Vehicle v) =>
             new(SimEventKind.VehicleDestroyed, v.Id, v.Position, default, 0f, ExplosionTier.Medium, v.Def.Id, v.Team);
 
-        internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, float seconds) =>
-            new(SimEventKind.DeploymentQueued, EntityId.None, at, default, seconds, default, vehicleId, team);
+        /// <summary>A vehicle bought: where it will land (Position), which way it faces in (Target), and in how long (Value).</summary>
+        internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
+            new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team);
 
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);

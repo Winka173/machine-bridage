@@ -201,6 +201,8 @@ namespace MachineBrigade.Game.Match
             // battles never see, and every merged model costs load time and memory on a phone.
             foreach (var id in Fieldable(catalog, mission)) _models.Prewarm(catalog.Vehicles[id].Model);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
+            // The transport that flies reinforcements in (see AirDrops).
+            if (_models.Has("sky_gunship")) _models.Prewarm("sky_gunship");
             _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
