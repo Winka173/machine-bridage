@@ -226,7 +226,8 @@ namespace MachineBrigade.Game.Views
             if (health >= _trail) _trail = health;
             if (lost <= 0.004f) return;
             _trailHoldUntil = now + 0.4f;
-            if (lost >= FlashHit && now - _hitTime >= FlashGap) _hitTime = now;
+            // Concrete and steel emplacements do not flash; they smoke and burn instead.
+            if (lost >= FlashHit && now - _hitTime >= FlashGap && !Def.Static) _hitTime = now;
             if (lost >= 0.03f && !Flying)
             {
                 var degrees = Mathf.Clamp(lost * 60f, 1.5f, 4f);

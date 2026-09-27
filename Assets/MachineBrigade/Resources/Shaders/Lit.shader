@@ -202,7 +202,7 @@ Shader "MachineBrigade/Lit"
                 half4 color = UniversalFragmentPBR(inputData, surface);
                 color.rgb = min(color.rgb, MaxReflected) + _EmissionColor.rgb * _Tint.rgb;
                 // Hit flash: a brief white-hot wash (1 - _Tint.a; 0 unless a view is flashing).
-                color.rgb = lerp(color.rgb, half3(1.25h, 1.2h, 1.1h), (1.0h - _Tint.a) * 0.4h);
+                color.rgb = lerp(color.rgb, half3(1.25h, 1.2h, 1.1h), (1.0h - _Tint.a) * 0.3h);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
                 return half4(color.rgb, 1.0h);
             }

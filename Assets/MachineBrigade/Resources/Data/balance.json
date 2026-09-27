@@ -316,8 +316,7 @@
     // Fixed defences (Siege mode): they never move, and every one of them goes up in flames.
     { "id": "spawn_bastion", "class": "Defense", "static": true, "model": "heavy_turret", "armor": "Heavy", "hp": 5000, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 44,
       "firesWhileMoving": true, "weapon": "bastion_gun",
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" },
-                     { "weapon": "sam", "slot": "missile", "aim": "Free" } ] },
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "twin_30_flak", "slot": "mg", "aim": "Free" } ] },
     // The siege keep's heavy pieces: a twin 155 mm coastal turret, a Flakturm with quad flak and a
     // SAM box, a Patriot-style battery with its search radar.
     { "id": "heavy_turret",     "static": true, "armor": "Structure", "hp": 2800, "speed": 0, "turnRate": 1, "turretTurnRate": 32, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 60,
