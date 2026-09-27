@@ -2,6 +2,67 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: Rarer, deadlier aircraft; neutral towers; defences that burn and stay
+
+The user asked for:
+- a gentler hit flash (many hits from many guns looked odd);
+- dearer aircraft, since they were spammed, but deadlier ones (carpet bombing above all);
+- ground vehicles that anti-air aside are not led round in circles by aircraft (the machine-gun logic);
+- bombs that no longer burst before the bomber has flown over;
+- fixed defences that smoke and burn when hurt and blow up when destroyed, leaving their ruin in place;
+- better effects on the camp bastions and the other towers;
+- neutral watchtowers, firing on both sides, on the capture points, with a sensible side for the towers of every mode.
+
+### Done
+
+**Hit flash**
+- A soft flash, only for a hit that takes 2 % or more at once (never machine-gun patter), at most every 0.6 s, at 0.3 strength.
+- Defences never flash; they smoke and burn instead.
+
+**Air power**
+- Aircraft cost about 1.45x as much, and a side may have at most six up at once (`TeamEconomy.MaxAircraft`, like the air slots of Wargame and World in Conflict).
+- The commander keeps about a seventh of its army in the air.
+- Aircraft weapons do 1.35x damage:
+  - the heavy bomber's payload 400 (was 220);
+  - the stealth bomber's 850 (was 520);
+  - carpet bombing 330 (was 200), airstrike 240, air raid 210.
+- Anti-air weapons do 1.4x damage, so anti-air stays the counter.
+- Counters hold: 3 SAMs still beat 2 attack jets, and 3 AA vehicles beat 2 helicopters.
+
+**Aircraft do not lead ground units about**
+- A vehicle whose main weapon is a machine gun counted a helicopter as something to drive after, so a circling helicopter led it round and round.
+- Now only anti-air vehicles go after aircraft. The rest shoot at one that comes into reach and hold their ground, and never swing their hull round after it.
+
+**Bombs land under the bomber**
+- A bomb keeps the bomber's forward speed as it falls, so it lands as the bomber passes over, not ahead of it (`BombsLandUnderTheBomber`).
+- Airstrike aircraft now reach the bomb line as the first bomb lands.
+- Each bomb drops from under the aircraft instead of out of empty air 25 m ahead of it.
+
+**Defences**
+- A damaged defence smokes from its top; badly hit, it burns in two places, throws sparks, and its ammunition pops.
+- When destroyed:
+  - a big blast at its top, a dust skirt, and concrete and steel thrown out;
+  - a chain of ammunition blasts;
+  - the ruin slumps over and leans, burns for 45 s and smoulders on.
+- The ruin stays for the rest of the battle; it never sinks away as a vehicle hulk does.
+- Twin and quad guns fire barrel by barrel, each from its own tip (the camp bastion, the flak tower, and any other model with side-by-side barrels).
+- The bastion's roof carries twin flak for aircraft, instead of SAMs that came out of the middle of its roof.
+
+**Neutral towers**
+- Conquest and King of the Hill: a watchtower on each point that belongs to no side and fires on both, after Warcraft III's creep camps and the hostile mercenaries of Sins of a Solar Empire.
+  - It stands again 100 s after it is knocked down, like a MOBA jungle camp.
+  - It is grey, with a pale health bar and minimap blip.
+- Each side's camp keeps its own bastions.
+- Assault keeps towers that belong to the defender, as in Battlefield's Breakthrough.
+- Siege keeps the whole fortress on the defender's side.
+
+**AI and balance**
+- The attack stance still prefers the weakest-held point, but only when there is a choice; a last point is attacked however hard it is held.
+- A committed attack presses on for 60 s (it was 35 s, too short to cross open ground to a dug-in enemy), and the army waits 30 s (was 40 s) before committing.
+- The test decks now look like a player's: the dearest aircraft (one at most), an anti-air card, an artillery card, then the dearest ground vehicles. With aircraft dearer, "the six dearest cards" had become half aircraft.
+- m10 enemy: 15 CP at the start, 0.7 income.
+- Campaign: all 17 missions win 5/5. Suite: 200 passed.
+
 ## 2026-09-27: Damage you can see, two-weapon vehicles, real air war, 200 m maps, epic siege, Attack and Defend
 
 The user asked for:

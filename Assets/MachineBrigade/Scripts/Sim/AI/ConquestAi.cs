@@ -171,6 +171,10 @@ namespace MachineBrigade.Sim.AI
             var defend = Stance == CommanderStance.Defend;
             world.TryGetRally(_enemyTeam, out var enemyCamp);
             var ownPower = ArmyPower(world);
+            // Where they are thin only matters with a choice to make: the last point is attacked however hard it is held.
+            var choices = 0;
+            foreach (var point in _mode.Points)
+                if (!point.Locked && point.Owner != _team) choices++;
             foreach (var point in _mode.Points)
             {
                 if (point.Locked) continue;
@@ -195,7 +199,7 @@ namespace MachineBrigade.Sim.AI
                     if (ours) score += threatened ? 2.5f : -2f;
                     // Go where they are thin: every enemy seen dug in round a point (towers and
                     // defences included) counts against it, relative to our own strength.
-                    else score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * 1.2f;
+                    else if (choices > 1) score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * 1.2f;
                 }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
