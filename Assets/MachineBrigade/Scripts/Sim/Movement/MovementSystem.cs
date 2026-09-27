@@ -10,9 +10,11 @@ namespace MachineBrigade.Sim.Movement
 {
     /// <summary>
     /// Turns orders into driving: follows paths, closes in on attack targets, handles
-    /// arrival and getting stuck, and keeps hulls from overlapping.
+    /// arrival and getting stuck, and keeps hulls from overlapping. The traffic rules between
+    /// friends (making way, head-on meetings, routing round parked hulls) are in
+    /// MovementSystem.Traffic.cs.
     /// </summary>
-    internal sealed class MovementSystem
+    internal sealed partial class MovementSystem
     {
         private const float ArriveWaypoint = 1.6f;
         private const float ArriveFinal = 0.8f;
@@ -25,7 +27,9 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>A hull stuck this close to its goal (plus its own size) among others has arrived.</summary>
         private const float ArrivalReach = 5f;
-        private const int StuckStrikesToGiveUp = 3;
+
+        /// <summary>Stuck windows before a vehicle gives up its route: two routed round parked hulls, one backing off, then this.</summary>
+        private const int StuckStrikesToGiveUp = 4;
         private const float SeparationSlack = 0.05f;
 
         /// <summary>A destination this close that lies beside or behind the hull counts as reached.</summary>
@@ -57,7 +61,12 @@ namespace MachineBrigade.Sim.Movement
 
         private readonly SimWorld _world;
 
-        public MovementSystem(SimWorld world) => _world = world;
+        public MovementSystem(SimWorld world)
+        {
+            _world = world;
+            _unitCosts = new Navigation.UnitCostField(world.Grid);
+            _costFinder = new Navigation.PathFinder(world.Grid);
+        }
 
         /// <summary>Living ground vehicles sorted by X, for the neighbour searches of avoidance and separation.</summary>
         private readonly List<Vehicle> _ground = new();
@@ -67,13 +76,20 @@ namespace MachineBrigade.Sim.Movement
         public void Step(float dt)
         {
             SortGround();
+            // Requests posted last step are served now, before anyone drives: two-phase, so no
+            // outcome depends on the order vehicles are driven in.
+            ServeHeadOns();
+            ServeYieldRequests();
+            PrepareGates();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
                 // Fixed defences only turn their guns (the combat system does that).
                 if (v.Def.Static) continue;
                 v.RepathTimer -= dt;
-                UpdateOrder(v);
+                if (!v.Flying) TrackTraffic(v);
+                // Making way or backing out for a friend: the order waits (it is taken up again after).
+                if (!TrafficOverlay(v)) UpdateOrder(v);
                 if (v.ManualOrder && v.Order.Kind == OrderKind.Idle)
                 {
                     v.ManualOrder = false;
@@ -81,6 +97,8 @@ namespace MachineBrigade.Sim.Movement
                 }
                 Drive(v, dt);
             }
+            ResolveGates();
+            RunPathQueue();
             SortGround();
             Separate();
         }
@@ -252,6 +270,19 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private void UpdateGuard(Vehicle v)
         {
+            if (!v.Flying)
+            {
+                // Never idle in a gate, a gap or their mouths (a post there would close the way for
+                // everyone): stand beside it, and make that the post.
+                var lanes = _world.Lanes;
+                if (!v.HasPath && v.RepathTimer <= 0f && lanes.NoParkAt(v.Position) && TryStandBeside(v.Position, 16f, out var aside))
+                {
+                    v.GuardPoint = aside;
+                    _world.PathTo(v, aside);
+                    return;
+                }
+                if (lanes.NoParkAt(v.GuardPoint) && TryStandBeside(v.GuardPoint, 16f, out var post)) v.GuardPoint = post;
+            }
             var weapon = v.Def.Weapon;
             if (weapon.MinRange > 0f || weapon.Damage <= 0f) return;
             if (v.Def.FixedWing)
@@ -347,7 +378,7 @@ namespace MachineBrigade.Sim.Movement
             if (v.ResumeRoute)
             {
                 v.ResumeRoute = false;
-                _world.PathTo(v, v.Order.Point);
+                if (!KeepCostedPath(v, v.Order.Point)) _world.PathTo(v, v.Order.Point);
             }
             else if (v.PathCompleted)
             {
@@ -382,6 +413,7 @@ namespace MachineBrigade.Sim.Movement
             var back = threat != null ? escort.Position - threat.Position : v.Position - escort.Position;
             back = back.LengthSquared() > 0.01f ? Vector2.Normalize(back) : SimMath.Forward(escort.Heading + MathF.PI);
             var spot = escort.Position + back * (escort.Def.HullBound + v.Def.HullBound + 5f);
+            if (_world.Lanes.NoParkAt(spot) && TryStandBeside(spot, 10f, out var beside)) spot = beside;
             if (Vector2.Distance(spot, v.Position) < 4f)
             {
                 v.ClearPath();
@@ -412,13 +444,48 @@ namespace MachineBrigade.Sim.Movement
             var clear = _world.HasLineOfFire(v, target, weapon);
             if (distance <= weapon.Range * 0.9f && clear)
             {
+                // Never stop in the doorway, nor in the road with friends coming up behind: step
+                // off to the side first (a short drive; the turret keeps firing), or roll on through
+                // a gate to the first place it may stop.
+                if (!v.Flying && InTheWay(v, out var noPark))
+                {
+                    if (v.HasPath && _world.Time < v.Traffic.OffLaneUntil) return;
+                    if (v.RepathTimer <= 0f && TryOffLaneSpot(v, target, out var spot))
+                    {
+                        _world.PathTo(v, spot);
+                        v.RepathTimer = RepathInterval * 3f;
+                        v.Traffic.OffLaneUntil = _world.Time + OffLaneSeconds;
+                        return;
+                    }
+                    if (noPark)
+                    {
+                        if (!v.HasPath && v.RepathTimer <= 0f && TryStandBeside(v.Position, 16f, out var beside))
+                        {
+                            _world.PathTo(v, beside);
+                            v.Traffic.OffLaneUntil = _world.Time + OffLaneSeconds;
+                        }
+                        return;
+                    }
+                }
                 v.ClearPath();
+                return;
+            }
+            // A fixed defence's ground is closed to routes, so a route ends a few metres short of it:
+            // a weapon of very short reach (a car bomb's charge) drives the last metres straight at it.
+            if (!v.Flying && !v.HasPath && target is Vehicle { BlocksRoutes: true } && distance <= weapon.Range + 4f)
+            {
+                _single.Clear();
+                _single.Add(target.Position);
+                v.SetPath(_single, target.Position);
+                v.RepathTimer = RepathInterval;
                 return;
             }
             var goalDrift = Vector2.Distance(v.PathGoal, target.Position);
             if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > 4f || (!clear && v.PathCompleted)))
             {
                 v.RepathTimer = RepathInterval;
+                // A route just planned round parked hulls is kept a moment (it would be planned straight back through them).
+                if (goalDrift <= 10f && KeepCostedPath(v, v.PathGoal)) return;
                 _world.PathTo(v, target.Position);
             }
         }
@@ -436,8 +503,25 @@ namespace MachineBrigade.Sim.Movement
                 DriveAeroplane(v, dt);
                 return;
             }
+            if (!def.Flying)
+            {
+                // Backing out of a doorway for a friend, or waiting beside its mouth afterwards.
+                if (v.Traffic.Reversing(_world.Time))
+                {
+                    DriveReverse(v, dt);
+                    return;
+                }
+                if (_world.Time < v.Traffic.HoldUntil)
+                {
+                    v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
+                    TryAdvance(v, v.Speed * dt);
+                    return;
+                }
+            }
             if (!v.HasPath)
             {
+                v.Traffic.WaitingOnYield = false;
+                v.Traffic.WaitingForGate = false;
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
                 TryAdvance(v, v.Speed * dt);
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
@@ -473,8 +557,12 @@ namespace MachineBrigade.Sim.Movement
 
             var desired = SimMath.HeadingOf(toWaypoint);
             var slowFor = float.MaxValue;
+            var wasWaiting = v.Traffic.WaitingOnYield;
+            v.Traffic.WaitingOnYield = false;
             if (!def.Flying && distance > 1.5f)
             {
+                // A short doorway held by traffic the other way: wait short of it (one way at a time).
+                GateCheck(v, toWaypoint / distance, ref slowFor);
                 // Look ahead for a hull in the way. Follow a friend going the same way; steer round
                 // anything parked, crossing or hostile instead of shoving into it.
                 var forward = SimMath.Forward(v.Heading);
@@ -482,6 +570,11 @@ namespace MachineBrigade.Sim.Movement
                 // Convoy trucks and bosses have right of way over their own side: the others
                 // make room (they yield far more), so these keep to their route.
                 if (blocker != null && blocker.Team == v.Team && (v.Scripted || v.Def.Boss)) blocker = null;
+                if (blocker != null) NoteBlocker(v, blocker);
+                // A parked friend in the way is asked to make way; while it does, crawl straight on
+                // behind it rather than swerve (see MovementSystem.Traffic).
+                if (blocker != null && blocker.Team == v.Team && !blocker.Def.Static && Negotiate(v, blocker, forward, wasWaiting, ref slowFor))
+                    blocker = null;
                 if (blocker != null)
                 {
                     var sameWay = Vector2.Dot(SimMath.Forward(blocker.Heading), forward) > 0.4f;
@@ -772,7 +865,8 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>
         /// Measures progress over a time window rather than per frame, so healthy movement is
-        /// never misjudged at high frame rates. Repaths twice, then gives up (V2 R05).
+        /// never misjudged at high frame rates. Asks a friend in the way to move, repaths twice
+        /// (round the parked hulls), backs off, then gives up (V2 R05).
         /// </summary>
         private void DetectStuck(Vehicle v, float dt)
         {
@@ -794,42 +888,63 @@ namespace MachineBrigade.Sim.Movement
             if (progressed)
             {
                 v.StuckStrikes = 0;
+                v.Traffic.YieldEscalations = 0;
+                v.Traffic.TrafficBoost = 0;
                 return;
             }
 
+            // Waiting behind a friend that is making way (OpenRA's "the cell is being evacuated"),
+            // or queued behind one where there is no way round: waiting is not being stuck.
+            var traffic = v.Traffic;
+            if (traffic.WaitingOnYield && _world.Time - traffic.WaitStarted < YieldWaitSeconds) return;
+            if (traffic.WaitingForGate && _world.Time - traffic.GateWaitStarted < GateWaitMax) return;
+            if (StillQueued(v)) return;
+
             // Arrival contagion (as in StarCraft II's movement): on the last leg, within a few metres
             // of the goal and pressed against other hulls already there, it has arrived. Pushing on
-            // for the exact spot only keeps the whole group shuffling.
-            if (v.PathIndex == v.Path.Count - 1 && Vector2.Distance(v.Position, v.PathGoal) < ArrivalReach + v.Def.HullBound && Crowded(v))
+            // for the exact spot only keeps the whole group shuffling. Never in a doorway, though:
+            // "arriving" there closes the way for everyone.
+            if (v.PathIndex == v.Path.Count - 1 && Vector2.Distance(v.Position, v.PathGoal) < ArrivalReach + v.Def.HullBound && Crowded(v) &&
+                !_world.Lanes.NoParkAt(v.Position))
             {
                 v.ClearPath();
                 v.StuckStrikes = 0;
                 if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = v.Position;
                 return;
             }
-            v.StuckStrikes++;
-            if (v.StuckStrikes >= StuckStrikesToGiveUp)
+            // Ask the friend in the way again, then route round the parked hulls, then back off,
+            // then give up (MovementSystem.Traffic).
+            OnNoProgress(v);
+        }
+
+        /// <summary>Queued behind a hull with no way round, and it is still there ahead: keep waiting, and keep asking it to move.</summary>
+        private bool StillQueued(Vehicle v)
+        {
+            var t = v.Traffic;
+            if (!t.QueueBehind.IsValid) return false;
+            if (_world.Time < t.QueueUntil && _world.TryGetVehicle(t.QueueBehind, out var ahead) && ahead.IsAlive &&
+                Vector2.Distance(ahead.Position, v.Position) < ahead.Def.HullBound + v.Def.HullBound + 8f)
             {
-                v.ClearPath();
-                // Given up in a crowd: at least move out of the knot so the others can pass.
-                var clear = v.Position;
-                var unjammed = Crowded(v) && TryUnjam(v, out clear);
-                if (unjammed) _world.PathTo(v, clear);
-                // Guarding a post it cannot reach (another hull is parked on it): the post moves to
-                // where it can stand, instead of it pushing back towards it for ever.
-                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = unjammed ? clear : v.Position;
-                return;
+                PostYield(v, ahead, 0);
+                return true;
             }
-            var strikes = v.StuckStrikes;
-            _world.PathTo(v, v.PathGoal);
-            // Wedged in a crowd of hulls: step aside to a random open spot first, so a knot of
-            // vehicles pushing against each other breaks up instead of locking solid (each picks
-            // its own way, so they do not all dodge the same way).
-            if (strikes >= 2 && v.HasPath && Crowded(v) && TryUnjam(v, out var aside)) v.Path.Insert(v.PathIndex, aside);
-            // Wedged a second time on a fresh route: back off to open ground a few metres away,
-            // then take the route from there.
-            else if (strikes >= 2 && v.HasPath && TryDetour(v, v.Path[v.PathIndex], out var detour)) v.Path.Insert(v.PathIndex, detour);
-            v.StuckStrikes = strikes;
+            t.QueueBehind = EntityId.None;
+            return false;
+        }
+
+        /// <summary>The last rung of the stuck ladder: drop the route, and at least move out of a knot so the others can pass.</summary>
+        private void GiveUp(Vehicle v)
+        {
+            v.ClearPath();
+            var clear = v.Position;
+            var unjammed = Crowded(v) && TryUnjam(v, out clear);
+            if (unjammed) _world.PathTo(v, clear);
+            // Guarding a post it cannot reach (another hull is parked on it): the post moves to
+            // where it can stand, instead of it pushing back towards it for ever (never into a doorway).
+            if (v.Order.Kind != OrderKind.Idle) return;
+            var post = unjammed ? clear : v.Position;
+            if (_world.Lanes.NoParkAt(post) && TryStandBeside(post, 16f, out var beside)) post = beside;
+            v.GuardPoint = post;
         }
 
         /// <summary>Other ground hulls pressed close round this one.</summary>

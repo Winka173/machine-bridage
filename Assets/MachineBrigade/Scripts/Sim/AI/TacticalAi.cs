@@ -6,6 +6,7 @@ using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
+using MachineBrigade.Sim.Navigation;
 
 namespace MachineBrigade.Sim.AI
 {
@@ -642,9 +643,12 @@ namespace MachineBrigade.Sim.AI
                 if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
                 // Never into a known gun's reach: back along the line of advance until clear of it.
                 for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;
+                // Guns deploy beside the roads and main routes, never in a gate: parked there they
+                // are what the rest of the army jams behind.
+                var stand = world.Lanes.OffLane(Clamp(world, standoff), 10f);
                 // Alone they attack-move, so they stop and fire at the first enemy that comes into sight.
-                if (Vector2.Distance(a.Position, standoff) > 10f)
-                    Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, Clamp(world, standoff));
+                if (Vector2.Distance(a.Position, stand) > 10f)
+                    Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, stand);
             }
         }
 
@@ -677,15 +681,23 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Standing at its firing spot (a move order it has as good as finished).</summary>
         private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 3f;
 
+        /// <summary>Firing-spot scoring: on a road, per main route through the cell, per friend parked within 7 m, booked by another gun, open ground.</summary>
+        private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotReservedPenalty = 1000f, SpotOpenBonus = 6f;
+
         /// <summary>
         /// A spot to fire at <paramref name="target"/> from: inside our range (just short of it,
         /// beyond our minimum), outside every known gun's reach, on open ground. Rings at 0.95,
         /// 0.85 and 0.75 of our range, 24 bearings each, the nearest to where the gun already is
-        /// (after the standoff solvers of RTS bots such as PurpleWave and Steamhammer).
+        /// (after the standoff solvers of RTS bots such as PurpleWave and Steamhammer), scored as
+        /// in tactical position selection (generate, filter, score): never in a doorway or its
+        /// mouth, off the roads and main routes the rest of the army drives along, spread out from
+        /// other parked friends (fewer jams, less splash), and not on a spot another gun has
+        /// booked. The chosen spot is booked (Company of Heroes reserves destinations the same way).
         /// </summary>
         private Vector2? FiringSpot(SimWorld world, Vehicle shooter, Vector2 target, float targetRadius)
         {
             var weapon = shooter.Def.Weapon;
+            var lanes = world.Lanes;
             var low = weapon.MinRange + 2f;
             Vector2? best = null;
             var bestScore = float.MaxValue;
@@ -694,20 +706,42 @@ namespace MachineBrigade.Sim.AI
             {
                 var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * 0.5f);
                 if (distance > weapon.Range + targetRadius) continue;
+                // The outer ring first: a nearer ring has to be clearly better to win.
+                var ringPenalty = (0.95f - fraction) * weapon.Range * 0.5f;
                 for (var k = 0; k < 24; k++)
                 {
                     // Bearings fan out from the side the gun is on: 0, +15, -15, +30 degrees and so on.
                     var turn = ((k + 1) / 2) * (k % 2 == 0 ? 1f : -1f) * SimMath.DegToRad(15f);
                     var p = Clamp(world, target + SimMath.Forward(start + turn) * distance);
                     if (!world.Grid.IsWalkable(p) || Exposed(p, StandoffMargin)) continue;
-                    var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f;
+                    var f = lanes.At(p);
+                    if ((f & LaneFlags.NoPark) != 0) continue;
+                    var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f + ringPenalty +
+                                ((f & LaneFlags.Road) != 0 ? SpotRoadPenalty : 0f) +
+                                ((f & LaneFlags.Route) != 0 ? SpotRoutePenalty * lanes.RouteCountAt(p) : 0f) -
+                                (lanes.ClearanceAt(p) >= 4 ? SpotOpenBonus : 0f);
+                    if (score >= bestScore) continue;
+                    score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter) +
+                             (lanes.ReservedByOther(p, shooter.Id, world) ? SpotReservedPenalty : 0f);
                     if (score >= bestScore) continue;
                     bestScore = score;
                     best = p;
                 }
-                if (best != null) return best;
             }
+            if (best is { } spot) lanes.Reserve(spot, shooter);
             return best;
+        }
+
+        /// <summary>Friendly ground vehicles standing (no route) within <paramref name="radius"/> of <paramref name="p"/>, other than <paramref name="self"/>.</summary>
+        private int FriendsParkedNear(SimWorld world, Vector2 p, float radius, Vehicle self)
+        {
+            var count = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (v == self || !v.IsAlive || v.Team != _team || v.Flying || v.Def.Static || v.HasPath) continue;
+                if (Vector2.DistanceSquared(v.Position, p) < radius * radius) count++;
+            }
+            return count;
         }
 
         /// <summary>
