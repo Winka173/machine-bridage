@@ -403,7 +403,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive) continue;
-                if (v.Team == _enemyTeam)
+                if (v.Team == _enemyTeam || v.Team == Teams.Hostile)
                 {
                     if (v.IsVisibleTo(_team)) _enemies.Add(v);
                     continue;
@@ -453,6 +453,8 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 var weapon = v.Def.Weapon;
                 if (!weapon.CanTarget(boss.Flying)) continue;
+                // A flying boss is for anti-air and aircraft; the rest shoot it only when it comes near.
+                if (boss.Flying && !v.Flying && !Combat.CombatSystem.IsAntiAir(weapon)) continue;
                 var distance = Vector2.Distance(v.Position, boss.Position);
                 if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
                 vehicles.RemoveAt(i);

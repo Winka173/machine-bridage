@@ -165,7 +165,8 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>Flak and anti-aircraft missiles: weapons made to kill aircraft.</summary>
-        private static bool IsAntiAir(WeaponDef weapon) => weapon.DamageType == DamageType.Flak || weapon.Targets == TargetLayers.Air;
+        /// <summary>A weapon made for aircraft: flak, or one that can only hit what flies.</summary>
+        internal static bool IsAntiAir(WeaponDef weapon) => weapon.DamageType == DamageType.Flak || weapon.Targets == TargetLayers.Air;
 
         /// <summary>An aeroplane's guns stay on the target of its strafing run while it is in reach.</summary>
         private bool RunTargetInReach(Vehicle v, WeaponDef weapon, out Vehicle target)
@@ -332,6 +333,10 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
+            // A bomb keeps the aircraft's forward speed as it falls, so it lands under the aircraft
+            // as it passes over, not ahead of it.
+            if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
+                travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale };
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.

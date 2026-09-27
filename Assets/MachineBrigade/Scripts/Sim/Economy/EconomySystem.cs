@@ -62,6 +62,12 @@ namespace MachineBrigade.Sim.Economy
         public const int MaxVehicles = 32;
 
         /// <summary>
+        /// Aircraft one side may have up at once (and on the way), like the air slots of Wargame
+        /// and World in Conflict: air power is a scarce, dear asset, not a swarm.
+        /// </summary>
+        public const int MaxAircraft = 6;
+
+        /// <summary>
         /// Army value kept up at full income: half again the mode's old army cap, so a normal
         /// army never pays upkeep and only a swarm does.
         /// </summary>
@@ -138,6 +144,7 @@ namespace MachineBrigade.Sim.Economy
             if (!_world.TryGetRally(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
             if (economy.Cp < def.CpCost) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= TeamEconomy.MaxVehicles) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= def.CpCost;
@@ -212,6 +219,17 @@ namespace MachineBrigade.Sim.Economy
                 if (v.IsAlive && v.Team == team) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _) in _pending)
                 if (pendingTeam == team) total += _world.Catalog.Vehicle(defId).CpCost;
+            return total;
+        }
+
+        /// <summary>Aircraft a side has up, plus those on the way.</summary>
+        public int AircraftCount(int team)
+        {
+            var total = 0;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team == team && v.Flying && !v.Def.Boss && !v.Scripted) total++;
+            foreach (var (pendingTeam, id, _) in _pending)
+                if (pendingTeam == team && _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying) total++;
             return total;
         }
 

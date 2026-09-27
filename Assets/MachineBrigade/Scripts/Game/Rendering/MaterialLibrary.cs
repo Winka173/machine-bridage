@@ -128,6 +128,7 @@ namespace MachineBrigade.Game.Rendering
             BarBack = Unlit(unlit, "BarBack", new Color(0.04f, 0.06f, 0.06f));
             BarAlly = Unlit(unlit, "BarAlly", TeamColors.Ui(0));
             BarTrail = Unlit(unlit, "BarTrail", new Color(1f, 0.86f, 0.45f));
+            BarNeutral = Unlit(unlit, "BarNeutral", new Color(0.92f, 0.9f, 0.82f));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
             BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
@@ -186,6 +187,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Health just lost, shown behind the bar before it catches up.</summary>
         public Material BarTrail { get; }
+
+        /// <summary>A neutral watchtower's health.</summary>
+        public Material BarNeutral { get; }
         public Material BarEnemy { get; }
 
         /// <summary>Gold health bar of elite enemy units.</summary>

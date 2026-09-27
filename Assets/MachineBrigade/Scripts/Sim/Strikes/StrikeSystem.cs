@@ -164,12 +164,15 @@ namespace MachineBrigade.Sim.Strikes
                 case SupportKind.Airstrike:
                 {
                     var end = s.Point + s.Direction * support.Length;
-                    if (!s.Announced && now >= s.Start - RunIn)
+                    // The aircraft flies the bomb line at the speed the bombs walk along it, and is
+                    // over each bomb as it lands (bombs keep its forward speed as they fall): it
+                    // comes in from far enough back to be seen, but never later than the first bomb.
+                    var speed = support.Length / MathF.Max(0.2f, support.Duration);
+                    var lead = MathF.Min(Approach + support.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));
+                    if (!s.Announced && now >= s.Start - lead / speed)
                     {
-                        // The jet crosses the whole map along the bomb line.
-                        var from = s.Point - s.Direction * (Approach + support.Length * 0.2f);
+                        var from = s.Point - s.Direction * lead;
                         var to = end + s.Direction * Approach;
-                        var speed = support.Length / MathF.Max(0.2f, support.Duration);
                         _world.Emit(SimEvent.AircraftPass(s.Team, support, from, to, Vector2.Distance(from, to) / speed));
                         s.Announced = true;
                     }

@@ -183,6 +183,7 @@ namespace MachineBrigade.Game.Hud
             ["err.UnknownCard"] = ("Not in your deck", "Không có trong bộ bài"),
             ["err.NotEnoughCp"] = ("Not enough CP", "Không đủ CP"),
             ["err.ArmyAtCapacity"] = ("Too many vehicles on the field", "Quá nhiều xe trên chiến trường"),
+            ["err.AirAtCapacity"] = ("Air slots full: at most 6 aircraft at once", "Hết suất không quân: tối đa 6 máy bay cùng lúc"),
             ["err.OnCooldown"] = ("Not ready yet", "Chưa sẵn sàng"),
             ["err.NotAvailable"] = ("Not available in this mode", "Không dùng được ở chế độ này"),
             ["result.victory"] = ("VICTORY", "CHIẾN THẮNG"),

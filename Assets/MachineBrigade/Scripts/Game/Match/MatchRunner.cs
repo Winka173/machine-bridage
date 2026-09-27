@@ -534,7 +534,7 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
-                        else _kills++;
+                        else if (e.Team == EnemyTeam) _kills++;
                         if (!_menu && e.Team == EnemyTeam && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var slain))
                         {
                             DailyMissions.Record("kills");
@@ -794,7 +794,7 @@ namespace MachineBrigade.Game.Match
             foreach (var v in _world.Vehicles)
             {
                 if (!v.IsAlive || (v.Team != PlayerTeam && !v.IsVisibleTo(PlayerTeam))) continue;
-                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : 1, v.Flying);
+                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying);
             }
             var cam = _camera;
             var corners = new[] { new Vector2(0f, 0f), new Vector2(Screen.width, 0f), new Vector2(Screen.width, Screen.height), new Vector2(0f, Screen.height) };

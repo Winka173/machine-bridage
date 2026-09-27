@@ -309,6 +309,7 @@ namespace MachineBrigade.Sim.AI
         private void TryDeploy(SimWorld world, TeamEconomy economy)
         {
             var cards = Cards(world, economy.Vehicles, world.Catalog.Vehicles.Keys);
+            var airFull = world.Economy.AircraftCount(_team) >= TeamEconomy.MaxAircraft;
             string? best = null, bestAffordable = null;
             var bestScore = float.MinValue;
             var bestAffordableScore = float.MinValue;
@@ -335,6 +336,7 @@ namespace MachineBrigade.Sim.AI
                 // Bosses and mission trucks cost nothing and are never bought.
                 if (def.Boss || def.CpCost <= 0) continue;
                 if (economy.VehicleCount >= TeamEconomy.MaxVehicles) continue;
+                if (def.Flying && airFull) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
                 if (_difficulty != AiDifficulty.Easy)
                 {
@@ -342,9 +344,9 @@ namespace MachineBrigade.Sim.AI
                     if (CanHitAir(def)) score += air * 2.2f - ownAa * 1.5f;
                     if (main.DamageType == DamageType.ArmorPiercing) score += heavy * 0.6f;
                     if (main.DamageType is DamageType.Kinetic or DamageType.Fire) score += light * 0.5f;
-                    // Keep about a fifth of the army in the air: aircraft are fast, hit hard and
-                    // make the enemy spend on anti-air.
-                    if (def.Flying) score += (ownAir * 5 < ownTotal + 3 ? 1.8f : -1.2f) + heavy * 0.35f - air * 0.25f;
+                    // Keep about a seventh of the army in the air: aircraft are fast and hit hard,
+                    // but dear, and anti-air is what they are for.
+                    if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                     // Enough anti-air for the enemy's aircraft, not a car park of it.

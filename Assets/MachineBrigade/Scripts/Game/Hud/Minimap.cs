@@ -179,7 +179,7 @@ namespace MachineBrigade.Game.Hud
                 p.BeginPath();
                 p.Arc(c, air ? 4.6f : 3.6f, 0f, 360f);
                 p.Fill();
-                p.fillColor = team == 0 ? UiKit.Mint : UiKit.Danger;
+                p.fillColor = team == 0 ? UiKit.Mint : team == 2 ? new Color(0.92f, 0.9f, 0.8f) : UiKit.Danger;
                 p.BeginPath();
                 if (air)
                 {

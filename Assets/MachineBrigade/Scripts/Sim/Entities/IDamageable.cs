@@ -25,6 +25,12 @@ namespace MachineBrigade.Sim.Entities
     {
         public const int Neutral = -1;
 
+        /// <summary>
+        /// Neutral and hostile to everyone (a watchtower on a capture point): it fires on every side
+        /// and every side fires on it.
+        /// </summary>
+        public const int Hostile = 2;
+
         /// <summary>Source team for environmental blasts, which hurt every side.</summary>
         public const int Environment = -2;
     }

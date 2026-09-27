@@ -121,7 +121,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BaseDefences.Build(world, PlayerTeam, EnemyTeam);
-            _outposts = new Outposts(world, _points);
+            _outposts = new Outposts(world, _points, neutral: true);
         }
 
         private Outposts? _outposts;
