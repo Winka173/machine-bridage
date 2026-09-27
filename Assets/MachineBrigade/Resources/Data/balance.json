@@ -437,6 +437,60 @@
     { "id": "rail_boxcar",   "armor": "Structure", "hp": 400,  "width": 11,   "depth": 3.2,  "blocks": true },
     { "id": "dock_bollards", "armor": "Heavy",     "hp": 400,  "width": 6,    "depth": 1,    "blocks": true },
     { "id": "lamp_post",     "armor": "Light",     "hp": 40,   "width": 0.5,  "depth": 0.5 },
-    { "id": "jersey_barrier","armor": "Heavy",     "hp": 300,  "width": 4,    "depth": 0.8,  "blocks": true }
+    { "id": "jersey_barrier","armor": "Heavy",     "hp": 300,  "width": 4,    "depth": 0.8,  "blocks": true },
+    // Volcanic: basalt fields, obsidian, fumaroles and burnt forest round an abandoned geothermal plant.
+    { "id": "basalt_rock_a", "armor": "Structure", "hp": 1000000, "width": 5,  "depth": 4,   "blocks": true },
+    { "id": "basalt_rock_b", "armor": "Structure", "hp": 1000000, "width": 7,  "depth": 5,   "blocks": true },
+    { "id": "basalt_rock_c", "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
+    { "id": "obsidian_spire","armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
+    { "id": "lava_vent",     "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3 },
+    { "id": "charred_tree",  "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "volcanic_cliff","armor": "Structure", "hp": 1000000, "width": 14, "depth": 6,   "blocks": true },
+    // Surface tiles the map view draws itself (no model): molten lava and river water block movement, a ford is
+    // shallow water that vehicles drive through. The map generator lays them on a 4 m grid.
+    { "id": "lava_pool",     "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,   "blocks": true },
+    { "id": "river_water",   "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,   "blocks": true },
+    { "id": "river_ford",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4 },
+    // Jungle: rainforest, a temple ruin and stilt villages.
+    { "id": "jungle_tree_a", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_b", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_c", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "bamboo_clump",  "armor": "Light",     "hp": 40,   "width": 2.5,  "depth": 2.5 },
+    { "id": "fern_bush",     "armor": "Light",     "hp": 20,   "width": 1.5,  "depth": 1.5 },
+    { "id": "temple_ruin",   "armor": "Structure", "hp": 2000, "width": 12,   "depth": 12,   "blocks": true },
+    { "id": "stilt_hut",     "armor": "Structure", "hp": 350,  "width": 7,    "depth": 6,    "blocks": true },
+    // Airbase: parked jets and fuel trucks stand close on purpose, so one fireball sets off the whole line.
+    { "id": "hangar",        "armor": "Structure", "hp": 1800, "width": 22,   "depth": 16,   "blocks": true },
+    { "id": "control_tower", "armor": "Structure", "hp": 900,  "width": 6,    "depth": 6,    "blocks": true },
+    { "id": "parked_jet",    "armor": "Light",     "hp": 260,  "width": 10,   "depth": 9,    "blocks": true,
+      "explosion": { "damage": 380, "radius": 16, "delay": 0.45, "tier": "Huge" } },
+    { "id": "fuel_truck",    "armor": "Light",     "hp": 200,  "width": 7,    "depth": 2.6,  "blocks": true,
+      "explosion": { "damage": 220, "radius": 11, "delay": 0.35, "tier": "Large" } },
+    { "id": "radar_dome",    "armor": "Structure", "hp": 900,  "width": 8,    "depth": 8,    "blocks": true },
+    { "id": "revetment",     "armor": "Structure", "hp": 1000000, "width": 12, "depth": 2,   "blocks": true },
+    { "id": "runway_light",  "armor": "Light",     "hp": 10,   "width": 0.5,  "depth": 0.5 },
+    // City: towers, a parking garage, and buses that go up like fuel trucks.
+    { "id": "highrise_a",    "armor": "Structure", "hp": 2400, "width": 12,   "depth": 12,   "blocks": true },
+    { "id": "highrise_b",    "armor": "Structure", "hp": 2600, "width": 14,   "depth": 10,   "blocks": true },
+    { "id": "skyscraper",    "armor": "Structure", "hp": 3200, "width": 14,   "depth": 14,   "blocks": true },
+    { "id": "parking_garage","armor": "Structure", "hp": 2000, "width": 16,   "depth": 12,   "blocks": true },
+    { "id": "billboard",     "armor": "Structure", "hp": 150,  "width": 8,    "depth": 1.5,  "blocks": true },
+    { "id": "bus",           "armor": "Light",     "hp": 250,  "width": 11,   "depth": 2.6,  "blocks": true,
+      "explosion": { "damage": 200, "radius": 10, "delay": 0.4, "tier": "Large" } },
+    { "id": "traffic_light", "armor": "Light",     "hp": 20,   "width": 0.6,  "depth": 0.6 },
+    // Siege fortress: the command HQ is the target; the depots and ammo dumps blow the base apart round it.
+    { "id": "command_hq",    "armor": "Structure", "hp": 6000, "width": 16,   "depth": 14,   "blocks": true,
+      "explosion": { "damage": 500, "radius": 24, "delay": 0.8, "tier": "Ultimate" } },
+    { "id": "base_wall",     "armor": "Structure", "hp": 1500, "width": 8,    "depth": 1.2,  "blocks": true },
+    { "id": "base_gate",     "armor": "Structure", "hp": 1000000, "width": 9, "depth": 2 },
+    { "id": "floodlight_mast","armor": "Structure","hp": 300,  "width": 1.2,  "depth": 1.2,  "blocks": true },
+    { "id": "fuel_depot",    "armor": "Structure", "hp": 600,  "width": 10,   "depth": 8,    "blocks": true,
+      "explosion": { "damage": 380, "radius": 20, "delay": 0.5, "tier": "Ultimate" } },
+    { "id": "ammo_dump",     "armor": "Structure", "hp": 400,  "width": 6,    "depth": 5,    "blocks": true,
+      "explosion": { "damage": 300, "radius": 15, "delay": 0.3, "tier": "Huge" } },
+    { "id": "vehicle_hangar","armor": "Structure", "hp": 1500, "width": 14,   "depth": 10,   "blocks": true },
+    { "id": "helipad",       "armor": "Structure", "hp": 1000000, "width": 10, "depth": 10 },
+    { "id": "razor_wire",    "armor": "Light",     "hp": 80,   "width": 8,    "depth": 1,    "blocks": true },
+    { "id": "sandbag_wall",  "armor": "Structure", "hp": 600,  "width": 8,    "depth": 1.4,  "blocks": true }
   ]
 }

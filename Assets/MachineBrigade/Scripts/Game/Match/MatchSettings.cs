@@ -146,6 +146,16 @@ namespace MachineBrigade.Game.Match
                 new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
             new("rustyard", "harbor", "anchor",
                 new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night }),
+            // Lava glows best in the dark: night comes up as often as a clear day.
+            new("emberridge", "volcanic", "flame",
+                new[] { WeatherKind.Night, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Storm }),
+            new("junglepass", "jungle", "pine",
+                new[] { WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm, WeatherKind.Overcast, WeatherKind.Night }),
+            new("skyhold", "temperate", "jet",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night }),
+            // A city at night: lit windows, street lamps and burning buses.
+            new("metrocity", "urban", "home",
+                new[] { WeatherKind.Night, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Storm }),
         };
 
         public static string Map { get; set; } = "ashfield";
