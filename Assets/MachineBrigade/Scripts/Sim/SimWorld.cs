@@ -134,6 +134,47 @@ namespace MachineBrigade.Sim
 
         public const float HomeRadius = 35f;
 
+        private readonly int[] _strikesCalled = new int[2];
+        private readonly int[] _aircraftBought = new int[2];
+
+        /// <summary>Fire support a side has called this battle (a mission's "no strikes" star).</summary>
+        public int StrikesCalled(int team) => team is 0 or 1 ? _strikesCalled[team] : 0;
+
+        /// <summary>Aircraft a side has bought this battle (a mission's "no aircraft" star).</summary>
+        public int AircraftBought(int team) => team is 0 or 1 ? _aircraftBought[team] : 0;
+
+        internal void CountStrike(int team)
+        {
+            if (team is 0 or 1) _strikesCalled[team]++;
+        }
+
+        internal void CountAircraft(int team)
+        {
+            if (team is 0 or 1) _aircraftBought[team]++;
+        }
+
+        /// <summary>
+        /// Takes a vehicle off the field without a trace (no blast, no wreck, no event): a
+        /// defence already destroyed in an earlier attack on the weekly fortress.
+        /// </summary>
+        internal void RemoveQuietly(Vehicle v)
+        {
+            if (!_vehicles.ContainsKey(v.Id)) return;
+            v.Hp = 0f;
+            _vehicleList.Remove(v);
+            _vehicles.Remove(v.Id);
+            if (v.BlocksRoutes) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+        }
+
+        /// <summary>Knocks a prop down without a blast: its ground and line of fire open (the view shows its rubble).</summary>
+        internal void RemoveQuietly(Prop prop)
+        {
+            if (!prop.IsAlive) return;
+            prop.Hp = 0f;
+            if (prop.Def.BlocksMovement) Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, ObstacleClearance);
+            if (prop.Def.BlocksFire) Cover.Remove(prop);
+        }
+
         /// <summary>Device check: takes a share of a vehicle's health (a defence burning down on camera).</summary>
         public void DebugDamage(Vehicle v, float fraction) => Damage.Apply(v, v.MaxHp * fraction, DamageType.HighExplosive);
 

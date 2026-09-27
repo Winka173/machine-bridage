@@ -86,6 +86,7 @@ namespace MachineBrigade.Sim.Strikes
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f);
 
             Launch(support, command.Team, command.Point, command.Point2);
+            _world.CountStrike(command.Team);
             return CommandResult.Ok;
         }
 

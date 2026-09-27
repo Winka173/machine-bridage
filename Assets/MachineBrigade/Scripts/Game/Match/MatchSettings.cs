@@ -25,6 +25,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Hold three sectors against the enemy's Breakthrough.</summary>
         Defend,
+
+        /// <summary>This week's fortress: a siege whose broken rings stay broken all week.</summary>
+        Weekly,
     }
 
     public enum WeatherKind
@@ -129,6 +132,11 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>False shows the menu over an AI-versus-AI battle; true plays the chosen match.</summary>
         public static bool InMatch { get; set; }
+
+        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 heroic, 2 iron); not saved.</summary>
+
+        public static int MissionTier { get; set; }
+
 
         public static GameModeKind Mode { get; set; } = GameModeKind.Conquest;
 

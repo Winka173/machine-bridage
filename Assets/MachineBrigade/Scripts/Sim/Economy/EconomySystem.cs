@@ -148,6 +148,7 @@ namespace MachineBrigade.Sim.Economy
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= def.CpCost;
+            if (def.Flying) _world.CountAircraft(team);
             _pending.Add((team, defId, _world.Time + DeliverySeconds));
             economy.ArmyCp = ArmyCp(team);
             economy.VehicleCount = VehicleCount(team);
