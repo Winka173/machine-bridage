@@ -22,6 +22,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The bosses one after another.</summary>
         BossRush,
+
+        /// <summary>Hold three sectors against the enemy's Breakthrough.</summary>
+        Defend,
     }
 
     public enum WeatherKind
@@ -287,7 +290,8 @@ namespace MachineBrigade.Game.Match
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
                 Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
                 Weather = (WeatherKind)PlayerPrefs.GetInt("mb.weather", (int)WeatherKind.Random);
-                Mode = (GameModeKind)Mathf.Clamp(PlayerPrefs.GetInt("mb.mode", 0), 0, (int)GameModeKind.Assault);
+                var savedMode = (GameModeKind)PlayerPrefs.GetInt("mb.mode", 0);
+                Mode = System.Enum.IsDefined(typeof(GameModeKind), savedMode) && savedMode != GameModeKind.Campaign ? savedMode : GameModeKind.Conquest;
                 Mission = PlayerPrefs.GetString("mb.mission", Mission);
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;

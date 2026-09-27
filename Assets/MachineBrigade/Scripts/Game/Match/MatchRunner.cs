@@ -117,6 +117,7 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-deathmatch")) MatchSettings.Mode = GameModeKind.Deathmatch;
                 if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
                 if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
+                if (DebugFlags.Has("-mb-defend")) MatchSettings.Mode = GameModeKind.Defend;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
             foreach (var campaignMission in Campaign.All)

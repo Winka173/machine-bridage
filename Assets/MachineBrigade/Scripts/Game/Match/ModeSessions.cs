@@ -139,6 +139,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Deathmatch => new DeathmatchSession(),
                 GameModeKind.KingOfTheHill => new HillSession(),
                 GameModeKind.Assault => new AssaultSession(),
+                GameModeKind.Defend => new DefendSession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
                 GameModeKind.Campaign => new MissionSession(Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
@@ -361,6 +362,56 @@ namespace MachineBrigade.Game.Match
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
+            outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            return outcome;
+        }
+    }
+
+    /// <summary>
+    /// Defend (phòng thủ): the enemy's Breakthrough, three sectors the player holds one behind the
+    /// other with dug-in guns; the enemy's clock grows with every sector it takes. Hold until it runs out.
+    /// </summary>
+    internal sealed class DefendSession : ModeSession
+    {
+        private AssaultMode _mode;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Score, ScoreLabel = "stat.held" };
+        public override string Kicker => Strings.Get("mode.defend.kicker");
+        public override string Subtitle => Strings.Get("mode.defend.sub");
+        public override string StartToast => Strings.Get("mode.defend.toast");
+
+        protected override void Build(SimWorld world, int seed)
+        {
+            // The harder the enemy, the more time it has to break through.
+            var start = Difficulty switch { AiDifficulty.Hard => 400f, AiDifficulty.Easy => 330f, _ => 360f };
+            _mode = new AssaultMode(new AssaultRules
+            {
+                PlayerDefends = true, StartSeconds = start,
+                Attacker = EnemySide(28f, Difficulty == AiDifficulty.Hard ? 1.7f : Difficulty == AiDifficulty.Easy ? 1.25f : 1.5f, Difficulty, world.Catalog),
+                Defender = PlayerSide(20f, 1.1f),
+            });
+            Mode = _mode;
+            _mode.Setup(world);
+            AddEnemyCommander(_mode, seed, CommanderStance.Attack);
+            AddPlayerCommander(_mode, seed).Stance = CommanderStance.Defend;
+        }
+
+        public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
+        {
+            hud.SetStats(0, 0, 0, 0f, fps);
+            FillPoints(_mode, scratch);
+            var count = _mode.Points.Count;
+            var held = PointCapture.Held(_mode.Points, PlayerTeam);
+            hud.SetScore(held, count - held, count, scratch);
+            hud.SetTimer(_mode.SecondsLeft(world));
+        }
+
+        public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
+        {
+            if (_mode.Result is not { } result) return null;
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            AddRows(outcome, world, kills, losses);
+            outcome.Rows.Add((Strings.Get("stat.held"), $"{PointCapture.Held(_mode.Points, PlayerTeam)} / {_mode.Points.Count}"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }

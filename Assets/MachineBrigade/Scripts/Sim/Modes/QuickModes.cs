@@ -169,6 +169,9 @@ namespace MachineBrigade.Sim.Modes
         public SideSetup Attacker { get; set; } = new() { StartCp = 20f, Income = 1.45f };
 
         public SideSetup Defender { get; set; } = new() { StartCp = 26f, Income = 1.05f };
+
+        /// <summary>The Defend mode: the enemy attacks and the player holds the sectors.</summary>
+        public bool PlayerDefends { get; set; }
     }
 
     /// <summary>
@@ -184,6 +187,11 @@ namespace MachineBrigade.Sim.Modes
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
+
+        /// <summary>The side taking the sectors and the side holding them (the player attacks unless the rules say it defends).</summary>
+        public int Attacker => _rules.PlayerDefends ? EnemyTeam : PlayerTeam;
+
+        public int Defender => _rules.PlayerDefends ? PlayerTeam : EnemyTeam;
 
         private readonly AssaultRules _rules;
         private readonly List<ObjectiveState> _points = new();
@@ -209,20 +217,20 @@ namespace MachineBrigade.Sim.Modes
 
         public bool InOvertime(SimWorld world) => world.Time < _overtimeUntil && world.Time >= _deadline;
 
-        public int Taken => PointCapture.Held(_points, PlayerTeam);
+        public int Taken => PointCapture.Held(_points, Attacker);
 
         /// <summary>The points of one sector (0 = A).</summary>
         public IReadOnlyList<ObjectiveState> SectorPoints(int sector) => _sectors[sector];
 
         public void Setup(SimWorld world)
         {
-            world.EnableEconomy(_rules.Attacker.Build(PlayerTeam));
-            world.EnableEconomy(_rules.Defender.Build(EnemyTeam));
+            world.EnableEconomy(_rules.Attacker.Build(Attacker));
+            world.EnableEconomy(_rules.Defender.Build(Defender));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BuildSectors(world);
             _deadline = _rules.StartSeconds;
             if (_rules.Defences) Fortify(world);
-            BaseDefences.Build(world, PlayerTeam);
+            BaseDefences.Build(world, Attacker);
             _outposts = new Outposts(world, _points, built: true);
         }
 
@@ -233,30 +241,30 @@ namespace MachineBrigade.Sim.Modes
             {
                 foreach (var point in _sectors[Sector]) PointCapture.Tick(world, point, dt, _rules.CaptureSeconds);
                 var taken = true;
-                foreach (var point in _sectors[Sector]) taken &= point.Owner == PlayerTeam;
+                foreach (var point in _sectors[Sector]) taken &= point.Owner == Attacker;
                 if (taken) Advance(world);
             }
             _outposts?.Tick(world);
-            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = 0.25f * Sector;
+            if (world.TryGetEconomy(Attacker, out var e0)) e0.Bonus = 0.25f * Sector;
 
-            if (Sector >= _sectors.Count) Result = new MatchResult(PlayerTeam);
+            if (Sector >= _sectors.Count) Result = new MatchResult(Attacker);
             else if (world.Time >= _deadline)
             {
                 // Overtime: the attack goes on while it is still pushing on a live point.
                 var fighting = false;
                 foreach (var point in _sectors[Sector])
-                    fighting |= point.Contested || (point.Owner != PlayerTeam && point.Progress > -0.999f && Pushing(world, point));
+                    fighting |= point.Contested || (point.Owner != Attacker && point.Progress * (Defender == Attacker ? 1f : -1f) < 0.999f && Pushing(world, point));
                 if (fighting && _overtimeUntil < _deadline) _overtimeUntil = world.Time + _rules.Overtime;
-                if (!fighting || world.Time >= _overtimeUntil) Result = new MatchResult(EnemyTeam);
+                if (!fighting || world.Time >= _overtimeUntil) Result = new MatchResult(Defender);
             }
             if (Result != null) world.IsOver = true;
         }
 
-        private static bool Pushing(SimWorld world, ObjectiveState point)
+        private bool Pushing(SimWorld world, ObjectiveState point)
         {
             var r = point.Def.Radius;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == PlayerTeam && !v.Flying && Vector2.DistanceSquared(v.Position, point.Def.Position) < r * r) return true;
+                if (v.IsAlive && v.Team == Attacker && !v.Flying && Vector2.DistanceSquared(v.Position, point.Def.Position) < r * r) return true;
             return false;
         }
 
@@ -272,13 +280,14 @@ namespace MachineBrigade.Sim.Modes
             var remaining = MathF.Max(0f, (float)(_deadline - world.Time));
             _deadline = world.Time + MathF.Min(_rules.MaxBank, remaining + _rules.SectorBonus);
             _overtimeUntil = double.NegativeInfinity;
-            if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.SectorCp);
+            if (world.TryGetEconomy(Attacker, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.SectorCp);
             if (Sector < _sectors.Count)
             {
                 foreach (var point in _sectors[Sector]) point.Locked = false;
-                world.SetRally(PlayerTeam, Open(world, centre - _axis * 14f, 10f));
+                world.SetRally(Attacker, Open(world, centre - _axis * 14f, 10f));
             }
-            var key = Sector >= _sectors.Count ? "assault.done" : Sector == 1 ? "assault.sectorB" : "assault.sectorC";
+            var side = _rules.PlayerDefends ? "defend." : "assault.";
+            var key = side + (Sector >= _sectors.Count ? "done" : Sector == 1 ? "sectorB" : "sectorC");
             world.Emit(SimEvent.Stage(Sector + 1, centre, key));
         }
 
@@ -290,8 +299,8 @@ namespace MachineBrigade.Sim.Modes
         /// </summary>
         private void BuildSectors(SimWorld world)
         {
-            world.TryGetRally(PlayerTeam, out var from);
-            world.TryGetRally(EnemyTeam, out var to);
+            world.TryGetRally(Attacker, out var from);
+            world.TryGetRally(Defender, out var to);
             var length = Vector2.Distance(from, to);
             _axis = length > 1f ? (to - from) / length : Vector2.UnitX;
             var across = new Vector2(-_axis.Y, _axis.X);
@@ -308,7 +317,7 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var (id, name, spot) in layout[s])
                 {
                     var point = new ObjectiveState(new CapturePointDef(id, name, Open(world, spot, 14f), s == 2 ? 13f : 12f));
-                    PointCapture.Own(point, EnemyTeam);
+                    PointCapture.Own(point, Defender);
                     point.Locked = s > 0;
                     sector.Add(point);
                     _points.Add(point);
@@ -338,7 +347,7 @@ namespace MachineBrigade.Sim.Modes
                     var point = sector[i % sector.Count];
                     var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? 6f : 9f);
                     var spot = point.Def.Position + _axis * (point.Def.Radius + 4f) + across * side;
-                    var gun = world.SpawnVehicle(kinds[s][i], EnemyTeam, Open(world, spot, 6f), heading);
+                    var gun = world.SpawnVehicle(kinds[s][i], Defender, Open(world, spot, 6f), heading);
                     world.AnchorDefence(gun);
                     _defences[s].Add(gun.Id);
                 }

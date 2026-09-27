@@ -85,6 +85,7 @@ namespace MachineBrigade.Game.Hud
                 (GameModeKind.Deathmatch, "swords", "mode.deathmatch", "mode.deathmatchSub"),
                 (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
                 (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
+                (GameModeKind.Defend, "shield", "mode.defend", "mode.defendSub"),
                 (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
                 (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
                 (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
