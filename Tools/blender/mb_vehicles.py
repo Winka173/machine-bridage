@@ -7,12 +7,16 @@ using the `Team` / `TeamGlow` materials are recoloured per army at runtime.
 
 Weapon empties: `Muzzle_main` sits at the tip of the main weapon (child of Turret). Secondary
 weapons add `Muzzle_coax` (beside the main gun), `Muzzle_mg` (roof machine gun on its own
-`Mount_mg` yaw pivot) and `Muzzle_missile` (launcher opening). A `Radar` pivot spins about Z.
+`Mount_mg` yaw pivot), `Muzzle_gun` (40 mm grenade launcher on its own `Mount_gun` yaw pivot) and
+`Muzzle_missile` (launcher opening). The roof machine guns and grenade launchers that give the
+scout jeep, MLRS, SAM launcher and rocket technical a second weapon come from mb_weapons.py. A
+`Radar` pivot spins about Z.
 """
 import math
 
 from mathutils import Euler, Matrix, Vector
 
+import mb_weapons as wpn
 from frontier_kit import chamfered
 
 R90 = math.pi / 2
@@ -687,7 +691,8 @@ def artillery(a):
 
 def scout_jeep(a):
     """Open-top 4x4 scout car with a pintle machine gun: louvred hood, guarded headlights, brush guard
-    and winch, four seats, a braced roll bar, radio, ammunition and jerrycans in the rear tub."""
+    and winch, four seats, a braced roll bar, radio, ammunition and jerrycans in the rear tub, and a
+    40 mm grenade launcher on a pedestal behind the roll bar (Mount_gun)."""
     body = a.part('Body', 'Team')
     steel = a.part('Steel', 'Steel')
     armor = a.part('Armor', 'Armor')
@@ -753,6 +758,10 @@ def scout_jeep(a):
     cannon.box((.05, .16, .08), loc=(0, .24, .6), rot=(.3, 0, 0), bevel=0)                  # grips
     a.part('Ammo_box', 'Armor', t).box((.2, .18, .16), loc=(.16, .05, .56), bevel=.02)
     a.pivot('Muzzle_main', (0, -1.16, .66), t)  # the pintle machine gun is the jeep's main weapon
+    # Second weapon: a 40 mm grenade launcher on a pedestal in the rear tub behind the roll bar
+    # (Mount_gun / Muzzle_gun): its cradle clears the spare tyre and its top stays under 1.73 m, so the
+    # pintle gun's barrel sweeps over it.
+    wpn.agl(a, (0, 1.8, 1.14), post=.26, shield=.22, ammo=-1, sight='side')
 
 
 # ----------------------------------------------------------------------------- new vehicles
@@ -849,7 +858,8 @@ def apc(a):
 
 def mlrs(a):
     """6x6 armoured truck carrying a trainable 12-round rocket pod: a cab with door lines, mirrors, a
-    brush guard and roof hatch, a spare tyre and stowage on the bed, mudguards over the rear bogie."""
+    brush guard and roof hatch, a spare tyre and stowage on the bed, mudguards over the rear bogie, and a
+    heavy machine gun on the cab roof (Mount_mg)."""
     cab = a.part('Cab', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -944,6 +954,9 @@ def mlrs(a):
         for col in (-.66, -.22, .22, .66):
             _tube_mouth(a, t, pod @ _frame((col, -length / 2, row), FORWARD), .15, protrude=.07, seg=10)
     a.pivot('Muzzle_main', tuple(pod @ Vector((0, -length / 2 - .07, 0))), t)
+    # Second weapon: a heavy machine gun on the cab roof behind the hatch (Mount_mg / Muzzle_mg), well in
+    # front of the pod's swing. roof(y) is the cab roof line.
+    wpn.hmg(a, (.45, -2.18, 2.62 + (-2.18 + 3.38) / 1.38 * .08), post=.22, ammo=-1)
 
 
 def aa_vehicle(a):
@@ -1346,7 +1359,7 @@ def heavy_tank(a):
 def sam_launcher(a):
     """Tracked surface-to-air missile launcher: two ribbed 4-cell missile boxes raised 35 degrees on a
     trainable launcher, a search radar panel spinning on its own mast beside the cab, five-panel
-    skirts, fender stowage and rear bins."""
+    skirts, fender stowage and rear bins, and a heavy machine gun on the driver's cab (Mount_mg)."""
     tracks(a, 1.18, 5.6, .8, .27, 6, .45, belt_width=.54, wheel_seg=12, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -1424,6 +1437,10 @@ def sam_launcher(a):
     tsteel.box((.24, length * .9, .24), loc=spine @ Vector((0, 0, -.22)), rot=rot, bevel=.03)  # cradle
     tsteel.cyl(.11, 2.2, loc=hinge, rot=ACROSS, seg=10, bevel=.02, bseg=1)             # elevation hinge
     a.pivot('Muzzle_main', tuple(spine @ Vector((0, -length / 2 - .06, 0))), t)
+    # Second weapon: a heavy machine gun on the driver's cab roof in front of the hatch (Mount_mg /
+    # Muzzle_mg), low and far ahead of the missile boxes' swing; its 0.8 m barrel stops short of the
+    # radar mast when it swings right.
+    wpn.hmg(a, (-.58, -2.18, 1.73), post=.16, length=.8, ammo=-1)
 
 
 def mortar_carrier(a):
@@ -1510,8 +1527,8 @@ def mortar_carrier(a):
 
 def rocket_technical(a):
     """Civilian pickup turned rocket artillery: team paint over a tired body, canvas and rust, a bull
-    bar, a spare tyre on the cab roof, reload crates in the bed and a twelve-tube rocket launcher on a
-    turntable."""
+    bar, a spare tyre on the cab roof, reload crates in the bed, a twelve-tube rocket launcher on a
+    turntable and a pintle machine gun on the cab roof (Mount_mg)."""
     body = a.part('Body', 'Team')
     steel = a.part('Steel', 'Steel')
     chassis = a.part('Chassis', 'Undercarriage')
@@ -1587,6 +1604,9 @@ def rocket_technical(a):
     for y in (-length / 2 + .22, length / 2 - .2):
         a.part('Pod_bands', 'Team', t).box((.88, .1, .68), loc=pod @ Vector((0, y, 0)), rot=rot, bevel=.02, seg=1)
     a.pivot('Muzzle_main', tuple(pod @ Vector((0, -length / 2 - .03, 0))), t)
+    # Second weapon: a pintle machine gun on the right of the cab roof beside the spare-tyre rack, firing
+    # over the bonnet (Mount_mg / Muzzle_mg), high enough to turn over the tarp roll and the light bar.
+    wpn.hmg(a, (.72, -.42, 1.772), post=.3, ammo=-1)
 
 
 # name: (builder, Asset options). Vehicles use tight contact AO like 3d_astra's units.

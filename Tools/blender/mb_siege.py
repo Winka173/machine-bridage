@@ -3,20 +3,27 @@ a fortified enemy base that the player's army assaults, by day or by night.
 
 Static defences are "vehicles" with speed 0 (ModelLibrary rigs them like tanks):
   * gun_turret: 120 mm gun turret on a battered concrete ring emplacement. `Turret` with
-    Main_cannon / Muzzle_brake (recoil) and `Muzzle_main`.
+    Main_cannon / Muzzle_brake (recoil) and `Muzzle_main`; a coaxial MG on the mantlet with
+    `Muzzle_coax` (child of Turret).
   * aa_turret: twin 35 mm flak turret on a sandbagged pad. `Turret` with Main_cannon and
-    Main_cannon_2 (+ Muzzle_brake / Muzzle_brake_2), `Muzzle_main` centred between the tips and a
-    tracking radar on `Radar` (child of Turret, spins about local Z).
-  * rocket_turret: rocket and SAM box launcher behind a low blast wall. `Turret`, `Muzzle_main`.
+    Main_cannon_2 (+ Muzzle_brake / Muzzle_brake_2), `Muzzle_main` centred between the tips, a
+    tracking radar on `Radar` (child of Turret, spins about local Z) and a two-round SAM box on the
+    turret's right side with `Muzzle_missile` (child of Turret).
+  * rocket_turret: rocket and SAM box launcher behind a low blast wall. `Turret`, `Muzzle_main`; a
+    heavy MG on an outrigger at the right of the launcher base, on `Mount_mg` (child of Turret) with
+    `Muzzle_mg`.
   * mg_bunker: round "mushroom" pillbox: the roof stands on a central column over a continuous
     all-round firing slit, so the MG on `Turret` (a ring mount around the column) can yaw all the
-    way round with its barrel through the slit. `Muzzle_main` at the barrel tip.
+    way round with its barrel through the slit. `Muzzle_main` at the barrel tip. A tripod ATGM on the
+    roof turns on `Mount_missile` (`Muzzle_missile`).
   * artillery_emplacement: 152 mm towed howitzer on a firing platform in a sandbag ring. The
     whole gun (trails, wheels, shield, ready-round crates) is on `Turret`; Main_cannon /
-    Muzzle_brake recoil; `Muzzle_main`. Spare ammunition stands in the corners outside the ring.
+    Muzzle_brake recoil; `Muzzle_main`. Spare ammunition stands in the corners outside the ring. A
+    heavy MG on a sandbagged post on the ring wall guards the pit on `Mount_mg` (`Muzzle_mg`).
   * guard_tower: 11 m steel watchtower on a concrete blockhouse: ladder, walkway railing, cabin,
-    a roof MG on `Turret` with `Muzzle_main`, and a searchlight on its own `Searchlight` pivot
-    (the game sweeps it) whose Lamp lens faces the pivot's -Y.
+    a roof MG on `Turret` with `Muzzle_main`, a 40 mm grenade launcher on `Mount_gun` (`Muzzle_gun`)
+    at the front right of the roof, and a searchlight on its own `Searchlight` pivot (the game sweeps
+    it) whose Lamp lens faces the pivot's -Y.
 Props (static buildings): command_hq (the Siege target; comms mast and a `Radar` dish),
 base_wall, base_gate, floodlight_mast, fuel_depot, ammo_dump, vehicle_hangar, helipad (walkable,
 under 0.1 m), razor_wire and sandbag_wall. base_wall, razor_wire and sandbag_wall end flush at
@@ -36,6 +43,7 @@ import random
 import bmesh
 from mathutils import Euler, Matrix, Vector, noise
 
+import mb_weapons as wpn
 from frontier_kit import chamfered
 from mb_bosses import _railing
 from mb_harbor import _trapezoids, corrugated_wall
@@ -422,7 +430,7 @@ def gun_turret(a):
     a hazard-striped coping round the steel turret race, an ammunition porch with a lit steel door,
     a ladder and a cable conduit. The faceted turret carries add-on cheek armour, a cupola, a
     loader's hatch, a sight, smoke dischargers, a bustle rack, a spotlight and a long gun with a
-    fume extractor and a grooved muzzle brake."""
+    fume extractor and a grooved muzzle brake, with an armoured coaxial MG (Muzzle_coax) on the mantlet."""
     rng = random.Random(11)
     conc = a.part('Emplacement', 'Concrete')
     conc.prism(chamfered(5.0, 5.0, 1.1), .34, loc=(0, 0, .15), axis='Z', bevel=.05, seg=1, taper=.985)
@@ -511,10 +519,15 @@ def gun_turret(a):
     tsteel.box((.1, .1, .07), loc=(-1.0, 1.7, top + .02), bevel=0)
     tarm.box((.3, .34, .26), loc=(-.95, -1.5, top + .02), bevel=.03, seg=1)                         # spotlight
     a.part('Spotlight', 'Lamp', t).box((.22, .04, .16), loc=(-.95, -1.68, top + .03), bevel=.01, seg=1)
-    # Gun: coax MG beside the mantlet, then the long 120 mm tube.
+    # Gun: the coaxial MG (second weapon, slot coax) in an armoured housing on the mantlet's right cheek,
+    # a 7.6 cm barrel with a flash hider and `Muzzle_coax` (a child of Turret) at its face; then the long
+    # 120 mm tube.
+    a.part('Coax_housing', 'Armor', t).box((.22, .34, .22), loc=(.42, -2.12, .47), bevel=.03, seg=1)
     coax = a.part('Coax', 'Steel', t)
-    coax.box((.12, .3, .12), loc=(.42, -2.05, .48), bevel=.02, seg=1)
-    coax.cyl(.024, .42, loc=(.42, -2.4, .48), rot=FORWARD, seg=8, bevel=0)
+    coax.box((.14, .1, .1), loc=(.42, -2.3, .47), bevel=0)                                          # trunnion block
+    coax.cyl(.038, .5, loc=(.42, -2.55, .47), rot=FORWARD, seg=8, bevel=0)
+    a.part('Coax_hider', 'Undercarriage', t).cyl(.052, .12, loc=(.42, -2.82, .47), rot=FORWARD, seg=8, bevel=0)
+    a.pivot('Muzzle_coax', (.42, -2.88, .47), t)
     tip = _gun(a, t, 0, -2.04, .58, 3.35, .13, pitch=.02, seg=14,
                sleeves=((.26, .08, .155), (.72, .08, .155)), extractor=(.46, .66, .19), brake=(.6, .22, 2),
                brake_seg=12)
@@ -528,7 +541,8 @@ def aa_turret(a):
     """Twin 35 mm flak turret (Oerlikon GDF lineage) on a sandbagged concrete pad (4.5 x 4.5 m): a
     Team gun house on a turntable with a gun pod on each side, both barrels raised 28 degrees with
     cooling sleeves and flash hiders, ammunition magazines, an optical sight and a small tracking
-    radar spinning on the turret roof. Ready ammunition waits in the pad's corners."""
+    radar spinning on the turret roof, and a box of two SAM tubes on an arm at the turret's right side.
+    Ready ammunition waits in the pad's corners."""
     rng = random.Random(21)
     a.part('Pad', 'Concrete').prism(chamfered(4.5, 4.5, .5), .32, loc=(0, 0, .14), axis='Z', bevel=.04, seg=1,
                                     taper=.99)
@@ -606,13 +620,31 @@ def aa_turret(a):
     rm.limb((0, -.15, .42), (0, -.44, .47), .03, .03, bevel=0)
     _dish(a.part('Radar_dish', 'Armor', r), (0, -.1, .42), .44, .3, depth=.13, seg=12, tilt=.2)
     a.part('Radar_feed', 'Lamp', r).box((.06, .05, .06), loc=(0, -.47, .475), bevel=0)
+    # Second weapon (slot missile): a box of two SAM tubes (Mistral / Stinger lineage) on an arm off the
+    # right of the rear pack, outboard of the right gun pod and its magazine, raised 20 degrees and high
+    # enough to sweep over the sandbags. `Muzzle_missile` (a child of Turret) sits between the two tube
+    # mouths. The box is not named like the elevating barrel parts, so it stays at its authored angle.
+    sam_pitch, L = math.radians(20), 1.5
+    at = _axis((1.45, .8, 1.1), sam_pitch)
+    srot = (-sam_pitch, 0, 0)
+    a.part('SAM_box', 'Team', t).box((.3, L, .5), loc=tuple(at(L / 2 - .15)), rot=srot, bevel=.03, seg=1)
+    frame = a.part('SAM_frame', 'Armor', t)
+    for d in (-.13, L - .22):                                                                   # end bands
+        frame.box((.34, .1, .54), loc=tuple(at(d)), rot=srot, bevel=.01, seg=1)
+    frame.box((.05, L - .5, .06), loc=tuple(at(L / 2 - .15, .1, .165)), rot=srot, bevel=0)       # side rail
+    a.part('SAM_bracket', 'Armor', t).limb((.4, .95, .85), (1.5, .95, .85), .14, .14, bevel=.015, seg=1)
+    for up in (-.11, .11):
+        _tube_mouth(a, t, _frame(at(L - .15, up), (R90 - sam_pitch, 0, 0)), .085, protrude=.05, seg=10,
+                    name='SAM_tubes')
+    a.pivot('Muzzle_missile', tuple(at(L - .15 + .05)), t)
 
 
 # ----------------------------------------------------------------------------- rocket_turret
 def rocket_turret(a):
     """Rocket and SAM battery (4.5 x 4.5 m): a trainable box launcher of eight canisters raised 30
     degrees on a Team launcher base, an elevation ram, a fire-control sensor with a glass eye, cable
-    runs and hazard markings, behind a low concrete blast wall open at the back."""
+    runs and hazard markings, a heavy MG on an outrigger at the right (Mount_mg), behind a low concrete
+    blast wall open at the back."""
     rng = random.Random(33)
     a.part('Pad', 'Concrete').prism(chamfered(4.5, 4.5, .6), .3, loc=(0, 0, .13), axis='Z', bevel=.04, seg=1,
                                     taper=.99)
@@ -688,6 +720,13 @@ def rocket_turret(a):
     a.part('Sensor_lamp', 'Lamp', t).box((.1, .03, .06), loc=(1.08, -.76, 1.03), bevel=0)
     _stowage_bin(a, (-.95, -.5, .1), (.36, .5, .5), parent=t, latch_side=0)
     _antenna(a, t, -.6, 1.05, .45, 1.3)
+    # Second weapon: a heavy machine gun on an outrigger arm at the right of the launcher base, at roof
+    # height but outboard of the box launcher, so the box can elevate without meeting it; its tall pintle
+    # lifts the barrel over the fire-control sensor (Mount_mg, a child of Turret, with Muzzle_mg).
+    br = a.part('HMG_bracket', 'Armor', t)
+    br.box((.92, .2, .12), loc=(1.08, .15, .64), bevel=.015, seg=1)
+    br.limb((.72, .15, .2), (1.36, .15, .6), .1, .1, bevel=0)                                      # brace
+    wpn.hmg(a, (1.45, .15, .7), parent=t, post=.52, ammo=1)
 
 
 # ----------------------------------------------------------------------------- mg_bunker
@@ -697,7 +736,7 @@ def mg_bunker(a):
     with a Team steel fascia, carried on a central column. The heavy MG rides a ring mount on the
     column, so it traverses all the way round with its barrel poking out of the slit. Camouflage
     netting and sandbags on the roof, a periscope, a vent, and a low steel door with a lamp at the
-    back."""
+    back; a tripod ATGM stands on the roof (Mount_missile)."""
     rng = random.Random(44)
     conc = a.part('Pillbox', 'Concrete')
     slit0, slit1 = .95, 1.35
@@ -774,6 +813,9 @@ def mg_bunker(a):
     brake.cyl(.056, .18, loc=(0, tip_y + .09, zc), rot=FORWARD, seg=8, bevel=0)
     brake.cyl(.062, .05, loc=(0, -1.3, zc), rot=FORWARD, seg=8, bevel=0)                          # barrel collar
     a.pivot('Muzzle_main', (0, tip_y - .01, zc), t)
+    # Second weapon: a tripod anti-tank missile launcher on the roof slab, front right inside the sandbag
+    # arc (Mount_missile / Muzzle_missile); its canister clears the sandbags.
+    wpn.atgm_tripod(a, (.3, -.58, top + .02), height=.55, length=1.2, spread=.34)
 
 
 # ----------------------------------------------------------------------------- artillery_emplacement
@@ -782,7 +824,7 @@ def artillery_emplacement(a):
     plank firing platform with its split trails spread and spades down; the carriage, wheels, shield,
     equilibrators, cradle, recuperators, double-baffle brake and two ready-round crates turn together
     on `Turret`. Spare crates and rounds wait in the corners outside the ring, and the ring opens at
-    the back."""
+    the back. A heavy MG on a sandbagged post on the ring wall (Mount_mg) guards the pit."""
     rng = random.Random(55)
     a.part('Platform', 'Wood').cyl(2.55, .08, loc=(0, 0, .03), seg=20, bevel=.02, bseg=1)
     planks = a.part('Planks', 'LogWood')
@@ -863,6 +905,16 @@ def artillery_emplacement(a):
     for s in (-1, 1):
         crate(a, (s * 1.2, .95, .02), size=(.7, .38, .3), yaw=-s * .5, parent=t, band=s < 0)
     shells(a, (.0, 1.35, .1), 2, 1, parent=t, pitch=.2)
+    # Second weapon: a heavy machine gun guarding the pit from a sandbagged post on the front right of the
+    # ring wall (Mount_mg / Muzzle_mg, not on the Turret): a timber post through the wall with three bags
+    # packed round its foot on the top course. The howitzer's barrel sweeps 0.6 m over it.
+    u = math.radians(-55)
+    post = Vector((3.02 * math.cos(u), 3.02 * math.sin(u), 0))
+    n, tg = Vector((math.cos(u), math.sin(u), 0)), Vector((-math.sin(u), math.cos(u), 0))
+    a.part('HMG_post', 'LogWood').cyl(.075, .66, loc=tuple(post + Vector((0, 0, .8))), seg=8, bevel=0)
+    for off, yaw in ((n * .2, u + R90), (tg * .42 - n * .02, u), (-tg * .42 - n * .02, u)):
+        bag(bags, tuple(post + off + Vector((0, 0, .95))), (.6, .34, .24), yaw=yaw)
+    wpn.hmg(a, tuple(post + Vector((0, 0, 1.12))), post=.16, ammo=1)
 
 
 # ----------------------------------------------------------------------------- guard_tower
@@ -872,7 +924,8 @@ def guard_tower(a):
     through a hatch to a walkway with a railing round a Team steel cabin with a glazed band (some
     panes lit), and a roof deck behind a low steel parapet carrying a roof MG on `Turret` (front
     left) and a searchlight on its own `Searchlight` pivot (rear right, Lamp lens facing the pivot's
-    -Y). The MG's barrel clears the parapet and never reaches the searchlight."""
+    -Y), plus a 40 mm grenade launcher on `Mount_gun` at the roof's front right. The MG's barrel clears
+    the parapet and never reaches the searchlight or the grenade launcher."""
     conc = a.part('Blockhouse', 'Concrete')
     conc.prism(chamfered(3.5, 3.5, .35), .32, loc=(0, 0, .14), axis='Z', bevel=.04, seg=1)
     conc.box((2.5, 2.5, 2.6), loc=(0, 0, 1.55), bevel=.06, seg=1, taper=(.95, .95))
@@ -978,6 +1031,10 @@ def guard_tower(a):
     a.part('Main_cannon', 'Steel', t).cyl(.03, .66, loc=(0, -.58, zc), rot=FORWARD, seg=8, bevel=0)
     a.part('Muzzle_brake', 'Undercarriage', t).cyl(.045, .13, loc=(0, -.94, zc), rot=FORWARD, seg=8, bevel=0)
     a.pivot('Muzzle_main', (0, -1.01, zc), t)
+    # Second weapon: a 40 mm grenade launcher on a pedestal at the front right of the roof deck (Mount_gun /
+    # Muzzle_gun): the barrel clears the parapet, the launcher stays out of the roof MG's reach (its ammunition
+    # can on the outer side) and far from the searchlight.
+    wpn.agl(a, (.95, -.95, top), post=.45, ammo=1)
     a.part('Searchlight_post', 'Steel').cyl(.1, .36, loc=(.8, .8, top + .16), seg=8, bevel=0)
     searchlight(a, 'Searchlight', (.8, .8, top + .34), r=.28, length=.5)
     _moving_pivots(a, {'Searchlight'})

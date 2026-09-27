@@ -411,7 +411,8 @@ def _mlrs(a):
     slits, applique plates on the doors), side skirts with reactive armour over the chassis, and the
     12-round pod replaced by a twin pod of 2 x 9 rounds on the same launcher pivot (Muzzle_main stays
     centred on the pod faces); an APS ring, a commander's sight, smoke banks and a whip antenna on the
-    cab roof, gold chevrons on the pods and crests on their flanks."""
+    cab roof, gold chevrons on the pods and crests on their flanks. The base model's roof HMG (Mount_mg)
+    turns black with a gold barrel band and a red-lit sight."""
     t = 'Turret'
     wy, wz, rx = -3.72 + .34 * .55, 1.72 + .9 * .55, -math.atan2(.34, .9)
     n = Vector((0, -math.cos(rx), -math.sin(rx)))            # windscreen normal (forwards and up)
@@ -421,11 +422,11 @@ def _mlrs(a):
     for s in (-1, 1):
         m = _onto(Vector((s * .5, wy, wz)) + n * .012, n, up)                         # windscreen pane centre
         for v in (-.13, .13):
-            _plate(shutters, m, (.94, .16, .05), sink=0.0, off=(0, v), bevel=.01)
+            _plate(shutters, m, (.94, .16, .05), sink=0.0, off=(0, v), bevel=0)
         _plate(glow, m, (.8, .03, .02), sink=-.015, bevel=0)
         m = _onto((s * 1.19, -2.72, 2.22), (s, 0, 0), (0, 0, 1))                       # side window centre
         for v in (-.11, .11):
-            _plate(shutters, m, (.78, .15, .05), sink=0.0, off=(0, v), bevel=.01)
+            _plate(shutters, m, (.78, .15, .05), sink=0.0, off=(0, v), bevel=0)
         _plate(glow, m, (.66, .025, .02), sink=-.015, bevel=0)
         _plate(a.part('Elite_plates', 'EliteBlack'), _onto((s * 1.18, -2.72, 1.58), (s, 0, 0), (0, 0, 1)),
                (.8, .45, .05), sink=.005, bevel=.012)
@@ -441,7 +442,7 @@ def _mlrs(a):
     _cdr_sight(a, (.1, -3.0, roof(-3.0)), yaw=.2, post=.12)
     for s, y in ((1, -2.3), (-1, -2.6)):
         _smoke_bank(a, (s * .95, y, roof(y)), s, count=4)
-    _whip(a, (.7, -2.15, roof(-2.15)), 1.3)
+    _whip(a, (-.95, -3.15, roof(-3.15)), 1.3)          # front left, out of the roof HMG's traverse
     # Twin pod on the same launcher: every base launcher part is rebuilt around two 9-round pods.
     _drop(a, None, parent=t)
     tsteel = a.part('Turret_steel', 'Steel', t)
@@ -480,6 +481,13 @@ def _mlrs(a):
         _crest(a, _onto(pod @ Vector((s * (W / 2 + .002), 1.25, 0)), out, up), w=.3, h=.34, parent=t)
     tarm.box((.14, L - .4, H * .7), loc=mid @ Vector((0, .1, -H * .1)), rot=rot, bevel=0)  # spine between the pods
     a.pivots['Muzzle_main'].location = tuple(mid @ Vector((0, -L / 2 - .07, 0)))
+    # The base model's roof HMG (on Mount_mg, mb_weapons.hmg with post .22: bore 0.36 m up, jacket from
+    # y -0.17 to -0.43) turns EliteBlack with the other Armor; it also gets a gold band on the jacket in
+    # front of the shield and a red-lit sight on the feed cover.
+    m = 'Mount_mg'
+    a.part('HMG_gilt', 'Gilded', m).cyl(.058, .05, loc=(0, -.39, .36), rot=FORWARD, seg=10, bevel=0)
+    a.part('HMG_sight', 'EliteBlack', m).box((.06, .12, .07), loc=(0, -.02, .48), bevel=0)
+    a.part('HMG_glow', 'EliteGlow', m).box((.04, .02, .04), loc=(0, -.088, .485), bevel=0)
 
 
 # ----------------------------------------------------------------------------- attack helicopter

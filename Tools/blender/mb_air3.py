@@ -13,7 +13,8 @@ apart, so no two visible faces are coplanar.
     triple Maverick-style launchers.
   * recon_drone: MALE reconnaissance drone (TB2 lineage), origin at the fuselage centre. Twin tail
     booms carry an inverted V-tail; the two-blade pusher `Propeller` spins about local Y;
-    `Muzzle_missile` between the two small underwing missiles.
+    `Muzzle_missile` between the two small underwing missiles; `Muzzle_gun` at the barrel of the gun
+    pod under the right cheek of the nose.
   * heavy_attack_heli: heavy assault gunship (Mi-24 / Mi-35 lineage), origin on the ground under the
     cabin (wheels on z = 0). `Rotor` (five blades, spins about Z), `Tail_rotor` (X-shaped, left side,
     spins about X), a twin-barrel chin turret on `Mount_gun` with `Muzzle_gun`, `Muzzle_rocket`
@@ -350,8 +351,8 @@ def recon_drone(a):
     """Medium-altitude long-endurance reconnaissance drone (TB2 lineage), 12 x 7 m: a slim fuselage
     with a big sensor ball under the nose, a long shoulder wing with flaps and ailerons, twin tail
     booms ending in an inverted V-tail with ruddervators, a two-blade pusher `Propeller` (spins
-    about local Y) between the booms, fixed tricycle gear and one small missile under each wing.
-    Origin at the fuselage centre (it flies)."""
+    about local Y) between the booms, fixed tricycle gear, one small missile under each wing and a gun
+    pod under the right cheek of the nose (Muzzle_gun). Origin at the fuselage centre (it flies)."""
     body = a.part('Fuselage', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -440,6 +441,19 @@ def recon_drone(a):
         pylons.box((.07, .8, .04), loc=(x, -.15, zm + .075), bevel=0)                          # launch rail
         _aam(mis, (x, -.2, zm), length=1.1, r=.06, seg=8, canards=True, fin=1.5)
     a.pivot('Muzzle_missile', (0, -.75, zm))
+    # Second weapon (slot gun, fixed forward): a gun pod slung under the right cheek of the nose on a stub
+    # pylon, outboard of the fuselage so it reads from above: a dark streamlined pod with a steel band,
+    # an 8 cm barrel and a flash hider, clear of the sensor ball and the nose leg. Muzzle_gun at its face.
+    px, py, pz = .42, -1.75, -.33
+    gun_pod = a.part('Gun_pod', 'Armor')
+    gun_pod.lathe([(.03, -.62), (.08, -.5), (.105, -.25), (.105, .35), (.085, .52), (.05, .62)], loc=(px, py, pz),
+                  rot=FORWARD, seg=10)
+    gun_pod.box((.3, .6, .05), loc=(px - .15, py + .05, pz + .12), rot=(0, .3, 0), bevel=0)        # stub pylon
+    steel.cyl(.112, .04, loc=(px, py + .2, pz), rot=FORWARD, seg=10, bevel=0)                     # pod band
+    steel.cyl(.04, .44, loc=(px, py - .62 - .15, pz), rot=FORWARD, seg=8, bevel=0)                # barrel
+    a.part('Gun_pod_hider', 'Undercarriage').cyl(.052, .1, loc=(px, py - .62 - .42, pz), rot=FORWARD, seg=8,
+                                                 bevel=0)
+    a.pivot('Muzzle_gun', (px, py - .62 - .47, pz))
 
 
 # ----------------------------------------------------------------------------- heavy attack helicopter
