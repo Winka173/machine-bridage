@@ -41,6 +41,17 @@ base, an Endless mode, and a separate Survival.
 - Pause and result screens, equipment frames (square, graphite tinted by rarity with a glow and a bottom bar of the colour) and the battle HUD's buttons follow the same shapes; the battle HUD keeps its colours.
 - Endless is on the Events tab with the record wave.
 
+**Equipment rework** (merged from `feature/gear`, 093c1a7)
+- Every piece has a base type (34, each with its own picture) with an implicit line, the main stat by level, 0/1/2/2/2 sub-stats by rarity (with a roll-quality bar), a trait on Epic and Legendary (42 traits: extra rounds, faster reload, ricochet, executioner, incendiary, shred, reactive blocks and more), and one of 10 brands (2-piece and 4-piece set bonuses). 14 special modules. Armour and plating merged; a new Optics slot. Old saves migrate (nothing is lost).
+- In battle, traits show a short word over the vehicle when they fire (at most every 2 s).
+- The loot boxes stay as they are (coins buy crates): the user's decision after the legal-risk note.
+
+### Still to do (resume here)
+- `feature/pathing` (worktree `MachineBrigade-path`): anti-jam pathing, committed as work in progress; finish, test, merge.
+- Phase 4 maps: every map 50 % bigger (campaign coordinates too), denser and prettier, the area outside built as terrain with a boundary, houses the right size next to the vehicles; performance and the highest graphics tier; more detailed models for high graphics.
+- Check the equipment screen on the emulator after the merge (the APK is built, not yet looked at).
+- Then a detailed PDF of the game for the user's review with other developers: modes, equipment, damage and DPS numbers, weapons, economy, maps, towers, with pictures.
+
 ### Known limitations
 - m21 (the saucer) is hard for the scripted test deck (2/5).
 - The new modes and markers were checked in tests; the look on a phone is still to be checked.
