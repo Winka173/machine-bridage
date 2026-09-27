@@ -428,7 +428,7 @@
     border-bottom-color: var(--n950);
 }
 .wide .icon { width: 22px; height: 22px; margin-right: 12px; }
-.wide-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 16px; letter-spacing: 1px; color: var(--n100);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.wide-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 16px; letter-spacing: 1px; color: var(--n100); }
 .wide-text { flex-shrink: 1; }
 .wide-sub { font-size: 11px; color: var(--n300); margin-top: 0; white-space: normal; }
 .wide.primary { background-color: var(--amber); border-bottom-color: var(--amber-deep); border-bottom-width: 5px; }
@@ -558,7 +558,7 @@
 .segment.last-segment { margin-right: 0; }
 .segments.grid .segment { flex-basis: 18%; }
 .segment .icon { width: 16px; height: 16px; margin-right: 5px; }
-.segment-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; letter-spacing: 1px; color: var(--n200);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.segment-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; letter-spacing: 1px; color: var(--n200); }
 .segment.chosen { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
 .segment.chosen .segment-label { color: var(--amber-ink); }
 .segment.chosen .icon { --icon-color: #1b1206; }
@@ -586,7 +586,7 @@
     border-bottom-color: var(--n950);
 }
 .setting-row > .icon { width: 20px; height: 20px; margin-right: 12px; }
-.setting-label { flex-grow: 1; -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 15px; letter-spacing: 1px; color: var(--n100);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.setting-label { flex-grow: 1; -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 15px; letter-spacing: 1px; color: var(--n100); }
 .setting-value {
     -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--amber);
     min-width: 96px; height: 32px; padding: 0 8px;
@@ -608,7 +608,7 @@
     border-radius: 5px;
     border-bottom-color: var(--n950);
 }
-.option-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; letter-spacing: 1px; color: var(--n300);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.option-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; letter-spacing: 1px; color: var(--n300); }
 .option.chosen { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
 .option.chosen .option-label { color: var(--amber-ink); }
 .custom-tag {
@@ -638,8 +638,8 @@
 .campaign-banner:active { border-bottom-width: 1px; translate: 0 3px; }
 .campaign-banner > .icon { width: 34px; height: 34px; margin-right: 12px; --icon-color: #fff1dc; }
 .campaign-banner-text { flex-grow: 1; }
-.campaign-banner-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 18px; letter-spacing: 1px; color: #fff4e2;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-.campaign-banner-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 11px; color: #ffd9a8; margin-top: -2px;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.campaign-banner-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 18px; letter-spacing: 1px; color: #fff4e2; }
+.campaign-banner-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 11px; color: #ffd9a8; margin-top: -2px; }
 .campaign-banner-next {
     -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; color: var(--amber-ink);
     background-color: var(--amber-light); border-radius: 12px; padding: 3px 10px; max-width: 170px;
