@@ -56,6 +56,8 @@ namespace MachineBrigade.Sim
             }
             _pathFinder = new PathFinder(Grid);
             Damage = new DamageSystem(this);
+            Status = new StatusSystem(this);
+            Gear = new Abilities.GearSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
@@ -108,6 +110,17 @@ namespace MachineBrigade.Sim
 
         internal Random Random { get; }
         internal DamageSystem Damage { get; }
+
+        /// <summary>Timed effects: burning, slowed, shredded, marked, barriers and aura buffs.</summary>
+        internal StatusSystem Status { get; }
+
+        /// <summary>Equipment traits and modules in battle.</summary>
+        internal Abilities.GearSystem Gear { get; }
+
+        internal CombatSystem Combat => _combat;
+
+        /// <summary>Some round is flying at this vehicle.</summary>
+        internal bool RoundIncoming(EntityId vehicle) => _combat.RoundIncoming(vehicle);
         internal EconomySystem Economy { get; }
         internal StrikeSystem Strikes { get; }
         internal Abilities.AbilitySystem Abilities => _abilities;
@@ -303,7 +316,7 @@ namespace MachineBrigade.Sim
         internal float StrikeDamage(int team, string supportId) =>
             team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
 
-        private static void Upgrade(Vehicle v, VehicleBoost b)
+        private void Upgrade(Vehicle v, VehicleBoost b)
         {
             v.BoostHp = b.Hp;
             v.BoostSpeed = b.Speed;
@@ -315,6 +328,7 @@ namespace MachineBrigade.Sim
             v.Regen = b.Regen;
             v.Special = b.Special;
             v.SpecialPower = b.SpecialPower;
+            v.SpecialPower2 = b.SpecialPower2;
             switch (b.Special)
             {
                 case SpecialModule.ReactiveArmor:
@@ -328,6 +342,9 @@ namespace MachineBrigade.Sim
                     v.FireBoost *= 1f + b.SpecialPower;
                     break;
             }
+            // Stat lines, tuned weapons, traits and the other modules.
+            Gear.Equip(v, b);
+            v.RefillMagazines();
         }
 
         /// <summary>
@@ -452,6 +469,8 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Status.Step(dt);
+            Gear.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
@@ -629,8 +648,27 @@ namespace MachineBrigade.Sim
         /// <summary>Seconds a stealthy aircraft stays in plain sight after it fires (its bay doors open).</summary>
         private const double StealthReveal = 2.5;
 
+        private readonly List<float> _sight = new();
+        private readonly List<bool> _thermal = new();
+
         private void RefreshVisibility()
         {
+            // Each spotter's reach with its equipment (optics; more standing still) and whether it
+            // sees through smoke (a thermal imager).
+            _sight.Clear();
+            _thermal.Clear();
+            foreach (var spotter in _vehicleList)
+            {
+                var reach = spotter.Def.VisionRange * spotter.VisionFactor;
+                var thermal = false;
+                if (spotter.Gear is { } g)
+                {
+                    if (!spotter.IsMoving && Time - spotter.StillSince >= 1.0) reach *= 1f + g.Stat(StatId.StillVision);
+                    thermal = g.Has(TraitId.ThermalImager);
+                }
+                _sight.Add(reach);
+                _thermal.Add(thermal);
+            }
             foreach (var target in _vehicleList)
             {
                 // A fixed defence, once seen, stays on the map (it cannot move away), as buildings
@@ -644,19 +682,34 @@ namespace MachineBrigade.Sim
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
                 }
-                foreach (var spotter in _vehicleList)
+                // Equipment on the target: a camouflage net standing still, Ghillie Mode hidden.
+                var hidden = false;
+                if (target.Gear is { } tg)
                 {
+                    if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);
+                    hidden = tg.Hidden;
+                }
+                for (var i = 0; i < _vehicleList.Count; i++)
+                {
+                    var spotter = _vehicleList[i];
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
-                    var range = spotter.Def.VisionRange * sight;
+                    var range = _sight[i] * sight;
+                    if (hidden) range = MathF.Min(range, GhillieReveal);
                     if (spotter.Team == target.Team ||
                         (Vector2.DistanceSquared(spotter.Position, target.Position) <= range * range &&
-                         !Strikes.Obscures(spotter.Position, target.Position)))
+                         (_thermal[i] || !Strikes.Obscures(spotter.Position, target.Position))))
                         mask |= 1 << spotter.Team;
                 }
+                // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
+                ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
+                if (reveal.Until > Time) mask |= reveal.Stacks;
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }
         }
+
+        /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
+        public const float GhillieReveal = 8f;
 
         /// <summary>
         /// A defence a mode puts down (a camp bastion, a point's tower, an Assault sector's guns)

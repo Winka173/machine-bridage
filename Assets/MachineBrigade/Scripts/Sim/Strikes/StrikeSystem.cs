@@ -131,6 +131,14 @@ namespace MachineBrigade.Sim.Strikes
             _world.Emit(SimEvent.SmokeDeployed(team, at, radius, seconds));
         }
 
+        /// <summary>Whether a point lies inside a smoke cloud.</summary>
+        public bool InSmoke(Vector2 at)
+        {
+            foreach (var zone in _smoke)
+                if (Vector2.DistanceSquared(zone.Centre, at) < zone.Radius * zone.Radius) return true;
+            return false;
+        }
+
         /// <summary>Whether sight between two points is cut by smoke (either end inside a cloud, beyond arm's length).</summary>
         public bool Obscures(Vector2 from, Vector2 to)
         {
@@ -312,7 +320,8 @@ namespace MachineBrigade.Sim.Strikes
         {
             var support = s.Support;
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
-            _world.Damage.Splash(at, support.BlastRadius, support.Damage * _world.StrikeDamage(s.Team, support.Id), support.DamageType, s.Team, EntityId.None);
+            _world.Damage.Splash(at, support.BlastRadius, support.Damage * _world.StrikeDamage(s.Team, support.Id), support.DamageType, s.Team, EntityId.None,
+                info: new Combat.HitInfo(null, s.Team, null, at, Combat.HitKind.Strike, true));
         }
 
         /// <summary>The side the rounds come from: the calling side's camp, else back along the strike.</summary>

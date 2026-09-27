@@ -101,6 +101,27 @@ namespace MachineBrigade.Sim.Content
         public float Spread { get; }
 
         public ExplosionTier ImpactTier { get; }
+
+        /// <summary>
+        /// A copy of this weapon for one vehicle's equipment (a longer barrel, a bigger magazine):
+        /// the shared definition is never changed. Same id, so it looks and sounds the same.
+        /// </summary>
+        internal WeaponDef Tuned(float range, float cooldown, float projectileSpeed, float splashRadius, float spread, float burstInterval,
+            TargetLayers targets, int ammo, float reload, ClusterDef? cluster, float damage = -1f, int burst = -1, ProjectileKind? projectile = null)
+        {
+            var copy = new WeaponDef(Id, DamageType, damage >= 0f ? damage : Damage, MathF.Max(0.01f, cooldown), MathF.Max(range, MinRange + 0.5f), MinRange,
+                MathF.Max(0.1f, projectileSpeed), MathF.Max(0f, splashRadius), MathF.Max(0f, spread), ImpactTier, projectile ?? Projectile,
+                burst >= 1 ? burst : Burst, MathF.Max(0f, burstInterval), targets)
+            {
+                Ammo = ammo,
+                Reload = reload,
+                ImpactScale = ImpactScale,
+                Cluster = cluster,
+                Pierce = Pierce,
+                Beam = Beam,
+            };
+            return copy;
+        }
     }
 
     /// <summary>A delayed high-explosive blast (vehicle cook-off, fuel barrel). Hurts every side.</summary>

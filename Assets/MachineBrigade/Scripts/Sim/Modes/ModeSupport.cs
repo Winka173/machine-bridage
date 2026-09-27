@@ -33,8 +33,8 @@ namespace MachineBrigade.Sim.Modes
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
-                if (v.Team == TeamA) power0 += v.Def.CaptureRate;
-                else if (v.Team == TeamB) power1 += v.Def.CaptureRate;
+                if (v.Team == TeamA) power0 += v.CaptureRate;
+                else if (v.Team == TeamB) power1 += v.CaptureRate;
             }
 
             point.Contested = power0 > 0f && power1 > 0f;
