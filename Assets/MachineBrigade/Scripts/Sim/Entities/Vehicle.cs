@@ -235,6 +235,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
 
+        /// <summary>When the last main-gun, missile or rocket shot left this vehicle (its weapons take turns).</summary>
+        internal double HeavyShotAt = double.NegativeInfinity;
+
         /// <summary>Which way round an obstacle the hull is edging (+1 or -1), and until when it keeps to it.</summary>
         internal float SlideSide;
         internal double SlideUntil = double.NegativeInfinity;

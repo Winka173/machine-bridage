@@ -36,20 +36,22 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed);
+                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed || p.Failed);
                 if (weapon.Guided && !decoyed) at = target.Position;
                 if (decoyed) at = target.Position + p.Miss;
                 if (!decoyed && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
-                    Apply(target, weapon.Damage, weapon.DamageType);
+                    Apply(target, weapon.Damage * p.DamageScale, weapon.DamageType);
                     hit = target.Id;
                 }
             }
 
+            // Every blast is a little different: its reach varies by up to 15 %.
             if (weapon.SplashRadius > 0f)
-                Splash(at, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
+                Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
+                    weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
         }

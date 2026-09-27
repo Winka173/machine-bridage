@@ -444,6 +444,9 @@ namespace MachineBrigade.Game.Effects
         {
             // Off screen, a blast leaves its crater and fires (they persist) but no particles.
             if (!_cull.Visible(position, tier >= ExplosionTier.Huge ? 0.4f : 0.25f)) return;
+            // No two blasts alike: a little bigger or smaller, a little off the exact point.
+            scale *= 0.85f + 0.35f * UnityEngine.Random.value;
+            position += new Vector3(UnityEngine.Random.Range(-0.4f, 0.4f), 0f, UnityEngine.Random.Range(-0.4f, 0.4f)) * scale;
             _explosions[tier].Play(position, now, scale);
             Shake(position, tier switch
             {

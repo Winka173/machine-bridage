@@ -11,8 +11,8 @@
   "economy": { "income": 0.65, "supply": 0.8 },
 
   "damageTable": {
-    "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.6, "Structure": 0.3 },
-    "ArmorPiercing": { "Light": 0.75, "Heavy": 1.00, "Air": 0.5, "Structure": 0.6 },
+    "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.3, "Structure": 0.3 },
+    "ArmorPiercing": { "Light": 0.75, "Heavy": 1.00, "Air": 0.3, "Structure": 0.6 },
     "HighExplosive": { "Light": 1.00, "Heavy": 0.60, "Air": 0.0, "Structure": 1.5 },
     "Fire":          { "Light": 1.25, "Heavy": 0.50, "Air": 0.0, "Structure": 1.0 },
     "Flak":          { "Light": 0.40, "Heavy": 0.10, "Air": 1.5, "Structure": 0.1 }
@@ -314,7 +314,7 @@
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
     { "id": "supply_truck",     "class": "Support", "armor": "Heavy", "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "length": 7.3, "width": 2.72, "cp": 0, "vision": 26,
-      "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "truck",
+      "firesWhileMoving": true, "weapon": "mg_jeep", "secondary": [ { "weapon": "agl_40", "slot": "gun", "aim": "Free" } ], "captureRate": 0, "model": "truck",
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     { "id": "behemoth",         "armor": "Heavy", "hp": 6200, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "skills": ["behemoth_escort", "boss_rage", "boss_bulwark"],
