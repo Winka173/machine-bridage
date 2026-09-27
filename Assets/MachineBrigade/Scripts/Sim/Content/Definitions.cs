@@ -50,6 +50,9 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public int Ammo { get; internal set; }
 
+        /// <summary>Cluster munition: bomblets scattered where the round lands (null: an ordinary round).</summary>
+        public ClusterDef? Cluster { get; internal set; }
+
         /// <summary>Shots per trigger pull (rocket salvo, machine-gun burst); the cooldown starts after the last.</summary>
         public int Burst { get; }
 
@@ -79,6 +82,24 @@ namespace MachineBrigade.Sim.Content
     }
 
     /// <summary>A delayed high-explosive blast (vehicle cook-off, fuel barrel). Hurts every side.</summary>
+    /// <summary>
+    /// Cluster munition: where the round lands it scatters <see cref="Count"/> bomblets over
+    /// <see cref="Radius"/> metres, each going off a moment later as its own small blast.
+    /// </summary>
+    public sealed class ClusterDef
+    {
+        public ClusterDef(int count, float radius, ExplosionDef bomblet)
+        {
+            Count = count >= 1 ? count : throw new ArgumentException("cluster: count must be at least 1.");
+            Radius = Guard.Positive(radius, "cluster", nameof(radius));
+            Bomblet = bomblet ?? throw new ArgumentNullException(nameof(bomblet));
+        }
+
+        public int Count { get; }
+        public float Radius { get; }
+        public ExplosionDef Bomblet { get; }
+    }
+
     public sealed class ExplosionDef
     {
         public ExplosionDef(float damage, float radius, float delay, ExplosionTier tier)

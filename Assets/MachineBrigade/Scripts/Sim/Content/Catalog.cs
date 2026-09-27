@@ -102,6 +102,12 @@ namespace MachineBrigade.Sim.Content
                     w.Float("spread", 0f), w.Enum<ExplosionTier>("impactTier"),
                     w.Enum("projectile", ProjectileKind.Shell), w.Int("burst", 1), w.Float("burstInterval", 0.1f),
                     w.Enum("targets", TargetLayers.Ground)) { Ammo = w.Int("ammo", 0) });
+                if (w.Has("cluster"))
+                {
+                    var c = w.Object("cluster");
+                    def.Cluster = new ClusterDef(c.Int("count", 4), c.Float("radius"),
+                        new ExplosionDef(c.Float("damage"), c.Float("splash"), 0f, c.Enum("tier", ExplosionTier.Small)));
+                }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
 

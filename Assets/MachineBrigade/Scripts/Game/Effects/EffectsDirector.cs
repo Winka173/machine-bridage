@@ -214,6 +214,13 @@ namespace MachineBrigade.Game.Effects
                             break;
                         }
                         var blast = Ground(e.Position, 0.3f);
+                        // A cluster bomblet: its own small fireball, not a spray of sparks.
+                        if (e.Tier == ExplosionTier.Small)
+                        {
+                            Pop(_pop, blast + Vector3.up * 0.3f, now);
+                            _decals.Place(blast, 1.8f);
+                            break;
+                        }
                         Explode(e.Tier, blast, now);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
                         _wrecks.Blow(e.Entity, now);
@@ -322,6 +329,7 @@ namespace MachineBrigade.Game.Effects
             }
             while (_wrecks.TryCrash(out var crash, out var size)) Crash(crash, size, now);
             KickUpDust(views, now);
+            ShowDamage(views, now);
 
             var markerAge = Time.unscaledTime - _markerStart;
             if (markerAge < 0.6f) _marker.Set(new Color(0.7f, 2f, 1.3f, 1f), Color.white, markerAge / 0.6f);
@@ -332,6 +340,42 @@ namespace MachineBrigade.Game.Effects
         {
             _wrecks.Clear();
             if (_root != null) Object.Destroy(_root.gameObject);
+        }
+
+        /// <summary>
+        /// Damage shows on the hull: below 60 % health a vehicle smokes, pale at first and blacker
+        /// as it weakens; below 30 % it burns, flames licking out of it under thick black smoke and
+        /// a spark now and then; the hull itself darkens with soot. Aircraft trail their smoke.
+        /// </summary>
+        private void ShowDamage(ViewRegistry views, float now)
+        {
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                var sim = view.Sim;
+                var health = sim.MaxHp > 0f ? sim.Hp / sim.MaxHp : 1f;
+                view.Scorch(health);
+                if (health >= 0.6f || now < view.DamageFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
+                var burning = health < 0.3f;
+                view.DamageFxAt = now + (burning ? 0.12f : Mathf.Lerp(0.18f, 0.4f, (health - 0.3f) / 0.3f));
+                var radius = sim.Radius;
+                var root = view.Root;
+                var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
+                _emitters.DamageSmoke(top, radius * (burning ? 1.1f : 0.8f), burning ? 0f : Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
+                if (!burning) continue;
+                var spot = view.Position + Vector3.up * (view.Flying ? 0.2f : 1f) +
+                           root.right * UnityEngine.Random.Range(-0.5f, 0.5f) * radius + root.forward * UnityEngine.Random.Range(-0.6f, 0.4f) * radius;
+                _emitters.DamageFire(spot, radius * 0.7f);
+                if (UnityEngine.Random.value < 0.08f)
+                {
+                    _layers.Sparks.Emit(new ParticleSystem.EmitParams
+                    {
+                        position = spot, velocity = Vector3.up * 5f + UnityEngine.Random.insideUnitSphere * 3f, startSize = 0.15f,
+                        startLifetime = 0.8f, applyShapeToPosition = false,
+                    }, 6);
+                }
+            }
         }
 
         /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>

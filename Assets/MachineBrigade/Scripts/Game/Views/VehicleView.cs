@@ -150,6 +150,26 @@ namespace MachineBrigade.Game.Views
         /// <summary>Next time tread dust may be kicked up; owned by the effects layer.</summary>
         public float DustAt { get; set; }
 
+        /// <summary>When the next wisp of damage smoke or lick of flame is due (see EffectsDirector).</summary>
+        public float DamageFxAt { get; set; }
+
+        private float _shownScorch = 1f;
+
+        /// <summary>
+        /// Darkens the hull as it takes damage: clean above half health, sooty and scorched as it
+        /// nears destruction (the wreck tint is darker still).
+        /// </summary>
+        public void Scorch(float health)
+        {
+            if (_wreck) return;
+            var shade = health >= 0.5f ? 1f : Mathf.Lerp(0.45f, 1f, health / 0.5f);
+            if (Mathf.Abs(shade - _shownScorch) < 0.04f) return;
+            _shownScorch = shade;
+            var block = new MaterialPropertyBlock();
+            block.SetColor(TintId, new Color(shade, shade * 0.97f, shade * 0.95f));
+            foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
+        }
+
         /// <summary>Current flight height (0 on the ground).</summary>
         public float Altitude { get; private set; }
 
