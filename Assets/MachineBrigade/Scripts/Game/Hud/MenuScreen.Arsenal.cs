@@ -64,8 +64,8 @@ namespace MachineBrigade.Game.Hud
             scroll.contentContainer.Add(_arsenalBody);
             _arsenal.Add(scroll);
             var dock = UiKit.Box("menu-actions dock-row");
-            _arsenalAction = UiKit.WideButton("wide primary big", "upgrade", "", null, () => _action?.Invoke());
-            _arsenalAction2 = UiKit.WideButton("wide", "gear", "", null, () => _action2?.Invoke());
+            _arsenalAction = UiKit.WideButton("wide primary arsenal-go", "upgrade", "", null, () => _action?.Invoke());
+            _arsenalAction2 = UiKit.WideButton("wide arsenal-two", "gear", "", null, () => _action2?.Invoke());
             dock.Add(_arsenalAction);
             dock.Add(_arsenalAction2);
             dock.Add(UiKit.WideButton("wide back-button", "retreat", Strings.Get("menu.back"), null, () => Show(_main)));
@@ -93,7 +93,7 @@ namespace MachineBrigade.Game.Hud
                     BuildGearTab();
                     break;
                 default:
-                    _arsenalNote.text = Strings.Get("arsenal.cratesNote");
+                    _arsenalNote.text = Strings.Get("arsenal.cratesNote") + " " + Strings.Get("arsenal.cratesHint");
                     BuildCratesTab();
                     break;
             }
@@ -575,11 +575,11 @@ namespace MachineBrigade.Game.Hud
                     break;
                 default:
                     RefreshCrates();
-                    _arsenalDetail.Clear();
-                    DetailHint("arsenal.cratesHint");
                     SetActions(null, null, null, null);
                     break;
             }
+            // The crates tab has nothing to select: its room goes to the crates (the hint is its note).
+            _arsenalDetail.style.display = _arsenalTab == ArsenalTab.Crates ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         private void DetailHint(string key, string arg = null)

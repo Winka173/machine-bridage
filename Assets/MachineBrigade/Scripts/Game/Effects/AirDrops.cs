@@ -174,11 +174,12 @@ namespace MachineBrigade.Game.Effects
         {
             var chute = new GameObject("Parachute").transform;
             chute.SetParent(vehicle, false);
-            var size = Mathf.Max(def.Length, def.Width) * 0.9f + 3f;
+            // About 1.3 vehicle lengths across: big enough to read as a cargo chute, not a tent over the battle.
+            var size = Mathf.Max(def.Length, def.Width) * 0.65f + 0.8f;
             var canopy = new GameObject("Canopy", typeof(MeshFilter), typeof(MeshRenderer));
             canopy.transform.SetParent(chute, false);
-            canopy.transform.localPosition = new Vector3(0f, 7f + size * 0.25f, 0f);
-            canopy.transform.localScale = new Vector3(size, size * 0.45f, size);
+            canopy.transform.localPosition = new Vector3(0f, 5f + size * 0.4f, 0f);
+            canopy.transform.localScale = new Vector3(size, size * 0.5f, size);
             canopy.GetComponent<MeshFilter>().sharedMesh = _canopy;
             var renderer = canopy.GetComponent<MeshRenderer>();
             renderer.sharedMaterial = _cloth;
@@ -201,7 +202,7 @@ namespace MachineBrigade.Game.Effects
             return chute;
         }
 
-        /// <summary>A unit dome (radius 1, height 1) open at the bottom, seen from above and below.</summary>
+        /// <summary>A unit dome (radius 1, height 1) open at the bottom, its outside facing out (seen from above).</summary>
         private static Mesh Dome(int segments, int rings)
         {
             var vertices = new List<Vector3>();
@@ -222,7 +223,6 @@ namespace MachineBrigade.Game.Effects
                 {
                     var a = r * (segments + 1) + s;
                     var b = a + segments + 1;
-                    triangles.AddRange(new[] { a, b, a + 1, a + 1, b, b + 1 });
                     triangles.AddRange(new[] { a, a + 1, b, a + 1, b + 1, b });
                 }
             var mesh = new Mesh { name = "Canopy" };

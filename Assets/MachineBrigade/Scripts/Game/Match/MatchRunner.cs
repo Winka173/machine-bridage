@@ -692,6 +692,8 @@ namespace MachineBrigade.Game.Match
                     Reload("loading.apply");
                 }
             };
+            // The stand-in ad screen, in the menu too (the arsenal's ad crates); set per scene, as the HUD is.
+            PlaceholderAds.Presenter = _hud.ShowPlaceholderAd;
             if (_menu) return;
 
             _hud.SelectAllPressed += _selection.SelectAll;
@@ -732,7 +734,6 @@ namespace MachineBrigade.Game.Match
                     _hud.ShowRewardClaimed(_reward.Coins * (watched ? 2 : 1), watched);
                 });
             };
-            PlaceholderAds.Presenter = _hud.ShowPlaceholderAd;
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
             _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));

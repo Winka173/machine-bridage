@@ -391,6 +391,17 @@
 .loot-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--chalk); white-space: normal; flex-shrink: 1; }
 .crate-chip .icon { --icon-color: #f2c14e; }
 .wide.disabled { opacity: 0.55; }
+.dock-row .arsenal-go { flex-grow: 1; flex-shrink: 1; margin-right: 10px; height: 64px; }
+.dock-row .arsenal-two { flex-shrink: 1; margin-right: 10px; height: 64px; }
+.arsenal-go .wide-title, .arsenal-two .wide-title { font-size: 15px; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The narrow main page: a compact brand strip, and four dock buttons that fit. */
+.menu-brand.compact .menu-title { font-size: 22px; letter-spacing: 2px; margin-right: 5px; }
+.menu-brand.compact > .icon { width: 28px; height: 28px; margin-right: 8px; }
+.menu-brand.compact .rank-pill, .menu-brand.compact .coin-pill { padding: 0 7px; margin-left: 5px; }
+.menu-brand.compact .rank-label { display: none; }
+.menu-brand.compact .rank-track { width: 34px; }
+.menu-small .wide .wide-title { font-size: 14px; letter-spacing: 0; }
+.menu-small .wide .icon { width: 18px; height: 18px; margin-right: 6px; }
 .cards {
     flex-direction: row; align-items: flex-end;
     padding: 6px 4px;

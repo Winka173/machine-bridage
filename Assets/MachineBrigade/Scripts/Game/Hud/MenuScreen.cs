@@ -35,7 +35,7 @@ namespace MachineBrigade.Game.Hud
 
             // Main page: brand strip, the campaign, quick battle and its options, the dock ---------
             _main = UiKit.Box("menu-panel", PickingMode.Position);
-            _main.Add(Brand());
+            _main.Add(Brand(compact: true));
             var body = Scroller();
             _main.Add(body);
             var content = body.contentContainer;
@@ -405,10 +405,13 @@ namespace MachineBrigade.Game.Hud
                 MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots);
         }
 
-        /// <summary>The brand strip across the top of every menu page, with the player's rank and coins.</summary>
-        private VisualElement Brand()
+        /// <summary>
+        /// The brand strip across the top of every menu page, with the player's rank, coins and
+        /// gems; compact on the narrow main page, where the full strip does not fit.
+        /// </summary>
+        private VisualElement Brand(bool compact = false)
         {
-            var brand = UiKit.Box("menu-brand");
+            var brand = UiKit.Box(compact ? "menu-brand compact" : "menu-brand");
             brand.Add(UiKit.Icon("logo", UiKit.Ink, 2.2f));
             var text = UiKit.Box("menu-brand-text");
             text.Add(UiKit.Text("MACHINE", "menu-title"));
