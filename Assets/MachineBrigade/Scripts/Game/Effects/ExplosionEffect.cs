@@ -25,6 +25,9 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public const float FireballPivot = 0.32f;
 
+        /// <summary>Where a rolling fireball starts in the blast sheet: past the initial burst of flame.</summary>
+        public const float RollFrom = 0.26f;
+
         public BlastLayers(MaterialLibrary m, Transform parent)
         {
             var fx = FxMaterials.Shared;
@@ -49,6 +52,21 @@ namespace MachineBrigade.Game.Effects
             PB.Colors(HotFireball, PB.Hold(new Color(0.3f, 0.28f, 0.26f), new Color(0.27f, 0.26f, 0.25f), 0.02f, 0.72f));
             PB.Grow(HotFireball, 0.85f, 1.15f);
             Drag(HotFireball, 0.12f);
+
+            // Fireballs that join a blast after it started. They play the sheet from where the flame
+            // is already rolling up (no burst of flame of their own) and fade in, so a blast that
+            // keeps growing never looks like it flashed and started again.
+            RollingFireball = Shared(root, "Rolling Fireball", fx.Blast, 400, -0.02f);
+            PB.Flipbook(RollingFireball, loop: false, tilt: 10f, from: RollFrom, pivotY: FireballPivot);
+            PB.Colors(RollingFireball, PB.Hold(new Color(0.34f, 0.31f, 0.28f), new Color(0.3f, 0.29f, 0.28f), 0.16f, 0.7f));
+            PB.Grow(RollingFireball, 0.9f, 1.15f);
+            Drag(RollingFireball, 0.12f);
+
+            HotRollingFireball = Shared(root, "Hot Rolling Fireball", fx.HotBlast, 150, -0.02f);
+            PB.Flipbook(HotRollingFireball, loop: false, tilt: 8f, from: RollFrom, pivotY: FireballPivot);
+            PB.Colors(HotRollingFireball, PB.Hold(new Color(0.3f, 0.28f, 0.26f), new Color(0.27f, 0.26f, 0.25f), 0.16f, 0.7f));
+            PB.Grow(HotRollingFireball, 0.9f, 1.15f);
+            Drag(HotRollingFireball, 0.12f);
 
             // Black smoke billowing up out of the blast and drifting off with the wind.
             Smoke = Shared(root, "Smoke", fx.Smoke, 1500);
@@ -152,7 +170,7 @@ namespace MachineBrigade.Game.Effects
 
             All = new[]
             {
-                Flash, Fireball, HotFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, AirShock,
+                Flash, Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, AirShock,
                 GroundLight, CraterGlow,
             };
         }
@@ -160,6 +178,8 @@ namespace MachineBrigade.Game.Effects
         public ParticleSystem Flash { get; }
         public ParticleSystem Fireball { get; }
         public ParticleSystem HotFireball { get; }
+        public ParticleSystem RollingFireball { get; }
+        public ParticleSystem HotRollingFireball { get; }
         public ParticleSystem Smoke { get; }
         public ParticleSystem Sparks { get; }
         public ParticleSystem Dust { get; }
@@ -266,8 +286,9 @@ namespace MachineBrigade.Game.Effects
         private readonly struct Burst
         {
             public Burst(ParticleSystem system, float time, int count, Vector2 size, Vector2 speed, Vector2 lifetime, float radius,
-                float lift = 0f)
+                float lift = 0f, float ring = 0f)
             {
+                Ring = ring;
                 System = system;
                 Time = time;
                 Count = count;
@@ -286,6 +307,9 @@ namespace MachineBrigade.Game.Effects
             public Vector2 Lifetime { get; }
             public float Radius { get; }
             public float Lift { get; }
+
+            /// <summary>Distance from the blast centre, at a random bearing (0: on the centre).</summary>
+            public float Ring { get; }
         }
 
         private readonly struct Pending
@@ -362,6 +386,12 @@ namespace MachineBrigade.Game.Effects
             main.startLifetime = new ParticleSystem.MinMaxCurve(b.Lifetime.x, b.Lifetime.y);
             var shape = ps.shape;
             if (shape.enabled) shape.radius = Mathf.Max(0.01f, b.Radius * scale);
+            if (b.Ring > 0f)
+            {
+                var bearing = Random.value * Mathf.PI * 2f;
+                var reach = b.Ring * scale * Random.Range(0.85f, 1.2f);
+                position += new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach);
+            }
             ps.Emit(new ParticleSystem.EmitParams { position = position + Vector3.up * (b.Lift * scale), applyShapeToPosition = true },
                 b.Count);
         }
@@ -388,8 +418,12 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         private void Fireball(int count, Vector2 size, Vector2 lifetime, float radius, float time = 0f, bool hot = false,
             float lift = 0f, Vector2? speed = null) =>
-            _bursts.Add(new Burst(hot ? _layers.HotFireball : _layers.Fireball, time, count, size, speed ?? new Vector2(0.5f, 2.5f),
-                lifetime, radius, lift));
+            _bursts.Add(new Burst(Layer(time, hot), time, count, size, speed ?? new Vector2(0.5f, 2.5f), lifetime, radius, lift));
+
+        /// <summary>The first fireballs burst; any that come later roll on from the same blast.</summary>
+        private ParticleSystem Layer(float time, bool hot) => time > 0f
+            ? hot ? _layers.HotRollingFireball : _layers.RollingFireball
+            : hot ? _layers.HotFireball : _layers.Fireball;
 
         private void Smoke(int count, Vector2 size, Vector2 lifetime, float time = 0.12f) =>
             _bursts.Add(new Burst(_layers.Smoke, time, count, size, new Vector2(0.8f, 2.8f), lifetime, size.x * 0.25f, size.x * 0.15f));
@@ -408,12 +442,18 @@ namespace MachineBrigade.Game.Effects
             _bursts.Add(new Burst(_layers.DustRing, 0.02f, count, new Vector2(size * 0.16f, size * 0.26f),
                 new Vector2(size * 0.45f, size * 0.85f), new Vector2(1.6f, 2.8f), size * 0.08f, 0.3f));
 
-        /// <summary>Fireballs popping around a big blast for a second: a chain of secondary explosions.</summary>
-        private void Secondaries(float radius, float size)
+        /// <summary>
+        /// Small secondary explosions around a big blast for a second: each its own little blast
+        /// (fireball and a spray of sparks) out on a ring beyond the main fireball, never on top of
+        /// it, so the big one reads as one explosion and the pops as others going off round it.
+        /// </summary>
+        private void Secondaries(float ring, float size)
         {
-            foreach (var (time, count) in new[] { (0.22f, 2), (0.42f, 1), (0.62f, 2), (0.85f, 1), (1.1f, 1), (1.35f, 1) })
-                _bursts.Add(new Burst(_layers.Fireball, time, count, new Vector2(size * 0.8f, size * 1.25f), new Vector2(0.5f, 2f),
-                    new Vector2(0.8f, 1.1f), radius));
+            foreach (var time in new[] { 0.3f, 0.55f, 0.85f, 1.2f })
+            {
+                _bursts.Add(new Burst(_layers.Fireball, time, 1, new Vector2(size * 0.75f, size), new Vector2(0.4f, 1.6f),
+                    new Vector2(0.7f, 0.95f), 0.3f, 0f, ring));
+            }
         }
 
         private void Debris(int count, Vector2 speed) =>
@@ -481,7 +521,7 @@ namespace MachineBrigade.Game.Effects
                     e.Flash(10f);
                     e.Fireball(3, new Vector2(7.5f, 9.5f), new Vector2(1.25f, 1.6f), 0.8f);
                     e.Fireball(2, new Vector2(4.5f, 6f), new Vector2(0.9f, 1.2f), 1.6f, 0.12f);
-                    e.Secondaries(3.5f, 3.4f);
+                    e.Secondaries(6.5f, 3f);
                     e.Smoke(6, new Vector2(5f, 7f), new Vector2(4f, 6f));
                     e.Sparks(64, new Vector2(9f, 22f), 0.2f);
                     e.Debris(18, new Vector2(6f, 13f));
@@ -505,7 +545,7 @@ namespace MachineBrigade.Game.Effects
                     e.Fireball(2, new Vector2(7f, 9.5f) * s, new Vector2(1.2f, 1.5f), 3f * s, 0.14f);
                     e.Fireball(2, new Vector2(6f, 8f) * s, new Vector2(1.1f, 1.4f), 3.4f * s, 0.3f);
                     e.Fireball(1, new Vector2(8f, 10f) * s, new Vector2(1.3f, 1.6f), 1.5f * s, 0.48f, hot: ultimate);
-                    e.Secondaries(6f * s, 4.2f * s);
+                    e.Secondaries(10f * s, 3.8f * s);
                     e.Smoke(ultimate ? 12 : 9, new Vector2(7f, 10f) * s, new Vector2(5f, 8f));
                     e.Sparks(ultimate ? 150 : 110, new Vector2(12f, 30f), 0.26f);
                     e.Debris(ultimate ? 40 : 30, new Vector2(8f, 20f));
@@ -569,6 +609,33 @@ namespace MachineBrigade.Game.Effects
             e.Smoke(1, new Vector2(2.2f, 3f), new Vector2(2f, 2.8f), 0.08f);
             e.Embers(8, 0.7f);
             e.GroundLight(6f, 0.4f, 0.2f);
+            return e;
+        }
+
+        /// <summary>
+        /// A building brought down: the shell or charge that did it (a short, low fireball inside
+        /// the walls), then the building falling in its own dust: a skirt rolling out along the
+        /// ground, billows pouring up over the heap as each floor lands, a haze that hangs, and a
+        /// hail of concrete, plaster and timber. Scaled to the building's size.
+        /// </summary>
+        public static ExplosionEffect CreateCollapse(BlastLayers l)
+        {
+            var e = new ExplosionEffect(l);
+            e.Flash(6f);
+            e.Fireball(2, new Vector2(4.5f, 6f), new Vector2(0.9f, 1.2f), 1.4f, lift: 0.6f);
+            e.Sparks(26, new Vector2(6f, 14f), 0.16f);
+            // Dust is the look of a building coming down, so there is a lot of it: a thick skirt
+            // rolling out, a second one as the roof lands, and big slow billows pouring up over the
+            // heap as each floor gives way, hanging for seconds after.
+            e.DustRing(26f, 28);
+            e._bursts.Add(new Burst(l.DustRing, 0.6f, 20, new Vector2(4.4f, 6.4f), new Vector2(5f, 10f), new Vector2(2.6f, 4f), 2.4f, 0.3f));
+            foreach (var (time, count) in new[] { (0.1f, 5), (0.4f, 6), (0.75f, 6), (1.1f, 6), (1.5f, 5) })
+                e._bursts.Add(new Burst(l.Dust, time, count, new Vector2(7f, 10.5f), new Vector2(0.3f, 1.2f), new Vector2(4.2f, 6.2f), 3.4f, 1.2f));
+            e.Debris(40, new Vector2(5f, 12f));
+            e.Dirt(24, new Vector2(4f, 10f));
+            e.Smoke(4, new Vector2(5f, 7f), new Vector2(5f, 7.5f), 0.6f);
+            e.Embers(14, 1f);
+            e._chunks = new ChunkThrower.Recipe(earth: 10, wreckage: 4, burning: 3, new Vector2(5f, 11f), 1f);
             return e;
         }
 

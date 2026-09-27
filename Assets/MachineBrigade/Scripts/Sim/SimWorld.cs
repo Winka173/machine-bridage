@@ -124,7 +124,13 @@ namespace MachineBrigade.Sim
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
-        public void EnableEconomy(TeamEconomy economy) => Economy.Enable(economy);
+        public void EnableEconomy(TeamEconomy economy)
+        {
+            // The catalog sets the pace of every economy (see balance.json "economy").
+            economy.IncomeScale = Catalog.IncomeScale;
+            economy.SupplyScale = Catalog.SupplyScale;
+            Economy.Enable(economy);
+        }
 
         public bool TryGetEconomy(int team, out TeamEconomy economy) => Economy.TryGet(team, out economy);
 
@@ -307,6 +313,12 @@ namespace MachineBrigade.Sim
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
+
+        /// <summary>Development only (the -mb-demolish device check): blows a prop apart as a heavy shell would.</summary>
+        public void DebugDestroyProp(Prop prop)
+        {
+            if (prop.IsAlive) Damage.Apply(prop, prop.Hp * 10f + 10000f, DamageType.HighExplosive);
+        }
 
         /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
         public void Announce(in SimEvent e) => _events.Add(e);

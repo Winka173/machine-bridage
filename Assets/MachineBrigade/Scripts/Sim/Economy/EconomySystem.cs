@@ -36,7 +36,13 @@ namespace MachineBrigade.Sim.Economy
         public float Cp { get; internal set; }
 
         /// <summary>CP per second before objective bonuses.</summary>
-        public float Income => _income * (Doctrine?.Income ?? 1f);
+        public float Income => _income * (Doctrine?.Income ?? 1f) * IncomeScale;
+
+        /// <summary>The catalog's economy pace: scales the income and objective bonuses (1: as the mode set them).</summary>
+        public float IncomeScale { get; internal set; } = 1f;
+
+        /// <summary>The catalog's scale for the supply line (1: as the mode set it).</summary>
+        public float SupplyScale { get; internal set; } = 1f;
 
         private readonly float _income;
         private readonly int _armyCap;
@@ -50,10 +56,10 @@ namespace MachineBrigade.Sim.Economy
         public float Bank { get; }
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => _armyCap + (Doctrine?.ArmyCap ?? 0);
+        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0)) * SupplyScale);
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
-        public const int MaxVehicles = 44;
+        public const int MaxVehicles = 32;
 
         /// <summary>
         /// Army value kept up at full income: half again the mode's old army cap, so a normal
@@ -74,7 +80,7 @@ namespace MachineBrigade.Sim.Economy
         }
 
         /// <summary>CP per second actually earned now: income and bonuses after upkeep.</summary>
-        public float Earning => (Income + Bonus) * Upkeep;
+        public float Earning => (Income + Bonus * IncomeScale) * Upkeep;
 
         /// <summary>Vehicles on the field plus deliveries on the way.</summary>
         public int VehicleCount { get; internal set; }

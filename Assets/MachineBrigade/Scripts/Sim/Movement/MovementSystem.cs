@@ -311,7 +311,7 @@ namespace MachineBrigade.Sim.Movement
                 }
                 else
                 {
-                    v.ClearPath();
+                    StayBehindArmour(v);
                 }
                 v.ResumeRoute = true;
                 return;
@@ -335,6 +335,45 @@ namespace MachineBrigade.Sim.Movement
             else if (v.PathCompleted)
             {
                 v.SetOrder(Order.Idle);
+            }
+        }
+
+        /// <summary>
+        /// An anti-aircraft vehicle that cannot fight the tanks ahead keeps a few metres behind the
+        /// nearest friendly ground unit that can (its umbrella moves with the army), instead of
+        /// freezing on the spot; with none near, it holds where it is.
+        /// </summary>
+        private void StayBehindArmour(Vehicle v)
+        {
+            Vehicle? escort = null;
+            var nearest = 30f;
+            foreach (var other in _world.VehicleList)
+            {
+                if (other == v || !other.IsAlive || other.Team != v.Team || other.Flying || other.Def.Static) continue;
+                if (other.Def.Weapon.Targets == TargetLayers.Air || other.Def.Weapon.MinRange > 0f) continue;
+                var d = Vector2.Distance(other.Position, v.Position);
+                if (d >= nearest) continue;
+                nearest = d;
+                escort = other;
+            }
+            if (escort == null)
+            {
+                v.ClearPath();
+                return;
+            }
+            var threat = _world.FindNearestEnemy(escort, v.Def.VisionRange, requireVisible: true, layers: TargetLayers.Ground);
+            var back = threat != null ? escort.Position - threat.Position : v.Position - escort.Position;
+            back = back.LengthSquared() > 0.01f ? Vector2.Normalize(back) : SimMath.Forward(escort.Heading + MathF.PI);
+            var spot = escort.Position + back * (escort.Def.HullBound + v.Def.HullBound + 5f);
+            if (Vector2.Distance(spot, v.Position) < 4f)
+            {
+                v.ClearPath();
+                return;
+            }
+            if (v.RepathTimer <= 0f && (!v.HasPath || Vector2.Distance(v.PathGoal, spot) > 4f))
+            {
+                v.RepathTimer = RepathInterval * 2f;
+                _world.PathTo(v, _world.ClampToMap(spot));
             }
         }
 
@@ -400,6 +439,7 @@ namespace MachineBrigade.Sim.Movement
             var arrive = isFinal ? (def.Flying && CrowdedInAir(v, waypoint) ? ArriveFinal + v.Radius * 0.9f : ArriveFinal) : ArriveWaypoint;
             if (distance <= arrive)
             {
+                Vehicle.PathTrace?.Invoke(v, $"Arrive {v.PathIndex}/{v.Path.Count} d{distance:0.0}");
                 v.PathIndex++;
                 if (!v.HasPath) v.PathCompleted = true;
                 return;
@@ -458,6 +498,7 @@ namespace MachineBrigade.Sim.Movement
                 // enough. Driving on would only circle it (a slow-turning tank cannot tighten
                 // its turn under the final-approach speed), which reads as a hull going round
                 // and round.
+                Vehicle.PathTrace?.Invoke(v, $"Settle d{distance:0.0}");
                 v.PathIndex++;
                 v.PathCompleted = true;
                 return;
@@ -479,7 +520,7 @@ namespace MachineBrigade.Sim.Movement
             var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
             v.Speed = SimMath.MoveTowards(v.Speed, targetSpeed, acceleration * dt);
 
-            if (!TryAdvance(v, v.Speed * dt)) v.Speed = 0f;
+            if (!TryAdvance(v, v.Speed * dt) && (def.Flying || !Sidestep(v, SimMath.HeadingOf(toWaypoint), dt))) v.Speed = 0f;
             if (!def.Flying) DetectStuck(v, dt);
         }
 
@@ -577,6 +618,81 @@ namespace MachineBrigade.Sim.Movement
             return v.Position + direction * 10f;
         }
 
+        /// <summary>
+        /// The way straight ahead is blocked (a wall corner, a wreck, the edge of the map's
+        /// outline, often after a shove or a detour turned the hull into it): edge along the
+        /// nearest free bearing towards the waypoint, turning the hull with it, instead of standing
+        /// pressed against the obstacle until the stuck check gives up on the route.
+        /// </summary>
+        private bool Sidestep(Vehicle v, float towards, float dt)
+        {
+            // Still swinging round towards the waypoint: pivot on the spot first (tracks can).
+            if (MathF.Abs(SimMath.WrapAngle(v.Heading - towards)) > 0.6f) return false;
+            var step = MathF.Max(v.Speed, v.Def.Speed * 0.3f) * dt;
+            var probe = MathF.Max(1.5f, v.Def.HullRadius + 0.5f);
+            // Keep to the side chosen a moment ago (else the side the hull leans to), so it edges
+            // one way round the obstacle instead of hesitating between the two.
+            var lean = _world.Time < v.SlideUntil ? v.SlideSide : SimMath.WrapAngle(v.Heading - towards) >= 0f ? 1f : -1f;
+            for (var k = 0; k <= 6; k++)
+            {
+                for (var side = 0; side < (k == 0 ? 1 : 2); side++)
+                {
+                    var bearing = towards + (side == 0 ? lean : -lean) * k * 0.35f;
+                    var direction = SimMath.Forward(bearing);
+                    if (!_world.Grid.IsWalkable(v.Position + direction * probe) || HullNear(v, v.Position + direction * probe)) continue;
+                    if (!TryPlace(v, v.Position + direction * step)) continue;
+                    v.Heading = SimMath.RotateTowards(v.Heading, bearing, v.Def.TurnRate * dt);
+                    v.Speed = MathF.Min(MathF.Max(v.Speed, v.Def.Speed * 0.3f), v.Def.Speed * 0.6f);
+                    if (k > 0)
+                    {
+                        v.SlideSide = side == 0 ? lean : -lean;
+                        v.SlideUntil = _world.Time + 1.5;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>Another ground vehicle's hull covers <paramref name="point"/> (as far as this hull reaches).</summary>
+        private bool HullNear(Vehicle v, Vector2 point)
+        {
+            var reach = v.Def.HullRadius + _maxBound;
+            for (var i = LowerBound(point.X - reach); i < _ground.Count; i++)
+            {
+                var o = _ground[i];
+                if (o.Position.X > point.X + reach) break;
+                if (o == v || !o.IsAlive) continue;
+                Spine(o, out var a, out var b);
+                ClosestPoints(point, point, a, b, out _, out var c);
+                if (Vector2.DistanceSquared(point, c) < Square(v.Def.HullRadius + o.Def.HullRadius)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// A free spot a few metres away, in the open and in plain line to it, from which the next
+        /// waypoint is in plain line too if possible: where a hull wedged against something backs
+        /// off to before it tries again.
+        /// </summary>
+        private bool TryDetour(Vehicle v, Vector2 next, out Vector2 detour)
+        {
+            detour = default;
+            var best = float.MaxValue;
+            var grid = _world.Grid;
+            for (var ring = 1; ring <= 2; ring++)
+            for (var k = 0; k < 16; k++)
+            {
+                var p = v.Position + SimMath.Forward(k * SimMath.Tau / 16f) * (2.5f * ring + v.Def.HullRadius);
+                if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(v.Position, p)) continue;
+                var score = Vector2.Distance(p, next) + (grid.LineOfSight(p, next) ? 0f : 12f);
+                if (score >= best) continue;
+                best = score;
+                detour = p;
+            }
+            return best < float.MaxValue;
+        }
+
         private bool TryAdvance(Vehicle v, float distance)
         {
             if (distance <= 0f) return true;
@@ -611,6 +727,9 @@ namespace MachineBrigade.Sim.Movement
             }
             var strikes = v.StuckStrikes;
             _world.PathTo(v, v.PathGoal);
+            // Wedged a second time on a fresh route: back off to open ground a few metres away,
+            // then take the route from there.
+            if (strikes >= 2 && v.HasPath && TryDetour(v, v.Path[v.PathIndex], out var detour)) v.Path.Insert(v.PathIndex, detour);
             v.StuckStrikes = strikes;
         }
 

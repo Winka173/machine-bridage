@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Content;
@@ -23,6 +24,7 @@ namespace MachineBrigade.Sim.Entities
             Heading = heading;
             TurretHeading = heading;
             Hp = def.MaxHp;
+            ApsCharges = def.Aps?.Charges ?? 0;
             Order = Order.Idle;
             PathCompleted = true;
             GuardPoint = position;
@@ -226,10 +228,25 @@ namespace MachineBrigade.Sim.Entities
         internal float StuckTimer;
         internal int StuckStrikes;
 
+        /// <summary>Interceptors ready in the active protection system, and the reload under way.</summary>
+        internal int ApsCharges;
+        internal float ApsReload;
+
+        /// <summary>Which launcher fires next (the systems alternate sides).</summary>
+        internal bool ApsLeft;
+
+        /// <summary>Which way round an obstacle the hull is edging (+1 or -1), and until when it keeps to it.</summary>
+        internal float SlideSide;
+        internal double SlideUntil = double.NegativeInfinity;
+
         internal bool HasPath => PathIndex < Path.Count;
+
+        /// <summary>Diagnostics hook (tests only): told whenever a vehicle's path or order changes.</summary>
+        internal static Action<Vehicle, string>? PathTrace;
 
         internal void SetPath(List<Vector2> points, Vector2 goal)
         {
+            PathTrace?.Invoke(this, $"SetPath {points.Count} to {goal}");
             Path.Clear();
             Path.AddRange(points);
             PathIndex = 0;
@@ -242,6 +259,7 @@ namespace MachineBrigade.Sim.Entities
 
         internal void ClearPath()
         {
+            PathTrace?.Invoke(this, "ClearPath");
             Path.Clear();
             PathIndex = 0;
             PathCompleted = true;
@@ -249,6 +267,7 @@ namespace MachineBrigade.Sim.Entities
 
         internal void SetOrder(Order order)
         {
+            PathTrace?.Invoke(this, $"SetOrder {order.Kind} {order.Point}");
             Order = order;
             RunTarget = EntityId.None;
             RunExtending = false;

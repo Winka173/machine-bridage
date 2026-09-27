@@ -40,6 +40,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Balance version, recorded with results so tuning changes stay traceable.</summary>
         public int Version { get; }
 
+        /// <summary>Multiplies every side's CP income, objective bonuses included (balance.json "economy.income").</summary>
+        public float IncomeScale { get; internal set; } = 1f;
+
+        /// <summary>Multiplies every side's supply line, the army kept up at full income ("economy.supply").</summary>
+        public float SupplyScale { get; internal set; } = 1f;
+
         public DamageTable Damage { get; }
 
         public IReadOnlyDictionary<string, WeaponDef> Weapons => _weapons;
@@ -76,6 +82,16 @@ namespace MachineBrigade.Sim.Content
             var root = new JsonObject(MiniJson.Parse(json), "balance");
 
             var damage = root.Has("damageTable") ? ParseDamageTable(root.Object("damageTable")) : DamageTable.Default;
+
+            // Global tuning, one place for the whole roster: "toughness" multiplies every vehicle's
+            // health (bosses separately), "firepower" the damage of strikes and of blasts (burning
+            // props, vehicles blowing up, mines), "economy" every side's income and supply line.
+            float Tune(string section, string key) => root.Has(section) ? root.Object(section).Float(key, 1f) : 1f;
+            var vehicleHp = Tune("toughness", "vehicles");
+            var bossHp = Tune("toughness", "bosses");
+            var strikeDamage = Tune("firepower", "strikes");
+            var propBlasts = Tune("firepower", "propBlasts");
+            var vehicleBlasts = Tune("firepower", "vehicleBlasts");
 
             var weapons = new Dictionary<string, WeaponDef>();
             foreach (var w in root.Array("weapons"))
@@ -117,9 +133,9 @@ namespace MachineBrigade.Sim.Content
                     // not an easier target, a smaller-drawn tank not a harder one.
                     var scale = v.Float("scale", 1f);
                     var def = new VehicleDef(
-                        v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
-                        v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
-                        v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
+                        v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp") * (v.Bool("boss", false) ? bossHp : vehicleHp),
+                        v.Float("speed"), v.Float("turnRate"), v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
+                        v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion", vehicleBlasts), secondary,
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
                         v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false), v.Bool("static", false));
                     if (v.Has("model")) def.Model = v.String("model");
@@ -141,11 +157,16 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("aps"))
+                    {
+                        var a = v.Object("aps");
+                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"));
+                    }
                     if (v.Has("mines"))
                     {
                         var m = v.Object("mines");
                         def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
-                            new ExplosionDef(m.Float("damage"), m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
+                            new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
                             m.Float("trigger", 2f));
                     }
                     return def;
@@ -158,7 +179,7 @@ namespace MachineBrigade.Sim.Content
                 var propScale = p.Float("scale", 1f);
                 props.Add(Wrap(p, () => new PropDef(
                     p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width") * propScale, p.Float("depth") * propScale,
-                    p.Bool("blocks", false), ParseExplosion(p, "explosion"), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
+                    p.Bool("blocks", false), ParseExplosion(p, "explosion", propBlasts), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
                 { Scale = propScale }));
             }
 
@@ -169,7 +190,7 @@ namespace MachineBrigade.Sim.Content
                 {
                     supports.Add(Wrap(s, () => new SupportDef(
                         s.String("id"), s.Enum<SupportKind>("kind"), s.Int("cp", 0), s.Float("cooldown"), s.Float("delay", 1.5f),
-                        s.Float("radius"), s.Int("count", 1), s.Float("duration", 0f), s.Float("damage", 0f),
+                        s.Float("radius"), s.Int("count", 1), s.Float("duration", 0f), s.Float("damage", 0f) * strikeDamage,
                         s.Enum("damageType", DamageType.HighExplosive), s.Enum("tier", ExplosionTier.Large), s.Float("length", 0f),
                         s.Float("blast", 0f))
                     {
@@ -180,7 +201,11 @@ namespace MachineBrigade.Sim.Content
                 }
             }
 
-            return new Catalog(root.Int("version", 1), damage, weapons.Values, vehicles, props, supports);
+            return new Catalog(root.Int("version", 1), damage, weapons.Values, vehicles, props, supports)
+            {
+                IncomeScale = Tune("economy", "income"),
+                SupplyScale = Tune("economy", "supply"),
+            };
         }
 
         private static WeaponDef Weapon(Dictionary<string, WeaponDef> weapons, JsonObject owner, string key)
@@ -191,11 +216,11 @@ namespace MachineBrigade.Sim.Content
                 : throw new FormatException($"{owner.Path}.{key}: unknown weapon '{id}'.");
         }
 
-        private static ExplosionDef? ParseExplosion(JsonObject owner, string key)
+        private static ExplosionDef? ParseExplosion(JsonObject owner, string key, float damageScale = 1f)
         {
             if (!owner.Has(key)) return null;
             var e = owner.Object(key);
-            return Wrap(e, () => new ExplosionDef(e.Float("damage"), e.Float("radius"), e.Float("delay", 0f),
+            return Wrap(e, () => new ExplosionDef(e.Float("damage") * damageScale, e.Float("radius"), e.Float("delay", 0f),
                 e.Enum<ExplosionTier>("tier")));
         }
 

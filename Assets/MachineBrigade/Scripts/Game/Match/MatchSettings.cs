@@ -99,6 +99,7 @@ namespace MachineBrigade.Game.Match
             "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber", "sky_gunship",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher", "siege_mortar",
+            "grad_truck", "atgm_carrier", "aps_tank",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
         };

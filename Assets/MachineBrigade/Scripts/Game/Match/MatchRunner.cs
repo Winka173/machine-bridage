@@ -393,6 +393,7 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
+            if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
             else FollowTheFight();
@@ -438,6 +439,30 @@ namespace MachineBrigade.Game.Match
                 _censusDone = true;
                 _perf.Census(_surroundings.InstancedTriangles, _surroundings.Batches);
             }
+        }
+
+        private float _demolishAt = 8f;
+
+        /// <summary>Device check for building collapses: every few seconds the building nearest the view comes down.</summary>
+        private void Demolish()
+        {
+            _demolishAt = Time.time + 5f;
+            var focus = new System.Numerics.Vector2(_camera.Focus.x, _camera.Focus.z);
+            MachineBrigade.Sim.Entities.Prop best = null;
+            var nearest = 70f;
+            foreach (var prop in _world.Props)
+            {
+                if (!prop.IsAlive || !prop.Def.BlocksMovement || prop.Def.Indestructible || prop.Def.Width * prop.Def.Depth < 30f) continue;
+                var d = System.Numerics.Vector2.Distance(prop.Position, focus);
+                if (d >= nearest) continue;
+                nearest = d;
+                best = prop;
+            }
+            if (best == null) return;
+            // Look at it first, so the collapse is in view.
+            _camera.FocusOn(new Vector3(best.Position.X, 0f, best.Position.Y));
+            _lastInput = Time.unscaledTime;
+            _world.DebugDestroyProp(best);
         }
 
         /// <summary>A slow-motion moment on a blast that is on screen.</summary>
@@ -513,10 +538,6 @@ namespace MachineBrigade.Game.Match
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(180, 255);
                         }
-                        break;
-                    case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
-                    case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
-                        StartCinematic(e.Position);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
@@ -701,7 +722,11 @@ namespace MachineBrigade.Game.Match
             var touching = (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed) ||
                            (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed ||
                                                       Mouse.current.scroll.ReadValue().sqrMagnitude > 0f));
-            if (touching || _commander?.ArmedSupport != null || _paused) _lastInput = Time.unscaledTime;
+            if (touching || _commander?.ArmedSupport != null || _paused)
+            {
+                _lastInput = Time.unscaledTime;
+                _camera.StopFollowing();
+            }
             if (Time.unscaledTime - _lastInput < AutoCameraDelay) return;
             if (Time.time >= _attractAt)
             {
@@ -716,7 +741,7 @@ namespace MachineBrigade.Game.Match
                 }
                 if (count > 0) _attractFocus = sum / count;
             }
-            if (_attractFocus != Vector3.zero) _camera.Glide(_attractFocus, _camera.Zoom, Time.unscaledDeltaTime, 0.5f);
+            if (_attractFocus != Vector3.zero) _camera.Follow(_attractFocus, Time.unscaledDeltaTime);
         }
 
         private void UpdateStatus()

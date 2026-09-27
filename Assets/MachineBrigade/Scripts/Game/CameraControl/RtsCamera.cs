@@ -79,9 +79,16 @@ namespace MachineBrigade.Game.CameraControl
             Place();
         }
 
+        /// <summary>
+        /// Camera shake is switched off for now (the user found it read as stutter); explosions,
+        /// shots and cinematic moments still call <see cref="AddTrauma"/>, so turning this back on
+        /// restores them all.
+        /// </summary>
+        public static bool ShakeEnabled { get; set; }
+
         public void AddTrauma(float amount)
         {
-            if (Match.DebugFlags.Has("-mb-no-shake")) return;
+            if (!ShakeEnabled || Match.DebugFlags.Has("-mb-no-shake")) return;
             _trauma = Mathf.Min(1f, _trauma + amount * ShakeScale);
         }
 
@@ -104,6 +111,22 @@ namespace MachineBrigade.Game.CameraControl
             Zoom = Mathf.Clamp(Mathf.Lerp(Zoom, zoom, k), MinZoom, MaxZoom);
             Clamp();
         }
+
+        private Vector3 _followVelocity;
+
+        /// <summary>
+        /// Follows <paramref name="point"/> like a critically damped spring: when the point moves
+        /// on, the camera's speed changes smoothly instead of lurching as an exponential chase does.
+        /// </summary>
+        public void Follow(Vector3 point, float dt, float smoothTime = 1.6f)
+        {
+            if (dt <= 0f) return;
+            Focus = Vector3.SmoothDamp(Focus, new Vector3(point.x, 0f, point.z), ref _followVelocity, smoothTime, 14f, dt);
+            Clamp();
+        }
+
+        /// <summary>Forgets the follow speed (after the player moved the view by hand).</summary>
+        public void StopFollowing() => _followVelocity = Vector3.zero;
 
         /// <summary>Call once per frame after input: places the camera and applies shake.</summary>
         public void Apply(float unscaledDeltaTime)
