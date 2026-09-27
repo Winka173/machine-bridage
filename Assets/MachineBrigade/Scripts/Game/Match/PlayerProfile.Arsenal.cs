@@ -24,6 +24,7 @@ namespace MachineBrigade.Game.Match
             while (d.sinceEpic.Count < kinds) d.sinceEpic.Add(0);
             while (d.sinceLegendary.Count < kinds) d.sinceLegendary.Add(0);
             foreach (var g in d.gear) d.nextGearId = Math.Max(d.nextGearId, g.id + 1);
+            if (d.gearVersion < GearVersion) MigrateGear(d);
             // Gems are gone (one currency now): a save that still holds some gets coins for them.
             if (d.gems > 0)
             {
@@ -34,6 +35,38 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Coins for each gem an old save still held (a legendary crate was 500 gems, now 8,000 coins).</summary>
         public const int GemToCoins = 15;
+
+        /// <summary>The equipment model the save is in (see <see cref="Data.gearVersion"/>).</summary>
+        internal const int GearVersion = 2;
+
+        /// <summary>
+        /// Equipment from before the affix model: every piece gets a base type, a brand, its sub-stats
+        /// and (Epic and up) a trait (see <see cref="Gear.Migrate"/>); Plating pieces become Armor
+        /// pieces with a plating base type. A branch that wore both keeps its armour kit in the Armor
+        /// slot and the plating goes back to the bag; one that wore only plating wears it as armour.
+        /// The old Plating slot is now Optics, left empty. Nothing is lost.
+        /// </summary>
+        private static void MigrateGear(Data d)
+        {
+            var wasPlating = new HashSet<int>();
+            foreach (var g in d.gear)
+            {
+                if (g == null) continue;
+                if (g.slot == Gear.LegacyPlatingSlot) wasPlating.Add(g.id);
+                Gear.Migrate(g);
+            }
+            d.gear.RemoveAll(g => g == null);
+            for (var b = 0; b < Branches; b++)
+            {
+                var armor = b * Gear.Slots + (int)GearSlot.Armor;
+                var old = b * Gear.Slots + Gear.LegacyPlatingSlot;
+                if (old >= d.loadout.Count) continue;
+                var plating = d.loadout[old];
+                d.loadout[old] = 0;
+                if (plating != 0 && wasPlating.Contains(plating) && d.loadout[armor] == 0) d.loadout[armor] = plating;
+            }
+            d.gearVersion = GearVersion;
+        }
 
         private static Data A
         {
@@ -182,6 +215,8 @@ namespace MachineBrigade.Game.Match
             }
             keep.rarity++;
             keep.level = Mathf.Min(keep.level, Gear.LevelCap[keep.rarity]);
+            // It keeps its base type, sub-stats and trait; a new sub-stat slot and (at Epic) a trait are rolled.
+            Gear.Promote(keep, DeckBranches | WornBy(keep));
             Save();
             return keep;
         }
@@ -205,6 +240,22 @@ namespace MachineBrigade.Game.Match
             }
             return merges;
         }
+
+        /// <summary>The branches of the battle deck (crates and merges favour them).</summary>
+        public static BranchMask DeckBranches => Gear.DeckMask(MatchSettings.DeckVehicles);
+
+        /// <summary>The branches whose loadouts wear this piece.</summary>
+        private static BranchMask WornBy(GearItem item)
+        {
+            var mask = BranchMask.None;
+            for (var i = 0; i < A.loadout.Count; i++)
+                if (A.loadout[i] == item.id)
+                    mask |= GearCatalog.MaskOf((GearBranch)(i / Gear.Slots));
+            return mask;
+        }
+
+        /// <summary>The set brands a branch's loadout wears, for chips such as "Ironclad 2/4".</summary>
+        public static List<Gear.SetChip> SetChips(GearBranch branch) => Gear.SetChips(Loadout(branch));
 
         /// <summary>What the player's upgrades do to a vehicle of this card: its rank and its branch's loadout.</summary>
         public static VehicleBoost BoostFor(VehicleDef def) => Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
@@ -240,7 +291,7 @@ namespace MachineBrigade.Game.Match
                 if (IsUnlocked(id) && Rank(id) < CardRanks.Max) cards.Add(id);
             var sinceEpic = A.sinceEpic[(int)kind];
             var sinceLegendary = A.sinceLegendary[(int)kind];
-            var loot = Crates.Open(kind, rng, cards, ref sinceEpic, ref sinceLegendary, NextGearId);
+            var loot = Crates.Open(kind, rng, cards, ref sinceEpic, ref sinceLegendary, NextGearId, DeckBranches);
             A.sinceEpic[(int)kind] = sinceEpic;
             A.sinceLegendary[(int)kind] = sinceLegendary;
             A.coins += loot.Coins;

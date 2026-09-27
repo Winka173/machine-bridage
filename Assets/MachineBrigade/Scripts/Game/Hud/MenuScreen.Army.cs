@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Hud
             Support,
         }
 
-        private VisualElement _deckView, _gearView, _deckSlots, _collection, _gearSlots, _gearGrid, _gearInfo, _popover;
+        private VisualElement _deckView, _gearView, _deckSlots, _collection, _gearSlots, _gearGrid, _gearInfo, _popover, _gearSets;
         private Label _deckSummary, _deckWarnings, _popoverText, _gearTotal;
         private VisualElement _popoverInfo, _popoverUse;
         private ArmyView _armyView = ArmyView.Deck;
@@ -142,6 +142,8 @@ namespace MachineBrigade.Game.Hud
             centre.Add(_gearSlots);
             _gearTotal = UiKit.Text("", "gear-total");
             centre.Add(_gearTotal);
+            _gearSets = UiKit.Box("gear-sets");
+            centre.Add(_gearSets);
             _gearView.Add(centre);
             var inventory = UiKit.Box("gear-inventory");
             _gearInfo = UiKit.Box("gear-info");
@@ -396,6 +398,7 @@ namespace MachineBrigade.Game.Hud
                 if (PlayerProfile.Equipped(_branch, (GearSlot)s) is { } piece)
                     worn.Add(StatText(piece));
             _gearTotal.text = worn.Count == 0 ? Strings.Get("gear.totalNone") : Strings.Format("gear.total", string.Join("  ·  ", worn));
+            FillSetChips(_gearSets, _branch);
             _gearGrid.Clear();
             var items = PlayerProfile.GearOwned.Where(g => _slotFilter == null || g.Slot == _slotFilter)
                 .OrderByDescending(g => g.rarity).ThenBy(g => g.slot).ThenByDescending(g => g.level).ToList();
@@ -436,6 +439,9 @@ namespace MachineBrigade.Game.Hud
             names.Add(title);
             names.Add(UiKit.Text(Strings.Format("gear.detail", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), item.level,
                 Gear.LevelCap[item.rarity], StatText(item)), "gear-info-line"));
+            // The slot and brand under the name ("Weapon · Ironclad Works").
+            var brand = GearCatalog.Brand(item.brand);
+            names.Add(UiKit.Text(GearText.SlotName(item.Slot) + (brand != null ? "  ·  " + GearText.BrandName(brand) : ""), "gear-info-line gear-base-line"));
             var current = PlayerProfile.Equipped(_branch, item.Slot);
             if (current != null && current != item)
                 names.Add(UiKit.Text(Strings.Format("gear.compare", StatText(current), StatText(item)), "gear-info-compare"));
@@ -443,6 +449,7 @@ namespace MachineBrigade.Game.Hud
             names.Add(UiKit.Text(item.rarity < (int)Rarity.Legendary ? Strings.Format("gear.mergeHint", partners + 1) : Strings.Get("gear.top"), "gear-info-merge"));
             head.Add(names);
             _gearInfo.Add(head);
+            _gearInfo.Add(GearLines(item));
             var actions = UiKit.Box("gear-actions");
             var equipped = current == item;
             actions.Add(UiKit.WideButton(equipped ? "wide" : "wide primary", equipped ? "close" : "check",
@@ -480,12 +487,9 @@ namespace MachineBrigade.Game.Hud
             _ => "jet",
         };
 
-        private static string GearName(GearItem item) =>
-            item.Slot == GearSlot.Special
-                ? Strings.Get("module." + item.Module.ToString().ToLowerInvariant())
-                : Strings.Get("gear.name." + item.Slot.ToString().ToLowerInvariant());
+        private static string GearName(GearItem item) => GearText.Name(item);
 
-        /// <summary>A piece's effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m".</summary>
+        /// <summary>A piece's main effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m", or a module's name.</summary>
         private static string StatText(GearItem item)
         {
             var v = Gear.Value(item);
@@ -493,15 +497,79 @@ namespace MachineBrigade.Game.Hud
             {
                 GearSlot.Weapon => Strings.Format("stat.gear.damage", Pct(v)),
                 GearSlot.Loader => Strings.Format("stat.gear.fire", Pct(v)),
+                GearSlot.Armor when Gear.MainStat(item) == StatId.DamageTaken => Strings.Format("stat.gear.taken", Pct(v)),
                 GearSlot.Armor => Strings.Format("stat.gear.hp", Pct(v)),
-                GearSlot.Plating => Strings.Format("stat.gear.taken", Pct(v)),
+                GearSlot.Optics => Strings.Format("stat.gear.vision", Pct(v)),
                 GearSlot.Engine => Strings.Format("stat.gear.speed", Pct(v)),
                 GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0")),
                 _ => item.Module == SpecialModule.SmokeDischarger ? Strings.Format("stat.gear.smoke", Mathf.RoundToInt(v))
                     : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0"))
                     : item.Module == SpecialModule.ReactiveArmor ? Strings.Format("stat.gear.taken", Pct(v))
-                    : Strings.Format("stat.gear.crew", Pct(v)),
+                    : item.Module == SpecialModule.VeteranCrew ? Strings.Format("stat.gear.crew", Pct(v))
+                    : GearText.Name(item),
             };
+        }
+
+        // ------------------------------------------------------------------ gear rework: lines, trait, sets
+        // (Kept apart so the menu restyle can move them; styles are in the gear block at the end of Hud.uss.)
+
+        /// <summary>A piece's affix lines: main stat, implicit, drawback, sub-stats with their roll bars, the trait and the brand.</summary>
+        private static VisualElement GearLines(GearItem item)
+        {
+            var box = UiKit.Box("gear-lines");
+            if (item.Slot == GearSlot.Special)
+            {
+                box.Add(UiKit.Text(GearText.ModuleEffect(item), "gear-line gear-line-trait"));
+                return box;
+            }
+            foreach (var line in Gear.Lines(item))
+            {
+                var row = UiKit.Box("gear-line-row");
+                var kind = line.Kind switch
+                {
+                    Gear.LineKind.Main => "gear-line-main",
+                    Gear.LineKind.Implicit => "gear-line-implicit",
+                    Gear.LineKind.Penalty => "gear-line-penalty",
+                    _ => "gear-line-sub",
+                };
+                row.Add(UiKit.Text(GearText.Line(line), "gear-line " + kind));
+                if (line.Quality >= 0f)
+                {
+                    // The Division's roll bar: where the sub-stat landed between its worst and best roll.
+                    var bar = UiKit.Box("gear-roll");
+                    var fill = UiKit.Box("gear-roll-fill");
+                    fill.style.width = Length.Percent(Mathf.Lerp(8f, 100f, line.Quality));
+                    bar.Add(fill);
+                    row.Add(bar);
+                }
+                box.Add(row);
+            }
+            var trait = GearText.TraitLine(item);
+            if (trait.Length > 0) box.Add(UiKit.Text(trait, "gear-line gear-line-trait"));
+            else if (item.rarity < (int)Rarity.Epic) box.Add(UiKit.Text(Strings.Get("gear.traitAtEpic"), "gear-line gear-line-dim"));
+            var brand = GearCatalog.Brand(item.brand);
+            if (brand != null) box.Add(UiKit.Text(GearText.BrandName(brand) + "  ·  " + GearText.BrandBonuses(brand), "gear-line gear-line-set"));
+            return box;
+        }
+
+        /// <summary>The loadout's set chips ("Ironclad 2/4"), lit when the two-piece bonus is on.</summary>
+        private static void FillSetChips(VisualElement row, GearBranch branch)
+        {
+            row.Clear();
+            var chips = PlayerProfile.SetChips(branch);
+            if (chips.Count == 0)
+            {
+                row.Add(UiKit.Text(Strings.Get("gear.setNone"), "gear-set-none"));
+                return;
+            }
+            foreach (var chip in chips)
+            {
+                var label = UiKit.Text(GearText.Chip(chip), "gear-set-chip");
+                label.EnableInClassList("active", chip.TwoPiece);
+                label.EnableInClassList("full", chip.FourPiece);
+                label.tooltip = GearText.BrandBonuses(chip.Brand);
+                row.Add(label);
+            }
         }
 
         private static string Pct(float v) => Mathf.RoundToInt(v * 100f).ToString();

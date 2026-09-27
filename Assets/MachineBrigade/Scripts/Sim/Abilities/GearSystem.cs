@@ -247,7 +247,8 @@ namespace MachineBrigade.Sim.Abilities
                     Proc(v, TraitId.SiegeAnchor);
                 }
                 if (g.Anchored) v.RangeFactor *= 1f + g.Trait(TraitId.SiegeAnchor).B;
-                if (g.UnanchorUntil > now) speed = 0f;
+                // Dug in, and for a second after the order to move while the anchor comes up: no driving.
+                if (g.Anchored || g.UnanchorUntil > now) speed = 0f;
             }
             if (g.Has(TraitId.GhillieMode))
             {

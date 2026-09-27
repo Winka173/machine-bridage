@@ -45,6 +45,9 @@ namespace MachineBrigade.Game.Match
             public int universal;
             public List<GearItem> gear = new();
             public int nextGearId = 1;
+
+            /// <summary>2: equipment in the affix model (base types, sub-stats, traits; Optics in slot 3). Older saves are brought up to date on load.</summary>
+            public int gearVersion;
             public List<int> loadout = new();
             public List<int> crates = new();
             public List<int> sinceEpic = new();
@@ -333,6 +336,17 @@ namespace MachineBrigade.Game.Match
             _data = new Data();
             _noSave = true;
         }
+
+        /// <summary>Tests: starts from a saved profile's JSON (an old save, say), never written to the device.</summary>
+        internal static void LoadForTests(string json)
+        {
+            _data = JsonUtility.FromJson<Data>(json) ?? new Data();
+            _noSave = true;
+            FixArsenal(_data);
+        }
+
+        /// <summary>Tests: the profile as it would be saved.</summary>
+        internal static string JsonForTests() => JsonUtility.ToJson(D);
 
         private static bool _noSave;
     }
