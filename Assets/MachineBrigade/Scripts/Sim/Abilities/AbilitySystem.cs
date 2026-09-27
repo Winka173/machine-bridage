@@ -38,6 +38,9 @@ namespace MachineBrigade.Sim.Abilities
         private readonly List<Vehicle> _jammers = new();
         private readonly List<(string def, int team, Vector2 at, float heading)> _summons = new();
         private float _auraTimer;
+
+        /// <summary>Skill triggers are checked four times a second: each may search for enemies.</summary>
+        private float _skillTimer;
         private int _nextMine = 1;
 
         public AbilitySystem(SimWorld world) => _world = world;
@@ -58,12 +61,15 @@ namespace MachineBrigade.Sim.Abilities
             _auraTimer -= dt;
             var auraTick = _auraTimer <= 0f;
             if (auraTick) _auraTimer += AuraInterval;
+            _skillTimer -= dt;
+            var skillTick = _skillTimer <= 0f;
+            if (skillTick) _skillTimer += 0.25f;
 
             _summons.Clear();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
-                if (v.Def.Skills.Count > 0) UseSkills(v, now);
+                if (skillTick && v.Def.Skills.Count > 0) UseSkills(v, now);
                 if (v.Def.Mines != null) LayMines(v, now);
                 if (auraTick)
                 {

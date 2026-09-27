@@ -175,7 +175,10 @@ namespace MachineBrigade.Game.Match
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
-            foreach (var def in catalog.Vehicles.Values) _models.Prewarm(def.Model);
+            // Build the merged models of every vehicle this battle can field now, not on first use
+            // mid-battle, and only those: the catalogue holds bosses, elites and defences most
+            // battles never see, and every merged model costs load time and memory on a phone.
+            foreach (var id in Fieldable(catalog, mission)) _models.Prewarm(catalog.Vehicles[id].Model);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
@@ -248,6 +251,44 @@ namespace MachineBrigade.Game.Match
                 _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             }
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
+        }
+
+        /// <summary>Vehicles that can appear this battle: both decks (and their elite versions), units on the
+        /// field, the mission's boss, waves and placed units, fire-support escorts and every summon.</summary>
+        private HashSet<string> Fieldable(Catalog catalog, MissionDef mission)
+        {
+            var ids = new HashSet<string>();
+            void Add(string id)
+            {
+                if (id == null || !catalog.Vehicles.TryGetValue(id, out var def) || !ids.Add(id)) return;
+                if (catalog.EliteVariant(id) is { } elite) Add(elite);
+                foreach (var skill in def.Skills)
+                    if (skill.Unit != null) Add(skill.Unit);
+            }
+            for (var team = 0; team <= 1; team++)
+                if (_world.TryGetEconomy(team, out var economy))
+                {
+                    if (economy.Vehicles.Count == 0) foreach (var id in catalog.Vehicles.Keys) Add(id);
+                    foreach (var id in economy.Vehicles) Add(id);
+                }
+            foreach (var v in _world.Vehicles) Add(v.Def.Id);
+            foreach (var support in catalog.Supports.Values)
+                foreach (var unit in support.Units) Add(unit);
+            if (mission != null)
+            {
+                Add(mission.Boss?.Def);
+                Add(mission.Convoy?.Def);
+                if (mission.Waves != null) foreach (var id in mission.Waves.Roster) Add(id);
+                foreach (var u in mission.Units) Add(u.DefId);
+            }
+            // Boss Rush brings its bosses and their escorts later.
+            if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
+                foreach (var boss in new BossRushRules().Bosses)
+                {
+                    Add(boss);
+                    if (new BossRushRules().Escorts.TryGetValue(boss, out var escorts)) foreach (var e in escorts) Add(e);
+                }
+            return ids;
         }
 
         private string _builtGraphics;

@@ -425,6 +425,14 @@ namespace MachineBrigade.Game.Views
                 var centre = new Vector2(cx, cz);
                 var outside = Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) - _half;
                 if (outside < 18f || Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) > reach || NearRiver(centre, 11f)) continue;
+                // Towers only in the ring the camera can see; a tower is thousands of triangles in a
+                // dozen materials, and a city of them out to the horizon cost more than the battle.
+                if (outside > 62f) continue;
+                if (outside > 40f)
+                {
+                    Add(models, _rng.Next(2) == 0 ? "office_block" : "apartment", centre, _rng.Next(4) * 90f, 1f + (float)_rng.NextDouble() * 0.2f);
+                    continue;
+                }
                 var back = Mathf.Clamp01(0.5f + 0.5f * Vector2.Dot(centre.normalized, new Vector2(-0.7071f, 0.7071f)));
                 if (_rng.Next(4) == 0)
                 {
