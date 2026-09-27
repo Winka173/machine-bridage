@@ -150,7 +150,7 @@
                  { "def": "tank_destroyer", "team": 0, "x": -55, "z": -7.5, "heading": 0 },
                  { "def": "heavy_tank", "team": 0, "x": -45, "z": -5, "heading": 0 },
                  { "def": "mlrs", "team": 0, "x": -62.5, "z": -25, "heading": 0 } ],
-      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerCp": 28, "playerIncome": 1.4, "playerCap": 36,
+      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerCp": 28, "playerIncome": 1.55, "playerCap": 36,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "attack_jet"],
       "coins": 1200, "xp": 700, "unlocks": ["heavy_rocket_artillery", "mine_layer"], "starTime": 480, "starLosses": 12 }
   ]
