@@ -394,6 +394,12 @@ namespace MachineBrigade.Game.Match
             }
 
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
+            {
+                // Device check: a smoke screen in the thick of the fight every few seconds.
+                _smokeAt = Time.time + 9f;
+                _effects.DebugSmokeScreen(_camera.Focus + new Vector3(UnityEngine.Random.Range(-6f, 6f), 0f, UnityEngine.Random.Range(-6f, 6f)));
+            }
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
             else FollowTheFight();
@@ -430,6 +436,7 @@ namespace MachineBrigade.Game.Match
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
+            _map.DrawShields(_camera.Rotation, Time.time);
             _crates?.Update(_world);
             _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
@@ -442,6 +449,7 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+        private float _smokeAt = 10f;
 
         /// <summary>Device check for building collapses: every few seconds the building nearest the view comes down.</summary>
         private void Demolish()
@@ -538,6 +546,11 @@ namespace MachineBrigade.Game.Match
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(180, 255);
                         }
+                        break;
+                    case SimEventKind.StageCleared when !_menu:
+                    case SimEventKind.FortressAlert when !_menu:
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
+                        if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)

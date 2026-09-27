@@ -65,6 +65,8 @@ namespace MachineBrigade.Sim.Strikes
                 return CommandResult.Rejected(CommandError.UnknownCard);
             if (!SimMath.IsFinite(command.Point)) return CommandResult.Rejected(CommandError.InvalidPoint);
             if (!_world.Map.Contains(command.Point)) return CommandResult.Rejected(CommandError.OutOfBounds);
+            // Home zones: no strikes on the enemy's camp.
+            if (_world.InEnemyHome(command.Point, command.Team)) return CommandResult.Rejected(CommandError.InvalidPoint);
 
             var economy = _world.Economy.TryGet(command.Team, out var e) ? e : null;
             if (support.Consumable)

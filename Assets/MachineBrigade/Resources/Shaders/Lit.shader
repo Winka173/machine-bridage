@@ -2,7 +2,8 @@
 // worn edges, ground grime) in their vertex colours; it multiplies the material colour, exactly
 // as in the 3d_astra renderer. Lighting goes through URP's own UniversalFragmentPBR, so the sun,
 // its shadows, explosion point lights, ambient and reflections all behave like URP Lit.
-// _BaseMap textures the ground (white elsewhere); _Tint darkens wrecks; _Wind sways foliage.
+// _BaseMap textures the ground (white elsewhere); _Tint darkens wrecks, and its alpha below 1
+// flashes a vehicle white as it is hit; _Wind sways foliage.
 Shader "MachineBrigade/Lit"
 {
     Properties
@@ -200,6 +201,8 @@ Shader "MachineBrigade/Lit"
                 // added afterwards so it still blooms.
                 half4 color = UniversalFragmentPBR(inputData, surface);
                 color.rgb = min(color.rgb, MaxReflected) + _EmissionColor.rgb * _Tint.rgb;
+                // Hit flash: a brief white-hot wash (1 - _Tint.a; 0 unless a view is flashing).
+                color.rgb = lerp(color.rgb, half3(1.35h, 1.3h, 1.2h), (1.0h - _Tint.a) * 0.75h);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
                 return half4(color.rgb, 1.0h);
             }

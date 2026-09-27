@@ -204,6 +204,51 @@ namespace MachineBrigade.Game.Views
             }
         }
 
+        private readonly Dictionary<EntityId, Transform> _shields = new();
+        private static Mesh _shieldQuad;
+
+        /// <summary>
+        /// A shimmering energy shield round every prop that cannot be hurt yet (a siege objective
+        /// whose stage has not come): a pulsing ring facing the camera, gone once the shield drops.
+        /// </summary>
+        public void DrawShields(Quaternion cameraRotation, float time)
+        {
+            foreach (var prop in _world.Props)
+            {
+                var shielded = prop.IsAlive && prop.Invulnerable;
+                _shields.TryGetValue(prop.Id, out var ring);
+                if (!shielded)
+                {
+                    if (ring != null && ring.gameObject.activeSelf) ring.gameObject.SetActive(false);
+                    continue;
+                }
+                if (ring == null)
+                {
+                    _shieldQuad ??= ShieldQuad();
+                    ring = VehicleView.CreateMesh("Shield", _root.transform, _shieldQuad, _materials.Shockwave, false);
+                    _shields[prop.Id] = ring;
+                }
+                if (!ring.gameObject.activeSelf) ring.gameObject.SetActive(true);
+                var size = (prop.Radius + 2.5f) * 2.3f * (1f + Mathf.Sin(time * 3.1f + prop.Id.Value) * 0.04f);
+                ring.position = new Vector3(prop.Position.X, prop.Radius * 0.6f + 1f, prop.Position.Y);
+                ring.rotation = cameraRotation;
+                ring.localScale = new Vector3(size, size, 1f);
+            }
+        }
+
+        /// <summary>A camera-facing quad tinted shield blue, for the particle shader's ring shape.</summary>
+        private static Mesh ShieldQuad()
+        {
+            var colour = Primitives.Linear(new Color(0.35f, 0.85f, 1f, 0.8f));
+            var mesh = new Mesh { name = "PropShield" };
+            mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
+            mesh.SetUVs(0, new[] { new UnityEngine.Vector2(0f, 0f), new UnityEngine.Vector2(1f, 0f), new UnityEngine.Vector2(1f, 1f), new UnityEngine.Vector2(0f, 1f) });
+            mesh.SetColors(new[] { colour, colour, colour, colour });
+            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         public void Animate(float time)
         {
             if (_collapses.Count > 0) AnimateCollapses(time);

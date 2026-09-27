@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
@@ -78,6 +79,163 @@ namespace MachineBrigade.Sim.Modes
     /// Notices vehicles that are gone since the last look and books them to their side: how many
     /// each side lost and what they cost. Destroyed and removed vehicles count the same.
     /// </summary>
+    /// <summary>
+    /// Spawn protection for the capture modes, after LoL's Nexus Obelisk and Dota's fountain: each
+    /// side's camp gets two indestructible bastions (twin guns and flak, reaching 40 m, air and
+    /// ground) and a home zone (see <see cref="SimWorld.HomeZones"/>), so a winning army cannot
+    /// camp the losing side's spawn and a match cannot be steamrolled to its last vehicle.
+    /// </summary>
+    public static class BaseDefences
+    {
+        public const string Bastion = "spawn_bastion";
+
+        public static void Build(SimWorld world, params int[] teams)
+        {
+            world.HomeZones = true;
+            if (!world.Catalog.Vehicles.ContainsKey(Bastion)) return;
+            foreach (var team in teams)
+            {
+                if (!world.TryGetRally(team, out var rally)) continue;
+                var toward = rally.LengthSquared() > 1f ? Vector2.Normalize(-rally) : Vector2.UnitX;
+                var side = new Vector2(-toward.Y, toward.X);
+                foreach (var s in new[] { -1f, 1f })
+                {
+                    var bastion = world.SpawnVehicle(Bastion, team, rally + toward * 10f + side * (18f * s), SimMath.HeadingOf(toward));
+                    bastion.Invulnerable = true;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Watchtowers on the capture points, after Battlefront's and PlanetSide's point turrets: a
+    /// point a side holds gets that side's tower beside it after <see cref="BuildSeconds"/>; when
+    /// the point falls the tower is blown up, and the new owner's goes up in its place. A tower
+    /// knocked down while its side still holds the point is rebuilt after
+    /// <see cref="RebuildSeconds"/>. Holding ground is worth more than standing on it, and taking
+    /// a point means breaking its tower.
+    /// </summary>
+    public sealed class Outposts
+    {
+        public const string Tower = "point_tower";
+        public const float BuildSeconds = 8f;
+        public const float RebuildSeconds = 35f;
+
+        private sealed class Site
+        {
+            public ObjectiveState Point = null!;
+            public Vector2 Spot;
+            public float Heading;
+            public EntityId Tower;
+            public int Team = -1;
+            public int Pending = -1;
+            public double BuildAt;
+        }
+
+        private readonly List<Site> _sites = new();
+
+        /// <param name="built">Points already held get their tower at once (a defender dug in).</param>
+        public Outposts(SimWorld world, IReadOnlyList<ObjectiveState> points, bool built = false)
+        {
+            if (!world.Catalog.Vehicles.ContainsKey(Tower)) return;
+            // Towers stand to the side of the line between the camps, off the approach lanes.
+            var across = Vector2.UnitX;
+            if (world.TryGetRally(0, out var a) && world.TryGetRally(1, out var b) && Vector2.DistanceSquared(a, b) > 1f)
+            {
+                var along = Vector2.Normalize(b - a);
+                across = new Vector2(-along.Y, along.X);
+            }
+            foreach (var point in points)
+            {
+                var site = new Site { Point = point, Spot = SpotFor(world, point, across) };
+                site.Heading = SimMath.HeadingOf(point.Def.Position - site.Spot);
+                _sites.Add(site);
+                if (built && point.Owner >= 0) Raise(world, site, point.Owner);
+            }
+        }
+
+        public void Tick(SimWorld world)
+        {
+            foreach (var site in _sites)
+            {
+                var owner = site.Point.Owner;
+                var standing = world.TryGetVehicle(site.Tower, out var tower) && tower.IsAlive;
+                if (standing && site.Team != owner)
+                {
+                    // The point fell: its tower goes up with it.
+                    world.Damage.Apply(tower!, 1e7f, DamageType.HighExplosive);
+                    standing = false;
+                }
+                if (!standing && site.Tower.IsValid)
+                {
+                    // Lost while the point is still held: rebuilt after a while.
+                    if (site.Team == owner && owner >= 0)
+                    {
+                        site.Pending = owner;
+                        site.BuildAt = world.Time + RebuildSeconds;
+                    }
+                    site.Tower = default;
+                    site.Team = -1;
+                }
+                if (standing || owner < 0)
+                {
+                    if (owner < 0) site.Pending = -1;
+                    continue;
+                }
+                if (site.Pending != owner)
+                {
+                    site.Pending = owner;
+                    site.BuildAt = world.Time + BuildSeconds;
+                }
+                else if (world.Time >= site.BuildAt) Raise(world, site, owner);
+            }
+        }
+
+        /// <summary>The tower standing at a point for its owner, if any.</summary>
+        public bool TryGetTower(SimWorld world, ObjectiveState point, out Vehicle tower)
+        {
+            foreach (var site in _sites)
+                if (site.Point == point && world.TryGetVehicle(site.Tower, out tower!) && tower.IsAlive) return true;
+            tower = null!;
+            return false;
+        }
+
+        private static void Raise(SimWorld world, Site site, int team)
+        {
+            var tower = world.SpawnVehicle(Tower, team, site.Spot, site.Heading);
+            site.Tower = tower.Id;
+            site.Team = team;
+            site.Pending = -1;
+        }
+
+        /// <summary>Just outside the circle, on open ground with room round it, to one side of the lane.</summary>
+        private static Vector2 SpotFor(SimWorld world, ObjectiveState point, Vector2 across)
+        {
+            var centre = point.Def.Position;
+            var reach = point.Def.Radius + 3f;
+            var start = MathF.Atan2(across.Y, across.X);
+            for (var ring = 0; ring < 3; ring++)
+                for (var i = 0; i < 16; i++)
+                {
+                    // Alternate sides of the lane, working round from square across it.
+                    var step = (i + 1) / 2 * (i % 2 == 0 ? 1 : -1);
+                    var angle = start + (i % 4 < 2 ? 0f : MathF.PI) + step * (MathF.PI / 8f);
+                    var at = centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (reach + ring * 3f);
+                    if (Open(world, at, 3f)) return at;
+                }
+            return centre + across * reach;
+        }
+
+        private static bool Open(SimWorld world, Vector2 at, float room)
+        {
+            if (!world.Map.Contains(at)) return false;
+            for (var dx = -1; dx <= 1; dx++)
+                for (var dy = -1; dy <= 1; dy++)
+                    if (!world.Grid.IsWalkable(at + new Vector2(dx, dy) * room)) return false;
+            return true;
+        }
+    }
+
     public sealed class KillLedger
     {
         private readonly Dictionary<EntityId, (int team, int cost)> _alive = new();

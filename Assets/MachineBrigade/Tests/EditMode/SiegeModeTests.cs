@@ -17,6 +17,49 @@ namespace MachineBrigade.Tests
         private static readonly string[] Army =
             { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_mortar", "attack_helicopter", "engineer_vehicle" };
 
+        /// <summary>
+        /// The real fortress, in three stages: the attackers break the outer line (its relays),
+        /// then the shield generators, then the HQ; each stage adds time; the siege always ends.
+        /// </summary>
+        [Test]
+        public void ThreeStageSiegeOnARealFortress()
+        {
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("greenvale_siege"), seed: 7);
+            var mode = new SiegeMode(new SiegeRules
+            {
+                Attacker = new SideSetup { StartCp = 30f, Income = 1.6f, ArmyCap = 36, Vehicles = Army },
+                Defender = new SideSetup { StartCp = 16f, Income = 0.8f, Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle" } },
+            });
+            mode.Setup(world);
+            Assert.AreEqual(1, mode.Stage, "the siege opens on the outer line");
+            var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 3) { Stance = CommanderStance.Defend, DefendPoint = mode.Fortress };
+            var attacker = new ConquestAi(mode, 0, 1, AiDifficulty.Hard, 4)
+            {
+                Goal = w => w.TryGetProp(mode.Target(w), out var objective) ? objective.Position : mode.Fortress,
+                Demolish = w => mode.Target(w),
+            };
+            var reached = new List<string>();
+            var stage = mode.Stage;
+            var t = 0f;
+            for (; t < 20 * 60 && mode.Result == null; t += TestWorlds.Step)
+            {
+                mode.Tick(world, TestWorlds.Step);
+                defender.Tick(world, TestWorlds.Step);
+                attacker.Tick(world, TestWorlds.Step);
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+                if (mode.Stage != stage)
+                {
+                    reached.Add($"stage {mode.Stage} at {t / 60f:0.0} min ({mode.SecondsLeft(world):0} s left)");
+                    stage = mode.Stage;
+                }
+            }
+            Debug.Log($"THREE-STAGE SIEGE: {(mode.Result?.WinningTeam == 0 ? "WON" : "LOST")} after {t / 60f:0.0} min, progress {mode.Progress(world):P0}; " +
+                      string.Join("; ", reached));
+            Assert.IsNotNull(mode.Result, "a siege always ends");
+            Assert.GreaterOrEqual(reached.Count, 1, "a strong army breaks at least the outer line");
+        }
+
         [Test]
         public void AttackersBreakAFortressOfFixedDefences()
         {

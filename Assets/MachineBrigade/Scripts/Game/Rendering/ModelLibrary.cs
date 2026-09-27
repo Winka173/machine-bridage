@@ -133,8 +133,11 @@ namespace MachineBrigade.Game.Rendering
             (new Regex(@"^Propeller(_\d+)?(\.\d+)?$"), Vector3.forward, 2200f),
         };
 
-        /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam).</summary>
-        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam)(\.\d+)?$");
+        /// <summary>
+        /// Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam, a
+        /// launcher's erector, a tower's sweeping searchlight).
+        /// </summary>
+        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight)(\.\d+)?$");
 
         /// <summary>
         /// Turret parts that elevate with the gun: barrels, muzzle brakes, mortar tubes, rocket and

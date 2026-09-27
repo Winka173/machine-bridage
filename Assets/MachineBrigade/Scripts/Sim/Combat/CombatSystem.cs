@@ -151,6 +151,9 @@ namespace MachineBrigade.Sim.Combat
                 var effect = _world.Catalog.Damage.Multiplier(weapon.DamageType, other.Armor);
                 if (effect <= 0f) continue;
                 var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+                // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
+                // anti-aircraft weapons go for aircraft first.
+                if (other.Flying != IsAntiAir(weapon)) score *= 0.02f;
                 if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
                 if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
                 score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
@@ -160,6 +163,9 @@ namespace MachineBrigade.Sim.Combat
             }
             return best;
         }
+
+        /// <summary>Flak and anti-aircraft missiles: weapons made to kill aircraft.</summary>
+        private static bool IsAntiAir(WeaponDef weapon) => weapon.DamageType == DamageType.Flak || weapon.Targets == TargetLayers.Air;
 
         /// <summary>An aeroplane's guns stay on the target of its strafing run while it is in reach.</summary>
         private bool RunTargetInReach(Vehicle v, WeaponDef weapon, out Vehicle target)
@@ -213,11 +219,20 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
 
-            if (target == null || !CanFire(v, index, target)) return;
+            if (target == null || !CanFire(v, index, target) || !InRhythm(v, index)) return;
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
             if (state.Ammo == 0) return;
             if (state.Ammo > 0) state.Ammo--;
-            Launch(v, index, target.Position, target.Id, IsFlying(target));
+            var scale = IsMachineGun(weapon) ? RunDamage : 1f;
+            Launch(v, index, target.Position, target.Id, IsFlying(target), scale);
+            if (!IsMachineGun(weapon)) v.HeavyShotAt = _world.Time;
+            if (IsMachineGun(weapon))
+            {
+                // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).
+                state.Cooldown = weapon.Cooldown * Jitter();
+                if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (0.7f + 0.6f * (float)_world.Random.NextDouble());
+                return;
+            }
             if (weapon.Burst > 1)
             {
                 state.BurstLeft = weapon.Burst - 1;
@@ -228,8 +243,54 @@ namespace MachineBrigade.Sim.Combat
             }
             else
             {
-                state.Cooldown = weapon.Cooldown;
+                state.Cooldown = weapon.Cooldown * Jitter();
             }
+        }
+
+        /// <summary>A machine gun: bullets fired faster than three a second, one at a time.</summary>
+        private static bool IsMachineGun(WeaponDef weapon) =>
+            weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < 0.35f && weapon.Burst <= 1;
+
+        /// <summary>Rounds per run of machine-gun fire, and the pause after it.</summary>
+        private const int RunShortest = 6, RunLongest = 10;
+        private const float RestSeconds = 1.0f;
+
+        /// <summary>
+        /// Machine-gun rounds carry the damage of the pauses between runs, so a gun firing in
+        /// bursts hurts as much per minute as one that never let go: (run + pause) / run for an
+        /// average run of 8 rounds at a typical 0.18 s and a 1 s pause.
+        /// </summary>
+        private const float RunDamage = 1.7f;
+
+        /// <summary>No two shots are exactly as far apart: up to 10 % either way, so identical vehicles fall out of step.</summary>
+        private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
+
+        /// <summary>
+        /// The weapons of one vehicle take turns. A machine gun opens up after a random delay,
+        /// fires runs of 6 to 10 rounds and pauses; it holds off for a moment round each main-gun,
+        /// missile or rocket shot. Two heavy weapons never fire in the same instant: a helicopter
+        /// looses its missile, then its rockets, then rakes with its gun.
+        /// </summary>
+        private bool InRhythm(Vehicle v, int index)
+        {
+            var weapon = v.Def.Mounts[index].Weapon;
+            var sinceHeavy = _world.Time - v.HeavyShotAt;
+            var state = v.Weapons[index];
+            if (IsMachineGun(weapon))
+            {
+                if (!state.Started)
+                {
+                    state.Started = true;
+                    state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
+                    return false;
+                }
+                if (sinceHeavy < 0.35) return false;
+                // The main gun is about to fire: let it.
+                if (index > 0 && !IsMachineGun(v.Def.Weapon) && v.Target.IsValid && v.Weapons[0].Cooldown is > 0f and < 0.25f) return false;
+                if (state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
+                return true;
+            }
+            return sinceHeavy >= 0.3;
         }
 
         private bool CanFire(Vehicle v, int index, IDamageable target)
@@ -249,11 +310,14 @@ namespace MachineBrigade.Sim.Combat
             return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
         }
 
-        private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying)
+        private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f)
         {
             var weapon = shooter.Def.Mounts[index].Weapon;
             var distance = Vector2.Distance(shooter.Position, aimAt);
-            var spread = weapon.Guided ? 0f : weapon.Spread * Math.Clamp(distance / weapon.Range, 0.25f, 1f);
+            // Rounds scatter more the farther they fly: tight up close, and at the edge of range
+            // wide enough that a long shot can miss outright.
+            var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
+            var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
@@ -269,7 +333,9 @@ namespace MachineBrigade.Sim.Combat
             }
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
 
-            var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying);
+            var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale };
+            // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
+            if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach) projectile.Failed = true;
             if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
                 projectile.Jammed = true;
             if (weapon.Guided)

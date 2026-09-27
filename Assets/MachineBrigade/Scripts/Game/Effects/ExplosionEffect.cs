@@ -173,6 +173,38 @@ namespace MachineBrigade.Game.Effects
                 Flash, Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, AirShock,
                 GroundLight, CraterGlow,
             };
+
+            // Twins of the blended layers, drawn over the smoke screens, for blasts in front of them.
+            foreach (var layer in new[] { Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Dust, DustRing })
+            {
+                var twin = Object.Instantiate(layer.gameObject, root).GetComponent<ParticleSystem>();
+                twin.name = layer.name + " (front)";
+                var renderer = twin.GetComponent<ParticleSystemRenderer>();
+                renderer.sharedMaterial = fx.InFront(renderer.sharedMaterial);
+                twin.gameObject.SetActive(false);
+                _front[layer] = twin;
+            }
+        }
+
+        private readonly Dictionary<ParticleSystem, ParticleSystem> _front = new();
+
+        /// <summary>The smoke screens standing now (StrikeEffects keeps the list).</summary>
+        public SmokeScreens Screens { get; } = new();
+
+        /// <summary>
+        /// The system a burst at <paramref name="position"/> goes into: the layer itself, or its twin
+        /// drawn over the smoke screens when the blast stands clear of them and nearer the camera.
+        /// Blasts inside a screen or behind it stay under the smoke.
+        /// </summary>
+        public ParticleSystem Route(ParticleSystem system, Vector3 position)
+        {
+            if (Screens.Count == 0 || !_front.TryGetValue(system, out var twin) || !Screens.InFront(position)) return system;
+            if (!twin.gameObject.activeSelf)
+            {
+                twin.gameObject.SetActive(true);
+                twin.Play(true);
+            }
+            return twin;
         }
 
         public ParticleSystem Flash { get; }
@@ -200,6 +232,7 @@ namespace MachineBrigade.Game.Effects
         public void Clear()
         {
             foreach (var system in All) system.Clear(true);
+            foreach (var twin in _front.Values) twin.Clear(true);
         }
 
         /// <summary>
@@ -271,6 +304,47 @@ namespace MachineBrigade.Game.Effects
             emission.enabled = false;
             ps.Play(true);
             return ps;
+        }
+    }
+
+    /// <summary>
+    /// The smoke screens standing now, as circles on the ground, so the blasts in front of them
+    /// can be drawn over the smoke and the ones inside or behind under it (see
+    /// <see cref="BlastLayers.Route"/> and <see cref="FxQueue"/>).
+    /// </summary>
+    internal sealed class SmokeScreens
+    {
+        private readonly List<(Vector3 centre, float radius)> _screens = new();
+
+        public int Count => _screens.Count;
+
+        public void Add(Vector3 centre, float radius) => _screens.Add((centre, radius));
+
+        public void Remove(Vector3 centre)
+        {
+            for (var i = _screens.Count - 1; i >= 0; i--)
+                if ((_screens[i].centre - centre).sqrMagnitude < 0.01f)
+                {
+                    _screens.RemoveAt(i);
+                    return;
+                }
+        }
+
+        /// <summary>Whether a point stands clear of every screen and on the camera's side of it.</summary>
+        public bool InFront(Vector3 point)
+        {
+            var camera = Camera.main;
+            if (camera == null) return false;
+            var forward = camera.transform.forward;
+            forward.y = 0f;
+            if (forward.sqrMagnitude < 1e-4f) return false;
+            foreach (var (centre, radius) in _screens)
+            {
+                var offset = point - centre;
+                offset.y = 0f;
+                if (offset.sqrMagnitude < radius * radius || Vector3.Dot(offset, forward) > 0f) return false;
+            }
+            return true;
         }
     }
 
@@ -377,9 +451,9 @@ namespace MachineBrigade.Game.Effects
 
         public void Clear() => _pending.Clear();
 
-        private static void Emit(in Burst b, Vector3 position, float scale)
+        private void Emit(in Burst b, Vector3 position, float scale)
         {
-            var ps = b.System;
+            var ps = _layers.Route(b.System, position);
             var main = ps.main;
             main.startSize = new ParticleSystem.MinMaxCurve(b.Size.x * scale, b.Size.y * scale);
             main.startSpeed = new ParticleSystem.MinMaxCurve(b.Speed.x * scale, b.Speed.y * scale);

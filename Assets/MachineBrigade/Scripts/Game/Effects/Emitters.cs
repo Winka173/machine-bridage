@@ -18,6 +18,8 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _flame;
         private readonly ParticleSystem _flak;
         private readonly ParticleSystem _repair;
+        private readonly ParticleSystem _damageSmoke;
+        private readonly ParticleSystem _damageFire;
 
         public Emitters(MaterialLibrary m, Transform parent)
         {
@@ -30,6 +32,16 @@ namespace MachineBrigade.Game.Effects
             _flak = Continuous(parent, "Flak Bursts", m.Smoke, 200, PB.Plume(0.08f, 0.3f, 0.8f), 0.6f, 1.8f);
             _repair = Continuous(parent, "Repair", m.Sparks, 200,
                 PB.Fade(new Color(0.5f, 1.6f, 0.8f), new Color(0.3f, 1.2f, 0.6f), new Color(0.2f, 0.8f, 0.4f)), 1f, 0.3f);
+            // A damaged vehicle's smoke: billows off the engine deck, grey while it is only hurt,
+            // black and thick once it is burning (the particle colour sets how dark).
+            _damageSmoke = Continuous(parent, "Damage Smoke", FxMaterials.Shared.Smoke, 1200,
+                PB.Hold(Color.white, new Color(0.85f, 0.85f, 0.85f), 0.12f, 0.5f, 0.85f), 0.6f, 2.2f);
+            PB.Flipbook(_damageSmoke, loop: false, tilt: 25f);
+            PB.Rise(_damageSmoke, 1.2f, 2.4f);
+            // Flames licking out of a badly damaged hull.
+            _damageFire = Continuous(parent, "Damage Fire", FxMaterials.Shared.Flames, 600,
+                PB.Hold(new Color(0.3f, 0.27f, 0.24f), new Color(0.26f, 0.24f, 0.22f), 0.1f, 0.6f), 0.7f, 1.2f);
+            PB.Flipbook(_damageFire, loop: true, tilt: 10f, pivotY: -0.1f);
             _dust = Continuous(parent, "Tread Dust", m.Smoke, 1500,
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
         }
@@ -70,6 +82,29 @@ namespace MachineBrigade.Game.Effects
             for (var i = 0; i < 6; i++)
                 Emit(_repair, position + Random.insideUnitSphere * 1.2f, Vector3.up * Random.Range(1.5f, 3f), Random.Range(0.15f, 0.3f),
                     Random.Range(0.6f, 1f));
+        }
+
+        /// <summary>One billow of smoke off a damaged vehicle; <paramref name="shade"/> 1 is pale grey, 0 black.</summary>
+        public void DamageSmoke(Vector3 position, float size, float shade)
+        {
+            var emit = new ParticleSystem.EmitParams
+            {
+                position = position + Random.insideUnitSphere * 0.3f,
+                velocity = Vector3.up * Random.Range(0.6f, 1.2f) + Random.insideUnitSphere * 0.3f,
+                startSize = size * Random.Range(0.8f, 1.2f),
+                startLifetime = Random.Range(1.6f, 2.4f),
+                startColor = new Color(0.12f + 0.4f * shade, 0.12f + 0.39f * shade, 0.12f + 0.38f * shade, 0.85f),
+                rotation = Random.Range(0f, 360f),
+                applyShapeToPosition = false,
+            };
+            _damageSmoke.Emit(emit, 1);
+        }
+
+        /// <summary>A lick of flame out of a burning hull.</summary>
+        public void DamageFire(Vector3 position, float size)
+        {
+            Emit(_damageFire, position, Vector3.up * Random.Range(0.4f, 0.9f) + Random.insideUnitSphere * 0.2f, size * Random.Range(0.8f, 1.2f),
+                Random.Range(0.45f, 0.75f));
         }
 
         public void Dust(Vector3 position, float scale)

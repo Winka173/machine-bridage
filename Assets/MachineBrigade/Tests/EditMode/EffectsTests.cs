@@ -65,8 +65,44 @@ namespace MachineBrigade.Tests
             var layers = new BlastLayers(_materials, _root.transform);
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
                 ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
-            // 17 layers (the rolling fireballs among them) plus the burning debris's smoke-trail sub-emitter.
-            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 18, "one system per layer kind, not per blast");
+            // 17 layers (the rolling fireballs among them) plus the burning debris's smoke-trail
+            // sub-emitter, and 7 twins drawn in front of smoke screens.
+            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 25, "one system per layer kind, not per blast");
+        }
+
+        [Test]
+        public void BlastsDrawInAFixedOrderAroundSmokeScreens()
+        {
+            var fx = FxMaterials.Shared;
+            Assert.Less(fx.Dust.renderQueue, fx.Smoke.renderQueue);
+            Assert.Less(fx.Smoke.renderQueue, fx.Flames.renderQueue);
+            Assert.Less(fx.Flames.renderQueue, fx.Blast.renderQueue);
+            Assert.AreEqual(fx.Blast.renderQueue, fx.HotBlast.renderQueue);
+            Assert.Less(fx.Blast.renderQueue, fx.ScreenSmoke.renderQueue, "a smoke screen covers the blasts inside it");
+            Assert.Greater(fx.InFront(fx.Dust).renderQueue, fx.ScreenSmoke.renderQueue, "and blasts in front of it cover the screen");
+            Assert.Less(fx.InFront(fx.Blast).renderQueue, 3010, "additive light still comes last");
+
+            var cameraObject = new GameObject("Camera") { tag = "MainCamera" };
+            try
+            {
+                cameraObject.AddComponent<Camera>();
+                cameraObject.transform.SetPositionAndRotation(new Vector3(0f, 40f, -40f), Quaternion.Euler(45f, 0f, 0f));
+                var layers = new BlastLayers(_materials, _root.transform);
+                Assert.AreSame(layers.Fireball, layers.Route(layers.Fireball, new Vector3(0f, 0f, -30f)), "no screen: the layer itself");
+                layers.Screens.Add(Vector3.zero, 10f);
+                Assert.AreSame(layers.Fireball, layers.Route(layers.Fireball, new Vector3(2f, 0f, 1f)), "inside the screen: under the smoke");
+                Assert.AreSame(layers.Fireball, layers.Route(layers.Fireball, new Vector3(0f, 0f, 20f)), "behind it: under the smoke");
+                var front = layers.Route(layers.Fireball, new Vector3(0f, 0f, -20f));
+                Assert.AreNotSame(layers.Fireball, front, "in front of it: the twin over the smoke");
+                Assert.AreEqual(fx.InFront(fx.Blast), front.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+                Assert.AreSame(layers.Sparks, layers.Route(layers.Sparks, new Vector3(0f, 0f, -20f)), "additive layers need no twin");
+                layers.Screens.Remove(Vector3.zero);
+                Assert.AreSame(layers.Fireball, layers.Route(layers.Fireball, new Vector3(0f, 0f, -20f)), "the screen gone: back to the layer");
+            }
+            finally
+            {
+                Object.DestroyImmediate(cameraObject);
+            }
         }
 
         [Test]

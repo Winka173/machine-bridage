@@ -124,6 +124,46 @@ namespace MachineBrigade.Sim
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
+        /// <summary>
+        /// Home zones (the capture modes): within <see cref="HomeRadius"/> of its own camp a
+        /// vehicle repairs 2 % of its health a second once it has not been hit for 3 s, a newly
+        /// arrived vehicle takes a fifth of the damage for its first 5 s, and the enemy cannot call
+        /// strikes into the zone.
+        /// </summary>
+        public bool HomeZones { get; set; }
+
+        public const float HomeRadius = 35f;
+
+        private readonly bool[] _entrench = new bool[2];
+
+        /// <summary>
+        /// A side told to dig in (its commander's Defend stance): its ground vehicles that have
+        /// stood still for <see cref="EntrenchSeconds"/> go hull-down and take
+        /// <see cref="EntrenchReduction"/> less damage from direct fire (guns and bullets; not
+        /// artillery, rockets or bombs, the way to dig them out), until they move again.
+        /// </summary>
+        public void Entrench(int team, bool on)
+        {
+            if (team >= 0 && team < _entrench.Length) _entrench[team] = on;
+        }
+
+        public const float EntrenchSeconds = 3f;
+        public const float EntrenchReduction = 0.2f;
+
+        /// <summary>Hull-down: its side is dug in and it has not moved for a while.</summary>
+        public bool IsEntrenched(Vehicle v) =>
+            v.Team >= 0 && v.Team < _entrench.Length && _entrench[v.Team] && !v.Flying && !v.Def.Static &&
+            Time - v.StillSince >= EntrenchSeconds;
+
+        /// <summary>Whether a point lies in another side's home zone (strikes cannot be called there).</summary>
+        internal bool InEnemyHome(Vector2 point, int team)
+        {
+            if (!HomeZones) return false;
+            foreach (var start in Map.Teams)
+                if (start.Team != team && Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+            return false;
+        }
+
         public void EnableEconomy(TeamEconomy economy)
         {
             // The catalog sets the pace of every economy (see balance.json "economy").
@@ -158,6 +198,9 @@ namespace MachineBrigade.Sim
 
         public bool TryGetRally(int team, out Vector2 rally) => _rally.TryGetValue(team, out rally);
 
+        /// <summary>Moves a side's drop zone (an Assault attacker moving up behind the sector it took).</summary>
+        public void SetRally(int team, Vector2 rally) => _rally[team] = ClampToMap(rally);
+
         public int CountAlive(int team)
         {
             var count = 0;
@@ -182,6 +225,7 @@ namespace MachineBrigade.Sim
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
             Emit(SimEvent.Spawned(vehicle));
+            if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
         }
 

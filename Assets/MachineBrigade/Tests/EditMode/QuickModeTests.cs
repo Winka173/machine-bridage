@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim;
@@ -71,10 +72,23 @@ namespace MachineBrigade.Tests
             });
             mode.Setup(world);
             foreach (var p in mode.Points) Assert.AreEqual(1, p.Owner, "the defender owns every objective at the start");
+            Assert.AreEqual(3, mode.SectorCount, "three sectors");
+            Assert.AreEqual(2, mode.SectorPoints(1).Count, "B has two points");
+            Assert.IsFalse(mode.SectorPoints(0)[0].Locked, "only the front sector is live");
+            Assert.IsTrue(mode.SectorPoints(1).All(p => p.Locked) && mode.SectorPoints(2).All(p => p.Locked));
+            world.TryGetRally(0, out var from);
+            world.TryGetRally(1, out var to);
+            var depth = new float[3];
+            for (var s = 0; s < 3; s++)
+                depth[s] = mode.SectorPoints(s).Average(p => System.Numerics.Vector2.Distance(p.Def.Position, from));
+            Assert.Less(depth[0], depth[1], "sectors lie one behind the other");
+            Assert.Less(depth[1], depth[2]);
+            Assert.GreaterOrEqual(System.Numerics.Vector2.Distance(mode.SectorPoints(2)[0].Def.Position, to), 40f, "C well short of the camp");
+            Assert.GreaterOrEqual(world.VehicleList.Count(v => v.Team == 1 && v.Def.Static), 7, "each sector dug in");
             var attacker = new ConquestAi(mode, 0, 1, AiDifficulty.Hard, 7) { Stance = CommanderStance.Attack };
             var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 8) { Stance = CommanderStance.Defend };
-            var (kills, minutes) = Play(world, mode, attacker, defender, 15f);
-            Debug.Log($"Assault: {minutes:0.0} min, taken {mode.Taken}/{mode.Points.Count}, result {mode.Result?.WinningTeam}, destroyed {kills}");
+            var (kills, minutes) = Play(world, mode, attacker, defender, 18f);
+            Debug.Log($"Assault: {minutes:0.0} min, sector {mode.Sector + 1}/{mode.SectorCount}, taken {mode.Taken}/{mode.Points.Count}, result {mode.Result?.WinningTeam}, destroyed {kills}");
             Assert.IsNotNull(mode.Result, "an assault ends by capture or by the clock");
             Assert.Greater(kills, 10, "there is a real fight");
         }

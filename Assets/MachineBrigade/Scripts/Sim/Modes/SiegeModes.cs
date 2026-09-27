@@ -2,30 +2,64 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
+using MachineBrigade.Sim.Events;
 using MachineBrigade.Sim.Entities;
 
 namespace MachineBrigade.Sim.Modes
 {
     public sealed class SiegeRules
     {
-        /// <summary>Seconds to bring down the command HQ.</summary>
-        public float TimeLimit { get; set; } = 15 * 60f;
+        /// <summary>
+        /// The clock is a time bank (as in Overwatch escort): this much at the start, and each
+        /// stage cleared adds its bonus, up to <see cref="MaxBank"/> on the clock at once.
+        /// </summary>
+        public float StartSeconds { get; set; } = 300f;
 
-        /// <summary>Prop that has to fall.</summary>
+        public float[] StageBonus { get; set; } = { 240f, 300f };
+        public float MaxBank { get; set; } = 600f;
+
+        /// <summary>
+        /// The clock may run over by up to this long while the attackers are fighting at a live
+        /// objective, so a strike already in the air can still count.
+        /// </summary>
+        public float Overtime { get; set; } = 90f;
+
+        /// <summary>Stage 1 objectives: the relay stations of the outer line.</summary>
+        public string Relay { get; set; } = "radar_station";
+
+        /// <summary>Stage 2 objectives: the shield generators inside the walls, which keep the HQ shielded.</summary>
+        public string Generator { get; set; } = "shield_generator";
+
+        /// <summary>Stage 3: the prop that has to fall.</summary>
         public string Target { get; set; } = "command_hq";
 
-        /// <summary>The HQ is this many times tougher than the building's catalogue health (a fortress core).</summary>
-        public float Hardening { get; set; } = 4f;
+        /// <summary>The HQ is this many times tougher than the building's catalogue health.</summary>
+        public float Hardening { get; set; } = 2.5f;
+
+        /// <summary>The fortress guardian that rolls out of the keep when stage 3 begins (null: none).</summary>
+        public string? Guardian { get; set; } = "mobile_fortress";
+
+        /// <summary>CP the attacker gets each time a stage falls.</summary>
+        public float StageCp { get; set; } = 15f;
 
         public SideSetup Attacker { get; set; } = new() { StartCp = 26f, Income = 1.5f, ArmyCap = 34 };
         public SideSetup Defender { get; set; } = new() { StartCp = 20f, Income = 1f };
     }
 
     /// <summary>
-    /// Siege (công thành): the enemy holds a fortress of walls, gun turrets, AA, bunkers and guard
-    /// towers around a command HQ. The player's army has to break in and level the HQ before the
-    /// clock runs out; the defender sends out its own tanks from inside the walls.
+    /// Siege (công thành), in three stages.
+    /// <list type="number">
+    /// <item><description>Break the outer line: destroy its relay stations.</description></item>
+    /// <item><description>Get inside the walls and destroy the shield generators. While any
+    /// stands, the HQ is shielded, and each one lost browns out the defences.</description></item>
+    /// <item><description>Level the command HQ in the keep. Its guardian boss rolls out, and at
+    /// 75, 50 and 25 % health the HQ calls a barrage, raises a shield round the keep with elite
+    /// reinforcements, and makes a last stand.</description></item>
+    /// </list>
+    /// Each stage cleared adds time, pays the attacker CP, and blows up the defences of the ring
+    /// just taken, one after another. When the HQ falls, the whole fortress goes up in a chain.
     /// </summary>
     public sealed class SiegeMode : IGameMode, IObjectiveMode
     {
@@ -34,9 +68,17 @@ namespace MachineBrigade.Sim.Modes
 
         private readonly SiegeRules _rules;
         private readonly KillLedger _ledger = new();
+        private readonly List<EntityId> _relays = new();
+        private readonly List<EntityId> _generators = new();
         private readonly List<EntityId> _targets = new();
-        private readonly List<EntityId> _defences = new();
+        private readonly List<EntityId>[] _defences = { new(), new(), new() };
+        private readonly List<EntityId> _fortressProps = new();
+        private readonly List<(double at, EntityId id, bool prop)> _chain = new();
         private double _wipedSince = -1;
+        private double _deadline;
+        private double _finishAt = -1;
+        private double _glyphUntil = -1;
+        private int _hqPhase;
 
         public SiegeMode(SiegeRules? rules = null) => _rules = rules ?? new SiegeRules();
 
@@ -46,7 +88,10 @@ namespace MachineBrigade.Sim.Modes
         public int Kills => _ledger.Kills(PlayerTeam);
         public int Losses => _ledger.Losses(PlayerTeam);
 
-        public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)world.Time);
+        /// <summary>The stage under way: 1 outer line, 2 walls, 3 keep (4 once the fortress fell).</summary>
+        public int Stage { get; private set; } = 1;
+
+        public float SecondsLeft(SimWorld world) => MathF.Max(0f, (float)(_deadline - world.Time));
 
         /// <summary>The fortress centre (the HQ), for the defender to rally round.</summary>
         public Vector2? Fortress { get; private set; }
@@ -57,56 +102,143 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Defender.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             foreach (var prop in world.Props)
-                if (prop.IsAlive && prop.Def.Id == _rules.Target)
+            {
+                if (!prop.IsAlive) continue;
+                if (prop.Def.Id == _rules.Target)
                 {
                     _targets.Add(prop.Id);
                     if (_rules.Hardening > 1f) prop.Harden(_rules.Hardening);
                     Fortress ??= prop.Position;
                 }
-            foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static) _defences.Add(v.Id);
+                else if (prop.Def.Id == _rules.Relay) _relays.Add(prop.Id);
+                else if (prop.Def.Id == _rules.Generator) _generators.Add(prop.Id);
+            }
             if (Fortress == null && world.TryGetRally(EnemyTeam, out var rally)) Fortress = rally;
+            var rings = world.Map.SiegeRings;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static) _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
+            // Everything built into the fortress goes up with it at the end.
+            if (Fortress is { } centre && rings.Count > 0)
+                foreach (var prop in world.Props)
+                    if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible && Chebyshev(prop.Position, centre) <= rings[0] + 4f)
+                        _fortressProps.Add(prop.Id);
+            // A map without relays (or generators) starts at the stage it has, with the time those stages would have earned.
+            Stage = _relays.Count > 0 ? 1 : _generators.Count > 0 ? 2 : 3;
+            _deadline = _rules.StartSeconds;
+            for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
+            Shield(world);
         }
 
-        /// <summary>Share of the HQ destroyed (0-1); without an HQ, of the fixed defences.</summary>
+        /// <summary>Which ring a point lies in: 1 outer line, 2 walls, 3 keep.</summary>
+        private int RingOf(Vector2 p, IReadOnlyList<float> rings)
+        {
+            if (Fortress is not { } centre || rings.Count < 2) return 1;
+            var d = Chebyshev(p, centre);
+            return d > rings[0] ? 1 : d > rings[1] ? 2 : 3;
+        }
+
+        private static float Chebyshev(Vector2 a, Vector2 b) => MathF.Max(MathF.Abs(a.X - b.X), MathF.Abs(a.Y - b.Y));
+
+        /// <summary>Only the current stage's objectives can be hurt; later ones are shielded.</summary>
+        private void Shield(SimWorld world)
+        {
+            var glyph = world.Time < _glyphUntil;
+            foreach (var id in _relays)
+                if (world.TryGetProp(id, out var p)) p.Invulnerable = false;
+            foreach (var id in _generators)
+                if (world.TryGetProp(id, out var p)) p.Invulnerable = Stage < 2;
+            foreach (var id in _targets)
+                if (world.TryGetProp(id, out var p)) p.Invulnerable = Stage < 3 || glyph;
+            foreach (var id in _defences[2])
+                if (world.TryGetVehicle(id, out var v)) v.Invulnerable = glyph;
+        }
+
+        private static int Alive(SimWorld world, List<EntityId> props)
+        {
+            var n = 0;
+            foreach (var id in props)
+                if (world.TryGetProp(id, out var p) && p.IsAlive) n++;
+            return n;
+        }
+
+        /// <summary>Share of the whole siege done (0-1): a third per stage.</summary>
         public float Progress(SimWorld world)
         {
-            if (_targets.Count > 0)
+            if (Stage >= 4) return 1f;
+            float part;
+            switch (Stage)
             {
-                float hp = 0f, max = 0f;
-                foreach (var id in _targets)
-                    if (world.TryGetProp(id, out var p))
+                case 1:
+                    part = _relays.Count > 0 ? 1f - Alive(world, _relays) / (float)_relays.Count : 1f;
+                    break;
+                case 2:
+                    part = _generators.Count > 0 ? 1f - Alive(world, _generators) / (float)_generators.Count : 1f;
+                    break;
+                default:
+                    if (_targets.Count == 0)
                     {
-                        hp += MathF.Max(0f, p.Hp);
-                        max += p.MaxHp;
+                        // No HQ: the fixed defences are the fortress (destroyed ones leave the world's list).
+                        int total = 0, standing = 0;
+                        foreach (var ring in _defences)
+                            foreach (var id in ring)
+                            {
+                                total++;
+                                if (world.TryGetVehicle(id, out var v) && v.IsAlive) standing++;
+                            }
+                        part = total > 0 ? 1f - standing / (float)total : 0f;
+                        break;
                     }
-                return max > 0f ? 1f - hp / max : 1f;
+                    float hp = 0f, max = 0f;
+                    foreach (var id in _targets)
+                        if (world.TryGetProp(id, out var p))
+                        {
+                            hp += MathF.Max(0f, p.Hp);
+                            max += p.MaxHp;
+                        }
+                    part = max > 0f ? 1f - hp / max : 1f;
+                    break;
             }
-            // Destroyed vehicles leave the world's list, so count against the ones there at the start.
-            var standing = 0;
-            foreach (var id in _defences)
-                if (world.TryGetVehicle(id, out var v) && v.IsAlive) standing++;
-            return _defences.Count > 0 ? 1f - standing / (float)_defences.Count : 0f;
+            return MathF.Min(1f, (Stage - 1 + part) / 3f);
         }
 
-        /// <summary>What the attacking army should knock down now: the HQ.</summary>
+        /// <summary>What the attacking army should knock down now: the current stage's nearest standing objective.</summary>
         public EntityId Target(SimWorld world)
         {
-            foreach (var id in _targets)
-                if (world.TryGetProp(id, out var p) && p.IsAlive) return id;
-            return EntityId.None;
+            var list = Stage switch { 1 => _relays, 2 => _generators, _ => _targets };
+            var from = world.TryGetRally(PlayerTeam, out var rally) ? rally : Vector2.Zero;
+            var best = EntityId.None;
+            var nearest = float.MaxValue;
+            foreach (var id in list)
+            {
+                if (!world.TryGetProp(id, out var p) || !p.IsAlive) continue;
+                var d = Vector2.DistanceSquared(p.Position, from);
+                if (d >= nearest) continue;
+                nearest = d;
+                best = id;
+            }
+            return best;
         }
 
         public void Tick(SimWorld world, float dt)
         {
             if (Result != null) return;
             _ledger.Update(world);
-            if (Progress(world) >= 0.999f)
+            RunChain(world);
+            if (_finishAt >= 0)
             {
-                Finish(world, PlayerTeam);
+                if (world.Time >= _finishAt) Finish(world, PlayerTeam);
                 return;
             }
-            if (world.Time >= _rules.TimeLimit)
+            if (Stage == 1 && Alive(world, _relays) == 0) Advance(world, 2);
+            if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
+            if (Stage == 3) KeepEvents(world);
+            Brownout(world);
+            if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= 0.999f))
+            {
+                Fall(world);
+                return;
+            }
+            if (world.Time >= _deadline && !(world.Time < _deadline + _rules.Overtime && Contested(world)))
             {
                 Finish(world, EnemyTeam);
                 return;
@@ -114,6 +246,147 @@ namespace MachineBrigade.Sim.Modes
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
+        }
+
+        /// <summary>Attackers are fighting within 25 m of a live objective (overtime runs while they are).</summary>
+        private bool Contested(SimWorld world)
+        {
+            if (!world.TryGetProp(Target(world), out var objective)) return false;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == PlayerTeam && Vector2.Distance(v.Position, objective.Position) < 25f) return true;
+            return false;
+        }
+
+        private void Advance(SimWorld world, int next)
+        {
+            var cleared = Stage;
+            Stage = next;
+            var bonus = _rules.StageBonus.Length >= cleared ? _rules.StageBonus[cleared - 1] : 0f;
+            _deadline = Math.Min(_deadline + bonus, world.Time + _rules.MaxBank);
+            if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.StageCp);
+            // The ring just taken is lost to the defender: its guns blow up one after another.
+            Collapse(world, _defences[cleared - 1], 0.25, props: false);
+            Shield(world);
+            if (next == 3 && _rules.Guardian != null && Fortress is { } hq && world.Catalog.Vehicles.ContainsKey(_rules.Guardian))
+            {
+                var toward = world.TryGetRally(PlayerTeam, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
+                world.SpawnVehicle(_rules.Guardian, EnemyTeam, hq + toward * 12f, SimMath.HeadingOf(toward));
+            }
+            world.Emit(SimEvent.Stage(next, Fortress ?? Vector2.Zero, next == 2 ? "siege.stage2" : "siege.stage3"));
+        }
+
+        /// <summary>
+        /// The HQ's last cards, at 75, 50 and 25 % of its health: an artillery barrage on the
+        /// attackers, then a six-second shield over the keep while two elites arrive, then a last
+        /// stand that has every remaining gun firing faster.
+        /// </summary>
+        private void KeepEvents(SimWorld world)
+        {
+            if (!world.TryGetProp(Target(world), out var hq)) return;
+            var health = hq.Hp / hq.MaxHp;
+            if (_hqPhase == 0 && health < 0.75f)
+            {
+                _hqPhase = 1;
+                if (world.Catalog.TryGetSupport("artillery_barrage", out var barrage) && TryAttackerCentre(world, out var at))
+                    world.Strikes.Launch(barrage, EnemyTeam, at, at);
+                world.Emit(SimEvent.Alert(hq.Position, "siege.barrage"));
+            }
+            else if (_hqPhase == 1 && health < 0.5f)
+            {
+                _hqPhase = 2;
+                _glyphUntil = world.Time + 6.0;
+                foreach (var elite in new[] { "elite_mbt", "elite_heavy_tank" })
+                    if (world.Catalog.Vehicles.ContainsKey(elite))
+                        world.SpawnVehicle(elite, EnemyTeam, hq.Position + new Vector2(-8f, -8f), SimMath.DegToRad(225f));
+                world.Emit(SimEvent.Alert(hq.Position, "siege.glyph"));
+            }
+            else if (_hqPhase == 2 && health < 0.25f)
+            {
+                _hqPhase = 3;
+                world.Emit(SimEvent.Alert(hq.Position, "siege.laststand"));
+            }
+            Shield(world);
+        }
+
+        private static bool TryAttackerCentre(SimWorld world, out Vector2 centre)
+        {
+            var sum = Vector2.Zero;
+            var n = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != PlayerTeam || v.Flying) continue;
+                sum += v.Position;
+                n++;
+            }
+            centre = n > 0 ? sum / n : Vector2.Zero;
+            return n > 0;
+        }
+
+        /// <summary>
+        /// Each generator lost browns out the walls and keep: their guns fire a sixth slower per
+        /// generator down; the HQ's last stand has them firing 30 % faster instead.
+        /// </summary>
+        private void Brownout(SimWorld world)
+        {
+            var down = _generators.Count - Alive(world, _generators);
+            var boost = _hqPhase >= 3 ? 1.3f : MathF.Max(0.5f, 1f - down / 6f);
+            for (var ring = 1; ring < 3; ring++)
+                foreach (var id in _defences[ring])
+                    if (world.TryGetVehicle(id, out var v)) v.FireBoost = boost;
+        }
+
+        /// <summary>The HQ is down: the fortress goes up in a chain over four seconds, then the siege is won.</summary>
+        private void Fall(SimWorld world)
+        {
+            Stage = 4;
+            var remaining = new List<EntityId>();
+            foreach (var ring in _defences) remaining.AddRange(ring);
+            Collapse(world, remaining, 0.12, props: false);
+            Collapse(world, _fortressProps, 0.08, props: true);
+            _finishAt = world.Time + 4.5;
+            world.Emit(SimEvent.Stage(4, Fortress ?? Vector2.Zero, "siege.fallen"));
+        }
+
+        /// <summary>Queues things to blow up one after another, nearest the fortress centre first.</summary>
+        private void Collapse(SimWorld world, List<EntityId> ids, double interval, bool props)
+        {
+            var centre = Fortress ?? Vector2.Zero;
+            var order = new List<(float d, EntityId id)>();
+            foreach (var id in ids)
+            {
+                if (props ? world.TryGetProp(id, out var p) && p.IsAlive : world.TryGetVehicle(id, out _))
+                {
+                    var at = props ? world.TryGetProp(id, out var pp) ? pp.Position : centre
+                        : world.TryGetVehicle(id, out var vv) ? vv.Position : centre;
+                    order.Add((Vector2.Distance(at, centre), id));
+                }
+            }
+            order.Sort((a, b) => a.d.CompareTo(b.d));
+            var start = world.Time + 0.4;
+            for (var i = 0; i < order.Count; i++) _chain.Add((start + i * interval, order[i].id, props));
+        }
+
+        private void RunChain(SimWorld world)
+        {
+            for (var i = _chain.Count - 1; i >= 0; i--)
+            {
+                var (at, id, prop) = _chain[i];
+                if (world.Time < at) continue;
+                _chain.RemoveAt(i);
+                if (prop)
+                {
+                    if (world.TryGetProp(id, out var p) && p.IsAlive)
+                    {
+                        p.Invulnerable = false;
+                        world.Damage.Apply(p, p.Hp * 10f + 100000f, DamageType.HighExplosive);
+                    }
+                }
+                else if (world.TryGetVehicle(id, out var v) && v.IsAlive)
+                {
+                    v.Invulnerable = false;
+                    world.Damage.Apply(v, v.Hp * 10f + 100000f, DamageType.HighExplosive);
+                }
+            }
         }
 
         private void Finish(SimWorld world, int winner)

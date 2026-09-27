@@ -38,5 +38,11 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>How far off a decoyed or jammed guided round lands from its target.</summary>
         public Vector2 Miss { get; set; }
+
+        /// <summary>A guided round that simply failed (lost lock at long range): it lands off target by <see cref="Miss"/>.</summary>
+        public bool Failed { get; set; }
+
+        /// <summary>Damage multiplier: machine-gun rounds carry the damage of the pause between bursts.</summary>
+        public float DamageScale { get; set; } = 1f;
     }
 }

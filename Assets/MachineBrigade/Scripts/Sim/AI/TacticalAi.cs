@@ -80,6 +80,20 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public float? Leash { get; set; }
 
+        /// <summary>
+        /// The commander's own leash while it holds ground (the Defend stance), used when no
+        /// mission leash is set. Like <see cref="Leash"/>, a holding army never falls back.
+        /// </summary>
+        public float? HoldLeash { get; set; }
+
+        /// <summary>
+        /// Which way the army faces while it holds a point (towards the threat); null faces
+        /// along the advance. Artillery stands behind the line, the line in front of the point.
+        /// </summary>
+        public Func<SimWorld, Vector2?>? Facing { get; set; }
+
+        private float? ActiveLeash => Leash ?? HoldLeash;
+
         /// <summary>Below this ratio of our strength to theirs around the front, the army stops attacking.</summary>
         private const float OutmatchedRatio = 0.6f;
 
@@ -144,7 +158,7 @@ namespace MachineBrigade.Sim.AI
             var groundContact = NearestGround(front, out _) < float.MaxValue;
             var goal = Objective?.Invoke(world);
             var chase = groundContact;
-            if (chase && goal.HasValue && Leash is { } leash) chase = Vector2.Distance(NearestCluster(front), goal.Value) < leash;
+            if (chase && goal.HasValue && ActiveLeash is { } leash) chase = Vector2.Distance(NearestCluster(front), goal.Value) < leash;
             if (chase && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
             else if (goal.HasValue) objective = goal.Value;
             else if (chase) objective = NearestCluster(front);
@@ -164,6 +178,13 @@ namespace MachineBrigade.Sim.AI
             if (Vector2.Distance(objective, _lastObjective) > 20f) _flanked.Clear();
             _lastObjective = objective;
             var forward = Direction(front, objective);
+            // Holding a point: face the threat, and stand the line a little in front of it.
+            var holding = HoldLeash != null && Leash == null && goal.HasValue && !chase && Facing?.Invoke(world) is { } facing;
+            if (holding)
+            {
+                forward = Facing!(world)!.Value;
+                objective = Clamp(world, goal!.Value + forward * 5f);
+            }
 
             PullBackDamaged(world, front, forward);
             GrabCrates(world);
@@ -211,7 +232,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in _forget) _seen.Remove(id);
             StrengthRatio = theirs > 0.5f ? ours / theirs : 1f;
 
-            if (Leash != null)
+            if (ActiveLeash != null)
             {
                 _outmatched = false;
                 return false;
@@ -498,6 +519,15 @@ namespace MachineBrigade.Sim.AI
                     Issue(world, CommandType.Move, a.Id, Clamp(world, a.Position + away * (weapon.MinRange + 14f - closest)));
                     continue;
                 }
+                // Kiting: outranging the nearest threat by 6 m or more, never let it into its own
+                // reach; back off to just beyond it, then fire again.
+                var reach = threat != null && threat.Def.Weapon.CanTarget(a.Flying) ? threat.Def.Weapon.Range : 0f;
+                if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move)
+                {
+                    var away = Direction(threat!.Position, a.Position);
+                    Issue(world, CommandType.Move, a.Id, Clamp(world, a.Position + away * (reach + 10f - closest)));
+                    continue;
+                }
                 if (a.Order.Kind == OrderKind.Move) continue;
 
                 if (contact && TryFindCluster(a, out var cluster))
@@ -507,10 +537,15 @@ namespace MachineBrigade.Sim.AI
                 }
                 if (a.Order.Kind != OrderKind.Idle || a.Target.IsValid) continue;
 
-                // Stand off behind the main body, close enough to reach the enemy.
-                var standoff = contact ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
-                if (Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
-                if (Vector2.Distance(a.Position, standoff) > 10f) Issue(world, CommandType.Move, a.Id, Clamp(world, standoff));
+                // Stand off behind the main body, close enough to reach the enemy. With no main body
+                // (an army of launchers and drone carriers) there is nothing to stand behind: close
+                // to firing distance of the objective instead of backing away from their own centre.
+                var alone = !_outmatched && _line.Count == 0 && _fast.Count == 0;
+                var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
+                if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
+                // Alone they attack-move, so they stop and fire at the first enemy that comes into sight.
+                if (Vector2.Distance(a.Position, standoff) > 10f)
+                    Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, Clamp(world, standoff));
             }
         }
 
@@ -571,10 +606,12 @@ namespace MachineBrigade.Sim.AI
             }
             if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
             var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
-            // Those already on their way to this rendezvous keep their route.
+            // Those already on their way to this rendezvous keep their route, and those standing at
+            // it stay put: sending them again would reshuffle the slots and keep everyone moving.
             for (var i = _ids.Count - 1; i >= 0; i--)
-                if (world.TryGetVehicle(_ids[i], out var going) && going.Order.Kind == OrderKind.AttackMove &&
-                    Vector2.Distance(going.Order.Point, goal) < SameRendezvous) _ids.RemoveAt(i);
+                if (world.TryGetVehicle(_ids[i], out var going) &&
+                    ((going.Order.Kind == OrderKind.AttackMove && Vector2.Distance(going.Order.Point, goal) < SameRendezvous) ||
+                     (going.Order.Kind == OrderKind.Idle && Vector2.Distance(going.Position, goal) < SameRendezvous))) _ids.RemoveAt(i);
             if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, goal);
         }
 

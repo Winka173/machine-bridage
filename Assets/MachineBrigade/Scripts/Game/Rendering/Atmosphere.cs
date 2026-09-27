@@ -36,7 +36,8 @@ namespace MachineBrigade.Game.Rendering
         private static readonly Vector2[] Corners = { new(0f, 0f), new(1f, 0f), new(0f, 1f), new(1f, 1f) };
 
         /// <summary>Highest thing that casts a shadow: aircraft fly up to 22 m, the flare stack is 20 m.</summary>
-        private const float CasterCeiling = 30f;
+        /// <summary>Highest anything is drawn (bombers fly at up to 46 m): the near plane and shadows reach it.</summary>
+        private const float CasterCeiling = 52f;
 
         /// <summary>Fade band at the edge of the shadow range, kept just off screen.</summary>
         private const float ShadowBorder = 0.05f;

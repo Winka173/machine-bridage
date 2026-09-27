@@ -127,6 +127,7 @@ namespace MachineBrigade.Game.Rendering
             MoveMarker = Unlit(unlit, "MoveMarker", new Color(0.7f, 2f, 1.3f));
             BarBack = Unlit(unlit, "BarBack", new Color(0.04f, 0.06f, 0.06f));
             BarAlly = Unlit(unlit, "BarAlly", TeamColors.Ui(0));
+            BarTrail = Unlit(unlit, "BarTrail", new Color(1f, 0.86f, 0.45f));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
             BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
@@ -182,6 +183,9 @@ namespace MachineBrigade.Game.Rendering
         public Material Objective { get; }
         public Material BarBack { get; }
         public Material BarAlly { get; }
+
+        /// <summary>Health just lost, shown behind the bar before it catches up.</summary>
+        public Material BarTrail { get; }
         public Material BarEnemy { get; }
 
         /// <summary>Gold health bar of elite enemy units.</summary>
@@ -361,7 +365,7 @@ namespace MachineBrigade.Game.Rendering
             m.SetFloat("_Intensity", intensity);
             m.SetFloat("_Shape", shape);
             m.SetFloat("_Softness", softness);
-            m.renderQueue = additive ? 3010 : 3000;
+            m.renderQueue = additive ? 3010 : Effects.FxQueue.Haze;
             _owned.Add(m);
             return m;
         }

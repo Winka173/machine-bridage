@@ -29,6 +29,7 @@ namespace MachineBrigade.Game.Views
         private readonly GroundMark _shadowRing;
         private readonly Transform _bar;
         private readonly Transform _barFill;
+        private readonly Transform _barTrail;
         private readonly Vector3[] _recoilRest;
         private readonly float _recoilDistance;
         private readonly Transform[] _mounts;
@@ -106,6 +107,8 @@ namespace MachineBrigade.Game.Views
             _bar.localPosition = new Vector3(0f, _model.Muzzle.y * vehicle.Def.Scale + 1.9f, 0f);
             var back = CreateMesh("Back", _bar, meshes.Quad, materials.BarBack, false);
             back.localScale = new Vector3(BarWidth + 0.14f, BarHeight + 0.14f, 1f);
+            _barTrail = CreateMesh("Trail", _bar, meshes.Quad, materials.BarTrail, false);
+            _barTrail.localPosition = new Vector3(0f, 0f, -0.01f);
             _barFill = CreateMesh("Fill", _bar, meshes.Quad, vehicle.Team == playerTeam ? materials.BarAlly : materials.BarEnemy,
                 false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
@@ -119,6 +122,7 @@ namespace MachineBrigade.Game.Views
             if (_erector != null) _erectorRest = _erector.localRotation;
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
             _shieldMaterial = materials.Shockwave;
+            AddRotorBlur(materials);
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -148,6 +152,84 @@ namespace MachineBrigade.Game.Views
 
         /// <summary>Next time tread dust may be kicked up; owned by the effects layer.</summary>
         public float DustAt { get; set; }
+
+        /// <summary>When the next wisp of damage smoke or lick of flame is due (see EffectsDirector).</summary>
+        public float DamageFxAt { get; set; }
+
+        private float _shownScorch = 1f;
+        private float _scorch = 1f;
+        private float _shownFlash;
+
+        /// <summary>
+        /// Darkens the hull as it takes damage: clean above half health, sooty and scorched as it
+        /// nears destruction (the wreck tint is darker still).
+        /// </summary>
+        public void Scorch(float health)
+        {
+            if (_wreck) return;
+            var shade = health >= 0.5f ? 1f : Mathf.Lerp(0.45f, 1f, health / 0.5f);
+            if (Mathf.Abs(shade - _shownScorch) < 0.04f) return;
+            _shownScorch = shade;
+            _scorch = shade;
+            ApplyTint();
+        }
+
+        private MaterialPropertyBlock _tintBlock;
+
+        private void ApplyTint()
+        {
+            _tintBlock ??= new MaterialPropertyBlock();
+            _tintBlock.SetColor(TintId, new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash));
+            foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
+        }
+
+        // Hit feedback (after the usual arcade recipe): a white flash for 0.06 s fading over 0.12 s,
+        // at most every 0.15 s; heavy hits rock the hull 1.5 to 4 degrees; the health bar keeps a
+        // trail of what was just lost, which catches up after 0.4 s.
+        private const float FlashHold = 0.06f;
+        private const float FlashFade = 0.12f;
+        private const float FlashGap = 0.15f;
+        private float _hitTime = -10f;
+        private float _lastHealth = 1f;
+        private float _trail = 1f;
+        private float _trailHoldUntil;
+        private Vector2 _jolt;
+        private float _joltTime = -10f;
+
+        private void NoteHealth(float health)
+        {
+            var now = Time.time;
+            var lost = _lastHealth - health;
+            _lastHealth = health;
+            if (health >= _trail) _trail = health;
+            if (lost <= 0.004f) return;
+            _trailHoldUntil = now + 0.4f;
+            if (now - _hitTime >= FlashGap) _hitTime = now;
+            if (lost >= 0.03f && !Flying)
+            {
+                var degrees = Mathf.Clamp(lost * 60f, 1.5f, 4f);
+                _jolt = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * degrees;
+                _joltTime = now;
+            }
+        }
+
+        private void RenderHitFeedback()
+        {
+            var t = Time.time - _hitTime;
+            var flash = t < FlashHold ? 1f : Mathf.Clamp01(1f - (t - FlashHold) / FlashFade);
+            if (Mathf.Abs(flash - _shownFlash) > 0.02f || (flash == 0f && _shownFlash != 0f))
+            {
+                _shownFlash = flash;
+                ApplyTint();
+            }
+        }
+
+        /// <summary>The hull's rock after a heavy hit (pitch, roll in degrees), dying away in 0.3 s.</summary>
+        private Vector2 Jolt()
+        {
+            var t = (Time.time - _joltTime) / 0.3f;
+            return t is >= 0f and < 1f ? _jolt * ((1f - t) * (1f - t)) : Vector2.zero;
+        }
 
         /// <summary>Current flight height (0 on the ground).</summary>
         public float Altitude { get; private set; }
@@ -310,7 +392,8 @@ namespace MachineBrigade.Game.Views
                 _bouncePhase += Time.deltaTime * (4f + _currentSpeed * 1.4f);
                 var bounce = Mathf.Sin(_bouncePhase) * 0.012f * Mathf.Clamp01(_currentSpeed / 4f);
                 _body.localPosition = new Vector3(0f, bounce, 0f);
-                _body.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+                var jolt = Jolt();
+                _body.localRotation = Quaternion.Euler(_pitch + jolt.x, 0f, jolt.y);
             }
             Root.position = position;
             Root.rotation = Quaternion.Euler(0f, hull, 0f);
@@ -347,12 +430,17 @@ namespace MachineBrigade.Game.Views
                 _shadowRing.Transform.rotation = Quaternion.identity;
             }
             var health = Mathf.Clamp01(Sim.Hp / Sim.MaxHp);
+            NoteHealth(health);
+            RenderHitFeedback();
+            if (Time.time >= _trailHoldUntil && _trail > health) _trail = Mathf.MoveTowards(_trail, health, Time.deltaTime * 2f);
             var showBar = Selected || health < 0.999f;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
+            _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);
+            _barTrail.localPosition = new Vector3(-BarWidth * (1f - _trail) * 0.5f, 0f, -0.01f);
         }
 
         private void AnimateParts(Quaternion cameraRotation)
@@ -450,13 +538,67 @@ namespace MachineBrigade.Game.Views
             Spin(Mathf.Clamp01(1f - t * 0.6f));
         }
 
+        /// <summary>
+        /// Most a fast spinner (rotor, propeller) turns in one frame. Turned further, a rotor of four
+        /// or five blades seems to crawl backwards or strobe (the wagon-wheel effect); below it the
+        /// blades read as sweeping round, and the blur disc sells the speed.
+        /// </summary>
+        private const float MaxSpinPerFrame = 23f;
+
+        private float[] _spinAngles;
+
         private void Spin(float speed)
         {
             var spinners = _model.Spinners;
             if (spinners.Count == 0) return;
-            _spin += Time.deltaTime * speed;
+            _spinAngles ??= new float[spinners.Count];
+            var dt = Time.deltaTime * speed;
             for (var i = 0; i < spinners.Count; i++)
-                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spin * spinners[i].DegreesPerSecond, spinners[i].Axis);
+            {
+                var step = spinners[i].DegreesPerSecond * dt;
+                if (spinners[i].DegreesPerSecond > 600f) step = Mathf.Min(step, MaxSpinPerFrame);
+                _spinAngles[i] = (_spinAngles[i] + step) % 360f;
+                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spinAngles[i], spinners[i].Axis);
+            }
+        }
+
+        private static Mesh _blurDisc;
+
+        /// <summary>
+        /// A faint disc under each main rotor, the blur of blades turning faster than the eye can
+        /// follow; it stays still while the blades sweep through it.
+        /// </summary>
+        private void AddRotorBlur(MaterialLibrary materials)
+        {
+            foreach (var spinner in _model.Spinners)
+            {
+                if (spinner.Axis != Vector3.up || spinner.DegreesPerSecond < 600f || spinner.Transform.parent == null) continue;
+                var renderers = spinner.Transform.GetComponentsInChildren<Renderer>();
+                if (renderers.Length == 0) continue;
+                var bounds = renderers[0].bounds;
+                foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+                var radius = Mathf.Max(bounds.extents.x, bounds.extents.z) / Mathf.Max(0.01f, Root.lossyScale.x);
+                if (radius < 0.5f) continue;
+                _blurDisc ??= BlurDisc();
+                var disc = CreateMesh("Rotor Blur", spinner.Transform.parent, _blurDisc, materials.SoftSmoke, false);
+                disc.localPosition = spinner.Transform.localPosition + Vector3.up * 0.05f;
+                disc.localRotation = Quaternion.identity;
+                var parentScale = spinner.Transform.parent.lossyScale.x / Mathf.Max(0.01f, Root.lossyScale.x);
+                disc.localScale = Vector3.one * (radius * 2.1f / Mathf.Max(0.01f, parentScale));
+            }
+        }
+
+        /// <summary>A flat quad (XZ plane) tinted a faint smoky grey, for the soft-disc particle shader.</summary>
+        private static Mesh BlurDisc()
+        {
+            var colour = Primitives.Linear(new Color(0.16f, 0.16f, 0.17f, 0.3f));
+            var mesh = new Mesh { name = "RotorBlur" };
+            mesh.SetVertices(new[] { new Vector3(-0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, 0.5f), new Vector3(-0.5f, 0f, 0.5f) });
+            mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
+            mesh.SetColors(new[] { colour, colour, colour, colour });
+            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+            mesh.RecalculateBounds();
+            return mesh;
         }
 
         internal static Transform CreateMesh(string name, Transform parent, Mesh mesh, Material material, bool castShadows)

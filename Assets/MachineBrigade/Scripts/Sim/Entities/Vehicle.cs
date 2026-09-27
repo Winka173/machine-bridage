@@ -105,7 +105,16 @@ namespace MachineBrigade.Sim.Entities
         internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed;
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f);
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost;
+
+        /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
+        internal float FireBoost = 1f;
+
+        /// <summary>Until when a newly arrived vehicle takes only a fifth of the damage (home zones).</summary>
+        internal double GraceUntil = double.NegativeInfinity;
+
+        /// <summary>Takes no damage (a dormant fortress guardian, a spawn bastion).</summary>
+        public bool Invulnerable { get; internal set; }
 
         /// <summary>Firing state per mount, parallel to <see cref="VehicleDef.Mounts"/>.</summary>
         internal readonly WeaponState[] Weapons;
@@ -219,6 +228,10 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
         internal double LastHitTime = double.NegativeInfinity;
 
+        /// <summary>Where the vehicle last stood still, and since when (entrenchment, see <see cref="SimWorld.Entrench"/>).</summary>
+        internal Vector2 StillAt;
+        internal double StillSince;
+
         /// <summary>Steering round a hull in the way: which way (+1 clockwise, -1 anticlockwise), and until when.</summary>
         internal float AvoidSide;
 
@@ -234,6 +247,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
+
+        /// <summary>When the last main-gun, missile or rocket shot left this vehicle (its weapons take turns).</summary>
+        internal double HeavyShotAt = double.NegativeInfinity;
 
         /// <summary>Which way round an obstacle the hull is edging (+1 or -1), and until when it keeps to it.</summary>
         internal float SlideSide;

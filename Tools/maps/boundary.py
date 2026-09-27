@@ -13,7 +13,9 @@ terrain replaces it.
 """
 import math
 
-HALF = 80.0
+# The battlefield is 200 m across; SHAPES are written for the 160 m design grid and scaled by SCALE.
+SCALE = 1.25
+HALF = 80.0 * SCALE
 RES = 1.0   # carving grid, metres
 N = int(HALF * 2 / RES)
 
@@ -126,7 +128,8 @@ def keep_mask(keep):
 # ------------------------------------------------------------------------------------ carving
 def carve_mask(map_id, keep, seed):
     base, noise, scale, bites = SHAPES.get(map_id, (4.0, 6.0, 20.0, []))
-    bites = [(b[0], b[1], b[2], len(b) > 3 and b[3] == 'force') for b in bites]
+    base, noise, scale = base * SCALE, noise * SCALE, scale * SCALE
+    bites = [(b[0], b[1] * SCALE, b[2], len(b) > 3 and b[3] == 'force') for b in bites]
     bites = bites + [((a + 180.0) % 360.0, d, w, f) for a, d, w, f in bites]
     core = keep_mask(keep.get('core', {}))
     extra = keep_mask(keep.get('extra', {}))

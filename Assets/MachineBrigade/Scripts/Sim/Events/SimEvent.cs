@@ -60,6 +60,15 @@ namespace MachineBrigade.Sim.Events
         /// Position; Value is -1 for the left launcher, +1 for the right.
         /// </summary>
         Intercepted,
+
+        /// <summary>
+        /// A siege stage fell (Value: the stage now under way, 2 or 3; 4 when the fortress falls)
+        /// at Position; DefId is the string key announcing what comes next.
+        /// </summary>
+        StageCleared,
+
+        /// <summary>A fortress event (DefId: its string key, for the announcement) at Position.</summary>
+        FortressAlert,
     }
 
     /// <summary>
@@ -172,6 +181,12 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Intercept(Vehicle aps, WeaponDef weapon, Vector2 at, bool left) =>
             new(SimEventKind.Intercepted, aps.Id, at, aps.Position, left ? -1f : 1f, ExplosionTier.Small, weapon.Id, aps.Team);
+
+        internal static SimEvent Stage(int stage, Vector2 at, string key) =>
+            new(SimEventKind.StageCleared, default, at, default, stage, default, key, 0);
+
+        internal static SimEvent Alert(Vector2 at, string key) =>
+            new(SimEventKind.FortressAlert, default, at, default, 0f, default, key, 1);
 
         internal static SimEvent CrateClaimed(Crate c, int team) =>
             new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);

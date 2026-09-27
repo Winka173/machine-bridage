@@ -36,22 +36,40 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed);
+                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed || p.Failed);
                 if (weapon.Guided && !decoyed) at = target.Position;
                 if (decoyed) at = target.Position + p.Miss;
                 if (!decoyed && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
-                    Apply(target, weapon.Damage, weapon.DamageType);
+                    Apply(target, weapon.Damage * p.DamageScale, weapon.DamageType);
                     hit = target.Id;
                 }
             }
 
+            // Every blast is a little different: its reach varies by up to 15 %.
             if (weapon.SplashRadius > 0f)
-                Splash(at, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
+                Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
+                    weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
+            if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale);
+        }
+
+        /// <summary>A cluster round opens over the impact: its bomblets land round it and go off one after another.</summary>
+        private void Scatter(ClusterDef cluster, Vector2 at, int team, float damageScale)
+        {
+            var rng = _world.Random;
+            var blast = damageScale == 1f ? cluster.Bomblet
+                : new ExplosionDef(cluster.Bomblet.Damage * damageScale, cluster.Bomblet.Radius, 0f, cluster.Bomblet.Tier);
+            for (var k = 0; k < cluster.Count; k++)
+            {
+                var angle = (float)rng.NextDouble() * SimMath.Tau;
+                var reach = cluster.Radius * MathF.Sqrt(0.15f + 0.85f * (float)rng.NextDouble());
+                var spot = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
+                _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team));
+            }
         }
 
         /// <summary>
@@ -119,6 +137,7 @@ namespace MachineBrigade.Sim.Combat
         public void Apply(IDamageable target, float amount, DamageType type)
         {
             if (!target.IsAlive || !(amount > 0f)) return;
+            if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return;
             var damage = amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
             if (!(damage > 0f)) return;
 
@@ -126,6 +145,10 @@ namespace MachineBrigade.Sim.Combat
             {
                 case Vehicle vehicle:
                     if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
+                    if (vehicle.GraceUntil > _world.Time) damage *= 0.2f;
+                    // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
+                    if (type is DamageType.Kinetic or DamageType.ArmorPiercing && _world.IsEntrenched(vehicle))
+                        damage *= 1f - SimWorld.EntrenchReduction;
                     vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
                     _world.Emit(SimEvent.Damage(vehicle, damage));
                     if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);
@@ -153,7 +176,7 @@ namespace MachineBrigade.Sim.Combat
                 _pending.RemoveAt(i);
                 _world.Emit(SimEvent.Exploded(pending.Position, pending.Explosion, pending.Source));
                 Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
-                    Teams.Environment, EntityId.None);
+                    pending.Team, EntityId.None);
             }
         }
 
@@ -191,8 +214,9 @@ namespace MachineBrigade.Sim.Combat
 
         private readonly struct PendingExplosion
         {
-            public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source)
+            public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source, int team = Teams.Environment)
             {
+                Team = team;
                 Due = due;
                 Position = position;
                 Explosion = explosion;
@@ -203,6 +227,9 @@ namespace MachineBrigade.Sim.Combat
             public Vector2 Position { get; }
             public ExplosionDef Explosion { get; }
             public EntityId Source { get; }
+
+            /// <summary>Whose blast it is (a cluster bomblet spares its own side); the environment's hurts everyone.</summary>
+            public int Team { get; }
         }
     }
 }

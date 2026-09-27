@@ -50,13 +50,15 @@ namespace MachineBrigade.Game.Effects
         private readonly List<Jet> _jets = new();
         private readonly List<(float at, Vector3 from, Vector3 to)> _bombs = new();
         private readonly List<(ParticleSystem system, float until)> _smoke = new();
+        private readonly SmokeScreens _screens;
         private readonly Transform _root;
         private readonly MaterialLibrary _materials;
         private readonly bool _hasJet, _hasBomb, _hasCruise;
 
         public StrikeEffects(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, Emitters emitters,
-            ProjectilePool projectiles, Transform parent)
+            ProjectilePool projectiles, SmokeScreens screens, Transform parent)
         {
+            _screens = screens;
             _catalog = catalog;
             _materials = materials;
             _models = models;
@@ -167,6 +169,7 @@ namespace MachineBrigade.Game.Effects
                 emission.enabled = false;
                 if (now > until + 9f)
                 {
+                    _screens?.Remove(system.transform.position);
                     Object.Destroy(system.gameObject);
                     _smoke.RemoveAt(i);
                 }
@@ -246,9 +249,14 @@ namespace MachineBrigade.Game.Effects
             if (_hasCruise) _projectiles.Launch(_models.Merged("cruise_missile"), from, to, e.Value, 4f, 1.2f, now);
         }
 
+        /// <summary>Device check (<c>-mb-smokescreen</c>): a smoke screen with no strike behind it.</summary>
+        internal void DebugSmoke(Vector3 at, float now) => SpawnSmoke(at, 12f, 12f, now);
+
         private void SpawnSmoke(Vector3 at, float radius, float seconds, float now)
         {
-            var ps = PB.Create(_root, "Smoke Screen", _materials.Smoke);
+            // Billowing smoke sheets on their own queue (FxQueue.Screen): whatever burns inside or
+            // behind the screen shows through it only as a glow.
+            var ps = PB.Create(_root, "Smoke Screen", FxMaterials.Shared.ScreenSmoke);
             ps.transform.position = at;
             var main = ps.main;
             main.loop = true;
@@ -259,9 +267,11 @@ namespace MachineBrigade.Game.Effects
             shape.shapeType = ParticleSystemShapeType.Circle;
             shape.radius = radius * 0.8f;
             shape.rotation = new Vector3(90f, 0f, 0f);
+            PB.Flipbook(ps, loop: false, tilt: 25f, from: 0.08f, to: 0.92f);
             PB.Colors(ps, PB.Plume(0.72f, 0.82f, 0.75f));
             PB.Grow(ps, 0.6f, 1.6f);
             PB.Rise(ps, 0.2f, 0.6f);
+            _screens?.Add(at, radius * 0.8f + 4f);
             var emission = ps.emission;
             emission.enabled = true;
             emission.rateOverTime = 26f;

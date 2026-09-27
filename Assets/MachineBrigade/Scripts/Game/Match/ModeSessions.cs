@@ -334,9 +334,11 @@ namespace MachineBrigade.Game.Match
 
         protected override void Build(SimWorld world, int seed)
         {
+            // The time bank: harder assaults start with less on the clock.
+            var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
             _mode = new AssaultMode(new AssaultRules
             {
-                Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(26f, 1.05f, Difficulty, world.Catalog),
+                StartSeconds = start, Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(26f, 1.05f, Difficulty, world.Catalog),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -358,7 +360,7 @@ namespace MachineBrigade.Game.Match
             if (_mode.Result is not { } result) return null;
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.taken"), $"{_mode.Taken} / {_mode.Points.Count}"));
+            outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -377,10 +379,11 @@ namespace MachineBrigade.Game.Match
         {
             var attacker = PlayerSide(26f, 1.5f);
             attacker.ArmyCap = 34;
-            var time = Difficulty switch { AiDifficulty.Hard => 13f, AiDifficulty.Easy => 18f, _ => 15f } * 60f;
+            // The time bank: harder sieges start with less on the clock.
+            var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
             _mode = new SiegeMode(new SiegeRules
             {
-                TimeLimit = time, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.2f : 0.95f, Difficulty, world.Catalog),
+                StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.2f : 0.95f, Difficulty, world.Catalog),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -396,8 +399,9 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var progress = _mode.Progress(world);
-            hud.SetMission(Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress,
-                _mode.SecondsLeft(world), scratch);
+            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
+                Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
         }
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
