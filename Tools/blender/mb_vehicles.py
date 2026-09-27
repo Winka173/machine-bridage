@@ -626,8 +626,7 @@ def main_battle_tank(a):
 
 def scout_jeep(a):
     """Open-top 4x4 scout car with a pintle machine gun: louvred hood, guarded headlights, brush guard
-    and winch, four seats, a braced roll bar, radio, ammunition and jerrycans in the rear tub, and a
-    40 mm grenade launcher on a pedestal behind the roll bar (Mount_gun)."""
+    and winch, four seats, a braced roll bar, radio, ammunition and jerrycans in the rear tub."""
     body = a.part('Body', 'Team')
     steel = a.part('Steel', 'Steel')
     armor = a.part('Armor', 'Armor')
@@ -693,10 +692,6 @@ def scout_jeep(a):
     cannon.box((.05, .16, .08), loc=(0, .24, .6), rot=(.3, 0, 0), bevel=0)                  # grips
     a.part('Ammo_box', 'Armor', t).box((.2, .18, .16), loc=(.16, .05, .56), bevel=.02)
     a.pivot('Muzzle_main', (0, -1.16, .66), t)  # the pintle machine gun is the jeep's main weapon
-    # Second weapon: a 40 mm grenade launcher on a pedestal in the rear tub behind the roll bar
-    # (Mount_gun / Muzzle_gun): its cradle clears the spare tyre and its top stays under 1.73 m, so the
-    # pintle gun's barrel sweeps over it.
-    wpn.agl(a, (0, 1.8, 1.14), post=.26, shield=.22, ammo=-1, sight='side')
 
 
 # ----------------------------------------------------------------------------- new vehicles

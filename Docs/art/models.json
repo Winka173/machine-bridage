@@ -281,11 +281,11 @@
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
-    "triangles": 8980
+    "triangles": 8352
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
-    "triangles": 7144
+    "triangles": 6516
   },
   "factory": {
     "file": "factory.glb",
@@ -501,7 +501,7 @@
   },
   "mine_layer": {
     "file": "mine_layer.glb",
-    "triangles": 8792
+    "triangles": 8164
   },
   "missile": {
     "file": "missile.glb",
@@ -693,7 +693,7 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 4672
+    "triangles": 4044
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",

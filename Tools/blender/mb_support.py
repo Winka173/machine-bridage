@@ -4,20 +4,18 @@ Vehicles (origin on the ground at the footprint centre, Blender -Y is the front)
   * engineer_vehicle: tracked armoured recovery and engineering vehicle (BREM-1 / M88 lineage)
     with a hazard-striped dozer blade, a crane boom folded along the right of the deck, a rear
     winch, tool boxes, spare track links, tow cables and a work light bar. `Turret` is a small
-    remote weapon station on the cab roof; `Muzzle_main` is its machine gun. A 40 mm grenade launcher
-    stands on the deck behind the cab on `Mount_gun` (`Muzzle_gun`).
+    remote weapon station on the cab roof; `Muzzle_main` is its machine gun.
   * ew_jammer: 6x6 electronic-warfare jamming truck: a boxy shelter body with a generator, two
     raised telescopic masts carrying antenna arrays, whip antennas and a dish on the `Radar`
     pivot (spins about Z). `Turret` is a roof remote weapon station with `Muzzle_main` (machine
-    gun); a 40 mm grenade launcher behind the cab hatch turns on `Mount_gun` (`Muzzle_gun`).
+    gun).
   * fpv_carrier: armoured 6x6 MRAP truck launching FPV kamikaze drones. `Turret` carries the rear
     launcher rack of drone cells, facing up and back, with quadcopters sitting in the open cells;
     `Muzzle_main` is at the top centre of the rack's open face. A roof `Mount_mg` holds a
     remote-weapon machine gun with `Muzzle_mg`.
   * mine_layer: tracked mine layer (GMZ-3 / MT-LB lineage): mine hoppers and racks of mines on the
     deck, a rear dispensing chute and ploughshare lowered to the ground. `Turret` is a small roof
-    machine-gun turret with `Muzzle_main`; a 40 mm grenade launcher at the front right of the cab roof
-    turns on `Mount_gun` (`Muzzle_gun`).
+    machine-gun turret with `Muzzle_main`.
 Small models:
   * mine: anti-tank mine half-buried in a scuffed dirt ring, a TeamGlow light on top (prop).
   * fpv_drone: FPV kamikaze quadcopter projectile with an RPG-style charge; flies along -Y,
@@ -27,7 +25,7 @@ Small models:
     ambient occlusion but never cast it onto the crate.
 
 The machine guns on the vehicles' `Turret` are not named Main_cannon, so they do not recoil (the
-runtime recoil is sized for tank guns). The grenade launchers come from mb_weapons.py. Conventions
+runtime recoil is sized for tank guns). Conventions
 and helpers are those of mb_vehicles.py; touching parts overlap or stand at least 1 cm apart, never
 face to face (coplanar faces z-fight).
 """
@@ -174,8 +172,7 @@ def engineer_vehicle(a):
     hazard-striped dozer blade on push arms and rams, a crew cab on the left front with a work light
     bar, vision blocks and a small remote weapon station, a telescopic crane boom folded along the
     right of the deck on a slewing base with a hook block, a recovery winch and fairlead at the
-    rear, tool boxes and tools on the fenders, spare track links, tow cables, a stowed tow bar and a
-    40 mm grenade launcher on the deck behind the cab (Mount_gun)."""
+    rear, tool boxes and tools on the fenders, spare track links, tow cables and a stowed tow bar."""
     F, B = -.12, .12                                       # front and rear overhang shifts
     tracks(a, 1.26, 6.3 + B - F, .9, .3, 6, .48, belt_width=.58, wheel_seg=10, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
@@ -330,10 +327,6 @@ def engineer_vehicle(a):
     steel.torus(.07, .02, loc=(-.77, rear + .05, 1.22), rot=(R90, 0, 0), seg=8, ring=4)
     steel.cyl(.22, .08, loc=(-.45, -1.3, roof(-1.3) + .02), seg=14, bevel=.015, bseg=1)  # RWS pedestal
     _rws_turret(a, (-.45, -1.3, roof(-1.3) + .05), length=.8)
-    # Second weapon: a 40 mm grenade launcher on a pedestal on the deck behind the gas bottles (Mount_gun /
-    # Muzzle_gun), between the spare road wheel and the grille, far enough from the crane boom to turn
-    # over the right side without meeting it and below the RWS's barrel.
-    wpn.agl(a, (-.22, .55, 1.5), post=.3, ammo=-1)
 
 
 # ----------------------------------------------------------------------------- electronic warfare truck
@@ -378,8 +371,7 @@ def ew_jammer(a):
     split windscreen, mirrors and a snorkel, a generator set behind it, and a tall shelter body with
     ribs, air-conditioning units, a side door, a rear door and ladder, roof handrails, two raised
     telescopic masts (a radome panel array and a log-periodic antenna), whips, a spinning dish on
-    `Radar`, a roof remote weapon station on `Turret` and a 40 mm grenade launcher on the cab roof
-    (Mount_gun); stabiliser jacks down at the rear."""
+    `Radar` and a roof remote weapon station on `Turret`; stabiliser jacks down at the rear."""
     body = a.part('Body', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -497,9 +489,6 @@ def ew_jammer(a):
     _dish(a.part('Radar_dish', 'Armor', r), (0, -.06, .42), .56, .56, depth=.15, seg=12, tilt=.3)
     steel.cyl(.22, .08, loc=(0, -.75, zt + .03), seg=14, bevel=.015, bseg=1)                # RWS pedestal
     _rws_turret(a, (0, -.75, zt + .06), length=.85)
-    # Second weapon: a 40 mm grenade launcher on a pedestal behind the cab hatch (Mount_gun / Muzzle_gun),
-    # clear of the whip antenna and far from the jammer masts at the back of the shelter.
-    wpn.agl(a, (-.25, -2.95, 3.0), post=.3, ammo=-1)
 
 
 # ----------------------------------------------------------------------------- FPV drones and their carrier
@@ -735,8 +724,7 @@ def mine_layer(a):
     """Tracked mine layer (GMZ-3 / MT-LB lineage): a front cab with a small machine-gun `Turret`,
     two open mine hoppers with their lids thrown open, racks of mines on the fenders, a conveyor to
     the rear, and the dispensing chute running down into a ploughshare lowered to the ground, with
-    a hazard-striped plough beam, furrow-closing discs and ploughed earth; a 40 mm grenade launcher on
-    the cab roof (Mount_gun)."""
+    a hazard-striped plough beam, furrow-closing discs and ploughed earth."""
     tracks(a, 1.16, 5.9, .8, .27, 7, .44, belt_width=.52, wheel_seg=10, lean=True, sprocket=-1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -843,9 +831,6 @@ def mine_layer(a):
     gun.cyl(.034, .08, loc=(0, -1.08, .19), rot=FORWARD, seg=8, bevel=0)
     a.pivot('Muzzle_main', (0, -1.12, .19), t)
     _periscopes(a, [(.18, -.18, .35, 0), (-.2, -.1, .34, -.6)], parent=t, size=(.1, .06, .07))
-    # Second weapon: a 40 mm grenade launcher on a pedestal at the front right of the cab roof, ahead of
-    # the commander's hatch (Mount_gun / Muzzle_gun); outside the turret gun's reach and above its turret.
-    wpn.agl(a, (.8, -2.05, 2.05), post=.3, ammo=1)
 
 
 def mine(a):
