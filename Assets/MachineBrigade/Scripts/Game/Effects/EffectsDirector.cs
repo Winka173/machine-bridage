@@ -48,6 +48,7 @@ namespace MachineBrigade.Game.Effects
         private readonly Dictionary<ExplosionTier, ExplosionEffect> _explosions = new();
         private readonly List<ExplosionEffect> _blasts = new();
         private readonly BlastLayers _layers;
+        private readonly Catalog _catalog;
         private readonly MuzzleFx _muzzle;
         private readonly ExplosionEffect _airburst;
         private readonly ExplosionEffect _napalm;
@@ -69,6 +70,7 @@ namespace MachineBrigade.Game.Effects
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {
+            _catalog = catalog;
             _materials = materials;
             _models = models;
             _camera = camera;
