@@ -184,6 +184,12 @@ namespace MachineBrigade.Game.Views
         public bool Selected { get; set; }
         public bool Flying => Def.Flying;
 
+        /// <summary>The model's body as drawn (with its pitch and bank), for effects that follow it.</summary>
+        public Transform Body => _body;
+
+        /// <summary>How far an aircraft is banked into its turn, in degrees.</summary>
+        public float Bank => _bank;
+
         /// <summary>World-space main muzzle, for tracers and flashes.</summary>
         public Vector3 MuzzleWorld => _body.TransformPoint(_model.Muzzle);
 

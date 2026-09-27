@@ -143,10 +143,14 @@ namespace MachineBrigade.Game.Effects
                 if (now >= jet.NextPuff)
                 {
                     jet.NextPuff = now + 0.03f;
-                    var right = jet.Root.transform.right;
-                    _emitters.Trail(p + right * 4.5f - jet.Root.transform.forward * 2f, 0.45f);
-                    _emitters.Trail(p - right * 4.5f - jet.Root.transform.forward * 2f, 0.45f);
-                    _emitters.Motor(p - jet.Root.transform.forward * 5.5f, jet.Root.transform.forward, 1.6f);
+                    // Vapour off the wingtips and a hot exhaust, sized to the aircraft as drawn.
+                    var scale = jet.Root.transform.localScale.x;
+                    var right = jet.Root.transform.right * 4.5f * scale;
+                    var back = jet.Root.transform.forward;
+                    _emitters.Contrail(p + right - back * 2f * scale, 0.4f, 1.2f);
+                    _emitters.Contrail(p - right - back * 2f * scale, 0.4f, 1.2f);
+                    _emitters.Afterburner(p - back * 5.5f * scale, back, 1.4f);
+                    _emitters.Contrail(p - back * 6.5f * scale, 0.5f, 1.4f);
                 }
             }
 

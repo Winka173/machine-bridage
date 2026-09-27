@@ -69,6 +69,12 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A fortress event (DefId: its string key, for the announcement) at Position.</summary>
         FortressAlert,
+
+        /// <summary>
+        /// A fire-support round (DefId: the support) is coming down onto Position, landing in Value
+        /// seconds, fired from the direction of Target (a unit vector): drawn falling from the sky.
+        /// </summary>
+        ShellInbound,
     }
 
     /// <summary>
@@ -151,6 +157,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
+
+        internal static SimEvent ShellInbound(int team, SupportDef support, Vector2 at, Vector2 from, float seconds) =>
+            new(SimEventKind.ShellInbound, EntityId.None, at, from, seconds, support.Tier, support.Id, team);
 
         internal static SimEvent StrikeImpact(int team, SupportDef support, Vector2 at) =>
             new(SimEventKind.StrikeImpact, EntityId.None, at, default, support.BlastRadius, support.Tier, support.Id, team);

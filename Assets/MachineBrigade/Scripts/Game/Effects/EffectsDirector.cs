@@ -152,6 +152,18 @@ namespace MachineBrigade.Game.Effects
                         _drops.Queue(e, now);
                         break;
 
+                    case SimEventKind.ShellInbound:
+                    {
+                        // Fire support coming down: a glowing round (a smoke shell trailing white) falls
+                        // steeply out of the sky from its guns' side onto the spot it hits.
+                        var land = Ground(e.Position, 0.2f);
+                        var from = land + new Vector3(e.Target.X, 0f, e.Target.Y) * 24f + Vector3.up * 58f;
+                        if (!_cull.Visible(land, 0.6f)) break;
+                        var smoke = _catalog.TryGetSupport(e.DefId, out var inbound) && inbound.Kind == SupportKind.Smoke;
+                        _tracers.Launch(from, land, e.Value, 0f, smoke ? 0.4f : 0.34f, smoke ? 2.2f : 3.6f, now, 0f, smoke ? 1.1f : 0.5f);
+                        break;
+                    }
+
                     case SimEventKind.ProjectileImpact:
                         if (e.Airborne)
                         {
@@ -365,6 +377,7 @@ namespace MachineBrigade.Game.Effects
             _projectiles.Tick(now, _emitters);
             _strikes.Tick(now);
             _drops.Tick(now);
+            JetTrails(views, now);
             _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
@@ -628,6 +641,36 @@ namespace MachineBrigade.Game.Effects
                 ExplosionTier.Huge => 0.7f,
                 _ => 1f,
             });
+        }
+
+        private float _nextJetPuff;
+
+        /// <summary>
+        /// Jets in flight: a hot exhaust and a thin vapour trail behind the engines, and vortices
+        /// streaming off the wingtips when they pull hard into a turn.
+        /// </summary>
+        private void JetTrails(ViewRegistry views, float now)
+        {
+            if (now < _nextJetPuff) return;
+            _nextJetPuff = now + 0.04f;
+            foreach (var view in views.All)
+            {
+                if (!view.Flying || !view.Def.FixedWing || !view.Sim.IsAlive || view.Body == null) continue;
+                var body = view.Body;
+                var at = body.position;
+                if (at.y < 3f || !_cull.Visible(at, 0.5f)) continue;
+                var forward = body.forward;
+                var size = view.Def.Radius * view.Def.Scale;
+                var tail = at - forward * size * 1.1f;
+                _emitters.Afterburner(tail, forward, 0.8f + size * 0.12f);
+                _emitters.Contrail(tail - forward * 0.6f, 0.35f + size * 0.04f, 1.1f);
+                if (Mathf.Abs(view.Bank) > 22f)
+                {
+                    var right = body.right * size * 1.25f;
+                    _emitters.Contrail(at + right, 0.26f, 0.8f);
+                    _emitters.Contrail(at - right, 0.26f, 0.8f);
+                }
+            }
         }
 
         /// <summary>A brief flash of the whole screen, of the given strength (0 to 1): huge and ultimate blasts on screen.</summary>

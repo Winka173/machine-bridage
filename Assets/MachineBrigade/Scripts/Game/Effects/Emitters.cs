@@ -13,6 +13,7 @@ namespace MachineBrigade.Game.Effects
     internal sealed class Emitters
     {
         private readonly ParticleSystem _trail;
+        private readonly ParticleSystem _contrail;
         private readonly ParticleSystem _dust;
         private readonly ParticleSystem _motor;
         private readonly ParticleSystem _flame;
@@ -25,6 +26,9 @@ namespace MachineBrigade.Game.Effects
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
+            // Jets' vapour: thin white trails that spread and fade behind the engines and wingtips.
+            _contrail = Continuous(parent, "Contrails", m.Smoke, 1600,
+                PB.Fade(new Color(0.97f, 0.98f, 1f), new Color(0.94f, 0.96f, 0.99f), new Color(0.9f, 0.92f, 0.96f), 0.5f), 0.45f, 2.4f);
             _flame = Continuous(parent, "Flame Jets", FxMaterials.Shared.Napalm, 900,
                 PB.Hold(new Color(0.3f, 0.27f, 0.24f), new Color(0.26f, 0.24f, 0.22f), 0.05f, 0.7f), 0.45f, 1.6f);
             // The sheet's burning half only; the quads are lowered so the fire sits on the stream.
@@ -50,6 +54,18 @@ namespace MachineBrigade.Game.Effects
         {
             Emit(_trail, position, Random.insideUnitSphere * 0.2f + Vector3.up * 0.25f, size * Random.Range(0.7f, 1.2f),
                 Random.Range(0.6f, 1.1f));
+        }
+
+        /// <summary>A puff of a jet's vapour trail (engine or wingtip), lingering <paramref name="life"/> seconds.</summary>
+        public void Contrail(Vector3 position, float size, float life)
+        {
+            Emit(_contrail, position, Random.insideUnitSphere * 0.15f, size * Random.Range(0.85f, 1.15f), life * Random.Range(0.85f, 1.1f));
+        }
+
+        /// <summary>A jet engine's hot exhaust: a short tongue of flame out of the nozzle.</summary>
+        public void Afterburner(Vector3 position, Vector3 forward, float scale)
+        {
+            Emit(_motor, position, -forward * 7f + Random.insideUnitSphere * 0.3f, Random.Range(0.35f, 0.55f) * scale, Random.Range(0.05f, 0.09f));
         }
 
         /// <summary>The burning motor behind a flying missile or rocket.</summary>

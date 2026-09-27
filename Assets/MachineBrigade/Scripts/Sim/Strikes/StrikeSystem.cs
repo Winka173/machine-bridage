@@ -49,7 +49,13 @@ namespace MachineBrigade.Sim.Strikes
 
             /// <summary>Spread multiplier: fire support called into an enemy jammer's bubble lands wide.</summary>
             public float Scatter = 1f;
+
+            /// <summary>Where each round of a barrage lands, aimed a moment before it does (so it can be seen coming down).</summary>
+            public readonly List<Vector2> Planned = new();
         }
+
+        /// <summary>Seconds a fire-support round is seen falling before it lands.</summary>
+        private const float ShellFall = 0.9f;
 
         private readonly SimWorld _world;
         private readonly List<Strike> _strikes = new();
@@ -150,13 +156,22 @@ namespace MachineBrigade.Sim.Strikes
             {
                 case SupportKind.Barrage:
                 {
-                    if (now < s.Start) return false;
                     var interval = support.Count > 1 ? support.Duration / (support.Count - 1) : 0f;
-                    while (s.Done < support.Count && now >= s.Start + s.Done * interval)
+                    // Each round is aimed a moment before it lands and announced, so the shell can be
+                    // seen coming down out of the sky onto the very spot it hits.
+                    while (s.Planned.Count < support.Count && now >= s.Start + s.Planned.Count * interval - ShellFall)
                     {
                         var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
                         var r = support.Radius * MathF.Sqrt((float)_world.Random.NextDouble());
-                        Blast(s, s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r);
+                        var at = Scattered(s, s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r);
+                        var lands = s.Start + s.Planned.Count * interval;
+                        s.Planned.Add(at);
+                        _world.Emit(SimEvent.ShellInbound(s.Team, support, at, FireFrom(s), (float)Math.Max(0.15, lands - now)));
+                    }
+                    if (now < s.Start) return false;
+                    while (s.Done < support.Count && now >= s.Start + s.Done * interval)
+                    {
+                        Land(s, s.Planned[s.Done]);
                         s.Done++;
                     }
                     return s.Done >= support.Count;
@@ -203,6 +218,18 @@ namespace MachineBrigade.Sim.Strikes
                 }
 
                 case SupportKind.Smoke:
+                    // The smoke shells come down first: one on the mark and four round it.
+                    if (!s.Announced && now >= s.Start - ShellFall)
+                    {
+                        s.Announced = true;
+                        for (var k = 0; k < 5; k++)
+                        {
+                            var angle = k * SimMath.Tau / 4f + 0.8f;
+                            var at = k == 0 ? s.Point : s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (support.Radius * 0.5f);
+                            _world.Emit(SimEvent.ShellInbound(s.Team, support, _world.ClampToMap(at), FireFrom(s),
+                                (float)Math.Max(0.15, s.Start - now + k * 0.08)));
+                        }
+                    }
                     if (now < s.Start) return false;
                     _smoke.Add(new SmokeZone(s.Point, support.Radius, now + support.Duration));
                     _world.Emit(SimEvent.SmokeDeployed(s.Team, s.Point, support.Radius, support.Duration));
@@ -266,7 +293,10 @@ namespace MachineBrigade.Sim.Strikes
             }
         }
 
-        private void Blast(Strike s, Vector2 at)
+        private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));
+
+        /// <summary>Fire support called into an enemy jammer's bubble lands wide.</summary>
+        private Vector2 Scattered(Strike s, Vector2 at)
         {
             var support = s.Support;
             if (s.Scatter > 1f)
@@ -275,9 +305,21 @@ namespace MachineBrigade.Sim.Strikes
                 var off = (s.Scatter - 1f) * MathF.Max(6f, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());
                 at += new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * off;
             }
-            at = _world.ClampToMap(at);
+            return _world.ClampToMap(at);
+        }
+
+        private void Land(Strike s, Vector2 at)
+        {
+            var support = s.Support;
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
             _world.Damage.Splash(at, support.BlastRadius, support.Damage, support.DamageType, s.Team, EntityId.None);
+        }
+
+        /// <summary>The side the rounds come from: the calling side's camp, else back along the strike.</summary>
+        private Vector2 FireFrom(Strike s)
+        {
+            if (_world.TryGetRally(s.Team, out var home) && Vector2.DistanceSquared(home, s.Point) > 1f) return Vector2.Normalize(home - s.Point);
+            return s.Direction.LengthSquared() > 0.01f ? -Vector2.Normalize(s.Direction) : Vector2.UnitY;
         }
 
         private void Heal(Strike s)
