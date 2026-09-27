@@ -136,6 +136,7 @@ namespace MachineBrigade.Game.Views
                 instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
                     Quaternion.Euler(0f, yaw, 0f));
                 if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                if (!Mathf.Approximately(prop.Def.Scale, 1f)) instance.transform.localScale *= prop.Def.Scale;
                 _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
                 // Buildings, vehicles and street furniture never move: batch them (not trees, whose
                 // wind sway needs their own transforms, nor props with spinning parts).

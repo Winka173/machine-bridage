@@ -157,6 +157,13 @@ namespace MachineBrigade.Sim.Content
         public float Width { get; internal set; }
 
         /// <summary>Collision capsule: half the length of its spine (0 for a round footprint).</summary>
+        /// <summary>
+        /// Size of the model relative to how it was built: aircraft are drawn closer to their
+        /// real size next to tanks and houses, ground vehicles a little smaller. The radius, length
+        /// and width above already include it.
+        /// </summary>
+        public float Scale { get; set; } = 1f;
+
         public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
 
         /// <summary>Collision capsule radius (a little inside the hull, so parked vehicles can touch).</summary>
@@ -271,6 +278,9 @@ namespace MachineBrigade.Sim.Content
         public float Depth { get; }
 
         public bool BlocksMovement { get; }
+
+        /// <summary>Size of the model relative to how it was built; the footprint already includes it.</summary>
+        public float Scale { get; set; } = 1f;
 
         /// <summary>
         /// Stands tall enough to stop a direct-fire round (buildings, rock, fortress walls). Low

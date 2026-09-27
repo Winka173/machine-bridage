@@ -67,6 +67,8 @@ namespace MachineBrigade.Game.Views
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
             _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
+            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
+            _body.localScale = Vector3.one * vehicle.Def.Scale;
             _spawnTime = Time.time;
 
             _recoilRest = new Vector3[_model.RecoilParts.Count];
@@ -101,7 +103,7 @@ namespace MachineBrigade.Game.Views
 
             _bar = new GameObject("HealthBar").transform;
             _bar.SetParent(Root, false);
-            _bar.localPosition = new Vector3(0f, _model.Muzzle.y + 1.9f, 0f);
+            _bar.localPosition = new Vector3(0f, _model.Muzzle.y * vehicle.Def.Scale + 1.9f, 0f);
             var back = CreateMesh("Back", _bar, meshes.Quad, materials.BarBack, false);
             back.localScale = new Vector3(BarWidth + 0.14f, BarHeight + 0.14f, 1f);
             _barFill = CreateMesh("Fill", _bar, meshes.Quad, vehicle.Team == playerTeam ? materials.BarAlly : materials.BarEnemy,
@@ -139,7 +141,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>World-space main muzzle, for tracers and flashes.</summary>
         public Vector3 MuzzleWorld => _body.TransformPoint(_model.Muzzle);
 
-        public float MuzzleHeight => _model.Muzzle.y;
+        public float MuzzleHeight => _model.Muzzle.y * Def.Scale;
 
         /// <summary>Latest simulated ground speed in m/s.</summary>
         public float Speed => _currentSpeed;

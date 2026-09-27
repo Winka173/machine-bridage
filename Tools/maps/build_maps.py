@@ -72,7 +72,13 @@ def load_props():
     text = (DATA / 'balance.json').read_text(encoding='utf-8')
     text = re.sub(r'^\s*//.*$', '', text, flags=re.M)
     balance = json.loads(text)
-    return {p['id']: p for p in balance['props']}
+    props = {p['id']: p for p in balance['props']}
+    # A prop's "scale" resizes its model and footprint together (see Catalog.cs).
+    for p in props.values():
+        scale = p.get('scale', 1.0)
+        p['width'] *= scale
+        p['depth'] *= scale
+    return props
 
 
 PROPS = load_props()
