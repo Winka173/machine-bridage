@@ -2,6 +2,42 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-28: Round 5 (playtest list): real armament, new vehicles, campaign depth, Defend as a base
+
+The user's fifth list: bugs, one currency, real weapons for every vehicle, new vehicles (car
+bombs, suicide drones and more), a repair vehicle, notes for every vehicle, an In action tab,
+weather that eases in, fall damage, bigger bosses and a flying-saucer boss, campaign enemies that
+scale with the player's arsenal and get reinforcements, more mission types, Defend with a real
+base, an Endless mode, and a separate Survival.
+
+### Done
+
+**Fixes and quick changes**
+- Deck slots keep their places (removing one card no longer removes another); gems are gone (coins only, old gems converted at 15 coins each); smaller rifle tracers; summoned aircraft fly in from behind and above instead of rising from the ground; the AI never drops strikes on its own troops; smoke and fire thin out along the line of sight to a boss; weather changes over eight seconds; crashing aircraft do fall damage; wings no longer vanish when the camera turns (shadow caster ceiling and camera distance); upgrade badges sit in place; economy faster (income 0.85, supply 0.9), boss rush easier; auto-buy counters the enemy's mix (air with anti-air and the other way round).
+
+**Vehicles**
+- Every vehicle's weapons checked against the real thing: the AC-130 fires its guns from the left side while orbiting, the B-2 carries JASSMs and hides (stealth), fighters carry air-to-air missiles and a gun, throttle back and hover to fight, and hunt aircraft; helicopters and jets have flares.
+- Ten new vehicles with their own models and icons: armoured car bomb, ZU-23 technical, smoke carrier, Lancet truck, Shahed launcher, Iron Beam laser, railgun truck, turtle tank, BMPT and sapper (repairs towers slowly, with a wrench over what it mends).
+- Notes for every vehicle on its detail page; the In action tab shows it firing on a little range of its own.
+- Bosses bigger and better armed; a new boss, the Silver Bug flying saucer (laser, coilguns, shield, EMP, drones).
+- Engine effects by kind (afterburners, turbofan trails, smoky old jets, props, rotor downwash), contrails high up, wingtip vortices, navigation lights.
+- The grenade launchers are gone from the jeep and support vehicles, in the data and now in the models.
+
+**Campaign**
+- The enemy keeps pace with the arsenal: it gets 80 % of the average edge the player's card ranks and equipment give the deck (health from toughness, damage from firepower), boss and towers included.
+- Enemy reinforcements: when the enemy army falls below 60 % of its peak, or the player's goal passes a milestone, a group is flown in by parachute (75 s apart, bigger each time, anti-air first against air), with a warning.
+- Four new goals: Hunt (marked vehicles on patrol, hardened), Recon (bring a vehicle onto each objective for 3 s), Protect (keep the player's buildings standing until the clock runs out), Shoot down (a number of aircraft). Markers over the targets: red to destroy, blue to keep, amber to scout.
+- Six new missions (m17 to m22) on Red Rock, Whiteout, Rust Yard, Skyhold, Dune Break and Greenvale, unlocking the ten new vehicles. Five-seed balance: m17 5/5, m18 5/5, m19 5/5, m20 5/5, m21 2/5 (the saucer), m22 3/5; the first sixteen 80/85.
+
+**Modes**
+- Defend is now the player's own base: the siege map's fortress (walls, gates, towers, relays, shield generators, HQ) and its garrison are the player's, and the enemy lays siege to it in the same three stages, with waves flown in on top of what it buys. Hold until its clock runs out.
+- Endless: the same fortress, no clock, waves every 55 s that grow and turn elite; the best wave is kept.
+- Survival stays the army-only mode (no base, no towers).
+
+### Known limitations
+- m21 (the saucer) is hard for the scripted test deck (2/5).
+- The new modes and markers were checked in tests; the look on a phone is still to be checked.
+
 ## 2026-09-27 (late): Mobile menu layout, vehicle detail page, equipment pictures
 
 The user asked for a detail screen for each vehicle (health, damage, equipment), a menu split

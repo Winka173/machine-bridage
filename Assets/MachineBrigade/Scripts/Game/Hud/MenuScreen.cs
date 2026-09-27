@@ -90,13 +90,13 @@ namespace MachineBrigade.Game.Hud
             _topBar.Add(gear);
             Root.Add(_topBar);
 
-            // Bottom tabs: Battle in the middle, raised and wider.
+            // The navigation rail down the left edge (landscape has width to spare, not height).
             _tabBar = UiKit.Box("nav-tabs", PickingMode.Position);
-            foreach (var (tab, icon, key) in new[] { (Tab.Shop, "shop", "tab.shop"), (Tab.Army, "tank", "tab.army"), (Tab.Battle, "swords", "tab.battle"),
-                         (Tab.Campaign, "campaign", "tab.campaign"), (Tab.Events, "trophy", "tab.events") })
+            foreach (var (tab, icon, key) in new[] { (Tab.Battle, "swords", "tab.battle"), (Tab.Army, "tank", "tab.army"),
+                         (Tab.Campaign, "campaign", "tab.campaign"), (Tab.Events, "trophy", "tab.events"), (Tab.Shop, "shop", "tab.shop") })
             {
                 var t = tab;
-                var button = UiKit.Button(tab == Tab.Battle ? "nav-tab battle" : "nav-tab", () => ShowTab(t));
+                var button = UiKit.Button("nav-tab", () => ShowTab(t));
                 button.Add(UiKit.Icon(icon, UiKit.Ink, 1.9f));
                 button.Add(UiKit.Text(Strings.Get(key), "nav-tab-label"));
                 var dot = UiKit.Box("red-dot");
@@ -109,6 +109,7 @@ namespace MachineBrigade.Game.Hud
 
             // A language change rebuilds the menu; come back to the page the player was on.
             ShowTab(_reopenTab);
+            UiKit.Uppercase(Root);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
         }
@@ -259,6 +260,7 @@ namespace MachineBrigade.Game.Hud
             RefreshEvents();
             RefreshDetail();
             RefreshDots();
+            UiKit.Uppercase(Root);
         }
 
         /// <summary>Red dots only for something to do (Clash Royale's rule): an affordable rank-up, a reward to claim, a free crate.</summary>

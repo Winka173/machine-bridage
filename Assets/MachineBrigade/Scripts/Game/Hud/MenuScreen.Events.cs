@@ -56,10 +56,13 @@ namespace MachineBrigade.Game.Hud
             right.Add(UiKit.Text(Strings.Get("events.special"), "menu-caps"));
             right.Add(EventCard("home", "mode.weekly", "mode.weeklySub", GameModeKind.Weekly, out _weeklyStage));
             right.Add(EventCard("skull", "mode.bossrush", "mode.bossrushSub", GameModeKind.BossRush, out _));
-            right.Add(EventCard("shield", "mode.survival", "mode.survivalSub", GameModeKind.Survival, out _));
+            right.Add(EventCard("trophy", "mode.endless", "mode.endlessSub", GameModeKind.Endless, out _endlessBest));
+            right.Add(EventCard("people", "mode.survival", "mode.survivalSub", GameModeKind.Survival, out _));
             columns.Add(right);
             page.Add(columns);
         }
+
+        private Label _endlessBest;
 
         private VisualElement EventCard(string icon, string name, string sub, GameModeKind mode, out Label extra)
         {
@@ -96,6 +99,8 @@ namespace MachineBrigade.Game.Hud
                 claim.EnableInClassList("ready", DailyMissions.Done(i) && !DailyMissions.Claimed(i));
                 claim.EnableInClassList("claimed", DailyMissions.Claimed(i));
             }
+            if (_endlessBest != null)
+                _endlessBest.text = DefendSession.BestWave > 0 ? Strings.Format("events.endlessBest", DefendSession.BestWave) : "";
             if (_weeklyStage != null)
                 _weeklyStage.text = Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week));
         }

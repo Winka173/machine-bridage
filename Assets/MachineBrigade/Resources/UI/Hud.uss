@@ -1558,139 +1558,537 @@
 .settings-page .option-label { font-size: 14px; }
 .settings-page .setting-row .icon-button { width: 56px; height: 48px; border-radius: 8px; }
 
-/* ================================================================ menu v4: one colour per meaning, finished buttons */
-/* After Supercell's rule of one hue per job: green commits (upgrade, equip, buy, claim, open);
-   amber is only the hero call to battle (Deploy, the Battle tab, Start mission); steel is a
-   secondary button; selection is a white outline and a lighter face, never a hue; coins are a
-   yellow icon with white numbers; rarity colours stay on the items. Every button carries one
-   9-slice gloss over its own colour (Tools/art/ui_skin.py): a bright top rim, a soft sheen, a
-   darker foot, a thin dark outline, and a label with a drop shadow. */
+/* ================================================================ menu v5: "Field Command" (flat, tactical) */
+/* After War Thunder Mobile's 2025 redesign, WoT Blitz Reforged and Delta Force: dark graphite
+   surfaces over the battle, 1 px hairlines, square corners (2 px), one amber accent for the one
+   main action on a screen (a flat face with two corners cut, Tools/art/ui_field.py) and for what
+   is selected (a 3 px line), bone for confirming, uppercase condensed labels with tracking.
+   No bevels, lips, gloss or drop shadows. Battle HUD colours are left alone. */
 :root {
-    --action: #35c15a;
-    --action-lip: #1c8a3a;
-    --secondary: #34505f;
-    --secondary-lip: #1f3340;
-    --select: #f4f8fa;
-    --coin: #ffd23f;
-    --info: #7fc4ff;
+    --surface-1: rgba(18, 23, 27, 0.92);
+    --surface-2: rgba(26, 33, 38, 0.95);
+    --surface-3: #242c32;
+    --line-1: rgba(237, 234, 227, 0.08);
+    --line-2: rgba(237, 234, 227, 0.2);
+    --line-3: #e9e4d8;
+    --text-hi: #edeae3;
+    --text-mid: #a3adb3;
+    --text-lo: #69747b;
+    --ink: #16110a;
+    --accent: #f2a33a;
+    --accent-press: #d48a24;
+    --bone: #ede6d6;
+    --bone-press: #d8d0be;
+    --positive: #9ccb5e;
+    --negative: #e5533c;
+    --warning: #f2c14e;
+    --coin: #f2c14e;
+    --info: #4f8fd8;
 }
 
+/* --- reset: no gloss, no lips, square corners, a press that scales ---------------------------------------------- */
 .menu .wide, .menu .segment, .menu .option, .menu .rail-button, .menu .gear-branch, .menu .setup-mode, .menu .deploy-button,
 .menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .doctrine-chip, .menu .nav-back,
-.menu .nav-icon, .menu .crate-odds, .menu .daily-claim, .menu .home-card-go, .menu .nav-tab.battle, .menu .icon-button,
-.menu .nav-pill-plus, .menu .detail-arrow {
-    background-image: resource("UI/Skin/gloss");
-    -unity-slice-left: 12;
-    -unity-slice-right: 12;
-    -unity-slice-top: 22;
-    -unity-slice-bottom: 14;
+.menu .nav-icon, .menu .crate-odds, .menu .daily-claim, .menu .home-card-go, .menu .nav-tab, .menu .icon-button,
+.menu .nav-pill-plus, .menu .detail-arrow, .menu .home-card, .menu .deck-slot, .menu .unit-card-big, .menu .gear-slot2,
+.menu .map-card, .menu .shop-card, .menu .setting-row, .menu .mission-row, .menu .tier-chip, .menu .card, .menu .nav-pill,
+.menu .nav-profile, .menu .crate-tile, .menu .event-daily, .menu .event-card, .menu .weapon-row, .menu .stat-fact,
+.menu .counter-chip, .menu .gear-info, .menu .deck-strip, .menu .card-popover, .menu .menu-panel, .menu .unlock-chip {
+    background-image: none;
+    border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    translate: 0 0;
+    transition-property: scale, background-color, border-color, -unity-background-image-tint-color;
+    transition-duration: 0.08s;
+    transition-timing-function: ease-out-cubic;
 }
-.menu .wide, .menu .segment, .menu .option, .menu .rail-button, .menu .gear-branch, .menu .setup-mode, .menu .deploy-button,
-.menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .doctrine-chip, .menu .nav-back,
-.menu .nav-icon, .menu .crate-odds, .menu .daily-claim {
-    border-top-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-color: rgba(0, 0, 0, 0.45);
-    border-left-color: rgba(0, 0, 0, 0.45);
-    border-right-color: rgba(0, 0, 0, 0.45);
-}
+.menu .pressed { scale: 0.96 0.96; translate: 0 0; }
 .menu .wide-title, .menu .segment-label, .menu .option-label, .menu .deploy-text, .menu .upgrade-big-text, .menu .event-play-text,
 .menu .crate-button-text, .menu .rail-label, .menu .gear-branch-name, .menu .setup-mode-name, .menu .nav-back-text, .menu .event-claim-text,
 .menu .daily-reward, .menu .nav-tab-label {
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
-/* Secondary buttons: steel. */
-.menu .wide { background-color: var(--secondary); border-bottom-color: var(--secondary-lip); }
-.menu .wide.disabled { background-color: var(--n700); border-bottom-color: var(--n950); }
+/* Uppercase condensed labels (the text is uppercased in code: UiKit.Uppercase). */
+.menu .wide-title, .menu .segment-label, .menu .option-label, .menu .rail-label, .menu .gear-branch-name, .menu .setup-mode-name,
+.menu .nav-back-text, .menu .nav-tab-label, .menu .crate-button-text, .menu .upgrade-big-text, .menu .event-play-text,
+.menu .menu-caps, .menu .home-card-caps, .menu .map-name, .menu .unit-card-name, .menu .shop-name, .menu .tier-name {
+    -unity-font: resource("Fonts/BarlowCondensed-SemiBold");
+    letter-spacing: 1.2px;
+    padding-top: 2px;
+}
+.menu .menu-caps, .menu .home-card-caps {
+    font-size: 15px; letter-spacing: 2px; color: var(--text-mid); -unity-text-align: middle-left;
+}
 
-/* Actions: green, white label. */
-.menu .wide.primary, .menu .wide.upgrade-button, .menu .crate-button.primary, .menu .upgrade-big.ready,
-.menu .daily-claim.ready, .menu .event-claim.ready {
-    background-color: var(--action);
-    border-bottom-color: var(--action-lip);
+/* --- surfaces ----------------------------------------------------------------------------------------------------- */
+.menu .menu-backdrop { background-color: #0e1215; background-image: resource("UI/Skin/ui_vignette"); }
+.menu .full-page { background-color: #0e1215; }
+.menu .menu-panel { background-color: var(--surface-1); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2); }
+.menu .page-dock { background-color: var(--surface-1); border-top-width: 1px; border-top-color: var(--line-1); }
+
+/* --- top bar -------------------------------------------------------------------------------------------------------- */
+.menu .nav-top {
+    background-color: rgba(0, 0, 0, 0); background-image: resource("UI/Skin/ui_scrim_top");
+    border-bottom-width: 0; padding: 0 18px;
+}
+.menu .nav-profile { background-color: rgba(0, 0, 0, 0); height: 56px; padding: 0 12px 0 2px; }
+.menu .nav-profile > .icon { width: 30px; height: 30px; margin-right: 10px; --icon-color: #edeae3; }
+.menu .nav-profile .rank-label { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 20px; letter-spacing: 1px; color: var(--text-hi); }
+.menu .nav-profile .rank-track { width: 112px; height: 4px; margin-top: 4px; border-radius: 0; background-color: #2a3136; }
+.menu .nav-profile .rank-fill { border-radius: 0; background-color: var(--positive); }
+.menu .nav-back {
+    height: 52px; padding: 0 18px 0 12px; background-color: rgba(18, 23, 27, 0.55);
+    background-image: resource("UI/Skin/ui_brackets"); -unity-slice-left: 16; -unity-slice-top: 16; -unity-slice-right: 16; -unity-slice-bottom: 16;
+    -unity-background-image-tint-color: rgba(233, 228, 216, 0.75);
+}
+.menu .nav-back > .icon { width: 24px; height: 24px; margin-right: 8px; }
+.menu .nav-back-text { font-size: 18px; color: var(--text-hi); }
+.menu .nav-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 26px; letter-spacing: 2px; color: var(--text-hi); padding-top: 2px; }
+.menu .nav-pill { background-color: rgba(0, 0, 0, 0); height: 52px; padding: 0 0 0 8px; margin-left: 14px; }
+.menu .nav-pill > .icon { width: 26px; height: 26px; margin-right: 8px; --icon-color: #f2c14e; }
+.menu .nav-pill-value { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 27px; letter-spacing: 0.5px; color: var(--text-hi); margin-right: 10px; }
+.menu .nav-pill-plus {
+    width: 34px; height: 34px; background-color: var(--surface-3);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .nav-pill-plus .icon { width: 18px; height: 18px; }
+.menu .nav-icon {
+    width: 54px; height: 54px; margin-left: 14px; background-color: rgba(18, 23, 27, 0.7);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .nav-icon .icon { width: 26px; height: 26px; }
+
+/* --- navigation rail on the left ------------------------------------------------------------------------------------- */
+.menu .nav-tabs {
+    top: 72px; bottom: 0; left: 0; right: auto; width: 108px; height: auto;
+    flex-direction: column; align-items: stretch; justify-content: flex-start; padding-top: 10px;
+    background-color: rgba(12, 15, 18, 0.84); border-top-width: 0; border-right-width: 1px; border-right-color: var(--line-1);
+}
+.menu .nav-tab {
+    flex-grow: 0; flex-basis: auto; height: 100px; margin: 0 0 2px 0;
+    background-color: rgba(0, 0, 0, 0); border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0);
+}
+.menu .nav-tab > .icon { width: 32px; height: 32px; --icon-color: #a3adb3; }
+.menu .nav-tab-label { font-size: 16px; letter-spacing: 1px; color: var(--text-mid); margin-top: 6px; }
+.menu .nav-tab.chosen { background-color: rgba(255, 255, 255, 0.06); border-left-color: var(--accent); }
+.menu .nav-tab.chosen > .icon { --icon-color: #f2a33a; }
+.menu .nav-tab.chosen .nav-tab-label { color: var(--text-hi); }
+.menu .red-dot {
+    top: 16px; right: 26px; width: 12px; height: 12px; rotate: 45deg;
+    border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+    border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: var(--negative);
+}
+.menu .tab-page { left: 108px; bottom: 0; }
+
+/* a short message, bottom centre */
+.menu .menu-toast {
+    bottom: 28px; left: 28%; right: 28%; padding: 12px 18px; font-size: 16px; color: var(--text-hi);
+    background-color: var(--surface-2); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-left-width: 4px; border-left-color: var(--positive);
+}
+.menu .menu-toast.warn { border-left-color: var(--warning); color: var(--text-hi); }
+
+/* --- buttons ---------------------------------------------------------------------------------------------------------- */
+/* Ghost: the everyday secondary button. */
+.menu .wide {
+    background-color: rgba(18, 23, 27, 0.6);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .wide .icon { --icon-color: #edeae3; }
+.menu .wide-title { font-size: 19px; color: var(--text-hi); }
+.menu .wide-sub { color: var(--text-mid); }
+.menu .wide.pressed { background-color: rgba(237, 234, 227, 0.12); border-color: rgba(237, 234, 227, 0.6); }
+.menu .wide.disabled { background-color: rgba(18, 23, 27, 0.4); border-color: var(--line-1); }
+.menu .wide.disabled .wide-title { color: var(--text-lo); }
+.menu .wide.disabled .icon { --icon-color: #69747b; }
+/* Bone: confirming (equip, upgrade a piece, claim, open, buy one thing). */
+.menu .wide.primary, .menu .wide.upgrade-button, .menu .crate-button.primary, .menu .daily-claim.ready, .menu .event-claim.ready,
+.menu .event-play, .menu .home-card-go {
+    background-color: var(--bone); border-color: var(--bone);
 }
 .menu .wide.primary .wide-title, .menu .wide.upgrade-button .wide-title, .menu .crate-button.primary .crate-button-text,
-.menu .upgrade-big.ready .upgrade-big-text, .menu .daily-claim.ready .daily-reward, .menu .event-claim.ready .event-claim-text {
-    color: #ffffff;
+.menu .daily-claim.ready .daily-reward, .menu .event-claim.ready .event-claim-text, .menu .event-play-text { color: var(--ink); }
+.menu .wide.primary .icon, .menu .wide.upgrade-button .icon, .menu .crate-button.primary .icon, .menu .daily-claim.ready .icon,
+.menu .event-claim.ready .icon, .menu .event-play .icon, .menu .home-card-go .icon { --icon-color: #16110a; }
+.menu .wide.primary.pressed, .menu .wide.upgrade-button.pressed, .menu .crate-button.primary.pressed, .menu .event-play.pressed,
+.menu .home-card-go.pressed { background-color: var(--bone-press); }
+.menu .wide.primary.disabled { background-color: rgba(237, 230, 214, 0.12); border-color: var(--line-1); }
+.menu .wide.primary.disabled .wide-title { color: var(--text-lo); }
+.menu .wide.primary.disabled .icon { --icon-color: #69747b; }
+/* Amber, two corners cut: the one main action (Deploy, Start mission, Rank up, Buy in the shop). */
+.menu .deploy-button, .menu .wide.primary.campaign-start, .menu .upgrade-big.ready, .menu .wide.shop-buy {
+    background-color: rgba(0, 0, 0, 0); border-color: rgba(0, 0, 0, 0);
+    border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;
+    background-image: resource("UI/Skin/ui_cta_fill");
+    -unity-slice-left: 44; -unity-slice-top: 42; -unity-slice-right: 44; -unity-slice-bottom: 42;
+    -unity-background-image-tint-color: var(--accent);
 }
-.menu .wide.primary .icon, .menu .wide.upgrade-button .icon, .menu .crate-button.primary .icon, .menu .upgrade-big.ready > .icon {
-    --icon-color: #ffffff;
+.menu .deploy-button.pressed, .menu .wide.primary.campaign-start.pressed, .menu .upgrade-big.ready.pressed, .menu .wide.shop-buy.pressed {
+    -unity-background-image-tint-color: var(--accent-press); scale: 0.97 0.97;
 }
-.menu .wide.primary.disabled { background-color: var(--n700); border-bottom-color: var(--n950); }
-.menu .wide.primary.disabled .wide-title { color: var(--n300); }
-
-/* The hero call to battle keeps amber. */
-.menu .wide.primary.campaign-start { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
-.menu .wide.primary.campaign-start .wide-title { color: var(--amber-ink); }
-.menu .wide.primary.campaign-start .icon { --icon-color: #1b1206; }
-
-/* Selection: a white outline on a lighter face, white label. */
-.menu .segment.chosen, .menu .option.chosen, .menu .doctrine-chip.chosen {
-    background-color: var(--n600);
-    border-top-width: 2px;
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-color: var(--select);
-    border-left-color: var(--select);
-    border-right-color: var(--select);
-    border-bottom-color: var(--n950);
+.menu .wide.primary.campaign-start.disabled, .menu .wide.shop-buy.disabled { -unity-background-image-tint-color: #3b3226; }
+.menu .wide.primary.campaign-start.disabled .wide-title, .menu .wide.shop-buy.disabled .wide-title { color: #7d7262; }
+.menu .deploy-text, .menu .wide.primary.campaign-start .wide-title, .menu .upgrade-big.ready .upgrade-big-text, .menu .wide.shop-buy .wide-title {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); color: var(--ink); letter-spacing: 3px; padding-top: 3px;
 }
-.menu .segment.chosen .segment-label, .menu .option.chosen .option-label { color: #ffffff; }
-.menu .segment.chosen .icon, .menu .doctrine-chip.chosen .icon { --icon-color: #ffffff; }
-.menu .nav-tab.chosen { background-color: var(--n750); border-top-color: var(--select); }
-.menu .nav-tab.chosen > .icon { --icon-color: #ffffff; }
-.menu .nav-tab.chosen .nav-tab-label { color: #ffffff; }
-.menu .nav-tab.battle { background-color: var(--amber-deep); }
-.menu .nav-tab.battle.chosen { background-color: var(--amber); }
-.menu .rail-button.chosen, .menu .gear-branch.chosen { background-color: var(--n600); border-left-color: var(--select); }
-.menu .rail-button.chosen > .icon, .menu .gear-branch.chosen > .icon { --icon-color: #ffffff; }
-.menu .rail-button.chosen .rail-label, .menu .gear-branch.chosen .gear-branch-name { color: #ffffff; }
-.menu .setup-mode.chosen { background-color: var(--n600); border-top-color: var(--select); }
-.menu .setup-mode.chosen > .icon { --icon-color: #ffffff; }
-.menu .setup-mode.chosen .setup-mode-name { color: #ffffff; }
-.menu .map-card.chosen { border-left-color: var(--select); border-right-color: var(--select); border-top-color: var(--select); border-bottom-color: var(--select); }
-.menu .map-card.chosen .map-name { color: #ffffff; }
-.menu .gear-slot2.chosen { border-color: var(--select); background-color: var(--n700); }
-.menu .gear-cell.chosen { border-color: var(--select); }
-.menu .shop-card.chosen { border-color: var(--select); }
-.menu .wide.deck-toggle.chosen { background-color: var(--n600); border-top-color: var(--select); border-left-color: var(--select); border-right-color: var(--select); border-top-width: 2px; border-left-width: 2px; border-right-width: 2px; }
+.menu .deploy-button > .icon, .menu .wide.primary.campaign-start .icon, .menu .upgrade-big.ready > .icon, .menu .wide.shop-buy .icon { --icon-color: #16110a; }
+.menu .deploy-button { height: 92px; }
+.menu .deploy-button > .icon { width: 34px; height: 34px; margin-right: 12px; }
+.menu .deploy-text { font-size: 40px; letter-spacing: 4px; }
 
-/* Coins: a yellow icon, white numbers. */
-.menu .nav-pill.coin > .icon, .menu .price-tag .icon, .menu .daily-claim .icon, .menu .event-claim .icon, .menu .detail-reward-icon,
-.menu .coin-card > .icon {
-    --icon-color: #ffd23f;
+/* Icon buttons and arrows: small ghost squares. */
+.menu .icon-button, .menu .detail-arrow, .menu .crate-odds {
+    background-color: rgba(18, 23, 27, 0.7);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
 }
-.menu .price-value { color: var(--n100); }
-.menu .nav-pill-plus { background-color: var(--action); }
+.menu .icon-button.pressed, .menu .detail-arrow.pressed, .menu .crate-odds.pressed { background-color: var(--surface-3); }
 
-/* Headings and small texts off amber. */
-.menu .loot-title { color: var(--n100); }
-.menu .detail-role { color: var(--n200); }
-.menu .home-card-chips { color: var(--n300); }
-.menu .unit-card-rank { color: var(--n200); }
-.menu .deck-slot-rank { color: var(--n200); }
-.menu .event-card > .icon { --icon-color: #edeff0; }
-.menu .event-card-extra { color: var(--info); }
-.menu .nav-profile > .icon { --icon-color: #edeff0; }
-.menu .mode-info { color: var(--n300); }
-.menu .gear-total { color: var(--action); }
-.menu .unit-card-up { background-color: var(--action); }
-.menu .unit-card-big.upgradable .unit-card-fill { background-color: var(--action); }
-.menu .detail-print-fill { background-color: var(--info); }
+/* --- tabs, segments, options: a 3 px amber line marks the choice ------------------------------------------------------ */
+.menu .segment, .menu .option, .menu .tier-chip, .menu .doctrine-chip {
+    background-color: var(--surface-2);
+    border-top-width: 3px; border-top-color: rgba(0, 0, 0, 0);
+    border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
+    border-right-color: var(--line-1); border-bottom-color: var(--line-1); border-left-color: var(--line-1);
+}
+.menu .segment-label, .menu .option-label { font-size: 17px; color: var(--text-mid); }
+.menu .segment .icon, .menu .doctrine-chip .icon { --icon-color: #a3adb3; }
+.menu .segment.chosen, .menu .option.chosen, .menu .tier-chip.chosen, .menu .doctrine-chip.chosen {
+    background-color: var(--surface-3); border-top-color: var(--accent);
+    border-right-color: var(--line-2); border-bottom-color: var(--line-2); border-left-color: var(--line-2);
+}
+.menu .segment.chosen .segment-label, .menu .option.chosen .option-label, .menu .tier-chip.chosen .tier-name { color: var(--text-hi); }
+.menu .segment.chosen .icon, .menu .doctrine-chip.chosen .icon { --icon-color: #edeae3; }
+/* Rails (shop sections, equipment branches): the amber line on the left. */
+.menu .rail-button, .menu .gear-branch {
+    background-color: var(--surface-2); border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-color: var(--line-1); border-right-color: var(--line-1); border-bottom-color: var(--line-1);
+}
+.menu .rail-button > .icon, .menu .gear-branch > .icon { --icon-color: #a3adb3; }
+.menu .rail-label, .menu .gear-branch-name { font-size: 16px; color: var(--text-mid); }
+.menu .rail-button.chosen, .menu .gear-branch.chosen { background-color: var(--surface-3); border-left-color: var(--accent); }
+.menu .rail-button.chosen > .icon, .menu .gear-branch.chosen > .icon { --icon-color: #f2a33a; }
+.menu .rail-button.chosen .rail-label, .menu .gear-branch.chosen .gear-branch-name { color: var(--text-hi); }
 
-/* Bigger gear tiles and numbers (Survivor.io and Archero fill the whole tile with the rarity). */
-.gear-art-level { font-size: 17px; padding: 0 6px; background-color: rgba(8, 10, 12, 0.78); -unity-text-outline-width: 0.4px; -unity-text-outline-color: rgba(0, 0, 0, 0.8); }
-.gear-art-pip { width: 9px; height: 9px; border-radius: 5px; margin: 0 2px; }
+/* --- cards and tiles: surface, hairline; chosen = bone outline and an amber top line ---------------------------------- */
+.menu .setup-mode, .menu .map-card, .menu .shop-card, .menu .gear-slot2, .menu .card {
+    background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+}
+.menu .setup-mode > .icon { --icon-color: #a3adb3; }
+.menu .setup-mode-name { font-size: 16px; color: var(--text-mid); }
+.menu .setup-mode.chosen, .menu .map-card.chosen, .menu .shop-card.chosen, .menu .gear-slot2.chosen, .menu .card.chosen {
+    background-color: var(--surface-3);
+    border-top-width: 3px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--accent); border-right-color: var(--line-3); border-bottom-color: var(--line-3); border-left-color: var(--line-3);
+}
+.menu .setup-mode.chosen > .icon { --icon-color: #f2a33a; }
+.menu .setup-mode.chosen .setup-mode-name, .menu .map-card.chosen .map-name { color: var(--text-hi); }
+.menu .map-name { font-size: 16px; color: var(--text-hi); }
+.menu .map-art { border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .setting-row {
+    background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+}
+
+/* --- Battle tab (the lobby): the battle is the stage; a column on the right; Deploy under the right thumb -------------- */
+.menu .battle-scrim { position: absolute; top: 0; right: 0; bottom: 0; width: 620px; background-image: resource("UI/Skin/ui_scrim_side"); }
+.menu .home-left { left: auto; right: 18px; top: 6px; width: 404px; }
+.menu .home-right { right: 18px; bottom: 18px; width: 404px; }
+.menu .home-card {
+    padding: 12px 14px; margin-bottom: 10px; background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+}
+.menu .home-card > .icon { width: 34px; height: 34px; margin-right: 12px; --icon-color: #edeae3; }
+.menu .home-card-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; color: var(--text-hi); padding-top: 2px; }
+.menu .home-card-sub { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 14px; color: var(--text-mid); }
+.menu .home-card-chips { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 13px; color: var(--text-lo); }
+.menu .campaign-card { height: 88px; background-color: var(--surface-2); border-color: var(--line-2); }
+.menu .campaign-card > .icon { --icon-color: #edeae3; }
+.menu .campaign-card .home-card-title { color: var(--text-hi); }
+.menu .campaign-card .home-card-sub { color: var(--text-mid); }
+.menu .home-card-go { width: 56px; height: 56px; }
+.menu .home-card-go .icon { width: 26px; height: 26px; }
+.menu .home-card-go.change {
+    width: 48px; height: 48px; background-color: rgba(18, 23, 27, 0.7);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .home-card-go.change .icon { width: 22px; height: 22px; --icon-color: #edeae3; }
+.menu .home-card.mode-card { height: 76px; margin-bottom: 10px; padding: 8px 10px 8px 14px; background-color: var(--surface-2); border-color: var(--line-2); }
+.menu .home-card.mode-card > .icon { width: 30px; height: 30px; --icon-color: #edeae3; }
+.menu .home-card.mode-card .home-card-title { font-size: 20px; }
+.menu .campaign-card.pressed, .menu .home-card.mode-card.pressed { background-color: var(--surface-3); }
+.menu .daily-card { padding: 10px 12px 4px 12px; }
+.menu .daily-card .daily-row {
+    height: 50px; padding: 0 0 0 4px; margin-bottom: 0; background-color: rgba(0, 0, 0, 0);
+    border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+    border-bottom-width: 1px; border-bottom-color: var(--line-1);
+}
+.menu .daily-card .daily-text { font-size: 14px; color: var(--text-hi); }
+.menu .daily-card .daily-progress { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 19px; color: var(--text-mid); margin-right: 10px; }
+.menu .daily-claim {
+    height: 38px; min-width: 88px; background-color: rgba(18, 23, 27, 0.6);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .daily-claim .icon { width: 18px; height: 18px; --icon-color: #f2c14e; }
+.menu .daily-reward { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 19px; color: var(--text-hi); }
+.menu .daily-claim.claimed { background-color: rgba(0, 0, 0, 0); border-color: rgba(0, 0, 0, 0); }
+.menu .daily-claim.claimed .daily-reward { color: var(--text-lo); }
+
+/* --- battle setup ------------------------------------------------------------------------------------------------------ */
+.menu .setup-mode { height: 92px; border-top-left-radius: 2px; }
+.menu .setup-page .page-dock .deploy-button { width: 420px; height: 88px; }
+.menu .setup-page .page-dock .deploy-text { font-size: 38px; }
+
+/* --- Army: deck strip, collection cards, popover, equipment ------------------------------------------------------------ */
+.menu .deck-strip { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+.menu .deck-slot {
+    background-color: var(--surface-3);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 3px; border-left-width: 1px;
+    border-top-color: var(--line-2); border-right-color: var(--line-2); border-left-color: var(--line-2); border-bottom-color: #7e8f9c;
+}
+.menu .deck-slot.support { border-bottom-color: var(--negative); }
+.menu .deck-slot.empty { background-color: rgba(18, 23, 27, 0.5); border-color: var(--line-1); border-bottom-color: var(--line-1); }
+.menu .deck-slot-rank { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); color: var(--text-mid); }
+.menu .deck-divider { width: 1px; background-color: var(--line-2); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .deck-warnings { color: var(--warning); }
+.menu .unit-card-big {
+    background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 3px; border-left-width: 1px;
+    border-top-color: var(--line-1); border-right-color: var(--line-1); border-left-color: var(--line-1); border-bottom-color: #7e8f9c;
+}
+.menu .unit-card-big.support { border-bottom-color: var(--negative); }
+.menu .unit-card-art { background-color: rgba(255, 255, 255, 0.03); }
+.menu .unit-card-art .icon { --icon-color: #edeae3; }
+.menu .unit-card-name { font-size: 17px; letter-spacing: 1px; color: var(--text-hi); }
+.menu .unit-card-rank { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); color: var(--text-mid); }
+.menu .unit-card-track { height: 4px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; background-color: #2a3136; }
+.menu .unit-card-fill { background-color: var(--info); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .unit-card-cost {
+    min-width: 26px; height: 24px; background-color: rgba(10, 13, 16, 0.85);
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .unit-card-cost-text { color: var(--text-hi); }
+.menu .unit-card-check {
+    width: 24px; height: 24px; background-color: var(--bone); border-width: 0;
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.menu .unit-card-check .icon { --icon-color: #16110a; width: 16px; height: 16px; }
+.menu .unit-card-up {
+    width: 22px; height: 22px; background-color: var(--positive);
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.menu .unit-card-big.in-deck { border-top-color: var(--line-3); border-right-color: var(--line-3); border-left-color: var(--line-3); }
+.menu .unit-card-big.in-deck .unit-card-art { background-color: rgba(237, 230, 214, 0.08); }
+.menu .unit-card-big.upgradable .unit-card-fill { background-color: var(--positive); }
+.menu .unit-card-big.locked { background-color: rgba(18, 23, 27, 0.7); border-bottom-color: var(--line-1); }
+.menu .unit-card-big.locked .unit-card-art .icon { --icon-color: #3a454c; }
+.menu .unit-card-big.locked .unit-card-name { color: var(--text-lo); }
+.menu .unit-card-lock { background-color: rgba(10, 13, 16, 0.85); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+.menu .card-popover {
+    background-color: var(--surface-1);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .gear-info { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+.menu .gear-info-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; }
+.menu .gear-total { color: var(--positive); }
+.menu .gear-info-compare { color: var(--positive); }
+.menu .gear-slot2.special { background-color: rgba(242, 163, 58, 0.06); }
+.menu .gear-cell { border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+.menu .gear-cell.equipped { background-color: rgba(237, 230, 214, 0.1); }
+.menu .gear-cell.chosen { border-color: var(--line-3); }
+.menu .gear-art.empty { background-color: rgba(18, 23, 27, 0.6); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; border-color: var(--line-1); }
+.gear-art-level { font-size: 17px; padding: 0 6px; background-color: rgba(8, 10, 12, 0.78); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+.gear-art-pip { width: 9px; height: 9px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; rotate: 45deg; margin: 0 2px; }
 .gear-slot2 { width: 118px; }
 .gear-slot2.special { width: 132px; }
 .gear-slot2 .gear-slot-value { font-size: 13px; }
 .gear-centre { width: 520px; }
 .loot-gear-cell { width: 128px; }
-.menu .role-note { font-size: 15px; color: var(--n100); margin: 0 0 12px 0; padding: 10px 12px; background-color: var(--n800); border-radius: 10px; border-left-width: 4px; border-left-color: var(--info); }
+
+/* --- vehicle detail --------------------------------------------------------------------------------------------------- */
+.menu .detail-stage { background-color: rgba(255, 255, 255, 0.02); border-bottom-width: 0; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+.menu .detail-role { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 18px; letter-spacing: 1px; color: var(--text-mid); }
+.menu .counter-chip { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+.menu .counter-label { color: var(--text-mid); }
+.menu .stat-name { color: var(--text-mid); }
+.menu .stat-value { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); color: var(--text-hi); }
+.menu .stat-gain { color: #7faede; }
+.menu .stat-next .icon { --icon-color: #9ccb5e; }
+.menu .stat-next-text { color: var(--positive); }
+.menu .stat-bar { height: 6px; background-color: #2a3136; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .stat-bar-next, .menu .stat-bar-boost, .menu .stat-bar-base { border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .stat-bar-next { background-color: rgba(156, 203, 94, 0.55); }
+.menu .stat-bar-boost { background-color: var(--info); }
+.menu .stat-bar-base { background-color: var(--text-hi); }
+.menu .stat-fact { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+.menu .stat-fact .icon { --icon-color: #a3adb3; }
+.menu .weapon-row { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+.menu .weapon-row > .icon { --icon-color: #edeae3; }
+.menu .weapon-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 19px; letter-spacing: 0.5px; }
+.menu .weapon-line.ammo { color: var(--warning); }
+.menu .role-note {
+    font-size: 15px; color: var(--text-hi); margin: 0 0 12px 0; padding: 10px 12px; background-color: var(--surface-2);
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-left-width: 4px; border-left-color: var(--info);
+}
 .detail-scroll .menu-caps { margin-top: 2px; }
-.menu .crate-button { background-color: var(--secondary); border-bottom-color: var(--secondary-lip); }
-.menu .crate-button.primary.empty { background-color: var(--n700); border-bottom-color: var(--n950); }
-.menu .crate-button.primary.empty .crate-button-text { color: var(--n300); }
-.menu .crate-button.primary.empty .icon { --icon-color: #7e8f9c; }
+.menu .wide.deck-toggle.chosen { border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: var(--line-3); background-color: rgba(237, 230, 214, 0.08); }
+.menu .detail-print-track { height: 6px; background-color: #2a3136; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .detail-print-fill { background-color: var(--info); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .detail-print-row > .icon { --icon-color: #7faede; }
+.menu .upgrade-big {
+    background-color: rgba(18, 23, 27, 0.5);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+}
+.menu .upgrade-big-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; color: var(--text-mid); }
+.menu .upgrade-big > .icon { --icon-color: #a3adb3; }
+.menu .upgrade-big.ready .upgrade-big-text { font-size: 28px; }
+.menu .upgrade-big.maxed { background-color: rgba(156, 203, 94, 0.08); border-color: rgba(156, 203, 94, 0.4); }
+.menu .upgrade-big.maxed .upgrade-big-text { color: var(--positive); }
+
+/* --- shop ------------------------------------------------------------------------------------------------------------ */
+.menu .shop-card .shop-name { font-size: 18px; color: var(--text-hi); }
+.menu .unit-art, .menu .deal-art, .menu .skin-swatch { border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .deal-art { background-color: var(--surface-3); }
+.menu .deal-card.free .deal-art { background-color: rgba(156, 203, 94, 0.05); }
+.menu .deal-card.ad .deal-art { background-color: rgba(79, 143, 216, 0.05); }
+.menu .deal-card.gold .deal-art { background-color: rgba(233, 185, 73, 0.05); }
+.menu .deal-status { color: var(--text-mid); }
+.menu .price-tag .icon, .menu .coin-card > .icon, .menu .event-claim .icon, .menu .detail-reward-icon { --icon-color: #f2c14e; }
+.menu .price-value { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); color: var(--text-hi); }
+.menu .item-owned { color: var(--positive); }
+.menu .crate-tile {
+    background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-color: var(--line-1); border-right-color: var(--line-1); border-bottom-color: var(--line-1);
+    border-left-width: 4px;
+}
+.menu .crate-button {
+    background-color: rgba(18, 23, 27, 0.6);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .crate-button-text { font-size: 18px; color: var(--text-hi); }
+.menu .crate-button.primary.empty { background-color: rgba(237, 230, 214, 0.12); border-color: var(--line-1); }
+.menu .crate-button.primary.empty .crate-button-text { color: var(--text-lo); }
+.menu .crate-button.primary.empty .icon { --icon-color: #69747b; }
+.menu .wide.shop-buy .wide-title { font-size: 28px; }
+
+/* --- campaign --------------------------------------------------------------------------------------------------------- */
+.menu .mission-row {
+    background-color: var(--surface-2); border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-color: var(--line-1); border-right-color: var(--line-1); border-bottom-color: var(--line-1);
+}
+.menu .mission-row.chosen { background-color: var(--surface-3); border-left-color: var(--accent); }
+.menu .mission-row.boss { border-left-color: var(--negative); }
+.menu .mission-row.boss.chosen { border-left-color: var(--accent); }
+.menu .mission-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 19px; letter-spacing: 0.5px; }
+.menu .mission-number { color: var(--text-lo); }
+.menu .wide.primary.campaign-start .wide-title { font-size: 30px; }
+.menu .unlock-chip { background-color: var(--surface-2); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1); }
+
+/* --- events ----------------------------------------------------------------------------------------------------------- */
+.menu .event-daily, .menu .event-card {
+    background-color: var(--surface-2);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+}
+.menu .event-card { border-left-width: 4px; border-left-color: var(--line-3); }
+.menu .event-card > .icon { --icon-color: #edeae3; }
+.menu .event-card-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; }
+.menu .event-card-extra { color: #7faede; }
+.menu .event-daily-track { height: 6px; background-color: #2a3136; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .event-daily-fill { background-color: var(--positive); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu .event-claim {
+    background-color: rgba(18, 23, 27, 0.6);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.menu .event-claim-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); color: var(--text-hi); }
+.menu .event-claim.claimed { background-color: rgba(0, 0, 0, 0); border-color: rgba(0, 0, 0, 0); }
+.menu .event-claim.claimed .event-claim-text { color: var(--text-lo); }
+.menu .event-play-text { font-size: 20px; }
+
+/* --- misc ------------------------------------------------------------------------------------------------------------- */
+.menu .loot-title { color: var(--text-hi); }
+.menu .mode-info { color: var(--text-mid); }
+.menu .home-card-chips { color: var(--text-lo); }
+.menu .deploy-button { overflow: hidden; }
+.menu .cta-shine {
+    position: absolute; top: 0; bottom: 0; left: -34%; width: 30%;
+    background-image: resource("UI/Skin/ui_shine"); -unity-background-scale-mode: stretch-to-fill; opacity: 0.4;
+    translate: 0 0; transition-property: translate; transition-duration: 0s;
+}
+.menu .cta-shine.sweep { translate: 520% 0; transition-duration: 0.75s; transition-timing-function: ease-in-out-sine; }
+.menu .home-deck {
+    position: absolute; left: 18px; bottom: 18px; padding: 8px 10px 10px 10px; background-color: var(--surface-1);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    transition-property: scale, background-color; transition-duration: 0.08s;
+}
+.menu .home-deck .home-card-caps { margin-bottom: 6px; }
+.menu .home-deck-slots { flex-direction: row; align-items: center; }
+.menu .home-deck-slot {
+    width: 58px; height: 58px; margin-right: 4px; align-items: center; justify-content: center; background-color: var(--surface-3);
+    border-top-width: 1px; border-right-width: 1px; border-left-width: 1px; border-bottom-width: 3px;
+    border-top-color: var(--line-2); border-right-color: var(--line-2); border-left-color: var(--line-2); border-bottom-color: #7e8f9c;
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.menu .home-deck-slot > .icon { width: 30px; height: 30px; }
+.menu .home-deck-slot.support { border-bottom-color: var(--negative); }
+.menu .home-deck-slot.empty { background-color: rgba(18, 23, 27, 0.5); border-color: var(--line-1); }
+.menu .home-deck-slot .unit-card-cost { top: 2px; left: 2px; min-width: 20px; height: 18px; }
+.menu .home-deck-slot .unit-card-cost-text { font-size: 13px; }
+.menu .home-deck .deck-divider { height: 44px; margin: 0 6px 0 2px; }
+.menu .home-deck.pressed { background-color: var(--surface-3); }
+
+/* --- the battle's overlays (pause, result, ad) in the same style ------------------------------------------------------ */
+.overlay { background-color: rgba(10, 13, 16, 0.74); }
+.overlay .result-card {
+    width: 460px; background-color: var(--surface-1);
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+}
+.overlay .result-head { background-color: rgba(255, 255, 255, 0.03); border-top-width: 4px; border-top-color: var(--line-3); padding: 16px 20px 12px 20px; }
+.overlay .result-head.victory { background-color: rgba(156, 203, 94, 0.1); border-top-color: var(--positive); }
+.overlay .result-head.defeat { background-color: rgba(229, 83, 60, 0.1); border-top-color: var(--negative); }
+.overlay .result-head .icon { width: 36px; height: 36px; }
+.overlay .result-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 50px; letter-spacing: 5px; color: var(--text-hi); padding-top: 4px; }
+.overlay .result-sub { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 14px; letter-spacing: 0.5px; color: var(--text-mid); }
+.overlay .result-row {
+    margin-top: 0; padding: 9px 4px; background-color: rgba(0, 0, 0, 0);
+    border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+    border-bottom-width: 1px; border-bottom-color: var(--line-1);
+}
+.overlay .result-label { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 15px; letter-spacing: 0; color: var(--text-mid); }
+.overlay .result-value { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; color: var(--text-hi); }
+.overlay .wide, .overlay .unlock-chip {
+    background-image: none; background-color: rgba(18, 23, 27, 0.6); height: 60px; translate: 0 0;
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
+    transition-property: scale, background-color; transition-duration: 0.08s;
+}
+.overlay .unlock-chip { height: auto; }
+.overlay .wide-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1.5px; color: var(--text-hi); padding-top: 2px; }
+.overlay .wide.primary {
+    background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; height: 72px;
+    background-image: resource("UI/Skin/ui_cta_fill"); -unity-slice-left: 44; -unity-slice-top: 42; -unity-slice-right: 44; -unity-slice-bottom: 42;
+    -unity-background-image-tint-color: var(--accent);
+}
+.overlay .wide.primary .wide-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 28px; letter-spacing: 3px; color: var(--ink); }
+.overlay .wide.primary .icon { --icon-color: #16110a; }
+.overlay .wide.pressed { scale: 0.97 0.97; translate: 0 0; }
+.overlay .wide.primary.pressed { -unity-background-image-tint-color: var(--accent-press); }
+
+/* --- states the base rules set that the v5 surfaces would otherwise cover ----------------------------------------------- */
+.menu .shop-card.equipped { background-color: rgba(156, 203, 94, 0.08); border-color: var(--positive); }
+.menu .shop-card.soon { background-color: rgba(18, 23, 27, 0.5); }
+.menu .unit-art { background-color: rgba(255, 255, 255, 0.04); }
+.menu .mission-row.locked { background-color: rgba(18, 23, 27, 0.5); }
+.menu .map-card.locked { background-color: rgba(18, 23, 27, 0.5); }
+.menu .tier-chip.locked { background-color: rgba(18, 23, 27, 0.5); }
+.menu .rail-label { flex-grow: 1; }
+.menu .events-right .event-card { min-height: 104px; margin-bottom: 8px; }
+/* Content-sized labels that cut with an ellipsis lose a few characters to their letter-spacing (the measure leaves
+   it out): let them fill their box instead. */
+.menu .setup-mode-name, .menu .gear-branch-name, .menu .map-name { width: 100%; -unity-text-align: middle-center; }
+.menu .card-popover { background-color: #151a1e; border-color: var(--line-2); }
+.menu .popover-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; }

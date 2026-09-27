@@ -609,6 +609,7 @@ namespace MachineBrigade.Game.Hud
             ["endless.record"] = ("New record: wave {0}!", "Kỷ lục mới: đợt {0}!"),
             ["endless.reached"] = ("Held to wave {0}", "Trụ tới đợt {0}"),
             ["endless.best"] = ("Best wave", "Đợt xa nhất"),
+            ["events.endlessBest"] = ("Record: wave {0}", "Kỷ lục: đợt {0}"),
             ["base.goal1"] = ("hold the relay stations", "giữ các trạm radar"),
             ["base.goal2"] = ("hold the shield generators", "giữ máy phát khiên"),
             ["base.goal3"] = ("protect the command HQ", "bảo vệ sở chỉ huy"),

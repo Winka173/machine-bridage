@@ -74,6 +74,33 @@ namespace MachineBrigade.Game.Hud
             return button;
         }
 
+        /// <summary>
+        /// Labels drawn in uppercase condensed type (USS has no text-transform): buttons, tabs,
+        /// section captions and card names. Their text is uppercased wherever it was set.
+        /// </summary>
+        private static readonly string[] CapsClasses =
+        {
+            "wide-title", "segment-label", "option-label", "rail-label", "gear-branch-name", "setup-mode-name", "nav-back-text",
+            "nav-tab-label", "crate-button-text", "upgrade-big-text", "event-play-text", "menu-caps", "home-card-caps", "map-name",
+            "unit-card-name", "shop-name", "tier-name", "deploy-text", "home-card-title", "mission-name", "detail-name",
+            "event-card-title", "gear-info-title", "weapon-name", "detail-role", "crate-name", "loot-title",
+        };
+
+        public static void Uppercase(VisualElement root)
+        {
+            root.Query<Label>().ForEach(label =>
+            {
+                if (string.IsNullOrEmpty(label.text)) return;
+                foreach (var c in CapsClasses)
+                {
+                    if (!label.ClassListContains(c)) continue;
+                    var upper = label.text.ToUpperInvariant();
+                    if (upper != label.text) label.text = upper;
+                    return;
+                }
+            });
+        }
+
         /// <summary>Raised by every button built here, for the UI click sound.</summary>
         public static event Action Clicked;
 

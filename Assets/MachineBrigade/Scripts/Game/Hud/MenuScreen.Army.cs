@@ -283,6 +283,7 @@ namespace MachineBrigade.Game.Hud
             _popoverUse.Q<Label>(className: "wide-title").text = Strings.Get(inDeck ? "army.remove" : "army.use");
             _popover.style.display = DisplayStyle.Flex;
             _popover.BringToFront();
+            UiKit.Uppercase(_popover);
         }
 
         private void HidePopover()
