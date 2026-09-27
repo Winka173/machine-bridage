@@ -31,6 +31,7 @@ namespace MachineBrigade.Game.Hud
             Frames.Clear();
             Pictures.Clear();
             Own.Clear();
+            NoPicture.Clear();
         }
 
         /// <summary>
@@ -56,17 +57,19 @@ namespace MachineBrigade.Game.Hud
         };
 
         private static readonly Dictionary<string, Texture2D> Own = new();
+        private static readonly HashSet<string> NoPicture = new();
 
-        /// <summary>A piece's own picture (Resources/UI/Gear/&lt;base type id&gt;), else its fallback.</summary>
+        /// <summary>A piece's own picture (Resources/UI/Gear/&lt;base type id&gt;), else its fallback (a missing one is looked for once).</summary>
         public static Texture2D PictureFor(GearItem item)
         {
             var id = item.baseType;
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && !NoPicture.Contains(id))
             {
                 if (!Own.TryGetValue(id, out var tex) || tex == null)
                 {
                     tex = Resources.Load<Texture2D>("UI/Gear/" + id);
-                    Own[id] = tex;
+                    if (tex == null) NoPicture.Add(id);
+                    else Own[id] = tex;
                 }
                 if (tex != null) return tex;
             }

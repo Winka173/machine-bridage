@@ -27,6 +27,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 var v = list[i];
                 if (!v.IsAlive) continue;
+                v.LastStatusCheck = now;
                 ref var burn = ref v.Statuses[(int)StatusKind.Burn];
                 if (burn.Until > now && burn.Value > 0f)
                 {

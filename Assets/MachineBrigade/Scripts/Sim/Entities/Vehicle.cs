@@ -94,6 +94,15 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Hit points left in an absorbing barrier (Aegis Barrier, Shared Shield), for the view.</summary>
         public float Barrier => Statuses[(int)StatusKind.Barrier].Value;
 
+        /// <summary>Reactive blocks left (Reactive Blocks trait), for a counter on the unit; 0 without the trait.</summary>
+        public int ReactiveBlocksLeft => Gear != null && Gear.Has(TraitId.ReactiveBlocks) ? Gear.Blocks : 0;
+
+        /// <summary>On fire from an Incendiary hit or a Firestorm, for the view.</summary>
+        public bool Burning => Statuses[(int)StatusKind.Burn].Until > LastStatusCheck && Statuses[(int)StatusKind.Burn].Value > 0f;
+
+        /// <summary>Sim time of the last step, so views can read timed effects without the clock.</summary>
+        internal double LastStatusCheck;
+
         /// <summary>Capture speed on objectives, with its equipment.</summary>
         public float CaptureRate => Def.CaptureRate * CaptureFactor;
 
