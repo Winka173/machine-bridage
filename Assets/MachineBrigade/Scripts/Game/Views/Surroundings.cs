@@ -111,7 +111,8 @@ namespace MachineBrigade.Game.Views
                 // Room for tall trees and outcrops above the ground-level centres.
                 bounds.Expand(new Vector3(14f, 0f, 14f));
                 bounds.SetMinMax(new Vector3(bounds.min.x, bounds.min.y - 1f, bounds.min.z), new Vector3(bounds.max.x, bounds.max.y + 16f, bounds.max.z));
-                var edge = Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
+                var edge = cell >= ShadowlessCells ? float.MaxValue
+                    : Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
                 var parameters = new RenderParams(material)
                 {
                     shadowCastingMode = edge < _shadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
@@ -180,8 +181,12 @@ namespace MachineBrigade.Game.Views
             if (_lavaMaterial != null) Object.Destroy(_lavaMaterial);
         }
 
-        /// <summary>At least <paramref name="margin"/> metres beyond the battlefield's outline.</summary>
-        private bool Outside(Vector2 p, float margin) => _field.Distance(p) > margin;
+        /// <summary>
+        /// At least <paramref name="margin"/> metres beyond the square. The countryside scatter
+        /// stays out there; the bays carved inside the square get their own, budgeted dressing
+        /// (<see cref="ScatterBays"/>), since everything in them is in the middle of the view.
+        /// </summary>
+        private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x) > _half + margin || Mathf.Abs(p.y) > _half + margin;
 
         private bool NearRiver(Vector2 p, float margin) =>
             (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin);
@@ -380,7 +385,7 @@ namespace MachineBrigade.Game.Views
                 if (InCity(p)) continue;
                 var height = Height(p);
                 if (height > TreeLine) continue;
-                var distance = _field.Distance(p);
+                var distance = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
                 var noise = Mathf.PerlinNoise(p.x * 0.035f + 5f, p.y * 0.035f + 9f);
                 // A thick tree line along the map edge, then whole forests on the lower slopes,
                 // thinning out towards the tree line.
@@ -412,31 +417,40 @@ namespace MachineBrigade.Game.Views
         private void ScatterBays(ModelLibrary models)
         {
             var reach = _half + 10f;
-            for (var attempt = 0; attempt < 26000 * _density; attempt++)
+            // A budget, not a fill: the bays sit in the middle of every view, so each tree there is
+            // drawn (and shadowed) every frame.
+            var budget = (int)(240 * _density);
+            var placed = 0;
+            var trees = 0;
+            for (var attempt = 0; attempt < 12000 && placed < budget; attempt++)
             {
                 var p = new Vector2((float)(_rng.NextDouble() * 2 - 1) * reach, (float)(_rng.NextDouble() * 2 - 1) * reach);
                 var d = _field.Distance(p);
                 if (d < 2.2f || Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) > _half + 8f || InCity(p) || NearRiver(p, 1f)) continue;
                 var height = Height(p);
                 var roll = _rng.NextDouble();
-                if (roll < 0.1 && _theme.Crags.Length > 0 && height > 2f)
+                if (roll < 0.14 && _theme.Crags.Length > 0 && height > 2f)
                 {
                     Add(models, _theme.Crags[_rng.Next(_theme.Crags.Length)], p, (float)_rng.NextDouble() * 360f,
-                        0.6f + (float)_rng.NextDouble() * 0.7f, height - 0.6f);
+                        0.7f + (float)_rng.NextDouble() * 0.8f, height - 0.6f, shadowless: true);
+                    placed++;
                 }
-                else if (roll < 0.26 && _theme.Rocks.Length > 0)
+                else if (roll < 0.5 && _theme.Rocks.Length > 0)
                 {
+                    // Big rocks do most of the dressing: a few hundred triangles each.
                     Add(models, _theme.Rocks[_rng.Next(_theme.Rocks.Length)], p, (float)_rng.NextDouble() * 360f,
-                        0.9f + (float)_rng.NextDouble() * 1.8f, height - 0.35f);
+                        1.2f + (float)_rng.NextDouble() * 2.2f, height - 0.35f, shadowless: true);
+                    placed++;
                 }
-                else if (_theme.Forest > 0.05f && roll < 0.26 + 0.6 * _theme.Forest && height < TreeLine)
+                else if (_theme.Forest > 0.05f && roll < 0.5 + 0.35 * _theme.Forest && height < TreeLine && d < 9f)
                 {
-                    // Densest right along the edge, thinning over the knolls.
-                    var chance = d < 7f ? 0.85f : 0.45f;
-                    if (_rng.NextDouble() > chance) continue;
+                    // A tree line along the edge only; the knolls behind it stay rock.
+                    if (_rng.NextDouble() > 0.4 || trees >= budget / 3) continue;
                     var pool = height > 6f ? _theme.HighlandTrees : _theme.LowlandTrees;
                     Add(models, pool[_rng.Next(pool.Length)], p, (float)_rng.NextDouble() * 360f,
-                        0.8f + (float)_rng.NextDouble() * 0.6f, height - 0.1f);
+                        0.9f + (float)_rng.NextDouble() * 0.5f, height - 0.1f, shadowless: true);
+                    placed++;
+                    trees++;
                 }
             }
         }
@@ -672,10 +686,15 @@ namespace MachineBrigade.Game.Views
         private Vector2 RandomPoint() =>
             new((float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f, (float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f);
 
-        private void Add(ModelLibrary models, string modelId, Vector2 position, float yaw, float scale, float height = 0f)
+        /// <summary>Cell ids from here up hold the bays' dressing, which casts no shadow.</summary>
+        private const int ShadowlessCells = 100000;
+
+        private void Add(ModelLibrary models, string modelId, Vector2 position, float yaw, float scale, float height = 0f,
+            bool shadowless = false)
         {
             var placement = Matrix4x4.TRS(new Vector3(position.x, height, position.y), Quaternion.Euler(0f, yaw, 0f), Vector3.one * scale);
             var cell = Mathf.FloorToInt((position.x + Extent) / CellSize) * 64 + Mathf.FloorToInt((position.y + Extent) / CellSize);
+            if (shadowless) cell += ShadowlessCells;
             var at = new Vector3(position.x, height, position.y);
             if (_cellBounds.TryGetValue(cell, out var cellBounds))
             {

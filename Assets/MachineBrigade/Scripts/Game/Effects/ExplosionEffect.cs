@@ -459,7 +459,7 @@ namespace MachineBrigade.Game.Effects
                 case ExplosionTier.Small:
                     // Bullets and flak: frequent, so cheap. A spray of sparks and a puff of dust.
                     e.Sparks(12, new Vector2(4f, 10f), 0.12f);
-                    e.Dust(2, new Vector2(1.2f, 2f));
+                    e.Dust(1, new Vector2(1.3f, 2.1f));
                     break;
 
                 case ExplosionTier.Medium:
