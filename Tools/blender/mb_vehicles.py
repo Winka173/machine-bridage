@@ -621,72 +621,7 @@ def main_battle_tank(a):
     _roof_mg(a, t, (.42, .25, .95), length=.85)
 
 
-def artillery(a):
-    """Tracked 155 mm self-propelled howitzer: a big boxy turret with bolted side doors, bins, hatches
-    and roof stowage, a folded travel lock on the glacis, four-panel skirts and recoil spades."""
-    tracks(a, 1.2, 5.4, .8, .28, 6, .45, belt_width=.56, wheel_seg=12, lean=True, sprocket=-1)
-    hull = a.part('Hull', 'Team')
-    armor = a.part('Armor', 'Armor')
-    steel = a.part('Steel', 'Steel')
-    deck = a.part('Deck', 'Undercarriage')
-    front, brow = (-2.8, .82), (-2.1, 1.14)
-    hull.prism([(-2.8, .52), front, brow, (2.75, 1.14), (2.75, .52)], 1.9, bevel=.06)
-    armor.box((1.5, 1.0, .42), loc=(0, -1.75, 1.34), bevel=.05, taper=(.9, .8))  # driver cab
-    a.part('Visor', 'Glass').box((1.1, .04, .14), loc=(0, -2.2, 1.38), rot=(-.4, 0, 0), bevel=.01, seg=1)
-    _hatch(a, -.3, -1.68, 1.54, .22)
-    for s in (-1, 1):
-        _skirt(a, s, 1.525, -2.12, 2.5, .62, 1.06, 4, thick=.1)
-        _headlight(a, s * .62, -2.8, .66)
-        steel.box((.14, .16, .1), loc=(s * .25, -2.86, .6), bevel=.02, seg=1)             # tow hooks
-        armor.box((.5, .12, .7), loc=(s * .7, 2.95, .55), rot=(.5, 0, 0), bevel=.03)  # recoil spades
-        _taillight(a, s * .8, 2.75, 1.0)
-    # Folded travel lock on the glacis, fender stowage in front of the turret.
-    lock = [_glacis(front, brow, t, .04) for t in (.12, .88)]
-    _rail(a, [(-.35, lock[0][0], lock[0][1]), (-.35, lock[1][0], lock[1][1]), (.35, lock[1][0], lock[1][1]),
-              (.35, lock[0][0], lock[0][1])], r=.035)
-    steel.box((.3, .14, .12), loc=(0, lock[1][0], lock[1][1] + .02), rot=(lock[1][2], 0, 0), bevel=0)
-    _stowage_bin(a, (-1.2, -1.1, .92), (.42, .9, .22), latch_side=0)
-    _shovel(a, (-1.25, -2.0, .945), length=.85)
-    _jerrycans(a, (1.2, -1.45, .92), 3)
-    _cable(a, [(1.42, -2.4, .96), (1.42, -.5, .96)])
-    deck.grille(.9, .5, loc=(0, -.85, 1.15), rot=(-R90, 0, 0), slats=5, depth=.07, thickness=.04)
-    _grille_frame(a, 0, -.85, 1.13, .9, .5, t=.05)
-
-    t = a.pivot('Turret', (0, .8, 1.14))
-    turret = a.part('Turret_body', 'Team', t)
-    turret.box((2.2, 2.7, 1.25), loc=(0, .15, .64), bevel=.07, taper=(.94, .96))
-    tarm = a.part('Turret_armor', 'Armor', t)
-    turret.box((2.26, 2.0, .12), loc=(0, .35, 1.3), bevel=.03, seg=1)                  # roof plate
-    tsteel = a.part('Turret_steel', 'Steel', t)
-    for s in (-1, 1):
-        a.part('Ammo', 'Hazard', t).box((.5, .3, .3), loc=(s * .55, 1.62, .36), bevel=.03)
-        side = ((1.1, -1.2), (1.1, 1.5)) if s > 0 else ((-1.1, 1.5), (-1.1, -1.2))
-
-        def at(y, z):
-            u = (y + 1.2) / 2.7 if s > 0 else (1.5 - y) / 2.7
-            return _face_frame(*side, 1.25, .94, z0=.015, u=u, v=(z - .015) / 1.25)
-        _face_box(a, 'Turret_armor', 'Armor', at(.45, .6), (.9, .7, .05), parent=t)          # side door
-        _face_box(a, 'Turret_steel', 'Steel', at(.2 if s > 0 else .7, .62), (.05, .22, .09), parent=t,
-                  bevel=0, sink=-.035)                                                        # door handle
-        _face_box(a, 'Turret_bins', 'Armor', at(1.2, .55), (.5, .5, .2), parent=t)            # rear bin
-        _face_box(a, 'Turret_bins', 'Armor', at(1.2, .8), (.53, .05, .23), parent=t, bevel=0, sink=.02)
-        _face_box(a, 'Turret_bins', 'Armor', at(-.6, .5), (.8, .36, .18), parent=t)           # front bin
-        _face_box(a, 'Turret_bins', 'Armor', at(-.6, .69), (.83, .05, .21), parent=t, bevel=0, sink=.02)
-        _smoke(a, tsteel, .78, -1.2, 1.05, s, count=3, gap=.08, r=.05, depth=.16)
-        _rail(a, [(s * 1.02, -.4, 1.35), (s * 1.02, -.4, 1.42), (s * 1.02, 1.05, 1.42), (s * 1.02, 1.05, 1.35)],
-              parent=t)
-    a.part('Vents', 'Undercarriage', t).grille(.8, .5, loc=(0, 1.51, .75), slats=5, depth=.06, thickness=.04)
-    tarm.box((.7, .5, .9), loc=(0, -1.32, .66), bevel=.05)  # cradle
-    _hatch(a, .6, .4, 1.35, .28, parent=t)                                                  # commander
-    _periscopes(a, [(.6 + math.cos(ang) * .37, .4 + math.sin(ang) * .37, 1.35, ang + R90)
-                    for ang in (-R90, -R90 + .8, -R90 - .8)], parent=t)
-    _hatch(a, -.4, .5, 1.35, .26, parent=t)                                                 # loader
-    _roll(a, (0, 1.08, 1.47), 1.1, r=.11, parent=t)
-    _antenna(a, t, -.8, 1.2, 1.3, 1.1)
-    tip = _barrel(a, t, start_y=-1.55, length=4.4, radius=.13, height=.7, pitch=.14, brake=(.38, .42, .3),
-                  sleeve=(.2, .8, .18), style='baffle', bands=(.4, .7))
-    a.pivot('Muzzle_main', tip, t)
-    _roof_mg(a, t, (.6, .4, 1.46), length=.75)
+# artillery: the wheeled 155 mm gun is built in mb_artillery.py.
 
 
 def scout_jeep(a):
@@ -1614,7 +1549,6 @@ BUILDERS = {
     'scout_jeep': (scout_jeep, dict(ao_distance=.5, grime_height=.45)),
     'light_tank': (light_tank, dict(ao_distance=.55, grime_height=.5)),
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
-    'artillery': (artillery, dict(ao_distance=.6, grime_height=.55)),
     'apc': (apc, dict(ao_distance=.6, grime_height=.55)),
     'mlrs': (mlrs, dict(ao_distance=.6, grime_height=.55)),
     'aa_vehicle': (aa_vehicle, dict(ao_distance=.55, grime_height=.5)),

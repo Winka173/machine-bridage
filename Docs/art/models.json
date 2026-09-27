@@ -31,6 +31,10 @@
     "file": "apc.glb",
     "triangles": 6448
   },
+  "aps_tank": {
+    "file": "aps_tank.glb",
+    "triangles": 8164
+  },
   "armored_car": {
     "file": "armored_car.glb",
     "triangles": 6064
@@ -41,7 +45,7 @@
   },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 7052
+    "triangles": 8676
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
@@ -50,6 +54,10 @@
   "artillery_wreck": {
     "file": "artillery_wreck.glb",
     "triangles": 2488
+  },
+  "atgm_carrier": {
+    "file": "atgm_carrier.glb",
+    "triangles": 7356
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
@@ -335,6 +343,10 @@
     "file": "garage.glb",
     "triangles": 832
   },
+  "grad_truck": {
+    "file": "grad_truck.glb",
+    "triangles": 8092
+  },
   "guard_tower": {
     "file": "guard_tower.glb",
     "triangles": 4656
@@ -401,7 +413,7 @@
   },
   "howitzer": {
     "file": "howitzer.glb",
-    "triangles": 7596
+    "triangles": 8800
   },
   "icbm": {
     "file": "icbm.glb",
@@ -661,7 +673,7 @@
   },
   "siege_tank": {
     "file": "siege_tank.glb",
-    "triangles": 8936
+    "triangles": 9608
   },
   "silo": {
     "file": "silo.glb",

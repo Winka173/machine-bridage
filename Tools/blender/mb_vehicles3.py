@@ -4,8 +4,7 @@ frontier_kit and the mb_vehicles / mb_vehicles2 helpers.
   * twin_tank: twin-barrel medium-heavy tank; a wide low turret with two 105 mm guns side by side
     (`Main_cannon` / `Main_cannon_2`, `Muzzle_brake` / `Muzzle_brake_2`, one `Muzzle_main` centred
     between the tips), `Muzzle_coax` between the mantlets and a roof gun on `Mount_mg` (Turret).
-  * siege_tank: super-heavy siege gun tank on nine road wheels a side; the turret sits well back with
-    a very long 203 mm gun (fume extractor, big baffle brake); `Mount_mg` roof cupola (Turret).
+  * siege_tank: now built in mb_artillery.py (203 mm self-propelled gun, 2S7 Pion lineage).
   * heavy_rocket_artillery: 8x8 300 mm multiple rocket launcher (Smerch lineage), split armoured cab,
     twelve tubes on `Turret` pitched up 15 degrees; `Mount_mg` on the cab roof (root).
   * ballistic_launcher: 8x8 tactical ballistic missile TEL (Iskander lineage), two missiles raised
@@ -30,7 +29,7 @@ from mathutils import Euler, Matrix, Vector
 
 from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _barrel, _basket, _cable, _coax, _era, _exhaust,
                          _face_frame, _frame, _glacis, _grille_frame, _hatch, _headlight, _periscopes, _pick, _rail,
-                         _roll, _roof_mg, _shovel, _skirt, _smoke, _stowage_bin, _taillight, _track_links, _wheel,
+                         _roof_mg, _shovel, _skirt, _smoke, _stowage_bin, _taillight, _track_links, _wheel,
                          tracks)
 from mb_vehicles2 import _axis
 
@@ -240,155 +239,7 @@ def twin_tank(a):
 
 
 # ----------------------------------------------------------------------------- siege tank
-def _siege_gun(a, t, y0, z0, length, r0, r1, pitch):
-    """Very long gun from inside the mantlet at (0, y0, z0) forwards, pitched up by `pitch`: a tapered
-    tube with a thermal jacket at the breech end, clamps, a bulged fume extractor and a big three-baffle
-    muzzle brake. Parts Main_cannon / Muzzle_brake; returns the centre of the brake's front face."""
-    rot, brot = (R90 - pitch, 0, 0), (-pitch, 0, 0)
-    at = _axis((0, y0, z0), pitch)
-
-    def rad(f):
-        return r0 + (r1 - r0) * f
-    cannon = a.part('Main_cannon', 'Steel', t)
-    cannon.cyl(r0, length, loc=at(length / 2), rot=rot, seg=12, r2=r1, bevel=.015, bseg=1)
-    cannon.cyl(rad(.1) + .035, length * .2, loc=at(length * .1 + .03), rot=rot, seg=12, bevel=.02, bseg=1)  # jacket
-    for f in (.29, .7):
-        cannon.cyl(rad(f) + .03, .08, loc=at(length * f), rot=rot, seg=12, bevel=0)                      # clamps
-    f, w = .43, 1.2
-    cannon.lathe([(rad(f) * .96, 0), (rad(f) + .09, w * .18), (rad(f) + .09, w * .82), (rad(f) * .96, w)],
-                 loc=at(length * f - w / 2), rot=rot, seg=12)                                           # fume extractor
-    brake = a.part('Muzzle_brake', 'Undercarriage', t)
-    bl = 1.0
-    brake.cyl(r1 + .035, bl, loc=at(length - .05 + bl / 2), rot=rot, seg=12, bevel=.01, bseg=1)
-    for fr in (.1, .43, .76):                                                                          # baffles
-        brake.box((.8, .18, .64), loc=at(length - .05 + bl * fr + .09), rot=brot, bevel=.03, seg=1)
-    return tuple(at(length - .05 + bl))
-
-
-def siege_tank(a):
-    """Super-heavy siege gun tank: a 12.5 m hull on nine road wheels a side behind six bolted skirt
-    panels, engine grilles and bins on the long front deck, a folding travel lock on the glacis and a
-    recoil spade and unditching log at the rear. The big boxy turret sits well back and carries a very
-    long 203 mm gun with a recoil guard, a fume extractor and a big baffle brake, laid slightly
-    elevated so it clears everything on the hull in its sweep; a roof cupola carries the machine gun."""
-    tracks(a, 1.42, 11.6, 1.05, .36, 9, .56, belt_width=.7, wheel_seg=8, lean=True, sprocket=1, cleat_pitch=.36)
-    hull = a.part('Hull', 'Team')
-    armor = a.part('Armor', 'Armor')
-    steel = a.part('Steel', 'Steel')
-    deck = a.part('Deck', 'Undercarriage')
-    hull.prism([(-5.45, .58), (-5.95, 1.24), (5.9, 1.24), (5.75, .58)], 2.0, bevel=.05)             # belly
-    front, brow = (-6.25, 1.36), (-4.6, 1.8)
-    hull.prism([(-6.1, 1.18), front, brow, (5.95, 1.8), (6.25, 1.58), (6.25, 1.18)], 3.68, bevel=.07)
-    for s in (-1, 1):
-        _skirt(a, s, 1.92, -5.6, 5.7, .62, 1.52, 5, thick=.1, gap=.04)
-        steel.box((.18, .22, .16), loc=(s * .62, -5.7, .9), bevel=0)                               # tow hooks
-        steel.box((.18, .22, .16), loc=(s * .62, 5.84, .9), bevel=0)
-        # Armoured headlights at the glacis corners.
-        gy, gz, grot = _glacis(front, brow, .14, .04)
-        armor.box((.36, .22, .16), loc=(s * 1.45, gy, gz), rot=(grot, 0, 0), bevel=.02, seg=1)
-        ly, lz, _ = _glacis(front, brow, .066, .05)
-        a.part('Lamps', 'Lamp').box((.24, .03, .09), loc=(s * 1.45, ly, lz), rot=(grot, 0, 0), bevel=0)
-        # Spare track links on the lower glacis beside the travel lock.
-        gy, gz, grot = _glacis(front, brow, .4, 0)
-        _track_links(a, _frame((s * 1.2, gy, gz), (grot, 0, 0)), 2, width=.5)
-        # Front deck: engine grilles in frames, bins along both edges (under the gun), tow cables.
-        deck.grille(1.0, 1.9, loc=(s * .6, -2.75, 1.81), rot=(-R90, 0, 0), slats=10, depth=.08, thickness=.04)
-        _grille_frame(a, s * .6, -2.75, 1.79, 1.0, 1.9, t=.05)
-        _stowage_bin(a, (s * 1.5, -2.5, 1.79), (.5, 3.4, .34), latch_side=s)
-        _cable(a, [(s * 1.72, -.9, 1.825), (s * 1.72, 2.4, 1.825), (s * 1.7, 4.7, 1.825)])
-        # Rear: tail lights and bins on the plate, deck grilles behind the turret.
-        _taillight(a, s * 1.5, 6.25, 1.44)
-        armor.box((.8, .3, .28), loc=(s * .85, 6.3, 1.38), bevel=.03, seg=1)
-        steel.box((.04, .06, .08), loc=(s * .85, 6.46, 1.44), bevel=0)
-        deck.grille(.9, .45, loc=(s * .8, 5.52, 1.81), rot=(-R90, 0, 0), slats=4, depth=.07, thickness=.04)
-    # Exhaust box on the right of the front deck.
-    armor.box((.36, .7, .3), loc=(1.3, -.75, 1.9), bevel=.03, seg=1)
-    deck.grille(.5, .2, loc=(1.3, -1.11, 1.9), slats=2, depth=.05, thickness=.04)
-    # Driver's hatch and vision blocks front left.
-    _hatch(a, -.8, -4.15, 1.79, .3)
-    _periscopes(a, [(-.8 + dx, -4.55, 1.79, 0) for dx in (-.2, 0, .2)])
-    # Folding travel lock on the glacis: an A-frame folded flat, with the gun cradle at its head.
-    lock = a.part('Travel_lock', 'Steel')
-    y0, z0, rot0 = _glacis(front, brow, .12, .06)
-    y1, z1, _ = _glacis(front, brow, .8, .06)
-    for s in (-1, 1):
-        lock.limb((s * .55, y0, z0), (s * .2, y1, z1), .1, .08, bevel=0)
-        hy, hz, _ = _glacis(front, brow, .12, .05)
-        armor.box((.16, .26, .2), loc=(s * .7, hy, hz), rot=(rot0, 0, 0), bevel=0)                    # hinge lugs
-    lock.box((1.3, .12, .11), loc=(0, y0, z0), rot=(rot0, 0, 0), bevel=0)                          # hinge bar
-    y2, z2, _ = _glacis(front, brow, .84, .12)
-    lock.box((.62, .2, .18), loc=(0, y2, z2), rot=(rot0, 0, 0), bevel=.03, seg=1)                   # cradle
-    for s in (-1, 1):
-        y3, z3, _ = _glacis(front, brow, .84, .26)
-        lock.box((.08, .16, .2), loc=(s * .24, y3, z3), rot=(rot0, 0, 0), bevel=.01, seg=1)          # jaws
-    # Rear: unditching log across the deck, recoil spade folded up against the tail.
-    a.part('Log', 'Wood').cyl(.13, 3.0, loc=(0, 5.95, 1.92), rot=ACROSS, seg=10, bevel=0)
-    for x in (-1.25, 1.25):
-        steel.box((.08, .32, .1), loc=(x, 5.95, 1.82), bevel=.01, seg=1)
-    spade = a.part('Spade', 'Armor')
-    lean = .38
-    spade.box((2.7, .14, .95), loc=(0, 6.44, .98), rot=(lean, 0, 0), bevel=.03, seg=1)
-    for x in (-.9, 0, .9):                                                                          # ribs
-        spade.box((.1, .16, .8), loc=(x, 6.36, 1.0), rot=(lean, 0, 0), bevel=0)
-    for x in (-1.1, -.55, 0, .55, 1.1):                                                             # teeth
-        steel.box((.16, .1, .16), loc=(x, 6.66, .52), rot=(lean, 0, 0), bevel=0)
-    for s in (-1, 1):
-        steel.limb((s * 1.0, 5.8, .82), (s * 1.0, 6.36, .8), .12, .12, bevel=.02)                    # hinge arms
-    steel.cyl(.07, 2.2, loc=(0, 6.34, .78), rot=ACROSS, seg=8, bevel=0)                            # hinge
-    steel.cyl(1.5, .1, loc=(0, 2.4, 1.82), seg=20, bevel=.02, bseg=1)                             # turret ring
-
-    t = a.pivot('Turret', (0, 2.4, 1.86))
-    H = 1.25
-    turret = a.part('Turret_body', 'Team', t)
-    outline = [(-1.1, -2.2), (1.1, -2.2), (1.6, -1.5), (1.64, 2.3), (1.4, 2.6), (-1.4, 2.6), (-1.64, 2.3),
-               (-1.6, -1.5)]
-    turret.prism(outline, H, loc=(0, 0, H / 2), axis='Z', bevel=.07, taper=.93)
-    tarm = a.part('Turret_armor', 'Armor', t)
-    tsteel = a.part('Turret_steel', 'Steel', t)
-    tarm.box((1.3, .55, 1.0), loc=(0, -2.3, .72), bevel=.05, taper=(.92, .92))                    # mantlet
-    pitch, y0, z0 = .04, -2.4, .78
-    at = _axis((0, y0, z0), pitch)
-    a.part('Recoil_guard', 'Armor', t).box((.64, 1.55, .58), loc=at(.85), rot=(-pitch, 0, 0), bevel=.04, seg=1)
-    rec = a.part('Recuperators', 'Steel', t)
-    for side in (-.16, .16):
-        rec.cyl(.085, .7, loc=at(1.85, .2, side), rot=(R90 - pitch, 0, 0), seg=8, bevel=0)
-        rec.cyl(.1, .07, loc=at(2.2, .2, side), rot=(R90 - pitch, 0, 0), seg=8, bevel=0)
-    tip = _siege_gun(a, t, y0, z0, 9.0, .2, .15, pitch)
-    a.pivot('Muzzle_main', tip, t)
-    for s in (-1, 1):
-        tarm.box((.34, 2.2, .56), loc=(s * 1.74, .95, .46), bevel=.03, seg=1)                     # side bins
-        tsteel.box((.05, 2.0, .05), loc=(s * 1.92, .95, .64), bevel=0)                            # bin rails
-        tarm.box((.36, .06, .5), loc=(s * 1.74, .95, .46), bevel=0)                               # bin divider
-        _smoke(a, tsteel, 1.16, -1.9, .98, s, count=2, gap=.1, r=.06, depth=.18)
-        _rail(a, [(s * 1.3, -.8, H - .02), (s * 1.3, -.8, H + .05), (s * 1.3, 1.2, H + .05), (s * 1.3, 1.2, H - .02)],
-              parent=t)
-        # Side door ahead of the bins, with a handle.
-        tarm.box((.06, .9, .7), loc=(s * 1.58, -.8, .52), bevel=.015, seg=1)
-        tsteel.box((.05, .2, .05), loc=(s * 1.62, -.5, .54), bevel=0)
-    # Roof: cupola with the machine gun, sights, hatches, vents, a tarp roll and antennas.
-    tsteel.cyl(.34, .14, loc=(.85, -.9, H + .05), seg=16, bevel=.03, bseg=1)
-    a.part('Cupola_top', 'Armor', t).cyl(.29, .06, loc=(.85, -.9, H + .14), seg=16, bevel=.015, bseg=1)
-    glass = a.part('Periscope', 'Glass', t)
-    for k in range(4):
-        ang = -R90 + (k - 1.5) * .7
-        glass.box((.1, .05, .07), loc=(.85 + math.cos(ang) * .34, -.9 + math.sin(ang) * .34, H + .08),
-                  rot=(0, 0, ang + R90), bevel=0)
-    _roof_mg(a, t, (.85, -.9, H + .165), length=.9)
-    tsteel.cyl(.14, .22, loc=(-.8, -1.3, H + .1), seg=10, bevel=.02, bseg=1)                     # panoramic sight
-    tsteel.box((.34, .34, .22), loc=(-.8, -1.3, H + .3), bevel=.04, seg=1)
-    a.part('Sight', 'Glass', t).box((.24, .04, .11), loc=(-.8, -1.48, H + .31), bevel=.01, seg=1)
-    _hatch(a, -.75, .1, H - .01, .3, parent=t)
-    _hatch(a, .8, .6, H - .01, .28, parent=t, hinge=-1)
-    a.part('Vents', 'Undercarriage', t).grille(1.0, .6, loc=(0, 1.4, H + .005), rot=(-R90, 0, 0), slats=5, depth=.07,
-                                               thickness=.04)
-    _roll(a, (0, 2.0, H + .1), 2.0, r=.13, parent=t)
-    for x, height in ((-1.15, 1.4), (1.15, 1.1)):
-        tsteel.box((.1, .1, .07), loc=(x, 2.2, H), bevel=0)
-        _antenna(a, t, x, 2.2, H + .02, height)
-    # Rear face: ammunition hatch with a handle.
-    ry, rz, rrot = _glacis((2.6 * .93, H), (2.6, 0), .5, .025)
-    tarm.box((1.2, .8, .06), loc=(0, ry, rz), rot=(rrot, 0, 0), bevel=.02, seg=1)
-    tsteel.box((.3, .05, .05), loc=(0, ry + .03, rz - .25), bevel=0)
+# siege_tank: the 203 mm self-propelled gun is built in mb_artillery.py.
 
 
 # ----------------------------------------------------------------------------- wheeled launchers
@@ -777,7 +628,6 @@ def heavy_rocket(a):
 # name: (builder, Asset options). Vehicles use tight contact AO like 3d_astra's units.
 BUILDERS = {
     'twin_tank': (twin_tank, dict(ao_distance=.6, grime_height=.55)),
-    'siege_tank': (siege_tank, dict(ao_distance=.7, grime_height=.6)),
     'heavy_rocket_artillery': (heavy_rocket_artillery, dict(ao_distance=.6, grime_height=.55)),
     'ballistic_launcher': (ballistic_launcher, dict(ao_distance=.6, grime_height=.55)),
     'siege_mortar': (siege_mortar, dict(ao_distance=.6, grime_height=.55)),
