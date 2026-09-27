@@ -263,6 +263,10 @@ namespace MachineBrigade.Sim.Entities
         internal float StuckTimer;
         internal int StuckStrikes;
 
+        /// <summary>The waypoint being driven to at the last stuck check, and how far off it was then.</summary>
+        internal int StuckWaypoint = -1;
+        internal float StuckWaypointDistance;
+
         /// <summary>Interceptors ready in the active protection system, and the reload under way.</summary>
         internal int ApsCharges;
         internal float ApsReload;
@@ -293,6 +297,7 @@ namespace MachineBrigade.Sim.Entities
             StuckSample = Position;
             StuckTimer = 0f;
             StuckStrikes = 0;
+            StuckWaypoint = -1;
         }
 
         internal void ClearPath()

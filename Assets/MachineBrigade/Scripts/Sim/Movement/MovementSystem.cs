@@ -19,6 +19,12 @@ namespace MachineBrigade.Sim.Movement
         private const float RepathInterval = 0.5f;
         private const float StuckWindow = 1.5f;
         private const float StuckDistance = 0.4f;
+
+        /// <summary>Driving this far in one stuck window counts as progress even when it is not towards the waypoint (going round something).</summary>
+        private const float StuckDetourDistance = 3f;
+
+        /// <summary>A hull stuck this close to its goal (plus its own size) among others has arrived.</summary>
+        private const float ArrivalReach = 5f;
         private const int StuckStrikesToGiveUp = 3;
         private const float SeparationSlack = 0.05f;
 
@@ -718,8 +724,18 @@ namespace MachineBrigade.Sim.Movement
         private void DetectStuck(Vehicle v, float dt)
         {
             v.StuckTimer += dt;
-            if (v.StuckTimer < StuckWindow) return;
-            var progressed = Vector2.Distance(v.Position, v.StuckSample) >= StuckDistance;
+            if (v.StuckTimer < StuckWindow || !v.HasPath) return;
+            // Progress is getting closer to the waypoint, not merely moving: a hull edging back
+            // and forth against a corner (or creeping sideways along it) moves every step and gets
+            // nowhere, and used to pass the check for ever. A new waypoint, or a real stretch of
+            // driving (round an obstacle), counts too.
+            var toWaypoint = Vector2.Distance(v.Position, v.Path[v.PathIndex]);
+            var moved = Vector2.Distance(v.Position, v.StuckSample);
+            // (A new route every few seconds changes the waypoint without the hull going anywhere.)
+            var progressed = moved >= StuckDetourDistance ||
+                             (moved >= StuckDistance && (v.PathIndex != v.StuckWaypoint || v.StuckWaypointDistance - toWaypoint >= StuckDistance));
+            v.StuckWaypoint = v.PathIndex;
+            v.StuckWaypointDistance = toWaypoint;
             v.StuckSample = v.Position;
             v.StuckTimer = 0f;
             if (progressed)
@@ -728,12 +744,27 @@ namespace MachineBrigade.Sim.Movement
                 return;
             }
 
+            // Arrival contagion (as in StarCraft II's movement): on the last leg, within a few metres
+            // of the goal and pressed against other hulls already there, it has arrived. Pushing on
+            // for the exact spot only keeps the whole group shuffling.
+            if (v.PathIndex == v.Path.Count - 1 && Vector2.Distance(v.Position, v.PathGoal) < ArrivalReach + v.Def.HullBound && Crowded(v))
+            {
+                v.ClearPath();
+                v.StuckStrikes = 0;
+                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = v.Position;
+                return;
+            }
             v.StuckStrikes++;
             if (v.StuckStrikes >= StuckStrikesToGiveUp)
             {
                 v.ClearPath();
                 // Given up in a crowd: at least move out of the knot so the others can pass.
-                if (Crowded(v) && TryUnjam(v, out var clear)) _world.PathTo(v, clear);
+                var clear = v.Position;
+                var unjammed = Crowded(v) && TryUnjam(v, out clear);
+                if (unjammed) _world.PathTo(v, clear);
+                // Guarding a post it cannot reach (another hull is parked on it): the post moves to
+                // where it can stand, instead of it pushing back towards it for ever.
+                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = unjammed ? clear : v.Position;
                 return;
             }
             var strikes = v.StuckStrikes;
