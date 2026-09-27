@@ -108,6 +108,7 @@ namespace MachineBrigade.Game.Views
 
             var rng = new Random(17);
             var surfaces = new List<Prop>();
+            var still = new List<GameObject>();
             foreach (var prop in world.Props)
             {
                 var id = prop.Def.Id;
@@ -121,6 +122,7 @@ namespace MachineBrigade.Game.Views
                 // Tiny clutter (barrels, crates, traps) casts a shadow only on High: many casters, little to see.
                 var casts = shadows != Match.ShadowLevel.Off &&
                             (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
+                var movingBefore = _moving.Count;
                 var instance = id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
                 // Towers on the battlefield are cut down to size so they do not hide the fighting
                 // from the high camera (the skyline beyond the edge keeps them full height).
@@ -132,7 +134,13 @@ namespace MachineBrigade.Game.Views
                     Quaternion.Euler(0f, yaw, 0f));
                 if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
                 _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
+                // Buildings, vehicles and street furniture never move: batch them (not trees, whose
+                // wind sway needs their own transforms, nor props with spinning parts).
+                if (!vegetation && _moving.Count == movingBefore) still.Add(instance);
             }
+            // Static batching: one shared vertex buffer per material instead of a draw per prop. A
+            // city block is dozens of props in a dozen materials each; destroyed ones still hide.
+            if (still.Count > 1) StaticBatchingUtility.Combine(still.ToArray(), _root);
             BuildSurfaces(world, surfaces);
             if (theme.Cracks > 0f) BuildCracks(TerrainPainter.Cracks(world, theme));
             ScatterBushes(world, rng);

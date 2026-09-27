@@ -62,3 +62,16 @@ Everything is tuned for this game: an orthographic RTS with heavy particles and 
 | VFX Graph | No GLES |
 | On-tile post-processing | No bloom |
 | Cascades | See above |
+
+
+## 2026-09-27: after the big expansion (emulator, relative only)
+
+`-mb-perf` on the Pixel 3a API 35 emulator (host GPU; its 30 fps cap and timings say nothing about phones, they compare maps and changes):
+
+| Scene | fps | setpass | triangles | shadow pass |
+|---|---|---|---|---|
+| Ashfield Conquest | 30 (cap) | ~70 | ~380k | ~4.5 ms |
+| Metro City, before | 15-19 | 200-300 | 500-640k | 10-15 ms |
+| Metro City, skyline ring + static batching | 25-30 | 100-250 | 250-420k | ~7 ms |
+
+Changes: prewarm only the vehicles a battle can field; Metro City's skyline only where the camera sees (it was 1M instanced triangles in 1631 batches); static batching of map props that never move; skill triggers at 4 Hz. Still to do on a real phone: measure the new flipbook fill (+13% quad area in the effects agent's stress rig) and the city in the dense centre.

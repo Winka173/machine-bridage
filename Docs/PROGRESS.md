@@ -2,6 +2,101 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: The big expansion (everything from the suggestion list, plus more)
+
+The user asked for all of the earlier suggestions, and more:
+- more vehicle variety: twin-barrel and longer tanks, artillery, long-range missiles with limited ammo that fall back to a machine gun;
+- more aircraft;
+- more debris and more realistic fire;
+- units no longer driving through each other;
+- an AI that holds its position instead of charging when outmatched;
+- elite enemy units, a counter system and a rebalance;
+- items bought with coins;
+- a siege mode against a lit fortress, by day and by night;
+- an optimisation pass once all of that was in.
+
+### Done
+
+**Collisions and AI**
+- Hulls collide as capsules sized from each model's measured hull.
+  - Drivers look ahead: they follow a friend going the same way, steer round anything parked or hostile, and pass oncoming traffic on the right.
+  - New vehicles spawn on free ground.
+  - Deep overlaps in a whole AI battle fell from 35 to 2 of about 200 contacts.
+- The tactical AI weighs the odds (CP value × health, mobile units only).
+  - Below 0.6 it falls back to a point it holds and waits for reinforcements. It attacks again at 0.95, or commits after 40 s so that dug-in defenders cannot stall it.
+  - Buying is balanced: anti-air is matched to the enemy's aircraft, a core of ground units that can capture is kept, and high explosive is bought against demolition targets.
+  - The main body no longer waits forever on vehicles that never finish a move.
+
+**Abilities** (`AbilitySystem`)
+- Limited ammunition: re-arm at home, or near an engineer; the AI sends empty launchers to re-arm.
+- Engineers repair and re-arm the vehicles around them.
+- EW jammers scramble missiles, drones and fire support aimed into their area.
+- Mine layers lay mines, which the enemy sees only up close.
+- Automatic skills: shield, repair, smoke, overdrive, barrage, flares, summon and EMP.
+
+**Units**
+- New ground vehicles:
+  - twin-barrel tank, siege tank (203 mm), 300 mm rocket artillery, ballistic missile launcher, 240 mm siege mortar;
+  - engineer, EW jammer, FPV drone carrier, mine layer.
+- New aircraft: fighter jet, tank buster, recon drone, assault gunship.
+- Seven elite enemy variants: refurbished models about 1.15× the base, black and gold with a red glow, gold health bars and skills. Deliveries turn elite at 10% on Normal and 25% on Hard.
+- Six fixed defences: gun, AA and rocket turrets, bunker, howitzer pit, guard tower with a sweeping searchlight.
+- Two bosses:
+  - Hive Carrier: an airship that launches drone swarms.
+  - Doomsday Train: raises its missile during a launch countdown.
+- Boss phases on every boss: escorts called in, rage, bulwark shields and EMP pulses.
+
+**Counters**
+- Every vehicle has a class.
+- `CounterTests` requires the counter to win twelve equal-CP skirmishes.
+- Cards and the selection panel show "strong vs / weak vs".
+- Defences are structures, so high explosive breaks them.
+
+**Items, doctrines, events and daily challenges**
+- **Items:** seven, bought in pairs for coins and carried into any battle: MOAB, cluster bombs, airdropped tanks, field repair, EMP, shield dome and a gunship on call.
+- **Doctrines:** five, picked on the deck page.
+- **Battle events:** supply crates to fight over, neutral bomber raids, and weather that changes mid-battle.
+- **Daily challenges:** three a day, paid in coins.
+
+**Modes**
+- **Siege:** walls, gates, defences, a command HQ hardened 4×, floodlights, and fuel and ammo dumps that chain-explode. It works on all twelve maps' `_siege` variants.
+- **Boss Rush:** four bosses in a row, with elite escorts.
+
+**Maps**
+- Four new battlefields:
+  - Ember Ridge: volcanic, with lava rivers and a geothermal plant.
+  - Jungle Pass: jungle, with a river, fords and a temple.
+  - Skyhold Airbase: parked jets that chain-explode.
+  - Metro City: urban, with a street grid, high-rises and lit windows at night.
+- Three new themes.
+- Every map has a Siege version.
+
+**Campaign**
+- An optional Boot Camp (m00) with timed tips, and m13–m16 built on the new content.
+- Balanced with the deck a player really has at each point: 15 of 17 missions won in all five seeds, m06 and m11 in four of five.
+
+**Effects**
+- Flipbook fire, blasts and smoke: a Mantaflow fire loop, and procedural blast and smoke sheets.
+- Mesh debris that bounces and burns, turret tosses, cook-off chains and textured scorch marks.
+- Items with no damage (EMP, shield dome, airdrops) show pulses instead of blasts.
+
+**Polish**
+- War drums while a boss is on the field.
+- Vibration on boss kills and cinematic blasts.
+- Colour-blind team colours: blue and orange.
+
+**Optimisation**
+- Only the vehicles a battle can field are prewarmed.
+- Metro City's skyline is limited to the ring the camera can see; before, it was 1M instanced triangles in 1631 batches.
+- Static batching for map props that never move.
+- Skill checks run at 4 Hz.
+- Emulator measurements are relative only; see `PERFORMANCE.md`.
+
+### Known limitations
+- **Ads:** still the placeholder. A real SDK needs the user's AdMob account.
+- **Real phones:** nothing has been measured on one. The emulator figures are for comparison between maps only.
+- **Balance:** the counter targets and the campaign are tuned for the auto-commander; human play may need adjustments.
+
 ## 2026-09-27: Campaign, bosses, free-to-play economy, new modes, eight battlefields
 
 The user asked for:
