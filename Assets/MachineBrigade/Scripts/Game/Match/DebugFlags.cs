@@ -8,9 +8,13 @@ namespace MachineBrigade.Game.Match
     /// Development switches read from the command line (on Android:
     /// <c>adb shell am start -n com.winka.machinebrigade/com.unity3d.player.UnityPlayerGameActivity --es mbflags -mb-no-shake,-mb-no-post</c>),
     /// so a rendering problem can be bisected on a device without a rebuild per experiment.
+    /// In the editor they come from the Machine Brigade > Debug Flags window instead.
     /// </summary>
     public static class DebugFlags
     {
+        /// <summary>Where the editor's Debug Flags window keeps its switches (EditorPrefs, comma-separated).</summary>
+        public const string EditorPrefsKey = "MachineBrigade.DebugFlags";
+
         private static HashSet<string> _flags;
 
         /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
@@ -28,6 +32,9 @@ namespace MachineBrigade.Game.Match
                 try
                 {
                     foreach (var arg in Environment.GetCommandLineArgs()) Add(arg);
+#if UNITY_EDITOR
+                    Add(UnityEditor.EditorPrefs.GetString(EditorPrefsKey, ""));
+#endif
 #if UNITY_ANDROID && !UNITY_EDITOR
                     // IL2CPP players do not see intent extras on the command line; read ours directly.
                     using var player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
