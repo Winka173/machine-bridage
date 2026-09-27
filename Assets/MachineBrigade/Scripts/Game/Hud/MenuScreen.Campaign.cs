@@ -127,7 +127,7 @@ namespace MachineBrigade.Game.Hud
 
             var m = Campaign.All[_selectedMission];
             var map = MapOf(m.Map);
-            foreach (var theme in new[] { "temperate", "desert", "snow", "harbor" }) _detailArt.EnableInClassList(theme, map.Theme == theme);
+            foreach (var theme in new[] { "temperate", "desert", "snow", "harbor", "volcanic", "jungle", "urban" }) _detailArt.EnableInClassList(theme, map.Theme == theme);
             _detailMapIcon.Name = map.Icon;
             _detailKicker.text = Strings.Format("campaign.detailKicker", _selectedMission + 1, Strings.Get("map." + m.Map)).ToUpperInvariant();
             _detailName.text = Strings.Get("mission." + m.Id + ".name");
