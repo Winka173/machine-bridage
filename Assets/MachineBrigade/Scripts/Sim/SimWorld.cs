@@ -649,7 +649,7 @@ namespace MachineBrigade.Sim
         private const double StealthReveal = 2.5;
 
         private readonly List<float> _sight = new();
-        private readonly List<bool> _thermal = new();
+        private readonly List<float> _thermal = new();
 
         private void RefreshVisibility()
         {
@@ -660,11 +660,12 @@ namespace MachineBrigade.Sim
             foreach (var spotter in _vehicleList)
             {
                 var reach = spotter.Def.VisionRange * spotter.VisionFactor;
-                var thermal = false;
+                var thermal = 0f;
                 if (spotter.Gear is { } g)
                 {
                     if (!spotter.IsMoving && Time - spotter.StillSince >= 1.0) reach *= 1f + g.Stat(StatId.StillVision);
-                    thermal = g.Has(TraitId.ThermalImager);
+                    // A thermal imager sees through smoke out to its share of the vision range.
+                    if (g.Has(TraitId.ThermalImager)) thermal = reach * MathF.Min(1f, g.Trait(TraitId.ThermalImager).A);
                 }
                 _sight.Add(reach);
                 _thermal.Add(thermal);
@@ -695,10 +696,14 @@ namespace MachineBrigade.Sim
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
                     var range = _sight[i] * sight;
                     if (hidden) range = MathF.Min(range, GhillieReveal);
-                    if (spotter.Team == target.Team ||
-                        (Vector2.DistanceSquared(spotter.Position, target.Position) <= range * range &&
-                         (_thermal[i] || !Strikes.Obscures(spotter.Position, target.Position))))
-                        mask |= 1 << spotter.Team;
+                    if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
+                    else
+                    {
+                        var d2 = Vector2.DistanceSquared(spotter.Position, target.Position);
+                        var thermal = _thermal[i] * sight;
+                        if (d2 <= range * range && ((thermal > 0f && d2 <= thermal * thermal) || !Strikes.Obscures(spotter.Position, target.Position)))
+                            mask |= 1 << spotter.Team;
+                    }
                 }
                 // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
                 ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];

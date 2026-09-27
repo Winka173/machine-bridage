@@ -241,6 +241,18 @@ namespace MachineBrigade.Game.Match
             return merges;
         }
 
+        /// <summary>
+        /// Sets an Epic or Legendary piece's trait to one of the three it was offered when it reached
+        /// Epic (<see cref="GearItem.traitOptions"/>): for a trait-choice screen. Returns whether it took.
+        /// </summary>
+        public static bool ChooseTrait(GearItem item, string traitKey)
+        {
+            if (item == null || !A.gear.Contains(item) || item.traitOptions == null || !item.traitOptions.Contains(traitKey)) return false;
+            item.trait = traitKey;
+            Save();
+            return true;
+        }
+
         /// <summary>The branches of the battle deck (crates and merges favour them).</summary>
         public static BranchMask DeckBranches => Gear.DeckMask(MatchSettings.DeckVehicles);
 

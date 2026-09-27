@@ -201,6 +201,11 @@ namespace MachineBrigade.Tests
             CollectionAssert.Contains(epic.traitOptions, epic.trait);
             Assert.AreEqual(GearSlot.Weapon, GearCatalog.Trait(epic.trait).Slot);
             Assert.AreEqual(before + Gear.Spent(new GearItem { level = 2 }), PlayerProfile.Coins, "the fodder's levels come back");
+            // The player may pick another of the three offered, never one that was not.
+            var other = epic.traitOptions.First(o => o != epic.trait);
+            Assert.IsTrue(PlayerProfile.ChooseTrait(epic, other));
+            Assert.AreEqual(other, epic.trait);
+            Assert.IsFalse(PlayerProfile.ChooseTrait(epic, "not_a_trait"));
 
             // Two more epics of the slot: up to legendary, keeping the trait at its legendary value.
             for (var i = 0; i < 2; i++)
