@@ -320,6 +320,8 @@
 }
 /* upkeep: the army is bigger than its supply and the income is cut */
 .cp-army.upkeep { color: var(--amber); }
+/* boost: the underdog's reinforcements come faster (catch-up) */
+.cp-army.boost { color: var(--mint); }
 .cards {
     flex-direction: row; align-items: flex-end;
     padding: 6px 4px;

@@ -283,7 +283,7 @@ namespace MachineBrigade.Sim.Movement
             var weapon = v.Def.Weapon;
             var reach = GuardLeash + weapon.Range * 0.9f;
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
-                attacker.IsAlive && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
+                attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
                 Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
                 return attacker;
 
@@ -292,7 +292,7 @@ namespace MachineBrigade.Sim.Movement
             foreach (var other in _world.VehicleList)
             {
                 if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
-                if (other.Flying && !HuntsAircraft(v)) continue;
+                if ((other.Flying && !HuntsAircraft(v)) || other.Invulnerable) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > v.Def.VisionRange || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -395,9 +395,8 @@ namespace MachineBrigade.Sim.Movement
             {
                 if (v.RepathTimer > 0f && v.HasPath) return;
                 v.RepathTimer = RepathInterval;
-                var away = v.Position - target.Position;
-                away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI);
-                _world.PathTo(v, _world.ClampToMap(target.Position + away * (weapon.MinRange + 8f)));
+                // Back off by the best way out; cornered, hold and let the machine gun fight.
+                if (_world.EscapeRoute(v, target.Position, weapon.MinRange + 8f - distance) is { } escape) _world.PathTo(v, escape);
                 return;
             }
             // In range and in the clear: hold here. In range but behind cover: keep driving (the
@@ -598,7 +597,7 @@ namespace MachineBrigade.Sim.Movement
             if (v.Order.Kind == OrderKind.Attack && _world.TryGetTarget(v.Order.Target, out var ordered) && ordered.IsAlive)
                 return ordered;
             var weapon = v.Def.Weapon;
-            if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && run.IsVisibleTo(v.Team) &&
+            if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && !run.Invulnerable && run.IsVisibleTo(v.Team) &&
                 weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f)
                 return run;
             v.RunExtending = false;
@@ -733,14 +732,54 @@ namespace MachineBrigade.Sim.Movement
             if (v.StuckStrikes >= StuckStrikesToGiveUp)
             {
                 v.ClearPath();
+                // Given up in a crowd: at least move out of the knot so the others can pass.
+                if (Crowded(v) && TryUnjam(v, out var clear)) _world.PathTo(v, clear);
                 return;
             }
             var strikes = v.StuckStrikes;
             _world.PathTo(v, v.PathGoal);
+            // Wedged in a crowd of hulls: step aside to a random open spot first, so a knot of
+            // vehicles pushing against each other breaks up instead of locking solid (each picks
+            // its own way, so they do not all dodge the same way).
+            if (strikes >= 2 && v.HasPath && Crowded(v) && TryUnjam(v, out var aside)) v.Path.Insert(v.PathIndex, aside);
             // Wedged a second time on a fresh route: back off to open ground a few metres away,
             // then take the route from there.
-            if (strikes >= 2 && v.HasPath && TryDetour(v, v.Path[v.PathIndex], out var detour)) v.Path.Insert(v.PathIndex, detour);
+            else if (strikes >= 2 && v.HasPath && TryDetour(v, v.Path[v.PathIndex], out var detour)) v.Path.Insert(v.PathIndex, detour);
             v.StuckStrikes = strikes;
+        }
+
+        /// <summary>Other ground hulls pressed close round this one.</summary>
+        private bool Crowded(Vehicle v)
+        {
+            var reach = v.Def.HullBound * 2f + 1.5f;
+            foreach (var other in _ground)
+                if (other != v && other.IsAlive && Vector2.DistanceSquared(other.Position, v.Position) < reach * reach) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// A random open spot 3.5 to 6 m away with the most room round it (walkable, inside the
+        /// map, clear of other hulls): a step aside out of a jam.
+        /// </summary>
+        private bool TryUnjam(Vehicle v, out Vector2 spot)
+        {
+            spot = default;
+            var bestRoom = 2.5f;
+            var start = (float)_world.Random.NextDouble() * SimMath.Tau;
+            for (var k = 0; k < 10; k++)
+            {
+                var angle = start + k * (SimMath.Tau / 10f);
+                var reach = 3.5f + 2.5f * (float)_world.Random.NextDouble();
+                var p = _world.ClampToMap(v.Position + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
+                if (!_world.Map.Contains(p) || !_world.Grid.IsWalkable(p)) continue;
+                var room = float.MaxValue;
+                foreach (var other in _ground)
+                    if (other != v && other.IsAlive) room = MathF.Min(room, Vector2.Distance(other.Position, p) - other.Def.HullBound);
+                if (room <= bestRoom) continue;
+                bestRoom = room;
+                spot = p;
+            }
+            return bestRoom > 2.5f;
         }
 
         /// <summary>

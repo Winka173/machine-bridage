@@ -120,16 +120,18 @@ namespace MachineBrigade.Game.Hud
             // Styles and text only change when the shown value does: each change costs a layout pass.
             var fill = Mathf.Round(Mathf.Clamp01(cp / Mathf.Max(1f, bank)) * 200f) / 2f;
             if (!Mathf.Approximately(fill, _shownFill)) _cpFill.style.width = Length.Percent(_shownFill = fill);
-            // Income per second; amber once upkeep eats into it (the army is bigger than its supply).
+            // Income per second; amber once upkeep eats into it (the army is bigger than its supply),
+            // mint while the underdog's reinforcements are boosted (upkeep here is the net modifier).
             var tenths = Mathf.RoundToInt(earning * 10f);
             var upkeepStep = Mathf.RoundToInt((1f - upkeep) * 20f);
             if (tenths != _shownEarning || upkeepStep != _shownUpkeep)
             {
                 _shownEarning = tenths;
                 _shownUpkeep = upkeepStep;
-                _army.text = Strings.Format(upkeepStep > 0 ? "stat.income.upkeep" : "stat.income", (tenths / 10f).ToString("0.0"),
-                    Mathf.RoundToInt((1f - upkeep) * 100f));
+                var key = upkeepStep > 0 ? "stat.income.upkeep" : upkeepStep < 0 ? "stat.income.boost" : "stat.income";
+                _army.text = Strings.Format(key, (tenths / 10f).ToString("0.0"), Mathf.RoundToInt(Mathf.Abs(1f - upkeep) * 100f));
                 _army.EnableInClassList("upkeep", upkeepStep > 0);
+                _army.EnableInClassList("boost", upkeepStep < 0);
             }
 
             for (var i = 0; i < _cards.Count && i < states.Count; i++)

@@ -46,6 +46,7 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
+            world.CatchUp = true;
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
@@ -117,6 +118,7 @@ namespace MachineBrigade.Sim.Modes
                 if (def.Id == _rules.Hill) hill = def;
             hill ??= world.Map.Points.Count > 0 ? world.Map.Points[0] : null;
             if (hill != null) _points.Add(new ObjectiveState(hill.Value));
+            world.CatchUp = true;
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
@@ -224,6 +226,7 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
+            world.CatchUp = true;
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);

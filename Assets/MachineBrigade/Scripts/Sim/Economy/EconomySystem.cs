@@ -15,6 +15,9 @@ namespace MachineBrigade.Sim.Economy
     /// bigger than its supply (<see cref="ArmyCap"/>) costs upkeep, which slows the income, so
     /// a side can always buy but a huge army starves its own reinforcements. Only a vehicle
     /// count far above any real army stops purchases, to keep phones fast.
+    /// In the quick modes (<see cref="SimWorld.CatchUp"/>) the side that is losing the war of
+    /// armies is reinforced faster and paid more for its kills, so one side cannot simply roll
+    /// the other over (see <see cref="EconomySystem"/>).
     /// </summary>
     public sealed class TeamEconomy
     {
@@ -85,8 +88,14 @@ namespace MachineBrigade.Sim.Economy
             return MathF.Max(0.25f, 1f - 0.5f * (armyCp - supply) / supply);
         }
 
-        /// <summary>CP per second actually earned now: income and bonuses after upkeep.</summary>
-        public float Earning => (Income + Bonus * IncomeScale) * Upkeep;
+        /// <summary>
+        /// The underdog's reinforcement boost: 1 while the armies are close, up to
+        /// 1 + <see cref="EconomySystem.MaxCatchUp"/> for a side whose army has been shot to pieces.
+        /// </summary>
+        public float CatchUp { get; internal set; } = 1f;
+
+        /// <summary>CP per second actually earned now: income and bonuses after upkeep, and the underdog's boost.</summary>
+        public float Earning => (Income + Bonus * IncomeScale) * Upkeep * CatchUp;
 
         /// <summary>Vehicles on the field plus deliveries on the way.</summary>
         public int VehicleCount { get; internal set; }
@@ -112,9 +121,34 @@ namespace MachineBrigade.Sim.Economy
             ReadyAt.TryGetValue(supportId, out var ready) ? (float)Math.Max(0.0, ready - now) : 0f;
     }
 
-    /// <summary>Command Point income, purchases, deliveries and kill rewards for every side that has an economy.</summary>
+    /// <summary>
+    /// Command Point income, purchases, deliveries and kill rewards for every side that has an economy.
+    /// <para>
+    /// Catch-up (the quick modes only; campaign missions are balanced by hand): a snowball is the
+    /// bigger army winning every fight, taking the points and earning more for it. Like the
+    /// reinforcement points of World in Conflict and the bounties of Dota, two gentle levers
+    /// work against it. The side whose army is under three quarters of the other's is
+    /// reinforced faster, up to half again at a fifth or less; and a kill pays by the odds: the
+    /// underdog knocking out a unit of the bigger army earns up to half as much again, the
+    /// bigger army picking off the last of the smaller one earns as little as half. Neither
+    /// changes a close fight; together with the home zones' repair and invulnerable bastions
+    /// they give a beaten side the time and means to come back.
+    /// </para>
+    /// </summary>
     internal sealed class EconomySystem
     {
+        /// <summary>The underdog's biggest reinforcement boost (0.5: half again the income).</summary>
+        public const float MaxCatchUp = 0.5f;
+
+        /// <summary>The underdog's boost starts once its army falls under this share of the other's.</summary>
+        private const float CatchUpBelow = 0.75f;
+
+        /// <summary>Armies too small to judge (the opening, a wiped board) change nothing.</summary>
+        private const int CatchUpMinimumArmy = 14;
+
+        /// <summary>Seconds for the boost to settle to a change in the odds (no flicker as units die and arrive).</summary>
+        private const float CatchUpSettle = 4f;
+
         /// <summary>Seconds between buying a vehicle and it arriving at the drop zone.</summary>
         public const float DeliverySeconds = 2.5f;
 
@@ -171,6 +205,11 @@ namespace MachineBrigade.Sim.Economy
             {
                 economy.ArmyCp = ArmyCp(economy.Team);
                 economy.VehicleCount = VehicleCount(economy.Team);
+            }
+            foreach (var economy in _teams.Values)
+            {
+                var target = _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
+                economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }
 
@@ -192,7 +231,42 @@ namespace MachineBrigade.Sim.Economy
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward);
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward * Bounty(economy, victim));
+        }
+
+        /// <summary>
+        /// The underdog's income boost for an army of <paramref name="own"/> CP against
+        /// <paramref name="rival"/>: none down to three quarters of the rival's, then rising to
+        /// <see cref="MaxCatchUp"/> at a fifth.
+        /// </summary>
+        public static float CatchUpFor(int own, int rival)
+        {
+            if (rival < CatchUpMinimumArmy) return 1f;
+            var odds = own / (float)rival;
+            return 1f + MaxCatchUp * Math.Clamp((CatchUpBelow - odds) / (CatchUpBelow - 0.2f), 0f, 1f);
+        }
+
+        /// <summary>
+        /// A kill's pay by the odds (catch-up only): the square root of the victim side's army over
+        /// the killer's, from half to half as much again.
+        /// </summary>
+        private float Bounty(TeamEconomy killer, Vehicle victim)
+        {
+            if (!_world.CatchUp || !_teams.TryGetValue(victim.Team, out var loser)) return 1f;
+            // The victim still counts: it was part of the army the killer was up against.
+            var theirs = MathF.Max(CatchUpMinimumArmy, loser.ArmyCp + victim.Def.ArmyCost);
+            var ours = MathF.Max(CatchUpMinimumArmy, killer.ArmyCp);
+            return Math.Clamp(MathF.Sqrt(theirs / ours), 0.5f, 1.5f);
+        }
+
+        /// <summary>The one other side with an economy (the catch-up compares two armies).</summary>
+        private bool TryGetRival(int team, out TeamEconomy rival)
+        {
+            rival = null!;
+            if (_teams.Count != 2) return false;
+            foreach (var economy in _teams.Values)
+                if (economy.Team != team) rival = economy;
+            return rival != null;
         }
 
         private void Deliver(int team, string defId)

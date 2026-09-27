@@ -101,6 +101,7 @@ namespace MachineBrigade.Sim.Modes
         {
             _tickets[0] = _tickets[1] = _rules.Tickets;
             foreach (var def in world.Map.Points) _points.Add(new ObjectiveState(def));
+            world.CatchUp = true;
             world.EnableEconomy(new TeamEconomy(PlayerTeam, _rules.StartCp, vehicles: _rules.PlayerVehicles, supports: _rules.PlayerSupports));
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);

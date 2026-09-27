@@ -177,7 +177,9 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.StrikeImpact:
                         var hit = Ground(e.Position, 0.3f);
                         var huge = e.Tier >= ExplosionTier.Ultimate;
-                        Explode(e.Tier, hit, now);
+                        // Drawn as big as the strike reaches (a heavier bomb, a bigger fireball).
+                        var nominal = e.Tier switch { ExplosionTier.Large => 4.5f, ExplosionTier.Huge => 6.5f, ExplosionTier.Ultimate => 20f, _ => 3f };
+                        Explode(e.Tier, hit, now, Mathf.Clamp(e.Value / nominal, 0.9f, 1.6f));
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)));
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")

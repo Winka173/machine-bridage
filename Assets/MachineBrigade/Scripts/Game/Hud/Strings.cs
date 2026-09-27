@@ -162,6 +162,7 @@ namespace MachineBrigade.Game.Hud
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{0}/s", "+{0}/s"),
             ["stat.income.upkeep"] = ("+{0}/s  -{1}%", "+{0}/s  -{1}%"),
+            ["stat.income.boost"] = ("+{0}/s  +{1}%", "+{0}/s  +{1}%"),
             ["point.a"] = ("A", "A"),
             ["point.b1"] = ("B1", "B1"),
             ["point.b2"] = ("B2", "B2"),

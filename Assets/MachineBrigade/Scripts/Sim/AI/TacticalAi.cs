@@ -169,6 +169,12 @@ namespace MachineBrigade.Sim.AI
             else if (goal.HasValue) objective = goal.Value;
             else if (chase) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
+            else if (world.HomeZones)
+            {
+                // The camp itself is guarded by bastions that cannot be destroyed: press up to its edge, not into it.
+                var inward = objective.LengthSquared() > 1f ? Vector2.Normalize(-objective) : Vector2.UnitX;
+                objective += inward * (SimWorld.HomeRadius + 18f);
+            }
             contact = groundContact;
             if (JudgeOdds(world, front, contact))
             {
@@ -411,7 +417,7 @@ namespace MachineBrigade.Sim.AI
                 if (!v.IsAlive) continue;
                 if (v.Team == _enemyTeam || v.Team == Teams.Hostile)
                 {
-                    if (v.IsVisibleTo(_team)) _enemies.Add(v);
+                    if (v.IsVisibleTo(_team) && !v.Invulnerable) _enemies.Add(v);
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
@@ -519,21 +525,25 @@ namespace MachineBrigade.Sim.AI
             foreach (var a in _artillery)
             {
                 var weapon = a.Def.Weapon;
-                var closest = Nearest(a.Position, out var threat);
+                // Only ground threats: a gun cannot outrun a helicopter, and running from one
+                // hovering overhead only herded it into the map's edge (its machine gun and the
+                // anti-air answer aircraft).
+                var closest = NearestGround(a.Position, out var threat);
                 if (threat != null && closest < weapon.MinRange + 6f)
                 {
-                    // Too close to shoot back: open the distance.
-                    var away = Direction(threat.Position, a.Position);
-                    Issue(world, CommandType.Move, a.Id, Clamp(world, a.Position + away * (weapon.MinRange + 14f - closest)));
+                    // Too close to shoot back: open the distance, by the best way out (never into the
+                    // map's edge); cornered, it stays and its machine gun fights.
+                    if (world.EscapeRoute(a, threat.Position, weapon.MinRange + 14f - closest) is { } escape)
+                        Issue(world, CommandType.Move, a.Id, escape);
                     continue;
                 }
                 // Kiting: outranging the nearest threat by 6 m or more, never let it into its own
                 // reach; back off to just beyond it, then fire again.
                 var reach = threat != null && threat.Def.Weapon.CanTarget(a.Flying) ? threat.Def.Weapon.Range : 0f;
-                if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move)
+                if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move &&
+                    world.EscapeRoute(a, threat!.Position, reach + 10f - closest) is { } kite)
                 {
-                    var away = Direction(threat!.Position, a.Position);
-                    Issue(world, CommandType.Move, a.Id, Clamp(world, a.Position + away * (reach + 10f - closest)));
+                    Issue(world, CommandType.Move, a.Id, kite);
                     continue;
                 }
                 if (a.Order.Kind == OrderKind.Move) continue;

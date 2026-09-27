@@ -96,6 +96,8 @@ namespace MachineBrigade.Sim.Combat
                 case OrderKind.Attack:
                     // Shooting at an ordered target needs sight of it (smoke and fog stop assigned shelling).
                     if (!_world.TryGetTarget(v.Order.Target, out var ordered) || !ordered.IsAlive) return null;
+                    // Shielded for now (a boss behind its glyph): shoot at something else meanwhile.
+                    if (ordered is Vehicle { Invulnerable: true }) return BestInRange(v, weapon, EntityId.None);
                     return ordered is Vehicle hidden && !hidden.IsVisibleTo(v.Team) ? null : ordered;
 
                 case OrderKind.AttackMove:
@@ -189,7 +191,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
+            target.IsAlive && !target.Invulnerable && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
             HasLineOfFire(v, target, weapon);
 
         /// <summary>
