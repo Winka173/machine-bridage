@@ -7,7 +7,9 @@ Conventions as in mb_air.py: metres, +Z up, Blender -Y is the nose, origin at th
     the rack of twelve bombs under the open bay doors (hidden once they drop); `Muzzle_gun` at the
     tail turret's four barrels, which point backwards (+Y).
   * stealth_bomber: faceted flying wing (B-2 lineage). `Bombs` is a pivot at the twin bomb bays
-    holding six guided bombs behind the open doors.
+    holding six guided bombs behind the open doors. A stand-off missile hangs half out of a small bay
+    under each wing near the leading edge (not under `Bombs`); `Muzzle_rocket` is centred between
+    their noses.
   * sky_gunship: side-firing gunship (AC-130 lineage). `Propeller`, `Propeller_2`, `Propeller_3`
     and `Propeller_4` (engines one to four, left to right) spin about local Y. Its guns fire out of
     the left side (-X): `Muzzle_main` at the 105 mm howitzer, `Muzzle_gun` at the 40 mm cannon
@@ -206,7 +208,8 @@ def stealth_bomber(a):
     """Stealth bomber (B-2 lineage): a faceted flying wing swept 33 degrees with a double-W
     sawtooth trailing edge, a humped crew section with four windscreen panels, serrated dorsal
     intakes, exhaust trenches glowing ahead of heat-tiled aft decks, split elevons, and twin bomb
-    bays whose doors hang open under six laser-guided bombs. Span about 16 m."""
+    bays whose doors hang open under six laser-guided bombs; a stand-off missile hangs half out of a
+    small bay under each wing, its nose ahead of the leading edge. Span about 16 m."""
     wing = a.part('Wing', 'Team', flat=True)
     armor = a.part('Armor', 'Armor', flat=True)
     dark = a.part('Undercarriage', 'Undercarriage')
@@ -293,6 +296,39 @@ def stealth_bomber(a):
         a.part('Steel', 'Steel').box((.02, .2, .12), loc=(s * .8, -.6, _sw_top(pa, .8, -.6) + .04), rot=(-.4, 0, 0),
                                      bevel=0, taper=(1, .5))
     a.part('Beacon', 'TeamGlow').sphere(.05, loc=(0, .8, _sw_top(pa, 0, .8) + .01), seg=8, rings=5)
+    # Second weapon (slot rocket): a stand-off cruise missile (JASSM lineage) hanging half out of a small
+    # weapons bay under each wing near the leading edge. Each missile's front 1.4 m sticks out ahead of the
+    # swept leading edge, so the pair reads from above; the bay shows as a dark liner between two open
+    # doors. They are not under `Bombs`. Muzzle_rocket is centred between the two noses.
+    x, y_nose, zc, length = 2.9, -2.7, -.08, 3.8
+    for s in (-1, 1):
+        _standoff_missile(a, s * x, y_nose, zc, length)
+        yb0, yb1 = -1.1, 1.0                                                           # bay, under the skin
+        yc = (yb0 + yb1) / 2
+        dark.box((.66, yb1 - yb0, .02), loc=(s * x, yc, -.115), bevel=0)
+        for side in (-1, 1):
+            tilt = .3
+            c = Vector((s * x + side * (.33 + math.sin(tilt) * .16), yc, -.115 - math.cos(tilt) * .16))
+            doors.box((.03, yb1 - yb0 - .1, .32), loc=tuple(c), rot=(0, -side * tilt, 0), bevel=0)
+    a.pivot('Muzzle_rocket', (0, y_nose - .01, zc - .02))
+
+
+def _standoff_missile(a, x, y_nose, zc, length, w=.44, h=.24):
+    """Stand-off cruise missile lying along -Y with its nose tip at (x, y_nose): a faceted, flat-bottomed
+    body `w` wide and `h` tall (light grey), a dark radome nose with a glass seeker window, a yellow
+    band, and a ventral tail fin."""
+    def ring(d, k, grow=1.0):
+        pts = [(-.34, -.5), (.34, -.5), (.5, -.12), (.25, .5), (-.25, .5), (-.5, -.12)]
+        return [(x + px * w * k * grow, y_nose + d, zc + pz * h * k * grow) for px, pz in pts]
+    tip = [[(x, y_nose, zc - h * .08)]]
+    a.part('Standoff_nose', 'Armor').loft(tip + [ring(.18, .36), ring(.45, .72)], bevel=0)
+    body = [ring(.45, .72), ring(.8, .95), ring(1.15, 1.0), ring(length - .35, 1.0), ring(length, .72)]
+    a.part('Standoff_missile', 'Fuel').loft(body, bevel=0)
+    a.part('Standoff_band', 'Hazard').loft([ring(.95, .99, 1.08), ring(1.03, 1.0, 1.08)], bevel=0)
+    a.part('Standoff_seeker', 'Glass').box((.12, .14, .04), loc=(x, y_nose + .3, zc - h * .27), rot=(.35, 0, 0),
+                                           bevel=0)
+    a.part('Standoff_fins', 'Armor').box((.03, .45, .24), loc=(x, y_nose + length - .3, zc - h / 2 - .1),
+                                         bevel=0, taper=(1, 1))
 
 
 def _edge_strip(part, stations, u0, u1, out=.02, inn=.012, lower=.5):

@@ -10,7 +10,8 @@ Conventions (shared with ModelLibrary.cs): metres, +Z up, Blender -Y is the nose
   * strike_jet: origin at the fuselage centre (it flies). `Bombs` is a pivot at the origin whose
     children are the six wing bombs (hidden together once they drop); `Muzzle_gun` at the chin gun.
   * attack_jet and strike_drone fly like strike_jet. strike_drone's pusher `Propeller` spins about
-    local Y (the fuselage axis).
+    local Y (the fuselage axis); `Muzzle_missile` sits between its missile rails and `Muzzle_rocket`
+    between the noses of its two guided bombs, which hang on `Pylon_bomb` pylons (not `Bombs`).
   * Munitions: origin at the centre, nose at -Y, emissive `Alloy` motors at the tail.
 Team / TeamGlow parts are recoloured per army at runtime. The fixed-wing kit below (airfoil lofts
 with control surfaces, skin panels, intakes, nozzles, turbofans, propellers, bombs, missiles and
@@ -1147,16 +1148,20 @@ def strike_drone(a):
     blades = a.part('Propeller_blades', 'Armor', p)
     for k in range(4):
         _prop_blade(blades, math.pi / 4 + k * R90, .08, .8, .16, .08, .04, .014, .7, .25, axis_y=.02)
-    # Stores: a laser-guided bomb inboard and a twin missile rail outboard under each wing.
+    # Stores: a laser-guided bomb inboard (the second weapon, slot rocket) and a twin missile rail outboard
+    # under each wing. The bombs are long enough that the seeker, canards and nose band stand well ahead
+    # of the leading edge and the tail fins behind the trailing edge, so they read from above; their
+    # pylons are Pylon_bomb (never Bombs: that pivot is hidden after a drop).
     stores = _store_parts(a, None, 'Ordnance')
     pylons = a.part('Pylons', 'Armor')
     mis = dict(body=a.part('Missiles', 'Fuel'), fins=a.part('Missile_fins', 'Armor'),
                nose=a.part('Missile_seekers', 'Glass'), band=a.part('Missile_bands', 'Hazard'))
+    rb, lb, yb = .15, 2.1, -.45                                                       # bomb radius, length, centre
     for s in (-1, 1):
         x = s * 1.45
         zt = wing.bottom(1.45)
-        _pylon(pylons, x, -.5, .2, zt + .04, zt - .1, w=.06)
-        _bomb(stores, (x, -.3, zt - .1 - .12 - .015), length=1.3, r=.12, seg=8, guided=True)
+        _pylon(a.part('Pylon_bomb', 'Armor'), x, -.55, .28, zt + .04, zt - .1, w=.07)
+        _bomb(stores, (x, yb, zt - .1 - rb - .015), length=lb, r=rb, seg=10, guided=True)
         x = s * 2.45
         zt = wing.bottom(2.45)
         _pylon(pylons, x, -.45, .15, zt + .04, -.105, w=.06)
@@ -1164,6 +1169,8 @@ def strike_drone(a):
         for dx in (-.085, .085):
             _aam(mis, (x + dx, -.86 + .475, -.19), length=.95, r=.055, seg=8, canards=False, fin=1.4)
     a.pivot('Muzzle_missile', (0, -.86, -.19))
+    # Muzzle_rocket: centred between the two bomb noses (like Muzzle_missile between the rails).
+    a.pivot('Muzzle_rocket', (0, yb - lb / 2 - rb * .35, wing.bottom(1.45) - .1 - rb - .015))
 
 
 # ----------------------------------------------------------------------------- munitions
