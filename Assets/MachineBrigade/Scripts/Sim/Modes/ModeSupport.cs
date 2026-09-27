@@ -78,6 +78,34 @@ namespace MachineBrigade.Sim.Modes
     /// Notices vehicles that are gone since the last look and books them to their side: how many
     /// each side lost and what they cost. Destroyed and removed vehicles count the same.
     /// </summary>
+    /// <summary>
+    /// Spawn protection for the capture modes, after LoL's Nexus Obelisk and Dota's fountain: each
+    /// side's camp gets two indestructible bastions (twin guns and flak, reaching 40 m, air and
+    /// ground) and a home zone (see <see cref="SimWorld.HomeZones"/>), so a winning army cannot
+    /// camp the losing side's spawn and a match cannot be steamrolled to its last vehicle.
+    /// </summary>
+    public static class BaseDefences
+    {
+        public const string Bastion = "spawn_bastion";
+
+        public static void Build(SimWorld world, params int[] teams)
+        {
+            world.HomeZones = true;
+            if (!world.Catalog.Vehicles.ContainsKey(Bastion)) return;
+            foreach (var team in teams)
+            {
+                if (!world.TryGetRally(team, out var rally)) continue;
+                var toward = rally.LengthSquared() > 1f ? Vector2.Normalize(-rally) : Vector2.UnitX;
+                var side = new Vector2(-toward.Y, toward.X);
+                foreach (var s in new[] { -1f, 1f })
+                {
+                    var bastion = world.SpawnVehicle(Bastion, team, rally + toward * 10f + side * (18f * s), SimMath.HeadingOf(toward));
+                    bastion.Invulnerable = true;
+                }
+            }
+        }
+    }
+
     public sealed class KillLedger
     {
         private readonly Dictionary<EntityId, (int team, int cost)> _alive = new();

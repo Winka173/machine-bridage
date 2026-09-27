@@ -145,6 +145,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 case Vehicle vehicle:
                     if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
+                    if (vehicle.GraceUntil > _world.Time) damage *= 0.2f;
                     vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
                     _world.Emit(SimEvent.Damage(vehicle, damage));
                     if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);

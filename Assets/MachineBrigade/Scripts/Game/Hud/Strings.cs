@@ -335,6 +335,8 @@ namespace MachineBrigade.Game.Hud
             ["siege.fallen"] = ("The fortress falls!", "Pháo đài sụp đổ!"),
             ["siege.barrage"] = ("The HQ calls in an artillery barrage", "Sở chỉ huy gọi pháo kích"),
             ["siege.glyph"] = ("The keep's shield is up: reinforcements arriving", "Khiên thành trong bật lên: địch tăng viện"),
+            ["comeback.ours"] = ("Reinforcements: a Behemoth joins our side!", "Viện binh: siêu tăng Behemoth đã đến phe ta!"),
+            ["comeback.theirs"] = ("The enemy fields a Behemoth!", "Địch tung siêu tăng Behemoth!"),
             ["siege.laststand"] = ("Last stand: the fortress guns fire faster", "Liều chết: pháo đài bắn nhanh hơn"),
             ["mode.bossrush"] = ("Boss Rush", "Săn trùm"),
             ["mode.bossrushSub"] = ("Four bosses in a row", "Bốn trùm liên tiếp"),

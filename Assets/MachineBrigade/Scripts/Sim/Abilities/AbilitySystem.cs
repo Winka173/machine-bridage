@@ -56,6 +56,10 @@ namespace MachineBrigade.Sim.Abilities
                 if (!v.IsAlive) continue;
                 v.RefreshEffects(now);
                 if (v.Def.Jammer > 0f) _jammers.Add(v);
+                // Home zone: a vehicle left alone for 3 s by its own camp repairs 2 % a second.
+                if (_world.HomeZones && !v.Def.Static && v.Hp < v.MaxHp && now - v.LastHitTime > 3.0 &&
+                    _world.TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(v.Position, home) < SimWorld.HomeRadius * SimWorld.HomeRadius)
+                    v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.02f * dt);
                 // Active protection reloads one interceptor at a time.
                 var aps = v.Def.Aps;
                 if (aps != null && v.ApsCharges < aps.Charges && (v.ApsReload += dt) >= aps.Recharge)

@@ -41,6 +41,17 @@ namespace MachineBrigade.Sim.Modes
         public float Bleed { get; set; } = 0.6f;
 
         public float PointIncome { get; set; } = 0.3f;
+
+        /// <summary>Spawn bastions and home zones at both camps (see <see cref="Modes.BaseDefences"/>).</summary>
+        public bool BaseDefences { get; set; } = true;
+
+        /// <summary>
+        /// A side this many tickets behind gets a boss once (Battlefield 1's behemoths): a bounded
+        /// comeback, not a rubber band. 0 turns it off.
+        /// </summary>
+        public int ComebackGap { get; set; } = 100;
+
+        public string ComebackBoss { get; set; } = "behemoth";
         public float StartCp { get; set; } = 14f;
         public IReadOnlyList<string> PlayerVehicles { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> PlayerSupports { get; set; } = Array.Empty<string>();
@@ -87,6 +98,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(new TeamEconomy(PlayerTeam, _rules.StartCp, vehicles: _rules.PlayerVehicles, supports: _rules.PlayerSupports));
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            if (_rules.BaseDefences) BaseDefences.Build(world, PlayerTeam, EnemyTeam);
         }
 
         public void Tick(SimWorld world, float dt)
@@ -102,6 +114,7 @@ namespace MachineBrigade.Sim.Modes
             if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = _rules.PointIncome * held0;
             if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = _rules.PointIncome * held1;
 
+            Comeback(world);
             var lost0 = _tickets[PlayerTeam] <= 0f;
             var lost1 = _tickets[EnemyTeam] <= 0f;
             if (!lost0 && !lost1) return;
@@ -110,5 +123,22 @@ namespace MachineBrigade.Sim.Modes
         }
 
         private void Capture(SimWorld world, ObjectiveState point, float dt) => PointCapture.Tick(world, point, dt, _rules.CaptureSeconds);
+
+        private readonly bool[] _comebackGiven = new bool[2];
+
+        /// <summary>The side far behind on tickets gets its boss, once a match.</summary>
+        private void Comeback(SimWorld world)
+        {
+            if (_rules.ComebackGap <= 0 || !world.Catalog.Vehicles.ContainsKey(_rules.ComebackBoss)) return;
+            for (var team = 0; team < 2; team++)
+            {
+                if (_comebackGiven[team] || _tickets[1 - team] - _tickets[team] < _rules.ComebackGap) continue;
+                if (!world.TryGetRally(team, out var rally)) continue;
+                _comebackGiven[team] = true;
+                var toward = rally.LengthSquared() > 1f ? Vector2.Normalize(-rally) : Vector2.UnitX;
+                world.SpawnVehicle(_rules.ComebackBoss, team, rally + toward * 6f, SimMath.HeadingOf(toward));
+                world.Emit(SimEvent.Alert(rally, team == PlayerTeam ? "comeback.ours" : "comeback.theirs"));
+            }
+        }
     }
 }

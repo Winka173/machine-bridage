@@ -80,6 +80,7 @@
     { "id": "hind_rockets",      "damageType": "HighExplosive", "damage": 55,  "cooldown": 8,    "range": 34, "projectileSpeed": 90, "splash": 3.5, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08 },
     // Elite variants.
     // Elite weapons. Cluster rockets scatter bomblets that each go off as a small blast.
+    { "id": "bastion_gun",       "damageType": "ArmorPiercing", "damage": 220, "cooldown": 2.2,  "range": 40, "projectileSpeed": 200, "splash": 2.5, "spread": 0.3, "impactTier": "Large" },
     { "id": "gun_152_heat",      "damageType": "ArmorPiercing", "damage": 280, "cooldown": 4.5,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large" },
     { "id": "gun_105_apfsds",    "damageType": "ArmorPiercing", "damage": 320, "cooldown": 3.6,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium" },
     { "id": "hellfire_volley",   "damageType": "ArmorPiercing", "damage": 170, "cooldown": 6.0,  "range": 34, "projectileSpeed": 70, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.45 },
@@ -310,6 +311,9 @@
       "deathExplosion": { "damage": 150, "radius": 10, "delay": 0.35, "tier": "Ultimate" } },
 
     // Fixed defences (Siege mode): they never move, and every one of them goes up in flames.
+    { "id": "spawn_bastion", "class": "Defense", "static": true, "model": "gun_turret", "armor": "Heavy", "hp": 5000, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.8, "length": 5.5, "width": 5.5, "cp": 0, "vision": 44,
+      "firesWhileMoving": true, "weapon": "bastion_gun",
+      "secondary": [ { "weapon": "twin_30_flak", "slot": "coax", "aim": "Turret" } ] },
     { "id": "gun_turret",       "static": true, "armor": "Structure", "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 50, "radius": 2.5, "length": 5, "width": 5, "cp": 0, "vision": 42,
       "weapon": "gun_120mm", "secondary": [{"weapon": "mg_coax", "slot": "coax", "aim": "Turret"}], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     { "id": "aa_turret",        "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,

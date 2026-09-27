@@ -124,6 +124,25 @@ namespace MachineBrigade.Sim
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
+        /// <summary>
+        /// Home zones (the capture modes): within <see cref="HomeRadius"/> of its own camp a
+        /// vehicle repairs 2 % of its health a second once it has not been hit for 3 s, a newly
+        /// arrived vehicle takes a fifth of the damage for its first 5 s, and the enemy cannot call
+        /// strikes into the zone.
+        /// </summary>
+        public bool HomeZones { get; set; }
+
+        public const float HomeRadius = 35f;
+
+        /// <summary>Whether a point lies in another side's home zone (strikes cannot be called there).</summary>
+        internal bool InEnemyHome(Vector2 point, int team)
+        {
+            if (!HomeZones) return false;
+            foreach (var start in Map.Teams)
+                if (start.Team != team && Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+            return false;
+        }
+
         public void EnableEconomy(TeamEconomy economy)
         {
             // The catalog sets the pace of every economy (see balance.json "economy").
@@ -182,6 +201,7 @@ namespace MachineBrigade.Sim
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
             Emit(SimEvent.Spawned(vehicle));
+            if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
         }
 

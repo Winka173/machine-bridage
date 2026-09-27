@@ -110,6 +110,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
         internal float FireBoost = 1f;
 
+        /// <summary>Until when a newly arrived vehicle takes only a fifth of the damage (home zones).</summary>
+        internal double GraceUntil = double.NegativeInfinity;
+
         /// <summary>Takes no damage (a dormant fortress guardian, a spawn bastion).</summary>
         public bool Invulnerable { get; internal set; }
 
