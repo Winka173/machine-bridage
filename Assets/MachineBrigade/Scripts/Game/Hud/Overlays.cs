@@ -15,6 +15,9 @@ namespace MachineBrigade.Game.Hud
 
         public List<string> Unlocked { get; } = new();
 
+        /// <summary>Crates the battle paid (their names).</summary>
+        public List<string> Crates { get; } = new();
+
         /// <summary>A rewarded ad may double the coins.</summary>
         public bool CanDouble { get; set; }
 
@@ -124,8 +127,15 @@ namespace MachineBrigade.Game.Hud
                     chip.Add(UiKit.Text(Strings.Format("result.unlocked", name), "unlock-text"));
                     _unlocks.Add(chip);
                 }
+                foreach (var name in reward.Crates)
+                {
+                    var chip = UiKit.Box("unlock-chip crate-chip");
+                    chip.Add(UiKit.Icon("crate", UiKit.Ink, 1.6f));
+                    chip.Add(UiKit.Text(Strings.Format("result.crate", name), "unlock-text"));
+                    _unlocks.Add(chip);
+                }
             }
-            _unlocks.style.display = hasReward && reward.Unlocked.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _unlocks.style.display = hasReward && reward.Unlocked.Count + reward.Crates.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             _double.style.display = hasReward && reward.CanDouble && reward.Coins > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             var next = hasReward && reward.HasNext;
             _next.style.display = next ? DisplayStyle.Flex : DisplayStyle.None;

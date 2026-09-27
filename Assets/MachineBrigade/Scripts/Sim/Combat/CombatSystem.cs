@@ -404,6 +404,7 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
+            damageScale *= shooter.DamageBoost;
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale, Origin = origin };
             if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
             {

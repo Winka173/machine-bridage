@@ -8,7 +8,7 @@ namespace MachineBrigade.Game.Match
     /// The player's progress, saved on the device: coins, rank (XP), cards unlocked, items bought
     /// (skins and premium units), the equipped skin and the stars won on each campaign mission.
     /// </summary>
-    public static class PlayerProfile
+    public static partial class PlayerProfile
     {
         [Serializable]
         private sealed class Data
@@ -35,6 +35,25 @@ namespace MachineBrigade.Game.Match
             public List<int> dailyProgress = new();
             public List<bool> dailyClaimed = new();
             public List<int> itemCounts = new();
+
+            // The arsenal (see PlayerProfile.Arsenal.cs): gems, card ranks and blueprints,
+            // equipment and loadouts, crates, pity counters and the daily crate counters.
+            public int gems;
+            public List<string> rankIds = new();
+            public List<int> ranks = new();
+            public List<int> prints = new();
+            public int universal;
+            public List<GearItem> gear = new();
+            public int nextGearId = 1;
+            public List<int> loadout = new();
+            public List<int> crates = new();
+            public List<int> sinceEpic = new();
+            public List<int> sinceLegendary = new();
+            public int winCrateDay;
+            public int winCrates;
+            public int adDay;
+            public int ads;
+            public long lastAdTicks;
         }
 
         private const string Key = "mb.profile";
@@ -267,6 +286,7 @@ namespace MachineBrigade.Game.Match
 
         public static void Load()
         {
+            _noSave = false;
             try
             {
                 var json = PlayerPrefs.GetString(Key, "");
@@ -281,14 +301,18 @@ namespace MachineBrigade.Game.Match
             while (_data.missionStars.Count < _data.missionIds.Count) _data.missionStars.Add(0);
             while (_data.missionTiers.Count < _data.missionIds.Count) _data.missionTiers.Add(0);
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
+            FixArsenal(_data);
         }
 
         public static void Save()
         {
             try
             {
-                PlayerPrefs.SetString(Key, JsonUtility.ToJson(D));
-                PlayerPrefs.Save();
+                if (!_noSave)
+                {
+                    PlayerPrefs.SetString(Key, JsonUtility.ToJson(D));
+                    PlayerPrefs.Save();
+                }
             }
             catch (Exception e)
             {
@@ -297,10 +321,16 @@ namespace MachineBrigade.Game.Match
             Changed?.Invoke();
         }
 
-        /// <summary>Forgets everything (tests and a future "reset progress" button).</summary>
+        /// <summary>
+        /// Starts from an empty profile that is never written to the device (tests: the real
+        /// profile, in the editor's prefs, stays as it was; <see cref="Load"/> brings it back).
+        /// </summary>
         public static void ResetForTests()
         {
             _data = new Data();
+            _noSave = true;
         }
+
+        private static bool _noSave;
     }
 }

@@ -266,17 +266,63 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
+            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && !def.Boss && !def.Static) Upgrade(vehicle, boosts(def));
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
-                vehicle.HpScale = doctrine.Toughness(def.Class);
-                vehicle.DoctrineSpeed = doctrine.Speed;
-                vehicle.Hp = vehicle.MaxHp;
+                vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
+                vehicle.DoctrineSpeed = doctrine.Speed * vehicle.BoostSpeed;
             }
+            vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
             Emit(SimEvent.Spawned(vehicle));
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
+        }
+
+        private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
+        private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
+
+        /// <summary>
+        /// A side's upgrades (card ranks and equipment): what each of its vehicles gets as it enters
+        /// the battle (null: none). Set before the forces are placed.
+        /// </summary>
+        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null)
+        {
+            if (team < 0 || team >= _boosts.Length) return;
+            _boosts[team] = boosts;
+            _strikeBoosts[team] = strikeDamage;
+        }
+
+        /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
+        internal float StrikeDamage(int team, string supportId) =>
+            team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
+
+        private static void Upgrade(Vehicle v, VehicleBoost b)
+        {
+            v.BoostHp = b.Hp;
+            v.BoostSpeed = b.Speed;
+            v.HpScale = b.Hp;
+            v.DoctrineSpeed = b.Speed;
+            v.DamageBoost = b.Damage;
+            v.FireBoost = b.FireRate;
+            v.DamageTaken = b.DamageTaken;
+            v.Regen = b.Regen;
+            v.Special = b.Special;
+            v.SpecialPower = b.SpecialPower;
+            switch (b.Special)
+            {
+                case SpecialModule.ReactiveArmor:
+                    v.DamageTaken *= 1f - b.SpecialPower;
+                    break;
+                case SpecialModule.AutoRepair:
+                    v.Regen += b.SpecialPower;
+                    break;
+                case SpecialModule.VeteranCrew:
+                    v.DamageBoost *= 1f + b.SpecialPower;
+                    v.FireBoost *= 1f + b.SpecialPower;
+                    break;
+            }
         }
 
         /// <summary>
@@ -291,8 +337,8 @@ namespace MachineBrigade.Sim
             {
                 if (!v.IsAlive || v.Team != team || v.Def.Boss || v.Def.Static) continue;
                 var share = v.Hp / v.MaxHp;
-                v.HpScale = doctrine?.Toughness(v.Def.Class) ?? 1f;
-                v.DoctrineSpeed = doctrine?.Speed ?? 1f;
+                v.HpScale = (doctrine?.Toughness(v.Def.Class) ?? 1f) * v.BoostHp;
+                v.DoctrineSpeed = (doctrine?.Speed ?? 1f) * v.BoostSpeed;
                 v.Hp = v.MaxHp * share;
             }
         }

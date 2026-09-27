@@ -323,6 +323,85 @@
 .cp-army.upkeep { color: var(--amber); }
 /* boost: the underdog's reinforcements come faster (catch-up) */
 .cp-army.boost { color: var(--mint); }
+
+/* ================================================================ arsenal: ranks, equipment, crates */
+.gem-pill { margin-left: 6px; }
+.gem-pill .icon { --icon-color: #7fd6ff; }
+.arsenal-detail { height: 118px; }
+.arsenal-body { padding-bottom: 12px; }
+.rank-card .rank-badge {
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; color: var(--amber-ink);
+    background-color: var(--amber); border-radius: 8px; padding: 1px 8px; margin-top: 2px;
+}
+.print-track { width: 80%; height: 5px; margin-top: 6px; background-color: var(--n900); border-radius: 3px; overflow: hidden; }
+.print-fill { height: 5px; background-color: var(--mint); }
+.rank-card.ready { border-color: var(--mint); }
+.branch-row { margin-bottom: 8px; }
+.gear-slots { flex-direction: row; flex-wrap: wrap; margin-bottom: 6px; }
+.gear-slot {
+    width: 86px; height: 74px; margin: 0 6px 6px 0; align-items: center; justify-content: center;
+    background-color: var(--n750); border-radius: 10px; border-width: 2px;
+}
+.gear-slot.special { background-color: var(--n800); }
+.gear-slot.chosen { background-color: var(--n700); }
+.gear-slot .icon { width: 24px; height: 24px; }
+.gear-slot-value { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 10px; color: var(--n200); margin-top: 4px; -unity-text-align: middle-center; white-space: normal; }
+.gear-tools { flex-direction: row; align-items: center; justify-content: space-between; margin: 4px 0 6px 0; }
+.small-wide { height: 36px; padding: 0 10px; }
+.gear-grid { flex-direction: row; flex-wrap: wrap; }
+.gear-tile {
+    width: 64px; height: 64px; margin: 0 6px 6px 0; align-items: center; justify-content: center;
+    background-color: var(--n800); border-radius: 8px; border-width: 2px;
+}
+.gear-tile.chosen { background-color: var(--n700); }
+.gear-tile.equipped { background-color: var(--ally-dark); }
+.gear-tile .icon { width: 26px; height: 26px; }
+.gear-tile-level { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: var(--n300); margin-top: 2px; }
+.crate-grid { flex-direction: row; flex-wrap: wrap; }
+.crate-tile {
+    width: 48%; margin: 0 2% 8px 0; padding: 10px; background-color: var(--n750); border-radius: 10px;
+    border-left-width: 4px; border-left-color: var(--n400);
+}
+.crate-tile.silver { border-left-color: #c9d2da; }
+.crate-tile.gold { border-left-color: #f2c14e; }
+.crate-tile.legendary { border-left-color: #b86cf0; }
+.crate-tile.ad-crate { width: 98%; border-left-color: var(--mint); }
+.crate-top { flex-direction: row; align-items: center; }
+.crate-top .icon { width: 30px; height: 30px; margin-right: 10px; }
+.crate-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--chalk); }
+.crate-count { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 11px; color: var(--n300); white-space: normal; }
+.crate-buttons { flex-direction: row; flex-wrap: wrap; margin-top: 8px; }
+.crate-button {
+    flex-direction: row; align-items: center; height: 32px; padding: 0 10px; margin: 0 6px 6px 0;
+    background-color: var(--n850); border-radius: 6px; border-bottom-width: 2px; border-bottom-color: var(--n950);
+}
+.crate-button.primary { background-color: var(--amber); }
+.crate-button.primary .crate-button-text { color: var(--amber-ink); }
+.crate-button.pressed { translate: 0 2px; border-bottom-width: 0; }
+.crate-button .icon { width: 16px; height: 16px; margin-right: 6px; }
+.crate-button-text { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; color: var(--chalk); }
+.gem-grid { flex-direction: row; flex-wrap: wrap; }
+.gem-card .icon { --icon-color: #7fd6ff; width: 26px; height: 26px; margin-top: 8px; }
+.loot-overlay { align-items: center; justify-content: center; background-color: rgba(4, 6, 8, 0.78); }
+.loot-card { width: 560px; max-height: 86%; padding: 18px; background-color: var(--n850); border-radius: 14px; border-width: 2px; border-color: var(--amber); }
+.loot-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 20px; color: var(--amber); margin-bottom: 8px; -unity-text-align: middle-center; }
+.loot-scroll { max-height: 380px; margin-bottom: 10px; }
+.loot-row { flex-direction: row; align-items: center; padding: 6px 8px; margin-bottom: 4px; background-color: var(--n800); border-radius: 6px; transition-property: opacity; transition-duration: 0.25s; }
+.loot-row .icon { width: 18px; height: 18px; margin-right: 8px; }
+.loot-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--chalk); white-space: normal; flex-shrink: 1; }
+.crate-chip .icon { --icon-color: #f2c14e; }
+.wide.disabled { opacity: 0.55; }
+.dock-row .arsenal-go { flex-grow: 1; flex-shrink: 1; margin-right: 10px; height: 64px; }
+.dock-row .arsenal-two { flex-shrink: 1; margin-right: 10px; height: 64px; }
+.arsenal-go .wide-title, .arsenal-two .wide-title { font-size: 15px; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The narrow main page: a compact brand strip, and four dock buttons that fit. */
+.menu-brand.compact .menu-title { font-size: 22px; letter-spacing: 2px; margin-right: 5px; }
+.menu-brand.compact > .icon { width: 28px; height: 28px; margin-right: 8px; }
+.menu-brand.compact .rank-pill, .menu-brand.compact .coin-pill { padding: 0 7px; margin-left: 5px; }
+.menu-brand.compact .rank-label { display: none; }
+.menu-brand.compact .rank-track { width: 34px; }
+.menu-small .wide .wide-title { font-size: 14px; letter-spacing: 0; }
+.menu-small .wide .icon { width: 18px; height: 18px; margin-right: 6px; }
 .cards {
     flex-direction: row; align-items: flex-end;
     padding: 6px 4px;

@@ -10,3 +10,7 @@ Things that are deliberately different in test builds. Go through this list befo
    - Turning it back on restores every shake source.
 3. **Ads.** `Ads.cs` is still the placeholder. It needs the real AdMob SDK and ad unit IDs.
 4. **Build.** Build a signed release AAB, not the development APK (`BuildScripts.BuildAndroidDevApk`). Swappy frame pacing is only enabled in release builds.
+5. **Gem store.** `GemStore.TestPurchases` (`Assets/MachineBrigade/Scripts/Game/Match/Arsenal.cs`) is `true` in test builds: every gem pack is granted free.
+   - Wire in Google Play Billing (and StoreKit on iOS), then set it to `false`.
+   - Paid crates need the odds screen that is already in the game, and a matching page on the website for Korea.
+   - Consider selling paid crates as "X-ray" crates (contents shown before buying). Paid random items put the game at PEGI 16 from June 2026 and are restricted in Belgium, and for minors in Brazil.

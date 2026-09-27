@@ -158,6 +158,26 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Health multiplier from the side's doctrine.</summary>
         internal float HpScale = 1f;
 
+        // ------------------------------------------------------------ upgrades (card rank, equipment)
+        /// <summary>The side's upgrades for this vehicle's health and speed (the doctrine multiplies on top).</summary>
+        internal float BoostHp = 1f;
+        internal float BoostSpeed = 1f;
+
+        /// <summary>Its rounds hit this much harder.</summary>
+        internal float DamageBoost = 1f;
+
+        /// <summary>It takes this share of the damage that lands on it (plating, reactive armour).</summary>
+        internal float DamageTaken = 1f;
+
+        /// <summary>Self-repair, as a share of its health a second, once it has not been hit for a few seconds.</summary>
+        internal float Regen;
+
+        internal SpecialModule Special;
+        internal float SpecialPower;
+
+        /// <summary>Its smoke dischargers have fired (once a battle).</summary>
+        internal bool SmokeUsed;
+
         /// <summary>Drive speed multiplier from the side's doctrine.</summary>
         internal float DoctrineSpeed = 1f;
         public float Radius => Def.Radius;

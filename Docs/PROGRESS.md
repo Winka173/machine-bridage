@@ -2,6 +2,97 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: Siege playtest fixes, AI in waves, air drops, arsenal (ranks, equipment, crates)
+
+The user played the siege and asked for:
+- smaller aircraft (the attack helicopter was huge) that do not melt the moment they come near, or anti-air that is less deadly and shorter-ranged;
+- siege tanks that fire at targets in range, reload visibly (an icon when empty) and shell from outside the enemy turrets' reach;
+- better auto-buying and attacks in waves;
+- enemy vehicles that no longer stand stuck in one place;
+- a bigger purse for the siege attacker;
+- reinforcements that drive in or parachute down instead of popping up;
+- barrage and smoke rounds seen falling from the sky;
+- flight effects for jets;
+- an AI worth the name (research outside, copy code if needed), and the same fixes checked everywhere;
+- more buildings in the fortress, paying a bounty when destroyed, which the AI shoots after the military targets;
+- a menu that registers every tap, scrolls, and lets deck cards be removed;
+- a smooth start to a battle (a loading screen or a fade);
+- an audio review: the "enemy barrage coming" alert sounded wrong amid the explosions;
+- bigger impacts from the turrets' guns;
+- launchers that stand and reload when empty, with an icon over them;
+- card ranks bought with coins, equipment in rarities white to gold, and crates (after battles, for coins or real money, a few a day for ads), with six equipment slots plus a special one.
+
+Research was done by two agents: RTS AI (0 A.D., OpenRA, StarCraft bots, PurpleWave, Supreme Commander) and meta-progression (Clash Royale, Brawl Stars, Archero, Survivor.io, War Robots, loot-box law). Only permissively licensed code may be copied; nothing was copied this round, the designs were implemented from the descriptions.
+
+### Done
+
+**Menu and loading**
+- Taps land: `Tap` fires on release within 18 px of the press, whoever holds the pointer. UI Toolkit's `Clickable` lost every tap a scroll view took over.
+- Deck: the card detail is a fixed pane above the grid. It used to appear inside the scroll and push the cards down, so the next tap hit another card.
+- `Curtain`: the screen and sound fade to black, a loading screen names the mode and map, the scene builds behind it and fades in after three frames. Every scene change goes through it; a second tap while it runs is ignored.
+- In the editor, clicks count even when the Game view does not have focus.
+- `Machine Brigade > Debug Flags` window: the development switches in Play mode (start a mode, map or weather, test views, switch-offs).
+
+**Artillery and the siege**
+- Fixed defences, once seen, stay known (buildings under the fog); the siege attacker starts with the fortress plans.
+- Artillery and siege tanks shell the known defences first, then the mission's structure, from a firing spot inside their range and outside every known gun's reach (24 bearings on 3 rings). They never attack-move into the guns.
+- Empty magazines reload in place, standing still: 10 to 28 s, three times as fast at home or beside a supply vehicle. An overhead gauge shows three shells, a reload bar, and blinks red while the vehicle is moving and the reload waits. The AI stops empty launchers to reload (moving out of reach first if threatened).
+- The fortress has 14 more buildings (barracks, stores, offices, workshops), placed clear of the attack lanes. Each pays the attacker 2 to 6 CP when it falls, and 12 coins at the end. The attacking AI shoots them only with nothing military in reach.
+- Siege attacker: 34 CP to start, 1.8 income, supply 40, 20 CP a stage. Defender income 0.85 (1.05 on Hard).
+- Turret guns: a 120 mm of their own (Large, 1.35x), bastion shells 1.5x, twin 155 mm 1.3x, turret rockets 1.3x. Gun shells never flash the screen.
+
+**Aircraft**
+- Drawn about 0.55 of real size so a helicopter is about 1.5 tank lengths (the attack helicopter was 14.3 m against a 6.3 m tank).
+- Helicopters are tougher (attack 500, scout 300, gunship 900, Hind 1250 base health).
+- Fortress anti-air is toned down: quad flak 46 m and 34 damage, missile battery 62 m, 240 damage, two missiles. Mobile SAMs reach 44 m (long-range 55 m); helicopter weapons reach 34 to 36 m.
+- Jets trail vapour and a hot exhaust, with wingtip vortices in hard turns.
+
+**Movement and AI**
+- The stuck check measures progress towards the waypoint. A hull edging back and forth against a corner used to pass it forever: 261 shakes in a test battle, now about 30.
+- Arrival contagion: a hull stuck close to a crowded goal has arrived. A guard post it cannot reach moves to where it stands.
+- Reinforcements gather at a staging point near home and go forward in threes (or after 25 s), not one by one.
+- The line stops at the edge of known defences' reach until 80% of it has gathered, then goes in together.
+- Remembered defences are not contact: nobody chases a gun seen minutes ago.
+- Buying follows a role mix per stance (front line, fast, artillery, anti-air, air; a siege attacker brings 30% artillery), then counters.
+
+**Reinforcements, fire support, audio**
+- Bought ground vehicles are flown in: a transport passes over and the vehicle comes down under a parachute onto its landing point, decided when it is bought. Aircraft fly in from the map's edge. Delivery takes 3.5 s.
+- Every barrage round is aimed 0.9 s ahead and drawn falling from the sky onto the spot it hits; smoke shells come down before the cloud.
+- The interface beep for enemy strikes is gone. Barrages and heavy shells whistle down where they land.
+- Points taken and lost come over the radio instead of the puzzle chimes. The fortress siren fades with distance.
+
+**Arsenal**
+- **Card ranks 1 to 10:** each rank adds +5% health and damage (+5% damage for strike cards). A rank costs coins (50 up to 5,000) and the card's blueprints (2 up to 90); universal blueprints make up the rest.
+- **Equipment per branch** (Armour, Light, Artillery, Air):
+  - six slots: gun, autoloader, armour, plating, engine, repair kit;
+  - one special slot: reactive armour, auto-repair, veteran crew, or smoke dischargers (Epic and Legendary only).
+- **Rarities:** Common, Uncommon, Rare, Epic, Legendary, with level caps 5 to 25. A new piece gives 40% of its rarity's top value; each level costs 30 coins times the level.
+- **Caps:** damage and health +25%, rate of fire and speed +15%, damage taken -20%.
+- **Merging:** three identical pieces make the next rarity. It always succeeds, the equipped or highest-level piece is kept, and the levels spent on the others are refunded.
+- **Crates:**
+
+  | Crate | Coins | Blueprints | Equipment rolls | Price |
+  |---|---|---|---|---|
+  | Battle | 60–120 | 6 | 1 | earned only |
+  | Silver | 250–350 | 15 | 2 | 900 coins or 60 gems |
+  | Gold | 800–1,000 | 45 | 4 | 3,000 coins or 180 gems |
+  | Legendary | 2,000–2,500 | 120 (+10 universal) | 6 | 500 gems |
+
+  - Rolls use odds per rarity. The gold crate's first roll is guaranteed Rare or better, the legendary crate's Epic or better.
+  - Pity: an Epic within 5 gold crates, a Legendary within 25 gold or 4 legendary crates.
+  - An odds screen on every crate shows the per-roll odds, the chance of at least one, and the player's own pity counters.
+- **Sources:** a battle crate for each of the first five wins a day, a silver crate for a mission's first clear, three ad crates a day (the first silver) ten minutes apart.
+- **Gems:** packs from $0.99 to $99.99. `GemStore.TestPurchases` grants them free in test builds; see the release checklist.
+- Upgrades are applied to the player's vehicles and strikes in the simulation (`SimWorld.SetBoosts`); campaign balance runs without them.
+- Tests never write the real profile.
+
+**Results:** suite 236 passed, 17 skipped. Campaign: all 17 missions win 5/5 (checked before the arsenal, which campaign balance does not use).
+
+### Still open
+- A device check of the new screens (arsenal, loot card, curtain) and effects (drops, falling shells, contrails).
+- The real ad network and store billing.
+- Card blueprints only from crates (no shop sale yet); chapter-based rank caps are not enforced.
+
 ## 2026-09-27: AI review, catch-up for the losing side, bigger bombing blasts
 
 The user asked for:

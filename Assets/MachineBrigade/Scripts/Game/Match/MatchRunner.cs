@@ -149,6 +149,8 @@ namespace MachineBrigade.Game.Match
             var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
             var map = GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
+            // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
+            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost);
             _session = ModeSession.Create(kind, _menu, _world, seed);
             // A campaign tier holds for the one mission it was chosen for.
             if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;
@@ -690,6 +692,8 @@ namespace MachineBrigade.Game.Match
                     Reload("loading.apply");
                 }
             };
+            // The stand-in ad screen, in the menu too (the arsenal's ad crates); set per scene, as the HUD is.
+            PlaceholderAds.Presenter = _hud.ShowPlaceholderAd;
             if (_menu) return;
 
             _hud.SelectAllPressed += _selection.SelectAll;
@@ -730,7 +734,6 @@ namespace MachineBrigade.Game.Match
                     _hud.ShowRewardClaimed(_reward.Coins * (watched ? 2 : 1), watched);
                 });
             };
-            PlaceholderAds.Presenter = _hud.ShowPlaceholderAd;
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
             _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));
@@ -930,6 +933,13 @@ namespace MachineBrigade.Game.Match
                     CanDouble = Ads.Rewarded.Ready,
                 };
                 foreach (var id in _reward.Unlocks) view.Unlocked.Add(Strings.Card(id));
+                // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
+                if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));
+                if (outcome.Result > 0 && _reward.MissionId != null && !PlayerProfile.Completed(_reward.MissionId))
+                {
+                    PlayerProfile.AddCrate(CrateKind.Silver);
+                    view.Crates.Add(Strings.Get("crate.silver"));
+                }
                 var index = _session is MissionSession ? Campaign.IndexOf(MatchSettings.Mission) : -1;
                 view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
             }
