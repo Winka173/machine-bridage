@@ -58,6 +58,17 @@ namespace MachineBrigade.Game.Effects
         private readonly WreckManager _wrecks;
         private readonly Emitters _emitters;
         private readonly TrackMarks _tracks;
+        private readonly NightLights _night;
+
+        /// <summary>Night: blasts, gun flashes and fires light the ground, and flares drift over the fighting.</summary>
+        public bool Night
+        {
+            set
+            {
+                _night.Night = value;
+                _fires.Night = value;
+            }
+        }
         private readonly FireSpots _fires;
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
@@ -97,6 +108,7 @@ namespace MachineBrigade.Game.Effects
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
             _tracks = new TrackMarks(materials, _root);
+            _night = new NightLights(materials, _emitters, _root);
             _fires = new FireSpots(materials, _root);
             _fires.Visible = p => _cull.Visible(p, 0.3f);
             _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
@@ -124,7 +136,14 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.WeaponFired:
                         // Shots entirely off screen are not drawn (the sound still plays).
                         if (_cull.Visible(Ground(e.Position, 1f), 0.15f) || _cull.Visible(Ground(e.Target, 1f), 0.15f))
+                        {
                             _weapons.Fired(e, views, now);
+                            // At night the flash lights the ground at the muzzle.
+                            if (views.TryGet(e.Entity, out var gunner) && !gunner.Flying && e.DefId != null &&
+                                _catalog.Weapons.TryGetValue(e.DefId, out var fired))
+                                _night.Flash(gunner.Position + gunner.Root.forward * gunner.Sim.Radius,
+                                    fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
+                        }
                         break;
 
                     case SimEventKind.ProjectileImpact:
@@ -335,6 +354,7 @@ namespace MachineBrigade.Game.Effects
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _strikes.Tick(now);
+            _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
@@ -578,6 +598,14 @@ namespace MachineBrigade.Game.Effects
             scale *= 0.85f + 0.35f * UnityEngine.Random.value;
             position += new Vector3(UnityEngine.Random.Range(-0.4f, 0.4f), 0f, UnityEngine.Random.Range(-0.4f, 0.4f)) * scale;
             _explosions[tier].Play(position, now, scale);
+            _night.Blast(position, scale * tier switch
+            {
+                ExplosionTier.Small => 3f,
+                ExplosionTier.Medium => 5.5f,
+                ExplosionTier.Large => 9f,
+                ExplosionTier.Huge => 13f,
+                _ => 18f,
+            }, tier >= ExplosionTier.Huge ? 0.9f : 0.45f);
             // The biggest blasts light the whole screen for a moment (no shake): stronger the nearer the view.
             if (tier >= ExplosionTier.Huge && Flash != null)
                 Flash((tier >= ExplosionTier.Ultimate ? 0.22f : 0.11f) / (1f + Vector3.Distance(position, _camera.Focus) / 40f));

@@ -206,6 +206,7 @@ namespace MachineBrigade.Game.Match
             if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
             _weatherKind = weather;
+            _effects.Night = weather == WeatherKind.Night;
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -265,6 +266,7 @@ namespace MachineBrigade.Game.Match
             _weather.Dispose();
             _weatherKind = next;
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            _effects.Night = next == WeatherKind.Night;
             if (next == WeatherKind.Clear)
             {
                 var theme = MapTheme.For(_world.Map.Theme);
