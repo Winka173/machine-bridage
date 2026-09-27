@@ -839,3 +839,6 @@
     background-color: var(--amber); min-width: 22px; align-items: center;
 }
 .item-count-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n950); }
+
+/* colour-blind safe teams: blue for ours, orange for theirs */
+.cb { --ally: #3f6fb0; --ally-dark: #2b4e80; --mint: #7fb8ff; --danger: #f08c1e; --danger-dark: #a45a0c; }

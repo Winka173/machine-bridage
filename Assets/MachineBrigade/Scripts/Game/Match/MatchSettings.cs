@@ -208,6 +208,12 @@ namespace MachineBrigade.Game.Match
 
         public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
 
+        /// <summary>Short vibrations on the heaviest moments.</summary>
+        public static bool Haptics { get; set; } = true;
+
+        /// <summary>Blue against orange instead of green against red, for red-green colour blindness.</summary>
+        public static bool ColorBlind { get; set; }
+
         /// <summary>The player's doctrine for the next battle (see <c>Doctrine</c>).</summary>
         public static string Doctrine { get; set; } = "armor";
 
@@ -269,6 +275,9 @@ namespace MachineBrigade.Game.Match
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
                 Doctrine = PlayerPrefs.GetString("mb.doctrine", "armor");
+                Haptics = PlayerPrefs.GetInt("mb.haptics", 1) == 1;
+                ColorBlind = PlayerPrefs.GetInt("mb.colorblind", 0) == 1;
+                MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
                 BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
@@ -305,6 +314,9 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
                 PlayerPrefs.SetString("mb.doctrine", Doctrine);
+                PlayerPrefs.SetInt("mb.haptics", Haptics ? 1 : 0);
+                PlayerPrefs.SetInt("mb.colorblind", ColorBlind ? 1 : 0);
+                MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 PlayerPrefs.SetInt("mb.uiSize", UiSize);
                 PlayerPrefs.SetInt("mb.battery", BatterySaver);
                 PlayerPrefs.SetInt("mb.brightness", Brightness);

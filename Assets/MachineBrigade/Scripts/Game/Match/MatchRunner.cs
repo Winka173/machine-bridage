@@ -222,6 +222,13 @@ namespace MachineBrigade.Game.Match
             DispatchEvents();
         }
 
+        private bool BossOnField()
+        {
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Def.Boss && v.Team == EnemyTeam) return true;
+            return false;
+        }
+
         /// <summary>The weather turns mid-battle, to another of this map's weathers.</summary>
         private void ShiftWeather()
         {
@@ -250,7 +257,7 @@ namespace MachineBrigade.Game.Match
         {
             var o = MatchSettings.Options;
             return $"{o.Shadows}|{o.RenderScale}|{o.AntiAliasing}|{o.FrameRate}|{o.Bloom}|{o.RichScenery}|{o.MaxEffects}|" +
-                   $"{MatchSettings.UiSize}|{MatchSettings.SavingBattery}|{MatchSettings.Brightness}";
+                   $"{MatchSettings.UiSize}|{MatchSettings.SavingBattery}|{MatchSettings.Brightness}|{MatchSettings.ColorBlind}";
         }
 
         /// <summary>
@@ -342,6 +349,7 @@ namespace MachineBrigade.Game.Match
             {
                 _effects.Tick(_views);
                 _weather.Tick();
+                if (!_menu && Time.frameCount % 15 == 0) _audio.BossMusic = BossOnField();
                 if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
             _perf?.End(PerfProbe.Section.Effects);
@@ -386,6 +394,7 @@ namespace MachineBrigade.Game.Match
             var viewport = _camera.Camera.WorldToViewportPoint(point);
             if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
             if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
+            Haptics.Pulse(70, 190);
             _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
             _camera.AddTrauma(0.6f);
         }
@@ -441,7 +450,10 @@ namespace MachineBrigade.Game.Match
                         if (e.Team == PlayerTeam) _losses++;
                         else _kills++;
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
+                        {
                             StartCinematic(e.Position, force: true);
+                            Haptics.Pulse(180, 255);
+                        }
                         break;
                     case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
                     case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:

@@ -90,6 +90,8 @@ namespace MachineBrigade.Game.Hud
             if (Match.DebugFlags.Has("-mb-no-hud")) _root.style.display = DisplayStyle.None;
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             _root.pickingMode = PickingMode.Ignore;
+            // Colour-blind safe teams re-tint every ally and enemy colour in the styles.
+            _root.EnableInClassList("cb", Match.MatchSettings.ColorBlind);
 
             var hud = UiKit.Box("hud");
             _root.Add(hud);
