@@ -298,7 +298,7 @@
       "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 0.8, "tier": "Ultimate" } },
-    { "id": "mobile_fortress",  "armor": "Heavy", "hp": 10500, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
+    { "id": "mobile_fortress",  "armor": "Heavy", "hp": 9000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
       "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "skills": ["fortress_escort", "fortress_barrage", "boss_emp"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],

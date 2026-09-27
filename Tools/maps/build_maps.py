@@ -44,6 +44,12 @@ per map (valleys, bays, a canyon rim, trimmed corners) and never into the camps,
 roads, buildings, map units or any campaign route. Decoration left outside is dropped; the
 game fills the outside with terrain, blocks it to ground units and shows it on the minimap.
 
+Once the outline is carved, every battlefield is dressed inside it with the map kit (`warzone`):
+burnt-out wrecks and shell craters in no man's land, foxholes, a trench line, barricades and a
+road checkpoint at every objective, a field camp on each camp's flanks, and per theme telegraph
+poles, pylons, ruins, dead trees and anti-tank ditches. Cover comes in equal numbers on either
+half, trees give way to it, and campaign spawns and routes stay clear.
+
 Every placement is checked against the footprints in balance.json, the roads, the camps and
 the objectives, and the result is flood-filled on the simulation's 2 m navigation grid (with
 its 1.5 m obstacle clearance, filled exactly like NavGrid.AddBlocker) to prove that both camps
