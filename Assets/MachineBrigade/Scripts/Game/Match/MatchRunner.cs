@@ -44,6 +44,11 @@ namespace MachineBrigade.Game.Match
         }
 
         private SimWorld _world;
+        private UnitPreview _preview;
+        private bool _lobbyCovered;
+        private int _lobbyMask;
+        private CameraClearFlags _lobbyClear;
+        private bool _lobbyPost;
         private ModeSession _session;
         private MatchReward _reward;
         private readonly Cinematics _cinematics = new();
@@ -231,6 +236,12 @@ namespace MachineBrigade.Game.Match
             {
                 ShowFps = MatchSettings.ShowFps,
             };
+            // The menu's vehicle detail page shows the model on a turntable.
+            if (_menu)
+            {
+                _preview = new UnitPreview(_models, worldRoot);
+                _hud.MenuPreview = _preview;
+            }
             if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);
             if (_hud.Minimap != null)
             {
@@ -390,6 +401,14 @@ namespace MachineBrigade.Game.Match
             }
             _frameRate.Tick();
             _frameRateTarget = _frameRate.Target;
+            _preview?.Tick(Time.unscaledDeltaTime);
+            // A menu page covering the whole lobby: its battle rests and its camera stops drawing.
+            var covered = _menu && _hud.MenuCoversBattle;
+            if (covered != _lobbyCovered)
+            {
+                _lobbyCovered = covered;
+                RestLobbyCamera(covered);
+            }
             // Menus and pause draw every other frame until touched: the battle behind them keeps
             // moving, the phone does half the work.
             UnityEngine.Rendering.OnDemandRendering.renderFrameInterval =
@@ -399,7 +418,7 @@ namespace MachineBrigade.Game.Match
             // A cinematic moment slows the whole battle (sim, particles) for a second.
             if (!_paused && !_resultShown) Time.timeScale = _cinematics.TimeScale(Time.unscaledTime);
             _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
-            var steps = _paused ? 0 : _clock.Advance(Time.deltaTime);
+            var steps = _paused || _lobbyCovered ? 0 : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
             _perf?.CountSteps(steps);
             for (var i = 0; i < steps; i++)
@@ -568,6 +587,33 @@ namespace MachineBrigade.Game.Match
         private void OnProfileChanged()
         {
             if (_materials != null && _previewSkin == null) ApplySkin(PlayerProfile.EquippedSkin);
+        }
+
+        /// <summary>
+        /// A menu page covers the lobby: its camera draws nothing but a plain clear (no scene, no
+        /// post), which keeps the screen clean round the safe area and the phone cool; restored on return.
+        /// </summary>
+        private void RestLobbyCamera(bool rest)
+        {
+            var cam = Camera.main;
+            if (cam == null) return;
+            var data = cam.GetUniversalAdditionalCameraData();
+            if (rest)
+            {
+                _lobbyMask = cam.cullingMask;
+                _lobbyClear = cam.clearFlags;
+                _lobbyPost = data.renderPostProcessing;
+                cam.cullingMask = 0;
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.067f, 0.078f, 0.094f);
+                data.renderPostProcessing = false;
+            }
+            else
+            {
+                cam.cullingMask = _lobbyMask;
+                cam.clearFlags = _lobbyClear;
+                data.renderPostProcessing = _lobbyPost;
+            }
         }
 
         private void OnDestroy()

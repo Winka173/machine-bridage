@@ -364,6 +364,18 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Closes an open menu page; false when there is none (main menu or in a match).</summary>
         public bool MenuBack() => _menu != null && _menu.Back();
 
+        /// <summary>The vehicle turntable for the menu's detail page.</summary>
+        public Rendering.UnitPreview MenuPreview
+        {
+            set
+            {
+                if (_menu != null) _menu.Preview = value;
+            }
+        }
+
+        /// <summary>A menu page covers the whole lobby battle (it can rest).</summary>
+        public bool MenuCoversBattle => _menu != null && _menu.CoversBattle;
+
         public void SetPaused(bool paused)
         {
             if (_pause != null) _pause.Visible = paused;

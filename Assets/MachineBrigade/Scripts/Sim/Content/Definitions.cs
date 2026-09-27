@@ -57,6 +57,12 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float Reload { get; internal set; }
 
+        /// <summary>
+        /// Seconds to reload the whole magazine in place: <see cref="Reload"/>, else two fifths of
+        /// the time it takes to fire it off, between 10 and 28 s.
+        /// </summary>
+        public float MagazineReload => Reload > 0f ? Reload : Math.Clamp(Ammo * Cooldown * 0.4f, 10f, 28f);
+
         /// <summary>How big the impact is drawn against its tier's size (a fortress gun's shell lands bigger than a tank's).</summary>
         public float ImpactScale { get; internal set; } = 1f;
 

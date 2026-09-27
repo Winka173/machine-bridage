@@ -2,6 +2,46 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27 (late): Mobile menu layout, vehicle detail page, equipment pictures
+
+The user asked for a detail screen for each vehicle (health, damage, equipment), a menu split
+the way mobile games split theirs (researched outside, then reworked), pictures for every piece
+of equipment that show its rarity, and left the equipment numbers to us.
+
+### Done
+
+**Menu layout** (after Clash Royale, Brawl Stars and War Robots)
+- Top bar: rank on the left (Back on a full page), the page title, coins and gems with a + that opens the matching shop section, settings.
+- Five tabs along the bottom, 96 px tall: Shop, Army, BATTLE (raised, in the middle), Campaign, Events. Red dots only when there is something to do: an affordable rank-up (Army), a reward to claim (Events), a free or owned crate (Shop).
+- Battle tab: the lobby battle behind; the next campaign mission and today's challenges on the left; the chosen battle and a 104 px DEPLOY in the bottom-right corner. Tapping the battle card opens Battle Setup as a full page (modes, maps, difficulty, weather, its own Deploy).
+- Army tab: the deck strip (eight vehicles, two supports, average cost, what the deck lacks, the doctrine), filters and a sort by rank, then the collection as big cards (cost, rank, blueprint bar, in-deck tick, upgrade arrow, lock). A tap offers Details or Use/Remove. The Equipment view has branches, the seven-slot loadout with the whole set's total, the chosen piece's panel, and the inventory.
+- Shop tab: a rail of Deals (a free crate every day, the ad crates, a gold crate at 30 % off once a day), Crates (odds one tap away), Gems, Skins, Units, Items.
+- Events tab: today's challenges with progress bars and claim buttons; the weekly fortress, the boss rush and survival, one tap to play.
+- Covered pages rest the lobby: its simulation pauses and its camera draws only a plain clear, with no scene and no post-processing.
+- Every tappable part is at least 52 px tall, main actions 84 to 104 px. The layout is written as USS in `Hud.uss` ("menu v3").
+
+**Vehicle detail page** (`MenuScreen.Detail.cs`)
+- The vehicle's own model turns on a turntable (`UnitPreview`: its own camera on layer 31 into a render texture), with arrows to step through the collection.
+- Role, class, branch and rank; what it is strong and weak against.
+- Stats tab: health, damage per shot, damage per second, range, speed and sight as bars against the roster's best (`UnitStats`). The base is white, equipment and rank blue, the next rank's gain a green ghost. Then armour, cost, magazine and reload, minimum range, special module.
+- Weapons tab: every mount, with damage, rate, range, targets and ammunition. Equipment tab: the branch's seven slots; a tap opens the Equipment view on that slot.
+- Bottom bar: add to or remove from the deck, the blueprint bar, and the rank-up. It says what is missing, and sends the player to crates or to the shop when that is the way forward.
+
+**Equipment pictures** (`Tools/blender/mb_gear_icons.py`, `GearArt`)
+- Ten Blender-rendered pictures, one for each of the six slots and each of the four special modules: gun barrel, autoloader, armour plate, spaced plating, engine, repair kit, reactive bricks, repair arm, crew helmet, smoke launchers.
+- Rarity frames drawn at run time: grey, green, blue, purple or gold with a glow at the heart, a bright border, a diagonal shine on legendary pieces, one to five pips and the level. They are used in the loadout, the inventory, the detail page and the crate results; the pieces are shown on top of the crate results.
+
+**Equipment numbers** (unchanged from the arsenal round, now shown)
+- The main stat at the top level runs from common to legendary: damage, fire rate and health 3/5/8/11/14 %; damage taken 2/3.5/5.5/7.5/9.5 %; speed 2/3.5/5/6.5/8 %; repair 0.2 to 1 % a second.
+- A piece starts at 40 % of that number at level 1. Level caps are 5/10/15/20/25, at 30 coins a level.
+- Each stat has a cap for the whole loadout.
+
+**Fixes**
+- The text table had `shop.owned` twice. An indexer initialiser keeps the last one silently, so the Owned label read "Owned: {0}". `StringsTests` now fails on a repeated key and on any literal key the code uses that the table lacks.
+
+### Open
+- Needs a look on a real phone: the render-texture turntable's cost, and touch comfort with thumbs.
+
 ## 2026-09-27: Siege playtest fixes, AI in waves, air drops, arsenal (ranks, equipment, crates)
 
 The user played the siege and asked for:

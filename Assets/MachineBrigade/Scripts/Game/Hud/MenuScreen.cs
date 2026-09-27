@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MachineBrigade.Game.Match;
-using MachineBrigade.Sim.AI;
+using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,218 +9,290 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The main menu, drawn over a live AI-versus-AI battle: pick a mode, difficulty and weather,
-    /// edit the deck, change settings, deploy. Choices are written to <see cref="MatchSettings"/>.
+    /// The menus, laid out as mobile games lay them out (Clash Royale's bottom tabs, Brawl Stars'
+    /// and War Robots' landscape lobby): a top bar with the rank and the currencies, five tabs along
+    /// the bottom (Shop, Army, BATTLE in the middle, Campaign, Events), the live battle behind the
+    /// Battle tab with Deploy one tap away in the bottom-right corner, and full-screen pages (a
+    /// vehicle's details, the battle setup, settings) that hide the tabs and go back with Back.
+    /// Choices are written to <see cref="MatchSettings"/>.
     /// </summary>
     internal sealed partial class MenuScreen
     {
+        public enum Tab
+        {
+            Shop,
+            Army,
+            Battle,
+            Campaign,
+            Events,
+        }
+
         private readonly Catalog _catalog;
-        private readonly VisualElement _main, _deck, _settings;
         private readonly Action _play;
+        private readonly VisualElement _backdrop, _topBar, _tabBar, _profile, _backButton;
+        private readonly Label _pageTitle;
         private readonly List<Label> _coinLabels = new(), _rankLabels = new(), _gemLabels = new();
         private readonly List<VisualElement> _rankFills = new();
-        private Label _deckNote, _campaignBannerSub, _campaignBannerNext;
         private readonly List<(VisualElement element, Func<bool> selected)> _choices = new();
-        private readonly Label _deckTitle;
-        private readonly Dictionary<string, VisualElement> _deckCards = new();
+        private readonly Dictionary<Tab, VisualElement> _tabPages = new();
+        private readonly Dictionary<Tab, (VisualElement button, VisualElement dot)> _tabButtons = new();
+        private readonly Stack<(VisualElement page, string title)> _overlays = new();
         private readonly Dictionary<string, Label> _settingValues = new();
+        private VisualElement _settings;
         private Label _customTag;
+        private Tab _tab = Tab.Battle;
 
         public MenuScreen(Catalog catalog, Action play)
         {
             _catalog = catalog;
+            _play = play;
             Root = UiKit.Box("menu", PickingMode.Ignore);
 
-            _play = play;
+            // Behind every opaque page: nothing of the battle shows through, so the lobby can rest.
+            _backdrop = UiKit.Box("menu-backdrop");
+            Root.Add(_backdrop);
 
-            // Main page: brand strip, the campaign, quick battle and its options, the dock ---------
-            _main = UiKit.Box("menu-panel", PickingMode.Position);
-            _main.Add(Brand(compact: true));
-            var body = Scroller();
-            _main.Add(body);
-            var content = body.contentContainer;
-            content.Add(UiKit.Text(Strings.Get("menu.tagline"), "menu-tagline"));
-
-            // The campaign banner: progress and the next mission, one tap to the campaign page.
-            var banner = UiKit.Button("campaign-banner", () => Show(_campaign));
-            banner.Add(UiKit.Icon("campaign", UiKit.Ink, 1.9f));
-            var bannerText = UiKit.Box("campaign-banner-text");
-            bannerText.Add(UiKit.Text(Strings.Get("campaign.title").ToUpperInvariant(), "campaign-banner-title"));
-            _campaignBannerSub = UiKit.Text("", "campaign-banner-sub");
-            bannerText.Add(_campaignBannerSub);
-            banner.Add(bannerText);
-            _campaignBannerNext = UiKit.Text("", "campaign-banner-next");
-            banner.Add(_campaignBannerNext);
-            content.Add(banner);
-
-            // Today's three challenges, paying coins when claimed.
-            var daily = UiKit.Box("daily");
-            daily.Add(UiKit.Text(Strings.Get("daily.title"), "menu-caps"));
-            for (var i = 0; i < 3; i++)
-            {
-                var index = i;
-                var row = UiKit.Box("daily-row");
-                var text = UiKit.Text("", "daily-text");
-                var progress = UiKit.Text("", "daily-progress");
-                var claim = UiKit.Button("daily-claim", () =>
-                {
-                    if (DailyMissions.Claim(index)) Refresh();
-                });
-                claim.Add(UiKit.Icon("coin", UiKit.Ink, 1.6f));
-                var reward = UiKit.Text("", "daily-reward");
-                claim.Add(reward);
-                row.Add(text);
-                row.Add(progress);
-                row.Add(claim);
-                daily.Add(row);
-                _dailyRows.Add((text, progress, claim, reward));
-            }
-            content.Add(daily);
-
-            content.Add(Section(1, "menu.quick"));
-            var modes = UiKit.Box("menu-modes grid-modes");
-            var modeList = new[]
-            {
-                (GameModeKind.Conquest, "flag", "mode.conquest", "mode.conquestSub"),
-                (GameModeKind.Deathmatch, "swords", "mode.deathmatch", "mode.deathmatchSub"),
-                (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
-                (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
-                (GameModeKind.Defend, "shield", "mode.defend", "mode.defendSub"),
-                (GameModeKind.Weekly, "home", "mode.weekly", "mode.weeklySub"),
-                (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
-                (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
-                (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
-            };
-            foreach (var (kind, icon, name, sub) in modeList)
-            {
-                var tile = UiKit.Button("mode-tile", () => Set(() => MatchSettings.Mode = kind));
-                tile.Add(UiKit.Icon(icon, UiKit.Ink, 1.8f));
-                tile.Add(UiKit.Text(Strings.Get(name), "mode-tile-name"));
-                modes.Add(Choice(tile, () => MatchSettings.Mode == kind));
-                _modeLines[kind] = Strings.Get(sub);
-            }
-            content.Add(modes);
-            _modeInfo = UiKit.Text("", "mode-info");
-            content.Add(_modeInfo);
-
-            content.Add(Section(2, "menu.map"));
-            var maps = UiKit.Box("maps");
-            for (var i = 0; i < MatchSettings.AllMaps.Length; i++)
-                maps.Add(MapCard(MatchSettings.AllMaps[i], i == MatchSettings.AllMaps.Length - 1));
-            content.Add(maps);
-
-            content.Add(Section(3, "menu.difficulty"));
-            var difficulty = UiKit.Box("segments");
-            var levels = new[] { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard") };
-            for (var i = 0; i < levels.Length; i++)
-            {
-                var (level, key) = levels[i];
-                difficulty.Add(Choice(Segment(null, Strings.Get(key), () => Set(() => MatchSettings.Difficulty = level), i == levels.Length - 1),
-                    () => MatchSettings.Difficulty == level));
-            }
-            content.Add(difficulty);
-
-            content.Add(Section(4, "menu.weather"));
-            var weather = UiKit.Box("segments grid");
-            foreach (var (kind, icon, key) in new[]
-                     {
-                         (WeatherKind.Clear, "sun", "menu.clear"), (WeatherKind.Overcast, "cloud", "menu.overcast"),
-                         (WeatherKind.Rain, "rain", "menu.rain"), (WeatherKind.Storm, "storm", "menu.storm"),
-                         (WeatherKind.Snow, "snow", "menu.snow"), (WeatherKind.Sandstorm, "wind", "menu.sandstorm"),
-                         (WeatherKind.Fog, "fog", "menu.fog"), (WeatherKind.Night, "moon", "menu.night"),
-                         (WeatherKind.Random, "dice", "menu.random"),
-                     })
-                weather.Add(Choice(Segment(icon, Strings.Get(key), () => Set(() => MatchSettings.Weather = kind)),
-                    () => MatchSettings.Weather == kind));
-            content.Add(weather);
-
-            var actions = UiKit.Box("menu-actions");
-            actions.Add(UiKit.WideButton("wide primary big", "play", Strings.Get("menu.play"), null, () =>
-            {
-                if (MatchSettings.Mode == GameModeKind.Campaign) MatchSettings.Mode = GameModeKind.Conquest;
-                MatchSettings.Save();
-                play();
-            }));
-            var small = UiKit.Box("menu-small");
-            small.Add(UiKit.WideButton("wide", "deck", Strings.Get("menu.deck"), null, () => Show(_deck)));
-            small.Add(UiKit.WideButton("wide", "crate", Strings.Get("menu.arsenal"), null, () => Show(_arsenal)));
-            small.Add(UiKit.WideButton("wide", "shop", Strings.Get("menu.shop"), null, () => Show(_shop)));
-            small.Add(UiKit.WideButton("wide last-card", "settings", Strings.Get("menu.settings"), null, () => Show(_settings)));
-            actions.Add(small);
-            _main.Add(actions);
-            Root.Add(_main);
-
-            // Deck page: locked cards show how to get them ---------------------------------------
-            _deck = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
-            _deck.Add(Brand());
-            // The tapped card's details sit in a fixed pane above the scrolling cards: showing them
-            // never pushes the cards down under the finger (the next tap used to hit another card).
-            _cardDetail = UiKit.Box("card-detail");
-            _deck.Add(_cardDetail);
-            ClearDetail();
-            var deckScroll = Scroller();
-            var deckBody = deckScroll.contentContainer;
-            _deckTitle = UiKit.Text("", "menu-caps");
-            deckBody.Add(_deckTitle);
-            _deckNote = UiKit.Text(Strings.Get("deck.hint"), "menu-note");
-            deckBody.Add(_deckNote);
-            // Doctrine for the next battle: owned ones can be picked, the rest say where to buy them.
-            deckBody.Add(UiKit.Text(Strings.Get("doctrine.title"), "menu-caps"));
-            var doctrines = UiKit.Box("segments doctrine-row");
-            var allDoctrines = MachineBrigade.Sim.Content.Doctrine.All;
-            for (var i = 0; i < allDoctrines.Count; i++)
-            {
-                var id = allDoctrines[i].Id;
-                doctrines.Add(Choice(Segment(DoctrineIcon(id), Strings.Get("doctrine." + id), () =>
-                {
-                    if (!Progression.DoctrineOwned(id))
-                    {
-                        _deckNote.text = Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Progression.DoctrinePrice.ToString("N0"));
-                        _deckNote.AddToClassList("warn");
-                        return;
-                    }
-                    MatchSettings.Doctrine = id;
-                    MatchSettings.Save();
-                    _deckNote.RemoveFromClassList("warn");
-                    _deckNote.text = Strings.Get("doctrine." + id + ".info");
-                    Refresh();
-                }, i == allDoctrines.Count - 1), () => MatchSettings.Doctrine == id));
-            }
-            deckBody.Add(doctrines);
-            var grid = UiKit.Box("deck-grid");
-            foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
-            foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
-            deckBody.Add(grid);
-            _deck.Add(deckScroll);
-            var deckDock = UiKit.Box("menu-actions");
-            deckDock.Add(UiKit.WideButton("wide", "retreat", Strings.Get("menu.back"), null, () =>
-            {
-                MatchSettings.Save();
-                Show(_main);
-            }));
-            _deck.Add(deckDock);
-            Root.Add(_deck);
-
-            BuildCampaignPage();
+            // The pages, between the bars.
+            BuildBattlePage();
+            BuildArmyPage();
             BuildShopPage();
-            BuildArsenalPage();
+            BuildCampaignPage();
+            BuildEventsPage();
+            BuildSetupPage();
+            BuildDetailPage();
+            BuildSettingsPage();
 
-            // Settings page: graphics, gameplay, sound and language in one scrolling list ---------
-            _settings = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
-            _settings.Add(Brand());
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            // Top bar: rank on the left (Back on a full-screen page), the page's title, then coins, gems and settings.
+            _topBar = UiKit.Box("nav-top", PickingMode.Position);
+            _profile = UiKit.Box("nav-profile");
+            _profile.Add(UiKit.Icon("rank", UiKit.Ink, 1.8f));
+            var rankText = UiKit.Box("rank-text");
+            var rankLabel = UiKit.Text("", "rank-label");
+            rankText.Add(rankLabel);
+            var track = UiKit.Box("rank-track");
+            var fill = UiKit.Box("rank-fill");
+            track.Add(fill);
+            rankText.Add(track);
+            _profile.Add(rankText);
+            _rankLabels.Add(rankLabel);
+            _rankFills.Add(fill);
+            _topBar.Add(_profile);
+            _backButton = UiKit.Button("nav-back", () => Back());
+            _backButton.Add(UiKit.Icon("retreat", UiKit.Ink, 1.9f));
+            _backButton.Add(UiKit.Text(Strings.Get("menu.back"), "nav-back-text"));
+            _topBar.Add(_backButton);
+            _pageTitle = UiKit.Text("", "nav-title");
+            _topBar.Add(_pageTitle);
+            _topBar.Add(UiKit.Box("nav-spacer"));
+            _topBar.Add(CurrencyPill("coin", _coinLabels, () => OpenShop(ShopTab.Deals)));
+            _topBar.Add(CurrencyPill("gem", _gemLabels, () => OpenShop(ShopTab.Gems)));
+            var gear = UiKit.Button("nav-icon", () => Open(_settings, Strings.Get("menu.settings")));
+            gear.Add(UiKit.Icon("settings", UiKit.Ink, 1.9f));
+            _topBar.Add(gear);
+            Root.Add(_topBar);
+
+            // Bottom tabs: Battle in the middle, raised and wider.
+            _tabBar = UiKit.Box("nav-tabs", PickingMode.Position);
+            foreach (var (tab, icon, key) in new[] { (Tab.Shop, "shop", "tab.shop"), (Tab.Army, "tank", "tab.army"), (Tab.Battle, "swords", "tab.battle"),
+                         (Tab.Campaign, "campaign", "tab.campaign"), (Tab.Events, "trophy", "tab.events") })
             {
-                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-                verticalScrollerVisibility = ScrollerVisibility.Hidden,
-                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
-            };
-            scroll.AddToClassList("menu-body");
-            scroll.AddToClassList("settings-scroll");
-            MouseDragScroll.Attach(scroll);
-            _settings.Add(scroll);
-            var settingsBody = scroll.contentContainer;
+                var t = tab;
+                var button = UiKit.Button(tab == Tab.Battle ? "nav-tab battle" : "nav-tab", () => ShowTab(t));
+                button.Add(UiKit.Icon(icon, UiKit.Ink, 1.9f));
+                button.Add(UiKit.Text(Strings.Get(key), "nav-tab-label"));
+                var dot = UiKit.Box("red-dot");
+                button.Add(dot);
+                _tabBar.Add(button);
+                _tabButtons[tab] = (button, dot);
+            }
+            Root.Add(_tabBar);
+            Root.Add(_note);
 
-            settingsBody.Add(Section(1, "settings.section.graphics"));
+            // A language change rebuilds the menu; come back to the page the player was on.
+            ShowTab(_reopenTab);
+            if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
+            _reopenSettings = false;
+        }
+
+        private static bool _reopenSettings;
+        private static Tab _reopenTab = Tab.Battle;
+
+        public VisualElement Root { get; }
+
+        /// <summary>The vehicle turntable for the detail page (set by the match once the models exist).</summary>
+        public UnitPreview Preview { get; set; }
+
+        /// <summary>An opaque page covers the lobby battle: it need not be drawn or run.</summary>
+        public bool CoversBattle => _overlays.Count > 0 || _tab != Tab.Battle;
+
+        /// <summary>Raised when settings were changed and saved (volume, quality, language).</summary>
+        public event Action SettingsChanged;
+
+        /// <summary>Raised while the volume is being adjusted, before anything is saved.</summary>
+        public event Action VolumeChanged;
+
+        // ------------------------------------------------------------------ navigation
+
+        public void ShowTab(Tab tab)
+        {
+            while (_overlays.Count > 0) CloseTop();
+            _tab = tab;
+            _reopenTab = tab;
+            foreach (var (t, page) in _tabPages) page.style.display = t == tab ? DisplayStyle.Flex : DisplayStyle.None;
+            foreach (var (t, (button, _)) in _tabButtons) button.EnableInClassList("chosen", t == tab);
+            _pageTitle.text = tab == Tab.Battle ? "" : Strings.Get("tab." + tab.ToString().ToLowerInvariant()).ToUpperInvariant();
+            if (tab == Tab.Shop) SkinPreviewed?.Invoke(null);
+            UpdateChrome();
+            Refresh();
+        }
+
+        /// <summary>Opens a full-screen page over the tabs (Back closes it).</summary>
+        private void Open(VisualElement page, string title)
+        {
+            if (_overlays.Count > 0 && _overlays.Peek().page == page) return;
+            _overlays.Push((page, title));
+            page.style.display = DisplayStyle.Flex;
+            page.BringToFront();
+            _topBar.BringToFront();
+            _note.BringToFront();
+            UpdateChrome();
+            Refresh();
+        }
+
+        private void CloseTop()
+        {
+            if (_overlays.Count == 0) return;
+            var (page, _) = _overlays.Pop();
+            page.style.display = DisplayStyle.None;
+            if (page == _detail) Preview?.Hide();
+            if (page == _settings)
+            {
+                MatchSettings.Save();
+                SettingsChanged?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// The Android back button (and the top bar's Back): closes the page on top, else goes to
+        /// the Battle tab. Returns false on the Battle tab, where there is nothing to close.
+        /// </summary>
+        public bool Back()
+        {
+            if (_lootPanel != null && _lootPanel.style.display == DisplayStyle.Flex)
+            {
+                _lootPanel.style.display = DisplayStyle.None;
+                return true;
+            }
+            if (_popover != null && _popover.style.display == DisplayStyle.Flex)
+            {
+                HidePopover();
+                return true;
+            }
+            if (_overlays.Count > 0)
+            {
+                CloseTop();
+                UpdateChrome();
+                Refresh();
+                return true;
+            }
+            if (_tab == Tab.Battle) return false;
+            ShowTab(Tab.Battle);
+            return true;
+        }
+
+        private void UpdateChrome()
+        {
+            var overlay = _overlays.Count > 0;
+            _tabBar.style.display = overlay ? DisplayStyle.None : DisplayStyle.Flex;
+            _profile.style.display = overlay ? DisplayStyle.None : DisplayStyle.Flex;
+            _backButton.style.display = overlay ? DisplayStyle.Flex : DisplayStyle.None;
+            if (overlay) _pageTitle.text = _overlays.Peek().title.ToUpperInvariant();
+            _backdrop.style.display = CoversBattle ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        private VisualElement CurrencyPill(string icon, List<Label> labels, Action plus)
+        {
+            var pill = UiKit.Button("nav-pill " + icon, plus);
+            pill.Add(UiKit.Icon(icon, UiKit.Ink, 1.8f));
+            var label = UiKit.Text("", "nav-pill-value");
+            pill.Add(label);
+            var add = UiKit.Box("nav-pill-plus");
+            add.Add(UiKit.Icon("plus", UiKit.Ink, 2.2f));
+            pill.Add(add);
+            labels.Add(label);
+            return pill;
+        }
+
+        /// <summary>A tab's page: the area between the bars.</summary>
+        private VisualElement TabPage(Tab tab, string classes = "")
+        {
+            var page = UiKit.Box("tab-page " + classes, PickingMode.Ignore);
+            page.style.display = DisplayStyle.None;
+            _tabPages[tab] = page;
+            Root.Add(page);
+            return page;
+        }
+
+        /// <summary>A full-screen page (under the top bar, over the tabs).</summary>
+        private VisualElement FullPage(string classes = "")
+        {
+            var page = UiKit.Box("full-page " + classes, PickingMode.Position);
+            page.style.display = DisplayStyle.None;
+            Root.Add(page);
+            return page;
+        }
+
+        // ------------------------------------------------------------------ refresh
+
+        private void Refresh()
+        {
+            foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
+            foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
+            foreach (var label in _gemLabels) label.text = PlayerProfile.Gems.ToString("N0");
+            foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
+            foreach (var fill in _rankFills)
+                fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));
+            if (_customTag != null)
+                _customTag.style.display = MatchSettings.Graphics == GraphicsQuality.Custom ? DisplayStyle.Flex : DisplayStyle.None;
+            RefreshBattle();
+            RefreshArmy();
+            RefreshShop();
+            RefreshCampaign();
+            RefreshEvents();
+            RefreshDetail();
+            RefreshDots();
+        }
+
+        /// <summary>Red dots only for something to do (Clash Royale's rule): an affordable rank-up, a reward to claim, a free crate.</summary>
+        private void RefreshDots()
+        {
+            var upgrade = false;
+            foreach (var id in MatchSettings.AllVehicles)
+                if (PlayerProfile.CanRankUp(id)) upgrade = true;
+            foreach (var id in MatchSettings.AllSupports)
+                if (PlayerProfile.CanRankUp(id)) upgrade = true;
+            var claim = false;
+            for (var i = 0; i < DailyMissions.Current.Count; i++)
+                if (DailyMissions.Done(i) && !DailyMissions.Claimed(i)) claim = true;
+            var free = PlayerProfile.FreeDealReady || (PlayerProfile.AdCratesLeft > 0 && PlayerProfile.AdCrateWait <= TimeSpan.Zero) ||
+                       PlayerProfile.CrateCount(CrateKind.Battle) + PlayerProfile.CrateCount(CrateKind.Silver) +
+                       PlayerProfile.CrateCount(CrateKind.Gold) + PlayerProfile.CrateCount(CrateKind.Legendary) > 0;
+            _tabButtons[Tab.Army].dot.style.display = upgrade ? DisplayStyle.Flex : DisplayStyle.None;
+            _tabButtons[Tab.Events].dot.style.display = claim ? DisplayStyle.Flex : DisplayStyle.None;
+            _tabButtons[Tab.Shop].dot.style.display = free ? DisplayStyle.Flex : DisplayStyle.None;
+            _tabButtons[Tab.Battle].dot.style.display = DisplayStyle.None;
+            _tabButtons[Tab.Campaign].dot.style.display = DisplayStyle.None;
+        }
+
+        // ------------------------------------------------------------------ settings (a full-screen page from the gear)
+
+        private void BuildSettingsPage()
+        {
+            _settings = FullPage("settings-page");
+            var scroll = Scroller();
+            _settings.Add(scroll);
+            var body = scroll.contentContainer;
+            body.Add(Section(1, "settings.section.graphics"));
             var presetRow = OptionRow("bolt", "settings.preset",
                 new[] { Strings.Format("settings.autoTier", Level(MatchSettings.DetectTier())), Level(GraphicsQuality.Low),
                     Level(GraphicsQuality.Medium), Level(GraphicsQuality.High) },
@@ -228,61 +300,61 @@ namespace MachineBrigade.Game.Hud
                 i => MatchSettings.Graphics = (GraphicsQuality)i);
             _customTag = UiKit.Text(Strings.Get("settings.custom"), "custom-tag");
             presetRow.Insert(2, _customTag);
-            settingsBody.Add(presetRow);
-            settingsBody.Add(OptionRow("shadow", "settings.shadows",
+            body.Add(presetRow);
+            body.Add(OptionRow("shadow", "settings.shadows",
                 new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Level(GraphicsQuality.Medium), Level(GraphicsQuality.High) },
                 () => (int)MatchSettings.Options.Shadows, i => MatchSettings.Customise(o => o.Shadows = (ShadowLevel)i)));
-            settingsBody.Add(OptionRow("resolution", "settings.resolution", Array.ConvertAll(GraphicsOptions.RenderScales, v => v + "%"),
+            body.Add(OptionRow("resolution", "settings.resolution", Array.ConvertAll(GraphicsOptions.RenderScales, v => v + "%"),
                 () => Array.IndexOf(GraphicsOptions.RenderScales, MatchSettings.Options.RenderScale),
                 i => MatchSettings.Customise(o => o.RenderScale = GraphicsOptions.RenderScales[i])));
-            settingsBody.Add(OptionRow("edges", "settings.aa", new[] { Strings.Get("settings.off"), "2x", "4x" },
+            body.Add(OptionRow("edges", "settings.aa", new[] { Strings.Get("settings.off"), "2x", "4x" },
                 () => Array.IndexOf(GraphicsOptions.AntiAliasingLevels, MatchSettings.Options.AntiAliasing),
                 i => MatchSettings.Customise(o => o.AntiAliasing = GraphicsOptions.AntiAliasingLevels[i])));
             // Only caps the screen can show, and only divisors of its refresh (frame pacing).
             var refresh = Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value);
             var rates = Array.FindAll(GraphicsOptions.FrameRates, r => r <= 60 || (refresh >= r && refresh % r == 0));
-            settingsBody.Add(OptionRow("gauge", "settings.framerate", Array.ConvertAll(rates, v => v.ToString()),
+            body.Add(OptionRow("gauge", "settings.framerate", Array.ConvertAll(rates, v => v.ToString()),
                 () => Array.IndexOf(rates, MatchSettings.Options.FrameRate),
                 i => MatchSettings.Customise(o => o.FrameRate = rates[i])));
-            settingsBody.Add(OptionRow("battery", "settings.battery",
+            body.Add(OptionRow("battery", "settings.battery",
                 new[] { Strings.Get("settings.off"), Strings.Get("settings.on"), Strings.Get("settings.auto") },
                 () => MatchSettings.BatterySaver, i => MatchSettings.BatterySaver = i));
-            settingsBody.Add(OptionRow("sun", "settings.bloom",
+            body.Add(OptionRow("sun", "settings.bloom",
                 new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Level(GraphicsQuality.High) },
                 () => MatchSettings.Options.Bloom, i => MatchSettings.Customise(o => o.Bloom = i)));
-            settingsBody.Add(Stepper("brightness", "sun", Strings.Get("settings.brightness"), () => $"{MatchSettings.Brightness}%",
+            body.Add(Stepper("brightness", "sun", Strings.Get("settings.brightness"), () => $"{MatchSettings.Brightness}%",
                 step => MatchSettings.Brightness = Mathf.Clamp(MatchSettings.Brightness + step * 5, 80, 120)));
-            settingsBody.Add(OptionRow("pine", "settings.scenery", new[] { Strings.Get("settings.sparse"), Strings.Get("settings.dense") },
+            body.Add(OptionRow("pine", "settings.scenery", new[] { Strings.Get("settings.sparse"), Strings.Get("settings.dense") },
                 () => MatchSettings.Options.RichScenery ? 1 : 0, i => MatchSettings.Customise(o => o.RichScenery = i == 1)));
-            settingsBody.Add(OptionRow("flame", "settings.effects", new[] { Strings.Get("settings.balanced"), Strings.Get("settings.max") },
+            body.Add(OptionRow("flame", "settings.effects", new[] { Strings.Get("settings.balanced"), Strings.Get("settings.max") },
                 () => MatchSettings.Options.MaxEffects ? 1 : 0, i => MatchSettings.Customise(o => o.MaxEffects = i == 1)));
 
-            settingsBody.Add(Section(2, "settings.section.game"));
+            body.Add(Section(2, "settings.section.game"));
             // Camera shake is switched off for now (RtsCamera.ShakeEnabled), so its setting is hidden with it.
             if (CameraControl.RtsCamera.ShakeEnabled)
-                settingsBody.Add(OptionRow("move", "settings.shake",
+                body.Add(OptionRow("move", "settings.shake",
                     new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
-            settingsBody.Add(OptionRow("bolt", "settings.haptics", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+            body.Add(OptionRow("bolt", "settings.haptics", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
                 () => MatchSettings.Haptics ? 1 : 0, i => MatchSettings.Haptics = i == 1));
-            settingsBody.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
+            body.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
                 () => MatchSettings.ColorBlind ? 1 : 0, i => MatchSettings.ColorBlind = i == 1));
-            settingsBody.Add(OptionRow("camera", "settings.cinematic", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+            body.Add(OptionRow("camera", "settings.cinematic", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
                 () => MatchSettings.CinematicMoments ? 1 : 0, i => MatchSettings.CinematicMoments = i == 1));
-            settingsBody.Add(OptionRow("camera", "settings.camera",
+            body.Add(OptionRow("camera", "settings.camera",
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));
-            settingsBody.Add(OptionRow("resize", "settings.ui",
+            body.Add(OptionRow("resize", "settings.ui",
                 new[] { Strings.Get("settings.small"), Strings.Get("settings.normal"), Strings.Get("settings.large") },
                 () => MatchSettings.UiSize, i => MatchSettings.UiSize = i));
-            settingsBody.Add(OptionRow("info", "settings.fps", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+            body.Add(OptionRow("info", "settings.fps", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
                 () => MatchSettings.ShowFps ? 1 : 0, i => MatchSettings.ShowFps = i == 1));
 
-            settingsBody.Add(Section(3, "settings.section.sound"));
-            settingsBody.Add(Stepper("volume", "volume", Strings.Get("settings.volume"),
+            body.Add(Section(3, "settings.section.sound"));
+            body.Add(Stepper("volume", "volume", Strings.Get("settings.volume"),
                 () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",
                 step => MatchSettings.Volume = Mathf.Clamp01(Mathf.Round((MatchSettings.Volume + step * 0.1f) * 10f) / 10f)));
-            settingsBody.Add(OptionRow("globe", "settings.language", new[] { Strings.Get("settings.auto"), "English", "Tiếng Việt" },
+            body.Add(OptionRow("globe", "settings.language", new[] { Strings.Get("settings.auto"), "English", "Tiếng Việt" },
                 () => (int)MatchSettings.Language, i =>
                 {
                     if ((int)MatchSettings.Language == i) return;
@@ -292,50 +364,9 @@ namespace MachineBrigade.Game.Hud
                     _reopenSettings = true;
                     SettingsChanged?.Invoke();
                 }, last: true));
-            var settingsDock = UiKit.Box("menu-actions");
-            settingsDock.Add(UiKit.WideButton("wide", "retreat", Strings.Get("menu.back"), null, () =>
-            {
-                MatchSettings.Save();
-                SettingsChanged?.Invoke();
-                Show(_main);
-            }));
-            _settings.Add(settingsDock);
-            Root.Add(_settings);
-
-            // A language change rebuilds the menu; come back to the page the player was on.
-            Show(_reopenSettings ? _settings : _main);
-            _reopenSettings = false;
         }
 
-        private static bool _reopenSettings;
-
-        public VisualElement Root { get; }
-
-        /// <summary>Raised when settings were changed and saved (volume, quality, language).</summary>
-        public event Action SettingsChanged;
-
-        /// <summary>Raised while the volume is being adjusted, before anything is saved.</summary>
-        public event Action VolumeChanged;
-
-        /// <summary>
-        /// The Android back button: from the deck or settings page back to the main page (saving
-        /// as the Back buttons do). Returns false on the main page, where there is nothing to close.
-        /// </summary>
-        public bool Back()
-        {
-            if (_main.style.display == DisplayStyle.Flex) return false;
-            MatchSettings.Save();
-            SettingsChanged?.Invoke();
-            Show(_main);
-            return true;
-        }
-
-        private void Show(VisualElement page)
-        {
-            foreach (var p in new[] { _main, _deck, _settings, _campaign, _shop, _arsenal })
-                if (p != null) p.style.display = p == page ? DisplayStyle.Flex : DisplayStyle.None;
-            Refresh();
-        }
+        // ------------------------------------------------------------------ shared building blocks
 
         /// <summary>A vertical scrolling page body (touch-dragged, no scrollbars).</summary>
         private static ScrollView Scroller(string extra = null)
@@ -359,168 +390,11 @@ namespace MachineBrigade.Game.Hud
             Refresh();
         }
 
-        private readonly List<(Label text, Label progress, VisualElement claim, Label reward)> _dailyRows = new();
-
-        private void RefreshDaily()
-        {
-            var tasks = DailyMissions.Current;
-            for (var i = 0; i < _dailyRows.Count && i < tasks.Count; i++)
-            {
-                var (text, progress, claim, reward) = _dailyRows[i];
-                text.text = Strings.Format("daily." + tasks[i].Kind, tasks[i].Target);
-                progress.text = $"{DailyMissions.Progress(i)}/{tasks[i].Target}";
-                reward.text = DailyMissions.Claimed(i) ? Strings.Get("daily.claimed") : tasks[i].Reward.ToString("N0");
-                claim.EnableInClassList("ready", DailyMissions.Done(i) && !DailyMissions.Claimed(i));
-                claim.EnableInClassList("claimed", DailyMissions.Claimed(i));
-            }
-        }
-
-        private void Refresh()
-        {
-            RefreshDaily();
-            if (_modeInfo != null) _modeInfo.text = _modeLines.TryGetValue(MatchSettings.Mode, out var line) ? line : "";
-            foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
-            foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
-            foreach (var label in _gemLabels) label.text = PlayerProfile.Gems.ToString("N0");
-            foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
-            foreach (var fill in _rankFills)
-                fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));
-            if (_campaignBannerSub != null)
-            {
-                _campaignBannerSub.text = Strings.Format("campaign.progress", Campaign.Won, Campaign.All.Count, PlayerProfile.TotalStars);
-                var next = Campaign.All[Campaign.Next];
-                _campaignBannerNext.text = Strings.Format("campaign.next", Campaign.Next + 1, Strings.Get("mission." + next.Id + ".name"));
-            }
-            RefreshCampaign();
-            RefreshShop();
-            RefreshArsenal();
-            if (_customTag != null)
-                _customTag.style.display = MatchSettings.Graphics == GraphicsQuality.Custom ? DisplayStyle.Flex : DisplayStyle.None;
-            foreach (var (id, card) in _deckCards)
-            {
-                card.EnableInClassList("chosen", MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id));
-                card.EnableInClassList("locked", !PlayerProfile.IsUnlocked(id));
-            }
-            _deckTitle.text = Strings.Format("menu.deckTitle", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
-                MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots);
-        }
-
-        /// <summary>
-        /// The brand strip across the top of every menu page, with the player's rank, coins and
-        /// gems; compact on the narrow main page, where the full strip does not fit.
-        /// </summary>
-        private VisualElement Brand(bool compact = false)
-        {
-            var brand = UiKit.Box(compact ? "menu-brand compact" : "menu-brand");
-            brand.Add(UiKit.Icon("logo", UiKit.Ink, 2.2f));
-            var text = UiKit.Box("menu-brand-text");
-            text.Add(UiKit.Text("MACHINE", "menu-title"));
-            text.Add(UiKit.Text("BRIGADE", "menu-title accent"));
-            brand.Add(text);
-            var profile = UiKit.Box("brand-profile");
-            var rank = UiKit.Box("rank-pill");
-            rank.Add(UiKit.Icon("rank", UiKit.Ink, 1.8f));
-            var rankText = UiKit.Box("rank-text");
-            var rankLabel = UiKit.Text("", "rank-label");
-            rankText.Add(rankLabel);
-            var track = UiKit.Box("rank-track");
-            var fill = UiKit.Box("rank-fill");
-            track.Add(fill);
-            rankText.Add(track);
-            rank.Add(rankText);
-            profile.Add(rank);
-            var coins = UiKit.Box("coin-pill");
-            coins.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
-            var coinLabel = UiKit.Text("", "coin-label");
-            coins.Add(coinLabel);
-            profile.Add(coins);
-            var gems = UiKit.Box("coin-pill gem-pill");
-            gems.Add(UiKit.Icon("gem", UiKit.Ink, 1.8f));
-            var gemLabel = UiKit.Text("", "coin-label");
-            gems.Add(gemLabel);
-            profile.Add(gems);
-            _gemLabels.Add(gemLabel);
-            brand.Add(profile);
-            _rankLabels.Add(rankLabel);
-            _rankFills.Add(fill);
-            _coinLabels.Add(coinLabel);
-            return brand;
-        }
-
         /// <summary>A numbered section title: "02 // MAP".</summary>
         private static Label Section(int number, string key)
         {
             var title = Strings.Get(key).ToUpperInvariant();
             return UiKit.Text(number > 0 ? $"{number:00}  //  {title}" : title, "menu-caps");
-        }
-
-        private VisualElement MapCard(MapInfo map, bool last)
-        {
-            var available = MatchSettings.MapAvailable(map.Id);
-            var card = UiKit.Button(last ? "map-card last-card" : "map-card", () =>
-            {
-                if (available) Set(() => MatchSettings.Map = map.Id);
-            });
-            card.EnableInClassList("locked", !available);
-            var art = UiKit.Box("map-art " + map.Theme);
-            art.Add(UiKit.Icon(map.Icon, UiKit.Ink, 1.8f));
-            card.Add(art);
-            card.Add(UiKit.Text(Strings.Get("map." + map.Id), "map-name"));
-            card.Add(UiKit.Text(Strings.Get("map." + map.Id + ".sub"), "map-sub"));
-            return Choice(card, () => MatchSettings.CurrentMap.Id == map.Id);
-        }
-
-        private readonly Dictionary<GameModeKind, string> _modeLines = new();
-        private Label _modeInfo;
-        private VisualElement _cardDetail;
-
-        /// <summary>
-        /// What the last tapped card is: its full name, what it beats and what beats it, and every
-        /// weapon it carries (kind, calibre, what it can hit, rounds when they run out).
-        /// </summary>
-        private void ShowDetail(string id, bool support)
-        {
-            _cardDetail.Clear();
-            var head = UiKit.Box("detail-head");
-            head.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.7f));
-            var names = UiKit.Box("detail-names");
-            names.Add(UiKit.Text(Strings.Card(id), "detail-title"));
-            if (!support && _catalog.Vehicles.TryGetValue(id, out var def))
-            {
-                names.Add(UiKit.Text(Counters.Line(def), "detail-counter"));
-                head.Add(names);
-                _cardDetail.Add(head);
-                _cardDetail.Add(UiKit.Text(Strings.Get("detail.weapons"), "detail-caps"));
-                var list = UiKit.Box("detail-weapons");
-                foreach (var line in WeaponInfo.Of(def))
-                {
-                    var row = UiKit.Box("detail-weapon");
-                    row.Add(UiKit.Icon(line.Icon, UiKit.Ink, 1.7f));
-                    row.Add(UiKit.Text(line.Name, "detail-weapon-name"));
-                    row.Add(UiKit.Text(line.Targets, "detail-weapon-tag"));
-                    if (line.Ammo > 0) row.Add(UiKit.Text(Strings.Format("detail.ammo", line.Ammo), "detail-weapon-tag ammo"));
-                    list.Add(row);
-                }
-                _cardDetail.Add(list);
-            }
-            else
-            {
-                head.Add(names);
-                _cardDetail.Add(head);
-            }
-        }
-
-        /// <summary>The detail pane before any card is tapped: what tapping does.</summary>
-        private void ClearDetail()
-        {
-            _cardDetail.Clear();
-            var head = UiKit.Box("detail-head");
-            head.Add(UiKit.Icon("info", UiKit.Ink, 1.7f));
-            var names = UiKit.Box("detail-names");
-            names.Add(UiKit.Text(Strings.Get("detail.pickTitle"), "detail-title"));
-            names.Add(UiKit.Text(Strings.Get("detail.pick"), "detail-empty"));
-            head.Add(names);
-            _cardDetail.Add(head);
         }
 
         private VisualElement Choice(VisualElement element, Func<bool> selected)
@@ -535,39 +409,6 @@ namespace MachineBrigade.Game.Hud
             if (icon != null) segment.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
             segment.Add(UiKit.Text(label, "segment-label"));
             return segment;
-        }
-
-        private VisualElement DeckCard(string id, bool support)
-        {
-            var cost = support
-                ? _catalog.TryGetSupport(id, out var s) ? s.CpCost : 0
-                : _catalog.Vehicles.TryGetValue(id, out var v) ? v.CpCost : 0;
-            var card = UiKit.Button(support ? "card support deck-card" : "card deck-card", () =>
-            {
-                if (!PlayerProfile.IsUnlocked(id))
-                {
-                    _deckNote.text = LockReason(id);
-                    _deckNote.AddToClassList("warn");
-                    return;
-                }
-                _deckNote.RemoveFromClassList("warn");
-                ShowDetail(id, support);
-                var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
-                var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
-                if (deck.Contains(id)) deck.Remove(id);
-                else if (deck.Count < slots) deck.Add(id);
-                Refresh();
-            });
-            card.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            card.Add(UiKit.Text(Strings.Short(id), "card-name"));
-            var badge = UiKit.Box("card-cost");
-            badge.Add(UiKit.Text(cost.ToString(), "card-cost-text"));
-            card.Add(badge);
-            var lockBadge = UiKit.Box("card-lock");
-            lockBadge.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
-            card.Add(lockBadge);
-            _deckCards[id] = card;
-            return card;
         }
 
         /// <summary>A settings row: a label on the left, its choices as segments on the right.</summary>
@@ -588,19 +429,6 @@ namespace MachineBrigade.Game.Hud
             row.Add(group);
             return row;
         }
-
-        /// <summary>How to get a locked card: the mission that unlocks it, or the shop.</summary>
-        private string LockReason(string id)
-        {
-            var name = Strings.Card(id);
-            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Progression.Price(id, _catalog));
-            var mission = Progression.UnlockMission(id);
-            return mission != null
-                ? Strings.Format("deck.lockedMission", name, Campaign.IndexOf(mission.Id) + 1, Progression.Price(id, _catalog))
-                : Strings.Format("deck.lockedShop", name, Progression.Price(id, _catalog));
-        }
-
-        private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());
 
         private VisualElement Stepper(string key, string icon, string label, Func<string> value, Action<int> step)
         {
@@ -624,6 +452,36 @@ namespace MachineBrigade.Game.Hud
             }));
             return row;
         }
+
+        /// <summary>How to get a locked card: the mission that unlocks it, or the shop.</summary>
+        private string LockReason(string id)
+        {
+            var name = Strings.Card(id);
+            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Progression.Price(id, _catalog));
+            var mission = Progression.UnlockMission(id);
+            return mission != null
+                ? Strings.Format("deck.lockedMission", name, Campaign.IndexOf(mission.Id) + 1, Progression.Price(id, _catalog))
+                : Strings.Format("deck.lockedShop", name, Progression.Price(id, _catalog));
+        }
+
+        private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());
+
+        /// <summary>A short message along the bottom of the menu (what just happened, or why not).</summary>
+        private void Note(string text, bool warn = false)
+        {
+            _note.text = text;
+            _note.EnableInClassList("warn", warn);
+            _note.style.display = DisplayStyle.Flex;
+            _note.BringToFront();
+            _noteShown = Time.unscaledTime;
+            _note.schedule.Execute(() =>
+            {
+                if (Time.unscaledTime - _noteShown >= 2.9f) _note.style.display = DisplayStyle.None;
+            }).StartingIn(3000);
+        }
+
+        private Label _note;
+        private float _noteShown;
     }
 
     internal sealed partial class MenuScreen
@@ -635,6 +493,22 @@ namespace MachineBrigade.Game.Hud
             "artillery" => "artillery",
             "blitz" => "bolt",
             _ => "cp",
+        };
+
+        internal static string ClassIcon(UnitClass c) => c switch
+        {
+            UnitClass.Scout => "jeep",
+            UnitClass.Light => "armoredcar",
+            UnitClass.Tank => "tank",
+            UnitClass.Heavy => "heavytank",
+            UnitClass.TankHunter => "destroyer",
+            UnitClass.Artillery => "artillery",
+            UnitClass.AntiAir => "aa",
+            UnitClass.Helicopter => "helicopter",
+            UnitClass.Plane => "jet",
+            UnitClass.Defense => "shield",
+            UnitClass.Boss => "skull",
+            _ => "repair",
         };
     }
 
