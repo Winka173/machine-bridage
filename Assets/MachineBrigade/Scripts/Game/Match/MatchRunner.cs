@@ -211,7 +211,9 @@ namespace MachineBrigade.Game.Match
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-                _camera.FocusOn(new Vector3(-80f, 0f, 80f));
+                // The north-west edge: the boundary line and the country beyond it.
+                var edge = _world.Map.HalfSize * 0.8f;
+                _camera.FocusOn(new Vector3(-edge, 0f, edge));
                 _lastInput = float.MaxValue;
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
