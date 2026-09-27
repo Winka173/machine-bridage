@@ -209,6 +209,7 @@ namespace MachineBrigade.Game.Hud
             };
             scroll.AddToClassList("menu-body");
             scroll.AddToClassList("settings-scroll");
+            MouseDragScroll.Attach(scroll);
             _settings.Add(scroll);
             var settingsBody = scroll.contentContainer;
 
@@ -339,6 +340,7 @@ namespace MachineBrigade.Game.Hud
             scroll.AddToClassList("menu-body");
             scroll.AddToClassList("settings-scroll");
             if (extra != null) scroll.AddToClassList(extra);
+            MouseDragScroll.Attach(scroll);
             return scroll;
         }
 

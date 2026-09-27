@@ -514,10 +514,6 @@ namespace MachineBrigade.Game.Match
                             Haptics.Pulse(180, 255);
                         }
                         break;
-                    case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
-                    case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
-                        StartCinematic(e.Position);
-                        break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
                             DailyMissions.Record("buildings");
@@ -701,7 +697,11 @@ namespace MachineBrigade.Game.Match
             var touching = (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed) ||
                            (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed ||
                                                       Mouse.current.scroll.ReadValue().sqrMagnitude > 0f));
-            if (touching || _commander?.ArmedSupport != null || _paused) _lastInput = Time.unscaledTime;
+            if (touching || _commander?.ArmedSupport != null || _paused)
+            {
+                _lastInput = Time.unscaledTime;
+                _camera.StopFollowing();
+            }
             if (Time.unscaledTime - _lastInput < AutoCameraDelay) return;
             if (Time.time >= _attractAt)
             {
@@ -716,7 +716,7 @@ namespace MachineBrigade.Game.Match
                 }
                 if (count > 0) _attractFocus = sum / count;
             }
-            if (_attractFocus != Vector3.zero) _camera.Glide(_attractFocus, _camera.Zoom, Time.unscaledDeltaTime, 0.5f);
+            if (_attractFocus != Vector3.zero) _camera.Follow(_attractFocus, Time.unscaledDeltaTime);
         }
 
         private void UpdateStatus()

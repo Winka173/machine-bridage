@@ -3,10 +3,10 @@ using UnityEngine;
 namespace MachineBrigade.Game.Match
 {
     /// <summary>
-    /// Cinematic moments for the biggest blasts (a boss dying, an ultimate explosion): time eases
-    /// down to a crawl for about a second and back, the camera leans in, and letterbox bars
-    /// slide in so it reads as deliberate rather than as a stutter. Rare by design: at most one
-    /// every <see cref="Cooldown"/> seconds (a boss always gets one), and it can be switched off.
+    /// Cinematic moments for a boss dying: time eases down to a crawl for about a second and back,
+    /// the camera leans in, and letterbox bars slide in so it reads as deliberate rather than as a
+    /// stutter. Only bosses get one (ultimate explosions used to as well, which, every half minute
+    /// in a big battle, read as the game hitching), and it can be switched off.
     /// </summary>
     internal sealed class Cinematics
     {

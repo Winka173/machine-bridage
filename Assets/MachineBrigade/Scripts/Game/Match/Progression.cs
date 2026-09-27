@@ -22,6 +22,13 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public static class Progression
     {
+        /// <summary>
+        /// TEST BUILDS ONLY: every card (vehicles, strikes, premium units) and every doctrine is
+        /// unlocked, so the whole roster can be tried. Set it to false before a release build (see
+        /// Docs/RELEASE_CHECKLIST.md); the campaign and shop unlocks then work as designed.
+        /// </summary>
+        public static bool TestUnlockAll = true;
+
         public static readonly string[] StarterVehicles =
             { "scout_jeep", "armored_car", "apc", "light_tank", "main_battle_tank", "aa_vehicle", "artillery" };
 
@@ -65,7 +72,7 @@ namespace MachineBrigade.Game.Match
         /// <summary>Doctrines: the first is free, the others are bought with coins (owned as "doctrine.&lt;id&gt;").</summary>
         public const int DoctrinePrice = 1500;
 
-        public static bool DoctrineOwned(string id) => id == "armor" || PlayerProfile.Owns("doctrine." + id);
+        public static bool DoctrineOwned(string id) => TestUnlockAll || id == "armor" || PlayerProfile.Owns("doctrine." + id);
 
         public static bool IsStarter(string id) =>
             System.Array.IndexOf(StarterVehicles, id) >= 0 || System.Array.IndexOf(StarterSupports, id) >= 0;

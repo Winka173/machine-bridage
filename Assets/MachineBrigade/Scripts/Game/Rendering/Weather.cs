@@ -38,6 +38,10 @@ namespace MachineBrigade.Game.Rendering
         private float _nextLightning = float.MaxValue;
         private readonly float _dim = 1f;
         private float _flashStart = -10f;
+        private ParticleSystemRenderer _rainRenderer;
+
+        /// <summary>The shortest a rain streak is drawn, in seconds of fall.</summary>
+        private const float RainStreak = 0.04f;
 
         /// <summary>Light, fog and grading of one kind of weather.</summary>
         private readonly struct Mood
@@ -158,7 +162,7 @@ namespace MachineBrigade.Game.Rendering
                     _grounds[i].SetColor("_BaseColor", _groundColour[i] * 0.82f);
                 }
                 var heavy = kind == WeatherKind.Storm;
-                var rate = (heavy ? 3800f : 2000f) * (highQuality ? 1f : 0.55f);
+                var rate = (heavy ? 2800f : 1800f) * (highQuality ? 1f : 0.55f);
                 _rain = RainSystem(materials, rate, heavy);
                 _splashes = SplashSystem(materials, rate * 0.35f);
                 _audio.RainLevel = heavy ? 0.5f : 0.35f;
@@ -176,6 +180,11 @@ namespace MachineBrigade.Game.Rendering
                 // The rain volume follows the view; drops are simulated in world space.
                 _rain.transform.position = focus + new Vector3(0f, 26f, 0f);
                 _splashes.transform.position = focus + Vector3.up * 0.1f;
+                // Each streak is as long as the way its drop falls in one frame (a little more), so
+                // a drop's streaks in consecutive frames touch: the rain reads as falling, not as
+                // strobing dashes, at 30 fps or 60 alike.
+                var frame = Mathf.Clamp(Time.smoothDeltaTime, 1f / 120f, 1f / 20f);
+                _rainRenderer.velocityScale = Mathf.Max(RainStreak, frame * 1.25f);
             }
             // Snow, dust and fog volumes follow the view too, upwind so they drift across it.
             if (_flakes != null) _flakes.transform.position = focus + new Vector3(-6f, 20f, -3f);
@@ -190,10 +199,10 @@ namespace MachineBrigade.Game.Rendering
                 _flashStart = Time.time;
                 _audio.Thunder(Random.Range(0.4f, 2.2f));
             }
-            // Two quick flickers, then the storm light returns.
+            // One bright flash that dies away smoothly, with a softer after-glow: no strobing flicker.
             var t = Time.time - _flashStart;
-            var flash = t < 0.35f ? (t < 0.07f || (t > 0.14f && t < 0.2f) ? 1f : 0.25f) * (1f - t / 0.35f) : 0f;
-            _sun.intensity = _sunIntensity * _dim + flash * 3.5f;
+            var flash = t < 0f ? 0f : Mathf.Exp(-t * 9f) + 0.35f * Mathf.Exp(-Mathf.Abs(t - 0.22f) * 14f) * (t < 0.6f ? 1f : 0f);
+            _sun.intensity = _sunIntensity * _dim + Mathf.Clamp01(flash) * 3f;
         }
 
         public void Dispose()
@@ -232,7 +241,8 @@ namespace MachineBrigade.Game.Rendering
             main.loop = true;
             main.duration = 5f;
             main.maxParticles = (int)(rate * 1.2f);
-            main.startLifetime = new ParticleSystem.MinMaxCurve(0.85f, 1.0f);
+            // 24 m/s from 26 m up: each drop lands in just over a second.
+            main.startLifetime = new ParticleSystem.MinMaxCurve(1.05f, 1.15f);
             main.startSpeed = 0f;
             main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.08f);
             main.startColor = new Color(0.78f, 0.84f, 0.9f, heavy ? 0.5f : 0.38f);
@@ -243,14 +253,15 @@ namespace MachineBrigade.Game.Rendering
             velocity.enabled = true;
             velocity.space = ParticleSystemSimulationSpace.World;
             velocity.x = new ParticleSystem.MinMaxCurve(heavy ? 6f : 3f);
-            velocity.y = new ParticleSystem.MinMaxCurve(-30f);
+            velocity.y = new ParticleSystem.MinMaxCurve(-24f);
             velocity.z = new ParticleSystem.MinMaxCurve(heavy ? 3f : 1.5f);
             var emission = ps.emission;
             emission.rateOverTime = rate;
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
-            renderer.velocityScale = 0.035f;
+            renderer.velocityScale = RainStreak;
             renderer.lengthScale = 1f;
             renderer.maxParticleSize = 1f;
+            _rainRenderer = renderer;
             ps.Play();
             return ps;
         }

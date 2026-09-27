@@ -58,9 +58,12 @@ namespace MachineBrigade.Game.Match
 
         public static string EquippedSkin => D.skin;
 
-        public static bool IsUnlocked(string cardId) => Progression.IsStarter(cardId) || D.unlocked.Contains(cardId) || D.owned.Contains(cardId);
+        public static bool IsUnlocked(string cardId) =>
+            Progression.TestUnlockAll || Progression.IsStarter(cardId) || D.unlocked.Contains(cardId) || D.owned.Contains(cardId);
 
-        public static bool Owns(string itemId) => itemId == Skins.Default || D.owned.Contains(itemId);
+        /// <summary>Owned items: skins, doctrines and premium cards (in test builds every doctrine is).</summary>
+        public static bool Owns(string itemId) =>
+            itemId == Skins.Default || D.owned.Contains(itemId) || (Progression.TestUnlockAll && itemId.StartsWith("doctrine."));
 
         public static int Stars(string missionId)
         {
