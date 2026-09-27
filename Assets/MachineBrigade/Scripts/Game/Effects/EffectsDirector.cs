@@ -50,6 +50,7 @@ namespace MachineBrigade.Game.Effects
         private readonly ExplosionEffect _napalm;
         private readonly ExplosionEffect _kill;
         private readonly ExplosionEffect _pop;
+        private readonly ExplosionEffect _collapse;
         private readonly ScreenCull _cull;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
@@ -90,6 +91,8 @@ namespace MachineBrigade.Game.Effects
             _blasts.Add(_kill);
             _pop = ExplosionEffect.CreatePop(_layers);
             _blasts.Add(_pop);
+            _collapse = ExplosionEffect.CreateCollapse(_layers);
+            _blasts.Add(_collapse);
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
             _fires = new FireSpots(materials, _root);
@@ -238,7 +241,8 @@ namespace MachineBrigade.Game.Effects
                         var centre = prop.Transform.position;
                         if (prop.IsBuilding)
                         {
-                            Explode(ExplosionTier.Large, centre + Vector3.up * 2.5f, now);
+                            // A building comes down in its own dust (MapView sinks the walls into the heap).
+                            if (_cull.Visible(centre, 0.4f)) _collapse.Play(centre, now, Mathf.Clamp(prop.Prop.Radius / 5f, 0.8f, 1.8f));
                             // The rubble keeps burning in a couple of places.
                             var reach = prop.Prop.Radius * 0.4f;
                             _fires.Ignite(centre + new Vector3(UnityEngine.Random.Range(-reach, reach), 0f, UnityEngine.Random.Range(-reach, reach)),
@@ -248,8 +252,11 @@ namespace MachineBrigade.Game.Effects
                         }
                         var spread = Mathf.Max(0.5f, prop.Prop.Radius * 0.6f);
                         var force = prop.IsBuilding ? 10f : 7f;
-                        foreach (var id in prop.Debris)
+                        // Big buildings throw their chunk set twice over.
+                        var throws = prop.IsBuilding && prop.Prop.Radius > 5f ? prop.Debris.Count * 2 : prop.Debris.Count;
+                        for (var k = 0; k < throws; k++)
                         {
+                            var id = prop.Debris[k % prop.Debris.Count];
                             var offset = new Vector3(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0.4f, 2.5f),
                                 UnityEngine.Random.Range(-spread, spread));
                             _debris.Throw(Chunk(id), centre + offset, UnityEngine.Random.rotation, centre - Vector3.up, force, now);
@@ -350,10 +357,30 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Builds everything that would otherwise be created the first time it is needed mid-battle.</summary>
         public void Prewarm()
         {
+            WarmUpPipelines();
             foreach (var id in new[] { "missile", "rocket", "bomb", "cruise_missile" })
                 if (_models.Has(id)) _models.Merged(id);
             foreach (var id in new[] { "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_metal", "debris_leaves" })
                 if (_models.Has(id)) Chunk(id);
+        }
+
+        /// <summary>
+        /// Draws every effect layer once, a speck too small to see, at the start of the battle. On
+        /// Vulkan the driver builds a pipeline the first time each material and vertex layout is
+        /// drawn, which stalls that frame: done here, under the load, instead of the first time a
+        /// napalm strike or a burning wreck appears mid-fight.
+        /// </summary>
+        private void WarmUpPipelines()
+        {
+            var at = _camera.Focus + Vector3.up * 0.5f;
+            foreach (var system in _root.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                if (!system.gameObject.activeInHierarchy) continue;
+                system.Emit(new ParticleSystem.EmitParams
+                {
+                    position = at, startSize = 0.005f, startLifetime = 0.05f, velocity = Vector3.zero, applyShapeToPosition = false,
+                }, 1);
+            }
         }
 
         /// <summary>Items that do no damage (EMP, shield dome, airdrops, loaned escorts) show a pulse, not a blast.</summary>

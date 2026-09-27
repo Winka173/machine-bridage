@@ -32,7 +32,7 @@
       "boss": { "def": "mega_gunship", "x": 45, "z": 45, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12,
       "enemyDeck": ["scout_jeep", "armored_car", "light_tank", "apc", "main_battle_tank", "rocket_technical"],
-      "coins": 400, "xp": 300, "unlocks": ["attack_helicopter"], "starTime": 420, "starLosses": 8 },
+      "coins": 400, "xp": 300, "unlocks": ["attack_helicopter"], "starTime": 900, "starLosses": 8 },
 
     { "id": "m04", "map": "dunebreak", "weather": "Clear", "goal": "Survive", "surviveSeconds": 300, "points": ["east"],
       "enemyAi": "waves", "difficulty": "Normal", "playerCp": 18,
@@ -55,7 +55,7 @@
     { "id": "m06", "map": "dunebreak", "weather": "Sandstorm", "goal": "Boss", "timeLimit": 1200,
       "boss": { "def": "behemoth", "x": 40, "z": 40, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 10, "enemyIncome": 0.85,
-      "playerCp": 22, "playerIncome": 1.25, "playerCap": 36,
+      "playerCp": 26, "playerIncome": 1.45, "playerCap": 36,
       "enemyDeck": ["armored_car", "light_tank", "apc", "main_battle_tank", "aa_vehicle", "tank_destroyer", "attack_helicopter"],
       "coins": 500, "xp": 350, "unlocks": ["heavy_tank", "mlrs"], "starTime": 540, "starLosses": 10 },
 
@@ -93,7 +93,7 @@
 
     { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
-      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 24, "playerCp": 20, "playerIncome": 1.3,
+      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.5,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "sam_launcher", "mlrs", "attack_helicopter", "artillery"],
       "coins": 450, "xp": 320, "unlocks": ["attack_jet", "ifv"], "starTime": 600, "starLosses": 12 },
 

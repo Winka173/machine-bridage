@@ -124,7 +124,13 @@ namespace MachineBrigade.Sim
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
-        public void EnableEconomy(TeamEconomy economy) => Economy.Enable(economy);
+        public void EnableEconomy(TeamEconomy economy)
+        {
+            // The catalog sets the pace of every economy (see balance.json "economy").
+            economy.IncomeScale = Catalog.IncomeScale;
+            economy.SupplyScale = Catalog.SupplyScale;
+            Economy.Enable(economy);
+        }
 
         public bool TryGetEconomy(int team, out TeamEconomy economy) => Economy.TryGet(team, out economy);
 

@@ -15,10 +15,11 @@ namespace MachineBrigade.Game.Views
 {
     public sealed class PropView
     {
-        public PropView(Prop prop, GameObject gameObject, string rubbleModel, IReadOnlyList<string> debris)
+        public PropView(Prop prop, GameObject gameObject, string model, string rubbleModel, IReadOnlyList<string> debris)
         {
             Prop = prop;
             GameObject = gameObject;
+            Model = model;
             RubbleModel = rubbleModel;
             Debris = debris;
         }
@@ -26,6 +27,9 @@ namespace MachineBrigade.Game.Views
         public Prop Prop { get; }
         public GameObject GameObject { get; set; }
         public Transform Transform => GameObject.transform;
+
+        /// <summary>The model it is drawn with.</summary>
+        public string Model { get; }
 
         /// <summary>Model left behind when destroyed, or null when the prop vanishes into its blast.</summary>
         public string RubbleModel { get; }
@@ -140,7 +144,7 @@ namespace MachineBrigade.Game.Views
                     Quaternion.Euler(0f, yaw, 0f));
                 if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
                 if (!Mathf.Approximately(prop.Def.Scale, 1f)) instance.transform.localScale *= prop.Def.Scale;
-                _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
+                _props.Add(prop.Id, new PropView(prop, instance, model, rubble, debris));
                 // Buildings, vehicles and street furniture never move: batch them (not trees, whose
                 // wind sway needs their own transforms, nor props with spinning parts).
                 if (!vegetation && _moving.Count == movingBefore) still.Add(instance);
@@ -154,8 +158,53 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Turns radar dishes, rocks pumpjacks and moves the glow over lava; call once per frame.</summary>
+        private sealed class Collapse
+        {
+            public Transform Ghost, Rubble;
+            public Vector3 Position, Scale, Heap, Axis;
+            public Quaternion Rotation;
+            public float Start, Seconds, Tilt, Seed;
+        }
+
+        private readonly List<Collapse> _collapses = new();
+        private readonly Random _collapseRng = new(4242);
+
+        /// <summary>
+        /// Buildings coming down: a shudder, then the walls sink into the ground faster and faster
+        /// (as falling floors do), spreading and leaning a little, while the rubble heap rises out
+        /// of the dust in their place.
+        /// </summary>
+        private void AnimateCollapses(float time)
+        {
+            for (var i = _collapses.Count - 1; i >= 0; i--)
+            {
+                var c = _collapses[i];
+                var t = (time - c.Start) / c.Seconds;
+                if (t >= 1f || c.Ghost == null)
+                {
+                    if (c.Ghost != null) Object.Destroy(c.Ghost.gameObject);
+                    if (c.Rubble != null) c.Rubble.localScale = c.Heap;
+                    _collapses.RemoveAt(i);
+                    continue;
+                }
+                var hold = Mathf.Clamp01(t / 0.15f);
+                var fall = Mathf.Clamp01((t - 0.12f) / 0.88f);
+                fall *= fall;
+                var shake = (0.05f + 0.1f * hold) * (1f - fall);
+                var jitter = new Vector3(Mathf.Sin(time * 47f + c.Seed) * shake, 0f, Mathf.Cos(time * 53f + c.Seed * 1.7f) * shake);
+                c.Ghost.localScale = new Vector3(c.Scale.x * (1f + 0.08f * fall), c.Scale.y * Mathf.Max(0.04f, 1f - fall), c.Scale.z * (1f + 0.08f * fall));
+                c.Ghost.SetPositionAndRotation(c.Position + jitter + Vector3.down * (0.3f * fall), Quaternion.AngleAxis(c.Tilt * fall, c.Axis) * c.Rotation);
+                if (c.Rubble != null)
+                {
+                    var grow = Mathf.Clamp01((t - 0.3f) / 0.7f);
+                    c.Rubble.localScale = new Vector3(c.Heap.x, c.Heap.y * Mathf.Lerp(0.08f, 1f, grow * (2f - grow)), c.Heap.z);
+                }
+            }
+        }
+
         public void Animate(float time)
         {
+            if (_collapses.Count > 0) AnimateCollapses(time);
             foreach (var (part, rest, axis, speed, phase, rocks) in _moving)
             {
                 if (part == null || !part.gameObject.activeInHierarchy) continue;
@@ -197,8 +246,24 @@ namespace MachineBrigade.Game.Views
                 var rubble = Spawn(view.RubbleModel, true);
                 rubble.transform.SetPositionAndRotation(transform.position, transform.rotation);
                 // Stretch the rubble over the whole footprint (a church leaves a long heap).
+                var heap = Vector3.one;
                 if (RubbleSize.TryGetValue(view.RubbleModel, out var size))
-                    rubble.transform.localScale = new Vector3(view.Prop.Def.Width / size.x, 1f, view.Prop.Def.Depth / size.y);
+                    heap = new Vector3(view.Prop.Def.Width / size.x, 1f, view.Prop.Def.Depth / size.y);
+                rubble.transform.localScale = new Vector3(heap.x, heap.y * 0.08f, heap.z);
+                // The building does not vanish: a copy of it (the original is merged into the static
+                // batch and cannot move) shudders and sinks into its own dust while the heap rises.
+                var ghost = Spawn(view.Model, true).transform;
+                ghost.SetPositionAndRotation(transform.position, transform.rotation);
+                ghost.localScale = transform.lossyScale;
+                var bearing = (float)_collapseRng.NextDouble() * Mathf.PI * 2f;
+                _collapses.Add(new Collapse
+                {
+                    Ghost = ghost, Rubble = rubble.transform, Position = transform.position, Rotation = transform.rotation,
+                    Scale = transform.lossyScale, Heap = heap, Start = Time.time,
+                    Seconds = Mathf.Lerp(1.3f, 2.1f, Mathf.InverseLerp(4f, 12f, view.Prop.Radius)),
+                    Axis = new Vector3(Mathf.Cos(bearing), 0f, Mathf.Sin(bearing)), Tilt = 4f + (float)_collapseRng.NextDouble() * 7f,
+                    Seed = (float)_collapseRng.NextDouble() * 100f,
+                });
                 view.GameObject.SetActive(false);
                 view.GameObject = rubble;
             }

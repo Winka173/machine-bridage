@@ -613,6 +613,30 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>
+        /// A building brought down: the shell or charge that did it (a short, low fireball inside
+        /// the walls), then the building falling in its own dust: a skirt rolling out along the
+        /// ground, billows pouring up over the heap as each floor lands, a haze that hangs, and a
+        /// hail of concrete, plaster and timber. Scaled to the building's size.
+        /// </summary>
+        public static ExplosionEffect CreateCollapse(BlastLayers l)
+        {
+            var e = new ExplosionEffect(l);
+            e.Flash(6f);
+            e.Fireball(2, new Vector2(4.5f, 6f), new Vector2(0.9f, 1.2f), 1.4f, lift: 0.6f);
+            e.Sparks(26, new Vector2(6f, 14f), 0.16f);
+            e.DustRing(20f, 20);
+            e._bursts.Add(new Burst(l.DustRing, 0.55f, 14, new Vector2(3.2f, 4.8f), new Vector2(5f, 10f), new Vector2(2.2f, 3.4f), 2.2f, 0.3f));
+            foreach (var (time, count) in new[] { (0.12f, 4), (0.45f, 5), (0.85f, 5), (1.25f, 4) })
+                e._bursts.Add(new Burst(l.Dust, time, count, new Vector2(4.5f, 7f), new Vector2(0.4f, 1.8f), new Vector2(2.8f, 4.2f), 3f, 0.8f));
+            e.Debris(40, new Vector2(5f, 12f));
+            e.Dirt(24, new Vector2(4f, 10f));
+            e.Smoke(4, new Vector2(5f, 7f), new Vector2(5f, 7.5f), 0.6f);
+            e.Embers(14, 1f);
+            e._chunks = new ChunkThrower.Recipe(earth: 10, wreckage: 4, burning: 3, new Vector2(5f, 11f), 1f);
+            return e;
+        }
+
+        /// <summary>
         /// A napalm canister bursting: a wide, low, rolling wall of fire under heavy black smoke,
         /// and burning gobs of fuel flung out (the ground keeps burning; see <see cref="FireSpots"/>).
         /// </summary>
