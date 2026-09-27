@@ -785,6 +785,8 @@ namespace MachineBrigade.Game.Match
             if (_tier == 2) player.AutoStrike = false;
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
+            // A demolition inside a fortress is a siege: guns to break it from outside its reach.
+            if (_def.Goal == MissionGoal.Destroy && _def.Variant == "siege") player.RoleMix = ConquestAi.SiegeMix;
             // Holding a point: fight whatever comes at it, but never wander off and leave it open.
             if (_def.Goal == MissionGoal.Hold) player.Leash = 32f;
             if (_def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)

@@ -123,8 +123,8 @@
       "coins": 800, "xp": 500, "unlocks": ["thermobaric_launcher"], "starTime": 120, "starLosses": 8, "challenge": {"kind": "NoStrikes"} },
 
     { "id": "m13", "map": "emberridge", "variant": "siege", "weather": "Night", "goal": "Destroy", "targets": ["command_hq"],
-      "targetHealth": 2.2, "timeLimit": 1100,
-      "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 26, "playerIncome": 1.85, "playerCap": 36,
+      "targetHealth": 1.2, "timeLimit": 1500,
+      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Easy", "enemyCp": 10, "playerCp": 30, "playerIncome": 2.2, "playerCap": 40,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "mortar_carrier", "tank_destroyer"],
       "waves": { "first": 90, "interval": 70, "size": 2, "grow": 0.3, "maxSize": 4, "maxAlive": 10,
                  "roster": ["main_battle_tank", "apc", "attack_helicopter", "elite_mbt"] },
