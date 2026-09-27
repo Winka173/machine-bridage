@@ -181,7 +181,7 @@ namespace MachineBrigade.Game.Effects
             _smoke = Shared(root, "Chunk Smoke", fx.Smoke, 3000);
             PB.Flipbook(_smoke, loop: false, tilt: 30f, from: 0.1f);
             PB.Colors(_smoke, PB.Hold(new Color(0.14f, 0.13f, 0.12f), new Color(0.42f, 0.41f, 0.4f), 0.08f, 0.45f, 0.85f));
-            PB.Grow(_smoke, 0.45f, 2.4f);
+            PB.Grow(_smoke, 0.45f, 1.8f);
             PB.Rise(_smoke, 0.4f, 1.1f);
         }
 

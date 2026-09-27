@@ -175,7 +175,7 @@ namespace MachineBrigade.Game.Effects
             PB.Basics(trail, new Vector2(0.9f, 1.4f), new Vector2(0f, 0.2f), new Vector2(1f, 1.35f));
             PB.Flipbook(trail, loop: false, tilt: 30f, from: 0.1f);
             PB.Colors(trail, PB.Hold(new Color(0.16f, 0.15f, 0.14f), new Color(0.45f, 0.44f, 0.43f), 0.08f, 0.4f, 0.8f));
-            PB.Grow(trail, 0.6f, 2.4f);
+            PB.Grow(trail, 0.6f, 1.9f);
             var emission = trail.emission;
             emission.rateOverTime = 12f;
             var sub = ps.subEmitters;
