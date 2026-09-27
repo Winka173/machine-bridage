@@ -157,6 +157,11 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("aps"))
+                    {
+                        var a = v.Object("aps");
+                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"));
+                    }
                     if (v.Has("mines"))
                     {
                         var m = v.Object("mines");

@@ -34,6 +34,9 @@ namespace MachineBrigade.Tests
             "highrise_a", "highrise_b", "skyscraper", "parking_garage", "billboard", "bus", "traffic_light",
         };
 
+        /// <summary>Vehicles added with the artillery pass (real-world equipment).</summary>
+        private static readonly string[] Added = { "grad_truck", "atgm_carrier", "aps_tank" };
+
         private static readonly string[] Props =
         {
             "house_small", "house_large", "wall", "fuel_tank", "barrel", "ammo_crate", "tree", "tree_broad", "bush",
@@ -59,6 +62,8 @@ namespace MachineBrigade.Tests
             foreach (var id in Props)
                 Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
             foreach (var id in Others)
+                Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
+            foreach (var id in Added)
                 Assert.IsNotNull(Load(id).GetComponentInChildren<MeshFilter>(), id);
         }
 

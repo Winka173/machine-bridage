@@ -187,6 +187,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Lays mines as it goes (mine layers).</summary>
         public MineLayerDef? Mines { get; internal set; }
 
+        /// <summary>Active protection: shoots down incoming missiles and rockets (see <see cref="ApsDef"/>).</summary>
+        public ApsDef? Aps { get; internal set; }
+
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }
 

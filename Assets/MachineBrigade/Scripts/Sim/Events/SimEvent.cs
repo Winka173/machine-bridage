@@ -54,6 +54,12 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Team claimed the supply crate at Position.</summary>
         CrateClaimed,
+
+        /// <summary>
+        /// An active protection system (Entity) shot down an incoming round (DefId: its weapon) at
+        /// Position; Value is -1 for the left launcher, +1 for the right.
+        /// </summary>
+        Intercepted,
     }
 
     /// <summary>
@@ -163,6 +169,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent CrateIncoming(Crate c, float seconds) =>
             new(SimEventKind.CrateIncoming, c.Id, c.Position, default, seconds, default, null, Teams.Neutral);
+
+        internal static SimEvent Intercept(Vehicle aps, WeaponDef weapon, Vector2 at, bool left) =>
+            new(SimEventKind.Intercepted, aps.Id, at, aps.Position, left ? -1f : 1f, ExplosionTier.Small, weapon.Id, aps.Team);
 
         internal static SimEvent CrateClaimed(Crate c, int team) =>
             new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);

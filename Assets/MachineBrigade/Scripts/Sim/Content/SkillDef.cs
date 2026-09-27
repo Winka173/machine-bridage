@@ -113,6 +113,25 @@ namespace MachineBrigade.Sim.Content
         public float Rate { get; }
     }
 
+    /// <summary>
+    /// An active protection system (Trophy, Afganit): shoots down incoming missiles, drones and
+    /// direct-fire rockets aimed at anything within <see cref="Radius"/> of the vehicle. It holds
+    /// <see cref="Charges"/> interceptors, each reloaded <see cref="Recharge"/> seconds after use.
+    /// </summary>
+    public sealed class ApsDef
+    {
+        public ApsDef(float radius, int charges, float recharge)
+        {
+            Radius = Guard.Positive(radius, "aps", nameof(radius));
+            Charges = charges >= 1 ? charges : throw new ArgumentException("aps: charges must be at least 1.");
+            Recharge = Guard.Positive(recharge, "aps", nameof(recharge));
+        }
+
+        public float Radius { get; }
+        public int Charges { get; }
+        public float Recharge { get; }
+    }
+
     /// <summary>A mine layer's charges: laid every Interval seconds, at most Max alive per layer.</summary>
     public sealed class MineLayerDef
     {

@@ -188,6 +188,20 @@ namespace MachineBrigade.Game.Effects
                         _strikes.Consume(e, now);
                         break;
 
+                    case SimEventKind.Intercepted:
+                        // Active protection: a launcher on the turret fires, and the incoming round
+                        // bursts in the air a few metres short of the tank.
+                        var interceptAt = Ground(e.Position, 1.8f);
+                        if (views.TryGet(e.Entity, out var guard))
+                        {
+                            var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
+                            _tracers.Launch(from, interceptAt, 0.06f, 0f, 0.12f, 1.2f, now);
+                            _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, interceptAt - from, now, 0.9f, guard.Position.y);
+                        }
+                        Pop(_pop, interceptAt, now);
+                        _emitters.Flak(interceptAt);
+                        break;
+
                     case SimEventKind.Repaired:
                         if (views.TryGet(e.Entity, out var repaired)) _emitters.Repair(repaired.Position + Vector3.up);
                         break;

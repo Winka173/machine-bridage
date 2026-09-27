@@ -31,6 +31,7 @@ namespace MachineBrigade.Sim.Combat
             var weapon = p.Weapon;
             var hit = EntityId.None;
             var at = p.AimPoint;
+            if (TryIntercept(p)) return;
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
@@ -51,6 +52,34 @@ namespace MachineBrigade.Sim.Combat
                 Splash(at, weapon.SplashRadius, weapon.Damage, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
+        }
+
+        /// <summary>
+        /// An active protection system of the target's side shoots the round down short of its
+        /// mark: missiles, drones and direct-fire rockets only (not shells, bullets, bombs or
+        /// artillery rockets), aimed within the system's reach, while it has an interceptor.
+        /// </summary>
+        private bool TryIntercept(Projectile p)
+        {
+            var weapon = p.Weapon;
+            var kind = weapon.Projectile;
+            if (p.TargetFlying || !(weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f))) return false;
+            var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
+            foreach (var v in _world.VehicleList)
+            {
+                var aps = v.Def.Aps;
+                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0) continue;
+                if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
+                v.ApsCharges--;
+                v.ApsLeft = !v.ApsLeft;
+                // The interceptor meets the round a few metres out, on the side it came from.
+                var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;
+                var toward = from - v.Position;
+                toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+                _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

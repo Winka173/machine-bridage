@@ -56,6 +56,13 @@ namespace MachineBrigade.Sim.Abilities
                 if (!v.IsAlive) continue;
                 v.RefreshEffects(now);
                 if (v.Def.Jammer > 0f) _jammers.Add(v);
+                // Active protection reloads one interceptor at a time.
+                var aps = v.Def.Aps;
+                if (aps != null && v.ApsCharges < aps.Charges && (v.ApsReload += dt) >= aps.Recharge)
+                {
+                    v.ApsCharges++;
+                    v.ApsReload = 0f;
+                }
             }
 
             _auraTimer -= dt;
