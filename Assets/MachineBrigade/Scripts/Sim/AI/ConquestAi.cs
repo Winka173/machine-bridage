@@ -21,10 +21,17 @@ namespace MachineBrigade.Sim.AI
     /// <summary>The commander's general intent.</summary>
     public enum CommanderStance
     {
-        /// <summary>Take neutral and enemy objectives.</summary>
+        /// <summary>
+        /// Take ground: the weakest-held enemy or neutral point in reach, the army advancing in
+        /// bounds, flanking, and pulling back to regroup when outmatched.
+        /// </summary>
         Attack,
 
-        /// <summary>Hold what we have: go where our objectives are threatened.</summary>
+        /// <summary>
+        /// Hold ground: the army stands on our point facing the enemy (the one under threat, else
+        /// the one nearest them), chases only a short way off it, never falls back, and digs in:
+        /// vehicles that stop go hull-down and take less damage (see <see cref="SimWorld.Entrench"/>).
+        /// </summary>
         Defend,
     }
 
@@ -96,8 +103,33 @@ namespace MachineBrigade.Sim.AI
             _enemyTeam = enemyTeam;
             _difficulty = difficulty;
             _random = new Random(seed);
-            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective, FallBackTo = SafePoint };
+            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective, FallBackTo = SafePoint, Facing = Threat };
         }
+
+        /// <summary>How far off the point it holds a defending army chases.</summary>
+        private const float HoldReach = 26f;
+
+        /// <summary>Which way the threat lies from the point being held: the enemy seen nearest it, else their camp.</summary>
+        private Vector2? Threat(SimWorld world)
+        {
+            if (_holding is not { } held) return null;
+            Vector2? nearest = null;
+            var best = float.MaxValue;
+            foreach (var e in _tactics.KnownEnemies)
+            {
+                if (e.Flying || e.Def.Static) continue;
+                var d = Vector2.DistanceSquared(e.Position, held);
+                if (d >= best) continue;
+                best = d;
+                nearest = e.Position;
+            }
+            var to = nearest ?? (world.TryGetRally(_enemyTeam, out var camp) ? camp : held + Vector2.UnitX);
+            var along = to - held;
+            return along.LengthSquared() > 1f ? Vector2.Normalize(along) : Vector2.UnitX;
+        }
+
+        /// <summary>The point the army is holding this decision (Defend), or null.</summary>
+        private Vector2? _holding;
 
         private float Interval => _difficulty switch
         {
@@ -108,6 +140,9 @@ namespace MachineBrigade.Sim.AI
 
         public void Tick(SimWorld world, float dt)
         {
+            var defend = Stance == CommanderStance.Defend;
+            world.Entrench(_team, defend);
+            _tactics.HoldLeash = defend && _holding != null ? HoldReach : null;
             _tactics.Tick(world, dt);
             _timer -= dt;
             if (_timer > 0f || world.IsOver) return;
@@ -123,6 +158,7 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private Vector2? ChooseObjective(SimWorld world)
         {
+            _holding = null;
             if (FocusPoint != null && _mode != null)
                 foreach (var point in _mode.Points)
                     if (point.Def.Id == FocusPoint) return point.Def.Position;
@@ -133,14 +169,20 @@ namespace MachineBrigade.Sim.AI
             ObjectiveState? best = null;
             var bestScore = float.MinValue;
             var defend = Stance == CommanderStance.Defend;
+            world.TryGetRally(_enemyTeam, out var enemyCamp);
+            var ownPower = ArmyPower(world);
             foreach (var point in _mode.Points)
             {
+                if (point.Locked) continue;
                 float score;
                 if (defend)
                 {
-                    // Our points first, threatened ones most; take new ground only when we hold nothing.
-                    score = point.Owner == _team ? 3f : point.Owner == -1 ? 1f : 0.5f;
-                    if (point.Contested || (point.Owner == _team && point.Progress * (_team == 0 ? 1f : -1f) < 0.99f)) score += 2f;
+                    // Our points first, threatened ones most, then the one nearest the enemy (the
+                    // front); take new ground only when we hold nothing.
+                    var ours = point.Owner == _team;
+                    score = ours ? 3f : point.Owner == -1 ? 1f : 0.5f;
+                    if (point.Contested || (ours && (point.Progress * (_team == 0 ? 1f : -1f) < 0.99f || EnemyNear(world, point)))) score += 2f;
+                    if (ours) score -= Vector2.Distance(point.Def.Position, enemyCamp) / 120f;
                 }
                 else
                 {
@@ -151,13 +193,36 @@ namespace MachineBrigade.Sim.AI
                     score = ours ? 0f : point.Owner == _enemyTeam ? 2.2f : 3f;
                     if (point.Contested) score += 1.5f;
                     if (ours) score += threatened ? 2.5f : -2f;
+                    // Go where they are thin: every enemy seen dug in round a point (towers and
+                    // defences included) counts against it, relative to our own strength.
+                    else score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * 1.2f;
                 }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
                 best = point;
                 bestScore = score;
             }
-            return best != null && bestScore > -1.5f ? best.Def.Position : null;
+            if (best == null || bestScore <= -1.5f) return null;
+            if (defend && best.Owner == _team) _holding = best.Def.Position;
+            return best.Def.Position;
+        }
+
+        /// <summary>Strength of the enemies seen round a point (a guess from what is in sight).</summary>
+        private float Guard(ObjectiveState point)
+        {
+            var reach = point.Def.Radius + 18f;
+            var total = 0f;
+            foreach (var e in _tactics.KnownEnemies)
+                if (!e.Flying && Vector2.Distance(e.Position, point.Def.Position) < reach) total += e.Def.Power * (e.Hp / e.MaxHp);
+            return total;
+        }
+
+        private float ArmyPower(SimWorld world)
+        {
+            var total = 0f;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _team && !v.Def.Static && !v.Scripted) total += v.Def.Power * (v.Hp / v.MaxHp);
+            return total;
         }
 
         /// <summary>
@@ -390,6 +455,7 @@ namespace MachineBrigade.Sim.AI
             air = heavy = light = 0;
             foreach (var e in _tactics.KnownEnemies)
             {
+                if (e.Def.Static) continue;
                 if (e.Flying) air++;
                 else if (e.Armor == ArmorClass.Heavy) heavy++;
                 else light++;
@@ -401,7 +467,7 @@ namespace MachineBrigade.Sim.AI
             aa = artillery = air = total = 0;
             foreach (var v in world.Vehicles)
             {
-                if (!v.IsAlive || v.Team != _team) continue;
+                if (!v.IsAlive || v.Team != _team || v.Def.Static) continue;
                 total++;
                 if (v.Def.Flying) air++;
                 else if (CanHitAir(v.Def)) aa++;

@@ -134,6 +134,26 @@ namespace MachineBrigade.Sim
 
         public const float HomeRadius = 35f;
 
+        private readonly bool[] _entrench = new bool[2];
+
+        /// <summary>
+        /// A side told to dig in (its commander's Defend stance): its ground vehicles that have
+        /// stood still for <see cref="EntrenchSeconds"/> go hull-down and take
+        /// <see cref="EntrenchReduction"/> less damage, until they move again.
+        /// </summary>
+        public void Entrench(int team, bool on)
+        {
+            if (team >= 0 && team < _entrench.Length) _entrench[team] = on;
+        }
+
+        public const float EntrenchSeconds = 3f;
+        public const float EntrenchReduction = 0.2f;
+
+        /// <summary>Hull-down: its side is dug in and it has not moved for a while.</summary>
+        public bool IsEntrenched(Vehicle v) =>
+            v.Team >= 0 && v.Team < _entrench.Length && _entrench[v.Team] && !v.Flying && !v.Def.Static &&
+            Time - v.StillSince >= EntrenchSeconds;
+
         /// <summary>Whether a point lies in another side's home zone (strikes cannot be called there).</summary>
         internal bool InEnemyHome(Vector2 point, int team)
         {
@@ -176,6 +196,9 @@ namespace MachineBrigade.Sim
         }
 
         public bool TryGetRally(int team, out Vector2 rally) => _rally.TryGetValue(team, out rally);
+
+        /// <summary>Moves a side's drop zone (an Assault attacker moving up behind the sector it took).</summary>
+        public void SetRally(int team, Vector2 rally) => _rally[team] = ClampToMap(rally);
 
         public int CountAlive(int team)
         {

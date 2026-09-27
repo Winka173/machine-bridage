@@ -56,6 +56,12 @@ namespace MachineBrigade.Sim.Abilities
                 if (!v.IsAlive) continue;
                 v.RefreshEffects(now);
                 if (v.Def.Jammer > 0f) _jammers.Add(v);
+                // Standing still (entrenchment counts from here).
+                if (Vector2.DistanceSquared(v.Position, v.StillAt) > 0.04f)
+                {
+                    v.StillAt = v.Position;
+                    v.StillSince = now;
+                }
                 // Home zone: a vehicle left alone for 3 s by its own camp repairs 2 % a second.
                 if (_world.HomeZones && !v.Def.Static && v.Hp < v.MaxHp && now - v.LastHitTime > 3.0 &&
                     _world.TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(v.Position, home) < SimWorld.HomeRadius * SimWorld.HomeRadius)

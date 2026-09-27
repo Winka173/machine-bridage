@@ -24,6 +24,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Both sides have vehicles inside the circle, so nothing moves.</summary>
         public bool Contested { get; internal set; }
+
+        /// <summary>Out of play for now (an Assault sector not yet live, or one already taken): it cannot change hands.</summary>
+        public bool Locked { get; internal set; }
     }
 
     /// <summary>Tunable Conquest rules; defaults follow the game plan.</summary>
@@ -44,6 +47,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Spawn bastions and home zones at both camps (see <see cref="Modes.BaseDefences"/>).</summary>
         public bool BaseDefences { get; set; } = true;
+
+        /// <summary>Watchtowers on the points for whoever holds them (see <see cref="Modes.Outposts"/>).</summary>
+        public bool Outposts { get; set; } = true;
 
         /// <summary>
         /// A side this many tickets behind gets a boss once (Battlefield 1's behemoths): a bounded
@@ -99,7 +105,10 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             if (_rules.BaseDefences) BaseDefences.Build(world, PlayerTeam, EnemyTeam);
+            if (_rules.Outposts) _outposts = new Outposts(world, _points);
         }
+
+        private Outposts? _outposts;
 
         public void Tick(SimWorld world, float dt)
         {
@@ -114,6 +123,7 @@ namespace MachineBrigade.Sim.Modes
             if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = _rules.PointIncome * held0;
             if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = _rules.PointIncome * held1;
 
+            _outposts?.Tick(world);
             Comeback(world);
             var lost0 = _tickets[PlayerTeam] <= 0f;
             var lost1 = _tickets[EnemyTeam] <= 0f;
