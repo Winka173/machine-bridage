@@ -141,7 +141,7 @@ namespace MachineBrigade.Game.Rendering
         /// missile boxes, and the muzzle empties on them. Frames and carriages stay put.
         /// </summary>
         private static readonly Regex BarrelPattern = new(
-            @"^(main_cannon|muzzle_brake|mortar_tube|rocket_tubes|tubes|tube_bores|pod(?!_frame)|atgm_pod|launcher|muzzle_main|muzzle_coax|muzzle_missile|muzzle_rocket)\w*(\.\d+)?$",
+            @"^(main_cannon|muzzle_brake|mortar_tube|rocket_tubes|tubes|tube_bores|pod(?!_frame)|atgm_pod|launcher|coax|muzzle_main|muzzle_coax|muzzle_missile|muzzle_rocket)\w*(\.\d+)?$",
             RegexOptions.IgnoreCase);
 
         private const string ElevationName = "Elevation";
@@ -410,6 +410,10 @@ namespace MachineBrigade.Game.Rendering
                 if (child.name.StartsWith("Muzzle_main", StringComparison.OrdinalIgnoreCase)) muzzle = child;
             }
             if (muzzle == null) return (0f, BarrelKind.None);
+            // A missile muzzle rides with the gun only when its launcher does (an IFV's turret
+            // box); a SAM rack of its own beside the gun stays put.
+            var launcherRides = parts.Exists(p => Regex.IsMatch(p.name, "^(launcher|tubes|pod|atgm_pod)", RegexOptions.IgnoreCase));
+            if (!launcherRides) parts.RemoveAll(p => p.name.StartsWith("Muzzle_missile", StringComparison.OrdinalIgnoreCase));
 
             Bounds? box = null;
             var kind = BarrelKind.Gun;

@@ -395,7 +395,10 @@ namespace MachineBrigade.Sim.Movement
             var isFinal = v.PathIndex == v.Path.Count - 1;
             var toWaypoint = waypoint - v.Position;
             var distance = toWaypoint.Length();
-            if (distance <= (isFinal ? ArriveFinal : ArriveWaypoint))
+            // Aircraft keep apart in the air, so a flight sent to one point spreads round it: when
+            // others of the flight crowd the destination, anywhere within their own size of it is there.
+            var arrive = isFinal ? (def.Flying && CrowdedInAir(v, waypoint) ? ArriveFinal + v.Radius * 0.9f : ArriveFinal) : ArriveWaypoint;
+            if (distance <= arrive)
             {
                 v.PathIndex++;
                 if (!v.HasPath) v.PathCompleted = true;
@@ -704,6 +707,18 @@ namespace MachineBrigade.Sim.Movement
             if (v.Def.Static) return 0f;
             var weight = v.HasPath ? 0.3f : 0.7f;
             return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
+        }
+
+        /// <summary>Another aircraft of the same side is hovering close enough to <paramref name="point"/> to keep this one off it.</summary>
+        private bool CrowdedInAir(Vehicle v, Vector2 point)
+        {
+            foreach (var other in _world.VehicleList)
+            {
+                if (other == v || !other.IsAlive || !other.Flying || other.Team != v.Team) continue;
+                var reach = other.Radius + v.Radius;
+                if (Vector2.DistanceSquared(other.Position, point) < reach * reach) return true;
+            }
+            return false;
         }
 
         /// <summary>Moves a vehicle by <paramref name="offset"/>, or slides it along a wall; false if it cannot move at all.</summary>
