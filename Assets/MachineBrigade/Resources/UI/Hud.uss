@@ -67,7 +67,8 @@
 .tool, .cmd, .wide, .segment, .toggle, .setting-row, .icon-button, .card, .point-chip, .option {
     border-bottom-width: 3px;
 }
-.tool:active, .cmd:active, .wide:active, .segment:active, .toggle:active, .icon-button:active, .card:active, .option:active {
+.tool:active, .cmd:active, .wide:active, .segment:active, .toggle:active, .icon-button:active, .card:active, .option:active,
+.tool.pressed, .cmd.pressed, .wide.pressed, .segment.pressed, .toggle.pressed, .icon-button.pressed, .card.pressed, .option.pressed {
     border-bottom-width: 1px;
     translate: 0 2px;
 }
@@ -637,7 +638,7 @@
     background-color: var(--amber-deep); border-radius: 8px;
     border-bottom-color: #7a4410; border-bottom-width: 4px;
 }
-.campaign-banner:active { border-bottom-width: 1px; translate: 0 3px; }
+.campaign-banner:active, .campaign-banner.pressed { border-bottom-width: 1px; translate: 0 3px; }
 .campaign-banner > .icon { width: 34px; height: 34px; margin-right: 12px; --icon-color: #fff1dc; }
 .campaign-banner-text { flex-grow: 1; }
 .campaign-banner-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 18px; letter-spacing: 1px; color: #fff4e2; }
@@ -703,7 +704,7 @@
     background-color: var(--n750); border-radius: 6px; border-bottom-color: var(--n950); border-bottom-width: 3px;
     border-left-width: 4px; border-left-color: var(--n750);
 }
-.mission-row:active { border-bottom-width: 1px; translate: 0 2px; }
+.mission-row:active, .mission-row.pressed { border-bottom-width: 1px; translate: 0 2px; }
 .mission-row.boss { border-left-color: var(--danger-dark); }
 .mission-row.chosen { background-color: var(--n700); border-left-color: var(--amber); }
 .mission-row.locked { background-color: var(--n850); }
@@ -766,7 +767,7 @@
     background-color: var(--n750); border-radius: 8px; overflow: hidden;
     border-width: 3px; border-color: var(--n750); border-bottom-color: var(--n950);
 }
-.shop-card:active { translate: 0 2px; }
+.shop-card:active, .shop-card.pressed { translate: 0 2px; }
 .shop-card.chosen { border-color: var(--amber); }
 .shop-card.equipped { background-color: var(--ally-dark); border-color: var(--ally); }
 .shop-card.soon { background-color: var(--n850); }
@@ -897,7 +898,7 @@
     border-bottom-width: 3px; border-bottom-color: var(--n950);
     border-top-width: 3px; border-top-color: var(--n750);
 }
-.mode-tile:active { border-bottom-width: 1px; translate: 0 2px; }
+.mode-tile:active, .mode-tile.pressed { border-bottom-width: 1px; translate: 0 2px; }
 .mode-tile .icon { width: 24px; height: 24px; }
 .mode-tile-name {
     -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; color: var(--n200); margin-top: 5px;
@@ -916,9 +917,10 @@
 
 .deck-grid .card { width: 92px; height: 96px; margin: 0 6px 6px 0; }
 .card-detail {
-    display: none; margin: 6px 0 8px 0; padding: 10px 12px;
+    height: 150px; flex-shrink: 0; overflow: hidden; margin: 8px 22px 4px 22px; padding: 10px 12px;
     background-color: var(--n800); border-radius: 10px;
 }
+.detail-empty { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n300); white-space: normal; margin-top: 6px; }
 .detail-head { flex-direction: row; align-items: center; }
 .detail-head > .icon { width: 30px; height: 30px; margin-right: 10px; --icon-color: #8fd694; }
 .detail-names { flex-grow: 1; flex-shrink: 1; }
