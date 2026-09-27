@@ -495,7 +495,7 @@ namespace MachineBrigade.Game.Match
             _lastInput = Time.unscaledTime;
             if (Time.time < _raidAt) return;
             _raidAt = Time.time + 18f;
-            var at = bastion.Position + new System.Numerics.Vector2(30f, 30f);
+            var at = bastion.Position + new System.Numerics.Vector2(20f, 20f);
             foreach (var id in new[] { "light_tank", "apc", "armored_car", "attack_helicopter" })
                 _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);
         }

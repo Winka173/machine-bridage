@@ -155,12 +155,17 @@ namespace MachineBrigade.Game.Effects
         private void Shells(WeaponDef weapon, in SimEvent e, Vector3 from, Vector3 to, Vector3 forward, Vector3 aim, float? groundY,
             float distance, float now)
         {
-            if (e.Tier <= ExplosionTier.Medium)
+            // Only guns that lob their shells (artillery with a minimum range, howitzers) fly an arc;
+            // a tank or turret gun fires straight down its barrel however big its shell is.
+            var lobs = weapon != null ? weapon.Indirect || weapon.Id.Contains("howitzer") : e.Tier > ExplosionTier.Medium;
+            if (!lobs)
             {
                 var heavy = weapon != null && weapon.Damage >= 100f;
-                _tracers.Launch(from, to, e.Value, 0f, heavy ? 0.22f : 0.16f, heavy ? 3.2f : 2.6f, now, 0f, heavy ? 0.95f : 0.75f);
-                _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, heavy ? 1.25f : 1f, groundY);
-                _shake(from, heavy ? 0.08f : 0.05f);
+                var big = e.Tier >= ExplosionTier.Large;
+                _tracers.Launch(from, to, e.Value, 0f, big ? 0.28f : heavy ? 0.22f : 0.16f, big ? 3.6f : heavy ? 3.2f : 2.6f, now, 0f,
+                    big ? 1.1f : heavy ? 0.95f : 0.75f);
+                _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, big ? 1.5f : heavy ? 1.25f : 1f, groundY);
+                _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
                 return;
             }
             // Artillery: a high arc with a thick trail.
