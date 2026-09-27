@@ -57,6 +57,9 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>`Muzzle_&lt;slot&gt;` empties by lower-case slot name (main, coax, mg, missile, rocket, gun).</summary>
         public IReadOnlyDictionary<string, Transform> Muzzles { get; }
 
+        /// <summary>Launchers on both sides for a slot (pods, rails), left to right; see <see cref="LaunchPoint"/>.</summary>
+        public IReadOnlyDictionary<string, List<LaunchPoint>> Launchers { get; internal set; } = new Dictionary<string, List<LaunchPoint>>();
+
         /// <summary>`Mount_&lt;slot&gt;` yaw pivots of weapons that turn on their own.</summary>
         public IReadOnlyDictionary<string, Transform> Mounts { get; }
 
@@ -211,8 +214,14 @@ namespace MachineBrigade.Game.Rendering
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
             _elevations.TryGetValue(modelId, out var raise);
+            var launchers = new Dictionary<string, List<LaunchPoint>>();
+            foreach (var point in root.GetComponentsInChildren<LaunchPoint>(true))
+            {
+                if (!launchers.TryGetValue(point.Slot, out var list)) launchers[point.Slot] = list = new List<LaunchPoint>();
+                list.Add(point);
+            }
             return new ModelInstance(root, turret, recoil, muzzle, renderers, muzzles, mounts, spinners, elevation,
-                raise.pitch, elevation != null ? raise.kind : BarrelKind.None);
+                raise.pitch, elevation != null ? raise.kind : BarrelKind.None) { Launchers = launchers };
         }
 
         /// <summary>
@@ -328,9 +337,143 @@ namespace MachineBrigade.Game.Rendering
             template.name = modelId;
             var raise = AddElevation(template.transform);
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
+            AddLaunchPoints(template.transform);
             MergeRigidParts(template.transform);
             _templates[modelId] = template;
             return template;
+        }
+
+        /// <summary>
+        /// Where each weapon slot's rounds leave from, looked for in this order: launchers in pairs
+        /// or rows across the model (pods, rails, twin guns; one launch point each, used in turn),
+        /// else the face of a box of tubes (one launch point in the middle of the face, each round
+        /// leaving from a random spot on it, as from a different tube).
+        /// </summary>
+        private static readonly (string slot, string[] pairs, string[] faces)[] Launchers =
+        {
+            ("rocket", new[] { "Pods", "Rocket_pod", "Rocket_pods" },
+                new[] { "Pod_face", "Tubes_bore", "Rocket_tubes_face", "Box_face", "Launcher_face", "Launcher_tubes_bore", "Tubes" }),
+            ("missile", new[] { "Missiles", "Launch_tubes", "Missile_pack", "ATGM_pod", "Standoff_missile", "Missile_racks" },
+                new[] { "Tubes_bore", "Launcher_tubes_bore", "Launcher_covers", "Tubes" }),
+            ("gun", new[] { "Miniguns" }, new string[0]),
+            ("main", new[] { "Pods" },
+                new[] { "Tubes_bore", "Pod_face", "Rocket_tubes_face", "Box_face", "Launcher_face", "Launcher_tubes_bore", "Launcher_covers", "Tubes" }),
+        };
+
+        /// <summary>
+        /// Launch points for the slots in <see cref="Launchers"/>, next to the slot's muzzle so they
+        /// turn and elevate with it. Paired launchers are found by grouping the meshes' vertices
+        /// across the model (a gap of 0.35 m or more starts a new group; two groups at least); a
+        /// face of tubes is taken whole. A slot with neither keeps its muzzle.
+        /// </summary>
+        private static void AddLaunchPoints(Transform root)
+        {
+            var byName = new Dictionary<string, List<MeshFilter>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
+                var name = Regex.Replace(filter.name, @"\.\d+$", string.Empty);
+                if (!byName.TryGetValue(name, out var list)) byName[name] = list = new List<MeshFilter>();
+                list.Add(filter);
+            }
+            var muzzles = new Dictionary<string, Transform>();
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            {
+                var m = MuzzlePattern.Match(t.name);
+                if (m.Success) muzzles[m.Groups[1].Value.ToLowerInvariant()] = t;
+            }
+            foreach (var (slot, pairs, faces) in Launchers)
+            {
+                if (!muzzles.TryGetValue(slot, out var muzzle)) continue;
+                // Only launchers round the slot's own muzzle: a model can carry other pods and
+                // tubes elsewhere (a boss with sponson pods and a rear rocket box).
+                var at = root.InverseTransformPoint(muzzle.position);
+                List<(Vector3 front, Vector2 half)> found = null;
+                var face = false;
+                foreach (var part in pairs)
+                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters) is { Count: >= 2 } groups && AroundMuzzle(groups, at))
+                    {
+                        found = groups;
+                        break;
+                    }
+                if (found == null)
+                    foreach (var part in faces)
+                        if (byName.TryGetValue(part, out var filters) && WholeFace(root, filters) is var whole && Vector3.Distance(whole.front, at) < 1.6f)
+                        {
+                            found = new List<(Vector3, Vector2)> { whole };
+                            face = true;
+                            break;
+                        }
+                if (found == null) continue;
+                for (var i = 0; i < found.Count; i++)
+                {
+                    var (front, half) = found[i];
+                    var point = new GameObject($"Launch_{slot}_{i}").transform;
+                    point.SetParent(muzzle.parent, false);
+                    point.position = root.TransformPoint(front);
+                    point.rotation = muzzle.rotation;
+                    var launch = point.gameObject.AddComponent<LaunchPoint>();
+                    launch.Slot = slot;
+                    launch.Spread = face ? half * 0.8f : Vector2.zero;
+                }
+            }
+        }
+
+        /// <summary>Whether a row of launchers is the one a muzzle stands for: level with it, and spread either side of it.</summary>
+        private static bool AroundMuzzle(List<(Vector3 front, Vector2 half)> groups, Vector3 muzzle)
+        {
+            float y = 0f, z = 0f, left = float.MaxValue, right = float.MinValue;
+            foreach (var (front, _) in groups)
+            {
+                y += front.y;
+                z += front.z;
+                left = Mathf.Min(left, front.x);
+                right = Mathf.Max(right, front.x);
+            }
+            y /= groups.Count;
+            z /= groups.Count;
+            return Mathf.Abs(muzzle.y - y) < 1.2f && Mathf.Abs(muzzle.z - z) < 2f && muzzle.x > left - 0.6f && muzzle.x < right + 0.6f;
+        }
+
+        /// <summary>The front face of a box of tubes: its middle (root space) and its half width and height.</summary>
+        private static (Vector3 front, Vector2 half) WholeFace(Transform root, List<MeshFilter> filters)
+        {
+            var lo = Vector3.positiveInfinity;
+            var hi = Vector3.negativeInfinity;
+            foreach (var filter in filters)
+                foreach (var v in filter.sharedMesh.vertices)
+                {
+                    var p = root.InverseTransformPoint(filter.transform.TransformPoint(v));
+                    lo = Vector3.Min(lo, p);
+                    hi = Vector3.Max(hi, p);
+                }
+            return (new Vector3((lo.x + hi.x) * 0.5f, (lo.y + hi.y) * 0.5f, hi.z), new Vector2((hi.x - lo.x) * 0.5f, (hi.y - lo.y) * 0.5f));
+        }
+
+        /// <summary>The launchers in a set of meshes, left to right: the middle of each one's front face (root space) and its half width and height.</summary>
+        private static List<(Vector3 front, Vector2 half)> LauncherGroups(Transform root, List<MeshFilter> filters)
+        {
+            var points = new List<Vector3>();
+            foreach (var filter in filters)
+                foreach (var v in filter.sharedMesh.vertices)
+                    points.Add(root.InverseTransformPoint(filter.transform.TransformPoint(v)));
+            points.Sort((a, b) => a.x.CompareTo(b.x));
+            var groups = new List<(Vector3, Vector2)>();
+            var start = 0;
+            for (var i = 1; i <= points.Count; i++)
+            {
+                if (i < points.Count && points[i].x - points[i - 1].x < 0.35f) continue;
+                var lo = points[start];
+                var hi = points[start];
+                for (var k = start; k < i; k++)
+                {
+                    lo = Vector3.Min(lo, points[k]);
+                    hi = Vector3.Max(hi, points[k]);
+                }
+                groups.Add((new Vector3((lo.x + hi.x) * 0.5f, (lo.y + hi.y) * 0.5f, hi.z), new Vector2((hi.x - lo.x) * 0.5f, (hi.y - lo.y) * 0.5f)));
+                start = i;
+            }
+            return groups;
         }
 
         private void MergeRigidParts(Transform root)

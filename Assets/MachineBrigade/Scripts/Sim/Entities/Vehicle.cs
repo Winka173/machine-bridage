@@ -228,6 +228,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
         internal double LastHitTime = double.NegativeInfinity;
 
+        /// <summary>A defence a mode put down, whose ground routes go round (see SimWorld.AnchorDefence).</summary>
+        internal bool BlocksRoutes;
+
         /// <summary>Where the vehicle last stood still, and since when (entrenchment, see <see cref="SimWorld.Entrench"/>).</summary>
         internal Vector2 StillAt;
         internal double StillSince;

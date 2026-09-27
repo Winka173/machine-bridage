@@ -339,6 +339,7 @@ namespace MachineBrigade.Sim.Modes
                     var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? 6f : 9f);
                     var spot = point.Def.Position + _axis * (point.Def.Radius + 4f) + across * side;
                     var gun = world.SpawnVehicle(kinds[s][i], EnemyTeam, Open(world, spot, 6f), heading);
+                    world.AnchorDefence(gun);
                     _defences[s].Add(gun.Id);
                 }
             }

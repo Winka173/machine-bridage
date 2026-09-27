@@ -102,6 +102,7 @@ namespace MachineBrigade.Sim.Modes
                 {
                     var bastion = world.SpawnVehicle(Bastion, team, rally + toward * 10f + side * (18f * s), SimMath.HeadingOf(toward));
                     bastion.Invulnerable = true;
+                    world.AnchorDefence(bastion);
                 }
             }
         }
@@ -237,6 +238,7 @@ namespace MachineBrigade.Sim.Modes
         private static void Raise(SimWorld world, Site site, int team)
         {
             var tower = world.SpawnVehicle(Tower, team, site.Spot, site.Heading);
+            world.AnchorDefence(tower);
             site.Tower = tower.Id;
             site.Team = team;
             site.Pending = -1;

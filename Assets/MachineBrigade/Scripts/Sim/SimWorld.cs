@@ -393,13 +393,13 @@ namespace MachineBrigade.Sim
 
         /// <summary>Nearest living enemy vehicle within <paramref name="range"/> of the edge of its hull.</summary>
         internal Vehicle? FindNearestEnemy(Vehicle from, float range, bool requireVisible, float minRange = 0f,
-            TargetLayers layers = TargetLayers.All)
+            TargetLayers layers = TargetLayers.All, bool mobileOnly = false)
         {
             Vehicle? best = null;
             var bestDistance = float.MaxValue;
             foreach (var other in _vehicleList)
             {
-                if (!other.IsAlive || other.Team == from.Team) continue;
+                if (!other.IsAlive || other.Team == from.Team || (mobileOnly && other.Def.Static)) continue;
                 if ((layers & (other.Flying ? TargetLayers.Air : TargetLayers.Ground)) == 0) continue;
                 if (requireVisible && !other.IsVisibleTo(from.Team)) continue;
                 var centre = Vector2.Distance(from.Position, other.Position);
@@ -450,6 +450,21 @@ namespace MachineBrigade.Sim
             }
         }
 
+        /// <summary>
+        /// A defence a mode puts down (a camp bastion, a point's tower, an Assault sector's guns)
+        /// stands on the ground like a building: routes go round it. Defences a map places already
+        /// have their ground kept clear and their routes checked by the map builder.
+        /// </summary>
+        internal void AnchorDefence(Vehicle v)
+        {
+            if (!v.Def.Static || v.BlocksRoutes) return;
+            v.BlocksRoutes = true;
+            Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+        }
+
+        /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>
+        private static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
+
         private void RemoveDead()
         {
             for (var i = _vehicleList.Count - 1; i >= 0; i--)
@@ -458,6 +473,8 @@ namespace MachineBrigade.Sim
                 if (v.IsAlive) continue;
                 _vehicleList.RemoveAt(i);
                 _vehicles.Remove(v.Id);
+                // Its ruin can be driven round or over: the ground opens again.
+                if (v.BlocksRoutes) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
             }
         }
 

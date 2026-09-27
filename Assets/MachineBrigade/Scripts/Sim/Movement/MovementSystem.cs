@@ -305,8 +305,9 @@ namespace MachineBrigade.Sim.Movement
         private void UpdateAttackMove(Vehicle v)
         {
             var weapon = v.Def.Weapon;
+            // (A fixed defence does not come for it: only vehicles make it take cover.)
             if (weapon.Targets == TargetLayers.Air && !v.Flying &&
-                _world.FindNearestEnemy(v, v.Def.VisionRange * 0.7f, requireVisible: true, layers: TargetLayers.Ground) != null)
+                _world.FindNearestEnemy(v, v.Def.VisionRange * 0.7f, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null)
             {
                 // Anti-aircraft missiles cannot fight tanks: hold behind the line while ground enemies
                 // are close, turning only on aircraft.
