@@ -751,7 +751,7 @@
 .shop-tabs .segment { flex-basis: 30%; }
 .shop-grid { flex-direction: row; flex-wrap: wrap; }
 .shop-card {
-    width: 150px; height: 150px; margin: 0 8px 8px 0; align-items: center;
+    width: 150px; height: 168px; margin: 0 8px 8px 0; align-items: center;
     background-color: var(--n750); border-radius: 8px; overflow: hidden;
     border-width: 3px; border-color: var(--n750); border-bottom-color: var(--n950);
 }
@@ -759,17 +759,19 @@
 .shop-card.chosen { border-color: var(--amber); }
 .shop-card.equipped { background-color: var(--ally-dark); border-color: var(--ally); }
 .shop-card.soon { background-color: var(--n850); }
-.skin-swatch { flex-direction: row; width: 100%; height: 70px; }
+.skin-swatch { flex-direction: row; width: 100%; height: 62px; flex-shrink: 0; }
 .skin-band { flex-grow: 1; height: 100%; }
 .skin-swatch.metal { border-bottom-width: 3px; border-bottom-color: #ffffff; }
-.unit-art { width: 100%; height: 70px; align-items: center; justify-content: center; background-color: var(--n700); }
+.unit-art { width: 100%; height: 62px; flex-shrink: 0; align-items: center; justify-content: center; background-color: var(--n700); }
 .unit-art.premium { background-color: #5a3a12; }
 .unit-art .icon { width: 40px; height: 40px; }
 .unit-art.premium .icon { --icon-color: #f5b55e; }
-.shop-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--n100); margin-top: 6px; -unity-text-align: middle-center; white-space: normal; padding: 0 6px; }
+/* Names get two lines of room whether they need them or not, so every card's price sits on the same row. */
+.shop-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--n100); margin-top: 4px; height: 36px; -unity-text-align: middle-center; white-space: normal; padding: 0 6px; }
 .shop-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: var(--n400); margin-top: -2px; }
 .shop-soon { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 10px; color: var(--n400); margin-top: 6px; }
-.price-tag { flex-direction: row; align-items: center; margin-top: auto; margin-bottom: 8px; }
+/* The price is pinned to the bottom of the card, so it lines up across a row whatever sits above it. */
+.price-tag { flex-direction: row; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; bottom: 8px; }
 .price-tag .icon { width: 15px; height: 15px; margin-right: 4px; --icon-color: #f2a33a; }
 .price-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--amber); }
 .price-status { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 10px; color: var(--mint); margin-left: 6px; }
