@@ -122,7 +122,7 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Blender may suffix duplicate names (Turret.001); accept those too.</summary>
         private static readonly Regex TurretPattern = new(@"^Turret(\.\d+)?$");
 
-        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp)(\.\d+)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r)(\.\d+)?$", RegexOptions.IgnoreCase);
         private static readonly Regex MountPattern = new(@"^Mount_([a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Spinning parts: (name, local axis, degrees per second). Blender Z (up) is Unity Y.</summary>

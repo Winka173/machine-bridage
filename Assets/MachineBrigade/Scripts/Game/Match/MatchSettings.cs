@@ -108,6 +108,8 @@ namespace MachineBrigade.Game.Match
             "grad_truck", "atgm_carrier", "aps_tank",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
+            "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
+            "turtle_tank", "bmpt", "sapper",
         };
 
         public static readonly string[] AllSupports =

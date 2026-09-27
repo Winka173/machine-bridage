@@ -20,6 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             Stats,
             Weapons,
+            Firing,
             Equipment,
         }
 
@@ -58,10 +59,11 @@ namespace MachineBrigade.Game.Hud
             var right = UiKit.Box("detail-right");
             var tabs = UiKit.Box("segments detail-tabs");
             foreach (var (tab, icon, key) in new[] { (DetailTab.Stats, "gauge", "detail.stats"), (DetailTab.Weapons, "cannon", "detail.weaponsTab"),
-                         (DetailTab.Equipment, "gear", "army.equipment") })
+                         (DetailTab.Firing, "crosshair", "detail.firing"), (DetailTab.Equipment, "gear", "army.equipment") })
                 tabs.Add(Choice(Segment(icon, Strings.Get(key), () =>
                 {
                     _detailTab = tab;
+                    ShowPreview();
                     Refresh();
                 }, tab == DetailTab.Equipment), () => _detailTab == tab));
             right.Add(tabs);
@@ -126,7 +128,9 @@ namespace MachineBrigade.Game.Hud
             var vehicle = _detailId != null && _catalog.Vehicles.TryGetValue(_detailId, out var def) ? def : null;
             if (vehicle != null && Preview != null)
             {
-                Preview.Show(vehicle.Model, vehicle.Scale);
+                // The In action tab shows it firing on a range; the others turn it on its stand.
+                if (_detailTab == DetailTab.Firing) Preview.ShowRange(vehicle.Id);
+                else Preview.Show(vehicle.Model, vehicle.Scale);
                 _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
                 _detailPreview.style.display = DisplayStyle.Flex;
                 _detailIcon.style.display = DisplayStyle.None;
@@ -165,12 +169,22 @@ namespace MachineBrigade.Game.Hud
             switch (_detailTab)
             {
                 case DetailTab.Stats:
+                    // What it is for and anything special it does, in words, above the numbers.
+                    if (Strings.Has("note." + id))
+                    {
+                        _detailBody.Add(UiKit.Text(Strings.Get("detail.notes"), "menu-caps"));
+                        _detailBody.Add(UiKit.Text(Strings.Get("note." + id), "detail-note role-note"));
+                    }
                     if (vehicle != null) VehicleStats(vehicle, rank);
                     else StrikeStats(id, rank);
                     break;
                 case DetailTab.Weapons:
                     if (vehicle != null) VehicleWeapons(vehicle);
                     else _detailBody.Add(UiKit.Text(Strings.Get("support." + id + ".info"), "detail-note"));
+                    break;
+                case DetailTab.Firing:
+                    _detailBody.Add(UiKit.Text(Strings.Get(vehicle != null ? "detail.firingNote" : "detail.firingStrike"), "detail-note role-note"));
+                    if (vehicle != null) VehicleWeapons(vehicle);
                     break;
                 default:
                     if (vehicle != null) DetailEquipment(vehicle);

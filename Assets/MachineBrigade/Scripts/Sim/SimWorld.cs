@@ -455,6 +455,13 @@ namespace MachineBrigade.Sim
 
         internal void Emit(in SimEvent e) => _events.Add(e);
 
+        /// <summary>Turns a vehicle into a firing-range target (see <see cref="Vehicle.Dummy"/>).</summary>
+        public void MakeDummy(Vehicle v)
+        {
+            v.Dummy = true;
+            v.RefreshEffects(Time);
+        }
+
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
 
@@ -627,6 +634,11 @@ namespace MachineBrigade.Sim
                 var mask = 0;
                 // A stealthy aircraft shows only close up, or for a moment after it fires.
                 var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
+                if (target.Dummy)
+                {
+                    target.SeenByMask = target.VisibleToMask = ~0;
+                    continue;
+                }
                 foreach (var spotter in _vehicleList)
                 {
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;

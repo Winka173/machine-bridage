@@ -1,3 +1,4 @@
+using MachineBrigade.Sim.Content;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -13,14 +14,21 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>A layer nothing else uses: the preview model lives on it alone.</summary>
         private const int Layer = 31;
 
+        private readonly Catalog _catalog;
+        private readonly MaterialLibrary _materials;
+        private readonly MeshLibrary _meshes;
         private readonly ModelLibrary _models;
         private readonly Transform _root, _turntable;
         private readonly Camera _camera;
         private GameObject _model;
         private string _shown;
+        private FiringRange _range;
 
-        public UnitPreview(ModelLibrary models, Transform parent)
+        public UnitPreview(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, Transform parent)
         {
+            _catalog = catalog;
+            _materials = materials;
+            _meshes = meshes;
             _models = models;
             _root = new GameObject("Unit Preview").transform;
             _root.SetParent(parent, false);
@@ -51,6 +59,10 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Shows a vehicle's model (in the player's colours) and starts the camera.</summary>
         public void Show(string modelId, float scale)
         {
+            var fromRange = _range != null;
+            CloseRange();
+            _turntable.gameObject.SetActive(true);
+            if (fromRange && _model != null) Frame();
             if (_shown != modelId || _model == null)
             {
                 if (_model != null) Object.Destroy(_model);
@@ -65,15 +77,39 @@ namespace MachineBrigade.Game.Rendering
             _camera.enabled = true;
         }
 
+        /// <summary>The vehicle in action: firing at targets on a little range of its own (see <see cref="FiringRange"/>).</summary>
+        public void ShowRange(string vehicleId)
+        {
+            CloseRange();
+            _turntable.gameObject.SetActive(false);
+            _range = new FiringRange(_catalog, _materials, _meshes, _models, _camera, Layer, vehicleId);
+            _camera.enabled = true;
+        }
+
+        private void CloseRange()
+        {
+            if (_range == null) return;
+            _range.Dispose();
+            _range = null;
+            // The range moved the camera and widened its view: back to the turntable's.
+            _camera.orthographic = false;
+            _camera.fieldOfView = 28f;
+            _camera.nearClipPlane = 0.5f;
+            _camera.farClipPlane = 200f;
+        }
+
         public void Hide()
         {
+            CloseRange();
             _camera.enabled = false;
         }
 
-        /// <summary>Per frame: the turntable turns while it is shown.</summary>
+        /// <summary>Per frame: the turntable turns, or the range plays, while it is shown.</summary>
         public void Tick(float dt)
         {
-            if (_camera.enabled) _turntable.Rotate(0f, 22f * dt, 0f, Space.Self);
+            if (!_camera.enabled) return;
+            if (_range != null) _range.Tick(dt);
+            else _turntable.Rotate(0f, 22f * dt, 0f, Space.Self);
         }
 
         /// <summary>Centres the model on the turntable and backs the camera off to fit it, from a little above.</summary>

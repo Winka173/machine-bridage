@@ -25,6 +25,9 @@ import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
 import mb_harbor  # noqa: E402
 import mb_mapkit  # noqa: E402
+import mb_new_tracked  # noqa: E402
+import mb_new_trucks  # noqa: E402
+import mb_new_wheeled  # noqa: E402
 import mb_props  # noqa: E402
 import mb_siege  # noqa: E402
 import mb_support  # noqa: E402
@@ -46,7 +49,8 @@ def all_builders():
             **mb_terrain.BUILDERS, **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS,
             **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS, **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS,
             **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
-            **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS}
+            **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
+            **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS}
 
 
 def build_all(filters=()):

@@ -45,10 +45,14 @@ namespace MachineBrigade.Sim.Combat
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
                     var facing = target is Vehicle struck && !weapon.Indirect ? FacingFactor(struck, p.Origin) : 1f;
+                    // A kamikaze drone's damage partly stopped by a turtle tank's shed.
+                    if (weapon.Projectile == ProjectileKind.Drone && target is Vehicle shed) facing *= shed.Def.DroneArmor;
                     Apply(target, weapon.Damage * p.DamageScale * facing, weapon.DamageType);
                     hit = target.Id;
                 }
             }
+
+            if (weapon.Pierce && !p.TargetFlying) PierceLine(p, at, hit);
 
             // Every blast is a little different: its reach varies by up to 15 %.
             if (weapon.SplashRadius > 0f)
@@ -173,6 +177,8 @@ namespace MachineBrigade.Sim.Combat
                     if (type is DamageType.Kinetic or DamageType.ArmorPiercing && _world.IsEntrenched(vehicle))
                         damage *= 1f - SimWorld.EntrenchReduction;
                     vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+                    // A firing-range target takes the hit (its bar shows it) but never goes down.
+                    if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
                     _world.Emit(SimEvent.Damage(vehicle, damage));
                     if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);
                     break;
@@ -214,6 +220,43 @@ namespace MachineBrigade.Sim.Combat
             Apply(target, damage * scale, type);
         }
 
+        /// <summary>
+        /// A car bomb goes off: the blast (its weapon's damage and splash) hurts the enemy and
+        /// spares its own side, and the car is gone.
+        /// </summary>
+        internal void Detonate(Vehicle car, WeaponDef charge)
+        {
+            if (!car.IsAlive) return;
+            _pending.Add(new PendingExplosion(_world.Time, car.Position,
+                new ExplosionDef(charge.Damage, MathF.Max(1f, charge.SplashRadius), 0f, charge.ImpactTier), car.Id, car.Team));
+            car.Detonated = true;
+            Apply(car, car.Hp + car.MaxHp, DamageType.HighExplosive);
+            car.Hp = 0f;
+        }
+
+        /// <summary>
+        /// A railgun slug goes on through everything on its line: every enemy ground vehicle within
+        /// a hull's width of it takes the full hit (the one it was aimed at already has).
+        /// </summary>
+        private void PierceLine(Projectile p, Vector2 to, EntityId struck)
+        {
+            var from = p.Origin;
+            var line = to - from;
+            var length = line.Length();
+            if (length < 0.1f) return;
+            var along = line / length;
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Id == struck || v.Id == p.Owner) continue;
+                var offset = v.Position - from;
+                var t = Vector2.Dot(offset, along);
+                if (t < 0f || t > length + 12f) continue;
+                if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
+                Blame(v, p.Owner, p.OwnerTeam);
+                Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType);
+            }
+        }
+
         /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
         private const double FlareDecoy = 0.35;
 
@@ -224,7 +267,7 @@ namespace MachineBrigade.Sim.Combat
             vehicle.Speed = 0f;
             _world.Emit(SimEvent.VehicleLost(vehicle));
             _world.Economy.OnVehicleDestroyed(vehicle);
-            if (vehicle.Def.DeathExplosion != null) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
+            if (vehicle.Def.DeathExplosion != null && !vehicle.Detonated) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
             if (vehicle.Def.Flying) ScheduleCrash(vehicle, speed);
         }
 

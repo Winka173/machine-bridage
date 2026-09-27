@@ -69,6 +69,17 @@ namespace MachineBrigade.Game.Effects
             Place(tracer, 0f);
         }
 
+        /// <summary>A laser: one straight bar from muzzle to target, held for <paramref name="duration"/> seconds.</summary>
+        public void Beam(Vector3 from, Vector3 to, float duration, float thickness, float now)
+        {
+            var direction = to - from;
+            var length = direction.magnitude;
+            if (length < 0.1f) return;
+            var mid = (from + to) * 0.5f;
+            // A tracer that barely moves: centred on the middle of the line, as long as the line.
+            Launch(mid, mid + direction / length * 0.01f, duration, 0f, thickness, length, now);
+        }
+
         public void Tick(float now, Emitters emitters)
         {
             foreach (var tracer in _tracers)

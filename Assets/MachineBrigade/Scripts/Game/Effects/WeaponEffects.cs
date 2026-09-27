@@ -65,6 +65,13 @@ namespace MachineBrigade.Game.Effects
             var kind = weapon?.Projectile ?? (e.Tier == ExplosionTier.Small ? ProjectileKind.Bullet : ProjectileKind.Shell);
             var targetId = e.Other;
 
+            if (weapon != null && weapon.Beam)
+            {
+                // A laser: a hard bright bar for a moment, the glow of the director at the muzzle.
+                _tracers.Beam(from, to, 0.08f, 0.09f, now);
+                _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.6f, groundY);
+                return;
+            }
             switch (kind)
             {
                 case ProjectileKind.Bullet:

@@ -404,6 +404,11 @@ namespace MachineBrigade.Sim.Combat
         {
             var weapon = shooter.Def.Mounts[index].Weapon;
             shooter.LastFiredAt = _world.Time;
+            if (index == 0 && shooter.Def.Kamikaze)
+            {
+                _world.Damage.Detonate(shooter, weapon);
+                return;
+            }
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.

@@ -29,6 +29,16 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void EveryVehicleHasANameAndARoleNote()
+        {
+            var missing = new List<string>();
+            foreach (var id in MachineBrigade.Game.Match.MatchSettings.AllVehicles)
+                foreach (var key in new[] { "unit." + id, "short." + id, "note." + id })
+                    if (!MachineBrigade.Game.Hud.Strings.Has(key)) missing.Add(key);
+            Assert.That(missing, Is.Empty, "missing: " + string.Join(", ", missing));
+        }
+
+        [Test]
         public void EveryLiteralKeyInTheCodeExists()
         {
             var keys = new HashSet<string>(TableKeys());

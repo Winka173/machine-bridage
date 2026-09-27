@@ -92,6 +92,9 @@ namespace MachineBrigade.Sim.Abilities
                 {
                     RearmAtHome(v);
                     if (v.Def.RepairAura != null || v.Def.RearmAura != null) Support(v);
+                    if (v.Def.FortifyAura != null) Fortify(v);
+                    // A firing-range target mends itself between volleys.
+                    if (v.Dummy) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.08f * AuraInterval);
                 }
                 // Upgrades: self-repair out of combat, and smoke dischargers at half health.
                 if (v.Regen > 0f && v.Hp < v.MaxHp && now - v.LastHitTime > 4.0) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * v.Regen * dt);
@@ -157,6 +160,24 @@ namespace MachineBrigade.Sim.Abilities
                     v.RearmProgress += AuraInterval / rearm.Rate;
                     TopUp(v);
                 }
+            }
+        }
+
+        /// <summary>
+        /// A sapper patches up friendly fixed defences round it: towers, turrets, bunkers. It is
+        /// slow (a tower takes minutes), so a defended line can be kept standing but not made
+        /// unbreakable; the repair shows over the defence being worked on.
+        /// </summary>
+        private void Fortify(Vehicle sapper)
+        {
+            var aura = sapper.Def.FortifyAura!;
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != sapper.Team || !v.Def.Static || v.Hp >= v.MaxHp) continue;
+                if (Vector2.Distance(v.Position, sapper.Position) > aura.Radius + v.Def.HullBound) continue;
+                var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * aura.Rate * AuraInterval);
+                v.Hp += amount;
+                _world.Emit(SimEvent.RepairedBy(v, amount));
             }
         }
 
@@ -229,6 +250,7 @@ namespace MachineBrigade.Sim.Abilities
                 }
                 var mask = 1 << m.Team;
                 var armed = now >= m.ArmedAt;
+                var rolled = EntityId.None;
                 foreach (var v in _world.VehicleList)
                 {
                     if (!v.IsAlive || v.Flying || v.Team == m.Team || v.Team < 0) continue;
@@ -236,13 +258,15 @@ namespace MachineBrigade.Sim.Abilities
                     if (distance < MineSpotting) mask |= 1 << v.Team;
                     if (!armed || distance > m.Def.Trigger + v.Def.HullRadius) continue;
                     m.IsAlive = false;
+                    if (v.Def.MineProof) rolled = v.Id;
                     break;
                 }
                 m.VisibleToMask = mask;
                 if (m.IsAlive) continue;
                 _world.Emit(SimEvent.MineDetonated(m));
                 _world.Emit(SimEvent.Exploded(m.Position, m.Def.Blast, m.Id));
-                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, EntityId.None);
+                // A mine roller sets it off out in front of the tracks: the roller takes the blast.
+                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled);
                 _mines.RemoveAt(i);
             }
         }

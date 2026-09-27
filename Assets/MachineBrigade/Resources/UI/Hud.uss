@@ -1688,6 +1688,8 @@
 .gear-slot2 .gear-slot-value { font-size: 13px; }
 .gear-centre { width: 520px; }
 .loot-gear-cell { width: 128px; }
+.menu .role-note { font-size: 15px; color: var(--n100); margin: 0 0 12px 0; padding: 10px 12px; background-color: var(--n800); border-radius: 10px; border-left-width: 4px; border-left-color: var(--info); }
+.detail-scroll .menu-caps { margin-top: 2px; }
 .menu .crate-button { background-color: var(--secondary); border-bottom-color: var(--secondary-lip); }
 .menu .crate-button.primary.empty { background-color: var(--n700); border-bottom-color: var(--n950); }
 .menu .crate-button.primary.empty .crate-button-text { color: var(--n300); }

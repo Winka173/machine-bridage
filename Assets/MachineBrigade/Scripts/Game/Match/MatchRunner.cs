@@ -239,7 +239,7 @@ namespace MachineBrigade.Game.Match
             // The menu's vehicle detail page shows the model on a turntable.
             if (_menu)
             {
-                _preview = new UnitPreview(_models, worldRoot);
+                _preview = new UnitPreview(catalog, _materials, _meshes, _models, worldRoot);
                 _hud.MenuPreview = _preview;
             }
             if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);

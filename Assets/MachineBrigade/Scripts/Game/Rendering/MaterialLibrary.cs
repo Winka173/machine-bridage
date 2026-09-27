@@ -134,6 +134,10 @@ namespace MachineBrigade.Game.Rendering
             AmmoReload = Unlit(unlit, "AmmoReload", new Color(1f, 0.7f, 0.22f));
             AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
             AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
+            RepairMark = Unlit(unlit, "RepairMark", new Color(0.5f, 1.45f, 0.62f));
+            NavRed = Unlit(unlit, "NavRed", new Color(3.2f, 0.25f, 0.18f));
+            NavGreen = Unlit(unlit, "NavGreen", new Color(0.25f, 3f, 0.6f));
+            NavWhite = Unlit(unlit, "NavWhite", new Color(4f, 4f, 3.8f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -208,6 +212,14 @@ namespace MachineBrigade.Game.Rendering
         public Material AmmoReload { get; }
         public Material AmmoEmpty { get; }
         public Material AmmoSpent { get; }
+
+        /// <summary>The green wrench over something being repaired (a sapper at a tower).</summary>
+        public Material RepairMark { get; }
+
+        /// <summary>Aircraft navigation lights: red on the left wingtip, green on the right, white strobes.</summary>
+        public Material NavRed { get; }
+        public Material NavGreen { get; }
+        public Material NavWhite { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

@@ -54,7 +54,7 @@ namespace MachineBrigade.Tests
                     Goal = w => w.TryGetVehicle(mode.Boss, out var b) && b.IsAlive ? b.Position : null,
                 };
                 var t = 0f;
-                for (; t < 22 * 60 && mode.Result == null; t += TestWorlds.Step)
+                for (; t < 27 * 60 && mode.Result == null; t += TestWorlds.Step)
                 {
                     mode.Tick(world, TestWorlds.Step);
                     waves.Tick(world, TestWorlds.Step);

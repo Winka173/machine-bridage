@@ -78,6 +78,12 @@ namespace MachineBrigade.Sim.Content
         public TargetLayers Targets { get; }
 
         public bool CanTarget(bool flying) => (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+
+        /// <summary>A railgun slug: it goes through everything on its line and hurts all of it.</summary>
+        public bool Pierce { get; internal set; }
+
+        /// <summary>A laser: drawn as a beam from the muzzle to the target (it hits at once).</summary>
+        public bool Beam { get; internal set; }
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -204,6 +210,21 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Can stop in the air to shoot (a Harrier or F-35B): a few seconds at a time, then it must fly on.</summary>
         public bool Vtol { get; internal set; }
+
+        /// <summary>
+        /// A suicide vehicle (car bomb): "firing" its main weapon at a target in reach blows it up,
+        /// a blast of the weapon's damage and splash that spares its own side.
+        /// </summary>
+        public bool Kamikaze { get; internal set; }
+
+        /// <summary>Share of a kamikaze drone's damage that gets through (a turtle tank's shed stops most).</summary>
+        public float DroneArmor { get; internal set; } = 1f;
+
+        /// <summary>A mine roller: mines it sets off go off harmlessly in front of it.</summary>
+        public bool MineProof { get; internal set; }
+
+        /// <summary>Repairs friendly fixed defences (towers, turrets, bunkers) around it, slowly (sappers).</summary>
+        public AuraDef? FortifyAura { get; internal set; }
 
         /// <summary>Points the main weapon another way than its default (a gunship's guns out of the left side).</summary>
         internal void AimMain(MountAim aim)

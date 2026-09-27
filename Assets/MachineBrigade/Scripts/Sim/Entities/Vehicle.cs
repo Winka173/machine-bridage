@@ -101,7 +101,7 @@ namespace MachineBrigade.Sim.Entities
             ShieldUp = ShieldUntil > now;
             Overdriven = OverdriveUntil > now;
             FlaresUp = FlaresUntil > now;
-            Stunned = StunnedUntil > now;
+            Stunned = StunnedUntil > now || Dummy;
             Barraging = BarrageUntil > now;
         }
 
@@ -193,6 +193,15 @@ namespace MachineBrigade.Sim.Entities
             MountAim.Hull => Heading,
             _ => Weapons[index].Heading,
         };
+
+        /// <summary>
+        /// A target on a firing range (the detail page's demo): it never fires or moves, is always in
+        /// sight, and cannot be destroyed (its health stops at a sliver and comes back).
+        /// </summary>
+        public bool Dummy { get; internal set; }
+
+        /// <summary>A car bomb that set itself off: its own blast was the explosion (no second one as it dies).</summary>
+        internal bool Detonated { get; set; }
 
         /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
         public double LastFiredAt { get; internal set; } = double.NegativeInfinity;

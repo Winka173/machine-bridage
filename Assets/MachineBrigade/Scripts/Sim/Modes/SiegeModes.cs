@@ -462,7 +462,7 @@ namespace MachineBrigade.Sim.Modes
     public sealed class BossRushRules
     {
         /// <summary>The bosses, fought one after another.</summary>
-        public IReadOnlyList<string> Bosses { get; set; } = new[] { "behemoth", "mega_gunship", "mobile_fortress", "drone_mothership" };
+        public IReadOnlyList<string> Bosses { get; set; } = new[] { "behemoth", "mega_gunship", "mobile_fortress", "drone_mothership", "silver_bug" };
 
         /// <summary>Elite escorts that come with each boss, by boss.</summary>
         public IReadOnlyDictionary<string, string[]> Escorts { get; set; } = new Dictionary<string, string[]>
@@ -471,12 +471,13 @@ namespace MachineBrigade.Sim.Modes
             ["mega_gunship"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
             ["mobile_fortress"] = new[] { "elite_heavy_tank", "elite_aa", "elite_mlrs" },
             ["drone_mothership"] = new[] { "elite_aa", "elite_apc", "elite_tank_destroyer" },
+            ["silver_bug"] = new[] { "elite_aa", "elite_attack_helicopter", "elite_heavy_tank" },
         };
 
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
 
-        public float TimeLimit { get; set; } = 22 * 60f;
+        public float TimeLimit { get; set; } = 27 * 60f;
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;
