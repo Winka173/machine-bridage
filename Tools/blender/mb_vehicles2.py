@@ -1,7 +1,7 @@
 """Machine Brigade ground vehicles, second roster, built with frontier_kit.
 
-A self-propelled howitzer, a thermobaric rocket launcher on a tank chassis, a tracked infantry
-fighting vehicle, a gun-missile air-defence truck and the premium titan tank. Conventions and
+A thermobaric rocket launcher on a tank chassis, a tracked infantry fighting vehicle, a gun-missile
+air-defence truck and the premium titan tank (the self-propelled howitzer is in mb_artillery.py). Conventions and
 helpers are those of mb_vehicles.py: metres, +Z up, Blender -Y is the front, origin on the ground at
 the hull centre, turret parts authored relative to the `Turret` empty.
 
@@ -17,7 +17,7 @@ from mathutils import Euler, Vector
 
 import mb_weapons as wpn
 from frontier_kit import chamfered
-from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _coax, _dish, _flank, _frame, _glacis, _roof_mg, _rws,
+from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _coax, _dish, _flank, _frame, _glacis, _rws,
                          _smoke, _sponson_section, _tube_mouth, _wheel, tracks)
 
 
@@ -80,107 +80,7 @@ def _skirts(part, x, y0, y1, z0, z1, panels, thick=.08, gap=.03, bevel=.025):
     return ys
 
 
-# ----------------------------------------------------------------------------- howitzer
-def howitzer(a):
-    """Self-propelled 155 mm howitzer (PzH 2000 / K9 lineage): a front-engined hull with a long
-    shallow glacis, a big turret over the rear half and a very long gun, laid slightly elevated
-    over the front deck, with a fume extractor, a grooved muzzle brake and an armoured recoil guard
-    with twin recuperators at the mantlet. A folded travel lock lies on the glacis."""
-    tracks(a, 1.3, 7.0, .95, .32, 7, .5, belt_width=.6, wheel_seg=10, lean=True)
-    hull = a.part('Hull', 'Team')
-    armor = a.part('Armor', 'Armor')
-    steel = a.part('Steel', 'Steel')
-    deck = a.part('Deck', 'Undercarriage')
-    hull.prism([(-3.45, .56), (-3.78, 1.12), (3.9, 1.12), (3.9, .56)], 1.9, bevel=.05)       # belly between belts
-    nose, brow = (-3.93, 1.28), (-2.85, 1.62)
-    hull.prism([(-3.8, 1.065), nose, brow, (3.84, 1.62), (3.92, 1.54), (3.92, 1.065)], 3.28, bevel=.06)
-    ys = _skirts(hull, 1.72, -3.45, 3.45, .64, 1.36, 4)
-    for s in (-1, 1):
-        steel.bolts([(s * 1.77, y + dy, 1.27) for y in ys for dy in (-.5, .5)], r=.035, h=.03, rot=ACROSS, bevel=0)
-        gy, gz, grot = _glacis(nose, brow, .1, .03)
-        a.part('Lamps', 'Lamp').box((.26, .1, .06), loc=(s * 1.25, gy, gz), rot=(grot, 0, 0), bevel=.01, seg=1)
-        steel.box((.16, .2, .14), loc=(s * .75, -3.66, .9), bevel=.02, seg=1)                  # tow hooks
-        steel.box((.16, .2, .14), loc=(s * .75, 3.97, .9), bevel=.02, seg=1)
-        a.part('Tail_lights', 'Alloy').box((.16, .05, .1), loc=(s * 1.35, 3.935, 1.42), bevel=.01, seg=1)
-        steel.box((.08, .1, .16), loc=(-.5, 3.985, .9 + (s + 1) * .21), bevel=.01, seg=1)      # door hinges
-    # Folded travel lock on the glacis: an A-frame with a cradle for the barrel.
-    lock = a.part('Travel_lock', 'Steel')
-    y0, z0, rot0 = _glacis(nose, brow, .14, .05)
-    y1, z1, _ = _glacis(nose, brow, .82, .05)
-    for s in (-1, 1):
-        lock.limb((s * .46, y0, z0), (s * .16, y1, z1), .08, .07, bevel=.015, seg=1)
-    lock.box((1.06, .1, .09), loc=(0, y0, z0), rot=(rot0, 0, 0), bevel=.015, seg=1)          # hinge bar
-    y2, z2, _ = _glacis(nose, brow, .86, .1)
-    lock.box((.46, .16, .16), loc=(0, y2, z2), rot=(rot0, 0, 0), bevel=.03, seg=1)           # cradle
-    # Front deck: engine grilles on the right, the driver's hatch and vision blocks on the left.
-    deck.grille(1.2, .8, loc=(.72, -2.3, 1.63), rot=(-R90, 0, 0), slats=6, depth=.08, thickness=.04)
-    deck.grille(1.2, .6, loc=(.72, -1.35, 1.63), rot=(-R90, 0, 0), slats=4, depth=.08, thickness=.04)
-    armor.box((.34, .5, .24), loc=(1.3, -1.8, 1.72), bevel=.03, seg=1)                        # exhaust box
-    deck.grille(.28, .18, loc=(1.3, -2.06, 1.72), slats=2, depth=.05, thickness=.04)
-    armor.cyl(.3, .06, loc=(-.72, -2.2, 1.64), seg=14, bevel=.02, bseg=1)
-    glass = a.part('Vision_blocks', 'Glass')
-    for dx in (-.17, 0, .17):
-        glass.box((.12, .06, .08), loc=(-.72 + dx, -2.56, 1.655), bevel=.01, seg=1)
-    # Rear crew door.
-    armor.box((.9, .06, .78), loc=(0, 3.96, 1.1), bevel=.02, seg=1)
-    steel.box((.26, .05, .05), loc=(.25, 4.0, 1.14), bevel=.01, seg=1)
-    steel.cyl(1.25, .1, loc=(0, 1.25, 1.645), seg=20, bevel=.02, bseg=1)                   # turret ring
-
-    t = a.pivot('Turret', (0, 1.25, 1.7))
-    H = 1.1
-    turret = a.part('Turret_body', 'Team', t)
-    outline = [(-1.0, -1.95), (1.0, -1.95), (1.46, -1.35), (1.5, 2.45), (1.3, 2.65), (-1.3, 2.65), (-1.5, 2.45),
-               (-1.46, -1.35)]
-    turret.prism(outline, H, loc=(0, 0, H / 2), axis='Z', bevel=.06, taper=.93)
-    tarm = a.part('Turret_armor', 'Armor', t)
-    tsteel = a.part('Turret_steel', 'Steel', t)
-    tarm.box((1.12, .4, .82), loc=(0, -2.0, .58), bevel=.05, taper=(.92, .92))              # mantlet
-    x, z, lean = _flank((1.48, 0), (1.48 * .93, H), .52, .02)
-    for s in (-1, 1):
-        tarm.box((.32, 2.1, .5), loc=(s * 1.6, 1.15, .42), bevel=.03)                        # stowage bins
-        tsteel.box((.05, 1.9, .05), loc=(s * 1.77, 1.15, .6), bevel=0)                      # bin rails
-        tarm.box((.06, .9, .72), loc=(s * x, -.55, z), rot=(0, -s * lean, 0), bevel=.02, seg=1)  # side doors
-        tsteel.box((.05, .2, .05), loc=(s * (x + .04), -.3, z), rot=(0, -s * lean, 0), bevel=.01, seg=1)
-        _smoke(a, tsteel, 1.1, -1.72, .88, s, count=3, gap=.08, r=.05, depth=.16)
-    # Gun: armoured recoil guard (cradle) around the breech end; the twin recuperators run inside it
-    # and only their capped front ends stand out above the barrel.
-    pitch = .1
-    at = _axis((0, -2.05, .62), pitch)
-    grot = (-pitch, 0, 0)
-    a.part('Recoil_guard', 'Armor', t).box((.54, 1.4, .48), loc=at(.55), rot=grot, bevel=.04)
-    rec = a.part('Recuperators', 'Steel', t)
-    for side in (-.12, .12):
-        rec.cyl(.07, .5, loc=at(1.15, .14, side), rot=(R90 - pitch, 0, 0), seg=10, bevel=0)
-        rec.cyl(.088, .07, loc=at(1.4, .14, side), rot=(R90 - pitch, 0, 0), seg=10, bevel=0)
-    tip = _gun(a, t, 0, -2.05, .62, 5.2, .1, pitch=pitch, seg=14,
-               sleeves=((.3, .07, .118), (.86, .07, .118)), extractor=(.64, .72, .158),
-               brake=(.62, .19, 2), brake_seg=12)
-    a.pivot('Muzzle_main', tip, t)
-    # Roof: commander's cupola with the pintle gun, panoramic sight, hatch, vents and a tarp roll.
-    tsteel.cyl(.32, .12, loc=(.72, -.7, H + .05), seg=16, bevel=.03, bseg=1)
-    a.part('Cupola_top', 'Armor', t).cyl(.27, .05, loc=(.72, -.7, H + .12), seg=16, bevel=.015, bseg=1)
-    glass = a.part('Periscope', 'Glass', t)
-    for k in range(3):
-        ang = -R90 + (k - 1) * .75
-        glass.box((.1, .05, .07), loc=(.72 + math.cos(ang) * .32, -.7 + math.sin(ang) * .32, H + .07),
-                  rot=(0, 0, ang + R90), bevel=.01, seg=1)
-    _roof_mg(a, t, (.72, -.7, H + .145), length=.9)
-    tsteel.cyl(.13, .2, loc=(-.72, -1.0, H + .09), seg=10, bevel=.02, bseg=1)
-    tsteel.box((.3, .3, .2), loc=(-.72, -1.0, H + .28), bevel=.04)
-    a.part('Sight', 'Glass', t).box((.22, .04, .1), loc=(-.72, -1.15, H + .29), bevel=.01, seg=1)
-    a.part('Hatch', 'Armor', t).cyl(.3, .06, loc=(-.62, -.1, H + .02), seg=14, bevel=.02, bseg=1)
-    a.part('Vents', 'Undercarriage', t).grille(.9, .6, loc=(0, 1.3, H + .01), rot=(-R90, 0, 0), slats=5,
-                                               depth=.07, thickness=.04)
-    a.part('Tarp', 'Canvas', t).cyl(.14, 1.7, loc=(0, 2.0, H + .135), rot=ACROSS, seg=10, bevel=.04)
-    # Rear: ammunition hatch between jerrycans.
-    ry, rz, rrot = _glacis((2.65 * .93, H), (2.65, 0), .5, .025)
-    tarm.box((1.1, .72, .06), loc=(0, ry, rz), rot=(rrot, 0, 0), bevel=.02, seg=1)
-    for s in (-1, 1):
-        cy, cz, _ = _glacis((2.65 * .93, H), (2.65, 0), .55, .075)
-        a.part('Jerrycans', 'Hazard', t).box((.22, .44, .16), loc=(s * .9, cy, cz), rot=(rrot, 0, 0), bevel=.03,
-                                             seg=1)
-    _antenna(a, t, -1.15, 2.1, H, 1.3)
-    _antenna(a, t, 1.15, 2.1, H, 1.0)
+# howitzer: the tracked 155 mm self-propelled howitzer is built in mb_artillery.py.
 
 
 # ----------------------------------------------------------------------------- thermobaric launcher
@@ -622,7 +522,6 @@ def titan_tank(a):
 
 # name: (builder, Asset options). Vehicles use tight contact AO like 3d_astra's units.
 BUILDERS = {
-    'howitzer': (howitzer, dict(ao_distance=.6, grime_height=.55)),
     'thermobaric_launcher': (thermobaric_launcher, dict(ao_distance=.6, grime_height=.55)),
     'ifv': (ifv, dict(ao_distance=.55, grime_height=.5)),
     'heavy_aa': (heavy_aa, dict(ao_distance=.6, grime_height=.55)),
