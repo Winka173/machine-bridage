@@ -128,6 +128,50 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Every turreted vehicle's barrel sits on an elevating pivot at its trunnion, so shells
+        /// that fly high leave from a raised barrel: raising the pivot lifts the muzzle and keeps
+        /// it attached. Artillery, mortars, rocket boxes and anti-aircraft guns must have one.
+        /// </summary>
+        [Test]
+        public void BarrelsRiseOnTheirTrunnion()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Elevation Test").transform;
+            var report = new System.Text.StringBuilder();
+            try
+            {
+                foreach (var id in Vehicles)
+                {
+                    var model = models.Spawn(id, 0, parent);
+                    if (model.Elevation == null)
+                    {
+                        report.Append($"{id}: none; ");
+                        continue;
+                    }
+                    Assert.IsTrue(model.Muzzles.TryGetValue("main", out var muzzle), $"{id}: Muzzle_main");
+                    Assert.IsTrue(muzzle.IsChildOf(model.Elevation), $"{id}: the muzzle rides on the elevating pivot");
+                    var before = muzzle.position;
+                    model.Elevation.localRotation = Quaternion.Euler(-30f, 0f, 0f);
+                    var lift = muzzle.position.y - before.y;
+                    Assert.Greater(lift, 0.1f, $"{id}: raising the barrel lifts the muzzle");
+                    Assert.Less(Vector3.Distance(model.Elevation.position, muzzle.position), 12f, $"{id}: the pivot is on the vehicle");
+                    report.Append($"{id}: {model.Barrel} rest {model.RestPitch:0}deg lift {lift:0.00}; ");
+                }
+                Debug.Log("ELEVATION " + report);
+                foreach (var id in new[] { "howitzer", "artillery", "siege_tank", "siege_mortar", "mortar_carrier", "mlrs", "sam_launcher",
+                             "heavy_aa", "aa_vehicle", "thermobaric_launcher", "heavy_rocket_artillery", "main_battle_tank" })
+                    Assert.IsNotNull(models.Spawn(id, 0, parent).Elevation, $"{id} raises its barrel");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         /// <summary>Spawned models keep every animated part but merge the rest into a few renderers.</summary>
         [Test]
         public void SpawnedModelsMergeRigidPartsButKeepMovingOnes()

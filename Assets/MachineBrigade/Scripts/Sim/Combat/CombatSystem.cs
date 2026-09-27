@@ -59,6 +59,8 @@ namespace MachineBrigade.Sim.Combat
 
                 var target = SelectTarget(v);
                 v.Target = target?.Id ?? EntityId.None;
+                v.AimDistance = target != null ? Vector2.Distance(v.Position, target.Position) : 0f;
+                v.AimHeight = target is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
                 if (mounts[0].Aim == MountAim.Turret)
                 {
                     var desired = target != null ? SimMath.HeadingOf(target.Position - v.Position) : v.Heading;
@@ -125,13 +127,13 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             var weapon = mount.Weapon;
-            if (mount.Aim != MountAim.Free) return primary != null && InReach(v, primary, weapon) ? primary : null;
+            if (mount.Aim != MountAim.Free) return primary != null && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
             if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon))
                 return current;
             var best = BestInRange(v, weapon, primary?.Id ?? EntityId.None);
             if (best != null) return best;
             // An ordered attack on a building or barrel: the roof gun joins in.
-            return primary != null && primary is not Vehicle && InReach(v, primary, weapon) ? primary : null;
+            return primary != null && primary is not Vehicle && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
         }
 
         /// <summary>
@@ -166,8 +168,21 @@ namespace MachineBrigade.Sim.Combat
             return v.Def.FixedWing && _world.TryGetVehicle(v.RunTarget, out target) && IsValidAutoTarget(v, target, weapon);
         }
 
-        private static bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon);
+        private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
+            target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
+            HasLineOfFire(v, target, weapon);
+
+        /// <summary>
+        /// Direct fire needs a clear line: buildings, rock and fortress walls stop it. Aircraft
+        /// fire over everything and are shot at over everything; artillery, mortars, rocket
+        /// artillery, bombs and drones lob or fly over cover.
+        /// </summary>
+        public bool HasLineOfFire(Vehicle v, IDamageable target, WeaponDef weapon)
+        {
+            if (v.Flying || IsFlying(target) || weapon.Indirect) return true;
+            return !_world.Cover.TryFirstHit(v.Position, target.Position, v.Radius * 0.6f, target is Vehicle ? target.Radius * 0.5f : 0f,
+                target as Prop, out _);
+        }
 
         private static bool InReach(Vehicle v, IDamageable target, WeaponDef weapon)
         {
@@ -217,13 +232,13 @@ namespace MachineBrigade.Sim.Combat
             }
         }
 
-        private static bool CanFire(Vehicle v, int index, IDamageable target)
+        private bool CanFire(Vehicle v, int index, IDamageable target)
         {
             var mount = v.Def.Mounts[index];
             if (v.Weapons[index].Cooldown > 0f) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
-            if (!InReach(v, target, mount.Weapon)) return false;
+            if (!InReach(v, target, mount.Weapon) || !HasLineOfFire(v, target, mount.Weapon)) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
             var tolerance = mount.Aim switch
             {
@@ -241,6 +256,17 @@ namespace MachineBrigade.Sim.Combat
             var spread = weapon.Guided ? 0f : weapon.Spread * Math.Clamp(distance / weapon.Range, 0.25f, 1f);
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
+            // A direct-fire round that meets a wall on its way (the spread took it wide, or the
+            // target slipped behind a building mid-salvo) bursts on the wall and damages it.
+            if (!shooter.Flying && !targetFlying && !weapon.Indirect)
+            {
+                _world.TryGetTarget(target, out var aimed);
+                if (_world.Cover.TryFirstHit(origin, aim, 0.2f, 0f, aimed as Prop, out var wall) && _world.CoverAt(wall) is { } cover)
+                {
+                    aim = wall;
+                    target = cover.Id;
+                }
+            }
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
 
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying);

@@ -79,6 +79,47 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(Campaign.All[i].Goal is MissionGoal.Boss or MissionGoal.Intercept, $"mission {i} is a boss fight");
         }
 
+        /// <summary>
+        /// Balance check, run by hand (it takes a while): each mission over five seeds with the
+        /// deck a player really has, logging wins, time, progress and the peak army size.
+        /// Runs only with the environment variable MB_BALANCE=1 (and -testFilter WinRateOverFiveSeeds).
+        /// </summary>
+        [Category("Balance")]
+        [TestCaseSource(nameof(Missions))]
+        public void WinRateOverFiveSeeds(string id)
+        {
+            if (System.Environment.GetEnvironmentVariable("MB_BALANCE") != "1") Assert.Ignore("balance check: set MB_BALANCE=1 to run it");
+            var wins = 0;
+            var text = "";
+            for (var seed = 1; seed <= 5; seed++)
+            {
+                var def = Campaign.Get(id);
+                MatchSettings.Mission = id;
+                var (vehicles, supports) = RealisticDeck(id);
+                MatchSettings.DeckVehicles.Clear();
+                MatchSettings.DeckVehicles.AddRange(vehicles);
+                MatchSettings.DeckSupports.Clear();
+                MatchSettings.DeckSupports.AddRange(supports);
+                var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(def.Map + "_" + def.Variant), seed: seed);
+                var session = ModeSession.Create(GameModeKind.Campaign, false, world, seed);
+                var mission = (MissionSession)session;
+                var t = 0f;
+                var peak = 0;
+                for (; t < 22 * 60 && session.Mode.Result == null; t += 0.05f)
+                {
+                    session.Mode.Tick(world, 0.05f);
+                    session.TickAi(world, 0.05f);
+                    world.Step(0.05f);
+                    world.ClearEvents();
+                    if (world.TryGetEconomy(0, out var economy) && economy.VehicleCount > peak) peak = economy.VehicleCount;
+                }
+                var won = session.Mode.Result?.WinningTeam == 0;
+                if (won) wins++;
+                text += $" s{seed}:{(won ? "W" : "L")}{t / 60f:0.0}m/{mission.Mission.Progress(world):P0}/peak {peak}";
+            }
+            Debug.Log($"SEEDS {id}: {wins}/5{text}");
+        }
+
         [TestCaseSource(nameof(Missions))]
         public void MissionPlaysToAnEnd(string id)
         {

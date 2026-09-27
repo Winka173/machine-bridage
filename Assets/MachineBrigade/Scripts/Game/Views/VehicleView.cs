@@ -220,6 +220,49 @@ namespace MachineBrigade.Game.Views
             hull = _shownHeading;
         }
 
+        private float _elevation = float.NaN;
+
+        /// <summary>
+        /// Raises the barrel to where its shots go: howitzers and rocket boxes lift to their
+        /// firing angle (mortars highest), guns at aircraft follow the aircraft up, tank guns
+        /// tilt a few degrees with range. Idle, artillery rests slightly raised. The angle
+        /// moves at a gun-laying speed, not in a snap.
+        /// </summary>
+        private void Elevate()
+        {
+            var pivot = _model.Elevation;
+            if (pivot == null) return;
+            var weapon = Def.Weapon;
+            var indirect = weapon.MinRange > 0f || weapon.Projectile == ProjectileKind.Bomb;
+            var aiming = Sim.Target.IsValid && Sim.AimDistance > 0f;
+            float want;
+            if (Def.Flying)
+            {
+                // A gunship's chin gun looks down at what it shoots.
+                want = aiming ? Mathf.Clamp(-Mathf.Atan2(Altitude, Mathf.Max(1f, Sim.AimDistance)) * Mathf.Rad2Deg, -65f, 5f) : -6f;
+            }
+            else if (aiming && Sim.AimHeight > 0f)
+                want = Mathf.Clamp(Mathf.Atan2(Sim.AimHeight - MuzzleHeight, Mathf.Max(1f, Sim.AimDistance)) * Mathf.Rad2Deg, 8f, 78f);
+            else if (aiming && (indirect || _model.Barrel == BarrelKind.Mortar))
+            {
+                // Farther targets want a higher arc, up to the weapon's own ceiling.
+                var reach = Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range));
+                want = _model.Barrel switch
+                {
+                    BarrelKind.Mortar => Mathf.Lerp(55f, 72f, reach),
+                    BarrelKind.Launcher => Mathf.Lerp(28f, 48f, reach),
+                    _ => Mathf.Lerp(24f, 50f, reach),
+                };
+            }
+            else if (aiming) want = Mathf.Lerp(0.5f, 4f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range)));
+            else if (_model.Barrel == BarrelKind.Mortar) want = Mathf.Max(_model.RestPitch, 40f);
+            else want = indirect ? 10f : weapon.Targets == TargetLayers.Air ? 18f : 0f;
+            if (float.IsNaN(_elevation)) _elevation = _model.RestPitch;
+            var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 80f : indirect ? 32f : 45f;
+            _elevation = Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);
+            pivot.localRotation = Quaternion.Euler(-(_elevation - _model.RestPitch), 0f, 0f);
+        }
+
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
         public void Recoil() => _recoilTime = Time.time;
 
@@ -290,6 +333,7 @@ namespace MachineBrigade.Game.Views
                 mount.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(parentYaw, heading), 0f);
             }
 
+            Elevate();
             Spin(1f);
             AnimateParts(cameraRotation);
 

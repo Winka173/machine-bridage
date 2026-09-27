@@ -352,13 +352,16 @@ namespace MachineBrigade.Sim.Movement
                 _world.PathTo(v, _world.ClampToMap(target.Position + away * (weapon.MinRange + 8f)));
                 return;
             }
-            if (distance <= weapon.Range * 0.9f)
+            // In range and in the clear: hold here. In range but behind cover: keep driving (the
+            // path leads round the building or rock) until the line of fire opens.
+            var clear = _world.HasLineOfFire(v, target, weapon);
+            if (distance <= weapon.Range * 0.9f && clear)
             {
                 v.ClearPath();
                 return;
             }
             var goalDrift = Vector2.Distance(v.PathGoal, target.Position);
-            if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > 4f))
+            if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > 4f || (!clear && v.PathCompleted)))
             {
                 v.RepathTimer = RepathInterval;
                 _world.PathTo(v, target.Position);

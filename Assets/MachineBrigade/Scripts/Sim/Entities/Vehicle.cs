@@ -176,6 +176,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Enemy an attack-moving vehicle broke off its route to fight.</summary>
         internal EntityId Engaged;
 
+        /// <summary>Distance to what the main weapon is aimed at (0 with no target); drives the barrel's elevation.</summary>
+        public float AimDistance { get; internal set; }
+
+        /// <summary>Flight height of the aircraft the main weapon is aimed at (0 for ground targets).</summary>
+        public float AimHeight { get; internal set; }
+
         internal bool ResumeRoute;
 
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>

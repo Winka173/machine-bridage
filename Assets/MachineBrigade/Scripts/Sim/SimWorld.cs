@@ -47,6 +47,7 @@ namespace MachineBrigade.Sim
             Generation = generation;
             Random = new Random(seed);
             Grid = new NavGrid(map.Size, 2f);
+            Cover = new CoverGrid(map.Size);
             _pathFinder = new PathFinder(Grid);
             Damage = new DamageSystem(this);
             _movement = new MovementSystem(this);
@@ -62,6 +63,20 @@ namespace MachineBrigade.Sim
         public Catalog Catalog { get; }
         public MapDefinition Map { get; }
         public NavGrid Grid { get; }
+
+        /// <summary>Where direct fire cannot pass (tall props); see <see cref="CoverGrid"/>.</summary>
+        public CoverGrid Cover { get; }
+
+        /// <summary>Whether <paramref name="shooter"/> has a clear line of fire at <paramref name="target"/> with <paramref name="weapon"/>.</summary>
+        internal bool HasLineOfFire(Vehicle shooter, IDamageable target, WeaponDef weapon) => _combat.HasLineOfFire(shooter, target, weapon);
+
+        /// <summary>The fire-blocking prop standing at <paramref name="p"/>, if any.</summary>
+        internal Prop? CoverAt(Vector2 p)
+        {
+            foreach (var prop in _propList)
+                if (prop.IsAlive && prop.Def.BlocksFire && CoverGrid.Inside(prop, p)) return prop;
+            return null;
+        }
 
         /// <summary>Distinguishes matches, so references from before a restart never apply.</summary>
         public int Generation { get; }
@@ -350,6 +365,7 @@ namespace MachineBrigade.Sim
             _props.Add(prop.Id, prop);
             _propList.Add(prop);
             if (prop.Def.BlocksMovement) Grid.AddBlocker(prop.Position, prop.Width, prop.Depth, ObstacleClearance);
+            if (prop.Def.BlocksFire) Cover.Add(prop);
         }
 
         private void RefreshVisibility()
