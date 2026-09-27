@@ -58,6 +58,25 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>The main weapon has limited ammunition and none left.</summary>
         public bool OutOfAmmo => Weapons[0].Ammo == 0;
 
+        /// <summary>Standing still enough for the crew to restock (fixed defences and aircraft always are).</summary>
+        internal bool StillForReload => Def.Static || Flying || MathF.Abs(Speed) < Combat.CombatSystem.ReloadStillSpeed;
+
+        /// <summary>The main weapon is empty but on the move, so its reload waits (the crew restocks standing still).</summary>
+        public bool ReloadPaused => OutOfAmmo && !StillForReload;
+
+        /// <summary>How far the main weapon's in-place reload has got, 0 to 1 (1 when it is not reloading).</summary>
+        public float ReloadProgress
+        {
+            get
+            {
+                var weapon = Def.Mounts[0].Weapon;
+                if (weapon.Ammo <= 0 || Weapons[0].Ammo != 0) return 1f;
+                var total = Combat.CombatSystem.ReloadSeconds(weapon);
+                var left = Weapons[0].ReloadLeft > 0f ? Weapons[0].ReloadLeft : total;
+                return Math.Clamp(1f - left / total, 0f, 1f);
+            }
+        }
+
         // ------------------------------------------------------------ skills and effects
         internal readonly double[] SkillReadyAt;
         internal readonly bool[] SkillUsed;

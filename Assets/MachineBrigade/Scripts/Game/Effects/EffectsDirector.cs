@@ -160,8 +160,10 @@ namespace MachineBrigade.Game.Effects
                             break;
                         }
                         var impact = Ground(e.Position, 0.15f);
-                        Explode(e.Tier, impact, now);
-                        if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
+                        var size = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var round) ? round.ImpactScale : 1f;
+                        // A gun's shell never flashes the screen, however big: only strikes and blasts do.
+                        Explode(e.Tier, impact, now, size, flash: false);
+                        if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size);
                         if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.35f) _fires.Ignite(impact, 0.45f, 7f, now);
                         // Thermobaric rockets leave the impact area burning.
                         if (e.DefId == "thermobaric_rockets" && UnityEngine.Random.value < 0.6f) _fires.Ignite(impact, 1.1f, 14f, now);
@@ -592,7 +594,7 @@ namespace MachineBrigade.Game.Effects
             if (_cull.Visible(position, 0.2f)) effect.Play(position, now);
         }
 
-        private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
+        private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f, bool flash = true)
         {
             // Off screen, a blast leaves its crater and fires (they persist) but no particles.
             if (!_cull.Visible(position, tier >= ExplosionTier.Huge ? 0.4f : 0.25f)) return;
@@ -609,7 +611,7 @@ namespace MachineBrigade.Game.Effects
                 _ => 18f,
             }, tier >= ExplosionTier.Huge ? 0.9f : 0.45f);
             // The biggest blasts light the whole screen for a moment (no shake): stronger the nearer the view.
-            if (tier >= ExplosionTier.Huge && Flash != null)
+            if (flash && tier >= ExplosionTier.Huge && Flash != null)
                 Flash((tier >= ExplosionTier.Ultimate ? 0.22f : 0.11f) / (1f + Vector3.Distance(position, _camera.Focus) / 40f));
             Shake(position, tier switch
             {

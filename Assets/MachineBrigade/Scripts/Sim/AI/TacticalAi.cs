@@ -47,6 +47,9 @@ namespace MachineBrigade.Sim.AI
         private readonly List<Vehicle> _artillery = new();
         private readonly List<Vehicle> _enemies = new();
 
+        /// <summary>Known enemy fixed defences that can hit the ground (their reach is a wall for artillery).</summary>
+        private readonly List<Vehicle> _defences = new();
+
         /// <summary>Engineers and jammers: they follow the army and cover it.</summary>
         private readonly List<Vehicle> _support = new();
 
@@ -333,9 +336,14 @@ namespace MachineBrigade.Sim.AI
 
         private readonly HashSet<EntityId> _rearmIds = new();
 
+        /// <summary>A supply vehicle closer than this is worth the drive for an empty launcher (it reloads three times as fast).</summary>
+        private const float DepotReach = 40f;
+
         /// <summary>
-        /// Empty launchers drive to the nearest engineer (else home) to be restocked; the ones
-        /// that are full again rejoin their role at the next decision.
+        /// Empty launchers reload where they stand: the crew restocks only while the vehicle is
+        /// still, so the AI stops them. A supply vehicle close by is worth the short drive, and a
+        /// launcher with an enemy about to reach it moves out of reach first. Once the magazine
+        /// is back they rejoin their role at the next decision.
         /// </summary>
         private void SendToRearm(SimWorld world)
         {
@@ -344,7 +352,7 @@ namespace MachineBrigade.Sim.AI
             {
                 _rearmIds.Add(v.Id);
                 Vector2? depot = null;
-                var best = 70f;
+                var best = DepotReach;
                 foreach (var e in world.VehicleList)
                 {
                     if (!e.IsAlive || e.Team != _team || e.Def.RearmAura == null) continue;
@@ -353,10 +361,23 @@ namespace MachineBrigade.Sim.AI
                     best = d;
                     depot = e.Position;
                 }
-                if (depot == null && world.TryGetRally(_team, out var home)) depot = home;
-                if (depot == null || Vector2.Distance(v.Position, depot.Value) < 8f) continue;
-                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, depot.Value) < 6f) continue;
-                Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
+                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f)
+                {
+                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > 6f)
+                        Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
+                    continue;
+                }
+                var closest = NearestGround(v.Position, out var threat);
+                if (threat != null && threat.Def.Weapon.CanTarget(false) && closest < threat.Def.Weapon.Range + 4f &&
+                    world.EscapeRoute(v, threat.Position, threat.Def.Weapon.Range + 10f - closest) is { } away)
+                {
+                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, away) > 6f) Issue(world, CommandType.Move, v.Id, away);
+                    continue;
+                }
+                // A move already under way to get out of reach finishes first; otherwise stop and reload.
+                if (v.Order.Kind == OrderKind.Move && v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 3f &&
+                    threat != null && closest < threat.Def.Weapon.Range + 14f) continue;
+                if (v.Order.Kind != OrderKind.Idle || v.HasPath) world.Submit(new Command(CommandType.Stop, _team, new[] { v.Id }));
             }
         }
 
@@ -399,6 +420,7 @@ namespace MachineBrigade.Sim.AI
             _fast.Clear();
             _artillery.Clear();
             _enemies.Clear();
+            _defences.Clear();
             _support.Clear();
             _rearming.Clear();
             // Pulled-back vehicles rejoin once repaired (or rested a while); the dead are forgotten.
@@ -417,13 +439,17 @@ namespace MachineBrigade.Sim.AI
                 if (!v.IsAlive) continue;
                 if (v.Team == _enemyTeam || v.Team == Teams.Hostile)
                 {
-                    if (v.IsVisibleTo(_team) && !v.Invulnerable) _enemies.Add(v);
+                    if (v.IsVisibleTo(_team) && !v.Invulnerable)
+                    {
+                        _enemies.Add(v);
+                        if (v.Def.Static && GroundReach(v) > 0f) _defences.Add(v);
+                    }
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
                 if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
-                // An empty launcher goes to be restocked, and stays until it is full again.
-                if (!v.Flying && (v.OutOfAmmo || (_rearmIds.Contains(v.Id) && v.NeedsAmmo)))
+                // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
+                if (!v.Flying && v.OutOfAmmo)
                 {
                     _rearming.Add(v);
                     continue;
@@ -484,7 +510,6 @@ namespace MachineBrigade.Sim.AI
             if (Demolish == null || !world.TryGetProp(Demolish(world), out var target) || !target.IsAlive) return;
             DemolishWith(world, target, _line);
             DemolishWith(world, target, _fast);
-            DemolishWith(world, target, _artillery);
         }
 
         private void DemolishWith(SimWorld world, Prop target, List<Vehicle> vehicles)
@@ -546,13 +571,17 @@ namespace MachineBrigade.Sim.AI
                     Issue(world, CommandType.Move, a.Id, kite);
                     continue;
                 }
-                if (a.Order.Kind == OrderKind.Move) continue;
+                if (a.Order.Kind == OrderKind.Move && !Standing(a)) continue;
 
-                if (contact && TryFindCluster(a, out var cluster))
+                if (contact && TryFindCluster(a, out var cluster) && !Exposed(a.Position, 0f))
                 {
                     if (a.Order.Kind != OrderKind.Attack) Issue(world, CommandType.Attack, a.Id, cluster.Position, cluster.Id);
                     continue;
                 }
+                // Fixed defences first (the military targets), then the structure the mission wants
+                // down: each from a spot inside our range and outside every known gun's reach.
+                if (ShellDefences(world, a)) continue;
+                if (ShellStructure(world, a)) continue;
                 if (a.Order.Kind != OrderKind.Idle || a.Target.IsValid) continue;
 
                 // Stand off behind the main body, close enough to reach the enemy. With no main body
@@ -561,10 +590,118 @@ namespace MachineBrigade.Sim.AI
                 var alone = !_outmatched && _line.Count == 0 && _fast.Count == 0;
                 var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
                 if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
+                // Never into a known gun's reach: back along the line of advance until clear of it.
+                for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;
                 // Alone they attack-move, so they stop and fire at the first enemy that comes into sight.
                 if (Vector2.Distance(a.Position, standoff) > 10f)
                     Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, Clamp(world, standoff));
             }
+        }
+
+        /// <summary>Extra room an artillery piece keeps outside a fixed defence's reach.</summary>
+        private const float StandoffMargin = 4f;
+
+        /// <summary>How far past its own range an artillery piece looks for a defence to shell.</summary>
+        private const float DefenceSearch = 45f;
+
+        /// <summary>A defence's reach against the ground (its longest ground weapon), 0 when it cannot hit the ground.</summary>
+        private static float GroundReach(Vehicle d)
+        {
+            var reach = 0f;
+            foreach (var m in d.Def.Mounts)
+                if (m.Weapon.CanTarget(false) && m.Weapon.Damage > 0f) reach = MathF.Max(reach, m.Weapon.Range);
+            return reach;
+        }
+
+        /// <summary>A point inside some known fixed defence's reach (plus <paramref name="margin"/>).</summary>
+        private bool Exposed(Vector2 p, float margin)
+        {
+            foreach (var d in _defences)
+            {
+                var reach = GroundReach(d) + margin + d.Radius;
+                if (Vector2.DistanceSquared(p, d.Position) < reach * reach) return true;
+            }
+            return false;
+        }
+
+        /// <summary>Standing at its firing spot (a move order it has as good as finished).</summary>
+        private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 3f;
+
+        /// <summary>
+        /// A spot to fire at <paramref name="target"/> from: inside our range (just short of it,
+        /// beyond our minimum), outside every known gun's reach, on open ground. Rings at 0.95,
+        /// 0.85 and 0.75 of our range, 24 bearings each, the nearest to where the gun already is
+        /// (after the standoff solvers of RTS bots such as PurpleWave and Steamhammer).
+        /// </summary>
+        private Vector2? FiringSpot(SimWorld world, Vehicle shooter, Vector2 target, float targetRadius)
+        {
+            var weapon = shooter.Def.Weapon;
+            var low = weapon.MinRange + 2f;
+            Vector2? best = null;
+            var bestScore = float.MaxValue;
+            var start = SimMath.HeadingOf(shooter.Position - target);
+            foreach (var fraction in new[] { 0.95f, 0.85f, 0.75f })
+            {
+                var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * 0.5f);
+                if (distance > weapon.Range + targetRadius) continue;
+                for (var k = 0; k < 24; k++)
+                {
+                    // Bearings fan out from the side the gun is on: 0, +15, -15, +30 degrees and so on.
+                    var turn = ((k + 1) / 2) * (k % 2 == 0 ? 1f : -1f) * SimMath.DegToRad(15f);
+                    var p = Clamp(world, target + SimMath.Forward(start + turn) * distance);
+                    if (!world.Grid.IsWalkable(p) || Exposed(p, StandoffMargin)) continue;
+                    var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f;
+                    if (score >= bestScore) continue;
+                    bestScore = score;
+                    best = p;
+                }
+                if (best != null) return best;
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// Shells the nearest known fixed defence it can reach from a safe spot: drives there (a
+        /// plain move, never an attack-move that would chase into the guns), then fires from it.
+        /// </summary>
+        private bool ShellDefences(SimWorld world, Vehicle a)
+        {
+            var weapon = a.Def.Weapon;
+            if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) <= 0.2f) return false;
+            Vehicle? pick = null;
+            var pickDistance = float.MaxValue;
+            foreach (var d in _defences)
+            {
+                var distance = Vector2.Distance(d.Position, a.Position);
+                if (distance > weapon.Range + DefenceSearch || distance >= pickDistance) continue;
+                pick = d;
+                pickDistance = distance;
+            }
+            return pick != null && ShellFromSafety(world, a, pick.Position, pick.Radius, pick.Id);
+        }
+
+        /// <summary>The mission's structure (a relay, a generator, the HQ) from a safe spot, once no defence needs shelling first.</summary>
+        private bool ShellStructure(SimWorld world, Vehicle a)
+        {
+            if (Demolish == null || !world.TryGetProp(Demolish(world), out var target) || !target.IsAlive) return false;
+            var weapon = a.Def.Weapon;
+            if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, target.Position) > weapon.Range + DefenceSearch * 2f) return false;
+            return ShellFromSafety(world, a, target.Position, target.Radius, target.Id);
+        }
+
+        private bool ShellFromSafety(SimWorld world, Vehicle a, Vector2 target, float radius, EntityId targetId)
+        {
+            var weapon = a.Def.Weapon;
+            var distance = Vector2.Distance(a.Position, target) - radius;
+            var inRange = distance <= weapon.Range - 0.5f && distance >= weapon.MinRange + 1f;
+            if (inRange && !Exposed(a.Position, 1f))
+            {
+                if (a.Order.Kind != OrderKind.Attack || a.Order.Target != targetId) Issue(world, CommandType.Attack, a.Id, target, targetId);
+                return true;
+            }
+            if (FiringSpot(world, a, target, radius) is not { } spot) return false;
+            if (a.Order.Kind != OrderKind.Move || Vector2.Distance(a.Order.Point, spot) > 4f) Issue(world, CommandType.Move, a.Id, spot);
+            return true;
         }
 
         /// <summary>Fast vehicles drive round the side of the fight, then attack from there.</summary>

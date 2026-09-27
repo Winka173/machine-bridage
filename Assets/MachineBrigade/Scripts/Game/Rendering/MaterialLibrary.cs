@@ -131,6 +131,9 @@ namespace MachineBrigade.Game.Rendering
             BarNeutral = Unlit(unlit, "BarNeutral", new Color(0.92f, 0.9f, 0.82f));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
             BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
+            AmmoReload = Unlit(unlit, "AmmoReload", new Color(1f, 0.7f, 0.22f));
+            AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
+            AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -200,6 +203,11 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Gold health bar of elite enemy units.</summary>
         public Material BarElite { get; }
+
+        /// <summary>The overhead ammunition gauge: rounds coming back (amber), empty and waiting (red), spent (grey).</summary>
+        public Material AmmoReload { get; }
+        public Material AmmoEmpty { get; }
+        public Material AmmoSpent { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

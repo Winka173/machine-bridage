@@ -60,7 +60,7 @@ namespace MachineBrigade.Tests
             var mortar = world.SpawnVehicle("siege_mortar", 0, new Vector2(-58f, -58f), 0f);
             mortar.Weapons[0].Ammo = 0;
             Run(world, 12f);
-            Assert.Greater(mortar.Ammo(0), 2, "back at the rally point the mortar is restocked round by round");
+            Assert.AreEqual(mortar.Def.Mounts[0].Weapon.Ammo, mortar.Ammo(0), "back at the rally point the empty mortar reloads its whole magazine three times as fast");
         }
 
         [Test]
@@ -73,7 +73,8 @@ namespace MachineBrigade.Tests
             tank.Weapons[0].Ammo = 0;
             Run(world, 10f);
             Assert.Greater(tank.Hp, tank.MaxHp * 0.55f, "the engineer patches up the tank beside it");
-            Assert.Greater(tank.Ammo(0), 0, "and hands it fresh shells");
+            Assert.Less(tank.Weapons[0].ReloadLeft, Sim.Combat.CombatSystem.ReloadSeconds(tank.Def.Mounts[0].Weapon) - 20f,
+                "and its crew reloads three times as fast beside it");
         }
 
         [Test]

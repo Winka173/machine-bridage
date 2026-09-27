@@ -50,6 +50,16 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public int Ammo { get; internal set; }
 
+        /// <summary>
+        /// Seconds to reload a whole magazine in place once it is empty (the crew restocking the
+        /// launcher or the rack), standing still; 0 derives it from the magazine (see
+        /// <see cref="Combat.CombatSystem.ReloadSeconds"/>).
+        /// </summary>
+        public float Reload { get; internal set; }
+
+        /// <summary>How big the impact is drawn against its tier's size (a fortress gun's shell lands bigger than a tank's).</summary>
+        public float ImpactScale { get; internal set; } = 1f;
+
         /// <summary>Cluster munition: bomblets scattered where the round lands (null: an ordinary round).</summary>
         public ClusterDef? Cluster { get; internal set; }
 

@@ -122,7 +122,12 @@ namespace MachineBrigade.Sim.Modes
             if (Fortress == null && world.TryGetRally(EnemyTeam, out var rally)) Fortress = rally;
             var rings = world.Map.SiegeRings;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static) _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
+                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static)
+                {
+                    _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
+                    // The attacker comes with the fortress plans: every gun is on the map from the start.
+                    v.VisibleToMask |= 1 << PlayerTeam;
+                }
             // Everything built into the fortress goes up with it at the end.
             if (Fortress is { } centre && rings.Count > 0)
                 foreach (var prop in world.Props)

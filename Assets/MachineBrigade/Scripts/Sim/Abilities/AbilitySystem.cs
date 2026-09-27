@@ -153,19 +153,37 @@ namespace MachineBrigade.Sim.Abilities
             }
         }
 
-        /// <summary>Hands out whole rounds as the re-arm progress fills.</summary>
+        /// <summary>
+        /// Hands out whole rounds to part-empty magazines as the re-arm progress fills; an empty
+        /// one being reloaded in place goes three times as fast instead (the whole magazine comes
+        /// back at once, so it never trickles back one round at a time and runs dry again).
+        /// </summary>
         private static void TopUp(Vehicle v)
         {
-            while (v.RearmProgress >= 1f && v.NeedsAmmo)
+            for (var i = 0; i < v.Weapons.Length; i++)
+                if (v.Weapons[i].Ammo == 0 && v.Weapons[i].ReloadLeft > 0f)
+                    v.Weapons[i].ReloadLeft = MathF.Max(0.0001f, v.Weapons[i].ReloadLeft - AuraInterval * 2f); // the reload itself finishes it
+            while (v.RearmProgress >= 1f && PartEmpty(v))
             {
                 v.RearmProgress -= 1f;
                 for (var i = 0; i < v.Weapons.Length; i++)
                 {
                     var max = v.Def.Mounts[i].Weapon.Ammo;
-                    if (max > 0 && v.Weapons[i].Ammo < max) v.Weapons[i].Ammo++;
+                    if (max > 0 && v.Weapons[i].Ammo > 0 && v.Weapons[i].Ammo < max) v.Weapons[i].Ammo++;
                 }
             }
-            if (!v.NeedsAmmo) v.RearmProgress = 0f;
+            if (!PartEmpty(v)) v.RearmProgress = 0f;
+        }
+
+        /// <summary>Some limited weapon has rounds left but is not full (empty ones reload in place).</summary>
+        private static bool PartEmpty(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var max = v.Def.Mounts[i].Weapon.Ammo;
+                if (max > 0 && v.Weapons[i].Ammo > 0 && v.Weapons[i].Ammo < max) return true;
+            }
+            return false;
         }
 
         // ------------------------------------------------------------------ mines
