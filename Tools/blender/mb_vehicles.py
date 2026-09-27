@@ -11,11 +11,16 @@ weapons add `Muzzle_coax` (beside the main gun), `Muzzle_mg` (roof machine gun o
 `Muzzle_missile` (launcher opening). The roof machine guns and grenade launchers that give the
 scout jeep, MLRS, SAM launcher and rocket technical a second weapon come from mb_weapons.py. A
 `Radar` pivot spins about Z.
+
+High detail: builders that take `detail=True` (the `<id>_hd` variants, see mb_detail.py) mark the asset
+with mb_detail.mark, and the helpers below then add their own small parts (track links, wheel nuts and
+tread, hatch bolts, bin ribs ...); without the mark they build exactly what they always did.
 """
 import math
 
 from mathutils import Euler, Matrix, Vector
 
+import mb_detail as hd
 import mb_weapons as wpn
 from frontier_kit import chamfered
 
@@ -67,6 +72,9 @@ def _road_wheel(a, x, y, z, r, s, seg=10, face=None):
     a.part('Tyres', 'Undercarriage').cyl(r, .08, loc=(face + s * .02, y, z), rot=ACROSS, seg=seg, bevel=0)
     a.part('Wheels', 'Team').cyl(r * .74, .03, loc=(face + s * .065, y, z), rot=ACROSS, seg=seg, bevel=0)
     a.part('Hubs', 'Steel').cyl(r * .26, .03, loc=(face + s * .075, y, z), rot=ACROSS, seg=6, bevel=0)
+    if hd.on(a):  # a ring of bolts on the disc
+        hd.bolt_ring(a.part('Wheel_bolts', 'Steel'), hd.frame((face + s * .08, y, z), hd.side_rot(s)), r * .5, 6,
+                     r=.016, h=.02, phase=.3)
 
 
 def tracks(a, half_width, length, height, wheel_r, wheels, z, belt_width=.46, wheel_seg=14, lean=False,
@@ -89,6 +97,9 @@ def tracks(a, half_width, length, height, wheel_r, wheels, z, belt_width=.46, wh
                        for cy, cz, r in circles for k in range(20)])
     fender_end = length * .46
     seg = min(wheel_seg, 12) if not lean else min(wheel_seg, 10)
+    detail = hd.on(a)
+    if detail:
+        seg = 16  # round road wheels up close
     for s in (-1, 1):
         x = s * half_width
         face = x + s * belt_width / 2
@@ -101,6 +112,22 @@ def tracks(a, half_width, length, height, wheel_r, wheels, z, belt_width=.46, wh
                      rot=(math.atan2(tz, ty), 0, 0), bevel=0)
         fender.box((belt_width + .14, length * .92, .06), loc=(x, -.03, top + .05), bevel=.02, seg=1,
                    taper=(1, .98))
+        if detail:
+            # End connectors on the outer edge of every link, all the way round the belt (flush with the
+            # belt's running face, so the footprint and ground line stay put).
+            links = a.part('Track_links', 'Steel')
+            for (py, pz), (ty, tz) in _perimeter(outline, cleat_pitch, .05 + cleat_pitch / 2):
+                if pz > top - .05 and abs(py) < fender_end:
+                    continue  # the top run is under the fender
+                ny, nz = tz, -ty
+                links.box((.035, .06, .05), loc=(face + s * .005, py - ny * .03, pz - nz * .03),
+                          rot=(math.atan2(tz, ty), 0, 0), bevel=0)
+            # Fender: a raised outer lip and a bolt row.
+            fittings = a.part('Fender_fittings', 'Armor')
+            fittings.box((.03, length * .88, .05), loc=(face + s * .05, -.03, top + .085), bevel=0)
+            hd.bolt_line(a.part('Fender_bolts', 'Steel'), (face + s * .012, -.03 - length * .42, top + .08),
+                         (face + s * .012, -.03 + length * .42, top + .08), max(4, int(length * .84 / .38)), r=.016,
+                         h=.022)
         for i in range(wheels):
             y = -length / 2 + .5 + i * (length - 1.0) / (wheels - 1)
             _road_wheel(a, x, y, z - .06, wheel_r, s, seg=seg, face=face)
@@ -121,6 +148,17 @@ def tracks(a, half_width, length, height, wheel_r, wheels, z, belt_width=.46, wh
                 drive.cyl(rb * .62, .03, loc=(face + s * .03, cy, cz), rot=ACROSS, seg=seg, bevel=0)
             a.part('Hubs', 'Steel').cyl(rb * .3, .035, loc=(face + s * .0525, cy, cz), rot=ACROSS, seg=8,
                                         bevel=0)
+            if detail:
+                bolts = a.part('Wheel_bolts', 'Steel')
+                if sprocket and end == sprocket:  # sprocket: bolt ring on the disc
+                    hd.bolt_ring(bolts, hd.frame((face + s * .03, cy, cz), hd.side_rot(s)), rb * .58, 8, r=.017,
+                                 h=.022)
+                else:  # idler: lightening holes round the disc
+                    holes = a.part('Idler_holes', 'Undercarriage')
+                    for k in range(5):
+                        u = k * TAU / 5
+                        holes.cyl(rb * .11, .02, loc=(face + s * .042, cy + math.cos(u) * rb * .44,
+                                                     cz + math.sin(u) * rb * .44), rot=ACROSS, seg=6, bevel=0)
         for i in range(rollers):  # return rollers carry the top run between the wheels
             y = -length / 2 + 1.0 + (i + .5) * (length - 2.0) / rollers
             a.part('Tyres', 'Undercarriage').cyl(.1, .07, loc=(face + s * .015, y, top - .13), rot=ACROSS, seg=8,
@@ -173,6 +211,12 @@ def _barrel(a, turret, start_y, length, radius, height, pitch=0.0, brake=(.26, .
 def _antenna(a, turret, x, y, z, height=1.0):
     a.part('Antenna', 'Steel', turret).cyl(.012, height, loc=(x, y, z + height / 2), seg=5, bevel=0)
     a.part('Beacon', 'TeamGlow', turret).sphere(.045, loc=(x, y, z + height + .02), seg=8, rings=5)
+    if hd.on(a):  # insulated base with a spring and a tie-down band
+        a.part('Antenna_base', 'Armor', turret).cyl(.045, .08, loc=(x, y, z + .03), seg=10, bevel=0)
+        spring = a.part('Antenna', 'Steel', turret)
+        for k in range(4):
+            spring.cyl(.024, .014, loc=(x, y, z + .085 + k * .026), seg=8, bevel=0)
+        spring.cyl(.018, .02, loc=(x, y, z + height * .55), seg=6, bevel=0)
 
 
 def _coax(a, turret, x, y, z, length=.4, housing=.26):
@@ -200,6 +244,22 @@ def _roof_mg(a, parent, loc, length=.8, shield=True):
     if shield:
         a.part('MG_shield', 'Armor', m).box((.48, .04, .3), loc=(0, -.24, .25), rot=(-.12, 0, 0), bevel=.012,
                                              seg=1, taper=(.8, 1))
+    if hd.on(a):
+        det = a.part('MG_detail', 'Steel', m)
+        for k in (.3, .45, .6):                                                     # barrel jacket rings
+            det.cyl(.036, .025, loc=(0, front - length * k, .21), rot=FORWARD, seg=8, bevel=0)
+        det.tube([(-.035, -.08, .26), (-.035, -.08, .31), (-.035, .1, .31), (-.035, .1, .26)], .011, seg=4)  # handle
+        det.box((.025, .03, .06), loc=(0, -.14, .29), bevel=0)                        # front sight post
+        det.box((.05, .03, .05), loc=(0, .17, .285), bevel=0)                          # rear sight
+        det.box((.16, .05, .03), loc=(0, .02, .28), bevel=0)                           # feed cover hinge
+        belt = a.part('MG_belt', 'Crate', m)
+        for k in range(3):                                                             # ammunition belt
+            belt.box((.03, .06, .035), loc=(.1 - k * .025, .03, .215 + k * .012), rot=(0, -.5, 0), bevel=0)
+        if shield:  # bolts on the shield's front face
+            ms = hd.frame((0, -.24, .25), (-.12, 0, 0))
+            for dx in (-.16, .16):
+                for dz in (-.09, .09):
+                    hd.bolt(det, tuple(ms @ Vector((dx, -.02, dz))), (R90 - .12, 0, 0), r=.014, h=.02)
     a.pivot('Muzzle_mg', (0, front - length + .02, .21), m)
 
 
@@ -207,14 +267,55 @@ def _smoke(a, part, x, y, z, s, count=3, gap=.07, r=.04, depth=.14):
     """Smoke-grenade dischargers angled up and outwards on side s."""
     for i in range(count):
         part.cyl(r, depth, loc=(s * (x + i * gap), y, z), rot=(.6, 0, s * .4), seg=8, bevel=0)
+    if hd.on(a):  # a lip round each mouth over a dark recessed bore
+        parent = next((k[2] for k, v in a.shapes.items() if v is part), None)
+        bores = a.part('Smoke_bores', 'Undercarriage', parent)
+        for i in range(count):
+            rot = (.6, 0, s * .4)
+            m = hd.frame((s * (x + i * gap), y, z), rot)
+            part.lathe([(r * 1.18, -.02), (r * 1.18, .012), (r * .78, .012), (r * .78, -.008)],
+                       loc=tuple(m @ Vector((0, 0, depth / 2))), rot=rot, seg=8)
+            bores.cyl(r * .76, .012, loc=tuple(m @ Vector((0, 0, depth / 2 - .005))), rot=rot, seg=8, bevel=0)
+
+
+def _tread(a, x, y, zc, r, width, n=18, depth=.045, mat='Rubber', yaw=0.0):
+    """High-detail tyre tread on an axle along X at (x, y, zc) (turned by yaw about Z): two staggered rows
+    of angled lugs whose faces reach radius r (their corners stay inside it). The caller shrinks the tyre
+    core to about r - depth, so the silhouette and the ground contact stay where they were."""
+    part = a.part('Tread', mat)
+    lw = width * .42
+    for row, (dx, twist) in enumerate(((-width * .24, .3), (width * .24, -.3))):
+        for k in range(n):
+            phi = (k + .5 * row) * TAU / n
+            m = (Matrix.Translation(Vector((x, y, zc))) @ Matrix.Rotation(yaw, 4, 'Z') @ Matrix.Rotation(phi, 4, 'X')
+                 @ Matrix.Translation(Vector((dx, 0, r - depth / 2 - .005))) @ Matrix.Rotation(twist, 4, 'Z'))
+            part.box((lw, r * .2, depth), loc=tuple(m.to_translation()), rot=m.to_euler('XYZ'), bevel=0)
 
 
 def _wheel(a, x, y, r, width, seg=16):
     """Big off-road tyre touching the ground (z = r) with a steel hub and centre cap."""
+    if hd.on(a):
+        _wheel_hd(a, x, y, r, width, seg)
+        return
     a.part('Tyres', 'Rubber').cyl(r, width, loc=(x, y, r), rot=ACROSS, seg=seg, bevel=r * .16, bseg=1)
     hubs = a.part('Hubs', 'Steel')
     hubs.cyl(r * .52, width + .04, loc=(x, y, r), rot=ACROSS, seg=10, bevel=.02, bseg=1)
     hubs.cyl(r * .2, width + .1, loc=(x, y, r), rot=ACROSS, seg=6, bevel=0)
+
+
+def _wheel_hd(a, x, y, r, width, seg=16):
+    """_wheel up close: a lugged tread round a slimmer core, a rounder hub, wheel nuts and the hub cap.
+    Same outer size as the normal wheel."""
+    s = 1 if x > 0 else -1
+    depth = min(.05, r * .09)
+    a.part('Tyres', 'Rubber').cyl(r - depth + .006, width, loc=(x, y, r), rot=ACROSS, seg=max(seg, 16),
+                                  bevel=r * .14, bseg=1)
+    _tread(a, x, y, r, r, width, n=max(12, int(r * 26)), depth=depth)
+    hubs = a.part('Hubs', 'Steel')
+    hubs.cyl(r * .52, width + .04, loc=(x, y, r), rot=ACROSS, seg=14, bevel=.02, bseg=1)
+    hubs.cyl(r * .2, width + .1, loc=(x, y, r), rot=ACROSS, seg=8, bevel=0)
+    hd.bolt_ring(a.part('Wheel_nuts', 'Steel'), hd.frame((x + s * (width / 2 + .02), y, r), hd.side_rot(s)), r * .34,
+                 6, r=.022, h=.03)
 
 
 def _frame(loc, rot):
@@ -264,6 +365,12 @@ def _skirt(a, s, x, y0, y1, z0, z1, panels, mat='Team', thick=.08, gap=.035, bol
         if bolts:
             for dy in (-w / 2 + .1, w / 2 - .1):
                 steel.box((.03, .05, .05), loc=(s * (x + thick / 2 + .005), yc + dy, z0 + .1), bevel=0)
+        if hd.on(a):  # a bolt row under the lip and a pressed stiffening rib across the plate
+            fx = s * (x + thick / 2)
+            n = max(2, int(w / .3) + 1)
+            hd.bolt_line(a.part('Skirt_rivets', 'Steel', parent), (fx, yc - w / 2, z1 - .09),
+                         (fx, yc + w / 2, z1 - .09), n, rot=hd.side_rot(s), r=.016, h=.024, inset=.07)
+            a.part('Skirt_ribs', mat, parent).box((.03, w - .08, .05), loc=(fx, yc, z0 + (z1 - z0) * .42), bevel=0)
 
 
 def _stowage_bin(a, loc, size, parent=None, mat='Armor', lid='Armor', latch_side=-1, yaw=0.0):
@@ -283,6 +390,18 @@ def _stowage_bin(a, loc, size, parent=None, mat='Armor', lid='Armor', latch_side
                       bevel=0)
         else:
             steel.box((.05, .03, .07), loc=m @ Vector((k * w, -d / 2 - .006, h - .09)), rot=rot, bevel=0)
+    if hd.on(a):  # a pressed rib round the body, lid hinges on the far side, a padlock hasp
+        a.part('Stowage_ribs', lid, parent).box((w + .016, d + .016, .03), loc=m @ Vector((0, 0, h * .42)), rot=rot,
+                                                bevel=0)
+        if latch_side:
+            for k in (-.3, .3):
+                steel.cyl(.016, .07, loc=m @ Vector((-latch_side * (w / 2 + .004), k * d, h - .02)), rot=(R90, 0, yaw),
+                          seg=6, bevel=0)
+            steel.box((.02, .04, .05), loc=m @ Vector((latch_side * (w / 2 + .01), 0, h - .07)), rot=rot, bevel=0)
+        else:
+            for k in (-.3, .3):
+                steel.cyl(.016, .07, loc=m @ Vector((k * w, d / 2 + .004, h - .02)), rot=(0, R90, yaw), seg=6, bevel=0)
+            steel.box((.04, .02, .05), loc=m @ Vector((0, -d / 2 - .01, h - .07)), rot=rot, bevel=0)
 
 
 def _jerrycans(a, loc, count, axis='y', parent=None, mat='Crate', bracket=True):
@@ -299,6 +418,19 @@ def _jerrycans(a, loc, count, axis='y', parent=None, mat='Crate', bracket=True):
             cx, cy, size, handle = x + off, y, (t, wide, h), (.05, .2, .04)
         body.box(size, loc=(cx, cy, z + h / 2 - .01), bevel=.02, seg=1)
         body.box(handle, loc=(cx, cy, z + h + .005), bevel=0)
+        if hd.on(a):  # embossed band, spout and the X pressed into the outer faces
+            body.box((size[0] + .012, size[1] + .012, .03), loc=(cx, cy, z + h * .48), bevel=0)
+            ox, oy = (wide * .3, 0) if axis == 'y' else (0, wide * .3)
+            a.part('Jerrycan_caps', 'Steel', parent).cyl(.028, .05, loc=(cx + ox, cy + oy, z + h), seg=6, bevel=0)
+            rib = a.part('Jerrycan_ribs', mat, parent)
+            ang = math.atan2(h * .7, wide * .8)
+            ln = math.hypot(h * .7, wide * .8)
+            for e in ((-1, 1) if count == 1 else ((-1,) if i == 0 else (1,) if i == count - 1 else ())):
+                for tw in (ang, -ang):
+                    if axis == 'y':
+                        rib.box((ln, .02, .025), loc=(cx, cy + e * (t / 2 + .004), z + h * .5), rot=(0, tw, 0), bevel=0)
+                    else:
+                        rib.box((.02, ln, .025), loc=(cx + e * (t / 2 + .004), cy, z + h * .5), rot=(tw, 0, 0), bevel=0)
     if bracket:
         run = count * (t + .025) + .02
         size = (wide + .04, run, .04) if axis == 'y' else (run, wide + .04, .04)
@@ -311,6 +443,16 @@ def _cable(a, points, parent=None, r=.022):
     part.tube(points, r, seg=6)
     for p in (points[0], points[-1]):
         part.box((.08, .08, .075), loc=p, bevel=0)
+    if hd.on(a):  # stowage clamps every 45 cm along the run
+        clamps = a.part('Cable_clamps', 'Armor', parent)
+        for p0, p1 in zip(points, points[1:]):
+            p0, p1 = Vector(p0), Vector(p1)
+            d = p1 - p0
+            n = int(d.length / .45)
+            yaw = math.atan2(d.y, d.x) - R90
+            for i in range(1, n + 1):
+                q = p0.lerp(p1, i / (n + 1))
+                clamps.box((r * 3.4, .04, r * 3.2), loc=tuple(q), rot=(0, 0, yaw), bevel=0)
 
 
 def _shovel(a, loc, yaw=0.0, parent=None, length=1.0):
@@ -321,6 +463,15 @@ def _shovel(a, loc, yaw=0.0, parent=None, length=1.0):
                                          bevel=0)
     a.part('Tool_handles', 'Armor', parent).box((.04, length - .26, .035), loc=m @ Vector((0, .13, 0)), rot=rot,
                                                 bevel=0)
+    if hd.on(a):  # blade socket, D-grip and two rack clamps
+        steel = a.part('Tools', 'Steel', parent)
+        steel.box((.07, .1, .04), loc=m @ Vector((0, -length / 2 + .29, 0)), rot=rot, bevel=0)
+        steel.tube([tuple(m @ Vector(p)) for p in ((-.02, length / 2 - .16, 0), (-.06, length / 2 - .1, 0),
+                                                    (-.06, length / 2 - .03, 0), (.06, length / 2 - .03, 0),
+                                                    (.06, length / 2 - .1, 0), (.02, length / 2 - .16, 0))], .012, seg=4)
+        for k in (-.12, .22):
+            a.part('Tool_clamps', 'Armor', parent).box((.1, .03, .05), loc=m @ Vector((0, k * length, .01)), rot=rot,
+                                                       bevel=0)
 
 
 def _pick(a, loc, yaw=0.0, parent=None, length=.9):
@@ -330,6 +481,12 @@ def _pick(a, loc, yaw=0.0, parent=None, length=.9):
     a.part('Tool_handles', 'Armor', parent).box((.045, length, .04), loc=m @ Vector((0, 0, 0)), rot=rot, bevel=0)
     a.part('Tools', 'Steel', parent).box((.42, .06, .06), loc=m @ Vector((0, -length / 2 + .06, .01)), rot=rot,
                                          bevel=0)
+    if hd.on(a):  # the head's eye collar round the handle, two rack clamps
+        a.part('Tools', 'Steel', parent).box((.08, .11, .075), loc=m @ Vector((0, -length / 2 + .06, .012)), rot=rot,
+                                             bevel=0)
+        for k in (-.05, .3):
+            a.part('Tool_clamps', 'Armor', parent).box((.1, .03, .05), loc=m @ Vector((0, k * length, .01)), rot=rot,
+                                                       bevel=0)
 
 
 def _headlight(a, x, y, z, parent=None, guard=True, facing=-1):
@@ -338,6 +495,16 @@ def _headlight(a, x, y, z, parent=None, guard=True, facing=-1):
     f = facing
     a.part('Light_housing', 'Armor', parent).box((.24, .12, .17), loc=(x, y - f * .04, z), bevel=.02, seg=1)
     a.part('Lamps', 'Lamp', parent).box((.17, .03, .11), loc=(x, y + f * .025, z), bevel=0)
+    if hd.on(a):  # lens bezel and four housing bolts
+        rot = hd.FRONT if f < 0 else hd.BACK
+        bezel = a.part('Light_bezels', 'Steel', parent)
+        for dz in (-.062, .062):
+            bezel.box((.19, .02, .014), loc=(x, y + f * .03, z + dz), bevel=0)
+        for dx in (-.092, .092):
+            bezel.box((.014, .02, .138), loc=(x + dx, y + f * .03, z), bevel=0)
+        for dx in (-.1, .1):
+            for dz in (-.07, .07):
+                hd.bolt(bezel, (x + dx, y + f * .02, z + dz), rot, r=.012, h=.018)
     if guard:
         g = y + f * .1
         a.part('Light_guards', 'Steel', parent).tube(
@@ -359,6 +526,12 @@ def _hatch(a, x, y, z, r, parent=None, mat='Armor', handle=True, hinge=1, seg=12
     a.part('Hatches', mat, parent).cyl(r, .06, loc=(x, y, z + .02), seg=seg, bevel=.015, bseg=1)
     steel = a.part('Hatch_fittings', 'Steel', parent)
     steel.box((r * .9, .08, .06), loc=(x, y + hinge * (r + .01), z + .03), bevel=0)
+    if hd.on(a):  # bolt ring on the lid, hinge pin, locking lever and a periscope boss
+        hd.bolt_ring(steel, hd.frame((x, y, z + .05)), r * .8, 8, r=.014, h=.02, phase=.2)
+        steel.cyl(.02, r * 1.02, loc=(x, y + hinge * (r + .01), z + .065), rot=ACROSS, seg=6, bevel=0)
+        steel.box((.05, .05, .04), loc=(x + r * .55, y - hinge * r * .55, z + .055), rot=(0, 0, .8), bevel=0)
+        a.part('Hatches', mat, parent).cyl(r * .22, .03, loc=(x - r * .35, y + hinge * r * .2, z + .055), seg=8,
+                                           bevel=0)
     if handle:
         hy = y - hinge * r * .3
         steel.tube([(x - r * .4, hy, z + .04), (x - r * .4, hy, z + .1), (x + r * .4, hy, z + .1),
@@ -375,11 +548,21 @@ def _periscopes(a, points, parent=None, size=(.13, .07, .08)):
         a.part('Periscope', 'Glass', parent).box((size[0], .02, size[2] * .5),
                                                  loc=m @ Vector((0, -size[1] / 2 - .003, size[2] * .45 - .02)),
                                                  rot=(0, 0, yaw), bevel=0)
+        if hd.on(a):  # rain guard over the glass and a bolt either side
+            a.part('Periscope_guards', 'Armor', parent).box((size[0] + .05, .045, .014),
+                                                            loc=m @ Vector((0, -size[1] / 2 - .008, size[2] - .02)),
+                                                            rot=(0, 0, yaw), bevel=0)
+            for dx in (-1, 1):
+                hd.bolt(a.part('Periscope_guards', 'Armor', parent),
+                        tuple(m @ Vector((dx * (size[0] / 2 + .012), .015, size[2] - .02))), (0, 0, yaw), r=.01, h=.018)
 
 
 def _rail(a, points, parent=None, r=.016):
     """Grab rail / handrail along a polyline."""
     a.part('Grab_rails', 'Steel', parent).tube(points, r, seg=4)
+    if hd.on(a):  # welded foot plates where the rail meets the surface
+        for p in (points[0], points[-1]):
+            a.part('Rail_feet', 'Steel', parent).box((r * 4, r * 4, .016), loc=(p[0], p[1], p[2] + .004), bevel=0)
 
 
 def _exhaust(a, x, y, z, w, d, parent=None, facing=1, slats=3):
@@ -389,6 +572,13 @@ def _exhaust(a, x, y, z, w, d, parent=None, facing=1, slats=3):
     a.part('Exhaust_louvres', 'Undercarriage', parent).grille(w, d, loc=(x, y + f * .03, z),
                                                               rot=(0, 0, 0 if f < 0 else math.pi), slats=slats,
                                                               depth=.05, thickness=.035)
+    if hd.on(a):  # cowl bolts and a heat-shield bar across the louvres
+        rot = hd.FRONT if f < 0 else hd.BACK
+        steel = a.part('Exhaust_bolts', 'Steel', parent)
+        for dx in (-1, 1):
+            for dz in (-1, 1):
+                hd.bolt(steel, (x + dx * (w / 2 + .02), y + f * .02, z + dz * (d / 2 + .02)), rot, r=.014, h=.02)
+        steel.box((.025, .03, d + .02), loc=(x, y + f * .045, z), bevel=0)
 
 
 def _grille_frame(a, x, y, z, w, d, parent=None, mat='Armor', t=.06):
@@ -398,6 +588,13 @@ def _grille_frame(a, x, y, z, w, d, parent=None, mat='Armor', t=.06):
     fr.box((w + 2 * t, t, .05), loc=(x, y + d / 2 + t / 2, z + .005), bevel=0)
     fr.box((t, d, .05), loc=(x - w / 2 - t / 2, y, z + .005), bevel=0)
     fr.box((t, d, .05), loc=(x + w / 2 + t / 2, y, z + .005), bevel=0)
+    if hd.on(a):  # bolts round the frame, a centre bar and a lifting handle
+        steel = a.part('Grille_bolts', 'Steel', parent)
+        hd.plate_bolts(steel, hd.frame((x, y, z + .03)), w + t, d + t, max(3, int(w / .3) + 1), max(2, int(d / .3) + 1),
+                       r=.013, hh=.018, inset=0)
+        fr.box((.035, d, .03), loc=(x, y, z + .035), bevel=0)
+        hd.handle(steel, (x - .1, y + d / 2 + t / 2, z + .03), (x + .1, y + d / 2 + t / 2, z + .03), (0, 0, 1), h=.05,
+                  r=.01)
 
 
 def _era(a, m, cols, rows, size, gap=.03, parent=None, mat='Armor', bevel=.012):
@@ -409,6 +606,10 @@ def _era(a, m, cols, rows, size, gap=.03, parent=None, mat='Armor', bevel=.012):
         for j in range(rows):
             p = Vector(((i - (cols - 1) / 2) * (w + gap), (j - (rows - 1) / 2) * (d + gap), t / 2 - .01))
             a.part('ERA', mat, parent).box((w, d, t), loc=m @ p, rot=rot, bevel=bevel, seg=1)
+            if hd.on(a):  # two retaining bolts per block
+                for e in (-1, 1):
+                    hd.bolt(a.part('ERA_bolts', 'Steel', parent),
+                            tuple(m @ (p + Vector((e * w * .28, 0, t / 2)))), tuple(rot), r=.016, h=.022)
 
 
 def _face_frame(b0, b1, h, taper=1.0, z0=0.0, u=.5, v=.5, out=0.0):
@@ -459,6 +660,13 @@ def _roll(a, loc, length, r=.13, axis='x', parent=None, mat='Canvas', straps=Tru
             off = Vector((k * length, 0, 0)) if axis == 'x' else Vector((0, k * length, 0))
             a.part('Straps', 'Undercarriage', parent).cyl(r + .012, .05, loc=Vector(loc) + off, rot=rot, seg=10,
                                                           bevel=0)
+            if hd.on(a):  # buckle on top of each strap
+                a.part('Strap_buckles', 'Steel', parent).box((.06, .06, .02),
+                                                             loc=Vector(loc) + off + Vector((0, 0, r + .012)), bevel=0)
+    if hd.on(a):  # folds along the roll
+        for k in (-.12, .12):
+            off = Vector((k * length, 0, 0)) if axis == 'x' else Vector((0, k * length, 0))
+            a.part('Tarp', mat, parent).cyl(r + .006, .035, loc=Vector(loc) + off, rot=rot, seg=10, bevel=0)
 
 
 def _track_links(a, m, count, width=.5, parent=None):
@@ -470,6 +678,13 @@ def _track_links(a, m, count, width=.5, parent=None):
         p = Vector((0, (i - (count - 1) / 2) * .19, .015))
         part.box((width, .16, .05), loc=m @ p, rot=rot, bevel=0)
         part.box((width * .8, .04, .04), loc=m @ (p + Vector((0, 0, .035))), rot=rot, bevel=0)
+        if hd.on(a):  # link pins at both edges and the centre guide horns
+            pin_rot = (m.to_3x3() @ Euler(ACROSS, 'XYZ').to_matrix()).to_euler('XYZ')
+            pins = a.part('Spare_link_pins', 'Steel', parent)
+            for e in (-1, 1):
+                pins.cyl(.016, width + .03, loc=m @ (p + Vector((0, e * .07, .015))), rot=pin_rot, seg=6, bevel=0)
+            for e in (-1, 1):
+                pins.box((.04, .06, .05), loc=m @ (p + Vector((e * width * .18, 0, .045))), rot=rot, bevel=0)
 
 
 def _basket(a, x0, x1, y0, y1, z0, h, parent=None, contents=True, box=True):
@@ -478,6 +693,16 @@ def _basket(a, x0, x1, y0, y1, z0, h, parent=None, contents=True, box=True):
     steel.tube([(x0, y0, z0 + h), (x0, y1, z0 + h), (x1, y1, z0 + h), (x1, y0, z0 + h)], .02, seg=4)
     for x, y in ((x0, y1), (x1, y1)):
         steel.box((.035, .035, h), loc=(x, y, z0 + h / 2), bevel=0)
+    if hd.on(a):  # a middle rail and upright bars round the three open sides
+        steel.tube([(x0, y0, z0 + h * .5), (x0, y1, z0 + h * .5), (x1, y1, z0 + h * .5), (x1, y0, z0 + h * .5)], .014,
+                   seg=4)
+        n = max(3, int((x1 - x0) / .2))
+        for i in range(1, n):
+            steel.box((.02, .02, h), loc=(x0 + (x1 - x0) * i / n, y1, z0 + h / 2), bevel=0)
+        for x in (x0, x1):
+            m = max(2, int((y1 - y0) / .2))
+            for i in range(1, m):
+                steel.box((.02, .02, h), loc=(x, y0 + (y1 - y0) * i / m, z0 + h / 2), bevel=0)
     a.part('Basket_floor', 'Armor', parent).box((x1 - x0, y1 - y0, .04),
                                                 loc=((x0 + x1) / 2, (y0 + y1) / 2, z0 + .02), bevel=0)
     if contents:
@@ -488,10 +713,82 @@ def _basket(a, x0, x1, y0, y1, z0, h, parent=None, contents=True, box=True):
                                                   loc=(x1 - .22, (y0 + y1) / 2, z0 + .04 + .1), bevel=.02, seg=1)
 
 
+# ----------------------------------------------------------------------------- high-detail kit
+# Vehicle-level parts that only the `_hd` variants add (see mb_detail.py). All sink 1 cm into the surface.
+def _glacis_bolts(a, front, back, t, x0, x1, n, parent=None, r=.018):
+    """A bolt row across a sloped plate (see _glacis) at fraction t, from x0 to x1."""
+    gy, gz, grot = _glacis(front, back, t, 0)
+    hd.bolt_line(a.part('Hull_bolts', 'Steel', parent), (x0, gy, gz), (x1, gy, gz), n, rot=(grot, 0, 0), r=r, h=.024)
+
+
+def _shackle(a, x, y, z, parent=None, w=.1, drop=.1):
+    """Tow shackle hanging under a tow hook whose underside is at (x, y, z)."""
+    a.part('Shackles', 'Steel', parent).tube([(x - w / 2, y, z + .01), (x - w / 2, y, z - drop),
+                                              (x - w * .2, y, z - drop - .03), (x + w * .2, y, z - drop - .03),
+                                              (x + w / 2, y, z - drop), (x + w / 2, y, z + .01)], .016, seg=4)
+
+
+def _eyes(a, points, parent=None, size=.09):
+    """Lifting eyes at [(x, y, z, yaw)...] on a roof."""
+    part = a.part('Lifting_eyes', 'Steel', parent)
+    for x, y, z, yaw in points:
+        hd.lifting_eye(part, (x, y, z), yaw, size)
+
+
+def _filler(a, x, y, z, parent=None, r=.07):
+    """Fuel filler cap on a deck at height z: a bolted ring, the hinged cap and its lever."""
+    steel = a.part('Filler_caps', 'Steel', parent)
+    steel.cyl(r * 1.35, .02, loc=(x, y, z), seg=10, bevel=0)
+    steel.cyl(r, .04, loc=(x, y, z + .02), seg=10, bevel=0)
+    steel.box((.04, r * .9, .03), loc=(x, y + r * .6, z + .045), bevel=0)
+    hd.bolt_ring(steel, hd.frame((x, y, z + .01)), r * 1.18, 6, r=.01, h=.016)
+
+
+def _access_panel(a, x, y, z, w, d, parent=None, nx=4, ny=2, rot=(0, 0, 0), mat='Armor'):
+    """Bolted access plate lying on a surface at (x, y, z) (local XY of rot), w x d."""
+    m = hd.frame((x, y, z), rot)
+    a.part('Access_panels', mat, parent).box((w, d, .022), loc=tuple(m @ Vector((0, 0, .001))), rot=rot, bevel=0)
+    hd.plate_bolts(a.part('Panel_bolts', 'Steel', parent), m @ hd.frame((0, 0, .012)), w, d, nx, ny, r=.013, hh=.018,
+                   inset=.035)
+
+
+def _vent(a, x, y, z, parent=None, r=.1):
+    """Mushroom ventilator on a roof at height z: a collar and a flat dome."""
+    a.part('Vents', 'Armor', parent).cyl(r * .6, .07, loc=(x, y, z + .025), seg=10, bevel=0)
+    a.part('Vents', 'Armor', parent).sphere((r, r, r * .45), loc=(x, y, z + .06), seg=12, rings=6, cut=0)
+
+
+def _phone(a, x, y, z, parent=None, facing=1):
+    """Infantry telephone box on a rear plate at y facing `facing` (+1: rear)."""
+    f = facing
+    a.part('Phone_box', 'Armor', parent).box((.16, .05, .18), loc=(x, y + f * .015, z), bevel=0)
+    a.part('Phone_box', 'Armor', parent).box((.18, .03, .03), loc=(x, y + f * .04, z + .08), bevel=0)
+    a.part('Phone_handle', 'Steel', parent).box((.04, .02, .06), loc=(x + .05, y + f * .045, z - .03), bevel=0)
+
+
+def _pintle(a, x, y, z, parent=None, facing=1):
+    """Tow pintle hook on a rear plate at y: mounting block, hook and latch."""
+    f = facing
+    steel = a.part('Pintle', 'Steel', parent)
+    steel.box((.16, .04, .14), loc=(x, y + f * .01, z), bevel=0)
+    steel.box((.06, .03, .1), loc=(x, y + f * .04, z - .02), bevel=0)
+    steel.box((.1, .02, .03), loc=(x, y + f * .045, z + .05), bevel=0)
+
+
+def _face_bolts(a, b0, b1, h, taper, v, n, parent=None, u0=.1, u1=.9, z0=0.0, r=.016, name='Turret_bolts'):
+    """A bolt row on a side face of a Z prism (see _face_frame), v up the face, from u0 to u1 along it."""
+    part = a.part(name, 'Steel', parent)
+    for i in range(n):
+        u = u0 + (u1 - u0) * (i / max(1, n - 1))
+        m = _face_frame(b0, b1, h, taper, z0=z0, u=u, v=v)
+        part.cyl(r, .024, loc=tuple(m @ Vector((0, 0, .002))), rot=m.to_euler('XYZ'), seg=6, bevel=0)
+
+
 # ----------------------------------------------------------------------------- tanks
-def light_tank(a):
+def light_tank(a, detail=False):
     """Light tank: rear-drive running gear under four-panel skirts, fender stowage, tow cable and a
     small turret with a cupola, loader's hatch, bustle basket and a baffle-braked 90 mm gun."""
+    hd.mark(a, detail)
     tracks(a, 1.02, 4.4, .72, .25, 5, .42, belt_width=.5, sprocket=1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -548,11 +845,39 @@ def light_tank(a):
                   sleeve=(.09, .32, .12), style='baffle', bands=(.45, .7))
     a.pivot('Muzzle_main', tip, t)
     _coax(a, t, .29, -.8, .31, length=.36, housing=.32)
+    if detail:
+        # Hull: bolt rows along the glacis edges and down the hull sides, shackles on the tow hooks,
+        # lifting eyes, an engine access plate, filler caps and the rear plate's pintle and phone.
+        for u in (.1, .9):
+            _glacis_bolts(a, front, brow, u, -.62, .62, 7)
+        for s in (-1, 1):
+            _shackle(a, s * .22, -2.38, .51)
+            hd.bolt_line(a.part('Hull_bolts', 'Steel'), (s * .81, -1.3, 1.03), (s * .81, 1.75, 1.03), 8,
+                         rot=hd.side_rot(s), r=.016, h=.022)
+            _filler(a, s * .66, .72, 1.12)
+        _eyes(a, [(s * .62, y, 1.12, 0) for s in (-1, 1) for y in (-1.42, 1.9)])
+        _access_panel(a, 0, .78, 1.12, .7, .24, nx=4, ny=2)
+        _pintle(a, 0, 2.25, .62)
+        _phone(a, .48, 2.25, .62)
+        a.part('Rear_jack', 'Steel').cyl(.06, .44, loc=(-.32, 2.33, .62), rot=ACROSS, seg=8, bevel=0)
+        for dx in (-.16, .16):
+            a.part('Rear_jack', 'Armor').box((.04, .1, .12), loc=(-.32 + dx, 2.29, .62), bevel=0)
+        # Turret: lifting eyes, bolt rings, mantlet bolts, a ventilator, sight hood and a roof seam.
+        _eyes(a, [(-.46, .5, .5, 0), (.46, .5, .5, 0), (.45, -.45, .5, -.6)], parent=t, size=.08)
+        hd.bolt_ring(a.part('Turret_bolts', 'Steel', t), hd.frame((.28, .15, .58)), .215, 10, r=.012, h=.018)
+        for dx in (-.16, .16):
+            for dz in (-.12, .12):
+                hd.bolt(a.part('Turret_bolts', 'Steel', t), (dx, -.96, .25 + dz), hd.FRONT, r=.016, h=.024)
+        _vent(a, .05, .45, .5, parent=t, r=.08)
+        tarm.box((.24, .08, .025), loc=(-.3, -.43, .62), bevel=0)                          # sight hood
+        hd.bolt_line(a.part('Turret_bolts', 'Steel', t), (-.42, 1.058, .3), (.42, 1.058, .3), 6, rot=hd.BACK,
+                     r=.014, h=.02)
 
 
-def main_battle_tank(a):
+def main_battle_tank(a, detail=False):
     """Main battle tank: rear-drive running gear behind five-panel skirts, reactive armour on the
     glacis and turret cheeks, fender and bustle stowage, and a smooth-bore 120 mm gun."""
+    hd.mark(a, detail)
     tracks(a, 1.28, 5.8, .9, .3, 7, .5, belt_width=.62, wheel_seg=12, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -619,14 +944,37 @@ def main_battle_tank(a):
     a.pivot('Muzzle_main', tip, t)
     _coax(a, t, .45, -1.17, .44, length=.46, housing=.3)
     _roof_mg(a, t, (.42, .25, .95), length=.85)
+    if detail:
+        # Hull: glacis bolt rows clear of the add-on blocks, shackles, lifting eyes, filler caps, pintle and
+        # the infantry phone on the rear plate.
+        for u in (.07, .93):
+            _glacis_bolts(a, front, brow, u, -.85, .85, 9)
+        for s in (-1, 1):
+            _shackle(a, s * .3, -3.08, .6)
+            _filler(a, s * .86, 1.0, 1.38)
+        _eyes(a, [(s * .8, -1.95, 1.38, 0) for s in (-1, 1)] + [(s * .9, 2.1, 1.38, R90) for s in (-1, 1)])
+        _pintle(a, 0, 2.95, .7)
+        _phone(a, .82, 2.95, .74)
+        # Turret: lifting eyes, a ventilator, bolt ring under the cupola top, mantlet bolts, a roof seam and
+        # grab rails along the roof edges.
+        _eyes(a, [(-.72, .75, .66, 0), (.72, .75, .66, 0), (.62, -.5, .66, -.5)], parent=t)
+        _vent(a, -.2, .82, .66, parent=t)
+        hd.bolt_ring(a.part('Turret_bolts', 'Steel', t), hd.frame((.42, .25, .88)), .28, 12, r=.012, h=.018)
+        for dx in (-.21, .21):
+            for dz in (-.17, .17):
+                hd.bolt(a.part('Turret_bolts', 'Steel', t), (dx, -1.39, .33 + dz), hd.FRONT, r=.018, h=.026)
+        a.part('Turret_seams', 'Armor', t).box((1.7, .025, .014), loc=(0, -.2, .66), bevel=0)
+        for s in (-1, 1):
+            _rail(a, [(s * .8, -.35, .655), (s * .8, -.35, .72), (s * .85, .55, .72), (s * .85, .55, .655)], parent=t)
 
 
 # artillery: the wheeled 155 mm gun is built in mb_artillery.py.
 
 
-def scout_jeep(a):
+def scout_jeep(a, detail=False):
     """Open-top 4x4 scout car with a pintle machine gun: louvred hood, guarded headlights, brush guard
     and winch, four seats, a braced roll bar, radio, ammunition and jerrycans in the rear tub."""
+    hd.mark(a, detail)
     body = a.part('Body', 'Team')
     steel = a.part('Steel', 'Steel')
     armor = a.part('Armor', 'Armor')
@@ -634,9 +982,14 @@ def scout_jeep(a):
     rubber = a.part('Tyres', 'Rubber')
     seats = a.part('Seats', 'Canvas')
     chassis.box((1.45, 3.7, .26), loc=(0, 0, .55), bevel=.04)
+    tread = .038 if detail else 0  # the high-detail tyre is a slimmer core inside a lugged tread
     for sx in (-1, 1):
         for y in (-1.25, 1.2):
-            rubber.cyl(.42, .34, loc=(sx * .86, y, .42), rot=ACROSS, seg=16, bevel=.07, bseg=1)
+            rubber.cyl(.42 - tread, .34, loc=(sx * .86, y, .42), rot=ACROSS, seg=16, bevel=.07, bseg=1)
+            if detail:
+                _tread(a, sx * .86, y, .42, .42, .34, n=13, depth=tread)
+                hd.bolt_ring(a.part('Wheel_nuts', 'Steel'), hd.frame((sx * 1.045, y, .42), hd.side_rot(sx)), .15, 5,
+                             r=.02, h=.03)
             armor.cyl(.24, .37, loc=(sx * .86, y, .42), rot=ACROSS, seg=10, bevel=.02, bseg=1)   # wheel discs
             steel.cyl(.09, .4, loc=(sx * .86, y, .42), rot=ACROSS, seg=6, bevel=0)               # hub caps
             body.box((.46, 1.05, .1), loc=(sx * .9, y, .92), bevel=.03, taper=(1, .8))
@@ -671,7 +1024,7 @@ def scout_jeep(a):
     _rail(a, [(-.62, -2.1, .67), (-.62, -2.17, .74), (-.62, -2.17, 1.0), (.62, -2.17, 1.0), (.62, -2.17, .74),
               (.62, -2.1, .67)], r=.025)
     # Rear: spare tyre, jerrycans, tail lights; radio and ammunition in the tub.
-    rubber.cyl(.36, .22, loc=(0, 2.03, 1.02), rot=FORWARD, seg=16, bevel=.06, bseg=1)
+    rubber.cyl(.36 - tread, .22, loc=(0, 2.03, 1.02), rot=FORWARD, seg=16, bevel=.06, bseg=1)
     armor.cyl(.2, .25, loc=(0, 2.03, 1.02), rot=FORWARD, seg=10, bevel=0)
     for sx in (-1, 1):
         a.part('Jerrycans', 'Hazard').box((.3, .16, .4), loc=(sx * .58, 2.0, 1.05), bevel=.03)
@@ -692,6 +1045,67 @@ def scout_jeep(a):
     cannon.box((.05, .16, .08), loc=(0, .24, .6), rot=(.3, 0, 0), bevel=0)                  # grips
     a.part('Ammo_box', 'Armor', t).box((.2, .18, .16), loc=(.16, .05, .56), bevel=.02)
     a.pivot('Muzzle_main', (0, -1.16, .66), t)  # the pintle machine gun is the jeep's main weapon
+    if detail:
+        # Spare wheel: tread and its carrier bracket.
+        _tread(a, 0, 2.03, 1.02, .36, .22, n=12, depth=tread, yaw=R90)
+        steel.box((.5, .06, .08), loc=(0, 1.93, 1.02), bevel=0)
+        # Body: rivet rows along the tub and hood sides, hood panel lines, grab handles, a filler cap.
+        rivets = a.part('Rivets', 'Steel')
+        for sx in (-1, 1):
+            hd.bolt_line(rivets, (sx * .86, -.25, 1.08), (sx * .86, 1.85, 1.08), 12, rot=hd.side_rot(sx), r=.013,
+                         h=.02)
+            hd.bolt_line(rivets, (sx * .85, -1.3, 1.02), (sx * .85, -.45, 1.02), 5, rot=hd.side_rot(sx), r=.013,
+                         h=.02)
+            a.part('Panel_lines', 'Armor').tube([(sx * .5, -1.98, .975), (sx * .5, -1.1, 1.126), (sx * .5, -.4, 1.146)],
+                                                .01, seg=4)
+            hd.handle(steel, (sx * .86, .3, 1.0), (sx * .86, .55, 1.0), (sx, 0, 0), h=.05)
+            for dy in (-.4, 0, .4):                                                                  # step treads
+                steel.box((.12, .2, .02), loc=(sx * .9, -.05 + dy, .67), bevel=0)
+        steel.cyl(.06, .04, loc=(-.86, .15, .93), rot=ACROSS, seg=8, bevel=0)                        # filler cap
+        # Windscreen: fold-down hinges and wiper arms; roll bar padding and base plates.
+        for sx in (-1, 1):
+            hd.hinge(steel, (sx * .7, -.36, 1.13), (sx * .5, -.36, 1.13), r=.022, knuckles=2)
+            steel.box((.02, .02, .3), loc=(sx * .4, -.405, 1.3), rot=(-.12, 0, sx * .5), bevel=0)
+            steel.box((.1, .1, .02), loc=(sx * .82, 1.55, 1.145), bevel=0)
+            steel.box((.08, .08, .02), loc=(sx * .82, 1.9, 1.145), bevel=0)
+        a.part('Seats', 'Canvas').cyl(.06, 1.2, loc=(0, 1.55, 1.78), rot=ACROSS, seg=8, bevel=0)
+        # Seats: frames round the backs and a seam across each cushion.
+        for x, y in ((-.38, -.05), (.38, -.05), (-.48, 1.0), (.48, 1.0)):
+            steel.tube([(x - .2, y + .27, 1.22), (x - .2, y + .3, 1.62), (x + .2, y + .3, 1.62), (x + .2, y + .27, 1.22)],
+                       .012, seg=4)
+            seats.box((.45, .025, .125), loc=(x, y, 1.19), bevel=0)
+        # Tub: tie-down loops at the corners, radio knobs and handle, the antenna's spring base.
+        for x, y in ((-.78, .45), (.78, .45), (-.78, 1.9), (.78, 1.9)):
+            hd.handle(steel, (x, y - .05, 1.14), (x, y + .05, 1.14), (0, 0, 1), h=.04, r=.01)
+        for dx in (-.08, .08):
+            steel.cyl(.025, .03, loc=(.55 + dx, 1.47, 1.2), rot=FORWARD, seg=8, bevel=0)
+        hd.handle(steel, (.43, 1.65, 1.41), (.67, 1.65, 1.41), (0, 0, 1), h=.05, r=.01)
+        armor.cyl(.04, .08, loc=(.72, 1.75, 1.43), seg=10, bevel=0)
+        for k in range(4):
+            steel.cyl(.022, .014, loc=(.72, 1.75, 1.49 + k * .026), seg=8, bevel=0)
+        # Front: winch cable wraps and hook, bumper bolts and tow shackles.
+        for dx in (-.1, 0, .1):
+            steel.cyl(.074, .04, loc=(dx, -2.135, .6), rot=ACROSS, seg=10, bevel=0)
+        steel.tube([(0, -2.19, .58), (0, -2.19, .49), (.03, -2.18, .46)], .012, seg=4)
+        for dx in (-.6, -.3, .3, .6):
+            hd.bolt(steel, (dx, -2.11, .6), hd.FRONT, r=.016, h=.024)
+        for sx in (-1, 1):
+            _shackle(a, sx * .45, -2.08, .53, w=.08, drop=.07)
+        # Jerrycans: caps and a pressed band.
+        for sx in (-1, 1):
+            a.part('Jerrycans', 'Hazard').box((.312, .172, .03), loc=(sx * .58, 2.0, 1.05), bevel=0)
+            steel.cyl(.03, .05, loc=(sx * .58 + .09, 2.0, 1.26), seg=6, bevel=0)
+        # Tools lying beside the seats; the pintle's base flange.
+        _pick(a, (-.74, .65, 1.16), length=.8)
+        _shovel(a, (.74, .35, 1.155), length=.8)
+        base = a.part('Pintle_base', 'Steel')
+        base.cyl(.13, .03, loc=(0, .72, 1.15), seg=12, bevel=0)
+        hd.bolt_ring(base, hd.frame((0, .72, 1.165)), .1, 4, r=.014, h=.02, phase=.785)
+        # Gun: shield bolts and the ammunition box's latch (neither is part of the elevating gun).
+        for dx in (-.24, .24):
+            for dz in (-.14, .14):
+                hd.bolt(a.part('Shield_bolts', 'Steel', t), (dx, -.25, .66 + dz), hd.FRONT, r=.014, h=.022)
+        a.part('Shield_bolts', 'Steel', t).box((.05, .03, .05), loc=(.16, -.045, .59), bevel=0)
 
 
 # ----------------------------------------------------------------------------- new vehicles
@@ -702,10 +1116,11 @@ def _hull_section(y, zb, z1, z2, zt, wb, w1, w2, wt):
             (-w1, y, z1)]
 
 
-def apc(a):
+def apc(a, detail=False):
     """8x8 wheeled armoured personnel carrier with a wedge nose and a 30 mm turret: bolted add-on
     armour, troop hatches with vision blocks, side bins, slat armour flanking the rear door and a
     bedroll on the roof."""
+    hd.mark(a, detail)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -784,6 +1199,38 @@ def apc(a):
                   sleeve=(.1, .34, .075), seg=10, style='flash')
     a.pivot('Muzzle_main', tip, t)
     _coax(a, t, .25, -.69, .33, length=.32, housing=.3)
+    if detail:
+        # Hull: corner bolts on the add-on flank plates, a bolt row along the upright flank band, shackles,
+        # a framed engine grille, and a vision block, grab handle and bolts on the rear door.
+        bolts = a.part('Hull_bolts', 'Steel')
+        for s in (-1, 1):
+            plate = hd.frame((s * (1.14 + .018), 0, 1.683), (0, -s * slope, 0))
+            brot = (plate.to_3x3() @ Euler(hd.side_rot(s), 'XYZ').to_matrix()).to_euler('XYZ')
+            for y in (-1.25, .15, 1.55):
+                for dy in (-.56, .56):
+                    for dz in (-.2, .2):
+                        hd.bolt(bolts, tuple(plate @ Vector((s * .03, y + dy, dz))), tuple(brot), r=.017, h=.024)
+            for y0, y1, n in ((-1.8, -.65, 4), (.35, 3.1, 9)):
+                hd.bolt_line(bolts, (s * 1.262, y0, 1.2), (s * 1.262, y1, 1.2), n, rot=hd.side_rot(s), r=.016, h=.024)
+            _shackle(a, s * .5, -3.32, .72)
+        _grille_frame(a, .48, -1.3, 1.99, .72, .7, t=.04)
+        a.part('Vision_blocks', 'Glass').box((.16, .03, .08), loc=(-.22, 3.465, 1.58), bevel=0)
+        armor.box((.24, .06, .03), loc=(-.22, 3.47, 1.64), bevel=0)
+        hd.handle(steel, (.4, 3.46, 1.05), (.4, 3.46, 1.4), (0, 1, 0), h=.06)
+        hd.bolt_line(bolts, (-.36, 3.46, .82), (-.36, 3.46, 1.45), 4, rot=hd.BACK, r=.015, h=.022)
+        # Turret: mantlet and bustle bolts, lifting eyes, a ventilator, a hood over the commander's sight and
+        # bolts on the launcher arm.
+        tb = a.part('Turret_bolts', 'Steel', t)
+        for dx in (-.12, .12):
+            for dz in (-.09, .09):
+                hd.bolt(tb, (dx, -.84, .28 + dz), hd.FRONT, r=.014, h=.022)
+        hd.bolt_line(tb, (-.35, .842, .3), (.35, .842, .3), 5, rot=hd.BACK, r=.013, h=.02)
+        _eyes(a, [(.42, .42, .52, 0), (-.4, .46, .52, 0), (0, -.42, .52, 0)], parent=t, size=.075)
+        _vent(a, .1, .35, .52, parent=t, r=.075)
+        tarm.box((.3, .08, .025), loc=(.3, -.05, .72), bevel=0)
+        for dx in (-.1, .1):
+            for dy in (-.07, .07):
+                hd.bolt(tb, (-.72 + dx, .02 + dy, .44), r=.013, h=.02)
 
 
 def mlrs(a):
@@ -889,9 +1336,10 @@ def mlrs(a):
     wpn.hmg(a, (.45, -2.18, 2.62 + (-2.18 + 3.38) / 1.38 * .08), post=.22, ammo=-1)
 
 
-def aa_vehicle(a):
+def aa_vehicle(a, detail=False):
     """Tracked self-propelled anti-aircraft gun: twin 35 mm cannons with slotted flash hiders, a search
     radar and a SAM box; skirts, fender stowage, a commander's hatch and a bustle basket."""
+    hd.mark(a, detail)
     tracks(a, 1.02, 4.6, .72, .25, 5, .42, belt_width=.5, wheel_seg=12, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -950,6 +1398,36 @@ def aa_vehicle(a):
     mast.limb((0, -.22, .5), (0, -.52, .56), .035, .035, bevel=0)             # feed horn
     _dish(a.part('Radar_dish', 'Armor', r), (0, -.18, .5), .6, .26, depth=.14, tilt=.25)
     _antenna(a, t, .6, .7, .7, .9)
+    if detail:
+        # Hull: glacis and side bolt rows, shackles, lifting eyes, filler caps, an engine access plate, the
+        # rear pintle and phone.
+        for u in (.1, .9):
+            _glacis_bolts(a, front, brow, u, -.62, .62, 7)
+        for s in (-1, 1):
+            _shackle(a, s * .22, -2.48, .51)
+            hd.bolt_line(a.part('Hull_bolts', 'Steel'), (s * .81, -1.4, 1.03), (s * .81, 1.85, 1.03), 8,
+                         rot=hd.side_rot(s), r=.016, h=.022)
+            _filler(a, s * .66, .95, 1.12)
+        _eyes(a, [(s * .62, -1.5, 1.12, 0) for s in (-1, 1)] + [(s * .68, 1.3, 1.12, R90) for s in (-1, 1)])
+        _access_panel(a, 0, 1.18, 1.12, .7, .3, nx=4, ny=2)
+        _pintle(a, 0, 2.35, .62)
+        _phone(a, .48, 2.35, .62)
+        # Turret: bolt rows on the gun housings, lifting eyes, a hood and bolts on the tracking sensor,
+        # feed struts on the radar dish.
+        for s in (-1, 1):
+            hd.bolt_line(a.part('Turret_bolts', 'Steel', t), (s * .92, -.66, .67), (s * .92, .42, .67), 6, r=.016,
+                         h=.024)
+        _eyes(a, [(-.55, .75, .72, 0), (.03, -.72, .72, 0)], parent=t, size=.08)
+        a.part('Turret_armor', 'Armor', t).box((.46, .1, .03), loc=(.36, -.62, 1.0), bevel=0)
+        for dx in (-.15, .15):
+            for dy in (-.12, .12):
+                hd.bolt(a.part('Turret_bolts', 'Steel', t), (.36 + dx, -.42 + dy, 1.01), r=.013, h=.02)
+        turn = Matrix.Rotation(-.25, 3, 'X')
+        horn = Vector((0, -.49, .554))
+        struts = a.part('Radar_struts', 'Steel', r)
+        for u in (0.0, math.pi, math.pi / 2):
+            rim = Vector((0, -.18, .5)) + turn @ Vector((.6 * .96 * math.cos(u), -.14, .26 * .96 * math.sin(u)))
+            struts.limb(tuple(rim), tuple(horn), .018, .018, bevel=0)
 
 
 def flame_tank(a):
@@ -1060,6 +1538,16 @@ def _rws(a, parent, loc, length=.85):
     front = -.5
     gun.cyl(.03, length, loc=(.08, front - length / 2 + .02, .3), rot=FORWARD, seg=8, bevel=0)
     gun.cyl(.046, .12, loc=(.08, front - length + .06, .3), rot=FORWARD, seg=8, bevel=0)  # flash hider
+    if hd.on(a):  # sensor hood and window frame, cradle bolts, barrel jacket rings, cable run
+        det = a.part('RWS_detail', 'Steel', m)
+        a.part('RWS', 'Armor', m).box((.26, .12, .03), loc=(-.32, -.1, .445), bevel=0)             # sensor hood
+        for dz in (-.075, .075):
+            det.box((.18, .02, .015), loc=(-.32, -.16, .31 + dz), bevel=0)
+        hd.plate_bolts(det, hd.frame((0, .06, .4)), .4, .56, 3, 3, r=.014, hh=.02, inset=.04)
+        for k in (.3, .5, .7):
+            det.cyl(.038, .025, loc=(.08, front - length * k, .3), rot=FORWARD, seg=8, bevel=0)
+        det.tube([(-.2, .2, .2), (-.22, .3, .14), (-.12, .34, .08)], .018, seg=4)
+        det.box((.08, .05, .06), loc=(.3, .3, .3), bevel=0)                                       # ammo box latch
     a.pivot('Muzzle_mg', (.08, front - length, .3), m)
 
 
@@ -1144,10 +1632,11 @@ def _sponson_section(y, zb, zs, zt, wb, ws, wt):
             (-ws, y, zs + .08), (-ws, y, zs), (-wb, y, zs)]
 
 
-def tank_destroyer(a):
+def tank_destroyer(a, detail=False):
     """Low tank destroyer: sloped sponson hull with bolt-on plates, an open-top turret with side bins
     and a very long 105 mm gun with a double-baffle muzzle brake; spare wheel, jerrycans and a tow
     cable on the hull."""
+    hd.mark(a, detail)
     tracks(a, 1.22, 6.2, .8, .28, 7, .45, belt_width=.56, wheel_seg=12, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -1215,12 +1704,60 @@ def tank_destroyer(a):
                   sleeve=(.42, .5, .125), seg=12, style='baffle', bands=(.2, .72))
     a.pivot('Muzzle_main', tip, t)
     _roof_mg(a, t, (.93, .5, .72), length=.8, shield=False)
+    if detail:
+        # Hull: corner bolts on the bolt-on flank plates, glacis bolt rows, shackles, lifting eyes by the
+        # driver's hatches, filler caps and the infantry phone.
+        bolts = a.part('Hull_bolts', 'Steel')
+        x, z, lean = _flank((1.52, 1.04), (1.16, 1.36), .5, .02)
+        for s in (-1, 1):
+            plate = hd.frame((s * x, 0, z), (0, -s * lean, 0))
+            brot = (plate.to_3x3() @ Euler(hd.side_rot(s), 'XYZ').to_matrix()).to_euler('XYZ')
+            for y in (-1.55, -.2, 1.15, 2.5):
+                for dy in (-.48, .48):
+                    for dz in (-.12, .12):
+                        hd.bolt(bolts, tuple(plate @ Vector((s * .03, y + dy, dz))), tuple(brot), r=.017, h=.024)
+            _shackle(a, s * .55, -3.58, .66, w=.1)
+            _filler(a, s * .9, 1.4, 1.36)
+        for u in (.08, .92):
+            _glacis_bolts(a, (-3.5, 1.1), (-2.1, 1.36), u, -1.0, 1.0, 9)
+        _eyes(a, [(s * 1.0, -1.6, 1.36, 0) for s in (-1, 1)])
+        _phone(a, .75, 3.5, .72)
+        # Turret: bolt rows round the outside of the walls, mantlet bolts, latches on the side bins, and the
+        # fighting compartment: radio, recoil guard behind the breech, a second row of ready rounds, seat
+        # backs and the gunner's traverse handwheel.
+        for i, b0 in enumerate(outline):
+            b1 = outline[(i + 1) % len(outline)]
+            if b0[1] < -1.2 and b1[1] < -1.2:
+                continue  # front plate: the mantlet covers it
+            n = max(2, int(math.hypot(b1[0] - b0[0], b1[1] - b0[1]) / .3) + 1)
+            _face_bolts(a, b0, b1, .72, .9, .82, n, parent=t, u0=.12, u1=.88)
+        for dx in (-.28, .28):
+            for dz in (-.16, .16):
+                hd.bolt(a.part('Turret_bolts', 'Steel', t), (dx, -1.495, .42 + dz), (hd.FRONT[0] - .05, 0, 0), r=.018,
+                        h=.026)
+        for b0, b1 in (((1.02, -.6), (1.08, .8)), ((-1.08, .8), (-1.02, -.6))):
+            m = _face_frame(b0, b1, .72, .9, u=.62, v=.42)
+            for dx in (-.25, .25):
+                _face_box(a, 'Turret_latches', 'Steel', m @ Matrix.Translation((dx, 0, 0)), (.05, .08, .03), parent=t,
+                          bevel=0, lift=.1, sink=-.14)
+        inside = a.part('Fighting_compartment', 'Armor', t)
+        inside.box((.2, .36, .3), loc=(-.84, .55, .26), bevel=.01, seg=1)                     # radio
+        a.part('Radio_dials', 'Glass', t).box((.03, .22, .1), loc=(-.735, .55, .32), bevel=0)
+        a.part('Compartment_steel', 'Steel', t).tube([(-.17, -.4, .34), (-.17, .08, .34), (.17, .08, .34), (.17, -.4, .34)],
+                                                   .02, seg=4)                                # recoil guard
+        rounds = a.part('Ready_rounds', 'Steel', t)
+        for xr in (-.5, -.25, 0, .25, .5):
+            rounds.cyl(.05, .04, loc=(xr, .74, .22), rot=FORWARD, seg=8, bevel=0)
+        for s in (-1, 1):
+            inside.box((.34, .06, .32), loc=(s * .55, .35, .52), bevel=.02, seg=1)                # seat backs
+        a.part('Compartment_steel', 'Steel', t).torus(.09, .012, loc=(-.46, -.72, .56), rot=FORWARD, seg=12, ring=4)
 
 
-def heavy_tank(a):
+def heavy_tank(a, detail=False):
     """Super-heavy tank: seven-wheel running gear under a deck as wide as the tracks, bolted
     four-panel skirts, reactive armour and a massive angular turret with a baffle-braked 152 mm gun,
     bustle basket, bins, tools and tow cables."""
+    hd.mark(a, detail)
     # Seven lean 8-sided road wheels and two idlers: the skirts and the wide deck hide nearly all of them.
     tracks(a, 1.32, 7.4, 1.0, .33, 7, .55, belt_width=.66, wheel_seg=8, lean=True, sprocket=0, cleat_pitch=.28)
     hull = a.part('Hull', 'Team')
@@ -1284,6 +1821,21 @@ def heavy_tank(a):
     a.pivot('Muzzle_main', tip, t)
     _coax(a, t, .2, -1.8, .3, length=.4, housing=.26)
     _rws(a, t, (.55, .35, .9))
+    if detail:
+        # Hull: a bolt row along the glacis toe, shackles, lifting eyes by the driver, pintle and phone.
+        _glacis_bolts(a, front, back, .06, -1.5, 1.5, 11)
+        for s in (-1, 1):
+            _shackle(a, s * .7, -4.1, .75, w=.12)
+        _eyes(a, [(s * .75, -2.85, 1.68, 0) for s in (-1, 1)], size=.1)
+        _pintle(a, 0, 4.1, .85)
+        _phone(a, 1.1, 4.24, 1.26)
+        # Turret: lifting eyes, mantlet bolts, a ventilator and a roof seam.
+        _eyes(a, [(-.95, 1.05, .9, 0), (.95, 1.05, .9, 0), (-.5, -1.0, .9, .5)], parent=t, size=.1)
+        for dx in (-.2, .2):
+            for dz in (-.22, .22):
+                hd.bolt(a.part('Turret_bolts', 'Steel', t), (dx, -1.87, .44 + dz), hd.FRONT, r=.02, h=.028)
+        _vent(a, 0, .3, .9, parent=t, r=.11)
+        a.part('Turret_seams', 'Armor', t).box((1.5, .025, .014), loc=(-.2, -.35, .9), bevel=0)
 
 
 def sam_launcher(a):

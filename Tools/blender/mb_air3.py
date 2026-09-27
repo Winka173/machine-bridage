@@ -38,10 +38,11 @@ import math
 
 from mathutils import Vector
 
+import mb_detail as hd
 from mb_air import (ACROSS, BACKWARD, FORWARD, LEFT, R90, RIGHT, Planform, _aam, _aam_parts, _blade, _bubble,
-                    _canopy, _dome, _exhaust_duct, _hoop, _intake, _nozzle, _octagon, _patch, _prop_blade, _pylon,
-                    _revolve, _ring_at, _rocket_pod, _rotor_head, _sec, _skin_panel, _skin_z, _surface, _trap_fin,
-                    _upright, _wing)
+                    _canopy, _dischargers, _dome, _exhaust_duct, _hoop, _hoop_line, _intake, _nozzle, _octagon, _patch,
+                    _prop_blade, _pylon, _revolve, _ring_at, _rivet_row, _rocket_pod, _rotor_head, _seam_line, _sec,
+                    _skin_panel, _skin_z, _surface, _trap_fin, _upright, _wing, _wing_line, _wing_rib, _wing_rivets)
 from mb_bosses import _bogie, _headlamp, _plate_bolts, _sec6, _underframe
 from mb_town import fbox
 from mb_vehicles import _antenna, _dish, _flank, _frame, _glacis
@@ -60,7 +61,7 @@ def _sq(x, y, zc, w, h, p=4.0, n=12):
 
 
 # ----------------------------------------------------------------------------- fighter jet
-def fighter_jet(a):
+def fighter_jet(a, detail=False):
     """Air-superiority fighter (Su-27 / F-15 lineage), 13 x 19 m: a long radome nose with a pitot boom
     and an IRST ball, a bubble canopy far forward on a dorsal spine with an air brake, leading-edge
     root extensions blending into a 42-degree wing with flaperons and ailerons, a broad lifting
@@ -68,6 +69,7 @@ def fighter_jet(a):
     rudders, all-moving stabilisers and canted ventral fins, afterburning nozzles either side of a
     tail stinger. The cannon sits in the right wing root; four air-to-air missiles hang on the wing
     pylons' shoulder rails and one more on each wingtip rail."""
+    hd.mark(a, detail)
     body = a.part('Fuselage', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -177,6 +179,74 @@ def fighter_jet(a):
             _aam(aams, (x + dx, .6, zp), length=3.0, r=.085, canards=False, fin=1.7)
     a.pivot('Muzzle_missile', (0, .6 - 1.5, zp))
     a.pivot('Muzzle_aam', (0, .6 - 1.6, zp))
+    if detail:
+        _fighter_jet_detail(a, hull, spine, lerx, wing, fin, stab)
+
+
+def _fighter_jet_detail(a, hull, spine, lerx, wing, fin, stab):
+    """High-detail parts of the fighter (see mb_detail.py): frames, seams and rivet rows over the fuselage
+    and lifting body, frames round the tail booms and intake trunks, spar and rib lines with rivets on the
+    wings, root extensions and tail, dischargers, rivets round the air brake, gun vents, anti-collision
+    lights. The nozzles add their own petal seams and actuators (see _nozzle)."""
+    lines = a.part('Panel_lines', 'Armor')
+    rivets = a.part('Rivets', 'Steel')
+    steel = a.part('Detail_steel', 'Steel')
+    for y in (-7.3, -5.9, -4.6, -3.3):                                        # forward fuselage frames
+        i0, i1 = (11, 5) if -6.95 < y < -3.75 else (10, 6)
+        _hoop_line(lines, hull, y, [(i0 + k) % 16 for k in range((i1 - i0) % 16 + 1)])
+    for y in (2.8, 5.0, 6.6):                                                 # lifting body frames
+        _hoop_line(lines, hull, y, [(9 + k) % 16 for k in range(15)])
+    for i in (5, 10):
+        _seam_line(lines, hull, -7.4, -1.8, i, u=.5)
+        _rivet_row(rivets, hull, -7.3, -2.0, i, 22, u=.2 if i == 5 else .8, size=.02)
+    for i in (6, 9):
+        _seam_line(lines, hull, -1.8, 6.6, i, u=.5)
+        _rivet_row(rivets, hull, -1.5, 6.5, i, 30, u=.2 if i == 6 else .8, size=.02)
+    for i in (7, 8):
+        _rivet_row(rivets, hull, 1.3, 6.0, i, 20, u=.5, size=.02)
+    for i, u in ((2, .15), (5, .85)):                                         # round the air brake
+        _rivet_row(rivets, spine, -2.95, -1.75, i, 8, u=u, size=.018, out=.018)
+    for i, u in ((5, .1), (6, .9), (9, .1), (10, .9)):                        # along the engine bay doors
+        _rivet_row(rivets, hull, 1.45, 3.85, i, 12, u=u, size=.018, out=.02)
+    # Tail booms and intake trunks: frames.
+    for s in (-1, 1):
+        x = s * 1.95
+        boom = [[(x + p[0], p[1], p[2]) for p in _sec(y, w, zb, zt, n=10)] for y, w, zb, zt in
+                ((2.8, .12, -.12, .1), (3.6, .22, -.25, .2), (7.4, .22, -.25, .2), (8.4, .16, -.16, .12))]
+        for y in (4.6, 5.8, 7.0):
+            _hoop_line(lines, boom, y, list(range(10)) + [0], r=.008)
+        x = s * 1.12
+        trunk = [_sq(x, -2.6, -.6, .31, .41, n=10), _sq(x, .5, -.62, .33, .42, p=3.5, n=10),
+                 _sq(x, 4.5, -.6, .36, .42, p=3, n=10), _sq(x, 6.6, -.55, .43, .43, p=2.4, n=10),
+                 _sq(x, 7.3, -.52, .45, .45, p=2.2, n=10)]
+        for y in (-1.2, 1.8, 3.4, 5.6):  # the outboard side, short of the keel (the lowest point of the jet)
+            _hoop_line(lines, trunk, y, [9, 0, 1, 2] if s > 0 else [3, 4, 5, 6], r=.008)
+    # Wings, root extensions and stabilisers: spar and rib lines, rivet rows, dischargers.
+    for frame in (RIGHT, LEFT):
+        for u in (.15, .62):
+            _wing_line(lines, wing, frame, 2.0, 6.0, u)
+        for u in (.19, .4, .66):
+            _wing_rivets(rivets, wing, frame, 2.0, 6.0, u, 18)
+        for sp in (2.15, 3.85, 5.65):
+            _wing_rib(lines, wing, frame, sp, .06, .72)
+        _dischargers(steel, wing, frame, (4.6, 5.3))
+        _wing_line(lines, lerx, frame, .7, 2.5, .55)
+        _wing_rivets(rivets, lerx, frame, .7, 2.5, .35, 10)
+        _wing_line(lines, stab, frame, 2.1, 4.95, .12)
+        _wing_rivets(rivets, stab, frame, 2.1, 4.95, .16, 12)
+    for s in (-1, 1):
+        frame = _upright(s * 1.95, .14, .06)
+        for side in (1, -1):
+            for u in (.15, .6):
+                _wing_line(lines, fin, frame, .1, 2.9, u, side=side, lower=1.0)
+            for sp in (.8, 1.7):
+                _wing_rib(lines, fin, frame, sp, .05, .64, side=side, lower=1.0)
+    # Gun vents in the right wing root; anti-collision lights on the spine and belly.
+    for y in (-3.3, -3.5):
+        a.part('Detail_dark', 'Undercarriage').box((.08, .12, .02), loc=(-.86, y, .225), bevel=0)
+    beacon = a.part('Beacon_lights', 'Alloy')
+    beacon.sphere((.05, .05, .035), loc=(0, 2.5, _skin_z(spine, 2.5, 0) - .005), seg=10, rings=6, cut=0)
+    beacon.sphere((.05, .05, .035), loc=(0, -.4, -.44), rot=(math.pi, 0, 0), seg=10, rings=6, cut=0)
 
 
 # ----------------------------------------------------------------------------- tank buster

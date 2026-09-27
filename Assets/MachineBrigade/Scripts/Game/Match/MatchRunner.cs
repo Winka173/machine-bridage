@@ -144,6 +144,8 @@ namespace MachineBrigade.Game.Match
                     }
             }
             var options = MatchSettings.Options;
+            // High graphics draws the most-seen vehicles with their high-detail models.
+            ModelLibrary.HighDetail = options.Shadows == ShadowLevel.High && options.RichScenery;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
             _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
