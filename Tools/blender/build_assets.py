@@ -18,6 +18,7 @@ if str(HERE) not in sys.path:
 import frontier_kit as kit  # noqa: E402
 import mb_air  # noqa: E402
 import mb_air2  # noqa: E402
+import mb_air3  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_harbor  # noqa: E402
 import mb_props  # noqa: E402
@@ -34,7 +35,8 @@ REPORT = ROOT / 'Docs' / 'art' / 'models.json'
 
 def all_builders():
     return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS,
-            **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS, **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS}
+            **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS, **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS,
+            **mb_air3.BUILDERS}
 
 
 def build_all(filters=()):

@@ -139,6 +139,10 @@
     "file": "dock_bollards.glb",
     "triangles": 762
   },
+  "drone_mothership": {
+    "file": "drone_mothership.glb",
+    "triangles": 18242
+  },
   "factory": {
     "file": "factory.glb",
     "triangles": 4896
@@ -146,6 +150,10 @@
   "fence": {
     "file": "fence.glb",
     "triangles": 430
+  },
+  "fighter_jet": {
+    "file": "fighter_jet.glb",
+    "triangles": 8612
   },
   "flame_tank": {
     "file": "flame_tank.glb",
@@ -171,6 +179,10 @@
     "file": "heavy_aa.glb",
     "triangles": 8676
   },
+  "heavy_attack_heli": {
+    "file": "heavy_attack_heli.glb",
+    "triangles": 8778
+  },
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
     "triangles": 10106
@@ -194,6 +206,10 @@
   "howitzer": {
     "file": "howitzer.glb",
     "triangles": 7596
+  },
+  "icbm": {
+    "file": "icbm.glb",
+    "triangles": 732
   },
   "ifv": {
     "file": "ifv.glb",
@@ -259,6 +275,10 @@
     "file": "mountain_c.glb",
     "triangles": 2252
   },
+  "nuke_train": {
+    "file": "nuke_train.glb",
+    "triangles": 18388
+  },
   "office_block": {
     "file": "office_block.glb",
     "triangles": 3524
@@ -290,6 +310,10 @@
   "rail_tanker": {
     "file": "rail_tanker.glb",
     "triangles": 2498
+  },
+  "recon_drone": {
+    "file": "recon_drone.glb",
+    "triangles": 4354
   },
   "refinery_tower": {
     "file": "refinery_tower.glb",
@@ -386,6 +410,10 @@
   "strike_jet": {
     "file": "strike_jet.glb",
     "triangles": 8700
+  },
+  "tank_buster": {
+    "file": "tank_buster.glb",
+    "triangles": 8958
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
