@@ -314,6 +314,12 @@ namespace MachineBrigade.Sim
 
         internal void Emit(in SimEvent e) => _events.Add(e);
 
+        /// <summary>Development only (the -mb-demolish device check): blows a prop apart as a heavy shell would.</summary>
+        public void DebugDestroyProp(Prop prop)
+        {
+            if (prop.IsAlive) Damage.Apply(prop, prop.Hp * 10f + 10000f, DamageType.HighExplosive);
+        }
+
         /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
         public void Announce(in SimEvent e) => _events.Add(e);
 

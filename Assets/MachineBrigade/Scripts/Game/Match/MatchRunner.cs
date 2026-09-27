@@ -393,6 +393,7 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
+            if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
             else FollowTheFight();
@@ -438,6 +439,30 @@ namespace MachineBrigade.Game.Match
                 _censusDone = true;
                 _perf.Census(_surroundings.InstancedTriangles, _surroundings.Batches);
             }
+        }
+
+        private float _demolishAt = 8f;
+
+        /// <summary>Device check for building collapses: every few seconds the building nearest the view comes down.</summary>
+        private void Demolish()
+        {
+            _demolishAt = Time.time + 5f;
+            var focus = new System.Numerics.Vector2(_camera.Focus.x, _camera.Focus.z);
+            MachineBrigade.Sim.Entities.Prop best = null;
+            var nearest = 70f;
+            foreach (var prop in _world.Props)
+            {
+                if (!prop.IsAlive || !prop.Def.BlocksMovement || prop.Def.Indestructible || prop.Def.Width * prop.Def.Depth < 30f) continue;
+                var d = System.Numerics.Vector2.Distance(prop.Position, focus);
+                if (d >= nearest) continue;
+                nearest = d;
+                best = prop;
+            }
+            if (best == null) return;
+            // Look at it first, so the collapse is in view.
+            _camera.FocusOn(new Vector3(best.Position.X, 0f, best.Position.Y));
+            _lastInput = Time.unscaledTime;
+            _world.DebugDestroyProp(best);
         }
 
         /// <summary>A slow-motion moment on a blast that is on screen.</summary>

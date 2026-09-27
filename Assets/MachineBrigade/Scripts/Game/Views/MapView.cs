@@ -180,7 +180,9 @@ namespace MachineBrigade.Game.Views
             {
                 var c = _collapses[i];
                 var t = (time - c.Start) / c.Seconds;
-                if (t >= 1f || c.Ghost == null)
+                // The last of it, squashed flat, is gone into the dust (a flattened roof would read as a
+                // painted patch on the ground).
+                if (t >= 0.86f || c.Ghost == null)
                 {
                     if (c.Ghost != null) Object.Destroy(c.Ghost.gameObject);
                     if (c.Rubble != null) c.Rubble.localScale = c.Heap;
@@ -193,10 +195,10 @@ namespace MachineBrigade.Game.Views
                 var shake = (0.05f + 0.1f * hold) * (1f - fall);
                 var jitter = new Vector3(Mathf.Sin(time * 47f + c.Seed) * shake, 0f, Mathf.Cos(time * 53f + c.Seed * 1.7f) * shake);
                 c.Ghost.localScale = new Vector3(c.Scale.x * (1f + 0.08f * fall), c.Scale.y * Mathf.Max(0.04f, 1f - fall), c.Scale.z * (1f + 0.08f * fall));
-                c.Ghost.SetPositionAndRotation(c.Position + jitter + Vector3.down * (0.3f * fall), Quaternion.AngleAxis(c.Tilt * fall, c.Axis) * c.Rotation);
+                c.Ghost.SetPositionAndRotation(c.Position + jitter + Vector3.down * (1.2f * fall), Quaternion.AngleAxis(c.Tilt * fall, c.Axis) * c.Rotation);
                 if (c.Rubble != null)
                 {
-                    var grow = Mathf.Clamp01((t - 0.3f) / 0.7f);
+                    var grow = Mathf.Clamp01((t - 0.3f) / 0.56f);
                     c.Rubble.localScale = new Vector3(c.Heap.x, c.Heap.y * Mathf.Lerp(0.08f, 1f, grow * (2f - grow)), c.Heap.z);
                 }
             }

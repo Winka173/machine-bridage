@@ -624,10 +624,13 @@ namespace MachineBrigade.Game.Effects
             e.Flash(6f);
             e.Fireball(2, new Vector2(4.5f, 6f), new Vector2(0.9f, 1.2f), 1.4f, lift: 0.6f);
             e.Sparks(26, new Vector2(6f, 14f), 0.16f);
-            e.DustRing(20f, 20);
-            e._bursts.Add(new Burst(l.DustRing, 0.55f, 14, new Vector2(3.2f, 4.8f), new Vector2(5f, 10f), new Vector2(2.2f, 3.4f), 2.2f, 0.3f));
-            foreach (var (time, count) in new[] { (0.12f, 4), (0.45f, 5), (0.85f, 5), (1.25f, 4) })
-                e._bursts.Add(new Burst(l.Dust, time, count, new Vector2(4.5f, 7f), new Vector2(0.4f, 1.8f), new Vector2(2.8f, 4.2f), 3f, 0.8f));
+            // Dust is the look of a building coming down, so there is a lot of it: a thick skirt
+            // rolling out, a second one as the roof lands, and big slow billows pouring up over the
+            // heap as each floor gives way, hanging for seconds after.
+            e.DustRing(26f, 28);
+            e._bursts.Add(new Burst(l.DustRing, 0.6f, 20, new Vector2(4.4f, 6.4f), new Vector2(5f, 10f), new Vector2(2.6f, 4f), 2.4f, 0.3f));
+            foreach (var (time, count) in new[] { (0.1f, 5), (0.4f, 6), (0.75f, 6), (1.1f, 6), (1.5f, 5) })
+                e._bursts.Add(new Burst(l.Dust, time, count, new Vector2(7f, 10.5f), new Vector2(0.3f, 1.2f), new Vector2(4.2f, 6.2f), 3.4f, 1.2f));
             e.Debris(40, new Vector2(5f, 12f));
             e.Dirt(24, new Vector2(4f, 10f));
             e.Smoke(4, new Vector2(5f, 7f), new Vector2(5f, 7.5f), 0.6f);
