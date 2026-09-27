@@ -56,10 +56,16 @@ namespace MachineBrigade.Sim.Economy
         public const int MaxVehicles = 44;
 
         /// <summary>
+        /// Army value kept up at full income: half again the mode's old army cap, so a normal
+        /// army never pays upkeep and only a swarm does.
+        /// </summary>
+        public int Supply => ArmyCap * 3 / 2;
+
+        /// <summary>
         /// Share of the income left after upkeep: full up to the supply, then falling steadily
         /// (half at twice the supply) to a floor of a quarter.
         /// </summary>
-        public float Upkeep => UpkeepFor(ArmyCp, ArmyCap);
+        public float Upkeep => UpkeepFor(ArmyCp, Supply);
 
         public static float UpkeepFor(int armyCp, int supply)
         {

@@ -136,6 +136,43 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Every battlefield has its own outline, not the plain square: the camps and objectives
+        /// lie inside it, the ground beyond is blocked to ground units and stops direct fire,
+        /// and all three versions of a map share it.
+        /// </summary>
+        [Test]
+        public void EveryMapHasItsOwnOutlineAndNothingDrivesBeyondIt()
+        {
+            var catalog = Catalog.FromJson(File.ReadAllText(DataPath("balance.json")));
+            foreach (var info in MachineBrigade.Game.Match.MatchSettings.AllMaps)
+            {
+                var conquest = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/" + info.Id + "_conquest.json")));
+                Assert.GreaterOrEqual(conquest.Boundary.Count, 12, $"{info.Id}: has an outline");
+                foreach (var suffix in new[] { "_sandbox", "_siege" })
+                {
+                    var other = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/" + info.Id + suffix + ".json")));
+                    CollectionAssert.AreEqual(conquest.Boundary, other.Boundary, $"{info.Id}{suffix} shares the outline");
+                }
+                foreach (var team in conquest.Teams) Assert.IsTrue(conquest.InsideBoundary(team.Rally), $"{info.Id}: camp {team.Team} inside");
+                foreach (var point in conquest.Points) Assert.IsTrue(conquest.InsideBoundary(point.Position), $"{info.Id}: {point.Id} inside");
+
+                // A real shape: a good share of the square is terrain.
+                var outside = 0;
+                for (var x = -79f; x < 80f; x += 2f)
+                for (var z = -79f; z < 80f; z += 2f)
+                    if (!conquest.InsideBoundary(new System.Numerics.Vector2(x, z))) outside++;
+                Assert.Greater(outside, 80 * 80 / 20, $"{info.Id}: at least a twentieth of the square is carved away");
+
+                var world = new MachineBrigade.Sim.SimWorld(catalog, conquest, seed: 1);
+                var corner = new System.Numerics.Vector2(-79f, 79f);
+                for (var x = -79f; x < 80f && conquest.InsideBoundary(corner); x += 1f) corner = new System.Numerics.Vector2(x, 79f);
+                Assert.IsFalse(conquest.InsideBoundary(corner), $"{info.Id}: found ground beyond the outline");
+                Assert.IsFalse(world.Grid.IsWalkable(corner), $"{info.Id}: no driving beyond the outline");
+                Assert.IsTrue(world.Cover.IsBlocked(corner), $"{info.Id}: the terrain beyond stops direct fire");
+            }
+        }
+
         [Test]
         public void UnknownWeaponReferenceNamesThePath()
         {

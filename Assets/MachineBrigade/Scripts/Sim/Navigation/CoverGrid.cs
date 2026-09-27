@@ -35,6 +35,17 @@ namespace MachineBrigade.Sim.Navigation
 
         public void Add(Prop prop) => Change(prop, +1);
 
+        /// <summary>Makes every cell whose centre fails <paramref name="open"/> stop fire for good (terrain beyond the outline).</summary>
+        public void BlockWhere(Func<Vector2, bool> open)
+        {
+            for (var y = 0; y < _size; y++)
+            for (var x = 0; x < _size; x++)
+            {
+                var centre = new Vector2((x + 0.5f) * CellSize - _half, (y + 0.5f) * CellSize - _half);
+                if (!open(centre)) _count[y * _size + x]++;
+            }
+        }
+
         public void Remove(Prop prop) => Change(prop, -1);
 
         public bool IsBlocked(Vector2 p)

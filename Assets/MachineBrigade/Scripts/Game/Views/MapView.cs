@@ -85,6 +85,9 @@ namespace MachineBrigade.Game.Views
         private readonly List<Material> _ownedMaterials = new();
         private Texture2D _groundTexture;
 
+        /// <summary>The battlefield from above for the minimap (painted with the ground; transparent beyond the outline).</summary>
+        public Texture2D MinimapTexture { get; private set; }
+
         // The lava surface: its base colours, and a travelling wave of brightness over them.
         private Mesh _lava;
         private Color[] _lavaBase;
@@ -210,6 +213,7 @@ namespace MachineBrigade.Game.Views
             foreach (var material in _ownedMaterials)
                 if (material != null) Object.Destroy(material);
             if (_groundTexture != null) Object.Destroy(_groundTexture);
+            if (MinimapTexture != null) Object.Destroy(MinimapTexture);
             _meshes.Clear();
             _ownedMaterials.Clear();
             _props.Clear();
@@ -618,7 +622,8 @@ namespace MachineBrigade.Game.Views
         private void BuildGround(SimWorld world, MaterialLibrary materials)
         {
             var size = world.Map.Size;
-            _groundTexture = TerrainPainter.Paint(world, _theme);
+            _groundTexture = TerrainPainter.Paint(world, _theme, out var minimap);
+            MinimapTexture = minimap;
             materials.Ground.SetTexture("_BaseMap", _groundTexture);
             materials.Pebble.SetColor("_BaseColor", _theme.Pebble);
             materials.GrassTuft.SetColor("_BaseColor", _theme.GrassTuft);

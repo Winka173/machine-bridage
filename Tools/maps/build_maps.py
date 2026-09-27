@@ -39,6 +39,11 @@ Every map also gets a Siege version (`fortify`): the enemy fortress fills the no
 quadrant (a walled 56 m square with two gates, the command HQ, depots, dumps, hangars and an
 outer line of bunkers and obstacles), with its fixed defences as team-1 map units.
 
+Every map has its own outline inside the 160 m square (`boundary.py`): the edge is carved in
+per map (valleys, bays, a canyon rim, trimmed corners) and never into the camps, objectives,
+roads, buildings, map units or any campaign route. Decoration left outside is dropped; the
+game fills the outside with terrain, blocks it to ground units and shows it on the minimap.
+
 Every placement is checked against the footprints in balance.json, the roads, the camps and
 the objectives, and the result is flood-filled on the simulation's 2 m navigation grid (with
 its 1.5 m obstacle clearance, filled exactly like NavGrid.AddBlocker) to prove that both camps
@@ -50,7 +55,11 @@ import json
 import math
 import random
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import boundary as outline_tools  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -85,6 +94,7 @@ class Layout:
         self.failed = []
         self.reserved = []  # rectangles kept free for map units (siege defences)
         self.units = []     # extra map units (siege defences)
+        self.boundary = None  # the battlefield's outline, once carved (see boundary.py)
 
     # ------------------------------------------------------------------ geometry
     @staticmethod
@@ -390,6 +400,13 @@ class Layout:
             for gx in range(max(0, a0), min(n, a1 + 1)):
                 for gz in range(max(0, b0), min(n, b1 + 1)):
                     blocked[gz][gx] = True
+        if self.boundary:
+            # Outside the outline is terrain, blocked like SimWorld does: by the cell centre.
+            for gz in range(n):
+                for gx in range(n):
+                    cx, cz = gx * CELL - HALF + CELL / 2, gz * CELL - HALF + CELL / 2
+                    if not outline_tools.inside(self.boundary, cx, cz):
+                        blocked[gz][gx] = True
         return blocked
 
 
@@ -489,11 +506,84 @@ def ashfield(seed=11):
     return finish(L)
 
 
+# Natural blockers: they are terrain already, so the outline may carve through them.
+NATURAL = {'mesa', 'cliff_a', 'cliff_b', 'boulders', 'snow_rock', 'basalt_rock_a', 'basalt_rock_b', 'basalt_rock_c',
+           'obsidian_spire', 'volcanic_cliff', 'lava_pool', 'river_water', 'river_ford', 'hedge', 'stone_wall', 'fence'}
+
+
+def campaign_keep(map_id):
+    """Everything the campaign places on a map: boss and convoy spawns and routes, mission units."""
+    text = (DATA / 'campaign.json').read_text(encoding='utf-8')
+    missions = json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))['missions']
+    circles, lines = [], []
+    for m in missions:
+        if m['map'] != map_id:
+            continue
+        for key in ('boss', 'convoy'):
+            if key in m:
+                spot = m[key]
+                circles.append((spot['x'], spot['z'], outline_tools.KEEP_UNIT))
+                route = spot.get('route', [])
+                pts = [(spot['x'], spot['z'])] + [(route[i], route[i + 1]) for i in range(0, len(route) - 1, 2)]
+                if len(pts) > 1:
+                    lines.append((pts, outline_tools.KEEP_ROUTE))
+        for u in m.get('units', []):
+            circles.append((u['x'], u['z'], outline_tools.KEEP_UNIT))
+    return circles, lines
+
+
+def keep_of(layouts, map_id):
+    """What the outline must not cut: the core (camps, objectives, campaign routes and units, the
+    fortress) never; the extras (roads, buildings) except in a map's forced bites."""
+    circles, lines = campaign_keep(map_id)
+    core_rects, extra_rects, roads = [], [], []
+    for L in layouts:
+        for t in L.teams:
+            circles.append((t[0], t[1], outline_tools.KEEP_CAMP))
+        for x, z, r in L.points:
+            circles.append((x, z, r + outline_tools.KEEP_POINT))
+        for road in L.roads:
+            pts = road['points']
+            roads.append(([(pts[i], pts[i + 1]) for i in range(0, len(pts) - 1, 2)], road['width'] / 2 + outline_tools.KEEP_ROAD))
+        for prop, (x0, z0, x1, z1) in zip(L.props, L.rects):
+            if PROPS[prop['def']].get('blocks', False) and prop['def'] not in NATURAL:
+                g = outline_tools.KEEP_PROP
+                siege_part = prop['def'] in ('command_hq', 'base_wall', 'fuel_depot', 'ammo_dump', 'vehicle_hangar')
+                (core_rects if siege_part else extra_rects).append((x0 - g, z0 - g, x1 + g, z1 + g))
+        for x0, z0, x1, z1 in L.reserved:
+            core_rects.append((x0 - 2, z0 - 2, x1 + 2, z1 + 2))
+        for u in L.units:
+            circles.append((u['x'], u['z'], outline_tools.KEEP_UNIT))
+    for u in CONQUEST_UNITS + SURVIVAL_UNITS:
+        circles.append((u['x'], u['z'], outline_tools.KEEP_UNIT))
+    return {'core': {'circles': circles, 'rects': core_rects, 'lines': lines},
+            'extra': {'rects': extra_rects, 'lines': roads}}
+
+
+def apply_outline(L, poly):
+    """Drops what the outline left outside (decoration and natural rock) and records the outline."""
+    kept_props, kept_rects, dropped = [], [], 0
+    for prop, rect in zip(L.props, L.rects):
+        x0, z0, x1, z1 = rect
+        corners = ((x0, z0), (x1, z0), (x0, z1), (x1, z1), ((x0 + x1) / 2, (z0 + z1) / 2))
+        if all(outline_tools.inside(poly, x, z) for x, z in corners):
+            kept_props.append(prop)
+            kept_rects.append(rect)
+        else:
+            dropped += 1
+    L.props, L.rects = kept_props, kept_rects
+    L.boundary = poly
+    return dropped
+
+
 def dump(path, comment, meta, layout):
     out = [f'// {comment}', '// Generated by Tools/maps/build_maps.py: edit the script, not this file.', '{']
     fields = []
     for key, value in meta.items():
         fields.append(f'  "{key}": {json.dumps(value)}')
+    if layout.boundary:
+        flat = [v for x, z in layout.boundary for v in (x, z)]
+        fields.append(f'  "boundary": {json.dumps(flat)}')
     fields.append('  "roads": [\n' + ',\n'.join('    ' + json.dumps(r) for r in layout.roads) + '\n  ]')
     fields.append('  "props": [\n' + ',\n'.join('    ' + json.dumps(p) for p in layout.props) + '\n  ]')
     out.append(',\n\n'.join(fields))
@@ -2120,6 +2210,21 @@ def main(only=()):
         if only and map_id not in only:
             continue
         layout = build()
+        # One outline per battlefield, shared by all its versions: carved round everything the
+        # Conquest, Survival and Siege versions and the campaign need.
+        siege = fortify(build(), map_id)
+        poly, _ = outline_tools.carve(map_id, keep_of([layout, siege], map_id), seed=len(map_id) * 31 + 7)
+        dropped = apply_outline(layout, poly)
+        apply_outline(siege, poly)
+        missing = layout.reachable()
+        if missing:
+            raise SystemExit(f'{map_id}: unreachable inside the outline: {missing}')
+        hq = next(p for p in siege.props if p['def'] == 'command_hq')
+        w, d = PROPS['command_hq']['width'] / 2, PROPS['command_hq']['depth'] / 2
+        missing = siege.reachable([('camp', *siege.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)])
+        if missing:
+            raise SystemExit(f'{map_id} siege: unreachable inside the outline: {missing}')
+        print(f'{map_id}: outline of {len(poly)} points, {dropped} props left outside dropped')
         counts = {}
         for p in layout.props:
             counts[p['def']] = counts.get(p['def'], 0) + 1
@@ -2132,7 +2237,6 @@ def main(only=()):
         dump(DATA / 'maps' / f'{map_id}_sandbox.json', survival,
              {'id': f'{map_id}_sandbox', 'theme': theme, 'size': 160, 'teams': TEAMS, 'units': SURVIVAL_UNITS}, layout)
         # Siege: the same battlefield (built afresh, so it is identical) with the enemy fortress.
-        siege = fortify(build(), map_id)
         name = conquest.split(' for ')[0]
         dump(DATA / 'maps' / f'{map_id}_siege.json',
              f'{name} for Siege: the enemy fortress holds the north-east quadrant; destroy its command HQ.',

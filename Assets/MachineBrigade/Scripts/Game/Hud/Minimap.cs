@@ -6,9 +6,11 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The battlefield from above, turned to match the camera (the square map shows as a
-    /// diamond). Shows objectives, friendly and spotted enemy vehicles, incoming strikes and the
-    /// camera's view; tapping it moves the camera there.
+    /// The battlefield from above, turned to match the camera (north-east is up). Under
+    /// everything lies a picture of the map itself (<see cref="SetPicture"/>): the painted ground
+    /// with roads, buildings, rock, trees, water and lava, in the map's real shape. On top it shows
+    /// objectives, friendly and spotted enemy vehicles, incoming strikes and the camera's view;
+    /// tapping it moves the camera there.
     /// </summary>
     public sealed class Minimap : VisualElement
     {
@@ -18,14 +20,32 @@ namespace MachineBrigade.Game.Hud
         private readonly List<(Vector2 at, float radius, int owner, float progress)> _points = new();
         private readonly List<(Vector2 at, float radius)> _warnings = new();
         private readonly Vector2[] _view = new Vector2[4];
+        private readonly VisualElement _picture;
+        private readonly VisualElement _overlay;
         private float _half = 80f;
         private bool _hasView;
+        private bool _hasPicture;
 
         public Minimap()
         {
             AddToClassList("minimap");
             pickingMode = PickingMode.Position;
-            generateVisualContent += Draw;
+            generateVisualContent += DrawGround;
+
+            // The map picture, turned 45 degrees like the camera; sized and centred on layout.
+            _picture = new VisualElement { pickingMode = PickingMode.Ignore };
+            _picture.style.position = Position.Absolute;
+            _picture.style.rotate = new Rotate(45f);
+            _picture.style.display = DisplayStyle.None;
+            Add(_picture);
+
+            _overlay = new VisualElement { pickingMode = PickingMode.Ignore };
+            _overlay.style.position = Position.Absolute;
+            _overlay.style.left = _overlay.style.top = _overlay.style.right = _overlay.style.bottom = 0;
+            _overlay.generateVisualContent += DrawMarks;
+            Add(_overlay);
+
+            RegisterCallback<GeometryChangedEvent>(_ => FitPicture());
             RegisterCallback<PointerDownEvent>(e =>
             {
                 Clicked?.Invoke(FromLocal(e.localPosition));
@@ -36,8 +56,19 @@ namespace MachineBrigade.Game.Hud
         /// <summary>World position (x, z) tapped on the minimap.</summary>
         public event Action<Vector2> Clicked;
 
-        /// <summary>Colour of the battlefield square (follows the map's ground).</summary>
+        /// <summary>Colour of the battlefield square when there is no picture (follows the map's ground).</summary>
         public Color Ground { get; set; } = new(0.25f, 0.33f, 0.24f, 0.85f);
+
+        /// <summary>Shows the map's own picture (north up, transparent beyond its outline) under the marks.</summary>
+        public void SetPicture(Texture2D picture, float halfSize)
+        {
+            _half = halfSize;
+            _hasPicture = picture != null;
+            _picture.style.backgroundImage = picture != null ? new StyleBackground(picture) : new StyleBackground(StyleKeyword.None);
+            _picture.style.display = _hasPicture ? DisplayStyle.Flex : DisplayStyle.None;
+            FitPicture();
+            MarkDirtyRepaint();
+        }
 
         public void Begin(float halfSize)
         {
@@ -63,9 +94,21 @@ namespace MachineBrigade.Game.Hud
             _hasView = true;
         }
 
-        public void Flush() => MarkDirtyRepaint();
+        public void Flush() => _overlay.MarkDirtyRepaint();
 
         private float Scale => Mathf.Min(contentRect.width, contentRect.height) / (_half * 2f * 1.4142f) * 0.96f;
+
+        /// <summary>The map square as a picture: its side on screen, centred, then turned by the style's rotation.</summary>
+        private void FitPicture()
+        {
+            if (!_hasPicture || contentRect.width < 4f) return;
+            var side = _half * 2f * Scale;
+            var c = contentRect.center;
+            _picture.style.width = side;
+            _picture.style.height = side;
+            _picture.style.left = c.x - side * 0.5f;
+            _picture.style.top = c.y - side * 0.5f;
+        }
 
         /// <summary>World (x, z) to local pixels: rotated -45 degrees so the camera's forward points up.</summary>
         private Vector2 ToLocal(Vector2 w)
@@ -84,12 +127,11 @@ namespace MachineBrigade.Game.Hud
             return new Vector2((mx - my) * Cos45, (mx + my) * Cos45);
         }
 
-        private void Draw(MeshGenerationContext context)
+        /// <summary>Without a picture: the plain map square, in the ground's colour.</summary>
+        private void DrawGround(MeshGenerationContext context)
         {
-            if (contentRect.width < 4f) return;
+            if (_hasPicture || contentRect.width < 4f) return;
             var p = context.painter2D;
-
-            // Map area.
             p.fillColor = Ground;
             p.strokeColor = new Color(0.65f, 0.89f, 0.75f, 0.35f);
             p.lineWidth = 1.2f;
@@ -101,23 +143,29 @@ namespace MachineBrigade.Game.Hud
             p.ClosePath();
             p.Fill();
             p.Stroke();
+        }
+
+        private void DrawMarks(MeshGenerationContext context)
+        {
+            if (contentRect.width < 4f) return;
+            var p = context.painter2D;
 
             foreach (var (at, radius, owner, progress) in _points)
             {
-                var colour = owner == 0 ? UiKit.Mint : owner == 1 ? UiKit.Danger : new Color(0.85f, 0.85f, 0.8f);
-                p.fillColor = new Color(colour.r, colour.g, colour.b, 0.28f);
+                var colour = owner == 0 ? UiKit.Mint : owner == 1 ? UiKit.Danger : new Color(0.95f, 0.95f, 0.9f);
+                p.fillColor = new Color(colour.r, colour.g, colour.b, 0.3f);
                 p.strokeColor = colour;
-                p.lineWidth = 1.5f;
+                p.lineWidth = 2f;
                 p.BeginPath();
-                p.Arc(ToLocal(at), Mathf.Max(4f, radius * Scale), 0f, 360f);
+                p.Arc(ToLocal(at), Mathf.Max(5f, radius * Scale), 0f, 360f);
                 p.Fill();
                 p.Stroke();
             }
 
             foreach (var (at, radius) in _warnings)
             {
-                p.strokeColor = new Color(1f, 0.35f, 0.25f, 0.9f);
-                p.lineWidth = 1.5f;
+                p.strokeColor = new Color(1f, 0.35f, 0.25f, 0.95f);
+                p.lineWidth = 1.8f;
                 p.BeginPath();
                 p.Arc(ToLocal(at), Mathf.Max(5f, radius * Scale), 0f, 360f);
                 p.Stroke();
@@ -125,28 +173,33 @@ namespace MachineBrigade.Game.Hud
 
             foreach (var (at, team, air) in _blips)
             {
-                p.fillColor = team == 0 ? UiKit.Mint : UiKit.Danger;
                 var c = ToLocal(at);
+                // A dark halo keeps each blip readable on any ground.
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.75f);
+                p.BeginPath();
+                p.Arc(c, air ? 4.6f : 3.6f, 0f, 360f);
+                p.Fill();
+                p.fillColor = team == 0 ? UiKit.Mint : UiKit.Danger;
                 p.BeginPath();
                 if (air)
                 {
                     // Aircraft as small triangles.
-                    p.MoveTo(c + new Vector2(0f, -3.5f));
-                    p.LineTo(c + new Vector2(3f, 2.5f));
-                    p.LineTo(c + new Vector2(-3f, 2.5f));
+                    p.MoveTo(c + new Vector2(0f, -3.8f));
+                    p.LineTo(c + new Vector2(3.3f, 2.6f));
+                    p.LineTo(c + new Vector2(-3.3f, 2.6f));
                     p.ClosePath();
                 }
                 else
                 {
-                    p.Arc(c, 2.2f, 0f, 360f);
+                    p.Arc(c, 2.5f, 0f, 360f);
                 }
                 p.Fill();
             }
 
             if (_hasView)
             {
-                p.strokeColor = new Color(1f, 1f, 1f, 0.75f);
-                p.lineWidth = 1f;
+                p.strokeColor = new Color(1f, 1f, 1f, 0.85f);
+                p.lineWidth = 1.2f;
                 p.BeginPath();
                 p.MoveTo(ToLocal(_view[0]));
                 for (var i = 1; i < 4; i++) p.LineTo(ToLocal(_view[i]));

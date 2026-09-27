@@ -166,6 +166,14 @@ namespace MachineBrigade.Game.Match
             };
             _attractFocus = start;
             // Device check of the scenery: the north-west corner, zoomed right out.
+            // Device check of the whole battlefield: its outline, terrain and objectives in one view.
+            if (DebugFlags.Has("-mb-overview"))
+            {
+                _camera.MaxZoom = 95f;
+                _camera.ZoomBy(0.05f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                _camera.FocusOn(Vector3.zero);
+                _lastInput = float.MaxValue;
+            }
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
@@ -205,7 +213,11 @@ namespace MachineBrigade.Game.Match
             {
                 ShowFps = MatchSettings.ShowFps,
             };
-            if (_hud.Minimap != null) _hud.Minimap.Ground = theme.Minimap;
+            if (_hud.Minimap != null)
+            {
+                _hud.Minimap.Ground = theme.Minimap;
+                _hud.Minimap.SetPicture(_map.MinimapTexture, _world.Map.HalfSize);
+            }
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)
             {

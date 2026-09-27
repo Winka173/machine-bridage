@@ -74,8 +74,10 @@ namespace MachineBrigade.Sim.Content
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
-            IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate")
+            IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
+            IReadOnlyList<Vector2>? boundary = null)
         {
+            Boundary = boundary ?? Array.Empty<Vector2>();
             Theme = string.IsNullOrWhiteSpace(theme) ? "temperate" : theme;
             Points = points ?? Array.Empty<CapturePointDef>();
             Roads = roads ?? Array.Empty<RoadDef>();
@@ -104,6 +106,28 @@ namespace MachineBrigade.Sim.Content
 
         public bool Contains(Vector2 point) =>
             MathF.Abs(point.X) <= HalfSize && MathF.Abs(point.Y) <= HalfSize;
+
+        /// <summary>
+        /// The battlefield's outline inside the square (counter-clockwise), or empty for a plain
+        /// square. Outside it is terrain: ground vehicles cannot drive there and it stops direct
+        /// fire; aircraft fly over it.
+        /// </summary>
+        public IReadOnlyList<Vector2> Boundary { get; }
+
+        /// <summary>Whether a point lies inside the outline (always, for a map without one).</summary>
+        public bool InsideBoundary(Vector2 p)
+        {
+            var poly = Boundary;
+            if (poly.Count < 3) return Contains(p);
+            var inside = false;
+            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            {
+                var a = poly[i];
+                var b = poly[j];
+                if ((a.Y > p.Y) != (b.Y > p.Y) && p.X < (b.X - a.X) * (p.Y - a.Y) / (b.Y - a.Y) + a.X) inside = !inside;
+            }
+            return inside;
+        }
 
         public static MapDefinition FromJson(string json)
         {
@@ -151,7 +175,16 @@ namespace MachineBrigade.Sim.Content
                 }
             }
 
-            return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate");
+            var boundary = new List<Vector2>();
+            if (root.Has("boundary"))
+            {
+                var flat = root.FloatArray("boundary");
+                if (flat.Count < 6 || flat.Count % 2 != 0) throw new FormatException("map.boundary: needs at least three x, z pairs.");
+                for (var i = 0; i < flat.Count; i += 2) boundary.Add(new Vector2(flat[i], flat[i + 1]));
+            }
+
+            return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
+                boundary);
         }
     }
 }

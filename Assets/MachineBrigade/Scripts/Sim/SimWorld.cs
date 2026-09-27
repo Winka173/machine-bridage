@@ -48,6 +48,12 @@ namespace MachineBrigade.Sim
             Random = new Random(seed);
             Grid = new NavGrid(map.Size, 2f);
             Cover = new CoverGrid(map.Size);
+            if (map.Boundary.Count >= 3)
+            {
+                // Beyond the outline is terrain: no driving there, and it stops direct fire.
+                Grid.BlockWhere(map.InsideBoundary);
+                Cover.BlockWhere(map.InsideBoundary);
+            }
             _pathFinder = new PathFinder(Grid);
             Damage = new DamageSystem(this);
             _movement = new MovementSystem(this);

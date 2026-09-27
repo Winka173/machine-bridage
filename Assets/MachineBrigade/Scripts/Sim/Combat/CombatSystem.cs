@@ -261,10 +261,10 @@ namespace MachineBrigade.Sim.Combat
             if (!shooter.Flying && !targetFlying && !weapon.Indirect)
             {
                 _world.TryGetTarget(target, out var aimed);
-                if (_world.Cover.TryFirstHit(origin, aim, 0.2f, 0f, aimed as Prop, out var wall) && _world.CoverAt(wall) is { } cover)
+                if (_world.Cover.TryFirstHit(origin, aim, 0.2f, 0f, aimed as Prop, out var wall))
                 {
                     aim = wall;
-                    target = cover.Id;
+                    target = _world.CoverAt(wall)?.Id ?? EntityId.None;
                 }
             }
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;

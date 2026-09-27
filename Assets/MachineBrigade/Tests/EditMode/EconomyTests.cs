@@ -50,8 +50,8 @@ namespace MachineBrigade.Tests
         [Test]
         public void AnArmyAboveItsSupplyCostsUpkeepInsteadOfBeingCapped()
         {
-            // Supply 6: the second tank takes the army over it, and is still delivered.
-            var world = WorldWithCp(30f, armyCap: 6);
+            // Old cap 4, so supply 6: the second tank takes the army over it, and is still delivered.
+            var world = WorldWithCp(30f, armyCap: 4);
             Assert.IsTrue(world.Submit(Command.Deploy(0, "tank")).Accepted);
             Assert.IsTrue(world.Submit(Command.Deploy(0, "tank")).Accepted, "no hard cap: the purchase goes through");
             world.TryGetEconomy(0, out var economy);

@@ -15,7 +15,10 @@ namespace MachineBrigade.Game.CameraControl
         private const float Yaw = -45f;
         private const float Distance = 60f; // keeps the view inside the shadow distance
         private const float MinZoom = 9f;
-        private const float MaxZoom = 42f;
+        private const float DefaultMaxZoom = 42f;
+
+        /// <summary>Furthest the view zooms out (raised only by the -mb-overview device check).</summary>
+        public float MaxZoom { get; set; } = DefaultMaxZoom;
         private const float TraumaDecay = 1.4f;
 
         private readonly Camera _camera;
