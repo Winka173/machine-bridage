@@ -138,6 +138,9 @@ namespace MachineBrigade.Game.Rendering
             NavRed = Unlit(unlit, "NavRed", new Color(3.2f, 0.25f, 0.18f));
             NavGreen = Unlit(unlit, "NavGreen", new Color(0.25f, 3f, 0.6f));
             NavWhite = Unlit(unlit, "NavWhite", new Color(4f, 4f, 3.8f));
+            MarkAttack = Unlit(unlit, "MarkAttack", new Color(2.4f, 0.32f, 0.22f));
+            MarkDefend = Unlit(unlit, "MarkDefend", new Color(0.3f, 1.1f, 2.4f));
+            MarkScout = Unlit(unlit, "MarkScout", new Color(2.4f, 1.55f, 0.3f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -220,6 +223,11 @@ namespace MachineBrigade.Game.Rendering
         public Material NavRed { get; }
         public Material NavGreen { get; }
         public Material NavWhite { get; }
+
+        /// <summary>Mission markers: red over what to destroy, blue over what to keep, amber over a spot to scout.</summary>
+        public Material MarkAttack { get; }
+        public Material MarkDefend { get; }
+        public Material MarkScout { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

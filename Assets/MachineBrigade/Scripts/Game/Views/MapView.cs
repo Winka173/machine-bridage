@@ -341,6 +341,8 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Swaps a destroyed prop for its rubble (or hides it) and returns its view for debris.</summary>
+        public bool TryGetProp(EntityId id, out PropView view) => _props.TryGetValue(id, out view);
+
         public bool TryDestroy(EntityId id, out PropView view)
         {
             if (!_props.TryGetValue(id, out view)) return false;

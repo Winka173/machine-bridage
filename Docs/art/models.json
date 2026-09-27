@@ -123,6 +123,10 @@
     "file": "birch.glb",
     "triangles": 436
   },
+  "bmpt": {
+    "file": "bmpt.glb",
+    "triangles": 10596
+  },
   "bomb": {
     "file": "bomb.glb",
     "triangles": 392
@@ -431,6 +435,10 @@
     "file": "ifv.glb",
     "triangles": 6416
   },
+  "iron_beam": {
+    "file": "iron_beam.glb",
+    "triangles": 10456
+  },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
     "triangles": 356
@@ -450,6 +458,10 @@
   "lamp_post": {
     "file": "lamp_post.glb",
     "triangles": 284
+  },
+  "lancet_truck": {
+    "file": "lancet_truck.glb",
+    "triangles": 10234
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -583,6 +595,10 @@
     "file": "rail_tanker.glb",
     "triangles": 2498
   },
+  "railgun_truck": {
+    "file": "railgun_truck.glb",
+    "triangles": 11708
+  },
   "razor_wire": {
     "file": "razor_wire.glb",
     "triangles": 1752
@@ -667,6 +683,10 @@
     "file": "sandbags.glb",
     "triangles": 1320
   },
+  "sapper": {
+    "file": "sapper.glb",
+    "triangles": 10062
+  },
   "scout_heli": {
     "file": "scout_heli.glb",
     "triangles": 4266
@@ -674,6 +694,10 @@
   "scout_jeep": {
     "file": "scout_jeep.glb",
     "triangles": 4672
+  },
+  "shahed_truck": {
+    "file": "shahed_truck.glb",
+    "triangles": 10252
   },
   "shield_generator": {
     "file": "shield_generator.glb",
@@ -695,6 +719,10 @@
     "file": "silo.glb",
     "triangles": 1884
   },
+  "silver_bug": {
+    "file": "silver_bug.glb",
+    "triangles": 24035
+  },
   "sky_gunship": {
     "file": "sky_gunship.glb",
     "triangles": 9348
@@ -702,6 +730,10 @@
   "skyscraper": {
     "file": "skyscraper.glb",
     "triangles": 4592
+  },
+  "smoke_carrier": {
+    "file": "smoke_carrier.glb",
+    "triangles": 9280
   },
   "snow_pine": {
     "file": "snow_pine.glb",
@@ -811,9 +843,17 @@
     "file": "truck.glb",
     "triangles": 2428
   },
+  "turtle_tank": {
+    "file": "turtle_tank.glb",
+    "triangles": 11272
+  },
   "twin_tank": {
     "file": "twin_tank.glb",
     "triangles": 8832
+  },
+  "vbied": {
+    "file": "vbied.glb",
+    "triangles": 9760
   },
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",
@@ -850,5 +890,9 @@
   "wreck_truck": {
     "file": "wreck_truck.glb",
     "triangles": 2228
+  },
+  "zu23_technical": {
+    "file": "zu23_technical.glb",
+    "triangles": 9444
   }
 }

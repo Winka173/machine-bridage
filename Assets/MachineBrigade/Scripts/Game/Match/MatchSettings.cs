@@ -28,6 +28,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>This week's fortress: a siege whose broken rings stay broken all week.</summary>
         Weekly,
+
+        /// <summary>The player's fortress against waves that never stop, until the HQ falls.</summary>
+        Endless,
     }
 
     public enum WeatherKind

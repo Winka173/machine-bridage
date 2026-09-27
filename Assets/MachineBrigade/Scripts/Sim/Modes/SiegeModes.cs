@@ -60,6 +60,22 @@ namespace MachineBrigade.Sim.Modes
 
         public SideSetup Attacker { get; set; } = new() { StartCp = 34f, Income = 1.8f, ArmyCap = 40 };
         public SideSetup Defender { get; set; } = new() { StartCp = 20f, Income = 1f };
+
+        /// <summary>
+        /// Defend: the fortress is the player's base and the enemy lays siege to it. The map's two
+        /// sides trade places (the fortress's guns and garrison become the player's); the player
+        /// holds until the attacker's clock runs out.
+        /// </summary>
+        public bool PlayerDefends { get; set; }
+
+        /// <summary>Endless: no clock; the waves keep coming, bigger and more often elite, until the HQ falls.</summary>
+        public bool Endless { get; set; }
+
+        /// <summary>Seconds between the attacker's waves (flown in on top of what it buys); 0: none.</summary>
+        public float WaveSeconds { get; set; }
+
+        /// <summary>What the waves are made of (empty: the attacker's deck).</summary>
+        public IReadOnlyList<string> WaveRoster { get; set; } = Array.Empty<string>();
     }
 
     /// <summary>
@@ -103,6 +119,26 @@ namespace MachineBrigade.Sim.Modes
 
         public SiegeMode(SiegeRules? rules = null) => _rules = rules ?? new SiegeRules();
 
+        /// <summary>The side breaking in and the side holding the fortress (the player attacks unless it defends).</summary>
+        public int Attacker => _rules.PlayerDefends ? EnemyTeam : PlayerTeam;
+
+        public int Defender => _rules.PlayerDefends ? PlayerTeam : EnemyTeam;
+
+        /// <summary>Waves sent so far (Defend and Endless).</summary>
+        public int Wave { get; private set; }
+
+        /// <summary>Seconds until the next wave, or -1 when there are none.</summary>
+        public float SecondsToWave(SimWorld world) => _rules.WaveSeconds > 0f ? MathF.Max(0f, (float)(_nextWave - world.Time)) : -1f;
+
+        public bool Endless => _rules.Endless;
+
+        private double _nextWave;
+
+        /// <summary>A key for what just happened, in the words of the side the player is on.</summary>
+        private string Key(string what) => (_rules.PlayerDefends ? "base." : "siege.") + what;
+
+        private int Side(int mapTeam) => _rules.PlayerDefends && mapTeam is PlayerTeam or EnemyTeam ? 1 - mapTeam : mapTeam;
+
         public MatchResult? Result { get; private set; }
         public IReadOnlyList<ObjectiveState> Points => Array.Empty<ObjectiveState>();
 
@@ -119,9 +155,15 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
-            world.EnableEconomy(_rules.Attacker.Build(PlayerTeam));
-            world.EnableEconomy(_rules.Defender.Build(EnemyTeam));
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            world.EnableEconomy(_rules.Attacker.Build(Attacker));
+            world.EnableEconomy(_rules.Defender.Build(Defender));
+            // Defend: the camps trade places, so the player's drop zone is inside the fortress.
+            if (_rules.PlayerDefends && world.TryGetRally(PlayerTeam, out var outside) && world.TryGetRally(EnemyTeam, out var inside))
+            {
+                world.SetRally(PlayerTeam, inside);
+                world.SetRally(EnemyTeam, outside);
+            }
+            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, Side(unit.Team), unit.Position, unit.Heading);
             foreach (var prop in world.Props)
             {
                 if (!prop.IsAlive) continue;
@@ -134,14 +176,14 @@ namespace MachineBrigade.Sim.Modes
                 else if (prop.Def.Id == _rules.Relay) _relays.Add(prop.Id);
                 else if (prop.Def.Id == _rules.Generator) _generators.Add(prop.Id);
             }
-            if (Fortress == null && world.TryGetRally(EnemyTeam, out var rally)) Fortress = rally;
+            if (Fortress == null && world.TryGetRally(Defender, out var rally)) Fortress = rally;
             var rings = world.Map.SiegeRings;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static)
+                if (v.IsAlive && v.Team == Defender && v.Def.Static)
                 {
                     _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
                     // The attacker comes with the fortress plans: every gun is on the map from the start.
-                    v.VisibleToMask |= 1 << PlayerTeam;
+                    v.VisibleToMask |= 1 << Attacker;
                 }
             // Everything built into the fortress goes up with it at the end.
             if (Fortress is { } centre && rings.Count > 0)
@@ -163,7 +205,8 @@ namespace MachineBrigade.Sim.Modes
                 Stage++;
                 if (Stage == 3) SpawnGuardian(world);
             }
-            _deadline = _rules.StartSeconds;
+            _deadline = _rules.Endless ? double.MaxValue : _rules.StartSeconds;
+            _nextWave = _rules.WaveSeconds > 0f ? _rules.WaveSeconds * 0.75f : double.MaxValue;
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             Shield(world);
         }
@@ -244,7 +287,7 @@ namespace MachineBrigade.Sim.Modes
         public EntityId Target(SimWorld world)
         {
             var list = Stage switch { 1 => _relays, 2 => _generators, _ => _targets };
-            var from = world.TryGetRally(PlayerTeam, out var rally) ? rally : Vector2.Zero;
+            var from = world.TryGetRally(Attacker, out var rally) ? rally : Vector2.Zero;
             var best = EntityId.None;
             var nearest = float.MaxValue;
             foreach (var id in list)
@@ -265,9 +308,10 @@ namespace MachineBrigade.Sim.Modes
             RunChain(world);
             if (_finishAt >= 0)
             {
-                if (world.Time >= _finishAt) Finish(world, PlayerTeam);
+                if (world.Time >= _finishAt) Finish(world, Attacker);
                 return;
             }
+            if (world.Time >= _nextWave) SendWave(world);
             if (Stage == 1 && Alive(world, _relays) == 0) Advance(world, 2);
             if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
             if (Stage == 3) KeepEvents(world);
@@ -280,9 +324,11 @@ namespace MachineBrigade.Sim.Modes
             }
             if (world.Time >= _deadline && !(world.Time < _deadline + _rules.Overtime && Contested(world)))
             {
-                Finish(world, EnemyTeam);
+                Finish(world, Defender);
                 return;
             }
+            // An attacking player wiped out has lost; an attacking AI always buys more.
+            if (_rules.PlayerDefends) return;
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
@@ -301,9 +347,9 @@ namespace MachineBrigade.Sim.Modes
                 _bounty.RemoveAt(i);
                 if (building == null) continue;
                 var cp = Math.Clamp(MathF.Round(building.Def.MaxHp / 400f), 2f, 6f);
-                if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + cp);
+                if (world.TryGetEconomy(Attacker, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + cp);
                 BuildingsRazed++;
-                world.Emit(SimEvent.BountyPaid(PlayerTeam, building.Def.Id, building.Position, cp));
+                world.Emit(SimEvent.BountyPaid(Attacker, building.Def.Id, building.Position, cp));
             }
         }
 
@@ -312,7 +358,7 @@ namespace MachineBrigade.Sim.Modes
         {
             if (!world.TryGetProp(Target(world), out var objective)) return false;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == PlayerTeam && Vector2.Distance(v.Position, objective.Position) < 25f) return true;
+                if (v.IsAlive && v.Team == Attacker && Vector2.Distance(v.Position, objective.Position) < 25f) return true;
             return false;
         }
 
@@ -322,20 +368,20 @@ namespace MachineBrigade.Sim.Modes
             Stage = next;
             var bonus = _rules.StageBonus.Length >= cleared ? _rules.StageBonus[cleared - 1] : 0f;
             _deadline = Math.Min(_deadline + bonus, world.Time + _rules.MaxBank);
-            if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.StageCp);
+            if (world.TryGetEconomy(Attacker, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.StageCp);
             // The ring just taken is lost to the defender: its guns blow up one after another.
             Collapse(world, _defences[cleared - 1], 0.25, props: false);
             Shield(world);
             if (next == 3) SpawnGuardian(world);
-            world.Emit(SimEvent.Stage(next, Fortress ?? Vector2.Zero, next == 2 ? "siege.stage2" : "siege.stage3"));
+            world.Emit(SimEvent.Stage(next, Fortress ?? Vector2.Zero, Key(next == 2 ? "stage2" : "stage3")));
         }
 
         /// <summary>The keep's guardian wakes (stage three).</summary>
         private void SpawnGuardian(SimWorld world)
         {
             if (_rules.Guardian == null || Fortress is not { } hq || !world.Catalog.Vehicles.ContainsKey(_rules.Guardian)) return;
-            var toward = world.TryGetRally(PlayerTeam, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
-            world.SpawnVehicle(_rules.Guardian, EnemyTeam, hq + toward * 12f, SimMath.HeadingOf(toward));
+            var toward = world.TryGetRally(Attacker, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
+            world.SpawnVehicle(_rules.Guardian, Defender, hq + toward * 12f, SimMath.HeadingOf(toward));
         }
 
         /// <summary>
@@ -351,8 +397,8 @@ namespace MachineBrigade.Sim.Modes
             {
                 _hqPhase = 1;
                 if (world.Catalog.TryGetSupport("artillery_barrage", out var barrage) && TryAttackerCentre(world, out var at))
-                    world.Strikes.Launch(barrage, EnemyTeam, at, at);
-                world.Emit(SimEvent.Alert(hq.Position, "siege.barrage"));
+                    world.Strikes.Launch(barrage, Defender, at, at);
+                world.Emit(SimEvent.Alert(hq.Position, Key("barrage")));
             }
             else if (_hqPhase == 1 && health < 0.5f)
             {
@@ -360,24 +406,24 @@ namespace MachineBrigade.Sim.Modes
                 _glyphUntil = world.Time + 6.0;
                 foreach (var elite in new[] { "elite_mbt", "elite_heavy_tank" })
                     if (world.Catalog.Vehicles.ContainsKey(elite))
-                        world.SpawnVehicle(elite, EnemyTeam, hq.Position + new Vector2(-8f, -8f), SimMath.DegToRad(225f));
-                world.Emit(SimEvent.Alert(hq.Position, "siege.glyph"));
+                        world.SpawnVehicle(elite, Defender, hq.Position + new Vector2(-8f, -8f), SimMath.DegToRad(225f));
+                world.Emit(SimEvent.Alert(hq.Position, Key("glyph")));
             }
             else if (_hqPhase == 2 && health < 0.25f)
             {
                 _hqPhase = 3;
-                world.Emit(SimEvent.Alert(hq.Position, "siege.laststand"));
+                world.Emit(SimEvent.Alert(hq.Position, Key("laststand")));
             }
             Shield(world);
         }
 
-        private static bool TryAttackerCentre(SimWorld world, out Vector2 centre)
+        private bool TryAttackerCentre(SimWorld world, out Vector2 centre)
         {
             var sum = Vector2.Zero;
             var n = 0;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != PlayerTeam || v.Flying) continue;
+                if (!v.IsAlive || v.Team != Attacker || v.Flying) continue;
                 sum += v.Position;
                 n++;
             }
@@ -407,7 +453,32 @@ namespace MachineBrigade.Sim.Modes
             Collapse(world, remaining, 0.12, props: false);
             Collapse(world, _fortressProps, 0.08, props: true);
             _finishAt = world.Time + 4.5;
-            world.Emit(SimEvent.Stage(4, Fortress ?? Vector2.Zero, "siege.fallen"));
+            world.Emit(SimEvent.Stage(4, Fortress ?? Vector2.Zero, Key("fallen")));
+        }
+
+        /// <summary>
+        /// A wave flown in to the attacker's camp on top of what it buys: bigger each time, and
+        /// from the sixth on more and more of it the elite versions. Endless also has the attacker
+        /// earn a little more after every wave.
+        /// </summary>
+        private void SendWave(SimWorld world)
+        {
+            _nextWave = world.Time + _rules.WaveSeconds;
+            if (!world.TryGetRally(Attacker, out var camp)) return;
+            var roster = _rules.WaveRoster.Count > 0 ? _rules.WaveRoster
+                : world.TryGetEconomy(Attacker, out var own) ? own.Vehicles : Array.Empty<string>();
+            if (roster.Count == 0) return;
+            Wave++;
+            var count = Math.Min(12, 2 + Wave);
+            var elite = MathF.Min(0.6f, (Wave - 5) * 0.08f);
+            for (var i = 0; i < count; i++)
+            {
+                var id = roster[(Wave * 3 + i * 5) % roster.Count];
+                if (elite > 0f && world.Catalog.EliteVariant(id) is { } better && world.Random.NextDouble() < elite) id = better;
+                world.Economy.Airlift(Attacker, id, camp);
+            }
+            if (_rules.Endless && world.TryGetEconomy(Attacker, out var economy)) economy.IncomeScale *= 1.05f;
+            world.Emit(SimEvent.Alert(camp, Key("wave")));
         }
 
         /// <summary>Queues things to blow up one after another, nearest the fortress centre first.</summary>

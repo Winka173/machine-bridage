@@ -20,6 +20,7 @@ import mb_air  # noqa: E402
 import mb_artillery  # noqa: E402
 import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
+import mb_boss_saucer  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
@@ -50,7 +51,8 @@ def all_builders():
             **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS, **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS,
             **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
             **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
-            **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS}
+            **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
+            **mb_boss_saucer.BUILDERS}
 
 
 def build_all(filters=()):

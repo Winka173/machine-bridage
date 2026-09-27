@@ -68,6 +68,8 @@ namespace MachineBrigade.Game.Match
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private ObjectiveView _objectives;
+        private MissionMarkers _markers;
+        private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
         private Weather _weather;
@@ -130,6 +132,7 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
                 if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
                 if (DebugFlags.Has("-mb-defend")) MatchSettings.Mode = GameModeKind.Defend;
+                if (DebugFlags.Has("-mb-endless")) MatchSettings.Mode = GameModeKind.Endless;
                 if (DebugFlags.Has("-mb-weekly")) MatchSettings.Mode = GameModeKind.Weekly;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
@@ -187,6 +190,7 @@ namespace MachineBrigade.Game.Match
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
                 _objectives = new ObjectiveView(_session.Objectives, _meshes, _materials, worldRoot);
+            if (_session is MissionSession) _markers = new MissionMarkers(_meshes, _materials, worldRoot);
 
             _world.TryGetRally(PlayerTeam, out var rally);
             var start = _menu ? Vector3.zero : new Vector3(rally.X + 16f, 0f, rally.Y + 16f);
@@ -488,6 +492,11 @@ namespace MachineBrigade.Game.Match
             _perf?.End(PerfProbe.Section.Views);
             _perf?.Begin();
             _objectives?.Render(Time.time);
+            if (_markers != null && _session is MissionSession mission)
+            {
+                mission.Mission.Marks(_world, _marks);
+                _markers.Render(_marks, _views, _map, _camera.Rotation, Time.time);
+            }
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
@@ -859,6 +868,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.KingOfTheHill => "mode.hill",
                 GameModeKind.Assault => "mode.assault",
                 GameModeKind.Defend => "mode.defend",
+                GameModeKind.Endless => "mode.endless",
                 GameModeKind.Weekly => "mode.weekly",
                 GameModeKind.Survival => "mode.survival",
                 GameModeKind.Siege => "mode.siege",

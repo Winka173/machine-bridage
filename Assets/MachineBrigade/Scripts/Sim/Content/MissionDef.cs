@@ -29,6 +29,18 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Destroy the boss before it reaches the end of its route.</summary>
         Intercept,
+
+        /// <summary>Hunt down marked high-value vehicles (a battery, a commander) that patrol with their guard.</summary>
+        Hunt,
+
+        /// <summary>Scout every listed objective: bring a vehicle onto each for a few seconds.</summary>
+        Recon,
+
+        /// <summary>Keep enough of the listed buildings on the player's side standing until the clock runs out.</summary>
+        Protect,
+
+        /// <summary>Shoot down enough enemy aircraft.</summary>
+        ShootDown,
     }
 
     /// <summary>Enemy vehicles arriving on a schedule.</summary>
@@ -81,7 +93,18 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<string> EnemyOwns { get; set; } = Array.Empty<string>();
 
         public float HoldSeconds { get; set; } = 180f;
+
+        /// <summary>Destroy: the kinds of building to knock down. Protect: the kinds to keep standing (those on the player's side).</summary>
         public IReadOnlyList<string> Targets { get; set; } = Array.Empty<string>();
+
+        /// <summary>Protect: the mission is lost when fewer than this many are left standing.</summary>
+        public int ProtectNeeded { get; set; } = 1;
+
+        /// <summary>Hunt: the marked vehicles, each on its patrol route (driven round and round).</summary>
+        public IReadOnlyList<ScriptedUnitDef> Hunt { get; set; } = Array.Empty<ScriptedUnitDef>();
+
+        /// <summary>ShootDown: enemy aircraft to bring down.</summary>
+        public int KillsNeeded { get; set; } = 10;
         public float SurviveSeconds { get; set; } = 300f;
 
         /// <summary>Seconds before the mission is lost (0: no limit).</summary>
@@ -200,6 +223,8 @@ namespace MachineBrigade.Sim.Content
                 EnemyOwns = Strings(m, "enemyOwns"),
                 HoldSeconds = m.Float("holdSeconds", 180f),
                 Targets = Strings(m, "targets"),
+                ProtectNeeded = m.Int("protectNeeded", 1),
+                KillsNeeded = m.Int("killsNeeded", 10),
                 SurviveSeconds = m.Float("surviveSeconds", 300f),
                 TimeLimit = m.Float("timeLimit", 0f),
                 ConvoyCount = m.Int("convoyCount", 4),
@@ -232,6 +257,12 @@ namespace MachineBrigade.Sim.Content
                 def.ChallengeValue = c.Int("value", 0);
             }
             if (m.Has("boss")) def.Boss = Scripted(m.Object("boss"));
+            if (m.Has("hunt"))
+            {
+                var hunt = new List<ScriptedUnitDef>();
+                foreach (var h in m.Array("hunt")) hunt.Add(Scripted(h));
+                def.Hunt = hunt;
+            }
             if (m.Has("convoy")) def.Convoy = Scripted(m.Object("convoy"));
             if (m.Has("waves"))
             {

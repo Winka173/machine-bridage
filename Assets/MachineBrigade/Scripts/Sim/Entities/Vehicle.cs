@@ -284,6 +284,9 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public bool Scripted { get; internal set; }
 
+        /// <summary>A mission's hunted vehicle: the game draws a target marker over it.</summary>
+        public bool Marked { get; internal set; }
+
         /// <summary>The player took direct control of this vehicle recently.</summary>
         public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;
 

@@ -23,7 +23,8 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
             (GameModeKind.Defend, "shield", "mode.defend", "mode.defendSub"),
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
-            (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
+            (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),
+            (GameModeKind.Survival, "people", "mode.survival", "mode.survivalSub"),
             (GameModeKind.Weekly, "home", "mode.weekly", "mode.weeklySub"),
             (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
         };
