@@ -361,7 +361,7 @@ namespace MachineBrigade.Game.Rendering
             m.SetFloat("_Intensity", intensity);
             m.SetFloat("_Shape", shape);
             m.SetFloat("_Softness", softness);
-            m.renderQueue = additive ? 3010 : 3000;
+            m.renderQueue = additive ? 3010 : Effects.FxQueue.Haze;
             _owned.Add(m);
             return m;
         }

@@ -104,7 +104,7 @@ namespace MachineBrigade.Game.Effects
             _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
             _projectiles = new ProjectilePool(_root, 96);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
-            _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _root);
+            _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
             _marker.Transform.localScale = Vector3.one * 2.2f;
