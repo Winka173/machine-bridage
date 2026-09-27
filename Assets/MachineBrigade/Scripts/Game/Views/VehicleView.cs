@@ -19,7 +19,8 @@ namespace MachineBrigade.Game.Views
         private const float BarWidth = 2.4f;
         private const float BarHeight = 0.2f;
         private const float RecoilSeconds = 0.35f;
-        private const float TakeOffSeconds = 2.2f;
+        /// <summary>Aircraft fly in over this long: from behind along their heading, a little above their height.</summary>
+        private const float ArriveSeconds = 2.6f;
 
         private static readonly int TintId = Shader.PropertyToID("_Tint");
 
@@ -181,6 +182,9 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>Dead: a burning hulk or a falling wreck.</summary>
+        public bool IsWreck => _wreck;
         public bool Selected { get; set; }
         public bool Flying => Def.Flying;
 
@@ -479,9 +483,17 @@ namespace MachineBrigade.Game.Views
 
             if (Flying)
             {
-                // Climb after spawning, hover with a slow bob, nose down when speeding up and bank into turns.
-                var climb = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / TakeOffSeconds);
-                Altitude = Def.Altitude * climb + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * climb;
+                // Fly in from behind (never out of the ground), then hover with a slow bob, nose
+                // down when speeding up and bank into turns.
+                var arrive = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                var above = 1f - arrive;
+                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * arrive;
+                if (above > 0f)
+                {
+                    // It flies in along its heading from behind, dropping to its height as it comes.
+                    var heading = hull * Mathf.Deg2Rad;
+                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * (above * above * (Def.FixedWing ? 80f : 35f));
+                }
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
                 {

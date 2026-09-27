@@ -241,15 +241,18 @@ namespace MachineBrigade.Game.Hud
             cost.Add(UiKit.Text(CostOf(id).ToString(), "unit-card-cost-text"));
             card.Add(cost);
             card.Add(UiKit.Text("", "unit-card-rank"));
+            // The blueprint bar; ready to rank up, it turns green with the upgrade arrow at its end.
+            var foot = UiKit.Box("unit-card-foot");
             var track = UiKit.Box("unit-card-track");
             track.Add(UiKit.Box("unit-card-fill"));
-            card.Add(track);
+            foot.Add(track);
+            var up = UiKit.Box("unit-card-up");
+            up.Add(UiKit.Icon("upgrade", UiKit.Ink, 2.4f));
+            foot.Add(up);
+            card.Add(foot);
             var check = UiKit.Box("unit-card-check");
             check.Add(UiKit.Icon("check", UiKit.Ink, 2.2f));
             card.Add(check);
-            var up = UiKit.Box("unit-card-up");
-            up.Add(UiKit.Icon("upgrade", UiKit.Ink, 2.2f));
-            card.Add(up);
             var lockBadge = UiKit.Box("unit-card-lock");
             lockBadge.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
             card.Add(lockBadge);
@@ -287,19 +290,25 @@ namespace MachineBrigade.Game.Hud
             if (_popover != null) _popover.style.display = DisplayStyle.None;
         }
 
-        /// <summary>Puts a card in the deck (the first free slot) or takes it out.</summary>
+        /// <summary>Puts a card in the deck (the first empty slot) or takes it out of its slot; the others stay where they are.</summary>
         private void ToggleInDeck(string id)
         {
             if (!PlayerProfile.IsUnlocked(id)) return;
             var support = IsSupport(id);
-            var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
-            var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
-            if (deck.Contains(id)) deck.Remove(id);
-            else if (deck.Count < slots) deck.Add(id);
-            else
+            switch (MatchSettings.ToggleDeckCard(id, support))
             {
-                Note(Strings.Get(support ? "army.fullSupports" : "army.fullVehicles"), true);
-                return;
+                case MatchSettings.DeckChange.Full:
+                    Note(Strings.Get(support ? "army.fullSupports" : "army.fullVehicles"), true);
+                    return;
+                case MatchSettings.DeckChange.LastCard:
+                    Note(Strings.Get(support ? "army.lastSupport" : "army.lastVehicle"), true);
+                    return;
+                case MatchSettings.DeckChange.Removed:
+                    Note(Strings.Format("army.removed", Strings.Card(id)));
+                    break;
+                default:
+                    Note(Strings.Format("army.added", Strings.Card(id)));
+                    break;
             }
             MatchSettings.Save();
             Refresh();
@@ -316,9 +325,9 @@ namespace MachineBrigade.Game.Hud
         private void RefreshDeck()
         {
             _deckSlots.Clear();
-            for (var i = 0; i < MatchSettings.DeckVehicleSlots; i++) _deckSlots.Add(DeckSlot(i < MatchSettings.DeckVehicles.Count ? MatchSettings.DeckVehicles[i] : null, false));
+            foreach (var id in MatchSettings.DeckLayout(false)) _deckSlots.Add(DeckSlot(id, false));
             _deckSlots.Add(UiKit.Box("deck-divider"));
-            for (var i = 0; i < MatchSettings.DeckSupportSlots; i++) _deckSlots.Add(DeckSlot(i < MatchSettings.DeckSupports.Count ? MatchSettings.DeckSupports[i] : null, true));
+            foreach (var id in MatchSettings.DeckLayout(true)) _deckSlots.Add(DeckSlot(id, true));
             var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
             _deckSummary.text = Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
                 MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-");

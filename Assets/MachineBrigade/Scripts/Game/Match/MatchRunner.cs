@@ -71,6 +71,7 @@ namespace MachineBrigade.Game.Match
         private EffectsDirector _effects;
         private AudioDirector _audio;
         private Weather _weather;
+        private Weather _leavingWeather;
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
@@ -218,8 +219,7 @@ namespace MachineBrigade.Game.Match
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
                 : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
-            if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
-            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
+            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
             _worldRoot = worldRoot;
@@ -286,15 +286,13 @@ namespace MachineBrigade.Game.Match
             var random = new System.Random((int)_world.Tick);
             for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
             if (next == _weatherKind) return;
-            _weather.Dispose();
+            // The new weather rolls in over a few seconds while the old one thins out (see Weather).
+            _leavingWeather?.Dispose();
+            _leavingWeather = _weather;
             _weatherKind = next;
-            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            var theme = MapTheme.For(_world.Map.Theme);
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
-            if (next == WeatherKind.Clear)
-            {
-                var theme = MapTheme.For(_world.Map.Theme);
-                _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
-            }
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -452,6 +450,11 @@ namespace MachineBrigade.Game.Match
             {
                 _effects.Tick(_views);
                 _weather.Tick();
+                if (_leavingWeather != null && !_leavingWeather.TickLeaving())
+                {
+                    _leavingWeather.Dispose();
+                    _leavingWeather = null;
+                }
                 if (!_menu && Time.frameCount % 15 == 0) _audio.BossMusic = BossOnField();
                 if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
@@ -621,6 +624,7 @@ namespace MachineBrigade.Game.Match
             PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
+            _leavingWeather?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
             _audio?.Dispose();

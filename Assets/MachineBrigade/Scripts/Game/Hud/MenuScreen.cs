@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Hud
         private readonly Action _play;
         private readonly VisualElement _backdrop, _topBar, _tabBar, _profile, _backButton;
         private readonly Label _pageTitle;
-        private readonly List<Label> _coinLabels = new(), _rankLabels = new(), _gemLabels = new();
+        private readonly List<Label> _coinLabels = new(), _rankLabels = new();
         private readonly List<VisualElement> _rankFills = new();
         private readonly List<(VisualElement element, Func<bool> selected)> _choices = new();
         private readonly Dictionary<Tab, VisualElement> _tabPages = new();
@@ -84,8 +84,7 @@ namespace MachineBrigade.Game.Hud
             _pageTitle = UiKit.Text("", "nav-title");
             _topBar.Add(_pageTitle);
             _topBar.Add(UiKit.Box("nav-spacer"));
-            _topBar.Add(CurrencyPill("coin", _coinLabels, () => OpenShop(ShopTab.Deals)));
-            _topBar.Add(CurrencyPill("gem", _gemLabels, () => OpenShop(ShopTab.Gems)));
+            _topBar.Add(CurrencyPill("coin", _coinLabels, () => OpenShop(ShopTab.Coins)));
             var gear = UiKit.Button("nav-icon", () => Open(_settings, Strings.Get("menu.settings")));
             gear.Add(UiKit.Icon("settings", UiKit.Ink, 1.9f));
             _topBar.Add(gear);
@@ -248,7 +247,6 @@ namespace MachineBrigade.Game.Hud
         {
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
-            foreach (var label in _gemLabels) label.text = PlayerProfile.Gems.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
             foreach (var fill in _rankFills)
                 fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));

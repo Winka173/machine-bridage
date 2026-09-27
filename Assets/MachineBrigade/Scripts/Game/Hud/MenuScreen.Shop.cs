@@ -20,7 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             Deals,
             Crates,
-            Gems,
+            Coins,
             Skins,
             Units,
             Items,
@@ -45,7 +45,7 @@ namespace MachineBrigade.Game.Hud
             var rail = UiKit.Box("shop-rail");
             foreach (var (tab, icon, key) in new[]
                      {
-                         (ShopTab.Deals, "star", "shop.deals"), (ShopTab.Crates, "crate", "arsenal.crates"), (ShopTab.Gems, "gem", "shop.gems"),
+                         (ShopTab.Deals, "star", "shop.deals"), (ShopTab.Crates, "crate", "arsenal.crates"), (ShopTab.Coins, "coin", "shop.coins"),
                          (ShopTab.Skins, "paint", "shop.skins"), (ShopTab.Units, "tank", "shop.units"), (ShopTab.Items, "bomb", "shop.items"),
                      })
             {
@@ -107,8 +107,8 @@ namespace MachineBrigade.Game.Hud
                 case ShopTab.Crates:
                     foreach (CrateKind kind in Enum.GetValues(typeof(CrateKind))) grid.Add(CrateTile(kind));
                     break;
-                case ShopTab.Gems:
-                    foreach (var (id, gems, price) in GemStore.Packs) grid.Add(GemCard(id, gems, price));
+                case ShopTab.Coins:
+                    foreach (var (id, coins, price) in CoinStore.Packs) grid.Add(CoinCard(id, coins, price));
                     break;
                 case ShopTab.Skins:
                     foreach (var skin in Skins.All) grid.Add(SkinCard(skin));
@@ -189,25 +189,23 @@ namespace MachineBrigade.Game.Hud
             var buttons = UiKit.Box("crate-buttons");
             buttons.Add(CrateButton("primary", "crate", Strings.Get("crate.open"), () => OpenCrate(k)));
             if (Crates.CoinPrice[(int)kind] > 0)
-                buttons.Add(CrateButton("", "coin", Crates.CoinPrice[(int)kind].ToString("N0"), () => BuyCrate(k, false)));
-            if (Crates.GemPrice[(int)kind] > 0)
-                buttons.Add(CrateButton("", "gem", Crates.GemPrice[(int)kind].ToString("N0"), () => BuyCrate(k, true)));
+                buttons.Add(CrateButton("", "coin", Crates.CoinPrice[(int)kind].ToString("N0"), () => BuyCrate(k)));
             tile.Add(buttons);
             _crateCounts.Add((kind, count));
             return tile;
         }
 
-        private VisualElement GemCard(string id, int gems, string price)
+        private VisualElement CoinCard(string id, int coins, string price)
         {
             var pack = id;
-            var card = UiKit.Button("shop-card gem-card", () => GemStore.Buy(pack, ok =>
+            var card = UiKit.Button("shop-card coin-card", () => CoinStore.Buy(pack, ok =>
             {
-                Note(ok ? Strings.Format("gems.bought", gems.ToString("N0")) : Strings.Get("gems.soon"), !ok);
+                Note(ok ? Strings.Format("coins.bought", coins.ToString("N0")) : Strings.Get("coins.soon"), !ok);
                 Refresh();
             }));
-            card.Add(UiKit.Icon("gem", UiKit.Ink, 1.8f));
-            card.Add(UiKit.Text(gems.ToString("N0"), "shop-name"));
-            card.Add(UiKit.Text(GemStore.TestPurchases ? price + "  ·  TEST" : price, "shop-sub"));
+            card.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
+            card.Add(UiKit.Text(coins.ToString("N0"), "shop-name"));
+            card.Add(UiKit.Text(CoinStore.TestPurchases ? price + "  ·  TEST" : price, "shop-sub"));
             return card;
         }
 
@@ -231,10 +229,10 @@ namespace MachineBrigade.Game.Hud
             Refresh();
         }
 
-        private void BuyCrate(CrateKind kind, bool gems)
+        private void BuyCrate(CrateKind kind)
         {
-            if (PlayerProfile.TryBuyCrate(kind, gems)) Note(Strings.Format("crate.bought", Strings.Get("crate." + kind.ToString().ToLowerInvariant())));
-            else Note(Strings.Get(gems ? "gems.notEnough" : "arsenal.needCoins"), true);
+            if (PlayerProfile.TryBuyCrate(kind)) Note(Strings.Format("crate.bought", Strings.Get("crate." + kind.ToString().ToLowerInvariant())));
+            else Note(Strings.Get("arsenal.needCoins"), true);
             Refresh();
         }
 

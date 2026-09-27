@@ -6,9 +6,10 @@
   // Global tuning. toughness: every vehicle's health (bosses separately). firepower: strikes, and the blasts of
   // burning props, vehicles blowing up and mines, so they still matter against tougher vehicles. economy: every
   // side's CP income (objective bonuses included) and supply line, so fewer, longer-lived vehicles take the field.
+  // Income was 0.65 and supply 0.8 until playtests found CP coming in too slowly (2026-09-27).
   "toughness": { "vehicles": 2.5, "bosses": 0.85 },
   "firepower": { "strikes": 2.0, "propBlasts": 1.5, "vehicleBlasts": 2.0 },
-  "economy": { "income": 0.65, "supply": 0.8 },
+  "economy": { "income": 0.85, "supply": 0.9 },
 
   "damageTable": {
     "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.3, "Structure": 0.3 },

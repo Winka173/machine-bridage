@@ -233,9 +233,8 @@ namespace MachineBrigade.Game.Match
         public static readonly int[] EpicPity = { 0, 0, 5, 0 };
         public static readonly int[] LegendaryPity = { 0, 0, 25, 4 };
 
-        /// <summary>Prices: in gems (the premium currency), and in coins where a crate can be bought with them (0: not for coins).</summary>
-        public static readonly int[] GemPrice = { 0, 60, 180, 500 };
-        public static readonly int[] CoinPrice = { 0, 900, 3000, 0 };
+        /// <summary>Prices in coins, the one currency (0: not for sale; battle crates are won).</summary>
+        public static readonly int[] CoinPrice = { 0, 900, 3000, 8000 };
 
         /// <summary>
         /// Opens a crate: coins, blueprints for cards the player has, and equipment rolls. The pity
@@ -345,25 +344,26 @@ namespace MachineBrigade.Game.Match
     }
 
     /// <summary>
-    /// Buying gems with real money. Until a store (Google Play Billing, the App Store) is wired
-    /// in, test builds grant the gems at once (marked TEST in the shop) and release builds say
+    /// Buying coins with real money: the game has one currency, so the store sells coins (larger
+    /// packs give more per dollar). Until a store (Google Play Billing, the App Store) is wired
+    /// in, test builds grant the coins at once (marked TEST in the shop) and release builds say
     /// the store is coming. See Docs/RELEASE_CHECKLIST.md.
     /// </summary>
-    public static class GemStore
+    public static class CoinStore
     {
-        /// <summary>Test builds: a purchase grants its gems without a payment.</summary>
+        /// <summary>Test builds: a purchase grants its coins without a payment.</summary>
         public static bool TestPurchases = true;
 
-        public static readonly (string id, int gems, string price)[] Packs =
+        public static readonly (string id, int coins, string price)[] Packs =
         {
-            ("gems_80", 80, "$0.99"), ("gems_500", 500, "$4.99"), ("gems_1200", 1200, "$9.99"),
-            ("gems_2500", 2500, "$19.99"), ("gems_6500", 6500, "$49.99"), ("gems_14000", 14000, "$99.99"),
+            ("coins_1200", 1200, "$0.99"), ("coins_7000", 7000, "$4.99"), ("coins_15000", 15000, "$9.99"),
+            ("coins_32000", 32000, "$19.99"), ("coins_85000", 85000, "$49.99"), ("coins_180000", 180000, "$99.99"),
         };
 
-        /// <summary>Buys a gem pack; <paramref name="done"/> gets whether gems were granted.</summary>
+        /// <summary>Buys a coin pack; <paramref name="done"/> gets whether coins were granted.</summary>
         public static void Buy(string packId, Action<bool> done)
         {
-            foreach (var (id, gems, _) in Packs)
+            foreach (var (id, coins, _) in Packs)
             {
                 if (id != packId) continue;
                 if (!TestPurchases)
@@ -371,7 +371,7 @@ namespace MachineBrigade.Game.Match
                     done?.Invoke(false);
                     return;
                 }
-                PlayerProfile.AddGems(gems);
+                PlayerProfile.AddCoins(coins);
                 done?.Invoke(true);
                 return;
             }

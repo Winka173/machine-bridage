@@ -36,9 +36,9 @@ namespace MachineBrigade.Game.Match
             public List<bool> dailyClaimed = new();
             public List<int> itemCounts = new();
 
-            // The arsenal (see PlayerProfile.Arsenal.cs): gems, card ranks and blueprints,
+            // The arsenal (see PlayerProfile.Arsenal.cs): card ranks and blueprints,
             // equipment and loadouts, crates, pity counters and the daily crate counters.
-            public int gems;
+            public int gems; // old saves only: turned into coins on load
             public List<string> rankIds = new();
             public List<int> ranks = new();
             public List<int> prints = new();

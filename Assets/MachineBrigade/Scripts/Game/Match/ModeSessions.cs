@@ -550,9 +550,10 @@ namespace MachineBrigade.Game.Match
 
         protected override void Build(SimWorld world, int seed)
         {
-            var player = PlayerSide(30f, Difficulty == AiDifficulty.Hard ? 1.35f : 1.6f);
+            // A bigger opening purse and income than the old 30 CP and 1.6: playtests found the rush too hard to win.
+            var player = PlayerSide(40f, Difficulty == AiDifficulty.Hard ? 1.55f : 1.8f);
             player.ArmyCap = 36;
-            _mode = new BossRushMode(new BossRushRules { Player = player });
+            _mode = new BossRushMode(new BossRushRules { Player = player, Bounty = 25f });
             Mode = _mode;
             _mode.Setup(world);
             world.TryGetRally(PlayerTeam, out var home);

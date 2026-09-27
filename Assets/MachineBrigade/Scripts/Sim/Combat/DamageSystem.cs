@@ -215,12 +215,37 @@ namespace MachineBrigade.Sim.Combat
 
         private void OnVehicleDestroyed(Vehicle vehicle)
         {
+            var speed = vehicle.Speed;
             vehicle.ClearPath();
             vehicle.Speed = 0f;
             _world.Emit(SimEvent.VehicleLost(vehicle));
             _world.Economy.OnVehicleDestroyed(vehicle);
             if (vehicle.Def.DeathExplosion != null) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
+            if (vehicle.Def.Flying) ScheduleCrash(vehicle, speed);
         }
+
+        /// <summary>
+        /// A shot-down aircraft comes down where its momentum carries it, as its wreck falls on
+        /// screen (VehicleView: a fall under 11 m/s² for aeroplanes, 7 for helicopters, the drift
+        /// fading as it goes), and crushes whatever is under it, either side's: a blast sized by
+        /// how heavy it was.
+        /// </summary>
+        private void ScheduleCrash(Vehicle vehicle, float speed)
+        {
+            var def = vehicle.Def;
+            var fall = MathF.Sqrt(2f * def.Altitude / (def.FixedWing ? 11f : 7f));
+            var fade = def.FixedWing ? 0.35f : 0.5f;
+            var glide = MathF.Min(fall, 1f / fade);
+            var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);
+            var forward = SimMath.Forward(vehicle.Heading);
+            var at = _world.ClampToMap(vehicle.Position + forward * carry);
+            _pending.Add(new PendingExplosion(_world.Time + fall, at, CrashBlast(def), vehicle.Id));
+        }
+
+        /// <summary>The blast of an aircraft hitting the ground: 8 % of its health as damage, wider for heavier aircraft.</summary>
+        public static ExplosionDef CrashBlast(VehicleDef def) =>
+            new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,
+                def.MaxHp > 3000f ? ExplosionTier.Huge : ExplosionTier.Large);
 
         /// <summary>A hull drives over a tree, bush or fence: it goes down the way the hull was going.</summary>
         internal void Crush(Prop prop, Vector2 direction)

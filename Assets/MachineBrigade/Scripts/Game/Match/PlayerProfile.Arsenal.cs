@@ -6,7 +6,7 @@ using UnityEngine;
 namespace MachineBrigade.Game.Match
 {
     /// <summary>
-    /// The arsenal part of the profile: gems (the premium currency), card ranks and blueprints,
+    /// The arsenal part of the profile: card ranks and blueprints,
     /// equipment and the loadout of each branch, crates waiting to be opened with their pity
     /// counters, and the daily crate counters.
     /// </summary>
@@ -24,7 +24,16 @@ namespace MachineBrigade.Game.Match
             while (d.sinceEpic.Count < kinds) d.sinceEpic.Add(0);
             while (d.sinceLegendary.Count < kinds) d.sinceLegendary.Add(0);
             foreach (var g in d.gear) d.nextGearId = Math.Max(d.nextGearId, g.id + 1);
+            // Gems are gone (one currency now): a save that still holds some gets coins for them.
+            if (d.gems > 0)
+            {
+                d.coins += d.gems * GemToCoins;
+                d.gems = 0;
+            }
         }
+
+        /// <summary>Coins for each gem an old save still held (a legendary crate was 500 gems, now 8,000 coins).</summary>
+        public const int GemToCoins = 15;
 
         private static Data A
         {
@@ -34,25 +43,6 @@ namespace MachineBrigade.Game.Match
                 FixArsenal(d);
                 return d;
             }
-        }
-
-        // ------------------------------------------------------------------ gems
-
-        public static int Gems => A.gems;
-
-        public static void AddGems(int amount)
-        {
-            if (amount == 0) return;
-            A.gems = Mathf.Max(0, A.gems + amount);
-            Save();
-        }
-
-        public static bool TrySpendGems(int amount)
-        {
-            if (amount < 0 || A.gems < amount) return false;
-            A.gems -= amount;
-            Save();
-            return true;
         }
 
         // ------------------------------------------------------------------ card ranks
@@ -261,12 +251,11 @@ namespace MachineBrigade.Game.Match
             return loot;
         }
 
-        /// <summary>Buys a crate with gems or coins (where it is sold for coins).</summary>
-        public static bool TryBuyCrate(CrateKind kind, bool withGems)
+        /// <summary>Buys a crate with coins (battle crates are not sold).</summary>
+        public static bool TryBuyCrate(CrateKind kind)
         {
-            var price = withGems ? Crates.GemPrice[(int)kind] : Crates.CoinPrice[(int)kind];
-            if (price <= 0) return false;
-            if (withGems ? !TrySpendGems(price) : !TrySpend(price)) return false;
+            var price = Crates.CoinPrice[(int)kind];
+            if (price <= 0 || !TrySpend(price)) return false;
             AddCrate(kind);
             return true;
         }

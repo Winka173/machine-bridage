@@ -378,6 +378,7 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _drops.Tick(now);
             JetTrails(views, now);
+            KeepBossInSight(views);
             _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
@@ -400,8 +401,31 @@ namespace MachineBrigade.Game.Effects
             else _marker.Visible = false;
         }
 
+        private static readonly int ClearId = Shader.PropertyToID("_MbClear");
+
+        /// <summary>
+        /// The boss nearest the view is never lost in the smoke and fire of the strikes on it: the
+        /// particle shaders thin what lies over it on screen (MbClear.hlsl).
+        /// </summary>
+        private void KeepBossInSight(ViewRegistry views)
+        {
+            var clear = Vector4.zero;
+            var best = float.MaxValue;
+            foreach (var view in views.All)
+            {
+                if (!view.Def.Boss || view.IsWreck) continue;
+                var d = (view.Position - _camera.Focus).sqrMagnitude;
+                if (d >= best) continue;
+                best = d;
+                var centre = view.Position + Vector3.up * (view.Flying ? 0f : 2.5f);
+                clear = new Vector4(centre.x, centre.y, centre.z, view.Def.Radius * 1.25f + 2f);
+            }
+            Shader.SetGlobalVector(ClearId, clear);
+        }
+
         public void Dispose()
         {
+            Shader.SetGlobalVector(ClearId, Vector4.zero);
             _wrecks.Clear();
             if (_root != null) Object.Destroy(_root.gameObject);
         }

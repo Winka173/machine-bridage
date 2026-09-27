@@ -13,7 +13,17 @@ namespace MachineBrigade.Game.CameraControl
     {
         private const float Pitch = 52f;
         private const float Yaw = -45f;
-        private const float Distance = 60f; // keeps the view inside the shadow distance
+        /// <summary>
+        /// How far back along its view the camera sits. The view is orthographic, so this changes
+        /// nothing on screen; it only has to clear the highest thing drawn. At 60 m, aircraft near the
+        /// bottom of a zoomed-out view (bombers at 46 m, a banking wing) fell behind the camera and
+        /// were cut away. The near plane is pushed up to the tallest object (Atmosphere), so the
+        /// shadow range is unchanged.
+        /// </summary>
+        public const float Distance = 130f;
+
+        /// <summary>Depth added to everything by standing further back than the original 60 m (fog distances add it).</summary>
+        public const float DepthShift = Distance - 60f;
         private const float MinZoom = 9f;
         private const float DefaultMaxZoom = 42f;
 
@@ -32,7 +42,7 @@ namespace MachineBrigade.Game.CameraControl
             _halfSize = halfSize;
             _camera.orthographic = true;
             _camera.nearClipPlane = 1f;
-            _camera.farClipPlane = 320f;
+            _camera.farClipPlane = 320f + DepthShift;
             Focus = focus;
             Zoom = Mathf.Clamp(zoom, MinZoom, MaxZoom);
             Clamp();
