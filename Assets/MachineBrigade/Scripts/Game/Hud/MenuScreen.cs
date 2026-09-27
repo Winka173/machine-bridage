@@ -90,9 +90,16 @@ namespace MachineBrigade.Game.Hud
                 (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
             };
             foreach (var (kind, icon, name, sub) in modeList)
-                modes.Add(Choice(UiKit.WideButton("mode-card", icon, Strings.Get(name), Strings.Get(sub), () => Set(() => MatchSettings.Mode = kind)),
-                    () => MatchSettings.Mode == kind));
+            {
+                var tile = UiKit.Button("mode-tile", () => Set(() => MatchSettings.Mode = kind));
+                tile.Add(UiKit.Icon(icon, UiKit.Ink, 1.8f));
+                tile.Add(UiKit.Text(Strings.Get(name), "mode-tile-name"));
+                modes.Add(Choice(tile, () => MatchSettings.Mode == kind));
+                _modeLines[kind] = Strings.Get(sub);
+            }
             content.Add(modes);
+            _modeInfo = UiKit.Text("", "mode-info");
+            content.Add(_modeInfo);
 
             content.Add(Section(2, "menu.map"));
             var maps = UiKit.Box("maps");
@@ -172,6 +179,8 @@ namespace MachineBrigade.Game.Hud
                 }, i == allDoctrines.Count - 1), () => MatchSettings.Doctrine == id));
             }
             deckBody.Add(doctrines);
+            _cardDetail = UiKit.Box("card-detail");
+            deckBody.Add(_cardDetail);
             var grid = UiKit.Box("deck-grid");
             foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
             foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
@@ -358,6 +367,7 @@ namespace MachineBrigade.Game.Hud
         private void Refresh()
         {
             RefreshDaily();
+            if (_modeInfo != null) _modeInfo.text = _modeLines.TryGetValue(MatchSettings.Mode, out var line) ? line : "";
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
@@ -438,6 +448,47 @@ namespace MachineBrigade.Game.Hud
             return Choice(card, () => MatchSettings.CurrentMap.Id == map.Id);
         }
 
+        private readonly Dictionary<GameModeKind, string> _modeLines = new();
+        private Label _modeInfo;
+        private VisualElement _cardDetail;
+
+        /// <summary>
+        /// What the last tapped card is: its full name, what it beats and what beats it, and every
+        /// weapon it carries (kind, calibre, what it can hit, rounds when they run out).
+        /// </summary>
+        private void ShowDetail(string id, bool support)
+        {
+            _cardDetail.Clear();
+            var head = UiKit.Box("detail-head");
+            head.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.7f));
+            var names = UiKit.Box("detail-names");
+            names.Add(UiKit.Text(Strings.Card(id), "detail-title"));
+            if (!support && _catalog.Vehicles.TryGetValue(id, out var def))
+            {
+                names.Add(UiKit.Text(Counters.Line(def), "detail-counter"));
+                head.Add(names);
+                _cardDetail.Add(head);
+                _cardDetail.Add(UiKit.Text(Strings.Get("detail.weapons"), "detail-caps"));
+                var list = UiKit.Box("detail-weapons");
+                foreach (var line in WeaponInfo.Of(def))
+                {
+                    var row = UiKit.Box("detail-weapon");
+                    row.Add(UiKit.Icon(line.Icon, UiKit.Ink, 1.7f));
+                    row.Add(UiKit.Text(line.Name, "detail-weapon-name"));
+                    row.Add(UiKit.Text(line.Targets, "detail-weapon-tag"));
+                    if (line.Ammo > 0) row.Add(UiKit.Text(Strings.Format("detail.ammo", line.Ammo), "detail-weapon-tag ammo"));
+                    list.Add(row);
+                }
+                _cardDetail.Add(list);
+            }
+            else
+            {
+                head.Add(names);
+                _cardDetail.Add(head);
+            }
+            _cardDetail.style.display = DisplayStyle.Flex;
+        }
+
         private VisualElement Choice(VisualElement element, Func<bool> selected)
         {
             _choices.Add((element, selected));
@@ -466,9 +517,7 @@ namespace MachineBrigade.Game.Hud
                     return;
                 }
                 _deckNote.RemoveFromClassList("warn");
-                // Tapping a card also says what it is good against.
-                if (!support && _catalog.Vehicles.TryGetValue(id, out var picked))
-                    _deckNote.text = Strings.Card(id) + " — " + Counters.Line(picked);
+                ShowDetail(id, support);
                 var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
                 var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
                 if (deck.Contains(id)) deck.Remove(id);
@@ -476,7 +525,7 @@ namespace MachineBrigade.Game.Hud
                 Refresh();
             });
             card.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            card.Add(UiKit.Text(Strings.Card(id), "card-name"));
+            card.Add(UiKit.Text(Strings.Short(id), "card-name"));
             var badge = UiKit.Box("card-cost");
             badge.Add(UiKit.Text(cost.ToString(), "card-cost-text"));
             card.Add(badge);

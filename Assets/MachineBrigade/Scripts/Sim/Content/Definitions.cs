@@ -159,8 +159,8 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Collision capsule: half the length of its spine (0 for a round footprint).</summary>
         /// <summary>
         /// Size of the model relative to how it was built: aircraft are drawn closer to their
-        /// real size next to tanks and houses, ground vehicles a little smaller. The radius, length
-        /// and width above already include it.
+        /// real size next to tanks and houses, ground vehicles a little smaller. Length and width
+        /// (the hull) include it; the radius, which decides how easily it is hit, does not.
         /// </summary>
         public float Scale { get; set; } = 1f;
 

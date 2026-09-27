@@ -112,12 +112,13 @@ namespace MachineBrigade.Sim.Content
                 }
                 vehicles.Add(Wrap(v, () =>
                 {
-                    // Every size given (radius, length, width) is the built model's; "scale" resizes the
-                    // model and its hull together.
+                    // "scale" resizes the drawn model and its hull (length, width) together. The radius
+                    // (how far a shot or blast reaches it) stays as given: a bigger-drawn aircraft is
+                    // not an easier target, a smaller-drawn tank not a harder one.
                     var scale = v.Float("scale", 1f);
                     var def = new VehicleDef(
                         v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
-                        v.Float("turretTurnRate"), v.Float("radius") * scale, v.Int("cp", 0), v.Float("vision"),
+                        v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
                         v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
                         v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false), v.Bool("static", false));
