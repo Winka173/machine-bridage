@@ -157,6 +157,15 @@ namespace MachineBrigade.Game.Match
             _world = new SimWorld(catalog, map, seed);
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost);
+            // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
+            if (mission != null)
+            {
+                var deck = new List<VehicleBoost>();
+                foreach (var id in MatchSettings.DeckVehicles)
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                var edge = EnemyScaling.Match(deck);
+                _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
+            }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             // A campaign tier holds for the one mission it was chosen for.
             if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;

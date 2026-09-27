@@ -6,6 +6,7 @@ using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
+using MachineBrigade.Sim.Events;
 
 namespace MachineBrigade.Sim.Modes
 {
@@ -39,6 +40,19 @@ namespace MachineBrigade.Sim.Modes
         private double _wipedSince = -1, _heldByEnemySince = -1;
         private EntityId _boss;
         private int _bossWaypoint;
+        private int _reinforced;
+        private float _peak;
+        private double _nextReinforce = ReinforceFirst;
+        private readonly List<string> _roster = new();
+
+        /// <summary>No reinforcements before this far in, and at least this long between two.</summary>
+        private const double ReinforceFirst = 45.0, ReinforceGap = 75.0;
+
+        /// <summary>The enemy calls for help once its army is down to this share of the strongest it has been.</summary>
+        private const float ReinforceBelow = 0.6f;
+
+        /// <summary>Times the enemy has been reinforced.</summary>
+        public int Reinforced => _reinforced;
         private double _launchStarted = -1;
 
         /// <param name="player">The player's CP and deck (the Game layer passes the unlocked cards).</param>
@@ -151,6 +165,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var point in _points) PointCapture.Tick(world, point, dt, CaptureSeconds);
             if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = 0.25f * PointCapture.Held(_points, PlayerTeam);
             SpawnWaves(world, dt);
+            if (world.Tick % 20 == 0) CallReinforcements(world);
             DriveConvoy(world, dt);
             DriveBoss(world);
 
@@ -254,6 +269,76 @@ namespace MachineBrigade.Sim.Modes
                 var at = world.ClampToMap(origin + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 8f);
                 world.SpawnVehicle(def, EnemyTeam, at, SimMath.DegToRad(225f));
             }
+        }
+
+        /// <summary>
+        /// The enemy calls for help when it is losing: once its army has fallen well below the
+        /// strongest it has been, or the player's goal passes another milestone, a group is flown in
+        /// to its camp (a parachute drop, as a bought vehicle comes), bigger each time, answering
+        /// the player's aircraft with anti-air when it has some.
+        /// </summary>
+        private void CallReinforcements(SimWorld world)
+        {
+            var strength = EnemyStrength(world);
+            _peak = MathF.Max(_peak, strength);
+            if (_reinforced >= _def.Reinforcements || world.Time < _nextReinforce) return;
+            var losing = _peak > 0f && strength < _peak * ReinforceBelow;
+            var pressed = Progress(world) >= 0.3f + 0.25f * _reinforced;
+            if (!losing && !pressed) return;
+            if (!world.TryGetRally(EnemyTeam, out var camp)) return;
+            var roster = Roster(world);
+            if (roster.Count == 0) return;
+            var count = Math.Min(8, _def.ReinforceSize + _reinforced);
+            var answerAir = PlayerAirShare(world) > 0.25f;
+            for (var i = 0; i < count; i++)
+            {
+                var id = roster[(_reinforced * 5 + i * 3) % roster.Count];
+                if (i == 0 && answerAir && FirstAntiAir(world, roster) is { } aa) id = aa;
+                world.Economy.Airlift(EnemyTeam, id, camp);
+            }
+            _reinforced++;
+            _nextReinforce = world.Time + ReinforceGap;
+            world.Emit(SimEvent.Alert(camp, "toast.enemyReinforce"));
+        }
+
+        /// <summary>What the enemy calls in: its deck, else its wave roster, else what it started with.</summary>
+        private IReadOnlyList<string> Roster(SimWorld world)
+        {
+            if (_enemy != null && _enemy.Vehicles.Count > 0) return _enemy.Vehicles;
+            if (_def.Waves != null && _def.Waves.Roster.Count > 0) return _def.Waves.Roster;
+            if (_roster.Count == 0)
+                foreach (var u in world.Map.Units)
+                    if (u.Team == EnemyTeam && world.Catalog.Vehicles.TryGetValue(u.DefId, out var def) && !def.Static && !def.Boss && !_roster.Contains(u.DefId))
+                        _roster.Add(u.DefId);
+            return _roster;
+        }
+
+        private static float EnemyStrength(SimWorld world)
+        {
+            var total = 0f;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == EnemyTeam && !v.Def.Boss && !v.Def.Static && !v.Scripted) total += v.Def.ArmyCost;
+            return total;
+        }
+
+        private static float PlayerAirShare(SimWorld world)
+        {
+            var air = 0f;
+            var all = 0f;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != PlayerTeam || v.Scripted) continue;
+                all += v.Def.ArmyCost;
+                if (v.Flying) air += v.Def.ArmyCost;
+            }
+            return all > 0f ? air / all : 0f;
+        }
+
+        private static string? FirstAntiAir(SimWorld world, IReadOnlyList<string> roster)
+        {
+            foreach (var id in roster)
+                if (world.Catalog.Vehicles.TryGetValue(id, out var def) && !def.Flying && def.Weapon.CanTarget(true)) return id;
+            return null;
         }
 
         private void DriveConvoy(SimWorld world, float dt)

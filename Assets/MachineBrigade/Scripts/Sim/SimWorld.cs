@@ -266,7 +266,8 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
-            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && !def.Boss && !def.Static) Upgrade(vehicle, boosts(def));
+            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && (_boostAll[team] || (!def.Boss && !def.Static)))
+                Upgrade(vehicle, boosts(def));
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
@@ -282,16 +283,20 @@ namespace MachineBrigade.Sim
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
+        private readonly bool[] _boostAll = new bool[3];
 
         /// <summary>
         /// A side's upgrades (card ranks and equipment): what each of its vehicles gets as it enters
-        /// the battle (null: none). Set before the forces are placed.
+        /// the battle (null: none). Set before the forces are placed. Bosses and emplacements are
+        /// left as they are unless <paramref name="everything"/> (a campaign enemy keeping pace
+        /// with the player's arsenal: its boss and towers too).
         /// </summary>
-        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null)
+        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false)
         {
             if (team < 0 || team >= _boosts.Length) return;
             _boosts[team] = boosts;
             _strikeBoosts[team] = strikeDamage;
+            _boostAll[team] = everything;
         }
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>

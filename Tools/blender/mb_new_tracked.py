@@ -10,31 +10,38 @@ the `Turret` empty. Touching parts overlap or stand at least 1 cm apart, never f
     The gun pokes out through a slot in the front slope; openings in the roof and walls show the
     dark inside. Two drone jammers and whip antennas on the roof, and a KMT mine roller (two toothed
     roller gangs on push arms, a dog-bone chain between them) in front. `Turret` is the T-72 turret
-    inside the shed (it cannot really turn); `Main_cannon` / `Muzzle_main` are its 125 mm gun.
+    inside the shed (it cannot really turn); `Main_cannon` / `Muzzle_main` are its 125 mm gun and
+    `Muzzle_coax` the coaxial machine gun, whose piped barrel pokes out of the slot beside the gun.
+    Shed panels are mostly Team (painted sheet) mixed with Armor, Corrugated and Rust.
   * bmpt: BMPT "Terminator" tank support vehicle on a T-72 hull: a low turret with twin 30 mm
     autocannons (`Main_cannon`, `Main_cannon_2`, `Muzzle_main` between the two tips), a coaxial
     machine gun (`Muzzle_coax`) and an armoured ATGM box of two tubes on each turret side, fixed to
     the turret (`Muzzle_missile` centred between the four tube mouths; the tube lips are
     `Launch_tubes`, one group per side). Two 30 mm grenade launchers in armoured sponsons on the
     front fenders are fixed to the hull: `Muzzle_agl_l` (left, +X) and `Muzzle_agl_r` (right, -X),
-    each turned a little outwards. Reactive armour on the glacis and skirts, slat armour at the rear
-    of the skirts and a dozer blade under the nose.
+    each turned a little outwards (the empties carry that yaw). Reactive armour on the glacis and
+    skirts, slat armour at the rear of the skirts and a dozer blade under the nose. The ATGM boxes and
+    tube parts use names outside ModelLibrary's barrel pattern, so they turn with the turret but do
+    not elevate with the cannons.
   * sapper: combat engineer vehicle (Terrier / Kodiak / IMR-3M lineage): an angular armoured hull
-    with a wide hazard-striped dozer blade on hydraulic arms, an excavator arm with a toothed bucket
-    folded along the right side (-X), a small jib crane with a hook, a welding kit, spare track
-    links, tool boxes, a rear winch and warning beacons. `Turret` is the roof remote weapon station;
-    its 12.7 mm machine gun is `Main_cannon` with `Muzzle_main` at the flash hider.
+    with bolt-on flank plates and a crew cab on the front left, a wide hazard-striped dozer blade on
+    push arms and lift rams, an excavator arm along the right side (-X) with its boom rising back to
+    the elbow and the stick folded down to a toothed bucket curled in on the rear deck, a small jib
+    crane with a hook, a welding kit, spare track links, tool boxes, lane-marking dispensers, a rear
+    winch and TeamGlow warning beacons. `Turret` is the cab-roof remote weapon station; its 12.7 mm
+    machine gun is `Main_cannon` (with `Muzzle_brake`, so it recoils and elevates) and `Muzzle_main`
+    sits at the flash hider.
 """
 import math
 import random
 
-from mathutils import Matrix, Vector
+from mathutils import Vector
 
-from frontier_kit import chamfered
-from mb_support import _beacon, _plane, _ram, _rod, _stripes, _whip
-from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _barrel, _cable, _coax, _era, _exhaust, _face_frame, _frame,
-                         _glacis, _grille_frame, _hatch, _headlight, _jerrycans, _periscopes, _pick, _rail, _roll,
-                         _shovel, _skirt, _slats, _smoke, _stowage_bin, _taillight, _track_links, _tube_mouth, tracks)
+from mb_support import _beacon, _plane, _ram, _rod, _stripes
+from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _barrel, _cable, _coax, _era, _exhaust, _face_frame, _flank,
+                         _frame, _glacis, _grille_frame, _hatch, _headlight, _jerrycans, _periscopes, _pick, _rail,
+                         _roll, _shovel, _skirt, _slats, _smoke, _sponson_section, _stowage_bin, _taillight,
+                         _track_links, _tube_mouth, tracks)
 
 TAU = math.tau
 
@@ -146,7 +153,7 @@ def _toothed_disc(part, x, y, z, r, width, teeth=10, depth=.07):
 
 # ----------------------------------------------------------------------------- turtle tank
 # Shed: side walls at |x| = XE from ZS up to the eaves at ZE, hip roof up to a flat top (|x| <= XT, ZT).
-XE, ZS, ZE, XT, ZT = 1.9, .8, 1.66, .95, 2.95
+XE, ZS, ZE, XT, ZT = 1.8, .8, 1.66, .95, 2.95
 YFE, YFT, YRE, YRT = -3.32, -2.15, 3.55, 3.0          # front / rear eave and top edges
 
 
@@ -302,7 +309,7 @@ def _mine_roller(a, y_mount):
     dark = a.part('Roller_armor', 'Armor')
     discs = a.part('Roller_discs', 'Armor')
     steel = a.part('Roller_steel', 'Steel')
-    ya, r = -5.5, .45                               # axle and disc radius: fronts at y = -5.95
+    ya, r = -5.22, .45                              # axle and disc radius: fronts at y = -5.67
     for s in (-1, 1):
         c = s * 1.3
         for dx in (-.3, 0, .3):
@@ -344,9 +351,9 @@ def turtle_tank(a):
     # Rear: fuel drums on the tail plate, the unditching log below them, tail lights and tow hooks.
     for s in (-1, 1):
         x = s * .6
-        hull.cyl(.27, .9, loc=(x, 3.72, 1.2), rot=ACROSS, seg=12, bevel=.04)
+        hull.cyl(.27, .9, loc=(x, 3.64, 1.2), rot=ACROSS, seg=12, bevel=.04)
         for dx in (-.3, .3):
-            steel.cyl(.282, .05, loc=(x + dx, 3.72, 1.2), rot=ACROSS, seg=12, bevel=0)
+            steel.cyl(.282, .05, loc=(x + dx, 3.64, 1.2), rot=ACROSS, seg=12, bevel=0)
         steel.box((.1, .3, .1), loc=(x, 3.52, .95), bevel=0)
         _taillight(a, s * 1.2, 3.42, 1.1)
         steel.box((.16, .2, .14), loc=(s * .75, 3.5, .7), bevel=.02, seg=1)
@@ -407,28 +414,28 @@ def turtle_tank(a):
 
 
 # ----------------------------------------------------------------------------- BMPT Terminator
-def _t72_hull(a, rear=3.42, drums=True):
-    """T-72 lineage hull: a narrow belly between the tracks and an upper hull as wide as the tracks
-    (sponsons over them) with a long upper glacis; fuel drums and the unditching log on the tail.
-    Returns (nose, brow) of the upper glacis."""
-    tracks(a, 1.3, 6.4, .9, .34, 6, .5, belt_width=.58, wheel_seg=10, lean=True, sprocket=1)
+def _t72_hull(a, front=-3.38, rear=3.2, drums=True):
+    """T-72 lineage hull from y = front to rear: a narrow belly between the tracks and an upper hull as
+    wide as the tracks (sponsons over them) with a long upper glacis; fuel drums and the unditching log
+    on the tail. Returns (nose, brow) of the upper glacis."""
+    tracks(a, 1.3, rear - front - .2, .9, .34, 6, .5, belt_width=.58, wheel_seg=10, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
     steel = a.part('Steel', 'Steel')
-    hull.prism([(-3.28, .55), (-3.5, 1.04), (rear - .1, 1.04), (rear - .1, .55)], 2.1, bevel=.05)      # belly
-    nose, brow = (-3.56, 1.02), (-2.25, 1.44)
-    hull.prism([(-3.44, .96), nose, brow, (rear - .15, 1.44), (rear, 1.3), (rear, .96)], 3.18, bevel=.06)
+    hull.prism([(front + .28, .55), (front + .06, 1.04), (rear - .1, 1.04), (rear - .1, .55)], 2.1, bevel=.05)  # belly
+    nose, brow = (front, 1.02), (front + 1.31, 1.44)
+    hull.prism([(front + .12, .96), nose, brow, (rear - .15, 1.44), (rear, 1.3), (rear, .96)], 3.18, bevel=.06)
     for s in (-1, 1):
         _taillight(a, s * 1.25, rear, 1.2)
         steel.box((.16, .2, .14), loc=(s * .8, rear + .06, .78), bevel=.02, seg=1)             # rear tow hooks
-        steel.box((.16, .2, .14), loc=(s * .45, -3.36, .66), bevel=.02, seg=1)                  # front tow hooks
+        steel.box((.16, .2, .14), loc=(s * .45, front + .2, .66), bevel=.02, seg=1)            # front tow hooks
         if drums:
             x = s * .62
-            hull.cyl(.27, .9, loc=(x, rear + .3, 1.18), rot=ACROSS, seg=12, bevel=.04)
+            hull.cyl(.27, .9, loc=(x, rear + .26, 1.18), rot=ACROSS, seg=12, bevel=.04)
             for dx in (-.3, .3):
-                steel.cyl(.282, .05, loc=(x + dx, rear + .3, 1.18), rot=ACROSS, seg=12, bevel=0)
-            steel.box((.1, .3, .1), loc=(x, rear + .1, .93), bevel=0)
+                steel.cyl(.282, .05, loc=(x + dx, rear + .26, 1.18), rot=ACROSS, seg=12, bevel=0)
+            steel.box((.1, .3, .1), loc=(x, rear + .08, .93), bevel=0)
     if drums:
-        a.part('Log', 'Wood').cyl(.13, 2.6, loc=(0, rear + .2, .76), rot=ACROSS, seg=10, bevel=.03)
+        a.part('Log', 'Wood').cyl(.13, 2.6, loc=(0, rear + .18, .76), rot=ACROSS, seg=10, bevel=.03)
     return nose, brow
 
 
@@ -440,7 +447,8 @@ def _agl_sponson(a, s, nose, brow, yaw=.16):
 
     def gz(y):
         return z0 + (z1 - z0) * (y - y0) / (y1 - y0)
-    yf, yr, top = -2.9, -1.6, 1.88
+    yf, top = y0 + .6, 1.88
+    yr = yf + 1.23
     prof = [(yf, gz(yf) - .03), (y1, z1 - .03), (yr, z1 - .03), (yr, top), (yf + .38, top), (yf, top - .28)]
     a.part('AGL_sponson', 'Team').prism(prof, .52, loc=(x, 0, 0), bevel=.03, seg=1)
     armor = a.part('AGL_armor', 'Armor')
@@ -484,43 +492,44 @@ def bmpt(a):
     for s in (-1, 1):
         _agl_sponson(a, s, nose, brow)
     # Dozer blade across the nose, below the glacis, on two arms into the lower hull.
-    blade = [(-3.84, .3), (-3.74, .46), (-3.7, .64), (-3.72, .84), (-3.78, .96), (-3.7, .98), (-3.62, .84),
-             (-3.6, .64), (-3.64, .44), (-3.74, .3)]
+    ny = nose[0] + 3.56                                                     # blade profile authored at -3.56
+    blade = [(y + ny, z) for y, z in ((-3.84, .3), (-3.74, .46), (-3.7, .64), (-3.72, .84), (-3.78, .96),
+                                      (-3.7, .98), (-3.62, .84), (-3.6, .64), (-3.64, .44), (-3.74, .3))]
     a.part('Blade', 'Team').prism(blade, 2.9, bevel=.015)
-    steel.box((2.92, .1, .07), loc=(0, -3.83, .31), rot=(.5, 0, 0), bevel=0)                  # cutting edge
+    steel.box((2.92, .1, .07), loc=(0, -3.83 + ny, .31), rot=(.5, 0, 0), bevel=0)             # cutting edge
     for x in (-1.1, -.37, .37, 1.1):
-        armor.prism([(-3.66, .36), (-3.62, .64), (-3.64, .86), (-3.5, .84), (-3.44, .5)], .06, loc=(x, 0, 0),
-                    bevel=0)                                                                  # back ribs
+        armor.prism([(y + ny, z) for y, z in ((-3.66, .36), (-3.62, .64), (-3.64, .86), (-3.5, .84), (-3.44, .5))],
+                    .06, loc=(x, 0, 0), bevel=0)                                              # back ribs
     for s in (-1, 1):
-        armor.limb((s * .7, -3.62, .6), (s * .7, -3.3, .7), .14, .16, bevel=0)               # blade arms
+        armor.limb((s * .7, -3.62 + ny, .6), (s * .7, -3.3 + ny, .7), .14, .16, bevel=0)     # blade arms
     # Side skirts: reactive armour over the front four panels, slat armour at the rear.
     for s in (-1, 1):
-        _skirt(a, s, 1.64, -3.2, 3.25, .6, 1.4, 6, thick=.08, bolts=False)
-        step = (3.25 + 3.2 + .035) / 6
+        _skirt(a, s, 1.64, -3.05, 3.05, .6, 1.4, 6, thick=.08, bolts=False)
+        step = (3.05 + 3.05 + .035) / 6
         for i in range(4):
-            yc = -3.2 + step * (i + .5) - .0175
+            yc = -3.05 + step * (i + .5) - .0175
             for dy in (-.27, .27):
                 for z in (.82, 1.18):
                     era.box((.1, .5, .32), loc=(s * 1.72, yc + dy, z), bevel=0)
-        _slats(a, _frame((s * 1.86, 2.2, .98), (0, 0, R90)), 2.0, .72, 5)
-        for y in (1.35, 2.2, 3.05):
-            steel.box((.2, .05, .05), loc=(s * 1.76, y, 1.28), bevel=0)                           # slat brackets
-            steel.box((.2, .05, .05), loc=(s * 1.76, y, .7), bevel=0)
-        _cable(a, [(s * 1.5, -1.3, 1.465), (s * 1.5, .5, 1.465), (s * 1.48, 2.4, 1.465)])
+        _slats(a, _frame((s * 1.79, 2.05, .98), (0, 0, R90)), 1.95, .72, 5)
+        for y in (1.2, 2.05, 2.9):
+            steel.box((.16, .05, .05), loc=(s * 1.73, y, 1.28), bevel=0)                          # slat brackets
+            steel.box((.16, .05, .05), loc=(s * 1.73, y, .7), bevel=0)
+        _cable(a, [(s * 1.5, -1.2, 1.465), (s * 1.5, .5, 1.465), (s * 1.48, 2.3, 1.465)])
     # Deck: driver's hatch and vision blocks, engine grilles, fender bins and fuel cells, exhaust.
-    _hatch(a, 0, -1.9, 1.43, .25)
-    _periscopes(a, [(dx, -2.2, 1.43, 0) for dx in (-.2, 0, .2)])
+    _hatch(a, 0, -1.75, 1.43, .25)
+    _periscopes(a, [(dx, -2.04, 1.43, 0) for dx in (-.2, 0, .2)])
     for s in (-1, 1):
-        deck.grille(.9, .9, loc=(s * .55, 2.35, 1.45), rot=(-R90, 0, 0), slats=6, depth=.08, thickness=.04)
-        _grille_frame(a, s * .55, 2.35, 1.43, .9, .9, t=.04)
-    _stowage_bin(a, (-1.32, .95, 1.43), (.36, .95, .28), latch_side=-1)
-    _stowage_bin(a, (-1.32, 2.2, 1.43), (.36, 1.1, .28), latch_side=-1)
+        deck.grille(.9, .9, loc=(s * .55, 2.2, 1.45), rot=(-R90, 0, 0), slats=6, depth=.08, thickness=.04)
+        _grille_frame(a, s * .55, 2.2, 1.43, .9, .9, t=.04)
+    _stowage_bin(a, (-1.32, .9, 1.43), (.36, .95, .28), latch_side=-1)
+    _stowage_bin(a, (-1.32, 2.1, 1.43), (.36, 1.1, .28), latch_side=-1)
     for y in (1.2, 1.75):
         a.part('Fuel_cells', 'Team').box((.36, .5, .26), loc=(1.32, y, 1.55), bevel=.03, seg=1)   # below the ATGM sweep
-    a.part('Exhaust_louvres', 'Undercarriage').grille(.7, .2, loc=(1.6, 2.6, 1.3), rot=(0, 0, R90), slats=3,
+    a.part('Exhaust_louvres', 'Undercarriage').grille(.7, .2, loc=(1.6, 2.45, 1.3), rot=(0, 0, R90), slats=3,
                                                       depth=.05, thickness=.04)
-    armor.box((.08, .9, .3), loc=(1.56, 2.6, 1.3), bevel=.015, seg=1)
-    _antenna(a, None, -1.3, 3.1, 1.43, 1.2)
+    armor.box((.08, .9, .3), loc=(1.56, 2.45, 1.3), bevel=.015, seg=1)
+    _antenna(a, None, -1.3, 2.9, 1.43, 1.2)
     steel.cyl(1.2, .1, loc=(0, .3, 1.47), seg=20, bevel=.02, bseg=1)                          # turret ring
 
     # Turret: low and wide, the twin-cannon cradle on the roof front, an ATGM box on each side.
@@ -532,7 +541,6 @@ def bmpt(a):
     turret.prism(outline, H, loc=(0, 0, H / 2), axis='Z', bevel=.05, taper=.9)
     tarm = a.part('Turret_armor', 'Armor', t)
     tsteel = a.part('Turret_steel', 'Steel', t)
-    tera = a.part('Turret_ERA', 'Armor', t)
     for b0, b1 in (((.7, -1.28), (1.15, -.76)), ((-1.15, -.76), (-.7, -1.28))):          # cheek ERA
         _era(a, _face_frame(b0, b1, H, .9, u=.5, v=.5), 2, 2, (.22, .19, .08), parent=t, mat='Armor', bevel=0)
     _era(a, _face_frame((-.7, -1.28), (.7, -1.28), H, .9, u=.5, v=.5), 4, 2, (.28, .19, .08), parent=t,
@@ -581,7 +589,241 @@ def bmpt(a):
     _antenna(a, t, .85, 1.1, H - .02, 1.0)
 
 
+# ----------------------------------------------------------------------------- combat engineer vehicle
+def _rws_mg(a, loc, length=1.0):
+    """Remote weapon station on the `Turret` pivot at loc: ring, armoured cradle, sensor head and an
+    ammunition box that only turn, and a 12.7 mm machine gun (receiver, barrel jacket and barrel as
+    `Main_cannon`, flash hider as `Muzzle_brake`) that also elevates and recoils. `Muzzle_main` sits
+    at the flash hider's face."""
+    t = a.pivot('Turret', loc)
+    body = a.part('RWS_body', 'Armor', t)
+    a.part('RWS_ring', 'Steel', t).cyl(.3, .08, loc=(0, 0, .03), seg=14, bevel=.015, bseg=1)
+    body.box((.42, .56, .22), loc=(0, .05, .17), bevel=.03, seg=1)                     # base
+    for s in (-1, 1):
+        body.box((.05, .4, .26), loc=(s * .13, -.02, .38), bevel=0)                      # cradle cheeks
+    body.box((.24, .3, .26), loc=(.3, .0, .36), bevel=.03, seg=1)                        # sensor head
+    a.part('RWS_sensor', 'Glass', t).box((.16, .03, .14), loc=(.3, -.155, .38), bevel=0)
+    a.part('RWS_ammo', 'Crate', t).box((.16, .32, .22), loc=(-.26, .06, .33), bevel=.02, seg=1)
+    zb = .4
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.box((.14, .46, .15), loc=(0, .02, zb), bevel=.02, seg=1)                       # receiver
+    gun.box((.1, .2, .03), loc=(0, .0, zb + .085), bevel=0)                             # feed cover
+    front = -.21
+    gun.cyl(.052, .28, loc=(0, front - .12, zb), rot=FORWARD, seg=10, bevel=0)           # barrel jacket
+    gun.cyl(.037, length - .3, loc=(0, front - .24 - (length - .3) / 2 + .02, zb), rot=FORWARD, seg=8, bevel=0)
+    tip = front - length
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.052, .12, loc=(0, tip + .06, zb), rot=FORWARD, seg=8,
+                                                   bevel=0)
+    a.pivot('Muzzle_main', (0, tip, zb), t)
+    return t
+
+
+def _bucket(a, x, y, z, width=.92, f=1):
+    """Excavator bucket curled in for travel, hinged at (x, y, z): a J-shaped shell (its caps are the
+    side plates) reaching towards -f * Y, a steel lip with five teeth curled back towards +f * Y, hinge
+    lugs and pin."""
+    pts = [(.04, .08), (-.3, .06), (-.5, -.14), (-.52, -.38), (-.36, -.56), (-.06, -.6), (.1, -.54), (.08, -.46),
+           (-.06, -.5), (-.3, -.46), (-.42, -.34), (-.42, -.16), (-.28, -.02), (.02, -.01)]
+    prof = [(y + f * dy, z + dz) for dy, dz in pts]
+    if f < 0:
+        prof.reverse()
+    a.part('Bucket', 'Armor').prism(prof, width, loc=(x, 0, 0), bevel=.012, seg=1)
+    steel = a.part('Bucket_steel', 'Steel')
+    steel.box((width + .02, .1, .05), loc=(x, y + f * .07, z - .5), rot=(f * .4, 0, 0), bevel=0)   # cutting lip
+    for k in range(5):
+        dx = (k - 2) * width / 5.2
+        steel.box((.08, .16, .06), loc=(x + dx, y + f * .16, z - .47), rot=(f * .4, 0, 0), bevel=0)   # teeth
+    for side in (-1, 1):
+        steel.box((.04, .22, .12), loc=(x + side * .14, y - f * .02, z + .08), bevel=0)           # hinge lugs
+    steel.cyl(.05, .4, loc=(x, y, z + .06), rot=ACROSS, seg=8, bevel=0)                         # hinge pin
+
+
+def sapper(a):
+    """Combat engineer vehicle: see the module docstring."""
+    tracks(a, 1.32, 6.6, .92, .31, 7, .5, belt_width=.6, wheel_seg=10, lean=True, sprocket=1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    deck = a.part('Deck', 'Undercarriage')
+    full = (.5, 1.0, 1.62, 1.02, 1.66, 1.36)
+    front, back = (-3.62, 1.14), (-2.55, 1.62)                     # upper glacis (y, z)
+    hull.loft([
+        _sponson_section(-3.62, .72, 1.0, 1.14, .96, 1.58, 1.3),
+        _sponson_section(-2.55, *full),
+        _sponson_section(3.2, *full),
+        _sponson_section(3.48, .62, 1.0, 1.48, .98, 1.64, 1.32),
+    ], bevel=.05, seg=2)
+    # Heavy side skirts over the tracks, bolt-on plates on the sloped flanks above them.
+    fx, fz, lean = _flank((1.66, 1.08), (1.36, 1.62), .5, .025)
+    for s in (-1, 1):
+        _skirt(a, s, 1.72, -3.25, 3.3, .56, 1.18, 5, thick=.1, bolts=True)
+        for y in (-2.1, -.9, .35, 1.6, 2.75):
+            armor.box((.06, 1.1, .4), loc=(s * fx, y, fz), rot=(0, -s * lean, 0), bevel=0)
+    # Crew cab on the front left: a steep front plate with vision blocks, inward-sloped sides.
+    x0, x1 = -.05, 1.42
+
+    def cab_ring(y, zt, inset):
+        return [(x0, y, 1.56), (x1, y, 1.56), (x1 - inset, y, zt), (x0 + inset, y, zt)]
+    a.part('Cab', 'Team').loft([cab_ring(-2.56, 1.84, .05), cab_ring(-2.14, 2.44, .15), cab_ring(-.5, 2.44, .15),
+                                cab_ring(-.36, 2.32, .1)], bevel=.04, seg=1)
+    zr = 2.44
+    cab_front = ((-2.56, 1.84), (-2.14, zr))
+    gy, gz, grot = _glacis(*cab_front, .62, .012)
+    glass = a.part('Vision_blocks', 'Glass')
+    for dx in (-.17, 0, .17):
+        glass.box((.13, .07, .06), loc=(.95 + dx, gy, gz), rot=(grot, 0, 0), bevel=0)
+    glass.box((.3, .07, .08), loc=(.25, gy, gz), rot=(grot, 0, 0), bevel=0)
+    for dy in (-1.7, -1.1):                                                                   # side vision blocks
+        glass.box((.05, .2, .08), loc=(x1 - .085, dy, 2.18), rot=(0, -.17, 0), bevel=0)
+    armor.box((.06, .7, .6), loc=(x1 - .06, -1.3, 1.92), rot=(0, -.17, 0), bevel=0)            # side door
+    steel.box((.05, .16, .04), loc=(x1 - .02, -1.05, 1.9), bevel=0)
+    _hatch(a, .3, -.85, zr, .25)
+    _hatch(a, 1.05, -.85, zr, .23, hinge=-1)
+    _periscopes(a, [(.3, -1.95, zr - .01, 0), (1.05, -1.95, zr - .01, 0), (1.25, -1.3, zr - .01, -R90)])
+    for x in (.05, 1.3):                                                                      # warning beacons
+        _beacon(a, x, -.55, zr - .01, mat='TeamGlow', r=.085)
+    lights = a.part('Light_housing', 'Armor')
+    for x in (.25, 1.15):                                                                      # work lights
+        lights.box((.2, .12, .15), loc=(x, -2.16, zr + .06), bevel=0)
+        a.part('Lamps', 'Lamp').box((.15, .03, .1), loc=(x, -2.225, zr + .06), bevel=0)
+    for k in range(3):                                                                         # smoke dischargers
+        steel.cyl(.045, .16, loc=(1.3 - k * .09, -2.28, 2.36), rot=(.6, 0, .5), seg=8, bevel=0)
+        steel.cyl(.045, .16, loc=(.07 + k * .09, -2.28, 2.36), rot=(.6, 0, -.5), seg=8, bevel=0)
+    _antenna(a, None, 1.25, -.5, zr - .01, 1.3)
+    _rws_mg(a, (.68, -1.45, zr + .01))
+    steel.cyl(.33, .05, loc=(.68, -1.45, zr + .005), seg=14, bevel=0)                          # RWS race
+
+    # Glacis: headlights, tow hooks, spare track links on the right.
+    for s in (-1, 1):
+        gy, gz, grot = _glacis(front, back, .3, .02)
+        _headlight(a, s * 1.18, gy - .02, gz + .08, guard=False)
+        steel.box((.16, .2, .14), loc=(s * .5, -3.66, .86), bevel=.02, seg=1)
+    gy, gz, grot = _glacis(front, back, .55, 0)
+    _track_links(a, _frame((-.62, gy, gz), (grot, 0, 0)), 3, width=.46)
+    _track_links(a, _frame((.72, gy, gz), (grot, 0, 0)), 2, width=.46)
+
+    # Dozer blade: a wide concave moldboard raised for travel, cutting edge and top lip, end plates and
+    # back ribs, push arms into the lower hull and two lift rams from the glacis; hazard band on top.
+    by = .1                                                                 # blade profile authored 10 cm forward
+    blade = [(y + by, z) for y, z in ((-4.18, .24), (-4.08, .44), (-4.03, .68), (-4.03, .98), (-4.08, 1.18),
+                                      (-4.16, 1.3), (-4.06, 1.32), (-3.98, 1.18), (-3.94, .98), (-3.94, .68),
+                                      (-3.98, .44), (-4.08, .24))]
+    a.part('Blade', 'Team').prism(blade, 3.6, bevel=.015)
+    steel.box((3.62, .12, .08), loc=(0, -4.16 + by, .26), rot=(.5, 0, 0), bevel=0)             # cutting edge
+    steel.box((3.62, .12, .05), loc=(0, -4.1 + by, 1.31), bevel=0)                              # top lip
+    for s in (-1, 1):
+        armor.prism([(y + by, z) for y, z in ((-4.21, .22), (-4.12, 1.34), (-3.92, 1.3), (-3.92, .28))], .06,
+                    loc=(s * 1.81, 0, 0), bevel=0)                                              # end plates
+    for x in (-1.4, -.7, 0, .7, 1.4):                                                           # back ribs
+        armor.prism([(y + by, z) for y, z in ((-3.96, .3), (-3.93, .6), (-3.92, .96), (-3.96, 1.2), (-3.8, 1.12),
+                                              (-3.78, .4))], .07, loc=(x, 0, 0), bevel=0)
+    for s in (-1, 1):
+        armor.limb((s * .95, -3.84 + by, .5), (s * .95, -3.3, .64), .16, .18, bevel=0)          # push arms
+        armor.box((.24, .3, .3), loc=(s * .95, -3.3, .66), bevel=.02, seg=1)
+        _ram(a, (s * .5, -3.25, 1.3), (s * .5, -3.86 + by, 1.1), .07)                         # lift rams
+        armor.box((.14, .2, .14), loc=(s * .5, -3.2, 1.33), bevel=0)
+    _stripes(a, _plane((0, -4.1 + by, 1.16), (1, 0, 0), (0, .25, 1)), 3.5, .2, pitch=.4)
+
+    # Excavator arm folded along the right side: slewing base at the front right, a bent boom rising back
+    # to the elbow on an A-frame rest, the stick folded down behind it and the bucket curled in on the rear
+    # deck; boom, stick and bucket rams and hoses.
+    ax = -.88
+    steel.cyl(.5, .1, loc=(ax, -1.95, 1.64), seg=16, bevel=.02, bseg=1)
+    arm = a.part('Arm', 'Team')
+    arm.box((.78, .7, .42), loc=(ax, -1.9, 1.88), bevel=.04, seg=1, taper=(.85, .9))            # slewing housing
+    for s in (-1, 1):
+        armor.box((.06, .42, .36), loc=(ax + s * .2, -1.9, 2.12), bevel=0)                        # foot cheeks
+    steel.cyl(.07, .5, loc=(ax, -1.95, 2.18), rot=ACROSS, seg=8, bevel=0)                      # foot pin
+    F, K, E = Vector((ax, -1.95, 2.18)), Vector((ax, -.35, 2.92)), Vector((ax, 1.3, 2.88))
+    S = Vector((ax, 2.5, 2.32))
+    arm.limb(tuple(F), tuple(K), .3, .38, bevel=.03, seg=1)                                     # boom
+    arm.limb(tuple(K + Vector((0, -.08, -.02))), tuple(E), .28, .34, bevel=.03, seg=1)
+    arm.limb(tuple(E + Vector((0, -.05, .02))), tuple(S), .22, .28, bevel=.025, seg=1)           # stick
+    lever = E + Vector((0, -.12, .3))
+    armor.limb(tuple(E), tuple(lever), .24, .16, bevel=0)                                        # stick lever
+    steel.cyl(.07, .4, loc=E, rot=ACROSS, seg=8, bevel=0)                                        # elbow pin
+    steel.cyl(.05, .34, loc=lever, rot=ACROSS, seg=8, bevel=0)
+    _bucket(a, ax, S.y, S.z, f=-1)
+    for s in (-1, 1):
+        _ram(a, (ax + s * .22, -1.55, 1.98), (ax + s * .22, -.9, 2.5), .065)                     # boom rams
+    _ram(a, (ax, -.55, 3.08), tuple(lever), .06)                                                 # stick ram
+    _ram(a, (ax, 1.45, 3.02), (ax, 2.35, 2.52), .05)                                             # bucket ram
+    armor.box((.3, .3, .12), loc=(ax, -.55, 3.04), bevel=0)                                      # ram lug
+    hoses = a.part('Hoses', 'Rubber')
+    for dx in (-.17, .17):
+        hoses.tube([(ax + dx, -1.7, 2.3), (ax + dx, -.35, 3.06), (ax + dx, 1.2, 3.02), (ax + dx, 2.3, 2.46)], .022,
+                   seg=4)
+    for dx in (-.24, .24):                                                                       # A-frame rest
+        armor.limb((ax + dx * 1.4, .45, 1.6), (ax + dx * .5, .45, 2.66), .07, .07, bevel=0)
+    armor.box((.4, .16, .06), loc=(ax, .45, 2.68), bevel=0)
+    _stripes(a, _plane(K + Vector((0, .5, .17)), (0, 1, -.02), (1, 0, 0)), .9, .3, pitch=.2, lean=.6)
+
+    # Rear deck: welding kit (gas bottles in a rack, a welder box with cable reels) behind the cab, a small
+    # jib crane with a hook at the left rear, engine grilles, the recovery winch and tool boxes.
+    for x, mat in ((.35, 'Fuel'), (.6, 'Fuel'), (.85, 'BarrelRed')):
+        a.part(f'Gas_bottles_{mat}', mat).lathe([(.11, 1.6), (.11, 2.28), (.075, 2.37), (.035, 2.41), (.035, 2.45)],
+                                                loc=(x, -.12, 0), seg=8)
+        steel.cyl(.045, .06, loc=(x, -.12, 2.47), seg=6, bevel=0)
+    for z in (1.85, 2.15):
+        steel.box((.78, .03, .05), loc=(.6, -.005, z), bevel=0)
+    for x in (.18, 1.02):
+        steel.box((.04, .28, .7), loc=(x, -.12, 1.95), bevel=0)
+    armor.box((.62, .52, .44), loc=(.72, .62, 1.84), bevel=.03, seg=1)                          # welder
+    a.part('Welder_panel', 'Glass').box((.3, .02, .12), loc=(.72, .355, 1.92), bevel=0)
+    for dx in (-.16, .16):
+        a.part('Cable_reels', 'Rubber').cyl(.15, .12, loc=(.72 + dx, .98, 1.8), rot=ACROSS, seg=10, bevel=0)
+    steel.cyl(.04, .44, loc=(.72, .98, 1.8), rot=ACROSS, seg=6, bevel=0)
+    a.part('Hoses', 'Rubber').tube([(.72, .36, 1.7), (.6, .1, 1.66), (.5, -.1, 1.66), (.4, -.12, 1.72)], .02,
+                                   seg=4)
+    for x in (.1, .85):
+        deck.grille(.66, .8, loc=(x, 2.05, 1.64), rot=(-R90, 0, 0), slats=6, depth=.08, thickness=.04)
+        _grille_frame(a, x, 2.05, 1.62, .66, .8, t=.04)
+    wx, wy = .2, 2.95
+    armor.box((1.0, .6, .1), loc=(wx, wy, 1.64), bevel=0)
+    for s in (-1, 1):
+        armor.box((.08, .5, .5), loc=(wx + s * .46, wy, 1.9), bevel=0)
+    a.part('Winch_drum', 'Steel').cyl(.22, .76, loc=(wx, wy, 1.92), rot=ACROSS, seg=12, bevel=0)
+    for dx in (-.38, .38):
+        a.part('Winch_flanges', 'Armor').cyl(.28, .04, loc=(wx + dx, wy, 1.92), rot=ACROSS, seg=12, bevel=0)
+    steel.box((.5, .16, .16), loc=(wx, 3.44, 1.36), bevel=0)                                   # fairlead
+    _cable(a, [(wx, wy + .12, 1.72), (wx, 3.4, 1.46), (wx, 3.52, 1.3), (wx, 3.56, 1.1)], r=.028)
+    # Jib crane on the left rear corner: post, jib and a hook block on its cable.
+    cx, cy = 1.05, 2.9
+    crane = a.part('Crane', 'Hazard')
+    steel.cyl(.14, .1, loc=(cx, cy, 1.66), seg=10, bevel=0)
+    crane.cyl(.09, .9, loc=(cx, cy, 2.1), seg=10, bevel=0)                                     # post
+    tipc = Vector((cx + .3, cy + .55, 2.62))
+    crane.limb((cx, cy - .05, 2.5), tuple(tipc), .12, .14, bevel=0)                               # jib
+    _ram(a, (cx, cy + .02, 1.9), (cx + .17, cy + .36, 2.47), .04)
+    steel.cyl(.07, .1, loc=tipc + Vector((0, 0, -.06)), rot=ACROSS, seg=8, bevel=0)             # sheave
+    _rod(steel, tipc + Vector((0, .04, -.1)), tipc + Vector((0, .04, -.62)), .012, seg=4)
+    a.part('Hook_block', 'Hazard').box((.14, .1, .14), loc=tipc + Vector((0, .04, -.68)), bevel=0)
+    steel.torus(.05, .014, loc=tipc + Vector((0, .04, -.8)), rot=(0, R90, 0), seg=8, ring=4)
+    _beacon(a, cx, cy, 2.55, mat='TeamGlow', r=.07)
+    # Lane-marking dispensers at the rear corners.
+    for x in (-1.22, 1.3):
+        a.part('Lane_markers', 'Hazard').cyl(.1, .42, loc=(x, 3.28, 1.8), seg=10, bevel=0)
+        for dx in (-.04, .04):
+            steel.cyl(.012, .5, loc=(x + dx, 3.28, 2.2), seg=4, bevel=0)
+    # Right side: a tool box in front of the bucket and a tool chest; left edge: jerrycans, shovel and pick;
+    # tow cables.
+    _stowage_bin(a, (-1.12, 1.2, 1.61), (.34, .8, .3), latch_side=-1)
+    a.part('Tool_chest', 'Crate').box((.52, .62, .34), loc=(-.28, 1.1, 1.78), bevel=.02, seg=1)
+    steel.box((.3, .04, .04), loc=(-.28, .78, 1.88), bevel=0)
+    _jerrycans(a, (1.2, 1.25, 1.61), 3)
+    _shovel(a, (1.2, .1, 1.64), length=1.0)
+    _pick(a, (-1.2, -.2, 1.645), length=.9)
+    for s in (-1, 1):
+        _cable(a, [(s * 1.3, -2.3, 1.645), (s * 1.3, -.5, 1.645), (s * 1.3, .6, 1.645)])
+        _taillight(a, s * 1.2, 3.48, 1.3)
+        steel.box((.16, .2, .14), loc=(s * .75, 3.54, .82), bevel=.02, seg=1)                  # rear tow hooks
+        _exhaust(a, s * .7, 3.48, 1.02, .34, .2)
+    # Spare track links on the rear plate.
+    _track_links(a, _frame((0, 3.5, 1.02), (-R90, 0, 0)), 3, width=.42)
+
+
 BUILDERS = {
     'turtle_tank': (turtle_tank, dict(ao_distance=.6, grime_height=.55)),
     'bmpt': (bmpt, dict(ao_distance=.6, grime_height=.55)),
+    'sapper': (sapper, dict(ao_distance=.6, grime_height=.55)),
 }

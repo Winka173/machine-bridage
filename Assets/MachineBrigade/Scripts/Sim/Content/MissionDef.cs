@@ -110,6 +110,15 @@ namespace MachineBrigade.Sim.Content
         public float EnemyIncome { get; set; } = 1f;
         public IReadOnlyList<string> EnemyDeck { get; set; } = Array.Empty<string>();
         public WaveDef? Waves { get; set; }
+
+        /// <summary>
+        /// How many times the enemy calls for help when it is losing (see <see cref="Modes.MissionMode"/>),
+        /// and how many vehicles come the first time (one more each time after).
+        /// </summary>
+        public int Reinforcements { get; set; } = 3;
+
+        public int ReinforceSize { get; set; } = 3;
+
         public float PlayerCp { get; set; } = 16f;
         public float PlayerIncome { get; set; } = 1f;
 
@@ -159,6 +168,8 @@ namespace MachineBrigade.Sim.Content
             var copy = (MissionDef)MemberwiseClone();
             copy.EnemyCp = EnemyCp * enemy;
             copy.EnemyIncome = EnemyIncome * (1f + (enemy - 1f) * 0.8f);
+            copy.Reinforcements = Reinforcements + 1;
+            copy.ReinforceSize = (int)Math.Ceiling(ReinforceSize * enemy);
             if (Waves != null)
                 copy.Waves = new WaveDef
                 {
@@ -200,6 +211,8 @@ namespace MachineBrigade.Sim.Content
                 EnemyCp = m.Float("enemyCp", 14f),
                 EnemyIncome = m.Float("enemyIncome", 1f),
                 EnemyDeck = Strings(m, "enemyDeck"),
+                Reinforcements = m.Int("reinforcements", 3),
+                ReinforceSize = m.Int("reinforceSize", 3),
                 PlayerCp = m.Float("playerCp", 16f),
                 PlayerIncome = m.Float("playerIncome", 1f),
                 PlayerCap = (int)m.Float("playerCap", 30f),

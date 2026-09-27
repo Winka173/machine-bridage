@@ -194,6 +194,35 @@ namespace MachineBrigade.Game.Match
     }
 
     /// <summary>
+    /// Campaign enemies keep pace with the player's arsenal: they get most (not all) of the edge
+    /// the card ranks and equipment give the player's deck on average, so upgrades still tell but
+    /// the missions do not turn into walkovers. Toughness (health over the share of damage taken)
+    /// goes on health, firepower (damage times rate of fire) on damage.
+    /// </summary>
+    public static class EnemyScaling
+    {
+        /// <summary>How much of the player's edge the enemy matches.</summary>
+        public const float Share = 0.8f;
+
+        public static VehicleBoost Match(IEnumerable<VehicleBoost> deck)
+        {
+            var tough = 0f;
+            var fire = 0f;
+            var n = 0;
+            foreach (var b in deck)
+            {
+                tough += b.Hp / Mathf.Max(0.1f, b.DamageTaken);
+                fire += b.Damage * b.FireRate;
+                n++;
+            }
+            if (n == 0) return VehicleBoost.None;
+            var hp = 1f + Mathf.Max(0f, tough / n - 1f) * Share;
+            var damage = 1f + Mathf.Max(0f, fire / n - 1f) * Share;
+            return new VehicleBoost(hp, damage, 1f, 1f, 1f, 0f, SpecialModule.None, 0f);
+        }
+    }
+
+    /// <summary>
     /// Crates: what each holds and the odds of every rarity, with pity (a guaranteed epic or
     /// legendary after a run without one), after Clash Royale, Archero and Hearthstone. The
     /// odds are shown in the game before a crate is bought or opened (Apple 3.1.1, Google Play,

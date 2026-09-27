@@ -444,6 +444,7 @@ namespace MachineBrigade.Game.Hud
             ["detail.firingStrike"] = ("Fire support is called on the battlefield: pick a spot and it lands there.", "Hỏa lực yểm trợ được gọi trên chiến trường: chọn một điểm và nó rơi xuống đó."),
             ["unit.silver_bug"] = ("Silver Bug", "Đĩa bay Silver Bug"),
             ["short.silver_bug"] = ("Silver Bug", "Silver Bug"),
+            ["toast.enemyReinforce"] = ("Enemy reinforcements inbound!", "Địch được chi viện!"),
             ["toast.bounty"] = ("Fortress building destroyed: +{0} CP", "Phá công trình pháo đài: +{0} CP"),
             ["stat.razed"] = ("Buildings razed", "Công trình phá hủy"),
             ["loading.deploy"] = ("Deploying", "Xuất kích"),

@@ -202,6 +202,21 @@ namespace MachineBrigade.Sim.Economy
             return CommandResult.Ok;
         }
 
+        /// <summary>
+        /// A delivery nobody pays for (a mission enemy's reinforcements): it comes the way a bought
+        /// vehicle does, dropped by parachute near <paramref name="near"/> (aircraft fly in over the
+        /// edge), and needs no economy for the side.
+        /// </summary>
+        public void Airlift(int team, string defId, Vector2 near)
+        {
+            if (!_world.Catalog.Vehicles.ContainsKey(defId)) return;
+            var index = _deliveries++;
+            var angle = index * 2.39996f;
+            var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
+            _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(near), DeliverySeconds));
+        }
+
         /// <summary>Spends CP for a strike; the caller has already validated everything else.</summary>
         public bool TrySpend(int team, int cost)
         {
