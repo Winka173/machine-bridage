@@ -139,6 +139,8 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Deathmatch => new DeathmatchSession(),
                 GameModeKind.KingOfTheHill => new HillSession(),
                 GameModeKind.Assault => new AssaultSession(),
+                GameModeKind.Siege => new SiegeSession(),
+                GameModeKind.BossRush => new BossRushSession(),
                 GameModeKind.Campaign => new MissionSession(Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
@@ -163,7 +165,16 @@ namespace MachineBrigade.Game.Match
         protected abstract void Build(SimWorld world, int seed);
 
         /// <summary>Which map file the mode plays on (objectives or the open sandbox version).</summary>
-        public static string MapFile(GameModeKind kind, string mapId) =>
+        public static string MapFile(GameModeKind kind, string mapId) => kind switch
+        {
+            // Every battlefield has a fortified version; fall back to Conquest's if one is missing.
+            GameModeKind.Siege => UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null
+                ? mapId + "_siege" : mapId + "_conquest",
+            GameModeKind.BossRush => mapId + "_sandbox",
+            _ => LegacyMapFile(kind, mapId),
+        };
+
+        private static string LegacyMapFile(GameModeKind kind, string mapId) =>
             mapId + (kind is GameModeKind.Survival ? "_sandbox" : "_conquest");
     }
 
@@ -349,6 +360,113 @@ namespace MachineBrigade.Game.Match
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("stat.taken"), $"{_mode.Taken} / {_mode.Points.Count}"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            return outcome;
+        }
+    }
+
+    internal sealed class SiegeSession : ModeSession
+    {
+        private SiegeMode _mode;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Mission };
+        public override string Kicker => Strings.Get("mode.siege.kicker");
+        public override string Subtitle => Strings.Get("mode.siege.sub");
+        public override string StartToast => Strings.Get("mode.siege.toast");
+
+        protected override void Build(SimWorld world, int seed)
+        {
+            var attacker = PlayerSide(26f, 1.5f);
+            attacker.ArmyCap = 34;
+            var time = Difficulty switch { AiDifficulty.Hard => 13f, AiDifficulty.Easy => 18f, _ => 15f } * 60f;
+            _mode = new SiegeMode(new SiegeRules
+            {
+                TimeLimit = time, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.2f : 0.95f, Difficulty, world.Catalog),
+            });
+            Mode = _mode;
+            _mode.Setup(world);
+            var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
+            defender.DefendPoint = _mode.Fortress;
+            var player = AddPlayerCommander(_mode, seed);
+            player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
+            player.Demolish = w => _mode.Target(w);
+        }
+
+        public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
+        {
+            hud.SetStats(0, 0, 0, 0f, fps);
+            scratch.Clear();
+            var progress = _mode.Progress(world);
+            hud.SetMission(Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress,
+                _mode.SecondsLeft(world), scratch);
+        }
+
+        public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
+        {
+            if (_mode.Result is not { } result) return null;
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            AddRows(outcome, world, kills, losses);
+            outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
+            outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            // Levelling a fortress pays extra.
+            if (outcome.Result > 0) outcome.Reward.Coins += 150;
+            return outcome;
+        }
+    }
+
+    internal sealed class BossRushSession : ModeSession
+    {
+        private BossRushMode _mode;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Mission };
+        public override string Kicker => Strings.Get("mode.bossrush.kicker");
+        public override string Subtitle => Strings.Get("mode.bossrush.sub");
+        public override string StartToast => Strings.Get("mode.bossrush.toast");
+
+        protected override void Build(SimWorld world, int seed)
+        {
+            var player = PlayerSide(30f, Difficulty == AiDifficulty.Hard ? 1.35f : 1.6f);
+            player.ArmyCap = 36;
+            _mode = new BossRushMode(new BossRushRules { Player = player });
+            Mode = _mode;
+            _mode.Setup(world);
+            world.TryGetRally(PlayerTeam, out var home);
+            // The bosses and their escorts come for the player's army.
+            Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => PlayerCentre(w) ?? home };
+            AddPlayerCommander(_mode, seed).Goal = w => w.TryGetVehicle(_mode.Boss, out var b) && b.IsAlive ? b.Position : null;
+        }
+
+        private static Vector2? PlayerCentre(SimWorld world)
+        {
+            var sum = Vector2.Zero;
+            var n = 0;
+            foreach (var v in world.Vehicles)
+                if (v.IsAlive && v.Team == PlayerTeam && !v.Flying)
+                {
+                    sum += v.Position;
+                    n++;
+                }
+            return n > 0 ? sum / n : null;
+        }
+
+        public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
+        {
+            hud.SetStats(0, 0, 0, 0f, fps);
+            scratch.Clear();
+            hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
+                _mode.SecondsLeft(world), scratch);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+            else hud.SetBoss(null, 0f);
+        }
+
+        public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
+        {
+            if (_mode.Result is not { } result) return null;
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            AddRows(outcome, world, kills, losses);
+            outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
+            outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            // Every boss brought down pays, win or lose.
+            outcome.Reward.Coins += 120 * _mode.Defeated;
             return outcome;
         }
     }

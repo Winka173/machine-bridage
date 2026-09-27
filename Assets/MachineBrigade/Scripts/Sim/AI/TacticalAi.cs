@@ -178,8 +178,10 @@ namespace MachineBrigade.Sim.AI
                 if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
             }
             var theirs = 0f;
+            // Fixed defences do not count: they cannot chase, and the army picks the range to fight
+            // them at (artillery outranges every turret). The odds are about the mobile fight.
             foreach (var e in _enemies)
-                if (Vector2.Distance(e.Position, front) < 60f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
+                if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
             // Remember what we saw while falling back: out of sight is not the same as gone.
             if (_outmatched) theirs = MathF.Max(theirs, _theirStrength * 0.9f);
             _theirStrength = theirs;

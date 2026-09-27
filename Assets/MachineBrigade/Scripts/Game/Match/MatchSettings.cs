@@ -16,6 +16,12 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A campaign mission (<see cref="MatchSettings.Mission"/>).</summary>
         Campaign,
+
+        /// <summary>Break into an enemy fortress and level its command HQ.</summary>
+        Siege,
+
+        /// <summary>The bosses one after another.</summary>
+        BossRush,
     }
 
     public enum WeatherKind

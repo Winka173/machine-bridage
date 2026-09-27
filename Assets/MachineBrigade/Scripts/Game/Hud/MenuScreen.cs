@@ -62,6 +62,8 @@ namespace MachineBrigade.Game.Hud
                 (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
                 (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
                 (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
+                (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
+                (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
             };
             foreach (var (kind, icon, name, sub) in modeList)
                 modes.Add(Choice(UiKit.WideButton("mode-card", icon, Strings.Get(name), Strings.Get(sub), () => Set(() => MatchSettings.Mode = kind)),
