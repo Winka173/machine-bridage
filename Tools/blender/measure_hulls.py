@@ -1,12 +1,16 @@
-"""Measures hull footprints (X width, Y length) of vehicle GLBs, ignoring everything under turrets,
-mounts, rotors and propellers, so the collision capsule fits the body rather than the gun."""
+"""Usage: blender --background --python Tools/blender/measure_hulls.py -- <model names>
+
+Measures hull footprints (X width, Y length) of vehicle GLBs, ignoring everything under turrets,
+mounts, rotors and propellers, so the collision capsule fits the body rather than the gun. Copy the
+printed numbers into the vehicle's "length" and "width" in balance.json."""
 import json
 import sys
+from pathlib import Path
 
 import bpy
 from mathutils import Vector
 
-MODELS = r'C:\Users\Winka\Projects\MachineBrigade\Assets\MachineBrigade\Resources\Models'
+MODELS = Path(__file__).resolve().parents[2] / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
 names = sys.argv[sys.argv.index('--') + 1:]
 out = {}
 SKIP = ('Turret', 'Mount_', 'Rotor', 'Tail_rotor', 'Propeller', 'Radar', 'Bombs', 'Erector', 'Searchlight')
@@ -23,7 +27,7 @@ def skipped(o):
 for name in names:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     try:
-        bpy.ops.import_scene.gltf(filepath=f'{MODELS}\\{name}.glb')
+        bpy.ops.import_scene.gltf(filepath=str(MODELS / f'{name}.glb'))
     except Exception as e:  # noqa: BLE001
         out[name] = str(e)
         continue
