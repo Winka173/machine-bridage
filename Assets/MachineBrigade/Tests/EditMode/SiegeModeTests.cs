@@ -50,6 +50,37 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0, mode.Result.Value.WinningTeam, "a strong army levels a small fortress");
         }
 
+        [TestCase("ashfield")]
+        [TestCase("dunebreak")]
+        [TestCase("metrocity")]
+        public void CommanderLevelsTheHqOfARealFortress(string map)
+        {
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(map + "_siege"), seed: 8);
+            var mode = new SiegeMode(new SiegeRules
+            {
+                Attacker = new SideSetup { StartCp = 26f, Income = 1.5f, ArmyCap = 34, Vehicles = Army },
+                Defender = new SideSetup { StartCp = 20f, Income = 0.95f, Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle", "light_tank" } },
+            });
+            mode.Setup(world);
+            var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 3) { Stance = CommanderStance.Defend, DefendPoint = mode.Fortress };
+            var attacker = new ConquestAi(mode, 0, 1, AiDifficulty.Hard, 4)
+            {
+                Goal = w => w.TryGetProp(mode.Target(w), out var hq) ? hq.Position : mode.Fortress,
+                Demolish = w => mode.Target(w),
+            };
+            var t = 0f;
+            for (; t < 15 * 60 && mode.Result == null; t += TestWorlds.Step)
+            {
+                mode.Tick(world, TestWorlds.Step);
+                defender.Tick(world, TestWorlds.Step);
+                attacker.Tick(world, TestWorlds.Step);
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+            }
+            Debug.Log($"Siege on {map}: {(mode.Result?.WinningTeam == 0 ? "WON" : "LOST")} after {t / 60f:0.0} min, HQ {mode.Progress(world):P0}, losses {mode.Losses}");
+            Assert.IsNotNull(mode.Result, "a siege always ends");
+        }
+
         [Test]
         public void BossRushSendsBossesOneAfterAnother()
         {

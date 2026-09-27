@@ -15,6 +15,9 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Prop that has to fall.</summary>
         public string Target { get; set; } = "command_hq";
 
+        /// <summary>The HQ is this many times tougher than the building's catalogue health (a fortress core).</summary>
+        public float Hardening { get; set; } = 4f;
+
         public SideSetup Attacker { get; set; } = new() { StartCp = 26f, Income = 1.5f, ArmyCap = 34 };
         public SideSetup Defender { get; set; } = new() { StartCp = 20f, Income = 1f };
     }
@@ -57,6 +60,7 @@ namespace MachineBrigade.Sim.Modes
                 if (prop.IsAlive && prop.Def.Id == _rules.Target)
                 {
                     _targets.Add(prop.Id);
+                    if (_rules.Hardening > 1f) prop.Harden(_rules.Hardening);
                     Fortress ??= prop.Position;
                 }
             foreach (var v in world.VehicleList)
