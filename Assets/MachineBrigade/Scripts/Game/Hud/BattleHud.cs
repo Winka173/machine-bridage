@@ -100,6 +100,8 @@ namespace MachineBrigade.Game.Hud
             _flash.style.backgroundColor = new Color(1f, 0.9f, 0.72f);
             _flash.style.opacity = 0f;
             _root.Add(_flash);
+            // Equipment proc words over vehicles, under every control.
+            if (mode != HudMode.Menu) _words = new TraitWords(_root);
 
             var hud = UiKit.Box("hud");
             _root.Add(hud);
@@ -620,12 +622,17 @@ namespace MachineBrigade.Game.Hud
 
         private readonly VisualElement _flash;
         private float _flashLevel;
+        private readonly TraitWords _words;
+
+        /// <summary>A short word over a vehicle whose equipment just went off (see <see cref="TraitWords"/>).</summary>
+        public void TraitWord(Vector3 world, string word, bool ours, Camera camera) => _words?.Show(world, word, ours, camera);
 
         /// <summary>Flashes the screen (a huge blast in view); the stronger of overlapping flashes wins, and it fades in a fifth of a second.</summary>
         public void Flash(float strength) => _flashLevel = Mathf.Max(_flashLevel, Mathf.Clamp01(strength));
 
         public void Tick()
         {
+            _words?.Tick();
             if (_flashLevel > 0f)
             {
                 _flashLevel = Mathf.Max(0f, _flashLevel - Time.unscaledDeltaTime * 1.1f);

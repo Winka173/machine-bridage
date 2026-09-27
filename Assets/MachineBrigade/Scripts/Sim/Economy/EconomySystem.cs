@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Commands;
+using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
@@ -253,12 +254,25 @@ namespace MachineBrigade.Sim.Economy
         /// Pays the side that dealt the last damage (recently), even if the shooter died with its
         /// shell still in the air, and for strike kills.
         /// </summary>
-        public void OnVehicleDestroyed(Vehicle victim)
+        public void OnVehicleDestroyed(Vehicle victim, Vehicle? killer = null)
         {
+            // Quartermaster's four-piece: part of its own cost comes back when it falls.
+            if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
+                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.CpCost * victim.Gear.Trait(TraitId.SetSalvageRights).B);
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward * Bounty(economy, victim));
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward * Bounty(economy, victim) * KillerBonus(killer, team));
+        }
+
+        /// <summary>A killer's equipment that pays more for its kills (War Profiteer, Quartermaster's four-piece).</summary>
+        private static float KillerBonus(Vehicle? killer, int team)
+        {
+            if (killer == null || killer.Team != team) return 1f;
+            var bonus = 1f;
+            if (killer.Special == SpecialModule.WarProfiteer) bonus += killer.SpecialPower;
+            if (killer.Gear != null && killer.Gear.Has(TraitId.SetSalvageRights)) bonus += killer.Gear.Trait(TraitId.SetSalvageRights).A;
+            return bonus;
         }
 
         /// <summary>

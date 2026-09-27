@@ -658,6 +658,21 @@ namespace MachineBrigade.Game.Match
             AudioListener.pause = false;
         }
 
+        /// <summary>An equipment proc: its word over the vehicle (not over an enemy the player cannot see).</summary>
+        private void ShowTraitWord(in SimEvent e)
+        {
+            var word = GearText.Proc(e.DefId);
+            if (word == null) return;
+            Vector3 at;
+            if (_views.TryGet(e.Entity, out var view))
+            {
+                if (e.Team != PlayerTeam && !view.Sim.IsVisibleTo(PlayerTeam)) return;
+                at = view.Position + Vector3.up * 3.2f;
+            }
+            else at = new Vector3(e.Position.X, 3.2f, e.Position.Y);
+            _hud.TraitWord(at, word, e.Team == PlayerTeam, _camera.Camera);
+        }
+
         private void DispatchEvents()
         {
             foreach (var e in _world.Events)
@@ -691,6 +706,9 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.FortressAlert when !_menu:
                         if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
+                        break;
+                    case SimEventKind.TraitProc when !_menu:
+                        ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
                         _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);

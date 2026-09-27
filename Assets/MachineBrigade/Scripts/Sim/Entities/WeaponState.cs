@@ -31,6 +31,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>The salvo was aimed at an aircraft: later rounds keep bursting in the air.</summary>
         public bool BurstFlying;
 
+        /// <summary>Damage of each round of the salvo under way against a plain round (Twin Feed spreads its bonus over the extra round).</summary>
+        public float BurstScale = 1f;
+
         /// <summary>
         /// Machine guns fire in bursts: rounds left in the current run of fire (0: pausing, or not
         /// started), and whether the gun has fired yet (its first run starts after a random delay).

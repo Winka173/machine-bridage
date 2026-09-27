@@ -30,10 +30,51 @@ namespace MachineBrigade.Game.Hud
         {
             Frames.Clear();
             Pictures.Clear();
+            Own.Clear();
+            NoPicture.Clear();
         }
 
-        public static string PictureName(GearItem item) =>
-            item.Slot == GearSlot.Special ? item.Module.ToString().ToLowerInvariant() : item.Slot.ToString().ToLowerInvariant();
+        /// <summary>
+        /// The picture a piece falls back to when its base type has none of its own yet
+        /// (Resources/UI/Gear/gear_&lt;name&gt;): its slot's, plating base types the old plating's,
+        /// Optics the crew helmet with its goggles, new modules the reactive armour's.
+        /// </summary>
+        public static string PictureName(GearItem item)
+        {
+            if (item.Slot == GearSlot.Special)
+                return item.Module is SpecialModule.ReactiveArmor or SpecialModule.AutoRepair or SpecialModule.VeteranCrew or SpecialModule.SmokeDischarger
+                    ? item.Module.ToString().ToLowerInvariant()
+                    : "reactivearmor";
+            return SlotPicture(item.Slot, Gear.BaseOf(item)?.Plating == true);
+        }
+
+        private static string SlotPicture(GearSlot slot, bool plating = false) => slot switch
+        {
+            GearSlot.Special => "reactivearmor",
+            GearSlot.Optics => "veterancrew",
+            GearSlot.Armor when plating => "plating",
+            _ => slot.ToString().ToLowerInvariant(),
+        };
+
+        private static readonly Dictionary<string, Texture2D> Own = new();
+        private static readonly HashSet<string> NoPicture = new();
+
+        /// <summary>A piece's own picture (Resources/UI/Gear/&lt;base type id&gt;), else its fallback (a missing one is looked for once).</summary>
+        public static Texture2D PictureFor(GearItem item)
+        {
+            var id = item.baseType;
+            if (!string.IsNullOrEmpty(id) && !NoPicture.Contains(id))
+            {
+                if (!Own.TryGetValue(id, out var tex) || tex == null)
+                {
+                    tex = Resources.Load<Texture2D>("UI/Gear/" + id);
+                    if (tex == null) NoPicture.Add(id);
+                    else Own[id] = tex;
+                }
+                if (tex != null) return tex;
+            }
+            return Picture(PictureName(item));
+        }
 
         /// <summary>A tile for a piece: frame, picture, level and pips. <paramref name="size"/> in panel pixels.</summary>
         public static VisualElement Tile(GearItem item, float size, bool showLevel = true)
@@ -44,7 +85,7 @@ namespace MachineBrigade.Game.Hud
             tile.style.backgroundImage = Background.FromTexture2D(Frame(item.rarity));
             var picture = new VisualElement { pickingMode = PickingMode.Ignore };
             picture.AddToClassList("gear-art-picture");
-            if (Picture(PictureName(item)) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
+            if (PictureFor(item) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
             tile.Add(picture);
             var pips = new VisualElement { pickingMode = PickingMode.Ignore };
             pips.AddToClassList("gear-art-pips");
@@ -74,7 +115,7 @@ namespace MachineBrigade.Game.Hud
             tile.style.width = tile.style.height = size;
             var picture = new VisualElement { pickingMode = PickingMode.Ignore };
             picture.AddToClassList("gear-art-picture");
-            var name = slot == GearSlot.Special ? "reactivearmor" : slot.ToString().ToLowerInvariant();
+            var name = SlotPicture(slot);
             if (Picture(name) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
             tile.Add(picture);
             return tile;

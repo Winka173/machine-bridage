@@ -12,7 +12,10 @@ namespace MachineBrigade.Sim.Combat
     /// <summary>
     /// The only place hit points change. Resolves impacts, splash and delayed explosions,
     /// and announces each destruction exactly once, which is what makes chain reactions
-    /// terminate: an entity can only start one explosion.
+    /// terminate: an entity can only start one explosion. Equipment hooks in here: what a hit
+    /// does to its target (<see cref="Abilities.GearSystem.Outgoing"/>), what a vehicle's
+    /// resistances, barrier and armour traits take off (<see cref="Abilities.GearSystem.Incoming"/>),
+    /// and what happens when a vehicle is destroyed.
     /// </summary>
     internal sealed class DamageSystem
     {
@@ -31,24 +34,33 @@ namespace MachineBrigade.Sim.Combat
             var weapon = p.Weapon;
             var hit = EntityId.None;
             var at = p.AimPoint;
-            if (TryIntercept(p)) return;
+            if (!p.Tandem && TryIntercept(p)) return;
+            var info = HitInfo.Of(p, HitKind.Direct);
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
                 // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them).
                 var decoyed = weapon.Guided && ((target is Vehicle { FlaresUp: true } && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
-                if (weapon.Guided && !decoyed) at = target.Position;
-                if (decoyed) at = target.Position + p.Miss;
-                if (!decoyed && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
+                // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
+                var lure = default(Vector2);
+                var lured = !decoyed && target is Vehicle guarded && _world.Gear.Lure(guarded, p, out lure);
+                if (lured) at = lure;
+                else
+                {
+                    if (weapon.Guided && !decoyed) at = target.Position;
+                    if (decoyed) at = target.Position + p.Miss;
+                }
+                if (!decoyed && !lured && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
                     var facing = target is Vehicle struck && !weapon.Indirect ? FacingFactor(struck, p.Origin) : 1f;
                     // A kamikaze drone's damage partly stopped by a turtle tank's shed.
                     if (weapon.Projectile == ProjectileKind.Drone && target is Vehicle shed) facing *= shed.Def.DroneArmor;
-                    Apply(target, weapon.Damage * p.DamageScale * facing, weapon.DamageType);
+                    var dealt = Apply(target, weapon.Damage * p.DamageScale * facing, weapon.DamageType, info);
                     hit = target.Id;
+                    if (!p.NoProc && p.Shooter?.Gear != null) _world.Gear.OnDirectHit(p, target, dealt);
                 }
             }
 
@@ -57,10 +69,14 @@ namespace MachineBrigade.Sim.Combat
             // Every blast is a little different: its reach varies by up to 15 %.
             if (weapon.SplashRadius > 0f)
                 Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
-                    weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying);
+                    weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
+            // A heavy round from equipment bursts round its target too, at half its weight.
+            if (p.ExtraSplash > 0f)
+                Splash(at, p.ExtraSplash, weapon.Damage * p.DamageScale * 0.5f, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
+                    info.As(HitKind.Splash));
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
-            if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale);
+            if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale, p.Shooter);
         }
 
         /// <summary>
@@ -84,7 +100,7 @@ namespace MachineBrigade.Sim.Combat
         private static readonly float RearArc = SimMath.DegToRad(50f);
 
         /// <summary>A cluster round opens over the impact: its bomblets land round it and go off one after another.</summary>
-        private void Scatter(ClusterDef cluster, Vector2 at, int team, float damageScale)
+        private void Scatter(ClusterDef cluster, Vector2 at, int team, float damageScale, Vehicle? attacker)
         {
             var rng = _world.Random;
             var blast = damageScale == 1f ? cluster.Bomblet
@@ -94,7 +110,7 @@ namespace MachineBrigade.Sim.Combat
                 var angle = (float)rng.NextDouble() * SimMath.Tau;
                 var reach = cluster.Radius * MathF.Sqrt(0.15f + 0.85f * (float)rng.NextDouble());
                 var spot = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
-                _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team));
+                _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash));
             }
         }
 
@@ -111,7 +127,7 @@ namespace MachineBrigade.Sim.Combat
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
             foreach (var v in _world.VehicleList)
             {
-                var aps = v.Def.Aps;
+                var aps = v.Aps;
                 if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 v.ApsCharges--;
@@ -131,7 +147,7 @@ namespace MachineBrigade.Sim.Combat
         /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
         /// </summary>
         public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude,
-            EntityId attacker = default, bool airborne = false)
+            EntityId attacker = default, bool airborne = false, in HitInfo info = default)
         {
             foreach (var v in _world.VehicleList)
             {
@@ -139,13 +155,13 @@ namespace MachineBrigade.Sim.Combat
                 if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
                 if (Reaches(v, at, radius)) Blame(v, attacker, sourceTeam);
-                ApplyFalloff(v, at, radius, damage, type);
+                ApplyFalloff(v, at, radius, damage, type, info);
             }
             if (airborne) return;
             foreach (var prop in _world.PropList)
             {
                 if (!prop.IsAlive || prop.Id == exclude) continue;
-                ApplyFalloff(prop, at, radius, damage, type);
+                ApplyFalloff(prop, at, radius, damage, type, info);
             }
         }
 
@@ -160,34 +176,74 @@ namespace MachineBrigade.Sim.Combat
             if (attacker.IsValid) victim.LastAttacker = attacker;
         }
 
-        public void Apply(IDamageable target, float amount, DamageType type)
+        /// <summary>A fire burning on a vehicle does its share of damage this step (credited to whoever lit it).</summary>
+        internal void Burn(Vehicle v, float amount, Vehicle? lighter, int team, EntityId source)
         {
-            if (!target.IsAlive || !(amount > 0f)) return;
-            if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return;
-            var damage = amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
-            if (!(damage > 0f)) return;
+            Blame(v, source, team);
+            Apply(v, amount, DamageType.Fire, new HitInfo(lighter, team, null, v.Position, HitKind.Burn, false));
+        }
+
+        /// <summary>Deals damage (after the damage table, equipment and armour); returns what the target actually lost.</summary>
+        public float Apply(IDamageable target, float amount, DamageType type, in HitInfo hit = default)
+        {
+            if (!target.IsAlive || !(amount > 0f)) return 0f;
+            if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
+            var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
+            var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
+            if (!(damage > 0f)) return 0f;
+            if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
 
             switch (target)
             {
                 case Vehicle vehicle:
-                    damage *= vehicle.DamageTaken;
-                    if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
-                    if (vehicle.GraceUntil > _world.Time) damage *= 0.2f;
-                    // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
-                    if (type is DamageType.Kinetic or DamageType.ArmorPiercing && _world.IsEntrenched(vehicle))
-                        damage *= 1f - SimWorld.EntrenchReduction;
-                    vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
-                    // A firing-range target takes the hit (its bar shows it) but never goes down.
-                    if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
-                    _world.Emit(SimEvent.Damage(vehicle, damage));
-                    if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);
-                    break;
+                    return HitVehicle(vehicle, damage, type, hit);
                 case Prop prop:
                     prop.Hp = MathF.Max(0f, prop.Hp - damage);
                     _world.Emit(SimEvent.Damage(prop, damage));
                     if (!prop.IsAlive) OnPropDestroyed(prop);
-                    break;
+                    return damage;
             }
+            return 0f;
+        }
+
+        private float HitVehicle(Vehicle vehicle, float damage, DamageType type, in HitInfo hit)
+        {
+            var now = _world.Time;
+            if (vehicle.ImmuneUntil > now) return 0f;
+            if (hit.Kind == HitKind.Burn)
+            {
+                damage *= _world.Gear.Incoming(vehicle, type, hit);
+            }
+            else if (hit.Kind != HitKind.Redirect)
+            {
+                damage *= vehicle.DamageTaken;
+                if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
+                if (vehicle.GraceUntil > now) damage *= 0.2f;
+                // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
+                if (type is DamageType.Kinetic or DamageType.ArmorPiercing && _world.IsEntrenched(vehicle))
+                    damage *= 1f - SimWorld.EntrenchReduction;
+                damage *= _world.Gear.Incoming(vehicle, type, hit);
+                if (!(damage > 0f)) return 0f;
+                if (!(hit.Projectile?.Tandem ?? false)) damage = _world.Status.Absorb(vehicle, damage);
+                if (vehicle.Gear != null) damage = _world.Gear.Soak(vehicle, damage);
+                damage = _world.Gear.Redirect(vehicle, damage, hit);
+            }
+            if (!(damage > 0f)) return 0f;
+            // Unbreakable: a killing blow once a life leaves it on a sliver, briefly untouchable.
+            if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
+            vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+            // A firing-range target takes the hit (its bar shows it) but never goes down.
+            if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
+            _world.Emit(SimEvent.Damage(vehicle, damage));
+            if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
+            if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
+            return damage;
+        }
+
+        /// <summary>Takes hit points off a vehicle directly (a guardian's share of an ally's hit): its own plating counts, nothing else.</summary>
+        internal void TakeOver(Vehicle guardian, float damage, in HitInfo hit)
+        {
+            Apply(guardian, damage * guardian.DamageTaken, DamageType.Kinetic, hit.As(HitKind.Redirect));
         }
 
         /// <summary>Detonates every explosion that has come due; new ones may be queued as a result.</summary>
@@ -204,20 +260,26 @@ namespace MachineBrigade.Sim.Combat
                 }
                 _pending.RemoveAt(i);
                 _world.Emit(SimEvent.Exploded(pending.Position, pending.Explosion, pending.Source));
+                var info = pending.Kind == HitKind.None ? default
+                    : new HitInfo(pending.Attacker, pending.Team, null, pending.Position, pending.Kind, true);
                 Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
-                    pending.Team, EntityId.None);
+                    pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info);
             }
         }
+
+        /// <summary>A blast from equipment (Volatile Fuel Tanks, Uplink Barrage) that spares its own side, after <paramref name="delay"/> seconds.</summary>
+        internal void Queue(Vector2 at, ExplosionDef blast, double delay, int team, Vehicle? attacker, HitKind kind, EntityId source = default) =>
+            _pending.Add(new PendingExplosion(_world.Time + delay, at, blast, source, team, attacker, kind));
 
         private static bool Reaches(IDamageable target, Vector2 at, float radius) =>
             Vector2.Distance(target.Position, at) - target.Radius <= radius;
 
-        private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type)
+        private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type, in HitInfo info)
         {
             var edgeDistance = MathF.Max(0f, Vector2.Distance(target.Position, at) - target.Radius);
             if (edgeDistance > radius) return;
             var scale = 1f - (1f - EdgeFalloff) * SimMath.Clamp01(edgeDistance / radius);
-            Apply(target, damage * scale, type);
+            Apply(target, damage * scale, type, info);
         }
 
         /// <summary>
@@ -245,6 +307,7 @@ namespace MachineBrigade.Sim.Combat
             var length = line.Length();
             if (length < 0.1f) return;
             var along = line / length;
+            var info = HitInfo.Of(p, HitKind.Pierce);
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Id == struck || v.Id == p.Owner) continue;
@@ -253,22 +316,28 @@ namespace MachineBrigade.Sim.Combat
                 if (t < 0f || t > length + 12f) continue;
                 if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
                 Blame(v, p.Owner, p.OwnerTeam);
-                Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType);
+                Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
             }
         }
 
         /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
         private const double FlareDecoy = 0.35;
 
-        private void OnVehicleDestroyed(Vehicle vehicle)
+        private void OnVehicleDestroyed(Vehicle vehicle, in HitInfo hit)
         {
             var speed = vehicle.Speed;
             vehicle.ClearPath();
             vehicle.Speed = 0f;
+            // Who gets the kill: the vehicle whose round it was, else whoever hit it last (recently).
+            var killer = hit.Attacker;
+            if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= 10.0 &&
+                _world.TryGetVehicle(vehicle.LastAttacker, out var last)) killer = last;
+            if (killer != null && killer.Team == vehicle.Team) killer = null;
             _world.Emit(SimEvent.VehicleLost(vehicle));
-            _world.Economy.OnVehicleDestroyed(vehicle);
+            _world.Economy.OnVehicleDestroyed(vehicle, killer);
             if (vehicle.Def.DeathExplosion != null && !vehicle.Detonated) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
             if (vehicle.Def.Flying) ScheduleCrash(vehicle, speed);
+            _world.Gear.OnDeath(vehicle, killer);
         }
 
         /// <summary>
@@ -317,13 +386,16 @@ namespace MachineBrigade.Sim.Combat
 
         private readonly struct PendingExplosion
         {
-            public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source, int team = Teams.Environment)
+            public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source, int team = Teams.Environment,
+                Vehicle? attacker = null, HitKind kind = HitKind.None)
             {
                 Team = team;
                 Due = due;
                 Position = position;
                 Explosion = explosion;
                 Source = source;
+                Attacker = attacker;
+                Kind = kind;
             }
 
             public double Due { get; }
@@ -333,6 +405,11 @@ namespace MachineBrigade.Sim.Combat
 
             /// <summary>Whose blast it is (a cluster bomblet spares its own side); the environment's hurts everyone.</summary>
             public int Team { get; }
+
+            /// <summary>The vehicle whose round or equipment it is (its hit effects and kill credit), if any.</summary>
+            public Vehicle? Attacker { get; }
+
+            public HitKind Kind { get; }
         }
     }
 }

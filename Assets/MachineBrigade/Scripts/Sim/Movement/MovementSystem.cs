@@ -443,7 +443,7 @@ namespace MachineBrigade.Sim.Movement
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
                 if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
                     (def.Flying || target is not Vehicle { Flying: true }))
-                    v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * dt);
+                    v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * v.TurnFactor * dt);
                 return;
             }
 
@@ -526,7 +526,7 @@ namespace MachineBrigade.Sim.Movement
             // a turn; a vehicle slowed or stopped (against a wall corner) always corrects.
             var cruising = v.Speed > def.Speed * 0.3f;
             if ((!isFinal || distance > 2.5f || misalignment > 0.6f) && (def.Flying || !cruising || misalignment > HeadingDeadBand))
-                v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * dt);
+                v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * v.TurnFactor * dt);
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
@@ -601,7 +601,7 @@ namespace MachineBrigade.Sim.Movement
             var nearEdge = MathF.Abs(v.Position.X) > half - margin || MathF.Abs(v.Position.Y) > half - margin;
             if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
 
-            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
             v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
@@ -626,7 +626,7 @@ namespace MachineBrigade.Sim.Movement
             }
             if (now >= v.HoverUntil) return false;
             v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 1.1f * dt);
-            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * 1.3f * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * v.TurnFactor * 1.3f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
             // Leaving the hover, it flies straight out before turning back in.
             if (now + dt >= v.HoverUntil) v.RunExtending = true;
@@ -709,7 +709,7 @@ namespace MachineBrigade.Sim.Movement
                     var direction = SimMath.Forward(bearing);
                     if (!_world.Grid.IsWalkable(v.Position + direction * probe) || HullNear(v, v.Position + direction * probe)) continue;
                     if (!TryPlace(v, v.Position + direction * step)) continue;
-                    v.Heading = SimMath.RotateTowards(v.Heading, bearing, v.Def.TurnRate * dt);
+                    v.Heading = SimMath.RotateTowards(v.Heading, bearing, v.Def.TurnRate * v.TurnFactor * dt);
                     v.Speed = MathF.Min(MathF.Max(v.Speed, v.Def.Speed * 0.3f), v.Def.Speed * 0.6f);
                     if (k > 0)
                     {

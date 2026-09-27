@@ -67,7 +67,7 @@ namespace MachineBrigade.Sim.Abilities
                     _world.TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(v.Position, home) < SimWorld.HomeRadius * SimWorld.HomeRadius)
                     v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.02f * dt);
                 // Active protection reloads one interceptor at a time.
-                var aps = v.Def.Aps;
+                var aps = v.Aps;
                 if (aps != null && v.ApsCharges < aps.Charges && (v.ApsReload += dt) >= aps.Recharge)
                 {
                     v.ApsCharges++;
@@ -87,7 +87,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive) continue;
                 if (skillTick && v.Def.Skills.Count > 0) UseSkills(v, now);
-                if (v.Def.Mines != null) LayMines(v, now);
+                if (v.MineLayer != null) LayMines(v, now);
                 if (auraTick)
                 {
                     RearmAtHome(v);
@@ -96,16 +96,22 @@ namespace MachineBrigade.Sim.Abilities
                     // A firing-range target mends itself between volleys.
                     if (v.Dummy) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.08f * AuraInterval);
                 }
-                // Upgrades: self-repair out of combat, and smoke dischargers at half health.
-                if (v.Regen > 0f && v.Hp < v.MaxHp && now - v.LastHitTime > 4.0) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * v.Regen * dt);
+                // Upgrades: self-repair out of combat (sooner with a toolbox, part of it under fire with a
+                // combat welder, half while burning), and smoke dischargers at half health.
+                if (v.Regen > 0f && v.Hp < v.MaxHp)
+                {
+                    var rate = Regenerating(v, now);
+                    if (rate > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * v.Regen * rate * dt);
+                }
                 if (v.Special == SpecialModule.SmokeDischarger && !v.SmokeUsed && v.Hp < v.MaxHp * 0.5f)
                 {
                     v.SmokeUsed = true;
                     _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
+                    _world.Gear.Proc(v, SpecialModule.SmokeDischarger);
                 }
                 if (v.Healing > 0f && v.HealUntil > now)
                 {
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.Healing * dt);
+                    var amount = MathF.Min(v.MaxHp - v.Hp, v.Healing * GearSystem.RepairFactor(v, now) * dt);
                     if (amount > 0f) v.Hp += amount;
                 }
             }
@@ -120,6 +126,19 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var (def, team, at, heading) in _summons) _world.SpawnVehicle(def, team, at, heading);
 
             TriggerMines(now);
+        }
+
+        /// <summary>
+        /// How fast a vehicle's own repair works now, against its full rate: all of it once not hit
+        /// for 4 s (less with a toolbox), a combat welder's share under fire, half while burning.
+        /// </summary>
+        private static float Regenerating(Vehicle v, double now)
+        {
+            var g = v.Gear;
+            if (g == null) return now - v.LastHitTime > 4.0 ? 1f : 0f;
+            var delay = Math.Max(1.0, 4.0 - g.Stat(StatId.RegenDelay));
+            var rate = now - v.LastHitTime > delay ? 1f : g.Has(TraitId.CombatWelder) ? g.Trait(TraitId.CombatWelder).A : 0f;
+            return rate * GearSystem.RepairFactor(v, now);
         }
 
         /// <summary>Whether <paramref name="point"/> lies inside a jammer of a team hostile to <paramref name="team"/>.</summary>
@@ -151,7 +170,7 @@ namespace MachineBrigade.Sim.Abilities
                 var distance = Vector2.Distance(v.Position, engineer.Position);
                 if (repair != null && distance <= repair.Radius && !v.Def.Boss && v.Hp < v.MaxHp)
                 {
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * repair.Rate * AuraInterval);
+                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * repair.Rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
                     v.Hp += amount;
                     _world.Emit(SimEvent.RepairedBy(v, amount));
                 }
@@ -196,7 +215,7 @@ namespace MachineBrigade.Sim.Abilities
                 v.RearmProgress -= 1f;
                 for (var i = 0; i < v.Weapons.Length; i++)
                 {
-                    var max = v.Def.Mounts[i].Weapon.Ammo;
+                    var max = v.Arms[i].Ammo;
                     if (max > 0 && v.Weapons[i].Ammo > 0 && v.Weapons[i].Ammo < max) v.Weapons[i].Ammo++;
                 }
             }
@@ -208,7 +227,7 @@ namespace MachineBrigade.Sim.Abilities
         {
             for (var i = 0; i < v.Weapons.Length; i++)
             {
-                var max = v.Def.Mounts[i].Weapon.Ammo;
+                var max = v.Arms[i].Ammo;
                 if (max > 0 && v.Weapons[i].Ammo > 0 && v.Weapons[i].Ammo < max) return true;
             }
             return false;
@@ -218,8 +237,10 @@ namespace MachineBrigade.Sim.Abilities
 
         private void LayMines(Vehicle v, double now)
         {
-            var def = v.Def.Mines!;
+            var def = v.MineLayer!;
             if (v.Flying || now < v.NextMineAt) return;
+            // A Mine Dispenser module drops its mines only on the move.
+            if (v.Def.Mines == null && !v.IsMoving) return;
             v.NextMineAt = now + def.Interval;
             var mine = 0;
             foreach (var m in _mines)
@@ -281,7 +302,7 @@ namespace MachineBrigade.Sim.Abilities
                 var skill = skills[i];
                 if (v.SkillReadyAt[i] > now || (skill.Once && v.SkillUsed[i])) continue;
                 if (!Triggered(v, skill, now)) continue;
-                v.SkillReadyAt[i] = now + skill.Cooldown;
+                v.SkillReadyAt[i] = now + skill.Cooldown * (v.Gear != null ? MathF.Max(0.5f, 1f - v.Gear.Stat(StatId.Cooldowns)) : 1f);
                 v.SkillUsed[i] = true;
                 Fire(v, skill, now);
                 v.RefreshEffects(now);
@@ -341,7 +362,7 @@ namespace MachineBrigade.Sim.Abilities
                     {
                         if (!other.IsAlive || other.Team == v.Team || other.Team < 0 || other.Flying || other.Def.Boss) continue;
                         if (Vector2.Distance(other.Position, v.Position) > skill.Radius + other.Def.HullRadius) continue;
-                        other.StunnedUntil = Math.Max(other.StunnedUntil, until);
+                        _world.Status.Stun(other, until);
                         other.ClearPath();
                         other.Speed = 0f;
                     }

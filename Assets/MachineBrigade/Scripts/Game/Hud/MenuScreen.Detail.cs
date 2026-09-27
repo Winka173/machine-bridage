@@ -270,7 +270,7 @@ namespace MachineBrigade.Game.Hud
             info.Add(Fact("cp", Strings.Format("detail.cost", def.CpCost)));
             if (def.Weapon.Ammo > 0) info.Add(Fact("ammo", Strings.Format("detail.magazine", def.Weapon.Ammo, Mathf.RoundToInt(def.Weapon.MagazineReload))));
             if (def.Weapon.MinRange > 0f) info.Add(Fact("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
-            if (now.Special != SpecialModule.None) info.Add(Fact("star", Strings.Get("module." + now.Special.ToString().ToLowerInvariant())));
+            if (now.Special != SpecialModule.None) info.Add(Fact("star", Strings.Get("special." + GearKeys.Module(now.Special))));
             _detailBody.Add(info);
         }
 
@@ -392,6 +392,26 @@ namespace MachineBrigade.Game.Hud
                 slots.Add(tile);
             }
             _detailBody.Add(slots);
+            DetailGearLines(branch);
+        }
+
+        /// <summary>Under the slots: the branch's set chips, then each worn piece's name, lines and trait (gear rework).</summary>
+        private void DetailGearLines(GearBranch branch)
+        {
+            var sets = UiKit.Box("gear-sets detail-gear-sets");
+            FillSetChips(sets, branch);
+            _detailBody.Add(sets);
+            for (var s = 0; s < Gear.Slots; s++)
+            {
+                var item = PlayerProfile.Equipped(branch, (GearSlot)s);
+                if (item == null) continue;
+                var block = UiKit.Box("detail-gear-piece");
+                var name = UiKit.Text(GearName(item) + "  ·  " + Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), "gear-info-title detail-gear-name");
+                name.style.color = GearArt.Colors[item.rarity];
+                block.Add(name);
+                block.Add(GearLines(item));
+                _detailBody.Add(block);
+            }
         }
     }
 }
