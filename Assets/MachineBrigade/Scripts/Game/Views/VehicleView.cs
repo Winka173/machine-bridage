@@ -19,7 +19,8 @@ namespace MachineBrigade.Game.Views
         private const float BarWidth = 2.4f;
         private const float BarHeight = 0.2f;
         private const float RecoilSeconds = 0.35f;
-        private const float TakeOffSeconds = 2.2f;
+        /// <summary>Aircraft fly in over this long: from behind along their heading, a little above their height.</summary>
+        private const float ArriveSeconds = 2.6f;
 
         private static readonly int TintId = Shader.PropertyToID("_Tint");
 
@@ -70,6 +71,8 @@ namespace MachineBrigade.Game.Views
             _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
+            ModelBounds = Measure(_model.Root.transform, _body);
+            if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
             _recoilRest = new Vector3[_model.RecoilParts.Count];
@@ -154,6 +157,7 @@ namespace MachineBrigade.Game.Views
                 vehicle.Team == playerTeam ? materials.BarAlly : vehicle.Team == Teams.Hostile ? materials.BarNeutral : materials.BarEnemy, false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
             if (vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildAmmoGauge(meshes, materials);
+            BuildRepairMark(meshes, materials);
             _bar.gameObject.SetActive(false);
 
             foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
@@ -181,6 +185,71 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>Dead: a burning hulk or a falling wreck.</summary>
+        public bool IsWreck => _wreck;
+
+        /// <summary>The drawn model's extent in the body's own frame (before the def's scale): span on X, length on Z.</summary>
+        public Bounds ModelBounds { get; }
+
+        private static Bounds Measure(Transform model, Transform frame)
+        {
+            var bounds = new Bounds();
+            var first = true;
+            foreach (var filter in model.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null) continue;
+                var b = filter.sharedMesh.bounds;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                    var p = frame.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                    if (first) bounds = new Bounds(p, Vector3.zero);
+                    else bounds.Encapsulate(p);
+                    first = false;
+                }
+            }
+            return bounds;
+        }
+
+        private Transform _navStrobe, _navBeacon;
+
+        /// <summary>
+        /// Navigation lights, as on real aircraft: steady red on the left wingtip and green on the
+        /// right, a white strobe on the tail that flashes; a helicopter adds a red anti-collision
+        /// beacon on top that pulses.
+        /// </summary>
+        private void BuildNavLights(MeshLibrary meshes, MaterialLibrary materials)
+        {
+            var b = ModelBounds;
+            var size = Mathf.Max(0.12f, b.size.x * 0.018f);
+            // The model's left is -X in the engine (Blender's +X), the nose +Z.
+            Transform Light(string name, Material material, Vector3 at)
+            {
+                var light = CreateMesh(name, _body, meshes.Box, material, false);
+                light.localPosition = at;
+                light.localScale = Vector3.one * (size / Mathf.Max(0.01f, Def.Scale));
+                return light;
+            }
+            var wingZ = b.center.z;
+            Light("Nav_left", materials.NavRed, new Vector3(b.min.x, b.center.y, wingZ));
+            Light("Nav_right", materials.NavGreen, new Vector3(b.max.x, b.center.y, wingZ));
+            _navStrobe = Light("Nav_strobe", materials.NavWhite, new Vector3(b.center.x, b.max.y * 0.8f, b.min.z));
+            if (!Def.FixedWing) _navBeacon = Light("Nav_beacon", materials.NavRed, new Vector3(b.center.x, b.max.y, b.center.z));
+        }
+
+        private void AnimateNavLights()
+        {
+            if (_navStrobe == null) return;
+            var phase = Mathf.Repeat(Time.time + Id.Value * 0.37f, 1.2f);
+            var on = phase < 0.07f || (phase > 0.16f && phase < 0.22f);
+            if (_navStrobe.gameObject.activeSelf != on) _navStrobe.gameObject.SetActive(on);
+            if (_navBeacon != null)
+            {
+                var pulse = Mathf.Repeat(Time.time * 1.1f + Id.Value * 0.21f, 1f) < 0.35f;
+                if (_navBeacon.gameObject.activeSelf != pulse) _navBeacon.gameObject.SetActive(pulse);
+            }
+        }
         public bool Selected { get; set; }
         public bool Flying => Def.Flying;
 
@@ -479,9 +548,17 @@ namespace MachineBrigade.Game.Views
 
             if (Flying)
             {
-                // Climb after spawning, hover with a slow bob, nose down when speeding up and bank into turns.
-                var climb = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / TakeOffSeconds);
-                Altitude = Def.Altitude * climb + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * climb;
+                // Fly in from behind (never out of the ground), then hover with a slow bob, nose
+                // down when speeding up and bank into turns.
+                var arrive = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                var above = 1f - arrive;
+                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * arrive;
+                if (above > 0f)
+                {
+                    // It flies in along its heading from behind, dropping to its height as it comes.
+                    var heading = hull * Mathf.Deg2Rad;
+                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * (above * above * (Def.FixedWing ? 80f : 35f));
+                }
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
                 {
@@ -497,6 +574,7 @@ namespace MachineBrigade.Game.Views
                 position.y = Altitude;
                 _body.localPosition = Vector3.zero;
                 _body.localRotation = Quaternion.Euler(_pitch, 0f, _bank);
+                AnimateNavLights();
             }
             else
             {
@@ -547,10 +625,13 @@ namespace MachineBrigade.Game.Views
             RenderHitFeedback();
             if (Time.time >= _trailHoldUntil && _trail > health) _trail = Mathf.MoveTowards(_trail, health, Time.deltaTime * 2f);
             var reloading = _ammoGauge != null && Sim.OutOfAmmo;
-            var showBar = Selected || health < 0.999f || reloading;
+            var repairing = Time.time < _repairUntil;
+            var showBar = Selected || health < 0.999f || reloading || repairing;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
+            if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
+            if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
             if (_ammoGauge != null) RenderAmmoGauge(reloading);
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
@@ -559,6 +640,38 @@ namespace MachineBrigade.Game.Views
         }
 
         private Transform _ammoGauge, _reloadFill;
+        private Transform _repairMark;
+        private float _repairUntil = -1f;
+
+        /// <summary>Something is repairing this vehicle or defence: the wrench shows over its health bar for a moment.</summary>
+        public void ShowRepair() => _repairUntil = Time.time + 1.4f;
+
+        /// <summary>
+        /// A green wrench on a dark disc above the health bar: a diagonal handle and a head with an
+        /// open jaw, built from quads so it needs no texture.
+        /// </summary>
+        private void BuildRepairMark(MeshLibrary meshes, MaterialLibrary materials)
+        {
+            _repairMark = new GameObject("RepairMark").transform;
+            _repairMark.SetParent(_bar, false);
+            _repairMark.localPosition = new Vector3(0f, 0.72f, 0f);
+            var back = CreateMesh("Back", _repairMark, meshes.Quad, materials.BarBack, false);
+            back.localScale = new Vector3(0.82f, 0.82f, 1f);
+            back.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            var handle = CreateMesh("Handle", _repairMark, meshes.Quad, materials.RepairMark, false);
+            handle.localScale = new Vector3(0.14f, 0.62f, 1f);
+            handle.localRotation = Quaternion.Euler(0f, 0f, -45f);
+            handle.localPosition = new Vector3(-0.05f, -0.05f, -0.01f);
+            var head = CreateMesh("Head", _repairMark, meshes.Quad, materials.RepairMark, false);
+            head.localScale = new Vector3(0.3f, 0.3f, 1f);
+            head.localRotation = Quaternion.Euler(0f, 0f, -45f);
+            head.localPosition = new Vector3(0.17f, 0.17f, -0.01f);
+            var jaw = CreateMesh("Jaw", _repairMark, meshes.Quad, materials.BarBack, false);
+            jaw.localScale = new Vector3(0.1f, 0.18f, 1f);
+            jaw.localRotation = Quaternion.Euler(0f, 0f, -45f);
+            jaw.localPosition = new Vector3(0.23f, 0.23f, -0.02f);
+            _repairMark.gameObject.SetActive(false);
+        }
         private MeshRenderer[] _shells;
         private Material _ammoReload, _ammoEmpty, _ammoSpent;
         private int _shownShells = -1;

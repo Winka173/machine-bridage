@@ -5,7 +5,13 @@ Headless (from the repository root):
   blender --background --python Tools/blender/build_assets.py -- tank    # names containing "tank"
 Also writes Docs/art/models.json (triangle counts). Blender is only needed to change the art;
 the committed GLB files are all Unity needs.
+
+The most-seen vehicles also get a high-detail variant, <name>_hd.glb: the same builder run with
+detail=True (see mb_detail.py), which the high graphics tiers load instead (ModelLibrary.HighDetail).
+  blender --background --python Tools/blender/build_assets.py -- apc_hd   # one variant
+  blender --background --python Tools/blender/build_assets.py -- _hd      # every variant
 """
+import functools
 import json
 import sys
 from pathlib import Path
@@ -20,11 +26,15 @@ import mb_air  # noqa: E402
 import mb_artillery  # noqa: E402
 import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
+import mb_boss_saucer  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
 import mb_harbor  # noqa: E402
 import mb_mapkit  # noqa: E402
+import mb_new_tracked  # noqa: E402
+import mb_new_trucks  # noqa: E402
+import mb_new_wheeled  # noqa: E402
 import mb_props  # noqa: E402
 import mb_siege  # noqa: E402
 import mb_support  # noqa: E402
@@ -39,14 +49,23 @@ import mb_vehicles3  # noqa: E402
 ROOT = HERE.parents[1]
 OUT = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
 REPORT = ROOT / 'Docs' / 'art' / 'models.json'
+# Vehicles with a high-detail variant: <name>_hd is the builder called with detail=True.
+HIGH_DETAIL = ('main_battle_tank', 'light_tank', 'heavy_tank', 'apc', 'scout_jeep', 'aa_vehicle', 'artillery',
+               'tank_destroyer', 'attack_helicopter', 'attack_jet', 'fighter_jet', 'sky_gunship')
 
 
 def all_builders():
-    return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS,
-            **mb_terrain.BUILDERS, **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS,
-            **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS, **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS,
-            **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
-            **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS}
+    builders = {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS,
+                **mb_terrain.BUILDERS, **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS,
+                **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS, **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS,
+                **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
+                **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
+                **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
+                **mb_boss_saucer.BUILDERS}
+    for name in HIGH_DETAIL:
+        build, options = builders[name]
+        builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
+    return builders
 
 
 def build_all(filters=()):

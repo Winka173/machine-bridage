@@ -65,6 +65,13 @@ namespace MachineBrigade.Game.Effects
             var kind = weapon?.Projectile ?? (e.Tier == ExplosionTier.Small ? ProjectileKind.Bullet : ProjectileKind.Shell);
             var targetId = e.Other;
 
+            if (weapon != null && weapon.Beam)
+            {
+                // A laser: a hard bright bar for a moment, the glow of the director at the muzzle.
+                _tracers.Beam(from, to, 0.08f, 0.09f, now);
+                _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.6f, groundY);
+                return;
+            }
             switch (kind)
             {
                 case ProjectileKind.Bullet:
@@ -141,8 +148,9 @@ namespace MachineBrigade.Game.Effects
             // Light machine guns show a pair of tracers per burst (nearly every vehicle carries one
             // now, firing five bursts a second); cannons one heavier tracer per shot.
             var rounds = damage < 12f ? 2 : 1;
-            var thickness = Mathf.Lerp(0.08f, 0.17f, Mathf.InverseLerp(6f, 30f, damage));
-            var length = Mathf.Lerp(1.6f, 2.6f, Mathf.InverseLerp(6f, 30f, damage));
+            // Rifle-calibre tracers are thin streaks; autocannon ones a little heavier.
+            var thickness = Mathf.Lerp(0.05f, 0.12f, Mathf.InverseLerp(6f, 30f, damage));
+            var length = Mathf.Lerp(1.1f, 2.0f, Mathf.InverseLerp(6f, 30f, damage));
             for (var i = 0; i < rounds; i++)
             {
                 var scatter = rounds > 1 ? side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f) : Vector3.zero;

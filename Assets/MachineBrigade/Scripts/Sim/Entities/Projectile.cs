@@ -50,5 +50,20 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Damage multiplier: machine-gun rounds carry the damage of the pause between bursts.</summary>
         public float DamageScale { get; set; } = 1f;
+
+        /// <summary>The vehicle that fired it (it may have died since): its equipment's hit effects.</summary>
+        public Vehicle? Shooter { get; set; }
+
+        /// <summary>Fired from the shooter's main weapon (hit traits apply to it).</summary>
+        public bool Main { get; set; }
+
+        /// <summary>A tandem warhead: no active protection, reactive block or barrier stops it.</summary>
+        public bool Tandem { get; set; }
+
+        /// <summary>A heavy round (Overpressure Chamber, Heavy Round): it also bursts over this radius.</summary>
+        public float ExtraSplash { get; set; }
+
+        /// <summary>A bounce or a drone from equipment: it sets off no further hit traits.</summary>
+        public bool NoProc { get; set; }
     }
 }

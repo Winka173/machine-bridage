@@ -78,6 +78,12 @@ namespace MachineBrigade.Sim.Content
         public TargetLayers Targets { get; }
 
         public bool CanTarget(bool flying) => (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+
+        /// <summary>A railgun slug: it goes through everything on its line and hurts all of it.</summary>
+        public bool Pierce { get; internal set; }
+
+        /// <summary>A laser: drawn as a beam from the muzzle to the target (it hits at once).</summary>
+        public bool Beam { get; internal set; }
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -95,6 +101,27 @@ namespace MachineBrigade.Sim.Content
         public float Spread { get; }
 
         public ExplosionTier ImpactTier { get; }
+
+        /// <summary>
+        /// A copy of this weapon for one vehicle's equipment (a longer barrel, a bigger magazine):
+        /// the shared definition is never changed. Same id, so it looks and sounds the same.
+        /// </summary>
+        internal WeaponDef Tuned(float range, float cooldown, float projectileSpeed, float splashRadius, float spread, float burstInterval,
+            TargetLayers targets, int ammo, float reload, ClusterDef? cluster, float damage = -1f, int burst = -1, ProjectileKind? projectile = null)
+        {
+            var copy = new WeaponDef(Id, DamageType, damage >= 0f ? damage : Damage, MathF.Max(0.01f, cooldown), MathF.Max(range, MinRange + 0.5f), MinRange,
+                MathF.Max(0.1f, projectileSpeed), MathF.Max(0f, splashRadius), MathF.Max(0f, spread), ImpactTier, projectile ?? Projectile,
+                burst >= 1 ? burst : Burst, MathF.Max(0f, burstInterval), targets)
+            {
+                Ammo = ammo,
+                Reload = reload,
+                ImpactScale = ImpactScale,
+                Cluster = cluster,
+                Pierce = Pierce,
+                Beam = Beam,
+            };
+            return copy;
+        }
     }
 
     /// <summary>A delayed high-explosive blast (vehicle cook-off, fuel barrel). Hurts every side.</summary>
@@ -186,6 +213,46 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A fixed defence (gun turret, bunker, tower): it never moves, is never pushed and is never bought.</summary>
         public bool Static { get; }
+
+        /// <summary>
+        /// Circles its target instead of making strafing runs: a gunship's left-hand pylon turn,
+        /// which keeps its side-firing guns on the target for as long as it likes.
+        /// </summary>
+        public bool Orbit { get; internal set; }
+
+        /// <summary>Seen only close up (at <see cref="StealthSight"/> of a spotter's sight) unless it has just fired.</summary>
+        public bool Stealth { get; internal set; }
+
+        /// <summary>Share of a spotter's sight at which a stealthy aircraft shows.</summary>
+        public const float StealthSight = 0.4f;
+
+        /// <summary>A fighter on combat air patrol: goes after enemy aircraft well beyond its own post.</summary>
+        public bool Interceptor { get; internal set; }
+
+        /// <summary>Can stop in the air to shoot (a Harrier or F-35B): a few seconds at a time, then it must fly on.</summary>
+        public bool Vtol { get; internal set; }
+
+        /// <summary>
+        /// A suicide vehicle (car bomb): "firing" its main weapon at a target in reach blows it up,
+        /// a blast of the weapon's damage and splash that spares its own side.
+        /// </summary>
+        public bool Kamikaze { get; internal set; }
+
+        /// <summary>Share of a kamikaze drone's damage that gets through (a turtle tank's shed stops most).</summary>
+        public float DroneArmor { get; internal set; } = 1f;
+
+        /// <summary>A mine roller: mines it sets off go off harmlessly in front of it.</summary>
+        public bool MineProof { get; internal set; }
+
+        /// <summary>Repairs friendly fixed defences (towers, turrets, bunkers) around it, slowly (sappers).</summary>
+        public AuraDef? FortifyAura { get; internal set; }
+
+        /// <summary>Points the main weapon another way than its default (a gunship's guns out of the left side).</summary>
+        internal void AimMain(MountAim aim)
+        {
+            var mounts = (List<WeaponMount>)Mounts;
+            mounts[0] = new WeaponMount(mounts[0].Weapon, mounts[0].Slot, aim);
+        }
 
         /// <summary>Hull length along the heading, for collisions (the gun barrel is not counted).</summary>
         public float Length { get; internal set; }

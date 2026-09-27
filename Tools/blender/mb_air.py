@@ -22,7 +22,8 @@ import math
 import bmesh
 from mathutils import Vector
 
-from mb_vehicles import _frame, _tube_mouth
+import mb_detail as hd
+from mb_vehicles import _access_panel, _frame, _tube_mouth
 
 R90 = math.pi / 2
 FORWARD = (R90, 0, 0)    # local +Z -> -Y (nose)
@@ -101,6 +102,21 @@ def _rotor_head(a, r, blades, R, chord, hub=.3, phase=0.0, t=.05, cap=.25, strip
         steel.cyl(.02, .26, loc=tuple(d * hub * .72 - e * (chord * .275 + .04) + Vector((0, 0, -.12))), seg=5,
                   bevel=0)                                                                  # pitch link
         _blade(blades_p, tips, d, e, (0, 0, 1), hub * .6 + grip - .06, R, chord, t, stripe=stripe, droop=droop)
+    if hd.on(a):  # hub and swashplate bolts, grip bolts, pitch horns and the scissor links
+        bolts = a.part('Rotor_bolts', 'Steel', r)
+        hd.bolt_ring(bolts, hd.frame((0, 0, .05)), hub * .89, 8, r=.018, h=.024)
+        hd.bolt_ring(bolts, hd.frame((0, 0, -.215)), hub * .62, 6, r=.014, h=.02)
+        for k in range(blades):
+            ang = phase + k * math.tau / blades
+            d = Vector((math.cos(ang), math.sin(ang), 0))
+            e = Vector((-math.sin(ang), math.cos(ang), 0))
+            for f in (.3, .72):
+                hd.bolt(bolts, tuple(d * (hub * .6 + grip * f) + Vector((0, 0, .062))), r=.016, h=.022)
+            bolts.box((.1, .045, .03), loc=tuple(d * hub * .72 - e * (chord * .275 + .01) + Vector((0, 0, .0))),
+                      rot=(0, 0, ang), bevel=0)                                         # pitch horn
+        for sx in (-1, 1):
+            bolts.limb((sx * hub * .52, 0, -.2), (sx * hub * .3, 0, -.06), .03, .03, bevel=0)
+            bolts.limb((sx * hub * .3, 0, -.06), (sx * hub * .12, 0, -.04), .03, .03, bevel=0)
 
 
 def _tail_rotor(a, tr, blades, R, chord, t=.028, phase=0.0, side=-1):
@@ -116,6 +132,13 @@ def _tail_rotor(a, tr, blades, R, chord, t=.028, phase=0.0, side=-1):
         d = (0, -math.sin(ang), math.cos(ang))
         e = (0, math.cos(ang), math.sin(ang))
         _blade(bl, tips, d, e, (side, 0, 0), R * .12, R, chord, t, pitch=.2, stripe=R * .16, tip=R * .08, droop=0)
+    if hd.on(a):  # bolts round the hub and a pitch link to every blade root
+        links = a.part('Tail_rotor_links', 'Steel', tr)
+        hd.bolt_ring(links, hd.frame((side * .05, 0, 0), (0, side * R90, 0)), R * .1, 5, r=.012, h=.018)
+        for k in range(blades):
+            ang = phase + k * math.tau / blades + .35
+            tipv = Vector((side * .03, -math.sin(ang) * R * .15, math.cos(ang) * R * .15))
+            links.limb((side * .09, 0, 0), tuple(tipv), .016, .016, bevel=0)
 
 
 def _hellfire(a, x, y, z, length=1.1, r=.08, fins=True):
@@ -143,6 +166,13 @@ def _exhaust_duct(a, loc, yaw, size=(.36, .7, .36), pitch=0.0):
     a.part('Exhaust_vanes', 'Steel').grille(size[0] * .64, size[2] * .66,
                                             loc=tuple(m @ Vector((0, size[1] / 2 + .035, 0))),
                                             rot=(pitch, 0, yaw + math.pi), slats=4, depth=.05, thickness=.025)
+    if hd.on(a):  # stiffening ribs over the duct and a bolted flange at its root
+        ribs = a.part('Exhaust_ribs', 'Armor')
+        for f in (-.25, .1):
+            ribs.box((size[0] * .96, .04, size[2] * 1.03), loc=tuple(m @ Vector((0, size[1] * f, 0))),
+                     rot=(pitch, 0, yaw), bevel=0)
+        flange = m @ hd.frame((0, -size[1] / 2 + .04, 0), (-R90, 0, 0))
+        hd.bolt_ring(a.part('Exhaust_bolts', 'Steel'), flange, size[0] * .48, 6, r=.014, h=.02)
 
 
 def _ring(y, w, zc, h, top=None, seg=12):
@@ -159,19 +189,20 @@ def _arc(y, w, zc, h, a0=-.45, a1=math.pi + .45, n=9):
 
 
 # ----------------------------------------------------------------------------- helicopters
-def attack_helicopter(a):
+def attack_helicopter(a, detail=False):
     """Tandem-seat attack helicopter (AH-64 lineage): gunner low in front, pilot raised behind,
     avionics bays along the cheeks, a TADS/PNVS sensor nose, shoulder engines with infrared
     suppressor exhausts, a mast-mounted radar over an articulated four-blade rotor, stub wings with
     rocket pods and four-round Hellfire racks, and a chin gun on its own yaw mount. Origin on the
     ground under the fuselage centre (skids touch z = 0)."""
+    hd.mark(a, detail)
     # Chunky proportions (wide cabin, thick boom, big fin) so it still reads at RTS camera distance.
     body = a.part('Fuselage', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
     dark = a.part('Undercarriage', 'Undercarriage')
     glass = a.part('Canopy', 'Glass')
-    body.loft([
+    hull = [
         _octagon(-4.55, .24, 1.2, 1.54),
         _octagon(-4.1, .5, .98, 1.8),
         _octagon(-3.2, .66, .9, 1.92),
@@ -179,8 +210,10 @@ def attack_helicopter(a):
         _octagon(0.0, .8, .9, 2.12),
         _octagon(1.25, .7, 1.0, 2.06),
         _octagon(2.1, .44, 1.36, 2.0),
-    ], bevel=.07, seg=2)
-    body.loft([_octagon(1.8, .42, 1.4, 2.0), _octagon(4.75, .2, 1.6, 1.9)], bevel=.04, seg=1)      # tail boom
+    ]
+    body.loft(hull, bevel=.07, seg=2)
+    boom = [_octagon(1.8, .42, 1.4, 2.0), _octagon(4.75, .2, 1.6, 1.9)]
+    body.loft(boom, bevel=.04, seg=1)                                                                 # tail boom
     body.prism([(3.85, 1.8), (4.85, 1.7), (5.15, 3.5), (4.6, 3.55)], .16, bevel=.03)                # fin
     body.box((2.2, .62, .09), loc=(0, 4.2, 1.8), bevel=.02, seg=1, taper=(1, .7))                    # stabiliser
     for s in (-1, 1):
@@ -229,6 +262,7 @@ def attack_helicopter(a):
         a.part('Wing_lights', 'TeamGlow').box((.06, .12, .06), loc=(s * 2.44, .1, 1.52), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -.8, 1.1))
     a.pivot('Muzzle_missile', (0, -.71, 1.225))
+    a.pivot('Muzzle_aam', (0, -.62, 1.3))
     # TADS sensor drum under the nose with its side housings and windows, PNVS turret above.
     armor.cyl(.22, .5, loc=(0, -4.62, 1.3), rot=ACROSS, seg=12, bevel=.03, bseg=1)
     sensor = a.part('Sensor', 'Glass')
@@ -272,6 +306,87 @@ def attack_helicopter(a):
     armor.cyl(.1, .18, loc=(-.15, 4.74, 2.86), rot=ACROSS, seg=10, bevel=.02, bseg=1)                 # gearbox
     tr = a.pivot('Tail_rotor', (-.3, 4.74, 2.86))
     _tail_rotor(a, tr, 4, .8, .16, phase=math.pi / 4, side=-1)
+    if detail:
+        _attack_helicopter_detail(a, hull, boom, g)
+
+
+def _attack_helicopter_detail(a, hull, boom, g):
+    """High-detail parts of the attack helicopter (see mb_detail.py): panel lines and rivets on the fuselage,
+    boom, fin and wings, latches and doors on the avionics bays, cowl bands and intake screens, access panels
+    on the rotor pylon, bolts on the sensor housings, canopy sills, steps, antennas and lights. The rotor
+    head, tail rotor and exhaust ducts add their own (see _rotor_head, _tail_rotor, _exhaust_duct)."""
+    lines = a.part('Panel_lines', 'Armor')
+    rivets = a.part('Rivets', 'Steel')
+    steel = a.part('Detail_steel', 'Steel')
+    dark = a.part('Detail_dark', 'Undercarriage')
+    flats = (.2, .8)
+    for y in (-3.6, -2.7, -.15, .9):                                          # frames round the lower fuselage
+        _hoop_line(lines, hull, y, [6, 7, 0, 1, 2], us=flats)
+    for i in (2, 6):                                                          # seams along both sides
+        _seam_line(lines, hull, -4.0, 1.2, i, u=.75 if i == 2 else .25)
+        _rivet_row(rivets, hull, -2.6, -.3, i, 14, u=.9 if i == 2 else .1)
+    for y in (2.3, 2.9, 3.5, 4.1):                                            # boom frames
+        _hoop_line(lines, boom, y, list(range(8)) + [0], r=.008, us=flats)
+    for i, u in ((2, .3), (2, .7), (6, .3), (6, .7), (4, .3), (4, .7)):       # boom rivet rows, sides and top
+        _rivet_row(rivets, boom, 2.0, 3.8 if i == 4 else 4.6, i, 18, u=u, size=.02)
+    for i in (2, 6):
+        _seam_line(lines, boom, 1.9, 4.6, i, r=.008)
+    # Avionics bays: two doors a side outlined, with latches.
+    for s in (-1, 1):
+        for y0, y1 in ((-2.6, -1.5), (-1.4, -.3)):
+            x0, x1 = s * 1.07, s * 1.048
+            lines.tube([(x0, y0, 1.05), (x0, y1, 1.05), (x1, y1, 1.4), (x1, y0, 1.4), (x0, y0, 1.05)], .007, seg=4)
+            steel.box((.03, .08, .05), loc=(s * 1.064, y1 - .12, 1.22), bevel=0)
+        for y in (-3.02, -2.86):                                              # boarding steps
+            dark.box((.03, .12, .06), loc=(s * .675, y, 1.25), bevel=0)
+            dark.box((.03, .12, .06), loc=(s * .69, y, 1.5), bevel=0)
+    # Engine nacelles: cowl bands with latches, intake screens, rivets along the tops.
+    for s in (-1, 1):
+        x = s * .74
+        for y in (-.35, .55):
+            a.part('Cowl_bands', 'Armor').cyl(.366, .03, loc=(x, y, 2.18), rot=FORWARD, seg=14, bevel=0)
+        for y in (-.5, .1, .7):
+            steel.box((.03, .08, .05), loc=(x + s * .362, y, 2.18), bevel=0)
+        steel.box((.46, .02, .02), loc=(x, -.875, 2.18), bevel=0)
+        steel.box((.02, .02, .46), loc=(x, -.875, 2.18), bevel=0)
+        for k in range(12):
+            rivets.box((.02, .02, .012), loc=(x, -.7 + k * .14, 2.542), bevel=0)
+    # Rotor pylon: bolted access panels either side of the mast; an anti-collision light behind it.
+    for s in (-1, 1):
+        _access_panel(a, s * .2, -.05, 2.54, .24, .5, nx=2, ny=3)
+    a.part('Beacon_lights', 'Alloy').sphere((.05, .05, .035), loc=(0, .3, 2.535), seg=10, rings=6, cut=0)
+    a.part('Beacon_lights', 'Alloy').sphere((.05, .05, .035), loc=(0, .1, .905), rot=(math.pi, 0, 0), seg=10,
+                                            rings=6, cut=0)
+    # Stub wings: rivet rows and a spar line on top.
+    for s in (-1, 1):
+        for y in (-.3, .4):
+            for k in range(12):
+                rivets.box((.02, .02, .012), loc=(s * (.75 + k * .14), y, 1.602), bevel=0)
+        lines.tube([(s * .72, .08, 1.604), (s * 2.3, .08, 1.604)], .007, seg=4)
+    # Tail: fin panel lines on both sides, stabiliser rivets.
+    for sx in (-1, 1):
+        lines.tube([(sx * .083, 4.45, 1.95), (sx * .083, 4.83, 3.35)], .007, seg=4)
+        lines.tube([(sx * .083, 4.3, 2.6), (sx * .083, 4.98, 2.6)], .007, seg=4)
+        for k in range(8):
+            rivets.box((.02, .02, .012), loc=(sx * (.3 + k * .1), 4.2, 1.847), bevel=0)
+    # Nose: bolts on the sensor housings; canopy sill rails.
+    for s in (-1, 1):
+        for dy in (-.1, .1):
+            for dz in (-.1, .1):
+                hd.bolt(steel, (s * .34, -4.6 + dy, 1.3 + dz), hd.side_rot(s), r=.012, h=.018)
+    for sections in (((-4.05, .32, 1.6), (-3.55, .54, 1.7), (-2.68, .56, 1.76)),
+                     ((-2.78, .58, 1.78), (-2.4, .6, 1.8), (-1.35, .58, 1.84), (-.95, .46, 1.88))):
+        for s in (-1, 1):
+            a.part('Canopy_frames', 'Armor').tube([(s * (w + .008), y, z0 + .02) for y, w, z0 in sections], .018, seg=4)
+    # Skid clamps, antennas and the chin gun's barrel rings.
+    for s in (-1, 1):
+        for y in (-1.1, .95):
+            steel.box((.1, .1, .14), loc=(s * 1.05, y, .09), bevel=0)
+    steel.box((.02, .18, .12), loc=(0, 2.6, 2.02), rot=(-.35, 0, 0), bevel=0, taper=(1, .5))
+    steel.box((.02, .16, .1), loc=(0, -1.0, .86), rot=(.35, 0, 0), bevel=0, taper=(1, .5))
+    ring = a.part('Gun_detail', 'Steel', g)
+    for y in (-.95, -1.05, -1.15):
+        ring.cyl(.047, .025, loc=(0, y, -.16), rot=FORWARD, seg=8, bevel=0)
 
 
 def gunship_heli(a):
@@ -356,6 +471,9 @@ def gunship_heli(a):
         a.part('Wing_lights', 'TeamGlow').box((.06, .14, .06), loc=(s * 3.36, .5, z + .17), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -.97, (wing_z(1.6) + wing_z(2.45)) / 2 - .54))
     a.pivot('Muzzle_missile', (0, -.86, wing_z(3.25) - .215))
+    # Door gunners at the troop cabin's windows, left (+X) and right (-X).
+    a.pivot('Muzzle_door_l', (1.02, -1.0, 1.62))
+    a.pivot('Muzzle_door_r', (-1.02, -1.0, 1.62))
     # Tricycle landing gear (the retractable kind, shown down): twin nose wheels, mains behind the wings.
     gear = a.part('Gear', 'Steel')
     tyres = a.part('Tyres', 'Rubber')
@@ -701,6 +819,88 @@ def _canopy(glass, frames, stations, bows=(), r=.024, n=9):
         frames.tube([ring[i] for ring in rings], r * .9, seg=6)
 
 
+# ----------------------------------------------------------------------------- high-detail kit
+# Panel lines, rivets and small fittings for the `_hd` aircraft (see mb_detail.py). Lines are thin dark
+# tubes standing just proud of the skin; rivets are tiny flat plates. Nothing here is added to a part the
+# runtime measures (Pods, Missiles ...), and all of it stays inside the model's bounds.
+def _skin_point(rings, y, i, u=0.0, out=0.0):
+    """Point on a loft (constant-y rings) at station y, a fraction u from ring point i towards i + 1,
+    pushed `out` along the outward normal; returns (point, normal)."""
+    ring = _ring_at(rings, y)
+    n = len(ring)
+    cx, cz = sum(q[0] for q in ring) / n, sum(q[2] for q in ring) / n
+    p0, p1 = Vector(ring[i % n]), Vector(ring[(i + 1) % n])
+    p = p0.lerp(p1, u)
+    t = p1 - p0 if u else Vector(ring[(i + 1) % n]) - Vector(ring[(i - 1) % n])
+    nrm = Vector((t.z, 0, -t.x)).normalized()
+    if nrm.dot(Vector((p.x - cx, 0, p.z - cz))) < 0:
+        nrm = -nrm
+    return p + nrm * out, nrm
+
+
+def _hoop_line(part, rings, y, idx, r=.009, out=.003, us=(0.0,)):
+    """Panel line round a loft at station y through ring points idx (each at the fractions us towards
+    the next point: (.2, .8) keeps a line on the flats of a heavily bevelled loft)."""
+    pts = [tuple(_skin_point(rings, y, i, u, out + r * .4)[0]) for i in idx for u in us]
+    part.tube(pts, r, seg=4)
+
+
+def _seam_line(part, rings, y0, y1, i, u=.5, r=.009, out=.003):
+    """Panel line along a loft from station y0 to y1, a fraction u between ring points i and i + 1."""
+    ys = [y0] + [q[0][1] for q in rings if y0 + .02 < q[0][1] < y1 - .02] + [y1]
+    part.tube([tuple(_skin_point(rings, y, i, u, out + r * .4)[0]) for y in ys], r, seg=4)
+
+
+def _rivet_row(part, rings, y0, y1, i, n, u=.5, size=.022, out=.002):
+    """n flush rivet heads along a loft between y0 and y1, a fraction u between ring points i and i + 1
+    (out lifts them onto a panel standing proud of the skin)."""
+    for k in range(n):
+        y = y0 + (y1 - y0) * (k + .5) / n
+        p, nrm = _skin_point(rings, y, i, u, out)
+        part.box((size, size, .012), loc=tuple(p), rot=Vector((0, 0, 1)).rotation_difference(nrm).to_euler('XYZ'),
+                 bevel=0)
+
+
+def _foil_z(pf, s, u, side=1, lower=.72):
+    le, c, t, h = pf.at(s)
+    up, lo = t / (1 + lower), t * lower / (1 + lower)
+    return le + u * c, (h + max(up * _naca(u), .007)) if side > 0 else (h - max(lo * _naca(u), .007))
+
+
+def _wing_line(part, pf, frame, s0, s1, u, side=1, lower=.72, r=.008, out=.003):
+    """Spanwise panel line on a lifting surface's upper (side 1) or lower (-1) skin at chord fraction u."""
+    pts = []
+    for sp in (s0, s1):
+        y, z = _foil_z(pf, sp, u, side, lower)
+        pts.append(frame(sp, y, z + side * (out + r * .4)))
+    part.tube(pts, r, seg=4)
+
+
+def _wing_rib(part, pf, frame, sp, u0, u1, side=1, lower=.72, r=.007, out=.003):
+    """Chordwise panel line (a rib line) at span sp from chord fraction u0 to u1."""
+    us = [u0] + [u for u in FOIL_U if u0 + .02 < u < u1 - .02] + [u1]
+    pts = []
+    for u in us:
+        y, z = _foil_z(pf, sp, u, side, lower)
+        pts.append(frame(sp, y, z + side * (out + r * .4)))
+    part.tube(pts, r, seg=4)
+
+
+def _wing_rivets(part, pf, frame, s0, s1, u, n, lower=.72, size=.02):
+    """n rivet heads along the upper skin of a (roughly horizontal) surface at chord fraction u."""
+    for k in range(n):
+        sp = s0 + (s1 - s0) * (k + .5) / n
+        y, z = _foil_z(pf, sp, u, 1, lower)
+        part.box((size, size, .012), loc=frame(sp, y, z + .002), bevel=0)
+
+
+def _dischargers(part, pf, frame, spans, length=.13):
+    """Static discharger wicks trailing from the trailing edge at the given spans."""
+    for sp in spans:
+        le, c, t, h = pf.at(sp)
+        part.tube([frame(sp, le + c - .03, h), frame(sp, le + c + length, h)], .006, seg=4)
+
+
 def _squircle(w, h, n=12):
     """Rounded-rectangle outline (superellipse, exponent 4) starting at +x, counter-clockwise."""
     return [(w * math.copysign(abs(math.cos(u)) ** .5, math.cos(u)),
@@ -743,6 +943,17 @@ def _nozzle(a, x, y, z, r, length, seg=16, glow=True):
         g = a.part('Exhaust_glow', 'Alloy')
         g.torus(r * .45, r * .07, loc=(x, y + length * .5 + .02, z), rot=FORWARD, seg=seg, ring=4)
         g.cyl(r * .16, .04, loc=(x, y + length * .5 + .03, z), rot=FORWARD, seg=8, bevel=0)
+    if hd.on(a):  # petal seams over the sleeve and actuator rods on the shroud
+        seams = a.part('Nozzle_seams', 'Undercarriage')
+        acts = a.part('Nozzle_actuators', 'Steel')
+        for k in range(seg):
+            u = (k + .5) * math.tau / seg
+            c, sn = math.cos(u), math.sin(u)
+            seams.tube([(x + c * (r * .976 + .014), y + length * .44, z + sn * (r * .976 + .014)),
+                        (x + c * (r * .86 + .014), y + length + .005, z + sn * (r * .86 + .014))], .007, seg=4)
+            if k % 4 == 1:
+                acts.tube([(x + c * (r * 1.03), y + length * .08, z + sn * (r * 1.03)),
+                           (x + c * (r * .985), y + length * .38, z + sn * (r * .985))], .014, seg=4)
 
 
 def _revolve(part, loop, loc, rot, seg=16):
@@ -950,6 +1161,22 @@ def _turbofan(a, x, y, z, r, length, blades=10, glow=True, cowl='Nacelles'):
     steel.cyl(r * .42, .5, r2=r * .08, loc=(x, y + L - .05, z), rot=BACKWARD, seg=12, bevel=0)       # core plug
     if glow:
         a.part('Exhaust_glow', 'Alloy').torus(r * .6, r * .05, loc=(x, y + L - .1, z), rot=FORWARD, seg=16, ring=4)
+    if hd.on(a):  # a second stage of fan blades, cowl panel bands with latches, the core's exhaust vanes
+        for k in range(blades):
+            phi = (k + .5) * math.tau / blades
+            steel.box((r * .5, .08, .016), loc=(x + math.cos(phi) * r * .48, y + .36, z + math.sin(phi) * r * .48),
+                      rot=(-.5, -phi, 0), bevel=0)
+        bands = a.part('Cowl_bands', 'Armor')
+        for f in (.36, .62):
+            bands.cyl(r * 1.006, .035, loc=(x, y + L * f, z), rot=FORWARD, seg=16, bevel=0)
+            for k in range(3):
+                phi = .5 + k * 1.05
+                bands.box((.06, .08, .03), loc=(x + math.cos(phi) * r * 1.01, y + L * f + .06, z + math.sin(phi) * r * 1.01),
+                          rot=(0, -phi + R90, 0), bevel=0)
+        for k in range(6):
+            phi = k * math.tau / 6
+            steel.box((r * .3, .1, .012), loc=(x + math.cos(phi) * r * .58, y + L - .12, z + math.sin(phi) * r * .58),
+                      rot=(0, -phi, 0), bevel=0)
 
 
 def _rocket_pod(a, x, y, z, r, length, tubes=7, part='Pods'):
@@ -980,11 +1207,12 @@ def _maverick(a, x, y, z, length=1.6, r=.11):
     return y + length * .06 - r * .9
 
 
-def attack_jet(a):
+def attack_jet(a, detail=False):
     """Ground-attack jet (A-10 lineage): boxy armoured fuselage around a seven-barrel nose cannon,
     a bubble canopy, straight wings with gear pods at the roots, drooped tips and split ailerons,
     two turbofans high on the rear fuselage and a twin-fin tailplane. Pylons carry bombs, rocket
     pods, air-to-ground and air-to-air missiles. Origin at the fuselage centre (it flies)."""
+    hd.mark(a, detail)
     body = a.part('Fuselage', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -1080,6 +1308,82 @@ def attack_jet(a):
         _aam(aams, (x, -.6, zt - .14 - .055), length=1.9, r=.062)
     a.pivot('Muzzle_rocket', (0, -1.25, -1.0))
     a.pivot('Muzzle_missile', (0, -1.38, -.93))
+    a.pivot('Muzzle_aam', (0, -1.55, zt - .25))
+    if detail:
+        _attack_jet_detail(a, hull, st, inner, outer, stab, fin)
+
+
+def _attack_jet_detail(a, hull, st, inner, outer, stab, fin):
+    """High-detail parts of the attack jet (see mb_detail.py): frames, seams and rivet rows over the
+    fuselage and the riveted armour bathtub, spar and rib lines with rivets on the wings and tail, static
+    dischargers, a third canopy bow, gear-door lines, sway braces on the pylons, pitot tubes, aerials and
+    anti-collision lights. The turbofans add their own (see _turbofan)."""
+    lines = a.part('Panel_lines', 'Armor')
+    rivets = a.part('Rivets', 'Steel')
+    steel = a.part('Detail_steel', 'Steel')
+    for y in (-5.0, -4.0, -2.6, -1.0, .6, 2.2, 3.4, 4.6):                  # frames, clear of canopy and spine
+        i0, i1 = (11, 5) if -4.8 < y < -2.2 else (10, 6)
+        _hoop_line(lines, hull, y, [(i0 + k) % 16 for k in range((i1 - i0) % 16 + 1)])
+    for i in (4, 12):
+        _seam_line(lines, hull, -5.6, 5.0, i, u=0.0)
+    for i in (6, 9):
+        _seam_line(lines, hull, -2.2, 4.4, i, u=.5)
+    for i in (5, 10):                                                       # the armour bathtub's rivets
+        for u in (.12, .88):
+            _rivet_row(rivets, hull, -4.25, -1.25, i, 16, u=u, size=.02, out=.016)
+    for i in (5, 10):
+        _rivet_row(rivets, hull, -1.0, 4.4, i, 26, u=.5, size=.02)
+    for i in (7, 8):
+        _rivet_row(rivets, hull, 1.7, 4.8, i, 14, u=.5, size=.02)
+    # Wings: spar and rib lines with rivet rows, dischargers on the ailerons.
+    for frame in (RIGHT, LEFT):
+        for u in (.15, .62):
+            _wing_line(lines, inner, frame, .62, 2.55, u)
+            _wing_line(lines, outer, frame, 2.65, 6.15, u)
+            _wing_rivets(rivets, inner, frame, .62, 2.55, u + .04, 12)
+            _wing_rivets(rivets, outer, frame, 2.65, 6.1, u + .04, 22)
+        for sp in (1.1, 1.7):
+            _wing_rib(lines, inner, frame, sp, .06, .7)
+        for sp in (4.5, 5.2, 5.9):
+            _wing_rib(lines, outer, frame, sp, .06, .66)
+        _dischargers(steel, outer, frame, (5.3, 5.85))
+        for u in (.15, .6):
+            _wing_line(lines, stab, frame, .35, 2.65, u)
+        _wing_rivets(rivets, stab, frame, .35, 2.6, .2, 14)
+    for s in (-1, 1):
+        frame = _upright(s * 2.74, -.52, 0.0)
+        for side in (1, -1):
+            for u in (.15, .6):
+                _wing_line(lines, fin, frame, .05, 2.15, u, side=side, lower=1.0)
+            for sp in (.4, 1.3):
+                _wing_rib(lines, fin, frame, sp, .05, .64, side=side, lower=1.0)
+    # A third canopy bow.
+    rings = [_dome(y, w + .004, _skin_z(hull, y, w) - .03, z1 + .004, 9) for y, w, z1 in st]
+    a.part('Canopy_frames', 'Armor').tube(_ring_at(rings, -2.8), .02, seg=6)
+    # Gear pods: door hinge lines either side of the wheel well.
+    for s in (-1, 1):
+        x = s * 1.36
+        gear = [[(x + px, py, pz) for px, py, pz in ring] for ring in
+                (_sec(-1.95, .2, -.95, -.62, pt=2.2, pb=2.2), _sec(-1.4, .27, -1.05, -.5, pt=2.2, pb=2.2),
+                 _sec(.3, .27, -1.03, -.5, pt=2.2, pb=2.2), _sec(1.0, .14, -.86, -.6))]
+        for i in (2, 13):
+            _seam_line(lines, gear, -1.3, .25, i, u=.5, r=.008)
+    # Pylons: sway braces round each store.
+    for x, pf, y0, y1, drop in ((2.05, inner, -1.25, .1, .18), (2.95, outer, -1.0, .3, None),
+                                (4.1, outer, -1.05, .2, None), (5.35, outer, -.9, .2, .14)):
+        zb = pf.bottom(x) - drop if drop else (-.81 if x < 3 else -.79)
+        for s in (-1, 1):
+            for dy in (.3, .7):
+                for dx in (-.065, .065):
+                    steel.box((.03, .05, .06), loc=(s * x + dx, y0 + (y1 - y0) * dy, zb - .01), bevel=0)
+    # Nose pitot tubes, aerials and anti-collision lights.
+    for s in (-1, 1):
+        steel.tube([(s * .45, -5.2, .05), (s * .45, -5.62, .05)], .014, seg=4)
+    steel.box((.02, .2, .14), loc=(0, 2.2, _skin_z(hull, 2.2, 0) + .06), rot=(-.35, 0, 0), bevel=0, taper=(1, .5))
+    steel.box((.02, .18, .12), loc=(0, -2.8, -.83), rot=(.35, 0, 0), bevel=0, taper=(1, .5))
+    beacon = a.part('Beacon_lights', 'Alloy')
+    beacon.sphere((.05, .05, .035), loc=(0, .1, .615), seg=10, rings=6, cut=0)
+    beacon.sphere((.05, .05, .035), loc=(0, .3, -.715), rot=(math.pi, 0, 0), seg=10, rings=6, cut=0)
 
 
 def _prop_blade(part, phi, r0, r1, c0, c1, t0, t1, pitch0, pitch1, axis_y=0.0, sense=1):

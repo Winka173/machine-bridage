@@ -38,6 +38,7 @@ namespace MachineBrigade.Game.Hud
         public ResultPanel(Action again, Action menu, Action doubleCoins, Action next)
         {
             Root = UiKit.Box("overlay", PickingMode.Position);
+            Root.RegisterCallback<AttachToPanelEvent>(_ => UiKit.Uppercase(Root));
             var card = UiKit.Box("result-card");
             _head = UiKit.Box("result-head victory");
             _icon = UiKit.Icon("trophy", UiKit.Ink, 1.8f);
@@ -90,7 +91,7 @@ namespace MachineBrigade.Game.Hud
         /// <param name="outcome">1 victory, 0 draw, -1 defeat.</param>
         public void Show(int outcome, string subtitle, IReadOnlyList<(string label, string value)> rows, RewardView reward)
         {
-            _title.text = Strings.Get(outcome > 0 ? "result.victory" : outcome < 0 ? "result.defeat" : "result.draw");
+            _title.text = Strings.Get(outcome > 0 ? "result.victory" : outcome < 0 ? "result.defeat" : "result.draw").ToUpperInvariant();
             _head.EnableInClassList("victory", outcome > 0);
             _head.EnableInClassList("defeat", outcome < 0);
             _icon.Name = outcome < 0 ? "skull" : outcome > 0 ? "trophy" : "flag";
@@ -158,10 +159,11 @@ namespace MachineBrigade.Game.Hud
         public PausePanel(Action resume, Action restart, Action menu)
         {
             Root = UiKit.Box("overlay", PickingMode.Position);
+            Root.RegisterCallback<AttachToPanelEvent>(_ => UiKit.Uppercase(Root));
             var card = UiKit.Box("result-card");
             var head = UiKit.Box("result-head");
             head.Add(UiKit.Icon("pause", UiKit.Ink, 1.8f));
-            head.Add(UiKit.Text(Strings.Get("pause.title"), "result-title"));
+            head.Add(UiKit.Text(Strings.Get("pause.title").ToUpperInvariant(), "result-title"));
             card.Add(head);
             var buttons = UiKit.Box("result-buttons");
             buttons.Add(UiKit.WideButton("wide primary", "play", Strings.Get("pause.resume"), null, resume));

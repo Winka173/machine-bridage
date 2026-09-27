@@ -42,6 +42,7 @@ Shader "MachineBrigade/Particle"
             #pragma multi_compile_fog
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "MbClear.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 half _Intensity;
@@ -67,6 +68,7 @@ Shader "MachineBrigade/Particle"
                 float4 uv : TEXCOORD0;
                 float3 sun : TEXCOORD1; // sun direction in view space, for lighting smoke
                 float fog : TEXCOORD2;
+                float3 positionWS : TEXCOORD3;
             };
 
             // Fog from view depth. URP's clip-space fog assumes a perspective camera; with this
@@ -89,6 +91,7 @@ Shader "MachineBrigade/Particle"
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.sun = normalize(mul((float3x3)UNITY_MATRIX_V, _MainLightPosition.xyz));
                 output.fog = OrthoFog(positionWS);
+                output.positionWS = positionWS;
                 output.color = input.color;
                 output.uv = input.uv;
                 return output;
@@ -152,7 +155,17 @@ Shader "MachineBrigade/Particle"
                 return colour;
             }
 
-            half4 Frag(Varyings input) : SV_Target
+            // Over a boss: alpha-blended smoke keeps a fifth of its cover, additive fire half its glow.
+            half4 Cleared(half4 colour, float3 positionWS)
+            {
+                half blended = _DstBlend > 1.5h ? 1.0h : 0.0h;
+                half fade = MbClearFade(positionWS, lerp(0.5h, 0.2h, blended));
+                colour.a *= lerp(1.0h, fade, blended);
+                colour.rgb *= lerp(fade, 1.0h, blended);
+                return colour;
+            }
+
+            half4 Shaded(Varyings input)
             {
                 if (_Shape > 3.5h) return Fogged(Billow(input), input.fog);
                 if (_Shape > 2.5h) return Fogged(Flame(input), input.fog);
@@ -175,6 +188,11 @@ Shader "MachineBrigade/Particle"
                 color.rgb *= _Intensity;
                 color.a *= mask;
                 return Fogged(color, input.fog);
+            }
+
+            half4 Frag(Varyings input) : SV_Target
+            {
+                return Cleared(Shaded(input), input.positionWS);
             }
             ENDHLSL
         }

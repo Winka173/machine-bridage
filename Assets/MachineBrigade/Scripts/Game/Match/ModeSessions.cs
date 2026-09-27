@@ -139,7 +139,8 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Deathmatch => new DeathmatchSession(),
                 GameModeKind.KingOfTheHill => new HillSession(),
                 GameModeKind.Assault => new AssaultSession(),
-                GameModeKind.Defend => new DefendSession(),
+                GameModeKind.Defend => new DefendSession(endless: false),
+                GameModeKind.Endless => new DefendSession(endless: true),
                 GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
@@ -170,8 +171,8 @@ namespace MachineBrigade.Game.Match
         public static string MapFile(GameModeKind kind, string mapId) => kind switch
         {
             // Every battlefield has a fortified version; fall back to Conquest's if one is missing.
-            GameModeKind.Siege => UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null
-                ? mapId + "_siege" : mapId + "_conquest",
+            GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless =>
+                UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null ? mapId + "_siege" : mapId + "_conquest",
             GameModeKind.BossRush => mapId + "_sandbox",
             GameModeKind.Weekly => WeeklyFortress.MapId + "_siege",
             _ => LegacyMapFile(kind, mapId),
@@ -373,39 +374,70 @@ namespace MachineBrigade.Game.Match
     /// Defend (phòng thủ): the enemy's Breakthrough, three sectors the player holds one behind the
     /// other with dug-in guns; the enemy's clock grows with every sector it takes. Hold until it runs out.
     /// </summary>
+    /// <summary>
+    /// Defend: the player's own base. The siege map's fortress (walls, gates, guard towers, gun
+    /// turrets, relay stations, shield generators and the command HQ in the keep) is the
+    /// player's, garrison included, and the enemy lays siege to it in three stages, as the player
+    /// does in Siege: the outer line, the shield generators, then the HQ. The player holds until
+    /// the attacker's clock runs out, with enemy waves flown in on top of what it buys. Endless:
+    /// no clock, the waves grow and turn elite until the HQ falls, and the best wave is kept.
+    /// </summary>
     internal sealed class DefendSession : ModeSession
     {
-        private AssaultMode _mode;
+        private const string BestKey = "mb.endless.best";
 
-        public override HudSpec Hud => new() { Mode = HudMode.Score, ScoreLabel = "stat.held" };
-        public override string Kicker => Strings.Get("mode.defend.kicker");
-        public override string Subtitle => Strings.Get("mode.defend.sub");
-        public override string StartToast => Strings.Get("mode.defend.toast");
+        private readonly bool _endless;
+        private SiegeMode _mode;
+
+        public DefendSession(bool endless) => _endless = endless;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Mission };
+        public override string Kicker => Strings.Get(_endless ? "mode.endless.kicker" : "mode.defend.kicker");
+        public override string Subtitle => Strings.Get(_endless ? "mode.endless.sub" : "mode.defend.sub");
+        public override string StartToast => Strings.Get(_endless ? "mode.endless.toast" : "mode.defend.toast");
+
+        /// <summary>The furthest wave held in Endless.</summary>
+        public static int BestWave => UnityEngine.PlayerPrefs.GetInt(BestKey, 0);
 
         protected override void Build(SimWorld world, int seed)
         {
-            // The harder the enemy, the more time it has to break through.
-            var start = Difficulty switch { AiDifficulty.Hard => 400f, AiDifficulty.Easy => 330f, _ => 360f };
-            _mode = new AssaultMode(new AssaultRules
+            var hard = Difficulty == AiDifficulty.Hard;
+            var easy = Difficulty == AiDifficulty.Easy;
+            var defender = PlayerSide(24f, 1.15f);
+            defender.ArmyCap = 36;
+            var attacker = EnemySide(26f, hard ? 1.6f : easy ? 1.15f : 1.35f, Difficulty, world.Catalog);
+            attacker.ArmyCap = 40;
+            _mode = new SiegeMode(new SiegeRules
             {
-                PlayerDefends = true, StartSeconds = start,
-                Attacker = EnemySide(28f, Difficulty == AiDifficulty.Hard ? 1.7f : Difficulty == AiDifficulty.Easy ? 1.25f : 1.5f, Difficulty, world.Catalog),
-                Defender = PlayerSide(20f, 1.1f),
+                PlayerDefends = true, Endless = _endless,
+                // The clock the enemy has to break in: longer the harder it is.
+                StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
+                WaveSeconds = _endless ? 55f : 75f, StageCp = 12f,
+                Attacker = attacker, Defender = defender,
             });
             Mode = _mode;
             _mode.Setup(world);
-            AddEnemyCommander(_mode, seed, CommanderStance.Attack);
-            AddPlayerCommander(_mode, seed).Stance = CommanderStance.Defend;
+            var enemy = AddEnemyCommander(_mode, seed, CommanderStance.Attack);
+            enemy.Goal = w => w.TryGetProp(_mode.Target(w), out var objective) ? objective.Position : _mode.Fortress;
+            enemy.Demolish = w => _mode.Target(w);
+            enemy.Plunder = _ => _mode.BountyTargets;
+            enemy.RoleMix = ConquestAi.SiegeMix;
+            // The player's commander stands on whatever the enemy is going for.
+            var player = AddPlayerCommander(_mode, seed);
+            player.Stance = CommanderStance.Defend;
+            player.Goal = w => w.TryGetProp(_mode.Target(w), out var objective) ? objective.Position : _mode.Fortress;
+            player.Leash = 40f;
         }
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
         {
             hud.SetStats(0, 0, 0, 0f, fps);
-            FillPoints(_mode, scratch);
-            var count = _mode.Points.Count;
-            var held = PointCapture.Held(_mode.Points, PlayerTeam);
-            hud.SetScore(held, count - held, count, scratch);
-            hud.SetTimer(_mode.SecondsLeft(world));
+            scratch.Clear();
+            var integrity = 1f - _mode.Progress(world);
+            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
+                Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" }));
+            var detail = Strings.Format("base.waveOf", _mode.Wave) + "  ·  " + $"{UnityEngine.Mathf.RoundToInt(integrity * 100f)}%";
+            hud.SetMission(goal, detail, integrity, _endless ? -1f : _mode.SecondsLeft(world), scratch);
         }
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
@@ -413,8 +445,19 @@ namespace MachineBrigade.Game.Match
             if (_mode.Result is not { } result) return null;
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.held"), $"{PointCapture.Held(_mode.Points, PlayerTeam)} / {_mode.Points.Count}"));
+            outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
+            if (_endless)
+            {
+                var best = BestWave;
+                if (_mode.Wave > best) UnityEngine.PlayerPrefs.SetInt(BestKey, _mode.Wave);
+                outcome.Subtitle = Strings.Format(_mode.Wave > best ? "endless.record" : "endless.reached", _mode.Wave);
+                outcome.Rows.Add((Strings.Get("endless.best"), UnityEngine.Mathf.Max(best, _mode.Wave).ToString()));
+                outcome.Reward = Rewards.Survival(Difficulty, _mode.Wave, kills);
+                return outcome;
+            }
+            outcome.Rows.Add((Strings.Get("base.integrity"), $"{UnityEngine.Mathf.RoundToInt((1f - _mode.Progress(world)) * 100f)}%"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            if (outcome.Result > 0) outcome.Reward.Coins += 120;
             return outcome;
         }
     }
@@ -550,9 +593,10 @@ namespace MachineBrigade.Game.Match
 
         protected override void Build(SimWorld world, int seed)
         {
-            var player = PlayerSide(30f, Difficulty == AiDifficulty.Hard ? 1.35f : 1.6f);
+            // A bigger opening purse and income than the old 30 CP and 1.6: playtests found the rush too hard to win.
+            var player = PlayerSide(40f, Difficulty == AiDifficulty.Hard ? 1.55f : 1.8f);
             player.ArmyCap = 36;
-            _mode = new BossRushMode(new BossRushRules { Player = player });
+            _mode = new BossRushMode(new BossRushRules { Player = player, Bounty = 25f });
             Mode = _mode;
             _mode.Setup(world);
             world.TryGetRally(PlayerTeam, out var home);
@@ -726,20 +770,26 @@ namespace MachineBrigade.Game.Match
             if (commander)
             {
                 var stance = _def.EnemyStance == "Defend" ? CommanderStance.Defend : CommanderStance.Attack;
-                AddEnemyCommander(_mode, seed, stance).Goal = w => _mode.EnemyGoal(w);
+                var enemyAi = AddEnemyCommander(_mode, seed, stance);
+                enemyAi.Goal = w => _mode.EnemyGoal(w);
+                // Protect: the enemy comes to knock the player's buildings down.
+                if (_def.Goal == MissionGoal.Protect) enemyAi.Demolish = w => _mode.EnemyDemolish(w);
             }
             else if (_def.EnemyAi == "waves")
             {
                 world.TryGetRally(PlayerTeam, out var home);
                 Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => _mode.EnemyGoal(w) ?? home };
+                if (_def.Goal == MissionGoal.Protect) Waves.Demolish = w => _mode.EnemyDemolish(w);
             }
             var player = AddPlayerCommander(_mode, seed);
             if (_tier == 2) player.AutoStrike = false;
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
+            // A demolition inside a fortress is a siege: guns to break it from outside its reach.
+            if (_def.Goal == MissionGoal.Destroy && _def.Variant == "siege") player.RoleMix = ConquestAi.SiegeMix;
             // Holding a point: fight whatever comes at it, but never wander off and leave it open.
             if (_def.Goal == MissionGoal.Hold) player.Leash = 32f;
-            if (_def.Goal == MissionGoal.Survive)
+            if (_def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
             {
                 foreach (var p in world.Map.Points)
                     if (_def.Points.Count > 0 && p.Id == _def.Points[0]) player.DefendPoint = p.Position;
@@ -770,7 +820,7 @@ namespace MachineBrigade.Game.Match
             var (done, needed) = _mode.Count(world);
             var detail = _def.Goal switch
             {
-                MissionGoal.Hold or MissionGoal.Survive => $"{Clock(done)} / {Clock(needed)}",
+                MissionGoal.Hold or MissionGoal.Survive or MissionGoal.Protect => $"{Clock(done)} / {Clock(needed)}",
                 MissionGoal.Intercept when _mode.LaunchIn(world) >= 0f => Strings.Format("mission.launchIn", Clock(_mode.LaunchIn(world))),
                 MissionGoal.Boss or MissionGoal.Intercept => $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%",
                 _ => $"{done} / {needed}",

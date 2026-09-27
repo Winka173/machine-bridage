@@ -78,6 +78,13 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Team knocked down an enemy building worth a bounty (DefId: the building) at Position, paid Value CP.</summary>
         Bounty,
+
+        /// <summary>
+        /// A vehicle's equipment went off where the player should see it (DefId: the trait's or
+        /// module's key, e.g. "ricochet_shells"): the game shows a short word over the vehicle. At
+        /// most one every two seconds per vehicle.
+        /// </summary>
+        TraitProc,
     }
 
     /// <summary>
@@ -140,6 +147,13 @@ namespace MachineBrigade.Sim.Events
             return new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id,
                 shooter.Team, mount, target);
         }
+
+        /// <summary>A shot from equipment rather than a mount (a Drone Escort drone): drawn from the main muzzle with its own weapon's look.</summary>
+        internal static SimEvent FiredWith(Vehicle shooter, WeaponDef weapon, Vector2 origin, Vector2 aim, float travelTime, EntityId target) =>
+            new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id, shooter.Team, 0, target);
+
+        internal static SimEvent Proc(Vehicle v, string key) =>
+            new(SimEventKind.TraitProc, v.Id, v.Position, default, 0f, default, key, v.Team, airborne: v.Flying);
 
         internal static SimEvent Impact(WeaponDef weapon, Vector2 at, EntityId hit, int team, bool airborne = false) =>
             new(SimEventKind.ProjectileImpact, hit, at, default, weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team,

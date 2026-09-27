@@ -14,9 +14,11 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     internal static class GearArt
     {
+        // Grey, green, blue, purple and orange: legendary is orange, not gold, so it never reads as
+        // the coin's yellow or the battle button's amber.
         public static readonly Color[] Colors =
         {
-            new(0.72f, 0.75f, 0.78f), new(0.38f, 0.8f, 0.36f), new(0.3f, 0.6f, 1f), new(0.72f, 0.42f, 0.98f), new(1f, 0.74f, 0.2f),
+            new(0.6f, 0.655f, 0.69f), new(0.3f, 0.78f, 0.39f), new(0.243f, 0.557f, 1f), new(0.643f, 0.361f, 1f), new(1f, 0.541f, 0.122f),
         };
 
         private static readonly Dictionary<int, Texture2D> Frames = new();
@@ -28,10 +30,51 @@ namespace MachineBrigade.Game.Hud
         {
             Frames.Clear();
             Pictures.Clear();
+            Own.Clear();
+            NoPicture.Clear();
         }
 
-        public static string PictureName(GearItem item) =>
-            item.Slot == GearSlot.Special ? item.Module.ToString().ToLowerInvariant() : item.Slot.ToString().ToLowerInvariant();
+        /// <summary>
+        /// The picture a piece falls back to when its base type has none of its own yet
+        /// (Resources/UI/Gear/gear_&lt;name&gt;): its slot's, plating base types the old plating's,
+        /// Optics the crew helmet with its goggles, new modules the reactive armour's.
+        /// </summary>
+        public static string PictureName(GearItem item)
+        {
+            if (item.Slot == GearSlot.Special)
+                return item.Module is SpecialModule.ReactiveArmor or SpecialModule.AutoRepair or SpecialModule.VeteranCrew or SpecialModule.SmokeDischarger
+                    ? item.Module.ToString().ToLowerInvariant()
+                    : "reactivearmor";
+            return SlotPicture(item.Slot, Gear.BaseOf(item)?.Plating == true);
+        }
+
+        private static string SlotPicture(GearSlot slot, bool plating = false) => slot switch
+        {
+            GearSlot.Special => "reactivearmor",
+            GearSlot.Optics => "veterancrew",
+            GearSlot.Armor when plating => "plating",
+            _ => slot.ToString().ToLowerInvariant(),
+        };
+
+        private static readonly Dictionary<string, Texture2D> Own = new();
+        private static readonly HashSet<string> NoPicture = new();
+
+        /// <summary>A piece's own picture (Resources/UI/Gear/&lt;base type id&gt;), else its fallback (a missing one is looked for once).</summary>
+        public static Texture2D PictureFor(GearItem item)
+        {
+            var id = item.baseType;
+            if (!string.IsNullOrEmpty(id) && !NoPicture.Contains(id))
+            {
+                if (!Own.TryGetValue(id, out var tex) || tex == null)
+                {
+                    tex = Resources.Load<Texture2D>("UI/Gear/" + id);
+                    if (tex == null) NoPicture.Add(id);
+                    else Own[id] = tex;
+                }
+                if (tex != null) return tex;
+            }
+            return Picture(PictureName(item));
+        }
 
         /// <summary>A tile for a piece: frame, picture, level and pips. <paramref name="size"/> in panel pixels.</summary>
         public static VisualElement Tile(GearItem item, float size, bool showLevel = true)
@@ -42,7 +85,7 @@ namespace MachineBrigade.Game.Hud
             tile.style.backgroundImage = Background.FromTexture2D(Frame(item.rarity));
             var picture = new VisualElement { pickingMode = PickingMode.Ignore };
             picture.AddToClassList("gear-art-picture");
-            if (Picture(PictureName(item)) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
+            if (PictureFor(item) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
             tile.Add(picture);
             var pips = new VisualElement { pickingMode = PickingMode.Ignore };
             pips.AddToClassList("gear-art-pips");
@@ -72,7 +115,7 @@ namespace MachineBrigade.Game.Hud
             tile.style.width = tile.style.height = size;
             var picture = new VisualElement { pickingMode = PickingMode.Ignore };
             picture.AddToClassList("gear-art-picture");
-            var name = slot == GearSlot.Special ? "reactivearmor" : slot.ToString().ToLowerInvariant();
+            var name = SlotPicture(slot);
             if (Picture(name) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
             tile.Add(picture);
             return tile;
@@ -86,7 +129,12 @@ namespace MachineBrigade.Game.Hud
             return tex;
         }
 
-        /// <summary>The rarity frame, drawn once per rarity: a radial glow in its colour, a border, and for legendary a diagonal shine.</summary>
+        /// <summary>
+        /// The rarity frame, drawn once per rarity: graphite tinted by the rarity, a glow in its
+        /// colour behind the picture, a hairline border and a bar of the colour along the bottom
+        /// (the menus' flat style: square corners, the colour where it tells), and for legendary a
+        /// diagonal shine.
+        /// </summary>
         public static Texture2D Frame(int rarity)
         {
             if (Frames.TryGetValue(rarity, out var cached) && cached != null) return cached;
@@ -95,7 +143,7 @@ namespace MachineBrigade.Game.Hud
             var colour = Colors[rarity];
             var dark = new Color(0.07f, 0.085f, 0.095f);
             var pixels = new Color[n * n];
-            const float corner = 14f;
+            const float corner = 3f;
             for (var y = 0; y < n; y++)
             for (var x = 0; x < n; x++)
             {
@@ -112,13 +160,16 @@ namespace MachineBrigade.Game.Hud
                 var u = (x - n * 0.5f) / (n * 0.5f);
                 var v = (y - n * 0.42f) / (n * 0.5f);
                 var glow = Mathf.Clamp01(1f - Mathf.Sqrt(u * u + v * v) * 0.95f);
-                var c = Color.Lerp(dark, colour * 0.62f, glow * glow * (0.55f + 0.1f * rarity));
-                // A band of the rarity's colour along the bottom, under the pips.
-                if (y < 12) c = Color.Lerp(c, colour * 0.45f, 0.6f);
-                // Border: 3 px of the colour, a lighter inner line.
+                // Graphite tinted by the rarity, lit from the top, a glow of the colour behind the
+                // picture: the rarity still reads across a room without a full-colour tile.
+                var lit = Mathf.Lerp(0.1f, 0.3f, Mathf.Pow(y / (n - 1f), 1.3f)) + glow * glow * 0.34f;
+                var c = dark * 0.85f + colour * lit;
+                // A darker band along the bottom, under the pips and the level, on a bar of the colour.
+                if (y < 16) c = Color.Lerp(c, dark, 0.55f);
+                if (y < 5) c = colour;
+                // Border: a 2 px line of the colour.
                 var edge = -outside;
-                if (edge < 3.5f) c = Color.Lerp(c, colour, 0.95f);
-                else if (edge < 5f) c = Color.Lerp(c, Color.Lerp(colour, Color.white, 0.4f), 0.35f);
+                if (edge < 2.5f) c = Color.Lerp(c, colour, 0.85f);
                 // Legendary: a diagonal shine; epic: a brighter heart.
                 if (rarity >= 4)
                 {

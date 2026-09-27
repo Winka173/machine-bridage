@@ -68,9 +68,12 @@ namespace MachineBrigade.Game.Match
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private ObjectiveView _objectives;
+        private MissionMarkers _markers;
+        private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
         private Weather _weather;
+        private Weather _leavingWeather;
         private RtsCamera _camera;
         private SelectionController _selection;
         private TouchGestures _gestures;
@@ -129,6 +132,7 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
                 if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
                 if (DebugFlags.Has("-mb-defend")) MatchSettings.Mode = GameModeKind.Defend;
+                if (DebugFlags.Has("-mb-endless")) MatchSettings.Mode = GameModeKind.Endless;
                 if (DebugFlags.Has("-mb-weekly")) MatchSettings.Mode = GameModeKind.Weekly;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
@@ -140,6 +144,8 @@ namespace MachineBrigade.Game.Match
                     }
             }
             var options = MatchSettings.Options;
+            // High graphics draws the most-seen vehicles with their high-detail models.
+            ModelLibrary.HighDetail = options.Shadows == ShadowLevel.High && options.RichScenery;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
             _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
@@ -156,6 +162,15 @@ namespace MachineBrigade.Game.Match
             _world = new SimWorld(catalog, map, seed);
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost);
+            // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
+            if (mission != null)
+            {
+                var deck = new List<VehicleBoost>();
+                foreach (var id in MatchSettings.DeckVehicles)
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                var edge = EnemyScaling.Match(deck);
+                _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
+            }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             // A campaign tier holds for the one mission it was chosen for.
             if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;
@@ -177,6 +192,7 @@ namespace MachineBrigade.Game.Match
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
                 _objectives = new ObjectiveView(_session.Objectives, _meshes, _materials, worldRoot);
+            if (_session is MissionSession) _markers = new MissionMarkers(_meshes, _materials, worldRoot);
 
             _world.TryGetRally(PlayerTeam, out var rally);
             var start = _menu ? Vector3.zero : new Vector3(rally.X + 16f, 0f, rally.Y + 16f);
@@ -197,7 +213,9 @@ namespace MachineBrigade.Game.Match
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-                _camera.FocusOn(new Vector3(-80f, 0f, 80f));
+                // The north-west edge: the boundary line and the country beyond it.
+                var edge = _world.Map.HalfSize * 0.8f;
+                _camera.FocusOn(new Vector3(-edge, 0f, edge));
                 _lastInput = float.MaxValue;
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
@@ -218,8 +236,7 @@ namespace MachineBrigade.Game.Match
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
                 : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
-            if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
-            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
+            _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
             _worldRoot = worldRoot;
@@ -239,7 +256,7 @@ namespace MachineBrigade.Game.Match
             // The menu's vehicle detail page shows the model on a turntable.
             if (_menu)
             {
-                _preview = new UnitPreview(_models, worldRoot);
+                _preview = new UnitPreview(catalog, _materials, _meshes, _models, worldRoot);
                 _hud.MenuPreview = _preview;
             }
             if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);
@@ -286,15 +303,13 @@ namespace MachineBrigade.Game.Match
             var random = new System.Random((int)_world.Tick);
             for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
             if (next == _weatherKind) return;
-            _weather.Dispose();
+            // The new weather rolls in over a few seconds while the old one thins out (see Weather).
+            _leavingWeather?.Dispose();
+            _leavingWeather = _weather;
             _weatherKind = next;
-            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            var theme = MapTheme.For(_world.Map.Theme);
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
-            if (next == WeatherKind.Clear)
-            {
-                var theme = MapTheme.For(_world.Map.Theme);
-                _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
-            }
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -452,6 +467,11 @@ namespace MachineBrigade.Game.Match
             {
                 _effects.Tick(_views);
                 _weather.Tick();
+                if (_leavingWeather != null && !_leavingWeather.TickLeaving())
+                {
+                    _leavingWeather.Dispose();
+                    _leavingWeather = null;
+                }
                 if (!_menu && Time.frameCount % 15 == 0) _audio.BossMusic = BossOnField();
                 if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
@@ -476,6 +496,11 @@ namespace MachineBrigade.Game.Match
             _perf?.End(PerfProbe.Section.Views);
             _perf?.Begin();
             _objectives?.Render(Time.time);
+            if (_markers != null && _session is MissionSession mission)
+            {
+                mission.Mission.Marks(_world, _marks);
+                _markers.Render(_marks, _views, _map, _camera.Rotation, Time.time);
+            }
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
@@ -621,6 +646,7 @@ namespace MachineBrigade.Game.Match
             PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
+            _leavingWeather?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
             _audio?.Dispose();
@@ -634,6 +660,21 @@ namespace MachineBrigade.Game.Match
             _atmosphere?.Dispose();
             Time.timeScale = 1f;
             AudioListener.pause = false;
+        }
+
+        /// <summary>An equipment proc: its word over the vehicle (not over an enemy the player cannot see).</summary>
+        private void ShowTraitWord(in SimEvent e)
+        {
+            var word = GearText.Proc(e.DefId);
+            if (word == null) return;
+            Vector3 at;
+            if (_views.TryGet(e.Entity, out var view))
+            {
+                if (e.Team != PlayerTeam && !view.Sim.IsVisibleTo(PlayerTeam)) return;
+                at = view.Position + Vector3.up * 3.2f;
+            }
+            else at = new Vector3(e.Position.X, 3.2f, e.Position.Y);
+            _hud.TraitWord(at, word, e.Team == PlayerTeam, _camera.Camera);
         }
 
         private void DispatchEvents()
@@ -669,6 +710,9 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.FortressAlert when !_menu:
                         if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
+                        break;
+                    case SimEventKind.TraitProc when !_menu:
+                        ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
                         _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
@@ -846,6 +890,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.KingOfTheHill => "mode.hill",
                 GameModeKind.Assault => "mode.assault",
                 GameModeKind.Defend => "mode.defend",
+                GameModeKind.Endless => "mode.endless",
                 GameModeKind.Weekly => "mode.weekly",
                 GameModeKind.Survival => "mode.survival",
                 GameModeKind.Siege => "mode.siege",
@@ -946,6 +991,8 @@ namespace MachineBrigade.Game.Match
                 if (!v.IsAlive || (v.Team != PlayerTeam && !v.IsVisibleTo(PlayerTeam))) continue;
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying);
             }
+            // A mission's targets are known wherever they are (the briefing's intelligence).
+            foreach (var mark in _marks) minimap.Mark(new Vector2(mark.Position.X, mark.Position.Y), (int)mark.Kind);
             var cam = _camera;
             var corners = new[] { new Vector2(0f, 0f), new Vector2(Screen.width, 0f), new Vector2(Screen.width, Screen.height), new Vector2(0f, Screen.height) };
             var ground = new Vector2[4];

@@ -313,12 +313,18 @@ namespace MachineBrigade.Sim.AI
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
-            var foundCluster = FindCluster(out var cluster, out var size);
-            // A boss is worth the biggest strike on its own.
+            var foundCluster = FindCluster(world, out var cluster, out var size);
+            // A boss is worth the biggest strike on its own: aimed at its far side from our own
+            // vehicles fighting it, so the bombs are not seen falling on them.
             foreach (var e in _tactics.KnownEnemies)
                 if (e.Def.Boss && !e.Flying)
                 {
                     cluster = e.Position;
+                    if (OwnCentroid(world, e.Position, e.Radius + 16f, out var own))
+                    {
+                        var away = e.Position - own;
+                        if (away.LengthSquared() > 0.01f) cluster = e.Position + Vector2.Normalize(away) * (e.Radius + 3f);
+                    }
                     size = ClusterSize + 2;
                     foundCluster = true;
                     break;
@@ -337,8 +343,66 @@ namespace MachineBrigade.Sim.AI
             world.TryGetRally(_team, out var home);
             var along = cluster - home;
             along = along.LengthSquared() > 1f ? Vector2.Normalize(along) : Vector2.UnitX;
+            if (pick.IsLine)
+            {
+                // A bombing run is laid along a line clear of our own vehicles: the direction from
+                // home first, then turned until it is clear; none clear, no run.
+                if (!ClearRun(world, cluster, along, pick, out along)) return false;
+            }
+            else if (OwnWithin(world, cluster, pick.Radius + StrikeMargin) && !Boss(cluster)) return false;
             var start = pick.IsLine ? cluster - along * (pick.Length * 0.5f) : cluster;
             return world.Submit(Command.Strike(_team, pick.Id, world.ClampToMap(start), start + along)).Accepted;
+        }
+
+        /// <summary>Room left round a strike's blast before our own vehicles count as under it.</summary>
+        private const float StrikeMargin = 5f;
+
+        private bool Boss(Vector2 at)
+        {
+            foreach (var e in _tactics.KnownEnemies)
+                if (e.Def.Boss && Vector2.Distance(e.Position, at) < e.Radius + 8f) return true;
+            return false;
+        }
+
+        /// <summary>Any of our own ground vehicles within reach of a point (aircraft fly above the blasts).</summary>
+        private bool OwnWithin(SimWorld world, Vector2 at, float reach)
+        {
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _team && !v.Flying && Vector2.Distance(v.Position, at) < reach + v.Radius) return true;
+            return false;
+        }
+
+        private bool OwnCentroid(SimWorld world, Vector2 at, float reach, out Vector2 centre)
+        {
+            centre = Vector2.Zero;
+            var n = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Flying || Vector2.Distance(v.Position, at) > reach) continue;
+                centre += v.Position;
+                n++;
+            }
+            if (n == 0) return false;
+            centre /= n;
+            return true;
+        }
+
+        /// <summary>A direction for a bombing run over <paramref name="centre"/> that stays clear of our own vehicles.</summary>
+        private bool ClearRun(SimWorld world, Vector2 centre, Vector2 preferred, SupportDef strike, out Vector2 direction)
+        {
+            var reach = strike.Radius + StrikeMargin;
+            for (var turn = 0; turn < 8; turn++)
+            {
+                // 0, +45, -45, +90, -90, +135, -135, 180 degrees from the preferred direction.
+                var angle = (turn + 1) / 2 * (MathF.PI / 4f) * (turn % 2 == 1 ? 1f : -1f);
+                direction = SimMath.Rotate(preferred, angle);
+                var clear = true;
+                for (var s = -4; s <= 4 && clear; s++)
+                    if (OwnWithin(world, centre + direction * (strike.Length * 0.5f * s / 4f), reach)) clear = false;
+                if (clear) return true;
+            }
+            direction = preferred;
+            return false;
         }
 
         private void TryDeploy(SimWorld world, TeamEconomy economy)
@@ -350,6 +414,8 @@ namespace MachineBrigade.Sim.AI
             var bestAffordableScore = float.MinValue;
             CountEnemies(out var air, out var heavy, out var light);
             CountOwn(world, out var ownAa, out var ownArtillery, out var ownAir, out var ownTotal);
+            var enemy = EnemyMix();
+            var answer = OwnAnswers(world);
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -386,16 +452,14 @@ namespace MachineBrigade.Sim.AI
                 if (_difficulty != AiDifficulty.Easy)
                 {
                     var main = def.Weapon;
-                    if (CanHitAir(def)) score += air * 2.2f - ownAa * 1.5f;
-                    if (main.DamageType == DamageType.ArmorPiercing) score += heavy * 0.6f;
-                    if (main.DamageType is DamageType.Kinetic or DamageType.Fire) score += light * 0.5f;
+                    score += CounterScore(def, enemy, answer);
                     // Keep about a seventh of the army in the air: aircraft are fast and hit hard,
                     // but dear, and anti-air is what they are for.
                     if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                     // Enough anti-air for the enemy's aircraft, not a car park of it.
-                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * 0.5f - 1f) * 1.5f;
+                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * 0.7f - 1f) * 1.2f;
                     // Points are taken on the ground: keep a core of vehicles that can capture.
                     if (neutral > 0 && capturers < 4) score += def.Flying || def.CaptureRate <= 0f ? -2.5f : 1.2f;
                     if (demolishing)
@@ -455,7 +519,7 @@ namespace MachineBrigade.Sim.AI
             return cards;
         }
 
-        private bool FindCluster(out Vector2 centre, out int size)
+        private bool FindCluster(SimWorld world, out Vector2 centre, out int size)
         {
             centre = default;
             size = 0;
@@ -472,6 +536,8 @@ namespace MachineBrigade.Sim.AI
                     sum += other.Position;
                 }
                 if (around < ClusterSize || around <= size) continue;
+                // Never a cluster our own vehicles are fighting in: the bombs would fall on them too.
+                if (OwnWithin(world, sum / around, ClusterRadius + StrikeMargin)) continue;
                 size = around;
                 centre = sum / around;
             }
@@ -501,6 +567,85 @@ namespace MachineBrigade.Sim.AI
             return best >= 2;
         }
 
+        /// <summary>The value (CP) of what the enemy fields that the AI has seen, by kind.</summary>
+        private struct Mix
+        {
+            public float Air, Heavy, Light, Artillery, AntiAir, Total;
+        }
+
+        private Mix EnemyMix()
+        {
+            var mix = new Mix();
+            foreach (var e in _tactics.KnownEnemies)
+            {
+                if (e.Def.Static) continue;
+                // A boss weighs as much as a small army of its kind.
+                var value = e.Def.Boss ? 30f : MathF.Max(1f, e.Def.CpCost);
+                if (e.Flying) mix.Air += value;
+                else if (e.Def.Weapon.MinRange > 0f) mix.Artillery += value;
+                else if (e.Armor == ArmorClass.Heavy) mix.Heavy += value;
+                else mix.Light += value;
+                if (CanHitAir(e.Def)) mix.AntiAir += value;
+                mix.Total += value;
+            }
+            return mix;
+        }
+
+        /// <summary>The value (CP) of our own vehicles that answer each kind of enemy: anti-air (fighters included), anti-armour, anti-light, and hunters fast enough to catch artillery.</summary>
+        private Mix OwnAnswers(SimWorld world)
+        {
+            var mix = new Mix();
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted) continue;
+                var value = MathF.Max(1f, v.Def.CpCost);
+                if (CanHitAir(v.Def)) mix.Air += value;
+                if (KillsArmour(v.Def)) mix.Heavy += value;
+                if (v.Def.Weapon.DamageType is DamageType.Kinetic or DamageType.Fire or DamageType.HighExplosive && v.Def.Weapon.MinRange <= 0f)
+                    mix.Light += value;
+                if (v.Def.Flying || v.Def.Speed >= 11f) mix.Artillery += value;
+                mix.Total += value;
+            }
+            return mix;
+        }
+
+        private static bool KillsArmour(VehicleDef def)
+        {
+            foreach (var m in def.Mounts)
+                if (m.Weapon.DamageType == DamageType.ArmorPiercing && m.Weapon.CanTarget(false)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// How much a vehicle answers what the enemy fields, against what we already have for it: a
+        /// kind of enemy worth a third of its army wants about a third of ours able to kill it. Lots
+        /// of enemy aircraft: anti-air and fighters; none: no anti-air. Heavy armour: guns and missiles
+        /// that pierce it. Light vehicles: machine guns, flame and blast. Artillery: aircraft and fast
+        /// raiders. An enemy thick with anti-air: fewer aircraft of our own.
+        /// </summary>
+        private static float CounterScore(VehicleDef def, Mix enemy, Mix own)
+        {
+            if (enemy.Total <= 0f) return 0f;
+            var ours = MathF.Max(8f, own.Total);
+            float Short(float theirs, float answering) => theirs / enemy.Total - answering / ours * 0.85f;
+            var score = 0f;
+            var antiAir = CanHitAir(def);
+            if (antiAir)
+            {
+                score += Short(enemy.Air, own.Air) * 8f;
+                // The first answer to aircraft matters most.
+                if (enemy.Air > 0f && own.Air <= 0f) score += 2f;
+                // No aircraft over there: a dedicated anti-air vehicle is dead weight.
+                if (enemy.Air <= 0f && def.Class == UnitClass.AntiAir) score -= 2.5f;
+            }
+            if (KillsArmour(def)) score += Short(enemy.Heavy, own.Heavy) * 6f;
+            if (def.Weapon.DamageType is DamageType.Kinetic or DamageType.Fire or DamageType.HighExplosive && def.Weapon.MinRange <= 0f)
+                score += Short(enemy.Light, own.Light) * 4f;
+            if (def.Flying || def.Speed >= 11f) score += Short(enemy.Artillery, own.Artillery) * 4f;
+            if (def.Flying && !antiAir) score -= enemy.AntiAir / enemy.Total * 4f;
+            return score;
+        }
+
         private void CountEnemies(out int air, out int heavy, out int light)
         {
             air = heavy = light = 0;
@@ -521,7 +666,8 @@ namespace MachineBrigade.Sim.AI
                 if (!v.IsAlive || v.Team != _team || v.Def.Static) continue;
                 total++;
                 if (v.Def.Flying) air++;
-                else if (CanHitAir(v.Def)) aa++;
+                // Fighters answer aircraft as well as anti-air vehicles do.
+                if (CanHitAir(v.Def)) aa++;
                 if (v.Def.Weapon.MinRange > 0f) artillery++;
             }
         }

@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Hud
         private readonly Action _play;
         private readonly VisualElement _backdrop, _topBar, _tabBar, _profile, _backButton;
         private readonly Label _pageTitle;
-        private readonly List<Label> _coinLabels = new(), _rankLabels = new(), _gemLabels = new();
+        private readonly List<Label> _coinLabels = new(), _rankLabels = new();
         private readonly List<VisualElement> _rankFills = new();
         private readonly List<(VisualElement element, Func<bool> selected)> _choices = new();
         private readonly Dictionary<Tab, VisualElement> _tabPages = new();
@@ -84,20 +84,19 @@ namespace MachineBrigade.Game.Hud
             _pageTitle = UiKit.Text("", "nav-title");
             _topBar.Add(_pageTitle);
             _topBar.Add(UiKit.Box("nav-spacer"));
-            _topBar.Add(CurrencyPill("coin", _coinLabels, () => OpenShop(ShopTab.Deals)));
-            _topBar.Add(CurrencyPill("gem", _gemLabels, () => OpenShop(ShopTab.Gems)));
+            _topBar.Add(CurrencyPill("coin", _coinLabels, () => OpenShop(ShopTab.Coins)));
             var gear = UiKit.Button("nav-icon", () => Open(_settings, Strings.Get("menu.settings")));
             gear.Add(UiKit.Icon("settings", UiKit.Ink, 1.9f));
             _topBar.Add(gear);
             Root.Add(_topBar);
 
-            // Bottom tabs: Battle in the middle, raised and wider.
+            // The navigation rail down the left edge (landscape has width to spare, not height).
             _tabBar = UiKit.Box("nav-tabs", PickingMode.Position);
-            foreach (var (tab, icon, key) in new[] { (Tab.Shop, "shop", "tab.shop"), (Tab.Army, "tank", "tab.army"), (Tab.Battle, "swords", "tab.battle"),
-                         (Tab.Campaign, "campaign", "tab.campaign"), (Tab.Events, "trophy", "tab.events") })
+            foreach (var (tab, icon, key) in new[] { (Tab.Battle, "swords", "tab.battle"), (Tab.Army, "tank", "tab.army"),
+                         (Tab.Campaign, "campaign", "tab.campaign"), (Tab.Events, "trophy", "tab.events"), (Tab.Shop, "shop", "tab.shop") })
             {
                 var t = tab;
-                var button = UiKit.Button(tab == Tab.Battle ? "nav-tab battle" : "nav-tab", () => ShowTab(t));
+                var button = UiKit.Button("nav-tab", () => ShowTab(t));
                 button.Add(UiKit.Icon(icon, UiKit.Ink, 1.9f));
                 button.Add(UiKit.Text(Strings.Get(key), "nav-tab-label"));
                 var dot = UiKit.Box("red-dot");
@@ -110,6 +109,7 @@ namespace MachineBrigade.Game.Hud
 
             // A language change rebuilds the menu; come back to the page the player was on.
             ShowTab(_reopenTab);
+            UiKit.Uppercase(Root);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
         }
@@ -248,7 +248,6 @@ namespace MachineBrigade.Game.Hud
         {
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
-            foreach (var label in _gemLabels) label.text = PlayerProfile.Gems.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
             foreach (var fill in _rankFills)
                 fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));
@@ -261,6 +260,7 @@ namespace MachineBrigade.Game.Hud
             RefreshEvents();
             RefreshDetail();
             RefreshDots();
+            UiKit.Uppercase(Root);
         }
 
         /// <summary>Red dots only for something to do (Clash Royale's rule): an affordable rank-up, a reward to claim, a free crate.</summary>
@@ -490,7 +490,7 @@ namespace MachineBrigade.Game.Hud
         {
             "armor" => "heavytank",
             "air" => "jet",
-            "artillery" => "artillery",
+            "artillery" => "truckgun",
             "blitz" => "bolt",
             _ => "cp",
         };
@@ -532,28 +532,43 @@ namespace MachineBrigade.Game.Hud
             "rocket_technical" => "technical",
             "gunship_heli" => "gunship",
             "scout_heli" => "scoutheli",
-            "attack_jet" => "jet",
-            "strike_drone" => "drone",
+            "strike_drone" => "reaper",
             "flame_tank" => "flame",
-            "ifv" => "apc",
+            "ifv" => "ifv",
             "howitzer" => "artillery",
-            "thermobaric_launcher" => "mlrs",
-            "heavy_aa" => "aa",
-            "titan_tank" => "heavytank",
-            "twin_tank" or "siege_tank" or "aps_tank" => "heavytank",
-            "grad_truck" => "mlrs",
-            "atgm_carrier" => "missile",
-            "heavy_rocket_artillery" => "mlrs",
-            "ballistic_launcher" => "missile",
-            "siege_mortar" => "mortar",
-            "engineer_vehicle" => "repair",
+            "thermobaric_launcher" => "thermo",
+            "heavy_aa" => "heavyaa",
+            "titan_tank" => "titan",
+            "twin_tank" => "twintank",
+            "siege_tank" => "siegegun",
+            "aps_tank" => "apstank",
+            "grad_truck" => "grad",
+            "atgm_carrier" => "atgm",
+            "heavy_rocket_artillery" => "smerch",
+            "ballistic_launcher" => "ballistic",
+            "siege_mortar" => "siegemortar",
+            "engineer_vehicle" => "engineer",
             "ew_jammer" => "jammer",
-            "fpv_carrier" or "recon_drone" => "drone",
+            "fpv_carrier" => "fpvtruck",
+            "recon_drone" => "drone",
             "mine_layer" => "mine",
             "fighter_jet" => "fighter",
-            "tank_buster" => "jet",
-            "heavy_attack_heli" => "gunship",
-            "heavy_bomber" or "stealth_bomber" or "sky_gunship" => "jet",
+            "attack_jet" => "su25",
+            "tank_buster" => "a10",
+            "heavy_attack_heli" => "hind2",
+            "heavy_bomber" => "b52",
+            "stealth_bomber" => "b2",
+            "sky_gunship" => "ac130",
+            "vbied" => "vbied",
+            "zu23_technical" => "zu23",
+            "smoke_carrier" => "smokecar",
+            "lancet_truck" => "lancet",
+            "shahed_truck" => "shahed",
+            "iron_beam" => "laser",
+            "railgun_truck" => "railgun",
+            "turtle_tank" => "turtle",
+            "bmpt" => "bmpt",
+            "sapper" => "sapper",
             "napalm_strike" => "flame",
             "moab" => "bomb",
             "cluster_strike" => "airstrike",

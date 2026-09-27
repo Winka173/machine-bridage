@@ -19,6 +19,7 @@ namespace MachineBrigade.Game.Hud
         private readonly List<(Vector2 at, int team, bool air)> _blips = new();
         private readonly List<(Vector2 at, float radius, int owner, float progress)> _points = new();
         private readonly List<(Vector2 at, float radius)> _warnings = new();
+        private readonly List<(Vector2 at, int kind)> _marks = new();
         private readonly Vector2[] _view = new Vector2[4];
         private readonly VisualElement _picture;
         private readonly VisualElement _overlay;
@@ -76,6 +77,7 @@ namespace MachineBrigade.Game.Hud
             _blips.Clear();
             _points.Clear();
             _warnings.Clear();
+            _marks.Clear();
             _hasView = false;
         }
 
@@ -84,6 +86,9 @@ namespace MachineBrigade.Game.Hud
         public void Point(Vector2 world, float radius, int owner, float progress) => _points.Add((world, radius, owner, progress));
 
         public void Warning(Vector2 world, float radius) => _warnings.Add((world, radius));
+
+        /// <summary>A mission target: 0 destroy (red), 1 keep standing (blue), 2 scout (amber).</summary>
+        public void Mark(Vector2 world, int kind) => _marks.Add((world, kind));
 
         public void View(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
         {
@@ -194,6 +199,27 @@ namespace MachineBrigade.Game.Hud
                     p.Arc(c, 2.5f, 0f, 360f);
                 }
                 p.Fill();
+            }
+
+            // Mission targets on top of everything, as diamonds (the markers over them in the battle).
+            foreach (var (at, kind) in _marks)
+            {
+                var c = ToLocal(at);
+                var colour = kind == 1 ? new Color(0.35f, 0.7f, 1f) : kind == 2 ? new Color(1f, 0.72f, 0.2f) : new Color(1f, 0.3f, 0.22f);
+                void Diamond(float r)
+                {
+                    p.BeginPath();
+                    p.MoveTo(c + new Vector2(0f, -r));
+                    p.LineTo(c + new Vector2(r, 0f));
+                    p.LineTo(c + new Vector2(0f, r));
+                    p.LineTo(c + new Vector2(-r, 0f));
+                    p.ClosePath();
+                    p.Fill();
+                }
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.85f);
+                Diamond(7f);
+                p.fillColor = colour;
+                Diamond(5f);
             }
 
             if (_hasView)

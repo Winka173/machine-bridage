@@ -12,16 +12,19 @@ Conventions as in mb_air.py: metres, +Z up, Blender -Y is the nose, origin at th
     their noses.
   * sky_gunship: side-firing gunship (AC-130 lineage). `Propeller`, `Propeller_2`, `Propeller_3`
     and `Propeller_4` (engines one to four, left to right) spin about local Y. Its guns fire out of
-    the left side (-X): `Muzzle_main` at the 105 mm howitzer, `Muzzle_gun` at the 40 mm cannon
-    and `Muzzle_mg` at the 25 mm gatling.
+    the left (port) side, +X (the nose is -Y, so the aircraft's left is +X): `Muzzle_main` at the
+    105 mm howitzer, `Muzzle_gun` at the 40 mm cannon and `Muzzle_mg` at the 25 mm gatling;
+    `Muzzle_ramp` at the rear ramp's missile launcher.
 """
 import math
 
 from mathutils import Vector
 
-from mb_air import (ACROSS, BACKWARD, FORWARD, LEFT, R90, RIGHT, Planform, _bomb, _dome, _naca, _patch, _prop_blade,
-                    _pylon, _revolve, _ring_at, _sec, _skin_offsets, _skin_panel, _skin_z, _store_parts, _upright,
-                    _wing)
+import mb_detail as hd
+from mb_air import (ACROSS, BACKWARD, FORWARD, LEFT, R90, RIGHT, Planform, _bomb, _dischargers, _dome, _hoop_line,
+                    _naca, _patch, _prop_blade, _pylon, _revolve, _ring_at, _rivet_row, _seam_line, _sec, _skin_offsets,
+                    _skin_panel, _skin_point, _skin_z, _store_parts, _upright, _wing, _wing_line, _wing_rib,
+                    _wing_rivets)
 from mb_vehicles import _frame
 
 
@@ -101,6 +104,7 @@ def heavy_bomber(a):
     # The rack: twelve bombs in three columns, two layers and two rows, hung from steel beams.
     b = a.pivot('Bombs', (0, .25, -.3))
     a.pivot('Muzzle_missile', (0, .25, -.9))
+    a.pivot('Muzzle_rocket', (0, -.6, -.95))
     bombs = _store_parts(a, b)
     rack = a.part('Bomb_rack', 'Steel')
     for x in (-.38, 0, .38):
@@ -363,6 +367,14 @@ def _turboprop(a, x, y0, zc, pivot, te, side, blades=6):
              _sec(te + .35, .1, zc - .1, zc + .1, n=12)]
     body.loft([[(x + q[0], q[1], q[2]) for q in r] for r in rings], bevel=.02, seg=1)
     body.box((.26, .55, .2), loc=(x, y0 + .45, zc - .34), bevel=.04, seg=1, taper=(.9, .9))      # oil cooler
+    if hd.on(a):  # cowl frames and latches on the outboard side
+        nacelle = [[(x + q[0], q[1], q[2]) for q in r] for r in rings]
+        for y in (y0 + .75, y0 + 1.75):
+            _hoop_line(a.part('Panel_lines', 'Armor'), nacelle, y, list(range(12)) + [0], r=.008)
+        for y in (y0 + .95, y0 + 1.25, y0 + 1.55):
+            p, nrm = _skin_point(nacelle, y, 3 if side > 0 else 9, 0.0, .01)
+            a.part('Detail_steel', 'Steel').box((.03, .08, .05), loc=tuple(p),
+                                                rot=Vector((1, 0, 0)).rotation_difference(nrm).to_euler('XYZ'), bevel=0)
     a.part('Undercarriage', 'Undercarriage').box((.2, .03, .12), loc=(x, y0 + .17, zc - .35), bevel=0)
     flaps = a.part('Cowl_flaps', 'Armor')
     for k in range(4):                                                                       # cowl flaps
@@ -385,19 +397,20 @@ def _turboprop(a, x, y0, zc, pivot, te, side, blades=6):
 
 
 def _side_gun(loc, tilt=.14):
-    """A barrel out of the left side (-X) from loc, tilted down by `tilt`: returns a function giving
+    """A barrel out of the left side (+X) from loc, tilted down by `tilt`: returns a function giving
     the point t metres along the barrel, and the rotation that lays a cylinder along it."""
-    d = Vector((-math.cos(tilt), 0, -math.sin(tilt)))
-    return (lambda t: tuple(Vector(loc) + d * t)), (0, -R90 - tilt, 0)
+    d = Vector((math.cos(tilt), 0, -math.sin(tilt)))
+    return (lambda t: tuple(Vector(loc) + d * t)), (0, R90 + tilt, 0)
 
 
-def sky_gunship(a):
+def sky_gunship(a, detail=False):
     """Side-firing gunship (AC-130 lineage): a round transport fuselage with a radome nose, flight
     deck windows and a refuelling probe, gear sponsons, a high wing with flaps, ailerons, flap-track
     fairings and underwing tanks, four turboprops with six-blade `Propeller`..`Propeller_4`, an
     upswept tail with a tall fin, and the left-side battery: a 105 mm howitzer (`Muzzle_main`), a
     40 mm cannon (`Muzzle_gun`) and a 25 mm gatling (`Muzzle_mg`), with sensor turrets under the
     nose and behind the gear. Span about 17 m."""
+    hd.mark(a, detail)
     body = a.part('Fuselage', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -483,8 +496,8 @@ def sky_gunship(a):
     # The left-side battery, front to back: 25 mm gatling, 40 mm cannon, 105 mm howitzer.
     guns = a.part('Guns', 'Steel')
     ports = a.part('Gun_ports', 'Armor')
-    at, rot = _side_gun((-.97, -3.3, .0))                                                     # 25 mm gatling
-    ports.box((.16, .5, .42), loc=(-.95, -3.3, .02), bevel=.03, seg=1)
+    at, rot = _side_gun((.97, -3.3, .0))                                                      # 25 mm gatling
+    ports.box((.16, .5, .42), loc=(.95, -3.3, .02), bevel=.03, seg=1)
     guns.cyl(.08, .14, loc=at(.1), rot=rot, seg=10, bevel=0)
     for k in range(5):
         ang = k * math.tau / 5
@@ -492,25 +505,96 @@ def sky_gunship(a):
         guns.cyl(.02, .72, loc=tuple(Vector(at(.5)) + off), rot=rot, seg=5, bevel=0)
     guns.cyl(.075, .06, loc=at(.8), rot=rot, seg=10, bevel=0)
     a.pivot('Muzzle_mg', at(.89))
-    at, rot = _side_gun((-.97, .3, .05))                                                      # 40 mm cannon
-    ports.box((.18, .7, .5), loc=(-.95, .3, .07), bevel=.03, seg=1)
+    at, rot = _side_gun((.97, .3, .05))                                                       # 40 mm cannon
+    ports.box((.18, .7, .5), loc=(.95, .3, .07), bevel=.03, seg=1)
     guns.cyl(.085, .36, loc=at(.2), rot=rot, seg=10, bevel=.01, bseg=1)
     guns.cyl(.065, 1.0, loc=at(.6), rot=rot, seg=10, bevel=0)
     guns.cyl(.09, .2, r2=.06, loc=at(1.12), rot=rot, seg=10, bevel=0)
     a.pivot('Muzzle_gun', at(1.24))
-    at, rot = _side_gun((-.97, 2.85, .02))                                                    # 105 mm howitzer
-    ports.box((.22, 1.0, .72), loc=(-.94, 2.85, .05), bevel=.04, seg=1)
+    at, rot = _side_gun((.97, 2.85, .02))                                                     # 105 mm howitzer
+    ports.box((.22, 1.0, .72), loc=(.94, 2.85, .05), bevel=.04, seg=1)
     guns.cyl(.13, .5, loc=at(.25), rot=rot, seg=12, bevel=.015, bseg=1)
     guns.cyl(.085, 1.5, loc=at(.85), rot=rot, seg=12, bevel=0)
-    a.part('Howitzer_brake', 'Undercarriage').box((.2, .28, .24), loc=at(1.62), rot=(0, -.14, 0), bevel=.03, seg=1)
+    a.part('Howitzer_brake', 'Undercarriage').box((.2, .28, .24), loc=at(1.62), rot=(0, .14, 0), bevel=.03, seg=1)
     a.pivot('Muzzle_main', at(1.76))
-    # Sensor turrets: a ball under the nose and another behind the left gear sponson.
+    # The rear ramp door's launcher (AC-130J "Gunslinger"): Griffin missiles out of the back.
+    armor.box((.5, .5, .3), loc=(0, 4.55, -.42), bevel=.04, seg=1)
+    for k in range(5):
+        steel.cyl(.045, .44, loc=(-.16 + k * .08, 4.62, -.42), rot=BACKWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_ramp', (0, 4.95, -.42))
+    # Sensor turrets: a ball under the nose and another behind the left gear sponson, looking out left.
     sensor = a.part('Sensor', 'Glass')
-    for (x, y, z), rr in (((-.5, -4.7, -.98), .24), ((-.66, 2.45, -.82), .18)):
+    for (x, y, z), rr in (((.5, -4.7, -.98), .24), ((.66, 2.45, -.82), .18)):
         armor.cyl(rr * .45, .2, loc=(x, y, z + rr * .9), seg=10, bevel=0)
         armor.sphere(rr, loc=(x, y, z), seg=12, rings=8)
-        sensor.cyl(rr * .42, .04, loc=(x - rr + .012, y, z - rr * .15), rot=ACROSS, seg=10, bevel=0)
-        sensor.cyl(rr * .2, .04, loc=(x - rr * .8 + .01, y - rr * .55, z + rr * .1), rot=(0, R90, .6), seg=8, bevel=0)
+        sensor.cyl(rr * .42, .04, loc=(x + rr - .012, y, z - rr * .15), rot=ACROSS, seg=10, bevel=0)
+        sensor.cyl(rr * .2, .04, loc=(x + rr * .8 - .01, y - rr * .55, z + rr * .1), rot=(0, R90, -.6), seg=8, bevel=0)
+    if detail:
+        _sky_gunship_detail(a, hull, wing, stab, fin)
+
+
+def _sky_gunship_detail(a, hull, wing, stab, fin):
+    """High-detail parts of the gunship (see mb_detail.py): fuselage frames, seams and rivet rows, spar and
+    rib lines with rivets on the wing and tail, dischargers, window seals, door hinges and handles, the cargo
+    ramp's outline, windscreen wipers, bolts on the gun ports, a satcom dome, aerials and anti-collision
+    lights. The turboprops add frames and latches on their nacelles (see _turboprop)."""
+    lines = a.part('Panel_lines', 'Armor')
+    rivets = a.part('Rivets', 'Steel')
+    steel = a.part('Detail_steel', 'Steel')
+    for y in (-4.1, -3.8, -2.0, 0.0, 1.2, 2.2, 3.45, 4.75, 5.5):          # frames, clear of windows and ports
+        _hoop_line(lines, hull, y, list(range(24)) + [0])
+    for i in (9, 15):
+        _seam_line(lines, hull, -5.3, 5.6, i, u=0.0)
+    for i in (6, 18):
+        _seam_line(lines, hull, -5.0, 4.0, i, u=0.0)
+    for i in (10, 13):
+        _rivet_row(rivets, hull, -5.0, 5.0, i, 50, u=.5, size=.022)
+    for i in (6, 17):
+        _rivet_row(rivets, hull, -4.8, 4.2, i, 44, u=.5, size=.022)
+    # Wing and tail: spar and rib lines, rivet rows, dischargers on the ailerons.
+    for frame in (RIGHT, LEFT):
+        for u in (.15, .62):
+            _wing_line(lines, wing, frame, .95, 8.3, u)
+            _wing_rivets(rivets, wing, frame, .95, 8.25, u + .04, 36)
+        for sp in (3.0, 3.9, 4.6, 7.6):
+            _wing_rib(lines, wing, frame, sp, .12, .68)
+        _dischargers(steel, wing, frame, (6.2, 7.2, 8.1))
+        for u in (.15, .6):
+            _wing_line(lines, stab, frame, .45, 3.3, u)
+        _wing_rivets(rivets, stab, frame, .45, 3.3, .19, 16)
+    frame = _upright(0, .76, 0)
+    for side in (1, -1):
+        for u in (.15, .6):
+            _wing_line(lines, fin, frame, .2, 3.25, u, side=side, lower=1.0)
+        for sp in (1.0, 2.0):
+            _wing_rib(lines, fin, frame, sp, .05, .64, side=side, lower=1.0)
+    # Windows, doors, the cargo ramp and the windscreen.
+    seals = a.part('Window_seals', 'Rubber')
+    for s, ys in ((-1, (-2.3, -1.4)), (1, (-2.6, -1.3, 1.0, 3.6))):
+        for y in ys:
+            seals.cyl(.135, .03, loc=(s * .968, y, .45), rot=ACROSS, seg=12, bevel=0)
+    for y, idx, handle in ((-4.66, [15, 16, 17], (-3.8, 16)), (2.44, [5, 6, 7], (3.2, 6))):
+        _hoop_line(lines, hull, y, idx, r=.008, out=.02)
+        p, nrm = _skin_point(hull, handle[0], handle[1], .5, .024)
+        steel.box((.1, .03, .03), loc=tuple(p), rot=Vector((0, 0, 1)).rotation_difference(nrm).to_euler('XYZ'), bevel=0)
+    _hoop_line(lines, hull, 3.3, [20, 21, 22, 23, 0, 1, 2, 3, 4], r=.01)
+    for i in (3, 20):
+        _seam_line(lines, hull, 3.3, 5.2, i, u=.5, r=.01)
+    for u in (.3, .7):
+        p, nrm = _skin_point(hull, -5.62, 11, u, .026)
+        steel.box((.02, .24, .02), loc=tuple(p), rot=Vector((0, 0, 1)).rotation_difference(nrm).to_euler('XYZ'), bevel=0)
+    # Gun ports: bolts round their faces.
+    for yc, zc_, face, dy, dz in ((-3.3, .02, 1.03, .18, .14), (.3, .07, 1.04, .28, .18), (2.85, .05, 1.05, .42, .28)):
+        for sy in (-1, 1):
+            for sz in (-1, 1):
+                hd.bolt(steel, (face, yc + sy * dy, zc_ + sz * dz), hd.RIGHT_X, r=.016, h=.024)
+    # Satcom dome, aerials and anti-collision lights.
+    a.part('Satcom', 'Armor').sphere((.2, .26, .1), loc=(0, 3.0, _skin_z(hull, 3.0, 0) - .01), seg=12, rings=6, cut=0)
+    for y, z in ((-3.2, 1.0), (4.0, .98)):
+        steel.box((.02, .24, .18), loc=(0, y, z + .08), rot=(-.35, 0, 0), bevel=0, taper=(1, .5))
+    beacon = a.part('Beacon_lights', 'Alloy')
+    beacon.sphere((.06, .06, .04), loc=(0, .5, 1.195), seg=10, rings=6, cut=0)
+    beacon.sphere((.06, .06, .04), loc=(0, 0, -.925), rot=(math.pi, 0, 0), seg=10, rings=6, cut=0)
 
 
 # name: (builder, Asset options). They fly: no ground occlusion or grime.

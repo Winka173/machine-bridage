@@ -54,7 +54,7 @@ namespace MachineBrigade.Game.Rendering
 
         public BarrelKind Barrel { get; }
 
-        /// <summary>`Muzzle_&lt;slot&gt;` empties by lower-case slot name (main, coax, mg, missile, rocket, gun).</summary>
+        /// <summary>`Muzzle_&lt;slot&gt;` empties by lower-case slot name (main, coax, mg, missile, rocket, gun, aam, door_l, door_r, ramp).</summary>
         public IReadOnlyDictionary<string, Transform> Muzzles { get; }
 
         /// <summary>Launchers on both sides for a slot (pods, rails), left to right; see <see cref="LaunchPoint"/>.</summary>
@@ -122,7 +122,7 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Blender may suffix duplicate names (Turret.001); accept those too.</summary>
         private static readonly Regex TurretPattern = new(@"^Turret(\.\d+)?$");
 
-        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun)(\.\d+)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r)(\.\d+)?$", RegexOptions.IgnoreCase);
         private static readonly Regex MountPattern = new(@"^Mount_([a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Spinning parts: (name, local axis, degrees per second). Blender Z (up) is Unity Y.</summary>
@@ -163,11 +163,43 @@ namespace MachineBrigade.Game.Rendering
 
         private const string FallbackModel = "light_tank";
 
+        /// <summary>Suffix of a model's high-detail variant in Resources/Models (main_battle_tank_hd.glb).</summary>
+        public const string HighDetailSuffix = "_hd";
+
+        /// <summary>
+        /// Load the high-detail variant of a model (Resources/Models/&lt;id&gt;_hd, built by
+        /// Tools/blender/build_assets.py) wherever one ships, for the high graphics tiers; models without
+        /// one load as usual. Off by default. It may change at any time: models are cached per variant,
+        /// so spawns after a change use the other variant and models already in the scene keep theirs.
+        /// A variant has the same pivots, muzzles and part names as its model, so nothing else changes.
+        /// </summary>
+        public static bool HighDetail { get; set; }
+
+        /// <summary>Model id -> the id of its high-detail variant, or the model's own id when none ships.</summary>
+        private readonly Dictionary<string, string> _detailIds = new();
+
         public ModelLibrary(MaterialLibrary materials) => _materials = materials;
+
+        /// <summary>
+        /// The resource a model loads from: its high-detail variant when <see cref="HighDetail"/> is on
+        /// and one ships, else the model itself.
+        /// </summary>
+        public string ResolveId(string modelId)
+        {
+            if (!HighDetail) return modelId;
+            if (!_detailIds.TryGetValue(modelId, out var id))
+            {
+                var variant = modelId + HighDetailSuffix;
+                id = Resources.Load<GameObject>("Models/" + variant) != null ? variant : modelId;
+                _detailIds[modelId] = id;
+            }
+            return id;
+        }
 
         public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true)
         {
-            var root = Object.Instantiate(Template(modelId), parent, false);
+            var id = ResolveId(modelId);
+            var root = Object.Instantiate(Template(id), parent, false);
             root.name = modelId;
             var renderers = root.GetComponentsInChildren<Renderer>(true);
             foreach (var renderer in renderers)
@@ -213,7 +245,7 @@ namespace MachineBrigade.Game.Rendering
                     if (name.IsMatch(t.name)) spinners.Add(new Spinner(t, axis, speed));
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
-            _elevations.TryGetValue(modelId, out var raise);
+            _elevations.TryGetValue(id, out var raise);
             var launchers = new Dictionary<string, List<LaunchPoint>>();
             foreach (var point in root.GetComponentsInChildren<LaunchPoint>(true))
             {
@@ -230,7 +262,7 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         public IEnumerable<(Mesh mesh, Matrix4x4 local, Material[] materials)> Parts(string modelId, int team = -1)
         {
-            var root = Prefab(modelId).transform;
+            var root = Prefab(ResolveId(modelId)).transform;
             foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
             {
                 var renderer = filter.GetComponent<MeshRenderer>();
@@ -246,7 +278,7 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>First mesh of a model, with materials resolved; used for pooled debris.</summary>
         public ChunkModel Chunk(string modelId)
         {
-            var filter = Prefab(modelId).GetComponentInChildren<MeshFilter>(true);
+            var filter = Prefab(ResolveId(modelId)).GetComponentInChildren<MeshFilter>(true);
             var renderer = filter != null ? filter.GetComponent<MeshRenderer>() : null;
             if (filter == null || renderer == null) throw new InvalidOperationException($"Model '{modelId}' has no mesh.");
             var materials = renderer.sharedMaterials;
@@ -257,7 +289,7 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>Builds a model's merged template now rather than on its first spawn mid-battle.</summary>
-        public void Prewarm(string modelId) => Template(modelId);
+        public void Prewarm(string modelId) => Template(ResolveId(modelId));
 
         /// <summary>Whether a model exists in Resources/Models.</summary>
         public bool Has(string modelId) => _prefabs.ContainsKey(modelId) || Resources.Load<GameObject>("Models/" + modelId) != null;
@@ -268,6 +300,7 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         public ChunkModel Merged(string modelId)
         {
+            modelId = ResolveId(modelId);
             if (_merged.TryGetValue(modelId, out var cached)) return cached;
             var root = Prefab(modelId).transform;
             var byMaterial = new Dictionary<string, List<CombineInstance>>();
@@ -319,10 +352,10 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>
-        /// A copy of the model with its rigid parts merged: every mesh is combined into one per
-        /// part that moves on its own (the hull, the turret, each recoiling barrel, weapon mount,
-        /// rotor and propeller). A tank drops from about twenty renderers to four or five, which
-        /// cuts draw calls in the camera and the shadow pass alike. Built once per model.
+        /// A copy of the model (a resolved id, see <see cref="ResolveId"/>) with its rigid parts merged:
+        /// every mesh is combined into one per part that moves on its own (the hull, the turret, each
+        /// recoiling barrel, weapon mount, rotor and propeller). A tank drops from about twenty renderers
+        /// to four or five, which cuts draw calls in the camera and the shadow pass alike. Built once per model.
         /// </summary>
         private GameObject Template(string modelId)
         {

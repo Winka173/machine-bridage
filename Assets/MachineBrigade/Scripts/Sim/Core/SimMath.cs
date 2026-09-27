@@ -17,6 +17,14 @@ namespace MachineBrigade.Sim.Core
 
         public static Vector2 Forward(float heading) => new Vector2(MathF.Sin(heading), MathF.Cos(heading));
 
+        /// <summary>A direction turned by <paramref name="radians"/> (anticlockwise on the X-Y plane).</summary>
+        public static Vector2 Rotate(Vector2 v, float radians)
+        {
+            var c = MathF.Cos(radians);
+            var s = MathF.Sin(radians);
+            return new Vector2(v.X * c - v.Y * s, v.X * s + v.Y * c);
+        }
+
         /// <summary>Wraps an angle into (-PI, PI].</summary>
         public static float WrapAngle(float angle)
         {

@@ -6,6 +6,7 @@ using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
+using MachineBrigade.Sim.Events;
 
 namespace MachineBrigade.Sim.Modes
 {
@@ -15,6 +16,43 @@ namespace MachineBrigade.Sim.Modes
     /// army wiped out, the clock, the objective lost). The Game layer adds the commander AIs and
     /// points them at <see cref="PlayerGoal"/> and <see cref="EnemyGoal"/>.
     /// </summary>
+    /// <summary>What a mission marker over the battlefield asks for.</summary>
+    public enum MissionMarkKind
+    {
+        /// <summary>Destroy it (a demolition target, a hunted vehicle).</summary>
+        Attack,
+
+        /// <summary>Keep it standing.</summary>
+        Defend,
+
+        /// <summary>Go and look (a recon objective not yet scouted).</summary>
+        Scout,
+    }
+
+    /// <summary>A marker the game draws over a mission's target: a building, a vehicle or a spot.</summary>
+    public readonly struct MissionMark
+    {
+        public MissionMark(MissionMarkKind kind, EntityId entity, bool prop, Vector2 position, float progress)
+        {
+            Kind = kind;
+            Entity = entity;
+            Prop = prop;
+            Position = position;
+            Progress = progress;
+        }
+
+        public MissionMarkKind Kind { get; }
+
+        /// <summary>The building or vehicle marked (none for a spot).</summary>
+        public EntityId Entity { get; }
+
+        public bool Prop { get; }
+        public Vector2 Position { get; }
+
+        /// <summary>A scouting spot: how far the look is (0 to 1).</summary>
+        public float Progress { get; }
+    }
+
     public sealed class MissionMode : IGameMode, IObjectiveMode
     {
         public const int PlayerTeam = 0;
@@ -27,6 +65,11 @@ namespace MachineBrigade.Sim.Modes
         private readonly SideSetup? _enemy;
         private readonly List<ObjectiveState> _points = new();
         private readonly List<EntityId> _targets = new();
+        private readonly List<(EntityId id, int waypoint)> _hunted = new();
+        private readonly Dictionary<string, float> _scouting = new();
+
+        /// <summary>Seconds a vehicle must stay on a recon objective to scout it.</summary>
+        public const float ScoutSeconds = 3f;
         private readonly List<(EntityId id, int waypoint)> _convoy = new();
         private readonly HashSet<EntityId> _halted = new();
 
@@ -39,6 +82,19 @@ namespace MachineBrigade.Sim.Modes
         private double _wipedSince = -1, _heldByEnemySince = -1;
         private EntityId _boss;
         private int _bossWaypoint;
+        private int _reinforced;
+        private float _peak;
+        private double _nextReinforce = ReinforceFirst;
+        private readonly List<string> _roster = new();
+
+        /// <summary>No reinforcements before this far in, and at least this long between two.</summary>
+        private const double ReinforceFirst = 45.0, ReinforceGap = 75.0;
+
+        /// <summary>The enemy calls for help once its army is down to this share of the strongest it has been.</summary>
+        private const float ReinforceBelow = 0.6f;
+
+        /// <summary>Times the enemy has been reinforced.</summary>
+        public int Reinforced => _reinforced;
         private double _launchStarted = -1;
 
         /// <param name="player">The player's CP and deck (the Game layer passes the unlocked cards).</param>
@@ -80,7 +136,10 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => MathF.Min(1f, _held / MathF.Max(1f, _def.HoldSeconds)),
             MissionGoal.Destroy => _targets.Count == 0 ? 1f : 1f - AliveTargets(world) / (float)_targets.Count,
             MissionGoal.Escort => MathF.Min(1f, _arrived / (float)Math.Max(1, _def.ConvoyNeeded)),
-            MissionGoal.Survive => MathF.Min(1f, (float)world.Time / MathF.Max(1f, _def.SurviveSeconds)),
+            MissionGoal.Survive or MissionGoal.Protect => MathF.Min(1f, (float)world.Time / MathF.Max(1f, _def.SurviveSeconds)),
+            MissionGoal.Hunt => _hunted.Count == 0 ? 1f : 1f - AliveHunted(world) / (float)_hunted.Count,
+            MissionGoal.Recon => _points.Count == 0 ? 1f : PointCapture.Held(_points, PlayerTeam) / (float)_points.Count,
+            MissionGoal.ShootDown => MathF.Min(1f, _ledger.AirKills(PlayerTeam) / (float)Math.Max(1, _def.KillsNeeded)),
             _ => world.TryGetVehicle(_boss, out var boss) ? 1f - boss.Hp / boss.MaxHp : _boss.IsValid ? 1f : 0f,
         };
 
@@ -91,7 +150,10 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => ((int)_held, (int)_def.HoldSeconds),
             MissionGoal.Destroy => (_targets.Count - AliveTargets(world), _targets.Count),
             MissionGoal.Escort => (_arrived, _def.ConvoyNeeded),
-            MissionGoal.Survive => ((int)world.Time, (int)_def.SurviveSeconds),
+            MissionGoal.Survive or MissionGoal.Protect => ((int)world.Time, (int)_def.SurviveSeconds),
+            MissionGoal.Hunt => (_hunted.Count - AliveHunted(world), _hunted.Count),
+            MissionGoal.Recon => (PointCapture.Held(_points, PlayerTeam), _points.Count),
+            MissionGoal.ShootDown => (Math.Min(_ledger.AirKills(PlayerTeam), _def.KillsNeeded), _def.KillsNeeded),
             _ => (Result?.WinningTeam == PlayerTeam ? 1 : 0, 1),
         };
 
@@ -113,19 +175,19 @@ namespace MachineBrigade.Sim.Modes
 
             // Objectives: the listed ones (all of them when none are listed) for capture; the one
             // held for hold. Other goals fight over none.
-            if (_def.Goal is MissionGoal.Capture or MissionGoal.Hold)
+            if (_def.Goal is MissionGoal.Capture or MissionGoal.Hold or MissionGoal.Recon)
                 foreach (var p in world.Map.Points)
                 {
                     if (_def.Points.Count > 0 && !Contains(_def.Points, p.Id)) continue;
                     if (_def.Goal == MissionGoal.Hold && _points.Count > 0) break;
                     var state = new ObjectiveState(p);
-                    if (Contains(_def.EnemyOwns, p.Id)) PointCapture.Own(state, EnemyTeam);
+                    if (Contains(_def.EnemyOwns, p.Id) && _def.Goal != MissionGoal.Recon) PointCapture.Own(state, EnemyTeam);
                     else if (_def.Goal == MissionGoal.Hold) PointCapture.Own(state, PlayerTeam);
                     _points.Add(state);
                 }
-            if (_def.Goal == MissionGoal.Destroy)
+            if (_def.Goal is MissionGoal.Destroy or MissionGoal.Protect)
                 foreach (var prop in world.Props)
-                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id))
+                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id) && (_def.Goal == MissionGoal.Destroy || OnPlayerSide(world, prop.Position)))
                     {
                         _targets.Add(prop.Id);
                         if (_def.TargetHealth > 1f) prop.Harden(_def.TargetHealth);
@@ -141,16 +203,39 @@ namespace MachineBrigade.Sim.Modes
                     Drive(world, boss, _def.Boss.Route[0]);
                 }
             }
+            foreach (var h in _def.Hunt)
+            {
+                var hunted = world.SpawnVehicle(h.Def, EnemyTeam, h.Position, h.Heading);
+                hunted.Marked = true;
+                // The hunted are hardened like demolition targets: a hunt, not a drive-by.
+                if (_def.TargetHealth > 1f)
+                {
+                    hunted.HpScale *= _def.TargetHealth;
+                    hunted.Hp = hunted.MaxHp;
+                }
+                _hunted.Add((hunted.Id, 0));
+                if (h.Route.Count == 0) continue;
+                hunted.Scripted = true;
+                Drive(world, hunted, h.Route[0]);
+            }
             _waveTimer = _def.Waves?.First ?? float.MaxValue;
         }
+
+        private static bool OnPlayerSide(SimWorld world, Vector2 at) =>
+            !world.TryGetRally(PlayerTeam, out var home) || !world.TryGetRally(EnemyTeam, out var camp) ||
+            Vector2.Distance(at, home) < Vector2.Distance(at, camp);
 
         public void Tick(SimWorld world, float dt)
         {
             if (Result != null) return;
             _ledger.Update(world);
-            foreach (var point in _points) PointCapture.Tick(world, point, dt, CaptureSeconds);
+            if (_def.Goal == MissionGoal.Recon) Scout(world, dt);
+            else
+                foreach (var point in _points) PointCapture.Tick(world, point, dt, CaptureSeconds);
+            DriveHunted(world);
             if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = 0.25f * PointCapture.Held(_points, PlayerTeam);
             SpawnWaves(world, dt);
+            if (world.Tick % 20 == 0) CallReinforcements(world);
             DriveConvoy(world, dt);
             DriveBoss(world);
 
@@ -160,7 +245,10 @@ namespace MachineBrigade.Sim.Modes
                 MissionGoal.Hold => (_held += _points.Count > 0 && _points[0].Owner == PlayerTeam ? dt : 0f) >= _def.HoldSeconds,
                 MissionGoal.Destroy => AliveTargets(world) == 0,
                 MissionGoal.Escort => _arrived >= _def.ConvoyNeeded,
-                MissionGoal.Survive => world.Time >= _def.SurviveSeconds,
+                MissionGoal.Survive or MissionGoal.Protect => world.Time >= _def.SurviveSeconds,
+                MissionGoal.Hunt => _hunted.Count > 0 && AliveHunted(world) == 0,
+                MissionGoal.Recon => _points.Count > 0 && PointCapture.Held(_points, PlayerTeam) == _points.Count,
+                MissionGoal.ShootDown => _ledger.AirKills(PlayerTeam) >= _def.KillsNeeded,
                 _ => _boss.IsValid && (!world.TryGetVehicle(_boss, out var b) || !b.IsAlive),
             };
             if (won)
@@ -178,6 +266,9 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Destroy => NearestTarget(world),
             MissionGoal.Escort => ConvoyFront(world),
             MissionGoal.Boss or MissionGoal.Intercept => world.TryGetVehicle(_boss, out var b) && b.IsAlive ? b.Position : null,
+            MissionGoal.Hunt => NearestHunted(world, PlayerCentre(world) ?? Vector2.Zero),
+            MissionGoal.Recon => NextSpot(world, PlayerCentre(world) ?? Vector2.Zero),
+            MissionGoal.Protect => Threatened(world),
             _ => null,
         };
 
@@ -192,6 +283,15 @@ namespace MachineBrigade.Sim.Modes
                     return ConvoyFront(world);
                 case MissionGoal.Destroy:
                     return NearestTarget(world);
+                case MissionGoal.Hunt:
+                    // Guard the marked vehicles: the one the player is closest to.
+                    return NearestHunted(world, PlayerCentre(world) ?? Vector2.Zero);
+                case MissionGoal.Recon:
+                    // Get to the next spot first and wait there.
+                    return NextSpot(world, PlayerCentre(world) ?? Vector2.Zero);
+                case MissionGoal.Protect:
+                    return world.TryGetProp(EnemyDemolish(world), out var building) ? building.Position : PlayerCentre(world);
+                case MissionGoal.ShootDown:
                 case MissionGoal.Survive:
                 case MissionGoal.Boss:
                 case MissionGoal.Intercept:
@@ -203,7 +303,8 @@ namespace MachineBrigade.Sim.Modes
 
         private bool Lost(SimWorld world)
         {
-            if (_def.TimeLimit > 0f && world.Time >= _def.TimeLimit && _def.Goal != MissionGoal.Survive) return true;
+            if (_def.TimeLimit > 0f && world.Time >= _def.TimeLimit && _def.Goal is not (MissionGoal.Survive or MissionGoal.Protect)) return true;
+            if (_def.Goal == MissionGoal.Protect && _targets.Count > 0 && AliveTargets(world) < Math.Min(_def.ProtectNeeded, _targets.Count)) return true;
             // The held objective is lost only when the enemy keeps it for a while: time to hit back.
             if (_def.Goal == MissionGoal.Hold && _points.Count > 0)
             {
@@ -254,6 +355,76 @@ namespace MachineBrigade.Sim.Modes
                 var at = world.ClampToMap(origin + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 8f);
                 world.SpawnVehicle(def, EnemyTeam, at, SimMath.DegToRad(225f));
             }
+        }
+
+        /// <summary>
+        /// The enemy calls for help when it is losing: once its army has fallen well below the
+        /// strongest it has been, or the player's goal passes another milestone, a group is flown in
+        /// to its camp (a parachute drop, as a bought vehicle comes), bigger each time, answering
+        /// the player's aircraft with anti-air when it has some.
+        /// </summary>
+        private void CallReinforcements(SimWorld world)
+        {
+            var strength = EnemyStrength(world);
+            _peak = MathF.Max(_peak, strength);
+            if (_reinforced >= _def.Reinforcements || world.Time < _nextReinforce) return;
+            var losing = _peak > 0f && strength < _peak * ReinforceBelow;
+            var pressed = Progress(world) >= 0.3f + 0.25f * _reinforced;
+            if (!losing && !pressed) return;
+            if (!world.TryGetRally(EnemyTeam, out var camp)) return;
+            var roster = Roster(world);
+            if (roster.Count == 0) return;
+            var count = Math.Min(8, _def.ReinforceSize + _reinforced);
+            var answerAir = PlayerAirShare(world) > 0.25f;
+            for (var i = 0; i < count; i++)
+            {
+                var id = roster[(_reinforced * 5 + i * 3) % roster.Count];
+                if (i == 0 && answerAir && FirstAntiAir(world, roster) is { } aa) id = aa;
+                world.Economy.Airlift(EnemyTeam, id, camp);
+            }
+            _reinforced++;
+            _nextReinforce = world.Time + ReinforceGap;
+            world.Emit(SimEvent.Alert(camp, "toast.enemyReinforce"));
+        }
+
+        /// <summary>What the enemy calls in: its deck, else its wave roster, else what it started with.</summary>
+        private IReadOnlyList<string> Roster(SimWorld world)
+        {
+            if (_enemy != null && _enemy.Vehicles.Count > 0) return _enemy.Vehicles;
+            if (_def.Waves != null && _def.Waves.Roster.Count > 0) return _def.Waves.Roster;
+            if (_roster.Count == 0)
+                foreach (var u in world.Map.Units)
+                    if (u.Team == EnemyTeam && world.Catalog.Vehicles.TryGetValue(u.DefId, out var def) && !def.Static && !def.Boss && !_roster.Contains(u.DefId))
+                        _roster.Add(u.DefId);
+            return _roster;
+        }
+
+        private static float EnemyStrength(SimWorld world)
+        {
+            var total = 0f;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == EnemyTeam && !v.Def.Boss && !v.Def.Static && !v.Scripted) total += v.Def.ArmyCost;
+            return total;
+        }
+
+        private static float PlayerAirShare(SimWorld world)
+        {
+            var air = 0f;
+            var all = 0f;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != PlayerTeam || v.Scripted) continue;
+                all += v.Def.ArmyCost;
+                if (v.Flying) air += v.Def.ArmyCost;
+            }
+            return all > 0f ? air / all : 0f;
+        }
+
+        private static string? FirstAntiAir(SimWorld world, IReadOnlyList<string> roster)
+        {
+            foreach (var id in roster)
+                if (world.Catalog.Vehicles.TryGetValue(id, out var def) && !def.Flying && def.Weapon.CanTarget(true)) return id;
+            return null;
         }
 
         private void DriveConvoy(SimWorld world, float dt)
@@ -307,6 +478,8 @@ namespace MachineBrigade.Sim.Modes
             if (!world.TryGetVehicle(_boss, out var boss) || !boss.IsAlive) return;
             if (Vector2.Distance(boss.Position, route[_bossWaypoint]) > WaypointReach) return;
             _bossWaypoint++;
+            // A boss fight's route is a patrol, flown round and round (it does not park on the drop zone).
+            if (_def.Goal == MissionGoal.Boss && _bossWaypoint >= route.Count) _bossWaypoint = 0;
             if (_bossWaypoint < route.Count) Drive(world, boss, route[_bossWaypoint]);
         }
 
@@ -327,14 +500,133 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The demolition target the player's commander should shoot at, or none.</summary>
         public EntityId PlayerDemolish(SimWorld world) => _def.Goal == MissionGoal.Destroy ? NearestTargetId(world) : EntityId.None;
 
+        /// <summary>Protect: the building the enemy goes for (the one nearest its army), or none.</summary>
+        public EntityId EnemyDemolish(SimWorld world) => _def.Goal == MissionGoal.Protect ? NearestTargetId(world, EnemyCentre(world)) : EntityId.None;
+
+        /// <summary>The markers the game draws: what to destroy, keep standing or scout.</summary>
+        public void Marks(SimWorld world, List<MissionMark> into)
+        {
+            into.Clear();
+            var kind = _def.Goal == MissionGoal.Protect ? MissionMarkKind.Defend : MissionMarkKind.Attack;
+            foreach (var id in _targets)
+                if (world.TryGetProp(id, out var p) && p.IsAlive) into.Add(new MissionMark(kind, id, true, p.Position, 0f));
+            foreach (var (id, _) in _hunted)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive) into.Add(new MissionMark(MissionMarkKind.Attack, id, false, v.Position, 0f));
+            if (_def.Goal == MissionGoal.Recon)
+                foreach (var point in _points)
+                    if (point.Owner != PlayerTeam)
+                        into.Add(new MissionMark(MissionMarkKind.Scout, EntityId.None, false, point.Def.Position,
+                            _scouting.TryGetValue(point.Def.Id, out var t) ? t / ScoutSeconds : 0f));
+        }
+
+        /// <summary>
+        /// Recon: a spot is scouted once one of the player's vehicles (an aircraft too) has been on
+        /// it for a few seconds; it then stays the player's (the enemy cannot take the look back).
+        /// </summary>
+        private void Scout(SimWorld world, float dt)
+        {
+            foreach (var point in _points)
+            {
+                if (point.Owner == PlayerTeam) continue;
+                var there = false;
+                foreach (var v in world.VehicleList)
+                    if (v.IsAlive && v.Team == PlayerTeam && !v.Scripted &&
+                        Vector2.DistanceSquared(v.Position, point.Def.Position) < point.Def.Radius * point.Def.Radius)
+                    {
+                        there = true;
+                        break;
+                    }
+                _scouting.TryGetValue(point.Def.Id, out var seconds);
+                seconds = there ? seconds + dt : MathF.Max(0f, seconds - dt * 0.5f);
+                _scouting[point.Def.Id] = seconds;
+                point.Progress = MathF.Min(1f, seconds / ScoutSeconds);
+                if (seconds < ScoutSeconds) continue;
+                PointCapture.Own(point, PlayerTeam);
+                point.Locked = true;
+                world.Emit(SimEvent.Captured(point.Def.Id, point.Def.Position, PlayerTeam));
+            }
+        }
+
+        private Vector2? NextSpot(SimWorld world, Vector2 from)
+        {
+            Vector2? best = null;
+            var bestDistance = float.MaxValue;
+            foreach (var point in _points)
+            {
+                if (point.Owner == PlayerTeam) continue;
+                var d = Vector2.DistanceSquared(from, point.Def.Position);
+                if (d >= bestDistance) continue;
+                bestDistance = d;
+                best = point.Def.Position;
+            }
+            return best;
+        }
+
+        /// <summary>The hunted vehicles drive their patrol routes round and round (until the player's army is on them).</summary>
+        private void DriveHunted(SimWorld world)
+        {
+            for (var i = 0; i < _hunted.Count; i++)
+            {
+                var (id, waypoint) = _hunted[i];
+                var route = _def.Hunt[i].Route;
+                if (route.Count == 0 || !world.TryGetVehicle(id, out var v) || !v.IsAlive) continue;
+                if (Vector2.Distance(v.Position, route[waypoint]) > WaypointReach) continue;
+                waypoint = (waypoint + 1) % route.Count;
+                _hunted[i] = (id, waypoint);
+                Drive(world, v, route[waypoint]);
+            }
+        }
+
+        private int AliveHunted(SimWorld world)
+        {
+            var alive = 0;
+            foreach (var (id, _) in _hunted)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive) alive++;
+            return alive;
+        }
+
+        private Vector2? NearestHunted(SimWorld world, Vector2 from)
+        {
+            Vector2? best = null;
+            var bestDistance = float.MaxValue;
+            foreach (var (id, _) in _hunted)
+            {
+                if (!world.TryGetVehicle(id, out var v) || !v.IsAlive) continue;
+                var d = Vector2.DistanceSquared(from, v.Position);
+                if (d >= bestDistance) continue;
+                bestDistance = d;
+                best = v.Position;
+            }
+            return best;
+        }
+
+        /// <summary>Protect: the building the enemy is closest to, where the army should stand.</summary>
+        private Vector2? Threatened(SimWorld world) =>
+            world.TryGetProp(NearestTargetId(world, EnemyCentre(world)), out var p) ? p.Position : null;
+
+        private static Vector2 EnemyCentre(SimWorld world)
+        {
+            var sum = Vector2.Zero;
+            var count = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != EnemyTeam || v.Flying || v.Def.Static) continue;
+                sum += v.Position;
+                count++;
+            }
+            if (count > 0) return sum / count;
+            return world.TryGetRally(EnemyTeam, out var camp) ? camp : Vector2.Zero;
+        }
+
         private Vector2? NearestTarget(SimWorld world) =>
             world.TryGetProp(NearestTargetId(world), out var p) ? p.Position : null;
 
-        private EntityId NearestTargetId(SimWorld world)
+        private EntityId NearestTargetId(SimWorld world) => NearestTargetId(world, PlayerCentre(world) ?? Vector2.Zero);
+
+        private EntityId NearestTargetId(SimWorld world, Vector2 from)
         {
             var best = EntityId.None;
             var bestDistance = float.MaxValue;
-            var from = PlayerCentre(world) ?? Vector2.Zero;
             foreach (var id in _targets)
             {
                 if (!world.TryGetProp(id, out var p) || !p.IsAlive) continue;

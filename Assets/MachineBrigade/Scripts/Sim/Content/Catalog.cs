@@ -104,6 +104,7 @@ namespace MachineBrigade.Sim.Content
                     w.Enum("targets", TargetLayers.Ground))
                 {
                     Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
+                    Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false),
                 });
                 if (w.Has("cluster"))
                 {
@@ -166,6 +167,15 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("mainAim")) def.AimMain(v.Enum<MountAim>("mainAim"));
+                    def.Orbit = v.Bool("orbit", false);
+                    def.Stealth = v.Bool("stealth", false);
+                    def.Interceptor = v.Bool("interceptor", false);
+                    def.Vtol = v.Bool("vtol", false);
+                    def.Kamikaze = v.Bool("kamikaze", false);
+                    def.DroneArmor = v.Float("droneArmor", 1f);
+                    def.MineProof = v.Bool("mineProof", false);
+                    if (v.Has("fortify")) def.FortifyAura = ParseAura(v.Object("fortify"));
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");

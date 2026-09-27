@@ -55,9 +55,9 @@ namespace MachineBrigade.Game.Match
                 new("stat.detail.hp", def.MaxHp, def.MaxHp * boost.Hp, best["hp"], "N0"),
                 new("stat.detail.volley", Volley(w), Volley(w) * boost.Damage, best["volley"], "N0"),
                 new("stat.detail.dps", Dps(w), Dps(w) * boost.Damage * boost.FireRate, best["dps"], "N0"),
-                new("stat.detail.range", w.Range, w.Range, best["range"], "0"),
+                new("stat.detail.range", w.Range, w.Range * (1f + boost.Stat(StatId.Range)), best["range"], "0"),
                 new("stat.detail.speed", def.Speed, def.Speed * boost.Speed, best["speed"], "0.0"),
-                new("stat.detail.vision", def.VisionRange, def.VisionRange, best["vision"], "0"),
+                new("stat.detail.vision", def.VisionRange, def.VisionRange * (1f + boost.Stat(StatId.Vision)), best["vision"], "0"),
             };
         }
 

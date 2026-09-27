@@ -73,9 +73,9 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ABootCampThenSixteenMissionsWithABossEveryThird()
+        public void ABootCampThenTwentyTwoMissionsWithABossEveryThird()
         {
-            Assert.AreEqual(17, Campaign.All.Count);
+            Assert.AreEqual(23, Campaign.All.Count);
             Assert.IsTrue(Campaign.All[0].Optional, "the boot camp is optional");
             var catalog = GameContent.LoadCatalog();
             foreach (var m in Campaign.All)
@@ -83,8 +83,12 @@ namespace MachineBrigade.Tests
                 Assert.DoesNotThrow(() => GameContent.LoadMap(m.Map + "_" + m.Variant), m.Id);
                 if (m.Boss != null) Assert.IsTrue(catalog.Vehicles[m.Boss.Def].Boss, $"{m.Id}: {m.Boss.Def} is a boss");
                 foreach (var id in m.EnemyDeck) Assert.IsTrue(catalog.Vehicles.ContainsKey(id), $"{m.Id}: enemy card {id}");
+                foreach (var h in m.Hunt) Assert.IsTrue(catalog.Vehicles.ContainsKey(h.Def), $"{m.Id}: hunted {h.Def}");
+                if (m.Waves != null)
+                    foreach (var id in m.Waves.Roster) Assert.IsTrue(catalog.Vehicles.ContainsKey(id), $"{m.Id}: wave {id}");
+                foreach (var id in m.Unlocks) Assert.IsTrue(catalog.Vehicles.ContainsKey(id) || catalog.TryGetSupport(id, out _), $"{m.Id}: unlock {id}");
             }
-            for (var i = 3; i < 17; i += 3)
+            for (var i = 3; i < Campaign.All.Count; i += 3)
                 Assert.IsTrue(Campaign.All[i].Goal is MissionGoal.Boss or MissionGoal.Intercept, $"mission {i} is a boss fight");
         }
 
@@ -124,7 +128,12 @@ namespace MachineBrigade.Tests
                 }
                 var won = session.Mode.Result?.WinningTeam == 0;
                 if (won) wins++;
-                text += $" s{seed}:{(won ? "W" : "L")}{t / 60f:0.0}m/{mission.Mission.Progress(world):P0}/peak {peak}";
+                text += $" s{seed}:{(won ? "W" : "L")}{t / 60f:0.0}m/{mission.Mission.Progress(world):P0}/peak {peak}/re {mission.Mission.Reinforced}";
+                // A hunt that stalls: where the marked vehicles that got away are.
+                foreach (var v in world.VehicleList)
+                    if (!won && v.IsAlive && v.Marked) text += $" [{v.Def.Id} at {v.Position.X:0},{v.Position.Y:0} hp {v.Hp / v.MaxHp:P0}]";
+                if (!won && world.TryGetVehicle(mission.Mission.Boss, out var boss) && boss.IsAlive)
+                    text += $" [boss hp {boss.Hp / boss.MaxHp:P0} at {boss.Position.X:0},{boss.Position.Y:0}]";
             }
             Debug.Log($"SEEDS {id}: {wins}/5{text}");
         }

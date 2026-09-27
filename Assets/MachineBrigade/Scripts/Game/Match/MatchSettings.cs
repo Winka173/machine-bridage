@@ -28,6 +28,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>This week's fortress: a siege whose broken rings stay broken all week.</summary>
         Weekly,
+
+        /// <summary>The player's fortress against waves that never stop, until the HQ falls.</summary>
+        Endless,
     }
 
     public enum WeatherKind
@@ -108,6 +111,8 @@ namespace MachineBrigade.Game.Match
             "grad_truck", "atgm_carrier", "aps_tank",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
+            "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
+            "turtle_tank", "bmpt", "sapper",
         };
 
         public static readonly string[] AllSupports =
@@ -188,6 +193,62 @@ namespace MachineBrigade.Game.Match
 
         public static List<string> DeckVehicles { get; } = new(DefaultVehicles);
         public static List<string> DeckSupports { get; } = new(DefaultSupports);
+
+        // Where each card sits in the deck on screen (null: an empty slot). Taking a card out
+        // leaves its slot empty instead of sliding the others along, which read as the wrong
+        // card leaving.
+        private static readonly string[] VehicleLayout = new string[DeckVehicleSlots];
+        private static readonly string[] SupportLayout = new string[DeckSupportSlots];
+
+        /// <summary>The deck's slots as the player sees them, reconciled with the deck list.</summary>
+        public static string[] DeckLayout(bool supports)
+        {
+            var deck = supports ? DeckSupports : DeckVehicles;
+            var layout = supports ? SupportLayout : VehicleLayout;
+            for (var i = 0; i < layout.Length; i++)
+                if (layout[i] != null && (!deck.Contains(layout[i]) || Array.IndexOf(layout, layout[i]) != i)) layout[i] = null;
+            foreach (var id in deck)
+            {
+                if (Array.IndexOf(layout, id) >= 0) continue;
+                var free = Array.IndexOf(layout, null);
+                if (free >= 0) layout[free] = id;
+            }
+            return layout;
+        }
+
+        /// <summary>
+        /// Puts a card in the deck's first empty slot or takes it out of its slot. The last card
+        /// of a kind stays (an empty deck means "anything" to the simulation).
+        /// </summary>
+        public static DeckChange ToggleDeckCard(string id, bool supports)
+        {
+            var deck = supports ? DeckSupports : DeckVehicles;
+            var layout = DeckLayout(supports);
+            var at = Array.IndexOf(layout, id);
+            if (at >= 0)
+            {
+                if (deck.Count <= 1) return DeckChange.LastCard;
+                layout[at] = null;
+            }
+            else
+            {
+                var free = Array.IndexOf(layout, null);
+                if (free < 0) return DeckChange.Full;
+                layout[free] = id;
+            }
+            deck.Clear();
+            foreach (var card in layout)
+                if (card != null) deck.Add(card);
+            return at >= 0 ? DeckChange.Removed : DeckChange.Added;
+        }
+
+        public enum DeckChange
+        {
+            Added,
+            Removed,
+            Full,
+            LastCard,
+        }
 
         public static float Volume { get; set; } = 0.8f;
         public static GraphicsQuality Graphics { get; set; } = GraphicsQuality.Auto;
@@ -303,8 +364,8 @@ namespace MachineBrigade.Game.Match
                 Mission = PlayerPrefs.GetString("mb.mission", Mission);
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;
-                ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots);
-                ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots);
+                ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots, VehicleLayout);
+                ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots, SupportLayout);
             }
             catch (Exception e)
             {
@@ -343,8 +404,9 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetString("mb.mission", Mission);
                 PlayerPrefs.SetInt("mb.autoDeploy", AutoDeploy ? 1 : 0);
                 PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
-                PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", DeckVehicles));
-                PlayerPrefs.SetString("mb.deck.supports", string.Join(",", DeckSupports));
+                // Saved slot by slot, empty slots as blanks, so the layout comes back as it was.
+                PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", Array.ConvertAll(DeckLayout(false), c => c ?? "")));
+                PlayerPrefs.SetString("mb.deck.supports", string.Join(",", Array.ConvertAll(DeckLayout(true), c => c ?? "")));
                 PlayerPrefs.SetInt("mb.deck.version", DeckVersion);
                 PlayerPrefs.Save();
             }
@@ -373,10 +435,14 @@ namespace MachineBrigade.Game.Match
             };
         }
 
-        private static void ReadDeck(string key, List<string> deck, string[] all, string[] defaults, int slots)
+        private static void ReadDeck(string key, List<string> deck, string[] all, string[] defaults, int slots, string[] layout)
         {
             var saved = PlayerPrefs.GetString(key, "");
             if (string.IsNullOrEmpty(saved)) return;
+            Array.Clear(layout, 0, layout.Length);
+            var positions = saved.Split(',');
+            for (var i = 0; i < positions.Length && i < layout.Length; i++)
+                if (Array.IndexOf(all, positions[i]) >= 0 && PlayerProfile.IsUnlocked(positions[i])) layout[i] = positions[i];
             var cards = new List<string>();
             foreach (var id in saved.Split(','))
                 if (Array.IndexOf(all, id) >= 0 && PlayerProfile.IsUnlocked(id) && !cards.Contains(id) && cards.Count < slots) cards.Add(id);

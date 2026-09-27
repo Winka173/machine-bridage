@@ -60,7 +60,7 @@ namespace MachineBrigade.Game.Match
             },
             _ => new GraphicsOptions
             {
-                Shadows = ShadowLevel.High, RenderScale = 100, AntiAliasing = Application.isMobilePlatform ? 2 : 4, FrameRate = 60,
+                Shadows = ShadowLevel.High, RenderScale = 100, AntiAliasing = 4, FrameRate = 60,
                 Bloom = 2, RichScenery = true, MaxEffects = true,
             },
         };

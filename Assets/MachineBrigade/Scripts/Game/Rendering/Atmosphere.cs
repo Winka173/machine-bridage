@@ -35,9 +35,13 @@ namespace MachineBrigade.Game.Rendering
         private readonly UpscalingFilterSelection _originalUpscaling;
         private static readonly Vector2[] Corners = { new(0f, 0f), new(1f, 0f), new(0f, 1f), new(1f, 1f) };
 
-        /// <summary>Highest thing that casts a shadow: aircraft fly up to 22 m, the flare stack is 20 m.</summary>
-        /// <summary>Highest anything is drawn (bombers fly at up to 46 m): the near plane and shadows reach it.</summary>
-        private const float CasterCeiling = 52f;
+        /// <summary>
+        /// Highest anything is drawn: bombers fly at 46 m, a banked wingtip reaches about 8 m higher,
+        /// and arriving aircraft come in up to 10 m above their height. The near plane stops here, so
+        /// every screen corner (the camera stands far enough back) draws up to it; the shadow range
+        /// grows with it, so it is kept no higher than it must be.
+        /// </summary>
+        private const float CasterCeiling = 64f;
 
         /// <summary>Fade band at the edge of the shadow range, kept just off screen.</summary>
         private const float ShadowBorder = 0.05f;
@@ -66,8 +70,8 @@ namespace MachineBrigade.Game.Rendering
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = Haze;
-            RenderSettings.fogStartDistance = 100f;
-            RenderSettings.fogEndDistance = 220f;
+            RenderSettings.fogStartDistance = 100f + CameraControl.RtsCamera.DepthShift;
+            RenderSettings.fogEndDistance = 220f + CameraControl.RtsCamera.DepthShift;
 
             // Shadow and edge quality: a tight shadow range keeps texels small, extra bias stops
             // acne flickering on hulls as they move, and MSAA stops edges crawling.
@@ -95,7 +99,8 @@ namespace MachineBrigade.Game.Rendering
                 // FSR 1 sharpens the upscale where the GPU supports it (it falls back to bilinear).
                 _pipeline.upscalingFilter = _pipeline.renderScale < 0.99f ? UpscalingFilterSelection.FSR : UpscalingFilterSelection.Auto;
                 _originalShadowResolution = _pipeline.mainLightShadowmapResolution;
-                _pipeline.mainLightShadowmapResolution = options.Shadows == Match.ShadowLevel.High ? 2048 : 1024;
+                // High: a 4096 map, so the sharper edges survive the far camera (130 m) the view uses now.
+                _pipeline.mainLightShadowmapResolution = options.Shadows == Match.ShadowLevel.High ? 4096 : 1024;
                 // One shadow map: cascades fix perspective aliasing, which an orthographic view does not have.
                 _originalCascades = _pipeline.shadowCascadeCount;
                 _pipeline.shadowCascadeCount = 1;
@@ -116,12 +121,11 @@ namespace MachineBrigade.Game.Rendering
                     Match.ShadowLevel.Low => LightShadows.Hard,
                     _ => LightShadows.Soft,
                 };
-                // Four taps on phones (Unity's mobile balance); nine on desktop High.
+                // High: nine taps on phones too, sixteen on desktop; four taps below High.
                 var data = _sun.GetUniversalAdditionalLightData();
                 if (data != null)
-                    data.softShadowQuality = options.Shadows == Match.ShadowLevel.High && !Application.isMobilePlatform
-                        ? SoftShadowQuality.Medium
-                        : SoftShadowQuality.Low;
+                    data.softShadowQuality = options.Shadows != Match.ShadowLevel.High ? SoftShadowQuality.Low
+                        : Application.isMobilePlatform ? SoftShadowQuality.Medium : SoftShadowQuality.High;
             }
         }
 
@@ -186,8 +190,9 @@ namespace MachineBrigade.Game.Rendering
             RenderSettings.ambientProbe = Hemisphere((Sky * cast).linear * AmbientStrength * light,
                 (Earth * cast).linear * AmbientStrength * light);
             RenderSettings.fogColor = fog;
-            RenderSettings.fogStartDistance = fogStart;
-            RenderSettings.fogEndDistance = fogEnd;
+            // Fog distances are authored for a camera 60 m back; it now stands further off.
+            RenderSettings.fogStartDistance = fogStart + CameraControl.RtsCamera.DepthShift;
+            RenderSettings.fogEndDistance = fogEnd + CameraControl.RtsCamera.DepthShift;
             if (Camera.main != null) Camera.main.backgroundColor = fog;
         }
 

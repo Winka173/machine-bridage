@@ -55,6 +55,7 @@ Shader "MachineBrigade/Flipbook"
             #pragma multi_compile_local _ _FLIPBOOK_BLEND
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "MbClear.hlsl"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -90,6 +91,7 @@ Shader "MachineBrigade/Flipbook"
                 half4 color : COLOR;
                 float4 uv : TEXCOORD0;
                 float4 data : TEXCOORD1; // x: frame blend, y: age, z: height above the ground, w: fog
+                float3 positionWS : TEXCOORD2;
             };
 
             Varyings Vert(Attributes input)
@@ -107,6 +109,7 @@ Shader "MachineBrigade/Flipbook"
                 // URP's clip-space fog assumes a perspective camera; use view depth (OrthoFog).
                 float fog = ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
                 output.data = float4(input.anim.x, input.anim.y, height, fog);
+                output.positionWS = positionWS;
                 return output;
             }
 
@@ -138,7 +141,8 @@ Shader "MachineBrigade/Flipbook"
                 fire = MixFogColor(fire, half3(0, 0, 0), fogFactor);
 
                 half alpha = saturate(coverage + heat * _FireOpacity * fade);
-                return half4(smoke * coverage + fire, alpha);
+                // Premultiplied: thinning the whole puff over a boss keeps its colours.
+                return half4(smoke * coverage + fire, alpha) * MbClearFade(input.positionWS, 0.25h);
             }
             ENDHLSL
         }

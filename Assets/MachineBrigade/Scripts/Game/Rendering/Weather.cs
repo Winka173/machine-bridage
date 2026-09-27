@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Match;
@@ -12,36 +13,84 @@ using Random = UnityEngine.Random;
 namespace MachineBrigade.Game.Rendering
 {
     /// <summary>
-    /// The match's weather, all visual: an overcast sky dims and cools the light and pulls the
-    /// fog in; rain adds falling streaks around the camera, splashes, a wet sheen on the ground
-    /// and its hiss; storms add heavier rain, gusting foliage, lightning flashes and thunder.
-    /// Snow drifts down in the wind; a sandstorm rolls dust clouds and blowing grit through an
-    /// orange haze; fog closes in with low wisps; night leaves moonlight, so every fire and
-    /// explosion lights up the field. Nothing here touches the simulation.
+    /// The match's weather, all visual:
+    /// - Overcast dims and cools the light and pulls the fog in.
+    /// - Rain adds falling streaks round the camera, splashes, a wet sheen on the ground and its hiss.
+    /// - A storm adds heavier rain, gusting foliage, lightning flashes and thunder.
+    /// - Snow drifts down in the wind.
+    /// - A sandstorm rolls dust clouds and blowing grit through an orange haze.
+    /// - Fog closes in with low wisps.
+    /// - Night leaves moonlight, so every fire and explosion lights up the field.
+    ///
+    /// When the weather turns mid-battle, the new weather rolls in over <see cref="TransitionSeconds"/>:
+    /// light, fog, colour grading, wet ground, wind in the foliage and the weather's sound all ease
+    /// from how the scene looks now to the new look. The old weather's rain or snow thins out while
+    /// the new one thickens. Nothing here touches the simulation.
     /// </summary>
     public sealed class Weather : IDisposable
     {
+        /// <summary>How long one weather takes to turn into the next.</summary>
+        public const float TransitionSeconds = 8f;
+
         private readonly WeatherKind _kind;
         private readonly RtsCamera _camera;
         private readonly AudioDirector _audio;
+        private readonly Atmosphere _atmosphere;
         private readonly Light _sun;
-        private readonly float _sunIntensity;
-        private readonly Color _sunColour;
         private readonly Material[] _grounds;
-        private readonly float[] _groundRoughness;
-        private readonly Color[] _groundColour;
         private readonly Material[] _foliage;
-        private readonly float[] _foliageWind;
         private readonly GameObject _root;
         private readonly ParticleSystem _rain, _splashes, _flakes, _dust, _grit, _wisps;
+        private readonly List<(ParticleSystem system, float rate)> _systems = new();
         private readonly Volume _volume;
+        private readonly Baseline _base;
+        private readonly Look _from, _to;
+        private float _blend;
         private float _nextLightning = float.MaxValue;
-        private readonly float _dim = 1f;
         private float _flashStart = -10f;
         private ParticleSystemRenderer _rainRenderer;
+        private float _retiredAt = -1f;
 
         /// <summary>The shortest a rain streak is drawn, in seconds of fall.</summary>
         private const float RainStreak = 0.04f;
+
+        /// <summary>The scene before any weather: the map's own clear day, restored when the match ends.</summary>
+        private sealed class Baseline
+        {
+            public float SunIntensity;
+            public Color SunColour;
+            public float Shadow;
+            public float[] GroundRoughness;
+            public Color[] GroundColour;
+            public float[] FoliageWind;
+            public float Saturation, Exposure, Vignette;
+        }
+
+        /// <summary>Everything a weather sets that can ease from one weather to the next.</summary>
+        private struct Look
+        {
+            public float Sun, Shadow, Ambient, FogStart, FogEnd, Wet, Wind, Saturation, Exposure, Vignette, RainSound, AirSound;
+            public Color SunColour, Cast, Fog;
+
+            public static Look Lerp(in Look a, in Look b, float t) => new()
+            {
+                Sun = Mathf.Lerp(a.Sun, b.Sun, t),
+                Shadow = Mathf.Lerp(a.Shadow, b.Shadow, t),
+                Ambient = Mathf.Lerp(a.Ambient, b.Ambient, t),
+                FogStart = Mathf.Lerp(a.FogStart, b.FogStart, t),
+                FogEnd = Mathf.Lerp(a.FogEnd, b.FogEnd, t),
+                Wet = Mathf.Lerp(a.Wet, b.Wet, t),
+                Wind = Mathf.Lerp(a.Wind, b.Wind, t),
+                Saturation = Mathf.Lerp(a.Saturation, b.Saturation, t),
+                Exposure = Mathf.Lerp(a.Exposure, b.Exposure, t),
+                Vignette = Mathf.Lerp(a.Vignette, b.Vignette, t),
+                RainSound = Mathf.Lerp(a.RainSound, b.RainSound, t),
+                AirSound = Mathf.Lerp(a.AirSound, b.AirSound, t),
+                SunColour = Color.Lerp(a.SunColour, b.SunColour, t),
+                Cast = Color.Lerp(a.Cast, b.Cast, t),
+                Fog = Color.Lerp(a.Fog, b.Fog, t),
+            };
+        }
 
         /// <summary>Light, fog and grading of one kind of weather.</summary>
         private readonly struct Mood
@@ -94,85 +143,219 @@ namespace MachineBrigade.Game.Rendering
             _ => new Mood(1f, 1f, Color.white, Atmosphere.Haze, 100f, 220f, Color.white, 0f, 0f, 0f, 0f),
         };
 
+        /// <param name="clearCast">The map's own light on a clear day (its theme's cast), which Clear eases back to.</param>
+        /// <param name="clearHaze">The map's own haze on a clear day.</param>
+        /// <param name="previous">The weather this one replaces: it rolls in from how that one looks now.</param>
         public Weather(WeatherKind kind, Atmosphere atmosphere, MaterialLibrary materials, RtsCamera camera, AudioDirector audio,
-            Transform parent, bool highQuality)
+            Transform parent, bool highQuality, Color clearCast, Color clearHaze, Weather previous = null)
         {
             _kind = kind;
             _camera = camera;
             _audio = audio;
+            _atmosphere = atmosphere;
             foreach (var light in Object.FindObjectsByType<Light>())
                 if (light.type == LightType.Directional) _sun = light;
-            if (_sun != null)
-            {
-                _sunIntensity = _sun.intensity;
-                _sunColour = _sun.color;
-            }
             _grounds = new[] { materials.Ground, materials.OuterGround };
-            _groundRoughness = Array.ConvertAll(_grounds, g => g.GetFloat("_Roughness"));
-            _groundColour = Array.ConvertAll(_grounds, g => g.GetColor("_BaseColor"));
             _foliage = new[] { materials.GrassTuft, materials.ForModel("Foliage", -1), materials.ForModel("FoliageLight", -1) };
-            _foliageWind = Array.ConvertAll(_foliage, m => m.GetFloat("_Wind"));
             foreach (var v in Object.FindObjectsByType<Volume>()) _volume = v;
+            // The clear-day scene is read once, before the first weather touches it; later weathers inherit it.
+            _base = previous?._base ?? CaptureBaseline();
+            _to = LookOf(kind, clearCast, clearHaze);
+            _from = previous != null ? previous.Current : _to;
+            _blend = previous != null ? 0f : 1f;
 
             _root = new GameObject("Weather");
             _root.transform.SetParent(parent, false);
-
-            var wet = kind is WeatherKind.Rain or WeatherKind.Storm;
-            var mood = MoodOf(kind);
-            _dim = mood.Sun;
-            if (kind != WeatherKind.Clear)
-            {
-                atmosphere.SetMood(mood.Ambient, mood.Cast, mood.Fog, mood.FogStart, mood.FogEnd);
-                if (_sun != null)
-                {
-                    _sun.intensity = _sunIntensity * mood.Sun;
-                    _sun.color = Color.Lerp(_sunColour, mood.SunTint, mood.Tint);
-                    _sun.shadowStrength = kind == WeatherKind.Night ? 0.6f : Mathf.Lerp(0.85f, 0.45f, 1f - mood.Sun);
-                }
-                Grade(mood.Saturation, mood.Exposure, mood.Vignette);
-            }
             var density = highQuality ? 1f : 0.55f;
             switch (kind)
             {
                 case WeatherKind.Snow:
-                    _flakes = Snowfall(materials, 1100f * density);
-                    _audio.AmbientLevel = 0.18f;
-                    for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _foliageWind[i] * 1.3f);
+                    _flakes = Keep(Snowfall(materials, 1100f * density), 1100f * density);
                     break;
                 case WeatherKind.Sandstorm:
-                    _dust = DustClouds(materials, 7f * density);
-                    _grit = Grit(materials, 1400f * density);
-                    _audio.RainLevel = 0.22f; // the hiss of blowing sand
-                    _audio.AmbientLevel = 0.5f;
-                    for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _foliageWind[i] * 3f);
+                    _dust = Keep(DustClouds(materials, 7f * density), 7f * density);
+                    _grit = Keep(Grit(materials, 1400f * density), 1400f * density);
                     break;
                 case WeatherKind.Fog:
-                    _wisps = FogWisps(materials, 4f * density);
-                    break;
-                case WeatherKind.Night:
-                    _audio.AmbientLevel = 0.1f;
+                    _wisps = Keep(FogWisps(materials, 4f * density), 4f * density);
                     break;
             }
-            if (wet)
+            if (kind is WeatherKind.Rain or WeatherKind.Storm)
             {
-                // Wet ground: darker and glossier.
-                for (var i = 0; i < _grounds.Length; i++)
-                {
-                    _grounds[i].SetFloat("_Roughness", 0.42f);
-                    _grounds[i].SetColor("_BaseColor", _groundColour[i] * 0.82f);
-                }
                 var heavy = kind == WeatherKind.Storm;
-                var rate = (heavy ? 2800f : 1800f) * (highQuality ? 1f : 0.55f);
-                _rain = RainSystem(materials, rate, heavy);
-                _splashes = SplashSystem(materials, rate * 0.35f);
-                _audio.RainLevel = heavy ? 0.5f : 0.35f;
-                _audio.AmbientLevel = heavy ? 0.4f : 0.24f;
-                for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _foliageWind[i] * (heavy ? 2.6f : 1.6f));
+                var rate = (heavy ? 2800f : 1800f) * density;
+                _rain = Keep(RainSystem(materials, rate, heavy), rate);
+                _splashes = Keep(SplashSystem(materials, rate * 0.35f), rate * 0.35f);
             }
-            if (kind == WeatherKind.Storm) _nextLightning = Time.time + Random.Range(4f, 9f);
+            if (kind == WeatherKind.Storm) _nextLightning = Time.time + Random.Range(4f, 9f) + (previous != null ? TransitionSeconds * 0.5f : 0f);
+            previous?.Retire();
+            Apply(Look.Lerp(_from, _to, Ease(_blend)));
+            SetRates(_blend);
+        }
+
+        /// <summary>This weather's look at this moment (a transition in progress included).</summary>
+        private Look Current => Look.Lerp(_from, _to, Ease(_blend));
+
+        private static float Ease(float t) => t * t * (3f - 2f * t);
+
+        private ParticleSystem Keep(ParticleSystem system, float rate)
+        {
+            _systems.Add((system, rate));
+            return system;
+        }
+
+        private Baseline CaptureBaseline()
+        {
+            var b = new Baseline
+            {
+                SunIntensity = _sun != null ? _sun.intensity : 1f,
+                SunColour = _sun != null ? _sun.color : Color.white,
+                Shadow = _sun != null ? _sun.shadowStrength : 1f,
+                GroundRoughness = Array.ConvertAll(_grounds, g => g.GetFloat("_Roughness")),
+                GroundColour = Array.ConvertAll(_grounds, g => g.GetColor("_BaseColor")),
+                FoliageWind = Array.ConvertAll(_foliage, m => m.GetFloat("_Wind")),
+            };
+            if (_volume != null)
+            {
+                var profile = _volume.profile; // instantiates a copy, leaving the asset untouched
+                if (profile.TryGet<ColorAdjustments>(out var colour))
+                {
+                    b.Saturation = colour.saturation.value;
+                    b.Exposure = colour.postExposure.value;
+                }
+                if (profile.TryGet<Vignette>(out var edge)) b.Vignette = edge.intensity.value;
+            }
+            return b;
+        }
+
+        private Look LookOf(WeatherKind kind, Color clearCast, Color clearHaze)
+        {
+            var mood = MoodOf(kind);
+            var clear = kind == WeatherKind.Clear;
+            var wet = kind is WeatherKind.Rain or WeatherKind.Storm;
+            return new Look
+            {
+                Sun = _base.SunIntensity * mood.Sun,
+                SunColour = Color.Lerp(_base.SunColour, mood.SunTint, mood.Tint),
+                Shadow = clear ? _base.Shadow : kind == WeatherKind.Night ? 0.6f : Mathf.Lerp(0.85f, 0.45f, 1f - mood.Sun),
+                Ambient = mood.Ambient,
+                Cast = clear ? clearCast : mood.Cast,
+                Fog = clear ? clearHaze : mood.Fog,
+                FogStart = mood.FogStart,
+                FogEnd = mood.FogEnd,
+                Wet = wet ? 1f : 0f,
+                Wind = kind switch
+                {
+                    WeatherKind.Snow => 1.3f,
+                    WeatherKind.Sandstorm => 3f,
+                    WeatherKind.Rain => 1.6f,
+                    WeatherKind.Storm => 2.6f,
+                    _ => 1f,
+                },
+                Saturation = _base.Saturation + mood.Saturation,
+                Exposure = _base.Exposure + mood.Exposure,
+                Vignette = clear ? _base.Vignette : mood.Vignette,
+                // The rain loop is also the hiss of blowing sand.
+                RainSound = kind switch
+                {
+                    WeatherKind.Storm => 0.5f,
+                    WeatherKind.Rain => 0.35f,
+                    WeatherKind.Sandstorm => 0.22f,
+                    _ => 0f,
+                },
+                AirSound = kind switch
+                {
+                    WeatherKind.Storm => 0.4f,
+                    WeatherKind.Rain => 0.24f,
+                    WeatherKind.Sandstorm => 0.5f,
+                    WeatherKind.Snow => 0.18f,
+                    WeatherKind.Night => 0.1f,
+                    _ => 0.16f,
+                },
+            };
+        }
+
+        private void Apply(in Look look)
+        {
+            _atmosphere.SetMood(look.Ambient, look.Cast, look.Fog, look.FogStart, look.FogEnd);
+            if (_sun != null)
+            {
+                _sun.intensity = look.Sun;
+                _sun.color = look.SunColour;
+                _sun.shadowStrength = look.Shadow;
+            }
+            // Wet ground: darker and glossier.
+            for (var i = 0; i < _grounds.Length; i++)
+            {
+                _grounds[i].SetFloat("_Roughness", Mathf.Lerp(_base.GroundRoughness[i], 0.42f, look.Wet));
+                _grounds[i].SetColor("_BaseColor", _base.GroundColour[i] * Mathf.Lerp(1f, 0.82f, look.Wet));
+            }
+            for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _base.FoliageWind[i] * look.Wind);
+            if (_volume != null)
+            {
+                var profile = _volume.profile;
+                if (profile.TryGet<ColorAdjustments>(out var colour))
+                {
+                    colour.saturation.Override(look.Saturation);
+                    colour.postExposure.Override(look.Exposure);
+                }
+                if (profile.TryGet<Vignette>(out var edge)) edge.intensity.Override(look.Vignette);
+            }
+            _audio.RainLevel = look.RainSound;
+            _audio.AmbientLevel = look.AirSound;
+        }
+
+        /// <summary>This weather's particles at a share of their full rate (thickening as it rolls in).</summary>
+        private void SetRates(float share)
+        {
+            foreach (var (system, rate) in _systems)
+            {
+                var emission = system.emission;
+                emission.rateOverTime = rate * share;
+            }
+        }
+
+        /// <summary>Replaced by the next weather: its particles thin out and it lets go of the scene.</summary>
+        private void Retire()
+        {
+            _retiredAt = Time.time;
+            _nextLightning = float.MaxValue;
+        }
+
+        /// <summary>A replaced weather thinning out; false once its last drops have fallen (then dispose it).</summary>
+        public bool TickLeaving()
+        {
+            Follow();
+            var t = (Time.time - _retiredAt) / (TransitionSeconds * 0.7f);
+            SetRates(Mathf.Clamp01(1f - t));
+            return t < 1.5f;
         }
 
         public void Tick()
+        {
+            Follow();
+            if (_blend < 1f)
+            {
+                _blend = Mathf.Min(1f, _blend + Time.deltaTime / TransitionSeconds);
+                Apply(Current);
+                SetRates(Ease(_blend));
+            }
+
+            if (_kind != WeatherKind.Storm || _sun == null) return;
+            if (Time.time >= _nextLightning)
+            {
+                _nextLightning = Time.time + Random.Range(6f, 15f);
+                _flashStart = Time.time;
+                _audio.Thunder(Random.Range(0.4f, 2.2f));
+            }
+            // One bright flash that dies away smoothly, with a softer after-glow: no strobing flicker.
+            var ft = Time.time - _flashStart;
+            var flash = ft < 0f ? 0f : Mathf.Exp(-ft * 9f) + 0.35f * Mathf.Exp(-Mathf.Abs(ft - 0.22f) * 14f) * (ft < 0.6f ? 1f : 0f);
+            _sun.intensity = Current.Sun + Mathf.Clamp01(flash) * 3f;
+        }
+
+        /// <summary>The weather's particle volumes follow the view.</summary>
+        private void Follow()
         {
             var focus = _camera.Focus;
             if (_rain != null)
@@ -191,47 +374,30 @@ namespace MachineBrigade.Game.Rendering
             if (_dust != null) _dust.transform.position = focus + new Vector3(-40f, 4f, -20f);
             if (_grit != null) _grit.transform.position = focus + new Vector3(-30f, 6f, -15f);
             if (_wisps != null) _wisps.transform.position = focus + new Vector3(-12f, 2f, -6f);
-
-            if (_kind != WeatherKind.Storm || _sun == null) return;
-            if (Time.time >= _nextLightning)
-            {
-                _nextLightning = Time.time + Random.Range(6f, 15f);
-                _flashStart = Time.time;
-                _audio.Thunder(Random.Range(0.4f, 2.2f));
-            }
-            // One bright flash that dies away smoothly, with a softer after-glow: no strobing flicker.
-            var t = Time.time - _flashStart;
-            var flash = t < 0f ? 0f : Mathf.Exp(-t * 9f) + 0.35f * Mathf.Exp(-Mathf.Abs(t - 0.22f) * 14f) * (t < 0.6f ? 1f : 0f);
-            _sun.intensity = _sunIntensity * _dim + Mathf.Clamp01(flash) * 3f;
         }
 
+        /// <summary>
+        /// Ends the weather. The current one puts the clear-day scene back; a replaced one only
+        /// removes its particles, since the weather that replaced it owns the scene now.
+        /// </summary>
         public void Dispose()
         {
-            if (_sun != null)
+            if (_retiredAt < 0f)
             {
-                _sun.intensity = _sunIntensity;
-                _sun.color = _sunColour;
+                if (_sun != null)
+                {
+                    _sun.intensity = _base.SunIntensity;
+                    _sun.color = _base.SunColour;
+                    _sun.shadowStrength = _base.Shadow;
+                }
+                for (var i = 0; i < _grounds.Length; i++)
+                {
+                    _grounds[i].SetFloat("_Roughness", _base.GroundRoughness[i]);
+                    _grounds[i].SetColor("_BaseColor", _base.GroundColour[i]);
+                }
+                for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _base.FoliageWind[i]);
             }
-            for (var i = 0; i < _grounds.Length; i++)
-            {
-                _grounds[i].SetFloat("_Roughness", _groundRoughness[i]);
-                _grounds[i].SetColor("_BaseColor", _groundColour[i]);
-            }
-            for (var i = 0; i < _foliage.Length; i++) _foliage[i].SetFloat("_Wind", _foliageWind[i]);
             if (_root != null) Object.Destroy(_root);
-        }
-
-        /// <summary>Colour grading for dull weather, on a per-match copy of the volume profile.</summary>
-        private void Grade(float saturation, float exposure, float vignette)
-        {
-            if (_volume == null) return;
-            var profile = _volume.profile; // instantiates a copy, leaving the asset untouched
-            if (profile.TryGet<ColorAdjustments>(out var colour))
-            {
-                colour.saturation.Override(colour.saturation.value + saturation);
-                colour.postExposure.Override(colour.postExposure.value + exposure);
-            }
-            if (profile.TryGet<Vignette>(out var edge)) edge.intensity.Override(vignette);
         }
 
         private ParticleSystem RainSystem(MaterialLibrary m, float rate, bool heavy)

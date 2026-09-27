@@ -170,6 +170,7 @@ namespace MachineBrigade.Game.Audio
         /// <summary>Extra wind for rain and storms.</summary>
         public float AmbientLevel
         {
+            get => _ambient.volume;
             set => _ambient.volume = value;
         }
 

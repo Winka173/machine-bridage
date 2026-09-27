@@ -75,8 +75,9 @@ namespace MachineBrigade.Sim.Content
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
-            IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null)
+            IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null)
         {
+            Decor = decor ?? Array.Empty<PropPlacement>();
             SiegeRings = siegeRings ?? Array.Empty<float>();
             Boundary = boundary ?? Array.Empty<Vector2>();
             Theme = string.IsNullOrWhiteSpace(theme) ? "temperate" : theme;
@@ -95,6 +96,12 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<TeamStart> Teams { get; }
         public IReadOnlyList<PropPlacement> Props { get; }
         public IReadOnlyList<UnitPlacement> Units { get; }
+
+        /// <summary>
+        /// Scenery beyond the boundary: buildings, woods and rocks drawn like the map's own but never
+        /// simulated (nothing reaches them), so the country goes on past the edge.
+        /// </summary>
+        public IReadOnlyList<PropPlacement> Decor { get; }
 
         /// <summary>Objectives for Conquest (may be empty for other modes).</summary>
         public IReadOnlyList<CapturePointDef> Points { get; }
@@ -192,8 +199,15 @@ namespace MachineBrigade.Sim.Content
             }
 
             var rings = root.Has("siegeRings") ? new List<float>(root.FloatArray("siegeRings")) : null;
+            var decor = new List<PropPlacement>();
+            if (root.Has("decor"))
+                foreach (var p in root.Array("decor"))
+                {
+                    var rotation = ((p.Int("rot", 0) % 360) + 360) % 360;
+                    decor.Add(new PropPlacement(p.String("def"), new Vector2(p.Float("x"), p.Float("z")), rotation - rotation % 45));
+                }
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings);
+                boundary, rings, decor);
         }
     }
 }

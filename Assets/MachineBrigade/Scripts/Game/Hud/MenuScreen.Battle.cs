@@ -23,7 +23,8 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
             (GameModeKind.Defend, "shield", "mode.defend", "mode.defendSub"),
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
-            (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
+            (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),
+            (GameModeKind.Survival, "people", "mode.survival", "mode.survivalSub"),
             (GameModeKind.Weekly, "home", "mode.weekly", "mode.weeklySub"),
             (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
         };
@@ -36,6 +37,8 @@ namespace MachineBrigade.Game.Hud
         private void BuildBattlePage()
         {
             var page = TabPage(Tab.Battle, "battle-page");
+            // The battle is the stage; a soft dark fade behind the column keeps its text readable.
+            page.Add(UiKit.Box("battle-scrim"));
 
             // Left column: the campaign, today's challenges, the weekly fortress.
             var left = UiKit.Box("home-left");
@@ -97,8 +100,24 @@ namespace MachineBrigade.Game.Hud
             change.Add(UiKit.Icon("settings", UiKit.Ink, 1.9f));
             mode.Add(change);
             right.Add(mode);
-            right.Add(DeployButton("deploy-button"));
+            var deploy = DeployButton("deploy-button");
+            // Now and then a band of light sweeps across Deploy (the one moving thing on the page).
+            var shine = UiKit.Box("cta-shine");
+            deploy.Add(shine);
+            deploy.schedule.Execute(() =>
+            {
+                shine.RemoveFromClassList("sweep");
+                shine.schedule.Execute(() => shine.AddToClassList("sweep")).StartingIn(60);
+            }).Every(4600);
+            right.Add(deploy);
             page.Add(right);
+
+            // Bottom-left: the deck at a glance; a tap opens the Army tab.
+            var deck = UiKit.Button("home-deck", () => ShowTab(Tab.Army));
+            deck.Add(UiKit.Text(Strings.Get("tab.army"), "home-card-caps"));
+            _homeDeck = UiKit.Box("home-deck-slots");
+            deck.Add(_homeDeck);
+            page.Add(deck);
 
             _note = UiKit.Text("", "menu-toast");
             _note.style.display = DisplayStyle.None;
@@ -129,8 +148,31 @@ namespace MachineBrigade.Game.Hud
             _play();
         }
 
+        private VisualElement _homeDeck;
+
+        private void RefreshHomeDeck()
+        {
+            _homeDeck.Clear();
+            void Slot(string id, bool support)
+            {
+                var slot = UiKit.Box(id == null ? "home-deck-slot empty" : support ? "home-deck-slot support" : "home-deck-slot");
+                if (id != null)
+                {
+                    slot.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
+                    var cost = UiKit.Box("unit-card-cost");
+                    cost.Add(UiKit.Text(CostOf(id).ToString(), "unit-card-cost-text"));
+                    slot.Add(cost);
+                }
+                _homeDeck.Add(slot);
+            }
+            foreach (var id in MatchSettings.DeckLayout(false)) Slot(id, false);
+            _homeDeck.Add(UiKit.Box("deck-divider"));
+            foreach (var id in MatchSettings.DeckLayout(true)) Slot(id, true);
+        }
+
         private void RefreshBattle()
         {
+            RefreshHomeDeck();
             var next = Campaign.All[Campaign.Next];
             _campaignCardTitle.text = Strings.Format("home.nextMission", Campaign.Next + 1, Strings.Get("mission." + next.Id + ".name"));
             _campaignCardSub.text = Strings.Format("campaign.progress", Campaign.Won, Campaign.All.Count, PlayerProfile.TotalStars);
@@ -151,9 +193,11 @@ namespace MachineBrigade.Game.Hud
                 _modeName.text = Strings.Get(name);
                 if (_setupInfo != null) _setupInfo.text = Strings.Get(sub);
             }
-            _modeMap.text = Strings.Get("map." + MatchSettings.CurrentMap.Id);
-            _modeChips.text = Strings.Get("menu." + MatchSettings.Difficulty.ToString().ToLowerInvariant()) + "  ·  " +
-                              Strings.Get("menu." + MatchSettings.Weather.ToString().ToLowerInvariant());
+            // One line under the mode: the battlefield, the difficulty and the weather.
+            _modeMap.text = Strings.Get("map." + MatchSettings.CurrentMap.Id) + "  ·  " +
+                            Strings.Get("menu." + MatchSettings.Difficulty.ToString().ToLowerInvariant()) + "  ·  " +
+                            Strings.Get("menu." + MatchSettings.Weather.ToString().ToLowerInvariant());
+            _modeChips.style.display = DisplayStyle.None;
         }
 
         // ------------------------------------------------------------------ battle setup

@@ -55,7 +55,10 @@ namespace MachineBrigade.Sim
                 Cover.BlockWhere(map.InsideBoundary);
             }
             _pathFinder = new PathFinder(Grid);
+            _lanes = new LaneMap(Grid);
             Damage = new DamageSystem(this);
+            Status = new StatusSystem(this);
+            Gear = new Abilities.GearSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
@@ -72,6 +75,21 @@ namespace MachineBrigade.Sim
 
         /// <summary>Where direct fire cannot pass (tall props); see <see cref="CoverGrid"/>.</summary>
         public CoverGrid Cover { get; }
+
+        private readonly LaneMap _lanes;
+
+        /// <summary>
+        /// Roads, main routes and doorways (where nobody may stop), rebuilt when a wall falls; see
+        /// <see cref="LaneMap"/>.
+        /// </summary>
+        public LaneMap Lanes
+        {
+            get
+            {
+                _lanes.RebuildIfDirty(this);
+                return _lanes;
+            }
+        }
 
         /// <summary>Whether <paramref name="shooter"/> has a clear line of fire at <paramref name="target"/> with <paramref name="weapon"/>.</summary>
         internal bool HasLineOfFire(Vehicle shooter, IDamageable target, WeaponDef weapon) => _combat.HasLineOfFire(shooter, target, weapon);
@@ -107,7 +125,22 @@ namespace MachineBrigade.Sim
         public int PendingExplosionCount => Damage.PendingCount;
 
         internal Random Random { get; }
+
+        /// <summary>The driving and traffic rules (tests read its path-search budget).</summary>
+        internal MovementSystem Movement => _movement;
+
         internal DamageSystem Damage { get; }
+
+        /// <summary>Timed effects: burning, slowed, shredded, marked, barriers and aura buffs.</summary>
+        internal StatusSystem Status { get; }
+
+        /// <summary>Equipment traits and modules in battle.</summary>
+        internal Abilities.GearSystem Gear { get; }
+
+        internal CombatSystem Combat => _combat;
+
+        /// <summary>Some round is flying at this vehicle.</summary>
+        internal bool RoundIncoming(EntityId vehicle) => _combat.RoundIncoming(vehicle);
         internal EconomySystem Economy { get; }
         internal StrikeSystem Strikes { get; }
         internal Abilities.AbilitySystem Abilities => _abilities;
@@ -266,7 +299,8 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
-            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && !def.Boss && !def.Static) Upgrade(vehicle, boosts(def));
+            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && (_boostAll[team] || (!def.Boss && !def.Static)))
+                Upgrade(vehicle, boosts(def));
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
@@ -275,6 +309,9 @@ namespace MachineBrigade.Sim
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
+            // A fixed defence stands on its ground like a building from the start, wherever it came
+            // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
+            if (def.Static) AnchorDefence(vehicle);
             Emit(SimEvent.Spawned(vehicle));
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
@@ -282,23 +319,27 @@ namespace MachineBrigade.Sim
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
+        private readonly bool[] _boostAll = new bool[3];
 
         /// <summary>
         /// A side's upgrades (card ranks and equipment): what each of its vehicles gets as it enters
-        /// the battle (null: none). Set before the forces are placed.
+        /// the battle (null: none). Set before the forces are placed. Bosses and emplacements are
+        /// left as they are unless <paramref name="everything"/> (a campaign enemy keeping pace
+        /// with the player's arsenal: its boss and towers too).
         /// </summary>
-        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null)
+        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false)
         {
             if (team < 0 || team >= _boosts.Length) return;
             _boosts[team] = boosts;
             _strikeBoosts[team] = strikeDamage;
+            _boostAll[team] = everything;
         }
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
         internal float StrikeDamage(int team, string supportId) =>
             team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
 
-        private static void Upgrade(Vehicle v, VehicleBoost b)
+        private void Upgrade(Vehicle v, VehicleBoost b)
         {
             v.BoostHp = b.Hp;
             v.BoostSpeed = b.Speed;
@@ -310,6 +351,7 @@ namespace MachineBrigade.Sim
             v.Regen = b.Regen;
             v.Special = b.Special;
             v.SpecialPower = b.SpecialPower;
+            v.SpecialPower2 = b.SpecialPower2;
             switch (b.Special)
             {
                 case SpecialModule.ReactiveArmor:
@@ -323,6 +365,9 @@ namespace MachineBrigade.Sim
                     v.FireBoost *= 1f + b.SpecialPower;
                     break;
             }
+            // Stat lines, tuned weapons, traits and the other modules.
+            Gear.Equip(v, b);
+            v.RefillMagazines();
         }
 
         /// <summary>
@@ -447,6 +492,8 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Status.Step(dt);
+            Gear.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
@@ -454,6 +501,13 @@ namespace MachineBrigade.Sim
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
+
+        /// <summary>Turns a vehicle into a firing-range target (see <see cref="Vehicle.Dummy"/>).</summary>
+        public void MakeDummy(Vehicle v)
+        {
+            v.Dummy = true;
+            v.RefreshEffects(Time);
+        }
 
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
@@ -562,7 +616,9 @@ namespace MachineBrigade.Sim
                     var moved = Vector2.Distance(p, v.Position);
                     if (moved < 4f) break;
                     var edge = Map.HalfSize - MathF.Max(MathF.Abs(p.X), MathF.Abs(p.Y));
-                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge);
+                    // (It stops where it lands: not in a gate or a gap, where it would close the way.)
+                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -
+                                (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
                     if (score > bestScore)
                     {
                         bestScore = score;
@@ -595,7 +651,7 @@ namespace MachineBrigade.Sim
         {
             var spacing = 1.5f;
             foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);
-            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid);
+            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid, _unitBuffer[0].Flying ? null : Lanes);
             Formation.Assign(_unitBuffer, slots, point, _slotBuffer);
             foreach (var v in _unitBuffer)
             {
@@ -614,31 +670,82 @@ namespace MachineBrigade.Sim
             if (prop.Def.BlocksFire) Cover.Add(prop);
         }
 
+        /// <summary>Seconds a stealthy aircraft stays in plain sight after it fires (its bay doors open).</summary>
+        private const double StealthReveal = 2.5;
+
+        private readonly List<float> _sight = new();
+        private readonly List<float> _thermal = new();
+
         private void RefreshVisibility()
         {
+            // Each spotter's reach with its equipment (optics; more standing still) and whether it
+            // sees through smoke (a thermal imager).
+            _sight.Clear();
+            _thermal.Clear();
+            foreach (var spotter in _vehicleList)
+            {
+                var reach = spotter.Def.VisionRange * spotter.VisionFactor;
+                var thermal = 0f;
+                if (spotter.Gear is { } g)
+                {
+                    if (!spotter.IsMoving && Time - spotter.StillSince >= 1.0) reach *= 1f + g.Stat(StatId.StillVision);
+                    // A thermal imager sees through smoke out to its share of the vision range.
+                    if (g.Has(TraitId.ThermalImager)) thermal = reach * MathF.Min(1f, g.Trait(TraitId.ThermalImager).A);
+                }
+                _sight.Add(reach);
+                _thermal.Add(thermal);
+            }
             foreach (var target in _vehicleList)
             {
                 // A fixed defence, once seen, stays on the map (it cannot move away), as buildings
                 // stay under the fog in most RTS: artillery can shell it from beyond its own sight.
                 var known = target.Def.Static ? target.VisibleToMask : 0;
                 var mask = 0;
-                foreach (var spotter in _vehicleList)
+                // A stealthy aircraft shows only close up, or for a moment after it fires.
+                var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
+                if (target.Dummy)
                 {
-                    if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
-                    if (spotter.Team == target.Team ||
-                        (Vector2.DistanceSquared(spotter.Position, target.Position) <= spotter.Def.VisionRange * spotter.Def.VisionRange &&
-                         !Strikes.Obscures(spotter.Position, target.Position)))
-                        mask |= 1 << spotter.Team;
+                    target.SeenByMask = target.VisibleToMask = ~0;
+                    continue;
                 }
+                // Equipment on the target: a camouflage net standing still, Ghillie Mode hidden.
+                var hidden = false;
+                if (target.Gear is { } tg)
+                {
+                    if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);
+                    hidden = tg.Hidden;
+                }
+                for (var i = 0; i < _vehicleList.Count; i++)
+                {
+                    var spotter = _vehicleList[i];
+                    if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
+                    var range = _sight[i] * sight;
+                    if (hidden) range = MathF.Min(range, GhillieReveal);
+                    if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
+                    else
+                    {
+                        var d2 = Vector2.DistanceSquared(spotter.Position, target.Position);
+                        var thermal = _thermal[i] * sight;
+                        if (d2 <= range * range && ((thermal > 0f && d2 <= thermal * thermal) || !Strikes.Obscures(spotter.Position, target.Position)))
+                            mask |= 1 << spotter.Team;
+                    }
+                }
+                // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
+                ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
+                if (reveal.Until > Time) mask |= reveal.Stacks;
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }
         }
 
+        /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
+        public const float GhillieReveal = 8f;
+
         /// <summary>
-        /// A defence a mode puts down (a camp bastion, a point's tower, an Assault sector's guns)
-        /// stands on the ground like a building: routes go round it. Defences a map places already
-        /// have their ground kept clear and their routes checked by the map builder.
+        /// A fixed defence (a camp bastion, a point's tower, an Assault sector's guns, a fortress's
+        /// turrets) stands on the ground like a building: routes go round it. Every one is anchored
+        /// as it spawns; the map builder keeps the ground of those a map places clear and checks the
+        /// routes round them.
         /// </summary>
         internal void AnchorDefence(Vehicle v)
         {

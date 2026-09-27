@@ -33,8 +33,8 @@ namespace MachineBrigade.Sim.Modes
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
-                if (v.Team == TeamA) power0 += v.Def.CaptureRate;
-                else if (v.Team == TeamB) power1 += v.Def.CaptureRate;
+                if (v.Team == TeamA) power0 += v.CaptureRate;
+                else if (v.Team == TeamB) power1 += v.CaptureRate;
             }
 
             point.Contested = power0 > 0f && power1 > 0f;
@@ -274,7 +274,8 @@ namespace MachineBrigade.Sim.Modes
 
     public sealed class KillLedger
     {
-        private readonly Dictionary<EntityId, (int team, int cost)> _alive = new();
+        private readonly Dictionary<EntityId, (int team, int cost, bool air)> _alive = new();
+        private readonly int[] _airLosses = new int[2];
         private readonly List<EntityId> _gone = new();
         private readonly HashSet<EntityId> _seen = new();
         private readonly int[] _losses = new int[2];
@@ -286,6 +287,9 @@ namespace MachineBrigade.Sim.Modes
         public int Losses(int team) => team is 0 or 1 ? _losses[team] : 0;
 
         public int LostCp(int team) => team is 0 or 1 ? _lostCp[team] : 0;
+
+        /// <summary>Aircraft the other side lost.</summary>
+        public int AirKills(int team) => team is 0 or 1 ? _airLosses[1 - team] : 0;
 
         /// <summary>Vehicles the other side lost.</summary>
         public int Kills(int team) => Losses(1 - team);
@@ -300,15 +304,16 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (!v.IsAlive || v.Team < 0 || v.Team > 1 || (Ignore != null && Ignore(v))) continue;
                 _seen.Add(v.Id);
-                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost);
+                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost, v.Def.Flying);
             }
             _gone.Clear();
             foreach (var id in _alive.Keys)
                 if (!_seen.Contains(id)) _gone.Add(id);
             foreach (var id in _gone)
             {
-                var (team, cost) = _alive[id];
+                var (team, cost, air) = _alive[id];
                 _losses[team]++;
+                if (air) _airLosses[team]++;
                 _lostCp[team] += cost;
                 Lost?.Invoke(team, cost);
                 _alive.Remove(id);

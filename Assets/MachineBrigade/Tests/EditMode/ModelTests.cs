@@ -284,6 +284,27 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>The high-detail variants (High graphics) keep every pivot and muzzle of the normal model, in the same place.</summary>
+        [TestCase("main_battle_tank"), TestCase("light_tank"), TestCase("heavy_tank"), TestCase("apc"), TestCase("scout_jeep"),
+         TestCase("aa_vehicle"), TestCase("artillery"), TestCase("tank_destroyer"), TestCase("attack_helicopter"), TestCase("attack_jet"),
+         TestCase("fighter_jet"), TestCase("sky_gunship")]
+        public void HighDetailVariantsKeepThePivots(string id)
+        {
+            var normal = Load(id).transform;
+            var detail = Load(id + "_hd").transform;
+            var checkedAny = false;
+            foreach (var t in normal.GetComponentsInChildren<Transform>(true))
+            {
+                if (!(t.name.StartsWith("Muzzle_") || t.name == "Turret" || t.name.StartsWith("Mount_") || t.name is "Rotor" or "Tail_rotor" or "Radar"))
+                    continue;
+                var twin = Find(detail, t.name);
+                Assert.IsNotNull(twin, $"{id}_hd has {t.name}");
+                Assert.Less(Vector3.Distance(normal.InverseTransformPoint(t.position), detail.InverseTransformPoint(twin.position)), 0.01f, $"{id}_hd {t.name} in place");
+                checkedAny = true;
+            }
+            Assert.IsTrue(checkedAny, $"{id} has pivots to compare");
+        }
+
         private static GameObject Load(string id)
         {
             var prefab = Resources.Load<GameObject>("Models/" + id);

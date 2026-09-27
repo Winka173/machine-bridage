@@ -15,6 +15,9 @@ namespace MachineBrigade.Sim.Entities
     {
         internal readonly List<Vector2> Path = new();
 
+        /// <summary>Its part in the traffic rules: making way, waiting, queueing, backing out (see Movement.TrafficState).</summary>
+        internal readonly Movement.TrafficState Traffic = new();
+
         internal Vehicle(EntityId id, VehicleDef def, int team, Vector2 position, float heading)
         {
             Id = id;
@@ -29,17 +32,82 @@ namespace MachineBrigade.Sim.Entities
             PathCompleted = true;
             GuardPoint = position;
             Weapons = new WeaponState[def.Mounts.Count];
+            Arms = new WeaponDef[def.Mounts.Count];
             for (var i = 0; i < Weapons.Length; i++)
             {
+                Arms[i] = def.Mounts[i].Weapon;
                 var ammo = def.Mounts[i].Weapon.Ammo;
                 Weapons[i] = new WeaponState { Heading = heading, Ammo = ammo > 0 ? ammo : -1 };
             }
+            Aps = def.Aps;
+            MineLayer = def.Mines;
             SkillReadyAt = new double[def.Skills.Count];
             SkillUsed = new bool[def.Skills.Count];
         }
 
         /// <summary>Rounds left for mount <paramref name="index"/>, or -1 when unlimited.</summary>
         public int Ammo(int index) => Weapons[index].Ammo;
+
+        /// <summary>
+        /// The weapon on mount <paramref name="index"/> as this vehicle carries it: the catalog's,
+        /// or a copy its equipment tuned (range, magazine, reload...). Shared definitions never change.
+        /// </summary>
+        internal readonly WeaponDef[] Arms;
+
+        public WeaponDef Arm(int index) => Arms[index];
+
+        /// <summary>The main weapon as this vehicle carries it.</summary>
+        public WeaponDef Weapon => Arms[0];
+
+        /// <summary>Its active protection system (the model's own, or a Trophy module's).</summary>
+        internal ApsDef? Aps;
+
+        /// <summary>The mines it lays (a mine layer's own, or a Mine Dispenser module's).</summary>
+        internal MineLayerDef? MineLayer;
+
+        /// <summary>Fills every magazine to what it carries now (after its equipment changed the weapons).</summary>
+        internal void RefillMagazines()
+        {
+            for (var i = 0; i < Weapons.Length; i++)
+                Weapons[i].Ammo = Arms[i].Ammo > 0 ? Arms[i].Ammo : -1;
+        }
+
+        // ------------------------------------------------------------ equipment and timed effects
+        /// <summary>Equipment beyond the plain multipliers: stat lines, traits and their counters (null: none).</summary>
+        internal GearState? Gear;
+
+        /// <summary>Timed effects (burning, slowed, shredded, marked, barrier...), by <see cref="StatusKind"/>.</summary>
+        internal readonly Status[] Statuses = new Status[(int)StatusKind.Count];
+
+        /// <summary>Speed and fire-rate multipliers from equipment and effects, worked out every step.</summary>
+        internal float SpeedGear = 1f, FireGear = 1f;
+
+        /// <summary>Hull and turret turn rates, vision and capture speed from equipment.</summary>
+        internal float TurnFactor = 1f, TurretFactor = 1f, VisionFactor = 1f, CaptureFactor = 1f;
+
+        /// <summary>Weapon reach from equipment effects of the moment (a siege anchor dug in).</summary>
+        internal float RangeFactor = 1f;
+
+        /// <summary>Repairs it receives (regeneration, auras) are multiplied by this.</summary>
+        internal float RepairReceived = 1f;
+
+        /// <summary>Takes no damage until then (Unbreakable, Aegis Dome).</summary>
+        internal double ImmuneUntil = double.NegativeInfinity;
+
+        /// <summary>Hit points left in an absorbing barrier (Aegis Barrier, Shared Shield), for the view.</summary>
+        public float Barrier => Statuses[(int)StatusKind.Barrier].Value;
+
+        /// <summary>Reactive blocks left (Reactive Blocks trait), for a counter on the unit; 0 without the trait.</summary>
+        public int ReactiveBlocksLeft => Gear != null && Gear.Has(TraitId.ReactiveBlocks) ? Gear.Blocks : 0;
+
+        /// <summary>On fire from an Incendiary hit or a Firestorm, for the view.</summary>
+        public bool Burning => Statuses[(int)StatusKind.Burn].Until > LastStatusCheck && Statuses[(int)StatusKind.Burn].Value > 0f;
+
+        /// <summary>Sim time of the last step, so views can read timed effects without the clock.</summary>
+        internal double LastStatusCheck;
+
+        /// <summary>Capture speed on objectives, with its equipment.</summary>
+        public float CaptureRate => Def.CaptureRate * CaptureFactor;
 
         /// <summary>Some limited weapon is not full.</summary>
         internal bool NeedsAmmo
@@ -48,7 +116,7 @@ namespace MachineBrigade.Sim.Entities
             {
                 for (var i = 0; i < Weapons.Length; i++)
                 {
-                    var max = Def.Mounts[i].Weapon.Ammo;
+                    var max = Arms[i].Ammo;
                     if (max > 0 && Weapons[i].Ammo < max) return true;
                 }
                 return false;
@@ -69,7 +137,7 @@ namespace MachineBrigade.Sim.Entities
         {
             get
             {
-                var weapon = Def.Mounts[0].Weapon;
+                var weapon = Arms[0];
                 if (weapon.Ammo <= 0 || Weapons[0].Ammo != 0) return 1f;
                 var total = Combat.CombatSystem.ReloadSeconds(weapon);
                 var left = Weapons[0].ReloadLeft > 0f ? Weapons[0].ReloadLeft : total;
@@ -101,7 +169,7 @@ namespace MachineBrigade.Sim.Entities
             ShieldUp = ShieldUntil > now;
             Overdriven = OverdriveUntil > now;
             FlaresUp = FlaresUntil > now;
-            Stunned = StunnedUntil > now;
+            Stunned = StunnedUntil > now || Dummy;
             Barraging = BarrageUntil > now;
         }
 
@@ -121,10 +189,10 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear;
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost;
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear;
 
         /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
         internal float FireBoost = 1f;
@@ -173,7 +241,7 @@ namespace MachineBrigade.Sim.Entities
         internal float Regen;
 
         internal SpecialModule Special;
-        internal float SpecialPower;
+        internal float SpecialPower, SpecialPower2;
 
         /// <summary>Its smoke dischargers have fired (once a battle).</summary>
         internal bool SmokeUsed;
@@ -193,6 +261,24 @@ namespace MachineBrigade.Sim.Entities
             MountAim.Hull => Heading,
             _ => Weapons[index].Heading,
         };
+
+        /// <summary>
+        /// A target on a firing range (the detail page's demo): it never fires or moves, is always in
+        /// sight, and cannot be destroyed (its health stops at a sliver and comes back).
+        /// </summary>
+        public bool Dummy { get; internal set; }
+
+        /// <summary>A car bomb that set itself off: its own blast was the explosion (no second one as it dies).</summary>
+        internal bool Detonated { get; set; }
+
+        /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
+        public double LastFiredAt { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>A VTOL jet holds in the air to shoot until then.</summary>
+        public double HoverUntil { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>A VTOL jet can stop in the air again from then.</summary>
+        public double HoverReadyAt { get; internal set; } = double.NegativeInfinity;
 
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
@@ -265,6 +351,9 @@ namespace MachineBrigade.Sim.Entities
         /// orders move it.
         /// </summary>
         public bool Scripted { get; internal set; }
+
+        /// <summary>A mission's hunted vehicle: the game draws a target marker over it.</summary>
+        public bool Marked { get; internal set; }
 
         /// <summary>The player took direct control of this vehicle recently.</summary>
         public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;

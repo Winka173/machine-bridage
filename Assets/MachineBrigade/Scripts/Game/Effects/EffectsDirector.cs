@@ -246,7 +246,11 @@ namespace MachineBrigade.Game.Effects
                         break;
 
                     case SimEventKind.Repaired:
-                        if (views.TryGet(e.Entity, out var repaired)) _emitters.Repair(repaired.Position + Vector3.up);
+                        if (views.TryGet(e.Entity, out var repaired))
+                        {
+                            _emitters.Repair(repaired.Position + Vector3.up);
+                            repaired.ShowRepair();
+                        }
                         break;
 
                     case SimEventKind.Explosion:
@@ -378,6 +382,7 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _drops.Tick(now);
             JetTrails(views, now);
+            KeepBossInSight(views);
             _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
@@ -400,8 +405,31 @@ namespace MachineBrigade.Game.Effects
             else _marker.Visible = false;
         }
 
+        private static readonly int ClearId = Shader.PropertyToID("_MbClear");
+
+        /// <summary>
+        /// The boss nearest the view is never lost in the smoke and fire of the strikes on it: the
+        /// particle shaders thin what lies over it on screen (MbClear.hlsl).
+        /// </summary>
+        private void KeepBossInSight(ViewRegistry views)
+        {
+            var clear = Vector4.zero;
+            var best = float.MaxValue;
+            foreach (var view in views.All)
+            {
+                if (!view.Def.Boss || view.IsWreck) continue;
+                var d = (view.Position - _camera.Focus).sqrMagnitude;
+                if (d >= best) continue;
+                best = d;
+                var centre = view.Position + Vector3.up * (view.Flying ? 0f : 2.5f);
+                clear = new Vector4(centre.x, centre.y, centre.z, view.Def.Radius * 1.25f + 2f);
+            }
+            Shader.SetGlobalVector(ClearId, clear);
+        }
+
         public void Dispose()
         {
+            Shader.SetGlobalVector(ClearId, Vector4.zero);
             _wrecks.Clear();
             if (_root != null) Object.Destroy(_root.gameObject);
         }
@@ -649,29 +677,110 @@ namespace MachineBrigade.Game.Effects
         /// Jets in flight: a hot exhaust and a thin vapour trail behind the engines, and vortices
         /// streaming off the wingtips when they pull hard into a turn.
         /// </summary>
+        /// <summary>What an aircraft's engines leave behind.</summary>
+        private enum Engine
+        {
+            /// <summary>A fighter's afterburning jet: a flame at full power, a heat shimmer otherwise.</summary>
+            Afterburner,
+
+            /// <summary>A turbojet without afterburner (Su-25): a dull glow.</summary>
+            Hot,
+
+            /// <summary>A turbofan: a thin grey smoke line.</summary>
+            Fan,
+
+            /// <summary>An old turbofan (the B-52's eight): thick dark smoke.</summary>
+            Smoky,
+
+            /// <summary>A turboprop or a drone's pusher propeller: a faint exhaust.</summary>
+            Prop,
+
+            /// <summary>A helicopter: turbine exhausts, and the rotor's downwash raising dust below.</summary>
+            Rotor,
+        }
+
+        /// <summary>
+        /// Each aircraft's engines: the kind, and where they sit as fractions of the model's half-span
+        /// (x) and half-length (z, negative towards the tail) and height (y), from its drawn bounds.
+        /// </summary>
+        private static (Engine kind, float[] x, float z, float y) EnginesOf(string model) => model switch
+        {
+            "fighter_jet" => (Engine.Afterburner, new[] { -0.1f, 0.1f }, -1f, 0f),
+            "attack_jet" => (Engine.Hot, new[] { -0.12f, 0.12f }, -0.95f, 0f),
+            "tank_buster" => (Engine.Fan, new[] { -0.17f, 0.17f }, -0.45f, 0.55f),
+            "heavy_bomber" => (Engine.Smoky, new[] { -0.62f, -0.34f, 0.34f, 0.62f }, -0.05f, -0.2f),
+            "stealth_bomber" => (Engine.Fan, new[] { -0.16f, 0.16f }, -0.25f, 0.3f),
+            "sky_gunship" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
+            "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),
+            "strike_jet" => (Engine.Hot, new[] { 0f }, -1f, 0f),
+            _ => (Engine.Rotor, new[] { -0.14f, 0.14f }, -0.15f, 0.55f),
+        };
+
         private void JetTrails(ViewRegistry views, float now)
         {
             if (now < _nextJetPuff) return;
             _nextJetPuff = now + 0.04f;
+            _jetTick++;
             foreach (var view in views.All)
             {
-                if (!view.Flying || !view.Def.FixedWing || !view.Sim.IsAlive || view.Body == null) continue;
+                if (!view.Flying || !view.Sim.IsAlive || view.Body == null || view.Def.Boss) continue;
                 var body = view.Body;
                 var at = body.position;
                 if (at.y < 3f || !_cull.Visible(at, 0.5f)) continue;
                 var forward = body.forward;
-                var size = view.Def.Radius * view.Def.Scale;
-                var tail = at - forward * size * 1.1f;
-                _emitters.Afterburner(tail, forward, 0.8f + size * 0.12f);
-                _emitters.Contrail(tail - forward * 0.6f, 0.35f + size * 0.04f, 1.1f);
-                if (Mathf.Abs(view.Bank) > 22f)
+                var b = view.ModelBounds;
+                var scale = view.Def.Scale;
+                var (kind, xs, z, y) = EnginesOf(view.Def.Model);
+                var speed = view.Sim.Speed / Mathf.Max(1f, view.Def.Speed);
+                // Vapour trails where the air is cold enough: long ones at bomber heights, none low down.
+                var contrail = view.Altitude > 28f;
+                foreach (var x in xs)
                 {
-                    var right = body.right * size * 1.25f;
-                    _emitters.Contrail(at + right, 0.26f, 0.8f);
-                    _emitters.Contrail(at - right, 0.26f, 0.8f);
+                    var local = new Vector3(b.center.x + x * b.extents.x, b.center.y + y * b.extents.y, b.center.z + z * b.extents.z);
+                    var engine = body.TransformPoint(local);
+                    switch (kind)
+                    {
+                        case Engine.Afterburner:
+                            if (speed > 0.92f) _emitters.Afterburner(engine, forward, 0.7f + scale * 0.5f);
+                            else if ((_jetTick & 1) == 0) _emitters.Afterburner(engine, forward, 0.3f);
+                            break;
+                        case Engine.Hot:
+                            if ((_jetTick & 1) == 0) _emitters.Afterburner(engine, forward, 0.35f + scale * 0.2f);
+                            break;
+                        case Engine.Fan:
+                            if ((_jetTick & 3) == 0) _emitters.Trail(engine - forward * 0.3f, 0.22f + scale * 0.1f);
+                            break;
+                        case Engine.Smoky:
+                            if ((_jetTick & 1) == 0) _emitters.DamageSmoke(engine - forward * 0.4f, 0.32f + scale * 0.12f, 0.18f);
+                            break;
+                        case Engine.Prop:
+                            if ((_jetTick & 3) == 0) _emitters.Trail(engine - forward * 0.8f, 0.16f + scale * 0.06f);
+                            break;
+                        case Engine.Rotor:
+                            if ((_jetTick & 3) == 0) _emitters.Trail(engine - forward * 0.3f + Vector3.up * 0.2f, 0.12f + scale * 0.05f);
+                            break;
+                    }
+                    if (contrail && view.Def.FixedWing) _emitters.Contrail(engine - forward * 0.8f, 0.3f + scale * 0.08f, view.Altitude > 38f ? 2.6f : 1.2f);
+                }
+                if (view.Def.FixedWing && Mathf.Abs(view.Bank) > 22f)
+                {
+                    // Wingtip vortices in a hard turn.
+                    var tip = body.right * b.extents.x * scale * 0.95f;
+                    _emitters.Contrail(at + tip, 0.24f, 0.8f);
+                    _emitters.Contrail(at - tip, 0.24f, 0.8f);
+                }
+                if (kind == Engine.Rotor && speed < 0.5f && (_jetTick % 5) == 0)
+                {
+                    // Downwash: the rotor blows dust out in a ring on the ground below.
+                    var radius = b.extents.x * scale * 1.1f + 2f;
+                    var angle = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
+                    var ground = new Vector3(at.x, 0.2f, at.z) + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+                    _emitters.Dust(ground, 1.4f);
                 }
             }
         }
+
+        private int _jetTick;
 
         /// <summary>A brief flash of the whole screen, of the given strength (0 to 1): huge and ultimate blasts on screen.</summary>
         public Action<float> Flash { get; set; }

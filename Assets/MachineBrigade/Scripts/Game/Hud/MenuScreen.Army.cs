@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Hud
             Support,
         }
 
-        private VisualElement _deckView, _gearView, _deckSlots, _collection, _gearSlots, _gearGrid, _gearInfo, _popover;
+        private VisualElement _deckView, _gearView, _deckSlots, _collection, _gearSlots, _gearGrid, _gearInfo, _popover, _gearSets;
         private Label _deckSummary, _deckWarnings, _popoverText, _gearTotal;
         private VisualElement _popoverInfo, _popoverUse;
         private ArmyView _armyView = ArmyView.Deck;
@@ -142,6 +142,8 @@ namespace MachineBrigade.Game.Hud
             centre.Add(_gearSlots);
             _gearTotal = UiKit.Text("", "gear-total");
             centre.Add(_gearTotal);
+            _gearSets = UiKit.Box("gear-sets");
+            centre.Add(_gearSets);
             _gearView.Add(centre);
             var inventory = UiKit.Box("gear-inventory");
             _gearInfo = UiKit.Box("gear-info");
@@ -241,15 +243,18 @@ namespace MachineBrigade.Game.Hud
             cost.Add(UiKit.Text(CostOf(id).ToString(), "unit-card-cost-text"));
             card.Add(cost);
             card.Add(UiKit.Text("", "unit-card-rank"));
+            // The blueprint bar; ready to rank up, it turns green with the upgrade arrow at its end.
+            var foot = UiKit.Box("unit-card-foot");
             var track = UiKit.Box("unit-card-track");
             track.Add(UiKit.Box("unit-card-fill"));
-            card.Add(track);
+            foot.Add(track);
+            var up = UiKit.Box("unit-card-up");
+            up.Add(UiKit.Icon("upgrade", UiKit.Ink, 2.4f));
+            foot.Add(up);
+            card.Add(foot);
             var check = UiKit.Box("unit-card-check");
             check.Add(UiKit.Icon("check", UiKit.Ink, 2.2f));
             card.Add(check);
-            var up = UiKit.Box("unit-card-up");
-            up.Add(UiKit.Icon("upgrade", UiKit.Ink, 2.2f));
-            card.Add(up);
             var lockBadge = UiKit.Box("unit-card-lock");
             lockBadge.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
             card.Add(lockBadge);
@@ -280,6 +285,7 @@ namespace MachineBrigade.Game.Hud
             _popoverUse.Q<Label>(className: "wide-title").text = Strings.Get(inDeck ? "army.remove" : "army.use");
             _popover.style.display = DisplayStyle.Flex;
             _popover.BringToFront();
+            UiKit.Uppercase(_popover);
         }
 
         private void HidePopover()
@@ -287,19 +293,25 @@ namespace MachineBrigade.Game.Hud
             if (_popover != null) _popover.style.display = DisplayStyle.None;
         }
 
-        /// <summary>Puts a card in the deck (the first free slot) or takes it out.</summary>
+        /// <summary>Puts a card in the deck (the first empty slot) or takes it out of its slot; the others stay where they are.</summary>
         private void ToggleInDeck(string id)
         {
             if (!PlayerProfile.IsUnlocked(id)) return;
             var support = IsSupport(id);
-            var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
-            var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
-            if (deck.Contains(id)) deck.Remove(id);
-            else if (deck.Count < slots) deck.Add(id);
-            else
+            switch (MatchSettings.ToggleDeckCard(id, support))
             {
-                Note(Strings.Get(support ? "army.fullSupports" : "army.fullVehicles"), true);
-                return;
+                case MatchSettings.DeckChange.Full:
+                    Note(Strings.Get(support ? "army.fullSupports" : "army.fullVehicles"), true);
+                    return;
+                case MatchSettings.DeckChange.LastCard:
+                    Note(Strings.Get(support ? "army.lastSupport" : "army.lastVehicle"), true);
+                    return;
+                case MatchSettings.DeckChange.Removed:
+                    Note(Strings.Format("army.removed", Strings.Card(id)));
+                    break;
+                default:
+                    Note(Strings.Format("army.added", Strings.Card(id)));
+                    break;
             }
             MatchSettings.Save();
             Refresh();
@@ -316,9 +328,9 @@ namespace MachineBrigade.Game.Hud
         private void RefreshDeck()
         {
             _deckSlots.Clear();
-            for (var i = 0; i < MatchSettings.DeckVehicleSlots; i++) _deckSlots.Add(DeckSlot(i < MatchSettings.DeckVehicles.Count ? MatchSettings.DeckVehicles[i] : null, false));
+            foreach (var id in MatchSettings.DeckLayout(false)) _deckSlots.Add(DeckSlot(id, false));
             _deckSlots.Add(UiKit.Box("deck-divider"));
-            for (var i = 0; i < MatchSettings.DeckSupportSlots; i++) _deckSlots.Add(DeckSlot(i < MatchSettings.DeckSupports.Count ? MatchSettings.DeckSupports[i] : null, true));
+            foreach (var id in MatchSettings.DeckLayout(true)) _deckSlots.Add(DeckSlot(id, true));
             var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
             _deckSummary.text = Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
                 MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-");
@@ -377,7 +389,7 @@ namespace MachineBrigade.Game.Hud
                     _gearSelected = PlayerProfile.Equipped(_branch, slot);
                     Refresh();
                 });
-                tile.Add(item != null ? GearArt.Tile(item, slot == GearSlot.Special ? 92 : 76) : GearArt.Empty(slot, slot == GearSlot.Special ? 92 : 76));
+                tile.Add(item != null ? GearArt.Tile(item, slot == GearSlot.Special ? 104 : 92) : GearArt.Empty(slot, slot == GearSlot.Special ? 104 : 92));
                 tile.Add(UiKit.Text(item != null ? StatText(item) : Strings.Get("gear.slot." + slot.ToString().ToLowerInvariant()), "gear-slot-value"));
                 tile.EnableInClassList("chosen", _slotFilter == slot);
                 _gearSlots.Add(tile);
@@ -387,6 +399,7 @@ namespace MachineBrigade.Game.Hud
                 if (PlayerProfile.Equipped(_branch, (GearSlot)s) is { } piece)
                     worn.Add(StatText(piece));
             _gearTotal.text = worn.Count == 0 ? Strings.Get("gear.totalNone") : Strings.Format("gear.total", string.Join("  ·  ", worn));
+            FillSetChips(_gearSets, _branch);
             _gearGrid.Clear();
             var items = PlayerProfile.GearOwned.Where(g => _slotFilter == null || g.Slot == _slotFilter)
                 .OrderByDescending(g => g.rarity).ThenBy(g => g.slot).ThenByDescending(g => g.level).ToList();
@@ -400,7 +413,7 @@ namespace MachineBrigade.Game.Hud
                     _gearSelected = g;
                     Refresh();
                 });
-                tile.Add(GearArt.Tile(item, 84));
+                tile.Add(GearArt.Tile(item, 92));
                 tile.EnableInClassList("chosen", item == _gearSelected);
                 tile.EnableInClassList("equipped", PlayerProfile.IsEquipped(item));
                 grid.Add(tile);
@@ -420,13 +433,16 @@ namespace MachineBrigade.Game.Hud
                 return;
             }
             var head = UiKit.Box("gear-info-head");
-            head.Add(GearArt.Tile(item, 72, showLevel: false));
+            head.Add(GearArt.Tile(item, 84, showLevel: false));
             var names = UiKit.Box("gear-info-names");
             var title = UiKit.Text(GearName(item), "gear-info-title");
             title.style.color = GearArt.Colors[item.rarity];
             names.Add(title);
             names.Add(UiKit.Text(Strings.Format("gear.detail", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), item.level,
                 Gear.LevelCap[item.rarity], StatText(item)), "gear-info-line"));
+            // The slot and brand under the name ("Weapon · Ironclad Works").
+            var brand = GearCatalog.Brand(item.brand);
+            names.Add(UiKit.Text(GearText.SlotName(item.Slot) + (brand != null ? "  ·  " + GearText.BrandName(brand) : ""), "gear-info-line gear-base-line"));
             var current = PlayerProfile.Equipped(_branch, item.Slot);
             if (current != null && current != item)
                 names.Add(UiKit.Text(Strings.Format("gear.compare", StatText(current), StatText(item)), "gear-info-compare"));
@@ -434,6 +450,7 @@ namespace MachineBrigade.Game.Hud
             names.Add(UiKit.Text(item.rarity < (int)Rarity.Legendary ? Strings.Format("gear.mergeHint", partners + 1) : Strings.Get("gear.top"), "gear-info-merge"));
             head.Add(names);
             _gearInfo.Add(head);
+            _gearInfo.Add(GearLines(item));
             var actions = UiKit.Box("gear-actions");
             var equipped = current == item;
             actions.Add(UiKit.WideButton(equipped ? "wide" : "wide primary", equipped ? "close" : "check",
@@ -471,12 +488,9 @@ namespace MachineBrigade.Game.Hud
             _ => "jet",
         };
 
-        private static string GearName(GearItem item) =>
-            item.Slot == GearSlot.Special
-                ? Strings.Get("module." + item.Module.ToString().ToLowerInvariant())
-                : Strings.Get("gear.name." + item.Slot.ToString().ToLowerInvariant());
+        private static string GearName(GearItem item) => GearText.Name(item);
 
-        /// <summary>A piece's effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m".</summary>
+        /// <summary>A piece's main effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m", or a module's name.</summary>
         private static string StatText(GearItem item)
         {
             var v = Gear.Value(item);
@@ -484,15 +498,79 @@ namespace MachineBrigade.Game.Hud
             {
                 GearSlot.Weapon => Strings.Format("stat.gear.damage", Pct(v)),
                 GearSlot.Loader => Strings.Format("stat.gear.fire", Pct(v)),
+                GearSlot.Armor when Gear.MainStat(item) == StatId.DamageTaken => Strings.Format("stat.gear.taken", Pct(v)),
                 GearSlot.Armor => Strings.Format("stat.gear.hp", Pct(v)),
-                GearSlot.Plating => Strings.Format("stat.gear.taken", Pct(v)),
+                GearSlot.Optics => Strings.Format("stat.gear.vision", Pct(v)),
                 GearSlot.Engine => Strings.Format("stat.gear.speed", Pct(v)),
                 GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0")),
                 _ => item.Module == SpecialModule.SmokeDischarger ? Strings.Format("stat.gear.smoke", Mathf.RoundToInt(v))
                     : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0"))
                     : item.Module == SpecialModule.ReactiveArmor ? Strings.Format("stat.gear.taken", Pct(v))
-                    : Strings.Format("stat.gear.crew", Pct(v)),
+                    : item.Module == SpecialModule.VeteranCrew ? Strings.Format("stat.gear.crew", Pct(v))
+                    : GearText.Name(item),
             };
+        }
+
+        // ------------------------------------------------------------------ gear rework: lines, trait, sets
+        // (Kept apart so the menu restyle can move them; styles are in the gear block at the end of Hud.uss.)
+
+        /// <summary>A piece's affix lines: main stat, implicit, drawback, sub-stats with their roll bars, the trait and the brand.</summary>
+        private static VisualElement GearLines(GearItem item)
+        {
+            var box = UiKit.Box("gear-lines");
+            if (item.Slot == GearSlot.Special)
+            {
+                box.Add(UiKit.Text(GearText.ModuleEffect(item), "gear-line gear-line-trait"));
+                return box;
+            }
+            foreach (var line in Gear.Lines(item))
+            {
+                var row = UiKit.Box("gear-line-row");
+                var kind = line.Kind switch
+                {
+                    Gear.LineKind.Main => "gear-line-main",
+                    Gear.LineKind.Implicit => "gear-line-implicit",
+                    Gear.LineKind.Penalty => "gear-line-penalty",
+                    _ => "gear-line-sub",
+                };
+                row.Add(UiKit.Text(GearText.Line(line), "gear-line " + kind));
+                if (line.Quality >= 0f)
+                {
+                    // The Division's roll bar: where the sub-stat landed between its worst and best roll.
+                    var bar = UiKit.Box("gear-roll");
+                    var fill = UiKit.Box("gear-roll-fill");
+                    fill.style.width = Length.Percent(Mathf.Lerp(8f, 100f, line.Quality));
+                    bar.Add(fill);
+                    row.Add(bar);
+                }
+                box.Add(row);
+            }
+            var trait = GearText.TraitLine(item);
+            if (trait.Length > 0) box.Add(UiKit.Text(trait, "gear-line gear-line-trait"));
+            else if (item.rarity < (int)Rarity.Epic) box.Add(UiKit.Text(Strings.Get("gear.traitAtEpic"), "gear-line gear-line-dim"));
+            var brand = GearCatalog.Brand(item.brand);
+            if (brand != null) box.Add(UiKit.Text(GearText.BrandName(brand) + "  ·  " + GearText.BrandBonuses(brand), "gear-line gear-line-set"));
+            return box;
+        }
+
+        /// <summary>The loadout's set chips ("Ironclad 2/4"), lit when the two-piece bonus is on.</summary>
+        private static void FillSetChips(VisualElement row, GearBranch branch)
+        {
+            row.Clear();
+            var chips = PlayerProfile.SetChips(branch);
+            if (chips.Count == 0)
+            {
+                row.Add(UiKit.Text(Strings.Get("gear.setNone"), "gear-set-none"));
+                return;
+            }
+            foreach (var chip in chips)
+            {
+                var label = UiKit.Text(GearText.Chip(chip), "gear-set-chip");
+                label.EnableInClassList("active", chip.TwoPiece);
+                label.EnableInClassList("full", chip.FourPiece);
+                label.tooltip = GearText.BrandBonuses(chip.Brand);
+                row.Add(label);
+            }
         }
 
         private static string Pct(float v) => Mathf.RoundToInt(v * 100f).ToString();

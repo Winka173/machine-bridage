@@ -222,6 +222,10 @@ namespace MachineBrigade.Game.Hud
             MissionGoal.Destroy => "flame",
             MissionGoal.Escort => "apc",
             MissionGoal.Survive => "shield",
+            MissionGoal.Hunt => "crosshair",
+            MissionGoal.Recon => "eye",
+            MissionGoal.Protect => "home",
+            MissionGoal.ShootDown => "aa",
             _ => "skull",
         };
 

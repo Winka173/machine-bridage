@@ -20,6 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             Stats,
             Weapons,
+            Firing,
             Equipment,
         }
 
@@ -58,10 +59,11 @@ namespace MachineBrigade.Game.Hud
             var right = UiKit.Box("detail-right");
             var tabs = UiKit.Box("segments detail-tabs");
             foreach (var (tab, icon, key) in new[] { (DetailTab.Stats, "gauge", "detail.stats"), (DetailTab.Weapons, "cannon", "detail.weaponsTab"),
-                         (DetailTab.Equipment, "gear", "army.equipment") })
+                         (DetailTab.Firing, "crosshair", "detail.firing"), (DetailTab.Equipment, "gear", "army.equipment") })
                 tabs.Add(Choice(Segment(icon, Strings.Get(key), () =>
                 {
                     _detailTab = tab;
+                    ShowPreview();
                     Refresh();
                 }, tab == DetailTab.Equipment), () => _detailTab == tab));
             right.Add(tabs);
@@ -126,7 +128,9 @@ namespace MachineBrigade.Game.Hud
             var vehicle = _detailId != null && _catalog.Vehicles.TryGetValue(_detailId, out var def) ? def : null;
             if (vehicle != null && Preview != null)
             {
-                Preview.Show(vehicle.Model, vehicle.Scale);
+                // The In action tab shows it firing on a range; the others turn it on its stand.
+                if (_detailTab == DetailTab.Firing) Preview.ShowRange(vehicle.Id);
+                else Preview.Show(vehicle.Model, vehicle.Scale);
                 _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
                 _detailPreview.style.display = DisplayStyle.Flex;
                 _detailIcon.style.display = DisplayStyle.None;
@@ -165,12 +169,22 @@ namespace MachineBrigade.Game.Hud
             switch (_detailTab)
             {
                 case DetailTab.Stats:
+                    // What it is for and anything special it does, in words, above the numbers.
+                    if (Strings.Has("note." + id))
+                    {
+                        _detailBody.Add(UiKit.Text(Strings.Get("detail.notes"), "menu-caps"));
+                        _detailBody.Add(UiKit.Text(Strings.Get("note." + id), "detail-note role-note"));
+                    }
                     if (vehicle != null) VehicleStats(vehicle, rank);
                     else StrikeStats(id, rank);
                     break;
                 case DetailTab.Weapons:
                     if (vehicle != null) VehicleWeapons(vehicle);
                     else _detailBody.Add(UiKit.Text(Strings.Get("support." + id + ".info"), "detail-note"));
+                    break;
+                case DetailTab.Firing:
+                    _detailBody.Add(UiKit.Text(Strings.Get(vehicle != null ? "detail.firingNote" : "detail.firingStrike"), "detail-note role-note"));
+                    if (vehicle != null) VehicleWeapons(vehicle);
                     break;
                 default:
                     if (vehicle != null) DetailEquipment(vehicle);
@@ -256,7 +270,7 @@ namespace MachineBrigade.Game.Hud
             info.Add(Fact("cp", Strings.Format("detail.cost", def.CpCost)));
             if (def.Weapon.Ammo > 0) info.Add(Fact("ammo", Strings.Format("detail.magazine", def.Weapon.Ammo, Mathf.RoundToInt(def.Weapon.MagazineReload))));
             if (def.Weapon.MinRange > 0f) info.Add(Fact("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
-            if (now.Special != SpecialModule.None) info.Add(Fact("star", Strings.Get("module." + now.Special.ToString().ToLowerInvariant())));
+            if (now.Special != SpecialModule.None) info.Add(Fact("star", Strings.Get("special." + GearKeys.Module(now.Special))));
             _detailBody.Add(info);
         }
 
@@ -378,6 +392,26 @@ namespace MachineBrigade.Game.Hud
                 slots.Add(tile);
             }
             _detailBody.Add(slots);
+            DetailGearLines(branch);
+        }
+
+        /// <summary>Under the slots: the branch's set chips, then each worn piece's name, lines and trait (gear rework).</summary>
+        private void DetailGearLines(GearBranch branch)
+        {
+            var sets = UiKit.Box("gear-sets detail-gear-sets");
+            FillSetChips(sets, branch);
+            _detailBody.Add(sets);
+            for (var s = 0; s < Gear.Slots; s++)
+            {
+                var item = PlayerProfile.Equipped(branch, (GearSlot)s);
+                if (item == null) continue;
+                var block = UiKit.Box("detail-gear-piece");
+                var name = UiKit.Text(GearName(item) + "  ·  " + Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), "gear-info-title detail-gear-name");
+                name.style.color = GearArt.Colors[item.rarity];
+                block.Add(name);
+                block.Add(GearLines(item));
+                _detailBody.Add(block);
+            }
         }
     }
 }

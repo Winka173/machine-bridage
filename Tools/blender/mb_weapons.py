@@ -19,6 +19,8 @@ at least 1 cm apart, never face to face.
 """
 import math
 
+import mb_detail as hd
+
 R90 = math.pi / 2
 TAU = math.tau
 FORWARD = (R90, 0, 0)   # cylinder axis along Y (local +Z -> -Y)
@@ -75,6 +77,17 @@ def hmg(a, loc, parent=None, post=.16, length=.9, shield=True, ammo=1, socket=Tr
         for s in (-1, 1):
             guard.box((.16, .03, .26), loc=(s * .3, -.25, zc + .06), rot=(-.1, 0, s * .55), bevel=0)
             steel.box((.03, .18, .03), loc=(s * .12, -.2, zc - .05), bevel=0)             # shield struts
+    if hd.on(a):  # jacket cooling rings, sights, carry handle and the ammunition belt into the feed
+        det = a.part('HMG_detail', 'Steel', m)
+        for k in range(4):
+            det.cyl(.054, .018, loc=(0, front - .03 - k * .06, zb), rot=FORWARD, seg=10, bevel=0)
+        det.box((.025, .03, .06), loc=(0, front + .02, zb + .07), bevel=0)
+        det.box((.05, .03, .05), loc=(0, .2, zc + .09), bevel=0)
+        det.tube([(-.05, -.08, zc + .07), (-.05, -.08, zc + .12), (-.05, .1, zc + .12), (-.05, .1, zc + .07)], .011, seg=4)
+        belt = a.part('HMG_belt', 'Crate', m)
+        for k in range(3):
+            belt.box((.03, .06, .035), loc=(ammo * (.13 - k * .025), .02, zc + .03 + k * .012), rot=(0, ammo * -.5, 0),
+                     bevel=0)
     a.pivot('Muzzle_mg', (0, tip, zb), m)
     return m
 

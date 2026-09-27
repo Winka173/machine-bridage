@@ -45,12 +45,13 @@ import math
 
 from mathutils import Vector
 
+import mb_detail as hd
 import mb_weapons as wpn
 from frontier_kit import chamfered
-from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _barrel, _basket, _cable, _coax, _face_box, _face_frame,
+from mb_vehicles import (ACROSS, FORWARD, R90, TAU, _antenna, _barrel, _basket, _cable, _coax, _face_box, _face_frame,
                          _flank, _frame, _glacis, _grille_frame, _hatch, _headlight, _jerrycans, _periscopes, _rail,
-                         _roll, _roof_mg, _rws, _shovel, _stowage_bin, _taillight, _track_links, _tube_mouth, _wheel,
-                         tracks)
+                         _roll, _roof_mg, _rws, _shackle, _shovel, _stowage_bin, _taillight, _track_links, _tube_mouth,
+                         _wheel, tracks)
 from mb_vehicles2 import _axis, _gun
 from mb_vehicles3 import _jack
 
@@ -82,13 +83,14 @@ def _arc(part, at, r_in, r_out, a0, a1, width, steps=5):
 
 
 # ----------------------------------------------------------------------------- artillery (CAESAR)
-def artillery(a):
+def artillery(a, detail=False):
     """155 mm wheeled self-propelled howitzer (CAESAR 6x6 lineage): a cab-forward armoured crew cab with
     four doors, a big raked windscreen, guarded lamps and a roof machine gun; an ammunition module with
     side locker doors behind it; charge lockers, a fuel tank and tool boxes between the axles; and on the
     flatbed's tail an open gun mount whose long L52 barrel is laid forward over the cab: a cradle with twin
     recuperators, an elevating arc, a breech ring and a double-baffle muzzle brake. The hydraulic
     earth spade is folded up at the tail behind two stabiliser jacks."""
+    hd.mark(a, detail)
     cab = a.part('Cab', 'Team')
     body = a.part('Body', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -277,6 +279,89 @@ def artillery(a):
     for f in (.22, .72):
         brake.box((.42, .13, .3), loc=at(L - .02 + bl * f), rot=brot, bevel=.02, seg=1)
     a.pivot('Muzzle_main', tuple(at(L - .02 + bl)), t)
+    if detail:
+        _artillery_detail(a, t, T)
+
+
+def _artillery_detail(a, t, T):
+    """High-detail parts of the CAESAR (see mb_detail.py). The gun, its cradle and brake (the elevating
+    group) are left exactly as they are; everything here is hull or static mount."""
+    steel = a.part('Detail_steel', 'Steel')
+    rubber = a.part('Window_seals', 'Rubber')
+    # Cab: door hinges, window seals, grab handles, bolt rows along the roof edges, bumper bolts, shackles
+    # on the tow eyes, a bolt ring round the machine-gun ring, a framed air unit and travel-lock pins.
+    for s in (-1, 1):
+        ox = s * 1.23
+        for y in (-4.1, -3.24):
+            for z in (1.75, 2.45):
+                steel.cyl(.024, .15, loc=(ox + s * .018, y, z), seg=6, bevel=0)
+                steel.box((.02, .09, .1), loc=(ox + s * .008, y + .05, z), bevel=0)
+        for y0, y1 in ((-4.0, -3.4), (-3.18, -2.5)):
+            rubber.box((.03, y1 - y0 + .05, .03), loc=(ox + s * .01, (y0 + y1) / 2, 2.07), bevel=0)
+            for y in (y0 - .015, y1 + .015):
+                rubber.box((.03, .03, .47), loc=(ox + s * .01, y, 2.3), bevel=0)
+        for y in (-4.24, -2.2):
+            hd.handle(steel, (ox, y, 1.72), (ox, y, 2.3), (s, 0, 0), h=.05)
+        hd.bolt_line(steel, (s * 1.12, -3.95, 2.84), (s * 1.12, -2.45, 2.84), 8, r=.016, h=.022)
+        _shackle(a, s * .55, -4.66, .73)
+    for x in (-.9, -.25, .25, .9):
+        hd.bolt(steel, (x, -4.62, .82), hd.FRONT, r=.018, h=.026)
+    hd.bolt_ring(steel, hd.frame((-.62, -3.62, 2.91)), .31, 10, r=.014, h=.02)
+    _grille_frame(a, 0, -2.5, 2.98, .6, .34, t=.03)
+    for s in (-1, 1):
+        steel.cyl(.02, .1, loc=(s * .27, -4.0, 3.21), rot=ACROSS, seg=6, bevel=0)
+    # Ammunition module: hinge knuckles and T-handles on the locker doors, bolts round the roof plate,
+    # hinges on the roof hatches.
+    for s in (-1, 1):
+        for y in (-1.62, -.98):
+            for dy in (-.18, .18):
+                steel.cyl(.022, .1, loc=(s * 1.262, y + dy, 2.25), rot=FORWARD, seg=6, bevel=0)
+            steel.box((.03, .12, .03), loc=(s * 1.28, y + .2, 1.96), bevel=0)
+    hd.plate_bolts(steel, hd.frame((0, -1.3, 2.44)), 2.3, 1.2, 8, 4, r=.014, hh=.02, inset=.1)
+    for x in (-.55, .55):
+        for dx in (-.25, .25):
+            steel.cyl(.02, .12, loc=(x + dx, -1.04, 2.475), rot=ACROSS, seg=6, bevel=0)
+    # Chassis: locker T-handles, the fuel tank's filler cap and strap bolts, rear bumper bolts.
+    for s in (-1, 1):
+        for y in (-.25, .45):
+            steel.box((.03, .12, .03), loc=(s * 1.2, y, 1.05), bevel=0)
+    steel.cyl(.05, .05, loc=(-.95, -1.55, 1.15), seg=8, bevel=0)
+    for y in (-1.6, -1.0):
+        hd.bolt(steel, (-.95, y, 1.18), r=.016, h=.024)
+    for x in (-.7, -.15, .15, .7):
+        hd.bolt(steel, (x, 4.27, .9), hd.BACK, r=.016, h=.024)
+    # Spade: bolts on the blade between the ribs, hydraulic hoses to the rams.
+    lean = .3
+    hinge = Vector((0, 4.3, .74))
+    up = Vector((0, math.sin(lean), math.cos(lean)))
+    out = Vector((0, math.cos(lean), -math.sin(lean)))
+    for x in (-.39, .39):
+        for k in (.35, .7, 1.05):
+            hd.bolt(steel, tuple(hinge + up * k + out * .06 + Vector((x, 0, 0))), (-R90 - lean, 0, 0), r=.022, h=.03)
+    for s in (-1, 1):
+        a.part('Hoses', 'Undercarriage').tube([(s * .5, 3.95, 1.15), (s * .5, 3.75, 1.2), (s * .35, 3.6, 1.22)], .022,
+                                              seg=6)
+    # Gun mount (static parts only): turntable bolts where the carriage leaves them showing, carriage and
+    # bracket bolts, bolt rings on the trunnion caps, ram hoses, the gunner's handwheels, tray rollers.
+    ts = a.part('Gun_mount_steel', 'Steel', t)
+    for k in range(24):
+        u = k * TAU / 24
+        c, sn = math.cos(u), math.sin(u)
+        if abs(c) * .9 > .82 or abs(sn) * .9 > .77:
+            hd.bolt(ts, (c * .9, sn * .9, .07), r=.018, h=.026)
+    for x in (-.6, -.36, -.12, .12, .36, .6):
+        hd.bolt(ts, (x, .645, .37), r=.015, h=.022)
+    for x in (-.6, -.12, .12, .6):
+        hd.bolt(ts, (x, -.645, .37), r=.015, h=.022)
+    for s in (-1, 1):
+        hd.bolt_line(ts, (s * .57, -.55, .2), (s * .57, .45, .2), 5, rot=hd.side_rot(s), r=.016, h=.024)
+        hd.bolt_ring(ts, hd.frame((s * .64, T[1], T[2]), hd.side_rot(s)), .1, 6, r=.014, h=.02)
+        a.part('Gun_mount_hoses', 'Undercarriage', t).tube([(s * .3, -.46, .32), (s * .36, -.4, .38), (s * .42, -.2, .385)],
+                                                        .018, seg=6)
+    for dy in (-.35, -.05):
+        ts.torus(.07, .012, loc=(-.915, -.2 + dy + .15, .58), rot=hd.RIGHT_X, seg=12, ring=4)
+    for y in (.1, .3, .5, .7):
+        ts.cyl(.028, .24, loc=(.84, y, .72), rot=ACROSS, seg=8, bevel=0)
 
 
 
