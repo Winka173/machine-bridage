@@ -50,6 +50,7 @@ namespace MachineBrigade.Sim.Combat
                 var mounts = v.Def.Mounts;
                 // Cooldowns run regardless of movement or retargeting, so micro cannot create free shots.
                 for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
+                ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off.
                 if (v.Stunned)
                 {
@@ -86,6 +87,43 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
             UpdateProjectiles(dt);
+        }
+
+        /// <summary>Below this speed a vehicle counts as standing still, and its crew can reload.</summary>
+        internal const float ReloadStillSpeed = 0.4f;
+
+        /// <summary>
+        /// Seconds to reload a whole magazine in place: the weapon's own figure, else two fifths of
+        /// the time it takes to fire it off, between 10 and 28 s (a Grad about 17 s, a howitzer 28 s).
+        /// </summary>
+        public static float ReloadSeconds(WeaponDef weapon) =>
+            weapon.Reload > 0f ? weapon.Reload : Math.Clamp(weapon.Ammo * weapon.Cooldown * 0.4f, 10f, 28f);
+
+        /// <summary>
+        /// An empty magazine is reloaded in place, like the salvo reloads of Art of War 3 and
+        /// Warpath: the crew restocks while the vehicle stands still (moving pauses it), then the
+        /// whole magazine is back at once. Home and a supply vehicle make it faster (see
+        /// <see cref="Abilities.AbilitySystem"/>); part-empty magazines are topped up there too.
+        /// </summary>
+        private static void ReloadMagazines(Vehicle v, float dt)
+        {
+            var mounts = v.Def.Mounts;
+            for (var i = 0; i < mounts.Count; i++)
+            {
+                var state = v.Weapons[i];
+                var weapon = mounts[i].Weapon;
+                if (weapon.Ammo <= 0 || state.Ammo != 0)
+                {
+                    state.ReloadLeft = 0f;
+                    continue;
+                }
+                if (state.ReloadLeft <= 0f) state.ReloadLeft = ReloadSeconds(weapon);
+                if (!v.StillForReload) continue;
+                state.ReloadLeft -= dt;
+                if (state.ReloadLeft > 0f) continue;
+                state.ReloadLeft = 0f;
+                state.Ammo = weapon.Ammo;
+            }
         }
 
         private IDamageable? SelectTarget(Vehicle v)

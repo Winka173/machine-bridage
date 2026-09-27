@@ -451,6 +451,8 @@ namespace MachineBrigade.Game.Match
             var player = AddPlayerCommander(_mode, seed);
             player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
             player.Demolish = w => _mode.Target(w);
+            player.Plunder = _ => _mode.BountyTargets;
+            player.RoleMix = ConquestAi.SiegeMix;
         }
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
@@ -482,6 +484,9 @@ namespace MachineBrigade.Game.Match
 
     internal sealed class SiegeSession : ModeSession
     {
+        /// <summary>Coins at the end for each fortress building knocked down.</summary>
+        public const int SiegeBountyCoins = 12;
+
         private SiegeMode _mode;
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
@@ -491,13 +496,14 @@ namespace MachineBrigade.Game.Match
 
         protected override void Build(SimWorld world, int seed)
         {
-            var attacker = PlayerSide(26f, 1.5f);
-            attacker.ArmyCap = 34;
+            // The attacker has the bigger purse (a siege needs numbers); the fortress has its guns.
+            var attacker = PlayerSide(34f, 1.8f);
+            attacker.ArmyCap = 40;
             // The time bank: harder sieges start with less on the clock.
             var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
             _mode = new SiegeMode(new SiegeRules
             {
-                StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.2f : 0.95f, Difficulty, world.Catalog),
+                StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.05f : 0.85f, Difficulty, world.Catalog),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -524,9 +530,11 @@ namespace MachineBrigade.Game.Match
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
+            outcome.Rows.Add((Strings.Get("stat.razed"), _mode.BuildingsRazed.ToString()));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
-            // Levelling a fortress pays extra.
+            // Levelling a fortress pays extra, and every building knocked down on the way.
             if (outcome.Result > 0) outcome.Reward.Coins += 150;
+            outcome.Reward.Coins += _mode.BuildingsRazed * SiegeBountyCoins;
             return outcome;
         }
     }

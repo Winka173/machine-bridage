@@ -149,8 +149,12 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>Seconds for the boost to settle to a change in the odds (no flicker as units die and arrive).</summary>
         private const float CatchUpSettle = 4f;
 
-        /// <summary>Seconds between buying a vehicle and it arriving at the drop zone.</summary>
-        public const float DeliverySeconds = 2.5f;
+        /// <summary>
+        /// Seconds between buying a vehicle and it arriving: long enough for the transport to fly
+        /// over and the vehicle to come down under its parachute onto its landing point (the drop
+        /// is drawn by the game; aircraft fly in from the map's edge instead).
+        /// </summary>
+        public const float DeliverySeconds = 3.5f;
 
         /// <summary>How far past the drop zone a delivered vehicle drives, so the zone stays clear.</summary>
         private const float RollIn = 12f;
@@ -159,7 +163,7 @@ namespace MachineBrigade.Sim.Economy
 
         private readonly SimWorld _world;
         private readonly Dictionary<int, TeamEconomy> _teams = new();
-        private readonly List<(int team, string defId, double due)> _pending = new();
+        private readonly List<(int team, string defId, double due, Vector2 landing)> _pending = new();
         private readonly List<EntityId> _single = new(1);
         private int _deliveries;
 
@@ -183,10 +187,18 @@ namespace MachineBrigade.Sim.Economy
             // Charged exactly once, when accepted (T03).
             economy.Cp -= def.CpCost;
             if (def.Flying) _world.CountAircraft(team);
-            _pending.Add((team, defId, _world.Time + DeliverySeconds));
+            // Veteran crews: some deliveries turn up as the refurbished elite version. Decided now,
+            // with the landing point, so the drop the game draws is the vehicle that lands.
+            if (economy.EliteChance > 0f && _world.Catalog.EliteVariant(defId) is { } elite && _world.Random.NextDouble() < economy.EliteChance)
+                defId = elite;
+            // Deliveries fan out around the zone so consecutive ones do not stack.
+            var index = _deliveries++;
+            var angle = index * 2.39996f;
+            var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
+            _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
             economy.ArmyCp = ArmyCp(team);
             economy.VehicleCount = VehicleCount(team);
-            _world.Emit(SimEvent.DeploymentQueued(team, defId, zone, DeliverySeconds));
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), DeliverySeconds));
             return CommandResult.Ok;
         }
 
@@ -215,10 +227,10 @@ namespace MachineBrigade.Sim.Economy
 
             for (var i = _pending.Count - 1; i >= 0; i--)
             {
-                var (team, defId, due) = _pending[i];
+                var (team, defId, due, landing) = _pending[i];
                 if (due > _world.Time) continue;
                 _pending.RemoveAt(i);
-                Deliver(team, defId);
+                Deliver(team, defId, landing);
             }
         }
 
@@ -269,22 +281,30 @@ namespace MachineBrigade.Sim.Economy
             return rival != null;
         }
 
-        private void Deliver(int team, string defId)
+        /// <summary>From a team's zone towards the middle of the map.</summary>
+        private static Vector2 Inward(Vector2 zone) => zone.LengthSquared() > 0.01f ? Vector2.Normalize(-zone) : Vector2.UnitY;
+
+        private void Deliver(int team, string defId, Vector2 landing)
         {
             if (!_world.TryGetRally(team, out var zone)) return;
-            // Deliveries fan out around the zone so consecutive ones do not stack.
-            var index = _deliveries++;
-            var angle = index * 2.39996f;
-            var offset = new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
-            var inward = Vector2.Normalize(-zone == Vector2.Zero ? Vector2.UnitY : -zone);
-            // Veteran crews: some deliveries turn up as the refurbished elite version.
-            if (_teams.TryGetValue(team, out var economy) && economy.EliteChance > 0f &&
-                _world.Catalog.EliteVariant(defId) is { } elite && _world.Random.NextDouble() < economy.EliteChance)
-                defId = elite;
-            var vehicle = _world.SpawnVehicle(defId, team, zone + offset, SimMath.HeadingOf(inward));
+            var inward = Inward(zone);
+            var at = landing;
+            // Aircraft fly in over the map's edge behind the zone instead of appearing on it.
+            if (_world.Catalog.Vehicle(defId).Flying) at = EdgeBehind(zone, inward);
+            var vehicle = _world.SpawnVehicle(defId, team, at, SimMath.HeadingOf(inward));
             _single.Clear();
             _single.Add(vehicle.Id);
-            _world.Submit(new Command(CommandType.Move, team, _single, _world.ClampToMap(vehicle.Position + inward * RollIn)));
+            _world.Submit(new Command(CommandType.Move, team, _single, _world.ClampToMap(landing + inward * RollIn)));
+        }
+
+        /// <summary>The map's edge straight behind a zone (looking in from it), just inside the square.</summary>
+        private Vector2 EdgeBehind(Vector2 zone, Vector2 inward)
+        {
+            var limit = _world.Map.HalfSize - 2f;
+            var p = zone;
+            for (var step = 0; step < 40 && MathF.Abs(p.X - inward.X * 4f) <= limit && MathF.Abs(p.Y - inward.Y * 4f) <= limit; step++)
+                p -= inward * 4f;
+            return p;
         }
 
         private int ArmyCp(int team)
@@ -292,7 +312,7 @@ namespace MachineBrigade.Sim.Economy
             var total = 0;
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Team == team) total += v.Def.ArmyCost;
-            foreach (var (pendingTeam, defId, _) in _pending)
+            foreach (var (pendingTeam, defId, _, _) in _pending)
                 if (pendingTeam == team) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
         }
@@ -303,7 +323,7 @@ namespace MachineBrigade.Sim.Economy
             var total = 0;
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Team == team && v.Flying && !v.Def.Boss && !v.Scripted) total++;
-            foreach (var (pendingTeam, id, _) in _pending)
+            foreach (var (pendingTeam, id, _, _) in _pending)
                 if (pendingTeam == team && _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying) total++;
             return total;
         }
@@ -313,7 +333,7 @@ namespace MachineBrigade.Sim.Economy
             var total = 0;
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted) total++;
-            foreach (var (pendingTeam, _, _) in _pending)
+            foreach (var (pendingTeam, _, _, _) in _pending)
                 if (pendingTeam == team) total++;
             return total;
         }

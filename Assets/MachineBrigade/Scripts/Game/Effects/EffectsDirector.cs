@@ -73,6 +73,7 @@ namespace MachineBrigade.Game.Effects
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly StrikeEffects _strikes;
+        private readonly AirDrops _drops;
         private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
@@ -119,6 +120,7 @@ namespace MachineBrigade.Game.Effects
             _projectiles = new ProjectilePool(_root, 96);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
+            _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
             _marker.Transform.localScale = Vector3.one * 2.2f;
@@ -146,6 +148,22 @@ namespace MachineBrigade.Game.Effects
                         }
                         break;
 
+                    case SimEventKind.DeploymentQueued:
+                        _drops.Queue(e, now);
+                        break;
+
+                    case SimEventKind.ShellInbound:
+                    {
+                        // Fire support coming down: a glowing round (a smoke shell trailing white) falls
+                        // steeply out of the sky from its guns' side onto the spot it hits.
+                        var land = Ground(e.Position, 0.2f);
+                        var from = land + new Vector3(e.Target.X, 0f, e.Target.Y) * 24f + Vector3.up * 58f;
+                        if (!_cull.Visible(land, 0.6f)) break;
+                        var smoke = _catalog.TryGetSupport(e.DefId, out var inbound) && inbound.Kind == SupportKind.Smoke;
+                        _tracers.Launch(from, land, e.Value, 0f, smoke ? 0.4f : 0.34f, smoke ? 2.2f : 3.6f, now, 0f, smoke ? 1.1f : 0.5f);
+                        break;
+                    }
+
                     case SimEventKind.ProjectileImpact:
                         if (e.Airborne)
                         {
@@ -160,8 +178,10 @@ namespace MachineBrigade.Game.Effects
                             break;
                         }
                         var impact = Ground(e.Position, 0.15f);
-                        Explode(e.Tier, impact, now);
-                        if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, e.Tier >= ExplosionTier.Large ? 5f : 2.2f);
+                        var size = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var round) ? round.ImpactScale : 1f;
+                        // A gun's shell never flashes the screen, however big: only strikes and blasts do.
+                        Explode(e.Tier, impact, now, size, flash: false);
+                        if (e.Tier >= ExplosionTier.Medium) _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size);
                         if (e.DefId == "flamethrower" && UnityEngine.Random.value < 0.35f) _fires.Ignite(impact, 0.45f, 7f, now);
                         // Thermobaric rockets leave the impact area burning.
                         if (e.DefId == "thermobaric_rockets" && UnityEngine.Random.value < 0.6f) _fires.Ignite(impact, 1.1f, 14f, now);
@@ -356,6 +376,8 @@ namespace MachineBrigade.Game.Effects
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _strikes.Tick(now);
+            _drops.Tick(now);
+            JetTrails(views, now);
             _night.Tick(now, Time.deltaTime, _camera.Focus);
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
@@ -592,7 +614,7 @@ namespace MachineBrigade.Game.Effects
             if (_cull.Visible(position, 0.2f)) effect.Play(position, now);
         }
 
-        private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
+        private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f, bool flash = true)
         {
             // Off screen, a blast leaves its crater and fires (they persist) but no particles.
             if (!_cull.Visible(position, tier >= ExplosionTier.Huge ? 0.4f : 0.25f)) return;
@@ -609,7 +631,7 @@ namespace MachineBrigade.Game.Effects
                 _ => 18f,
             }, tier >= ExplosionTier.Huge ? 0.9f : 0.45f);
             // The biggest blasts light the whole screen for a moment (no shake): stronger the nearer the view.
-            if (tier >= ExplosionTier.Huge && Flash != null)
+            if (flash && tier >= ExplosionTier.Huge && Flash != null)
                 Flash((tier >= ExplosionTier.Ultimate ? 0.22f : 0.11f) / (1f + Vector3.Distance(position, _camera.Focus) / 40f));
             Shake(position, tier switch
             {
@@ -619,6 +641,36 @@ namespace MachineBrigade.Game.Effects
                 ExplosionTier.Huge => 0.7f,
                 _ => 1f,
             });
+        }
+
+        private float _nextJetPuff;
+
+        /// <summary>
+        /// Jets in flight: a hot exhaust and a thin vapour trail behind the engines, and vortices
+        /// streaming off the wingtips when they pull hard into a turn.
+        /// </summary>
+        private void JetTrails(ViewRegistry views, float now)
+        {
+            if (now < _nextJetPuff) return;
+            _nextJetPuff = now + 0.04f;
+            foreach (var view in views.All)
+            {
+                if (!view.Flying || !view.Def.FixedWing || !view.Sim.IsAlive || view.Body == null) continue;
+                var body = view.Body;
+                var at = body.position;
+                if (at.y < 3f || !_cull.Visible(at, 0.5f)) continue;
+                var forward = body.forward;
+                var size = view.Def.Radius * view.Def.Scale;
+                var tail = at - forward * size * 1.1f;
+                _emitters.Afterburner(tail, forward, 0.8f + size * 0.12f);
+                _emitters.Contrail(tail - forward * 0.6f, 0.35f + size * 0.04f, 1.1f);
+                if (Mathf.Abs(view.Bank) > 22f)
+                {
+                    var right = body.right * size * 1.25f;
+                    _emitters.Contrail(at + right, 0.26f, 0.8f);
+                    _emitters.Contrail(at - right, 0.26f, 0.8f);
+                }
+            }
         }
 
         /// <summary>A brief flash of the whole screen, of the given strength (0 to 1): huge and ultimate blasts on screen.</summary>

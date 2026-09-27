@@ -66,6 +66,30 @@ namespace MachineBrigade.Sim.AI
 
         public CommanderStance Stance { get; set; } = CommanderStance.Attack;
 
+        /// <summary>
+        /// The army's intended mix by value (front line, fast, artillery, anti-air, aircraft); what
+        /// is furthest below its share is bought first, before counters adjust it. Null picks a
+        /// mix for the stance (a siege attacker brings more artillery).
+        /// </summary>
+        public float[]? RoleMix { get; set; }
+
+        /// <summary>A mix for a siege attacker: guns to break the fortress from outside its reach.</summary>
+        public static readonly float[] SiegeMix = { 0.35f, 0.08f, 0.30f, 0.12f, 0.15f };
+
+        private static readonly float[] AttackMix = { 0.45f, 0.15f, 0.15f, 0.10f, 0.15f };
+        private static readonly float[] DefendMix = { 0.50f, 0.12f, 0.15f, 0.18f, 0.05f };
+
+        private enum Role { Front, Fast, Artillery, AntiAir, Air }
+
+        private static Role RoleOf(VehicleDef def) =>
+            def.Flying ? Role.Air
+            : def.Weapon.MinRange > 0f ? Role.Artillery
+            : def.Class == UnitClass.AntiAir || (CanHitAir(def) && def.Armor != ArmorClass.Heavy) ? Role.AntiAir
+            : def.Speed >= 11f ? Role.Fast
+            : Role.Front;
+
+        private readonly float[] _have = new float[5];
+
         /// <summary>Objective id the army should concentrate on; null lets the commander choose.</summary>
         public string? FocusPoint { get; set; }
 
@@ -87,6 +111,13 @@ namespace MachineBrigade.Sim.AI
         {
             get => _tactics.Demolish;
             set => _tactics.Demolish = value;
+        }
+
+        /// <summary>Enemy buildings to shoot up when nothing military is in reach (see <see cref="TacticalAi.Plunder"/>).</summary>
+        public Func<SimWorld, IReadOnlyList<EntityId>>? Plunder
+        {
+            get => _tactics.Plunder;
+            set => _tactics.Plunder = value;
         }
 
         /// <summary>Where to hold when there are no objectives (Survival).</summary>
@@ -333,6 +364,16 @@ namespace MachineBrigade.Sim.AI
             }
             // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
             var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
+            // How the army's value is split between the roles now (deliveries on the way included).
+            Array.Clear(_have, 0, _have.Length);
+            var armyValue = 0f;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted) continue;
+                _have[(int)RoleOf(v.Def)] += v.Def.CpCost;
+                armyValue += v.Def.CpCost;
+            }
+            var mix = RoleMix ?? (Stance == CommanderStance.Defend ? DefendMix : AttackMix);
 
             foreach (var id in cards)
             {
@@ -363,6 +404,10 @@ namespace MachineBrigade.Sim.AI
                         if (def.Class == UnitClass.AntiAir) score -= 1.5f;
                     }
                 }
+                // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
+                // unit-share quotas): an army of one kind is easy to counter.
+                if (_difficulty != AiDifficulty.Easy && armyValue > 0f)
+                    score += (mix[(int)RoleOf(def)] - _have[(int)RoleOf(def)] / armyValue) * 5f;
                 // A mixed army: each copy already fielded makes another less attractive.
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
                 // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).

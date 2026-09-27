@@ -58,6 +58,25 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>The main weapon has limited ammunition and none left.</summary>
         public bool OutOfAmmo => Weapons[0].Ammo == 0;
 
+        /// <summary>Standing still enough for the crew to restock (fixed defences and aircraft always are).</summary>
+        internal bool StillForReload => Def.Static || Flying || MathF.Abs(Speed) < Combat.CombatSystem.ReloadStillSpeed;
+
+        /// <summary>The main weapon is empty but on the move, so its reload waits (the crew restocks standing still).</summary>
+        public bool ReloadPaused => OutOfAmmo && !StillForReload;
+
+        /// <summary>How far the main weapon's in-place reload has got, 0 to 1 (1 when it is not reloading).</summary>
+        public float ReloadProgress
+        {
+            get
+            {
+                var weapon = Def.Mounts[0].Weapon;
+                if (weapon.Ammo <= 0 || Weapons[0].Ammo != 0) return 1f;
+                var total = Combat.CombatSystem.ReloadSeconds(weapon);
+                var left = Weapons[0].ReloadLeft > 0f ? Weapons[0].ReloadLeft : total;
+                return Math.Clamp(1f - left / total, 0f, 1f);
+            }
+        }
+
         // ------------------------------------------------------------ skills and effects
         internal readonly double[] SkillReadyAt;
         internal readonly bool[] SkillUsed;
@@ -179,6 +198,14 @@ namespace MachineBrigade.Sim.Entities
 
         public bool IsVisibleTo(int team) => team >= 0 && (VisibleToMask & (1 << team)) != 0;
 
+        /// <summary>
+        /// Teams with it in sight right now (for a fixed defence, <see cref="VisibleToMask"/> also
+        /// keeps the teams that have seen it before: they know where it stands).
+        /// </summary>
+        public int SeenByMask { get; internal set; }
+
+        public bool IsSeenBy(int team) => team >= 0 && (SeenByMask & (1 << team)) != 0;
+
         internal int PathIndex;
         internal bool PathCompleted;
         internal Vector2 PathGoal;
@@ -244,6 +271,10 @@ namespace MachineBrigade.Sim.Entities
         internal float StuckTimer;
         internal int StuckStrikes;
 
+        /// <summary>The waypoint being driven to at the last stuck check, and how far off it was then.</summary>
+        internal int StuckWaypoint = -1;
+        internal float StuckWaypointDistance;
+
         /// <summary>Interceptors ready in the active protection system, and the reload under way.</summary>
         internal int ApsCharges;
         internal float ApsReload;
@@ -274,6 +305,7 @@ namespace MachineBrigade.Sim.Entities
             StuckSample = Position;
             StuckTimer = 0f;
             StuckStrikes = 0;
+            StuckWaypoint = -1;
         }
 
         internal void ClearPath()

@@ -75,6 +75,59 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void SiegeTankShellsAKnownTurretFromOutsideItsReach()
+        {
+            var world = Field();
+            var turret = world.SpawnVehicle("heavy_turret", 1, new Vector2(0f, 30f), MathF.PI);
+            var tank = world.SpawnVehicle("siege_tank", 0, new Vector2(0f, -55f), 0f);
+            // Seen once (a scout drove past): it stays known.
+            turret.VisibleToMask |= 1;
+            var ai = new TacticalAi(0, 1);
+            var reach = turret.Def.Weapon.Range + turret.Radius;
+            var closest = float.MaxValue;
+            var start = turret.Hp;
+            Run(world, 120f, () =>
+            {
+                ai.Tick(world, TestWorlds.Step);
+                closest = MathF.Min(closest, Vector2.Distance(tank.Position, turret.Position));
+            });
+            Assert.IsTrue(turret.IsVisibleTo(0), "a fixed defence once seen stays known");
+            Assert.Greater(closest, reach, "the siege tank never drives into the turret's reach");
+            Assert.Less(turret.Hp, start * 0.5f, "it shells the turret from outside it");
+        }
+
+        [Test]
+        public void EmptyLauncherStandsStillAndReloadsItsWholeMagazine()
+        {
+            var world = Field();
+            var grad = world.SpawnVehicle("grad_truck", 0, new Vector2(0f, 0f), 0f);
+            grad.Weapons[0].Ammo = 0;
+            var ai = new TacticalAi(0, 1);
+            var seconds = Sim.Combat.CombatSystem.ReloadSeconds(grad.Def.Mounts[0].Weapon);
+            Run(world, seconds * 0.5f, () => ai.Tick(world, TestWorlds.Step));
+            Assert.IsTrue(grad.OutOfAmmo, "halfway through, still reloading");
+            Assert.Greater(grad.ReloadProgress, 0.4f, "and the reload shows its progress");
+            Run(world, seconds * 0.6f, () => ai.Tick(world, TestWorlds.Step));
+            Assert.AreEqual(grad.Def.Mounts[0].Weapon.Ammo, grad.Ammo(0), "the whole magazine comes back at once");
+        }
+
+        [Test]
+        public void FortressBuildingsPayABountyWhenKnockedDown()
+        {
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("ashfield_siege"), seed: 4);
+            var mode = new SiegeMode();
+            mode.Setup(world);
+            Assert.GreaterOrEqual(mode.BountyTargets.Count, 10, "the fortress is full of buildings worth knocking down");
+            world.TryGetEconomy(SiegeMode.PlayerTeam, out var economy);
+            economy.Cp = 0f;
+            world.TryGetProp(mode.BountyTargets[0], out var building);
+            world.Damage.Apply(building, 1e7f, DamageType.HighExplosive);
+            Run(world, 0.2f, () => mode.Tick(world, TestWorlds.Step));
+            Assert.AreEqual(1, mode.BuildingsRazed);
+            Assert.GreaterOrEqual(economy.Cp, 2f, "and pays the attacker on the spot");
+        }
+
+        [Test]
         public void TwoPackedGroupsSwappingSidesDoNotLockUp()
         {
             var world = Field(120f);

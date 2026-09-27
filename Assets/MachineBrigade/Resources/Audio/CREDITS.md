@@ -4,7 +4,7 @@ Every sound in this folder is a recorded sound effect taken from a free source w
 
 ## Licences used
 
-- **Sonniss #GameAudioGDC bundles** (60 files). Sonniss gives these bundles away every year for GDC. Licence terms (from the License.pdf shipped inside every bundle zip, and https://sonniss.com/gdc-bundle-license/): worldwide, non-exclusive, royalty-free; use on unlimited projects; use and modify for personal and commercial projects **without attribution**; games explicitly included. Restrictions: do not sell the sounds as they come (selling them inside a game is allowed), do not claim authorship of the original recordings, do not use them to train AI. Copyright stays with the original publishers named below.
+- **Sonniss #GameAudioGDC bundles** (58 files). Sonniss gives these bundles away every year for GDC. Licence terms (from the License.pdf shipped inside every bundle zip, and https://sonniss.com/gdc-bundle-license/): worldwide, non-exclusive, royalty-free; use on unlimited projects; use and modify for personal and commercial projects **without attribution**; games explicitly included. Restrictions: do not sell the sounds as they come (selling them inside a game is allowed), do not claim authorship of the original recordings, do not use them to train AI. Copyright stays with the original publishers named below.
   The official download page (https://sonniss.com/gameaudiogdc/) is behind a Cloudflare check, so each file was read straight out of the unmodified official bundle zips mirrored on the Internet Archive (item `sonniss.com-gdc-game-audio-bundles`); the per-file links below point to the exact file inside the exact zip.
 
 - **CC0 1.0** (2 files, Kenney UI Audio) and **CC0 1.0** (1 file, OpenGameArt "Horde War Drums loop" by William Hector). Public domain dedication; no conditions.
@@ -76,8 +76,6 @@ Python (numpy, scipy, soundfile): converted to mono (channel average; a single c
 | `thunder/thunder_2.ogg` | 4.55 s | InspectorJ | Essentials 01 Thunder: "THUN_InsJ_Thunder_Extremely-Close_03.wav" | Sonniss GDC licence (no attribution) |
 | `thunder/thunder_3.ogg` | 4.53 s | Soundrangers | Thunder: "thunder_strike_03.wav" | Sonniss GDC licence (no attribution) |
 | `siren/siren_1.ogg` | 2.78 s | Pole Position Production | Sherman M4A1 Medium Tank: "Sherman_M4A1_t11_foley_siren_long_CMC6.wav" | Sonniss GDC licence (no attribution) |
-| `capture/capture_1.ogg` | 1.00 s | Chris Logsdon | Ambient Puzzle SFX Pack: "Success 2a.wav" | Sonniss GDC licence (no attribution) |
-| `lost/lost_1.ogg` | 1.00 s | Chris Logsdon | Ambient Puzzle SFX Pack: "Fail 3a.wav" | Sonniss GDC licence (no attribution) |
 | `click/click_1.ogg` | 0.09 s | Kenney (www.kenney.nl) | UI Audio pack ("click1.ogg") | CC0 1.0 |
 | `click/click_2.ogg` | 0.07 s | Kenney (www.kenney.nl) | UI Audio pack ("click3.ogg") | CC0 1.0 |
 
@@ -660,28 +658,6 @@ Python (numpy, scipy, soundfile): converted to mono (channel average; a single c
 - Official page: <https://sonniss.com/gameaudiogdc/>
 - Licence: Sonniss #GameAudioGDC Bundle Licensing Agreement: royalty-free, commercial use allowed, modification allowed, no attribution required (https://sonniss.com/gdc-bundle-license/)
 - What was done: cut 0.10-3.00 s of the source; mono, 44.1 kHz, high-pass 30 Hz, head trimmed, 2 ms fade-in, 700 ms fade-out.
-
-### capture
-
-**`capture/capture_1.ogg`** (1.00 s)
-- Author: Chris Logsdon
-- Original: Ambient Puzzle SFX Pack: "Success 2a.wav"
-- From: Sonniss GDC 2019 Game Audio Bundle (Sonniss.com - GDC 2019 - Game Audio Bundle Part 2of8.zip)
-- Source URL: <https://archive.org/download/sonniss.com-gdc-game-audio-bundles/Sonniss.com%20-%20GDC%202019%20-%20Game%20Audio%20Bundle%20Part%202of8.zip/Sonniss.com%20-%20GDC%202019%20-%20Game%20Audio%20Bundle%20Part%202of8/Chris%20Logsdon%20-%20Ambient%20Puzzle%20SFX%20Pack/Success%202a.wav>
-- Official page: <https://sonniss.com/gameaudiogdc/>
-- Licence: Sonniss #GameAudioGDC Bundle Licensing Agreement: royalty-free, commercial use allowed, modification allowed, no attribution required (https://sonniss.com/gdc-bundle-license/)
-- What was done: cut 0.00-1.00 s of the source; mono, 44.1 kHz, high-pass 90 Hz, head trimmed, 2 ms fade-in, 420 ms fade-out.
-
-### lost
-
-**`lost/lost_1.ogg`** (1.00 s)
-- Author: Chris Logsdon
-- Original: Ambient Puzzle SFX Pack: "Fail 3a.wav"
-- From: Sonniss GDC 2019 Game Audio Bundle (Sonniss.com - GDC 2019 - Game Audio Bundle Part 2of8.zip)
-- Source URL: <https://archive.org/download/sonniss.com-gdc-game-audio-bundles/Sonniss.com%20-%20GDC%202019%20-%20Game%20Audio%20Bundle%20Part%202of8.zip/Sonniss.com%20-%20GDC%202019%20-%20Game%20Audio%20Bundle%20Part%202of8/Chris%20Logsdon%20-%20Ambient%20Puzzle%20SFX%20Pack/Fail%203a.wav>
-- Official page: <https://sonniss.com/gameaudiogdc/>
-- Licence: Sonniss #GameAudioGDC Bundle Licensing Agreement: royalty-free, commercial use allowed, modification allowed, no attribution required (https://sonniss.com/gdc-bundle-license/)
-- What was done: cut 0.00-1.00 s of the source; mono, 44.1 kHz, high-pass 90 Hz, head trimmed, 2 ms fade-in, 420 ms fade-out.
 
 ### click
 

@@ -93,6 +93,12 @@ namespace MachineBrigade.Game.Match
         {
             // Nothing needs PhysX: debris, turrets and wrecks move on their own kinematics.
             Physics.simulationMode = SimulationMode.Script;
+#if UNITY_EDITOR
+            // A click on the Game view counts even while another editor window has focus; by
+            // default pointer input waits for the Game view to be focused, so clicks went missing.
+            UnityEngine.InputSystem.InputSystem.settings.editorInputBehaviorInPlayMode =
+                UnityEngine.InputSystem.InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+#endif
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
             MatchSettings.Load();
@@ -195,6 +201,8 @@ namespace MachineBrigade.Game.Match
             // battles never see, and every merged model costs load time and memory on a phone.
             foreach (var id in Fieldable(catalog, mission)) _models.Prewarm(catalog.Vehicles[id].Model);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
+            // The transport that flies reinforcements in (see AirDrops).
+            if (_models.Has("sky_gunship")) _models.Prewarm("sky_gunship");
             _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
@@ -244,6 +252,8 @@ namespace MachineBrigade.Game.Match
             Wire();
 
             DispatchEvents();
+            // Built: lift the curtain once this scene has drawn a few frames.
+            Curtain.Open();
         }
 
         private bool BossOnField()
@@ -612,6 +622,9 @@ namespace MachineBrigade.Game.Match
                         if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
+                    case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
+                        _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
+                        break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
                             DailyMissions.Record("buildings");
@@ -654,8 +667,9 @@ namespace MachineBrigade.Game.Match
         {
             _hud.PlayPressed += () =>
             {
+                if (Curtain.Busy) return;
                 MatchSettings.InMatch = true;
-                Reload();
+                Reload("loading.deploy", DeployDetail());
             };
             var builtInVietnamese = Strings.Vietnamese;
             _hud.VolumeChanged += () => AudioListener.volume = MatchSettings.Volume;
@@ -673,7 +687,7 @@ namespace MachineBrigade.Game.Match
                 if (Strings.Vietnamese != builtInVietnamese || GraphicsSignature() != _builtGraphics)
                 {
                     _frameRateTarget = MatchSettings.Options.FrameRate;
-                    Reload();
+                    Reload("loading.apply");
                 }
             };
             if (_menu) return;
@@ -686,22 +700,25 @@ namespace MachineBrigade.Game.Match
             _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
             _hud.RestartPressed += () =>
             {
+                if (Curtain.Busy) return;
                 ClaimReward();
-                Reload();
+                Reload("loading.deploy", DeployDetail());
             };
             _hud.MenuPressed += () =>
             {
+                if (Curtain.Busy) return;
                 ClaimReward();
                 MatchSettings.InMatch = false;
-                Reload();
+                Reload("loading.base");
             };
             _hud.NextMissionPressed += () =>
             {
+                if (Curtain.Busy) return;
                 ClaimReward();
                 var next = Campaign.IndexOf(MatchSettings.Mission) + 1;
                 if (next > 0 && next < Campaign.All.Count) MatchSettings.Mission = Campaign.All[next].Id;
                 MatchSettings.Save();
-                Reload();
+                Reload("loading.deploy", DeployDetail());
             };
             _hud.DoubleRewardPressed += () =>
             {
@@ -758,11 +775,35 @@ namespace MachineBrigade.Game.Match
             AudioListener.pause = paused;
         }
 
-        private static void Reload()
+        /// <summary>
+        /// Rebuilds the scene behind the curtain: the screen and sound fade out, the scene loads
+        /// behind black with what is being loaded on screen, and it fades back in once drawn.
+        /// </summary>
+        private static void Reload(string statusKey, string detail = null)
         {
             Time.timeScale = 1f;
             AudioListener.pause = false;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            var scene = SceneManager.GetActiveScene().buildIndex;
+            Curtain.Close(Strings.Get(statusKey).ToUpperInvariant(), detail, () => SceneManager.LoadScene(scene));
+        }
+
+        /// <summary>What the loading screen names: the mission, or the mode and the battlefield.</summary>
+        private static string DeployDetail()
+        {
+            if (MatchSettings.Mode == GameModeKind.Campaign) return Strings.Get("mission." + MatchSettings.Mission + ".name");
+            var mode = MatchSettings.Mode switch
+            {
+                GameModeKind.Deathmatch => "mode.deathmatch",
+                GameModeKind.KingOfTheHill => "mode.hill",
+                GameModeKind.Assault => "mode.assault",
+                GameModeKind.Defend => "mode.defend",
+                GameModeKind.Weekly => "mode.weekly",
+                GameModeKind.Survival => "mode.survival",
+                GameModeKind.Siege => "mode.siege",
+                GameModeKind.BossRush => "mode.bossrush",
+                _ => "mode.conquest",
+            };
+            return Strings.Get(mode) + "  ·  " + Strings.Get("map." + MatchSettings.CurrentMap.Id);
         }
 
         /// <summary>Menu background: the camera drifts towards wherever the fighting is.</summary>

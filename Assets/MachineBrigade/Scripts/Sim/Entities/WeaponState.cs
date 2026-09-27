@@ -14,6 +14,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Rounds left, or -1 for a weapon with unlimited ammunition.</summary>
         public int Ammo = -1;
+
+        /// <summary>An empty magazine being reloaded in place: seconds still to go (0: not reloading).</summary>
+        public float ReloadLeft;
         public EntityId Target;
 
         /// <summary>World heading of a free mount (pintle gun, chin turret), in radians.</summary>

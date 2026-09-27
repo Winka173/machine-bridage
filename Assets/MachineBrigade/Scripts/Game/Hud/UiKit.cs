@@ -43,11 +43,11 @@ namespace MachineBrigade.Game.Hud
             return icon;
         }
 
-        /// <summary>Anything tappable: a box with a click handler that also plays the UI tick.</summary>
+        /// <summary>Anything tappable: a box with a tap handler (see <see cref="Tap"/>) that also plays the UI tick.</summary>
         public static VisualElement Button(string className, Action onClick)
         {
             var button = Box(className, PickingMode.Position);
-            button.AddManipulator(new Clickable(() =>
+            button.AddManipulator(new Tap(() =>
             {
                 Clicked?.Invoke();
                 onClick?.Invoke();

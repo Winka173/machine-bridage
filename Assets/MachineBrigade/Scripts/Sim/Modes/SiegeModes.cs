@@ -48,9 +48,17 @@ namespace MachineBrigade.Sim.Modes
         public int StartStage { get; set; } = 1;
 
         /// <summary>CP the attacker gets each time a stage falls.</summary>
-        public float StageCp { get; set; } = 15f;
+        public float StageCp { get; set; } = 20f;
 
-        public SideSetup Attacker { get; set; } = new() { StartCp = 26f, Income = 1.5f, ArmyCap = 34 };
+        /// <summary>The fortress's own buildings (barracks, stores, offices, workshops): each one knocked down pays the attacker.</summary>
+        public HashSet<string> BountyBuildings { get; set; } = new()
+        {
+            "warehouse", "office_block", "house_large", "house_small", "garage", "container_stack", "container", "townhouse",
+            "radar_dome", "fuel_depot", "ammo_dump", "vehicle_hangar", "barn", "apartment", "adobe_house", "adobe_large",
+            "cottage", "log_cabin", "shop", "factory", "hangar", "control_tower",
+        };
+
+        public SideSetup Attacker { get; set; } = new() { StartCp = 34f, Income = 1.8f, ArmyCap = 40 };
         public SideSetup Defender { get; set; } = new() { StartCp = 20f, Income = 1f };
     }
 
@@ -79,6 +87,13 @@ namespace MachineBrigade.Sim.Modes
         private readonly List<EntityId> _targets = new();
         private readonly List<EntityId>[] _defences = { new(), new(), new() };
         private readonly List<EntityId> _fortressProps = new();
+        private readonly List<EntityId> _bounty = new();
+
+        /// <summary>The fortress buildings still standing that pay a bounty when knocked down (for the attacking AI).</summary>
+        public IReadOnlyList<EntityId> BountyTargets => _bounty;
+
+        /// <summary>Buildings the attacker has knocked down (each paid on the spot, and in coins at the end).</summary>
+        public int BuildingsRazed { get; private set; }
         private readonly List<(double at, EntityId id, bool prop)> _chain = new();
         private double _wipedSince = -1;
         private double _deadline;
@@ -122,12 +137,20 @@ namespace MachineBrigade.Sim.Modes
             if (Fortress == null && world.TryGetRally(EnemyTeam, out var rally)) Fortress = rally;
             var rings = world.Map.SiegeRings;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static) _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
+                if (v.IsAlive && v.Team == EnemyTeam && v.Def.Static)
+                {
+                    _defences[RingOf(v.Position, rings) - 1].Add(v.Id);
+                    // The attacker comes with the fortress plans: every gun is on the map from the start.
+                    v.VisibleToMask |= 1 << PlayerTeam;
+                }
             // Everything built into the fortress goes up with it at the end.
             if (Fortress is { } centre && rings.Count > 0)
                 foreach (var prop in world.Props)
                     if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible && Chebyshev(prop.Position, centre) <= rings[0] + 4f)
+                    {
                         _fortressProps.Add(prop.Id);
+                        if (_rules.BountyBuildings.Contains(prop.Def.Id)) _bounty.Add(prop.Id);
+                    }
             // A map without relays (or generators) starts at the stage it has, with the time those stages would have earned.
             Stage = _relays.Count > 0 ? 1 : _generators.Count > 0 ? 2 : 3;
             // Rings already broken (the weekly fortress): their objectives and guns are gone.
@@ -248,6 +271,7 @@ namespace MachineBrigade.Sim.Modes
             if (Stage == 1 && Alive(world, _relays) == 0) Advance(world, 2);
             if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
             if (Stage == 3) KeepEvents(world);
+            PayBounties(world);
             Brownout(world);
             if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= 0.999f))
             {
@@ -262,6 +286,25 @@ namespace MachineBrigade.Sim.Modes
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
+        }
+
+        /// <summary>
+        /// Every fortress building knocked down pays the attacker on the spot: two to six CP by its
+        /// size (a garage, a warehouse), and coins at the end of the battle. Buildings that go up
+        /// in the fortress's final collapse pay nothing.
+        /// </summary>
+        private void PayBounties(SimWorld world)
+        {
+            for (var i = _bounty.Count - 1; i >= 0; i--)
+            {
+                if (world.TryGetProp(_bounty[i], out var building) && building.IsAlive) continue;
+                _bounty.RemoveAt(i);
+                if (building == null) continue;
+                var cp = Math.Clamp(MathF.Round(building.Def.MaxHp / 400f), 2f, 6f);
+                if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + cp);
+                BuildingsRazed++;
+                world.Emit(SimEvent.BountyPaid(PlayerTeam, building.Def.Id, building.Position, cp));
+            }
         }
 
         /// <summary>Attackers are fighting within 25 m of a live objective (overtime runs while they are).</summary>

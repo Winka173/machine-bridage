@@ -93,7 +93,7 @@ namespace MachineBrigade.Game.Hud
             while (_points.Count < points.Count)
             {
                 var chip = new PointChip();
-                chip.AddManipulator(new Clickable(() =>
+                chip.AddManipulator(new Tap(() =>
                 {
                     if (chip.Id != null) PointPressed?.Invoke(chip.Id);
                 }));

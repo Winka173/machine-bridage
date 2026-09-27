@@ -101,7 +101,10 @@ namespace MachineBrigade.Sim.Content
                     w.Float("range"), w.Float("minRange", 0f), w.Float("projectileSpeed"), w.Float("splash", 0f),
                     w.Float("spread", 0f), w.Enum<ExplosionTier>("impactTier"),
                     w.Enum("projectile", ProjectileKind.Shell), w.Int("burst", 1), w.Float("burstInterval", 0.1f),
-                    w.Enum("targets", TargetLayers.Ground)) { Ammo = w.Int("ammo", 0) });
+                    w.Enum("targets", TargetLayers.Ground))
+                {
+                    Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
+                });
                 if (w.Has("cluster"))
                 {
                     var c = w.Object("cluster");

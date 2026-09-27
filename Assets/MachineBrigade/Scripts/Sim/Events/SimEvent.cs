@@ -69,6 +69,15 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A fortress event (DefId: its string key, for the announcement) at Position.</summary>
         FortressAlert,
+
+        /// <summary>
+        /// A fire-support round (DefId: the support) is coming down onto Position, landing in Value
+        /// seconds, fired from the direction of Target (a unit vector): drawn falling from the sky.
+        /// </summary>
+        ShellInbound,
+
+        /// <summary>Team knocked down an enemy building worth a bounty (DefId: the building) at Position, paid Value CP.</summary>
+        Bounty,
     }
 
     /// <summary>
@@ -145,11 +154,18 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent VehicleLost(Vehicle v) =>
             new(SimEventKind.VehicleDestroyed, v.Id, v.Position, default, 0f, ExplosionTier.Medium, v.Def.Id, v.Team);
 
-        internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, float seconds) =>
-            new(SimEventKind.DeploymentQueued, EntityId.None, at, default, seconds, default, vehicleId, team);
+        /// <summary>A vehicle bought: where it will land (Position), which way it faces in (Target), and in how long (Value).</summary>
+        internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
+            new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team);
 
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
+
+        internal static SimEvent BountyPaid(int team, string building, Vector2 at, float cp) =>
+            new(SimEventKind.Bounty, EntityId.None, at, default, cp, default, building, team);
+
+        internal static SimEvent ShellInbound(int team, SupportDef support, Vector2 at, Vector2 from, float seconds) =>
+            new(SimEventKind.ShellInbound, EntityId.None, at, from, seconds, support.Tier, support.Id, team);
 
         internal static SimEvent StrikeImpact(int team, SupportDef support, Vector2 at) =>
             new(SimEventKind.StrikeImpact, EntityId.None, at, default, support.BlastRadius, support.Tier, support.Id, team);

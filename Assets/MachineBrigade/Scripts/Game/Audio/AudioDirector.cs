@@ -34,7 +34,7 @@ namespace MachineBrigade.Game.Audio
         private enum Sound
         {
             MachineGun, Autocannon, Cannon, HeavyCannon, Howitzer, Rocket, Missile, Flak, Flame,
-            ExplosionSmall, ExplosionMedium, ExplosionLarge, ExplosionHuge, Collapse, Debris, Impact, Jet,
+            ExplosionSmall, ExplosionMedium, ExplosionLarge, ExplosionHuge, Collapse, Debris, Impact, Jet, Whistle,
         }
 
         /// <summary>One category: its clips and how it is mixed.</summary>
@@ -87,7 +87,7 @@ namespace MachineBrigade.Game.Audio
         private readonly AudioSource _ambient, _rotor, _jetLoop, _ui, _rain, _fire, _drums;
         private readonly AudioClip[] _thunder, _clicks;
         private readonly List<float> _thunderAt = new();
-        private readonly AudioClip _warning, _captured, _lost, _siren;
+        private readonly AudioClip _captured, _lost, _siren;
         private readonly Dictionary<Sound, Bank> _banks = new();
         private readonly List<AudioClip> _owned = new();
         private readonly List<(float at, Sound sound, System.Numerics.Vector2 where, float volume)> _delayed = new();
@@ -122,9 +122,12 @@ namespace MachineBrigade.Game.Audio
             Add(Sound.Debris, "debris", i => SoundSynth.Collapse(850 + i), 0.45f, 2, 0.12f, 1);
             Add(Sound.Impact, "impact_metal", i => SoundSynth.MachineGun(860 + i, 1), 0.28f, 3, 0.1f, 0, light: true);
             Add(Sound.Jet, "jet_pass", i => SoundSynth.JetPass(900 + i), 0.9f, 2, 0.5f, 4);
-            _warning = Own(SoundSynth.Warning());
-            _captured = Recorded("capture")?[0] ?? Own(SoundSynth.Chime(true));
-            _lost = Recorded("lost")?[0] ?? Own(SoundSynth.Chime(false));
+            // Incoming shells whistle down onto where they land: the warning is in the world, where
+            // the danger is, not a beep from the interface (Company of Heroes and Men of War do the same).
+            Add(Sound.Whistle, "whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, 3);
+            // Points taken and lost come over the radio: a squelch and two soft notes.
+            _captured = Own(SoundSynth.Radio(true));
+            _lost = Own(SoundSynth.Radio(false));
             _siren = Recorded("siren")?[0];
 
             for (var i = 0; i < Voices; i++)
@@ -195,6 +198,9 @@ namespace MachineBrigade.Game.Audio
                         // Bombs are released silently; the blast is the sound.
                         if (weapon != null && weapon.Projectile == ProjectileKind.Bomb) break;
                         Play(WeaponSound(weapon), e.Position, 1f);
+                        // Heavy shells on a long flight whistle down onto where they are aimed.
+                        if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
+                            Schedule(Sound.Whistle, e.Target, 0.7f, e.Value - WhistleLead);
                         break;
                     case SimEventKind.ProjectileImpact:
                         if (e.Tier >= ExplosionTier.Medium) Play(Blast(e.Tier), e.Position, e.Tier >= ExplosionTier.Huge ? 1f : 0.85f);
@@ -214,11 +220,20 @@ namespace MachineBrigade.Game.Audio
                     case SimEventKind.AircraftPass:
                         Play(Sound.Jet, e.Target, 1f, reachBonus: 80f);
                         break;
-                    case SimEventKind.StrikeWarning when _playerTeam >= 0 && e.Team != _playerTeam:
-                        _ui.PlayOneShot(_warning, 0.55f);
+                    case SimEventKind.StrikeWarning:
+                        // A barrage or a missile whistles down in the last second before it lands
+                        // (aircraft strikes announce themselves with their engines; smoke and repairs are quiet).
+                        if (_catalog.TryGetSupport(e.DefId, out var strike) && strike.Kind is SupportKind.Barrage or SupportKind.CruiseMissile)
+                        {
+                            Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
+                            // A long barrage keeps coming down: a second whistle halfway through.
+                            if (strike.Duration > 1.5f) Schedule(Sound.Whistle, e.Position, 0.85f, e.Value + strike.Duration * 0.5f - WhistleLead);
+                        }
                         break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
-                        _ui.PlayOneShot(_siren, 0.35f);
+                        // The fortress's own alarm: heard as far as the fortress is near the view.
+                        var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), _camera.Focus);
+                        if (alarm < 120f) _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
                         break;
                     case SimEventKind.StageCleared when _playerTeam >= 0:
                         _ui.PlayOneShot(_captured, 0.6f);
@@ -305,6 +320,13 @@ namespace MachineBrigade.Game.Audio
                 _delayed.RemoveAt(i);
                 Start(d.sound, d.where, d.volume);
             }
+            for (var i = _scheduled.Count - 1; i >= 0; i--)
+            {
+                var s = _scheduled[i];
+                if (now < s.at) continue;
+                _scheduled.RemoveAt(i);
+                Play(s.sound, s.where, s.volume);
+            }
             // Small arms come back up after a big blast.
             var duck = Duck(now);
             foreach (var v in _voices)
@@ -348,6 +370,18 @@ namespace MachineBrigade.Game.Audio
         private static float DuckLevel(float left) => Mathf.Lerp(1f, 0.5f, Mathf.Clamp01(left / 0.35f));
 
         private float Duck(float now) => now < _duckUntil ? DuckLevel(_duckUntil - now) : 1f;
+
+        /// <summary>How long before a shell lands its whistle starts (the clip's length, less the cut at the end).</summary>
+        private const float WhistleLead = 1.15f;
+
+        /// <summary>Sounds due later (a whistle timed to a landing), played through the usual limits when due.</summary>
+        private readonly List<(float at, Sound sound, System.Numerics.Vector2 where, float volume)> _scheduled = new();
+
+        private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay)
+        {
+            if (_scheduled.Count > 24) return;
+            _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), sound, at, volume));
+        }
 
         private void Burn(System.Numerics.Vector2 at, float seconds) =>
             _fires.Add((new Vector3(at.X, 0f, at.Y), Time.unscaledTime + seconds));

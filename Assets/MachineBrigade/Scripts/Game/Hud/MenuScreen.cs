@@ -152,6 +152,11 @@ namespace MachineBrigade.Game.Hud
             // Deck page: locked cards show how to get them ---------------------------------------
             _deck = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
             _deck.Add(Brand());
+            // The tapped card's details sit in a fixed pane above the scrolling cards: showing them
+            // never pushes the cards down under the finger (the next tap used to hit another card).
+            _cardDetail = UiKit.Box("card-detail");
+            _deck.Add(_cardDetail);
+            ClearDetail();
             var deckScroll = Scroller();
             var deckBody = deckScroll.contentContainer;
             _deckTitle = UiKit.Text("", "menu-caps");
@@ -181,8 +186,6 @@ namespace MachineBrigade.Game.Hud
                 }, i == allDoctrines.Count - 1), () => MatchSettings.Doctrine == id));
             }
             deckBody.Add(doctrines);
-            _cardDetail = UiKit.Box("card-detail");
-            deckBody.Add(_cardDetail);
             var grid = UiKit.Box("deck-grid");
             foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
             foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
@@ -492,7 +495,19 @@ namespace MachineBrigade.Game.Hud
                 head.Add(names);
                 _cardDetail.Add(head);
             }
-            _cardDetail.style.display = DisplayStyle.Flex;
+        }
+
+        /// <summary>The detail pane before any card is tapped: what tapping does.</summary>
+        private void ClearDetail()
+        {
+            _cardDetail.Clear();
+            var head = UiKit.Box("detail-head");
+            head.Add(UiKit.Icon("info", UiKit.Ink, 1.7f));
+            var names = UiKit.Box("detail-names");
+            names.Add(UiKit.Text(Strings.Get("detail.pickTitle"), "detail-title"));
+            names.Add(UiKit.Text(Strings.Get("detail.pick"), "detail-empty"));
+            head.Add(names);
+            _cardDetail.Add(head);
         }
 
         private VisualElement Choice(VisualElement element, Func<bool> selected)
