@@ -75,6 +75,9 @@ namespace MachineBrigade.Sim.Events
         /// seconds, fired from the direction of Target (a unit vector): drawn falling from the sky.
         /// </summary>
         ShellInbound,
+
+        /// <summary>Team knocked down an enemy building worth a bounty (DefId: the building) at Position, paid Value CP.</summary>
+        Bounty,
     }
 
     /// <summary>
@@ -157,6 +160,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
+
+        internal static SimEvent BountyPaid(int team, string building, Vector2 at, float cp) =>
+            new(SimEventKind.Bounty, EntityId.None, at, default, cp, default, building, team);
 
         internal static SimEvent ShellInbound(int team, SupportDef support, Vector2 at, Vector2 from, float seconds) =>
             new(SimEventKind.ShellInbound, EntityId.None, at, from, seconds, support.Tier, support.Id, team);

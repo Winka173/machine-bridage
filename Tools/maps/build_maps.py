@@ -2098,11 +2098,68 @@ def fortress_defences():
     return out
 
 
+# The fortress's own buildings (barracks, stores, offices, workshops): worth a bounty to the
+# attacker when knocked down (see SiegeMode), and cover for the defenders inside.
+FORTRESS_BUILDINGS = ['warehouse', 'office_block', 'house_large', 'garage', 'container_stack', 'house_small', 'radar_dome',
+                      'house_small', 'garage', 'container', 'townhouse', 'garage', 'container_stack']
+
+# Lanes kept open for the attack: from each ring gate to the keep gate, and the keep gate to the HQ.
+FORTRESS_LANES = [(13, 44, 43, 60), (44, 13, 60, 43), (33, 44, 43, 71), (44, 33, 71, 43), (43, 57, 55, 71), (57, 43, 71, 55)]
+
+
+def fortress_buildings(L, name, count=14, reach=None):
+    """Buildings scattered in the wall ring and the keep, in mirrored pairs across the diagonal,
+    clear of the approach lanes; returns them, newest last (dropped first if they block a route)."""
+    rng = random.Random(sum(ord(c) for c in name) * 7919)
+    placed = []
+
+    def in_lane(x, z, w, d):
+        return any(x - w / 2 - 1 < r[2] and x + w / 2 + 1 > r[0] and z - d / 2 - 1 < r[3] and z + d / 2 + 1 > r[1]
+                   for r in FORTRESS_LANES)
+
+    tries = 0
+    while len(placed) < count and tries < 3000:
+        tries += 1
+        kind = rng.choice(FORTRESS_BUILDINGS)
+        rot = rng.choice((0, 90))
+        if rng.random() < 0.35:
+            x, z = rng.uniform(48, 80), rng.uniform(48, 80)
+        else:
+            x, z = rng.uniform(18, 95), rng.uniform(18, 95)
+            if 40 < x < 88 and 40 < z < 88:
+                continue
+        for px, pz, prot in ((x, z, rot), (z, x, 90 - rot)):
+            w, d = Layout.size(kind, prot)
+            if in_lane(px, pz, w, d) or len(placed) >= count:
+                continue
+            if L.put(kind, px, pz, prot, pad=1.1):
+                # Never at the price of a route: a building that cuts one off goes again at once.
+                if reach is not None and L.reachable(reach()):
+                    L.remove(lambda a0, b0, a1, b1, hx=px, hz=pz: a0 <= hx <= a1 and b0 <= hz <= b1)
+                    continue
+                placed.append((kind, px, pz))
+    L.failed = [f for f in L.failed if f[0] not in FORTRESS_BUILDINGS]
+    return placed
+
+
 UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
              'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'missile_battery': 9.5}
 
 
-def fortify(L, name):
+def siege_targets(L):
+    """What the attack must be able to reach: the enemy camp, the HQ, every relay and generator."""
+    generator = model_or('shield_generator', 'fuel_depot')
+    hq = next(p for p in L.props if p['def'] == 'command_hq')
+    w, d = PROPS['command_hq']['width'] / 2, PROPS['command_hq']['depth'] / 2
+    targets = [('camp', *L.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
+    for p in L.props:
+        if p['def'] in ('radar_station', generator):
+            pw, pd = PROPS[p['def']]['width'] / 2, PROPS[p['def']]['depth'] / 2
+            targets.append((p['def'], p['x'] - pw, p['z'] - pd, p['x'] + pw, p['z'] + pd))
+    return targets
+
+
+def fortify(L, name, buildings=True):
     """Turns a conquest layout (on the 200 m battlefield) into its siege variant: the fortress
     in three rings round the command HQ (see the notes above HQ)."""
     L.failed = []
@@ -2152,6 +2209,8 @@ def fortify(L, name):
     L.put('vehicle_hangar', 58.0, 90.0, 0)
     L.put('vehicle_hangar', 90.0, 58.0, 90)
     L.put('helipad', 90.0, 76.0, 0, pad=0.2)
+    # (Not when carving the outline: the buildings must not move the battlefield's edge for every version.)
+    houses = fortress_buildings(L, name, reach=lambda: siege_targets(L)) if buildings else []
     for x, z in ((ring + 2, ring_gate - 9.5), (ring + 2, ring_gate + 9.5), (ring_gate - 9.5, ring + 2), (ring_gate + 9.5, ring + 2),
                  (x0 + 2, keep_gate - 6), (keep_gate - 6, z0 + 2)):
         L.put('floodlight_mast', x, z, 0, pad=0.2)
@@ -2190,16 +2249,17 @@ def fortify(L, name):
     for unit in L.units:
         if not L.walkable(unit['x'], unit['z']):
             raise SystemExit(f"{name} siege: {unit['def']} at ({unit['x']}, {unit['z']}) stands on a blocked cell")
-    hq = next(p for p in L.props if p['def'] == 'command_hq')
-    w, d = PROPS['command_hq']['width'] / 2, PROPS['command_hq']['depth'] / 2
-    targets = [('camp', *L.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
-    for p in L.props:
-        if p['def'] in ('radar_station', generator):
-            pw, pd = PROPS[p['def']]['width'] / 2, PROPS[p['def']]['depth'] / 2
-            targets.append((p['def'], p['x'] - pw, p['z'] - pd, p['x'] + pw, p['z'] + pd))
+    targets = siege_targets(L)
     missing = L.reachable(targets)
+    # A building that closes a route goes again (newest first), until every objective can be reached.
+    while missing and houses:
+        kind, hx, hz = houses.pop()
+        L.remove(lambda a0, b0, a1, b1: a0 <= hx <= a1 and b0 <= hz <= b1)
+        missing = L.reachable(targets)
     if missing:
         raise SystemExit(f'{name} siege: unreachable from the player camp: {missing}')
+    if buildings:
+        print(f'{name} siege: {len(houses)} fortress buildings')
     return L
 
 
@@ -2679,7 +2739,7 @@ def main(only=()):
         # One outline per battlefield, shared by all its versions: carved round everything the
         # Conquest, Survival and Siege versions and the campaign need; then the battlefield is
         # dressed and filled inside it (the siege version the same, before its fortress).
-        poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify(scale_layout(build()), map_id)], map_id), seed=len(map_id) * 31 + 7)
+        poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify(scale_layout(build()), map_id, buildings=False)], map_id), seed=len(map_id) * 31 + 7)
         densify(warzone(layout, map_id, theme, poly), map_id, theme, poly)
         siege = fortify(densify(warzone(scale_layout(build()), map_id, theme, poly), map_id, theme, poly), map_id)
         dropped = apply_outline(layout, poly)

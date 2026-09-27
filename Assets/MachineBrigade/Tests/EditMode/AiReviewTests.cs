@@ -112,6 +112,22 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void FortressBuildingsPayABountyWhenKnockedDown()
+        {
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("ashfield_siege"), seed: 4);
+            var mode = new SiegeMode();
+            mode.Setup(world);
+            Assert.GreaterOrEqual(mode.BountyTargets.Count, 10, "the fortress is full of buildings worth knocking down");
+            world.TryGetEconomy(SiegeMode.PlayerTeam, out var economy);
+            economy.Cp = 0f;
+            world.TryGetProp(mode.BountyTargets[0], out var building);
+            world.Damage.Apply(building, 1e7f, DamageType.HighExplosive);
+            Run(world, 0.2f, () => mode.Tick(world, TestWorlds.Step));
+            Assert.AreEqual(1, mode.BuildingsRazed);
+            Assert.GreaterOrEqual(economy.Cp, 2f, "and pays the attacker on the spot");
+        }
+
+        [Test]
         public void TwoPackedGroupsSwappingSidesDoNotLockUp()
         {
             var world = Field(120f);

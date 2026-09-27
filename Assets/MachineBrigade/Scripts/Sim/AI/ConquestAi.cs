@@ -89,6 +89,13 @@ namespace MachineBrigade.Sim.AI
             set => _tactics.Demolish = value;
         }
 
+        /// <summary>Enemy buildings to shoot up when nothing military is in reach (see <see cref="TacticalAi.Plunder"/>).</summary>
+        public Func<SimWorld, IReadOnlyList<EntityId>>? Plunder
+        {
+            get => _tactics.Plunder;
+            set => _tactics.Plunder = value;
+        }
+
         /// <summary>Where to hold when there are no objectives (Survival).</summary>
         public Vector2? DefendPoint { get; set; }
 

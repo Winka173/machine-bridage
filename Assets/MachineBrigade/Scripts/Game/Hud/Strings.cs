@@ -162,6 +162,8 @@ namespace MachineBrigade.Game.Hud
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{0}/s", "+{0}/s"),
             ["stat.income.upkeep"] = ("+{0}/s  -{1}%", "+{0}/s  -{1}%"),
+            ["toast.bounty"] = ("Fortress building destroyed: +{0} CP", "Phá công trình pháo đài: +{0} CP"),
+            ["stat.razed"] = ("Buildings razed", "Công trình phá hủy"),
             ["loading.deploy"] = ("Deploying", "Xuất kích"),
             ["loading.base"] = ("Returning to base", "Về căn cứ"),
             ["loading.apply"] = ("Applying settings", "Đang áp dụng cài đặt"),

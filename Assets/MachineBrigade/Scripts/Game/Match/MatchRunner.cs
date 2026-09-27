@@ -622,6 +622,9 @@ namespace MachineBrigade.Game.Match
                         if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
+                    case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
+                        _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
+                        break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
                             DailyMissions.Record("buildings");

@@ -78,6 +78,12 @@ namespace MachineBrigade.Sim.AI
         public Func<SimWorld, EntityId>? Demolish { get; set; }
 
         /// <summary>
+        /// Enemy buildings worth shooting up when there is nothing military in reach (a siege's
+        /// fortress buildings, each paying a bounty); null or empty for none.
+        /// </summary>
+        public Func<SimWorld, IReadOnlyList<EntityId>>? Plunder { get; set; }
+
+        /// <summary>
         /// With an objective set, how far from it the army may chase enemies (a point it has to
         /// hold); null lets it go after anything in sight.
         /// </summary>
@@ -207,6 +213,7 @@ namespace MachineBrigade.Sim.AI
             DirectSupport(world, front, forward);
             FocusBoss(world);
             FocusDemolition(world);
+            ShootBuildings(world);
             DirectArtillery(world, front, objective, forward, contact);
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
@@ -525,6 +532,44 @@ namespace MachineBrigade.Sim.AI
                 vehicles.RemoveAt(i);
                 if (v.Order.Kind == OrderKind.Attack && v.Order.Target == target.Id) continue;
                 Issue(world, CommandType.Attack, v.Id, target.Position, target.Id);
+            }
+        }
+
+        /// <summary>
+        /// Vehicles standing idle with no enemy (vehicle or defence) in reach shoot up the enemy
+        /// buildings next to them; the military targets always come first, and nobody leaves the
+        /// advance for a building.
+        /// </summary>
+        private void ShootBuildings(SimWorld world)
+        {
+            if (Plunder?.Invoke(world) is not { Count: > 0 } buildings) return;
+            PlunderWith(world, buildings, _line);
+            PlunderWith(world, buildings, _fast);
+        }
+
+        private void PlunderWith(SimWorld world, IReadOnlyList<EntityId> buildings, List<Vehicle> vehicles)
+        {
+            for (var i = vehicles.Count - 1; i >= 0; i--)
+            {
+                var v = vehicles[i];
+                if (!Ready(v) || Busy(world, v)) continue;
+                var weapon = v.Def.Weapon;
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) < 0.25f) continue;
+                if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
+                Prop? best = null;
+                var bestDistance = weapon.Range + 2f;
+                foreach (var id in buildings)
+                {
+                    if (!world.TryGetProp(id, out var building) || !building.IsAlive) continue;
+                    var distance = Vector2.Distance(v.Position, building.Position) - building.Radius;
+                    if (distance >= bestDistance) continue;
+                    best = building;
+                    bestDistance = distance;
+                }
+                if (best == null) continue;
+                vehicles.RemoveAt(i);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == best.Id) continue;
+                Issue(world, CommandType.Attack, v.Id, best.Position, best.Id);
             }
         }
 
