@@ -386,7 +386,7 @@ namespace MachineBrigade.Game.Hud
                     _gearSelected = PlayerProfile.Equipped(_branch, slot);
                     Refresh();
                 });
-                tile.Add(item != null ? GearArt.Tile(item, slot == GearSlot.Special ? 92 : 76) : GearArt.Empty(slot, slot == GearSlot.Special ? 92 : 76));
+                tile.Add(item != null ? GearArt.Tile(item, slot == GearSlot.Special ? 104 : 92) : GearArt.Empty(slot, slot == GearSlot.Special ? 104 : 92));
                 tile.Add(UiKit.Text(item != null ? StatText(item) : Strings.Get("gear.slot." + slot.ToString().ToLowerInvariant()), "gear-slot-value"));
                 tile.EnableInClassList("chosen", _slotFilter == slot);
                 _gearSlots.Add(tile);
@@ -409,7 +409,7 @@ namespace MachineBrigade.Game.Hud
                     _gearSelected = g;
                     Refresh();
                 });
-                tile.Add(GearArt.Tile(item, 84));
+                tile.Add(GearArt.Tile(item, 92));
                 tile.EnableInClassList("chosen", item == _gearSelected);
                 tile.EnableInClassList("equipped", PlayerProfile.IsEquipped(item));
                 grid.Add(tile);
@@ -429,7 +429,7 @@ namespace MachineBrigade.Game.Hud
                 return;
             }
             var head = UiKit.Box("gear-info-head");
-            head.Add(GearArt.Tile(item, 72, showLevel: false));
+            head.Add(GearArt.Tile(item, 84, showLevel: false));
             var names = UiKit.Box("gear-info-names");
             var title = UiKit.Text(GearName(item), "gear-info-title");
             title.style.color = GearArt.Colors[item.rarity];

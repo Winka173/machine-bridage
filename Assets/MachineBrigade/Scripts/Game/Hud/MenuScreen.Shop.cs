@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Hud
         private ShopTab _shopTab = ShopTab.Deals;
         private string _shopSelected;
         private readonly List<(VisualElement card, string id)> _shopCards = new();
-        private readonly List<(CrateKind kind, Label count)> _crateCounts = new();
+        private readonly List<(CrateKind kind, Label count, VisualElement open)> _crateCounts = new();
         private Label _adCrateLabel, _freeDealLabel, _goldDealLabel;
 
         /// <summary>A skin is being tried on (null: back to the equipped one).</summary>
@@ -187,11 +187,12 @@ namespace MachineBrigade.Game.Hud
             top.Add(odds);
             tile.Add(top);
             var buttons = UiKit.Box("crate-buttons");
-            buttons.Add(CrateButton("primary", "crate", Strings.Get("crate.open"), () => OpenCrate(k)));
+            var open = CrateButton("primary", "crate", Strings.Get("crate.open"), () => OpenCrate(k));
+            buttons.Add(open);
             if (Crates.CoinPrice[(int)kind] > 0)
                 buttons.Add(CrateButton("", "coin", Crates.CoinPrice[(int)kind].ToString("N0"), () => BuyCrate(k)));
             tile.Add(buttons);
-            _crateCounts.Add((kind, count));
+            _crateCounts.Add((kind, count, open));
             return tile;
         }
 
@@ -449,7 +450,12 @@ namespace MachineBrigade.Game.Hud
 
         private void RefreshShop()
         {
-            foreach (var (kind, count) in _crateCounts) count.text = Strings.Format("crate.owned", PlayerProfile.CrateCount(kind));
+            foreach (var (kind, count, open) in _crateCounts)
+            {
+                count.text = Strings.Format("crate.owned", PlayerProfile.CrateCount(kind));
+                // Nothing to open: the button greys (a tap still says why).
+                open.EnableInClassList("empty", PlayerProfile.CrateCount(kind) <= 0);
+            }
             if (_adCrateLabel != null)
             {
                 var left = PlayerProfile.AdCratesLeft;

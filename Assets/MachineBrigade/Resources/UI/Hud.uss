@@ -1557,3 +1557,138 @@
 .settings-page .option { min-width: 84px; height: 46px; border-radius: 8px; }
 .settings-page .option-label { font-size: 14px; }
 .settings-page .setting-row .icon-button { width: 56px; height: 48px; border-radius: 8px; }
+
+/* ================================================================ menu v4: one colour per meaning, finished buttons */
+/* After Supercell's rule of one hue per job: green commits (upgrade, equip, buy, claim, open);
+   amber is only the hero call to battle (Deploy, the Battle tab, Start mission); steel is a
+   secondary button; selection is a white outline and a lighter face, never a hue; coins are a
+   yellow icon with white numbers; rarity colours stay on the items. Every button carries one
+   9-slice gloss over its own colour (Tools/art/ui_skin.py): a bright top rim, a soft sheen, a
+   darker foot, a thin dark outline, and a label with a drop shadow. */
+:root {
+    --action: #35c15a;
+    --action-lip: #1c8a3a;
+    --secondary: #34505f;
+    --secondary-lip: #1f3340;
+    --select: #f4f8fa;
+    --coin: #ffd23f;
+    --info: #7fc4ff;
+}
+
+.menu .wide, .menu .segment, .menu .option, .menu .rail-button, .menu .gear-branch, .menu .setup-mode, .menu .deploy-button,
+.menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .doctrine-chip, .menu .nav-back,
+.menu .nav-icon, .menu .crate-odds, .menu .daily-claim, .menu .home-card-go, .menu .nav-tab.battle, .menu .icon-button,
+.menu .nav-pill-plus, .menu .detail-arrow {
+    background-image: resource("UI/Skin/gloss");
+    -unity-slice-left: 12;
+    -unity-slice-right: 12;
+    -unity-slice-top: 22;
+    -unity-slice-bottom: 14;
+}
+.menu .wide, .menu .segment, .menu .option, .menu .rail-button, .menu .gear-branch, .menu .setup-mode, .menu .deploy-button,
+.menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .doctrine-chip, .menu .nav-back,
+.menu .nav-icon, .menu .crate-odds, .menu .daily-claim {
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.45);
+    border-left-color: rgba(0, 0, 0, 0.45);
+    border-right-color: rgba(0, 0, 0, 0.45);
+}
+.menu .wide-title, .menu .segment-label, .menu .option-label, .menu .deploy-text, .menu .upgrade-big-text, .menu .event-play-text,
+.menu .crate-button-text, .menu .rail-label, .menu .gear-branch-name, .menu .setup-mode-name, .menu .nav-back-text, .menu .event-claim-text,
+.menu .daily-reward, .menu .nav-tab-label {
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Secondary buttons: steel. */
+.menu .wide { background-color: var(--secondary); border-bottom-color: var(--secondary-lip); }
+.menu .wide.disabled { background-color: var(--n700); border-bottom-color: var(--n950); }
+
+/* Actions: green, white label. */
+.menu .wide.primary, .menu .wide.upgrade-button, .menu .crate-button.primary, .menu .upgrade-big.ready,
+.menu .daily-claim.ready, .menu .event-claim.ready {
+    background-color: var(--action);
+    border-bottom-color: var(--action-lip);
+}
+.menu .wide.primary .wide-title, .menu .wide.upgrade-button .wide-title, .menu .crate-button.primary .crate-button-text,
+.menu .upgrade-big.ready .upgrade-big-text, .menu .daily-claim.ready .daily-reward, .menu .event-claim.ready .event-claim-text {
+    color: #ffffff;
+}
+.menu .wide.primary .icon, .menu .wide.upgrade-button .icon, .menu .crate-button.primary .icon, .menu .upgrade-big.ready > .icon {
+    --icon-color: #ffffff;
+}
+.menu .wide.primary.disabled { background-color: var(--n700); border-bottom-color: var(--n950); }
+.menu .wide.primary.disabled .wide-title { color: var(--n300); }
+
+/* The hero call to battle keeps amber. */
+.menu .wide.primary.campaign-start { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
+.menu .wide.primary.campaign-start .wide-title { color: var(--amber-ink); }
+.menu .wide.primary.campaign-start .icon { --icon-color: #1b1206; }
+
+/* Selection: a white outline on a lighter face, white label. */
+.menu .segment.chosen, .menu .option.chosen, .menu .doctrine-chip.chosen {
+    background-color: var(--n600);
+    border-top-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-color: var(--select);
+    border-left-color: var(--select);
+    border-right-color: var(--select);
+    border-bottom-color: var(--n950);
+}
+.menu .segment.chosen .segment-label, .menu .option.chosen .option-label { color: #ffffff; }
+.menu .segment.chosen .icon, .menu .doctrine-chip.chosen .icon { --icon-color: #ffffff; }
+.menu .nav-tab.chosen { background-color: var(--n750); border-top-color: var(--select); }
+.menu .nav-tab.chosen > .icon { --icon-color: #ffffff; }
+.menu .nav-tab.chosen .nav-tab-label { color: #ffffff; }
+.menu .nav-tab.battle { background-color: var(--amber-deep); }
+.menu .nav-tab.battle.chosen { background-color: var(--amber); }
+.menu .rail-button.chosen, .menu .gear-branch.chosen { background-color: var(--n600); border-left-color: var(--select); }
+.menu .rail-button.chosen > .icon, .menu .gear-branch.chosen > .icon { --icon-color: #ffffff; }
+.menu .rail-button.chosen .rail-label, .menu .gear-branch.chosen .gear-branch-name { color: #ffffff; }
+.menu .setup-mode.chosen { background-color: var(--n600); border-top-color: var(--select); }
+.menu .setup-mode.chosen > .icon { --icon-color: #ffffff; }
+.menu .setup-mode.chosen .setup-mode-name { color: #ffffff; }
+.menu .map-card.chosen { border-left-color: var(--select); border-right-color: var(--select); border-top-color: var(--select); border-bottom-color: var(--select); }
+.menu .map-card.chosen .map-name { color: #ffffff; }
+.menu .gear-slot2.chosen { border-color: var(--select); background-color: var(--n700); }
+.menu .gear-cell.chosen { border-color: var(--select); }
+.menu .shop-card.chosen { border-color: var(--select); }
+.menu .wide.deck-toggle.chosen { background-color: var(--n600); border-top-color: var(--select); border-left-color: var(--select); border-right-color: var(--select); border-top-width: 2px; border-left-width: 2px; border-right-width: 2px; }
+
+/* Coins: a yellow icon, white numbers. */
+.menu .nav-pill.coin > .icon, .menu .price-tag .icon, .menu .daily-claim .icon, .menu .event-claim .icon, .menu .detail-reward-icon,
+.menu .coin-card > .icon {
+    --icon-color: #ffd23f;
+}
+.menu .price-value { color: var(--n100); }
+.menu .nav-pill-plus { background-color: var(--action); }
+
+/* Headings and small texts off amber. */
+.menu .loot-title { color: var(--n100); }
+.menu .detail-role { color: var(--n200); }
+.menu .home-card-chips { color: var(--n300); }
+.menu .unit-card-rank { color: var(--n200); }
+.menu .deck-slot-rank { color: var(--n200); }
+.menu .event-card > .icon { --icon-color: #edeff0; }
+.menu .event-card-extra { color: var(--info); }
+.menu .nav-profile > .icon { --icon-color: #edeff0; }
+.menu .mode-info { color: var(--n300); }
+.menu .gear-total { color: var(--action); }
+.menu .unit-card-up { background-color: var(--action); }
+.menu .unit-card-big.upgradable .unit-card-fill { background-color: var(--action); }
+.menu .detail-print-fill { background-color: var(--info); }
+
+/* Bigger gear tiles and numbers (Survivor.io and Archero fill the whole tile with the rarity). */
+.gear-art-level { font-size: 17px; padding: 0 6px; background-color: rgba(8, 10, 12, 0.78); -unity-text-outline-width: 0.4px; -unity-text-outline-color: rgba(0, 0, 0, 0.8); }
+.gear-art-pip { width: 9px; height: 9px; border-radius: 5px; margin: 0 2px; }
+.gear-slot2 { width: 118px; }
+.gear-slot2.special { width: 132px; }
+.gear-slot2 .gear-slot-value { font-size: 13px; }
+.gear-centre { width: 520px; }
+.loot-gear-cell { width: 128px; }
+.menu .crate-button { background-color: var(--secondary); border-bottom-color: var(--secondary-lip); }
+.menu .crate-button.primary.empty { background-color: var(--n700); border-bottom-color: var(--n950); }
+.menu .crate-button.primary.empty .crate-button-text { color: var(--n300); }
+.menu .crate-button.primary.empty .icon { --icon-color: #7e8f9c; }

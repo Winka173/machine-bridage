@@ -14,9 +14,11 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     internal static class GearArt
     {
+        // Grey, green, blue, purple and orange: legendary is orange, not gold, so it never reads as
+        // the coin's yellow or the battle button's amber.
         public static readonly Color[] Colors =
         {
-            new(0.72f, 0.75f, 0.78f), new(0.38f, 0.8f, 0.36f), new(0.3f, 0.6f, 1f), new(0.72f, 0.42f, 0.98f), new(1f, 0.74f, 0.2f),
+            new(0.6f, 0.655f, 0.69f), new(0.3f, 0.78f, 0.39f), new(0.243f, 0.557f, 1f), new(0.643f, 0.361f, 1f), new(1f, 0.541f, 0.122f),
         };
 
         private static readonly Dictionary<int, Texture2D> Frames = new();
@@ -112,9 +114,12 @@ namespace MachineBrigade.Game.Hud
                 var u = (x - n * 0.5f) / (n * 0.5f);
                 var v = (y - n * 0.42f) / (n * 0.5f);
                 var glow = Mathf.Clamp01(1f - Mathf.Sqrt(u * u + v * v) * 0.95f);
-                var c = Color.Lerp(dark, colour * 0.62f, glow * glow * (0.55f + 0.1f * rarity));
-                // A band of the rarity's colour along the bottom, under the pips.
-                if (y < 12) c = Color.Lerp(c, colour * 0.45f, 0.6f);
+                // Filled with the rarity's colour, lit from the top, brightest behind the picture: a
+                // full-colour tile reads across a room (Archero's and Survivor.io's do).
+                var lit = Mathf.Lerp(0.2f, 0.62f, Mathf.Pow(y / (n - 1f), 1.3f)) + glow * glow * 0.26f;
+                var c = dark * 0.45f + colour * lit;
+                // A darker band along the bottom, under the pips and the level.
+                if (y < 14) c = Color.Lerp(c, dark, 0.45f);
                 // Border: 3 px of the colour, a lighter inner line.
                 var edge = -outside;
                 if (edge < 3.5f) c = Color.Lerp(c, colour, 0.95f);
