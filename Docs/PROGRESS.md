@@ -34,6 +34,13 @@ base, an Endless mode, and a separate Survival.
 - Endless: the same fortress, no clock, waves every 55 s that grow and turn elite; the best wave is kept.
 - Survival stays the army-only mode (no base, no towers).
 
+**Menus restyled: "Field Command"** (the user found the glossy Clash-style menu dated)
+- Researched War Thunder Mobile's 2025 redesign, WoT Blitz Reforged, Delta Force, Arena Breakout and others (reference images and a spec in the session notes); chose a flat, tactical look.
+- Graphite translucent surfaces over the battle, 1 px hairlines, 2 px corners; no bevel lips, gloss or drop shadows. Amber only for the one main action on a screen (a flat face with two corners cut) and for what is selected (a 3 px line); bone for confirming; Barlow Condensed uppercase labels with tracking (`UiKit.Uppercase`: USS has no text-transform).
+- Navigation is a rail on the left; the home column is on the right over a soft scrim, Deploy bottom-right with a light sweep now and then, the deck at a glance bottom-left.
+- Pause and result screens, equipment frames (square, graphite tinted by rarity with a glow and a bottom bar of the colour) and the battle HUD's buttons follow the same shapes; the battle HUD keeps its colours.
+- Endless is on the Events tab with the record wave.
+
 ### Known limitations
 - m21 (the saucer) is hard for the scripted test deck (2/5).
 - The new modes and markers were checked in tests; the look on a phone is still to be checked.

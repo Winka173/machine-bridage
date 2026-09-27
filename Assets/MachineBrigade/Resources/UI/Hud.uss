@@ -1894,7 +1894,7 @@
 .menu .gear-info-title { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; }
 .menu .gear-total { color: var(--positive); }
 .menu .gear-info-compare { color: var(--positive); }
-.menu .gear-slot2.special { background-color: rgba(242, 163, 58, 0.06); }
+.menu .gear-slot2.special { background-color: rgba(242, 163, 58, 0.025); }
 .menu .gear-cell { border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
 .menu .gear-cell.equipped { background-color: rgba(237, 230, 214, 0.1); }
 .menu .gear-cell.chosen { border-color: var(--line-3); }
@@ -2092,3 +2092,47 @@
 .menu .setup-mode-name, .menu .gear-branch-name, .menu .map-name { width: 100%; -unity-text-align: middle-center; }
 .menu .card-popover { background-color: #151a1e; border-color: var(--line-2); }
 .menu .popover-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; }
+.menu .setting-value { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 20px; color: var(--text-hi); }
+.menu .gear-slot-value { color: var(--text-mid); }
+
+/* ================================================================ battle HUD, flat (to match the menus) */
+/* Same colours and meanings as before (amber is what is armed or chosen, green is on); only the
+   shapes change: square corners, hairlines, no dark lip under the buttons, a press that scales. */
+.minimap, .rail-group, .command, .cp-meter, .score-side, .mission-bar, .boss-bar {
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
+    border-top-color: rgba(237, 234, 227, 0.1); border-right-color: rgba(237, 234, 227, 0.1);
+    border-bottom-color: rgba(237, 234, 227, 0.1); border-left-color: rgba(237, 234, 227, 0.1);
+}
+.tool, .toggle, .cmd, .card, .item, .portrait, .weapon-chip {
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.tool, .toggle, .cmd {
+    background-color: rgba(34, 42, 48, 0.94);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
+    border-top-color: rgba(237, 234, 227, 0.12); border-right-color: rgba(237, 234, 227, 0.12);
+    border-bottom-color: rgba(237, 234, 227, 0.12); border-left-color: rgba(237, 234, 227, 0.12);
+    transition-property: scale; transition-duration: 0.08s;
+}
+.card {
+    background-color: #232b31;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
+    border-top-color: rgba(237, 234, 227, 0.12); border-right-color: rgba(237, 234, 227, 0.12);
+    border-bottom-color: rgba(237, 234, 227, 0.12); border-left-color: rgba(237, 234, 227, 0.12);
+    transition-property: scale; transition-duration: 0.08s;
+}
+.card.support { border-top-width: 3px; border-top-color: var(--danger); }
+.tool.on, .toggle.on, .cmd.armed { border-top-color: #f2a33a; border-right-color: #f2a33a; border-bottom-color: #f2a33a; border-left-color: #f2a33a; }
+.toggle.switch.on { border-top-color: var(--ally); border-right-color: var(--ally); border-bottom-color: var(--ally); border-left-color: var(--ally); }
+.tool:active, .cmd:active, .toggle:active, .card:active, .tool.pressed, .cmd.pressed, .toggle.pressed, .card.pressed {
+    translate: 0 0; scale: 0.95 0.95; border-bottom-width: 1px;
+}
+.card-cost {
+    width: 22px; height: 22px;
+    border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+}
+.card-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; letter-spacing: 0; }
+.toggle-label, .cmd-label { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); letter-spacing: 0; }
+.toggle-label { font-size: 14px; max-width: 64px; }
+.cmd-label { font-size: 15px; }
+.hp-track, .cp-track, .score-track { border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }

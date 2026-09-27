@@ -88,7 +88,12 @@ namespace MachineBrigade.Game.Hud
             return tex;
         }
 
-        /// <summary>The rarity frame, drawn once per rarity: a radial glow in its colour, a border, and for legendary a diagonal shine.</summary>
+        /// <summary>
+        /// The rarity frame, drawn once per rarity: graphite tinted by the rarity, a glow in its
+        /// colour behind the picture, a hairline border and a bar of the colour along the bottom
+        /// (the menus' flat style: square corners, the colour where it tells), and for legendary a
+        /// diagonal shine.
+        /// </summary>
         public static Texture2D Frame(int rarity)
         {
             if (Frames.TryGetValue(rarity, out var cached) && cached != null) return cached;
@@ -97,7 +102,7 @@ namespace MachineBrigade.Game.Hud
             var colour = Colors[rarity];
             var dark = new Color(0.07f, 0.085f, 0.095f);
             var pixels = new Color[n * n];
-            const float corner = 14f;
+            const float corner = 3f;
             for (var y = 0; y < n; y++)
             for (var x = 0; x < n; x++)
             {
@@ -114,16 +119,16 @@ namespace MachineBrigade.Game.Hud
                 var u = (x - n * 0.5f) / (n * 0.5f);
                 var v = (y - n * 0.42f) / (n * 0.5f);
                 var glow = Mathf.Clamp01(1f - Mathf.Sqrt(u * u + v * v) * 0.95f);
-                // Filled with the rarity's colour, lit from the top, brightest behind the picture: a
-                // full-colour tile reads across a room (Archero's and Survivor.io's do).
-                var lit = Mathf.Lerp(0.2f, 0.62f, Mathf.Pow(y / (n - 1f), 1.3f)) + glow * glow * 0.26f;
-                var c = dark * 0.45f + colour * lit;
-                // A darker band along the bottom, under the pips and the level.
-                if (y < 14) c = Color.Lerp(c, dark, 0.45f);
-                // Border: 3 px of the colour, a lighter inner line.
+                // Graphite tinted by the rarity, lit from the top, a glow of the colour behind the
+                // picture: the rarity still reads across a room without a full-colour tile.
+                var lit = Mathf.Lerp(0.1f, 0.3f, Mathf.Pow(y / (n - 1f), 1.3f)) + glow * glow * 0.34f;
+                var c = dark * 0.85f + colour * lit;
+                // A darker band along the bottom, under the pips and the level, on a bar of the colour.
+                if (y < 16) c = Color.Lerp(c, dark, 0.55f);
+                if (y < 5) c = colour;
+                // Border: a 2 px line of the colour.
                 var edge = -outside;
-                if (edge < 3.5f) c = Color.Lerp(c, colour, 0.95f);
-                else if (edge < 5f) c = Color.Lerp(c, Color.Lerp(colour, Color.white, 0.4f), 0.35f);
+                if (edge < 2.5f) c = Color.Lerp(c, colour, 0.85f);
                 // Legendary: a diagonal shine; epic: a brighter heart.
                 if (rarity >= 4)
                 {
