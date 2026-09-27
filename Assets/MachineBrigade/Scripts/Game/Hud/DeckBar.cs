@@ -93,7 +93,7 @@ namespace MachineBrigade.Game.Hud
                 card.Cooldown = UiKit.Box("card-cooldown");
                 card.Root.Add(card.Cooldown);
                 card.Root.Add(UiKit.Icon(info.Icon, UiKit.Ink, 1.6f));
-                card.Root.Add(UiKit.Text(Strings.Card(info.Id), "card-name"));
+                card.Root.Add(UiKit.Text(Strings.Short(info.Id), "card-name"));
                 var cost = UiKit.Box("card-cost");
                 card.Cost = UiKit.Text(info.Cost.ToString(), "card-cost-text");
                 cost.Add(card.Cost);

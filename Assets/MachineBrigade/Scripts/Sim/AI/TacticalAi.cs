@@ -166,6 +166,7 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
             FocusBoss(world);
@@ -236,6 +237,65 @@ namespace MachineBrigade.Sim.AI
                 _fallBackPoint = Clamp(world, FallBackTo?.Invoke(world, front) ?? front + back * distance);
             }
             return _outmatched;
+        }
+
+        /// <summary>Supply crates on the ground and the vehicle sent to claim each.</summary>
+        private readonly Dictionary<EntityId, EntityId> _crateRunners = new();
+
+        private readonly List<EntityId> _staleCrates = new();
+
+        /// <summary>How far a free vehicle will go out of its way for a supply crate.</summary>
+        private const float CrateDetour = 50f;
+
+        /// <summary>
+        /// A supply crate that has landed is worth fighting over: the nearest free vehicle (a
+        /// fast one first) drives onto it and sits there until it is claimed; the others carry on.
+        /// </summary>
+        private void GrabCrates(SimWorld world)
+        {
+            _staleCrates.Clear();
+            foreach (var (crateId, _) in _crateRunners)
+            {
+                var alive = false;
+                foreach (var c in world.CrateList)
+                    if (c.Id == crateId && c.IsAlive) alive = true;
+                if (!alive) _staleCrates.Add(crateId);
+            }
+            foreach (var id in _staleCrates) _crateRunners.Remove(id);
+
+            foreach (var crate in world.CrateList)
+            {
+                if (!crate.IsAlive || world.Time < crate.LandsAt) continue;
+                if (!_crateRunners.TryGetValue(crate.Id, out var runnerId) || !world.TryGetVehicle(runnerId, out var runner) || !runner.IsAlive ||
+                    runner.Team != _team)
+                {
+                    runner = Nearest(_fast, crate.Position) ?? Nearest(_line, crate.Position);
+                    if (runner == null) continue;
+                    _crateRunners[crate.Id] = runner.Id;
+                }
+                _fast.Remove(runner);
+                _line.Remove(runner);
+                if (Vector2.Distance(runner.Position, crate.Position) < 2.5f) continue;
+                if (runner.Order.Kind == OrderKind.Move && Vector2.Distance(runner.Order.Point, crate.Position) < 2f) continue;
+                _ids.Clear();
+                _ids.Add(runner.Id);
+                Issue(world, CommandType.Move, _ids, crate.Position);
+            }
+        }
+
+        private Vehicle? Nearest(List<Vehicle> pool, Vector2 at)
+        {
+            Vehicle? best = null;
+            var bestDistance = CrateDetour;
+            foreach (var v in pool)
+            {
+                if (v.Flying || _crateRunners.ContainsValue(v.Id)) continue;
+                var d = Vector2.Distance(v.Position, at);
+                if (d >= bestDistance) continue;
+                best = v;
+                bestDistance = d;
+            }
+            return best;
         }
 
         private readonly HashSet<EntityId> _rearmIds = new();

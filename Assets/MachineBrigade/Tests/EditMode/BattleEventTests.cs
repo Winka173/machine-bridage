@@ -41,7 +41,7 @@ namespace MachineBrigade.Tests
                 }
                 world.ClearEvents();
             }
-            Debug.Log($"Battle events: {dropped} crates dropped, {claimed} claimed, {raids} bomber raids");
+            Debug.Log($"Battle events: {dropped} crates dropped, {claimed} claimed, {raids} bomber raids in {world.Time / 60:0.0} min, result {mode.Result?.WinningTeam}");
             Assert.GreaterOrEqual(dropped, 2, "crates come down every minute or two");
             Assert.GreaterOrEqual(claimed, 1, "and somebody grabs one");
             Assert.GreaterOrEqual(raids, 1, "bombers raid the front at least once");

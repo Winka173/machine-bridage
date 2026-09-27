@@ -36,6 +36,9 @@ namespace MachineBrigade.Game.Hud
             ["attack"] = "<path d=\"M20 4 9 15M20 4h-5M20 4v5M7 13l4 4M4 20l4-4\"/>",
             // Machine Brigade additions in the same style.
             ["plus"] = "<path d=\"M12 5v14M5 12h14\"/>",
+            // Weapons: a gun on its mantlet, a belt of rounds.
+            ["cannon"] = "<path d=\"M3 18h8a3 3 0 0 0 0-6H3Z\"/><path d=\"M12 14h7M19 12.5v3M21 13v2\"/>",
+            ["mg"] = "<path d=\"M4 20v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Z\"/><path d=\"M4 15h4m2 0h4m2 0h4\"/>",
             ["minus"] = "<path d=\"M5 12h14\"/>",
             ["restart"] = "<path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/>",
             ["retreat"] = "<path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h11a5 5 0 0 1 0 10h-3\"/>",

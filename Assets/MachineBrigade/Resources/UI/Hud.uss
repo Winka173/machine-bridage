@@ -1,9 +1,10 @@
-/* Machine Brigade HUD: "command console" design system (Stitch project "Machine Brigade UI
-   Redesign"). Every panel and button is a solid, opaque surface; depth comes from solid layers
-   (panel body, header strip, inner well) and from buttons with a darker bottom edge that press
-   down. Amber marks what is selected or primary; green is ours, red is theirs. Headings,
-   labels and numbers use Barlow Condensed; body text uses Inter. Authored for a 1280 x 720
-   reference resolution (the panel scales with screen height). */
+/* Machine Brigade HUD: "command console" design system. Controls hug the screen edges in
+   dark glass clusters so the fight owns the middle; buttons press down on a darker bottom edge.
+   Amber marks what is selected or primary; green is ours, red is theirs. All text is Be
+   Vietnam Pro (drawn for Vietnamese, so stacked accents never clip or push a line off centre);
+   numbers use Barlow Condensed. Labels are one line and cut with an ellipsis rather than
+   spill out of their box. Authored for a 1280 x 720 reference resolution (the panel scales
+   with screen height). */
 
 :root {
     --n950: #0c0f12;
@@ -28,31 +29,38 @@
     --mint: #8fd694;
     --danger: #e5533c;
     --danger-dark: #992211;
+    --chalk: #f1ece2;
+    --glass: rgba(16, 20, 24, 0.9);
+    --glass-raised: #252e35;
 }
 
 .hud {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
-    -unity-font: resource("Fonts/Inter-Regular");
-    color: var(--n100);
-    font-size: 13px;
+    -unity-font: resource("Fonts/BeVietnamPro-Medium");
+    color: var(--chalk);
+    font-size: 14px;
 }
 
 .safe { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
 
 /* Icons take their colour from --icon-color (see IconElement); selected states turn them dark. */
-.icon { --icon-color: #edeff0; }
+.icon { --icon-color: #f1ece2; flex-shrink: 0; }
+
+/* One line that never spills out of its box: centred, cut with an ellipsis if it must be. */
+.fit { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -unity-text-align: middle-center; }
 
 /* ================================================================ shared building blocks */
 .panel-header {
     flex-direction: row; align-items: center; justify-content: space-between;
-    height: 28px; padding-left: 10px; padding-right: 10px;
+    height: 30px; padding-left: 12px; padding-right: 12px;
     background-color: var(--n700);
 }
 .caps {
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold");
-    font-size: 13px; letter-spacing: 2px;
+    -unity-font: resource("Fonts/BeVietnamPro-Bold");
+    font-size: 11px; letter-spacing: 1.5px;
     color: var(--n300);
+    -unity-text-align: middle-left;
 }
 
 /* A solid, pressable button: face plus a darker bottom edge that flattens when pressed. */
@@ -64,80 +72,73 @@
     translate: 0 2px;
 }
 
-/* ================================================================ top bar */
+/* ================================================================ top bar: scores in the middle, pause on the right */
 .topbar {
-    flex-direction: row;
-    align-items: center;
-    height: 54px;
-    padding-left: 14px;
-    padding-right: 10px;
-    background-color: var(--n900);
-    border-bottom-width: 2px;
-    border-bottom-color: var(--n950);
+    position: absolute; top: 8px; left: 0; right: 0;
+    flex-direction: row; align-items: flex-start;
+    padding-left: 10px; padding-right: 10px;
 }
-
-.brand { flex-direction: row; align-items: center; width: 210px; }
-.brand .icon { width: 28px; height: 28px; margin-right: 10px; --icon-color: #f2a33a; }
-.brand-top { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; letter-spacing: 3px; color: var(--n100); }
-.brand-bottom { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 11px; letter-spacing: 4px; color: var(--amber); margin-top: -4px; }
+.topbar-left { width: 236px; }
+.brand { display: none; }
 
 .stats { flex-grow: 1; flex-direction: row; justify-content: center; align-items: center; }
 .stat {
     flex-direction: row; align-items: center;
-    height: 40px; padding-left: 12px; padding-right: 14px; margin-left: 4px; margin-right: 4px;
-    background-color: var(--n800);
-    border-radius: 6px;
+    height: 46px; padding-left: 12px; padding-right: 14px; margin-left: 3px; margin-right: 3px;
+    background-color: var(--glass);
+    border-radius: 10px;
 }
 .stat .icon { width: 20px; height: 20px; margin-right: 8px; }
-.stat-number { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 26px; -unity-text-align: middle-left; color: var(--n100); }
-.stat-label { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 10px; letter-spacing: 2px; color: var(--n400); margin-top: -6px; }
+.stat-text { justify-content: center; }
+.stat-number { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 26px; -unity-text-align: middle-left; color: var(--chalk); margin-top: -2px; margin-bottom: -4px; }
+.stat-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 9px; letter-spacing: 1px; color: var(--n400); }
 .stat-divider { width: 0; }
 
-.topbar-right { flex-direction: row; align-items: center; width: 210px; justify-content: flex-end; }
+.topbar-right { flex-direction: row; align-items: center; width: 236px; justify-content: flex-end; }
 .fps {
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n300);
-    margin-right: 10px; padding-left: 8px; padding-right: 8px;
-    background-color: var(--n800); border-radius: 4px;
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; color: var(--n300);
+    margin-right: 8px; padding: 2px 8px;
+    background-color: var(--glass); border-radius: 6px;
 }
 
 .icon-button {
-    width: 42px; height: 40px;
+    width: 48px; height: 46px;
     align-items: center; justify-content: center;
-    background-color: var(--n700);
-    border-radius: 6px;
+    background-color: var(--glass-raised);
+    border-radius: 10px;
     border-bottom-color: var(--n950);
 }
-.icon-button .icon { width: 20px; height: 20px; }
+.icon-button .icon { width: 22px; height: 22px; }
 
 /* ================================================================ conquest score */
 .score { flex-direction: row; align-items: center; }
 .score-side {
-    flex-direction: row; align-items: center; width: 200px; height: 40px;
-    padding-left: 10px; padding-right: 10px;
-    background-color: var(--n800); border-radius: 6px;
+    flex-direction: row; align-items: center; width: 176px; height: 46px;
+    padding-left: 12px; padding-right: 12px;
+    background-color: var(--glass); border-radius: 10px;
 }
 .score-side.theirs { justify-content: flex-end; }
-.score-number { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 30px; margin-left: 6px; margin-right: 6px; }
+.score-number { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 30px; margin-left: 4px; margin-right: 4px; margin-top: -2px; }
 .score-side.ours .score-number { color: var(--mint); }
 .score-side.theirs .score-number { color: var(--danger); }
-.score-column { flex-grow: 1; }
+.score-column { flex-grow: 1; justify-content: center; }
 .score-side .stat-label { margin-top: 0; }
 .score-side.theirs .stat-label { -unity-text-align: middle-right; }
-.score-track { height: 8px; margin-top: 3px; background-color: var(--n950); border-radius: 2px; }
-.score-fill { height: 100%; width: 100%; border-radius: 2px; background-color: var(--ally); }
+.score-track { height: 7px; margin-top: 4px; background-color: var(--n950); border-radius: 4px; overflow: hidden; }
+.score-fill { height: 100%; width: 100%; background-color: var(--mint); }
 .score-side.theirs .score-track { flex-direction: row-reverse; }
 .score-side.theirs .score-fill { background-color: var(--danger); }
 
-.chips { flex-direction: row; margin-left: 12px; margin-right: 12px; }
+.chips { flex-direction: row; margin-left: 8px; margin-right: 8px; }
 .point-chip {
-    width: 42px; height: 42px;
-    margin-left: 5px; margin-right: 5px;
+    width: 44px; height: 44px;
+    margin-left: 4px; margin-right: 4px;
     align-items: center; justify-content: center;
-    border-radius: 21px;
+    border-radius: 22px;
     background-color: var(--n600);
     border-bottom-color: var(--n800);
 }
-.point-letter { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; color: var(--n100); }
+.point-letter { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 22px; color: var(--chalk); -unity-text-align: middle-center; }
 .point-chip.ours { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
 .point-chip.theirs { background-color: var(--danger); border-bottom-color: var(--danger-dark); }
 .point-chip.contested { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
@@ -150,128 +151,144 @@
 /* ================================================================ mission banner and hint */
 .mission { align-items: center; }
 .mission-strip {
-    padding: 8px 28px 10px 20px;
+    padding: 10px 30px 12px 22px;
     background-color: var(--n900);
     border-left-width: 8px; border-left-color: var(--amber);
-    border-radius: 6px;
+    border-radius: 8px;
     border-bottom-width: 3px; border-bottom-color: var(--n950);
 }
-.kicker { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; letter-spacing: 4px; color: var(--amber); }
-.mission-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 40px; letter-spacing: 3px; color: var(--n100); margin-top: -4px; }
-.mission-sub { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; letter-spacing: 3px; color: var(--n300); margin-top: -4px; }
+.kicker { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; letter-spacing: 3px; color: var(--amber); }
+.mission-title { -unity-font: resource("Fonts/BeVietnamPro-ExtraBold"); font-size: 34px; color: var(--chalk); margin-top: 2px; }
+.mission-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 12px; letter-spacing: 1px; color: var(--n300); margin-top: 2px; }
 
-.hint-bar { position: absolute; bottom: 132px; left: 0; right: 0; align-items: center; }
+.hint-bar {
+    position: absolute; bottom: 122px; left: 0; right: 0; align-items: center;
+    opacity: 1; transition-property: opacity; transition-duration: 0.5s;
+}
+.hint-bar.gone { opacity: 0; }
 .hint {
     -unity-text-align: middle-center;
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold");
-    font-size: 13px; letter-spacing: 1px;
+    -unity-font: resource("Fonts/BeVietnamPro-SemiBold");
+    font-size: 12px;
     color: var(--n200);
-    padding: 4px 14px;
-    background-color: var(--n900);
-    border-radius: 12px;
+    padding: 5px 16px;
+    background-color: var(--glass);
+    border-radius: 14px;
 }
 
-/* ================================================================ tool column */
-.left-column { position: absolute; left: 12px; top: 64px; }
+/* ================================================================ left column: minimap and tools */
+.left-column { position: absolute; left: 10px; top: 8px; width: 216px; }
 .minimap {
-    width: 184px; height: 184px;
+    width: 216px; height: 216px;
     overflow: hidden;
-    background-color: var(--n850);
-    border-radius: 8px;
+    background-color: var(--glass);
+    border-radius: 12px;
     border-bottom-width: 3px; border-bottom-color: var(--n950);
 }
-.tools { flex-direction: row; flex-wrap: wrap; width: 196px; margin-top: 8px; }
+.tools { flex-direction: row; width: 216px; margin-top: 6px; justify-content: space-between; }
 .tool {
-    width: 43px; height: 52px;
-    margin-right: 4px; margin-bottom: 4px;
+    width: 51px; height: 46px;
     align-items: center; justify-content: center;
-    background-color: var(--n700);
-    border-radius: 6px;
+    background-color: var(--glass-raised);
+    border-radius: 10px;
     border-bottom-color: var(--n950);
 }
-.tool .icon { width: 20px; height: 20px; }
-.tool-label { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 11px; letter-spacing: 1px; margin-top: 2px; color: var(--n200); }
+.tool .icon { width: 22px; height: 22px; }
+.tool-label { display: none; }
 .tool.on { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
-.tool.on .tool-label { color: var(--amber-ink); }
 .tool.on .icon { --icon-color: #1b1206; }
 
-/* ================================================================ commander panel */
-.commander {
-    position: absolute; right: 12px; bottom: 222px;
-    width: 280px;
-    background-color: var(--n800);
-    border-radius: 8px;
-    border-bottom-width: 3px; border-bottom-color: var(--n950);
-    overflow: hidden;
+/* ================================================================ commander rail (right edge) */
+.rail { position: absolute; right: 10px; top: 116px; width: 72px; }
+.rail-group {
+    padding: 5px 5px 0 5px;
+    margin-bottom: 8px;
+    background-color: var(--glass);
+    border-radius: 12px;
 }
-.commander-body { padding: 8px; }
-.commander-row { flex-direction: row; margin-bottom: 6px; }
-.commander-row.last-row { margin-bottom: 0; }
 .toggle {
-    flex-grow: 1; flex-basis: 0; height: 40px; margin-right: 6px;
-    flex-direction: row; align-items: center; justify-content: center;
-    background-color: var(--n700);
-    border-radius: 6px;
+    height: 60px; margin-bottom: 5px;
+    flex-direction: column; align-items: center; justify-content: center;
+    background-color: var(--glass-raised);
+    border-radius: 9px;
     border-bottom-color: var(--n950);
 }
-.toggle.last-toggle { margin-right: 0; }
-.toggle .icon { width: 18px; height: 18px; margin-right: 6px; }
-.toggle-label { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; letter-spacing: 1px; color: var(--n200); }
+.toggle .icon { width: 22px; height: 22px; }
+.toggle-label {
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 10px; color: var(--n200);
+    margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -unity-text-align: middle-center;
+    max-width: 58px;
+}
 .toggle.on { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
 .toggle.on .toggle-label { color: var(--amber-ink); }
 .toggle.on .icon { --icon-color: #1b1206; }
 .toggle.switch.on { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
-.toggle.switch.on .toggle-label { color: var(--n100); }
-.toggle.switch.on .icon { --icon-color: #edeff0; }
+.toggle.switch.on .toggle-label { color: var(--chalk); }
+.toggle.switch.on .icon { --icon-color: #f1ece2; }
 
-/* ================================================================ selection (command) panel */
+/* ================================================================ selection card (only while something is selected) */
 .command {
-    position: absolute; right: 12px; bottom: 12px;
-    width: 280px;
-    background-color: var(--n800);
-    border-radius: 8px;
+    position: absolute; right: 10px; bottom: 116px;
+    width: 272px;
+    background-color: var(--glass);
+    border-radius: 12px;
     border-bottom-width: 3px; border-bottom-color: var(--n950);
     overflow: hidden;
+    display: none;
 }
 .command-header {
     flex-direction: row; align-items: center; justify-content: space-between;
-    height: 28px; padding-left: 10px; padding-right: 10px;
-    background-color: var(--n700);
+    height: 28px; padding-left: 12px; padding-right: 12px;
+    background-color: var(--n800);
 }
-.command-body { padding: 8px; }
-.details { flex-direction: row; align-items: center; margin-bottom: 8px; }
+.command-body { padding: 10px; }
+.details { flex-direction: row; align-items: center; }
 .portrait {
-    width: 48px; height: 48px;
+    width: 46px; height: 46px;
     margin-right: 10px;
     align-items: center; justify-content: center;
-    background-color: var(--n700);
-    border-radius: 6px;
+    background-color: var(--n750);
+    border-radius: 10px;
 }
 .portrait .icon { width: 28px; height: 28px; }
-.details-text { flex-grow: 1; }
-.unit-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; letter-spacing: 1px; color: var(--n100); }
-.unit-name.empty { font-size: 16px; color: var(--n400); }
-.hp-track { height: 8px; margin-top: 4px; background-color: var(--n950); border-radius: 2px; }
-.hp-fill { height: 100%; width: 100%; background-color: var(--mint); border-radius: 2px; }
+.details-text { flex-grow: 1; flex-shrink: 1; overflow: hidden; }
+.unit-name {
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 15px; color: var(--chalk);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.unit-name.empty { font-size: 13px; color: var(--n400); }
+.hp-track { height: 7px; margin-top: 5px; background-color: var(--n950); border-radius: 4px; overflow: hidden; }
+.hp-fill { height: 100%; width: 100%; background-color: var(--mint); }
 .hp-fill.hurt { background-color: var(--amber); }
 .hp-fill.critical { background-color: var(--danger); }
-.hp-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n300); margin-top: 3px; }
-.hp-text.hint-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; }
-.counter-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 11px; color: var(--amber-light); margin-top: 3px; white-space: normal; }
+.hp-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; color: var(--n300); margin-top: 2px; }
+.hp-text.hint-text { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 11px; }
+.weapon-row { flex-direction: row; flex-wrap: wrap; margin-top: 8px; }
+.weapon-chip {
+    flex-direction: row; align-items: center;
+    height: 24px; padding: 0 8px 0 6px; margin-right: 4px; margin-bottom: 4px;
+    background-color: var(--n800); border-radius: 12px;
+}
+.weapon-chip .icon { width: 14px; height: 14px; margin-right: 4px; --icon-color: #f5b55e; }
+.weapon-name { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: var(--n200); white-space: nowrap; }
+.counter-text {
+    -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: var(--amber-light);
+    margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
-.buttons { flex-direction: row; }
+.buttons { flex-direction: row; margin-top: 8px; }
 .cmd {
     flex-grow: 1; flex-basis: 0;
-    height: 52px;
+    height: 46px;
     margin-right: 6px;
-    align-items: center; justify-content: center;
-    background-color: var(--n700);
-    border-radius: 6px;
+    flex-direction: row; align-items: center; justify-content: center;
+    background-color: var(--n750);
+    border-radius: 9px;
     border-bottom-color: var(--n950);
 }
 .cmd.last { margin-right: 0; }
-.cmd .icon { width: 22px; height: 22px; }
-.cmd-label { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 1px; margin-top: 2px; color: var(--n200); }
+.cmd .icon { width: 20px; height: 20px; margin-right: 6px; }
+.cmd-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 12px; color: var(--n200); -unity-text-align: middle-center; }
 .cmd.armed { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
 .cmd.armed .cmd-label { color: var(--amber-ink); }
 .cmd.armed .icon { --icon-color: #1b1206; }
@@ -281,66 +298,65 @@
 
 /* ================================================================ deck tray */
 .deck {
-    position: absolute; bottom: 10px; left: 206px; right: 302px;
+    position: absolute; bottom: 8px; left: 236px; right: 92px;
     flex-direction: row; align-items: flex-end; justify-content: center;
 }
 .cp-meter {
-    width: 96px; height: 106px; margin-right: 6px;
-    background-color: var(--n800);
-    border-radius: 8px;
+    width: 88px; height: 96px; margin-right: 6px;
+    background-color: var(--glass);
+    border-radius: 12px;
     border-bottom-width: 3px; border-bottom-color: var(--n950);
     overflow: hidden;
+    justify-content: center;
 }
-.cp-top { flex-direction: row; align-items: center; justify-content: center; margin-top: 8px; }
-.cp-top .icon { width: 20px; height: 20px; margin-right: 4px; --icon-color: #f2a33a; }
-.cp-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 38px; color: var(--amber); margin-top: -4px; margin-bottom: -4px; }
-.cp-track { height: 8px; margin: 4px 8px 0 8px; background-color: var(--n950); border-radius: 2px; }
-.cp-fill { height: 100%; width: 0; background-color: var(--amber); border-radius: 2px; }
+.cp-top { flex-direction: row; align-items: center; justify-content: center; }
+.cp-top .icon { width: 18px; height: 18px; margin-right: 3px; --icon-color: #f4a62a; }
+.cp-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 38px; color: var(--amber); margin-top: -6px; margin-bottom: -6px; -unity-text-align: middle-center; }
+.cp-track { height: 7px; margin: 4px 10px 0 10px; background-color: var(--n950); border-radius: 4px; overflow: hidden; }
+.cp-fill { height: 100%; width: 0; background-color: var(--amber); }
 .cp-army {
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 12px; letter-spacing: 1px; color: var(--n300);
-    -unity-text-align: middle-center; margin-top: 6px; padding-top: 3px; padding-bottom: 3px;
-    background-color: var(--n850);
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 14px; color: var(--n300);
+    -unity-text-align: middle-center; margin-top: 5px;
 }
 /* upkeep: the army is bigger than its supply and the income is cut */
 .cp-army.upkeep { color: var(--amber); }
 .cards {
     flex-direction: row; align-items: flex-end;
-    padding: 5px 3px;
-    background-color: var(--n900);
-    border-radius: 8px;
+    padding: 6px 4px;
+    background-color: var(--glass);
+    border-radius: 12px;
     border-bottom-width: 3px; border-bottom-color: var(--n950);
 }
-.card-gap { width: 8px; flex-shrink: 1; }
+.card-gap { width: 10px; flex-shrink: 1; }
 .card {
-    width: 72px; height: 96px; min-width: 52px; flex-shrink: 1;
+    width: 80px; height: 88px; min-width: 56px; flex-shrink: 1;
     margin-left: 3px; margin-right: 3px;
     align-items: center;
     overflow: hidden;
-    background-color: var(--n700);
-    border-radius: 6px;
+    background-color: var(--n750);
+    border-radius: 9px;
     border-bottom-color: var(--n950);
 }
-.card .icon { width: 32px; height: 32px; margin-top: 22px; }
+.card .icon { width: 34px; height: 34px; margin-top: 16px; }
 .card-name {
     position: absolute; left: 0; right: 0; bottom: 0;
-    height: 30px;
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 12px;
-    -unity-text-align: middle-center; white-space: normal;
-    padding-left: 2px; padding-right: 2px;
-    color: var(--n100);
+    height: 24px;
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 10px;
+    -unity-text-align: middle-center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding-left: 3px; padding-right: 3px;
+    color: var(--chalk);
     background-color: var(--n850);
 }
 .card-cost {
-    position: absolute; top: 0; right: 0;
-    min-width: 22px; height: 20px;
-    padding: 0 5px;
+    position: absolute; top: 4px; left: 4px;
+    width: 24px; height: 24px;
     align-items: center; justify-content: center;
     background-color: var(--amber);
-    border-bottom-left-radius: 6px;
+    border-radius: 12px;
 }
-.card-cost-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--amber-ink); }
+.card-cost-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 17px; color: var(--amber-ink); -unity-text-align: middle-center; margin-top: -1px; }
 .card-cooldown { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background-color: rgb(12, 15, 18); opacity: 0.78; }
-.card.support { border-top-width: 5px; border-top-color: var(--danger); }
+.card.support { border-top-width: 4px; border-top-color: var(--danger); }
 /* Disabled states stay solid and readable: dark card, grey icon, badge says why. */
 .card.unaffordable .icon, .card.locked .icon { --icon-color: #52606d; }
 .card.unaffordable .card-name, .card.locked .card-name { color: var(--n400); }
@@ -354,16 +370,16 @@
 
 /* ================================================================ targeting prompt, toast */
 .targeting {
-    position: absolute; bottom: 128px; left: 0; right: 0;
+    position: absolute; bottom: 118px; left: 0; right: 0;
     flex-direction: row; justify-content: center; align-items: center;
 }
 .targeting-text {
-    height: 42px; padding: 0 16px; margin-right: 8px;
+    height: 44px; padding: 0 18px; margin-right: 8px;
     -unity-text-align: middle-left;
-    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 17px; letter-spacing: 1px;
-    color: var(--n100);
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px;
+    color: var(--chalk);
     background-color: var(--danger);
-    border-radius: 6px;
+    border-radius: 10px;
     border-bottom-width: 3px; border-bottom-color: var(--danger-dark);
 }
 
@@ -381,9 +397,9 @@
     border-radius: 18px;
     border-bottom-width: 3px; border-bottom-color: var(--amber-deep);
 }
-.toast-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 17px; letter-spacing: 1px; color: var(--amber-ink); }
+.toast-text { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--amber-ink); -unity-text-align: middle-center; }
 .toast-box.error { background-color: var(--danger); border-bottom-color: var(--danger-dark); }
-.toast-box.error .toast-text { color: var(--n100); }
+.toast-box.error .toast-text { color: var(--chalk); }
 
 .banner {
     position: absolute; top: 96px; left: 0; right: 0;
@@ -395,7 +411,7 @@
 
 .selection-box {
     position: absolute;
-    background-color: rgba(242, 163, 58, 0.14);
+    background-color: rgba(244, 166, 42, 0.14);
     border-width: 2px;
     border-color: var(--amber);
     display: none;
@@ -828,7 +844,7 @@
 .letterbox.bottom { bottom: 0; }
 
 /* items bought with coins: a column under the minimap tools */
-.item-strip { position: absolute; left: 16px; top: 430px; flex-direction: column; }
+.item-strip { position: absolute; left: 10px; top: 290px; flex-direction: column; }
 .item {
     width: 56px; height: 56px; margin-bottom: 6px; border-radius: 8px; align-items: center; justify-content: center;
     background-color: var(--n800); border-width: 2px; border-color: var(--amber);

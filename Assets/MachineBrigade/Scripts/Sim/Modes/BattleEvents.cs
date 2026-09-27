@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Modes
             _random = new Random(seed * 7919 + 13);
             _raids = raids;
             _nextCrate = 45 + _random.NextDouble() * 30;
-            _nextRaid = 110 + _random.NextDouble() * 60;
+            _nextRaid = 80 + _random.NextDouble() * 45;
         }
 
         public void Tick(SimWorld world, float dt)
@@ -136,6 +136,21 @@ namespace MachineBrigade.Sim.Modes
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = a.Position;
+            }
+            if (best == null)
+            {
+                // No clash yet: the raid finds the biggest group of vehicles on the ground instead.
+                var most = 2;
+                foreach (var a in world.VehicleList)
+                {
+                    if (!a.IsAlive || a.Flying || a.Team < 0 || a.Def.Static) continue;
+                    var count = 0;
+                    foreach (var b in world.VehicleList)
+                        if (b.IsAlive && !b.Flying && b.Team >= 0 && Vector2.Distance(a.Position, b.Position) < 25f) count++;
+                    if (count <= most) continue;
+                    most = count;
+                    best = a.Position;
+                }
             }
             if (best == null) return false;
             var angle = (float)(_random.NextDouble() * SimMath.Tau);
