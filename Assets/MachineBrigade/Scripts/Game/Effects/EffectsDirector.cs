@@ -148,6 +148,10 @@ namespace MachineBrigade.Game.Effects
                         else if (e.Tier == ExplosionTier.Medium && UnityEngine.Random.value < 0.15f) _fires.Ignite(impact, 0.35f, 5f, now);
                         break;
 
+                    case SimEventKind.StrikeImpact when IsGentle(e.DefId):
+                        Pulse(e.DefId, Ground(e.Position, 0.3f));
+                        break;
+
                     case SimEventKind.StrikeImpact:
                         var hit = Ground(e.Position, 0.3f);
                         var huge = e.Tier >= ExplosionTier.Ultimate;
@@ -206,6 +210,10 @@ namespace MachineBrigade.Game.Effects
                         {
                             _fires.Ignite(blast, 0.9f, 18f, now);
                         }
+                        break;
+
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
+                        Ring(Ground(e.Position, 0.3f), 30f, new Color(0.45f, 0.8f, 2.4f, 1f));
                         break;
 
                     case SimEventKind.VehicleRetired:
@@ -339,6 +347,43 @@ namespace MachineBrigade.Game.Effects
                 if (_models.Has(id)) _models.Merged(id);
             foreach (var id in new[] { "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_metal", "debris_leaves" })
                 if (_models.Has(id)) Chunk(id);
+        }
+
+        /// <summary>Items that do no damage (EMP, shield dome, airdrops, loaned escorts) show a pulse, not a blast.</summary>
+        private bool IsGentle(string defId) =>
+            defId != null && _catalog.TryGetSupport(defId, out var support) &&
+            support.Kind is SupportKind.Emp or SupportKind.ShieldDome or SupportKind.Reinforce or SupportKind.Escort;
+
+        private void Pulse(string defId, Vector3 at)
+        {
+            if (!_catalog.TryGetSupport(defId, out var support)) return;
+            switch (support.Kind)
+            {
+                case SupportKind.Emp:
+                    // An electric-blue shockwave the size of the blast, twice over.
+                    Ring(at, support.Radius * 2.2f, new Color(0.45f, 0.8f, 2.6f, 1f));
+                    Ring(at, support.Radius * 1.4f, new Color(0.9f, 1.4f, 3f, 1f));
+                    break;
+                case SupportKind.ShieldDome:
+                    Ring(at, support.Radius * 2f, new Color(0.35f, 1.6f, 2.2f, 1f));
+                    break;
+                default:
+                    // Airdrops land in a gust of dust.
+                    Ring(at, 14f, new Color(1.2f, 1.1f, 0.9f, 0.8f));
+                    break;
+            }
+        }
+
+        /// <summary>One expanding ground ring of the given size and colour (the shockwave layer, tinted).</summary>
+        private void Ring(Vector3 at, float size, Color colour)
+        {
+            if (!_cull.Visible(at, 0.2f)) return;
+            var emit = new ParticleSystem.EmitParams
+            {
+                position = at + Vector3.up * 0.2f, startSize = size, startColor = colour, startLifetime = 0.6f,
+                applyShapeToPosition = false,
+            };
+            _layers.Shockwave.Emit(emit, 1);
         }
 
         private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
