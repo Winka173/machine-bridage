@@ -93,7 +93,7 @@
 
     { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
-      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.5,
+      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.7,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "sam_launcher", "mlrs", "attack_helicopter", "artillery"],
       "coins": 450, "xp": 320, "unlocks": ["attack_jet", "ifv"], "starTime": 600, "starLosses": 12 },
 
@@ -124,7 +124,7 @@
 
     { "id": "m13", "map": "emberridge", "variant": "siege", "weather": "Night", "goal": "Destroy", "targets": ["command_hq"],
       "targetHealth": 2.5, "timeLimit": 1100,
-      "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 26, "playerIncome": 1.4, "playerCap": 36,
+      "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 26, "playerIncome": 1.7, "playerCap": 36,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "mortar_carrier", "tank_destroyer"],
       "waves": { "first": 90, "interval": 70, "size": 2, "grow": 0.3, "maxSize": 4, "maxAlive": 10,
                  "roster": ["main_battle_tank", "apc", "attack_helicopter", "elite_mbt"] },

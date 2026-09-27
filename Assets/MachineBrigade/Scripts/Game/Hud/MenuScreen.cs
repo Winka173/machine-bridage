@@ -251,9 +251,11 @@ namespace MachineBrigade.Game.Hud
                 () => MatchSettings.Options.MaxEffects ? 1 : 0, i => MatchSettings.Customise(o => o.MaxEffects = i == 1)));
 
             settingsBody.Add(Section(2, "settings.section.game"));
-            settingsBody.Add(OptionRow("move", "settings.shake",
-                new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
-                () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            // Camera shake is switched off for now (RtsCamera.ShakeEnabled), so its setting is hidden with it.
+            if (CameraControl.RtsCamera.ShakeEnabled)
+                settingsBody.Add(OptionRow("move", "settings.shake",
+                    new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
+                    () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
             settingsBody.Add(OptionRow("bolt", "settings.haptics", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
                 () => MatchSettings.Haptics ? 1 : 0, i => MatchSettings.Haptics = i == 1));
             settingsBody.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
