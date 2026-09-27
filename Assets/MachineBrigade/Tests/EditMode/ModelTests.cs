@@ -35,7 +35,7 @@ namespace MachineBrigade.Tests
         };
 
         /// <summary>Vehicles added with the artillery pass (real-world equipment).</summary>
-        private static readonly string[] Added = { "grad_truck", "atgm_carrier", "aps_tank" };
+        private static readonly string[] Added = { "grad_truck", "atgm_carrier", "aps_tank", "heavy_turret", "flak_tower", "missile_battery" };
 
         private static readonly string[] Props =
         {
@@ -52,6 +52,8 @@ namespace MachineBrigade.Tests
             "wreck_tank", "wreck_truck", "wreck_car", "artillery_wreck", "trench_straight", "trench_corner", "foxhole", "crater_large",
             "tank_ditch", "command_tent", "camo_net", "supply_pile", "fuel_bladder", "checkpoint", "barricade", "power_pylon",
             "telegraph_pole", "radio_mast", "bridge_road", "ruin_house", "ruin_tower", "dead_tree",
+            // Siege fortress.
+            "shield_generator",
         };
 
         [Test]

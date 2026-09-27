@@ -2083,7 +2083,7 @@ def fortress_defences():
         ('guard_tower', 0.0, 24.0), ('guard_tower', 0.0, 88.0),
         ('gun_turret', 2.0, 44.0), ('aa_turret', 6.0, 74.0),
         # Stage 2, inside the wall ring.
-        ('gun_turret', 20.0, 40.0), ('rocket_turret', 22.0, 60.0), ('aa_turret', 32.0, 52.0),
+        ('gun_turret', 20.0, 40.0), ('rocket_turret', 22.0, 64.0), ('aa_turret', 32.0, 52.0),
         ('artillery_emplacement', 26.0, 88.0), (battery, 34.0, 34.0), (flak, 36.0, 88.0),
         # Stage 3, the keep.
         (heavy, 49.0, 49.0), ('mg_bunker', 48.0, 66.0), (flak, 76.0, 76.0), ('aa_turret', 52.0, 78.0),
@@ -2142,17 +2142,17 @@ def fortify(L, name):
     for x, z in ((-2.0, 60.0), (60.0, -2.0)):
         L.remove(lambda a0, b0, a1, b1: a0 < x + 7 and a1 > x - 7 and b0 < z + 7 and b1 > z - 7)
         L.put('radar_station', x, z, 0, pad=0.5)
-    for x, z in ((26.0, 72.0), (72.0, 26.0), (28.0, 28.0)):
+    for x, z in ((26.0, 72.0), (72.0, 26.0), (24.0, 24.0)):
         L.put(generator, x, z, 0, pad=0.5)
     # The ring's stores and hangars (they chain when they go), floodlights at the gates.
-    L.put('fuel_depot', 40.0, 74.0, 0)
-    L.put('fuel_depot', 74.0, 40.0, 90)
-    L.put('ammo_dump', 20.0, 76.0, 90)
-    L.put('ammo_dump', 76.0, 20.0, 0)
+    L.put('fuel_depot', 35.0, 64.0, 90)
+    L.put('fuel_depot', 64.0, 35.0, 0)
+    L.put('ammo_dump', 19.0, 80.0, 90)
+    L.put('ammo_dump', 80.0, 19.0, 0)
     L.put('vehicle_hangar', 58.0, 90.0, 0)
     L.put('vehicle_hangar', 90.0, 58.0, 90)
-    L.put('helipad', 76.0, 70.0, 0, pad=0.2)
-    for x, z in ((ring + 2, ring_gate - 7), (ring + 2, ring_gate + 7), (ring_gate - 7, ring + 2), (ring_gate + 7, ring + 2),
+    L.put('helipad', 90.0, 76.0, 0, pad=0.2)
+    for x, z in ((ring + 2, ring_gate - 9.5), (ring + 2, ring_gate + 9.5), (ring_gate - 9.5, ring + 2), (ring_gate + 9.5, ring + 2),
                  (x0 + 2, keep_gate - 6), (keep_gate - 6, z0 + 2)):
         L.put('floodlight_mast', x, z, 0, pad=0.2)
     for x, z, rot in ((ring + 6, ring_gate - 5.5, 0), (ring + 6, ring_gate + 5.5, 0), (ring_gate - 5.5, ring + 6, 90),
@@ -2161,8 +2161,10 @@ def fortify(L, name):
 
     # Razor wire 8 m out from the ring walls, open at the gate approaches.
     for u in (22.0, 30.0, 38.0, 62.0, 86.0):
-        L.put('razor_wire', ring - 8, u, 90, pad=0.0)
-        L.put('razor_wire', u, ring - 8, 0, pad=0.0)
+        for x, z, rot in ((ring - 8, u, 90), (u, ring - 8, 0)):
+            w, d = Layout.size('razor_wire', rot)
+            L.remove(lambda a0, b0, a1, b1: a0 < x + w / 2 + 0.5 and a1 > x - w / 2 - 0.5 and b0 < z + d / 2 + 0.5 and b1 > z - d / 2 - 0.5)
+            L.put('razor_wire', x, z, rot, pad=0.0)
 
     # The outer line: sandbag strongpoints round each bunker, tank traps between, open lanes.
     def outer(kind, u, off, rot_along):
