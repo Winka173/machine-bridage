@@ -189,6 +189,37 @@ namespace MachineBrigade.Game.Views
             }
         }
 
+        private Vector3 _shownPosition, _shownVelocity;
+        private float _shownHeading;
+        private bool _shown;
+
+        /// <summary>
+        /// Irons out collision jitter on the drawn hull. The position follows the interpolated
+        /// one through a filter that predicts along the smoothed velocity (steady driving is not
+        /// delayed), so a crowd shoving itself a few centimetres back and forth at the
+        /// simulation rate no longer shakes; the heading eases the same way. Large jumps
+        /// (spawning, teleports) snap straight through.
+        /// </summary>
+        private void Steady(ref Vector3 position, ref float hull)
+        {
+            var dt = Time.deltaTime;
+            if (!_shown || (position - _shownPosition).sqrMagnitude > 4f || dt <= 0f)
+            {
+                _shown = true;
+                _shownPosition = position;
+                _shownVelocity = Vector3.zero;
+                _shownHeading = hull;
+                return;
+            }
+            var velocity = (_currentPosition - _previousPosition) * 20f;
+            _shownVelocity = Vector3.Lerp(_shownVelocity, velocity, 1f - Mathf.Exp(-dt * 7f));
+            var predicted = _shownPosition + _shownVelocity * dt;
+            _shownPosition = Vector3.Lerp(predicted, position, 1f - Mathf.Exp(-dt * 11f));
+            _shownHeading = Mathf.LerpAngle(_shownHeading, hull, 1f - Mathf.Exp(-dt * 14f));
+            position = _shownPosition;
+            hull = _shownHeading;
+        }
+
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
         public void Recoil() => _recoilTime = Time.time;
 
@@ -204,6 +235,7 @@ namespace MachineBrigade.Game.Views
             var position = Vector3.Lerp(_previousPosition, _currentPosition, alpha);
             var acceleration = (_currentSpeed - _previousSpeed) * 20f;
             var ease = 1f - Mathf.Exp(-Time.deltaTime * 6f);
+            if (!Flying) Steady(ref position, ref hull);
 
             if (Flying)
             {

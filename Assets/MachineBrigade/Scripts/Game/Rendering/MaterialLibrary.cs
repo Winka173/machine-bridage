@@ -140,6 +140,11 @@ namespace MachineBrigade.Game.Rendering
             Smoke = Particle(particle, "Smoke", additive: false, intensity: 1f, shape: 4f, softness: 1.2f, depthPull: 8f);
             SoftSmoke = Particle(particle, "SoftSmoke", additive: false, intensity: 1f, shape: 0f, softness: 1.6f, depthPull: 4f);
             Shockwave = Particle(particle, "Shockwave", additive: true, intensity: 1.6f, shape: 1f, softness: 1f);
+            // Light cast on the ground by blasts: a wide soft pool, drawn over the ground and under the smoke.
+            Glow = Particle(particle, "Glow", additive: true, intensity: 1.35f, shape: 0f, softness: 1.8f);
+            Glow.renderQueue = 2960;
+            // The first instant of a blast: a round white-hot flash (a flame-shaped one read as a ghostly streak).
+            Flash = Particle(particle, "Flash", additive: true, intensity: 2.6f, shape: 0f, softness: 1.3f, depthPull: 6f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
             // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
             Scorch.renderQueue = 2950;
@@ -195,6 +200,12 @@ namespace MachineBrigade.Game.Rendering
         public Material Splash { get; }
         public Material Smoke { get; }
         public Material Shockwave { get; }
+
+        /// <summary>Soft additive pool of light on the ground, standing in for a real point light.</summary>
+        public Material Glow { get; }
+
+        /// <summary>Round white-hot flash at the heart of a blast.</summary>
+        public Material Flash { get; }
         public Material Scorch { get; }
 
         /// <summary>

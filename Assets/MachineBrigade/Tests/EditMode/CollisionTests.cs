@@ -86,6 +86,59 @@ namespace MachineBrigade.Tests
             Assert.Less(b.Position.Y, -25f, "and so did the second");
         }
 
+        /// <summary>
+        /// Counts shakes: a vehicle moving one way and straight back the next step (a reversal
+        /// of more than 120 degrees), or swinging its heading back and forth. That is what
+        /// reads as vibrating hulls when a crowd pushes against itself.
+        /// </summary>
+        private sealed class ShakeMeter
+        {
+            private readonly Dictionary<EntityId, (Vector2 p, Vector2 d, float h, float dh)> _last = new();
+            public int Moves, Shakes, Swings;
+
+            public void Sample(IReadOnlyList<Vehicle> list)
+            {
+                foreach (var v in list)
+                {
+                    if (!v.IsAlive || v.Flying) continue;
+                    if (!_last.TryGetValue(v.Id, out var last))
+                    {
+                        _last[v.Id] = (v.Position, Vector2.Zero, v.Heading, 0f);
+                        continue;
+                    }
+                    var d = v.Position - last.p;
+                    var dh = MachineBrigade.Sim.Core.SimMath.WrapAngle(v.Heading - last.h);
+                    if (d.Length() > 0.02f && last.d.Length() > 0.02f)
+                    {
+                        Moves++;
+                        if (Vector2.Dot(d, last.d) < -0.5f * d.Length() * last.d.Length()) Shakes++;
+                    }
+                    if (MathF.Abs(dh) > 0.01f && MathF.Abs(last.dh) > 0.01f && MathF.Sign(dh) != MathF.Sign(last.dh)) Swings++;
+                    _last[v.Id] = (v.Position, d, v.Heading, dh);
+                }
+            }
+        }
+
+        [Test]
+        public void CrowdConvergingOnOnePointDoesNotShake()
+        {
+            var world = OpenField();
+            var ids = new List<EntityId>();
+            for (var i = 0; i < 12; i++)
+                ids.Add(world.SpawnVehicle(i % 3 == 0 ? "heavy_tank" : "main_battle_tank", 0, new Vector2(i % 6 * 5f - 12f, -30f - i / 6 * 6f), 0f).Id);
+            world.Submit(new MachineBrigade.Sim.Commands.Command(MachineBrigade.Sim.Commands.CommandType.Move, 0, ids.ToArray(), new Vector2(0f, 10f)));
+            var meter = new ShakeMeter();
+            for (var t = 0f; t < 40f; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+                meter.Sample(world.VehicleList);
+            }
+            Debug.Log($"Crowd: moves {meter.Moves}, shakes {meter.Shakes}, heading swings {meter.Swings}");
+            Assert.Less(meter.Shakes, Math.Max(4, meter.Moves / 100), "hulls do not shove each other back and forth");
+            Assert.Less(meter.Swings, 60, "and do not wag their headings");
+        }
+
         [Test]
         public void HullsStayApartThroughAWholeBattle()
         {
@@ -100,6 +153,7 @@ namespace MachineBrigade.Tests
             var ai1 = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 6);
             int samples = 0, deep = 0;
             var worst = 0f;
+            var meter = new ShakeMeter();
             for (var t = 0f; t < 6 * 60 && mode.Result == null; t += TestWorlds.Step)
             {
                 mode.Tick(world, TestWorlds.Step);
@@ -107,6 +161,7 @@ namespace MachineBrigade.Tests
                 ai1.Tick(world, TestWorlds.Step);
                 world.Step(TestWorlds.Step);
                 world.ClearEvents();
+                meter.Sample(world.VehicleList);
                 if ((int)(t / TestWorlds.Step) % 20 != 0) continue;
                 var list = world.VehicleList;
                 for (var i = 0; i < list.Count; i++)
@@ -122,8 +177,10 @@ namespace MachineBrigade.Tests
                     if (p > 0.8f) deep++;
                 }
             }
-            Debug.Log($"Hull contacts sampled {samples}, deep overlaps {deep}, worst {worst:0.00} m");
+            Debug.Log($"Hull contacts sampled {samples}, deep overlaps {deep}, worst {worst:0.00} m; " +
+                      $"moves {meter.Moves}, shakes {meter.Shakes}, heading swings {meter.Swings}");
             Assert.Less(deep, Math.Max(3, samples / 50), "hulls rarely sink more than 0.8 m into each other");
+            Assert.Less(meter.Shakes, Math.Max(10, meter.Moves / 200), "and hardly ever shake against each other");
         }
     }
 }

@@ -13,23 +13,21 @@ namespace MachineBrigade.Game.Effects
     /// <summary>Visual budgets from the game plan (section 6), per quality preset.</summary>
     public readonly struct EffectBudget
     {
-        public EffectBudget(int debris, int lights, int decals, int wrecks)
+        public EffectBudget(int debris, int decals, int wrecks)
         {
             Debris = debris;
-            Lights = lights;
             Decals = decals;
             Wrecks = wrecks;
         }
 
         public int Debris { get; }
-        public int Lights { get; }
         public int Decals { get; }
 
         /// <summary>Hulks left on the field before the oldest sinks away.</summary>
         public int Wrecks { get; }
 
-        public static EffectBudget Eco => new EffectBudget(260, 3, 96, 45);
-        public static EffectBudget High => new EffectBudget(520, 8, 160, 70);
+        public static EffectBudget Eco => new EffectBudget(260, 96, 30);
+        public static EffectBudget High => new EffectBudget(520, 160, 45);
     }
 
     /// <summary>
@@ -38,8 +36,6 @@ namespace MachineBrigade.Game.Effects
     /// </summary>
     public sealed class EffectsDirector : IDisposable
     {
-        private const float LightFadeSeconds = 0.3f;
-
         private readonly Transform _root;
         private readonly MaterialLibrary _materials;
         private readonly ModelLibrary _models;
@@ -52,6 +48,8 @@ namespace MachineBrigade.Game.Effects
         private readonly MuzzleFx _muzzle;
         private readonly ExplosionEffect _airburst;
         private readonly ExplosionEffect _napalm;
+        private readonly ExplosionEffect _kill;
+        private readonly ExplosionEffect _pop;
         private readonly ScreenCull _cull;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
@@ -62,8 +60,6 @@ namespace MachineBrigade.Game.Effects
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly StrikeEffects _strikes;
-        private readonly Light[] _lightPool;
-        private readonly float[] _lightStart, _lightIntensity;
         private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
@@ -90,10 +86,10 @@ namespace MachineBrigade.Game.Effects
             _blasts.Add(_airburst);
             _napalm = ExplosionEffect.CreateNapalm(_layers);
             _blasts.Add(_napalm);
-            _lightPool = new Light[budget.Lights];
-            _lightStart = new float[budget.Lights];
-            _lightIntensity = new float[budget.Lights];
-            for (var i = 0; i < _lightPool.Length; i++) _lightPool[i] = CreateLight(_root);
+            _kill = ExplosionEffect.CreateKill(_layers);
+            _blasts.Add(_kill);
+            _pop = ExplosionEffect.CreatePop(_layers);
+            _blasts.Add(_pop);
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
             _fires = new FireSpots(materials, _root);
@@ -227,8 +223,13 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.VehicleDestroyed:
                         var view = views.Detach(e.Entity);
                         if (view == null) break;
+                        // One death, one big blast. A vehicle with its own death explosion (the
+                        // Explosion event a moment later) shows only the killing hit now, so the
+                        // big blast does not look like this one restarting.
+                        var blowsUp = e.DefId != null && _catalog.Vehicles.TryGetValue(e.DefId, out var lost) && lost.DeathExplosion != null;
+                        if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
                         // Aircraft burst into flames in the air, then fall (see Crash).
-                        Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
+                        else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
                         _wrecks.Add(view, now);
                         break;
 
@@ -292,10 +293,14 @@ namespace MachineBrigade.Game.Effects
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
             _fires.Tick(now, Time.deltaTime);
-            if (_wrecks.TryCookOff(now, out var cookOff, out var cookOffTier)) Explode(cookOffTier, cookOff, now);
+            // Secondary explosions in burning hulks: small pops around the big blast, never another big one.
+            while (_wrecks.TryCookOff(now, out var cookOff, out var pop))
+            {
+                if (pop) Pop(_pop, cookOff, now);
+                else Explode(ExplosionTier.Small, cookOff, now);
+            }
             while (_wrecks.TryCrash(out var crash, out var size)) Crash(crash, size, now);
             KickUpDust(views, now);
-            FadeLights(Time.unscaledTime);
 
             var markerAge = Time.unscaledTime - _markerStart;
             if (markerAge < 0.6f) _marker.Set(new Color(0.7f, 2f, 1.3f, 1f), Color.white, markerAge / 0.6f);
@@ -388,29 +393,17 @@ namespace MachineBrigade.Game.Effects
             _layers.Shockwave.Emit(emit, 1);
         }
 
+        /// <summary>A small effect with no shake (the killing hit, a cook-off pop).</summary>
+        private void Pop(ExplosionEffect effect, Vector3 position, float now)
+        {
+            if (_cull.Visible(position, 0.2f)) effect.Play(position, now);
+        }
+
         private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)
         {
             // Off screen, a blast leaves its crater and fires (they persist) but no particles.
             if (!_cull.Visible(position, tier >= ExplosionTier.Huge ? 0.4f : 0.25f)) return;
-            var effect = _explosions[tier];
-            effect.Play(position, now, scale);
-            if (effect.LightRange > 0f && _lightPool.Length > 0 && !Match.DebugFlags.Has("-mb-no-lights"))
-            {
-                // A free light, or the one closest to fading out.
-                var pick = 0;
-                for (var i = 0; i < _lightPool.Length; i++)
-                {
-                    if (!_lightPool[i].enabled) { pick = i; break; }
-                    if (_lightStart[i] < _lightStart[pick]) pick = i;
-                }
-                var light = _lightPool[pick];
-                light.transform.position = position + Vector3.up * 2f * scale;
-                light.range = effect.LightRange * scale;
-                light.intensity = effect.LightIntensity;
-                light.enabled = true;
-                _lightStart[pick] = Time.unscaledTime;
-                _lightIntensity[pick] = effect.LightIntensity;
-            }
+            _explosions[tier].Play(position, now, scale);
             Shake(position, tier switch
             {
                 ExplosionTier.Small => 0f,
@@ -419,30 +412,6 @@ namespace MachineBrigade.Game.Effects
                 ExplosionTier.Huge => 0.7f,
                 _ => 1f,
             });
-        }
-
-        private void FadeLights(float realNow)
-        {
-            for (var i = 0; i < _lightPool.Length; i++)
-            {
-                var light = _lightPool[i];
-                if (!light.enabled) continue;
-                var t = (realNow - _lightStart[i]) / LightFadeSeconds;
-                if (t >= 1f) light.enabled = false;
-                else light.intensity = _lightIntensity[i] * (1f - t);
-            }
-        }
-
-        private static Light CreateLight(Transform parent)
-        {
-            var go = new GameObject("Blast Light");
-            go.transform.SetParent(parent, false);
-            var light = go.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.color = new Color(1f, 0.62f, 0.3f);
-            light.shadows = LightShadows.None;
-            light.enabled = false;
-            return light;
         }
 
         private void Shake(Vector3 at, float amount)

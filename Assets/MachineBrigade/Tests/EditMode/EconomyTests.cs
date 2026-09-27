@@ -39,18 +39,39 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void DeploymentWithoutCpOrAboveTheCapIsRefusedWithoutCharge()
+        public void DeploymentWithoutCpIsRefusedWithoutCharge()
         {
             var poor = WorldWithCp(3f);
             Assert.AreEqual(CommandError.NotEnoughCp, poor.Submit(Command.Deploy(0, "tank")).Error);
             poor.TryGetEconomy(0, out var poorEconomy);
             Assert.AreEqual(3f, poorEconomy.Cp, 0.001f);
+        }
 
-            var capped = WorldWithCp(30f, armyCap: 6);
-            Assert.IsTrue(capped.Submit(Command.Deploy(0, "tank")).Accepted);
-            Assert.AreEqual(CommandError.ArmyAtCapacity, capped.Submit(Command.Deploy(0, "tank")).Error, "T08");
-            capped.TryGetEconomy(0, out var cappedEconomy);
-            Assert.AreEqual(26f, cappedEconomy.Cp, 0.001f);
+        [Test]
+        public void AnArmyAboveItsSupplyCostsUpkeepInsteadOfBeingCapped()
+        {
+            // Supply 6: the second tank takes the army over it, and is still delivered.
+            var world = WorldWithCp(30f, armyCap: 6);
+            Assert.IsTrue(world.Submit(Command.Deploy(0, "tank")).Accepted);
+            Assert.IsTrue(world.Submit(Command.Deploy(0, "tank")).Accepted, "no hard cap: the purchase goes through");
+            world.TryGetEconomy(0, out var economy);
+            world.Step(0.05f);
+            Assert.Less(economy.Upkeep, 1f, "an army above its supply earns less");
+            Assert.AreEqual(1f, TeamEconomy.UpkeepFor(6, 6), 1e-4f, "up to the supply, full income");
+            Assert.AreEqual(0.5f, TeamEconomy.UpkeepFor(12, 6), 1e-4f, "half at twice the supply");
+            Assert.AreEqual(0.25f, TeamEconomy.UpkeepFor(60, 6), 1e-4f, "never below a quarter");
+        }
+
+        [Test]
+        public void OnlyTheSafetyLimitOfVehiclesRefusesAPurchase()
+        {
+            var world = WorldWithCp(30f);
+            for (var i = 0; i < TeamEconomy.MaxVehicles; i++)
+                world.SpawnVehicle("tank", 0, new Vector2(-40f + i % 10 * 6f, -40f + i / 10 * 8f), 0f);
+            world.Step(0.05f);
+            Assert.AreEqual(CommandError.ArmyAtCapacity, world.Submit(Command.Deploy(0, "tank")).Error, "T08");
+            world.TryGetEconomy(0, out var economy);
+            Assert.AreEqual(30f, economy.Cp, 0.5f, "refused without charge");
         }
 
         [Test]

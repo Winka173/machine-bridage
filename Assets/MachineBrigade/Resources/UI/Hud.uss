@@ -301,6 +301,8 @@
     -unity-text-align: middle-center; margin-top: 6px; padding-top: 3px; padding-bottom: 3px;
     background-color: var(--n850);
 }
+/* upkeep: the army is bigger than its supply and the income is cut */
+.cp-army.upkeep { color: var(--amber); }
 .cards {
     flex-direction: row; align-items: flex-end;
     padding: 5px 3px;

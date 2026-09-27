@@ -21,6 +21,20 @@ namespace MachineBrigade.Sim.Movement
         private const float StuckDistance = 0.4f;
         private const int StuckStrikesToGiveUp = 3;
         private const float SeparationSlack = 0.05f;
+
+        /// <summary>A destination this close that lies beside or behind the hull counts as reached.</summary>
+        private const float SettleDistance = 2.5f;
+
+        /// <summary>Within this distance of its destination a hovering aircraft slides straight onto it.</summary>
+        private const float HoverSlide = 6f;
+
+        /// <summary>How long a detour round a blocker lasts after it was last seen, and how far it turns.</summary>
+        private const double AvoidSeconds = 0.9;
+
+        private const float AvoidAngle = 0.8f;
+
+        /// <summary>Misalignment a driver ignores rather than turn for (radians, about 2.3 degrees).</summary>
+        private const float HeadingDeadBand = 0.04f;
         private const float SeparationStiffness = 0.55f;
 
         /// <summary>Largest push per step, so a deep overlap resolves over a few steps instead of a jump.</summary>
@@ -384,6 +398,15 @@ namespace MachineBrigade.Sim.Movement
                 if (!v.HasPath) v.PathCompleted = true;
                 return;
             }
+            if (def.Flying && isFinal && distance < HoverSlide)
+            {
+                // A helicopter slides the last metres sideways rather than turning: with a slow
+                // turn it could otherwise circle its destination for ever.
+                v.Speed = SimMath.MoveTowards(v.Speed, MathF.Min(def.Speed * v.SpeedFactor, MathF.Max(1f, distance * 1.2f)), def.Speed * 2f * dt);
+                var slide = toWaypoint / distance * MathF.Min(distance, v.Speed * dt);
+                if (_world.Map.Contains(v.Position + slide)) v.Position += slide;
+                return;
+            }
 
             var desired = SimMath.HeadingOf(toWaypoint);
             var slowFor = float.MaxValue;
@@ -393,6 +416,9 @@ namespace MachineBrigade.Sim.Movement
                 // anything parked, crossing or hostile instead of shoving into it.
                 var forward = SimMath.Forward(v.Heading);
                 var blocker = Blocker(v, forward, 1.2f + v.Speed * 0.7f);
+                // Convoy trucks and bosses have right of way over their own side: the others
+                // make room (they yield far more), so these keep to their route.
+                if (blocker != null && blocker.Team == v.Team && (v.Scripted || v.Def.Boss)) blocker = null;
                 if (blocker != null)
                 {
                     var sameWay = Vector2.Dot(SimMath.Forward(blocker.Heading), forward) > 0.4f;
@@ -409,22 +435,40 @@ namespace MachineBrigade.Sim.Movement
                             var oncoming = blocker.IsMoving && Vector2.Dot(SimMath.Forward(blocker.Heading), forward) < -0.5f;
                             v.AvoidSide = oncoming || onLeft ? 1f : -1f;
                         }
-                        v.AvoidUntil = _world.Time + 0.8;
-                        desired += v.AvoidSide * 0.8f;
+                        v.AvoidUntil = _world.Time + AvoidSeconds;
                         slowFor = def.Speed * 0.5f;
                     }
                 }
             }
+            // The detour fades out over a moment after the way last looked blocked. Dropping it
+            // the instant the blocker leaves the look-ahead turned the hull straight back at it,
+            // then away again: a wag every few steps.
+            if (!def.Flying && _world.Time < v.AvoidUntil)
+                desired += v.AvoidSide * AvoidAngle * (float)Math.Min(1.0, (v.AvoidUntil - _world.Time) / (AvoidSeconds * 0.5));
             var misalignment = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
+            if (isFinal && distance < SettleDistance && MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toWaypoint) - v.Heading)) > 1.2f)
+            {
+                // The destination is beside or behind the hull and only a few metres off: close
+                // enough. Driving on would only circle it (a slow-turning tank cannot tighten
+                // its turn under the final-approach speed), which reads as a hull going round
+                // and round.
+                v.PathIndex++;
+                v.PathCompleted = true;
+                return;
+            }
             // Close to the final point, small corrections would swing the hull back and forth:
-            // hold the heading and let the vehicle roll in.
-            if (!isFinal || distance > 2.5f || misalignment > 0.6f)
+            // hold the heading and let the vehicle roll in. While cruising, slivers of
+            // misalignment (a shove from a neighbour shifting the bearing a degree) are not worth
+            // a turn; a vehicle slowed or stopped (against a wall corner) always corrects.
+            var cruising = v.Speed > def.Speed * 0.3f;
+            if ((!isFinal || distance > 2.5f || misalignment > 0.6f) && (def.Flying || !cruising || misalignment > HeadingDeadBand))
                 v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * dt);
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
             var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
-            if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(1.5f, distance * 1.5f));
+            // Roll in slowly, and pivot (tracks can turn on the spot) rather than orbit the point.
+            if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(misalignment > 0.6f ? 0.3f : 1.5f, distance * 1.5f));
             targetSpeed = MathF.Min(targetSpeed, slowFor);
             var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
             v.Speed = SimMath.MoveTowards(v.Speed, targetSpeed, acceleration * dt);
@@ -633,6 +677,22 @@ namespace MachineBrigade.Sim.Movement
             var movedB = weightB > 0f && Nudge(b, normal * (overlap * weightB / total));
             if (!movedA && weightB > 0f) Nudge(b, normal * (overlap * weightA / total));
             if (!movedB && weightA > 0f) Nudge(a, -normal * (overlap * weightB / total));
+            Brake(a, -normal, weightA / total);
+            Brake(b, normal, weightB / total);
+        }
+
+        /// <summary>
+        /// A driver shoved back against its direction of travel eases off the throttle, instead
+        /// of ramming straight back in next step: driving in and being pushed out at 20 Hz is
+        /// what made packed hulls vibrate. Only as much as it is actually shoved (its
+        /// <paramref name="share"/> of the push): a convoy truck or a boss that the others
+        /// make way for keeps its speed and pushes through.
+        /// </summary>
+        private static void Brake(Vehicle v, Vector2 push, float share)
+        {
+            if (v.Flying || v.Speed <= 0f || share < 0.2f) return;
+            var against = -Vector2.Dot(SimMath.Forward(v.Heading), push);
+            if (against > 0.3f) v.Speed *= 1f - 0.5f * MathF.Min(1f, against) * share;
         }
 
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>

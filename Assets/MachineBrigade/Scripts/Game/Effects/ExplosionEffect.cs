@@ -32,7 +32,7 @@ namespace MachineBrigade.Game.Effects
             root.SetParent(parent, false);
             var ground = PB.GroundPlane(root);
 
-            Flash = Shared(root, "Flash", m.Fire, 300);
+            Flash = Shared(root, "Flash", m.Flash, 300);
             var flash = Flash.main;
             flash.startColor = new Color(1f, 0.9f, 0.7f);
 
@@ -110,14 +110,38 @@ namespace MachineBrigade.Game.Effects
             noise.strength = 0.8f;
             noise.frequency = 0.6f;
 
+            // The shockwave: a thin bright ring racing out along the ground, snapping open fast
+            // (most of its growth in the first third of its short life) and fading as it goes.
             Shockwave = Shared(root, "Shockwave", m.Shockwave, 200, 0f, ParticleSystemRenderMode.HorizontalBillboard);
             var shock = Shockwave.main;
             shock.startRotation = 0f;
             shock.startColor = new Color(1f, 0.85f, 0.6f, 0.9f);
             var none = Shockwave.shape;
             none.enabled = false;
-            PB.Grow(Shockwave, 0.1f, 1f);
+            Snap(Shockwave, 0.08f);
             PB.Colors(Shockwave, PB.Fade(Color.white, Color.white, Color.white, 0.9f));
+
+            // The same wave seen in the air: a pale ring facing the camera around the fireball,
+            // gone in a fifth of a second. Together with the ground ring it sells the punch.
+            AirShock = Shared(root, "Air Shock", m.Shockwave, 120);
+            var air = AirShock.main;
+            air.startRotation = 0f;
+            air.startColor = new Color(1f, 0.93f, 0.8f, 0.55f);
+            var airShape = AirShock.shape;
+            airShape.enabled = false;
+            Snap(AirShock, 0.15f);
+            PB.Colors(AirShock, PB.Fade(Color.white, Color.white, Color.white, 0.6f));
+
+            // The blast lighting up the ground around it: a soft additive pool, flaring and
+            // dying in a third of a second. It stands in for a real light, which would switch
+            // every lit material to its extra-lights variant and shade the whole screen again.
+            GroundLight = Shared(root, "Ground Light", m.Glow, 200, 0f, ParticleSystemRenderMode.HorizontalBillboard);
+            var pool = GroundLight.main;
+            pool.startRotation = 0f;
+            var poolShape = GroundLight.shape;
+            poolShape.enabled = false;
+            PB.Colors(GroundLight, PB.Fade(new Color(1f, 0.62f, 0.3f), new Color(1f, 0.5f, 0.2f), new Color(0.7f, 0.25f, 0.08f), 1f));
+            PB.Grow(GroundLight, 0.85f, 1.1f);
 
             // The crater floor glowing hot for a few seconds, cooling and shrinking.
             CraterGlow = Shared(root, "Crater Glow", m.Fire, 300, 0f, ParticleSystemRenderMode.HorizontalBillboard);
@@ -128,7 +152,8 @@ namespace MachineBrigade.Game.Effects
 
             All = new[]
             {
-                Flash, Fireball, HotFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, CraterGlow,
+                Flash, Fireball, HotFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, AirShock,
+                GroundLight, CraterGlow,
             };
         }
 
@@ -144,6 +169,8 @@ namespace MachineBrigade.Game.Effects
         public ParticleSystem BurningDebris { get; }
         public ParticleSystem Embers { get; }
         public ParticleSystem Shockwave { get; }
+        public ParticleSystem AirShock { get; }
+        public ParticleSystem GroundLight { get; }
         public ParticleSystem CraterGlow { get; }
         public IReadOnlyList<ParticleSystem> All { get; }
 
@@ -192,6 +219,15 @@ namespace MachineBrigade.Game.Effects
             shape.angle = angle;
             shape.radius = radius;
             shape.rotation = new Vector3(-90f, 0f, 0f);
+        }
+
+        /// <summary>Grows from <paramref name="from"/> to full size, most of it at once, then coasting (an expanding wave front).</summary>
+        private static void Snap(ParticleSystem ps, float from)
+        {
+            var size = ps.sizeOverLifetime;
+            size.enabled = true;
+            var curve = new AnimationCurve(new Keyframe(0f, from, 0f, 4f), new Keyframe(0.3f, 0.78f, 1.2f, 1.2f), new Keyframe(1f, 1f, 0.2f, 0f));
+            size.size = new ParticleSystem.MinMaxCurve(1f, curve);
         }
 
         /// <summary>Air drag: puffs thrown out fast are braked and then drift.</summary>
@@ -278,11 +314,6 @@ namespace MachineBrigade.Game.Effects
             _layers = layers;
         }
 
-        /// <summary>Range of the flash of light this blast casts (0: none).</summary>
-        public float LightRange { get; private set; }
-
-        public float LightIntensity { get; private set; }
-
         /// <summary>Particles this blast emits in all (its budget; smoke trails of burning chunks come on top).</summary>
         public int ParticleCount
         {
@@ -301,7 +332,7 @@ namespace MachineBrigade.Game.Effects
         {
             for (var i = 0; i < _bursts.Count; i++)
             {
-                if (_bursts[i].Time <= 0f) Emit(_bursts[i], position, scale);
+                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale);
                 else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale));
             }
             _layers.Chunks?.Throw(_chunks, position, scale, now);
@@ -314,7 +345,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = _pending[i];
                 if (now < p.At) continue;
-                Emit(_bursts[p.BurstIndex], p.Position, p.Scale);
+                EmitBurst(p.BurstIndex, p.Position, p.Scale);
                 _pending[i] = _pending[_pending.Count - 1];
                 _pending.RemoveAt(_pending.Count - 1);
             }
@@ -335,9 +366,20 @@ namespace MachineBrigade.Game.Effects
                 b.Count);
         }
 
+        private void EmitBurst(int index, Vector3 position, float scale)
+        {
+            var b = _bursts[index];
+            if (b.System == _layers.GroundLight)
+            {
+                var main = b.System.main;
+                main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
+            }
+            Emit(b, position, scale);
+        }
+
         // Layer recipes. Sizes and speeds are in metres.
         private void Flash(float size) =>
-            _bursts.Add(new Burst(_layers.Flash, 0f, 1, new Vector2(size, size * 1.2f), Vector2.zero, new Vector2(0.06f, 0.09f), 0.2f));
+            _bursts.Add(new Burst(_layers.Flash, 0f, 1, new Vector2(size * 0.7f, size * 0.85f), Vector2.zero, new Vector2(0.07f, 0.1f), 0.2f, 0.8f));
 
         /// <summary>
         /// Fireball flipbooks. Each is a whole explosion over its life; a few overlapping ones of
@@ -384,8 +426,26 @@ namespace MachineBrigade.Game.Effects
             _bursts.Add(new Burst(_layers.Embers, 0.05f, count, new Vector2(0.08f, 0.18f), new Vector2(1f, 4f) * scale,
                 new Vector2(1.5f, 3.5f), 1.2f * scale));
 
-        private void Shockwave(float size) =>
-            _bursts.Add(new Burst(_layers.Shockwave, 0f, 1, new Vector2(size, size), Vector2.zero, new Vector2(0.35f, 0.35f), 0f, 0.3f));
+        /// <summary>
+        /// The shockwave: a ground ring and an air ring, small and fast. It is the snap that
+        /// makes a blast land, not a wall of light, so it stays tight around the fireball.
+        /// </summary>
+        private void Shockwave(float size)
+        {
+            _bursts.Add(new Burst(_layers.Shockwave, 0f, 1, new Vector2(size, size * 1.08f), Vector2.zero, new Vector2(0.26f, 0.3f), 0f, 0.3f));
+            _bursts.Add(new Burst(_layers.AirShock, 0f, 1, new Vector2(size * 0.55f, size * 0.6f), Vector2.zero, new Vector2(0.16f, 0.2f),
+                0f, size * 0.08f));
+        }
+
+        /// <summary>The ground lit up by the blast for a moment (see <see cref="BlastLayers.GroundLight"/>).</summary>
+        private void GroundLight(float size, float brightness, float seconds = 0.32f)
+        {
+            _bursts.Add(new Burst(_layers.GroundLight, 0f, 1, new Vector2(size, size * 1.1f), Vector2.zero,
+                new Vector2(seconds, seconds * 1.15f), 0f, 0.15f));
+            _glow = brightness;
+        }
+
+        private float _glow = 1f;
 
         private void CraterGlow(float size, float seconds) =>
             _bursts.Add(new Burst(_layers.CraterGlow, 0.05f, 1, new Vector2(size, size * 1.1f), Vector2.zero,
@@ -404,6 +464,8 @@ namespace MachineBrigade.Game.Effects
 
                 case ExplosionTier.Medium:
                     e.Flash(5f);
+                    e.GroundLight(9f, 0.55f, 0.25f);
+                    e.Shockwave(6.5f);
                     e.Fireball(2, new Vector2(4.2f, 5.6f), new Vector2(0.95f, 1.25f), 0.35f);
                     e.Smoke(3, new Vector2(3.2f, 4.6f), new Vector2(2.6f, 3.6f));
                     e.Sparks(28, new Vector2(7f, 16f), 0.16f);
@@ -426,12 +488,11 @@ namespace MachineBrigade.Game.Effects
                     e.BurningDebris(8, new Vector2(7f, 13f));
                     e.Dirt(18, new Vector2(5f, 12f));
                     e.Embers(26, 1f);
-                    e.Shockwave(18f);
+                    e.Shockwave(11f);
+                    e.GroundLight(20f, 0.85f);
                     e.DustRing(16f, 14);
                     e.CraterGlow(5.5f, 4.5f);
                     e._chunks = new ChunkThrower.Recipe(earth: 12, wreckage: 4, burning: 3, new Vector2(7f, 14f), 1f);
-                    e.LightRange = 18f;
-                    e.LightIntensity = 10f;
                     break;
 
                 default: // Huge and above
@@ -451,15 +512,13 @@ namespace MachineBrigade.Game.Effects
                     e.BurningDebris(ultimate ? 16 : 12, new Vector2(9f, 18f) * s);
                     e.Dirt(ultimate ? 34 : 24, new Vector2(6f, 15f));
                     e.Embers(ultimate ? 70 : 50, 1.6f);
-                    e.Shockwave(34f * s);
-                    if (ultimate) e.Shockwave(22f * s);
+                    e.Shockwave(16f * s);
+                    e.GroundLight(32f * s, 1f, 0.4f);
                     e.DustRing(26f * s, ultimate ? 30 : 22);
                     e.CraterGlow(9f * s, 6f);
                     e._chunks = ultimate
                         ? new ChunkThrower.Recipe(earth: 30, wreckage: 12, burning: 9, new Vector2(10f, 22f), 1.4f)
                         : new ChunkThrower.Recipe(earth: 20, wreckage: 8, burning: 6, new Vector2(9f, 18f), 1.2f);
-                    e.LightRange = 30f * s;
-                    e.LightIntensity = 16f;
                     break;
             }
             return e;
@@ -478,8 +537,38 @@ namespace MachineBrigade.Game.Effects
             e.Debris(10, new Vector2(4f, 9f));
             e.Embers(12, 0.8f);
             e._chunks = new ChunkThrower.Recipe(earth: 0, wreckage: 4, burning: 2, new Vector2(4f, 9f), 0.8f);
-            e.LightRange = 14f;
-            e.LightIntensity = 7f;
+            e._bursts.Add(new Burst(l.AirShock, 0f, 1, new Vector2(6f, 6.6f), Vector2.zero, new Vector2(0.16f, 0.2f), 0f));
+            return e;
+        }
+
+        /// <summary>
+        /// The killing hit on a vehicle whose own death explosion follows a moment later: a
+        /// burst of sparks and a lick of flame out of the hull, small enough that the big blast
+        /// after it reads as the one explosion, not a second copy.
+        /// </summary>
+        public static ExplosionEffect CreateKill(BlastLayers l)
+        {
+            var e = new ExplosionEffect(l);
+            e.Sparks(34, new Vector2(6f, 14f), 0.16f);
+            e.Fireball(1, new Vector2(1.8f, 2.4f), new Vector2(0.6f, 0.75f), 0.2f, lift: 0.3f, speed: new Vector2(0.3f, 1f));
+            e.Smoke(2, new Vector2(1.8f, 2.6f), new Vector2(1.6f, 2.2f), 0.05f);
+            e.Embers(10, 0.6f);
+            return e;
+        }
+
+        /// <summary>
+        /// A small secondary explosion: ammunition or fuel going up in a burning hulk, or the
+        /// satellite pops around a big blast. One compact fireball, sparks and a wisp of smoke;
+        /// no shockwave, so it never looks like the main blast starting over.
+        /// </summary>
+        public static ExplosionEffect CreatePop(BlastLayers l)
+        {
+            var e = new ExplosionEffect(l);
+            e.Fireball(1, new Vector2(2.2f, 3.2f), new Vector2(0.7f, 0.95f), 0.3f, speed: new Vector2(0.4f, 1.6f));
+            e.Sparks(22, new Vector2(6f, 15f), 0.15f);
+            e.Smoke(1, new Vector2(2.2f, 3f), new Vector2(2f, 2.8f), 0.08f);
+            e.Embers(8, 0.7f);
+            e.GroundLight(6f, 0.4f, 0.2f);
             return e;
         }
 

@@ -346,8 +346,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);
 
-        public void SetDeck(float cp, float bank, int armyCp, int armyCap, IReadOnlyList<CardState> states) =>
-            _deck?.Update(cp, bank, armyCp, armyCap, states);
+        public void SetDeck(float cp, float bank, float earning, float upkeep, IReadOnlyList<CardState> states) =>
+            _deck?.Update(cp, bank, earning, upkeep, states);
 
         /// <summary>Shows the strike-targeting prompt, or hides it when <paramref name="message"/> is null.</summary>
         public void SetTargeting(string message)
