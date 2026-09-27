@@ -250,6 +250,13 @@ namespace MachineBrigade.Sim.Movement
             // One standing where the mover is going is part of the group gathering there: it is not
             // sent away (the mover settles beside it, see the arrival rule in DetectStuck).
             if (mover.HasPath && Vector2.DistanceSquared(blocker.Position, mover.PathGoal) < GatherReach * GatherReach) return;
+            // Nor is a member of the same group bound for the same place: the ones there first hold
+            // their slots and the rest settle round them (asking each other to make way, a marching
+            // group never comes to rest).
+            if (SameDestination(mover, blocker)) return;
+            // One holding its ground in the open (arrived, gathering, dug in) is driven round, not
+            // sent away: only on a road, in a narrow pass or a doorway does it make way.
+            if (Holding(blocker) && (_world.Lanes.At(blocker.Position) & (LaneFlags.Road | LaneFlags.Narrow | LaneFlags.NoPark)) == 0) return;
             var bt = blocker.Traffic;
             if (bt.YieldingTo == mover.Id || mover.Traffic.YieldingTo == blocker.Id) return;
             var pm = TrafficPriority(mover) + mover.Traffic.TrafficBoost;
@@ -262,6 +269,17 @@ namespace MachineBrigade.Sim.Movement
             bt.PendingDepth = depth;
             bt.PendingDir = MoverDirection(mover, blocker);
         }
+
+        /// <summary>Both are on the same kind of order to (nearly) the same point: one group on the way to one place.</summary>
+        private static bool SameDestination(Vehicle a, Vehicle b) =>
+            a.Order.Kind is OrderKind.Move or OrderKind.AttackMove or OrderKind.Retreat && b.Order.Kind == a.Order.Kind &&
+            Vector2.DistanceSquared(a.Order.Point, b.Order.Point) < SameGoalReach * SameGoalReach;
+
+        /// <summary>Not on its way anywhere: idle, or at the end of its order's path.</summary>
+        private static bool Holding(Vehicle v) => v.Order.Kind == OrderKind.Idle || !v.HasPath;
+
+        /// <summary>Order points this close belong to one group's move (its formation slots).</summary>
+        private const float SameGoalReach = 18f;
 
         /// <summary>Which way the mover is going past the blocker: towards its first waypoint beyond it.</summary>
         private static Vector2 MoverDirection(Vehicle mover, Vehicle blocker)
