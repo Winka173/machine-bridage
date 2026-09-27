@@ -25,6 +25,9 @@ namespace MachineBrigade.Tests
             "ballistic_missile", "heavy_rocket", "mine", "fpv_drone", "supply_crate", "repair_crate",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli", "drone_mothership", "nuke_train", "icbm",
+            "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "artillery_emplacement", "guard_tower",
+            "command_hq", "base_wall", "base_gate", "floodlight_mast", "fuel_depot", "ammo_dump", "vehicle_hangar", "helipad",
+            "razor_wire", "sandbag_wall",
         };
 
         private static readonly string[] Props =

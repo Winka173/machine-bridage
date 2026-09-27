@@ -23,6 +23,7 @@ import mb_bosses  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_harbor  # noqa: E402
 import mb_props  # noqa: E402
+import mb_siege  # noqa: E402
 import mb_support  # noqa: E402
 import mb_terrain  # noqa: E402
 import mb_themes  # noqa: E402
@@ -39,7 +40,7 @@ REPORT = ROOT / 'Docs' / 'art' / 'models.json'
 def all_builders():
     return {**mb_vehicles.BUILDERS, **mb_air.BUILDERS, **mb_air2.BUILDERS, **mb_props.BUILDERS, **mb_terrain.BUILDERS,
             **mb_town.BUILDERS, **mb_themes.BUILDERS, **mb_harbor.BUILDERS, **mb_vehicles2.BUILDERS, **mb_bosses.BUILDERS,
-            **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS, **mb_support.BUILDERS, **mb_air3.BUILDERS}
+            **mb_elites.BUILDERS, **mb_vehicles3.BUILDERS, **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS}
 
 
 def build_all(filters=()):
