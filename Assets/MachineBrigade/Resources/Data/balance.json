@@ -436,7 +436,7 @@
       "explosion": { "damage": 70, "radius": 6, "delay": 0.15, "tier": "Large" } },
     { "id": "ammo_crate",  "armor": "Light",     "hp": 35,   "width": 1.25, "depth": 1.25,
       "explosion": { "damage": 90, "radius": 7, "delay": 0.2, "tier": "Large" } },
-    { "id": "tree",        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 },
+    { "id": "tree", "crush": true,        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 },
     // Terrain: rock is effectively indestructible and shapes the lanes; sandbags and tank traps can be shot away.
     { "id": "cliff_a",     "armor": "Structure", "hp": 1000000, "width": 13, "depth": 10,  "blocks": true },
     { "id": "cliff_b",     "armor": "Structure", "hp": 1000000, "width": 10,  "depth": 9.5,  "blocks": true },
@@ -457,9 +457,9 @@
     { "id": "garage", "scale": 1.15,      "armor": "Structure", "hp": 350,  "width": 5,   "depth": 5.2,   "blocks": true },
     { "id": "water_tower", "scale": 1.15, "armor": "Structure", "hp": 450,  "width": 4,   "depth": 4,   "blocks": true, "blocksFire": false },
     { "id": "ruin", "scale": 1.15,        "armor": "Structure", "hp": 400,  "width": 8,   "depth": 8,   "blocks": true },
-    { "id": "fence",       "armor": "Light",     "hp": 40,   "width": 4,   "depth": 0.3 },
+    { "id": "fence", "crush": true,       "armor": "Light",     "hp": 40,   "width": 4,   "depth": 0.3 },
     { "id": "stone_wall",  "armor": "Structure", "hp": 300,  "width": 6,   "depth": 0.8, "blocks": true, "blocksFire": false },
-    { "id": "hedge",       "armor": "Light",     "hp": 60,   "width": 6,   "depth": 1.2 },
+    { "id": "hedge", "crush": true,       "armor": "Light",     "hp": 60,   "width": 6,   "depth": 1.2 },
     // Civilian vehicles burn and blow up when shot.
     { "id": "car",         "armor": "Light",     "hp": 60,   "width": 4.4, "depth": 1.9,
       "explosion": { "damage": 60, "radius": 5, "delay": 0.4, "tier": "Large" } },
@@ -469,8 +469,8 @@
     { "id": "adobe_house", "scale": 1.15,   "armor": "Structure", "hp": 700,  "width": 7.3,  "depth": 7.2,  "blocks": true },
     { "id": "adobe_large", "scale": 1.15,   "armor": "Structure", "hp": 1300, "width": 11.8, "depth": 9.3,  "blocks": true },
     { "id": "market_stall",  "armor": "Light",     "hp": 80,   "width": 4.3,  "depth": 3 },
-    { "id": "palm",          "armor": "Light",     "hp": 45,   "width": 1.5,  "depth": 1.5 },
-    { "id": "cactus",        "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "palm", "crush": true,          "armor": "Light",     "hp": 45,   "width": 1.5,  "depth": 1.5 },
+    { "id": "cactus", "crush": true,        "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
     { "id": "oil_pump",      "armor": "Structure", "hp": 300,  "width": 4.9,  "depth": 2.5,  "blocks": true, "blocksFire": false,
       "explosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Large" } },
     { "id": "refinery_tower","armor": "Structure", "hp": 900,  "width": 5.9,  "depth": 5.9,  "blocks": true,
@@ -503,7 +503,7 @@
     { "id": "basalt_rock_c", "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
     { "id": "obsidian_spire","armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
     { "id": "lava_vent",     "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3 },
-    { "id": "charred_tree",  "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "charred_tree", "crush": true,  "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
     { "id": "volcanic_cliff","armor": "Structure", "hp": 1000000, "width": 14, "depth": 6,   "blocks": true },
     // Surface tiles the map view draws itself (no model): molten lava and river water block movement, a ford is
     // shallow water that vehicles drive through. The map generator lays them on a 4 m grid.
@@ -511,11 +511,11 @@
     { "id": "river_water",   "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,   "blocks": true, "blocksFire": false },
     { "id": "river_ford",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4 },
     // Jungle: rainforest, a temple ruin and stilt villages.
-    { "id": "jungle_tree_a", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "jungle_tree_b", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "jungle_tree_c", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "bamboo_clump",  "armor": "Light",     "hp": 40,   "width": 2.5,  "depth": 2.5 },
-    { "id": "fern_bush",     "armor": "Light",     "hp": 20,   "width": 1.5,  "depth": 1.5 },
+    { "id": "jungle_tree_a", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_b", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_c", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "bamboo_clump", "crush": true,  "armor": "Light",     "hp": 40,   "width": 2.5,  "depth": 2.5 },
+    { "id": "fern_bush", "crush": true,     "armor": "Light",     "hp": 20,   "width": 1.5,  "depth": 1.5 },
     { "id": "temple_ruin", "scale": 1.15,   "armor": "Structure", "hp": 2000, "width": 12,   "depth": 12,   "blocks": true },
     { "id": "stilt_hut", "scale": 1.15,     "armor": "Structure", "hp": 350,  "width": 7,    "depth": 6,    "blocks": true },
     // Airbase: parked jets and fuel trucks stand close on purpose, so one fireball sets off the whole line.
@@ -579,6 +579,6 @@
     { "id": "bridge_road",   "armor": "Structure", "hp": 1000000, "width": 8.35, "depth": 20 },
     { "id": "ruin_house", "scale": 1.15, "armor": "Structure", "hp": 500, "width": 7.8, "depth": 7.8, "blocks": true },
     { "id": "ruin_tower", "scale": 1.15, "armor": "Structure", "hp": 700, "width": 5.2, "depth": 5.6, "blocks": true },
-    { "id": "dead_tree",     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
+    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
   ]
 }

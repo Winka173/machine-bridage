@@ -148,6 +148,9 @@ namespace MachineBrigade.Game.Rendering
             // The first instant of a blast: a round white-hot flash (a flame-shaped one read as a ghostly streak).
             Flash = Particle(particle, "Flash", additive: true, intensity: 2.6f, shape: 0f, softness: 1.3f, depthPull: 6f);
             Scorch = Particle(particle, "Scorch", additive: false, intensity: 1f, shape: 0f, softness: 0.8f);
+            // Track marks: soft-edged dark oblongs on the ground, under every effect.
+            Tread = Particle(particle, "Tread", additive: false, intensity: 1f, shape: 2f, softness: 0.55f);
+            Tread.renderQueue = 2951;
             // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
             Scorch.renderQueue = 2950;
             Scorch.enableInstancing = true;
@@ -184,6 +187,9 @@ namespace MachineBrigade.Game.Rendering
         public Material Objective { get; }
         public Material BarBack { get; }
         public Material BarAlly { get; }
+
+        /// <summary>Track marks on the ground (see TrackMarks).</summary>
+        public Material Tread { get; }
 
         /// <summary>Health just lost, shown behind the bar before it catches up.</summary>
         public Material BarTrail { get; }

@@ -57,6 +57,7 @@ namespace MachineBrigade.Game.Effects
         private readonly DebrisPool _debris;
         private readonly WreckManager _wrecks;
         private readonly Emitters _emitters;
+        private readonly TrackMarks _tracks;
         private readonly FireSpots _fires;
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
@@ -95,6 +96,7 @@ namespace MachineBrigade.Game.Effects
             _blasts.Add(_collapse);
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
             _emitters = new Emitters(materials, _root);
+            _tracks = new TrackMarks(materials, _root);
             _fires = new FireSpots(materials, _root);
             _fires.Visible = p => _cull.Visible(p, 0.3f);
             _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
@@ -258,6 +260,19 @@ namespace MachineBrigade.Game.Effects
                         _wrecks.Add(view, now);
                         break;
 
+                    case SimEventKind.PropDestroyed when e.Tier == ExplosionTier.Small && e.Target != default:
+                        // A tree or fence knocked down by a hull: it falls, a puff of dust and leaves.
+                        if (map.Topple(e.Entity, new Vector3(e.Target.X, 0f, e.Target.Y)))
+                        {
+                            var at = new Vector3(e.Position.X, 0.3f, e.Position.Y);
+                            _emitters.Dust(at, 1.2f);
+                            if (_models.Has("debris_leaves"))
+                                for (var k = 0; k < 3; k++)
+                                    _debris.Throw(Chunk("debris_leaves"), at + Vector3.up * UnityEngine.Random.Range(1f, 3f), UnityEngine.Random.rotation,
+                                        at - Vector3.up, 3f, now);
+                        }
+                        break;
+
                     case SimEventKind.PropDestroyed:
                         if (!map.TryDestroy(e.Entity, out var prop)) break;
                         var centre = prop.Transform.position;
@@ -333,6 +348,7 @@ namespace MachineBrigade.Game.Effects
             }
             while (_wrecks.TryCrash(out var crash, out var size)) Crash(crash, size, now);
             KickUpDust(views, now);
+            PrintTracks(views);
             ShowDamage(views, now);
 
             var markerAge = Time.unscaledTime - _markerStart;
@@ -404,6 +420,27 @@ namespace MachineBrigade.Game.Effects
                 var scale = radius * 0.75f;
                 _emitters.Dust(rear + root.right * radius * 0.55f, scale);
                 _emitters.Dust(rear - root.right * radius * 0.55f, scale);
+            }
+        }
+
+        /// <summary>Two lines of track marks behind every ground vehicle on the move, printed every 0.8 m.</summary>
+        private void PrintTracks(ViewRegistry views)
+        {
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                if (view.Flying || view.Def.Static || view.Speed < 0.3f) continue;
+                var at = view.Position;
+                if ((at - view.TrackAt).sqrMagnitude < 0.64f) continue;
+                view.TrackAt = at;
+                if (!_cull.Visible(at, 0.1f)) continue;
+                var root = view.Root;
+                var gauge = view.Def.Width * view.Def.Scale * 0.36f;
+                var width = Mathf.Clamp(view.Def.Width * view.Def.Scale * 0.2f, 0.28f, 0.75f);
+                var heading = root.eulerAngles.y;
+                _tracks.Print(at + root.right * gauge, heading, width);
+                _tracks.Print(at - root.right * gauge, heading, width);
             }
         }
 

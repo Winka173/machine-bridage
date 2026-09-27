@@ -167,6 +167,62 @@ namespace MachineBrigade.Game.Views
         }
 
         private readonly List<Collapse> _collapses = new();
+
+        private sealed class Felled
+        {
+            public Transform Ghost;
+            public Quaternion Rest;
+            public Vector3 Axis, Position;
+            public float Start, Height;
+        }
+
+        private readonly List<Felled> _topples = new();
+
+        /// <summary>
+        /// A tree (or bush, hedge, fence) knocked down by a hull: it tips over the way the hull
+        /// was going, slowly at first, lands with a small bounce, lies there a while and then sinks
+        /// out of sight. Returns false when it has no view.
+        /// </summary>
+        public bool Topple(EntityId id, Vector3 direction)
+        {
+            if (!_props.TryGetValue(id, out var view) || view.GameObject == null || !view.GameObject.activeSelf) return false;
+            var transform = view.Transform;
+            var ghost = Spawn(view.Model, false).transform;
+            ghost.SetPositionAndRotation(transform.position, transform.rotation);
+            ghost.localScale = transform.lossyScale;
+            view.GameObject.SetActive(false);
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 1e-4f) direction = Vector3.forward;
+            _topples.Add(new Felled
+            {
+                Ghost = ghost, Rest = transform.rotation, Position = transform.position, Start = Time.time,
+                Axis = Vector3.Cross(Vector3.up, direction.normalized), Height = Mathf.Max(1f, view.Prop.Radius * 2.5f),
+            });
+            return true;
+        }
+
+        private void AnimateTopples(float time)
+        {
+            for (var i = _topples.Count - 1; i >= 0; i--)
+            {
+                var t = _topples[i];
+                var age = time - t.Start;
+                if (t.Ghost == null || age > 32f)
+                {
+                    if (t.Ghost != null) Object.Destroy(t.Ghost.gameObject);
+                    _topples.RemoveAt(i);
+                    continue;
+                }
+                // Falls like a felled trunk: slow, then faster, a little bounce where it lands.
+                var fall = Mathf.Clamp01(age / 0.8f);
+                var angle = 86f * fall * fall;
+                if (fall >= 1f) angle -= Mathf.Sin(Mathf.Clamp01((age - 0.8f) / 0.25f) * Mathf.PI) * 6f;
+                t.Ghost.rotation = Quaternion.AngleAxis(angle, t.Axis) * t.Rest;
+                // Lies there, then sinks into the ground.
+                var sink = Mathf.Clamp01((age - 28f) / 4f);
+                t.Ghost.position = t.Position - Vector3.up * (t.Height * 0.4f * sink);
+            }
+        }
         private readonly Random _collapseRng = new(4242);
 
         /// <summary>
@@ -252,6 +308,7 @@ namespace MachineBrigade.Game.Views
         public void Animate(float time)
         {
             if (_collapses.Count > 0) AnimateCollapses(time);
+            if (_topples.Count > 0) AnimateTopples(time);
             foreach (var (part, rest, axis, speed, phase, rocks) in _moving)
             {
                 if (part == null || !part.gameObject.activeInHierarchy) continue;

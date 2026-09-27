@@ -393,6 +393,7 @@ namespace MachineBrigade.Sim
             RefreshVisibility();
             Economy.Step(dt);
             _movement.Step(dt);
+            CrushVegetation();
             _abilities.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
@@ -401,6 +402,44 @@ namespace MachineBrigade.Sim
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
+
+        private const float CrushCell = 6f;
+        private Dictionary<(int, int), List<Prop>>? _crushable;
+
+        /// <summary>Ground vehicles knock down the trees, bushes, hedges and fences they drive into.</summary>
+        private void CrushVegetation()
+        {
+            if (_crushable == null)
+            {
+                _crushable = new Dictionary<(int, int), List<Prop>>();
+                foreach (var prop in _propList)
+                {
+                    if (!prop.IsAlive || !prop.Def.Crushable) continue;
+                    var key = ((int)MathF.Floor(prop.Position.X / CrushCell), (int)MathF.Floor(prop.Position.Y / CrushCell));
+                    if (!_crushable.TryGetValue(key, out var list)) _crushable[key] = list = new List<Prop>();
+                    list.Add(prop);
+                }
+            }
+            if (_crushable.Count == 0) return;
+            foreach (var v in _vehicleList)
+            {
+                if (!v.IsAlive || v.Flying || v.Def.Static || v.Speed < 0.5f) continue;
+                var cx = (int)MathF.Floor(v.Position.X / CrushCell);
+                var cy = (int)MathF.Floor(v.Position.Y / CrushCell);
+                for (var dx = -1; dx <= 1; dx++)
+                    for (var dy = -1; dy <= 1; dy++)
+                    {
+                        if (!_crushable.TryGetValue((cx + dx, cy + dy), out var list)) continue;
+                        foreach (var prop in list)
+                        {
+                            if (!prop.IsAlive) continue;
+                            var reach = v.Def.HullRadius + 0.3f + prop.Radius * 0.5f;
+                            if (Vector2.DistanceSquared(v.Position, prop.Position) < reach * reach)
+                                Damage.Crush(prop, SimMath.Forward(v.Heading));
+                        }
+                    }
+            }
+        }
 
         /// <summary>Development only (the -mb-demolish device check): blows a prop apart as a heavy shell would.</summary>
         public void DebugDestroyProp(Prop prop)

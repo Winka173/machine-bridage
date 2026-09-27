@@ -221,6 +221,15 @@ namespace MachineBrigade.Sim.Combat
             if (vehicle.Def.DeathExplosion != null) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
         }
 
+        /// <summary>A hull drives over a tree, bush or fence: it goes down the way the hull was going.</summary>
+        internal void Crush(Prop prop, Vector2 direction)
+        {
+            if (!prop.IsAlive || prop.Invulnerable) return;
+            prop.Hp = 0f;
+            if (prop.Def.BlocksFire) _world.Cover.Remove(prop);
+            _world.Emit(SimEvent.PropCrushed(prop, direction));
+        }
+
         private void OnPropDestroyed(Prop prop)
         {
             if (prop.Def.BlocksMovement)

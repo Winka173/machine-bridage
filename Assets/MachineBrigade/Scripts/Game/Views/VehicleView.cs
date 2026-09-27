@@ -201,6 +201,9 @@ namespace MachineBrigade.Game.Views
         /// <summary>Next time tread dust may be kicked up; owned by the effects layer.</summary>
         public float DustAt { get; set; }
 
+        /// <summary>Where the last track mark was printed (see EffectsDirector).</summary>
+        public Vector3 TrackAt { get; set; }
+
         /// <summary>When the next wisp of damage smoke or lick of flame is due (see EffectsDirector).</summary>
         public float DamageFxAt { get; set; }
 
