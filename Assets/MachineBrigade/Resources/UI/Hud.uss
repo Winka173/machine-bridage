@@ -842,3 +842,16 @@
 
 /* colour-blind safe teams: blue for ours, orange for theirs */
 .cb { --ally: #3f6fb0; --ally-dark: #2b4e80; --mint: #7fb8ff; --danger: #f08c1e; --danger-dark: #a45a0c; }
+
+/* today's challenges on the main menu */
+.daily { margin-bottom: 8px; }
+.daily-row { flex-direction: row; align-items: center; height: 34px; padding-left: 10px; padding-right: 4px; margin-bottom: 4px;
+    background-color: var(--n800); border-radius: 6px; }
+.daily-text { flex-grow: 1; -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; color: var(--n200); }
+.daily-progress { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; color: var(--n300); margin-right: 8px; }
+.daily-claim { flex-direction: row; align-items: center; height: 26px; padding-left: 6px; padding-right: 8px; border-radius: 5px;
+    background-color: var(--n700); }
+.daily-claim.ready { background-color: var(--amber); }
+.daily-claim.claimed { background-color: var(--ally-dark); }
+.daily-reward { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n100); margin-left: 3px; }
+.daily-claim.ready .daily-reward { color: var(--amber-ink); }

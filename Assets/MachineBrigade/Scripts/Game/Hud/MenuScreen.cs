@@ -53,6 +53,30 @@ namespace MachineBrigade.Game.Hud
             banner.Add(_campaignBannerNext);
             content.Add(banner);
 
+            // Today's three challenges, paying coins when claimed.
+            var daily = UiKit.Box("daily");
+            daily.Add(UiKit.Text(Strings.Get("daily.title"), "menu-caps"));
+            for (var i = 0; i < 3; i++)
+            {
+                var index = i;
+                var row = UiKit.Box("daily-row");
+                var text = UiKit.Text("", "daily-text");
+                var progress = UiKit.Text("", "daily-progress");
+                var claim = UiKit.Button("daily-claim", () =>
+                {
+                    if (DailyMissions.Claim(index)) Refresh();
+                });
+                claim.Add(UiKit.Icon("coin", UiKit.Ink, 1.6f));
+                var reward = UiKit.Text("", "daily-reward");
+                claim.Add(reward);
+                row.Add(text);
+                row.Add(progress);
+                row.Add(claim);
+                daily.Add(row);
+                _dailyRows.Add((text, progress, claim, reward));
+            }
+            content.Add(daily);
+
             content.Add(Section(1, "menu.quick"));
             var modes = UiKit.Box("menu-modes grid-modes");
             var modeList = new[]
@@ -315,8 +339,25 @@ namespace MachineBrigade.Game.Hud
             Refresh();
         }
 
+        private readonly List<(Label text, Label progress, VisualElement claim, Label reward)> _dailyRows = new();
+
+        private void RefreshDaily()
+        {
+            var tasks = DailyMissions.Current;
+            for (var i = 0; i < _dailyRows.Count && i < tasks.Count; i++)
+            {
+                var (text, progress, claim, reward) = _dailyRows[i];
+                text.text = Strings.Format("daily." + tasks[i].Kind, tasks[i].Target);
+                progress.text = $"{DailyMissions.Progress(i)}/{tasks[i].Target}";
+                reward.text = DailyMissions.Claimed(i) ? Strings.Get("daily.claimed") : tasks[i].Reward.ToString("N0");
+                claim.EnableInClassList("ready", DailyMissions.Done(i) && !DailyMissions.Claimed(i));
+                claim.EnableInClassList("claimed", DailyMissions.Claimed(i));
+            }
+        }
+
         private void Refresh()
         {
+            RefreshDaily();
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);

@@ -449,6 +449,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
                         else _kills++;
+                        if (!_menu && e.Team == EnemyTeam && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var slain))
+                        {
+                            DailyMissions.Record("kills");
+                            if (slain.Elite) DailyMissions.Record("elites");
+                            if (slain.Boss) DailyMissions.Record("bosses");
+                        }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
                         {
                             StartCinematic(e.Position, force: true);
@@ -459,7 +465,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
                         StartCinematic(e.Position);
                         break;
+                    case SimEventKind.PropDestroyed when !_menu:
+                        if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
+                            DailyMissions.Record("buildings");
+                        break;
                     case SimEventKind.PointCaptured when !_menu:
+                        if (e.Team == PlayerTeam) DailyMissions.Record("captures");
                         var letter = Strings.Get("point." + e.DefId);
                         if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter));
                         else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true);
@@ -483,6 +494,7 @@ namespace MachineBrigade.Game.Match
                         if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
                         // An item was used: it is gone from the profile too.
                         if (!_menu && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
+                        if (!_menu && e.Team == PlayerTeam && support != null) DailyMissions.Record(support.Consumable ? "items" : "strikes");
                         break;
                 }
             }
@@ -713,6 +725,7 @@ namespace MachineBrigade.Game.Match
             if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
+            if (outcome.Result > 0) DailyMissions.Record("wins");
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;

@@ -23,6 +23,9 @@ namespace MachineBrigade.Game.Match
             public List<string> missionIds = new();
             public List<int> missionStars = new();
             public List<string> itemIds = new();
+            public int dailyDay;
+            public List<int> dailyProgress = new();
+            public List<bool> dailyClaimed = new();
             public List<int> itemCounts = new();
         }
 
@@ -66,6 +69,42 @@ namespace MachineBrigade.Game.Match
         }
 
         public static bool Completed(string missionId) => Stars(missionId) > 0;
+
+        private static void DailyReset(int day)
+        {
+            if (D.dailyDay == day && D.dailyProgress.Count == 3 && D.dailyClaimed.Count == 3) return;
+            D.dailyDay = day;
+            D.dailyProgress = new List<int> { 0, 0, 0 };
+            D.dailyClaimed = new List<bool> { false, false, false };
+        }
+
+        public static int DailyProgress(int day, int index)
+        {
+            DailyReset(day);
+            return D.dailyProgress[index];
+        }
+
+        public static bool DailyClaimed(int day, int index)
+        {
+            DailyReset(day);
+            return D.dailyClaimed[index];
+        }
+
+        public static void AddDailyProgress(int day, int index, int amount, int cap)
+        {
+            DailyReset(day);
+            var next = Mathf.Min(cap, D.dailyProgress[index] + amount);
+            if (next == D.dailyProgress[index]) return;
+            D.dailyProgress[index] = next;
+            Save();
+        }
+
+        public static void ClaimDaily(int day, int index)
+        {
+            DailyReset(day);
+            D.dailyClaimed[index] = true;
+            Save();
+        }
 
         /// <summary>How many of a single-use item (MOAB, EMP...) the player has.</summary>
         public static int ItemCount(string itemId)
