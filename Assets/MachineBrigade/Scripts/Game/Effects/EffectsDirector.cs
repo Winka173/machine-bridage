@@ -28,8 +28,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Hulks left on the field before the oldest sinks away.</summary>
         public int Wrecks { get; }
 
-        public static EffectBudget Eco => new EffectBudget(90, 3, 96, 45);
-        public static EffectBudget High => new EffectBudget(220, 8, 160, 70);
+        public static EffectBudget Eco => new EffectBudget(260, 3, 96, 45);
+        public static EffectBudget High => new EffectBudget(520, 8, 160, 70);
     }
 
     /// <summary>
@@ -50,6 +50,7 @@ namespace MachineBrigade.Game.Effects
         private readonly BlastLayers _layers;
         private readonly MuzzleFx _muzzle;
         private readonly ExplosionEffect _airburst;
+        private readonly ExplosionEffect _napalm;
         private readonly ScreenCull _cull;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
@@ -85,6 +86,8 @@ namespace MachineBrigade.Game.Effects
             _muzzle = new MuzzleFx(materials, _root);
             _airburst = ExplosionEffect.CreateAirburst(_layers);
             _blasts.Add(_airburst);
+            _napalm = ExplosionEffect.CreateNapalm(_layers);
+            _blasts.Add(_napalm);
             _lightPool = new Light[budget.Lights];
             _lightStart = new float[budget.Lights];
             _lightIntensity = new float[budget.Lights];
@@ -93,9 +96,11 @@ namespace MachineBrigade.Game.Effects
             _emitters = new Emitters(materials, _root);
             _fires = new FireSpots(materials, _root);
             _fires.Visible = p => _cull.Visible(p, 0.3f);
-            _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
+            _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
-            _wrecks = new WreckManager(_fires, budget.Wrecks);
+            _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, _root);
+            _layers.Chunks.Trails.Visible = p => _cull.Visible(p, 0.3f);
+            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
             _projectiles = new ProjectilePool(_root, 96);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _root);
@@ -151,6 +156,7 @@ namespace MachineBrigade.Game.Effects
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
                         {
+                            if (_cull.Visible(hit, 0.3f)) _napalm.Play(hit, now);
                             // Napalm: the ground itself burns in a wide strip for half a minute.
                             for (var i = 0; i < 3; i++)
                             {
@@ -191,7 +197,7 @@ namespace MachineBrigade.Game.Effects
                         var blast = Ground(e.Position, 0.3f);
                         Explode(e.Tier, blast, now);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
-                        _wrecks.TossTurret(e.Entity, now);
+                        _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
                         {
                             _fires.Ignite(blast, 1.4f, 30f, now);
@@ -270,8 +276,7 @@ namespace MachineBrigade.Game.Effects
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
             _fires.Tick(now, Time.deltaTime);
-            if (_wrecks.TryCookOff(now, out var cookOff))
-                Explode(UnityEngine.Random.value < 0.3f ? ExplosionTier.Medium : ExplosionTier.Small, cookOff, now);
+            if (_wrecks.TryCookOff(now, out var cookOff, out var cookOffTier)) Explode(cookOffTier, cookOff, now);
             while (_wrecks.TryCrash(out var crash, out var size)) Crash(crash, size, now);
             KickUpDust(views, now);
             FadeLights(Time.unscaledTime);

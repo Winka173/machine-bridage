@@ -103,6 +103,80 @@ namespace MachineBrigade.Editor
             materials.Dispose();
         }
 
+        /// <summary>
+        /// Explosions of every tier, a tank dying, a wreck burning and a napalm run, each in its own
+        /// row, frozen at <see cref="BlastMoments"/> seconds after it starts. Batch mode (with
+        /// graphics): -executeMethod MachineBrigade.Editor.EffectShots.Blasts -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Blast Shots")]
+        public static void Blasts()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/blasts.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260927);
+            var materials = new MaterialLibrary();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root, 1200f);
+            var rig = new BlastRig(materials, meshes, models, root);
+            var scenes = BlastScenes.All(rig);
+
+            var size = new Vector2Int(480, 270);
+            var sheet = new Texture2D(size.x * BlastMoments.Length, size.y * scenes.Length, TextureFormat.RGB24, false);
+            var camera = Camera(root);
+            var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.targetTexture = rt;
+            camera.Render();
+
+            // Every scene runs on one clock; each starts at Start + its own offset, so a wreck can
+            // have burned for a while before its row is photographed.
+            const float step = 1f / 60f;
+            var time = 0f;
+            var frame = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
+            var systems = root.GetComponentsInChildren<ParticleSystem>(true);
+            for (var shot = 0; shot < BlastMoments.Length; shot++)
+            {
+                var until = BlastScenes.Start + BlastMoments[shot];
+                while (time + 1e-4f < until)
+                {
+                    time += step;
+                    foreach (var scene in scenes) scene.Run(time);
+                    rig.Tick(time, step);
+                    foreach (var ps in systems) ps.Simulate(step, false, false, false);
+                }
+                for (var row = 0; row < scenes.Length; row++)
+                {
+                    var scene = scenes[row];
+                    camera.orthographicSize = scene.View;
+                    camera.transform.position = scene.Focus - camera.transform.forward * 80f;
+                    rig.Draw(time);
+                    camera.Render();
+                    RenderTexture.active = rt;
+                    frame.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
+                    frame.Apply();
+                    sheet.SetPixels(shot * size.x, (scenes.Length - 1 - row) * size.y, size.x, size.y, frame.GetPixels());
+                }
+            }
+            RenderTexture.active = null;
+            sheet.Apply();
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
+            File.WriteAllBytes(output, sheet.EncodeToPNG());
+            Debug.Log($"[EffectShots] wrote {Path.GetFullPath(output)}; rows: {string.Join(", ", System.Array.ConvertAll(scenes, s => s.Name))}; " +
+                $"peak particles {rig.PeakParticles}, peak big quads {rig.PeakBig}, peak quad area {rig.PeakFill:F0} m2, " +
+                $"peak chunks {rig.PeakChunks}; per blast: {rig.Budget}; at the peak: {rig.PeakBreakdown}");
+            camera.targetTexture = null;
+            rt.Release();
+            Object.DestroyImmediate(frame);
+            rig.Dispose();
+            models.Dispose();
+            meshes.Dispose();
+            materials.Dispose();
+        }
+
+        /// <summary>Seconds after a scene starts at which each column is taken.</summary>
+        private static readonly float[] BlastMoments = { 0.05f, 0.25f, 0.7f, 1.6f, 4f };
+
         private static void Fire(ModelLibrary models, MuzzleFx fx, Transform root, in Shooter s, float now)
         {
             var instance = models.Spawn(s.Model, 0, root);
@@ -119,11 +193,11 @@ namespace MachineBrigade.Editor
             fx.Fire(s.Kind, muzzle, aim, now, s.Scale, s.Altitude > 0f ? (float?)null : 0f);
         }
 
-        private static void Stage(MaterialLibrary materials, Transform root)
+        private static void Stage(MaterialLibrary materials, Transform root, float groundSize = 80f)
         {
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.transform.SetParent(root, false);
-            ground.transform.localScale = new Vector3(8f, 1f, 8f);
+            ground.transform.localScale = new Vector3(groundSize / 10f, 1f, groundSize / 10f);
             var sand = new Material(materials.Ground);
             sand.SetColor("_BaseColor", new Color(0.66f, 0.58f, 0.44f));
             ground.GetComponent<Renderer>().sharedMaterial = sand;

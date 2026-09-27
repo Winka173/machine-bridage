@@ -65,7 +65,82 @@ namespace MachineBrigade.Tests
             var layers = new BlastLayers(_materials, _root.transform);
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
                 ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
-            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 12, "one system per layer kind, not per blast");
+            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 15, "one system per layer kind, not per blast");
+        }
+
+        [Test]
+        public void FireballsSmokeAndFlamesAreFlipbooks()
+        {
+            new BlastLayers(_materials, _root.transform);
+            new FireSpots(_materials, _root.transform);
+            foreach (var name in new[] { "Fireball", "Hot Fireball", "Smoke", "Dust", "Dust Ring", "Flames" })
+            {
+                var layer = Layer(name);
+                var sheet = layer.textureSheetAnimation;
+                Assert.IsTrue(sheet.enabled, name + " animates a sheet");
+                Assert.AreEqual(FxMaterials.Tiles, sheet.numTilesX, name);
+                var material = layer.GetComponent<ParticleSystemRenderer>().sharedMaterial;
+                Assert.AreEqual("MachineBrigade/Flipbook", material.shader.name, name);
+                Assert.IsNotNull(material.GetTexture("_MainTex"), name + " has its sheet");
+            }
+        }
+
+        [Test]
+        public void BiggerBlastsThrowMoreSolidChunks()
+        {
+            var layers = new BlastLayers(_materials, _root.transform);
+            var fires = new FireSpots(_materials, _root.transform);
+            var previous = -1;
+            foreach (var tier in new[] { ExplosionTier.Medium, ExplosionTier.Large, ExplosionTier.Huge, ExplosionTier.Ultimate })
+            {
+                var pool = new DebrisPool(600);
+                layers.Chunks = new ChunkThrower(pool, _materials, null, fires, _root.transform);
+                ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
+                Assert.Greater(pool.Active, previous, $"{tier} throws more chunks than the tier below");
+                previous = pool.Active;
+            }
+            Assert.GreaterOrEqual(previous, 40, "the heaviest blasts throw dozens of chunks");
+        }
+
+        [Test]
+        public void BurningChunksTrailFireAndSmokeThenBurnWhereTheyLand()
+        {
+            var layers = new BlastLayers(_materials, _root.transform);
+            var fires = new FireSpots(_materials, _root.transform);
+            var pool = new DebrisPool(300);
+            layers.Chunks = new ChunkThrower(pool, _materials, null, fires, _root.transform);
+            ExplosionEffect.Create(ExplosionTier.Huge, layers).Play(Vector3.zero, 0f);
+            pool.Tick(0.3f, 0.3f);
+            Assert.Greater(Layer("Chunk Flames").particleCount, 0, "burning chunks trail flames");
+            Assert.Greater(Layer("Chunk Smoke").particleCount, 0, "and smoke");
+            for (var t = 0.3f; t < 4f; t += 0.05f) pool.Tick(t, 0.05f);
+            Assert.Greater(fires.Burning, 0, "the burning chunks keep burning on the ground");
+        }
+
+        [Test]
+        public void ChunksBounceAndSettleLyingOnTheGround()
+        {
+            var pool = new DebrisPool(8);
+            var mesh = ChunkMeshes.Shard(3);
+            pool.Launch(new ChunkModel(mesh, new[] { _materials.Fallback }), new Vector3(0f, 1f, 0f), Random.rotation,
+                new Vector3(4f, 9f, 0f), Vector3.one, 0f, 30f);
+            for (var t = 0f; t < 6f; t += 0.02f) pool.Tick(t, 0.02f);
+            Assert.AreEqual(1, pool.Active, "the chunk is still there");
+            pool.Tick(31f, 0.02f);
+            Assert.AreEqual(0, pool.Active, "and gone once its time is up");
+        }
+
+        [Test]
+        public void BlastsStayWithinTheirParticleBudgets()
+        {
+            var layers = new BlastLayers(_materials, _root.transform);
+            var caps = new System.Collections.Generic.Dictionary<ExplosionTier, int>
+            {
+                [ExplosionTier.Small] = 20, [ExplosionTier.Medium] = 90, [ExplosionTier.Large] = 240, [ExplosionTier.Huge] = 400,
+                [ExplosionTier.Ultimate] = 480,
+            };
+            foreach (var pair in caps)
+                Assert.LessOrEqual(ExplosionEffect.Create(pair.Key, layers).ParticleCount, pair.Value, pair.Key.ToString());
         }
 
         [Test]
