@@ -320,6 +320,8 @@
 }
 /* upkeep: the army is bigger than its supply and the income is cut */
 .cp-army.upkeep { color: var(--amber); }
+/* boost: the underdog's reinforcements come faster (catch-up) */
+.cp-army.boost { color: var(--mint); }
 .cards {
     flex-direction: row; align-items: flex-end;
     padding: 6px 4px;
@@ -736,6 +738,15 @@
 .detail-stars .icon { width: 22px; height: 22px; margin-right: 3px; }
 .detail-rules { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 10px; color: var(--n400); white-space: normal; margin: 2px 14px 0 14px; }
 .reward-line { margin-top: 10px; }
+.detail-tiers { flex-direction: row; flex-wrap: wrap; align-items: center; margin: 8px 14px 0 14px; }
+.tier-chip { height: 26px; padding: 0 10px; margin: 0 6px 4px 0; border-radius: 13px; background-color: var(--n700); justify-content: center; }
+.tier-chip.chosen { background-color: var(--amber); }
+.tier-chip.chosen .tier-name { color: #1d1a12; }
+.tier-chip.locked { opacity: 0.35; }
+.tier-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; color: var(--n100); }
+.tier-rules { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 10px; color: var(--n400); white-space: normal; flex-basis: 100%; }
+.mission-tier { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 9px; color: var(--amber); margin-right: 4px; }
+.mission-tier.iron { color: #d9dde2; }
 .detail-reward { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--n100); }
 .detail-unlocks { margin: 6px 14px 0 14px; }
 .unlock-chip {

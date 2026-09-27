@@ -2,6 +2,111 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: AI review, catch-up for the losing side, bigger bombing blasts
+
+The user asked for:
+- artillery that no longer gets stuck at the map's edge when the enemy closes in and there is nowhere left to back off to;
+- crowds of vehicles that no longer lock each other up (a random step aside, a little more room);
+- no one shooting at the invulnerable camp bastions, while the AI still chases the enemy into its camp;
+- a check of the other behaviours;
+- bigger blasts for the bombing strikes;
+- something that stops one side simply rolling the other over, after looking at how other games do it.
+
+### Done
+
+**Artillery at the map's edge**
+- `SimWorld.EscapeRoute`: the way to back off from a threat. It tries straight back, then 35°, 70° and 110° to either side, and the way to its own camp. It picks the open spot that gains the most distance from the threat and keeps off the map's edge. A gun cornered against the edge used to drive into the clamp point and sit there.
+- Used by the tactical AI (too close to fire, and kiting) and by the vehicle's own min-range retreat. With no way out (4 m or more), the gun stays and its machine gun fights.
+- Artillery backs off only from ground threats. Running from a helicopter hovering overhead was the main way guns were herded into the edge: a gun cannot outrun one.
+- Artillery sees 30 m (was 20 to 26 m, under its 20 to 25 m minimum range): it notices a threat before the threat is already inside its minimum range. It still needs spotters for its 70 to 90 m fire.
+
+**Crowds**
+- A vehicle wedged a second time with other hulls pressed round it steps aside first: a random open spot 3.5 to 6 m away, with the most room round it (`MovementSystem.TryUnjam`). Each vehicle picks its own way, so a knot breaks up instead of everyone dodging the same way.
+- A vehicle that gives up on its route inside a crowd still moves out of the knot, so the others can pass.
+
+**Invulnerable bastions**
+- Nothing picks them as a target any more: not auto-fire, not guard or attack-move, not the tactical AI's target list, not aircraft run targets.
+- A player order to attack one is refused.
+- An ordered target that becomes shielded (a boss behind its glyph) is set aside: the vehicle shoots at something else meanwhile.
+- The AI still chases enemies into their camp.
+- With nothing else to do, the AI's army waits just outside the enemy camp's home zone (out of the bastions' reach) instead of parking under guns it cannot hurt.
+
+**Bigger bombing blasts** (radius in metres)
+
+| Strike or weapon | Was | Now |
+|---|---|---|
+| Airstrike | 6 | 8 |
+| Napalm | 7 | 9 |
+| Carpet bombing | 7 | 9 |
+| Air raid | 6 | 8 |
+| Cluster strike | 4 | 5.5 |
+| Artillery barrage | 5 | 6 |
+| Cruise missile | 15 | 18 |
+| MOAB | 22 | 27 |
+| Heavy bomber payload | 8 | 10 |
+| Stealth bomber payload | 10 | 13 |
+| Jet bombs | 7 | 8 |
+| Guided bomb | 5 | 6 |
+
+- The explosion is drawn as big as the strike reaches: 0.9x to 1.6x of its tier's size.
+
+**Catch-up (quick modes)**
+- What drives a snowball: the bigger army wins every fight, takes the points, earns more for them, and was paid a flat quarter of every kill.
+- Other games work against it in several ways:
+  - World in Conflict returns a lost unit's points;
+  - Company of Heroes has upkeep;
+  - Dota pays more for killing a dominant side (bounties);
+  - many games give a safe, healing home base.
+- Machine Brigade already had upkeep, home zones and bastions. Two gentle levers are new:
+  - **Underdog reinforcements:** a side whose army is under three quarters of the other's earns faster, up to +50 % at a fifth or less. The boost settles over about 4 s. It is shown in mint next to the income ("+2.1/s +35%").
+  - **Bounty by the odds:** a kill pays a quarter of the victim's cost, times √(victim side's army ÷ killer side's army), clamped to 0.5–1.5. The underdog picking off the big army's units earns up to 37.5 %; the big army finishing off the last of the small one earns as little as 12.5 %.
+- Neither lever changes a close fight. Armies under 14 CP (the opening) change nothing.
+- On in Conquest, King of the Hill, Deathmatch, Breakthrough and Defend. Off in campaign missions and the siege modes, which are balanced by hand.
+
+**Tests:** `AiReviewTests`
+- a gun at the edge escapes along it and opens the range;
+- two packed groups of heavy tanks swap sides without locking up;
+- no one targets a bastion, and an order to attack one is refused;
+- the catch-up curve, the underdog's boost, and the bounty.
+
+**Results:** suite 227 passed, 17 skipped. Campaign: all 17 missions win 5/5. Conquest AI-vs-AI matches on the twelve maps still end decisively, in 5.7 to 9.7 minutes.
+
+## 2026-09-27: Launch points, directional armour, smarter fire, night, Defend, challenges
+
+The user asked for:
+- rounds that leave from the real launchers (both pods of the attack helicopter, both barrels of the twin tower together), checked on every vehicle;
+- a list of every vehicle, defence and weapon;
+- then, from a list of suggestions, items 1, 4, 8, 10, 11, 13, 7 and 6 (the screen flash only).
+
+### Done
+
+- **Launch points:**
+  - Found from mesh names and vertices when a model's template is built.
+  - Paired launchers (pods, missile rails, launch tubes) fire left and right in turn.
+  - Launcher faces (tube bores, pod faces, box launchers) fire from a random tube across the face.
+  - Only launchers round the slot's own muzzle count.
+  - Twin guns fire both barrels together (0.05 s apart). L/R barrels are recognised and measured from their meshes.
+- **Directional armour:**
+  - Direct fire does 1.25x from the side and 1.6x from the rear (50° arcs).
+  - Not aircraft, structures or fixed defences.
+- **Smarter fire:**
+  - Targets are scored by value and threat (1.2x if the target is aiming at the shooter, 0.3x if it is unarmed).
+  - Heavy weapons (cooldown of 2 s or more) do not pile onto a target already doomed by shots in flight.
+  - Artillery brackets: the spread narrows by 0.7x a shot on the same target, to 0.4x.
+- **Night lighting:**
+  - Blasts, gun flashes and fires light pools of warm light on the ground.
+  - Illumination flares drift down over the fighting, lighting a 30 m circle.
+- **Defend mode:** the enemy's Breakthrough against three dug-in sectors the player holds. The Defend stance entrenches still vehicles (-20 % direct-fire damage).
+- **Challenges:**
+  - Heroic and Iron tiers for every mission.
+  - A third star per mission: no strikes, no aircraft, or a kill count.
+  - A weekly fortress whose broken rings stay broken all week.
+- **Track marks and trees:**
+  - Every ground vehicle leaves track marks that fade over half a minute.
+  - Hulls knock down trees, bushes, hedges and fences, which topple the way the vehicle drove.
+- **Screen flash:** a brief flash of the whole screen on huge and ultimate blasts, stronger the nearer they are.
+- **Balance:** campaign 17/17 at 5/5 (m03, m10, m13 and m16 retuned).
+
 ## 2026-09-27: Rarer, deadlier aircraft; neutral towers; defences that burn and stay
 
 The user asked for:

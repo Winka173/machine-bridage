@@ -139,6 +139,8 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Deathmatch => new DeathmatchSession(),
                 GameModeKind.KingOfTheHill => new HillSession(),
                 GameModeKind.Assault => new AssaultSession(),
+                GameModeKind.Defend => new DefendSession(),
+                GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
                 GameModeKind.Campaign => new MissionSession(Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
@@ -171,6 +173,7 @@ namespace MachineBrigade.Game.Match
             GameModeKind.Siege => UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null
                 ? mapId + "_siege" : mapId + "_conquest",
             GameModeKind.BossRush => mapId + "_sandbox",
+            GameModeKind.Weekly => WeeklyFortress.MapId + "_siege",
             _ => LegacyMapFile(kind, mapId),
         };
 
@@ -362,6 +365,117 @@ namespace MachineBrigade.Game.Match
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            return outcome;
+        }
+    }
+
+    /// <summary>
+    /// Defend (phòng thủ): the enemy's Breakthrough, three sectors the player holds one behind the
+    /// other with dug-in guns; the enemy's clock grows with every sector it takes. Hold until it runs out.
+    /// </summary>
+    internal sealed class DefendSession : ModeSession
+    {
+        private AssaultMode _mode;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Score, ScoreLabel = "stat.held" };
+        public override string Kicker => Strings.Get("mode.defend.kicker");
+        public override string Subtitle => Strings.Get("mode.defend.sub");
+        public override string StartToast => Strings.Get("mode.defend.toast");
+
+        protected override void Build(SimWorld world, int seed)
+        {
+            // The harder the enemy, the more time it has to break through.
+            var start = Difficulty switch { AiDifficulty.Hard => 400f, AiDifficulty.Easy => 330f, _ => 360f };
+            _mode = new AssaultMode(new AssaultRules
+            {
+                PlayerDefends = true, StartSeconds = start,
+                Attacker = EnemySide(28f, Difficulty == AiDifficulty.Hard ? 1.7f : Difficulty == AiDifficulty.Easy ? 1.25f : 1.5f, Difficulty, world.Catalog),
+                Defender = PlayerSide(20f, 1.1f),
+            });
+            Mode = _mode;
+            _mode.Setup(world);
+            AddEnemyCommander(_mode, seed, CommanderStance.Attack);
+            AddPlayerCommander(_mode, seed).Stance = CommanderStance.Defend;
+        }
+
+        public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
+        {
+            hud.SetStats(0, 0, 0, 0f, fps);
+            FillPoints(_mode, scratch);
+            var count = _mode.Points.Count;
+            var held = PointCapture.Held(_mode.Points, PlayerTeam);
+            hud.SetScore(held, count - held, count, scratch);
+            hud.SetTimer(_mode.SecondsLeft(world));
+        }
+
+        public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
+        {
+            if (_mode.Result is not { } result) return null;
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            AddRows(outcome, world, kills, losses);
+            outcome.Rows.Add((Strings.Get("stat.held"), $"{PointCapture.Held(_mode.Points, PlayerTeam)} / {_mode.Points.Count}"));
+            outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            return outcome;
+        }
+    }
+
+    /// <summary>
+    /// The weekly fortress (see <see cref="WeeklyFortress"/>): a siege that starts at the stage an
+    /// earlier attack this week reached, and pays its weekly reward on the first win of the week.
+    /// </summary>
+    internal sealed class WeeklySession : ModeSession
+    {
+        private SiegeMode _mode;
+        private int _week, _startStage;
+
+        public override HudSpec Hud => new() { Mode = HudMode.Mission };
+        public override string Kicker => Strings.Get("mode.weekly.kicker");
+        public override string Subtitle => Strings.Format("mode.weekly.sub", _week % 100, Strings.Get("map." + WeeklyFortress.MapId));
+        public override string StartToast => Strings.Format("mode.weekly.toast", _startStage, WeeklyFortress.Reward);
+
+        protected override void Build(SimWorld world, int seed)
+        {
+            _week = WeeklyFortress.Week;
+            _startStage = PlayerProfile.WeeklyStage(_week);
+            var attacker = PlayerSide(26f, 1.5f);
+            attacker.ArmyCap = 34;
+            _mode = new SiegeMode(new SiegeRules
+            {
+                StartSeconds = 300f, StartStage = _startStage,
+                Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog),
+            });
+            Mode = _mode;
+            _mode.Setup(world);
+            var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
+            defender.DefendPoint = _mode.Fortress;
+            var player = AddPlayerCommander(_mode, seed);
+            player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
+            player.Demolish = w => _mode.Target(w);
+        }
+
+        public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
+        {
+            hud.SetStats(0, 0, 0, 0f, fps);
+            scratch.Clear();
+            var progress = _mode.Progress(world);
+            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
+                Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
+        }
+
+        public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
+        {
+            if (_mode.Result is not { } result) return null;
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            AddRows(outcome, world, kills, losses);
+            outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
+            outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
+            // The rings broken stay broken for the rest of the week; the first win of the week pays.
+            if (PlayerProfile.RecordWeekly(_week, UnityEngine.Mathf.Min(3, _mode.Stage), outcome.Result > 0))
+            {
+                outcome.Reward.Coins += WeeklyFortress.Reward;
+                outcome.Rows.Add((Strings.Get("mode.weekly"), Strings.Format("weekly.reward", WeeklyFortress.Reward)));
+            }
             return outcome;
         }
     }
@@ -585,7 +699,19 @@ namespace MachineBrigade.Game.Match
             }
             var playerSide = PlayerSide(_def.PlayerCp, _def.PlayerIncome);
             playerSide.ArmyCap = _def.PlayerCap;
-            _mode = new MissionMode(_def, playerSide, enemy);
+            // Heroic and Iron: the enemy comes stronger; Iron also leaves the player poorer and without fire support.
+            _tier = System.Math.Clamp(MatchSettings.MissionTier, 0, 2);
+            if (_tier > 0 && enemy != null)
+            {
+                enemy.StartCp *= 1.3f;
+                enemy.Income *= 1.25f;
+            }
+            if (_tier == 2)
+            {
+                playerSide.Income *= 0.8f;
+                playerSide.Supports = System.Array.Empty<string>();
+            }
+            _mode = new MissionMode(_tier > 0 ? _def.Harder(1.3f) : _def, playerSide, enemy);
             Mode = _mode;
             _mode.Setup(world);
 
@@ -600,6 +726,7 @@ namespace MachineBrigade.Game.Match
                 Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => _mode.EnemyGoal(w) ?? home };
             }
             var player = AddPlayerCommander(_mode, seed);
+            if (_tier == 2) player.AutoStrike = false;
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
             // Holding a point: fight whatever comes at it, but never wander off and leave it open.
@@ -614,6 +741,16 @@ namespace MachineBrigade.Game.Match
         }
 
         private int _nextTip;
+        private int _tier;
+
+        /// <summary>Whether the mission's own third-star challenge was met.</summary>
+        private bool ChallengeMet(SimWorld world) => _def.Challenge switch
+        {
+            "NoStrikes" => world.StrikesCalled(PlayerTeam) == 0,
+            "NoAircraft" => world.AircraftBought(PlayerTeam) == 0,
+            "Kills" => _mode.Kills >= _def.ChallengeValue,
+            _ => true,
+        };
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
         {
@@ -645,7 +782,8 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.kills"), _mode.Kills.ToString()));
             outcome.Rows.Add((Strings.Get("result.losses"), _mode.Losses.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
-            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, _mode.Losses);
+            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, _mode.Losses, ChallengeMet(world), _tier);
+            if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));
             return outcome;
         }
     }

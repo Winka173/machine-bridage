@@ -93,6 +93,14 @@ namespace MachineBrigade.Game.Hud
             // Colour-blind safe teams re-tint every ally and enemy colour in the styles.
             _root.EnableInClassList("cb", Match.MatchSettings.ColorBlind);
 
+            // The flash of a huge blast: a warm wash over the battlefield, under every control.
+            _flash = new VisualElement { pickingMode = PickingMode.Ignore };
+            _flash.style.position = Position.Absolute;
+            _flash.style.left = _flash.style.top = _flash.style.right = _flash.style.bottom = 0;
+            _flash.style.backgroundColor = new Color(1f, 0.9f, 0.72f);
+            _flash.style.opacity = 0f;
+            _root.Add(_flash);
+
             var hud = UiKit.Box("hud");
             _root.Add(hud);
             _safe = UiKit.Box("safe");
@@ -598,8 +606,19 @@ namespace MachineBrigade.Game.Hud
             return panel != null && panel.Pick(ToPanel(screen)) != null;
         }
 
+        private readonly VisualElement _flash;
+        private float _flashLevel;
+
+        /// <summary>Flashes the screen (a huge blast in view); the stronger of overlapping flashes wins, and it fades in a fifth of a second.</summary>
+        public void Flash(float strength) => _flashLevel = Mathf.Max(_flashLevel, Mathf.Clamp01(strength));
+
         public void Tick()
         {
+            if (_flashLevel > 0f)
+            {
+                _flashLevel = Mathf.Max(0f, _flashLevel - Time.unscaledDeltaTime * 1.1f);
+                _flash.style.opacity = _flashLevel;
+            }
             var toastDone = Time.unscaledTime > _toastUntil || (_toastQueue.Count > 0 && Time.unscaledTime - _toastShownAt > 1.2f);
             if (toastDone && _toastQueue.Count > 0)
             {

@@ -8,6 +8,10 @@ namespace MachineBrigade.Sim.Entities
     {
         public float Cooldown;
 
+        /// <summary>Artillery walking its fire onto a target: which one, and how many rounds it has put near it.</summary>
+        public EntityId BracketTarget;
+        public int BracketShots;
+
         /// <summary>Rounds left, or -1 for a weapon with unlimited ammunition.</summary>
         public int Ammo = -1;
         public EntityId Target;

@@ -48,6 +48,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _smoke;
         private readonly ParticleSystem _glow;
 
+        /// <summary>Night: the firelight on the ground spreads twice as far.</summary>
+        public bool Night { get; set; }
+
         public FireSpots(MaterialLibrary m, Transform parent)
         {
             var fx = FxMaterials.Shared;
@@ -256,7 +259,8 @@ namespace MachineBrigade.Game.Effects
             _glow.Emit(new ParticleSystem.EmitParams
             {
                 position = new Vector3(f.Position.x, 0.08f, f.Position.z),
-                startSize = Random.Range(2.6f, 3.4f) * f.Size,
+                // At night the firelight reaches much farther.
+                startSize = Random.Range(2.6f, 3.4f) * f.Size * (Night ? 2f : 1f),
                 startLifetime = Random.Range(0.7f, 1f),
                 rotation = Random.Range(0f, 360f),
             }, 1);

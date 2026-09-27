@@ -32,7 +32,8 @@ namespace MachineBrigade.Tests
         {
             var world = TestWorlds.World();
             world.SpawnVehicle("tank", 0, Vector2.Zero, 0f);
-            var target = world.SpawnVehicle("dummy", 1, new Vector2(0f, 10f), 0f);
+            // Facing the shooter: a hit on its front armour (see ArmourTests for the sides and rear).
+            var target = world.SpawnVehicle("dummy", 1, new Vector2(0f, 10f), System.MathF.PI);
             world.ClearEvents();
 
             var fired = 0;

@@ -16,6 +16,9 @@ namespace MachineBrigade.Game.Match
 
         public string MissionId { get; set; }
 
+        /// <summary>The tier the mission was fought at (0 normal, 1 heroic, 2 iron).</summary>
+        public int Tier { get; set; }
+
         /// <summary>Cards this battle unlocks (a campaign mission's first win).</summary>
         public List<string> Unlocks { get; } = new();
 
@@ -32,7 +35,7 @@ namespace MachineBrigade.Game.Match
             PlayerProfile.AddCoins(Coins * multiplier);
             RanksGained.AddRange(PlayerProfile.AddXp(Xp));
             foreach (var id in Unlocks) PlayerProfile.Unlock(id);
-            if (MissionId != null) PlayerProfile.RecordMission(MissionId, Stars);
+            if (MissionId != null) PlayerProfile.RecordMission(MissionId, Stars, Tier);
         }
     }
 
@@ -68,20 +71,25 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>Stars for a won mission: one for the win, one for speed, one for few losses.</summary>
-        public static int Stars(MissionDef mission, bool won, float seconds, int losses)
+        /// <summary>Stars: one for the win, one for the time, one for the mission's own challenge (or for few losses).</summary>
+        public static int Stars(MissionDef mission, bool won, float seconds, int losses, bool challenge = true)
         {
             if (!won) return 0;
             var stars = 1;
             if (mission.StarTime <= 0f || seconds <= mission.StarTime) stars++;
-            if (mission.StarLosses < 0 || losses <= mission.StarLosses) stars++;
+            if (mission.Challenge != null ? challenge : mission.StarLosses < 0 || losses <= mission.StarLosses) stars++;
             return stars;
         }
 
-        public static MatchReward Mission(MissionDef mission, bool won, float seconds, int losses)
+        /// <summary>Reward multiplier of a mission tier: Heroic pays half as much again, Iron double.</summary>
+        public static float TierPay(int tier) => tier switch { 1 => 1.5f, 2 => 2f, _ => 1f };
+
+        public static MatchReward Mission(MissionDef mission, bool won, float seconds, int losses, bool challenge = true, int tier = 0)
         {
-            var stars = Stars(mission, won, seconds, losses);
-            var first = won && !PlayerProfile.Completed(mission.Id);
-            var reward = new MatchReward { MissionId = mission.Id, Stars = stars };
+            var stars = Stars(mission, won, seconds, losses, challenge);
+            // A tier's first win pays in full, like the mission's first win.
+            var first = won && (!PlayerProfile.Completed(mission.Id) || PlayerProfile.MissionTier(mission.Id) < tier);
+            var reward = new MatchReward { MissionId = mission.Id, Stars = stars, Tier = tier };
             if (!won)
             {
                 reward.Coins = 30;
@@ -89,9 +97,9 @@ namespace MachineBrigade.Game.Match
                 return reward;
             }
             var share = first ? 1f : 0.35f;
-            reward.Coins = Mathf.RoundToInt(mission.RewardCoins * share + 50 * stars);
-            reward.Xp = Mathf.RoundToInt(mission.RewardXp * share + 30 * stars);
-            if (first) reward.Unlocks.AddRange(mission.Unlocks);
+            reward.Coins = Mathf.RoundToInt((mission.RewardCoins * share + 50 * stars) * TierPay(tier));
+            reward.Xp = Mathf.RoundToInt((mission.RewardXp * share + 30 * stars) * TierPay(tier));
+            if (!PlayerProfile.Completed(mission.Id)) reward.Unlocks.AddRange(mission.Unlocks);
             return reward;
         }
     }

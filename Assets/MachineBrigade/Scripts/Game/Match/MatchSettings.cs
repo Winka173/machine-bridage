@@ -22,6 +22,12 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The bosses one after another.</summary>
         BossRush,
+
+        /// <summary>Hold three sectors against the enemy's Breakthrough.</summary>
+        Defend,
+
+        /// <summary>This week's fortress: a siege whose broken rings stay broken all week.</summary>
+        Weekly,
     }
 
     public enum WeatherKind
@@ -126,6 +132,11 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>False shows the menu over an AI-versus-AI battle; true plays the chosen match.</summary>
         public static bool InMatch { get; set; }
+
+        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 heroic, 2 iron); not saved.</summary>
+
+        public static int MissionTier { get; set; }
+
 
         public static GameModeKind Mode { get; set; } = GameModeKind.Conquest;
 
@@ -287,7 +298,8 @@ namespace MachineBrigade.Game.Match
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
                 Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
                 Weather = (WeatherKind)PlayerPrefs.GetInt("mb.weather", (int)WeatherKind.Random);
-                Mode = (GameModeKind)Mathf.Clamp(PlayerPrefs.GetInt("mb.mode", 0), 0, (int)GameModeKind.Assault);
+                var savedMode = (GameModeKind)PlayerPrefs.GetInt("mb.mode", 0);
+                Mode = System.Enum.IsDefined(typeof(GameModeKind), savedMode) && savedMode != GameModeKind.Campaign ? savedMode : GameModeKind.Conquest;
                 Mission = PlayerPrefs.GetString("mb.mission", Mission);
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;

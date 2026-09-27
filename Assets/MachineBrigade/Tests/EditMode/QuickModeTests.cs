@@ -92,5 +92,31 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(mode.Result, "an assault ends by capture or by the clock");
             Assert.Greater(kills, 10, "there is a real fight");
         }
+
+        [Test]
+        public void DefendIsTheSameBreakthroughWithTheSidesSwapped()
+        {
+            var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("ashfield_conquest"), seed: 34);
+            var mode = new AssaultMode(new AssaultRules
+            {
+                PlayerDefends = true, StartSeconds = 360f, Attacker = Side(28f, 1.5f), Defender = Side(20f, 1.1f),
+            });
+            mode.Setup(world);
+            Assert.AreEqual(1, mode.Attacker);
+            Assert.AreEqual(0, mode.Defender);
+            foreach (var p in mode.Points) Assert.AreEqual(0, p.Owner, "the player holds every sector at the start");
+            world.TryGetRally(0, out var home);
+            var depth = new float[3];
+            for (var s = 0; s < 3; s++) depth[s] = mode.SectorPoints(s).Average(p => System.Numerics.Vector2.Distance(p.Def.Position, home));
+            Assert.Greater(depth[0], depth[1], "sector A is the farthest from the player's camp");
+            Assert.Greater(depth[1], depth[2], "and C the nearest");
+            Assert.GreaterOrEqual(world.VehicleList.Count(v => v.Team == 0 && v.Def.Static), 7, "the player's sectors are dug in");
+            var attacker = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 9) { Stance = CommanderStance.Attack };
+            var defender = new ConquestAi(mode, 0, 1, AiDifficulty.Hard, 10) { Stance = CommanderStance.Defend };
+            var (kills, minutes) = Play(world, mode, attacker, defender, 18f);
+            Debug.Log($"Defend: {minutes:0.0} min, enemy at sector {mode.Sector + 1}/{mode.SectorCount}, result {mode.Result?.WinningTeam}, destroyed {kills}");
+            Assert.IsNotNull(mode.Result, "a defence ends");
+            Assert.Greater(kills, 10, "there is a real fight");
+        }
     }
 }

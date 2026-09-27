@@ -141,6 +141,33 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Third star: won losing at most this many vehicles (negative: always).</summary>
         public int StarLosses { get; set; } = -1;
 
+        /// <summary>
+        /// The mission's own third star, instead of the losses rule: "NoStrikes" (no fire support
+        /// called), "NoAircraft" (no aircraft bought), "Kills" (at least <see cref="ChallengeValue"/>
+        /// enemy vehicles destroyed); null keeps <see cref="StarLosses"/>.
+        /// </summary>
+        public string? Challenge { get; set; }
+
+        public int ChallengeValue { get; set; }
+
+        /// <summary>
+        /// A harder copy of the mission (the Heroic and Iron tiers): the enemy starts with more
+        /// CP, earns more and sends bigger waves. The mission itself is left as it is.
+        /// </summary>
+        public MissionDef Harder(float enemy)
+        {
+            var copy = (MissionDef)MemberwiseClone();
+            copy.EnemyCp = EnemyCp * enemy;
+            copy.EnemyIncome = EnemyIncome * (1f + (enemy - 1f) * 0.8f);
+            if (Waves != null)
+                copy.Waves = new WaveDef
+                {
+                    First = Waves.First, Interval = Waves.Interval, Size = (int)Math.Ceiling(Waves.Size * enemy), Grow = Waves.Grow * enemy,
+                    MaxSize = (int)Math.Ceiling(Waves.MaxSize * enemy), MaxAlive = (int)Math.Ceiling(Waves.MaxAlive * enemy),
+                };
+            return copy;
+        }
+
         public static IReadOnlyList<MissionDef> ListFromJson(string json)
         {
             var root = new JsonObject(MiniJson.Parse(json), "campaign");
@@ -185,6 +212,12 @@ namespace MachineBrigade.Sim.Content
                 StarTime = m.Float("starTime", 0f),
                 StarLosses = m.Int("starLosses", -1),
             };
+            if (m.Has("challenge"))
+            {
+                var c = m.Object("challenge");
+                def.Challenge = c.String("kind");
+                def.ChallengeValue = c.Int("value", 0);
+            }
             if (m.Has("boss")) def.Boss = Scripted(m.Object("boss"));
             if (m.Has("convoy")) def.Convoy = Scripted(m.Object("convoy"));
             if (m.Has("waves"))

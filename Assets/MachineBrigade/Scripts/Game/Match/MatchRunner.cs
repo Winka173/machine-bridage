@@ -117,6 +117,8 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-deathmatch")) MatchSettings.Mode = GameModeKind.Deathmatch;
                 if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
                 if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
+                if (DebugFlags.Has("-mb-defend")) MatchSettings.Mode = GameModeKind.Defend;
+                if (DebugFlags.Has("-mb-weekly")) MatchSettings.Mode = GameModeKind.Weekly;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
             foreach (var campaignMission in Campaign.All)
@@ -142,6 +144,8 @@ namespace MachineBrigade.Game.Match
             var map = GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
             _session = ModeSession.Create(kind, _menu, _world, seed);
+            // A campaign tier holds for the one mission it was chosen for.
+            if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;
             _clock = new SimClock();
 
             var worldRoot = new GameObject("Battlefield").transform;
@@ -153,6 +157,9 @@ namespace MachineBrigade.Game.Match
             var theme = MapTheme.For(map.Theme);
             if (theme.ModelGrass.HasValue) _materials.ForModel("Grass", -1).SetColor("_BaseColor", theme.ModelGrass.Value);
             _map = new MapView(_world, _models, _materials, theme, worldRoot, options.Shadows);
+            // Buildings already down before the battle (the weekly fortress's broken rings) show as rubble.
+            foreach (var prop in _world.Props)
+                if (!prop.IsAlive) _map.TryDestroy(prop.Id, out _);
             _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot, options);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
@@ -199,6 +206,7 @@ namespace MachineBrigade.Game.Match
             if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
             _weatherKind = weather;
+            _effects.Night = weather == WeatherKind.Night;
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -213,6 +221,7 @@ namespace MachineBrigade.Game.Match
             {
                 ShowFps = MatchSettings.ShowFps,
             };
+            if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);
             if (_hud.Minimap != null)
             {
                 _hud.Minimap.Ground = theme.Minimap;
@@ -257,6 +266,7 @@ namespace MachineBrigade.Game.Match
             _weather.Dispose();
             _weatherKind = next;
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            _effects.Night = next == WeatherKind.Night;
             if (next == WeatherKind.Clear)
             {
                 var theme = MapTheme.For(_world.Map.Theme);

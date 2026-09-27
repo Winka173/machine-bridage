@@ -9,12 +9,12 @@
       "tips": [ { "at": 2, "key": "tip.auto" }, { "at": 9, "key": "tip.deploy" }, { "at": 16, "key": "tip.points" },
                 { "at": 24, "key": "tip.strike" }, { "at": 33, "key": "tip.select" }, { "at": 43, "key": "tip.counters" },
                 { "at": 54, "key": "tip.items" } ],
-      "coins": 100, "xp": 80, "unlocks": [], "starTime": 300, "starLosses": 4 },
+      "coins": 100, "xp": 80, "unlocks": [], "starTime": 300, "starLosses": 4, "challenge": {"kind": "Kills", "value": 8} },
 
     { "id": "m01", "map": "ashfield", "weather": "Clear", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Easy", "enemyCp": 10, "enemyIncome": 0.8,
       "enemyDeck": ["scout_jeep", "armored_car", "light_tank", "apc"],
-      "coins": 150, "xp": 120, "unlocks": ["rocket_technical"], "starTime": 480, "starLosses": 6 },
+      "coins": 150, "xp": 120, "unlocks": ["rocket_technical"], "starTime": 480, "starLosses": 6, "challenge": {"kind": "NoStrikes"} },
 
     { "id": "m02", "map": "ashfield", "weather": "Overcast", "goal": "Escort", "convoyCount": 5, "convoyNeeded": 3,
       "convoy": { "def": "supply_truck", "x": -70, "z": -70, "heading": 45,
@@ -26,20 +26,20 @@
       "waves": { "first": 12, "interval": 26, "size": 2, "grow": 0.4, "maxSize": 5, "maxAlive": 10,
                  "roster": ["scout_jeep", "armored_car", "rocket_technical", "light_tank", "apc"],
                  "spawns": [10, -72, 62, -30, 62, 20, 30, 30, -30, 14] },
-      "coins": 200, "xp": 150, "unlocks": ["mortar_carrier", "repair_drop"], "starTime": 240, "starLosses": 4 },
+      "coins": 200, "xp": 150, "unlocks": ["mortar_carrier", "repair_drop"], "starTime": 240, "starLosses": 4, "challenge": {"kind": "Kills", "value": 15} },
 
     { "id": "m03", "map": "ashfield", "weather": "Storm", "goal": "Boss", "timeLimit": 1140,
       "boss": { "def": "mega_gunship", "x": 56.2, "z": 56.2, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerIncome": 1.2,
       "enemyDeck": ["scout_jeep", "armored_car", "light_tank", "apc", "main_battle_tank", "rocket_technical"],
-      "coins": 400, "xp": 300, "unlocks": ["attack_helicopter"], "starTime": 900, "starLosses": 8 },
+      "coins": 400, "xp": 300, "unlocks": ["attack_helicopter"], "starTime": 900, "starLosses": 8, "challenge": {"kind": "NoStrikes"} },
 
     { "id": "m04", "map": "dunebreak", "weather": "Clear", "goal": "Survive", "surviveSeconds": 300, "points": ["east"],
       "enemyAi": "waves", "difficulty": "Normal", "playerCp": 18,
       "waves": { "first": 18, "interval": 30, "size": 3, "grow": 0.6, "maxSize": 8, "maxAlive": 16,
                  "roster": ["rocket_technical", "armored_car", "apc", "light_tank", "mortar_carrier", "attack_helicopter"],
                  "spawns": [62, -10, 50, 22, 18, -76] },
-      "coins": 250, "xp": 200, "unlocks": ["tank_destroyer"], "starTime": 0, "starLosses": 8 },
+      "coins": 250, "xp": 200, "unlocks": ["tank_destroyer"], "starTime": 0, "starLosses": 8, "challenge": {"kind": "NoAircraft"} },
 
     { "id": "m05", "map": "dunebreak", "weather": "Night", "goal": "Destroy", "targets": ["refinery_tower", "storage_tank"], "timeLimit": 900, "targetHealth": 1.5,
       "units": [ { "def": "main_battle_tank", "team": 1, "x": 7.5, "z": 27.5, "heading": 225 },
@@ -50,7 +50,7 @@
                  { "def": "armored_car", "team": 1, "x": 70, "z": -72.5, "heading": 225 } ],
       "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 20,
       "enemyDeck": ["armored_car", "light_tank", "apc", "main_battle_tank", "aa_vehicle", "rocket_technical", "mortar_carrier"],
-      "coins": 300, "xp": 220, "unlocks": ["grad_truck", "flame_tank", "airstrike"], "starTime": 480, "starLosses": 8 },
+      "coins": 300, "xp": 220, "unlocks": ["grad_truck", "flame_tank", "airstrike"], "starTime": 480, "starLosses": 8, "challenge": {"kind": "Kills", "value": 20} },
 
     { "id": "m06", "map": "dunebreak", "weather": "Sandstorm", "goal": "Boss", "timeLimit": 1200,
       "boss": { "def": "behemoth", "x": 50, "z": 50, "heading": 225 },
@@ -69,7 +69,7 @@
       "enemyDeck": ["light_tank", "apc", "main_battle_tank", "aa_vehicle", "sam_launcher", "mortar_carrier", "tank_destroyer"],
       "waves": { "first": 60, "interval": 55, "size": 2, "grow": 0.4, "maxSize": 5, "maxAlive": 18,
                  "roster": ["scout_heli", "attack_helicopter", "armored_car"] },
-      "coins": 320, "xp": 240, "unlocks": ["atgm_carrier", "scout_heli", "strike_drone"], "starTime": 420, "starLosses": 7 },
+      "coins": 320, "xp": 240, "unlocks": ["atgm_carrier", "scout_heli", "strike_drone"], "starTime": 420, "starLosses": 7, "challenge": {"kind": "NoStrikes"} },
 
     { "id": "m08", "map": "frostpeak", "weather": "Fog", "goal": "Hold", "points": ["town"], "holdSeconds": 180,
       "units": [ { "def": "main_battle_tank", "team": 0, "x": -7.5, "z": -7.5, "heading": 45 },
@@ -89,7 +89,7 @@
       "boss": { "def": "mobile_fortress", "x": 52.5, "z": 57.5, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Hard", "enemyCp": 16,
       "enemyDeck": ["light_tank", "main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "mlrs"],
-      "coins": 600, "xp": 420, "unlocks": ["gunship_heli", "cruise_missile"], "starTime": 600, "starLosses": 12 },
+      "coins": 600, "xp": 420, "unlocks": ["gunship_heli", "cruise_missile"], "starTime": 600, "starLosses": 12, "challenge": {"kind": "NoAircraft"} },
 
     { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
@@ -107,7 +107,7 @@
       "waves": { "first": 20, "interval": 26, "size": 3, "grow": 0.6, "maxSize": 7, "maxAlive": 18,
                  "roster": ["armored_car", "rocket_technical", "light_tank", "attack_helicopter", "flame_tank"], "spawns": [40, 62, 62, 10, -64, 40] },
       "timeLimit": 1100,
-      "coins": 500, "xp": 360, "unlocks": ["aps_tank", "howitzer"], "starTime": 300, "starLosses": 8 },
+      "coins": 500, "xp": 360, "unlocks": ["aps_tank", "howitzer"], "starTime": 300, "starLosses": 8, "challenge": {"kind": "Kills", "value": 25} },
 
     { "id": "m12", "map": "ironport", "weather": "Night", "goal": "Intercept",
       "boss": { "def": "armored_train", "x": 87.5, "z": 71.2, "heading": 270, "route": [50, 71.2, 0, 71.2, -50, 71.2, -92.5, 71.2] },
@@ -120,7 +120,7 @@
                  { "def": "heavy_tank", "team": 0, "x": -30, "z": 62.5, "heading": 90 } ],
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 10, "playerCp": 28, "playerIncome": 1.4,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "attack_jet"],
-      "coins": 800, "xp": 500, "unlocks": ["thermobaric_launcher"], "starTime": 120, "starLosses": 8 },
+      "coins": 800, "xp": 500, "unlocks": ["thermobaric_launcher"], "starTime": 120, "starLosses": 8, "challenge": {"kind": "NoStrikes"} },
 
     { "id": "m13", "map": "emberridge", "variant": "siege", "weather": "Night", "goal": "Destroy", "targets": ["command_hq"],
       "targetHealth": 2.2, "timeLimit": 1100,
@@ -136,13 +136,13 @@
       "enemyDeck": ["light_tank", "apc", "main_battle_tank", "flame_tank", "attack_helicopter", "tank_destroyer"],
       "waves": { "first": 80, "interval": 70, "size": 2, "grow": 0.3, "maxSize": 4, "maxAlive": 10,
                  "roster": ["elite_apc", "main_battle_tank", "elite_mbt", "attack_helicopter"] },
-      "coins": 700, "xp": 440, "unlocks": ["engineer_vehicle", "fpv_carrier", "ew_jammer"], "starTime": 600, "starLosses": 14 },
+      "coins": 700, "xp": 440, "unlocks": ["engineer_vehicle", "fpv_carrier", "ew_jammer"], "starTime": 600, "starLosses": 14, "challenge": {"kind": "NoAircraft"} },
 
     { "id": "m15", "map": "skyhold", "weather": "Clear", "goal": "Boss", "timeLimit": 1100,
       "boss": { "def": "drone_mothership", "x": 56.2, "z": 56.2, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 14, "playerCp": 24, "playerIncome": 1.3, "playerCap": 36,
       "enemyDeck": ["main_battle_tank", "aa_vehicle", "attack_helicopter", "gunship_heli", "strike_drone", "heavy_tank"],
-      "coins": 900, "xp": 560, "unlocks": ["fighter_jet", "recon_drone", "tank_buster"], "starTime": 720, "starLosses": 14 },
+      "coins": 900, "xp": 560, "unlocks": ["fighter_jet", "recon_drone", "tank_buster"], "starTime": 720, "starLosses": 14, "challenge": {"kind": "Kills", "value": 30} },
 
     { "id": "m16", "map": "metrocity", "weather": "Night", "goal": "Intercept", "launchSeconds": 60, "timeLimit": 1200,
       "boss": { "def": "nuke_train", "x": 92.5, "z": 67.5, "heading": 270, "route": [50, 67.5, 0, 67.5, -45, 67.5, -67.5, 67.5, -67.5, 22.5] },
@@ -150,7 +150,7 @@
                  { "def": "tank_destroyer", "team": 0, "x": -55, "z": -7.5, "heading": 0 },
                  { "def": "heavy_tank", "team": 0, "x": -45, "z": -5, "heading": 0 },
                  { "def": "mlrs", "team": 0, "x": -62.5, "z": -25, "heading": 0 } ],
-      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerCp": 28, "playerIncome": 1.4, "playerCap": 36,
+      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerCp": 28, "playerIncome": 1.55, "playerCap": 36,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "attack_jet"],
       "coins": 1200, "xp": 700, "unlocks": ["heavy_rocket_artillery", "mine_layer"], "starTime": 480, "starLosses": 12 }
   ]

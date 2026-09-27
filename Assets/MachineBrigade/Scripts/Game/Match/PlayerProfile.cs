@@ -22,6 +22,14 @@ namespace MachineBrigade.Game.Match
             public string skin = Skins.Default;
             public List<string> missionIds = new();
             public List<int> missionStars = new();
+
+            /// <summary>Best tier won per mission (0 normal, 1 heroic, 2 iron), alongside missionIds.</summary>
+            public List<int> missionTiers = new();
+
+            /// <summary>The weekly fortress: the week it is for, the stage reached, whether its reward was paid.</summary>
+            public int weeklyId;
+            public int weeklyStage = 1;
+            public bool weeklyClaimed;
             public List<string> itemIds = new();
             public int dailyDay;
             public List<int> dailyProgress = new();
@@ -208,8 +216,8 @@ namespace MachineBrigade.Game.Match
             Save();
         }
 
-        /// <summary>Records a mission result, keeping the best star count. Returns true on the first clear.</summary>
-        public static bool RecordMission(string missionId, int stars)
+        /// <summary>Records a mission result, keeping the best star count and tier. Returns true on the first clear.</summary>
+        public static bool RecordMission(string missionId, int stars, int tier = 0)
         {
             var i = D.missionIds.IndexOf(missionId);
             var first = i < 0 || D.missionStars[i] == 0;
@@ -217,10 +225,44 @@ namespace MachineBrigade.Game.Match
             {
                 D.missionIds.Add(missionId);
                 D.missionStars.Add(stars);
+                D.missionTiers.Add(stars > 0 ? tier : -1);
             }
-            else if (stars > D.missionStars[i]) D.missionStars[i] = stars;
+            else
+            {
+                if (stars > D.missionStars[i]) D.missionStars[i] = stars;
+                if (stars > 0 && tier > D.missionTiers[i]) D.missionTiers[i] = tier;
+            }
             Save();
             return first && stars > 0;
+        }
+
+        /// <summary>The hardest tier a mission has been won at (-1: not won yet).</summary>
+        public static int MissionTier(string missionId)
+        {
+            var i = D.missionIds.IndexOf(missionId);
+            return i >= 0 && D.missionStars[i] > 0 ? Math.Max(0, D.missionTiers[i]) : -1;
+        }
+
+        /// <summary>The stage reached on this week's fortress (1 at the start of a week).</summary>
+        public static int WeeklyStage(int week) => D.weeklyId == week ? D.weeklyStage : 1;
+
+        public static bool WeeklyClaimed(int week) => D.weeklyId == week && D.weeklyClaimed;
+
+        /// <summary>Records an attack on the weekly fortress; returns true when it pays its weekly reward (the first win of the week).</summary>
+        public static bool RecordWeekly(int week, int stage, bool won)
+        {
+            if (D.weeklyId != week)
+            {
+                D.weeklyId = week;
+                D.weeklyStage = 1;
+                D.weeklyClaimed = false;
+            }
+            D.weeklyStage = Math.Max(D.weeklyStage, Math.Clamp(stage, 1, 3));
+            var pays = won && !D.weeklyClaimed;
+            if (pays) D.weeklyClaimed = true;
+            if (won) D.weeklyStage = 1;
+            Save();
+            return pays;
         }
 
         public static void Load()
@@ -237,6 +279,7 @@ namespace MachineBrigade.Game.Match
             }
             if (!Skins.Exists(_data.skin)) _data.skin = Skins.Default;
             while (_data.missionStars.Count < _data.missionIds.Count) _data.missionStars.Add(0);
+            while (_data.missionTiers.Count < _data.missionIds.Count) _data.missionTiers.Add(0);
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
         }
 

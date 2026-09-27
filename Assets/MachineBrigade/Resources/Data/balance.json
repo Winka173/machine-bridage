@@ -50,7 +50,7 @@
     { "id": "scout_rockets",     "damageType": "HighExplosive", "damage": 47,  "cooldown": 8,    "range": 28, "projectileSpeed": 90, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 6, "burstInterval": 0.12 },
     { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 38,  "cooldown": 2.5,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "burst": 10, "burstInterval": 0.05 },
     { "id": "jet_rockets",       "damageType": "HighExplosive", "damage": 61,  "cooldown": 7,    "range": 36, "projectileSpeed": 110, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
-    { "id": "jet_bombs",         "damageType": "HighExplosive", "damage": 351, "cooldown": 12,   "range": 26, "projectileSpeed": 35, "splash": 7, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "burst": 2, "burstInterval": 0.25 },
+    { "id": "jet_bombs",         "damageType": "HighExplosive", "damage": 351, "cooldown": 12,   "range": 26, "projectileSpeed": 35, "splash": 8, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "burst": 2, "burstInterval": 0.25 },
     { "id": "drone_missile",     "damageType": "ArmorPiercing", "damage": 270, "cooldown": 4,    "range": 48, "projectileSpeed": 60, "impactTier": "Medium", "projectile": "Missile" },
     // Second wave of vehicles.
     { "id": "gun_155_sph",       "damageType": "HighExplosive", "damage": 150, "cooldown": 6.0,  "range": 100, "minRange": 25, "projectileSpeed": 50, "splash": 8, "spread": 4.5, "impactTier": "Huge", "ammo": 16 },
@@ -58,9 +58,9 @@
     { "id": "twin_30_flak",      "damageType": "Flak",          "damage": 28,  "cooldown": 0.45, "range": 42, "projectileSpeed": 280, "splash": 2.5, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 6, "burstInterval": 0.06 },
     { "id": "gun_140_twin",      "damageType": "ArmorPiercing", "damage": 210, "cooldown": 3.4,  "range": 40, "projectileSpeed": 200, "splash": 2, "spread": 0.5, "impactTier": "Large", "burst": 2, "burstInterval": 0.05 },
     // Premium aircraft (bought with coins).
-    { "id": "bomber_payload",    "damageType": "HighExplosive", "damage": 400, "cooldown": 11,   "range": 28, "projectileSpeed": 35, "splash": 8, "spread": 7, "impactTier": "Huge", "projectile": "Bomb", "burst": 12, "burstInterval": 0.12 },
+    { "id": "bomber_payload",    "damageType": "HighExplosive", "damage": 400, "cooldown": 11,   "range": 28, "projectileSpeed": 35, "splash": 10, "spread": 7, "impactTier": "Huge", "projectile": "Bomb", "burst": 12, "burstInterval": 0.12 },
     { "id": "bomber_tail_guns",  "damageType": "Kinetic",       "damage": 19,  "cooldown": 0.3,  "range": 30, "projectileSpeed": 240, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "Air" },
-    { "id": "stealth_payload",   "damageType": "HighExplosive", "damage": 850, "cooldown": 14,   "range": 30, "projectileSpeed": 40, "splash": 10, "spread": 2, "impactTier": "Ultimate", "projectile": "Bomb", "burst": 3, "burstInterval": 0.3 },
+    { "id": "stealth_payload",   "damageType": "HighExplosive", "damage": 850, "cooldown": 14,   "range": 30, "projectileSpeed": 40, "splash": 13, "spread": 2, "impactTier": "Ultimate", "projectile": "Bomb", "burst": 3, "burstInterval": 0.3 },
     { "id": "gunship_105",       "damageType": "HighExplosive", "damage": 243, "cooldown": 3.5,  "range": 58, "projectileSpeed": 120, "splash": 6.5, "spread": 3, "impactTier": "Huge" },
     { "id": "gunship_40mm",      "damageType": "HighExplosive", "damage": 61,  "cooldown": 0.9,  "range": 55, "projectileSpeed": 200, "splash": 3, "spread": 2.5, "impactTier": "Medium", "burst": 3, "burstInterval": 0.2 },
     { "id": "gunship_25mm",      "damageType": "Kinetic",       "damage": 19,  "cooldown": 0.12, "range": 50, "projectileSpeed": 280, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
@@ -108,7 +108,7 @@
     { "id": "boss_flak",         "damageType": "Flak",          "damage": 31,  "cooldown": 0.4,  "range": 40, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 4, "burstInterval": 0.07 },
     { "id": "train_gun",         "damageType": "ArmorPiercing", "damage": 200, "cooldown": 3.2,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" },
     { "id": "agl_40", "damageType": "HighExplosive", "damage": 7, "cooldown": 2.4, "range": 30, "projectileSpeed": 70, "splash": 2, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "burst": 3, "burstInterval": 0.2 },
-    { "id": "guided_bomb", "damageType": "HighExplosive", "damage": 297, "cooldown": 10, "range": 30, "projectileSpeed": 40, "splash": 5, "spread": 1, "impactTier": "Large", "projectile": "Bomb", "ammo": 4 },
+    { "id": "guided_bomb", "damageType": "HighExplosive", "damage": 297, "cooldown": 10, "range": 30, "projectileSpeed": 40, "splash": 6, "spread": 1, "impactTier": "Large", "projectile": "Bomb", "ammo": 4 },
     { "id": "atgm_post", "damageType": "ArmorPiercing", "damage": 110, "cooldown": 14.0, "range": 34, "projectileSpeed": 55, "impactTier": "Medium", "projectile": "Missile" },
     { "id": "drone_gun", "damageType": "Kinetic", "damage": 12, "cooldown": 0.2, "range": 26, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet" }
   ],
@@ -135,11 +135,11 @@
       "firesWhileMoving": true, "weapon": "flamethrower",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.3, "tier": "Huge" } },
-    { "id": "artillery", "scale": 0.85,        "armor": "Light", "hp": 300, "speed": 7, "turnRate": 60, "turretTurnRate": 45, "radius": 2.0, "length": 9.53, "width": 2.69, "cp": 6, "vision": 20,
+    { "id": "artillery", "scale": 0.85,        "armor": "Light", "hp": 300, "speed": 7, "turnRate": 60, "turretTurnRate": 45, "radius": 2.0, "length": 9.53, "width": 2.69, "cp": 6, "vision": 30,
       "firesWhileMoving": false, "weapon": "howitzer",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Large" } },
-    { "id": "mlrs", "scale": 0.85,             "armor": "Light", "hp": 320, "speed": 6, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.53, "width": 2.65, "cp": 5, "vision": 24,
+    { "id": "mlrs", "scale": 0.85,             "armor": "Light", "hp": 320, "speed": 6, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.53, "width": 2.65, "cp": 5, "vision": 30,
       "firesWhileMoving": false, "weapon": "mlrs_rockets", "secondary": [{"weapon": "hmg_roof", "slot": "mg", "aim": "Free"}],
       "deathExplosion": { "damage": 110, "radius": 8, "delay": 0.3, "tier": "Huge" } },
     { "id": "aa_vehicle", "scale": 0.85,       "armor": "Light", "hp": 350, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "length": 5.11, "width": 2.73, "cp": 4, "vision": 42,
@@ -187,11 +187,11 @@
     { "id": "strike_drone", "scale": 1.4,     "armor": "Air",  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
-    { "id": "howitzer", "scale": 0.85,         "armor": "Light", "hp": 480, "speed": 5.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.6, "length": 7.85, "width": 3.58, "cp": 8, "vision": 26,
+    { "id": "howitzer", "scale": 0.85,         "armor": "Light", "hp": 480, "speed": 5.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.6, "length": 7.85, "width": 3.58, "cp": 8, "vision": 30,
       "firesWhileMoving": false, "weapon": "gun_155_sph",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.4, "tier": "Huge" } },
-    { "id": "thermobaric_launcher", "scale": 0.85, "armor": "Heavy", "hp": 900, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 7.4, "width": 3.65, "cp": 9, "vision": 24,
+    { "id": "thermobaric_launcher", "scale": 0.85, "armor": "Heavy", "hp": 900, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 7.4, "width": 3.65, "cp": 9, "vision": 30,
       "firesWhileMoving": false, "weapon": "thermobaric_rockets", "secondary": [{"weapon": "hmg_roof", "slot": "mg", "aim": "Free"}], "mainSlot": "rocket",
       "deathExplosion": { "damage": 180, "radius": 12, "delay": 0.4, "tier": "Ultimate" } },
     { "id": "ifv", "scale": 0.85,              "armor": "Light", "hp": 520, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 6.81, "width": 3.14, "cp": 5, "vision": 34,
@@ -229,7 +229,7 @@
       "deathExplosion": { "damage": 220, "radius": 11, "delay": 0.5, "tier": "Ultimate" } },
     // Real-world additions: a BM-21 Grad truck, a wheeled anti-tank missile carrier (Stryker ATGM) and a tank with an
     // active protection system (Merkava with Trophy) that shoots down incoming missiles and rockets.
-    { "id": "grad_truck", "scale": 0.85,       "armor": "Light", "hp": 280, "speed": 8, "turnRate": 70, "turretTurnRate": 55, "radius": 2.2, "length": 7.52, "width": 2.55, "cp": 6, "vision": 24,
+    { "id": "grad_truck", "scale": 0.85,       "armor": "Light", "hp": 280, "speed": 8, "turnRate": 70, "turretTurnRate": 55, "radius": 2.2, "length": 7.52, "width": 2.55, "cp": 6, "vision": 30,
       "firesWhileMoving": false, "weapon": "grad_rockets", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 120, "radius": 9, "delay": 0.3, "tier": "Huge" } },
     { "id": "atgm_carrier", "scale": 0.85,     "armor": "Light", "hp": 420, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 2.3, "length": 7.31, "width": 2.89, "cp": 6, "vision": 36,
@@ -240,7 +240,7 @@
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "aps": { "radius": 10, "charges": 2, "recharge": 6 },
       "deathExplosion": { "damage": 150, "radius": 7, "delay": 0.45, "tier": "Huge" } },
-    { "id": "heavy_rocket_artillery", "scale": 0.85, "armor": "Light", "hp": 420, "speed": 6.5, "turnRate": 55, "turretTurnRate": 40, "radius": 2.6, "length": 12.37, "width": 3.12, "cp": 9, "vision": 26,
+    { "id": "heavy_rocket_artillery", "scale": 0.85, "armor": "Light", "hp": 420, "speed": 6.5, "turnRate": 55, "turretTurnRate": 40, "radius": 2.6, "length": 12.37, "width": 3.12, "cp": 9, "vision": 30,
       "firesWhileMoving": false, "weapon": "rockets_300mm",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 11, "delay": 0.4, "tier": "Ultimate" } },
@@ -373,8 +373,8 @@
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 300, "radius": 14, "delay": 0.8, "tier": "Ultimate" } },
     { "id": "nuke_train",       "boss": true, "armor": "Heavy", "hp": 6400, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 22, "width": 3.4, "cp": 0, "vision": 55,
-      "firesWhileMoving": true, "weapon": "boss_flak", "captureRate": 0, "skills": ["train_smoke", "nuke_escort"],
-      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "skills": ["train_smoke", "nuke_escort"],
+      "secondary": [ { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 0.6, "tier": "Ultimate" } }
   ],
 
@@ -406,19 +406,19 @@
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
   // bomb line); count impacts spread over duration; blast = radius of each impact. Repair heals damage x max HP in total.
   "supports": [
-    { "id": "artillery_barrage", "kind": "Barrage",       "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 12, "duration": 4,   "damage": 110, "blast": 5,  "tier": "Large" },
-    { "id": "airstrike",         "kind": "Airstrike",     "cp": 8,  "cooldown": 90,  "delay": 2.0, "radius": 4,  "count": 8,  "duration": 1.2, "damage": 240, "blast": 6,  "tier": "Huge", "length": 60 },
-    { "id": "cruise_missile",    "kind": "CruiseMissile", "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 15, "count": 1,  "damage": 520, "blast": 15, "tier": "Ultimate" },
+    { "id": "artillery_barrage", "kind": "Barrage",       "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 12, "duration": 4,   "damage": 110, "blast": 6,  "tier": "Large" },
+    { "id": "airstrike",         "kind": "Airstrike",     "cp": 8,  "cooldown": 90,  "delay": 2.0, "radius": 4,  "count": 8,  "duration": 1.2, "damage": 240, "blast": 8,  "tier": "Huge", "length": 60 },
+    { "id": "cruise_missile",    "kind": "CruiseMissile", "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 15, "count": 1,  "damage": 520, "blast": 18, "tier": "Ultimate" },
     { "id": "smoke_screen",      "kind": "Smoke",         "cp": 2,  "cooldown": 30,  "delay": 1.0, "radius": 12, "count": 1,  "duration": 12, "tier": "Small" },
     { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
     // Premium (bought with coins): a line of fire, and a heavy bomber laying a carpet of bombs.
-    { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 7,  "tier": "Huge", "length": 55, "damageType": "Fire" },
-    { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 330, "blast": 7,  "tier": "Huge", "length": 95 },
+    { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 9,  "tier": "Huge", "length": 55, "damageType": "Fire" },
+    { "id": "carpet_bombing",    "kind": "Airstrike",     "cp": 12, "cooldown": 150, "delay": 2.5, "radius": 4,  "count": 24, "duration": 2.6, "damage": 330, "blast": 9,  "tier": "Huge", "length": 95 },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
-    { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 210, "blast": 6, "tier": "Huge", "length": 70 },
+    { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 210, "blast": 8, "tier": "Huge", "length": 70 },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
-    { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 22, "tier": "Ultimate" },
-    { "id": "cluster_strike",    "kind": "Airstrike",     "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 40, "duration": 2.2, "damage": 90, "blast": 4, "tier": "Large", "length": 60 },
+    { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },
+    { "id": "cluster_strike",    "kind": "Airstrike",     "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 40, "duration": 2.2, "damage": 90, "blast": 5.5, "tier": "Large", "length": 60 },
     { "id": "reinforcements",    "kind": "Reinforce",     "consumable": true, "cooldown": 30, "delay": 3.0, "radius": 8,  "count": 3, "tier": "Large", "units": ["main_battle_tank", "main_battle_tank", "ifv"] },
     { "id": "field_repair",      "kind": "Repair",        "consumable": true, "cooldown": 30, "delay": 1.0, "radius": 500, "count": 5, "duration": 5, "damage": 0.5, "tier": "Small" },
     { "id": "emp_blast",         "kind": "Emp",           "consumable": true, "cooldown": 20, "delay": 2.0, "radius": 20, "count": 1, "duration": 6, "tier": "Huge" },
@@ -436,7 +436,7 @@
       "explosion": { "damage": 70, "radius": 6, "delay": 0.15, "tier": "Large" } },
     { "id": "ammo_crate",  "armor": "Light",     "hp": 35,   "width": 1.25, "depth": 1.25,
       "explosion": { "damage": 90, "radius": 7, "delay": 0.2, "tier": "Large" } },
-    { "id": "tree",        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 },
+    { "id": "tree", "crush": true,        "armor": "Light",     "hp": 45,   "width": 1.5, "depth": 1.5 },
     // Terrain: rock is effectively indestructible and shapes the lanes; sandbags and tank traps can be shot away.
     { "id": "cliff_a",     "armor": "Structure", "hp": 1000000, "width": 13, "depth": 10,  "blocks": true },
     { "id": "cliff_b",     "armor": "Structure", "hp": 1000000, "width": 10,  "depth": 9.5,  "blocks": true },
@@ -457,9 +457,9 @@
     { "id": "garage", "scale": 1.15,      "armor": "Structure", "hp": 350,  "width": 5,   "depth": 5.2,   "blocks": true },
     { "id": "water_tower", "scale": 1.15, "armor": "Structure", "hp": 450,  "width": 4,   "depth": 4,   "blocks": true, "blocksFire": false },
     { "id": "ruin", "scale": 1.15,        "armor": "Structure", "hp": 400,  "width": 8,   "depth": 8,   "blocks": true },
-    { "id": "fence",       "armor": "Light",     "hp": 40,   "width": 4,   "depth": 0.3 },
+    { "id": "fence", "crush": true,       "armor": "Light",     "hp": 40,   "width": 4,   "depth": 0.3 },
     { "id": "stone_wall",  "armor": "Structure", "hp": 300,  "width": 6,   "depth": 0.8, "blocks": true, "blocksFire": false },
-    { "id": "hedge",       "armor": "Light",     "hp": 60,   "width": 6,   "depth": 1.2 },
+    { "id": "hedge", "crush": true,       "armor": "Light",     "hp": 60,   "width": 6,   "depth": 1.2 },
     // Civilian vehicles burn and blow up when shot.
     { "id": "car",         "armor": "Light",     "hp": 60,   "width": 4.4, "depth": 1.9,
       "explosion": { "damage": 60, "radius": 5, "delay": 0.4, "tier": "Large" } },
@@ -469,8 +469,8 @@
     { "id": "adobe_house", "scale": 1.15,   "armor": "Structure", "hp": 700,  "width": 7.3,  "depth": 7.2,  "blocks": true },
     { "id": "adobe_large", "scale": 1.15,   "armor": "Structure", "hp": 1300, "width": 11.8, "depth": 9.3,  "blocks": true },
     { "id": "market_stall",  "armor": "Light",     "hp": 80,   "width": 4.3,  "depth": 3 },
-    { "id": "palm",          "armor": "Light",     "hp": 45,   "width": 1.5,  "depth": 1.5 },
-    { "id": "cactus",        "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "palm", "crush": true,          "armor": "Light",     "hp": 45,   "width": 1.5,  "depth": 1.5 },
+    { "id": "cactus", "crush": true,        "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
     { "id": "oil_pump",      "armor": "Structure", "hp": 300,  "width": 4.9,  "depth": 2.5,  "blocks": true, "blocksFire": false,
       "explosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Large" } },
     { "id": "refinery_tower","armor": "Structure", "hp": 900,  "width": 5.9,  "depth": 5.9,  "blocks": true,
@@ -503,7 +503,7 @@
     { "id": "basalt_rock_c", "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
     { "id": "obsidian_spire","armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3,   "blocks": true },
     { "id": "lava_vent",     "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3 },
-    { "id": "charred_tree",  "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
+    { "id": "charred_tree", "crush": true,  "armor": "Light",     "hp": 30,   "width": 1.2,  "depth": 1.2 },
     { "id": "volcanic_cliff","armor": "Structure", "hp": 1000000, "width": 14, "depth": 6,   "blocks": true },
     // Surface tiles the map view draws itself (no model): molten lava and river water block movement, a ford is
     // shallow water that vehicles drive through. The map generator lays them on a 4 m grid.
@@ -511,11 +511,11 @@
     { "id": "river_water",   "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,   "blocks": true, "blocksFire": false },
     { "id": "river_ford",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4 },
     // Jungle: rainforest, a temple ruin and stilt villages.
-    { "id": "jungle_tree_a", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "jungle_tree_b", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "jungle_tree_c", "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
-    { "id": "bamboo_clump",  "armor": "Light",     "hp": 40,   "width": 2.5,  "depth": 2.5 },
-    { "id": "fern_bush",     "armor": "Light",     "hp": 20,   "width": 1.5,  "depth": 1.5 },
+    { "id": "jungle_tree_a", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_b", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "jungle_tree_c", "crush": true, "armor": "Light",     "hp": 60,   "width": 2,    "depth": 2 },
+    { "id": "bamboo_clump", "crush": true,  "armor": "Light",     "hp": 40,   "width": 2.5,  "depth": 2.5 },
+    { "id": "fern_bush", "crush": true,     "armor": "Light",     "hp": 20,   "width": 1.5,  "depth": 1.5 },
     { "id": "temple_ruin", "scale": 1.15,   "armor": "Structure", "hp": 2000, "width": 12,   "depth": 12,   "blocks": true },
     { "id": "stilt_hut", "scale": 1.15,     "armor": "Structure", "hp": 350,  "width": 7,    "depth": 6,    "blocks": true },
     // Airbase: parked jets and fuel trucks stand close on purpose, so one fireball sets off the whole line.
@@ -579,6 +579,6 @@
     { "id": "bridge_road",   "armor": "Structure", "hp": 1000000, "width": 8.35, "depth": 20 },
     { "id": "ruin_house", "scale": 1.15, "armor": "Structure", "hp": 500, "width": 7.8, "depth": 7.8, "blocks": true },
     { "id": "ruin_tower", "scale": 1.15, "armor": "Structure", "hp": 700, "width": 5.2, "depth": 5.6, "blocks": true },
-    { "id": "dead_tree",     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
+    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
   ]
 }

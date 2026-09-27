@@ -24,6 +24,12 @@ namespace MachineBrigade.Sim.Entities
         }
 
         public EntityId Owner { get; }
+
+        /// <summary>Where the round was fired from (armour facing: which side of the target it strikes).</summary>
+        public Vector2 Origin { get; set; }
+
+        /// <summary>The damage this round is expected to do to its target (so other guns do not waste shots on it).</summary>
+        public float Incoming { get; set; }
         public int OwnerTeam { get; }
         public WeaponDef Weapon { get; }
         public Vector2 AimPoint { get; }

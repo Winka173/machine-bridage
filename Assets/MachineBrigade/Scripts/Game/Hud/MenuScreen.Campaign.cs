@@ -8,7 +8,8 @@ namespace MachineBrigade.Game.Hud
     /// <summary>The campaign page: missions grouped by battlefield, and the chosen one's briefing.</summary>
     internal sealed partial class MenuScreen
     {
-        private VisualElement _campaign, _detailArt, _detailUnlocks, _detailStars, _startMission;
+        private VisualElement _campaign, _detailArt, _detailUnlocks, _detailStars, _startMission, _detailTiers;
+        private int _tier;
         private Label _detailKicker, _detailName, _detailGoal, _detailBrief, _detailReward, _detailRules, _detailWeather;
         private IconElement _detailMapIcon, _detailGoalIcon, _detailWeatherIcon;
         private readonly List<(VisualElement row, int index)> _missionRows = new();
@@ -64,6 +65,8 @@ namespace MachineBrigade.Game.Hud
             detail.Add(_detailStars);
             _detailRules = UiKit.Text("", "detail-rules");
             detail.Add(_detailRules);
+            _detailTiers = UiKit.Box("detail-tiers");
+            detail.Add(_detailTiers);
             var reward = UiKit.Box("detail-line reward-line");
             reward.Add(UiKit.Icon("coin", UiKit.Ink, 1.7f));
             _detailReward = UiKit.Text("", "detail-reward");
@@ -88,6 +91,7 @@ namespace MachineBrigade.Game.Hud
             var row = UiKit.Button("mission-row", () =>
             {
                 _selectedMission = index;
+                _tier = 0;
                 Refresh();
             });
             row.Add(UiKit.Text((index + 1).ToString("00"), "mission-number"));
@@ -98,6 +102,7 @@ namespace MachineBrigade.Game.Hud
             var stars = UiKit.Box("mission-stars");
             for (var s = 0; s < 3; s++) stars.Add(UiKit.Icon("star", UiKit.Ink, 1.8f));
             row.Add(stars);
+            row.Add(UiKit.Text("", "mission-tier"));
             var lockIcon = UiKit.Icon("lock", UiKit.Ink, 1.8f);
             lockIcon.AddToClassList("mission-lock");
             row.Add(lockIcon);
@@ -117,6 +122,12 @@ namespace MachineBrigade.Game.Hud
                 row.EnableInClassList("locked", !open);
                 row.EnableInClassList("chosen", index == _selectedMission);
                 var stars = PlayerProfile.Stars(mission.Id);
+                var best = PlayerProfile.MissionTier(mission.Id);
+                if (row.Q<Label>(className: "mission-tier") is { } tierLabel)
+                {
+                    tierLabel.text = best > 0 ? Strings.Get("tier." + best + ".short") : "";
+                    tierLabel.EnableInClassList("iron", best == 2);
+                }
                 var starBox = row.Q(className: "mission-stars");
                 for (var s = 0; s < starBox.childCount; s++)
                 {
@@ -144,13 +155,41 @@ namespace MachineBrigade.Game.Hud
                 star.AddToClassList(s < won ? "star-on" : "star-off");
                 _detailStars.Add(star);
             }
+            var third = m.Challenge switch
+            {
+                "NoStrikes" => Strings.Get("challenge.nostrikes"),
+                "NoAircraft" => Strings.Get("challenge.noaircraft"),
+                "Kills" => Strings.Format("challenge.kills", m.ChallengeValue),
+                _ => Strings.Format("challenge.losses", System.Math.Max(0, m.StarLosses)),
+            };
             _detailRules.text = m.StarTime > 0f
-                ? Strings.Format("campaign.stars", $"{(int)m.StarTime / 60}:{(int)m.StarTime % 60:00}", System.Math.Max(0, m.StarLosses))
-                : Strings.Format("campaign.starsNoTime", System.Math.Max(0, m.StarLosses));
+                ? Strings.Format("campaign.stars3", $"{(int)m.StarTime / 60}:{(int)m.StarTime % 60:00}", third)
+                : Strings.Format("campaign.stars3NoTime", third);
+            // Tiers: Heroic opens once the mission is won, Iron once Heroic is.
+            var bestTier = PlayerProfile.MissionTier(m.Id);
+            if (_tier > bestTier + 1) _tier = 0;
+            MatchSettings.MissionTier = _tier;
+            _detailTiers.Clear();
+            for (var t = 0; t < 3; t++)
+            {
+                var tier = t;
+                var open = tier <= bestTier + 1;
+                var chip = UiKit.Button("tier-chip", () =>
+                {
+                    if (tier > PlayerProfile.MissionTier(Campaign.All[_selectedMission].Id) + 1) return;
+                    _tier = tier;
+                    Refresh();
+                });
+                chip.Add(UiKit.Text(Strings.Get("tier." + tier), "tier-name"));
+                chip.EnableInClassList("chosen", tier == _tier);
+                chip.EnableInClassList("locked", !open);
+                _detailTiers.Add(chip);
+            }
+            _detailTiers.Add(UiKit.Text(_tier == 0 ? "" : Strings.Get("tier." + _tier + ".rules"), "tier-rules"));
             var first = !PlayerProfile.Completed(m.Id);
             _detailReward.text = first
-                ? Strings.Format("campaign.rewards", m.RewardCoins)
-                : Strings.Format("campaign.replayRewards", UnityEngine.Mathf.RoundToInt(m.RewardCoins * 0.35f));
+                ? Strings.Format("campaign.rewards", UnityEngine.Mathf.RoundToInt(m.RewardCoins * Rewards.TierPay(_tier)))
+                : Strings.Format("campaign.replayRewards", UnityEngine.Mathf.RoundToInt(m.RewardCoins * (PlayerProfile.MissionTier(m.Id) < _tier ? 1f : 0.35f) * Rewards.TierPay(_tier)));
             _detailUnlocks.Clear();
             foreach (var id in m.Unlocks)
             {

@@ -134,6 +134,53 @@ namespace MachineBrigade.Sim
 
         public const float HomeRadius = 35f;
 
+        /// <summary>
+        /// Catch-up (the quick modes): the side losing the war of armies is reinforced faster and
+        /// paid more for its kills (see <see cref="Economy.EconomySystem"/>).
+        /// </summary>
+        public bool CatchUp { get; set; }
+
+        private readonly int[] _strikesCalled = new int[2];
+        private readonly int[] _aircraftBought = new int[2];
+
+        /// <summary>Fire support a side has called this battle (a mission's "no strikes" star).</summary>
+        public int StrikesCalled(int team) => team is 0 or 1 ? _strikesCalled[team] : 0;
+
+        /// <summary>Aircraft a side has bought this battle (a mission's "no aircraft" star).</summary>
+        public int AircraftBought(int team) => team is 0 or 1 ? _aircraftBought[team] : 0;
+
+        internal void CountStrike(int team)
+        {
+            if (team is 0 or 1) _strikesCalled[team]++;
+        }
+
+        internal void CountAircraft(int team)
+        {
+            if (team is 0 or 1) _aircraftBought[team]++;
+        }
+
+        /// <summary>
+        /// Takes a vehicle off the field without a trace (no blast, no wreck, no event): a
+        /// defence already destroyed in an earlier attack on the weekly fortress.
+        /// </summary>
+        internal void RemoveQuietly(Vehicle v)
+        {
+            if (!_vehicles.ContainsKey(v.Id)) return;
+            v.Hp = 0f;
+            _vehicleList.Remove(v);
+            _vehicles.Remove(v.Id);
+            if (v.BlocksRoutes) Grid.RemoveBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+        }
+
+        /// <summary>Knocks a prop down without a blast: its ground and line of fire open (the view shows its rubble).</summary>
+        internal void RemoveQuietly(Prop prop)
+        {
+            if (!prop.IsAlive) return;
+            prop.Hp = 0f;
+            if (prop.Def.BlocksMovement) Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, ObstacleClearance);
+            if (prop.Def.BlocksFire) Cover.Remove(prop);
+        }
+
         /// <summary>Device check: takes a share of a vehicle's health (a defence burning down on camera).</summary>
         public void DebugDamage(Vehicle v, float fraction) => Damage.Apply(v, v.MaxHp * fraction, DamageType.HighExplosive);
 
@@ -327,7 +374,7 @@ namespace MachineBrigade.Sim
                         return CommandResult.Rejected(CommandError.InvalidTarget);
                     if (target is Vehicle enemy && !enemy.IsVisibleTo(command.Team))
                         return CommandResult.Rejected(CommandError.TargetNotVisible);
-                    if (target is Prop { Def: { Indestructible: true } }) return CommandResult.Rejected(CommandError.InvalidTarget);
+                    if (target is Prop { Def: { Indestructible: true } } or Vehicle { Invulnerable: true }) return CommandResult.Rejected(CommandError.InvalidTarget);
                     // Only vehicles whose main weapon can reach it (tank guns cannot hit aircraft) take the order.
                     var flying = target is Vehicle { Flying: true };
                     var ordered = 0;
@@ -352,6 +399,7 @@ namespace MachineBrigade.Sim
             RefreshVisibility();
             Economy.Step(dt);
             _movement.Step(dt);
+            CrushVegetation();
             _abilities.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
@@ -360,6 +408,44 @@ namespace MachineBrigade.Sim
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
+
+        private const float CrushCell = 6f;
+        private Dictionary<(int, int), List<Prop>>? _crushable;
+
+        /// <summary>Ground vehicles knock down the trees, bushes, hedges and fences they drive into.</summary>
+        private void CrushVegetation()
+        {
+            if (_crushable == null)
+            {
+                _crushable = new Dictionary<(int, int), List<Prop>>();
+                foreach (var prop in _propList)
+                {
+                    if (!prop.IsAlive || !prop.Def.Crushable) continue;
+                    var key = ((int)MathF.Floor(prop.Position.X / CrushCell), (int)MathF.Floor(prop.Position.Y / CrushCell));
+                    if (!_crushable.TryGetValue(key, out var list)) _crushable[key] = list = new List<Prop>();
+                    list.Add(prop);
+                }
+            }
+            if (_crushable.Count == 0) return;
+            foreach (var v in _vehicleList)
+            {
+                if (!v.IsAlive || v.Flying || v.Def.Static || v.Speed < 0.5f) continue;
+                var cx = (int)MathF.Floor(v.Position.X / CrushCell);
+                var cy = (int)MathF.Floor(v.Position.Y / CrushCell);
+                for (var dx = -1; dx <= 1; dx++)
+                    for (var dy = -1; dy <= 1; dy++)
+                    {
+                        if (!_crushable.TryGetValue((cx + dx, cy + dy), out var list)) continue;
+                        foreach (var prop in list)
+                        {
+                            if (!prop.IsAlive) continue;
+                            var reach = v.Def.HullRadius + 0.3f + prop.Radius * 0.5f;
+                            if (Vector2.DistanceSquared(v.Position, prop.Position) < reach * reach)
+                                Damage.Crush(prop, SimMath.Forward(v.Heading));
+                        }
+                    }
+            }
+        }
 
         /// <summary>Development only (the -mb-demolish device check): blows a prop apart as a heavy shell would.</summary>
         public void DebugDestroyProp(Prop prop)
@@ -392,6 +478,55 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>Nearest living enemy vehicle within <paramref name="range"/> of the edge of its hull.</summary>
+        private static readonly float[] EscapeBearings =
+        {
+            0f, SimMath.DegToRad(35f), -SimMath.DegToRad(35f), SimMath.DegToRad(70f), -SimMath.DegToRad(70f),
+            SimMath.DegToRad(110f), -SimMath.DegToRad(110f),
+        };
+
+        /// <summary>
+        /// Where a vehicle can back off to from a threat, up to <paramref name="distance"/> away:
+        /// of the bearings away from it (straight back, then angled up to 110 degrees either side)
+        /// and the way to its own camp, the open spot that gains the most distance from the threat,
+        /// kept off the map's edge. Null when it is cornered (no way out of 4 m or more): it
+        /// stands and fights with what it has instead of pushing into the edge.
+        /// </summary>
+        internal Vector2? EscapeRoute(Vehicle v, Vector2 threat, float distance)
+        {
+            distance = MathF.Max(distance, 6f);
+            var away = v.Position - threat;
+            var back = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : SimMath.Forward(v.Heading + MathF.PI);
+            var bearings = new List<Vector2>(EscapeBearings.Length + 1);
+            foreach (var turn in EscapeBearings)
+            {
+                var c = MathF.Cos(turn);
+                var s = MathF.Sin(turn);
+                bearings.Add(new Vector2(back.X * c - back.Y * s, back.X * s + back.Y * c));
+            }
+            if (TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(home, v.Position) > 16f)
+                bearings.Add(Vector2.Normalize(home - v.Position));
+            Vector2? best = null;
+            var bestScore = 1f;
+            var here = Vector2.Distance(v.Position, threat);
+            foreach (var dir in bearings)
+                for (var d = distance; d >= 4f; d -= 3f)
+                {
+                    var p = ClampToMap(v.Position + dir * d);
+                    if (!Map.Contains(p) || !Grid.IsWalkable(p)) continue;
+                    var moved = Vector2.Distance(p, v.Position);
+                    if (moved < 4f) break;
+                    var edge = Map.HalfSize - MathF.Max(MathF.Abs(p.X), MathF.Abs(p.Y));
+                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        best = p;
+                    }
+                    break;
+                }
+            return best;
+        }
+
         internal Vehicle? FindNearestEnemy(Vehicle from, float range, bool requireVisible, float minRange = 0f,
             TargetLayers layers = TargetLayers.All, bool mobileOnly = false)
         {
@@ -399,7 +534,7 @@ namespace MachineBrigade.Sim
             var bestDistance = float.MaxValue;
             foreach (var other in _vehicleList)
             {
-                if (!other.IsAlive || other.Team == from.Team || (mobileOnly && other.Def.Static)) continue;
+                if (!other.IsAlive || other.Team == from.Team || other.Invulnerable || (mobileOnly && other.Def.Static)) continue;
                 if ((layers & (other.Flying ? TargetLayers.Air : TargetLayers.Ground)) == 0) continue;
                 if (requireVisible && !other.IsVisibleTo(from.Team)) continue;
                 var centre = Vector2.Distance(from.Position, other.Position);

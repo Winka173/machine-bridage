@@ -96,6 +96,8 @@ namespace MachineBrigade.Sim.Combat
                 case OrderKind.Attack:
                     // Shooting at an ordered target needs sight of it (smoke and fog stop assigned shelling).
                     if (!_world.TryGetTarget(v.Order.Target, out var ordered) || !ordered.IsAlive) return null;
+                    // Shielded for now (a boss behind its glyph): shoot at something else meanwhile.
+                    if (ordered is Vehicle { Invulnerable: true }) return BestInRange(v, weapon, EntityId.None);
                     return ordered is Vehicle hidden && !hidden.IsVisibleTo(v.Team) ? null : ordered;
 
                 case OrderKind.AttackMove:
@@ -156,6 +158,14 @@ namespace MachineBrigade.Sim.Combat
                 if (other.Flying != IsAntiAir(weapon)) score *= 0.02f;
                 if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
                 if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
+                // Worth more the more it costs (a titan before a jeep); one aiming at us first;
+                // an unarmed truck last.
+                score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);
+                if (other.Target == v.Id) score *= 1.2f;
+                if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
+                // Slow, heavy weapons do not waste a shot on a target already as good as dead
+                // from the rounds on their way to it (overkill).
+                if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
                 score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
                 if (score <= bestScore) continue;
                 best = other;
@@ -164,7 +174,12 @@ namespace MachineBrigade.Sim.Combat
             return best;
         }
 
-        /// <summary>Flak and anti-aircraft missiles: weapons made to kill aircraft.</summary>
+        /// <summary>What a target is worth: its CP, or for units never bought (bosses, defences) a guess from their health.</summary>
+        private static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
+
+        /// <summary>Damage on its way to each target (rounds in flight), for overkill checks.</summary>
+        private readonly Dictionary<EntityId, float> _incoming = new();
+
         /// <summary>A weapon made for aircraft: flak, or one that can only hit what flies.</summary>
         internal static bool IsAntiAir(WeaponDef weapon) => weapon.DamageType == DamageType.Flak || weapon.Targets == TargetLayers.Air;
 
@@ -176,7 +191,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
+            target.IsAlive && !target.Invulnerable && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
             HasLineOfFire(v, target, weapon);
 
         /// <summary>
@@ -319,6 +334,19 @@ namespace MachineBrigade.Sim.Combat
             // wide enough that a long shot can miss outright.
             var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
             var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            // Artillery brackets its target (Wargame and real gunnery): the first round lands wide,
+            // each correction brings the fall of shot in, down to 0.4 of the spread.
+            if (weapon.MinRange > 0f && weapon.Projectile is ProjectileKind.Shell or ProjectileKind.Rocket)
+            {
+                var state = shooter.Weapons[index];
+                if (target.IsValid && state.BracketTarget == target) state.BracketShots++;
+                else
+                {
+                    state.BracketTarget = target;
+                    state.BracketShots = 0;
+                }
+                spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));
+            }
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
@@ -338,7 +366,12 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
-            var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale };
+            var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale, Origin = origin };
+            if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
+            {
+                projectile.Incoming = weapon.Damage * damageScale * _world.Catalog.Damage.Multiplier(weapon.DamageType, aimedAt.Armor);
+                _incoming[target] = (_incoming.TryGetValue(target, out var already) ? already : 0f) + projectile.Incoming;
+            }
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
             if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach) projectile.Failed = true;
             if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
@@ -361,6 +394,11 @@ namespace MachineBrigade.Sim.Combat
                 if (p.TimeLeft > 0f) continue;
                 _projectiles[i] = _projectiles[_projectiles.Count - 1];
                 _projectiles.RemoveAt(_projectiles.Count - 1);
+                if (p.Incoming > 0f && _incoming.TryGetValue(p.Target, out var due))
+                {
+                    if (due - p.Incoming > 0.01f) _incoming[p.Target] = due - p.Incoming;
+                    else _incoming.Remove(p.Target);
+                }
                 _world.Damage.ResolveImpact(p);
             }
         }

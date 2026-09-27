@@ -41,6 +41,12 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The fortress guardian that rolls out of the keep when stage 3 begins (null: none).</summary>
         public string? Guardian { get; set; } = "mobile_fortress";
 
+        /// <summary>
+        /// The stage the attack starts at (the weekly fortress: rings broken in an earlier attack
+        /// this week stay broken). Their objectives and guns are gone; the clock has their bonuses.
+        /// </summary>
+        public int StartStage { get; set; } = 1;
+
         /// <summary>CP the attacker gets each time a stage falls.</summary>
         public float StageCp { get; set; } = 15f;
 
@@ -124,6 +130,16 @@ namespace MachineBrigade.Sim.Modes
                         _fortressProps.Add(prop.Id);
             // A map without relays (or generators) starts at the stage it has, with the time those stages would have earned.
             Stage = _relays.Count > 0 ? 1 : _generators.Count > 0 ? 2 : 3;
+            // Rings already broken (the weekly fortress): their objectives and guns are gone.
+            while (Stage < Math.Min(3, _rules.StartStage))
+            {
+                foreach (var id in Stage == 1 ? _relays : _generators)
+                    if (world.TryGetProp(id, out var fallen)) world.RemoveQuietly(fallen);
+                foreach (var id in _defences[Stage - 1])
+                    if (world.TryGetVehicle(id, out var gun)) world.RemoveQuietly(gun);
+                Stage++;
+                if (Stage == 3) SpawnGuardian(world);
+            }
             _deadline = _rules.StartSeconds;
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             Shield(world);
@@ -267,12 +283,16 @@ namespace MachineBrigade.Sim.Modes
             // The ring just taken is lost to the defender: its guns blow up one after another.
             Collapse(world, _defences[cleared - 1], 0.25, props: false);
             Shield(world);
-            if (next == 3 && _rules.Guardian != null && Fortress is { } hq && world.Catalog.Vehicles.ContainsKey(_rules.Guardian))
-            {
-                var toward = world.TryGetRally(PlayerTeam, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
-                world.SpawnVehicle(_rules.Guardian, EnemyTeam, hq + toward * 12f, SimMath.HeadingOf(toward));
-            }
+            if (next == 3) SpawnGuardian(world);
             world.Emit(SimEvent.Stage(next, Fortress ?? Vector2.Zero, next == 2 ? "siege.stage2" : "siege.stage3"));
+        }
+
+        /// <summary>The keep's guardian wakes (stage three).</summary>
+        private void SpawnGuardian(SimWorld world)
+        {
+            if (_rules.Guardian == null || Fortress is not { } hq || !world.Catalog.Vehicles.ContainsKey(_rules.Guardian)) return;
+            var toward = world.TryGetRally(PlayerTeam, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
+            world.SpawnVehicle(_rules.Guardian, EnemyTeam, hq + toward * 12f, SimMath.HeadingOf(toward));
         }
 
         /// <summary>

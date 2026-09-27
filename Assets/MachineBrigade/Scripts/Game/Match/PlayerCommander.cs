@@ -105,7 +105,7 @@ namespace MachineBrigade.Game.Match
                     _states[i] = new CardState(economy.Cp >= card.Cost, economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, false);
                 }
             }
-            _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep, _states);
+            _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
             if (_items.Count == 0) return;
             if (_armedItem >= 0 && (economy.ItemCount(_items[_armedItem]) <= 0 || economy.CooldownLeft(_items[_armedItem], _world.Time) > 0f)) Disarm();
             for (var i = 0; i < _items.Count; i++)

@@ -197,6 +197,10 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent MineDetonated(Mine m) =>
             new(SimEventKind.MineDetonated, m.Id, m.Position, default, m.Def.Blast.Radius, m.Def.Blast.Tier, null, m.Team);
 
+        /// <summary>A tree or fence knocked down by a hull; Target is the way it falls.</summary>
+        internal static SimEvent PropCrushed(Prop p, Vector2 direction) =>
+            new(SimEventKind.PropDestroyed, p.Id, p.Position, direction, p.Radius, ExplosionTier.Small, p.Def.Id, Teams.Neutral);
+
         internal static SimEvent PropLost(Prop p) =>
             new(SimEventKind.PropDestroyed, p.Id, p.Position, default, p.Radius, ExplosionTier.Medium, p.Def.Id, Teams.Neutral);
     }

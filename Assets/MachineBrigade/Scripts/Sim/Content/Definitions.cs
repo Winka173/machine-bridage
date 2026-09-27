@@ -312,6 +312,9 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public bool BlocksFire { get; }
 
+        /// <summary>A hull knocks it down by driving into it (trees, bushes, hedges, fences).</summary>
+        public bool Crushable { get; set; }
+
         /// <summary>Terrain (rock, earth) that no weapon can realistically destroy; never an attack target.</summary>
         public bool Indestructible => MaxHp >= 100000f;
 
