@@ -119,6 +119,7 @@ namespace MachineBrigade.Game.Views
             if (_erector != null) _erectorRest = _erector.localRotation;
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
             _shieldMaterial = materials.Shockwave;
+            AddRotorBlur(materials);
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -450,13 +451,67 @@ namespace MachineBrigade.Game.Views
             Spin(Mathf.Clamp01(1f - t * 0.6f));
         }
 
+        /// <summary>
+        /// Most a fast spinner (rotor, propeller) turns in one frame. Turned further, a rotor of four
+        /// or five blades seems to crawl backwards or strobe (the wagon-wheel effect); below it the
+        /// blades read as sweeping round, and the blur disc sells the speed.
+        /// </summary>
+        private const float MaxSpinPerFrame = 23f;
+
+        private float[] _spinAngles;
+
         private void Spin(float speed)
         {
             var spinners = _model.Spinners;
             if (spinners.Count == 0) return;
-            _spin += Time.deltaTime * speed;
+            _spinAngles ??= new float[spinners.Count];
+            var dt = Time.deltaTime * speed;
             for (var i = 0; i < spinners.Count; i++)
-                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spin * spinners[i].DegreesPerSecond, spinners[i].Axis);
+            {
+                var step = spinners[i].DegreesPerSecond * dt;
+                if (spinners[i].DegreesPerSecond > 600f) step = Mathf.Min(step, MaxSpinPerFrame);
+                _spinAngles[i] = (_spinAngles[i] + step) % 360f;
+                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spinAngles[i], spinners[i].Axis);
+            }
+        }
+
+        private static Mesh _blurDisc;
+
+        /// <summary>
+        /// A faint disc under each main rotor, the blur of blades turning faster than the eye can
+        /// follow; it stays still while the blades sweep through it.
+        /// </summary>
+        private void AddRotorBlur(MaterialLibrary materials)
+        {
+            foreach (var spinner in _model.Spinners)
+            {
+                if (spinner.Axis != Vector3.up || spinner.DegreesPerSecond < 600f || spinner.Transform.parent == null) continue;
+                var renderers = spinner.Transform.GetComponentsInChildren<Renderer>();
+                if (renderers.Length == 0) continue;
+                var bounds = renderers[0].bounds;
+                foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+                var radius = Mathf.Max(bounds.extents.x, bounds.extents.z) / Mathf.Max(0.01f, Root.lossyScale.x);
+                if (radius < 0.5f) continue;
+                _blurDisc ??= BlurDisc();
+                var disc = CreateMesh("Rotor Blur", spinner.Transform.parent, _blurDisc, materials.SoftSmoke, false);
+                disc.localPosition = spinner.Transform.localPosition + Vector3.up * 0.05f;
+                disc.localRotation = Quaternion.identity;
+                var parentScale = spinner.Transform.parent.lossyScale.x / Mathf.Max(0.01f, Root.lossyScale.x);
+                disc.localScale = Vector3.one * (radius * 2.1f / Mathf.Max(0.01f, parentScale));
+            }
+        }
+
+        /// <summary>A flat quad (XZ plane) tinted a faint smoky grey, for the soft-disc particle shader.</summary>
+        private static Mesh BlurDisc()
+        {
+            var colour = Primitives.Linear(new Color(0.16f, 0.16f, 0.17f, 0.3f));
+            var mesh = new Mesh { name = "RotorBlur" };
+            mesh.SetVertices(new[] { new Vector3(-0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, 0.5f), new Vector3(-0.5f, 0f, 0.5f) });
+            mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
+            mesh.SetColors(new[] { colour, colour, colour, colour });
+            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+            mesh.RecalculateBounds();
+            return mesh;
         }
 
         internal static Transform CreateMesh(string name, Transform parent, Mesh mesh, Material material, bool castShadows)

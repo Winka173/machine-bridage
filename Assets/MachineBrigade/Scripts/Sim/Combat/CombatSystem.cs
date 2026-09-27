@@ -334,8 +334,8 @@ namespace MachineBrigade.Sim.Combat
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
 
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying) { DamageScale = damageScale };
-            // Guided rounds are reliable up close; at long range one in six or so loses lock.
-            if (weapon.Guided && _world.Random.NextDouble() < 0.03 + 0.14 * reach * reach) projectile.Failed = true;
+            // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
+            if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach) projectile.Failed = true;
             if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
                 projectile.Jammed = true;
             if (weapon.Guided)
