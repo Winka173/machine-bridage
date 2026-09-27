@@ -299,6 +299,10 @@
     "file": "fighter_jet.glb",
     "triangles": 8612
   },
+  "flak_tower": {
+    "file": "flak_tower.glb",
+    "triangles": 9748
+  },
   "flame_tank": {
     "file": "flame_tank.glb",
     "triangles": 7784
@@ -386,6 +390,10 @@
   "heavy_tank": {
     "file": "heavy_tank.glb",
     "triangles": 8328
+  },
+  "heavy_turret": {
+    "file": "heavy_turret.glb",
+    "triangles": 9222
   },
   "hedge": {
     "file": "hedge.glb",
@@ -486,6 +494,10 @@
   "missile": {
     "file": "missile.glb",
     "triangles": 398
+  },
+  "missile_battery": {
+    "file": "missile_battery.glb",
+    "triangles": 6926
   },
   "mlrs": {
     "file": "mlrs.glb",
@@ -662,6 +674,10 @@
   "scout_jeep": {
     "file": "scout_jeep.glb",
     "triangles": 4672
+  },
+  "shield_generator": {
+    "file": "shield_generator.glb",
+    "triangles": 5864
   },
   "shop": {
     "file": "shop.glb",
