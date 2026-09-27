@@ -28,6 +28,10 @@ namespace MachineBrigade.Tests
             "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "artillery_emplacement", "guard_tower",
             "command_hq", "base_wall", "base_gate", "floodlight_mast", "fuel_depot", "ammo_dump", "vehicle_hangar", "helipad",
             "razor_wire", "sandbag_wall",
+            "basalt_rock_a", "basalt_rock_b", "basalt_rock_c", "obsidian_spire", "lava_vent", "charred_tree", "volcanic_cliff",
+            "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "bamboo_clump", "fern_bush", "temple_ruin", "stilt_hut",
+            "hangar", "control_tower", "parked_jet", "fuel_truck", "radar_dome", "revetment", "runway_light",
+            "highrise_a", "highrise_b", "skyscraper", "parking_garage", "billboard", "bus", "traffic_light",
         };
 
         private static readonly string[] Props =

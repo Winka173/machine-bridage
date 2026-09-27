@@ -121,8 +121,8 @@ namespace MachineBrigade.Game.Views
                 // Tiny clutter (barrels, crates, traps) casts a shadow only on High: many casters, little to see.
                 var casts = shadows != Match.ShadowLevel.Off &&
                             (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
-                var instance = id is "oil_pump" or "radar_station" or "control_tower" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
-                if (id is "car" or "truck" or "bus") Repaint(instance, _materials.CarPaints, rng);
+                var instance = id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
+                if (id is "car" or "truck" or "bus" or "fuel_truck") Repaint(instance, _materials.CarPaints, rng);
                 if (id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
                 var yaw = vegetation ? (float)rng.NextDouble() * 360f : prop.Rotation;
                 instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),

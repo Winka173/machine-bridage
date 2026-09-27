@@ -84,6 +84,10 @@ namespace MachineBrigade.Game.Rendering
             // Elite enemy units: dark armour and red sensor glow.
             ["EliteBlack"] = ("#1c1e24", 0.35f, 0.5f, 0f),
             ["Medical"] = ("#e9ece6", 0.1f, 0.4f, 0f),
+            // Volcanic, jungle, airbase and city maps.
+            ["LavaGlow"] = ("#ff4a12", 0f, 0.45f, 2.2f),
+            ["SignalGreen"] = ("#3cf08c", 0f, 0.3f, 2.4f),
+            ["Obsidian"] = ("#1e1c26", 0.3f, 0.16f, 0f),
             ["EliteGlow"] = ("#ff2a1f", 0f, 0.3f, 2.4f),
         };
 
