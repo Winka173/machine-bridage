@@ -93,6 +93,13 @@ namespace MachineBrigade.Sim.Abilities
                     RearmAtHome(v);
                     if (v.Def.RepairAura != null || v.Def.RearmAura != null) Support(v);
                 }
+                // Upgrades: self-repair out of combat, and smoke dischargers at half health.
+                if (v.Regen > 0f && v.Hp < v.MaxHp && now - v.LastHitTime > 4.0) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * v.Regen * dt);
+                if (v.Special == SpecialModule.SmokeDischarger && !v.SmokeUsed && v.Hp < v.MaxHp * 0.5f)
+                {
+                    v.SmokeUsed = true;
+                    _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
+                }
                 if (v.Healing > 0f && v.HealUntil > now)
                 {
                     var amount = MathF.Min(v.MaxHp - v.Hp, v.Healing * dt);

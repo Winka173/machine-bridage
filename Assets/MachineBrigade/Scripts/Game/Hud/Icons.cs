@@ -109,6 +109,11 @@ namespace MachineBrigade.Game.Hud
             ["fighter"] = "<path d=\"M12 2l2 7 7 5v2l-7-2-1 5 3 2v1H8v-1l3-2-1-5-7 2v-2l7-5Z\"/>",
             ["elite"] = "<path d=\"M5 12l7-5 7 5M5 18l7-5 7 5M12 2l1 2h2l-1.5 1.5.5 2-2-1-2 1 .5-2L9 4h2Z\"/>",
             ["ammo"] = "<path d=\"M6 20V10l2-5 2 5v10ZM14 20V10l2-5 2 5v10ZM6 16h4M14 16h4\"/>",
+            ["crate"] = "<rect x=\"4\" y=\"8\" width=\"16\" height=\"12\" rx=\"1\"/><path d=\"M4 12h16M12 8v12M7 8l2-3h6l2 3\"/>",
+            ["gem"] = "<path d=\"M6 4h12l3 5-9 11L3 9Z\"/><path d=\"M3 9h18M9.5 4 12 20l2.5-16\"/>",
+            ["gear"] = "<circle cx=\"12\" cy=\"12\" r=\"3.2\"/><path d=\"M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1\"/>",
+            ["blueprint"] = "<path d=\"M6 3h9l4 4v14H6Z\"/><path d=\"M15 3v4h4M9 12h7M9 16h5\"/>",
+            ["upgrade"] = "<path d=\"M6 14l6-6 6 6M6 20l6-6 6 6\"/>",
             ["skull"] = "<path d=\"M12 3a8 8 0 0 0-5 14v3h10v-3a8 8 0 0 0-5-14Z\"/><circle cx=\"9\" cy=\"11\" r=\"1.5\"/><circle cx=\"15\" cy=\"11\" r=\"1.5\"/><path d=\"M10 20v-2M14 20v-2\"/>",
         };
 

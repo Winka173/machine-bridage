@@ -312,7 +312,7 @@ namespace MachineBrigade.Sim.Strikes
         {
             var support = s.Support;
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
-            _world.Damage.Splash(at, support.BlastRadius, support.Damage, support.DamageType, s.Team, EntityId.None);
+            _world.Damage.Splash(at, support.BlastRadius, support.Damage * _world.StrikeDamage(s.Team, support.Id), support.DamageType, s.Team, EntityId.None);
         }
 
         /// <summary>The side the rounds come from: the calling side's camp, else back along the strike.</summary>

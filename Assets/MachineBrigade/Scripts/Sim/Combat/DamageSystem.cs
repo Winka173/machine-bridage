@@ -165,6 +165,7 @@ namespace MachineBrigade.Sim.Combat
             switch (target)
             {
                 case Vehicle vehicle:
+                    damage *= vehicle.DamageTaken;
                     if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
                     if (vehicle.GraceUntil > _world.Time) damage *= 0.2f;
                     // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.

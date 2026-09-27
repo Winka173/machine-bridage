@@ -17,7 +17,7 @@ namespace MachineBrigade.Game.Hud
         private readonly Catalog _catalog;
         private readonly VisualElement _main, _deck, _settings;
         private readonly Action _play;
-        private readonly List<Label> _coinLabels = new(), _rankLabels = new();
+        private readonly List<Label> _coinLabels = new(), _rankLabels = new(), _gemLabels = new();
         private readonly List<VisualElement> _rankFills = new();
         private Label _deckNote, _campaignBannerSub, _campaignBannerNext;
         private readonly List<(VisualElement element, Func<bool> selected)> _choices = new();
@@ -143,6 +143,7 @@ namespace MachineBrigade.Game.Hud
             }));
             var small = UiKit.Box("menu-small");
             small.Add(UiKit.WideButton("wide", "deck", Strings.Get("menu.deck"), null, () => Show(_deck)));
+            small.Add(UiKit.WideButton("wide", "crate", Strings.Get("menu.arsenal"), null, () => Show(_arsenal)));
             small.Add(UiKit.WideButton("wide", "shop", Strings.Get("menu.shop"), null, () => Show(_shop)));
             small.Add(UiKit.WideButton("wide last-card", "settings", Strings.Get("menu.settings"), null, () => Show(_settings)));
             actions.Add(small);
@@ -202,6 +203,7 @@ namespace MachineBrigade.Game.Hud
 
             BuildCampaignPage();
             BuildShopPage();
+            BuildArsenalPage();
 
             // Settings page: graphics, gameplay, sound and language in one scrolling list ---------
             _settings = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
@@ -330,7 +332,7 @@ namespace MachineBrigade.Game.Hud
 
         private void Show(VisualElement page)
         {
-            foreach (var p in new[] { _main, _deck, _settings, _campaign, _shop })
+            foreach (var p in new[] { _main, _deck, _settings, _campaign, _shop, _arsenal })
                 if (p != null) p.style.display = p == page ? DisplayStyle.Flex : DisplayStyle.None;
             Refresh();
         }
@@ -379,6 +381,7 @@ namespace MachineBrigade.Game.Hud
             if (_modeInfo != null) _modeInfo.text = _modeLines.TryGetValue(MatchSettings.Mode, out var line) ? line : "";
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
+            foreach (var label in _gemLabels) label.text = PlayerProfile.Gems.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
             foreach (var fill in _rankFills)
                 fill.style.width = Length.Percent(100f * PlayerProfile.Xp / Mathf.Max(1, PlayerProfile.XpForNext));
@@ -390,6 +393,7 @@ namespace MachineBrigade.Game.Hud
             }
             RefreshCampaign();
             RefreshShop();
+            RefreshArsenal();
             if (_customTag != null)
                 _customTag.style.display = MatchSettings.Graphics == GraphicsQuality.Custom ? DisplayStyle.Flex : DisplayStyle.None;
             foreach (var (id, card) in _deckCards)
@@ -427,6 +431,12 @@ namespace MachineBrigade.Game.Hud
             var coinLabel = UiKit.Text("", "coin-label");
             coins.Add(coinLabel);
             profile.Add(coins);
+            var gems = UiKit.Box("coin-pill gem-pill");
+            gems.Add(UiKit.Icon("gem", UiKit.Ink, 1.8f));
+            var gemLabel = UiKit.Text("", "coin-label");
+            gems.Add(gemLabel);
+            profile.Add(gems);
+            _gemLabels.Add(gemLabel);
             brand.Add(profile);
             _rankLabels.Add(rankLabel);
             _rankFills.Add(fill);
