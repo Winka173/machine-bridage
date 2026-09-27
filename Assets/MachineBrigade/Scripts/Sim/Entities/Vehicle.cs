@@ -105,7 +105,13 @@ namespace MachineBrigade.Sim.Entities
         internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed;
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f);
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost;
+
+        /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
+        internal float FireBoost = 1f;
+
+        /// <summary>Takes no damage (a dormant fortress guardian, a spawn bastion).</summary>
+        public bool Invulnerable { get; internal set; }
 
         /// <summary>Firing state per mount, parallel to <see cref="VehicleDef.Mounts"/>.</summary>
         internal readonly WeaponState[] Weapons;

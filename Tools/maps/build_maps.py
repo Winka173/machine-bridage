@@ -69,7 +69,12 @@ import boundary as outline_tools  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
-HALF = 80.0
+# The layouts are designed on a 160 m grid (HALF_DESIGN) and spread over the 200 m battlefield
+# (scale_layout): positions grow by S, buildings, props and capture radii keep their size.
+HALF_DESIGN = 80.0
+S = 1.25
+HALF = HALF_DESIGN * S
+SURFACE_TILES = {'lava_pool', 'river_water', 'river_ford'}
 CELL = 2.0
 CLEARANCE = 1.5
 
@@ -107,6 +112,7 @@ class Layout:
         self.reserved = []  # rectangles kept free for map units (siege defences)
         self.units = []     # extra map units (siege defences)
         self.boundary = None  # the battlefield's outline, once carved (see boundary.py)
+        self.half = HALF_DESIGN  # half the square's side: the design grid, until scale_layout
 
     # ------------------------------------------------------------------ geometry
     @staticmethod
@@ -151,7 +157,7 @@ class Layout:
     def free(self, def_id, x, z, rot, pad, road_gap, ignore_points=False):
         w, d = self.size(def_id, rot)
         x0, z0, x1, z1 = x - w / 2, z - d / 2, x + w / 2, z + d / 2
-        if x0 < -HALF + 2 or z0 < -HALF + 2 or x1 > HALF - 2 or z1 > HALF - 2:
+        if x0 < -self.half + 2 or z0 < -self.half + 2 or x1 > self.half - 2 or z1 > self.half - 2:
             return False
         blocks = PROPS[def_id].get('blocks', False)
         for team in self.teams:
@@ -187,7 +193,8 @@ class Layout:
         only the map edge, other props and reserved unit spots are respected."""
         w, d = self.size(def_id, rot)
         x0, z0, x1, z1 = x - w / 2, z - d / 2, x + w / 2, z + d / 2
-        if x0 < -HALF + 1 or z0 < -HALF + 1 or x1 > HALF - 1 or z1 > HALF - 1 or not self.fits(x0, z0, x1, z1, pad):
+        h = self.half
+        if x0 < -h + 1 or z0 < -h + 1 or x1 > h - 1 or z1 > h - 1 or not self.fits(x0, z0, x1, z1, pad):
             self.failed.append((def_id, x, z))
             return False
         self.force(def_id, x, z, rot)
@@ -363,11 +370,11 @@ class Layout:
     def reachable(self, targets=None):
         """Flood fill on the nav grid from the first camp; returns the unreachable targets
         (by default the other camps and every objective)."""
-        n = int(HALF * 2 / CELL)
+        n = int(self.half * 2 / CELL)
         blocked = self.blocked_grid()
 
         def cell(x, z):
-            return int((x + HALF) / CELL), int((z + HALF) / CELL)
+            return int((x + self.half) / CELL), int((z + self.half) / CELL)
 
         start = cell(*self.teams[0])
         seen = {start}
@@ -396,21 +403,21 @@ class Layout:
     def walkable(self, x, z):
         """Whether the nav cell under a point is open (units spawned elsewhere get moved)."""
         blocked = self.blocked_grid()
-        gx, gz = int((x + HALF) / CELL), int((z + HALF) / CELL)
+        gx, gz = int((x + self.half) / CELL), int((z + self.half) / CELL)
         return not blocked[gz][gx]
 
     def blocked_grid(self):
         """The simulation's 2 m navigation grid, exactly as NavGrid.AddBlocker fills it: every cell
         that a blocking footprint, grown by the obstacle clearance, touches at all."""
-        n = int(HALF * 2 / CELL)
+        n = int(self.half * 2 / CELL)
         blocked = [[False] * n for _ in range(n)]
         for prop, (x0, z0, x1, z1) in zip(self.props, self.rects):
             if not PROPS[prop['def']].get('blocks', False):
                 continue
-            a0 = int(math.floor((x0 - CLEARANCE + HALF) / CELL))
-            a1 = int(math.floor((x1 + CLEARANCE - 1e-4 + HALF) / CELL))
-            b0 = int(math.floor((z0 - CLEARANCE + HALF) / CELL))
-            b1 = int(math.floor((z1 + CLEARANCE - 1e-4 + HALF) / CELL))
+            a0 = int(math.floor((x0 - CLEARANCE + self.half) / CELL))
+            a1 = int(math.floor((x1 + CLEARANCE - 1e-4 + self.half) / CELL))
+            b0 = int(math.floor((z0 - CLEARANCE + self.half) / CELL))
+            b1 = int(math.floor((z1 + CLEARANCE - 1e-4 + self.half) / CELL))
             for gx in range(max(0, a0), min(n, a1 + 1)):
                 for gz in range(max(0, b0), min(n, b1 + 1)):
                     blocked[gz][gx] = True
@@ -418,7 +425,7 @@ class Layout:
             # Outside the outline is terrain, blocked like SimWorld does: by the cell centre.
             for gz in range(n):
                 for gx in range(n):
-                    cx, cz = gx * CELL - HALF + CELL / 2, gz * CELL - HALF + CELL / 2
+                    cx, cz = gx * CELL - self.half + CELL / 2, gz * CELL - self.half + CELL / 2
                     if not outline_tools.inside(self.boundary, cx, cz):
                         blocked[gz][gx] = True
         return blocked
@@ -655,11 +662,11 @@ def tiles(L, kind_at, step=4.0, road_gap=1.0):
     deep tiles keep off roads (a road over lava or water is a causeway or ford) and, being
     blocking, off the objectives. Returns tiles placed."""
     placed = 0
-    n = int(HALF * 2 / step)
+    n = int(HALF_DESIGN * 2 / step)
     for gx in range(n):
-        x = -HALF + step * (gx + 0.5)
+        x = -HALF_DESIGN + step * (gx + 0.5)
         for gz in range(n):
-            z = -HALF + step * (gz + 0.5)
+            z = -HALF_DESIGN + step * (gz + 0.5)
             kind = kind_at(x, z)
             if kind is None:
                 continue
@@ -1978,22 +1985,8 @@ def metrocity(seed=151):
 # gate in the west and south walls (the sides facing the player), guard towers in the corners,
 # the command HQ in the middle, depots, dumps and hangars round it, and an outer line of
 # bunkers, tank traps and sandbags 22 m in front of the walls.
-FORT = (14.0, 14.0, 70.0, 70.0)      # wall centrelines: x0, z0, x1, z1
+# (The fortress is laid out by fortify(), further down.)
 GATE = 7.0                            # clear opening in a wall
-OUTER = -8.0                          # the outer line runs along x = -8 and z = -8
-SIEGE_DEFENCES = [
-    # (vehicle, x, z): static team-1 defences, facing the player's corner (heading 225).
-    ('guard_tower', 19.0, 19.0), ('guard_tower', 65.0, 19.0), ('guard_tower', 19.0, 65.0), ('guard_tower', 65.0, 65.0),
-    ('gun_turret', 21.0, 33.0), ('gun_turret', 21.0, 51.0), ('gun_turret', 33.0, 21.0), ('gun_turret', 51.0, 21.0),
-    ('aa_turret', 28.0, 28.0), ('aa_turret', 54.0, 36.0), ('aa_turret', 36.0, 54.0),
-    ('rocket_turret', 52.0, 27.0), ('rocket_turret', 27.0, 52.0),
-    ('artillery_emplacement', 46.0, 55.5), ('artillery_emplacement', 55.5, 46.0),
-    ('mg_bunker', OUTER, 30.0), ('mg_bunker', OUTER, 54.0), ('mg_bunker', 30.0, OUTER), ('mg_bunker', 54.0, OUTER),
-]
-# Room kept free round each defence: its hull (length x width in balance.json) plus a little.
-UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
-             'artillery_emplacement': 7.0}
-
 
 def clip_roads(L, x0, z0, x1, z1):
     """Cuts every road where it passes through a rectangle (the fortress), keeping the pieces outside."""
@@ -2060,80 +2053,134 @@ def wall_line(L, axis, line, start, end, gate=None, corner_seam=0.5):
             L.force('base_gate', line, gate, 90)
 
 
-def fortify(L, name):
-    """Turns a conquest layout into its siege variant (see the notes above FORT)."""
-    x0, z0, x1, z1 = FORT
-    L.failed = []
-    # Clear the quadrant, the razor wire belt in front of the walls included, and cut the roads.
-    L.remove(lambda a0, b0, a1, b1: a1 > 1.0 and b1 > 1.0)
-    clip_roads(L, x0 - 1, z0 - 1, HALF, HALF)
-    L.points = []
-    # Clear a 12 m approach lane out from each gate, through the outer line and 26 m beyond it
-    # (rock, lava or buildings there would seal the fortress off).
-    west_gate, south_gate = (z0 + z1) / 2 + 0.6, (x0 + x1) / 2 - 0.6
-    L.remove(lambda a0, b0, a1, b1: a1 > OUTER - 26 and a0 < x0 and b1 > west_gate - 6 and b0 < west_gate + 6)
-    L.remove(lambda a0, b0, a1, b1: b1 > OUTER - 26 and b0 < z0 and a1 > south_gate - 6 and a0 < south_gate + 6)
+MODELS = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'
 
-    # Reserve the defence positions first, clearing whatever stood on the outer-line bunkers.
-    for kind, x, z in SIEGE_DEFENCES:
+
+def model_or(kind, fallback):
+    """A new fortress model once its art exists, else the nearest existing piece."""
+    return kind if (MODELS / f'{kind}.glb').exists() else fallback
+
+
+# The siege fortress on the 200 m battlefield, in three rings round the command HQ (see
+# SiegeMode): the outer line (stage 1: its relay stations), an L of walls closing the north-east
+# off against the map's edge (stage 2: the shield generators inside), and the walled keep with
+# the HQ (stage 3). Ring distances are the larger of the x and z offsets from the HQ.
+HQ = (62.0, 62.0)
+KEEP = (44.0, 44.0, 84.0, 84.0)     # keep wall centrelines x0, z0, x1, z1
+RING_WALL = 14.0                    # the wall ring runs along x = 14 and z = 14
+OUTER_LINE = -12.0                  # the outer line runs along x = -12 and z = -12
+SIEGE_RINGS = [48.0, 22.0]          # beyond 48 m of the HQ: stage 1; beyond 22 m: stage 2; else stage 3
+
+
+def fortress_defences():
+    """(vehicle, x, z) of every fixed defence, facing the player's corner; mirrored pairs across the diagonal."""
+    heavy = model_or('heavy_turret', 'gun_turret')
+    flak = model_or('flak_tower', 'aa_turret')
+    battery = model_or('missile_battery', 'aa_turret')
+    pairs = [
+        # Stage 1, the outer line: bunkers on the line, towers, guns and AA behind it.
+        ('mg_bunker', OUTER_LINE, 36.0), ('mg_bunker', OUTER_LINE, 78.0),
+        ('guard_tower', 0.0, 24.0), ('guard_tower', 0.0, 88.0),
+        ('gun_turret', 2.0, 44.0), ('aa_turret', 6.0, 74.0),
+        # Stage 2, inside the wall ring.
+        ('gun_turret', 20.0, 40.0), ('rocket_turret', 22.0, 60.0), ('aa_turret', 32.0, 52.0),
+        ('artillery_emplacement', 26.0, 88.0), (battery, 34.0, 34.0), (flak, 36.0, 88.0),
+        # Stage 3, the keep.
+        (heavy, 49.0, 49.0), ('mg_bunker', 48.0, 66.0), (flak, 76.0, 76.0), ('aa_turret', 52.0, 78.0),
+    ]
+    out, seen = [], set()
+    for kind, x, z in pairs:
+        for px, pz in ((x, z), (z, x)):
+            if (px, pz) in seen:
+                continue
+            seen.add((px, pz))
+            out.append((kind, px, pz))
+    return out
+
+
+UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
+             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'missile_battery': 9.5}
+
+
+def fortify(L, name):
+    """Turns a conquest layout (on the 200 m battlefield) into its siege variant: the fortress
+    in three rings round the command HQ (see the notes above HQ)."""
+    L.failed = []
+    x0, z0, x1, z1 = KEEP
+    ring = RING_WALL
+    edge = L.half + 4.0  # past the outline: the pieces outside it are dropped, the rest seals against it
+    # Clear everything inside the wall ring, and cut the roads there.
+    L.remove(lambda a0, b0, a1, b1: a1 > ring - 4 and b1 > ring - 4)
+    clip_roads(L, ring - 5, ring - 5, L.half, L.half)
+    L.points = []
+    ring_gate, keep_gate = 52.0, (x0 + x1) / 2
+    # Approach lanes, 14 m wide, from beyond the outer line to each ring gate.
+    for g in (ring_gate,):
+        L.remove(lambda a0, b0, a1, b1: a1 > OUTER_LINE - 30 and a0 < ring + 2 and b1 > g - 7 and b0 < g + 7)
+        L.remove(lambda a0, b0, a1, b1: b1 > OUTER_LINE - 30 and b0 < ring + 2 and a1 > g - 7 and a0 < g + 7)
+
+    # Defences first, clearing whatever stood on their spots.
+    for kind, x, z in fortress_defences():
         r = UNIT_SPOT[kind] / 2
         L.remove(lambda a0, b0, a1, b1: a0 < x + r + 1.5 and a1 > x - r - 1.5 and b0 < z + r + 1.5 and b1 > z - r - 1.5)
         L.reserved.append((x - r, z - r, x + r, z + r))
         L.units.append({'def': kind, 'team': 1, 'x': x, 'z': z, 'heading': 225})
 
-    # The ring: each wall runs past one corner (a pinwheel), so the corners close without overlap.
-    # The gates sit mid-wall, so six segments fit either side of each with half a metre to spare.
-    wall_line(L, 'x', z0, x0 - 0.6, x1 - 0.6, gate=(x0 + x1) / 2 - 0.6)  # south wall
-    wall_line(L, 'z', x1, z0 - 0.6, z1 - 0.6)                            # east wall
-    wall_line(L, 'x', z1, x0 + 0.6, x1 + 0.6)                            # north wall
-    wall_line(L, 'z', x0, z0 + 0.6, z1 + 0.6, gate=(z0 + z1) / 2 + 0.6)  # west wall
+    # The wall ring: an L along x = 14 and z = 14 out to the map's edge, a gate in each.
+    wall_line(L, 'z', ring, ring + 0.6, edge, gate=ring_gate)          # west wall, running north
+    wall_line(L, 'x', ring, ring - 0.6, edge, gate=ring_gate)          # south wall, running east
+    # The keep: a full ring (pinwheel corners), gates in the west and south walls.
+    wall_line(L, 'x', z0, x0 - 0.6, x1 - 0.6, gate=keep_gate)          # south
+    wall_line(L, 'z', x1, z0 - 0.6, z1 - 0.6)                           # east
+    wall_line(L, 'x', z1, x0 + 0.6, x1 + 0.6)                           # north
+    wall_line(L, 'z', x0, z0 + 0.6, z1 + 0.6, gate=keep_gate)          # west
 
-    # Inside: the HQ in the middle, hangars along the north and east walls with an ammo dump and
-    # a fuel depot beside each (they chain), a helipad on the rally, floodlights, and sandbag
-    # walls lining the two gate lanes (the lanes themselves stay open).
-    L.put('command_hq', 42, 42, 0, pad=0.5)
-    L.put('vehicle_hangar', 28.5, 62.5, 0)
-    L.put('ammo_dump', 38.5, 64, 90)
-    L.put('fuel_depot', 46.5, 65, 0)
-    L.put('vehicle_hangar', 62.5, 28.5, 90)
-    L.put('ammo_dump', 64, 38.5, 0)
-    L.put('fuel_depot', 65, 46.5, 90)
-    L.put('helipad', 57, 57, 0, pad=0.2)
-    for x, z in ((17, 37.5), (17, 47.7), (36.3, 17), (46.5, 17), (56, 67.5), (67.5, 57)):
+    # Stage objectives: the relay stations behind the outer line, the shield generators inside
+    # the ring, the command HQ in the keep.
+    generator = model_or('shield_generator', 'fuel_depot')
+    L.put('command_hq', *HQ, 0, pad=0.5)
+    for x, z in ((-2.0, 60.0), (60.0, -2.0)):
+        L.remove(lambda a0, b0, a1, b1: a0 < x + 7 and a1 > x - 7 and b0 < z + 7 and b1 > z - 7)
+        L.put('radar_station', x, z, 0, pad=0.5)
+    for x, z in ((26.0, 72.0), (72.0, 26.0), (28.0, 28.0)):
+        L.put(generator, x, z, 0, pad=0.5)
+    # The ring's stores and hangars (they chain when they go), floodlights at the gates.
+    L.put('fuel_depot', 40.0, 74.0, 0)
+    L.put('fuel_depot', 74.0, 40.0, 90)
+    L.put('ammo_dump', 20.0, 76.0, 90)
+    L.put('ammo_dump', 76.0, 20.0, 0)
+    L.put('vehicle_hangar', 58.0, 90.0, 0)
+    L.put('vehicle_hangar', 90.0, 58.0, 90)
+    L.put('helipad', 76.0, 70.0, 0, pad=0.2)
+    for x, z in ((ring + 2, ring_gate - 7), (ring + 2, ring_gate + 7), (ring_gate - 7, ring + 2), (ring_gate + 7, ring + 2),
+                 (x0 + 2, keep_gate - 6), (keep_gate - 6, z0 + 2)):
         L.put('floodlight_mast', x, z, 0, pad=0.2)
-    for x, z, rot in ((28, 36.5, 0), (28, 47.5, 0), (36.5, 28, 90), (47.5, 28, 90)):
+    for x, z, rot in ((ring + 6, ring_gate - 5.5, 0), (ring + 6, ring_gate + 5.5, 0), (ring_gate - 5.5, ring + 6, 90),
+                      (ring_gate + 5.5, ring + 6, 90)):
         L.put('sandbag_wall', x, z, rot, pad=0.2)
 
-    # Razor wire 10 m out from the west and south walls, open at the gate approaches, the corner
-    # and the far ends.
-    for u in (12, 20, 28, 56, 64):
-        L.put('razor_wire', 4, u, 90, pad=0.0)
-        L.put('razor_wire', u, 4, 0, pad=0.0)
+    # Razor wire 8 m out from the ring walls, open at the gate approaches.
+    for u in (22.0, 30.0, 38.0, 62.0, 86.0):
+        L.put('razor_wire', ring - 8, u, 90, pad=0.0)
+        L.put('razor_wire', u, ring - 8, 0, pad=0.0)
 
-    # The outer line: strongpoints of sandbags round each bunker, rows of tank traps between,
-    # gaps for vehicles and for the gate roads.
+    # The outer line: sandbag strongpoints round each bunker, tank traps between, open lanes.
     def outer(kind, u, off, rot_along):
-        """A piece on both outer lines: `u` along the line, `off` in front (+) or behind (-) it."""
-        for x, z, rot in ((OUTER - off, u, 90 if rot_along else 0), (u, OUTER - off, 0 if rot_along else 90)):
+        for x, z, rot in ((OUTER_LINE - off, u, 90 if rot_along else 0), (u, OUTER_LINE - off, 0 if rot_along else 90)):
             w, d = Layout.size(kind, rot)
             L.remove(lambda a0, b0, a1, b1: a0 < x + w / 2 + 1.5 and a1 > x - w / 2 - 1.5 and
                      b0 < z + d / 2 + 1.5 and b1 > z - d / 2 - 1.5)
             L.put(kind, x, z, rot, pad=0.2)
-    for u in (30, 54):
+    for u in (36.0, 78.0):
         outer('sandbags', u - 5.5, 0, True)
         outer('sandbags', u + 5.5, 0, True)
         outer('sandbags', u, 4.2, True)
-    for u, off in ((13, 0), (16.5, 1.8), (20, 0), (64, 0), (67.5, 1.8), (71, 0)):
+    for u, off in ((18.0, 0), (21.5, 1.8), (25.0, 0), (62.0, 0), (65.5, 1.8), (69.0, 0), (88.0, 0)):
         outer('tank_trap', u, off, True)
-    for u in (6.5, 76):
-        outer('sandbags', u, 0, True)
-    L.remove(lambda a0, b0, a1, b1: a0 < OUTER + 2.5 and a1 > OUTER - 2.5 and b0 < OUTER + 2.5 and b1 > OUTER - 2.5)
-    L.put('tank_trap', OUTER, OUTER, 0, pad=0.2)
 
-    # Roads through the gates to the HQ, and from the HQ to the helipad.
-    L.road(7, -30, west_gate, 34, west_gate)
-    L.road(7, south_gate, -30, south_gate, 35)
-    L.road(6, 50, 50, 56, 56)
+    # Roads: through each ring gate and keep gate to the HQ.
+    L.road(7, OUTER_LINE - 30, ring_gate, x0 - 6, ring_gate, x0 - 6, keep_gate, HQ[0] - 8, keep_gate)
+    L.road(7, ring_gate, OUTER_LINE - 30, ring_gate, z0 - 6, keep_gate, z0 - 6, keep_gate, HQ[1] - 7)
 
     for def_id, x, z in L.failed:
         print(f'warning: {name} siege: could not place {def_id} near ({x}, {z})')
@@ -2143,7 +2190,12 @@ def fortify(L, name):
             raise SystemExit(f"{name} siege: {unit['def']} at ({unit['x']}, {unit['z']}) stands on a blocked cell")
     hq = next(p for p in L.props if p['def'] == 'command_hq')
     w, d = PROPS['command_hq']['width'] / 2, PROPS['command_hq']['depth'] / 2
-    missing = L.reachable([('camp', *L.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)])
+    targets = [('camp', *L.teams[1]), ('hq', hq['x'] - w, hq['z'] - d, hq['x'] + w, hq['z'] + d)]
+    for p in L.props:
+        if p['def'] in ('radar_station', generator):
+            pw, pd = PROPS[p['def']]['width'] / 2, PROPS[p['def']]['depth'] / 2
+            targets.append((p['def'], p['x'] - pw, p['z'] - pd, p['x'] + pw, p['z'] + pd))
+    missing = L.reachable(targets)
     if missing:
         raise SystemExit(f'{name} siege: unreachable from the player camp: {missing}')
     return L
@@ -2304,18 +2356,18 @@ def warzone(L, map_id, theme, poly):
     placed = [0, 0]
     on_road = None if theme == 'urban' else 1.5
     for _ in range(1500):
-        if min(placed) >= 5:
+        if min(placed) >= 7:
             break
-        x, z = rng.uniform(-64, 64), rng.uniform(-64, 64)
-        if placed[half(x, z)] >= 5 or min(math.hypot(x - t[0], z - t[1]) for t in L.teams) < 34:
+        x, z = rng.uniform(-HALF + 16, HALF - 16), rng.uniform(-HALF + 16, HALF - 16)
+        if placed[half(x, z)] >= 7 or min(math.hypot(x - t[0], z - t[1]) for t in L.teams) < 34:
             continue
         if one(rng.choice(WRECKS), x, z, rng.choice(QUARTERS), pad=1.8, road_gap=on_road):
             placed[half(x, z)] += 1
             a = rng.random() * math.tau
             one('crater_large', x + math.cos(a) * 6.5, z + math.sin(a) * 6.5, 0, pad=0.3, road_gap=None if on_road is None else 0.5)
-    for _ in range(4):
+    for _ in range(8):
         for _ in range(40):
-            x, z = rng.uniform(-60, 60), rng.uniform(-60, 60)
+            x, z = rng.uniform(-HALF + 15, HALF - 15), rng.uniform(-HALF + 15, HALF - 15)
             if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 30 and one('crater_large', x, z, 0, pad=0.5,
                                                                                   road_gap=None if on_road is None else 0.5):
                 break
@@ -2340,7 +2392,7 @@ def warzone(L, map_id, theme, poly):
     if style['poles']:
         count = 0
         for road in L.roads:
-            if road['width'] > 9 or count >= 24:
+            if road['width'] > 9 or count >= 36:
                 continue
             pts, half = road['points'], road['width'] / 2
             carry = 4.0
@@ -2351,7 +2403,7 @@ def warzone(L, map_id, theme, poly):
                     continue
                 ux, uz = (bx - ax) / length, (bz - az) / length
                 at = carry
-                while at < length and count < 24:
+                while at < length and count < 36:
                     x, z = ax + ux * at - uz * (half + 2.4), az + uz * at + ux * (half + 2.4)
                     if one('telegraph_pole', x, z, 0, pad=0.3, road_gap=1.2):
                         count += 1
@@ -2359,9 +2411,9 @@ def warzone(L, map_id, theme, poly):
                 carry = at - length
 
     if style['dead']:
-        for _ in range(10):
+        for _ in range(16):
             for _ in range(30):
-                x, z = rng.uniform(-66, 66), rng.uniform(-66, 66)
+                x, z = rng.uniform(-HALF + 14, HALF - 14), rng.uniform(-HALF + 14, HALF - 14)
                 if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 28 and one('dead_tree', x, z, 0, pad=0.5):
                     break
 
@@ -2401,6 +2453,148 @@ def checkpoint(L, px, pz, r, place):
     return False
 
 
+def scale_layout(L):
+    """Spreads a layout built on the 160 m design grid over the 200 m battlefield: every position
+    (props, roads, camps, objectives, plazas) moves out by S; buildings, props, road widths and
+    capture radii keep their size, so streets, yards and fields open up. The 4 m surface tiles
+    (lava, river, ford) are laid again on the battlefield's own 4 m grid, from where the scaled
+    design put them, so rivers and lava stay unbroken."""
+    s = S
+    L.teams = [(x * s, z * s) for x, z in L.teams]
+    L.points = [(x * s, z * s, r) for x, z, r in L.points]
+    L.clear = tuple((a * s, b * s, c * s, d * s) for a, b, c, d in L.clear)
+    L.roads = [{'width': r['width'], 'points': [v * s for v in r['points']]} for r in L.roads]
+    L._samples = None
+    design_tiles = {}
+    props, rects = [], []
+    for prop in L.props:
+        if prop['def'] in SURFACE_TILES:
+            design_tiles[(math.floor((prop['x'] + HALF_DESIGN) / 4.0), math.floor((prop['z'] + HALF_DESIGN) / 4.0))] = prop['def']
+            continue
+        x, z = round(prop['x'] * s * 20) / 20, round(prop['z'] * s * 20) / 20
+        rot = prop.get('rot', 0)
+        w, d = Layout.size(prop['def'], rot)
+        entry = dict(prop, x=x, z=z)
+        props.append(entry)
+        rects.append((x - w / 2, z - d / 2, x + w / 2, z + d / 2))
+    L.props, L.rects = props, rects
+    L.reserved = [(a * s, b * s, c * s, d * s) for a, b, c, d in L.reserved]
+    L.units = [dict(u, x=u['x'] * s, z=u['z'] * s) for u in L.units]
+    L.half = HALF
+    if design_tiles:
+        n = int(HALF * 2 / 4.0)
+        for gx in range(n):
+            for gz in range(n):
+                x, z = -HALF + 4.0 * (gx + 0.5), -HALF + 4.0 * (gz + 0.5)
+                kind = design_tiles.get((math.floor((x / s + HALF_DESIGN) / 4.0), math.floor((z / s + HALF_DESIGN) / 4.0)))
+                if kind:
+                    L.force(kind, x, z)
+    return L
+
+
+# What fills a theme's open ground: trees in clumps, rocks, and the buildings of its hamlets.
+DENSIFY = {
+    'temperate': dict(trees=('tree',), rocks=('boulders',), houses=('cottage', 'house_small', 'barn', 'garage'), yard='fence'),
+    'desert': dict(trees=('palm', 'cactus', 'cactus'), rocks=('boulders',), houses=('adobe_house', 'adobe_house', 'garage'), yard='wall'),
+    'snow': dict(trees=('tree',), rocks=('snow_rock',), houses=('log_cabin', 'log_cabin', 'barn'), yard='fence'),
+    'harbor': dict(trees=('tree',), rocks=(), houses=('warehouse', 'garage', 'container_stack'), yard='jersey_barrier'),
+    'volcanic': dict(trees=('charred_tree',), rocks=('basalt_rock_a', 'basalt_rock_c'), houses=('ruin', 'ruin_house'), yard=None),
+    'jungle': dict(trees=('jungle_tree_a', 'jungle_tree_b', 'jungle_tree_c', 'bamboo_clump', 'fern_bush'), rocks=('boulders',),
+                   houses=('stilt_hut',), yard=None),
+    'urban': dict(trees=('tree',), rocks=(), houses=('shop', 'office_block'), yard='jersey_barrier'),
+}
+
+
+def densify(L, map_id, theme, poly):
+    """Fills the ground the bigger battlefield opened up: clumps of the theme's trees in the
+    open, a few rock outcrops away from the roads, and hamlets (two or three of the theme's
+    buildings with a yard and a vehicle) beside the roads, as many on either half. Everything is
+    inside the outline, clear of camps, objectives, plazas and campaign routes."""
+    style = DENSIFY[theme]
+    rng = random.Random(sum(map(ord, map_id)) * 13 + 5)
+    circles, lines = campaign_keep(map_id)
+
+    def clear(x, z, reach):
+        for cx, cz, _ in circles:
+            if math.hypot(x - cx, z - cz) < 6.0 + reach:
+                return False
+        for pts, _ in lines:
+            for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+                if segment_distance(x, z, ax, az, bx, bz) < 5.0 + reach:
+                    return False
+        return True
+
+    def inside(kind, x, z, rot=0, margin=1.5):
+        w, d = L.size(kind, rot)
+        w, d = w / 2 + margin, d / 2 + margin
+        return all(outline_tools.inside(poly, x + sx * w, z + sz * d) for sx in (-1, 0, 1) for sz in (-1, 0, 1))
+
+    def put(kind, x, z, rot=0, pad=1.0, road_gap=1.0):
+        x, z = round(x * 2) / 2, round(z * 2) / 2
+        blocks = PROPS[kind].get('blocks', False)
+        if not inside(kind, x, z, rot) or (blocks and not clear(x, z, max(L.size(kind, rot)) / 2 + 1)):
+            return False
+        return L.add(kind, x, z, rot, pad=pad, road_gap=road_gap)
+
+    def far_from_points(x, z, extra):
+        return all(math.hypot(x - px, z - pz) > r + extra for px, pz, r in L.points)
+
+    def far_from_camps(x, z, d):
+        return all(math.hypot(x - t[0], z - t[1]) > d for t in L.teams)
+
+    # Tree clumps in the open.
+    for _ in range(18):
+        for _ in range(40):
+            cx, cz = rng.uniform(-HALF + 8, HALF - 8), rng.uniform(-HALF + 8, HALF - 8)
+            if far_from_camps(cx, cz, 32) and far_from_points(cx, cz, 6) and outline_tools.inside(poly, cx, cz):
+                break
+        else:
+            continue
+        for _ in range(rng.randint(6, 12)):
+            a, r = rng.random() * math.tau, 7 * math.sqrt(rng.random())
+            put(rng.choice(style['trees']), cx + math.cos(a) * r, cz + math.sin(a) * r, 0, pad=0.3, road_gap=1.0)
+
+    # Rock outcrops, off the roads and the objectives.
+    for _ in range(6 if style['rocks'] else 0):
+        for _ in range(40):
+            cx, cz = rng.uniform(-HALF + 10, HALF - 10), rng.uniform(-HALF + 10, HALF - 10)
+            if far_from_camps(cx, cz, 34) and far_from_points(cx, cz, 12) and outline_tools.inside(poly, cx, cz):
+                break
+        else:
+            continue
+        for _ in range(rng.randint(2, 4)):
+            a, r = rng.random() * math.tau, 4 * math.sqrt(rng.random())
+            put(rng.choice(style['rocks']), cx + math.cos(a) * r, cz + math.sin(a) * r, 0, pad=2.0, road_gap=3.0)
+
+    # Hamlets beside the roads: equal numbers on either half.
+    made = [0, 0]
+    samples = L.road_samples()
+    for _ in range(400):
+        if min(made) >= 3 or not samples:
+            break
+        px, pz, half_width = samples[rng.randrange(len(samples))]
+        side = 0 if px + pz < 0 else 1
+        if made[side] >= 3 or not far_from_camps(px, pz, 34) or not far_from_points(px, pz, 14):
+            continue
+        # Set back from the road, on whichever side has room.
+        placed = 0
+        for k in range(rng.randint(2, 3)):
+            kind = rng.choice(style['houses'])
+            a = rng.random() * math.tau
+            off = half_width + 6 + k * 3 + rng.uniform(0, 4)
+            x, z = px + math.cos(a) * off, pz + math.sin(a) * off
+            if put(kind, x, z, rng.choice((0, 90, 180, 270)), pad=1.5, road_gap=1.5):
+                placed += 1
+                if style['yard'] and rng.random() < 0.6:
+                    put(style['yard'], x + rng.uniform(-6, 6), z + rng.uniform(-6, 6), rng.choice((0, 90)), pad=0.4, road_gap=1.0)
+                if rng.random() < 0.4:
+                    put(rng.choice(('car', 'truck')), x + rng.uniform(-7, 7), z + rng.uniform(-7, 7), rng.choice((0, 90)),
+                        pad=0.8, road_gap=0.6)
+        if placed:
+            made[side] += 1
+    return L
+
+
 def finish(L):
     for def_id, x, z in L.failed:
         print(f'warning: could not place {def_id} near ({x}, {z})')
@@ -2410,28 +2604,28 @@ def finish(L):
     return L
 
 
-TEAMS = [{'team': 0, 'x': -58, 'z': -58}, {'team': 1, 'x': 58, 'z': 58}]
+TEAMS = [{'team': 0, 'x': -58 * S, 'z': -58 * S}, {'team': 1, 'x': 58 * S, 'z': 58 * S}]
 CONQUEST_UNITS = [
-    {'def': 'scout_jeep', 'team': 0, 'x': -50, 'z': -58, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -58, 'z': -50, 'heading': 45},
-    {'def': 'apc', 'team': 0, 'x': -53, 'z': -53, 'heading': 45},
-    {'def': 'light_tank', 'team': 0, 'x': -60, 'z': -60, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 1, 'x': 50, 'z': 58, 'heading': 225},
-    {'def': 'scout_jeep', 'team': 1, 'x': 58, 'z': 50, 'heading': 225},
-    {'def': 'apc', 'team': 1, 'x': 53, 'z': 53, 'heading': 225},
-    {'def': 'light_tank', 'team': 1, 'x': 60, 'z': 60, 'heading': 225},
+    {'def': 'scout_jeep', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45},
+    {'def': 'scout_jeep', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45},
+    {'def': 'apc', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45},
+    {'def': 'light_tank', 'team': 0, 'x': -75.0, 'z': -75.0, 'heading': 45},
+    {'def': 'scout_jeep', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225},
+    {'def': 'scout_jeep', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225},
+    {'def': 'apc', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225},
+    {'def': 'light_tank', 'team': 1, 'x': 75.0, 'z': 75.0, 'heading': 225},
 ]
 SURVIVAL_UNITS = [
-    {'def': 'light_tank', 'team': 0, 'x': -50, 'z': -58, 'heading': 45},
-    {'def': 'light_tank', 'team': 0, 'x': -58, 'z': -50, 'heading': 45},
-    {'def': 'main_battle_tank', 'team': 0, 'x': -53, 'z': -53, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -61, 'z': -46, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -46, 'z': -61, 'heading': 45},
-    {'def': 'artillery', 'team': 0, 'x': -63, 'z': -63, 'heading': 45},
-    {'def': 'light_tank', 'team': 1, 'x': 50, 'z': 58, 'heading': 225},
-    {'def': 'light_tank', 'team': 1, 'x': 58, 'z': 50, 'heading': 225},
-    {'def': 'main_battle_tank', 'team': 1, 'x': 53, 'z': 53, 'heading': 225},
-    {'def': 'scout_jeep', 'team': 1, 'x': 46, 'z': 61, 'heading': 225},
+    {'def': 'light_tank', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45},
+    {'def': 'light_tank', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45},
+    {'def': 'main_battle_tank', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45},
+    {'def': 'scout_jeep', 'team': 0, 'x': -76.25, 'z': -57.5, 'heading': 45},
+    {'def': 'scout_jeep', 'team': 0, 'x': -57.5, 'z': -76.25, 'heading': 45},
+    {'def': 'artillery', 'team': 0, 'x': -78.75, 'z': -78.75, 'heading': 45},
+    {'def': 'light_tank', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225},
+    {'def': 'light_tank', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225},
+    {'def': 'main_battle_tank', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225},
+    {'def': 'scout_jeep', 'team': 1, 'x': 57.5, 'z': 76.25, 'heading': 225},
 ]
 
 MAPS = [
@@ -2479,13 +2673,13 @@ def main(only=()):
     for map_id, build, theme, names, conquest, survival in MAPS:
         if only and map_id not in only:
             continue
-        layout = build()
+        layout = scale_layout(build())
         # One outline per battlefield, shared by all its versions: carved round everything the
         # Conquest, Survival and Siege versions and the campaign need; then the battlefield is
-        # dressed inside it (the siege version gets the same dressing before its fortress).
-        poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify(build(), map_id)], map_id), seed=len(map_id) * 31 + 7)
-        warzone(layout, map_id, theme, poly)
-        siege = fortify(warzone(build(), map_id, theme, poly), map_id)
+        # dressed and filled inside it (the siege version the same, before its fortress).
+        poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify(scale_layout(build()), map_id)], map_id), seed=len(map_id) * 31 + 7)
+        densify(warzone(layout, map_id, theme, poly), map_id, theme, poly)
+        siege = fortify(densify(warzone(scale_layout(build()), map_id, theme, poly), map_id, theme, poly), map_id)
         dropped = apply_outline(layout, poly)
         apply_outline(siege, poly)
         missing = layout.reachable()
@@ -2504,15 +2698,15 @@ def main(only=()):
         points = [{'id': pid, 'name': name, 'x': x, 'z': z, 'radius': r}
                   for pid, name, (x, z, r) in zip(('west', 'town', 'east'), names, layout.points)]
         dump(DATA / 'maps' / f'{map_id}_conquest.json', conquest,
-             {'id': f'{map_id}_conquest', 'theme': theme, 'size': 160, 'teams': TEAMS, 'points': points,
+             {'id': f'{map_id}_conquest', 'theme': theme, 'size': 200, 'teams': TEAMS, 'points': points,
               'units': CONQUEST_UNITS}, layout)
         dump(DATA / 'maps' / f'{map_id}_sandbox.json', survival,
-             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': 160, 'teams': TEAMS, 'units': SURVIVAL_UNITS}, layout)
+             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': 200, 'teams': TEAMS, 'units': SURVIVAL_UNITS}, layout)
         # Siege: the same battlefield (built afresh, so it is identical) with the enemy fortress.
         name = conquest.split(' for ')[0]
         dump(DATA / 'maps' / f'{map_id}_siege.json',
              f'{name} for Siege: the enemy fortress holds the north-east quadrant; destroy its command HQ.',
-             {'id': f'{map_id}_siege', 'theme': theme, 'size': 160, 'teams': TEAMS, 'points': [],
+             {'id': f'{map_id}_siege', 'theme': theme, 'size': 200, 'teams': TEAMS, 'points': [], 'siegeRings': SIEGE_RINGS,
               'units': [u for u in CONQUEST_UNITS if u['team'] == 0] + siege.units}, siege)
         print(f'{map_id}_siege: {len(siege.props)} props, {len(siege.units)} defences')
 

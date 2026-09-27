@@ -50,7 +50,7 @@ namespace MachineBrigade.Tests
             var catalog = Catalog.FromJson(File.ReadAllText(DataPath("balance.json")));
             var map = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/ashfield_sandbox.json")));
 
-            Assert.AreEqual(160f, map.Size);
+            Assert.AreEqual(200f, map.Size);
             foreach (var p in map.Props) Assert.DoesNotThrow(() => catalog.Prop(p.DefId), p.DefId);
             foreach (var u in map.Units) Assert.DoesNotThrow(() => catalog.Vehicle(u.DefId), u.DefId);
         }
@@ -159,14 +159,16 @@ namespace MachineBrigade.Tests
 
                 // A real shape: a good share of the square is terrain.
                 var outside = 0;
-                for (var x = -79f; x < 80f; x += 2f)
-                for (var z = -79f; z < 80f; z += 2f)
+                var half = conquest.HalfSize;
+                for (var x = -half + 1f; x < half; x += 2f)
+                for (var z = -half + 1f; z < half; z += 2f)
                     if (!conquest.InsideBoundary(new System.Numerics.Vector2(x, z))) outside++;
-                Assert.Greater(outside, 80 * 80 / 20, $"{info.Id}: at least a twentieth of the square is carved away");
+                Assert.Greater(outside, half * half / 20f, $"{info.Id}: at least a twentieth of the square is carved away");
 
                 var world = new MachineBrigade.Sim.SimWorld(catalog, conquest, seed: 1);
-                var corner = new System.Numerics.Vector2(-79f, 79f);
-                for (var x = -79f; x < 80f && conquest.InsideBoundary(corner); x += 1f) corner = new System.Numerics.Vector2(x, 79f);
+                var top = half - 1f;
+                var corner = new System.Numerics.Vector2(-top, top);
+                for (var x = -top; x < half && conquest.InsideBoundary(corner); x += 1f) corner = new System.Numerics.Vector2(x, top);
                 Assert.IsFalse(conquest.InsideBoundary(corner), $"{info.Id}: found ground beyond the outline");
                 Assert.IsFalse(world.Grid.IsWalkable(corner), $"{info.Id}: no driving beyond the outline");
                 Assert.IsTrue(world.Cover.IsBlocked(corner), $"{info.Id}: the terrain beyond stops direct fire");

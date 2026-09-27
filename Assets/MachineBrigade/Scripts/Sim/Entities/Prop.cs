@@ -45,6 +45,9 @@ namespace MachineBrigade.Sim.Entities
         public bool IsAlive => Hp > 0f;
 
         /// <summary>Multiplies this structure's health (full health, scaled).</summary>
+        /// <summary>Shielded (a siege objective whose stage has not come yet): it takes no damage.</summary>
+        public bool Invulnerable { get; internal set; }
+
         internal void Harden(float factor)
         {
             MaxHp = Def.MaxHp * factor;

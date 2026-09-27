@@ -137,6 +137,7 @@ namespace MachineBrigade.Sim.Combat
         public void Apply(IDamageable target, float amount, DamageType type)
         {
             if (!target.IsAlive || !(amount > 0f)) return;
+            if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return;
             var damage = amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
             if (!(damage > 0f)) return;
 

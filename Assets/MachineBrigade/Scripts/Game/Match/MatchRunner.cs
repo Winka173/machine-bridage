@@ -430,6 +430,7 @@ namespace MachineBrigade.Game.Match
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
+            _map.DrawShields(_camera.Rotation, Time.time);
             _crates?.Update(_world);
             _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
@@ -538,6 +539,11 @@ namespace MachineBrigade.Game.Match
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(180, 255);
                         }
+                        break;
+                    case SimEventKind.StageCleared when !_menu:
+                    case SimEventKind.FortressAlert when !_menu:
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
+                        if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)

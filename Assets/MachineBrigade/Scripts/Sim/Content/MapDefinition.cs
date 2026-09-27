@@ -75,8 +75,9 @@ namespace MachineBrigade.Sim.Content
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
-            IReadOnlyList<Vector2>? boundary = null)
+            IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null)
         {
+            SiegeRings = siegeRings ?? Array.Empty<float>();
             Boundary = boundary ?? Array.Empty<Vector2>();
             Theme = string.IsNullOrWhiteSpace(theme) ? "temperate" : theme;
             Points = points ?? Array.Empty<CapturePointDef>();
@@ -113,6 +114,13 @@ namespace MachineBrigade.Sim.Content
         /// fire; aircraft fly over it.
         /// </summary>
         public IReadOnlyList<Vector2> Boundary { get; }
+
+        /// <summary>
+        /// Siege maps: the fortress rings, as distances (the larger of the x and z offsets) from the
+        /// command HQ: beyond the first is the outer line (stage 1), between them the wall ring
+        /// (stage 2), inside the second the keep (stage 3). Empty elsewhere.
+        /// </summary>
+        public IReadOnlyList<float> SiegeRings { get; }
 
         /// <summary>Whether a point lies inside the outline (always, for a map without one).</summary>
         public bool InsideBoundary(Vector2 p)
@@ -183,8 +191,9 @@ namespace MachineBrigade.Sim.Content
                 for (var i = 0; i < flat.Count; i += 2) boundary.Add(new Vector2(flat[i], flat[i + 1]));
             }
 
+            var rings = root.Has("siegeRings") ? new List<float>(root.FloatArray("siegeRings")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary);
+                boundary, rings);
         }
     }
 }
