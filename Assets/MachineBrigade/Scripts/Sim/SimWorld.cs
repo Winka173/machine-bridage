@@ -123,6 +123,10 @@ namespace MachineBrigade.Sim
         public int PendingExplosionCount => Damage.PendingCount;
 
         internal Random Random { get; }
+
+        /// <summary>The driving and traffic rules (tests read its path-search budget).</summary>
+        internal MovementSystem Movement => _movement;
+
         internal DamageSystem Damage { get; }
         internal EconomySystem Economy { get; }
         internal StrikeSystem Strikes { get; }
@@ -291,6 +295,9 @@ namespace MachineBrigade.Sim
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
+            // A fixed defence stands on its ground like a building from the start, wherever it came
+            // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
+            if (def.Static) AnchorDefence(vehicle);
             Emit(SimEvent.Spawned(vehicle));
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
@@ -672,9 +679,10 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>
-        /// A defence a mode puts down (a camp bastion, a point's tower, an Assault sector's guns)
-        /// stands on the ground like a building: routes go round it. Defences a map places already
-        /// have their ground kept clear and their routes checked by the map builder.
+        /// A fixed defence (a camp bastion, a point's tower, an Assault sector's guns, a fortress's
+        /// turrets) stands on the ground like a building: routes go round it. Every one is anchored
+        /// as it spawns; the map builder keeps the ground of those a map places clear and checks the
+        /// routes round them.
         /// </summary>
         internal void AnchorDefence(Vehicle v)
         {

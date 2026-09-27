@@ -1229,12 +1229,13 @@ def base_wall(a):
 
 # ----------------------------------------------------------------------------- base_gate
 def base_gate(a):
-    """Base gate (9 x 2 m, open): two concrete pillars with Team panels, hazard-banded inner faces and
+    """Base gate (12 x 2 m, open): two concrete pillars with Team panels, hazard-banded inner faces and
     lit lanterns on their caps, an overhead truss with a Team sign on both sides and two floodlights,
     and a red and white barrier arm raised almost upright on its housing (counterweight, rest fork on
-    the far pillar). Units drive through the 7 m gap."""
+    the far pillar). Units drive through the 10 m gap: three navigation cells across, so one hull
+    stopped in the gate does not close it (the pillars stand over the wall ends, 5 to 6 m out)."""
     for s in (-1, 1):
-        x = s * 4.0
+        x = s * 5.5
         a.part('Pillars', 'Concrete').box((1.0, 1.8, 4.1), loc=(x, 0, 2.03), bevel=.06, seg=1, taper=(.94, .96))
         a.part('Pillar_caps', 'Concrete').box((1.2, 2.0, .24), loc=(x, 0, 4.18), bevel=.04, seg=1)
         for face, y in (('-y', -.9), ('+y', .9)):
@@ -1250,13 +1251,13 @@ def base_gate(a):
         a.part('Lantern_caps', 'Armor').box((.34, .34, .06), loc=(x, 0, 4.6), bevel=0)
         # Truss column.
         a.part('Truss', 'Armor').box((.22, .22, 1.9), loc=(x, .55, 5.15), bevel=0)
-    fbox(a.part('Control_box', 'Armor'), '-y', (-4.0, -.87, 1.3), (.5, .2, .6), out=.1, bevel=.02)
-    a.part('Control_lamp', 'Alloy').box((.08, .03, .08), loc=(-3.85, -1.08, 1.5), bevel=0)
+    fbox(a.part('Control_box', 'Armor'), '-y', (-5.5, -.87, 1.3), (.5, .2, .6), out=.1, bevel=.02)
+    a.part('Control_lamp', 'Alloy').box((.08, .03, .08), loc=(-5.35, -1.08, 1.5), bevel=0)
     truss = a.part('Truss', 'Armor')
     for z in (5.3, 6.1):
-        truss.box((8.2, .14, .14), loc=(0, .55, z), bevel=0)
-    for k in range(8):
-        x0, x1 = -4.0 + k, -3.0 + k
+        truss.box((11.2, .14, .14), loc=(0, .55, z), bevel=0)
+    for k in range(11):
+        x0, x1 = -5.5 + k, -4.5 + k
         za, zb = (5.3, 6.1) if k % 2 == 0 else (6.1, 5.3)
         truss.limb((x0, .55, za), (x1, .55, zb), .08 + .02 * (k % 2), .08 + .02 * (k % 2), bevel=0)
     for side, yb in ((-1, .55 - .09), (1, .55 + .09)):
@@ -1264,10 +1265,10 @@ def base_gate(a):
         a.part('Gate_sign', 'Team').box((3.4, .05, .8), loc=(0, yb + side * .04, 5.7), bevel=.01, seg=1)
         for sx in (-1, 1):
             a.part('Sign_stripes', 'Hazard').box((.32, .03, .8), loc=(sx * 1.42, yb + side * .075, 5.7), bevel=0)
-    for x in (-2.6, 2.6):
+    for x in (-3.6, 3.6):
         flood_head(a, (x, .55, 6.58), yaw=0.0, tilt=.55, size=(.56, .26, .38))
     # Barrier: housing on the right, arm raised to 80 degrees towards -X, rest fork on the left.
-    hx, hy = 3.26, -.62
+    hx, hy = 4.76, -.62
     a.part('Barrier_housing', 'Armor').box((.42, .46, 1.0), loc=(hx, hy, .5), bevel=.03, seg=1)
     a.part('Barrier_housing_top', 'SafetyStripe').box((.44, .48, .08), loc=(hx, hy, .98), bevel=.01, seg=1)
     a.part('Barrier_hub', 'Steel').cyl(.12, .56, loc=(hx, hy, 1.1), rot=(R90, 0, 0), seg=10, bevel=.01, bseg=1)
@@ -1281,9 +1282,9 @@ def base_gate(a):
     a.part('Barrier_weight', 'Armor').limb(tuple(piv + d * .12), tuple(piv - d * .5), .24, .26, bevel=.02)
     a.part('Barrier_tip', 'Lamp').box((.15, .15, .12), loc=tuple(piv + d * (.1 + 7 * seg_len + .06)), bevel=0)
     fork = a.part('Barrier_rest', 'Steel')
-    fork.box((.08, .08, 1.0), loc=(-3.3, hy - .3, .5), bevel=0)
+    fork.box((.08, .08, 1.0), loc=(-4.8, hy - .3, .5), bevel=0)
     for s in (-1, 1):
-        fork.box((.04, .04, .16), loc=(-3.3, hy - .3 + s * .08, 1.06), bevel=0)
+        fork.box((.04, .04, .16), loc=(-4.8, hy - .3 + s * .08, 1.06), bevel=0)
 
 
 # ----------------------------------------------------------------------------- floodlight_mast

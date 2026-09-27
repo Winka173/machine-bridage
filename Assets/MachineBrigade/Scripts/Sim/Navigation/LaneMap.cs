@@ -67,6 +67,9 @@ namespace MachineBrigade.Sim.Navigation
         private readonly byte[] _routeCount;
         private readonly int[] _stamp;
         private readonly int[] _reservedBy;
+        private readonly byte[] _narrowAxis;
+        private readonly short[] _doorway;
+        private readonly List<Vector2> _doorwayThrough = new();
         private readonly PathFinder _finder;
         private readonly List<Vector2> _path = new();
         private readonly List<int> _queue = new();
@@ -83,11 +86,26 @@ namespace MachineBrigade.Sim.Navigation
             _routeCount = new byte[n];
             _stamp = new int[n];
             _reservedBy = new int[n];
+            _narrowAxis = new byte[n];
+            _doorway = new short[n];
             _finder = new PathFinder(grid);
         }
 
         /// <summary>How many times the map has been built (tests).</summary>
         public int Builds { get; private set; }
+
+        /// <summary>The short doorways (no-parking runs) found at the last build, numbered from 1.</summary>
+        public int DoorwayCount => _doorwayThrough.Count;
+
+        /// <summary>The short doorway (with its mouths) the cell under <paramref name="p"/> belongs to; 0 for none.</summary>
+        public int DoorwayAt(Vector2 p)
+        {
+            var (x, y) = _grid.CellOf(p);
+            return _grid.InBounds(x, y) ? _doorway[_grid.Index(x, y)] : 0;
+        }
+
+        /// <summary>The way through doorway <paramref name="id"/> (a unit vector; its sign is arbitrary).</summary>
+        public Vector2 DoorwayThrough(int id) => id > 0 && id <= _doorwayThrough.Count ? _doorwayThrough[id - 1] : Vector2.UnitY;
 
         public LaneFlags At(Vector2 p)
         {
@@ -132,6 +150,8 @@ namespace MachineBrigade.Sim.Navigation
             Builds++;
             Array.Clear(_flags, 0, _flags.Length);
             Array.Clear(_routeCount, 0, _routeCount.Length);
+            Array.Clear(_doorway, 0, _doorway.Length);
+            _doorwayThrough.Clear();
             BuildClearance();
             foreach (var road in world.Map.Roads)
                 for (var i = 0; i + 1 < road.Points.Count; i++)
@@ -258,6 +278,7 @@ namespace MachineBrigade.Sim.Navigation
                     int px = -ay, py = ax;
                     if (Run(x, y, px, py, ThroughCells) < ThroughCells || Run(x, y, -px, -py, ThroughCells) < ThroughCells) continue;
                     _flags[_grid.Index(x, y)] |= LaneFlags.Narrow;
+                    _narrowAxis[_grid.Index(x, y)] = (byte)axis;
                     break;
                 }
             }
@@ -300,13 +321,23 @@ namespace MachineBrigade.Sim.Navigation
                         run.Add(j);
                     }
                 }
-                if (run.Count > MaxNoParkCells) continue;
+                if (run.Count > MaxNoParkCells || _doorwayThrough.Count >= short.MaxValue) continue;
+                // A doorway of its own: numbered, with the way through it (square to the narrow axis
+                // of its first cell), so traffic can take turns through it.
+                var axis = _narrowAxis[start];
+                _doorwayThrough.Add(Vector2.Normalize(new Vector2(-AxisY[axis], AxisX[axis])));
+                var id = (short)_doorwayThrough.Count;
                 foreach (var i in run)
                 {
                     int cx = i % _grid.Width, cy = i / _grid.Width;
                     for (var dy = -NoParkMouth; dy <= NoParkMouth; dy++)
                     for (var dx = -NoParkMouth; dx <= NoParkMouth; dx++)
-                        if (_grid.IsWalkable(cx + dx, cy + dy)) _flags[_grid.Index(cx + dx, cy + dy)] |= LaneFlags.NoPark;
+                    {
+                        if (!_grid.IsWalkable(cx + dx, cy + dy)) continue;
+                        var j = _grid.Index(cx + dx, cy + dy);
+                        _flags[j] |= LaneFlags.NoPark;
+                        if (_doorway[j] == 0) _doorway[j] = id;
+                    }
                 }
             }
         }
@@ -404,16 +435,27 @@ namespace MachineBrigade.Sim.Navigation
         }
 
         /// <summary>
-        /// Whether another living vehicle has booked the cell under <paramref name="p"/> and is still
-        /// going there or standing there (a booking left behind by a gun that moved on does not count).
+        /// Whether a 3 x 3 booking round <paramref name="p"/> would overlap one another living vehicle
+        /// holds and still uses (a booking left behind by a gun that moved on does not count).
         /// </summary>
         internal bool ReservedByOther(Vector2 p, EntityId self, SimWorld world)
         {
-            var (x, y) = _grid.CellOf(p);
-            if (!_grid.InBounds(x, y)) return false;
-            var owner = _reservedBy[_grid.Index(x, y)];
-            if (owner == 0 || owner == self.Value) return false;
-            if (!world.TryGetVehicle(new EntityId(owner), out var o) || !o.IsAlive || !o.Traffic.HasReservation) return false;
+            var (cx, cy) = _grid.CellOf(p);
+            for (var y = cy - 2; y <= cy + 2; y++)
+            for (var x = cx - 2; x <= cx + 2; x++)
+            {
+                if (!_grid.InBounds(x, y)) continue;
+                var owner = _reservedBy[_grid.Index(x, y)];
+                if (owner == 0 || owner == self.Value) continue;
+                if (world.TryGetVehicle(new EntityId(owner), out var o) && InUse(o)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>A vehicle's booking still stands: it is at its booked spot or ordered there.</summary>
+        internal static bool InUse(Vehicle o)
+        {
+            if (!o.IsAlive || !o.Traffic.HasReservation) return false;
             var at = o.Traffic.ReservedAt;
             return Vector2.DistanceSquared(o.Position, at) < 36f || Vector2.DistanceSquared(o.Order.Point, at) < 36f;
         }

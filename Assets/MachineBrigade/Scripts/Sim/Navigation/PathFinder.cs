@@ -196,12 +196,11 @@ namespace MachineBrigade.Sim.Navigation
             return MaxExtraAlong(anchor, _raw[j], costs) <= allowed;
         }
 
-        /// <summary>A cell's extra cost in this search: the stamped hulls, the blocker, and nothing under the requester.</summary>
+        /// <summary>A cell's extra cost in this search: the stamped hulls (none under the requester itself) and the blocker.</summary>
         private int Extra(int index, PathCosts costs)
         {
             var c = _grid.CellCenter(index % _grid.Width, index / _grid.Width);
-            if (Vector2.DistanceSquared(c, costs.Start) < costs.StartSkip * costs.StartSkip) return 0;
-            var extra = costs.Extra != null ? costs.Extra[index] : 0;
+            var extra = costs.Extra != null && Vector2.DistanceSquared(c, costs.Start) >= costs.StartSkip * costs.StartSkip ? costs.Extra[index] : 0;
             if (costs.HasBlocker && extra < costs.BlockerCost)
             {
                 var ab = costs.BlockerB - costs.BlockerA;

@@ -93,6 +93,24 @@ def load_props():
 
 
 PROPS = load_props()
+
+
+def load_static_footprints():
+    """Fixed defences' anchored ground (SimWorld.StaticFootprint): 0.8 times the longer hull side."""
+    text = (DATA / 'balance.json').read_text(encoding='utf-8')
+    balance = json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    out = {}
+    for v in balance['vehicles']:
+        if not v.get('static', False):
+            continue
+        scale = v.get('scale', 1.0)
+        length = v['length'] * scale if 'length' in v else v['radius'] * 2.7
+        width = v['width'] * scale if 'width' in v else v['radius'] * 1.6
+        out[v['id']] = max(length, width) * 0.8
+    return out
+
+
+STATIC_FOOTPRINT = load_static_footprints()
 BUILDINGS = {'house_small', 'house_large', 'cottage', 'townhouse', 'apartment', 'shop', 'church', 'barn', 'silo',
              'warehouse', 'garage', 'water_tower', 'ruin', 'fuel_tank', 'wall', 'adobe_house', 'adobe_large',
              'refinery_tower', 'storage_tank', 'oil_pump', 'log_cabin', 'radar_station', 'watchtower', 'factory',
@@ -402,18 +420,24 @@ class Layout:
 
     def walkable(self, x, z):
         """Whether the nav cell under a point is open (units spawned elsewhere get moved)."""
-        blocked = self.blocked_grid()
+        blocked = self.blocked_grid(units=False)
         gx, gz = int((x + self.half) / CELL), int((z + self.half) / CELL)
         return not blocked[gz][gx]
 
-    def blocked_grid(self):
+    def blocked_grid(self, units=True):
         """The simulation's 2 m navigation grid, exactly as NavGrid.AddBlocker fills it: every cell
-        that a blocking footprint, grown by the obstacle clearance, touches at all."""
+        that a blocking footprint, grown by the obstacle clearance, touches at all. Fixed defences
+        placed as map units block their ground too (SimWorld anchors every one as it spawns: a
+        square of 0.8 times its longer side)."""
         n = int(self.half * 2 / CELL)
         blocked = [[False] * n for _ in range(n)]
-        for prop, (x0, z0, x1, z1) in zip(self.props, self.rects):
-            if not PROPS[prop['def']].get('blocks', False):
-                continue
+        rects = [r for prop, r in zip(self.props, self.rects) if PROPS[prop['def']].get('blocks', False)]
+        if units:
+            for u in self.units:
+                side = STATIC_FOOTPRINT.get(u['def'])
+                if side:
+                    rects.append((u['x'] - side / 2, u['z'] - side / 2, u['x'] + side / 2, u['z'] + side / 2))
+        for x0, z0, x1, z1 in rects:
             a0 = int(math.floor((x0 - CLEARANCE + self.half) / CELL))
             a1 = int(math.floor((x1 + CLEARANCE - 1e-4 + self.half) / CELL))
             b0 = int(math.floor((z0 - CLEARANCE + self.half) / CELL))
@@ -1986,7 +2010,11 @@ def metrocity(seed=151):
 # the command HQ in the middle, depots, dumps and hangars round it, and an outer line of
 # bunkers, tank traps and sandbags 22 m in front of the walls.
 # (The fortress is laid out by fortify(), further down.)
-GATE = 7.0                            # clear opening in a wall
+# A gate is 10 m of clear opening centred on an odd coordinate, the centre of a 2 m navigation
+# cell: with the 1.5 m obstacle clearance on each wall end that leaves three whole walkable cells
+# (6 m) across it, room for a parked hull and a tank passing it. A 7 m gate kept two cells, or
+# one when centred on a cell edge, and a single hull stopped in it closed the fortress.
+GATE = 10.0                           # clear opening in a wall
 
 def clip_roads(L, x0, z0, x1, z1):
     """Cuts every road where it passes through a rectangle (the fortress), keeping the pieces outside."""
@@ -2021,12 +2049,23 @@ def clip_roads(L, x0, z0, x1, z1):
     L._samples = None
 
 
-def wall_line(L, axis, line, start, end, gate=None, corner_seam=0.5):
+def wall_line(L, axis, line, start, end, gate=None, corner_seam=0.5, slit=None):
     """Base wall segments end to end along a wall centreline; `gate` is the centre of a GATE-wide
-    opening. Without a gate the wall is exactly seven segments; with one, six, and the metre
-    left over becomes two small seams at the corners (under the guard towers)."""
+    opening. Without a gate the segments run from `start`; a wall whose length is not a whole
+    number of segments leaves its odd metres as a slit at `slit` (behind the HQ, where no one
+    sees it and no hull fits through it). With a gate the segments run outwards from the gate
+    and the metres left over become small seams at the corners."""
     pieces = []
-    if gate is None:
+    if gate is None and slit is not None:
+        u = start
+        while u + 8 <= slit + 1e-6:
+            pieces.append(u + 4)
+            u += 8
+        u = end
+        while u - 8 >= slit - 1e-6:
+            pieces.append(u - 4)
+            u -= 8
+    elif gate is None:
         u = start
         while u + 8 <= end + 1e-6:
             pieces.append(u + 4)
@@ -2065,11 +2104,17 @@ def model_or(kind, fallback):
 # SiegeMode): the outer line (stage 1: its relay stations), an L of walls closing the north-east
 # off against the map's edge (stage 2: the shield generators inside), and the walled keep with
 # the HQ (stage 3). Ring distances are the larger of the x and z offsets from the HQ.
-HQ = (62.0, 62.0)
-KEEP = (44.0, 44.0, 84.0, 84.0)     # keep wall centrelines x0, z0, x1, z1
+# The HQ stands in the keep's back corner, a metre or two off the walls (too close for a hull to
+# get behind it), so the keep is an open yard in front of it rather than a ring of alleys round
+# it: defenders coming out of the keep and attackers going in have room to pass each other.
+HQ = (75.0, 75.0)
+KEEP = (41.4, 41.4, 84.0, 84.0)     # keep wall centrelines x0, z0, x1, z1 (the gated walls run from 42 to 84)
+KEEP_GATE = 63.0                    # the keep's gates, in its west and south walls
+RING_GATE = 53.0                    # the wall ring's gates, in its west and south walls
 RING_WALL = 14.0                    # the wall ring runs along x = 14 and z = 14
 OUTER_LINE = -12.0                  # the outer line runs along x = -12 and z = -12
-SIEGE_RINGS = [48.0, 22.0]          # beyond 48 m of the HQ: stage 1; beyond 22 m: stage 2; else stage 3
+SIEGE_RINGS = [60.0, 35.0]          # beyond 60 m of the HQ: stage 1; beyond 35 m: stage 2; else stage 3
+SIEGE_RALLY = (58.0, 58.0)          # the defenders' camp in Siege: the keep's yard (their conquest camp is under the HQ)
 
 
 def fortress_defences():
@@ -2082,15 +2127,16 @@ def fortress_defences():
         ('mg_bunker', OUTER_LINE, 36.0), ('mg_bunker', OUTER_LINE, 78.0),
         ('guard_tower', 0.0, 24.0), ('guard_tower', 0.0, 88.0),
         ('gun_turret', 2.0, 44.0), ('aa_turret', 6.0, 74.0),
-        # Stage 2, inside the wall ring.
-        ('gun_turret', 20.0, 40.0), ('rocket_turret', 22.0, 64.0), ('aa_turret', 32.0, 52.0),
+        # Stage 2, inside the wall ring, clear of the lane from each ring gate to the keep gate.
+        ('gun_turret', 20.0, 40.0), ('rocket_turret', 20.0, 70.0), ('aa_turret', 32.0, 44.0),
         ('artillery_emplacement', 26.0, 88.0), (battery, 34.0, 34.0), (flak, 36.0, 88.0),
-        # Stage 3, the keep.
-        (heavy, 49.0, 49.0), ('mg_bunker', 48.0, 66.0), (flak, 76.0, 76.0), ('aa_turret', 52.0, 78.0),
+        # Stage 3, the keep: in its corners and against its walls, clear of the yard and the
+        # gates' mouths (the flak tower alone, in the corner west of the HQ).
+        (heavy, 46.5, 46.5), ('mg_bunker', 54.0, 79.0), ('aa_turret', 60.0, 79.0), (flak, 46.5, 77.5, 'alone'),
     ]
     out, seen = [], set()
-    for kind, x, z in pairs:
-        for px, pz in ((x, z), (z, x)):
+    for kind, x, z, *alone in pairs:
+        for px, pz in ((x, z),) if alone else ((x, z), (z, x)):
             if (px, pz) in seen:
                 continue
             seen.add((px, pz))
@@ -2103,13 +2149,62 @@ def fortress_defences():
 FORTRESS_BUILDINGS = ['warehouse', 'office_block', 'house_large', 'garage', 'container_stack', 'house_small', 'radar_dome',
                       'house_small', 'garage', 'container', 'townhouse', 'garage', 'container_stack']
 
-# Lanes kept open for the attack: from each ring gate to the keep gate, and the keep gate to the HQ.
-FORTRESS_LANES = [(13, 44, 43, 60), (44, 13, 60, 43), (33, 44, 43, 71), (44, 33, 71, 43), (43, 57, 55, 71), (57, 43, 71, 55)]
+# Lanes kept open for the attack: from each ring gate to the keep gate, 28 m wide round it.
+FORTRESS_LANES = [(13, 44, 43, 72), (44, 13, 72, 43)]
+
+# Two buildings (or a building and a wall) either touch, closing the gap for good, or leave at
+# least this much between them: 6 m of room for hull centres once both sides are grown by the
+# obstacle clearance (two walkable cells at least, three where they line up), enough for two
+# hulls to pass. A gap in between makes an alley one hull wide that jams the first time a
+# vehicle stops in it.
+ALLEY_SEALED = 2.5
+ALLEY_OPEN = 9.0
+
+# Fortress buildings stand this far from whatever they are pushed up against.
+BUILDING_HUG = 0.5
+
+
+def solid_rects(L):
+    """What vehicles cannot drive through: blocking props and the ground fixed defences anchor."""
+    rects = [r for p, r in zip(L.props, L.rects) if PROPS[p['def']].get('blocks', False)]
+    for u in L.units:
+        side = STATIC_FOOTPRINT.get(u['def'])
+        if side:
+            rects.append((u['x'] - side / 2, u['z'] - side / 2, u['x'] + side / 2, u['z'] + side / 2))
+    return rects
+
+
+def alley_with(L, x0, z0, x1, z1):
+    """The first solid footprint that a rectangle would stand an alley's width from: too far to
+    close the gap, too near to leave room to pass. None if none."""
+    for rect in solid_rects(L):
+        a0, b0, a1, b1 = rect
+        dx = max(a0 - x1, x0 - a1, 0.0)
+        dz = max(b0 - z1, z0 - b1, 0.0)
+        if ALLEY_SEALED < math.hypot(dx, dz) < ALLEY_OPEN:
+            return rect
+    return None
+
+
+def hugging(rng, anchor, w, d):
+    """A centre for a w x d footprint flush against a random side of `anchor` (BUILDING_HUG off it)."""
+    a0, b0, a1, b1 = anchor
+    side = rng.randrange(4)
+    if side < 2:
+        x = a0 - BUILDING_HUG - w / 2 if side == 0 else a1 + BUILDING_HUG + w / 2
+        lo, hi = sorted((b0 - d / 2 + 1, b1 + d / 2 - 1))
+        return x, rng.uniform(lo, hi)
+    z = b0 - BUILDING_HUG - d / 2 if side == 2 else b1 + BUILDING_HUG + d / 2
+    lo, hi = sorted((a0 - w / 2 + 1, a1 + w / 2 - 1))
+    return rng.uniform(lo, hi), z
 
 
 def fortress_buildings(L, name, count=14, reach=None):
-    """Buildings scattered in the wall ring and the keep, in mirrored pairs across the diagonal,
-    clear of the approach lanes; returns them, newest last (dropped first if they block a route)."""
+    """Buildings in the wall ring (the keep's yard stays open), in mirrored pairs across the
+    diagonal, clear of the approach lanes. Each stands flush against something solid (a wall, a
+    store, a defence) and at least an alley's width from everything else: a fortress of blocks and
+    open lanes, not of one-hull alleys. Returns them, newest last (dropped first if they block a
+    route)."""
     rng = random.Random(sum(ord(c) for c in name) * 7919)
     placed = []
 
@@ -2117,22 +2212,30 @@ def fortress_buildings(L, name, count=14, reach=None):
         return any(x - w / 2 - 1 < r[2] and x + w / 2 + 1 > r[0] and z - d / 2 - 1 < r[3] and z + d / 2 + 1 > r[1]
                    for r in FORTRESS_LANES)
 
+    def in_ring(r):
+        cx, cz = (r[0] + r[2]) / 2, (r[1] + r[3]) / 2
+        return cx >= RING_WALL - 1 and cz >= RING_WALL - 1 and not (KEEP[0] < cx < KEEP[2] and KEEP[1] < cz < KEEP[3])
+
     tries = 0
     while len(placed) < count and tries < 3000:
         tries += 1
         kind = rng.choice(FORTRESS_BUILDINGS)
         rot = rng.choice((0, 90))
-        if rng.random() < 0.35:
-            x, z = rng.uniform(48, 80), rng.uniform(48, 80)
-        else:
-            x, z = rng.uniform(18, 95), rng.uniform(18, 95)
-            if 40 < x < 88 and 40 < z < 88:
-                continue
+        anchors = [r for r in solid_rects(L) if in_ring(r)]
+        if not anchors:
+            break
+        w, d = Layout.size(kind, rot)
+        x, z = hugging(rng, rng.choice(anchors), w, d)
+        x, z = round(x, 2), round(z, 2)
+        if x < RING_WALL + 1 or z < RING_WALL + 1 or (40 < x < 88 and 40 < z < 88):
+            continue
         for px, pz, prot in ((x, z, rot), (z, x, 90 - rot)):
             w, d = Layout.size(kind, prot)
             if in_lane(px, pz, w, d) or len(placed) >= count:
                 continue
-            if L.put(kind, px, pz, prot, pad=1.1):
+            if alley_with(L, px - w / 2, pz - d / 2, px + w / 2, pz + d / 2) is not None:
+                continue
+            if L.put(kind, px, pz, prot, pad=BUILDING_HUG - 0.1):
                 # Never at the price of a route: a building that cuts one off goes again at once.
                 if reach is not None and L.reachable(reach()):
                     L.remove(lambda a0, b0, a1, b1, hx=px, hz=pz: a0 <= hx <= a1 and b0 <= hz <= b1)
@@ -2163,6 +2266,7 @@ def fortify(L, name, buildings=True):
     """Turns a conquest layout (on the 200 m battlefield) into its siege variant: the fortress
     in three rings round the command HQ (see the notes above HQ)."""
     L.failed = []
+    L.teams = [L.teams[0], SIEGE_RALLY]
     x0, z0, x1, z1 = KEEP
     ring = RING_WALL
     edge = L.half + 4.0  # past the outline: the pieces outside it are dropped, the rest seals against it
@@ -2170,7 +2274,7 @@ def fortify(L, name, buildings=True):
     L.remove(lambda a0, b0, a1, b1: a1 > ring - 4 and b1 > ring - 4)
     clip_roads(L, ring - 5, ring - 5, L.half, L.half)
     L.points = []
-    ring_gate, keep_gate = 52.0, (x0 + x1) / 2
+    ring_gate, keep_gate = RING_GATE, KEEP_GATE
     # Approach lanes, 14 m wide, from beyond the outer line to each ring gate.
     for g in (ring_gate,):
         L.remove(lambda a0, b0, a1, b1: a1 > OUTER_LINE - 30 and a0 < ring + 2 and b1 > g - 7 and b0 < g + 7)
@@ -2186,24 +2290,29 @@ def fortify(L, name, buildings=True):
     # The wall ring: an L along x = 14 and z = 14 out to the map's edge, a gate in each.
     wall_line(L, 'z', ring, ring + 0.6, edge, gate=ring_gate)          # west wall, running north
     wall_line(L, 'x', ring, ring - 0.6, edge, gate=ring_gate)          # south wall, running east
-    # The keep: a full ring (pinwheel corners), gates in the west and south walls.
-    wall_line(L, 'x', z0, x0 - 0.6, x1 - 0.6, gate=keep_gate)          # south
-    wall_line(L, 'z', x1, z0 - 0.6, z1 - 0.6)                           # east
-    wall_line(L, 'x', z1, x0 + 0.6, x1 + 0.6)                           # north
-    wall_line(L, 'z', x0, z0 + 0.6, z1 + 0.6, gate=keep_gate)          # west
+    # The keep: the south and west walls run from 42 to 84 with a gate in the middle of each (two
+    # segments either side of it), a floodlight mast on the corner between them; the north and
+    # east walls, behind the HQ, close the ring and keep their odd metres as a slit hidden behind
+    # it (the north wall takes the far corner).
+    lo = x0 + 0.6
+    wall_line(L, 'x', z0, lo, lo + 42.0, gate=keep_gate, corner_seam=0.0)     # south
+    wall_line(L, 'z', x0, lo, lo + 42.0, gate=keep_gate, corner_seam=0.0)     # west
+    wall_line(L, 'x', z1, lo, x1 + 0.6, slit=HQ[0])                            # north
+    wall_line(L, 'z', x1, lo, z1 - 0.6, slit=HQ[1])                            # east
+    L.force('floodlight_mast', x0, z0, 0)
 
     # Stage objectives: the relay stations behind the outer line, the shield generators inside
     # the ring, the command HQ in the keep.
     generator = model_or('shield_generator', 'fuel_depot')
-    L.put('command_hq', *HQ, 0, pad=0.5)
+    L.put('command_hq', *HQ, 0, pad=0.3)
     for x, z in ((-2.0, 60.0), (60.0, -2.0)):
         L.remove(lambda a0, b0, a1, b1: a0 < x + 7 and a1 > x - 7 and b0 < z + 7 and b1 > z - 7)
         L.put('radar_station', x, z, 0, pad=0.5)
-    for x, z in ((26.0, 72.0), (72.0, 26.0), (24.0, 24.0)):
+    for x, z in ((26.0, 78.0), (78.0, 26.0), (24.0, 24.0)):
         L.put(generator, x, z, 0, pad=0.5)
-    # The ring's stores and hangars (they chain when they go), floodlights at the gates.
-    L.put('fuel_depot', 35.0, 64.0, 90)
-    L.put('fuel_depot', 64.0, 35.0, 0)
+    # The ring's stores and hangars (they chain when they go), off the lanes to the keep gates.
+    L.put('fuel_depot', 35.0, 78.0, 90)
+    L.put('fuel_depot', 78.0, 35.0, 0)
     L.put('ammo_dump', 19.0, 80.0, 90)
     L.put('ammo_dump', 80.0, 19.0, 0)
     L.put('vehicle_hangar', 58.0, 90.0, 0)
@@ -2211,11 +2320,12 @@ def fortify(L, name, buildings=True):
     L.put('helipad', 90.0, 76.0, 0, pad=0.2)
     # (Not when carving the outline: the buildings must not move the battlefield's edge for every version.)
     houses = fortress_buildings(L, name, reach=lambda: siege_targets(L)) if buildings else []
-    for x, z in ((ring + 2, ring_gate - 9.5), (ring + 2, ring_gate + 9.5), (ring_gate - 9.5, ring + 2), (ring_gate + 9.5, ring + 2),
-                 (x0 + 2, keep_gate - 6), (keep_gate - 6, z0 + 2)):
+    # Floodlights beside the ring gates, and sandbag walls inside them that funnel no narrower
+    # than the gate itself.
+    for x, z in ((ring + 2, ring_gate - 9.5), (ring + 2, ring_gate + 9.5), (ring_gate - 9.5, ring + 2), (ring_gate + 9.5, ring + 2)):
         L.put('floodlight_mast', x, z, 0, pad=0.2)
-    for x, z, rot in ((ring + 6, ring_gate - 5.5, 0), (ring + 6, ring_gate + 5.5, 0), (ring_gate - 5.5, ring + 6, 90),
-                      (ring_gate + 5.5, ring + 6, 90)):
+    for x, z, rot in ((ring + 6, ring_gate - 7.5, 0), (ring + 6, ring_gate + 7.5, 0), (ring_gate - 7.5, ring + 6, 90),
+                      (ring_gate + 7.5, ring + 6, 90)):
         L.put('sandbag_wall', x, z, rot, pad=0.2)
 
     # Razor wire 8 m out from the ring walls, open at the gate approaches.
@@ -2239,9 +2349,9 @@ def fortify(L, name, buildings=True):
     for u, off in ((18.0, 0), (21.5, 1.8), (25.0, 0), (62.0, 0), (65.5, 1.8), (69.0, 0), (88.0, 0)):
         outer('tank_trap', u, off, True)
 
-    # Roads: through each ring gate and keep gate to the HQ.
-    L.road(7, OUTER_LINE - 30, ring_gate, x0 - 6, ring_gate, x0 - 6, keep_gate, HQ[0] - 8, keep_gate)
-    L.road(7, ring_gate, OUTER_LINE - 30, ring_gate, z0 - 6, keep_gate, z0 - 6, keep_gate, HQ[1] - 7)
+    # Roads: through each ring gate and keep gate into the keep's yard.
+    L.road(7, OUTER_LINE - 30, ring_gate, x0 - 6, ring_gate, x0 - 6, keep_gate, x0 + 12, keep_gate)
+    L.road(7, ring_gate, OUTER_LINE - 30, ring_gate, z0 - 6, keep_gate, z0 - 6, keep_gate, z0 + 12)
 
     for def_id, x, z in L.failed:
         print(f'warning: {name} siege: could not place {def_id} near ({x}, {z})')
@@ -2768,7 +2878,8 @@ def main(only=()):
         name = conquest.split(' for ')[0]
         dump(DATA / 'maps' / f'{map_id}_siege.json',
              f'{name} for Siege: the enemy fortress holds the north-east quadrant; destroy its command HQ.',
-             {'id': f'{map_id}_siege', 'theme': theme, 'size': 200, 'teams': TEAMS, 'points': [], 'siegeRings': SIEGE_RINGS,
+             {'id': f'{map_id}_siege', 'theme': theme, 'size': 200,
+              'teams': [TEAMS[0], {'team': 1, 'x': SIEGE_RALLY[0], 'z': SIEGE_RALLY[1]}], 'points': [], 'siegeRings': SIEGE_RINGS,
               'units': [u for u in CONQUEST_UNITS if u['team'] == 0] + siege.units}, siege)
         print(f'{map_id}_siege: {len(siege.props)} props, {len(siege.units)} defences')
 

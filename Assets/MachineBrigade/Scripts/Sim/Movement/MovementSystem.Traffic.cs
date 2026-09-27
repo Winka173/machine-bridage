@@ -41,6 +41,9 @@ namespace MachineBrigade.Sim.Movement
 
         private static readonly float[] AlongSteps = { 0f, 4f, 8f, -4f };
 
+        /// <summary>Yield-spot score per radian the yielder has to turn to drive there.</summary>
+        private const float YieldTurnCost = 3f;
+
         /// <summary>A yield lasts at most this long (which also bounds the reload it pauses).</summary>
         private const double YieldMaxSeconds = 4.0;
 
@@ -56,6 +59,9 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>Priorities from this up are obeyed even by a vehicle already yielding or resting after a yield.</summary>
         private const int OverridePriority = 80;
 
+        /// <summary>Friends standing this close to a mover's destination are not asked to make way (the group's rendezvous, as in TacticalAi).</summary>
+        private const float GatherReach = 12f;
+
         /// <summary>A unit's routes planned round parked hulls come at least this far apart.</summary>
         private const double MinCostRepathGap = 1.0;
 
@@ -70,8 +76,17 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>A queued search starts only with this much of the step's budget left (the first always runs).</summary>
         private const int MinSearchBudget = 2000;
 
+        /// <summary>
+        /// Extra step cost of the cells under the hull in the way (x13 at the path finder's 0.1
+        /// scale), and of one that cannot move at all (x26: a detour of a few dozen metres is cheaper).
+        /// </summary>
+        private const int BlockerCost = 120, ImmovableBlockerCost = 250;
+
         /// <summary>A route round the hulls longer than this share of the plain one (plus a few metres) is no way round.</summary>
         private const float DetourCap = 1.5f;
+
+        /// <summary>The detour cap on the second route planned round the hulls: still stuck behind it, a longer way round is worth it.</summary>
+        private const float DetourCapLate = 3f;
 
         private const float DetourSlack = 8f;
 
@@ -156,9 +171,10 @@ namespace MachineBrigade.Sim.Movement
             if (v.Order.Kind == OrderKind.Retreat || (weapon.MinRange > 0f && v.HasPath &&
                     _world.FindNearestEnemy(v, weapon.MinRange + 6f, requireVisible: true, layers: TargetLayers.Ground) != null))
                 return 80;
-            // A mover held up by the hull ahead still has a mover's right of way.
-            if (v.HasPath && (MathF.Abs(v.Speed) > 0.3f || _world.Time - v.Traffic.LastBlockerTime < 1.0))
-                return v.ManualOrder ? 65 : v.Engaged.IsValid ? 60 : 50;
+            // On its way somewhere, held up or not, it has a mover's right of way: movers do not ask
+            // each other to make way (a column would shuffle itself), only after getting nowhere
+            // (see OnNoProgress) do they ask with more weight.
+            if (v.HasPath) return v.ManualOrder ? 65 : v.Engaged.IsValid ? 60 : 50;
             if (v.Traffic.YieldingTo.IsValid) return 40;
             if (v.OutOfAmmo) return 15;
             if (v.Target.IsValid)
@@ -177,7 +193,7 @@ namespace MachineBrigade.Sim.Movement
             var t = b.Traffic;
             var now = _world.Time;
             if (now - t.ParkedSince < ParkedForAsk) return false;
-            return !t.Reversing(now) && now >= t.HoldUntil && !t.WaitingOnYield && !t.QueueBehind.IsValid;
+            return !t.Reversing(now) && now >= t.HoldUntil && !t.WaitingOnYield && !t.QueueBehind.IsValid && t.GateWaitId == 0;
         }
 
         /// <summary>Keeps <see cref="TrafficState.ParkedSince"/> and notices new orders (a new order cancels any traffic overlay).</summary>
@@ -195,6 +211,8 @@ namespace MachineBrigade.Sim.Movement
             if (SameOrder(v.Order, t.OrderSeen)) return;
             t.OrderSeen = v.Order;
             if (t.YieldingTo.IsValid) EndYield(v, resume: false);
+            t.GateWaitId = 0;
+            t.WaitingForGate = false;
             t.ReverseUntil = double.NegativeInfinity;
             t.HoldUntil = double.NegativeInfinity;
             t.QueueBehind = EntityId.None;
@@ -215,6 +233,7 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             var now = _world.Time;
             if (t.Reversing(now) || now < t.HoldUntil) return true;
+            if (t.GateWaitId != 0) return UpdateGateWait(v);
             return t.YieldingTo.IsValid && UpdateYield(v);
         }
 
@@ -228,6 +247,9 @@ namespace MachineBrigade.Sim.Movement
         private void PostYield(Vehicle mover, Vehicle blocker, int depth)
         {
             if (depth > MaxYieldDepth || blocker.Team != mover.Team || mover.Flying || !Askable(blocker)) return;
+            // One standing where the mover is going is part of the group gathering there: it is not
+            // sent away (the mover settles beside it, see the arrival rule in DetectStuck).
+            if (mover.HasPath && Vector2.DistanceSquared(blocker.Position, mover.PathGoal) < GatherReach * GatherReach) return;
             var bt = blocker.Traffic;
             if (bt.YieldingTo == mover.Id || mover.Traffic.YieldingTo == blocker.Id) return;
             var pm = TrafficPriority(mover) + mover.Traffic.TrafficBoost;
@@ -304,7 +326,9 @@ namespace MachineBrigade.Sim.Movement
                     if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(b.Position, p)) continue;
                     if (DistanceToRoute(mover, p, 25f) < clear) continue;
                     var f = lanes.At(p);
-                    var score = Vector2.Distance(b.Position, p) + (pass == 1 ? 6f : 0f) +
+                    // (A spot behind costs a slow pivot there and another back: worth several metres.)
+                    var turn = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(p - b.Position) - b.Heading));
+                    var score = Vector2.Distance(b.Position, p) + turn * YieldTurnCost + (pass == 1 ? 6f : 0f) +
                                 ((f & LaneFlags.NoPark) != 0 ? 50f : 0f) + ((f & LaneFlags.Route) != 0 ? 8f : 0f) +
                                 (KeepsTargetInReach(b, p) ? 0f : 10f);
                     if (score >= best) continue;
@@ -469,9 +493,17 @@ namespace MachineBrigade.Sim.Movement
             t.YieldArrivedAt = double.PositiveInfinity;
             if (!resume) return;
             Vehicle.PathTrace?.Invoke(v, "Yield done");
-            // On the way somewhere: on to the order's destination (a chase picks its own route
-            // again next step). Holding, guarding or firing: from here.
-            if (v.Order.Kind is OrderKind.Move or OrderKind.Retreat or OrderKind.AttackMove && (t.ResumeHadPath || v.Order.Kind == OrderKind.AttackMove))
+            ResumeOrder(v);
+        }
+
+        /// <summary>
+        /// Takes up the order a traffic overlay interrupted: on the way somewhere, on to the order's
+        /// destination (a chase picks its own route again next step); holding, guarding or firing,
+        /// from here.
+        /// </summary>
+        private void ResumeOrder(Vehicle v)
+        {
+            if (v.Order.Kind is OrderKind.Move or OrderKind.Retreat or OrderKind.AttackMove && (v.Traffic.ResumeHadPath || v.Order.Kind == OrderKind.AttackMove))
                 _world.PathTo(v, v.Order.Point);
             else v.ClearPath();
             v.RepathTimer = 0f;
@@ -489,7 +521,8 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             var bt = blocker.Traffic;
             var now = _world.Time;
-            if (blocker.HasPath && Vector2.Dot(SimMath.Forward(blocker.Heading), forward) < -0.5f)
+            // (One waiting its turn at a doorway is as good as parked: it is asked to step aside.)
+            if (!bt.WaitingForGate && !t.WaitingForGate && Oncoming(v, blocker, forward))
             {
                 // Head-on: in a doorway one of the two backs out (decided next step); elsewhere
                 // both keep right as before. One already making way for the other is left to it.
@@ -505,6 +538,7 @@ namespace MachineBrigade.Sim.Movement
                 slowFor = MathF.Min(slowFor, MathF.Abs(blocker.Speed) * 0.9f);
                 return true;
             }
+            if (t.QueueBehind == blocker.Id && now >= t.QueueUntil) t.QueueBehind = EntityId.None;
             if (t.QueueBehind == blocker.Id)
             {
                 var gap = Vector2.Distance(v.Position, blocker.Position) - v.Def.HullBound - blocker.Def.HullBound;
@@ -525,19 +559,229 @@ namespace MachineBrigade.Sim.Movement
             return false;
         }
 
+        /// <summary>
+        /// The friend ahead is coming the other way and means to come past: facing us, and its
+        /// next waypoint is on our side of it (not a hull that is only turning round, or backing).
+        /// </summary>
+        private static bool Oncoming(Vehicle v, Vehicle blocker, Vector2 forward)
+        {
+            if (!blocker.HasPath || Vector2.Dot(SimMath.Forward(blocker.Heading), forward) >= -0.5f) return false;
+            var towards = blocker.Path[blocker.PathIndex] - blocker.Position;
+            return towards.LengthSquared() > 1f && Vector2.Dot(Vector2.Normalize(towards), forward) < -0.5f &&
+                   Vector2.Dot(towards, v.Position - blocker.Position) > 0f;
+        }
+
         private void NoteBlocker(Vehicle v, Vehicle blocker)
         {
             v.Traffic.LastBlocker = blocker.Id;
             v.Traffic.LastBlockerTime = _world.Time;
         }
 
-        /// <summary>The hull that last stood in the way, if that was within the last second.</summary>
-        private Vehicle? RecentBlocker(Vehicle v)
+        /// <summary>The hull that last stood in the way, if that was within the last <paramref name="maxAge"/> seconds.</summary>
+        private Vehicle? RecentBlocker(Vehicle v, double maxAge = 1.0)
         {
             var t = v.Traffic;
-            if (_world.Time - t.LastBlockerTime > 1.0 || !_world.TryGetVehicle(t.LastBlocker, out var b) || !b.IsAlive) return null;
+            if (_world.Time - t.LastBlockerTime > maxAge || !_world.TryGetVehicle(t.LastBlocker, out var b) || !b.IsAlive) return null;
             return b;
         }
+
+        // ------------------------------------------------------------------ taking turns through a doorway
+
+        /// <summary>A doorway stays one-way this many steps after the last vehicle going that way was in it or about to enter.</summary>
+        private const int GateHoldTicks = 10;
+
+        /// <summary>One way holds a doorway at most this long while vehicles wait on the other side.</summary>
+        private const double GateTurnSeconds = 8.0;
+
+        /// <summary>After waiting this long at a doorway a vehicle counts as stuck after all.</summary>
+        private const double GateWaitMax = 12.0;
+
+        /// <summary>How far past its own nose a vehicle looks for the doorway it is about to enter.</summary>
+        private const float GateLookAhead = 2f;
+
+        private int _gateBuild = -1;
+
+        /// <summary>Per doorway: the way it is held (+1 or -1 along its way through, 0 free), the step that way was last used, and since when it has held.</summary>
+        private int[] _gateDir = Array.Empty<int>();
+        private long[] _gateSeen = Array.Empty<long>();
+        private double[] _gateSince = Array.Empty<double>();
+
+        /// <summary>Per doorway, bit 1 for +1 and bit 2 for -1: the ways vehicles claimed it this step, and the ways they waited at it this step and the last.</summary>
+        private int[] _gateClaims = Array.Empty<int>();
+        private int[] _gateWaiting = Array.Empty<int>();
+        private int[] _gateWaitingPrev = Array.Empty<int>();
+
+        /// <summary>
+        /// Starts a step's doorway bookkeeping: fresh tables when the lane map was rebuilt (its
+        /// doorways are numbered anew), and no claims yet.
+        /// </summary>
+        private void PrepareGates()
+        {
+            var lanes = _world.Lanes;
+            if (lanes.Builds != _gateBuild)
+            {
+                _gateBuild = lanes.Builds;
+                var n = lanes.DoorwayCount + 1;
+                _gateDir = new int[n];
+                _gateSeen = new long[n];
+                _gateSince = new double[n];
+                _gateClaims = new int[n];
+                _gateWaiting = new int[n];
+                _gateWaitingPrev = new int[n];
+            }
+            Array.Clear(_gateClaims, 0, _gateClaims.Length);
+            Array.Clear(_gateWaiting, 0, _gateWaiting.Length);
+        }
+
+        /// <summary>Which way through doorway <paramref name="id"/> a vehicle heading along <paramref name="dir"/> goes: +1, -1, or 0 (along it).</summary>
+        private int GateSide(int id, Vector2 dir)
+        {
+            var along = Vector2.Dot(dir, _world.Lanes.DoorwayThrough(id));
+            return along > 0.3f ? 1 : along < -0.3f ? -1 : 0;
+        }
+
+        private static int WayBit(int way) => way > 0 ? 1 : 2;
+
+        /// <summary>
+        /// A single-lane bridge rule for short doorways (a fortress gate): one way at a time. Inside
+        /// one, a vehicle keeps it open for its own way; about to enter one held the other way (or
+        /// held its own way for long while others wait opposite), it stops short and waits. Claims
+        /// are only collected here and settled at the end of the step, so the outcome does not
+        /// depend on the order vehicles are driven in.
+        /// </summary>
+        private void GateCheck(Vehicle v, Vector2 moveDir, ref float slowFor)
+        {
+            var t = v.Traffic;
+            var lanes = _world.Lanes;
+            var tick = _world.Tick;
+            var here = lanes.DoorwayAt(v.Position);
+            if (here > 0 && here < _gateDir.Length)
+            {
+                var side = GateSide(here, moveDir);
+                if (side != 0 && _gateDir[here] == side) _gateSeen[here] = tick;
+                else if (side != 0) _gateClaims[here] |= WayBit(side);
+                t.WaitingForGate = false;
+                return;
+            }
+            var probe = v.Position + SimMath.Forward(v.Heading) * (v.Def.HullHalf + v.Def.HullRadius + GateLookAhead);
+            var ahead = lanes.DoorwayAt(probe);
+            var way = ahead > 0 && ahead < _gateDir.Length ? GateSide(ahead, moveDir) : 0;
+            if (way == 0)
+            {
+                t.WaitingForGate = false;
+                return;
+            }
+            var heldOther = _gateDir[ahead] == -way && tick - _gateSeen[ahead] <= GateHoldTicks;
+            var turnOver = _gateDir[ahead] == way && (_gateWaitingPrev[ahead] & WayBit(-way)) != 0 &&
+                           _world.Time - _gateSince[ahead] > GateTurnSeconds;
+            _gateClaims[ahead] |= WayBit(way);
+            if (heldOther || turnOver)
+            {
+                slowFor = 0f;
+                if (!t.WaitingForGate) t.GateWaitStarted = _world.Time;
+                t.WaitingForGate = true;
+                _gateWaiting[ahead] |= WayBit(way);
+                // Out of the way of the traffic coming out: wait beside the route, not in its mouth.
+                if (TryGateWaitSpot(v, moveDir, out var spot)) StartGateWait(v, ahead, way, spot);
+                return;
+            }
+            t.WaitingForGate = false;
+            if (_gateDir[ahead] == way) _gateSeen[ahead] = tick;
+        }
+
+        /// <summary>
+        /// Ends a step's doorway bookkeeping: a doorway nobody used its way for a moment is free and
+        /// goes to the way claimed this step; claimed both ways, to the way that did not have it
+        /// last (turn and turn about).
+        /// </summary>
+        private void ResolveGates()
+        {
+            var tick = _world.Tick;
+            for (var id = 1; id < _gateDir.Length; id++)
+            {
+                if (_gateDir[id] != 0 && tick - _gateSeen[id] <= GateHoldTicks) continue;
+                var claims = _gateClaims[id];
+                var way = claims == 3 ? (_gateDir[id] > 0 ? -1 : 1) : claims == 1 ? 1 : claims == 2 ? -1 : 0;
+                if (way != 0 && way != _gateDir[id]) _gateSince[id] = _world.Time;
+                _gateDir[id] = way;
+                if (way != 0) _gateSeen[id] = tick;
+            }
+            Array.Copy(_gateWaiting, _gateWaitingPrev, _gateWaiting.Length);
+        }
+
+        /// <summary>Sideways offsets and steps back tried for a place to wait beside a doorway, off the route.</summary>
+        private static readonly float[] GateWaitLateral = { 5f, 7f, 9f };
+
+        private static readonly float[] GateWaitBack = { 0f, 3f, 6f };
+
+        /// <summary>
+        /// A place to wait for a doorway: to the side of the way in (the traffic coming out keeps to
+        /// the route), a little back, off doorways and the main routes where possible, clear of other
+        /// hulls and in plain line.
+        /// </summary>
+        private bool TryGateWaitSpot(Vehicle v, Vector2 moveDir, out Vector2 spot)
+        {
+            spot = default;
+            var lanes = _world.Lanes;
+            var grid = _world.Grid;
+            var side = new Vector2(-moveDir.Y, moveDir.X);
+            var best = float.MaxValue;
+            foreach (var lateral in GateWaitLateral)
+            foreach (var back in GateWaitBack)
+                for (var s = -1; s <= 1; s += 2)
+                {
+                    var p = v.Position + side * (s * lateral) - moveDir * back;
+                    if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(v.Position, p)) continue;
+                    var f = lanes.At(p);
+                    if ((f & LaneFlags.NoPark) != 0) continue;
+                    var turn = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(p - v.Position) - v.Heading));
+                    var score = lateral + back * 0.5f + turn * YieldTurnCost + ((f & LaneFlags.Route) != 0 ? 8f * lanes.RouteCountAt(p) : 0f);
+                    if (score >= best || HullAt(v, p) != null) continue;
+                    best = score;
+                    spot = p;
+                }
+            return best < float.MaxValue;
+        }
+
+        private void StartGateWait(Vehicle v, int id, int way, Vector2 spot)
+        {
+            var t = v.Traffic;
+            t.OrderAtYield = v.Order;
+            t.ResumeHadPath = v.HasPath;
+            t.GateWaitId = id;
+            t.GateWaitWay = way;
+            t.GateWaitBuild = _gateBuild;
+            Vehicle.PathTrace?.Invoke(v, $"Wait for doorway {id}");
+            _single.Clear();
+            _single.Add(spot);
+            v.SetPath(_single, spot);
+        }
+
+        /// <summary>
+        /// Waiting beside a doorway: it keeps claiming its way (so the doorway turns to it next), and
+        /// goes on once the doorway is no longer held the other way, or after waiting long enough.
+        /// False once the wait is over.
+        /// </summary>
+        private bool UpdateGateWait(Vehicle v)
+        {
+            var t = v.Traffic;
+            var id = t.GateWaitId;
+            var stale = t.GateWaitBuild != _gateBuild || id >= _gateDir.Length;
+            if (!stale)
+            {
+                _gateClaims[id] |= WayBit(t.GateWaitWay);
+                _gateWaiting[id] |= WayBit(t.GateWaitWay);
+            }
+            if (!stale && GateWay(id) == -t.GateWaitWay && _world.Time - t.GateWaitStarted < GateWaitMax) return true;
+            t.GateWaitId = 0;
+            t.WaitingForGate = false;
+            Vehicle.PathTrace?.Invoke(v, "Doorway free");
+            ResumeOrder(v);
+            return false;
+        }
+
+        /// <summary>The way doorway <paramref name="id"/> is held (+1 or -1 along its way through), 0 when free (tests).</summary>
+        internal int GateWay(int id) => id > 0 && id < _gateDir.Length && _world.Tick - _gateSeen[id] <= GateHoldTicks ? _gateDir[id] : 0;
 
         // ------------------------------------------------------------------ head-on in a doorway
 
@@ -643,8 +887,18 @@ namespace MachineBrigade.Sim.Movement
         private void OnNoProgress(Vehicle v)
         {
             var t = v.Traffic;
-            var now = _world.Time;
             var blocker = RecentBlocker(v);
+            if (blocker != null && blocker.Team == v.Team && !blocker.HasPath && !_world.Lanes.NoParkAt(v.Position) &&
+                Vector2.DistanceSquared(blocker.Position, v.PathGoal) < GatherReach * GatherReach &&
+                Vector2.Distance(v.Position, v.PathGoal) < GatherReach + v.Def.HullBound * 2f)
+            {
+                // Held up by a friend already standing where it is going: the group has gathered,
+                // and this one has arrived too (it is not asked to leave, see PostYield).
+                v.ClearPath();
+                v.StuckStrikes = 0;
+                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = v.Position;
+                return;
+            }
             if (blocker != null && blocker.Team == v.Team && blocker.Traffic.YieldingTo != v.Id && t.YieldEscalations < 2 && Askable(blocker))
             {
                 t.YieldEscalations++;
@@ -665,7 +919,9 @@ namespace MachineBrigade.Sim.Movement
             }
             else
             {
-                RequestCostedPath(v, blocker, aside: v.StuckStrikes >= 2);
+                // (The hull that held it up a few seconds ago still counts: pressed against it at an
+                // angle, it may not be dead ahead any more.)
+                RequestCostedPath(v, blocker ?? RecentBlocker(v, 3.0), aside: v.StuckStrikes >= 2);
             }
         }
 
@@ -723,6 +979,8 @@ namespace MachineBrigade.Sim.Movement
                 {
                     Spine(blocker, out _costs.BlockerA, out _costs.BlockerB);
                     _costs.BlockerRadius = blocker.Def.HullRadius + v.Def.HullRadius + 0.5f;
+                    // A hull that cannot move at all (knocked out) is as good as a wall.
+                    _costs.BlockerCost = blocker.Stunned || blocker.Def.Static ? ImmovableBlockerCost : BlockerCost;
                 }
                 _costs.MaxExpansions = Math.Min(MaxNodesPerSearch, remaining - 1);
                 var found = _costFinder.TryFindPath(v.Position, request.Goal, _costBuffer, _costs);
@@ -739,6 +997,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var t = v.Traffic;
             var strikes = request.Strikes;
+            Vehicle.PathTrace?.Invoke(v, $"Costed route round #{blocker?.Id.Value ?? 0}: {(found ? $"{_costBuffer.Count} points, {PathLength(v.Position, _costBuffer):0} m" : "none")}");
             if (!found)
             {
                 // No cheaper way found in budget: the plain replan, as before.
@@ -747,9 +1006,16 @@ namespace MachineBrigade.Sim.Movement
                 if (request.Aside) StepAside(v);
                 return;
             }
-            if (blocker != null && blocker.Team == v.Team &&
-                (PathLength(v.Position, _costBuffer) > RemainingLength(v) * DetourCap + DetourSlack ||
-                 PassesNear(v, _costBuffer, blocker, NoAlternativeLength)))
+            // A friend that can still move is worth waiting for rather than a long way round; one
+            // that cannot (knocked out) is not, and the second time round a longer detour will do.
+            // Only a hull that is going to clear (on its way, making way, or one that can be asked) is
+            // worth queueing behind.
+            var mayMove = blocker != null && !blocker.Stunned && !blocker.Def.Static &&
+                          (blocker.HasPath || blocker.Traffic.YieldingTo.IsValid || Askable(blocker));
+            var cap = request.Strikes >= 2 ? DetourCapLate : DetourCap;
+            if (blocker != null && blocker.Team == v.Team && mayMove &&
+                (PassesNear(v, _costBuffer, blocker, NoAlternativeLength) ||
+                 PathLength(v.Position, _costBuffer) > RemainingLength(v) * cap + DetourSlack))
             {
                 // No real way round (a single gate): wait behind it, and keep asking it to move.
                 t.QueueBehind = blocker.Id;

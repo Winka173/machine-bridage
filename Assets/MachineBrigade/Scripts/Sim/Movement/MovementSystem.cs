@@ -80,6 +80,7 @@ namespace MachineBrigade.Sim.Movement
             // outcome depends on the order vehicles are driven in.
             ServeHeadOns();
             ServeYieldRequests();
+            PrepareGates();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -96,6 +97,7 @@ namespace MachineBrigade.Sim.Movement
                 }
                 Drive(v, dt);
             }
+            ResolveGates();
             RunPathQueue();
             SortGround();
             Separate();
@@ -468,6 +470,16 @@ namespace MachineBrigade.Sim.Movement
                 v.ClearPath();
                 return;
             }
+            // A fixed defence's ground is closed to routes, so a route ends a few metres short of it:
+            // a weapon of very short reach (a car bomb's charge) drives the last metres straight at it.
+            if (!v.Flying && !v.HasPath && target is Vehicle { BlocksRoutes: true } && distance <= weapon.Range + 4f)
+            {
+                _single.Clear();
+                _single.Add(target.Position);
+                v.SetPath(_single, target.Position);
+                v.RepathTimer = RepathInterval;
+                return;
+            }
             var goalDrift = Vector2.Distance(v.PathGoal, target.Position);
             if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > 4f || (!clear && v.PathCompleted)))
             {
@@ -509,6 +521,7 @@ namespace MachineBrigade.Sim.Movement
             if (!v.HasPath)
             {
                 v.Traffic.WaitingOnYield = false;
+                v.Traffic.WaitingForGate = false;
                 v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
                 TryAdvance(v, v.Speed * dt);
                 // Hovering aircraft turn to face their target so hull-mounted rockets and missiles bear.
@@ -548,6 +561,8 @@ namespace MachineBrigade.Sim.Movement
             v.Traffic.WaitingOnYield = false;
             if (!def.Flying && distance > 1.5f)
             {
+                // A short doorway held by traffic the other way: wait short of it (one way at a time).
+                GateCheck(v, toWaypoint / distance, ref slowFor);
                 // Look ahead for a hull in the way. Follow a friend going the same way; steer round
                 // anything parked, crossing or hostile instead of shoving into it.
                 var forward = SimMath.Forward(v.Heading);
@@ -882,6 +897,7 @@ namespace MachineBrigade.Sim.Movement
             // or queued behind one where there is no way round: waiting is not being stuck.
             var traffic = v.Traffic;
             if (traffic.WaitingOnYield && _world.Time - traffic.WaitStarted < YieldWaitSeconds) return;
+            if (traffic.WaitingForGate && _world.Time - traffic.GateWaitStarted < GateWaitMax) return;
             if (StillQueued(v)) return;
 
             // Arrival contagion (as in StarCraft II's movement): on the last leg, within a few metres

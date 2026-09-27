@@ -22,8 +22,8 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>Below this speed a vehicle counts as parked.</summary>
         public const float ParkedSpeed = 0.5f;
 
-        /// <summary>Step multipliers x5, x9 and x2 at the path finder's 0.1 scale.</summary>
-        public const byte FriendParkedCost = 40, EnemyParkedCost = 80, RingCost = 10;
+        /// <summary>Step multipliers x5, x9, x26 and x2 at the path finder's 0.1 scale.</summary>
+        public const byte FriendParkedCost = 40, EnemyParkedCost = 80, StunnedCost = 250, RingCost = 10;
 
         /// <summary>The ring reaches this far past the hull (metres).</summary>
         private const float RingReach = 2f;
@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.Navigation
 
         private readonly NavGrid _grid;
         private readonly byte[][] _cost;
-        private long _refreshedAt = long.MinValue;
+        private long _refreshedAt = -RefreshTicks;
 
         public UnitCostField(NavGrid grid)
         {
@@ -61,8 +61,9 @@ namespace MachineBrigade.Sim.Navigation
             {
                 if (!v.IsAlive || v.Flying || v.BlocksRoutes) continue;
                 if (!v.Def.Static && v.HasPath && MathF.Abs(v.Speed) > ParkedSpeed) continue;
+                // A hull knocked out (stunned) cannot make way at all: as good as a wall for a while.
                 for (var team = 0; team < Layers; team++)
-                    Stamp(_cost[team], v, team == v.Team ? FriendParkedCost : EnemyParkedCost);
+                    Stamp(_cost[team], v, v.Stunned ? StunnedCost : team == v.Team ? FriendParkedCost : EnemyParkedCost);
             }
         }
 

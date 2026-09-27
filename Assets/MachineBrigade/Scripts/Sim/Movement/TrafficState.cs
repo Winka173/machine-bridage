@@ -69,6 +69,18 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>Stepping off the route or out of a doorway to hold fire position (until then).</summary>
         public double OffLaneUntil = double.NegativeInfinity;
 
+        /// <summary>Stopped short of a doorway held by traffic the other way (since <see cref="GateWaitStarted"/>).</summary>
+        public bool WaitingForGate;
+        public double GateWaitStarted = double.PositiveInfinity;
+
+        /// <summary>
+        /// Waiting its turn beside a doorway, off the route (0: not): which doorway (numbered by the
+        /// lane map build <see cref="GateWaitBuild"/>) and which way it wants through.
+        /// </summary>
+        public int GateWaitId;
+        public int GateWaitWay;
+        public int GateWaitBuild;
+
         // ------------------------------------------------------------ head-on in a narrow passage
         /// <summary>Met this friend head-on in a doorway this step (resolved at the start of the next).</summary>
         public EntityId HeadOn;

@@ -105,7 +105,7 @@
   },
   "base_gate": {
     "file": "base_gate.glb",
-    "triangles": 1700
+    "triangles": 1736
   },
   "base_wall": {
     "file": "base_wall.glb",
