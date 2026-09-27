@@ -122,6 +122,9 @@ namespace MachineBrigade.Game.Views
                 var casts = shadows != Match.ShadowLevel.Off &&
                             (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
                 var instance = id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
+                // Towers on the battlefield are cut down to size so they do not hide the fighting
+                // from the high camera (the skyline beyond the edge keeps them full height).
+                if (id is "highrise_a" or "highrise_b" or "skyscraper") instance.transform.localScale = new Vector3(1f, 0.62f, 1f);
                 if (id is "car" or "truck" or "bus" or "fuel_truck") Repaint(instance, _materials.CarPaints, rng);
                 if (id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
                 var yaw = vegetation ? (float)rng.NextDouble() * 360f : prop.Rotation;
@@ -150,7 +153,7 @@ namespace MachineBrigade.Game.Views
                 _lavaUpdated = time;
                 for (var i = 0; i < _lavaBase.Length; i++)
                 {
-                    var glow = 0.72f + 0.28f * Mathf.Sin(time * 0.9f + _lavaPhase[i]);
+                    var glow = 0.82f + 0.18f * Mathf.Sin(time * 0.9f + _lavaPhase[i]);
                     _lavaColours[i] = Primitives.Linear(_lavaBase[i] * glow);
                 }
                 _lava.colors32 = _lavaColours;
@@ -325,9 +328,11 @@ namespace MachineBrigade.Game.Views
                     // Crust floats in plates on the hotter lava.
                     var n = Mathf.PerlinNoise(v.x * 0.19f + 3.1f, v.z * 0.19f + 7.7f);
                     var plates = Edge(0.52f, 0.7f, n);
-                    var hot = Color.Lerp(new Color(1f, 0.55f, 0.35f), Color.white, heat);
-                    _lavaBase[i] = Color.Lerp(crust, hot, heat * (1f - 0.7f * plates) + 0.15f);
-                    _lavaPhase[i] = v.x * 0.21f + v.z * 0.13f + n * 7f;
+                    // Orange to yellow, never white: the material's HDR tint would clip near-white
+                    // vertices and show the 1 m grid between them.
+                    var hot = Color.Lerp(new Color(0.85f, 0.33f, 0.12f), new Color(1f, 0.7f, 0.28f), heat);
+                    _lavaBase[i] = Color.Lerp(crust, hot, (0.25f + heat * 0.75f) * (1f - 0.65f * plates)) * 0.72f;
+                    _lavaPhase[i] = v.x * 0.21f + v.z * 0.13f + n * 2.5f;
                     _lavaColours[i] = Primitives.Linear(_lavaBase[i]);
                 }
                 mesh.colors32 = _lavaColours;
