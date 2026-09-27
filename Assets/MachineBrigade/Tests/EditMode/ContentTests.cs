@@ -50,7 +50,7 @@ namespace MachineBrigade.Tests
             var catalog = Catalog.FromJson(File.ReadAllText(DataPath("balance.json")));
             var map = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/ashfield_sandbox.json")));
 
-            Assert.AreEqual(200f, map.Size);
+            Assert.AreEqual(300f, map.Size);
             foreach (var p in map.Props) Assert.DoesNotThrow(() => catalog.Prop(p.DefId), p.DefId);
             foreach (var u in map.Units) Assert.DoesNotThrow(() => catalog.Vehicle(u.DefId), u.DefId);
         }

@@ -141,6 +141,7 @@ namespace MachineBrigade.Game.Rendering
             MarkAttack = Unlit(unlit, "MarkAttack", new Color(2.4f, 0.32f, 0.22f));
             MarkDefend = Unlit(unlit, "MarkDefend", new Color(0.3f, 1.1f, 2.4f));
             MarkScout = Unlit(unlit, "MarkScout", new Color(2.4f, 1.55f, 0.3f));
+            BoundaryLine = Unlit(unlit, "BoundaryLine", new Color(1.05f, 1f, 0.92f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -228,6 +229,9 @@ namespace MachineBrigade.Game.Rendering
         public Material MarkAttack { get; }
         public Material MarkDefend { get; }
         public Material MarkScout { get; }
+
+        /// <summary>The dashed line along the battlefield's boundary.</summary>
+        public Material BoundaryLine { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

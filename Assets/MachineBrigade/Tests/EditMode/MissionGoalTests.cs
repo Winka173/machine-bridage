@@ -95,7 +95,8 @@ namespace MachineBrigade.Tests
             Run(world, mode, 2f);
             Assert.AreEqual(1, mode.Count(world).done, "the town is scouted");
             var next = mode.PlayerGoal(world);
-            Assert.IsTrue(next == new Vector2(-37.5f, 57.5f) || next == new Vector2(37.5f, -57.5f), "the commander is sent to a spot not yet scouted");
+            var open = new List<ObjectiveState>(mode.Points).FindAll(p => p.Owner != 0);
+            Assert.IsTrue(open.Exists(p => p.Def.Position == next), "the commander is sent to a spot not yet scouted");
             foreach (var p in mode.Points)
                 if (p.Owner != 0) world.SpawnVehicle("scout_jeep", 0, p.Def.Position, 0f);
             Run(world, mode, 3.5f);

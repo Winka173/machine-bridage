@@ -99,7 +99,8 @@ namespace MachineBrigade.Game.Rendering
                 // FSR 1 sharpens the upscale where the GPU supports it (it falls back to bilinear).
                 _pipeline.upscalingFilter = _pipeline.renderScale < 0.99f ? UpscalingFilterSelection.FSR : UpscalingFilterSelection.Auto;
                 _originalShadowResolution = _pipeline.mainLightShadowmapResolution;
-                _pipeline.mainLightShadowmapResolution = options.Shadows == Match.ShadowLevel.High ? 2048 : 1024;
+                // High: a 4096 map, so the sharper edges survive the far camera (130 m) the view uses now.
+                _pipeline.mainLightShadowmapResolution = options.Shadows == Match.ShadowLevel.High ? 4096 : 1024;
                 // One shadow map: cascades fix perspective aliasing, which an orthographic view does not have.
                 _originalCascades = _pipeline.shadowCascadeCount;
                 _pipeline.shadowCascadeCount = 1;
@@ -120,12 +121,11 @@ namespace MachineBrigade.Game.Rendering
                     Match.ShadowLevel.Low => LightShadows.Hard,
                     _ => LightShadows.Soft,
                 };
-                // Four taps on phones (Unity's mobile balance); nine on desktop High.
+                // High: nine taps on phones too, sixteen on desktop; four taps below High.
                 var data = _sun.GetUniversalAdditionalLightData();
                 if (data != null)
-                    data.softShadowQuality = options.Shadows == Match.ShadowLevel.High && !Application.isMobilePlatform
-                        ? SoftShadowQuality.Medium
-                        : SoftShadowQuality.Low;
+                    data.softShadowQuality = options.Shadows != Match.ShadowLevel.High ? SoftShadowQuality.Low
+                        : Application.isMobilePlatform ? SoftShadowQuality.Medium : SoftShadowQuality.High;
             }
         }
 

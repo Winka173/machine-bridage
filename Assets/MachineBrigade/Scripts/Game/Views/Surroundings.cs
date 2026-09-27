@@ -22,7 +22,8 @@ namespace MachineBrigade.Game.Views
     /// </summary>
     public sealed class Surroundings : IDisposable
     {
-        private const float Extent = 230f; // half-size of the decorated area
+        /// <summary>Half-size of the decorated area: 130 m past the battlefield's edge.</summary>
+        private float Extent => _half + 130f;
 
         private readonly GameObject _root;
         private readonly List<Mesh> _meshes = new();

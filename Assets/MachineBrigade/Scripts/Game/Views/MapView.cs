@@ -149,12 +149,89 @@ namespace MachineBrigade.Game.Views
                 // wind sway needs their own transforms, nor props with spinning parts).
                 if (!vegetation && _moving.Count == movingBefore) still.Add(instance);
             }
+            BuildDecor(world, rng, still, shadows);
             // Static batching: one shared vertex buffer per material instead of a draw per prop. A
             // city block is dozens of props in a dozen materials each; destroyed ones still hide.
             if (still.Count > 1) StaticBatchingUtility.Combine(still.ToArray(), _root);
+            BuildBoundaryLine(world);
             BuildSurfaces(world, surfaces);
             if (theme.Cracks > 0f) BuildCracks(TerrainPainter.Cracks(world, theme));
             ScatterBushes(world, rng);
+        }
+
+        /// <summary>
+        /// The country beyond the boundary (Map.Decor): the same kinds of building, wood and rock as
+        /// inside, drawn once and batched, never simulated. Only the big ones cast shadows, and only
+        /// on High.
+        /// </summary>
+        private void BuildDecor(SimWorld world, Random rng, List<GameObject> still, Match.ShadowLevel shadows)
+        {
+            foreach (var placement in world.Map.Decor)
+            {
+                if (!world.Catalog.Props.TryGetValue(placement.DefId, out var def) || Surfaces.Contains(def.Id)) continue;
+                var (model, _, _) = Describe(def.Id, rng);
+                var vegetation = Vegetation.Contains(def.Id);
+                var casts = shadows == Match.ShadowLevel.High && def.Width * def.Depth >= 30f;
+                var instance = Spawn(model, casts);
+                if (def.Id is "highrise_a" or "highrise_b" or "skyscraper") instance.transform.localScale = new Vector3(1f, 0.62f, 1f);
+                if (def.Id is "car" or "truck" or "bus" or "fuel_truck") Repaint(instance, _materials.CarPaints, rng);
+                if (def.Id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
+                var yaw = vegetation ? (float)rng.NextDouble() * 360f : placement.Rotation;
+                instance.transform.SetPositionAndRotation(new Vector3(placement.Position.X, 0f, placement.Position.Y), Quaternion.Euler(0f, yaw, 0f));
+                if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                if (!Mathf.Approximately(def.Scale, 1f)) instance.transform.localScale *= def.Scale;
+                if (!vegetation) still.Add(instance);
+            }
+        }
+
+        /// <summary>
+        /// The boundary, marked on the ground: a dashed pale line along the outline, so where the
+        /// playable ground ends reads at a glance now that the country goes on past it.
+        /// </summary>
+        private void BuildBoundaryLine(SimWorld world)
+        {
+            var outline = world.Map.Boundary;
+            if (outline.Count < 3) return;
+            const float dash = 3f, gap = 2f, width = 0.7f;
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            var carry = 0f;
+            for (var i = 0; i < outline.Count; i++)
+            {
+                var a = outline[i];
+                var b = outline[(i + 1) % outline.Count];
+                var ab = new UnityEngine.Vector2(b.X - a.X, b.Y - a.Y);
+                var length = ab.magnitude;
+                if (length < 0.01f) continue;
+                var dir = ab / length;
+                var side = new UnityEngine.Vector2(-dir.y, dir.x) * (width * 0.5f);
+                var at = carry;
+                while (at < length)
+                {
+                    var end = Mathf.Min(length, at + dash);
+                    var p0 = new UnityEngine.Vector2(a.X, a.Y) + dir * at;
+                    var p1 = new UnityEngine.Vector2(a.X, a.Y) + dir * end;
+                    var n = vertices.Count;
+                    vertices.Add(new Vector3(p0.x - side.x, 0.06f, p0.y - side.y));
+                    vertices.Add(new Vector3(p0.x + side.x, 0.06f, p0.y + side.y));
+                    vertices.Add(new Vector3(p1.x + side.x, 0.06f, p1.y + side.y));
+                    vertices.Add(new Vector3(p1.x - side.x, 0.06f, p1.y - side.y));
+                    triangles.AddRange(new[] { n, n + 1, n + 2, n, n + 2, n + 3 });
+                    at = end + gap;
+                }
+                carry = at - length;
+            }
+            var mesh = new Mesh { name = "Boundary Line", indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateBounds();
+            var line = new GameObject("Boundary Line");
+            line.transform.SetParent(_root.transform, false);
+            line.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var renderer = line.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = _materials.BoundaryLine;
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
         }
 
         /// <summary>Turns radar dishes, rocks pumpjacks and moves the glow over lava; call once per frame.</summary>
