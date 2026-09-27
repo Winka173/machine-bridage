@@ -107,6 +107,8 @@ class Layout:
     def size(def_id, rot):
         p = PROPS[def_id]
         w, d = p['width'], p['depth']
+        if rot % 90:
+            return ((w + d) * R2,) * 2  # diagonal (bridges): the bounding square, as in Prop.cs
         return (d, w) if rot % 180 == 90 else (w, d)
 
     def road(self, width, *points):
@@ -1746,6 +1748,10 @@ def junglepass(seed=127):
             return 'river_ford'
         return 'river_water'
     tiles(L, river, road_gap=None)
+    # A low road bridge carries each track across its ford, square to the river (diagonal).
+    L.force('bridge_road', 0.0, 0.0, 45)
+    for sign in (1, -1):
+        L.force('bridge_road', *diag(sign * river_s(52), sign * 52), 45)
 
     # Stilt villages on the banks of the side fords: huts round a landing, bamboo by the water.
     for sign in (1, -1):
@@ -2137,6 +2143,258 @@ def fortify(L, name):
     return L
 
 
+# ---------------------------------------------------------------------------- battlefield dressing
+# Which parts of the map kit each theme gets: telegraph poles along the roads, a line of pylons
+# across open country, shattered dead trees, ruined houses round the centre, anti-tank ditches.
+WAR = {
+    'temperate': dict(poles=True, pylons=True, dead=True, ruins=True, ditch=True),
+    'desert': dict(poles=True, pylons=True, dead=True, ruins=False, ditch=False),
+    'snow': dict(poles=True, pylons=True, dead=True, ruins=False, ditch=True),
+    'harbor': dict(poles=False, pylons=True, dead=False, ruins=True, ditch=False),
+    'volcanic': dict(poles=False, pylons=False, dead=True, ruins=False, ditch=False),
+    'jungle': dict(poles=True, pylons=False, dead=False, ruins=False, ditch=False),
+    'urban': dict(poles=False, pylons=False, dead=False, ruins=True, ditch=False),
+}
+GREENERY = {'tree', 'palm', 'cactus', 'charred_tree', 'jungle_tree_a', 'jungle_tree_b', 'jungle_tree_c', 'bamboo_clump',
+            'fern_bush', 'dead_tree'}
+WRECKS = ('wreck_tank', 'wreck_tank', 'wreck_tank', 'wreck_truck', 'wreck_truck', 'wreck_car', 'wreck_car', 'artillery_wreck')
+FIELD_CAMP = ('command_tent', 'camo_net', 'supply_pile', 'fuel_bladder', 'radio_mast', 'supply_pile', 'camo_net')
+QUARTERS = (0, 90, 180, 270)
+
+
+def segment_distance(x, z, ax, az, bx, bz):
+    dx, dz = bx - ax, bz - az
+    length = dx * dx + dz * dz
+    t = 0.0 if length == 0 else max(0.0, min(1.0, ((x - ax) * dx + (z - az) * dz) / length))
+    return math.hypot(x - ax - dx * t, z - az - dz * t)
+
+
+def warzone(L, map_id, theme, poly):
+    """Dresses a finished layout as a fought-over battlefield with the map kit: burnt-out wrecks,
+    each with the crater of the shell that killed it, in no man's land; shell craters, foxholes, a
+    trench line, barricades, a wreck and a road checkpoint round every objective; a field camp
+    (command tent, camouflage nets, supply piles, a fuel bladder, a radio mast) on each camp's
+    flanks; telegraph poles along the roads, pylons across open country, ruins round the centre
+    and shattered trees, per theme (WAR).
+
+    Anything that is cover (wrecks, ruins, tents, barricades, pylons: they block movement, most
+    block fire too) comes in equal numbers on either half of the map and stays clear of every
+    campaign spawn and route. Trees and scrub give way to it. Everything
+    goes through the usual checks (camps, plazas, objectives, roads, other footprints) and inside
+    the battlefield's outline `poly`."""
+    style = WAR[theme]
+    rng = random.Random(sum(map(ord, map_id)) * 7 + 3)
+    circles, lines = campaign_keep(map_id)
+
+    def clear(kind, x, z, rot):
+        if not PROPS[kind].get('blocks', False):
+            return True
+        # Spawns and routes keep 6 m and 5 m of open ground round them (units path round the rest).
+        reach = max(L.size(kind, rot)) / 2 + 1.0
+        for cx, cz, _ in circles:
+            if math.hypot(x - cx, z - cz) < 6.0 + reach:
+                return False
+        for pts, _ in lines:
+            for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+                if segment_distance(x, z, ax, az, bx, bz) < 5.0 + reach:
+                    return False
+        return True
+
+    def within(kind, x, z, rot, margin=1.5):
+        w, d = L.size(kind, rot)
+        w, d = w / 2 + margin, d / 2 + margin
+        return all(outline_tools.inside(poly, x + sx * w, z + sz * d) for sx in (-1, 0, 1) for sz in (-1, 0, 1))
+
+    # Trees and scrub give way: a wreck or a camp stands in a clearing, so only the solid props
+    # (buildings, rock, walls, other dressing) are in the way; the greenery under a new piece goes.
+    solid = [None]
+
+    def ok(kind, x, z, rot, pad, road_gap):
+        x, z = round(x * 2) / 2, round(z * 2) / 2
+        if not (within(kind, x, z, rot) and clear(kind, x, z, rot)):
+            return False
+        if solid[0] is None:
+            solid[0] = [(p, r) for p, r in zip(L.props, L.rects) if p['def'] not in GREENERY]
+        props, rects = L.props, L.rects
+        L.props, L.rects = [p for p, _ in solid[0]], [r for _, r in solid[0]]
+        try:
+            return L.free(kind, x, z, rot, pad, road_gap)
+        finally:
+            L.props, L.rects = props, rects
+
+    def add(kind, x, z, rot):
+        x, z = round(x * 2) / 2, round(z * 2) / 2
+        w, d = L.size(kind, rot)
+        box = (x - w / 2 - 0.5, z - d / 2 - 0.5, x + w / 2 + 0.5, z + d / 2 + 0.5)
+        keep = [(p, r) for p, r in zip(L.props, L.rects)
+                if not (p['def'] in GREENERY and r[0] < box[2] and r[2] > box[0] and r[1] < box[3] and r[3] > box[1])]
+        L.props, L.rects = [p for p, _ in keep], [r for _, r in keep]
+        L.force(kind, x, z, rot)
+        solid[0] = None
+
+    def one(kind, x, z, rot=0, pad=1.0, road_gap=1.0):
+        if not ok(kind, x, z, rot, pad, road_gap):
+            return False
+        add(kind, x, z, rot)
+        return True
+
+    def ring(place, kind, cx, cz, r0, r1, rot=None, pad=1.0, road_gap=1.0, tries=40):
+        for _ in range(tries):
+            a = rng.random() * math.tau
+            r = rng.uniform(r0, r1)
+            if place(kind, cx + math.cos(a) * r, cz + math.sin(a) * r, rng.choice(QUARTERS) if rot is None else rot,
+                     pad=pad, road_gap=road_gap):
+                return True
+        return False
+
+    def run(kind, cx, cz, rot, tiles, length):
+        """Tiles laid end to end (trenches, ditches) along x (rot 90) or z (rot 0), all or none."""
+        ux, uz = (1, 0) if rot % 180 == 90 else (0, 1)
+        spots = [(cx + ux * length * (i - (tiles - 1) / 2), cz + uz * length * (i - (tiles - 1) / 2)) for i in range(tiles)]
+        if not all(ok(kind, x, z, rot, 0.5, 1.0) for x, z in spots):
+            return False
+        for x, z in spots:
+            add(kind, x, z, rot)
+        return True
+
+    def half(x, z):
+        """0 for the south-west (team 0) half of the map, 1 for the north-east half."""
+        return 0 if x + z < 0 else 1
+
+    # A field camp on the flanks of each camp.
+    for tx, tz in L.teams:
+        base = math.atan2(-tz, -tx)
+        for i, kind in enumerate(FIELD_CAMP):
+            side = 1 if i % 2 == 0 else -1
+            for _ in range(80):
+                a = base + side * math.radians(rng.uniform(50, 135))
+                r = rng.uniform(25, 44)
+                if one(kind, tx + math.cos(a) * r, tz + math.sin(a) * r, rng.choice((0, 90)), pad=1.2):
+                    break
+
+    # Every objective: craters, foxholes, a trench line, barricades, a wreck and a road checkpoint.
+    for px, pz, r in L.points:
+        for _ in range(3):
+            ring(one, 'crater_large', px, pz, r * 0.2, r + 12, rot=0, pad=0.5, road_gap=0.5)
+        for _ in range(2):
+            ring(one, 'foxhole', px, pz, r + 1, r + 8, rot=0, pad=0.5)
+        # A trench line along one side of the objective: two tiles if they fit, else one.
+        sides = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        rng.shuffle(sides)
+        spots = [(sx, sz, d, shift) for d in (r + 3.5, r + 6, r + 9) for sx, sz in sides for shift in (0, -6, 6)]
+        length = PROPS['trench_straight']['depth']
+        for tiles in (2, 1):
+            if any(run('trench_straight', px + sx * d + sz * shift, pz + sz * d + sx * shift, 90 if sz else 0, tiles, length)
+                   for sx, sz, d, shift in spots):
+                break
+        ring(one, 'trench_corner', px, pz, r + 4, r + 12, pad=0.8)
+        for _ in range(2):
+            ring(one, 'barricade', px, pz, r + 3, r + 12, pad=1.5, tries=60)
+        ring(one, rng.choice(('wreck_car', 'wreck_truck')), px, pz, r + 3, r + 16, pad=1.5, tries=60)
+        checkpoint(L, px, pz, r, one)
+
+    # No man's land: burnt-out wrecks, as many on either half, each beside the crater of the shell
+    # that killed it. In the city the open ground is the avenues, so the wrecks lie in the streets.
+    placed = [0, 0]
+    on_road = None if theme == 'urban' else 1.5
+    for _ in range(1500):
+        if min(placed) >= 5:
+            break
+        x, z = rng.uniform(-64, 64), rng.uniform(-64, 64)
+        if placed[half(x, z)] >= 5 or min(math.hypot(x - t[0], z - t[1]) for t in L.teams) < 34:
+            continue
+        if one(rng.choice(WRECKS), x, z, rng.choice(QUARTERS), pad=1.8, road_gap=on_road):
+            placed[half(x, z)] += 1
+            a = rng.random() * math.tau
+            one('crater_large', x + math.cos(a) * 6.5, z + math.sin(a) * 6.5, 0, pad=0.3, road_gap=None if on_road is None else 0.5)
+    for _ in range(4):
+        for _ in range(40):
+            x, z = rng.uniform(-60, 60), rng.uniform(-60, 60)
+            if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 30 and one('crater_large', x, z, 0, pad=0.5,
+                                                                                  road_gap=None if on_road is None else 0.5):
+                break
+
+    if style['ruins']:
+        for kind in ('ruin_house', 'ruin_tower', 'ruin_house', 'ruin_tower'):
+            ring(one, kind, 0, 0, 22, 42, pad=1.5, tries=80)
+        # Half the old ruins become the new, more broken ones (never larger, so nothing overlaps).
+        for prop in L.props:
+            if prop['def'] == 'ruin':
+                roll = rng.random()
+                prop['def'] = 'ruin_house' if roll < 0.5 else 'ruin_tower' if roll < 0.75 else 'ruin'
+
+    if style['pylons']:
+        # A pylon line out on each flank, each tower as near its slot as it fits.
+        for t0 in (44, -44):
+            for s0 in range(-52, 53, 26):
+                for ds, dt in ((0, 0), (0, -5), (0, 5), (-5, 0), (5, 0), (-5, -5), (5, 5), (0, -10), (0, 10), (-8, 8), (8, -8)):
+                    if one('power_pylon', *diag(s0 + ds, t0 + dt), 0, pad=1.5, road_gap=2.0):
+                        break
+
+    if style['poles']:
+        count = 0
+        for road in L.roads:
+            if road['width'] > 9 or count >= 24:
+                continue
+            pts, half = road['points'], road['width'] / 2
+            carry = 4.0
+            for i in range(0, len(pts) - 2, 2):
+                ax, az, bx, bz = pts[i:i + 4]
+                length = math.hypot(bx - ax, bz - az)
+                if length < 1:
+                    continue
+                ux, uz = (bx - ax) / length, (bz - az) / length
+                at = carry
+                while at < length and count < 24:
+                    x, z = ax + ux * at - uz * (half + 2.4), az + uz * at + ux * (half + 2.4)
+                    if one('telegraph_pole', x, z, 0, pad=0.3, road_gap=1.2):
+                        count += 1
+                    at += 15.0
+                carry = at - length
+
+    if style['dead']:
+        for _ in range(10):
+            for _ in range(30):
+                x, z = rng.uniform(-66, 66), rng.uniform(-66, 66)
+                if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 28 and one('dead_tree', x, z, 0, pad=0.5):
+                    break
+
+    if style['ditch']:
+        for _ in range(60):
+            s, t = rng.uniform(-34, -12), rng.uniform(-30, 30)
+            x, z = diag(s, t)
+            rot = rng.choice((0, 90))
+            if run('tank_ditch', x, z, rot, 2, PROPS['tank_ditch']['depth']) and run('tank_ditch', -x, -z, rot, 2, PROPS['tank_ditch']['depth']):
+                break
+    return L
+
+
+def checkpoint(L, px, pz, r, place):
+    """A road checkpoint beside a straight stretch of road 6 to 14 m out from an objective."""
+    for road in L.roads:
+        pts, half = road['points'], road['width'] / 2
+        for i in range(0, len(pts) - 2, 2):
+            ax, az, bx, bz = pts[i:i + 4]
+            along_x = abs(bz - az) < 0.2 * abs(bx - ax)
+            along_z = abs(bx - ax) < 0.2 * abs(bz - az)
+            length = math.hypot(bx - ax, bz - az)
+            if not (along_x or along_z) or length < 4:
+                continue
+            for k in range(int(length / 2) + 1):
+                t = k * 2 / length
+                x, z = ax + (bx - ax) * t, az + (bz - az) * t
+                if not r + 6 < math.hypot(x - px, z - pz) < r + 14:
+                    continue
+                w, d = Layout.size('checkpoint', 0)
+                for side in (1, -1):
+                    off = half + 1.0 + d / 2
+                    if along_x and place('checkpoint', x, z + side * off, 0 if side > 0 else 180, pad=0.8, road_gap=0.4):
+                        return True
+                    if along_z and place('checkpoint', x + side * off, z, 90 if side > 0 else 270, pad=0.8, road_gap=0.4):
+                        return True
+    return False
+
+
 def finish(L):
     for def_id, x, z in L.failed:
         print(f'warning: could not place {def_id} near ({x}, {z})')
@@ -2217,9 +2475,11 @@ def main(only=()):
             continue
         layout = build()
         # One outline per battlefield, shared by all its versions: carved round everything the
-        # Conquest, Survival and Siege versions and the campaign need.
-        siege = fortify(build(), map_id)
-        poly, _ = outline_tools.carve(map_id, keep_of([layout, siege], map_id), seed=len(map_id) * 31 + 7)
+        # Conquest, Survival and Siege versions and the campaign need; then the battlefield is
+        # dressed inside it (the siege version gets the same dressing before its fortress).
+        poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify(build(), map_id)], map_id), seed=len(map_id) * 31 + 7)
+        warzone(layout, map_id, theme, poly)
+        siege = fortify(warzone(build(), map_id, theme, poly), map_id)
         dropped = apply_outline(layout, poly)
         apply_outline(siege, poly)
         missing = layout.reachable()

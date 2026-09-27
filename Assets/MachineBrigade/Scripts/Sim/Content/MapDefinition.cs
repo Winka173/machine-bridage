@@ -143,7 +143,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var p in root.Array("props"))
             {
                 var rotation = p.Int("rot", 0);
-                if (rotation % 90 != 0) throw new FormatException($"{p.Path}.rot: must be a multiple of 90.");
+                if (rotation % 45 != 0) throw new FormatException($"{p.Path}.rot: must be a multiple of 45.");
                 props.Add(new PropPlacement(p.String("def"), new Vector2(p.Float("x"), p.Float("z")), ((rotation % 360) + 360) % 360));
             }
 

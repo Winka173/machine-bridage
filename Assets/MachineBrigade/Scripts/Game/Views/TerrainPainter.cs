@@ -394,8 +394,18 @@ namespace MachineBrigade.Game.Views
             "tank_trap", "lamp_post", "jersey_barrier", "dock_bollards", "mesa", "snow_rock", "pipeline", "market_stall",
             "charred_tree", "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "bamboo_clump", "fern_bush", "basalt_rock_a",
             "basalt_rock_b", "basalt_rock_c", "obsidian_spire", "volcanic_cliff", "runway_light", "traffic_light", "billboard",
-            "bus", "fuel_truck", "parked_jet", "razor_wire", "sandbag_wall", "floodlight_mast", "base_gate",
+            "bus", "fuel_truck", "parked_jet", "razor_wire", "sandbag_wall", "floodlight_mast", "base_gate", "telegraph_pole",
+            "dead_tree", "bridge_road", "barricade",
         };
+
+        /// <summary>Shell-torn ground: a scorched patch under craters, foxholes and wrecks.</summary>
+        private static readonly HashSet<string> Scorched = new()
+        {
+            "crater_large", "foxhole", "wreck_tank", "wreck_truck", "wreck_car", "artillery_wreck",
+        };
+
+        /// <summary>Dug earth: fresh dirt along trenches and anti-tank ditches.</summary>
+        private static readonly HashSet<string> Dug = new() { "trench_straight", "trench_corner", "tank_ditch" };
 
         private static readonly HashSet<string> PavedUnder = new()
         {
@@ -418,6 +428,7 @@ namespace MachineBrigade.Game.Views
             var crust = Color.Lerp(theme.Dirt, Color.black, 0.45f);
             var ember = new Color(0.55f, 0.2f, 0.07f);
             var mud = Color.Lerp(theme.Dirt, new Color(0.3f, 0.24f, 0.16f), 0.4f);
+            var burnt = Color.Lerp(theme.Dirt, new Color(0.08f, 0.07f, 0.06f), 0.55f);
             foreach (var prop in world.Props)
             {
                 var id = prop.Def.Id;
@@ -445,6 +456,20 @@ namespace MachineBrigade.Game.Views
                     margin = id == "hedge" ? 1.6f : 2.2f;
                     strength = 0.95f;
                     round = id != "hedge";
+                }
+                else if (Scorched.Contains(id))
+                {
+                    colour = burnt;
+                    rim = Color.Lerp(theme.Dirt, burnt, 0.45f);
+                    margin = id == "crater_large" ? 3f : 2f;
+                    strength = 0.8f;
+                    round = id is "crater_large" or "foxhole";
+                }
+                else if (Dug.Contains(id))
+                {
+                    colour = rim = theme.Dirt * 0.9f;
+                    margin = 1.6f;
+                    strength = 0.75f;
                 }
                 else if (Unmarked.Contains(id))
                 {

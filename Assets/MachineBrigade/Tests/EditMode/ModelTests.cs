@@ -45,6 +45,10 @@ namespace MachineBrigade.Tests
             "adobe_house", "adobe_large", "market_stall", "palm", "cactus", "oil_pump", "refinery_tower", "storage_tank", "pipeline",
             "mesa", "snow_pine", "log_cabin", "snow_rock", "radar_station", "watchtower", "container", "container_stack",
             "gantry_crane", "factory", "rail_tanker", "rail_boxcar", "dock_bollards", "office_block", "lamp_post", "jersey_barrier",
+            // Map kit.
+            "wreck_tank", "wreck_truck", "wreck_car", "artillery_wreck", "trench_straight", "trench_corner", "foxhole", "crater_large",
+            "tank_ditch", "command_tent", "camo_net", "supply_pile", "fuel_bladder", "checkpoint", "barricade", "power_pylon",
+            "telegraph_pole", "radio_mast", "bridge_road", "ruin_house", "ruin_tower", "dead_tree",
         };
 
         [Test]

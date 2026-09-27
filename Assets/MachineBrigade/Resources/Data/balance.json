@@ -495,6 +495,33 @@
     { "id": "vehicle_hangar","armor": "Structure", "hp": 1500, "width": 14,   "depth": 10,   "blocks": true },
     { "id": "helipad",       "armor": "Structure", "hp": 1000000, "width": 10, "depth": 10 },
     { "id": "razor_wire",    "armor": "Light",     "hp": 80,   "width": 8,    "depth": 1,    "blocks": true, "blocksFire": false },
-    { "id": "sandbag_wall",  "armor": "Structure", "hp": 600,  "width": 8,    "depth": 1.4,  "blocks": true, "blocksFire": false }
+    { "id": "sandbag_wall",  "armor": "Structure", "hp": 600,  "width": 8,    "depth": 1.4,  "blocks": true, "blocksFire": false },
+    // Battlefield dressing (the map kit). Wrecks and ruins are cover that can be shot to pieces (ground wrecks at the
+    // ground vehicles' 0.85 scale, ruins at the buildings' 1.15); earthworks, craters and the bridge are flat and
+    // indestructible; the supply pile and the fuel bladder go up when shot.
+    { "id": "wreck_tank", "scale": 0.85, "armor": "Heavy", "hp": 900, "width": 3.58, "depth": 7.53, "blocks": true },
+    { "id": "wreck_truck",   "armor": "Structure", "hp": 350,  "width": 2.82, "depth": 7.65, "blocks": true },
+    { "id": "wreck_car",     "armor": "Structure", "hp": 220,  "width": 2.08, "depth": 4.63, "blocks": true },
+    { "id": "artillery_wreck", "scale": 0.85, "armor": "Heavy", "hp": 500, "width": 3.07, "depth": 6.48, "blocks": true, "blocksFire": false },
+    { "id": "trench_straight", "armor": "Structure", "hp": 1000000, "width": 2.4, "depth": 8 },
+    { "id": "trench_corner", "armor": "Structure", "hp": 1000000, "width": 5,  "depth": 5 },
+    { "id": "foxhole",       "armor": "Structure", "hp": 1000000, "width": 3,  "depth": 3 },
+    { "id": "crater_large",  "armor": "Structure", "hp": 1000000, "width": 7,  "depth": 7 },
+    { "id": "tank_ditch",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 10 },
+    { "id": "command_tent",  "armor": "Light",     "hp": 220,  "width": 5.9,  "depth": 4.9,  "blocks": true },
+    { "id": "camo_net",      "armor": "Light",     "hp": 60,   "width": 8,    "depth": 6 },
+    { "id": "supply_pile",   "armor": "Light",     "hp": 120,  "width": 3.9,  "depth": 3.1,  "blocks": true, "blocksFire": false,
+      "explosion": { "damage": 90, "radius": 7, "delay": 0.25, "tier": "Large" } },
+    { "id": "fuel_bladder",  "armor": "Light",     "hp": 90,   "width": 5.2,  "depth": 2.9,  "blocks": true, "blocksFire": false,
+      "explosion": { "damage": 180, "radius": 11, "delay": 0.3, "tier": "Huge" } },
+    { "id": "checkpoint",    "armor": "Structure", "hp": 300,  "width": 6.2,  "depth": 3.9,  "blocks": true, "blocksFire": false },
+    { "id": "barricade",     "armor": "Heavy",     "hp": 350,  "width": 6.1,  "depth": 1.9,  "blocks": true, "blocksFire": false },
+    { "id": "power_pylon",   "armor": "Structure", "hp": 500,  "width": 4.1,  "depth": 4.1,  "blocks": true, "blocksFire": false },
+    { "id": "telegraph_pole","armor": "Light",     "hp": 30,   "width": 0.6,  "depth": 0.6 },
+    { "id": "radio_mast",    "armor": "Structure", "hp": 200,  "width": 3,    "depth": 2.8 },
+    { "id": "bridge_road",   "armor": "Structure", "hp": 1000000, "width": 8.35, "depth": 20 },
+    { "id": "ruin_house", "scale": 1.15, "armor": "Structure", "hp": 500, "width": 7.8, "depth": 7.8, "blocks": true },
+    { "id": "ruin_tower", "scale": 1.15, "armor": "Structure", "hp": 700, "width": 5.2, "depth": 5.6, "blocks": true },
+    { "id": "dead_tree",     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
   ]
 }

@@ -53,7 +53,6 @@
     {"def": "billboard", "x": -28.5, "z": -31.5, "rot": 90},
     {"def": "tree", "x": 63.5, "z": -8.5},
     {"def": "tree", "x": -8.5, "z": -76.5},
-    {"def": "tree", "x": 8.5, "z": -63.5},
     {"def": "tree", "x": -8.5, "z": 63.5},
     {"def": "tree", "x": 8.5, "z": 76.5},
     {"def": "tree", "x": 27.5, "z": 63.5},
@@ -224,6 +223,24 @@
     {"def": "car", "x": 66.0, "z": -23.0},
     {"def": "car", "x": -23.0, "z": -66.0, "rot": 90},
     {"def": "car", "x": 6.0, "z": 49.0},
-    {"def": "car", "x": 24.0, "z": -61.0}
+    {"def": "car", "x": 24.0, "z": -61.0},
+    {"def": "wreck_tank", "x": 30.0, "z": -17.5, "rot": 270},
+    {"def": "wreck_car", "x": 13.0, "z": -55.5, "rot": 270},
+    {"def": "crater_large", "x": 8.5, "z": -60.5},
+    {"def": "wreck_tank", "x": -22.0, "z": 5.5, "rot": 270},
+    {"def": "wreck_car", "x": 50.0, "z": -10.5, "rot": 90},
+    {"def": "crater_large", "x": 49.0, "z": -17.0},
+    {"def": "wreck_car", "x": 10.0, "z": -18.5},
+    {"def": "wreck_tank", "x": -18.0, "z": 30.5, "rot": 270},
+    {"def": "crater_large", "x": -20.5, "z": 24.5},
+    {"def": "wreck_truck", "x": 51.0, "z": -27.0, "rot": 180},
+    {"def": "crater_large", "x": 57.5, "z": -25.5},
+    {"def": "wreck_truck", "x": -4.0, "z": 21.0, "rot": 180},
+    {"def": "wreck_car", "x": -21.5, "z": -45.0, "rot": 180},
+    {"def": "wreck_tank", "x": -13.0, "z": -45.5, "rot": 180},
+    {"def": "crater_large", "x": 14.0, "z": 38.0},
+    {"def": "crater_large", "x": -10.5, "z": -20.0},
+    {"def": "crater_large", "x": 29.5, "z": -50.0},
+    {"def": "crater_large", "x": 57.5, "z": 6.5}
   ]
 }
