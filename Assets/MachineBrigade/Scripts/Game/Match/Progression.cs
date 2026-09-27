@@ -62,6 +62,11 @@ namespace MachineBrigade.Game.Match
 
         public static bool IsItem(string id) => ItemPrices.ContainsKey(id);
 
+        /// <summary>Doctrines: the first is free, the others are bought with coins (owned as "doctrine.&lt;id&gt;").</summary>
+        public const int DoctrinePrice = 1500;
+
+        public static bool DoctrineOwned(string id) => id == "armor" || PlayerProfile.Owns("doctrine." + id);
+
         public static bool IsStarter(string id) =>
             System.Array.IndexOf(StarterVehicles, id) >= 0 || System.Array.IndexOf(StarterSupports, id) >= 0;
 

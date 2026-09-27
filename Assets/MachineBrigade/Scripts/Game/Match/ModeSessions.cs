@@ -149,6 +149,14 @@ namespace MachineBrigade.Game.Match
             var elite = menu ? 0.15f : session.Difficulty switch { AiDifficulty.Hard => 0.25f, AiDifficulty.Normal => 0.1f, _ => 0f };
             if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.EliteChance = elite;
             if (menu && world.TryGetEconomy(PlayerTeam, out var ours)) ours.EliteChance = elite;
+            // Doctrines: the player's choice; a hard enemy picks one of its own.
+            if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
+                world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));
+            if (session.Difficulty == AiDifficulty.Hard || menu)
+            {
+                var all = MachineBrigade.Sim.Content.Doctrine.All;
+                world.SetDoctrine(EnemyTeam, all[new System.Random(seed).Next(all.Count)]);
+            }
             return session;
         }
 

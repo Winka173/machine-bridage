@@ -23,9 +23,9 @@ namespace MachineBrigade.Sim.Economy
         {
             Team = team;
             Cp = startCp;
-            Income = income;
+            _income = income;
             Bank = bank;
-            ArmyCap = armyCap;
+            _armyCap = armyCap;
             Vehicles = vehicles ?? Array.Empty<string>();
             Supports = supports ?? Array.Empty<string>();
         }
@@ -34,13 +34,19 @@ namespace MachineBrigade.Sim.Economy
         public float Cp { get; internal set; }
 
         /// <summary>CP per second before objective bonuses.</summary>
-        public float Income { get; }
+        public float Income => _income * (Doctrine?.Income ?? 1f);
+
+        private readonly float _income;
+        private readonly int _armyCap;
+
+        /// <summary>The commander's doctrine for this battle, or none.</summary>
+        public Content.Doctrine? Doctrine { get; set; }
 
         /// <summary>Extra CP per second, set by the game mode (for example per held objective).</summary>
         public float Bonus { get; set; }
 
         public float Bank { get; }
-        public int ArmyCap { get; }
+        public int ArmyCap => _armyCap + (Doctrine?.ArmyCap ?? 0);
 
         /// <summary>Vehicle cards in the deck (empty: any vehicle).</summary>
         public IReadOnlyList<string> Vehicles { get; }

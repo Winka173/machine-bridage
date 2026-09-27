@@ -192,6 +192,9 @@ namespace MachineBrigade.Game.Match
 
         public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
 
+        /// <summary>The player's doctrine for the next battle (see <c>Doctrine</c>).</summary>
+        public static string Doctrine { get; set; } = "armor";
+
         /// <summary>Slow motion and letterbox for a second on the biggest blasts.</summary>
         public static bool CinematicMoments { get; set; } = true;
 
@@ -249,6 +252,7 @@ namespace MachineBrigade.Game.Match
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
+                Doctrine = PlayerPrefs.GetString("mb.doctrine", "armor");
                 UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
                 BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
@@ -284,6 +288,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
+                PlayerPrefs.SetString("mb.doctrine", Doctrine);
                 PlayerPrefs.SetInt("mb.uiSize", UiSize);
                 PlayerPrefs.SetInt("mb.battery", BatterySaver);
                 PlayerPrefs.SetInt("mb.brightness", Brightness);

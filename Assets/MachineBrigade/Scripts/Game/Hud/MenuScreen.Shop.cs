@@ -80,6 +80,8 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case ShopTab.Premium:
                     foreach (var id in PremiumCards) _shopGrid.Add(UnitCard(id, premium: true));
+                    foreach (var doctrine in MachineBrigade.Sim.Content.Doctrine.All)
+                        if (doctrine.Id != "armor") _shopGrid.Add(DoctrineCard(doctrine.Id));
                     break;
                 case ShopTab.Items:
                     _shopNote.text = Strings.Get("shop.itemsNote");
@@ -154,6 +156,26 @@ namespace MachineBrigade.Game.Hud
 
         private bool IsItemTab => _tab == ShopTab.Items;
 
+        private VisualElement DoctrineCard(string doctrine)
+        {
+            var id = "doctrine." + doctrine;
+            var card = UiKit.Button("shop-card unit-card", () =>
+            {
+                SelectShop(id);
+                _shopNote.text = Strings.Get(id + ".info");
+            });
+            var art = UiKit.Box("unit-art premium");
+            art.Add(UiKit.Icon(DoctrineIcon(doctrine), UiKit.Ink, 1.6f));
+            card.Add(art);
+            card.Add(UiKit.Text(Strings.Get(id), "shop-name"));
+            card.Add(UiKit.Text(Strings.Get("doctrine.title"), "shop-sub"));
+            card.Add(PriceTag(Progression.DoctrinePrice));
+            _shopCards.Add((card, id));
+            return card;
+        }
+
+        private static bool IsDoctrine(string id) => id.StartsWith("doctrine.");
+
         private static VisualElement PriceTag(int price)
         {
             var tag = UiKit.Box("price-tag");
@@ -172,9 +194,10 @@ namespace MachineBrigade.Game.Hud
 
         private bool IsSkinTab => _tab == ShopTab.Skins;
 
-        private bool Owned(string id) => IsItemTab ? false : IsSkinTab ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id);
+        private bool Owned(string id) => IsItemTab ? false : IsSkinTab || IsDoctrine(id) ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id);
 
-        private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id) : IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
+        private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id) : IsDoctrine(id) ? Progression.DoctrinePrice
+            : IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
 
         private void RefreshShop()
         {
@@ -238,7 +261,7 @@ namespace MachineBrigade.Game.Hud
             else if (PlayerProfile.TryBuy(id, PriceOf(id)))
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);
-                _shopNote.text = Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : Strings.Card(id));
+                _shopNote.text = Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : IsDoctrine(id) ? Strings.Get(id) : Strings.Card(id));
             }
             else
             {

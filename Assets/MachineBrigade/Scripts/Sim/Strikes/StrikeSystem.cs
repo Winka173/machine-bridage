@@ -81,7 +81,7 @@ namespace MachineBrigade.Sim.Strikes
                 if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
                 if (!_world.Economy.TrySpend(command.Team, support.CpCost)) return CommandResult.Rejected(CommandError.NotEnoughCp);
             }
-            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown;
+            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f);
 
             Launch(support, command.Team, command.Point, command.Point2);
             return CommandResult.Ok;

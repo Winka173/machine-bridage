@@ -94,7 +94,7 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => Overdriven ? OverdriveSpeed : 1f;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed;
 
         /// <summary>Fire-rate multiplier from skills.</summary>
         internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f);
@@ -117,7 +117,13 @@ namespace MachineBrigade.Sim.Entities
         public float Speed { get; internal set; }
 
         public float Hp { get; internal set; }
-        public float MaxHp => Def.MaxHp;
+        public float MaxHp => Def.MaxHp * HpScale;
+
+        /// <summary>Health multiplier from the side's doctrine.</summary>
+        internal float HpScale = 1f;
+
+        /// <summary>Drive speed multiplier from the side's doctrine.</summary>
+        internal float DoctrineSpeed = 1f;
         public float Radius => Def.Radius;
         public ArmorClass Armor => Def.Armor;
         public bool IsAlive => Hp > 0f;

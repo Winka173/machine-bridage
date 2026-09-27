@@ -123,6 +123,29 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(_deckTitle);
             _deckNote = UiKit.Text(Strings.Get("deck.hint"), "menu-note");
             deckBody.Add(_deckNote);
+            // Doctrine for the next battle: owned ones can be picked, the rest say where to buy them.
+            deckBody.Add(UiKit.Text(Strings.Get("doctrine.title"), "menu-caps"));
+            var doctrines = UiKit.Box("segments doctrine-row");
+            var allDoctrines = MachineBrigade.Sim.Content.Doctrine.All;
+            for (var i = 0; i < allDoctrines.Count; i++)
+            {
+                var id = allDoctrines[i].Id;
+                doctrines.Add(Choice(Segment(DoctrineIcon(id), Strings.Get("doctrine." + id), () =>
+                {
+                    if (!Progression.DoctrineOwned(id))
+                    {
+                        _deckNote.text = Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Progression.DoctrinePrice.ToString("N0"));
+                        _deckNote.AddToClassList("warn");
+                        return;
+                    }
+                    MatchSettings.Doctrine = id;
+                    MatchSettings.Save();
+                    _deckNote.RemoveFromClassList("warn");
+                    _deckNote.text = Strings.Get("doctrine." + id + ".info");
+                    Refresh();
+                }, i == allDoctrines.Count - 1), () => MatchSettings.Doctrine == id));
+            }
+            deckBody.Add(doctrines);
             var grid = UiKit.Box("deck-grid");
             foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
             foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
@@ -471,6 +494,18 @@ namespace MachineBrigade.Game.Hud
             }));
             return row;
         }
+    }
+
+    internal sealed partial class MenuScreen
+    {
+        internal static string DoctrineIcon(string id) => id switch
+        {
+            "armor" => "heavytank",
+            "air" => "jet",
+            "artillery" => "artillery",
+            "blitz" => "bolt",
+            _ => "cp",
+        };
     }
 
     /// <summary>Which icon each card shows.</summary>

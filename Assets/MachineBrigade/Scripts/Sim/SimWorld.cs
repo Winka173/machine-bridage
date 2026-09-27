@@ -146,10 +146,34 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
+            if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
+            {
+                vehicle.HpScale = doctrine.Toughness(def.Class);
+                vehicle.DoctrineSpeed = doctrine.Speed;
+                vehicle.Hp = vehicle.MaxHp;
+            }
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
             Emit(SimEvent.Spawned(vehicle));
             return vehicle;
+        }
+
+        /// <summary>
+        /// Gives a side its doctrine for the battle; vehicles already on the field are toughened
+        /// (or sped up) in place, keeping their share of health.
+        /// </summary>
+        public void SetDoctrine(int team, Doctrine? doctrine)
+        {
+            if (!Economy.TryGet(team, out var economy)) return;
+            economy.Doctrine = doctrine;
+            foreach (var v in _vehicleList)
+            {
+                if (!v.IsAlive || v.Team != team || v.Def.Boss || v.Def.Static) continue;
+                var share = v.Hp / v.MaxHp;
+                v.HpScale = doctrine?.Toughness(v.Def.Class) ?? 1f;
+                v.DoctrineSpeed = doctrine?.Speed ?? 1f;
+                v.Hp = v.MaxHp * share;
+            }
         }
 
         /// <summary>
