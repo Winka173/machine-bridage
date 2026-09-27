@@ -452,6 +452,7 @@ namespace MachineBrigade.Game.Match
             player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
             player.Demolish = w => _mode.Target(w);
             player.Plunder = _ => _mode.BountyTargets;
+            player.RoleMix = ConquestAi.SiegeMix;
         }
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)

@@ -166,7 +166,10 @@ namespace MachineBrigade.Sim.AI
             var body = _line.Count > 0 ? _line : _fast.Count > 0 ? _fast : _artillery;
             if (body.Count == 0) return;
 
-            var front = Centre(body);
+            var front = FrontOf(world, body);
+            GatherReinforcements(world, front);
+            if (_line.Count == 0 && _fast.Count == 0 && _artillery.Count == 0) return;
+            body = _line.Count > 0 ? _line : _fast.Count > 0 ? _fast : _artillery;
             var contact = _enemies.Count > 0;
             Vector2 objective;
             // Aircraft do not steer the army: ground forces go for ground targets and objectives.
@@ -448,7 +451,9 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (v.IsVisibleTo(_team) && !v.Invulnerable)
                     {
-                        _enemies.Add(v);
+                        // A remembered defence is not contact (nobody chases a gun seen minutes ago),
+                        // but its reach is a wall for artillery and the edge the line gathers at.
+                        if (!v.Def.Static || v.IsSeenBy(_team)) _enemies.Add(v);
                         if (v.Def.Static && GroundReach(v) > 0f) _defences.Add(v);
                     }
                     continue;
@@ -806,6 +811,19 @@ namespace MachineBrigade.Sim.AI
             }
             if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
             var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
+            // Into the reach of known defences only together: the next bound stops at the edge of
+            // their guns until most of the line has gathered there, then everyone goes in at once.
+            if (_defences.Count > 0 && Exposed(goal, 2f))
+            {
+                var edge = goal;
+                var back = Direction(goal, lead.Position);
+                for (var step = 0; step < 14 && Exposed(edge, 2f); step++) edge += back * 4f;
+                edge = Clamp(world, edge);
+                var gathered = 0;
+                foreach (var v in _line)
+                    if (Vector2.Distance(v.Position, edge) < 16f) gathered++;
+                goal = gathered >= MathF.Ceiling(_line.Count * 0.8f) ? Clamp(world, objective) : edge;
+            }
             // Those already on their way to this rendezvous keep their route, and those standing at
             // it stay put: sending them again would reshuffle the slots and keep everyone moving.
             for (var i = _ids.Count - 1; i >= 0; i--)
@@ -813,6 +831,97 @@ namespace MachineBrigade.Sim.AI
                     ((going.Order.Kind == OrderKind.AttackMove && Vector2.Distance(going.Order.Point, goal) < SameRendezvous) ||
                      (going.Order.Kind == OrderKind.Idle && Vector2.Distance(going.Position, goal) < SameRendezvous))) _ids.RemoveAt(i);
             if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, goal);
+        }
+
+        /// <summary>A vehicle this far from the army and this close to home is a reinforcement still to join.</summary>
+        private const float ReinforcementGap = 50f;
+        private const float HomeReach = 45f;
+
+        /// <summary>Reinforcements go forward in groups of this many (or once the first has waited this long).</summary>
+        private const int WaveSize = 3;
+        private const double WaveWait = 25.0;
+
+        /// <summary>Reinforcements waiting at the staging point, and since when.</summary>
+        private readonly Dictionary<EntityId, double> _staged = new();
+        private readonly List<Vehicle> _joining = new();
+        private readonly List<EntityId> _gone = new();
+
+        /// <summary>Where the army is: the middle of the vehicles out in the field (reinforcements still at home do not drag it back).</summary>
+        private Vector2 FrontOf(SimWorld world, List<Vehicle> body)
+        {
+            if (!world.TryGetRally(_team, out var home)) return Centre(body);
+            var sum = Vector2.Zero;
+            var count = 0;
+            foreach (var v in body)
+            {
+                if (Vector2.Distance(v.Position, home) < HomeReach) continue;
+                sum += v.Position;
+                count++;
+            }
+            return count >= 2 ? sum / count : Centre(body);
+        }
+
+        /// <summary>
+        /// New vehicles do not drive out to the front one by one (each would meet the enemy alone):
+        /// they gather at a staging point a little out from home and go forward together once
+        /// three have gathered, or the first has waited long enough (after the reinforcement rule
+        /// of StarCraft bots such as UAlbertaBot: join only as a group, else wait for the next wave).
+        /// </summary>
+        private void GatherReinforcements(SimWorld world, Vector2 front)
+        {
+            _joining.Clear();
+            if (!world.TryGetRally(_team, out var home) || Vector2.Distance(front, home) < ReinforcementGap + HomeReach * 0.5f)
+            {
+                _staged.Clear();
+                return;
+            }
+            var staging = Clamp(world, home + Direction(home, front) * 22f);
+            CollectJoining(world, home, front, _line);
+            CollectJoining(world, home, front, _fast);
+            // The army out in the field has to be more than these few, or they are the army.
+            if (_joining.Count == 0 || _line.Count + _fast.Count - _joining.Count < 2)
+            {
+                _staged.Clear();
+                return;
+            }
+            _gone.Clear();
+            foreach (var id in _staged.Keys)
+                if (!_joining.Exists(v => v.Id == id)) _gone.Add(id);
+            foreach (var id in _gone) _staged.Remove(id);
+
+            var waiting = 0;
+            var oldest = world.Time;
+            foreach (var v in _joining)
+            {
+                if (Vector2.Distance(v.Position, staging) > 12f) continue;
+                if (!_staged.TryGetValue(v.Id, out var since)) _staged[v.Id] = since = world.Time;
+                waiting++;
+                oldest = Math.Min(oldest, since);
+            }
+            // Enough of them (or long enough): they go forward together with the rest of the army.
+            if (waiting >= WaveSize || (waiting > 0 && world.Time - oldest > WaveWait))
+            {
+                foreach (var v in _joining) _staged.Remove(v.Id);
+                return;
+            }
+            _ids.Clear();
+            foreach (var v in _joining)
+            {
+                _line.Remove(v);
+                _fast.Remove(v);
+                if (Vector2.Distance(v.Position, staging) < 10f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, staging) < 8f) continue;
+                _ids.Add(v.Id);
+            }
+            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, staging);
+        }
+
+        private void CollectJoining(SimWorld world, Vector2 home, Vector2 front, List<Vehicle> vehicles)
+        {
+            foreach (var v in vehicles)
+                if (!v.Flying && Vector2.Distance(v.Position, home) < HomeReach && Vector2.Distance(v.Position, front) > ReinforcementGap &&
+                    !Busy(world, v))
+                    _joining.Add(v);
         }
 
         /// <summary>Two rendezvous closer than this are the same one (group moves spread their slots).</summary>

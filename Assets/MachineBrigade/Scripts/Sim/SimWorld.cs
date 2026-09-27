@@ -574,7 +574,8 @@ namespace MachineBrigade.Sim
             {
                 // A fixed defence, once seen, stays on the map (it cannot move away), as buildings
                 // stay under the fog in most RTS: artillery can shell it from beyond its own sight.
-                var mask = target.Def.Static ? target.VisibleToMask : 0;
+                var known = target.Def.Static ? target.VisibleToMask : 0;
+                var mask = 0;
                 foreach (var spotter in _vehicleList)
                 {
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
@@ -583,7 +584,8 @@ namespace MachineBrigade.Sim
                          !Strikes.Obscures(spotter.Position, target.Position)))
                         mask |= 1 << spotter.Team;
                 }
-                target.VisibleToMask = mask;
+                target.SeenByMask = mask;
+                target.VisibleToMask = mask | known;
             }
         }
 

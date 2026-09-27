@@ -198,6 +198,14 @@ namespace MachineBrigade.Sim.Entities
 
         public bool IsVisibleTo(int team) => team >= 0 && (VisibleToMask & (1 << team)) != 0;
 
+        /// <summary>
+        /// Teams with it in sight right now (for a fixed defence, <see cref="VisibleToMask"/> also
+        /// keeps the teams that have seen it before: they know where it stands).
+        /// </summary>
+        public int SeenByMask { get; internal set; }
+
+        public bool IsSeenBy(int team) => team >= 0 && (SeenByMask & (1 << team)) != 0;
+
         internal int PathIndex;
         internal bool PathCompleted;
         internal Vector2 PathGoal;
