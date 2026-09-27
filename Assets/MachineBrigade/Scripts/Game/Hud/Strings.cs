@@ -296,6 +296,7 @@ namespace MachineBrigade.Game.Hud
             ["doctrine.blitz.info"] = ("The whole army drives 15% faster; scouts and light armour +15% health.", "Toàn quân chạy nhanh hơn 15%; trinh sát và xe nhẹ +15% máu."),
             ["doctrine.logistics.info"] = ("+20% CP income and +4 army cap.", "+20% thu nhập CP và +4 trần quân."),
             ["doctrine.locked"] = ("{0}: buy it in the shop for {1} coins.", "{0}: mua trong cửa hàng với {1} coin."),
+            ["mission.launchIn"] = ("LAUNCH IN {0}", "PHÓNG SAU {0}"),
             ["counter.strong"] = ("Strong vs {0}", "Mạnh với {0}"),
             ["counter.weak"] = ("Weak vs {0}", "Yếu trước {0}"),
             ["counter.support"] = ("Supports the army", "Hỗ trợ đội quân"),

@@ -47,6 +47,16 @@ namespace MachineBrigade.Game.Views
         private Vector3 _crashDrift;
         private bool _wreck;
 
+        // Parts some models animate from the simulation: the Doomsday Train's missile erector and a
+        // guard tower's searchlight. Null on every other model.
+        private readonly Transform _erector, _searchlight;
+        private readonly Quaternion _erectorRest, _searchlightRest;
+
+        // A shimmering ring round a vehicle while a shield skill soaks up damage.
+        private Transform _shield;
+        private readonly Material _shieldMaterial;
+        private static Mesh _shieldMesh;
+
         public VehicleView(Vehicle vehicle, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials,
             Transform parent, int playerTeam)
         {
@@ -98,6 +108,17 @@ namespace MachineBrigade.Game.Views
                 false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
             _bar.gameObject.SetActive(false);
+
+            foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "Erector") _erector = t;
+                else if (t.name == "Searchlight") _searchlight = t;
+            }
+            if (_erector != null) _erectorRest = _erector.localRotation;
+            if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
+            _shieldMaterial = materials.Shockwave;
+            // Elite enemies wear a gold health bar.
+            if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
             Snapshot();
             Snapshot(); // previous == current, so the first frame does not interpolate from the origin
@@ -238,6 +259,7 @@ namespace MachineBrigade.Game.Views
             }
 
             Spin(1f);
+            AnimateParts(cameraRotation);
 
             _ring.Visible = Selected;
             if (_shadowRing != null)
@@ -253,6 +275,43 @@ namespace MachineBrigade.Game.Views
             _bar.rotation = cameraRotation;
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
+        }
+
+        private void AnimateParts(Quaternion cameraRotation)
+        {
+            // The missile rises on its erector as the launch countdown runs.
+            if (_erector != null) _erector.localRotation = _erectorRest * Quaternion.Euler(-90f * Sim.Charge, 0f, 0f);
+            // Searchlights sweep back and forth, each tower on its own rhythm.
+            if (_searchlight != null)
+                _searchlight.localRotation = _searchlightRest * Quaternion.Euler(0f, Mathf.Sin(Time.time * 0.45f + Id.Value) * 75f, 0f);
+
+            if (Sim.ShieldUp)
+            {
+                if (_shield == null)
+                {
+                    _shieldMesh ??= ShieldQuad();
+                    _shield = CreateMesh("Shield", Root, _shieldMesh, _shieldMaterial, false);
+                }
+                if (!_shield.gameObject.activeSelf) _shield.gameObject.SetActive(true);
+                var size = (Def.HullBound + 1.2f) * 2.4f * (1f + Mathf.Sin(Time.time * 9f) * 0.04f);
+                _shield.position = Root.position + Vector3.up * (Altitude + 1.2f);
+                _shield.rotation = cameraRotation;
+                _shield.localScale = new Vector3(size, size, 1f);
+            }
+            else if (_shield != null && _shield.gameObject.activeSelf) _shield.gameObject.SetActive(false);
+        }
+
+        /// <summary>A camera-facing quad tinted shield blue, for the particle shader's ring shape.</summary>
+        private static Mesh ShieldQuad()
+        {
+            var colour = Primitives.Linear(new Color(0.35f, 0.85f, 1f, 0.9f));
+            var mesh = new Mesh { name = "ShieldQuad" };
+            mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
+            mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
+            mesh.SetColors(new[] { colour, colour, colour, colour });
+            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+            mesh.RecalculateBounds();
+            return mesh;
         }
 
         /// <summary>Freezes the view as a burnt-out hulk; the simulation entity is gone.</summary>

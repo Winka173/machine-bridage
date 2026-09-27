@@ -124,6 +124,7 @@ namespace MachineBrigade.Game.Rendering
             BarBack = Unlit(unlit, "BarBack", new Color(0.04f, 0.06f, 0.06f));
             BarAlly = Unlit(unlit, "BarAlly", TeamColors.Ui(0));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
+            BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -173,6 +174,9 @@ namespace MachineBrigade.Game.Rendering
         public Material BarBack { get; }
         public Material BarAlly { get; }
         public Material BarEnemy { get; }
+
+        /// <summary>Gold health bar of elite enemy units.</summary>
+        public Material BarElite { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

@@ -65,6 +65,12 @@ namespace MachineBrigade.Sim.Entities
         internal float ShieldAmount, OverdriveSpeed = 1f, BarrageRate = 1f, Healing, RearmProgress;
         internal double NextMineAt;
 
+        /// <summary>
+        /// A boss's own countdown shown on the model, 0 to 1 (the Doomsday Train raising its
+        /// missile before launch). Set by the mission.
+        /// </summary>
+        public float Charge { get; internal set; }
+
         /// <summary>A loaned aircraft (an escort item) leaves the battle at this time.</summary>
         internal double ExpiresAt = double.PositiveInfinity;
 

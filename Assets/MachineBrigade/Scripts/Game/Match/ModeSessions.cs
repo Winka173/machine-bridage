@@ -617,6 +617,7 @@ namespace MachineBrigade.Game.Match
             var detail = _def.Goal switch
             {
                 MissionGoal.Hold or MissionGoal.Survive => $"{Clock(done)} / {Clock(needed)}",
+                MissionGoal.Intercept when _mode.LaunchIn(world) >= 0f => Strings.Format("mission.launchIn", Clock(_mode.LaunchIn(world))),
                 MissionGoal.Boss or MissionGoal.Intercept => $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%",
                 _ => $"{done} / {needed}",
             };

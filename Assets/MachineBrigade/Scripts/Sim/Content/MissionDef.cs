@@ -87,6 +87,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds before the mission is lost (0: no limit).</summary>
         public float TimeLimit { get; set; }
 
+        /// <summary>
+        /// Intercept: once the boss reaches the end of its route it prepares to launch, and the
+        /// mission is lost after this many seconds (0: lost the moment it arrives).
+        /// </summary>
+        public float LaunchSeconds { get; set; }
+
         public ScriptedUnitDef? Boss { get; set; }
 
         /// <summary>Convoy trucks, spawned one after another along the route.</summary>
@@ -154,6 +160,7 @@ namespace MachineBrigade.Sim.Content
                 TimeLimit = m.Float("timeLimit", 0f),
                 ConvoyCount = m.Int("convoyCount", 4),
                 ConvoyNeeded = m.Int("convoyNeeded", 2),
+                LaunchSeconds = m.Float("launchSeconds", 0f),
                 EnemyAi = m.Has("enemyAi") ? m.String("enemyAi") : "commander",
                 EnemyStance = m.Has("enemyStance") ? m.String("enemyStance") : "Attack",
                 Difficulty = m.Has("difficulty") ? m.String("difficulty") : "Normal",
