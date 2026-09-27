@@ -46,11 +46,18 @@ base, an Endless mode, and a separate Survival.
 - In battle, traits show a short word over the vehicle when they fire (at most every 2 s).
 - The loot boxes stay as they are (coins buy crates): the user's decision after the legal-risk note.
 
-### Still to do (resume here)
-- `feature/pathing` (worktree `MachineBrigade-path`): anti-jam pathing, committed as work in progress; finish, test, merge.
-- Phase 4 maps: every map 50 % bigger (campaign coordinates too), denser and prettier, the area outside built as terrain with a boundary, houses the right size next to the vehicles; performance and the highest graphics tier; more detailed models for high graphics.
-- Check the equipment screen on the emulator after the merge (the APK is built, not yet looked at).
-- Then a detailed PDF of the game for the user's review with other developers: modes, equipment, damage and DPS numbers, weapons, economy, maps, towers, with pictures.
+**Traffic** (merged from `feature/pathing`)
+- A lane map (roads, main routes, narrow passes, doorways), no stopping in doorways, parked units making way by priority (a group bound for one place never asks its own members, and a unit holding its ground in the open is driven round), one direction at a time through a gate, costed repaths round parked hulls; siege gates 10 m wide on three walkable cells and an open keep yard.
+
+**Battlefields** (Phase 4)
+- Every map half as big again: 300 x 300 m. Woods, rocks, hamlets, wrecks, craters and poles grow with the area and a quarter more; the start units move out with their camps; the fortress keeps its plan in the enemy's corner.
+- What lies outside the outline stays as decor (drawn, never simulated) so the country goes on past the edge, and a dashed line marks the boundary; the countryside reaches 130 m further.
+- Houses, barns, garages and shops 1.3 times bigger (they were smaller than the tanks); campaign positions scaled with the maps.
+- High graphics: a 4096 shadow map, soft shadows on phones too, 4x MSAA.
+- Five-seed campaign balance on the new maps: 107/115 before retuning m13 (now 3/5, siege buying mix for a demolition inside a fortress).
+
+**Design-review document**
+- `ExportGameDoc` (MB_EXPORT) writes the game's numbers to JSON; `Tools/docs/build_doc.py` builds an illustrated PDF (modes, campaign, every vehicle with weapons and DPS, weapons and the damage table, towers, elites, bosses, fire support, equipment, economy, maps, AI, interface).
 
 ### Known limitations
 - m21 (the saucer) is hard for the scripted test deck (2/5).

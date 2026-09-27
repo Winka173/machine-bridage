@@ -335,7 +335,8 @@ def build(game, imgdir):
     ui = [('home.png', 'Trang chủ: trận đấu AI làm nền, cột thẻ bên phải, nút XUẤT KÍCH.'), ('army.png', 'Quân đội: bộ bài và bộ sưu tập.'),
           ('detail.png', 'Chi tiết phương tiện: mô hình 3D xoay, chỉ số, vũ khí, xem bắn, trang bị.'), ('gear.png', 'Trang bị.'),
           ('setup.png', 'Thiết lập trận: chế độ, bản đồ, độ khó, thời tiết.'), ('events.png', 'Sự kiện.'), ('shop.png', 'Cửa hàng.'),
-          ('settings.png', 'Cài đặt đồ họa và âm thanh.'), ('edge.png', 'Mép bản đồ: đường ranh giới và cảnh ngoài viền.')]
+          ('settings.png', 'Cài đặt đồ họa và âm thanh.'), ('result.png', 'Màn kết quả trận.'),
+          ('edge.png', 'Mép bản đồ: đường ranh giới và cảnh ngoài viền.')]
     out.append("<div class='section'><h2>13. Giao diện</h2><p>Phong cách “Field Command”: nền xám thép trong suốt trên trận đấu, viền mảnh, góc vuông, một màu nhấn cam "
                "cho hành động chính (góc vát), chữ in hoa hẹp. Thanh điều hướng dọc bên trái.</p>")
     for name, cap in ui:
