@@ -20,6 +20,10 @@ namespace MachineBrigade.Tests
         [TestCase("whiteout")]
         [TestCase("greenvale")]
         [TestCase("rustyard")]
+        [TestCase("emberridge")]
+        [TestCase("junglepass")]
+        [TestCase("skyhold")]
+        [TestCase("metrocity")]
         public void AiVersusAiConquestUsesTheWholeRosterAndFinishes(string mapId)
         {
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(mapId + "_conquest"), seed: 77);

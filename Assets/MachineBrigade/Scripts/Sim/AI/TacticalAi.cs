@@ -46,6 +46,12 @@ namespace MachineBrigade.Sim.AI
         private readonly List<Vehicle> _fast = new();
         private readonly List<Vehicle> _artillery = new();
         private readonly List<Vehicle> _enemies = new();
+
+        /// <summary>Engineers and jammers: they follow the army and cover it.</summary>
+        private readonly List<Vehicle> _support = new();
+
+        /// <summary>Launchers out of ammunition on their way to be restocked.</summary>
+        private readonly List<Vehicle> _rearming = new();
         /// <summary>Vehicles pulled back to recover, with when they left the line.</summary>
         private readonly Dictionary<EntityId, double> _fallingBack = new();
 
@@ -73,6 +79,38 @@ namespace MachineBrigade.Sim.AI
         /// hold); null lets it go after anything in sight.
         /// </summary>
         public float? Leash { get; set; }
+
+        /// <summary>Below this ratio of our strength to theirs around the front, the army stops attacking.</summary>
+        private const float OutmatchedRatio = 0.6f;
+
+        /// <summary>It attacks again once reinforcements bring the ratio back up to this.</summary>
+        private const float RecoveredRatio = 0.95f;
+
+        /// <summary>How long a fall-back lasts at least, so the army does not bob in and out of range.</summary>
+        private const float FallBackHold = 12f;
+
+        private bool _outmatched;
+
+        /// <summary>After holding back this long without catching up, the army commits anyway: an enemy
+        /// dug in on its objectives never comes out, and waiting forever loses on the clock.</summary>
+        private const float Patience = 40f;
+
+        private double _committedUntil = double.NegativeInfinity;
+        private double _outmatchedSince;
+        private float _theirStrength;
+        private Vector2 _fallBackPoint;
+
+        /// <summary>
+        /// Where to fall back to when outmatched, given the front (an objective we hold); null
+        /// falls back towards home.
+        /// </summary>
+        public Func<SimWorld, Vector2, Vector2?>? FallBackTo { get; set; }
+
+        /// <summary>Our strength over theirs around the front at the last decision (1 with nobody in sight).</summary>
+        public float StrengthRatio { get; private set; } = 1f;
+
+        /// <summary>The army is outmatched and holding a position behind the front until reinforcements arrive.</summary>
+        public bool HoldingBack => _outmatched;
 
         /// <summary>Visible enemy vehicles, refreshed every decision.</summary>
         public IReadOnlyList<Vehicle> KnownEnemies => _enemies;
@@ -108,17 +146,141 @@ namespace MachineBrigade.Sim.AI
             else if (chase) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
             contact = groundContact;
+            if (JudgeOdds(world, front, contact))
+            {
+                // Outmatched: break contact, gather behind the front and let them come to us. Idle
+                // vehicles still fight anything that walks into range; artillery keeps shelling.
+                PullBackDamaged(world, front, Direction(front, objective));
+                FocusBoss(world);
+                DirectArtillery(world, front, objective, Direction(front, objective), contact);
+                FallBack(world);
+                return;
+            }
             // A new objective: every fast vehicle may be sent round a flank again.
             if (Vector2.Distance(objective, _lastObjective) > 20f) _flanked.Clear();
             _lastObjective = objective;
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            SendToRearm(world);
+            DirectSupport(world, front, forward);
             FocusBoss(world);
             FocusDemolition(world);
             DirectArtillery(world, front, objective, forward, contact);
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
+        }
+
+        /// <summary>
+        /// Compares our strength near the front with the enemy's there and decides whether to
+        /// fall back. Holding a point (a leash) never falls back: that is the point of holding.
+        /// </summary>
+        private bool JudgeOdds(SimWorld world, Vector2 front, bool contact)
+        {
+            var ours = 0f;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Scripted) continue;
+                if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+            }
+            var theirs = 0f;
+            // Fixed defences do not count: they cannot chase, and the army picks the range to fight
+            // them at (artillery outranges every turret). The odds are about the mobile fight.
+            foreach (var e in _enemies)
+                if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
+            // Remember what we saw while falling back: out of sight is not the same as gone.
+            if (_outmatched) theirs = MathF.Max(theirs, _theirStrength * 0.9f);
+            _theirStrength = theirs;
+            StrengthRatio = theirs > 0.5f ? ours / theirs : 1f;
+
+            if (Leash != null)
+            {
+                _outmatched = false;
+                return false;
+            }
+            if (_outmatched)
+            {
+                var held = world.Time - _outmatchedSince > FallBackHold;
+                if (held && (StrengthRatio >= RecoveredRatio || theirs <= 0.5f)) _outmatched = false;
+                else if (world.Time - _outmatchedSince > Patience)
+                {
+                    _outmatched = false;
+                    _committedUntil = world.Time + 35.0;
+                }
+            }
+            else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
+            {
+                _outmatched = true;
+                _outmatchedSince = world.Time;
+                // Fall back to a point we hold, else towards home, far enough to break contact.
+                var home = world.TryGetRally(_team, out var rally) ? rally : front;
+                var back = Direction(front, home);
+                var distance = MathF.Min(30f, Vector2.Distance(front, home));
+                _fallBackPoint = Clamp(world, FallBackTo?.Invoke(world, front) ?? front + back * distance);
+            }
+            return _outmatched;
+        }
+
+        private readonly HashSet<EntityId> _rearmIds = new();
+
+        /// <summary>
+        /// Empty launchers drive to the nearest engineer (else home) to be restocked; the ones
+        /// that are full again rejoin their role at the next decision.
+        /// </summary>
+        private void SendToRearm(SimWorld world)
+        {
+            _rearmIds.Clear();
+            foreach (var v in _rearming)
+            {
+                _rearmIds.Add(v.Id);
+                Vector2? depot = null;
+                var best = 70f;
+                foreach (var e in world.VehicleList)
+                {
+                    if (!e.IsAlive || e.Team != _team || e.Def.RearmAura == null) continue;
+                    var d = Vector2.Distance(e.Position, v.Position);
+                    if (d >= best) continue;
+                    best = d;
+                    depot = e.Position;
+                }
+                if (depot == null && world.TryGetRally(_team, out var home)) depot = home;
+                if (depot == null || Vector2.Distance(v.Position, depot.Value) < 8f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, depot.Value) < 6f) continue;
+                Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
+            }
+        }
+
+        /// <summary>Engineers and jammers keep a little behind the middle of the army.</summary>
+        private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
+        {
+            var spot = Clamp(world, front - forward * 9f);
+            _ids.Clear();
+            foreach (var v in _support)
+            {
+                if (Vector2.Distance(v.Position, spot) < 10f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
+                _ids.Add(v.Id);
+            }
+            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, spot);
+        }
+
+        /// <summary>Everyone in the line drives (not attack-moves) back to the fall-back point and waits there.</summary>
+        private void FallBack(SimWorld world)
+        {
+            _ids.Clear();
+            CollectFallBack(_line);
+            CollectFallBack(_fast);
+            if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, _fallBackPoint);
+        }
+
+        private void CollectFallBack(List<Vehicle> vehicles)
+        {
+            foreach (var v in vehicles)
+            {
+                if (Vector2.Distance(v.Position, _fallBackPoint) < 12f) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, _fallBackPoint) < SameRendezvous) continue;
+                _ids.Add(v.Id);
+            }
         }
 
         private void Sort(SimWorld world)
@@ -127,6 +289,8 @@ namespace MachineBrigade.Sim.AI
             _fast.Clear();
             _artillery.Clear();
             _enemies.Clear();
+            _support.Clear();
+            _rearming.Clear();
             // Pulled-back vehicles rejoin once repaired (or rested a while); the dead are forgotten.
             _released.Clear();
             foreach (var (id, since) in _fallingBack)
@@ -147,8 +311,15 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || v.Scripted || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
-                if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
+                if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // An empty launcher goes to be restocked, and stays until it is full again.
+                if (!v.Flying && (v.OutOfAmmo || (_rearmIds.Contains(v.Id) && v.NeedsAmmo)))
+                {
+                    _rearming.Add(v);
+                    continue;
+                }
+                if (v.Def.RepairAura != null || v.Def.Jammer > 0f) _support.Add(v);
+                else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
             }

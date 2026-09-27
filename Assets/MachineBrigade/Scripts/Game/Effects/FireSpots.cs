@@ -6,18 +6,26 @@ using PB = MachineBrigade.Game.Effects.ParticleBuilder;
 namespace MachineBrigade.Game.Effects
 {
     /// <summary>
-    /// Everything that keeps burning: craters, rubble, fuel depots and wrecks. All fires emit into
-    /// three shared systems (flames, embers, smoke), so any number of them can burn at once and
-    /// none is ever cut short to make room for another. A fire flares up, burns, dies down, then
-    /// keeps smouldering smoke for a while before it is gone.
+    /// Everything that keeps burning: craters, rubble, fuel depots, wrecks and napalm. All fires
+    /// emit into a few shared systems (flames, smoke, embers, the glow they cast on the ground), so
+    /// any number of them can burn at once and none is ever cut short to make room for another.
+    /// Flames and smoke are flipbooks rendered from a fire simulation (<see cref="FxMaterials"/>):
+    /// a few overlapping looping flame billboards per fire, each on its own frame, under a column
+    /// of billowing black smoke. A fire flares up, burns, dies down, then keeps smouldering smoke
+    /// for a while before it is gone.
     /// </summary>
     internal sealed class FireSpots
     {
-        private const float FlameRate = 18f;
-        private const float SmokeRate = 5f;
+        private const float FlameRate = 2.4f;
+        private const float SmokeRate = 1.3f;
         private const float EmberRate = 4f;
+        private const float GlowRate = 2.2f;
         private const float FlareSeconds = 0.4f;
         private const float DieDownSeconds = 3f;
+        private const float JetInterval = 1f / 26f;
+
+        /// <summary>Where the base of the flames sits in a flame frame, as a pivot offset in particle sizes.</summary>
+        private const float FlamePivot = 0.33f;
 
         /// <summary>Hard cap on burning spots; far beyond what a battle reaches.</summary>
         private const int MaxFires = 160;
@@ -28,7 +36,7 @@ namespace MachineBrigade.Game.Effects
             public Transform Anchor;
             public Vector3 AnchorOffset;
             public float Size, Start, Until, SmokeUntil;
-            public float FlameDebt, SmokeDebt, EmberDebt;
+            public float FlameDebt, SmokeDebt, EmberDebt, GlowDebt;
             public int Id;
         }
 
@@ -38,27 +46,38 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _flames;
         private readonly ParticleSystem _embers;
         private readonly ParticleSystem _smoke;
+        private readonly ParticleSystem _glow;
 
         public FireSpots(MaterialLibrary m, Transform parent)
         {
+            var fx = FxMaterials.Shared;
             var root = new GameObject("Fires").transform;
             root.SetParent(parent, false);
 
-            _flames = Shared(root, "Flames", m.Fire, 4000);
-            PB.Colors(_flames, PB.FireGradient);
-            PB.Grow(_flames, 1f, 0.3f);
+            // Looping flame sheets standing on the fire's base; the sooty fringe takes this colour.
+            _flames = Shared(root, "Flames", fx.Flames, 2500);
+            PB.Flipbook(_flames, loop: true, tilt: 4f, pivotY: FlamePivot);
+            PB.Colors(_flames, PB.Hold(new Color(0.24f, 0.21f, 0.19f), new Color(0.2f, 0.18f, 0.17f), 0.15f, 0.62f));
+            PB.Grow(_flames, 0.92f, 1.06f);
 
-            _embers = Shared(root, "Embers", m.Sparks, 800);
+            _embers = Shared(root, "Embers", m.Sparks, 1200);
             PB.Colors(_embers, PB.Fade(new Color(1f, 0.8f, 0.4f), new Color(1f, 0.5f, 0.15f), new Color(0.6f, 0.15f, 0.05f)));
             var noise = _embers.noise;
             noise.enabled = true;
             noise.strength = 0.9f;
             noise.frequency = 0.5f;
 
-            _smoke = Shared(root, "Smoke", m.Smoke, 3000);
-            PB.Colors(_smoke, PB.Plume(0.14f, 0.45f, 0.34f));
-            PB.Grow(_smoke, 0.7f, 2.4f);
-            PB.Rise(_smoke, 1.8f, 2.8f);
+            // A column of black smoke billowing up and leaning off with the wind.
+            _smoke = Shared(root, "Smoke", fx.Smoke, 2500);
+            PB.Flipbook(_smoke, loop: false, tilt: 20f);
+            PB.Colors(_smoke, PB.Hold(new Color(0.09f, 0.085f, 0.08f), new Color(0.42f, 0.41f, 0.4f), 0.1f, 0.5f, 0.92f));
+            PB.Grow(_smoke, 0.6f, 2.5f);
+            PB.Rise(_smoke, 1.8f, 2.9f);
+
+            // Firelight flickering on the ground around each fire.
+            _glow = Shared(root, "Fire Glow", m.Fire, 800, ParticleSystemRenderMode.HorizontalBillboard);
+            PB.Colors(_glow, PB.Fade(new Color(1f, 0.5f, 0.15f), new Color(0.9f, 0.35f, 0.08f), new Color(0.6f, 0.15f, 0.03f), 0.32f));
+            PB.Grow(_glow, 0.9f, 1.05f);
         }
 
         public int Burning => _fires.Count;
@@ -90,6 +109,8 @@ namespace MachineBrigade.Game.Effects
                 Start = now,
                 Until = now + seconds,
                 SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f),
+                // Start part way through a flame, so a new fire shows at once.
+                FlameDebt = 0.8f,
                 Id = _nextId,
             });
             return _nextId++;
@@ -132,7 +153,7 @@ namespace MachineBrigade.Game.Effects
                 var intensity = Mathf.Sqrt(Mathf.Max(0.2f, f.Size));
                 if (Visible != null && !Visible(f.Position))
                 {
-                    f.FlameDebt = f.EmberDebt = f.SmokeDebt = 0f;
+                    f.FlameDebt = f.EmberDebt = f.SmokeDebt = f.GlowDebt = 0f;
                     _fires[i] = f;
                     continue;
                 }
@@ -140,10 +161,48 @@ namespace MachineBrigade.Game.Effects
                 f.FlameDebt += dt * FlameRate * intensity * flame;
                 f.EmberDebt += dt * EmberRate * intensity * flame * (f.Size >= 0.7f ? 1f : 0.3f);
                 f.SmokeDebt += dt * SmokeRate * intensity * smoke;
-                for (; f.FlameDebt >= 1f; f.FlameDebt -= 1f) EmitFlame(f);
+                f.GlowDebt += dt * GlowRate * flame;
+                for (; f.FlameDebt >= 1f; f.FlameDebt -= 1f) EmitFlame(f, flame);
                 for (; f.EmberDebt >= 1f; f.EmberDebt -= 1f) EmitEmber(f);
                 for (; f.SmokeDebt >= 1f; f.SmokeDebt -= 1f) EmitSmoke(f, smoke);
+                for (; f.GlowDebt >= 1f; f.GlowDebt -= 1f) EmitGlow(f);
                 _fires[i] = f;
+            }
+        }
+
+        /// <summary>
+        /// Ammunition cooking off inside a hull: a roaring fountain of flame out of the turret ring,
+        /// with sparks and smoke. Call every frame while it lasts; <paramref name="debt"/> carries
+        /// the emission between frames.
+        /// </summary>
+        public void Jet(Vector3 at, float strength, ref float debt, float dt)
+        {
+            if (Visible != null && !Visible(at)) return;
+            for (debt += dt; debt >= JetInterval; debt -= JetInterval)
+            {
+                var spread = Random.insideUnitCircle * 0.9f;
+                _flames.Emit(new ParticleSystem.EmitParams
+                {
+                    position = at + new Vector3(spread.x * 0.2f, 0f, spread.y * 0.2f),
+                    velocity = new Vector3(spread.x, Random.Range(7f, 12f) * strength, spread.y),
+                    startSize = Random.Range(1.3f, 2.1f) * strength,
+                    startLifetime = Random.Range(0.35f, 0.6f),
+                }, 1);
+                _embers.Emit(new ParticleSystem.EmitParams
+                {
+                    position = at,
+                    velocity = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(8f, 15f), Random.Range(-2.5f, 2.5f)),
+                    startSize = Random.Range(0.1f, 0.2f),
+                    startLifetime = Random.Range(0.8f, 1.6f),
+                }, 2);
+                if (Random.value < 0.35f)
+                    _smoke.Emit(new ParticleSystem.EmitParams
+                    {
+                        position = at + Vector3.up * 4f * strength,
+                        velocity = new Vector3(0f, Random.Range(2f, 3.5f), 0f),
+                        startSize = Random.Range(2f, 3f) * strength,
+                        startLifetime = Random.Range(3f, 4.5f),
+                    }, 1);
             }
         }
 
@@ -153,19 +212,18 @@ namespace MachineBrigade.Game.Effects
             _flames.Clear();
             _embers.Clear();
             _smoke.Clear();
+            _glow.Clear();
         }
 
-        private void EmitFlame(in Fire f)
+        private void EmitFlame(in Fire f, float strength)
         {
-            var disc = Random.insideUnitCircle * 0.9f * f.Size;
-            var lift = Mathf.Sqrt(f.Size);
+            var disc = Random.insideUnitCircle * 0.35f * f.Size;
             _flames.Emit(new ParticleSystem.EmitParams
             {
-                position = f.Position + new Vector3(disc.x, 0.1f, disc.y),
-                velocity = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(1.2f, 2.6f) * lift, Random.Range(-0.25f, 0.25f)),
-                startSize = Random.Range(0.9f, 1.8f) * f.Size,
-                startLifetime = Random.Range(0.5f, 1f),
-                rotation = Random.Range(0f, 360f),
+                position = f.Position + new Vector3(disc.x, 0.05f, disc.y),
+                velocity = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(0.1f, 0.35f), Random.Range(-0.1f, 0.1f)),
+                startSize = Random.Range(2.7f, 3.5f) * f.Size * Mathf.Lerp(0.75f, 1f, strength),
+                startLifetime = Random.Range(1.6f, 2.4f),
             }, 1);
         }
 
@@ -183,20 +241,31 @@ namespace MachineBrigade.Game.Effects
 
         private void EmitSmoke(in Fire f, float thickness)
         {
-            var disc = Random.insideUnitCircle * 0.6f * f.Size;
+            var disc = Random.insideUnitCircle * 0.5f * f.Size;
             _smoke.Emit(new ParticleSystem.EmitParams
             {
-                position = f.Position + new Vector3(disc.x, 1.1f * f.Size, disc.y),
-                velocity = new Vector3(0f, Random.Range(0.2f, 0.5f), 0f),
-                startSize = Random.Range(1f, 1.9f) * f.Size * Mathf.Lerp(0.7f, 1.2f, thickness),
-                startLifetime = Random.Range(2.6f, 4.2f),
+                position = f.Position + new Vector3(disc.x, 1.5f * f.Size, disc.y),
+                velocity = new Vector3(0f, Random.Range(0.3f, 0.7f), 0f),
+                startSize = Random.Range(2f, 3f) * f.Size * Mathf.Lerp(0.7f, 1.15f, thickness),
+                startLifetime = Random.Range(4.5f, 7f),
+            }, 1);
+        }
+
+        private void EmitGlow(in Fire f)
+        {
+            _glow.Emit(new ParticleSystem.EmitParams
+            {
+                position = new Vector3(f.Position.x, 0.08f, f.Position.z),
+                startSize = Random.Range(2.6f, 3.4f) * f.Size,
+                startLifetime = Random.Range(0.7f, 1f),
                 rotation = Random.Range(0f, 360f),
             }, 1);
         }
 
-        private static ParticleSystem Shared(Transform parent, string name, Material material, int max)
+        private static ParticleSystem Shared(Transform parent, string name, Material material, int max,
+            ParticleSystemRenderMode mode = ParticleSystemRenderMode.Billboard)
         {
-            var ps = PB.Create(parent, name, material);
+            var ps = PB.Create(parent, name, material, mode);
             var main = ps.main;
             main.loop = true;
             main.maxParticles = max;

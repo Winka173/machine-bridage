@@ -24,7 +24,18 @@ namespace MachineBrigade.Sim.Content
             _weapons = Index(weapons, w => w.Id, "weapon");
             _vehicles = Index(vehicles, v => v.Id, "vehicle");
             _props = Index(props, p => p.Id, "prop");
+            foreach (var v in _vehicles.Values)
+            {
+                if (v.EliteOf == null || !_vehicles.TryGetValue(v.EliteOf, out var original)) continue;
+                v.ArmyCost = original.CpCost;
+                _elites[v.EliteOf] = v.Id;
+            }
         }
+
+        private readonly Dictionary<string, string> _elites = new();
+
+        /// <summary>The elite version of a vehicle, if it has one.</summary>
+        public string? EliteVariant(string vehicleId) => _elites.TryGetValue(vehicleId, out var elite) ? elite : null;
 
         /// <summary>Balance version, recorded with results so tuning changes stay traceable.</summary>
         public int Version { get; }
@@ -44,6 +55,21 @@ namespace MachineBrigade.Sim.Content
         public PropDef Prop(string id) =>
             _props.TryGetValue(id, out var def) ? def : throw new KeyNotFoundException($"Unknown prop '{id}'.");
 
+        private static AuraDef ParseAura(JsonObject o) => new(o.Float("radius"), o.Float("rate"));
+
+        /// <summary>A sensible class for vehicles whose data does not name one.</summary>
+        private static UnitClass InferClass(VehicleDef def)
+        {
+            if (def.Boss) return UnitClass.Boss;
+            if (def.Static) return UnitClass.Defense;
+            if (def.Flying) return def.FixedWing ? UnitClass.Plane : UnitClass.Helicopter;
+            var weapon = def.Weapon;
+            if (weapon.MinRange > 0f) return UnitClass.Artillery;
+            if (!weapon.CanTarget(false) || weapon.DamageType == DamageType.Flak) return UnitClass.AntiAir;
+            if (def.Armor == ArmorClass.Heavy) return def.MaxHp >= 1400f ? UnitClass.Heavy : UnitClass.Tank;
+            return def.Speed >= 11f ? UnitClass.Scout : UnitClass.Light;
+        }
+
         /// <summary>Parses <c>balance.json</c>. Throws <see cref="FormatException"/> naming the bad field.</summary>
         public static Catalog FromJson(string json)
         {
@@ -59,9 +85,20 @@ namespace MachineBrigade.Sim.Content
                     w.Float("range"), w.Float("minRange", 0f), w.Float("projectileSpeed"), w.Float("splash", 0f),
                     w.Float("spread", 0f), w.Enum<ExplosionTier>("impactTier"),
                     w.Enum("projectile", ProjectileKind.Shell), w.Int("burst", 1), w.Float("burstInterval", 0.1f),
-                    w.Enum("targets", TargetLayers.Ground)));
+                    w.Enum("targets", TargetLayers.Ground)) { Ammo = w.Int("ammo", 0) });
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
+
+            var skills = new Dictionary<string, SkillDef>();
+            if (root.Has("skills"))
+                foreach (var k in root.Array("skills"))
+                {
+                    var skill = Wrap(k, () => new SkillDef(k.String("id"), k.Enum<SkillKind>("kind"),
+                        k.Enum("trigger", SkillTrigger.Always), k.Float("threshold", 0f), k.Float("cooldown", 0f),
+                        k.Float("duration", 0f), k.Float("amount", 0f), k.Float("radius", 0f), k.Int("count", 0),
+                        k.Has("unit") ? k.String("unit") : null, k.Bool("once", false)));
+                    if (!skills.TryAdd(skill.Id, skill)) throw new FormatException($"{k.Path}: duplicate skill '{skill.Id}'.");
+                }
 
             var vehicles = new List<VehicleDef>();
             foreach (var v in root.Array("vehicles"))
@@ -80,9 +117,32 @@ namespace MachineBrigade.Sim.Content
                         v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
                         v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion"), secondary,
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
-                        v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false));
+                        v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false), v.Bool("static", false));
                     if (v.Has("model")) def.Model = v.String("model");
                     def.Boss = v.Bool("boss", false);
+                    def.Elite = v.Bool("elite", false);
+                    def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
+                    def.ArmyCost = def.CpCost;
+                    if (v.Has("length")) def.Length = v.Float("length");
+                    if (v.Has("width")) def.Width = v.Float("width");
+                    def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
+                    if (v.Has("skills"))
+                    {
+                        var list = new List<SkillDef>();
+                        foreach (var id in v.StringArray("skills"))
+                            list.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{v.Path}.skills: unknown skill '{id}'."));
+                        def.Skills = list;
+                    }
+                    if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
+                    if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
+                    def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("mines"))
+                    {
+                        var m = v.Object("mines");
+                        def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
+                            new ExplosionDef(m.Float("damage"), m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
+                            m.Float("trigger", 2f));
+                    }
                     return def;
                 }));
             }
@@ -104,7 +164,12 @@ namespace MachineBrigade.Sim.Content
                         s.String("id"), s.Enum<SupportKind>("kind"), s.Int("cp", 0), s.Float("cooldown"), s.Float("delay", 1.5f),
                         s.Float("radius"), s.Int("count", 1), s.Float("duration", 0f), s.Float("damage", 0f),
                         s.Enum("damageType", DamageType.HighExplosive), s.Enum("tier", ExplosionTier.Large), s.Float("length", 0f),
-                        s.Float("blast", 0f))));
+                        s.Float("blast", 0f))
+                    {
+                        Consumable = s.Bool("consumable", false),
+                        EventOnly = s.Bool("event", false),
+                        Units = s.Has("units") ? s.StringArray("units") : Array.Empty<string>(),
+                    }));
                 }
             }
 

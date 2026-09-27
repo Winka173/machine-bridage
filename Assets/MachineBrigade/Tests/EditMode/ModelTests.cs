@@ -12,6 +12,7 @@ namespace MachineBrigade.Tests
             "scout_jeep", "light_tank", "main_battle_tank", "artillery", "apc", "mlrs", "aa_vehicle", "flame_tank",
             "armored_car", "tank_destroyer", "heavy_tank", "sam_launcher", "mortar_carrier", "rocket_technical",
             "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
+            "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher", "siege_mortar",
         };
 
         private static readonly string[] Others =
@@ -20,6 +21,17 @@ namespace MachineBrigade.Tests
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
             "gunship_heli", "scout_heli", "attack_jet", "strike_drone", "heavy_bomber", "stealth_bomber", "sky_gunship",
             "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
+            "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer", "elite_attack_helicopter", "elite_mlrs", "elite_aa", "elite_apc",
+            "ballistic_missile", "heavy_rocket", "mine", "fpv_drone", "supply_crate", "repair_crate",
+            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
+            "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli", "drone_mothership", "nuke_train", "icbm",
+            "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "artillery_emplacement", "guard_tower",
+            "command_hq", "base_wall", "base_gate", "floodlight_mast", "fuel_depot", "ammo_dump", "vehicle_hangar", "helipad",
+            "razor_wire", "sandbag_wall",
+            "basalt_rock_a", "basalt_rock_b", "basalt_rock_c", "obsidian_spire", "lava_vent", "charred_tree", "volcanic_cliff",
+            "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "bamboo_clump", "fern_bush", "temple_ruin", "stilt_hut",
+            "hangar", "control_tower", "parked_jet", "fuel_truck", "radar_dome", "revetment", "runway_light",
+            "highrise_a", "highrise_b", "skyscraper", "parking_garage", "billboard", "bus", "traffic_light",
         };
 
         private static readonly string[] Props =
@@ -90,7 +102,8 @@ namespace MachineBrigade.Tests
                 var tip = turret.InverseTransformPoint(muzzle.position);
                 Assert.Greater(tip.z, 0.2f, $"{id}'s weapon points backwards (z = {tip.z})");
                 // Guns recoil; launchers (the rocket pod) have no barrel.
-                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical" or "thermobaric_launcher") continue;
+                if (id is "mlrs" or "sam_launcher" or "mortar_carrier" or "rocket_technical" or "thermobaric_launcher" or "heavy_rocket_artillery"
+                    or "ballistic_launcher" or "siege_mortar") continue;
                 Assert.IsNotNull(FindPrefix(turret, "Main_cannon"), $"{id} needs a Main_cannon under its Turret");
             }
         }

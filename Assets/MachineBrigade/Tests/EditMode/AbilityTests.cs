@@ -1,0 +1,173 @@
+using System.Collections.Generic;
+using System.Numerics;
+using NUnit.Framework;
+using MachineBrigade.Game.Match;
+using MachineBrigade.Sim;
+using MachineBrigade.Sim.Commands;
+using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Entities;
+using MachineBrigade.Sim.Events;
+
+namespace MachineBrigade.Tests
+{
+    /// <summary>Ammunition, support auras, mines, jammers and the skills of elite units and bosses.</summary>
+    public class AbilityTests
+    {
+        /// <summary>An empty 160 m field with the shipped catalog; team 0 lives at (-60,-60).</summary>
+        private static SimWorld Field() =>
+            new SimWorld(GameContent.LoadCatalog(), new MapDefinition("field", 160f,
+                new[] { new TeamStart(0, new Vector2(-60f, -60f)), new TeamStart(1, new Vector2(60f, 60f)) },
+                new List<PropPlacement>(), new List<UnitPlacement>()));
+
+        private static void Run(SimWorld world, float seconds)
+        {
+            for (var t = 0f; t < seconds; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+            }
+        }
+
+        [Test]
+        public void LongRangeLauncherRunsDryThenFightsWithItsMachineGun()
+        {
+            var world = Field();
+            var launcher = world.SpawnVehicle("heavy_rocket_artillery", 0, new Vector2(0f, -40f), 0f);
+            var targets = new List<Vehicle>();
+            for (var i = 0; i < 6; i++) targets.Add(world.SpawnVehicle("heavy_tank", 1, new Vector2(i * 8f - 20f, 60f), 3.14f));
+            // A drone overhead spots for the launcher (team sight is shared).
+            world.SpawnVehicle("recon_drone", 0, new Vector2(0f, -15f), 0f);
+            Assert.AreEqual(3, launcher.Ammo(0), "starts with its salvos");
+            var mg = 0;
+            for (var t = 0f; t < 90f; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                foreach (var e in world.Events)
+                    if (e.Kind == SimEventKind.WeaponFired && e.Entity == launcher.Id && e.Mount == 1) mg++;
+                world.ClearEvents();
+                if (launcher.OutOfAmmo && mg == 0)
+                    world.SpawnVehicle("scout_jeep", 1, launcher.Position + new Vector2(0f, 18f), 3.14f);
+                if (launcher.OutOfAmmo && mg > 0) break;
+            }
+            Assert.IsTrue(launcher.OutOfAmmo, "three salvos and the rack is empty");
+            Assert.Greater(mg, 0, "the machine gun keeps fighting once the rockets are gone");
+        }
+
+        [Test]
+        public void VehiclesRearmAtHome()
+        {
+            var world = Field();
+            var mortar = world.SpawnVehicle("siege_mortar", 0, new Vector2(-58f, -58f), 0f);
+            mortar.Weapons[0].Ammo = 0;
+            Run(world, 12f);
+            Assert.Greater(mortar.Ammo(0), 2, "back at the rally point the mortar is restocked round by round");
+        }
+
+        [Test]
+        public void EngineerRepairsAndRearmsNearbyVehicles()
+        {
+            var world = Field();
+            var engineer = world.SpawnVehicle("engineer_vehicle", 0, new Vector2(0f, 0f), 0f);
+            var tank = world.SpawnVehicle("siege_tank", 0, new Vector2(8f, 0f), 0f);
+            tank.Hp = tank.MaxHp * 0.4f;
+            tank.Weapons[0].Ammo = 0;
+            Run(world, 10f);
+            Assert.Greater(tank.Hp, tank.MaxHp * 0.55f, "the engineer patches up the tank beside it");
+            Assert.Greater(tank.Ammo(0), 0, "and hands it fresh shells");
+        }
+
+        [Test]
+        public void MineLayerLaysMinesThatBlowUpEnemies()
+        {
+            var world = Field();
+            var layer = world.SpawnVehicle("mine_layer", 0, new Vector2(0f, -30f), 0f);
+            world.Submit(new Command(CommandType.Move, 0, new[] { layer.Id }, new Vector2(0f, 20f)));
+            Run(world, 14f);
+            Assert.GreaterOrEqual(world.Mines.Count, 2, "mines are dropped along the way");
+            var mine = world.Mines[0];
+            Assert.IsFalse(mine.IsVisibleTo(1), "the enemy cannot see a mine from afar");
+            var victim = world.SpawnVehicle("apc", 1, mine.Position + new Vector2(0f, 12f), 3.14f);
+            world.Submit(new Command(CommandType.Move, 1, new[] { victim.Id }, mine.Position - new Vector2(0f, 10f)));
+            var detonated = false;
+            for (var t = 0f; t < 8f && !detonated; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                foreach (var e in world.Events) detonated |= e.Kind == SimEventKind.MineDetonated;
+                world.ClearEvents();
+            }
+            Assert.IsTrue(detonated, "driving over a mine sets it off");
+            Assert.Less(victim.Hp, victim.MaxHp * 0.5f, "and wrecks a light vehicle");
+        }
+
+        [Test]
+        public void JammerMakesGuidedMissilesMiss()
+        {
+            int Hits(bool jammer)
+            {
+                var world = Field();
+                var target = world.SpawnVehicle("heavy_tank", 0, new Vector2(0f, 0f), 0f);
+                if (jammer) world.SpawnVehicle("ew_jammer", 0, new Vector2(0f, -10f), 0f);
+                world.SpawnVehicle("fpv_carrier", 1, new Vector2(0f, 30f), 3.14f);
+                var hits = 0;
+                for (var t = 0f; t < 30f; t += TestWorlds.Step)
+                {
+                    world.Step(TestWorlds.Step);
+                    foreach (var e in world.Events)
+                        if (e.Kind == SimEventKind.ProjectileImpact && e.Entity == target.Id && e.DefId == "fpv_swarm") hits++;
+                    world.ClearEvents();
+                }
+                return hits;
+            }
+            var clean = Hits(false);
+            var jammed = Hits(true);
+            Assert.Greater(clean, 2, "drones strike home without a jammer");
+            Assert.Less(jammed, clean / 2 + 1, "a jammer scrambles most of them");
+        }
+
+        [Test]
+        public void EliteShieldSoaksDamage()
+        {
+            var world = Field();
+            var elite = world.SpawnVehicle("elite_mbt", 1, new Vector2(0f, 20f), 3.14f);
+            for (var i = 0; i < 4; i++) world.SpawnVehicle("main_battle_tank", 0, new Vector2(i * 5f - 8f, 2f), 0f);
+            var shieldUsed = false;
+            for (var t = 0f; t < 20f && !shieldUsed; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                foreach (var e in world.Events) shieldUsed |= e.Kind == SimEventKind.SkillUsed && e.Skill == SkillKind.Shield;
+                world.ClearEvents();
+            }
+            Assert.IsTrue(shieldUsed, "an elite under fire raises its shield");
+            Assert.IsTrue(elite.ShieldUp);
+        }
+
+        [Test]
+        public void BossPhaseSummonsEscortsOnce()
+        {
+            var world = Field();
+            var boss = world.SpawnVehicle("behemoth", 1, new Vector2(0f, 30f), 3.14f);
+            boss.Hp = boss.MaxHp * 0.65f;
+            var before = world.CountAlive(1);
+            Run(world, 1f);
+            Assert.AreEqual(before + 2, world.CountAlive(1), "below 70% the behemoth calls in two elite tanks");
+            Run(world, 2f);
+            Assert.AreEqual(before + 2, world.CountAlive(1), "a phase fires once");
+        }
+
+        [Test]
+        public void EmpStunsEnemyVehicles()
+        {
+            var world = Field();
+            world.SpawnVehicle("elite_apc", 1, new Vector2(0f, 10f), 3.14f);
+            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
+            var stunned = false;
+            for (var t = 0f; t < 10f && !stunned; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                world.ClearEvents();
+                stunned |= tank.Stunned;
+            }
+            Assert.IsTrue(stunned, "the elite carrier's EMP knocks out a tank beside it");
+        }
+    }
+}

@@ -87,6 +87,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds before the mission is lost (0: no limit).</summary>
         public float TimeLimit { get; set; }
 
+        /// <summary>
+        /// Intercept: once the boss reaches the end of its route it prepares to launch, and the
+        /// mission is lost after this many seconds (0: lost the moment it arrives).
+        /// </summary>
+        public float LaunchSeconds { get; set; }
+
         public ScriptedUnitDef? Boss { get; set; }
 
         /// <summary>Convoy trucks, spawned one after another along the route.</summary>
@@ -123,6 +129,12 @@ namespace MachineBrigade.Sim.Content
         public int RewardXp { get; set; } = 150;
         public IReadOnlyList<string> Unlocks { get; set; } = Array.Empty<string>();
 
+        /// <summary>Hints shown during the mission: (seconds in, localisation key). The tutorial talks the player through.</summary>
+        public IReadOnlyList<(float at, string key)> Tips { get; set; } = Array.Empty<(float, string)>();
+
+        /// <summary>An optional mission (the tutorial): the next one does not wait for it.</summary>
+        public bool Optional { get; set; }
+
         /// <summary>Second star: won within this many seconds (0: always).</summary>
         public float StarTime { get; set; }
 
@@ -154,6 +166,7 @@ namespace MachineBrigade.Sim.Content
                 TimeLimit = m.Float("timeLimit", 0f),
                 ConvoyCount = m.Int("convoyCount", 4),
                 ConvoyNeeded = m.Int("convoyNeeded", 2),
+                LaunchSeconds = m.Float("launchSeconds", 0f),
                 EnemyAi = m.Has("enemyAi") ? m.String("enemyAi") : "commander",
                 EnemyStance = m.Has("enemyStance") ? m.String("enemyStance") : "Attack",
                 Difficulty = m.Has("difficulty") ? m.String("difficulty") : "Normal",
@@ -167,6 +180,8 @@ namespace MachineBrigade.Sim.Content
                 RewardCoins = m.Int("coins", 200),
                 RewardXp = m.Int("xp", 150),
                 Unlocks = Strings(m, "unlocks"),
+                Tips = ParseTips(m),
+                Optional = m.Bool("optional", false),
                 StarTime = m.Float("starTime", 0f),
                 StarLosses = m.Int("starLosses", -1),
             };
@@ -205,6 +220,14 @@ namespace MachineBrigade.Sim.Content
             Heading = SimMath.DegToRad(o.Float("heading", 0f)),
             Route = o.Has("route") ? Points2(o.FloatArray("route")) : Array.Empty<Vector2>(),
         };
+
+        private static IReadOnlyList<(float, string)> ParseTips(JsonObject m)
+        {
+            if (!m.Has("tips")) return Array.Empty<(float, string)>();
+            var tips = new List<(float, string)>();
+            foreach (var t in m.Array("tips")) tips.Add((t.Float("at"), t.String("key")));
+            return tips;
+        }
 
         private static IReadOnlyList<string> Strings(JsonObject o, string key)
         {

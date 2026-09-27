@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -19,6 +20,18 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Restores health to friendly vehicles in a circle over a few seconds.</summary>
         Repair,
+
+        /// <summary>Knocks out enemy ground vehicles in the circle for Duration seconds.</summary>
+        Emp,
+
+        /// <summary>Friendly vehicles in the circle take Damage (0-1) less damage for Duration seconds.</summary>
+        ShieldDome,
+
+        /// <summary>Units are dropped on the point.</summary>
+        Reinforce,
+
+        /// <summary>An aircraft (Units) joins the fight for Duration seconds, then leaves.</summary>
+        Escort,
     }
 
     /// <summary>
@@ -79,6 +92,15 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Whether the call needs a direction as well as a point.</summary>
         public bool IsLine => Kind == SupportKind.Airstrike;
+
+        /// <summary>A single-use item bought with coins: it costs no CP and is not in the deck.</summary>
+        public bool Consumable { get; internal set; }
+
+        /// <summary>Only battle events call it (a neutral bomber raid); never a card.</summary>
+        public bool EventOnly { get; internal set; }
+
+        /// <summary>Vehicles dropped (Reinforce) or flown in (Escort).</summary>
+        public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
     }
 
     /// <summary>An objective circle from the map (Conquest).</summary>

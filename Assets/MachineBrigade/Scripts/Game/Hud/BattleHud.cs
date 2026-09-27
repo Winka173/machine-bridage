@@ -70,6 +70,7 @@ namespace MachineBrigade.Game.Hud
         {
             var mode = spec.Mode;
             Mode = mode;
+            Catalog = catalog;
             if (EventSystem.current == null)
                 _eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
 
@@ -89,6 +90,8 @@ namespace MachineBrigade.Game.Hud
             if (Match.DebugFlags.Has("-mb-no-hud")) _root.style.display = DisplayStyle.None;
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             _root.pickingMode = PickingMode.Ignore;
+            // Colour-blind safe teams re-tint every ally and enemy colour in the styles.
+            _root.EnableInClassList("cb", Match.MatchSettings.ColorBlind);
 
             var hud = UiKit.Box("hud");
             _root.Add(hud);
@@ -211,6 +214,8 @@ namespace MachineBrigade.Game.Hud
             detailsText.Add(track);
             _hpText = UiKit.Text("", "hp-text");
             detailsText.Add(_hpText);
+            _counterText = UiKit.Text("", "counter-text");
+            detailsText.Add(_counterText);
             details.Add(detailsText);
             commandBody.Add(details);
 
@@ -478,6 +483,7 @@ namespace MachineBrigade.Game.Hud
                 _hpFill.style.width = Length.Percent(0f);
                 _portraitIcon.Name = "tank";
                 _portraitIcon.Tint = new Color(UiKit.Mint.r, UiKit.Mint.g, UiKit.Mint.b, 0.35f);
+                _counterText.text = "";
                 return;
             }
 
@@ -492,7 +498,30 @@ namespace MachineBrigade.Game.Hud
             _hpFill.EnableInClassList("hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("critical", health < 0.3f);
             _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
+            // What this unit is for: who it beats and who beats it.
+            _counterText.text = summary.DefId != null && Catalog != null && Catalog.Vehicles.TryGetValue(summary.DefId, out var def)
+                ? MachineBrigade.Game.Match.Counters.Line(def) : "";
         }
+
+        private Label _counterText;
+        private ItemBar _items;
+
+        /// <summary>An item button was tapped (index into the list given to <see cref="SetupItems"/>).</summary>
+        public event Action<int> ItemPressed;
+
+        /// <summary>Builds the item strip for the items the player brought into this match.</summary>
+        public void SetupItems(IReadOnlyList<string> items)
+        {
+            if (_items != null || items.Count == 0 || _safe == null) return;
+            _items = new ItemBar(items);
+            _items.Pressed += i => ItemPressed?.Invoke(i);
+            _safe.Add(_items.Root);
+        }
+
+        public void SetItems(IReadOnlyList<ItemState> states) => _items?.Update(states);
+
+        /// <summary>The loaded catalog, for card and unit details.</summary>
+        private Catalog Catalog { get; }
 
         public void SetModes(bool attackMoveArmed, bool boxMode)
         {

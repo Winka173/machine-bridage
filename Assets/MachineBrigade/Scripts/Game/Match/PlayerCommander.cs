@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Hud;
@@ -22,6 +23,9 @@ namespace MachineBrigade.Game.Match
         private readonly List<CardInfo> _cards;
         private readonly CardState[] _states;
         private int _armed = -1;
+        private int _armedItem = -1;
+        private readonly List<string> _items = new();
+        private ItemState[] _itemStates = Array.Empty<ItemState>();
 
         public PlayerCommander(SimWorld world, BattleHud hud, RtsCamera camera, int team, List<CardInfo> cards)
         {
@@ -33,10 +37,20 @@ namespace MachineBrigade.Game.Match
             _states = new CardState[cards.Count];
             hud.CardPressed += OnCard;
             hud.TargetCancelled += Disarm;
+            // Items the player brought (bought with coins): a strip of their own under the minimap.
+            if (world.TryGetEconomy(team, out var economy))
+                foreach (var id in Progression.Items)
+                    if (economy.ItemCount(id) > 0) _items.Add(id);
+            if (_items.Count > 0)
+            {
+                _itemStates = new ItemState[_items.Count];
+                hud.SetupItems(_items);
+                hud.ItemPressed += OnItem;
+            }
         }
 
-        /// <summary>Id of the support waiting for a target, or null.</summary>
-        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : null;
+        /// <summary>Id of the support (or item) waiting for a target, or null.</summary>
+        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : null;
 
         /// <summary>Builds the card list for a deck, reading costs from the catalog.</summary>
         public static List<CardInfo> Cards(SimWorld world, IEnumerable<string> vehicles, IEnumerable<string> supports)
@@ -52,12 +66,12 @@ namespace MachineBrigade.Game.Match
         /// <summary>Tap interceptor: while a strike is armed, the tap chooses its target.</summary>
         public bool TryTap(Vector2 screen)
         {
-            if (_armed < 0) return false;
+            if (_armed < 0 && _armedItem < 0) return false;
             if (!_camera.TryGroundPoint(screen, out var ground)) return true;
-            var card = _cards[_armed];
+            var id = ArmedSupport;
             var point = new SimVector2(ground.x, ground.z);
             var towards = point;
-            if (_world.Catalog.TryGetSupport(card.Id, out var support) && support.IsLine && _world.TryGetRally(_team, out var home))
+            if (_world.Catalog.TryGetSupport(id, out var support) && support.IsLine && _world.TryGetRally(_team, out var home))
             {
                 // Bombers run in from our side of the map, centred on the tap.
                 var along = point - home;
@@ -65,7 +79,7 @@ namespace MachineBrigade.Game.Match
                 point -= along * (support.Length * 0.5f);
                 towards = point + along;
             }
-            var result = _world.Submit(Command.Strike(_team, card.Id, point, towards));
+            var result = _world.Submit(Command.Strike(_team, id, point, towards));
             if (!result.Accepted) _hud.ShowError(result.Error);
             else Disarm();
             return true;
@@ -92,6 +106,36 @@ namespace MachineBrigade.Game.Match
                 }
             }
             _hud.SetDeck(economy.Cp, economy.Bank, economy.ArmyCp, economy.ArmyCap, _states);
+            if (_items.Count == 0) return;
+            if (_armedItem >= 0 && (economy.ItemCount(_items[_armedItem]) <= 0 || economy.CooldownLeft(_items[_armedItem], _world.Time) > 0f)) Disarm();
+            for (var i = 0; i < _items.Count; i++)
+            {
+                var cooldown = 0f;
+                if (_world.Catalog.TryGetSupport(_items[i], out var s) && s.Cooldown > 0f)
+                    cooldown = economy.CooldownLeft(_items[i], _world.Time) / s.Cooldown;
+                _itemStates[i] = new ItemState(economy.ItemCount(_items[i]), cooldown, i == _armedItem);
+            }
+            _hud.SetItems(_itemStates);
+        }
+
+        private void OnItem(int index)
+        {
+            if (_armedItem == index)
+            {
+                Disarm();
+                return;
+            }
+            if (!_world.TryGetEconomy(_team, out var economy)) return;
+            var id = _items[index];
+            if (economy.ItemCount(id) <= 0) return;
+            if (economy.CooldownLeft(id, _world.Time) > 0f)
+            {
+                _hud.ShowError(CommandError.OnCooldown);
+                return;
+            }
+            _armed = -1;
+            _armedItem = index;
+            _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(id)));
         }
 
         private void OnCard(int index)
@@ -122,12 +166,14 @@ namespace MachineBrigade.Game.Match
                 return;
             }
             _armed = index;
+            _armedItem = -1;
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(card.Id)));
         }
 
         public void Disarm()
         {
             _armed = -1;
+            _armedItem = -1;
             _hud.SetTargeting(null);
         }
     }

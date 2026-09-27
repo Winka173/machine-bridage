@@ -16,6 +16,12 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A campaign mission (<see cref="MatchSettings.Mission"/>).</summary>
         Campaign,
+
+        /// <summary>Break into an enemy fortress and level its command HQ.</summary>
+        Siege,
+
+        /// <summary>The bosses one after another.</summary>
+        BossRush,
     }
 
     public enum WeatherKind
@@ -92,6 +98,9 @@ namespace MachineBrigade.Game.Match
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
             "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber", "sky_gunship",
+            "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher", "siege_mortar",
+            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
+            "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
         };
 
         public static readonly string[] AllSupports =
@@ -137,6 +146,16 @@ namespace MachineBrigade.Game.Match
                 new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Fog, WeatherKind.Night }),
             new("rustyard", "harbor", "anchor",
                 new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night }),
+            // Lava glows best in the dark: night comes up as often as a clear day.
+            new("emberridge", "volcanic", "flame",
+                new[] { WeatherKind.Night, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Storm }),
+            new("junglepass", "jungle", "pine",
+                new[] { WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm, WeatherKind.Overcast, WeatherKind.Night }),
+            new("skyhold", "temperate", "jet",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night }),
+            // A city at night: lit windows, street lamps and burning buses.
+            new("metrocity", "urban", "home",
+                new[] { WeatherKind.Night, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Storm }),
         };
 
         public static string Map { get; set; } = "ashfield";
@@ -188,6 +207,15 @@ namespace MachineBrigade.Game.Match
         public static int ScreenShake { get; set; } = 2;
 
         public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
+
+        /// <summary>Short vibrations on the heaviest moments.</summary>
+        public static bool Haptics { get; set; } = true;
+
+        /// <summary>Blue against orange instead of green against red, for red-green colour blindness.</summary>
+        public static bool ColorBlind { get; set; }
+
+        /// <summary>The player's doctrine for the next battle (see <c>Doctrine</c>).</summary>
+        public static string Doctrine { get; set; } = "armor";
 
         /// <summary>Slow motion and letterbox for a second on the biggest blasts.</summary>
         public static bool CinematicMoments { get; set; } = true;
@@ -246,6 +274,10 @@ namespace MachineBrigade.Game.Match
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
+                Doctrine = PlayerPrefs.GetString("mb.doctrine", "armor");
+                Haptics = PlayerPrefs.GetInt("mb.haptics", 1) == 1;
+                ColorBlind = PlayerPrefs.GetInt("mb.colorblind", 0) == 1;
+                MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
                 BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
@@ -281,6 +313,10 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
+                PlayerPrefs.SetString("mb.doctrine", Doctrine);
+                PlayerPrefs.SetInt("mb.haptics", Haptics ? 1 : 0);
+                PlayerPrefs.SetInt("mb.colorblind", ColorBlind ? 1 : 0);
+                MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 PlayerPrefs.SetInt("mb.uiSize", UiSize);
                 PlayerPrefs.SetInt("mb.battery", BatterySaver);
                 PlayerPrefs.SetInt("mb.brightness", Brightness);

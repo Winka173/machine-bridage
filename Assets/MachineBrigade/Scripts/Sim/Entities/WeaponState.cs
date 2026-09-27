@@ -7,6 +7,9 @@ namespace MachineBrigade.Sim.Entities
     internal sealed class WeaponState
     {
         public float Cooldown;
+
+        /// <summary>Rounds left, or -1 for a weapon with unlimited ammunition.</summary>
+        public int Ammo = -1;
         public EntityId Target;
 
         /// <summary>World heading of a free mount (pintle gun, chin turret), in radians.</summary>

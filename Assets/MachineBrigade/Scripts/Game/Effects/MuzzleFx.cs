@@ -47,7 +47,7 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Length of a flame tongue, in widths.</summary>
         private const float FlameLength = 4.2f;
 
-        private readonly ParticleSystem _core, _tongue, _sparks, _smoke, _dust;
+        private readonly ParticleSystem _core, _tongue, _sparks, _smoke, _dust, _fireball;
         private readonly List<Pending> _pending = new();
 
         public MuzzleFx(MaterialLibrary m, Transform parent)
@@ -80,6 +80,13 @@ namespace MachineBrigade.Game.Effects
             PB.Grow(_smoke, 0.8f, 2.5f);
             Brake(_smoke, 0.14f);
             PB.Rise(_smoke, 0.3f, 0.8f);
+
+            // Big guns belch a ball of fire that rolls into smoke: the first half of the explosion flipbook.
+            _fireball = Shared(root, "Muzzle Fireball", FxMaterials.Shared.Blast, 300);
+            PB.Flipbook(_fireball, loop: false, to: 0.5f, tilt: 20f, pivotY: 0.12f);
+            PB.Colors(_fireball, PB.Hold(new Color(0.55f, 0.53f, 0.5f), new Color(0.6f, 0.58f, 0.56f), 0.02f, 0.6f));
+            PB.Grow(_fireball, 0.7f, 1.25f);
+            Brake(_fireball, 0.2f);
 
             _dust = Shared(root, "Muzzle Dust", m.Smoke, 700);
             PB.Colors(_dust, PB.Fade(new Color(0.6f, 0.54f, 0.42f), new Color(0.56f, 0.51f, 0.4f), new Color(0.52f, 0.48f, 0.4f), 0.5f));
@@ -167,6 +174,15 @@ namespace MachineBrigade.Game.Effects
             Tongue(from, side, 1, 0.65f * s, 0.1f);
             Tongue(from, -side, 1, 0.65f * s, 0.1f);
             Sparks(from, dir, artillery ? 12 : 8, 6f, 15f, s);
+            // Upright (the sheet's own tilt), unlike the round puffs, which spin freely.
+            _fireball.Emit(new ParticleSystem.EmitParams
+            {
+                position = from + dir * (0.9f * s),
+                velocity = dir * (6f * s),
+                startSize = Random.Range(2.4f, 3f) * s,
+                startLifetime = Random.Range(0.4f, 0.55f),
+                applyShapeToPosition = false,
+            }, 1);
             // A thick puff straight ahead and a ring blown out of the brake.
             Puffs(from, dir, artillery ? 12 : 9, new Vector2(3f, 9f), new Vector2(1.1f, 1.8f), new Vector2(2f, 3.2f) * (artillery ? 1.4f : 1f), s);
             Puffs(from, side, 2, new Vector2(2f, 5f), new Vector2(0.8f, 1.2f), new Vector2(1.4f, 2.4f), s);

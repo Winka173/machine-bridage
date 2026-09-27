@@ -22,6 +22,11 @@ namespace MachineBrigade.Game.Match
             public string skin = Skins.Default;
             public List<string> missionIds = new();
             public List<int> missionStars = new();
+            public List<string> itemIds = new();
+            public int dailyDay;
+            public List<int> dailyProgress = new();
+            public List<bool> dailyClaimed = new();
+            public List<int> itemCounts = new();
         }
 
         private const string Key = "mb.profile";
@@ -64,6 +69,73 @@ namespace MachineBrigade.Game.Match
         }
 
         public static bool Completed(string missionId) => Stars(missionId) > 0;
+
+        private static void DailyReset(int day)
+        {
+            if (D.dailyDay == day && D.dailyProgress.Count == 3 && D.dailyClaimed.Count == 3) return;
+            D.dailyDay = day;
+            D.dailyProgress = new List<int> { 0, 0, 0 };
+            D.dailyClaimed = new List<bool> { false, false, false };
+        }
+
+        public static int DailyProgress(int day, int index)
+        {
+            DailyReset(day);
+            return D.dailyProgress[index];
+        }
+
+        public static bool DailyClaimed(int day, int index)
+        {
+            DailyReset(day);
+            return D.dailyClaimed[index];
+        }
+
+        public static void AddDailyProgress(int day, int index, int amount, int cap)
+        {
+            DailyReset(day);
+            var next = Mathf.Min(cap, D.dailyProgress[index] + amount);
+            if (next == D.dailyProgress[index]) return;
+            D.dailyProgress[index] = next;
+            Save();
+        }
+
+        public static void ClaimDaily(int day, int index)
+        {
+            DailyReset(day);
+            D.dailyClaimed[index] = true;
+            Save();
+        }
+
+        /// <summary>How many of a single-use item (MOAB, EMP...) the player has.</summary>
+        public static int ItemCount(string itemId)
+        {
+            var i = D.itemIds.IndexOf(itemId);
+            return i >= 0 ? D.itemCounts[i] : 0;
+        }
+
+        public static void AddItems(string itemId, int count)
+        {
+            var i = D.itemIds.IndexOf(itemId);
+            if (i < 0)
+            {
+                D.itemIds.Add(itemId);
+                D.itemCounts.Add(0);
+                i = D.itemIds.Count - 1;
+            }
+            D.itemCounts[i] = Mathf.Max(0, D.itemCounts[i] + count);
+            Save();
+        }
+
+        /// <summary>Buys <paramref name="count"/> of an item for coins.</summary>
+        public static bool TryBuyItems(string itemId, int count, int price)
+        {
+            if (!TrySpend(price)) return false;
+            AddItems(itemId, count);
+            return true;
+        }
+
+        /// <summary>One item was used in battle.</summary>
+        public static void UseItem(string itemId) => AddItems(itemId, -1);
 
         public static int TotalStars
         {
@@ -162,6 +234,7 @@ namespace MachineBrigade.Game.Match
             }
             if (!Skins.Exists(_data.skin)) _data.skin = Skins.Default;
             while (_data.missionStars.Count < _data.missionIds.Count) _data.missionStars.Add(0);
+            while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
         }
 
         public static void Save()

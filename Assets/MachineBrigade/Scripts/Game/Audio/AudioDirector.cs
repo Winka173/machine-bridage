@@ -87,10 +87,23 @@ namespace MachineBrigade.Game.Audio
             _rain.loop = true;
             _rain.volume = 0f;
             _thunder = Make(i => SoundSynth.Thunder(40 + i), 2);
+            _drums = NewSource("War Drums");
+            _drums.clip = Own(SoundSynth.WarDrums(21));
+            _drums.loop = true;
+            _drums.volume = 0f;
             _ui = NewSource("UI");
             _ui.clip = Own(SoundSynth.Click());
             // Menu clicks still sound while the game (and every other source) is paused.
             _ui.ignoreListenerPause = true;
+        }
+
+        private readonly AudioSource _drums;
+        private float _drumsTarget;
+
+        /// <summary>War drums while a boss is on the field; they fade in and out.</summary>
+        public bool BossMusic
+        {
+            set => _drumsTarget = value ? 0.5f : 0f;
         }
 
         /// <summary>Extra wind for rain and storms.</summary>
@@ -160,6 +173,12 @@ namespace MachineBrigade.Game.Audio
         /// <summary>Per frame: helicopter rotors get louder as aircraft come near the view.</summary>
         public void Tick(ViewRegistry views)
         {
+            if (!Mathf.Approximately(_drums.volume, _drumsTarget))
+            {
+                _drums.volume = Mathf.MoveTowards(_drums.volume, _drumsTarget, Time.unscaledDeltaTime * 0.25f);
+                if (_drums.volume > 0f && !_drums.isPlaying) _drums.Play();
+                if (_drums.volume <= 0f && _drums.isPlaying) _drums.Stop();
+            }
             // Helicopters drive the rotor loop, aeroplanes the jet loop.
             var nearest = float.MaxValue;
             var nearestJet = float.MaxValue;
@@ -204,6 +223,7 @@ namespace MachineBrigade.Game.Audio
             {
                 case ProjectileKind.Missile:
                 case ProjectileKind.Rocket:
+                case ProjectileKind.Drone:
                     return Sound.Launch;
                 case ProjectileKind.Flame:
                     return Sound.Flame;

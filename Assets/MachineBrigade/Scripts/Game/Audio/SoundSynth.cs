@@ -210,6 +210,58 @@ namespace MachineBrigade.Game.Audio
         }
 
         /// <summary>Incoming-strike alarm: two short falling tones.</summary>
+        /// <summary>
+        /// A seamless 9.6 s war-drum loop at 100 bpm for boss fights: a deep kick on every beat,
+        /// taiko toms answering, a low droning bass that swells each bar, and a metal clang every
+        /// second bar.
+        /// </summary>
+        public static AudioClip WarDrums(int seed)
+        {
+            var rng = new Random(seed);
+            const float beat = 0.6f;
+            var length = beat * 16f;
+            var data = new float[(int)(Rate * length)];
+            for (var b = 0; b < 16; b++)
+            {
+                var start = (int)(Rate * b * beat);
+                // Kick: a sine that drops from 90 to 42 Hz.
+                for (var i = 0; start + i < data.Length && i < Rate * 0.5f; i++)
+                {
+                    var t = i / (float)Rate;
+                    var freq = 42f + 48f * Mathf.Exp(-t * 18f);
+                    data[start + i] += Mathf.Sin(2f * Mathf.PI * freq * t) * Env(t, 0.002f, 0.16f) * 0.9f;
+                }
+                // Toms on the off-beats, higher on the last beat of each bar.
+                var tomAt = start + (int)(Rate * beat * 0.5f);
+                var tomFreq = b % 4 == 3 ? 150f : 110f;
+                for (var i = 0; tomAt + i < data.Length && i < Rate * 0.35f; i++)
+                {
+                    var t = i / (float)Rate;
+                    data[tomAt + i] += (Mathf.Sin(2f * Mathf.PI * tomFreq * t * (1f - t * 0.3f)) + Noise(rng) * 0.25f) *
+                                       Env(t, 0.003f, 0.09f) * 0.45f;
+                }
+                // A metal clang every second bar.
+                if (b % 8 == 0)
+                    for (var i = 0; start + i < data.Length && i < Rate * 0.9f; i++)
+                    {
+                        var t = i / (float)Rate;
+                        data[start + i] += (Mathf.Sin(2f * Mathf.PI * 587f * t) + 0.6f * Mathf.Sin(2f * Mathf.PI * 911f * t) +
+                                            0.4f * Mathf.Sin(2f * Mathf.PI * 1433f * t)) * Env(t, 0.001f, 0.35f) * 0.18f;
+                    }
+            }
+            // Droning bass under it all, swelling with each bar and fading to zero at the loop point.
+            var low = new OnePole(0.03f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var bar = t / (beat * 4f) % 1f;
+                var swell = 0.35f + 0.65f * Mathf.Sin(bar * Mathf.PI);
+                var saw = 2f * (55f * t % 1f) - 1f;
+                data[i] += low.Next(saw) * swell * 0.55f;
+            }
+            return Finish("war_drums", data, 0.6f);
+        }
+
         public static AudioClip Warning()
         {
             var data = new float[(int)(Rate * 0.7f)];

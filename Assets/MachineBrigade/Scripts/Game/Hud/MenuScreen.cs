@@ -53,6 +53,30 @@ namespace MachineBrigade.Game.Hud
             banner.Add(_campaignBannerNext);
             content.Add(banner);
 
+            // Today's three challenges, paying coins when claimed.
+            var daily = UiKit.Box("daily");
+            daily.Add(UiKit.Text(Strings.Get("daily.title"), "menu-caps"));
+            for (var i = 0; i < 3; i++)
+            {
+                var index = i;
+                var row = UiKit.Box("daily-row");
+                var text = UiKit.Text("", "daily-text");
+                var progress = UiKit.Text("", "daily-progress");
+                var claim = UiKit.Button("daily-claim", () =>
+                {
+                    if (DailyMissions.Claim(index)) Refresh();
+                });
+                claim.Add(UiKit.Icon("coin", UiKit.Ink, 1.6f));
+                var reward = UiKit.Text("", "daily-reward");
+                claim.Add(reward);
+                row.Add(text);
+                row.Add(progress);
+                row.Add(claim);
+                daily.Add(row);
+                _dailyRows.Add((text, progress, claim, reward));
+            }
+            content.Add(daily);
+
             content.Add(Section(1, "menu.quick"));
             var modes = UiKit.Box("menu-modes grid-modes");
             var modeList = new[]
@@ -62,6 +86,8 @@ namespace MachineBrigade.Game.Hud
                 (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
                 (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
                 (GameModeKind.Survival, "shield", "mode.survival", "mode.survivalSub"),
+                (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
+                (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
             };
             foreach (var (kind, icon, name, sub) in modeList)
                 modes.Add(Choice(UiKit.WideButton("mode-card", icon, Strings.Get(name), Strings.Get(sub), () => Set(() => MatchSettings.Mode = kind)),
@@ -123,6 +149,29 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(_deckTitle);
             _deckNote = UiKit.Text(Strings.Get("deck.hint"), "menu-note");
             deckBody.Add(_deckNote);
+            // Doctrine for the next battle: owned ones can be picked, the rest say where to buy them.
+            deckBody.Add(UiKit.Text(Strings.Get("doctrine.title"), "menu-caps"));
+            var doctrines = UiKit.Box("segments doctrine-row");
+            var allDoctrines = MachineBrigade.Sim.Content.Doctrine.All;
+            for (var i = 0; i < allDoctrines.Count; i++)
+            {
+                var id = allDoctrines[i].Id;
+                doctrines.Add(Choice(Segment(DoctrineIcon(id), Strings.Get("doctrine." + id), () =>
+                {
+                    if (!Progression.DoctrineOwned(id))
+                    {
+                        _deckNote.text = Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Progression.DoctrinePrice.ToString("N0"));
+                        _deckNote.AddToClassList("warn");
+                        return;
+                    }
+                    MatchSettings.Doctrine = id;
+                    MatchSettings.Save();
+                    _deckNote.RemoveFromClassList("warn");
+                    _deckNote.text = Strings.Get("doctrine." + id + ".info");
+                    Refresh();
+                }, i == allDoctrines.Count - 1), () => MatchSettings.Doctrine == id));
+            }
+            deckBody.Add(doctrines);
             var grid = UiKit.Box("deck-grid");
             foreach (var id in MatchSettings.AllVehicles) grid.Add(DeckCard(id, support: false));
             foreach (var id in MatchSettings.AllSupports) grid.Add(DeckCard(id, support: true));
@@ -195,6 +244,10 @@ namespace MachineBrigade.Game.Hud
             settingsBody.Add(OptionRow("move", "settings.shake",
                 new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                 () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            settingsBody.Add(OptionRow("bolt", "settings.haptics", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
+                () => MatchSettings.Haptics ? 1 : 0, i => MatchSettings.Haptics = i == 1));
+            settingsBody.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
+                () => MatchSettings.ColorBlind ? 1 : 0, i => MatchSettings.ColorBlind = i == 1));
             settingsBody.Add(OptionRow("camera", "settings.cinematic", new[] { Strings.Get("settings.off"), Strings.Get("settings.on") },
                 () => MatchSettings.CinematicMoments ? 1 : 0, i => MatchSettings.CinematicMoments = i == 1));
             settingsBody.Add(OptionRow("camera", "settings.camera",
@@ -286,8 +339,25 @@ namespace MachineBrigade.Game.Hud
             Refresh();
         }
 
+        private readonly List<(Label text, Label progress, VisualElement claim, Label reward)> _dailyRows = new();
+
+        private void RefreshDaily()
+        {
+            var tasks = DailyMissions.Current;
+            for (var i = 0; i < _dailyRows.Count && i < tasks.Count; i++)
+            {
+                var (text, progress, claim, reward) = _dailyRows[i];
+                text.text = Strings.Format("daily." + tasks[i].Kind, tasks[i].Target);
+                progress.text = $"{DailyMissions.Progress(i)}/{tasks[i].Target}";
+                reward.text = DailyMissions.Claimed(i) ? Strings.Get("daily.claimed") : tasks[i].Reward.ToString("N0");
+                claim.EnableInClassList("ready", DailyMissions.Done(i) && !DailyMissions.Claimed(i));
+                claim.EnableInClassList("claimed", DailyMissions.Claimed(i));
+            }
+        }
+
         private void Refresh()
         {
+            RefreshDaily();
             foreach (var (element, selected) in _choices) element.EnableInClassList("chosen", selected());
             foreach (var label in _coinLabels) label.text = PlayerProfile.Coins.ToString("N0");
             foreach (var label in _rankLabels) label.text = Strings.Format("profile.rank", PlayerProfile.Level);
@@ -396,6 +466,9 @@ namespace MachineBrigade.Game.Hud
                     return;
                 }
                 _deckNote.RemoveFromClassList("warn");
+                // Tapping a card also says what it is good against.
+                if (!support && _catalog.Vehicles.TryGetValue(id, out var picked))
+                    _deckNote.text = Strings.Card(id) + " — " + Counters.Line(picked);
                 var deck = support ? MatchSettings.DeckSupports : MatchSettings.DeckVehicles;
                 var slots = support ? MatchSettings.DeckSupportSlots : MatchSettings.DeckVehicleSlots;
                 if (deck.Contains(id)) deck.Remove(id);
@@ -470,6 +543,18 @@ namespace MachineBrigade.Game.Hud
         }
     }
 
+    internal sealed partial class MenuScreen
+    {
+        internal static string DoctrineIcon(string id) => id switch
+        {
+            "armor" => "heavytank",
+            "air" => "jet",
+            "artillery" => "artillery",
+            "blitz" => "bolt",
+            _ => "cp",
+        };
+    }
+
     /// <summary>Which icon each card shows.</summary>
     public static class CardIcons
     {
@@ -498,8 +583,26 @@ namespace MachineBrigade.Game.Hud
             "thermobaric_launcher" => "mlrs",
             "heavy_aa" => "aa",
             "titan_tank" => "heavytank",
+            "twin_tank" or "siege_tank" => "heavytank",
+            "heavy_rocket_artillery" => "mlrs",
+            "ballistic_launcher" => "missile",
+            "siege_mortar" => "mortar",
+            "engineer_vehicle" => "repair",
+            "ew_jammer" => "jammer",
+            "fpv_carrier" or "recon_drone" => "drone",
+            "mine_layer" => "mine",
+            "fighter_jet" => "fighter",
+            "tank_buster" => "jet",
+            "heavy_attack_heli" => "gunship",
             "heavy_bomber" or "stealth_bomber" or "sky_gunship" => "jet",
             "napalm_strike" => "flame",
+            "moab" => "bomb",
+            "cluster_strike" => "airstrike",
+            "reinforcements" => "reinforce",
+            "field_repair" => "repair",
+            "emp_blast" => "bolt",
+            "shield_dome" => "shield",
+            "gunship_support" => "gunship",
             "carpet_bombing" => "airstrike",
             "artillery_barrage" => "barrage",
             "airstrike" => "airstrike",

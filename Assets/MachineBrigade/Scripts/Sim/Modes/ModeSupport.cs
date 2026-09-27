@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (!v.IsAlive || v.Team < 0 || v.Team > 1 || (Ignore != null && Ignore(v))) continue;
                 _seen.Add(v.Id);
-                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.CpCost);
+                if (!_alive.ContainsKey(v.Id)) _alive[v.Id] = (v.Team, v.Def.ArmyCost);
             }
             _gone.Clear();
             foreach (var id in _alive.Keys)

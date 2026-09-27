@@ -36,6 +36,29 @@ namespace MachineBrigade.Sim.Content
         Rocket,
         Flame,
         Bomb,
+
+        /// <summary>A kamikaze drone: slow, guided, and it dives onto its target.</summary>
+        Drone,
+    }
+
+    /// <summary>
+    /// What a vehicle is for. Drives the counter table shown on the cards and the AI's sense of
+    /// which enemy each unit should fight; damage itself comes from damage type against armour.
+    /// </summary>
+    public enum UnitClass
+    {
+        Scout,
+        Light,
+        Tank,
+        Heavy,
+        TankHunter,
+        Artillery,
+        AntiAir,
+        Support,
+        Helicopter,
+        Plane,
+        Defense,
+        Boss,
     }
 
     /// <summary>Which layers a weapon can engage.</summary>

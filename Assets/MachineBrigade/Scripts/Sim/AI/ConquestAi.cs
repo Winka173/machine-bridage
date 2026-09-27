@@ -96,7 +96,7 @@ namespace MachineBrigade.Sim.AI
             _enemyTeam = enemyTeam;
             _difficulty = difficulty;
             _random = new Random(seed);
-            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective };
+            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective, FallBackTo = SafePoint };
         }
 
         private float Interval => _difficulty switch
@@ -158,6 +158,29 @@ namespace MachineBrigade.Sim.AI
                 bestScore = score;
             }
             return best != null && bestScore > -1.5f ? best.Def.Position : null;
+        }
+
+        /// <summary>
+        /// Outmatched at the front: the point we hold that lies between the front and home,
+        /// nearest the front, where the army can dig in and meet the attack together.
+        /// </summary>
+        private Vector2? SafePoint(SimWorld world, Vector2 front)
+        {
+            if (_mode == null || !world.TryGetRally(_team, out var home)) return null;
+            Vector2? best = null;
+            var bestDistance = float.MaxValue;
+            var frontToHome = Vector2.Distance(front, home);
+            foreach (var point in _mode.Points)
+            {
+                if (point.Owner != _team) continue;
+                var p = point.Def.Position;
+                var distance = Vector2.Distance(front, p);
+                if (distance < 15f || Vector2.Distance(p, home) > frontToHome) continue;
+                if (distance >= bestDistance) continue;
+                best = p;
+                bestDistance = distance;
+            }
+            return best;
         }
 
         private bool Draining(ObjectiveState point)
@@ -231,8 +254,15 @@ namespace MachineBrigade.Sim.AI
                 foreach (var p in _mode.Points)
                     if (p.Owner != _team) neutral++;
             var owned = new Dictionary<string, int>();
+            var capturers = 0;
             foreach (var v in world.Vehicles)
-                if (v.IsAlive && v.Team == _team) owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
+            {
+                if (!v.IsAlive || v.Team != _team) continue;
+                owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
+                if (!v.Flying && v.Def.CaptureRate > 0f && !v.Def.Static) capturers++;
+            }
+            // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
+            var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
 
             foreach (var id in cards)
             {
@@ -252,6 +282,15 @@ namespace MachineBrigade.Sim.AI
                     if (def.Flying) score += (ownAir * 5 < ownTotal + 3 ? 1.8f : -1.2f) + heavy * 0.35f - air * 0.25f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
+                    // Enough anti-air for the enemy's aircraft, not a car park of it.
+                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * 0.5f - 1f) * 1.5f;
+                    // Points are taken on the ground: keep a core of vehicles that can capture.
+                    if (neutral > 0 && capturers < 4) score += def.Flying || def.CaptureRate <= 0f ? -2.5f : 1.2f;
+                    if (demolishing)
+                    {
+                        if (main.DamageType == DamageType.HighExplosive) score += 1.6f;
+                        if (def.Class == UnitClass.AntiAir) score -= 1.5f;
+                    }
                 }
                 // A mixed army: each copy already fielded makes another less attractive.
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
@@ -290,8 +329,15 @@ namespace MachineBrigade.Sim.AI
         private static bool Ready(SimWorld world, TeamEconomy economy, SupportDef s) =>
             economy.Cp >= s.CpCost && economy.CooldownLeft(s.Id, world.Time) <= 0f;
 
-        private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all) =>
-            deck.Count > 0 ? deck : all;
+        private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all)
+        {
+            if (deck.Count > 0) return deck;
+            // Items are bought with coins by the player; the AI never has any.
+            var cards = new List<string>();
+            foreach (var id in all)
+                if (!world.Catalog.TryGetSupport(id, out var support) || !(support.Consumable || support.EventOnly)) cards.Add(id);
+            return cards;
+        }
 
         private bool FindCluster(out Vector2 centre, out int size)
         {

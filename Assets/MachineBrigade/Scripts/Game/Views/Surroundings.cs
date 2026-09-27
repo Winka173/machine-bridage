@@ -17,6 +17,8 @@ namespace MachineBrigade.Game.Views
     /// slopes, rock on the heights and snow on the peaks, plus farm fields with farmhouses. It is
     /// decoration only: the simulation and the camera clamp stay inside the map. Trees and rocks
     /// are drawn with GPU instancing in culled cells, so thousands of them cost a few draw calls.
+    /// Themes change the picture: a volcanic map has a glowing lava river and fumaroles, a city
+    /// continues its street grid out to the hills with a tower in every block and a canal.
     /// </summary>
     public sealed class Surroundings : IDisposable
     {
@@ -72,11 +74,19 @@ namespace MachineBrigade.Game.Views
 
             materials.Water.SetColor("_BaseColor", theme.WaterColour);
             materials.Water.SetFloat("_Roughness", theme.WaterRoughness);
-            if (theme.Water is ThemeWater.River or ThemeWater.FrozenRiver)
+            if (theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Canal)
             {
                 var river = Place("River", Own(Plane(1f, 1)), materials.Water);
                 river.transform.position = new Vector3(0f, -0.01f, RiverZ);
                 river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
+            }
+            else if (theme.Water == ThemeWater.Lava)
+            {
+                // Molten rock glows on the unlit shader, so it lights up the valley at night.
+                _lavaMaterial = new Material(Shader.Find("MachineBrigade/Unlit")) { name = "Lava River" };
+                _lavaMaterial.SetColor("_Color", theme.LavaHot);
+                var lava = Place("Lava River", Own(LavaRiver()), _lavaMaterial);
+                lava.transform.position = new Vector3(0f, -0.01f, RiverZ);
             }
             else if (theme.Water == ThemeWater.Sea)
             {
@@ -86,8 +96,10 @@ namespace MachineBrigade.Game.Views
                 sea.transform.localScale = new Vector3(Extent * 6f, 1f, Extent * 3f);
             }
 
+            if (theme.Skyline != null) BuildSkyline(models);
             ScatterForests(models, fields);
             ScatterRocks(models);
+            ScatterScenery(models, fields);
             PlaceFarmhouses(models, fields);
             var total = 0;
             foreach (var entry in _instances)
@@ -121,14 +133,27 @@ namespace MachineBrigade.Game.Views
         private readonly Material _rangeMaterial;
         private readonly MapTheme _theme;
         private readonly float _density, _shadowReach;
+        private Material _lavaMaterial;
 
         private float RiverZ => _half + 62f;
-        private const float RiverWidth = 16f;
+
+        /// <summary>A city canal is narrow; rivers of water or lava are wide.</summary>
+        private float RiverWidth => _theme.Water == ThemeWater.Canal ? 9f : 16f;
+
+        /// <summary>The city's street grid continues the map's: 16 m avenues every 36 m, from x and z = 18.</summary>
+        private const float BlockPitch = 36f;
+        private const float AvenueWidth = 16f;
+
+        private bool OnAvenue(float v) => Mathf.Abs(Mathf.Repeat(v - 18f + BlockPitch * 0.5f, BlockPitch) - BlockPitch * 0.5f) < AvenueWidth * 0.5f;
+
+        /// <summary>Inside the city that surrounds an urban map (it ends where the hills begin).</summary>
+        private bool InCity(Vector2 p) =>
+            _theme.Skyline != null && Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half < _theme.RangeStart - 6f;
 
         /// <summary>The quay line of a harbour map: the sea starts just past the north edge.</summary>
         private float SeaShore => _half + 5f;
 
-        private bool HasRiver => _theme.Water is ThemeWater.River or ThemeWater.FrozenRiver;
+        private bool HasRiver => _theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Lava or ThemeWater.Canal;
 
         private bool InSea(Vector2 p, float margin) => _theme.Water == ThemeWater.Sea && p.y > SeaShore - margin;
 
@@ -149,6 +174,7 @@ namespace MachineBrigade.Game.Views
                 if (mesh != null) Object.Destroy(mesh);
             if (_texture != null) Object.Destroy(_texture);
             if (_palette != null) Object.Destroy(_palette);
+            if (_lavaMaterial != null) Object.Destroy(_lavaMaterial);
         }
 
         private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x) > _half + margin || Mathf.Abs(p.y) > _half + margin;
@@ -160,8 +186,9 @@ namespace MachineBrigade.Game.Views
         private float Height(Vector2 p)
         {
             var outside = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
-            if (outside < MountainStart || InSea(p, 0f)) return 0f;
-            var ramp = Mathf.SmoothStep(0f, 1f, (outside - MountainStart) / 70f);
+            var start = Mathf.Max(MountainStart, _theme.RangeStart);
+            if (outside < start || InSea(p, 0f)) return 0f;
+            var ramp = Mathf.SmoothStep(0f, 1f, (outside - start) / 70f);
             // Tall along the far (top of the screen) sides, rolling hills on the near ones, so
             // the range frames the battle without hiding it.
             var back = Mathf.Clamp01(0.5f + 0.65f * Vector2.Dot(p.normalized, new Vector2(-0.7071f, 0.7071f)));
@@ -322,6 +349,8 @@ namespace MachineBrigade.Game.Views
             {
                 var p = RandomPoint();
                 if (!Outside(p, 4f) || NearRiver(p, 3f) || InField(p, fields)) continue;
+                // The city has its own street trees (see BuildSkyline).
+                if (InCity(p)) continue;
                 var height = Height(p);
                 if (height > TreeLine) continue;
                 var distance = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
@@ -344,7 +373,7 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < 700; i++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 3f) || NearRiver(p, 1f) || InField(p, fields) || OnMountain(p)) continue;
+                if (!Outside(p, 3f) || NearRiver(p, 1f) || InField(p, fields) || OnMountain(p) || InCity(p)) continue;
                 Add(models, _theme.Bush, p, (float)_rng.NextDouble() * 360f, 0.7f + (float)_rng.NextDouble() * 0.9f);
             }
         }
@@ -361,7 +390,7 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < 260; i++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 6f) || NearRiver(p, 2f)) continue;
+                if (!Outside(p, 6f) || NearRiver(p, 2f) || InCity(p)) continue;
                 var height = Height(p);
                 var model = _theme.Rocks[_rng.Next(_theme.Rocks.Length)];
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 1.2f + (float)_rng.NextDouble() * 2.4f + height * 0.05f, height - 0.4f);
@@ -370,12 +399,128 @@ namespace MachineBrigade.Game.Views
             for (var i = 0; i < 140; i++)
             {
                 var p = RandomPoint();
-                if (!Outside(p, 10f) || NearRiver(p, 6f)) continue;
+                if (!Outside(p, 10f) || NearRiver(p, 6f) || InCity(p)) continue;
                 var height = Height(p);
                 if (height < 2f && _rng.Next(3) != 0) continue;
                 var model = _theme.Crags[_rng.Next(_theme.Crags.Length)];
                 Add(models, model, p, (float)_rng.NextDouble() * 360f, 0.8f + (float)_rng.NextDouble() * 0.9f, height - 0.6f);
             }
+        }
+
+        /// <summary>
+        /// The city round an urban map: the map's street grid carried on out to the hills, with a
+        /// tower in every block (two smaller ones in some), taller towards the far side so the
+        /// skyline frames the battle without hiding it. Their windows use the kit's glowing glass
+        /// and lamp materials, which is what lights the city up at night.
+        /// </summary>
+        private void BuildSkyline(ModelLibrary models)
+        {
+            var kinds = _theme.Skyline;
+            var reach = _half + _theme.RangeStart - 6f;
+            var first = -Mathf.Floor(Extent / BlockPitch) * BlockPitch;
+            for (var cx = first; cx <= Extent; cx += BlockPitch)
+            for (var cz = first; cz <= Extent; cz += BlockPitch)
+            {
+                // Block centres sit half a pitch off the avenues: 0, +-36, +-72, ...
+                var centre = new Vector2(cx, cz);
+                var outside = Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) - _half;
+                if (outside < 18f || Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) > reach || NearRiver(centre, 11f)) continue;
+                // Towers only in the ring the camera can see; a tower is thousands of triangles in a
+                // dozen materials, and a city of them out to the horizon cost more than the battle.
+                if (outside > 62f) continue;
+                if (outside > 40f)
+                {
+                    Add(models, _rng.Next(2) == 0 ? "office_block" : "apartment", centre, _rng.Next(4) * 90f, 1f + (float)_rng.NextDouble() * 0.2f);
+                    continue;
+                }
+                var back = Mathf.Clamp01(0.5f + 0.5f * Vector2.Dot(centre.normalized, new Vector2(-0.7071f, 0.7071f)));
+                if (_rng.Next(4) == 0)
+                {
+                    // Two mid-size towers side by side.
+                    for (var k = -1; k <= 1; k += 2)
+                    {
+                        var at = centre + new Vector2(k * 5f, -k * 1.5f);
+                        Add(models, kinds[_rng.Next(kinds.Length)], at, _rng.Next(4) * 90f, 0.62f + (float)_rng.NextDouble() * 0.12f);
+                    }
+                    continue;
+                }
+                var scale = 0.95f + back * 0.3f + (float)_rng.NextDouble() * 0.12f;
+                Add(models, kinds[_rng.Next(kinds.Length)], centre, _rng.Next(4) * 90f, Mathf.Min(scale, 1.3f));
+            }
+            // A few trees and lamps along the pavements.
+            for (var i = 0; i < 260 * _density; i++)
+            {
+                var p = RandomPoint();
+                if (!Outside(p, 3f) || !InCity(p) || NearRiver(p, 2f)) continue;
+                var ax = OnAvenue(p.x);
+                var az = OnAvenue(p.y);
+                if (ax == az) continue;
+                // Snap onto the pavement at the edge of the avenue.
+                var v = ax ? p.x : p.y;
+                var lane = Mathf.Round((v - 18f) / BlockPitch) * BlockPitch + 18f;
+                var kerb = lane + Mathf.Sign(v - lane) * (AvenueWidth * 0.5f - 1f);
+                var at = ax ? new Vector2(kerb, p.y) : new Vector2(p.x, kerb);
+                Add(models, _rng.Next(3) == 0 ? "lamp_post" : _theme.Trees[_rng.Next(_theme.Trees.Length)], at,
+                    (float)_rng.NextDouble() * 360f, 0.85f + (float)_rng.NextDouble() * 0.3f);
+            }
+        }
+
+        /// <summary>Theme scenery on the flat round the map: fumaroles and obsidian, bamboo and huts.</summary>
+        private void ScatterScenery(ModelLibrary models, List<Rect> fields)
+        {
+            if (_theme.Scenery == null) return;
+            for (var i = 0; i < 180 * _density; i++)
+            {
+                var p = RandomPoint();
+                if (!Outside(p, 5f) || NearRiver(p, 3f) || InField(p, fields) || OnMountain(p)) continue;
+                var model = _theme.Scenery[_rng.Next(_theme.Scenery.Length)];
+                Add(models, model, p, _rng.Next(4) * 90f + (float)_rng.NextDouble() * 20f, 0.8f + (float)_rng.NextDouble() * 0.5f);
+            }
+        }
+
+        /// <summary>
+        /// The lava river beyond the north edge: a strip of 2 m cells whose vertex colours hold
+        /// floating plates of cooling crust on the glowing flow, darkest at the banks.
+        /// </summary>
+        private Mesh LavaRiver()
+        {
+            const float cell = 2f;
+            var nx = Mathf.CeilToInt(Extent * 2f / cell);
+            var nz = Mathf.CeilToInt(RiverWidth / cell);
+            var vertices = new List<Vector3>();
+            var colours = new List<Color>();
+            var normals = new List<Vector3>();
+            var triangles = new List<int>();
+            var crust = _theme.LavaCrust;
+            for (var j = 0; j <= nz; j++)
+            for (var i = 0; i <= nx; i++)
+            {
+                var x = i * cell - Extent;
+                var z = j * cell - RiverWidth * 0.5f;
+                // A wavy bank.
+                var bank = Mathf.Abs(z) / (RiverWidth * 0.5f);
+                z += Mathf.Sin(x * 0.07f) * 1.2f * (1f - bank * 0.3f);
+                vertices.Add(new Vector3(x, 0f, z));
+                normals.Add(Vector3.up);
+                var n = Mathf.PerlinNoise(x * 0.09f + 4.2f, (z + RiverZ) * 0.2f + 1.3f);
+                var heat = (1f - Edge(0.55f, 1f, bank)) * (1f - 0.75f * Edge(0.5f, 0.68f, n));
+                colours.Add(Primitives.Linear(Color.Lerp(crust, Color.white, Mathf.Clamp01(heat + 0.1f))));
+            }
+            var stride = nx + 1;
+            for (var j = 0; j < nz; j++)
+            for (var i = 0; i < nx; i++)
+            {
+                var k = j * stride + i;
+                triangles.Add(k); triangles.Add(k + stride); triangles.Add(k + 1);
+                triangles.Add(k + 1); triangles.Add(k + stride); triangles.Add(k + stride + 1);
+            }
+            var mesh = new Mesh { name = "Lava River" };
+            mesh.SetVertices(vertices);
+            mesh.SetNormals(normals);
+            mesh.SetColors(colours);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateBounds();
+            return mesh;
         }
 
         private void PlaceFarmhouses(ModelLibrary models, List<Rect> fields)
@@ -419,7 +564,12 @@ namespace MachineBrigade.Game.Views
             var pixels = new Color[size * size];
             var worldPerPixel = Extent * 2f / size;
             var crops = mapTheme.Crops;
-            var bank = Color.Lerp(theme.Dirt, theme.Sand, 0.5f);
+            var bank = mapTheme.Water switch
+            {
+                ThemeWater.Lava => new Color(0.2f, 0.1f, 0.07f),
+                ThemeWater.Canal => theme.Stone,
+                _ => Color.Lerp(theme.Dirt, theme.Sand, 0.5f),
+            };
             for (var y = 0; y < size; y++)
             for (var x = 0; x < size; x++)
             {
@@ -432,6 +582,9 @@ namespace MachineBrigade.Game.Views
                     var rows = Mathf.Repeat(p.x * 0.9f, 1f) < 0.5f ? 0.92f : 1.04f;
                     colour = crops[f % crops.Length] * rows;
                 }
+                // The city: asphalt avenues between concrete blocks, and grass on the hills beyond.
+                if (InCity(p) && (OnAvenue(p.x) || OnAvenue(p.y))) colour = theme.Road;
+                else if (mapTheme.Paved && !InCity(p)) colour = Color.Lerp(mapTheme.Lawn, colour, 0.3f);
                 var riverDistance = HasRiver ? Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f
                     : mapTheme.Water == ThemeWater.Sea ? SeaShore - p.y : 99f;
                 if (riverDistance < 4f) colour = Color.Lerp(colour, bank, Mathf.Clamp01(1f - riverDistance / 4f));

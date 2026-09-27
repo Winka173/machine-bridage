@@ -36,7 +36,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>What the weapon fires. Missiles home in on their target; the rest land on the aim point.</summary>
         public ProjectileKind Projectile { get; }
 
-        public bool Guided => Projectile == ProjectileKind.Missile;
+        public bool Guided => Projectile is ProjectileKind.Missile or ProjectileKind.Drone;
+
+        /// <summary>
+        /// Shots (trigger pulls) carried, or 0 for unlimited. Long-range weapons run dry so they
+        /// cannot be spammed; the vehicle then fights with its other mounts until it re-arms.
+        /// </summary>
+        public int Ammo { get; internal set; }
 
         /// <summary>Shots per trigger pull (rocket salvo, machine-gun burst); the cooldown starts after the last.</summary>
         public int Burst { get; }
@@ -106,12 +112,14 @@ namespace MachineBrigade.Sim.Content
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,
             WeaponDef weapon, ExplosionDef? deathExplosion, IReadOnlyList<WeaponMount>? secondary = null,
-            bool flying = false, float altitude = 0f, float captureRate = 1f, string mainSlot = "main", bool fixedWing = false)
+            bool flying = false, float altitude = 0f, float captureRate = 1f, string mainSlot = "main", bool fixedWing = false,
+            bool isStatic = false)
         {
             Id = Guard.Id(id);
             Armor = armor;
             MaxHp = Guard.Positive(maxHp, id, "hp");
-            Speed = Guard.Positive(speed, id, nameof(speed));
+            Static = isStatic && !flying;
+            Speed = Static ? 0f : Guard.Positive(speed, id, nameof(speed));
             TurnRate = SimMath.DegToRad(Guard.Positive(turnRateDegrees, id, "turnRate"));
             TurretTurnRate = SimMath.DegToRad(Guard.Positive(turretTurnRateDegrees, id, "turretTurnRate"));
             Radius = Guard.Positive(radius, id, nameof(radius));
@@ -128,7 +136,62 @@ namespace MachineBrigade.Sim.Content
             CaptureRate = Guard.NonNegative(captureRate, id, nameof(captureRate));
             FixedWing = flying && fixedWing;
             Model = Id;
+            ArmyCost = CpCost;
+            Width = flying ? radius * 2f : radius * 1.6f;
+            Length = flying ? radius * 2f : radius * 2.7f;
         }
+
+        /// <summary>A fixed defence (gun turret, bunker, tower): it never moves, is never pushed and is never bought.</summary>
+        public bool Static { get; }
+
+        /// <summary>Hull length along the heading, for collisions (the gun barrel is not counted).</summary>
+        public float Length { get; internal set; }
+
+        /// <summary>Hull width across the heading, for collisions.</summary>
+        public float Width { get; internal set; }
+
+        /// <summary>Collision capsule: half the length of its spine (0 for a round footprint).</summary>
+        public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
+
+        /// <summary>Collision capsule radius (a little inside the hull, so parked vehicles can touch).</summary>
+        public float HullRadius => Width * 0.46f;
+
+        /// <summary>Radius of a circle around the whole capsule.</summary>
+        public float HullBound => HullHalf + HullRadius;
+
+        /// <summary>Skills the vehicle uses on its own (elite units, boss phases).</summary>
+        public IReadOnlyList<SkillDef> Skills { get; internal set; } = Array.Empty<SkillDef>();
+
+        /// <summary>Repairs friendly vehicles around it (engineers).</summary>
+        public AuraDef? RepairAura { get; internal set; }
+
+        /// <summary>Re-arms friendly vehicles around it (engineers).</summary>
+        public AuraDef? RearmAura { get; internal set; }
+
+        /// <summary>Radius in which enemy guided weapons and fire support are scrambled (0: no jammer).</summary>
+        public float Jammer { get; internal set; }
+
+        /// <summary>Lays mines as it goes (mine layers).</summary>
+        public MineLayerDef? Mines { get; internal set; }
+
+        /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
+        public UnitClass Class { get; internal set; }
+
+        /// <summary>A veteran enemy variant: bigger, tougher, with skills; shown with an elite badge.</summary>
+        public bool Elite { get; internal set; }
+
+        /// <summary>For an elite: the vehicle it is a refurbished version of.</summary>
+        public string? EliteOf { get; internal set; }
+
+        /// <summary>What it counts against the army cap and pays out as a kill (an elite counts as its base unit).</summary>
+        public int ArmyCost { get; internal set; }
+
+        /// <summary>
+        /// Rough fighting value at full health, in CP: what the unit costs, or for units that are
+        /// never bought (defences, mission units) an estimate from their toughness. Bosses count
+        /// as nothing here, because the army fights them whatever the odds.
+        /// </summary>
+        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
 
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
         public string Model { get; internal set; }

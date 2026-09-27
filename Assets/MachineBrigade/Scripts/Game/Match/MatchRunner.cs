@@ -54,6 +54,12 @@ namespace MachineBrigade.Game.Match
         private ModelLibrary _models;
         private Atmosphere _atmosphere;
         private MapView _map;
+        private CrateViews _crates;
+        private MineViews _mineViews;
+        private Transform _worldRoot;
+        private bool _richEffects;
+        private double _nextWeatherShift = double.MaxValue;
+        private WeatherKind _weatherKind;
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private ObjectiveView _objectives;
@@ -111,7 +117,9 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-deathmatch")) MatchSettings.Mode = GameModeKind.Deathmatch;
                 if (DebugFlags.Has("-mb-hill")) MatchSettings.Mode = GameModeKind.KingOfTheHill;
                 if (DebugFlags.Has("-mb-assault")) MatchSettings.Mode = GameModeKind.Assault;
-                foreach (var campaignMission in Campaign.All)
+                if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
+            if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
+            foreach (var campaignMission in Campaign.All)
                     if (DebugFlags.Has("-mb-" + campaignMission.Id))
                     {
                         MatchSettings.Mode = GameModeKind.Campaign;
@@ -167,7 +175,10 @@ namespace MachineBrigade.Game.Match
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
-            foreach (var def in catalog.Vehicles.Values) _models.Prewarm(def.Model);
+            // Build the merged models of every vehicle this battle can field now, not on first use
+            // mid-battle, and only those: the catalogue holds bosses, elites and defences most
+            // battles never see, and every merged model costs load time and memory on a phone.
+            foreach (var id in Fieldable(catalog, mission)) _models.Prewarm(catalog.Vehicles[id].Model);
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             _effects.Prewarm();
             // The menu battle has no player side, so no alarms or chimes.
@@ -179,6 +190,13 @@ namespace MachineBrigade.Game.Match
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
             if (weather == WeatherKind.Clear) _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects);
+            _weatherKind = weather;
+            _worldRoot = worldRoot;
+            _richEffects = options.MaxEffects;
+            _crates = new CrateViews(_models, worldRoot);
+            _mineViews = new MineViews(_models, worldRoot, _menu ? -1 : PlayerTeam);
+            // Quick battles sometimes turn: a storm rolls in, the fog comes down, night falls.
+            if (!_menu && mission == null) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
             ApplyPost(options.Bloom, MatchSettings.Brightness);
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
@@ -191,6 +209,13 @@ namespace MachineBrigade.Game.Match
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)
             {
+                // Items bought with coins come along into every real match.
+                if (_world.TryGetEconomy(PlayerTeam, out var economy))
+                    foreach (var item in Progression.Items)
+                    {
+                        var owned = PlayerProfile.ItemCount(item);
+                        if (owned > 0) economy.Items[item] = owned;
+                    }
                 _commander = new PlayerCommander(_world, _hud, _camera, PlayerTeam, cards);
                 _selection.TapInterceptor = _commander.TryTap;
                 _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
@@ -200,6 +225,72 @@ namespace MachineBrigade.Game.Match
             DispatchEvents();
         }
 
+        private bool BossOnField()
+        {
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Def.Boss && v.Team == EnemyTeam) return true;
+            return false;
+        }
+
+        /// <summary>The weather turns mid-battle, to another of this map's weathers.</summary>
+        private void ShiftWeather()
+        {
+            _nextWeatherShift = double.MaxValue;
+            var choices = MatchSettings.CurrentMap.Weathers;
+            if (choices == null || choices.Length < 2) return;
+            var next = _weatherKind;
+            var random = new System.Random((int)_world.Tick);
+            for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
+            if (next == _weatherKind) return;
+            _weather.Dispose();
+            _weatherKind = next;
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects);
+            if (next == WeatherKind.Clear)
+            {
+                var theme = MapTheme.For(_world.Map.Theme);
+                _atmosphere.SetMood(1f, theme.Cast, theme.Haze, 100f, 220f);
+            }
+            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
+        }
+
+        /// <summary>Vehicles that can appear this battle: both decks (and their elite versions), units on the
+        /// field, the mission's boss, waves and placed units, fire-support escorts and every summon.</summary>
+        private HashSet<string> Fieldable(Catalog catalog, MissionDef mission)
+        {
+            var ids = new HashSet<string>();
+            void Add(string id)
+            {
+                if (id == null || !catalog.Vehicles.TryGetValue(id, out var def) || !ids.Add(id)) return;
+                if (catalog.EliteVariant(id) is { } elite) Add(elite);
+                foreach (var skill in def.Skills)
+                    if (skill.Unit != null) Add(skill.Unit);
+            }
+            for (var team = 0; team <= 1; team++)
+                if (_world.TryGetEconomy(team, out var economy))
+                {
+                    if (economy.Vehicles.Count == 0) foreach (var id in catalog.Vehicles.Keys) Add(id);
+                    foreach (var id in economy.Vehicles) Add(id);
+                }
+            foreach (var v in _world.Vehicles) Add(v.Def.Id);
+            foreach (var support in catalog.Supports.Values)
+                foreach (var unit in support.Units) Add(unit);
+            if (mission != null)
+            {
+                Add(mission.Boss?.Def);
+                Add(mission.Convoy?.Def);
+                if (mission.Waves != null) foreach (var id in mission.Waves.Roster) Add(id);
+                foreach (var u in mission.Units) Add(u.DefId);
+            }
+            // Boss Rush brings its bosses and their escorts later.
+            if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
+                foreach (var boss in new BossRushRules().Bosses)
+                {
+                    Add(boss);
+                    if (new BossRushRules().Escorts.TryGetValue(boss, out var escorts)) foreach (var e in escorts) Add(e);
+                }
+            return ids;
+        }
+
         private string _builtGraphics;
 
         /// <summary>Everything that needs a rebuild to take effect.</summary>
@@ -207,7 +298,7 @@ namespace MachineBrigade.Game.Match
         {
             var o = MatchSettings.Options;
             return $"{o.Shadows}|{o.RenderScale}|{o.AntiAliasing}|{o.FrameRate}|{o.Bloom}|{o.RichScenery}|{o.MaxEffects}|" +
-                   $"{MatchSettings.UiSize}|{MatchSettings.SavingBattery}|{MatchSettings.Brightness}";
+                   $"{MatchSettings.UiSize}|{MatchSettings.SavingBattery}|{MatchSettings.Brightness}|{MatchSettings.ColorBlind}";
         }
 
         /// <summary>
@@ -299,6 +390,8 @@ namespace MachineBrigade.Game.Match
             {
                 _effects.Tick(_views);
                 _weather.Tick();
+                if (!_menu && Time.frameCount % 15 == 0) _audio.BossMusic = BossOnField();
+                if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
             _perf?.End(PerfProbe.Section.Effects);
             _perf?.Begin();
@@ -324,6 +417,8 @@ namespace MachineBrigade.Game.Match
             _effects.Draw();
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
+            _crates?.Update(_world);
+            _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
             _perf?.EndFrame(_views.All.Count);
             if (_perf != null && !_censusDone && Time.time > 6f)
@@ -340,6 +435,7 @@ namespace MachineBrigade.Game.Match
             var viewport = _camera.Camera.WorldToViewportPoint(point);
             if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
             if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
+            Haptics.Pulse(70, 190);
             _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
             _camera.AddTrauma(0.6f);
         }
@@ -394,23 +490,52 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
                         else _kills++;
+                        if (!_menu && e.Team == EnemyTeam && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var slain))
+                        {
+                            DailyMissions.Record("kills");
+                            if (slain.Elite) DailyMissions.Record("elites");
+                            if (slain.Boss) DailyMissions.Record("bosses");
+                        }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
+                        {
                             StartCinematic(e.Position, force: true);
+                            Haptics.Pulse(180, 255);
+                        }
                         break;
                     case SimEventKind.Explosion when !_menu && e.Tier >= ExplosionTier.Ultimate:
                     case SimEventKind.StrikeImpact when !_menu && e.Tier >= ExplosionTier.Ultimate:
                         StartCinematic(e.Position);
                         break;
+                    case SimEventKind.PropDestroyed when !_menu:
+                        if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
+                            DailyMissions.Record("buildings");
+                        break;
                     case SimEventKind.PointCaptured when !_menu:
+                        if (e.Team == PlayerTeam) DailyMissions.Record("captures");
                         var letter = Strings.Get("point." + e.DefId);
                         if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter));
                         else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true);
+                        break;
+                    case SimEventKind.CrateIncoming when !_menu:
+                        _hud.Toast(Strings.Get("toast.crate"));
+                        break;
+                    case SimEventKind.CrateClaimed when !_menu:
+                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Get("toast.crateOurs"));
+                        else _hud.Toast(Strings.Get("toast.crateTheirs"), error: true);
+                        break;
+                    case SimEventKind.StrikeWarning when !_menu && e.Team == MachineBrigade.Sim.Entities.Teams.Environment:
+                        _hud.Toast(Strings.Get("toast.raid"), error: true);
+                        if (_world.Catalog.TryGetSupport(e.DefId, out var raid))
+                            _warnings.Add((new Vector2(e.Position.X, e.Position.Y), raid.Length * 0.5f, Time.time + e.Value + raid.Duration + 0.5f));
                         break;
                     case SimEventKind.StrikeWarning:
                         if (_world.Catalog.TryGetSupport(e.DefId, out var support))
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), support.IsLine ? support.Length * 0.5f : support.Radius,
                                 Time.time + e.Value + support.Duration + 0.5f));
                         if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
+                        // An item was used: it is gone from the profile too.
+                        if (!_menu && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
+                        if (!_menu && e.Team == PlayerTeam && support != null) DailyMissions.Record(support.Consumable ? "items" : "strikes");
                         break;
                 }
             }
@@ -641,6 +766,7 @@ namespace MachineBrigade.Game.Match
             if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
+            if (outcome.Result > 0) DailyMissions.Record("wins");
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;

@@ -28,8 +28,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Hulks left on the field before the oldest sinks away.</summary>
         public int Wrecks { get; }
 
-        public static EffectBudget Eco => new EffectBudget(90, 3, 96, 45);
-        public static EffectBudget High => new EffectBudget(220, 8, 160, 70);
+        public static EffectBudget Eco => new EffectBudget(260, 3, 96, 45);
+        public static EffectBudget High => new EffectBudget(520, 8, 160, 70);
     }
 
     /// <summary>
@@ -48,8 +48,10 @@ namespace MachineBrigade.Game.Effects
         private readonly Dictionary<ExplosionTier, ExplosionEffect> _explosions = new();
         private readonly List<ExplosionEffect> _blasts = new();
         private readonly BlastLayers _layers;
+        private readonly Catalog _catalog;
         private readonly MuzzleFx _muzzle;
         private readonly ExplosionEffect _airburst;
+        private readonly ExplosionEffect _napalm;
         private readonly ScreenCull _cull;
         private readonly TracerPool _tracers;
         private readonly DecalPool _decals;
@@ -68,6 +70,7 @@ namespace MachineBrigade.Game.Effects
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {
+            _catalog = catalog;
             _materials = materials;
             _models = models;
             _camera = camera;
@@ -85,6 +88,8 @@ namespace MachineBrigade.Game.Effects
             _muzzle = new MuzzleFx(materials, _root);
             _airburst = ExplosionEffect.CreateAirburst(_layers);
             _blasts.Add(_airburst);
+            _napalm = ExplosionEffect.CreateNapalm(_layers);
+            _blasts.Add(_napalm);
             _lightPool = new Light[budget.Lights];
             _lightStart = new float[budget.Lights];
             _lightIntensity = new float[budget.Lights];
@@ -93,9 +98,11 @@ namespace MachineBrigade.Game.Effects
             _emitters = new Emitters(materials, _root);
             _fires = new FireSpots(materials, _root);
             _fires.Visible = p => _cull.Visible(p, 0.3f);
-            _decals = new DecalPool(meshes.ScorchQuad, materials.Scorch, _root, budget.Decals);
+            _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
-            _wrecks = new WreckManager(_fires, budget.Wrecks);
+            _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, _root);
+            _layers.Chunks.Trails.Visible = p => _cull.Visible(p, 0.3f);
+            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
             _projectiles = new ProjectilePool(_root, 96);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _root);
@@ -143,6 +150,10 @@ namespace MachineBrigade.Game.Effects
                         else if (e.Tier == ExplosionTier.Medium && UnityEngine.Random.value < 0.15f) _fires.Ignite(impact, 0.35f, 5f, now);
                         break;
 
+                    case SimEventKind.StrikeImpact when IsGentle(e.DefId):
+                        Pulse(e.DefId, Ground(e.Position, 0.3f));
+                        break;
+
                     case SimEventKind.StrikeImpact:
                         var hit = Ground(e.Position, 0.3f);
                         var huge = e.Tier >= ExplosionTier.Ultimate;
@@ -151,6 +162,7 @@ namespace MachineBrigade.Game.Effects
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
                         {
+                            if (_cull.Visible(hit, 0.3f)) _napalm.Play(hit, now);
                             // Napalm: the ground itself burns in a wide strip for half a minute.
                             for (var i = 0; i < 3; i++)
                             {
@@ -191,7 +203,7 @@ namespace MachineBrigade.Game.Effects
                         var blast = Ground(e.Position, 0.3f);
                         Explode(e.Tier, blast, now);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
-                        _wrecks.TossTurret(e.Entity, now);
+                        _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
                         {
                             _fires.Ignite(blast, 1.4f, 30f, now);
@@ -200,6 +212,16 @@ namespace MachineBrigade.Game.Effects
                         {
                             _fires.Ignite(blast, 0.9f, 18f, now);
                         }
+                        break;
+
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
+                        Ring(Ground(e.Position, 0.3f), 30f, new Color(0.45f, 0.8f, 2.4f, 1f));
+                        break;
+
+                    case SimEventKind.VehicleRetired:
+                        // A loaned escort flies home: it simply leaves, no wreck.
+                        var leaving = views.Detach(e.Entity);
+                        if (leaving != null) Object.Destroy(leaving.Root.gameObject);
                         break;
 
                     case SimEventKind.VehicleDestroyed:
@@ -270,8 +292,7 @@ namespace MachineBrigade.Game.Effects
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
             _fires.Tick(now, Time.deltaTime);
-            if (_wrecks.TryCookOff(now, out var cookOff))
-                Explode(UnityEngine.Random.value < 0.3f ? ExplosionTier.Medium : ExplosionTier.Small, cookOff, now);
+            if (_wrecks.TryCookOff(now, out var cookOff, out var cookOffTier)) Explode(cookOffTier, cookOff, now);
             while (_wrecks.TryCrash(out var crash, out var size)) Crash(crash, size, now);
             KickUpDust(views, now);
             FadeLights(Time.unscaledTime);
@@ -328,6 +349,43 @@ namespace MachineBrigade.Game.Effects
                 if (_models.Has(id)) _models.Merged(id);
             foreach (var id in new[] { "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_metal", "debris_leaves" })
                 if (_models.Has(id)) Chunk(id);
+        }
+
+        /// <summary>Items that do no damage (EMP, shield dome, airdrops, loaned escorts) show a pulse, not a blast.</summary>
+        private bool IsGentle(string defId) =>
+            defId != null && _catalog.TryGetSupport(defId, out var support) &&
+            support.Kind is SupportKind.Emp or SupportKind.ShieldDome or SupportKind.Reinforce or SupportKind.Escort;
+
+        private void Pulse(string defId, Vector3 at)
+        {
+            if (!_catalog.TryGetSupport(defId, out var support)) return;
+            switch (support.Kind)
+            {
+                case SupportKind.Emp:
+                    // An electric-blue shockwave the size of the blast, twice over.
+                    Ring(at, support.Radius * 2.2f, new Color(0.45f, 0.8f, 2.6f, 1f));
+                    Ring(at, support.Radius * 1.4f, new Color(0.9f, 1.4f, 3f, 1f));
+                    break;
+                case SupportKind.ShieldDome:
+                    Ring(at, support.Radius * 2f, new Color(0.35f, 1.6f, 2.2f, 1f));
+                    break;
+                default:
+                    // Airdrops land in a gust of dust.
+                    Ring(at, 14f, new Color(1.2f, 1.1f, 0.9f, 0.8f));
+                    break;
+            }
+        }
+
+        /// <summary>One expanding ground ring of the given size and colour (the shockwave layer, tinted).</summary>
+        private void Ring(Vector3 at, float size, Color colour)
+        {
+            if (!_cull.Visible(at, 0.2f)) return;
+            var emit = new ParticleSystem.EmitParams
+            {
+                position = at + Vector3.up * 0.2f, startSize = size, startColor = colour, startLifetime = 0.6f,
+                applyShapeToPosition = false,
+            };
+            _layers.Shockwave.Emit(emit, 1);
         }
 
         private void Explode(ExplosionTier tier, Vector3 position, float now, float scale = 1f)

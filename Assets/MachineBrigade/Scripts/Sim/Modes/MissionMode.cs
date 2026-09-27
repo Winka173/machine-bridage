@@ -39,6 +39,7 @@ namespace MachineBrigade.Sim.Modes
         private double _wipedSince = -1, _heldByEnemySince = -1;
         private EntityId _boss;
         private int _bossWaypoint;
+        private double _launchStarted = -1;
 
         /// <param name="player">The player's CP and deck (the Game layer passes the unlocked cards).</param>
         /// <param name="enemy">The enemy's economy when it has a commander; null when it only sends waves.</param>
@@ -67,6 +68,10 @@ namespace MachineBrigade.Sim.Modes
         public EntityId Boss => _boss;
 
         public float SecondsLeft(SimWorld world) => _def.TimeLimit > 0f ? MathF.Max(0f, _def.TimeLimit - (float)world.Time) : -1f;
+
+        /// <summary>Seconds until the boss launches, or -1 while it is still on its way.</summary>
+        public float LaunchIn(SimWorld world) =>
+            _launchStarted < 0 ? -1f : MathF.Max(0f, _def.LaunchSeconds - (float)(world.Time - _launchStarted));
 
         /// <summary>How far the goal is (0 to 1).</summary>
         public float Progress(SimWorld world) => _def.Goal switch
@@ -209,7 +214,14 @@ namespace MachineBrigade.Sim.Modes
             if (_def.Goal == MissionGoal.Escort && _convoySpawned >= _def.ConvoyCount && _arrived + ConvoyAlive(world) < _def.ConvoyNeeded)
                 return true;
             if (_def.Goal == MissionGoal.Intercept && world.TryGetVehicle(_boss, out var train) && train.IsAlive &&
-                _def.Boss != null && _bossWaypoint >= _def.Boss.Route.Count) return true;
+                _def.Boss != null && _bossWaypoint >= _def.Boss.Route.Count)
+            {
+                // At the launch site: the missile goes up, and the clock runs out on the player.
+                if (_def.LaunchSeconds <= 0f) return true;
+                if (_launchStarted < 0) _launchStarted = world.Time;
+                train.Charge = MathF.Min(1f, (float)(world.Time - _launchStarted) / _def.LaunchSeconds);
+                if (train.Charge >= 1f) return true;
+            }
             // The army wiped out for a while (nothing alive or on the way).
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;

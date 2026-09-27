@@ -36,10 +36,38 @@ namespace MachineBrigade.Tests
             MatchSettings.Mission = _mission;
         }
 
-        [Test]
-        public void TwelveMissionsOverFourBattlefieldsEachEndingInABoss()
+        /// <summary>Starter cards plus the unlocks of every earlier mission: six strongest vehicles, two best supports.</summary>
+        internal static (List<string> vehicles, List<string> supports) RealisticDeck(string missionId)
         {
-            Assert.AreEqual(12, Campaign.All.Count);
+            var catalog = GameContent.LoadCatalog();
+            var owned = new List<string>(Progression.StarterVehicles);
+            var supports = new List<string>(Progression.StarterSupports);
+            foreach (var m in Campaign.All)
+            {
+                if (m.Id == missionId) break;
+                foreach (var id in m.Unlocks)
+                {
+                    if (catalog.Vehicles.ContainsKey(id) && !owned.Contains(id)) owned.Add(id);
+                    else if (catalog.TryGetSupport(id, out _) && !supports.Contains(id)) supports.Add(id);
+                }
+            }
+            owned.Sort((a, b) => catalog.Vehicle(b).CpCost.CompareTo(catalog.Vehicle(a).CpCost));
+            var deck = owned.GetRange(0, System.Math.Min(6, owned.Count));
+            // Keep an anti-air card if there is one: skies are busy by the midgame.
+            if (!deck.Exists(v => catalog.Vehicle(v).Class == UnitClass.AntiAir))
+            {
+                var aa = owned.Find(v => catalog.Vehicle(v).Class == UnitClass.AntiAir);
+                if (aa != null) deck[deck.Count - 1] = aa;
+            }
+            supports.Sort((a, b) => catalog.Supports[b].CpCost.CompareTo(catalog.Supports[a].CpCost));
+            return (deck, supports.GetRange(0, System.Math.Min(2, supports.Count)));
+        }
+
+        [Test]
+        public void ABootCampThenSixteenMissionsWithABossEveryThird()
+        {
+            Assert.AreEqual(17, Campaign.All.Count);
+            Assert.IsTrue(Campaign.All[0].Optional, "the boot camp is optional");
             var catalog = GameContent.LoadCatalog();
             foreach (var m in Campaign.All)
             {
@@ -47,8 +75,8 @@ namespace MachineBrigade.Tests
                 if (m.Boss != null) Assert.IsTrue(catalog.Vehicles[m.Boss.Def].Boss, $"{m.Id}: {m.Boss.Def} is a boss");
                 foreach (var id in m.EnemyDeck) Assert.IsTrue(catalog.Vehicles.ContainsKey(id), $"{m.Id}: enemy card {id}");
             }
-            for (var i = 2; i < 12; i += 3)
-                Assert.IsTrue(Campaign.All[i].Goal is MissionGoal.Boss or MissionGoal.Intercept, $"mission {i + 1} is a boss fight");
+            for (var i = 3; i < 17; i += 3)
+                Assert.IsTrue(Campaign.All[i].Goal is MissionGoal.Boss or MissionGoal.Intercept, $"mission {i} is a boss fight");
         }
 
         [TestCaseSource(nameof(Missions))]
@@ -56,14 +84,13 @@ namespace MachineBrigade.Tests
         {
             var def = Campaign.Get(id);
             MatchSettings.Mission = id;
-            // A strong but realistic deck: what a player has by the late campaign.
+            // The deck a player really has at this point: the starter cards plus everything the
+            // missions before this one unlocked, the six strongest vehicles of them.
+            var (vehicles, supports) = RealisticDeck(id);
             MatchSettings.DeckVehicles.Clear();
-            MatchSettings.DeckVehicles.AddRange(new[]
-            {
-                "light_tank", "main_battle_tank", "heavy_tank", "aa_vehicle", "tank_destroyer", "attack_helicopter", "mlrs", "apc",
-            });
+            MatchSettings.DeckVehicles.AddRange(vehicles);
             MatchSettings.DeckSupports.Clear();
-            MatchSettings.DeckSupports.AddRange(new[] { "artillery_barrage", "airstrike" });
+            MatchSettings.DeckSupports.AddRange(supports);
 
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(def.Map + "_" + def.Variant), seed: 5);
             var session = ModeSession.Create(GameModeKind.Campaign, false, world, 5);

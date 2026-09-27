@@ -33,9 +33,39 @@ namespace MachineBrigade.Game.Match
             ["heavy_bomber"] = 4000,
             ["sky_gunship"] = 4500,
             ["stealth_bomber"] = 5000,
+            ["siege_tank"] = 4500,
+            ["ballistic_launcher"] = 5000,
+            ["heavy_attack_heli"] = 3500,
             ["napalm_strike"] = 1500,
             ["carpet_bombing"] = 3000,
         };
+
+        /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>
+        private static readonly Dictionary<string, int> ItemPrices = new()
+        {
+            ["moab"] = 1200,
+            ["cluster_strike"] = 600,
+            ["reinforcements"] = 900,
+            ["field_repair"] = 500,
+            ["emp_blast"] = 700,
+            ["shield_dome"] = 600,
+            ["gunship_support"] = 1000,
+        };
+
+        public static readonly string[] Items =
+            { "moab", "cluster_strike", "reinforcements", "field_repair", "emp_blast", "shield_dome", "gunship_support" };
+
+        /// <summary>Items come in packs of this many.</summary>
+        public const int ItemPack = 2;
+
+        public static int ItemPrice(string id) => ItemPrices.TryGetValue(id, out var price) ? price : 800;
+
+        public static bool IsItem(string id) => ItemPrices.ContainsKey(id);
+
+        /// <summary>Doctrines: the first is free, the others are bought with coins (owned as "doctrine.&lt;id&gt;").</summary>
+        public const int DoctrinePrice = 1500;
+
+        public static bool DoctrineOwned(string id) => id == "armor" || PlayerProfile.Owns("doctrine." + id);
 
         public static bool IsStarter(string id) =>
             System.Array.IndexOf(StarterVehicles, id) >= 0 || System.Array.IndexOf(StarterSupports, id) >= 0;
@@ -86,7 +116,8 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>The first mission, and every mission after one already won.</summary>
-        public static bool IsOpen(int index) => index == 0 || (index > 0 && index < All.Count && PlayerProfile.Completed(All[index - 1].Id));
+        public static bool IsOpen(int index) =>
+            index == 0 || (index > 0 && index < All.Count && (All[index - 1].Optional || PlayerProfile.Completed(All[index - 1].Id)));
 
         /// <summary>The next mission to play: the first not yet won (or the last).</summary>
         public static int Next

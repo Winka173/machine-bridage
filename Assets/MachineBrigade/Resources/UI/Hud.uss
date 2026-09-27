@@ -257,6 +257,7 @@
 .hp-fill.critical { background-color: var(--danger); }
 .hp-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n300); margin-top: 3px; }
 .hp-text.hint-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; }
+.counter-text { -unity-font: resource("Fonts/Inter-Regular"); font-size: 11px; color: var(--amber-light); margin-top: 3px; white-space: normal; }
 
 .buttons { flex-direction: row; }
 .cmd {
@@ -516,6 +517,9 @@
 .map-art.desert { background-color: #9a7440; }
 .map-art.snow { background-color: #7d93a3; }
 .map-art.harbor { background-color: #35566b; }
+.map-art.volcanic { background-color: #6a2a1a; }
+.map-art.jungle { background-color: #2f5a2a; }
+.map-art.urban { background-color: #4a5058; }
 .map-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; letter-spacing: 1px; margin: 2px 6px 0 6px; color: var(--n100); }
 .map-sub { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 11px; letter-spacing: 0; margin: -3px 6px 0 6px; color: var(--n400); }
 .map-name, .map-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -670,6 +674,9 @@
 .map-group-swatch.desert { background-color: #9a7440; }
 .map-group-swatch.snow { background-color: #7d93a3; }
 .map-group-swatch.harbor { background-color: #35566b; }
+.map-group-swatch.volcanic { background-color: #6a2a1a; }
+.map-group-swatch.jungle { background-color: #2f5a2a; }
+.map-group-swatch.urban { background-color: #4a5058; }
 .map-group-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: var(--n300); }
 .mission-row {
     flex-direction: row; align-items: center; height: 54px; margin-bottom: 5px; padding: 0 10px;
@@ -696,6 +703,9 @@
 .detail-art.desert { background-color: #9a7440; }
 .detail-art.snow { background-color: #7d93a3; }
 .detail-art.harbor { background-color: #35566b; }
+.detail-art.volcanic { background-color: #6a2a1a; }
+.detail-art.jungle { background-color: #2f5a2a; }
+.detail-art.urban { background-color: #4a5058; }
 .detail-art .icon { width: 28px; height: 28px; margin-right: 10px; }
 .detail-kicker { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 13px; letter-spacing: 2px; color: #f4f7f8; }
 .detail-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 26px; letter-spacing: 1px; color: var(--n100); margin: 8px 14px 0 14px; }
@@ -814,3 +824,34 @@
 .letterbox { position: absolute; left: 0; right: 0; height: 0; background-color: #000000; display: none; }
 .letterbox.top { top: 0; }
 .letterbox.bottom { bottom: 0; }
+
+/* items bought with coins: a column under the minimap tools */
+.item-strip { position: absolute; left: 16px; top: 430px; flex-direction: column; }
+.item {
+    width: 56px; height: 56px; margin-bottom: 6px; border-radius: 8px; align-items: center; justify-content: center;
+    background-color: var(--n800); border-width: 2px; border-color: var(--amber);
+}
+.item.selected { background-color: var(--amber); }
+.item.empty { opacity: 0.4; }
+.item-cooldown { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background-color: var(--n950); border-radius: 6px; }
+.item-count {
+    position: absolute; right: -4px; bottom: -4px; padding-left: 4px; padding-right: 4px; border-radius: 6px;
+    background-color: var(--amber); min-width: 22px; align-items: center;
+}
+.item-count-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n950); }
+
+/* colour-blind safe teams: blue for ours, orange for theirs */
+.cb { --ally: #3f6fb0; --ally-dark: #2b4e80; --mint: #7fb8ff; --danger: #f08c1e; --danger-dark: #a45a0c; }
+
+/* today's challenges on the main menu */
+.daily { margin-bottom: 8px; }
+.daily-row { flex-direction: row; align-items: center; height: 34px; padding-left: 10px; padding-right: 4px; margin-bottom: 4px;
+    background-color: var(--n800); border-radius: 6px; }
+.daily-text { flex-grow: 1; -unity-font: resource("Fonts/Inter-Regular"); font-size: 12px; color: var(--n200); }
+.daily-progress { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; color: var(--n300); margin-right: 8px; }
+.daily-claim { flex-direction: row; align-items: center; height: 26px; padding-left: 6px; padding-right: 8px; border-radius: 5px;
+    background-color: var(--n700); }
+.daily-claim.ready { background-color: var(--amber); }
+.daily-claim.claimed { background-color: var(--ally-dark); }
+.daily-reward { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 13px; color: var(--n100); margin-left: 3px; }
+.daily-claim.ready .daily-reward { color: var(--amber-ink); }

@@ -7,7 +7,8 @@ namespace MachineBrigade.Game.Effects
     /// <summary>
     /// Shared world-space particle systems that effects emit into on demand: shell smoke trails,
     /// rocket motors, flame jets and tread dust. One system per kind keeps the cost to a few draw calls no
-    /// matter how many vehicles are firing or driving.
+    /// matter how many vehicles are firing or driving. Flamethrower streams are rolling balls of
+    /// fire from the explosion flipbook (<see cref="FxMaterials"/>), its early, burning frames.
     /// </summary>
     internal sealed class Emitters
     {
@@ -22,7 +23,10 @@ namespace MachineBrigade.Game.Effects
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
-            _flame = Continuous(parent, "Flame Jets", m.Fire, 600, PB.FireGradient, 0.5f, 2.2f);
+            _flame = Continuous(parent, "Flame Jets", FxMaterials.Shared.Napalm, 900,
+                PB.Hold(new Color(0.3f, 0.27f, 0.24f), new Color(0.26f, 0.24f, 0.22f), 0.05f, 0.7f), 0.45f, 1.6f);
+            // The sheet's burning half only; the quads are lowered so the fire sits on the stream.
+            PB.Flipbook(_flame, loop: true, tilt: 30f, pivotY: -0.05f);
             _flak = Continuous(parent, "Flak Bursts", m.Smoke, 200, PB.Plume(0.08f, 0.3f, 0.8f), 0.6f, 1.8f);
             _repair = Continuous(parent, "Repair", m.Sparks, 200,
                 PB.Fade(new Color(0.5f, 1.6f, 0.8f), new Color(0.3f, 1.2f, 0.6f), new Color(0.2f, 0.8f, 0.4f)), 1f, 0.3f);
@@ -47,9 +51,9 @@ namespace MachineBrigade.Game.Effects
         public void FlameJet(Vector3 from, Vector3 to, float seconds)
         {
             var velocity = (to - from) / Mathf.Max(0.1f, seconds);
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 4; i++)
                 Emit(_flame, from + Random.insideUnitSphere * 0.15f, velocity * Random.Range(0.85f, 1.1f) + Random.insideUnitSphere * 1.2f,
-                    Random.Range(0.5f, 0.9f), seconds * Random.Range(0.9f, 1.25f));
+                    Random.Range(0.9f, 1.4f), seconds * Random.Range(0.9f, 1.25f));
         }
 
         /// <summary>The black puff of an anti-aircraft shell bursting.</summary>

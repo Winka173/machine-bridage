@@ -81,6 +81,14 @@ namespace MachineBrigade.Game.Rendering
             ["RailBrown"] = ("#7a3f2c", 0.3f, 0.6f, 0f),
             // Premium trims (the Titan).
             ["Gilded"] = ("#f5c75a", 0.9f, 0.28f, 0f),
+            // Elite enemy units: dark armour and red sensor glow.
+            ["EliteBlack"] = ("#1c1e24", 0.35f, 0.5f, 0f),
+            ["Medical"] = ("#e9ece6", 0.1f, 0.4f, 0f),
+            // Volcanic, jungle, airbase and city maps.
+            ["LavaGlow"] = ("#ff4a12", 0f, 0.45f, 2.2f),
+            ["SignalGreen"] = ("#3cf08c", 0f, 0.3f, 2.4f),
+            ["Obsidian"] = ("#1e1c26", 0.3f, 0.16f, 0f),
+            ["EliteGlow"] = ("#ff2a1f", 0f, 0.3f, 2.4f),
         };
 
         private readonly List<Material> _owned = new();
@@ -120,6 +128,7 @@ namespace MachineBrigade.Game.Rendering
             BarBack = Unlit(unlit, "BarBack", new Color(0.04f, 0.06f, 0.06f));
             BarAlly = Unlit(unlit, "BarAlly", TeamColors.Ui(0));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
+            BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
             Tracer = Unlit(unlit, "Tracer", new Color(7f, 5f, 1.8f)); // HDR so bloom makes it glow
             StrikeWarning = Unlit(unlit, "StrikeWarning", new Color(2.6f, 0.35f, 0.2f));
             Objective = Unlit(unlit, "Objective", new Color(0.9f, 0.9f, 0.85f));
@@ -169,6 +178,9 @@ namespace MachineBrigade.Game.Rendering
         public Material BarBack { get; }
         public Material BarAlly { get; }
         public Material BarEnemy { get; }
+
+        /// <summary>Gold health bar of elite enemy units.</summary>
+        public Material BarElite { get; }
         public Material Tracer { get; }
         public Material Fire { get; }
         public Material Sparks { get; }

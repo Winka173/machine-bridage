@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
@@ -19,8 +20,11 @@ namespace MachineBrigade.Sim.Movement
         private const float StuckWindow = 1.5f;
         private const float StuckDistance = 0.4f;
         private const int StuckStrikesToGiveUp = 3;
-        private const float SeparationSlack = 0.08f;
-        private const float SeparationStiffness = 0.35f;
+        private const float SeparationSlack = 0.05f;
+        private const float SeparationStiffness = 0.55f;
+
+        /// <summary>Largest push per step, so a deep overlap resolves over a few steps instead of a jump.</summary>
+        private const float MaxPush = 0.35f;
 
         /// <summary>How far an idle vehicle will drive from its post to fight.</summary>
         private const float GuardLeash = 16f;
@@ -35,11 +39,19 @@ namespace MachineBrigade.Sim.Movement
 
         public MovementSystem(SimWorld world) => _world = world;
 
+        /// <summary>Living ground vehicles sorted by X, for the neighbour searches of avoidance and separation.</summary>
+        private readonly List<Vehicle> _ground = new();
+
+        private float _maxBound;
+
         public void Step(float dt)
         {
+            SortGround();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
+                // Fixed defences only turn their guns (the combat system does that).
+                if (v.Def.Static) continue;
                 v.RepathTimer -= dt;
                 UpdateOrder(v);
                 if (v.ManualOrder && v.Order.Kind == OrderKind.Idle)
@@ -49,8 +61,139 @@ namespace MachineBrigade.Sim.Movement
                 }
                 Drive(v, dt);
             }
+            SortGround();
             Separate();
         }
+
+        /// <summary>
+        /// Keeps <see cref="_ground"/> sorted by X. Positions change little between steps, so an
+        /// insertion sort over the nearly sorted list is linear and allocates nothing.
+        /// </summary>
+        private void SortGround()
+        {
+            _ground.Clear();
+            _maxBound = 0f;
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Flying) continue;
+                _ground.Add(v);
+                if (v.Def.HullBound > _maxBound) _maxBound = v.Def.HullBound;
+            }
+            for (var i = 1; i < _ground.Count; i++)
+            {
+                var item = _ground[i];
+                var j = i - 1;
+                while (j >= 0 && _ground[j].Position.X > item.Position.X)
+                {
+                    _ground[j + 1] = _ground[j];
+                    j--;
+                }
+                _ground[j + 1] = item;
+            }
+        }
+
+        /// <summary>First index in <see cref="_ground"/> whose X is at least <paramref name="x"/>.</summary>
+        private int LowerBound(float x)
+        {
+            int lo = 0, hi = _ground.Count;
+            while (lo < hi)
+            {
+                var mid = (lo + hi) >> 1;
+                if (_ground[mid].Position.X < x) lo = mid + 1;
+                else hi = mid;
+            }
+            return lo;
+        }
+
+        /// <summary>The ends of a vehicle's collision capsule spine.</summary>
+        private static void Spine(Vehicle v, out Vector2 a, out Vector2 b)
+        {
+            var half = SimMath.Forward(v.Heading) * v.Def.HullHalf;
+            a = v.Position - half;
+            b = v.Position + half;
+        }
+
+        /// <summary>Closest points between segments p1-q1 and p2-q2 (Ericson, Real-Time Collision Detection 5.1.9).</summary>
+        private static void ClosestPoints(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2, out Vector2 c1, out Vector2 c2)
+        {
+            var d1 = q1 - p1;
+            var d2 = q2 - p2;
+            var r = p1 - p2;
+            var a = Vector2.Dot(d1, d1);
+            var e = Vector2.Dot(d2, d2);
+            var f = Vector2.Dot(d2, r);
+            float s, t;
+            if (a <= 1e-6f && e <= 1e-6f)
+            {
+                c1 = p1;
+                c2 = p2;
+                return;
+            }
+            if (a <= 1e-6f)
+            {
+                s = 0f;
+                t = Math.Clamp(f / e, 0f, 1f);
+            }
+            else
+            {
+                var c = Vector2.Dot(d1, r);
+                if (e <= 1e-6f)
+                {
+                    t = 0f;
+                    s = Math.Clamp(-c / a, 0f, 1f);
+                }
+                else
+                {
+                    var b = Vector2.Dot(d1, d2);
+                    var denominator = a * e - b * b;
+                    s = denominator > 1e-6f ? Math.Clamp((b * f - c * e) / denominator, 0f, 1f) : 0f;
+                    t = (b * s + f) / e;
+                    if (t < 0f)
+                    {
+                        t = 0f;
+                        s = Math.Clamp(-c / a, 0f, 1f);
+                    }
+                    else if (t > 1f)
+                    {
+                        t = 1f;
+                        s = Math.Clamp((b - c) / a, 0f, 1f);
+                    }
+                }
+            }
+            c1 = p1 + d1 * s;
+            c2 = p2 + d2 * t;
+        }
+
+        /// <summary>
+        /// The nearest ground vehicle whose hull the driver would run into within
+        /// <paramref name="reach"/> metres ahead, or null.
+        /// </summary>
+        private Vehicle? Blocker(Vehicle v, Vector2 forward, float reach)
+        {
+            var front = v.Position + forward * v.Def.HullHalf;
+            var probe = v.Position + forward * (v.Def.HullHalf + reach);
+            var width = v.Def.HullRadius * 0.85f;
+            var span = v.Def.HullBound + reach + _maxBound;
+            Vehicle? nearest = null;
+            var nearestAhead = float.MaxValue;
+            for (var i = LowerBound(v.Position.X - span); i < _ground.Count; i++)
+            {
+                var o = _ground[i];
+                if (o.Position.X > v.Position.X + span) break;
+                if (o == v || !o.IsAlive) continue;
+                var offset = o.Position - v.Position;
+                var ahead = Vector2.Dot(offset, forward);
+                if (ahead <= 0f || ahead > nearestAhead) continue;
+                Spine(o, out var oa, out var ob);
+                ClosestPoints(front, probe, oa, ob, out var c1, out var c2);
+                if (Vector2.DistanceSquared(c1, c2) >= Square(width + o.Def.HullRadius)) continue;
+                nearest = o;
+                nearestAhead = ahead;
+            }
+            return nearest;
+        }
+
+        private static float Square(float x) => x * x;
 
         private void UpdateOrder(Vehicle v)
         {
@@ -211,6 +354,11 @@ namespace MachineBrigade.Sim.Movement
         private void Drive(Vehicle v, float dt)
         {
             var def = v.Def;
+            if (v.Stunned)
+            {
+                v.Speed = 0f;
+                return;
+            }
             if (def.FixedWing)
             {
                 DriveAeroplane(v, dt);
@@ -238,6 +386,35 @@ namespace MachineBrigade.Sim.Movement
             }
 
             var desired = SimMath.HeadingOf(toWaypoint);
+            var slowFor = float.MaxValue;
+            if (!def.Flying && distance > 1.5f)
+            {
+                // Look ahead for a hull in the way. Follow a friend going the same way; steer round
+                // anything parked, crossing or hostile instead of shoving into it.
+                var forward = SimMath.Forward(v.Heading);
+                var blocker = Blocker(v, forward, 1.2f + v.Speed * 0.7f);
+                if (blocker != null)
+                {
+                    var sameWay = Vector2.Dot(SimMath.Forward(blocker.Heading), forward) > 0.4f;
+                    if (blocker.Team == v.Team && blocker.IsMoving && sameWay) slowFor = blocker.Speed * 0.9f;
+                    else
+                    {
+                        // Steer away from the side the blocker is on (headings turn clockwise), and
+                        // keep the choice a moment so the hull does not weave. Oncoming traffic
+                        // always passes on the right, so two drivers never both dodge into each other.
+                        if (_world.Time >= v.AvoidUntil)
+                        {
+                            var offset = blocker.Position - v.Position;
+                            var onLeft = forward.X * offset.Y - forward.Y * offset.X > 0f;
+                            var oncoming = blocker.IsMoving && Vector2.Dot(SimMath.Forward(blocker.Heading), forward) < -0.5f;
+                            v.AvoidSide = oncoming || onLeft ? 1f : -1f;
+                        }
+                        v.AvoidUntil = _world.Time + 0.8;
+                        desired += v.AvoidSide * 0.8f;
+                        slowFor = def.Speed * 0.5f;
+                    }
+                }
+            }
             var misalignment = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
             // Close to the final point, small corrections would swing the hull back and forth:
             // hold the heading and let the vehicle roll in.
@@ -246,8 +423,9 @@ namespace MachineBrigade.Sim.Movement
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
-            var targetSpeed = def.Speed * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
+            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying ? 0.4f : 0.15f);
             if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(1.5f, distance * 1.5f));
+            targetSpeed = MathF.Min(targetSpeed, slowFor);
             var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
             v.Speed = SimMath.MoveTowards(v.Speed, targetSpeed, acceleration * dt);
 
@@ -304,7 +482,7 @@ namespace MachineBrigade.Sim.Movement
             if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * dt);
-            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed, def.Speed * 0.8f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
 
@@ -386,54 +564,98 @@ namespace MachineBrigade.Sim.Movement
             v.StuckStrikes = strikes;
         }
 
-        /// <summary>Pushes overlapping hulls apart; parked vehicles yield more than moving ones.</summary>
+        /// <summary>
+        /// Pushes overlapping hulls apart. Ground vehicles collide as capsules along their
+        /// heading (a tank is long and narrow, not a disc); parked vehicles yield more than moving
+        /// ones, and fixed defences do not yield at all. Aircraft keep apart from each other only.
+        /// </summary>
         private void Separate()
         {
+            for (var i = 0; i < _ground.Count; i++)
+            {
+                var a = _ground[i];
+                var reach = a.Def.HullBound + _maxBound;
+                Spine(a, out var a0, out var a1);
+                for (var j = i + 1; j < _ground.Count; j++)
+                {
+                    var b = _ground[j];
+                    if (b.Position.X - a.Position.X > reach) break;
+                    var bound = a.Def.HullBound + b.Def.HullBound;
+                    if (Vector2.DistanceSquared(a.Position, b.Position) >= bound * bound) continue;
+                    Spine(b, out var b0, out var b1);
+                    ClosestPoints(a0, a1, b0, b1, out var ca, out var cb);
+                    Push(a, b, cb - ca, a.Def.HullRadius + b.Def.HullRadius);
+                }
+            }
+
             var list = _world.VehicleList;
             for (var i = 0; i < list.Count; i++)
             {
                 var a = list[i];
-                if (!a.IsAlive) continue;
+                if (!a.IsAlive || !a.Flying) continue;
                 for (var j = i + 1; j < list.Count; j++)
                 {
                     var b = list[j];
-                    // Aircraft only keep apart from each other; they fly over ground vehicles.
-                    if (!b.IsAlive || a.Flying != b.Flying) continue;
-                    var delta = b.Position - a.Position;
-                    var minimum = a.Radius + b.Radius;
-                    var distanceSquared = delta.LengthSquared();
-                    if (distanceSquared >= minimum * minimum) continue;
-
-                    Vector2 normal;
-                    float distance;
-                    if (distanceSquared < 1e-6f)
-                    {
-                        normal = SimMath.Forward((a.Id.Value * 2.39996f) % SimMath.Tau);
-                        distance = 0f;
-                    }
-                    else
-                    {
-                        distance = MathF.Sqrt(distanceSquared);
-                        normal = delta / distance;
-                    }
-
-                    // Resolve only part of the overlap per step and ignore slivers: full correction
-                    // every step makes packed groups shove each other back and forth (visible jitter).
-                    var overlap = (minimum - distance - SeparationSlack) * SeparationStiffness;
-                    if (overlap <= 0f) continue;
-                    var weightA = a.HasPath ? 0.3f : 0.7f;
-                    var weightB = b.HasPath ? 0.3f : 0.7f;
-                    var total = weightA + weightB;
-                    Nudge(a, -normal * (overlap * weightA / total));
-                    Nudge(b, normal * (overlap * weightB / total));
+                    if (!b.IsAlive || !b.Flying) continue;
+                    Push(a, b, b.Position - a.Position, a.Radius + b.Radius);
                 }
             }
         }
 
-        private void Nudge(Vehicle v, Vector2 offset)
+        private void Push(Vehicle a, Vehicle b, Vector2 delta, float minimum)
         {
-            var next = v.Position + offset;
-            if (_world.Map.Contains(next) && (v.Flying || _world.Grid.IsWalkable(next))) v.Position = next;
+            var distanceSquared = delta.LengthSquared();
+            if (distanceSquared >= minimum * minimum) return;
+
+            Vector2 normal;
+            float distance;
+            if (distanceSquared < 1e-6f)
+            {
+                normal = SimMath.Forward((a.Id.Value * 2.39996f) % SimMath.Tau);
+                distance = 0f;
+            }
+            else
+            {
+                distance = MathF.Sqrt(distanceSquared);
+                normal = delta / distance;
+            }
+
+            // Resolve only part of the overlap per step and ignore slivers: full correction every
+            // step makes packed groups shove each other back and forth (visible jitter).
+            var overlap = MathF.Min((minimum - distance - SeparationSlack) * SeparationStiffness, MaxPush);
+            if (overlap <= 0f) return;
+            var weightA = Yield(a);
+            var weightB = Yield(b);
+            var total = weightA + weightB;
+            if (total <= 0f) return;
+            // Whoever cannot move (a wall behind it) passes its share to the other.
+            var movedA = weightA > 0f && Nudge(a, -normal * (overlap * weightA / total));
+            var movedB = weightB > 0f && Nudge(b, normal * (overlap * weightB / total));
+            if (!movedA && weightB > 0f) Nudge(b, normal * (overlap * weightA / total));
+            if (!movedB && weightA > 0f) Nudge(a, -normal * (overlap * weightB / total));
+        }
+
+        /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>
+        private static float Yield(Vehicle v)
+        {
+            if (v.Def.Static) return 0f;
+            var weight = v.HasPath ? 0.3f : 0.7f;
+            return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
+        }
+
+        /// <summary>Moves a vehicle by <paramref name="offset"/>, or slides it along a wall; false if it cannot move at all.</summary>
+        private bool Nudge(Vehicle v, Vector2 offset)
+        {
+            if (TryPlace(v, v.Position + offset)) return true;
+            // Blocked: slide along whichever axis is still free.
+            return TryPlace(v, v.Position + new Vector2(offset.X, 0f)) || TryPlace(v, v.Position + new Vector2(0f, offset.Y));
+        }
+
+        private bool TryPlace(Vehicle v, Vector2 next)
+        {
+            if (!_world.Map.Contains(next) || (!v.Flying && !_world.Grid.IsWalkable(next))) return false;
+            v.Position = next;
+            return true;
         }
     }
 }

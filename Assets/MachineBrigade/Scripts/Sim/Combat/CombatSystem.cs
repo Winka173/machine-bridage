@@ -30,8 +30,16 @@ namespace MachineBrigade.Sim.Combat
 
         public CombatSystem(SimWorld world) => _world = world;
 
+        /// <summary>Vehicles a guided missile or drone is flying at this step.</summary>
+        private readonly HashSet<EntityId> _missileTargets = new();
+
+        public bool MissileIncoming(EntityId vehicle) => _missileTargets.Contains(vehicle);
+
         public void Step(float dt)
         {
+            _missileTargets.Clear();
+            foreach (var p in _projectiles)
+                if (p.Weapon.Guided && p.Target.IsValid) _missileTargets.Add(p.Target);
             _focus.Clear();
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Target.IsValid) _focus.Add((v.Team, v.Target));
@@ -41,7 +49,13 @@ namespace MachineBrigade.Sim.Combat
                 if (!v.IsAlive) continue;
                 var mounts = v.Def.Mounts;
                 // Cooldowns run regardless of movement or retargeting, so micro cannot create free shots.
-                for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt);
+                for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
+                // Knocked out by an EMP: the crew can do nothing until it wears off.
+                if (v.Stunned)
+                {
+                    v.Target = EntityId.None;
+                    continue;
+                }
 
                 var target = SelectTarget(v);
                 v.Target = target?.Id ?? EntityId.None;
@@ -185,6 +199,9 @@ namespace MachineBrigade.Sim.Combat
             }
 
             if (target == null || !CanFire(v, index, target)) return;
+            // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
+            if (state.Ammo == 0) return;
+            if (state.Ammo > 0) state.Ammo--;
             Launch(v, index, target.Position, target.Id, IsFlying(target));
             if (weapon.Burst > 1)
             {
@@ -226,7 +243,15 @@ namespace MachineBrigade.Sim.Combat
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
 
-            _projectiles.Add(new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying));
+            var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying);
+            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
+                projectile.Jammed = true;
+            if (weapon.Guided)
+            {
+                var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
+                projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (5f + (float)_world.Random.NextDouble() * 6f);
+            }
+            _projectiles.Add(projectile);
             _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target));
         }
 

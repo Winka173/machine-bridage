@@ -33,9 +33,12 @@ namespace MachineBrigade.Sim.Combat
             var at = p.AimPoint;
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
-                // Guided missiles follow their target; everything else lands where it was aimed.
-                if (weapon.Guided) at = target.Position;
-                if (Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
+                // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
+                // them); everything else lands where it was aimed.
+                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed);
+                if (weapon.Guided && !decoyed) at = target.Position;
+                if (decoyed) at = target.Position + p.Miss;
+                if (!decoyed && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
@@ -93,6 +96,7 @@ namespace MachineBrigade.Sim.Combat
             switch (target)
             {
                 case Vehicle vehicle:
+                    if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
                     vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
                     _world.Emit(SimEvent.Damage(vehicle, damage));
                     if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);

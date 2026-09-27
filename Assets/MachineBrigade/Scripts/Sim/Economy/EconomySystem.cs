@@ -23,9 +23,9 @@ namespace MachineBrigade.Sim.Economy
         {
             Team = team;
             Cp = startCp;
-            Income = income;
+            _income = income;
             Bank = bank;
-            ArmyCap = armyCap;
+            _armyCap = armyCap;
             Vehicles = vehicles ?? Array.Empty<string>();
             Supports = supports ?? Array.Empty<string>();
         }
@@ -34,13 +34,19 @@ namespace MachineBrigade.Sim.Economy
         public float Cp { get; internal set; }
 
         /// <summary>CP per second before objective bonuses.</summary>
-        public float Income { get; }
+        public float Income => _income * (Doctrine?.Income ?? 1f);
+
+        private readonly float _income;
+        private readonly int _armyCap;
+
+        /// <summary>The commander's doctrine for this battle, or none.</summary>
+        public Content.Doctrine? Doctrine { get; set; }
 
         /// <summary>Extra CP per second, set by the game mode (for example per held objective).</summary>
         public float Bonus { get; set; }
 
         public float Bank { get; }
-        public int ArmyCap { get; }
+        public int ArmyCap => _armyCap + (Doctrine?.ArmyCap ?? 0);
 
         /// <summary>Vehicle cards in the deck (empty: any vehicle).</summary>
         public IReadOnlyList<string> Vehicles { get; }
@@ -50,6 +56,14 @@ namespace MachineBrigade.Sim.Economy
 
         /// <summary>CP value of this side's army on the field plus deliveries on the way.</summary>
         public int ArmyCp { get; internal set; }
+
+        /// <summary>Chance that a delivered vehicle arrives as its elite version (enemy difficulty).</summary>
+        public float EliteChance { get; set; }
+
+        /// <summary>Single-use items this side carries into the match (bought with coins), by support id.</summary>
+        public Dictionary<string, int> Items { get; } = new();
+
+        public int ItemCount(string supportId) => Items.TryGetValue(supportId, out var n) ? n : 0;
 
         public float CooldownLeft(string supportId, double now) =>
             ReadyAt.TryGetValue(supportId, out var ready) ? (float)Math.Max(0.0, ready - now) : 0f;
@@ -131,7 +145,7 @@ namespace MachineBrigade.Sim.Economy
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.CpCost * KillReward);
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward);
         }
 
         private void Deliver(int team, string defId)
@@ -142,6 +156,10 @@ namespace MachineBrigade.Sim.Economy
             var angle = index * 2.39996f;
             var offset = new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
             var inward = Vector2.Normalize(-zone == Vector2.Zero ? Vector2.UnitY : -zone);
+            // Veteran crews: some deliveries turn up as the refurbished elite version.
+            if (_teams.TryGetValue(team, out var economy) && economy.EliteChance > 0f &&
+                _world.Catalog.EliteVariant(defId) is { } elite && _world.Random.NextDouble() < economy.EliteChance)
+                defId = elite;
             var vehicle = _world.SpawnVehicle(defId, team, zone + offset, SimMath.HeadingOf(inward));
             _single.Clear();
             _single.Add(vehicle.Id);
@@ -152,7 +170,7 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team) total += v.Def.CpCost;
+                if (v.IsAlive && v.Team == team) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _) in _pending)
                 if (pendingTeam == team) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;

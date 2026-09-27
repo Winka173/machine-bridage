@@ -9,13 +9,19 @@ namespace MachineBrigade.Game.Views
         FrozenRiver,
         Sea,
         None,
+
+        /// <summary>A river of molten lava: it glows, and lights the valley at night.</summary>
+        Lava,
+
+        /// <summary>A narrow straight canal between concrete banks (a city).</summary>
+        Canal,
     }
 
     /// <summary>
     /// The look of one kind of battlefield: ground palette and speckle, which trees grow on the
     /// map and round it, the ground clutter, the mountain colours, the water beyond the edge and
     /// the scenery houses. Presentation only; maps name their theme ("temperate", "desert",
-    /// "snow", "harbor").
+    /// "snow", "harbor", "volcanic", "jungle", "urban").
     /// </summary>
     public sealed class MapTheme
     {
@@ -82,6 +88,38 @@ namespace MachineBrigade.Game.Views
         /// </summary>
         public Color? ModelGrass { get; private set; }
 
+        // Molten lava: the lava river beyond the edge, lava pools on the map, glowing cracks.
+        /// <summary>
+        /// Lava at its hottest, as an HDR material colour (Unity converts it to linear, so 2.6 is
+        /// about 8 in the frame buffer: it blooms like the tracers).
+        /// </summary>
+        public Color LavaHot { get; private set; } = new(2.6f, 1.05f, 0.3f);
+
+        /// <summary>Cooling crust on the surface and edges of lava (sRGB 0..1; it multiplies LavaHot).</summary>
+        public Color LavaCrust { get; private set; } = new(0.22f, 0.07f, 0.04f);
+
+        /// <summary>Glowing cracks over the open ground, per unit of the volcanic count (0 for none).</summary>
+        public float Cracks { get; private set; }
+
+        // Cities.
+        /// <summary>
+        /// Paved ground (a city): asphalt roads with lane markings and crossings, concrete
+        /// elsewhere, and grass only in the parks, under trees and hedges.
+        /// </summary>
+        public bool Paved { get; private set; }
+
+        /// <summary>Lawn colour under trees and hedges on paved ground.</summary>
+        public Color Lawn { get; private set; } = Hex("#5f7a45");
+
+        /// <summary>Towers standing in city blocks round the map (null for countryside).</summary>
+        public string[] Skyline { get; private set; }
+
+        /// <summary>Extra scenery scattered round the map on the flat (fumaroles, obsidian, huts).</summary>
+        public string[] Scenery { get; private set; }
+
+        /// <summary>How far past the map edge the mountains begin (a city fills the gap).</summary>
+        public float RangeStart { get; private set; } = 16f;
+
         /// <summary>The battlefield square on the minimap.</summary>
         public Color Minimap => new(Palette.Grass.r * 0.5f, Palette.Grass.g * 0.5f, Palette.Grass.b * 0.5f, 0.9f);
 
@@ -90,6 +128,9 @@ namespace MachineBrigade.Game.Views
             "desert" => Desert,
             "snow" => Snow,
             "harbor" => Harbor,
+            "volcanic" => Volcanic,
+            "jungle" => Jungle,
+            "urban" => Urban,
             _ => Temperate,
         };
 
@@ -262,6 +303,156 @@ namespace MachineBrigade.Game.Views
                     Peaks = 0.7f,
                     Haze = new Color(0.37f, 0.46f, 0.5f),
                     Cast = new Color(0.95f, 0.98f, 1.03f),
+                };
+            }
+        }
+
+        /// <summary>
+        /// Dark basalt and ash with glowing cracks, lava pools and a lava river beyond the edge;
+        /// black ranges, charred forest, an ember-red haze.
+        /// </summary>
+        public static MapTheme Volcanic
+        {
+            get
+            {
+                var palette = new TerrainTheme("#3d3936", "#2a2524", "#5b524b", "#4d4239", "#57514d");
+                return new MapTheme
+                {
+                    Id = "volcanic",
+                    Palette = palette,
+                    SpeckleLight = Rgb(150, 112, 86),
+                    SpeckleDark = Rgb(14, 11, 11),
+                    Skirt = Hex("#1d1918"),
+                    Pebble = Hex("#2a2624"),
+                    GrassTuft = Hex("#4a4038"),
+                    Tufts = 0f,
+                    Bush = null,
+                    Trees = new[] { "charred_tree" },
+                    DeadTrees = 0f,
+                    LowlandTrees = new[] { "charred_tree", "charred_tree", "charred_tree", "tree_dead" },
+                    HighlandTrees = new[] { "charred_tree", "tree_dead" },
+                    Forest = 0.28f,
+                    Fields = false,
+                    Crops = new[] { new Color(0.3f, 0.28f, 0.26f) },
+                    Farmhouses = new[] { "ruin", "factory", "storage_tank" },
+                    Water = ThemeWater.Lava,
+                    WaterColour = Hex("#2a1410"),
+                    WaterRoughness = 0.6f,
+                    Rocks = new[] { "basalt_rock_a", "basalt_rock_b", "basalt_rock_c", "obsidian_spire" },
+                    Crags = new[] { "volcanic_cliff", "basalt_rock_b", "obsidian_spire" },
+                    Scenery = new[] { "lava_vent", "lava_vent", "obsidian_spire", "basalt_rock_c" },
+                    Meadow = Hex("#3a3532"),
+                    ForestFloor = Hex("#2e2927"),
+                    Rock = Hex("#262221"),
+                    Cliff = Hex("#171413"),
+                    // The tallest cones glow a dull ember red at the top.
+                    Peak = Hex("#5a2418"),
+                    PeakLine = 0.78f,
+                    Peaks = 1.25f,
+                    ModelGrass = Hex("#46403b"),
+                    Haze = new Color(0.36f, 0.2f, 0.16f),
+                    Cast = new Color(1.12f, 0.86f, 0.74f),
+                    Cracks = 1f,
+                };
+            }
+        }
+
+        /// <summary>
+        /// Lush dark rainforest, muddy tracks and a brown river, stilt huts and rice paddies, green
+        /// jungle hills in a humid green haze.
+        /// </summary>
+        public static MapTheme Jungle
+        {
+            get
+            {
+                var palette = new TerrainTheme("#3f5a32", "#6b5236", "#8a7a52", "#7a6042", "#5d6a5a");
+                return new MapTheme
+                {
+                    Id = "jungle",
+                    Palette = palette,
+                    SpeckleLight = Rgb(150, 170, 96),
+                    SpeckleDark = Rgb(18, 34, 18),
+                    Skirt = Hex("#2e3a24"),
+                    Pebble = Hex("#4f5a44"),
+                    GrassTuft = Hex("#3f6a30"),
+                    Tufts = 1.3f,
+                    Bush = "fern_bush",
+                    Trees = new[] { "jungle_tree_a", "jungle_tree_a", "jungle_tree_b", "jungle_tree_c" },
+                    DeadTrees = 0f,
+                    LowlandTrees = new[] { "jungle_tree_a", "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "jungle_tree_c",
+                        "bamboo_clump", "palm" },
+                    HighlandTrees = new[] { "jungle_tree_a", "jungle_tree_b", "jungle_tree_b", "jungle_tree_c", "tree_round" },
+                    Forest = 1.45f,
+                    Fields = true,
+                    // Rice paddies: flooded green terraces.
+                    Crops = new[] { new Color(0.36f, 0.5f, 0.28f), new Color(0.44f, 0.56f, 0.3f), new Color(0.32f, 0.44f, 0.34f) },
+                    Farmhouses = new[] { "stilt_hut", "stilt_hut", "stilt_hut", "bamboo_clump" },
+                    Water = ThemeWater.River,
+                    WaterColour = Hex("#6b5838"),
+                    WaterRoughness = 0.12f,
+                    Rocks = new[] { "rock_a", "rock_b", "rock_c" },
+                    Crags = new[] { "cliff_a", "cliff_b", "boulders" },
+                    Scenery = new[] { "bamboo_clump", "fern_bush", "fern_bush", "stilt_hut" },
+                    Meadow = Hex("#46633a"),
+                    ForestFloor = Hex("#2f4a28"),
+                    Rock = Hex("#5a6450"),
+                    Cliff = Hex("#3f463a"),
+                    // No snow: the summits disappear into cloud forest.
+                    Peak = Hex("#6f8068"),
+                    PeakLine = 0.9f,
+                    Peaks = 1.05f,
+                    ModelGrass = Hex("#4a7436"),
+                    Haze = new Color(0.4f, 0.5f, 0.42f),
+                    Cast = new Color(0.94f, 1.03f, 0.9f),
+                };
+            }
+        }
+
+        /// <summary>
+        /// A city: asphalt and concrete, lane markings, grass only in parks; towers in every block
+        /// round the map (their windows lit at night), a canal to the north, far grey hills.
+        /// </summary>
+        public static MapTheme Urban
+        {
+            get
+            {
+                var palette = new TerrainTheme("#8b8b86", "#74746f", "#a3a29b", "#3b3c3f", "#9a9890");
+                return new MapTheme
+                {
+                    Id = "urban",
+                    Palette = palette,
+                    SpeckleLight = Rgb(200, 198, 190),
+                    SpeckleDark = Rgb(40, 40, 42),
+                    Skirt = Hex("#3a3a3a"),
+                    Pebble = Hex("#6a6a66"),
+                    GrassTuft = Hex("#56663f"),
+                    Tufts = 0f,
+                    Bush = null,
+                    Trees = new[] { "tree_round", "tree_round", "tree", "birch" },
+                    DeadTrees = 0f,
+                    LowlandTrees = new[] { "tree_round", "tree", "tree", "birch", "pine" },
+                    HighlandTrees = new[] { "pine", "pine", "tree", "tree_round" },
+                    Forest = 0.35f,
+                    Fields = false,
+                    Crops = new[] { new Color(0.5f, 0.5f, 0.48f) },
+                    Farmhouses = new[] { "office_block", "apartment", "warehouse" },
+                    Water = ThemeWater.Canal,
+                    WaterColour = Hex("#35535a"),
+                    WaterRoughness = 0.05f,
+                    Rocks = new[] { "rock_a", "rock_b", "rock_c" },
+                    Crags = new[] { "cliff_a", "cliff_b", "boulders" },
+                    Skyline = new[] { "highrise_a", "highrise_a", "highrise_b", "highrise_b", "skyscraper", "office_block", "apartment" },
+                    RangeStart = 96f,
+                    Meadow = Hex("#6d7564"),
+                    ForestFloor = Hex("#56634a"),
+                    Rock = Hex("#7a7a74"),
+                    Cliff = Hex("#5c5c58"),
+                    Peak = Hex("#9a9c9c"),
+                    PeakLine = 0.9f,
+                    Peaks = 0.55f,
+                    Haze = new Color(0.46f, 0.47f, 0.5f),
+                    Cast = new Color(0.98f, 0.98f, 1.02f),
+                    Paved = true,
                 };
             }
         }

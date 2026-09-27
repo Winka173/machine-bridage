@@ -46,6 +46,9 @@ namespace MachineBrigade.Sim.Strikes
             public double Start;
             public int Done;
             public bool Announced;
+
+            /// <summary>Spread multiplier: fire support called into an enemy jammer's bubble lands wide.</summary>
+            public float Scatter = 1f;
         }
 
         private readonly SimWorld _world;
@@ -64,23 +67,39 @@ namespace MachineBrigade.Sim.Strikes
             if (!_world.Map.Contains(command.Point)) return CommandResult.Rejected(CommandError.OutOfBounds);
 
             var economy = _world.Economy.TryGet(command.Team, out var e) ? e : null;
-            if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
-                return CommandResult.Rejected(CommandError.UnknownCard);
-            if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
-            if (!_world.Economy.TrySpend(command.Team, support.CpCost)) return CommandResult.Rejected(CommandError.NotEnoughCp);
-            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown;
+            if (support.Consumable)
+            {
+                // Items are not in the deck and cost no CP, but each use spends one.
+                if (economy == null || economy.ItemCount(support.Id) <= 0) return CommandResult.Rejected(CommandError.UnknownCard);
+                if (economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
+                economy.Items[support.Id] = economy.ItemCount(support.Id) - 1;
+            }
+            else
+            {
+                if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
+                    return CommandResult.Rejected(CommandError.UnknownCard);
+                if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
+                if (!_world.Economy.TrySpend(command.Team, support.CpCost)) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            }
+            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f);
 
-            var direction = command.Point2 - command.Point;
+            Launch(support, command.Team, command.Point, command.Point2);
+            return CommandResult.Ok;
+        }
+
+        /// <summary>Starts a strike with no deck, CP or cooldown checks (battle events call bombers this way).</summary>
+        internal void Launch(SupportDef support, int team, Vector2 point, Vector2 towards)
+        {
+            var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
             var strike = new Strike
             {
-                Support = support, Team = command.Team, Point = command.Point, Direction = direction,
-                Start = _world.Time + support.Delay,
+                Support = support, Team = team, Point = point, Direction = direction,
+                Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? 2.2f : 1f,
             };
             _strikes.Add(strike);
-            var end = support.IsLine ? command.Point + direction * support.Length : command.Point;
-            _world.Emit(SimEvent.StrikeWarning(command.Team, support, command.Point, end, support.Delay));
-            return CommandResult.Ok;
+            var end = support.IsLine ? point + direction * support.Length : point;
+            _world.Emit(SimEvent.StrikeWarning(team, support, point, end, support.Delay));
         }
 
         public void Step()
@@ -94,6 +113,13 @@ namespace MachineBrigade.Sim.Strikes
                 var strike = _strikes[i];
                 if (Advance(strike, now)) _strikes.RemoveAt(i);
             }
+        }
+
+        /// <summary>A vehicle's own smoke dischargers (a skill), announced like a smoke strike.</summary>
+        public void AddSmoke(int team, Vector2 at, float radius, float seconds)
+        {
+            _smoke.Add(new SmokeZone(at, radius, _world.Time + seconds));
+            _world.Emit(SimEvent.SmokeDeployed(team, at, radius, seconds));
         }
 
         /// <summary>Whether sight between two points is cut by smoke (either end inside a cloud, beyond arm's length).</summary>
@@ -188,6 +214,47 @@ namespace MachineBrigade.Sim.Strikes
                     return s.Done >= support.Count;
                 }
 
+                case SupportKind.Emp:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Boss) continue;
+                        if (Vector2.Distance(v.Position, s.Point) > support.Radius + v.Def.HullRadius) continue;
+                        v.StunnedUntil = Math.Max(v.StunnedUntil, now + support.Duration);
+                        v.ClearPath();
+                        v.Speed = 0f;
+                    }
+                    return true;
+
+                case SupportKind.ShieldDome:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
+                        v.ShieldUntil = Math.Max(v.ShieldUntil, now + support.Duration);
+                        v.ShieldAmount = Math.Clamp(support.Damage, 0f, 0.9f);
+                        v.RefreshEffects(now);
+                    }
+                    return true;
+
+                case SupportKind.Reinforce:
+                case SupportKind.Escort:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var units = support.Units;
+                    for (var k = 0; k < units.Count; k++)
+                    {
+                        var angle = k * SimMath.Tau / Math.Max(1, units.Count);
+                        var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
+                        var unit = _world.SpawnVehicle(units[k], s.Team, _world.ClampToMap(at), SimMath.HeadingOf(s.Direction));
+                        if (support.Kind == SupportKind.Escort) unit.ExpiresAt = now + support.Duration;
+                    }
+                    return true;
+                }
+
                 default:
                     return true;
             }
@@ -196,6 +263,12 @@ namespace MachineBrigade.Sim.Strikes
         private void Blast(Strike s, Vector2 at)
         {
             var support = s.Support;
+            if (s.Scatter > 1f)
+            {
+                var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
+                var off = (s.Scatter - 1f) * MathF.Max(6f, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());
+                at += new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * off;
+            }
             at = _world.ClampToMap(at);
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
             _world.Damage.Splash(at, support.BlastRadius, support.Damage, support.DamageType, s.Team, EntityId.None);

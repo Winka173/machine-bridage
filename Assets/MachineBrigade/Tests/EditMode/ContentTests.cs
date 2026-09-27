@@ -74,6 +74,68 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Every battlefield on the menu also ships a Siege version: the enemy fortress with its
+        /// command HQ and fixed team-1 defences, no objectives, and the HQ reachable by land from
+        /// the player's rally (the gates are open) on the simulation's own navigation grid.
+        /// </summary>
+        [Test]
+        public void EveryMenuMapShipsASiegeVersionWithAReachableHq()
+        {
+            var catalog = Catalog.FromJson(File.ReadAllText(DataPath("balance.json")));
+            foreach (var info in MachineBrigade.Game.Match.MatchSettings.AllMaps)
+            {
+                var map = MapDefinition.FromJson(File.ReadAllText(DataPath("maps/" + info.Id + "_siege.json")));
+                Assert.AreEqual(info.Id + "_siege", map.Id);
+                Assert.AreEqual(info.Theme, map.Theme, map.Id);
+                Assert.AreEqual(2, map.Teams.Count, map.Id);
+                Assert.AreEqual(0, map.Points.Count, $"{map.Id}: Siege has no capture points");
+                foreach (var p in map.Props) Assert.DoesNotThrow(() => catalog.Prop(p.DefId), $"{map.Id}: {p.DefId}");
+                foreach (var u in map.Units) Assert.DoesNotThrow(() => catalog.Vehicle(u.DefId), $"{map.Id}: {u.DefId}");
+
+                var hqs = map.Props.Where(p => p.DefId == "command_hq").ToList();
+                Assert.AreEqual(1, hqs.Count, $"{map.Id}: one command HQ");
+                var defences = map.Units.Where(u => u.Team == 1 && catalog.Vehicle(u.DefId).Static).ToList();
+                Assert.GreaterOrEqual(defences.Count, 12, $"{map.Id}: the fortress is defended");
+                foreach (var kind in new[] { "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "artillery_emplacement", "guard_tower" })
+                    Assert.IsTrue(defences.Any(u => u.DefId == kind), $"{map.Id}: has a {kind}");
+
+                var world = new MachineBrigade.Sim.SimWorld(catalog, map, seed: 1);
+                var grid = world.Grid;
+                var reached = new bool[grid.Width * grid.Height];
+                var player = map.Teams.First(t => t.Team == 0).Rally;
+                var (sx, sy) = grid.CellOf(player);
+                Assert.IsTrue(grid.IsWalkable(sx, sy), $"{map.Id}: the player rally is open ground");
+                var todo = new Stack<(int, int)>();
+                todo.Push((sx, sy));
+                reached[grid.Index(sx, sy)] = true;
+                while (todo.Count > 0)
+                {
+                    var (x, y) = todo.Pop();
+                    foreach (var (dx, dy) in new[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
+                    {
+                        int nx = x + dx, ny = y + dy;
+                        if (!grid.IsWalkable(nx, ny) || reached[grid.Index(nx, ny)]) continue;
+                        reached[grid.Index(nx, ny)] = true;
+                        todo.Push((nx, ny));
+                    }
+                }
+                // Reached: an open cell within 3 m of the HQ's footprint (close enough to shoot it point blank).
+                var hq = hqs[0];
+                var def = catalog.Prop("command_hq");
+                var half = new System.Numerics.Vector2(def.Width * 0.5f + 3f, def.Depth * 0.5f + 3f);
+                var (x0, y0) = grid.CellOf(hq.Position - half);
+                var (x1, y1) = grid.CellOf(hq.Position + half);
+                var near = false;
+                for (var y = y0; y <= y1 && !near; y++)
+                for (var x = x0; x <= x1 && !near; x++)
+                    near = grid.InBounds(x, y) && reached[grid.Index(x, y)];
+                Assert.IsTrue(near, $"{map.Id}: the command HQ can be reached from the player rally");
+                var (ex, ey) = grid.CellOf(map.Teams.First(t => t.Team == 1).Rally);
+                Assert.IsTrue(reached[grid.Index(ex, ey)], $"{map.Id}: the enemy rally inside the base is reachable");
+            }
+        }
+
         [Test]
         public void UnknownWeaponReferenceNamesThePath()
         {
