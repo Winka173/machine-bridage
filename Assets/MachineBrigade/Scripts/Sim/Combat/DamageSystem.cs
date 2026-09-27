@@ -43,7 +43,8 @@ namespace MachineBrigade.Sim.Combat
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
-                    Apply(target, weapon.Damage * p.DamageScale, weapon.DamageType);
+                    var facing = target is Vehicle struck && !weapon.Indirect ? FacingFactor(struck, p.Origin) : 1f;
+                    Apply(target, weapon.Damage * p.DamageScale * facing, weapon.DamageType);
                     hit = target.Id;
                 }
             }
@@ -56,6 +57,26 @@ namespace MachineBrigade.Sim.Combat
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
             if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale);
         }
+
+        /// <summary>
+        /// Armour by facing, after Company of Heroes and Wargame: a hull is thickest in front. A
+        /// direct-fire hit from the side does 1.25x, from behind 1.6x (within 50 degrees of the
+        /// nose counts as the front, within 50 of the tail as the rear). Aircraft and fixed
+        /// defences are the same all round, and artillery, bombs and drones strike from above.
+        /// </summary>
+        internal static float FacingFactor(Vehicle target, Vector2 from)
+        {
+            if (target.Flying || target.Def.Static || target.Armor is not (ArmorClass.Heavy or ArmorClass.Light)) return 1f;
+            var toShooter = from - target.Position;
+            if (toShooter.LengthSquared() < 0.01f) return 1f;
+            var off = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toShooter) - target.Heading));
+            return off <= FrontArc ? 1f : off >= MathF.PI - RearArc ? RearFactor : SideFactor;
+        }
+
+        internal const float SideFactor = 1.25f;
+        internal const float RearFactor = 1.6f;
+        private static readonly float FrontArc = SimMath.DegToRad(50f);
+        private static readonly float RearArc = SimMath.DegToRad(50f);
 
         /// <summary>A cluster round opens over the impact: its bomblets land round it and go off one after another.</summary>
         private void Scatter(ClusterDef cluster, Vector2 at, int team, float damageScale)

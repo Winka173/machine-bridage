@@ -541,6 +541,9 @@ namespace MachineBrigade.Game.Effects
             scale *= 0.85f + 0.35f * UnityEngine.Random.value;
             position += new Vector3(UnityEngine.Random.Range(-0.4f, 0.4f), 0f, UnityEngine.Random.Range(-0.4f, 0.4f)) * scale;
             _explosions[tier].Play(position, now, scale);
+            // The biggest blasts light the whole screen for a moment (no shake): stronger the nearer the view.
+            if (tier >= ExplosionTier.Huge && Flash != null)
+                Flash((tier >= ExplosionTier.Ultimate ? 0.22f : 0.11f) / (1f + Vector3.Distance(position, _camera.Focus) / 40f));
             Shake(position, tier switch
             {
                 ExplosionTier.Small => 0f,
@@ -550,6 +553,9 @@ namespace MachineBrigade.Game.Effects
                 _ => 1f,
             });
         }
+
+        /// <summary>A brief flash of the whole screen, of the given strength (0 to 1): huge and ultimate blasts on screen.</summary>
+        public Action<float> Flash { get; set; }
 
         private void Shake(Vector3 at, float amount)
         {

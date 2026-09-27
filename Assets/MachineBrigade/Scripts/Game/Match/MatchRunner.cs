@@ -213,6 +213,7 @@ namespace MachineBrigade.Game.Match
             {
                 ShowFps = MatchSettings.ShowFps,
             };
+            if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);
             if (_hud.Minimap != null)
             {
                 _hud.Minimap.Ground = theme.Minimap;
