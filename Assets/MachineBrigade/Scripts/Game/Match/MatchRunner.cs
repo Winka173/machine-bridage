@@ -394,6 +394,12 @@ namespace MachineBrigade.Game.Match
             }
 
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
+            {
+                // Device check: a smoke screen in the thick of the fight every few seconds.
+                _smokeAt = Time.time + 9f;
+                _effects.DebugSmokeScreen(_camera.Focus + new Vector3(UnityEngine.Random.Range(-6f, 6f), 0f, UnityEngine.Random.Range(-6f, 6f)));
+            }
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
             else FollowTheFight();
@@ -443,6 +449,7 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+        private float _smokeAt = 10f;
 
         /// <summary>Device check for building collapses: every few seconds the building nearest the view comes down.</summary>
         private void Demolish()

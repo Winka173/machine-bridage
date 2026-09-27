@@ -139,7 +139,8 @@ namespace MachineBrigade.Sim
         /// <summary>
         /// A side told to dig in (its commander's Defend stance): its ground vehicles that have
         /// stood still for <see cref="EntrenchSeconds"/> go hull-down and take
-        /// <see cref="EntrenchReduction"/> less damage, until they move again.
+        /// <see cref="EntrenchReduction"/> less damage from direct fire (guns and bullets; not
+        /// artillery, rockets or bombs, the way to dig them out), until they move again.
         /// </summary>
         public void Entrench(int team, bool on)
         {

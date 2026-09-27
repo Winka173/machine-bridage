@@ -269,7 +269,7 @@ namespace MachineBrigade.Game.Hud
             ["toast.focus"] = ("Army converging on point {0}", "Quân ta dồn về cứ điểm {0}"),
             ["toast.focusClear"] = ("The commander picks targets", "Chỉ huy tự chọn mục tiêu"),
             ["toast.attack"] = ("Stance: attack. The army goes for the weakest-held point.", "Thế trận: tấn công. Quân ta đánh vào điểm địch giữ yếu nhất."),
-            ["toast.defend"] = ("Stance: defend. The army holds our front point and digs in: vehicles that stop take 20% less damage.", "Thế trận: phòng thủ. Quân ta giữ điểm tiền tuyến và cố thủ: xe đứng yên nhận ít hơn 20% sát thương."),
+            ["toast.defend"] = ("Stance: defend. The army holds our front point and digs in: vehicles that stop take 20% less damage from direct fire.", "Thế trận: phòng thủ. Quân ta giữ điểm tiền tuyến và cố thủ: xe đứng yên nhận ít hơn 20% sát thương từ hỏa lực bắn thẳng."),
             ["hint.auto"] = ("Your army fights on its own  ·  Tap A B C to point it  ·  Tap a vehicle to take control",
                 "Quân ta tự chiến đấu  ·  Chạm A B C để chỉ hướng  ·  Chạm xe để điều khiển tay"),
             ["hint.autoSurvival"] = ("Your army fights on its own  ·  Tap a vehicle to take control",

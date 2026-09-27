@@ -2,6 +2,128 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: Damage you can see, two-weapon vehicles, real air war, 200 m maps, epic siege, Attack and Defend
+
+The user asked for:
+- damage that shows on the hull, cluster rounds for the elite MLRS and Grad, and better weapons for the elites;
+- at least two weapons on every vehicle, firing in turns with different delays (rockets and machine guns on attack helicopters), modelled on real vehicles;
+- faster, higher jets and bombers; believable aircraft sizes; rotors that look right;
+- aircraft that only anti-air kills easily, with other guns doing little to them and only aiming at them when nothing else is left; a jet to hunt enemy aircraft;
+- some randomness in trajectories and blasts, so long-range weapons can miss;
+- bigger maps, packed with more scenery;
+- a fix for blasts and smoke screens drawn over each other;
+- free, well-organised battle sounds;
+- a grander siege: more sentries, bosses, a bigger base, several stages;
+- Attack and Defend reworked after other games, with towers at the camps and at the spawn so no side is steamrolled.
+
+### Done
+
+**Damage and weapons**
+- Hulls show damage:
+  - grey smoke below 60 % health;
+  - black smoke and flames below 30 %;
+  - soot darkens them below 50 %.
+- Hit feedback, after the usual arcade recipe:
+  - a white flash (0.06 s, then a 0.12 s fade, at most every 0.15 s);
+  - heavy hits rock the hull 1.5 to 4 degrees;
+  - the health bar keeps a yellow trail of what was just lost, which catches up after 0.4 s.
+- Cluster rockets (`ClusterDef`):
+  - the elite MLRS and a new elite Grad scatter bomblets over the target;
+  - each bomblet is its own small blast.
+- Elites carry heavier weapons (HEAT 152 mm, APFSDS 105 mm, Hellfire volleys, AHEAD 35 mm).
+- Every vehicle has at least two weapons, mounted as on the real thing:
+  - machine guns fire runs of 6 to 10 rounds, then rest;
+  - a heavy gun and its machine gun take turns;
+  - each weapon starts at a random delay, and cooldowns vary by ±10 %.
+- Guns keep their rhythm (`WeaponRhythmTests`).
+
+**Air war**
+- Aircraft sizes follow the real ones:
+  - ground vehicles are about 0.8 of life size;
+  - big aircraft about 0.5, so a bomber no longer dwarfs the map.
+- Jets and bombers fly faster and higher; their turn rate grows with speed, so they do not wag their noses.
+- Rotors turn at most 23 degrees a frame, with a blur disc, so they sweep instead of strobing.
+- Guns and armour-piercing rounds do 0.3× damage to aircraft.
+- Weapons that are not anti-air look at an aircraft only when nothing on the ground is in reach (and anti-air the other way round).
+- The fighter jet hunts enemy aircraft; SAMs, flak and AA vehicles are what kill them easily.
+
+**Randomness**
+- Scatter grows with range, faster near the weapon's limit, so long shots can miss.
+- Guided rounds sometimes lose lock (2 % point blank, up to 10 % at full range).
+- Splash radius varies by ±15 %, and blasts vary in size and position.
+
+**Maps**
+- Battlefields are 200 m across instead of 160.
+- Clumps of trees, rock outcrops and hamlets fill the open ground; every map was rebuilt.
+- Blasts and smoke no longer pop over each other:
+  - most effects emit into systems shared by the whole map, whose bounds span the battlefield, so Unity's distance sort between them was arbitrary;
+  - each layer now has a fixed draw queue (`FxQueue`);
+  - smoke screens are billowing flipbook smoke drawn over whatever burns inside or behind them;
+  - blasts in front of a screen go into twin layers drawn over it (`BlastLayers.Route`).
+
+**Audio**
+- 63 recorded sounds in 27 categories: Sonniss GDC bundles (royalty-free) and CC0, credited file by file in `Resources/Audio/CREDITS.md`.
+- The mix follows Wwise and FMOD practice:
+  - variants never repeat twice running;
+  - each category has a voice limit and a priority, so a rifle round never cuts a big blast;
+  - far sounds are muffled, and big blasts far off arrive at the speed of sound (at most 0.3 s late);
+  - big blasts duck the small arms for a moment;
+  - fires crackle near the view.
+- The synthesised sounds remain as a fallback.
+
+**Siege**
+- Three stages:
+  - the outer line, whose relay stations must fall;
+  - the wall ring, with its shield generators;
+  - the keep, with the command HQ.
+- Each stage's objectives are shielded until their stage.
+- A time bank grows with each stage taken.
+- A falling stage takes its defences down in a chain.
+- The HQ fights harder as it weakens.
+- A mobile-fortress guardian wakes at stage three.
+- New fortress art:
+  - a twin 155 mm coastal turret;
+  - a flak tower with quad guns and a SAM box;
+  - a Patriot-style missile battery;
+  - a shield generator.
+- 29 fixed defences per fortress, and every piece now stands on every map.
+
+**Attack and Defend**
+- Defend holds our front point, or the one under threat:
+  - the army faces the enemy and chases only 26 m off the point;
+  - it never falls back;
+  - it digs in: a vehicle that stops goes hull-down and takes 20 % less direct-fire damage (artillery, rockets and bombs still land, which is how to dig it out).
+- Attack goes for the weakest-held point: the enemies and towers seen round each point count against it.
+- Watchtowers on captured points (Conquest, King of the Hill, Assault):
+  - the holder's tower goes up 8 s after capture;
+  - it is blown up when the point falls;
+  - it is rebuilt 35 s after it is knocked down.
+- Spawn protection in the capture modes:
+  - two indestructible bastions per camp (heavy turret model, 40 m, hitting air and ground);
+  - a 35 m home zone that repairs 2 % a second;
+  - five seconds of spawn protection;
+  - no enemy strikes on a camp.
+- A side 100 tickets behind in Conquest gets a Behemoth, once.
+- Assault is now a Breakthrough:
+  - three sectors, A, then B (two points), then C, lie one behind the other towards the enemy camp;
+  - only the front sector can be captured;
+  - a sector taken locks, blows up its defences, adds time and CP, and moves the drop zone up;
+  - overtime runs while a live point is still being fought over.
+- AI fixes found along the way:
+  - vehicles already at their rendezvous are no longer re-sent every decision, which kept whole armies shuffling;
+  - an army of launchers and drone carriers closes to firing range instead of backing into the map's edge;
+  - long-range units kite anything they outrange by 6 m or more.
+
+**Balance** (five seeds, auto-commander, realistic decks)
+- All 17 missions win 5/5. The siege mission (m13) takes 10 to 13 min.
+- m03 player income ×1.2; m10 1.85; m13 1.85 with the HQ at ×2.2.
+- The heavy turret has 2800 health and its guns reach 50 m; the flak tower has 2600 health.
+
+### Known limitations
+- Sounds have not been heard on a phone. Loop levels follow measured loudness, but still need a listen.
+- The watchtowers borrow the guard-tower model.
+- Real phones: there are still no measurements on one.
+
 ## 2026-09-27: No stutter, tougher vehicles, real artillery, APS, buildings that collapse
 
 The user asked for:

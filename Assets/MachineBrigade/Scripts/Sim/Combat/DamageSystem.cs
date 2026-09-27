@@ -146,7 +146,9 @@ namespace MachineBrigade.Sim.Combat
                 case Vehicle vehicle:
                     if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
                     if (vehicle.GraceUntil > _world.Time) damage *= 0.2f;
-                    if (_world.IsEntrenched(vehicle)) damage *= 1f - SimWorld.EntrenchReduction;
+                    // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
+                    if (type is DamageType.Kinetic or DamageType.ArmorPiercing && _world.IsEntrenched(vehicle))
+                        damage *= 1f - SimWorld.EntrenchReduction;
                     vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
                     _world.Emit(SimEvent.Damage(vehicle, damage));
                     if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle);

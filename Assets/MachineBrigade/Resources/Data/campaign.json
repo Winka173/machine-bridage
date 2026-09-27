@@ -30,7 +30,7 @@
 
     { "id": "m03", "map": "ashfield", "weather": "Storm", "goal": "Boss", "timeLimit": 1140,
       "boss": { "def": "mega_gunship", "x": 56.2, "z": 56.2, "heading": 225 },
-      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12,
+      "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12, "playerIncome": 1.2,
       "enemyDeck": ["scout_jeep", "armored_car", "light_tank", "apc", "main_battle_tank", "rocket_technical"],
       "coins": 400, "xp": 300, "unlocks": ["attack_helicopter"], "starTime": 900, "starLosses": 8 },
 
@@ -93,7 +93,7 @@
 
     { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
-      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.7,
+      "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 18, "playerCp": 26, "playerIncome": 1.85,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "sam_launcher", "mlrs", "attack_helicopter", "artillery"],
       "coins": 450, "xp": 320, "unlocks": ["attack_jet", "ifv"], "starTime": 600, "starLosses": 12 },
 
@@ -123,8 +123,8 @@
       "coins": 800, "xp": 500, "unlocks": ["thermobaric_launcher"], "starTime": 120, "starLosses": 8 },
 
     { "id": "m13", "map": "emberridge", "variant": "siege", "weather": "Night", "goal": "Destroy", "targets": ["command_hq"],
-      "targetHealth": 2.5, "timeLimit": 1100,
-      "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 26, "playerIncome": 1.7, "playerCap": 36,
+      "targetHealth": 2.2, "timeLimit": 1100,
+      "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 16, "playerCp": 26, "playerIncome": 1.85, "playerCap": 36,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "aa_vehicle", "mortar_carrier", "tank_destroyer"],
       "waves": { "first": 90, "interval": 70, "size": 2, "grow": 0.3, "maxSize": 4, "maxAlive": 10,
                  "roster": ["main_battle_tank", "apc", "attack_helicopter", "elite_mbt"] },

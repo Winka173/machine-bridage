@@ -310,6 +310,9 @@ namespace MachineBrigade.Game.Effects
             _markerStart = Time.unscaledTime;
         }
 
+        /// <summary>Device check for blasts and smoke screens drawn together: a screen at <paramref name="at"/>.</summary>
+        public void DebugSmokeScreen(Vector3 at) => _strikes.DebugSmoke(at, Time.time);
+
         public void Tick(ViewRegistry views)
         {
             var now = Time.time;

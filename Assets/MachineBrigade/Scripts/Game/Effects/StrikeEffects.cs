@@ -249,6 +249,9 @@ namespace MachineBrigade.Game.Effects
             if (_hasCruise) _projectiles.Launch(_models.Merged("cruise_missile"), from, to, e.Value, 4f, 1.2f, now);
         }
 
+        /// <summary>Device check (<c>-mb-smokescreen</c>): a smoke screen with no strike behind it.</summary>
+        internal void DebugSmoke(Vector3 at, float now) => SpawnSmoke(at, 12f, 12f, now);
+
         private void SpawnSmoke(Vector3 at, float radius, float seconds, float now)
         {
             // Billowing smoke sheets on their own queue (FxQueue.Screen): whatever burns inside or
