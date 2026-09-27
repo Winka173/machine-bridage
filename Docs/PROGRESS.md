@@ -53,15 +53,18 @@ base, an Endless mode, and a separate Survival.
 - Every map half as big again: 300 x 300 m. Woods, rocks, hamlets, wrecks, craters and poles grow with the area and a quarter more; the start units move out with their camps; the fortress keeps its plan in the enemy's corner.
 - What lies outside the outline stays as decor (drawn, never simulated) so the country goes on past the edge, and a dashed line marks the boundary; the countryside reaches 130 m further.
 - Houses, barns, garages and shops 1.3 times bigger (they were smaller than the tanks); campaign positions scaled with the maps.
-- High graphics: a 4096 shadow map, soft shadows on phones too, 4x MSAA.
+- High graphics: a 4096 shadow map, soft shadows on phones too, 4x MSAA, and high-detail models (`<id>_hd`, same pivots) for the twelve most-seen vehicles when shadows are High and scenery is rich.
 - Five-seed campaign balance on the new maps: 107/115 before retuning m13 (now 3/5, siege buying mix for a demolition inside a fortress).
 
 **Design-review document**
 - `ExportGameDoc` (MB_EXPORT) writes the game's numbers to JSON; `Tools/docs/build_doc.py` builds an illustrated PDF (modes, campaign, every vehicle with weapons and DPS, weapons and the damage table, towers, elites, bosses, fire support, equipment, economy, maps, AI, interface).
+- The current edition, in Vietnamese: `Docs/Machine_Brigade_Design_Review.pdf` (62 pages, 76 vehicle renders, 13 map plans, 18 screenshots). Rebuild: run the Export test with `MB_EXPORT=<dir>/game.json`, then `python Tools/docs/build_doc.py <dir>/game.json <dir> <out.pdf>` (vehicle renders from `Tools/blender/preview_assets.py`, shots from the emulator).
+- Test suite at the end of the round: 375 tests, 350 pass, 25 skipped (balance and export runs), none failing.
 
 ### Known limitations
 - m21 (the saucer) is hard for the scripted test deck (2/5).
-- The new modes and markers were checked in tests; the look on a phone is still to be checked.
+- The new modes, markers, menus and the map edge were checked on the emulator; frame rate on a real phone is still to be measured (the 300 m maps, the 4096 shadow map and the high-detail models all cost more there).
+- Ads are still placeholders.
 
 ## 2026-09-27 (late): Mobile menu layout, vehicle detail page, equipment pictures
 

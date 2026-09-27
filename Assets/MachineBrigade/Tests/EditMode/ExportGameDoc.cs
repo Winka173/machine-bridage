@@ -114,12 +114,15 @@ namespace MachineBrigade.Tests
             var bases = GearCatalog.Bases.Select(b => (object)new Dictionary<string, object>
             {
                 ["id"] = b.Id, ["name"] = Text("gear.base." + b.Id), ["slot"] = b.Slot.ToString(), ["implicit"] = b.Implicit.ToString(),
-                ["implicitName"] = Text("stat.line." + b.Implicit.ToString().ToLowerInvariant()), ["top"] = b.Top,
+                ["implicitName"] = GearText.Line(b.Implicit, b.Top[b.Top.Length - 1]), ["top"] = b.Top,
+                ["lines"] = b.Top.Select(v => GearText.Line(b.Implicit, v)).ToList(),
+                ["penaltyLine"] = b.TradeOff && b.PenaltyTop != null ? GearText.Line(b.Penalty, b.PenaltyTop[b.PenaltyTop.Length - 1], true) : "",
                 ["tradeOff"] = b.TradeOff, ["penalty"] = b.TradeOff ? b.Penalty.ToString() : "", ["minRarity"] = b.MinRarity,
             }).ToList();
             var traits = GearCatalog.Traits.Select(t => (object)new Dictionary<string, object>
             {
                 ["id"] = t.Id.ToString(), ["key"] = t.Key, ["name"] = Text("trait." + t.Key), ["effect"] = Text("trait." + t.Key + ".info"),
+                ["effectEpic"] = GearText.TraitEffect(t.At(Rarity.Epic)), ["effectLegendary"] = GearText.TraitEffect(t.At(Rarity.Legendary)),
                 ["slot"] = t.Slot.ToString(), ["epic"] = t.Epic, ["legendary"] = t.Legendary,
             }).ToList();
             var modules = GearCatalog.Modules.Select(m => (object)new Dictionary<string, object>

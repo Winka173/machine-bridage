@@ -57,11 +57,30 @@ def fill(text, values):
     return re.sub(r'\{(\d+)\}', one, text)
 
 
+CACHE = None
+SIZES = {'thumb': 640, 'gearicon': 128, 'shot': 1500, '': 1300}
+
+
 def img(path, cls='', alt=''):
+    """An image, shrunk and saved as JPEG in the cache (PNG kept for small icons with transparency)."""
+    from PIL import Image
     p = Path(path)
     if not p.exists():
         return ''
-    return f'<img class="{cls}" src="{p.as_uri()}" alt="{esc(alt)}">'
+    width = SIZES.get(cls, 1300)
+    icon = cls == 'gearicon'
+    out = CACHE / (p.parent.name + '_' + p.stem + ('.png' if icon else '.jpg'))
+    if not out.exists():
+        im = Image.open(p)
+        if im.width > width:
+            im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+        if icon:
+            im.save(out)
+        else:
+            bg = Image.new('RGB', im.size, (255, 255, 255))
+            bg.paste(im, mask=im.split()[3] if im.mode == 'RGBA' else None)
+            bg.save(out, quality=84, optimize=True)
+    return f'<img class="{cls}" src="{out.as_uri()}" alt="{esc(alt)}">'
 
 
 def table(head, rows, cls=''):
@@ -202,6 +221,7 @@ def build(game, imgdir):
         groups.setdefault(key, []).append(v)
     out.append("<div class='section'><h2>4. Phương tiện</h2><p>Chỉ số gốc (hạng 1, chưa trang bị). DPS = sát thương mỗi loạt / chu kỳ bắn, cộng mọi vũ khí, "
                "nhân hệ số giáp (phần 6). Hạng thẻ cộng +5% máu và sát thương mỗi hạng (tối đa hạng 10: +45%).</p>")
+    out.append(f"{img(imgdir / 'shots' / 'hd.png', 'shot')}<div class='caption'>Model thường và model chi tiết (đồ họa Cao) của 12 xe phổ biến nhất.</div>")
     for key, vs in groups.items():
         out.append(f"<h3>{esc(key)} ({len(vs)})</h3>")
         out.extend(vehicle_card(v, imgdir) for v in vs)
@@ -261,17 +281,22 @@ def build(game, imgdir):
     base_rows = []
     for b in g['bases']:
         icon = img(GEAR_ART / (b['id'] + '.png'), 'gearicon')
-        implicit = fill(b['implicitName'], ['']) if b['implicitName'] else b['implicit']
+        values = ' / '.join(b.get('lines') or [f"{v * 100:g}%" for v in b['top']])
+        penalty = f"<br><span class='muted'>{esc(b['penaltyLine'])}</span>" if b.get('penaltyLine') else ''
         base_rows.append([icon, f"<b>{esc(b['name'] or b['id'])}</b>" + (' <span class="chip">đánh đổi</span>' if b['tradeOff'] else ''),
-                          SLOT_VI.get(b['slot'], b['slot']), esc(implicit.replace('+%', '').strip()), pct_list(b['top'])])
+                          SLOT_VI.get(b['slot'], b['slot']), esc(b['implicitName']) + penalty, esc(values)])
     trait_rows = []
     for t in g['traits']:
         e = [f"{v * 100:g}" if isinstance(v, float) and v < 5 else f"{v:g}" for v in t['epic']]
         l = [f"{v * 100:g}" if isinstance(v, float) and v < 5 else f"{v:g}" for v in t['legendary']]
         values = [f"{a}/{b}" for a, b in zip(e, l)]
-        trait_rows.append([f"<b>{esc(t['name'] or t['key'])}</b>", SLOT_VI.get(t['slot'], t['slot']), esc(fill(t['effect'], values))])
-    mod_rows = [[img(GEAR_ART / (m['key'] + '.png'), 'gearicon'), f"<b>{esc(m['name'] or m['key'])}</b>", esc(fill(m['effect'], [f"{m['epic']:g}/{m['legendary']:g}"]))]
-                for m in g['modules']]
+        effect = (f"<b>Sử thi:</b> {esc(t['effectEpic'])}<br><b>Huyền thoại:</b> {esc(t['effectLegendary'])}" if t.get('effectEpic')
+                  else esc(fill(t['effect'], values)))
+        trait_rows.append([f"<b>{esc(t['name'] or t['key'])}</b>", SLOT_VI.get(t['slot'], t['slot']), effect])
+    def share(v):
+        return f"{v * 100:g}" if 0 < v < 1 else f"{v:g}"
+    mod_rows = [[img(GEAR_ART / (m['key'] + '.png'), 'gearicon'), f"<b>{esc(m['name'] or m['key'])}</b>",
+                 esc(fill(m['effect'], [f"{share(m['epic'])}/{share(m['legendary'])}"]))] for m in g['modules']]
     brand_rows = [[f"<b>{esc(b['name'])}</b>", esc(b['bonuses'])] for b in g['brands']]
     out.append("<div class='section'><h2>9. Trang bị</h2>"
                "<p>Mỗi nhánh (Thiết giáp, Xe nhẹ, Pháo binh, Không quân) có 7 ô: Vũ khí, Nạp đạn, Giáp, Quang học, Động cơ, Sửa chữa và Đặc biệt. "
@@ -280,8 +305,8 @@ def build(game, imgdir):
                "và <b>một thương hiệu</b> (bộ 2 món và 4 món). Ghép 3 món cùng ô cùng độ hiếm để lên bậc. Mỗi chỉ số có trần cho cả bộ.</p>"
                f"<p>{rar}</p>" + img(Path(imgdir) / 'shots' / 'gear.png', 'shot')
                + "<div class='caption'>Màn trang bị.</div>"
-               + f"<h3>Loại đồ ({len(base_rows)})</h3>" + table(['', 'Loại', 'Ô', 'Dòng ẩn', 'Giá trị ở cấp tối đa (Thường → Huyền thoại)'], base_rows)
-               + f"<h3>Dòng unique ({len(trait_rows)}) — giá trị Sử thi/Huyền thoại</h3>" + table(['Dòng', 'Ô', 'Hiệu ứng'], trait_rows)
+               + f"<h3>Loại đồ ({len(base_rows)})</h3>" + table(['', 'Loại', 'Ô', 'Dòng ẩn (Huyền thoại, cấp tối đa)', 'Thường → Huyền thoại'], base_rows)
+               + f"<h3>Dòng unique ({len(trait_rows)})</h3>" + table(['Dòng', 'Ô', 'Hiệu ứng'], trait_rows)
                + f"<h3>Module đặc biệt ({len(mod_rows)})</h3>" + table(['', 'Module', 'Hiệu ứng (Sử thi/Huyền thoại)'], mod_rows)
                + f"<h3>Thương hiệu / bộ ({len(brand_rows)})</h3>" + table(['Thương hiệu', 'Thưởng bộ 2 và bộ 4'], brand_rows) + '</div>')
 
@@ -329,7 +354,8 @@ def build(game, imgdir):
                "<li><b>Trang bị trong trận:</b> 42 dòng unique móc vào các sự kiện bắn, trúng, hạ, chết, đứng yên, đổi mục tiêu; hệ thống trạng thái (cháy, chậm, "
                "xé giáp, đánh dấu, khiên); hiện chữ nhỏ trên xe khi kích hoạt.</li>"
                "<li><b>Chiến dịch:</b> địch scale theo kho vũ khí người chơi, chi viện bằng dù, dấu mục tiêu trên chiến trường và bản đồ nhỏ.</li>"
-               "<li><b>Kiểm thử:</b> 362 bài test tự động (338 chạy, 24 bài cân bằng/xuất dữ liệu chạy tay). Cân bằng chiến dịch chạy 5 seed mỗi nhiệm vụ.</li></ul></div>")
+               "<li><b>Kiểm thử:</b> 375 bài test tự động (350 chạy mỗi lần, 25 bài cân bằng/xuất dữ liệu chạy tay). Cân bằng chiến dịch chạy 5 seed mỗi nhiệm vụ.</li>"
+               "<li><b>Đồ họa:</b> URP, mức Thấp/Vừa/Cao/Tùy chỉnh; Cao có shadow map 4096, bóng mềm, MSAA 4x và model chi tiết cho 12 xe phổ biến nhất.</li></ul></div>")
 
     # ------------------------------------------------------------------ UI
     ui = [('home.png', 'Trang chủ: trận đấu AI làm nền, cột thẻ bên phải, nút XUẤT KÍCH.'), ('army.png', 'Quân đội: bộ bài và bộ sưu tập.'),
@@ -349,6 +375,9 @@ def build(game, imgdir):
 
 def main():
     game_json, imgdir, pdf = sys.argv[1], sys.argv[2], sys.argv[3]
+    global CACHE
+    CACHE = Path(imgdir) / 'cache'
+    CACHE.mkdir(exist_ok=True)
     game = json.loads(Path(game_json).read_text(encoding='utf-8'))
     page = Path(pdf).with_suffix('.html')
     page.write_text(build(game, imgdir), encoding='utf-8')
