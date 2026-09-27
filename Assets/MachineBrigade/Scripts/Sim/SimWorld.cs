@@ -55,6 +55,7 @@ namespace MachineBrigade.Sim
                 Cover.BlockWhere(map.InsideBoundary);
             }
             _pathFinder = new PathFinder(Grid);
+            _lanes = new LaneMap(Grid);
             Damage = new DamageSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
@@ -72,6 +73,21 @@ namespace MachineBrigade.Sim
 
         /// <summary>Where direct fire cannot pass (tall props); see <see cref="CoverGrid"/>.</summary>
         public CoverGrid Cover { get; }
+
+        private readonly LaneMap _lanes;
+
+        /// <summary>
+        /// Roads, main routes and doorways (where nobody may stop), rebuilt when a wall falls; see
+        /// <see cref="LaneMap"/>.
+        /// </summary>
+        public LaneMap Lanes
+        {
+            get
+            {
+                _lanes.RebuildIfDirty(this);
+                return _lanes;
+            }
+        }
 
         /// <summary>Whether <paramref name="shooter"/> has a clear line of fire at <paramref name="target"/> with <paramref name="weapon"/>.</summary>
         internal bool HasLineOfFire(Vehicle shooter, IDamageable target, WeaponDef weapon) => _combat.HasLineOfFire(shooter, target, weapon);
@@ -569,7 +585,9 @@ namespace MachineBrigade.Sim
                     var moved = Vector2.Distance(p, v.Position);
                     if (moved < 4f) break;
                     var edge = Map.HalfSize - MathF.Max(MathF.Abs(p.X), MathF.Abs(p.Y));
-                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge);
+                    // (It stops where it lands: not in a gate or a gap, where it would close the way.)
+                    var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -
+                                (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
                     if (score > bestScore)
                     {
                         bestScore = score;
@@ -602,7 +620,7 @@ namespace MachineBrigade.Sim
         {
             var spacing = 1.5f;
             foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);
-            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid);
+            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid, _unitBuffer[0].Flying ? null : Lanes);
             Formation.Assign(_unitBuffer, slots, point, _slotBuffer);
             foreach (var v in _unitBuffer)
             {

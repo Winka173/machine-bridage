@@ -13,11 +13,20 @@ namespace MachineBrigade.Sim.Navigation
     /// </summary>
     public static class Formation
     {
-        public static List<Vector2> Slots(Vector2 center, int count, float spacing, NavGrid grid)
+        /// <summary>
+        /// Destinations round <paramref name="center"/>, spaced <paramref name="spacing"/> apart.
+        /// With <paramref name="lanes"/>, none lies in a doorway or its mouth (a gate, a gap between
+        /// buildings): a group sent there stops beside it, where it does not close the way.
+        /// </summary>
+        public static List<Vector2> Slots(Vector2 center, int count, float spacing, NavGrid grid, LaneMap? lanes = null)
         {
             var slots = new List<Vector2>(count);
             if (count <= 0) return slots;
-            if (grid.TryNearestWalkable(center, 16, out var first)) slots.Add(first);
+            if (grid.TryNearestWalkable(center, 16, out var first))
+            {
+                if (lanes != null && lanes.NoParkAt(first) && lanes.TryParkable(first, 12f, out var beside)) first = beside;
+                slots.Add(first);
+            }
 
             for (var ring = 1; slots.Count < count && ring <= 24; ring++)
             {
@@ -27,6 +36,7 @@ namespace MachineBrigade.Sim.Navigation
                     var angle = k * SimMath.Tau / around + ring * 0.5f;
                     var candidate = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * spacing);
                     if (!grid.IsWalkable(candidate) || !IsFree(slots, candidate, spacing * 0.8f)) continue;
+                    if (lanes != null && lanes.NoParkAt(candidate)) continue;
                     slots.Add(candidate);
                 }
             }

@@ -15,6 +15,9 @@ namespace MachineBrigade.Sim.Entities
     {
         internal readonly List<Vector2> Path = new();
 
+        /// <summary>Its part in the traffic rules: making way, waiting, queueing, backing out (see Movement.TrafficState).</summary>
+        internal readonly Movement.TrafficState Traffic = new();
+
         internal Vehicle(EntityId id, VehicleDef def, int team, Vector2 position, float heading)
         {
             Id = id;
