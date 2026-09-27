@@ -82,5 +82,14 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Fixed forward on the hull (helicopter rockets): the vehicle turns to aim.</summary>
         Hull,
+
+        /// <summary>
+        /// Out of the left side (an AC-130's guns, a door gunner): aims anywhere within 60 degrees
+        /// of square to the left of the hull, and the aircraft flies to keep its target there.
+        /// </summary>
+        Left,
+
+        /// <summary>Out of the right side (a door gunner), within 60 degrees of square to the right.</summary>
+        Right,
     }
 }

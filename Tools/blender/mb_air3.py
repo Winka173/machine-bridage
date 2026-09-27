@@ -176,6 +176,7 @@ def fighter_jet(a):
         for dx in (-.2, .2):
             _aam(aams, (x + dx, .6, zp), length=3.0, r=.085, canards=False, fin=1.7)
     a.pivot('Muzzle_missile', (0, .6 - 1.5, zp))
+    a.pivot('Muzzle_aam', (0, .6 - 1.6, zp))
 
 
 # ----------------------------------------------------------------------------- tank buster
@@ -329,6 +330,7 @@ def tank_buster(a):
         _pylon(pylons, x, -1.45, .35, outer.bottom(3.84) + .06, zr + .2, w=.12)
         _rocket_pod(a, x, -1.9, zr, .28, 2.05)
     a.pivot('Muzzle_rocket', (0, -1.93, zr))
+    a.pivot('Muzzle_aam', (0, -1.2, zr + .1))
     # Outboard: an air-to-air missile pair on the left wing (+X), an ECM pod on the right.
     x = 6.96
     zt = outer.bottom(x)
@@ -574,6 +576,7 @@ def heavy_attack_heli(a):
         a.part('Wing_lights', 'TeamGlow').box((.06, .16, .07), loc=(s * 4.03, .55, z + .2), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -1.16, (wing_z(1.92) + wing_z(2.94)) / 2 - .67))
     a.pivot('Muzzle_missile', (0, -.99, wing_z(3.9) - .14))
+    a.pivot('Muzzle_aam', (0, -.9, wing_z(3.9) - .05))
     # Tricycle landing gear (retractable, shown down): twin nose wheels, mains behind the wings.
     gear = a.part('Gear', 'Steel')
     tyres = a.part('Tyres', 'Rubber')

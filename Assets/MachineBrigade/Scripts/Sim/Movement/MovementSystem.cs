@@ -287,7 +287,8 @@ namespace MachineBrigade.Sim.Movement
             // Only threats that can be fought without leaving the leash, so the vehicle never
             // swings back and forth at its edge.
             var weapon = v.Def.Weapon;
-            var reach = GuardLeash + weapon.Range * 0.9f;
+            // A fighter on combat air patrol reaches out much further for enemy aircraft.
+            var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? 2.4f : 0.9f);
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
                 attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
                 Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
@@ -299,8 +300,9 @@ namespace MachineBrigade.Sim.Movement
             {
                 if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
                 if ((other.Flying && !HuntsAircraft(v)) || other.Invulnerable) continue;
+                if (v.Def.Interceptor && !other.Flying) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
-                if (distance > v.Def.VisionRange || distance >= bestDistance) continue;
+                if (distance > MathF.Max(v.Def.VisionRange, v.Def.Interceptor ? reach : 0f) || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
                 best = other;
                 bestDistance = distance;
@@ -549,8 +551,17 @@ namespace MachineBrigade.Sim.Movement
             var def = v.Def;
             var turnRadius = def.Speed / def.TurnRate;
             var target = RunTarget(v);
+            if (target != null && def.Vtol && Hover(v, target, dt)) return;
             Vector2 goal;
-            if (target != null)
+            var throttle = 1f;
+            if (target != null && def.Orbit)
+            {
+                // A gunship's pylon turn: round and round the target, anticlockwise so it stays on
+                // the left where the guns are, far enough out to see it and to stay clear of the
+                // short-range anti-aircraft round it.
+                goal = OrbitAround(v, target.Position, MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f));
+            }
+            else if (target != null)
             {
                 var range = def.Weapon.Range;
                 var toTarget = target.Position - v.Position;
@@ -566,6 +577,9 @@ namespace MachineBrigade.Sim.Movement
                     v.RunExtending = false;
                 }
                 goal = v.RunExtending ? v.Position + SimMath.Forward(v.Heading) * 10f : target.Position;
+                // Throttle back through the attack run for more time on the target; full power to
+                // extend and come round.
+                if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
             }
             else if (v.HasPath)
             {
@@ -588,8 +602,47 @@ namespace MachineBrigade.Sim.Movement
             if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * dt);
-            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor, def.Speed * 0.8f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
+        }
+
+        /// <summary>Seconds a VTOL jet holds in the air to shoot, and how long before it can again.</summary>
+        private const double HoverSeconds = 6.0, HoverRest = 12.0;
+
+        /// <summary>
+        /// A VTOL jet (Harrier, F-35B) with a target in reach stops in the air, turns on the spot to
+        /// keep its nose and guns on it, then flies on: the hover is short, since a hovering jet is
+        /// slow, loud and easy to hit. True while it is holding.
+        /// </summary>
+        private bool Hover(Vehicle v, IDamageable target, float dt)
+        {
+            var def = v.Def;
+            var now = _world.Time;
+            var distance = Vector2.Distance(v.Position, target.Position);
+            if (now >= v.HoverUntil && now >= v.HoverReadyAt && distance < def.Weapon.Range * 0.8f && distance > 6f)
+            {
+                v.HoverUntil = now + HoverSeconds;
+                v.HoverReadyAt = v.HoverUntil + HoverRest;
+            }
+            if (now >= v.HoverUntil) return false;
+            v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 1.1f * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * 1.3f * dt);
+            v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
+            // Leaving the hover, it flies straight out before turning back in.
+            if (now + dt >= v.HoverUntil) v.RunExtending = true;
+            return true;
+        }
+
+        /// <summary>A point ahead on an anticlockwise circle of <paramref name="radius"/> round <paramref name="centre"/> (the centre kept on the left).</summary>
+        private static Vector2 OrbitAround(Vehicle v, Vector2 centre, float radius)
+        {
+            var from = v.Position - centre;
+            var distance = from.Length();
+            var outward = distance > 0.1f ? from / distance : SimMath.Forward(v.Heading);
+            var tangent = new Vector2(-outward.Y, outward.X);
+            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * 1.4f;
+            var direction = Vector2.Normalize(tangent + outward * pull);
+            return v.Position + direction * 10f;
         }
 
         /// <summary>The strafing-run target: an ordered one, else the current or last engaged enemy.</summary>

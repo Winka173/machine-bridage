@@ -187,6 +187,31 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A fixed defence (gun turret, bunker, tower): it never moves, is never pushed and is never bought.</summary>
         public bool Static { get; }
 
+        /// <summary>
+        /// Circles its target instead of making strafing runs: a gunship's left-hand pylon turn,
+        /// which keeps its side-firing guns on the target for as long as it likes.
+        /// </summary>
+        public bool Orbit { get; internal set; }
+
+        /// <summary>Seen only close up (at <see cref="StealthSight"/> of a spotter's sight) unless it has just fired.</summary>
+        public bool Stealth { get; internal set; }
+
+        /// <summary>Share of a spotter's sight at which a stealthy aircraft shows.</summary>
+        public const float StealthSight = 0.4f;
+
+        /// <summary>A fighter on combat air patrol: goes after enemy aircraft well beyond its own post.</summary>
+        public bool Interceptor { get; internal set; }
+
+        /// <summary>Can stop in the air to shoot (a Harrier or F-35B): a few seconds at a time, then it must fly on.</summary>
+        public bool Vtol { get; internal set; }
+
+        /// <summary>Points the main weapon another way than its default (a gunship's guns out of the left side).</summary>
+        internal void AimMain(MountAim aim)
+        {
+            var mounts = (List<WeaponMount>)Mounts;
+            mounts[0] = new WeaponMount(mounts[0].Weapon, mounts[0].Slot, aim);
+        }
+
         /// <summary>Hull length along the heading, for collisions (the gun barrel is not counted).</summary>
         public float Length { get; internal set; }
 

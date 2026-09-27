@@ -70,6 +70,7 @@ namespace MachineBrigade.Sim.Combat
                 else
                 {
                     v.TurretHeading = v.Heading;
+                    if (IsSide(mounts[0].Aim)) AimSide(v, 0, target, dt);
                 }
                 Operate(v, 0, target, dt);
 
@@ -82,6 +83,10 @@ namespace MachineBrigade.Sim.Combat
                     {
                         var aim = secondary != null ? SimMath.HeadingOf(secondary.Position - v.Position) : v.TurretHeading;
                         state.Heading = SimMath.RotateTowards(state.Heading, aim, FreeMountTurnRate * dt);
+                    }
+                    else if (IsSide(mounts[i].Aim))
+                    {
+                        AimSide(v, i, secondary, dt);
                     }
                     Operate(v, i, secondary, dt);
                 }
@@ -166,10 +171,14 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             var weapon = mount.Weapon;
-            if (mount.Aim != MountAim.Free) return primary != null && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
-            if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon))
+            var side = IsSide(mount.Aim);
+            if (mount.Aim != MountAim.Free && !side) return primary != null && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
+            if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon) &&
+                (!side || InArc(v, index, current.Position)))
                 return current;
-            var best = BestInRange(v, weapon, primary?.Id ?? EntityId.None);
+            // A side gun takes the main weapon's target when it bears, else the best one on its side.
+            if (side && primary is Vehicle p && IsValidAutoTarget(v, p, weapon) && InArc(v, index, p.Position)) return p;
+            var best = BestInRange(v, weapon, primary?.Id ?? EntityId.None, side ? index : -1);
             if (best != null) return best;
             // An ordered attack on a building or barrel: the roof gun joins in.
             return primary != null && primary is not Vehicle && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
@@ -180,13 +189,14 @@ namespace MachineBrigade.Sim.Combat
         /// or can be finished with this shot, and one teammates (or this vehicle's main gun) are
         /// already firing on. Distance only tips the balance between otherwise equal targets.
         /// </summary>
-        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured)
+        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured, int arcMount = -1)
         {
             Vehicle? best = null;
             var bestScore = 0f;
             foreach (var other in _world.VehicleList)
             {
                 if (!IsValidAutoTarget(v, other, weapon)) continue;
+                if (arcMount >= 0 && !InArc(v, arcMount, other.Position)) continue;
                 var effect = _world.Catalog.Damage.Multiplier(weapon.DamageType, other.Armor);
                 if (effect <= 0f) continue;
                 var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
@@ -354,18 +364,46 @@ namespace MachineBrigade.Sim.Combat
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, mount.Weapon) || !HasLineOfFire(v, target, mount.Weapon)) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
+            if (IsSide(mount.Aim) && !InArc(v, index, target.Position)) return false;
             var tolerance = mount.Aim switch
             {
                 MountAim.Turret => TurretTolerance,
-                MountAim.Free => FreeTolerance,
+                MountAim.Free or MountAim.Left or MountAim.Right => FreeTolerance,
                 _ => HullTolerance,
             };
             return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
         }
 
+        private static bool IsSide(MountAim aim) => aim is MountAim.Left or MountAim.Right;
+
+        /// <summary>How far either way of square to its side a broadside gun can aim.</summary>
+        private const float SideArc = MathF.PI / 3f;
+
+        /// <summary>The heading square out of a side mount's side of the hull.</summary>
+        private static float SideCentre(Vehicle v, int index) =>
+            v.Heading + (v.Def.Mounts[index].Aim == MountAim.Left ? -MathF.PI * 0.5f : MathF.PI * 0.5f);
+
+        private static bool InArc(Vehicle v, int index, Vector2 at) =>
+            MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(at - v.Position) - SideCentre(v, index))) <= SideArc;
+
+        /// <summary>A broadside gun follows its target within its arc; with none it rests square to its side.</summary>
+        private static void AimSide(Vehicle v, int index, IDamageable? target, float dt)
+        {
+            var centre = SideCentre(v, index);
+            var aim = centre;
+            if (target != null)
+            {
+                var off = SimMath.WrapAngle(SimMath.HeadingOf(target.Position - v.Position) - centre);
+                aim = centre + Math.Clamp(off, -SideArc, SideArc);
+            }
+            var state = v.Weapons[index];
+            state.Heading = SimMath.RotateTowards(state.Heading, aim, FreeMountTurnRate * dt);
+        }
+
         private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f)
         {
             var weapon = shooter.Def.Mounts[index].Weapon;
+            shooter.LastFiredAt = _world.Time;
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.

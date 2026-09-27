@@ -12,8 +12,9 @@ Conventions as in mb_air.py: metres, +Z up, Blender -Y is the nose, origin at th
     their noses.
   * sky_gunship: side-firing gunship (AC-130 lineage). `Propeller`, `Propeller_2`, `Propeller_3`
     and `Propeller_4` (engines one to four, left to right) spin about local Y. Its guns fire out of
-    the left side (-X): `Muzzle_main` at the 105 mm howitzer, `Muzzle_gun` at the 40 mm cannon
-    and `Muzzle_mg` at the 25 mm gatling.
+    the left (port) side, +X (the nose is -Y, so the aircraft's left is +X): `Muzzle_main` at the
+    105 mm howitzer, `Muzzle_gun` at the 40 mm cannon and `Muzzle_mg` at the 25 mm gatling;
+    `Muzzle_ramp` at the rear ramp's missile launcher.
 """
 import math
 
@@ -101,6 +102,7 @@ def heavy_bomber(a):
     # The rack: twelve bombs in three columns, two layers and two rows, hung from steel beams.
     b = a.pivot('Bombs', (0, .25, -.3))
     a.pivot('Muzzle_missile', (0, .25, -.9))
+    a.pivot('Muzzle_rocket', (0, -.6, -.95))
     bombs = _store_parts(a, b)
     rack = a.part('Bomb_rack', 'Steel')
     for x in (-.38, 0, .38):
@@ -385,10 +387,10 @@ def _turboprop(a, x, y0, zc, pivot, te, side, blades=6):
 
 
 def _side_gun(loc, tilt=.14):
-    """A barrel out of the left side (-X) from loc, tilted down by `tilt`: returns a function giving
+    """A barrel out of the left side (+X) from loc, tilted down by `tilt`: returns a function giving
     the point t metres along the barrel, and the rotation that lays a cylinder along it."""
-    d = Vector((-math.cos(tilt), 0, -math.sin(tilt)))
-    return (lambda t: tuple(Vector(loc) + d * t)), (0, -R90 - tilt, 0)
+    d = Vector((math.cos(tilt), 0, -math.sin(tilt)))
+    return (lambda t: tuple(Vector(loc) + d * t)), (0, R90 + tilt, 0)
 
 
 def sky_gunship(a):
@@ -483,8 +485,8 @@ def sky_gunship(a):
     # The left-side battery, front to back: 25 mm gatling, 40 mm cannon, 105 mm howitzer.
     guns = a.part('Guns', 'Steel')
     ports = a.part('Gun_ports', 'Armor')
-    at, rot = _side_gun((-.97, -3.3, .0))                                                     # 25 mm gatling
-    ports.box((.16, .5, .42), loc=(-.95, -3.3, .02), bevel=.03, seg=1)
+    at, rot = _side_gun((.97, -3.3, .0))                                                      # 25 mm gatling
+    ports.box((.16, .5, .42), loc=(.95, -3.3, .02), bevel=.03, seg=1)
     guns.cyl(.08, .14, loc=at(.1), rot=rot, seg=10, bevel=0)
     for k in range(5):
         ang = k * math.tau / 5
@@ -492,25 +494,30 @@ def sky_gunship(a):
         guns.cyl(.02, .72, loc=tuple(Vector(at(.5)) + off), rot=rot, seg=5, bevel=0)
     guns.cyl(.075, .06, loc=at(.8), rot=rot, seg=10, bevel=0)
     a.pivot('Muzzle_mg', at(.89))
-    at, rot = _side_gun((-.97, .3, .05))                                                      # 40 mm cannon
-    ports.box((.18, .7, .5), loc=(-.95, .3, .07), bevel=.03, seg=1)
+    at, rot = _side_gun((.97, .3, .05))                                                       # 40 mm cannon
+    ports.box((.18, .7, .5), loc=(.95, .3, .07), bevel=.03, seg=1)
     guns.cyl(.085, .36, loc=at(.2), rot=rot, seg=10, bevel=.01, bseg=1)
     guns.cyl(.065, 1.0, loc=at(.6), rot=rot, seg=10, bevel=0)
     guns.cyl(.09, .2, r2=.06, loc=at(1.12), rot=rot, seg=10, bevel=0)
     a.pivot('Muzzle_gun', at(1.24))
-    at, rot = _side_gun((-.97, 2.85, .02))                                                    # 105 mm howitzer
-    ports.box((.22, 1.0, .72), loc=(-.94, 2.85, .05), bevel=.04, seg=1)
+    at, rot = _side_gun((.97, 2.85, .02))                                                     # 105 mm howitzer
+    ports.box((.22, 1.0, .72), loc=(.94, 2.85, .05), bevel=.04, seg=1)
     guns.cyl(.13, .5, loc=at(.25), rot=rot, seg=12, bevel=.015, bseg=1)
     guns.cyl(.085, 1.5, loc=at(.85), rot=rot, seg=12, bevel=0)
-    a.part('Howitzer_brake', 'Undercarriage').box((.2, .28, .24), loc=at(1.62), rot=(0, -.14, 0), bevel=.03, seg=1)
+    a.part('Howitzer_brake', 'Undercarriage').box((.2, .28, .24), loc=at(1.62), rot=(0, .14, 0), bevel=.03, seg=1)
     a.pivot('Muzzle_main', at(1.76))
-    # Sensor turrets: a ball under the nose and another behind the left gear sponson.
+    # The rear ramp door's launcher (AC-130J "Gunslinger"): Griffin missiles out of the back.
+    armor.box((.5, .5, .3), loc=(0, 4.55, -.42), bevel=.04, seg=1)
+    for k in range(5):
+        steel.cyl(.045, .44, loc=(-.16 + k * .08, 4.62, -.42), rot=BACKWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_ramp', (0, 4.95, -.42))
+    # Sensor turrets: a ball under the nose and another behind the left gear sponson, looking out left.
     sensor = a.part('Sensor', 'Glass')
-    for (x, y, z), rr in (((-.5, -4.7, -.98), .24), ((-.66, 2.45, -.82), .18)):
+    for (x, y, z), rr in (((.5, -4.7, -.98), .24), ((.66, 2.45, -.82), .18)):
         armor.cyl(rr * .45, .2, loc=(x, y, z + rr * .9), seg=10, bevel=0)
         armor.sphere(rr, loc=(x, y, z), seg=12, rings=8)
-        sensor.cyl(rr * .42, .04, loc=(x - rr + .012, y, z - rr * .15), rot=ACROSS, seg=10, bevel=0)
-        sensor.cyl(rr * .2, .04, loc=(x - rr * .8 + .01, y - rr * .55, z + rr * .1), rot=(0, R90, .6), seg=8, bevel=0)
+        sensor.cyl(rr * .42, .04, loc=(x + rr - .012, y, z - rr * .15), rot=ACROSS, seg=10, bevel=0)
+        sensor.cyl(rr * .2, .04, loc=(x + rr * .8 - .01, y - rr * .55, z + rr * .1), rot=(0, R90, -.6), seg=8, bevel=0)
 
 
 # name: (builder, Asset options). They fly: no ground occlusion or grime.

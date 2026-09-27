@@ -166,6 +166,11 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);
+                    if (v.Has("mainAim")) def.AimMain(v.Enum<MountAim>("mainAim"));
+                    def.Orbit = v.Bool("orbit", false);
+                    def.Stealth = v.Bool("stealth", false);
+                    def.Interceptor = v.Bool("interceptor", false);
+                    def.Vtol = v.Bool("vtol", false);
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");

@@ -36,7 +36,8 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                var decoyed = weapon.Guided && (target is Vehicle { FlaresUp: true } || p.Jammed || p.Failed);
+                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them).
+                var decoyed = weapon.Guided && ((target is Vehicle { FlaresUp: true } && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
                 if (weapon.Guided && !decoyed) at = target.Position;
                 if (decoyed) at = target.Position + p.Miss;
                 if (!decoyed && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
@@ -212,6 +213,9 @@ namespace MachineBrigade.Sim.Combat
             var scale = 1f - (1f - EdgeFalloff) * SimMath.Clamp01(edgeDistance / radius);
             Apply(target, damage * scale, type);
         }
+
+        /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
+        private const double FlareDecoy = 0.35;
 
         private void OnVehicleDestroyed(Vehicle vehicle)
         {

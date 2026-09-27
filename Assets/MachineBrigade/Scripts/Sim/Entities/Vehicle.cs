@@ -194,6 +194,15 @@ namespace MachineBrigade.Sim.Entities
             _ => Weapons[index].Heading,
         };
 
+        /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
+        public double LastFiredAt { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>A VTOL jet holds in the air to shoot until then.</summary>
+        public double HoverUntil { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>A VTOL jet can stop in the air again from then.</summary>
+        public double HoverReadyAt { get; internal set; } = double.NegativeInfinity;
+
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
 

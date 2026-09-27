@@ -229,6 +229,7 @@ def attack_helicopter(a):
         a.part('Wing_lights', 'TeamGlow').box((.06, .12, .06), loc=(s * 2.44, .1, 1.52), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -.8, 1.1))
     a.pivot('Muzzle_missile', (0, -.71, 1.225))
+    a.pivot('Muzzle_aam', (0, -.62, 1.3))
     # TADS sensor drum under the nose with its side housings and windows, PNVS turret above.
     armor.cyl(.22, .5, loc=(0, -4.62, 1.3), rot=ACROSS, seg=12, bevel=.03, bseg=1)
     sensor = a.part('Sensor', 'Glass')
@@ -356,6 +357,9 @@ def gunship_heli(a):
         a.part('Wing_lights', 'TeamGlow').box((.06, .14, .06), loc=(s * 3.36, .5, z + .17), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -.97, (wing_z(1.6) + wing_z(2.45)) / 2 - .54))
     a.pivot('Muzzle_missile', (0, -.86, wing_z(3.25) - .215))
+    # Door gunners at the troop cabin's windows, left (+X) and right (-X).
+    a.pivot('Muzzle_door_l', (1.02, -1.0, 1.62))
+    a.pivot('Muzzle_door_r', (-1.02, -1.0, 1.62))
     # Tricycle landing gear (the retractable kind, shown down): twin nose wheels, mains behind the wings.
     gear = a.part('Gear', 'Steel')
     tyres = a.part('Tyres', 'Rubber')
@@ -1080,6 +1084,7 @@ def attack_jet(a):
         _aam(aams, (x, -.6, zt - .14 - .055), length=1.9, r=.062)
     a.pivot('Muzzle_rocket', (0, -1.25, -1.0))
     a.pivot('Muzzle_missile', (0, -1.38, -.93))
+    a.pivot('Muzzle_aam', (0, -1.55, zt - .25))
 
 
 def _prop_blade(part, phi, r0, r1, c0, c1, t0, t1, pitch0, pitch1, axis_y=0.0, sense=1):

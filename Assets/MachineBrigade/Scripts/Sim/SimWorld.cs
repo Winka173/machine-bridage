@@ -614,6 +614,9 @@ namespace MachineBrigade.Sim
             if (prop.Def.BlocksFire) Cover.Add(prop);
         }
 
+        /// <summary>Seconds a stealthy aircraft stays in plain sight after it fires (its bay doors open).</summary>
+        private const double StealthReveal = 2.5;
+
         private void RefreshVisibility()
         {
             foreach (var target in _vehicleList)
@@ -622,11 +625,14 @@ namespace MachineBrigade.Sim
                 // stay under the fog in most RTS: artillery can shell it from beyond its own sight.
                 var known = target.Def.Static ? target.VisibleToMask : 0;
                 var mask = 0;
+                // A stealthy aircraft shows only close up, or for a moment after it fires.
+                var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
                 foreach (var spotter in _vehicleList)
                 {
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
+                    var range = spotter.Def.VisionRange * sight;
                     if (spotter.Team == target.Team ||
-                        (Vector2.DistanceSquared(spotter.Position, target.Position) <= spotter.Def.VisionRange * spotter.Def.VisionRange &&
+                        (Vector2.DistanceSquared(spotter.Position, target.Position) <= range * range &&
                          !Strikes.Obscures(spotter.Position, target.Position)))
                         mask |= 1 << spotter.Team;
                 }
