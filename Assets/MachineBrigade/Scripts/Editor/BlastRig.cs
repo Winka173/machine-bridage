@@ -24,6 +24,8 @@ namespace MachineBrigade.Editor
         private readonly BlastLayers _layers;
         private readonly ExplosionEffect _airburst;
         private readonly ExplosionEffect _napalm;
+        private readonly ExplosionEffect _kill;
+        private readonly ExplosionEffect _pop;
         private readonly FireSpots _fires;
         private readonly DebrisPool _debris;
         private readonly DecalPool _decals;
@@ -52,6 +54,10 @@ namespace MachineBrigade.Editor
             _all.Add(_airburst);
             _napalm = ExplosionEffect.CreateNapalm(_layers);
             _all.Add(_napalm);
+            _kill = ExplosionEffect.CreateKill(_layers);
+            _all.Add(_kill);
+            _pop = ExplosionEffect.CreatePop(_layers);
+            _all.Add(_pop);
             _fires = new FireSpots(materials, root);
             _decals = new DecalPool(meshes.ScorchQuad, root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
@@ -147,10 +153,14 @@ namespace MachineBrigade.Editor
             return view;
         }
 
-        /// <summary>VehicleDestroyed: the kill blast and the hulk left behind.</summary>
-        public void Destroyed(VehicleView view, float now)
+        /// <summary>
+        /// VehicleDestroyed: the killing hit (its death explosion follows) or, for a vehicle with
+        /// none, the kill blast; and the hulk left behind. Mirrors EffectsDirector.
+        /// </summary>
+        public void Destroyed(VehicleView view, float now, bool blowsUp = true)
         {
-            Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
+            if (blowsUp) _kill.Play(view.Position + Vector3.up * 0.8f, now);
+            else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
             _wrecks.Add(view, now);
         }
 
@@ -171,7 +181,11 @@ namespace MachineBrigade.Editor
             _debris.Tick(now, dt);
             _wrecks.Tick(now, dt);
             _fires.Tick(now, dt);
-            if (_wrecks.TryCookOff(now, out var cookOff, out var cookOffTier)) Explode(cookOffTier, cookOff, now);
+            while (_wrecks.TryCookOff(now, out var cookOff, out var pop))
+            {
+                if (pop) _pop.Play(cookOff, now);
+                else Explode(ExplosionTier.Small, cookOff, now);
+            }
             var alive = 0;
             var big = 0;
             var fill = 0f;

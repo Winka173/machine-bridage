@@ -95,9 +95,13 @@ namespace MachineBrigade.Sim.AI
         /// dug in on its objectives never comes out, and waiting forever loses on the clock.</summary>
         private const float Patience = 40f;
 
+        /// <summary>Enemies seen near the front: their strength then, when, and where.</summary>
+        private readonly Dictionary<EntityId, (float power, double seen, Vector2 at)> _seen = new();
+
+        private readonly List<EntityId> _forget = new();
+
         private double _committedUntil = double.NegativeInfinity;
         private double _outmatchedSince;
-        private float _theirStrength;
         private Vector2 _fallBackPoint;
 
         /// <summary>
@@ -162,6 +166,7 @@ namespace MachineBrigade.Sim.AI
             var forward = Direction(front, objective);
 
             PullBackDamaged(world, front, forward);
+            GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
             FocusBoss(world);
@@ -183,14 +188,27 @@ namespace MachineBrigade.Sim.AI
                 if (!v.IsAlive || v.Team != _team || v.Scripted) continue;
                 if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
             }
-            var theirs = 0f;
             // Fixed defences do not count: they cannot chase, and the army picks the range to fight
             // them at (artillery outranges every turret). The odds are about the mobile fight.
             foreach (var e in _enemies)
-                if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
-            // Remember what we saw while falling back: out of sight is not the same as gone.
-            if (_outmatched) theirs = MathF.Max(theirs, _theirStrength * 0.9f);
-            _theirStrength = theirs;
+                if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) _seen[e.Id] = (e.Def.Power * (e.Hp / e.MaxHp), world.Time, e.Position);
+            // Every enemy seen near the front is remembered: out of sight is not the same as gone.
+            // One in view counts as it is now; one out of view fades (half in about 45 s); one
+            // known destroyed is forgotten. The patience rule still commits in the end.
+            var theirs = 0f;
+            _forget.Clear();
+            foreach (var (id, (power, seen, at)) in _seen)
+            {
+                var age = world.Time - seen;
+                if (!world.TryGetVehicle(id, out var known) || !known.IsAlive || age > 120.0)
+                {
+                    _forget.Add(id);
+                    continue;
+                }
+                // Only what was last seen around where the army is now.
+                if (Vector2.Distance(at, front) < 70f) theirs += power * (float)Math.Pow(0.5, age / 45.0);
+            }
+            foreach (var id in _forget) _seen.Remove(id);
             StrengthRatio = theirs > 0.5f ? ours / theirs : 1f;
 
             if (Leash != null)
@@ -219,6 +237,65 @@ namespace MachineBrigade.Sim.AI
                 _fallBackPoint = Clamp(world, FallBackTo?.Invoke(world, front) ?? front + back * distance);
             }
             return _outmatched;
+        }
+
+        /// <summary>Supply crates on the ground and the vehicle sent to claim each.</summary>
+        private readonly Dictionary<EntityId, EntityId> _crateRunners = new();
+
+        private readonly List<EntityId> _staleCrates = new();
+
+        /// <summary>How far a free vehicle will go out of its way for a supply crate.</summary>
+        private const float CrateDetour = 50f;
+
+        /// <summary>
+        /// A supply crate that has landed is worth fighting over: the nearest free vehicle (a
+        /// fast one first) drives onto it and sits there until it is claimed; the others carry on.
+        /// </summary>
+        private void GrabCrates(SimWorld world)
+        {
+            _staleCrates.Clear();
+            foreach (var (crateId, _) in _crateRunners)
+            {
+                var alive = false;
+                foreach (var c in world.CrateList)
+                    if (c.Id == crateId && c.IsAlive) alive = true;
+                if (!alive) _staleCrates.Add(crateId);
+            }
+            foreach (var id in _staleCrates) _crateRunners.Remove(id);
+
+            foreach (var crate in world.CrateList)
+            {
+                if (!crate.IsAlive || world.Time < crate.LandsAt) continue;
+                if (!_crateRunners.TryGetValue(crate.Id, out var runnerId) || !world.TryGetVehicle(runnerId, out var runner) || !runner.IsAlive ||
+                    runner.Team != _team)
+                {
+                    runner = Nearest(_fast, crate.Position) ?? Nearest(_line, crate.Position);
+                    if (runner == null) continue;
+                    _crateRunners[crate.Id] = runner.Id;
+                }
+                _fast.Remove(runner);
+                _line.Remove(runner);
+                if (Vector2.Distance(runner.Position, crate.Position) < 2.5f) continue;
+                if (runner.Order.Kind == OrderKind.Move && Vector2.Distance(runner.Order.Point, crate.Position) < 2f) continue;
+                _ids.Clear();
+                _ids.Add(runner.Id);
+                Issue(world, CommandType.Move, _ids, crate.Position);
+            }
+        }
+
+        private Vehicle? Nearest(List<Vehicle> pool, Vector2 at)
+        {
+            Vehicle? best = null;
+            var bestDistance = CrateDetour;
+            foreach (var v in pool)
+            {
+                if (v.Flying || _crateRunners.ContainsValue(v.Id)) continue;
+                var d = Vector2.Distance(v.Position, at);
+                if (d >= bestDistance) continue;
+                best = v;
+                bestDistance = d;
+            }
+            return best;
         }
 
         private readonly HashSet<EntityId> _rearmIds = new();

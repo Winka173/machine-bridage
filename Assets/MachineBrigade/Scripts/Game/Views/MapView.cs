@@ -48,6 +48,7 @@ namespace MachineBrigade.Game.Views
         private static readonly HashSet<string> Vegetation = new()
         {
             "tree", "palm", "cactus", "charred_tree", "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "bamboo_clump", "fern_bush",
+            "dead_tree",
         };
 
         /// <summary>Surface tiles merged into meshes instead of spawned as models.</summary>
@@ -84,6 +85,9 @@ namespace MachineBrigade.Game.Views
         private readonly List<(Transform part, Quaternion rest, Vector3 axis, float speed, float phase, bool rocks)> _moving = new();
         private readonly List<Material> _ownedMaterials = new();
         private Texture2D _groundTexture;
+
+        /// <summary>The battlefield from above for the minimap (painted with the ground; transparent beyond the outline).</summary>
+        public Texture2D MinimapTexture { get; private set; }
 
         // The lava surface: its base colours, and a travelling wave of brightness over them.
         private Mesh _lava;
@@ -130,9 +134,12 @@ namespace MachineBrigade.Game.Views
                 if (id is "car" or "truck" or "bus" or "fuel_truck") Repaint(instance, _materials.CarPaints, rng);
                 if (id is "container" or "container_stack") Repaint(instance, _materials.ContainerPaints, rng);
                 var yaw = vegetation ? (float)rng.NextDouble() * 360f : prop.Rotation;
-                instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, 0f, prop.Position.Y),
+                // A bridge sits low so its deck is level with the ground and vehicles drive across it
+                // (its girders and piers go down into the river).
+                instance.transform.SetPositionAndRotation(new Vector3(prop.Position.X, id == "bridge_road" ? -1f : 0f, prop.Position.Y),
                     Quaternion.Euler(0f, yaw, 0f));
                 if (vegetation) instance.transform.localScale = Vector3.one * (0.85f + (float)rng.NextDouble() * 0.35f);
+                if (!Mathf.Approximately(prop.Def.Scale, 1f)) instance.transform.localScale *= prop.Def.Scale;
                 _props.Add(prop.Id, new PropView(prop, instance, rubble, debris));
                 // Buildings, vehicles and street furniture never move: batch them (not trees, whose
                 // wind sway needs their own transforms, nor props with spinning parts).
@@ -210,6 +217,7 @@ namespace MachineBrigade.Game.Views
             foreach (var material in _ownedMaterials)
                 if (material != null) Object.Destroy(material);
             if (_groundTexture != null) Object.Destroy(_groundTexture);
+            if (MinimapTexture != null) Object.Destroy(MinimapTexture);
             _meshes.Clear();
             _ownedMaterials.Clear();
             _props.Clear();
@@ -300,6 +308,18 @@ namespace MachineBrigade.Game.Views
             "vehicle_hangar" => ("vehicle_hangar", "rubble_large", MetalDebris),
             "razor_wire" => ("razor_wire", null, new[] { "debris_metal", "debris_metal" }),
             "sandbag_wall" => ("sandbag_wall", null, new[] { "debris_plaster", "debris_plaster", "debris_plaster", "debris_plaster" }),
+            // Map kit: wrecks break into scrap, ruins into rubble; earthworks, craters and the bridge never break.
+            "wreck_tank" or "artillery_wreck" => (defId, null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal",
+                "debris_metal" }),
+            "wreck_truck" or "wreck_car" or "power_pylon" or "radio_mast" => (defId, null, SteelDebris),
+            "trench_straight" or "trench_corner" or "foxhole" or "crater_large" or "tank_ditch" or "bridge_road" => (defId, null, Array.Empty<string>()),
+            "command_tent" or "camo_net" => (defId, null, new[] { "debris_wood", "debris_plaster", "debris_wood" }),
+            "supply_pile" => ("supply_pile", null, new[] { "debris_wood", "debris_wood", "debris_metal", "debris_wood" }),
+            "fuel_bladder" => ("fuel_bladder", null, new[] { "debris_metal", "debris_plaster" }),
+            "checkpoint" => ("checkpoint", null, new[] { "debris_wood", "debris_metal", "debris_concrete", "debris_wood" }),
+            "barricade" => ("barricade", null, new[] { "debris_concrete", "debris_metal", "debris_concrete" }),
+            "telegraph_pole" or "dead_tree" => (defId, null, new[] { "debris_wood", "debris_wood" }),
+            "ruin_house" or "ruin_tower" => (defId, "rubble_small", BuildingDebris),
             _ => (defId, null, Array.Empty<string>()),
         };
 
@@ -618,7 +638,8 @@ namespace MachineBrigade.Game.Views
         private void BuildGround(SimWorld world, MaterialLibrary materials)
         {
             var size = world.Map.Size;
-            _groundTexture = TerrainPainter.Paint(world, _theme);
+            _groundTexture = TerrainPainter.Paint(world, _theme, out var minimap);
+            MinimapTexture = minimap;
             materials.Ground.SetTexture("_BaseMap", _groundTexture);
             materials.Pebble.SetColor("_BaseColor", _theme.Pebble);
             materials.GrassTuft.SetColor("_BaseColor", _theme.GrassTuft);

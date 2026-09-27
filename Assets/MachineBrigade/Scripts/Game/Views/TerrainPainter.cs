@@ -45,7 +45,13 @@ namespace MachineBrigade.Game.Views
         private const float RunwayWidth = 18f;
         private const float TaxiwayWidth = 9f;
 
-        public static Texture2D Paint(SimWorld world, MapTheme mapTheme, int size = 1024)
+        public static Texture2D Paint(SimWorld world, MapTheme mapTheme, int size = 1024) => Paint(world, mapTheme, out _, size);
+
+        /// <summary>
+        /// The ground texture, and the minimap picture made from the same paint (see
+        /// <see cref="MinimapFrom"/>).
+        /// </summary>
+        public static Texture2D Paint(SimWorld world, MapTheme mapTheme, out Texture2D minimap, int size = 1024)
         {
             var theme = mapTheme.Palette;
             var map = world.Map;
@@ -66,10 +72,13 @@ namespace MachineBrigade.Game.Views
                 airfield || mapTheme.Paved);
             PaintFootprints(pixels, size, map.HalfSize, worldPerPixel, world, mapTheme);
             if (mapTheme.Cracks > 0f) PaintCracks(pixels, size, map.HalfSize, worldPerPixel, Cracks(world, mapTheme));
+            var field = BoundaryField.For(map);
+            if (field.HasOutline) PaintWilds(pixels, size, map.HalfSize, worldPerPixel, field, theme);
             Blur(pixels, size, 2);
             if (mapTheme.Paved) PaintStreetMarkings(pixels, size, map.HalfSize, worldPerPixel, roads);
             if (airfield) PaintAirfieldMarkings(pixels, size, map.HalfSize, worldPerPixel, roads);
             Speckle(pixels, size, new Random(1482), mapTheme.SpeckleLight, mapTheme.SpeckleDark);
+            minimap = MinimapFrom(pixels, size, world, mapTheme, field);
 
             var texture = new Texture2D(size, size, TextureFormat.RGBA32, true, false)
             {
@@ -80,6 +89,116 @@ namespace MachineBrigade.Game.Views
             };
             texture.SetPixels(pixels);
             texture.Apply(true, true);
+            return texture;
+        }
+
+        /// <summary>
+        /// Beyond the battlefield's outline the ground is wild: stony earth under the rough terrain
+        /// that fills the bays, with a dark rim of scree right along the edge. (Roads that ran on
+        /// out there disappear under it.)
+        /// </summary>
+        private static void PaintWilds(Color[] pixels, int size, float half, float worldPerPixel, BoundaryField field, TerrainTheme theme)
+        {
+            var wild = Color.Lerp(theme.Stone, theme.Dirt, 0.45f) * 0.82f;
+            var scree = Color.Lerp(theme.Stone, Color.black, 0.35f);
+            for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
+            {
+                var wx = (x + 0.5f) * worldPerPixel - half;
+                var wz = (y + 0.5f) * worldPerPixel - half;
+                var d = field.Distance(new Vector2(wx, wz));
+                if (d < -0.6f) continue;
+                var i = y * size + x;
+                var noise = Mathf.PerlinNoise(wx * 0.21f + 3.1f, wz * 0.21f + 8.7f);
+                var ground = Color.Lerp(wild, theme.Dirt * 0.9f, noise * 0.5f);
+                // A soft band of scree from just inside the edge to a metre or so out.
+                var rim = 1f - Mathf.Clamp01(Mathf.Abs(d - 0.4f) / 1.1f);
+                var outside = Mathf.Clamp01((d + 0.6f) / 1.2f);
+                var c = Color.Lerp(pixels[i], ground, outside);
+                c = Color.Lerp(c, scree, rim * 0.55f);
+                c.a = 1f;
+                pixels[i] = c;
+            }
+        }
+
+        /// <summary>
+        /// The minimap picture: the painted ground shrunk to <paramref name="size"/>/4 with the
+        /// battlefield drawn on it (buildings as roofs, rock grey, trees as dark dots, water and
+        /// lava in their colours); beyond the outline it is transparent, so the minimap shows the
+        /// map's real shape. North is up (+z), east right (+x).
+        /// </summary>
+        private static Texture2D MinimapFrom(Color[] ground, int size, SimWorld world, MapTheme mapTheme, BoundaryField field)
+        {
+            const int factor = 4;
+            var n = size / factor;
+            var map = world.Map;
+            var pixels = new Color[n * n];
+            for (var y = 0; y < n; y++)
+            for (var x = 0; x < n; x++)
+            {
+                var sum = Color.clear;
+                for (var dy = 0; dy < factor; dy++)
+                for (var dx = 0; dx < factor; dx++)
+                    sum += ground[(y * factor + dy) * size + x * factor + dx];
+                var c = sum / (factor * factor);
+                // Brighten and saturate a little: the minimap is small and seen at a glance.
+                c = Color.Lerp(c, c * 1.18f, 0.8f);
+                c.a = 1f;
+                pixels[y * n + x] = c;
+            }
+
+            var perPixel = map.Size / n;
+            var roof = new Color(0.36f, 0.33f, 0.31f, 1f);
+            var rock = new Color(0.52f, 0.5f, 0.47f, 1f);
+            var tree = new Color(0.16f, 0.3f, 0.14f, 1f);
+            var water = new Color(0.2f, 0.36f, 0.5f, 1f);
+            var lava = new Color(1f, 0.42f, 0.08f, 1f);
+            foreach (var prop in world.Props)
+            {
+                var id = prop.Def.Id;
+                Color colour;
+                if (id.Contains("lava")) colour = lava;
+                else if (id == "river_water") colour = water;
+                else if (id == "river_ford") colour = Color.Lerp(water, mapTheme.Palette.Sand, 0.5f);
+                else if (id.Contains("tree") || id == "palm" || id == "bamboo_clump" || id == "hedge" || id == "fern_bush" || id == "bush" || id == "cactus")
+                    colour = tree;
+                else if (!prop.Def.BlocksMovement) continue;
+                else if (prop.Def.Indestructible || id.Contains("rock") || id.Contains("cliff") || id.Contains("mesa") || id == "boulders" ||
+                         id.Contains("spire"))
+                    colour = rock;
+                else colour = roof;
+                var hw = Mathf.Max(prop.Width * 0.5f, perPixel * 0.6f);
+                var hd = Mathf.Max(prop.Depth * 0.5f, perPixel * 0.6f);
+                var x0 = Mathf.FloorToInt((prop.Position.X - hw + map.HalfSize) / perPixel);
+                var x1 = Mathf.FloorToInt((prop.Position.X + hw + map.HalfSize) / perPixel);
+                var y0 = Mathf.FloorToInt((prop.Position.Y - hd + map.HalfSize) / perPixel);
+                var y1 = Mathf.FloorToInt((prop.Position.Y + hd + map.HalfSize) / perPixel);
+                for (var y = Mathf.Max(0, y0); y <= Mathf.Min(n - 1, y1); y++)
+                for (var x = Mathf.Max(0, x0); x <= Mathf.Min(n - 1, x1); x++)
+                    pixels[y * n + x] = colour;
+            }
+
+            if (field.HasOutline)
+            {
+                var rimColour = new Color(0.93f, 0.9f, 0.8f, 1f);
+                for (var y = 0; y < n; y++)
+                for (var x = 0; x < n; x++)
+                {
+                    var d = field.Distance(new Vector2((x + 0.5f) * perPixel - map.HalfSize, (y + 0.5f) * perPixel - map.HalfSize));
+                    var i = y * n + x;
+                    if (d > perPixel * 1.2f) pixels[i] = Color.clear;
+                    else if (d > -perPixel * 0.4f) pixels[i] = Color.Lerp(pixels[i], rimColour, 0.85f);
+                }
+            }
+
+            var texture = new Texture2D(n, n, TextureFormat.RGBA32, false, false)
+            {
+                name = "Minimap",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+            };
+            texture.SetPixels(pixels);
+            texture.Apply(false, true);
             return texture;
         }
 
@@ -275,8 +394,18 @@ namespace MachineBrigade.Game.Views
             "tank_trap", "lamp_post", "jersey_barrier", "dock_bollards", "mesa", "snow_rock", "pipeline", "market_stall",
             "charred_tree", "jungle_tree_a", "jungle_tree_b", "jungle_tree_c", "bamboo_clump", "fern_bush", "basalt_rock_a",
             "basalt_rock_b", "basalt_rock_c", "obsidian_spire", "volcanic_cliff", "runway_light", "traffic_light", "billboard",
-            "bus", "fuel_truck", "parked_jet", "razor_wire", "sandbag_wall", "floodlight_mast", "base_gate",
+            "bus", "fuel_truck", "parked_jet", "razor_wire", "sandbag_wall", "floodlight_mast", "base_gate", "telegraph_pole",
+            "dead_tree", "bridge_road", "barricade",
         };
+
+        /// <summary>Shell-torn ground: a scorched patch under craters, foxholes and wrecks.</summary>
+        private static readonly HashSet<string> Scorched = new()
+        {
+            "crater_large", "foxhole", "wreck_tank", "wreck_truck", "wreck_car", "artillery_wreck",
+        };
+
+        /// <summary>Dug earth: fresh dirt along trenches and anti-tank ditches.</summary>
+        private static readonly HashSet<string> Dug = new() { "trench_straight", "trench_corner", "tank_ditch" };
 
         private static readonly HashSet<string> PavedUnder = new()
         {
@@ -299,6 +428,7 @@ namespace MachineBrigade.Game.Views
             var crust = Color.Lerp(theme.Dirt, Color.black, 0.45f);
             var ember = new Color(0.55f, 0.2f, 0.07f);
             var mud = Color.Lerp(theme.Dirt, new Color(0.3f, 0.24f, 0.16f), 0.4f);
+            var burnt = Color.Lerp(theme.Dirt, new Color(0.08f, 0.07f, 0.06f), 0.55f);
             foreach (var prop in world.Props)
             {
                 var id = prop.Def.Id;
@@ -326,6 +456,20 @@ namespace MachineBrigade.Game.Views
                     margin = id == "hedge" ? 1.6f : 2.2f;
                     strength = 0.95f;
                     round = id != "hedge";
+                }
+                else if (Scorched.Contains(id))
+                {
+                    colour = burnt;
+                    rim = Color.Lerp(theme.Dirt, burnt, 0.45f);
+                    margin = id == "crater_large" ? 3f : 2f;
+                    strength = 0.8f;
+                    round = id is "crater_large" or "foxhole";
+                }
+                else if (Dug.Contains(id))
+                {
+                    colour = rim = theme.Dirt * 0.9f;
+                    margin = 1.6f;
+                    strength = 0.75f;
                 }
                 else if (Unmarked.Contains(id))
                 {

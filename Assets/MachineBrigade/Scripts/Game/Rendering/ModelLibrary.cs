@@ -7,12 +7,27 @@ using Object = UnityEngine.Object;
 
 namespace MachineBrigade.Game.Rendering
 {
+    /// <summary>What sits on a model's elevating pivot, which decides how high it is raised to fire.</summary>
+    public enum BarrelKind
+    {
+        None,
+
+        /// <summary>A gun barrel (tank cannon, howitzer, autocannon).</summary>
+        Gun,
+
+        /// <summary>A mortar tube: fires high.</summary>
+        Mortar,
+
+        /// <summary>A box of rocket or missile tubes.</summary>
+        Launcher,
+    }
+
     /// <summary>A spawned model and the parts the game animates.</summary>
     public sealed class ModelInstance
     {
         public ModelInstance(GameObject root, Transform turret, IReadOnlyList<Transform> recoilParts, Vector3 muzzle,
             Renderer[] renderers, IReadOnlyDictionary<string, Transform> muzzles, IReadOnlyDictionary<string, Transform> mounts,
-            IReadOnlyList<Spinner> spinners)
+            IReadOnlyList<Spinner> spinners, Transform elevation = null, float restPitch = 0f, BarrelKind barrel = BarrelKind.None)
         {
             Root = root;
             Turret = turret;
@@ -22,7 +37,22 @@ namespace MachineBrigade.Game.Rendering
             Muzzles = muzzles;
             Mounts = mounts;
             Spinners = spinners;
+            Elevation = elevation;
+            RestPitch = restPitch;
+            Barrel = barrel;
         }
+
+        /// <summary>
+        /// The pivot the barrel (or launcher) is raised on, at its trunnion under the turret; null
+        /// when the model has none. Rotating it about its local X pitches every barrel part,
+        /// muzzle and recoiling piece on it.
+        /// </summary>
+        public Transform Elevation { get; }
+
+        /// <summary>How far the barrel already points up in the model as built, in degrees.</summary>
+        public float RestPitch { get; }
+
+        public BarrelKind Barrel { get; }
 
         /// <summary>`Muzzle_&lt;slot&gt;` empties by lower-case slot name (main, coax, mg, missile, rocket, gun).</summary>
         public IReadOnlyDictionary<string, Transform> Muzzles { get; }
@@ -106,6 +136,18 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam).</summary>
         private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam)(\.\d+)?$");
 
+        /// <summary>
+        /// Turret parts that elevate with the gun: barrels, muzzle brakes, mortar tubes, rocket and
+        /// missile boxes, and the muzzle empties on them. Frames and carriages stay put.
+        /// </summary>
+        private static readonly Regex BarrelPattern = new(
+            @"^(main_cannon|muzzle_brake|mortar_tube|rocket_tubes|tubes|tube_bores|pod(?!_frame)|atgm_pod|launcher|coax|muzzle_main|muzzle_coax|muzzle_missile|muzzle_rocket)\w*(\.\d+)?$",
+            RegexOptions.IgnoreCase);
+
+        private const string ElevationName = "Elevation";
+
+        private readonly Dictionary<string, (float pitch, BarrelKind kind)> _elevations = new();
+
         private readonly MaterialLibrary _materials;
         private readonly Dictionary<string, GameObject> _prefabs = new();
         private readonly Dictionary<string, ChunkModel> _merged = new();
@@ -140,10 +182,15 @@ namespace MachineBrigade.Game.Rendering
             var turret = Find(root.transform, TurretPattern);
             var recoil = new List<Transform>();
             var muzzle = new Vector3(0f, 1.5f, 1f);
+            Transform elevation = null;
             if (turret != null)
             {
+                elevation = turret.Find(ElevationName);
                 foreach (Transform child in turret)
                     if (RecoilPattern.IsMatch(child.name)) recoil.Add(child);
+                if (elevation != null)
+                    foreach (Transform child in elevation)
+                        if (RecoilPattern.IsMatch(child.name)) recoil.Add(child);
                 muzzle = MuzzleOf(root.transform, recoil);
             }
 
@@ -160,7 +207,9 @@ namespace MachineBrigade.Game.Rendering
                     if (name.IsMatch(t.name)) spinners.Add(new Spinner(t, axis, speed));
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
-            return new ModelInstance(root, turret, recoil, muzzle, renderers, muzzles, mounts, spinners);
+            _elevations.TryGetValue(modelId, out var raise);
+            return new ModelInstance(root, turret, recoil, muzzle, renderers, muzzles, mounts, spinners, elevation,
+                raise.pitch, elevation != null ? raise.kind : BarrelKind.None);
         }
 
         /// <summary>
@@ -274,6 +323,8 @@ namespace MachineBrigade.Game.Rendering
             }
             var template = Object.Instantiate(Prefab(modelId), _templateRoot, false);
             template.name = modelId;
+            var raise = AddElevation(template.transform);
+            if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
             MergeRigidParts(template.transform);
             _templates[modelId] = template;
             return template;
@@ -340,6 +391,74 @@ namespace MachineBrigade.Game.Rendering
             }
         }
 
+        /// <summary>
+        /// Puts the turret's barrel parts on an elevating pivot at their trunnion (the rear of the
+        /// barrel group, low down), so guns, mortars and launchers can be raised to fire. Returns
+        /// how far the barrel already points up and what kind it is; no pivot without a turret or
+        /// a Muzzle_main to aim along.
+        /// </summary>
+        private static (float pitch, BarrelKind kind) AddElevation(Transform root)
+        {
+            var turret = Find(root, TurretPattern);
+            if (turret == null || turret.Find(ElevationName) != null) return (0f, BarrelKind.None);
+            var parts = new List<Transform>();
+            Transform muzzle = null;
+            foreach (Transform child in turret)
+            {
+                if (!BarrelPattern.IsMatch(child.name)) continue;
+                parts.Add(child);
+                if (child.name.StartsWith("Muzzle_main", StringComparison.OrdinalIgnoreCase)) muzzle = child;
+            }
+            if (muzzle == null) return (0f, BarrelKind.None);
+            // A missile muzzle rides with the gun only when its launcher does (an IFV's turret
+            // box); a SAM rack of its own beside the gun stays put.
+            var launcherRides = parts.Exists(p => Regex.IsMatch(p.name, "^(launcher|tubes|pod|atgm_pod)", RegexOptions.IgnoreCase));
+            if (!launcherRides) parts.RemoveAll(p => p.name.StartsWith("Muzzle_missile", StringComparison.OrdinalIgnoreCase));
+
+            Bounds? box = null;
+            var kind = BarrelKind.Gun;
+            foreach (var part in parts)
+            {
+                var name = part.name.ToLowerInvariant();
+                if (name.StartsWith("mortar_tube")) kind = BarrelKind.Mortar;
+                else if (kind == BarrelKind.Gun && (name.StartsWith("tubes") || name.StartsWith("rocket_tubes") || name.StartsWith("pod") ||
+                                                    name.StartsWith("launcher")) && !HasCannon(parts)) kind = BarrelKind.Launcher;
+                foreach (var filter in part.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    if (filter.sharedMesh == null) continue;
+                    foreach (var corner in Corners(filter.sharedMesh.bounds))
+                    {
+                        var p = turret.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                        if (box == null) box = new Bounds(p, Vector3.zero);
+                        else
+                        {
+                            var b = box.Value;
+                            b.Encapsulate(p);
+                            box = b;
+                        }
+                    }
+                }
+            }
+            if (box == null) return (0f, BarrelKind.None);
+            var bounds = box.Value;
+            // The trunnion: the back of the barrel group, a third of the way up it.
+            var pivot = new Vector3(bounds.center.x, bounds.min.y + bounds.size.y * 0.3f, bounds.min.z + bounds.size.z * 0.06f);
+            var go = new GameObject(ElevationName);
+            go.transform.SetParent(turret, false);
+            go.transform.localPosition = pivot;
+            foreach (var part in parts) part.SetParent(go.transform, true);
+            var aim = turret.InverseTransformPoint(muzzle.position) - pivot;
+            var pitch = Mathf.Atan2(aim.y, Mathf.Max(0.01f, new Vector2(aim.x, aim.z).magnitude)) * Mathf.Rad2Deg;
+            return (pitch, kind);
+        }
+
+        private static bool HasCannon(List<Transform> parts)
+        {
+            foreach (var p in parts)
+                if (p.name.StartsWith("Main_cannon", StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
+        }
+
         private static void Release(Object o)
         {
             if (o == null) return;
@@ -351,7 +470,9 @@ namespace MachineBrigade.Game.Rendering
         {
             var name = t.name;
             if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name)) return true;
-            if (RecoilPattern.IsMatch(name) && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
+            if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
+            if (RecoilPattern.IsMatch(name) && t.parent != null &&
+                (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;
             foreach (var (pattern, _, _) in SpinnerPatterns)
                 if (pattern.IsMatch(name)) return true;
             return false;

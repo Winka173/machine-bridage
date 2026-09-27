@@ -67,6 +67,8 @@ namespace MachineBrigade.Game.Views
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
             _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
+            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
+            _body.localScale = Vector3.one * vehicle.Def.Scale;
             _spawnTime = Time.time;
 
             _recoilRest = new Vector3[_model.RecoilParts.Count];
@@ -101,7 +103,7 @@ namespace MachineBrigade.Game.Views
 
             _bar = new GameObject("HealthBar").transform;
             _bar.SetParent(Root, false);
-            _bar.localPosition = new Vector3(0f, _model.Muzzle.y + 1.9f, 0f);
+            _bar.localPosition = new Vector3(0f, _model.Muzzle.y * vehicle.Def.Scale + 1.9f, 0f);
             var back = CreateMesh("Back", _bar, meshes.Quad, materials.BarBack, false);
             back.localScale = new Vector3(BarWidth + 0.14f, BarHeight + 0.14f, 1f);
             _barFill = CreateMesh("Fill", _bar, meshes.Quad, vehicle.Team == playerTeam ? materials.BarAlly : materials.BarEnemy,
@@ -139,7 +141,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>World-space main muzzle, for tracers and flashes.</summary>
         public Vector3 MuzzleWorld => _body.TransformPoint(_model.Muzzle);
 
-        public float MuzzleHeight => _model.Muzzle.y;
+        public float MuzzleHeight => _model.Muzzle.y * Def.Scale;
 
         /// <summary>Latest simulated ground speed in m/s.</summary>
         public float Speed => _currentSpeed;
@@ -189,6 +191,80 @@ namespace MachineBrigade.Game.Views
             }
         }
 
+        private Vector3 _shownPosition, _shownVelocity;
+        private float _shownHeading;
+        private bool _shown;
+
+        /// <summary>
+        /// Irons out collision jitter on the drawn hull. The position follows the interpolated
+        /// one through a filter that predicts along the smoothed velocity (steady driving is not
+        /// delayed), so a crowd shoving itself a few centimetres back and forth at the
+        /// simulation rate no longer shakes; the heading eases the same way. Large jumps
+        /// (spawning, teleports) snap straight through.
+        /// </summary>
+        private void Steady(ref Vector3 position, ref float hull)
+        {
+            var dt = Time.deltaTime;
+            if (!_shown || (position - _shownPosition).sqrMagnitude > 4f || dt <= 0f)
+            {
+                _shown = true;
+                _shownPosition = position;
+                _shownVelocity = Vector3.zero;
+                _shownHeading = hull;
+                return;
+            }
+            var velocity = (_currentPosition - _previousPosition) * 20f;
+            _shownVelocity = Vector3.Lerp(_shownVelocity, velocity, 1f - Mathf.Exp(-dt * 7f));
+            var predicted = _shownPosition + _shownVelocity * dt;
+            _shownPosition = Vector3.Lerp(predicted, position, 1f - Mathf.Exp(-dt * 11f));
+            _shownHeading = Mathf.LerpAngle(_shownHeading, hull, 1f - Mathf.Exp(-dt * 14f));
+            position = _shownPosition;
+            hull = _shownHeading;
+        }
+
+        private float _elevation = float.NaN;
+
+        /// <summary>
+        /// Raises the barrel to where its shots go: howitzers and rocket boxes lift to their
+        /// firing angle (mortars highest), guns at aircraft follow the aircraft up, tank guns
+        /// tilt a few degrees with range. Idle, artillery rests slightly raised. The angle
+        /// moves at a gun-laying speed, not in a snap.
+        /// </summary>
+        private void Elevate()
+        {
+            var pivot = _model.Elevation;
+            if (pivot == null) return;
+            var weapon = Def.Weapon;
+            var indirect = weapon.MinRange > 0f || weapon.Projectile == ProjectileKind.Bomb;
+            var aiming = Sim.Target.IsValid && Sim.AimDistance > 0f;
+            float want;
+            if (Def.Flying)
+            {
+                // A gunship's chin gun looks down at what it shoots.
+                want = aiming ? Mathf.Clamp(-Mathf.Atan2(Altitude, Mathf.Max(1f, Sim.AimDistance)) * Mathf.Rad2Deg, -65f, 5f) : -6f;
+            }
+            else if (aiming && Sim.AimHeight > 0f)
+                want = Mathf.Clamp(Mathf.Atan2(Sim.AimHeight - MuzzleHeight, Mathf.Max(1f, Sim.AimDistance)) * Mathf.Rad2Deg, 8f, 78f);
+            else if (aiming && (indirect || _model.Barrel == BarrelKind.Mortar))
+            {
+                // Farther targets want a higher arc, up to the weapon's own ceiling.
+                var reach = Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range));
+                want = _model.Barrel switch
+                {
+                    BarrelKind.Mortar => Mathf.Lerp(55f, 72f, reach),
+                    BarrelKind.Launcher => Mathf.Lerp(28f, 48f, reach),
+                    _ => Mathf.Lerp(24f, 50f, reach),
+                };
+            }
+            else if (aiming) want = Mathf.Lerp(0.5f, 4f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range)));
+            else if (_model.Barrel == BarrelKind.Mortar) want = Mathf.Max(_model.RestPitch, 40f);
+            else want = indirect ? 10f : weapon.Targets == TargetLayers.Air ? 18f : 0f;
+            if (float.IsNaN(_elevation)) _elevation = _model.RestPitch;
+            var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 80f : indirect ? 32f : 45f;
+            _elevation = Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);
+            pivot.localRotation = Quaternion.Euler(-(_elevation - _model.RestPitch), 0f, 0f);
+        }
+
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
         public void Recoil() => _recoilTime = Time.time;
 
@@ -204,6 +280,7 @@ namespace MachineBrigade.Game.Views
             var position = Vector3.Lerp(_previousPosition, _currentPosition, alpha);
             var acceleration = (_currentSpeed - _previousSpeed) * 20f;
             var ease = 1f - Mathf.Exp(-Time.deltaTime * 6f);
+            if (!Flying) Steady(ref position, ref hull);
 
             if (Flying)
             {
@@ -258,6 +335,7 @@ namespace MachineBrigade.Game.Views
                 mount.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(parentYaw, heading), 0f);
             }
 
+            Elevate();
             Spin(1f);
             AnimateParts(cameraRotation);
 

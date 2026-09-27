@@ -2,6 +2,103 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-27: Smooth blasts, map outlines, phone UI, line of fire, scale pass, map kit
+
+The user asked for:
+- smooth explosions, with a small shockwave and one big blast plus small ones;
+- no hard army cap;
+- a minimap with each map's own shape and its terrain;
+- a phone-friendly UI with less text, redone menus, centred labels and better fonts;
+- AI that cannot shoot through buildings or rock;
+- richer maps;
+- no jitter when vehicles touch;
+- barrels that elevate when they fire high;
+- at least two weapons per vehicle, listed in its description;
+- wrecks that clear sooner;
+- no doubled explosions;
+- a project ready to play in the Unity editor, responsive on every device;
+- sensible sizes: aircraft larger, tanks smaller, houses larger.
+
+### Done
+
+**Explosions**
+- Point lights are gone from blasts. A fake ground light (an additive disc) replaces them, which removed most hitches.
+  - Emulator hitches in the same battle: 203 → 68. This is a relative figure, not phone performance.
+- Blasts from Medium up get a small air shockwave ring.
+- A vehicle death plays one quick kill pop, then its own big blast.
+  - Large wrecks cook off in a chain of small pops, not repeated big blasts.
+  - This fixed the doubled or "reset" explosion: the old code played a Medium blast, then the delayed death blast, then a full cook-off chain.
+- Wrecks burn for 12 s, stay 17 s and sink in 3 s.
+
+**Economy**
+- The hard cap is replaced by upkeep. Past the supply line (1.5 × the old cap), income falls, to half at twice supply (never below 25 %).
+- Only a safety limit of 44 vehicles remains.
+- The deck bar shows the income and the upkeep cut.
+
+**Movement and combat**
+- Contacts are calmer:
+  - avoidance fades in and out;
+  - there is a heading dead band while cruising;
+  - braking is shared by push;
+  - scripted units and bosses have right of way;
+  - tanks settle at their final point.
+- Ground vehicles are drawn through a velocity-predicting filter.
+- Heading swings in a whole AI battle: 1426 → about 150.
+- Line of fire:
+  - buildings, rock, wrecks and walls that block fire are rasterised into a 1 m `CoverGrid`;
+  - direct-fire weapons check it before targeting and firing;
+  - a shot that is blocked anyway hits the wall;
+  - vehicles close in until they are clear;
+  - indirect weapons (mortars, artillery, bombs, drones) fire over.
+- Barrels elevate: every model has an `Elevation` pivot on its gun, mortar or launcher group, which pitches to the ballistic angle for the current target.
+- Every combat vehicle has at least two weapons. There are 18 new secondaries, with new models where needed (grenade launcher, guided bomb, drone gun, ATGM post).
+- The tactical AI remembers each enemy it has seen, with a half-life of 45 s, and picks up nearby crates.
+
+**Maps**
+- Each map has its own outline, carved per map by `Tools/maps/boundary.py` inside the 160 m square: valleys, bays, a canyon rim.
+  - Nothing drives or builds past it.
+  - The outside is terrain with sparse, shadowless rock and trees.
+- The minimap is the painted terrain, cut to the outline and turned to match the camera, with haloed blips.
+- The map kit (22 new models) dresses every battlefield (`warzone` in `build_maps.py`):
+  - wrecks with their craters in no man's land;
+  - foxholes, trench lines, barricades, a wreck and a road checkpoint at every objective;
+  - a field camp (command tent, camouflage nets, supply piles, a fuel bladder, a radio mast) beside each camp;
+  - per theme: telegraph poles, pylons, ruins, dead trees and anti-tank ditches;
+  - low road bridges across the Jungle Pass fords.
+  - Cover comes in equal numbers on both halves. Campaign spawns and routes stay clear, and reachability is still proven.
+  - Craters and wrecks scorch the ground beneath them.
+- Props may turn in 45° steps; a diagonal prop keeps its bounding square as its footprint.
+
+**Scale**
+- `VehicleDef.Scale` resizes the model and the hull length and width; the hit radius is deliberately left alone, because scaling it upset the balance.
+  - Aircraft are 1.05–2.0× larger.
+  - Non-boss ground vehicles are 0.85×.
+- `PropDef.Scale`: 25 buildings are 1.15× larger. The command HQ and the vehicle hangar are unscaled, so the fortress still fits.
+
+**UI**
+- Be Vietnam Pro for text (full Vietnamese coverage); Barlow Condensed stays for numbers.
+- Battle HUD:
+  - glass panels and icon-only tools;
+  - a commander rail;
+  - a selection card only when something is selected;
+  - weapon chips and short names.
+- It adapts to the screen shape (`MatchFor` from 4:3 to 16:9 and wider).
+- Menus: icon mode tiles with one line for the chosen mode. Deck cards open a detail panel with every weapon (kind, calibre, targets, ammo).
+- Button labels no longer end in an ellipsis.
+
+**Editor**
+- `EditorStartup` makes Play always start from the game scene (`Sandbox.unity`). It also opens that scene in a fresh session and adds the menu item *Machine Brigade → Open Game Scene*.
+- Batch test and build runs use a mirrored worktree (`MachineBrigade-runner`), so the project can stay open in the editor.
+
+**Balance** (five seeds per mission, auto-commander)
+14 of 17 missions win 5/5; m02, m09 and m10 win 4/5. Before this round, 12 were 5/5 and m03 and m16 only 3/5.
+The map kit first dropped m09 (the Mobile Fortress on Frostpeak) to 2/5, with stalls at the time limit, so the boss went from 10,500 to 9,000 hp.
+
+### Known limitations
+- **Ads:** still the placeholder; a real SDK needs the user's AdMob account.
+- **Real phones:** nothing has been measured on one. On the emulator, Ashfield runs at about 23 fps with 15–24 vehicles (26.6 before the bigger buildings and the outside scenery). Use it only to compare builds.
+- **Bridges:** they are visual. Vehicles cross at the ford underneath, and the deck is level with the ground.
+
 ## 2026-09-27: The big expansion (everything from the suggestion list, plus more)
 
 The user asked for all of the earlier suggestions, and more:

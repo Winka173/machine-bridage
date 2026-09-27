@@ -39,6 +39,12 @@ namespace MachineBrigade.Sim.Content
         public bool Guided => Projectile is ProjectileKind.Missile or ProjectileKind.Drone;
 
         /// <summary>
+        /// Fires over cover: artillery, mortars and rocket artillery (anything with a minimum
+        /// range) lob their rounds, bombs fall and drones fly. Everything else needs a clear line.
+        /// </summary>
+        public bool Indirect => MinRange > 0f || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
+
+        /// <summary>
         /// Shots (trigger pulls) carried, or 0 for unlimited. Long-range weapons run dry so they
         /// cannot be spammed; the vehicle then fights with its other mounts until it re-arms.
         /// </summary>
@@ -151,6 +157,13 @@ namespace MachineBrigade.Sim.Content
         public float Width { get; internal set; }
 
         /// <summary>Collision capsule: half the length of its spine (0 for a round footprint).</summary>
+        /// <summary>
+        /// Size of the model relative to how it was built: aircraft are drawn closer to their
+        /// real size next to tanks and houses, ground vehicles a little smaller. Length and width
+        /// (the hull) include it; the radius, which decides how easily it is hit, does not.
+        /// </summary>
+        public float Scale { get; set; } = 1f;
+
         public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
 
         /// <summary>Collision capsule radius (a little inside the hull, so parked vehicles can touch).</summary>
@@ -242,8 +255,9 @@ namespace MachineBrigade.Sim.Content
     public sealed class PropDef
     {
         public PropDef(string id, ArmorClass armor, float maxHp, float width, float depth, bool blocksMovement,
-            ExplosionDef? explosion)
+            ExplosionDef? explosion, bool? blocksFire = null)
         {
+            BlocksFire = blocksFire ?? blocksMovement;
             Id = Guard.Id(id);
             Armor = armor;
             MaxHp = Guard.Positive(maxHp, id, "hp");
@@ -264,6 +278,15 @@ namespace MachineBrigade.Sim.Content
         public float Depth { get; }
 
         public bool BlocksMovement { get; }
+
+        /// <summary>Size of the model relative to how it was built; the footprint already includes it.</summary>
+        public float Scale { get; set; } = 1f;
+
+        /// <summary>
+        /// Stands tall enough to stop a direct-fire round (buildings, rock, fortress walls). Low
+        /// cover and open structures (sandbags, tank traps, barriers, a water tower on legs) do not.
+        /// </summary>
+        public bool BlocksFire { get; }
 
         /// <summary>Terrain (rock, earth) that no weapon can realistically destroy; never an attack target.</summary>
         public bool Indestructible => MaxHp >= 100000f;

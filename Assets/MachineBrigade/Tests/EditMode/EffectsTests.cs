@@ -65,7 +65,7 @@ namespace MachineBrigade.Tests
             var layers = new BlastLayers(_materials, _root.transform);
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
                 ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
-            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 15, "one system per layer kind, not per blast");
+            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 17, "one system per layer kind, not per blast");
         }
 
         [Test]

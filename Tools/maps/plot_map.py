@@ -87,6 +87,16 @@ def main(src, out):
         ax.add_patch(patches.Circle((u['x'], u['z']), 2.0, color=colour, zorder=7))
         ax.text(u['x'], u['z'] + 2.8, UNIT_LABELS.get(u['def'], u['def'][:2]), fontsize=6, color=colour, weight='bold',
                 ha='center', va='bottom', zorder=7)
+    if m.get('boundary'):
+        # Outside the outline is terrain: shade it and draw the edge.
+        flat = m['boundary']
+        poly = list(zip(flat[0::2], flat[1::2]))
+        outer = [(-half, -half), (half, -half), (half, half), (-half, half)]
+        from matplotlib.path import Path as MPath
+        codes = [MPath.MOVETO] + [MPath.LINETO] * 3 + [MPath.CLOSEPOLY] + [MPath.MOVETO] + [MPath.LINETO] * (len(poly) - 1) + [MPath.CLOSEPOLY]
+        verts = outer + [outer[0]] + poly[::-1] + [poly[-1]]
+        ax.add_patch(patches.PathPatch(MPath(verts, codes), facecolor='#3b3a36', alpha=0.85, edgecolor='none', zorder=8))
+        ax.plot([x for x, _ in poly] + [poly[0][0]], [z for _, z in poly] + [poly[0][1]], color='#f0e8d0', linewidth=1.2, zorder=9)
     for t in m['teams']:
         ax.add_patch(patches.Circle((t['x'], t['z']), 22, fill=False, color='#2060ff' if t['team'] == 0 else '#ff4020'))
     for pt in m.get('points', []):

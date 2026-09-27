@@ -19,6 +19,8 @@ namespace MachineBrigade.Sim.Entities
             var sideways = rotation == 90 || rotation == 270;
             Width = sideways ? def.Depth : def.Width;
             Depth = sideways ? def.Width : def.Depth;
+            // A diagonal prop (a bridge across a diagonal river) keeps the square that bounds it.
+            if (rotation % 90 != 0) Width = Depth = (def.Width + def.Depth) * 0.70710677f;
         }
 
         public EntityId Id { get; }
@@ -26,7 +28,7 @@ namespace MachineBrigade.Sim.Entities
         public int Team => Teams.Neutral;
         public Vector2 Position { get; }
 
-        /// <summary>Degrees: 0, 90, 180 or 270.</summary>
+        /// <summary>Degrees, a multiple of 45 (diagonals only for props that are driven over, like bridges).</summary>
         public int Rotation { get; }
 
         /// <summary>Footprint along X after rotation.</summary>

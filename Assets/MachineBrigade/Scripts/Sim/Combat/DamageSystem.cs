@@ -152,6 +152,7 @@ namespace MachineBrigade.Sim.Combat
         {
             if (prop.Def.BlocksMovement)
                 _world.Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, SimWorld.ObstacleClearance);
+            if (prop.Def.BlocksFire) _world.Cover.Remove(prop);
             _world.Emit(SimEvent.PropLost(prop));
             if (prop.Def.Explosion != null) Schedule(prop.Position, prop.Def.Explosion, prop.Id);
         }

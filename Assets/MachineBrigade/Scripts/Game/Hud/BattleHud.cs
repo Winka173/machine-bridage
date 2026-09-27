@@ -79,7 +79,7 @@ namespace MachineBrigade.Game.Hud
             _settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
             _settings.referenceResolution = new Vector2Int(1280, 720);
             _settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
-            _settings.match = 1f;
+            _settings.match = MatchFor(Screen.width, Screen.height);
             _settings.scale = Match.MatchSettings.UiScale;
             _settings.sortingOrder = 10;
 
@@ -112,15 +112,9 @@ namespace MachineBrigade.Game.Hud
             }
 
             // Top bar ---------------------------------------------------------------------------
-            var top = UiKit.Box("topbar", PickingMode.Position);
+            var top = UiKit.Box("topbar");
             _safe.Add(top);
-            var brand = UiKit.Box("brand");
-            brand.Add(UiKit.Icon("logo", UiKit.Mint, 2f));
-            var brandText = UiKit.Box("brand-text");
-            brandText.Add(UiKit.Text(Strings.Get("brand.top"), "brand-top"));
-            brandText.Add(UiKit.Text(Strings.Get("brand.bottom"), "brand-bottom"));
-            brand.Add(brandText);
-            top.Add(brand);
+            top.Add(UiKit.Box("topbar-left"));
 
             var stats = UiKit.Box("stats");
             if (mode == HudMode.Score)
@@ -146,7 +140,7 @@ namespace MachineBrigade.Game.Hud
             }
             top.Add(stats);
 
-            var right = UiKit.Box("topbar-right");
+            var right = UiKit.Box("topbar-right", PickingMode.Position);
             _fps = UiKit.Text("", "fps");
             right.Add(_fps);
             right.Add(UiKit.IconButton("pause", () => PausePressed?.Invoke()));
@@ -164,8 +158,8 @@ namespace MachineBrigade.Game.Hud
             Minimap.Clicked += p => MinimapClicked?.Invoke(p);
             left.Add(Minimap);
             var tools = UiKit.Box("tools");
-            tools.Add(Tool("people", Strings.Get("tool.army"), () => SelectAllPressed?.Invoke()));
-            _boxTool = Tool("expand", Strings.Get("tool.box"), () => BoxModeToggled?.Invoke());
+            tools.Add(Tool("people", "", () => SelectAllPressed?.Invoke()));
+            _boxTool = Tool("expand", "", () => BoxModeToggled?.Invoke());
             tools.Add(_boxTool);
             tools.Add(Tool("plus", "", () => ZoomPressed?.Invoke(1.25f)));
             tools.Add(Tool("minus", "", () => ZoomPressed?.Invoke(0.8f)));
@@ -173,25 +167,21 @@ namespace MachineBrigade.Game.Hud
             _safe.Add(left);
 
             // Commander panel: the army fights on its own; the player sets intent -------------------
-            var commander = UiKit.Box("commander", PickingMode.Position);
-            var commanderHead = UiKit.Box("panel-header");
-            commanderHead.Add(UiKit.Text(Strings.Get("panel.commander"), "caps"));
-            commander.Add(commanderHead);
-            var commanderBody = UiKit.Box("commander-body");
-            var stance = UiKit.Box("commander-row");
-            _attackStance = Toggle(stance, "attack", Strings.Get("stance.attack"), () => StancePressed?.Invoke(false));
-            _defendStance = Toggle(stance, "shield", Strings.Get("stance.defend"), () => StancePressed?.Invoke(true), "last-toggle");
-            commanderBody.Add(stance);
-            var autos = UiKit.Box("commander-row last-row");
-            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("auto.deploy"), () => AutoDeployToggled?.Invoke(), "switch");
-            _autoStrike = Toggle(autos, "barrage", Strings.Get("auto.strike"), () => AutoStrikeToggled?.Invoke(), "switch last-toggle");
-            commanderBody.Add(autos);
-            commander.Add(commanderBody);
+            var commander = UiKit.Box("rail", PickingMode.Position);
+            var stance = UiKit.Box("rail-group");
+            _attackStance = Toggle(stance, "attack", Strings.Get("rail.attack"), () => StancePressed?.Invoke(false));
+            _defendStance = Toggle(stance, "shield", Strings.Get("rail.defend"), () => StancePressed?.Invoke(true));
+            commander.Add(stance);
+            var autos = UiKit.Box("rail-group");
+            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("rail.buy"), () => AutoDeployToggled?.Invoke(), "switch");
+            _autoStrike = Toggle(autos, "barrage", Strings.Get("rail.support"), () => AutoStrikeToggled?.Invoke(), "switch");
+            commander.Add(autos);
             _safe.Add(commander);
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
             // Command panel (hand orders for selected vehicles) -------------------------------------
             var command = UiKit.Box("command", PickingMode.Position);
+            _command = command;
             var header = UiKit.Box("command-header");
             header.Add(UiKit.Text(Strings.Get("panel.selection"), "caps"));
             _selectedCount = UiKit.Text("", "caps");
@@ -214,15 +204,17 @@ namespace MachineBrigade.Game.Hud
             detailsText.Add(track);
             _hpText = UiKit.Text("", "hp-text");
             detailsText.Add(_hpText);
-            _counterText = UiKit.Text("", "counter-text");
-            detailsText.Add(_counterText);
             details.Add(detailsText);
             commandBody.Add(details);
+            _weapons = UiKit.Box("weapon-row");
+            commandBody.Add(_weapons);
+            _counterText = UiKit.Text("", "counter-text");
+            commandBody.Add(_counterText);
 
             var buttons = UiKit.Box("buttons");
-            _attackMove = Command(buttons, "crosshair", Strings.Get("cmd.attackMove"), () => AttackMovePressed?.Invoke());
-            Command(buttons, "stop", Strings.Get("cmd.stop"), () => StopPressed?.Invoke());
-            Command(buttons, "retreat", Strings.Get("cmd.retreat"), () => RetreatPressed?.Invoke()).AddToClassList("last");
+            _attackMove = Command(buttons, "crosshair", Strings.Get("cmd.attackShort"), () => AttackMovePressed?.Invoke());
+            Command(buttons, "stop", Strings.Get("cmd.stopShort"), () => StopPressed?.Invoke());
+            Command(buttons, "retreat", Strings.Get("cmd.retreatShort"), () => RetreatPressed?.Invoke()).AddToClassList("last");
             commandBody.Add(buttons);
             _safe.Add(command);
 
@@ -237,6 +229,9 @@ namespace MachineBrigade.Game.Hud
             // Overlays -----------------------------------------------------------------------------
             _autoHint = spec.HintKey;
             _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
+            // The standing hint is for the first moments of a match only; mode hints (attack-move,
+            // box select) and strike targeting bring it back while they are active.
+            _hintUntil = Time.unscaledTime + 9f;
             _hintBar = UiKit.Box("hint-bar");
             _hintBar.Add(_hint);
             _safe.Add(_hintBar);
@@ -346,8 +341,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);
 
-        public void SetDeck(float cp, float bank, int armyCp, int armyCap, IReadOnlyList<CardState> states) =>
-            _deck?.Update(cp, bank, armyCp, armyCap, states);
+        public void SetDeck(float cp, float bank, float earning, float upkeep, IReadOnlyList<CardState> states) =>
+            _deck?.Update(cp, bank, earning, upkeep, states);
 
         /// <summary>Shows the strike-targeting prompt, or hides it when <paramref name="message"/> is null.</summary>
         public void SetTargeting(string message)
@@ -465,9 +460,14 @@ namespace MachineBrigade.Game.Hud
             _bannerUntil = Time.unscaledTime + seconds;
         }
 
+        private VisualElement _command, _weapons;
+        private float _hintUntil;
+        private string _weaponsFor;
+
         public void SetSelection(SelectionSummary summary)
         {
             if (_unitName == null) return;
+            _command.style.display = summary.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             // Only rebuild the panel when what it shows has changed (whole hit points).
             if (summary.Count == _shownSelection.Count && summary.DefId == _shownSelection.DefId &&
                 Mathf.CeilToInt(summary.Hp) == Mathf.CeilToInt(_shownSelection.Hp) &&
@@ -498,9 +498,23 @@ namespace MachineBrigade.Game.Hud
             _hpFill.EnableInClassList("hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("critical", health < 0.3f);
             _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
-            // What this unit is for: who it beats and who beats it.
-            _counterText.text = summary.DefId != null && Catalog != null && Catalog.Vehicles.TryGetValue(summary.DefId, out var def)
-                ? MachineBrigade.Game.Match.Counters.Line(def) : "";
+            // What this unit is for: who it beats and who beats it; and what it fights with.
+            VehicleDef def = null;
+            var known = summary.DefId != null && Catalog != null && Catalog.Vehicles.TryGetValue(summary.DefId, out def);
+            _counterText.text = known ? MachineBrigade.Game.Match.Counters.Line(def) : "";
+            if (_weaponsFor != summary.DefId)
+            {
+                _weaponsFor = summary.DefId;
+                _weapons.Clear();
+                if (known)
+                    foreach (var line in WeaponInfo.Of(def))
+                    {
+                        var chip = UiKit.Box("weapon-chip");
+                        chip.Add(UiKit.Icon(line.Icon, UiKit.Ink, 1.7f));
+                        chip.Add(UiKit.Text(line.Name, "weapon-name"));
+                        _weapons.Add(chip);
+                    }
+            }
         }
 
         private Label _counterText;
@@ -531,6 +545,8 @@ namespace MachineBrigade.Game.Hud
             _attackMove.EnableInClassList("armed", attackMoveArmed);
             _boxTool.EnableInClassList("on", boxMode);
             _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : _autoHint);
+            if (attackMoveArmed || boxMode) _hintUntil = float.MaxValue;
+            else if (_hintUntil == float.MaxValue) _hintUntil = Time.unscaledTime;
         }
 
         public void ShowError(CommandError error) => Toast(Strings.Error(error), error: true);
@@ -596,8 +612,33 @@ namespace MachineBrigade.Game.Hud
             }
             if (_banner != null && _banner.ClassListContains("visible") && Time.unscaledTime > _bannerUntil)
                 _banner.RemoveFromClassList("visible");
+            _hintBar?.EnableInClassList("gone", Time.unscaledTime > _hintUntil);
             TickAd();
+            if (Screen.width != _screenWidth || Screen.height != _screenHeight)
+            {
+                // A new screen shape (another device, a rotated tablet, a resized Game view).
+                _screenWidth = Screen.width;
+                _screenHeight = Screen.height;
+                _settings.match = MatchFor(_screenWidth, _screenHeight);
+                _appliedSafeArea = default;
+            }
             if (Screen.safeArea != _appliedSafeArea) ApplySafeArea();
+        }
+
+        private int _screenWidth, _screenHeight;
+
+        /// <summary>
+        /// Responsive scaling. The layout is authored for 1280 x 720. On screens at least that
+        /// wide for their height (16:9 and the long 19.5:9 and 21:9 phones) the panel scales with
+        /// the height, so everything keeps its size and the extra width goes to the battlefield
+        /// between the edge clusters; on squarer screens (16:10, 3:2, 4:3 tablets) it blends over
+        /// to scaling with the width, so the deck and the side columns always fit across.
+        /// </summary>
+        private static float MatchFor(int width, int height)
+        {
+            if (width <= 0 || height <= 0) return 1f;
+            var aspect = width / (float)height;
+            return Mathf.Clamp01((aspect - 4f / 3f) / (16f / 9f - 4f / 3f));
         }
 
         public void Dispose()

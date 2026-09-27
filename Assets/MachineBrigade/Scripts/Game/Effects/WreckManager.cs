@@ -16,9 +16,11 @@ namespace MachineBrigade.Game.Effects
     /// </summary>
     internal sealed class WreckManager
     {
-        private const float BurnSeconds = 45f;
-        private const float LifeSeconds = 75f;
-        private const float SinkSeconds = 5f;
+        // Explode, burn, go: a hulk burns for a quarter of a minute and is gone soon after, so
+        // the field shows the current fight rather than a scrapyard of old ones.
+        private const float BurnSeconds = 12f;
+        private const float LifeSeconds = 17f;
+        private const float SinkSeconds = 3f;
         private const float SinkDepth = 2.2f;
         private const float Gravity = 18f;
 
@@ -62,7 +64,7 @@ namespace MachineBrigade.Game.Effects
             var wreck = new Wreck
             {
                 Id = view.Id, View = view, Created = now, Expires = now + LifeSeconds * Random.Range(0.85f, 1.15f),
-                NextPop = now + Random.Range(4f, 7f), PopsLeft = Random.Range(2, 6), WasFalling = view.Falling,
+                NextPop = now + Random.Range(3f, 5f), PopsLeft = Random.Range(1, 3), WasFalling = view.Falling,
             };
             _wrecks.Add(wreck);
             // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
@@ -120,11 +122,14 @@ namespace MachineBrigade.Game.Effects
             _chunks?.Wreck(view.Root.position, radius, view.Team, true, now);
             wreck.HopVelocity = Random.Range(3f, 4.5f);
 
+            // Ammunition going up: a quick chain of small pops around the hull after the big blast.
+            if (radius >= 1.1f)
+            {
+                wreck.ChainLeft = radius >= 1.8f ? Random.Range(3, 5) : Random.Range(2, 4);
+                wreck.NextChain = now + Random.Range(0.35f, 0.6f);
+            }
             if (radius >= 1.8f)
             {
-                // Ammunition going up: a quick chain of blasts in the first seconds...
-                wreck.ChainLeft = Random.Range(2, 4);
-                wreck.NextChain = now + Random.Range(0.45f, 0.9f);
                 // ...and in some hulls a roaring jet of flame out of the turret ring.
                 if (view.Turret != null && Random.value < 0.55f)
                 {
@@ -148,10 +153,11 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>
         /// Ammunition cooking off inside a burning hulk: returns one wreck position that is due a
-        /// secondary blast and how big it is: first a quick chain right after a big vehicle dies,
-        /// then a few pops while it burns.
+        /// secondary explosion, and whether it is a pop (a small fireball) or only a spray of
+        /// sparks: first a quick chain of pops scattered round the hull right after the big
+        /// blast, then a few while it burns. Never another big blast on the same spot.
         /// </summary>
-        public bool TryCookOff(float now, out Vector3 position, out ExplosionTier tier)
+        public bool TryCookOff(float now, out Vector3 position, out bool pop)
         {
             foreach (var w in _wrecks)
             {
@@ -159,20 +165,20 @@ namespace MachineBrigade.Game.Effects
                 if (w.ChainLeft > 0 && now >= w.NextChain)
                 {
                     w.ChainLeft--;
-                    w.NextChain = now + Random.Range(0.3f, 0.75f);
-                    tier = Random.value < 0.4f ? ExplosionTier.Large : ExplosionTier.Medium;
-                    position = Around(w, 1f);
+                    w.NextChain = now + Random.Range(0.22f, 0.5f);
+                    pop = true;
+                    position = Around(w, 0.8f, w.View.Sim.Radius * 1.4f);
                     return true;
                 }
                 if (now - w.Created > BurnSeconds || w.PopsLeft <= 0 || now < w.NextPop) continue;
                 w.PopsLeft--;
-                w.NextPop = now + Random.Range(2f, 6f);
-                tier = Random.value < 0.45f ? ExplosionTier.Medium : ExplosionTier.Small;
-                position = Around(w, 1.2f);
+                w.NextPop = now + Random.Range(2f, 4f);
+                pop = Random.value < 0.5f;
+                position = Around(w, 1.2f, 0.7f);
                 return true;
             }
             position = default;
-            tier = ExplosionTier.Small;
+            pop = false;
             return false;
         }
 
@@ -236,8 +242,8 @@ namespace MachineBrigade.Game.Effects
             _crashes.Clear();
         }
 
-        private static Vector3 Around(Wreck w, float height) =>
-            w.View.Root.position + new Vector3(Random.Range(-0.7f, 0.7f), height, Random.Range(-0.7f, 0.7f));
+        private static Vector3 Around(Wreck w, float height, float reach) =>
+            w.View.Root.position + new Vector3(Random.Range(-reach, reach), height, Random.Range(-reach, reach));
 
         /// <summary>The hull thrown up by its death explosion, landing back with a thud.</summary>
         private static void Hop(Wreck w, float dt)
@@ -284,7 +290,7 @@ namespace MachineBrigade.Game.Effects
                     var up = Vector3.Dot(turret.up, Vector3.up) >= 0f ? Vector3.up : Vector3.down;
                     turret.rotation = Quaternion.FromToRotation(turret.up, up) * turret.rotation;
                     _chunks?.Trails.Land(position, 0f, true, now);
-                    _fires.Ignite(new Vector3(position.x, 0.3f, position.z), 0.55f, Random.Range(14f, 22f), now);
+                    _fires.Ignite(new Vector3(position.x, 0.3f, position.z), 0.55f, Random.Range(8f, 12f), now);
                 }
             }
             turret.position = position;

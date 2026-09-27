@@ -11,8 +11,10 @@ namespace MachineBrigade.Sim.Economy
 {
     /// <summary>
     /// One side's Command Points and deck (game plan section 2). CP regenerate over time, up to a
-    /// bank cap; kills refund a quarter of the victim's cost; the army on the field may not exceed
-    /// the unit cap.
+    /// bank cap; kills refund a quarter of the victim's cost. There is no hard army cap: an army
+    /// bigger than its supply (<see cref="ArmyCap"/>) costs upkeep, which slows the income, so
+    /// a side can always buy but a huge army starves its own reinforcements. Only a vehicle
+    /// count far above any real army stops purchases, to keep phones fast.
     /// </summary>
     public sealed class TeamEconomy
     {
@@ -46,7 +48,36 @@ namespace MachineBrigade.Sim.Economy
         public float Bonus { get; set; }
 
         public float Bank { get; }
+
+        /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
         public int ArmyCap => _armyCap + (Doctrine?.ArmyCap ?? 0);
+
+        /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
+        public const int MaxVehicles = 44;
+
+        /// <summary>
+        /// Army value kept up at full income: half again the mode's old army cap, so a normal
+        /// army never pays upkeep and only a swarm does.
+        /// </summary>
+        public int Supply => ArmyCap * 3 / 2;
+
+        /// <summary>
+        /// Share of the income left after upkeep: full up to the supply, then falling steadily
+        /// (half at twice the supply) to a floor of a quarter.
+        /// </summary>
+        public float Upkeep => UpkeepFor(ArmyCp, Supply);
+
+        public static float UpkeepFor(int armyCp, int supply)
+        {
+            if (supply <= 0 || armyCp <= supply) return 1f;
+            return MathF.Max(0.25f, 1f - 0.5f * (armyCp - supply) / supply);
+        }
+
+        /// <summary>CP per second actually earned now: income and bonuses after upkeep.</summary>
+        public float Earning => (Income + Bonus) * Upkeep;
+
+        /// <summary>Vehicles on the field plus deliveries on the way.</summary>
+        public int VehicleCount { get; internal set; }
 
         /// <summary>Vehicle cards in the deck (empty: any vehicle).</summary>
         public IReadOnlyList<string> Vehicles { get; }
@@ -100,12 +131,13 @@ namespace MachineBrigade.Sim.Economy
             if (economy.Vehicles.Count > 0 && !Contains(economy.Vehicles, defId)) return CommandResult.Rejected(CommandError.UnknownCard);
             if (!_world.TryGetRally(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
             if (economy.Cp < def.CpCost) return CommandResult.Rejected(CommandError.NotEnoughCp);
-            if (ArmyCp(team) + def.CpCost > economy.ArmyCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (VehicleCount(team) >= TeamEconomy.MaxVehicles) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= def.CpCost;
             _pending.Add((team, defId, _world.Time + DeliverySeconds));
             economy.ArmyCp = ArmyCp(team);
+            economy.VehicleCount = VehicleCount(team);
             _world.Emit(SimEvent.DeploymentQueued(team, defId, zone, DeliverySeconds));
             return CommandResult.Ok;
         }
@@ -123,8 +155,9 @@ namespace MachineBrigade.Sim.Economy
         {
             foreach (var economy in _teams.Values)
             {
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + (economy.Income + economy.Bonus) * dt);
                 economy.ArmyCp = ArmyCp(economy.Team);
+                economy.VehicleCount = VehicleCount(economy.Team);
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }
 
             for (var i = _pending.Count - 1; i >= 0; i--)
@@ -173,6 +206,16 @@ namespace MachineBrigade.Sim.Economy
                 if (v.IsAlive && v.Team == team) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _) in _pending)
                 if (pendingTeam == team) total += _world.Catalog.Vehicle(defId).CpCost;
+            return total;
+        }
+
+        private int VehicleCount(int team)
+        {
+            var total = 0;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted) total++;
+            foreach (var (pendingTeam, _, _) in _pending)
+                if (pendingTeam == team) total++;
             return total;
         }
 

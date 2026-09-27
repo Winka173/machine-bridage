@@ -28,7 +28,7 @@
                  "spawns": [10, -72, 62, -30, 62, 20, 30, 30, -30, 14] },
       "coins": 200, "xp": 150, "unlocks": ["mortar_carrier", "repair_drop"], "starTime": 240, "starLosses": 4 },
 
-    { "id": "m03", "map": "ashfield", "weather": "Storm", "goal": "Boss", "timeLimit": 900,
+    { "id": "m03", "map": "ashfield", "weather": "Storm", "goal": "Boss", "timeLimit": 1140,
       "boss": { "def": "mega_gunship", "x": 45, "z": 45, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Normal", "enemyCp": 12,
       "enemyDeck": ["scout_jeep", "armored_car", "light_tank", "apc", "main_battle_tank", "rocket_technical"],
@@ -85,7 +85,7 @@
                  "roster": ["light_tank", "main_battle_tank", "apc", "mortar_carrier", "attack_helicopter", "flame_tank"] },
       "coins": 380, "xp": 280, "unlocks": ["sam_launcher", "heavy_aa"], "starTime": 0, "starLosses": 10 },
 
-    { "id": "m09", "map": "frostpeak", "weather": "Snow", "goal": "Boss", "timeLimit": 1100,
+    { "id": "m09", "map": "frostpeak", "weather": "Snow", "goal": "Boss", "timeLimit": 1200,
       "boss": { "def": "mobile_fortress", "x": 42, "z": 46, "heading": 225 },
       "enemyAi": "commander", "enemyStance": "Attack", "difficulty": "Hard", "enemyCp": 16,
       "enemyDeck": ["light_tank", "main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "mlrs"],

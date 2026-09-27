@@ -112,6 +112,10 @@ namespace MachineBrigade.Sim.Content
                 }
                 vehicles.Add(Wrap(v, () =>
                 {
+                    // "scale" resizes the drawn model and its hull (length, width) together. The radius
+                    // (how far a shot or blast reaches it) stays as given: a bigger-drawn aircraft is
+                    // not an easier target, a smaller-drawn tank not a harder one.
+                    var scale = v.Float("scale", 1f);
                     var def = new VehicleDef(
                         v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp"), v.Float("speed"), v.Float("turnRate"),
                         v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
@@ -123,8 +127,9 @@ namespace MachineBrigade.Sim.Content
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
                     def.ArmyCost = def.CpCost;
-                    if (v.Has("length")) def.Length = v.Float("length");
-                    if (v.Has("width")) def.Width = v.Float("width");
+                    def.Scale = scale;
+                    if (v.Has("length")) def.Length = v.Float("length") * scale;
+                    if (v.Has("width")) def.Width = v.Float("width") * scale;
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
                     if (v.Has("skills"))
                     {
@@ -150,9 +155,11 @@ namespace MachineBrigade.Sim.Content
             var props = new List<PropDef>();
             foreach (var p in root.Array("props"))
             {
+                var propScale = p.Float("scale", 1f);
                 props.Add(Wrap(p, () => new PropDef(
-                    p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width"), p.Float("depth"),
-                    p.Bool("blocks", false), ParseExplosion(p, "explosion"))));
+                    p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width") * propScale, p.Float("depth") * propScale,
+                    p.Bool("blocks", false), ParseExplosion(p, "explosion"), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
+                { Scale = propScale }));
             }
 
             var supports = new List<SupportDef>();

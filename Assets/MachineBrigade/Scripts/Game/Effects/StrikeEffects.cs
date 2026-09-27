@@ -223,6 +223,8 @@ namespace MachineBrigade.Game.Effects
             if (jet == null)
             {
                 jet = new Jet { Root = _models.Spawn(model, e.Team, _root).Root, Model = model };
+                var twin = model == "heavy_bomber" ? "heavy_bomber" : "attack_jet";
+                if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * sized.Scale;
                 foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
                     if (t.name.StartsWith("Bombs")) jet.Bombs = t;
                 _jets.Add(jet);

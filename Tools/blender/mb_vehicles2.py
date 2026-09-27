@@ -15,6 +15,7 @@ import math
 
 from mathutils import Euler, Vector
 
+import mb_weapons as wpn
 from frontier_kit import chamfered
 from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _coax, _dish, _flank, _frame, _glacis, _roof_mg, _rws,
                          _smoke, _sponson_section, _tube_mouth, _wheel, tracks)
@@ -186,7 +187,8 @@ def howitzer(a):
 def thermobaric_launcher(a):
     """Heavy thermobaric rocket launcher (TOS-1A lineage) on a tank chassis: a massive armoured
     box of 24 tubes under a hood on a trainable launcher, over a low hull with a dozer blade,
-    reactive armour on the glacis and skirts, rear fuel drums and an unditching log."""
+    reactive armour on the glacis and skirts, rear fuel drums, an unditching log and a heavy machine gun
+    on a tall pintle at the right rear corner of the hull (Mount_mg)."""
     tracks(a, 1.3, 6.1, .9, .35, 6, .48, belt_width=.6, wheel_seg=10, lean=True)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -277,6 +279,10 @@ def thermobaric_launcher(a):
     face = tuple(pod @ Vector((0, -L / 2 - .06, 0)))
     a.pivot('Muzzle_rocket', face, t)
     a.pivot('Muzzle_main', face, t)
+    # Second weapon: a heavy machine gun on a tall pintle at the right rear corner of the hull deck (Mount_mg
+    # / Muzzle_mg), outside the launcher's sweep and above the unditching log; its 0.7 m barrel stops
+    # short of the launcher's back plate.
+    wpn.hmg(a, (1.47, 3.22, 1.45), post=.45, length=.7, ammo=-1)
 
 
 # ----------------------------------------------------------------------------- infantry fighting vehicle

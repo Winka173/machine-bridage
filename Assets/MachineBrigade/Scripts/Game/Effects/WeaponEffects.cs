@@ -138,8 +138,9 @@ namespace MachineBrigade.Game.Effects
             var forward = new Vector3(aim.x, 0f, aim.z);
             forward = forward.sqrMagnitude > 1e-4f ? forward.normalized : Vector3.forward;
             var side = Vector3.Cross(Vector3.up, forward);
-            // Light machine guns show a burst of three; cannons one heavier tracer per shot.
-            var rounds = damage < 12f ? 3 : 1;
+            // Light machine guns show a pair of tracers per burst (nearly every vehicle carries one
+            // now, firing five bursts a second); cannons one heavier tracer per shot.
+            var rounds = damage < 12f ? 2 : 1;
             var thickness = Mathf.Lerp(0.08f, 0.17f, Mathf.InverseLerp(6f, 30f, damage));
             var length = Mathf.Lerp(1.6f, 2.6f, Mathf.InverseLerp(6f, 30f, damage));
             for (var i = 0; i < rounds; i++)

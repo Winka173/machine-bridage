@@ -69,10 +69,19 @@ namespace MachineBrigade.Game.Hud
             BuildShopGrid();
         }
 
+        /// <summary>The line above the grid (how items work, what a card is, what was bought); hidden when empty.</summary>
+        private void SetShopNote(string text)
+        {
+            _shopNote.text = text;
+            _shopNote.style.display = string.IsNullOrEmpty(text) ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
         private void BuildShopGrid()
         {
             _shopGrid.Clear();
             _shopCards.Clear();
+            // Only the items tab has a note (how items are used); the other tabs drop it.
+            SetShopNote(_tab == ShopTab.Items ? Strings.Get("shop.itemsNote") : "");
             switch (_tab)
             {
                 case ShopTab.Skins:
@@ -84,7 +93,6 @@ namespace MachineBrigade.Game.Hud
                         if (doctrine.Id != "armor") _shopGrid.Add(DoctrineCard(doctrine.Id));
                     break;
                 case ShopTab.Items:
-                    _shopNote.text = Strings.Get("shop.itemsNote");
                     foreach (var id in Progression.Items) _shopGrid.Add(ItemCard(id));
                     break;
                 default:
@@ -120,7 +128,7 @@ namespace MachineBrigade.Game.Hud
             var card = UiKit.Button("shop-card unit-card", () =>
             {
                 if (available) SelectShop(id);
-                else _shopNote.text = Strings.Format("shop.soon", Strings.Card(id));
+                else SetShopNote(Strings.Format("shop.soon", Strings.Card(id)));
             });
             card.EnableInClassList("soon", !available);
             var art = UiKit.Box("unit-art" + (premium ? " premium" : ""));
@@ -142,7 +150,7 @@ namespace MachineBrigade.Game.Hud
             var card = UiKit.Button("shop-card unit-card", () =>
             {
                 SelectShop(id);
-                _shopNote.text = Strings.Get("item." + id + ".info");
+                SetShopNote(Strings.Get("item." + id + ".info"));
             });
             var art = UiKit.Box("unit-art premium");
             art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
@@ -162,7 +170,7 @@ namespace MachineBrigade.Game.Hud
             var card = UiKit.Button("shop-card unit-card", () =>
             {
                 SelectShop(id);
-                _shopNote.text = Strings.Get(id + ".info");
+                SetShopNote(Strings.Get(id + ".info"));
             });
             var art = UiKit.Box("unit-art premium");
             art.Add(UiKit.Icon(DoctrineIcon(doctrine), UiKit.Ink, 1.6f));
@@ -249,8 +257,8 @@ namespace MachineBrigade.Game.Hud
             var id = _shopSelected;
             if (IsItemTab)
             {
-                _shopNote.text = PlayerProfile.TryBuyItems(id, Progression.ItemPack, PriceOf(id))
-                    ? Strings.Format("shop.bought", Strings.Support(id)) : Strings.Get("shop.notEnough");
+                SetShopNote(PlayerProfile.TryBuyItems(id, Progression.ItemPack, PriceOf(id))
+                    ? Strings.Format("shop.bought", Strings.Support(id)) : Strings.Get("shop.notEnough"));
                 Refresh();
                 return;
             }
@@ -261,11 +269,11 @@ namespace MachineBrigade.Game.Hud
             else if (PlayerProfile.TryBuy(id, PriceOf(id)))
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);
-                _shopNote.text = Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : IsDoctrine(id) ? Strings.Get(id) : Strings.Card(id));
+                SetShopNote(Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : IsDoctrine(id) ? Strings.Get(id) : Strings.Card(id)));
             }
             else
             {
-                _shopNote.text = Strings.Get("shop.notEnough");
+                SetShopNote(Strings.Get("shop.notEnough"));
             }
             Refresh();
         }

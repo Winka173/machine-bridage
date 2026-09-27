@@ -4,18 +4,20 @@ Vehicles (origin on the ground at the footprint centre, Blender -Y is the front)
   * engineer_vehicle: tracked armoured recovery and engineering vehicle (BREM-1 / M88 lineage)
     with a hazard-striped dozer blade, a crane boom folded along the right of the deck, a rear
     winch, tool boxes, spare track links, tow cables and a work light bar. `Turret` is a small
-    remote weapon station on the cab roof; `Muzzle_main` is its machine gun.
+    remote weapon station on the cab roof; `Muzzle_main` is its machine gun. A 40 mm grenade launcher
+    stands on the deck behind the cab on `Mount_gun` (`Muzzle_gun`).
   * ew_jammer: 6x6 electronic-warfare jamming truck: a boxy shelter body with a generator, two
     raised telescopic masts carrying antenna arrays, whip antennas and a dish on the `Radar`
     pivot (spins about Z). `Turret` is a roof remote weapon station with `Muzzle_main` (machine
-    gun).
+    gun); a 40 mm grenade launcher behind the cab hatch turns on `Mount_gun` (`Muzzle_gun`).
   * fpv_carrier: armoured 6x6 MRAP truck launching FPV kamikaze drones. `Turret` carries the rear
     launcher rack of drone cells, facing up and back, with quadcopters sitting in the open cells;
     `Muzzle_main` is at the top centre of the rack's open face. A roof `Mount_mg` holds a
     remote-weapon machine gun with `Muzzle_mg`.
   * mine_layer: tracked mine layer (GMZ-3 / MT-LB lineage): mine hoppers and racks of mines on the
     deck, a rear dispensing chute and ploughshare lowered to the ground. `Turret` is a small roof
-    machine-gun turret with `Muzzle_main`.
+    machine-gun turret with `Muzzle_main`; a 40 mm grenade launcher at the front right of the cab roof
+    turns on `Mount_gun` (`Muzzle_gun`).
 Small models:
   * mine: anti-tank mine half-buried in a scuffed dirt ring, a TeamGlow light on top (prop).
   * fpv_drone: FPV kamikaze quadcopter projectile with an RPG-style charge; flies along -Y,
@@ -25,13 +27,15 @@ Small models:
     ambient occlusion but never cast it onto the crate.
 
 The machine guns on the vehicles' `Turret` are not named Main_cannon, so they do not recoil (the
-runtime recoil is sized for tank guns). Conventions and helpers are those of mb_vehicles.py;
-touching parts overlap or stand at least 1 cm apart, never face to face (coplanar faces z-fight).
+runtime recoil is sized for tank guns). The grenade launchers come from mb_weapons.py. Conventions
+and helpers are those of mb_vehicles.py; touching parts overlap or stand at least 1 cm apart, never
+face to face (coplanar faces z-fight).
 """
 import math
 
 from mathutils import Matrix, Vector, noise
 
+import mb_weapons as wpn
 from frontier_kit import chamfered
 
 from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _cable, _dish, _exhaust, _flank, _frame, _glacis,
@@ -170,7 +174,8 @@ def engineer_vehicle(a):
     hazard-striped dozer blade on push arms and rams, a crew cab on the left front with a work light
     bar, vision blocks and a small remote weapon station, a telescopic crane boom folded along the
     right of the deck on a slewing base with a hook block, a recovery winch and fairlead at the
-    rear, tool boxes and tools on the fenders, spare track links, tow cables and a stowed tow bar."""
+    rear, tool boxes and tools on the fenders, spare track links, tow cables, a stowed tow bar and a
+    40 mm grenade launcher on the deck behind the cab (Mount_gun)."""
     F, B = -.12, .12                                       # front and rear overhang shifts
     tracks(a, 1.26, 6.3 + B - F, .9, .3, 6, .48, belt_width=.58, wheel_seg=10, lean=True, sprocket=1)
     hull = a.part('Hull', 'Team')
@@ -202,14 +207,14 @@ def engineer_vehicle(a):
     _periscopes(a, [(x, -2.06, roof(-2.06), 0) for x in (-.42, -.22)] +
                 [(-1.1, y, roof(y), -R90) for y in (-1.5, -1.0)] + [(.3, -1.35, roof(-1.35), R90)])
     # Left side: crew door with a vision block and handle, a grab rail behind it.
-    armor.box((.05, .7, .62), loc=(-1.135, -1.65, 1.88), bevel=.012, seg=1)
+    armor.box((.05, .7, .62), loc=(-1.135, -1.65, 1.88), bevel=0)
     steel.box((.04, .16, .04), loc=(-1.17, -1.45, 1.86), bevel=0)
     a.part('Vision_blocks', 'Glass').box((.04, .16, .07), loc=(-1.165, -1.8, 2.08), bevel=0)
     _rail(a, [(-1.1, -1.12, 2.0), (-1.17, -1.12, 2.0), (-1.17, -.62, 2.0), (-1.1, -.62, 2.0)])
     # Welding gas bottles in a rack against the cab's rear wall.
     for x, mat in ((-1.0, 'Fuel'), (-.76, 'Fuel'), (-.52, 'BarrelRed')):
         a.part(f'Gas_bottles_{mat}', mat).lathe([(.1, 1.49), (.1, 2.2), (.07, 2.29), (.035, 2.33), (.035, 2.37)],
-                                                loc=(x, -.28, 0), seg=10)
+                                                loc=(x, -.28, 0), seg=8)
         steel.cyl(.045, .06, loc=(x, -.28, 2.39), seg=6, bevel=0)                         # valve caps
     for z in (1.72, 2.06):
         steel.box((.78, .03, .05), loc=(-.76, -.175, z), bevel=0)                         # straps
@@ -219,7 +224,7 @@ def engineer_vehicle(a):
     steel.box((.09, .09, .06), loc=(-.95, 2.95 + B, 1.51), bevel=0)
     # Lower hull front: headlights, tow hooks.
     for s in (-1, 1):
-        steel.box((.16, .2, .14), loc=(s * .45, -3.18 + F, .74), bevel=.02, seg=1)
+        steel.box((.16, .2, .14), loc=(s * .45, -3.18 + F, .74), bevel=0)
     gy, gz, grot = _glacis(nose, brow, .7, .02)
     _headlight(a, -.95, gy - .02, gz + .1, guard=False)
     _headlight(a, 1.0, gy - .02, gz + .1, guard=False)
@@ -238,7 +243,7 @@ def engineer_vehicle(a):
     for s in (-1, 1):
         armor.prism(fy([(-3.77, .28), (-3.68, 1.14), (-3.5, 1.1), (-3.5, .34)]), .05, loc=(s * 1.64, 0, 0), bevel=0)
         armor.box((.1, .26, .1), loc=(s * .8, -3.45 + F, .55), bevel=0)                  # arm lugs
-        armor.limb((s * .8, -3.5 + F, .52), (s * .8, -3.02 + F, .66), .14, .16, bevel=.02, seg=1)  # push arms
+        armor.limb((s * .8, -3.5 + F, .52), (s * .8, -3.02 + F, .66), .14, .16, bevel=0)          # push arms
         _ram(a, (s * .45, -3.05 + F, 1.18), (s * .45, -3.55 + F, .97), .06)
     for x in (-1.25, -.4, .4, 1.25):                                                      # back ribs
         armor.prism(fy([(-3.64, .36), (-3.57, .5), (-3.54, .66), (-3.54, .92), (-3.565, 1.06), (-3.44, 1.0),
@@ -252,24 +257,24 @@ def engineer_vehicle(a):
     steel.cyl(.5, .12, loc=(cx, 2.3, 1.54), seg=16, bevel=.02, bseg=1)
     crane.box((.86, .92, .5), loc=(cx, 2.32, 1.85), bevel=.05, taper=(.9, .92))
     for s in (-1, 1):
-        armor.box((.07, .36, .34), loc=(cx + s * .21, 2.02, 2.12), bevel=.01, seg=1)       # pivot cheeks
+        armor.box((.07, .36, .34), loc=(cx + s * .21, 2.02, 2.12), bevel=0)                # pivot cheeks
     steel.cyl(.07, .52, loc=(cx, 2.02, 2.16), rot=ACROSS, seg=10, bevel=0)             # pivot pin
     armor.box((.5, .3, .28), loc=(cx, 2.72, 2.0), bevel=.03, seg=1)                     # hydraulic pack
-    a.part('Lamps', 'Lamp').box((.12, .02, .09), loc=(cx - .3, 1.855, 2.0), bevel=0)   # boom spotlight
-    a.part('Light_housing', 'Armor').box((.16, .08, .13), loc=(cx - .3, 1.9, 2.0), bevel=.01, seg=1)
+    a.part('Lamps', 'Lamp').box((.12, .02, .09), loc=(cx - .31, 1.855, 2.0), bevel=0)  # boom spotlight
+    a.part('Light_housing', 'Armor').box((.16, .08, .13), loc=(cx - .31, 1.9, 2.0), bevel=0)
     tip = Vector((cx, -2.2, 1.98))
     crane.limb((cx, 2.12, 2.16), tuple(tip), .34, .42, bevel=.03, seg=1)                # boom
     a.part('Boom_inner', 'Armor').limb(tuple(tip + Vector((0, .2, 0))), (cx, -2.42, 1.97), .26, .32, bevel=.02,
                                        seg=1)
     head = Vector((cx, -2.5, 1.99))
-    armor.box((.3, .2, .3), loc=head, bevel=.02, seg=1)
+    armor.box((.3, .2, .3), loc=head, bevel=0)
     for s in (-1, 1):
         armor.box((.03, .24, .26), loc=head + Vector((s * .11, -.04, -.16)), bevel=0)      # sheave cheeks
         _stripes(a, _plane(head + Vector((s * .15, 0, 0)), (0, s, 0), (0, 0, 1)), .18, .26, pitch=.16, lean=.6)
     steel.cyl(.11, .18, loc=head + Vector((0, -.06, -.19)), rot=ACROSS, seg=12, bevel=0)  # sheave
     for dx in (-.05, .05):
         _rod(steel, head + Vector((dx, -.15, -.24)), head + Vector((dx, -.15, -.37)), .01, seg=4)
-    a.part('Hook_block', 'Hazard').box((.18, .12, .16), loc=head + Vector((0, -.15, -.42)), bevel=.02, seg=1)
+    a.part('Hook_block', 'Hazard').box((.18, .12, .16), loc=head + Vector((0, -.15, -.42)), bevel=0)
     steel.torus(.05, .015, loc=head + Vector((0, -.27, -.4)), rot=(0, R90, 0), seg=8, ring=4)
     for s in (-1, 1):                                                                      # travel rest
         armor.box((.07, .07, .3), loc=(cx + s * .15, -1.6, 1.64), bevel=0)
@@ -293,14 +298,14 @@ def engineer_vehicle(a):
     a.part('Wheels', 'Team').cyl(.22, .03, loc=(.1, .3, 1.6), seg=10, bevel=0)
     a.part('Hubs', 'Steel').cyl(.08, .03, loc=(.1, .3, 1.62), seg=6, bevel=0)
     wx, wy = -.45, 2.45 + B
-    armor.box((1.14, .72, .1), loc=(wx, wy, 1.54), bevel=.02, seg=1)
+    armor.box((1.14, .72, .1), loc=(wx, wy, 1.54), bevel=0)
     for s in (-1, 1):
-        armor.box((.08, .56, .52), loc=(wx + s * .5, wy, 1.82), bevel=.015, seg=1)
+        armor.box((.08, .56, .52), loc=(wx + s * .5, wy, 1.82), bevel=0)
     a.part('Winch_drum', 'Steel').cyl(.24, .9, loc=(wx, wy, 1.86), rot=ACROSS, seg=14, bevel=0)
     steel.cyl(.06, 1.1, loc=(wx, wy, 1.86), rot=ACROSS, seg=8, bevel=0)                  # axle
     for dx in (-.44, .44):
         a.part('Winch_flanges', 'Armor').cyl(.29, .04, loc=(wx + dx, wy, 1.86), rot=ACROSS, seg=14, bevel=0)
-    steel.box((.5, .16, .14), loc=(wx, rear - .04, 1.46), bevel=.02, seg=1)             # fairlead
+    steel.box((.5, .16, .14), loc=(wx, rear - .04, 1.46), bevel=0)                      # fairlead
     steel.cyl(.05, .44, loc=(wx, rear, 1.52), rot=ACROSS, seg=8, bevel=0)
     _cable(a, [(wx, wy + .15, 1.66), (wx, rear - .15, 1.56), (wx, rear + .02, 1.45), (wx, rear + .1, 1.28)], r=.028)
     # Fenders: tool boxes, tools and jerrycans; tow cables along the hull sides.
@@ -315,16 +320,20 @@ def engineer_vehicle(a):
     for s in (-1, 1):
         _cable(a, [(s * 1.175, -2.6, 1.42), (s * 1.175, -.6, 1.42), (s * 1.175, 1.6, 1.42), (s * 1.175, 2.85, 1.38)])
         _taillight(a, s * 1.0, rear, 1.24)
-        steel.box((.16, .2, .14), loc=(s * .3, rear + .06, .74), bevel=.02, seg=1)        # rear tow hooks
+        steel.box((.16, .2, .14), loc=(s * .3, rear + .06, .74), bevel=0)                 # rear tow hooks
     # Rear plate: exhaust, towing pintle and the tow bar stowed flat on it.
     _exhaust(a, .45, rear, .98, .5, .22)
-    steel.box((.2, .2, .16), loc=(0, rear + .08, .78), bevel=.02, seg=1)
+    steel.box((.2, .2, .16), loc=(0, rear + .08, .78), bevel=0)
     tow = a.part('Tow_bar', 'Hazard')
     for x in (-1.02, -.52):
         _rod(tow, (x, rear + .05, .7), (-.77, rear + .05, 1.14), .04, seg=6)
     steel.torus(.07, .02, loc=(-.77, rear + .05, 1.22), rot=(R90, 0, 0), seg=8, ring=4)
     steel.cyl(.22, .08, loc=(-.45, -1.3, roof(-1.3) + .02), seg=14, bevel=.015, bseg=1)  # RWS pedestal
     _rws_turret(a, (-.45, -1.3, roof(-1.3) + .05), length=.8)
+    # Second weapon: a 40 mm grenade launcher on a pedestal on the deck behind the gas bottles (Mount_gun /
+    # Muzzle_gun), between the spare road wheel and the grille, far enough from the crane boom to turn
+    # over the right side without meeting it and below the RWS's barrel.
+    wpn.agl(a, (-.22, .55, 1.5), post=.3, ammo=-1)
 
 
 # ----------------------------------------------------------------------------- electronic warfare truck
@@ -369,7 +378,8 @@ def ew_jammer(a):
     split windscreen, mirrors and a snorkel, a generator set behind it, and a tall shelter body with
     ribs, air-conditioning units, a side door, a rear door and ladder, roof handrails, two raised
     telescopic masts (a radome panel array and a log-periodic antenna), whips, a spinning dish on
-    `Radar` and a roof remote weapon station on `Turret`; stabiliser jacks down at the rear."""
+    `Radar`, a roof remote weapon station on `Turret` and a 40 mm grenade launcher on the cab roof
+    (Mount_gun); stabiliser jacks down at the rear."""
     body = a.part('Body', 'Team')
     armor = a.part('Armor', 'Armor')
     steel = a.part('Steel', 'Steel')
@@ -487,6 +497,9 @@ def ew_jammer(a):
     _dish(a.part('Radar_dish', 'Armor', r), (0, -.06, .42), .56, .56, depth=.15, seg=12, tilt=.3)
     steel.cyl(.22, .08, loc=(0, -.75, zt + .03), seg=14, bevel=.015, bseg=1)                # RWS pedestal
     _rws_turret(a, (0, -.75, zt + .06), length=.85)
+    # Second weapon: a 40 mm grenade launcher on a pedestal behind the cab hatch (Mount_gun / Muzzle_gun),
+    # clear of the whip antenna and far from the jammer masts at the back of the shelter.
+    wpn.agl(a, (-.25, -2.95, 3.0), post=.3, ammo=-1)
 
 
 # ----------------------------------------------------------------------------- FPV drones and their carrier
@@ -722,7 +735,8 @@ def mine_layer(a):
     """Tracked mine layer (GMZ-3 / MT-LB lineage): a front cab with a small machine-gun `Turret`,
     two open mine hoppers with their lids thrown open, racks of mines on the fenders, a conveyor to
     the rear, and the dispensing chute running down into a ploughshare lowered to the ground, with
-    a hazard-striped plough beam, furrow-closing discs and ploughed earth."""
+    a hazard-striped plough beam, furrow-closing discs and ploughed earth; a 40 mm grenade launcher on
+    the cab roof (Mount_gun)."""
     tracks(a, 1.16, 5.9, .8, .27, 7, .44, belt_width=.52, wheel_seg=10, lean=True, sprocket=-1)
     hull = a.part('Hull', 'Team')
     armor = a.part('Armor', 'Armor')
@@ -829,6 +843,9 @@ def mine_layer(a):
     gun.cyl(.034, .08, loc=(0, -1.08, .19), rot=FORWARD, seg=8, bevel=0)
     a.pivot('Muzzle_main', (0, -1.12, .19), t)
     _periscopes(a, [(.18, -.18, .35, 0), (-.2, -.1, .34, -.6)], parent=t, size=(.1, .06, .07))
+    # Second weapon: a 40 mm grenade launcher on a pedestal at the front right of the cab roof, ahead of
+    # the commander's hatch (Mount_gun / Muzzle_gun); outside the turret gun's reach and above its turret.
+    wpn.agl(a, (.8, -2.05, 2.05), post=.3, ammo=1)
 
 
 def mine(a):

@@ -58,6 +58,15 @@ namespace MachineBrigade.Sim.Navigation
         public void RemoveBlocker(Vector2 center, float width, float depth, float clearance) =>
             ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);
 
+        /// <summary>Blocks every cell whose centre fails <paramref name="open"/> for good (terrain outside the map's outline).</summary>
+        public void BlockWhere(Func<Vector2, bool> open)
+        {
+            for (var y = 0; y < Height; y++)
+            for (var x = 0; x < Width; x++)
+                if (!open(CellCenter(x, y))) _blockers[Index(x, y)]++;
+            Version++;
+        }
+
         private void ChangeRect(Vector2 center, float width, float depth, int delta)
         {
             var half = new Vector2(width * 0.5f, depth * 0.5f);
