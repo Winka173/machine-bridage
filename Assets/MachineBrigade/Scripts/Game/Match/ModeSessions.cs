@@ -609,8 +609,13 @@ namespace MachineBrigade.Game.Match
             }
         }
 
+        private int _nextTip;
+
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
         {
+            // Mission hints (the tutorial), each once, when their moment comes.
+            while (_nextTip < _def.Tips.Count && world.Time >= _def.Tips[_nextTip].at)
+                hud.Toast(Strings.Get(_def.Tips[_nextTip++].key), seconds: 6f);
             hud.SetStats(0, 0, 0, 0f, fps);
             FillPoints(_mode, scratch);
             var (done, needed) = _mode.Count(world);

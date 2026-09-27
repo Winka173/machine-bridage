@@ -254,8 +254,15 @@ namespace MachineBrigade.Sim.AI
                 foreach (var p in _mode.Points)
                     if (p.Owner != _team) neutral++;
             var owned = new Dictionary<string, int>();
+            var capturers = 0;
             foreach (var v in world.Vehicles)
-                if (v.IsAlive && v.Team == _team) owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
+            {
+                if (!v.IsAlive || v.Team != _team) continue;
+                owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
+                if (!v.Flying && v.Def.CaptureRate > 0f && !v.Def.Static) capturers++;
+            }
+            // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
+            var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
 
             foreach (var id in cards)
             {
@@ -275,6 +282,15 @@ namespace MachineBrigade.Sim.AI
                     if (def.Flying) score += (ownAir * 5 < ownTotal + 3 ? 1.8f : -1.2f) + heavy * 0.35f - air * 0.25f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
+                    // Enough anti-air for the enemy's aircraft, not a car park of it.
+                    if (def.Class == UnitClass.AntiAir) score -= MathF.Max(0f, ownAa - air * 0.5f - 1f) * 1.5f;
+                    // Points are taken on the ground: keep a core of vehicles that can capture.
+                    if (neutral > 0 && capturers < 4) score += def.Flying || def.CaptureRate <= 0f ? -2.5f : 1.2f;
+                    if (demolishing)
+                    {
+                        if (main.DamageType == DamageType.HighExplosive) score += 1.6f;
+                        if (def.Class == UnitClass.AntiAir) score -= 1.5f;
+                    }
                 }
                 // A mixed army: each copy already fielded makes another less attractive.
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;

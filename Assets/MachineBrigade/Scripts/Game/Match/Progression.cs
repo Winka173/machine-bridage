@@ -116,7 +116,8 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>The first mission, and every mission after one already won.</summary>
-        public static bool IsOpen(int index) => index == 0 || (index > 0 && index < All.Count && PlayerProfile.Completed(All[index - 1].Id));
+        public static bool IsOpen(int index) =>
+            index == 0 || (index > 0 && index < All.Count && (All[index - 1].Optional || PlayerProfile.Completed(All[index - 1].Id)));
 
         /// <summary>The next mission to play: the first not yet won (or the last).</summary>
         public static int Next

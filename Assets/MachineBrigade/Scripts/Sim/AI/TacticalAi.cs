@@ -90,6 +90,12 @@ namespace MachineBrigade.Sim.AI
         private const float FallBackHold = 12f;
 
         private bool _outmatched;
+
+        /// <summary>After holding back this long without catching up, the army commits anyway: an enemy
+        /// dug in on its objectives never comes out, and waiting forever loses on the clock.</summary>
+        private const float Patience = 40f;
+
+        private double _committedUntil = double.NegativeInfinity;
         private double _outmatchedSince;
         private float _theirStrength;
         private Vector2 _fallBackPoint;
@@ -196,8 +202,13 @@ namespace MachineBrigade.Sim.AI
             {
                 var held = world.Time - _outmatchedSince > FallBackHold;
                 if (held && (StrengthRatio >= RecoveredRatio || theirs <= 0.5f)) _outmatched = false;
+                else if (world.Time - _outmatchedSince > Patience)
+                {
+                    _outmatched = false;
+                    _committedUntil = world.Time + 35.0;
+                }
             }
-            else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio)
+            else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
             {
                 _outmatched = true;
                 _outmatchedSince = world.Time;
