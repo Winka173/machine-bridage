@@ -54,6 +54,9 @@ namespace MachineBrigade.Game.Match
             public int adDay;
             public int ads;
             public long lastAdTicks;
+            public int dealDay;
+            public bool freeDealClaimed;
+            public bool goldDealBought;
         }
 
         private const string Key = "mb.profile";

@@ -271,6 +271,57 @@ namespace MachineBrigade.Game.Match
             return true;
         }
 
+        // ------------------------------------------------------------------ daily deals
+
+        private static void DealReset()
+        {
+            if (A.dealDay == Today) return;
+            A.dealDay = Today;
+            A.freeDealClaimed = false;
+            A.goldDealBought = false;
+        }
+
+        /// <summary>Today's free crate in the shop has not been taken yet (the deal that brings players back each day).</summary>
+        public static bool FreeDealReady
+        {
+            get
+            {
+                DealReset();
+                return !A.freeDealClaimed;
+            }
+        }
+
+        /// <summary>Takes today's free battle crate (it is added, ready to open).</summary>
+        public static bool TryClaimFreeDeal()
+        {
+            if (!FreeDealReady) return false;
+            A.freeDealClaimed = true;
+            A.crates[(int)CrateKind.Battle]++;
+            Save();
+            return true;
+        }
+
+        /// <summary>Today's gold crate at 30 % off, once a day.</summary>
+        public static int GoldDealPrice => Crates.CoinPrice[(int)CrateKind.Gold] * 7 / 10;
+
+        public static bool GoldDealReady
+        {
+            get
+            {
+                DealReset();
+                return !A.goldDealBought;
+            }
+        }
+
+        public static bool TryBuyGoldDeal()
+        {
+            if (!GoldDealReady || !TrySpend(GoldDealPrice)) return false;
+            A.goldDealBought = true;
+            A.crates[(int)CrateKind.Gold]++;
+            Save();
+            return true;
+        }
+
         // ------------------------------------------------------------------ daily crates
 
         private static int Today => (int)(DateTime.Now.Date - new DateTime(2024, 1, 1)).TotalDays;

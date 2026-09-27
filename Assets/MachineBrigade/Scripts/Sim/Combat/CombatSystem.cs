@@ -96,8 +96,7 @@ namespace MachineBrigade.Sim.Combat
         /// Seconds to reload a whole magazine in place: the weapon's own figure, else two fifths of
         /// the time it takes to fire it off, between 10 and 28 s (a Grad about 17 s, a howitzer 28 s).
         /// </summary>
-        public static float ReloadSeconds(WeaponDef weapon) =>
-            weapon.Reload > 0f ? weapon.Reload : Math.Clamp(weapon.Ammo * weapon.Cooldown * 0.4f, 10f, 28f);
+        public static float ReloadSeconds(WeaponDef weapon) => weapon.MagazineReload;
 
         /// <summary>
         /// An empty magazine is reloaded in place, like the salvo reloads of Art of War 3 and

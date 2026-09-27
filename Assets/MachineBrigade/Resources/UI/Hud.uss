@@ -1018,3 +1018,545 @@
     padding: 2px 6px; background-color: var(--n850); border-radius: 8px;
 }
 .detail-weapon-tag.ammo { color: var(--amber-light); }
+
+/* ================================================================ menu v3: mobile layout (top bar, bottom tabs, full pages) */
+/* Touch sizes follow the mobile guidance at 720 px tall: tabs 96 px, main actions 84 to 104 px,
+   nothing tappable under 52 px. Pages sit between the bars; full pages cover the tabs. */
+.menu-backdrop { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: var(--n900); }
+.tab-page { position: absolute; top: 72px; bottom: 106px; left: 0; right: 0; }
+.full-page { position: absolute; top: 72px; bottom: 0; left: 0; right: 0; background-color: var(--n900); }
+
+/* top bar */
+.nav-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 72px;
+    flex-direction: row; align-items: center; padding: 0 14px;
+    background-color: rgba(12, 15, 18, 0.9);
+    border-bottom-width: 2px; border-bottom-color: var(--n950);
+}
+.nav-profile {
+    flex-direction: row; align-items: center; height: 54px; padding: 0 16px 0 10px;
+    background-color: var(--n800); border-radius: 27px;
+}
+.nav-profile > .icon { width: 32px; height: 32px; margin-right: 8px; --icon-color: #f2a33a; }
+.nav-profile .rank-label { font-size: 15px; }
+.nav-profile .rank-track { width: 96px; height: 6px; margin-top: 3px; border-radius: 3px; }
+.nav-back {
+    flex-direction: row; align-items: center; height: 56px; padding: 0 20px 0 12px;
+    background-color: var(--n700); border-radius: 12px; border-bottom-width: 3px; border-bottom-color: var(--n950);
+}
+.nav-back > .icon { width: 28px; height: 28px; margin-right: 8px; }
+.nav-back-text { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 17px; color: var(--n100); }
+.nav-title {
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 21px; letter-spacing: 1px; color: var(--n100);
+    margin-left: 18px; flex-shrink: 0; white-space: nowrap;
+}
+.nav-spacer { flex-grow: 1; }
+.nav-pill {
+    flex-direction: row; align-items: center; height: 54px; padding: 0 6px 0 12px; margin-left: 10px;
+    background-color: var(--n950); border-radius: 27px; border-width: 2px; border-color: var(--n700);
+}
+.nav-pill > .icon { width: 28px; height: 28px; margin-right: 6px; --icon-color: #f2a33a; }
+.nav-pill.gem > .icon { --icon-color: #7fd6ff; }
+.nav-pill-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 25px; color: var(--n100); min-width: 44px; -unity-text-align: middle-right; margin-right: 8px; }
+.nav-pill-plus { width: 40px; height: 40px; border-radius: 20px; align-items: center; justify-content: center; background-color: var(--ally); }
+.nav-pill-plus .icon { width: 20px; height: 20px; }
+.nav-icon {
+    width: 58px; height: 58px; margin-left: 10px; align-items: center; justify-content: center;
+    background-color: var(--n700); border-radius: 14px; border-bottom-width: 3px; border-bottom-color: var(--n950);
+}
+.nav-icon .icon { width: 30px; height: 30px; }
+.nav-back.pressed, .nav-pill.pressed, .nav-icon.pressed { translate: 0 2px; }
+
+/* bottom tabs: Battle raised in the middle */
+.nav-tabs {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 96px;
+    flex-direction: row; align-items: flex-end;
+    background-color: rgba(12, 15, 18, 0.95);
+    border-top-width: 2px; border-top-color: var(--n950);
+}
+.nav-tab {
+    flex-grow: 1; flex-basis: 0; height: 94px; align-items: center; justify-content: center;
+    border-top-width: 4px; border-top-color: rgba(0, 0, 0, 0);
+}
+.nav-tab > .icon { width: 36px; height: 36px; --icon-color: #a9b4ba; }
+.nav-tab-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; letter-spacing: 1px; color: var(--n300); margin-top: 4px; }
+.nav-tab.chosen { background-color: var(--n800); border-top-color: var(--amber); }
+.nav-tab.chosen > .icon { --icon-color: #f2a33a; }
+.nav-tab.chosen .nav-tab-label { color: var(--amber); }
+.nav-tab.battle {
+    flex-grow: 1.35; height: 106px; margin: 0 8px; border-top-width: 0;
+    background-color: var(--amber-deep); border-top-left-radius: 18px; border-top-right-radius: 18px;
+    border-bottom-width: 0;
+}
+.nav-tab.battle > .icon { width: 42px; height: 42px; --icon-color: #fff1dc; }
+.nav-tab.battle .nav-tab-label { font-size: 17px; letter-spacing: 2px; color: #fff4e2; }
+.nav-tab.battle.chosen { background-color: var(--amber); }
+.nav-tab.battle.chosen > .icon { --icon-color: #1b1206; }
+.nav-tab.battle.chosen .nav-tab-label { color: var(--amber-ink); }
+.nav-tab.pressed { translate: 0 2px; }
+.red-dot {
+    position: absolute; top: 10px; right: 26%; width: 18px; height: 18px; border-radius: 9px;
+    background-color: var(--danger); border-width: 2px; border-color: var(--n950); display: none;
+}
+
+/* a short message over everything, above the tabs */
+.menu-toast {
+    position: absolute; bottom: 112px; left: 22%; right: 22%; padding: 12px 18px;
+    -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 16px; color: var(--n100);
+    -unity-text-align: middle-center; white-space: normal;
+    background-color: rgba(12, 15, 18, 0.95); border-radius: 12px;
+    border-left-width: 5px; border-left-color: var(--ally);
+}
+.menu-toast.warn { border-left-color: var(--amber); color: var(--amber-light); }
+
+/* shared page parts */
+.tab-page .menu-body, .full-page .menu-body { padding: 0; }
+.tab-page .menu-caps, .full-page .menu-caps { font-size: 14px; margin-top: 10px; margin-bottom: 8px; }
+.page-dock {
+    flex-direction: row; align-items: center; justify-content: flex-end; flex-shrink: 0;
+    padding: 10px 16px 12px 16px; background-color: var(--n850);
+    border-top-width: 2px; border-top-color: var(--n950);
+}
+.tab-page .segment, .full-page .segment { height: 54px; margin-right: 6px; margin-bottom: 6px; border-radius: 10px; }
+.tab-page .segment .icon, .full-page .segment .icon { width: 20px; height: 20px; margin-right: 6px; }
+.tab-page .segment-label, .full-page .segment-label { font-size: 14px; }
+.tab-page .wide, .full-page .wide { height: 64px; border-radius: 10px; }
+.tab-page .wide .wide-title, .full-page .wide .wide-title { font-size: 17px; }
+.tab-page .wide.small-wide, .full-page .wide.small-wide { height: 52px; }
+.tab-page .menu-note, .full-page .menu-note { font-size: 13px; color: var(--n300); }
+
+/* ================================================================ Battle tab (the lobby) */
+.home-left { position: absolute; left: 16px; top: 12px; width: 410px; }
+.home-right { position: absolute; right: 16px; bottom: 12px; width: 430px; }
+.home-card {
+    padding: 12px 14px; margin-bottom: 10px;
+    background-color: rgba(16, 20, 24, 0.9); border-radius: 16px;
+    border-bottom-width: 4px; border-bottom-color: var(--n950);
+}
+.home-card > .icon { width: 40px; height: 40px; margin-right: 12px; }
+.home-card-text { flex-grow: 1; flex-shrink: 1; }
+.home-card-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 19px; color: var(--n100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-card-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n300); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-card-chips { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--amber-light); margin-top: 3px; }
+.home-card-caps { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; letter-spacing: 1.5px; color: var(--n300); margin-bottom: 8px; }
+.home-card-go {
+    width: 64px; height: 64px; border-radius: 32px; margin-left: 10px; align-items: center; justify-content: center;
+    background-color: var(--amber-light);
+}
+.home-card-go .icon { width: 28px; height: 28px; --icon-color: #1b1206; }
+.home-card-go.change { background-color: var(--n700); border-radius: 14px; width: 60px; height: 60px; }
+.home-card-go.change .icon { --icon-color: #edeff0; }
+.campaign-card {
+    flex-direction: row; align-items: center; height: 100px;
+    background-color: var(--amber-deep); border-bottom-color: #7a4410;
+}
+.campaign-card > .icon { --icon-color: #fff1dc; }
+.campaign-card .home-card-title { color: #fff4e2; }
+.campaign-card .home-card-sub { color: #ffd9a8; }
+.home-card.mode-card {
+    flex-direction: row; align-items: center; height: 96px; flex-grow: 0; flex-basis: auto; margin: 0 0 10px 0; padding: 12px 14px;
+    border-left-width: 0; background-color: rgba(16, 20, 24, 0.9);
+}
+.home-card.mode-card > .icon { --icon-color: #f2a33a; }
+.campaign-card.pressed, .home-card.mode-card.pressed { translate: 0 3px; border-bottom-width: 1px; }
+.daily-card .daily-row { height: 52px; padding-left: 12px; padding-right: 6px; margin-bottom: 6px; border-radius: 10px; }
+.daily-card .daily-text { font-size: 13px; }
+.daily-card .daily-progress { font-size: 18px; margin-right: 10px; }
+.daily-card .daily-claim { height: 42px; min-width: 88px; justify-content: center; border-radius: 10px; }
+.daily-card .daily-claim .icon { width: 18px; height: 18px; }
+.daily-card .daily-reward { font-size: 18px; margin-left: 4px; }
+.deploy-button {
+    flex-direction: row; align-items: center; justify-content: center; height: 104px;
+    background-color: var(--amber); border-radius: 18px;
+    border-bottom-width: 6px; border-bottom-color: var(--amber-deep);
+}
+.deploy-button > .icon { width: 40px; height: 40px; margin-right: 14px; --icon-color: #1b1206; }
+.deploy-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 46px; letter-spacing: 6px; color: var(--amber-ink); }
+.deploy-button.pressed { translate: 0 4px; border-bottom-width: 2px; }
+
+/* battle setup page */
+.setup-page { flex-direction: column; }
+.setup-columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; padding: 6px 16px 0 16px; }
+.setup-left { width: 44%; flex-grow: 0; margin-right: 16px; }
+.setup-right { flex-grow: 1; }
+.setup-modes { flex-direction: row; flex-wrap: wrap; }
+.setup-mode {
+    width: 31.3%; height: 92px; margin: 0 2% 8px 0; align-items: center; justify-content: center;
+    background-color: var(--n750); border-radius: 12px;
+    border-bottom-width: 3px; border-bottom-color: var(--n950); border-top-width: 3px; border-top-color: var(--n750);
+}
+.setup-mode > .icon { width: 32px; height: 32px; }
+.setup-mode-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--n200); margin-top: 6px; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.setup-mode.chosen { background-color: var(--n700); border-top-color: var(--amber); }
+.setup-mode.chosen > .icon { --icon-color: #f2a33a; }
+.setup-mode.chosen .setup-mode-name { color: var(--amber); }
+.setup-mode.pressed { translate: 0 2px; border-bottom-width: 1px; }
+.setup-page .mode-info { font-size: 14px; margin-top: 4px; }
+.setup-maps { flex-direction: row; flex-wrap: wrap; }
+.setup-maps .map-card { flex-grow: 0; flex-basis: auto; width: 31.3%; height: 84px; margin: 0 2% 8px 0; border-radius: 10px; }
+.setup-maps .map-art { height: 48px; }
+.setup-maps .map-art .icon { width: 30px; height: 30px; }
+.setup-maps .map-name { font-size: 14px; margin-top: 6px; -unity-text-align: middle-center; }
+.setup-page .segments.grid .segment { flex-basis: 30%; }
+.setup-page .page-dock .deploy-button { width: 440px; height: 92px; }
+.setup-page .page-dock .deploy-text { font-size: 40px; }
+
+/* ================================================================ Army tab: deck, collection, equipment */
+.army-page { padding: 10px 16px 0 16px; }
+.army-views { width: 440px; flex-shrink: 0; }
+.army-deck { flex-grow: 1; flex-shrink: 1; }
+.deck-strip {
+    flex-direction: row; align-items: center; flex-shrink: 0; padding: 10px 12px; margin-bottom: 8px;
+    background-color: var(--n800); border-radius: 14px;
+}
+.deck-slots { flex-direction: row; align-items: center; flex-shrink: 0; }
+.deck-slot {
+    width: 74px; height: 96px; margin-right: 6px; align-items: center; justify-content: center;
+    background-color: var(--n700); border-radius: 10px;
+    border-bottom-width: 3px; border-bottom-color: var(--n950); border-top-width: 3px; border-top-color: var(--ally);
+}
+.deck-slot > .icon { width: 40px; height: 40px; }
+.deck-slot.support { border-top-color: var(--danger); }
+.deck-slot.empty { background-color: var(--n850); border-top-color: var(--n700); border-bottom-color: var(--n850); }
+.deck-slot.empty > .icon { width: 26px; height: 26px; --icon-color: #52606d; }
+.deck-slot.pressed { translate: 0 2px; }
+.deck-slot-rank { position: absolute; bottom: 4px; left: 0; right: 0; -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; color: var(--amber-light); -unity-text-align: middle-center; }
+.deck-divider { width: 3px; height: 78px; margin: 0 8px 0 2px; background-color: var(--n600); border-radius: 2px; }
+.deck-summary { flex-grow: 1; flex-shrink: 1; margin-left: 10px; }
+.deck-summary-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n200); white-space: normal; }
+.deck-warnings { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--amber-light); white-space: normal; margin-top: 3px; }
+.doctrine-chips { flex-direction: row; margin-top: 6px; }
+.doctrine-chip {
+    width: 56px; height: 48px; margin-right: 6px; align-items: center; justify-content: center;
+    background-color: var(--n700); border-radius: 10px; border-bottom-width: 3px; border-bottom-color: var(--n950);
+}
+.doctrine-chip .icon { width: 26px; height: 26px; }
+.doctrine-chip.chosen { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
+.doctrine-chip.chosen .icon { --icon-color: #1b1206; }
+.doctrine-chip.pressed { translate: 0 2px; }
+.army-filters { flex-direction: row; flex-shrink: 0; }
+.army-scroll { flex-grow: 1; }
+.collection-grid { flex-direction: row; flex-wrap: wrap; }
+
+/* a card in the collection */
+.unit-card-big {
+    width: 144px; height: 180px; margin: 0 10px 10px 0; overflow: hidden;
+    background-color: var(--n750); border-radius: 12px;
+    border-bottom-width: 4px; border-bottom-color: var(--n950); border-top-width: 4px; border-top-color: var(--ally);
+}
+.unit-card-big.support { border-top-color: var(--danger); }
+.unit-card-big.pressed { translate: 0 2px; border-bottom-width: 2px; }
+.unit-card-art { height: 96px; align-items: center; justify-content: center; background-color: var(--n700); }
+.unit-card-art .icon { width: 60px; height: 60px; }
+.unit-card-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--n100); margin: 6px 6px 0 6px; -unity-text-align: middle-center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.unit-card-rank { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 15px; color: var(--amber-light); -unity-text-align: middle-center; margin-top: -2px; }
+.unit-card-track { height: 8px; margin: 3px 14px 0 14px; background-color: var(--n950); border-radius: 4px; overflow: hidden; }
+.unit-card-fill { height: 100%; width: 0; background-color: #4a9cff; }
+.unit-card-cost {
+    position: absolute; top: 6px; left: 6px; min-width: 28px; height: 28px; padding: 0 4px; border-radius: 14px;
+    align-items: center; justify-content: center; background-color: var(--amber); border-width: 2px; border-color: var(--n950);
+}
+.unit-card-cost-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 17px; color: var(--amber-ink); margin: 0; padding: 0; -unity-text-align: middle-center; }
+.deck-slot .unit-card-cost { top: 3px; left: 3px; min-width: 24px; height: 24px; }
+.deck-slot .unit-card-cost-text { font-size: 15px; }
+.unit-card-check, .unit-card-up, .unit-card-lock {
+    position: absolute; width: 30px; height: 30px; border-radius: 15px; align-items: center; justify-content: center; display: none;
+}
+.unit-card-check { top: 6px; right: 6px; background-color: var(--ally); border-width: 2px; border-color: var(--n950); }
+.unit-card-check .icon, .unit-card-up .icon { width: 18px; height: 18px; }
+.unit-card-up { top: 62px; right: 6px; background-color: var(--mint); border-width: 2px; border-color: var(--n950); }
+.unit-card-up .icon { --icon-color: #0c0f12; }
+.unit-card-lock { top: 30px; left: 50%; margin-left: -18px; width: 36px; height: 36px; border-radius: 18px; background-color: rgba(12, 15, 18, 0.85); }
+.unit-card-lock .icon { width: 20px; height: 20px; --icon-color: #a9b4ba; }
+.unit-card-big.in-deck .unit-card-check { display: flex; }
+.unit-card-big.in-deck .unit-card-art { background-color: var(--ally-dark); }
+.unit-card-big.upgradable .unit-card-up { display: flex; }
+.unit-card-big.upgradable .unit-card-fill { background-color: var(--mint); }
+.unit-card-big.locked { background-color: var(--n850); border-top-color: var(--n700); }
+.unit-card-big.locked .unit-card-lock { display: flex; }
+.unit-card-big.locked .unit-card-art { background-color: var(--n800); }
+.unit-card-big.locked .unit-card-art .icon { --icon-color: #3a4650; }
+.unit-card-big.locked .unit-card-name { color: var(--n500); }
+.unit-card-big.locked .unit-card-track, .unit-card-big.locked .unit-card-cost { display: none; }
+
+/* Info / Use, as a bar along the bottom of the Army tab */
+.card-popover {
+    position: absolute; left: 16%; right: 16%; bottom: 12px; flex-direction: row; align-items: center;
+    padding: 12px 12px 12px 20px; background-color: var(--n800); border-radius: 16px;
+    border-width: 2px; border-color: var(--amber);
+}
+.popover-text { flex-grow: 1; flex-shrink: 1; -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 18px; color: var(--n100); white-space: normal; }
+.popover-buttons { flex-direction: row; }
+.tab-page .wide.popover-button { height: 72px; min-width: 176px; margin: 0 0 0 10px; justify-content: center; }
+
+/* equipment view: branches, loadout, inventory */
+.army-gear { flex-direction: row; flex-grow: 1; flex-shrink: 1; margin-top: 4px; }
+.gear-branches { width: 150px; margin-right: 12px; }
+.gear-branch {
+    height: 90px; margin-bottom: 8px; align-items: center; justify-content: center;
+    background-color: var(--n750); border-radius: 12px;
+    border-bottom-width: 3px; border-bottom-color: var(--n950); border-left-width: 4px; border-left-color: var(--n750);
+}
+.gear-branch > .icon { width: 36px; height: 36px; }
+.gear-branch-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--n200); margin-top: 4px; }
+.gear-branch.chosen { background-color: var(--n700); border-left-color: var(--amber); }
+.gear-branch.chosen > .icon { --icon-color: #f2a33a; }
+.gear-branch.chosen .gear-branch-name { color: var(--amber); }
+.gear-branch.pressed { translate: 0 2px; }
+.gear-centre { width: 480px; margin-right: 12px; }
+.gear-centre .menu-caps { margin-top: 0; }
+.gear-centre .gear-slots { flex-direction: row; flex-wrap: wrap; align-items: flex-end; margin-bottom: 2px; }
+.gear-slot2 {
+    width: 110px; margin: 0 8px 8px 0; padding: 6px 4px; align-items: center;
+    background-color: var(--n800); border-radius: 12px;
+    border-width: 2px; border-color: var(--n800); border-bottom-width: 3px; border-bottom-color: var(--n950);
+}
+.gear-slot2.special { width: 128px; background-color: #2a2414; border-color: #2a2414; border-bottom-color: var(--n950); }
+.gear-slot2.chosen { background-color: var(--n700); border-color: var(--amber); }
+.gear-slot2.pressed { translate: 0 2px; }
+.gear-slot2 .gear-slot-value { font-size: 12px; margin-top: 4px; height: 30px; color: var(--n200); }
+.gear-info { flex-shrink: 0; min-height: 96px; padding: 12px; margin-bottom: 10px; background-color: var(--n800); border-radius: 12px; }
+.gear-total { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 14px; color: var(--mint); white-space: normal; margin-top: 4px; }
+.gear-info-head { flex-direction: row; align-items: flex-start; }
+.gear-info-names { flex-grow: 1; flex-shrink: 1; margin-left: 12px; }
+.gear-info-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 19px; }
+.gear-info-line { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n200); white-space: normal; margin-top: 2px; }
+.gear-info-compare { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--mint); margin-top: 2px; white-space: normal; }
+.gear-info-merge { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 12px; color: var(--n400); margin-top: 2px; white-space: normal; }
+.gear-actions { flex-direction: row; margin-top: 10px; }
+.tab-page .gear-actions .wide { flex-grow: 1; flex-basis: 0; height: 62px; margin: 0 8px 0 0; padding: 0 10px; justify-content: center; }
+.tab-page .gear-actions .wide .wide-title { font-size: 15px; letter-spacing: 0; }
+.tab-page .gear-actions .wide .icon { width: 20px; height: 20px; margin-right: 6px; }
+.wide.upgrade-button { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
+.gear-inventory { flex-grow: 1; flex-shrink: 1; }
+.gear-inventory .gear-tools { margin: 0 0 6px 0; }
+.gear-inventory .gear-tools .menu-caps { margin: 0; }
+.gear-inventory .gear-tools .wide { padding: 0 14px; }
+.gear-scroll { flex-grow: 1; }
+.gear-grid2 { flex-direction: row; flex-wrap: wrap; }
+.gear-cell { margin: 0 6px 6px 0; padding: 3px; border-radius: 14px; border-width: 3px; border-color: rgba(0, 0, 0, 0); }
+.gear-cell.equipped { background-color: var(--ally-dark); }
+.gear-cell.chosen { border-color: var(--amber); }
+.gear-cell.pressed { translate: 0 2px; }
+
+/* a piece of equipment: rarity frame, picture, pips, level */
+.gear-art { -unity-background-scale-mode: stretch-to-fill; flex-shrink: 0; }
+.gear-art-picture { position: absolute; left: 7%; top: 5%; right: 7%; bottom: 13%; -unity-background-scale-mode: scale-to-fit; }
+.gear-art-pips { position: absolute; left: 0; right: 0; bottom: 4%; flex-direction: row; justify-content: center; }
+.gear-art-pip { width: 7px; height: 7px; margin: 0 1.5px; border-radius: 4px; border-width: 1px; border-color: rgba(0, 0, 0, 0.6); }
+.gear-art-level {
+    position: absolute; top: 4px; right: 5px; padding: 0 5px; border-radius: 6px;
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; color: var(--n100);
+    background-color: rgba(8, 10, 12, 0.7);
+}
+.gear-art.empty { background-color: var(--n850); border-radius: 12px; border-width: 2px; border-color: var(--n700); }
+.gear-art.empty .gear-art-picture { opacity: 0.2; }
+
+/* ================================================================ vehicle detail page */
+.detail-page { flex-direction: column; }
+.detail-columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; padding: 10px 16px 0 16px; }
+.detail-left { width: 45%; margin-right: 16px; }
+.detail-stage {
+    flex-grow: 1; flex-shrink: 1; min-height: 200px; align-items: center; justify-content: center; overflow: hidden;
+    background-color: var(--n800); border-radius: 16px; border-bottom-width: 4px; border-bottom-color: var(--n950);
+}
+.detail-preview { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
+.detail-big-icon { width: 150px; height: 150px; --icon-color: #a9b4ba; }
+.detail-arrow {
+    position: absolute; top: 50%; margin-top: -40px; width: 60px; height: 80px; align-items: center; justify-content: center;
+    background-color: rgba(12, 15, 18, 0.65); border-radius: 12px;
+}
+.detail-arrow.left { left: 8px; }
+.detail-arrow.right { right: 8px; }
+.detail-arrow .icon { width: 30px; height: 30px; }
+.detail-arrow.left .icon { rotate: 180deg; }
+.detail-arrow.pressed { translate: 0 2px; }
+.detail-role { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 15px; color: var(--amber-light); margin: 8px 4px 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail-counters { flex-shrink: 0; margin-bottom: 4px; }
+.counter-row { flex-direction: row; align-items: center; margin-top: 6px; }
+.counter-label { width: 92px; -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--n300); }
+.counter-chip { flex-direction: row; align-items: center; height: 36px; padding: 0 12px 0 8px; margin-right: 6px; border-radius: 18px; background-color: var(--n800); flex-shrink: 1; }
+.counter-chip .icon { width: 20px; height: 20px; margin-right: 6px; }
+.counter-row.strong .counter-chip .icon { --icon-color: #8fd694; }
+.counter-row.weak .counter-chip .icon { --icon-color: #e5533c; }
+.counter-name { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail-right { flex-grow: 1; flex-shrink: 1; }
+.detail-tabs { flex-shrink: 0; }
+.detail-scroll { flex-grow: 1; }
+.detail-note { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 14px; color: var(--n300); white-space: normal; margin: 4px 0 10px 0; }
+
+/* numbers as bars against the roster's best */
+.stat-row { margin-bottom: 9px; }
+.stat-head { flex-direction: row; align-items: center; }
+.stat-name { flex-grow: 1; -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 15px; color: var(--n200); }
+.stat-value { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 24px; color: var(--n100); }
+.stat-gain { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 18px; color: #7fc4ff; margin-left: 8px; }
+.stat-next { flex-direction: row; align-items: center; margin-left: 8px; }
+.stat-next .icon { width: 16px; height: 16px; margin-right: 2px; --icon-color: #8fd694; }
+.stat-next-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 18px; color: var(--mint); }
+.stat-bar { height: 12px; margin-top: 2px; background-color: var(--n950); border-radius: 6px; overflow: hidden; }
+.stat-bar-next, .stat-bar-boost, .stat-bar-base { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; }
+.stat-bar-next { background-color: rgba(143, 214, 148, 0.5); }
+.stat-bar-boost { background-color: #4a9cff; }
+.stat-bar-base { background-color: var(--n200); }
+.stat-facts { flex-direction: row; flex-wrap: wrap; margin-top: 4px; }
+.stat-fact {
+    flex-direction: row; align-items: center; min-height: 38px; padding: 6px 14px 6px 10px; margin: 0 8px 8px 0;
+    background-color: var(--n800); border-radius: 19px; flex-shrink: 1;
+}
+.stat-fact .icon { width: 20px; height: 20px; margin-right: 8px; --icon-color: #f2a33a; }
+.stat-fact-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n200); white-space: normal; flex-shrink: 1; }
+
+.weapon-row { flex-direction: row; align-items: center; padding: 12px 14px; margin-bottom: 8px; background-color: var(--n800); border-radius: 12px; }
+.weapon-row > .icon { width: 34px; height: 34px; margin-right: 14px; --icon-color: #f5b55e; }
+.weapon-text { flex-grow: 1; flex-shrink: 1; }
+.weapon-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 16px; color: var(--n100); }
+.weapon-line { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n300); white-space: normal; margin-top: 2px; }
+.weapon-line.ammo { color: var(--amber-light); }
+.detail-gear { flex-direction: row; flex-wrap: wrap; }
+.detail-gear .gear-slot2 { width: 114px; }
+
+.detail-dock { justify-content: space-between; }
+.full-page .wide.deck-toggle { width: 300px; height: 84px; margin-top: 0; justify-content: center; }
+.full-page .wide.deck-toggle .wide-title { font-size: 18px; }
+.wide.deck-toggle.chosen { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
+.detail-upgrade-box { flex-direction: row; align-items: center; flex-grow: 1; justify-content: flex-end; }
+.detail-print-row { flex-direction: row; align-items: center; width: 270px; margin-right: 16px; }
+.detail-print-row > .icon { width: 28px; height: 28px; --icon-color: #7fc4ff; }
+.detail-print-track { flex-grow: 1; height: 16px; margin: 0 10px; background-color: var(--n950); border-radius: 8px; overflow: hidden; }
+.detail-print-fill { height: 100%; width: 0; background-color: #4a9cff; border-radius: 8px; }
+.detail-prints { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; color: var(--n100); min-width: 52px; }
+.upgrade-big {
+    flex-direction: row; align-items: center; justify-content: center; height: 88px; min-width: 360px; padding: 0 22px;
+    background-color: var(--n700); border-radius: 14px; border-bottom-width: 5px; border-bottom-color: var(--n950);
+}
+.upgrade-big > .icon { width: 30px; height: 30px; margin-right: 10px; }
+.upgrade-big-text { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 19px; color: var(--n100); }
+.upgrade-big.ready { background-color: var(--ally); border-bottom-color: var(--ally-dark); }
+.upgrade-big.maxed { background-color: var(--n800); }
+.upgrade-big.maxed .upgrade-big-text { color: var(--amber); }
+.upgrade-big.pressed { translate: 0 3px; border-bottom-width: 2px; }
+
+/* ================================================================ Shop tab: rail on the left */
+.shop-page { flex-direction: row; }
+.shop-rail { width: 176px; padding: 10px 0 10px 16px; }
+.rail-button {
+    flex-direction: row; align-items: center; height: 74px; margin-bottom: 6px; padding: 0 10px;
+    background-color: var(--n800); border-radius: 12px; border-left-width: 4px; border-left-color: var(--n800);
+}
+.rail-button > .icon { width: 28px; height: 28px; margin-right: 8px; }
+.rail-label { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--n200); flex-shrink: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail-button.chosen { background-color: var(--n700); border-left-color: var(--amber); }
+.rail-button.chosen > .icon { --icon-color: #f2a33a; }
+.rail-button.chosen .rail-label { color: var(--amber); }
+.rail-button.pressed { translate: 0 2px; }
+.shop-main { flex-grow: 1; flex-shrink: 1; padding: 10px 16px 0 14px; }
+.shop-main > .menu-note { margin-top: 0; }
+.shop-scroll { flex-grow: 1; }
+.shop-page .shop-card { width: 170px; height: 214px; margin: 0 12px 12px 0; border-radius: 12px; }
+.shop-page .unit-art, .shop-page .skin-swatch { height: 96px; }
+.shop-page .unit-art .icon { width: 54px; height: 54px; }
+.shop-page .shop-name { font-size: 15px; height: 42px; margin-top: 6px; }
+.shop-page .shop-sub { font-size: 12px; }
+.shop-page .price-tag { bottom: 12px; }
+.shop-page .price-tag .icon { width: 20px; height: 20px; }
+.shop-page .price-value { font-size: 21px; }
+.shop-page .price-status { font-size: 13px; }
+.item-owned { color: var(--mint); }
+.shop-page .gem-card { justify-content: center; }
+.shop-page .gem-card > .icon { width: 64px; height: 64px; margin: 0 0 8px 0; }
+.shop-page .gem-card .shop-name { font-size: 26px; height: 34px; -unity-font: resource("Fonts/BarlowCondensed-Bold"); }
+.shop-page .deal-card { width: 280px; height: 250px; }
+.deal-art { width: 100%; height: 120px; align-items: center; justify-content: center; background-color: var(--n700); }
+.deal-art .icon { width: 68px; height: 68px; }
+.deal-card.free .deal-art { background-color: var(--ally-dark); }
+.deal-card.ad .deal-art { background-color: #35566b; }
+.deal-card.gold .deal-art { background-color: #5a3a12; }
+.deal-card.gold .deal-art .icon { --icon-color: #f2c14e; }
+.deal-status {
+    position: absolute; left: 10px; right: 10px; bottom: 12px;
+    -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 14px; color: var(--amber-light);
+    -unity-text-align: middle-center; white-space: normal;
+}
+.shop-page .crate-tile { width: 48.5%; margin: 0 1.5% 12px 0; padding: 14px; border-radius: 14px; border-left-width: 6px; }
+.crate-texts { flex-grow: 1; flex-shrink: 1; }
+.shop-page .crate-top > .icon { width: 44px; height: 44px; margin-right: 14px; }
+.shop-page .crate-name { font-size: 18px; }
+.shop-page .crate-count { font-size: 13px; }
+.crate-odds {
+    width: 56px; height: 56px; border-radius: 28px; align-items: center; justify-content: center;
+    background-color: var(--n700); border-bottom-width: 3px; border-bottom-color: var(--n950);
+}
+.shop-page .crate-top .crate-odds .icon { width: 26px; height: 26px; margin-right: 0; }
+.crate-odds.pressed { translate: 0 2px; }
+.shop-page .crate-buttons { margin-top: 12px; }
+.shop-page .crate-button { height: 58px; padding: 0 16px; margin: 0 8px 0 0; border-radius: 10px; border-bottom-width: 3px; flex-grow: 1; justify-content: center; }
+.shop-page .crate-button .icon { width: 22px; height: 22px; }
+.shop-page .crate-button-text { font-size: 17px; }
+.shop-dock { flex-direction: row; justify-content: flex-end; flex-shrink: 0; padding: 8px 0 12px 0; }
+.tab-page .wide.shop-buy { width: 400px; height: 84px; margin-top: 0; }
+.tab-page .wide.shop-buy .wide-title { font-size: 24px; letter-spacing: 2px; }
+
+/* crate results with the pieces as tiles */
+.loot-gear { flex-direction: row; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
+.loot-gear-cell { width: 120px; align-items: center; margin: 0 6px 10px 6px; }
+.loot-gear-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; margin-top: 4px; width: 120px; height: 36px; -unity-text-align: upper-center; white-space: normal; overflow: hidden; }
+.loot-gear-stat { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 12px; color: var(--n300); }
+.loot-card { width: 680px; max-height: 94%; }
+.loot-card .loot-scroll { max-height: 460px; }
+.loot-card .wide { height: 72px; justify-content: center; }
+
+/* ================================================================ Events tab */
+.events-columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; padding: 6px 16px 0 16px; }
+.events-left { width: 46%; margin-right: 16px; }
+.events-right { flex-grow: 1; flex-shrink: 1; }
+.event-daily {
+    flex-direction: row; align-items: center; min-height: 88px; padding: 12px 12px 12px 16px; margin-bottom: 10px;
+    background-color: var(--n800); border-radius: 14px;
+}
+.event-daily-info { flex-grow: 1; flex-shrink: 1; margin-right: 12px; }
+.event-daily-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 15px; color: var(--n100); white-space: normal; }
+.event-daily-track { height: 10px; margin-top: 8px; background-color: var(--n950); border-radius: 5px; overflow: hidden; }
+.event-daily-fill { height: 100%; width: 0; background-color: var(--amber); border-radius: 5px; }
+.event-daily-progress { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 16px; color: var(--n300); margin-top: 2px; }
+.event-claim {
+    flex-direction: row; align-items: center; justify-content: center; width: 124px; height: 64px;
+    background-color: var(--n700); border-radius: 12px; border-bottom-width: 4px; border-bottom-color: var(--n950);
+}
+.event-claim .icon { width: 22px; height: 22px; }
+.event-claim-text { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 22px; color: var(--n100); margin-left: 6px; }
+.event-claim.ready { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
+.event-claim.ready .icon { --icon-color: #1b1206; }
+.event-claim.ready .event-claim-text { color: var(--amber-ink); }
+.event-claim.claimed { background-color: var(--ally-dark); }
+.event-claim.pressed { translate: 0 2px; border-bottom-width: 2px; }
+.event-card {
+    flex-direction: row; align-items: center; min-height: 116px; padding: 12px 14px 12px 16px; margin-bottom: 10px;
+    background-color: var(--n800); border-radius: 14px; border-left-width: 6px; border-left-color: var(--amber-deep);
+}
+.event-card > .icon { width: 44px; height: 44px; margin-right: 14px; --icon-color: #f2a33a; }
+.event-card-text { flex-grow: 1; flex-shrink: 1; }
+.event-card-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 19px; color: var(--n100); }
+.event-card-sub { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 13px; color: var(--n300); white-space: normal; }
+.event-card-extra { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--amber-light); margin-top: 2px; }
+.event-play {
+    flex-direction: row; align-items: center; justify-content: center; width: 144px; height: 78px; margin-left: 12px;
+    background-color: var(--amber); border-radius: 14px; border-bottom-width: 5px; border-bottom-color: var(--amber-deep);
+}
+.event-play .icon { width: 26px; height: 26px; margin-right: 8px; --icon-color: #1b1206; }
+.event-play-text { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 20px; color: var(--amber-ink); }
+.event-play.pressed { translate: 0 3px; border-bottom-width: 2px; }
+
+/* ================================================================ Campaign tab and settings page */
+.campaign-page .campaign-list { padding: 0 8px 0 16px; }
+.campaign-page .mission-row { height: 64px; border-radius: 10px; }
+.campaign-page .mission-name { font-size: 16px; }
+.campaign-page .campaign-detail { margin: 10px 16px 10px 4px; }
+.tab-page .wide.campaign-start { height: 84px; margin: 12px 14px 0 14px; justify-content: center; }
+.tab-page .wide.campaign-start .wide-title { font-size: 26px; letter-spacing: 4px; }
+.settings-page { padding-top: 6px; }
+.settings-page .menu-body { padding: 0 90px; }
+.settings-page .setting-row { height: 60px; border-radius: 10px; }
+.settings-page .option { min-width: 84px; height: 46px; border-radius: 8px; }
+.settings-page .option-label { font-size: 14px; }
+.settings-page .setting-row .icon-button { width: 56px; height: 48px; border-radius: 8px; }

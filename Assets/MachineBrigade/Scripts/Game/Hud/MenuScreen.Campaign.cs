@@ -17,8 +17,7 @@ namespace MachineBrigade.Game.Hud
 
         private void BuildCampaignPage()
         {
-            _campaign = UiKit.Box("menu-panel wide-panel", PickingMode.Position);
-            _campaign.Add(Brand());
+            _campaign = TabPage(Tab.Campaign, "campaign-page opaque");
             var columns = UiKit.Box("campaign-columns");
             var list = Scroller("campaign-list");
             var content = list.contentContainer;
@@ -74,15 +73,10 @@ namespace MachineBrigade.Game.Hud
             detail.Add(reward);
             _detailUnlocks = UiKit.Box("detail-unlocks");
             detail.Add(_detailUnlocks);
+            _startMission = UiKit.WideButton("wide primary big campaign-start", "play", Strings.Get("campaign.play"), null, StartMission);
+            detail.Add(_startMission);
             columns.Add(detail);
             _campaign.Add(columns);
-
-            var dock = UiKit.Box("menu-actions dock-row");
-            _startMission = UiKit.WideButton("wide primary big", "play", Strings.Get("campaign.play"), null, StartMission);
-            dock.Add(_startMission);
-            dock.Add(UiKit.WideButton("wide back-button", "retreat", Strings.Get("menu.back"), null, () => Show(_main)));
-            _campaign.Add(dock);
-            Root.Add(_campaign);
         }
 
         private VisualElement MissionRow(int index)
