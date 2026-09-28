@@ -44,8 +44,15 @@ COLOURS = {'tree': '#3f6b3a', 'palm': '#5f8b3a', 'cactus': '#6f8b4a', 'mesa': '#
            'billboard': '#e0b030', 'bus': '#e08a1a', 'traffic_light': '#20c040',
            # Siege
            'command_hq': '#b01010', 'base_wall': '#202020', 'floodlight_mast': '#ffffa0', 'fuel_depot': '#ff4a00',
-           'ammo_dump': '#ff9000', 'vehicle_hangar': '#5a6a5a', 'razor_wire': '#b0b0b0', 'sandbag_wall': '#a8956a'}
+           'ammo_dump': '#ff9000', 'vehicle_hangar': '#5a6a5a', 'razor_wire': '#b0b0b0', 'sandbag_wall': '#a8956a',
+           # Map kit: open ground marks (craters, trenches) pale, wrecks dark, bridges as decks
+           'crater_large': '#a09a88', 'foxhole': '#a09a88', 'trench_straight': '#86795e', 'trench_corner': '#86795e',
+           'tank_ditch': '#86795e', 'wreck_tank': '#3a2a26', 'wreck_truck': '#3a2a26', 'wreck_car': '#3a2a26',
+           'artillery_wreck': '#3a2a26', 'boulders': '#707070', 'bridge_road': '#c9b48e', 'tank_trap': '#303030',
+           'dead_tree': '#5a4a3a', 'power_pylon': '#9098a0'}
 SURFACES = {'lava_pool': '#ff5a10', 'river_water': '#5a4a2a', 'river_ford': '#9a8a5a'}
+# Water as the theme draws it: brown in the jungle, blue elsewhere (sea, reservoir, big river).
+BLUE_WATER = {'river_water': '#2f5f7a', 'river_ford': '#7ea3a6'}
 OPEN = {'helipad': '#d8d8d0', 'base_gate': '#ffd000'}
 LABELLED = {'hangar', 'highrise_a', 'highrise_b', 'skyscraper', 'parking_garage', 'temple_ruin', 'fuel_depot',
             'vehicle_hangar', 'ammo_dump', 'stilt_hut', 'control_tower', 'radar_dome'}
@@ -167,7 +174,8 @@ def draw_map(ax, m, half):
         x, z, w, dd = footprint(p)
         kind = p['def']
         if kind in SURFACES:
-            ax.add_patch(patches.Rectangle((x, z), w, dd, color=SURFACES[kind], zorder=2, linewidth=0))
+            colour = SURFACES[kind] if m.get('theme') in ('jungle', 'volcanic') else BLUE_WATER.get(kind, SURFACES[kind])
+            ax.add_patch(patches.Rectangle((x, z), w, dd, color=colour, zorder=2, linewidth=0))
         elif kind in OPEN:
             ax.add_patch(patches.Rectangle((x, z), w, dd, fill=False, edgecolor=OPEN[kind], linewidth=1.5, zorder=4))
         else:

@@ -175,6 +175,26 @@ namespace MachineBrigade.Game.Match
             // A city at night: lit windows, street lamps and burning buses.
             new("metrocity", "urban", "home",
                 new[] { WeatherKind.Night, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Storm }),
+            // Round 4M: four battlefields for the campaign, four for skirmish (all in the rotation).
+            // A landing at dawn: overcast and fog come up as often as a clear day.
+            new("landingbeach", "temperate", "anchor",
+                new[] { WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Night }),
+            new("hydrodam", "temperate", "bolt",
+                new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm, WeatherKind.Night }),
+            new("capital", "urban", "crown",
+                new[] { WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm }),
+            // A launch goes at night under the floodlights as often as by day.
+            new("launchsite", "desert", "missile",
+                new[] { WeatherKind.Clear, WeatherKind.Night, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Night }),
+            // The flats are for long sight lines: mostly clear.
+            new("saltflat", "desert", "dune",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Night }),
+            new("borderbridge", "temperate", "flag",
+                new[] { WeatherKind.Clear, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm, WeatherKind.Night }),
+            new("swamp", "jungle", "fog",
+                new[] { WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Storm, WeatherKind.Clear, WeatherKind.Night }),
+            new("coralisles", "desert", "sun",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Storm, WeatherKind.Overcast, WeatherKind.Night }),
         };
 
         public static string Map { get; set; } = "ashfield";

@@ -574,3 +574,81 @@ bottom of each section.
   as the coming Field Command 2.0 rules ask.
 - **Tower icons.** `CardIcons.For` now has icons for the tower cards (a branch takes its tower's), which
   used to fall back to the tank. The HQ guide text speaks of sized hardpoints, not fortification points.
+
+## 4M. New battlefields
+
+Eight battlefields join the twelve (all in the skirmish rotation; the campaign engineer takes the
+first four): Landing Beach, Hydro Dam, Capital, Silver Bug Launch Site (campaign), Salt Flats,
+Border Bridge, Swamp, Coral Isles (skirmish). Each has Conquest (three points), Siege (the fortress
+in the north-east) and Survival versions, both camps with 2 large, 3 medium and 6 small tower
+slots and 3 utility slots, and an outpost (1 medium + 1 small) at every point.
+
+- **Laid out on the battlefield itself.** The new builders work in world metres
+  (`world_layout`), not on the 160 m design grid that is spread by 1.875 afterwards: causeways,
+  bridges, rock walls and city blocks must sit exactly on the 4 m water grid and the 2 m
+  navigation grid, and the spreading opens every seam. Nothing stands within 41 m of a camp (the
+  design grid's 22 m, spread), as before. The twelve old battlefields come out byte-identical.
+- **Builder fix.** Since the tower roster the keep's flak tower is `aa_turret.flak`, which has no
+  size of its own in balance.json, and the builder stopped on every siege map. It plans it on the
+  old 8 m Flakturm's ground, so the old siege maps stay as shipped.
+- **Terrain runs into the edge.** On the new battlefields rock and water that straddle the
+  outline stay (the old ones drop them), so a bluff or a river never leaves a gap along the edge
+  to drive round. A bridge deck counts as terrain for the base planner: it is never pulled down
+  to make room for a hardpoint.
+- **Per-map kit.** `MAP_WAR` and `MAP_DENSIFY` change a theme's dressing for one map (counts,
+  and a `where` test for the ground solid cover may take): the salt flats keep their sight lines
+  (no tree clumps, hamlets or pylon line, 6 wrecks a half), the beach stays sand (trees and rock
+  only above the bluffs), and nothing solid is dropped on a causeway, bridge or narrow shore of
+  the water maps.
+- **Water is river tiles.** The game draws the sea only beyond the north edge, so every sea,
+  lake and swamp inside a battlefield is `river_water` (impassable) with `river_ford` shallows,
+  in the theme's water colour. Beaches are a ring of shallows (walkable) round an island.
+- **Landing Beach (temperate).** Temperate, not harbour: the harbour theme dresses the country
+  round the map with factories; this is a Normandy-like coast. The sea lies along the south edge
+  inside the map, behind the player's camp on the sand; hedgehogs (tank traps) in two staggered
+  rows, wire, dunes (earth mounds), a sea wall broken every 34 m; the bluffs are two rows of cliff
+  pieces set edge to edge (the obstacle clearance seals the seams), 20 m deep, with four exits
+  20-28 m wide. Asymmetric by design: the enemy holds the plateau, the bluff tops and the village.
+  Points: `beach` (the beach strongpoint, east), `draw` (the head of the main exit, centre),
+  `village` (the church square, west).
+- **Hydro Dam (temperate).** Temperate, not snow: the snow theme draws water as pale ice, which
+  read as walkable. The river runs north-south so the dam crest lies square to the grid; the crest
+  is 12 m (four walkable cells) and the only other crossings are the road bridge (the centre) and
+  a 32 m ford. Points: `power_station`, `bridge`, `ford`.
+- **Capital (urban).** Different from Metro City: the river splits round an island that carries
+  the government quarter (the palace and the domed parliament face each other across the palace
+  square, ministries along the tree-lined Mall), and each arm has one bridge, so the two bridges
+  are the only ways across and every crossing goes over the island. The bridges are 25 m decks to
+  carry the traffic. Dense blocks (buildings a metre apart, one solid mass) between avenues. The
+  objectives are plazas, not roads, so their outposts fit. The outline takes the two flanks
+  (forced) to carve a twentieth of the square. Points: `gardens`, `palace_square`, `station`.
+- **Silver Bug Launch Site (desert).** Composed from the kit: the rocket is a refinery tower (a
+  tall stack), the fixed and mobile service towers gantry cranes, the flame pit a tank ditch, the
+  radar dishes radar stations and a dome, the perimeter fence razor wire gated at every road.
+  The rocket stands on the north edge of the pad so the centre point stays open ground. Rail
+  lines bring the stages in from the assembly building (north-west) and the propellant from the
+  farm (south-east). Points: `assembly_building`, `launch_pad`, `propellant_farm`.
+- **Salt Flats (desert).** The kit has no white ground, so the flats are the desert's sand. Nine
+  rock clusters a half as stepping stones, 40-60 m apart along every approach, the direct run
+  between the camps left open. Points: `salt_works`, `survey_beacon`, `brine_pumps`.
+- **Border Bridge (temperate).** The river is 50 m wide and narrows to 24 m at the Great Bridge
+  (a 42 m deck): on a wide river the bridge point had no bank within reach for its outpost.
+  The detours are a 26 m ford in the far west and an old one-deck bridge in the far east. The
+  centre point has a 14 m radius. Points: `border_village`, `great_bridge`, `customs_depot`.
+- **Swamp (jungle).** Brown jungle water. Causeways and bridges run square to the 4 m grid:
+  diagonal ones came out one cell wide in places. Causeways and the two main bridges to the centre
+  are 12 m (four cells); the footbridges are 8 m (two cells), the narrow passes. The camps stand
+  on 124 m squares of dry ground: smaller ones had no room for the third utility slot. Spur
+  causeways lead round to the fortress gates for Siege.
+- **Coral Isles (desert).** Desert, not harbour: sand, palms and the desert's turquoise water read
+  as a lagoon; the harbour's grey-green and industrial scenery did not. The lighthouse is a silo
+  (the white tower) with a floodlight mast and the keeper's cottage, on the centre island's north
+  headland (off the point's centre), an old fort on the south one. Points: `west_isle`,
+  `lighthouse`, `east_isle`.
+- **Names and icons.** English and Vietnamese names as given, one-line subtitles; icons anchor,
+  bolt, crown, missile, dune, flag, fog, sun. Weather favours the setting (fog and overcast for the
+  landing, night for the launch site, clear for the salt flats, fog and rain in the swamp).
+- **Tests.** `MapRouteTests` routes, on all twenty battlefields and all three versions, from
+  every drop zone to every capture point and the other drop zone, and in Siege to the command HQ,
+  with the movement system's pathfinder; the map lists of the base, traffic and battle tests take
+  the eight new ids.
