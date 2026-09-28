@@ -484,7 +484,8 @@ namespace MachineBrigade.Sim.Combat
         /// turns too (the coaxial gun, then the roof gun). A heavy weapon with its target lined
         /// up has the right of way: the machine gun breaks off its run. A helicopter looses its
         /// missile, then its rockets, then rakes with its gun. Bosses, with guns all over them,
-        /// only keep their mounts out of the same instant.
+        /// only keep their mounts out of the same instant. Test feedback 2: machine guns and AA
+        /// guns fire from magazines now (a 2.5-4 s stream, then the change), taking the same turns.
         /// </summary>
         private bool InRhythm(Vehicle v, int index)
         {
