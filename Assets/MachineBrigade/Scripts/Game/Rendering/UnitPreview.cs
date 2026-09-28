@@ -8,6 +8,9 @@ namespace MachineBrigade.Game.Rendering
     /// The vehicle on the detail screen: its model on a slow turntable, lit by the scene's sun,
     /// seen by a camera of its own (on a layer the battlefield camera ignores) that renders into a
     /// texture the menu shows. The camera only runs while a vehicle is shown.
+    /// The texture takes the shape of the box the menu shows it in (<see cref="Fit"/>), and the
+    /// camera's view is cut to what the old 4:3 texture showed in the detail page's box (DECISIONS
+    /// 12E): the turntable and the In action clips are framed as before, only bigger and sharper.
     /// </summary>
     public sealed class UnitPreview
     {
@@ -23,6 +26,13 @@ namespace MachineBrigade.Game.Rendering
         private GameObject _model;
         private string _shown;
         private FiringRange _range;
+        private bool _pinned;
+
+        /// <summary>The texture's caps on a phone: its longest side, and its pixels (about 1280 x 720).</summary>
+        private const int MaxSide = 1600, MaxPixels = 1280 * 720;
+
+        /// <summary>Four samples up to this many pixels (the old 640 x 480 turntable), two above: the big theatre stays about as dear.</summary>
+        private const int FourSamplesUpTo = 520 * 1000;
 
         public UnitPreview(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, Transform parent)
         {
@@ -35,7 +45,7 @@ namespace MachineBrigade.Game.Rendering
             _root.position = new Vector3(0f, -600f, 0f);
             _turntable = new GameObject("Turntable").transform;
             _turntable.SetParent(_root, false);
-            Texture = new RenderTexture(640, 480, 24, RenderTextureFormat.ARGB32) { name = "Unit Preview", antiAliasing = 4 };
+            Texture = NewTexture(640, 480);
             var cameraObject = new GameObject("Preview Camera");
             cameraObject.transform.SetParent(_root, false);
             _camera = cameraObject.AddComponent<Camera>();
@@ -59,13 +69,56 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>The game's sound: the In action range is heard through it while it plays.</summary>
         public Audio.AudioDirector Audio { get; set; }
 
-        /// <summary>Development capture only: a sharper texture for the range films.</summary>
+        /// <summary>Development capture only: a sharper texture for the range films (the menu's box no longer resizes it).</summary>
         public void Resize(int width, int height)
         {
+            _pinned = true;
+            Replace(width, height);
+        }
+
+        /// <summary>
+        /// Sizes the texture to the box the menu shows it in (in screen pixels): the box's shape, and
+        /// about its pixels within the caps. True when the texture was replaced (the menu then shows the new one).
+        /// </summary>
+        public bool Fit(float width, float height)
+        {
+            if (_pinned || width < 8f || height < 8f) return false;
+            var shrink = Mathf.Min(1f, Mathf.Min(MaxSide / Mathf.Max(width, height), Mathf.Sqrt(MaxPixels / (width * height))));
+            var w = Mathf.Max(64, Mathf.RoundToInt(width * shrink));
+            var h = Mathf.Max(64, Mathf.RoundToInt(height * shrink));
+            // A pixel or two of layout: keep the texture.
+            if (Mathf.Abs(w - Texture.width) <= 2 && Mathf.Abs(h - Texture.height) <= 2) return false;
+            Replace(w, h);
+            return true;
+        }
+
+        private static RenderTexture NewTexture(int width, int height) =>
+            new(width, height, 24, RenderTextureFormat.ARGB32) { name = "Unit Preview", antiAliasing = width * height <= FourSamplesUpTo ? 4 : 2 };
+
+        private void Replace(int width, int height)
+        {
             var old = Texture;
-            Texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "Unit Preview", antiAliasing = 4 };
+            Texture = NewTexture(width, height);
             _camera.targetTexture = Texture;
             old.Release();
+            Object.Destroy(old);
+            Project();
+            if (_range == null && _model != null && _turntable.gameObject.activeSelf) Frame();
+        }
+
+        /// <summary>
+        /// The camera's view cut to what the old 4:3 texture showed, cropped to fill the detail page's
+        /// box (its narrow edge at most 20 % in from the 4:3 frame's): a wide box sees as much across as
+        /// that frame and a little less top to bottom, a tall one the frame's width and more above and
+        /// below. The range and the turntable frame the vehicle by the camera's field of view as before.
+        /// </summary>
+        private void Project()
+        {
+            var aspect = (float)Texture.width / Texture.height;
+            var framing = Mathf.Max(0.8f, 4f / 3f / aspect);
+            var fov = 2f * Mathf.Atan(Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * framing) * Mathf.Rad2Deg;
+            _camera.aspect = aspect;
+            _camera.projectionMatrix = Matrix4x4.Perspective(fov, aspect, _camera.nearClipPlane, _camera.farClipPlane);
         }
 
         /// <summary>Shows a vehicle's model (in the player's colours) and starts the camera.</summary>
@@ -86,6 +139,7 @@ namespace MachineBrigade.Game.Rendering
                 _shown = modelId;
                 Frame();
             }
+            Project();
             _camera.enabled = true;
         }
 
@@ -95,6 +149,8 @@ namespace MachineBrigade.Game.Rendering
             CloseRange();
             _turntable.gameObject.SetActive(false);
             _range = new FiringRange(_catalog, _materials, _meshes, _models, _camera, Layer, vehicleId);
+            // The range set its own field of view and clip planes.
+            Project();
             _camera.enabled = true;
             if (Audio != null)
             {

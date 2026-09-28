@@ -304,6 +304,7 @@ namespace MachineBrigade.Game.Match
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
+            _effects.MapHalfSize = _world.Map.HalfSize;
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             // Build the merged models of every vehicle this battle can field now, not on first use
             // mid-battle, and only those: the catalogue holds bosses, elites and defences most

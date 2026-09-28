@@ -336,11 +336,17 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
         public double LastFiredAt { get; internal set; } = double.NegativeInfinity;
 
-        /// <summary>A VTOL jet holds in the air to shoot until then.</summary>
-        public double HoverUntil { get; internal set; } = double.NegativeInfinity;
+        /// <summary>An aeroplane holds its guns on its target until then (a VTOL jet hovering; see VehicleDef.AttackHold).</summary>
+        public double HoldUntil { get; internal set; } = double.NegativeInfinity;
 
-        /// <summary>A VTOL jet can stop in the air again from then.</summary>
-        public double HoverReadyAt { get; internal set; } = double.NegativeInfinity;
+        /// <summary>An aeroplane may begin another attack hold from then.</summary>
+        public double HoldReadyAt { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>An aeroplane in its attack hold this step: slowed (or hovering), its nose on the target.</summary>
+        public bool InAttackHold { get; internal set; }
+
+        /// <summary>An aeroplane flying on past its target (after a pass or a hold) before it turns in again.</summary>
+        public bool Breaking => RunExtending;
 
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
@@ -411,6 +417,11 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Aeroplanes: flying on past the target before turning in for the next run.</summary>
         internal bool RunExtending;
 
+        /// <summary>A VTOL jet leaving its hover turns away on this heading (not through the target), and to which side the next time.</summary>
+        internal float BreakHeading;
+        internal bool BreakAway;
+        internal float BreakSide = 1f;
+
         /// <summary>Carrying out an order the player gave by hand.</summary>
         internal bool ManualOrder;
 
@@ -472,6 +483,9 @@ namespace MachineBrigade.Sim.Entities
         internal double GunRoundAt = double.NegativeInfinity;
         internal int GunMount = -1;
         internal double HeavyWaitingAt = double.NegativeInfinity;
+
+        /// <summary>When the main gun's stream last stood ready but was held off by a secondary gun's magazine (test feedback 2).</summary>
+        internal double LeadWaitingAt = double.NegativeInfinity;
         internal double AnyRoundAt = double.NegativeInfinity;
         internal int AnyMount = -1;
 

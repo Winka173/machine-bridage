@@ -502,6 +502,29 @@ namespace MachineBrigade.Sim.Movement
 
         private static readonly float[] Rings = { 0.82f, 0.95f };
 
+        /// <summary>
+        /// Test feedback 2 (DECISIONS 12F): the reach a helicopter hovers at to fight. Holding at its
+        /// missile's reach left the gun and the rockets, which reach less far, silent (the attack
+        /// helicopter's gun is nearly half its firepower); it now comes in to the shortest reach of
+        /// the weapons it faces the target with (not the door guns, not a launcher that is empty or
+        /// cannot hit this target), but never nearer than 60 % of its main weapon's.
+        /// </summary>
+        private static float HoverReach(Vehicle v, IDamageable target)
+        {
+            var flying = target is Vehicle { Flying: true };
+            var main = v.Arms[0].Range;
+            var reach = main;
+            var mounts = v.Def.Mounts;
+            for (var i = 1; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim is MountAim.Left or MountAim.Right || mounts[i].ArcHalf > 0f) continue;
+                if (w.Damage <= 0f || !w.CanTarget(flying) || v.Weapons[i].Ammo == 0) continue;
+                reach = MathF.Min(reach, w.Range);
+            }
+            return MathF.Max(reach, main * 0.6f);
+        }
+
         /// <summary>Metres a standoff helicopter keeps beyond the reach of anti-air it outranges.</summary>
         private const float StandoffMargin = 5f;
 
@@ -522,9 +545,11 @@ namespace MachineBrigade.Sim.Movement
                 return;
             }
             // In range and in the clear: hold here. In range but behind cover: keep driving (the
-            // path leads round the building or rock) until the line of fire opens.
+            // path leads round the building or rock) until the line of fire opens. A helicopter
+            // comes in until its gun and rockets reach as well (see HoverReach).
             var clear = _world.HasLineOfFire(v, target, weapon);
-            if (distance <= weapon.Range * 0.9f && clear)
+            var reach = v.Flying && !v.Def.FixedWing && !v.Def.Boss ? HoverReach(v, target) : weapon.Range;
+            if (distance <= reach * 0.9f && clear)
             {
                 // Never stop in the doorway, nor in the road with friends coming up behind: step
                 // off to the side first (a short drive; the turret keeps firing), or roll on through
@@ -717,16 +742,20 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>
-        /// Aeroplanes never stop. With a target they fly at it, fire as it bears, pull through
-        /// past it and extend, then turn in for another run; with a destination they fly there;
-        /// otherwise they circle their post. They turn back well before the map edge.
+        /// Aeroplanes never stop (a VTOL jet only in its attack hold). With a target they fly at
+        /// it, fire as it bears, hold their guns on it (see <see cref="AttackHold"/>) or pull
+        /// through past it, extend, then turn in for another run; behind a fast jet they match its
+        /// speed; with a destination they fly there; otherwise they circle their post. They turn
+        /// back well before the map edge.
         /// </summary>
         private void DriveAeroplane(Vehicle v, float dt)
         {
             var def = v.Def;
             var turnRadius = def.Speed / def.TurnRate;
             var target = RunTarget(v);
-            if (target != null && def.Vtol && Hover(v, target, dt)) return;
+            v.InAttackHold = false;
+            if (target != null && def.AttackHold > 0f && !def.Orbit && AttackHold(v, target, dt)) return;
+            if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;
             Vector2 goal;
             var throttle = 1f;
             var half = _world.Map.HalfSize;
@@ -755,23 +784,41 @@ namespace MachineBrigade.Sim.Movement
             }
             else if (target != null)
             {
-                var range = def.Weapon.Range;
+                // The run is flown to the reach of its guns (a fighter's cannon, not its long-range missiles).
+                var range = AttackReach(v, target);
                 var toTarget = target.Position - v.Position;
                 var distance = toTarget.Length();
+                var ahead = Vector2.Dot(SimMath.Forward(v.Heading), toTarget);
+                var mover = FastMover(v, target);
                 if (!v.RunExtending)
                 {
                     // Pull through once too close to keep the nose on it, or once it slips behind.
-                    var behind = Vector2.Dot(SimMath.Forward(v.Heading), toTarget) < 0f;
-                    if (distance < MathF.Max(6f, range * 0.3f) || (behind && distance < range * 0.6f)) v.RunExtending = true;
+                    if (distance < MathF.Max(6f, range * 0.3f) || (ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
                 }
                 else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
                 {
                     v.RunExtending = false;
+                    v.BreakAway = false;
                 }
-                goal = v.RunExtending ? v.Position + SimMath.Forward(v.Heading) * 10f : target.Position;
+                // Out of a hover it turns away first rather than fly on through its target.
+                goal = v.RunExtending ? v.Position + SimMath.Forward(v.BreakAway ? v.BreakHeading : v.Heading) * 10f : target.Position;
+                var gap = distance - target.Radius;
+                if (!v.RunExtending && mover != null && gap < range * 1.3f && ahead > distance * 0.6f)
+                {
+                    // Behind a fast jet: match its speed to keep it on the nose at a little over half
+                    // the guns' reach (the cannon streams for as long as it stays there).
+                    var want = (mover.Speed + (gap - range * ChaseShare) * 1.5f) / MathF.Max(1f, def.Speed * v.SpeedFactor);
+                    throttle = Math.Clamp(want, def.Vtol ? 0.3f : 0.45f, 1f);
+                }
+                else if (!v.RunExtending && def.AttackHold > 0f && mover == null)
+                {
+                    // Coming in for a hold: easing off from half as far again as its reach, so it
+                    // is at half speed when the hold begins.
+                    throttle = Math.Clamp((gap - range) / range + 0.5f, 0.5f, 1f);
+                }
                 // Throttle back through the attack run for more time on the target; full power to
                 // extend and come round.
-                if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
+                else if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
             }
             else if (v.HasPath)
             {
@@ -801,35 +848,115 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>How fast the centre of a pylon turn follows its target, in metres a second.</summary>
         private const float OrbitGlide = 6f;
 
-        /// <summary>Seconds a VTOL jet holds in the air to shoot, and how long before it can again.</summary>
-        private const double HoverSeconds = 6.0, HoverRest = 12.0;
+        /// <summary>Seconds after an attack hold before the next may begin (it must have flown its loop as well).</summary>
+        private const double HoldRest = 1.5;
+
+        /// <summary>Slowest and fastest crawl (shares of its speed) of a jet that cannot hover in its hold; under flak it keeps at least the faster.</summary>
+        private const float HangSlowest = 0.15f, HangFastest = 0.5f;
+
+        /// <summary>How far off the nose (radians) the target may be for a jet that cannot hover to begin its hold.</summary>
+        private const float HoldCone = 0.6f;
+
+        /// <summary>Share of its guns' reach a hovering jet glides in to, and a chasing one keeps behind a fast jet.</summary>
+        private const float HoverShare = 0.6f, ChaseShare = 0.55f;
+
+        /// <summary>How far (radians) a jet leaving its hover turns away before it extends.</summary>
+        private const float BreakTurn = 1.1f;
 
         /// <summary>
-        /// A VTOL jet (Harrier, F-35B) with a target in reach stops in the air, turns on the spot to
-        /// keep its nose and guns on it, then flies on: the hover is short, since a hovering jet is
-        /// slow, loud and easy to hit. True while it is holding.
+        /// Test feedback 2 (DECISIONS 12F): an aeroplane with its target in reach holds its guns on
+        /// it for <see cref="VehicleDef.AttackHold"/> seconds, so the cannon streams a whole magazine
+        /// and the rockets, missiles and bombs all get their turn, instead of a pass of about a
+        /// second. A VTOL jet (Harrier, F-35B) hovers: it glides in to a little over half its guns'
+        /// reach, stops and turns on the spot to keep its nose on the target. Any other slows to a
+        /// crawl with its nose on the target, paced to come over it as the hold ends, then pulls
+        /// through. Either then breaks away at full power, comes round and holds again. Inside a
+        /// flak gun's reach it never hangs there: it slows only to half speed (a quicker run, since a
+        /// hovering jet is easy to hit). A target that gets out of reach (a fast jet) ends the hold
+        /// and the chase goes on. True while it holds.
         /// </summary>
-        private bool Hover(Vehicle v, IDamageable target, float dt)
+        private bool AttackHold(Vehicle v, IDamageable target, float dt)
         {
             var def = v.Def;
             var now = _world.Time;
-            var distance = Vector2.Distance(v.Position, target.Position);
-            // Never stop dead inside an anti-aircraft gun's reach (a boss's flak): fire from outside it.
-            var flak = UnderFlak(v);
-            if (flak && now < v.HoverUntil) v.HoverUntil = now;
-            if (!flak && now >= v.HoverUntil && now >= v.HoverReadyAt && distance < def.Weapon.Range * 0.8f && distance > 6f)
+            var reach = AttackReach(v, target);
+            var toTarget = target.Position - v.Position;
+            var distance = toTarget.Length();
+            var gap = distance - target.Radius;
+            var off = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toTarget) - v.Heading));
+            var pullThrough = MathF.Max(5f, reach * 0.2f);
+            if (now >= v.HoldUntil)
             {
-                v.HoverUntil = now + HoverSeconds;
-                v.HoverReadyAt = v.HoverUntil + HoverRest;
+                if (v.RunExtending || now < v.HoldReadyAt || gap > reach * 0.95f || distance < pullThrough + 3f ||
+                    (!def.Vtol && off > HoldCone) || FastMover(v, target) != null)
+                    return false;
+                v.HoldUntil = now + def.AttackHold;
             }
-            if (now >= v.HoverUntil) return false;
-            v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 1.1f * dt);
-            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * v.TurnFactor * 1.3f * dt);
+            // It got away (a jet flying on, a helicopter moving off): the chase goes on.
+            if (gap > reach * 1.25f)
+            {
+                v.HoldUntil = now;
+                v.HoldReadyAt = now + HoldRest;
+                return false;
+            }
+            var flak = UnderFlak(v);
+            var hover = def.Vtol && !flak;
+            // Over the target (or it slipped past the nose): pull through and fly on.
+            if (!hover && (distance < pullThrough || off > MathF.PI * 0.5f))
+            {
+                EndHold(v, now, false);
+                return false;
+            }
+            var cruise = def.Speed * v.SpeedFactor;
+            float want;
+            if (hover) want = Math.Clamp((gap - reach * HoverShare) * 1.5f, 0f, cruise * 0.5f);
+            else
+            {
+                // Paced to reach the target as the hold runs out.
+                var left = (float)Math.Max(0.3, v.HoldUntil - now);
+                want = Math.Clamp((distance - pullThrough) / left, cruise * (flak ? HangFastest : HangSlowest), cruise * HangFastest);
+            }
+            v.Speed = SimMath.MoveTowards(v.Speed, want, def.Speed * 1.1f * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(toTarget), def.TurnRate * v.TurnFactor * 1.4f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
-            // Leaving the hover, it flies straight out before turning back in.
-            if (now + dt >= v.HoverUntil) v.RunExtending = true;
+            v.InAttackHold = true;
+            if (now + dt >= v.HoldUntil) EndHold(v, now + dt, hover);
             return true;
         }
+
+        /// <summary>The hold is over: fly on (a hovering jet turns away first, to alternate sides) and come round.</summary>
+        private static void EndHold(Vehicle v, double at, bool hovered)
+        {
+            v.HoldUntil = at;
+            v.HoldReadyAt = at + HoldRest;
+            v.RunExtending = true;
+            v.BreakAway = hovered;
+            if (!hovered) return;
+            v.BreakHeading = v.Heading + v.BreakSide * BreakTurn;
+            v.BreakSide = -v.BreakSide;
+        }
+
+        /// <summary>
+        /// The reach an aeroplane's attack is flown to: its shortest-reaching hull-mounted gun that
+        /// can hit the target (a fighter's cannon rather than its long-range missiles), else its main weapon's.
+        /// </summary>
+        private static float AttackReach(Vehicle v, IDamageable target)
+        {
+            var flying = target is Vehicle { Flying: true };
+            var reach = 0f;
+            var mounts = v.Def.Mounts;
+            for (var i = 0; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim != MountAim.Hull || w.Projectile != ProjectileKind.Bullet || w.Damage <= 0f || !w.CanTarget(flying)) continue;
+                reach = reach > 0f ? MathF.Min(reach, w.Range) : w.Range;
+            }
+            return reach > 0f ? reach : v.Arms[0].Range;
+        }
+
+        /// <summary>The target is a jet flying fast (not hovering or crawling in its own hold): it is chased, not held on.</summary>
+        private static Vehicle? FastMover(Vehicle v, IDamageable target) =>
+            target is Vehicle jet && jet.Def.FixedWing && jet.Speed > v.Def.Speed * 0.35f ? jet : null;
 
         /// <summary>An enemy anti-aircraft gun (not a guided missile) has this aircraft within its reach and a little more.</summary>
         private bool UnderFlak(Vehicle v)

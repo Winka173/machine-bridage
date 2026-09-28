@@ -207,13 +207,25 @@
 /* ================================================================ E4 vehicle detail */
 .fc-detail { flex-direction: row; }
 .fc-detail__left { width: var(--fc-detail-column); flex-shrink: 0; }
+.fc-detail__left-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
 .fc-detail__left-body { padding: var(--fc-space-4) var(--fc-space-5); }
-.fc-detail__stage { height: 300px; margin-bottom: var(--fc-space-3); background-color: var(--fc-bg-2); }
+.fc-detail__stage { height: var(--fc-detail-stage); margin-bottom: var(--fc-space-2); background-color: var(--fc-bg-2); }
 .fc-detail__art { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
 .fc-detail__preview { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; }
-.fc-detail__arrow--left { position: absolute; left: var(--fc-space-2); top: 110px; }
-.fc-detail__arrow--right { position: absolute; right: var(--fc-space-2); top: 110px; }
+/* The name with the arrows beside it (small faces in full touch targets), off the picture. */
+.fc-detail__head { align-items: center; }
+.fc-detail__head > .fc-icon-btn { flex-shrink: 0; }
+.fc-detail__previous > .fc-icon-btn__face { rotate: 180deg; }
 .fc-detail__right { flex-grow: 1; flex-shrink: 1; }
+/* The In action tab: a theatre. The preview fills the space under the tabs; the name, the weapons,
+   the deck toggle and the dock (blueprints over the level-up) stand in the side column. */
+.fc-detail--theatre .fc-detail__left { width: var(--fc-detail-side); border-right-width: var(--fc-line); border-right-color: var(--fc-border); }
+.fc-detail--theatre .fc-detail__stage { height: auto; flex-grow: 1; flex-shrink: 1; margin: var(--fc-space-3) var(--fc-space-4); }
+.fc-detail--theatre .fc-detail__body-scroll, .fc-detail--theatre .fc-detail__tags, .fc-detail--theatre .fc-detail__counters { display: none; }
+.fc-detail--theatre .fc-detail__left-body > .fc-page__body { padding: var(--fc-space-2) 0 0 0; }
+.fc-detail--theatre .fc-detail__dock { flex-direction: column; align-items: stretch; }
+.fc-detail--theatre .fc-detail__dock > * { margin-right: 0; }
+.fc-detail--theatre .fc-detail__prints { flex-grow: 0; margin-bottom: var(--fc-space-3); }
 .fc-detail__dock {
     flex-direction: row; align-items: center; flex-wrap: nowrap;
     padding: var(--fc-space-3) var(--fc-space-5);
