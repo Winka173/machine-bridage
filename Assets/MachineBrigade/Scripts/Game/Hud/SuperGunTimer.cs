@@ -20,7 +20,7 @@ namespace MachineBrigade.Game.Hud
         public SuperGunTimer()
         {
             Root = UiKit.Box("gun-timer");
-            Root.Add(UiKit.Icon("siegegun", UiKit.Ink, 1.8f));
+            Root.Add(UiKit.Icon(TowerIcons.For("super_gun"), UiKit.Ink, 1.8f));
             var text = UiKit.Box("gun-timer-text");
             _name = UiKit.Text("", "gun-timer-name");
             _clock = UiKit.Text("", "gun-timer-clock");

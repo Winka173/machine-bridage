@@ -43,7 +43,8 @@ namespace MachineBrigade.Game.Hud
                 Name = Strings.Card(def.Id),
                 ShortName = Strings.Short(def.Id),
                 Branch = KitBranches.Of(def),
-                ClassIcon = KitBranches.ClassIcon(def.Class),
+                // A structure (tower, module, the HQ, a fixed defence) shows its own line icon, never a vehicle class's.
+                ClassIcon = def.Fort != null || def.Static ? TowerIcons.For(def.Id) ?? "module" : KitBranches.ClassIcon(def.Class),
                 Cp = def.CpCost,
                 Level = PlayerProfile.Rank(def.Id),
                 CanUpgrade = !locked && PlayerProfile.CanRankUp(def.Id),
