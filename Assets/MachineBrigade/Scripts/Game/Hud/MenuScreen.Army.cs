@@ -401,7 +401,8 @@ namespace MachineBrigade.Game.Hud
             _gearTotal.text = worn.Count == 0 ? Strings.Get("gear.totalNone") : Strings.Format("gear.total", string.Join("  ·  ", worn));
             FillSetChips(_gearSets, _branch);
             _gearGrid.Clear();
-            var items = PlayerProfile.GearOwned.Where(g => _slotFilter == null || g.Slot == _slotFilter)
+            // Tower pieces are worn by tower types (the base screen), not by the army's branches.
+            var items = PlayerProfile.VehicleGearOwned.Where(g => _slotFilter == null || g.Slot == _slotFilter)
                 .OrderByDescending(g => g.rarity).ThenBy(g => g.slot).ThenByDescending(g => g.level).ToList();
             if (items.Count == 0) _gearGrid.Add(UiKit.Text(Strings.Get(_slotFilter == null ? "gear.none" : "gear.noneForSlot"), "menu-note"));
             var grid = UiKit.Box("gear-grid2");

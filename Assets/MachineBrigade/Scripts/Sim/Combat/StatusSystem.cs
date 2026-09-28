@@ -131,11 +131,14 @@ namespace MachineBrigade.Sim.Combat
             return damage - soaked;
         }
 
-        /// <summary>Knocked out (an EMP) until <paramref name="until"/>, unless just cleansed; shortened by Fire Extinguisher.</summary>
+        /// <summary>Knocked out (an EMP) until <paramref name="until"/>, unless just cleansed; shortened by Fire Extinguisher and a tower's Backup Generator.</summary>
         public void Stun(Vehicle target, double until)
         {
             if (!target.IsAlive || Cleansed(target)) return;
             var now = _world.Time;
+            var seconds = _world.Gear.StunSeconds(target, (float)(until - now));
+            if (seconds <= 0f) return;
+            until = now + seconds;
             var factor = DurationFactor(target, false);
             if (factor < 1f) until = now + (until - now) * factor;
             target.StunnedUntil = Math.Max(target.StunnedUntil, until);

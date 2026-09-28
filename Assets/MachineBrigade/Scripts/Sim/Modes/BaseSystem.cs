@@ -44,6 +44,15 @@ namespace MachineBrigade.Sim.Modes
         public double LandsAt { get; internal set; } = double.NaN;
 
         public bool Incoming => !double.IsNaN(LandsAt);
+
+        /// <summary>
+        /// Its next call is free (a Modular tower, the first of its type to fall this battle), and
+        /// the wait before it is this share of the usual one (<see cref="FreeWait"/>).
+        /// </summary>
+        public bool FreeCall { get; internal set; }
+
+        /// <summary>The share of the usual cooldown a free re-drop waits (0: none).</summary>
+        public float FreeWait { get; internal set; } = 1f;
     }
 
     /// <summary>A side's base in the battle: its role, its HQ, its hardpoints and its outposts.</summary>
@@ -69,6 +78,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>The HQ was destroyed (only a Target or Defend base can be).</summary>
         public bool HqFallen { get; internal set; }
+
+        /// <summary>Tower types (card ids) whose Modular free re-drop this battle has been used.</summary>
+        public HashSet<string> ModularUsed { get; } = new();
     }
 
     /// <summary>
@@ -187,9 +199,34 @@ namespace MachineBrigade.Sim.Modes
             slot.LandsAt = double.NaN;
         }
 
-        /// <summary>CP to fly a tower back into this hardpoint.</summary>
+        /// <summary>CP to fly a tower back into this hardpoint (nothing for a Modular tower's free re-drop).</summary>
         public int CostOf(HardpointState slot) =>
-            slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCost(def) : 0;
+            !slot.FreeCall && slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCost(def) : 0;
+
+        /// <summary>
+        /// Modular (tower equipment): a tower that carries it has just been destroyed. If it is the
+        /// first of its type (card) its side has lost this battle, its hardpoint's next call is free
+        /// and waits <c>1 - cut</c> of the usual cooldown. Returns whether it was.
+        /// </summary>
+        internal bool FreeRedrop(Vehicle tower, float cut)
+        {
+            if (_clearingOutpost || !_bases.TryGetValue(tower.Team, out var b)) return false;
+            var slot = SlotOf(b, tower.Id);
+            if (slot == null || !b.ModularUsed.Add(tower.Def.CardId)) return false;
+            slot.FreeCall = true;
+            slot.FreeWait = Math.Clamp(1f - cut, 0f, 1f);
+            return true;
+        }
+
+        private static HardpointState? SlotOf(TeamBase b, EntityId structure)
+        {
+            foreach (var s in b.Slots)
+                if (s.Structure == structure) return s;
+            foreach (var outpost in b.Outposts.Values)
+                foreach (var s in outpost)
+                    if (s.Structure == structure) return s;
+            return null;
+        }
 
         /// <summary>Whether a destroyed tower here can be called back in now.</summary>
         public bool CanCall(HardpointState slot) => slot.Down && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt;
@@ -227,6 +264,8 @@ namespace MachineBrigade.Sim.Modes
             }
             if (!CanCall(slot)) return CommandResult.Rejected(slot.Incoming || slot.Structure.IsValid ? CommandError.InvalidPoint : CommandError.OnCooldown);
             if (!_world.Economy.TrySpend(command.Team, CostOf(slot))) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            slot.FreeCall = false;
+            slot.FreeWait = 1f;
             var rules = _world.Catalog.Base;
             slot.LandsAt = _world.Time + rules.RebuildDelay;
             slot.ReadyAt = _world.Time + rules.RebuildCooldown(_world.Catalog.Vehicles[slot.Tower!]);
@@ -331,8 +370,11 @@ namespace MachineBrigade.Sim.Modes
                     if (PointOwner != null && PointOwner(id) != b.Team)
                     {
                         _lost.Add(id);
+                        // Towers going down with a lost outpost never spend a Modular free re-drop.
+                        _clearingOutpost = true;
                         foreach (var slot in slots)
                             if (_world.TryGetVehicle(slot.Structure, out var tower) && tower.IsAlive) _world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);
+                        _clearingOutpost = false;
                         continue;
                     }
                     foreach (var slot in slots) Watch(b, slot);
@@ -342,6 +384,7 @@ namespace MachineBrigade.Sim.Modes
         }
 
         private readonly List<string> _lost = new();
+        private bool _clearingOutpost;
 
         private void Watch(TeamBase b, HardpointState slot)
         {
@@ -354,8 +397,9 @@ namespace MachineBrigade.Sim.Modes
             // Knocked down: it can be called back in once the cooldown is over.
             slot.Structure = EntityId.None;
             slot.Down = true;
-            slot.ReadyAt = Math.Max(slot.ReadyAt, _world.Time + (slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def)
-                ? _world.Catalog.Base.RebuildCooldown(def) : 30f));
+            var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : 30f;
+            // A Modular tower's free re-drop waits only its share of the cooldown, whatever the last call left.
+            slot.ReadyAt = slot.FreeCall ? _world.Time + cooldown * slot.FreeWait : Math.Max(slot.ReadyAt, _world.Time + cooldown);
         }
 
         /// <summary>Every tower standing in a side's base (camp and outposts).</summary>

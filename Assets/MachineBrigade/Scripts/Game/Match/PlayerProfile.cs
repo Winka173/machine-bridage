@@ -81,6 +81,13 @@ namespace MachineBrigade.Game.Match
             public List<string> branchChoices = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
+
+            /// <summary>
+            /// Tower equipment (see PlayerProfile.TowerGear.cs): the tower types that have a loadout,
+            /// and for each three piece ids in towerGear (Weapon, Structure, Systems; 0: empty).
+            /// </summary>
+            public List<string> towerGearIds = new();
+            public List<int> towerGear = new();
         }
 
         /// <summary>

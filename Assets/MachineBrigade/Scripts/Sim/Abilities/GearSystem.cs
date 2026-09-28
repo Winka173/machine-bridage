@@ -67,6 +67,7 @@ namespace MachineBrigade.Sim.Abilities
             TuneWeapons(v, g);
             if (g.Has(TraitId.ReactiveBlocks)) g.Blocks = (int)g.Trait(TraitId.ReactiveBlocks).A;
             if (g.Has(TraitId.AblativeLayer)) g.Ablative = -1f;
+            if (g.Has(TraitId.TowerBackupGenerator)) v.StunResist = Math.Clamp(g.Trait(TraitId.TowerBackupGenerator).A, 0f, 1f);
             if (g.Has(TraitId.SetSwarm)) g.Drone = DroneFor(v, g);
             var now = _world.Time;
             switch (v.Special)
@@ -343,6 +344,14 @@ namespace MachineBrigade.Sim.Abilities
                 v.FlaresUntil = Math.Max(v.FlaresUntil, now + 2.0);
                 g.Ready[(int)TraitId.SetStrafingRun] = now + g.Trait(TraitId.SetStrafingRun).B;
                 v.RefreshEffects(now);
+            }
+            // A tower's smoke launchers: a screen round it the first time it drops below half health.
+            if (g.Has(TraitId.TowerSmokeLaunchers) && !g.TowerSmokeUsed && v.Hp < v.MaxHp * 0.5f)
+            {
+                var t = g.Trait(TraitId.TowerSmokeLaunchers);
+                g.TowerSmokeUsed = true;
+                _world.Strikes.AddSmoke(v.Team, v.Position, t.A > 0f ? t.A : 10f, t.B > 0f ? t.B : 12f);
+                Proc(v, TraitId.TowerSmokeLaunchers);
             }
 
             // ---------------------------------------------------------- auras
@@ -849,6 +858,8 @@ namespace MachineBrigade.Sim.Abilities
                     m += g.Trait(TraitId.TandemWarhead).A;
                 if (g.CrownStacks > 0) m += g.Trait(TraitId.DarkCrown).A * g.CrownStacks;
             }
+            if (target is Vehicle aimed && IsFixedDefence(attacker) && attacker.Team is 0 or 1 && hit.Kind is HitKind.Direct or HitKind.Splash or HitKind.Pierce)
+                m += FireLink(attacker, aimed, hit, now);
             if (target is Vehicle victim && hit.Known)
             {
                 ref var mark = ref victim.Statuses[(int)StatusKind.Mark];
@@ -862,6 +873,65 @@ namespace MachineBrigade.Sim.Abilities
             ref var rally = ref attacker.Statuses[(int)StatusKind.Rally];
             if (rally.Until > now) m += rally.Value;
             return m;
+        }
+
+        /// <summary>A tower or the HQ: a fixed defence of a base (what Fire Link counts as a friendly tower).</summary>
+        private static bool IsFixedDefence(Vehicle v) => v.Def.Static && v.Def.Fort is { Kind: FortKind.Tower or FortKind.Hq };
+
+        /// <summary>
+        /// Fire Link: a tower hits harder while another fixed defence of its side has hit the same
+        /// target within the window. Every hit a fixed defence lands is noted on its target (with or
+        /// without the trait), so any friendly tower can set the link up.
+        /// </summary>
+        private float FireLink(Vehicle tower, Vehicle target, in HitInfo hit, double now)
+        {
+            ref var mark = ref target.TowerFire[tower.Team];
+            var bonus = 0f;
+            var g = tower.Gear;
+            if (g != null && g.Has(TraitId.TowerFireLink))
+            {
+                var t = g.Trait(TraitId.TowerFireLink);
+                if (mark.ByOther(tower.Id, now - (t.B > 0f ? t.B : 3f)))
+                {
+                    bonus = t.A;
+                    if (hit.Kind == HitKind.Direct) Proc(tower, TraitId.TowerFireLink);
+                }
+            }
+            mark.Note(tower.Id, now);
+            return bonus;
+        }
+
+        /// <summary>
+        /// How long a stun of <paramref name="seconds"/> lasts on this vehicle: a tower's Backup
+        /// Generator cuts it by its share, and at 1 the stun does not take at all (0). Everything
+        /// that knocks a vehicle out (EMP skills and strikes, SEAD, the EMP payload) asks here.
+        /// </summary>
+        public float StunSeconds(Vehicle v, float seconds)
+        {
+            if (v.StunResist <= 0f || seconds <= 0f) return seconds;
+            Proc(v, TraitId.TowerBackupGenerator);
+            return v.StunResist >= 1f ? 0f : seconds * (1f - v.StunResist);
+        }
+
+        /// <summary>
+        /// Counter-battery (tower equipment): enemy artillery that hits the tower, directly or with
+        /// its blast, is shown to the tower's side for a while (the radar trait's reveal status).
+        /// </summary>
+        private void CounterBattery(Vehicle v, GearState g, in HitInfo hit)
+        {
+            if (hit.Attacker is not { } shooter || !shooter.IsAlive || shooter.Team == v.Team || v.Team < 0 || v.Team > 30) return;
+            if (hit.Weapon is not { MinRange: > 0f } || hit.Kind is not (HitKind.Direct or HitKind.Splash)) return;
+            var now = _world.Time;
+            var seconds = g.Trait(TraitId.TowerCounterBattery).A;
+            ref var s = ref shooter.Statuses[(int)StatusKind.Reveal];
+            if (s.Until <= now)
+            {
+                s.Stacks = 0;
+                s.Value = 0f;
+            }
+            s.Stacks |= 1 << v.Team;
+            s.Until = Math.Max(s.Until, now + seconds);
+            Proc(v, TraitId.TowerCounterBattery);
         }
 
         /// <summary>Damage coming in: a multiplier from the victim's resistances, stances and effects (0: the hit bounced).</summary>
@@ -976,7 +1046,9 @@ namespace MachineBrigade.Sim.Abilities
         public void AfterDamaged(Vehicle v, DamageType type, in HitInfo hit)
         {
             var g = v.Gear!;
-            if (!g.Has(TraitId.AdaptivePlating) || hit.Kind is HitKind.Redirect or HitKind.Burn) return;
+            if (hit.Kind is HitKind.Redirect or HitKind.Burn) return;
+            if (g.Has(TraitId.TowerCounterBattery)) CounterBattery(v, g, hit);
+            if (!g.Has(TraitId.AdaptivePlating)) return;
             var now = _world.Time;
             var i = (int)type;
             g.Adapt[i] = g.AdaptUntil[i] > now ? Math.Min(4, g.Adapt[i] + 1) : 1;
@@ -1034,6 +1106,9 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Emit(SimEvent.Proc(victim, GearKeys.Trait(TraitId.VolatileFuelTanks)));
             }
             if (victim.Special == SpecialModule.EmpPayload) EmpPayload(victim, now);
+            // Modular: the first tower of its type to fall this battle is flown back in free (the base decides whether it is the first).
+            if (victim.Gear is { } mg && mg.Has(TraitId.TowerModular) && _world.Bases.FreeRedrop(victim, mg.Trait(TraitId.TowerModular).A))
+                _world.Emit(SimEvent.Proc(victim, GearKeys.Trait(TraitId.TowerModular)));
 
             foreach (var v in _world.VehicleList)
             {

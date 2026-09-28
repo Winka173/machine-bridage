@@ -41,6 +41,33 @@ namespace MachineBrigade.Sim.Entities
         Count,
     }
 
+    /// <summary>
+    /// The last two fixed defences of one side that hit a vehicle, and when (Fire Link: a tower
+    /// hits harder while another friendly tower has hit the same target within a few seconds).
+    /// </summary>
+    internal struct TowerFireMark
+    {
+        public EntityId Last, Previous;
+        public double LastAt, PreviousAt;
+
+        /// <summary>Whether a fixed defence other than <paramref name="self"/> hit it at or after <paramref name="since"/>.</summary>
+        public bool ByOther(EntityId self, double since) =>
+            (Last.IsValid && Last != self && LastAt >= since) || (Previous.IsValid && Previous != self && PreviousAt >= since);
+
+        public void Note(EntityId tower, double now)
+        {
+            if (Last == tower)
+            {
+                LastAt = now;
+                return;
+            }
+            Previous = Last;
+            PreviousAt = LastAt;
+            Last = tower;
+            LastAt = now;
+        }
+    }
+
     internal struct Status
     {
         public float Value;
@@ -132,6 +159,9 @@ namespace MachineBrigade.Sim.Entities
         public double UnanchorUntil = double.NegativeInfinity;
 
         public bool AfterburnerUsed, DomeUsed, SecondSmokeUsed, GhostNetUsed;
+
+        /// <summary>A tower's smoke launchers have fired (once a life, below half health).</summary>
+        public bool TowerSmokeUsed;
 
         /// <summary>Decoy Launcher: a decoy draws guided and indirect rounds until then, at this spot.</summary>
         public double DecoyUntil = double.NegativeInfinity;
