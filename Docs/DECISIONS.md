@@ -1750,8 +1750,8 @@ jammer was the example).
   the range (attack order on a target, not stunned, not moving), while the counter-battery radar
   with the same weapon and mount did; its clip shows the aura and the tanks it leads. A long menu
   (over a minute of lobby battle) logs thousands of "Quaternion To Matrix conversion failed"
-  asserts from `DebrisPool.Draw`: the debris rotations drift off unit length as they spin and
-  are never normalised. Dragon's teeth ploughed by a breacher go up in the defence-falls
+  asserts from `DebrisPool.Draw`: the debris rotations drift off unit length as they spin (fixed
+  meanwhile on lead/integration by 8e7d43c, which renormalises them each step). Dragon's teeth ploughed by a breacher go up in the defence-falls
   fireball; a concrete-crumble effect would suit them better.
 - **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
