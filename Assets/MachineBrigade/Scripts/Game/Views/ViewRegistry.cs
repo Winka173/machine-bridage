@@ -27,7 +27,16 @@ namespace MachineBrigade.Game.Views
             _parent = new GameObject("Vehicles").transform;
             _parent.SetParent(parent, false);
             _playerTeam = playerTeam;
+            if (VehicleLod.Enabled) _impostors = new ImpostorAtlas(materials);
         }
+
+        private readonly ImpostorAtlas _impostors;
+
+        /// <summary>The atlas of far-away cards; null with -mb-no-lod.</summary>
+        public ImpostorAtlas Impostors => _impostors;
+
+        /// <summary>The camera whose zoom picks the vehicles' detail levels (the main camera unless set).</summary>
+        public Camera LodCamera { get; set; }
 
         public IReadOnlyList<VehicleView> All => _list;
 
@@ -35,6 +44,7 @@ namespace MachineBrigade.Game.Views
         {
             if (_views.TryGetValue(vehicle.Id, out var existing)) return existing;
             var view = new VehicleView(vehicle, _models, _meshes, _materials, _parent, _playerTeam);
+            if (_impostors != null) view.Impostor = _impostors.Request(view.Lod, vehicle.Team);
             _views.Add(vehicle.Id, view);
             _list.Add(view);
             return view;
@@ -65,8 +75,34 @@ namespace MachineBrigade.Game.Views
 
         public void Render(float alpha, Quaternion cameraRotation)
         {
-            foreach (var view in _list) view.Render(alpha, cameraRotation);
-            if (BlobShadows) DrawBlobs();
+            if (LodCamera == null) LodCamera = Camera.main;
+            var ppm = VehicleLod.PixelsPerMetreOf(LodCamera);
+            VehicleLod.PixelsPerMetre = ppm;
+            _impostors?.BakePending(cameraRotation);
+            _impostors?.Begin();
+            _cards = 0;
+            foreach (var view in _list)
+            {
+                view.UpdateLod(ppm);
+                view.Render(alpha, cameraRotation);
+                if (_impostors == null || view.Level != VehicleLod.Impostor || !OnScreen(view)) continue;
+                _impostors.Add(view.Impostor, view.ImpostorCentre, view.Def.Scale, view.Root.eulerAngles.y, view.ImpostorTint);
+                _cards++;
+            }
+            _impostors?.Flush();
+            // Cards cast no shadows: with shadows on, a soft disc stands in under each one.
+            if (BlobShadows || _cards > 0) DrawBlobs(!BlobShadows);
+        }
+
+        private int _cards;
+
+        /// <summary>Whether a vehicle's card may be on screen (its middle within the view, with room for its size).</summary>
+        private bool OnScreen(VehicleView view)
+        {
+            if (LodCamera == null) return true;
+            var p = LodCamera.WorldToViewportPoint(view.ImpostorCentre);
+            var margin = view.LodSize * VehicleLod.PixelsPerMetre / Mathf.Max(1f, LodCamera.pixelHeight) + 0.02f;
+            return p.x > -margin && p.x < 1f + margin && p.y > -margin && p.y < 1f + margin;
         }
 
         /// <summary>
@@ -80,7 +116,7 @@ namespace MachineBrigade.Game.Views
         private Vector3 _sunDirection;
         private bool _blobReady;
 
-        private void DrawBlobs()
+        private void DrawBlobs(bool cardsOnly = false)
         {
             if (!_blobReady)
             {
@@ -99,7 +135,7 @@ namespace MachineBrigade.Game.Views
             var slide = new Vector3(_sunDirection.x, 0f, _sunDirection.z) / Mathf.Max(0.2f, -_sunDirection.y);
             foreach (var view in _list)
             {
-                if (!view.Root.gameObject.activeInHierarchy) continue;
+                if (!view.Root.gameObject.activeInHierarchy || (cardsOnly && view.Level != VehicleLod.Impostor)) continue;
                 var p = view.Root.position;
                 var size = view.Sim.Radius * 2.3f;
                 var ground = new Vector3(p.x, 0.04f, p.z);
@@ -138,6 +174,7 @@ namespace MachineBrigade.Game.Views
 
         public void Dispose()
         {
+            _impostors?.Dispose();
             if (_parent != null) Object.Destroy(_parent.gameObject);
             _views.Clear();
             _list.Clear();

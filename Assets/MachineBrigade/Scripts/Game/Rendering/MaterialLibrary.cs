@@ -11,7 +11,7 @@ namespace MachineBrigade.Game.Rendering
     /// gives them (Team, Armor, Steel, ...) and rebuilt on the project's Lit shader with the kit's
     /// colour, metallic, roughness and emission, so the GLB files only need to carry names.
     /// </summary>
-    public sealed class MaterialLibrary : IDisposable
+    public sealed partial class MaterialLibrary : IDisposable
     {
         /// <summary>Kit surface definitions: sRGB base colour, metallic, roughness, emission strength.</summary>
         private static readonly Dictionary<string, (string color, float metallic, float roughness, float emission)> Kit = new()
@@ -281,10 +281,12 @@ namespace MachineBrigade.Game.Rendering
             team.SetFloat("_CamoScale", scale);
             team.SetFloat("_Metallic", metallic);
             team.SetFloat("_Roughness", roughness);
+            SyncLodSurface(0);
         }
 
         public void Dispose()
         {
+            DisposeLod();
             foreach (var m in _owned)
             {
                 if (m == null) continue;

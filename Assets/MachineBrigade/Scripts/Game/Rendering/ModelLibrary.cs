@@ -84,7 +84,14 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Muzzle position in the model root's space, for tracers and flashes.</summary>
         public Vector3 Muzzle { get; }
 
+        /// <summary>The full-detail renderers (the far detail level's are in <see cref="Lod1Renderers"/>).</summary>
         public Renderer[] Renderers { get; }
+
+        /// <summary>The far detail level's renderers, one per moving part, inactive until switched to; empty without one.</summary>
+        public Renderer[] Lod1Renderers { get; internal set; } = Array.Empty<Renderer>();
+
+        /// <summary>The model's far detail level (sizes, impostor parts); null without one.</summary>
+        public ModelLod Lod { get; internal set; }
     }
 
     /// <summary>A part that spins about a local axis (helicopter rotors, radar dishes).</summary>
@@ -122,7 +129,7 @@ namespace MachineBrigade.Game.Rendering
     /// project's (see <see cref="MaterialLibrary.ForModel"/>). Naming contract from the Blender
     /// tools: a `Turret` empty for turrets, Main_cannon / Muzzle_brake parts for recoil.
     /// </summary>
-    public sealed class ModelLibrary
+    public sealed partial class ModelLibrary
     {
         private static readonly Regex RecoilPattern = new("^(main_cannon|muzzle_brake)", RegexOptions.IgnoreCase);
 
@@ -206,18 +213,31 @@ namespace MachineBrigade.Game.Rendering
             return id;
         }
 
-        public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true)
+        /// <param name="lod">Build and bring along the far detail level (vehicles; see <see cref="VehicleLod"/>).</param>
+        public ModelInstance Spawn(string modelId, int team, Transform parent, bool castShadows = true, bool lod = false)
         {
             var id = ResolveId(modelId);
+            if (lod) EnsureLod(id);
             var root = Object.Instantiate(Template(id), parent, false);
             root.name = modelId;
-            var renderers = root.GetComponentsInChildren<Renderer>(true);
-            foreach (var renderer in renderers)
+            var all = root.GetComponentsInChildren<Renderer>(true);
+            var full = new List<Renderer>(all.Length);
+            var far = new List<Renderer>();
+            foreach (var renderer in all)
             {
-                var materials = renderer.sharedMaterials;
-                for (var i = 0; i < materials.Length; i++)
-                    materials[i] = _materials.ForModel(materials[i] != null ? materials[i].name : string.Empty, team);
-                renderer.sharedMaterials = materials;
+                if (renderer.name == LodName)
+                {
+                    renderer.sharedMaterial = _materials.LodSurface(team);
+                    far.Add(renderer);
+                }
+                else
+                {
+                    var materials = renderer.sharedMaterials;
+                    for (var i = 0; i < materials.Length; i++)
+                        materials[i] = _materials.ForModel(materials[i] != null ? materials[i].name : string.Empty, team);
+                    renderer.sharedMaterials = materials;
+                    full.Add(renderer);
+                }
                 renderer.shadowCastingMode = castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
                 renderer.receiveShadows = true;
                 if (Match.DebugFlags.Has("-mb-probes-off"))
@@ -281,10 +301,11 @@ namespace MachineBrigade.Game.Rendering
             }
             foreach (var list in muzzleLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
             foreach (var list in mountLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
-            return new ModelInstance(root, turret, recoil, muzzle, renderers, muzzles, mounts, spinners, elevation,
+            return new ModelInstance(root, turret, recoil, muzzle, full.ToArray(), muzzles, mounts, spinners, elevation,
                 raise.pitch, elevation != null ? raise.kind : BarrelKind.None)
             {
                 Launchers = launchers, MuzzleLists = muzzleLists, MountLists = mountLists,
+                Lod1Renderers = far.ToArray(), Lod = lod && _lods.TryGetValue(id, out var info) ? info : null,
             };
         }
 
@@ -320,8 +341,13 @@ namespace MachineBrigade.Game.Rendering
             return new ChunkModel(filter.sharedMesh, resolved);
         }
 
-        /// <summary>Builds a model's merged template now rather than on its first spawn mid-battle.</summary>
-        public void Prewarm(string modelId) => Template(ResolveId(modelId));
+        /// <summary>Builds a model's merged template (and its far detail level, unless -mb-no-lod) now rather than on its first spawn mid-battle.</summary>
+        public void Prewarm(string modelId)
+        {
+            var id = ResolveId(modelId);
+            Template(id);
+            if (VehicleLod.Enabled) EnsureLod(id);
+        }
 
         /// <summary>Whether a model exists in Resources/Models.</summary>
         public bool Has(string modelId) => _prefabs.ContainsKey(modelId) || Resources.Load<GameObject>("Models/" + modelId) != null;

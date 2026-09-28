@@ -68,7 +68,7 @@ namespace MachineBrigade.Game.Views
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
-            _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
+            _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body, lod: VehicleLod.Enabled);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
             ModelBounds = Measure(_model.Root.transform, _body);
@@ -202,6 +202,63 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>The detail level it is drawn at (<see cref="VehicleLod"/>): 0 full, 1 simplified, 2 impostor.</summary>
+        public int Level => Mathf.Max(VehicleLod.Full, _level);
+
+        /// <summary>The model's far detail level; null when it has none (-mb-no-lod).</summary>
+        public ModelLod Lod => _model.Lod;
+
+        /// <summary>Its page in the impostor atlas (set by the views when it is made); null without one.</summary>
+        public ImpostorPage Impostor { get; internal set; }
+
+        /// <summary>How big it is in metres (length, span or height, whichever is most): what the level is chosen by.</summary>
+        public float LodSize => Mathf.Max(ModelBounds.size.x, Mathf.Max(ModelBounds.size.y, ModelBounds.size.z)) * Def.Scale;
+
+        /// <summary>Where its impostor card is centred (on its upright axis, at its middle height).</summary>
+        public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * Def.Scale);
+
+        /// <summary>The impostor's tint: the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
+        public Color ImpostorTint
+        {
+            get
+            {
+                var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+                if (!VehicleLod.Colours) return tint;
+                var debug = VehicleLod.Tint(VehicleLod.Impostor);
+                return new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a);
+            }
+        }
+
+        private int _level = -1;
+
+        /// <summary>
+        /// Chooses the detail level for this frame's scale (screen pixels per metre; 0 or less
+        /// keeps full detail), honouring -mb-lod=N. A wreck stays on meshes (its turret flies off).
+        /// </summary>
+        public void UpdateLod(float pixelsPerMetre)
+        {
+            var deepest = _model.Lod == null || _model.Lod1Renderers.Length == 0 ? VehicleLod.Full
+                : Impostor != null && Impostor.Baked && !_wreck ? VehicleLod.Impostor
+                : VehicleLod.Simple;
+            int level;
+            if (VehicleLod.Forced >= 0) level = Mathf.Min(VehicleLod.Forced, deepest);
+            else if (pixelsPerMetre <= 0f) level = VehicleLod.Full;
+            else level = VehicleLod.Choose(_level, LodSize * pixelsPerMetre, deepest);
+            SetLevel(level);
+        }
+
+        /// <summary>Shows one detail level: the full model's renderers, the simplified parts, or neither (the views draw the card).</summary>
+        public void SetLevel(int level)
+        {
+            if (level == _level) return;
+            var full = level == VehicleLod.Full;
+            var simple = level == VehicleLod.Simple;
+            foreach (var r in _model.Renderers) r.enabled = full;
+            foreach (var r in _model.Lod1Renderers) r.gameObject.SetActive(simple);
+            _level = level;
+            if (VehicleLod.Colours) ApplyTint();
+        }
 
         /// <summary>Dead: a burning hulk or a falling wreck.</summary>
         public bool IsWreck => _wreck;
@@ -383,8 +440,16 @@ namespace MachineBrigade.Game.Views
         private void ApplyTint()
         {
             _tintBlock ??= new MaterialPropertyBlock();
-            _tintBlock.SetColor(TintId, new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash));
+            var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+            _tintBlock.SetColor(TintId, tint);
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
+            if (_model.Lod1Renderers.Length == 0) return;
+            if (VehicleLod.Colours)
+            {
+                var debug = VehicleLod.Tint(VehicleLod.Simple);
+                _tintBlock.SetColor(TintId, new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a));
+            }
+            foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
         }
 
         // Hit feedback: a soft white flash for a hit that takes 2 % or more at once (a shell, a
@@ -936,7 +1001,10 @@ namespace MachineBrigade.Game.Views
                 var block = new MaterialPropertyBlock();
                 block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
                 foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
+                foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(block);
             }
+            // A hulk is drawn with meshes: its turret can be thrown off and it sinks away.
+            if (_level == VehicleLod.Impostor) SetLevel(VehicleLod.Simple);
             _ring.Visible = false;
             if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
@@ -966,8 +1034,12 @@ namespace MachineBrigade.Game.Views
         /// <summary>True while a shot-down aircraft is still falling.</summary>
         public bool Falling => _crashStart >= 0f && Root.position.y > 0.05f;
 
-        /// <summary>Animates a wreck that is still settling (a shot-down aircraft falling).</summary>
-        public void AnimateWreck() => RenderWreck();
+        /// <summary>Animates a wreck that is still settling (a shot-down aircraft falling) and keeps its detail level up with the zoom.</summary>
+        public void AnimateWreck()
+        {
+            UpdateLod(VehicleLod.PixelsPerMetre);
+            RenderWreck();
+        }
 
         private void RenderWreck()
         {
