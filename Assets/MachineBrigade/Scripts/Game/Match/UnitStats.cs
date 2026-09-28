@@ -41,10 +41,14 @@ namespace MachineBrigade.Game.Match
         private static Catalog _bestFor;
 
         /// <summary>Damage of one trigger pull of the main weapon (the whole salvo, or a whole magazine).</summary>
-        public static float Volley(WeaponDef w) => w.Damage * Mathf.Max(1, w.RoundsPerCycle);
+        public static float Volley(WeaponDef w) => Sim.Combat.FirePower.Volley(w);
 
-        /// <summary>The main weapon's damage a second (salvos over their cooldown, magazines over their change).</summary>
-        public static float Dps(WeaponDef w) => Volley(w) / Mathf.Max(0.1f, w.CycleSeconds);
+        /// <summary>
+        /// The main weapon's damage a second over a whole load (prompt 13 A.1): salvos over their
+        /// cooldown, magazines over their change, a launcher's load over its reload
+        /// (<see cref="Sim.Combat.FirePower.Sustained"/>).
+        /// </summary>
+        public static float Dps(WeaponDef w) => Sim.Combat.FirePower.Sustained(w);
 
         public static List<Stat> For(Catalog catalog, VehicleDef def, VehicleBoost boost)
         {

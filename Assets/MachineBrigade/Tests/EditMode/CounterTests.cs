@@ -17,16 +17,16 @@ namespace MachineBrigade.Tests
     /// </summary>
     public class CounterTests
     {
-        private static SimWorld Field() =>
-            new SimWorld(GameContent.LoadCatalog(), new MapDefinition("field", 200f,
+        private static SimWorld Field(Catalog catalog = null, int seed = 1) =>
+            new SimWorld(catalog ?? GameContent.LoadCatalog(), new MapDefinition("field", 200f,
                 new[] { new TeamStart(0, new Vector2(-80f, -80f)), new TeamStart(1, new Vector2(80f, 80f)) },
-                new List<PropPlacement>(), new List<UnitPlacement>()));
+                new List<PropPlacement>(), new List<UnitPlacement>()), seed);
 
         /// <summary>Runs a fight and returns the winning team (-1: nobody within the time).</summary>
         internal static int Skirmish(string a, int countA, string b, int countB, out string summary, float seconds = 150f,
-            string spotter = null)
+            string spotter = null, Catalog catalog = null, int seed = 1)
         {
-            var world = Field();
+            var world = Field(catalog, seed);
             // Artillery needs eyes: a drone circling well out of the fight's reach.
             if (spotter != null) world.SpawnVehicle(spotter, 0, new Vector2(-40f, 0f), 0f);
             var sideA = new List<Vehicle>();
