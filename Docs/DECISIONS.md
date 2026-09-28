@@ -2233,3 +2233,23 @@ of that line, often over the battlefield.
   in faster (up to 160 m/s) so it still starts beyond the edge, instead of appearing half-way.
 - View only (`AirDrops`); the sim's delivery time and landing point are unchanged. `TransportRouteTests` checks that it
   appears and leaves beyond the edge, passes over the drop and never goes further in than the drop and its turn.
+
+## 12H. Test feedback 2: fighter and helicopter sizes (2026-09-29)
+
+The owner found the fighters too big next to the other aircraft. Drawn size against the real aircraft: the fighter was at
+0.70 of an F-16, the bombers and the transport about 0.5 (B-52 0.44-0.54, B-2 0.47, C-130 0.53-0.57), the attack jet
+0.57, the A-10 0.54-0.59, the helicopters 0.47-0.56. Bombers and the transport keep their size; the rest shrink so they
+sit at or under the bombers' ratio (model `scale` only):
+
+| Aircraft | Scale | Change | Drawn length |
+|---|---|---|---|
+| fighter_jet | 0.55 -> 0.39 | -30 % | 10.6 -> 7.5 m |
+| attack_jet (and its elite) | 0.66 -> 0.56 | -15 % | 8.8 -> 7.5 m |
+| tank_buster (A-10) | 0.56 -> 0.50 | -10 % | 9.6 -> 8.6 m |
+| attack_helicopter and its elite | 0.81 -> 0.69 | -15 % | 8.3 -> 7.1 m |
+| gunship_heli (Mi-24) | 0.68 -> 0.58 | -15 % | 9.8 -> 8.4 m |
+| heavy_attack_heli (Ka-52) | 0.56 -> 0.48 | -15 % | 9.0 -> 7.7 m |
+| scout_heli | 0.63 -> 0.57 | -10 % | 5.6 -> 5.1 m |
+
+The sim's `radius`, `length` and `width` are unchanged (hits, spacing and blasts behave as before); muzzles and parts are
+model nodes, so they follow the smaller model.
