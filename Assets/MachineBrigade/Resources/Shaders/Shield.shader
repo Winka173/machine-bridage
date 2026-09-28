@@ -8,7 +8,8 @@
 // (up to four at once), a failing shield flickers (tiles drop out, the whole skin dips), and it
 // dies by shattering: it flares, then its tiles break one by one, shrink and fly off.
 //
-// Additive, no depth writes, both faces (the far side a little dimmer). Everything that varies
+// Premultiplied (its bright parts cover a little of what is behind them, so the side's colour
+// reads true over any ground), no depth writes, both faces (the far side dimmer). Everything that varies
 // per tile is worked out per vertex (a tile's seven vertices agree), so the fragment only adds
 // the fresnel, the lattice lines and the ground band. Time comes from _Now (set by script),
 // so editor shots freeze any moment. _SHIELD_LITE (Low graphics) drops the lattice, ripples and
@@ -120,8 +121,8 @@ Shader "MachineBrigade/Shield"
                 float t = saturate(age / RIPPLE_LIFE);
                 float d = distance(tileWS, TransformObjectToWorld(ripple.xyz));
                 float front = _Reach * (1.0 - (1.0 - t) * (1.0 - t));
-                float ring = saturate(1.0 - abs(d - front) / (_Cell * 0.65)) * (1.0 - t);
-                float spot = saturate(1.0 - d / (_Cell * 1.3)) * saturate(1.0 - age / 0.35) * 1.5;
+                float ring = saturate(1.0 - abs(d - front) / (_Cell * 0.8)) * (1.0 - t);
+                float spot = saturate(1.0 - d / (_Cell * 1.3)) * saturate(1.0 - age / 0.35) * 1.2;
                 return live * (ring * 1.6 + spot);
             }
 

@@ -47,6 +47,11 @@ namespace MachineBrigade.Editor
             var panels = new List<Panel>();
             ShieldVisual.LiteOverride = false;
 
+            // The battle camera's screen axes on the ground: right is north-east, up is north-west.
+            var right = new Vector3(0.7071f, 0f, 0.7071f);
+            var up = new Vector3(-0.7071f, 0f, 0.7071f);
+            var toCamera = Quaternion.Euler(52f, -45f, 0f) * Vector3.back;
+
             // 1. Siege: the enemy's dome over its keep, the whole of it.
             {
                 var at = new Vector3(0f, 0f, 0f);
@@ -54,32 +59,33 @@ namespace MachineBrigade.Editor
                 var dome = Dome(root, at, DomeRadius, ours: false);
                 panels.Add(new Panel { Name = "enemy dome (Siege)", Focus = at + Vector3.up * 8f, View = 40f, Prepare = () => dome.Tick(10f) });
             }
-            // 2. Defend: ours, at the battle's zoom, over the keep's middle.
+            // 2. Defend: ours, the whole of it.
             {
                 var at = new Vector3(400f, 0f, 0f);
                 Keep(models, root, at, 0);
                 var dome = Dome(root, at, DomeRadius, ours: true);
-                panels.Add(new Panel { Name = "our dome (Defend), battle zoom", Focus = at + new Vector3(8f, 0f, -8f), View = 19f, Prepare = () => dome.Tick(10f) });
+                panels.Add(new Panel { Name = "our dome (Defend)", Focus = at + Vector3.up * 8f, View = 40f, Prepare = () => dome.Tick(10f) });
+                // 3. The same at the battle's zoom, over the keep's middle: what stands inside stays plain to see.
+                panels.Add(new Panel { Name = "our dome, battle zoom", Focus = at + right * 8f, View = 19f, Prepare = () => dome.Tick(10f) });
             }
-            // 3. Hits: four ripples of different ages near the rim facing the attackers.
+            // 4. Hits: a round just landed (its flash), one a quarter of a second ago, one half a second ago.
             {
                 var at = new Vector3(800f, 0f, 0f);
                 Keep(models, root, at, 1);
                 var dome = Dome(root, at, DomeRadius, ours: false);
-                var rim = at + new Vector3(-0.62f, 0f, -0.62f) * DomeRadius;
+                var focus = at - right * 14f - up * 6f;
                 panels.Add(new Panel
                 {
-                    Name = "hits: ripples", Focus = rim + new Vector3(10f, 4f, 10f), View = 19f, Prepare = () =>
+                    Name = "hits: ripples 0.06, 0.25, 0.5 s", Focus = focus + Vector3.up * 6f, View = 19f, Prepare = () =>
                     {
-                        dome.Hit(rim + new Vector3(3f, 1f, -2f), 9.4f);
-                        dome.Hit(rim + new Vector3(-6f, 1f, 9f), 9.62f);
-                        dome.Hit(rim + new Vector3(12f, 1f, 4f), 9.8f);
-                        dome.Hit(rim + new Vector3(18f, 1f, 16f), 9.95f);
+                        dome.Hit(focus - right * 20f + up * 4f, 10f - 0.5f);
+                        dome.Hit(focus + up * 2f, 10f - 0.25f);
+                        dome.Hit(focus + right * 20f - up * 2f, 10f - 0.06f);
                         dome.Tick(10f);
                     },
                 });
             }
-            // 4. A generator badly damaged: the dome flickers (tiles drop out, the skin dips).
+            // 5. Generators badly damaged: the dome flickers (tiles drop out, the skin dips, a few spark).
             {
                 var at = new Vector3(1200f, 0f, 0f);
                 Keep(models, root, at, 1);
@@ -93,8 +99,8 @@ namespace MachineBrigade.Editor
                     },
                 });
             }
-            // 5-6. The last generator falls: the shatter a third and two-thirds of the way.
-            foreach (var (part, x) in new[] { (0.3f, 1600f), (0.62f, 2000f) })
+            // 6-8. The last generator falls: the flare, then the shatter a third and two-thirds of the way.
+            foreach (var (part, x) in new[] { (0.06f, 1600f), (0.35f, 2000f), (0.65f, 2400f) })
             {
                 var at = new Vector3(x, 0f, 0f);
                 Keep(models, root, at, 1);
@@ -109,7 +115,7 @@ namespace MachineBrigade.Editor
                     },
                 });
             }
-            // 7. Bubbles: the Tempest's shield skill (enemy) taking a hit, our tanks' from the item.
+            // 9. Bubbles: the Tempest's shield skill (enemy, its generator hurt) taking a hit; our tanks' from the item, one hit.
             {
                 var at = new Vector3(0f, 0f, 400f);
                 var boss = Vehicle(models, root, "behemoth_tempest", 1, at + new Vector3(-6f, 0f, 6f), 225f, 1.2f);
@@ -118,21 +124,20 @@ namespace MachineBrigade.Editor
                 var tankShield = Bubble(tank, 1f, ours: true);
                 var tank2 = Vehicle(models, root, "heavy_tank", 0, at + new Vector3(15f, 0f, 1f), 30f, 1f);
                 var tank2Shield = Bubble(tank2, 1f, ours: true);
-                var camera = Quaternion.Euler(52f, -45f, 0f) * Vector3.back;
                 panels.Add(new Panel
                 {
                     Name = "bubbles: boss (enemy) hit, our tanks", Focus = at + Vector3.up * 2f, View = 16f, Prepare = () =>
                     {
-                        bossShield.Hit(boss.position + new Vector3(2f, 2f, -3f), 9.75f, camera);
+                        bossShield.Hit(boss.position + new Vector3(2f, 2f, -3f), 9.8f, toCamera);
                         bossShield.Flicker = 0.3f;
                         bossShield.Tick(10f);
-                        tankShield.Hit(tank.position + new Vector3(-2f, 1.5f, 2f), 9.85f, camera);
+                        tankShield.Hit(tank.position + new Vector3(-2f, 1.5f, 2f), 9.85f, toCamera);
                         tankShield.Tick(10f);
                         tank2Shield.Tick(10f);
                     },
                 });
             }
-            // 8. The Shield Dome item over our group, a round landing on it, and one running out.
+            // 10. The Shield Dome item over our group, a round landing on it.
             {
                 var at = new Vector3(400f, 0f, 400f);
                 for (var i = 0; i < 5; i++)
@@ -140,21 +145,41 @@ namespace MachineBrigade.Editor
                     var a = i * 1.26f;
                     Vehicle(models, root, i % 2 == 0 ? "main_battle_tank" : "ifv", 0, at + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * 7f, 45f + i * 20f, 1f);
                 }
-                Vehicle(models, root, "main_battle_tank", 1, at + new Vector3(-24f, 0f, 18f), 135f, 1f);
+                Vehicle(models, root, "main_battle_tank", 1, at - up * 24f - right * 8f, 45f, 1f);
                 var item = Dome(root, at, 16f, ours: true);
                 panels.Add(new Panel
                 {
                     Name = "Shield Dome item, a hit", Focus = at + Vector3.up * 3f, View = 17f, Prepare = () =>
                     {
-                        item.Hit(at + new Vector3(-9f, 1f, 7f), 9.8f);
+                        item.Hit(at - up * 9f - right * 4f, 9.85f);
                         item.Tick(10f);
                     },
                 });
             }
-            // 9. Low graphics: the same enemy dome and a bubble, the lighter variant.
+            // 11. Siege objectives not yet in play: a generator and the HQ under their own shields.
+            {
+                var at = new Vector3(800f, 0f, 400f);
+                var generator = at - right * 12f;
+                var hq = at + right * 12f;
+                Place(models, root, "shield_generator", -1, generator, 0f);
+                Place(models, root, "headquarters", 1, hq, 0f);
+                Vehicle(models, root, "main_battle_tank", 0, at - up * 14f, 45f, 1f);
+                var small = Dome(root, generator, 7f * 0.5f * 1.15f + 1.8f, ours: false, height: 7.5f);
+                var big = Dome(root, hq, 16f * 0.5f * 1.15f + 1.8f, ours: false, height: 11f);
+                panels.Add(new Panel
+                {
+                    Name = "objectives' shields (Siege)", Focus = at + Vector3.up * 3f, View = 17f, Prepare = () =>
+                    {
+                        big.Hit(hq - up * 6f, 9.8f);
+                        small.Tick(10f);
+                        big.Tick(10f);
+                    },
+                });
+            }
+            // 12. Low graphics: the same enemy dome and a bubble, the lighter variant.
             {
                 ShieldVisual.LiteOverride = true;
-                var at = new Vector3(800f, 0f, 400f);
+                var at = new Vector3(1200f, 0f, 400f);
                 Keep(models, root, at, 1);
                 var dome = Dome(root, at, DomeRadius, ours: false);
                 var boss = Vehicle(models, root, "behemoth_tempest", 1, at + new Vector3(-30f, 0f, -30f), 225f, 1.2f);
@@ -172,15 +197,23 @@ namespace MachineBrigade.Editor
             }
 
             Render(root, panels, output);
+            // What each size of shield costs to draw.
+            var sizes = new System.Text.StringBuilder();
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null || !filter.sharedMesh.name.StartsWith("Shield") || sizes.ToString().Contains(filter.sharedMesh.name)) continue;
+                sizes.Append($"{filter.sharedMesh.name}: {filter.sharedMesh.vertexCount} vertices, {filter.sharedMesh.GetIndexCount(0) / 3} triangles; ");
+            }
+            Debug.Log("[ShieldShots] meshes: " + sizes);
             models.Dispose();
             materials.Dispose();
         }
 
-        private static ShieldVisual Dome(Transform root, Vector3 at, float radius, bool ours)
+        private static ShieldVisual Dome(Transform root, Vector3 at, float radius, bool ours, float height = 0f)
         {
             var dome = new ShieldVisual("Dome", root, ShieldVisual.Shape.Dome, radius);
             dome.Transform.position = at;
-            dome.Transform.localScale = new Vector3(radius, radius * DomeHeight, radius);
+            dome.Transform.localScale = new Vector3(radius, height > 0f ? height : radius * DomeHeight, radius);
             dome.SetSide(ours);
             dome.Raise(0f, 0f);
             return dome;
@@ -276,7 +309,7 @@ namespace MachineBrigade.Editor
                 frame.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
                 frame.Apply();
                 sheet.SetPixels(i % columns * size.x, (rows - 1 - i / columns) * size.y, size.x, size.y, frame.GetPixels());
-                File.WriteAllBytes($"{stem}-{i + 1}.png", frame.EncodeToPNG());
+                File.WriteAllBytes($"{stem}-{i + 1:00}-{Slug(panel.Name)}.png", frame.EncodeToPNG());
             }
             RenderTexture.active = null;
             sheet.Apply();
@@ -327,6 +360,15 @@ namespace MachineBrigade.Editor
             camera.allowHDR = true;
             camera.GetUniversalAdditionalCameraData().renderPostProcessing = true;
             return camera;
+        }
+
+        private static string Slug(string name)
+        {
+            var slug = new System.Text.StringBuilder();
+            foreach (var c in name.ToLowerInvariant())
+                if (char.IsLetterOrDigit(c)) slug.Append(c);
+                else if (slug.Length > 0 && slug[slug.Length - 1] != '-') slug.Append('-');
+            return slug.ToString().Trim('-');
         }
 
         private static string Argument(string name)
