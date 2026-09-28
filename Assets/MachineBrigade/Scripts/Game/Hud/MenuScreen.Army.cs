@@ -125,7 +125,7 @@ namespace MachineBrigade.Game.Hud
             page.Add(_gearView);
 
             // Base ---------------------------------------------------------------------------------------
-            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh);
+            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh) { OpenDetail = OpenDetail };
             _base.Root.AddToClassList("fc-army__base");
             page.Add(_base.Root);
         }

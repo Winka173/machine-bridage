@@ -285,6 +285,8 @@ namespace MachineBrigade.Game.Hud
         {
             var overlay = _overlays.Count > 0;
             _nav.style.display = overlay ? DisplayStyle.None : DisplayStyle.Flex;
+            // A page opened over the tabs covers them: the tab under it is hidden (not drawn, not tapped), its state kept.
+            foreach (var (_, page) in _tabPages) page.style.visibility = overlay ? Visibility.Hidden : Visibility.Visible;
             _backButton.style.display = overlay || (_tab == Tab.Campaign && _campaignChapter > 0) ? DisplayStyle.Flex : DisplayStyle.None;
             var home = !overlay && _tab == Tab.Home;
             _logo.style.display = home ? DisplayStyle.Flex : DisplayStyle.None;
@@ -571,7 +573,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base", "detail-tower", "detail-module",
             "detail", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
@@ -609,6 +611,14 @@ namespace MachineBrigade.Game.Hud
                 case "detail":
                     ShowTab(Tab.Army);
                     OpenDetail("main_battle_tank");
+                    break;
+                case "detail-tower":
+                case "detail-module":
+                    // A structure's page, opened from the base screen (its Equipment tab: branches and gear; a module's numbers).
+                    _armyView = ArmyView.Base;
+                    ShowTab(Tab.Army);
+                    _detailTab = screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
+                    OpenDetail(screen == "detail-tower" ? "aa_turret" : "repair_bay");
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));

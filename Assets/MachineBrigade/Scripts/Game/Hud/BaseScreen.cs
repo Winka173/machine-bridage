@@ -70,6 +70,7 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _left, _canvasBox, _hq, _panelBody, _headArt, _takeOut, _ghost, _confirm, _save;
         private CampCanvas _canvas;
         private IconElement _headIcon, _headSize, _ghostIcon;
+        private KitIconButton _info;
         private Label _mapName, _levelInfo, _hint, _hqLevel, _headName, _headLine, _headCount, _confirmText, _utilityCount, _saveTitle;
 
         private BaseLoadout _layout;
@@ -260,6 +261,13 @@ namespace MachineBrigade.Game.Hud
             headText.Add(_headLine);
             headText.Add(_headCount);
             head.Add(headText);
+            // The picked structure's detail page (the vehicles' page: model, numbers, weapons, guide, rank).
+            _info = new KitIconButton("info", Strings.Get("detail.title"), () =>
+            {
+                if (_selected != null) OpenDetail?.Invoke(_selected);
+            });
+            _info.AddToClassList("base-info");
+            head.Add(_info);
             right.Add(head);
             var tabs = UiKit.Box("base-tabs");
             foreach (var (tab, icon, key) in new[] { (PanelTab.Branch, "upgrade", "camp.branch"), (PanelTab.Gear, "gear", "camp.gear") })
@@ -887,6 +895,7 @@ namespace MachineBrigade.Game.Hud
             _takeOut.EnableInClassList("base-hidden", !(_picked is { } p && BaseLayout.At(_layout, p) != null && BaseLayout.CanClear(p)));
             foreach (var (button, tab) in _tabButtons) button.EnableInClassList("chosen", tab == _tab);
             _panelBody.Clear();
+            _info.style.display = id != null && OpenDetail != null ? DisplayStyle.Flex : DisplayStyle.None;
             if (id == null || !_catalog.Vehicles.TryGetValue(id, out var def))
             {
                 _headName.text = "";
@@ -1050,6 +1059,23 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The piece a tower type wears in one of its three slots (0 Weapon, 1 Structure, 2 Systems), or null.</summary>
         internal static GearItem TowerGearIn(string towerId, int slot) => PlayerProfile.TowerEquipped(towerId, TowerSlots[slot]);
+
+        /// <summary>The gear slot at a place in a tower type's three (weapon, structure, systems).</summary>
+        internal static GearSlot TowerSlotOf(int slot) => TowerSlots[slot];
+
+        /// <summary>A structure's detail page asked for (the info button on the picked tower's card): set by the menu.</summary>
+        internal Action<string> OpenDetail { get; set; }
+
+        /// <summary>Picks a tower or module for the panel (its Gear tab when <paramref name="gear"/>), from its detail page.</summary>
+        internal void Pick(string id, bool gear = false)
+        {
+            if (!_towers.Contains(id) && !_modules.Contains(id)) return;
+            _selected = id;
+            _armed = null;
+            _picked = null;
+            if (gear) _tab = PanelTab.Gear;
+            Refresh();
+        }
     }
 
     /// <summary>

@@ -237,6 +237,8 @@
 .fc-legend__swatch.fc-statbar__avg { position: relative; top: 0; bottom: 0; width: 4px; height: 12px; margin-left: 0; }
 .fc-legend__swatch.fc-statbar__next, .fc-legend__swatch.fc-statbar__boost, .fc-legend__swatch.fc-statbar__base { position: relative; }
 .fc-weapon { flex-direction: row; align-items: flex-start; padding: var(--fc-space-3); margin-bottom: var(--fc-space-2); }
+.fc-weapon--chosen { background-color: var(--fc-panel-selected); border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-menu.menu .base-info { margin-left: var(--fc-space-2); flex-shrink: 0; }
 .fc-weapon__icon { width: 36px; height: 36px; margin-right: var(--fc-space-3); --icon-color: var(--fc-text-2); }
 
 /* ================================================================ E9 shop */
@@ -332,10 +334,16 @@
 .fc-menu.menu .base-hq { border-color: var(--fc-border-strong); }
 .fc-menu.menu .base-hq-level { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-right { min-width: 360px; max-width: 400px; }
+/* The panel under the tabs takes what is left of the column and scrolls: the outpost under it stays on screen. */
+.fc-menu.menu .base-panel-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
 .fc-menu.menu .base-head { min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border-strong); }
 .fc-menu.menu .base-head-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
 .fc-menu.menu .base-head-line { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-head-count { color: var(--fc-text-2); }
+/* The name on its own line, then the size and rank with the count beside them: one line fewer. */
+.fc-menu.menu .base-head-text { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.fc-menu.menu .base-head-name { width: 100%; }
+.fc-menu.menu .base-head-count { color: var(--fc-text-2); margin-left: var(--fc-space-3); }
+.fc-menu.menu.fc-text-large .base-right { min-width: 400px; max-width: 440px; }
 .fc-menu.menu .base-takeout { width: var(--fc-touch); height: var(--fc-touch); }
 .fc-menu.menu .base-tab { height: var(--fc-touch); min-width: var(--fc-touch); }
 .fc-menu.menu .base-note { flex-shrink: 0; -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
