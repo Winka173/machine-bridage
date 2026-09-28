@@ -110,7 +110,8 @@ CAMP_CLUTTER = {
 
 # Terrain never makes way, not even for a camp that is still short of hardpoints once its clutter
 # is gone (then its buildings in the way are pulled down: the base is enlarged, see plan_bases).
-TERRAIN = {'mesa', 'cliff_a', 'cliff_b', 'volcanic_cliff', 'obsidian_spire', 'lava_pool', 'river_water', 'river_ford'}
+TERRAIN = {'mesa', 'cliff_a', 'cliff_b', 'volcanic_cliff', 'obsidian_spire', 'lava_pool', 'river_water', 'river_ford',
+           'bridge_road'}   # a bridge is the way across: never pulled down
 
 
 def clearable(props, rects, rallies, points=(), demolish=False, crowded=()):

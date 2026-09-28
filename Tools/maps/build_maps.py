@@ -156,6 +156,8 @@ class Layout:
         self.units = []     # extra map units (siege defences)
         self.boundary = None  # the battlefield's outline, once carved (see boundary.py)
         self.half = HALF_DESIGN  # half the square's side: the design grid, until scale_layout
+        self.camp_clear = 22.0   # nothing stands this near a camp (plus half its size)
+        self.world = False       # laid out on the battlefield itself, not the design grid (see world_layout)
 
     # ------------------------------------------------------------------ geometry
     @staticmethod
@@ -204,7 +206,7 @@ class Layout:
             return False
         blocks = PROPS[def_id].get('blocks', False)
         for team in self.teams:
-            if math.hypot(x - team[0], z - team[1]) < 22 + max(w, d) / 2:
+            if math.hypot(x - team[0], z - team[1]) < self.camp_clear + max(w, d) / 2:
                 return False
         # Squares and plazas stay open.
         for (c0, d0, c1, d1) in self.clear:
@@ -643,13 +645,15 @@ def apply_outline(L, poly):
     """Takes what the outline left outside off the battlefield and records the outline. What lay
     wholly outside stays as decor: drawn, never simulated, so the ground beyond the boundary is
     the same country as inside (houses, woods, rocks) instead of an empty strip; what straddled
-    the line is dropped (half a house on the edge would read as playable)."""
+    the line is dropped (half a house on the edge would read as playable). On a battlefield laid
+    out on the ground itself (world_layout) terrain that straddles the line stays: a rock wall or
+    a stretch of water runs on into the edge, with no gap beside it to drive round."""
     kept_props, kept_rects, decor, dropped = [], [], [], 0
     for prop, rect in zip(L.props, L.rects):
         x0, z0, x1, z1 = rect
         corners = ((x0, z0), (x1, z0), (x0, z1), (x1, z1), ((x0 + x1) / 2, (z0 + z1) / 2))
         inside = [outline_tools.inside(poly, x, z) for x, z in corners]
-        if all(inside):
+        if all(inside) or (L.world and any(inside) and prop['def'] in NATURAL and PROPS[prop['def']].get('blocks', False)):
             kept_props.append(prop)
             kept_rects.append(rect)
             continue
@@ -2442,6 +2446,11 @@ GREENERY = {'tree', 'palm', 'cactus', 'charred_tree', 'jungle_tree_a', 'jungle_t
 WRECKS = ('wreck_tank', 'wreck_tank', 'wreck_tank', 'wreck_truck', 'wreck_truck', 'wreck_car', 'wreck_car', 'artillery_wreck')
 FIELD_CAMP = ('command_tent', 'camo_net', 'supply_pile', 'fuel_bladder', 'radio_mast', 'supply_pile', 'camo_net')
 QUARTERS = (0, 90, 180, 270)
+# Per battlefield, changes to its theme's kit (keys of WAR, plus counts: 'wrecks' a half,
+# 'craters', 'dead_trees', and 'where': a test (x, z) of the ground where cover that blocks may
+# stand), for the maps whose ground the plain kit would spoil (the open salt flats, the causeways
+# of the water maps).
+MAP_WAR = {}
 
 
 def segment_distance(x, z, ax, az, bx, bz):
@@ -2464,7 +2473,7 @@ def warzone(L, map_id, theme, poly):
     campaign spawn and route. Trees and scrub give way to it. Everything
     goes through the usual checks (camps, plazas, objectives, roads, other footprints) and inside
     the battlefield's outline `poly`."""
-    style = WAR[theme]
+    style = dict(WAR[theme], **MAP_WAR.get(map_id, {}))
     rng = random.Random(sum(map(ord, map_id)) * 7 + 3)
     circles, lines = campaign_keep(map_id)
 
@@ -2491,9 +2500,13 @@ def warzone(L, map_id, theme, poly):
     # (buildings, rock, walls, other dressing) are in the way; the greenery under a new piece goes.
     solid = [None]
 
+    where = style.get('where')
+
     def ok(kind, x, z, rot, pad, road_gap):
         x, z = round(x * 2) / 2, round(z * 2) / 2
         if not (within(kind, x, z, rot) and clear(kind, x, z, rot)):
+            return False
+        if where is not None and PROPS[kind].get('blocks', False) and not where(x, z):
             return False
         if solid[0] is None:
             solid[0] = [(p, r) for p, r in zip(L.props, L.rects) if p['def'] not in GREENERY]
@@ -2579,7 +2592,7 @@ def warzone(L, map_id, theme, poly):
     # that killed it. In the city the open ground is the avenues, so the wrecks lie in the streets.
     placed = [0, 0]
     on_road = None if theme == 'urban' else 1.5
-    wrecks = more(7)
+    wrecks = style.get('wrecks', more(7))
     for _ in range(1500 * 3):
         if min(placed) >= wrecks:
             break
@@ -2590,7 +2603,7 @@ def warzone(L, map_id, theme, poly):
             placed[half(x, z)] += 1
             a = rng.random() * math.tau
             one('crater_large', x + math.cos(a) * 6.5, z + math.sin(a) * 6.5, 0, pad=0.3, road_gap=None if on_road is None else 0.5)
-    for _ in range(more(8)):
+    for _ in range(style.get('craters', more(8))):
         for _ in range(40):
             x, z = rng.uniform(-HALF + 15, HALF - 15), rng.uniform(-HALF + 15, HALF - 15)
             if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 30 and one('crater_large', x, z, 0, pad=0.5,
@@ -2636,7 +2649,7 @@ def warzone(L, map_id, theme, poly):
                 carry = at - length
 
     if style['dead']:
-        for _ in range(more(16)):
+        for _ in range(style.get('dead_trees', more(16))):
             for _ in range(30):
                 x, z = rng.uniform(-HALF + 14, HALF - 14), rng.uniform(-HALF + 14, HALF - 14)
                 if min(math.hypot(x - t[0], z - t[1]) for t in L.teams) > 28 and one('dead_tree', x, z, 0, pad=0.5):
@@ -2683,7 +2696,10 @@ def scale_layout(L):
     (props, roads, camps, objectives, plazas) moves out by S; buildings, props, road widths and
     capture radii keep their size, so streets, yards and fields open up. The 4 m surface tiles
     (lava, river, ford) are laid again on the battlefield's own 4 m grid, from where the scaled
-    design put them, so rivers and lava stay unbroken."""
+    design put them, so rivers and lava stay unbroken. A layout made on the battlefield itself
+    (world_layout) is already there and comes back as it is."""
+    if L.world:
+        return L
     s = S
     L.teams = [(x * s, z * s) for x, z in L.teams]
     L.points = [(x * s, z * s, r) for x, z, r in L.points]
@@ -2730,12 +2746,17 @@ DENSIFY = {
 }
 
 
+# Per battlefield, changes to its theme's fill (keys of DENSIFY, plus counts: 'clumps' of trees,
+# rock 'outcrops', 'hamlets' a half, and 'where': a test (x, z) of the ground it may fill).
+MAP_DENSIFY = {}
+
+
 def densify(L, map_id, theme, poly):
     """Fills the ground the bigger battlefield opened up: clumps of the theme's trees in the
     open, a few rock outcrops away from the roads, and hamlets (two or three of the theme's
     buildings with a yard and a vehicle) beside the roads, as many on either half. Everything is
     inside the outline, clear of camps, objectives, plazas and campaign routes."""
-    style = DENSIFY[theme]
+    style = dict(DENSIFY[theme], **MAP_DENSIFY.get(map_id, {}))
     rng = random.Random(sum(map(ord, map_id)) * 13 + 5)
     circles, lines = campaign_keep(map_id)
 
@@ -2754,10 +2775,14 @@ def densify(L, map_id, theme, poly):
         w, d = w / 2 + margin, d / 2 + margin
         return all(outline_tools.inside(poly, x + sx * w, z + sz * d) for sx in (-1, 0, 1) for sz in (-1, 0, 1))
 
+    where = style.get('where')
+
     def put(kind, x, z, rot=0, pad=1.0, road_gap=1.0):
         x, z = round(x * 2) / 2, round(z * 2) / 2
         blocks = PROPS[kind].get('blocks', False)
         if not inside(kind, x, z, rot) or (blocks and not clear(x, z, max(L.size(kind, rot)) / 2 + 1)):
+            return False
+        if where is not None and not where(x, z):
             return False
         return L.add(kind, x, z, rot, pad=pad, road_gap=road_gap)
 
@@ -2768,7 +2793,7 @@ def densify(L, map_id, theme, poly):
         return all(math.hypot(x - t[0], z - t[1]) > d for t in L.teams)
 
     # Tree clumps in the open.
-    for _ in range(more(18)):
+    for _ in range(style.get('clumps', more(18))):
         for _ in range(40):
             cx, cz = rng.uniform(-HALF + 8, HALF - 8), rng.uniform(-HALF + 8, HALF - 8)
             if far_from_camps(cx, cz, 32) and far_from_points(cx, cz, 6) and outline_tools.inside(poly, cx, cz):
@@ -2780,7 +2805,7 @@ def densify(L, map_id, theme, poly):
             put(rng.choice(style['trees']), cx + math.cos(a) * r, cz + math.sin(a) * r, 0, pad=0.3, road_gap=1.0)
 
     # Rock outcrops, off the roads and the objectives.
-    for _ in range(more(6) if style['rocks'] else 0):
+    for _ in range(style.get('outcrops', more(6)) if style['rocks'] else 0):
         for _ in range(40):
             cx, cz = rng.uniform(-HALF + 10, HALF - 10), rng.uniform(-HALF + 10, HALF - 10)
             if far_from_camps(cx, cz, 34) and far_from_points(cx, cz, 12) and outline_tools.inside(poly, cx, cz):
@@ -2794,7 +2819,7 @@ def densify(L, map_id, theme, poly):
     # Hamlets beside the roads: equal numbers on either half.
     made = [0, 0]
     samples = L.road_samples()
-    hamlets = more(3)
+    hamlets = style.get('hamlets', more(3))
     for _ in range(400 * 3):
         if min(made) >= hamlets or not samples:
             break
