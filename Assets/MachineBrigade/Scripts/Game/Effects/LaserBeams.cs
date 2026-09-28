@@ -51,7 +51,7 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The Iron Beam and point defence: white core in a red glow. The saucer's laser: green, and heavier.</summary>
         private static Palette PaletteOf(WeaponDef weapon) => weapon != null && weapon.Id == "saucer_laser"
             ? new Palette(new Color(0.85f, 1f, 0.9f), new Color(0.25f, 1f, 0.42f), 1.5f)
-            : new Palette(new Color(1f, 0.93f, 0.86f), new Color(1f, 0.26f, 0.07f), 1f);
+            : new Palette(new Color(1f, 0.93f, 0.86f), new Color(1f, 0.3f, 0.09f), 1f);
 
         private sealed class Beam
         {
@@ -82,8 +82,8 @@ namespace MachineBrigade.Game.Effects
             {
                 var shader = Shader.Find("MachineBrigade/Beam");
                 _coreMaterial = shader != null ? BeamMaterial(shader, "Beam Core", 5f, 0.55f, 0.2f) : m.Tracer;
-                _glowMaterial = shader != null ? BeamMaterial(shader, "Beam Glow", 3.4f, 1.8f, 0.45f) : m.Tracer;
-                _hazeMaterial = shader != null ? BeamMaterial(shader, "Beam Haze", 1.4f, 2.6f, 0.3f) : m.Tracer;
+                _glowMaterial = shader != null ? BeamMaterial(shader, "Beam Glow", 5f, 1.5f, 0.45f) : m.Tracer;
+                _hazeMaterial = shader != null ? BeamMaterial(shader, "Beam Haze", 2f, 2.4f, 0.3f) : m.Tracer;
             }
             for (var i = 0; i < Capacity; i++)
                 _beams.Add(new Beam
@@ -176,7 +176,7 @@ namespace MachineBrigade.Game.Effects
                 var fade = 1f - after;
 
                 // Core: gone within a few frames of the last shot. Glow: widens as it fades. Haze: faint and wide.
-                Set(b.Core, b.From, b.To, 0.26f * width * w * Mathf.Lerp(0.3f, 1f, charge), b.Colour.Core,
+                Set(b.Core, b.From, b.To, 0.3f * width * w * Mathf.Lerp(0.3f, 1f, charge), b.Colour.Core,
                     flicker * Mathf.Lerp(0.55f, 1f, charge) * Mathf.Clamp01(1f - after * 3.5f));
                 Set(b.Glow, b.From, b.To, 1.25f * width * w * Mathf.Lerp(0.25f, 1f, charge) * (1f + 0.4f * after), b.Colour.Glow,
                     0.85f * flicker * charge * fade);
