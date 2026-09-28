@@ -323,7 +323,8 @@ namespace MachineBrigade.Tests
             var world = Field();
             world.SetBoosts(0, _ => Lab.Harmless);
             var gun = world.SpawnVehicle("rail_supergun", 1, new Vector2(0f, 100f), (float)Math.PI);
-            Assert.IsTrue(world.Vehicles.Any(v => v.Def.Id == "targeting_station" && v.IsAlive), "its fire-control post");
+            // Prompt 9: its fire control is one of its parts (the generator), no longer a post in the field.
+            Assert.GreaterOrEqual(gun.Def.PartIndex("fire_control"), 0, "its fire-control part");
             Assert.GreaterOrEqual(world.Vehicles.Count(v => v.Team == 1 && v.Def.Static && v.Def.Fort != null), 6, "walls and guns round the bed");
             var group = new List<Vehicle>();
             for (var i = 0; i < 4; i++) group.Add(world.SpawnVehicle("main_battle_tank", 0, new Vector2(-60f + i * 5f, -80f), 0f));

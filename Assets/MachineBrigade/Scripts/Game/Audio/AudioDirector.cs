@@ -314,6 +314,14 @@ namespace MachineBrigade.Game.Audio
                 var near = Mathf.Clamp01(1f - Vector3.Distance(at, Focus) / reach);
                 fire += near * near * Mathf.Clamp01((until - now) / 6f);
             }
+            // A boss's broken parts burn on as it moves (prompt 9): a low crackle that follows it.
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                if (!view.Def.Boss || view.IsWreck || !view.Sim.IsAlive || view.Sim.BrokenParts == 0) continue;
+                var near = Mathf.Clamp01(1f - Vector3.Distance(view.Position, Focus) / reach);
+                fire += near * near * Mathf.Min(1f, 0.25f * view.Sim.BrokenParts);
+            }
             var fireTarget = Mathf.Min(0.55f, fire * 0.3f);
             _fire.volume = Mathf.MoveTowards(_fire.volume, fireTarget, Time.unscaledDeltaTime * 0.5f);
             if (_fire.volume > 0f && !_fire.isPlaying) _fire.Play();

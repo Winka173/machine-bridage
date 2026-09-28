@@ -163,6 +163,7 @@ namespace MachineBrigade.Game.Hud
             if (mode == HudMode.Mission)
             {
                 _boss = new BossBar();
+                _boss.Parts.Tapped += (boss, part) => BossPartTapped?.Invoke(boss, part);
                 _safe.Add(_boss.Root);
                 // The fortress modes' set pieces: the super-gun's countdown and the next wave.
                 var fortress = UiKit.Box("fortress-panel");
@@ -321,6 +322,9 @@ namespace MachineBrigade.Game.Hud
         public event Action<int> CardPressed;
         public event Action TargetCancelled;
         public event Action PausePressed;
+
+        /// <summary>A part's icon under the boss bar was tapped (prompt 9): the boss and the part's index.</summary>
+        public event Action<MachineBrigade.Sim.Core.EntityId, int> BossPartTapped;
         public event Action ResumePressed;
         public event Action MenuPressed;
         public event Action PlayPressed;
@@ -403,6 +407,9 @@ namespace MachineBrigade.Game.Hud
 
         public void SetMission(string goal, string detail, float progress, float secondsLeft, IReadOnlyList<PointInfo> points) =>
             _missionBar?.Update(goal, detail, progress, secondsLeft, points);
+
+        /// <summary>The boss's parts under its bar (prompt 9); <paramref name="focused"/> is the part the player has ordered fire at, or -1.</summary>
+        public void SetBossParts(MachineBrigade.Sim.Entities.Vehicle boss, int focused) => _boss?.Parts.Set(boss, focused);
 
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);

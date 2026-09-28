@@ -30,6 +30,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Stuns enemy ground vehicles within Radius for Duration: no driving, no firing.</summary>
         Emp,
+
+        /// <summary>A boss's self-repair (prompt 9): puts one broken part back at Amount of its health, the one with the strongest weapon.</summary>
+        Patch,
     }
 
     /// <summary>When a skill fires (checked every step; then it waits out its cooldown).</summary>
@@ -49,6 +52,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A guided missile or drone is flying at it.</summary>
         MissileIncoming,
+
+        /// <summary>One of its parts is broken and can still be patched (a boss's self-repair).</summary>
+        PartBroken,
     }
 
     /// <summary>

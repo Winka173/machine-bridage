@@ -102,10 +102,14 @@ namespace MachineBrigade.Game.Hud
             _fill = UiKit.Box("boss-fill");
             _track.Add(_fill);
             Root.Add(_track);
+            Root.Add(Parts.Root);
             Root.style.display = DisplayStyle.None;
         }
 
         public VisualElement Root { get; }
+
+        /// <summary>The boss's parts under the bar (prompt 9).</summary>
+        public BossPartsRow Parts { get; } = new();
 
         /// <summary>
         /// A multi-phase boss: the bar marked where each phase begins (<paramref name="marks"/>, shares of full
@@ -142,6 +146,7 @@ namespace MachineBrigade.Game.Hud
             {
                 if (_shownName != null) Root.style.display = DisplayStyle.None;
                 _shownName = null;
+                Parts.Set(null, -1);
                 return;
             }
             if (name != _shownName)

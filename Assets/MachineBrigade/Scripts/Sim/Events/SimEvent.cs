@@ -125,6 +125,9 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A landing craft (Entity) lowers its ramp at Position and lands Value vehicles.</summary>
         TroopsLanding,
+
+        /// <summary>A boss's self-repair put a part back: Entity the boss, Mount the part's index, DefId its id.</summary>
+        PartRepaired,
     }
 
     /// <summary>
@@ -281,6 +284,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent PartLost(Vehicle boss, int part, Vector2 at, string id) =>
             new(SimEventKind.PartBroken, boss.Id, at, boss.Position, 0f, ExplosionTier.Huge, id, boss.Team, part);
+
+        internal static SimEvent PartBack(Vehicle boss, int part, Vector2 at, string id) =>
+            new(SimEventKind.PartRepaired, boss.Id, at, boss.Position, 0f, ExplosionTier.Small, id, boss.Team, part);
 
         internal static SimEvent Burrow(Vehicle boss, int stage, Vector2 at, float seconds = 0f) =>
             new(SimEventKind.Burrowing, boss.Id, at, new Vector2(seconds, 0f), stage, ExplosionTier.Ultimate, boss.Def.Id, boss.Team);

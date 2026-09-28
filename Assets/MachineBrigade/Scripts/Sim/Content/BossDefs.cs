@@ -60,8 +60,42 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The mounts its <see cref="Spread"/> and <see cref="Fail"/> touch (empty: every mount).</summary>
         public IReadOnlyList<int> Affects { get; internal set; } = Array.Empty<int>();
 
-        /// <summary>Share of its full health the body loses when it breaks (0: none).</summary>
-        public float BreakDamage { get; internal set; }
+        /// <summary>Share of its own full health the body loses when it breaks (prompt 9: 0.3; the airship's parts 0).</summary>
+        public float BreakDamage { get; internal set; } = 0.3f;
+
+        /// <summary>
+        /// Boss mechanisms it drives, stopped once it breaks (see <see cref="Mechanisms"/>): "bombard"
+        /// (the supergun's shot), "spotter" (the shot's fire control: it falls wide), "burrow" (the
+        /// Earth Worm's dives), "landing" (the hovercraft's troops), "aura" (the Supreme Commander's
+        /// command aura).
+        /// </summary>
+        public IReadOnlyList<string> Stops { get; internal set; } = Array.Empty<string>();
+
+        /// <summary>The boss turns (hull and turret) this many times as fast once it breaks (a tail rotor: 0.5).</summary>
+        public float Turn { get; internal set; } = 1f;
+
+        /// <summary>Its mechanisms' intervals (the bombard, the landings) are this many times as long once it breaks (a tractor: 1.3).</summary>
+        public float Cadence { get; internal set; } = 1f;
+
+        /// <summary>A radio line when it breaks (an important part: a main gun, a shield generator, a drone bay, a locomotive).</summary>
+        public string? Radio { get; internal set; }
+
+        /// <summary>How it breaks in the view: "blast" (guns and ammunition: a big blast and debris), "energy" (a flash and arcs), "engine" (fire and a smoke trail).</summary>
+        public string Fx { get; internal set; } = "blast";
+
+        /// <summary>The attached model it is (an index into the boss's "attach": the supergun's tractors), or -1.</summary>
+        public int Attachment { get; internal set; } = -1;
+
+        /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
+        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura" };
+
+        /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
+        public static string FxFor(string kind) => kind switch
+        {
+            "engine" or "fan" or "rotor" or "locomotive" or "tractor" => "engine",
+            "shield" or "laser" or "coilgun" or "railgun" or "emp" => "energy",
+            _ => "blast",
+        };
     }
 
     /// <summary>The body takes no damage until <see cref="Count"/> parts of <see cref="Kind"/> have broken (the command airship's engines).</summary>
