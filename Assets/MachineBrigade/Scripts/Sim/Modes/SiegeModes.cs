@@ -1044,6 +1044,19 @@ namespace MachineBrigade.Sim.Modes
             Result = new MatchResult(winner);
             world.IsOver = true;
         }
+
+        /// <summary>Device check: the super-gun fires in this many seconds.</summary>
+        public void DebugFireSuperGunIn(SimWorld world, float seconds)
+        {
+            if (SuperGun.IsValid) _superGunFireAt = world.Time + seconds;
+        }
+
+        /// <summary>Device check: reinforcements for the fortress, flown in (by its line when it has one).</summary>
+        public void DebugReinforce(SimWorld world, params string[] vehicles)
+        {
+            if (!world.TryGetRally(Defender, out var rally)) return;
+            foreach (var id in vehicles) world.Economy.Airlift(Defender, id, rally);
+        }
     }
 
     public sealed class BossRushRules

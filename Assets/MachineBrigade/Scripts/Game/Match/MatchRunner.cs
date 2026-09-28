@@ -550,6 +550,7 @@ namespace MachineBrigade.Game.Match
             }
 
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && _fortress != null && Time.time >= _fortressCheckAt) FortressCheck();
             if (!_menu && !_paused && DebugFlags.Has("-mb-towerwatch")) WatchTower();
             if (!_menu && !_paused && DebugFlags.Has("-mb-bastion")) WatchBastion();
             if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
@@ -630,6 +631,73 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+
+        private float _fortressCheckAt = 1.5f;
+        private int _fortressStep;
+
+        /// <summary>
+        /// Device checks of the siege set pieces (debug flags, one at a time): -mb-fortress looks over
+        /// the walls and the keep; -mb-breach blows in the gate nearest the attackers and the wall
+        /// beside it on camera; -mb-domedown takes out the relays, then the generators, so the dome
+        /// drops; -mb-arrival brings the fortress's reinforcements in by its line; -mb-supergun has the
+        /// super-gun fire in 12 s at the player's army.
+        /// </summary>
+        private void FortressCheck()
+        {
+            _fortressCheckAt = float.MaxValue;
+            if (_session.Mode is not SiegeMode siege || _world.Map.Fortress is not { } fortress) return;
+            var step = _fortressStep++;
+            void Look(System.Numerics.Vector2 at, float zoom)
+            {
+                _camera.FocusOn(new Vector3(at.X, 0f, at.Y));
+                _camera.ZoomBy(zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                _lastInput = float.MaxValue;
+            }
+            if (DebugFlags.Has("-mb-fortress") && step == 0)
+            {
+                _camera.MaxZoom = 90f;
+                Look(new System.Numerics.Vector2(70f, 70f), 0.4f);
+            }
+            if (DebugFlags.Has("-mb-breach"))
+            {
+                MachineBrigade.Sim.Entities.Prop gate = null;
+                foreach (var (id, ring, _) in siege.Gates)
+                    if (ring == 2 && _world.TryGetProp(id, out var g) && g.IsAlive && (gate == null || g.Position.X < gate.Position.X)) gate = g;
+                if (gate == null) return;
+                if (step == 0)
+                {
+                    Look(gate.Position, 1.6f);
+                    _fortressCheckAt = Time.time + 3f;
+                    return;
+                }
+                _world.DebugDestroyProp(gate);
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && prop.Def.Id == "base_wall" && System.Numerics.Vector2.Distance(prop.Position, gate.Position) < 14f)
+                        _world.DebugDestroyProp(prop);
+            }
+            if (DebugFlags.Has("-mb-domedown"))
+            {
+                if (step == 0)
+                {
+                    Look(siege.DomeCentre, 0.8f);
+                    _fortressCheckAt = Time.time + 5f;
+                    return;
+                }
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && (step == 1 ? prop.Def.Id == "radar_station" : prop.Def.Id == "shield_generator")) _world.DebugDestroyProp(prop);
+                if (step == 1) _fortressCheckAt = Time.time + 2f;
+            }
+            if (DebugFlags.Has("-mb-arrival") && fortress.Arrival is { } line)
+            {
+                Look(line.Stop, 1.2f);
+                siege.DebugReinforce(_world, "main_battle_tank", "ifv", "light_tank", "armored_car");
+            }
+            if (DebugFlags.Has("-mb-supergun") && step == 0)
+            {
+                siege.DebugFireSuperGunIn(_world, 12f);
+                Look(siege.SuperGunAt, 0.7f);
+            }
+        }
         private MachineBrigade.Sim.Entities.Vehicle _watched;
         private float _watchHitAt, _watchUntil, _raidAt = 6f;
 

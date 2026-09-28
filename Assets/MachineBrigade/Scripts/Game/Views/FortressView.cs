@@ -317,7 +317,7 @@ namespace MachineBrigade.Game.Views
             else
             {
                 var plane = _models.Spawn(_models.Has("heavy_bomber") ? "heavy_bomber" : "strike_jet", team, _root.transform);
-                plane.Root.transform.localScale = Vector3.one * 1.9f;
+                plane.Root.transform.localScale = Vector3.one * 1.3f;
                 run.Plane = plane.Root.transform;
             }
             _runs.Add(run);
