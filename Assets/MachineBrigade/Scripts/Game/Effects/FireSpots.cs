@@ -12,7 +12,10 @@ namespace MachineBrigade.Game.Effects
     /// Flames and smoke are flipbooks rendered from a fire simulation (<see cref="FxMaterials"/>):
     /// a few overlapping looping flame billboards per fire, each on its own frame, under a column
     /// of billowing black smoke. A fire flares up, burns, dies down, then keeps smouldering smoke
-    /// for a while before it is gone.
+    /// for a while before it is gone. Fires burning on the ground (not riding a wreck or a hull)
+    /// draw their flames and firelight lying on the ground in depth, so a vehicle driving through
+    /// one is drawn on top of it rather than swallowed by it, and burn a fifth shorter than they
+    /// are lit for, napalm excepted (DECISIONS 12A).
     /// </summary>
     internal sealed class FireSpots
     {
@@ -42,11 +45,35 @@ namespace MachineBrigade.Game.Effects
 
         private int _nextId = 1;
 
+        /// <summary>A ground fire burns this share of the time it is lit for (napalm burns in full).</summary>
+        internal const float GroundBurn = 0.8f;
+
+        /// <summary>Below this height an unanchored fire burns on the ground (wreck and hull fires sit higher or ride their hull).</summary>
+        private const float GroundHeight = 0.7f;
+
+        /// <summary>A copy of a flame or firelight material that lies on the ground in depth (see MbDepth.hlsl).</summary>
+        internal static Material OnGround(Material source)
+        {
+            if (source == null) return null;
+            if (Grounded.TryGetValue(source, out var made) && made != null) return made;
+            made = new Material(source) { name = source.name + " (ground)", hideFlags = HideFlags.DontSave };
+            made.SetFloat("_OntoGround", 1f);
+            Grounded[source] = made;
+            return made;
+        }
+
+        private static readonly Dictionary<Material, Material> Grounded = new();
+
+        private static bool OnTheGround(in Fire f) => f.Anchor == null && f.Position.y < GroundHeight;
+
         private readonly List<Fire> _fires = new();
         private readonly ParticleSystem _flames;
         private readonly ParticleSystem _embers;
         private readonly ParticleSystem _smoke;
         private readonly ParticleSystem _glow;
+
+        /// <summary>The flames and firelight of fires burning on the ground: under the vehicles in them.</summary>
+        private readonly ParticleSystem _groundFlames, _groundGlow;
 
         /// <summary>Night: the firelight on the ground spreads twice as far.</summary>
         public bool Night { get; set; }
@@ -62,6 +89,10 @@ namespace MachineBrigade.Game.Effects
             PB.Flipbook(_flames, loop: true, tilt: 4f, pivotY: FlamePivot);
             PB.Colors(_flames, PB.Hold(new Color(0.24f, 0.21f, 0.19f), new Color(0.2f, 0.18f, 0.17f), 0.15f, 0.62f));
             PB.Grow(_flames, 0.92f, 1.06f);
+            _groundFlames = Shared(root, "Ground Flames", OnGround(fx.Flames), 2500);
+            PB.Flipbook(_groundFlames, loop: true, tilt: 4f, pivotY: FlamePivot);
+            PB.Colors(_groundFlames, PB.Hold(new Color(0.24f, 0.21f, 0.19f), new Color(0.2f, 0.18f, 0.17f), 0.15f, 0.62f));
+            PB.Grow(_groundFlames, 0.92f, 1.06f);
 
             _embers = Shared(root, "Embers", m.Sparks, 1200);
             PB.Colors(_embers, PB.Fade(new Color(1f, 0.8f, 0.4f), new Color(1f, 0.5f, 0.15f), new Color(0.6f, 0.15f, 0.05f)));
@@ -81,9 +112,20 @@ namespace MachineBrigade.Game.Effects
             _glow = Shared(root, "Fire Glow", m.Fire, 800, ParticleSystemRenderMode.HorizontalBillboard);
             PB.Colors(_glow, PB.Fade(new Color(1f, 0.5f, 0.15f), new Color(0.9f, 0.35f, 0.08f), new Color(0.6f, 0.15f, 0.03f), 0.32f));
             PB.Grow(_glow, 0.9f, 1.05f);
+            _groundGlow = Shared(root, "Ground Fire Glow", OnGround(m.Fire), 800, ParticleSystemRenderMode.HorizontalBillboard);
+            PB.Colors(_groundGlow, PB.Fade(new Color(1f, 0.5f, 0.15f), new Color(0.9f, 0.35f, 0.08f), new Color(0.6f, 0.15f, 0.03f), 0.32f));
+            PB.Grow(_groundGlow, 0.9f, 1.05f);
         }
 
         public int Burning => _fires.Count;
+
+        /// <summary>Tests: when fire <paramref name="id"/>'s flames go out (NaN once it is gone).</summary>
+        internal float FlamesUntil(int id)
+        {
+            foreach (var f in _fires)
+                if (f.Id == id) return f.Until;
+            return float.NaN;
+        }
 
         /// <summary>Only fires that could be seen emit particles; the rest keep burning silently.</summary>
         public System.Func<Vector3, bool> Visible { get; set; }
@@ -93,8 +135,10 @@ namespace MachineBrigade.Game.Effects
         /// <paramref name="seconds"/>. With an anchor it follows that transform (a falling wreck).
         /// </summary>
         /// <returns>A handle for <see cref="Extinguish"/>.</returns>
-        public int Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null)
+        public int Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null, bool napalm = false)
         {
+            // Ground fires burn a fifth shorter (the owner's second play test); napalm keeps its time.
+            if (anchor == null && position.y < GroundHeight && !napalm) seconds *= GroundBurn;
             if (_fires.Count >= MaxFires)
             {
                 // Drop whichever fire ends soonest; it was nearly out anyway.
@@ -216,12 +260,14 @@ namespace MachineBrigade.Game.Effects
             _embers.Clear();
             _smoke.Clear();
             _glow.Clear();
+            _groundFlames.Clear();
+            _groundGlow.Clear();
         }
 
         private void EmitFlame(in Fire f, float strength)
         {
             var disc = Random.insideUnitCircle * 0.35f * f.Size;
-            _flames.Emit(new ParticleSystem.EmitParams
+            (OnTheGround(f) ? _groundFlames : _flames).Emit(new ParticleSystem.EmitParams
             {
                 position = f.Position + new Vector3(disc.x, 0.05f, disc.y),
                 velocity = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(0.1f, 0.35f), Random.Range(-0.1f, 0.1f)),
@@ -256,7 +302,7 @@ namespace MachineBrigade.Game.Effects
 
         private void EmitGlow(in Fire f)
         {
-            _glow.Emit(new ParticleSystem.EmitParams
+            (OnTheGround(f) ? _groundGlow : _glow).Emit(new ParticleSystem.EmitParams
             {
                 position = new Vector3(f.Position.x, 0.08f, f.Position.z),
                 // At night the firelight reaches much farther.

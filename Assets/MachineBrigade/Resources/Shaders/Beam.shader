@@ -40,6 +40,7 @@ Shader "MachineBrigade/Beam"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "MbClear.hlsl"
+            #include "MbDepth.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 half _Intensity;
@@ -73,8 +74,9 @@ Shader "MachineBrigade/Beam"
                 Varyings output;
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 // Pulled towards the camera (orthographic: only its depth changes), so the beam is
-                // never cut by the hull or the ground it burns into.
-                positionWS -= GetViewForwardDir() * 3.0;
+                // never cut by the hull or the ground it burns into (along the ray to a perspective
+                // camera, so it stays on its muzzle there too: MbDepth.hlsl).
+                positionWS = MbDepthPull(positionWS, 3.0);
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.fog = ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
                 output.positionWS = positionWS;

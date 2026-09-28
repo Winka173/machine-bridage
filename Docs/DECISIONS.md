@@ -2220,6 +2220,109 @@ jammer was the example).
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
 
+## 12A. Test feedback 2: muzzle flashes and the flame's origin (2026-09-29)
+
+The owner's second play test: the scout jeep's muzzle flash (and many others') was drawn in the
+wrong place although its rounds left from the right spot; the flame tank's fire looked right but
+did not start from its nozzle. Added during the work: vehicles driving through a fire burning on
+the ground must be drawn on top of it (the flames covered the whole vehicle), and ground fires
+burn 20 % shorter, napalm excepted.
+
+- **Root causes of the misplaced flashes (four, all in the flash path, not the round's).**
+  1. *Stretched particles trail behind their position.* Unity draws a stretched billboard from
+     the particle (its tip) back along its velocity by size x lengthScale + speed x velocityScale
+     (measured by baking the mesh: `FlashTests.StretchedFlamesTrailBehindTheirParticle`). The
+     muzzle's flame tongue was placed half a flame out, as if the quad were centred, so half of
+     every tongue burned back over the barrel: about 1 m on a machine gun, 3 m on a tank gun,
+     whichever way the vehicle faced. Tongues are now placed a whole flame out (at the size they
+     are born at), so their base sits on the tip.
+  2. *World-space flashes left behind.* The five muzzle systems are world space; the core and
+     tongues stayed where they were lit for their 0.05-0.15 s, and the second and third flickers
+     of a machine-gun burst were lit where the muzzle had been 55 and 110 ms earlier. A scout jeep
+     at 12 m/s with a 360 deg/s turret trailed its flash by up to 2.6 m, a jet by 20-25 m. Now each
+     core and tongue particle rides its muzzle: it gets a unique random seed, and
+     `MuzzleFx.Follow` (called in `EffectsDirector.LaunchShots`, after the views are drawn) puts
+     it back on the muzzle node the round left from (`LastMuzzleNode`/`LastMuzzleLocal`, the
+     same anchor as the round) and turns it along the barrel every frame. The later flickers of a
+     burst light at the tip where it is then. Sparks, smoke, the fireball and dust are thrown into
+     the air and stay world space (only two small systems are read back, and only while a flash
+     is alive).
+  3. *Flashes faced the aim point, not the barrel.* Gun flashes (bullets, direct-fire shells,
+     rails, the flamethrower's) were pointed from the muzzle at the aim point, up to 105 deg off
+     the drawn barrel (a turret still swinging, a jet's nose gun at a ground target). They face
+     along the drawn barrel now (`VehicleView.DrawnBarrelOf`: the part the mount turns with, with
+     the hull's pitch, and the main gun's elevation). Launchers keep their launch line.
+  4. *Depth pull in perspective views.* Fire, smoke and flash materials are pulled 3-30 m
+     towards the camera so the ground does not slice them; with the battle's orthographic camera
+     that only changes depth, but the detail page's range and preview cameras are perspective,
+     where sliding along the view axis moved them across the screen, away from their muzzle and
+     nozzle (by a fifth of their distance from the middle of the view at the range's framing).
+     `MbDepth.hlsl` pulls along the ray to a perspective camera (Particle, Flipbook and Beam
+     shaders); the orthographic path is unchanged.
+- **The flame's origin.** The stream was fed for its whole trigger gap (up to 0.64 s) from the
+  point where the trigger was last pulled, 2-3 m behind a flame tank on the move, and its burning
+  streaks were born with their tip on the nozzle, trailing their whole length (2-3 m) back over
+  the turret (the same stretched-particle geometry). The stream now keeps the nozzle's anchor,
+  is fed from the nozzle as drawn once the views are drawn (`Emitters.FeedFlames`, from
+  `LaunchShots`; tools that only tick keep the old order), and each streak starts with its back
+  end on the nozzle; the fire balls and heat halo start just out of it. The flame shape fades
+  over about the last tenth of a streak (Particle.shader, shape 3), so streaks and tongues are
+  placed with that visible end on the muzzle (`MuzzleFx.FlameShapeMargin`). The look (DECISIONS
+  11A) is unchanged: same particles, rates, sizes and colours. The flame tank's `Muzzle_main`
+  node, which its rounds and now its stream leave from (11B), sits about 0.3 m beyond the end of
+  the drawn nozzle; left as it is, so the stream and the damage agree.
+- **Measured (`FlashTests.FlashesRideTheDrawnMuzzleOfEveryWeapon`, all 138 vehicles with a gun:
+  elites, bosses, towers and aircraft included).** Each fights a dummy twice, once turning onto it
+  and once driving past it, drawn in the game's frame order, and every live flash particle is
+  measured against its drawn muzzle on every frame (3,200 flashes, 32,000 particle-frames). The
+  same battles with the old behaviour switched back on (`MuzzleFx.RideMuzzles`,
+  `WeaponEffects.AlongBarrel`, `Emitters.RideNozzles` false) give the before numbers. Worst
+  distance of a flash's visible base from its drawn barrel tip over its life: before, median
+  2.2 m, over 0.5 m on 115 of the 138, scout jeep 2.3 m, light tank 2.8 m, main battle tank
+  3.5 m, twin tank 3.5 m, gun turret 3.3 m, behemoth 3.9 m, flame tank 2.2 m, attack helicopter
+  8.7 m, attack jet 19.9 m, fighter jet 25.0 m; after, 0.000 m on every vehicle. Forward tongues
+  point within 4.6 deg of the drawn barrel (their own jitter; 30-44 deg before). The flame
+  stream's origin was 2.2-2.9 m off its nozzle on the move and its streaks started 3.3-3.8 m
+  behind it; now 0.000 m and none behind. The test asserts 3 cm, 6 deg and 5 cm; it runs in about
+  12 s. The
+  vehicles that did not fire a flash in it are the unarmed structures, mine fields, dragon's
+  teeth, drone hangars (their drones launch elsewhere), the bomber (bombs have no flash), the car
+  bomb, the super gun (it does not fire inside the test's seven seconds) and the command vehicle
+  and counter-battery radar, whose machine gun never fires at a dummy (seen in 11D too).
+- **Render checks.** `MuzzleShots.Flashes` (-mbShotsOut folder, optional -mbShotsIds a+b):
+  flashes_NN.png, a row per vehicle, facing 0/90/180/270 deg with the turret swung onto a dummy,
+  frozen on the frame the most mounts show a flash, a green ball on each drawn tip a flash rides;
+  a fifth column through a perspective camera like the range's, the vehicle off the middle.
+  `MuzzleShots.GroundFire`: groundfire.png, a tank and a jeep parked in burning patches, before
+  (left) and after (right).
+- **Ground fires under the vehicles.** Decided: a fire burning on the ground lies on the ground
+  *in depth*. Its flames' vertices slide along their view ray onto the ground plane (20 cm up;
+  `MbOntoGround`, material float `_OntoGround`), so on screen a fire looks exactly as before but
+  anything standing above the ground, a vehicle driving through it first of all, is drawn over it.
+  Pushing the flames back by a fixed distance was rejected: the ground would then slice off their
+  lower metres (the ground behind a flame at height h is only 0.78 h deeper in this view).
+  Flattening the flames under vehicles would change their look and need a per-vehicle mask;
+  render queues cannot put transparent flames under opaque vehicles without drawing them in the
+  opaque pass. Which fires: `FireSpots` fires with no anchor below 0.7 m (blast and shell
+  craters, thermobaric, napalm's burning ground, strike and boss-death rings, burning debris,
+  the fires at a wrecked defence's foot, crashed aircraft) draw into a second flame system and a
+  second firelight system with ground-lying copies of their materials (`FireSpots.OnGround`); the
+  flame stream's licks on the ground draw into their own system. Fires riding a hull or up on a
+  wreck (wreck fires, boss part fires, cook-off jets) and the licks on the target the stream hits
+  are unchanged, so a burning vehicle still burns in front of itself. Trade-off: a vehicle or tree
+  standing just behind a ground fire also covers the tips of its flames.
+- **Ground fires burn 20 % shorter, napalm excepted.** `FireSpots.Ignite` burns a ground fire
+  for 0.8 of the time it is lit for (`GroundBurn`) unless it is napalm (the napalm strike's
+  burning strip passes `napalm: true`); fires on hulls and wrecks keep their time. The simulation
+  has no burning-ground damage zones (fire damage is the Burn status on vehicles, unchanged), so
+  balance.json was not touched: the drawn fire is the only thing that burns on the ground. The
+  flamethrower's ground fires count as ground fires, not napalm (napalm is the strike).
+  (`FlashTests.GroundFiresBurnAFifthShorterAndLieUnderVehicles`.)
+- **Also:** at night the ground light of a shot is lit under its muzzle, not in front of the hull.
+- **Not changed (other lanes):** a laser's beam re-reads its muzzle in `LaserBeams.Tick`, before
+  the views are drawn (a frame behind a moving emitter); the napalm strike's fire wall is an
+  explosion (`ExplosionEffect.CreateNapalm`) and still draws over vehicles for its few seconds.
+
 ## 12E. Test feedback 2: the in-action preview (2026-09-29)
 
 Play-test findings: on the detail page the In action clip (Xem bắn) was too small to watch, and the

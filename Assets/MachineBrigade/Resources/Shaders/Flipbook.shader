@@ -24,6 +24,7 @@ Shader "MachineBrigade/Flipbook"
         _SmokeLight ("Smoke brightness in light", Float) = 1.15
         _Density ("Smoke density", Float) = 1
         _DepthPull ("Depth pull (m towards the camera)", Float) = 0
+        _OntoGround ("Onto ground (1: lies on the ground in depth, under vehicles)", Float) = 0
         _GroundFade ("Fade below the ground over (m, 0 off)", Float) = 0
     }
 
@@ -56,6 +57,7 @@ Shader "MachineBrigade/Flipbook"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "MbClear.hlsl"
+            #include "MbDepth.hlsl"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -73,6 +75,7 @@ Shader "MachineBrigade/Flipbook"
                 half _SmokeLight;
                 half _Density;
                 float _DepthPull;
+                float _OntoGround;
                 float _GroundFade;
             CBUFFER_END
 
@@ -101,8 +104,10 @@ Shader "MachineBrigade/Flipbook"
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 float height = positionWS.y;
                 // The camera is orthographic: sliding a vertex towards it changes only its depth,
-                // so big puffs near the ground are not sliced by it (see Particle.shader).
-                positionWS -= GetViewForwardDir() * _DepthPull;
+                // so big puffs near the ground are not sliced by it (see Particle.shader; along the
+                // ray to a perspective camera, MbDepth.hlsl). A fire burning on the ground lies on
+                // the ground in depth instead, so a vehicle standing in it is drawn over its flames.
+                positionWS = _OntoGround > 0.5 ? MbOntoGround(positionWS, 0.2) : MbDepthPull(positionWS, _DepthPull);
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.color = input.color;
                 output.uv = float4(TRANSFORM_TEX(input.uv.xy, _MainTex), TRANSFORM_TEX(input.uv.zw, _MainTex));

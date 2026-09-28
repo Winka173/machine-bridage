@@ -12,6 +12,7 @@ Shader "MachineBrigade/Particle"
         _Shape ("Shape (0 dot, 1 ring, 2 square, 3 flame, 4 billow)", Float) = 0
         _Softness ("Softness", Float) = 1
         _DepthPull ("Depth Pull (m towards the camera)", Float) = 0
+        _OntoGround ("Onto Ground (1: lies on the ground in depth, under vehicles)", Float) = 0
         [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Float) = 5
         [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Float) = 1
     }
@@ -43,12 +44,14 @@ Shader "MachineBrigade/Particle"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "MbClear.hlsl"
+            #include "MbDepth.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 half _Intensity;
                 half _Shape;
                 half _Softness;
                 float _DepthPull;
+                float _OntoGround;
                 half _SrcBlend;
                 half _DstBlend;
             CBUFFER_END
@@ -86,8 +89,10 @@ Shader "MachineBrigade/Particle"
                 // Big puffs near the ground would be sliced by it along a straight line. The camera
                 // is orthographic, so sliding a vertex towards it changes only its depth, not where
                 // it lands on screen: pulling fire and smoke forward removes the cut for free.
+                // (Along the ray to a perspective camera: MbDepth.hlsl.) Firelight on the ground
+                // lies on the ground instead, so a vehicle over it is drawn on top.
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
-                positionWS -= GetViewForwardDir() * _DepthPull;
+                positionWS = _OntoGround > 0.5 ? MbOntoGround(positionWS, 0.2) : MbDepthPull(positionWS, _DepthPull);
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.sun = normalize(mul((float3x3)UNITY_MATRIX_V, _MainLightPosition.xyz));
                 output.fog = OrthoFog(positionWS);

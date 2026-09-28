@@ -730,6 +730,24 @@ namespace MachineBrigade.Game.Views
             return (flat * Mathf.Cos(pitch) + Vector3.up * Mathf.Sin(pitch)).normalized;
         }
 
+        /// <summary>
+        /// World-space direction the barrel of mount <paramref name="index"/> points in as drawn this
+        /// frame: the part it turns with (its own free mount, the turret or the hull, with the
+        /// hull's pitch and rock) and, for the main gun, the barrel's elevation. Muzzle flashes
+        /// face this way; <see cref="DirectionOf"/> is the simulation's latest heading, up to a
+        /// step ahead of the drawn turret.
+        /// </summary>
+        public Vector3 DrawnBarrelOf(int index)
+        {
+            var aim = index < Def.Mounts.Count ? Def.Mounts[index].Aim : MountAim.Turret;
+            var node = aim == MountAim.Free && index < _mounts.Length && _mounts[index] != null ? _mounts[index]
+                : aim != MountAim.Hull && _model.Turret != null ? _model.Turret : _body;
+            var forward = node.forward;
+            if (index == 0 && _model.Elevation != null && !float.IsNaN(_elevation))
+                forward = Quaternion.AngleAxis(-_elevation, node.right) * forward;
+            return forward;
+        }
+
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
         public void Recoil()
         {
