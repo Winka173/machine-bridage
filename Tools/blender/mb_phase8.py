@@ -1289,6 +1289,195 @@ def command_airship(a):
     dark.box((.4, 10.0, .3), loc=(0, 3.0, CA_KEEL - .1), bevel=0)                                      # keel between bays
 
 
+# ----------------------------------------------------------------------------- landing_hovercraft
+def ciws(a, mount, loc, parent=None, length=1.7):
+    """Six-barrel 30 mm close-in weapon system (AK-630 lineage) on its own yaw pivot `mount` at loc (relative to
+    `parent`): a ring on the parent, a squat Team drum with a domed roof, the cradle, a slim barrel cluster
+    (one bundle, so every round leaves from its axis) in a cooling shroud with a muzzle clamp, and a sensor
+    box on the roof. The muzzle sits at the cluster's tip. Returns the pivot key."""
+    key, mkey, tag = _slot_names(mount)
+    pk = dotted(parent) if parent else None
+    a.part(f'CIWS_ring_{tag}', 'Armor', pk).cyl(.82, .12, loc=_v(loc, dz=.04), seg=18, bevel=.02, bseg=1)
+    m = a.pivot(key, loc, pk)
+    body = a.part(f'CIWS_body_{tag}', 'Team', m)
+    body.cyl(.74, .62, loc=(0, .05, .36), seg=18, bevel=.04, bseg=1)
+    body.sphere((.74, .74, .34), loc=(0, .05, .66), seg=18, rings=6, cut=0)
+    arm = a.part(f'CIWS_armor_{tag}', 'Armor', m)
+    zb = .62
+    arm.box((.56, .7, .52), loc=(0, -.62, zb), bevel=.04, seg=1)                                   # cradle
+    arm.cyl(.2, .5, loc=(0, -1.1, zb), rot=FORWARD, seg=12, bevel=.02, bseg=1)                     # shroud
+    tip = -.97 - length
+    a.part(f'CIWS_barrels_{tag}', 'Steel', m).cyl(.13, -1.2 - tip, loc=(0, (-1.2 + tip) / 2, zb), rot=FORWARD, seg=12,
+                                                 bevel=0)
+    dark = a.part(f'CIWS_dark_{tag}', 'Undercarriage', m)
+    dark.cyl(.16, .1, loc=(0, tip + .45, zb), rot=FORWARD, seg=12, bevel=0)                        # muzzle clamp
+    dark.cyl(.15, .12, loc=(0, tip + .06, zb), rot=FORWARD, seg=12, bevel=0)
+    a.part(f'CIWS_bores_{tag}', 'Charred', m).cyl(.1, .02, loc=(0, tip + .005, zb), rot=FORWARD, seg=10, bevel=0)
+    arm.box((.3, .3, .22), loc=(.3, .2, 1.02), bevel=.03, seg=1)                                     # sensor
+    a.part(f'CIWS_glass_{tag}', 'Glass', m).box((.18, .02, .1), loc=(.3, .045, 1.03), bevel=0)
+    a.pivot(mkey, (0, tip, zb), m)
+    return m
+
+
+def _rounded_rect(hx, hy, r, n=6):
+    """Counter-clockwise outline of a rectangle (half sizes hx, hy) with corner radius r, n points per corner."""
+    pts = []
+    for cx, cy, a0 in ((hx - r, -hy + r, -R90), (hx - r, hy - r, 0.0), (-hx + r, hy - r, R90), (-hx + r, -hy + r, math.pi)):
+        for k in range(n):
+            u = a0 + R90 * k / (n - 1)
+            pts.append((cx + r * math.cos(u), cy + r * math.sin(u)))
+    return pts
+
+
+def landing_hovercraft(a):
+    """Air-cushion landing craft (LCAC / Zubr lineage), 28.3 x 16 m, 9.2 m to the mast top: a buoyancy hull
+    riding on a black bag skirt with fingers round its foot; an open cargo deck the full length between two
+    Team side structures (hazard lines and chevrons, tie-down rings, a raised stern ramp); on the side
+    structures the turbine intakes and exhausts, life-raft canisters along their outer walls, handrails, and
+    on the right front the raised control cabin with a mast (radar dome, nav lights). Navigation lights at the
+    corners.
+
+    Boss parts: `Part_fan` (left) and `Part_fan.001` (right): the twin shrouded pusher propellers at the stern
+    on pylons, each with its `Propeller` / `Propeller_2`, stators and twin rudders, origin at the duct's
+    middle; `Part_ramp`: the lowered bow ramp, hinged at the deck's bow sill, with `Muzzle_ramp` at its foot
+    where vehicles drive off; `Part_gun` (left front) and `Part_gun.001` (right, behind the cabin): six-barrel
+    CIWS on `Mount_gun` / `Mount_gun.001` (`Muzzle_gun`, `Muzzle_gun.001`)."""
+    _suffixed(a)
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    team, dark = a.part('Side_structures', 'Team'), a.part('Undercarriage', 'Undercarriage')
+    # Skirt: a bag round the hull bulging out, fingers along its foot.
+    skirt = a.part('Skirt', 'Rubber')
+    rings = [(7.25, 12.85, 2.9, .02), (7.7, 13.3, 3.3, .35), (7.95, 13.55, 3.5, 1.05), (7.55, 13.15, 3.1, 1.7),
+             (6.75, 12.35, 2.4, 1.95)]
+    skirt.loft([[(x, y, z) for x, y in _rounded_rect(hx, hy, r, 6)] for hx, hy, r, z in rings], bevel=0)
+    fingers = a.part('Skirt_fingers', 'Charred')
+    outline = _rounded_rect(7.5, 13.1, 3.2, 6)
+    per = 0.0
+    segs = []
+    for p, q in zip(outline, outline[1:] + outline[:1]):
+        L = math.hypot(q[0] - p[0], q[1] - p[1])
+        segs.append((p, q, L, per))
+        per += L
+    n = int(per / .75)
+    for k in range(n):
+        d = (k + .5) * per / n
+        p, q, L, s0 = next(sg for sg in segs if sg[3] <= d < sg[3] + sg[2])
+        t = (d - s0) / L
+        x, y = p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t
+        ang = math.atan2(q[1] - p[1], q[0] - p[0])
+        fingers.box((.5, .14, .42), loc=(x, y, .22), rot=(0, 0, ang), bevel=0)
+    # Hull, cargo deck and its markings.
+    hull = a.part('Hull', 'Armor')
+    hull.box((13.8, 25.0, 1.0), loc=(0, 0, 1.5), bevel=.08, seg=1)                                     # z 1 .. 2
+    deck = a.part('Cargo_deck', 'Undercarriage')
+    deck.box((7.4, 25.0, .06), loc=(0, 0, 2.02), bevel=0)
+    mark = a.part('Deck_markings', 'Hazard')
+    for s in (-1, 1):
+        mark.box((.14, 24.0, .02), loc=(s * 3.35, 0, 2.06), bevel=0)
+    for k in range(3):                                                                                  # chevrons
+        for s in (-1, 1):
+            mark.box((1.6, .2, .02), loc=(s * .7, -10.0 + k * 1.2, 2.06), rot=(0, 0, s * .5), bevel=0)
+    rings_ = a.part('Tie_downs', 'Steel')
+    for x in (-2.4, -.8, .8, 2.4):
+        for y in (-8.0, -4.0, 0.0, 4.0, 8.0):
+            rings_.cyl(.08, .04, loc=(x, y, 2.06), seg=6, bevel=0)
+    # Side structures.
+    for s in (-1, 1):
+        team.box((3.0, 20.5, 2.3), loc=(s * 5.3, -.25, 3.15), bevel=.07, seg=1, taper=(.96, .98))     # z 2 .. 4.3
+        armor.prism([(-11.6, 2.0), (-11.6, 2.6), (-10.6, 4.25), (-10.3, 4.25), (-10.3, 2.0)], 3.0, loc=(s * 5.3, 0, 0),
+                    axis='X', bevel=.05, seg=1)                                                          # sloped bows
+        grille = a.part('Intakes', 'Undercarriage')
+        for y in (-.8, 2.2, 5.2):
+            armor.box((2.0, 2.2, .4), loc=(s * 5.3, y, 4.45), bevel=.04, seg=1)
+            grille.grille(1.7, 1.8, loc=(s * 5.3, y, 4.66), rot=(-R90, 0, 0), slats=6, depth=.05, thickness=.04)
+        for y in (7.2, 8.4):                                                                             # exhausts
+            dark.box((1.2, .9, .3), loc=(s * 5.1, y, 4.42), rot=(.4, 0, 0), bevel=.02, seg=1)
+            a.part('Soot', 'Charred').box((1.0, .05, .22), loc=(s * 5.1, y + .42, 4.56), rot=(.4, 0, 0), bevel=0)
+        # Life-raft canisters in racks along the outer wall.
+        raft = a.part('Life_rafts', 'Medical')
+        for y in (-7.0, -5.4, -3.8, 3.8, 5.4):
+            raft.cyl(.3, 1.2, loc=(s * 7.05, y, 3.55), rot=FORWARD, seg=10, bevel=.03, bseg=1)
+            steel.box((.1, .08, .7), loc=(s * 6.84, y, 3.4), bevel=0)
+        # Handrails round the side-structure roofs, nav lights at the corners.
+        _railing(a.part('Railings', 'Steel'), [(s * 6.7, -1.2, 4.3), (s * 6.7, 9.6, 4.3)], h=.8, every=1.8)
+        a.part('Nav_green' if s < 0 else 'Nav_red', 'SignalGreen' if s < 0 else 'LavaGlow').box(
+            (.12, .24, .14), loc=(s * 6.85, -9.8, 4.2), bevel=0)
+        a.part('Stern_lights', 'Lamp').box((.2, .06, .14), loc=(s * 6.0, 10.02, 3.9), bevel=0)
+    # Stern ramp (raised) with hazard edges, bow sill.
+    armor.box((6.8, .2, 2.0), loc=(0, 12.45, 3.0), rot=(-.12, 0, 0), bevel=.03, seg=1)
+    for s in (-1, 1):
+        a.part('Ramp_edges', 'SafetyStripe').box((.14, .24, 2.0), loc=(s * 3.35, 12.46, 3.0), rot=(-.12, 0, 0), bevel=0)
+    armor.box((7.4, .5, .4), loc=(0, -12.35, 2.15), bevel=.03, seg=1)                                 # bow sill
+    # Control cabin on the right front with its mast.
+    cab = a.part('Cabin', 'Team')
+    cab.box((2.8, 2.8, 1.5), loc=(-5.3, -8.8, 5.05), bevel=.06, seg=1, taper=(.94, .94))
+    glass = a.part('Cabin_glass', 'Glass')
+    glass.box((2.2, .06, .5), loc=(-5.3, -10.18, 5.2), rot=(.12, 0, 0), bevel=0)
+    for s in (-1, 1):
+        glass.box((.06, 1.8, .45), loc=(-5.3 + s * 1.36, -8.8, 5.2), rot=(0, s * -.06, 0), bevel=0)
+    armor.box((3.0, 3.0, .12), loc=(-5.3, -8.8, 5.85), bevel=.03, seg=1)
+    steel.cyl(.1, 2.4, loc=(-5.3, -8.6, 7.1), seg=8, bevel=0)                                           # mast
+    steel.box((1.4, .1, .1), loc=(-5.3, -8.6, 7.6), bevel=0)
+    a.part('Radar_dome', 'Medical').sphere(.42, loc=(-5.3, -8.6, 8.55), seg=14, rings=8)
+    a.part('Mast_lights', 'Lamp').sphere(.07, loc=(-5.3, -8.6, 9.0), seg=6, rings=4)
+    for s in (-1, 1):
+        a.part('Mast_lights', 'Lamp').sphere(.06, loc=(-5.3 + s * .7, -8.6, 7.66), seg=6, rings=4)
+    _antenna(a, None, -4.2, -7.6, 5.9, 1.4)
+
+    # Part_ramp: the lowered bow ramp from the sill to the ground.
+    hinge = Vector((0, -12.5, 2.3))
+    foot = Vector((0, -15.6, .05))
+    pr = pv(a, 'Part_ramp', tuple(hinge))
+    d = (foot - hinge)
+    Lr = d.length
+    tilt = math.atan2(-d.z, -d.y)                                                                        # down-slope
+    ramp = a.part('Ramp', 'Armor', pr)
+    mid = d / 2
+    ramp.box((6.8, Lr, .2), loc=tuple(mid), rot=(tilt, 0, 0), bevel=.03, seg=1)
+    ribs = a.part('Ramp_ribs', 'Undercarriage', pr)
+    for k in range(9):
+        c = d * ((k + .5) / 9) + Vector((0, 0, .1 / math.cos(tilt)))
+        ribs.box((6.2, .1, .06), loc=tuple(c), rot=(tilt, 0, 0), bevel=0)
+    edge = a.part('Ramp_edges_bow', 'SafetyStripe', pr)
+    for s in (-1, 1):
+        edge.box((.2, Lr, .5), loc=tuple(mid + Vector((s * 3.3, 0, .2))), rot=(tilt, 0, 0), bevel=.02, seg=1)
+    steel_r = a.part('Ramp_steel', 'Steel', pr)
+    steel_r.cyl(.14, 7.0, loc=(0, 0, 0), rot=ACROSS, seg=10, bevel=0)                                    # hinge pin
+    steel_r.box((6.8, .2, .08), loc=tuple(d + Vector((0, .05, .05))), bevel=0)                           # toe plate
+    a.pivot('Muzzle_ramp', tuple(d + Vector((0, -.06, .05))), pr)
+
+    # Part_fan / Part_fan.001: the shrouded pusher propellers on pylons at the stern.
+    for name, prop, x in (('Part_fan', 'Propeller', 5.3), ('Part_fan.001', 'Propeller_2', -5.3)):
+        tag = name[5:].replace('.', '_')
+        pf = pv(a, name, (x, 10.9, 6.55))
+        _revolve(a.part(f'Duct_{tag}', 'Team', pf), [(2.02, -.8), (2.32, -.7), (2.32, .7), (2.02, .8)], (0, 0, 0),
+                 BACKWARD, 28)
+        _revolve(a.part(f'Duct_band_{tag}', 'Hazard', pf), [(2.3, -.1), (2.36, -.1), (2.36, .1), (2.3, .1)],
+                 (0, -.3, 0), BACKWARD, 28)
+        fa = a.part(f'Fan_armor_{tag}', 'Armor', pf)
+        fa.box((.9, 1.5, 1.2), loc=(0, 0, -2.6), bevel=.04, seg=1)                                        # pylon
+        fa.box((.3, .8, .6), loc=(0, .9, -2.1), bevel=.02, seg=1)
+        st = a.part(f'Fan_stators_{tag}', 'Steel', pf)
+        for k in range(4):
+            u = math.pi / 4 + k * R90
+            st.box((1.9, .1, .08), loc=(math.cos(u) * 1.05, .55, math.sin(u) * 1.05), rot=(0, -u, 0), bevel=0)
+        st.cyl(.36, .9, loc=(0, .45, 0), rot=BACKWARD, seg=12, bevel=.03, bseg=1)                          # gearbox
+        for dx in (-.8, .8):
+            fa.box((.12, 1.0, 3.4), loc=(dx, 1.5, 0), bevel=.02, seg=1)                                    # rudders
+        fa.box((2.0, .14, .14), loc=(0, 1.2, 1.75), bevel=0)
+        fa.box((2.0, .14, .14), loc=(0, 1.2, -1.75), bevel=0)
+        pp = a.pivot(prop, (0, -.1, 0), pf)
+        a.part(f'{prop}_hub', 'Steel', pp).lathe([(.3, .3), (.3, 0), (.18, -.25), (0, -.4)], rot=BACKWARD, seg=10)
+        bl = a.part(f'{prop}_blades', 'Armor', pp)
+        for k in range(5):
+            _prop_blade(bl, k * TAU / 5, .28, 1.95, .5, .34, .09, .03, .8, .35)
+
+    # Part_gun (left front) / Part_gun.001 (right, behind the cabin): CIWS on the side-structure roofs.
+    for name, x, y in (('Part_gun', 5.3, -6.4), ('Part_gun.001', -5.3, -3.0)):
+        pv(a, name, (x, y, 4.3))
+        ciws(a, name.replace('Part_', 'Mount_'), (0, 0, 0), parent=name)
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
     'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
@@ -1296,6 +1485,7 @@ BUILDERS = {
     'targeting_station': (targeting_station, dict(ao_distance=.9, grime_height=.6)),
     'earth_borer': (earth_borer, dict(ao_distance=1.0, grime_height=.8)),
     'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
+    'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=.8)),
 }
 
 

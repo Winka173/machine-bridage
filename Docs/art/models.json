@@ -539,6 +539,10 @@
     "file": "lancet_truck.glb",
     "triangles": 10234
   },
+  "landing_hovercraft": {
+    "file": "landing_hovercraft.glb",
+    "triangles": 8704
+  },
   "lava_vent": {
     "file": "lava_vent.glb",
     "triangles": 818
