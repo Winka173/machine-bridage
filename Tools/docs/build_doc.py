@@ -547,6 +547,10 @@ def build(game, imgdir):
             ('flame.png', 'Súng phun lửa làm lại: luồng nhiên liệu cong, cầu lửa cuộn, khói đen.'), ('railgun.png', 'Railgun: nạp năng lượng, tia sáng lưu lại.'),
             ('boss_death.png', 'Boss chết: nổ nhiều đợt, lóe trắng, sóng xung kích.'), ('muzzle_audit.png', 'Kiểm tra đầu nòng: mỗi chấm màu là nơi một vũ khí bắn ra.')]
     out.append("<div class='section'><h2>19. Hình ảnh</h2>")
+    shield = img(Path(__file__).resolve().parents[2] / 'Docs' / 'art' / 'shields' / 'shields.png', 'shot')
+    if shield:
+        out.append(f"{shield}<div class='caption'>Khiên vẽ lại (prompt 11): vòm lưới lục giác sáng ở viền, giữa trong suốt; địch đỏ cam, ta xanh; "
+                   "gợn sóng chỗ trúng đạn, chập chờn khi máy phát khiên hư, sụp vỡ khi tắt; bong bóng quanh xe và trùm; bản rút gọn cho đồ họa Thấp.</div>")
     for name, cap in pics:
         tag = img(r6 / name, 'shot')
         if tag:
