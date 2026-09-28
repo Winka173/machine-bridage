@@ -15,6 +15,11 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Rounds left, or -1 for a weapon with unlimited ammunition.</summary>
         public int Ammo = -1;
 
+        /// <summary>An aircraft's stores (prompt 13 C): rounds when fully loaded (0: not stores), and the next round coming back.</summary>
+        public int Load;
+
+        public float LoadProgress;
+
         /// <summary>An empty magazine being reloaded in place: seconds still to go (0: not reloading).</summary>
         public float ReloadLeft;
         public EntityId Target;

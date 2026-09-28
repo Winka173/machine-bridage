@@ -131,7 +131,7 @@ namespace MachineBrigade.Game.Hud
                 "Strong / weak: kills [[tanks]], heavy tanks and [[bosses]] from outside their reach; fears artillery, and light cars that close in.\n" +
                 "Tip: keep it just behind your tanks so it fires first; the best answer to heavy armour and bosses.",
                 "[[Diệt tăng]] · giáp dày · tầm xa (40 m)\n" +
-                "Cách đánh: pháo 125 mm [[xuyên giáp]] (như 2S25 Sprut), vừa chạy vừa bắn, xa hơn và nạp nhanh hơn pháo tăng chủ lực; súng máy nóc cho mục tiêu nhỏ.\n" +
+                "Cách đánh: pháo 125 mm [[xuyên giáp]] (như pháo tự hành 2S25), vừa chạy vừa bắn, xa hơn và nạp nhanh hơn pháo tăng chủ lực; súng máy nóc cho mục tiêu nhỏ.\n" +
                 "Mạnh / yếu: hạ [[xe tăng]], tăng hạng nặng và [[trùm]] từ ngoài tầm với của chúng; sợ pháo binh và xe nhẹ áp sát.\n" +
                 "Mẹo: để ngay sau hàng xe tăng để nó bắn trước; khắc tinh của thiết giáp nặng và trùm."),
             ["guide.atgm_carrier"] = (
@@ -303,14 +303,23 @@ namespace MachineBrigade.Game.Hud
 
             // Support vehicles.
             ["guide.engineer_vehicle"] = (
-                "[[Engineer]] · heavy armour · repairs and re-arms\n" +
-                "How it fights: only a roof MG; it [[repairs]] friendly vehicles within 14 m (2.5% health a second) and [[re-arms]] their launchers.\n" +
+                "[[Engineer]] · heavy armour · repairs\n" +
+                "How it fights: only a roof MG; it [[repairs]] friendly vehicles within 14 m (2.5% health a second), clears the mines it sees and breaks obstacles three times as fast.\n" +
                 "Strong / weak: keeps a tank line alive much longer; alone it fights poorly, and scouts or armoured cars pick it off.\n" +
-                "Tip: park it just behind the front, or beside rocket artillery so empty launchers reload faster.",
-                "[[Xe công binh]] · giáp dày · sửa chữa và tiếp đạn\n" +
-                "Cách đánh: chỉ có súng máy nóc; [[sửa chữa]] xe ta trong vòng 14 m (2,5% máu mỗi giây) và [[tiếp đạn]] cho bệ phóng.\n" +
+                "Tip: park it just behind the front; the [[ammunition carrier]] is the one that reloads launchers.",
+                "[[Xe công binh]] · giáp dày · sửa chữa\n" +
+                "Cách đánh: chỉ có súng máy nóc; [[sửa chữa]] xe ta trong vòng 14 m (2,5% máu mỗi giây), gỡ mìn nó thấy và phá vật cản nhanh gấp ba.\n" +
                 "Mạnh / yếu: giúp tuyến xe tăng trụ lâu hơn hẳn; tự đánh thì yếu, trinh sát và xe bọc thép dễ bắt nạt nó.\n" +
-                "Mẹo: đỗ ngay sau tuyến đầu, hoặc cạnh pháo phản lực để bệ phóng hết đạn nạp lại nhanh hơn."),
+                "Mẹo: đỗ ngay sau tuyến đầu; nạp đạn cho bệ phóng là việc của [[xe tiếp đạn]]."),
+            ["guide.ammo_carrier"] = (
+                "[[Ammunition carrier]] · light armour · forward rearm point\n" +
+                "How it fights: only a roof MG; empty launchers and missile carriers within 14 m [[reload three times as fast]], and helicopters within 12 m take their missiles and rockets on [[twice as fast]].\n" +
+                "Strong / weak: keeps rocket artillery and helicopters firing; thin-skinned and it blows up hard, so keep it out of the fight.\n" +
+                "Tip: park it behind the launchers; your commander sends empty launchers to it when the drive is quicker than reloading in place.",
+                "[[Xe tiếp đạn]] · giáp mỏng · điểm nạp tiền phương\n" +
+                "Cách đánh: chỉ có súng máy nóc; bệ phóng và xe tên lửa hết đạn trong vòng 14 m [[nạp nhanh gấp ba]], trực thăng trong vòng 12 m hồi tên lửa và rốc-két [[nhanh gấp đôi]].\n" +
+                "Mạnh / yếu: giữ pháo phản lực và trực thăng bắn liên tục; giáp mỏng và nổ rất mạnh, nên giữ xa chỗ giao tranh.\n" +
+                "Mẹo: đỗ sau các bệ phóng; chỉ huy tự đưa bệ phóng hết đạn tới nó khi đi tới đó nhanh hơn nạp tại chỗ."),
             ["guide.sapper"] = (
                 "[[Fortification sapper]] · heavy armour · repairs defences\n" +
                 "How it fights: a roof MG; it slowly [[repairs]] friendly towers, turrets and bunkers within 12 m (0.6% health a second). It cannot fix vehicles.\n" +
@@ -583,11 +592,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đỗ ngay sau đội xe tăng ở cứ điểm, ngoài tầm bắn thẳng của địch."),
             ["guide.wheeled_gun"] = (
                 "[[Wheeled tank hunter]] · light armour · fast (12 m/s)\n" +
-                "How it fights: a 120 mm [[armour-piercing]] gun (as on the Centauro II) on the move out to 38 m, about 65 damage a second on heavy armour, [[+25%]] on a flank or rear.\n" +
+                "How it fights: a 120 mm [[armour-piercing]] gun (as on the Centauro II) on the move out to 38 m, about 70 damage a second on heavy armour, [[+25%]] on a flank or rear.\n" +
                 "Strong / weak: runs round tank lines and punishes their sides; its thin armour loses any straight fight with a tank, and autocannons shred it.\n" +
                 "Tip: send it round the flank while your tanks hold the front: every hit on a side counts double work.",
                 "[[Pháo bánh lốp diệt tăng]] · giáp mỏng · nhanh (12 m/s)\n" +
-                "Cách đánh: pháo 120 mm [[xuyên giáp]] (như Centauro II) vừa chạy vừa bắn tới 38 m, khoảng 65 sát thương mỗi giây lên giáp dày, [[+25%]] khi trúng hông hoặc đuôi.\n" +
+                "Cách đánh: pháo 120 mm [[xuyên giáp]] (như Centauro II) vừa chạy vừa bắn tới 38 m, khoảng 70 sát thương mỗi giây lên giáp dày, [[+25%]] khi trúng hông hoặc đuôi.\n" +
                 "Mạnh / yếu: chạy vòng tuyến xe tăng và trừng phạt hai bên sườn; giáp mỏng nên đấu thẳng với tăng là thua, pháo tự động xé nát nó.\n" +
                 "Mẹo: vòng qua sườn trong lúc xe tăng giữ mặt trước: phát nào trúng hông cũng đáng giá."),
             ["guide.counter_battery_radar"] = (

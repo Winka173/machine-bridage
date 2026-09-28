@@ -257,6 +257,8 @@ namespace MachineBrigade.Sim.Combat
                 // Slow, heavy weapons do not waste a shot on a target already as good as dead
                 // from the rounds on their way to it (overkill).
                 if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
+                // A stick of bombs (prompt 13 D.2): the group or the structure, not the lone light car beside it.
+                if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
                 score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
                 if (score <= bestScore) continue;
                 best = other;
@@ -285,8 +287,63 @@ namespace MachineBrigade.Sim.Combat
             return null;
         }
 
+        /// <summary>
+        /// Prompt 13 D.2: what a stick of bombs on this target is worth against a plain target: the enemies
+        /// its blasts would reach (by their worth), a structure half as much again, a lone light vehicle a
+        /// quarter, and a third for ground the side bombed in the last 10 s (a pause between runs on one place).
+        /// </summary>
+        internal float BombWorth(int team, Vehicle target, WeaponDef bombs)
+        {
+            if (target.Flying) return 1f;
+            var reach = bombs.SplashRadius + 4f;
+            var worth = 0f;
+            var others = 0;
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == team || e.Team < 0 || e.Flying || e.Def.Untargetable) continue;
+                if (Vector2.DistanceSquared(e.Position, target.Position) > reach * reach) continue;
+                worth += Math.Clamp(Worth(e), 1f, 25f);
+                if (e != target) others++;
+            }
+            var factor = worth / Math.Clamp(Worth(target), 1f, 25f);
+            if (target.Def.Static) factor *= 1.5f;
+            else if (others == 0 && target.Armor == ArmorClass.Light && Worth(target) < 7f) factor *= 0.25f;
+            if (RecentlyBombed(team, target.Position)) factor *= 0.33f;
+            return factor;
+        }
+
+        /// <summary>Where each side's sticks of bombs fell, and when (a pause between runs on one place).</summary>
+        private readonly List<(int team, Vector2 at, double when)> _bombed = new();
+
+        private const float BombedRadius = 16f;
+        private const double BombedSeconds = 10.0;
+
+        internal bool RecentlyBombed(int team, Vector2 at)
+        {
+            var now = _world.Time;
+            for (var i = _bombed.Count - 1; i >= 0; i--)
+            {
+                var (t, p, when) = _bombed[i];
+                if (now - when > BombedSeconds)
+                {
+                    _bombed.RemoveAt(i);
+                    continue;
+                }
+                if (t == team && Vector2.DistanceSquared(p, at) < BombedRadius * BombedRadius) return true;
+            }
+            return false;
+        }
+
+        /// <summary>A friendly ground vehicle within <paramref name="reach"/> of a point.</summary>
+        private bool OwnNear(int team, Vector2 at, float reach)
+        {
+            foreach (var o in _world.VehicleList)
+                if (o.IsAlive && o.Team == team && !o.Flying && !o.Def.Static && Vector2.DistanceSquared(o.Position, at) < (reach + o.Radius) * (reach + o.Radius)) return true;
+            return false;
+        }
+
         /// <summary>What a target is worth: its CP, or for units never bought (bosses, defences) a guess from their health.</summary>
-        private static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
+        internal static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
 
         /// <summary>Damage on its way to each target (rounds in flight), for overkill checks.</summary>
         private readonly Dictionary<EntityId, float> _incoming = new();
@@ -367,7 +424,16 @@ namespace MachineBrigade.Sim.Combat
                 _world.Emit(SimEvent.Charging(v, index, weapon.Charge, target.Position));
                 return;
             }
-            if (state.Ammo > 0) state.Ammo--;
+            // An aircraft's stores (prompt 13 C): the salvo is what is left of them (a Grad-like ripple of
+            // rockets from a half-empty pod fires half a ripple); a launcher's magazine counts trigger pulls.
+            var salvo = weapon.Burst;
+            if (state.Load > 0)
+            {
+                salvo = Math.Min(weapon.Burst, Math.Max(0, state.Ammo));
+                state.Ammo -= salvo;
+            }
+            else if (state.Ammo > 0) state.Ammo--;
+            if (weapon.Projectile == ProjectileKind.Bomb && salvo > 1) _bombed.Add((v.Team, target.Position, _world.Time));
             // Shoot-and-scoot (the SP gun): rounds fired from this spot.
             if (index == 0 && v.Def.Scoot != null) v.ScootShots++;
             if (weapon.Clip > 0)
@@ -393,9 +459,9 @@ namespace MachineBrigade.Sim.Combat
                 if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (0.7f + 0.6f * (float)_world.Random.NextDouble());
                 return;
             }
-            if (weapon.Burst > 1 || extra > 0)
+            if (salvo > 1 || extra > 0)
             {
-                state.BurstLeft = weapon.Burst - 1 + extra;
+                state.BurstLeft = salvo - 1 + extra;
                 state.BurstTimer = weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
                 state.BurstTarget = target.Id;
                 state.BurstAim = target.Position;
@@ -667,6 +733,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             if (v.Weapons[index].Cooldown > 0f) return false;
+            // Prompt 13 D.2: no bombs where friends are too close to where they would fall.
+            if (v.Arms[index].Projectile == ProjectileKind.Bomb && OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f)) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;

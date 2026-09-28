@@ -83,6 +83,18 @@ namespace MachineBrigade.Sim.Content
 
         private static AuraDef ParseAura(JsonObject o) => new(o.Float("radius"), o.Float("rate"));
 
+        /// <summary>
+        /// Prompt 13 C.2: seconds from empty to fully loaded at the holding pattern's full rate when the
+        /// data gives none: helicopters and drones 8.5, fighters 11, attack jets 14, bombers 21.
+        /// </summary>
+        private static float DefaultRearm(VehicleDef def)
+        {
+            if (!def.Flying) return 0f;
+            if (!def.FixedWing || def.Drone) return 8.5f;
+            if (def.Interceptor) return 11f;
+            return def.Weapon.Projectile == ProjectileKind.Bomb ? 21f : 14f;
+        }
+
         /// <summary>A sensible class for vehicles whose data does not name one.</summary>
         private static UnitClass InferClass(VehicleDef def)
         {
@@ -123,7 +135,7 @@ namespace MachineBrigade.Sim.Content
                     w.Enum("projectile", ProjectileKind.Shell), w.Int("burst", 1), w.Float("burstInterval", 0.1f),
                     w.Enum("targets", TargetLayers.Ground))
                 {
-                    Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
+                    Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f), Load = w.Int("load", 0),
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f),
@@ -199,6 +211,7 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("model")) def.Model = v.String("model");
                     if (v.Has("mainModel")) def.Mounts[0].ProjectileModel = v.String("mainModel");
                     def.Boss = v.Bool("boss", false);
+                    def.Card = v.Bool("card", true);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
                     def.ArmyCost = def.CpCost;
@@ -241,6 +254,8 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("general")) def.General = v.String("general");
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
+                    // Prompt 13 F.2: an ammunition carrier: helicopters beside it rearm twice as fast.
+                    if (v.Has("airRearm")) def.AirRearm = ParseAura(v.Object("airRearm"));
                     def.Jammer = v.Float("jammer", 0f);
                     if (v.Has("mainAim")) def.AimMain(v.Enum<MountAim>("mainAim"));
                     def.Orbit = v.Bool("orbit", false);
@@ -248,6 +263,15 @@ namespace MachineBrigade.Sim.Content
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
                     def.AttackHold = def.FixedWing ? v.Float("attackHold", 0f) : 0f;
+                    // Prompt 13 C: an aircraft's stores per full load and how long they take to come back.
+                    if (v.Has("loads"))
+                    {
+                        var loads = new Dictionary<string, int>();
+                        var o = v.Object("loads");
+                        foreach (var key in o.Keys) loads[key] = o.Int(key, 0);
+                        def.Loads = loads;
+                    }
+                    def.RearmTime = v.Float("rearmTime", DefaultRearm(def));
                     def.Kamikaze = v.Bool("kamikaze", false);
                     def.DroneArmor = v.Float("droneArmor", 1f);
                     def.MineProof = v.Bool("mineProof", false);
@@ -308,6 +332,7 @@ namespace MachineBrigade.Sim.Content
                         def.Utility = new UtilityDef
                         {
                             Repair = u.Float("repair", 0f), Rearm = u.Float("rearm", 0f), AirRepair = u.Float("airRepair", 0f),
+                            AirRearm = u.Float("airRearm", 1f), AirCap = u.Int("airCap", 0),
                             AirReach = u.Float("airReach", 14f), Supply = u.Int("supply", 0), RevealBase = u.Bool("revealBase", false),
                         };
                     }

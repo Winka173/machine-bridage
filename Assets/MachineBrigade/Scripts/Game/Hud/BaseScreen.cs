@@ -881,6 +881,8 @@ namespace MachineBrigade.Game.Hud
                 if (_tab == PanelTab.Branch) BranchPanel(id);
                 else GearPanel(id);
             }
+            // A module with rank-7 branches (the landing pad's, prompt 13 F.1) has no gear: its branches only.
+            else if (TowerCards.Branches(_catalog, id).Count > 0) BranchPanel(id);
 
             // Replace, Remove, the detail page (D3).
             var buttons = Kit.Box("fc-base__buttons");

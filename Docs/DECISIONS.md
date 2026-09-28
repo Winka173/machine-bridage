@@ -3570,3 +3570,180 @@ fight live shorter (their own damage a second did not move); the wheeled gun −
 the same, plus fewer, bigger shots against light targets; the fighter −34 % against aircraft (air group): its
 AIM-120 at 280 (was 351) needs a fourth hit on a 1,250 HP helicopter whenever one is decoyed, which is the
 direction E wants anyway. Nothing was re-tuned for these in B; E takes the roster as B left it.
+
+### C. Stores and rearming on the field
+
+**C.1 What runs out.** An aircraft's *stores* (bombs, missiles, rockets) have a count per full load: weapon
+`load`, a carrier's own `loads` over it (the Ka-52's S-8s). Guns never run out (they change magazines in the air
+as before); ground launchers and missile vehicles keep their magazine and reload in place (`ammo`, standing
+still); supports and the air-raid event are not stores. The aircraft weapons that had `ammo` (AAMs, MANPADS,
+JASSM, the bomber's cruise missiles, Griffin, the drone's bombs), which reloaded in place in mid-air, are stores
+now. A salvo fires what is left (a half-empty rocket pod fires half a ripple). Bosses carry no stores (a boss
+fight is its own).
+
+| Aircraft | Stores per full load | Rearm, empty to full (full rate) |
+|---|---|---|
+| attack helicopter (and elite) | 4 Hellfire (elite 8 in pairs), 22 Hydra (2 salvos), 2 Stinger | 8.5 s |
+| gunship helicopter | 32 S-8 (2 salvos), 4 Hellfire | 9 s |
+| Ka-52 | 8 Vikhr (4 pairs), 24 S-8 (3 salvos), 2 Igla | 9 s |
+| scout helicopter | 24 Hydra (2 salvos) | 8 s |
+| strike drone / recon drone | 4 Hellfire + 2 GBU-39 / 4 MAM-L | 8.5 s |
+| fighter | 4 AIM-120, 2 AIM-9X | 11 s |
+| attack jet (and elite) | 16 S-8 (2 salvos of 8, D.1), 4 FAB-250 (2 pairs), 2 R-60 | 14 s |
+| A-10 | 14 Hydra (2 pods of 7), 2 Maverick, 2 AIM-9 | 15 s |
+| heavy bomber | 9 FAB-500 (one run, D.1), 2 Kh-101 | 16 s (brief: 20-22, see C.10) |
+| stealth bomber | 2 JDAM (one run, D.1), 4 JASSM (2 pairs) | 16 s (brief: 20-22, see C.10) |
+| AC-130 (the Gunship item) | 10 Griffin | 18 s |
+
+**C.2 Coming back one round at a time** (`SupplySystem`, Sim, stepped after the abilities): every store fills in
+the same time, one round at a time, anywhere on the map. **Full rate** once the aircraft has been out of danger
+and not attacking for 3 s; **half rate** while it attacks (a target in reach, its attack hold, or a shot fired in
+the last 3 s) or is inside enemy anti-air or fighter reach. Danger is the real one (every enemy AA gun, AA missile
+and fighter, whether seen or not; checked every fifth step, spread over the aircraft). Rearming mends nothing.
+
+**C.3 The holding pattern** (`SupplySystem.HoldingPoint`): from where the aircraft broke off, straight back
+towards home from the nearest friendly ground unit within 60 m (or from where it broke off when there is none),
+to the first spot out of every *known* enemy AA and fighter reach plus 6 m, the circle it will fly included;
+turning up to 60 degrees either way when straight back is covered; at least 1.5 s of flight behind a friendly
+line (2 s with none), at most 2.6 s; on the map with room to circle; with every spot covered, the least covered.
+It is worked out again every second as the front moves, always from where the aircraft broke off (a pattern
+worked out from where it circles would run away in front of it: that was the heavy bomber's 63 swings in
+`AirMotionTests` during the work). There an aeroplane circles as it circles a post and a helicopter hovers; it
+stays on the map, can be seen and shot, and its guns still fire at anything in reach. **The old rule of flying
+off the map to rearm:** there was none in the simulation; aircraft reloaded their few magazines in mid-air and
+went to the airfield (only if the base had one) when their main weapon was empty. That trip is gone (C.5).
+
+**C.4 Leaving at the right time.** An aircraft goes to rearm when its stores are spent. Stores that cannot hit
+what it fights do not count: an A-10's AIM-9s or an Apache's Stingers do not keep it on station; a fighter's
+stores are all air-to-air, so they all count. It first finishes what it is doing (`SupplySystem.CanBreakOff`): no
+salvo still firing, no attack hold under way, and an aeroplane not in its pass: it pulls through first. It flies
+out on a straight line, can be hit and keeps shooting and dropping flares; the holding point is chosen out of known
+AA, so the line away from the fight bends away from it. It comes back with half its stores (a bomber two thirds
+of its bombs) and something to attack near its orders; full and with nothing to attack it stays there ready (an
+aircraft on guard goes back to its post). The commander may send an aircraft early (the new `Rearm` command)
+when its stores are under a fifth and nothing it can hit is near it (`TacticalAi.RearmInLulls`). Low health keeps
+its old rule (the commander sends it to be mended below 35 %, released at 90 %), now only once its attack is over,
+and to the HQ when there is no landing pad.
+
+**C.5 Faster sites.** Landing pad (the airfield module): stores twice as fast as the holding pattern, mending
+3 % a second as before. HQ (every base): 1.5 times, mending 1 % a second. Beside an ammunition carrier (a
+helicopter only): twice as fast, no mending. A site is chosen when the flight there and the rearm take less time
+than at the holding pattern (a site under enemy AA counts at the slow rate), or, with the aircraft under 60 %
+health, a site that mends when it is at most 1.5 times (+5 s) as slow.
+
+**C.6 The attack loop** keeps 12F's hold and loop. With stores and targets, an aircraft attacks as before; out of
+stores it goes to its holding pattern; with no targets after rearming it waits there instead of circling the
+battlefield.
+
+**C.7 Ground launchers** reload in place as before. An empty one now drives to an ammunition carrier within
+about 60 m, or home (the camp), when the drive and a reload there (three times as fast) take less time than
+reloading where it stands (`TacticalAi.SendToRearm`; it moves out of an enemy's reach first, as before).
+
+**C.8 Attack jet and A-10 cannon passes.** Already settled by 12F's attack hold: a 2-2.5 s stream on the attack
+jet, up to 3.2 s on the A-10, in the 2-3 s the owner asked for. Nothing more changed; rockets and bombs are stores.
+
+**C.10 Time spent fighting** (`CombatValueMeasure`, 3 seeds, every scenario, 90 s and the 4-minute run): the share
+of an aircraft's time on the field attacking or ready to (on target, in its hold, or not on its way to rearm and
+not rearming below half its stores):
+
+| Aircraft | Ready | Flying out | At the holding pattern | Longest flight out |
+|---|---|---|---|---|
+| helicopters, drones, fighter, attack jet | 100 % | 0 | 0 | - (their stores come back as fast as they fire them) |
+| A-10 | 91 % | 3.5 % | 8.8 % | 2.6 s |
+| stealth bomber | 77 % | 9.5 % | 48 % | 4.5 s |
+| heavy bomber | 70 % | 13 % | 42 % | 4.7 s |
+
+The bombers' rearm is 16 s, not the brief's 20-22: at 21 s the heavy bomber was ready 63-68 % of the time and at
+0.7 of its old value, well under the 70 % target. Their longest flight out (4.5-4.7 s) is where the nearest spot
+out of an AA vehicle's reach is further than 2.6 s and a heavy bomber has to turn round first; it is flagged for
+the testing phase. Helicopters never need the holding pattern at these rates: a Hellfire every 5 s against 4 in
+8.5 s (half rate: one every 4.3 s) keeps pace. If the owner wants helicopters to go out to rearm, smaller loads
+would do it (not done: C.10's target is fighting time, and they meet it).
+
+### D. Bombers
+
+**D.1 Counts** (and the calibre scale's damage, B): heavy bomber 12 → **9** FAB-500 a run (400 each); stealth
+bomber 3 → **2** JDAM (850); attack jet rockets 20 → **16** a full load (two salvos of 8); airstrike 8 → **6** Mk 84
+a run (700 each after the ×2 strike firepower: the scale's 900 kg), 8 from card rank 7 (was 11); air raid event
+14 → **10** FAB-500 (400); cluster strike 40 → **30** bomblets; napalm 10 → **8** canisters; artillery barrage
+12 × 220 → **8 × 320** (155 mm). The cruise missile card and the MOAB are unchanged (a 1,000 kg class strike; the
+MOAB is the scale's 8,000).
+
+**D.2 Behaviour.** A bomber picks its run by what its bombs would hit (`MovementSystem.BombTarget`, and the same
+worth in the bomb mount's target choice, `CombatSystem.BombWorth`): the value of the enemies within its blast plus
+4 m, a structure half as much again, a lone light vehicle a quarter; never releases where a friendly ground vehicle
+is within the blast plus 3 m of the target; ground its side bombed in the last 10 s (16 m) is worth a third, a pause
+between runs on one place. Bombers go in only with two thirds of their bombs (C.4).
+
+**D.3 Aircraft against the ground.** Ground value (the six ground groups), per CP, after C-F: heavy bomber 438,
+stealth bomber 390, attack jet 438, A-10 383, strike drone 343; the best ground unit of the same role: heavy rocket
+artillery 456 and MLRS 441 (area and structures), tank destroyer 492 (armour). Every aircraft is at or under 1.0
+times the best ground unit of its role (the brief's ceiling: 1.3). Without any enemy anti-air they are 1.5-2 times
+as strong (attack jet: light 628, fort 1,156); with one AA vehicle they fall to 25-60.
+
+### E. Roster review
+
+Same role and price band within ±15 % of combat value per CP, from the measurement (3 seeds; before = the data
+before prompt 13 with the same tool, so the numbers compare). Ground value unless marked "air".
+
+| Vehicle | Change | Before → after (per CP) | Why |
+|---|---|---|---|
+| tank destroyer | 6 → 7 CP | 555 → 492 | the best anti-armour value by a third |
+| ATGM carrier | 6 → 5 CP, 420 → 520 HP, salvo every 8.7 → 7.6 s | 165 → 307 | a third of its peers' value: light armour, slow missiles |
+| wheeled gun | 7 → 6 CP, 440 → 620 HP, 105→120 mm gun 3.3 s | 146 → 234 | half its peers'; its flank bonus rarely comes into play; a fast flanker, left under the band on purpose |
+| Lancet truck | 7 → 6 CP | 204 → 238 | its double damage on artillery and parked vehicles is its point; the reference groups have little of either (kept under the band) |
+| MLRS | 5 → 6 CP | 551 → 441 | artillery's best by half |
+| heavy rocket artillery | 9 → 11 CP | 527 → 456 | same |
+| thermobaric launcher | 9 → 7 CP, 16 → 12.8 s | 243 → 267 | its 38 m reach puts it in the fight |
+| rocket technical | 150 → 190 HP, 8 → 7 s | 235 → 245 | fragile against anything that moves |
+| SP artillery | reload 52 → 36 s, 13.4 → 11 s | 284 → 314 | B's 155 mm stretched its cycle |
+| turtle tank | 8 → 7 CP | 262 → 360 | the battle tank's gun on a slower, hull-aimed body |
+| scout helicopter | 6 → 5 CP | 249 → 318 | |
+| Ka-52 | 14 → 13 CP | 229 → 265 | stays under the band on purpose: the best of all helicopters with AA about (+AA: 223-300) |
+| gunship helicopter | 14 → 15 CP | 469 → 384 | the brief's "highest heavy damage per CP of the helicopters" (tanks: 790 against the attack helicopter's 683) |
+| A-10 | 18 → 16 CP | 559 → 383 | stores (C) took a third of it |
+| stealth bomber | 20 → 18 CP | 535 → 390 | stores and 2 JDAM |
+| heavy bomber | 20 → 22 CP | 598 → 438 | still the aircraft's best on structures (fort 1,177) |
+| fighter | 10 → 12 CP | air 376 → 284 | the brief's "fighters dominate the air"; now between the AA vehicle (234) and the long-range SAM (410) |
+| heavy AA | 7 → 6 CP, 480 → 540 HP | air 219 → 194 | dies first of the anti-air in the air group |
+| ZU-23 technical | 170 → 210 HP | air 99 → 85 | |
+| engineer | 4 → 3 CP | - | lost its rearm aura to the ammunition carrier (F) |
+
+After it, per role: light 92-123; heavy 356-494 (the flame tank 356, an anti-light specialist: light group 700+);
+tank hunters 234-492 (the tank destroyer, FPV carrier and railgun 403-492); artillery 245-456; helicopters 265-392;
+aircraft 343-438; mobile anti-air in the air group 183-234 (the long-range SAM 410: it cannot hit the ground).
+The railgun (the brief's "still weak: 68 DPS on heavy for 9 CP") measures 403, at the tank hunters' middle: its
+pierce and reach are what the theoretical table missed; unchanged. **The Iron Beam** (`PrintPointDefenceValue`:
+four tanks under two ATGM carriers, an MLRS, a Lancet, an FPV carrier and an attack helicopter for 45 s): it saves
+4,214 HP (468 a CP, 22.7 interceptions) against two AA vehicles' 1,963 (245 a CP); unchanged at 9 CP. A C-RAM
+saves as much (4,194).
+
+**E.3 The sky gunship** is no card any more (`"card": false`): the AI never buys it, the design document lists it
+with the items (`itemVehicles`). The Gunship item still flies it. The save migration and the 4,500-coin refund
+were already done in prompt 2 (`CardMerges.Retired`); nothing else carried it as a card (it was only the design
+document's list and the AI's list of every catalog vehicle when it has no deck).
+
+**E.4 Behaviour against the guide text:** the tank destroyer, wheeled gun and gun pit (B.5), the wheeled gun's
+damage a second (65 → 70), the AA tower's quad flak (35 → 23 mm), the engineer (repair only) and the airstrike's
+bombs were corrected; G generates the behaviour lines from the data so they cannot drift again.
+
+### F. Content for the stores
+
+**F.1 The landing pad** (the airfield module, not a new building): stores twice as fast as the holding pattern,
+mending 3 % a second (C.5). Two rank-7 branches (`airfield.hangar`: one more aircraft up at once for its side,
+`EconomySystem.AircraftCap`, and a little tougher; `airfield.service`: stores and mending half as fast again, 4.5 %
+a second, 16 m). A module's branch is chosen and fights as a tower's does (`PlayerProfile` and `BaseSystem` now
+apply branches to modules). The enemy's base takes a landing pad in its first utility slot
+(`BaseLoadout.ForAi`); a fortress's landing pad destroyed pays the attacker 12 CP in Siege (`SiegeRules.PadCp`),
+and its aircraft then rearm only at their holding patterns and the HQ.
+
+**F.2 The ammunition carrier** (`ammo_carrier`, Support, 4 CP, 520 HP light armour, 8.5 m/s, roof HMG, a big
+death blast): launchers and missile carriers within 14 m reload three times as fast (the rearm aura the engineer
+had), helicopters within 12 m take their stores on twice as fast. The engineer keeps its repair and mine clearing
+and drops to 3 CP. The commander parks the carrier by its launchers and helicopters, 6 m back towards home and
+out of known defences' reach, buys one once it fields three launchers or helicopters (never a second), and sends
+empty launchers to it when that is quicker (C.7). Unlocked with the UAV scan in c3m03 (the mission after the
+attack helicopter's). Its model is the supply truck's for now (**asset debt**, `Docs/ASSET_DEBT.md`); its card
+render, In-action scene and short name come with the UI part (C.9, G).
+
+No other vehicle or building was added for the stores.

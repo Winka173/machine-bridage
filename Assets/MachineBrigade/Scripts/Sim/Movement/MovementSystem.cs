@@ -94,8 +94,11 @@ namespace MachineBrigade.Sim.Movement
                 }
                 v.RepathTimer -= dt;
                 if (!v.Flying) TrackTraffic(v);
+                // Out of stores (prompt 13 C): the aircraft flies to its holding pattern and circles there,
+                // its order kept for when it comes back.
+                if (v.Flying && v.Supply != SupplyState.Fighting) SteerToRearm(v);
                 // Making way or backing out for a friend: the order waits (it is taken up again after).
-                if (!TrafficOverlay(v)) UpdateOrder(v);
+                else if (!TrafficOverlay(v)) UpdateOrder(v);
                 if (v.ManualOrder && v.Order.Kind == OrderKind.Idle)
                 {
                     v.ManualOrder = false;
@@ -380,8 +383,10 @@ namespace MachineBrigade.Sim.Movement
                 v.ResumeRoute = true;
                 return;
             }
-            var enemy = _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
-                minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
+            // A bomber picks its run by what its bombs would hit (prompt 13 D.2): a group or a structure.
+            var enemy = v.Def.FixedWing && weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1 ? BombTarget(v)
+                : _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
+                    minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;
@@ -400,6 +405,30 @@ namespace MachineBrigade.Sim.Movement
             {
                 v.SetOrder(Order.Idle);
             }
+        }
+
+        /// <summary>
+        /// Prompt 13 D.2: a bomber's run: the known ground enemy in sight whose surroundings its bombs are
+        /// worth most on (groups and structures first, a lone light vehicle last, not ground it just
+        /// bombed), nearer ones a little ahead of farther.
+        /// </summary>
+        private Vehicle? BombTarget(Vehicle v)
+        {
+            var weapon = v.Def.Weapon;
+            var reach = MathF.Max(v.Def.VisionRange, 60f);
+            Vehicle? best = null;
+            var bestScore = 0f;
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Invulnerable || e.Def.Untargetable || !e.IsVisibleTo(v.Team)) continue;
+                var d = Vector2.Distance(e.Position, v.Position);
+                if (d > reach) continue;
+                var score = _world.Combat.BombWorth(v.Team, e, weapon) * MathF.Sqrt(Math.Clamp(Combat.CombatSystem.Worth(e), 2f, 25f)) / (1f + d / 200f);
+                if (score <= bestScore) continue;
+                best = e;
+                bestScore = score;
+            }
+            return best;
         }
 
         /// <summary>
@@ -988,9 +1017,36 @@ namespace MachineBrigade.Sim.Movement
             return v.Position + direction * 10f;
         }
 
+        /// <summary>
+        /// Prompt 13 C: an aircraft on its way to rearm or rearming flies to its holding pattern (or pad,
+        /// HQ, carrier): an aeroplane then circles it as it circles a post, a helicopter hovers over it.
+        /// </summary>
+        private void SteerToRearm(Vehicle v)
+        {
+            var at = v.HoldPoint;
+            v.GuardPoint = at;
+            v.Engaged = EntityId.None;
+            var distance = Vector2.Distance(v.Position, at);
+            // An aeroplane flies there and then circles it (its circle pulls it round; routing it back to
+            // the centre each time it swung wide would wag its nose); a helicopter hovers on the spot.
+            var near = v.Def.FixedWing ? Abilities.SupplySystem.Orbit(v) * 2f + 10f : 2.5f;
+            if (distance <= near)
+            {
+                if (v.HasPath && (!v.Def.FixedWing || distance < Abilities.SupplySystem.Orbit(v) + 4f)) v.ClearPath();
+                return;
+            }
+            if (!v.HasPath || Vector2.Distance(v.PathGoal, at) > 8f) _world.PathTo(v, at);
+        }
+
         /// <summary>The strafing-run target: an ordered one, else the current or last engaged enemy.</summary>
         private IDamageable? RunTarget(Vehicle v)
         {
+            // Out to rearm: no attack runs (its guns still fire at what comes into reach).
+            if (v.Supply != SupplyState.Fighting)
+            {
+                v.RunTarget = EntityId.None;
+                return null;
+            }
             if (v.Order.Kind is OrderKind.Move or OrderKind.Retreat)
             {
                 v.RunTarget = EntityId.None;

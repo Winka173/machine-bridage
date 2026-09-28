@@ -728,6 +728,7 @@ namespace MachineBrigade.Game.Hud
             "heavy_rocket_artillery" => "smerch",
             "ballistic_launcher" => "ballistic",
             "engineer_vehicle" => "engineer",
+            "ammo_carrier" => "engineer",
             "ew_jammer" => "jammer",
             "fpv_carrier" => "fpvtruck",
             "recon_drone" => "drone",

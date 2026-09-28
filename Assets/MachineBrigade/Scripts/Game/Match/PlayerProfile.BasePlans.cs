@@ -115,6 +115,9 @@ namespace MachineBrigade.Game.Match
             resolved.Utilities.RemoveAll(id => !string.IsNullOrEmpty(id) && !IsUnlocked(id));
             foreach (var id in resolved.Towers)
                 if (TowerBranch(id) is { } branch) resolved.Branches[id] = branch;
+            // A module's rank-7 branch too (the landing pad's, prompt 13 F.1).
+            foreach (var id in resolved.Utilities)
+                if (!string.IsNullOrEmpty(id) && TowerBranch(id) is { } branch) resolved.Branches[id] = branch;
             return resolved;
         }
 
