@@ -670,7 +670,7 @@ namespace MachineBrigade.Game.Hud
             ["army.base"] = ("Base", "Căn cứ"),
             ["camp.level"] = ("HQ level", "Cấp sở chỉ huy"),
             ["camp.hqLevel"] = ("HQ {0}", "SCH {0}"),
-            ["camp.opens"] = ("Opens {0} small, {1} medium, {2} large and {3} utility slots.", "Mở {0} ô nhỏ, {1} ô vừa, {2} ô lớn và {3} ô tiện ích."),
+            ["camp.opens"] = ("Opens {0} small · {1} medium · {2} large · {3} utility slots", "Mở {0} ô nhỏ · {1} ô vừa · {2} ô lớn · {3} ô tiện ích"),
             ["camp.size.small"] = ("Small", "Nhỏ"),
             ["camp.size.medium"] = ("Medium", "Vừa"),
             ["camp.size.large"] = ("Large", "Lớn"),

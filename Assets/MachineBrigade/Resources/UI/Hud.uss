@@ -2211,8 +2211,9 @@
     --base-frame-medium: 84px;
     --base-frame-large: 96px;
     --base-hq: 86px;
-    --base-slot-face: rgba(18, 23, 27, 0.85);
-    --base-slot-closed: rgba(18, 23, 27, 0.4);
+    --base-slot-face: #161b1f;
+    --base-slot-closed: #111518;
+    --base-hq-face: #1d2225;
     --base-lit-face: rgba(237, 230, 214, 0.1);
     --base-picked-face: rgba(237, 230, 214, 0.16);
     --base-hover-face: rgba(156, 203, 94, 0.14);
@@ -2233,17 +2234,16 @@
 .menu .base-level-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 30px; color: var(--text-mid); padding-top: 2px; }
 .menu .base-level.chosen .base-level-text { color: var(--text-hi); }
 .menu .base-level-info {
-    flex-grow: 1; flex-shrink: 1; margin: 0 14px 0 8px; font-size: 14px; color: var(--text-mid); white-space: normal;
+    flex-grow: 1; flex-shrink: 1; margin: 0 12px 0 8px; font-size: 13px; color: var(--text-mid); white-space: normal;
 }
 .menu .base-map-arrow { width: 72px; height: 72px; align-items: center; justify-content: center; flex-shrink: 0; }
 .menu .base-map-arrow .icon { width: 28px; height: 28px; }
 .menu .base-map-arrow.left .icon { rotate: 180deg; }
-.base-map-text { width: 168px; flex-shrink: 0; align-items: center; justify-content: center; margin: 0 6px; }
+.base-map-text { width: 196px; flex-shrink: 0; align-items: center; justify-content: center; margin: 0 6px; }
 .menu .base-map-name {
-    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 24px; letter-spacing: 1px; color: var(--text-hi);
+    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 22px; letter-spacing: 1px; color: var(--text-hi);
     -unity-text-align: middle-center; white-space: normal; padding-top: 2px;
 }
-.menu .base-map-sub { font-size: 13px; color: var(--text-lo); -unity-text-align: middle-center; white-space: normal; }
 .menu .wide.base-save {
     width: 176px; height: 72px; margin-left: 14px; flex-shrink: 0; justify-content: center; padding: 0 16px;
     background-color: rgba(0, 0, 0, 0); border-color: rgba(0, 0, 0, 0);
@@ -2306,15 +2306,15 @@
 .base-canvas {
     position: absolute; left: 0; top: 0; right: 0; bottom: 0;
     --camp-grid: rgba(237, 234, 227, 0.035);
-    --camp-road: rgba(237, 234, 227, 0.05);
-    --camp-edge: rgba(237, 234, 227, 0.14);
+    --camp-road: rgba(237, 234, 227, 0.028);
+    --camp-edge: rgba(237, 234, 227, 0.1);
     --camp-facing: rgba(237, 234, 227, 0.4);
     --camp-grid-step: 10;
     --camp-gap: 6;
     --camp-pad: 10;
     --camp-tick: 12;
 }
-.base-front { position: absolute; top: 6px; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: center; }
+.base-front { flex-direction: row; align-items: center; flex-shrink: 0; margin-left: 4px; }
 .base-front-arrow { width: 16px; height: 16px; rotate: -90deg; margin-right: 4px; --icon-color: #69747b; }
 .menu .base-front-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; letter-spacing: 2px; color: var(--text-lo); padding-top: 2px; }
 .menu .base-no-camp { position: absolute; top: 40%; left: 0; right: 0; -unity-text-align: middle-center; }
@@ -2354,32 +2354,34 @@
 .base-slot.utility .base-slot-icon { width: 30px; height: 30px; --icon-color: #69747b; }
 .menu .base-slot.lit { background-color: var(--base-lit-face); border-color: var(--line-3); }
 .base-slot.lit .base-slot-icon { --icon-color: #ede6d6; }
-.menu .base-slot.dim { opacity: 0.35; }
+.menu .base-slot.dim { border-color: var(--line-1); }
+.base-slot.dim .base-slot-icon, .base-slot.dim .base-slot-size .icon { --icon-color: #3a454c; }
+.menu .base-slot.dim .base-slot-caption { color: #3a454c; }
 .menu .base-slot.picked { background-color: var(--base-picked-face); border-color: var(--line-3); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; }
 .menu .base-slot.selected-type { border-color: var(--line-3); }
 .menu .base-slot.hover { background-color: var(--base-hover-face); border-color: var(--positive); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; }
 
 .menu .base-hq {
     position: absolute; width: var(--base-hq); height: var(--base-hq); align-items: center; justify-content: center;
-    background-color: rgba(237, 230, 214, 0.05);
+    background-color: var(--base-hq-face);
     border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: var(--line-2);
 }
 .base-hq > .icon { width: 44px; height: 44px; --icon-color: #edeae3; }
 .menu .base-hq-level { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 17px; letter-spacing: 1px; color: var(--text-mid); padding-top: 2px; }
 
 /* the picked tower card (right): branch and gear, then the outpost */
-.base-right { width: 320px; flex-shrink: 0; flex-direction: column; }
+.base-right { width: 25%; min-width: 320px; max-width: 420px; flex-shrink: 0; flex-direction: column; }
 .base-head {
-    flex-direction: row; align-items: center; flex-shrink: 0; min-height: 88px; padding: 8px; background-color: var(--surface-2);
+    flex-direction: row; align-items: center; flex-shrink: 0; min-height: 72px; padding: 6px 8px; background-color: var(--surface-2);
     border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
 }
-.base-head-art { width: 64px; height: 64px; flex-shrink: 0; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.03); }
+.base-head-art { width: 58px; height: 58px; flex-shrink: 0; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.03); }
 .base-head-icon { width: 40px; height: 40px; --icon-color: #edeae3; }
 .base-head-text { flex-grow: 1; flex-shrink: 1; margin: 0 8px 0 10px; }
 .menu .base-head-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 21px; letter-spacing: 0.5px; color: var(--text-hi); white-space: normal; padding-top: 2px; }
 .menu .base-head-line { font-size: 13px; color: var(--text-mid); white-space: normal; }
 .menu .base-head-count { color: var(--text-lo); }
-.menu .base-takeout { width: 72px; height: 72px; flex-shrink: 0; align-items: center; justify-content: center; }
+.menu .base-takeout { width: 72px; height: 72px; flex-shrink: 0; align-items: center; justify-content: center; margin-left: 6px; }
 .menu .base-takeout .icon { width: 26px; height: 26px; }
 .base-tabs { flex-direction: row; flex-shrink: 0; margin-top: 8px; }
 .menu .base-tab { height: 72px; margin: 0 6px 0 0; }
@@ -2387,7 +2389,7 @@
 .base-panel-scroll { flex-grow: 1; flex-shrink: 1; margin-top: 8px; }
 .menu .base-note { font-size: 14px; color: var(--text-mid); white-space: normal; margin: 0 0 8px 0; }
 .menu .base-branch {
-    min-height: 76px; padding: 10px 12px; margin-bottom: 8px; background-color: var(--surface-2);
+    min-height: 72px; padding: 8px 12px; margin-bottom: 8px; background-color: var(--surface-2);
     border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
     border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
     transition-property: scale, background-color; transition-duration: 0.08s;

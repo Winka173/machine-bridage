@@ -62,7 +62,7 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _left, _canvasBox, _hq, _panelBody, _headArt, _takeOut, _ghost, _confirm, _save;
         private CampCanvas _canvas;
         private IconElement _headIcon, _headSize, _ghostIcon;
-        private Label _mapName, _mapSub, _levelInfo, _hint, _hqLevel, _headName, _headLine, _headCount, _confirmText, _utilityCount, _saveTitle;
+        private Label _mapName, _levelInfo, _hint, _hqLevel, _headName, _headLine, _headCount, _confirmText, _utilityCount, _saveTitle;
 
         private BaseLoadout _layout;
         private bool _dirty;
@@ -159,9 +159,7 @@ namespace MachineBrigade.Game.Hud
             toolbar.Add(previous);
             var mapText = UiKit.Box("base-map-text");
             _mapName = UiKit.Text("", "base-map-name");
-            _mapSub = UiKit.Text("", "base-map-sub");
             mapText.Add(_mapName);
-            mapText.Add(_mapSub);
             toolbar.Add(mapText);
             var next = UiKit.Button("icon-button base-map-arrow right", () => StepMap(1));
             next.Add(UiKit.Icon("arrow", UiKit.Ink, 2.2f));
@@ -205,6 +203,13 @@ namespace MachineBrigade.Game.Hud
             _utilityCount = UiKit.Text("", "base-legend-count");
             utilityChip.Add(_utilityCount);
             legend.Add(utilityChip);
+            // Which way is up on the diagram: the camp's front, towards the enemy.
+            var front = UiKit.Box("base-front");
+            var arrow = UiKit.Icon("arrow", UiKit.Ink, 2f);
+            arrow.AddToClassList("base-front-arrow");
+            front.Add(arrow);
+            front.Add(UiKit.Text(Strings.Get("camp.front"), "base-front-text"));
+            legend.Add(front);
             _hint = UiKit.Text("", "base-hint");
             legend.Add(_hint);
             centre.Add(legend);
@@ -236,10 +241,6 @@ namespace MachineBrigade.Game.Hud
             headText.Add(_headLine);
             headText.Add(_headCount);
             head.Add(headText);
-            _takeOut = UiKit.Button("icon-button base-takeout", TakeOut);
-            _takeOut.Add(UiKit.Icon("close", UiKit.Ink, 2f));
-            _takeOut.tooltip = Strings.Get("camp.remove");
-            head.Add(_takeOut);
             right.Add(head);
             var tabs = UiKit.Box("base-tabs");
             foreach (var (tab, icon, key) in new[] { (PanelTab.Branch, "upgrade", "camp.branch"), (PanelTab.Gear, "gear", "camp.gear") })
@@ -255,6 +256,11 @@ namespace MachineBrigade.Game.Hud
                 tabs.Add(button);
                 _tabButtons.Add((button, tab));
             }
+            // Take a picked slot's tower out (shown only then).
+            _takeOut = UiKit.Button("icon-button base-takeout", TakeOut);
+            _takeOut.Add(UiKit.Icon("close", UiKit.Ink, 2f));
+            _takeOut.tooltip = Strings.Get("camp.remove");
+            tabs.Add(_takeOut);
             right.Add(tabs);
             var panelScroll = new ScrollView(ScrollViewMode.Vertical)
             {
@@ -409,16 +415,10 @@ namespace MachineBrigade.Game.Hud
                 _hqLevel = UiKit.Text("", "base-hq-level");
                 _hq.Add(_hqLevel);
                 _canvas.Add(_hq);
-                var front = UiKit.Box("base-front");
-                var arrow = UiKit.Icon("arrow", UiKit.Ink, 2f);
-                arrow.AddToClassList("base-front-arrow");
-                front.Add(arrow);
-                front.Add(UiKit.Text(Strings.Get("camp.front"), "base-front-text"));
-                _canvas.Add(front);
             }
             else _canvas.Add(UiKit.Text(Strings.Get("camp.noCamp"), "base-note base-no-camp"));
             _mapName.text = Strings.Get("map." + id);
-            _mapSub.text = Strings.Has("map." + id + ".sub") ? Strings.Get("map." + id + ".sub") : "";
+            _mapName.tooltip = Strings.Has("map." + id + ".sub") ? Strings.Get("map." + id + ".sub") : "";
             Refresh();
             if (_canvas.panel != null) _canvas.schedule.Execute(Arrange);
         }

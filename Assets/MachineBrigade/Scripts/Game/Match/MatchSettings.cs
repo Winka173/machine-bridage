@@ -440,6 +440,9 @@ namespace MachineBrigade.Game.Match
                 LanguageChoice.Vietnamese => true,
                 _ => Application.systemLanguage == SystemLanguage.Vietnamese,
             };
+            // Device checks of text lengths in each language: -mb-en, -mb-vi.
+            if (DebugFlags.Has("-mb-en")) Strings.Vietnamese = false;
+            else if (DebugFlags.Has("-mb-vi")) Strings.Vietnamese = true;
         }
 
         private static void ReadDeck(string key, List<string> deck, string[] all, string[] defaults, int slots, string[] layout)

@@ -611,11 +611,11 @@ namespace MachineBrigade.Game.Hud
                 "[[Headquarters]] · fixed defence · the heart of a base\n" +
                 "How it fights: a twin heavy gun fires two-shot [[volleys]] out to 40 m, twin 30 mm flak and a coaxial MG cover the sky; new vehicles are dropped round it.\n" +
                 "Strong / weak: very tough; in Conquest, King of the Hill and Deathmatch it [[cannot fall]], in Assault and Siege it is the [[target]], in Defend and Endless losing it loses the battle.\n" +
-                "Tip: its [[HQ level]] (1–5) sets the fortification points and utility slots for the base loadout; fill the hardpoints in front of it with towers.",
+                "Tip: its [[HQ level]] (1–5) opens the small, medium and large hardpoints and the utility slots of the base; fill them with towers on the Army tab's Base screen.",
                 "[[Sở chỉ huy]] · công sự cố định · trái tim của căn cứ\n" +
                 "Cách đánh: pháo nặng hai nòng bắn [[loạt đôi]] tới 40 m, pháo phòng không đôi 30 mm và súng máy đồng trục canh bầu trời; quân mới được thả dù quanh nó.\n" +
                 "Mạnh / yếu: cực lì; ở Chiếm cứ điểm, Giữ đồi và Tử chiến nó [[không thể bị phá]], ở Tấn công và Công thành nó là [[mục tiêu]], ở Phòng thủ và Vô tận mất nó là thua.\n" +
-                "Mẹo: [[cấp sở chỉ huy]] (1–5) quyết định điểm công sự và ô tiện ích của căn cứ; lấp các ô tháp phía trước nó bằng tháp."),
+                "Mẹo: [[cấp sở chỉ huy]] (1–5) mở các ô tháp nhỏ, vừa, lớn và ô tiện ích của căn cứ; đặt tháp vào chúng ở màn Căn cứ trong thẻ Quân đội."),
             ["guide.spawn_bastion"] = (
                 "[[Camp bastion]] · fixed defence · guards a base\n" +
                 "How it fights: never moves; a twin heavy gun fires two-shot [[volleys]] out to 40 m, and a coaxial MG also fires at aircraft.\n" +
