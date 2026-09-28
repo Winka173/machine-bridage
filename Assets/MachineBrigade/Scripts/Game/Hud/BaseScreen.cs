@@ -52,7 +52,10 @@ namespace MachineBrigade.Game.Hud
         private readonly Action<string, bool> _note;
         private readonly Action _changed;
         private readonly Dictionary<string, MapDefinition> _maps = new();
-        private readonly List<string> _towers;
+        private readonly List<string> _towers, _modules;
+
+        /// <summary>Whether the catalog has utility modules; without any the utility slots show as "soon".</summary>
+        private readonly bool _hasModules;
         private readonly List<SlotView> _campViews = new(), _outpostViews = new();
         private readonly List<(VisualElement row, string id)> _rows = new();
         private readonly List<(VisualElement button, int level)> _levelButtons = new();
@@ -88,6 +91,9 @@ namespace MachineBrigade.Game.Hud
             _changed = changed ?? (() => { });
             // Cheapest first, then by size: light towers at the top of the list.
             _towers = TowerCards.All(catalog).OrderBy(id => catalog.Vehicles[id].Fort.Size).ThenBy(id => id, StringComparer.Ordinal).ToList();
+            _modules = catalog.Vehicles.Values.Where(d => d.Fort is { Kind: FortKind.Utility } && d.BranchOf == null).Select(d => d.Id)
+                .OrderBy(id => id, StringComparer.Ordinal).ToList();
+            _hasModules = _modules.Count > 0;
             _layout = PlayerProfile.BaseLoadout;
             _selected = _towers.FirstOrDefault();
             Root = UiKit.Box("base-view", PickingMode.Position);
@@ -111,12 +117,15 @@ namespace MachineBrigade.Game.Hud
         {
             if (DebugFlags.Has("-mb-base-gear")) _tab = PanelTab.Gear;
             var pick = DebugFlags.Value("-mb-base-pick=");
-            if (!string.IsNullOrEmpty(pick) && _towers.Contains(pick))
+            if (!string.IsNullOrEmpty(pick) && (_towers.Contains(pick) || _modules.Contains(pick)))
             {
                 _selected = pick;
                 _armed = pick;
             }
             Refresh();
+            // -mb-base-confirm: the question a branch change asks, for a look at it (below rank 7 the answer is refused).
+            if (DebugFlags.Has("-mb-base-confirm") && _selected != null && TowerCards.Branches(_catalog, _selected) is { Count: > 1 } branches)
+                AskBranch(_selected, branches[1]);
         }
 
         /// <summary>The layout being edited (not yet saved while <see cref="Dirty"/>).</summary>
@@ -183,6 +192,11 @@ namespace MachineBrigade.Game.Hud
             scroll.AddToClassList("base-list");
             MouseDragScroll.Attach(scroll);
             foreach (var id in _towers) scroll.Add(TowerRow(id));
+            if (_hasModules)
+            {
+                scroll.Add(UiKit.Text(Strings.Get("camp.utility"), "menu-caps base-caps base-list-caps"));
+                foreach (var id in _modules) scroll.Add(TowerRow(id));
+            }
             _left.Add(scroll);
             body.Add(_left);
 
@@ -319,9 +333,9 @@ namespace MachineBrigade.Game.Hud
         {
             var row = UiKit.Button("base-tower", () => TapTower(id));
             var art = UiKit.Box("base-tower-art");
-            art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
+            art.Add(UiKit.Icon(IconFor(id), UiKit.Ink, 1.6f));
             var badge = UiKit.Box("base-size-badge");
-            badge.Add(UiKit.Icon(SizeIcon(_catalog.Vehicles[id].Fort.Size), UiKit.Ink, 2f));
+            badge.Add(UiKit.Icon(IsModule(id) ? "module" : SizeIcon(_catalog.Vehicles[id].Fort.Size), UiKit.Ink, 2f));
             art.Add(badge);
             row.Add(art);
             var text = UiKit.Box("base-tower-text");
@@ -348,12 +362,24 @@ namespace MachineBrigade.Game.Hud
             element.Add(view.Caption);
             element.RegisterCallback<PointerDownEvent>(e =>
             {
-                if (view.Utility || !view.Open) return;
+                if (Soon(view) || !view.Open) return;
                 var tower = BaseLayout.At(_layout, view.Slot);
                 if (tower != null) Press(e, tower, view.Slot, false);
             });
             view.Element = element;
         }
+
+        private bool IsModule(string id) => _catalog.Vehicles.TryGetValue(id, out var def) && def.Fort is { Kind: FortKind.Utility };
+
+        /// <summary>A card's icon (a utility module without an icon of its own shows the module chip).</summary>
+        private string IconFor(string id)
+        {
+            var icon = CardIcons.For(id);
+            return icon == "tank" && IsModule(id) ? "module" : icon;
+        }
+
+        /// <summary>A slot that takes nothing yet: a utility slot while there are no utility modules.</summary>
+        private bool Soon(SlotView view) => view.Utility && !_hasModules;
 
         internal static string SizeIcon(SlotSize size) => size switch
         {
@@ -480,7 +506,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A tower card tapped: picked for the panel and armed for a tap on a slot (or into the slot picked first).</summary>
         internal void TapTower(string id)
         {
-            if (_picked is { } slot && SlotFor(slot) is { } view && view.Open && !view.Utility)
+            if (_picked is { } slot && SlotFor(slot) is { } view && view.Open && !Soon(view))
             {
                 Drop(id, null, view);
                 return;
@@ -493,7 +519,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A slot tapped: the armed tower goes in; otherwise the slot is picked (tap a tower next, or take its tower out).</summary>
         internal void TapSlot(SlotView view)
         {
-            if (view.Utility)
+            if (Soon(view))
             {
                 _note(Strings.Get("camp.utilitySoon"), false);
                 return;
@@ -528,7 +554,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A tower dropped (or tapped) into a slot: from the list it replaces what was there; from another slot it moves (a swap when both fit).</summary>
         private bool Drop(string id, LoadoutSlot? from, SlotView target)
         {
-            if (!target.Open || target.Utility) return false;
+            if (!target.Open || Soon(target)) return false;
             if (!BaseLayout.Fits(_catalog, id, target.Slot))
             {
                 _note(Strings.Format("camp.tooBig", Strings.Card(id), SizeName(target.Slot.Size).ToLowerInvariant()), true);
@@ -658,7 +684,7 @@ namespace MachineBrigade.Game.Hud
             }
             MoveGhost(at);
             var over = SlotUnder(at);
-            var target = over != null && over.Open && !over.Utility && BaseLayout.Fits(_catalog, _pressId, over.Slot) ? over : null;
+            var target = over != null && over.Open && !Soon(over) && BaseLayout.Fits(_catalog, _pressId, over.Slot) ? over : null;
             if (target != _hover)
             {
                 _hover?.Element.RemoveFromClassList("hover");
@@ -675,7 +701,7 @@ namespace MachineBrigade.Game.Hud
             _armed = null;
             _picked = null;
             _selected = _pressId;
-            _ghostIcon.Name = CardIcons.For(_pressId);
+            _ghostIcon.Name = IconFor(_pressId);
             _ghost.RemoveFromClassList("base-hidden");
             _ghost.BringToFront();
             if (Root.panel != null) Root.CapturePointer(_pressPointer);
@@ -698,7 +724,7 @@ namespace MachineBrigade.Game.Hud
             EndDrag();
             if (over != null && !(from is { } f && f.Equals(over.Slot)))
             {
-                if (over.Utility) _note(Strings.Get("camp.utilitySoon"), false);
+                if (Soon(over)) _note(Strings.Get("camp.utilitySoon"), false);
                 else if (!over.Open) _note(Strings.Format("camp.closed", OpensAt(over.Slot)), true);
                 else Drop(id, from, over);
             }
@@ -784,17 +810,19 @@ namespace MachineBrigade.Game.Hud
         {
             foreach (var view in _campViews.Concat(_outpostViews))
             {
-                var tower = view.Utility ? null : BaseLayout.At(_layout, view.Slot);
+                var soon = Soon(view);
+                var tower = soon ? null : BaseLayout.At(_layout, view.Slot);
                 var e = view.Element;
+                e.EnableInClassList("soon", soon);
                 e.EnableInClassList("filled", tower != null);
                 e.EnableInClassList("closed", !view.Open);
-                var lit = carrying != null && view.Open && !view.Utility && BaseLayout.Fits(_catalog, carrying, view.Slot);
+                var lit = carrying != null && view.Open && !soon && BaseLayout.Fits(_catalog, carrying, view.Slot);
                 e.EnableInClassList("lit", lit);
                 e.EnableInClassList("dim", carrying != null && !lit);
                 e.EnableInClassList("picked", _picked is { } p && p.Equals(view.Slot));
                 e.EnableInClassList("selected-type", tower != null && tower == _selected && carrying == null);
-                view.Icon.Name = view.Utility ? "module" : tower != null ? CardIcons.For(tower) : view.Open ? "plus" : "lock";
-                view.Caption.text = view.Utility ? Strings.Get("camp.soon")
+                view.Icon.Name = soon ? "module" : tower != null ? IconFor(tower) : view.Open ? "plus" : "lock";
+                view.Caption.text = soon ? Strings.Get("camp.soon")
                     : !view.Open ? Strings.Format("camp.hqLevel", OpensAt(view.Slot))
                     : "";
                 e.tooltip = tower != null ? Strings.Card(tower) : SizeName(view.Slot.Size);
@@ -807,15 +835,16 @@ namespace MachineBrigade.Game.Hud
             foreach (var (row, id) in _rows)
             {
                 var fort = _catalog.Vehicles[id].Fort;
+                var module = fort.Kind == FortKind.Utility;
                 row.EnableInClassList("armed", id == carrying);
                 row.EnableInClassList("chosen", id == _selected);
                 var fits = slot is not { } s || BaseLayout.Fits(_catalog, id, s);
                 row.EnableInClassList("nofit", !fits);
                 var branch = PlayerProfile.TowerBranch(id);
-                var line = Strings.Format("camp.cardLine", SizeName(fort.Size), PlayerProfile.Rank(id));
+                var line = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(fort.Size), PlayerProfile.Rank(id));
                 if (branch != null) line += " · " + Strings.Branch(branch);
                 row.Q<Label>(className: "base-tower-line").text = line;
-                var placed = BaseLayout.Placed(_layout, id) + _layout.Outpost.Count(o => o == id);
+                var placed = BaseLayout.Placed(_layout, id) + _layout.Outpost.Count(o => o == id) + _layout.Utilities.Count(u => u == id);
                 var count = row.Q<Label>(className: "base-tower-count");
                 count.text = placed > 0 ? "×" + placed : "";
                 count.EnableInClassList("base-hidden", placed == 0);
@@ -845,12 +874,14 @@ namespace MachineBrigade.Game.Hud
                 _headLine.text = _headCount.text = "";
                 return;
             }
-            _headIcon.Name = CardIcons.For(id);
-            _headSize.Name = SizeIcon(def.Fort.Size);
+            var module = def.Fort.Kind == FortKind.Utility;
+            _headIcon.Name = IconFor(id);
+            _headSize.Name = module ? "module" : SizeIcon(def.Fort.Size);
             _headName.text = Strings.Card(id);
             var branch = PlayerProfile.TowerBranch(id);
-            _headLine.text = Strings.Format("camp.cardLine", SizeName(def.Fort.Size), PlayerProfile.Rank(id)) + (branch != null ? " · " + Strings.Branch(branch) : "");
-            _headCount.text = Strings.Format("camp.inCamp", BaseLayout.Placed(_layout, id));
+            _headLine.text = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(def.Fort.Size), PlayerProfile.Rank(id)) +
+                             (branch != null ? " · " + Strings.Branch(branch) : "");
+            _headCount.text = Strings.Format("camp.inCamp", BaseLayout.Placed(_layout, id) + _layout.Utilities.Count(u => u == id));
             if (_tab == PanelTab.Branch) BranchPanel(id);
             else GearPanel(id);
         }
@@ -899,10 +930,17 @@ namespace MachineBrigade.Game.Hud
                 ApplyBranch(towerId, branchId);
                 return;
             }
+            AskBranch(towerId, branchId);
+        }
+
+        /// <summary>Asks before a branch change spends coins.</summary>
+        private void AskBranch(string towerId, string branchId)
+        {
             _confirmText.text = Strings.Format("camp.branchConfirm", Strings.Card(towerId), Strings.Branch(branchId), PlayerProfile.BranchSwapCoins.ToString("N0"));
             _confirmed = () => ApplyBranch(towerId, branchId);
             _confirm.RemoveFromClassList("base-hidden");
             _confirm.BringToFront();
+            UiKit.Uppercase(_confirm);
         }
 
         private void ApplyBranch(string towerId, string branchId)

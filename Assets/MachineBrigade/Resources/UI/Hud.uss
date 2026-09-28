@@ -2306,7 +2306,7 @@
 .base-canvas {
     position: absolute; left: 0; top: 0; right: 0; bottom: 0;
     --camp-grid: rgba(237, 234, 227, 0.035);
-    --camp-road: rgba(237, 234, 227, 0.028);
+    --camp-road: rgba(237, 234, 227, 0.02);
     --camp-edge: rgba(237, 234, 227, 0.1);
     --camp-facing: rgba(237, 234, 227, 0.4);
     --camp-grid-step: 10;
@@ -2347,11 +2347,12 @@
 .base-slot.closed .base-slot-icon { width: 22px; height: 22px; --icon-color: #69747b; }
 .base-slot.closed .base-slot-size .icon { --icon-color: #69747b; }
 .base-slot.closed.filled .base-slot-icon { --icon-color: #69747b; }
-.menu .base-slot.utility {
+.menu .base-slot.soon {
     background-color: var(--base-slot-closed); border-color: var(--line-1);
     background-image: resource("UI/Skin/ui_hatch"); -unity-background-image-tint-color: rgba(237, 234, 227, 0.12);
 }
-.base-slot.utility .base-slot-icon { width: 30px; height: 30px; --icon-color: #69747b; }
+.base-slot.soon .base-slot-icon { width: 30px; height: 30px; --icon-color: #69747b; }
+.menu .base-list-caps { margin-top: 8px; }
 .menu .base-slot.lit { background-color: var(--base-lit-face); border-color: var(--line-3); }
 .base-slot.lit .base-slot-icon { --icon-color: #ede6d6; }
 .menu .base-slot.dim { border-color: var(--line-1); }

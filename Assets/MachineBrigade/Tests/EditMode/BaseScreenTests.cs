@@ -100,6 +100,35 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void UtilitySlotsWaitForModulesAndThenTakeThem()
+        {
+            // Without utility modules the utility slots are "soon" and take nothing.
+            var plain = new BaseScreen(GameContent.LoadCatalog(), null, null);
+            plain.ShowMap("ashfield");
+            Assert.IsTrue(plain.CampSlots.Where(v => v.Utility).All(v => v.Element.ClassListContains("soon")));
+            plain.TapTower("guard_tower");
+            Assert.IsFalse(plain.CampSlots.Any(v => v.Utility && v.Element.ClassListContains("lit")));
+
+            // With one (a test module added to the shipped data) they are live and only modules light them up.
+            var json = Resources.Load<TextAsset>("Data/balance").text;
+            var at = json.IndexOf("\"vehicles\": [", System.StringComparison.Ordinal) + "\"vehicles\": [".Length;
+            json = json.Insert(at, "{ \"id\": \"test_relay\", \"inherits\": \"guard_tower\", \"fort\": { \"size\": \"Medium\", \"kind\": \"Utility\" } },");
+            var catalog = Catalog.FromJson(json);
+            var screen = new BaseScreen(catalog, null, null);
+            screen.ShowMap("ashfield");
+            Assert.IsFalse(screen.CampSlots.Any(v => v.Element.ClassListContains("soon")));
+            screen.TapTower("test_relay");
+            var lit = screen.CampSlots.Where(v => v.Element.ClassListContains("lit")).ToList();
+            Assert.AreEqual(catalog.Base.UtilitySlots(5), lit.Count, "a module: the open utility slots only");
+            Assert.IsTrue(lit.All(v => v.Utility));
+            screen.TapSlot(LoadoutSlot.Utility(0));
+            Assert.AreEqual("test_relay", BaseLayout.At(screen.Layout, LoadoutSlot.Utility(0)));
+            screen.TapTower("guard_tower");
+            Assert.IsFalse(screen.CampSlots.Any(v => v.Utility && v.Element.ClassListContains("lit")), "a tower does not go into a utility slot");
+            CollectionAssert.AreEqual(new[] { "test_relay" }, BaseLayout.ForSaving(screen.Layout, catalog).Utilities, "and the module is saved");
+        }
+
+        [Test]
         public void TheDiagramKeepsFramesApartAndInside()
         {
             var catalog = GameContent.LoadCatalog();
