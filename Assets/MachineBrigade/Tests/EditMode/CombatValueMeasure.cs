@@ -103,6 +103,9 @@ namespace MachineBrigade.Tests
             public float Ready = -1f;
 
             public float Total => Light + Heavy + Air + Structure;
+
+            /// <summary>What one vehicle really delivered a second while it lived (the "real DPS" next to the theoretical one).</summary>
+            public float RealDps => Total / MathF.Max(1f, Survival * Count);
         }
 
         internal static IEnumerable<string> Roster(Catalog catalog)
@@ -153,7 +156,7 @@ namespace MachineBrigade.Tests
         public void PrintTheoreticalDps()
         {
             if (Environment.GetEnvironmentVariable("MB_BALANCE") != "1") Assert.Ignore("theoretical DPS: set MB_BALANCE=1");
-            var catalog = GameContent.LoadCatalog();
+            var catalog = LoadCatalog();
             var sb = new StringBuilder();
             sb.AppendLine("id\tclass\tcp\told_light\told_heavy\told_air\told_structure\tlight\theavy\tair\tstructure\theavy_per_cp");
             foreach (var def in catalog.Vehicles.Values.Where(v => !v.Boss && !v.Elite).OrderBy(v => v.Static).ThenBy(v => v.Class).ThenBy(v => v.CpCost).ThenBy(v => v.Id))
@@ -315,10 +318,10 @@ namespace MachineBrigade.Tests
         internal static string Tsv(List<Result> results)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("id\tscenario\tcount\tcp\tlight\theavy\tair\tstructure\ttotal\tonTarget\tsurvival\tfirstKill\tready\tvalue");
+            sb.AppendLine("id\tscenario\tcount\tcp\tlight\theavy\tair\tstructure\ttotal\tonTarget\tsurvival\tfirstKill\tready\tvalue\trealDps");
             foreach (var r in results)
                 sb.AppendLine(string.Join("\t", r.Id, r.Scenario, r.Count, r.Cp, F(r.Light), F(r.Heavy), F(r.Air), F(r.Structure), F(r.Total),
-                    F(r.OnTarget), F(r.Survival), F(r.FirstKill), F(r.Ready), F(r.Value)));
+                    F(r.OnTarget), F(r.Survival), F(r.FirstKill), F(r.Ready), F(r.Value), F(r.RealDps)));
             return sb.ToString();
         }
 
@@ -327,7 +330,7 @@ namespace MachineBrigade.Tests
         {
             var sb = new StringBuilder();
             var names = Standards.Select(s => s.Name).Concat(new[] { LongRun.Name }).ToList();
-            sb.AppendLine("id\tclass\tcp\t" + string.Join("\t", names) + "\tground\tnoAA\tonTarget\tsurvival\tready");
+            sb.AppendLine("id\tclass\tcp\t" + string.Join("\t", names) + "\tground\tnoAA\tonTarget\tsurvival\tready\tdpsLight\tdpsHeavy\tdpsFort\tdpsAir");
             foreach (var g in results.GroupBy(r => r.Id))
             {
                 var def = catalog.Vehicle(g.Key);
@@ -340,7 +343,8 @@ namespace MachineBrigade.Tests
                 sb.AppendLine(string.Join("\t", g.Key, def.Class, def.CpCost) + "\t" + string.Join("\t", cells) + "\t" +
                     F(ground.Average(r => r.Value)) + "\t" + F(noAa.Average(r => r.Value)) + "\t" + F(standard.Average(r => r.OnTarget)) + "\t" +
                     F(standard.Average(r => r.Survival)) + "\t" +
-                    (def.Flying ? F(g.Average(r => r.Ready)) : ""));
+                    (def.Flying ? F(g.Average(r => r.Ready)) : "") + "\t" +
+                    string.Join("\t", new[] { "light", "tanks", "fort", "air" }.Select(n => g.FirstOrDefault(r => r.Scenario == n) is { } r ? F(r.RealDps) : "")));
             }
             return sb.ToString();
         }

@@ -3054,3 +3054,180 @@ What read wrong was how the flashes were drawn:
   (13C), which owns the missile-versus-flare measurements.
 - The frozen-moment missile sheets show a gap between fast rockets and their flames; it comes from the sheet
   jumping straight to each moment (one long frame). In the game the frame is short and the flame sits on the tail.
+
+## 13C. Prompt 13: combat-value balance, ammo, modes, AI difficulty (2026-09-29)
+
+One balance pass in the owner's order A → I. The owner's rule on test time wins over the brief's "5 seeds
+for everything": part A runs each standard scenario once on a fixed seed; the few decisions that were close
+were checked on two more seeds, and that is said where it was done. Everything else is listed for the testing
+phase (13C.Z). The tables are in `Docs/COMBAT_VALUE.md` (generated) and the raw files in `Docs/balance/`.
+
+### A. Measuring real combat value
+
+**A.1 The theoretical table.** `FirePower.Sustained` (Sim, new) is what the design document's damage table,
+the detail screen's DPS and the measurement's theoretical table now read: a salvo's rounds over its cooldown, a
+magazine over its change, a launcher's rounds per load over the time to fire them *plus* the reload in place,
+and (after C) an aircraft's stores per full load plus the time to take them on again at the holding pattern's
+full rate. Before, `UnitStats.Dps` was volley / cycle, so every launcher counted as never running dry (the MLRS
+90 → 79 DPS on light, the siege tank's 169 → 138 on structures). The design document's "attack jet 1,074 DPS
+on heavy" came from the cannon at 64 damage (before 12F) streaming without end; the table now says 414 (the
+cannon at 22), but that is still a gun firing whenever it can. The real figure comes from A.2: **131 DPS on
+heavy for the attack jet, 280 for the A-10** in the tanks scenario (the brief's "about 100 and 190" came from
+11C's one-pass measurement). The corrected table and the real DPS are both in `COMBAT_VALUE.md`.
+
+**A.2-A.4 The measurement** (`CombatValueMeasure.MeasureTheRoster`, EditMode, explicit, `MB_BALANCE=1`):
+
+- Each buyable vehicle, rank 1 and no equipment, in a group of about 14 CP of its kind (1 to 5 vehicles:
+  equal-CP groups as `CounterTests` does, so a 3 CP car is not measured alone against two battle tanks), led by
+  the tactical AI (so artillery stands off, empty launchers stop to reload, aircraft attack as they do in play),
+  attacks a reference group placed 85 m (ground) or 135 m (aircraft) away, from arrival, for 90 s.
+- The groups: **light** (3 armoured cars, a jeep), **tanks** (2 battle tanks), **fort** (a gun turret and an MG
+  bunker), **air** (an attack helicopter and an attack jet), and **light+AA, tanks+AA, fort+AA** (an AA vehicle
+  added; an AA tower at the fort). A destroyed group comes back 3 s later as another wave, so a strong unit is not
+  left idle. Aircraft, helicopters and every launcher with limited ammunition also fight **long**: two battle
+  tanks, two armoured cars and an AA vehicle for 4 minutes, so empty-and-reload cycles count.
+- Everyone sees everyone (`RevealAll`: artillery has no spotter of its own there), except when the shooter is
+  stealthy (the point of a stealth bomber is not being seen).
+- Recorded per vehicle and group: the damage it really did (never more than its victim had left: a 700 blast on a
+  300 HP car counts 300) by armour, the share of its time with a target in reach (on target), its survival, the
+  time to destroy the first group, the real damage a second, and the **combat value per CP = damage × (1 + share
+  of the time alive) / 2 / CP**. The survival factor rewards a unit that is still there for the next fight
+  without counting its lifetime twice (the damage already stops when it dies); (1 + share) / 2 runs from 0.5
+  (killed at once) to 1 (alive at the end).
+- "Ground value" (the mean over the six ground groups) is the like-for-like figure for everything that fights
+  the ground; anti-air is judged on the air group; support vehicles (engineer, jammer, radar, command vehicle)
+  do nothing measurable here and are judged by what they do for others (E).
+- The whole roster (52 vehicles, 263 runs + 26 long ones) takes 8 s: the sim is fast when the battlefield is small.
+  `MB_CV_SEEDS=13,14,15` averages seeds, `MB_CV_BALANCE=<file>` measures another balance file (the before
+  column), `MB_CV_ONLY=a,b` a few vehicles.
+
+**A.5 Blast radii.** Checked against the data before 12C (`a455751`): no weapon's `splash`, no support's radius
+and no vehicle's death blast changed; 12C touched only `Game/Effects`, the editor and tests. Nothing to restore.
+
+**A.6 The earlier changes, measured.**
+
+- *Fire burning 20 % shorter (12A):* view only. The simulation has no burning-ground zones; fire damage is the
+  Burn status on vehicles, unchanged. The flame tank's, the flame bunker's and the Inferno's damage did not move.
+- *Slower missiles (11C, 12B):* `MissileHitMeasure.PrintMissileHitRates` fires each launcher at a target that
+  cannot die and drops flares (and, for the tanks, an Iron Beam's protection) for 90 s:
+
+  | Launcher → target | Missile, speed | Hit rate now | At the 11C speed |
+  |---|---|---|---|
+  | AA vehicle → attack jet (flares) | `sam` 40 | 86 % | |
+  | SAM launcher → attack jet | `sam_long` 46 | 77 % | |
+  | missile battery → attack jet | `sam_battery` 46 | 92 % | |
+  | long-range SAM → attack jet | `sam_48n6` 62 | 91 % | |
+  | fighter → attack jet | `air_to_air` 34 | 100 % | 94 % (48) |
+  | fighter → attack helicopter | `wvr_aam` 34 | 71 % | 79 % (48) |
+  | ATGM carrier → battle tank + Iron Beam | `atgm_heavy` 19 | 45 % (11 of 22 shot down) | 45 % (24) |
+  | ATGM carrier → battle tank, no protection | `atgm_heavy` 19 | 91 % | 91 % |
+  | attack helicopter → tank + Iron Beam | `heli_atgm` 21 | 6 % (16 of 18 shot down) | 6 % (30) |
+  | Ka-52 → tank + Iron Beam | `vikhr` 24 | 42 % | 42 % (34) |
+
+  Active protection intercepts at impact, whatever the speed, so it takes the same share. Flares take a few
+  points more of the slower air-to-air missiles (a longer flight overlaps a flare more often). The Iron Beam
+  against the attack helicopter's single Hellfires (6 %) is its one strong counter; salvos of two get through.
+- *Long streams (12D) and the new fighter AI (12F):* measured there at unchanged DPS per weapon; the combat
+  value now includes them (the fighter's on-target share against aircraft is 76 %, its survival 28 s against the
+  air group).
+
+**The owner's slower SAMs (asked for during this pass).** Ground SAMs 10 % slower: `sam` 40 → 36 m/s,
+`sam_long` 46 → 41, `sam_battery` 46 → 41 (its PAC-3 and long-range branches inherit it), `sam_48n6` 62 → 56.
+Alone that breaks "SAM beats jets" (the lead's finding, reproduced: seed 1 lost, the jets untouched). So a guided
+missile now has a seeker: **`flareResist`**, the share of flare decoys it sees through (a flare's pull, 35 %,
+times 1 − resist; one roll per missile, the random draw unchanged so replays stay the same). Radar-guided SAMs
+see through most flares, as they do: Buk 0.8, Patriot and S-400 0.85; the SHORAD/Stinger dart 0.5 (a two-colour
+seeker). Air-to-air missiles and the helicopters' MANPADS keep 0 (the fighter is already the strongest thing in
+the air, E). Measured (`PrintSamAgainstJets`, 4 seeds each):
+
+| | SAM → attack jet hit rate | 3 SAM launchers vs 2 attack jets | 3 AA vehicles vs 2 attack helicopters |
+|---|---|---|---|
+| before (11C speeds) | 77 % | 4/4 won | 4/4 |
+| 10 % slower | 77 % | 3/4 (seed 1 lost, jets untouched) | 4/4 |
+| 10 % slower + seekers (shipped) | 92 % | 4/4 | 4/4 |
+
+Found on the way: one A-10 (18 CP) beats two SAM launchers (10 CP) in 6 s on every seed, before and after; it is
+an E question (SAM value per CP), not a speed one.
+
+### B. Damage a round by the real weapon
+
+**B.1 Data.** Every weapon has `real` (the real weapon: "2A42 30 mm", "9M133 Kornet", "FAB-500 (500 kg)"),
+`family` and `size` (the calibre in mm; for missiles the missile's kg, for bombs, drones and AA missiles the
+warhead's kg). Families: `mg`, `autocannon` (20-57 mm, AA guns included), `grenade`, `tank_gun`, `howitzer`,
+`mortar`, `rocket`, `atgm`, `aa_missile`, `bomb`, `cruise`, `ballistic`, `drone`, and scales of their own for
+`flame`, `laser`, `railgun`, `melee`, `special`. The weapon line reads "id, real name, family, size, ...".
+
+**B.2 The scale** (per round, before armour), as the owner's reference with one number chosen in each band:
+
+| Family | Size → damage |
+|---|---|
+| machine guns | 7.62 mm 5.5 · 12.7 mm 9.5 |
+| autocannons | 20 mm 13 · 23 mm 14 · 25 mm 17 · 30 mm 22 · 35 mm 25 · 40 mm 30 · 57 mm 70 |
+| grenade launcher | 40 mm 26 (low velocity, below the 40 mm cannon) |
+| tank and direct guns | 57 mm 70 · 76 mm 120 · 105 mm 200 · 120 mm 240 · 125 mm 250 · 140 mm 280 · 152 mm 320 |
+| howitzers | 105 mm 200 · 152/155 mm 320 · 203 mm 420 |
+| mortars | 120 mm 150 · 240 mm 450 |
+| rockets | 70 mm 28 · 80 mm 32 · 107 mm 45 · 122 mm 57 · 220 mm (TOS) 97 · 227 mm 100 · 300 mm 140 |
+| ATGM / AGM (missile kg) | Griffin, MAM-L 180 · TOW-2, Konkurs 190 · Kornet, Ataka 230 · Vikhr, Hellfire 250 · Maverick 345 · Kh-29 360 |
+| AA missiles (warhead kg) | Igla 150 · Stinger / SHORAD 170 · R-60 175 · AIM-9 220 · AIM-120 280 · Buk 320 · Patriot PAC-2 340 · PAC-3 360 · S-400 48N6 600 |
+| bombs (kg) | 110 200 · 250 300 · 500 400 · 900 (car bomb) 700 · 907 (JDAM) 850 |
+| cruise / ballistic | Kh-101 360 · JASSM 390 · Iskander 600 |
+| drones (warhead kg) | FPV 140 · Lancet 240 · Shahed 320 |
+
+Choices: the AA missiles' scale is by warhead, so the long-range 48N6 keeps its 600 one-shot (its identity);
+PAC-3 is counted a little above PAC-2 (hit-to-kill) so the branch stays the upgrade; the thermobaric 220 mm sits
+just under the 227 mm. The car bomb is a 900 kg charge in the bomb family, just under the JDAM.
+
+**B.3 Inversions fixed** (all 142 weapons were redone; the brief's list):
+
+| Brief's example | Before | Now |
+|---|---|---|
+| 105 mm of the tank destroyer / wheeled gun / gun pit above the 120 mm | 357 / 300 / 290 vs 200 | re-gunned (B.5): 125 mm 250, 120 mm 240, 120 mm 240; the battle tank's 120 mm 240 |
+| 30 mm: Su-25 / Mi-24 GSh-30K / GAU-8 / BMPT / IFV | 22 (after 12F) / 15.8 / 27 / 21.3 / 22.4 | 22 on all five |
+| Ka-52 23 mm vs 12.7 mm; 35 mm flak below the ZU-23 | 6.2; 6.85 vs 9.7 | 23 mm 14; 35 mm 25, ZU-23 14 |
+| 25 mm: armoured car / gunship | 15.5 / 12.4 | 17 / 17 |
+| 155 mm SP gun vs the gunship's 105 mm | 171 vs 347 | 320 vs 200 |
+| S-8 80 mm vs helicopter rockets; elite Grad, elite MLRS | 22 vs 40; 19, 13 | S-8 32, Hydra 28; Grad 57, GMLRS 100 |
+| elite Apache's Hellfire vs the Apache's | 128 vs 256 | 250 and 250 |
+| the UAV's small bomb vs the Su-25's FAB | 297 vs 351 | GBU-39 200, FAB-250 300 |
+
+Also: boss guns now fire the calibre's rounds (12D had cut them to 1.8-6 a round to keep the bosses' damage a
+second: the hovercraft's AK-630 22, the mega gunship's M230 22, `boss_hmg` 9.5): the same real weapon hits the
+same everywhere, and the boss's damage a second is kept by shorter bursts.
+
+**B.4 Damage a second kept** (`bapply.py` in the session scratchpad, reproducible from `bplan.py`): for each
+weapon the new round's damage, then
+- single shots: the cooldown by the same factor (the battle tank's 120 mm 4.57 → 5.48 s, the SP gun 7.14 →
+  13.4 s with its reload 28 → 52 s, the tank destroyer 5.57 → 3.9 s);
+- salvos: the salvo's size first (the Apache's Hydras 8 × 40 → 11 × 28, the Su-25's S-8s 20 × 22 → 14 × 32,
+  the A-10's 8 × 61 → 17 × 28, the MLRS 6 × 80 → 5 × 100), then the cooldown for the rest;
+- magazines: the stream kept about as long as before (the owner likes long streams, 12D), the change 0.8-4.5 s,
+  the cadence as near the old as that allows (the Gepard's 35 mm: 50 at 18/s → 23 at 10/s, change 1.2 → 4.3 s;
+  the M230: 30 at 10/s → 22 at 9/s, change 4.3 s; C-RAM: 100 at 33/s → 23 at 8/s);
+- launchers: the cycle and the reload in place scaled together.
+Every weapon's `FirePower.Sustained` is within 1 % of before. `roundWeight` keeps a round from looking or
+sounding lighter than before (the owner's rule); it is dropped where the damage now reaches it.
+
+**B.5 Re-gunned rather than weakened:** the tank destroyer fires a 125 mm (2A75, as on the 2S25 Sprut) and its
+elite a 125 mm APFSDS, the wheeled gun a 120 mm (Centauro II), the gun pit a dug-in 120 mm. Their guide lines and
+notes say so; the weapon ids stay (saves, equipment).
+
+**B.6 Autocannon rounds.** A kinetic weapon of the autocannon family (20-57 mm) uses the damage table's new
+**Autocannon row: light 1.0, heavy 0.38, air 0.3, structure 0.4** (a machine gun's kinetic: 0.25 / 0.3 / 0.3; AP:
+1.0 on heavy). A new damage type was rejected: resistance stats are indexed by damage type in saved equipment.
+`DamageTable.Multiplier(weapon, armour)` is used wherever the weapon is known (targeting, the overkill check, a
+hit's damage through `HitInfo.Weapon`, boss parts, the design document). The GAU-8 and the jets' cannons keep
+their armour-piercing rounds (depleted uranium / API: they are tank-busting guns), and the AA guns their flak.
+
+**B.7 Tests** (`CalibreTests`): damage never falls as the size rises within a family; the same real weapon (its
+name without the variant note in brackets) hits the same on every carrier; the reference scale's bands hold;
+every weapon that fires has a family, size and name; autocannon rounds sit between a machine gun's and a tank
+gun's on armour.
+
+**What B did to combat value** (three seeds, 13-15, before and after B, ground value): most vehicles within
+±10 %. The movers, and why: the light tank −24 %, flame tank −18 %, bulldozer −13 %, sapper −13 %: the *reference*
+light group's armoured cars now hit heavy armour 52 % harder with their 25 mm (B.6), so heavy vehicles in that
+fight live shorter (their own damage a second did not move); the wheeled gun −26 % and tank destroyer −12 %:
+the same, plus fewer, bigger shots against light targets; the fighter −34 % against aircraft (air group): its
+AIM-120 at 280 (was 351) needs a fourth hit on a 1,250 HP helicopter whenever one is decoyed, which is the
+direction E wants anyway. Nothing was re-tuned for these in B; E takes the roster as B left it.
