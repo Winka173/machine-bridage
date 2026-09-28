@@ -38,14 +38,15 @@ namespace MachineBrigade.Tests
             ["air"] = new[] { "attack_helicopter", "attack_helicopter", "gunship_heli", "attack_jet" },
         };
 
-        /// <summary>A mixed base of all three sizes (the default a player starts with, and what the tests compare with).</summary>
-        internal static BaseLoadout Mixed() => new()
+        /// <summary>A mixed base of all three sizes: the default a player starts with, and what the tests compare with.</summary>
+        internal static BaseLoadout Mixed()
         {
-            HqLevel = 5,
-            Small = { "guard_tower", "aa_turret", "mg_bunker", "ew_tower", "aa_turret", "guard_tower" },
-            Medium = { "gun_turret", "atgm_tower", "c_ram" },
-            Large = { "artillery_emplacement", "missile_battery" },
-        };
+            var b = new BaseLoadout { HqLevel = 5 };
+            b.Small.AddRange(PlayerProfile.DefaultSmall);
+            b.Medium.AddRange(PlayerProfile.DefaultMedium);
+            b.Large.AddRange(PlayerProfile.DefaultLarge);
+            return b;
+        }
 
         /// <summary>Every slot a tower fits filled with that one tower (a medium tower leaves the small slots empty).</summary>
         internal static BaseLoadout OnlyOf(Catalog catalog, string tower)
@@ -244,6 +245,37 @@ namespace MachineBrigade.Tests
                     }
                 report.Append($"{t} ({size}): {holds}/15\n");
             }
+            Debug.Log(report.ToString());
+        }
+
+        /// <summary>Candidate mixed bases against the five armies (5 seeds each): a tool for choosing the default base.</summary>
+        [Test, Category("Balance"), Timeout(7200000)]
+        public void MixedBaseCandidates()
+        {
+            Gate();
+            var catalog = GameContent.LoadCatalog();
+            BaseLoadout Base(string[] large, string[] medium, string[] small)
+            {
+                var b = new BaseLoadout { HqLevel = 5 };
+                b.Large.AddRange(large);
+                b.Medium.AddRange(medium);
+                b.Small.AddRange(small);
+                return b;
+            }
+            var mixedSmall = new[] { "guard_tower", "aa_turret", "mg_bunker", "guard_tower", "aa_turret", "mg_bunker" };
+            var candidates = new Dictionary<string, BaseLoadout>
+            {
+                ["default"] = Base(new[] { "artillery_emplacement", "missile_battery" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
+                ["art+heavy"] = Base(new[] { "artillery_emplacement", "heavy_turret" }, new[] { "gun_turret", "rocket_turret", "gun_turret" }, mixedSmall),
+                ["heavy+patriot"] = Base(new[] { "heavy_turret", "missile_battery" }, new[] { "gun_turret", "rocket_turret", "atgm_tower" }, mixedSmall),
+                ["heavy+art, atgm"] = Base(new[] { "heavy_turret", "artillery_emplacement" }, new[] { "gun_turret", "rocket_turret", "atgm_tower" }, mixedSmall),
+                ["greedy"] = Base(new[] { "heavy_turret", "heavy_turret" }, new[] { "rocket_turret", "aa_turret", "gun_turret" },
+                    new[] { "guard_tower", "guard_tower", "mg_bunker", "mg_bunker", "guard_tower", "guard_tower" }),
+            };
+            var report = new StringBuilder("CANDIDATES score, 5 seeds\n");
+            report.Append("base".PadRight(20)).Append(string.Join("", Enemies.Keys.Select(k => k.PadLeft(14)))).Append('\n');
+            foreach (var (name, loadout) in candidates)
+                report.Append(name.PadRight(20)).Append(string.Join("", Enemies.Values.Select(army => Mean(catalog, loadout, army, 5).ToString("0.00").PadLeft(14)))).Append('\n');
             Debug.Log(report.ToString());
         }
 

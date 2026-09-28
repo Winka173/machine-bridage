@@ -76,6 +76,12 @@ namespace MachineBrigade.Sim.Economy
         public const int MaxVehicles = 32;
 
         /// <summary>
+        /// Most vehicles this side may have in the field or on the way (balance.json
+        /// economy.vehicleCap: 32, the enemy's 48 in Siege, Defend, Endless and the big operations).
+        /// </summary>
+        public int VehicleCap { get; set; } = MaxVehicles;
+
+        /// <summary>
         /// Aircraft one side may have up at once (and on the way), like the air slots of Wargame
         /// and World in Conflict: air power is a scarce, dear asset, not a swarm.
         /// </summary>
@@ -204,7 +210,7 @@ namespace MachineBrigade.Sim.Economy
             // A ranked card costs less to call (the army's value, upkeep and refunds keep its full price).
             var price = economy.CostOf(defId, def.CpCost);
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
-            if (VehicleCount(team) >= TeamEconomy.MaxVehicles) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
             if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
@@ -401,9 +407,9 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted) total++;
-            foreach (var (pendingTeam, _, _, _) in _pending)
-                if (pendingTeam == team) total++;
+                if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted && !v.Ally) total++;
+            foreach (var (pendingTeam, _, _, landing) in _pending)
+                if (pendingTeam == team && !_allyLandings.Contains(landing)) total++;
             return total;
         }
 

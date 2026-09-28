@@ -194,6 +194,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The ally's own HQ at its site (the defector's base when it changes sides).</summary>
         public string? Hq { get; set; }
+
+        /// <summary>The ally's towers and other structures round its site (they change sides with it).</summary>
+        public IReadOnlyList<UnitPlacement> Structures { get; set; } = Array.Empty<UnitPlacement>();
     }
 
     public sealed class MissionDef
@@ -446,6 +449,7 @@ namespace MachineBrigade.Sim.Content
                     Site = new Vector2(a.Float("x"), a.Float("z")), Heading = SimMath.DegToRad(a.Float("heading", 0f)),
                     Units = a.Has("units") ? Placements(a, "units") : Array.Empty<UnitPlacement>(),
                     Reinforcements = reinforcements, Hq = a.Has("hq") ? a.String("hq") : null,
+                    Structures = a.Has("structures") ? Placements(a, "structures") : Array.Empty<UnitPlacement>(),
                 };
             }
             // Stages: each is a mission of its own, its fields laid over the mission's ("stage" names it).

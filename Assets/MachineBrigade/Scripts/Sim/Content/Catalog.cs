@@ -54,6 +54,12 @@ namespace MachineBrigade.Sim.Content
 
         internal Dictionary<string, int> ArmyCaps { get; set; } = new();
 
+        internal Dictionary<string, int> VehicleCaps { get; set; } = new();
+
+        /// <summary>The enemy's vehicle ceiling in a mode (balance.json economy.vehicleCap): its entry, else "default", else 32.</summary>
+        public int VehicleCapFor(string? mode) =>
+            mode != null && VehicleCaps.TryGetValue(mode, out var cap) ? cap : VehicleCaps.TryGetValue("default", out var d) ? d : Economy.TeamEconomy.MaxVehicles;
+
         /// <summary>The army supply (CP) of a mode that does not set its own: its entry, else "default", else 24.</summary>
         public int ArmyCapFor(string? mode) =>
             mode != null && ArmyCaps.TryGetValue(mode, out var cap) ? cap : ArmyCaps.TryGetValue("default", out var d) ? d : 24;
@@ -322,6 +328,7 @@ namespace MachineBrigade.Sim.Content
                 SupplyScale = Tune("economy", "supply"),
                 EnemyScaling = Tune("economy", "enemyScaling"),
                 ArmyCaps = ReadArmyCaps(root),
+                VehicleCaps = ReadCaps(root, "vehicleCap", 32),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
         }
@@ -348,6 +355,15 @@ namespace MachineBrigade.Sim.Content
                 return merged;
             }
             foreach (var v in list) yield return Resolve(v, 0);
+        }
+
+        private static Dictionary<string, int> ReadCaps(JsonObject root, string key, int fallback)
+        {
+            var caps = new Dictionary<string, int>();
+            if (!root.Has("economy") || !root.Object("economy").Has(key)) return caps;
+            var o = root.Object("economy").Object(key);
+            foreach (var k in o.Keys) caps[k] = o.Int(k, fallback);
+            return caps;
         }
 
         private static Dictionary<string, int> ReadArmyCaps(JsonObject root)

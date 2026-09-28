@@ -338,6 +338,12 @@ namespace MachineBrigade.Sim.Entities
 
         internal int PathIndex;
         internal bool PathCompleted;
+
+        /// <summary>Its new route waits for a step with path-finding to spare (see SimWorld.PathsPerStep).</summary>
+        internal bool PathQueued;
+
+        /// <summary>Where the waiting route goes.</summary>
+        internal Vector2 QueuedGoal;
         internal Vector2 PathGoal;
         internal float RepathTimer;
 
@@ -450,6 +456,7 @@ namespace MachineBrigade.Sim.Entities
         internal void SetPath(List<Vector2> points, Vector2 goal)
         {
             PathTrace?.Invoke(this, $"SetPath {points.Count} to {goal}");
+            PathQueued = false;
             Path.Clear();
             Path.AddRange(points);
             PathIndex = 0;
@@ -464,6 +471,7 @@ namespace MachineBrigade.Sim.Entities
         internal void ClearPath()
         {
             PathTrace?.Invoke(this, "ClearPath");
+            PathQueued = false;
             Path.Clear();
             PathIndex = 0;
             PathCompleted = true;

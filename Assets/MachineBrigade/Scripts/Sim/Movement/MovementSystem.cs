@@ -239,7 +239,8 @@ namespace MachineBrigade.Sim.Movement
             {
                 case OrderKind.Move:
                 case OrderKind.Retreat:
-                    if (v.PathCompleted) v.SetOrder(Order.Idle);
+                    // Arrived (a route still waiting for its step is not an arrival).
+                    if (v.PathCompleted && !v.PathQueued) v.SetOrder(Order.Idle);
                     break;
 
                 case OrderKind.Attack:
@@ -380,7 +381,7 @@ namespace MachineBrigade.Sim.Movement
                 v.ResumeRoute = false;
                 if (!KeepCostedPath(v, v.Order.Point)) _world.PathTo(v, v.Order.Point);
             }
-            else if (v.PathCompleted)
+            else if (v.PathCompleted && !v.PathQueued)
             {
                 v.SetOrder(Order.Idle);
             }

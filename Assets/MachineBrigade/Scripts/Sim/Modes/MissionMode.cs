@@ -377,7 +377,7 @@ namespace MachineBrigade.Sim.Modes
             _waveTimer -= dt;
             if (_waveTimer > 0f) return;
             _waveTimer = waves.Interval;
-            if (world.CountAlive(EnemyTeam) >= waves.MaxAlive) return;
+            if (world.CountAlive(EnemyTeam) >= (_def.EnemyCap > 0 ? Math.Min(waves.MaxAlive, _def.EnemyCap) : waves.MaxAlive)) return;
             _wave++;
             var count = Math.Min(waves.MaxSize, waves.Size + (int)MathF.Floor(waves.Grow * (_wave - 1)));
             Vector2 origin;

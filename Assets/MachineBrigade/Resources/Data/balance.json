@@ -14,12 +14,15 @@
     // to ten mid-tier vehicles). A mode that sets its own (Siege, Defend, a campaign mission) keeps it.
     // The campaign stays at its tuned 24 until its rework; Survival at 30 (more would make the waves easy).
     "armyCap": { "default": 40, "Campaign": 24, "Survival": 30 },
+    // Most vehicles a side may have out at once; the enemy of the big modes more (prompt 5: cheap
+    // swarms in numbers, chosen from the tick budget measurement, TickBudgetTests).
+    "vehicleCap": { "default": 32, "Siege": 48, "Defend": 48, "Endless": 48, "Operation": 48 },
     // A campaign enemy matches this share of the player's arsenal edge (card ranks and equipment).
     "enemyScaling": 0.55 },
 
   // Bases (a loadout chosen before the battle, like the deck; nothing is built during it). The HQ
-  // stands in the camp with the drop zone round it; hardpoints (map data) take towers, each costing
-  // fortification points, and utility modules. HQ level 1-5: points and utility slots by level.
+  // stands in the camp with the drop zone round it; sized hardpoints (map data: small, medium, large)
+  // take towers of their size or smaller, and utility slots take modules. HQ level 1-5 opens them.
   // A destroyed tower is flown back in during the battle: CP = points x cpPerPoint (50 % x points x 2 CP),
   // then a cooldown. roles, by mode: Anchor (the HQ cannot fall: a camp to lean on), Target (the enemy
   // base is the objective), Defend (the side loses when its HQ falls), None (no base).

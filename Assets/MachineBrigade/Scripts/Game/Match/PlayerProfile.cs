@@ -134,9 +134,13 @@ namespace MachineBrigade.Game.Match
         /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>
         public static readonly string[] DefaultSmall = { "guard_tower", "aa_turret", "mg_bunker", "guard_tower", "aa_turret", "mg_bunker" };
 
-        public static readonly string[] DefaultMedium = { "gun_turret", "rocket_turret", "gun_turret" };
+        public static readonly string[] DefaultMedium = { "gun_turret", "rocket_turret", "atgm_tower" };
 
-        public static readonly string[] DefaultLarge = { "artillery_emplacement", "missile_battery" };
+        /// <summary>
+        /// The heavy fortress and the artillery emplacement: measured best of the candidates against
+        /// a mixed army with the attackers knowing the towers (DECISIONS 3, "Base table").
+        /// </summary>
+        public static readonly string[] DefaultLarge = { "heavy_turret", "artillery_emplacement" };
 
         /// <summary>2: the base loadout is in sized lists (see <see cref="Data.baseVersion"/>).</summary>
         internal const int BaseVersion = 2;

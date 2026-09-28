@@ -169,13 +169,27 @@ namespace MachineBrigade.Sim.AI
         private double _atEdgeSince = double.NaN;
 
         /// <summary>This AI commands the allied commander's units (and only those); the player's commands the rest.</summary>
-        public bool Allies { get; set; }
+        public bool Allies
+        {
+            get => _allies;
+            set
+            {
+                // The ally thinks a quarter of an interval after the player's commander (see the constructor).
+                if (value && !_allies) _timer += DecisionInterval * 0.25f;
+                _allies = value;
+            }
+        }
+
+        private bool _allies;
 
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
             _team = team;
             _enemyTeam = enemyTeam;
             _flankSide = new Random(seed).Next(2) == 0 ? -1f : 1f;
+            // The two sides' commanders think on different steps, so their heaviest steps (orders,
+            // routes for a whole group) do not land on the same one.
+            _timer = team == 1 ? DecisionInterval * 0.5f : 0f;
         }
 
         public void Tick(SimWorld world, float dt)

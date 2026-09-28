@@ -109,15 +109,23 @@ namespace MachineBrigade.Sim.Modes
             _startedAt = world.Time;
             if (_def.PlayArea is { } area) world.Expand(area);
             Begin(world, 0, true);
+            // A big operation's enemy may field more vehicles (its own ceiling, else the operations').
+            if (_def.Stages.Count > 0 && world.TryGetEconomy(EnemyTeam, out var enemy))
+                enemy.VehicleCap = _def.EnemyCap > 0 ? _def.EnemyCap : world.Catalog.VehicleCapFor("Operation");
             // A staged mission's own units are placed once (a mission of one stage places them itself).
             if (_def.Stages.Count > 0)
                 foreach (var u in _def.Units) world.SpawnVehicle(u.DefId, u.Team, u.Position, u.Heading);
             if (_def.Ally is { } ally)
+            {
+                // Its base first: the HQ at its site, its towers round it (fixed defences, like a camp's).
+                if (ally.Hq != null) Raise(world, ally.Hq, ally.Site, ally.Heading);
+                foreach (var s in ally.Structures) Raise(world, s.DefId, s.Position, s.Heading);
                 foreach (var u in ally.Units)
                 {
                     var v = world.SpawnVehicle(u.DefId, PlayerTeam, u.Position, u.Heading);
                     v.Ally = true;
                 }
+            }
         }
 
         public void Tick(SimWorld world, float dt)
@@ -267,6 +275,14 @@ namespace MachineBrigade.Sim.Modes
                 if (v.IsAlive && v.Ally) turned.Add(v);
             foreach (var v in turned) world.Defect(v, EnemyTeam);
             world.Emit(SimEvent.RadioMessage("radio.betrayal"));
+        }
+
+        private static void Raise(SimWorld world, string defId, Vector2 at, float heading)
+        {
+            if (!world.Catalog.Vehicles.ContainsKey(defId)) return;
+            var v = world.SpawnVehicle(defId, PlayerTeam, at, heading);
+            v.Ally = true;
+            if (v.Def.Static) world.AnchorDefence(v);
         }
 
         /// <summary>The ally's own reinforcements, on the operation's clock.</summary>

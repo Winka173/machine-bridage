@@ -278,6 +278,8 @@ namespace MachineBrigade.Sim
             economy.SupplyScale = Catalog.SupplyScale;
             // A mode that set no supply of its own takes the data's for it.
             if (economy.BaseArmyCap <= 0) economy.BaseArmyCap = Catalog.ArmyCapFor(ModeTag);
+            // The enemy of the big modes may field more (the player keeps the ordinary ceiling).
+            if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
             Economy.Enable(economy);
         }
 
@@ -604,6 +606,12 @@ namespace MachineBrigade.Sim
         {
             Tick++;
             Time += dt;
+            ServeQueuedPaths();
+            if (Profile != null)
+            {
+                ProfiledStep(dt);
+                return;
+            }
             RefreshVisibility();
             Economy.Step(dt);
             Bases.Step();
@@ -616,6 +624,53 @@ namespace MachineBrigade.Sim
             Strikes.Step();
             Damage.Step();
             RemoveDead();
+        }
+
+        /// <summary>The systems of a step, in order (the names of <see cref="Profile"/>'s columns).</summary>
+        public static readonly string[] ProfileSections =
+            { "visibility", "economy", "bases", "movement", "crush", "abilities", "status", "gear", "combat", "strikes", "damage", "remove" };
+
+        /// <summary>
+        /// When set (a measurement, never in play): each step adds one row of each system's time in
+        /// milliseconds, in <see cref="ProfileSections"/> order.
+        /// </summary>
+        public List<double[]>? Profile { get; set; }
+
+        private void ProfiledStep(float dt)
+        {
+            var row = new double[ProfileSections.Length];
+            var ticks = System.Diagnostics.Stopwatch.GetTimestamp();
+            void Lap(int i)
+            {
+                var now = System.Diagnostics.Stopwatch.GetTimestamp();
+                row[i] = (now - ticks) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+                ticks = now;
+            }
+            RefreshVisibility();
+            Lap(0);
+            Economy.Step(dt);
+            Lap(1);
+            Bases.Step();
+            Lap(2);
+            _movement.Step(dt);
+            Lap(3);
+            CrushVegetation();
+            Lap(4);
+            _abilities.Step(dt);
+            Lap(5);
+            Status.Step(dt);
+            Lap(6);
+            Gear.Step(dt);
+            Lap(7);
+            _combat.Step(dt);
+            Lap(8);
+            Strikes.Step();
+            Lap(9);
+            Damage.Step();
+            Lap(10);
+            RemoveDead();
+            Lap(11);
+            Profile!.Add(row);
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
@@ -674,7 +729,23 @@ namespace MachineBrigade.Sim
         /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
         public void Announce(in SimEvent e) => _events.Add(e);
 
-        /// <summary>Paths a vehicle towards <paramref name="goal"/>; on failure it simply stops.</summary>
+        /// <summary>
+        /// Most ground routes found in one step. The rest wait for the next steps, first come first
+        /// served, keeping the route they had: a commander ordering thirty vehicles at once (and
+        /// their re-plans half a second later) made a step's worst case several times its mean.
+        /// </summary>
+        internal const int PathsPerStep = 6;
+
+        private int _pathsThisStep;
+        private readonly List<Vehicle> _pathQueue = new();
+
+        /// <summary>Ground routes waiting for their step (for measurements).</summary>
+        internal int QueuedPaths => _pathQueue.Count;
+
+        /// <summary>
+        /// Paths a vehicle towards <paramref name="goal"/>; on failure it simply stops. A ground
+        /// route over this step's budget is found in a coming step (true: it is on its way).
+        /// </summary>
         internal bool PathTo(Vehicle vehicle, Vector2 goal)
         {
             vehicle.RepathTimer = 0.5f;
@@ -687,6 +758,33 @@ namespace MachineBrigade.Sim
                 vehicle.SetPath(_pathBuffer, goal);
                 return true;
             }
+            if (_pathsThisStep >= PathsPerStep)
+            {
+                if (!vehicle.PathQueued) _pathQueue.Add(vehicle);
+                vehicle.PathQueued = true;
+                vehicle.QueuedGoal = goal;
+                return true;
+            }
+            return FindPath(vehicle, goal);
+        }
+
+        /// <summary>The routes waiting from earlier steps, in the order they were asked for, as far as this step's budget goes.</summary>
+        private void ServeQueuedPaths()
+        {
+            _pathsThisStep = 0;
+            var served = 0;
+            while (served < _pathQueue.Count && _pathsThisStep < PathsPerStep)
+            {
+                var v = _pathQueue[served++];
+                if (v.PathQueued && v.IsAlive) FindPath(v, v.QueuedGoal);
+            }
+            _pathQueue.RemoveRange(0, served);
+        }
+
+        private bool FindPath(Vehicle vehicle, Vector2 goal)
+        {
+            _pathsThisStep++;
+            vehicle.PathQueued = false;
             if (_pathFinder.TryFindPath(vehicle.Position, goal, _pathBuffer))
             {
                 vehicle.SetPath(_pathBuffer, goal);

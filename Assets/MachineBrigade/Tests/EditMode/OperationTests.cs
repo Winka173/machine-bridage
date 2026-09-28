@@ -25,7 +25,7 @@ namespace MachineBrigade.Tests
             ""id"": ""op"", ""map"": ""ashfield"", ""goal"": ""Survive"", ""surviveSeconds"": 4,
             ""enemyAi"": ""none"", ""reinforcements"": 0, ""playerCp"": 5, ""playerIncome"": 0,
             ""units"": [ { ""def"": ""main_battle_tank"", ""team"": 0, ""x"": -60, ""z"": -60 } ],
-            ""ally"": { ""x"": -50, ""z"": -70, ""units"": [ { ""def"": ""ifv"", ""x"": -50, ""z"": -70 }, { ""def"": ""main_battle_tank"", ""x"": -46, ""z"": -70 } ],
+            ""ally"": { ""x"": -50, ""z"": -70, ""hq"": ""guard_tower"", ""structures"": [ { ""def"": ""mg_bunker"", ""x"": -42, ""z"": -76 } ], ""units"": [ { ""def"": ""ifv"", ""x"": -50, ""z"": -70 }, { ""def"": ""main_battle_tank"", ""x"": -46, ""z"": -70 } ],
                         ""reinforcements"": [ { ""at"": 2, ""units"": [ ""armored_car"" ] } ] },
             ""playArea"": { ""minX"": -90, ""minZ"": -90, ""maxX"": 0, ""maxZ"": 0 },
             ""stages"": [
@@ -76,6 +76,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(StageMoment.Time, def.Stages[0].Events[1].At);
             Assert.AreEqual(1.0, def.Stages[0].Events[1].Seconds, 1e-6);
             Assert.AreEqual(2, def.Ally.Units.Count);
+            Assert.AreEqual(1, def.Ally.Structures.Count);
             Assert.IsTrue(def.PlayArea.HasValue);
         }
 
@@ -121,15 +122,16 @@ namespace MachineBrigade.Tests
         public void TheAllyFightsOnThePlayersSideButIsNotThePlayersArmy()
         {
             var (world, op) = Start();
-            var allies = world.VehicleList.Where(v => v.IsAlive && v.Ally).ToList();
+            var allies = world.VehicleList.Where(v => v.IsAlive && v.Ally && !v.Def.Static).ToList();
             Assert.AreEqual(2, allies.Count);
             Assert.IsTrue(allies.All(v => v.Team == 0));
+            Assert.AreEqual(2, world.VehicleList.Count(v => v.IsAlive && v.Ally && v.Def.Static), "its HQ and tower");
             world.TryGetEconomy(0, out var economy);
             Run(world, op, 0.2f);
             int Own() => world.VehicleList.Where(v => v.IsAlive && v.Team == 0 && !v.Ally).Sum(v => v.Def.ArmyCost);
             Assert.AreEqual(Own(), economy.ArmyCp, "only the player's own vehicles count against the army");
             Run(world, op, 8f);
-            Assert.AreEqual(3, world.VehicleList.Count(v => v.IsAlive && v.Ally), "its reinforcement came in, as the ally's");
+            Assert.AreEqual(3, world.VehicleList.Count(v => v.IsAlive && v.Ally && !v.Def.Static), "its reinforcement came in, as the ally's");
             Assert.AreEqual(Own(), economy.ArmyCp);
         }
 
@@ -172,6 +174,7 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(op.Choose(world, "right"));
             Assert.IsTrue(op.Betrayed, "the stage's start event");
             Assert.IsTrue(allies.All(v => v.Team == 1 && !v.Ally), "every ally unit now fights for the enemy");
+            Assert.IsTrue(allies.Count(v => v.Def.Static) == 2, "its base with them");
             Assert.IsTrue(own.All(v => v.Team == 0), "nothing of the player's changed sides");
             // Side by side a moment ago: they fight now.
             var hp = own.Sum(v => v.Hp) + allies.Sum(v => v.Hp);
@@ -253,6 +256,34 @@ namespace MachineBrigade.Tests
             while (next < journal.Count && journal[next].tick == again.Tick) again.SubmitPlayer(journal[next++].command);
             Assert.AreEqual(checkpoint.Hash, again.StateHash(), "the same battle, step for step");
             Assert.AreEqual(op.StageIndex, replay.StageIndex);
+
+            // And from there on, the restored battle and the one that never stopped stay the same.
+            void Continue(SimWorld w, OperationMode o, TacticalAi a)
+            {
+                for (var i = 0; i < 6 * 20; i++)
+                {
+                    if (i == 10) o.Choose(w, "right");
+                    if (i % 17 == 0) w.SubmitPlayer(new Command(CommandType.Move, 0, new[] { tank.Id }, new Vector2(-45f, -45f + i * 0.1f)));
+                    o.Tick(w, Step);
+                    a.Tick(w, Step);
+                    w.Step(Step);
+                    w.ClearEvents();
+                }
+            }
+            // The first battle is past the checkpoint already: bring the copy level with it, then both go on.
+            while (again.Tick < world.Tick)
+            {
+                while (next < world.Journal.Count && world.Journal[next].tick == again.Tick) again.SubmitPlayer(world.Journal[next++].command);
+                replay.Tick(again, Step);
+                ai2.Tick(again, Step);
+                again.Step(Step);
+                again.ClearEvents();
+            }
+            Assert.AreEqual(world.StateHash(), again.StateHash(), "level again");
+            Continue(world, op, ai);
+            Continue(again, replay, ai2);
+            Assert.AreEqual(world.StateHash(), again.StateHash(), "six seconds on, through a choice and a betrayal: still the same battle");
+            Assert.AreEqual(op.Betrayed, replay.Betrayed);
         }
     }
 }

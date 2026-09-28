@@ -652,7 +652,7 @@ namespace MachineBrigade.Sim.AI
                 var def = world.Catalog.Vehicles[id];
                 // Bosses and mission trucks cost nothing and are never bought.
                 if (def.Boss || def.CpCost <= 0) continue;
-                if (economy.VehicleCount >= TeamEconomy.MaxVehicles) continue;
+                if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 if (def.Flying && airFull) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);

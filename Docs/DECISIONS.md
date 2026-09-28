@@ -152,6 +152,116 @@ bottom of each section.
 - **Defend.** The attacking waves get no camp base of their own: an attacker camp is built only when the
   player attacks (Siege).
 
+## 5. Multi-stage missions and big battles
+
+- **Stages run in one battle** (`OperationMode`).
+  - Each stage is a `MissionMode` of its own on the same world. Its JSON fields are laid over
+    the mission's. What a stage fights (units, boss, hunted vehicles, convoy, waves, tips) is its
+    own; the mission's units are placed once.
+  - A stage's clocks (time limit, survive time, the wiped check, reinforcements) count from its
+    start.
+  - Finishing a stage pays its CP, fires its end events, keeps a checkpoint and leads on: to
+    `next`, the next in the list, or a choice.
+  - Losing a stage loses the mission.
+  - Capture points keep their owners from stage to stage.
+- **Events** at a stage's start, its end, or a number of seconds in:
+  - reinforcements for a side (airlifted, as bought vehicles come);
+  - the ally's reinforcements;
+  - expansion of the play area;
+  - betrayal;
+  - a radio line;
+  - CP.
+  The commanders are set up for each stage's goal (hold leash, defend point, siege mix,
+  demolition) in the same step the stage begins, so a replay does the same.
+- **Choices.**
+  - At a branching stage the battle goes on and a dialog offers the two objectives. Nobody
+    choosing takes the first after 15 s.
+  - The auto commander does not choose: the player's pick is the one thing the game waits for,
+    and it is short.
+- **Checkpoints by replay, not by snapshot.**
+  - The world records the player's own commands with their step (`SimWorld.Journal`,
+    `SubmitPlayer`). The game layer records the player's switches: stance, auto deploy, auto
+    strike, focus point, branch picks.
+  - A checkpoint keeps the step and a fingerprint of the state (`StateHash`: every vehicle's id,
+    side, place and health, both sides' CP). It is taken at the start of the step after the
+    stage ended, before that step's commands.
+  - To go back, the battle is rebuilt from the same seed and the journal is fed in step for step
+    behind the loading screen. The simulation is deterministic, so it lands on the same state.
+  - Why not a snapshot: a deep copy of every system's state (paths, lanes, AI memories, pending
+    strikes, projectiles) would be a second copy of the whole simulation to maintain and keep
+    right as systems change. The replay needs nothing but determinism, which the tests already
+    guard.
+  - Tests:
+    - a replay reaches the checkpoint with the same hash;
+    - the restored battle and the uninterrupted one stay identical for six more seconds,
+      through a choice and a betrayal.
+  - The cost of a restore is replaying the battle so far: about 12,000 steps for ten minutes,
+    a few seconds on a phone.
+  - The journal is kept in memory only: a checkpoint lasts until the app closes. The result
+    screen offers "Chơi lại từ điểm lưu" after a lost staged mission.
+- **The allied commander.**
+  - Its own HQ, towers and units at its site, on the player's side (team 0) but tagged `Ally`.
+  - It is commanded by its own `TacticalAi` (`Allies = true`), and the player's commander
+    leaves those units alone. It goes for the player's goal.
+  - Its reinforcements land at its own site, so it never competes for the player's drop zone.
+  - The ally's vehicles are not the player's army: no upkeep, army cap or unit limits, not
+    selectable, not counted in the player's losses.
+  - Betrayal (`Defect`) turns every ally vehicle and structure over to the enemy. Each drops its
+    orders, path and targets, and its view is rebuilt in the new colours. Nothing of the
+    player's changes sides.
+  - It reuses the tactical AI rather than the Conquest commander, because the ally has no
+    economy of its own (team 0's CP is the player's).
+- **The play area.**
+  - A rectangle the player's side (team 0) cannot move out of: its routes stop at the edge. The
+    enemy is not held by it.
+  - It is drawn on the ground as a dashed amber line, and an event opens it.
+  - Growing a map past its old edge into the decor ring needs the map to be larger than its
+    first play area. The new operation maps set their outer ground up that way (the map agents'
+    part).
+- **The enemy's vehicle ceiling.**
+  - The existing 32 vehicles a side stays for the player and the ordinary modes. The enemy in
+    Siege, Defend, Endless and the big operations may field 48 (balance.json
+    `economy.vehicleCap`; an operation's own `enemyCap` overrides it).
+  - Big numbers come as swarms of cheap vehicles (the siege/defend waves).
+- **Tick budget**
+  - Setup: `TickBudgetTests`. A battle on Ashfield with both level-5 bases, the player's army of
+    28, and N enemies in cheap swarms, with both commanders running. The fallen are replaced so
+    the count holds. 60 s after a 10 s warm-up, three seeds a size; the median of the 99th
+    percentiles is used.
+  - Machine: a Ryzen 7 9700X, in the editor's Mono.
+  - The low-end phone is taken as 6 times slower. That covers a Cortex-A55 / A73 class CPU at
+    7–8 times slower in single-thread scores, less the IL2CPP build's gain over Mono.
+  - The budget per 20 Hz step on that phone is 8 ms on average and 16 ms (half a 30 fps frame)
+    at the 99th percentile.
+  - Two fixes came first:
+    - **Ground routes are found at most 6 a step** (`SimWorld.PathsPerStep`). A commander
+      ordering a whole group, and their re-plans half a second later, made the worst steps three
+      to five times the mean. The rest wait their turn, first come first served, and keep the
+      route they had; a stop cancels a waiting route. At 48 enemies at most 18 routes wait, which
+      is 3 steps (150 ms).
+    - **The two sides' commanders think on different steps**: the enemy's half a decision
+      interval later, the ally's a quarter.
+  - Results, desktop ms (phone-scaled mean / p99):
+
+    | enemies | vehicles alive | mean | p99 | phone mean | phone p99 |
+    |---|---|---|---|---|---|
+    | 24 | 74 | 0.56 | 2.67 | 3.4 | 16.0 |
+    | 32 | 82 | 0.62 | 3.38 | 3.7 | 20.3 |
+    | 40 | 90 | 0.71 | 2.69 | 4.3 | 16.1 |
+    | **48** | 98 | 0.73 | 2.56 | 4.4 | **15.3** |
+    | 56 | 106 | 0.89 | 3.90 | 5.4 | 23.4 |
+    | 64 | 114 | 0.97 | 3.88 | 5.8 | 23.3 |
+    | 80 | 130 | 1.31 | 6.23 | 7.8 | 37.4 |
+
+  - The mean grows with the count and stays well inside the budget.
+  - The 99th percentile is mostly a floor that does not follow the count: about 2.5–3.5 ms of
+    worst steps, the path budget's and the commanders' steps plus the machine's own noise. Five
+    agents were running Unity on it at the same time, so any one run is within about ±20 %.
+  - The ceiling is 48, the highest count at or under the budget. It is to be measured again on
+    a quiet machine and on a real low-end phone.
+  - The step profiler (`SimWorld.Profile`, off in play) shows movement at about half of a
+    step's time and combat at about a third.
+
 ## 7. Sized slots (the supplementary prompt; replaces fortification points)
 
 - **Why.** With both a slot count and a point budget, the slots were the scarce thing, so each
@@ -299,6 +409,33 @@ bottom of each section.
     every 35 s.
   - The EW tower sits at exactly 10 % and is left as it is. Its worth is against guided
     weapons and strikes, which only two of the five armies bring.
+- **The default base and the reference base.**
+  - With the attackers knowing the towers, the old reference mixed base scored only 1.44
+    against the mixed army. It spent four of its eleven slots on specialists (EW tower, C-RAM,
+    Patriot, ATGM tower). Several one-tower bases beat it: AA towers only 1.79, heavy fortresses
+    only 1.79, rocket batteries only 1.77.
+  - The player's default base, measured the same way, scored 1.19.
+  - Five candidates were measured (5 seeds, the five armies):
+
+    | candidate | mixed | armour | light+drones | artillery | air |
+    |---|---|---|---|---|---|
+    | default (artillery + Patriot; gun, rocket, gun) | 1.19 | 1.00 | 1.61 | 0.46 | 2.00 |
+    | artillery + heavy fortress; gun, rocket, gun | 1.00 | 1.00 | 1.61 | 0.51 | 2.00 |
+    | heavy fortress + Patriot; gun, rocket, ATGM | 1.63 | 1.78 | 1.61 | 0.50 | 2.00 |
+    | **heavy fortress + artillery; gun, rocket, ATGM** | **1.86** | 1.37 | 1.61 | 0.30 | 2.00 |
+    | greedy (2 heavy; rocket, AA, gun; 4 guard, 2 MG) | 1.71 | 1.91 | 1.78 | 0.44 | 2.00 |
+
+  - **The player's default base is now: heavy fortress and artillery emplacement; gun tower,
+    rocket battery and ATGM tower; two each of guard, AA and MG towers.** It is the only
+    candidate that beats every one-tower base against the mixed army (1.86 against 1.79). The
+    balance tests compare with this base (`BaseBalanceTests.Mixed` reads
+    `PlayerProfile.Default*`).
+  - Every base loses to the artillery army on its own (0.0–0.5). Five guns standing off beyond
+    the towers' reach is how artillery beats static defences. The answer is the defending army
+    and counter-battery fire, not the towers alone, so the towers were not changed for it.
+  - The harness now tells the attackers where every structure is from the start (a scouted
+    base), so the attack's tower sense (edge of reach, artillery first) plays out the same way
+    every time.
 - **Towers against vehicles of equal value** (small 5 CP, medium 8, large 12; 15 fights each).
   Most towers hold every fight. The C-RAM and the artillery emplacement hold none, and that is
   their design: the C-RAM has no gun for the ground, and the emplacement cannot fire inside its
