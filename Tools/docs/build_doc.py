@@ -115,7 +115,7 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; }
 .card { border: 1px solid #d5d9dc; padding: 8pt; page-break-inside: avoid; margin-bottom: 8pt; }
 .card .head { display: grid; grid-template-columns: 170pt 1fr; gap: 10pt; }
-.card img.thumb { width: 170pt; height: 96pt; object-fit: cover; border: 1px solid #e0e3e5; background: #6b7775; }
+.card img.thumb { width: 170pt; height: 120pt; object-fit: contain; border: 1px solid #e0e3e5; background: #ffffff; }
 .card .name { font-size: 13pt; font-weight: 700; }
 .card .meta { font-size: 8.8pt; color: #4a555c; }
 .card .note { font-size: 9pt; margin-top: 3pt; }
@@ -153,7 +153,9 @@ def vehicle_card(v, imgdir):
              f"<div>Tầm nhìn <b>{v['vision']:g} m</b></div><div>DPS vs nhẹ <b>{d['Light']:.0f}</b></div>"
              f"<div>DPS vs nặng <b>{d['Heavy']:.0f}</b></div><div>DPS vs máy bay <b>{d['Air']:.0f}</b></div></div>")
     skills = ''.join(f"<span class='chip'>{esc(s)}</span>" for s in v['skills'])
-    thumb = img(Path(imgdir) / 'veh' / (v['model'] + '.png'), 'thumb', v['name'])
+    # The game's own card render (Resources/UI/Cards, 512 px, transparent), else a hero render.
+    card = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'UI' / 'Cards' / (v['model'] + '.png')
+    thumb = img(card, 'thumb', v['name']) if card.exists() else img(Path(imgdir) / 'veh' / (v['model'] + '.png'), 'thumb', v['name'])
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"

@@ -7,6 +7,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 GOAL_VI_EXTRA = {'Outpost': 'Lập tiền đồn', 'Relieve': 'Giải vây', 'Evacuate': 'Di tản', 'Duel': 'Đấu tướng'}
 SIZE_VI = {'Small': 'Nhỏ', 'Medium': 'Vừa', 'Large': 'Lớn'}
+STYLE_VI = {'tank': 'Thiết giáp', 'armour': 'Thiết giáp', 'artillery': 'Pháo binh', 'drones': 'Drone', 'drone': 'Drone', 'air': 'Phòng không',
+            'antiair': 'Phòng không', 'logistics': 'Hậu cần', 'navy': 'Hậu cần', 'all': 'Tổng hợp', 'default': 'Mặc định'}
+STANCE_VI = {'Attack': 'Tấn công', 'Defend': 'Phòng thủ'}
 EVENT_VI = {'Reinforce': 'chi viện địch', 'AllyReinforce': 'chi viện ta', 'Expand': 'mở rộng vùng chơi', 'Betrayal': 'đồng minh phản bội',
             'Radio': 'radio', 'Cp': 'thưởng CP', 'Strike': 'không kích', 'Income': 'thu nhập'}
 
@@ -27,7 +30,7 @@ def campaign(game, h):
     rows = [[f"<b>{esc(c['name'])}</b>", esc(c['role']), esc(c['bio'])] for c in game['characters'] if c['name']]
     out.append("<h3>Nhân vật</h3>" + table(['Nhân vật', 'Vai trò', 'Tiểu sử'], rows))
     # Generals as AI configurations
-    rows = [[f"<b>{esc(g['name'] or g['id'])}</b>", esc(g['style']), esc(g['stance']), esc(', '.join(g['deck'])), esc(', '.join(g['supports'])),
+    rows = [[f"<b>{esc(g['name'] or g['id'])}</b>", esc(STYLE_VI.get(g['style'], g['style'])), esc(STANCE_VI.get(g['stance'], g['stance'])), esc(', '.join(g['deck'])), esc(', '.join(g['supports'])),
              esc(', '.join(g['elitesPrefer']))] for g in game['generals']]
     out.append("<h3>Tướng địch là cấu hình AI</h3><p>Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ưu tiên xe tinh nhuệ, chân dung, câu khiêu khích và câu khi thua.</p>"
                + table(['Tướng', 'Kiểu căn cứ', 'Thế trận', 'Bộ bài đặc trưng', 'Hỏa lực', 'Ưu tiên tinh nhuệ'], rows))
