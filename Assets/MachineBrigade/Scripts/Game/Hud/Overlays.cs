@@ -55,7 +55,7 @@ namespace MachineBrigade.Game.Hud
             _doubleCoins = doubleCoins;
             _next = next;
             _checkpoint = checkpoint;
-            Root = Kit.Root(KitDialog.ScrimClass + " fc-result");
+            Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-result");
             Root.pickingMode = PickingMode.Position;
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-result__card", PickingMode.Position);
 
@@ -247,7 +247,7 @@ namespace MachineBrigade.Game.Hud
 
         public ChoicePanel()
         {
-            Root = Kit.Root(KitDialog.ScrimClass + " fc-choice");
+            Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-choice");
             Root.pickingMode = PickingMode.Position;
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog fc-choice__card", PickingMode.Position);
             var head = Kit.Box("fc-row fc-mb-2");
@@ -299,7 +299,7 @@ namespace MachineBrigade.Game.Hud
 
         public PausePanel(Action resume, Action restart, Action menu, Action autoDeployToggled = null, Action autoStrikeToggled = null)
         {
-            Root = Kit.Root(KitDialog.ScrimClass + " fc-pause");
+            Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-pause");
             Root.pickingMode = PickingMode.Position;
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog fc-pause__card", PickingMode.Position);
             var head = Kit.Box("fc-row fc-mb-2");

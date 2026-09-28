@@ -75,7 +75,8 @@ namespace MachineBrigade.Game.Hud
             // the coins and the one settings gear on the right.
             _topBar = Kit.Box("fc-top", PickingMode.Position);
             _topLead = Kit.Box("fc-top__lead");
-            _backButton = new KitIconButton("retreat", Strings.Get("menu.back"), () => Back());
+            // The top bar is 44 pt: its icon buttons are small faces inside their 44 pt targets (prompt 14 A3).
+            _backButton = new KitIconButton("retreat", Strings.Get("menu.back"), () => Back(), plain: true);
             _topLead.Add(_backButton);
             _logo = Kit.Box("fc-top__logo");
             _logo.Add(Kit.Icon("logo"));
@@ -99,7 +100,7 @@ namespace MachineBrigade.Game.Hud
             _topBar.Add(rank);
             _coins = new KitCurrency(0, () => OpenShop(ShopTab.Coins));
             _topBar.Add(_coins);
-            var gear = new KitIconButton("settings", Strings.Get("menu.settings"), () => Open(_settings, Strings.Get("menu.settings")));
+            var gear = new KitIconButton("settings", Strings.Get("menu.settings"), () => Open(_settings, Strings.Get("menu.settings")), plain: true);
             gear.AddToClassList("fc-top__gear");
             _topBar.Add(gear);
             Root.Add(_topBar);

@@ -6,12 +6,14 @@
    size outside these blocks). Theme.tss imports this file, so every panel of the game has the
    tokens at its root.
 
-   Units. The game's panels are authored for 1280 x 720 and scale with the screen height on phones
-   (BattleHud.MatchFor), so a 19.5:9 phone shows a panel 1560 px wide. The brief's sizes are given
-   at a 1400 px reference width, the width of that phone class, so one reference pixel is
-   1560 / 1400 = 1.114 panel pixels. Sizes of 16 px and up (type, touch targets, the chamfer) are
-   converted with that factor; hairlines, bars and the spacing scale keep their literal values.
-   The comments give the reference value first. */
+   Units (prompt 14). Sizes are device points: 1 pt = 1.823 panel px (Kit.PanelPxPerPoint: the kit's
+   44 pt touch target is 80.2 px). The menus scale with the device's pixel density (BattleHud.MenuScale),
+   so a point is a point on every phone and tablet, whatever its width; a panel 720 px high is a phone
+   395 pt high, the reference phone. The comments give the points. Hairlines, bars and the spacing
+   scale keep their literal pixels (4 px is about 2 pt, 8 px 4 pt, 16 px 9 pt: the small end of the
+   brief's 4 / 8 / 12 / 16 / 24 pt scale, which cards and panels use inside).
+   The battle HUD keeps its own sizes (prompt 11): the .fc-hud block below restores them, and the
+   battle's overlays (result, pause, the choice between stages; .fc-overlay) take the menus' again. */
 
 :root {
     /* ---- A. colour: surfaces */
@@ -69,18 +71,19 @@
     --fc-font-text-medium: resource("Fonts/Barlow-Medium");
     --fc-font-text-semi: resource("Fonts/Barlow-SemiBold");
 
-    /* ---- B. type scale, Normal text size (reference px at 1400 wide in brackets) */
-    --fc-fs-primary: 42px;                    /* main button: 36-40 (37.7) */
-    --fc-fs-title: 30px;                      /* screen title: 26-30 (26.9) */
-    --fc-fs-panel-title: 23px;                /* panel title: 20-22 (20.6) */
-    --fc-fs-button: 23px;                     /* other buttons, tabs, chips: panel title size */
-    --fc-fs-body: 21px;                       /* body text: 18-20 (18.8) */
-    --fc-fs-small: 19px;                      /* secondary text: 16 at least (17.1); nothing smaller */
-    --fc-fs-number: 36px;                     /* big numbers (32.3) */
-    --fc-fs-number-small: 23px;               /* numbers in a row of text */
+    /* ---- B. type scale, Normal text size, in points (prompt 14: the brief's range in brackets) */
+    --fc-fs-primary: 35px;                    /* main button: 19 pt (18-20) */
+    --fc-fs-title: 33px;                      /* screen title: 18 pt (17-20) */
+    --fc-fs-panel-title: 26px;                /* panel title: 14.3 pt (14-15) */
+    --fc-fs-button: 26px;                     /* other buttons, tabs, chips: panel title size */
+    --fc-fs-body: 24px;                       /* body text: 13.2 pt (13-14) */
+    --fc-fs-small: 20px;                      /* secondary text: 11 pt; nothing under 10 pt (18.2 px) */
+    --fc-fs-number: 36px;                     /* big numbers: 19.7 pt */
+    --fc-fs-number-small: 25px;               /* numbers in a row of text: 13.7 pt */
+    --fc-fs-card: 22px;                       /* a card's name: 12 pt (cards are narrow; between the secondary and panel title sizes) */
 
     /* ---- B. touch targets, corners, borders */
-    --fc-touch: 82px;                         /* 72 px at 1400 wide (80.2), 44 pt on a 390 pt tall phone (81.2) */
+    --fc-touch: 81px;                         /* 44 pt: every tap target, a larger invisible one round a smaller face */
     --fc-control: 64px;                       /* the visible face of a chip, text button or plus inside its touch target */
     --fc-icon: 28px;
     --fc-icon-small: 22px;
@@ -101,33 +104,59 @@
     --fc-space-6: 24px;
     --fc-space-7: 32px;
 
-    /* ---- component sizes */
-    --fc-card-width: 184px;
-    --fc-card-art: 150px;
-    --fc-card-compact-width: 136px;
-    --fc-card-compact-art: 100px;
-    --fc-gear-width: 164px;
-    --fc-gear-art: 104px;
+    /* ---- component sizes (prompt 14: cards in lists 22 % smaller) */
+    --fc-card-width: 144px;                   /* 79 pt (184 px before) */
+    --fc-card-art: 116px;
+    --fc-card-compact-width: 112px;           /* 61 pt (136 px before) */
+    --fc-card-compact-art: 78px;
+    --fc-gear-width: 128px;                   /* 70 pt (164 px before) */
+    --fc-gear-art: 82px;
     --fc-dialog-width: 620px;
     --fc-tooltip-width: 380px;
     --fc-thumb-width: 112px;
     --fc-thumb-height: 63px;
-    --fc-nav-width: 148px;
+    --fc-nav-width: 132px;                    /* the left rail: 72 pt (72-80) */
+    --fc-nav-icon: 42px;                      /* its icons: 23 pt (22-24); labels are the secondary size, 11 pt */
+    --fc-tab: 73px;                           /* a row of tabs: 40 pt (the tabs' targets reach 44 pt) */
     --fc-switch-width: 64px;
     --fc-switch-height: 34px;
     --fc-knob: 24px;
 
     /* ---- screen layout (Screens.uss) */
-    --fc-topbar: 96px;
-    --fc-home-column: 440px;
-    --fc-detail-column: 520px;
-    --fc-detail-stage: 300px;                 /* the turntable's box on the detail page's left */
-    --fc-detail-side: 440px;                  /* the In action theatre's info column beside the big preview */
+    --fc-topbar: 81px;                        /* the top bar: 44.4 pt (44-48) */
+    --fc-home-column: 400px;
+    --fc-detail-column: 470px;
+    --fc-detail-stage: 250px;                 /* the turntable's box on the detail page's left */
+    --fc-detail-side: 400px;                  /* the In action theatre's info column beside the big preview */
     --fc-scrim-home: rgba(8, 10, 12, 0.38);   /* the home screen's battle, dimmed 38 % */
 }
 
-/* ---- B. type scale, Large text size (Settings > Text size > Large), about 1.15x */
+/* ---- B. type scale, Large text size (Settings > Text size > Large): the whole scale about 1.2x */
 .fc-text-large {
+    --fc-fs-primary: 42px;
+    --fc-fs-title: 40px;
+    --fc-fs-panel-title: 31px;
+    --fc-fs-button: 31px;
+    --fc-fs-body: 29px;
+    --fc-fs-small: 24px;
+    --fc-fs-number: 43px;
+    --fc-fs-number-small: 30px;
+    --fc-fs-card: 26px;
+}
+
+/* ---- the battle HUD keeps its own type and target sizes (prompt 11; it scales with the screen's height) */
+.fc-hud {
+    --fc-fs-primary: 42px;
+    --fc-fs-title: 30px;
+    --fc-fs-panel-title: 23px;
+    --fc-fs-button: 23px;
+    --fc-fs-body: 21px;
+    --fc-fs-small: 19px;
+    --fc-fs-number: 36px;
+    --fc-fs-number-small: 23px;
+    --fc-touch: 82px;
+}
+.fc-hud.fc-text-large {
     --fc-fs-primary: 48px;
     --fc-fs-title: 34px;
     --fc-fs-panel-title: 26px;
@@ -136,6 +165,28 @@
     --fc-fs-small: 22px;
     --fc-fs-number: 41px;
     --fc-fs-number-small: 26px;
+}
+/* ...and the battle's overlays (result, pause, the choice, the ad) are the menus' sizes again. */
+.fc-hud .fc-overlay {
+    --fc-fs-primary: 35px;
+    --fc-fs-title: 33px;
+    --fc-fs-panel-title: 26px;
+    --fc-fs-button: 26px;
+    --fc-fs-body: 24px;
+    --fc-fs-small: 20px;
+    --fc-fs-number: 36px;
+    --fc-fs-number-small: 25px;
+    --fc-touch: 81px;
+}
+.fc-hud .fc-overlay.fc-text-large {
+    --fc-fs-primary: 42px;
+    --fc-fs-title: 40px;
+    --fc-fs-panel-title: 31px;
+    --fc-fs-button: 31px;
+    --fc-fs-body: 29px;
+    --fc-fs-small: 24px;
+    --fc-fs-number: 43px;
+    --fc-fs-number-small: 30px;
 }
 
 /* ================================================================================================
@@ -332,7 +383,8 @@
     padding: 0 var(--fc-space-6);
     align-items: center; justify-content: center;
     border-bottom-width: var(--fc-underline); border-bottom-color: var(--fc-clear);
-    margin-bottom: -1px;
+    /* The row is 40 pt; each tab's 44 pt target reaches past it, unseen (and 1 px over the row's line). */
+    margin-top: -4px; margin-bottom: -5px;
 }
 .fc-tab__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 1.2px; color: var(--fc-text-2); -unity-text-align: middle-center; }
 .fc-root .fc-tab.pressed { background-color: var(--fc-panel-raised); scale: 1 1; }
@@ -438,8 +490,8 @@
     background-color: var(--fc-text);
 }
 .fc-vcard__upgrade > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-ink); }
-.fc-vcard__body { padding: var(--fc-space-2) var(--fc-space-3) var(--fc-space-3) var(--fc-space-3); }
-.fc-vcard__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 0.5px; color: var(--fc-text); }
+.fc-vcard__body { padding: var(--fc-space-2); }
+.fc-vcard__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-card); letter-spacing: 0.5px; color: var(--fc-text); }
 .fc-vcard__level { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); margin-top: var(--fc-space-1); }
 .fc-vcard__content { transition-property: opacity; transition-duration: 0.1s; }
 .fc-vcard--locked .fc-vcard__content { opacity: 0.45; }
@@ -459,7 +511,7 @@
 .fc-vcard--compact .fc-vcard__level { display: none; }
 .fc-vcard--compact .fc-vcard__cp-unit { display: none; }
 .fc-vcard--compact.fc-vcard--show-level .fc-vcard__level { display: flex; }
-.fc-vcard--compact .fc-vcard__body { padding: var(--fc-space-2); }
+.fc-vcard--compact .fc-vcard__body { padding: var(--fc-space-2) var(--fc-space-1); }
 
 /* ---- gear cards: a picture per item type in a rarity frame, the short main stat, the level ---- */
 .fc-gcard {
@@ -485,7 +537,7 @@
     -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text);
 }
 .fc-gcard__equipped { position: absolute; right: var(--fc-space-1); top: var(--fc-space-1); width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text); }
-.fc-gcard__body { padding: var(--fc-space-2) var(--fc-space-3) var(--fc-space-3) var(--fc-space-3); }
+.fc-gcard__body { padding: var(--fc-space-2); }
 .fc-gcard__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); letter-spacing: 0.5px; color: var(--fc-text); }
 .fc-gcard__stat { -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); margin-top: var(--fc-space-1); }
 .fc-gcard__compare { -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-small); margin-top: var(--fc-space-1); color: var(--fc-text-2); }
@@ -512,7 +564,7 @@
     padding: var(--fc-space-2) var(--fc-space-1);
     border-left-width: var(--fc-bar); border-left-color: var(--fc-clear);
 }
-.fc-nav-item > .fc-icon { width: 32px; height: 32px; --icon-color: var(--fc-text-2); }
+.fc-nav-item > .fc-icon { width: var(--fc-nav-icon); height: var(--fc-nav-icon); --icon-color: var(--fc-text-2); }
 .fc-nav-item__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); letter-spacing: 1px; color: var(--fc-text-2); margin-top: var(--fc-space-1); -unity-text-align: middle-center; }
 .fc-root .fc-nav-item.pressed { background-color: var(--fc-panel); scale: 1 1; }
 .fc-nav-item--selected { background-color: var(--fc-panel-selected); border-left-color: var(--fc-accent); }
@@ -607,6 +659,7 @@
 .fc-sample__deck { flex-grow: 0; flex-shrink: 0; margin-top: var(--fc-space-2); }
 .fc-sample__deck .unity-scroll-view__content-container { flex-direction: row; }
 .fc-sample__column--end { justify-content: flex-end; }
+.fc-text-large .fc-sample__modes { flex-direction: column; }
 .fc-preview__row--center { align-items: center; }
 .fc-preview__nav-row { flex-direction: row; width: auto; align-self: flex-start; border-right-width: 0; }
 .fc-preview__nav-row > .fc-nav-item { width: var(--fc-nav-width); }

@@ -113,11 +113,10 @@ namespace MachineBrigade.Game.Hud
 
                 _settings = ScriptableObject.CreateInstance<PanelSettings>();
                 _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
-                _settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
                 _settings.referenceResolution = new Vector2Int(1280, 720);
                 _settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
-                _settings.match = MatchFor(Screen.width, Screen.height);
-                _settings.scale = Match.MatchSettings.UiScale;
+                _menuPanel = mode == HudMode.Menu;
+                ApplyScale();
                 _settings.sortingOrder = 10;
 
                 _host = new GameObject("HUD");
@@ -668,7 +667,7 @@ namespace MachineBrigade.Game.Hud
         {
             if (_ad == null)
             {
-                _ad = Kit.Root(KitDialog.ScrimClass + " fc-ad");
+                _ad = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-ad");
                 _ad.pickingMode = PickingMode.Position;
                 var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog", PickingMode.Position);
                 card.Add(Kit.Text(Kit.Caps(Strings.Get("ad.title")), "fc-panel-title fc-dialog__title"));
@@ -908,13 +907,47 @@ namespace MachineBrigade.Game.Hud
                 // A new screen shape (another device, a rotated tablet, a resized Game view).
                 _screenWidth = Screen.width;
                 _screenHeight = Screen.height;
-                _settings.match = MatchFor(_screenWidth, _screenHeight);
+                ApplyScale();
                 _appliedSafeArea = default;
             }
             if (_settings != null && Screen.safeArea != _appliedSafeArea) ApplySafeArea();
         }
 
         private int _screenWidth, _screenHeight;
+        private readonly bool _menuPanel;
+
+        /// <summary>
+        /// The panel's scale: the menus in device points (prompt 14: <see cref="MenuScale"/>), the battle HUD with
+        /// the screen (<see cref="MatchFor"/>); the Settings' UI size multiplies either.
+        /// </summary>
+        private void ApplyScale()
+        {
+            if (_menuPanel)
+            {
+                _settings.scaleMode = PanelScaleMode.ConstantPixelSize;
+                _settings.scale = MenuScale(Screen.width, Screen.height, Screen.dpi, Application.isMobilePlatform) * Match.MatchSettings.UiScale;
+            }
+            else
+            {
+                _settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+                _settings.match = MatchFor(Screen.width, Screen.height);
+                _settings.scale = Match.MatchSettings.UiScale;
+            }
+        }
+
+        /// <summary>
+        /// The menus' scale (screen pixels per panel pixel) in device points (prompt 14): one point is
+        /// <see cref="Kit.PanelPxPerPoint"/> panel pixels whatever the screen's width, so a tablet shows more and a
+        /// phone the same as a phone. A point is a 160th of an inch (Android's dp, iOS's point is a 163rd). Where
+        /// the density is unknown or not a phone's (the editor, a desktop), the screen is taken for a phone 395 pt
+        /// high: the height scaling the menus had before.
+        /// </summary>
+        internal static float MenuScale(int width, int height, float dpi, bool mobile)
+        {
+            if (width <= 0 || height <= 0) return 1f;
+            if (!mobile || dpi < 100f) dpi = height / Kit.ReferencePhonePoints * Kit.PointsPerInch;
+            return dpi / (Kit.PointsPerInch * Kit.PanelPxPerPoint);
+        }
 
         /// <summary>
         /// Responsive scaling. The layout is authored for 1280 x 720. On screens at least that

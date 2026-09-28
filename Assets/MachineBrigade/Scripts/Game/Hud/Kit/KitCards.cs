@@ -228,8 +228,9 @@ namespace MachineBrigade.Game.Hud
             if (data.Equipped) art.Add(Kit.Icon("check", "fc-gcard__equipped", 2.4f));
             Add(art);
             var body = Kit.Box("fc-gcard__body");
+            // Equipment names are long ("Giáp tổng hợp gắn thêm") and have no short form: three lines on every card.
             var name = Kit.Text(Kit.Caps(data.Name), "fc-gcard__name");
-            Kit.FixedLines(name, 2);
+            Kit.FixedLines(name, 3);
             body.Add(name);
             if (!string.IsNullOrEmpty(data.MainStat)) body.Add(Kit.Text(data.MainStat, "fc-gcard__stat"));
             if (!string.IsNullOrEmpty(data.Compare))

@@ -57,6 +57,8 @@
 .fc-home__launch { margin-top: var(--fc-space-3); flex-shrink: 0; }
 .fc-home__grid { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
 .fc-home__grid > .fc-dropdown { width: 49%; margin-bottom: var(--fc-space-2); }
+/* Large text: one dropdown a row (two did not hold "Conquest" at 13 pt Large). */
+.fc-text-large .fc-home__grid > .fc-dropdown { width: 100%; }
 .fc-home__deck {
     position: absolute; left: var(--fc-space-4); bottom: var(--fc-space-4); right: 472px;
     padding: var(--fc-space-3) var(--fc-space-4);
@@ -70,7 +72,7 @@
 .fc-campaign-card__progress { flex-direction: row; align-items: center; margin-top: var(--fc-space-3); }
 .fc-campaign-card__progress > .fc-progress { flex-grow: 1; margin-right: var(--fc-space-3); }
 .fc-daily { margin-top: var(--fc-space-3); }
-.fc-daily__head { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: var(--fc-space-2); }
+.fc-daily__head { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: var(--fc-space-2); }
 .fc-daily__row { flex-direction: row; align-items: center; padding: var(--fc-space-2) 0; border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
 .fc-daily__text { flex-grow: 1; flex-shrink: 1; margin-right: var(--fc-space-3); }
 .fc-daily__text > .fc-progress { margin-top: var(--fc-space-2); }
@@ -192,7 +194,7 @@
 .fc-army__collection { margin-top: var(--fc-space-3); }
 /* Cards in a row are one height (prompt 11 B2): the tallest (a locked card with its unlock line) sets it. */
 .fc-army__grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
-.fc-army__gear { position: absolute; left: 0; top: var(--fc-touch); right: 0; bottom: 0; flex-direction: row; }
+.fc-army__gear { position: absolute; left: 0; top: var(--fc-tab); right: 0; bottom: 0; flex-direction: row; }
 .fc-army__gear-left { flex-grow: 1; flex-shrink: 1; }
 .fc-army__gear-right { width: 520px; flex-shrink: 0; margin: var(--fc-space-3) var(--fc-space-4); padding: var(--fc-space-3); }
 .fc-army__gear-info { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
@@ -202,7 +204,7 @@
 .fc-army__slot > .fc-caption { margin-bottom: var(--fc-space-1); }
 /* A slot's card fills its cell, so an empty slot is as tall as a worn one beside it (prompt 11 B2). */
 .fc-army__slot > .fc-gcard { flex-grow: 1; }
-.fc-army__base { position: absolute; left: 0; top: var(--fc-touch); right: 0; bottom: 0; }
+.fc-army__base { position: absolute; left: 0; top: var(--fc-tab); right: 0; bottom: 0; }
 .fc-gear-lines { margin-top: var(--fc-space-2); }
 .fc-gear-line { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-1); }
 .fc-gear-line__roll { width: 72px; margin-left: var(--fc-space-3); }
