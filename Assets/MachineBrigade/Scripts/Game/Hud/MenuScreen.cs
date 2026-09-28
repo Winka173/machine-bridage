@@ -561,7 +561,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base",
             "detail", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
@@ -602,6 +602,12 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));
+                    break;
+                case "setup-mode":
+                case "setup-map":
+                    // The match setup (E7): the home's pickers, open.
+                    ShowTab(Tab.Home);
+                    (screen == "setup-mode" ? _modeDrop : _mapDrop).Open();
                     break;
                 default:
                     if (screen.StartsWith("shop-") && Enum.TryParse<ShopTab>(screen.Substring(5), true, out var shop)) OpenShop(shop);
