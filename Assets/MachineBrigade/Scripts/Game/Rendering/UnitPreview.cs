@@ -89,7 +89,7 @@ namespace MachineBrigade.Game.Rendering
             _camera.enabled = true;
         }
 
-        /// <summary>The vehicle in action: firing at targets on a little range of its own (see <see cref="FiringRange"/>).</summary>
+        /// <summary>The vehicle (or a fire support, by its card id) in action: on a little range of its own (see <see cref="FiringRange"/>).</summary>
         public void ShowRange(string vehicleId)
         {
             CloseRange();

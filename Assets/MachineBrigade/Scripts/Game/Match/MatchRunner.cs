@@ -305,6 +305,7 @@ namespace MachineBrigade.Game.Match
                 _commander = new PlayerCommander(_world, _hud, _camera, PlayerTeam, cards);
                 _selection.TapInterceptor = _commander.TryTap;
                 _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
+                if (isActiveAndEnabled) _gestures.Enable();
             }
             Wire();
 
@@ -314,6 +315,9 @@ namespace MachineBrigade.Game.Match
             Curtain.Progress(1f);
             Curtain.Open();
         }
+
+        /// <summary>-mb-killboss: when each boss was first seen.</summary>
+        private readonly Dictionary<MachineBrigade.Sim.Core.EntityId, float> _bossSeen = new();
 
         private bool BossOnField()
         {
@@ -531,6 +535,15 @@ namespace MachineBrigade.Game.Match
                 }
                 // A boss on the field: the boss track (the old war-drum loop stays silent).
                 if (!_menu && Time.frameCount % 15 == 0) _music.Boss = BossOnField();
+                // Device check of a boss's death: it goes down after twelve seconds on the field.
+                if (!_menu && DebugFlags.Has("-mb-killboss") && Time.frameCount % 15 == 0)
+                    foreach (var v in _world.Vehicles)
+                        if (v.IsAlive && v.Def.Boss && _bossSeen.TryAdd(v.Id, Time.time) is var first && Time.time - _bossSeen[v.Id] > 12f)
+                        {
+                            _camera.FocusOn(new Vector3(v.Position.X, 0f, v.Position.Y));
+                            _lastInput = float.MaxValue;
+                            _world.DebugDamage(v, 5f);
+                        }
                 if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
             _perf?.End(PerfProbe.Section.Effects);

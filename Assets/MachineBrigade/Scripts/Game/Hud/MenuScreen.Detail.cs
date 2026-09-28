@@ -128,6 +128,15 @@ namespace MachineBrigade.Game.Hud
         private void ShowPreview()
         {
             var vehicle = _detailId != null && _catalog.Vehicles.TryGetValue(_detailId, out var def) ? def : null;
+            // A fire support's In action tab: the support called on a range.
+            if (vehicle == null && _detailId != null && Preview != null && _detailTab == DetailTab.Firing && _catalog.TryGetSupport(_detailId, out _))
+            {
+                Preview.ShowRange(_detailId);
+                _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
+                _detailPreview.style.display = DisplayStyle.Flex;
+                _detailIcon.style.display = DisplayStyle.None;
+                return;
+            }
             if (vehicle != null && Preview != null)
             {
                 // The In action tab shows it firing on a range; the others turn it on its stand.

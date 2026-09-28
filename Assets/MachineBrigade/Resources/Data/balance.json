@@ -276,7 +276,7 @@
     { "id": "grad_truck", "scale": 0.85,       "armor": "Light", "hp": 280, "speed": 8, "turnRate": 70, "turretTurnRate": 55, "radius": 2.2, "length": 7.52, "width": 2.55, "cp": 6, "vision": 30,
       "firesWhileMoving": false, "weapon": "grad_rockets", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 120, "radius": 9, "delay": 0.3, "tier": "Huge" } },
-    { "id": "atgm_carrier", "scale": 0.85,     "armor": "Light", "hp": 420, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 2.3, "length": 7.31, "width": 2.89, "cp": 6, "vision": 36,
+    { "id": "atgm_carrier", "class": "TankHunter", "scale": 0.85,     "armor": "Light", "hp": 420, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 2.3, "length": 7.31, "width": 2.89, "cp": 6, "vision": 36,
       "firesWhileMoving": true, "weapon": "atgm_heavy", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Large" } },
     { "id": "aps_tank", "scale": 0.85,         "armor": "Heavy", "hp": 1050, "speed": 6, "turnRate": 60, "turretTurnRate": 70, "radius": 2.3, "length": 7.82, "width": 3.73, "cp": 9, "vision": 30,

@@ -33,7 +33,8 @@ namespace MachineBrigade.Game.Match
             foreach (var id in list.Split('+'))
             {
                 if (id == "all") ids.AddRange(catalog.Vehicles.Keys);
-                else if (catalog.Vehicles.ContainsKey(id)) ids.Add(id);
+                else if (id == "supports") ids.AddRange(catalog.Supports.Keys);
+                else if (catalog.Vehicles.ContainsKey(id) || catalog.TryGetSupport(id, out _)) ids.Add(id);
             }
             if (ids.Count == 0) return;
             var capture = host.AddComponent<RangeCapture>();
