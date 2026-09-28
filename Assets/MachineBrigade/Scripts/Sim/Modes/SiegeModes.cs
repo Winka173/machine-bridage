@@ -1149,6 +1149,9 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>CP handed out each time the boss drops below 75, 50 and 25 % health (paid during the fight, BTD6 style).</summary>
         public float StepBounty { get; set; }
 
+        /// <summary>CP handed out for each part of the boss broken (prompt 9).</summary>
+        public float PartBounty { get; set; } = 2f;
+
         public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
     }
 
@@ -1196,6 +1199,9 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Health steps of the boss on the field already paid for (75, 50, 25 %).</summary>
         private int _stepsPaid;
 
+        /// <summary>Parts of the boss on the field already paid for (prompt 9: each part pays once, even if it is patched and broken again).</summary>
+        private ulong _partsPaid;
+
         public void Tick(SimWorld world, float dt)
         {
             if (Result != null) return;
@@ -1206,6 +1212,13 @@ namespace MachineBrigade.Sim.Modes
                 for (; _stepsPaid < steps; _stepsPaid++)
                     if (world.TryGetEconomy(PlayerTeam, out var paid)) paid.Cp = MathF.Min(paid.Bank, paid.Cp + _rules.StepBounty);
             }
+            if (_rules.PartBounty > 0f && Boss.IsValid && world.TryGetVehicle(Boss, out var parted) && parted.IsAlive)
+                for (var i = 0; i < parted.PartCount && i < 64; i++)
+                {
+                    if (!parted.IsPartBroken(i) || (_partsPaid & (1UL << i)) != 0) continue;
+                    _partsPaid |= 1UL << i;
+                    if (world.TryGetEconomy(PlayerTeam, out var bounty)) bounty.Cp = MathF.Min(bounty.Bank, bounty.Cp + _rules.PartBounty);
+                }
             if (Boss.IsValid && (!world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
             {
                 Boss = EntityId.None;
@@ -1237,6 +1250,7 @@ namespace MachineBrigade.Sim.Modes
             var heading = SimMath.HeadingOf(home - rally);
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
+            _partsPaid = 0;
             if (!_rules.Escorts.TryGetValue(id, out var escorts)) return;
             for (var i = 0; i < escorts.Length; i++)
             {

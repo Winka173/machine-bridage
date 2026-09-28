@@ -1,3 +1,5 @@
+// Needs the UI Toolkit test framework package (com.unity.ui.test-framework); without it the rest of the project still compiles.
+#if MB_UI_TEST_FRAMEWORK
 using System;
 using System.Linq;
 using NUnit.Framework;
@@ -69,3 +71,4 @@ namespace MachineBrigade.Tests
         }
     }
 }
+#endif

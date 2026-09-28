@@ -115,7 +115,7 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; }
 .card { border: 1px solid #d5d9dc; padding: 8pt; page-break-inside: avoid; margin-bottom: 8pt; }
 .card .head { display: grid; grid-template-columns: 170pt 1fr; gap: 10pt; }
-.card img.thumb { width: 170pt; height: 96pt; object-fit: cover; border: 1px solid #e0e3e5; background: #6b7775; }
+.card img.thumb { width: 170pt; height: 120pt; object-fit: contain; border: 1px solid #e0e3e5; background: #ffffff; }
 .card .name { font-size: 13pt; font-weight: 700; }
 .card .meta { font-size: 8.8pt; color: #4a555c; }
 .card .note { font-size: 9pt; margin-top: 3pt; }
@@ -153,7 +153,9 @@ def vehicle_card(v, imgdir):
              f"<div>Tầm nhìn <b>{v['vision']:g} m</b></div><div>DPS vs nhẹ <b>{d['Light']:.0f}</b></div>"
              f"<div>DPS vs nặng <b>{d['Heavy']:.0f}</b></div><div>DPS vs máy bay <b>{d['Air']:.0f}</b></div></div>")
     skills = ''.join(f"<span class='chip'>{esc(s)}</span>" for s in v['skills'])
-    thumb = img(Path(imgdir) / 'veh' / (v['model'] + '.png'), 'thumb', v['name'])
+    # The game's own card render (Resources/UI/Cards, 512 px, transparent), else a hero render.
+    card = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'UI' / 'Cards' / (v['model'] + '.png')
+    thumb = img(card, 'thumb', v['name']) if card.exists() else img(Path(imgdir) / 'veh' / (v['model'] + '.png'), 'thumb', v['name'])
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
@@ -171,8 +173,9 @@ def build(game, imgdir):
     out.append("<div class='cover'><div class='kicker'>TÀI LIỆU THIẾT KẾ · REVIEW</div><h1>MACHINE BRIGADE</h1>"
                f"<p class='muted'>Game chiến thuật thời gian thực trên mobile, chỉ có phương tiện quân sự · bản {date.today().isoformat()}</p>"
                f"{img(shots / 'home.png', 'shot')}"
-               "<p>Tài liệu này lấy số liệu trực tiếp từ dữ liệu game (balance.json, campaign.json, mã nguồn), gồm: các chế độ chơi, chiến dịch, "
-               "toàn bộ phương tiện với chỉ số và DPS, vũ khí, tháp canh, boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ và giao diện.</p></div>")
+               "<p>Tài liệu này lấy số liệu trực tiếp từ dữ liệu game (balance.json, campaign.json, mã nguồn), gồm: các chế độ chơi, "
+               "chiến dịch cốt truyện, nhiệm vụ nhiều giai đoạn, Tác chiến, căn cứ và tháp, Công thành / Phòng thủ, toàn bộ phương tiện với chỉ số và DPS, vũ khí, tháp canh, "
+               "xe tinh nhuệ, boss và bộ phận boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ, giao diện và các phép đo còn chờ phase kiểm tra.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Nhiệm vụ nhiều giai đoạn</li><li>Tác chiến</li><li>Căn cứ và tháp</li><li>Công thành và Phòng thủ</li>"
                "<li>Phương tiện (thẻ chi tiết)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
@@ -282,11 +285,9 @@ def build(game, imgdir):
                "theo độ khó (Dễ 5%, Thường 10%, Khó 15%, Anh hùng 20%, Thép 25%), trần 1–5 xe cùng lúc; tướng ưu tiên loại xe của mình. Hạ tinh nhuệ hoàn CP theo giá thật "
                "và thưởng một ít xu, có tỷ lệ nhỏ rơi bản thiết kế.</p>"
                + table(head, simple_rows(game['elites']))
-               + "<h3>Boss</h3><p>Boss có bộ phận riêng (máu riêng, gắn vũ khí hoặc kỹ năng; vỡ thì vũ khí đó im và thân mất thêm máu; chỉ phát trúng trực tiếp làm hại "
-               "bộ phận) và boss cuối chương có thanh máu nhiều pha. Số bộ phận và vạch pha ghi trên từng thẻ.</p>"
-               + ''.join(vehicle_card(v, imgdir) + (f"<p class='muted'>Bộ phận: {esc(', '.join(p['kind'] for p in v['parts']))}" if v.get('parts') else "<p class='muted'>")
-                         + (f" · pha ở {', '.join(f'{x * 100:g}%' for x in v['phases'])}" if v.get('phases') else '') + (f" · {esc(v['bossFile'])}" if v.get('bossFile') else '')
-                         + "</p>" for v in game['bosses']) + '</div>')
+               + "<h3>Boss</h3>" + programme.boss_rules(game, h)
+               + ''.join(vehicle_card(v, imgdir) + programme.boss_parts(v, h)
+                         + (f"<p class='muted'>{esc(v['bossFile'])}</p>" if v.get('bossFile') else '') for v in game['bosses']) + '</div>')
 
     # ------------------------------------------------------------------ supports
     rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>{guide_html(s.get('guide', ''))}", esc(s['kind']), s['cost'], f"{s['cooldown']:g} s",
@@ -429,6 +430,21 @@ def build(game, imgdir):
         tag = img(shots / name, 'shot')
         if tag:
             out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
+    preview = [('army-deck.png', 'Quân đội › Bộ bài: thẻ có ảnh render từ mô hình 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), học thuyết.'),
+               ('detail.png', 'Chi tiết phương tiện: thanh chỉ số tách phần gốc / từ trang bị / cấp tiếp theo, vạch trung bình của nhóm, nút Lên cấp cố định.'),
+               ('operations.png', 'Tác chiến: mỗi mục có ảnh, mô tả đúng luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'),
+               ('shop-crates.png', 'Cửa hàng › Hòm: ảnh hòm render, nội dung, tỷ lệ và giá trên từng ô; tab Skin đổi tên thành Ngụy trang.')]
+    tags = [(img(Path(imgdir) / 'ui' / name, 'shot'), cap) for name, cap in preview]
+    if any(t for t, _ in tags):
+        out.append("<h3>Xem trước: giao diện Field Command 2.0 (phase 10, đang làm)</h3>"
+                   "<p>Phase 10 dựng lại mọi màn trên một bộ token màu và chữ chung (font Barlow / Barlow Condensed, có đủ dấu tiếng Việt), "
+                   "một thư viện thành phần (nút, thẻ, tab, ô chọn, thanh chỉ số, hộp thoại), điều hướng 5 mục bên trái (Trang chủ, Chiến dịch, Tác chiến, "
+                   "Quân đội, Cửa hàng) và thanh trên cùng (cấp, kinh nghiệm, xu, cài đặt). Ảnh thẻ lấy từ mô hình 3D thật. Mỗi màn được kiểm tra tự động ở "
+                   "4 tỉ lệ màn hình (16:9, 19,5:9 tai thỏ, 20:9 đục lỗ, 4:3) và cỡ chữ Lớn: không chữ bị cắt, không thành phần chồng nhau. "
+                   "Còn lại: thiết lập trận, kết quả trận, HUD trong trận và rà tên gọi. Ảnh dưới đây là bản chưa gộp.</p>")
+        for tag, cap in tags:
+            if tag:
+                out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
     # ------------------------------------------------------------------ round 6 pictures
     r6 = imgdir / 'r6'
     pics = [('munitions_1.png', 'Mô hình đạn: tên lửa chống tăng và phòng không vác vai.'), ('munitions_2.png', 'Tên lửa không đối không, phòng không, không đối đất.'),

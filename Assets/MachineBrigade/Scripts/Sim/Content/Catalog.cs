@@ -175,6 +175,8 @@ namespace MachineBrigade.Sim.Content
                         secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
+                            ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
+                            ArcHalf = m.Has("arc") && m.FloatArray("arc").Count > 1 ? Math.Clamp(m.FloatArray("arc")[1], 5f, 180f) * MathF.PI / 180f : 0f,
                         });
                 }
                 vehicles.Add(Wrap(v, () =>

@@ -67,7 +67,8 @@ namespace MachineBrigade.Sim.Combat
                 // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
                 if (p.Part >= 0 && target is Vehicle partBoss && (partBoss.IsPartBroken(p.Part) ||
                     Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + 1.5f)) p.Part = -1;
-                if (!decoyed && !lured && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
+                // A part may stand out past the hull's round footprint (a hovercraft's fans, a train's locomotive): landing on it is a hit.
+                if (!decoyed && !lured && (p.Part >= 0 || Vector2.Distance(target.Position, at) <= target.Radius + 0.5f))
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);

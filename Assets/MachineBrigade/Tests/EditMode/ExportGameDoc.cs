@@ -131,7 +131,13 @@ namespace MachineBrigade.Tests
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
                 ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
-                ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object> { ["id"] = p.Id, ["kind"] = p.Kind, ["hp"] = p.Hp }).ToList(),
+                ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object>
+                {
+                    ["id"] = p.Id, ["kind"] = p.Kind, ["name"] = Text("part." + p.Kind), ["hp"] = p.Hp, ["breakDamage"] = p.BreakDamage,
+                    ["effects"] = MenuScreen.PartEffects(v, p), ["radio"] = p.Radio != null,
+                }).ToList(),
+                ["partLock"] = v.PartLock != null ? Text("part." + v.PartLock.Kind) + " ×" + v.PartLock.Count : "",
+                ["partPatch"] = v.Skills.Any(k => k.Kind == SkillKind.Patch), ["partTip"] = Text("guide.parts.tip." + v.Id),
                 ["size"] = v.Fort?.Size.ToString() ?? "", ["bossFile"] = Text("bossfile." + v.Id),
             };
         }

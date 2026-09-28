@@ -306,7 +306,8 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var c in list)
             {
                 var aura = c.Def.CommandAura;
-                if (aura == null || !c.IsAlive || c.Stunned) continue;
+                // A broken command antenna (prompt 9) takes the aura with it.
+                if (aura == null || !c.IsAlive || c.Stunned || c.AuraOff) continue;
                 var boost = 1f + aura.FireRate;
                 var harder = 1f + aura.Damage;
                 foreach (var v in list)
@@ -529,6 +530,7 @@ namespace MachineBrigade.Sim.Abilities
             SkillTrigger.EnemyInRange => _world.FindNearestEnemy(v, skill.Radius > 0f ? skill.Radius : v.Def.Weapon.Range,
                 requireVisible: true) != null,
             SkillTrigger.MissileIncoming => _world.MissileIncoming(v.Id),
+            SkillTrigger.PartBroken => _world.Bosses.CanPatch(v),
             _ => false,
         };
 
@@ -541,6 +543,10 @@ namespace MachineBrigade.Sim.Abilities
                     v.Healing = skill.Duration > 0f ? v.MaxHp * skill.Amount / skill.Duration : 0f;
                     v.HealUntil = until;
                     if (skill.Duration <= 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * skill.Amount);
+                    break;
+                case SkillKind.Patch:
+                    // Prompt 9: a boss's self-repair puts a broken part back instead of healing the body.
+                    _world.Bosses.Patch(v, skill.Amount > 0f ? skill.Amount : 0.5f);
                     break;
                 case SkillKind.Shield:
                     v.ShieldUntil = until;

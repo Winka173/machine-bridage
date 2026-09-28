@@ -1,12 +1,16 @@
 """The design document's sections for the 2026-09 programme (prompts 1-10): the story campaign,
 multi-stage missions, the Operations mode, bases and towers, Siege and Defend, and what is left
 to measure. build_doc.py calls these with the exported game (game.json) and its helpers."""
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
 GOAL_VI_EXTRA = {'Outpost': 'Lập tiền đồn', 'Relieve': 'Giải vây', 'Evacuate': 'Di tản', 'Duel': 'Đấu tướng'}
 SIZE_VI = {'Small': 'Nhỏ', 'Medium': 'Vừa', 'Large': 'Lớn'}
+STYLE_VI = {'tank': 'Thiết giáp', 'armour': 'Thiết giáp', 'artillery': 'Pháo binh', 'drones': 'Drone', 'drone': 'Drone', 'air': 'Phòng không',
+            'antiair': 'Phòng không', 'logistics': 'Hậu cần', 'navy': 'Hậu cần', 'all': 'Tổng hợp', 'default': 'Mặc định'}
+STANCE_VI = {'Attack': 'Tấn công', 'Defend': 'Phòng thủ'}
 EVENT_VI = {'Reinforce': 'chi viện địch', 'AllyReinforce': 'chi viện ta', 'Expand': 'mở rộng vùng chơi', 'Betrayal': 'đồng minh phản bội',
             'Radio': 'radio', 'Cp': 'thưởng CP', 'Strike': 'không kích', 'Income': 'thu nhập'}
 
@@ -27,7 +31,7 @@ def campaign(game, h):
     rows = [[f"<b>{esc(c['name'])}</b>", esc(c['role']), esc(c['bio'])] for c in game['characters'] if c['name']]
     out.append("<h3>Nhân vật</h3>" + table(['Nhân vật', 'Vai trò', 'Tiểu sử'], rows))
     # Generals as AI configurations
-    rows = [[f"<b>{esc(g['name'] or g['id'])}</b>", esc(g['style']), esc(g['stance']), esc(', '.join(g['deck'])), esc(', '.join(g['supports'])),
+    rows = [[f"<b>{esc(g['name'] or g['id'])}</b>", esc(STYLE_VI.get(g['style'], g['style'])), esc(STANCE_VI.get(g['stance'], g['stance'])), esc(', '.join(g['deck'])), esc(', '.join(g['supports'])),
              esc(', '.join(g['elitesPrefer']))] for g in game['generals']]
     out.append("<h3>Tướng địch là cấu hình AI</h3><p>Mỗi tướng có bộ bài, thói quen gọi hỏa lực, kiểu căn cứ, ưu tiên xe tinh nhuệ, chân dung, câu khiêu khích và câu khi thua.</p>"
                + table(['Tướng', 'Kiểu căn cứ', 'Thế trận', 'Bộ bài đặc trưng', 'Hỏa lực', 'Ưu tiên tinh nhuệ'], rows))
@@ -161,6 +165,60 @@ def siege(game, h):
             "<li><b>Đầm Lầy và Quần Đảo San Hô</b> giữ pháo đài kiểu cũ ở góc: tường mới sẽ cắt mọi đường đắp của hai bản đồ này.</li>"
             "<li><b>Đo (độ khó Thường, 5 seed):</b> Công thành thắng 5/5 (9,7–17,8 phút); Phòng thủ giữ 3/5 trên 5 bản đồ và 5/5 ở bài kiểm tra kết thúc trận; "
             "Vô tận: sở chỉ huy rơi ở phút 10,3–11,7.</li></ul></div>")
+
+
+def boss_rules(game, h):
+    """Prompt 9: the rules every boss's parts follow, the effects at the breaks, the part order."""
+    rules = [
+        '<b>Máu bộ phận</b> là một phần máu thân (đọc trực tiếp, nên tăng theo cấp chiến dịch, độ khó và bản mạnh của nhiệm vụ): mỗi bộ phận 8–15%; '
+        'boss từ 5 súng trở lên có tổng 50–70%, boss chỉ có 3–4 thứ phá được có tổng 35–47%.',
+        '<b>Máu thân</b> giảm còn ×0,76 đến ×0,90 (1,125 / (1 + 0,7 × tổng phần bộ phận)) để trận dài hơn khoảng 12% (ước tính theo mô hình, đo ở phase kiểm tra).',
+        '<b>Vỡ một bộ phận:</b> súng trên đó im cả trận; kỹ năng dừng khi mọi bộ phận mang nó đều vỡ; cơ chế dừng (phát bắn của siêu pháo, đào hầm của Giun Đất, '
+        'đổ quân của tàu đệm khí, hào quang của Tổng Tư Lệnh); áp dụng phạt tốc độ, quay, nhịp bắn, độ tản; thân mất thêm 30% máu của bộ phận đó.',
+        '<b>Chỉ phát trúng trực tiếp</b> làm hại bộ phận; nổ lan, lửa và hỏa lực hỗ trợ rơi vào thân. Đạn trúng bộ phận nhô ra ngoài thân (quạt, đầu máy, đầu kéo) nay tính là trúng.',
+        '<b>Tự sửa:</b> Tàu Thép và Bastion một lần mỗi trận hồi bộ phận đã vỡ có phát bắn mặt đất nặng nhất lên 50%.',
+        '<b>Nhắm bắn:</b> mỗi xe nhắm bộ phận nguy hiểm nhất với nó trong tầm (phòng không nhắm bộ phận bắn máy bay, diệt tăng nhắm bộ phận dày nhất); 2 trên 5 phát vẫn vào thân.',
+        '<b>Lệnh bắn bộ phận:</b> chạm vào biểu tượng bộ phận dưới thanh máu boss hoặc chạm thẳng vào bộ phận trên mô hình: mọi xe trong tầm dồn hỏa lực vào đó tới khi vỡ; chạm lại để hủy.',
+        '<b>Săn trùm</b> thưởng 2 CP cho mỗi bộ phận vỡ.',
+    ]
+    fx = [
+        'Dưới 50% máu bộ phận bốc khói và tóe lửa điện, dưới 25% bắt cháy.',
+        'Lúc vỡ: súng và kho đạn nổ lớn (có mảnh văng ở đồ họa Cao), bộ phận năng lượng lóe sáng với vòng xanh và tia điện, động cơ bùng cầu lửa; '
+        'bộ phận biến mất, thay bằng mảnh xác.',
+        'Sau khi vỡ, lửa và cột khói đen ở lại tới hết trận; thân boss cháy thêm ở 66% và 33% máu; boss bay hoặc chạy nhanh kéo vệt khói từ động cơ vỡ.',
+        'Tối đa 8 điểm lửa mỗi boss (5 ở đồ họa Thấp, khói và tia lửa giảm một nửa). Khi boss chết mọi đám cháy bùng lên, xác cháy 25–35 giây.',
+        'Chỉ là hình ảnh: mô phỏng không thấy khói, tầm nhìn qua boss đang cháy không đổi.',
+    ]
+    return ("<p>Mọi boss có bộ phận theo cùng một bộ luật (phase 9); boss cuối chương còn có thanh máu nhiều pha.</p><ul>"
+            + ''.join(f"<li>{r}</li>" for r in rules) + "</ul><h4>Lửa và khói ở chỗ vỡ</h4><ul>"
+            + ''.join(f"<li>{h['esc'](f)}</li>" for f in fx) + "</ul>")
+
+
+def boss_parts(v, h):
+    """The parts table under one boss's card."""
+    parts = v.get('parts') or []
+    if not parts:
+        return ''
+    groups = {}
+    for p in parts:
+        key = (p.get('name') or p['kind'], p.get('effects', ''), round(p['hp'], 3))
+        groups[key] = groups.get(key, 0) + 1
+    rows = [[h['esc'](name) + (f" ×{n}" if n > 1 else ''), f"{share * 100:g}%" + (f" (×{n}: {share * n * 100:g}%)" if n > 1 else ''), h['esc'](effects)]
+            for (name, effects, share), n in groups.items()]
+    total = sum(p['hp'] for p in parts)
+    notes = [f"Tổng {total * 100:.0f}% máu thân trong {len(parts)} bộ phận"]
+    if v.get('partLock'):
+        notes.append('thân không nhận sát thương tới khi vỡ ' + h['esc'](v['partLock']))
+    if v.get('partPatch'):
+        notes.append('tự sửa một bộ phận một lần mỗi trận')
+    if v.get('phases'):
+        notes.append('pha ở ' + ', '.join(f'{x * 100:g}%' for x in v['phases']))
+    tip = ''
+    if v.get('partTip'):
+        text = re.sub(r'^\s*(Mẹo|Tip)\s*:\s*', '', v['partTip'])
+        tip = "<p class='muted'><b>Mẹo:</b> " + re.sub(r'\[\[(.*?)\]\]', r'<b>\1</b>', h['esc'](text)) + "</p>"
+    return (h['table'](['Bộ phận', 'Máu (phần thân)', 'Khi vỡ'], rows)
+            + f"<p class='muted'>{'; '.join(notes)}.</p>" + tip)
 
 
 def testing(game, h):

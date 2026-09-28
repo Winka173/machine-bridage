@@ -117,11 +117,14 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>A boss's bar: its name, health, and for a multi-phase boss the marks and the phase it is in.</summary>
-        protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss, string name = null)
+        protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss, string name = null, SimWorld world = null)
         {
             name ??= Strings.Card(boss.Def.Id);
             var phases = boss.Def.Phases;
-            name += PartsLine(boss);
+            // Prompt 9: the parts are icons under the bar now; the name only says when the hull is shut.
+            if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");
+            var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
+            hud.SetBossParts(boss, focused);
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);
@@ -797,7 +800,7 @@ namespace MachineBrigade.Game.Match
             scratch.Clear();
             hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
                 _mode.SecondsLeft(world), scratch);
-            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss, world: world);
             else hud.SetBoss(null, 0f);
         }
 
@@ -1153,7 +1156,7 @@ namespace MachineBrigade.Game.Match
             if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive && !_mode.BossFled)
-                ShowBoss(hud, boss, BossName(_mode.Def, boss.Def.Id));
+                ShowBoss(hud, boss, BossName(_mode.Def, boss.Def.Id), world);
             else hud.SetBoss(null, 0f);
         }
 

@@ -28,7 +28,7 @@ namespace MachineBrigade.Sim.Bosses
     /// <item>Guards (<see cref="GuardDef"/>): the emplacements a boss arrives with.</item>
     /// </list>
     /// </summary>
-    internal sealed class BossSystem
+    internal sealed partial class BossSystem
     {
         private readonly SimWorld _world;
         private readonly List<(string def, int team, Vector2 at, float heading)> _spawns = new();
@@ -69,96 +69,6 @@ namespace MachineBrigade.Sim.Bosses
             _spawns.Clear();
         }
 
-        // ================================================================== parts
-
-        /// <summary>
-        /// Which part of a boss a shooter aims at (-1: the body). While the body is locked, the parts
-        /// that unlock it, nearest first; else the live part whose guns can reach the shooter (it is
-        /// the one hurting it), and now and then the body. Prompt 9 adds the player's own pick.
-        /// </summary>
-        public int ChoosePart(Vehicle shooter, Vehicle boss, WeaponDef weapon)
-        {
-            if (!boss.HasParts) return -1;
-            var parts = boss.Def.Parts;
-            var locked = boss.BodyLocked;
-            var best = -1;
-            var bestScore = float.MaxValue;
-            for (var i = 0; i < parts.Count; i++)
-            {
-                if (boss.PartBroken[i]) continue;
-                var score = Vector2.Distance(boss.PartPosition(i), shooter.Position);
-                if (locked && parts[i].Kind == boss.Def.PartLock!.Kind) score -= 1000f;
-                else if (locked) score += 500f;
-                if (!locked && Threatens(boss, parts[i], shooter)) score -= 30f;
-                if (score >= bestScore) continue;
-                bestScore = score;
-                best = i;
-            }
-            if (locked || best < 0) return best;
-            // The body stays the main target: about two shots in five go at it.
-            return _world.Random.NextDouble() < 0.4 ? -1 : best;
-        }
-
-        /// <summary>A part carries a gun that can reach this shooter.</summary>
-        private static bool Threatens(Vehicle boss, BossPartDef part, Vehicle shooter)
-        {
-            foreach (var m in part.Mounts)
-            {
-                var w = boss.Arms[m];
-                if (w.Damage > 0f && w.CanTarget(shooter.Flying) && Vector2.Distance(boss.Position, shooter.Position) <= w.Range + boss.Radius) return true;
-            }
-            return false;
-        }
-
-        /// <summary>Takes <paramref name="damage"/> off a part (already through the damage rules); returns what it lost, and breaks it at zero.</summary>
-        public float DamagePart(Vehicle boss, int i, float damage, in HitInfo hit)
-        {
-            if (i < 0 || i >= boss.PartHp.Length || boss.PartBroken[i] || !(damage > 0f)) return 0f;
-            var lost = MathF.Min(boss.PartHp[i], damage);
-            boss.PartHp[i] -= lost;
-            if (boss.PartHp[i] <= 0.01f) Break(boss, i, hit);
-            return lost;
-        }
-
-        /// <summary>A part breaks: its guns fall silent, its skills stop, its penalties apply, and the body takes its share.</summary>
-        public void Break(Vehicle boss, int i, in HitInfo hit = default)
-        {
-            if (boss.PartBroken[i]) return;
-            var part = boss.Def.Parts[i];
-            boss.PartBroken[i] = true;
-            boss.PartHp[i] = 0f;
-            foreach (var m in part.Mounts)
-            {
-                boss.MountOff[m] = true;
-                boss.Weapons[m].Target = EntityId.None;
-                boss.Weapons[m].BurstLeft = 0;
-            }
-            for (var k = 0; k < boss.Def.Skills.Count; k++)
-                foreach (var id in part.Skills)
-                    if (boss.Def.Skills[k].Id == id) boss.SkillOff[k] = true;
-            boss.PartSpeed *= part.Speed;
-            for (var m = 0; m < boss.Def.Mounts.Count; m++)
-            {
-                if (part.Affects.Count > 0 && !Contains(part.Affects, m)) continue;
-                boss.MountSpread[m] *= part.Spread;
-                boss.MountFail[m] = MathF.Min(0.9f, boss.MountFail[m] + part.Fail);
-            }
-            var at = boss.PartPosition(i);
-            _world.Emit(SimEvent.PartLost(boss, i, at, part.Id));
-            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, MathF.Max(3f, part.Radius * 1.4f), 0f, ExplosionTier.Huge), boss.Id));
-            // The body takes its share of the broken part (prompt 9: 30 %); none on the airship.
-            if (part.BreakDamage > 0f && boss.IsAlive)
-                _world.Damage.Apply(boss, boss.MaxHp * part.BreakDamage, DamageType.HighExplosive,
-                    new HitInfo(hit.Attacker, hit.Team, null, at, HitKind.Redirect, false));
-        }
-
-        private static bool Contains(IReadOnlyList<int> list, int x)
-        {
-            foreach (var y in list)
-                if (y == x) return true;
-            return false;
-        }
-
         // ================================================================== boring
 
         private void Bore(Vehicle v, BurrowDef b, double now, float dt)
@@ -166,7 +76,8 @@ namespace MachineBrigade.Sim.Bosses
             switch (v.Burrow)
             {
                 case Vehicle.BurrowState.Surface:
-                    if (now < v.BurrowNext || v.Stunned || v.Transforming) return;
+                    // Its drill broken (prompt 9): it can no longer go under.
+                    if (now < v.BurrowNext || v.Stunned || v.Transforming || v.BurrowOff) return;
                     // Nothing on the ground to go under: look again in a moment.
                     if (BiggestGroup(v, out _) < 1)
                     {
@@ -270,10 +181,11 @@ namespace MachineBrigade.Sim.Bosses
             {
                 if (now < v.LandingUntil) return;
                 v.Landing = false;
-                v.LandingNext = now + l.Every;
+                v.LandingNext = now + l.Every * v.PartCadence;
                 return;
             }
-            if (now < v.LandingNext || v.Landings >= l.Landings || l.Units.Count == 0 || v.Stunned) return;
+            // Its ramp broken (prompt 9): no more landings.
+            if (now < v.LandingNext || v.Landings >= l.Landings || l.Units.Count == 0 || v.Stunned || v.LandingOff) return;
             v.Landing = true;
             v.LandingUntil = now + l.Stop;
             v.Landings++;
@@ -294,11 +206,13 @@ namespace MachineBrigade.Sim.Bosses
 
         private void Bombard(Vehicle v, BombardDef b, double now)
         {
-            if (now < v.BombardNext || v.Stunned || v.Transforming) return;
-            v.BombardNext = now + b.Every;
+            // Its gun broken (prompt 9): no more shells; its tractors broken: slower.
+            if (now < v.BombardNext || v.Stunned || v.Transforming || v.BombardOff) return;
+            v.BombardNext = now + b.Every * v.PartCadence;
             if (BiggestGroup(v, out var aim) < 1) return;
-            // Its fire-control post gone: the shell falls much wider of the mark.
-            var scatter = b.Scatter * (b.Spotter != null && !SpotterStands(v, b.Spotter) ? b.BlindScatter : 1f);
+            // Its fire-control post gone (a guard or, since prompt 9, a part): the shell falls much wider of the mark.
+            var blind = v.SpotterOff || (b.Spotter != null && !SpotterStands(v, b.Spotter));
+            var scatter = b.Scatter * (blind ? b.BlindScatter : 1f);
             var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
             var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
             var at = _world.ClampToMap(aim + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);

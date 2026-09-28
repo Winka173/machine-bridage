@@ -78,7 +78,9 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(full.center.x, simple.center.x, tolerance, $"{id} stays where it was");
                 Assert.AreEqual(full.center.z, simple.center.z, tolerance, $"{id} stays where it was");
                 Assert.AreEqual(full.size.x, simple.size.x, tolerance * 2f, $"{id} keeps its span");
-                Assert.AreEqual(full.size.y, simple.size.y, tolerance * 2f, $"{id} keeps its height");
+                // Radio whips are centimetres thick: far away they are under a pixel and the simplifier drops them
+                // (they are merged into the hull, so the full extent cannot leave them out). No taller, at most a fifth lower.
+                Assert.That(simple.size.y, Is.InRange(full.size.y * 0.8f - tolerance, full.size.y + tolerance * 2f), $"{id} keeps its height");
                 Assert.AreEqual(full.size.z, simple.size.z, tolerance * 2f, $"{id} keeps its length");
                 foreach (var r in model.Lod1Renderers)
                 {

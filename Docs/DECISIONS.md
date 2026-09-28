@@ -1340,6 +1340,171 @@ Score: HQ health left plus share of the attackers destroyed (0-2), 3 seeds, 5 mi
 - The lab (MB_BALANCE=1): `EquipmentLabTests` (roster DPS, elite power, offensive lines, Twin Feed), `EquipmentRiskLab` (risky combinations, defensive lines and modules, the sponge, the scoot, one-tower bases), `EquipmentDocsExport` (writes EQUIPMENT_FIT.md and EQUIPMENT_VALUES.md).
 - Risky combinations measured (the full table is in EQUIPMENT_VALUES.md): Twin Feed on the battle tank +14 %, on the railgun +22 %; ricochet on flak +16 % and heavy flak +8 %, shredder on flak +9 %; cluster on the bomber within noise, on the MLRS +11 %; the drone escort module about the same per CP on a jeep as on a tank; War Profiteer with the Quartermaster four-piece capped at a 45 % refund (it would be 50 %), the Quartermaster's own-loss refund 10 % under the 15 % cap; Wolfpack on six jeeps +17 %, on three tanks +18 % (it is not a swarm tool only); the SP gun with the laser designator +8 %, the counter-battery radar adding nothing in a duel (it answers enemy artillery); Unbreakable, emergency kit and Phoenix on a heavy tank +36 % time alive.
 - Not run (left to the testing phase by the lead's instruction): the five-seed campaign sweep after the elite budget, the Boss Rush and Conquest ending sweeps (the Boss Rush cap in `ModeEndingTests` is now 55 minutes for its ten bosses), the snowball measurement after the refund caps, the rerun of the offensive lines after the last retune of Twin Feed's salvo share.
+## 9. Boss parts
+
+Prompt 9 (branch feature/boss-parts, from f64198c): the general part mechanism of prompt 8 on every
+boss, fire and smoke at the breaks, the part order, and the part row under the boss bar.
+
+### A. The general rules
+
+- **Health.** A part's full health is a share of the body's full health (`hp` in the data), read
+  live, so a boss made tougher after it spawned (a mission's stronger form, the campaign's pace, a
+  harder tier) has tougher parts: the scaling needs no code of its own. Each part is 8-15 % of the body
+  (the Spectre's four engines 7 %: nine parts would pass 70 %); in all 50-70 % for bosses with five or
+  more guns, and 35-47 % for the few with only three or four things worth breaking (the Supreme
+  Commander, the Earth Worm, the trains, the Tempest, the Inferno): padding them with parts that do
+  nothing would only make the fight longer.
+- **Body health retuned** so the kill takes about +12 % longer than before (the brief's 10-15 %). The
+  model: every part broken before the body falls costs its health in fire, and gives 30 % of it back to
+  the body, so the fire needed is body + 0.7 x parts; the body is cut to 1.125 / (1 + 0.7 x share) of its
+  old health (x0.76 to x0.90, table below). It is a model, not a measurement: the rounds that go at a
+  part that never breaks are lost too (it makes the kill a little longer), and the guns that go
+  silent make the fight easier (a little shorter). The five-seed kill times are for the testing phase.
+- **The body always takes damage.** Only the command airship keeps its lock (its hull shut until two
+  engines are down), and it keeps its prompt 8 design: no share of a broken part on the hull
+  (`breakDamage: 0` on its parts) and the radio line on its drone bays.
+- **Breaking a part:** its mounts never fire again; a skill stops once every part that carries it is
+  broken (the Hive's two drone racks share its launches: one rack down silences its own launcher,
+  both down end the launches); its mechanism stops (`stops`: the supergun's shot, its fire control,
+  the Earth Worm's dives, the hovercraft's landings, the Supreme Commander's aura); its penalties apply
+  (speed, turning, cadence, spread, lost locks); and the body takes 30 % of the part's full health
+  (a raw hit: no armour, no shield, and it can finish the boss). Everything a broken part takes away
+  is recomputed from scratch from the set of broken parts (`BossSystem.Recompute`), so a patch undoes
+  exactly what the break did.
+- **Only direct hits damage parts.** Blasts, fire, strikes, pierces and bounces land on the body
+  (unchanged since prompt 8), so artillery gets no multiplied damage out of a boss. New: a round that
+  lands on a part standing out past the hull's round footprint (a hovercraft's fans, a train's
+  locomotive, a supergun's tractors) is a hit on that part; before, it missed the boss altogether.
+- **Self-repair.** `train_patch` (the Iron Train's and the Bastion's) is a new skill kind, Patch, on a
+  new trigger, PartBroken: once a battle, one broken part comes back at 50 % of its health instead of
+  the body healing 20 %. The part with the strongest weapon is the one with the heaviest round against
+  ground vehicles (its damage a round against the armour it suits better): a main gun before a rocket
+  pod or a flak mount, whatever their rate (by damage a second the train would have mended its flak
+  first). A part is patched at most once; its broken piece is taken off and the part shown whole again.
+- **Health thresholds** (escorts, rage, shields, phases) still count on the body alone.
+- **Aim.** A shooter goes for the live part most dangerous to it that its weapon can reach: the part
+  whose guns can hit it (their damage a second against its armour), anti-air for the parts that shoot
+  at aircraft (it is shielding its own), a tank hunter for the toughest part; a part that drives a
+  skill or a mechanism counts a little extra; two rounds in five still go at the body. While the
+  airship's hull is shut, the engines first, as in prompt 8.
+- **The part order** (`CommandType.FocusPart`, journaled like every player command): every unit of
+  the side whose weapon reaches the part aims every round at it, and units in reach of the boss pick
+  it as their target first (x4 in the target score), until the part breaks or the order is cancelled
+  (the same part tapped again, or a null part). The support AI never calls strikes on parts: a strike
+  is a blast, and blasts land on the body (tested).
+- **Boss Rush** pays 2 CP for every part broken, once a part (a patched part broken again does not
+  pay twice), on top of the health-step bounties.
+- **Checkpoints** are replays (prompt 5), so they keep the parts' health, broken and patched state as
+  long as the battle replays the same: `SimWorld.StateHash` now takes every part's health (to a
+  thousandth), broken and patched flags and every side's part order, and a replay test checks a
+  battle with a part order, a cancel and broken parts replays to the same hash and the same parts.
+- **The Bastion's four autocannon turrets** each cover their own quarter (a new per-mount `arc`,
+  centre and half-width in degrees, handled like the broadside guns): front left, front right, rear
+  left, rear right, 80 degrees either way, so two turrets bear on any bearing and breaking the two on one
+  side opens that side.
+
+### B. Every boss's parts
+
+Mount numbers are the def's (0 the main weapon, then the secondaries in order). Health: old body
+health → new.
+
+| boss | body health | parts, share of the body | each part: share, what breaking it does |
+|---|---|---|---|
+| Iron Train (`armored_train`) | 5400 → 4400 | 5, 56 % | locomotive 12 %: speed x0.50; radio line<br>gun_car_front 12 %: mount 0 silent; radio line<br>gun_car_rear 12 %: mount 4 silent<br>rocket_car 10 %: mount 1 silent<br>flak_car 10 %: mount 3 silent |
+| Doomsday Train (`nuke_train`) | 6400 → 5450 | 4, 46 % | locomotive 12 %: speed x0.50; radio line<br>twin_gun 14 %: mount 0 silent; radio line<br>flak_front 10 %: mount 1 silent<br>flak_rear 10 %: mount 2 silent |
+| Behemoth (`behemoth`) | 6200 → 4950 | 6, 58 % | main_gun 14 %: mount 0 silent; radio line<br>gun_120 10 %: mount 1 silent<br>flak_r 8 %: mount 2 silent<br>flak_l 8 %: mount 3 silent<br>missiles_r 9 %: mount 4 silent<br>missiles_l 9 %: mount 5 silent |
+| Tempest (`behemoth_tempest`) | 5600 → 4750 | 4, 47 % | railgun 15 %: mount 0 silent; radio line<br>coil_l 10 %: mount 1 silent<br>coil_r 10 %: mount 2 silent<br>shield 12 %: skill mothership_shield off; skill boss_bulwark off; radio line |
+| Inferno (`behemoth_inferno`) | 6800 → 5800 | 4, 46 % | flamer_r 12 %: mount 0 silent; radio line<br>flamer_l 12 %: mount 3 silent<br>thermo 12 %: mount 1 silent<br>flak 10 %: mount 2 silent |
+| The Hive (`fortress_hive`) | 8000 → 6350 | 6, 60 % | rack_l 12 %: mount 0 silent; skill mothership_launch off; radio line<br>rack_r 12 %: mount 1 silent; skill mothership_launch off; radio line<br>sam 10 %: mount 2 silent<br>flak_l 8 %: mount 3 silent<br>flak_r 8 %: mount 4 silent<br>emp 10 %: skill boss_emp off |
+| Ice Fortress (`mobile_fortress`) | 9000 → 7000 | 7, 63 % | howitzer 13 %: mount 0 silent; skill fortress_barrage off; radio line<br>rockets_l 8 %: mount 1 silent<br>rockets_r 8 %: mount 2 silent<br>flak_l 8 %: mount 3 silent<br>flak_r 8 %: mount 4 silent<br>missiles 8 %: mount 5 silent<br>emp 10 %: skill boss_emp off |
+| Bastion (`fortress_bastion`) | 11000 → 9000 | 5, 54 % | mortar 14 %: mount 0 silent; skill fortress_barrage off; radio line<br>turret_fl 10 %: mount 1 silent<br>turret_fr 10 %: mount 2 silent<br>turret_rl 10 %: mount 3 silent<br>turret_rr 10 %: mount 4 silent |
+| Silver Bug (`silver_bug`) | 9000 → 7150 | 6, 60 % | laser 13 %: mount 0 silent; radio line<br>coilgun 10 %: mount 1 silent<br>flak 8 %: mount 2 silent<br>bay 10 %: mount 3 silent; skill saucer_drones off; radio line<br>shield 10 %: skill mothership_shield off; radio line<br>emp 9 %: skill saucer_emp off |
+| Spectre (`sky_fortress`) | 12000 → 9100 | 9, 69 % | gun_105 9 %: mount 0 silent; radio line<br>gun_40a 8 %: mount 1 silent<br>gun_40b 8 %: mount 2 silent<br>gun_25 8 %: mount 3 silent<br>griffin 8 %: mount 4 silent<br>engine_1 7 %: speed x0.85<br>engine_2 7 %: speed x0.85<br>engine_3 7 %: speed x0.85<br>engine_4 7 %: speed x0.85 |
+| Iron Bird (`mega_gunship`) | 15000 → 11500 | 8, 66 % | gun_l 8 %: mount 1 silent<br>gun_r 8 %: mount 2 silent<br>minigun_l 8 %: mount 4 silent<br>minigun_r 8 %: mount 5 silent<br>pod_l 8 %: mount 0 silent<br>pod_r 8 %: mount 6 silent<br>missiles 8 %: mount 3 silent<br>rotor_rear 10 %: turning x0.50 |
+| Hive Mothership (`drone_mothership`) | 16000 → 12300 | 7, 66 % | cannon_bow 10 %: mount 0 silent; radio line<br>cannon_gondola 10 %: mount 4 silent<br>drone_bay 10 %: mount 1 silent; radio line<br>uav_bay 10 %: skill mothership_launch off<br>flak_top 8 %: mount 2 silent<br>flak_rear 8 %: mount 3 silent<br>shield 10 %: skill mothership_shield off; radio line |
+| Rail Supergun (`rail_supergun`) | 7000 → 5500 | 6, 63 % | main_gun 15 %: no more shells; radio line<br>tractor_l 10 %: fires every x1.3<br>tractor_r 10 %: fires every x1.3<br>fire_control 12 %: shells fall wide<br>gun_l 8 %: mount 1 silent<br>gun_r 8 %: mount 2 silent |
+| Earth Worm (`earth_borer`) | 9500 → 8150 | 4, 44 % | drill 14 %: mount 0 silent; no more dives; radio line<br>gun_l 10 %: mount 1 silent<br>gun_r 10 %: mount 2 silent<br>engine 10 %: speed x0.70 |
+| Landing Hovercraft (`landing_hovercraft`) | 8000 → 6500 | 5, 54 % | ramp 14 %: no more landings; radio line<br>fan_l 10 %: speed x0.70<br>fan_r 10 %: speed x0.70<br>gun_l 10 %: mount 0 silent<br>gun_r 10 %: mount 1 silent |
+| Supreme Commander (`supreme_command`) | 6500 → 5850 | 3, 35 % | antenna 15 %: no command aura; radio line<br>mg_l 10 %: mount 0 silent<br>mg_r 10 %: mount 1 silent |
+
+Adapted to the data and the models:
+- **Iron Train:** its model is one armoured car with one turret, but its data has two 150 mm guns: the
+  two gun cars are the turret's gun and the second gun (a place on the hull), the locomotive and the
+  second gun car places on the hull (no model of their own). The roof MG stays on the body.
+- **Inferno:** its turret has two flamer nozzles but its data had one flamer: a second flamer mount
+  was added and the flamer's damage halved (60 to 30), so the two together burn as before and each is a
+  part.
+- **Tempest:** the shield generator carries both of its shields (`mothership_shield` and `boss_bulwark`).
+- **Silver Bug, Hive Mothership:** the shield and EMP emitters and the UAV bay have no nodes of their
+  own in the models: they are places on the hull.
+- **Rail Supergun:** its fire control is now its generator part (the model's `Part_generator`), not
+  the separate targeting post in the field (removed from its guards): a part must sit on the boss to
+  be hit. Breaking its gun ends the shelling; each tractor broken makes it fire 30 % less often (they
+  power it). Its two autocannons are parts too.
+- **Earth Worm:** its engine is a part as well (30 % slower). **Landing Hovercraft:** a fan broken, 30 %
+  slower. **Iron Bird:** the rear rotor of its tandem pair is the "tail rotor": it turns (hull and guns)
+  at half the rate.
+
+### C. Fire and smoke at the breaks (the view only)
+
+- All of it is in the Game assembly (`EffectsDirector.BossParts`, `VehicleView.BossParts`); the sim
+  has no smoke zone, no sight change from it (tested: sight across a burning boss is the same before
+  and after, and no smoke zone is added).
+- A part under 50 %: thin smoke and sparks; under 25 %: thicker smoke and a small fire (a fire point).
+  A break: a blast by its `fx` (guns and ammunition a big blast and, on High, flying debris; energy
+  parts a flash, a blue shock ring and arcs; engines a fireball and smoke), then a fire and its black
+  smoke column until the battle ends, arcs flickering on energy parts. The sim's own blast event for a
+  break is drawn at the part instead of on the ground (it is still heard).
+- The body: two small fires under 66 %, a big fire and thick smoke under 33 %.
+- The fires ride on the part's parent node (a turret turns them with it) or on the model, so they follow
+  the boss, and their smoke, emitted in the world, streams out behind a boss on the move; a flying or
+  fast boss's broken engines also trail long black smoke.
+- **Budget:** at most 8 fire points a boss (5 on Low); over the cap the two nearest are merged into
+  one at their size-weighted middle, as big as both (`FireBudget`, tested). The points are rebuilt only
+  when a part breaks or is patched, a part drops under a quarter or the body passes a threshold.
+  Every fire goes through the shared `FireSpots` systems (pooled, culled off screen). Low also halves
+  the smoke and sparks and drops the arcs; High throws physical debris. The heat haze round the fires
+  on High is not done: there is no distortion pass in the pipeline (ASSET_DEBT).
+- **Death:** every fire flares (a blast at each point) before the existing death blasts, and the wreck
+  burns on for 25-35 s.
+- **Sound:** the break is the sim's blast (heard as before); a low crackle follows a burning boss
+  (louder the more parts are down, the fire loop's volume cap unchanged). Camera shake comes with the
+  blast.
+- **Outline:** the ordered part is drawn again from behind, pushed out along its normals, in pulsing
+  gold (a new `MachineBrigade/Outline` shader), with a gold ring round it (the only mark for a part that
+  is a place on the hull).
+- **FPS** on the heaviest boss fight (many parts broken at once, escorts, Low): to measure in the
+  testing phase on a device.
+
+### D. Interface
+
+- A row of small icons under the boss bar (`BossPartsRow`, styled in Hud.uss as one block): an icon by
+  the kind of part, a thin health bar, broken ones greyed and crossed out, the ordered one ringed in
+  gold. Tapping an icon, or the part on the boss itself (the nearest live part on screen within a
+  finger's reach of the tap), orders every unit in reach at it; tapping it again cancels. A toast says
+  which. The text line of prompt 8 on the boss's name (engine 3/4 ...) is gone; "hull shielded" stays.
+- A radio line when an important part breaks (`radio` in the data): a main gun, a shield generator, a
+  drone bay or rack, a locomotive, and the Earth Worm's drill, the hovercraft's ramp and the Supreme
+  Commander's antenna, the three parts that end a boss's special mechanism. Other parts get the short
+  toast. A patch has its own toast.
+- The Guide tab of each boss lists its parts and what breaking each does, in words, from the data (so it
+  cannot drift), with the general rule, its lock or self-repair, and a tip for fighting it part by part.
+
+### E. Tests, and what is left to measure
+
+- `BossPartsTests`: every boss's parts (count, shares, names, one part a mount); a broken part's guns
+  fire no round and its skills are not used (all 17 bosses); the body always takes damage except the
+  locked airship; a break costs the body 30 % of the part; blasts and strikes never touch a part; parts
+  scale with the boss; each mechanism stops with its part (locomotive, rear rotor, engines, drill, ramp,
+  fans, fire control, tractors, gun, antenna, shield generator); the Bastion's corner arcs; the
+  self-repair patches exactly one part, the heaviest gun, once; aim goes for the dangerous part and two
+  rounds in five at the body; the part order works, is refused for a broken or unknown part or one's
+  own boss, is cancelled and ends when the part breaks; Boss Rush's 2 CP; the checkpoint replay; the
+  fire cap; the guide words and radio lines; the smoke never touching sight.
+- Left for the testing phase (the user's rule: short targeted runs only): kill times per boss with a
+  standard deck over five seeds (the target: now to +15 %), every boss mission in the campaign and
+  every Boss Rush fight still winnable on Normal, and the FPS check on the heaviest boss fight.
+
 ## 10. Field Command 2.0: foundation
 
 The foundation of the prompt-10 rebuild: the token theme, fonts and type scale, the component

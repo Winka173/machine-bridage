@@ -94,7 +94,7 @@ namespace MachineBrigade.Sim.Combat
                 else
                 {
                     v.TurretHeading = v.Heading;
-                    if (IsSide(mounts[0].Aim)) AimSide(v, 0, target, dt);
+                    if (IsSide(mounts[0])) AimSide(v, 0, target, dt);
                 }
                 if (v.MountWorks(0)) Operate(v, 0, target, dt);
 
@@ -114,7 +114,7 @@ namespace MachineBrigade.Sim.Combat
                         var aim = secondary != null ? SimMath.HeadingOf(secondary.Position - v.Position) : v.TurretHeading;
                         state.Heading = SimMath.RotateTowards(state.Heading, aim, FreeMountTurnRate * dt);
                     }
-                    else if (IsSide(mounts[i].Aim))
+                    else if (IsSide(mounts[i]))
                     {
                         AimSide(v, i, secondary, dt);
                     }
@@ -203,7 +203,7 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             var weapon = v.Arms[index];
-            var side = IsSide(mount.Aim);
+            var side = IsSide(mount);
             if (mount.Aim == MountAim.Turret && primary == null && v.CoaxAir.IsValid && _world.TryGetVehicle(v.CoaxAir, out var chased) &&
                 IsValidAutoTarget(v, chased, weapon))
                 return chased;
@@ -242,6 +242,8 @@ namespace MachineBrigade.Sim.Combat
                 // An obstacle only when there is nothing else (the commander orders a breach itself).
                 if (other.Def.Obstacle) score *= 0.05f;
                 if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
+                // The player has ordered the side at one of this boss's parts (prompt 9): units in reach turn on it.
+                if (other.HasParts && _world.Bosses.IsFocused(v.Team, other.Id)) score *= 4f;
                 // Ironclad's Bulwark: a dug-in tank draws the fire of enemies round it.
                 if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;
                 // Worth more the more it costs (a titan before a jeep); one aiming at us first;
@@ -503,7 +505,7 @@ namespace MachineBrigade.Sim.Combat
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
-            if (IsSide(mount.Aim) && !InArc(v, index, target.Position)) return false;
+            if (IsSide(mount) && !InArc(v, index, target.Position)) return false;
             var tolerance = mount.Aim switch
             {
                 MountAim.Turret => TurretTolerance,
@@ -513,17 +515,24 @@ namespace MachineBrigade.Sim.Combat
             return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
         }
 
-        private static bool IsSide(MountAim aim) => aim is MountAim.Left or MountAim.Right;
+        /// <summary>A broadside gun (out of the left or right side), or a mount with a firing arc of its own (prompt 9: the Bastion's corner turrets).</summary>
+        private static bool IsSide(WeaponMount mount) => mount.Aim is MountAim.Left or MountAim.Right || mount.ArcHalf > 0f;
 
         /// <summary>How far either way of square to its side a broadside gun can aim.</summary>
         private const float SideArc = MathF.PI / 3f;
 
-        /// <summary>The heading square out of a side mount's side of the hull.</summary>
-        private static float SideCentre(Vehicle v, int index) =>
-            v.Heading + (v.Def.Mounts[index].Aim == MountAim.Left ? -MathF.PI * 0.5f : MathF.PI * 0.5f);
+        /// <summary>The heading square out of a side mount's side of the hull (or the middle of its own arc).</summary>
+        private static float SideCentre(Vehicle v, int index)
+        {
+            var mount = v.Def.Mounts[index];
+            if (mount.ArcHalf > 0f) return v.Heading + mount.ArcCentre;
+            return v.Heading + (mount.Aim == MountAim.Left ? -MathF.PI * 0.5f : MathF.PI * 0.5f);
+        }
+
+        private static float ArcOf(Vehicle v, int index) => v.Def.Mounts[index].ArcHalf > 0f ? v.Def.Mounts[index].ArcHalf : SideArc;
 
         private static bool InArc(Vehicle v, int index, Vector2 at) =>
-            MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(at - v.Position) - SideCentre(v, index))) <= SideArc;
+            MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(at - v.Position) - SideCentre(v, index))) <= ArcOf(v, index);
 
         /// <summary>A broadside gun follows its target within its arc; with none it rests square to its side.</summary>
         private static void AimSide(Vehicle v, int index, IDamageable? target, float dt)
@@ -533,7 +542,7 @@ namespace MachineBrigade.Sim.Combat
             if (target != null)
             {
                 var off = SimMath.WrapAngle(SimMath.HeadingOf(target.Position - v.Position) - centre);
-                aim = centre + Math.Clamp(off, -SideArc, SideArc);
+                aim = centre + Math.Clamp(off, -ArcOf(v, index), ArcOf(v, index));
             }
             var state = v.Weapons[index];
             state.Heading = SimMath.RotateTowards(state.Heading, aim, FreeMountTurnRate * dt);
