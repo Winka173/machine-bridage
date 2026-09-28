@@ -151,3 +151,48 @@ bottom of each section.
   its line and never found it back). Now 5/5.
 - **Defend.** The attacking waves get no camp base of their own: an attacker camp is built only when the
   player attacks (Siege).
+
+## 7. Sized slots (the supplementary prompt; replaces fortification points)
+
+- **Why.** With both a slot count and a point budget, the slots were the scarce thing, so each
+  was filled with the strongest tower and the light ones were never picked.
+- **Slots by size.** Small takes light towers, medium light or medium, large any. HQ levels 1–5
+  open 3/1/0, 4/2/0, 4/2/1, 5/3/1 and 6/3/2 (small/medium/large), with 1/1/2/2/3 utility slots.
+  Every map camp has 6/3/2 tower slots and 3 utility slots, the most important of each size listed
+  first, so a lower level opens the best ones. Outposts have 1 small and 1 medium slot.
+- **Tower sizes.**
+  - Small: guard tower, MG bunker, AA tower, EW tower, dragon's teeth, minefield.
+  - Medium: gun tower, ATGM tower, rocket battery, C-RAM, hidden gun pit.
+  - Large: artillery emplacement, Patriot, drone hangar, heavy fortress.
+  - A tower's rank-7 branch keeps its size.
+- **A loadout is three lists by slot size** (`BaseLoadout.Small/Medium/Large`), not tied to a map:
+  the i-th small slot of any camp takes `Small[i]`. `Fitted` keeps only towers that fit a list's
+  size and only as many as the level opens.
+- **Rebuilding by size.** Small 2 CP / 25 s, medium 4 CP / 40 s, large 7 CP / 60 s (the 4 s
+  flight stays).
+- **Migration.** A saved point loadout (one list) goes into the level-5 lists largest first: large
+  towers into large slots; medium ones into medium, then large; light ones into small, then medium,
+  then large. What finds no slot is left out of the loadout: its rank and equipment live on the
+  tower's card, so nothing is lost.
+- **New profiles** get 6 small (guard, AA, MG ×2 each), 3 medium (gun, rockets, gun) and 2 large
+  (artillery emplacement, Patriot).
+- **The AI's base** fills every open slot by the style's weights among towers of the slot's own
+  size, and among smaller ones only when the style has none of that size. So a base mixes all three
+  sizes. Anti-air is always in it (the last small slot turns into one). Styles for the generals:
+  - Varga: anti-tank towers;
+  - Orlov: artillery emplacements;
+  - Kessler: an even spread;
+  - Dr Sen: drone hangars;
+  - Quạ Đen: anti-air;
+  - Aurel: the strongest of everything.
+
+## 3. Towers: cards, branches
+
+- **Tower cards** use the card ranks (1–10, +5 % a rank) and blueprints like vehicles. A loadout
+  tower now carries its card's rank; other fixed defences (a fortress, a point's watchtower) still
+  do not, unless the side boosts everything.
+- **Branches are defs that inherit their tower** (`"inherits"`, `"branchOf"` in balance.json): the
+  tower's data with the branch's changes on top, its model too. From rank 7 a tower card picks one
+  of its two branches. The first pick is free and a change costs 800 coins. The loadout carries the
+  pick into battle (`BaseLoadout.Branches`), and the tower is raised as its branch in its own slot.
+  A branch shows as "tower · branch" (`branch.<id>` texts).

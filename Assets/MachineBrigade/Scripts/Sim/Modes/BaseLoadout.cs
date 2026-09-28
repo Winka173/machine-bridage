@@ -6,39 +6,71 @@ using MachineBrigade.Sim.Content;
 namespace MachineBrigade.Sim.Modes
 {
     /// <summary>
-    /// A side's base as chosen before the battle, like its deck: the HQ level, the towers in the
-    /// order they fill the hardpoints (front ones first), the utility modules, and the towers it
-    /// flies onto an outpost's hardpoints. Nothing is built during the battle; a destroyed tower
-    /// can be flown back in (see <see cref="BaseSystem"/>).
+    /// A side's base as chosen before the battle, like its deck: the HQ level, a tower for each
+    /// hardpoint by size (<see cref="Small"/>, <see cref="Medium"/>, <see cref="Large"/>, the most
+    /// important slot of each size first), the utility modules, and the two towers it flies onto
+    /// an outpost (a small one, then one for the medium slot). It does not depend on the map: the
+    /// i-th small slot of the map's camp takes Small[i]. Nothing is built during the battle; a
+    /// destroyed tower can be flown back in (see <see cref="BaseSystem"/>).
     /// </summary>
     public sealed class BaseLoadout
     {
         public int HqLevel { get; set; } = 1;
-        public List<string> Towers { get; set; } = new();
+
+        /// <summary>Towers for the small hardpoints (light towers only).</summary>
+        public List<string> Small { get; set; } = new();
+
+        /// <summary>Towers for the medium hardpoints (light or medium).</summary>
+        public List<string> Medium { get; set; } = new();
+
+        /// <summary>Towers for the large hardpoints (any).</summary>
+        public List<string> Large { get; set; } = new();
+
         public List<string> Utilities { get; set; } = new();
 
-        /// <summary>Towers for an outpost's hardpoints, in slot order.</summary>
+        /// <summary>Towers for an outpost's hardpoints: the small slot's, then the medium slot's.</summary>
         public List<string> Outpost { get; set; } = new() { "guard_tower", "gun_turret" };
+
+        /// <summary>The rank-7 branch each tower fights as (tower id → branch def id); a tower not in it fights as itself.</summary>
+        public Dictionary<string, string> Branches { get; set; } = new();
+
+        /// <summary>The def a tower of the loadout is raised as: its chosen branch, else itself.</summary>
+        public string DefFor(string towerId) => Branches.TryGetValue(towerId, out var branch) ? branch : towerId;
+
+        /// <summary>The towers of one size's hardpoints.</summary>
+        public List<string> Of(SlotSize size) => size switch { SlotSize.Small => Small, SlotSize.Medium => Medium, _ => Large };
+
+        /// <summary>Every tower in the loadout, large slots first.</summary>
+        public IEnumerable<string> Towers
+        {
+            get
+            {
+                foreach (var id in Large) yield return id;
+                foreach (var id in Medium) yield return id;
+                foreach (var id in Small) yield return id;
+            }
+        }
 
         /// <summary>An HQ with nothing round it (tests, and modes that bring no loadout).</summary>
         public static BaseLoadout HqOnly(int level = 1) => new() { HqLevel = level };
 
         /// <summary>
-        /// This loadout cut to what its HQ level allows: unknown ids and non-towers dropped, then
-        /// towers in order while their points fit the budget, utility modules up to the slots.
+        /// This loadout cut to what its HQ level allows: in each size's list only towers that fit
+        /// that size, and only as many as the level opens; utility modules up to the slots.
         /// </summary>
         public BaseLoadout Fitted(Catalog catalog)
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var budget = rules.Points(level);
-            var fitted = new BaseLoadout { HqLevel = level, Outpost = new List<string>(Outpost) };
-            foreach (var id in Towers)
+            var fitted = new BaseLoadout { HqLevel = level, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches) };
+            foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
-                if (!catalog.Vehicles.TryGetValue(id, out var def) || def.Fort is not { Kind: FortKind.Tower } fort) continue;
-                if (fort.Points > budget) continue;
-                budget -= fort.Points;
-                fitted.Towers.Add(id);
+                var open = rules.Slots(level, size);
+                foreach (var id in Of(size))
+                {
+                    if (fitted.Of(size).Count >= open) break;
+                    if (IsTower(catalog, id, out var fort) && fort.Fits(size)) fitted.Of(size).Add(id);
+                }
             }
             var slots = rules.UtilitySlots(level);
             foreach (var id in Utilities)
@@ -49,65 +81,107 @@ namespace MachineBrigade.Sim.Modes
             return fitted;
         }
 
-        /// <summary>Fortification points the towers use.</summary>
-        public int PointsUsed(Catalog catalog)
+        private static bool IsTower(Catalog catalog, string id, out FortDef fort)
         {
-            var used = 0;
-            foreach (var id in Towers)
-                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Fort != null) used += def.Fort.Points;
-            return used;
+            fort = null!;
+            if (!catalog.Vehicles.TryGetValue(id, out var def) || def.Fort is not { Kind: FortKind.Tower } f) return false;
+            fort = f;
+            return true;
         }
 
         /// <summary>
-        /// The AI's own base: its HQ level by difficulty, then towers drawn by the style's weights
-        /// (a commander personality names its style; "default" otherwise) until the points run out,
-        /// anti-air always among them. Deterministic for a seed.
+        /// A loadout from before sized slots (one list of towers, points-limited): each tower into
+        /// the smallest free slot of the top HQ level it fits (large towers into large slots, medium
+        /// ones into medium then large, light ones into small, then medium, then large), in order.
+        /// Whatever finds no slot is left out: its rank and equipment live on the tower's card.
+        /// </summary>
+        public static BaseLoadout FromTowerList(Catalog catalog, int hqLevel, IEnumerable<string> towers, IEnumerable<string> utilities, IEnumerable<string>? outpost)
+        {
+            var rules = catalog.Base;
+            var loadout = new BaseLoadout { HqLevel = Math.Clamp(hqLevel, 1, rules.MaxLevel) };
+            loadout.Utilities.AddRange(utilities);
+            if (outpost != null)
+            {
+                loadout.Outpost.Clear();
+                loadout.Outpost.AddRange(outpost);
+            }
+            // The largest first, so a light tower never takes the only slot a heavy one could use.
+            var list = new List<string>(towers);
+            var order = new List<(string id, SlotSize size, int index)>();
+            for (var i = 0; i < list.Count; i++)
+                if (IsTower(catalog, list[i], out var fort)) order.Add((list[i], fort.Size, i));
+            order.Sort((a, b) => a.size != b.size ? b.size.CompareTo(a.size) : a.index.CompareTo(b.index));
+            var top = rules.MaxLevel;
+            foreach (var (id, size, _) in order)
+                for (var slot = size; slot <= SlotSize.Large; slot++)
+                {
+                    if (loadout.Of(slot).Count >= rules.Slots(top, slot)) continue;
+                    loadout.Of(slot).Add(id);
+                    break;
+                }
+            return loadout;
+        }
+
+        /// <summary>
+        /// The AI's own base: its HQ level by difficulty, then a tower for every open slot, drawn
+        /// by the style's weights (a general's personality names its style; "default" otherwise)
+        /// among the towers that fit the slot; the large and medium slots take the tower sizes made
+        /// for them when the style has any, so a base mixes all three. Anti-air is always in it.
+        /// Deterministic for a seed.
         /// </summary>
         public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null)
         {
             var rules = catalog.Base;
             var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel) };
-            var budget = rules.Points(loadout.HqLevel);
             var weights = rules.Style(style);
-            var pool = new List<(string id, int points, float weight)>();
+            var pool = new List<(string id, SlotSize size, float weight)>();
             foreach (var def in catalog.Vehicles.Values)
             {
-                if (def.Fort is not { Kind: FortKind.Tower } fort || def.Id == "point_tower") continue;
+                if (def.Fort is not { Kind: FortKind.Tower } fort || !TowerCards.IsLoadoutTower(def.Id)) continue;
                 var weight = weights.TryGetValue(def.Id, out var w) ? w : weights.TryGetValue("*", out var any) ? any : 0f;
-                if (weight > 0f) pool.Add((def.Id, fort.Points, weight));
+                if (weight > 0f) pool.Add((def.Id, fort.Size, weight));
             }
             pool.Sort((a, b) => string.CompareOrdinal(a.id, b.id));
-            var random = new Random(seed * 7919 + budget);
-            var antiAir = false;
-            for (var guard = 0; guard < 40 && budget > 0; guard++)
+            var random = new Random(seed * 7919 + loadout.HqLevel);
+            foreach (var size in new[] { SlotSize.Large, SlotSize.Medium, SlotSize.Small })
             {
-                var total = 0f;
-                foreach (var p in pool)
-                    if (p.points <= budget) total += p.weight;
-                if (total <= 0f) break;
-                var roll = (float)random.NextDouble() * total;
-                foreach (var p in pool)
+                var open = rules.Slots(loadout.HqLevel, size);
+                for (var k = 0; k < open; k++)
                 {
-                    if (p.points > budget) continue;
-                    roll -= p.weight;
-                    if (roll > 0f) continue;
-                    // Anti-air first once the base is half built without any.
-                    var pick = p.id;
-                    if (!antiAir && budget <= rules.Points(loadout.HqLevel) / 2 && !IsAntiAir(catalog, pick))
-                        foreach (var q in pool)
-                            if (q.points <= budget && IsAntiAir(catalog, q.id)) { pick = q.id; break; }
-                    antiAir |= IsAntiAir(catalog, pick);
-                    loadout.Towers.Add(pick);
-                    budget -= catalog.Vehicles[pick].Fort!.Points;
-                    break;
+                    // A slot's own size first; a smaller tower only when the style has none of it.
+                    var exact = pool.Exists(p => p.size == size);
+                    var pick = Draw(pool, random, p => exact ? p.size == size : p.size <= size);
+                    if (pick != null) loadout.Of(size).Add(pick);
                 }
             }
-            // The heaviest in front.
-            loadout.Towers.Sort((a, b) => catalog.Vehicles[b].Fort!.Points.CompareTo(catalog.Vehicles[a].Fort!.Points));
+            // Anti-air: the last small slot turns into the style's best anti-air tower if there is none.
+            var hasAa = false;
+            foreach (var id in loadout.Towers) hasAa |= IsAntiAir(catalog, id);
+            if (!hasAa && loadout.Small.Count > 0)
+            {
+                var aa = Draw(pool, random, p => p.size == SlotSize.Small && IsAntiAir(catalog, p.id)) ?? (catalog.Vehicles.ContainsKey("aa_turret") ? "aa_turret" : null);
+                if (aa != null) loadout.Small[loadout.Small.Count - 1] = aa;
+            }
             return loadout;
         }
 
-        private static bool IsAntiAir(Catalog catalog, string id)
+        private static string? Draw(List<(string id, SlotSize size, float weight)> pool, Random random, Predicate<(string id, SlotSize size, float weight)> fits)
+        {
+            var total = 0f;
+            foreach (var p in pool)
+                if (fits(p)) total += p.weight;
+            if (total <= 0f) return null;
+            var roll = (float)random.NextDouble() * total;
+            foreach (var p in pool)
+            {
+                if (!fits(p)) continue;
+                roll -= p.weight;
+                if (roll <= 0f) return p.id;
+            }
+            return null;
+        }
+
+        internal static bool IsAntiAir(Catalog catalog, string id)
         {
             foreach (var m in catalog.Vehicles[id].Mounts)
                 if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Flak || m.Weapon.Targets == TargetLayers.Air)) return true;
@@ -116,7 +190,40 @@ namespace MachineBrigade.Sim.Modes
 
         public BaseLoadout Clone() => new()
         {
-            HqLevel = HqLevel, Towers = new List<string>(Towers), Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost),
+            HqLevel = HqLevel, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
+            Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches),
         };
+    }
+
+    /// <summary>
+    /// Tower cards: which towers go into a loadout (a capture point's watchtower, merged towers and
+    /// branch defs do not: a branch fights in its tower's slot), and each tower's two rank-7 branches.
+    /// </summary>
+    public static class TowerCards
+    {
+        private static readonly HashSet<string> NotCards = new() { "point_tower", "flak_tower", "spawn_bastion" };
+
+        /// <summary>The rank a tower card must reach to choose its branch.</summary>
+        public const int BranchRank = 7;
+
+        public static bool IsLoadoutTower(string id) => !NotCards.Contains(id) && !id.Contains('.');
+
+        /// <summary>Every tower card in the catalog (loadout towers, not branches, not utility modules).</summary>
+        public static List<string> All(Catalog catalog)
+        {
+            var list = new List<string>();
+            foreach (var def in catalog.Vehicles.Values)
+                if (def.Fort is { Kind: FortKind.Tower } && def.BranchOf == null && IsLoadoutTower(def.Id)) list.Add(def.Id);
+            return list;
+        }
+
+        /// <summary>A tower's branch defs, in data order (two for every tower).</summary>
+        public static List<string> Branches(Catalog catalog, string towerId)
+        {
+            var list = new List<string>();
+            foreach (var def in catalog.Vehicles.Values)
+                if (def.BranchOf == towerId) list.Add(def.Id);
+            return list;
+        }
     }
 }

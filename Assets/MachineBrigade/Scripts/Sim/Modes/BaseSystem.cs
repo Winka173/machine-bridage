@@ -144,29 +144,35 @@ namespace MachineBrigade.Sim.Modes
                 b.Hq = hq.Id;
             }
             b.HqPosition = hqAt;
+            // The hardpoints the HQ level opens: the first so many of each size (the map lists the
+            // most important first), each taking the loadout's tower for that slot of that size.
             if (site != null)
+            {
+                var seen = new int[3];
+                var utility = 0;
                 for (var i = 0; i < site.Slots.Count; i++)
-                    b.Slots.Add(new HardpointState(site.Slots[i], i));
-            // The towers, in order, each into the first free hardpoint of its kind it fits.
-            Assign(b, fitted.Towers, HardpointKind.Tower);
-            Assign(b, fitted.Utilities, HardpointKind.Utility);
+                {
+                    var def = site.Slots[i];
+                    if (def.Kind == HardpointKind.Utility)
+                    {
+                        if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
+                        var state = new HardpointState(def, i);
+                        if (utility - 1 < fitted.Utilities.Count) state.Tower = fitted.Utilities[utility - 1];
+                        b.Slots.Add(state);
+                        continue;
+                    }
+                    var k = seen[(int)def.Class]++;
+                    if (k >= catalog.Base.Slots(fitted.HqLevel, def.Class)) continue;
+                    var slot = new HardpointState(def, i);
+                    var list = fitted.Of(def.Class);
+                    // A tower past rank 7 fights as its chosen branch (it stays in its tower's slot).
+                    if (k < list.Count) slot.Tower = catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
+                    b.Slots.Add(slot);
+                }
+            }
             foreach (var slot in b.Slots)
                 if (slot.Tower != null) Raise(b, slot);
             return b;
-        }
-
-        private void Assign(TeamBase b, List<string> ids, HardpointKind kind)
-        {
-            foreach (var id in ids)
-            {
-                var def = _world.Catalog.Vehicles[id];
-                foreach (var slot in b.Slots)
-                {
-                    if (slot.Tower != null || slot.Def.Kind != kind || Footprint(def) > slot.Def.Size + 0.01f) continue;
-                    slot.Tower = id;
-                    break;
-                }
-            }
         }
 
         /// <summary>A structure's footprint across (metres), as the hardpoint sizes count it.</summary>
@@ -223,7 +229,7 @@ namespace MachineBrigade.Sim.Modes
             if (!_world.Economy.TrySpend(command.Team, CostOf(slot))) return CommandResult.Rejected(CommandError.NotEnoughCp);
             var rules = _world.Catalog.Base;
             slot.LandsAt = _world.Time + rules.RebuildDelay;
-            slot.ReadyAt = _world.Time + rules.RebuildCooldown;
+            slot.ReadyAt = _world.Time + rules.RebuildCooldown(_world.Catalog.Vehicles[slot.Tower!]);
             _world.Emit(SimEvent.DeploymentQueued(command.Team, slot.Tower!, slot.Def.Position, SimMath.Forward(slot.Def.Facing), rules.RebuildDelay));
             return CommandResult.Ok;
         }
@@ -348,7 +354,8 @@ namespace MachineBrigade.Sim.Modes
             // Knocked down: it can be called back in once the cooldown is over.
             slot.Structure = EntityId.None;
             slot.Down = true;
-            slot.ReadyAt = Math.Max(slot.ReadyAt, _world.Time + _world.Catalog.Base.RebuildCooldown);
+            slot.ReadyAt = Math.Max(slot.ReadyAt, _world.Time + (slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def)
+                ? _world.Catalog.Base.RebuildCooldown(def) : 30f));
         }
 
         /// <summary>Every tower standing in a side's base (camp and outposts).</summary>

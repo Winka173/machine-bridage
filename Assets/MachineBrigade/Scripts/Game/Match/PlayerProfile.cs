@@ -64,9 +64,21 @@ namespace MachineBrigade.Game.Match
             /// <summary>1: progress on the merged and retired cards has been moved (see CardMerges).</summary>
             public int rosterVersion;
 
-            /// <summary>The base loadout (see BaseLoadout): HQ level, towers front first, utility modules, outpost towers.</summary>
+            /// <summary>
+            /// The base loadout (see BaseLoadout): HQ level, a tower for each hardpoint by size,
+            /// utility modules, outpost towers. baseTowers is the old point loadout (one list),
+            /// moved into the sized lists once (baseVersion 2).
+            /// </summary>
             public int baseLevel;
+            public int baseVersion;
+            public List<string> baseSmall = new();
+            public List<string> baseMedium = new();
+            public List<string> baseLarge = new();
             public List<string> baseTowers = new();
+
+            /// <summary>Towers whose rank-7 branch was chosen, and the branch def each fights as.</summary>
+            public List<string> branchTowers = new();
+            public List<string> branchChoices = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
         }
@@ -81,8 +93,13 @@ namespace MachineBrigade.Game.Match
             get
             {
                 var loadout = new Sim.Modes.BaseLoadout { HqLevel = D.baseLevel > 0 ? D.baseLevel : 5 };
-                loadout.Towers.AddRange(D.baseTowers.Count > 0 ? D.baseTowers : DefaultTowers);
+                var empty = D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
+                loadout.Small.AddRange(empty ? DefaultSmall : D.baseSmall);
+                loadout.Medium.AddRange(empty ? DefaultMedium : D.baseMedium);
+                loadout.Large.AddRange(empty ? DefaultLarge : D.baseLarge);
                 loadout.Utilities.AddRange(D.baseUtilities);
+                foreach (var id in loadout.Towers)
+                    if (TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
                 if (D.baseOutpost.Count > 0)
                 {
                     loadout.Outpost.Clear();
@@ -93,15 +110,41 @@ namespace MachineBrigade.Game.Match
             set
             {
                 D.baseLevel = value.HqLevel;
-                D.baseTowers = new List<string>(value.Towers);
+                D.baseSmall = new List<string>(value.Small);
+                D.baseMedium = new List<string>(value.Medium);
+                D.baseLarge = new List<string>(value.Large);
+                D.baseTowers.Clear();
+                D.baseVersion = BaseVersion;
                 D.baseUtilities = new List<string>(value.Utilities);
                 D.baseOutpost = new List<string>(value.Outpost);
                 Save();
             }
         }
 
-        /// <summary>A new profile's towers (13 of 14 points): a gun line, anti-air, a bunker and watchtowers.</summary>
-        public static readonly string[] DefaultTowers = { "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "guard_tower", "aa_turret" };
+        /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>
+        public static readonly string[] DefaultSmall = { "guard_tower", "aa_turret", "mg_bunker", "guard_tower", "aa_turret", "mg_bunker" };
+
+        public static readonly string[] DefaultMedium = { "gun_turret", "rocket_turret", "gun_turret" };
+
+        public static readonly string[] DefaultLarge = { "artillery_emplacement", "missile_battery" };
+
+        /// <summary>2: the base loadout is in sized lists (see <see cref="Data.baseVersion"/>).</summary>
+        internal const int BaseVersion = 2;
+
+        /// <summary>Moves a base loadout saved as one list of towers (fortification points) into the sized lists, once.</summary>
+        private static void MigrateBase(Data d)
+        {
+            if (d.baseVersion >= BaseVersion) return;
+            if (d.baseTowers.Count > 0)
+            {
+                var moved = Sim.Modes.BaseLoadout.FromTowerList(GameContent.LoadCatalog(), d.baseLevel > 0 ? d.baseLevel : 5, d.baseTowers, d.baseUtilities, d.baseOutpost.Count > 0 ? d.baseOutpost : null);
+                d.baseSmall = new List<string>(moved.Small);
+                d.baseMedium = new List<string>(moved.Medium);
+                d.baseLarge = new List<string>(moved.Large);
+                d.baseTowers.Clear();
+            }
+            d.baseVersion = BaseVersion;
+        }
 
         private const string Key = "mb.profile";
         private static Data _data;
@@ -349,6 +392,7 @@ namespace MachineBrigade.Game.Match
             while (_data.missionTiers.Count < _data.missionIds.Count) _data.missionTiers.Add(0);
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
             FixArsenal(_data);
+            MigrateBase(_data);
         }
 
         public static void Save()
@@ -384,6 +428,7 @@ namespace MachineBrigade.Game.Match
             _data = JsonUtility.FromJson<Data>(json) ?? new Data();
             _noSave = true;
             FixArsenal(_data);
+            MigrateBase(_data);
         }
 
         /// <summary>Tests: the profile as it would be saved.</summary>

@@ -26,9 +26,13 @@
   // Tower tiers (1-10), branches and utility modules come later; "tier", "branches" and "modules" are kept free for them.
   "base": {
     "hq": "headquarters",
-    "levels": [ { "points": 6, "utility": 1 }, { "points": 8, "utility": 1 }, { "points": 10, "utility": 2 },
-                { "points": 12, "utility": 2 }, { "points": 14, "utility": 3 } ],
-    "rebuild": { "cpPerPoint": 1.0, "cooldown": 45, "delay": 4 },
+    // Hardpoints an HQ level opens, by size (small takes light towers, medium light or medium,
+    // large any), and utility slots.
+    "levels": [ { "small": 3, "medium": 1, "large": 0, "utility": 1 }, { "small": 4, "medium": 2, "large": 0, "utility": 1 },
+                { "small": 4, "medium": 2, "large": 1, "utility": 2 }, { "small": 5, "medium": 3, "large": 1, "utility": 2 },
+                { "small": 6, "medium": 3, "large": 2, "utility": 3 } ],
+    // Flying a destroyed tower back in, by its size: light towers come back sooner and cheaper.
+    "rebuild": { "small": { "cp": 2, "cooldown": 25 }, "medium": { "cp": 4, "cooldown": 40 }, "large": { "cp": 7, "cooldown": 60 }, "delay": 4 },
     "outpost": { "cp": 6, "slots": 2 },
     "roles": { "Conquest": "Anchor", "KingOfTheHill": "Anchor", "Deathmatch": "Anchor", "Assault": "Target", "Siege": "Target",
                "Defend": "Defend", "Endless": "Defend", "Weekly": "Target", "Survival": "None", "BossRush": "None", "Campaign": "None" },
@@ -41,7 +45,15 @@
                      "artillery_emplacement": 0.7, "missile_battery": 0.6, "flak_tower": 0.5, "heavy_turret": 0.6 },
         "armour": { "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
         "artillery": { "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
-        "air": { "aa_turret": 2.0, "missile_battery": 1.6, "flak_tower": 1.2, "guard_tower": 0.8 }
+        "air": { "aa_turret": 2.0, "missile_battery": 1.6, "flak_tower": 1.2, "guard_tower": 0.8 },
+        // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
+        // Dr Sen drones, Quạ Đen anti-air, Aurel everything strong.
+        "varga": { "atgm_tower": 2.4, "gun_turret": 1.8, "heavy_turret": 1.6, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
+        "orlov": { "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
+        "kessler": { "*": 1.0 },
+        "sen": { "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
+        "quaden": { "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
+        "aurel": { "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
       }
     }
   },
@@ -449,32 +461,36 @@
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ] },
     // The siege keep's heavy pieces: a twin 155 mm coastal turret, a Flakturm with quad flak and a
     // SAM box, a Patriot-style battery with its search radar.
-    { "id": "heavy_turret",     "fort": { "points": 5, "weight": "Heavy" }, "static": true, "armor": "Structure", "hp": 2800, "speed": 0, "turnRate": 1, "turretTurnRate": 32, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 60,
+    { "id": "heavy_turret",     "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 2800, "speed": 0, "turnRate": 1, "turretTurnRate": 32, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 60,
       "weapon": "gun_155_twin", "secondary": [{"weapon": "mg_coax", "slot": "coax", "aim": "Turret"}],
       "deathExplosion": { "damage": 220, "radius": 12, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "flak_tower",       "fort": { "points": 4, "weight": "Heavy" }, "static": true, "armor": "Structure", "hp": 2600, "speed": 0, "turnRate": 1, "turretTurnRate": 150, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 70,
+    { "id": "flak_tower",       "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 2600, "speed": 0, "turnRate": 1, "turretTurnRate": 150, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 70,
       "weapon": "flak_quad", "secondary": [{"weapon": "sam", "slot": "missile", "aim": "Free"}],
       "deathExplosion": { "damage": 180, "radius": 11, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "missile_battery",  "fort": { "points": 4, "weight": "Heavy" }, "static": true, "armor": "Structure", "hp": 1900, "speed": 0, "turnRate": 1, "turretTurnRate": 70, "radius": 3.8, "length": 7, "width": 9, "cp": 0, "vision": 85,
+    { "id": "missile_battery",  "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 1900, "speed": 0, "turnRate": 1, "turretTurnRate": 70, "radius": 3.8, "length": 7, "width": 9, "cp": 0, "vision": 85,
       "weapon": "sam_battery", "secondary": [{"weapon": "hmg_roof", "slot": "mg", "aim": "Free"}],
       "deathExplosion": { "damage": 200, "radius": 12, "delay": 0.4, "tier": "Ultimate" } },
     // A capture point's watchtower (Outposts): neutral in Conquest and King of the Hill, the holder's in Assault.
-    { "id": "point_tower",      "fort": { "points": 1, "weight": "Light" }, "class": "Defense", "static": true, "model": "guard_tower", "armor": "Structure", "hp": 1400, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 50,
+    { "id": "point_tower",      "fort": { "size": "Small" }, "class": "Defense", "static": true, "model": "guard_tower", "armor": "Structure", "hp": 1400, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 50,
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // An anti-tank missile tower (Kornet twin launcher): the field-tower drop from card rank 5.
-    { "id": "atgm_tower",       "fort": { "points": 3, "weight": "Medium" }, "static": true, "armor": "Structure", "hp": 900, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.8, "width": 4.8, "cp": 0, "vision": 55,
+    { "id": "atgm_tower",       "fort": { "size": "Medium" }, "static": true, "armor": "Structure", "hp": 900, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.8, "width": 4.8, "cp": 0, "vision": 55,
       "weapon": "kornet_twin", "mainSlot": "missile", "deathExplosion": { "damage": 90, "radius": 6, "delay": 0.3, "tier": "Large" } },
-    { "id": "gun_turret",       "fort": { "points": 3, "weight": "Medium" }, "static": true, "armor": "Structure", "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 50, "radius": 2.5, "length": 5, "width": 5, "cp": 0, "vision": 42,
+    { "id": "gun_turret",       "fort": { "size": "Medium" }, "static": true, "armor": "Structure", "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 50, "radius": 2.5, "length": 5, "width": 5, "cp": 0, "vision": 42,
       "weapon": "turret_gun_120", "secondary": [{"weapon": "mg_coax", "slot": "coax", "aim": "Turret"}], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "aa_turret",        "fort": { "points": 2, "weight": "Light" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,
+    { "id": "aa_turret",        "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,
       "weapon": "twin_30_flak", "secondary": [{"weapon": "sam", "slot": "missile", "aim": "Turret"}], "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "rocket_turret",    "fort": { "points": 3, "weight": "Medium" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 55,
+    // Rank-7 branches of the AA tower: the old Flakturm's quad 35 mm (no missiles), or a SAM post.
+    { "id": "aa_turret.flak", "inherits": "aa_turret", "branchOf": "aa_turret", "weapon": "flak_quad", "secondary": [] },
+    { "id": "aa_turret.sam", "inherits": "aa_turret", "branchOf": "aa_turret", "weapon": "sam_long", "mainSlot": "missile",
+      "secondary": [ { "weapon": "hmg_roof", "slot": "main", "aim": "Turret" } ] },
+    { "id": "rocket_turret",    "fort": { "size": "Medium" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 55,
       "weapon": "turret_rockets", "secondary": [{"weapon": "mg_coax", "slot": "mg", "aim": "Free"}], "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.4, "tier": "Huge" } },
-    { "id": "mg_bunker",        "fort": { "points": 2, "weight": "Light" }, "static": true, "armor": "Structure", "hp": 1500, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
+    { "id": "mg_bunker",        "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 1500, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
       "weapon": "bunker_hmg", "secondary": [{"weapon": "atgm_post", "slot": "missile", "aim": "Free"}], "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
-    { "id": "artillery_emplacement", "fort": { "points": 4, "weight": "Heavy" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 3.0, "length": 6.5, "width": 6.5, "cp": 0, "vision": 30,
+    { "id": "artillery_emplacement", "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 3.0, "length": 6.5, "width": 6.5, "cp": 0, "vision": 30,
       "weapon": "howitzer", "secondary": [{"weapon": "mg_coax", "slot": "mg", "aim": "Free"}], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.4, "tier": "Huge" } },
-    { "id": "guard_tower",      "fort": { "points": 1, "weight": "Light" }, "static": true, "armor": "Structure", "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60,
+    { "id": "guard_tower",      "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60,
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

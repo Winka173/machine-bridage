@@ -339,6 +339,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>For an elite: the vehicle it is a refurbished version of.</summary>
         public string? EliteOf { get; internal set; }
 
+        /// <summary>For a tower's rank-7 branch: the tower it is a branch of (its card, rank and equipment are that tower's).</summary>
+        public string? BranchOf { get; internal set; }
+
+        /// <summary>The card this def counts as: the tower a branch belongs to, else itself.</summary>
+        public string CardId => BranchOf ?? Id;
+
         /// <summary>What it counts against the army cap and pays out as a kill (an elite counts as its base unit).</summary>
         public int ArmyCost { get; internal set; }
 

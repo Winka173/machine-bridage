@@ -325,7 +325,10 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
-            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && (_boostAll[team] || (!def.Boss && !def.Static)))
+            // A side's own loadout towers carry their card's rank and equipment; other fixed defences
+            // (a fortress, a point's watchtower) only when the side boosts everything.
+            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
+                (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
                 Upgrade(vehicle, boosts(def));
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {

@@ -18,6 +18,7 @@ namespace MachineBrigade.Game.Match
         {
             while (d.ranks.Count < d.rankIds.Count) d.ranks.Add(1);
             while (d.prints.Count < d.rankIds.Count) d.prints.Add(0);
+            while (d.branchChoices.Count < d.branchTowers.Count) d.branchChoices.Add("");
             while (d.loadout.Count < Branches * Gear.Slots) d.loadout.Add(0);
             var kinds = Enum.GetValues(typeof(CrateKind)).Length;
             while (d.crates.Count < kinds) d.crates.Add(0);
@@ -349,7 +350,46 @@ namespace MachineBrigade.Game.Match
         public static List<Gear.SetChip> SetChips(GearBranch branch) => Gear.SetChips(Loadout(branch));
 
         /// <summary>What the player's upgrades do to a vehicle of this card: its rank and its branch's loadout.</summary>
-        public static VehicleBoost BoostFor(VehicleDef def) => Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
+        public static VehicleBoost BoostFor(VehicleDef def) =>
+            def.Fort != null ? Gear.Boost(Rank(def.CardId), TowerGear(def.CardId)) : Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
+
+        // ------------------------------------------------------------------ tower cards
+
+        /// <summary>
+        /// The equipment a tower type wears (its Weapon, Structure and Systems slots), shared by
+        /// every tower of that type in the base. Empty until tower equipment is in.
+        /// </summary>
+        public static IEnumerable<GearItem> TowerGear(string towerId) => Array.Empty<GearItem>();
+
+        /// <summary>The branch def a tower fights as, once its card reached rank 7 and one was chosen; null otherwise.</summary>
+        public static string TowerBranch(string towerId)
+        {
+            var i = A.branchTowers.IndexOf(towerId);
+            if (i < 0 || Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return null;
+            return A.branchChoices[i];
+        }
+
+        /// <summary>Coins to change a tower's branch once one was chosen (the first choice is free).</summary>
+        public const int BranchSwapCoins = 800;
+
+        /// <summary>Chooses a tower's branch (rank 7 and up): free the first time, <see cref="BranchSwapCoins"/> to change it.</summary>
+        public static bool TryChooseBranch(string towerId, string branchId)
+        {
+            if (Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return false;
+            var d = A;
+            var i = d.branchTowers.IndexOf(towerId);
+            if (i >= 0 && d.branchChoices[i] == branchId) return true;
+            if (i >= 0 && !TrySpend(BranchSwapCoins)) return false;
+            // One reference for both lists: A re-checks them between reads.
+            if (i < 0)
+            {
+                d.branchTowers.Add(towerId);
+                d.branchChoices.Add(branchId);
+            }
+            else d.branchChoices[i] = branchId;
+            Save();
+            return true;
+        }
 
         /// <summary>How much harder a strike card hits at its rank.</summary>
         public static float StrikeBoost(string supportId) => 1f + CardRanks.Bonus(Rank(supportId));

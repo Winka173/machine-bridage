@@ -48,7 +48,12 @@ namespace MachineBrigade.Tests
                 if (!Strings.Has("guide." + id)) missing.Add("guide." + id);
             }
             foreach (var v in catalog.Vehicles.Values.Where(v => v.Static && v.Fort != null))
-                if (!Strings.Has("unit." + v.Id)) missing.Add("unit." + v.Id);
+            {
+                // A tower's branch is named as "tower · branch".
+                var key = v.BranchOf != null ? "branch." + v.Id : "unit." + v.Id;
+                if (!Strings.Has(key)) missing.Add(key);
+                if (v.BranchOf != null && !Strings.Has(key + ".info")) missing.Add(key + ".info");
+            }
             Assert.IsEmpty(missing, string.Join(", ", missing));
         }
 

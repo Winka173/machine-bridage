@@ -784,6 +784,10 @@ namespace MachineBrigade.Game.Hud
             ["err.AirAtCapacity"] = ("Air slots full: at most 6 aircraft at once", "Hết suất không quân: tối đa 6 máy bay cùng lúc"),
             ["err.OnCooldown"] = ("Not ready yet", "Chưa sẵn sàng"),
             ["err.UnitLimit"] = ("Only one of these per side", "Mỗi phe chỉ được một chiếc"),
+            ["branch.aa_turret.flak"] = ("Flak tower", "Tháp cao xạ"),
+            ["branch.aa_turret.flak.info"] = ("Quad 35 mm flak: far more fire at aircraft, no missiles.", "Pháo cao xạ 35 mm bốn nòng: hỏa lực phòng không mạnh hơn nhiều, không có tên lửa."),
+            ["branch.aa_turret.sam"] = ("SAM post", "Trạm tên lửa"),
+            ["branch.aa_turret.sam.info"] = ("A 55 m SAM pair instead of the flak, and a machine gun: reaches further, fires less.", "Cặp tên lửa phòng không 55 m thay cho pháo cao xạ, kèm súng máy: bắn xa hơn, ít phát hơn."),
             ["campaign.power"] = ("Recommended power {0} · your deck {1}", "Sức mạnh đề xuất {0} · bộ bài của bạn {1}"),
             ["err.NotAvailable"] = ("Not available in this mode", "Không dùng được ở chế độ này"),
             ["result.victory"] = ("VICTORY", "CHIẾN THẮNG"),
@@ -1272,7 +1276,16 @@ namespace MachineBrigade.Game.Hud
 
         public static string Error(CommandError error) => Get("err." + error);
 
-        public static string Unit(string defId) => Get("unit." + defId);
+        /// <summary>A vehicle's name; a tower's branch reads "AA tower · Flak tower".</summary>
+        public static string Unit(string defId)
+        {
+            if (Table.ContainsKey("unit." + defId)) return Get("unit." + defId);
+            var dot = defId.IndexOf('.');
+            return dot > 0 ? Get("unit." + defId.Substring(0, dot)) + " · " + Get("branch." + defId) : Get("unit." + defId);
+        }
+
+        /// <summary>A tower branch's own name ("Flak tower").</summary>
+        public static string Branch(string branchId) => Get("branch." + branchId);
 
         public static string Support(string defId) => Get("support." + defId);
 

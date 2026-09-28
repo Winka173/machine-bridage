@@ -22,6 +22,26 @@ namespace MachineBrigade.Tests
     /// </summary>
     public class BaseTests
     {
+        [TearDown]
+        public void RestoreProfile() => PlayerProfile.Load();
+
+        [Test]
+        public void AnOldPointLoadoutIsSortedIntoTheSizedSlots()
+        {
+            // A saved base from the fortification-point days: one list, heavy towers first.
+            PlayerProfile.LoadForTests("{\"baseLevel\":5,\"baseTowers\":[\"heavy_turret\",\"missile_battery\",\"artillery_emplacement\",\"gun_turret\",\"rocket_turret\",\"gun_turret\",\"atgm_tower\",\"aa_turret\",\"guard_tower\"]}");
+            var loadout = PlayerProfile.BaseLoadout;
+            Assert.AreEqual(5, loadout.HqLevel);
+            CollectionAssert.AreEqual(new[] { "heavy_turret", "missile_battery" }, loadout.Large, "the heavy towers take the two large slots");
+            CollectionAssert.AreEqual(new[] { "gun_turret", "rocket_turret", "gun_turret" }, loadout.Medium, "the medium ones the medium slots");
+            CollectionAssert.AreEqual(new[] { "aa_turret", "guard_tower" }, loadout.Small, "the light ones the small slots");
+            Assert.IsFalse(loadout.Towers.Contains("artillery_emplacement") || loadout.Towers.Contains("atgm_tower"),
+                "what finds no slot is left out (its card keeps its rank and gear)");
+            var json = PlayerProfile.JsonForTests();
+            PlayerProfile.LoadForTests(json);
+            CollectionAssert.AreEqual(new[] { "heavy_turret", "missile_battery" }, PlayerProfile.BaseLoadout.Large, "moved once, saved sized");
+        }
+
         private static Catalog Catalog => GameContent.LoadCatalog();
 
         private static void Run(SimWorld world, float seconds, IGameMode mode = null, params ConquestAi[] ais)
@@ -36,28 +56,40 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void HqLevelsSetThePointsAndUtilitySlots()
+        public void HqLevelsOpenSizedSlots()
         {
             var rules = Catalog.Base;
-            var points = Enumerable.Range(1, 5).Select(rules.Points).ToArray();
-            var utility = Enumerable.Range(1, 5).Select(rules.UtilitySlots).ToArray();
-            CollectionAssert.AreEqual(new[] { 6, 8, 10, 12, 14 }, points);
-            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, utility);
+            int[] Of(SlotSize size) => Enumerable.Range(1, 5).Select(l => rules.Slots(l, size)).ToArray();
+            CollectionAssert.AreEqual(new[] { 3, 4, 4, 5, 6 }, Of(SlotSize.Small));
+            CollectionAssert.AreEqual(new[] { 1, 2, 2, 3, 3 }, Of(SlotSize.Medium));
+            CollectionAssert.AreEqual(new[] { 0, 0, 1, 1, 2 }, Of(SlotSize.Large));
+            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, Enumerable.Range(1, 5).Select(rules.UtilitySlots).ToArray());
             var catalog = Catalog;
-            var loadout = new BaseLoadout { HqLevel = 1, Towers = { "heavy_turret", "guard_tower", "gun_turret", "guard_tower" } }.Fitted(catalog);
-            Assert.LessOrEqual(loadout.PointsUsed(catalog), 6, "a level 1 HQ takes 6 points of towers");
-            CollectionAssert.AreEqual(new[] { "heavy_turret", "guard_tower" }, loadout.Towers, "in order, while they fit");
+            var loadout = new BaseLoadout
+            {
+                HqLevel = 1,
+                Small = { "guard_tower", "gun_turret", "aa_turret", "mg_bunker", "guard_tower" },
+                Medium = { "heavy_turret", "rocket_turret", "gun_turret" },
+                Large = { "artillery_emplacement" },
+            }.Fitted(catalog);
+            CollectionAssert.AreEqual(new[] { "guard_tower", "aa_turret", "mg_bunker" }, loadout.Small, "3 small slots, light towers only");
+            CollectionAssert.AreEqual(new[] { "rocket_turret" }, loadout.Medium, "1 medium slot, no heavy tower in it");
+            Assert.IsEmpty(loadout.Large, "no large slot at level 1");
         }
 
         [Test]
-        public void TowerWeightsFollowTheirClass()
+        public void TowerSizesFollowTheRoster()
         {
-            foreach (var def in Catalog.Vehicles.Values.Where(v => v.Fort is { Kind: FortKind.Tower }))
-            {
-                var p = def.Fort.Points;
-                var expected = def.Fort.Weight switch { "Light" => p is 1 or 2, "Medium" => p == 3, _ => p is 4 or 5 };
-                Assert.IsTrue(expected, $"{def.Id}: {p} points for a {def.Fort.Weight} tower");
-            }
+            var catalog = Catalog;
+            foreach (var (id, size) in new[]
+                     {
+                         ("guard_tower", SlotSize.Small), ("mg_bunker", SlotSize.Small), ("aa_turret", SlotSize.Small),
+                         ("gun_turret", SlotSize.Medium), ("rocket_turret", SlotSize.Medium), ("atgm_tower", SlotSize.Medium),
+                         ("artillery_emplacement", SlotSize.Large), ("missile_battery", SlotSize.Large), ("heavy_turret", SlotSize.Large),
+                     })
+                Assert.AreEqual(size, catalog.Vehicles[id].Fort.Size, id);
+            Assert.IsTrue(catalog.Vehicles["guard_tower"].Fort.Fits(SlotSize.Large), "a light tower goes anywhere");
+            Assert.IsFalse(catalog.Vehicles["heavy_turret"].Fort.Fits(SlotSize.Medium), "a heavy one only into a large slot");
         }
 
         [Test]
@@ -66,11 +98,15 @@ namespace MachineBrigade.Tests
             var world = new SimWorld(Catalog, GameContent.LoadMap("ashfield_conquest"), seed: 3);
             var site = world.Map.BaseOf(0);
             Assert.IsNotNull(site, "the map has a camp for side 0");
-            var loadout = new BaseLoadout { HqLevel = 5, Towers = { "gun_turret", "aa_turret", "guard_tower" } };
+            var loadout = new BaseLoadout { HqLevel = 3, Small = { "aa_turret", "guard_tower" }, Medium = { "gun_turret" }, Large = { "heavy_turret" } };
             var b = world.Bases.Establish(0, loadout, BaseRole.Anchor);
             var towers = world.Bases.Towers(0).ToList();
-            Assert.AreEqual(3, towers.Count, "every tower in the loadout stands");
-            Assert.AreEqual("gun_turret", b.Slots[0].Tower, "the first tower in the front hardpoint");
+            Assert.AreEqual(4, towers.Count, "every tower in the loadout stands");
+            Assert.AreEqual(7, b.Slots.Count(s => s.Def.Kind == HardpointKind.Tower), "level 3 opens 4 small, 2 medium and 1 large hardpoint");
+            HardpointState First(SlotSize size) => b.Slots.First(s => s.Def.Kind == HardpointKind.Tower && s.Def.Class == size);
+            Assert.AreEqual("aa_turret", First(SlotSize.Small).Tower, "the first small tower in the first small hardpoint");
+            Assert.AreEqual("gun_turret", First(SlotSize.Medium).Tower);
+            Assert.AreEqual("heavy_turret", First(SlotSize.Large).Tower);
             Assert.IsTrue(towers.All(t => b.Slots.Any(s => Vector2.Distance(s.Def.Position, t.Position) < 0.01f)), "each on a hardpoint");
             Assert.IsTrue(world.VehicleList.Any(v => v.Id == b.Hq && v.Invulnerable), "an Anchor HQ, which cannot fall");
         }
@@ -81,7 +117,7 @@ namespace MachineBrigade.Tests
             var catalog = Catalog;
             var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: 3);
             world.EnableEconomy(new MachineBrigade.Sim.Economy.TeamEconomy(0, 30f, bank: 60f));
-            var b = world.Bases.Establish(0, new BaseLoadout { HqLevel = 5, Towers = { "gun_turret" } }, BaseRole.Anchor);
+            var b = world.Bases.Establish(0, new BaseLoadout { HqLevel = 5, Medium = { "gun_turret" } }, BaseRole.Anchor);
             var slot = b.Slots.First(s => s.Tower == "gun_turret");
             world.TryGetVehicle(slot.Structure, out var tower);
             world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);
@@ -89,12 +125,14 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(slot.Down, "the hardpoint is down");
             var call = new Command(CommandType.CallTower, 0, Array.Empty<EntityId>(), slot.Def.Position);
             Assert.IsFalse(world.Submit(call).Accepted, "not before its cooldown");
-            Run(world, catalog.Base.RebuildCooldown);
+            Run(world, catalog.Base.RebuildCooldown(catalog.Vehicles["gun_turret"]));
             world.TryGetEconomy(0, out var economy);
             economy.Cp = 20f;
             Assert.IsTrue(world.Submit(call).Accepted, "after it");
-            Assert.AreEqual(20f - catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), economy.Cp, 0.5f, "for its points in CP");
-            Assert.AreEqual(3, catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), "3 points: 3 CP (50 % x points x 2)");
+            Assert.AreEqual(20f - catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), economy.Cp, 0.5f, "for its price in CP");
+            Assert.AreEqual(4, catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), "a medium tower: 4 CP");
+            Assert.Less(catalog.Base.RebuildCost(catalog.Vehicles["guard_tower"]), catalog.Base.RebuildCost(catalog.Vehicles["heavy_turret"]), "a light tower is cheaper to fly back");
+            Assert.Less(catalog.Base.RebuildCooldown(catalog.Vehicles["guard_tower"]), catalog.Base.RebuildCooldown(catalog.Vehicles["heavy_turret"]), "and sooner");
             Run(world, catalog.Base.RebuildDelay + 0.5f);
             Assert.IsTrue(world.TryGetVehicle(slot.Structure, out var back) && back.IsAlive && back.Def.Id == "gun_turret", "it lands in its hardpoint");
             Assert.IsFalse(world.Submit(call).Accepted, "a standing tower cannot be called again");
@@ -169,9 +207,13 @@ namespace MachineBrigade.Tests
                 {
                     var a = BaseLoadout.ForAi(catalog, difficulty, style, 7);
                     var b = BaseLoadout.ForAi(catalog, difficulty, style, 7);
-                    CollectionAssert.AreEqual(a.Towers, b.Towers, "the same seed, the same base");
-                    Assert.LessOrEqual(a.PointsUsed(catalog), catalog.Base.Points(a.HqLevel), $"{difficulty}/{style} within its points");
-                    Assert.Greater(a.Towers.Count, 0, $"{difficulty}/{style} builds something");
+                    CollectionAssert.AreEqual(a.Towers.ToList(), b.Towers.ToList(), "the same seed, the same base");
+                    foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+                    {
+                        Assert.LessOrEqual(a.Of(size).Count, catalog.Base.Slots(a.HqLevel, size), $"{difficulty}/{style}: no more {size} towers than slots");
+                        Assert.IsTrue(a.Of(size).All(t => catalog.Vehicles[t].Fort.Fits(size)), $"{difficulty}/{style}: each fits its {size} slot");
+                    }
+                    Assert.Greater(a.Towers.Count(), 0, $"{difficulty}/{style} builds something");
                     if (a.HqLevel >= 3)
                         Assert.IsTrue(a.Towers.Any(t => catalog.Vehicles[t].Mounts.Any(m => m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak)),
                             $"{difficulty}/{style} brings anti-air");

@@ -29,22 +29,22 @@ namespace MachineBrigade.Sim.Content
     }
 
     /// <summary>
-    /// A structure's place in a base loadout (balance.json vehicle "fort"): what it costs in
-    /// fortification points, its weight class (light 1-2, medium 3, heavy 4-5), and what kind of
-    /// hardpoint it takes. Tower tiers and branches are a later step: <see cref="Tier"/> is kept for them.
+    /// A structure's place in a base loadout (balance.json vehicle "fort"): its size class (it goes
+    /// into a hardpoint of that size or bigger) and what kind of hardpoint it takes.
     /// </summary>
     public sealed class FortDef
     {
-        public FortDef(int points, string weight, FortKind kind)
+        public FortDef(SlotSize size, FortKind kind)
         {
-            Points = points;
-            Weight = weight;
+            Size = size;
             Kind = kind;
         }
 
-        public int Points { get; }
-        public string Weight { get; }
+        public SlotSize Size { get; }
         public FortKind Kind { get; }
+
+        /// <summary>Whether it goes into a hardpoint of this size (small towers anywhere, large ones only into large).</summary>
+        public bool Fits(SlotSize slot) => Size <= slot;
 
         /// <summary>The tower's tier (1-10), for the tier system to come; 1 until then.</summary>
         public int Tier { get; internal set; } = 1;
@@ -59,23 +59,30 @@ namespace MachineBrigade.Sim.Content
     {
         public string HqId { get; internal set; } = "headquarters";
 
-        private readonly List<(int points, int utility)> _levels = new() { (6, 1), (8, 1), (10, 2), (12, 2), (14, 3) };
+        private readonly List<(int small, int medium, int large, int utility)> _levels = new()
+            { (3, 1, 0, 1), (4, 2, 0, 1), (4, 2, 1, 2), (5, 3, 1, 2), (6, 3, 2, 3) };
         public int MaxLevel => _levels.Count;
 
-        /// <summary>Fortification points an HQ of this level (1-5) allows.</summary>
-        public int Points(int level) => _levels[Math.Clamp(level, 1, _levels.Count) - 1].points;
+        /// <summary>Tower hardpoints of a size an HQ of this level (1-5) opens.</summary>
+        public int Slots(int level, SlotSize size)
+        {
+            var l = _levels[Math.Clamp(level, 1, _levels.Count) - 1];
+            return size switch { SlotSize.Small => l.small, SlotSize.Medium => l.medium, _ => l.large };
+        }
 
         /// <summary>Utility modules an HQ of this level allows.</summary>
         public int UtilitySlots(int level) => _levels[Math.Clamp(level, 1, _levels.Count) - 1].utility;
 
-        public float CpPerPoint { get; internal set; } = 1f;
-        public float RebuildCooldown { get; internal set; } = 45f;
+        private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };
         public float RebuildDelay { get; internal set; } = 4f;
         public int OutpostCp { get; internal set; } = 6;
         public int OutpostSlots { get; internal set; } = 2;
 
-        /// <summary>CP to fly a destroyed tower back in: its points times <see cref="CpPerPoint"/>, at least 1.</summary>
-        public int RebuildCost(VehicleDef tower) => Math.Max(1, (int)MathF.Ceiling((tower.Fort?.Points ?? 1) * CpPerPoint));
+        /// <summary>CP to fly a destroyed tower back in, by its size.</summary>
+        public int RebuildCost(VehicleDef tower) => _rebuild[(int)(tower.Fort?.Size ?? SlotSize.Small)].cp;
+
+        /// <summary>Seconds after a tower falls (or was last called) before it can be flown back in, by its size.</summary>
+        public float RebuildCooldown(VehicleDef tower) => _rebuild[(int)(tower.Fort?.Size ?? SlotSize.Small)].cooldown;
 
         private readonly Dictionary<string, BaseRole> _roles = new(StringComparer.OrdinalIgnoreCase);
 
@@ -102,14 +109,19 @@ namespace MachineBrigade.Sim.Content
             if (b.Has("levels"))
             {
                 rules._levels.Clear();
-                foreach (var l in b.Array("levels")) rules._levels.Add((l.Int("points", 6), l.Int("utility", 1)));
+                foreach (var l in b.Array("levels")) rules._levels.Add((l.Int("small", 3), l.Int("medium", 1), l.Int("large", 0), l.Int("utility", 1)));
             }
             if (b.Has("rebuild"))
             {
                 var r = b.Object("rebuild");
-                rules.CpPerPoint = r.Float("cpPerPoint", 1f);
-                rules.RebuildCooldown = r.Float("cooldown", 45f);
                 rules.RebuildDelay = r.Float("delay", 4f);
+                foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+                {
+                    var key = size.ToString().ToLowerInvariant();
+                    if (!r.Has(key)) continue;
+                    var o = r.Object(key);
+                    rules._rebuild[(int)size] = (o.Int("cp", rules._rebuild[(int)size].cp), o.Float("cooldown", rules._rebuild[(int)size].cooldown));
+                }
             }
             if (b.Has("outpost"))
             {

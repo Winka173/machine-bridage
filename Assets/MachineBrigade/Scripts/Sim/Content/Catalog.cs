@@ -156,7 +156,7 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
-            foreach (var v in root.Array("vehicles"))
+            foreach (var v in Inherited(root.Array("vehicles")))
             {
                 var weapon = Weapon(weapons, v, "weapon");
                 var secondary = new List<WeaponMount>();
@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("fort"))
                     {
                         var f = v.Object("fort");
-                        def.Fort = new FortDef(f.Int("points", 1), f.Has("weight") ? f.String("weight") : "Light", f.Enum("kind", FortKind.Tower))
+                        def.Fort = new FortDef(f.Enum("size", SlotSize.Small), f.Enum("kind", FortKind.Tower))
                         {
                             Tier = f.Int("tier", 1),
                         };
@@ -242,6 +242,7 @@ namespace MachineBrigade.Sim.Content
                         def.CounterBattery = new CounterBatteryDef(c.Float("range"), c.Float("seconds"), c.Float("bonus", 0f));
                     }
                     def.ForwardDrop = v.Float("forwardDrop", 0f);
+                    def.BranchOf = v.Has("branchOf") ? v.String("branchOf") : null;
                     def.MaxPerSide = v.Int("maxPerSide", 0);
                     def.Standoff = v.Bool("standoff", false);
                     if (v.Has("mines"))
@@ -294,6 +295,30 @@ namespace MachineBrigade.Sim.Content
                 ArmyCaps = ReadArmyCaps(root),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
+        }
+
+        /// <summary>
+        /// Vehicle entries with "inherits" (a tower's rank-7 branch) take the named def's fields,
+        /// theirs on top; the parent's model too, unless they name their own. In data order.
+        /// </summary>
+        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries)
+        {
+            var list = new List<JsonObject>(entries);
+            var byId = new Dictionary<string, JsonObject>();
+            foreach (var v in list)
+                if (v.Has("id")) byId[v.String("id")] = v;
+            JsonObject Resolve(JsonObject v, int depth)
+            {
+                if (!v.Has("inherits")) return v;
+                if (depth > 4) throw new FormatException($"{v.Path}: inherits too deep");
+                var parentId = v.String("inherits");
+                if (!byId.TryGetValue(parentId, out var parent)) throw new FormatException($"{v.Path}.inherits: unknown vehicle '{parentId}'");
+                var baseDef = Resolve(parent, depth + 1);
+                var merged = baseDef.Under(v);
+                if (!v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
+                return merged;
+            }
+            foreach (var v in list) yield return Resolve(v, 0);
         }
 
         private static Dictionary<string, int> ReadArmyCaps(JsonObject root)
