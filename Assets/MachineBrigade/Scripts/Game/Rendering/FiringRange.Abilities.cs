@@ -56,6 +56,7 @@ namespace MachineBrigade.Game.Rendering
 
         private Vehicle _counterGun;
         private float _pulseAt;
+        private double _homeAt = -1;
 
         private static Scene SceneFor(VehicleDef def)
         {
@@ -115,7 +116,7 @@ namespace MachineBrigade.Game.Rendering
                     var ifv = Friend("ifv", s + new Vector2(6f, 3f), dummy: true);
                     Attacker("atgm_carrier", new Vector2(-7f, _far.Y + 18f), tank);
                     Attacker("lancet_truck", new Vector2(8f, _far.Y + 20f), ifv);
-                    Widen(_far.Y + 14f);
+                    Widen(_far.Y + 24f);
                     break;
                 case Scene.Interceptor:
                     // Rockets and a missile at the vehicles it guards: its laser burns them out of the air.
@@ -153,6 +154,7 @@ namespace MachineBrigade.Game.Rendering
                     break;
                 case Scene.Breach:
                     Obstacles();
+                    Widen(_far.Y + 10f);
                     break;
                 case Scene.Flares:
                     // An enemy air-defence vehicle fires SAMs at the aircraft: its flares pull them off.
@@ -214,6 +216,10 @@ namespace MachineBrigade.Game.Rendering
             var home = _start - new Vector2(0f, 2f);
             if (Vector2.Distance(_shooter.Position, home) < 2.5f)
             {
+                // A breather at the start before the next row goes up.
+                if (_homeAt < 0) _homeAt = _world.Time;
+                if (_world.Time - _homeAt < 3.0) return true;
+                _homeAt = -1;
                 Obstacles();
                 return true;
             }
@@ -268,7 +274,7 @@ namespace MachineBrigade.Game.Rendering
                 default:
                     return;
             }
-            _pulseAt = Time.unscaledTime + 1.5f;
+            _pulseAt = Time.unscaledTime + (_scene == Scene.Jammer ? 1f : 1.5f);
             var at = _views.TryGet(_shooter.Id, out var view) ? view.Position : new Vector3(_shooter.Position.X, 0f, _shooter.Position.Y);
             _effects.AbilityRing(new Vector3(at.x, 0.1f, at.z), size, colour);
         }

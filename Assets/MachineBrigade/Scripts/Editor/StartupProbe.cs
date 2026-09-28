@@ -36,6 +36,12 @@ namespace MachineBrigade.Editor
         private static FiringRange _range;
         private static Camera _rangeCamera;
         private static double _rangeTicked;
+
+        /// <summary>-mbProbeShots &lt;dir&gt; (a run with graphics): a frame of each range every half second of its time, as JPEGs.</summary>
+        private static string _shots;
+        private static RenderTexture _shotTexture;
+        private static float _rangeTime, _shotAt;
+        private static int _shot;
         private static readonly List<string> Errors = new();
         private static string _out;
         private static float _seconds = 20f;
@@ -55,6 +61,7 @@ namespace MachineBrigade.Editor
             _out = Arg("-mbProbeOut") ?? "probe.txt";
             if (float.TryParse(Arg("-mbProbeSeconds"), out var s)) _seconds = s;
             if (float.TryParse(Arg("-mbProbeRangeSeconds"), out var r)) _rangeSeconds = r;
+            _shots = Arg("-mbProbeShots");
             var range = Arg("-mbProbeRange");
             if (!string.IsNullOrEmpty(range)) Range.AddRange(range.Split('+'));
             Application.logMessageReceivedThreaded += OnLog;
@@ -114,6 +121,19 @@ namespace MachineBrigade.Editor
                 _range.Tick(dt);
                 var audio = Field(runner, "_audio") as MachineBrigade.Game.Audio.AudioDirector;
                 if (audio != null) audio.FocusOverride = _range.Look;
+                _rangeTime += dt;
+                if (_shots != null && _rangeTime >= _shotAt)
+                {
+                    _shotAt += 0.5f;
+                    _rangeCamera.Render();
+                    var frame = new Texture2D(_shotTexture.width, _shotTexture.height, TextureFormat.RGB24, false);
+                    RenderTexture.active = _shotTexture;
+                    frame.ReadPixels(new Rect(0, 0, frame.width, frame.height), 0, 0);
+                    frame.Apply(false);
+                    RenderTexture.active = null;
+                    File.WriteAllBytes(Path.Combine(_shots, $"{Range[_rangeIndex]}_{_shot++:00}.jpg"), frame.EncodeToJPG(85));
+                    UnityEngine.Object.DestroyImmediate(frame);
+                }
             }
             if (_rangeIndex >= 0 && now - _rangeStart >= _rangeSeconds)
             {
@@ -153,7 +173,19 @@ namespace MachineBrigade.Editor
                 _rangeCamera = new GameObject("Probe Range Camera").AddComponent<Camera>();
                 _rangeCamera.enabled = false;
                 _rangeCamera.transform.position = new Vector3(0f, -600f, 0f);
+                if (_shots != null)
+                {
+                    Directory.CreateDirectory(_shots);
+                    _shotTexture = new RenderTexture(640, 480, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+                    _rangeCamera.targetTexture = _shotTexture;
+                    _rangeCamera.cullingMask = 1 << 31;
+                    _rangeCamera.clearFlags = CameraClearFlags.SolidColor;
+                    _rangeCamera.backgroundColor = new Color(0.16f, 0.18f, 0.2f, 1f);
+                }
             }
+            _rangeTime = 0f;
+            _shotAt = 0.5f;
+            _shot = 0;
             _range?.Dispose();
             _range = new FiringRange(world.Catalog, Field(runner, "_materials") as MaterialLibrary, Field(runner, "_meshes") as MeshLibrary,
                 Field(runner, "_models") as ModelLibrary, _rangeCamera, 31, id);
@@ -171,6 +203,9 @@ namespace MachineBrigade.Editor
         private static void EndRange()
         {
             FiringRange.Log = null;
+            // The shooter's state at the end (why a vehicle might not be firing).
+            if (typeof(FiringRange).GetField("_shooter", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(_range) is MachineBrigade.Sim.Entities.Vehicle shooter)
+                Line($"  shooter alive {shooter.IsAlive}, order {shooter.Order.Kind} on {shooter.Order.Target}, target {shooter.Target}, stunned {shooter.Stunned}, moving {shooter.IsMoving}, at {shooter.Position}");
             _range?.Dispose();
             _range = null;
             MachineBrigade.Game.Audio.MusicDirector.Current?.Duck(1f);
