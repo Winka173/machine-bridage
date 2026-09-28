@@ -83,8 +83,8 @@ WALL_SLOTS = [
     ('small', 'tower', 5, [(52.0, 60.0), (60.0, 50.0), (78.0, 96.0), (96.0, 78.0), (46.0, 140.0), (140.0, 46.0),
                            (62.0, 80.0), (80.0, 62.0), (100.0, 140.0), (140.0, 100.0)]),
 ]
-OUTER_SMALL = 10
-OUTER_MEDIUM = 4
+OUTER_SMALL = 8
+OUTER_MEDIUM = 3
 
 # What may make way for the fortress's pieces outside the walls: the battlefield's clutter.
 CLUTTER = hardpoints.CAMP_CLUTTER
@@ -496,9 +496,21 @@ def fortify(L, name, theme, poly):
     if missing:
         raise SystemExit(f'{name} siege: with the gates shut and no hardpoints, unreachable from the attacker camp: {missing}')
     missing = F.missing(F.grid(gates=True))
-    # A piece that cuts a route off goes again (the latest first).
+    # A hardpoint that cuts a route off goes again: the one whose going opens it (the latest first).
     while missing and F.slots:
-        size, kind_, x, z, ring = F.slots.pop()
+        culprit = None
+        for k in range(len(F.slots) - 1, -1, -1):
+            size, kind_, x, z, ring = F.slots[k]
+            kept = F.blocks
+            F.blocks = [b for b in kept if (b[0], b[1]) != (x, z)]
+            still = F.missing(F.grid(gates=True))
+            F.blocks = kept
+            if len(still) < len(missing):
+                culprit = k
+                break
+        if culprit is None:
+            culprit = len(F.slots) - 1
+        size, kind_, x, z, ring = F.slots.pop(culprit)
         F.blocks = [b for b in F.blocks if (b[0], b[1]) != (x, z)]
         print(f'warning: {name} siege: {size} {kind_} hardpoint at ({x}, {z}) dropped: it cut off {missing}')
         missing = F.missing(F.grid(gates=True))
@@ -640,9 +652,9 @@ def outer_works(F, c, half):
         return False
 
     # Relays: in the middle and on either flank, well behind the line.
-    for base in (-85.0, 0.0, 85.0):
+    for base in (-50.0, 0.0, 50.0):
         placed = False
-        for t, off in ((tt, oo) for tt in (base, base * 0.8, base * 1.2, base * 0.6) for oo in (26.0, 34.0, 18.0, 44.0, 54.0)):
+        for t, off in ((tt, oo) for tt in (base, base * 0.8, base * 1.2, base * 0.6) for oo in (22.0, 30.0, 16.0, 40.0, 50.0)):
             x, z = at(t, off)
             spot = F.spot(x, z, 9.2, reach=18.0, clear=True, gap=3.0, road=1.0) if outline_tools.inside(F.poly, x, z) else None
             if spot and L.put('radar_station', *spot, 0, pad=0.5):

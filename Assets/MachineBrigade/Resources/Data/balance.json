@@ -700,7 +700,7 @@
     { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 9,  "tier": "Huge", "length": 55, "damageType": "Fire" },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
     // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).
-    { "id": "super_gun_shell",   "kind": "Barrage",       "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 620, "blast": 15, "tier": "Ultimate" },
+    { "id": "super_gun_shell",   "kind": "Barrage",       "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 450, "blast": 15, "tier": "Ultimate" },
     { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 210, "blast": 8, "tier": "Huge", "length": 70 },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },

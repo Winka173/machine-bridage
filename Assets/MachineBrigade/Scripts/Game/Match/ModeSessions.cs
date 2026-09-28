@@ -454,9 +454,9 @@ namespace MachineBrigade.Game.Match
         {
             var hard = Difficulty == AiDifficulty.Hard;
             var easy = Difficulty == AiDifficulty.Easy;
-            var defender = PlayerSide(24f, 1.2f);
-            defender.ArmyCap = 36;
-            var attacker = EnemySide(26f, hard ? 1.6f : easy ? 1.15f : 1.35f, Difficulty, world.Catalog);
+            var defender = PlayerSide(30f, 1.35f);
+            defender.ArmyCap = 38;
+            var attacker = EnemySide(22f, hard ? 1.45f : easy ? 1f : 1.2f, Difficulty, world.Catalog);
             attacker.ArmyCap = 40;
             _mode = new SiegeMode(new SiegeRules
             {
@@ -612,26 +612,37 @@ namespace MachineBrigade.Game.Match
         protected override void Build(SimWorld world, int seed)
         {
             // The attacker has the bigger purse (a siege needs numbers); the fortress has its guns.
-            var attacker = PlayerSide(34f, 1.8f);
-            attacker.ArmyCap = 40;
+            var attacker = PlayerSide(38f, 2.4f);
+            attacker.ArmyCap = 44;
             attacker.Bank = 40f;
+            // The fortress holds its ground with its towers and a modest garrison (its reinforcements come by its line).
+            var defender = EnemySide(Difficulty == AiDifficulty.Hard ? 18f : 12f, Difficulty switch { AiDifficulty.Hard => 0.85f, AiDifficulty.Easy => 0.45f, _ => 0.6f },
+                Difficulty, world.Catalog);
+            defender.ArmyCap = Difficulty == AiDifficulty.Hard ? 34 : 26;
             // The time bank: harder sieges start with less on the clock.
-            var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
+            var start = Difficulty switch { AiDifficulty.Hard => 420f, AiDifficulty.Easy => 540f, _ => 480f };
             _mode = new SiegeMode(new SiegeRules
             {
-                StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.05f : 0.85f, Difficulty, world.Catalog),
+                StartSeconds = start, StageBonus = new[] { 360f, 360f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
+                Hardening = 1.5f, LineHealth = new[] { 1f, 1.15f, 1.25f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
+                // An easier fortress leaves some of its outer hardpoints empty.
+                Manning = Difficulty switch { AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.75f },
+                Attacker = attacker, Defender = defender,
                 AttackerBase = PlayerProfile.BaseLoadout,
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
                 FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
-            var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
-            defender.DefendPoint = _mode.Fortress;
+            var garrison = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
+            garrison.DefendPoint = _mode.Fortress;
             var player = AddPlayerCommander(_mode, seed);
-            // The army blows in a gate when the objective is behind walls nobody has broken yet.
+            // The army blows in a gate when the objective is behind walls nobody has broken yet,
+            // brings the guns a siege needs, and shoots up the fortress's buildings for their bounties.
             player.Goal = w => _mode.AttackGoal(w);
             player.Demolish = w => _mode.AttackTarget(w);
+            player.Plunder = _ => _mode.BountyTargets;
+            player.RoleMix = ConquestAi.SiegeMix;
         }
 
         public override void SetNight(bool night) => _mode.Night = night;

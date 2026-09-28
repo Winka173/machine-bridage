@@ -122,6 +122,16 @@ namespace MachineBrigade.Sim.Modes
 
         public float[] LineDamage { get; set; } = { 1f, 1.1f, 1.2f };
 
+        /// <summary>The share of the outer line's and the walls' tower hardpoints that are manned (an easier fortress leaves some empty).</summary>
+        public float Manning { get; set; } = 1f;
+
+        /// <summary>
+        /// Whether the fortress's side can fly destroyed towers back into their hardpoints (null: only
+        /// when the fortress is the player's, in Defend; an AI fortress that rebuilt its keep under
+        /// fire never fell).
+        /// </summary>
+        public bool? Rebuild { get; set; }
+
         /// <summary>The gates (blocking until blown in) and the wall segments (toppling into rubble).</summary>
         public string Gate { get; set; } = "fortress_gate";
 
@@ -346,9 +356,13 @@ namespace MachineBrigade.Sim.Modes
             {
                 var loadout = _rules.FortressLoadout ?? BaseLoadout.ForAi(world.Catalog, "Normal");
                 var role = _rules.PlayerDefends ? BaseRole.Defend : BaseRole.Target;
-                var fortressBase = world.Bases.EstablishFortress(Defender, loadout, role, hqAt, _fortress.Slots, _rules.LineHealth, _rules.LineDamage);
+                var fortressBase = world.Bases.EstablishFortress(Defender, loadout, role, hqAt, _fortress.Slots, _rules.LineHealth, _rules.LineDamage, _rules.Manning);
+                var rebuild = _rules.Rebuild ?? _rules.PlayerDefends;
                 foreach (var slot in fortressBase.Slots)
+                {
                     if (slot.Structure.IsValid) _defences[Math.Clamp(slot.Ring, 1, 3) - 1].Add(slot.Structure);
+                    if (!rebuild) slot.Lost = true;
+                }
             }
             // An older map's fortress: its guns are map units.
             foreach (var v in world.VehicleList)
@@ -464,7 +478,7 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>
         /// Only the current stage's objectives can be hurt; later ones are shielded. The dome keeps
-        /// the keep's guns from harm while a generator stands.
+        /// the keep's guns from harm, and silent, while a generator stands.
         /// </summary>
         private void Shield(SimWorld world)
         {
@@ -475,8 +489,13 @@ namespace MachineBrigade.Sim.Modes
                 if (world.TryGetProp(id, out var p)) p.Invulnerable = Stage < 2;
             foreach (var id in _targets)
                 if (world.TryGetProp(id, out var p)) p.Invulnerable = Stage < 3 || glyph;
+            // Under the dome the keep's guns can neither be hurt nor fire out: the fight for the keep comes with stage three.
             foreach (var id in _defences[2])
-                if (world.TryGetVehicle(id, out var v)) v.Invulnerable = glyph || DomeUp;
+                if (world.TryGetVehicle(id, out var v))
+                {
+                    v.Invulnerable = glyph || DomeUp;
+                    v.HoldFire = DomeUp;
+                }
         }
 
         private static int Alive(SimWorld world, List<EntityId> props)
@@ -527,11 +546,15 @@ namespace MachineBrigade.Sim.Modes
             return MathF.Min(1f, (Stage - 1 + part) / 3f);
         }
 
-        /// <summary>What the attacking army should knock down now: the current stage's nearest standing objective.</summary>
+        /// <summary>
+        /// What the attacking army should knock down now: the current stage's standing objective
+        /// nearest the attacking army (its camp before it has one), so it works along the line
+        /// instead of marching back and forth across it.
+        /// </summary>
         public EntityId Target(SimWorld world)
         {
             var list = Stage switch { 1 => _relays, 2 => _generators, _ => _targets };
-            var from = world.TryGetRally(Attacker, out var rally) ? rally : Vector2.Zero;
+            var from = TryAttackerCentre(world, out var army) ? army : world.TryGetRally(Attacker, out var rally) ? rally : Vector2.Zero;
             var best = EntityId.None;
             var nearest = float.MaxValue;
             foreach (var id in list)

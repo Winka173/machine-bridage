@@ -202,10 +202,11 @@ namespace MachineBrigade.Sim.Modes
         /// loadout, its towers over again where the fortress has more hardpoints than the loadout has
         /// towers (<see cref="BaseLoadout.TowerForFortress"/>), each utility module once. A ring's
         /// towers are <paramref name="health"/> and <paramref name="damage"/> times the usual (by
-        /// ring, 1 up): the inner lines are the stronger. The modules work round the command HQ.
+        /// ring, 1 up): the inner lines are the stronger. With <paramref name="manning"/> under 1 only
+        /// that share of the outer rings' tower hardpoints is filled. The modules work round the command HQ.
         /// </summary>
         public TeamBase EstablishFortress(int team, BaseLoadout loadout, BaseRole role, Vector2 hq, IReadOnlyList<FortressSlotDef> slots,
-            IReadOnlyList<float>? health = null, IReadOnlyList<float>? damage = null)
+            IReadOnlyList<float>? health = null, IReadOnlyList<float>? damage = null, float manning = 1f)
         {
             var catalog = _world.Catalog;
             var fitted = loadout.Fitted(catalog);
@@ -222,6 +223,8 @@ namespace MachineBrigade.Sim.Modes
                     Ring = ring, HealthScale = ByRing(health, ring), DamageScale = ByRing(damage, ring),
                 };
                 var id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
+                // An undermanned fortress (an easier one) leaves some tower hardpoints of its outer rings empty, spread evenly.
+                if (def.Kind == HardpointKind.Tower && ring < 3 && manning < 1f && Unmanned(i, manning)) id = null;
                 if (id != null && def.Kind == HardpointKind.Tower && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
                 if (id != null && catalog.Vehicles.ContainsKey(id)) state.Tower = id;
                 b.Slots.Add(state);
@@ -230,6 +233,9 @@ namespace MachineBrigade.Sim.Modes
                 if (slot.Tower != null) Raise(b, slot);
             return b;
         }
+
+        /// <summary>Whether the <paramref name="index"/>-th hardpoint stays empty when only <paramref name="manning"/> of them are filled (evenly spread).</summary>
+        private static bool Unmanned(int index, float manning) => MathF.Floor((index + 1) * manning) == MathF.Floor(index * manning);
 
         private static float ByRing(IReadOnlyList<float>? scale, int ring) =>
             scale == null || scale.Count == 0 ? 1f : scale[Math.Clamp(ring - 1, 0, scale.Count - 1)];
