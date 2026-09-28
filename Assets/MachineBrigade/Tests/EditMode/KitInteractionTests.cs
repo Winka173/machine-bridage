@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Game.Hud;
+using MachineBrigade.Game.Match;
+using MachineBrigade.Sim.Content;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.TestFramework;
@@ -68,6 +70,52 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(UiLayoutTests.Shown(disabled.Q<Label>(className: "fc-btn__reason")), "the reason shows under the label");
             Assert.Throws<ArgumentException>(() => new KitButton(ButtonTier.Secondary, "X", null).Disable(""));
             Assert.Throws<ArgumentException>(() => _ = new KitIconButton("close", " ", null));
+        }
+
+        /// <summary>
+        /// Test feedback 2 (DECISIONS 12E): the home screen's mode picker lists Boss Rush with its line,
+        /// and a tap on it sets the battle Deploy starts (Deploy starts the picker's mode).
+        /// </summary>
+        [Test]
+        public void TheSetupModePickerOffersBossRush()
+        {
+            var mode = MatchSettings.Mode;
+            var vietnamese = Strings.Vietnamese;
+            DemoProfile.Use();
+            try
+            {
+                Strings.Vietnamese = true;
+                var host = new VisualElement();
+                host.AddToClassList("hud");
+                host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+                host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
+                var menu = new MenuScreen(GameContent.LoadCatalog(), () => { });
+                host.Add(menu.Root);
+                Mount(host);
+                menu.DebugShow("home");
+                simulate.FrameUpdate();
+                var drop = host.Query<KitDropdown>().ToList().First(d => d.Q<Label>(className: "fc-dropdown__label").text == Kit.Caps(Strings.Get("setup.mode")));
+                simulate.Click(drop);
+                simulate.FrameUpdate();
+                var rows = rootVisualElement.Query(className: "fc-option").ToList();
+                Assert.IsNotEmpty(rows, "the mode list opened");
+                var row = rows.FirstOrDefault(r => r.Query<Label>().ToList().Any(l => l.text == Strings.Get("mode.bossrush")));
+                Assert.IsNotNull(row, "Boss Rush is in the list: " + string.Join(", ", rows.Select(r => r.Q<Label>()?.text)));
+                StringAssert.Contains(Strings.Format("mode.bossrushSub", MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count),
+                    string.Join("|", row.Query<Label>().ToList().Select(l => l.text)), "with its line");
+                row.GetFirstAncestorOfType<ScrollView>()?.ScrollTo(row);
+                for (var i = 0; i < 2; i++) simulate.FrameUpdate();
+                simulate.Click(row);
+                simulate.FrameUpdate();
+                Assert.AreEqual(GameModeKind.BossRush, MatchSettings.Mode, "picked");
+                Assert.AreEqual(Strings.Get("mode.bossrush"), drop.Q<Label>(className: "fc-dropdown__value").text, "the picker shows it");
+            }
+            finally
+            {
+                MatchSettings.Mode = mode;
+                Strings.Vietnamese = vietnamese;
+                DemoProfile.Restore();
+            }
         }
     }
 }
