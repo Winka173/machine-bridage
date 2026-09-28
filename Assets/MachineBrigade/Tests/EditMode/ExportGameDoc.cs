@@ -106,6 +106,7 @@ namespace MachineBrigade.Tests
                     ["id"] = w.Id, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
                     ["cooldown"] = w.Cooldown, ["range"] = w.Range, ["minRange"] = w.MinRange, ["splash"] = w.SplashRadius,
                     ["targets"] = w.Targets.ToString(), ["dps"] = raw, ["projectile"] = w.Projectile.ToString(),
+                    ["clip"] = w.Clip, ["clipReload"] = w.ClipReload, ["speed"] = w.ProjectileSpeed,
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,

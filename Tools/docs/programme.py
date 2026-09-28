@@ -21,7 +21,7 @@ def campaign(game, h):
     goal_vi = dict(h['GOAL_VI'], **GOAL_VI_EXTRA)
     out = ["<div class='section'><h2>3. Chiến dịch</h2>"
            "<p><b>Bối cảnh:</b> tương lai gần, một vùng duyên hải hư cấu. Tập đoàn quân sự tư nhân <b>Hegemon</b> chiếm vùng này và chạy các chương trình "
-           "vũ khí thử nghiệm: Behemoth, Tổ Ong và dự án Silver Bug. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
+           "vũ khí thử nghiệm: Behemoth, Tổ Ong và dự án Bọ Bạc. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
            f"<p><b>Cấu trúc:</b> {len(game['chapters'])} chương trong 3 hồi, {len(game['campaign'])} nhiệm vụ "
            f"({sum(1 for m in game['campaign'] if not m['side'])} chính, {sum(1 for m in game['campaign'] if m['side'])} phụ). Mỗi chương có 10 nhiệm vụ chính "
            "và 2 nhiệm vụ phụ; nhiệm vụ 5 là boss giữa chương, nhiệm vụ 10 là chiến dịch lớn nhiều giai đoạn (15–25 phút, riêng trận cuối game tới 30 phút). "
@@ -221,6 +221,62 @@ def boss_parts(v, h):
             + f"<p class='muted'>{'; '.join(notes)}.</p>" + tip)
 
 
+def feedback(game, h):
+    """The fixes after the owner's play test (2026-09-28, DECISIONS 11A-11D)."""
+    e = h['esc']
+    missiles = [('Tên lửa chống tăng (TOW, Ataka...)', '36 → 24', '0,94 → 1,42 s ở 34 m'), ('Kornet', '38 → 25', '1,32 → 2,0 s ở 50 m'),
+                ('Hellfire và cùng lớp', '45 → 30', '0,76 → 1,13 s ở 34 m'), ('Vikhr (Ka-52)', '50 → 34', '1,1 → 1,62 s ở 55 m'),
+                ('Maverick, Kh-29', '50 → 32', '0,8 → 1,25 s ở 40 m'), ('Phòng không tầm ngắn (SAM, Stinger, Igla-V)', '60 → 40', '0,73 → 1,1 s ở 44 m'),
+                ('Phòng không tầm xa', '72 → 46', '1,39 → 2,17 s ở 100 m'), ('48N6', '95 → 62', '1,0 → 1,53 s'),
+                ('Không đối không (AIM-9, R-60...)', '74 → 48', '0,81 → 1,25 s ở 60 m'), ('Tên lửa hành trình, JASSM', '30 → 20', '3,7 → 5,5 s ở 110 m'),
+                ('Rocket bắn thẳng (6 loại)', '75 → 60', '0,45 → 0,57 s ở 34 m')]
+    rhythm = [('Pháo máy bay cường kích', 'loạt 10 viên, hồi 3,57 s', 'luồng 20 viên/s, băng 70, thay 1 s', '101 → 100'),
+              ('Gatling GAU (A-10)', 'loạt 14 viên', 'luồng 25 viên/s, băng 90, thay 1 s', '190 → 190'),
+              ('Pháo tiêm kích', 'loạt 8 viên', 'luồng 20 viên/s, băng 70, thay 1 s', '54 → 54,5'),
+              ('GSh-30K', 'loạt 6 viên', 'luồng 12,5 viên/s, băng 30, thay 1,2 s', '73,8 → 73,7'),
+              ('Pháo 25 mm máy bay pháo', 'súng máy', 'luồng 16,7 viên/s, băng 50, thay 1,2 s', '45 → 45'),
+              ('Pháo tự động 25 mm (xe bọc thép)', 'loạt 3, hồi 1,29 s', 'luồng 5 viên/s, băng 12, thay 1,6 s', '44 → 46,5'),
+              ('Pháo tự động 30 mm (IFV)', 'loạt 3', 'luồng 5 viên/s, băng 10, thay 1,8 s', '52,8 → 59,7'),
+              ('Pháo đôi 30 mm (BMPT)', 'loạt 4', 'luồng 6,7 viên/s, băng 16, thay 1,6 s', '74 → 84,5'),
+              ('Súng máy', 'hồi 0,16–0,22 s', 'hồi 0,1–0,13 s, viên nhẹ hơn', 'gần như giữ nguyên')]
+    clips = [('Xe gây nhiễu', 'tên lửa của địch bắn vào xe tăng bên cạnh bị mất khóa, bay lệch; vòng tím nhấp nháy'),
+             ('Iron Beam', 'đốt rơi rocket và tên lửa bắn vào xe nó bảo vệ; bắn cả trực thăng'),
+             ('Xe công binh', 'sửa hai xe tăng bị thương'), ('Xe đặc công', 'gia cố tháp canh bị hỏng'),
+             ('Xe chỉ huy', 'xe tăng trong vùng hào quang bắn nhanh hơn; vòng vàng'),
+             ('Radar phản pháo', 'cối địch bắn là bị lộ (chấm đỏ), cối ta bắn trả'),
+             ('Xe ủi bọc thép', 'ủi phẳng một hàng răng rồng'),
+             ('Máy bay, trực thăng', 'xe phòng không địch bắn, pháo sáng kéo tên lửa đi'),
+             ('IFV, xe thả khói', 'địch áp sát thì thả màn khói'), ('Drone trinh sát', 'đánh dấu mọi mục tiêu thấy được'),
+             ('EMP, vòm khiên', 'EMP làm im xe tăng đang bắn; vòm khiên đỡ đạn cho xe bên trong')]
+    return ("<div class='section'><h2>16b. Sửa sau buổi chơi thử (28/9)</h2>"
+            "<p>Chủ dự án chơi thử bản phase 1-9 và báo 16 lỗi; bốn nhóm sửa song song, mỗi nhóm có bài kiểm tra riêng và chạy thử chế độ Play (0 lỗi).</p>"
+            "<h3>Nòng súng và đường đạn</h3><ul>"
+            "<li><b>Đạn ra lệch nòng:</b> nguyên nhân là hiệu ứng bắn được đặt khi xe còn ở tư thế của khung hình trước (lệch tới 2,4 m ở trực thăng, 4,7 m ở máy bay). "
+            "Giờ đạn, chớp lửa và vệt khói xuất phát từ đầu nòng đúng như được vẽ trong khung hình đó, ở mọi hướng thân, tháp pháo, góc nâng và tư thế bay: đo được 0,000 m trên 400 phát.</li>"
+            "<li><b>Đạn pháo, cối:</b> bay trên một đường cong duy nhất ra khỏi nòng theo hướng nòng; đạn, vệt khói và điểm bắt đầu khớp nhau suốt đường bay.</li>"
+            "<li><b>Kích thước:</b> tên lửa chống tăng và vác vai ×1,1; rocket ×1,15; không đối đất, phòng không, không đối không, hành trình ×1,2; drone ×2.</li></ul>"
+            "<h3>Vũ khí</h3><ul>"
+            "<li><b>Mục tiêu:</b> xe chuyên phòng không (và tháp phòng không) giữ vũ khí chính bắn máy bay và ngóc nòng lên theo máy bay; xe khác chỉ bắn máy bay bằng súng máy. "
+            "Đổi sang chỉ bắn mặt đất: pháo 25 mm (xe bọc thép, tổ súng của tháp canh), pháo 30 mm (IFV, APC tinh nhuệ), pháo đôi BMPT, Vikhr của Ka-52, tên lửa của boss.</li>"
+            "<li><b>Nhịp bắn:</b> cơ chế băng đạn mới (bắn liên tục theo mục tiêu rồi thay băng), DPS giữ như cũ.</li></ul>"
+            + h['table'](['Tên lửa', 'Tốc độ (m/s)', 'Thời gian bay'], [[e(a), b, c] for a, b, c in missiles])
+            + h['table'](['Vũ khí', 'Trước', 'Sau', 'DPS'], [[e(a), e(b), e(c), e(d)] for a, b, c, d in rhythm])
+            + "<p class='muted'>Máy bay cường kích bắn một luồng 1–1,4 giây mỗi lượt bổ nhào (trước 0,45–0,55 s); muốn đủ 3–4 giây mỗi lượt cần tầm pháo xa hơn hoặc bổ nhào chậm hơn: chờ chủ dự án quyết.</p>"
+            "<h3>Vụ nổ, lửa, laser</h3><ul>"
+            "<li><b>Nổ đạn tăng:</b> công thức riêng (chớp sáng, cầu lửa và cầu lửa thứ hai, tia lửa, khói đen, bụi, mảnh kim loại); tăng nhẹ ×1,3, tăng chủ lực và diệt tăng ×1,4, tăng nặng và siêu nặng ×1,5.</li>"
+            "<li><b>Bom:</b> GBU-12, bom chùm, napalm ×1,3; ném bom rải thảm ×1,45; FAB-500, JDAM, Mk 84 ×1,5. Tên lửa hành trình và MOAB: vòng sóng xung kích bằng đúng bán kính sát thương (18 m và 27 m).</li>"
+            "<li><b>Giữ chất lượng khi phóng to:</b> thêm nhiều hạt hơn thay vì phóng to từng hạt (khung ảnh 128 px), chớp sáng không còn bị mặt đất cắt; đồ họa Thấp giữ 40% phần hạt thêm.</li>"
+            "<li><b>Xe phun lửa:</b> luồng lửa cam dày loang dần, cầu lửa napalm phồng khi bay và bốc lên ở mục tiêu, lửa đứng thẳng, hơi nóng, than hồng, khói đen dày hơn.</li>"
+            "<li><b>Iron Beam:</b> tia la-de liên tục có lõi trắng, quầng đỏ cam, nạp năng lượng 0,22 s, điểm cháy trắng, tia lửa và giọt kim loại nóng chảy, lưu sáng 0,28 s.</li></ul>"
+            "<h3>Menu, âm thanh, clip Xem bắn</h3><ul>"
+            "<li><b>Giật lúc mở game:</b> màn chờ chưa hiện ở lần mở đầu tiên nên người chơi thấy quá trình dựng (khung đầu 3,2 giây). Giờ màn chờ che từ khung đầu, âm thanh nạp trước; "
+            "5 giây đầu sau màn chờ không khung nào quá 33 ms (đo trên editor).</li>"
+            "<li><b>Nhạc:</b> một trình phát nhạc cho cả phiên, chuyển bài có crossfade 2 giây; menu không còn tiếng súng nổ của trận nền (chỉ gió nhẹ); clip Xem bắn nhỏ tiếng hơn và hạ nhạc.</li>"
+            "<li><b>Clip Xem bắn thể hiện kỹ năng đặc biệt:</b></li></ul>"
+            + h['table'](['Phương tiện', 'Clip cho thấy'], [[e(a), e(b)] for a, b in clips])
+            + "</div>")
+
+
 def testing(game, h):
     """Section: tests and what the testing phase still has to measure."""
     items = [
@@ -231,6 +287,9 @@ def testing(game, h):
         'Trang bị: độ chênh giữa các nhóm vũ khí (mục tiêu ≤ 1,5 lần), Nạp kép trên pháo tự động và giàn rocket, đầu đạn chùm lên công trình, cầu tuyết sau trần hoàn CP.',
         'Boss: thời gian hạ trong +15% sau khi có bộ phận; mọi trận boss và Săn trùm thắng được.',
         'Hiệu năng: ngân sách tick đo lại trên máy yên tĩnh và điện thoại yếu thật; FPS trận boss nặng nhất ở mức đồ họa Thấp; đảo và đầm lầy (2.500 vật thể).',
+        'Sau buổi chơi thử: khả năng thắng chiến dịch và trận boss khi súng chính xe thường không còn bắn máy bay; thời gian hạ tăng của máy bay cường kích và A-10 với nhịp bắn mới; '
+        'tỷ lệ trúng của tên lửa chậm hơn khi có pháo sáng và APS; FPS khi nhiều tên lửa hành trình hoặc ném bom rải thảm cùng lúc ở đồ họa Thấp; khung hình những giây đầu trên điện thoại thật.',
+        'Giao diện: FPS của HUD mới ở đồ họa Thấp; vùng an toàn trên máy tai thỏ và đục lỗ thật; toàn bộ bài kiểm tra EditMode.',
     ]
     return ("<div class='section'><h2>17. Kiểm thử và phép đo còn lại</h2>"
             "<p>Bài kiểm tra tự động chạy trong Unity (EditMode): mô phỏng xác định, nên mỗi luật có bài riêng (điểm lưu phát lại khớp tuyệt đối, phản bội không làm lỗi AI, "
