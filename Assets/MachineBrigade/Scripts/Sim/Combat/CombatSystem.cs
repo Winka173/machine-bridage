@@ -600,15 +600,18 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// Another secondary magazine gun of the vehicle could open up now and has been quiet longer
-        /// than mount <paramref name="index"/> (test feedback 2: the guns share the gaps between heavy rounds).
+        /// Another secondary magazine gun of the vehicle, at least as strong, could open up now and has
+        /// been quiet longer than mount <paramref name="index"/> (test feedback 2: a tank's coaxial and
+        /// roof guns share the gaps between main-gun rounds; the headquarters' two flak guns take turns
+        /// and its small coaxial gun only fills in, as before).
         /// </summary>
         private bool QuieterGunReady(Vehicle v, int index)
         {
             var mine = v.Weapons[index].LastRoundAt;
+            var strength = v.Arms[index].SustainedDps;
             for (var i = 0; i < v.Weapons.Length; i++)
             {
-                if (i == index || v.Arms[i].Clip <= 0 || Leads(v, i) || !v.MountWorks(i)) continue;
+                if (i == index || v.Arms[i].Clip <= 0 || Leads(v, i) || !v.MountWorks(i) || v.Arms[i].SustainedDps < strength) continue;
                 var other = v.Weapons[i];
                 if (other.LastRoundAt >= mine || other.Ammo == 0 || other.Cooldown > 0f) continue;
                 var id = i == 0 ? v.Target : other.Target;
