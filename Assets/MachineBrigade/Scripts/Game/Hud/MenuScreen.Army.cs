@@ -30,6 +30,7 @@ namespace MachineBrigade.Game.Hud
             Towers,
             Equipment,
             Base,
+            Outpost,
         }
 
         private enum CardFilter
@@ -62,11 +63,12 @@ namespace MachineBrigade.Game.Hud
         private GearItem _gearSelected;
         private GearSlot? _slotFilter;
         private BaseScreen _base;
+        private OutpostScreen _outpost;
 
         private void BuildArmyPage()
         {
             var page = TabPage(Tab.Army, "fc-page--opaque fc-army");
-            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.towers"), Strings.Get("army.equipment"), Strings.Get("army.base") }, 0, i =>
+            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.towers"), Strings.Get("army.equipment"), Strings.Get("army.base"), Strings.Get("army.outpost") }, 0, i =>
             {
                 _armyView = (ArmyView)i;
                 Refresh();
@@ -139,6 +141,11 @@ namespace MachineBrigade.Game.Hud
             _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh) { OpenDetail = OpenDetail };
             _base.Root.AddToClassList("fc-army__base");
             page.Add(_base.Root);
+
+            // Outpost (prompt 14 H: its own tab beside the base) ---------------------------------------------
+            _outpost = new OutpostScreen(_catalog, (text, warn) => Note(text, warn)) { OpenDetail = OpenDetail };
+            _outpost.Root.AddToClassList("fc-army__base");
+            page.Add(_outpost.Root);
         }
 
         private static KitBranch BranchOf(CardFilter filter) => filter switch
@@ -206,12 +213,15 @@ namespace MachineBrigade.Game.Hud
             _towersView.style.display = _armyView == ArmyView.Towers ? DisplayStyle.Flex : DisplayStyle.None;
             var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
             _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
-            // Leaving the base (another view, tab or page) saves what was changed there.
+            _outpost.Root.style.display = _armyView == ArmyView.Outpost ? DisplayStyle.Flex : DisplayStyle.None;
+            // Leaving the base (another view, tab or page) lets a drag or a pick go (changes are saved as they are made).
             if (!onBase) _base.Leave();
+            if (!(_tab == Tab.Army && _armyView == ArmyView.Outpost && _overlays.Count == 0)) _outpost.Leave();
             if (_tab != Tab.Army) return;
             if (_armyView == ArmyView.Deck) RefreshDeck();
             else if (_armyView == ArmyView.Towers) RefreshTowers();
             else if (_armyView == ArmyView.Equipment) RefreshGear();
+            else if (_armyView == ArmyView.Outpost) _outpost.Refresh();
             else _base.Refresh();
         }
 

@@ -270,6 +270,7 @@ namespace MachineBrigade.Game.Hud
                 return true;
             }
             if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Base && _base.Back()) return true;
+            if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Outpost && _outpost.Back()) return true;
             if (_overlays.Count > 0)
             {
                 CloseTop();
@@ -577,7 +578,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
@@ -610,8 +611,21 @@ namespace MachineBrigade.Game.Hud
                 case "army-towers":
                 case "army-gear":
                 case "army-base":
-                    _armyView = screen switch { "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, _ => ArmyView.Base };
+                case "army-outpost":
+                    _armyView = screen switch
+                    {
+                        "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
+                        _ => ArmyView.Base,
+                    };
                     ShowTab(Tab.Army);
+                    break;
+                case "army-base-picked":
+                case "army-base-ranges":
+                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown.
+                    _armyView = ArmyView.Base;
+                    ShowTab(Tab.Army);
+                    if (screen == "army-base-ranges") _base.ToggleRanges();
+                    else _base.DebugPickFilled();
                     break;
                 case "detail":
                 case "detail-action":

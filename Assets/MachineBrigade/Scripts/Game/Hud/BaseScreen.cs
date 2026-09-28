@@ -10,15 +10,24 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The base loadout screen (the Army tab's Base view), in the Field Command style: along the
-    /// top the HQ level (1-5, what it opens), the map and Save; the tower cards down the left;
-    /// in the middle the map's camp from above, front up, with the HQ and every hardpoint as a
-    /// frame sized by its class with its size icon (closed ones greyed, utility ones "soon"); on
-    /// the right the picked tower card's branch choice and gear, and the outpost's two towers.
-    /// Towers are dragged onto a slot (only the slots they fit light up) or tapped and then
-    /// placed with a tap; a placed tower is dragged to another slot or back onto the list. The
-    /// rules live in <see cref="BaseLayout"/>; Save writes the layout to the profile (leaving
-    /// the view saves too).
+    /// The Army tab's Base view (prompt 14, rebuilt on the Field Command 2.0 kit):
+    /// <list type="bullet">
+    /// <item><description>along the top, the HQ's level and what the next one opens, the map picker (its picture,
+    /// and a mark on maps set up on their own or where the plan does not fit exactly), the three saved plans, and
+    /// Auto-arrange; every change saves at once and a small "Saved" shows;</description></item>
+    /// <item><description>down the left, the tower tray by size (<see cref="TowerTray"/>);</description></item>
+    /// <item><description>in the middle the camp from above (<see cref="CampMap"/>): the map's picture, the enemy's
+    /// ways in, every slot at its real place sized by class, utility slots as hexagons, the range cover on
+    /// request, zoom and pan with two fingers;</description></item>
+    /// <item><description>on the right the picked slot or tower: its render, name, size and rank, its numbers
+    /// against the towers of its size, its range, its branch and gear, Replace, Remove and its detail page; with
+    /// nothing picked, how to lay a base out and how it stands;</description></item>
+    /// <item><description>along the bottom the base's cover (like the deck's), its strength (the number the Defend
+    /// and Endless waves scale with, <see cref="BaseStrength"/>) and the slots in words.</description></item>
+    /// </list>
+    /// The base is a plan by place for every map (<see cref="BasePlan"/>, prompt 14 G); a map can be set up on its
+    /// own. Towers are dragged onto a slot or tapped and then placed with a tap; only the slots they fit light up.
+    /// The outpost has its own view (<see cref="OutpostScreen"/>).
     /// </summary>
     internal sealed class BaseScreen
     {
@@ -33,61 +42,66 @@ namespace MachineBrigade.Game.Hud
 
         private static readonly GearSlot[] TowerSlots = { GearSlot.TowerWeapon, GearSlot.TowerStructure, GearSlot.TowerSystems };
 
-        /// <summary>The Gear tab's slot whose pieces are listed (-1: none).</summary>
-        private int _gearOpen = -1;
-
         /// <summary>How far (panel pixels) a press travels before it turns into a drag.</summary>
         private const float DragStart = 12f;
 
-        /// <summary>A hardpoint frame on the diagram or in the outpost box.</summary>
+        /// <summary>The largest a small slot's face may be, in metres of the map (medium 1.4 times, large twice: prompt 14 B3).</summary>
+        internal const float SmallFaceMetres = 12f;
+
+        /// <summary>The HQ mark's size to a small slot's.</summary>
+        internal const float HqRatio = 1.6f;
+
+        /// <summary>The face sizes' ratio to a small slot's: medium, large, a utility hexagon.</summary>
+        internal const float MediumRatio = 1.4f, LargeRatio = 2f, UtilityRatio = 1.4f;
+
+        /// <summary>A slot of the camp on the map.</summary>
         internal sealed class SlotView
         {
             public VisualElement Element;
-            public IconElement Icon;
-            public Label Caption;
-            public LoadoutSlot Slot;
-            public bool Open;
+            public SlotFace Face;
+            public int Hardpoint;
+            public PlaceKey Key;
+            public SlotSize Size;
             public bool Utility;
-            public int Hardpoint = -1;
-            public Vector2 World;
-            public float Facing;
+            public bool Open;
+            public UnityEngine.Vector2 Picture;
+
+            /// <summary>The loadout place this slot reads (for the fit rules).</summary>
+            public LoadoutSlot Slot => Utility ? LoadoutSlot.Utility(0, Size) : LoadoutSlot.Tower(Size, 0);
         }
 
         private readonly Catalog _catalog;
         private readonly Action<string, bool> _note;
         private readonly Action _changed;
-        private readonly Dictionary<string, MapDefinition> _maps = new();
-        private readonly List<string> _towers, _modules;
+        private readonly List<SlotView> _slots = new();
+        private readonly TowerTray _tray;
+        private readonly CampMap _map;
+        private readonly VisualElement _panelBody, _strip, _hq, _saved, _mapBox, _legend, _dropHost;
+        private readonly Label _hqTitle, _hqNext;
+        private readonly List<(KitChip chip, int plan)> _planChips = new();
+        private readonly KitChip _customChip, _rangeChip;
+        private VisualElement _hqMark;
+        private KitDropdown _mapDrop;
+        private readonly VisualElement _ghost;
+        private readonly IconElement _ghostIcon;
+        private IVisualElementScheduledItem _savedHide;
 
-        /// <summary>Whether the catalog has utility modules; without any the utility slots show as "soon".</summary>
-        private readonly bool _hasModules;
-        private readonly List<SlotView> _campViews = new(), _outpostViews = new();
-        private readonly List<(VisualElement row, string id)> _rows = new();
-        private readonly List<(VisualElement button, int level)> _levelButtons = new();
-        private readonly List<(VisualElement button, PanelTab tab)> _tabButtons = new();
-        private readonly Dictionary<SlotSize, Label> _legendCounts = new();
-
-        private VisualElement _left, _canvasBox, _hq, _panelBody, _headArt, _takeOut, _ghost, _confirm, _save;
-        private CampCanvas _canvas;
-        private IconElement _headIcon, _headSize, _ghostIcon;
-        private KitIconButton _info;
-        private Label _mapName, _levelInfo, _hint, _hqLevel, _headName, _headLine, _headCount, _confirmText, _utilityCount, _saveTitle;
-
-        private BaseLoadout _layout;
-        private bool _dirty;
         private string _mapId;
         private BaseSiteDef _site;
+        private float _faceMetres = SmallFaceMetres;
+        private CampFrame _frame;
         private string _selected, _armed;
-        private LoadoutSlot? _picked;
+        private int _picked = -1;
         private PanelTab _tab = PanelTab.Branch;
-        private Action _confirmed;
+        private int _gearOpen = -1;
+        private bool _ranges;
 
-        // A press on a tower or a filled slot that may become a drag.
+        // A press on a tray card or a filled slot that may become a drag.
         private int _pressPointer = -1;
-        private Vector2 _pressStart;
+        private UnityEngine.Vector2 _pressStart;
         private string _pressId;
-        private LoadoutSlot? _pressFrom;
-        private bool _pressHorizontal, _dragging;
+        private int _pressFrom = -1;
+        private bool _pressFromTray, _dragging;
         private SlotView _hover;
 
         public BaseScreen(Catalog catalog, Action<string, bool> note, Action changed)
@@ -95,52 +109,112 @@ namespace MachineBrigade.Game.Hud
             _catalog = catalog;
             _note = note ?? ((_, _) => { });
             _changed = changed ?? (() => { });
-            // Cheapest first, then by size: light towers at the top of the list.
-            _towers = TowerCards.All(catalog).OrderBy(id => catalog.Vehicles[id].Fort.Size).ThenBy(id => id, StringComparer.Ordinal).ToList();
-            _modules = catalog.Vehicles.Values.Where(d => d.Fort is { Kind: FortKind.Utility } && d.BranchOf == null).Select(d => d.Id)
-                .OrderBy(id => id, StringComparer.Ordinal).ToList();
-            _hasModules = _modules.Count > 0;
-            _layout = PlayerProfile.BaseLoadout;
-            _selected = _towers.FirstOrDefault();
-            Root = UiKit.Box("base-view", PickingMode.Position);
-            Build();
+            Root = Kit.Box("fc-base", PickingMode.Position);
+
+            // Top: the HQ's level, the map, the three plans, Auto-arrange, "Saved".
+            var bar = Kit.Box("fc-base__bar");
+            _hq = Kit.Box("fc-base__hq");
+            _hq.Add(Kit.Icon(TowerIcons.For("headquarters") ?? "hq", "fc-base__hq-icon"));
+            var hqText = Kit.Box("fc-base__hq-text");
+            _hqTitle = Kit.Text("", "fc-panel-title fc-row-text");
+            hqText.Add(_hqTitle);
+            _hqNext = Kit.Text("", "fc-small fc-row-text");
+            hqText.Add(_hqNext);
+            _hq.Add(hqText);
+            bar.Add(_hq);
+            _dropHost = Kit.Box("fc-base__map-pick");
+            bar.Add(_dropHost);
+            var plans = Kit.Box("fc-base__plans");
+            for (var i = 0; i < PlayerProfile.BasePlanCount; i++)
+            {
+                var index = i;
+                var chip = new KitChip(Strings.Format("camp.plan", i + 1), false, () => ChoosePlan(index));
+                plans.Add(chip);
+                _planChips.Add((chip, i));
+            }
+            bar.Add(plans);
+            bar.Add(new KitButton(ButtonTier.Secondary, Strings.Get("camp.auto"), AutoArrange, "bolt"));
+            _saved = Kit.Box("fc-base__saved");
+            _saved.Add(Kit.Icon("check", "fc-base__saved-icon"));
+            _saved.Add(Kit.Text(Strings.Get("camp.saved"), "fc-small"));
+            bar.Add(_saved);
+            Root.Add(bar);
+
+            var body = Kit.Box("fc-base__body");
+            _tray = new TowerTray(catalog, new[] { TowerTray.Tab.Small, TowerTray.Tab.Medium, TowerTray.Tab.Large, TowerTray.Tab.Utility }, TapTower,
+                (e, id) => Press(e, id, -1, true));
+            _tray.Changed += Refresh;
+            _tray.Root.AddToClassList("fc-base__tray");
+            body.Add(_tray.Root);
+
+            _mapBox = Kit.Box("fc-base__centre");
+            _map = new CampMap();
+            _map.Moved += PlaceSlots;
+            _mapBox.Add(_map);
+            var tools = Kit.Box("fc-base__map-tools");
+            _customChip = new KitChip(Strings.Get("camp.custom"), false, ToggleCustom, "settings");
+            tools.Add(_customChip);
+            _rangeChip = new KitChip(Strings.Get("camp.ranges"), false, ToggleRanges, "crosshair");
+            tools.Add(_rangeChip);
+            _mapBox.Add(tools);
+            _legend = Kit.Box(KitPanel.SurfaceClass + " fc-base__legend");
+            var ground = Kit.Box("fc-row");
+            ground.Add(Kit.Box("fc-base__swatch fc-base__swatch--ground"));
+            ground.Add(Kit.Text(Strings.Get("camp.rangeGround"), "fc-small"));
+            _legend.Add(ground);
+            var air = Kit.Box("fc-row");
+            air.Add(Kit.Box("fc-base__swatch fc-base__swatch--air"));
+            air.Add(Kit.Text(Strings.Get("camp.rangeAir"), "fc-small"));
+            _legend.Add(air);
+            _mapBox.Add(_legend);
+            body.Add(_mapBox);
+
+            var panel = Kit.Box(KitPanel.SurfaceClass + " fc-base__panel", PickingMode.Position);
+            var panelScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-base__panel-scroll");
+            _panelBody = panelScroll.contentContainer;
+            panel.Add(panelScroll);
+            body.Add(panel);
+            Root.Add(body);
+
+            _strip = Kit.Box(KitPanel.SurfaceClass + " fc-base__strip");
+            Root.Add(_strip);
+
+            // What follows the finger while a tower is dragged.
+            _ghost = Kit.Box(KitPanel.SurfaceClass + " fc-base__ghost");
+            _ghostIcon = Kit.Icon("tower", "fc-base__ghost-icon");
+            _ghost.Add(_ghostIcon);
+            _ghost.style.display = DisplayStyle.None;
+            Root.Add(_ghost);
+
             Root.RegisterCallback<PointerMoveEvent>(OnPointerMove, TrickleDown.TrickleDown);
             Root.RegisterCallback<PointerUpEvent>(OnPointerUp, TrickleDown.TrickleDown);
             Root.RegisterCallback<PointerCancelEvent>(_ => EndDrag(), TrickleDown.TrickleDown);
             Root.RegisterCallback<PointerCaptureOutEvent>(e =>
             {
-                // Only the view's own capture (a scroll view giving the pointer up bubbles here too).
                 if (_dragging && e.target == Root) EndDrag();
             });
-            var start = MatchSettings.CurrentMap.Id;
-            ShowMap(MapFlag() ?? start);
+            ShowMap(MapFlag() ?? MatchSettings.CurrentMap.Id);
         }
 
         public VisualElement Root { get; }
 
-        /// <summary>Debug flags for device checks: -mb-base-gear opens the Gear tab, -mb-base-pick=&lt;tower&gt; arms a tower (its slots lit).</summary>
-        public void DebugOpen()
-        {
-            if (DebugFlags.Has("-mb-base-gear")) _tab = PanelTab.Gear;
-            var pick = DebugFlags.Value("-mb-base-pick=");
-            if (!string.IsNullOrEmpty(pick) && (_towers.Contains(pick) || _modules.Contains(pick)))
-            {
-                _selected = pick;
-                _armed = pick;
-            }
-            Refresh();
-            // -mb-base-confirm: the question a branch change asks, for a look at it (below rank 7 the answer is refused).
-            if (DebugFlags.Has("-mb-base-confirm") && _selected != null && TowerCards.Branches(_catalog, _selected) is { Count: > 1 } branches)
-                AskBranch(_selected, branches[1]);
-        }
+        /// <summary>A structure's detail page asked for: set by the menu.</summary>
+        internal Action<string> OpenDetail { get; set; }
 
-        /// <summary>The layout being edited (not yet saved while <see cref="Dirty"/>).</summary>
-        internal BaseLoadout Layout => _layout;
-
-        internal bool Dirty => _dirty;
         internal string MapId => _mapId;
-        internal IReadOnlyList<SlotView> CampSlots => _campViews;
-        internal IReadOnlyList<SlotView> OutpostSlots => _outpostViews;
+        internal IReadOnlyList<SlotView> CampSlots => _slots;
+        internal CampMap Map => _map;
+        internal bool RangesShown => _ranges;
+
+        /// <summary>The base on the map in view as the battle will have it (the plan laid on the camp, or the map's own).</summary>
+        internal BaseLoadout Layout => _site != null ? Plan.Resolve(_mapId, _site, Level) : new BaseLoadout { HqLevel = Level };
+
+        /// <summary>The base strength shown (prompt 14 E2): <see cref="BaseStrength.Score(Catalog, BaseLoadout, Func{VehicleDef, VehicleBoost})"/>.</summary>
+        internal float Strength => BaseStrength.Score(_catalog, PlayerProfile.BaseLoadoutFor(_mapId), PlayerProfile.BoostFor);
+
+        private static BasePlan Plan => PlayerProfile.ActivePlan;
+
+        private static int Level => Mathf.Clamp(Campaign.HqLevelCap, 1, Campaign.MaxHqLevel);
 
         private static string MapFlag()
         {
@@ -148,252 +222,285 @@ namespace MachineBrigade.Game.Hud
             return string.IsNullOrEmpty(id) ? null : id;
         }
 
-        // ------------------------------------------------------------------ building
-
-        private void Build()
+        /// <summary>Debug flags for device checks: -mb-base-gear opens the Gear tab, -mb-base-pick=&lt;tower&gt; arms a tower, -mb-base-ranges shows the cover.</summary>
+        public void DebugOpen()
         {
-            // Top: HQ level, what it opens, the map, Save.
-            var toolbar = UiKit.Box("base-toolbar");
-            var levelBox = UiKit.Box("base-level-box");
-            levelBox.Add(UiKit.Text(Strings.Get("camp.level"), "menu-caps base-level-caption"));
-            var levels = UiKit.Box("base-levels");
-            for (var l = 1; l <= _catalog.Base.MaxLevel; l++)
+            if (DebugFlags.Has("-mb-base-gear")) _tab = PanelTab.Gear;
+            if (DebugFlags.Has("-mb-base-ranges")) _ranges = true;
+            var pick = DebugFlags.Value("-mb-base-pick=");
+            if (!string.IsNullOrEmpty(pick) && _catalog.Vehicles.ContainsKey(pick))
             {
-                var level = l;
-                var button = UiKit.Button("segment base-level", () => SetLevel(level));
-                button.Add(UiKit.Text(level.ToString(), "base-level-text"));
-                levels.Add(button);
-                _levelButtons.Add((button, level));
+                _selected = pick;
+                _armed = pick;
             }
-            levelBox.Add(levels);
-            toolbar.Add(levelBox);
-            _levelInfo = UiKit.Text("", "base-level-info");
-            toolbar.Add(_levelInfo);
-            var previous = UiKit.Button("icon-button base-map-arrow left", () => StepMap(-1));
-            previous.Add(UiKit.Icon("arrow", UiKit.Ink, 2.2f));
-            toolbar.Add(previous);
-            var mapText = UiKit.Box("base-map-text");
-            _mapName = UiKit.Text("", "base-map-name");
-            mapText.Add(_mapName);
-            toolbar.Add(mapText);
-            var next = UiKit.Button("icon-button base-map-arrow right", () => StepMap(1));
-            next.Add(UiKit.Icon("arrow", UiKit.Ink, 2.2f));
-            toolbar.Add(next);
-            _save = UiKit.WideButton("base-save", "check", Strings.Get("camp.save"), null, Save);
-            _saveTitle = _save.Q<Label>(className: "wide-title");
-            toolbar.Add(_save);
-            Root.Add(toolbar);
+            Refresh();
+        }
 
-            var body = UiKit.Box("base-body");
+        // ------------------------------------------------------------------ the map's camp
 
-            // Left: the tower cards.
-            _left = UiKit.Box("base-left");
-            _left.Add(UiKit.Text(Strings.Get("camp.towers"), "menu-caps base-caps"));
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
+        /// <summary>Shows a map's camp: the picture, the HQ and every slot at its place.</summary>
+        public void ShowMap(string id)
+        {
+            var site = BaseSites.CampOf(id);
+            if (site == null)
             {
-                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-                verticalScrollerVisibility = ScrollerVisibility.Hidden,
-                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
-            };
-            scroll.AddToClassList("base-list");
-            MouseDragScroll.Attach(scroll);
-            foreach (var id in _towers) scroll.Add(TowerRow(id));
-            if (_hasModules)
-            {
-                scroll.Add(UiKit.Text(Strings.Get("camp.utility"), "menu-caps base-caps base-list-caps"));
-                foreach (var id in _modules) scroll.Add(TowerRow(id));
+                id = MatchSettings.AllMaps[0].Id;
+                site = BaseSites.CampOf(id);
             }
-            _left.Add(scroll);
-            body.Add(_left);
-
-            // Middle: the camp.
-            var centre = UiKit.Box("base-centre");
-            var legend = UiKit.Box("base-legend");
-            foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+            _mapId = BaseSites.MapKey(id);
+            _site = site;
+            _picked = -1;
+            _map.Slots.Clear();
+            _slots.Clear();
+            if (_site == null)
             {
-                var chip = UiKit.Box("base-legend-chip");
-                chip.Add(UiKit.Icon(SizeIcon(size), UiKit.Ink, 1.8f));
-                var count = UiKit.Text("", "base-legend-count");
-                chip.Add(count);
-                _legendCounts[size] = count;
-                legend.Add(chip);
+                _map.Frame = null;
+                Refresh();
+                return;
             }
-            var utilityChip = UiKit.Box("base-legend-chip utility");
-            utilityChip.Add(UiKit.Icon("module", UiKit.Ink, 1.8f));
-            _utilityCount = UiKit.Text("", "base-legend-count");
-            utilityChip.Add(_utilityCount);
-            legend.Add(utilityChip);
-            // Which way is up on the diagram: the camp's front, towards the enemy.
-            var front = UiKit.Box("base-front");
-            var arrow = UiKit.Icon("arrow", UiKit.Ink, 2f);
-            arrow.AddToClassList("base-front-arrow");
-            front.Add(arrow);
-            front.Add(UiKit.Text(Strings.Get("camp.front"), "base-front-text"));
-            legend.Add(front);
-            _hint = UiKit.Text("", "base-hint");
-            legend.Add(_hint);
-            centre.Add(legend);
-            _canvasBox = UiKit.Box("base-canvas-box");
-            _canvas = new CampCanvas();
-            _canvas.AddToClassList("base-canvas");
-            _canvas.RegisterCallback<GeometryChangedEvent>(_ => Arrange());
-            _canvasBox.Add(_canvas);
-            centre.Add(_canvasBox);
-            body.Add(centre);
-
-            // Right: the picked tower card (branch, gear) and the outpost.
-            var right = UiKit.Box("base-right");
-            var head = UiKit.Box("base-head");
-            _headArt = UiKit.Box("base-head-art");
-            _headIcon = UiKit.Icon("tower", UiKit.Ink, 1.6f);
-            _headIcon.AddToClassList("base-head-icon");
-            _headArt.Add(_headIcon);
-            var sizeBadge = UiKit.Box("base-size-badge");
-            _headSize = UiKit.Icon("slot_small", UiKit.Ink, 2f);
-            sizeBadge.Add(_headSize);
-            _headArt.Add(sizeBadge);
-            head.Add(_headArt);
-            var headText = UiKit.Box("base-head-text");
-            _headName = UiKit.Text("", "base-head-name");
-            _headLine = UiKit.Text("", "base-head-line");
-            _headCount = UiKit.Text("", "base-head-line base-head-count");
-            headText.Add(_headName);
-            headText.Add(_headLine);
-            headText.Add(_headCount);
-            head.Add(headText);
-            // The picked structure's detail page (the vehicles' page: model, numbers, weapons, guide, rank).
-            _info = new KitIconButton("info", Strings.Get("detail.title"), () =>
+            _frame = CampFrame.For(_mapId, _site);
+            _faceMetres = FaceMetres(_site);
+            var keys = SlotPlaces.Keys(_site);
+            var camp = BaseLayout.Camp(_site, _catalog.Base, Level);
+            // The HQ.
+            _hqMark = Kit.Box("fc-base-hq");
+            _hqMark.Add(Kit.Icon(TowerIcons.For("headquarters") ?? "hq", "fc-base-hq__icon"));
+            _map.Slots.Add(_hqMark);
+            // Larger slots first, so a small one's target is on top where two targets meet.
+            var order = Enumerable.Range(0, _site.Slots.Count).OrderByDescending(i => _site.Slots[i].Kind == HardpointKind.Utility ? 1 : (int)_site.Slots[i].Class).ToList();
+            foreach (var i in order)
             {
-                if (_selected != null) OpenDetail?.Invoke(_selected);
-            });
-            _info.AddToClassList("base-info");
-            head.Add(_info);
-            right.Add(head);
-            var tabs = UiKit.Box("base-tabs");
-            foreach (var (tab, icon, key) in new[] { (PanelTab.Branch, "upgrade", "camp.branch"), (PanelTab.Gear, "gear", "camp.gear") })
-            {
-                var t = tab;
-                var button = UiKit.Button(tab == PanelTab.Gear ? "segment base-tab last-segment" : "segment base-tab", () =>
+                var def = _site.Slots[i];
+                var utility = def.Kind == HardpointKind.Utility;
+                var view = new SlotView
                 {
-                    _tab = t;
-                    Refresh();
+                    Hardpoint = i, Key = keys[i], Size = def.Class, Utility = utility, Open = camp[i].Open,
+                    Picture = _frame.ToPicture(def.Position),
+                };
+                var hardpoint = i;
+                view.Element = Kit.Tappable("fc-base-slot fc-base-slot--" + (utility ? "utility" : def.Class.ToString().ToLowerInvariant()), () => TapSlot(view));
+                view.Face = new SlotFace(utility);
+                view.Element.Add(view.Face);
+                view.Element.RegisterCallback<PointerDownEvent>(e =>
+                {
+                    if (!view.Open) return;
+                    if (Plan.At(_mapId, _site, hardpoint) is { } tower) Press(e, tower, hardpoint, false);
                 });
-                button.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
-                button.Add(UiKit.Text(Strings.Get(key), "segment-label"));
-                tabs.Add(button);
-                _tabButtons.Add((button, tab));
+                _map.Slots.Add(view.Element);
+                _slots.Add(view);
             }
-            // Take a picked slot's tower out (shown only then).
-            _takeOut = UiKit.Button("icon-button base-takeout", TakeOut);
-            _takeOut.Add(UiKit.Icon("close", UiKit.Ink, 2f));
-            _takeOut.tooltip = Strings.Get("camp.remove");
-            tabs.Add(_takeOut);
-            right.Add(tabs);
-            var panelScroll = new ScrollView(ScrollViewMode.Vertical)
+            _map.Frame = _frame;
+            Refresh();
+        }
+
+        /// <summary>
+        /// A small slot's face in metres of this camp: as large as it can be with no two faces (the HQ's too) touching,
+        /// each by its class's ratio, and a tenth kept between them; at most <see cref="SmallFaceMetres"/>.
+        /// </summary>
+        internal static float FaceMetres(BaseSiteDef site)
+        {
+            var points = new List<(System.Numerics.Vector2 at, float ratio)> { (site.Hq, HqRatio) };
+            foreach (var s in site.Slots)
+                points.Add((s.Position, s.Kind == HardpointKind.Utility ? UtilityRatio : s.Class switch { SlotSize.Small => 1f, SlotSize.Medium => MediumRatio, _ => LargeRatio }));
+            var best = SmallFaceMetres;
+            for (var i = 0; i < points.Count; i++)
+                for (var j = i + 1; j < points.Count; j++)
+                    best = Mathf.Min(best, 0.9f * 2f * System.Numerics.Vector2.Distance(points[i].at, points[j].at) / (points[i].ratio + points[j].ratio));
+            return best;
+        }
+
+        /// <summary>The ratio of a slot's face to a small one's (prompt 14 B3: medium 1.4, large 2; a utility hexagon 1.4).</summary>
+        internal static float RatioOf(SlotView view) => view.Utility ? UtilityRatio : view.Size switch { SlotSize.Small => 1f, SlotSize.Medium => MediumRatio, _ => LargeRatio };
+
+        /// <summary>The face of a slot at the map's zoom, in panel pixels.</summary>
+        internal float FaceSize(SlotView view) => _faceMetres * _map.PixelsPerMetre * RatioOf(view);
+
+        /// <summary>Puts every slot at its place on the map at the current zoom: its target the touch size, its face by class.</summary>
+        private void PlaceSlots()
+        {
+            if (_site == null || _frame == null) return;
+            var target = Kit.TouchTarget + 1f;
+            foreach (var view in _slots)
             {
-                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-                verticalScrollerVisibility = ScrollerVisibility.Hidden,
-                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
-            };
-            panelScroll.AddToClassList("base-panel-scroll");
-            MouseDragScroll.Attach(panelScroll);
-            _panelBody = panelScroll.contentContainer;
-            right.Add(panelScroll);
-            // The outpost: its two slots, with its caption and what it is beside them.
-            var outpost = UiKit.Box("base-outpost");
-            var outpostSlots = UiKit.Box("base-outpost-slots");
-            for (var i = 0; i < BaseLayout.DefaultOutpost.Length; i++)
-            {
-                var view = new SlotView { Slot = LoadoutSlot.Outpost(i), Open = true };
-                BuildSlot(view, "base-outpost-slot");
-                outpostSlots.Add(view.Element);
-                _outpostViews.Add(view);
+                var face = FaceSize(view);
+                var size = Mathf.Max(target, face);
+                view.Element.style.width = size;
+                view.Element.style.height = size;
+                view.Face.style.width = face;
+                view.Face.style.height = face;
+                _map.Place(view.Element, view.Picture, size);
             }
-            outpost.Add(outpostSlots);
-            var outpostText = UiKit.Box("base-outpost-text");
-            outpostText.Add(UiKit.Text(Strings.Get("camp.outpost"), "menu-caps base-caps"));
-            outpostText.Add(UiKit.Text(Strings.Get("camp.outpostInfo"), "base-note base-outpost-info"));
-            outpost.Add(outpostText);
-            right.Add(outpost);
-            body.Add(right);
-            Root.Add(body);
-
-            // What follows the finger while a tower is dragged.
-            _ghost = UiKit.Box("base-ghost base-hidden");
-            _ghostIcon = UiKit.Icon("tower", UiKit.Ink, 1.6f);
-            _ghostIcon.AddToClassList("base-ghost-icon");
-            _ghost.Add(_ghostIcon);
-            Root.Add(_ghost);
-
-            // Changing a branch that was already chosen costs coins: asked first.
-            _confirm = UiKit.Box("base-confirm base-hidden", PickingMode.Position);
-            var card = UiKit.Box("base-confirm-card");
-            _confirmText = UiKit.Text("", "base-confirm-text");
-            card.Add(_confirmText);
-            var buttons = UiKit.Box("base-confirm-buttons");
-            buttons.Add(UiKit.WideButton("base-confirm-button", "close", Strings.Get("camp.cancel"), null, HideConfirm));
-            buttons.Add(UiKit.WideButton("primary base-confirm-button", "check", Strings.Get("camp.change"), null, () =>
+            if (_hqMark != null)
             {
-                var action = _confirmed;
-                HideConfirm();
-                action?.Invoke();
-            }));
-            card.Add(buttons);
-            _confirm.Add(card);
-            Root.Add(_confirm);
+                var hq = _faceMetres * _map.PixelsPerMetre * HqRatio;
+                _hqMark.style.width = hq;
+                _hqMark.style.height = hq;
+                _map.Place(_hqMark, _frame.ToPicture(_site.Hq), hq);
+            }
         }
 
-        private VisualElement TowerRow(string id)
-        {
-            var row = UiKit.Button("base-tower", () => TapTower(id));
-            var art = UiKit.Box("base-tower-art");
-            art.Add(UiKit.Icon(IconFor(id), UiKit.Ink, 1.6f));
-            var badge = UiKit.Box("base-size-badge");
-            badge.Add(UiKit.Icon(IsModule(id) ? "module" : SizeIcon(_catalog.Vehicles[id].Fort.Size), UiKit.Ink, 2f));
-            art.Add(badge);
-            row.Add(art);
-            var text = UiKit.Box("base-tower-text");
-            text.Add(UiKit.Text(Strings.Card(id), "base-tower-name"));
-            text.Add(UiKit.Text("", "base-tower-line"));
-            row.Add(text);
-            row.Add(UiKit.Text("", "base-tower-count"));
-            row.RegisterCallback<PointerDownEvent>(e => Press(e, id, null, true));
-            _rows.Add((row, id));
-            return row;
-        }
+        // ------------------------------------------------------------------ taps
 
-        private void BuildSlot(SlotView view, string extra)
+        /// <summary>A tray card tapped: into the slot picked first when it fits, else armed for a tap on a slot (tap again to put it down).</summary>
+        internal void TapTower(string id)
         {
-            var element = UiKit.Button("base-slot " + extra + " size-" + view.Slot.Size.ToString().ToLowerInvariant(), () => TapSlot(view));
-            element.EnableInClassList("utility", view.Utility);
-            view.Icon = UiKit.Icon("plus", UiKit.Ink, 1.7f);
-            view.Icon.AddToClassList("base-slot-icon");
-            element.Add(view.Icon);
-            var badge = UiKit.Box("base-slot-size");
-            badge.Add(UiKit.Icon(view.Utility ? "module" : SizeIcon(view.Slot.Size), UiKit.Ink, 2f));
-            element.Add(badge);
-            view.Caption = UiKit.Text("", "base-slot-caption");
-            element.Add(view.Caption);
-            element.RegisterCallback<PointerDownEvent>(e =>
+            if (!PlayerProfile.IsUnlocked(id))
             {
-                if (Soon(view) || !view.Open) return;
-                var tower = BaseLayout.At(_layout, view.Slot);
-                if (tower != null) Press(e, tower, view.Slot, false);
-            });
-            view.Element = element;
+                _note(VehicleCardData.UnlockText(id), true);
+                return;
+            }
+            if (_picked >= 0 && ViewOf(_picked) is { Open: true } view)
+            {
+                Drop(id, -1, view);
+                return;
+            }
+            _selected = id;
+            _armed = _armed == id ? null : id;
+            Refresh();
         }
 
-        private bool IsModule(string id) => _catalog.Vehicles.TryGetValue(id, out var def) && def.Fort is { Kind: FortKind.Utility };
-
-        /// <summary>A card's icon (a utility module without an icon of its own shows the module chip).</summary>
-        private string IconFor(string id)
+        /// <summary>A slot tapped: the armed tower goes in; otherwise the slot is picked (the panel shows it; tap a card to put one in).</summary>
+        internal void TapSlot(SlotView view)
         {
-            var icon = CardIcons.For(id);
-            return icon == "tank" && IsModule(id) ? "module" : icon;
+            if (!view.Open)
+            {
+                _note(Strings.Format("camp.closed", OpensAt(view)), true);
+                return;
+            }
+            if (_armed != null)
+            {
+                Drop(_armed, -1, view);
+                return;
+            }
+            if (_picked == view.Hardpoint) _picked = -1;
+            else
+            {
+                _picked = view.Hardpoint;
+                _selected = Plan.At(_mapId, _site, view.Hardpoint);
+                _tray.Shown = view.Utility ? TowerTray.Tab.Utility : (TowerTray.Tab)(int)view.Size;
+            }
+            Refresh();
         }
 
-        /// <summary>A slot that takes nothing yet: a utility slot while there are no utility modules.</summary>
-        private bool Soon(SlotView view) => view.Utility && !_hasModules;
+        /// <summary>A slot tapped by its hardpoint (tests).</summary>
+        internal void TapSlot(int hardpoint)
+        {
+            if (ViewOf(hardpoint) is { } view) TapSlot(view);
+        }
+
+        private SlotView ViewOf(int hardpoint) => _slots.FirstOrDefault(v => v.Hardpoint == hardpoint);
+
+        private bool Fits(string id, SlotView view) => BaseLayout.Fits(_catalog, id, view.Slot);
+
+        /// <summary>A tower dropped (or tapped) into a slot: from the tray it replaces what was there; from another slot it moves (a swap when both fit).</summary>
+        private bool Drop(string id, int from, SlotView target)
+        {
+            if (!target.Open) return false;
+            if (!Fits(id, target))
+            {
+                _note(Strings.Format("camp.tooBig", Strings.Card(id), (target.Utility ? Strings.Get("camp.utility") : SizeName(target.Size)).ToLowerInvariant()), true);
+                Refresh();
+                return false;
+            }
+            if (from >= 0 && from != target.Hardpoint)
+            {
+                var displaced = Plan.At(_mapId, _site, target.Hardpoint);
+                Plan.Set(_mapId, _site, target.Hardpoint, id);
+                var source = ViewOf(from);
+                Plan.Set(_mapId, _site, from, displaced != null && source != null && Fits(displaced, source) ? displaced : null);
+            }
+            else Plan.Set(_mapId, _site, target.Hardpoint, id);
+            _armed = null;
+            _picked = target.Hardpoint;
+            _selected = id;
+            Saved(Strings.Format("camp.placed", Strings.Card(id)));
+            return true;
+        }
+
+        private void TakeOut(int hardpoint)
+        {
+            var tower = Plan.At(_mapId, _site, hardpoint);
+            if (tower == null) return;
+            Plan.Set(_mapId, _site, hardpoint, null);
+            _picked = -1;
+            Saved(Strings.Format("camp.removed", Strings.Card(tower)));
+        }
+
+        /// <summary>A change saved at once (prompt 14 F3): the profile is written, "Saved" shows a moment, the note says what changed.</summary>
+        private void Saved(string note)
+        {
+            PlayerProfile.SaveBasePlans();
+            if (note != null) _note(note, false);
+            _saved.AddToClassList("fc-base__saved--on");
+            _savedHide?.Pause();
+            if (_saved.panel != null) _savedHide = _saved.schedule.Execute(() => _saved.RemoveFromClassList("fc-base__saved--on")).StartingIn(1600);
+            _changed();
+            Refresh();
+        }
+
+        private void ChoosePlan(int index)
+        {
+            if (PlayerProfile.ActiveBasePlan == index) return;
+            PlayerProfile.ActiveBasePlan = index;
+            _picked = -1;
+            _armed = null;
+            _note(Strings.Format("camp.planChosen", index + 1), false);
+            _changed();
+            Refresh();
+        }
+
+        private void ToggleCustom()
+        {
+            if (_site == null) return;
+            var own = !Plan.Custom.ContainsKey(_mapId);
+            Plan.SetCustom(_mapId, _site, own, Level);
+            Saved(Strings.Get(own ? "camp.customOn" : "camp.customOff"));
+        }
+
+        /// <summary>Picks the first filled large slot, else any filled one (the screenshot of the panel and the range rings).</summary>
+        internal void DebugPickFilled()
+        {
+            var filled = _slots.Where(v => v.Open && !v.Utility && Plan.At(_mapId, _site, v.Hardpoint) != null).OrderByDescending(v => v.Size).FirstOrDefault();
+            if (filled != null) TapSlot(filled);
+        }
+
+        internal void ToggleRanges()
+        {
+            _ranges = !_ranges;
+            Refresh();
+        }
+
+        /// <summary>
+        /// Auto-arrange (prompt 14 G5): the enemy AI's own way of choosing a base, among the towers the player has, laid
+        /// on this camp; the utility modules stay. Into the map's own set-up when it has one, else the plan.
+        /// </summary>
+        internal void AutoArrange()
+        {
+            if (_site == null) return;
+            var seed = 17;
+            foreach (var c in _mapId) seed = seed * 31 + c;
+            var ai = BaseLoadout.ForAi(_catalog, "Normal", "default", seed, Level, PlayerProfile.IsUnlocked);
+            var towers = BasePlan.ToAssignment(_site, ai);
+            for (var i = 0; i < towers.Length; i++)
+                if (_site.Slots[i].Kind == HardpointKind.Utility) towers[i] = Plan.At(_mapId, _site, i);
+            if (Plan.Custom.ContainsKey(_mapId)) Plan.Custom[_mapId] = BasePlan.FromAssignment(_site, towers, Level);
+            else Plan.FromCamp(_site, towers);
+            _picked = -1;
+            _armed = null;
+            Saved(Strings.Get("camp.autoDone"));
+        }
+
+        /// <summary>The HQ level that opens a slot.</summary>
+        private int OpensAt(SlotView view)
+        {
+            var rules = _catalog.Base;
+            var index = 0;
+            foreach (var slot in BaseLayout.Camp(_site, rules, rules.MaxLevel))
+                if (slot.Hardpoint == view.Hardpoint) index = slot.Slot.Index;
+            for (var l = 1; l <= rules.MaxLevel; l++)
+                if ((view.Utility ? rules.UtilitySlots(l) : rules.Slots(l, view.Size)) > index) return l;
+            return rules.MaxLevel + 1;
+        }
 
         internal static string SizeIcon(SlotSize size) => size switch
         {
@@ -404,277 +511,43 @@ namespace MachineBrigade.Game.Hud
 
         private static string SizeName(SlotSize size) => Strings.Get("camp.size." + size.ToString().ToLowerInvariant());
 
-        // ------------------------------------------------------------------ the map's camp
-
-        private MapDefinition Map(string id)
-        {
-            if (_maps.TryGetValue(id, out var map)) return map;
-            try
-            {
-                map = GameContent.LoadMap(id + "_conquest");
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"[BaseScreen] No conquest map for {id}: {e.Message}");
-                map = null;
-            }
-            _maps[id] = map;
-            return map;
-        }
-
-        /// <summary>Shows a map's camp: its HQ and hardpoints as frames on the diagram.</summary>
-        public void ShowMap(string id)
-        {
-            var map = Map(id);
-            if (map?.BaseOf(0) == null && id != MatchSettings.AllMaps[0].Id)
-            {
-                id = MatchSettings.AllMaps[0].Id;
-                map = Map(id);
-            }
-            _mapId = id;
-            _site = map?.BaseOf(0);
-            _canvas.Map = map;
-            _canvas.Clear();
-            _campViews.Clear();
-            _hq = null;
-            if (_site != null)
-            {
-                foreach (var slot in BaseLayout.Camp(_site, _catalog.Base, _layout.HqLevel))
-                {
-                    var view = new SlotView
-                    {
-                        Slot = slot.Slot, Open = slot.Open, Utility = slot.Def.Kind == HardpointKind.Utility, Hardpoint = slot.Hardpoint,
-                        World = CampLayout.ToUnity(slot.Def.Position), Facing = slot.Def.Facing,
-                    };
-                    BuildSlot(view, "base-camp-slot");
-                    _canvas.Add(view.Element);
-                    _campViews.Add(view);
-                }
-                _hq = UiKit.Box("base-hq");
-                _hq.Add(UiKit.Icon("hq", UiKit.Ink, 1.6f));
-                _hqLevel = UiKit.Text("", "base-hq-level");
-                _hq.Add(_hqLevel);
-                _canvas.Add(_hq);
-            }
-            else _canvas.Add(UiKit.Text(Strings.Get("camp.noCamp"), "base-note base-no-camp"));
-            _mapName.text = Strings.Get("map." + id);
-            _mapName.tooltip = Strings.Has("map." + id + ".sub") ? Strings.Get("map." + id + ".sub") : "";
-            Refresh();
-            if (_canvas.panel != null) _canvas.schedule.Execute(Arrange);
-        }
-
-        private void StepMap(int step)
-        {
-            var maps = MatchSettings.AllMaps.Where(m => Map(m.Id)?.BaseOf(0) != null).Select(m => m.Id).ToList();
-            if (maps.Count == 0) return;
-            var i = maps.IndexOf(_mapId);
-            ShowMap(maps[((i < 0 ? 0 : i + step) % maps.Count + maps.Count) % maps.Count]);
-        }
-
-        /// <summary>Places the frames: the camp scaled to the diagram, front up, frames pushed apart where they would overlap.</summary>
-        private void Arrange()
-        {
-            if (_site == null || _hq == null) return;
-            var box = _canvas.contentRect.size;
-            if (box.x < 10f || box.y < 10f || float.IsNaN(box.x)) return;
-            var world = new List<Vector2> { CampLayout.ToUnity(_site.Hq) };
-            var sizes = new List<float> { Size(_hq) };
-            foreach (var view in _campViews)
-            {
-                world.Add(view.World);
-                sizes.Add(Size(view.Element));
-            }
-            if (sizes.Any(s => s <= 0f))
-            {
-                // Styles not resolved yet (the view was just built): try again next frame.
-                if (_canvas.panel != null) _canvas.schedule.Execute(Arrange);
-                return;
-            }
-            var fit = CampLayout.Arrange(CampLayout.ToUnity(_site.Hq), _site.Heading, world, sizes, box, _canvas.Gap, _canvas.Pad);
-            Place(_hq, fit.Centres[0], sizes[0]);
-            var facings = new List<(Vector2 centre, Vector2 direction, float half)>();
-            for (var i = 0; i < _campViews.Count; i++)
-            {
-                Place(_campViews[i].Element, fit.Centres[i + 1], sizes[i + 1]);
-                if (!_campViews[i].Utility) facings.Add((fit.Centres[i + 1], fit.PanelDirection(_campViews[i].Facing), sizes[i + 1] * 0.5f));
-            }
-            _canvas.Fit = fit;
-            _canvas.Facings = facings;
-            _canvas.MarkDirtyRepaint();
-        }
-
-        private static float Size(VisualElement e)
-        {
-            var w = e.resolvedStyle.width;
-            return float.IsNaN(w) ? 0f : w;
-        }
-
-        private static void Place(VisualElement e, Vector2 centre, float size)
-        {
-            e.style.left = centre.x - size * 0.5f;
-            e.style.top = centre.y - size * 0.5f;
-        }
-
-        // ------------------------------------------------------------------ taps
-
-        /// <summary>A tower card tapped: picked for the panel and armed for a tap on a slot (or into the slot picked first).</summary>
-        internal void TapTower(string id)
-        {
-            if (_picked is { } slot && SlotFor(slot) is { } view && view.Open && !Soon(view))
-            {
-                Drop(id, null, view);
-                return;
-            }
-            _selected = id;
-            _armed = _armed == id ? null : id;
-            Refresh();
-        }
-
-        /// <summary>A slot tapped: the armed tower goes in; otherwise the slot is picked (tap a tower next, or take its tower out).</summary>
-        internal void TapSlot(SlotView view)
-        {
-            if (Soon(view))
-            {
-                _note(Strings.Get("camp.utilitySoon"), false);
-                return;
-            }
-            if (!view.Open)
-            {
-                _note(Strings.Format("camp.closed", OpensAt(view.Slot)), true);
-                return;
-            }
-            if (_armed != null)
-            {
-                Drop(_armed, null, view);
-                return;
-            }
-            if (_picked is { } picked && picked.Equals(view.Slot)) _picked = null;
-            else
-            {
-                _picked = view.Slot;
-                if (BaseLayout.At(_layout, view.Slot) is { } tower) _selected = tower;
-            }
-            Refresh();
-        }
-
-        internal void TapSlot(LoadoutSlot slot)
-        {
-            if (SlotFor(slot) is { } view) TapSlot(view);
-        }
-
-        private SlotView SlotFor(LoadoutSlot slot) =>
-            _campViews.FirstOrDefault(v => v.Slot.Equals(slot)) ?? _outpostViews.FirstOrDefault(v => v.Slot.Equals(slot));
-
-        /// <summary>A tower dropped (or tapped) into a slot: from the list it replaces what was there; from another slot it moves (a swap when both fit).</summary>
-        private bool Drop(string id, LoadoutSlot? from, SlotView target)
-        {
-            if (!target.Open || Soon(target)) return false;
-            if (!BaseLayout.Fits(_catalog, id, target.Slot))
-            {
-                _note(Strings.Format("camp.tooBig", Strings.Card(id), SizeName(target.Slot.Size).ToLowerInvariant()), true);
-                Refresh();
-                return false;
-            }
-            var done = from is { } source ? BaseLayout.Move(_layout, _catalog, source, target.Slot) : BaseLayout.Place(_layout, _catalog, target.Slot, id);
-            if (!done)
-            {
-                if (from is { Kind: LoadoutSlotKind.Outpost }) _note(Strings.Get("camp.outpostKeep"), true);
-                Refresh();
-                return false;
-            }
-            _dirty = true;
-            _armed = null;
-            _picked = null;
-            _selected = id;
-            _note(Strings.Format("camp.placed", Strings.Card(id)), false);
-            Refresh();
-            return true;
-        }
-
-        private void TakeOut()
-        {
-            if (_picked is not { } slot || BaseLayout.At(_layout, slot) is not { } tower) return;
-            if (!BaseLayout.CanClear(slot))
-            {
-                _note(Strings.Get("camp.outpostKeep"), true);
-                return;
-            }
-            BaseLayout.Clear(_layout, slot);
-            _dirty = true;
-            _picked = null;
-            _note(Strings.Format("camp.removed", Strings.Card(tower)), false);
-            Refresh();
-        }
-
-        internal void SetLevel(int level)
-        {
-            // Levels above what the campaign has opened stay shut (every level in a test build).
-            if (level > Campaign.HqLevelCap)
-            {
-                if (Campaign.HqLevelMission(level) is { } opens) _hint.text = Strings.Format("camp.levelLocked", Campaign.Label(opens));
-                return;
-            }
-            if (_layout.HqLevel == level) return;
-            _layout.HqLevel = level;
-            _dirty = true;
-            _picked = null;
-            ShowMap(_mapId);
-        }
-
-        /// <summary>The HQ level that opens a place.</summary>
-        private int OpensAt(LoadoutSlot slot)
-        {
-            var rules = _catalog.Base;
-            for (var l = 1; l <= rules.MaxLevel; l++)
-                if ((slot.Kind == LoadoutSlotKind.Utility ? rules.UtilitySlots(l) : rules.Slots(l, slot.Size)) > slot.Index) return l;
-            return rules.MaxLevel + 1;
-        }
-
-        // ------------------------------------------------------------------ saving
-
-        /// <summary>Writes the layout to the profile (only a valid one: see <see cref="BaseLayout.ForSaving"/>).</summary>
-        internal void Save()
-        {
-            if (!_dirty) return;
-            PlayerProfile.BaseLoadout = BaseLayout.ForSaving(_layout, _catalog);
-            _layout = PlayerProfile.BaseLoadout;
-            _dirty = false;
-            _note(Strings.Get("camp.savedNote"), false);
-            Refresh();
-        }
-
-        /// <summary>The view is left (another view, tab or page): nothing is lost.</summary>
+        /// <summary>The view is left (another view, tab or page): a drag or a pick is let go (changes are already saved).</summary>
         public void Leave()
         {
             EndDrag();
-            HideConfirm();
             _armed = null;
-            _picked = null;
-            if (_dirty) Save();
+            _picked = -1;
         }
 
-        /// <summary>The Android back button: closes the question, drops a pick; false when there was nothing to close.</summary>
+        /// <summary>The Android back button: drops a drag, an armed card or a pick; false when there was nothing to drop.</summary>
         public bool Back()
         {
-            if (!_confirm.ClassListContains("base-hidden"))
-            {
-                HideConfirm();
-                return true;
-            }
-            if (_dragging || _armed != null || _picked != null)
+            if (_dragging || _armed != null || _picked >= 0)
             {
                 EndDrag();
                 _armed = null;
-                _picked = null;
+                _picked = -1;
                 Refresh();
                 return true;
             }
             return false;
         }
 
+        /// <summary>Picks a tower or module for the panel (its Gear tab when <paramref name="gear"/>), from its detail page.</summary>
+        internal void Pick(string id, bool gear = false)
+        {
+            if (!_catalog.Vehicles.TryGetValue(id, out var def) || def.Fort == null) return;
+            _selected = id;
+            _armed = null;
+            _picked = -1;
+            _tray.Shown = def.Fort.Kind == FortKind.Utility ? TowerTray.Tab.Utility : (TowerTray.Tab)(int)def.Fort.Size;
+            if (gear) _tab = PanelTab.Gear;
+            Refresh();
+        }
+
         // ------------------------------------------------------------------ drag and drop
 
-        private void Press(PointerDownEvent e, string id, LoadoutSlot? from, bool horizontal)
+        private void Press(PointerDownEvent e, string id, int from, bool fromTray)
         {
             if (e.pointerType == UnityEngine.UIElements.PointerType.mouse && e.button != 0) return;
             if (_dragging) return;
@@ -682,36 +555,38 @@ namespace MachineBrigade.Game.Hud
             _pressStart = e.position;
             _pressId = id;
             _pressFrom = from;
-            _pressHorizontal = horizontal;
+            _pressFromTray = fromTray;
+            // A press on a filled slot moves its tower, not the map.
+            _map.DragsGround = fromTray;
         }
 
         private void OnPointerMove(PointerMoveEvent e)
         {
             if (_pressPointer != e.pointerId || _pressId == null) return;
-            var at = (Vector2)e.position;
+            var at = (UnityEngine.Vector2)e.position;
             if (!_dragging)
             {
                 var delta = at - _pressStart;
                 if (delta.sqrMagnitude < DragStart * DragStart) return;
-                // In the list a mostly vertical pull is a scroll; sideways (towards the camp) it is a drag.
-                if (_pressHorizontal && Mathf.Abs(delta.x) < Mathf.Abs(delta.y))
+                // In the tray a mostly vertical pull is a scroll; sideways (towards the map) it is a drag.
+                if (_pressFromTray && Mathf.Abs(delta.x) < Mathf.Abs(delta.y))
                 {
                     _pressPointer = -1;
                     _pressId = null;
+                    _map.DragsGround = true;
                     return;
                 }
                 BeginDrag();
             }
             MoveGhost(at);
             var over = SlotUnder(at);
-            var target = over != null && over.Open && !Soon(over) && BaseLayout.Fits(_catalog, _pressId, over.Slot) ? over : null;
+            var target = over != null && over.Open && Fits(_pressId, over) ? over : null;
             if (target != _hover)
             {
-                _hover?.Element.RemoveFromClassList("hover");
+                _hover?.Element.RemoveFromClassList("fc-base-slot--hover");
                 _hover = target;
-                _hover?.Element.AddToClassList("hover");
+                _hover?.Element.AddToClassList("fc-base-slot--hover");
             }
-            _left.EnableInClassList("drop-out", _pressFrom != null && _left.worldBound.Contains(at));
             e.StopPropagation();
         }
 
@@ -719,10 +594,10 @@ namespace MachineBrigade.Game.Hud
         {
             _dragging = true;
             _armed = null;
-            _picked = null;
             _selected = _pressId;
-            _ghostIcon.Name = IconFor(_pressId);
-            _ghost.RemoveFromClassList("base-hidden");
+            _ghostIcon.Name = CardIcons.For(_pressId);
+            if (CardArt.For(_pressId) is { } render) _ghost.style.backgroundImage = Background.FromTexture2D(render);
+            _ghost.style.display = DisplayStyle.Flex;
             _ghost.BringToFront();
             if (Root.panel != null) Root.CapturePointer(_pressPointer);
             Refresh();
@@ -730,6 +605,7 @@ namespace MachineBrigade.Game.Hud
 
         private void OnPointerUp(PointerUpEvent e)
         {
+            _map.DragsGround = true;
             if (_pressPointer != e.pointerId) return;
             if (!_dragging)
             {
@@ -737,23 +613,17 @@ namespace MachineBrigade.Game.Hud
                 _pressId = null;
                 return;
             }
-            var at = (Vector2)e.position;
+            var at = (UnityEngine.Vector2)e.position;
             var id = _pressId;
             var from = _pressFrom;
             var over = SlotUnder(at);
             EndDrag();
-            if (over != null && !(from is { } f && f.Equals(over.Slot)))
+            if (over != null && over.Hardpoint != from)
             {
-                if (Soon(over)) _note(Strings.Get("camp.utilitySoon"), false);
-                else if (!over.Open) _note(Strings.Format("camp.closed", OpensAt(over.Slot)), true);
+                if (!over.Open) _note(Strings.Format("camp.closed", OpensAt(over)), true);
                 else Drop(id, from, over);
             }
-            else if (from is { } source && over == null && _left.worldBound.Contains(at))
-            {
-                // Dragged back onto the list: taken out of its slot.
-                _picked = source;
-                TakeOut();
-            }
+            else if (from >= 0 && over == null && _tray.Root.worldBound.Contains(at)) TakeOut(from);
             Refresh();
             e.StopPropagation();
         }
@@ -766,14 +636,13 @@ namespace MachineBrigade.Game.Hud
             _pressPointer = -1;
             if (was && Root.panel != null && Root.HasPointerCapture(pointer)) Root.ReleasePointer(pointer);
             _pressId = null;
-            _hover?.Element.RemoveFromClassList("hover");
+            _hover?.Element.RemoveFromClassList("fc-base-slot--hover");
             _hover = null;
-            _ghost?.AddToClassList("base-hidden");
-            _left?.RemoveFromClassList("drop-out");
+            if (_ghost != null) _ghost.style.display = DisplayStyle.None;
             if (was) Refresh();
         }
 
-        private void MoveGhost(Vector2 at)
+        private void MoveGhost(UnityEngine.Vector2 at)
         {
             var origin = Root.worldBound.position;
             var size = _ghost.resolvedStyle.width;
@@ -782,136 +651,267 @@ namespace MachineBrigade.Game.Hud
             _ghost.style.top = at.y - origin.y - size * 0.5f;
         }
 
-        private SlotView SlotUnder(Vector2 at)
+        private SlotView SlotUnder(UnityEngine.Vector2 at)
         {
-            foreach (var view in _campViews)
-                if (view.Element.worldBound.Contains(at)) return view;
-            foreach (var view in _outpostViews)
-                if (view.Element.worldBound.Contains(at)) return view;
-            return null;
+            // The nearest face under the finger (targets of neighbouring slots may overlap).
+            SlotView best = null;
+            var bestDistance = float.MaxValue;
+            foreach (var view in _slots)
+            {
+                var b = view.Element.worldBound;
+                if (!b.Contains(at)) continue;
+                var d = (b.center - at).sqrMagnitude;
+                if (d < bestDistance)
+                {
+                    bestDistance = d;
+                    best = view;
+                }
+            }
+            return best;
         }
 
         // ------------------------------------------------------------------ refresh
 
-        /// <summary>Brings every part up to date with the layout and the profile (ranks, branches, coins).</summary>
+        /// <summary>Brings every part up to date with the plan and the profile (ranks, branches, the level).</summary>
         public void Refresh()
         {
-            // Nothing unsaved: follow the profile (a branch chosen, a rank gained elsewhere).
-            if (!_dirty && !_dragging) _layout = PlayerProfile.BaseLoadout;
             var carrying = _dragging ? _pressId : _armed;
-            RefreshToolbar();
+            var layout = Layout;
+            RefreshBar(layout);
             RefreshSlots(carrying);
-            RefreshRows(carrying);
-            RefreshPanel();
-            RefreshHint(carrying);
-            UiKit.Uppercase(Root);
+            var picked = _picked >= 0 ? ViewOf(_picked) : null;
+            _tray.Refresh(carrying, id => PlacedCount(layout, id), picked != null ? id => Fits(id, picked) : null);
+            RefreshMap(layout);
+            RefreshPanel(layout);
+            RefreshStrip(layout);
         }
 
-        private void RefreshToolbar()
+        private void RefreshBar(BaseLoadout layout)
         {
             var rules = _catalog.Base;
-            var level = _layout.HqLevel;
-            foreach (var (button, l) in _levelButtons)
+            var level = layout.HqLevel;
+            _hqTitle.text = Kit.Caps(Strings.Format("camp.hqBadge", level));
+            if (level >= rules.MaxLevel) _hqNext.text = Strings.Get("camp.hqTop");
+            else
             {
-                button.EnableInClassList("chosen", l == level);
-                button.EnableInClassList("locked", l > Campaign.HqLevelCap);
+                var more = new List<string>();
+                foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+                {
+                    var n = rules.Slots(level + 1, size) - rules.Slots(level, size);
+                    if (n > 0) more.Add(Strings.Format("camp.more." + size.ToString().ToLowerInvariant(), n));
+                }
+                var u = rules.UtilitySlots(level + 1) - rules.UtilitySlots(level);
+                if (u > 0) more.Add(Strings.Format("camp.more.utility", u));
+                _hqNext.text = Strings.Format("camp.hqNext", level, level + 1, more.Count > 0 ? string.Join(", ", more) : Strings.Get("camp.moreNothing"));
             }
-            _levelInfo.text = Strings.Format("camp.opens", rules.Slots(level, SlotSize.Small), rules.Slots(level, SlotSize.Medium),
-                rules.Slots(level, SlotSize.Large), rules.UtilitySlots(level));
-            _save.EnableInClassList("disabled", !_dirty);
-            _saveTitle.text = Strings.Get(_dirty ? "camp.save" : "camp.saved").ToUpperInvariant();
-            if (_hqLevel != null) _hqLevel.text = Strings.Format("camp.hqLevel", level);
-            foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+            foreach (var (chip, plan) in _planChips) chip.Selected = plan == PlayerProfile.ActiveBasePlan;
+            // The map picker: every map's picture, and a word on maps set up on their own or where the plan moved a tower.
+            var maps = MatchSettings.AllMaps.Where(m => BaseSites.CampOf(m.Id) != null).ToList();
+            var options = new List<KitOption>();
+            var selected = 0;
+            for (var i = 0; i < maps.Count; i++)
             {
-                var open = _campViews.Where(v => !v.Utility && v.Slot.Size == size && v.Open).ToList();
-                _legendCounts[size].text = $"{open.Count(v => BaseLayout.At(_layout, v.Slot) != null)}/{open.Count}";
+                var id = maps[i].Id;
+                if (id == _mapId) selected = i;
+                options.Add(new KitOption(Strings.Get("map." + id), MapNote(id), MapArt.For(id)));
             }
-            var utilities = _campViews.Where(v => v.Utility && v.Open).ToList();
-            _utilityCount.text = $"{utilities.Count(v => BaseLayout.At(_layout, v.Slot) != null)}/{utilities.Count}";
+            _dropHost.Clear();
+            _mapDrop = new KitDropdown(Strings.Get("camp.map"), options, selected, i => ShowMap(maps[i].Id));
+            _dropHost.Add(_mapDrop);
+            var mark = KitDot.Attach(_mapDrop, MapNote(_mapId) != null);
+            mark.AddToClassList("fc-base__map-dot");
+        }
+
+        /// <summary>A map's mark on the picker: its own set-up, or a plan that does not fit it exactly (null: none).</summary>
+        private string MapNote(string mapId)
+        {
+            if (Plan.Custom.ContainsKey(mapId)) return Strings.Get("camp.customMark");
+            var site = BaseSites.CampOf(mapId);
+            return site != null && Plan.Misfits(mapId, site) ? Strings.Get("camp.misfit") : null;
         }
 
         private void RefreshSlots(string carrying)
         {
-            foreach (var view in _campViews.Concat(_outpostViews))
+            if (_site == null) return;
+            var towers = _site != null ? (Plan.Custom.ContainsKey(_mapId) ? BasePlan.ToAssignment(_site, Plan.Custom[_mapId]) : Plan.Assign(_site, out _)) : null;
+            foreach (var view in _slots)
             {
-                var soon = Soon(view);
-                var tower = soon ? null : BaseLayout.At(_layout, view.Slot);
+                var tower = towers?[view.Hardpoint];
                 var e = view.Element;
-                e.EnableInClassList("soon", soon);
-                e.EnableInClassList("filled", tower != null);
-                e.EnableInClassList("closed", !view.Open);
-                var lit = carrying != null && view.Open && !soon && BaseLayout.Fits(_catalog, carrying, view.Slot);
-                e.EnableInClassList("lit", lit);
-                e.EnableInClassList("dim", carrying != null && !lit);
-                e.EnableInClassList("picked", _picked is { } p && p.Equals(view.Slot));
-                e.EnableInClassList("selected-type", tower != null && tower == _selected && carrying == null);
-                view.Icon.Name = soon ? "module" : tower != null ? IconFor(tower) : view.Open ? "plus" : "lock";
-                view.Caption.text = soon ? Strings.Get("camp.soon")
-                    : !view.Open ? Strings.Format("camp.hqLevel", OpensAt(view.Slot))
-                    : "";
-                e.tooltip = tower != null ? Strings.Card(tower) : SizeName(view.Slot.Size);
+                var face = view.Face;
+                e.EnableInClassList("fc-base-slot--filled", tower != null);
+                e.EnableInClassList("fc-base-slot--closed", !view.Open);
+                var lit = carrying != null && view.Open && Fits(carrying, view);
+                e.EnableInClassList("fc-base-slot--lit", lit);
+                e.EnableInClassList("fc-base-slot--dim", carrying != null && !lit);
+                e.EnableInClassList("fc-base-slot--picked", _picked == view.Hardpoint);
+                var render = tower != null ? CardArt.For(tower) : null;
+                face.Art.style.backgroundImage = render != null ? new StyleBackground(render) : new StyleBackground(StyleKeyword.None);
+                face.Art.style.display = tower != null ? DisplayStyle.Flex : DisplayStyle.None;
+                // An empty slot says what it takes in words (B5); a closed one the HQ level it needs (F1).
+                face.Word.text = !view.Open ? Strings.Format("camp.hqLevel", OpensAt(view))
+                    : tower == null ? (view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size)) : "";
+                face.Word.style.display = face.Word.text.Length > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                face.Lock.style.display = view.Open ? DisplayStyle.None : DisplayStyle.Flex;
+                face.Rank = tower != null ? PlayerProfile.Rank(tower) : 0;
+                face.Branch.style.display = tower != null && PlayerProfile.TowerBranch(tower) != null ? DisplayStyle.Flex : DisplayStyle.None;
+                e.tooltip = tower != null ? Strings.Card(tower) : view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size);
             }
         }
 
-        private void RefreshRows(string carrying)
+        private void RefreshMap(BaseLoadout layout)
         {
-            var slot = _picked;
-            foreach (var (row, id) in _rows)
+            _customChip.Selected = _site != null && Plan.Custom.ContainsKey(_mapId);
+            _rangeChip.Selected = _ranges;
+            _legend.style.display = _ranges ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_site == null) return;
+            var towers = BasePlan.ToAssignment(_site, layout);
+            var camp = BaseLayout.Camp(_site, _catalog.Base, layout.HqLevel);
+            if (_ranges)
             {
-                var fort = _catalog.Vehicles[id].Fort;
-                var module = fort.Kind == FortKind.Utility;
-                row.EnableInClassList("armed", id == carrying);
-                row.EnableInClassList("chosen", id == _selected);
-                var fits = slot is not { } s || BaseLayout.Fits(_catalog, id, s);
-                row.EnableInClassList("nofit", !fits);
-                var branch = PlayerProfile.TowerBranch(id);
-                var line = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(fort.Size), PlayerProfile.Rank(id));
-                if (branch != null) line += " · " + Strings.Branch(branch);
-                row.Q<Label>(className: "base-tower-line").text = line;
-                var placed = PlacedCount(id);
-                var count = row.Q<Label>(className: "base-tower-count");
-                count.text = placed > 0 ? "×" + placed : "";
-                count.EnableInClassList("base-hidden", placed == 0);
+                var cover = new List<(UnityEngine.Vector2, float, float)>();
+                for (var i = 0; i < towers.Length; i++)
+                {
+                    if (towers[i] == null || !camp[i].Open || !_catalog.Vehicles.TryGetValue(layout.DefFor(towers[i]), out var def)) continue;
+                    var (ground, air, _) = BaseRoles.Reach(def);
+                    cover.Add((_frame.ToPicture(_site.Slots[i].Position), ground, air));
+                }
+                _map.Cover = cover;
             }
+            else _map.Cover = null;
+            // The picked slot's tower: its reach and its shortest range as rings.
+            _map.Rings = null;
+            if (_picked >= 0 && towers[_picked] is { } picked && _catalog.Vehicles.TryGetValue(layout.DefFor(picked), out var pd))
+            {
+                var (ground, air, min) = BaseRoles.Reach(pd);
+                _map.Rings = (_frame.ToPicture(_site.Slots[_picked].Position), Mathf.Max(ground, air), min);
+            }
+            _map.Repaint();
+            PlaceSlots();
         }
 
-        /// <summary>How many places hold a card: the camp's (every HQ level's), the outpost's and the utility slots.</summary>
-        private int PlacedCount(string id) => BaseLayout.Placed(_layout, id) + _layout.Outpost.Count(o => o == id) + _layout.Utilities.Count(u => u == id);
+        private static int PlacedCount(BaseLoadout layout, string id) =>
+            BaseLayout.Placed(layout, id) + layout.Utilities.Count(u => u == id);
 
-        private void RefreshHint(string carrying)
+        // ------------------------------------------------------------------ the panel
+
+        private void RefreshPanel(BaseLoadout layout)
         {
-            if (carrying != null) _hint.text = Strings.Format("camp.hintArmed", Strings.Card(carrying));
-            else if (_picked is { Kind: LoadoutSlotKind.Outpost }) _hint.text = Strings.Get("camp.outpostKeep");
-            else if (_picked is { } slot && BaseLayout.At(_layout, slot) != null) _hint.text = Strings.Get("camp.hintFilled");
-            else if (_picked is { } empty) _hint.text = Strings.Format("camp.hintSlot", SizeName(empty.Size).ToLowerInvariant());
-            else _hint.text = Strings.Get("camp.hint");
-        }
-
-        // ------------------------------------------------------------------ the tower card panel
-
-        private void RefreshPanel()
-        {
-            var id = _selected;
-            _takeOut.EnableInClassList("base-hidden", !(_picked is { } p && BaseLayout.At(_layout, p) != null && BaseLayout.CanClear(p)));
-            foreach (var (button, tab) in _tabButtons) button.EnableInClassList("chosen", tab == _tab);
             _panelBody.Clear();
-            _info.style.display = id != null && OpenDetail != null ? DisplayStyle.Flex : DisplayStyle.None;
+            var slot = _picked >= 0 ? ViewOf(_picked) : null;
+            var id = slot != null ? BasePlan.ToAssignment(_site, layout)[slot.Hardpoint] : _selected;
             if (id == null || !_catalog.Vehicles.TryGetValue(id, out var def))
             {
-                _headName.text = "";
-                _headLine.text = _headCount.text = "";
+                if (slot != null) EmptySlotPanel(slot);
+                else IdlePanel(layout);
                 return;
             }
-            var module = def.Fort.Kind == FortKind.Utility;
-            _headIcon.Name = IconFor(id);
-            _headSize.Name = module ? "module" : SizeIcon(def.Fort.Size);
-            _headName.text = Strings.Card(id);
+            var module = def.Fort?.Kind == FortKind.Utility;
+            var head = Kit.Box("fc-base__head");
+            var art = Kit.Box("fc-base__head-art");
+            if (CardArt.For(id) is { } render) art.style.backgroundImage = Background.FromTexture2D(render);
+            else art.Add(Kit.Icon(CardIcons.For(id), "fc-base__head-icon"));
+            head.Add(art);
+            var text = Kit.Box("fc-base__head-text");
+            text.Add(Kit.Text(Kit.Caps(Strings.Card(id)), "fc-panel-title fc-row-text"));
             var branch = PlayerProfile.TowerBranch(id);
-            _headLine.text = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(def.Fort.Size), PlayerProfile.Rank(id)) +
-                             (branch != null ? " · " + Strings.Branch(branch) : "");
-            _headCount.text = Strings.Format("camp.inCamp", PlacedCount(id));
-            if (_tab == PanelTab.Branch) BranchPanel(id);
-            else GearPanel(id);
+            var sizeWord = module ? Strings.Get("camp.utility") : SizeName(def.Fort.Size);
+            text.Add(Kit.Text(Strings.Format("camp.cardLine", sizeWord, PlayerProfile.Rank(id)) + (branch != null ? " · " + Strings.Branch(branch) : ""),
+                "fc-small fc-row-text"));
+            head.Add(text);
+            _panelBody.Add(head);
+
+            // Its numbers against the towers of its size (D1), and its range.
+            var shown = _catalog.Vehicles.TryGetValue(branch ?? id, out var fights) ? fights : def;
+            var boost = PlayerProfile.BoostFor(shown);
+            if (!module)
+            {
+                var best = BaseRoles.BestOfSize(_catalog, def.Fort.Size);
+                var (ground, air, min) = BaseRoles.Reach(shown);
+                var reach = Mathf.Max(ground, air);
+                _panelBody.Add(Kit.Text(Kit.Caps(Strings.Format("camp.vsSize", sizeWord.ToLowerInvariant())), "fc-caption fc-base__caption"));
+                StatRow("camp.statHp", shown.MaxHp * boost.Hp, best.hp, "N0");
+                StatRow("camp.statDps", UnitStats.Dps(shown.Weapon) * boost.Damage * boost.FireRate, best.dps, "N0");
+                StatRow("camp.statRange", reach, best.range, "0");
+                var reachLine = ground > 0f && air > 0f ? Strings.Format("camp.reachBoth", Mathf.RoundToInt(ground), Mathf.RoundToInt(air))
+                    : air > 0f ? Strings.Format("camp.reachAir", Mathf.RoundToInt(air))
+                    : ground > 0f ? Strings.Format("camp.reachGround", Mathf.RoundToInt(ground)) : Strings.Get("camp.reachNone");
+                if (min > 0f) reachLine += " · " + Strings.Format("camp.minRange", Mathf.RoundToInt(min));
+                _panelBody.Add(Kit.Text(reachLine, "fc-small fc-base__reach"));
+            }
+            else _panelBody.Add(Kit.Text(Strings.Get("guide." + id), "fc-small fc-base__reach"));
+
+            // Branch and gear (D2).
+            if (!module)
+            {
+                var tabs = new KitTabs(new[] { Strings.Get("camp.branch"), Strings.Get("camp.gear") }, (int)_tab, i =>
+                {
+                    _tab = (PanelTab)i;
+                    Refresh();
+                });
+                tabs.AddToClassList("fc-base__tabs");
+                _panelBody.Add(tabs);
+                if (_tab == PanelTab.Branch) BranchPanel(id);
+                else GearPanel(id);
+            }
+
+            // Replace, Remove, the detail page (D3).
+            var buttons = Kit.Box("fc-base__buttons");
+            if (slot != null)
+            {
+                buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("camp.replace"), () =>
+                {
+                    _armed = null;
+                    _tray.Shown = slot.Utility ? TowerTray.Tab.Utility : (TowerTray.Tab)(int)slot.Size;
+                    _note(Strings.Get("camp.replaceHint"), false);
+                    Refresh();
+                }, "restart"));
+                buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("camp.removeButton"), () => TakeOut(slot.Hardpoint), "close"));
+            }
+            if (OpenDetail != null) buttons.Add(new KitButton(ButtonTier.Text, Strings.Get("army.info"), () => OpenDetail(id), "info"));
+            _panelBody.Add(buttons);
+        }
+
+        private void StatRow(string key, float value, float best, string format)
+        {
+            var row = Kit.Box("fc-base__stat");
+            var line = Kit.Box("fc-row fc-row--spread");
+            line.Add(Kit.Text(Strings.Get(key), "fc-small fc-row-text"));
+            line.Add(Kit.Text(value.ToString(format, Kit.Culture), "fc-number-small"));
+            row.Add(line);
+            var track = Kit.Box("fc-statbar");
+            var fill = Kit.Box("fc-statbar__base");
+            fill.style.width = Length.Percent(Mathf.Clamp01(value / Mathf.Max(1f, best)) * 100f);
+            track.Add(fill);
+            row.Add(track);
+            _panelBody.Add(row);
+        }
+
+        private void EmptySlotPanel(SlotView slot)
+        {
+            var size = slot.Utility ? Strings.Get("camp.utility") : SizeName(slot.Size);
+            _panelBody.Add(Kit.Text(Kit.Caps(Strings.Format("camp.emptySlot", size)), "fc-panel-title"));
+            _panelBody.Add(Kit.Text(Strings.Get("camp.place." + slot.Key.Place.ToString().ToLowerInvariant()), "fc-small fc-mt-1"));
+            _panelBody.Add(Kit.Text(slot.Utility ? Strings.Get("camp.takesModule") : Strings.Format("camp.takes", size.ToLowerInvariant()), "fc-body-2 fc-mt-2"));
+        }
+
+        /// <summary>Nothing picked (D4): how to lay a base out, and the base's overview (E).</summary>
+        private void IdlePanel(BaseLoadout layout)
+        {
+            _panelBody.Add(Kit.Text(Kit.Caps(Strings.Get("camp.overview")), "fc-panel-title"));
+            _panelBody.Add(Kit.Text(Strings.Get("camp.idleHint"), "fc-body-2 fc-mt-2"));
+            var strength = Kit.Box("fc-base__strength-big");
+            strength.Add(Kit.Caption(Strings.Get("camp.strength")));
+            strength.Add(Kit.Text(Mathf.RoundToInt(Strength).ToString(), "fc-number"));
+            strength.Add(Kit.Text(Strings.Get("camp.strengthNote"), "fc-small"));
+            _panelBody.Add(strength);
+            if (_site != null) _panelBody.Add(Kit.Text(CountsLine(layout), "fc-small fc-mt-2"));
+        }
+
+        private string CountsLine(BaseLoadout layout)
+        {
+            var c = BaseRoles.Counts(_site, _catalog.Base, layout);
+            return Strings.Format("camp.counts", c[0].filled, c[0].open, c[1].filled, c[1].open, c[2].filled, c[2].open, c[3].filled, c[3].open);
         }
 
         private void BranchPanel(string id)
@@ -919,27 +919,27 @@ namespace MachineBrigade.Game.Hud
             var branches = TowerCards.Branches(_catalog, id);
             if (branches.Count == 0)
             {
-                _panelBody.Add(UiKit.Text(Strings.Get("camp.branchNone"), "base-note"));
+                _panelBody.Add(Kit.Text(Strings.Get("camp.branchNone"), "fc-small"));
                 return;
             }
             var rank = PlayerProfile.Rank(id);
             var chosen = PlayerProfile.TowerBranch(id);
             var locked = rank < TowerCards.BranchRank;
-            _panelBody.Add(UiKit.Text(locked ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
+            _panelBody.Add(Kit.Text(locked ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
                 : chosen == null ? Strings.Get("camp.branchFree")
-                : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0")), "base-note"));
+                : Strings.Format("camp.branchSwap", Kit.Count(PlayerProfile.BranchSwapCoins)), "fc-small fc-base__note"));
             foreach (var b in branches)
             {
                 var branchId = b;
-                var card = UiKit.Button("base-branch", () => ChooseBranch(id, branchId));
-                card.EnableInClassList("locked", locked);
-                card.EnableInClassList("chosen", branchId == chosen);
-                var head = UiKit.Box("base-branch-head");
-                head.Add(UiKit.Text(Strings.Branch(branchId), "base-branch-name"));
-                if (locked) head.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
-                else if (branchId == chosen) head.Add(UiKit.Text(Strings.Get("camp.current"), "base-branch-tag"));
+                var card = Kit.Tappable(KitPanel.SurfaceClass + " fc-base__branch", () => ChooseBranch(id, branchId));
+                card.EnableInClassList("fc-base__branch--locked", locked);
+                card.EnableInClassList("fc-base__branch--chosen", branchId == chosen);
+                var head = Kit.Box("fc-row");
+                head.Add(Kit.Text(Kit.Caps(Strings.Branch(branchId)), "fc-panel-title fc-row-text"));
+                if (locked) head.Add(Kit.Icon("lock", "fc-base__branch-lock"));
+                else if (branchId == chosen) head.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag"));
                 card.Add(head);
-                card.Add(UiKit.Text(Strings.Get("branch." + branchId + ".info"), "base-branch-info"));
+                card.Add(Kit.Text(Strings.Get("branch." + branchId + ".info"), "fc-small"));
                 _panelBody.Add(card);
             }
         }
@@ -958,17 +958,9 @@ namespace MachineBrigade.Game.Hud
                 ApplyBranch(towerId, branchId);
                 return;
             }
-            AskBranch(towerId, branchId);
-        }
-
-        /// <summary>Asks before a branch change spends coins.</summary>
-        private void AskBranch(string towerId, string branchId)
-        {
-            _confirmText.text = Strings.Format("camp.branchConfirm", Strings.Card(towerId), Strings.Branch(branchId), PlayerProfile.BranchSwapCoins.ToString("N0"));
-            _confirmed = () => ApplyBranch(towerId, branchId);
-            _confirm.RemoveFromClassList("base-hidden");
-            _confirm.BringToFront();
-            UiKit.Uppercase(_confirm);
+            KitDialog.Confirm(Root, Strings.Get("camp.branch"),
+                Strings.Format("camp.branchConfirm", Strings.Card(towerId), Strings.Branch(branchId), Kit.Count(PlayerProfile.BranchSwapCoins)),
+                Strings.Get("camp.change"), () => ApplyBranch(towerId, branchId));
         }
 
         private void ApplyBranch(string towerId, string branchId)
@@ -978,28 +970,21 @@ namespace MachineBrigade.Game.Hud
                 _note(Strings.Get("arsenal.needCoins"), true);
                 return;
             }
-            if (_layout.Towers.Contains(towerId)) _layout.Branches[towerId] = branchId;
             _note(Strings.Format("camp.branchChosen", Strings.Card(towerId), Strings.Branch(branchId)), false);
             _changed();
             Refresh();
         }
 
-        private void HideConfirm()
-        {
-            _confirmed = null;
-            _confirm?.AddToClassList("base-hidden");
-        }
-
         private void GearPanel(string id)
         {
-            var row = UiKit.Box("base-gear-slots");
+            var row = Kit.Box("fc-base__gear");
             var any = false;
             for (var i = 0; i < GearSlots.Length; i++)
             {
                 var slot = i;
                 var item = TowerGearIn(id, i);
                 any |= item != null;
-                var cell = UiKit.Button(i == _gearOpen ? "base-gear-slot open" : "base-gear-slot", () =>
+                var cell = Kit.Tappable("fc-base__gear-slot" + (i == _gearOpen ? " fc-base__gear-slot--open" : ""), () =>
                 {
                     _gearOpen = _gearOpen == slot ? -1 : slot;
                     Refresh();
@@ -1007,16 +992,16 @@ namespace MachineBrigade.Game.Hud
                 if (item != null) cell.Add(GearArt.Tile(item, GearTile));
                 else
                 {
-                    var empty = UiKit.Box("base-gear-empty");
-                    empty.Add(UiKit.Icon(GearSlotIcon(i), UiKit.Ink, 1.6f));
+                    var empty = Kit.Box("fc-base__gear-empty");
+                    empty.Add(Kit.Icon(GearSlotIcon(i)));
                     cell.Add(empty);
                 }
-                cell.Add(UiKit.Text(GearText.TowerSlotName(TowerSlots[i]), "base-gear-name"));
+                cell.Add(Kit.Text(GearText.TowerSlotName(TowerSlots[i]), "fc-small fc-base__gear-name"));
                 row.Add(cell);
             }
             _panelBody.Add(row);
             if (_gearOpen >= 0) GearChoices(id, TowerSlots[_gearOpen]);
-            else _panelBody.Add(UiKit.Text(any ? Strings.Format("camp.gearShared", Strings.Card(id)) : Strings.Get("camp.gearPick"), "base-note"));
+            else _panelBody.Add(Kit.Text(any ? Strings.Format("camp.gearShared", Strings.Card(id)) : Strings.Get("camp.gearPick"), "fc-small"));
         }
 
         /// <summary>The pieces in the bag that fit one of a tower type's slots: a tap wears one, and the worn one can come off.</summary>
@@ -1024,22 +1009,22 @@ namespace MachineBrigade.Game.Hud
         {
             var worn = PlayerProfile.TowerEquipped(id, slot);
             var pieces = PlayerProfile.TowerGearFor(id, slot);
-            var grid = UiKit.Box("base-gear-choices");
+            var grid = Kit.Box("fc-base__gear-choices");
             if (worn != null)
             {
-                var off = UiKit.Button("base-gear-choice off", () =>
+                var off = Kit.Tappable("fc-base__gear-choice", () =>
                 {
                     PlayerProfile.UnequipTower(id, slot);
                     _note(Strings.Format("camp.gearRemoved", GearText.TowerSlotName(slot), Strings.Card(id)), false);
                     Refresh();
                 });
-                off.Add(UiKit.Text(Strings.Get("camp.gearOff"), "base-gear-name"));
+                off.Add(Kit.Text(Strings.Get("camp.gearOff"), "fc-small"));
                 grid.Add(off);
             }
             foreach (var piece in pieces)
             {
                 var item = piece;
-                var choice = UiKit.Button(item == worn ? "base-gear-choice worn" : "base-gear-choice", () =>
+                var choice = Kit.Tappable("fc-base__gear-choice" + (item == worn ? " fc-base__gear-choice--worn" : ""), () =>
                 {
                     if (!PlayerProfile.EquipTower(id, item)) return;
                     _note(Strings.Format("camp.gearWorn", Strings.Card(id)), false);
@@ -1049,11 +1034,11 @@ namespace MachineBrigade.Game.Hud
                 grid.Add(choice);
             }
             _panelBody.Add(grid);
-            if (pieces.Count == 0) _panelBody.Add(UiKit.Text(Strings.Get("camp.gearNoPieces"), "base-note"));
+            if (pieces.Count == 0) _panelBody.Add(Kit.Text(Strings.Get("camp.gearNoPieces"), "fc-small"));
         }
 
         /// <summary>The gear tile's size (GearArt draws its tiles at a size given in pixels).</summary>
-        private const float GearTile = 84f;
+        private const float GearTile = 72f;
 
         private static string GearSlotIcon(int slot) => slot switch { 0 => "cannon", 1 => "shield", _ => "cbradar" };
 
@@ -1063,128 +1048,51 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The gear slot at a place in a tower type's three (weapon, structure, systems).</summary>
         internal static GearSlot TowerSlotOf(int slot) => TowerSlots[slot];
 
-        /// <summary>A structure's detail page asked for (the info button on the picked tower's card): set by the menu.</summary>
-        internal Action<string> OpenDetail { get; set; }
+        // ------------------------------------------------------------------ the strip: cover, strength, slots
 
-        /// <summary>Picks a tower or module for the panel (its Gear tab when <paramref name="gear"/>), from its detail page.</summary>
-        internal void Pick(string id, bool gear = false)
+        /// <summary>
+        /// The base's cover (E1: light vehicles, tanks, aircraft, rockets and missiles, stealth, repair and rearm; a
+        /// missing one in the warning colour), its strength (E2: the number the Defend and Endless waves scale with)
+        /// and the slots in words (E3: "Nhỏ 6/6 · Vừa 3/3 · Lớn 2/2 · Tiện ích 0/3").
+        /// </summary>
+        private void RefreshStrip(BaseLoadout layout)
         {
-            if (!_towers.Contains(id) && !_modules.Contains(id)) return;
-            _selected = id;
-            _armed = null;
-            _picked = null;
-            if (gear) _tab = PanelTab.Gear;
-            Refresh();
-        }
-    }
-
-    /// <summary>
-    /// The camp diagram's ground: a grid turned with the camp, the map's roads and edge, and a
-    /// tick from each hardpoint the way its tower faces. Colours and spacings come from the
-    /// stylesheet (--camp-* properties on .base-canvas).
-    /// </summary>
-    internal sealed class CampCanvas : VisualElement
-    {
-        private static readonly CustomStyleProperty<Color> GridColour = new("--camp-grid");
-        private static readonly CustomStyleProperty<Color> RoadColour = new("--camp-road");
-        private static readonly CustomStyleProperty<Color> EdgeColour = new("--camp-edge");
-        private static readonly CustomStyleProperty<Color> FacingColour = new("--camp-facing");
-        private static readonly CustomStyleProperty<float> GridStep = new("--camp-grid-step");
-        private static readonly CustomStyleProperty<float> GapSize = new("--camp-gap");
-        private static readonly CustomStyleProperty<float> PadSize = new("--camp-pad");
-        private static readonly CustomStyleProperty<float> TickLength = new("--camp-tick");
-
-        private Color _grid = Color.clear, _road = Color.clear, _edge = Color.clear, _facing = Color.clear;
-        private float _step = 10f, _tick = 10f;
-
-        public CampCanvas()
-        {
-            pickingMode = PickingMode.Position;
-            generateVisualContent += Draw;
-            RegisterCallback<CustomStyleResolvedEvent>(e =>
+            _strip.Clear();
+            var cover = Kit.Box("fc-base__cover");
+            cover.Add(Kit.Caption(Strings.Get("camp.cover")));
+            var tags = Kit.Box("fc-row fc-row--wrap");
+            var roles = BaseRoles.Cover(_catalog, layout);
+            foreach (var role in BaseRoles.All)
             {
-                var s = e.customStyle;
-                if (s.TryGetValue(GridColour, out var c)) _grid = c;
-                if (s.TryGetValue(RoadColour, out c)) _road = c;
-                if (s.TryGetValue(EdgeColour, out c)) _edge = c;
-                if (s.TryGetValue(FacingColour, out c)) _facing = c;
-                if (s.TryGetValue(GridStep, out var f)) _step = f;
-                if (s.TryGetValue(GapSize, out f)) Gap = f;
-                if (s.TryGetValue(PadSize, out f)) Pad = f;
-                if (s.TryGetValue(TickLength, out f)) _tick = f;
-                MarkDirtyRepaint();
-            });
+                var has = roles.Contains(role);
+                var tag = Kit.Box("fc-tag " + (has ? "fc-tag--ok" : "fc-tag--missing"));
+                tag.Add(Kit.Icon(has ? RoleIcon(role) : "info"));
+                tag.Add(Kit.Text(Strings.Get("camp.role." + role.ToString().ToLowerInvariant()), "fc-small" + (has ? "" : " fc-danger-text")));
+                tags.Add(tag);
+            }
+            cover.Add(tags);
+            _strip.Add(cover);
+            var numbers = Kit.Box("fc-base__numbers");
+            var strength = Kit.Box("fc-row");
+            strength.Add(Kit.Caption(Strings.Get("camp.strength")));
+            StrengthLabel = Kit.Text(Mathf.RoundToInt(Strength).ToString(), "fc-number-small fc-base__strength");
+            strength.Add(StrengthLabel);
+            numbers.Add(strength);
+            if (_site != null) numbers.Add(Kit.Text(CountsLine(layout), "fc-small"));
+            _strip.Add(numbers);
         }
 
-        public MapDefinition Map { get; set; }
-        public CampLayout.Fit? Fit { get; set; }
-        public List<(Vector2 centre, Vector2 direction, float half)> Facings { get; set; } = new();
+        /// <summary>The strength number on the strip (tests: it is <see cref="Strength"/>).</summary>
+        internal Label StrengthLabel { get; private set; }
 
-        /// <summary>The space kept between two frames (pixels).</summary>
-        public float Gap { get; private set; } = 8f;
-
-        /// <summary>The margin inside the diagram (pixels).</summary>
-        public float Pad { get; private set; } = 12f;
-
-        private void Draw(MeshGenerationContext context)
+        private static string RoleIcon(CoverRole role) => role switch
         {
-            if (Fit is not { } fit) return;
-            var p = context.painter2D;
-            var rect = contentRect;
-            // The grid, every so many metres in the camp's own axes.
-            var step = Mathf.Max(8f, _step * fit.Scale);
-            p.strokeColor = _grid;
-            p.lineWidth = 1f;
-            p.BeginPath();
-            for (var x = Mathf.Repeat(fit.Origin.x, step); x < rect.width; x += step)
-            {
-                p.MoveTo(new Vector2(x, 0f));
-                p.LineTo(new Vector2(x, rect.height));
-            }
-            for (var y = Mathf.Repeat(fit.Origin.y, step); y < rect.height; y += step)
-            {
-                p.MoveTo(new Vector2(0f, y));
-                p.LineTo(new Vector2(rect.width, y));
-            }
-            p.Stroke();
-            if (Map != null)
-            {
-                p.lineCap = LineCap.Round;
-                p.lineJoin = LineJoin.Round;
-                p.strokeColor = _road;
-                foreach (var road in Map.Roads)
-                {
-                    if (road.Points.Count < 2) continue;
-                    p.lineWidth = Mathf.Max(2f, road.Width * fit.Scale);
-                    p.BeginPath();
-                    p.MoveTo(fit.ToPanel(CampLayout.ToUnity(road.Points[0])));
-                    for (var i = 1; i < road.Points.Count; i++) p.LineTo(fit.ToPanel(CampLayout.ToUnity(road.Points[i])));
-                    p.Stroke();
-                }
-                if (Map.Boundary.Count > 2)
-                {
-                    p.strokeColor = _edge;
-                    p.lineWidth = 2f;
-                    p.BeginPath();
-                    p.MoveTo(fit.ToPanel(CampLayout.ToUnity(Map.Boundary[0])));
-                    for (var i = 1; i < Map.Boundary.Count; i++) p.LineTo(fit.ToPanel(CampLayout.ToUnity(Map.Boundary[i])));
-                    p.ClosePath();
-                    p.Stroke();
-                }
-            }
-            // Which way each tower faces.
-            p.strokeColor = _facing;
-            p.lineWidth = 2f;
-            p.lineCap = LineCap.Round;
-            foreach (var (centre, direction, half) in Facings)
-            {
-                // From the frame's edge outwards (a square: the edge is further along a diagonal).
-                var edge = half / Mathf.Max(0.3f, Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(direction.y))) + 2f;
-                p.BeginPath();
-                p.MoveTo(centre + direction * edge);
-                p.LineTo(centre + direction * (edge + _tick));
-                p.Stroke();
-            }
-        }
+            CoverRole.AntiLight => "t_mg",
+            CoverRole.AntiTank => "t_atgm",
+            CoverRole.AntiAir => "t_aa",
+            CoverRole.Intercept => "t_cram",
+            CoverRole.Stealth => "eye",
+            _ => "t_repair",
+        };
     }
 }
