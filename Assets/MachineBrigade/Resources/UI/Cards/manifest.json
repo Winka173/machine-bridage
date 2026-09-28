@@ -1,0 +1,861 @@
+{
+    "version": 2,
+    "size": 512,
+    "camera": "orthographic 3/4, pitch 26, yaw -142 (the front to the right), framed on the silhouette; key light 44/-105, fill 18/60, rim 12/150, flat ambient; contact shadow from above, blurred; elites and bosses in the enemy colours",
+    "entries": [
+        {
+            "id": "scout_jeep",
+            "kind": "vehicle",
+            "model": "scout_jeep",
+            "source": "Models/scout_jeep_hd",
+            "hash": "v2:dc28b6a3b5cead2464087c3d31713138e33fdb84"
+        },
+        {
+            "id": "armored_car",
+            "kind": "vehicle",
+            "model": "armored_car",
+            "source": "Models/armored_car",
+            "hash": "v2:cdbf8c1d724a0c03041c338c17f2299b37deb46e"
+        },
+        {
+            "id": "rocket_technical",
+            "kind": "vehicle",
+            "model": "rocket_technical",
+            "source": "Models/rocket_technical",
+            "hash": "v2:8018ab1e45db2e85248cd8962890b6b256780ab8"
+        },
+        {
+            "id": "light_tank",
+            "kind": "vehicle",
+            "model": "light_tank",
+            "source": "Models/light_tank_hd",
+            "hash": "v2:9286d0ec8849f50afb9cb50442973e2a13f86be8"
+        },
+        {
+            "id": "main_battle_tank",
+            "kind": "vehicle",
+            "model": "main_battle_tank",
+            "source": "Models/main_battle_tank_hd",
+            "hash": "v2:d05f2105b3d9822f06f58435d336edb43428447d"
+        },
+        {
+            "id": "heavy_tank",
+            "kind": "vehicle",
+            "model": "heavy_tank",
+            "source": "Models/heavy_tank_hd",
+            "hash": "v2:ee3a7b43cee094255f5d0bcf0f54c9386a6393b5"
+        },
+        {
+            "id": "tank_destroyer",
+            "kind": "vehicle",
+            "model": "tank_destroyer",
+            "source": "Models/tank_destroyer_hd",
+            "hash": "v2:8ed476e7d07da940da780b669224f6b88e28c12e"
+        },
+        {
+            "id": "flame_tank",
+            "kind": "vehicle",
+            "model": "flame_tank",
+            "source": "Models/flame_tank",
+            "hash": "v2:ef61f408c1644c4b9370558b0146b81684757345"
+        },
+        {
+            "id": "mortar_carrier",
+            "kind": "vehicle",
+            "model": "mortar_carrier",
+            "source": "Models/mortar_carrier",
+            "hash": "v2:16c95c92d9bb17c3257157b40c76138687014b2d"
+        },
+        {
+            "id": "artillery",
+            "kind": "vehicle",
+            "model": "artillery",
+            "source": "Models/artillery_hd",
+            "hash": "v2:53ea4c91b7376ba94b5548a5a82632876617b4a3"
+        },
+        {
+            "id": "mlrs",
+            "kind": "vehicle",
+            "model": "mlrs",
+            "source": "Models/mlrs",
+            "hash": "v2:bbbd1c6b8fbed8edcf35f52e6343aa2ea45e35b9"
+        },
+        {
+            "id": "aa_vehicle",
+            "kind": "vehicle",
+            "model": "aa_vehicle",
+            "source": "Models/aa_vehicle_hd",
+            "hash": "v2:531e27b64915a0c3c4b56827f86af741956bca7a"
+        },
+        {
+            "id": "sam_launcher",
+            "kind": "vehicle",
+            "model": "sam_launcher",
+            "source": "Models/sam_launcher",
+            "hash": "v2:933b4f3ae4e7782e410b94c273f21957e68f5708"
+        },
+        {
+            "id": "scout_heli",
+            "kind": "vehicle",
+            "model": "scout_heli",
+            "source": "Models/scout_heli",
+            "hash": "v2:f66628979211f1c6318475b29a3307065873fda6"
+        },
+        {
+            "id": "attack_helicopter",
+            "kind": "vehicle",
+            "model": "attack_helicopter",
+            "source": "Models/attack_helicopter_hd",
+            "hash": "v2:58ed4e8dccbcc637529ad2cc77781c9fd8052ff0"
+        },
+        {
+            "id": "gunship_heli",
+            "kind": "vehicle",
+            "model": "gunship_heli",
+            "source": "Models/gunship_heli",
+            "hash": "v2:f09a2763951e9ab8f88c00d12a3c11d4692ac906"
+        },
+        {
+            "id": "strike_drone",
+            "kind": "vehicle",
+            "model": "strike_drone",
+            "source": "Models/strike_drone",
+            "hash": "v2:5b4f52b580cd7a13d4e7943ed21f8a3aa3053057"
+        },
+        {
+            "id": "attack_jet",
+            "kind": "vehicle",
+            "model": "attack_jet",
+            "source": "Models/attack_jet_hd",
+            "hash": "v2:32d1d8e42e5bd6990f2e2b09befc7ab0eb347d19"
+        },
+        {
+            "id": "ifv",
+            "kind": "vehicle",
+            "model": "ifv",
+            "source": "Models/ifv",
+            "hash": "v2:d83d26588c003dd9e4589f712125649dc629eb47"
+        },
+        {
+            "id": "thermobaric_launcher",
+            "kind": "vehicle",
+            "model": "thermobaric_launcher",
+            "source": "Models/thermobaric_launcher",
+            "hash": "v2:c9baa9c59480afacb68ec35e0d08eb4c86d30afd"
+        },
+        {
+            "id": "heavy_aa",
+            "kind": "vehicle",
+            "model": "heavy_aa",
+            "source": "Models/heavy_aa",
+            "hash": "v2:d39d614afa24a9e8533eb7a7bb31ed7042e4e4f6"
+        },
+        {
+            "id": "titan_tank",
+            "kind": "vehicle",
+            "model": "titan_tank",
+            "source": "Models/titan_tank",
+            "hash": "v2:2e8875a40e2b8b48cf3f1bfb02c2198efcc3f8b8"
+        },
+        {
+            "id": "heavy_bomber",
+            "kind": "vehicle",
+            "model": "heavy_bomber",
+            "source": "Models/heavy_bomber",
+            "hash": "v2:78b6b8cacb48f2a9c4acb6fc08244f293bf0ec93"
+        },
+        {
+            "id": "stealth_bomber",
+            "kind": "vehicle",
+            "model": "stealth_bomber",
+            "source": "Models/stealth_bomber",
+            "hash": "v2:cc080ec302a948de2333e63234a55d4da5210922"
+        },
+        {
+            "id": "twin_tank",
+            "kind": "vehicle",
+            "model": "twin_tank",
+            "source": "Models/twin_tank",
+            "hash": "v2:4e9c6da21e422456665291a28a41ccc3234ae997"
+        },
+        {
+            "id": "siege_tank",
+            "kind": "vehicle",
+            "model": "siege_tank",
+            "source": "Models/siege_tank",
+            "hash": "v2:b345aeb82505cc4d9270f488bd01aff9f4d5cb0e"
+        },
+        {
+            "id": "heavy_rocket_artillery",
+            "kind": "vehicle",
+            "model": "heavy_rocket_artillery",
+            "source": "Models/heavy_rocket_artillery",
+            "hash": "v2:1ad4f69e31aa47c95889a0b6ab25f85465dfae9f"
+        },
+        {
+            "id": "ballistic_launcher",
+            "kind": "vehicle",
+            "model": "ballistic_launcher",
+            "source": "Models/ballistic_launcher",
+            "hash": "v2:956dae08eeca9901432458cba1dacc37e9adda9e"
+        },
+        {
+            "id": "atgm_carrier",
+            "kind": "vehicle",
+            "model": "atgm_carrier",
+            "source": "Models/atgm_carrier",
+            "hash": "v2:9649c97415fef82671639f5e52ed5a68c1e92c8a"
+        },
+        {
+            "id": "engineer_vehicle",
+            "kind": "vehicle",
+            "model": "engineer_vehicle",
+            "source": "Models/engineer_vehicle",
+            "hash": "v2:c97894b7aaf56a58e3eeb7670f45cfb376722b69"
+        },
+        {
+            "id": "ew_jammer",
+            "kind": "vehicle",
+            "model": "ew_jammer",
+            "source": "Models/ew_jammer",
+            "hash": "v2:7507c0c208b035e31124e0bcc5537ee6d0c2038c"
+        },
+        {
+            "id": "fpv_carrier",
+            "kind": "vehicle",
+            "model": "fpv_carrier",
+            "source": "Models/fpv_carrier",
+            "hash": "v2:a65c5f59f84c0e06d0feda062e280aa3d2331d6c"
+        },
+        {
+            "id": "mine_layer",
+            "kind": "vehicle",
+            "model": "mine_layer",
+            "source": "Models/mine_layer",
+            "hash": "v2:6bf757171836c3173bafc356542d9ab241f43446"
+        },
+        {
+            "id": "fighter_jet",
+            "kind": "vehicle",
+            "model": "fighter_jet",
+            "source": "Models/fighter_jet_hd",
+            "hash": "v2:90f1a6eacdb9860615a900ee1c3f3460216278e1"
+        },
+        {
+            "id": "tank_buster",
+            "kind": "vehicle",
+            "model": "tank_buster",
+            "source": "Models/tank_buster",
+            "hash": "v2:0f43b344b82cf5be84ae1e74e10e2c6216a27b8c"
+        },
+        {
+            "id": "recon_drone",
+            "kind": "vehicle",
+            "model": "recon_drone",
+            "source": "Models/recon_drone",
+            "hash": "v2:aab6d03110931fd4d7a0961043cb1370969108fb"
+        },
+        {
+            "id": "heavy_attack_heli",
+            "kind": "vehicle",
+            "model": "heavy_attack_heli",
+            "source": "Models/heavy_attack_heli",
+            "hash": "v2:fc4bedab2904743fc9011830b17b4830aa8ed776"
+        },
+        {
+            "id": "vbied",
+            "kind": "vehicle",
+            "model": "vbied",
+            "source": "Models/vbied",
+            "hash": "v2:2240c4406756ca05cfc3168ebfedb5eb2ad0925e"
+        },
+        {
+            "id": "zu23_technical",
+            "kind": "vehicle",
+            "model": "zu23_technical",
+            "source": "Models/zu23_technical",
+            "hash": "v2:c4efbfee6042f6ef5ae9aab967a920ec80dad83a"
+        },
+        {
+            "id": "smoke_carrier",
+            "kind": "vehicle",
+            "model": "smoke_carrier",
+            "source": "Models/smoke_carrier",
+            "hash": "v2:5adcc1706148e131846fec3a6dd4e5b28f52e968"
+        },
+        {
+            "id": "lancet_truck",
+            "kind": "vehicle",
+            "model": "lancet_truck",
+            "source": "Models/lancet_truck",
+            "hash": "v2:086eed353c8a2880afd4c9244a086fe36a52928c"
+        },
+        {
+            "id": "shahed_truck",
+            "kind": "vehicle",
+            "model": "shahed_truck",
+            "source": "Models/shahed_truck",
+            "hash": "v2:df6f246ad42a83b22420baf5f2f71f7d03c135f2"
+        },
+        {
+            "id": "iron_beam",
+            "kind": "vehicle",
+            "model": "iron_beam",
+            "source": "Models/iron_beam",
+            "hash": "v2:7bf8fd1cd5177030c71ba72b60263868fa5882c0"
+        },
+        {
+            "id": "railgun_truck",
+            "kind": "vehicle",
+            "model": "railgun_truck",
+            "source": "Models/railgun_truck",
+            "hash": "v2:918cc658da12f0297594e52b776c9e5de619d860"
+        },
+        {
+            "id": "turtle_tank",
+            "kind": "vehicle",
+            "model": "turtle_tank",
+            "source": "Models/turtle_tank",
+            "hash": "v2:c494d3e4ec1d85f58f9b776bb484e4210289819b"
+        },
+        {
+            "id": "bmpt",
+            "kind": "vehicle",
+            "model": "bmpt",
+            "source": "Models/bmpt",
+            "hash": "v2:c78b36b2289e9b0692c3326f816e7b96bb15c1c9"
+        },
+        {
+            "id": "sapper",
+            "kind": "vehicle",
+            "model": "sapper",
+            "source": "Models/sapper",
+            "hash": "v2:c263472cfbb12798642a76f049c2527417569311"
+        },
+        {
+            "id": "command_vehicle",
+            "kind": "vehicle",
+            "model": "command_vehicle",
+            "source": "Models/command_vehicle",
+            "hash": "v2:ba303720506154f92264e04d6ce1b2aec1026bd6"
+        },
+        {
+            "id": "wheeled_gun",
+            "kind": "vehicle",
+            "model": "wheeled_gun",
+            "source": "Models/wheeled_gun",
+            "hash": "v2:d14f882613636cabfeb464f5517aeeb2fdc2a710"
+        },
+        {
+            "id": "counter_battery_radar",
+            "kind": "vehicle",
+            "model": "counter_battery_radar",
+            "source": "Models/counter_battery_radar",
+            "hash": "v2:698d96166045843fa79ce6ec119967e8c1b13970"
+        },
+        {
+            "id": "long_sam",
+            "kind": "vehicle",
+            "model": "long_sam",
+            "source": "Models/long_sam",
+            "hash": "v2:612f3db572307f063e868e14ee7dfd64c3063567"
+        },
+        {
+            "id": "aa_turret",
+            "kind": "tower",
+            "model": "aa_turret",
+            "source": "Models/aa_turret",
+            "hash": "v2:b2ebffded7d338310feb345f08fd68ff20120012"
+        },
+        {
+            "id": "aa_turret.flak",
+            "kind": "tower",
+            "model": "aa_turret",
+            "source": "Models/aa_turret",
+            "hash": "v2:b2ebffded7d338310feb345f08fd68ff20120012"
+        },
+        {
+            "id": "aa_turret.sam",
+            "kind": "tower",
+            "model": "aa_turret",
+            "source": "Models/aa_turret",
+            "hash": "v2:b2ebffded7d338310feb345f08fd68ff20120012"
+        },
+        {
+            "id": "airfield",
+            "kind": "tower",
+            "model": "helipad",
+            "source": "Models/helipad",
+            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+        },
+        {
+            "id": "ammo_depot",
+            "kind": "tower",
+            "model": "ammo_dump",
+            "source": "Models/ammo_dump",
+            "hash": "v2:e06ac5b4ce0a619e553d5cf64eb70d17a36e4519"
+        },
+        {
+            "id": "armored_train",
+            "kind": "boss",
+            "model": "armored_train",
+            "source": "Models/armored_train",
+            "hash": "v2:ab14a787ee598998a8d5dfe870ad9fbe19358ed9"
+        },
+        {
+            "id": "artillery_emplacement",
+            "kind": "tower",
+            "model": "artillery_emplacement",
+            "source": "Models/artillery_emplacement",
+            "hash": "v2:5d9d69d7255658c0b8d40aa3d329f4e4568ed505"
+        },
+        {
+            "id": "artillery_emplacement.cb",
+            "kind": "tower",
+            "model": "artillery_emplacement",
+            "source": "Models/artillery_emplacement",
+            "hash": "v2:5d9d69d7255658c0b8d40aa3d329f4e4568ed505"
+        },
+        {
+            "id": "artillery_emplacement.ext",
+            "kind": "tower",
+            "model": "artillery_emplacement",
+            "source": "Models/artillery_emplacement",
+            "hash": "v2:5d9d69d7255658c0b8d40aa3d329f4e4568ed505"
+        },
+        {
+            "id": "atgm_tower",
+            "kind": "tower",
+            "model": "atgm_tower",
+            "source": "Models/atgm_tower",
+            "hash": "v2:ba6fb238cd82f5fb7a5200897f367757651c8a69"
+        },
+        {
+            "id": "atgm_tower.multi",
+            "kind": "tower",
+            "model": "atgm_tower",
+            "source": "Models/atgm_tower",
+            "hash": "v2:ba6fb238cd82f5fb7a5200897f367757651c8a69"
+        },
+        {
+            "id": "atgm_tower.top",
+            "kind": "tower",
+            "model": "atgm_tower",
+            "source": "Models/atgm_tower",
+            "hash": "v2:ba6fb238cd82f5fb7a5200897f367757651c8a69"
+        },
+        {
+            "id": "behemoth",
+            "kind": "boss",
+            "model": "behemoth",
+            "source": "Models/behemoth",
+            "hash": "v2:39abdca2ae53ba7078238d4ac12be5edec88b1e4"
+        },
+        {
+            "id": "behemoth_inferno",
+            "kind": "boss",
+            "model": "behemoth_inferno",
+            "source": "Models/behemoth_inferno",
+            "hash": "v2:0754f5db36eeee24e32aaeab5957da0713bbf624"
+        },
+        {
+            "id": "behemoth_tempest",
+            "kind": "boss",
+            "model": "behemoth_tempest",
+            "source": "Models/behemoth_tempest",
+            "hash": "v2:02ad152b31c5f5149cbf7e0f7dfd9a3adaf3586c"
+        },
+        {
+            "id": "c_ram",
+            "kind": "tower",
+            "model": "c_ram",
+            "source": "Models/c_ram",
+            "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
+        },
+        {
+            "id": "c_ram.centurion",
+            "kind": "tower",
+            "model": "c_ram",
+            "source": "Models/c_ram",
+            "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
+        },
+        {
+            "id": "c_ram.hunter",
+            "kind": "tower",
+            "model": "c_ram",
+            "source": "Models/c_ram",
+            "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
+        },
+        {
+            "id": "dragons_teeth",
+            "kind": "tower",
+            "model": "dragons_teeth",
+            "source": "Models/dragons_teeth",
+            "hash": "v2:37f1b25fe2a6c37888ec5c0fd39ad12e6b5a1350"
+        },
+        {
+            "id": "dragons_teeth.hedgehog",
+            "kind": "tower",
+            "model": "dragons_teeth",
+            "source": "Models/dragons_teeth",
+            "hash": "v2:37f1b25fe2a6c37888ec5c0fd39ad12e6b5a1350"
+        },
+        {
+            "id": "dragons_teeth.wire",
+            "kind": "tower",
+            "model": "dragons_teeth",
+            "source": "Models/dragons_teeth",
+            "hash": "v2:37f1b25fe2a6c37888ec5c0fd39ad12e6b5a1350"
+        },
+        {
+            "id": "drone_hangar",
+            "kind": "tower",
+            "model": "drone_hangar",
+            "source": "Models/drone_hangar",
+            "hash": "v2:c292d8d7a83c60979f2342acc9b3600f6e9938ec"
+        },
+        {
+            "id": "drone_hangar.lancet",
+            "kind": "tower",
+            "model": "drone_hangar",
+            "source": "Models/drone_hangar",
+            "hash": "v2:c292d8d7a83c60979f2342acc9b3600f6e9938ec"
+        },
+        {
+            "id": "drone_hangar.swarm",
+            "kind": "tower",
+            "model": "drone_hangar",
+            "source": "Models/drone_hangar",
+            "hash": "v2:c292d8d7a83c60979f2342acc9b3600f6e9938ec"
+        },
+        {
+            "id": "drone_mothership",
+            "kind": "boss",
+            "model": "drone_mothership",
+            "source": "Models/drone_mothership",
+            "hash": "v2:635e894f2b698bedbd344e58544f0e5a00401e24"
+        },
+        {
+            "id": "elite_aa",
+            "kind": "elite",
+            "model": "elite_aa",
+            "source": "Models/elite_aa",
+            "hash": "v2:df0039e52b713f9e07dd3106edc9c2636b676de6"
+        },
+        {
+            "id": "elite_apc",
+            "kind": "elite",
+            "model": "elite_apc",
+            "source": "Models/elite_apc",
+            "hash": "v2:ce3664000e3b1a1ee730e022c58bc76b857393fb"
+        },
+        {
+            "id": "elite_attack_helicopter",
+            "kind": "elite",
+            "model": "elite_attack_helicopter",
+            "source": "Models/elite_attack_helicopter",
+            "hash": "v2:da807bbe58cee61835edf15e91b787ef13116d9c"
+        },
+        {
+            "id": "elite_grad",
+            "kind": "elite",
+            "model": "grad_truck",
+            "source": "Models/grad_truck",
+            "hash": "v2:7b40afda42ff9b572f51bb994a2da0001d5e7ef3"
+        },
+        {
+            "id": "elite_heavy_tank",
+            "kind": "elite",
+            "model": "elite_heavy_tank",
+            "source": "Models/elite_heavy_tank",
+            "hash": "v2:6ed8a476656aa5c5cc33007285da46c33ed5fdcd"
+        },
+        {
+            "id": "elite_mbt",
+            "kind": "elite",
+            "model": "elite_mbt",
+            "source": "Models/elite_mbt",
+            "hash": "v2:8db78ade4e23ae1169caf6111836a8c56c5ab697"
+        },
+        {
+            "id": "elite_mlrs",
+            "kind": "elite",
+            "model": "elite_mlrs",
+            "source": "Models/elite_mlrs",
+            "hash": "v2:7c981776ae2fa5e963f5447e7a66dd75a6b3b718"
+        },
+        {
+            "id": "elite_tank_destroyer",
+            "kind": "elite",
+            "model": "elite_tank_destroyer",
+            "source": "Models/elite_tank_destroyer",
+            "hash": "v2:20734b72e94480f894a751350c1967718e9c494d"
+        },
+        {
+            "id": "ew_tower",
+            "kind": "tower",
+            "model": "ew_tower",
+            "source": "Models/ew_tower",
+            "hash": "v2:36b5768494a46676e0682c48cc71303ea1a3eeb6"
+        },
+        {
+            "id": "ew_tower.drone",
+            "kind": "tower",
+            "model": "ew_tower",
+            "source": "Models/ew_tower",
+            "hash": "v2:36b5768494a46676e0682c48cc71303ea1a3eeb6"
+        },
+        {
+            "id": "ew_tower.spoof",
+            "kind": "tower",
+            "model": "ew_tower",
+            "source": "Models/ew_tower",
+            "hash": "v2:36b5768494a46676e0682c48cc71303ea1a3eeb6"
+        },
+        {
+            "id": "fortress_bastion",
+            "kind": "boss",
+            "model": "fortress_bastion",
+            "source": "Models/fortress_bastion",
+            "hash": "v2:005ead87508b2b6456ff51b8326fb01456907c6e"
+        },
+        {
+            "id": "fortress_hive",
+            "kind": "boss",
+            "model": "fortress_hive",
+            "source": "Models/fortress_hive",
+            "hash": "v2:1da9a64ee783f56c86e60d2879bbb1d391559cc4"
+        },
+        {
+            "id": "guard_tower",
+            "kind": "tower",
+            "model": "guard_tower",
+            "source": "Models/guard_tower",
+            "hash": "v2:0f342acbc5cf1ffa0a7937919bc2e4d3197b6689"
+        },
+        {
+            "id": "guard_tower.nest",
+            "kind": "tower",
+            "model": "guard_tower",
+            "source": "Models/guard_tower",
+            "hash": "v2:0f342acbc5cf1ffa0a7937919bc2e4d3197b6689"
+        },
+        {
+            "id": "guard_tower.watch",
+            "kind": "tower",
+            "model": "guard_tower",
+            "source": "Models/guard_tower",
+            "hash": "v2:0f342acbc5cf1ffa0a7937919bc2e4d3197b6689"
+        },
+        {
+            "id": "gun_pit",
+            "kind": "tower",
+            "model": "gun_pit",
+            "source": "Models/gun_pit",
+            "hash": "v2:3982a2a9d3c35a922afb2f540b7debdcd70aba98"
+        },
+        {
+            "id": "gun_pit.ambush",
+            "kind": "tower",
+            "model": "gun_pit",
+            "source": "Models/gun_pit",
+            "hash": "v2:3982a2a9d3c35a922afb2f540b7debdcd70aba98"
+        },
+        {
+            "id": "gun_pit.deep",
+            "kind": "tower",
+            "model": "gun_pit",
+            "source": "Models/gun_pit",
+            "hash": "v2:3982a2a9d3c35a922afb2f540b7debdcd70aba98"
+        },
+        {
+            "id": "gun_turret",
+            "kind": "tower",
+            "model": "gun_turret",
+            "source": "Models/gun_turret",
+            "hash": "v2:31f28625a47dbb3e00ed1dc3c69ee983e26c8649"
+        },
+        {
+            "id": "gun_turret.auto",
+            "kind": "tower",
+            "model": "gun_turret",
+            "source": "Models/gun_turret",
+            "hash": "v2:31f28625a47dbb3e00ed1dc3c69ee983e26c8649"
+        },
+        {
+            "id": "gun_turret.long",
+            "kind": "tower",
+            "model": "gun_turret",
+            "source": "Models/gun_turret",
+            "hash": "v2:31f28625a47dbb3e00ed1dc3c69ee983e26c8649"
+        },
+        {
+            "id": "headquarters",
+            "kind": "tower",
+            "model": "headquarters",
+            "source": "Models/headquarters",
+            "hash": "v2:500fd35d0f1d7b921fb51f4349941fa4eea57b99"
+        },
+        {
+            "id": "heavy_turret",
+            "kind": "tower",
+            "model": "heavy_turret",
+            "source": "Models/heavy_turret",
+            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
+            "id": "heavy_turret.bastion",
+            "kind": "tower",
+            "model": "heavy_turret",
+            "source": "Models/heavy_turret",
+            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
+            "id": "heavy_turret.coastal",
+            "kind": "tower",
+            "model": "heavy_turret",
+            "source": "Models/heavy_turret",
+            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
+            "id": "logistics_station",
+            "kind": "tower",
+            "model": "fuel_depot",
+            "source": "Models/fuel_depot",
+            "hash": "v2:3efe3b997c57b52765373509917dc077fc136e2f"
+        },
+        {
+            "id": "mega_gunship",
+            "kind": "boss",
+            "model": "mega_gunship",
+            "source": "Models/mega_gunship",
+            "hash": "v2:69918eb47debb944b528f43beaa9fb3511795972"
+        },
+        {
+            "id": "mg_bunker",
+            "kind": "tower",
+            "model": "mg_bunker",
+            "source": "Models/mg_bunker",
+            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+        },
+        {
+            "id": "mg_bunker.flame",
+            "kind": "tower",
+            "model": "mg_bunker",
+            "source": "Models/mg_bunker",
+            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+        },
+        {
+            "id": "mg_bunker.twin",
+            "kind": "tower",
+            "model": "mg_bunker",
+            "source": "Models/mg_bunker",
+            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+        },
+        {
+            "id": "minefield",
+            "kind": "tower",
+            "model": "minefield",
+            "source": "Models/minefield",
+            "hash": "v2:a65dc206fd94ab4865f16150f4be255deaa6f225"
+        },
+        {
+            "id": "minefield.at",
+            "kind": "tower",
+            "model": "minefield",
+            "source": "Models/minefield",
+            "hash": "v2:a65dc206fd94ab4865f16150f4be255deaa6f225"
+        },
+        {
+            "id": "minefield.scatter",
+            "kind": "tower",
+            "model": "minefield",
+            "source": "Models/minefield",
+            "hash": "v2:a65dc206fd94ab4865f16150f4be255deaa6f225"
+        },
+        {
+            "id": "missile_battery",
+            "kind": "tower",
+            "model": "missile_battery",
+            "source": "Models/missile_battery",
+            "hash": "v2:00532fa9c5a43379acc7efb9c2166b4dc0af6cee"
+        },
+        {
+            "id": "missile_battery.lrr",
+            "kind": "tower",
+            "model": "missile_battery",
+            "source": "Models/missile_battery",
+            "hash": "v2:00532fa9c5a43379acc7efb9c2166b4dc0af6cee"
+        },
+        {
+            "id": "missile_battery.pac3",
+            "kind": "tower",
+            "model": "missile_battery",
+            "source": "Models/missile_battery",
+            "hash": "v2:00532fa9c5a43379acc7efb9c2166b4dc0af6cee"
+        },
+        {
+            "id": "mobile_fortress",
+            "kind": "boss",
+            "model": "mobile_fortress",
+            "source": "Models/mobile_fortress",
+            "hash": "v2:f7f01b0236b251df01687ca7565932112d5af156"
+        },
+        {
+            "id": "nuke_train",
+            "kind": "boss",
+            "model": "nuke_train",
+            "source": "Models/nuke_train",
+            "hash": "v2:6ee968502013041fb379ecd5392b13590b03a3d1"
+        },
+        {
+            "id": "radar_station",
+            "kind": "tower",
+            "model": "radar_dome",
+            "source": "Models/radar_dome",
+            "hash": "v2:5d58aa11d9f447e550b1402b8689b6c9d930780a"
+        },
+        {
+            "id": "repair_bay",
+            "kind": "tower",
+            "model": "vehicle_hangar",
+            "source": "Models/vehicle_hangar",
+            "hash": "v2:d6f815e24b488bfacdba0c838d4c60df705120ee"
+        },
+        {
+            "id": "rocket_turret",
+            "kind": "tower",
+            "model": "rocket_turret",
+            "source": "Models/rocket_turret",
+            "hash": "v2:4947e60170193cd9250b3ced07ea3e4669a7317d"
+        },
+        {
+            "id": "rocket_turret.cluster",
+            "kind": "tower",
+            "model": "rocket_turret",
+            "source": "Models/rocket_turret",
+            "hash": "v2:4947e60170193cd9250b3ced07ea3e4669a7317d"
+        },
+        {
+            "id": "rocket_turret.thermo",
+            "kind": "tower",
+            "model": "rocket_turret",
+            "source": "Models/rocket_turret",
+            "hash": "v2:4947e60170193cd9250b3ced07ea3e4669a7317d"
+        },
+        {
+            "id": "silver_bug",
+            "kind": "boss",
+            "model": "silver_bug",
+            "source": "Models/silver_bug",
+            "hash": "v2:dbfc2d6d42701ce49d8be45821069592230099f5"
+        },
+        {
+            "id": "sky_fortress",
+            "kind": "boss",
+            "model": "sky_fortress",
+            "source": "Models/sky_fortress",
+            "hash": "v2:0403326f84a0a720a86ad3a33b4e624d34b4e41c"
+        }
+    ]
+}
