@@ -789,7 +789,7 @@ namespace MachineBrigade.Game.Match
         }
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
-        public override string Kicker => Strings.Format("campaign.kicker", Campaign.IndexOf(_def.Id) + 1);
+        public override string Kicker => Strings.Format("campaign.kicker", Campaign.Label(_def));
         public override string Title => Strings.Get("mission." + _def.Id + ".name");
         public override string Subtitle => Strings.Get("goal." + _def.Goal.ToString().ToLowerInvariant());
         public override string StartToast => Strings.Get("mission." + _def.Id + ".brief");
@@ -798,15 +798,26 @@ namespace MachineBrigade.Game.Match
         {
             Difficulty = System.Enum.TryParse<AiDifficulty>(_def.Difficulty, out var d) ? d : AiDifficulty.Normal;
             var commander = _def.EnemyAi is "commander" or "both";
+            // The general in command: their deck when the mission names none, their fire support,
+            // their base's style.
+            var general = Campaign.General(_def.General);
+            EnemyStyle = _def.EnemyStyle ?? general?.Style ?? "default";
             SideSetup enemy = null;
             if (commander)
             {
                 var deck = new List<string>();
-                foreach (var id in _def.EnemyDeck)
+                foreach (var id in _def.EnemyDeck.Count > 0 ? _def.EnemyDeck : general?.Deck ?? (IReadOnlyList<string>)System.Array.Empty<string>())
                     if (world.Catalog.Vehicles.ContainsKey(id)) deck.Add(id);
                 var supports = new List<string>();
-                foreach (var id in MatchSettings.AllSupports)
-                    if (world.Catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) && id != "cruise_missile") supports.Add(id);
+                var habits = _def.EnemySupports.Count > 0 ? _def.EnemySupports : general?.Supports;
+                if (habits is { Count: > 0 })
+                {
+                    foreach (var id in habits)
+                        if (world.Catalog.TryGetSupport(id, out _)) supports.Add(id);
+                }
+                else
+                    foreach (var id in MatchSettings.AllSupports)
+                        if (world.Catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) && id != "cruise_missile") supports.Add(id);
                 enemy = new SideSetup
                 {
                     StartCp = _def.EnemyCp, Income = _def.EnemyIncome,
@@ -841,15 +852,24 @@ namespace MachineBrigade.Game.Match
             }
             Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
+            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null);
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, PlayerProfile.BaseLoadout, _def.PlayerBase)
-                    .Set(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed), _def.EnemyBase), PlayerTeam, EnemyTeam);
-            if (_def.Outposts.Count > 0)
+                    .Set(EnemyTeam, enemyBase, _def.EnemyBase), PlayerTeam, EnemyTeam);
+            // Outposts: the marked points, and a point to set one up on (the mission's or a stage's goal).
+            var outposts = new List<string>(_def.Outposts);
+            void AddSite(MissionDef m)
+            {
+                if (m.Goal == MissionGoal.Outpost && m.Points.Count > 0 && !outposts.Contains(m.Points[0])) outposts.Add(m.Points[0]);
+            }
+            AddSite(_def);
+            foreach (var s in _def.Stages) AddSite(s.Mission);
+            if (outposts.Count > 0)
             {
                 world.Bases.Ensure(PlayerTeam, PlayerProfile.BaseLoadout);
-                world.Bases.Ensure(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed));
-                foreach (var id in _def.Outposts) world.Bases.OutpostPoints.Add(id);
+                world.Bases.Ensure(EnemyTeam, enemyBase);
+                foreach (var id in outposts) world.Bases.OutpostPoints.Add(id);
                 world.Bases.PointOwner = id =>
                 {
                     foreach (var p in _mode.Points)
@@ -892,8 +912,8 @@ namespace MachineBrigade.Game.Match
             var player = PlayerAi;
             // A demolition inside a fortress is a siege: guns to break it from outside its reach.
             player.RoleMix = def.Goal == MissionGoal.Destroy && def.Variant == "siege" ? ConquestAi.SiegeMix : null;
-            // Holding a point: fight whatever comes at it, but never wander off and leave it open.
-            player.Leash = def.Goal == MissionGoal.Hold ? 32f : null;
+            // Holding a point (or an outpost on one): fight whatever comes at it, but never wander off and leave it open.
+            player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? 32f : null;
             player.DefendPoint = null;
             if (def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
             {
@@ -948,10 +968,14 @@ namespace MachineBrigade.Game.Match
             var goalText = Strings.Get("goal." + goal.ToString().ToLowerInvariant());
             if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
-            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive)
-                hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive && !_mode.BossFled)
+                hud.SetBoss(BossName(_mode.Def, boss.Def.Id), boss.Hp / boss.MaxHp);
             else hud.SetBoss(null, 0f);
         }
+
+        /// <summary>A boss's name in this mission: its own ("the Frost Monster") or its def's.</summary>
+        internal static string BossName(MissionDef def, string defId) =>
+            def.Boss?.Name is { } name && Strings.Has("boss." + name) ? Strings.Get("boss." + name) : Strings.Card(defId);
 
         /// <summary>The choice dialog while a stage waits on the player's pick; the first option goes ahead by itself.</summary>
         private void ShowChoice(BattleHud hud, SimWorld world)

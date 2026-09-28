@@ -148,6 +148,18 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The name it goes by in this mission (a text key "boss.&lt;name&gt;"; null: its def's).</summary>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// The def to field while <see cref="Def"/> is not in the catalog yet (a boss still being
+        /// modelled), at <see cref="FallbackHealth"/>; null: none.
+        /// </summary>
+        public string? Fallback { get; set; }
+
+        public float FallbackHealth { get; set; } = 1f;
+
+        /// <summary>The def fielded in this catalog, and its health share.</summary>
+        public (string def, float health) Resolve(Catalog catalog) =>
+            Fallback != null && !catalog.Vehicles.ContainsKey(Def) ? (Fallback, FallbackHealth) : (Def, Health);
     }
 
     /// <summary>One campaign mission, read from campaign.json.</summary>
@@ -464,6 +476,20 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A piece of tower equipment of this rarity the first win pays (side missions; null: none).</summary>
         public string? TowerGear { get; set; }
 
+        /// <summary>The mission of the old campaign this one grew out of (its stars move here with a saved game).</summary>
+        public string? Legacy { get; set; }
+
+        /// <summary>A chapter's big operation, offered again by the Operations mode.</summary>
+        public bool Operation { get; set; }
+
+        /// <summary>A notable siege, defence or duel the Operations mode offers for replay.</summary>
+        public bool Replay { get; set; }
+
+        /// <summary>Destroy and Protect: only the buildings within <see cref="TargetRadius"/> of this spot count (null: all of them).</summary>
+        public Vector2? TargetNear { get; set; }
+
+        public float TargetRadius { get; set; } = 40f;
+
         /// <summary>
         /// A harder copy of the mission (the Heroic and Iron tiers): the enemy starts with more
         /// CP, earns more and sends bigger waves. The mission itself is left as it is.
@@ -562,6 +588,11 @@ namespace MachineBrigade.Sim.Content
                 RarePrints = m.Int("rarePrints", 0),
                 TowerGear = m.Has("towerGear") ? m.String("towerGear") : null,
                 Radio = ParseRadio(m),
+                Legacy = m.Has("legacy") ? m.String("legacy") : null,
+                Operation = m.Bool("operation", false),
+                Replay = m.Bool("replay", false),
+                TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
+                TargetRadius = m.Float("targetRadius", 40f),
             };
             if (m.Has("challenge"))
             {
@@ -675,6 +706,8 @@ namespace MachineBrigade.Sim.Content
             Health = o.Float("health", 1f),
             FleeAt = o.Float("fleeAt", 0f),
             Name = o.Has("name") ? o.String("name") : null,
+            Fallback = o.Has("fallback") ? o.String("fallback") : null,
+            FallbackHealth = o.Float("fallbackHealth", o.Float("health", 1f)),
         };
 
         /// <summary>Radio lines: "on" a trigger (start, capture, boss...) or "at" a number of seconds.</summary>

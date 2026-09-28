@@ -125,7 +125,7 @@ namespace MachineBrigade.Game.Match
         private static readonly string[] DefaultSupports = Progression.StarterSupports;
 
         /// <summary>The campaign mission to play when <see cref="Mode"/> is Campaign.</summary>
-        public static string Mission { get; set; } = "m01";
+        public static string Mission { get; set; } = "c1m01";
 
         private static bool _loaded;
 

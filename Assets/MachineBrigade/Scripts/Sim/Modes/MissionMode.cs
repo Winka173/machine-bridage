@@ -241,7 +241,8 @@ namespace MachineBrigade.Sim.Modes
                 }
             if (_def.Goal is MissionGoal.Destroy or MissionGoal.Protect)
                 foreach (var prop in world.Props)
-                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id) && (_def.Goal == MissionGoal.Destroy || OnPlayerSide(world, prop.Position)))
+                    if (prop.IsAlive && Contains(_def.Targets, prop.Def.Id) && (_def.Goal == MissionGoal.Destroy || OnPlayerSide(world, prop.Position)) &&
+                        (_def.TargetNear is not { } near || Vector2.Distance(prop.Position, near) <= _def.TargetRadius))
                     {
                         _targets.Add(prop.Id);
                         if (_def.TargetHealth > 1f) prop.Harden(_def.TargetHealth);
@@ -249,12 +250,14 @@ namespace MachineBrigade.Sim.Modes
 
             if (_def.Boss != null)
             {
-                var boss = world.SpawnVehicle(_def.Boss.Def, EnemyTeam, _def.Boss.Position, _def.Boss.Heading);
+                // A boss still being modelled stands in as another until its def exists.
+                var (bossDef, health) = _def.Boss.Resolve(world.Catalog);
+                var boss = world.SpawnVehicle(bossDef, EnemyTeam, _def.Boss.Position, _def.Boss.Heading);
                 _boss = boss.Id;
                 // A weakened boss, or one in a stronger form than its def.
-                if (MathF.Abs(_def.Boss.Health - 1f) > 1e-3f && _def.Boss.Health > 0f)
+                if (MathF.Abs(health - 1f) > 1e-3f && health > 0f)
                 {
-                    boss.HpScale *= _def.Boss.Health;
+                    boss.HpScale *= health;
                     boss.Hp = boss.MaxHp;
                 }
                 if (_def.Boss.Route.Count > 0)

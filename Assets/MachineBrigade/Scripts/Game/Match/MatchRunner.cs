@@ -150,8 +150,9 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-weekly")) MatchSettings.Mode = GameModeKind.Weekly;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
+            // A campaign mission: -mb-c3m05, or an old id (-mb-m09) for the mission it became.
             foreach (var campaignMission in Campaign.All)
-                    if (DebugFlags.Has("-mb-" + campaignMission.Id))
+                    if (DebugFlags.Has("-mb-" + campaignMission.Id) || (campaignMission.Legacy != null && DebugFlags.Has("-mb-" + campaignMission.Legacy)))
                     {
                         MatchSettings.Mode = GameModeKind.Campaign;
                         MatchSettings.Mission = campaignMission.Id;
@@ -172,7 +173,8 @@ namespace MachineBrigade.Game.Match
             // A campaign mission names its own battlefield and version of it.
             var mission = !_menu && kind == GameModeKind.Campaign ? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0] : null;
             var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
-            var map = GameContent.LoadMap(mapFile);
+            // A mission that returns to a map from the other side plays it reversed.
+            var map = mission != null ? Campaign.LoadMap(mission) : GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
@@ -935,8 +937,8 @@ namespace MachineBrigade.Game.Match
             {
                 if (Curtain.Busy) return;
                 ClaimReward();
-                var next = Campaign.IndexOf(MatchSettings.Mission) + 1;
-                if (next > 0 && next < Campaign.All.Count) MatchSettings.Mission = Campaign.All[next].Id;
+                var next = Campaign.NextAfter(MatchSettings.Mission);
+                if (next >= 0) MatchSettings.Mission = Campaign.All[next].Id;
                 MatchSettings.Save();
                 Reload("loading.deploy", DeployDetail());
             };
@@ -1183,8 +1185,7 @@ namespace MachineBrigade.Game.Match
                     PlayerProfile.AddCrate(CrateKind.Silver);
                     view.Crates.Add(Strings.Get("crate.silver"));
                 }
-                var index = _session is MissionSession ? Campaign.IndexOf(MatchSettings.Mission) : -1;
-                view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
+                view.HasNext = outcome.Result > 0 && _session is MissionSession && Campaign.NextAfter(MatchSettings.Mission) >= 0;
                 view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
             }
             _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);

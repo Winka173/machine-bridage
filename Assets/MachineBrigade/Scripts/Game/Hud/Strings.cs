@@ -1449,7 +1449,8 @@ namespace MachineBrigade.Game.Hud
         public static bool Vietnamese { get; set; } = Application.systemLanguage == SystemLanguage.Vietnamese;
 
         public static string Get(string key) =>
-            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) ? (Vietnamese ? text.vi : text.en) : key;
+            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text)
+                ? (Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
 
@@ -1469,7 +1470,7 @@ namespace MachineBrigade.Game.Hud
         public static string Support(string defId) => Get("support." + defId);
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
-        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key);
+        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

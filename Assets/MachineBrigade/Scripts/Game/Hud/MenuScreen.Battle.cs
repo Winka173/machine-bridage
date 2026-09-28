@@ -174,7 +174,7 @@ namespace MachineBrigade.Game.Hud
         {
             RefreshHomeDeck();
             var next = Campaign.All[Campaign.Next];
-            _campaignCardTitle.text = Strings.Format("home.nextMission", Campaign.Next + 1, Strings.Get("mission." + next.Id + ".name"));
+            _campaignCardTitle.text = Strings.Format("home.nextMission", Campaign.Label(next), Strings.Get("mission." + next.Id + ".name"));
             _campaignCardSub.text = Strings.Format("campaign.progress", Campaign.Won, Campaign.All.Count, PlayerProfile.TotalStars);
             var tasks = DailyMissions.Current;
             for (var i = 0; i < _dailyRows.Count && i < tasks.Count; i++)

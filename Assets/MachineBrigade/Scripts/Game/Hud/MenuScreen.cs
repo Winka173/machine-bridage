@@ -490,7 +490,7 @@ namespace MachineBrigade.Game.Hud
             if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Progression.Price(id, _catalog));
             var mission = Progression.UnlockMission(id);
             return mission != null
-                ? Strings.Format("deck.lockedMission", name, Campaign.IndexOf(mission.Id) + 1, Progression.Price(id, _catalog))
+                ? Strings.Format("deck.lockedMission", name, Campaign.Label(mission), Progression.Price(id, _catalog))
                 : Strings.Format("deck.lockedShop", name, Progression.Price(id, _catalog));
         }
 

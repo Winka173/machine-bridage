@@ -194,6 +194,63 @@ namespace MachineBrigade.Game.Match
             Save();
         }
 
+        /// <summary>Universal blueprints (a side mission's rare blueprints).</summary>
+        public static void AddUniversalBlueprints(int count)
+        {
+            if (count <= 0) return;
+            A.universal += count;
+            Save();
+        }
+
+        /// <summary>
+        /// The main deck the campaign's blueprints go to: the battle deck's vehicles and supports,
+        /// then the base's first six tower types.
+        /// </summary>
+        public static List<string> MainDeck()
+        {
+            var cards = new List<string>();
+            foreach (var id in MatchSettings.DeckVehicles)
+                if (!cards.Contains(id)) cards.Add(id);
+            foreach (var id in MatchSettings.DeckSupports)
+                if (!cards.Contains(id)) cards.Add(id);
+            var towers = 0;
+            foreach (var id in BaseLoadout.Towers)
+            {
+                if (towers >= 6 || string.IsNullOrEmpty(id) || cards.Contains(id)) continue;
+                cards.Add(id);
+                towers++;
+            }
+            return cards;
+        }
+
+        /// <summary>
+        /// A mission's blueprints for the main deck: an even share each, the rest one apiece to the
+        /// cards furthest behind (lowest rank, then fewest blueprints). Returns what each card got.
+        /// </summary>
+        public static List<(string card, int count)> AddDeckBlueprints(int count)
+        {
+            var paid = new List<(string, int)>();
+            var cards = MainDeck();
+            if (count <= 0 || cards.Count == 0) return paid;
+            var each = count / cards.Count;
+            var rest = count - each * cards.Count;
+            var behind = new List<string>(cards);
+            behind.Sort((a, b) =>
+            {
+                var byRank = Rank(a).CompareTo(Rank(b));
+                return byRank != 0 ? byRank : Blueprints(a).CompareTo(Blueprints(b));
+            });
+            foreach (var card in cards)
+            {
+                var n = each + (behind.IndexOf(card) < rest ? 1 : 0);
+                if (n <= 0) continue;
+                A.prints[CardIndex(card)] += n;
+                paid.Add((card, n));
+            }
+            Save();
+            return paid;
+        }
+
         /// <summary>Whether a card can rank up now: enough coins, and blueprints (its own first, universal ones to make up the rest).</summary>
         public static bool CanRankUp(string cardId)
         {

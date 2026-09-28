@@ -90,6 +90,12 @@ namespace MachineBrigade.Game.Match
             public List<int> towerGear = new();
             /// <summary>The player has set the base up on the base screen: an empty camp stays empty.</summary>
             public bool baseEdited;
+
+            /// <summary>2: mission progress is in the story campaign's ids (see <see cref="MigrateCampaign"/>).</summary>
+            public int campaignVersion;
+
+            /// <summary>Chapters whose opening card (the chapter transition) has been shown.</summary>
+            public List<int> chaptersSeen = new();
         }
 
         /// <summary>
@@ -101,7 +107,8 @@ namespace MachineBrigade.Game.Match
         {
             get
             {
-                var loadout = new Sim.Modes.BaseLoadout { HqLevel = D.baseLevel > 0 ? D.baseLevel : 5 };
+                // The HQ level chosen, as far as the campaign has opened (every level in a test build).
+                var loadout = new Sim.Modes.BaseLoadout { HqLevel = Mathf.Clamp(D.baseLevel > 0 ? D.baseLevel : 5, 1, Campaign.HqLevelCap) };
                 var empty = !D.baseEdited && D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
                 loadout.Small.AddRange(empty ? DefaultSmall : D.baseSmall);
                 loadout.Medium.AddRange(empty ? DefaultMedium : D.baseMedium);
@@ -362,6 +369,55 @@ namespace MachineBrigade.Game.Match
             return i >= 0 && D.missionStars[i] > 0 ? Math.Max(0, D.missionTiers[i]) : -1;
         }
 
+        /// <summary>2: progress is kept under the story campaign's mission ids.</summary>
+        internal const int CampaignVersion = 2;
+
+        /// <summary>
+        /// Moves a save's progress from the old 23-mission campaign to the story campaign, once: each
+        /// old mission's stars and best tier go to the mission it became (<see cref="Sim.Content.MissionDef.Legacy"/>),
+        /// keeping the better of the two when both were played. Cards won stay unlocked (they are
+        /// kept by id), so nothing the player had is lost; the new missions around them are open to
+        /// play (a won mission opens the one after it).
+        /// </summary>
+        private static void MigrateCampaign(Data d)
+        {
+            if (d.campaignVersion >= CampaignVersion) return;
+            foreach (var mission in Campaign.All)
+            {
+                if (mission.Legacy == null) continue;
+                var old = d.missionIds.IndexOf(mission.Legacy);
+                if (old < 0) continue;
+                var stars = d.missionStars[old];
+                var tier = old < d.missionTiers.Count ? d.missionTiers[old] : 0;
+                d.missionIds.RemoveAt(old);
+                d.missionStars.RemoveAt(old);
+                if (old < d.missionTiers.Count) d.missionTiers.RemoveAt(old);
+                var i = d.missionIds.IndexOf(mission.Id);
+                if (i < 0)
+                {
+                    d.missionIds.Add(mission.Id);
+                    d.missionStars.Add(stars);
+                    d.missionTiers.Add(tier);
+                }
+                else
+                {
+                    d.missionStars[i] = Math.Max(d.missionStars[i], stars);
+                    d.missionTiers[i] = Math.Max(d.missionTiers[i], tier);
+                }
+            }
+            d.campaignVersion = CampaignVersion;
+        }
+
+        /// <summary>Whether a chapter's opening card has been shown.</summary>
+        public static bool ChapterSeen(int chapter) => D.chaptersSeen.Contains(chapter);
+
+        public static void MarkChapterSeen(int chapter)
+        {
+            if (D.chaptersSeen.Contains(chapter)) return;
+            D.chaptersSeen.Add(chapter);
+            Save();
+        }
+
         /// <summary>The stage reached on this week's fortress (1 at the start of a week).</summary>
         public static int WeeklyStage(int week) => D.weeklyId == week ? D.weeklyStage : 1;
 
@@ -403,6 +459,7 @@ namespace MachineBrigade.Game.Match
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
             FixArsenal(_data);
             MigrateBase(_data);
+            MigrateCampaign(_data);
         }
 
         public static void Save()
@@ -439,6 +496,7 @@ namespace MachineBrigade.Game.Match
             _noSave = true;
             FixArsenal(_data);
             MigrateBase(_data);
+            MigrateCampaign(_data);
         }
 
         /// <summary>Tests: the profile as it would be saved.</summary>
