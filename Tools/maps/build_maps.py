@@ -128,6 +128,10 @@ def load_static_footprints():
         length = v['length'] * scale if 'length' in v else v['radius'] * 2.7
         width = v['width'] * scale if 'width' in v else v['radius'] * 1.6
         out[v['id']] = max(length, width) * 0.8
+    # The keep's flak tower became the AA tower's flak branch (a def that inherits, so it has no
+    # size of its own here); the fortress keeps the ground planned for the old 8 m Flakturm, so
+    # its layout (and every siege battlefield) stays as it was.
+    out.setdefault('aa_turret.flak', 8 * 0.8)
     return out
 
 
@@ -2294,7 +2298,7 @@ def fortress_buildings(L, name, count=14, reach=None):
 
 
 UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
-             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'missile_battery': 9.5}
+             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'aa_turret.flak': 8.5, 'missile_battery': 9.5}
 
 
 def siege_targets(L):
