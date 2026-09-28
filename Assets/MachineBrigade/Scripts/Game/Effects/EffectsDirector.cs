@@ -432,7 +432,8 @@ namespace MachineBrigade.Game.Effects
                 // At night the flash lights the ground at the muzzle.
                 if (shooter != null && shooter.Root != null && !shooter.Flying && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var fired))
-                    _night.Flash(shooter.Position + shooter.Root.forward * shooter.Sim.Radius,
+                    _night.Flash(shooter.LastMuzzleNode != null ? shooter.LastMuzzleNode.TransformPoint(shooter.LastMuzzleLocal)
+                            : shooter.Position + shooter.Root.forward * shooter.Sim.Radius,
                         fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
             }
             _shots.Clear();

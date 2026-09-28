@@ -273,7 +273,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = buffer[i];
                 var axis = p.velocity.normalized;
-                into.Add((p.position - axis * RodLength(rod, p.GetCurrentSize(_flameCore), p.velocity.magnitude), axis,
+                into.Add((p.position - axis * (RodLength(rod, p.GetCurrentSize(_flameCore), p.velocity.magnitude) * (1f - MuzzleFx.FlameShapeMargin)), axis,
                     p.startLifetime - p.remainingLifetime));
             }
         }
@@ -316,12 +316,12 @@ namespace MachineBrigade.Game.Effects
                 for (; s.RodDebt >= 1f; s.RodDebt -= 1f)
                 {
                     // Spread over the frame so a slow frame does not bunch the rod up at the nozzle.
-                    // A streak trails back from its particle: born a length out, its back end sits
-                    // on the nozzle.
+                    // A streak trails back from its particle: born a length out, its back end (where
+                    // the flame shape shows) sits on the nozzle.
                     var tau = Random.value * dt;
                     var velocity = launch + Random.insideUnitSphere * 0.7f;
                     var size = Random.Range(0.5f, 0.7f);
-                    var length = RideNozzles ? RodLength(rod, size * RodGrowFrom, velocity.magnitude) : 0f;
+                    var length = RideNozzles ? RodLength(rod, size * RodGrowFrom, velocity.magnitude) * (1f - MuzzleFx.FlameShapeMargin) : 0f;
                     Emit(_flameCore, s.From + velocity.normalized * length + launch * tau, velocity, size,
                         (s.Travel - tau) * Random.Range(0.95f, 1.05f));
                 }

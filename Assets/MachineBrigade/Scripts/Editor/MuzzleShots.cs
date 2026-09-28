@@ -157,13 +157,17 @@ namespace MachineBrigade.Editor
         /// ball on each drawn barrel tip a flash rides. The fifth column is the last moment again
         /// through a perspective camera like the detail page's, the vehicle off the middle of its
         /// view. flashes.txt lists the worst flash offset per cell. Batch mode (with graphics):
-        /// -executeMethod MachineBrigade.Editor.MuzzleShots.Flashes -mbShotsOut &lt;folder&gt; [-mbShotsIds a+b].
+        /// -executeMethod MachineBrigade.Editor.MuzzleShots.Flashes -mbShotsOut &lt;folder&gt; [-mbShotsIds a+b]
+        /// [-mbShotsLate s]: with -mbShotsLate each cell is frozen that long after the first shot
+        /// instead (a flame stream in full flow).
         /// </summary>
         public static void Flashes()
         {
             var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/muzzle_shots");
             Directory.CreateDirectory(output);
             var only = Argument("-mbShotsIds");
+            var late = float.TryParse(Argument("-mbShotsLate"), System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var l) ? l : 0f;
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             Random.InitState(20260929);
             var materials = new MaterialLibrary();
@@ -204,7 +208,7 @@ namespace MachineBrigade.Editor
                         var kit = Build(catalog, models, meshes, materials, root, id, Headings[col], 70f, 0.6f);
                         kit.Emitters.LateFeed = true;
                         var worst = FlashMoment(kit, camera, rt, sheet, col, count - 1 - r, green,
-                            col == Headings.Length - 1 ? perspective : null, Headings.Length, out var lit);
+                            col == Headings.Length - 1 ? perspective : null, Headings.Length, late, out var lit);
                         line.Append($" h{Headings[col]}={worst:0.000}m/{lit}");
                         Object.DestroyImmediate(kit.Holder.gameObject);
                     }
@@ -228,8 +232,9 @@ namespace MachineBrigade.Editor
         /// time more mounts show a live flash than before; returns the worst flash offset seen.
         /// </summary>
         private static float FlashMoment(Kit kit, Camera camera, RenderTexture rt, Texture2D sheet, int col, int row, Material green,
-            Camera perspective, int perspectiveCol, out int flashes)
+            Camera perspective, int perspectiveCol, float late, out int flashes)
         {
+            var firstShot = -1f;
             const float frame = 1f / 30f;
             var measured = new List<MuzzleFx.Measured>();
             var balls = new List<GameObject>();
@@ -263,6 +268,7 @@ namespace MachineBrigade.Editor
                 kit.Emitters.FeedFlames(now, frame);
                 if (!kit.Views.TryGet(kit.Shooter.Id, out var view)) break;
                 foreach (var e in shots) kit.Weapons.Fired(e, view, kit.Views, now);
+                if (shots.Count > 0 && firstShot < 0f) firstShot = now;
                 flashes += shots.Count;
                 shots.Clear();
                 kit.Muzzle.Measure(measured);
@@ -272,8 +278,9 @@ namespace MachineBrigade.Editor
                     worst = Mathf.Max(worst, Vector3.Distance(m.Flash, m.Muzzle));
                     if (!tips.Exists(t => (t - m.Muzzle).sqrMagnitude < 0.01f)) tips.Add(m.Muzzle);
                 }
-                if (tips.Count <= best) continue;
-                best = tips.Count;
+                if (late > 0f ? firstShot < 0f || now < firstShot + late || best > 0 : tips.Count <= best) continue;
+                best = Mathf.Max(1, tips.Count);
+                if (tips.Count == 0) tips.Add(view.LastMuzzleNode != null ? view.LastMuzzleNode.TransformPoint(view.LastMuzzleLocal) : view.MuzzleWorld);
                 foreach (var b in balls) Object.DestroyImmediate(b);
                 balls.Clear();
                 foreach (var t in tips)

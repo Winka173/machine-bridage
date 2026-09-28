@@ -112,6 +112,13 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The share of its width a tongue is born at (it grows to 1.1 over its life).</summary>
         private const float TongueGrowFrom = 0.85f;
 
+        /// <summary>
+        /// The flame shape (Particle.shader, shape 3) fades out over about the last tenth of its quad
+        /// at each end: the visible back end of a streak is this share of its length in from the
+        /// quad's end, and that is what sits on the muzzle.
+        /// </summary>
+        internal const float FlameShapeMargin = 0.1f;
+
         private readonly ParticleSystem _core, _tongue, _sparks, _smoke, _dust, _fireball;
         private readonly List<Pending> _pending = new();
 
@@ -278,7 +285,7 @@ namespace MachineBrigade.Game.Effects
                 // A stretched quad trails back from its particle by its whole length (the particle
                 // is its tip), and a tongue grows: a length out keeps its base on the muzzle all its
                 // life. A core sits on the muzzle.
-                var along = ride.Along > 0f ? _buffer[i].GetCurrentSize(system) * FlameLength : 0f;
+                var along = ride.Along > 0f ? _buffer[i].GetCurrentSize(system) * FlameLength * (1f - FlameShapeMargin) : 0f;
                 _buffer[i].position = ride.Anchor.Point + axis * along;
                 if (ride.Drift > 0f) _buffer[i].velocity = axis * ride.Drift;
                 moved = true;
@@ -291,7 +298,8 @@ namespace MachineBrigade.Game.Effects
         /// be drawn: the base of a core (its centre) or of a stretched tongue (its back end along
         /// its velocity), the muzzle's point as drawn now, the way the particle points, and the
         /// barrel's direction as drawn now. A tongue's quad runs back from the particle (its tip)
-        /// size x lengthScale (velocityScale 0; FlashTests.StretchedFlamesTrailBehindTheirParticle).
+        /// size x lengthScale (velocityScale 0; FlashTests.StretchedFlamesTrailBehindTheirParticle);
+        /// its visible end is <see cref="FlameShapeMargin"/> of that in from the quad's end.
         /// </summary>
         internal struct Measured
         {
@@ -332,7 +340,7 @@ namespace MachineBrigade.Game.Effects
                 if (!_riding.TryGetValue(_buffer[i].randomSeed, out var ride) || ride.System != system || !ride.Anchor.Valid) continue;
                 var p = _buffer[i];
                 var axis = p.velocity.sqrMagnitude > 1e-6f ? p.velocity.normalized : Vector3.zero;
-                var flash = tongue ? p.position - axis * (p.GetCurrentSize(system) * length) : p.position;
+                var flash = tongue ? p.position - axis * (p.GetCurrentSize(system) * length * (1f - FlameShapeMargin)) : p.position;
                 // A side jet or a launcher's back-blast leaves the muzzle sideways or backwards on purpose.
                 var barrel = ride.Anchor.Direction.normalized;
                 into.Add(new Measured
@@ -400,7 +408,7 @@ namespace MachineBrigade.Game.Effects
                 // flame out, as if centred, half of every tongue burned back over the barrel: 1 m
                 // on a machine gun, 3 m on a tank gun.) It drifts only slightly (the velocity sets
                 // its direction). The old placement stays for the before measurements.
-                var along = RideMuzzles ? width * TongueGrowFrom * FlameLength : width * FlameLength * 0.5f;
+                var along = RideMuzzles ? width * TongueGrowFrom * FlameLength * (1f - FlameShapeMargin) : width * FlameLength * 0.5f;
                 Ride(_tongue, from, axis, along, 1.5f, width, life * Random.Range(0.85f, 1.2f));
             }
         }
