@@ -36,6 +36,42 @@ namespace MachineBrigade.Tests
             "attack_helicopter", "attack_jet", "gun_turret",
         };
 
+        /// <summary>A lobbed round leaves along its raised barrel even when its aim point is scattered off the barrel's line, and lands on it.</summary>
+        [Test]
+        public void ALobbedRoundLeavesAlongItsBarrel()
+        {
+            var from = new Vector3(0f, 2.5f, 0f);
+            var to = new Vector3(8f, 0.4f, 40f);
+            // Laid 60 degrees up, straight north: the round lands 11 degrees east of that line.
+            var barrel = Quaternion.Euler(-60f, 0f, 0f) * Vector3.forward;
+            var control = WeaponEffects.Bend(from, to, barrel);
+            Assert.IsTrue(control.HasValue, "a raised barrel bends the path");
+            var start = (control.Value - from).normalized;
+            Debug.Log($"BEND start {Vector3.Angle(start, barrel):0.00} deg off the barrel, peak {control.Value.y * 0.5f + (from.y + to.y) * 0.25f:0.0} m");
+            Assert.Less(Vector3.Angle(start, barrel), 0.5f, "the round leaves down the barrel");
+            Assert.IsNull(WeaponEffects.Bend(from, to, Vector3.forward), "a level barrel keeps the plain arc");
+        }
+
+        /// <summary>Drones are drawn twice their size; missiles and rockets 10-20 % bigger by type.</summary>
+        [Test]
+        public void MunitionsAreDrawnBiggerByType()
+        {
+            var catalog = GameContent.LoadCatalog();
+            float Size(string weapon, string model, bool air = false) =>
+                WeaponEffects.SizeOf(catalog.Weapons[weapon], catalog.Weapons[weapon].Projectile, model, air);
+            Assert.AreEqual(2f, Size("fpv_swarm", "fpv_drone"), 1e-4f, "FPV drones");
+            Assert.AreEqual(2f, Size("lancet", "lancet"), 1e-4f, "Lancets");
+            Assert.AreEqual(2f, Size("shahed", "shahed"), 1e-4f, "Shaheds");
+            Assert.AreEqual(2f, Size("mothership_drones", "fpv_drone"), 1e-4f, "the mothership's drones");
+            Assert.AreEqual(1.1f, Size("atgm", "atgm_tow"), 1e-4f, "a ground ATGM");
+            Assert.AreEqual(1.1f, Size("stinger_atas", "stinger"), 1e-4f, "MANPADS");
+            Assert.AreEqual(1.2f, Size("sam", "shorad_dart"), 1e-4f, "a SAM");
+            Assert.AreEqual(1.2f, Size("heli_atgm", "hellfire", air: true), 1e-4f, "air-to-ground");
+            Assert.AreEqual(1.2f, Size("air_cruise_missile", "cruise_missile", air: true), 1e-4f, "a cruise missile");
+            Assert.AreEqual(1.15f, Size("grad_rockets", "grad"), 1e-4f, "rockets in between");
+            Assert.AreEqual(1f, Size("howitzer", "shell_155"), 1e-4f, "gun shells as they were");
+        }
+
         /// <summary>A tracer's streak leaves from the barrel's tip on its first frame and ends on the target as it lands.</summary>
         [Test]
         public void AStreakStartsAtTheMuzzleAndEndsOnTheTarget()
