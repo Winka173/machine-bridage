@@ -35,6 +35,10 @@ namespace MachineBrigade.Editor
         private readonly MaterialLibrary _materials;
         private readonly Transform _root;
         private readonly SimWorld _world;
+        private readonly Catalog _catalog;
+        private readonly MuzzleFx _muzzle;
+        private readonly Emitters _emitters;
+        private readonly ExplosionEffect _shellHit;
         private readonly ParticleSystem[] _systems;
 
         public BlastRig(MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, Transform root)
@@ -58,12 +62,17 @@ namespace MachineBrigade.Editor
             _all.Add(_kill);
             _pop = ExplosionEffect.CreatePop(_layers);
             _all.Add(_pop);
+            _shellHit = ExplosionEffect.CreateShellHit(_layers);
+            _all.Add(_shellHit);
+            _muzzle = new MuzzleFx(materials, root);
+            _emitters = new Emitters(materials, root);
             _fires = new FireSpots(materials, root);
             _decals = new DecalPool(meshes.ScorchQuad, root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
             _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, root);
             _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
-            _world = new SimWorld(GameContent.LoadCatalog(), new MapDefinition("shots", 200f,
+            _catalog = GameContent.LoadCatalog();
+            _world = new SimWorld(_catalog, new MapDefinition("shots", 200f,
                 new[] { new TeamStart(0, new System.Numerics.Vector2(-80f, -80f)), new TeamStart(1, new System.Numerics.Vector2(80f, 80f)) },
                 new List<PropPlacement>(), new List<UnitPlacement>()));
             _systems = root.GetComponentsInChildren<ParticleSystem>(true);
@@ -98,11 +107,80 @@ namespace MachineBrigade.Editor
                 foreach (var pair in _tiers) parts.Add($"{pair.Key} {pair.Value.ParticleCount}p/{pair.Value.ChunkCount}c");
                 parts.Add($"Airburst {_airburst.ParticleCount}p/{_airburst.ChunkCount}c");
                 parts.Add($"Napalm {_napalm.ParticleCount}p/{_napalm.ChunkCount}c");
+                // Enlarged (DECISIONS 11A), High / Low tier.
+                string At(string name, ExplosionEffect e, float grow) => $"{name} x{grow:F2} {e.ParticleCountAt(grow)}p/{e.ParticleCountAt(grow, 0.4f)}p-low";
+                parts.Add(At("ShellHit", _shellHit, BlastSizes.LightTank));
+                parts.Add(At("ShellHit", _shellHit, BlastSizes.MainTank));
+                parts.Add(At("ShellHit", _shellHit, BlastSizes.HeavyTank));
+                parts.Add(At("Large", _tiers[ExplosionTier.Large], 1.3f));
+                parts.Add(At("Huge", _tiers[ExplosionTier.Huge], 1.5f));
+                parts.Add(At("Ultimate", _tiers[ExplosionTier.Ultimate], 1.5f));
+                parts.Add(At("Ultimate cruise", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(18f)));
+                parts.Add(At("Ultimate MOAB", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(27f)));
                 return string.Join(", ", parts);
             }
         }
 
-        public void Explode(ExplosionTier tier, Vector3 at, float now) => _tiers[tier].Play(at, now);
+        public void Explode(ExplosionTier tier, Vector3 at, float now, float scale = 1f, float grow = 1f) => _tiers[tier].Play(at, now, scale, grow);
+
+        /// <summary>
+        /// A tank's round striking a hull (ProjectileImpact of an armour-piercing shell): before the
+        /// play-test fix a spark spray (a Small blast and sparks), after it the shell-hit blast sized
+        /// by the tank's class. Mirrors EffectsDirector.ImpactOfKind.
+        /// </summary>
+        public void TankHit(string weapon, Vector3 at, float now, bool before)
+        {
+            var round = _catalog.Weapons[weapon];
+            var heavy = round.Damage >= 150f;
+            var hit = at + Vector3.up * 0.8f;
+            if (before)
+            {
+                Explode(ExplosionTier.Small, hit, now, heavy ? 0.9f : 0.6f);
+                _muzzle.SparkBurst(at + Vector3.up, Vector3.up + Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
+                return;
+            }
+            var grow = BlastSizes.TankShell(round);
+            _shellHit.Play(hit, now, heavy ? 1f : 0.75f, grow);
+            var sparks = heavy ? 36 : 16;
+            sparks += Mathf.RoundToInt(sparks * (grow - 1f));
+            _muzzle.SparkBurst(hit + Vector3.up * 0.2f, Vector3.up + Random.insideUnitSphere * 0.5f, sparks, 8f * grow, (heavy ? 24f : 16f) * grow);
+        }
+
+        /// <summary>An aircraft's bomb landing (ProjectileImpact of a Bomb), before or after the fix. Mirrors EffectsDirector.</summary>
+        public void BombHit(string weapon, Vector3 at, float now, bool before)
+        {
+            var round = _catalog.Weapons[weapon];
+            var bomb = before ? 1f : BlastSizes.Bomb(round.Id);
+            Explode(round.ImpactTier, at, now, round.ImpactScale, bomb);
+            Ring(at, Mathf.Max(6f, round.SplashRadius) * 3f * bomb, new Color(1.2f, 1.1f, 0.9f, 0.7f));
+            for (var i = 0; i < 3; i++)
+                _emitters.DamageSmoke(at + (Vector3.up * (1.5f + i * 1.5f) + Random.insideUnitSphere) * bomb,
+                    Mathf.Max(2.5f, round.SplashRadius * 0.6f) * Mathf.Pow(bomb, 0.65f), 0.3f);
+            if (round.ImpactTier >= ExplosionTier.Medium) _decals.Place(at, (round.ImpactTier >= ExplosionTier.Large ? 5f : 2.2f) * bomb);
+        }
+
+        private void Ring(Vector3 at, float size, Color colour) =>
+            _layers.Shockwave.Emit(new ParticleSystem.EmitParams
+            {
+                position = at + Vector3.up * 0.2f, startSize = size, startColor = colour, startLifetime = 0.6f, applyShapeToPosition = false,
+            }, 1);
+
+        /// <summary>A thin red circle on the ground: the blast radius the simulation deals damage in, to judge a blast against.</summary>
+        public void Marker(Vector3 at, float radius)
+        {
+            var line = new GameObject("Radius").AddComponent<LineRenderer>();
+            line.transform.SetParent(_root, false);
+            line.sharedMaterial = _materials.StrikeWarning;
+            line.loop = true;
+            line.useWorldSpace = true;
+            line.widthMultiplier = 0.3f;
+            line.positionCount = 72;
+            for (var i = 0; i < 72; i++)
+            {
+                var a = i * Mathf.PI * 2f / 72f;
+                line.SetPosition(i, at + new Vector3(Mathf.Cos(a) * radius, 0.12f, Mathf.Sin(a) * radius));
+            }
+        }
 
         public void Airburst(Vector3 at, ExplosionTier tier, float now)
         {
@@ -119,12 +197,21 @@ namespace MachineBrigade.Editor
             else if (tier == ExplosionTier.Large) _fires.Ignite(at, 0.6f, 10f, now);
         }
 
-        /// <summary>A fire-support impact (StrikeImpact); <paramref name="blast"/> is its radius.</summary>
-        public void Strike(string support, ExplosionTier tier, float blast, Vector3 at, float now)
+        /// <summary>
+        /// A fire-support impact (StrikeImpact); <paramref name="blast"/> is its radius. Mirrors
+        /// EffectsDirector; <paramref name="before"/> draws it as before the play-test fix.
+        /// </summary>
+        public void Strike(string support, ExplosionTier tier, float blast, Vector3 at, float now, bool before = false)
         {
             var huge = tier >= ExplosionTier.Ultimate;
-            Explode(tier, at, now);
-            _decals.Place(at, Mathf.Max(4f, blast * (huge ? 1.4f : 1.1f)));
+            var nominal = tier switch { ExplosionTier.Large => 4.5f, ExplosionTier.Huge => 6.5f, ExplosionTier.Ultimate => 20f, _ => 3f };
+            var scale = Mathf.Clamp(blast / nominal, 0.9f, 1.6f);
+            _catalog.TryGetSupport(support, out var def);
+            var matched = !before && def != null && def.Kind == SupportKind.CruiseMissile && huge;
+            var grow = before ? 1f : matched ? BlastSizes.Reach(blast) : BlastSizes.Strike(def);
+            if (matched) scale = 1f;
+            Explode(tier, at, now, scale, grow);
+            _decals.Place(at, Mathf.Max(4f, blast * (huge ? 1.4f : 1.1f)) * (matched ? 1f : grow));
             if (tier >= ExplosionTier.Large) _fires.Ignite(at, huge ? 2.2f : tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
             if (support == "napalm_strike")
             {
@@ -178,6 +265,8 @@ namespace MachineBrigade.Editor
         public void Tick(float now, float dt)
         {
             foreach (var blast in _all) blast.Tick(now);
+            _muzzle.Tick(now);
+            _emitters.Tick(now, dt);
             _debris.Tick(now, dt);
             _wrecks.Tick(now, dt);
             _fires.Tick(now, dt);

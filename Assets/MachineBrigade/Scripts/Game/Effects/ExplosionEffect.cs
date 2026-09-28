@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
 using UnityEngine;
@@ -35,7 +36,10 @@ namespace MachineBrigade.Game.Effects
             root.SetParent(parent, false);
             var ground = PB.GroundPlane(root);
 
-            Flash = Shared(root, "Flash", m.Flash, 300);
+            // The flash and the air ring face the camera and are pulled well towards it: an enlarged
+            // blast's flash is tens of metres across, and the ground would slice it along a straight
+            // line (they are additive light, drawn over everything anyway).
+            Flash = Shared(root, "Flash", Pulled(m.Flash, 30f), 300);
             var flash = Flash.main;
             flash.startColor = new Color(1f, 0.9f, 0.7f);
 
@@ -141,7 +145,7 @@ namespace MachineBrigade.Game.Effects
 
             // The same wave seen in the air: a pale ring facing the camera around the fireball,
             // gone in a fifth of a second. Together with the ground ring it sells the punch.
-            AirShock = Shared(root, "Air Shock", m.Shockwave, 120);
+            AirShock = Shared(root, "Air Shock", Pulled(m.Shockwave, 20f), 120);
             var air = AirShock.main;
             air.startRotation = 0f;
             air.startColor = new Color(1f, 0.93f, 0.8f, 0.55f);
@@ -263,6 +267,14 @@ namespace MachineBrigade.Game.Effects
             sub.AddSubEmitter(trail, ParticleSystemSubEmitterType.Birth, ParticleSystemSubEmitterProperties.InheritNothing);
             ps.Play(true);
             return ps;
+        }
+
+        /// <summary>A copy of an additive particle material drawn <paramref name="pull"/> metres nearer the camera.</summary>
+        private static Material Pulled(Material material, float pull)
+        {
+            var copy = new Material(material) { name = material.name + " (pulled)", hideFlags = HideFlags.DontSave };
+            copy.SetFloat("_DepthPull", pull);
+            return copy;
         }
 
         private static void Cone(ParticleSystem ps, float angle, float radius)
@@ -388,19 +400,49 @@ namespace MachineBrigade.Game.Effects
 
         private readonly struct Pending
         {
-            public Pending(float at, int burst, Vector3 position, float scale)
+            public Pending(float at, int burst, Vector3 position, float scale, float grow, float density)
             {
                 At = at;
                 BurstIndex = burst;
                 Position = position;
                 Scale = scale;
+                Grow = grow;
+                Density = density;
             }
 
             public float At { get; }
             public int BurstIndex { get; }
             public Vector3 Position { get; }
             public float Scale { get; }
+            public float Grow { get; }
+            public float Density { get; }
         }
+
+        /// <summary>How a layer grows when a blast is enlarged (see <see cref="Play"/>).</summary>
+        private enum Look
+        {
+            /// <summary>Flipbook fire, smoke and dust: more quads, spread wider, each only a little bigger.</summary>
+            Volume,
+
+            /// <summary>Sparks, debris, dirt and embers: more of them, thrown faster and farther.</summary>
+            Point,
+
+            /// <summary>Flash, shockwave, ground light, crater glow: computed shapes, crisp at any size, so simply bigger.</summary>
+            Ring,
+        }
+
+        /// <summary>
+        /// The share of the extra particles an enlarged blast adds that is emitted, by graphics
+        /// tier. A recipe's own particles are always emitted in full, so no tier ever shows less
+        /// fire or smoke than before; Low adds less of the extra, to stay cheap on the phones it
+        /// is for (DECISIONS 11A).
+        /// </summary>
+        public static float Density => MatchSettings.Tier switch
+        {
+            GraphicsQuality.Low => 0.4f,
+            GraphicsQuality.Medium => 0.75f,
+            _ => 1f,
+        };
 
         private readonly List<Burst> _bursts = new();
         private readonly List<Pending> _pending = new();
@@ -426,14 +468,25 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Solid chunks this blast throws.</summary>
         public int ChunkCount => _chunks.Earth + _chunks.Wreckage + _chunks.Burning;
 
-        public void Play(Vector3 position, float now, float scale = 1f)
+        /// <summary>
+        /// Plays the blast. <paramref name="scale"/> sizes every part of it alike (the old way).
+        /// <paramref name="grow"/> (1 or more) enlarges it without blowing its sprites up: the
+        /// flipbooks are 128 px a frame, so a fireball drawn half as big again goes soft and its
+        /// quad shows. Instead fire, smoke and dust come in more quads spread wider, each only a
+        /// little bigger (size x grow^0.65, count x grow^1.4, at most 2.6 times); sparks, debris
+        /// and embers come in greater numbers thrown farther; the flash, shockwave and glows (drawn
+        /// shapes, sharp at any size) simply grow. The blast covers grow times the ground.
+        /// </summary>
+        public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f)
         {
+            grow = Mathf.Max(1f, grow);
+            var density = grow > 1f ? Density : 1f;
             for (var i = 0; i < _bursts.Count; i++)
             {
-                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale);
-                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale));
+                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density);
+                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density));
             }
-            _layers.Chunks?.Throw(_chunks, position, scale, now);
+            _layers.Chunks?.Throw(_chunks, position, scale * grow, now);
         }
 
         /// <summary>Emits the later bursts that are due.</summary>
@@ -443,7 +496,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = _pending[i];
                 if (now < p.At) continue;
-                EmitBurst(p.BurstIndex, p.Position, p.Scale);
+                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density);
                 _pending[i] = _pending[_pending.Count - 1];
                 _pending.RemoveAt(_pending.Count - 1);
             }
@@ -451,26 +504,67 @@ namespace MachineBrigade.Game.Effects
 
         public void Clear() => _pending.Clear();
 
-        private void Emit(in Burst b, Vector3 position, float scale)
+        private Look LookOf(ParticleSystem s) =>
+            s == _layers.Flash || s == _layers.Shockwave || s == _layers.AirShock || s == _layers.GroundLight || s == _layers.CraterGlow
+                ? Look.Ring
+                : s == _layers.Sparks || s == _layers.Debris || s == _layers.Dirt || s == _layers.Embers || s == _layers.BurningDebris
+                    ? Look.Point
+                    : Look.Volume;
+
+        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density)
         {
+            // At grow 1 every factor below is exactly the old one.
+            var look = LookOf(b.System);
+            float size = scale, speed = scale, spread = scale, extra = 0f;
+            if (grow > 1f)
+            {
+                switch (look)
+                {
+                    case Look.Ring:
+                        size = speed = spread = scale * grow;
+                        break;
+                    case Look.Point:
+                        size = scale * Mathf.Pow(grow, 0.35f);
+                        speed = scale * Mathf.Pow(grow, 0.8f);
+                        spread = scale * grow;
+                        extra = b.Count * (Mathf.Pow(grow, 1.5f) - 1f) * density;
+                        break;
+                    default:
+                        size = scale * Mathf.Pow(grow, 0.65f);
+                        speed = scale * Mathf.Pow(grow, 0.85f);
+                        spread = scale * grow;
+                        extra = b.Count * (Mathf.Min(2.6f, Mathf.Pow(grow, 1.4f)) - 1f) * density;
+                        break;
+                }
+            }
             var ps = _layers.Route(b.System, position);
             var main = ps.main;
-            main.startSize = new ParticleSystem.MinMaxCurve(b.Size.x * scale, b.Size.y * scale);
-            main.startSpeed = new ParticleSystem.MinMaxCurve(b.Speed.x * scale, b.Speed.y * scale);
+            main.startSize = new ParticleSystem.MinMaxCurve(b.Size.x * size, b.Size.y * size);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(b.Speed.x * speed, b.Speed.y * speed);
             main.startLifetime = new ParticleSystem.MinMaxCurve(b.Lifetime.x, b.Lifetime.y);
             var shape = ps.shape;
-            if (shape.enabled) shape.radius = Mathf.Max(0.01f, b.Radius * scale);
+            if (shape.enabled)
+            {
+                var radius = b.Radius * spread;
+                // An enlarged fireball or cloud also spreads its quads over part of their own size,
+                // so the extra ones make one wider, lumpier blast instead of stacking in the middle.
+                if (grow > 1f && look == Look.Volume) radius += (b.Size.x + b.Size.y) * 0.5f * size * 0.14f * (grow - 1f);
+                shape.radius = Mathf.Max(0.01f, radius);
+            }
             if (b.Ring > 0f)
             {
                 var bearing = Random.value * Mathf.PI * 2f;
-                var reach = b.Ring * scale * Random.Range(0.85f, 1.2f);
+                var reach = b.Ring * spread * Random.Range(0.85f, 1.2f);
                 position += new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach);
             }
-            ps.Emit(new ParticleSystem.EmitParams { position = position + Vector3.up * (b.Lift * scale), applyShapeToPosition = true },
-                b.Count);
+            var count = b.Count + Mathf.RoundToInt(extra);
+            ps.Emit(new ParticleSystem.EmitParams
+            {
+                position = position + Vector3.up * (b.Lift * (look == Look.Volume ? size : spread)), applyShapeToPosition = true,
+            }, count);
         }
 
-        private void EmitBurst(int index, Vector3 position, float scale)
+        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density)
         {
             var b = _bursts[index];
             if (b.System == _layers.GroundLight)
@@ -478,7 +572,22 @@ namespace MachineBrigade.Game.Effects
                 var main = b.System.main;
                 main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
             }
-            Emit(b, position, scale);
+            Emit(b, position, scale, grow, density);
+        }
+
+        /// <summary>Particles this blast emits enlarged by <paramref name="grow"/> at a tier's <paramref name="density"/> (for the budget log and tests).</summary>
+        public int ParticleCountAt(float grow, float density = 1f)
+        {
+            var total = 0;
+            foreach (var b in _bursts)
+            {
+                var look = LookOf(b.System);
+                var extra = grow <= 1f || look == Look.Ring ? 0f
+                    : look == Look.Point ? b.Count * (Mathf.Pow(grow, 1.5f) - 1f)
+                    : b.Count * (Mathf.Min(2.6f, Mathf.Pow(grow, 1.4f)) - 1f);
+                total += b.Count + Mathf.RoundToInt(extra * density);
+            }
+            return total;
         }
 
         // Layer recipes. Sizes and speeds are in metres.
@@ -667,6 +776,32 @@ namespace MachineBrigade.Game.Effects
             e.Fireball(1, new Vector2(1.8f, 2.4f), new Vector2(0.6f, 0.75f), 0.2f, lift: 0.3f, speed: new Vector2(0.3f, 1f));
             e.Smoke(2, new Vector2(1.8f, 2.6f), new Vector2(1.6f, 2.2f), 0.05f);
             e.Embers(10, 0.6f);
+            return e;
+        }
+
+        /// <summary>
+        /// A tank's round striking armour or the ground beside it: a white-hot pop, a small hot
+        /// fireball bursting off the plate and a second one rolling out of it, a spray of sparks,
+        /// black smoke, flakes of metal, embers and a snap of air. Kept tight, so a kill's hulk
+        /// blast after it is still the big one. EffectsDirector sizes it by the gun: light tanks
+        /// x1.3, main battle tanks and tank destroyers x1.4, heavy, siege and super-heavy x1.5
+        /// (<see cref="BlastSizes"/>).
+        /// </summary>
+        public static ExplosionEffect CreateShellHit(BlastLayers l)
+        {
+            var e = new ExplosionEffect(l);
+            e.Flash(2.8f);
+            // The quads stand on their emission point; lowered so the fire bursts round the hit.
+            // Long enough lives that the flame shows for a fifth of a second before it rolls into smoke.
+            e.Fireball(1, new Vector2(2f, 2.6f), new Vector2(1.05f, 1.3f), 0.12f, hot: true, lift: -0.55f, speed: new Vector2(0.3f, 1.2f));
+            e.Fireball(1, new Vector2(1.5f, 2f), new Vector2(1.1f, 1.35f), 0.4f, 0.06f, lift: -0.35f, speed: new Vector2(0.5f, 1.6f));
+            e.Sparks(24, new Vector2(6f, 15f), 0.14f);
+            e.Smoke(1, new Vector2(1.8f, 2.5f), new Vector2(1.8f, 2.6f), 0.18f);
+            e.Dust(1, new Vector2(1.3f, 2.1f));
+            e.Debris(5, new Vector2(3f, 8f));
+            e.Embers(6, 0.6f);
+            e._bursts.Add(new Burst(l.AirShock, 0f, 1, new Vector2(2.8f, 3.2f), Vector2.zero, new Vector2(0.12f, 0.16f), 0f));
+            e.GroundLight(4.5f, 0.35f, 0.18f);
             return e;
         }
 
