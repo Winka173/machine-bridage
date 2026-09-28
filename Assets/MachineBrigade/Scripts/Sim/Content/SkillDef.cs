@@ -30,6 +30,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Stuns enemy ground vehicles within Radius for Duration: no driving, no firing.</summary>
         Emp,
+
+        /// <summary>A boss's self-repair (prompt 9): puts one broken part back at Amount of its health, the one with the strongest weapon.</summary>
+        Patch,
     }
 
     /// <summary>When a skill fires (checked every step; then it waits out its cooldown).</summary>
@@ -49,6 +52,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A guided missile or drone is flying at it.</summary>
         MissileIncoming,
+
+        /// <summary>One of its parts is broken and can still be patched (a boss's self-repair).</summary>
+        PartBroken,
     }
 
     /// <summary>
@@ -174,17 +180,24 @@ namespace MachineBrigade.Sim.Content
         public bool RevealBase { get; internal set; }
     }
 
-    /// <summary>A command vehicle's aura: friendly vehicles within Radius fire FireRate faster (several auras do not add up).</summary>
+    /// <summary>
+    /// A command vehicle's aura: friendly vehicles within Radius fire FireRate faster and hit Damage
+    /// harder (several auras do not add up: the best of each counts).
+    /// </summary>
     public sealed class CommandAuraDef
     {
-        public CommandAuraDef(float radius, float fireRate)
+        public CommandAuraDef(float radius, float fireRate, float damage = 0f)
         {
             Radius = Guard.Positive(radius, "commandAura", nameof(radius));
             FireRate = Guard.NonNegative(fireRate, "commandAura", nameof(fireRate));
+            Damage = Guard.NonNegative(damage, "commandAura", nameof(damage));
         }
 
         public float Radius { get; }
         public float FireRate { get; }
+
+        /// <summary>Share more damage for friendly vehicles in reach (the Supreme Commander's).</summary>
+        public float Damage { get; }
     }
 
     /// <summary>

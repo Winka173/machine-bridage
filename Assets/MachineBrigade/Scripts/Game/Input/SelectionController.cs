@@ -55,6 +55,9 @@ namespace MachineBrigade.Game.Input
             _pickMargin = 28f * Mathf.Max(1f, Screen.dpi / 160f);
         }
 
+        /// <summary>A tap landed on a part of an enemy boss (prompt 9): the boss and the part's index.</summary>
+        public event Action<EntityId, int> PartTapped;
+
         /// <summary>Raised when a command is refused, so the HUD can say why.</summary>
         public event Action<CommandError> Rejected;
 
@@ -113,6 +116,12 @@ namespace MachineBrigade.Game.Input
                 _selected.Clear();
                 _selected.Add(picked.Id);
                 return;
+            }
+            // A tap on one of an enemy boss's parts: every unit in reach goes for it (and the selection attacks the boss).
+            if (picked != null && picked.Team != _team && picked.Sim.HasParts && PartTapped != null)
+            {
+                var part = PartUnder(picked, screen);
+                if (part >= 0) PartTapped(picked.Id, part);
             }
             if (_selected.Count == 0 || (picked != null && picked.Team == _team)) return;
 
@@ -215,6 +224,24 @@ namespace MachineBrigade.Game.Input
 
         /// <summary>The player's own vehicle (not the allied commander's).</summary>
         private bool Mine(VehicleView view) => view.Team == _team && !view.Sim.Ally;
+
+        /// <summary>The live part of a boss nearest the tap on screen, within a finger's reach of it, or -1.</summary>
+        private int PartUnder(VehicleView boss, Vector2 screen)
+        {
+            var best = -1;
+            var bestDistance = _pickMargin * 2.2f;
+            for (var i = 0; i < boss.Sim.PartCount; i++)
+            {
+                if (boss.Sim.IsPartBroken(i)) continue;
+                var at = _camera.Camera.WorldToScreenPoint(boss.PartWorld(i));
+                if (at.z <= 0f) continue;
+                var d = Vector2.Distance(new Vector2(at.x, at.y), screen);
+                if (d >= bestDistance) continue;
+                bestDistance = d;
+                best = i;
+            }
+            return best;
+        }
 
         private bool Issue(Command command)
         {

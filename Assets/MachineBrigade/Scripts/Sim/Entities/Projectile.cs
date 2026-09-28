@@ -48,6 +48,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>A guided round that simply failed (lost lock at long range): it lands off target by <see cref="Miss"/>.</summary>
         public bool Failed { get; set; }
 
+        /// <summary>
+        /// When a mount fired it (sim seconds; infinity for rounds from equipment): flares that went
+        /// up while it flew can still pull it off, however long its flight (missiles fly slower
+        /// since test feedback 11C, some longer than a flare burns).
+        /// </summary>
+        public double LaunchedAt { get; set; } = double.PositiveInfinity;
+
         /// <summary>Damage multiplier: machine-gun rounds carry the damage of the pause between bursts.</summary>
         public float DamageScale { get; set; } = 1f;
 
@@ -65,5 +72,17 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>A bounce or a drone from equipment: it sets off no further hit traits.</summary>
         public bool NoProc { get; set; }
+
+        /// <summary>A ricochet: it strikes its target only (no blast, no piercing, no bomblets).</summary>
+        public bool Bounce { get; set; }
+
+        /// <summary>Carries no bomblets (a cluster salvo's rounds after its first few, see Cluster Warhead).</summary>
+        public bool NoCluster { get; set; }
+
+        /// <summary>
+        /// The boss part it was fired at (its index in the boss's parts), or -1 for the body: a direct
+        /// hit strikes the part while it stands, and its blast lands on the body only.
+        /// </summary>
+        public int Part { get; set; } = -1;
     }
 }

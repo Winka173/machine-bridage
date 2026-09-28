@@ -47,7 +47,8 @@ namespace MachineBrigade.Tests
             {
                 var source = File.ReadAllText(file);
                 foreach (Match m in Regex.Matches(source, @"Strings\.(?:Get|Format)\(""([^""]+)""\s*[,)]"))
-                    if (!keys.Contains(m.Groups[1].Value))
+                    // Strings.Has also reads the generated tables (GuideText, CampaignText).
+                    if (!keys.Contains(m.Groups[1].Value) && !MachineBrigade.Game.Hud.Strings.Has(m.Groups[1].Value))
                         missing.Add(m.Groups[1].Value + " (" + Path.GetFileName(file) + ")");
             }
             Assert.That(missing, Is.Empty, "missing keys: " + string.Join(", ", missing));

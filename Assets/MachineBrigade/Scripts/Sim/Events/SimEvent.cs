@@ -109,6 +109,25 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A charged weapon (Mount) of Entity began powering up; it fires in Value seconds at Target.</summary>
         WeaponCharging,
+
+        /// <summary>
+        /// A fortress's reinforcements are on their way in by its line (DefId "rail" or "runway"):
+        /// the train or aircraft gets to Position (the stop) in Value seconds, facing Target (a unit
+        /// vector); Team is whose they are. The vehicles aboard come as DeploymentQueued events with
+        /// Mount 1 (no parachute) and land when it stops.
+        /// </summary>
+        Arrival,
+        /// <summary>A boss part broke: Entity the boss, Mount the part's index, Position where it was, DefId the part's id.</summary>
+        PartBroken,
+
+        /// <summary>A boring boss (Entity): Value 0 it dives, 1 the ground cracks at Position (it breaks out in Target.X seconds), 2 it breaks out at Position.</summary>
+        Burrowing,
+
+        /// <summary>A landing craft (Entity) lowers its ramp at Position and lands Value vehicles.</summary>
+        TroopsLanding,
+
+        /// <summary>A boss's self-repair put a part back: Entity the boss, Mount the part's index, DefId its id.</summary>
+        PartRepaired,
     }
 
     /// <summary>
@@ -200,6 +219,16 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
             new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team);
 
+        /// <summary>A delivery that comes by a fortress's line (Mount 1): it gets off at Position when the train or aircraft stops.</summary>
+        internal static SimEvent DeploymentRouted(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
+            new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team, mount: 1);
+
+        /// <summary>Whether a DeploymentQueued event is a delivery by a fortress's line (no parachute).</summary>
+        public bool ByLine => Kind == SimEventKind.DeploymentQueued && Mount == 1;
+
+        internal static SimEvent ArrivalInbound(int team, string kind, Vector2 stop, Vector2 facing, float seconds) =>
+            new(SimEventKind.Arrival, EntityId.None, stop, facing, seconds, default, kind, team);
+
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
 
@@ -243,14 +272,27 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent Stage(int stage, Vector2 at, string key) =>
             new(SimEventKind.StageCleared, default, at, default, stage, default, key, 0);
 
-        internal static SimEvent Alert(Vector2 at, string key) =>
-            new(SimEventKind.FortressAlert, default, at, default, 0f, default, key, 1);
+        /// <summary>A fortress's alarm (its sirens): Team 1 when it is bad news for the player, 0 when good (a gate of the enemy's blown in).</summary>
+        internal static SimEvent Alert(Vector2 at, string key, bool bad = true) =>
+            new(SimEventKind.FortressAlert, default, at, default, 0f, default, key, bad ? 1 : 0);
 
         internal static SimEvent CrateClaimed(Crate c, int team) =>
             new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);
 
         internal static SimEvent Revealed(Vehicle radar, Vehicle gun, float seconds) =>
             new(SimEventKind.GunRevealed, radar.Id, gun.Position, default, seconds, default, gun.Def.Id, radar.Team, other: gun.Id);
+
+        internal static SimEvent PartLost(Vehicle boss, int part, Vector2 at, string id) =>
+            new(SimEventKind.PartBroken, boss.Id, at, boss.Position, 0f, ExplosionTier.Huge, id, boss.Team, part);
+
+        internal static SimEvent PartBack(Vehicle boss, int part, Vector2 at, string id) =>
+            new(SimEventKind.PartRepaired, boss.Id, at, boss.Position, 0f, ExplosionTier.Small, id, boss.Team, part);
+
+        internal static SimEvent Burrow(Vehicle boss, int stage, Vector2 at, float seconds = 0f) =>
+            new(SimEventKind.Burrowing, boss.Id, at, new Vector2(seconds, 0f), stage, ExplosionTier.Ultimate, boss.Def.Id, boss.Team);
+
+        internal static SimEvent Landed(Vehicle boss, Vector2 at, int count) =>
+            new(SimEventKind.TroopsLanding, boss.Id, at, boss.Position, count, ExplosionTier.Large, boss.Def.Id, boss.Team);
 
         internal static SimEvent BossPhase(Vehicle v, int number, bool begins, string? radio) =>
             new(SimEventKind.BossPhase, v.Id, v.Position, default, number, default, radio, v.Team, mount: begins ? 1 : 0);

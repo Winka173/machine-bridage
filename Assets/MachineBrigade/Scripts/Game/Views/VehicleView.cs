@@ -14,7 +14,7 @@ namespace MachineBrigade.Game.Views
     /// barrel recoil, hull pitch when accelerating or braking, a light bounce on the move, turning
     /// weapon mounts, spinning rotors, and flight (altitude, banking) for aircraft.
     /// </summary>
-    public sealed class VehicleView
+    public sealed partial class VehicleView
     {
         private const float BarWidth = 2.4f;
         private const float BarHeight = 0.2f;
@@ -69,7 +69,7 @@ namespace MachineBrigade.Game.Views
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
             // A boss in a later form wears that form's model.
-            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body);
+            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body, lod: VehicleLod.Enabled);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
             ModelBounds = Measure(_model.Root.transform, _body);
@@ -187,6 +187,7 @@ namespace MachineBrigade.Game.Views
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
             _shieldMaterial = materials.Shockwave;
             AddRotorBlur(materials);
+            InitParts(models, meshes, materials);
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -203,6 +204,63 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>The detail level it is drawn at (<see cref="VehicleLod"/>): 0 full, 1 simplified, 2 impostor.</summary>
+        public int Level => Mathf.Max(VehicleLod.Full, _level);
+
+        /// <summary>The model's far detail level; null when it has none (-mb-no-lod).</summary>
+        public ModelLod Lod => _model.Lod;
+
+        /// <summary>Its page in the impostor atlas (set by the views when it is made); null without one.</summary>
+        public ImpostorPage Impostor { get; internal set; }
+
+        /// <summary>How big it is in metres (length, span or height, whichever is most): what the level is chosen by.</summary>
+        public float LodSize => Mathf.Max(ModelBounds.size.x, Mathf.Max(ModelBounds.size.y, ModelBounds.size.z)) * Def.Scale;
+
+        /// <summary>Where its impostor card is centred (on its upright axis, at its middle height).</summary>
+        public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * Def.Scale);
+
+        /// <summary>The impostor's tint: the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
+        public Color ImpostorTint
+        {
+            get
+            {
+                var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+                if (!VehicleLod.Colours) return tint;
+                var debug = VehicleLod.Tint(VehicleLod.Impostor);
+                return new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a);
+            }
+        }
+
+        private int _level = -1;
+
+        /// <summary>
+        /// Chooses the detail level for this frame's scale (screen pixels per metre; 0 or less
+        /// keeps full detail), honouring -mb-lod=N. A wreck stays on meshes (its turret flies off).
+        /// </summary>
+        public void UpdateLod(float pixelsPerMetre)
+        {
+            var deepest = _model.Lod == null || _model.Lod1Renderers.Length == 0 ? VehicleLod.Full
+                : Impostor != null && Impostor.Baked && !_wreck ? VehicleLod.Impostor
+                : VehicleLod.Simple;
+            int level;
+            if (VehicleLod.Forced >= 0) level = Mathf.Min(VehicleLod.Forced, deepest);
+            else if (pixelsPerMetre <= 0f) level = VehicleLod.Full;
+            else level = VehicleLod.Choose(_level, LodSize * pixelsPerMetre, deepest);
+            SetLevel(level);
+        }
+
+        /// <summary>Shows one detail level: the full model's renderers, the simplified parts, or neither (the views draw the card).</summary>
+        public void SetLevel(int level)
+        {
+            if (level == _level) return;
+            var full = level == VehicleLod.Full;
+            var simple = level == VehicleLod.Simple;
+            foreach (var r in _model.Renderers) r.enabled = full;
+            foreach (var r in _model.Lod1Renderers) r.gameObject.SetActive(simple);
+            _level = level;
+            if (VehicleLod.Colours) ApplyTint();
+        }
 
         /// <summary>Dead: a burning hulk or a falling wreck.</summary>
         public bool IsWreck => _wreck;
@@ -384,8 +442,16 @@ namespace MachineBrigade.Game.Views
         private void ApplyTint()
         {
             _tintBlock ??= new MaterialPropertyBlock();
-            _tintBlock.SetColor(TintId, new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash));
+            var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+            _tintBlock.SetColor(TintId, tint);
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
+            if (_model.Lod1Renderers.Length == 0) return;
+            if (VehicleLod.Colours)
+            {
+                var debug = VehicleLod.Tint(VehicleLod.Simple);
+                _tintBlock.SetColor(TintId, new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a));
+            }
+            foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
         }
 
         // Hit feedback: a soft white flash for a hit that takes 2 % or more at once (a shell, a
@@ -463,9 +529,9 @@ namespace MachineBrigade.Game.Views
                 var list = _launchers[index];
                 var point = list[_nextLauncher[index]++ % list.Count];
                 var spread = point.Spread;
-                if (spread == Vector2.zero) return point.transform.position;
+                if (spread == Vector2.zero) return Anchored(point.transform, point.transform.position);
                 var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
-                return point.transform.position + point.transform.parent.TransformVector(jitter);
+                return Anchored(point.transform, point.transform.position + point.transform.parent.TransformVector(jitter));
             }
             if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
             {
@@ -473,21 +539,35 @@ namespace MachineBrigade.Game.Views
                 var centre = _muzzles[0].position;
                 var along = DirectionOf(0);
                 var offset = BarrelTip(_barrel) - centre;
-                return centre + offset - along * Vector3.Dot(offset, along);
+                return Anchored(_muzzles[0], centre + offset - along * Vector3.Dot(offset, along));
             }
             // An aircraft's air-to-air missile marked only on the centreline (a hint for the
             // builder, not a rail): it leaves from the wingtip rails instead.
             if (Def.Flying && index > 0 && Def.Mounts[index].Slot == "aam" && _muzzles[index] != null &&
                 Mathf.Abs(_body.InverseTransformPoint(_muzzles[index].position).x) < 0.1f && AirframeStore(index, "aam", out var rail))
-                return rail;
-            if (index < _muzzles.Length && _muzzles[index] != null) return _muzzles[index].position;
-            if (index == 0) return MuzzleWorld;
+                return Anchored(_body, rail);
+            if (index < _muzzles.Length && _muzzles[index] != null) return Anchored(_muzzles[index], _muzzles[index].position);
+            if (index == 0) return Anchored(_body, MuzzleWorld);
             var slot = Def.Mounts[index].Slot;
-            if (Def.Flying && AirframeStore(index, slot, out var store)) return store;
+            if (Def.Flying && AirframeStore(index, slot, out var store)) return Anchored(_body, store);
             var pivot = _mounts[index] != null ? _mounts[index] : _model.Turret != null ? _model.Turret : _body;
-            if (slot == "coax") return _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f;
+            if (slot == "coax") return Anchored(pivot, _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f);
             var top = pivot.position + Vector3.up * (pivot == _body ? MuzzleHeight + 0.6f : 0.8f);
-            return top + DirectionOf(index) * 0.8f;
+            return Anchored(pivot, top + DirectionOf(index) * 0.8f);
+        }
+
+        /// <summary>
+        /// Tests and tools: the part the last <see cref="MuzzleOf"/> point rides on and that point in
+        /// the part's own space, so where the barrel's tip is drawn can be found again later.
+        /// </summary>
+        internal Transform LastMuzzleNode { get; private set; }
+        internal Vector3 LastMuzzleLocal { get; private set; }
+
+        private Vector3 Anchored(Transform node, Vector3 world)
+        {
+            LastMuzzleNode = node;
+            LastMuzzleLocal = node.InverseTransformPoint(world);
+            return world;
         }
 
         /// <summary>
@@ -890,6 +970,7 @@ namespace MachineBrigade.Game.Views
         {
             // The missile rises on its erector as the launch countdown runs.
             if (_erector != null) _erector.localRotation = _erectorRest * Quaternion.Euler(-90f * Sim.Charge, 0f, 0f);
+            AnimatePrompt8Parts();
             // Searchlights sweep back and forth, each tower on its own rhythm.
             if (_searchlight != null)
                 _searchlight.localRotation = _searchlightRest * Quaternion.Euler(0f, Mathf.Sin(Time.time * 0.45f + Id.Value) * 75f, 0f);
@@ -937,7 +1018,10 @@ namespace MachineBrigade.Game.Views
                 var block = new MaterialPropertyBlock();
                 block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
                 foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
+                foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(block);
             }
+            // A hulk is drawn with meshes: its turret can be thrown off and it sinks away.
+            if (_level == VehicleLod.Impostor) SetLevel(VehicleLod.Simple);
             _ring.Visible = false;
             if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
@@ -967,8 +1051,12 @@ namespace MachineBrigade.Game.Views
         /// <summary>True while a shot-down aircraft is still falling.</summary>
         public bool Falling => _crashStart >= 0f && Root.position.y > 0.05f;
 
-        /// <summary>Animates a wreck that is still settling (a shot-down aircraft falling).</summary>
-        public void AnimateWreck() => RenderWreck();
+        /// <summary>Animates a wreck that is still settling (a shot-down aircraft falling) and keeps its detail level up with the zoom.</summary>
+        public void AnimateWreck()
+        {
+            UpdateLod(VehicleLod.PixelsPerMetre);
+            RenderWreck();
+        }
 
         private void RenderWreck()
         {

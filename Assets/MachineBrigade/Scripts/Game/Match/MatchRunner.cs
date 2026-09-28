@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Match
     /// chosen match it runs the menu over an AI-versus-AI battle. Restarting reloads the scene,
     /// which resets every system and view in one go (V2 rule 9).
     /// </summary>
-    public sealed class MatchRunner : MonoBehaviour
+    public sealed partial class MatchRunner : MonoBehaviour
     {
         private const int PlayerTeam = 0;
         private const int EnemyTeam = 1;
@@ -54,6 +54,13 @@ namespace MachineBrigade.Game.Match
         private ModeSession _session;
         private MatchReward _reward;
         private readonly Cinematics _cinematics = new();
+
+        /// <summary>The campaign's radio chatter (null outside a mission).</summary>
+        private RadioDirector _radio;
+
+        /// <summary>A story moment the camera goes to (a boss, reinforcements, a general): where, and until when.</summary>
+        private Vector3 _storyFocus;
+        private float _storyUntil;
         private float _cinematicZoom;
         private SimClock _clock;
         private MaterialLibrary _materials;
@@ -73,10 +80,12 @@ namespace MachineBrigade.Game.Match
         private MissionMarkers _markers;
         private PlayAreaView _playArea;
 
+        /// <summary>A siege fortress's set pieces (dome, line in, searchlights, super-gun); null elsewhere.</summary>
+        private FortressView _fortress;
+
         /// <summary>The battle was brought back to a checkpoint (replayed before its views were built).</summary>
         private bool _resumed;
 
-        private int _replayCommand, _replayInput;
         private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
@@ -95,8 +104,12 @@ namespace MachineBrigade.Game.Match
         private Vector3 _attractFocus;
         private int _announcedWave, _kills, _losses;
         private bool _warnedAir;
+
+        /// <summary>What the enemy brought (for a defeat's hints).</summary>
+        private readonly BattleTally _tally = new();
         private float _lastInput;
         private PerfProbe _perf;
+        private CrowdCheck _crowd;
         private FrameRateGovernor _frameRate;
 
         /// <summary>The rate the governor settled on carries over to the next scene load.</summary>
@@ -123,10 +136,14 @@ namespace MachineBrigade.Game.Match
 #endif
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
+            // The build happens behind the curtain, the first scene of a session too: shown once before the work starts.
+            Curtain.Cover();
+            yield return null;
             MatchSettings.Load();
             _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);
             ApplyDebugFlags();
             _perf = PerfProbe.Create();
+            if (_perf != null) _perf.Detail = () => _views?.LodSummary();
             if (!_debugStarted && DebugFlags.Has("-mb-play"))
             {
                 // Device testing: skip the menu once and play straight away.
@@ -150,8 +167,9 @@ namespace MachineBrigade.Game.Match
                 if (DebugFlags.Has("-mb-weekly")) MatchSettings.Mode = GameModeKind.Weekly;
                 if (DebugFlags.Has("-mb-siege")) MatchSettings.Mode = GameModeKind.Siege;
             if (DebugFlags.Has("-mb-bossrush")) MatchSettings.Mode = GameModeKind.BossRush;
+            // A campaign mission: -mb-c3m05, or an old id (-mb-m09) for the mission it became.
             foreach (var campaignMission in Campaign.All)
-                    if (DebugFlags.Has("-mb-" + campaignMission.Id))
+                    if (DebugFlags.Has("-mb-" + campaignMission.Id) || (campaignMission.Legacy != null && DebugFlags.Has("-mb-" + campaignMission.Legacy)))
                     {
                         MatchSettings.Mode = GameModeKind.Campaign;
                         MatchSettings.Mission = campaignMission.Id;
@@ -169,11 +187,16 @@ namespace MachineBrigade.Game.Match
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
             var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
+            Curtain.Progress(0.05f);
+            yield return null;
             // A campaign mission names its own battlefield and version of it.
             var mission = !_menu && kind == GameModeKind.Campaign ? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0] : null;
             var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
-            var map = GameContent.LoadMap(mapFile);
+            // A mission that returns to a map from the other side plays it reversed.
+            var map = mission != null ? Campaign.LoadMap(mission) : GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
+            Curtain.Progress(0.1f);
+            yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
@@ -183,10 +206,23 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
+                // The elite budget is part of that pace, not on top of it (prompt 8 H).
+                edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             if (!_menu) ApplyRankDiscounts(catalog, mission != null);
+            if (!_menu && _session is MissionSession storySession)
+            {
+                _radio = new RadioDirector(storySession.Def, seed);
+                _radio.Spoke += line => _hud?.Radio(line);
+                _radio.GeneralAppeared += general =>
+                {
+                    // A general's first words: the camera goes to their camp for a moment.
+                    if (_world.Bases.Of(EnemyTeam) is { } camp && camp.Hq.IsValid) StoryPan(camp.HqPosition);
+                    else if (_world.TryGetRally(EnemyTeam, out var rally)) StoryPan(rally);
+                };
+            }
             Curtain.Progress(0.15f);
             yield return null;
             // A campaign tier holds for the one mission it was chosen for.
@@ -251,6 +287,13 @@ namespace MachineBrigade.Game.Match
                 _camera.FocusOn(Vector3.zero);
                 _lastInput = float.MaxValue;
             }
+            // Device check at a chosen zoom (-mb-zoom=42: the widest the player can go).
+            if (float.TryParse(DebugFlags.Value("-mb-zoom="), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var zoom) && zoom > 0f)
+            {
+                _camera.MaxZoom = Mathf.Max(_camera.MaxZoom, zoom);
+                _camera.ZoomBy(_camera.Zoom / zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            }
+            if (!_menu) _crowd = CrowdCheck.Create(_world, start);
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
@@ -283,7 +326,7 @@ namespace MachineBrigade.Game.Match
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             // The soundtrack: the menu theme, the siege track for fortress battles, else a battle track.
             var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless;
-            _music = new MusicDirector(worldRoot, _menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
+            _music = MusicDirector.Play(_menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
                 System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
@@ -295,6 +338,12 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
+            _session.SetNight(weather == WeatherKind.Night);
+            if (!_menu && _session.Mode is MachineBrigade.Sim.Modes.SiegeMode siegeMode && _world.Map.Fortress != null)
+            {
+                _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
+                _fortress.SetNight(weather == WeatherKind.Night);
+            }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -374,6 +423,8 @@ namespace MachineBrigade.Game.Match
             var theme = MapTheme.For(_world.Map.Theme);
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
+            _session.SetNight(next == WeatherKind.Night);
+            _fortress?.SetNight(next == WeatherKind.Night);
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -388,6 +439,9 @@ namespace MachineBrigade.Game.Match
                 if (catalog.EliteVariant(id) is { } elite) Add(elite);
                 foreach (var skill in def.Skills)
                     if (skill.Unit != null) Add(skill.Unit);
+                // A boss's guards and the troops it lands (prompt 8).
+                foreach (var guard in def.Guards) Add(guard.Def);
+                if (def.Landing != null) foreach (var unit in def.Landing.Units) Add(unit);
             }
             for (var team = 0; team <= 1; team++)
                 if (_world.TryGetEconomy(team, out var economy))
@@ -541,7 +595,14 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
+            if (_crowd != null && !_paused)
+            {
+                // The crowd check holds the view on the two armies.
+                _crowd.Tick(_world, Time.time);
+                _lastInput = Time.unscaledTime;
+            }
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && _fortress != null && Time.time >= _fortressCheckAt) FortressCheck();
             if (!_menu && !_paused && DebugFlags.Has("-mb-towerwatch")) WatchTower();
             if (!_menu && !_paused && DebugFlags.Has("-mb-bastion")) WatchBastion();
             if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
@@ -552,7 +613,9 @@ namespace MachineBrigade.Game.Match
             }
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
+            else if (Time.unscaledTime < _storyUntil) _camera.Follow(_storyFocus, Time.unscaledDeltaTime, 0.7f);
             else FollowTheFight();
+            if (_radio != null && _session is MissionSession radioSession && !_paused) _radio.Tick(_world, radioSession);
             _selection.Tick();
             _perf?.Begin();
             if (!_paused)
@@ -580,7 +643,6 @@ namespace MachineBrigade.Game.Match
             _perf?.End(PerfProbe.Section.Effects);
             _perf?.Begin();
             _audio.Tick(_views);
-            _music?.Tick(Time.unscaledDeltaTime);
             _perf?.End(PerfProbe.Section.Audio);
             _perf?.Begin();
             _commander?.Update();
@@ -597,6 +659,8 @@ namespace MachineBrigade.Game.Match
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            // Rounds leave from the barrels as they have just been drawn.
+            _effects.LaunchShots(_views);
             _perf?.End(PerfProbe.Section.Views);
             _perf?.Begin();
             _objectives?.Render(Time.time);
@@ -609,6 +673,7 @@ namespace MachineBrigade.Game.Match
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
             _map.DrawShields(_camera.Rotation, Time.time);
+            _fortress?.Tick(Time.time, Time.deltaTime);
             _crates?.Update(_world);
             _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
@@ -621,6 +686,73 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+
+        private float _fortressCheckAt = 1.5f;
+        private int _fortressStep;
+
+        /// <summary>
+        /// Device checks of the siege set pieces (debug flags, one at a time): -mb-fortress looks over
+        /// the walls and the keep; -mb-breach blows in the gate nearest the attackers and the wall
+        /// beside it on camera; -mb-domedown takes out the relays, then the generators, so the dome
+        /// drops; -mb-arrival brings the fortress's reinforcements in by its line; -mb-supergun has the
+        /// super-gun fire in 12 s at the player's army.
+        /// </summary>
+        private void FortressCheck()
+        {
+            _fortressCheckAt = float.MaxValue;
+            if (_session.Mode is not SiegeMode siege || _world.Map.Fortress is not { } fortress) return;
+            var step = _fortressStep++;
+            void Look(System.Numerics.Vector2 at, float zoom)
+            {
+                _camera.FocusOn(new Vector3(at.X, 0f, at.Y));
+                _camera.ZoomBy(zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                _lastInput = float.MaxValue;
+            }
+            if (DebugFlags.Has("-mb-fortress") && step == 0)
+            {
+                _camera.MaxZoom = 90f;
+                Look(new System.Numerics.Vector2(70f, 70f), 0.4f);
+            }
+            if (DebugFlags.Has("-mb-breach"))
+            {
+                MachineBrigade.Sim.Entities.Prop gate = null;
+                foreach (var (id, ring, _) in siege.Gates)
+                    if (ring == 2 && _world.TryGetProp(id, out var g) && g.IsAlive && (gate == null || g.Position.X < gate.Position.X)) gate = g;
+                if (gate == null) return;
+                if (step == 0)
+                {
+                    Look(gate.Position, 1.6f);
+                    _fortressCheckAt = Time.time + 3f;
+                    return;
+                }
+                _world.DebugDestroyProp(gate);
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && prop.Def.Id == "base_wall" && System.Numerics.Vector2.Distance(prop.Position, gate.Position) < 14f)
+                        _world.DebugDestroyProp(prop);
+            }
+            if (DebugFlags.Has("-mb-domedown"))
+            {
+                if (step == 0)
+                {
+                    Look(siege.DomeCentre, 0.8f);
+                    _fortressCheckAt = Time.time + 5f;
+                    return;
+                }
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && (step == 1 ? prop.Def.Id == "radar_station" : prop.Def.Id == "shield_generator")) _world.DebugDestroyProp(prop);
+                if (step == 1) _fortressCheckAt = Time.time + 2f;
+            }
+            if (DebugFlags.Has("-mb-arrival") && fortress.Arrival is { } line)
+            {
+                Look(line.Stop, 1.2f);
+                siege.DebugReinforce(_world, "main_battle_tank", "ifv", "light_tank", "armored_car");
+            }
+            if (DebugFlags.Has("-mb-supergun") && step == 0)
+            {
+                siege.DebugFireSuperGunIn(_world, 12f);
+                Look(siege.SuperGunAt, 0.7f);
+            }
+        }
         private MachineBrigade.Sim.Entities.Vehicle _watched;
         private float _watchHitAt, _watchUntil, _raidAt = 6f;
 
@@ -693,6 +825,19 @@ namespace MachineBrigade.Game.Match
             _world.DebugDestroyProp(best);
         }
 
+        /// <summary>
+        /// A story moment (a boss or the enemy's reinforcements arriving, a general's first words):
+        /// the camera pans there for a few seconds under the letterbox, unless the player is busy
+        /// with the view; a touch hands it straight back.
+        /// </summary>
+        private void StoryPan(System.Numerics.Vector2 at)
+        {
+            if (_menu || !_cinematics.Enabled || Time.unscaledTime - _lastInput < 2f) return;
+            _storyFocus = new Vector3(at.X, 0f, at.Y);
+            _storyUntil = Time.unscaledTime + 3.5f;
+            _camera.StopFollowing();
+        }
+
         /// <summary>A slow-motion moment on a blast that is on screen.</summary>
         private void StartCinematic(System.Numerics.Vector2 at, bool force = false)
         {
@@ -753,6 +898,7 @@ namespace MachineBrigade.Game.Match
             _leavingWeather?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
+            _fortress?.Dispose();
             _audio?.Dispose();
             _music?.Dispose();
             _views?.Dispose();
@@ -790,6 +936,10 @@ namespace MachineBrigade.Game.Match
                 {
                     case SimEventKind.VehicleSpawned when _world.TryGetVehicle(e.Entity, out var vehicle):
                         _views.Add(vehicle);
+                        // A boss comes onto the field: the camera goes to meet it.
+                        if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
+                        EliteArrived(vehicle);
+                        if (vehicle.Team == EnemyTeam) _tally.Saw(vehicle.Def);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
@@ -803,6 +953,7 @@ namespace MachineBrigade.Game.Match
                         {
                             DailyMissions.Record("kills");
                             if (slain.Elite) DailyMissions.Record("elites");
+                            if (slain.Elite && !slain.Boss) _elitesSlain.Add(slain.EliteOf ?? slain.Id);
                             if (slain.Boss) DailyMissions.Record("bosses");
                         }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
@@ -823,11 +974,30 @@ namespace MachineBrigade.Game.Match
                         // Its new form: drawn again with the phase's model.
                         else if (phased.Form != null) _views.Rebuild(phased);
                         break;
+                    // Prompt 8 bosses: a part broken, the Earth Worm diving and the ground cracking, a landing.
+                    case SimEventKind.PartBroken when !_menu:
+                        PartBrokenToast(e);
+                        break;
+                    case SimEventKind.PartRepaired when !_menu:
+                        PartRepairedToast(e);
+                        break;
+                    case SimEventKind.Burrowing when !_menu:
+                        if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f);
+                        else if (e.Value < 1.5f && _world.TryGetVehicle(e.Entity, out var borer) && borer.Def.Burrow is { } bore)
+                        {
+                            _warnings.Add((new Vector2(e.Position.X, e.Position.Y), bore.Radius, Time.time + e.Target.X + 0.5f));
+                            _hud.Toast(Strings.Get("toast.cracking"), error: true, seconds: 2.5f);
+                        }
+                        break;
+                    case SimEventKind.TroopsLanding when !_menu:
+                        _hud.Toast(Strings.Format("toast.landing", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f);
+                        break;
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);
                         break;
                     case SimEventKind.Radio when !_menu && e.DefId != null:
-                        _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
+                        // In a campaign mission the radio panel speaks it (the director hears it below).
+                        if (_radio == null) _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
                         break;
                     case SimEventKind.StageStarted when !_menu && e.Value > 1f && _session is MissionSession staged:
                         _hud.ShowBanner(Strings.Format("stage.kicker", (int)e.Value), staged.StageTitle(e.DefId, (int)e.Value),
@@ -839,16 +1009,22 @@ namespace MachineBrigade.Game.Match
                         FitCameraToArea();
                         if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f);
                         break;
+                    case SimEventKind.FortressAlert when !_menu && e.DefId == "toast.enemyReinforce":
+                        _hud.Toast(Strings.Get(e.DefId), error: true);
+                        StoryPan(e.Position);
+                        break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
-                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
+                        // A fortress alarm is bad news for the player (Team 1) or good (0: the enemy's gate blown in).
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert && e.Team == 1);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.TraitProc when !_menu:
                         ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
-                        _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
+                        _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", _ => "toast.bounty" },
+                            Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
@@ -884,7 +1060,9 @@ namespace MachineBrigade.Game.Match
                 }
             }
             if (!DebugFlags.Has("-mb-no-fx")) _effects.Consume(_world.Events, _views, _map);
+            _fortress?.Consume(_world.Events);
             _audio.Consume(_world.Events);
+            _radio?.Consume(_world, _world.Events);
             _world.ClearEvents();
         }
 
@@ -938,6 +1116,14 @@ namespace MachineBrigade.Game.Match
                 MatchSettings.InMatch = false;
                 Reload("loading.base");
             };
+            _hud.DeckPressed += () =>
+            {
+                if (Curtain.Busy) return;
+                ClaimReward();
+                MatchSettings.InMatch = false;
+                MenuScreen.OpenDeckNext();
+                Reload("loading.base");
+            };
             _hud.CheckpointPressed += () =>
             {
                 if (Curtain.Busy || _session is not MissionSession staged) return;
@@ -951,8 +1137,8 @@ namespace MachineBrigade.Game.Match
             {
                 if (Curtain.Busy) return;
                 ClaimReward();
-                var next = Campaign.IndexOf(MatchSettings.Mission) + 1;
-                if (next > 0 && next < Campaign.All.Count) MatchSettings.Mission = Campaign.All[next].Id;
+                var next = Campaign.NextAfter(MatchSettings.Mission);
+                if (next >= 0) MatchSettings.Mission = Campaign.All[next].Id;
                 MatchSettings.Save();
                 Reload("loading.deploy", DeployDetail());
             };
@@ -1004,6 +1190,7 @@ namespace MachineBrigade.Game.Match
                     : Strings.Get("toast.focusClear"));
             };
             _selection.Rejected += _hud.ShowError;
+            WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
             _selection.BoxHidden += _hud.HideSelectionBox;
@@ -1128,6 +1315,7 @@ namespace MachineBrigade.Game.Match
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
             UpdateMinimap();
+            UpdateBossPartOutline();
         }
 
         private void UpdateMinimap()
@@ -1155,6 +1343,8 @@ namespace MachineBrigade.Game.Match
                     minimap.Boss(new Vector2(v.Position.X, v.Position.Y));
                     continue;
                 }
+                // An enemy elite has a symbol of its own (a gold ring round its blip).
+                if (v.Def.Elite && v.Team != PlayerTeam) minimap.Elite(new Vector2(v.Position.X, v.Position.Y), v.Flying, !seen);
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
@@ -1183,6 +1373,7 @@ namespace MachineBrigade.Game.Match
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;
+            Rewards.AddElites(_reward, outcome.Rows, _elitesSlain, _world.Catalog, _elitesSlain.Count * 7919 + (int)_world.Time);
             RewardView view = null;
             if (_reward != null)
             {
@@ -1192,6 +1383,12 @@ namespace MachineBrigade.Game.Match
                     CanDouble = Ads.Rewarded.Ready,
                 };
                 foreach (var id in _reward.Unlocks) view.Unlocked.Add(Strings.Card(id));
+                // The campaign's other pay-outs.
+                if (_reward.Prints > 0) view.Extras.Add(("star", $"{Strings.Get("result.prints")} +{_reward.Prints}"));
+                if (_reward.RarePrints > 0) view.Extras.Add(("star", Strings.Format("campaign.rareReward", _reward.RarePrints)));
+                if (_reward.TowerGear != null) view.Extras.Add(("shield", $"{Strings.Get("result.towerPiece")} · {Strings.Get("rarity." + _reward.TowerGear.ToLowerInvariant())}"));
+                if (_reward.HqLevel > 0) view.Extras.Add(("home", Strings.Format("result.hqLevel", _reward.HqLevel)));
+                if (_reward.Fragment != null) view.Extras.Add(("eye", Strings.Format("result.fragment", Strings.Get("mission." + _reward.Fragment + ".fragment.title"))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));
                 if (outcome.Result > 0 && _reward.MissionId != null && !PlayerProfile.Completed(_reward.MissionId))
@@ -1199,11 +1396,13 @@ namespace MachineBrigade.Game.Match
                     PlayerProfile.AddCrate(CrateKind.Silver);
                     view.Crates.Add(Strings.Get("crate.silver"));
                 }
-                var index = _session is MissionSession ? Campaign.IndexOf(MatchSettings.Mission) : -1;
-                view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
+                view.HasNext = outcome.Result > 0 && _session is MissionSession && Campaign.NextAfter(MatchSettings.Mission) >= 0;
                 view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
             }
-            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);
+            if (outcome.Result <= 0)
+                outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,
+                    MatchSettings.DeckVehicleSlots, _kills, _losses, _session is SiegeSession or AssaultSession or WeeklySession));
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, outcome.Note, outcome.Hints);
             _music?.Result(outcome.Result > 0);
         }
 
@@ -1217,53 +1416,15 @@ namespace MachineBrigade.Game.Match
         private IEnumerator Replay(ResumePoint resume)
         {
             _resumed = true;
-            _replayCommand = _replayInput = 0;
+            var replay = new CheckpointReplay(resume, _session, _world);
             var dt = (float)_clock.StepSeconds;
-            while (_world.Tick < resume.Tick && !_world.IsOver)
+            while (replay.Advance(dt, 500))
             {
-                FeedJournal(resume);
-                _session.Mode.Tick(_world, dt);
-                _session.TickAi(_world, dt);
-                _world.Step(dt);
-                _world.ClearEvents();
-                if (_world.Tick % 500 != 0) continue;
-                Curtain.Progress(0.15f + 0.25f * _world.Tick / Mathf.Max(1f, resume.Tick));
+                Curtain.Progress(0.15f + 0.25f * replay.Progress);
                 yield return null;
             }
-            FeedJournal(resume);
-            if (_world.StateHash() != resume.Hash)
+            if (!replay.Matches)
                 Debug.LogWarning($"Checkpoint replay drifted at step {_world.Tick}: {_world.StateHash():X16}, kept {resume.Hash:X16}");
-        }
-
-        /// <summary>The journal's commands and switches for the step the replay is on.</summary>
-        private void FeedJournal(ResumePoint resume)
-        {
-            while (_replayCommand < resume.Commands.Count && resume.Commands[_replayCommand].tick <= _world.Tick)
-                _world.SubmitPlayer(resume.Commands[_replayCommand++].command);
-            while (_replayInput < resume.Inputs.Count && resume.Inputs[_replayInput].tick <= _world.Tick)
-            {
-                var (_, input, value) = resume.Inputs[_replayInput++];
-                var ai = _session.PlayerAi;
-                if (input != "choose") MatchJournal.Record(_world, input, value);
-                switch (input)
-                {
-                    case "stance" when ai != null:
-                        ai.Stance = value == "defend" ? CommanderStance.Defend : CommanderStance.Attack;
-                        break;
-                    case "autoDeploy" when ai != null:
-                        ai.AutoDeploy = value == "1";
-                        break;
-                    case "autoStrike" when ai != null:
-                        ai.AutoStrike = value == "1";
-                        break;
-                    case "focus" when ai != null:
-                        ai.FocusPoint = string.IsNullOrEmpty(value) ? null : value;
-                        break;
-                    case "choose":
-                        (_session as MissionSession)?.Choose(_world, value);
-                        break;
-                }
-            }
         }
 
         /// <summary>The camera keeps to the play area as it is now (the whole map when there is none).</summary>

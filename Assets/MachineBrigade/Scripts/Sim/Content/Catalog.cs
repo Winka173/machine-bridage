@@ -8,7 +8,7 @@ namespace MachineBrigade.Sim.Content
     /// Every definition a match can use, resolved and validated up front so the simulation
     /// never meets a dangling id mid-battle.
     /// </summary>
-    public sealed class Catalog
+    public sealed partial class Catalog
     {
         private readonly Dictionary<string, WeaponDef> _weapons;
         private readonly Dictionary<string, VehicleDef> _vehicles;
@@ -26,8 +26,10 @@ namespace MachineBrigade.Sim.Content
             _props = Index(props, p => p.Id, "prop");
             foreach (var v in _vehicles.Values)
             {
+                v.Branch = BranchFor(v, BranchByClass, null);
                 if (v.EliteOf == null || !_vehicles.TryGetValue(v.EliteOf, out var original)) continue;
-                v.ArmyCost = original.CpCost;
+                // An elite counts (army value, kill refunds) at its elite price (prompt 8 H.4).
+                v.ArmyCost = EliteCost(original);
                 _elites.TryAdd(v.EliteOf, v.Id);
             }
         }
@@ -122,11 +124,14 @@ namespace MachineBrigade.Sim.Content
                     w.Enum("targets", TargetLayers.Ground))
                 {
                     Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
-                    Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false),
+                    Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f),
                     Charge = w.Float("charge", 0f),
+                    Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                 });
+                if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
+                    throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
                 {
                     var bonuses = new List<DamageBonus>();
@@ -162,6 +167,7 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
+            var ownBranches = new Dictionary<string, ArmyBranch?>();
             foreach (var v in Inherited(root.Array("vehicles"), model: true))
             {
                 var weapon = Weapon(weapons, v, "weapon");
@@ -172,6 +178,8 @@ namespace MachineBrigade.Sim.Content
                         secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
+                            ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
+                            ArcHalf = m.Has("arc") && m.FloatArray("arc").Count > 1 ? Math.Clamp(m.FloatArray("arc")[1], 5f, 180f) * MathF.PI / 180f : 0f,
                         });
                 }
                 vehicles.Add(Wrap(v, () =>
@@ -260,7 +268,7 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("commandAura"))
                     {
                         var c = v.Object("commandAura");
-                        def.CommandAura = new CommandAuraDef(c.Float("radius"), c.Float("fireRate"));
+                        def.CommandAura = new CommandAuraDef(c.Float("radius"), c.Float("fireRate"), c.Float("damage", 0f));
                     }
                     if (v.Has("counterBattery"))
                     {
@@ -307,6 +315,8 @@ namespace MachineBrigade.Sim.Content
                             new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
                             m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
                     }
+                    ParseExtras(v, def);
+                    if (v.Has("branch")) ownBranches[def.Id] = v.Enum<ArmyBranch>("branch");
                     return def;
                 }));
             }
@@ -318,7 +328,7 @@ namespace MachineBrigade.Sim.Content
                 props.Add(Wrap(p, () => new PropDef(
                     p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width") * propScale, p.Float("depth") * propScale,
                     p.Bool("blocks", false), ParseExplosion(p, "explosion", propBlasts), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
-                { Scale = propScale, Crushable = p.Bool("crush", false) }));
+                { Scale = propScale, Crushable = p.Bool("crush", false), Collapse = p.Float("collapse", 0f) }));
             }
 
             var supports = new List<SupportDef>();
@@ -342,7 +352,7 @@ namespace MachineBrigade.Sim.Content
                 }
             }
 
-            return new Catalog(root.Int("version", 1), damage, weapons.Values, vehicles, props, supports)
+            var catalog = new Catalog(root.Int("version", 1), damage, weapons.Values, vehicles, props, supports)
             {
                 IncomeScale = Tune("economy", "income"),
                 SupplyScale = Tune("economy", "supply"),
@@ -351,6 +361,8 @@ namespace MachineBrigade.Sim.Content
                 VehicleCaps = ReadCaps(root, "vehicleCap", 32),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
+            catalog.FinishExtras(root, ownBranches);
+            return catalog;
         }
 
         /// <summary>

@@ -26,7 +26,7 @@
       {"x": -66.0, "z": -116.0, "kind": "tower", "size": "small", "facing": 38},
       {"x": -130.0, "z": -72.0, "kind": "tower", "size": "small", "facing": 53},
       {"x": -80.0, "z": -124.0, "kind": "tower", "size": "small", "facing": 39},
-      {"x": -73.0, "z": -67.0, "kind": "utility", "size": "medium", "facing": 46},
+      {"x": -79.0, "z": -60.0, "kind": "utility", "size": "medium", "facing": 48},
       {"x": -51.0, "z": -125.0, "kind": "utility", "size": "medium", "facing": 34},
       {"x": -126.0, "z": -54.0, "kind": "utility", "size": "medium", "facing": 55}
     ]},
@@ -42,7 +42,7 @@
       {"x": 66.0, "z": 116.0, "kind": "tower", "size": "small", "facing": 218},
       {"x": 130.0, "z": 72.0, "kind": "tower", "size": "small", "facing": 233},
       {"x": 80.0, "z": 124.0, "kind": "tower", "size": "small", "facing": 219},
-      {"x": 73.0, "z": 67.0, "kind": "utility", "size": "medium", "facing": 226},
+      {"x": 79.0, "z": 60.0, "kind": "utility", "size": "medium", "facing": 228},
       {"x": 51.0, "z": 125.0, "kind": "utility", "size": "medium", "facing": 214},
       {"x": 126.0, "z": 54.0, "kind": "utility", "size": "medium", "facing": 235}
     ]}
@@ -656,6 +656,7 @@
     {"def": "charred_tree", "x": -9.0, "z": 109.0},
     {"def": "charred_tree", "x": -13.0, "z": 109.0},
     {"def": "charred_tree", "x": -76.0, "z": -77.0},
+    {"def": "charred_tree", "x": -78.5, "z": -75.0},
     {"def": "charred_tree", "x": 82.0, "z": -10.0},
     {"def": "charred_tree", "x": 87.5, "z": -6.5},
     {"def": "charred_tree", "x": 88.5, "z": -10.0},

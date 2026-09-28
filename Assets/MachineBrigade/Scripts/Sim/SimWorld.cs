@@ -59,6 +59,7 @@ namespace MachineBrigade.Sim
             Damage = new DamageSystem(this);
             Status = new StatusSystem(this);
             Gear = new Abilities.GearSystem(this);
+            Bosses = new MachineBrigade.Sim.Bosses.BossSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
@@ -90,6 +91,13 @@ namespace MachineBrigade.Sim
                 _lanes.RebuildIfDirty(this);
                 return _lanes;
             }
+        }
+
+        /// <summary>Rebuilds the lanes now (a wall came down and opened a breach: nobody may park in it).</summary>
+        internal void RebuildLanesNow()
+        {
+            _lanes.Hurry();
+            _lanes.RebuildIfDirty(this);
         }
 
         /// <summary>Whether <paramref name="shooter"/> has a clear line of fire at <paramref name="target"/> with <paramref name="weapon"/>.</summary>
@@ -138,6 +146,12 @@ namespace MachineBrigade.Sim
         /// <summary>Equipment traits and modules in battle.</summary>
         internal Abilities.GearSystem Gear { get; }
 
+        /// <summary>Boss parts, boring, landings, the supergun's shot and boss guards (prompt 8).</summary>
+        /// <summary>A side's elite budget (prompt 8 H): the modes set its share, cap and general.</summary>
+        public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
+
+        internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
+
         internal CombatSystem Combat => _combat;
 
         /// <summary>Some round is flying at this vehicle.</summary>
@@ -159,6 +173,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>A guided missile or drone is flying at this vehicle.</summary>
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
+
+        /// <summary>A guided missile (not a drone) is flying at this ground vehicle.</summary>
+        internal bool AtgmIncoming(EntityId vehicle) => _combat.AtgmIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
         /// <summary>
@@ -347,6 +364,8 @@ namespace MachineBrigade.Sim
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
+            // Its parts, a boss's timers, radio line and guards (prompt 8).
+            Bosses.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -478,6 +497,9 @@ namespace MachineBrigade.Sim
         private readonly List<(long tick, Command command)> _journal = new();
 
         /// <summary>A command from the player's screen: carried out and written in the journal.</summary>
+        /// <summary>The side's part order (prompt 9): the boss and the index of the part its units in reach aim at, if one stands.</summary>
+        public bool TryGetPartFocus(int team, out EntityId boss, out int part) => Bosses.TryGetFocus(team, out boss, out part);
+
         public CommandResult SubmitPlayer(Command command)
         {
             _journal.Add((Tick, command));
@@ -507,7 +529,11 @@ namespace MachineBrigade.Sim
                     Mix((long)MathF.Round(v.Position.X * 100f));
                     Mix((long)MathF.Round(v.Position.Y * 100f));
                     Mix((long)MathF.Round(v.Hp * 10f));
+                    // A boss's parts (prompt 9): a checkpoint's replay must bring every part back the same.
+                    for (var i = 0; i < v.PartCount; i++)
+                        Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
+                Bosses.Mix(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -553,6 +579,7 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
+            if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 
             _unitBuffer.Clear();
             foreach (var id in command.Units)
@@ -632,6 +659,7 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
             _combat.Step(dt);
@@ -671,6 +699,7 @@ namespace MachineBrigade.Sim
             CrushVegetation();
             Lap(4);
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
@@ -695,6 +724,9 @@ namespace MachineBrigade.Sim
             v.Dummy = true;
             v.RefreshEffects(Time);
         }
+
+        /// <summary>Turns a vehicle into a firing-range sparring partner (see <see cref="Vehicle.Sparring"/>).</summary>
+        public void MakeSparring(Vehicle v) => v.Sparring = true;
 
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
@@ -937,7 +969,13 @@ namespace MachineBrigade.Sim
                 var mask = 0;
                 // A stealthy aircraft shows only close up, or for a moment after it fires.
                 var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
-                if (target.Dummy)
+                // A boss boring underground: only its own side knows where it is.
+                if (target.Burrowed && !RevealAll)
+                {
+                    target.SeenByMask = target.VisibleToMask = target.Team is >= 0 and < 31 ? 1 << target.Team : 0;
+                    continue;
+                }
+                if (target.Dummy || RevealAll)
                 {
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
@@ -983,6 +1021,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;
+
+        /// <summary>Measurements only (the equipment lab's duels): every vehicle is in everyone's sight, as a firing-range target is.</summary>
+        internal bool RevealAll { get; set; }
 
         /// <summary>
         /// A fixed defence (a camp bastion, a point's tower, an Assault sector's guns, a fortress's

@@ -38,6 +38,15 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Revealed by counter-battery radar to the teams in Stacks (a mask); their artillery deals Value more to it.</summary>
         Reveal,
+
+        /// <summary>Under suppressive fire: fires Value slower.</summary>
+        Suppressed,
+
+        /// <summary>Phoenix Recovery's overheal: a barrier of Value hit points that fades at Until.</summary>
+        Overheal,
+
+        /// <summary>Vengeance: an ally fell close by; deals Value more damage.</summary>
+        Avenging,
         Count,
     }
 
@@ -175,5 +184,43 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Transit Gearbox: no enemy in sight (checked twice a second).</summary>
         public bool Calm;
+
+        // ----------------------------------------------------------------- prompt 8
+        /// <summary>Spare Magazine: the free refill of this life is spent.</summary>
+        public bool SpareUsed;
+
+        /// <summary>Opening Salvo: rounds fired until then at the new target get the bonus.</summary>
+        public double OpeningUntil = double.NegativeInfinity;
+
+        /// <summary>A heavy round's salvo (Overpressure, Heavy Round): its remaining rounds are heavy too, by this much.</summary>
+        public int HeavyRoundsLeft;
+        public float HeavyBonus;
+
+        /// <summary>Ricochet Shells: a fast gun's part-earned bounce (see the proc coefficient).</summary>
+        public float RicochetCarry;
+
+        /// <summary>Cluster Warhead: rounds of the current salvo that still carry bomblets.</summary>
+        public int BombletRoundsLeft;
+
+        /// <summary>Rearguard: moving away from the nearest known enemy (checked twice a second).</summary>
+        public bool Withdrawing;
+
+        /// <summary>Reverse Gearbox: when it may back off again.</summary>
+        public double BackOffAt;
+
+        /// <summary>Wolfpack four-piece: three or more friends on its target (checked twice a second).</summary>
+        public bool PackFocus;
+
+        /// <summary>Wolfpack two-piece: friends within reach (0 to 3, checked twice a second).</summary>
+        public int Pack;
+
+        /// <summary>Shredder Rounds: a fast gun's part-built stack (see the proc coefficient).</summary>
+        public float ShredCarry;
+
+        /// <summary>Momentum Gun: the streak as a fraction (a fast gun's hits count part of a step each).</summary>
+        public float StreakCarry;
+
+        /// <summary>Laser Warning: when its smoke may fire again.</summary>
+        public double WarningAt;
     }
 }

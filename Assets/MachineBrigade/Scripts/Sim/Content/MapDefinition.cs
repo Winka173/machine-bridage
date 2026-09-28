@@ -76,8 +76,9 @@ namespace MachineBrigade.Sim.Content
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
             IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null,
-            IReadOnlyList<BaseSiteDef>? bases = null)
+            IReadOnlyList<BaseSiteDef>? bases = null, FortressDef? fortress = null)
         {
+            Fortress = fortress;
             Bases = bases ?? Array.Empty<BaseSiteDef>();
             Decor = decor ?? Array.Empty<PropPlacement>();
             SiegeRings = siegeRings ?? Array.Empty<float>();
@@ -107,6 +108,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Each side's camp: its headquarters and hardpoints (empty on maps without bases).</summary>
         public IReadOnlyList<BaseSiteDef> Bases { get; }
+
+        /// <summary>A siege map's fortress: its ground, tower hardpoints by ring, super-gun and line in (null elsewhere).</summary>
+        public FortressDef? Fortress { get; }
 
         /// <summary>A side's camp in the map data, or null.</summary>
         public BaseSiteDef? BaseOf(int team)
@@ -155,6 +159,23 @@ namespace MachineBrigade.Sim.Content
                 if ((a.Y > p.Y) != (b.Y > p.Y) && p.X < (b.X - a.X) * (p.Y - a.Y) / (b.Y - a.Y) + a.X) inside = !inside;
             }
             return inside;
+        }
+
+        /// <summary>
+        /// The same battlefield with the two sides' camps swapped: side 0 starts where side 1 did,
+        /// with its camp, hardpoints and the units placed there (a fortress's towers too). A campaign
+        /// mission that comes back to a map from the other side plays on this.
+        /// </summary>
+        public MapDefinition Reversed()
+        {
+            static int Swap(int team) => team == 0 ? 1 : team == 1 ? 0 : team;
+            var teams = new List<TeamStart>();
+            foreach (var t in Teams) teams.Add(new TeamStart(Swap(t.Team), t.Rally));
+            var units = new List<UnitPlacement>();
+            foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading));
+            var bases = new List<BaseSiteDef>();
+            foreach (var b in Bases) bases.Add(new BaseSiteDef(Swap(b.Team), b.Hq, b.Heading, b.Slots));
+            return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases);
         }
 
         public static MapDefinition FromJson(string json)
@@ -229,8 +250,9 @@ namespace MachineBrigade.Sim.Content
             if (root.Has("bases"))
                 foreach (var b in root.Array("bases"))
                     bases.Add(BaseSiteDef.Parse(b));
+            var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor, bases);
+                boundary, rings, decor, bases, fortress);
         }
     }
 }

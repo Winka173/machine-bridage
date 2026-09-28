@@ -4,6 +4,8 @@
 // its shadows, explosion point lights, ambient and reflections all behave like URP Lit.
 // _BaseMap textures the ground (white elsewhere); _Tint darkens wrecks, and its alpha below 1
 // flashes a vehicle white as it is hit; _Wind sways foliage.
+// _VertexSurface marks a vehicle's far detail level (see MaterialLibrary.Lod): one material for
+// the whole part, each vertex naming its kit surface by a palette column in its first UV.
 Shader "MachineBrigade/Lit"
 {
     Properties
@@ -19,6 +21,7 @@ Shader "MachineBrigade/Lit"
         _CamoColorB ("Camo Second", Color) = (0.3, 0.3, 0.3, 1)
         _CamoColorC ("Camo Third", Color) = (0.6, 0.6, 0.6, 1)
         _CamoScale ("Camo Scale", Float) = 0.35
+        _VertexSurface ("Vertex Surface (far detail)", Float) = 0
     }
 
     SubShader
@@ -43,6 +46,7 @@ Shader "MachineBrigade/Lit"
             half4 _CamoColorB;
             half4 _CamoColorC;
             half _CamoScale;
+            half _VertexSurface;
         CBUFFER_END
 
         // Army skins: a pattern computed from the object-space position (the models' UVs are not
@@ -73,6 +77,35 @@ Shader "MachineBrigade/Lit"
             float m = SAMPLE_TEXTURE2D(_MbNoise, sampler_MbNoise, cell * 0.061).r;
             half3 d = lerp(baseColour, _CamoColorB.rgb, step(0.52, m + h * 0.18));
             return lerp(d, _CamoColorC.rgb, step(0.86, h));
+        }
+
+        // The far detail level's surfaces (MaterialLibrary.Palette): row 0 holds base colour and
+        // metallic, row 1 emission and roughness. A metallic of -1 is the army's paint (the
+        // material's colour, camouflage and finish), -2 its glow.
+        TEXTURE2D(_MbPalette);
+        SAMPLER(sampler_MbPalette);
+
+        void VertexSurface(float column, float3 positionOS, out half3 paint, out half metallic, out half roughness, out half3 emission)
+        {
+            half4 a = SAMPLE_TEXTURE2D_LOD(_MbPalette, sampler_MbPalette, float2(column, 0.25), 0);
+            half4 b = SAMPLE_TEXTURE2D_LOD(_MbPalette, sampler_MbPalette, float2(column, 0.75), 0);
+            paint = a.rgb;
+            metallic = a.a;
+            roughness = b.a;
+            emission = b.rgb;
+            if (a.a < -1.5h)
+            {
+                paint = _BaseColor.rgb;
+                metallic = 0.0h;
+                emission = _EmissionColor.rgb;
+            }
+            else if (a.a < -0.5h)
+            {
+                paint = Camo(positionOS, _BaseColor.rgb);
+                metallic = _Metallic;
+                roughness = _Roughness;
+                emission = half3(0.0h, 0.0h, 0.0h);
+            }
         }
 
         // Foliage sway: displacement grows with height above the ground. The phase comes from the
@@ -186,11 +219,20 @@ Shader "MachineBrigade/Lit"
                 // Baked vertex lighting is grey; its level also dims ambient light in crevices.
                 half bakedAo = saturate(dot(input.color.rgb, half3(0.333, 0.333, 0.334)) * 1.25);
 
+                half3 paint;
+                half metallic = _Metallic;
+                half roughness = _Roughness;
+                half3 emission = _EmissionColor.rgb;
+                UNITY_BRANCH
+                if (_VertexSurface > 0.5h)
+                    VertexSurface(input.uv.x, input.positionOS, paint, metallic, roughness, emission);
+                else
+                    paint = Camo(input.positionOS, _BaseColor.rgb) * SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
+
                 SurfaceData surface = (SurfaceData)0;
-                half3 map = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
-                surface.albedo = Camo(input.positionOS, _BaseColor.rgb) * map * input.color.rgb * _Tint.rgb;
-                surface.metallic = _Metallic;
-                surface.smoothness = 1.0h - SpecularAntiAliasedRoughness(_Roughness, input.normalWS);
+                surface.albedo = paint * input.color.rgb * _Tint.rgb;
+                surface.metallic = metallic;
+                surface.smoothness = 1.0h - SpecularAntiAliasedRoughness(roughness, input.normalWS);
                 surface.occlusion = lerp(0.55h, 1.0h, bakedAo);
                 surface.alpha = 1.0h;
                 surface.normalTS = half3(0, 0, 1);
@@ -200,7 +242,7 @@ Shader "MachineBrigade/Lit"
                 // over the whole vehicle. Reflected light is capped; emission (lamps, tracers) is
                 // added afterwards so it still blooms.
                 half4 color = UniversalFragmentPBR(inputData, surface);
-                color.rgb = min(color.rgb, MaxReflected) + _EmissionColor.rgb * _Tint.rgb;
+                color.rgb = min(color.rgb, MaxReflected) + emission * _Tint.rgb;
                 // Hit flash: a brief white-hot wash (1 - _Tint.a; 0 unless a view is flashing).
                 color.rgb = lerp(color.rgb, half3(1.25h, 1.2h, 1.1h), (1.0h - _Tint.a) * 0.3h);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
@@ -328,6 +370,74 @@ Shader "MachineBrigade/Lit"
             half4 NormalsFrag(Varyings input) : SV_Target
             {
                 return half4(NormalizeNormalPerPixel(input.normalWS), 0.0h);
+            }
+            ENDHLSL
+        }
+
+        // Draws a far-detail part into the impostor atlas (ImpostorAtlas): albedo and coverage to
+        // the first target; the view-space normal, metallic and glow to the second. Never drawn by
+        // the pipeline itself (its light mode is ours).
+        Pass
+        {
+            Name "ImpostorBake"
+            Tags { "LightMode" = "MbImpostorBake" }
+            ZWrite On
+            ZTest LEqual
+            Cull Back
+
+            HLSLPROGRAM
+            #pragma vertex BakeVert
+            #pragma fragment BakeFrag
+
+            struct Attributes
+            {
+                float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
+                half4 color : COLOR;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
+                half3 normalVS : TEXCOORD0;
+                half4 color : COLOR;
+                float2 uv : TEXCOORD1;
+                float3 positionOS : TEXCOORD2;
+            };
+
+            struct Targets
+            {
+                half4 albedo : SV_Target0;
+                half4 surface : SV_Target1;
+            };
+
+            Varyings BakeVert(Attributes input)
+            {
+                Varyings output;
+                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                output.normalVS = TransformWorldToViewDir(TransformObjectToWorldNormal(input.normalOS));
+                output.color = input.color;
+                output.uv = input.uv;
+                output.positionOS = input.positionOS.xyz;
+                return output;
+            }
+
+            Targets BakeFrag(Varyings input)
+            {
+                half3 paint;
+                half metallic;
+                half roughness;
+                half3 emission;
+                VertexSurface(input.uv.x, input.positionOS, paint, metallic, roughness, emission);
+                half3 albedo = paint * input.color.rgb;
+                half3 n = normalize(input.normalVS);
+                // Glow as a multiple of the albedo's brightness (the impostor tints it with the albedo).
+                half glow = saturate(dot(emission, half3(0.3h, 0.59h, 0.11h)) / max(dot(albedo, half3(0.3h, 0.59h, 0.11h)), 0.02h) / 16.0h);
+                Targets output;
+                output.albedo = half4(albedo, 1.0h);
+                output.surface = half4(n.xy * 0.5h + 0.5h, saturate(metallic), glow);
+                return output;
             }
             ENDHLSL
         }

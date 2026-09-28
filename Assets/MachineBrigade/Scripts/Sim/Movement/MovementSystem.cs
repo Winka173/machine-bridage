@@ -86,6 +86,12 @@ namespace MachineBrigade.Sim.Movement
                 if (!v.IsAlive) continue;
                 // Fixed defences only turn their guns (the combat system does that).
                 if (v.Def.Static) continue;
+                // A boss boring underground or landing troops: the boss system moves it (or holds it still).
+                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing)
+                {
+                    v.Speed = 0f;
+                    continue;
+                }
                 v.RepathTimer -= dt;
                 if (!v.Flying) TrackTraffic(v);
                 // Making way or backing out for a friend: the order waits (it is taken up again after).
@@ -113,7 +119,8 @@ namespace MachineBrigade.Sim.Movement
             _maxBound = 0f;
             foreach (var v in _world.VehicleList)
             {
-                if (!v.IsAlive || v.Flying) continue;
+                // Underground, it is in nobody's way.
+                if (!v.IsAlive || v.Flying || v.Burrowed) continue;
                 _ground.Add(v);
                 if (v.Def.HullBound > _maxBound) _maxBound = v.Def.HullBound;
             }
@@ -235,6 +242,14 @@ namespace MachineBrigade.Sim.Movement
 
         private void UpdateOrder(Vehicle v)
         {
+            // Relocating (the SP gun's shoot-and-scoot): it drives to its new spot whatever the
+            // order says, then takes the order up again from there.
+            if (v.Relocating)
+            {
+                if (v.HasPath || v.PathQueued) return;
+                v.Relocating = false;
+                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = v.Position;
+            }
             switch (v.Order.Kind)
             {
                 case OrderKind.Move:

@@ -137,7 +137,21 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>What a tower type's rank and pieces do to each of its towers (for a stat preview).</summary>
-        public static VehicleBoost TowerBoost(string towerId) => Gear.TowerBoost(Rank(TowerCardOf(towerId) ?? towerId), TowerGear(towerId));
+        public static VehicleBoost TowerBoost(string towerId) => Gear.TowerBoost(Rank(TowerCardOf(towerId) ?? towerId), TowerGear(towerId), BaseBrandCounts());
+
+        /// <summary>
+        /// The brand pieces worn by every tower type of the base together (Bulwark Engineering's bonuses
+        /// count across the whole base: three slots a tower type could never hold four pieces).
+        /// </summary>
+        public static int[] BaseBrandCounts()
+        {
+            var d = A;
+            var counts = new int[GearCatalog.Brands.Length + 1];
+            foreach (var id in d.towerGear)
+                if (FindGear(id) is { } item && item.brand >= 1 && item.brand < counts.Length)
+                    counts[item.brand]++;
+            return counts;
+        }
 
         /// <summary>What each tower type of the player's base has (crates favour tower pieces that work for one of them).</summary>
         internal static List<TowerNeed> BaseTowerNeeds()

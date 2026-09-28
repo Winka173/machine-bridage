@@ -21,6 +21,10 @@ namespace MachineBrigade.Game.Effects
             public MeshFilter Filter;
             public MeshRenderer Renderer;
             public Vector3 From, To;
+
+            /// <summary>The middle point of a bent path (see <see cref="Launch"/>'s control), used when Bent.</summary>
+            public Vector3 Mid;
+            public bool Bent;
             public Func<Vector3?> Homing;
             public float Start, Duration, Arc, Trail, PuffT, PuffStep, Wobble, Boost;
             public bool Flame, Active;
@@ -55,8 +59,13 @@ namespace MachineBrigade.Game.Effects
         /// <param name="trail">Smoke puff size; 0 for none.</param>
         /// <param name="boost">0: flies at one speed. Up to 1: leaves slowly and speeds up (a missile's launch and boost), arriving on time.</param>
         /// <param name="scale">How big the model is drawn.</param>
+        /// <param name="control">
+        /// A lobbed round's path through this point instead of the plain arc (a quadratic curve
+        /// from <paramref name="from"/> to <paramref name="to"/>): set along the barrel, the round
+        /// leaves down its barrel and bends onto where it lands, its trail on the same curve.
+        /// </param>
         public void Launch(ChunkModel model, Vector3 from, Vector3 to, float duration, float arc, float trail, float now,
-            Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f, float boost = 0f, float scale = 1f)
+            Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f, float boost = 0f, float scale = 1f, Vector3? control = null)
         {
             // A free slot if there is one, so a missile in flight does not teleport.
             var shot = _shots[_next];
@@ -71,6 +80,8 @@ namespace MachineBrigade.Game.Effects
             shot.From = from;
             shot.To = to;
             shot.Homing = homing;
+            shot.Bent = control.HasValue;
+            shot.Mid = control ?? Vector3.zero;
             shot.Start = now + delay;
             shot.Duration = Mathf.Max(0.05f, duration);
             shot.Arc = arc;
@@ -119,7 +130,9 @@ namespace MachineBrigade.Game.Effects
         {
             // A boosted missile covers its path as (1-b)t + b t^2: slow off the rail, fastest at the end.
             if (shot.Boost > 0f) t = (1f - shot.Boost) * t + shot.Boost * t * t;
-            var p = Vector3.Lerp(shot.From, shot.To, t) + Vector3.up * (shot.Arc * 4f * t * (1f - t));
+            var p = shot.Bent
+                ? Vector3.Lerp(Vector3.Lerp(shot.From, shot.Mid, t), Vector3.Lerp(shot.Mid, shot.To, t), t)
+                : Vector3.Lerp(shot.From, shot.To, t) + Vector3.up * (shot.Arc * 4f * t * (1f - t));
             if (shot.Wobble > 0f)
             {
                 // Unguided rockets corkscrew a little as they leave the tube.

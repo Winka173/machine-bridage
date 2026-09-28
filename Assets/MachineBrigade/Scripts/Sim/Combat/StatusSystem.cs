@@ -54,13 +54,27 @@ namespace MachineBrigade.Sim.Combat
 
         private bool Cleansed(Vehicle v) => Has(v, StatusKind.Cleansed, _world.Time);
 
-        /// <summary>Sets it on fire: <paramref name="dps"/> Fire damage a second for <paramref name="seconds"/>; a stronger fire replaces a weaker one.</summary>
-        public void Burn(Vehicle target, float dps, float seconds, int team, EntityId source, bool firestorm = false)
+        /// <summary>
+        /// Sets it on fire: <paramref name="dps"/> Fire damage a second for <paramref name="seconds"/>; a
+        /// stronger fire replaces a weaker one. <paramref name="stack"/> (Incendiary Rounds): the new fire
+        /// adds to what is still to burn, spread over its seconds (a fast gun's many small fires add up).
+        /// </summary>
+        public void Burn(Vehicle target, float dps, float seconds, int team, EntityId source, bool firestorm = false, bool stack = false)
         {
             if (!target.IsAlive || dps <= 0f || Cleansed(target) || target.Team == team) return;
             var now = _world.Time;
             seconds *= DurationFactor(target, true);
             ref var s = ref target.Statuses[(int)StatusKind.Burn];
+            if (stack && s.Until > now && s.Value > 0f)
+            {
+                var left = s.Value * (float)(s.Until - now);
+                s.Value = (left + dps * seconds) / seconds;
+                s.Until = now + seconds;
+                s.Team = team;
+                s.Source = source;
+                s.Flag |= firestorm;
+                return;
+            }
             if (s.Until <= now || dps >= s.Value)
             {
                 s.Value = dps;
@@ -84,16 +98,37 @@ namespace MachineBrigade.Sim.Combat
             s.Until = Math.Max(s.Until, now + seconds);
         }
 
-        /// <summary>One more stack of shred (up to <paramref name="maxStacks"/>), each making it take <paramref name="perStack"/> more damage.</summary>
-        public void Shred(Vehicle target, float perStack, float seconds, int maxStacks = 5)
+        /// <summary>
+        /// <paramref name="stacks"/> more stacks of shred (up to <paramref name="maxStacks"/>; a fraction
+        /// is kept towards the next), each making it take <paramref name="perStack"/> more damage.
+        /// </summary>
+        public void Shred(Vehicle target, float perStack, float seconds, int maxStacks = 5, float stacks = 1f)
         {
             if (!target.IsAlive || perStack <= 0f || Cleansed(target)) return;
             var now = _world.Time;
             ref var s = ref target.Statuses[(int)StatusKind.Shred];
-            if (s.Until <= now) s.Stacks = 0;
-            s.Stacks = Math.Min(maxStacks, s.Stacks + 1);
+            if (s.Until <= now)
+            {
+                s.Stacks = 0;
+                s.Extra = 0f;
+            }
+            s.Extra += stacks;
+            var whole = (int)MathF.Floor(s.Extra);
+            s.Extra -= whole;
+            s.Stacks = Math.Min(maxStacks, s.Stacks + whole);
             s.Value = Math.Max(s.Until > now ? s.Value : 0f, perStack);
             s.Until = now + seconds * DurationFactor(target, false);
+        }
+
+        /// <summary>Suppressive fire: it fires <paramref name="share"/> slower for <paramref name="seconds"/> (the stronger holds).</summary>
+        public void Suppress(Vehicle target, float share, float seconds)
+        {
+            if (!target.IsAlive || share <= 0f || Cleansed(target)) return;
+            var now = _world.Time;
+            seconds *= DurationFactor(target, false);
+            ref var s = ref target.Statuses[(int)StatusKind.Suppressed];
+            s.Value = s.Until > now ? Math.Max(s.Value, share) : share;
+            s.Until = Math.Max(s.Until, now + seconds);
         }
 
         /// <summary>Marks it for <paramref name="team"/>: that side deals <paramref name="bonus"/> more damage to it, its artillery reaches <paramref name="reach"/> farther.</summary>
@@ -160,6 +195,7 @@ namespace MachineBrigade.Sim.Combat
             v.Statuses[(int)StatusKind.Slow].Until = 0;
             v.Statuses[(int)StatusKind.Shred].Until = 0;
             v.Statuses[(int)StatusKind.Shred].Stacks = 0;
+            v.Statuses[(int)StatusKind.Suppressed].Until = 0;
             if (v.StunnedUntil > now) v.StunnedUntil = now;
             v.Statuses[(int)StatusKind.Cleansed].Until = now + immune;
             v.RefreshEffects(now);

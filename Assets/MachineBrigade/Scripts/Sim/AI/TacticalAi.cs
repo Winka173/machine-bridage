@@ -252,6 +252,7 @@ namespace MachineBrigade.Sim.AI
             SendToRearm(world);
             DirectSupport(world, front, forward);
             BreachObstacles(world, front, objective);
+            DirectBreachers(world, front, objective);
             FocusBoss(world);
             FocusDemolition(world);
             ShootBuildings(world);
@@ -501,6 +502,45 @@ namespace MachineBrigade.Sim.AI
         /// <summary>How near the front an obstacle must be for the line to breach it.</summary>
         private const float BreachReach = 30f;
 
+        /// <summary>How far ahead of the front a breacher looks for an enemy structure to open the way through.</summary>
+        private const float BreacherReach = 70f;
+
+        /// <summary>
+        /// Breachers (the armoured bulldozer) open the way into an enemy base ahead of the line: the
+        /// enemy obstacle or fixed defence nearest the line's way to the objective, an obstacle at once,
+        /// a defence once the line is strong enough to follow it in. With nothing to break they push on
+        /// with the line.
+        /// </summary>
+        private void DirectBreachers(SimWorld world, Vector2 front, Vector2 objective)
+        {
+            var toGoal = objective - front;
+            var dir = toGoal.LengthSquared() > 1f ? Vector2.Normalize(toGoal) : Vector2.UnitX;
+            for (var i = _line.Count - 1; i >= 0; i--)
+            {
+                var v = _line[i];
+                if (!v.Def.Breacher) continue;
+                Vehicle? pick = null;
+                var best = float.MaxValue;
+                foreach (var e in _enemies)
+                {
+                    if (!e.IsAlive || !e.Def.Static || e.Def.Untargetable || (e.Def.Fort == null && !e.Def.Obstacle)) continue;
+                    var off = e.Position - front;
+                    var along = Vector2.Dot(off, dir);
+                    if (along < -10f || along > BreacherReach) continue;
+                    var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * 1.5f - (e.Def.Obstacle ? 25f : 0f);
+                    if (score >= best) continue;
+                    best = score;
+                    pick = e;
+                }
+                if (pick == null) continue;
+                // A defence only once the line can follow it in; an obstacle at once.
+                if (!pick.Def.Obstacle && !StrongEnough(world, pick.Position, front)) continue;
+                _line.RemoveAt(i);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == pick.Id) continue;
+                Issue(world, CommandType.Attack, v.Id, pick.Position, pick.Id);
+            }
+        }
+
         /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
@@ -634,24 +674,48 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private void FocusDemolition(SimWorld world)
         {
-            if (Demolish == null || !world.TryGetProp(Demolish(world), out var target) || !target.IsAlive) return;
-            DemolishWith(world, target, _line);
-            DemolishWith(world, target, _fast);
+            if (!DemolishTarget(world, out var at, out var radius, out var id)) return;
+            DemolishWith(world, at, radius, id, _line);
+            DemolishWith(world, at, radius, id, _fast);
         }
 
-        private void DemolishWith(SimWorld world, Prop target, List<Vehicle> vehicles)
+        /// <summary>
+        /// The structure to knock down, if it still stands: a building, or a fixed defence (a
+        /// general's HQ in a duel).
+        /// </summary>
+        private bool DemolishTarget(SimWorld world, out Vector2 position, out float radius, out EntityId id)
+        {
+            position = default;
+            radius = 0f;
+            id = Demolish?.Invoke(world) ?? EntityId.None;
+            if (world.TryGetProp(id, out var prop) && prop.IsAlive)
+            {
+                position = prop.Position;
+                radius = prop.Radius;
+                return true;
+            }
+            if (world.TryGetVehicle(id, out var fixedDefence) && fixedDefence.IsAlive && fixedDefence.Def.Static && fixedDefence.Team != _team)
+            {
+                position = fixedDefence.Position;
+                radius = fixedDefence.Radius;
+                return true;
+            }
+            return false;
+        }
+
+        private void DemolishWith(SimWorld world, Vector2 at, float radius, EntityId id, List<Vehicle> vehicles)
         {
             for (var i = vehicles.Count - 1; i >= 0; i--)
             {
                 var v = vehicles[i];
                 var weapon = v.Def.Weapon;
                 if (!weapon.CanTarget(false)) continue;
-                var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
+                var distance = Vector2.Distance(v.Position, at) - radius;
                 if (distance > weapon.Range + BossReach || distance < weapon.MinRange) continue;
                 if (NearestGround(v.Position, out _) < weapon.Range) continue;
                 vehicles.RemoveAt(i);
-                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == target.Id) continue;
-                Issue(world, CommandType.Attack, v.Id, target.Position, target.Id);
+                if (v.Order.Kind == OrderKind.Attack && v.Order.Target == id) continue;
+                Issue(world, CommandType.Attack, v.Id, at, id);
             }
         }
 
@@ -886,10 +950,10 @@ namespace MachineBrigade.Sim.AI
         /// <summary>The mission's structure (a relay, a generator, the HQ) from a safe spot, once no defence needs shelling first.</summary>
         private bool ShellStructure(SimWorld world, Vehicle a)
         {
-            if (Demolish == null || !world.TryGetProp(Demolish(world), out var target) || !target.IsAlive) return false;
+            if (!DemolishTarget(world, out var at, out var radius, out var id)) return false;
             var weapon = a.Def.Weapon;
-            if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, target.Position) > weapon.Range + DefenceSearch * 2f) return false;
-            return ShellFromSafety(world, a, target.Position, target.Radius, target.Id);
+            if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, at) > weapon.Range + DefenceSearch * 2f) return false;
+            return ShellFromSafety(world, a, at, radius, id);
         }
 
         private bool ShellFromSafety(SimWorld world, Vehicle a, Vector2 target, float radius, EntityId targetId)
@@ -897,6 +961,13 @@ namespace MachineBrigade.Sim.AI
             var weapon = a.Def.Weapon;
             var distance = Vector2.Distance(a.Position, target) - radius;
             var inRange = distance <= weapon.Range - 0.5f && distance >= weapon.MinRange + 1f;
+            // A wall fell and opened a breach where the gun stands: its spot is a doorway now, and it
+            // moves off it to a new one rather than block the way in.
+            if (a.Traffic.HasReservation && world.Lanes.NoParkAt(a.Traffic.ReservedAt))
+            {
+                world.Lanes.Release(a);
+                inRange = false;
+            }
             if (inRange && !Exposed(a.Position, 1f))
             {
                 if (a.Order.Kind != OrderKind.Attack || a.Order.Target != targetId) Issue(world, CommandType.Attack, a.Id, target, targetId);

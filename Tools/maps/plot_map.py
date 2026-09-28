@@ -11,6 +11,11 @@ Bases (see hardpoints.py) are drawn in the team's colour: the HQ as a filled squ
 facing, each tower hardpoint as a square as big as its size (L, M, S, darker the larger), numbered in
 slot order within its size (most important first), each utility hardpoint as a diamond (U), the drop zone round the rally as a dashed circle, and the
 outpost hardpoints at the capture points as yellow squares.
+
+A siege map's fortress (its "fortress" block): the outer line as a dashed red line, the fortress's
+tower hardpoints as red squares by size with their ring (1-3), utility hardpoints as green diamonds,
+closed gates as solid red bars, the super-gun as a large star, and the line in (a rail line or a
+runway) as a dashed grey track with its stop as a ringed dot.
 """
 import json
 import re
@@ -49,7 +54,8 @@ COLOURS = {'tree': '#3f6b3a', 'palm': '#5f8b3a', 'cactus': '#6f8b4a', 'mesa': '#
            'crater_large': '#a09a88', 'foxhole': '#a09a88', 'trench_straight': '#86795e', 'trench_corner': '#86795e',
            'tank_ditch': '#86795e', 'wreck_tank': '#3a2a26', 'wreck_truck': '#3a2a26', 'wreck_car': '#3a2a26',
            'artillery_wreck': '#3a2a26', 'boulders': '#707070', 'bridge_road': '#c9b48e', 'tank_trap': '#303030',
-           'dead_tree': '#5a4a3a', 'power_pylon': '#9098a0'}
+           'dead_tree': '#5a4a3a', 'power_pylon': '#9098a0',
+           'shield_generator': '#30c0ff', 'radar_station': '#ffffff', 'fortress_gate': '#ff2020'}
 SURFACES = {'lava_pool': '#ff5a10', 'river_water': '#5a4a2a', 'river_ford': '#9a8a5a'}
 # Water as the theme draws it: brown in the jungle, blue elsewhere (sea, reservoir, big river).
 BLUE_WATER = {'river_water': '#2f5f7a', 'river_ford': '#7ea3a6'}
@@ -115,6 +121,38 @@ def draw_bases(ax, m, labels=True):
                         va='center', zorder=14)
 
 
+def draw_fortress(ax, m, half):
+    import math
+    f = m.get('fortress')
+    if not f:
+        return
+    c = f.get('outerLine')
+    if c is not None:
+        ax.plot([c - half, half], [half, c - half], color='#ff3020', linestyle='--', linewidth=1.6, zorder=10)
+    for s in f.get('slots', []):
+        size = slot_metres(s)
+        if s.get('kind') == 'utility':
+            r = size / 2
+            ax.add_patch(patches.Polygon([(s['x'], s['z'] - r), (s['x'] + r, s['z']), (s['x'], s['z'] + r), (s['x'] - r, s['z'])],
+                                         closed=True, facecolor='#39d98a', edgecolor='#e8321a', linewidth=1.2, zorder=12))
+        else:
+            ax.add_patch(patches.Rectangle((s['x'] - size / 2, s['z'] - size / 2), size, size, facecolor='#e8321a',
+                                           alpha=SLOT_SHADE.get(s.get('size'), 0.55), edgecolor='white', linewidth=0.8, zorder=12))
+        ax.text(s['x'], s['z'], str(s.get('ring', '')), fontsize=5, color='white', weight='bold', ha='center', va='center', zorder=14)
+    gun = f.get('superGun')
+    if gun:
+        ax.plot([gun['x']], [gun['z']], marker='*', markersize=16, color='#ff1010', markeredgecolor='white', zorder=13)
+    line = f.get('arrival')
+    if line:
+        pts = line['path']
+        ax.plot(pts[0::2], pts[1::2], color='#d0d0d0', linestyle='--', linewidth=3 if line['kind'] == 'rail' else 8, alpha=0.8, zorder=6)
+        ax.plot([line['stop'][0]], [line['stop'][1]], marker='o', markersize=9, markerfacecolor='#ffe040', markeredgecolor='black', zorder=13)
+    for p in m['props']:
+        if p['def'] == 'fortress_gate':
+            w, d = (10, 1.4) if p.get('rot', 0) % 180 == 0 else (1.4, 10)
+            ax.add_patch(patches.Rectangle((p['x'] - w / 2, p['z'] - d / 2), w, d, color='#ff2020', zorder=6))
+
+
 def main(src, out, bases=False):
     text = re.sub(r'^\s*//.*$', '', Path(src).read_text(encoding='utf-8'), flags=re.M)
     m = json.loads(text)
@@ -142,6 +180,7 @@ def main(src, out, bases=False):
     fig, ax = plt.subplots(figsize=(10, 10))
     draw_map(ax, m, half)
     draw_bases(ax, m, labels=False)
+    draw_fortress(ax, m, half)
     ax.set_title(m['id'])
     fig.savefig(out, dpi=90, bbox_inches='tight')
     plt.close(fig)

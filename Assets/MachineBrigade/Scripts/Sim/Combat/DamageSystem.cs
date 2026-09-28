@@ -25,9 +25,19 @@ namespace MachineBrigade.Sim.Combat
         private readonly SimWorld _world;
         private readonly List<PendingExplosion> _pending = new();
 
+        /// <summary>Toppling walls: when each one's ground opens (see <see cref="PropDef.Collapse"/>).</summary>
+        private readonly List<(double due, Prop prop)> _collapsing = new();
+
         public DamageSystem(SimWorld world) => _world = world;
 
         public int PendingCount => _pending.Count;
+
+        /// <summary>
+        /// Measurements only (never set in play, like <see cref="Entities.Vehicle.PathTrace"/>): told of
+        /// every hit point a vehicle loses, with who dealt it, how and with what (the equipment lab
+        /// attributes damage to the vehicle that dealt it).
+        /// </summary>
+        internal static Action<Vehicle?, Vehicle, float, HitKind, WeaponDef?>? DamageLog;
 
         public void ResolveImpact(Projectile p)
         {
@@ -35,23 +45,32 @@ namespace MachineBrigade.Sim.Combat
             var hit = EntityId.None;
             var at = p.AimPoint;
             if (!p.Tandem && TryIntercept(p)) return;
+            // Airburst Rounds: the target's own airburst fire takes down some of what is flying at it.
+            if (!p.Tandem && !p.TargetFlying && p.Target.IsValid && _world.TryGetVehicle(p.Target, out var shooting) && shooting.Gear != null &&
+                _world.Gear.ShootDown(p, shooting)) return;
             var info = HitInfo.Of(p, HitKind.Direct);
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them).
-                var decoyed = weapon.Guided && ((target is Vehicle { FlaresUp: true } && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
+                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them):
+                // flares out now, or put out while it flew (a slow missile outlasts a flare's burn).
+                var flared = target is Vehicle decoy && (decoy.FlaresUp || decoy.FlaresUntil > p.LaunchedAt);
+                var decoyed = weapon.Guided && ((flared && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
                 // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
                 var lure = default(Vector2);
                 var lured = !decoyed && target is Vehicle guarded && _world.Gear.Lure(guarded, p, out lure);
                 if (lured) at = lure;
                 else
                 {
-                    if (weapon.Guided && !decoyed) at = target.Position;
+                    if (weapon.Guided && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
                     if (decoyed) at = target.Position + p.Miss;
                 }
-                if (!decoyed && !lured && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
+                // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
+                if (p.Part >= 0 && target is Vehicle partBoss && (partBoss.IsPartBroken(p.Part) ||
+                    Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + 1.5f)) p.Part = -1;
+                // A part may stand out past the hull's round footprint (a hovercraft's fans, a train's locomotive): landing on it is a hit.
+                if (!decoyed && !lured && (p.Part >= 0 || Vector2.Distance(target.Position, at) <= target.Radius + 0.5f))
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
@@ -64,10 +83,10 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
 
-            if (weapon.Pierce && !p.TargetFlying) PierceLine(p, at, hit);
+            if (weapon.Pierce && !p.TargetFlying && !p.Bounce) PierceLine(p, at, hit);
 
-            // Every blast is a little different: its reach varies by up to 15 %.
-            if (weapon.SplashRadius > 0f)
+            // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
+            if (weapon.SplashRadius > 0f && !p.Bounce)
                 Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
                     weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
             // A heavy round from equipment bursts round its target too, at half its weight.
@@ -76,7 +95,7 @@ namespace MachineBrigade.Sim.Combat
                     info.As(HitKind.Splash));
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
-            if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale, p.Shooter);
+            if (weapon.Cluster != null && !p.TargetFlying && !p.NoCluster) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale, p.Shooter);
         }
 
         /// <summary>
@@ -105,8 +124,8 @@ namespace MachineBrigade.Sim.Combat
             if (vehicle != null && vehicle.Flying && attacker.Def.Fort is { Size: SlotSize.Small } && weapon.CanTarget(true) &&
                 (vehicle.Def.Class == UnitClass.Helicopter || vehicle.Def.Drone))
                 best = LightTowerAirBonus;
-            // Engineers breach obstacles three times as fast.
-            if (vehicle != null && vehicle.Def.Obstacle && attacker.Def.RepairAura != null) best = MathF.Max(best, EngineerBreach);
+            // Engineers (and the armoured bulldozer) breach obstacles three times as fast.
+            if (vehicle != null && vehicle.Def.Obstacle && (attacker.Def.RepairAura != null || attacker.Def.Breacher)) best = MathF.Max(best, EngineerBreach);
             for (var i = 0; i < bonuses.Count; i++)
             {
                 var b = bonuses[i];
@@ -258,6 +277,8 @@ namespace MachineBrigade.Sim.Combat
             else if (hit.Kind != HitKind.Redirect)
             {
                 damage *= vehicle.DamageTaken;
+                // A belly plate (the armoured bulldozer's) takes part of a mine's blast.
+                if (hit.Kind == HitKind.Mine) damage *= vehicle.Def.MineArmor;
                 if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
                 if (vehicle.GraceUntil > now) damage *= 0.2f;
                 // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
@@ -266,10 +287,25 @@ namespace MachineBrigade.Sim.Combat
                 damage *= _world.Gear.Incoming(vehicle, type, hit);
                 if (!(damage > 0f)) return 0f;
                 if (!(hit.Projectile?.Tandem ?? false)) damage = _world.Status.Absorb(vehicle, damage);
+                damage = _world.Gear.AbsorbOverheal(vehicle, damage);
                 if (vehicle.Gear != null) damage = _world.Gear.Soak(vehicle, damage);
                 damage = _world.Gear.Redirect(vehicle, damage, hit);
             }
             if (!(damage > 0f)) return 0f;
+            // A boss's parts: a direct hit on one hurts the part; the body is shut while its lock holds;
+            // a boring boss just out of the ground takes more.
+            if (vehicle.ExposedUntil > now) damage *= vehicle.Def.Burrow?.ExposedTaken ?? 1f;
+            if (vehicle.HasParts)
+            {
+                var part = hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !vehicle.IsPartBroken(shot.Part) ? shot.Part : -1;
+                if (part >= 0)
+                {
+                    var lost = _world.Bosses.DamagePart(vehicle, part, damage, hit);
+                    if (lost > 0f) _world.Emit(SimEvent.Damage(vehicle, lost));
+                    return lost;
+                }
+                if (vehicle.BodyLocked && hit.Kind != HitKind.Redirect) return 0f;
+            }
             // Unbreakable: a killing blow once a life leaves it on a sliver, briefly untouchable.
             if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
             // A multi-phase boss stops at its next phase's mark (what goes past it is lost) and transforms.
@@ -284,9 +320,10 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
             vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+            DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
-            if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
+            if (vehicle.Dummy || vehicle.Sparring) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
             _world.Emit(SimEvent.Damage(vehicle, damage));
             if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
             if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
@@ -302,6 +339,14 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Detonates every explosion that has come due; new ones may be queued as a result.</summary>
         public void Step()
         {
+            for (var k = _collapsing.Count - 1; k >= 0; k--)
+            {
+                var (due, fallen) = _collapsing[k];
+                if (due > _world.Time) continue;
+                _collapsing.RemoveAt(k);
+                _world.Grid.RemoveBlocker(fallen.Position, fallen.Width, fallen.Depth, SimWorld.ObstacleClearance);
+                _world.RebuildLanesNow();
+            }
             var i = 0;
             while (i < _pending.Count)
             {
@@ -431,7 +476,9 @@ namespace MachineBrigade.Sim.Combat
 
         private void OnPropDestroyed(Prop prop)
         {
-            if (prop.Def.BlocksMovement)
+            // A wall that topples opens its ground once it is down (see PropDef.Collapse).
+            if (prop.Def.BlocksMovement && prop.Def.Collapse > 0f) _collapsing.Add((_world.Time + prop.Def.Collapse, prop));
+            else if (prop.Def.BlocksMovement)
                 _world.Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, SimWorld.ObstacleClearance);
             if (prop.Def.BlocksFire) _world.Cover.Remove(prop);
             _world.Emit(SimEvent.PropLost(prop));

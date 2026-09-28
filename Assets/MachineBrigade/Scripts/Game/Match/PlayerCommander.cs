@@ -102,7 +102,7 @@ namespace MachineBrigade.Game.Match
                     var cooldown = 0f;
                     if (_world.Catalog.TryGetSupport(card.Id, out var s) && s.Cooldown > 0f)
                         cooldown = economy.CooldownLeft(card.Id, _world.Time) / s.Cooldown;
-                    _states[i] = new CardState(economy.Cp >= card.Cost, false, cooldown, i == _armed);
+                    _states[i] = new CardState(economy.Cp >= card.Cost, false, cooldown, i == _armed, economy.CooldownLeft(card.Id, _world.Time));
                 }
                 else
                 {

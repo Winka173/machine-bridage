@@ -162,9 +162,10 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0.75f, target.SpeedGear, 1e-4f, "slowed by a quarter");
             Shoot(world, shooter, target);
             Shoot(world, shooter, target);
-            Assert.AreEqual(3, target.Statuses[(int)StatusKind.Shred].Stacks);
-            // Anyone's hit (here with no attacker) lands 12 % harder on the shredded target.
-            Assert.AreEqual(1.12f, Hit(world, target, 100f, TestWorlds.Gun) / Hit(world, plainTarget, 100f, TestWorlds.Gun), 1e-3f);
+            // The proc coefficient: a gun firing once a second earns two thirds of a stack a hit.
+            Assert.AreEqual(2, target.Statuses[(int)StatusKind.Shred].Stacks);
+            // Anyone's hit (here with no attacker) lands 8 % harder on the shredded target.
+            Assert.AreEqual(1.08f, Hit(world, target, 100f, TestWorlds.Gun) / Hit(world, plainTarget, 100f, TestWorlds.Gun), 1e-3f);
             Run(world, 2.5f);
             Assert.AreEqual(1f, target.SpeedGear, 1e-5f, "the slow wears off after 2 s");
             // The mark: the shooter's side hits the marked target 10 % harder, the other side does not.
@@ -202,11 +203,17 @@ namespace MachineBrigade.Tests
             var first = world.SpawnVehicle("decoy", 1, new Vector2(40f, 0f), 0f);
             var second = world.SpawnVehicle("decoy", 1, new Vector2(40f, 6f), 0f);
             var far = world.SpawnVehicle("decoy", 1, new Vector2(40f, 30f), 0f);
+            // A gun firing once a second earns two thirds of a bounce a hit: the second hit bounces.
             var dealt = Shoot(world, shooter, first);
+            Run(world, 0.5f);
+            Assert.AreEqual(second.MaxHp, second.Hp, "not yet a whole bounce");
+            first.Hp = first.MaxHp;
+            dealt = Shoot(world, shooter, first);
             var events = Run(world, 0.5f);
-            // Half the round's damage, striking the second from where the first stood (armour facing).
-            var bounced = TestWorlds.Gun.Damage * 0.5f * DamageSystem.FacingFactor(second, first.Position);
-            Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the hit bounces on to the nearest enemy");
+            // Half the damage of the hits that earned it (one and a half hits' worth: 1 / (2/3)), striking the
+            // second from where the first stood (armour facing).
+            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * DamageSystem.FacingFactor(second, first.Position);
+            Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the earning hits' damage bounces on to the nearest enemy");
             Assert.AreEqual(TestWorlds.Gun.Damage * DamageSystem.FacingFactor(first, shooter.Position), dealt, 1e-2f);
             Assert.AreEqual(far.MaxHp, far.Hp, "only one bounce, to the nearest");
             Assert.AreEqual(first.MaxHp - dealt, first.Hp, 1e-3f);
@@ -227,7 +234,7 @@ namespace MachineBrigade.Tests
             shooter.Cooldown = 5f;
             Shoot(world, shooter, victim);
             Assert.IsFalse(victim.IsAlive);
-            Assert.AreEqual(0f, shooter.Cooldown, "Kill Reload: the gun is ready at once");
+            Assert.AreEqual(3f, shooter.Cooldown, 1e-4f, "Kill Reload: two seconds off the reload");
             Assert.AreEqual(shooter.MaxHp * 0.6f, shooter.Hp, 1e-2f, "Salvage Team: a tenth of its health back");
             world.TryGetEconomy(0, out var economy);
             Assert.AreEqual(4 * 0.25f * 1.5f, economy.Cp, 1e-3f, "War Profiteer: half as much again for the kill");
@@ -315,7 +322,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void TwinFeedAndHeavyRoundsChangeTheShots()
         {
-            var world = World(Traits(new GearTrait(TraitId.TwinFeed, 0.1f)));
+            var world = World(Traits(new GearTrait(TraitId.TwinFeed, 0.1f, 0.2f)));
             world.SpawnVehicle("tank", 0, new Vector2(0f, 0f), 0f);
             var target = world.SpawnVehicle("decoy", 1, new Vector2(10f, 0f), 0f);
             var plainWorld = TestWorlds.World();
@@ -323,9 +330,9 @@ namespace MachineBrigade.Tests
             var plainTarget = plainWorld.SpawnVehicle("decoy", 1, new Vector2(10f, 0f), 0f);
             var twin = DamageTo(Run(world, 3.5f), target);
             var plain = DamageTo(Run(plainWorld, 3.5f), plainTarget);
-            Assert.AreEqual(plain[0] * 1.1f / 2f, twin[0], 1e-2f, "two rounds, each half of a shot and a tenth");
-            Assert.AreEqual(twin[0], twin[1], 1e-3f, "the second round follows the first");
-            Assert.GreaterOrEqual(twin.Count, 4);
+            // A one-round gun: every round a fifth harder, no second round (prompt 8 I.2).
+            Assert.AreEqual(plain[0] * 1.2f, twin[0], 1e-2f, "each round a fifth harder");
+            Assert.AreEqual(plain.Count, twin.Count, "no extra round on a one-round gun");
 
             var heavy = World(Traits(new GearTrait(TraitId.OverpressureChamber, 4f)));
             heavy.SpawnVehicle("tank", 0, new Vector2(0f, 0f), 0f);

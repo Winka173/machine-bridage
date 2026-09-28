@@ -26,7 +26,8 @@ namespace MachineBrigade.Game.Match
             while (d.sinceEpic.Count < kinds) d.sinceEpic.Add(0);
             while (d.sinceLegendary.Count < kinds) d.sinceLegendary.Add(0);
             foreach (var g in d.gear) d.nextGearId = Math.Max(d.nextGearId, g.id + 1);
-            if (d.gearVersion < GearVersion) MigrateGear(d);
+            if (d.gearVersion < 2) MigrateGear(d);
+            if (d.gearVersion < GearVersion) MigrateFit(d);
             if (d.rosterVersion < RosterVersion) MigrateRoster(d);
             // Gems are gone (one currency now): a save that still holds some gets coins for them.
             if (d.gems > 0)
@@ -117,8 +118,30 @@ namespace MachineBrigade.Game.Match
             return true;
         }
 
-        /// <summary>The equipment model the save is in (see <see cref="Data.gearVersion"/>).</summary>
-        internal const int GearVersion = 2;
+        /// <summary>The equipment model the save is in (see <see cref="Data.gearVersion"/>; 3: prompt 8's cleanup and fit matrix).</summary>
+        internal const int GearVersion = 3;
+
+        /// <summary>
+        /// Prompt 8 (I.1, I.8): pieces of a retired or merged base type become their replacement (same
+        /// slot, rarity and level); a trade-off below Rare becomes a plain type of its slot; then every
+        /// piece a branch wears that no longer works for it is turned into one that does, in the same
+        /// slot, of the same rarity and level (its base type, trait or module re-rolled from its own
+        /// seed among those that fit), and stays on. Nothing is lost or taken off.
+        /// </summary>
+        private static void MigrateFit(Data d)
+        {
+            foreach (var g in d.gear)
+                if (g != null && !Gear.IsTower(g.Slot)) Gear.Upgrade(g);
+            for (var b = 0; b < Branches; b++)
+                for (var s = 0; s < Gear.Slots; s++)
+                {
+                    var i = b * Gear.Slots + s;
+                    if (i >= d.loadout.Count) continue;
+                    var item = d.gear.Find(g => g != null && g.id == d.loadout[i]);
+                    if (item != null) Gear.MakeFit(item, (GearBranch)b);
+                }
+            d.gearVersion = GearVersion;
+        }
 
         /// <summary>
         /// Equipment from before the affix model: every piece gets a base type, a brand, its sub-stats
@@ -194,6 +217,63 @@ namespace MachineBrigade.Game.Match
             Save();
         }
 
+        /// <summary>Universal blueprints (a side mission's rare blueprints).</summary>
+        public static void AddUniversalBlueprints(int count)
+        {
+            if (count <= 0) return;
+            A.universal += count;
+            Save();
+        }
+
+        /// <summary>
+        /// The main deck the campaign's blueprints go to: the battle deck's vehicles and supports,
+        /// then the base's first six tower types.
+        /// </summary>
+        public static List<string> MainDeck()
+        {
+            var cards = new List<string>();
+            foreach (var id in MatchSettings.DeckVehicles)
+                if (!cards.Contains(id)) cards.Add(id);
+            foreach (var id in MatchSettings.DeckSupports)
+                if (!cards.Contains(id)) cards.Add(id);
+            var towers = 0;
+            foreach (var id in BaseLoadout.Towers)
+            {
+                if (towers >= 6 || string.IsNullOrEmpty(id) || cards.Contains(id)) continue;
+                cards.Add(id);
+                towers++;
+            }
+            return cards;
+        }
+
+        /// <summary>
+        /// A mission's blueprints for the main deck: an even share each, the rest one apiece to the
+        /// cards furthest behind (lowest rank, then fewest blueprints). Returns what each card got.
+        /// </summary>
+        public static List<(string card, int count)> AddDeckBlueprints(int count)
+        {
+            var paid = new List<(string, int)>();
+            var cards = MainDeck();
+            if (count <= 0 || cards.Count == 0) return paid;
+            var each = count / cards.Count;
+            var rest = count - each * cards.Count;
+            var behind = new List<string>(cards);
+            behind.Sort((a, b) =>
+            {
+                var byRank = Rank(a).CompareTo(Rank(b));
+                return byRank != 0 ? byRank : Blueprints(a).CompareTo(Blueprints(b));
+            });
+            foreach (var card in cards)
+            {
+                var n = each + (behind.IndexOf(card) < rest ? 1 : 0);
+                if (n <= 0) continue;
+                A.prints[CardIndex(card)] += n;
+                paid.Add((card, n));
+            }
+            Save();
+            return paid;
+        }
+
         /// <summary>Whether a card can rank up now: enough coins, and blueprints (its own first, universal ones to make up the rest).</summary>
         public static bool CanRankUp(string cardId)
         {
@@ -243,14 +323,19 @@ namespace MachineBrigade.Game.Match
                 if (FindGear(A.loadout[(int)branch * Gear.Slots + s]) is { } item) yield return item;
         }
 
-        /// <summary>Equips a piece in its own slot of a branch (taking it off another branch that had it). Tower pieces go on tower types (<see cref="EquipTower(string, GearItem)"/>).</summary>
-        public static void Equip(GearBranch branch, GearItem item)
+        /// <summary>
+        /// Equips a piece in its own slot of a branch (taking it off another branch that had it). Refused
+        /// (false) for a piece that does not work for the branch (prompt 8 I.1). Tower pieces go on tower
+        /// types (<see cref="EquipTower(string, GearItem)"/>).
+        /// </summary>
+        public static bool Equip(GearBranch branch, GearItem item)
         {
-            if (item == null || !A.gear.Contains(item) || Gear.IsTower(item.Slot)) return;
+            if (item == null || !A.gear.Contains(item) || Gear.IsTower(item.Slot) || !VehicleFit.Fits(item, branch)) return false;
             for (var i = 0; i < A.loadout.Count; i++)
                 if (A.loadout[i] == item.id) A.loadout[i] = 0;
             A.loadout[(int)branch * Gear.Slots + item.slot] = item.id;
             Save();
+            return true;
         }
 
         public static void Unequip(GearBranch branch, GearSlot slot)
@@ -360,7 +445,7 @@ namespace MachineBrigade.Game.Match
         /// a tower (or its branch def) its card's rank and its type's three pieces, under the tower caps.
         /// </summary>
         public static VehicleBoost BoostFor(VehicleDef def) =>
-            def.Fort != null ? Gear.TowerBoost(Rank(def.CardId), TowerGear(def.CardId)) : Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
+            def.Fort != null ? Gear.TowerBoost(Rank(def.CardId), TowerGear(def.CardId), BaseBrandCounts()) : Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
 
         // ------------------------------------------------------------------ tower cards
 

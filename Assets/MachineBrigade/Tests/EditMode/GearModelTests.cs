@@ -63,12 +63,12 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(Gear.BaseOf(legendary));
             Assert.AreEqual(2, legendary.subs.Count);
             Assert.AreEqual(GearSlot.Weapon, GearCatalog.Trait(legendary.trait).Slot, "a legendary gets a weapon trait");
-            Assert.That(legendary.brand, Is.InRange(1, 10));
+            Assert.That(legendary.brand, Is.InRange(1, GearCatalog.VehicleBrandCount));
 
             // The migration is the same every time, and a migrated save loads unchanged.
             var first = gear.Select(g => g.baseType + "/" + g.trait + "/" + string.Join(",", g.subs.Select(s => s.stat + ":" + s.roll))).ToList();
             var saved = PlayerProfile.JsonForTests();
-            StringAssert.Contains("\"gearVersion\":2", saved);
+            StringAssert.Contains("\"gearVersion\":3", saved);
             PlayerProfile.LoadForTests(OldSave);
             Assert.AreEqual(first, PlayerProfile.GearOwned.Select(g => g.baseType + "/" + g.trait + "/" + string.Join(",", g.subs.Select(s => s.stat + ":" + s.roll))).ToList());
             PlayerProfile.LoadForTests(saved);
@@ -104,7 +104,7 @@ namespace MachineBrigade.Tests
                         Assert.That(sub.roll, Is.InRange(0.6f, 1f));
                         Assert.IsTrue(GearCatalog.Sub(sub.Stat).RollsOn(item.Slot));
                     }
-                    Assert.That(item.brand, Is.InRange(1, 10));
+                    Assert.That(item.brand, Is.InRange(1, GearCatalog.VehicleBrandCount));
                     if (rarity >= Rarity.Epic)
                     {
                         Assert.AreEqual(3, item.traitOptions.Count, "three traits offered");
@@ -167,11 +167,11 @@ namespace MachineBrigade.Tests
             }
             // A trade-off's drawback comes after the cap: a capped engine still pays the heavy barrel's 6 %.
             var engine = new GearItem { slot = (int)GearSlot.Engine, rarity = 4, level = 25, baseType = "overtuned_engine" };
-            var engine2 = new GearItem { slot = (int)GearSlot.Engine, rarity = 4, level = 25, baseType = "turbocharger" };
+            var engine2 = new GearItem { slot = (int)GearSlot.Engine, rarity = 4, level = 25, baseType = "drivetrain" };
             var barrel = new GearItem { slot = (int)GearSlot.Weapon, rarity = 4, level = 25, baseType = "heavy_barrel" };
             var fast = Gear.Boost(1, new[] { engine, engine2, barrel });
-            Assert.AreEqual(1f + 0.15f - 0.06f, fast.Speed, 1e-4f);
-            Assert.AreEqual(1f - 0.05f, fast.Hp, 1e-4f, "the overtuned engine's drawback");
+            Assert.AreEqual(1f + 0.15f - 0.07f, fast.Speed, 1e-4f);
+            Assert.AreEqual(1f - 0.06f, fast.Hp, 1e-4f, "the overtuned engine's drawback");
             Assert.AreEqual(0.12f, fast.Stat(StatId.Range), 1e-4f, "the heavy barrel's range, at the range cap");
         }
 
@@ -306,9 +306,9 @@ namespace MachineBrigade.Tests
             foreach (var b in GearCatalog.Bases)
                 if (b.TradeOff) Need("stat.pen." + GearKeys.Snake(b.Penalty.ToString()));
             Assert.That(missing, Is.Empty, "missing: " + string.Join(", ", missing));
-            Assert.AreEqual(34, GearCatalog.Bases.Length, "34 stat base types");
+            Assert.AreEqual(38, GearCatalog.Bases.Length, "38 stat base types (prompt 8: one retired, two merged, six new)");
             Assert.AreEqual(14, GearCatalog.Modules.Length, "14 special modules");
-            Assert.AreEqual(42, GearCatalog.Traits.Length, "42 traits");
+            Assert.AreEqual(45, GearCatalog.Traits.Length, "45 traits (prompt 8: three new lines)");
         }
     }
 }

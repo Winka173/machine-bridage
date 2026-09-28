@@ -26,6 +26,7 @@ namespace MachineBrigade.Game.Hud
             ["mine_dispenser"] = "ns", ["rally_horn"] = "pm", ["aegis_dome"] = "s", ["decoy_launcher"] = "ss", ["uplink_barrage"] = "ns",
             ["tower_fire_link"] = "ps", ["tower_counter_battery"] = "s", ["tower_modular"] = "p", ["tower_smoke_launchers"] = "ms",
             ["tower_backup_generator"] = "p",
+            ["twin_feed"] = "pp", ["vengeance"] = "pms", ["set_pack_hunt"] = "pmn", ["set_phoenix"] = "ps", ["set_bulwark_post"] = "s",
         };
 
         private static string Number(char kind, float v) => kind switch
@@ -71,6 +72,24 @@ namespace MachineBrigade.Game.Hud
         public static string TowerWornLine(GearItem item) =>
             PlayerProfile.TowerWearing(item) is { } tower ? Strings.Format("gear.towerWornBy", Strings.Card(tower)) : "";
 
+        /// <summary>"Armour: tanks, heavy tanks, tank hunters" (which classes wear a branch's loadout).</summary>
+        public static string BranchClasses(GearBranch branch)
+        {
+            var names = new List<string>();
+            foreach (var (cls, _) in VehicleFit.ClassesOf(branch)) names.Add(Strings.Get("class." + cls));
+            return Strings.Format("gear.branchClasses", Strings.Get("gear.branch." + branch.ToString().ToLowerInvariant()), string.Join(", ", names));
+        }
+
+        /// <summary>"Works for: Armour, Light" or "Works for no branch" (a vehicle piece's fit).</summary>
+        public static string FitLine(GearItem item)
+        {
+            var names = new List<string>();
+            var mask = Gear.BranchesOf(item);
+            foreach (GearBranch b in System.Enum.GetValues(typeof(GearBranch)))
+                if ((mask & GearCatalog.MaskOf(b)) != 0) names.Add(Strings.Get("gear.branch." + b.ToString().ToLowerInvariant()));
+            return names.Count == 0 ? Strings.Get("gear.fitsNone") : Strings.Format("gear.fitsFor", string.Join(", ", names));
+        }
+
         /// <summary>A stat line: "+8% range", "-6% speed" (a drawback), "-2 s regen delay".</summary>
         public static string Line(Gear.Line line) => Line(line.Stat, line.Value, line.Kind == Gear.LineKind.Penalty);
 
@@ -82,7 +101,7 @@ namespace MachineBrigade.Game.Hud
             var amount = stat switch
             {
                 StatId.Regen => (Mathf.Abs(value) * 100f).ToString("0.00"),
-                StatId.RegenDelay => Mathf.Abs(value).ToString("0.#"),
+                StatId.RegenDelay or StatId.LaserWarning => Mathf.Abs(value).ToString("0.#"),
                 _ => (Mathf.Abs(value) * 100f).ToString(Mathf.Abs(value) < 0.1f ? "0.#" : "0"),
             };
             return Strings.Format(penalty ? "stat.pen." + key : "stat.line." + key, amount);
@@ -149,7 +168,10 @@ namespace MachineBrigade.Game.Hud
         public static string BrandBonuses(BrandDef brand)
         {
             var four = brand.FourPiece;
-            return Strings.Format("gear.brandBonuses", Line(brand.Stat, brand.Value), TraitName(GearKeys.Trait(four.Id)) + ": " + TraitEffect(four));
+            var two = brand.TwoPiece.Id != TraitId.None ? TraitName(GearKeys.Trait(brand.TwoPiece.Id)) + ": " + TraitEffect(brand.TwoPiece) : Line(brand.Stat, brand.Value);
+            // A tower brand's pieces count across the whole base.
+            var text = Strings.Format("gear.brandBonuses", two, TraitName(GearKeys.Trait(four.Id)) + ": " + TraitEffect(four));
+            return brand.TowerOnly ? text + " " + Strings.Get("gear.brandBase") : text;
         }
 
         /// <summary>The word shown over a vehicle when its equipment goes off ("RICOCHET"), or null for none.</summary>

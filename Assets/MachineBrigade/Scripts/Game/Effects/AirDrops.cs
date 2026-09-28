@@ -68,7 +68,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A bought vehicle is on its way: fly it in.</summary>
         public void Queue(SimEvent e, float now)
         {
-            if (e.DefId == null || !_catalog.Vehicles.TryGetValue(e.DefId, out var def) || def.Flying) return;
+            // A fortress's reinforcements coming in by its rail line or runway get off the train or aircraft (FortressView), no parachute.
+            if (e.ByLine || e.DefId == null || !_catalog.Vehicles.TryGetValue(e.DefId, out var def) || def.Flying) return;
             var landing = new Vector3(e.Position.X, 0f, e.Position.Y);
             var inward = new Vector3(e.Target.X, 0f, e.Target.Y);
             if (inward.sqrMagnitude < 0.01f) inward = Vector3.forward;

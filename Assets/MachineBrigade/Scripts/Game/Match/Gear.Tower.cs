@@ -62,6 +62,22 @@ namespace MachineBrigade.Game.Match
         public static VehicleBoost TowerBoost(int rank, IEnumerable<GearItem> loadout) => Boost(rank, loadout, GearCatalog.TowerStatCap);
 
         /// <summary>
+        /// The same, with the base's Bulwark Engineering pieces counted across every tower type
+        /// (<paramref name="baseCounts"/>); a type gets the brand's bonuses only while it wears one.
+        /// </summary>
+        public static VehicleBoost TowerBoost(int rank, IEnumerable<GearItem> loadout, int[] baseCounts)
+        {
+            var list = new List<GearItem>(loadout);
+            var own = BrandCounts(list);
+            if (baseCounts != null && own.Length > GearCatalog.BulwarkBrand && own[GearCatalog.BulwarkBrand] > 0)
+                own[GearCatalog.BulwarkBrand] = Mathf.Max(own[GearCatalog.BulwarkBrand], baseCounts.Length > GearCatalog.BulwarkBrand ? baseCounts[GearCatalog.BulwarkBrand] : 0);
+            return Boost(rank, list, GearCatalog.TowerStatCap, own);
+        }
+
+        /// <summary>Share of new tower pieces that carry the Bulwark Engineering brand (the rest carry none).</summary>
+        public const float BulwarkShare = 0.35f;
+
+        /// <summary>
         /// A base type for a new tower piece of this slot and rarity: those that work for a tower
         /// of the player's base (<paramref name="towers"/>: what each tower type there has) three
         /// times as likely as the others.
@@ -102,6 +118,7 @@ namespace MachineBrigade.Game.Match
             var slot = TowerSlots[rng.Next(TowerSlots.Length)];
             var item = new GearItem { id = id, slot = (int)slot, rarity = (int)rarity, level = 1, seed = rng.Next(1, int.MaxValue) };
             item.baseType = PickTowerBase(slot, rarity, rng, towers)?.Id ?? "";
+            item.brand = rng.NextDouble() < BulwarkShare ? GearCatalog.BulwarkBrand : 0;
             FillSubs(item, rng);
             if (rarity >= Rarity.Epic) RollTrait(item, rng, BranchMask.All);
             return item;

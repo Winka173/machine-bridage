@@ -21,6 +21,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Marks a panel root whose release and move events are already watched.</summary>
         private const string RootMark = "tap-root";
 
+        /// <summary>Marks every element that takes a tap, so the UI checks can find the touch targets (UiLayoutTests).</summary>
+        public const string TargetClass = "mb-tap";
+
         private static Tap _pending;
         private static int _pointer = -1;
         private static long _downStamp;
@@ -40,6 +43,7 @@ namespace MachineBrigade.Game.Hud
 
         protected override void RegisterCallbacksOnTarget()
         {
+            target.AddToClassList(TargetClass);
             target.RegisterCallback<PointerDownEvent>(OnDown);
             target.RegisterCallback<AttachToPanelEvent>(OnAttach);
             target.RegisterCallback<DetachFromPanelEvent>(OnDetach);

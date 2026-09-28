@@ -46,6 +46,42 @@ namespace MachineBrigade.Sim.Modes
         /// </summary>
         public const string Empty = "";
 
+        /// <summary>
+        /// The tower a fortress raises in its <paramref name="index"/>-th hardpoint of a size (counted
+        /// over the whole fortress): the towers this loadout lists for that size, in order and over
+        /// again (a fortress has more hardpoints than a camp), empty entries skipped. A size the
+        /// loadout has nothing for takes the next smaller size's towers (they fit). Null: none at all.
+        /// </summary>
+        public string? TowerForFortress(SlotSize size, int index)
+        {
+            for (var s = (int)size; s >= 0; s--)
+            {
+                var list = Of((SlotSize)s);
+                var n = 0;
+                foreach (var id in list)
+                    if (!string.IsNullOrEmpty(id)) n++;
+                if (n == 0) continue;
+                var k = index % n;
+                foreach (var id in list)
+                {
+                    if (string.IsNullOrEmpty(id)) continue;
+                    if (k-- == 0) return id;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>The module a fortress raises in its <paramref name="index"/>-th utility hardpoint: each of the loadout's once, in order.</summary>
+        public string? UtilityForFortress(int index)
+        {
+            foreach (var id in Utilities)
+            {
+                if (string.IsNullOrEmpty(id)) continue;
+                if (index-- == 0) return id;
+            }
+            return null;
+        }
+
         /// <summary>Every tower in the loadout, large slots first (empty slots left out).</summary>
         public IEnumerable<string> Towers
         {

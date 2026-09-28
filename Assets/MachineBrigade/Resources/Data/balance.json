@@ -61,6 +61,37 @@
     }
   },
 
+  // Equipment branches: the classes whose vehicles wear each branch's loadout (prompt 8 I.1). An aircraft is
+  // always Air; the long-range SAM is anti-air (Light) and the FPV carrier a tank hunter (Armour).
+  "branches": {
+    "Armor": ["Tank", "Heavy", "TankHunter"],
+    "Light": ["Light", "Scout", "AntiAir", "Support"],
+    "Artillery": ["Artillery"],
+    "Air": ["Helicopter", "Plane"]
+  },
+
+  // The enemy's elites (prompt 8 H): an elite has its base card's health times hpScale and hits
+  // damageScale times as hard; it costs the enemy costScale times the base card's CP (and refunds its
+  // kill at that price). Instead of a chance per delivery, a share of the enemy's spending ("budget")
+  // may go on elites, with a cap on how many are out at once, both by difficulty; a general's
+  // favoured cards get the whole share, the rest otherShare of it. Each elite destroyed pays "coins"
+  // after the battle (the first bountyCap of them) and may drop a blueprint of its base card.
+  "elites": {
+    "costScale": 1.6, "hpScale": 1.6, "damageScale": 1.25, "powerRatio": 2.0, "otherShare": 0.5,
+    "budget": { "Easy": 0.05, "Normal": 0.10, "Hard": 0.15, "Heroic": 0.20, "Iron": 0.25 },
+    "cap": { "Easy": 1, "Normal": 2, "Hard": 3, "Heroic": 4, "Iron": 5 },
+    "coins": 10, "bountyCap": 4, "blueprintChance": 0.06
+  },
+
+  // The enemy generals: which of their cards they make elites of first (class names; "Drone" for
+  // drone carriers and UAVs, "Air" for every aircraft), and cards always in their deck.
+  "generals": {
+    "varga": { "elites": ["Tank", "Heavy"], "deck": ["armored_bulldozer"] },
+    "orlov": { "elites": ["Artillery"] },
+    "sen": { "elites": ["Drone"] },
+    "quaden": { "elites": ["Air"] }
+  },
+
   "damageTable": {
     "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.3, "Structure": 0.3 },
     "ArmorPiercing": { "Light": 0.75, "Heavy": 1.00, "Air": 0.3, "Structure": 0.6 },
@@ -71,40 +102,42 @@
 
   // projectile: Shell (default), Bullet, Missile (guided, always follows its target), Rocket, Flame, Bomb.
   // targets: Ground (default), Air or All. burst: shots per trigger, burstInterval apart; the cooldown follows the last.
+  // clip: a magazine fired as a stream, one round per cooldown at the target it bears on, then clipReload s to change it.
+  // roundWeight: how heavy a round looks and sounds (tracer, report) when its damage is not its calibre's (a faster gun's lighter rounds).
   "weapons": [
-    { "id": "mg_jeep",       "damageType": "Kinetic",       "damage": 9,   "cooldown": 0.18, "range": 22, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "mg_coax",       "damageType": "Kinetic",       "damage": 6,   "cooldown": 0.16, "range": 20, "projectileSpeed": 240, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "hmg_roof",      "damageType": "Kinetic",       "damage": 11,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 230, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "autocannon_30", "damageType": "Kinetic",       "damage": 32,  "cooldown": 1.57,  "range": 30, "projectileSpeed": 200, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.12 },
+    { "id": "mg_jeep",       "damageType": "Kinetic",       "damage": 7.7,   "cooldown": 0.12, "range": 22, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 9 },
+    { "id": "mg_coax",       "damageType": "Kinetic",       "damage": 4.8,   "cooldown": 0.1, "range": 20, "projectileSpeed": 240, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 6 },
+    { "id": "hmg_roof",      "damageType": "Kinetic",       "damage": 8.8,  "cooldown": 0.13,  "range": 30, "projectileSpeed": 230, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 11 },
+    { "id": "autocannon_30", "damageType": "Kinetic",       "damage": 22.4,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 200, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 10, "clipReload": 1.8, "roundWeight": 32 },
     { "id": "gun_57mm",      "damageType": "ArmorPiercing", "damage": 79,  "cooldown": 2.86,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium" },
     { "id": "gun_120mm",     "damageType": "ArmorPiercing", "damage": 200, "cooldown": 4.57,  "range": 32, "projectileSpeed": 170, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" },
 
     { "id": "turret_gun_120", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 6.0,  "range": 32, "projectileSpeed": 170, "splash": 1.5, "spread": 0.6, "impactTier": "Large", "impactScale": 1.35 },
-    { "id": "atgm",          "projectileModel": "atgm_tow", "damageType": "ArmorPiercing", "damage": 130, "cooldown": 9.0,  "range": 34, "projectileSpeed": 36, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "atgm",          "projectileModel": "atgm_tow", "damageType": "ArmorPiercing", "damage": 130, "cooldown": 9.0,  "range": 34, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile" },
     { "id": "flamethrower",  "damageType": "Fire",          "damage": 22,  "cooldown": 0.25, "range": 13, "projectileSpeed": 36, "splash": 2.5, "spread": 1.2, "impactTier": "Small", "projectile": "Flame" },
     { "id": "howitzer",      "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 171, "cooldown": 7.14,  "range": 90, "minRange": 25, "projectileSpeed": 45, "splash": 7, "spread": 5, "impactTier": "Large", "ammo": 20 },
     { "id": "mlrs_rockets",  "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 80,  "cooldown": 10,   "range": 110, "minRange": 20, "projectileSpeed": 52, "splash": 4.5, "spread": 2.2, "impactTier": "Large", "projectile": "Rocket", "burst": 6, "burstInterval": 0.3, "ammo": 4 },
     { "id": "flak_35",       "damageType": "Flak",          "damage": 11,  "cooldown": 0.9, "range": 36, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 10, "burstInterval": 0.055 },
-    { "id": "sam",           "projectileModel": "shorad_dart", "damageType": "Flak",          "damage": 210, "cooldown": 6.0,  "range": 44, "projectileSpeed": 60, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air" },
-    { "id": "heli_atgm",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 256, "cooldown": 5.0,  "range": 34, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "heli_gun",      "damageType": "Kinetic",       "damage": 16,  "cooldown": 0.22, "range": 26, "projectileSpeed": 220, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "heli_rockets",  "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 40,  "cooldown": 8.0,  "range": 30, "projectileSpeed": 75, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12 },
-    { "id": "autocannon_25",     "damageType": "Kinetic",       "damage": 22,  "cooldown": 1.29,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.1 },
+    { "id": "sam",           "projectileModel": "shorad_dart", "damageType": "Flak",          "damage": 210, "cooldown": 6.0,  "range": 44, "projectileSpeed": 40, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air" },
+    { "id": "heli_atgm",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 256, "cooldown": 5.0,  "range": 34, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "heli_gun",      "damageType": "Kinetic",       "damage": 12,  "cooldown": 0.12, "range": 26, "projectileSpeed": 220, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 16 },
+    { "id": "heli_rockets",  "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 40,  "cooldown": 8.0,  "range": 30, "projectileSpeed": 60, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12 },
+    { "id": "autocannon_25",     "damageType": "Kinetic",       "damage": 15.5,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 12, "clipReload": 1.6, "roundWeight": 22 },
     { "id": "gun_105_long",      "damageType": "ArmorPiercing", "damage": 357, "cooldown": 5.57,  "range": 40, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium" },
     { "id": "gun_152",           "damageType": "ArmorPiercing", "damage": 343, "cooldown": 6.43,  "range": 34, "projectileSpeed": 160, "splash": 2.5, "spread": 0.7, "impactTier": "Large" },
-    { "id": "sam_long",          "projectileModel": "buk", "damageType": "Flak",          "damage": 308, "cooldown": 5.5,  "range": 55, "projectileSpeed": 72, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.5 },
+    { "id": "sam_long",          "projectileModel": "buk", "damageType": "Flak",          "damage": 308, "cooldown": 5.5,  "range": 55, "projectileSpeed": 46, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.5 },
     { "id": "mortar_120",        "projectileModel": "mortar_bomb", "damageType": "HighExplosive", "damage": 107,  "cooldown": 4.57,  "range": 55, "minRange": 10, "projectileSpeed": 32, "splash": 5, "spread": 4.5, "impactTier": "Large", "ammo": 18 },
     { "id": "technical_rockets", "projectileModel": "rocket_107", "damageType": "HighExplosive", "damage": 30,  "cooldown": 8,   "range": 48, "minRange": 12, "projectileSpeed": 48, "splash": 3.5, "spread": 6, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.2, "ammo": 6 },
     // BM-21 Grad: a ripple of 20 rockets, a carpet of blasts. Heavy ATGM: two missiles a launch, long reach.
     { "id": "grad_rockets",  "projectileModel": "grad", "damageType": "HighExplosive", "damage": 26,  "cooldown": 14,   "range": 55, "minRange": 18, "projectileSpeed": 52, "splash": 3.5, "spread": 7, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.08, "ammo": 3 },
-    { "id": "atgm_heavy",    "projectileModel": "atgm_tow", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 8.0,  "range": 42, "projectileSpeed": 36, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.7 },
-    { "id": "gunship_rockets",   "projectileModel": "s8", "damageType": "HighExplosive", "damage": 42,  "cooldown": 9,    "range": 34, "projectileSpeed": 75, "splash": 3.2, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 12, "burstInterval": 0.1 },
-    { "id": "minigun",           "damageType": "Kinetic",       "damage": 7,   "cooldown": 0.07, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "scout_rockets",     "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 47,  "cooldown": 8,    "range": 28, "projectileSpeed": 75, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 7, "burstInterval": 0.11 },
-    { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 52,  "cooldown": 3.57,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "burst": 10, "burstInterval": 0.05 },
-    { "id": "jet_rockets",       "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 61,  "cooldown": 7,    "range": 36, "projectileSpeed": 75, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
+    { "id": "atgm_heavy",    "projectileModel": "atgm_tow", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 8.0,  "range": 42, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.7 },
+    { "id": "gunship_rockets",   "projectileModel": "s8", "damageType": "HighExplosive", "damage": 42,  "cooldown": 9,    "range": 34, "projectileSpeed": 60, "splash": 3.2, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 12, "burstInterval": 0.1 },
+    { "id": "minigun",           "damageType": "Kinetic",       "damage": 5.6,   "cooldown": 0.045, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7 },
+    { "id": "scout_rockets",     "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 47,  "cooldown": 8,    "range": 28, "projectileSpeed": 60, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 7, "burstInterval": 0.11 },
+    { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 64,  "cooldown": 0.05,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "clip": 70, "clipReload": 1 },
+    { "id": "jet_rockets",       "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 61,  "cooldown": 7,    "range": 36, "projectileSpeed": 60, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
     { "id": "jet_bombs",         "projectileModel": "bomb_fab", "damageType": "HighExplosive", "damage": 351, "cooldown": 12,   "range": 26, "projectileSpeed": 35, "splash": 8, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "burst": 2, "burstInterval": 0.25 },
-    { "id": "drone_missile",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 270, "cooldown": 4,    "range": 48, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
+    { "id": "drone_missile",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 270, "cooldown": 4,    "range": 48, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile", "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
     // Second wave of vehicles.
     { "id": "gun_155_sph",       "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 214, "cooldown": 8.57,  "range": 100, "minRange": 25, "projectileSpeed": 50, "splash": 8, "spread": 4.5, "impactTier": "Huge", "ammo": 16 },
     { "id": "thermobaric_rockets", "projectileModel": "tos_rocket", "damageType": "HighExplosive", "damage": 70, "cooldown": 14,  "range": 38, "minRange": 12, "projectileSpeed": 45, "splash": 7, "spread": 6, "impactTier": "Huge", "projectile": "Rocket", "burst": 12, "burstInterval": 0.14, "ammo": 4 },
@@ -112,11 +145,11 @@
     { "id": "gun_140_twin",      "damageType": "ArmorPiercing", "damage": 299, "cooldown": 4.86,  "range": 40, "projectileSpeed": 200, "splash": 2, "spread": 0.5, "impactTier": "Large", "burst": 2, "burstInterval": 0.05 },
     // Premium aircraft (bought with coins).
     { "id": "bomber_payload",    "projectileModel": "bomb", "damageType": "HighExplosive", "damage": 400, "cooldown": 11,   "range": 28, "projectileSpeed": 35, "splash": 10, "spread": 7, "impactTier": "Huge", "projectile": "Bomb", "burst": 12, "burstInterval": 0.12 },
-    { "id": "bomber_tail_guns",  "damageType": "Kinetic",       "damage": 19,  "cooldown": 0.3,  "range": 30, "projectileSpeed": 240, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "Air" },
+    { "id": "bomber_tail_guns",  "damageType": "Kinetic",       "damage": 15,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 240, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "roundWeight": 19 },
     { "id": "stealth_payload",   "projectileModel": "jdam", "damageType": "HighExplosive", "damage": 850, "cooldown": 14,   "range": 30, "projectileSpeed": 40, "splash": 13, "spread": 2, "impactTier": "Ultimate", "projectile": "Bomb", "burst": 3, "burstInterval": 0.3 },
     { "id": "gunship_105",       "damageType": "HighExplosive", "damage": 347, "cooldown": 5.0,  "range": 58, "projectileSpeed": 120, "splash": 6.5, "spread": 3, "impactTier": "Huge" },
     { "id": "gunship_40mm",      "damageType": "HighExplosive", "damage": 79,  "cooldown": 1.29,  "range": 55, "projectileSpeed": 200, "splash": 3, "spread": 2.5, "impactTier": "Medium", "burst": 3, "burstInterval": 0.2 },
-    { "id": "gunship_25mm",      "damageType": "Kinetic",       "damage": 19,  "cooldown": 0.12, "range": 50, "projectileSpeed": 280, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet" },
+    { "id": "gunship_25mm",      "damageType": "Kinetic",       "damage": 12.4,  "cooldown": 0.06, "range": 50, "projectileSpeed": 280, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "clip": 50, "clipReload": 1.2, "roundWeight": 19 },
     // Third wave: bigger guns, long-range launchers with limited ammunition (ammo = trigger pulls
     // carried; empty launchers fight with their machine gun until they re-arm at home or by an engineer).
     { "id": "gun_105_twin",      "damageType": "ArmorPiercing", "damage": 171, "cooldown": 4.86,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.6, "impactTier": "Medium", "burst": 2, "burstInterval": 0.05 },
@@ -125,22 +158,22 @@
     { "id": "ballistic_missile", "damageType": "HighExplosive", "damage": 700, "cooldown": 25,   "range": 180, "minRange": 40, "projectileSpeed": 45, "splash": 12, "spread": 5, "impactTier": "Ultimate", "projectile": "Rocket", "burst": 2, "burstInterval": 1.5, "ammo": 2 },
     { "id": "mortar_240",        "projectileModel": "mortar_bomb", "projectileScale": 1.8, "damageType": "HighExplosive", "damage": 543, "cooldown": 17.14,   "range": 85, "minRange": 20, "projectileSpeed": 38, "splash": 10, "spread": 5, "impactTier": "Ultimate", "ammo": 8 },
     { "id": "fpv_swarm",         "damageType": "ArmorPiercing", "damage": 140, "cooldown": 10,   "range": 75, "minRange": 12, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 4, "burstInterval": 0.35, "ammo": 4, "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
-    { "id": "air_to_air",        "projectileModel": "aim120", "damageType": "Flak",          "damage": 351, "cooldown": 5,    "range": 60, "projectileSpeed": 74, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 4 },
+    { "id": "air_to_air",        "projectileModel": "aim120", "damageType": "Flak",          "damage": 351, "cooldown": 5,    "range": 60, "projectileSpeed": 48, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 4 },
     // Real armament (Docs research 2026-09-27): dogfight and self-defence air-to-air missiles,
     // stand-off missiles for the bombers, the Mi-24P's fixed cannon and door guns, AC-130J missiles.
-    { "id": "wvr_aam",           "projectileModel": "aim9", "damageType": "Flak",          "damage": 260, "cooldown": 2.5,  "range": 30, "projectileSpeed": 74, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
-    { "id": "stinger_atas",      "projectileModel": "stinger", "damageType": "Flak",          "damage": 150, "cooldown": 8,    "range": 30, "projectileSpeed": 60, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
-    { "id": "igla_v",            "projectileModel": "igla", "damageType": "Flak",          "damage": 180, "cooldown": 10,   "range": 32, "projectileSpeed": 60, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
-    { "id": "r60",               "projectileModel": "r60", "damageType": "Flak",          "damage": 200, "cooldown": 8,    "range": 28, "projectileSpeed": 74, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
-    { "id": "aim9",              "projectileModel": "aim9", "damageType": "Flak",          "damage": 220, "cooldown": 8,    "range": 30, "projectileSpeed": 74, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
-    { "id": "jassm",             "projectileModel": "jassm", "damageType": "HighExplosive", "damage": 420, "cooldown": 10,   "range": 90, "projectileSpeed": 30, "splash": 5, "impactTier": "Huge", "projectile": "Missile", "burst": 2, "burstInterval": 0.6, "ammo": 4 },
-    { "id": "air_cruise_missile", "projectileModel": "cruise_missile", "damageType": "HighExplosive", "damage": 450, "cooldown": 14,  "range": 110, "projectileSpeed": 30, "splash": 6, "impactTier": "Huge", "projectile": "Missile", "ammo": 4 },
-    { "id": "griffin",           "projectileModel": "griffin", "damageType": "ArmorPiercing", "damage": 160, "cooldown": 4,    "range": 50, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "ammo": 10 },
-    { "id": "kh29",              "projectileModel": "maverick", "damageType": "ArmorPiercing", "damage": 260, "cooldown": 14,   "range": 38, "projectileSpeed": 50, "impactTier": "Large", "projectile": "Missile", "ammo": 2 },
-    { "id": "s8_pods",           "projectileModel": "s8", "damageType": "HighExplosive", "damage": 22,  "cooldown": 7,    "range": 34, "projectileSpeed": 75, "splash": 3, "spread": 4.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.05 },
-    { "id": "gsh30k",            "damageType": "ArmorPiercing", "damage": 41,  "cooldown": 2.14,  "range": 28, "projectileSpeed": 300, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "burst": 6, "burstInterval": 0.06 },
-    { "id": "gsh_23v",           "damageType": "Kinetic",       "damage": 14,  "cooldown": 0.12, "range": 26, "projectileSpeed": 240, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
-    { "id": "door_gun",          "damageType": "Kinetic",       "damage": 7,   "cooldown": 0.1,  "range": 22, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
+    { "id": "wvr_aam",           "projectileModel": "aim9", "damageType": "Flak",          "damage": 260, "cooldown": 2.5,  "range": 30, "projectileSpeed": 48, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
+    { "id": "stinger_atas",      "projectileModel": "stinger", "damageType": "Flak",          "damage": 150, "cooldown": 8,    "range": 30, "projectileSpeed": 40, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
+    { "id": "igla_v",            "projectileModel": "igla", "damageType": "Flak",          "damage": 180, "cooldown": 10,   "range": 32, "projectileSpeed": 40, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
+    { "id": "r60",               "projectileModel": "r60", "damageType": "Flak",          "damage": 200, "cooldown": 8,    "range": 28, "projectileSpeed": 48, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
+    { "id": "aim9",              "projectileModel": "aim9", "damageType": "Flak",          "damage": 220, "cooldown": 8,    "range": 30, "projectileSpeed": 48, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 2 },
+    { "id": "jassm",             "projectileModel": "jassm", "damageType": "HighExplosive", "damage": 420, "cooldown": 10,   "range": 90, "projectileSpeed": 20, "splash": 5, "impactTier": "Huge", "projectile": "Missile", "burst": 2, "burstInterval": 0.6, "ammo": 4 },
+    { "id": "air_cruise_missile", "projectileModel": "cruise_missile", "damageType": "HighExplosive", "damage": 450, "cooldown": 14,  "range": 110, "projectileSpeed": 20, "splash": 6, "impactTier": "Huge", "projectile": "Missile", "ammo": 4 },
+    { "id": "griffin",           "projectileModel": "griffin", "damageType": "ArmorPiercing", "damage": 160, "cooldown": 4,    "range": 50, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile", "ammo": 10 },
+    { "id": "kh29",              "projectileModel": "maverick", "damageType": "ArmorPiercing", "damage": 260, "cooldown": 14,   "range": 38, "projectileSpeed": 32, "impactTier": "Large", "projectile": "Missile", "ammo": 2 },
+    { "id": "s8_pods",           "projectileModel": "s8", "damageType": "HighExplosive", "damage": 22,  "cooldown": 7,    "range": 34, "projectileSpeed": 60, "splash": 3, "spread": 4.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.05 },
+    { "id": "gsh30k",            "damageType": "ArmorPiercing", "damage": 15.8,  "cooldown": 0.08,  "range": 28, "projectileSpeed": 300, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "clip": 30, "clipReload": 1.2, "roundWeight": 41 },
+    { "id": "gsh_23v",           "damageType": "Kinetic",       "damage": 9.3,  "cooldown": 0.045, "range": 26, "projectileSpeed": 240, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14 },
+    { "id": "door_gun",          "damageType": "Kinetic",       "damage": 6.4,   "cooldown": 0.07,  "range": 22, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7 },
     // Round 5 vehicles: car bomb, twin 23 mm, loitering munitions, Shahed, laser, railgun, BMPT guns.
     { "id": "detonator",         "damageType": "HighExplosive", "damage": 700, "cooldown": 1,    "range": 3, "projectileSpeed": 100, "splash": 7.5, "impactTier": "Ultimate",
       "bonuses": [ { "armor": "Structure", "mult": 0.5 } ] },
@@ -150,37 +183,42 @@
     { "id": "shahed",            "projectileModel": "shahed", "damageType": "HighExplosive", "damage": 320, "cooldown": 30,   "range": 150, "minRange": 20, "projectileSpeed": 20, "splash": 6, "impactTier": "Huge", "projectile": "Drone", "burst": 5, "burstInterval": 1.0, "ammo": 1 },
     { "id": "hel_beam",          "damageType": "Flak",          "damage": 7,   "cooldown": 0.1,  "range": 45, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true },
     { "id": "railgun",           "charge": 0.9, "projectileModel": "rail_slug", "damageType": "ArmorPiercing", "damage": 474, "cooldown": 7,    "range": 90, "projectileSpeed": 700, "spread": 0.4, "impactTier": "Large", "projectile": "Bullet", "pierce": true, "impactScale": 1.4 },
-    { "id": "twin_30_bmpt",      "damageType": "Kinetic",       "damage": 30,  "cooldown": 1.29,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 4, "burstInterval": 0.08 },
-    { "id": "ataka",             "projectileModel": "atgm_ataka", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 9,    "range": 40, "projectileSpeed": 36, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.5 },
-    // The Ka-52's Vikhr: laser-guided, supersonic, fired in pairs from long range; it can take down a helicopter too.
-    { "id": "vikhr",             "projectileModel": "atgm_ataka", "damageType": "ArmorPiercing", "damage": 230, "cooldown": 6.5, "range": 55, "projectileSpeed": 50, "impactTier": "Medium", "projectile": "Missile", "targets": "All", "burst": 2, "burstInterval": 0.45 },
-    { "id": "fighter_cannon",    "damageType": "Flak",          "damage": 30,  "cooldown": 1.2,  "range": 30, "projectileSpeed": 320, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.05 },
-    { "id": "gau_gatling",       "damageType": "ArmorPiercing", "damage": 62,  "cooldown": 3.14,  "range": 32, "projectileSpeed": 320, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "burst": 14, "burstInterval": 0.04 },
-    { "id": "maverick",          "projectileModel": "maverick", "damageType": "ArmorPiercing", "damage": 351, "cooldown": 8,    "range": 40, "projectileSpeed": 50, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "recon_missile",     "projectileModel": "mam_l", "damageType": "ArmorPiercing", "damage": 122,  "cooldown": 8,    "range": 50, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "hind_rockets",      "projectileModel": "s8", "damageType": "HighExplosive", "damage": 60,  "cooldown": 8,    "range": 36, "projectileSpeed": 75, "splash": 3.5, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.07 },
+    { "id": "twin_30_bmpt",      "damageType": "Kinetic",       "damage": 21.3,  "cooldown": 0.15,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 16, "clipReload": 1.6, "roundWeight": 30 },
+    { "id": "ataka",             "projectileModel": "atgm_ataka", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 9,    "range": 40, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.5 },
+    // The Ka-52's Vikhr: laser-guided, supersonic, fired in pairs from long range (at the ground: its Igla-V takes the aircraft).
+    { "id": "vikhr",             "projectileModel": "atgm_ataka", "damageType": "ArmorPiercing", "damage": 230, "cooldown": 6.5, "range": 55, "projectileSpeed": 34, "impactTier": "Medium", "projectile": "Missile", "targets": "Ground", "burst": 2, "burstInterval": 0.45 },
+    { "id": "fighter_cannon",    "damageType": "Flak",          "damage": 22,  "cooldown": 0.05,  "range": 30, "projectileSpeed": 320, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 70, "clipReload": 1, "roundWeight": 30 },
+    { "id": "gau_gatling",       "damageType": "ArmorPiercing", "damage": 44,  "cooldown": 0.04,  "range": 32, "projectileSpeed": 320, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "clip": 90, "clipReload": 1 },
+    { "id": "maverick",          "projectileModel": "maverick", "damageType": "ArmorPiercing", "damage": 351, "cooldown": 8,    "range": 40, "projectileSpeed": 32, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "recon_missile",     "projectileModel": "mam_l", "damageType": "ArmorPiercing", "damage": 122,  "cooldown": 8,    "range": 50, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "hind_rockets",      "projectileModel": "s8", "damageType": "HighExplosive", "damage": 60,  "cooldown": 8,    "range": 36, "projectileSpeed": 60, "splash": 3.5, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.07 },
     // Elite variants.
     // Elite weapons. Cluster rockets scatter bomblets that each go off as a small blast.
     { "id": "gun_155_twin",      "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 313, "cooldown": 8.6,  "range": 50, "projectileSpeed": 150, "splash": 4.5, "spread": 0.9, "impactTier": "Huge", "burst": 2, "burstInterval": 0.05, "impactScale": 1.3 },
     { "id": "flak_quad",         "damageType": "Flak",          "damage": 22,  "cooldown": 1.2,  "range": 46, "projectileSpeed": 300, "splash": 3.5, "spread": 1.6, "impactTier": "Medium", "projectile": "Bullet", "targets": "All", "burst": 12, "burstInterval": 0.05 },
-    { "id": "sam_battery",       "projectileModel": "patriot", "damageType": "Flak",          "damage": 240, "cooldown": 7.0,  "range": 90, "minRange": 20, "projectileSpeed": 72, "splash": 2.5, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.45 },
+    { "id": "sam_battery",       "projectileModel": "patriot", "damageType": "Flak",          "damage": 240, "cooldown": 7.0,  "range": 90, "minRange": 20, "projectileSpeed": 46, "splash": 2.5, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.45 },
     { "id": "bastion_gun",       "damageType": "ArmorPiercing", "damage": 284, "cooldown": 4.57,  "range": 40, "projectileSpeed": 200, "splash": 2.5, "spread": 0.3, "impactTier": "Large", "burst": 2, "burstInterval": 0.05, "impactScale": 1.5 },
-    { "id": "gun_152_heat",      "damageType": "ArmorPiercing", "damage": 400, "cooldown": 6.43,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large" },
-    { "id": "gun_105_apfsds",    "damageType": "ArmorPiercing", "damage": 457, "cooldown": 5.14,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium" },
-    { "id": "hellfire_volley",   "projectileModel": "hellfire_longbow", "damageType": "ArmorPiercing", "damage": 170, "cooldown": 6.0,  "range": 34, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.45 },
-    { "id": "twin_35_ahead",     "damageType": "Flak",          "damage": 46,  "cooldown": 1.1,  "range": 46, "projectileSpeed": 300, "splash": 4, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.06 },
-    { "id": "grad_cluster",      "projectileModel": "grad_cluster", "damageType": "HighExplosive", "damage": 18,  "cooldown": 12,   "range": 78, "minRange": 18, "projectileSpeed": 52, "splash": 3, "spread": 8, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08, "ammo": 3,
-      "cluster": { "count": 4, "radius": 5, "damage": 14, "splash": 2.2, "tier": "Small" } },
-    { "id": "gun_125_elite",     "damageType": "ArmorPiercing", "damage": 250, "cooldown": 4.0,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.5, "impactTier": "Large" },
-    { "id": "mlrs_elite",        "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 50,  "cooldown": 9,    "range": 75, "minRange": 20, "projectileSpeed": 52, "splash": 5, "spread": 5, "impactTier": "Large", "projectile": "Rocket", "burst": 16, "burstInterval": 0.14, "ammo": 6,
-      "cluster": { "count": 5, "radius": 6, "damage": 24, "splash": 2.6, "tier": "Small" } },
+    { "id": "gun_152_heat",      "damageType": "ArmorPiercing", "damage": 325, "cooldown": 6.43,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large" },
+    { "id": "gun_105_apfsds",    "damageType": "ArmorPiercing", "damage": 345, "cooldown": 5.57,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium" },
+    { "id": "hellfire_volley",   "projectileModel": "hellfire_longbow", "damageType": "ArmorPiercing", "damage": 128, "cooldown": 5.0,  "range": 34, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.45 },
+    { "id": "twin_35_ahead",     "damageType": "Flak",          "damage": 16,  "cooldown": 1.1,  "range": 46, "projectileSpeed": 300, "splash": 4, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.06 },
+    { "id": "grad_cluster",      "projectileModel": "grad_cluster", "damageType": "HighExplosive", "damage": 19,  "cooldown": 12,   "range": 78, "minRange": 18, "projectileSpeed": 52, "splash": 3, "spread": 8, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08, "ammo": 3,
+      "cluster": { "count": 4, "radius": 5, "damage": 15, "splash": 2.2, "tier": "Small" } },
+    { "id": "gun_125_elite",     "damageType": "ArmorPiercing", "damage": 205, "cooldown": 4.8,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.5, "impactTier": "Large" },
+    { "id": "mlrs_elite",        "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 13,  "cooldown": 9,    "range": 75, "minRange": 20, "projectileSpeed": 52, "splash": 5, "spread": 5, "impactTier": "Large", "projectile": "Rocket", "burst": 16, "burstInterval": 0.14, "ammo": 6,
+      "cluster": { "count": 5, "radius": 6, "damage": 6, "splash": 2.6, "tier": "Small" } },
     { "id": "autocannon_40",     "damageType": "Kinetic",       "damage": 51,  "cooldown": 1.43,  "range": 28, "projectileSpeed": 210, "splash": 1, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.14 },
     // Roster cleanup (prompt 2): the wheeled tank hunter's 105 mm (harder on a flank or rear), the
     // long-range SAM's big missile, the ATGM tower's twin launcher.
     { "id": "gun_105_wheeled",   "damageType": "ArmorPiercing", "damage": 300, "cooldown": 4.6,  "range": 38, "projectileSpeed": 230, "spread": 0.4, "impactTier": "Medium",
       "bonuses": [ { "flank": true, "mult": 1.25 } ] },
-    { "id": "sam_48n6",          "projectileModel": "patriot", "projectileScale": 1.3, "damageType": "Flak", "damage": 600, "cooldown": 8, "range": 95, "minRange": 20, "projectileSpeed": 95, "splash": 3, "impactTier": "Large", "projectile": "Missile", "targets": "Air" },
-    { "id": "kornet_twin",       "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 210, "cooldown": 9, "range": 50, "projectileSpeed": 38, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.6 },
+    { "id": "sam_48n6",          "projectileModel": "patriot", "projectileScale": 1.3, "damageType": "Flak", "damage": 600, "cooldown": 8, "range": 95, "minRange": 20, "projectileSpeed": 62, "splash": 3, "impactTier": "Large", "projectile": "Missile", "targets": "Air" },
+    { "id": "kornet_twin",       "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 210, "cooldown": 9, "range": 50, "projectileSpeed": 25, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.6 },
+    // Prompt 8: the armoured bulldozer's blade, a blow at 4.5 m (no round flies): three times as hard on
+    // structures (towers, bunkers, buildings, obstacles), weak on vehicles.
+    { "id": "dozer_blade", "melee": true, "damageType": "ArmorPiercing", "damage": 110, "cooldown": 1.6, "range": 4.5, "projectileSpeed": 400, "impactTier": "Medium",
+      "projectile": "Bullet", "targets": "Ground",
+      "bonuses": [ { "armor": "Structure", "mult": 3 }, { "armor": "Heavy", "mult": 0.4 }, { "armor": "Light", "mult": 0.55 } ] },
     // Towers (prompt 3): ground-only coaxial guns for the cannon towers, the new towers' weapons,
     // and the rank-7 branches' variants ("inherits": the named weapon's numbers, these on top).
     { "id": "none",              "damageType": "Kinetic", "damage": 0, "cooldown": 1, "range": 1, "projectileSpeed": 100, "impactTier": "Small" },
@@ -188,7 +226,7 @@
     { "id": "c_ram_gatling",     "damageType": "Flak", "damage": 7, "cooldown": 0.7, "range": 32, "projectileSpeed": 380, "splash": 1.2, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "burst": 12, "burstInterval": 0.03 },
     { "id": "gun_pit_105",       "damageType": "ArmorPiercing", "damage": 290, "cooldown": 5.6, "range": 36, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium" },
     { "id": "fpv_hangar",        "inherits": "fpv_swarm", "cooldown": 20, "range": 70, "minRange": 8, "burst": 2, "burstInterval": 1.0, "ammo": 0 },
-    { "id": "bunker_hmg_twin",   "inherits": "bunker_hmg", "cooldown": 0.075, "range": 28 },
+    { "id": "bunker_hmg_twin",   "inherits": "bunker_hmg", "cooldown": 0.045, "range": 28, "damage": 11.2 },
     { "id": "bunker_flame",      "inherits": "flamethrower", "range": 16, "damage": 26 },
     { "id": "turret_gun_120_long", "inherits": "turret_gun_120", "range": 38.4, "cooldown": 6.9 },
     { "id": "turret_gun_120_auto", "inherits": "turret_gun_120", "damage": 170, "cooldown": 4.45 },
@@ -206,7 +244,7 @@
     { "id": "gun_155_twin_long", "inherits": "gun_155_twin", "range": 60 },
     // Fixed defences (Siege mode).
     { "id": "turret_rockets",    "projectileModel": "grad", "damageType": "HighExplosive", "damage": 40,  "cooldown": 7,    "range": 55, "minRange": 8, "projectileSpeed": 55, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12, "impactScale": 1.3 },
-    { "id": "bunker_hmg",        "damageType": "Kinetic",       "damage": 14,  "cooldown": 0.12, "range": 32, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All" },
+    { "id": "bunker_hmg",        "damageType": "Kinetic",       "damage": 11.6,  "cooldown": 0.08, "range": 32, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14 },
     // New bosses.
     { "id": "saucer_laser",      "damageType": "Fire",          "damage": 9,   "cooldown": 0.1,  "range": 36, "projectileSpeed": 3000, "splash": 1.5, "impactTier": "Small", "projectile": "Bullet", "beam": true },
     { "id": "coilgun",           "charge": 0.5, "damageType": "ArmorPiercing", "damage": 250, "cooldown": 4.29,    "range": 55, "projectileSpeed": 420, "spread": 0.6, "impactTier": "Large", "projectile": "Bullet", "targets": "All", "burst": 2, "burstInterval": 0.25 },
@@ -216,19 +254,35 @@
     { "id": "gun_behemoth",      "damageType": "HighExplosive", "damage": 185, "cooldown": 5.14,  "range": 40, "projectileSpeed": 150, "splash": 5, "spread": 0.8, "impactTier": "Huge", "burst": 2, "burstInterval": 0.05 },
     { "id": "boss_howitzer",     "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 286, "cooldown": 6.43,  "range": 60, "projectileSpeed": 60, "splash": 9, "spread": 3, "impactTier": "Huge" },
     { "id": "boss_rockets",      "projectileModel": "grad", "damageType": "HighExplosive", "damage": 45,  "cooldown": 7,    "range": 45, "projectileSpeed": 55, "splash": 4, "spread": 5, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08 },
-    { "id": "boss_missiles",     "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 180, "cooldown": 5,    "range": 45, "projectileSpeed": 36, "impactTier": "Medium", "projectile": "Missile", "targets": "All" },
+    { "id": "boss_missiles",     "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 180, "cooldown": 5,    "range": 45, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "targets": "Ground" },
     { "id": "boss_flak",         "damageType": "Flak",          "damage": 21,  "cooldown": 0.9,  "range": 40, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 10, "burstInterval": 0.05 },
     { "id": "train_gun",         "damageType": "ArmorPiercing", "damage": 286, "cooldown": 4.57,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" },
     { "id": "agl_40", "damageType": "HighExplosive", "damage": 9.6, "cooldown": 3.43, "range": 30, "projectileSpeed": 70, "splash": 2, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "burst": 3, "burstInterval": 0.2 },
     { "id": "guided_bomb", "projectileModel": "gbu12", "damageType": "HighExplosive", "damage": 297, "cooldown": 10, "range": 30, "projectileSpeed": 40, "splash": 6, "spread": 1, "impactTier": "Large", "projectile": "Bomb", "ammo": 4 },
-    { "id": "atgm_post", "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 110, "cooldown": 14.0, "range": 34, "projectileSpeed": 36, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "atgm_post", "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 110, "cooldown": 14.0, "range": 34, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile" },
     { "id": "drone_gun", "damageType": "Kinetic", "damage": 12, "cooldown": 0.2, "range": 26, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet" },
     // Round 6 bosses. Inferno's twin flame projectors and thermobaric box; Tempest's railgun (it
     // charges for a second, then pierces a line); Bastion's heavy mortar.
-    { "id": "boss_flamer",       "damageType": "Fire",          "damage": 60,  "cooldown": 0.25, "range": 20, "projectileSpeed": 38, "splash": 3.5, "spread": 0.8, "impactTier": "Medium", "projectile": "Flame" },
+    { "id": "boss_flamer",       "damageType": "Fire",          "damage": 30,  "cooldown": 0.25, "range": 20, "projectileSpeed": 38, "splash": 3.5, "spread": 0.8, "impactTier": "Medium", "projectile": "Flame" },
     { "id": "boss_thermo",       "projectileModel": "tos_rocket", "damageType": "HighExplosive", "damage": 90, "cooldown": 12, "range": 46, "minRange": 10, "projectileSpeed": 45, "splash": 7, "spread": 3, "impactTier": "Large", "projectile": "Rocket", "burst": 6, "burstInterval": 0.2 },
     { "id": "boss_railgun",      "charge": 1.0, "projectileModel": "rail_slug", "damageType": "ArmorPiercing", "damage": 720, "cooldown": 8, "range": 80, "projectileSpeed": 700, "spread": 0.4, "impactTier": "Large", "projectile": "Bullet", "pierce": true, "impactScale": 1.6 },
-    { "id": "boss_mortar",       "projectileModel": "mortar_bomb", "projectileScale": 2.0, "damageType": "HighExplosive", "damage": 460, "cooldown": 10, "range": 80, "minRange": 12, "projectileSpeed": 36, "splash": 9, "spread": 3.5, "impactTier": "Huge", "projectile": "Shell" }
+    { "id": "boss_mortar",       "projectileModel": "mortar_bomb", "projectileScale": 2.0, "damageType": "HighExplosive", "damage": 460, "cooldown": 10, "range": 80, "minRange": 12, "projectileSpeed": 36, "splash": 9, "spread": 3.5, "impactTier": "Huge", "projectile": "Shell" },
+    // Prompt 8 bosses. The supergun's 80 cm shell (drawn: its shots are the boss system's, see "bombard");
+    // the Earth Worm's drill (a blow) and its hull guns; the airship's twin 57 mm flak and its drone bays;
+    // the hovercraft's six-barrel CIWS.
+    { "id": "supergun_800",      "projectileModel": "shell_155", "projectileScale": 3.2, "damageType": "HighExplosive", "damage": 1, "cooldown": 20, "range": 400, "minRange": 30,
+      "projectileSpeed": 120, "splash": 14, "impactTier": "Ultimate", "impactScale": 2.4 },
+    { "id": "borer_drill",       "melee": true, "damageType": "ArmorPiercing", "damage": 260, "cooldown": 1.5, "range": 7, "projectileSpeed": 400, "impactTier": "Large",
+      "projectile": "Bullet", "targets": "Ground", "bonuses": [ { "armor": "Structure", "mult": 2 } ] },
+    { "id": "borer_cannon",      "damageType": "ArmorPiercing", "damage": 150, "cooldown": 2.6, "range": 34, "projectileSpeed": 170, "splash": 1.5, "spread": 0.7, "impactTier": "Medium" },
+    { "id": "airship_flak",      "damageType": "Flak", "damage": 26, "cooldown": 1.1, "range": 48, "projectileSpeed": 280, "splash": 3, "spread": 1.4, "impactTier": "Medium",
+      "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.08 },
+    { "id": "airship_drones",    "damageType": "ArmorPiercing", "damage": 140, "cooldown": 8, "range": 70, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Large",
+      "projectile": "Drone", "burst": 3, "burstInterval": 0.35 },
+    // Test feedback 11C: the mega gunship's own guns at the old cadence (see the minigun and heli_gun above).
+    { "id": "boss_heli_gun",     "inherits": "heli_gun", "damage": 16, "cooldown": 0.22, "roundWeight": 16 },
+    { "id": "boss_minigun",      "inherits": "minigun", "damage": 7, "cooldown": 0.07, "roundWeight": 7 },
+    { "id": "hover_ciws",        "damageType": "Kinetic", "damage": 10, "cooldown": 0.07, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -249,7 +303,10 @@
       "firesWhileMoving": true, "weapon": "flamethrower",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.3, "tier": "Huge" } },
+    // Prompt 8 A.2: after three rounds from one spot it moves 15-20 m to a new one (counter-battery fire lands
+    // on nothing), and on a target its side has marked (a designator, a radar, a UAV) its rounds barely scatter.
     { "id": "artillery", "scale": 0.85,        "armor": "Light", "hp": 300, "speed": 7, "turnRate": 60, "turretTurnRate": 45, "radius": 2.0, "length": 9.53, "width": 2.69, "cp": 6, "vision": 30,
+      "scoot": { "shots": 3, "min": 15, "max": 20 }, "markedSpread": 0.15,
       "firesWhileMoving": false, "weapon": "howitzer",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Large" } },
@@ -302,7 +359,7 @@
       "secondary": [ { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" }, { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" },
                      { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "strike_drone", "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.98,     "armor": "Air",  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
+    { "id": "strike_drone", "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.98, "drone": true, "armor": "Air",  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
         { "id": "thermobaric_launcher", "scale": 0.85, "armor": "Heavy", "hp": 900, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 7.4, "width": 3.65, "cp": 9, "vision": 30,
@@ -379,7 +436,7 @@
       "secondary": [ { "weapon": "jet_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "maverick", "slot": "missile", "aim": "Hull" },
                      { "weapon": "aim9", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 100, "radius": 8, "delay": 0.6, "tier": "Huge" } },
-    { "id": "recon_drone", "strongVs": ["Scout", "Artillery"], "scale": 0.54,      "armor": "Air",  "hp": 220, "speed": 18, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
+    { "id": "recon_drone", "strongVs": ["Scout", "Artillery"], "scale": 0.54, "drone": true, "armor": "Air",  "hp": 220, "speed": 18, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
       "firesWhileMoving": true, "weapon": "recon_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
     { "id": "heavy_attack_heli", "strongVs": ["Tank", "Heavy", "Helicopter"], "scale": 0.56, "armor": "Air", "hp": 1250, "speed": 12, "turnRate": 80, "turretTurnRate": 360, "radius": 4.2, "cp": 14, "vision": 40,
@@ -425,6 +482,14 @@
     { "id": "sapper", "scale": 0.85,           "class": "Support", "armor": "Heavy", "hp": 800, "speed": 6, "turnRate": 80, "turretTurnRate": 200, "radius": 2.3, "length": 7.77, "width": 3.68, "cp": 5, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_roof", "fortify": { "radius": 12, "rate": 0.006 }, "captureRate": 1,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // Prompt 8 A.1: an armoured combat bulldozer (D9R). Only a roof machine gun; the blade rams structures down
+    // at three times the damage, it ploughs dragon's teeth flat as it drives into them, and takes half a mine's
+    // blast. The commander sends it ahead of the line into an enemy base. 3,500 health in game.
+    { "id": "armored_bulldozer", "scale": 0.85, "class": "Heavy", "armor": "Heavy", "hp": 1300, "speed": 5, "turnRate": 55, "turretTurnRate": 200, "radius": 3.4,
+      "length": 7.9, "width": 4.3, "cp": 7, "vision": 30, "captureRate": 1,
+      "firesWhileMoving": true, "weapon": "dozer_blade", "mainAim": "Hull", "mainSlot": "blade", "breacher": true, "mineArmor": 0.5,
+      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 90, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     // Roster cleanup (prompt 2). A command vehicle: a fire-rate aura, a forward drop zone once it has
     // stood still, one per side. A wheeled tank hunter (Centauro), a counter-battery radar
     // (Cobra / Zoopark), a long-range SAM (S-300 / S-400).
@@ -443,37 +508,46 @@
     { "id": "long_sam", "scale": 0.85, "class": "AntiAir", "armor": "Light", "hp": 440, "speed": 6, "turnRate": 60, "turretTurnRate": 60, "radius": 2.8, "length": 11.0, "width": 3.0, "cp": 11, "vision": 80,
       "firesWhileMoving": false, "weapon": "sam_48n6", "mainSlot": "missile", "captureRate": 0,
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armor": "Heavy", "hp": 1500, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
-      "firesWhileMoving": true, "weapon": "gun_125_elite", "skills": ["elite_shield", "elite_smoke"],
+    { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armor": "Heavy", "hp": 1440, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
+      "firesWhileMoving": true, "weapon": "gun_125_elite", "skills": ["elite_shield"],
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_heavy_tank", "scale": 0.85, "class": "Heavy", "elite": true, "eliteOf": "heavy_tank", "armor": "Heavy", "hp": 2600, "speed": 4.6, "turnRate": 45, "turretTurnRate": 45, "radius": 2.9, "length": 9.97, "width": 4.44, "cp": 0, "vision": 36,
-      "firesWhileMoving": true, "weapon": "gun_152_heat", "skills": ["elite_repair", "elite_overdrive"],
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+    { "id": "elite_heavy_tank", "scale": 0.85, "class": "Heavy", "elite": true, "eliteOf": "heavy_tank", "armor": "Heavy", "hp": 2560, "speed": 4.6, "turnRate": 45, "turretTurnRate": 45, "radius": 2.9, "length": 9.97, "width": 4.44, "cp": 0, "vision": 36,
+      "firesWhileMoving": true, "weapon": "gun_152_heat", "skills": ["elite_overdrive"],
+      "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 10, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "elite_tank_destroyer", "scale": 0.85, "class": "TankHunter", "elite": true, "eliteOf": "tank_destroyer", "armor": "Heavy", "hp": 900, "speed": 7.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.7, "length": 8.58, "width": 4.03, "cp": 0, "vision": 40,
+    { "id": "elite_tank_destroyer", "scale": 0.85, "class": "TankHunter", "elite": true, "eliteOf": "tank_destroyer", "armor": "Heavy", "hp": 992, "speed": 7.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.7, "length": 8.58, "width": 4.03, "cp": 0, "vision": 40,
       "firesWhileMoving": true, "weapon": "gun_105_apfsds", "skills": ["elite_barrage", "elite_smoke"],
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_attack_helicopter", "scale": 0.81, "elite": true, "eliteOf": "attack_helicopter", "armor": "Air", "hp": 850, "speed": 15, "turnRate": 120, "turretTurnRate": 360, "radius": 3.5, "cp": 0, "vision": 42,
+    { "id": "elite_attack_helicopter", "scale": 0.81, "elite": true, "eliteOf": "attack_helicopter", "armor": "Air", "hp": 800, "speed": 15, "turnRate": 120, "turretTurnRate": 360, "radius": 3.5, "cp": 0, "vision": 42,
       "firesWhileMoving": true, "weapon": "hellfire_volley", "mainSlot": "missile", "flying": true, "altitude": 15, "captureRate": 0, "skills": ["elite_flares", "elite_barrage"],
       "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" },
                      { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" } ],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "elite_mlrs", "scale": 0.85,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "armor": "Light", "hp": 550, "speed": 6.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.5, "length": 8.66, "width": 3.05, "cp": 0, "vision": 30,
+    { "id": "elite_mlrs", "scale": 0.85,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "armor": "Light", "hp": 512, "speed": 6.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.5, "length": 8.66, "width": 3.05, "cp": 0, "vision": 30,
       "firesWhileMoving": false, "weapon": "mlrs_elite", "secondary": [{"weapon": "hmg_roof", "slot": "mg", "aim": "Free"}], "skills": ["elite_barrage"],
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "elite_aa", "scale": 1.05,         "class": "AntiAir", "elite": true, "eliteOf": "aa_vehicle", "armor": "Light", "hp": 600, "speed": 8.5, "turnRate": 90, "turretTurnRate": 240, "radius": 2.3, "length": 5.88, "width": 3.22, "cp": 0, "vision": 60,
+    { "id": "elite_aa", "scale": 1.05,         "class": "AntiAir", "elite": true, "eliteOf": "aa_vehicle", "armor": "Light", "hp": 560, "speed": 8.5, "turnRate": 90, "turretTurnRate": 240, "radius": 2.3, "length": 5.88, "width": 3.22, "cp": 0, "vision": 60,
       "firesWhileMoving": true, "weapon": "twin_35_ahead", "skills": ["elite_overdrive"],
       "secondary": [ { "weapon": "sam", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "elite_apc", "scale": 0.85,        "class": "Light", "elite": true, "eliteOf": "ifv", "armor": "Light", "hp": 800, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 8.23, "width": 3.27, "cp": 0, "vision": 34,
-      "firesWhileMoving": true, "weapon": "autocannon_40", "skills": ["elite_smoke", "elite_emp"],
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm_heavy", "slot": "missile", "aim": "Turret" } ],
+    { "id": "elite_apc", "scale": 0.85,        "class": "Light", "elite": true, "eliteOf": "ifv", "armor": "Light", "hp": 832, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 8.23, "width": 3.27, "cp": 0, "vision": 34,
+      "firesWhileMoving": true, "weapon": "autocannon_30", "skills": ["elite_emp"],
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "elite_grad", "scale": 0.95,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "model": "grad_truck", "armor": "Light", "hp": 460, "speed": 8.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.52, "width": 2.55, "cp": 0, "vision": 30,
+    { "id": "elite_grad", "scale": 0.95,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "model": "grad_truck", "armor": "Light", "hp": 512, "speed": 8.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.52, "width": 2.55, "cp": 0, "vision": 30,
       "firesWhileMoving": false, "weapon": "grad_cluster", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ], "skills": ["elite_barrage"],
       "deathExplosion": { "damage": 150, "radius": 10, "delay": 0.35, "tier": "Ultimate" } },
+    // Prompt 8 H.2: elites of the enemy decks' commonest cards that had none, on their base card's
+    // model (dark armour, gold trim, the gold health bar): health 1.6 times. Their one skill is worth
+    // more than the others' (measured power, duel damage times time alive, 1.8-2.2 times the base
+    // card's), so their damage scale is below the elites' 1.25: the jet's long flares already double
+    // its life under missile fire, so it hits no harder than the plain jet.
+    { "id": "elite_fpv_carrier", "inherits": "fpv_carrier", "elite": true, "eliteOf": "fpv_carrier", "cp": 0, "hp": 672, "skills": ["elite_barrage"], "damageScale": 1.1 },
+    { "id": "elite_attack_jet", "inherits": "attack_jet", "elite": true, "eliteOf": "attack_jet", "cp": 0, "hp": 736, "skills": ["elite_flares"], "damageScale": 1.0 },
+    { "id": "elite_long_sam", "inherits": "long_sam", "elite": true, "eliteOf": "long_sam", "cp": 0, "hp": 704, "skills": ["elite_overdrive"], "damageScale": 1.2 },
+    { "id": "elite_artillery", "inherits": "artillery", "elite": true, "eliteOf": "artillery", "cp": 0, "hp": 480, "skills": ["elite_barrage"], "damageScale": 1.15 },
 
     // Fixed defences (Siege mode): they never move, and every one of them goes up in flames.
     // The camp headquarters (replaces the two spawn bastions): the drop zone round it, a twin gun and flak on its roof.
@@ -482,6 +556,10 @@
       "secondary": [ { "weapon": "twin_30_flak", "slot": "mg", "aim": "Free" }, { "weapon": "twin_30_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 260, "radius": 14, "delay": 0.8, "tier": "Ultimate" } },
+    // The fortress super-gun (Siege and Defend): a giant twin gun the fortress fires on a countdown at the attackers'
+    // army or camp (SiegeMode drives it; it has no gun of its own). Destroying it is a side objective.
+    { "id": "super_gun", "class": "Defense", "static": true, "model": "heavy_turret", "scale": 1.8, "armor": "Structure", "hp": 5200, "speed": 0, "turnRate": 1, "turretTurnRate": 12, "radius": 7, "length": 8, "width": 8, "cp": 0, "vision": 40,
+      "weapon": "none", "deathExplosion": { "damage": 380, "radius": 18, "delay": 0.6, "tier": "Ultimate" } },
     { "id": "spawn_bastion", "class": "Defense", "static": true, "model": "heavy_turret", "armor": "Heavy", "hp": 5000, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 44,
       "firesWhileMoving": true, "weapon": "bastion_gun",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ] },
@@ -573,6 +651,11 @@
       "weapon": "bunker_hmg", "secondary": [{"weapon": "atgm_post", "slot": "missile", "aim": "Free"}], "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     { "id": "artillery_emplacement", "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 3.0, "length": 6.5, "width": 6.5, "cp": 0, "vision": 30,
       "weapon": "howitzer", "secondary": [{"weapon": "mg_coax", "slot": "mg", "aim": "Free"}], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.4, "tier": "Huge" } },
+    // Bulwark Engineering (tower equipment, four pieces in the base): a fallen tower leaves this machine-gun
+    // post for 20 s. Not a base tower: it takes no hardpoint and no equipment.
+    { "id": "bulwark_post", "class": "Defense", "static": true, "model": "mg_bunker", "armor": "Structure", "hp": 500, "speed": 0, "turnRate": 1, "turretTurnRate": 160,
+      "radius": 1.6, "length": 3.4, "width": 3.4, "scale": 0.8, "cp": 0, "vision": 34, "weapon": "bunker_hmg",
+      "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     { "id": "guard_tower",      "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60, "revealStealth": true, "towerRangeAura": { "radius": 25, "range": 0.1 },
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
 
@@ -580,83 +663,269 @@
     { "id": "supply_truck",     "class": "Support", "armor": "Heavy", "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "length": 7.3, "width": 2.72, "cp": 0, "vision": 26,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "truck",
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
-    { "id": "behemoth", "scale": 1.2, "armor": "Heavy", "hp": 6200, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
+    { "id": "behemoth", "scale": 1.2, "armor": "Heavy", "hp": 4950, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "skills": ["behemoth_escort", "boss_rage", "boss_bulwark"],
       "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
+      "parts": [
+        {"id": "main_gun", "kind": "maingun", "hp": 0.14, "node": "Main_cannon|Main_cannon_2|Muzzle_brake|Muzzle_brake_2", "wreck": "wreck_barrel", "at": [0, 3.5, 4.1], "radius": 3.2, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "gun_120", "kind": "gun", "hp": 0.1, "node": "Mount_gun", "wreck": "wreck_turret", "at": [0, 3.45, 2.8], "radius": 2.2, "mounts": [1]},
+        {"id": "flak_r", "kind": "flak", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]},
+        {"id": "flak_l", "kind": "flak", "hp": 0.08, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [-0.9, -1.15, 4.8], "radius": 1.8, "mounts": [3]},
+        {"id": "missiles_r", "kind": "missiles", "hp": 0.09, "wreck": "wreck_launcher", "at": [2.6, -2.5, 2.3], "radius": 2.0, "mounts": [4]},
+        {"id": "missiles_l", "kind": "missiles", "hp": 0.09, "wreck": "wreck_launcher", "at": [-2.6, -2.5, 2.3], "radius": 2.0, "mounts": [5]} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "mobile_fortress", "scale": 1.2, "armor": "Heavy", "hp": 9000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
+    { "id": "mobile_fortress", "scale": 1.2, "armor": "Heavy", "hp": 7000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
       "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "skills": ["fortress_escort", "fortress_barrage", "boss_emp"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
+      "parts": [
+        {"id": "howitzer", "kind": "howitzer", "hp": 0.13, "node": "Main_cannon|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, 3.0, 7.1], "radius": 3.0, "mounts": [0], "skills": ["fortress_barrage"], "radio": "radio.part.maingun"},
+        {"id": "rockets_l", "kind": "rockets", "hp": 0.08, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [-1.9, -6.0, 4.6], "radius": 1.8, "mounts": [1]},
+        {"id": "rockets_r", "kind": "rockets", "hp": 0.08, "node": "Mount_rocket.001", "wreck": "wreck_launcher", "at": [1.9, -6.0, 4.6], "radius": 1.8, "mounts": [2]},
+        {"id": "flak_l", "kind": "flak", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-3.2, 6.0, 4.6], "radius": 1.8, "mounts": [3]},
+        {"id": "flak_r", "kind": "flak", "hp": 0.08, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [3.2, 6.0, 4.6], "radius": 1.8, "mounts": [4]},
+        {"id": "missiles", "kind": "missiles", "hp": 0.08, "wreck": "wreck_launcher", "at": [0, -6.05, 4.6], "radius": 1.8, "mounts": [5]},
+        {"id": "emp", "kind": "emp", "hp": 0.1, "node": "Radar", "wreck": "wreck_stump", "at": [0, -4.2, 7.7], "radius": 2.0, "skills": ["boss_emp"]} ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "armored_train", "scale": 1.15, "armor": "Heavy", "hp": 5400, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 19.85, "width": 3.4, "cp": 0, "vision": 50,
+    { "id": "armored_train", "scale": 1.15, "armor": "Heavy", "hp": 4400, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 19.85, "width": 3.4, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "skills": ["train_smoke", "train_patch"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" } ],
+      "parts": [
+        {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "wreck": "wreck_stump", "at": [0, 7.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
+        {"id": "gun_car_front", "kind": "maingun", "hp": 0.12, "node": "Main_cannon|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, -3.2, 3.7], "radius": 3.0, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "gun_car_rear", "kind": "maingun", "hp": 0.12, "wreck": "wreck_stump", "at": [0, 2.0, 3.0], "radius": 2.5, "mounts": [4]},
+        {"id": "rocket_car", "kind": "rockets", "hp": 0.1, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, -8.3, 3.0], "radius": 2.2, "mounts": [1]},
+        {"id": "flak_car", "kind": "flak", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -6.35, 3.2], "radius": 2.0, "mounts": [3]} ],
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "mega_gunship", "scale": 1.35,     "armor": "Air",   "hp": 15000, "speed": 6, "turnRate": 50, "turretTurnRate": 360, "radius": 7, "cp": 0, "vision": 55,
+    { "id": "mega_gunship", "scale": 1.35,     "armor": "Air",   "hp": 11500, "speed": 6, "turnRate": 50, "turretTurnRate": 360, "radius": 7, "cp": 0, "vision": 55,
       "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "mainModel": "hydra", "flying": true, "altitude": 20, "captureRate": 0, "boss": true, "skills": ["boss_flares", "gunship_escort", "boss_rage"],
-      "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_gun", "slot": "gun", "aim": "Free" },
-                     { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "minigun", "slot": "mg", "aim": "Free" },
-                     { "weapon": "minigun", "slot": "mg", "aim": "Free" }, { "weapon": "gunship_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ],
+      "secondary": [ { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" },
+                     { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" }, { "weapon": "gunship_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ],
+      "parts": [
+        {"id": "gun_l", "kind": "gun", "hp": 0.08, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-0.56, 7.1, 1.1], "radius": 1.5, "mounts": [1]},
+        {"id": "gun_r", "kind": "gun", "hp": 0.08, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [0.56, 7.1, 1.1], "radius": 1.5, "mounts": [2]},
+        {"id": "minigun_l", "kind": "minigun", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-1.52, 4.6, 1.9], "radius": 1.5, "mounts": [4]},
+        {"id": "minigun_r", "kind": "minigun", "hp": 0.08, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [1.52, 4.6, 1.9], "radius": 1.5, "mounts": [5]},
+        {"id": "pod_l", "kind": "rockets", "hp": 0.08, "wreck": "wreck_launcher", "at": [-2.67, 1.3, 1.4], "radius": 1.6, "mounts": [0]},
+        {"id": "pod_r", "kind": "rockets", "hp": 0.08, "wreck": "wreck_launcher", "at": [2.67, 1.3, 1.4], "radius": 1.6, "mounts": [6]},
+        {"id": "missiles", "kind": "missiles", "hp": 0.08, "wreck": "wreck_launcher", "at": [0, 1.25, 1.5], "radius": 1.4, "mounts": [3]},
+        {"id": "rotor_rear", "kind": "rotor", "hp": 0.1, "node": "Rotor_rear", "wreck": "wreck_stump", "at": [0, -6.7, 5.7], "radius": 3.0, "turn": 0.5} ],
       "deathExplosion": { "damage": 350, "radius": 15, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "drone_mothership", "scale": 1.15, "boss": true, "armor": "Air", "hp": 16000, "speed": 3.5, "turnRate": 20, "turretTurnRate": 90, "radius": 9, "cp": 0, "vision": 70,
+    { "id": "drone_mothership", "scale": 1.15, "boss": true, "armor": "Air", "hp": 12300, "speed": 3.5, "turnRate": 20, "turretTurnRate": 90, "radius": 9, "cp": 0, "vision": 70,
       "firesWhileMoving": true, "weapon": "mothership_cannon", "flying": true, "altitude": 26, "captureRate": 0,
       "skills": ["mothership_launch", "boss_flares", "mothership_shield"],
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "mothership_cannon", "slot": "main", "aim": "Free" } ],
+      "parts": [
+        {"id": "cannon_bow", "kind": "maingun", "hp": 0.1, "node": "Turret", "wreck": "wreck_turret", "at": [0, 10.8, -3.6], "radius": 2.0, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "cannon_gondola", "kind": "gun", "hp": 0.1, "node": "Mount_main.001", "wreck": "wreck_turret", "at": [0, 2.2, -5.4], "radius": 2.0, "mounts": [4]},
+        {"id": "drone_bay", "kind": "bay", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -2.3, -4.6], "radius": 3.0, "mounts": [1], "radio": "radio.part.bay"},
+        {"id": "uav_bay", "kind": "uav", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -8.5, -3.5], "radius": 2.5, "skills": ["mothership_launch"]},
+        {"id": "flak_top", "kind": "flak", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0, 4.8, 4.1], "radius": 1.8, "mounts": [2]},
+        {"id": "flak_rear", "kind": "flak", "hp": 0.08, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0, -3.4, 3.9], "radius": 1.8, "mounts": [3]},
+        {"id": "shield", "kind": "shield", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -2.35, 5.2], "radius": 2.5, "skills": ["mothership_shield"], "radio": "radio.part.shield"} ],
       "deathExplosion": { "damage": 300, "radius": 14, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "nuke_train", "scale": 1.15, "boss": true, "armor": "Heavy", "hp": 6400, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 22, "width": 3.4, "cp": 0, "vision": 55,
+    { "id": "nuke_train", "scale": 1.15, "boss": true, "armor": "Heavy", "hp": 5450, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 22, "width": 3.4, "cp": 0, "vision": 55,
       "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "skills": ["train_smoke", "nuke_escort"],
       "secondary": [ { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
+      "parts": [
+        {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "wreck": "wreck_stump", "at": [0, -8.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
+        {"id": "twin_gun", "kind": "maingun", "hp": 0.14, "node": "Main_cannon|Main_cannon_2|Muzzle_brake|Muzzle_brake_2", "wreck": "wreck_barrel", "at": [0, 5.5, 3.9], "radius": 3.0, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "flak_front", "kind": "flak", "hp": 0.1, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-0.45, 8.3, 3.5], "radius": 2.0, "mounts": [1]},
+        {"id": "flak_rear", "kind": "flak", "hp": 0.1, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0.45, 0.28, 3.5], "radius": 2.0, "mounts": [2]} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Silver Bug": what if the USAF had built Project 1794 (Avro VZ-9 Avrocar's big brother). A laser
     // that burns a line across the ground, rim coilguns, point-defence flak, drones from its bay, EMP.
-    { "id": "silver_bug", "boss": true, "armor": "Air", "hp": 9000, "speed": 5, "turnRate": 30, "turretTurnRate": 120, "radius": 10, "cp": 0, "vision": 72,
+    { "id": "silver_bug", "boss": true, "armor": "Air", "hp": 7150, "speed": 5, "turnRate": 30, "turretTurnRate": 120, "radius": 10, "cp": 0, "vision": 72,
       "firesWhileMoving": true, "weapon": "saucer_laser", "flying": true, "altitude": 24, "captureRate": 0,
       "skills": ["saucer_emp", "mothership_shield", "saucer_drones", "boss_rage"],
       "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" } ],
+      "parts": [
+        {"id": "laser", "kind": "laser", "hp": 0.13, "node": "Turret", "wreck": "wreck_stump", "at": [0, 0, -2.8], "radius": 2.5, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "coilgun", "kind": "coilgun", "hp": 0.1, "wreck": "wreck_stump", "at": [0, 0, 1.8], "radius": 3.0, "mounts": [1]},
+        {"id": "flak", "kind": "flak", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0, -6.4, 2.8], "radius": 1.8, "mounts": [2]},
+        {"id": "bay", "kind": "bay", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -7.7, -2.2], "radius": 2.4, "mounts": [3], "skills": ["saucer_drones"], "radio": "radio.part.bay"},
+        {"id": "shield", "kind": "shield", "hp": 0.1, "wreck": "wreck_stump", "at": [0, 4.0, 2.2], "radius": 2.4, "skills": ["mothership_shield"], "radio": "radio.part.shield"},
+        {"id": "emp", "kind": "emp", "hp": 0.09, "wreck": "wreck_stump", "at": [0, -3.0, 2.4], "radius": 2.2, "skills": ["saucer_emp"]} ],
       "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // Round 6 bosses: variants of the super-heavy tank, the mobile fortress and the gunship.
     // "Inferno": burns everything near it and lays the ground on fire; weak against aircraft.
-    { "id": "behemoth_inferno", "scale": 1.2, "armor": "Heavy", "hp": 6800, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
+    { "id": "behemoth_inferno", "scale": 1.2, "armor": "Heavy", "hp": 5800, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
       "firesWhileMoving": true, "weapon": "boss_flamer", "captureRate": 0, "boss": true, "skills": ["behemoth_escort", "boss_rage", "train_smoke"],
-      "secondary": [ { "weapon": "boss_thermo", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
+      "secondary": [ { "weapon": "boss_thermo", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_flamer", "slot": "main", "aim": "Turret" } ],
+      "parts": [
+        {"id": "flamer_r", "kind": "flamer", "hp": 0.12, "node": "Main_cannon|Main_cannon_hose|Main_cannon_jacket|Muzzle_brake|Muzzle_brake_glow|Muzzle_brake_pilot", "wreck": "wreck_barrel", "at": [0.62, 3.4, 4.1], "radius": 2.2, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "flamer_l", "kind": "flamer", "hp": 0.12, "node": "Main_cannon_2|Main_cannon_2_hose|Main_cannon_2_jacket|Muzzle_brake_2|Muzzle_brake_2_glow|Muzzle_brake_2_pilot", "wreck": "wreck_barrel", "at": [-0.62, 3.4, 4.1], "radius": 2.2, "mounts": [3]},
+        {"id": "thermo", "kind": "thermo", "hp": 0.12, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, 3.45, 2.8], "radius": 2.2, "mounts": [1]},
+        {"id": "flak", "kind": "flak", "hp": 0.1, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]} ],
       "deathExplosion": { "damage": 420, "radius": 19, "delay": 2.6, "tier": "Ultimate" } },
     // "Tempest": a railgun that charges and pierces a whole line from far off, coilguns, a shield.
-    { "id": "behemoth_tempest", "scale": 1.2, "armor": "Heavy", "hp": 5600, "speed": 2.6, "turnRate": 25, "turretTurnRate": 28, "radius": 6.4, "length": 15.84, "width": 6.5, "cp": 0, "vision": 70,
+    { "id": "behemoth_tempest", "scale": 1.2, "armor": "Heavy", "hp": 4750, "speed": 2.6, "turnRate": 25, "turretTurnRate": 28, "radius": 6.4, "length": 15.84, "width": 6.5, "cp": 0, "vision": 70,
       "firesWhileMoving": true, "weapon": "boss_railgun", "captureRate": 0, "boss": true, "skills": ["mothership_shield", "boss_bulwark", "boss_emp"],
       "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "coilgun", "slot": "gun", "aim": "Free" } ],
+      "parts": [
+        {"id": "railgun", "kind": "railgun", "hp": 0.15, "node": "Main_cannon*", "wreck": "wreck_barrel", "at": [0, 5.5, 4.1], "radius": 3.2, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "coil_l", "kind": "coilgun", "hp": 0.1, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-0.9, 3.3, 2.9], "radius": 1.8, "mounts": [1]},
+        {"id": "coil_r", "kind": "coilgun", "hp": 0.1, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [0.9, 3.3, 2.9], "radius": 1.8, "mounts": [2]},
+        {"id": "shield", "kind": "shield", "hp": 0.12, "node": "Radar", "wreck": "wreck_stump", "at": [0, -3.3, 5.9], "radius": 2.0, "skills": ["mothership_shield", "boss_bulwark"], "radio": "radio.part.shield"} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Hive": no big gun at all; drone swarms from two racks, a SAM battery, flak: deadly to aircraft.
-    { "id": "fortress_hive", "scale": 1.2, "armor": "Heavy", "hp": 8000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 60, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 75,
+    { "id": "fortress_hive", "scale": 1.2, "armor": "Heavy", "hp": 6350, "speed": 1.8, "turnRate": 20, "turretTurnRate": 60, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 75,
       "firesWhileMoving": true, "weapon": "mothership_drones", "mainSlot": "missile", "captureRate": 0, "boss": true, "skills": ["mothership_launch", "fortress_escort", "boss_emp"],
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "sam_battery", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
+      "parts": [
+        {"id": "rack_l", "kind": "launcher", "hp": 0.12, "node": "Mount_missile", "wreck": "wreck_launcher", "at": [-1.85, -6.15, 4.6], "radius": 2.0, "mounts": [0], "skills": ["mothership_launch"], "radio": "radio.part.bay"},
+        {"id": "rack_r", "kind": "launcher", "hp": 0.12, "node": "Mount_missile.001", "wreck": "wreck_launcher", "at": [1.85, -6.15, 4.6], "radius": 2.0, "mounts": [1], "skills": ["mothership_launch"], "radio": "radio.part.bay"},
+        {"id": "sam", "kind": "sam", "hp": 0.1, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, -3.6, 5.7], "radius": 2.0, "mounts": [2]},
+        {"id": "flak_l", "kind": "flak", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-3.2, 6.0, 4.6], "radius": 1.8, "mounts": [3]},
+        {"id": "flak_r", "kind": "flak", "hp": 0.08, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [3.2, 6.0, 4.6], "radius": 1.8, "mounts": [4]},
+        {"id": "emp", "kind": "emp", "hp": 0.1, "wreck": "wreck_stump", "at": [0, -1.0, 7.4], "radius": 2.2, "skills": ["boss_emp"]} ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     // "Bastion": the toughest thing on the field; four autocannon turrets, a heavy mortar, it patches itself up.
-    { "id": "fortress_bastion", "scale": 1.2, "armor": "Heavy", "hp": 11000, "speed": 1.5, "turnRate": 18, "turretTurnRate": 22, "radius": 7.5, "length": 16.57, "width": 9.1, "cp": 0, "vision": 64,
+    { "id": "fortress_bastion", "scale": 1.2, "armor": "Heavy", "hp": 9000, "speed": 1.5, "turnRate": 18, "turretTurnRate": 22, "radius": 7.5, "length": 16.57, "width": 9.1, "cp": 0, "vision": 64,
       "firesWhileMoving": true, "weapon": "boss_mortar", "captureRate": 0, "boss": true, "skills": ["train_patch", "boss_bulwark", "fortress_barrage"],
-      "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" },
-                     { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" } ],
+      "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-45, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [45, 80] },
+                     { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-135, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [135, 80] } ],
+      "parts": [
+        {"id": "mortar", "kind": "mortar", "hp": 0.14, "node": "Main_cannon*", "wreck": "wreck_barrel", "at": [0, -0.5, 7.5], "radius": 2.8, "mounts": [0], "skills": ["fortress_barrage"], "radio": "radio.part.maingun"},
+        {"id": "turret_fl", "kind": "turret", "hp": 0.1, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-3.2, 6.0, 4.7], "radius": 1.8, "mounts": [1]},
+        {"id": "turret_fr", "kind": "turret", "hp": 0.1, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [3.2, 6.0, 4.7], "radius": 1.8, "mounts": [2]},
+        {"id": "turret_rl", "kind": "turret", "hp": 0.1, "node": "Mount_gun.002", "wreck": "wreck_turret", "at": [-2.6, -6.25, 4.7], "radius": 1.8, "mounts": [3]},
+        {"id": "turret_rr", "kind": "turret", "hp": 0.1, "node": "Mount_gun.003", "wreck": "wreck_turret", "at": [2.6, -6.25, 4.7], "radius": 1.8, "mounts": [4]} ],
       "deathExplosion": { "damage": 500, "radius": 21, "delay": 2.6, "tier": "Ultimate" } },
+    // ----------------------------------------------------------------------------------------------------
+    // Prompt 8 bosses (DECISIONS 8 E). "parts": destructible parts, each with its share of the body's health,
+    // the model node it is, where it sits (x right, y forward, height, in metres), the weapon mounts and skills
+    // it carries and what breaking it does (speed, the spread and lost locks of the mounts it aims). A
+    // "partLock" shuts the body to damage until enough parts of a kind are broken.
+    //
+    // Kessler's rail supergun: it stands on its rails at the edge of the field; every 20 s one 80 cm shell at
+    // the biggest group of enemy ground vehicles anywhere on the map, its landing marked 3 s ahead. Guns,
+    // walls and its fire-control post round the bed (break the post and the shells fall wide).
+    { "id": "rail_supergun", "boss": true, "static": true, "general": "kessler", "radioSpawn": "radio.kessler.supergun", "armor": "Heavy", "hp": 5500, "speed": 0,
+      "turnRate": 1, "turretTurnRate": 12, "radius": 14, "length": 27, "width": 8, "scale": 1.0, "cp": 0, "vision": 90, "captureRate": 0,
+      "weapon": "none",
+      "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" } ],
+      "bombard": { "every": 20, "warn": 3, "damage": 1400, "radius": 14, "scatter": 3, "blindScatter": 2.5, "first": 10,
+                   "weapon": "supergun_800", "warning": "supergun_shell" },
+      "guards": [ { "def": "gun_turret", "at": [-16, 20] }, { "def": "gun_turret", "at": [16, 20] },
+                  { "def": "aa_turret", "at": [-13, -2] }, { "def": "aa_turret", "at": [13, -2] }, { "def": "mg_bunker", "at": [-8, 27] },
+                  { "def": "mg_bunker", "at": [8, 27] }, { "def": "dragons_teeth", "at": [-12, 36] }, { "def": "dragons_teeth", "at": [0, 38] },
+                  { "def": "dragons_teeth", "at": [12, 36] } ],
+      "attach": [ { "model": "rail_tractor", "at": [2.5, 19.26, 0.36] }, { "model": "rail_tractor", "at": [-2.5, 19.26, 0.36] } ],
+      "phases": [ { "at": 0.5, "transform": 3, "damage": 1.2, "radio": "radio.kessler.supergun.half" } ],
+      "parts": [
+        {"id": "main_gun", "kind": "maingun", "hp": 0.15, "node": "Main_cannon*|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, 6.0, 9.0], "radius": 5.0, "stops": ["bombard"], "radio": "radio.part.maingun"},
+        {"id": "tractor_l", "kind": "tractor", "hp": 0.1, "wreck": "wreck_stump", "at": [-2.5, -13.2, 1.5], "radius": 3.0, "attach": 0, "cadence": 1.3},
+        {"id": "tractor_r", "kind": "tractor", "hp": 0.1, "wreck": "wreck_stump", "at": [2.5, -13.2, 1.5], "radius": 3.0, "attach": 1, "cadence": 1.3},
+        {"id": "fire_control", "kind": "station", "hp": 0.12, "node": "Part_generator", "wreck": "wreck_stump", "at": [0, -11.2, 4.5], "radius": 2.5, "stops": ["spotter"], "fx": "energy"},
+        {"id": "gun_l", "kind": "gun", "hp": 0.08, "node": "Part_gun", "wreck": "wreck_turret", "at": [-2.6, 11.3, 4.4], "radius": 1.8, "mounts": [1]},
+        {"id": "gun_r", "kind": "gun", "hp": 0.08, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [2.6, 11.3, 4.4], "radius": 1.8, "mounts": [2]} ],
+      "deathExplosion": { "damage": 450, "radius": 22, "delay": 2.6, "tier": "Ultimate" } },
+    { "id": "targeting_station", "class": "Defense", "static": true, "armor": "Structure", "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.4,
+      "length": 8, "width": 6.5, "cp": 0, "vision": 110, "weapon": "none",
+      "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.3, "tier": "Huge" } },
+    // Varga's Earth Worm: dives, bores untouchable to under the biggest group of enemy ground vehicles, cracks
+    // the ground for 2 s and breaks out in a quake that stuns everything on the ground within 15 m; for 6 s
+    // after it is out it takes half as much again.
+    { "id": "earth_borer", "boss": true, "general": "varga", "radioSpawn": "radio.varga.borer", "armor": "Heavy", "hp": 8150, "speed": 3.2, "turnRate": 22, "turretTurnRate": 40,
+      "radius": 6, "length": 23.5, "width": 5.8, "scale": 1.0, "cp": 0, "vision": 55, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "borer_drill", "mainAim": "Hull",
+      "secondary": [ { "weapon": "borer_cannon", "slot": "gun", "aim": "Free" }, { "weapon": "borer_cannon", "slot": "gun", "aim": "Free" } ],
+      "burrow": { "surface": 22, "dive": 2, "speed": 14, "warn": 2, "radius": 15, "stun": 3, "damage": 350, "exposed": 6, "exposedTaken": 1.5, "first": 14 },
+      "skills": ["boss_rage"],
+      "phases": [ { "at": 0.5, "transform": 2.5, "speed": 1.15, "radio": "radio.varga.borer.half" } ],
+      "parts": [
+        {"id": "drill", "kind": "drill", "hp": 0.14, "node": "Part_drill", "wreck": "wreck_stump", "at": [0, 6.8, 3.3], "radius": 3.0, "mounts": [0], "stops": ["burrow"], "radio": "radio.part.drill"},
+        {"id": "gun_l", "kind": "gun", "hp": 0.1, "node": "Part_gun", "wreck": "wreck_turret", "at": [-1.3, 0.2, 5.6], "radius": 1.8, "mounts": [1]},
+        {"id": "gun_r", "kind": "gun", "hp": 0.1, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [1.3, -3.2, 5.6], "radius": 1.8, "mounts": [2]},
+        {"id": "engine", "kind": "engine", "hp": 0.1, "node": "Part_engine", "wreck": "wreck_engine", "at": [0, -7.3, 4.9], "radius": 2.5, "speed": 0.7} ],
+      "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
+    // Quạ Đen's command airship: four engines, two drone bays and a fire-control radar, each with its own
+    // health. The hull takes no damage until two engines are down; a bay broken, its drones stop; the radar
+    // broken, its flak scatters wide. Only anti-air and fighters reach it.
+    { "id": "command_airship", "boss": true, "general": "quaden", "radioSpawn": "radio.quaden.airship", "armor": "Air", "hp": 13000, "speed": 4.5, "turnRate": 16,
+      "turretTurnRate": 90, "radius": 18, "scale": 1.0, "cp": 0, "vision": 80, "flying": true, "altitude": 30, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "airship_flak", "mainSlot": "gun", "mainAim": "Free",
+      "secondary": [ { "weapon": "airship_flak", "slot": "gun", "aim": "Free" }, { "weapon": "airship_drones", "slot": "door_l", "aim": "Free" },
+                     { "weapon": "airship_drones", "slot": "door_r", "aim": "Free" } ],
+      "skills": ["airship_launch_l", "airship_launch_r"],
+      "parts": [
+        { "id": "engine_fl", "breakDamage": 0, "kind": "engine", "hp": 0.09, "node": "Part_engine", "wreck": "wreck_engine", "at": [-14.3, 9, 1], "radius": 3.6, "speed": 0.85 },
+        { "id": "engine_fr", "breakDamage": 0, "kind": "engine", "hp": 0.09, "node": "Part_engine.001", "wreck": "wreck_engine", "at": [14.3, 9, 1], "radius": 3.6, "speed": 0.85 },
+        { "id": "engine_rl", "breakDamage": 0, "kind": "engine", "hp": 0.09, "node": "Part_engine.002", "wreck": "wreck_engine", "at": [-14.3, -8, 1], "radius": 3.6, "speed": 0.85 },
+        { "id": "engine_rr", "breakDamage": 0, "kind": "engine", "hp": 0.09, "node": "Part_engine.003", "wreck": "wreck_engine", "at": [14.3, -8, 1], "radius": 3.6, "speed": 0.85 },
+        { "id": "hangar_l", "breakDamage": 0, "radio": "radio.part.bay", "kind": "hangar", "hp": 0.1, "node": "Part_hangar", "wreck": "wreck_launcher", "at": [-1.3, -3, -2.2], "radius": 3.2,
+          "mounts": [2], "skills": ["airship_launch_l"] },
+        { "id": "hangar_r", "breakDamage": 0, "radio": "radio.part.bay", "kind": "hangar", "hp": 0.1, "node": "Part_hangar.001", "wreck": "wreck_launcher", "at": [1.3, -3, -2.2], "radius": 3.2,
+          "mounts": [3], "skills": ["airship_launch_r"] },
+        { "id": "radar", "breakDamage": 0, "kind": "radar", "hp": 0.08, "node": "Part_radar", "wreck": "wreck_stump", "at": [0, 3.2, 6.7], "radius": 2.6,
+          "spread": 3, "fail": 0.5, "affects": [0, 1] } ],
+      "partLock": { "kind": "engine", "count": 2 },
+      "phases": [ { "at": 0.4, "transform": 3, "damage": 1.25, "radio": "radio.quaden.airship.half" } ],
+      "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
+    // The landing hovercraft: it runs its route (a mission's; in Boss Rush, at the army) and every 35 s stops,
+    // drops its bow ramp and lands 3 or 4 vehicles, five times at most. Stop it before it has landed them all.
+    { "id": "landing_hovercraft", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.hovercraft", "armor": "Heavy", "hp": 6500, "speed": 5.5,
+      "turnRate": 26, "turretTurnRate": 200, "radius": 9, "length": 29.3, "width": 15.9, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "gun", "mainAim": "Free",
+      "secondary": [ { "weapon": "hover_ciws", "slot": "gun", "aim": "Free" } ],
+      "landing": { "every": 35, "stop": 6, "min": 3, "max": 4, "landings": 5, "first": 15,
+                   "units": ["main_battle_tank", "ifv", "armored_car", "atgm_carrier", "aa_vehicle", "main_battle_tank", "ifv"], "ramp": [0, 16] },
+      "phases": [ { "at": 0.5, "transform": 2.5, "speed": 1.2, "radio": "radio.kessler.hovercraft.half" } ],
+      "parts": [
+        {"id": "ramp", "kind": "ramp", "hp": 0.14, "node": "Part_ramp", "wreck": "wreck_stump", "at": [0, 12.5, 2.3], "radius": 3.0, "stops": ["landing"], "radio": "radio.part.ramp"},
+        {"id": "fan_l", "kind": "fan", "hp": 0.1, "node": "Part_fan", "wreck": "wreck_engine", "at": [-5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
+        {"id": "fan_r", "kind": "fan", "hp": 0.1, "node": "Part_fan.001", "wreck": "wreck_engine", "at": [5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
+        {"id": "gun_l", "kind": "gun", "hp": 0.1, "node": "Part_gun", "wreck": "wreck_turret", "at": [-5.3, 6.4, 4.3], "radius": 1.8, "mounts": [0]},
+        {"id": "gun_r", "kind": "gun", "hp": 0.1, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [5.3, 3.0, 4.3], "radius": 1.8, "mounts": [1]} ],
+      "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
+    // General Hùng's Supreme Commander (after his betrayal): a super-heavy armoured headquarters with two light
+    // machine guns and nothing else, but every enemy unit within 40 m of it hits 20 % harder and fires 20 %
+    // faster; an elite guard rides with it and more come at 60 %.
+    { "id": "supreme_command", "boss": true, "general": "hung", "radioSpawn": "radio.hung.supreme", "armor": "Heavy", "hp": 5850, "speed": 4, "turnRate": 30,
+      "turretTurnRate": 200, "radius": 4.5, "length": 14.6, "width": 4.2, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "hmg_roof", "mainSlot": "mg", "mainAim": "Free",
+      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "commandAura": { "radius": 40, "fireRate": 0.2, "damage": 0.2 },
+      "skills": ["supreme_guard", "boss_bulwark"],
+      "phases": [ { "at": 0.5, "transform": 3, "heal": 0.08, "radio": "radio.hung.supreme.half" } ],
+      "parts": [
+        {"id": "antenna", "kind": "antenna", "hp": 0.15, "node": "Part_antenna", "wreck": "wreck_stump", "at": [0.6, -4.9, 4.1], "radius": 2.0, "stops": ["aura"], "radio": "radio.part.antenna", "fx": "energy"},
+        {"id": "mg_l", "kind": "gun", "hp": 0.1, "node": "Part_mg", "wreck": "wreck_turret", "at": [-1.15, 2.75, 5.6], "radius": 1.5, "mounts": [0]},
+        {"id": "mg_r", "kind": "gun", "hp": 0.1, "node": "Part_mg.001", "wreck": "wreck_turret", "at": [1.15, 2.75, 5.6], "radius": 1.5, "mounts": [1]} ],
+      "deathExplosion": { "damage": 380, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
     // "Spectre": a boss AC-130; circles its prey high up, 105 mm, two 40 mm and a 25 mm down its left side, Griffins from the ramp.
-    { "id": "sky_fortress", "scale": 1.3, "armor": "Air", "hp": 12000, "speed": 13, "turnRate": 55, "turretTurnRate": 360, "radius": 9, "cp": 0, "vision": 80,
+    { "id": "sky_fortress", "scale": 1.3, "armor": "Air", "hp": 9100, "speed": 13, "turnRate": 55, "turretTurnRate": 360, "radius": 9, "cp": 0, "vision": 80,
       "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "boss": true,
       "skills": ["boss_flares", "gunship_escort", "boss_rage"],
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" },
                      { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" }, { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ],
+      "parts": [
+        {"id": "gun_105", "kind": "maingun", "hp": 0.09, "node": "Mount_main", "wreck": "wreck_turret", "at": [-1.33, -3.7, 0], "radius": 2.0, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "gun_40a", "kind": "gun", "hp": 0.08, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-1.33, 1.23, 0], "radius": 1.6, "mounts": [1]},
+        {"id": "gun_40b", "kind": "gun", "hp": 0.08, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [-1.33, -0.97, 0], "radius": 1.6, "mounts": [2]},
+        {"id": "gun_25", "kind": "gun", "hp": 0.08, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-1.33, 4.29, 0], "radius": 1.6, "mounts": [3]},
+        {"id": "griffin", "kind": "missiles", "hp": 0.08, "wreck": "wreck_launcher", "at": [0, -6.4, -0.5], "radius": 2.0, "mounts": [4]},
+        {"id": "engine_1", "kind": "engine", "hp": 0.07, "node": "Propeller", "wreck": "wreck_engine", "at": [5.85, 3.5, 1.2], "radius": 1.8, "speed": 0.85},
+        {"id": "engine_2", "kind": "engine", "hp": 0.07, "node": "Propeller_2", "wreck": "wreck_engine", "at": [3.12, 3.6, 1.2], "radius": 1.8, "speed": 0.85},
+        {"id": "engine_3", "kind": "engine", "hp": 0.07, "node": "Propeller_3", "wreck": "wreck_engine", "at": [-3.12, 3.6, 1.2], "radius": 1.8, "speed": 0.85},
+        {"id": "engine_4", "kind": "engine", "hp": 0.07, "node": "Propeller_4", "wreck": "wreck_engine", "at": [-5.85, 3.5, 1.2], "radius": 1.8, "speed": 0.85} ],
       "deathExplosion": { "damage": 350, "radius": 16, "delay": 2.6, "tier": "Ultimate" } }
   ],
 
   // Skills of elite units and bosses, used automatically when the trigger is met (see SkillDef).
   // Once = a boss phase: fires a single time when the boss drops below the threshold.
   "skills": [
-    { "id": "elite_shield",     "kind": "Shield",    "trigger": "UnderFire",       "cooldown": 20, "duration": 5,  "amount": 0.6 },
+    { "id": "elite_shield",     "kind": "Shield",    "trigger": "UnderFire",       "cooldown": 20, "duration": 5,  "amount": 0.3 },
     { "id": "elite_smoke",      "kind": "Smoke",     "trigger": "HpBelow",         "threshold": 0.55, "cooldown": 30, "duration": 8, "radius": 9 },
     { "id": "elite_repair",     "kind": "Repair",    "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.3 },
     { "id": "elite_overdrive",  "kind": "Overdrive", "trigger": "EnemyInRange",    "cooldown": 25, "duration": 6,  "amount": 1.5 },
@@ -678,12 +947,17 @@
     { "id": "fortress_barrage", "kind": "Barrage",   "trigger": "HpBelow",         "threshold": 0.4, "cooldown": 25, "duration": 8, "amount": 2 },
     { "id": "gunship_escort",   "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 3, "unit": "elite_attack_helicopter" },
     { "id": "train_smoke",      "kind": "Smoke",     "trigger": "UnderFire",       "cooldown": 25, "duration": 8, "radius": 12 },
-    { "id": "train_patch",      "kind": "Repair",    "trigger": "HpBelow",         "threshold": 0.5, "once": true, "duration": 10, "amount": 0.2 },
+    { "id": "train_patch",      "kind": "Patch",     "trigger": "PartBroken",      "once": true, "amount": 0.5 },
     { "id": "nuke_escort",      "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 4, "unit": "elite_apc" },
     { "id": "mothership_launch", "kind": "Summon",   "trigger": "EnemyInRange",    "radius": 70, "cooldown": 30, "count": 3, "unit": "strike_drone" },
     { "id": "mothership_shield", "kind": "Shield",   "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.5 },
     { "id": "saucer_emp",       "kind": "Emp",       "trigger": "EnemyInRange",    "radius": 12, "cooldown": 24, "duration": 2.5 },
-    { "id": "saucer_drones",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.66, "once": true, "count": 4, "unit": "strike_drone" }
+    { "id": "saucer_drones",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.66, "once": true, "count": 4, "unit": "strike_drone" },
+    // Prompt 8 bosses: the airship's two drone bays launch a strike drone each (a bay broken, its launches stop);
+    // the Supreme Commander calls its elite guard.
+    { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
+    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
+    { "id": "supreme_guard",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 2, "unit": "elite_mbt" }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
@@ -697,7 +971,11 @@
     { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
     // Premium (bought with coins): a line of fire.
     { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 9,  "tier": "Huge", "length": 55, "damageType": "Fire" },
+    // The rail supergun's shell: only its warning ring (the boss system fires it).
+    { "id": "supergun_shell",    "kind": "Barrage",       "event": true, "cooldown": 0, "delay": 3.0, "radius": 16, "count": 1, "duration": 0, "damage": 0, "blast": 14, "tier": "Ultimate" },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
+    // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).
+    { "id": "super_gun_shell",   "kind": "Barrage",       "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 450, "blast": 15, "tier": "Ultimate" },
     { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 210, "blast": 8, "tier": "Huge", "length": 70 },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },
@@ -833,8 +1111,12 @@
       "explosion": { "damage": 500, "radius": 24, "delay": 0.8, "tier": "Ultimate" } },
     { "id": "shield_generator","armor": "Structure", "hp": 2400, "width": 7,    "depth": 7,    "blocks": true,
       "explosion": { "damage": 320, "radius": 16, "delay": 0.6, "tier": "Ultimate" } },
-    { "id": "base_wall",     "armor": "Structure", "hp": 1500, "width": 8,    "depth": 1.2,  "blocks": true },
+    // A fortress wall segment topples into passable rubble; its ground opens once it is down (1.4 s).
+    { "id": "base_wall",     "armor": "Structure", "hp": 1500, "width": 8,    "depth": 1.2,  "blocks": true, "collapse": 1.4 },
     { "id": "base_gate",     "armor": "Structure", "hp": 1000000, "width": 9, "depth": 2 },
+    // A fortress gate: steel doors in a wall's gateway that block the way (and direct fire) until they are blown in.
+    { "id": "fortress_gate", "armor": "Structure", "hp": 3200, "width": 10,   "depth": 1.4,  "blocks": true,
+      "explosion": { "damage": 60, "radius": 6, "delay": 0.15, "tier": "Huge" } },
     { "id": "floodlight_mast","armor": "Structure","hp": 300,  "width": 1.2,  "depth": 1.2,  "blocks": true, "blocksFire": false },
     { "id": "fuel_depot",    "armor": "Structure", "hp": 600,  "width": 10,   "depth": 8,    "blocks": true,
       "explosion": { "damage": 380, "radius": 20, "delay": 0.5, "tier": "Ultimate" } },

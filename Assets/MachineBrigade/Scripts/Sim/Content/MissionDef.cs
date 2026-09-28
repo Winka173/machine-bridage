@@ -41,6 +41,73 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Shoot down enough enemy aircraft.</summary>
         ShootDown,
+
+        /// <summary>
+        /// Set up an outpost: take the first listed objective, set it up as an outpost (its towers
+        /// flown in) and keep it for <see cref="MissionDef.HoldSeconds"/> once it stands.
+        /// </summary>
+        Outpost,
+
+        /// <summary>
+        /// Break the siege of an allied base: destroy every marked besieger before the ally's HQ
+        /// (see <see cref="AllyDef.Hq"/>) falls.
+        /// </summary>
+        Relieve,
+
+        /// <summary>
+        /// Evacuation: the convoy's trucks leave its start one after another (the army holds the
+        /// site until the last has left, then brings them out); enough must reach the route's end.
+        /// </summary>
+        Evacuate,
+
+        /// <summary>A duel with a general: level the enemy base's HQ (the base must be a Target).</summary>
+        Duel,
+    }
+
+    /// <summary>What sets a radio line off during a mission (the Game layer shows it; the battle is not changed).</summary>
+    public enum RadioTrigger
+    {
+        /// <summary>As the mission starts.</summary>
+        Start,
+
+        /// <summary><see cref="RadioLineDef.Seconds"/> into the mission.</summary>
+        Time,
+
+        /// <summary>The player takes an objective (<see cref="RadioLineDef.Arg"/>: its id, or any).</summary>
+        Capture,
+
+        /// <summary>The enemy takes one of the player's objectives.</summary>
+        Lost,
+
+        /// <summary>The boss comes onto the field.</summary>
+        Boss,
+
+        /// <summary>The boss is down to half its health.</summary>
+        BossHalf,
+
+        /// <summary>The player's HQ is down to half its health.</summary>
+        HqHalf,
+
+        /// <summary>A stage begins (<see cref="RadioLineDef.Arg"/>: its id).</summary>
+        Stage,
+
+        /// <summary>The enemy calls in reinforcements.</summary>
+        Reinforce,
+
+        /// <summary>The mission is won.</summary>
+        Win,
+
+        /// <summary>The mission is lost.</summary>
+        Lose,
+    }
+
+    /// <summary>One radio line of a mission: when it plays and its text key ("radio.&lt;speaker&gt;.&lt;line&gt;").</summary>
+    public sealed class RadioLineDef
+    {
+        public RadioTrigger On { get; set; }
+        public double Seconds { get; set; }
+        public string? Arg { get; set; }
+        public string Key { get; set; } = "";
     }
 
     /// <summary>Enemy vehicles arriving on a schedule.</summary>
@@ -72,6 +139,27 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Waypoints it drives along (convoys, the armoured train); empty: the AI commands it.</summary>
         public IReadOnlyList<Vector2> Route { get; set; } = Array.Empty<Vector2>();
+
+        /// <summary>Its health against its def's (a weakened Bastion, a boss in its complete form).</summary>
+        public float Health { get; set; } = 1f;
+
+        /// <summary>A boss that flees (the fight is won) once its health falls to this share (0: it fights to the end).</summary>
+        public float FleeAt { get; set; }
+
+        /// <summary>The name it goes by in this mission (a text key "boss.&lt;name&gt;"; null: its def's).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// The def to field while <see cref="Def"/> is not in the catalog yet (a boss still being
+        /// modelled), at <see cref="FallbackHealth"/>; null: none.
+        /// </summary>
+        public string? Fallback { get; set; }
+
+        public float FallbackHealth { get; set; } = 1f;
+
+        /// <summary>The def fielded in this catalog, and its health share.</summary>
+        public (string def, float health) Resolve(Catalog catalog) =>
+            Fallback != null && !catalog.Vehicles.ContainsKey(Def) ? (Fallback, FallbackHealth) : (Def, Health);
     }
 
     /// <summary>One campaign mission, read from campaign.json.</summary>
@@ -130,6 +218,16 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>CP for a side.</summary>
         Cp,
+
+        /// <summary>
+        /// Fire support for a side (Team) at no cost: Support at Position, else on the other side's
+        /// biggest group; with <see cref="StageEventDef.Every"/> it comes again on that interval for
+        /// the rest of the mission (allied air strikes opened by a choice).
+        /// </summary>
+        Strike,
+
+        /// <summary>A side's income is scaled by Amount from now on (the enemy weakened by a blown depot).</summary>
+        Income,
     }
 
     public sealed class StageEventDef
@@ -146,6 +244,12 @@ namespace MachineBrigade.Sim.Content
         public PlayArea? Area { get; set; }
 
         public float Amount { get; set; }
+
+        /// <summary>Strike: the support called.</summary>
+        public string? Support { get; set; }
+
+        /// <summary>Strike: seconds between repeats (0: once).</summary>
+        public double Every { get; set; }
     }
 
     /// <summary>
@@ -331,6 +435,62 @@ namespace MachineBrigade.Sim.Content
 
         public int ChallengeValue { get; set; }
 
+        // ------------------------------------------------------------------ the story campaign
+
+        /// <summary>The campaign chapter (1-9; 0 outside the chapters).</summary>
+        public int Chapter { get; set; }
+
+        /// <summary>A side mission: optional, opened by <see cref="After"/>, paying rare blueprints or tower equipment.</summary>
+        public bool Side { get; set; }
+
+        /// <summary>A side mission: the main mission whose first win opens it.</summary>
+        public string? After { get; set; }
+
+        /// <summary>The sides swap camps: the player starts from the enemy's usual corner (a return to a map taken earlier).</summary>
+        public bool Reversed { get; set; }
+
+        /// <summary>The enemy general in command (balance of the enemy's deck, fire support and base; their portrait and lines).</summary>
+        public string? General { get; set; }
+
+        /// <summary>Who gives the briefing (a portrait id): the colonel, unless the mission says otherwise.</summary>
+        public string Speaker { get; set; } = "khai";
+
+        /// <summary>The fire support the enemy commander calls (empty: every support that is not premium).</summary>
+        public IReadOnlyList<string> EnemySupports { get; set; } = Array.Empty<string>();
+
+        /// <summary>The enemy base's style (balance.json base.ai.styles; null: the general's, else "default").</summary>
+        public string? EnemyStyle { get; set; }
+
+        /// <summary>The enemy base's HQ level (0: by difficulty).</summary>
+        public int EnemyHq { get; set; }
+
+        /// <summary>Seconds between two convoy trucks leaving (an evacuation spaces them out more).</summary>
+        public float ConvoyInterval { get; set; } = 4f;
+
+        /// <summary>Radio lines this mission plays, by what sets them off.</summary>
+        public IReadOnlyList<RadioLineDef> Radio { get; set; } = Array.Empty<RadioLineDef>();
+
+        /// <summary>The HQ level the first win opens (0: none).</summary>
+        public int HqLevel { get; set; }
+
+        /// <summary>Blueprints the first win pays for the cards of the player's main deck (a third on a replay).</summary>
+        public int Prints { get; set; }
+
+        /// <summary>Universal blueprints the first win pays (side missions: rare blueprints).</summary>
+        public int RarePrints { get; set; }
+
+        /// <summary>A piece of tower equipment of this rarity the first win pays (side missions; null: none).</summary>
+        public string? TowerGear { get; set; }
+
+        /// <summary>The mission of the old campaign this one grew out of (its stars move here with a saved game).</summary>
+        public string? Legacy { get; set; }
+
+
+        /// <summary>Destroy and Protect: only the buildings within <see cref="TargetRadius"/> of this spot count (null: all of them).</summary>
+        public Vector2? TargetNear { get; set; }
+
+        public float TargetRadius { get; set; } = 40f;
+
         /// <summary>
         /// A harder copy of the mission (the Heroic and Iron tiers): the enemy starts with more
         /// CP, earns more and sends bigger waves. The mission itself is left as it is.
@@ -414,6 +574,26 @@ namespace MachineBrigade.Sim.Content
                 Outposts = Strings(m, "outposts"),
                 PlayerBase = m.Enum("playerBase", BaseRole.None),
                 EnemyBase = m.Enum("enemyBase", BaseRole.None),
+                Chapter = m.Int("chapter", 0),
+                Side = m.Bool("side", false),
+                After = m.Has("after") ? m.String("after") : null,
+                Reversed = m.Bool("reversed", false),
+                General = m.Has("general") ? m.String("general") : null,
+                Speaker = m.Has("speaker") ? m.String("speaker") : "khai",
+                EnemySupports = Strings(m, "enemySupports"),
+                EnemyStyle = m.Has("enemyStyle") ? m.String("enemyStyle") : null,
+                EnemyHq = m.Int("enemyHq", 0),
+                ConvoyInterval = m.Float("convoyInterval", 4f),
+                HqLevel = m.Int("hqLevel", 0),
+                Prints = m.Int("prints", 0),
+                RarePrints = m.Int("rarePrints", 0),
+                TowerGear = m.Has("towerGear") ? m.String("towerGear") : null,
+                Radio = ParseRadio(m),
+                Legacy = m.Has("legacy") ? m.String("legacy") : null,
+                Operation = m.Bool("operation", false),
+                Replay = m.Bool("replay", false),
+                TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
+                TargetRadius = m.Float("targetRadius", 40f),
             };
             if (m.Has("challenge"))
             {
@@ -447,8 +627,6 @@ namespace MachineBrigade.Sim.Content
             if (m.Has("units")) def.Units = Placements(m, "units");
             def.EnemyCap = m.Int("enemyCap", 0);
             def.PlayArea = Content.PlayArea.Read(m, "playArea");
-            def.Operation = m.Bool("operation", false);
-            def.Replay = m.Bool("replay", false);
             if (m.Has("ally"))
             {
                 var a = m.Object("ally");
@@ -468,7 +646,7 @@ namespace MachineBrigade.Sim.Content
             if (m.Has("stages"))
             {
                 var parent = m.With("stages", null).With("units", null).With("boss", null).With("hunt", null)
-                    .With("convoy", null).With("waves", null).With("tips", null).With("ally", null);
+                    .With("convoy", null).With("waves", null).With("tips", null).With("ally", null).With("radio", null);
                 var stages = new List<StageDef>();
                 foreach (var s in m.Array("stages"))
                 {
@@ -496,6 +674,8 @@ namespace MachineBrigade.Sim.Content
                             Key = e.Has("key") ? e.String("key") : null,
                             Area = Content.PlayArea.Read(e, "area"),
                             Amount = e.Float("amount", 0f),
+                            Support = e.Has("support") ? e.String("support") : null,
+                            Every = e.Float("every", 0f),
                         });
                     }
                     stage.Events = events;
@@ -524,7 +704,28 @@ namespace MachineBrigade.Sim.Content
             Position = new Vector2(o.Float("x"), o.Float("z")),
             Heading = SimMath.DegToRad(o.Float("heading", 0f)),
             Route = o.Has("route") ? Points2(o.FloatArray("route")) : Array.Empty<Vector2>(),
+            Health = o.Float("health", 1f),
+            FleeAt = o.Float("fleeAt", 0f),
+            Name = o.Has("name") ? o.String("name") : null,
+            Fallback = o.Has("fallback") ? o.String("fallback") : null,
+            FallbackHealth = o.Float("fallbackHealth", o.Float("health", 1f)),
         };
+
+        /// <summary>Radio lines: "on" a trigger (start, capture, boss...) or "at" a number of seconds.</summary>
+        private static IReadOnlyList<RadioLineDef> ParseRadio(JsonObject m)
+        {
+            if (!m.Has("radio")) return Array.Empty<RadioLineDef>();
+            var lines = new List<RadioLineDef>();
+            foreach (var r in m.Array("radio"))
+                lines.Add(new RadioLineDef
+                {
+                    On = r.Has("at") ? RadioTrigger.Time : r.Enum<RadioTrigger>("on"),
+                    Seconds = r.Float("at", 0f),
+                    Arg = r.Has("arg") ? r.String("arg") : null,
+                    Key = r.String("key"),
+                });
+            return lines;
+        }
 
         private static IReadOnlyList<(float, string)> ParseTips(JsonObject m)
         {

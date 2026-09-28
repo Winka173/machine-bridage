@@ -14,8 +14,16 @@ namespace MachineBrigade.Game.Match
         /// <summary>1 victory, 0 draw, -1 defeat.</summary>
         public int Result { get; set; }
 
+        /// <summary>The result's title: the mission's name, or the mode's (never both: not "Operation 02 / Conquest").</summary>
         public string Subtitle { get; set; }
+
+        /// <summary>A line under the title (an endless run's record); null for none.</summary>
+        public string Note { get; set; }
+
         public List<(string label, string value)> Rows { get; } = new();
+
+        /// <summary>After a defeat: one or two things to change, from how the battle went (filled by the runner).</summary>
+        public List<string> Hints { get; } = new();
         public MatchReward Reward { get; set; }
     }
 
@@ -51,6 +59,25 @@ namespace MachineBrigade.Game.Match
 
         public AiDifficulty Difficulty { get; protected set; } = AiDifficulty.Normal;
 
+        /// <summary>The key the enemy's elite budget goes by (prompt 8 H): Easy, Normal, Hard, or a mission tier's Heroic and Iron.</summary>
+        public virtual string EliteDifficulty => Difficulty.ToString();
+
+        /// <summary>The enemy's general (a campaign mission's), whose favoured cards become elites first; null for none.</summary>
+        public virtual string EnemyGeneral => null;
+
+        /// <summary>The elite budget's key for a difficulty and a mission tier (0 as written, 1 Heroic, 2 Iron).</summary>
+        public static string EliteKey(string difficulty, int tier) => tier switch { 1 => "Heroic", 2 => "Iron", _ => difficulty ?? "Normal" };
+
+        /// <summary>A side's elite budget from the catalog's rules for a difficulty key, and its general.</summary>
+        public static void SetElites(SimWorld world, int team, string key, string general)
+        {
+            var rules = world.Catalog.Elites;
+            var budget = world.Elites(team);
+            budget.Share = rules.BudgetFor(key);
+            budget.Cap = rules.CapFor(key);
+            budget.General = general != null && world.Catalog.Generals.TryGetValue(general, out var g) ? g : null;
+        }
+
         public void TickAi(SimWorld world, float dt)
         {
             foreach (var c in Commanders) c.Tick(world, dt);
@@ -61,6 +88,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Supply drops and bomber raids (every mode but the scripted campaign).</summary>
         protected BattleEvents Events;
+
+        /// <summary>The weather turned to night or back (the fortress modes sound their sirens at night).</summary>
+        public virtual void SetNight(bool night) { }
 
         /// <summary>Fills the top bar; called every frame.</summary>
         public abstract void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps);
@@ -87,17 +117,48 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>A boss's bar: its name, health, and for a multi-phase boss the marks and the phase it is in.</summary>
-        protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss)
+        protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss, string name = null, SimWorld world = null)
         {
+            name ??= Strings.Card(boss.Def.Id);
             var phases = boss.Def.Phases;
+            // Prompt 9: the parts are icons under the bar now; the name only says when the hull is shut.
+            if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");
+            var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
+            hud.SetBossParts(boss, focused);
+            hud.SetBossHp(boss.Hp, boss.MaxHp);
             if (phases.Count == 0)
             {
-                hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+                hud.SetBoss(name, boss.Hp / boss.MaxHp);
                 return;
             }
             var marks = new List<float>(phases.Count);
             foreach (var p in phases) marks.Add(p.At);
-            hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp, boss.Phase, marks, boss.Transforming);
+            hud.SetBoss(name, boss.Hp / boss.MaxHp, boss.Phase, marks, boss.Transforming);
+        }
+
+        /// <summary>A multi-part boss's parts on its bar: "  ·  engine 3/4 · drone bay 2/2 · radar 1/1 · hull shielded" (prompt 9 draws them as icons).</summary>
+        internal static string PartsLine(MachineBrigade.Sim.Entities.Vehicle boss)
+        {
+            if (!boss.HasParts) return "";
+            var kinds = new List<string>();
+            var alive = new Dictionary<string, int>();
+            var total = new Dictionary<string, int>();
+            for (var i = 0; i < boss.Def.Parts.Count; i++)
+            {
+                var kind = boss.Def.Parts[i].Kind;
+                if (!total.ContainsKey(kind))
+                {
+                    kinds.Add(kind);
+                    total[kind] = 0;
+                    alive[kind] = 0;
+                }
+                total[kind]++;
+                if (!boss.IsPartBroken(i)) alive[kind]++;
+            }
+            var bits = new List<string>();
+            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", Strings.Get("part." + kind), alive[kind], total[kind]));
+            if (boss.BodyLocked) bits.Add(Strings.Get("boss.locked"));
+            return "  ·  " + string.Join(" · ", bits);
         }
 
         protected static void FillPoints(IObjectiveMode mode, List<PointInfo> scratch)
@@ -120,6 +181,9 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.losses"), losses.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
         }
+
+        /// <summary>A score that says whose is whose: "Us 0 · Enemy 331".</summary>
+        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", us, enemy);
 
         protected static int OutcomeOf(MatchResult result) => result.IsDraw ? 0 : result.WinningTeam == PlayerTeam ? 1 : -1;
 
@@ -176,7 +240,8 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>The session for the chosen mode (or the menu's AI-versus-AI battle).</summary>
-        public static ModeSession Create(GameModeKind kind, bool menu, SimWorld world, int seed)
+        /// <param name="mission">A campaign mission to play (tests, a replay); null: the one chosen on the menu.</param>
+        public static ModeSession Create(GameModeKind kind, bool menu, SimWorld world, int seed, MissionDef mission = null)
         {
             ModeSession session = menu ? new MenuSession() : kind switch
             {
@@ -189,7 +254,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
-                GameModeKind.Campaign => new MissionSession(Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
+                GameModeKind.Campaign => new MissionSession(mission ?? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
@@ -197,10 +262,10 @@ namespace MachineBrigade.Game.Match
             session.Build(world, seed);
             // Supply drops everywhere; no bomber raids in Boss Rush (they hit the army massed round the boss).
             if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed, raids: kind != GameModeKind.BossRush);
-            // Elite crews turn up more often the harder the enemy (and now and then in the menu battle).
-            var elite = menu ? 0.15f : session.Difficulty switch { AiDifficulty.Hard => 0.25f, AiDifficulty.Normal => 0.1f, _ => 0f };
-            if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.EliteChance = elite;
-            if (menu && world.TryGetEconomy(PlayerTeam, out var ours)) ours.EliteChance = elite;
+            // Elites (prompt 8 H): a share of the enemy's spending by difficulty, not a chance per
+            // delivery (both sides in the menu battle).
+            SetElites(world, EnemyTeam, menu ? "Normal" : session.EliteDifficulty, menu ? null : session.EnemyGeneral);
+            if (menu) SetElites(world, PlayerTeam, "Normal", null);
             // Doctrines: the player's choice; a hard enemy picks one of its own.
             if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
                 world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));
@@ -289,9 +354,9 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.conquest") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.tickets"), $"{_mode.Tickets(PlayerTeam)} : {_mode.Tickets(EnemyTeam)}"));
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Tickets(PlayerTeam), _mode.Tickets(EnemyTeam))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -330,7 +395,8 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.deathmatch") };
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Kills(PlayerTeam), _mode.Kills(EnemyTeam))));
             AddRows(outcome, world, kills, losses);
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
@@ -370,9 +436,9 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.hill") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.score"), $"{_mode.Score(PlayerTeam)} : {_mode.Score(EnemyTeam)}"));
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Score(PlayerTeam), _mode.Score(EnemyTeam))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -414,7 +480,7 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.assault") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -438,6 +504,16 @@ namespace MachineBrigade.Game.Match
     {
         private const string BestKey = "mb.endless.best";
 
+        /// <summary>
+        /// What the enemy's waves are made of: a swarm of cheap, fast vehicles that grows wave on
+        /// wave (armoured cars, technicals, drone trucks, light tanks, car bombs, jeeps), with a
+        /// heavy vehicle every few waves.
+        /// </summary>
+        public static readonly string[] Swarm =
+            { "armored_car", "rocket_technical", "light_tank", "fpv_carrier", "zu23_technical", "armored_car", "vbied", "scout_jeep" };
+
+        public static readonly string[] Heavy = { "main_battle_tank", "mlrs", "heavy_tank", "attack_helicopter", "artillery" };
+
         private readonly bool _endless;
         private SiegeMode _mode;
 
@@ -455,23 +531,32 @@ namespace MachineBrigade.Game.Match
         {
             var hard = Difficulty == AiDifficulty.Hard;
             var easy = Difficulty == AiDifficulty.Easy;
-            var defender = PlayerSide(24f, 1.2f);
-            defender.ArmyCap = 36;
-            var attacker = EnemySide(26f, hard ? 1.6f : easy ? 1.15f : 1.35f, Difficulty, world.Catalog);
+            var defender = PlayerSide(30f, 1.35f);
+            defender.ArmyCap = 38;
+            var attacker = EnemySide(22f, hard ? 1.35f : easy ? 0.95f : 1.1f, Difficulty, world.Catalog);
             attacker.ArmyCap = 40;
             _mode = new SiegeMode(new SiegeRules
             {
                 PlayerDefends = true, Endless = _endless,
                 // The clock the enemy has to break in: longer the harder it is.
                 StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
-                WaveSeconds = _endless ? 55f : 75f, StageCp = 12f,
+                WaveSeconds = _endless ? 55f : 70f, StageCp = 12f, Hardening = 4.5f, LineHardening = 2f, RetreatCp = new[] { 24f, 32f },
+                // The player's inner lines are the strong ones.
+                LineHealth = new[] { 1f, 1.4f, 1.8f }, LineDamage = new[] { 1f, 1.2f, 1.35f },
+                // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
+                WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
+                WaveStart = hard ? 6 : easy ? 4 : 5, WaveGrowth = _endless ? 2f : hard ? 1.6f : 1.4f, WaveMax = 36, HeavyEvery = 3,
+                EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
+                // The player's fortress: exactly their own base loadout in its lines' hardpoints.
+                FortressLoadout = PlayerProfile.BaseLoadout,
                 Attacker = attacker, Defender = defender,
             });
             Mode = _mode;
             _mode.Setup(world);
             var enemy = AddEnemyCommander(_mode, seed, CommanderStance.Attack);
-            enemy.Goal = w => w.TryGetProp(_mode.Target(w), out var objective) ? objective.Position : _mode.Fortress;
-            enemy.Demolish = w => _mode.Target(w);
+            // The enemy blows in the player's gates on its way to each line's objectives.
+            enemy.Goal = w => _mode.AttackGoal(w);
+            enemy.Demolish = w => _mode.AttackTarget(w);
             enemy.Plunder = _ => _mode.BountyTargets;
             enemy.RoleMix = ConquestAi.SiegeMix;
             // The player's commander stands on whatever the enemy is going for.
@@ -486,23 +571,30 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var integrity = 1f - _mode.Progress(world);
-            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
+            var goal = Strings.Format("base.line", UnityEngine.Mathf.Min(3, _mode.Stage),
                 Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" }));
             var detail = Strings.Format("base.waveOf", _mode.Wave) + "  ·  " + $"{UnityEngine.Mathf.RoundToInt(integrity * 100f)}%";
             hud.SetMission(goal, detail, integrity, _endless ? -1f : _mode.SecondsLeft(world), scratch);
+            hud.SetWavePreview(_mode.NextWave, _mode.SecondsToWave(world), _mode.Wave + 1, _mode.Held);
+            hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: true);
         }
+
+        public override void SetNight(bool night) => _mode.Night = night;
+
+        /// <summary>The ids of a roster the catalogue has.</summary>
+        private static string[] Available(SimWorld world, string[] roster) => System.Array.FindAll(roster, world.Catalog.Vehicles.ContainsKey);
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get(_endless ? "mode.endless" : "mode.defend") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             if (_endless)
             {
                 var best = BestWave;
                 if (_mode.Wave > best) UnityEngine.PlayerPrefs.SetInt(BestKey, _mode.Wave);
-                outcome.Subtitle = Strings.Format(_mode.Wave > best ? "endless.record" : "endless.reached", _mode.Wave);
+                outcome.Note = Strings.Format(_mode.Wave > best ? "endless.record" : "endless.reached", _mode.Wave);
                 outcome.Rows.Add((Strings.Get("endless.best"), UnityEngine.Mathf.Max(best, _mode.Wave).ToString()));
                 outcome.Reward = Rewards.Survival(Difficulty, _mode.Wave, kills);
                 return outcome;
@@ -538,14 +630,15 @@ namespace MachineBrigade.Game.Match
             {
                 StartSeconds = 300f, StartStage = _startStage,
                 Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog),
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week),
             });
             Mode = _mode;
             _mode.Setup(world);
             var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
             defender.DefendPoint = _mode.Fortress;
             var player = AddPlayerCommander(_mode, seed);
-            player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
-            player.Demolish = w => _mode.Target(w);
+            player.Goal = w => _mode.AttackGoal(w);
+            player.Demolish = w => _mode.AttackTarget(w);
             player.Plunder = _ => _mode.BountyTargets;
             player.RoleMix = ConquestAi.SiegeMix;
         }
@@ -558,12 +651,15 @@ namespace MachineBrigade.Game.Match
             var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
                 Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
+            hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
+
+        public override void SetNight(bool night) => _mode.Night = night;
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.weekly") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -582,6 +678,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Coins at the end for each fortress building knocked down.</summary>
         public const int SiegeBountyCoins = 12;
 
+        /// <summary>Coins at the end for destroying the fortress's super-gun (the side objective).</summary>
+        public const int SuperGunCoins = 100;
+
         private SiegeMode _mode;
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
@@ -592,24 +691,40 @@ namespace MachineBrigade.Game.Match
         protected override void Build(SimWorld world, int seed)
         {
             // The attacker has the bigger purse (a siege needs numbers); the fortress has its guns.
-            var attacker = PlayerSide(34f, 1.8f);
-            attacker.ArmyCap = 40;
+            var attacker = PlayerSide(38f, 2.4f);
+            attacker.ArmyCap = 44;
             attacker.Bank = 40f;
+            // The fortress holds its ground with its towers and a modest garrison (its reinforcements come by its line).
+            var defender = EnemySide(Difficulty == AiDifficulty.Hard ? 18f : 12f, Difficulty switch { AiDifficulty.Hard => 0.85f, AiDifficulty.Easy => 0.45f, _ => 0.6f },
+                Difficulty, world.Catalog);
+            defender.ArmyCap = Difficulty == AiDifficulty.Hard ? 34 : 26;
             // The time bank: harder sieges start with less on the clock.
-            var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
+            var start = Difficulty switch { AiDifficulty.Hard => 420f, AiDifficulty.Easy => 540f, _ => 480f };
             _mode = new SiegeMode(new SiegeRules
             {
-                StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.05f : 0.85f, Difficulty, world.Catalog),
+                StartSeconds = start, StageBonus = new[] { 360f, 360f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
+                Hardening = 1.2f, LineHealth = new[] { 1f, 1.15f, 1.25f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
+                // An easier fortress leaves some of its outer hardpoints empty.
+                Manning = Difficulty switch { AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.75f },
+                Attacker = attacker, Defender = defender,
                 AttackerBase = PlayerProfile.BaseLoadout,
+                // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
-            var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
-            defender.DefendPoint = _mode.Fortress;
+            var garrison = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
+            garrison.DefendPoint = _mode.Fortress;
             var player = AddPlayerCommander(_mode, seed);
-            player.Goal = w => w.TryGetProp(_mode.Target(w), out var hq) ? hq.Position : _mode.Fortress;
-            player.Demolish = w => _mode.Target(w);
+            // The army blows in a gate when the objective is behind walls nobody has broken yet,
+            // brings the guns a siege needs, and shoots up the fortress's buildings for their bounties.
+            player.Goal = w => _mode.AttackGoal(w);
+            player.Demolish = w => _mode.AttackTarget(w);
+            player.Plunder = _ => _mode.BountyTargets;
+            player.RoleMix = ConquestAi.SiegeMix;
         }
+
+        public override void SetNight(bool night) => _mode.Night = night;
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps)
         {
@@ -617,21 +732,25 @@ namespace MachineBrigade.Game.Match
             scratch.Clear();
             var progress = _mode.Progress(world);
             var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+                Strings.Get(_mode.GateToBreak(world).IsValid ? "siege.goalGate"
+                    : _mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
+            hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.siege") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
             outcome.Rows.Add((Strings.Get("stat.razed"), _mode.BuildingsRazed.ToString()));
+            if (_mode.SuperGunDown) outcome.Rows.Add((Strings.Get("stat.superGun"), Strings.Format("result.superGun", SuperGunCoins)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
-            // Levelling a fortress pays extra, and every building knocked down on the way.
+            // Levelling a fortress pays extra, and every building knocked down on the way, and its super-gun.
             if (outcome.Result > 0) outcome.Reward.Coins += 150;
             outcome.Reward.Coins += _mode.BuildingsRazed * SiegeBountyCoins;
+            if (_mode.SuperGunDown) outcome.Reward.Coins += SuperGunCoins;
             return outcome;
         }
     }
@@ -682,14 +801,14 @@ namespace MachineBrigade.Game.Match
             scratch.Clear();
             hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
                 _mode.SecondsLeft(world), scratch);
-            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss, world: world);
             else hud.SetBoss(null, 0f);
         }
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.bossrush") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -737,7 +856,7 @@ namespace MachineBrigade.Game.Match
             if (_over || world.Time <= 5.0 || !Lost(world)) return null;
             _over = true;
             world.IsOver = true;
-            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("result.over") };
+            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get("result.over") };
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             outcome.Rows.Add((Strings.Get("result.kills"), kills.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
@@ -803,24 +922,45 @@ namespace MachineBrigade.Game.Match
         }
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
-        public override string Kicker => Strings.Format("campaign.kicker", Campaign.IndexOf(_def.Id) + 1);
+        public override string Kicker => Strings.Format("campaign.kicker", Campaign.Label(_def));
         public override string Title => Strings.Get("mission." + _def.Id + ".name");
         public override string Subtitle => Strings.Get("goal." + _def.Goal.ToString().ToLowerInvariant());
         public override string StartToast => Strings.Get("mission." + _def.Id + ".brief");
+
+        public override string EliteDifficulty => EliteKey(_def.Difficulty, _tier);
+        public override string EnemyGeneral => GeneralOf(_def);
+
+        /// <summary>The mission's enemy general (its AI configuration, portrait and lines), or null.</summary>
+        internal static string GeneralOf(MissionDef def) => def?.General;
 
         protected override void Build(SimWorld world, int seed)
         {
             Difficulty = System.Enum.TryParse<AiDifficulty>(_def.Difficulty, out var d) ? d : AiDifficulty.Normal;
             var commander = _def.EnemyAi is "commander" or "both";
+            // The general in command: their deck when the mission names none, their fire support,
+            // their base's style.
+            var general = Campaign.General(_def.General);
+            EnemyStyle = _def.EnemyStyle ?? general?.Style ?? "default";
             SideSetup enemy = null;
             if (commander)
             {
                 var deck = new List<string>();
-                foreach (var id in _def.EnemyDeck)
+                foreach (var id in _def.EnemyDeck.Count > 0 ? _def.EnemyDeck : general?.Deck ?? (IReadOnlyList<string>)System.Array.Empty<string>())
                     if (world.Catalog.Vehicles.ContainsKey(id)) deck.Add(id);
+                // A general's own cards join a mission's deck (Varga's armoured bulldozer).
+                if (deck.Count > 0 && _def.General is { } generalId && world.Catalog.Generals.TryGetValue(generalId, out var g))
+                    foreach (var id in g.Deck)
+                        if (!deck.Contains(id) && world.Catalog.Vehicles.ContainsKey(id)) deck.Add(id);
                 var supports = new List<string>();
-                foreach (var id in MatchSettings.AllSupports)
-                    if (world.Catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) && id != "cruise_missile") supports.Add(id);
+                var habits = _def.EnemySupports.Count > 0 ? _def.EnemySupports : general?.Supports;
+                if (habits is { Count: > 0 })
+                {
+                    foreach (var id in habits)
+                        if (world.Catalog.TryGetSupport(id, out _)) supports.Add(id);
+                }
+                else
+                    foreach (var id in MatchSettings.AllSupports)
+                        if (world.Catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) && id != "cruise_missile") supports.Add(id);
                 enemy = new SideSetup
                 {
                     StartCp = _def.EnemyCp, Income = _def.EnemyIncome,
@@ -868,15 +1008,27 @@ namespace MachineBrigade.Game.Match
             }
             Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
+            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null);
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadout), _def.PlayerBase)
-                    .Set(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed), _def.EnemyBase), PlayerTeam, EnemyTeam);
-            if (_def.Outposts.Count > 0)
+                    .Set(EnemyTeam, enemyBase, _def.EnemyBase), PlayerTeam, EnemyTeam);
+            // A duel's HQ is as tough as the mission says (its towers are the general's full base).
+            if (_def.Goal == MissionGoal.Duel && System.Math.Abs(_def.TargetHealth - 1f) > 1e-3f)
+                MissionMode.HardenHq(world, EnemyTeam, _def.TargetHealth);
+            // Outposts: the marked points, and a point to set one up on (the mission's or a stage's goal).
+            var outposts = new List<string>(_def.Outposts);
+            void AddSite(MissionDef m)
+            {
+                if (m.Goal == MissionGoal.Outpost && m.Points.Count > 0 && !outposts.Contains(m.Points[0])) outposts.Add(m.Points[0]);
+            }
+            AddSite(_def);
+            foreach (var s in _def.Stages) AddSite(s.Mission);
+            if (outposts.Count > 0)
             {
                 world.Bases.Ensure(PlayerTeam, PlayerProfile.BaseLoadout);
-                world.Bases.Ensure(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed));
-                foreach (var id in _def.Outposts) world.Bases.OutpostPoints.Add(id);
+                world.Bases.Ensure(EnemyTeam, enemyBase);
+                foreach (var id in outposts) world.Bases.OutpostPoints.Add(id);
                 world.Bases.PointOwner = id =>
                 {
                     foreach (var p in _mode.Points)
@@ -945,10 +1097,11 @@ namespace MachineBrigade.Game.Match
         {
             var def = _mode.Def;
             var player = PlayerAi;
-            // A demolition inside a fortress is a siege: guns to break it from outside its reach.
+            // A demolition inside a fortress is a siege: guns to break it from outside its reach. (Not a
+            // duel: there the general's army must be beaten in the field first, and the siege mix lost it.)
             player.RoleMix = def.Goal == MissionGoal.Destroy && def.Variant == "siege" ? ConquestAi.SiegeMix : null;
-            // Holding a point: fight whatever comes at it, but never wander off and leave it open.
-            player.Leash = def.Goal == MissionGoal.Hold ? 32f : null;
+            // Holding a point (or an outpost on one): fight whatever comes at it, but never wander off and leave it open.
+            player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? 32f : null;
             player.DefendPoint = null;
             if (def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
             {
@@ -1003,8 +1156,8 @@ namespace MachineBrigade.Game.Match
             var goalText = Strings.Get("goal." + goal.ToString().ToLowerInvariant());
             if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
-            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive)
-                ShowBoss(hud, boss);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive && !_mode.BossFled)
+                ShowBoss(hud, boss, BossName(_mode.Def, boss.Def.Id), world);
             else hud.SetBoss(null, 0f);
         }
 
@@ -1034,6 +1187,10 @@ namespace MachineBrigade.Game.Match
             outcome.Reward.Coins += Operations.Data.WeeklyOperationReward;
             outcome.Rows.Add((Strings.Get("ops.weekly"), Strings.Format("weekly.reward", Operations.Data.WeeklyOperationReward)));
         }
+
+        /// <summary>A boss's name in this mission: its own ("the Frost Monster") or its def's.</summary>
+        internal static string BossName(MissionDef def, string defId) =>
+            def.Boss?.Name is { } name && Strings.Has("boss." + name) ? Strings.Get("boss." + name) : Strings.Card(defId);
 
         /// <summary>The choice dialog while a stage waits on the player's pick; the first option goes ahead by itself.</summary>
         private void ShowChoice(BattleHud hud, SimWorld world)

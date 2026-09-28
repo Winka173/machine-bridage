@@ -126,9 +126,6 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>CP value of this side's army on the field plus deliveries on the way.</summary>
         public int ArmyCp { get; internal set; }
 
-        /// <summary>Chance that a delivered vehicle arrives as its elite version (enemy difficulty).</summary>
-        public float EliteChance { get; set; }
-
         /// <summary>Single-use items this side carries into the match (bought with coins), by support id.</summary>
         public Dictionary<string, int> Items { get; } = new();
 
@@ -161,7 +158,7 @@ namespace MachineBrigade.Sim.Economy
     /// they give a beaten side the time and means to come back.
     /// </para>
     /// </summary>
-    internal sealed class EconomySystem
+    internal sealed partial class EconomySystem
     {
         /// <summary>The underdog's biggest reinforcement boost (0.5: half again the income).</summary>
         public const float MaxCatchUp = 0.5f;
@@ -195,6 +192,26 @@ namespace MachineBrigade.Sim.Economy
 
         public EconomySystem(SimWorld world) => _world = world;
 
+        /// <summary>
+        /// A side whose ground deliveries come in by the fortress's line (a train, or an aircraft
+        /// onto a runway) instead of by parachute: when the next one gets in, where the vehicles get
+        /// off and the way along the platform they line up (null for the side: the usual drop).
+        /// </summary>
+        internal Func<int, (double due, Vector2 at, Vector2 along)?>? Route { get; set; }
+
+        /// <summary>A routed delivery's landing and time, or false for the usual parachute drop.</summary>
+        private bool Routed(int team, VehicleDef def, int index, out double due, out Vector2 landing)
+        {
+            due = 0;
+            landing = default;
+            if (def.Flying || Route?.Invoke(team) is not { } route) return false;
+            // Off the train (or out of the aircraft) one behind another along the platform.
+            var k = index % 6;
+            landing = route.at + route.along * ((k % 2 == 0 ? 1f : -1f) * (2f + (k / 2) * 5f));
+            due = MathF.Max((float)(_world.Time + 1.0), (float)route.due);
+            return true;
+        }
+
         public void Enable(TeamEconomy economy) => _teams[economy.Team] = economy;
 
         public bool TryGet(int team, out TeamEconomy economy) => _teams.TryGetValue(team, out economy!);
@@ -217,12 +234,20 @@ namespace MachineBrigade.Sim.Economy
             // Charged exactly once, when accepted (T03).
             economy.Cp -= price;
             if (def.Flying) _world.CountAircraft(team);
-            // Veteran crews: some deliveries turn up as the refurbished elite version. Decided now,
-            // with the landing point, so the drop the game draws is the vehicle that lands.
-            if (economy.EliteChance > 0f && _world.Catalog.EliteVariant(defId) is { } elite && _world.Random.NextDouble() < economy.EliteChance)
-                defId = elite;
+            // Veteran crews: a delivery turns up as the refurbished elite version while the side's
+            // elite budget has room (prompt 8 H), for the elite's dearer price. Decided now, with the
+            // landing point, so the drop the game draws is the vehicle that lands.
+            defId = Promote(team, economy, def);
             // Deliveries fan out around the zone so consecutive ones do not stack.
             var index = _deliveries++;
+            if (Routed(team, def, index, out var due, out var routed))
+            {
+                _pending.Add((team, defId, due, routed));
+                economy.ArmyCp = ArmyCp(team);
+                economy.VehicleCount = VehicleCount(team);
+                _world.Emit(SimEvent.DeploymentRouted(team, defId, routed, Inward(zone), (float)(due - _world.Time)));
+                return CommandResult.Ok;
+            }
             var angle = index * 2.39996f;
             var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
             _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
@@ -250,8 +275,14 @@ namespace MachineBrigade.Sim.Economy
         /// </summary>
         public void Airlift(int team, string defId, Vector2 near, bool ally = false)
         {
-            if (!_world.Catalog.Vehicles.ContainsKey(defId)) return;
+            if (!_world.Catalog.Vehicles.TryGetValue(defId, out var def)) return;
             var index = _deliveries++;
+            if (!ally && Routed(team, def, index, out var due, out var routed))
+            {
+                _pending.Add((team, defId, due, routed));
+                _world.Emit(SimEvent.DeploymentRouted(team, defId, routed, Inward(near), (float)(due - _world.Time)));
+                return;
+            }
             var angle = index * 2.39996f;
             var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
             _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
@@ -301,12 +332,21 @@ namespace MachineBrigade.Sim.Economy
         {
             // Quartermaster's four-piece: part of its own cost comes back when it falls.
             if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
-                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.CpCost * victim.Gear.Trait(TraitId.SetSalvageRights).B);
+                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward * Bounty(economy, victim) * KillerBonus(killer, team));
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillShare(Bounty(economy, victim), KillerBonus(killer, team)));
         }
+
+        /// <summary>The most a kill may refund, as a share of the victim's price, whatever pays it (prompt 8 I.6).</summary>
+        internal const float KillRefundCap = 0.45f;
+
+        /// <summary>The most one's own loss may refund (Quartermaster's four pieces), as a share of its price.</summary>
+        internal const float LossRefundCap = 0.15f;
+
+        /// <summary>A kill's refund as a share of the victim's price: the base quarter, the odds, the killer's equipment, capped.</summary>
+        internal static float KillShare(float bounty, float killerBonus) => MathF.Min(KillRefundCap, KillReward * bounty * killerBonus);
 
         /// <summary>A killer's equipment that pays more for its kills (War Profiteer, Quartermaster's four-piece).</summary>
         private static float KillerBonus(Vehicle? killer, int team)

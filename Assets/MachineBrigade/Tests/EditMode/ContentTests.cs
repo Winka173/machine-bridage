@@ -10,6 +10,8 @@ namespace MachineBrigade.Tests
 {
     public class ContentTests
     {
+        /// <summary>Causeway battlefields whose Siege keeps the classic corner fortress (Tools/maps/build_maps.py CLASSIC_SIEGE).</summary>
+        internal static readonly string[] ClassicSiege = { "swamp", "coralisles" };
         private static string DataPath(string file) =>
             Path.Combine(Application.dataPath, "MachineBrigade", "Resources", "Data", file);
 
@@ -95,10 +97,19 @@ namespace MachineBrigade.Tests
 
                 var hqs = map.Props.Where(p => p.DefId == "command_hq").ToList();
                 Assert.AreEqual(1, hqs.Count, $"{map.Id}: one command HQ");
-                var defences = map.Units.Where(u => u.Team == 1 && catalog.Vehicle(u.DefId).Static).ToList();
-                Assert.GreaterOrEqual(defences.Count, 12, $"{map.Id}: the fortress is defended");
-                foreach (var kind in new[] { "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "artillery_emplacement", "guard_tower" })
-                    Assert.IsTrue(defences.Any(u => u.DefId == kind), $"{map.Id}: has a {kind}");
+                // The fortress's towers stand in its sized hardpoints (the defender's loadout fills them), every ring holding some.
+                // The causeway battlefields keep the classic corner fortress (its defences are map units).
+                if (ClassicSiege.Contains(info.Id))
+                {
+                    Assert.IsNull(map.Fortress, $"{map.Id}: the classic fortress");
+                    Assert.IsTrue(map.Units.Any(u => u.Team == 1), $"{map.Id}: its defences");
+                    continue;
+                }
+                Assert.IsNotNull(map.Fortress, $"{map.Id}: has its fortress plan");
+                Assert.GreaterOrEqual(map.Fortress.Slots.Count, 24, $"{map.Id}: the fortress is defended");
+                for (var ring = 1; ring <= 3; ring++)
+                    Assert.IsTrue(map.Fortress.Slots.Any(s => s.Ring == ring && s.Hardpoint.Kind == HardpointKind.Tower), $"{map.Id}: ring {ring} has towers");
+                Assert.IsFalse(map.Units.Any(u => u.Team == 1 && catalog.Vehicle(u.DefId).Static), $"{map.Id}: no fixed defences as map units any more");
 
                 var world = new MachineBrigade.Sim.SimWorld(catalog, map, seed: 1);
                 var grid = world.Grid;

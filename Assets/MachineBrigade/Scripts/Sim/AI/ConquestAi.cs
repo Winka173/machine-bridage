@@ -210,6 +210,9 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (economy.Cp >= world.Catalog.Base.OutpostCp + 6f &&
                         world.Submit(new Command(CommandType.Outpost, _team, Array.Empty<EntityId>(), defId: point.Def.Id)).Accepted) return true;
+                    // Held and not yet set up: with an army on the field, save up for it rather
+                    // than spend every CP as it comes in (it never reached the price otherwise).
+                    if (economy.ArmyCp >= 16) return true;
                     continue;
                 }
                 for (var i = 0; i < slots.Count; i++)
@@ -622,6 +625,14 @@ namespace MachineBrigade.Sim.AI
             foreach (var e in _tactics.KnownEnemies)
                 if (e.IsAlive && !e.Def.Static && e.Def.Weapon.MinRange > 0f) enemyGuns++;
             var towers = ReadBase(out var towerReach);
+            var enemyObstacles = 0;
+            var enemyBreachers = 0;
+            foreach (var e in _tactics.KnownEnemies)
+            {
+                if (!e.IsAlive) continue;
+                if (e.Def.Obstacle) enemyObstacles++;
+                if (e.Def.Breacher) enemyBreachers++;
+            }
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -679,6 +690,11 @@ namespace MachineBrigade.Sim.AI
                     score += BaseCounter(def, towers, towerReach);
                     // A command vehicle pays once there is an army round it to lead.
                     if (def.CommandAura != null) score += ownTotal >= 5 ? 1.4f : -2f;
+                    // A breacher (the armoured bulldozer) pays against a base or a structure to bring down,
+                    // and is dead weight in an open fight.
+                    if (def.Breacher) score += towers.cannon + towers.machineGun + towers.antiAir + enemyObstacles >= 2 || demolishing ? 1.8f : -1.5f;
+                    // Enemy breachers coming for our base: tank hunters and guns that pierce heavy armour.
+                    if (enemyBreachers > 0 && KillsArmour(def) && !def.Flying) score += MathF.Min(2f, enemyBreachers * 0.7f);
                     // A counter-battery radar only where the enemy has guns to find.
                     if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
                 }
