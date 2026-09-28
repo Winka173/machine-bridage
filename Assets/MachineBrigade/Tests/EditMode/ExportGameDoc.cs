@@ -122,7 +122,7 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[a.ToString()] += raw * catalog.Damage.Multiplier(w.DamageType, a) * bonus;
+                    dps[a.ToString()] += raw * catalog.Damage.Multiplier(w, a) * bonus;
                 }
             }
             return new Dictionary<string, object>

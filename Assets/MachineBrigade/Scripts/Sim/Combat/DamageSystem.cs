@@ -247,7 +247,7 @@ namespace MachineBrigade.Sim.Combat
             if (!target.IsAlive || !(amount > 0f)) return 0f;
             if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
             var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
-            var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
+            var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor, hit.Weapon);
             if (!(damage > 0f)) return 0f;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);

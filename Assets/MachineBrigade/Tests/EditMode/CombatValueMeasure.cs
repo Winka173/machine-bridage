@@ -40,8 +40,32 @@ namespace MachineBrigade.Tests
     {
         private const float Budget = 14f;
 
-        /// <summary>The one fixed seed of every scenario (MB_CV_SEED overrides it for a second look).</summary>
-        private static int Seed => int.TryParse(Environment.GetEnvironmentVariable("MB_CV_SEED"), out var s) ? s : 13;
+        /// <summary>
+        /// The fixed seed of every scenario (the owner's rule: one run); MB_CV_SEEDS (a comma list) averages
+        /// several for a decision that needs a second look.
+        /// </summary>
+        private static int[] Seeds
+        {
+            get
+            {
+                var list = Environment.GetEnvironmentVariable("MB_CV_SEEDS");
+                return string.IsNullOrEmpty(list) ? new[] { 13 } : list.Split(',').Select(int.Parse).ToArray();
+            }
+        }
+
+        /// <summary>One scenario's results over several seeds, averaged (the first kill over the seeds that made one).</summary>
+        private static Result Mean(List<Result> runs)
+        {
+            if (runs.Count == 1) return runs[0];
+            var kills = runs.Where(r => r.FirstKill >= 0f).ToList();
+            return new Result
+            {
+                Id = runs[0].Id, Scenario = runs[0].Scenario, Count = runs[0].Count, Cp = runs[0].Cp, Seconds = runs[0].Seconds,
+                Light = runs.Average(r => r.Light), Heavy = runs.Average(r => r.Heavy), Air = runs.Average(r => r.Air), Structure = runs.Average(r => r.Structure),
+                OnTarget = runs.Average(r => r.OnTarget), Survival = runs.Average(r => r.Survival), Value = runs.Average(r => r.Value),
+                FirstKill = kills.Count > 0 ? kills.Average(r => r.FirstKill) : -1f, Ready = runs.Average(r => r.Ready),
+            };
+        }
         private const float Standard = 90f;
         private const float Long = 240f;
 
@@ -97,15 +121,15 @@ namespace MachineBrigade.Tests
         public void MeasureTheRoster()
         {
             if (Environment.GetEnvironmentVariable("MB_BALANCE") != "1") Assert.Ignore("combat value: set MB_BALANCE=1");
-            var catalog = GameContent.LoadCatalog();
+            var catalog = LoadCatalog();
             var results = new List<Result>();
             var started = DateTime.Now;
             foreach (var id in Roster(catalog))
             {
                 var def = catalog.Vehicle(id);
                 foreach (var s in Standards)
-                    results.Add(Run(catalog, id, s, Seed));
-                if (Limited(def)) results.Add(Run(catalog, id, LongRun, Seed));
+                    results.Add(Mean(Seeds.Select(seed => Run(catalog, id, s, seed)).ToList()));
+                if (Limited(def)) results.Add(Mean(Seeds.Select(seed => Run(catalog, id, LongRun, seed)).ToList()));
             }
             var outDir = Environment.GetEnvironmentVariable("MB_CV_OUT");
             if (string.IsNullOrEmpty(outDir)) outDir = Path.GetTempPath();
@@ -163,6 +187,13 @@ namespace MachineBrigade.Tests
             File.WriteAllText(Path.Combine(outDir, $"theoretical_dps_{tag}.tsv"), sb.ToString(), new UTF8Encoding(false));
             TestContext.Out.WriteLine(sb.ToString());
             Assert.Pass();
+        }
+
+        /// <summary>The shipped catalog, or another balance file (MB_CV_BALANCE: a path) to compare against.</summary>
+        internal static Catalog LoadCatalog()
+        {
+            var path = Environment.GetEnvironmentVariable("MB_CV_BALANCE");
+            return string.IsNullOrEmpty(path) ? GameContent.LoadCatalog() : Catalog.FromJson(File.ReadAllText(path));
         }
 
         private static SimWorld Field(Catalog catalog, int seed) =>
