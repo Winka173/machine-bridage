@@ -251,6 +251,9 @@ namespace MachineBrigade.Game.Match
         }
 
         public static float Volume { get; set; } = 0.8f;
+
+        /// <summary>The soundtrack's own level (0 turns it off), under the master volume.</summary>
+        public static float MusicVolume { get; set; } = 0.7f;
         public static GraphicsQuality Graphics { get; set; } = GraphicsQuality.Auto;
 
         /// <summary>
@@ -341,6 +344,7 @@ namespace MachineBrigade.Game.Match
             try
             {
                 Volume = PlayerPrefs.GetFloat("mb.volume", Volume);
+                MusicVolume = PlayerPrefs.GetFloat("mb.music", MusicVolume);
                 Graphics = (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt("mb.graphics", 0), 0, 4);
                 if (Graphics == GraphicsQuality.Custom) _custom = GraphicsOptions.Load("mb.gfx.", GraphicsOptions.For(DetectTier()));
                 // Reduced motion (older saves) became the low screen-shake setting.
@@ -382,6 +386,7 @@ namespace MachineBrigade.Game.Match
             try
             {
                 PlayerPrefs.SetFloat("mb.volume", Volume);
+                PlayerPrefs.SetFloat("mb.music", MusicVolume);
                 PlayerPrefs.SetInt("mb.graphics", (int)Graphics);
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);

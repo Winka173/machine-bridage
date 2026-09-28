@@ -67,11 +67,16 @@ namespace MachineBrigade.Sim.Combat
 
                 var target = SelectTarget(v);
                 v.Target = target?.Id ?? EntityId.None;
-                v.AimDistance = target != null ? Vector2.Distance(v.Position, target.Position) : 0f;
-                v.AimHeight = target is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
+                // Nothing on the ground for the main gun: the coaxial machine gun takes on an
+                // aircraft in reach and the turret swings after it.
+                var air = target == null ? CoaxAirTarget(v) : null;
+                v.CoaxAir = air?.Id ?? EntityId.None;
+                var laid = target ?? air;
+                v.AimDistance = laid != null ? Vector2.Distance(v.Position, laid.Position) : 0f;
+                v.AimHeight = laid is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
                 if (mounts[0].Aim == MountAim.Turret)
                 {
-                    var desired = target != null ? SimMath.HeadingOf(target.Position - v.Position) : v.Heading;
+                    var desired = laid != null ? SimMath.HeadingOf(laid.Position - v.Position) : v.Heading;
                     v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * v.TurretFactor * dt);
                 }
                 else
@@ -181,6 +186,9 @@ namespace MachineBrigade.Sim.Combat
             var mount = v.Def.Mounts[index];
             var weapon = v.Arms[index];
             var side = IsSide(mount.Aim);
+            if (mount.Aim == MountAim.Turret && primary == null && v.CoaxAir.IsValid && _world.TryGetVehicle(v.CoaxAir, out var chased) &&
+                IsValidAutoTarget(v, chased, weapon))
+                return chased;
             if (mount.Aim != MountAim.Free && !side) return primary != null && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
             if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon) &&
                 (!side || InArc(v, index, current.Position)))
@@ -230,6 +238,26 @@ namespace MachineBrigade.Sim.Combat
                 bestScore = score;
             }
             return best;
+        }
+
+        /// <summary>
+        /// An aircraft for a turret machine gun (a tank's coaxial gun) while the main gun has
+        /// nothing: the first turret mount that is a machine gun able to hit aircraft picks the
+        /// best one in its reach.
+        /// </summary>
+        private Vehicle? CoaxAirTarget(Vehicle v)
+        {
+            if (v.Flying || v.Def.Mounts[0].Aim != MountAim.Turret || v.Def.Weapon.CanTarget(true)) return null;
+            var mounts = v.Def.Mounts;
+            for (var i = 1; i < mounts.Count; i++)
+            {
+                var weapon = v.Arms[i];
+                if (mounts[i].Aim != MountAim.Turret || !IsMachineGun(weapon) || !weapon.CanTarget(true)) continue;
+                if (_world.TryGetVehicle(v.CoaxAir, out var current) && current.Flying && IsValidAutoTarget(v, current, weapon)) return current;
+                var best = BestInRange(v, weapon, EntityId.None);
+                return best != null && best.Flying ? best : null;
+            }
+            return null;
         }
 
         /// <summary>What a target is worth: its CP, or for units never bought (bosses, defences) a guess from their health.</summary>
@@ -293,9 +321,24 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
 
-            if (target == null || !CanFire(v, index, target) || !InRhythm(v, index)) return;
-            // Limited ammunition: one round per trigger pull (a whole salvo counts as one).
-            if (state.Ammo == 0) return;
+            // A charged weapon powering up: it fires when the charge is full, whatever it aims at
+            // by then (the charge is the target's warning); lost targets let it wait at full charge.
+            if (state.ChargeLeft > 0f)
+            {
+                state.ChargeLeft -= dt;
+                if (state.ChargeLeft > 0f) return;
+                state.ChargeLeft = 0f;
+                if (target == null || !InReach(v, target, weapon)) return;
+            }
+            // Limited ammunition: one round per trigger pull (a whole salvo counts as one). An empty
+            // launcher never takes its turn from the machine gun.
+            else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
+            else if (weapon.Charge > 0f)
+            {
+                state.ChargeLeft = weapon.Charge;
+                _world.Emit(SimEvent.Charging(v, index, weapon.Charge, target.Position));
+                return;
+            }
             if (state.Ammo > 0) state.Ammo--;
             var machineGun = IsMachineGun(weapon);
             var scale = machineGun ? RunDamage : 1f;
@@ -308,7 +351,6 @@ namespace MachineBrigade.Sim.Combat
                 else extra = _world.Gear.ExtraRounds(v, weapon, out perRound);
             }
             Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
-            if (!machineGun) v.HeavyShotAt = _world.Time;
             if (machineGun)
             {
                 // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).
@@ -352,32 +394,80 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>No two shots are exactly as far apart: up to 10 % either way, so identical vehicles fall out of step.</summary>
         private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
 
+        /// <summary>Quiet after a heavy round (a salvo's last) before a machine gun opens up again.</summary>
+        private const float GunAfterHeavy = 0.45f;
+
+        /// <summary>A machine gun stops this long before a heavy weapon with a target is due.</summary>
+        private const float GunBeforeHeavy = 0.3f;
+
+        /// <summary>A heavy weapon waits this long after another heavy weapon's last round, and after a machine-gun round.</summary>
+        private const float HeavyAfterHeavy = 0.4f;
+        private const float HeavyAfterGun = 0.25f;
+
+        /// <summary>Another machine gun that fired this recently is in the middle of its run.</summary>
+        private const float GunHandover = 0.4f;
+
         /// <summary>
-        /// The weapons of one vehicle take turns. A machine gun opens up after a random delay,
-        /// fires runs of 6 to 10 rounds and pauses; it holds off for a moment round each main-gun,
-        /// missile or rocket shot. Two heavy weapons never fire in the same instant: a helicopter
-        /// looses its missile, then its rockets, then rakes with its gun.
+        /// The weapons of one vehicle take clear turns, never firing together: a machine gun opens
+        /// up after a random delay, fires runs of 6 to 10 rounds and pauses; it stays quiet round
+        /// every main-gun, missile or rocket shot (and a whole salvo), and two machine guns take
+        /// turns too (the coaxial gun, then the roof gun). A heavy weapon with its target lined
+        /// up has the right of way: the machine gun breaks off its run. A helicopter looses its
+        /// missile, then its rockets, then rakes with its gun. Bosses, with guns all over them,
+        /// only keep their mounts out of the same instant.
         /// </summary>
         private bool InRhythm(Vehicle v, int index)
         {
             var weapon = v.Arms[index];
-            var sinceHeavy = _world.Time - v.HeavyShotAt;
+            var now = _world.Time;
             var state = v.Weapons[index];
-            if (IsMachineGun(weapon))
+            var gun = IsMachineGun(weapon);
+            if (gun && !state.Started)
             {
-                if (!state.Started)
-                {
-                    state.Started = true;
-                    state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
-                    return false;
-                }
-                if (sinceHeavy < 0.35) return false;
-                // The main gun is about to fire: let it.
-                if (index > 0 && !IsMachineGun(v.Weapon) && v.Target.IsValid && v.Weapons[0].Cooldown is > 0f and < 0.25f) return false;
+                state.Started = true;
+                state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
+                return false;
+            }
+            if (v.Def.Boss) return v.AnyMount == index || now - v.AnyRoundAt > 0.01;
+            if (SalvoUnderWay(v, index)) return false;
+            if (gun)
+            {
+                if (now - v.HeavyRoundAt < GunAfterHeavy) return false;
+                if (now - v.HeavyWaitingAt < 0.15) return false;
+                if (HeavyDue(v)) return false;
+                if (v.GunMount != index && now - v.GunRoundAt < GunHandover) return false;
                 if (state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
                 return true;
             }
-            return sinceHeavy >= 0.3;
+            if (v.HeavyMount != index && now - v.HeavyRoundAt < HeavyAfterHeavy) return false;
+            if (now - v.GunRoundAt < HeavyAfterGun)
+            {
+                // Ready and lined up: the machine gun ends its run for it.
+                v.HeavyWaitingAt = now;
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>Another mount of the vehicle is in the middle of a salvo.</summary>
+        private static bool SalvoUnderWay(Vehicle v, int index)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+                if (i != index && v.Weapons[i].BurstLeft > 0) return true;
+            return false;
+        }
+
+        /// <summary>A heavy weapon with a target is about to fire: its reload is nearly done.</summary>
+        private static bool HeavyDue(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var state = v.Weapons[i];
+                if (IsMachineGun(v.Arms[i]) || state.Ammo == 0) continue;
+                var aimed = i == 0 ? v.Target.IsValid : state.Target.IsValid;
+                if (aimed && state.Cooldown is > 0f and <= GunBeforeHeavy) return true;
+            }
+            return false;
         }
 
         private bool CanFire(Vehicle v, int index, IDamageable target)
@@ -429,6 +519,18 @@ namespace MachineBrigade.Sim.Combat
         {
             var weapon = shooter.Arms[index];
             shooter.LastFiredAt = _world.Time;
+            shooter.AnyRoundAt = _world.Time;
+            shooter.AnyMount = index;
+            if (IsMachineGun(weapon))
+            {
+                shooter.GunRoundAt = _world.Time;
+                shooter.GunMount = index;
+            }
+            else
+            {
+                shooter.HeavyRoundAt = _world.Time;
+                shooter.HeavyMount = index;
+            }
             if (index == 0 && shooter.Def.Kamikaze)
             {
                 _world.Damage.Detonate(shooter, weapon);

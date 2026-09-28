@@ -174,6 +174,90 @@ namespace MachineBrigade.Editor
             materials.Dispose();
         }
 
+        /// <summary>
+        /// A flame tank pouring fire onto a tank 13 m off, from the game's camera (top row) and
+        /// from the side (bottom row), frozen at <see cref="FlameMoments"/> seconds. Batch mode
+        /// (with graphics): -executeMethod MachineBrigade.Editor.EffectShots.Flames -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Flame Shots")]
+        public static void Flames()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/flames.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260928);
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root);
+            var emitters = new Emitters(materials, root);
+            var fx = new MuzzleFx(materials, root);
+            var tank = models.Spawn("flame_tank", 0, root);
+            tank.Root.transform.SetPositionAndRotation(new Vector3(-6.5f, 0f, 0f), Quaternion.Euler(0f, 90f, 0f));
+            tank.Root.transform.localScale = Vector3.one * 0.95f;
+            var target = models.Spawn("main_battle_tank", 1, root);
+            target.Root.transform.SetPositionAndRotation(new Vector3(6.5f, 0f, 0f), Quaternion.Euler(0f, -90f, 0f));
+            target.Root.transform.localScale = Vector3.one * 0.85f;
+            var muzzle = tank.Muzzles.TryGetValue("main", out var m) ? m.position : tank.Root.transform.TransformPoint(tank.Muzzle);
+            var aimAt = new Vector3(6.5f, 1f, 0f);
+
+            var size = new Vector2Int(640, 360);
+            var sheet = new Texture2D(size.x * FlameMoments.Length, size.y * 2, TextureFormat.RGB24, false);
+            var camera = Camera(root);
+            var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.targetTexture = rt;
+            camera.Render();
+            const float step = 1f / 60f;
+            var time = 0f;
+            var nextPull = 0.1f;
+            var frame = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
+            for (var shot = 0; shot < FlameMoments.Length; shot++)
+            {
+                while (time + 1e-4f < FlameMoments[shot])
+                {
+                    time += step;
+                    if (time >= nextPull && time < 1.6f)
+                    {
+                        nextPull += 0.25f + Random.Range(0f, 0.05f);
+                        emitters.FlameJet(muzzle, aimAt, Vector3.Distance(muzzle, aimAt) / 36f, 0.25f, time);
+                        fx.Fire(MuzzleFx.Kind.MachineGun, muzzle, aimAt - muzzle, time, 0.8f, 0f);
+                    }
+                    emitters.Tick(time, step);
+                    fx.Tick(time);
+                    foreach (var ps in root.GetComponentsInChildren<ParticleSystem>()) ps.Simulate(step, false, false, false);
+                }
+                for (var row = 0; row < 2; row++)
+                {
+                    if (row == 0)
+                    {
+                        camera.orthographicSize = 9f;
+                        camera.transform.rotation = Quaternion.Euler(52f, -45f, 0f);
+                    }
+                    else
+                    {
+                        camera.orthographicSize = 7f;
+                        camera.transform.rotation = Quaternion.Euler(8f, 0f, 0f);
+                    }
+                    camera.transform.position = new Vector3(0f, 1.5f, 0f) - camera.transform.forward * 80f;
+                    camera.Render();
+                    RenderTexture.active = rt;
+                    frame.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
+                    frame.Apply();
+                    sheet.SetPixels(shot * size.x, (1 - row) * size.y, size.x, size.y, frame.GetPixels());
+                }
+            }
+            RenderTexture.active = null;
+            sheet.Apply();
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
+            File.WriteAllBytes(output, sheet.EncodeToPNG());
+            Debug.Log("[EffectShots] wrote " + Path.GetFullPath(output));
+            camera.targetTexture = null;
+            rt.Release();
+            models.Dispose();
+            materials.Dispose();
+        }
+
+        private static readonly float[] FlameMoments = { 0.15f, 0.45f, 0.9f, 1.4f, 2.4f };
+
         /// <summary>Seconds after a scene starts at which each column is taken.</summary>
         private static readonly float[] BlastMoments = { 0.05f, 0.25f, 0.7f, 1.6f, 4f };
 

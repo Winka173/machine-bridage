@@ -85,6 +85,9 @@ namespace MachineBrigade.Sim.Events
         /// most one every two seconds per vehicle.
         /// </summary>
         TraitProc,
+
+        /// <summary>A charged weapon (Mount) of Entity began powering up; it fires in Value seconds at Target.</summary>
+        WeaponCharging,
     }
 
     /// <summary>
@@ -151,6 +154,10 @@ namespace MachineBrigade.Sim.Events
         /// <summary>A shot from equipment rather than a mount (a Drone Escort drone): drawn from the main muzzle with its own weapon's look.</summary>
         internal static SimEvent FiredWith(Vehicle shooter, WeaponDef weapon, Vector2 origin, Vector2 aim, float travelTime, EntityId target) =>
             new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id, shooter.Team, 0, target);
+
+        internal static SimEvent Charging(Vehicle shooter, int mount, float seconds, Vector2 aim) =>
+            new(SimEventKind.WeaponCharging, shooter.Id, shooter.Position, aim, seconds, default, shooter.Def.Mounts[mount].Weapon.Id,
+                shooter.Team, mount);
 
         internal static SimEvent Proc(Vehicle v, string key) =>
             new(SimEventKind.TraitProc, v.Id, v.Position, default, 0f, default, key, v.Team, airborne: v.Flying);

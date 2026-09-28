@@ -156,7 +156,9 @@ namespace MachineBrigade.Tests
             var mission = (MissionSession)session;
             const float step = 0.05f;
             var seconds = 0f;
-            for (; seconds < 22 * 60 && session.Mode.Result == null; seconds += step)
+            // Past the mission's own clock: a timed mission must end by then.
+            var cap = def.TimeLimit > 0f ? def.TimeLimit + 60f : 22 * 60;
+            for (; seconds < cap && session.Mode.Result == null; seconds += step)
             {
                 session.Mode.Tick(world, step);
                 session.TickAi(world, step);

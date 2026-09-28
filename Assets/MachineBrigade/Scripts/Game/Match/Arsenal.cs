@@ -122,6 +122,20 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The extra health and damage a card of this rank brings (0.05 a rank above the first).</summary>
         public static float Bonus(int rank) => 0.05f * (Mathf.Clamp(rank, 1, Max) - 1);
+
+        /// <summary>Share off a card's call cost at this rank, in basis points: 5 % from rank 7, 10 % from rank 9.</summary>
+        public static int CutBasisPoints(int rank) => rank >= 9 ? 1000 : rank >= 7 ? 500 : 0;
+
+        /// <summary>
+        /// A card's call cost at this rank, in whole CP (after Arknights' Potential: small steps with a
+        /// cap, and a floor): cards of 5 CP or less never change, exact halves go to the player.
+        /// </summary>
+        public static int CallCost(int cost, int rank)
+        {
+            var bp = CutBasisPoints(rank);
+            if (cost <= 5 || bp == 0) return cost;
+            return cost - (cost * bp + 5000) / 10000;
+        }
     }
 
     /// <summary>

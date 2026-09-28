@@ -39,14 +39,19 @@ namespace MachineBrigade.Tests
             world.SpawnVehicle("recon_drone", 0, new Vector2(0f, -15f), 0f);
             Assert.AreEqual(3, launcher.Ammo(0), "starts with its salvos");
             var mg = 0;
+            var jeep = false;
             for (var t = 0f; t < 90f; t += TestWorlds.Step)
             {
                 world.Step(TestWorlds.Step);
                 foreach (var e in world.Events)
                     if (e.Kind == SimEventKind.WeaponFired && e.Entity == launcher.Id && e.Mount == 1) mg++;
                 world.ClearEvents();
-                if (launcher.OutOfAmmo && mg == 0)
+                // One jeep comes close once the last salvo is away (the gun waits for the salvo to finish).
+                if (launcher.OutOfAmmo && mg == 0 && !jeep)
+                {
                     world.SpawnVehicle("scout_jeep", 1, launcher.Position + new Vector2(0f, 18f), 3.14f);
+                    jeep = true;
+                }
                 if (launcher.OutOfAmmo && mg > 0) break;
             }
             Assert.IsTrue(launcher.OutOfAmmo, "three salvos and the rack is empty");

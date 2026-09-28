@@ -126,7 +126,18 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
 .rar { display: inline-block; width: 9pt; height: 9pt; border-radius: 1px; margin-right: 3pt; vertical-align: middle; }
 .toc li { margin: 2pt 0; }
+.guide { font-size: 9pt; margin-top: 3pt; border-left: 2px solid #f2a33a; padding-left: 5pt; }
+.guide div { margin: 1pt 0; }
+.guide .hl { color: #b86e0b; font-weight: 700; }
 """
+
+
+def guide_html(text):
+    """The Guide tab's four lines, key words ([[word]]) highlighted."""
+    if not text:
+        return ''
+    lines = [re.sub(r'\[\[(.+?)\]\]', lambda m: f"<span class='hl'>{m.group(1)}</span>", esc(line)) for line in text.split('\n')]
+    return "<div class='guide'>" + ''.join(f"<div>{'<b>' + l + '</b>' if i == 0 else l}</div>" for i, l in enumerate(lines)) + "</div>"
 
 
 def vehicle_card(v, imgdir):
@@ -143,7 +154,7 @@ def vehicle_card(v, imgdir):
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
-            f"<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
+            f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
             + (table(['Vũ khí', 'Loại', 'Sát thương', 'Hồi', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '') + "</div>")
 
 
@@ -161,7 +172,7 @@ def build(game, imgdir):
                "toàn bộ phương tiện với chỉ số và DPS, vũ khí, tháp canh, boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ và giao diện.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Phương tiện (thẻ chi tiết)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
-               "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống</li><li>Giao diện</li></ol></div>")
+               "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống</li><li>Giao diện</li><li>Hình ảnh vòng 6</li></ol></div>")
 
     # ------------------------------------------------------------------ overview
     out.append("<div class='section'><h2>1. Tổng quan</h2>"
@@ -186,7 +197,9 @@ def build(game, imgdir):
         'Assault': 'Công phá: người chơi đánh chiếm lần lượt 3 khu phòng thủ (A, B, C) trong quỹ thời gian; mỗi khu chiếm được cộng thêm giờ.',
         'Campaign': 'Chiến dịch 23 nhiệm vụ (xem phần 3).',
         'Siege': 'Công thành 3 giai đoạn: phá trạm radar tuyến ngoài → phá máy phát khiên trong tường → san phẳng sở chỉ huy; boss canh giữ xuất hiện ở giai đoạn 3.',
-        'BossRush': 'Săn trùm: lần lượt 5 boss (Behemoth, Mega Gunship, Mobile Fortress, Drone Mothership, Silver Bug) kèm hộ tống.',
+        'BossRush': 'Săn trùm: lần lượt 5 loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: xe tăng siêu nặng (Behemoth / Inferno / Tempest), '
+                    'trực thăng-máy bay pháo (Chim sắt / Spectre), pháo đài di động (Pháo đài băng / Hive / Bastion), phi thuyền drone, đĩa bay Silver Bug. '
+                    'Thưởng CP khi boss mất 25/50/75% máu (8 CP mỗi mốc) và 12 CP khi hạ; không có không kích ngẫu nhiên.',
         'Defend': 'Phòng thủ căn cứ: pháo đài (tường, cổng, tháp, sở chỉ huy) là của bạn; địch công thành theo đúng 3 giai đoạn và được thả thêm các đợt quân; giữ tới khi địch hết giờ.',
         'Weekly': 'Pháo đài tuần: một cuộc công thành mà vòng thành đã phá được giữ nguyên cả tuần; thắng lần đầu trong tuần có thưởng.',
         'Endless': 'Vô tận: pháo đài của bạn trước các đợt địch không ngừng (mỗi 55 giây, to dần, tinh nhuệ dần); lưu kỷ lục đợt xa nhất.',
@@ -268,11 +281,14 @@ def build(game, imgdir):
                + "<h3>Boss</h3>" + ''.join(vehicle_card(v, imgdir) for v in game['bosses']) + '</div>')
 
     # ------------------------------------------------------------------ supports
-    rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>", esc(s['kind']), s['cost'], f"{s['cooldown']:g} s",
+    rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>{guide_html(s.get('guide', ''))}", esc(s['kind']), s['cost'], f"{s['cooldown']:g} s",
              num(s['damage']) if s['damage'] else '', f"{s['radius']:g}" if s['radius'] else '', s['count'] or '',
              f"{s['duration']:g}" if s['duration'] else ''] for s in game['supports']]
     out.append("<div class='section'><h2>8. Hỗ trợ hỏa lực</h2><p>Thẻ hỗ trợ trong bộ bài (2 ô), gọi vào một điểm trên bản đồ; không gọi được vào vùng căn cứ địch; "
-               "vật phẩm dùng một lần mua bằng xu.</p>" + table(['Hỗ trợ', 'Loại', 'CP', 'Hồi', 'Sát thương', 'Bán kính', 'Số lượng', 'Thời gian'], rows) + '</div>')
+               "vật phẩm dùng một lần mua bằng xu. Mỗi thẻ hỗ trợ có clip Xem bắn riêng (gọi hỏa lực lên một cụm mục tiêu).</p>"
+               + table(['Hỗ trợ', 'Loại', 'CP', 'Hồi', 'Sát thương', 'Bán kính', 'Số lượng', 'Thời gian'], rows)
+               + f"{img(imgdir / 'r6' / 'supports.png', 'shot')}<div class='caption'>Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên lửa hành trình, napalm, "
+               "ném bom rải thảm, MOAB, bom chùm, máy bay pháo, EMP, khói, tiếp tế, chi viện).</div></div>")
 
     # ------------------------------------------------------------------ gear
     g = game['gear']
@@ -313,8 +329,19 @@ def build(game, imgdir):
     # ------------------------------------------------------------------ economy
     e = game['economy']
     econ = balance.get('economy', {})
-    rank_rows = [[i + 1, f"{e['rankBonus'][i] * 100:g}%", num(e['rankCoins'][i]) if i < len(e['rankCoins']) else '—',
+    rank_rows = [[i + 1, f"{e['rankBonus'][i] * 100:g}%", f"−{e['rankCut'][i] / 100:g}%" if e.get('rankCut') and e['rankCut'][i] else '—',
+                  num(e['rankCoins'][i]) if i < len(e['rankCoins']) else '—',
                   e['rankPrints'][i] if i < len(e['rankPrints']) else '—'] for i in range(len(e['rankBonus']))]
+    cost_rows = [[c['cost'], c['rank7'], c['rank9']] for c in e.get('callCost', [])]
+    mode_econ = [
+        ['Chiếm cứ điểm, Tử chiến, Vua đồi', '18 CP', '1,35 × 0,95', 'Hai phe như nhau'],
+        ['Công phá (Assault)', '16 CP', '1,2 × 0,95', ''],
+        ['Công thành (người chơi tấn công)', '34 CP (kho 40)', '1,8 × 0,95', 'Thưởng CP mỗi giai đoạn'],
+        ['Phòng thủ / Vô tận (người chơi giữ)', '24 CP', '1,2 × 0,95', 'Vô tận: người chơi +2%/đợt (tối đa +30%), địch +4%/đợt'],
+        ['Sinh tồn', '16 CP', '0,9 × 0,95', 'Chỉ có quân, không căn cứ'],
+        ['Săn trùm (Boss Rush)', '40 CP (kho 45)', '2,0 × 0,95 (Khó 1,75)', '8 CP ở mỗi mốc 75/50/25% máu boss + 12 CP khi hạ'],
+        ['Chiến dịch', 'theo nhiệm vụ', 'theo nhiệm vụ × 0,95', 'Địch nhận 80% mức giảm giá bộ bài của người chơi thành thu nhập'],
+    ]
     crate_names = ['Chiến trường', 'Bạc', 'Vàng', 'Huyền thoại']
     crate_rows = [[crate_names[i], num(e['crateCoinPrice'][i]) if e['crateCoinPrice'][i] else 'miễn phí / thưởng', e['crateRolls'][i],
                    f"{e['crateCoinsLow'][i]}–{e['crateCoinsHigh'][i]}", ' · '.join(f"{RARITY_VI[r]} {p * 100:g}%" for r, p in enumerate(e['crateOdds'][i]) if p > 0)]
@@ -328,7 +355,16 @@ def build(game, imgdir):
                "<h3>Ngoài trận (một loại tiền: xu)</h3>"
                "<p>Thưởng trận nhanh: thắng 120 / hòa 70 / thua 40 xu + 1,5 xu mỗi xe hạ (tối đa 120) + 4 xu mỗi phút (tối đa 15), × hệ số độ khó; XP = 80% xu. "
                "Sinh tồn/Vô tận: 30 + 18 × số đợt + 1,5 × số xe hạ. Nhiệm vụ: thưởng theo sao và cấp độ. Thử thách hằng ngày 3 nhiệm vụ.</p>"
-               "<h3>Hạng thẻ</h3>" + table(['Hạng', 'Thưởng máu/sát thương', 'Xu lên hạng tiếp', 'Bản thiết kế'], rank_rows)
+               "<h3>Thu nhập theo chế độ (vòng 6: tăng vừa phải 12–26%)</h3>"
+               "<p>Hệ số chung: thu nhập 0,85 → <b>0,95</b>, tiếp tế 0,9 → <b>1,05</b> (nhiều xe trên sân hơn khoảng 12%). Tham khảo: elixir của Clash Royale "
+               "(tăng x2/x3 cuối trận), Potential của Arknights (giảm giá nhỏ theo bậc, có trần), Boss Rush của BTD6 (thưởng khi gây sát thương cho boss). "
+               "Tiêm kích 12 → 10 CP, cường kích 13 CP, xe rùa 8 CP; pháo phòng không của boss 27 → 21 sát thương/viên; máy bay VTOL không dừng lơ lửng "
+               "trong tầm pháo phòng không; AI không mua tiêm kích khi địch không có máy bay.</p>"
+               + table(['Chế độ', 'CP khởi đầu', 'Thu nhập (CP/giây)', 'Ghi chú'], mode_econ)
+               + "<h3>Hạng thẻ</h3><p>Từ hạng 7 thẻ rẻ hơn 5%, từ hạng 9 rẻ hơn 10% khi gọi (làm tròn CP nguyên, thẻ ≤ 5 CP không đổi). Giá trị quân, "
+               "phí tiếp tế và tiền hoàn khi bị hạ vẫn tính theo giá gốc.</p>"
+               + table(['Hạng', 'Thưởng máu/sát thương', 'Giảm giá gọi', 'Xu lên hạng tiếp', 'Bản thiết kế'], rank_rows)
+               + table(['Giá gốc (CP)', 'Hạng 7–8', 'Hạng 9–10'], cost_rows)
                + "<h3>Hòm đồ</h3><p>Giữ nguyên mua bằng xu (quyết định của chủ dự án). Có cơ chế bảo hiểm (pity) cho Sử thi/Huyền thoại, tỷ lệ công khai trong game.</p>"
                + table(['Hòm', 'Giá (xu)', 'Số món', 'Xu kèm', 'Tỷ lệ độ hiếm mỗi món'], crate_rows)
                + "<h3>Gói xu</h3>" + table(['Gói', 'Xu', 'Giá'], pack_rows)
@@ -354,12 +390,24 @@ def build(game, imgdir):
                "<li><b>Trang bị trong trận:</b> 42 dòng unique móc vào các sự kiện bắn, trúng, hạ, chết, đứng yên, đổi mục tiêu; hệ thống trạng thái (cháy, chậm, "
                "xé giáp, đánh dấu, khiên); hiện chữ nhỏ trên xe khi kích hoạt.</li>"
                "<li><b>Chiến dịch:</b> địch scale theo kho vũ khí người chơi, chi viện bằng dù, dấu mục tiêu trên chiến trường và bản đồ nhỏ.</li>"
-               "<li><b>Kiểm thử:</b> 375 bài test tự động (350 chạy mỗi lần, 25 bài cân bằng/xuất dữ liệu chạy tay). Cân bằng chiến dịch chạy 5 seed mỗi nhiệm vụ.</li>"
+               "<li><b>Nhịp bắn (vòng 6):</b> các vũ khí của một xe không bao giờ bắn cùng lúc: súng máy nghỉ quanh mỗi phát pháo/tên lửa và mỗi loạt, "
+               "hai súng máy thay phiên, vũ khí nặng đã ngắm được ưu tiên. Súng (trừ súng máy, pháo phòng không) bắn chậm hơn 30% và mạnh hơn tương ứng "
+               "(giữ nguyên DPS). Pháo phòng không bắn loạt 8–16 viên (16–25 viên/giây) rồi nghỉ. Xe tăng hết mục tiêu mặt đất thì dùng súng máy đồng trục "
+               "bắn máy bay. Railgun nạp năng lượng 0,9 giây rồi bắn xuyên hàng.</li>"
+               "<li><b>Đạn và vụ nổ:</b> 35 mô hình đạn riêng (TOW, Kornet, Ataka, Hellfire, Stinger, Igla, Pantsir, AIM-9, R-60, AIM-120, Patriot, Buk, Maverick, "
+               "JASSM, Hydra, S-8, Grad, GMLRS, TOS, Mk 84, FAB, GBU-12, JDAM, Lancet, Shahed, đạn xuyên, đạn nổ lõm, đạn pháo 155, đạn cối, đạn railgun); "
+               "tên lửa rời bệ chậm rồi tăng tốc (1–1,5 giây cho phát bắn 40–60 m). Vụ nổ theo loại: đạn xuyên tóe lửa, đạn lõm chớp sáng, đạn nổ tung đất và khói đen, "
+               "nhiệt áp bùng quả cầu lửa thứ hai, bom có vòng sóng xung kích và cột bụi; boss nổ nhiều đợt rồi lóe trắng toàn màn hình.</li>"
+               "<li><b>Âm thanh:</b> nhạc nền tự sáng tác bằng script (Tools/music: MIDI + FluidSynth + SoundFont FluidR3 giấy phép MIT, không dùng AI): "
+               "menu, 3 bản trận đấu, công thành, boss, thắng, thua; có mức âm lượng nhạc riêng. Clip Xem bắn có tiếng súng.</li>"
+               "<li><b>Bản đồ nhỏ:</b> hiện mọi xe địch (ngoài tầm nhìn thì mờ), boss là vòng đỏ nhấp nháy.</li>"
+               "<li><b>Kiểm thử:</b> 377 bài test tự động (352 chạy mỗi lần, 25 bài cân bằng/xuất dữ liệu chạy tay), trong đó có bài kiểm tra mọi xe không bắn "
+               "hai vũ khí cùng lúc. Cân bằng chiến dịch chạy 5 seed mỗi nhiệm vụ.</li>"
                "<li><b>Đồ họa:</b> URP, mức Thấp/Vừa/Cao/Tùy chỉnh; Cao có shadow map 4096, bóng mềm, MSAA 4x và model chi tiết cho 12 xe phổ biến nhất.</li></ul></div>")
 
     # ------------------------------------------------------------------ UI
     ui = [('home.png', 'Trang chủ: trận đấu AI làm nền, cột thẻ bên phải, nút XUẤT KÍCH.'), ('army.png', 'Quân đội: bộ bài và bộ sưu tập.'),
-          ('detail.png', 'Chi tiết phương tiện: mô hình 3D xoay, chỉ số, vũ khí, xem bắn, trang bị.'), ('gear.png', 'Trang bị.'),
+          ('detail.png', 'Chi tiết phương tiện: mô hình 3D xoay, chỉ số, vũ khí, xem bắn, trang bị.'), ('guide.png', 'Tab Hướng dẫn (mới): vai trò, cách đánh, mạnh/yếu, mẹo; từ khóa tô màu.'), ('gear.png', 'Trang bị.'),
           ('setup.png', 'Thiết lập trận: chế độ, bản đồ, độ khó, thời tiết.'), ('events.png', 'Sự kiện.'), ('shop.png', 'Cửa hàng.'),
           ('settings.png', 'Cài đặt đồ họa và âm thanh.'), ('result.png', 'Màn kết quả trận.'),
           ('edge.png', 'Mép bản đồ: đường ranh giới và cảnh ngoài viền.')]
@@ -367,6 +415,18 @@ def build(game, imgdir):
                "cho hành động chính (góc vát), chữ in hoa hẹp. Thanh điều hướng dọc bên trái.</p>")
     for name, cap in ui:
         tag = img(shots / name, 'shot')
+        if tag:
+            out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
+    # ------------------------------------------------------------------ round 6 pictures
+    r6 = imgdir / 'r6'
+    pics = [('munitions_1.png', 'Mô hình đạn: tên lửa chống tăng và phòng không vác vai.'), ('munitions_2.png', 'Tên lửa không đối không, phòng không, không đối đất.'),
+            ('munitions_3.png', 'Rocket.'), ('munitions_4.png', 'Bom và drone.'), ('munitions_5.png', 'Đạn pháo, đạn cối, đạn xuyên, đạn railgun.'),
+            ('new_models.png', 'Mô hình mới: Ka-52, Su-25, pháo công thành, Inferno, Tempest, Hive, Bastion, Spectre.'),
+            ('flame.png', 'Súng phun lửa làm lại: luồng nhiên liệu cong, cầu lửa cuộn, khói đen.'), ('railgun.png', 'Railgun: nạp năng lượng, tia sáng lưu lại.'),
+            ('boss_death.png', 'Boss chết: nổ nhiều đợt, lóe trắng, sóng xung kích.'), ('muzzle_audit.png', 'Kiểm tra đầu nòng: mỗi chấm màu là nơi một vũ khí bắn ra.')]
+    out.append("<div class='section'><h2>14. Hình ảnh vòng 6</h2>")
+    for name, cap in pics:
+        tag = img(r6 / name, 'shot')
         if tag:
             out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
     out.append('</div></body></html>')

@@ -40,5 +40,8 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public int RunLeft;
         public bool Started;
+
+        /// <summary>A charged weapon powering up: seconds still to go (0: not charging).</summary>
+        public float ChargeLeft;
     }
 }

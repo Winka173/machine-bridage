@@ -54,7 +54,19 @@ namespace MachineBrigade.Game.Rendering
             if (Camera.main != null) Camera.main.cullingMask &= ~(1 << Layer);
         }
 
-        public RenderTexture Texture { get; }
+        public RenderTexture Texture { get; private set; }
+
+        /// <summary>The game's sound: the In action range is heard through it while it plays.</summary>
+        public Audio.AudioDirector Audio { get; set; }
+
+        /// <summary>Development capture only: a sharper texture for the range films.</summary>
+        public void Resize(int width, int height)
+        {
+            var old = Texture;
+            Texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "Unit Preview", antiAliasing = 4 };
+            _camera.targetTexture = Texture;
+            old.Release();
+        }
 
         /// <summary>Shows a vehicle's model (in the player's colours) and starts the camera.</summary>
         public void Show(string modelId, float scale)
@@ -77,13 +89,19 @@ namespace MachineBrigade.Game.Rendering
             _camera.enabled = true;
         }
 
-        /// <summary>The vehicle in action: firing at targets on a little range of its own (see <see cref="FiringRange"/>).</summary>
+        /// <summary>The vehicle (or a fire support, by its card id) in action: on a little range of its own (see <see cref="FiringRange"/>).</summary>
         public void ShowRange(string vehicleId)
         {
             CloseRange();
             _turntable.gameObject.SetActive(false);
             _range = new FiringRange(_catalog, _materials, _meshes, _models, _camera, Layer, vehicleId);
             _camera.enabled = true;
+            if (Audio != null)
+            {
+                _range.Sounds = Audio.Consume;
+                Audio.ViewOverride = _camera;
+                Audio.ReachOverride = 90f;
+            }
         }
 
         private void CloseRange()
@@ -91,6 +109,12 @@ namespace MachineBrigade.Game.Rendering
             if (_range == null) return;
             _range.Dispose();
             _range = null;
+            if (Audio != null)
+            {
+                Audio.FocusOverride = null;
+                Audio.ViewOverride = null;
+                Audio.ReachOverride = 0f;
+            }
             // The range moved the camera and widened its view: back to the turntable's.
             _camera.orthographic = false;
             _camera.fieldOfView = 28f;
@@ -108,7 +132,11 @@ namespace MachineBrigade.Game.Rendering
         public void Tick(float dt)
         {
             if (!_camera.enabled) return;
-            if (_range != null) _range.Tick(dt);
+            if (_range != null)
+            {
+                _range.Tick(dt);
+                if (Audio != null) Audio.FocusOverride = _range.Look;
+            }
             else _turntable.Rotate(0f, 22f * dt, 0f, Space.Self);
         }
 

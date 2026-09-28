@@ -155,7 +155,7 @@ namespace MachineBrigade.Tests
         [TestCase("attack_helicopter", "missile", 2, 2f)]
         [TestCase("gunship_heli", "rocket", 2, 1.5f)]
         [TestCase("scout_heli", "gun", 2, 0.8f)]
-        [TestCase("heavy_attack_heli", "rocket", 4, 1.5f)]
+        [TestCase("heavy_attack_heli", "rocket", 2, 1.5f)]
         [TestCase("fighter_jet", "missile", 4, 3f)]
         [TestCase("attack_jet", "missile", 2, 3.5f)]
         [TestCase("tank_buster", "rocket", 2, 3f)]

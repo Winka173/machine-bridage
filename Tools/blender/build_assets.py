@@ -28,6 +28,9 @@ import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
 import mb_boss_saucer  # noqa: E402
 import mb_bosses  # noqa: E402
+import mb_bosses2  # noqa: E402
+import mb_munitions  # noqa: E402
+import mb_round6  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
 import mb_harbor  # noqa: E402
@@ -61,10 +64,14 @@ def all_builders():
                 **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
                 **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
                 **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
-                **mb_boss_saucer.BUILDERS}
+                **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS,
+                # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
+                **mb_round6.BUILDERS, **mb_bosses2.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
+    # A round 6 builder's own high-detail variant (attack_jet_hd) over the generic one.
+    builders.update({k: v for k, v in mb_round6.BUILDERS.items() if k.endswith('_hd')})
     return builders
 
 

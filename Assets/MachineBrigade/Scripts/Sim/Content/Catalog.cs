@@ -105,6 +105,9 @@ namespace MachineBrigade.Sim.Content
                 {
                     Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false),
+                    ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
+                    ProjectileScale = w.Float("projectileScale", 1f),
+                    Charge = w.Float("charge", 0f),
                 });
                 if (w.Has("cluster"))
                 {
@@ -134,7 +137,10 @@ namespace MachineBrigade.Sim.Content
                 if (v.Has("secondary"))
                 {
                     foreach (var m in v.Array("secondary"))
-                        secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free)));
+                        secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
+                        {
+                            ProjectileModel = m.Has("model") ? m.String("model") : null,
+                        });
                 }
                 vehicles.Add(Wrap(v, () =>
                 {
@@ -149,6 +155,7 @@ namespace MachineBrigade.Sim.Content
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
                         v.Has("mainSlot") ? v.String("mainSlot") : "main", v.Bool("fixedWing", false), v.Bool("static", false));
                     if (v.Has("model")) def.Model = v.String("model");
+                    if (v.Has("mainModel")) def.Mounts[0].ProjectileModel = v.String("mainModel");
                     def.Boss = v.Bool("boss", false);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
@@ -157,6 +164,12 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("length")) def.Length = v.Float("length") * scale;
                     if (v.Has("width")) def.Width = v.Float("width") * scale;
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
+                    if (v.Has("strongVs"))
+                    {
+                        var list = new List<UnitClass>();
+                        foreach (var name in v.StringArray("strongVs")) list.Add((UnitClass)Enum.Parse(typeof(UnitClass), name));
+                        def.StrongVs = list;
+                    }
                     if (v.Has("skills"))
                     {
                         var list = new List<SkillDef>();

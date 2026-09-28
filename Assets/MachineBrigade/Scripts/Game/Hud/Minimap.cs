@@ -16,7 +16,7 @@ namespace MachineBrigade.Game.Hud
     {
         private const float Cos45 = 0.70710678f;
 
-        private readonly List<(Vector2 at, int team, bool air)> _blips = new();
+        private readonly List<(Vector2 at, int team, bool air, bool dim)> _blips = new();
         private readonly List<(Vector2 at, float radius, int owner, float progress)> _points = new();
         private readonly List<(Vector2 at, float radius)> _warnings = new();
         private readonly List<(Vector2 at, int kind)> _marks = new();
@@ -78,10 +78,16 @@ namespace MachineBrigade.Game.Hud
             _points.Clear();
             _warnings.Clear();
             _marks.Clear();
+            _bosses.Clear();
             _hasView = false;
         }
 
-        public void Blip(Vector2 world, int team, bool air) => _blips.Add((world, team, air));
+        public void Blip(Vector2 world, int team, bool air, bool dim = false) => _blips.Add((world, team, air, dim));
+
+        /// <summary>A boss: a big pulsing red marker, wherever it is.</summary>
+        public void Boss(Vector2 world) => _bosses.Add(world);
+
+        private readonly List<Vector2> _bosses = new();
 
         public void Point(Vector2 world, float radius, int owner, float progress) => _points.Add((world, radius, owner, progress));
 
@@ -176,15 +182,17 @@ namespace MachineBrigade.Game.Hud
                 p.Stroke();
             }
 
-            foreach (var (at, team, air) in _blips)
+            foreach (var (at, team, air, dim) in _blips)
             {
                 var c = ToLocal(at);
                 // A dark halo keeps each blip readable on any ground.
-                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.75f);
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, dim ? 0.35f : 0.75f);
                 p.BeginPath();
                 p.Arc(c, air ? 4.6f : 3.6f, 0f, 360f);
                 p.Fill();
-                p.fillColor = team == 0 ? UiKit.Mint : team == 2 ? new Color(0.92f, 0.9f, 0.8f) : UiKit.Danger;
+                var tint = team == 0 ? UiKit.Mint : team == 2 ? new Color(0.92f, 0.9f, 0.8f) : UiKit.Danger;
+                // Out of sight: dimmer, as the radar has it.
+                p.fillColor = dim ? new Color(tint.r, tint.g, tint.b, 0.45f) : tint;
                 p.BeginPath();
                 if (air)
                 {
@@ -220,6 +228,26 @@ namespace MachineBrigade.Game.Hud
                 Diamond(7f);
                 p.fillColor = colour;
                 Diamond(5f);
+            }
+
+            // Bosses: a red disc in a pulsing ring, over everything but the view frame.
+            var pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 5f);
+            foreach (var at in _bosses)
+            {
+                var c = ToLocal(at);
+                p.strokeColor = new Color(1f, 0.25f, 0.2f, 0.5f + 0.5f * pulse);
+                p.lineWidth = 2f;
+                p.BeginPath();
+                p.Arc(c, 9f + 3f * pulse, 0f, 360f);
+                p.Stroke();
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.9f);
+                p.BeginPath();
+                p.Arc(c, 7f, 0f, 360f);
+                p.Fill();
+                p.fillColor = new Color(1f, 0.28f, 0.22f);
+                p.BeginPath();
+                p.Arc(c, 5.2f, 0f, 360f);
+                p.Fill();
             }
 
             if (_hasView)

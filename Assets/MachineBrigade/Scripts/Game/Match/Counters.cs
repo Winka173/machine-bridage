@@ -32,12 +32,17 @@ namespace MachineBrigade.Game.Match
         public static IReadOnlyList<UnitClass> StrongVs(UnitClass unit) =>
             Strong.TryGetValue(unit, out var list) ? list : Array.Empty<UnitClass>();
 
+        /// <summary>What this unit beats: its own list where the data gives one (aircraft differ within a class), else its class's.</summary>
+        public static IReadOnlyList<UnitClass> StrongVs(VehicleDef def) => def.StrongVs ?? StrongVs(def.Class);
+
         /// <summary>The classes that list <paramref name="unit"/> among their prey.</summary>
         public static IReadOnlyList<UnitClass> WeakVs(UnitClass unit)
         {
             var weak = new List<UnitClass>();
             foreach (var (hunter, prey) in Strong)
                 if (hunter != UnitClass.Boss && Array.IndexOf(prey, unit) >= 0) weak.Add(hunter);
+            // Aircraft also fear the fighters (planes), whatever the class line says.
+            if (unit == UnitClass.Plane && !weak.Contains(UnitClass.Plane)) weak.Add(UnitClass.Plane);
             return weak;
         }
 
@@ -45,7 +50,7 @@ namespace MachineBrigade.Game.Match
         public static string Line(VehicleDef def)
         {
             var text = new StringBuilder();
-            var strong = StrongVs(def.Class);
+            var strong = StrongVs(def);
             if (def.Class == UnitClass.Support) text.Append(Strings.Get("counter.support"));
             else if (strong.Count > 0) text.Append(Strings.Format("counter.strong", Join(strong)));
             var weak = WeakVs(def.Class);

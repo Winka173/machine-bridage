@@ -112,6 +112,14 @@ namespace MachineBrigade.Game.Hud
             UiKit.Uppercase(Root);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
+            // Device check of a detail page: -mb-detail=apc (and -mb-detail-guide for its Guide tab).
+            var detail = Match.DebugFlags.Value("-mb-detail=");
+            if (!string.IsNullOrEmpty(detail) && (catalog.Vehicles.ContainsKey(detail) || catalog.TryGetSupport(detail, out _)))
+            {
+                if (Match.DebugFlags.Has("-mb-detail-guide")) _detailTab = DetailTab.Guide;
+                OpenDetail(detail);
+                Refresh();
+            }
         }
 
         private static bool _reopenSettings;
@@ -120,7 +128,18 @@ namespace MachineBrigade.Game.Hud
         public VisualElement Root { get; }
 
         /// <summary>The vehicle turntable for the detail page (set by the match once the models exist).</summary>
-        public UnitPreview Preview { get; set; }
+        public UnitPreview Preview
+        {
+            get => _preview;
+            set
+            {
+                _preview = value;
+                // A detail page opened before the preview existed (-mb-detail): show its model now.
+                if (value != null && _detailId != null && _detail.style.display != DisplayStyle.None) ShowPreview();
+            }
+        }
+
+        private UnitPreview _preview;
 
         /// <summary>An opaque page covers the lobby battle: it need not be drawn or run.</summary>
         public bool CoversBattle => _overlays.Count > 0 || _tab != Tab.Battle;
@@ -354,6 +373,9 @@ namespace MachineBrigade.Game.Hud
             body.Add(Stepper("volume", "volume", Strings.Get("settings.volume"),
                 () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",
                 step => MatchSettings.Volume = Mathf.Clamp01(Mathf.Round((MatchSettings.Volume + step * 0.1f) * 10f) / 10f)));
+            body.Add(Stepper("music", "volume", Strings.Get("settings.music"),
+                () => MatchSettings.MusicVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.MusicVolume * 100f)}%",
+                step => MatchSettings.MusicVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.MusicVolume + step * 0.1f) * 10f) / 10f)));
             body.Add(OptionRow("globe", "settings.language", new[] { Strings.Get("settings.auto"), "English", "Tiếng Việt" },
                 () => (int)MatchSettings.Language, i =>
                 {
