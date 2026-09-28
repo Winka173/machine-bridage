@@ -73,6 +73,9 @@ namespace MachineBrigade.Game.Match
         private MissionMarkers _markers;
         private PlayAreaView _playArea;
 
+        /// <summary>A siege fortress's set pieces (dome, line in, searchlights, super-gun); null elsewhere.</summary>
+        private FortressView _fortress;
+
         /// <summary>The battle was brought back to a checkpoint (replayed before its views were built).</summary>
         private bool _resumed;
 
@@ -293,6 +296,11 @@ namespace MachineBrigade.Game.Match
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
             _session.SetNight(weather == WeatherKind.Night);
+            if (!_menu && _session.Mode is MachineBrigade.Sim.Modes.SiegeMode siegeMode && _world.Map.Fortress != null)
+            {
+                _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
+                _fortress.SetNight(weather == WeatherKind.Night);
+            }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -373,6 +381,7 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
             _session.SetNight(next == WeatherKind.Night);
+            _fortress?.SetNight(next == WeatherKind.Night);
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -608,6 +617,7 @@ namespace MachineBrigade.Game.Match
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
             _map.DrawShields(_camera.Rotation, Time.time);
+            _fortress?.Tick(Time.time, Time.deltaTime);
             _crates?.Update(_world);
             _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
@@ -752,6 +762,7 @@ namespace MachineBrigade.Game.Match
             _leavingWeather?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
+            _fortress?.Dispose();
             _audio?.Dispose();
             _music?.Dispose();
             _views?.Dispose();
@@ -872,6 +883,7 @@ namespace MachineBrigade.Game.Match
                 }
             }
             if (!DebugFlags.Has("-mb-no-fx")) _effects.Consume(_world.Events, _views, _map);
+            _fortress?.Consume(_world.Events);
             _audio.Consume(_world.Events);
             _world.ClearEvents();
         }

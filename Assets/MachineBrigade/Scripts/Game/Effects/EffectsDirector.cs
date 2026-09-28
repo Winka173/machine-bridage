@@ -951,6 +951,15 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A brief flash of the whole screen, of the given strength (0 to 1): huge and ultimate blasts on screen.</summary>
         public Action<float> Flash { get; set; }
 
+        /// <summary>
+        /// A blast the game stages rather than the simulation (the fortress super-gun's muzzle, the
+        /// shield dome going down): the tier's explosion, its light at night, flash and shake.
+        /// </summary>
+        public void Blast(ExplosionTier tier, Vector3 at, float scale = 1f) => Explode(tier, at, Time.time, scale);
+
+        /// <summary>One expanding ring on the ground of the given size and colour (HDR), for staged moments.</summary>
+        public void Shockwave(Vector3 at, float size, Color colour) => Ring(at, size, colour);
+
         private void Shake(Vector3 at, float amount)
         {
             if (amount <= 0f) return;
