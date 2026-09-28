@@ -490,7 +490,13 @@ def build(game, imgdir):
                "Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).</p>"
                "<p><b>Prompt 11:</b> HUD gọn trong trận (mặc định bật, tắt được trong Cài đặt): khi giao tranh HUD chỉ chiếm 26-28 % màn hình 16:9 "
                "và 21-23 % ở 20:9 (HUD đầy đủ 51-64 %). Mọi xe, tháp, công trình, thẻ hỗ trợ và vật phẩm có tên ngắn (tối đa khoảng 14 ký tự) "
-               "dùng ở chỗ chật; mọi thẻ có vùng tên cao cố định 2 dòng nên ảnh, CP và cấp luôn thẳng hàng. Khiên vẽ lại bằng một shader.</p>")
+               "dùng ở chỗ chật; mọi thẻ có vùng tên cao cố định 2 dòng nên ảnh, CP và cấp luôn thẳng hàng. Khiên vẽ lại bằng một shader.</p>"
+               "<p><b>Prompt 14:</b> ngoài trận mọi cỡ tính theo point của máy (thanh trên 44 pt, thanh bên 72 pt với icon 23 pt, tab 40 pt, nút 44 pt, "
+               "nút chính 53 pt, chữ 19 / 18 / 14 / 13 / 11 pt, cỡ Lớn gấp 1,2), thẻ trong danh sách nhỏ hơn 22 %; nội dung chiếm 70-89 % màn hình 16:9 và 20:9. "
+               "Màn Căn cứ là ảnh chụp thật từ trên xuống của trại trên từng bản đồ, mũi tên đỏ là hướng địch tới, ô tháp đúng vị trí thật với cỡ 1 / 1,4 / 2, "
+               "ô tiện ích hình lục giác; phủ tầm bắn (mặt đất cam, trên không xanh nhạt), chụm hai ngón để phóng to. Một bố trí chính áp cho cả 20 bản đồ theo "
+               "vị trí (cổng, vòng ngoài, vòng trong, cạnh SCH, phía sau), bản đồ nào cần thì chỉnh riêng; 3 bộ căn cứ; tự xếp theo cách AI địch xếp. "
+               "Sức mạnh căn cứ là đúng con số dùng để tính độ mạnh các đợt địch. Tiền đồn có tab riêng. Mỗi tháp có icon riêng.</p>")
     out.append("<h3>Trang chủ và thiết lập trận</h3>"
                + one('screen-home-vi-16x9.png', 'Trang chủ: trận AI làm nền, nhiệm vụ chiến dịch tiếp theo, thử thách hôm nay, bộ bài, bốn ô chọn chế độ / chiến trường / độ khó / thời tiết và nút XUẤT KÍCH.')
                + pair('screen-setup-mode-vi-16x9.png', 'Chọn chế độ: tên đầy đủ và mô tả một dòng.',
@@ -502,8 +508,20 @@ def build(game, imgdir):
                                                                                 'mỗi mục có ảnh, luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'))
     out.append("<h3>Quân đội</h3>"
                + one('screen-army-deck-vi-16x9.png', 'Bộ bài: thẻ render 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), học thuyết.')
-               + one('screen-army-towers-vi-16x9.png', 'Tháp và mô-đun: thẻ render 3D xếp theo cỡ, tên cao cố định 2 dòng, cấp và dòng mở khóa thẳng hàng.')
-               + one('screen-army-base-vi-16x9.png', 'Căn cứ: sơ đồ sở chỉ huy với ô nhỏ / vừa / lớn / tiện ích, chỉ sáng ô hợp lệ; panel tháp có hạng, nhánh, 3 ô đồ và nút xem chi tiết.'))
+               + one('screen-army-towers-vi-16x9.png', 'Tháp và mô-đun: thẻ render 3D xếp theo cỡ, tên cao cố định 2 dòng, cấp và dòng mở khóa thẳng hàng; góc thẻ là icon riêng của tháp.'))
+    out.append("<h3>Căn cứ và tiền đồn (prompt 14)</h3>"
+               + one('screen-army-base-vi-16x9.png', 'Căn cứ: trên cùng là cấp SCH và dòng lên cấp tiếp theo, chọn bản đồ (có ảnh trong danh sách), 3 bộ căn cứ và Tự xếp; tự lưu. '
+                                                   'Bên trái là khay tháp theo cỡ (Nhỏ / Vừa / Lớn / Tiện ích), tháp chưa mở bị mờ kèm nơi mở khóa. Giữa là ảnh thật của trại: '
+                                                   'mũi tên đỏ là hướng địch tới, ô đúng vị trí và cỡ thật, ô trống ghi cỡ bằng chữ, ô khóa ghi cấp SCH cần. Bên phải là tổng quan '
+                                                   'khi chưa chọn gì; dưới cùng là độ phủ căn cứ (thiếu thì báo đỏ), sức mạnh căn cứ và số ô đã dùng.')
+               + pair('screen-army-base-picked-vi-16x9.png', 'Chọn một tháp: chỉ số so với tháp cùng cỡ, tầm bắn đất / không và tầm tối thiểu, vòng tầm bắn trên bản đồ, '
+                                                             'tab Nhánh / Trang bị, nút Thay, Gỡ và Chi tiết.',
+                      'screen-army-base-ranges-vi-16x9.png', 'Hiện tầm bắn: vùng phủ mặt đất (cam) và trên không (xanh nhạt) của cả căn cứ.')
+               + pair('screen-army-outpost-vi-16x9.png', 'Tiền đồn: tab riêng, hai ô (nhỏ và vừa) quanh cứ điểm, khay tháp và mô tả cách tiền đồn hoạt động.',
+                      'screen-army-base-vi-large-16x9.png', 'Căn cứ ở cỡ chữ Lớn: hai công tắc trên bản đồ chỉ còn icon.')
+               + pair('screen-army-base-vi-20x9-punchhole.png', 'Căn cứ ở 20:9.', 'screen-army-base-vi-4x3.png', 'Căn cứ ở 4:3.')
+               + one('kit-tower-icons.png', 'Icon riêng cho mỗi tháp và mô-đun (prompt 14 I), nhánh dùng icon của tháp gốc.')
+               + one('basemaps-sheet.png', 'Ảnh trại trên 20 bản đồ, chụp từ trên xuống, kèm mũi tên hướng địch tới.'))
     out.append("<h3>Chi tiết phương tiện, tháp và công trình</h3>"
                + one('screen-detail-vi-16x9.png', 'Chi tiết phương tiện: mô hình 3D xoay, thanh chỉ số tách gốc / trang bị / cấp sau, vạch trung bình của nhóm; các tab Hướng dẫn, Vũ khí, Xem bắn, Trang bị.')
                + pair('screen-detail-tower-vi-16x9.png', 'Chi tiết tháp (mới): mô hình, chỉ số so với tháp cùng cỡ, vũ khí, Xem bắn, hạng, nhánh và 3 ô đồ.',
