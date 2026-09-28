@@ -11,23 +11,28 @@ namespace MachineBrigade.Tests
     /// <summary>
     /// The play-test fix of 2026-09-28 (DECISIONS 11A): bigger tank-round, bomb and cruise-missile
     /// blasts that never lose particles of their own, a flame stream with rolling fireballs, and
-    /// held laser beams.
+    /// held laser beams. The second play test's (12C): every blast a tenth bigger, drones by the
+    /// drone, tank rounds lingering by the tank's class.
     /// </summary>
     public class BlastSizeTests
     {
         private MaterialLibrary _materials;
         private GameObject _root;
+        private GraphicsQuality _graphics;
 
         [SetUp]
         public void SetUp()
         {
             _materials = new MaterialLibrary();
             _root = new GameObject("Blast Size Test");
+            _graphics = MatchSettings.Graphics;
+            MatchSettings.Graphics = GraphicsQuality.High;
         }
 
         [TearDown]
         public void TearDown()
         {
+            MatchSettings.Graphics = _graphics;
             Object.DestroyImmediate(_root);
             _materials.Dispose();
         }
@@ -46,6 +51,90 @@ namespace MachineBrigade.Tests
             foreach (var id in new[] { "guided_bomb", "jet_bombs", "bomber_payload", "stealth_payload", "airstrike", "cluster_strike" })
                 Assert.That(BlastSizes.Bomb(id), Is.InRange(1.3f, 1.5f), id);
             Assert.AreEqual(1f, BlastSizes.Strike(catalog.Supports["artillery_barrage"]), 1e-4f, "a barrage is shells, not bombs");
+        }
+
+        [Test]
+        public void TankRoundsLingerByTheTanksClassAndDronesGrowByTheDrone()
+        {
+            var w = GameContent.LoadCatalog().Weapons;
+            foreach (var id in new[] { "gun_57mm", "gun_105_wheeled" })
+                Assert.AreEqual(1.2f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": light tank and wheeled gun +20 %");
+            foreach (var id in new[] { "gun_120mm", "gun_105_long", "gun_105_apfsds", "gun_105_twin", "turret_gun_120", "gun_125_elite" })
+                Assert.AreEqual(1.25f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": main battle tank, tank destroyers, twin, 120 mm turret +25 %");
+            foreach (var id in new[] { "gun_152", "gun_152_heat", "gun_140_twin", "gun_203_siege" })
+                Assert.AreEqual(1.3f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": heavy, elite heavy, titan, siege +30 %");
+            Assert.AreEqual(1.3f, BlastSizes.GroundLife(w["gun_203_siege"]), 1e-4f, "the siege tank's shell lands lingering");
+            Assert.AreEqual(1f, BlastSizes.GroundLife(w["howitzer"]), 1e-4f, "other artillery as it was");
+
+            Assert.AreEqual(1.2f, BlastSizes.Drone(w["fpv_swarm"]), 1e-4f, "FPV");
+            Assert.AreEqual(1.2f, BlastSizes.Drone(w["fpv_hangar"]), 1e-4f, "the hangar's FPVs");
+            Assert.AreEqual(1.25f, BlastSizes.Drone(w["lancet"]), 1e-4f, "Lancet");
+            Assert.AreEqual(1.25f, BlastSizes.Drone(w["mothership_drones"]), 1e-4f, "the mothership's drones");
+            Assert.AreEqual(1.3f, BlastSizes.Drone(w["shahed"]), 1e-4f, "Shahed");
+            Assert.AreEqual(1.3f, BlastSizes.Drone(w["drone_missile"]), 1e-4f, "the strike drone's missiles");
+            Assert.AreEqual(1f, BlastSizes.Drone(w["atgm"]), 1e-4f, "a plain missile only gets the general tenth");
+            Assert.AreEqual(1.1f, BlastSizes.Bigger, 1e-4f);
+        }
+
+        [Test]
+        public void ALingeringShellHitKeepsItsFireAndSmokeLongerButItsFlashAndSparksQuick()
+        {
+            var layers = new BlastLayers(_materials, _root.transform);
+            var hit = ExplosionEffect.CreateShellHit(layers);
+            var lingering = new[] { "Hot Fireball", "Rolling Fireball", "Smoke", "Dust", "Embers" };
+            var quick = new[] { "Flash", "Sparks", "Air Shock", "Ground Light" };
+            var before = Lifetimes(hit, 1f, lingering, quick);
+
+            var after = Lifetimes(hit, 1.3f, lingering, quick);
+            foreach (var name in lingering) Assert.AreEqual(before[name] * 1.3f, after[name], 1e-3f, name + " lives 30 % longer on High");
+            foreach (var name in quick) Assert.AreEqual(before[name], after[name], 1e-5f, name + " stays as quick");
+
+            MatchSettings.Graphics = GraphicsQuality.Low;
+            var low = Lifetimes(hit, 1.3f, lingering, quick);
+            foreach (var name in lingering)
+            {
+                Assert.AreEqual(before[name] * (1f + 0.3f * 0.4f), low[name], 1e-3f, name + " lingers less on Low");
+                Assert.Greater(low[name], before[name], name + " still longer on Low");
+            }
+            // Low's cost in particle-seconds: more than before, less than High.
+            var (lingerLow, _) = hit.ParticleSecondsAt(1.65f, 1.3f, 0.4f);
+            var (lingerHigh, _) = hit.ParticleSecondsAt(1.65f, 1.3f);
+            var (lingerOld, _) = hit.ParticleSecondsAt(1.5f, 1f, 0.4f);
+            Assert.Less(lingerLow, lingerHigh);
+            Assert.Greater(lingerLow, lingerOld);
+        }
+
+        [Test]
+        public void EveryBlastIsATenthBiggerButAMatchedRingStaysOnItsRadius()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var radius = catalog.Supports["moab"].BlastRadius;
+            var layers = new BlastLayers(_materials, _root.transform);
+            var blast = ExplosionEffect.Create(ExplosionTier.Ultimate, layers);
+            var reach = BlastSizes.Reach(radius);
+            blast.Play(Vector3.zero, 0f, 1f, reach);
+            var flash = layers.Flash.main.startSize.constantMax;
+            var ring = layers.Shockwave.main.startSize.constantMax;
+            layers.Clear();
+            blast.Play(Vector3.zero, 0f, 1f, reach * BlastSizes.Bigger, 1f, reach);
+            Assert.AreEqual(flash * 1.1f, layers.Flash.main.startSize.constantMax, 1e-3f, "the flash a tenth bigger");
+            Assert.AreEqual(ring, layers.Shockwave.main.startSize.constantMax, 1e-3f, "the ground ring still on the radius");
+            foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
+            {
+                var e = ExplosionEffect.Create(tier, layers);
+                Assert.GreaterOrEqual(e.ParticleCountAt(BlastSizes.Bigger, 0.4f), e.ParticleCount, tier + ": a tenth bigger never loses any");
+            }
+        }
+
+        private System.Collections.Generic.Dictionary<string, float> Lifetimes(ExplosionEffect blast, float life, string[] lingering, string[] quick)
+        {
+            var layers = _root.GetComponentsInChildren<ParticleSystem>(true);
+            foreach (var ps in layers) ps.Clear(true);
+            blast.Play(Vector3.zero, 0f, 1f, 1.5f, life);
+            blast.Tick(5f);
+            var result = new System.Collections.Generic.Dictionary<string, float>();
+            foreach (var name in lingering.Concat(quick)) result[name] = Layer(name).main.startLifetime.constantMax;
+            return result;
         }
 
         [Test]
@@ -80,7 +169,9 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             var radius = catalog.Supports["cruise_missile"].BlastRadius;
             var layers = new BlastLayers(_materials, _root.transform);
-            ExplosionEffect.Create(ExplosionTier.Ultimate, layers).Play(Vector3.zero, 0f, 1f, BlastSizes.Reach(radius));
+            // As EffectsDirector draws it since 12C: the blast a tenth bigger, its ring kept on the radius.
+            var grow = BlastSizes.Reach(radius);
+            ExplosionEffect.Create(ExplosionTier.Ultimate, layers).Play(Vector3.zero, 0f, 1f, grow * BlastSizes.Bigger, 1f, grow);
             layers.Shockwave.Simulate(0.001f, false, false);
             var particles = new ParticleSystem.Particle[8];
             var n = layers.Shockwave.GetParticles(particles);

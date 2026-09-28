@@ -175,10 +175,12 @@ namespace MachineBrigade.Editor
         }
 
         /// <summary>
-        /// The play-test fix of 2026-09-28 (DECISIONS 11A), before and after in pairs of rows:
-        /// tank rounds striking tanks (light, main battle, heavy), aircraft bombs (GBU-12, FAB-500,
-        /// JDAM) and the cruise missile inside a red circle of its blast radius, frozen at
-        /// <see cref="BlastMoments"/>. Batch mode (with graphics): -executeMethod
+        /// The second play-test fix (DECISIONS 12C) against the first (11A), before and after in
+        /// pairs of rows: tank rounds striking tanks (light, main battle, heavy: a tenth bigger and
+        /// lingering longer), the siege tank's 203 mm and a howitzer's 155 mm, drones (FPV, Lancet,
+        /// Shahed), aircraft bombs (GBU-12, FAB-500, JDAM) and the cruise missile inside a red circle
+        /// of its blast radius; the Mk 84 and the MOAB after. Frozen at <see cref="ImpactMoments"/>,
+        /// late ones included so the longer life shows. Batch mode (with graphics): -executeMethod
         /// MachineBrigade.Editor.EffectShots.Impacts -mbShotsOut &lt;png&gt;.
         /// </summary>
         [MenuItem("Machine Brigade/Render Impact Shots")]
@@ -191,11 +193,11 @@ namespace MachineBrigade.Editor
             var meshes = new MeshLibrary();
             var models = new ModelLibrary(materials);
             var root = new GameObject("Shots").transform;
-            Stage(materials, root, 1400f);
+            Stage(materials, root, 1800f);
             var rig = new BlastRig(materials, meshes, models, root);
 
             var scenes = new System.Collections.Generic.List<BlastScene>();
-            Vector3 Row(int i) => new(-455f + i * 130f, 0f, 0f);
+            Vector3 Row(int i) => new(-715f + i * 130f, 0f, 0f);
             var shells = new[] { ("light_tank", "gun_57mm"), ("main_battle_tank", "gun_120mm"), ("heavy_tank", "gun_152") };
             for (var pass = 0; pass < 2; pass++)
             {
@@ -209,6 +211,34 @@ namespace MachineBrigade.Editor
                     rig.Spawn(shells[k].Item1, at);
                     var weapon = shells[k].Item2;
                     scene.At(0f, t => rig.TankHit(weapon, at, t, before));
+                }
+                scenes.Add(scene);
+            }
+            var landings = new[] { "gun_203_siege", "howitzer" };
+            for (var pass = 0; pass < 2; pass++)
+            {
+                var before = pass == 0;
+                var p = Row(8 + pass);
+                var scene = new BlastScene(before ? "siege 203 mm / howitzer 155 mm, before" : "shells landing, after", p, 14f);
+                for (var k = 0; k < landings.Length; k++)
+                {
+                    var at = p + new Vector3(0.7071f, 0f, 0.7071f) * ((k - 0.5f) * 16f) + Vector3.up * 0.15f;
+                    var weapon = landings[k];
+                    scene.At(0f, t => rig.ShellLanding(weapon, at, t, before));
+                }
+                scenes.Add(scene);
+            }
+            var drones = new[] { "fpv_swarm", "lancet", "shahed" };
+            for (var pass = 0; pass < 2; pass++)
+            {
+                var before = pass == 0;
+                var p = Row(10 + pass);
+                var scene = new BlastScene(before ? "drones FPV / Lancet / Shahed, before" : "drones, after", p, 13f);
+                for (var k = 0; k < drones.Length; k++)
+                {
+                    var at = p + new Vector3(0.7071f, 0f, 0.7071f) * ((k - 1) * 12f) + Vector3.up * 0.15f;
+                    var weapon = drones[k];
+                    scene.At(0f, t => rig.DroneHit(weapon, at, t, before));
                 }
                 scenes.Add(scene);
             }
@@ -477,7 +507,7 @@ namespace MachineBrigade.Editor
         private static readonly float[] LaserMoments = { 0.06f, 0.16f, 0.5f, 1.12f, 1.4f };
 
         /// <summary>The impact sheet's columns: the flash, the fireball at its hottest, rolling into smoke, the smoke, the scar.</summary>
-        private static readonly float[] ImpactMoments = { 0.04f, 0.14f, 0.35f, 0.9f, 2.5f };
+        private static readonly float[] ImpactMoments = { 0.04f, 0.14f, 0.35f, 0.9f, 1.5f, 2.5f, 3.2f };
 
         /// <summary>Seconds after a scene starts at which each column is taken.</summary>
         private static readonly float[] BlastMoments = { 0.05f, 0.25f, 0.7f, 1.6f, 4f };
