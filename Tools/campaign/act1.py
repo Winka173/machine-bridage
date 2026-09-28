@@ -501,7 +501,7 @@ add_mission(m('c3m04', 3, 'whiteout', 'Outpost', 'Night', points=['town'], holdS
             [say('mai', 'Start', 'The ice holds towers. I checked. Mostly.', 'Băng chịu được tháp. Tôi kiểm tra rồi. Gần như chắc chắn.'),
              say('orlov', 'At', 'A base on a lake. How poetic. How flammable.', 'Căn cứ trên mặt hồ. Thật nên thơ. Thật dễ cháy.', at=120)])
 
-add_mission(m('c3m05', 3, 'whiteout', 'Boss', 'Clear', general='orlov', timeLimit=1140, reinforcements=2,
+add_mission(m('c3m05', 3, 'whiteout', 'Boss', 'Clear', legacy='m03', general='orlov', timeLimit=1140, reinforcements=2,
               boss=scripted('mega_gunship', (84, 84), heading=225, route=[(60, 60), (-20, 60), (-40, -10), (30, -30)], health=0.8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85,
               enemyDeck=['light_tank', 'main_battle_tank', 'ifv', 'mortar_carrier', 'aa_vehicle', 'attack_helicopter'],
@@ -580,7 +580,7 @@ add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', general='orlov', enemyBa
             [say('orlov', 'Start', 'Fire mission. Grid one-seven. All batteries.', 'Nhiệm vụ bắn. Ô lưới một-bảy. Toàn bộ khẩu đội.'),
              say('orlov', 'Win', 'Recalculating. Withdraw the batteries to the next line.', 'Tính lại. Rút các khẩu đội về tuyến sau.')])
 
-add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Snow', variant='siege', legacy='m09', operation=True, general='orlov', reinforcements=3,
+add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Overcast', variant='siege', legacy='m09', operation=True, general='orlov', reinforcements=3,
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.95,
               enemyDeck=ORLOV, playerCp=30, playerIncome=2.0, playerCap=42, playerBase='Anchor', enemyHq=3,
               waves=waves(['main_battle_tank', 'ifv', 'mlrs', 'attack_helicopter', 'heavy_tank'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
