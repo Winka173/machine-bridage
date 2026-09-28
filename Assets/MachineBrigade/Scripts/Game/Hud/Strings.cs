@@ -44,7 +44,7 @@ namespace MachineBrigade.Game.Hud
             ["short.command_vehicle"] = ("Command", "Xe chỉ huy"),
             ["short.wheeled_gun"] = ("Wheeled gun", "Pháo bánh lốp"),
             ["short.armored_bulldozer"] = ("Bulldozer", "Xe ủi"),
-            ["short.counter_battery_radar"] = ("CB radar", "Radar phản pháo"),
+            ["short.counter_battery_radar"] = ("CB radar", "Phản pháo"),
             ["short.long_sam"] = ("Long SAM", "SAM tầm xa"),
             ["short.uav_scan"] = ("UAV scan", "UAV quét"),
             ["short.remote_mines"] = ("Mines", "Rải mìn"),
@@ -107,6 +107,16 @@ namespace MachineBrigade.Game.Hud
             ["rail.support"] = ("Support", "Yểm trợ"),
             ["rail.tower"] = ("Tower", "Tháp"),
             ["rail.towerCost"] = ("Tower ×{0} · {1} CP", "Dựng tháp ×{0} · {1} CP"),
+            ["rail.stance"] = ("Attack or defend", "Tấn công hay phòng thủ"),
+            ["rail.stanceAttack"] = ("Attacking: tap to defend", "Đang tấn công: chạm để phòng thủ"),
+            ["rail.stanceDefend"] = ("Defending: tap to attack", "Đang phòng thủ: chạm để tấn công"),
+            ["rail.buyOn"] = ("Auto buy is on", "Tự mua đang bật"),
+            ["rail.buyOff"] = ("Auto buy is off", "Tự mua đang tắt"),
+            ["rail.supportOn"] = ("Support is on", "Yểm trợ đang bật"),
+            ["rail.supportOff"] = ("Support is off", "Yểm trợ đang tắt"),
+            ["hud.bossExpand"] = ("Tap to show the boss's parts", "Chạm để xem các bộ phận của trùm"),
+            ["pause.commander"] = ("Commander", "Chỉ huy"),
+            ["settings.compactHud"] = ("Compact battle HUD", "HUD gọn trong trận"),
             ["toast.towerCalled"] = ("Tower on its way", "Tháp đang được thả dù"),
             ["alert.outpost.ours"] = ("Outpost set up", "Đã lập tiền đồn"),
             ["alert.outpost.theirs"] = ("The enemy set up an outpost", "Địch đã lập tiền đồn"),
@@ -1944,6 +1954,84 @@ namespace MachineBrigade.Game.Hud
             ["short.command_airship"] = ("Airship", "Khí cầu"),
             ["short.landing_hovercraft"] = ("Hovercraft", "Tàu đệm khí"),
             ["short.supreme_command"] = ("Supreme Cmdr", "Tổng Tư Lệnh"),
+            // Short names for the rest (prompt 11 B): elites, towers and their branches, modules, bosses.
+            ["short.elite_mbt"] = ("Elite MBT", "Tăng tinh nhuệ"),
+            ["short.elite_heavy_tank"] = ("Elite heavy", "Tăng nặng TN"),
+            ["short.elite_tank_destroyer"] = ("Elite TD", "Chống tăng TN"),
+            ["short.elite_attack_helicopter"] = ("Elite heli", "Trực thăng TN"),
+            ["short.elite_mlrs"] = ("Elite MLRS", "Phản lực TN"),
+            ["short.elite_aa"] = ("Elite AA", "Phòng không TN"),
+            ["short.elite_apc"] = ("Elite EW", "Bọc thép TN"),
+            ["short.elite_grad"] = ("Elite Grad", "Grad TN"),
+            ["short.elite_fpv_carrier"] = ("Elite FPV", "Drone FPV TN"),
+            ["short.elite_attack_jet"] = ("Elite jet", "Cường kích TN"),
+            ["short.elite_long_sam"] = ("Elite SAM", "SAM tầm xa TN"),
+            ["short.elite_artillery"] = ("Elite SPG", "Lựu pháo TN"),
+            ["short.spawn_bastion"] = ("Bastion", "Tháp căn cứ"),
+            ["short.heavy_turret"] = ("Fortress", "Pháo đài"),
+            ["short.missile_battery"] = ("Patriot", "Patriot"),
+            ["short.atgm_tower"] = ("ATGM tower", "Tháp ATGM"),
+            ["short.gun_turret"] = ("Gun turret", "Tháp pháo"),
+            ["short.aa_turret"] = ("AA turret", "Tháp PK"),
+            ["short.ew_tower"] = ("EW tower", "Tháp EW"),
+            ["short.dragons_teeth"] = ("Dragon's teeth", "Răng rồng"),
+            ["short.minefield"] = ("Minefield", "Bãi mìn"),
+            ["short.c_ram"] = ("C-RAM", "C-RAM"),
+            ["short.gun_pit"] = ("Gun pit", "Ụ pháo ẩn"),
+            ["short.drone_hangar"] = ("Drone hangar", "Nhà chứa drone"),
+            ["short.rocket_turret"] = ("Rockets", "Dàn rốc-két"),
+            ["short.mg_bunker"] = ("MG bunker", "Lô cốt"),
+            ["short.artillery_emplacement"] = ("Artillery", "Trận địa pháo"),
+            ["short.guard_tower"] = ("Guard tower", "Tháp canh"),
+            ["short.bulwark_post"] = ("Fallback post", "Ụ súng tạm"),
+            ["short.targeting_station"] = ("Fire control", "Trạm chỉ thị"),
+            ["short.supply_truck"] = ("Supply truck", "Xe tiếp tế"),
+            ["short.repair_bay"] = ("Repair bay", "Xưởng sửa chữa"),
+            ["short.ammo_depot"] = ("Ammo depot", "Kho đạn"),
+            ["short.airfield"] = ("Airfield", "Sân bay"),
+            ["short.logistics_station"] = ("Logistics", "Trạm hậu cần"),
+            ["short.radar_station"] = ("Radar", "Trạm radar"),
+            ["short.guard_tower.watch"] = ("Watchtower", "Tháp quan sát"),
+            ["short.guard_tower.nest"] = ("Gun nest", "Ổ súng"),
+            ["short.mg_bunker.twin"] = ("Twin HMG", "Súng máy đôi"),
+            ["short.mg_bunker.flame"] = ("Flame bunker", "Lô cốt lửa"),
+            ["short.ew_tower.drone"] = ("Drone jammer", "Chống drone"),
+            ["short.ew_tower.spoof"] = ("Radar spoofer", "Đánh lừa radar"),
+            ["short.dragons_teeth.hedgehog"] = ("Hedgehogs", "Chông sắt"),
+            ["short.dragons_teeth.wire"] = ("Wire and ditch", "Rào thép gai"),
+            ["short.minefield.at"] = ("AT field", "Mìn chống tăng"),
+            ["short.minefield.scatter"] = ("Scatter field", "Bãi mìn rải"),
+            ["short.gun_turret.long"] = ("Long barrel", "Nòng dài"),
+            ["short.gun_turret.auto"] = ("Autoloader", "Nạp tự động"),
+            ["short.atgm_tower.top"] = ("Top attack", "Đánh từ trên"),
+            ["short.atgm_tower.multi"] = ("Multi-role", "Đa năng"),
+            ["short.rocket_turret.cluster"] = ("Cluster", "Rốc-két chùm"),
+            ["short.rocket_turret.thermo"] = ("Thermobaric", "Nhiệt áp"),
+            ["short.c_ram.centurion"] = ("Centurion", "Centurion"),
+            ["short.c_ram.hunter"] = ("Hunter", "Săn máy bay"),
+            ["short.gun_pit.ambush"] = ("Ambush", "Phục kích"),
+            ["short.gun_pit.deep"] = ("Deep pit", "Hầm sâu"),
+            ["short.artillery_emplacement.cb"] = ("Counter-fire", "Phản pháo"),
+            ["short.artillery_emplacement.ext"] = ("Long range", "Tầm xa"),
+            ["short.missile_battery.pac3"] = ("PAC-3", "PAC-3"),
+            ["short.missile_battery.lrr"] = ("Long radar", "Radar tầm xa"),
+            ["short.drone_hangar.lancet"] = ("Lancet hangar", "Lancet"),
+            ["short.drone_hangar.swarm"] = ("Swarm", "Bầy đàn"),
+            ["short.heavy_turret.coastal"] = ("Coastal gun", "Pháo bờ biển"),
+            ["short.heavy_turret.bastion"] = ("Bastion", "Pháo đài thép"),
+            ["short.aa_turret.flak"] = ("Flak tower", "Tháp cao xạ"),
+            ["short.aa_turret.sam"] = ("SAM post", "Trạm tên lửa"),
+            ["short.behemoth"] = ("Behemoth", "Behemoth"),
+            ["short.mobile_fortress"] = ("Ice Fortress", "Pháo đài băng"),
+            ["short.armored_train"] = ("Iron Train", "Đoàn tàu thép"),
+            ["short.mega_gunship"] = ("Iron Bird", "Chim sắt"),
+            ["short.drone_mothership"] = ("Hive Carrier", "Tàu mẹ Tổ Ong"),
+            ["short.nuke_train"] = ("Doomsday", "Tàu Tận thế"),
+            ["short.behemoth_inferno"] = ("Inferno", "Inferno"),
+            ["short.behemoth_tempest"] = ("Tempest", "Tempest"),
+            ["short.fortress_hive"] = ("Hive", "Tổ ong Hive"),
+            ["short.fortress_bastion"] = ("Bastion", "Bastion"),
+            ["short.sky_fortress"] = ("Spectre", "Spectre"),
             ["note.rail_supergun"] = ("Kessler's 80 cm railway gun on its own bed at the edge of the field: one shell every 20 s at your biggest group anywhere on the map, marked 3 s ahead, behind walls, guns and a fire-control post.", "Pháo đường ray 80 cm của Kessler trên nền ray riêng ở mép chiến trường: cứ 20 giây một quả đạn vào cụm quân đông nhất của bạn ở bất cứ đâu, có cảnh báo trước 3 giây, sau tường, súng và trạm chỉ thị mục tiêu."),
             ["note.earth_borer"] = ("Varga's boring machine: it dives, bores unseen under your biggest group of ground vehicles and breaks out in a quake that stuns everything within 15 m. The cracks give 2 s warning.", "Máy khoan của Varga: chui xuống đất, khoan ngầm tới dưới cụm xe mặt đất đông nhất của bạn rồi trồi lên gây rung chấn làm choáng mọi thứ trong 15 m. Mặt đất nứt báo trước 2 giây."),
             ["note.command_airship"] = ("Quạ Đen's flying battleship: four engines, two drone bays and a fire-control radar, each with its own health; the hull takes no damage until two engines are down.", "Chiến hạm bay của Quạ Đen: bốn động cơ, hai nhà chứa drone và một radar điều khiển hỏa lực, mỗi bộ phận có máu riêng; thân chỉ nhận sát thương khi đã phá hai động cơ."),
@@ -2001,9 +2089,25 @@ namespace MachineBrigade.Game.Hud
             System.Text.RegularExpressions.Regex.Replace(text, @"\[\[(.+?)\]\]", "<b><color=#F2A33A>$1</color></b>");
 
         /// <summary>Vehicle or support card name.</summary>
-        public static string Card(string defId) => Table.ContainsKey("unit." + defId) ? Unit(defId) : Support(defId);
+        public static string Card(string defId) => Table.ContainsKey("unit." + defId) || IsBranch(defId) ? Unit(defId) : Support(defId);
 
-        /// <summary>A card's short name (one line on a card), falling back to its full name.</summary>
-        public static string Short(string defId) => Table.ContainsKey("short." + defId) ? Get("short." + defId) : Card(defId);
+        /// <summary>A tower branch's id ("aa_turret.flak"): the tower's name with the branch's (never the raw "support." key).</summary>
+        private static bool IsBranch(string defId)
+        {
+            var dot = defId?.IndexOf('.') ?? -1;
+            return dot > 0 && Table.ContainsKey("unit." + defId.Substring(0, dot));
+        }
+
+        /// <summary>
+        /// A card's short name (prompt 11 B: at most about 14 letters, for one line on a card, the deck strip,
+        /// chips and narrow lists), falling back to its full name; a tower branch without one of its own reads
+        /// as the branch's name alone.
+        /// </summary>
+        public static string Short(string defId)
+        {
+            if (defId == null) return "";
+            if (Table.ContainsKey("short." + defId)) return Get("short." + defId);
+            return IsBranch(defId) ? Branch(defId) : Card(defId);
+        }
     }
 }

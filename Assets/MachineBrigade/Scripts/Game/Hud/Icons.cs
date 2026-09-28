@@ -40,6 +40,8 @@ namespace MachineBrigade.Game.Hud
             ["attack"] = "<path d=\"M20 4 9 15M20 4h-5M20 4v5M7 13l4 4M4 20l4-4\"/>",
             // Machine Brigade additions in the same style.
             ["plus"] = "<path d=\"M12 5v14M5 12h14\"/>",
+            // The compact HUD's Auto buy (prompt 11 A2): a cart.
+            ["cart"] = "<path d=\"M2 4h3l2.5 11h11L21 7H6\"/><circle cx=\"9\" cy=\"19\" r=\"1.6\"/><circle cx=\"17\" cy=\"19\" r=\"1.6\"/>",
             // Weapons: a gun on its mantlet, a belt of rounds.
             ["cannon"] = "<path d=\"M3 18h8a3 3 0 0 0 0-6H3Z\"/><path d=\"M12 14h7M19 12.5v3M21 13v2\"/>",
             ["mg"] = "<path d=\"M4 20v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Z\"/><path d=\"M4 15h4m2 0h4m2 0h4\"/>",

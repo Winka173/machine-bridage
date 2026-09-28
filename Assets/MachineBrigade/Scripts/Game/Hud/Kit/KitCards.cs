@@ -13,6 +13,10 @@ namespace MachineBrigade.Game.Hud
     {
         public string Id;
         public string Name;
+
+        /// <summary>The short name (prompt 11 B): shown on compact cards, and on a full card whose name needs more than two lines. Null: <see cref="Name"/>.</summary>
+        public string ShortName;
+
         public KitBranch Branch;
         public string ClassIcon = "tank";
         public int Cp;
@@ -37,6 +41,7 @@ namespace MachineBrigade.Game.Hud
             {
                 Id = def.Id,
                 Name = Strings.Card(def.Id),
+                ShortName = Strings.Short(def.Id),
                 Branch = KitBranches.Of(def),
                 ClassIcon = KitBranches.ClassIcon(def.Class),
                 Cp = def.CpCost,
@@ -60,7 +65,8 @@ namespace MachineBrigade.Game.Hud
     /// A vehicle card: the 3D render under a 3 px bar in the branch's colour, the class icon, the CP
     /// cost in a dark box in the corner, the full name (it wraps; it is never cut), the level, and
     /// the upgrade mark only when the upgrade is affordable now. A locked card is dimmed to 45 %
-    /// and says where it unlocks.
+    /// and says where it unlocks. The name area is two lines high on every card (prompt 11 B2), so
+    /// every part sits in the same place on every card of a row; a compact card shows the short name.
     /// </summary>
     public sealed class KitVehicleCard : VisualElement
     {
@@ -95,7 +101,10 @@ namespace MachineBrigade.Game.Hud
             }
             content.Add(art);
             var body = Kit.Box("fc-vcard__body");
-            body.Add(Kit.Text(Kit.Caps(data.Name), "fc-vcard__name"));
+            var shortName = Kit.Caps(data.ShortName ?? (data.Id != null ? Strings.Short(data.Id) : data.Name));
+            var name = Kit.Text(compact ? shortName : Kit.Caps(data.Name), "fc-vcard__name");
+            Kit.FixedLines(name, 2, shortName);
+            body.Add(name);
             body.Add(Kit.Text(Strings.Format("kit.level", data.Level), "fc-vcard__level"));
             content.Add(body);
             Add(content);
@@ -219,7 +228,9 @@ namespace MachineBrigade.Game.Hud
             if (data.Equipped) art.Add(Kit.Icon("check", "fc-gcard__equipped", 2.4f));
             Add(art);
             var body = Kit.Box("fc-gcard__body");
-            body.Add(Kit.Text(Kit.Caps(data.Name), "fc-gcard__name"));
+            var name = Kit.Text(Kit.Caps(data.Name), "fc-gcard__name");
+            Kit.FixedLines(name, 2);
+            body.Add(name);
             if (!string.IsNullOrEmpty(data.MainStat)) body.Add(Kit.Text(data.MainStat, "fc-gcard__stat"));
             if (!string.IsNullOrEmpty(data.Compare))
                 body.Add(Kit.Text(data.Compare, "fc-gcard__compare" + (data.CompareSign > 0 ? " fc-gcard__compare--better" : data.CompareSign < 0 ? " fc-gcard__compare--worse" : "")));
