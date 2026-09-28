@@ -437,3 +437,89 @@ bottom of each section.
   as the coming Field Command 2.0 rules ask.
 - **Tower icons.** `CardIcons.For` now has icons for the tower cards (a branch takes its tower's), which
   used to fall back to the tank. The HQ guide text speaks of sized hardpoints, not fortification points.
+
+
+## 5L. Vehicle LOD and impostors
+
+Big battles put 100 and more vehicles in view (48 enemies in Siege, Defend and the large operations,
+the player's army, the bases' towers). Measured before this change, a fieldable model averaged 8,800
+triangles and 22 draws (one per material of each moving part), so a hundred of them meant about
+880,000 triangles and 2,200 draws in the main pass alone, and as many again in the shadow pass. On GLES
+(no SRP Batcher, see `Atmosphere`) and with the hit-flash property block breaking instancing, each of
+those draws is a full state change on the CPU: draws, not triangles, are the cost to cut.
+
+- **Three levels, chosen by size on screen.** 0: the full merged model. 1: a simplified model with one
+  mesh and one draw per moving part. 2: an impostor card. The camera is orthographic, so a vehicle's size
+  on screen does not depend on how far it is from the middle of the view: only the zoom, the resolution
+  (render scale included) and the vehicle's largest extent (length, span or height) count
+  (`VehicleLod.PixelsPerMetreOf`). Level 1 below 128 px across, impostors below 24 px, each with a 12%
+  band either side (`VehicleLod.Choose`): a vehicle drops a level at 88% of a threshold and comes back
+  at 112%, so a pinch that stops near a threshold never flickers. At 1080 px and the widest game zoom
+  (42) a tank is about 96 px (level 1), a jeep 56 px; impostors appear on small screens, low render
+  scales, `-mb-overview` and any wider zoom a later change allows.
+- **Level 1 is built at load, not in Blender.** Unity 6's mesh LOD generator (`MeshLodUtility`) is
+  editor-only, and the game merges each model's parts at run time (`ModelLibrary.MergeRigidParts`), so
+  the far level is made from the merged template when a battle prewarms its fieldable models: every
+  sub-mesh of a part welded, simplified by `MeshSimplifier` (quadric edge collapse after Garland and
+  Heckbert with meshoptimizer's vertex kinds: open edges and lines between surfaces only slide along
+  themselves, a link-condition and flip check, pieces smaller than twice the error dropped) to half a
+  pixel of error at the size level 1 takes over, then normals rebuilt with a 50 degree crease (hard where
+  collapsed bevels leave sharp edges). A second GLB per model from Blender was rejected: it doubles the
+  art in the APK, conflicts with every art branch, and Blender's decimator has no error bound (a bevelled
+  box at ratio 0.3 collapses). A vertex-clustering decimator was rejected: at the same error it removes
+  far less and blurs hard edges.
+- **One material per army at level 1.** Each vertex names its kit surface by a palette column in its UV
+  (`MaterialLibrary.Palette`: base colour and metallic, emission and roughness of every kit material,
+  linear, from the live materials); the army's paint and camouflage and its glow come from
+  `MaterialLibrary.LodSurface(team)`, kept in step with the skin (`ApplySkin`). The Lit shader has a
+  `_VertexSurface` branch (a uniform branch; the full models do not pay for it). So a tank that takes 21
+  draws up close takes 4 far away and keeps its exact colours; metallic and glowing parts keep theirs.
+- **Recoil folds into the mount at level 1; everything else still moves.** Turrets, elevating barrels,
+  weapon mounts, rotors, propellers and loose parts (erector, searchlight, lift, bombs) keep their own
+  part and pivot, so turrets aim and rotors spin at level 1; only the barrel kick is folded into its
+  mount (too small to see at that size). The view's animation (turret, mounts, elevation, spin, flight)
+  runs at every level, because muzzle flashes, tracers and missiles leave from those transforms: effects
+  are placed right at every level.
+- **Impostors are relit, not pre-lit.** A pre-lit card would miss night, storms (the lightning flash
+  lifts the sun for a moment), weather shifts mid-battle and blast lights. Each page (a model for one
+  army: the player, the enemy, one shared by everyone else) holds 16 headings of 32 px, drawn from the
+  simplified model with the game camera's rotation into two sheets: albedo and coverage (sRGB), and
+  view-space normal, metallic and glow (linear), premultiplied by coverage so the mip chain keeps its
+  edges. The card shader blends the two headings either side of the vehicle's own, and lights them with
+  the sun and its shadow, every visible light, ambient and reflections. Its own light loop: URP's
+  `UniversalFragmentPBR` reads the sun's strength from per-renderer data that instanced draws do not
+  get, and the first cards came out black. Cards stand in the camera's plane, pushed towards the camera
+  by the vehicle's size so the ground never cuts into them (an orthographic view does not move them on
+  screen); alpha to coverage smooths their outline with MSAA. Sheets are 512 px (16 pages, 2 MB for both
+  textures and mips), added as needed; every card on a sheet is one instanced draw.
+- **Turret and pose are dropped on cards**, as the brief allows: a card shows the hull's heading with the
+  turret at rest, aircraft level at their altitude. Rotors and propellers are left out of the bake (a
+  still rotor reads as a cross); the view's rotor blur disc stays. Cards cast no shadow: a soft disc
+  (`ViewRegistry.DrawBlobs`) stands under each card, as with shadows off.
+- **Pages are baked when a vehicle is made**, two a frame, and a vehicle stays on meshes until its page
+  is drawn: no hitch when the view zooms out over a new army. Wrecks never become cards (a turret can be
+  thrown off, the hulk sinks away); they keep following the zoom between levels 0 and 1.
+- **Nothing a player relies on changes with the level**: selection ring, health bar, ammunition and
+  repair marks, the aircraft ground ring, nav lights, shields and team colours are the view's own objects
+  and stay as they are; the hit flash and scorching tint all levels (`ImpostorTint` for cards).
+- **Debug flags.** `-mb-no-lod` (nothing built, full models only, for comparison), `-mb-lod=0|1|2`
+  (force a level where a vehicle has it), `-mb-lod-colours` (level 1 cyan, cards magenta), `-mb-crowd`
+  (`-mb-crowd=N`: two armies of fifty, N a side, topped up in view), `-mb-zoom=N` (the starting zoom).
+  `-mb-perf` now reports how many vehicles are at each level and how many cards went in how many draws.
+- **Checking by eye.** `MachineBrigade.Editor.LodShots.Compare` (batch mode with graphics, D3D11) renders
+  the full, simplified and impostor levels side by side at the sizes where each takes over, the atlas
+  sheets and a hundred-vehicle crowd at each level.
+- **Measured.**
+  - Load-time census of all 94 models: a fieldable model averages 8,817 triangles and 22.2 draws
+    at level 0. Its level 1 averages 2,719 triangles (31 %) and 3.6 draws; the worst keeps 73 % of
+    its triangles. Building every level 1 takes 1.1 s in all, spread over the battle's prewarm.
+  - A crowd of 100 vehicles in view (`-mb-crowd`, editor, D3D11):
+
+    | level | triangles | renderers | CPU per frame |
+    |---|---|---|---|
+    | 0 | 740,590 | 545 | 2.24 ms |
+    | 1 | 254,690 | 380 | 0.81 ms |
+    | 2 | 200 | 0 | 0.75 ms |
+
+    These are relative numbers from a desktop editor, not phone timings. A phone has to confirm
+    them.

@@ -89,7 +89,8 @@ namespace MachineBrigade.Game.Views
                 _impostors.Add(view.Impostor, view.ImpostorCentre, view.Def.Scale, view.Root.eulerAngles.y, view.ImpostorTint);
                 _cards++;
             }
-            _impostors?.Flush();
+            // Only in the battle camera (not a menu turntable's).
+            _impostors?.Flush(LodCamera);
             // Cards cast no shadows: with shadows on, a soft disc stands in under each one.
             if (BlobShadows || _cards > 0) DrawBlobs(!BlobShadows);
         }
