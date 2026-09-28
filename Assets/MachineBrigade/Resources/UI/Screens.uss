@@ -200,6 +200,8 @@
 .fc-army__slots { margin-top: var(--fc-space-3); }
 .fc-army__slot { margin-right: var(--fc-space-1); }
 .fc-army__slot > .fc-caption { margin-bottom: var(--fc-space-1); }
+/* A slot's card fills its cell, so an empty slot is as tall as a worn one beside it (prompt 11 B2). */
+.fc-army__slot > .fc-gcard { flex-grow: 1; }
 .fc-army__base { position: absolute; left: 0; top: var(--fc-touch); right: 0; bottom: 0; }
 .fc-gear-lines { margin-top: var(--fc-space-2); }
 .fc-gear-line { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-1); }
