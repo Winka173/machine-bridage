@@ -150,8 +150,8 @@ add_mission(m('c4m08', 4, 'rustyard', 'Hunt', 'Night', general='kessler', timeLi
               'Mìn của Kessler được đánh số, ghi ngày và vào sổ. Công binh của hắn có thể chỉ cho ta chính xác vị trí từng quả. Và họ đã chỉ, đổi lấy mỗi người một bữa ăn nóng.')),
             [say('linh', 'Start', 'Three marked vehicles, moving slowly. Where they have been, drive carefully.', 'Ba xe được đánh dấu, đi chậm. Đường chúng đã qua, lái cẩn thận.')])
 
-add_mission(m('c4m09', 4, 'ironport', 'Duel', 'Storm', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
+add_mission(m('c4m09', 4, 'ironport', 'Duel', 'Storm', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=2, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.34,
               playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
             ('The Admiral\'s Quarters', 'Tổng hành dinh của Đô đốc'),
             ('Kessler\'s headquarters stands behind the container stacks at the north end of the port, a little of every defence and mines everywhere. '
@@ -560,8 +560,8 @@ add_mission(m('c6m08', 6, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, gene
             [say('linh', 'Start', 'Seismic contact under the valley, moving west. That is Sâu Đất.', 'Tín hiệu địa chấn dưới thung lũng, đang di chuyển về phía tây. Đó là Sâu Đất.'),
              say('mai', 'Boss', 'Hit it when it surfaces. The drill head is armour; the back is not.', 'Đánh nó khi nó trồi lên. Đầu khoan là giáp; phía sau thì không.')])
 
-add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.59,
+add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=2, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.35,
               playerCp=30, playerIncome=2.35, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
             ('Varga\'s Winter Camp', 'Trại mùa đông của Varga'),
             ('Varga has made his winter camp in the south of the pass, in our old positions, and dug in every anti-tank gun he has. Level his HQ, and his counterstrike has no head.',

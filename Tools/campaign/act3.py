@@ -129,8 +129,8 @@ add_mission(m('c7m08', 7, 'frostpeak', 'Escort', 'Night', reversed=True, convoyC
               'Đường băng ở trại gỗ dài 700 mét tuyết nén. Diều Hâu bảo đó là đường băng tốt nhất dải duyên hải. Anh cũng nói thế về mọi đường băng anh từng hạ cánh.')),
             [say('dieuhau', 'Start', 'No fuel, no air cover. Bring me my fuel.', 'Không có nhiên liệu thì không có yểm trợ trên không. Mang nhiên liệu cho tôi.')])
 
-add_mission(m('c7m09', 7, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=12, enemyIncome=0.59,
+add_mission(m('c7m09', 7, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=12, enemyIncome=0.35,
               playerCp=32, playerIncome=2.4, playerCap=42, playerBase='Anchor', starTime=900, starLosses=14),
             ('Black Crow\'s Nest', 'Tổ Quạ Đen'),
             ('Quạ Đen\'s own headquarters, at the east end of the base, ringed with missiles. Level it; the air base will fight on, but without its head.',
@@ -415,8 +415,8 @@ add_mission(m('c9m01', 9, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, po
               'Nhà máy lọc dầu lữ đoàn đốt ở chương hai đã chạy lại. Hegemon dựng lại nó trong bốn tháng. Mai sửa lại: công nhân dựng lại nó. Hegemon chỉ đứng nhìn.')),
             [say('varga', 'Start', 'Colonel. We meet in the sand again. The last time, I think.', 'Đại tá. Ta lại gặp nhau trên cát. Lần cuối, ta nghĩ vậy.')])
 
-add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.62,
+add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['cruise_missile'], starTime=960, starLosses=16),
             ('Kessler\'s Last Timetable', 'Thời gian biểu cuối cùng của Kessler'),
             ('Kessler runs the launch site\'s rail lines and supply dumps from a base at its northern gate, mined to the teeth. Level his HQ.',
@@ -427,8 +427,8 @@ add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, gener
             [say('kessler', 'Start', 'The next train leaves on time. With or without you under it.', 'Chuyến tàu sau sẽ chạy đúng giờ. Dù có ngươi nằm dưới bánh hay không.'),
              say('kessler', 'Win', 'Cancel the timetable. All of it.', 'Hủy lịch trình. Toàn bộ.')])
 
-add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.62,
+add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret'], starTime=960, starLosses=16),
             ('The Last Behemoth Yard', 'Xưởng Behemoth cuối cùng'),
             ('Varga\'s final camp, in the dunes where he first built the Behemoth. Every anti-tank gun he has left, and every tank. Level his HQ.',
@@ -439,8 +439,8 @@ add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, revers
             [say('varga', 'Start', 'Steel does not negotiate. But it can be tired, Colonel.', 'Thép không biết thương lượng. Nhưng thép cũng biết mệt, đại tá ạ.'),
              say('varga', 'Win', 'Enough. Let the machines rest.', 'Đủ rồi. Để những cỗ máy được nghỉ.')])
 
-add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.62,
+add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['tank_buster'], starTime=960, starLosses=16),
             ('Orlov\'s Last Line', 'Tuyến cuối của Orlov'),
             ('Orlov has taken the southern end of the launch site and filled it with guns. From the north this time, break his line and level his HQ.',
@@ -465,9 +465,9 @@ add_mission(m('c9m05', 9, 'dunebreak', 'Boss', 'Clear', reversed=True, legacy='m
             [say('sen', 'Start', 'That is the one from Skyhold. They have fixed the shield. Keep hitting it.', 'Chính là chiếc ở Skyhold. Chúng đã sửa khiên. Cứ tiếp tục nện.'),
              say('aurel', 'Boss', 'Silver Bug is not a weapon, Colonel. It is a contract nobody can refuse.', 'Silver Bug không phải vũ khí, đại tá. Nó là một bản hợp đồng không ai từ chối nổi.')])
 
-add_mission(m('c9m06', 9, 'launchsite', 'Duel', 'Night', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1800,
+add_mission(m('c9m06', 9, 'launchsite', 'Duel', 'Night', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.62,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['mine_layer'], starTime=960, starLosses=16),
             ('The Crow Returns', 'Quạ Đen trở lại'),
             ('Quạ Đen has come back from the pass, and he has brought what is left of Hegemon\'s air force to the launch site. Level his base at night.',

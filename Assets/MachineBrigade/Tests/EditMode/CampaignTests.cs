@@ -132,7 +132,7 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>A player's profile at a mission: the main missions before it won, the cards and base they give, nothing unlocked for testing.</summary>
-        private static void PlayerAt(MissionDef mission, Catalog catalog)
+        internal static void PlayerAt(MissionDef mission, Catalog catalog)
         {
             PlayerProfile.ResetForTests();
             foreach (var m in Before(mission)) PlayerProfile.RecordMission(m.Id, 2);

@@ -584,8 +584,8 @@ add_mission(m('c3m08', 3, 'whiteout', 'Boss', 'Snow', legacy='m18', general='var
             [say('mai', 'Start', 'They patched it. Badly. The rear plates are still mine.', 'Chúng vá lại nó rồi. Vá ẩu. Giáp sau vẫn là của tôi.'),
              say('varga', 'Boss', 'I fixed her, Colonel. I always fix her.', 'Ta đã sửa lại nó, đại tá. Ta luôn sửa được nó.')])
 
-add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', targetHealth=0.3, general='orlov', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1800,
-              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.56,
+add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', targetHealth=0.3, general='orlov', enemyBase='Target', enemyHq=2, replay=True, reinforcements=1, timeLimit=1800,
+              units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.34,
               playerCp=28, playerIncome=2.25, playerCap=38, playerBase='Anchor', starTime=840, starLosses=12),
             ('Orlov\'s Gun Line', 'Trận địa pháo của Orlov'),
             ('Orlov\'s headquarters sits behind a wall of artillery emplacements, where he can see the whole valley. Break through and level it. He will not wait for you.',
