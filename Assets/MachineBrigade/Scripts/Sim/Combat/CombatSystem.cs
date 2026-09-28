@@ -500,8 +500,8 @@ namespace MachineBrigade.Sim.Combat
             }
             if (v.Def.Boss) return v.AnyMount == index || now - v.AnyRoundAt > 0.01;
             if (SalvoUnderWay(v, index) || StreamUnderWay(v, index)) return false;
-            // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: a
-            // jet's cannon fires on for seconds); the others wait for its magazine change.
+            // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: an
+            // armoured car's or an IFV's cannon fires on for seconds); the others wait for its magazine change.
             if (Leads(v, index) && Streaming(v, index)) return true;
             if (gun)
             {
@@ -509,8 +509,8 @@ namespace MachineBrigade.Sim.Combat
                 if (now - v.HeavyWaitingAt < 0.15) return false;
                 // A machine gun also makes way for a magazine gun about to open up (the main gun's stream).
                 if (HeavyDue(v, index, IsMachineGun(weapon))) return false;
-                // Before a leading magazine gun opens up, a heavy weapon lined up goes first (a jet's
-                // rockets or bombs, then its cannon for the rest of the run; an IFV's missile, then its cannon).
+                // Before a leading magazine gun opens up, a heavy weapon lined up goes first (an IFV's
+                // or a BMPT's missile, then its cannon).
                 if (Leads(v, index) && HeavyReady(v, index)) return false;
                 if (v.GunMount != index && now - v.GunRoundAt < GunHandover) return false;
                 if (IsMachineGun(weapon) && state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
