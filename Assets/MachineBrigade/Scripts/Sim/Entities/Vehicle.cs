@@ -11,7 +11,7 @@ namespace MachineBrigade.Sim.Entities
     /// A vehicle's authoritative state. Views read it to draw; only the simulation's systems
     /// change it.
     /// </summary>
-    public sealed class Vehicle : IDamageable
+    public sealed partial class Vehicle : IDamageable
     {
         internal readonly List<Vector2> Path = new();
 
@@ -109,8 +109,6 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Shoot-and-scoot: rounds fired from the current spot.</summary>
         internal int ScootShots;
 
-        /// <summary>A boss part's index this hit struck (set by the damage system for the length of one hit; -1: the body).</summary>
-        internal int PartStruck = -1;
 
         /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
         internal float StunResist;
@@ -213,7 +211,7 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear * PhaseSpeed;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear * PhaseSpeed * PartSpeed;
 
         /// <summary>A multi-phase boss: the phases it has passed (0: the first bar).</summary>
         public int Phase { get; internal set; }
@@ -232,6 +230,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
         internal float CommandFire = 1f;
+
+        /// <summary>A friendly commander's damage aura (the Supreme Commander's; 1: none in reach).</summary>
+        internal float CommandDamage = 1f;
 
         /// <summary>A gun pit down in its hole (see VehicleDef.Hidden): it cannot fire and is hard to see.</summary>
         public bool Lowered { get; internal set; }

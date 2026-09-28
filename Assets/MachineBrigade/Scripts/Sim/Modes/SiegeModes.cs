@@ -547,7 +547,8 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>
         /// Every kind of boss and its variants (at most three of a kind): the super-heavy tank
         /// (Behemoth, Inferno, Tempest), the gunship (Iron Bird, Spectre), the mobile fortress
-        /// (Citadel, Hive, Bastion), the drone mothership and the Silver Bug.
+        /// (Citadel, Hive, Bastion), the drone mothership, the Silver Bug, and prompt 8's five: the rail
+        /// supergun, the Earth Worm, the command airship, the landing hovercraft and the Supreme Commander.
         /// </summary>
         public static readonly IReadOnlyList<string[]> Kinds = new[]
         {
@@ -556,6 +557,11 @@ namespace MachineBrigade.Sim.Modes
             new[] { "mobile_fortress", "fortress_hive", "fortress_bastion" },
             new[] { "drone_mothership" },
             new[] { "silver_bug" },
+            new[] { "rail_supergun" },
+            new[] { "earth_borer" },
+            new[] { "command_airship" },
+            new[] { "landing_hovercraft" },
+            new[] { "supreme_command" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
@@ -588,12 +594,20 @@ namespace MachineBrigade.Sim.Modes
             ["sky_fortress"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
             ["fortress_hive"] = new[] { "elite_aa", "elite_apc" },
             ["fortress_bastion"] = new[] { "elite_heavy_tank", "elite_mlrs" },
+            // Prompt 8: the supergun has its walls and guns; the airship its drones; the hovercraft lands its own;
+            // the Supreme Commander rides with an elite guard.
+            ["rail_supergun"] = new[] { "elite_heavy_tank", "elite_tank_destroyer" },
+            ["earth_borer"] = new[] { "elite_mbt", "elite_mbt" },
+            ["command_airship"] = new[] { "elite_aa", "elite_attack_helicopter" },
+            ["landing_hovercraft"] = new[] { "elite_apc" },
+            ["supreme_command"] = new[] { "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer" },
         };
 
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
 
-        public float TimeLimit { get; set; } = 27 * 60f;
+        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five).</summary>
+        public float TimeLimit { get; set; } = 52 * 60f;
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;

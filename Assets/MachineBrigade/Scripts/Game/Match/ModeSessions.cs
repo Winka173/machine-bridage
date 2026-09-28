@@ -90,14 +90,40 @@ namespace MachineBrigade.Game.Match
         protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss)
         {
             var phases = boss.Def.Phases;
+            var name = Strings.Card(boss.Def.Id) + PartsLine(boss);
             if (phases.Count == 0)
             {
-                hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+                hud.SetBoss(name, boss.Hp / boss.MaxHp);
                 return;
             }
             var marks = new List<float>(phases.Count);
             foreach (var p in phases) marks.Add(p.At);
-            hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp, boss.Phase, marks, boss.Transforming);
+            hud.SetBoss(name, boss.Hp / boss.MaxHp, boss.Phase, marks, boss.Transforming);
+        }
+
+        /// <summary>A multi-part boss's parts on its bar: "  ·  engine 3/4 · drone bay 2/2 · radar 1/1 · hull shielded" (prompt 9 draws them as icons).</summary>
+        internal static string PartsLine(MachineBrigade.Sim.Entities.Vehicle boss)
+        {
+            if (!boss.HasParts) return "";
+            var kinds = new List<string>();
+            var alive = new Dictionary<string, int>();
+            var total = new Dictionary<string, int>();
+            for (var i = 0; i < boss.Def.Parts.Count; i++)
+            {
+                var kind = boss.Def.Parts[i].Kind;
+                if (!total.ContainsKey(kind))
+                {
+                    kinds.Add(kind);
+                    total[kind] = 0;
+                    alive[kind] = 0;
+                }
+                total[kind]++;
+                if (!boss.IsPartBroken(i)) alive[kind]++;
+            }
+            var bits = new List<string>();
+            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", Strings.Get("part." + kind), alive[kind], total[kind]));
+            if (boss.BodyLocked) bits.Add(Strings.Get("boss.locked"));
+            return "  ·  " + string.Join(" · ", bits);
         }
 
         protected static void FillPoints(IObjectiveMode mode, List<PointInfo> scratch)

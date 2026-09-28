@@ -14,7 +14,7 @@ namespace MachineBrigade.Game.Views
     /// barrel recoil, hull pitch when accelerating or braking, a light bounce on the move, turning
     /// weapon mounts, spinning rotors, and flight (altitude, banking) for aircraft.
     /// </summary>
-    public sealed class VehicleView
+    public sealed partial class VehicleView
     {
         private const float BarWidth = 2.4f;
         private const float BarHeight = 0.2f;
@@ -187,6 +187,7 @@ namespace MachineBrigade.Game.Views
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
             _shieldMaterial = materials.Shockwave;
             AddRotorBlur(materials);
+            InitParts(models, meshes, materials);
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -890,6 +891,7 @@ namespace MachineBrigade.Game.Views
         {
             // The missile rises on its erector as the launch countdown runs.
             if (_erector != null) _erector.localRotation = _erectorRest * Quaternion.Euler(-90f * Sim.Charge, 0f, 0f);
+            AnimatePrompt8Parts();
             // Searchlights sweep back and forth, each tower on its own rhythm.
             if (_searchlight != null)
                 _searchlight.localRotation = _searchlightRest * Quaternion.Euler(0f, Mathf.Sin(Time.time * 0.45f + Id.Value) * 75f, 0f);

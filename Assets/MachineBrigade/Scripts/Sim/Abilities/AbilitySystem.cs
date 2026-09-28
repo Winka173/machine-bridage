@@ -19,7 +19,7 @@ namespace MachineBrigade.Sim.Abilities
     /// summons, EMP), used automatically when their trigger is met.</item>
     /// </list>
     /// </summary>
-    internal sealed class AbilitySystem
+    internal sealed partial class AbilitySystem
     {
         /// <summary>Supply at home: within this distance of the team's rally point, vehicles re-arm.</summary>
         private const float HomeReach = 20f;
@@ -95,6 +95,8 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive) continue;
                 if (skillTick && v.Def.Skills.Count > 0) UseSkills(v, now);
+                if (skillTick && v.Def.Scoot != null) Scoot(v, now);
+                if (auraTick && v.Def.Breacher) Plough(v);
                 if (v.MineLayer != null) LayMines(v, now);
                 if (auraTick)
                 {
@@ -296,16 +298,23 @@ namespace MachineBrigade.Sim.Abilities
         private void CommandAuras()
         {
             var list = _world.VehicleList;
-            foreach (var v in list) v.CommandFire = 1f;
+            foreach (var v in list)
+            {
+                v.CommandFire = 1f;
+                v.CommandDamage = 1f;
+            }
             foreach (var c in list)
             {
                 var aura = c.Def.CommandAura;
                 if (aura == null || !c.IsAlive || c.Stunned) continue;
                 var boost = 1f + aura.FireRate;
+                var harder = 1f + aura.Damage;
                 foreach (var v in list)
                 {
-                    if (!v.IsAlive || v.Team != c.Team || v.Def.Boss || v.CommandFire >= boost) continue;
-                    if (Vector2.DistanceSquared(v.Position, c.Position) <= aura.Radius * aura.Radius) v.CommandFire = boost;
+                    if (!v.IsAlive || v == c || v.Team != c.Team || v.Def.Boss) continue;
+                    if (Vector2.DistanceSquared(v.Position, c.Position) > aura.Radius * aura.Radius) continue;
+                    v.CommandFire = MathF.Max(v.CommandFire, boost);
+                    v.CommandDamage = MathF.Max(v.CommandDamage, harder);
                 }
             }
         }
@@ -501,6 +510,8 @@ namespace MachineBrigade.Sim.Abilities
             {
                 var skill = skills[i];
                 if (v.SkillReadyAt[i] > now || (skill.Once && v.SkillUsed[i])) continue;
+                // A boss's skill on a broken part (a drone hangar's launches) is used no more.
+                if (i < v.SkillOff.Length && v.SkillOff[i]) continue;
                 if (!Triggered(v, skill, now)) continue;
                 v.SkillReadyAt[i] = now + skill.Cooldown * (v.Gear != null ? MathF.Max(0.5f, 1f - v.Gear.Stat(StatId.Cooldowns)) : 1f);
                 v.SkillUsed[i] = true;

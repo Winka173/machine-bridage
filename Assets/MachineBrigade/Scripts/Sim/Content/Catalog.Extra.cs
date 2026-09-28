@@ -188,6 +188,17 @@ namespace MachineBrigade.Sim.Content
                     Ramp = new Vector2(ramp.Count > 0 ? ramp[0] : 0f, ramp.Count > 1 ? ramp[1] : 10f),
                 };
             }
+            if (v.Has("bombard"))
+            {
+                var b = v.Object("bombard");
+                def.Bombard = new BombardDef
+                {
+                    Every = b.Float("every", 20f), Warn = b.Float("warn", 3f), Damage = b.Float("damage", 1400f), Radius = b.Float("radius", 14f),
+                    Scatter = b.Float("scatter", 3f), BlindScatter = b.Float("blindScatter", 2.5f), First = b.Float("first", 10f),
+                    Spotter = b.Has("spotter") ? b.String("spotter") : null, Weapon = b.Has("weapon") ? b.String("weapon") : null,
+                    Warning = b.Has("warning") ? b.String("warning") : null,
+                };
+            }
             if (v.Has("guards"))
             {
                 var guards = new List<GuardDef>();
@@ -303,6 +314,12 @@ namespace MachineBrigade.Sim.Content
                 if (def.Landing != null)
                     foreach (var id in def.Landing.Units)
                         if (!_vehicles.ContainsKey(id)) throw new FormatException($"{def.Id}.landing.units: unknown vehicle '{id}'.");
+                if (def.Bombard is { } bombard)
+                {
+                    if (bombard.Weapon != null && !_weapons.ContainsKey(bombard.Weapon)) throw new FormatException($"{def.Id}.bombard.weapon: unknown weapon '{bombard.Weapon}'.");
+                    if (bombard.Warning != null && !_supports.ContainsKey(bombard.Warning)) throw new FormatException($"{def.Id}.bombard.warning: unknown support '{bombard.Warning}'.");
+                    if (bombard.Spotter != null && !_vehicles.ContainsKey(bombard.Spotter)) throw new FormatException($"{def.Id}.bombard.spotter: unknown vehicle '{bombard.Spotter}'.");
+                }
             }
         }
 

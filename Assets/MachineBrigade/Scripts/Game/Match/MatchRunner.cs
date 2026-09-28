@@ -385,6 +385,9 @@ namespace MachineBrigade.Game.Match
                 if (catalog.EliteVariant(id) is { } elite) Add(elite);
                 foreach (var skill in def.Skills)
                     if (skill.Unit != null) Add(skill.Unit);
+                // A boss's guards and the troops it lands (prompt 8).
+                foreach (var guard in def.Guards) Add(guard.Def);
+                if (def.Landing != null) foreach (var unit in def.Landing.Units) Add(unit);
             }
             for (var team = 0; team <= 1; team++)
                 if (_world.TryGetEconomy(team, out var economy))
@@ -819,6 +822,22 @@ namespace MachineBrigade.Game.Match
                         }
                         // Its new form: drawn again with the phase's model.
                         else if (phased.Form != null) _views.Rebuild(phased);
+                        break;
+                    // Prompt 8 bosses: a part broken, the Earth Worm diving and the ground cracking, a landing.
+                    case SimEventKind.PartBroken when !_menu && _world.TryGetVehicle(e.Entity, out var broken) && e.Mount < broken.Def.Parts.Count:
+                        _hud.Toast(Strings.Format("toast.partBroken", Strings.Get("part." + broken.Def.Parts[e.Mount].Kind), Strings.Card(broken.Def.Id)), seconds: 3f);
+                        Haptics.Pulse(90, 220);
+                        break;
+                    case SimEventKind.Burrowing when !_menu:
+                        if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f);
+                        else if (e.Value < 1.5f && _world.TryGetVehicle(e.Entity, out var borer) && borer.Def.Burrow is { } bore)
+                        {
+                            _warnings.Add((new Vector2(e.Position.X, e.Position.Y), bore.Radius, Time.time + e.Target.X + 0.5f));
+                            _hud.Toast(Strings.Get("toast.cracking"), error: true, seconds: 2.5f);
+                        }
+                        break;
+                    case SimEventKind.TroopsLanding when !_menu:
+                        _hud.Toast(Strings.Format("toast.landing", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f);
                         break;
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);

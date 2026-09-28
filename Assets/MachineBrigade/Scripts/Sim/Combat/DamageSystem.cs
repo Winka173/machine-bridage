@@ -58,9 +58,12 @@ namespace MachineBrigade.Sim.Combat
                 if (lured) at = lure;
                 else
                 {
-                    if (weapon.Guided && !decoyed) at = target.Position;
+                    if (weapon.Guided && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
                     if (decoyed) at = target.Position + p.Miss;
                 }
+                // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
+                if (p.Part >= 0 && target is Vehicle partBoss && (partBoss.IsPartBroken(p.Part) ||
+                    Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + 1.5f)) p.Part = -1;
                 if (!decoyed && !lured && Vector2.Distance(target.Position, at) <= target.Radius + 0.5f)
                 {
                     // Blame first, so a killing blow is credited to this shooter.
@@ -115,8 +118,8 @@ namespace MachineBrigade.Sim.Combat
             if (vehicle != null && vehicle.Flying && attacker.Def.Fort is { Size: SlotSize.Small } && weapon.CanTarget(true) &&
                 (vehicle.Def.Class == UnitClass.Helicopter || vehicle.Def.Drone))
                 best = LightTowerAirBonus;
-            // Engineers breach obstacles three times as fast.
-            if (vehicle != null && vehicle.Def.Obstacle && attacker.Def.RepairAura != null) best = MathF.Max(best, EngineerBreach);
+            // Engineers (and the armoured bulldozer) breach obstacles three times as fast.
+            if (vehicle != null && vehicle.Def.Obstacle && (attacker.Def.RepairAura != null || attacker.Def.Breacher)) best = MathF.Max(best, EngineerBreach);
             for (var i = 0; i < bonuses.Count; i++)
             {
                 var b = bonuses[i];
@@ -283,6 +286,20 @@ namespace MachineBrigade.Sim.Combat
                 damage = _world.Gear.Redirect(vehicle, damage, hit);
             }
             if (!(damage > 0f)) return 0f;
+            // A boss's parts: a direct hit on one hurts the part; the body is shut while its lock holds;
+            // a boring boss just out of the ground takes more.
+            if (vehicle.ExposedUntil > now) damage *= vehicle.Def.Burrow?.ExposedTaken ?? 1f;
+            if (vehicle.HasParts)
+            {
+                var part = hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !vehicle.IsPartBroken(shot.Part) ? shot.Part : -1;
+                if (part >= 0)
+                {
+                    var lost = _world.Bosses.DamagePart(vehicle, part, damage, hit);
+                    if (lost > 0f) _world.Emit(SimEvent.Damage(vehicle, lost));
+                    return lost;
+                }
+                if (vehicle.BodyLocked && hit.Kind != HitKind.Redirect) return 0f;
+            }
             // Unbreakable: a killing blow once a life leaves it on a sliver, briefly untouchable.
             if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
             // A multi-phase boss stops at its next phase's mark (what goes past it is lost) and transforms.

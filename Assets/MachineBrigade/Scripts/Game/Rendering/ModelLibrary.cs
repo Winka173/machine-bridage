@@ -147,10 +147,19 @@ namespace MachineBrigade.Game.Rendering
         /// Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam, a
         /// launcher's erector, a tower's sweeping searchlight).
         /// </summary>
-        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight|Lift)(\.\d+)?$");
+        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight|Lift|Blade)(\.\d+)?$");
+
+        /// <summary>
+        /// A boss's destructible parts (prompt 8: Part_engine, Part_hangar.001 ...): each is its own
+        /// rigid group, so the view can hide it or put a wreck piece in its place when it breaks.
+        /// </summary>
+        internal static readonly Regex PartPattern = new(@"^Part_[a-z]+(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Models whose radar turns slower than the usual 120 degrees a second (an EW tower's jammer head).</summary>
         private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f };
+
+        /// <summary>Models whose propeller is something slower (the earth borer's drill head: 300 degrees a second).</summary>
+        private static readonly Dictionary<string, float> SlowPropellers = new() { ["earth_borer"] = 300f };
 
         /// <summary>
         /// Turret parts that elevate with the gun: barrels, muzzle brakes, mortar tubes, rocket and
@@ -268,7 +277,7 @@ namespace MachineBrigade.Game.Rendering
                 }
                 foreach (var (name, axis, speed) in SpinnerPatterns)
                     if (name.IsMatch(t.name))
-                        spinners.Add(new Spinner(t, axis, t.name.StartsWith("Radar") && SlowRadars.TryGetValue(id, out var slow) ? slow : speed));
+                        spinners.Add(new Spinner(t, axis, SpinSpeed(modelId, id, t.name, speed)));
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
             else if (turret == null) muzzle = RoofFront(root.transform);
@@ -714,10 +723,18 @@ namespace MachineBrigade.Game.Rendering
             else Object.DestroyImmediate(o);
         }
 
+        /// <summary>A spinner's speed: its pattern's, or a slower one for this model (an EW tower's radar, a drill head).</summary>
+        private static float SpinSpeed(string modelId, string resolvedId, string part, float speed)
+        {
+            if (part.StartsWith("Radar") && (SlowRadars.TryGetValue(resolvedId, out var radar) || SlowRadars.TryGetValue(modelId, out radar))) return radar;
+            if (part.StartsWith("Propeller") && (SlowPropellers.TryGetValue(resolvedId, out var prop) || SlowPropellers.TryGetValue(modelId, out prop))) return prop;
+            return speed;
+        }
+
         private static bool IsMovingPart(Transform t)
         {
             var name = t.name;
-            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name)) return true;
+            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name)) return true;
             if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
             if (RecoilPattern.IsMatch(name) && t.parent != null &&
                 (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;

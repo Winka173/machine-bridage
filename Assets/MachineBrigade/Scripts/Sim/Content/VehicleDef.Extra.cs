@@ -45,6 +45,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A landing-craft boss, or null.</summary>
         public LandingDef? Landing { get; internal set; }
 
+        /// <summary>A super-heavy gun's map-wide shot, or null.</summary>
+        public BombardDef? Bombard { get; internal set; }
+
         /// <summary>Emplacements it arrives with.</summary>
         public IReadOnlyList<GuardDef> Guards { get; internal set; } = Array.Empty<GuardDef>();
 

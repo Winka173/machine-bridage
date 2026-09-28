@@ -120,6 +120,33 @@ namespace MachineBrigade.Sim.Content
         public Vector2 Ramp { get; internal set; } = new(0f, 10f);
     }
 
+    /// <summary>
+    /// A super-heavy gun's shot (the rail supergun): every <see cref="Every"/> seconds one shell at the
+    /// enemy's biggest group of ground vehicles anywhere on the map, its landing marked
+    /// <see cref="Warn"/> seconds ahead: a blast of <see cref="Damage"/> over <see cref="Radius"/> m,
+    /// landing within <see cref="Scatter"/> m of the mark (times <see cref="BlindScatter"/> once its
+    /// <see cref="Spotter"/> is gone).
+    /// </summary>
+    public sealed class BombardDef
+    {
+        public float Every { get; internal set; } = 20f;
+        public float Warn { get; internal set; } = 3f;
+        public float Damage { get; internal set; } = 1400f;
+        public float Radius { get; internal set; } = 14f;
+        public float Scatter { get; internal set; } = 3f;
+        public float BlindScatter { get; internal set; } = 2.5f;
+        public float First { get; internal set; } = 10f;
+
+        /// <summary>The fire-control post that aims it (a guard's def id), or null.</summary>
+        public string? Spotter { get; internal set; }
+
+        /// <summary>The weapon drawn firing (its muzzle flash and the shell's flight).</summary>
+        public string? Weapon { get; internal set; }
+
+        /// <summary>The fire support whose warning marks the landing (an event-only support).</summary>
+        public string? Warning { get; internal set; }
+    }
+
     /// <summary>An emplacement a boss arrives with (the supergun's guns and walls), at an offset in its frame (X right, Y forward).</summary>
     public sealed class GuardDef
     {

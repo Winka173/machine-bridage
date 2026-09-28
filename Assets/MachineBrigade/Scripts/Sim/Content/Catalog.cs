@@ -124,7 +124,7 @@ namespace MachineBrigade.Sim.Content
                     w.Enum("targets", TargetLayers.Ground))
                 {
                     Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f),
-                    Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false),
+                    Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f),
                     Charge = w.Float("charge", 0f),
@@ -263,7 +263,7 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("commandAura"))
                     {
                         var c = v.Object("commandAura");
-                        def.CommandAura = new CommandAuraDef(c.Float("radius"), c.Float("fireRate"));
+                        def.CommandAura = new CommandAuraDef(c.Float("radius"), c.Float("fireRate"), c.Float("damage", 0f));
                     }
                     if (v.Has("counterBattery"))
                     {

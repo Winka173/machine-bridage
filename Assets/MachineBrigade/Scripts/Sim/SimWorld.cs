@@ -59,6 +59,7 @@ namespace MachineBrigade.Sim
             Damage = new DamageSystem(this);
             Status = new StatusSystem(this);
             Gear = new Abilities.GearSystem(this);
+            Bosses = new MachineBrigade.Sim.Bosses.BossSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
@@ -137,6 +138,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>Equipment traits and modules in battle.</summary>
         internal Abilities.GearSystem Gear { get; }
+
+        /// <summary>Boss parts, boring, landings, the supergun's shot and boss guards (prompt 8).</summary>
+        internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
 
         internal CombatSystem Combat => _combat;
 
@@ -343,6 +347,8 @@ namespace MachineBrigade.Sim
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
+            // Its parts, a boss's timers, radio line and guards (prompt 8).
+            Bosses.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -621,6 +627,7 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
             _combat.Step(dt);
@@ -660,6 +667,7 @@ namespace MachineBrigade.Sim
             CrushVegetation();
             Lap(4);
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
@@ -926,6 +934,12 @@ namespace MachineBrigade.Sim
                 var mask = 0;
                 // A stealthy aircraft shows only close up, or for a moment after it fires.
                 var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
+                // A boss boring underground: only its own side knows where it is.
+                if (target.Burrowed && !RevealAll)
+                {
+                    target.SeenByMask = target.VisibleToMask = target.Team is >= 0 and < 31 ? 1 << target.Team : 0;
+                    continue;
+                }
                 if (target.Dummy || RevealAll)
                 {
                     target.SeenByMask = target.VisibleToMask = ~0;

@@ -56,6 +56,12 @@ namespace MachineBrigade.Game.Effects
             var barrel = Vector3.zero;
             if (views.TryGet(e.Entity, out var shooter))
             {
+                // A blow (the bulldozer's blade): the blade strokes, no flash or tracer; the impact shows the hit.
+                if (weapon != null && weapon.Melee)
+                {
+                    shooter.BladeStroke();
+                    return;
+                }
                 if (e.Mount == 0) shooter.Recoil();
                 // The barrel is laid first, so the round leaves from where its muzzle now is.
                 if (e.Mount == 0 && !shooter.Flying)
