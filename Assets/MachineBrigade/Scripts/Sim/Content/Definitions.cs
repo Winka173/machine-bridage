@@ -85,6 +85,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A laser: drawn as a beam from the muzzle to the target (it hits at once).</summary>
         public bool Beam { get; internal set; }
 
+        /// <summary>A blow, not a round (the bulldozer's blade): no muzzle flash and no tracer, the hit lands at once.</summary>
+        public bool Melee { get; internal set; }
+
         /// <summary>Seconds a charged weapon (a railgun) powers up, target in sight, before each shot; 0 for none.</summary>
         public float Charge { get; internal set; }
 
@@ -131,6 +134,7 @@ namespace MachineBrigade.Sim.Content
                 Cluster = cluster,
                 Pierce = Pierce,
                 Beam = Beam,
+                Melee = Melee,
             };
             return copy;
         }
@@ -224,7 +228,7 @@ namespace MachineBrigade.Sim.Content
         public string? Radio { get; set; }
     }
 
-    public sealed class VehicleDef
+    public sealed partial class VehicleDef
     {
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,

@@ -855,9 +855,33 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             t.ReverseFor = forWhom?.Id ?? EntityId.None;
             t.ReverseLeft = distance;
-            t.ReverseUntil = _world.Time + distance / MathF.Max(0.5f, v.Def.Speed * ReverseSpeedShare) + 1.5;
+            t.ReverseUntil = _world.Time + distance / MathF.Max(0.5f, v.Def.Speed * ReverseShare(v)) + 1.5;
             if (forWhom != null) t.Yields++;
             Vehicle.PathTrace?.Invoke(v, $"Reverse {distance:0.0} for #{t.ReverseFor.Value}");
+        }
+
+        /// <summary>How fast a vehicle backs up, as a share of its speed (a Reverse Gearbox makes it faster).</summary>
+        private static float ReverseShare(Vehicle v) => ReverseSpeedShare * (1f + (v.Gear?.Stat(StatId.ReverseSpeed) ?? 0f)) * v.SpeedFactor;
+
+        /// <summary>
+        /// Backs away from an enemy that has closed in, nose towards it (the Reverse Gearbox): at most
+        /// <paramref name="distance"/> metres, and only when the way behind is free. False when it cannot.
+        /// </summary>
+        internal bool BackAway(Vehicle v, Vector2 threat, float distance)
+        {
+            if (v.Flying || v.Def.Static || v.Stunned || v.Traffic.Reversing(_world.Time)) return false;
+            var face = SimMath.HeadingOf(threat - v.Position);
+            // The way out is straight back from the nose pointed at it; turned too far off, the hull swings as it goes.
+            var back = -SimMath.Forward(face);
+            for (var d = 1f; d <= distance; d += 1f)
+            {
+                var p = v.Position + back * d;
+                if (!_world.Map.Contains(p) || !_world.Grid.IsWalkable(p) || HullAt(v, p) != null) return false;
+            }
+            StartReverse(v, null, distance);
+            v.Traffic.ReverseFacing = true;
+            v.Traffic.ReverseFace = threat;
+            return true;
         }
 
         /// <summary>Backs straight out along the hull's axis (tracks need not turn round), then waits beside the mouth.</summary>
@@ -865,8 +889,11 @@ namespace MachineBrigade.Sim.Movement
         {
             var t = v.Traffic;
             var def = v.Def;
+            // Backing away from an enemy: the hull swings to keep its nose (and its thick front plate) on it.
+            if (t.ReverseFacing)
+                v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(t.ReverseFace - v.Position), def.TurnRate * v.TurnFactor * dt);
             var back = -SimMath.Forward(v.Heading);
-            v.Speed = SimMath.MoveTowards(v.Speed, -def.Speed * ReverseSpeedShare, def.Speed * 2f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, -def.Speed * ReverseShare(v), def.Speed * 2f * dt);
             var step = MathF.Max(0f, -v.Speed) * dt;
             var next = v.Position + back * step;
             if (t.ReverseLeft <= 0f || !_world.Map.Contains(next) || !_world.Grid.IsWalkable(next) ||
@@ -883,6 +910,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var t = v.Traffic;
             t.ReverseUntil = double.NegativeInfinity;
+            t.ReverseFacing = false;
             v.Speed = 0f;
             v.StuckTimer = 0f;
             v.StuckSample = v.Position;

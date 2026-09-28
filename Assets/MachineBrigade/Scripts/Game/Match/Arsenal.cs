@@ -232,11 +232,11 @@ namespace MachineBrigade.Game.Match
         public static bool CanMerge(GearItem a, GearItem b) =>
             a.slot == b.slot && a.rarity == b.rarity && a.rarity < (int)Rarity.Legendary;
 
-        public static GearBranch BranchOf(VehicleDef def) =>
-            def.Flying ? GearBranch.Air
-            : def.Weapon.MinRange > 0f ? GearBranch.Artillery
-            : def.Class is UnitClass.Tank or UnitClass.Heavy or UnitClass.TankHunter ? GearBranch.Armor
-            : GearBranch.Light;
+        /// <summary>
+        /// The branch whose loadout a vehicle wears: data (balance.json "branches", see
+        /// <see cref="VehicleDef.Branch"/>): aircraft Air, guns that lob over cover Artillery, the rest by class.
+        /// </summary>
+        public static GearBranch BranchOf(VehicleDef def) => (GearBranch)(int)def.Branch;
 
         /// <summary>
         /// What a card's rank and its branch's loadout do to a vehicle: every piece's main stat,
@@ -250,7 +250,13 @@ namespace MachineBrigade.Game.Match
         /// A loadout's boost with these caps per stat (a vehicle's <see cref="GearCatalog.StatCap"/>,
         /// a tower type's <see cref="GearCatalog.TowerStatCap"/>).
         /// </summary>
-        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps)
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps) => Boost(rank, loadout, caps, null);
+
+        /// <summary>
+        /// A loadout's boost; <paramref name="brandCounts"/> overrides the brand pieces counted for the
+        /// set bonuses (a tower type's Bulwark pieces count across the whole base), null counts the loadout's own.
+        /// </summary>
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps, int[] brandCounts)
         {
             var count = (int)StatId.Count;
             var sum = new float[count];
@@ -276,6 +282,7 @@ namespace MachineBrigade.Game.Match
                 if (b != null)
                 {
                     if (b.Implicit != StatId.Count) sum[(int)b.Implicit] += ImplicitValue(item);
+                    if (b.Implicit2 != StatId.Count) sum[(int)b.Implicit2] += Implicit2Value(item);
                     if (b.TradeOff) penalty[(int)b.Penalty] += PenaltyValue(item);
                     if (b.Extra != TraitId.None && item.rarity >= b.ExtraFrom) traits.Add(new GearTrait(b.Extra, 1f));
                 }
@@ -290,11 +297,16 @@ namespace MachineBrigade.Game.Match
                 var trait = TraitOf(item);
                 if (trait.Id != TraitId.None) traits.Add(trait);
             }
-            var brands = BrandCounts(worn);
+            var brands = brandCounts ?? BrandCounts(worn);
             for (var i = 1; i < brands.Length; i++)
             {
                 var brand = GearCatalog.Brand(i);
-                if (brands[i] >= 2) sum[(int)brand.Stat] += brand.Value;
+                if (brand == null) continue;
+                if (brands[i] >= 2)
+                {
+                    if (brand.Stat != StatId.Count) sum[(int)brand.Stat] += brand.Value;
+                    if (brand.TwoPiece.Id != TraitId.None) traits.Add(brand.TwoPiece);
+                }
                 if (brands[i] >= 4) traits.Add(brand.FourPiece);
             }
             var stats = new float[count];
@@ -348,6 +360,18 @@ namespace MachineBrigade.Game.Match
                 n++;
             }
             return n == 0 ? 100 : Mathf.RoundToInt(100f * sum / n);
+        }
+
+        /// <summary>
+        /// The elite budget's edge taken out of a matched boost (prompt 8 H): elites make the enemy
+        /// <paramref name="eliteEdge"/> stronger per CP, so the boost that keeps pace with the
+        /// arsenal is that much smaller (split evenly between health and damage, never below none).
+        /// </summary>
+        public static VehicleBoost WithElites(VehicleBoost matched, float eliteEdge)
+        {
+            if (eliteEdge <= 0f) return matched;
+            var f = Mathf.Sqrt(1f + eliteEdge);
+            return new VehicleBoost(Mathf.Max(1f, matched.Hp / f), Mathf.Max(1f, matched.Damage / f), 1f, 1f, 1f, 0f, SpecialModule.None, 0f);
         }
 
         public static VehicleBoost Match(IEnumerable<VehicleBoost> deck, float share)

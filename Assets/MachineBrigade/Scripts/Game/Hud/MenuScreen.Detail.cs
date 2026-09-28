@@ -248,6 +248,21 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(UiKit.Text(Strings.Get("detail.notes"), "menu-caps"));
                 _detailBody.Add(UiKit.Text(Strings.Get("note." + id), "detail-note role-note"));
             }
+            // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
+            foreach (var elite in _catalog.Vehicles.Values)
+            {
+                if (!elite.Elite || elite.EliteOf != id || !Strings.Has("guide." + elite.Id)) continue;
+                _detailBody.Add(UiKit.Text(Strings.Get("detail.eliteVersion"), "menu-caps"));
+                var eliteLines = Strings.Get("guide." + elite.Id).Split('\n');
+                for (var i = 0; i < eliteLines.Length; i++)
+                {
+                    var line = Strings.Highlight(eliteLines[i].Trim());
+                    if (line.Length == 0) continue;
+                    var label = UiKit.Text(line, i == 0 ? "guide-headline" : "detail-note guide-line");
+                    label.enableRichText = true;
+                    _detailBody.Add(label);
+                }
+            }
         }
 
         private string LockReasonShort(string id)

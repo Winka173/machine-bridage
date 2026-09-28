@@ -1129,3 +1129,214 @@ those draws is a full state change on the CPU: draws, not triangles, are the cos
     ones (a few hardpoints by about 2 m, some building variants), because the merged generator
     draws its random numbers in a different order.
   - The campaign sweeps run again in the testing phase.
+## 8. New content, elites and equipment
+
+Prompt 8 (branch feature/content8). Every new thing is compared with what the game already had; the
+comparisons, the numbers measured and what was dropped are here. Measurements come from the
+equipment lab (`Tests/EditMode/EquipmentLab.cs`, `EquipmentRiskLab.cs`, MB_BALANCE=1): a duel is two
+shooters of one card firing at a moving row of targets that hit back for nothing, summed through
+`DamageSystem.DamageLog`; a soak is one vehicle under a fixed group's fire, its time alive per life.
+Nothing new is tied to a weather, a biome or a map, and nothing is a hero card.
+
+### A. Vehicles
+
+- **Armoured bulldozer** (Heavy, 7 CP, 3,250 health in game (the brief said 3,500: see below), heavy armour, 5 m/s, a roof MG). Its main
+  weapon is the blade (`dozer_blade`, a melee weapon: `WeaponDef.Melee`, 110 AP a blow every 1.6 s,
+  4.5 m reach, three times the damage on structures, less on armour): the blow lands with the Blade
+  node's stroke in the view. `breacher: true` flattens enemy obstacles it touches (dragon's teeth,
+  hedgehogs, wire: `AbilitySystem.Plough`), gives it the engineer's breach bonus on structures, and has
+  the tactical AI send it at the nearest obstacle or tower ahead within 70 m (a tower only when the group
+  is strong enough), after the existing breach pass. `mineArmor: 0.5` halves a mine's blast (mines now
+  hit as `HitKind.Mine`); it does not clear mines, the sapper does. Unlocked by mission 7 (act II) and
+  added to Varga's deck (balance.json `generals.varga.deck`; a mission with Varga as its general adds it
+  to its enemy deck).
+  - Against the turtle tank (8 CP, the sponge): at the brief's 3,500 the bulldozer had more health (against 3,250) but
+    no drone armour, no mine immunity and no gun, so the line does not fight while it soaks; measured
+    under the same fire: equal under mixed fire (33.3 s a life each), 17.6 s against 17.0 s under tank fire (deaths fall on the attackers' salvos: the same 17.6 s at 3,500 and at 3,250 health). The brief's 3,500 health is cut to the turtle's 3,250 so the rule "no better a sponge than the turtle" holds by construction: with the same health the turtle adds drone armour, mine immunity and a 120 mm that fights while it soaks. Per CP the bulldozer still soaks more (7 CP against 8); it is meant to go in first at a base, not to hold a line.
+  - Against the siege tank (12 CP, 203 mm, wrecks structures from range) and the sapper (5 CP, mines and
+    repairs): the bulldozer is the close-range wrecker (a gun tower down in 37 s against 125 s for the
+    turtle tank in `Prompt8ContentTests`), the siege tank the long-range one, the sapper the mine
+    clearer; none replaces another.
+  - Counters: the enemy commander scores cards that kill armour higher (+0.7 each, up to two) for every
+    bulldozer it sees; its own bulldozer scores +1.8 against a side with two or more towers or obstacles
+    known, -1.5 otherwise (no bulldozers in an open field battle).
+- **SP howitzer**: no new vehicle, two mechanisms. Shoot-and-scoot (`scoot`: after 3 rounds from one
+  spot, once its reload is under way, it drives 15-20 m to a spot across its line of fire, then angled
+  back, then straight back, still in reach of its target and clear of its minimum range; it tries again
+  after its next rounds if nowhere fits; never while the player has it on a move). Marked targets
+  (`markedSpread: 0.15`): a target under a mark, a reveal or a scan (radar, UAV scan, laser designator)
+  gets 15 % of its scatter (mean miss 3.0 m plain, 0.45 m marked). Its damage a second: 42 held in place, 44 with shoot-and-scoot (it moves during its reload, so the move costs no fire); no damage or price change was needed.
+- **Not added:** a fast assault tank (the tank destroyer at the same 6 CP already out-hits it on heavy
+  armour, 78 DPS, and the wheeled gun has the fast role) and a turretless tank destroyer (the twin tank
+  at the same 9 CP has the same damage with a turret, and the tank destroyer the reach).
+
+### B. New base types (values at Legendary, top level; the lower rarities follow the existing ladder)
+
+| base | slot | Legendary | branches | against what was there |
+|---|---|---|---|---|
+| Flanking rounds | Weapon | +20 % damage into flank and rear | Armour, Light | the only flank bonus on a piece (the wheeled gun's is its own) |
+| Airburst rounds | Weapon | +30 % damage on drones, rockets and missiles (shooting them down too) | Armour, Light | replaces the hyper-velocity charge; the proximity fuze stays for aircraft, this one for drones and rounds in flight |
+| Spare magazine | Loader | a launcher that runs dry reloads at once, once a life | branches with launchers or magazines (read from the weapons) | the only magazine piece; hot swap shortens every reload, this saves one |
+| Radar-absorbent coating | Armour | enemy missiles must come 20 % closer to lock on | all | flares and APS act after the lock; this before it |
+| Laser warning | Optics | smoke 8 m round it when an anti-tank missile locks on, every 20 s | Armour, Light | the smoke discharger acts on health, this on the lock |
+| Reverse gearbox | Engine | +40 % reverse speed; its AI backs off nose-on from enemies closing in | Armour, Light | Rearguard lowers damage when moving away, this makes the move |
+
+### C. New unique lines (Epic / Legendary)
+
+- **Vengeance** (Loader): a friend dying within 15 m gives +15 % / +20 % damage for 5 s; it never stacks
+  with itself (the best holds). Dark Crown is a small permanent gain; Vengeance is a burst after a loss,
+  so the two do not overlap.
+- **Suppressive Fire** (Weapon): a hit slows the target's fire by 10 % / 15 % for 3 s, scaled by the
+  proc coefficient (I.3).
+- **Rearguard** (Engine): 15 % / 20 % less damage taken while moving away from the enemy.
+All three hook into the existing gear events and show their small text over the vehicle when they fire.
+
+### D. New brands
+
+- **Phoenix Recovery**: 2 pieces +10 % repair received; 4 pieces: healing past full health becomes a
+  shield of up to 10 % of health for 8 s. Overlap with the Quartermaster (also +10 % repair received on
+  two pieces): kept, because the four-piece bonuses differ (refunds against overheal); the repair
+  received line keeps its cap, so the two do not stack past it.
+- **Wolfpack Tactics**: 2 pieces +4 % damage per friend within 15 m (up to three); 4 pieces: three or
+  more firing at one target all fire 15 % faster.
+- **Bulwark Engineering** (towers only): 2 pieces +10 % tower health; 4 pieces: a destroyed tower leaves
+  a machine-gun post for 20 s (`bulwark_post`). Pieces are counted across the whole base's tower gear
+  (one tower type rarely holds four), and it drops on 35 % of tower pieces.
+- **Not added:** roof cage armour (the anti-rocket cage already cuts drone damage and the artillery roof
+  bomb damage), a helicopter hunter (Light only, and the proximity fuze and AA pintle already do it),
+  Talon Precision (on artillery the fire-control computer does it), cavalry (weaker than the existing
+  rapid deployment), target marking and a data link (the laser designator does both), a first aid kit
+  (the emergency repair kit does it).
+
+### E. Bosses
+
+The general part mechanism (`VehicleDef.Parts`, `BossSystem`): a boss lists parts, each with a share
+of its health, a model node (`Part_*`), a position and radius for aiming, the weapon mounts and skills it
+carries, and what its loss does (speed, spread, failure chance on the mounts it affects, damage to the
+body). A `partLock` makes the body take no damage until enough parts of one kind are down. Shots at a
+boss pick a part (a locked body: the lock's parts; otherwise the most threatening part, 40 % the body);
+guided rounds fly to the part's position; a broken part hides its node and leaves a wreck piece. Prompt
+9 puts parts on every boss with this data only.
+
+| boss | general | what it does | how it differs from every boss before |
+|---|---|---|---|
+| Rail supergun | Kessler | static on its rail at the map edge; a shell every 20 s anywhere on the map, 3 s warning ring; a targeting station (kill it: the shells scatter) and gun emplacements guard it; tractors on the rail | the only boss that hits the whole map without moving: the player must dodge and push at once (the trains move, the fortresses have a reach) |
+| Earth Worm | Varga | dives (not targetable), surfaces under the player's biggest group after a 2 s crack warning, stuns ground vehicles within 15 m, takes 1.5 times damage for 6 s after | the only boss that cannot be shot most of the time and comes to the player |
+| Command airship | Quạ Đen | four engines, two drone hangars, one radar; the hull only after two engines; hangars down stop the drones, the radar down spoils its flak; anti-air and fighters only | the first multi-part boss: the fight is choosing what to break |
+| Landing hovercraft | (coast) | runs its coastal route (the trains' route logic) and lands 3-4 vehicles at each landing point, five landings | a race against its landings, not a damage race; the trains carry nothing |
+| Supreme Commander | Hùng | a super-heavy command vehicle with little fire of its own; every enemy within 40 m +20 % damage and +20 % fire rate; elite escorts, more at 60 % | a force multiplier: kill it first or fight a stronger army |
+
+All five are in Boss Rush (with their escorts, 52 min limit), with guide cards, their generals' radio
+lines on arrival and at half health, and their parts on the boss bar.
+Campaign placement proposed (the campaign rework wires it; its branch already names these ids):
+the hovercraft in chapter 1 (the landing beach), the Earth Worm in chapter 2 or 6 (Varga), the rail
+supergun in chapter 4 (Kessler's port, as a stage of the chapter's operation), the airship in chapter 7
+(Quạ Đen's sky war), the Supreme Commander in chapter 8 or 9 (after Hùng's betrayal), each a mid-chapter
+boss or a stage, not a replacement for the chapter's final boss.
+
+### H. Elites
+
+- **One footing.** Every elite: 1.6 times its base card's health (the data's "hp"; a test holds it),
+  1.25 times its damage (`VehicleDef.DamageScale`, from balance.json `elites.damageScale`), one or two
+  of the existing elite skills. Signature guns kept (the 125 mm, the 152 mm HEAT, the 105 mm APFSDS at
+  46 m, paired Hellfires, cluster rockets, airburst flak) but brought back to about the base card's damage
+  a second, so the scale is the difference. Before, the ratios ran from 1.03 (the Grad) to 3.97 (the AA).
+- **Measured power** (duel damage a second times time alive, 3 seeds, a 480 s soak so a tough elite is
+  not capped by the window): all twelve between 1.84 and 2.2 (ROSTER_BALANCE.md has the before and after tables). What it took: the EW carrier
+  keeps the EMP and drops its smoke (the brief's example); the heavy tank keeps its overdrive and drops
+  its repair (repair alone made it 2.9); the battle tank's shield is 30 % (it alone was 2.65 at 60 %);
+  the rocket elites' salvos are much lighter (sixteen cluster rockets on three targets were worth 2.9
+  times the base's damage). The new elites' one skill is worth more than the others', so their damage
+  scale is lower: FPV carrier 1.1, SP howitzer 1.15, long-range SAM 1.2, attack jet 1.0 (its long flares
+  alone double its life under missile fire). elite_repair is now on no vehicle; it stays in the data.
+- **New elites**: FPV carrier (barrage), attack jet (long flares), long-range SAM (overdrive), SP
+  howitzer (barrage): the enemy decks' commonest cards with none. Each skill fits the class (flares only
+  on aircraft; barrage on salvo and drone launchers and the howitzer). They use their base card's model
+  repainted (see ASSET_DEBT.md). The Grad elite stays an enemy card.
+- **Budget, not chance.** `EliteBudget` per side (sim): an elite costs 1.6 times its base card (the
+  difference charged when the delivery is promoted); a share of the side's spending may go on elites
+  (Easy 5 %, Normal 10 %, Hard 15 %, Heroic 20 %, Iron 25 %; the mission tier sets Heroic and Iron) with
+  at most 1/2/3/4/5 out at once. A delivery is promoted when the elite's price keeps the elites' part of
+  all spending within the share. A general's favoured cards get the whole share, the rest half
+  (`otherShare`): Varga tanks and heavy tanks, Orlov artillery, Sen drones, Quạ Đen aircraft. Waves and
+  reinforcements are counted at their CP value and follow the same budget; a siege's late waves raise
+  the share as they did the chance (0.08 a wave from the sixth), and the cap with it. The menu battle
+  gives both sides Normal. Boss escorts and summons are scripted and outside the budget.
+  - Consequence: elites are no longer a free upgrade (a 25 % chance at Hard was up to +25 % power for
+    nothing); at 1.6 times the price for about twice the power they are 1.25 times as strong per CP, so
+    the budget adds share times 0.25 to the enemy's strength (Normal +2.5 %, Iron +6 %).
+  - Enemy scaling: the campaign's matched boost (`EnemyScaling.Match`) is divided by the square root of
+    1 plus that edge on health and damage (`EnemyScaling.WithElites`), never below the plain card, so the
+    arsenal-matched enemy is as strong as before with elites in it, not stronger.
+  - The mission's general is read from `MissionDef.General` once the campaign rework is merged (a
+    reflection bridge until then, `MissionSession.GeneralOf`); quick modes have no general.
+- **Refunds** at the elite price: an elite's `ArmyCost` is its price, used by the kill refund, the army
+  value and the catch-up; the Quartermaster's own-loss refund uses it too.
+- **Rewards**: each elite destroyed pays 10 coins, for the first four of a battle (at most 40 against
+  120-300 for a quick battle's win; Normal fields about two in a quarter hour, so about +20 coins or
+  7 %), and 6 % of them drop a blueprint of their base card (only of a card the player can own). The
+  cap keeps a long battle near prompt 7's curve.
+- **Readability**: a gold ring round an elite's minimap blip; a radio line when the first elite of a wave
+  arrives (the first of the battle, of a new numbered wave, or after 60 s with none); the gold health
+  bar as before; each base card's Guide tab shows its elite version with its own entry and skills.
+
+### I. Equipment
+
+- **I.1 Fit matrix from the data.** balance.json `branches` names each class's branch (Armour: Tank,
+  Heavy, TankHunter; Light: Light, Scout, AntiAir, Support; Artillery; Air: Helicopter, Plane; an
+  aircraft is always Air). So the long-range SAM is Light (anti-air) and the FPV carrier Armour (tank
+  hunter), which the old rule by minimum range put in Artillery. `VehicleFit` reads what each card has
+  from its weapons and body and what each line needs; a class meets a need when a third of its cards do
+  (a half left the carousel autoloader with one class; a third keeps lone oddities out), a branch fits a
+  piece when one of its classes meets the need of its base type and its unique line together. Crates
+  drop only fitting pieces, the equipment screen refuses unfit ones (greyed, with the reason), the
+  branch pages list their classes, and save version 3 takes unfit pieces off into the inventory.
+  EQUIPMENT_FIT.md is generated from the code.
+- **I.2 Twin Feed**: bursts of three or more get the extra round as before (+12 % salvo at Legendary);
+  one- and two-round weapons get +15 % / +20 % damage a shot instead. The salvo share was raised from +12 % to +20 % at Legendary (+15 % Epic) so salvos match single shots. Measured (2 shooters, 5 seeds): tank cannon +14.5 %, long gun +15.7 %, railgun +22.8 % (it was -16.8 %: the old extra round wasted its charge), howitzer +22 %, flame +18 %, machine gun +17 %, heavy flak +23 %, bombs +16 %, jet cannon +11 %, flak +8 %, ATGM +8.5 %; the autocannon (-1 %) and the rocket salvo (+1.6 %) still gain nothing measurable (the missile of the IFV and the magazine of the MLRS dilute the duel), to look at in the testing phase
+- **I.3 Proc coefficient**: the main weapon's time between hits (a burst or a charge counted whole,
+  machine guns 1.7 times) over 1.5 s, clamped to 0.15-2.5, multiplies every on-hit chance and flat on-hit
+  amount (ricochet, incendiary, shredder, suppression, momentum, suppressive fire...). Shredder needs
+  more hits a stack on fast guns (a hit adds the proc coefficient's share of a stack, up to five stacks of 4 % more damage taken at Legendary). Spread of each offensive line's gain
+  between weapon groups: Ricochet now carries the damage share of the hits that earned the bounce (a fast gun bounces seldom but hard), so it no longer favours slow guns 17 to 1 (railgun +28.5 %, flak +1.7 % before; now 7.6 % to 31 % across groups, flak +16 %, heavy flak +8 %). Incendiary, momentum and opening salvo retuned (below). The measured spread is still above the 1.5 times the brief asks for on several lines (EQUIPMENT_VALUES.md): the duel dilutes a main-weapon line with the secondaries, and its targets respawn every 0.5 s, which inflates opening and kill lines on slow guns; a fairer harness (MainOnly duels, longer-lived targets) is for the testing phase.
+- **I.4 Cluster warheads** burst on the first two rounds of a salvo only (`ClusterRounds`), so a bomber's
+  or a rocket launcher's salvo gets about the same +20-30 % as a single-shot gun. Measured after raising the bomblets to 8 at Legendary: howitzer +13.8 %, rocket salvo +11.4 %, bombs +8 % on a line of targets; on a tight group (3.5 m) MLRS +11.6 %, SP howitzer +6.6 %, bomber +5.6 %: no weapon runs away with it any more; the +20-30 % the brief aims at on structures is still to measure
+- **I.5 Module scale**: fixed-effect modules (drone escort, uplink barrage, mine dispenser, EMP payload)
+  and the fuel blast are scaled by clamp(CP / 7, 0.4, 1.3) of the card's price (an elite: its elite
+  price); the fuel blast is capped at 1,500. Measured: a Legendary drone escort adds about 1.2 damage a second per CP on a 2 CP scout jeep and on a 7 CP battle tank alike (1.9 on the heavy tank), so spamming cheap cards with it no longer pays
+- **I.6 Refund caps**: a kill refunds at most 45 % of the victim's price (base 25 %, War Profiteer and
+  the Quartermaster four-piece included: together they would reach 50 %); the own-loss refund at most
+  15 %. Snowball: the cap bites only on a stacked killer, so the winning side's pace changes by at most
+  that 5 %.
+- **I.7 Trade-off pieces** (heavy barrel, hair trigger, overtuned engine, monolithic plate) drop from
+  Rare up only and their drawback grows with their rarity (-5/-6/-7 % speed on the heavy barrel), so
+  every piece that drops is a net gain; the alternative (a scaled drawback at Common) left two tiers of
+  nearly nothing.
+- **I.8 Cleanup**: the hyper-velocity charge retired (airburst rounds take its place), turbocharger and
+  turret drive merged into the drivetrain, mine rollers renamed underbelly armour (mines and blast
+  damage, so it works in every battle), the signal relay adds 10 % vision, the monolithic plate's main
+  stat shown (no raw key). Old pieces convert in place (same slot, rarity, level: `GearCatalog.Replaced`).
+- **I.9 Tower gear**: three slots a tower type, shared by every tower of that type; `TowerFit` limits
+  each piece to the tower types it works on; Bulwark counts across the base. One-tower bases in
+  Legendary gear against the mixed base in the same gear: no one-tower base is the best against every army. Against the mixed army the mixed base scores 1.89 and only the ATGM and heavy-turret bases tie it; the rocket battery base is best against armour (1.86 against 1.38) and worst against a mixed army (1.35); every one-tower base collapses against artillery (0.31-0.74 against 1.00). No change to tower gear or hardpoints.
+
+| base (Legendary tower gear) | mixed | armour | light+drones | artillery | air |
+|---|---|---|---|---|---|
+| mixed | 1.89 | 1.38 | 1.69 | 1.00 | 2.00 |
+| only gun_turret | 1.86 | 1.67 | 1.61 | 0.74 | 2.00 |
+| only atgm_tower | 1.89 | 1.59 | 1.41 | 0.31 | 2.00 |
+| only rocket_turret | 1.35 | 1.86 | 1.47 | 0.31 | 1.99 |
+| only heavy_turret | 1.89 | 1.21 | 1.42 | 0.31 | 1.98 |
+
+Score: HQ health left plus share of the attackers destroyed (0-2), 3 seeds, 5 minutes.
+- **I.10 No chained last stands**: once Unbreakable, the Aegis barrier or the Phoenix overheal saves a
+  vehicle from a killing blow, the others cannot fire for 6 s (`LastStandGap`). Measured on a heavy tank under two tanks and a tank destroyer: Unbreakable alone +15 % time alive, with the emergency kit and the Phoenix four-piece +36 %: they add up, they do not chain
+- **I.11 Values**: EQUIPMENT_VALUES.md (generated) lists every line and module's numbers and the lab's
+  measured gains. Offensive lines mostly land between +8 % and +25 % where they apply; deliberate exceptions: Opening Salvo and Kill Reload on slow guns and bombs (+35 % railgun, +62 % bombs for Kill Reload: the lab's fast target turnover), Unbreakable on fragile vehicles (+140 % on the helicopter, +8 % on the tank: a flat 2.5 s and one blow are worth most where lives are shortest), and the lines that act outside a duel or soak and read zero there (sight, stealth, capture, economy, debuffs on targets that do not shoot back, friends dying, repairs out of combat). Retuned in this pass: Twin Feed (salvo share 12 % to 20 %), Incendiary (14 % to 25 %), Opening Salvo (80 % to 50 %), Momentum (4 % to 7 % a stack), Cluster Warhead (6 to 8 bomblets), Ricochet (bounce weight)
+
+### J. Measurements and tests
+
+- Tests: `Prompt8ContentTests` (the bulldozer, the SP gun, the five bosses and the part mechanism, Boss Rush), `EquipmentPrompt8Tests` (fit matrix, new bases, lines, brands, proc coefficient, Twin Feed, cluster, module scale, refund caps, trade-offs, migration), `ElitePrompt8Tests` (footing, budget, caps, generals, waves, refunds, rewards, enemy pace), plus the updated gear, tower gear and model tests. The last full EditMode run: 614 tests, 561 passed, 0 failed, 53 skipped (balance measurements), before the last tuning pass (see the hand-off).
+- The lab (MB_BALANCE=1): `EquipmentLabTests` (roster DPS, elite power, offensive lines, Twin Feed), `EquipmentRiskLab` (risky combinations, defensive lines and modules, the sponge, the scoot, one-tower bases), `EquipmentDocsExport` (writes EQUIPMENT_FIT.md and EQUIPMENT_VALUES.md).
+- Risky combinations measured (the full table is in EQUIPMENT_VALUES.md): Twin Feed on the battle tank +14 %, on the railgun +22 %; ricochet on flak +16 % and heavy flak +8 %, shredder on flak +9 %; cluster on the bomber within noise, on the MLRS +11 %; the drone escort module about the same per CP on a jeep as on a tank; War Profiteer with the Quartermaster four-piece capped at a 45 % refund (it would be 50 %), the Quartermaster's own-loss refund 10 % under the 15 % cap; Wolfpack on six jeeps +17 %, on three tanks +18 % (it is not a swarm tool only); the SP gun with the laser designator +8 %, the counter-battery radar adding nothing in a duel (it answers enemy artillery); Unbreakable, emergency kit and Phoenix on a heavy tank +36 % time alive.
+- Not run (left to the testing phase by the lead's instruction): the five-seed campaign sweep after the elite budget, the Boss Rush and Conquest ending sweeps (the Boss Rush cap in `ModeEndingTests` is now 55 minutes for its ten bosses), the snowball measurement after the refund caps, the rerun of the offensive lines after the last retune of Twin Feed's salvo share.

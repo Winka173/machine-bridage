@@ -23,7 +23,8 @@ namespace MachineBrigade.Tests
             (GameModeKind.Defend, "greenvale", 22f),
             (GameModeKind.Endless, "ironport", 40f),
             (GameModeKind.Survival, "frostpeak", 40f),
-            (GameModeKind.BossRush, "ashfield", 28f),
+            // Ten bosses since prompt 8: a 52-minute limit.
+            (GameModeKind.BossRush, "ashfield", 55f),
         };
 
         private static string[] Names() => Array.ConvertAll(Modes, m => m.kind.ToString());

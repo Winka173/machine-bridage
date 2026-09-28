@@ -117,6 +117,14 @@ namespace MachineBrigade.Sim.Events
         /// Mount 1 (no parachute) and land when it stops.
         /// </summary>
         Arrival,
+        /// <summary>A boss part broke: Entity the boss, Mount the part's index, Position where it was, DefId the part's id.</summary>
+        PartBroken,
+
+        /// <summary>A boring boss (Entity): Value 0 it dives, 1 the ground cracks at Position (it breaks out in Target.X seconds), 2 it breaks out at Position.</summary>
+        Burrowing,
+
+        /// <summary>A landing craft (Entity) lowers its ramp at Position and lands Value vehicles.</summary>
+        TroopsLanding,
     }
 
     /// <summary>
@@ -270,6 +278,15 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Revealed(Vehicle radar, Vehicle gun, float seconds) =>
             new(SimEventKind.GunRevealed, radar.Id, gun.Position, default, seconds, default, gun.Def.Id, radar.Team, other: gun.Id);
+
+        internal static SimEvent PartLost(Vehicle boss, int part, Vector2 at, string id) =>
+            new(SimEventKind.PartBroken, boss.Id, at, boss.Position, 0f, ExplosionTier.Huge, id, boss.Team, part);
+
+        internal static SimEvent Burrow(Vehicle boss, int stage, Vector2 at, float seconds = 0f) =>
+            new(SimEventKind.Burrowing, boss.Id, at, new Vector2(seconds, 0f), stage, ExplosionTier.Ultimate, boss.Def.Id, boss.Team);
+
+        internal static SimEvent Landed(Vehicle boss, Vector2 at, int count) =>
+            new(SimEventKind.TroopsLanding, boss.Id, at, boss.Position, count, ExplosionTier.Large, boss.Def.Id, boss.Team);
 
         internal static SimEvent BossPhase(Vehicle v, int number, bool begins, string? radio) =>
             new(SimEventKind.BossPhase, v.Id, v.Position, default, number, default, radio, v.Team, mount: begins ? 1 : 0);

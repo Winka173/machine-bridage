@@ -84,8 +84,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(GearSlot.Weapon, GearCatalog.Trait(TraitId.Executioner).Slot, "a vehicle trait in a tower pool keeps its vehicle entry");
             Assert.AreEqual(GearSlot.TowerWeapon, GearCatalog.TraitFor(GearSlot.TowerWeapon, "executioner").Slot, "and a tower piece reads its tower entry");
             // The vehicle catalogue and its rolls are untouched.
-            Assert.AreEqual(34, GearCatalog.Bases.Length);
-            Assert.AreEqual(42, GearCatalog.Traits.Length);
+            Assert.AreEqual(38, GearCatalog.Bases.Length);
+            Assert.AreEqual(45, GearCatalog.Traits.Length);
             var rng = new Random(9);
             for (var i = 0; i < 300; i++) Assert.IsFalse(Gear.IsTower(Crates.Roll((Rarity)(i % 5), rng, i + 1).Slot), "a vehicle roll is never a tower piece");
         }
@@ -123,7 +123,7 @@ namespace MachineBrigade.Tests
                 var b = Gear.BaseOf(item);
                 Assert.IsNotNull(b, "a tower base type");
                 Assert.AreEqual(item.Slot, b.Slot);
-                Assert.AreEqual(0, item.brand, "no brand: sets are for vehicle loadouts");
+                Assert.That(item.brand, Is.EqualTo(0).Or.EqualTo(GearCatalog.BulwarkBrand), "no vehicle brand: only the tower brand, Bulwark Engineering");
                 Assert.AreEqual(b.NoSubs ? 0 : Gear.SubCount[(int)rarity], item.subs.Count, "its rarity's sub-stats");
                 var need = TowerFit.Need(b);
                 foreach (var sub in item.subs)
@@ -562,7 +562,7 @@ namespace MachineBrigade.Tests
                     if (!Gear.IsTower(g)) continue;
                     towers++;
                     Assert.IsTrue(GearCatalog.TowerBasesFor(g.Slot).Any(b => b.Id == g.baseType), "a tower base type of its slot");
-                    Assert.AreEqual(0, g.brand);
+                    Assert.That(g.brand, Is.EqualTo(0).Or.EqualTo(GearCatalog.BulwarkBrand));
                 }
             }
             var share = (float)towers / total;

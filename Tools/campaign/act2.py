@@ -104,20 +104,19 @@ add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLi
              say('khai', 'Boss', 'Everything on the train. Now.', 'Dồn hết vào đoàn tàu. Ngay.'),
              say('kessler', 'Win', 'Cancel the timetable.', 'Hủy lịch trình.')])
 
-add_mission(m('c4m06', 4, 'rustyard', 'Intercept', 'Clear', timeLimit=1200, launchSeconds=45, general='kessler', reinforcements=3,
-              boss=scripted('rail_supergun', (140, 11.25), heading=270, route=[(90, 11.25), (30, 11.25), (-30, 11.25), (-80, 11.25)],
-                            fallback='armored_train', fallbackHealth=1.8, name='rail_supergun'),
+add_mission(m('c4m06', 4, 'rustyard', 'Boss', 'Clear', timeLimit=1200, general='kessler', reinforcements=3,
+              boss=scripted('rail_supergun', (140, 11.25), heading=270, name='rail_supergun'),
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_tank', 'wheeled_gun'], (-70, -40), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor', starTime=540, starLosses=10),
             ('The Rail Supergun', 'Siêu pháo đường ray'),
-            ('Kessler has a gun too big for any road, pushed along the Rust Yard rails by two tractors. When it reaches its firing point, it shells our base. Stop it on the rails.',
-             'Kessler có một khẩu pháo quá to cho mọi con đường, được hai đầu kéo đẩy dọc đường ray Bãi Sắt Gỉ. Tới được điểm bắn là nó nã vào căn cứ của ta. Chặn nó ngay trên đường ray.'),
+            ('Kessler has a gun too big for any road, parked on the rails at the edge of the Rust Yard. Every twenty seconds it drops a shell on us, and the ground warns us three seconds before. Fight through its guard and destroy it.',
+             'Kessler có một khẩu pháo quá to cho mọi con đường, đậu trên đường ray ở rìa Bãi Sắt Gỉ. Cứ hai mươi giây nó lại nã một phát vào ta, và mặt đất báo trước ba giây. Đánh xuyên qua đội canh gác và phá hủy nó.'),
             (('Forty kilometres', 'Bốn mươi cây số'),
              ('The supergun\'s range card says forty kilometres. Its crew manual says: "Do not fire within forty kilometres of the Admiral." He was never that far from it.',
               'Bảng tầm bắn của siêu pháo ghi bốn mươi cây số. Sổ tay kíp pháo ghi: "Không được bắn khi Đô đốc ở trong vòng bốn mươi cây số." Ông ta chưa từng rời xa nó tới thế.')),
-            [say('linh', 'Start', 'The supergun is moving west on the middle track. It needs forty-five seconds to set up.', 'Siêu pháo đang di chuyển về phía tây trên đường ray giữa. Nó cần bốn mươi lăm giây để triển khai.'),
-             say('mai', 'BossHalf', 'The tractors are the weak point. Kill the tractors, the gun stops.', 'Đầu kéo là điểm yếu. Diệt đầu kéo là khẩu pháo đứng im.')])
+            [say('linh', 'Start', 'The supergun is on the east rails. Watch the ground: where it cracks red, a shell lands three seconds later.', 'Siêu pháo nằm trên đường ray phía đông. Để ý mặt đất: chỗ nào nứt đỏ, ba giây sau đạn rơi xuống đó.'),
+             say('mai', 'BossHalf', 'Take out its targeting station and its shells go wide.', 'Phá trạm chỉ thị mục tiêu của nó là đạn sẽ rơi lệch.')])
 
 add_mission(m('c4m07', 4, 'ironport', 'Protect', 'Overcast', reversed=True, targets=['factory', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='kessler', reinforcements=2,
@@ -457,7 +456,7 @@ add_mission(m('c6m02', 6, 'whiteout', 'Evacuate', 'Snow', reversed=True, convoyC
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'flame_tank', 'mortar_carrier'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(80, 60), (40, 100), (100, 10)]),
-              unlocks=['c_ram'], starTime=600, starLosses=10),
+              unlocks=['armored_bulldozer', 'c_ram'], starTime=600, starLosses=10),
             ('Evacuate Whiteout', 'Sơ tán Đèo Bão Tuyết'),
             ('Varga\'s counterstrike is pouring over the pass. The villagers at the frozen lake have to get out: six trucks, one every few seconds, down the road to our camp. '
              'Hold the lake until the last one leaves, then cover the road. Four must get through.',

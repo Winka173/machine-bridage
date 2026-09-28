@@ -515,9 +515,8 @@ namespace MachineBrigade.Sim.Strikes
             {
                 // Bosses cannot be patched up in the field: a 40% heal would undo minutes of fighting.
                 if (!v.IsAlive || v.Team != s.Team || v.Def.Boss || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
-                var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * fraction);
+                var amount = _world.Gear.Heal(v, v.MaxHp * fraction * Abilities.GearSystem.RepairFactor(v, _world.Time));
                 if (amount <= 0f) continue;
-                v.Hp += amount;
                 _world.Emit(SimEvent.RepairedBy(v, amount));
             }
         }

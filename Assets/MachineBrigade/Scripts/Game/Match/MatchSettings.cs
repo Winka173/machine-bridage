@@ -114,6 +114,7 @@ namespace MachineBrigade.Game.Match
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
             "turtle_tank", "bmpt", "sapper",
             "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
+            "armored_bulldozer",
         };
 
         public static readonly string[] AllSupports =

@@ -36,6 +36,11 @@ namespace MachineBrigade.Sim.Combat
 
         public bool MissileIncoming(EntityId vehicle) => _missileTargets.Contains(vehicle);
 
+        /// <summary>Ground vehicles a guided missile (not a drone) is flying at this step: an anti-tank missile's lock (Laser Warning's cue).</summary>
+        private readonly HashSet<EntityId> _atgmTargets = new();
+
+        public bool AtgmIncoming(EntityId vehicle) => _atgmTargets.Contains(vehicle);
+
         /// <summary>Some round is on its way to this vehicle (a Decoy Launcher's cue).</summary>
         public bool RoundIncoming(EntityId vehicle) => _incoming.ContainsKey(vehicle);
 
@@ -45,8 +50,13 @@ namespace MachineBrigade.Sim.Combat
         public void Step(float dt)
         {
             _missileTargets.Clear();
+            _atgmTargets.Clear();
             foreach (var p in _projectiles)
-                if (p.Weapon.Guided && p.Target.IsValid) _missileTargets.Add(p.Target);
+            {
+                if (!p.Weapon.Guided || !p.Target.IsValid) continue;
+                _missileTargets.Add(p.Target);
+                if (p.Weapon.Projectile == ProjectileKind.Missile && !p.TargetFlying) _atgmTargets.Add(p.Target);
+            }
             _focus.Clear();
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Target.IsValid) _focus.Add((v.Team, v.Target));
@@ -60,7 +70,7 @@ namespace MachineBrigade.Sim.Combat
                 ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
-                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive)
+                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed)
                 {
                     v.Target = EntityId.None;
                     continue;
@@ -75,7 +85,8 @@ namespace MachineBrigade.Sim.Combat
                 var laid = target ?? air;
                 v.AimDistance = laid != null ? Vector2.Distance(v.Position, laid.Position) : 0f;
                 v.AimHeight = laid is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
-                if (mounts[0].Aim == MountAim.Turret)
+                // A supergun's barrel stays laid where its last shell went (its shots are the boss system's).
+                if (mounts[0].Aim == MountAim.Turret && v.Def.Bombard == null)
                 {
                     var desired = laid != null ? SimMath.HeadingOf(laid.Position - v.Position) : v.Heading;
                     v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * v.TurretFactor * dt);
@@ -85,10 +96,16 @@ namespace MachineBrigade.Sim.Combat
                     v.TurretHeading = v.Heading;
                     if (IsSide(mounts[0].Aim)) AimSide(v, 0, target, dt);
                 }
-                Operate(v, 0, target, dt);
+                if (v.MountWorks(0)) Operate(v, 0, target, dt);
 
                 for (var i = 1; i < mounts.Count; i++)
                 {
+                    // A boss's mount on a broken part fires no more.
+                    if (!v.MountWorks(i))
+                    {
+                        v.Weapons[i].Target = EntityId.None;
+                        continue;
+                    }
                     var secondary = SelectSecondaryTarget(v, i, target);
                     var state = v.Weapons[i];
                     state.Target = secondary?.Id ?? EntityId.None;
@@ -299,7 +316,10 @@ namespace MachineBrigade.Sim.Combat
         {
             if (!weapon.CanTarget(IsFlying(target))) return false;
             var distance = Vector2.Distance(v.Position, target.Position);
-            return distance >= weapon.MinRange && distance - target.Radius <= weapon.Range * _world.Gear.Reach(v, target, weapon);
+            var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
+            // Radar-absorbent coating: a missile must come closer to lock on.
+            if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, 0.5f);
+            return distance >= weapon.MinRange && distance - target.Radius <= reach;
         }
 
         private static bool IsFlying(IDamageable target) => target is Vehicle vehicle && vehicle.Flying;
@@ -343,6 +363,8 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
             if (state.Ammo > 0) state.Ammo--;
+            // Shoot-and-scoot (the SP gun): rounds fired from this spot.
+            if (index == 0 && v.Def.Scoot != null) v.ScootShots++;
             var machineGun = IsMachineGun(weapon);
             var scale = machineGun ? RunDamage : 1f;
             // Equipment on the main weapon: extra rounds per pull (Twin Feed, Strafing Run).
@@ -548,11 +570,16 @@ namespace MachineBrigade.Sim.Combat
                 damageScale *= mods.Scale * _world.Gear.PintleScale(shooter, index, targetFlying);
             }
             if (pull) _world.Gear.Fired(shooter, weapon);
+            // A boss with parts: the round goes at one of them (or at the body).
+            var part = aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
+            if (part >= 0 && aimTarget is Vehicle partOf) aimAt = partOf.PartPosition(part);
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
             var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
             var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            // A boss's broken fire-control radar: its guns scatter wider.
+            if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
             if (!weapon.Guided && spread > 0f && (shooter.Gear != null || aimTarget is Vehicle { Gear: not null }))
                 spread *= _world.Gear.SpreadFactor(shooter, index, aimTarget, reach);
             // Artillery brackets its target (Wargame and real gunnery): the first round lands wide,
@@ -567,6 +594,9 @@ namespace MachineBrigade.Sim.Combat
                     state.BracketShots = 0;
                 }
                 spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));
+                // A target its side has marked (a designator's laser, a radar's fix, a UAV over it): the
+                // SP gun's rounds fall almost on the mark (prompt 8 A.2).
+                if (index == 0 && shooter.Def.MarkedSpread < 1f && aimTarget is Vehicle marked && Marked(marked, shooter.Team)) spread *= shooter.Def.MarkedSpread;
             }
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
@@ -587,7 +617,7 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
-            damageScale *= shooter.DamageBoost;
+            damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
             // A gun pit's first shot on rising (the Ambush branch).
             if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
             {
@@ -597,6 +627,7 @@ namespace MachineBrigade.Sim.Combat
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying)
             {
                 DamageScale = damageScale, Origin = origin, Shooter = shooter, Main = index == 0, Tandem = mods.Tandem, ExtraSplash = mods.ExtraSplash,
+                NoCluster = mods.NoCluster, Part = part,
             };
             if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
             {
@@ -604,7 +635,8 @@ namespace MachineBrigade.Sim.Combat
                 _incoming[target] = (_incoming.TryGetValue(target, out var already) ? already : 0f) + projectile.Incoming;
             }
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
-            if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach) projectile.Failed = true;
+            var fail = index < shooter.MountFail.Length ? shooter.MountFail[index] : 0f;
+            if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
             if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
                 projectile.Jammed = true;
             if (weapon.Guided)
@@ -614,6 +646,20 @@ namespace MachineBrigade.Sim.Combat
             }
             _projectiles.Add(projectile);
             _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target));
+        }
+
+        /// <summary>
+        /// A target <paramref name="team"/> has marked: a laser designator's mark, a counter-battery
+        /// radar's reveal, or a UAV scan over it.
+        /// </summary>
+        internal bool Marked(Vehicle target, int team)
+        {
+            var now = _world.Time;
+            ref var mark = ref target.Statuses[(int)StatusKind.Mark];
+            if (mark.Until > now && mark.Team == team) return true;
+            ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
+            if (reveal.Until > now && team is >= 0 and < 31 && (reveal.Stacks & (1 << team)) != 0) return true;
+            return team is >= 0 and < 31 && (_world.Strikes.ScanMask(target.Position, target.Team) & (1 << team)) != 0;
         }
 
         private void UpdateProjectiles(float dt)

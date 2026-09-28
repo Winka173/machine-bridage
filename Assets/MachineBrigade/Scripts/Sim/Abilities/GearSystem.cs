@@ -17,6 +17,9 @@ namespace MachineBrigade.Sim.Abilities
         public float ExtraSplash;
         public bool Tandem;
 
+        /// <summary>This round carries no bomblets (Cluster Warhead: only a salvo's first rounds do).</summary>
+        public bool NoCluster;
+
         public static ShotMods Plain => new() { Scale = 1f };
     }
 
@@ -29,7 +32,7 @@ namespace MachineBrigade.Sim.Abilities
     /// should see is announced as a <see cref="SimEventKind.TraitProc"/>, at most once per vehicle
     /// every two seconds. Everything is deterministic: timers, counters and thresholds, no chance.
     /// </summary>
-    internal sealed class GearSystem
+    internal sealed partial class GearSystem
     {
         /// <summary>Seconds between two proc words over one vehicle.</summary>
         public const double ProcGap = 2.0;
@@ -82,11 +85,12 @@ namespace MachineBrigade.Sim.Abilities
                     break;
                 }
                 case SpecialModule.MineDispenser when v.Def.Mines == null && !v.Flying:
-                    v.MineLayer = new MineLayerDef(b.SpecialPower2 > 0f ? b.SpecialPower2 : 20f, Math.Max(1, (int)MathF.Round(b.SpecialPower)), MineBlast(g), 2.2f);
+                    v.MineLayer = new MineLayerDef(b.SpecialPower2 > 0f ? b.SpecialPower2 : 20f, Math.Max(1, (int)MathF.Round(b.SpecialPower)), MineBlast(g, ModuleScale(v)), 2.2f);
                     v.NextMineAt = now + 3.0;
                     break;
                 case SpecialModule.DroneEscort:
-                    g.Drone ??= DroneFor(v, g);
+                    // Sized to the vehicle's price (a cheap vehicle's escort drones hit less hard).
+                    g.Drone = DroneFor(v, g, ModuleScale(v));
                     g.ModuleReady = now + 4.0;
                     break;
                 case SpecialModule.UplinkBarrage:
@@ -139,7 +143,7 @@ namespace MachineBrigade.Sim.Abilities
         }
 
         /// <summary>A Mine Dispenser's charge: three fifths of a mine layer's, or a stock one.</summary>
-        private ExplosionDef MineBlast(GearState g)
+        private ExplosionDef MineBlast(GearState g, float scale)
         {
             ExplosionDef? stock = null;
             foreach (var def in _world.Catalog.Vehicles.Values)
@@ -148,14 +152,14 @@ namespace MachineBrigade.Sim.Abilities
                     stock = def.Mines.Blast;
                     break;
                 }
-            var damage = (stock?.Damage * 0.6f ?? 260f) * (1f + g.Stat(StatId.SummonPower));
+            var damage = (stock?.Damage * 0.6f ?? 260f) * (1f + g.Stat(StatId.SummonPower)) * scale;
             return new ExplosionDef(damage, MathF.Min(stock?.Radius ?? 4f, 4f), 0f, stock?.Tier ?? ExplosionTier.Large);
         }
 
         /// <summary>The kamikaze drone this vehicle launches: a catalog drone's look, 60 % of one main-gun shot.</summary>
-        private WeaponDef DroneFor(Vehicle v, GearState g)
+        private WeaponDef DroneFor(Vehicle v, GearState g, float scale = 1f)
         {
-            var damage = MathF.Max(40f, v.Def.Weapon.Damage * 0.6f) * (1f + g.Stat(StatId.SummonPower));
+            var damage = MathF.Max(40f, v.Def.Weapon.Damage * 0.6f) * (1f + g.Stat(StatId.SummonPower)) * scale;
             WeaponDef? template = null;
             if (_world.Catalog.Weapons.TryGetValue("fpv_swarm", out var fpv)) template = fpv;
             else
@@ -197,6 +201,7 @@ namespace MachineBrigade.Sim.Abilities
         public void Step(float dt)
         {
             var now = _world.Time;
+            RaisePosts();
             _auraTimer -= dt;
             var aura = _auraTimer <= 0f;
             if (aura) _auraTimer += AuraInterval;
@@ -209,9 +214,14 @@ namespace MachineBrigade.Sim.Abilities
                 if (!v.IsAlive) continue;
                 if (v.Def.CounterBattery != null && (v.Gear == null || !v.Gear.Has(TraitId.CounterBatteryRadar))) _radars.Add(v);
                 var speed = 1f - StatusSystem.SlowShare(v, now);
-                var fire = 1f;
+                // Under suppressive fire: it fires slower (anyone's, equipment or not).
+                var fire = 1f - SuppressedShare(v, now);
                 v.RangeFactor = 1f;
-                if (v.Gear != null) StepGear(v, v.Gear, now, aura, ref speed, ref fire);
+                if (v.Gear != null)
+                {
+                    StepGear(v, v.Gear, now, aura, ref speed, ref fire);
+                    StepLines(v, v.Gear, now, aura, ref speed, ref fire);
+                }
                 v.SpeedGear = speed;
                 v.FireGear = fire;
             }
@@ -451,9 +461,8 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!ally.IsAlive || ally == v || ally.Team != v.Team || ally.Def.Boss || ally.Hp >= ally.MaxHp) continue;
                 if (now - ally.LastHitTime <= 4.0 || Vector2.DistanceSquared(ally.Position, v.Position) > radius * radius) continue;
-                var amount = MathF.Min(ally.MaxHp - ally.Hp, ally.MaxHp * t.A * AuraInterval * RepairFactor(ally, now));
+                var amount = Heal(ally, ally.MaxHp * t.A * AuraInterval * RepairFactor(ally, now));
                 if (amount <= 0f) continue;
-                ally.Hp += amount;
                 _world.Emit(SimEvent.RepairedBy(ally, amount));
             }
         }
@@ -485,8 +494,13 @@ namespace MachineBrigade.Sim.Abilities
             if (pressed < 3) return;
             g.DomeUsed = true;
             foreach (var ally in _world.VehicleList)
-                if (ally.IsAlive && ally.Team == v.Team && Vector2.DistanceSquared(ally.Position, v.Position) <= radius * radius)
-                    ally.ImmuneUntil = Math.Max(ally.ImmuneUntil, now + v.SpecialPower);
+            {
+                if (!ally.IsAlive || ally.Team != v.Team || Vector2.DistanceSquared(ally.Position, v.Position) > radius * radius) continue;
+                // One save at a time: a vehicle Unbreakable (or an overheal shield) just saved is left out.
+                if (ally.LastStandUntil > now) continue;
+                ally.ImmuneUntil = Math.Max(ally.ImmuneUntil, now + v.SpecialPower);
+                ally.LastStandUntil = now + v.SpecialPower + LastStandGap;
+            }
             Proc(v, SpecialModule.AegisDome);
         }
 
@@ -513,7 +527,7 @@ namespace MachineBrigade.Sim.Abilities
         private bool Barrage(Vehicle v, int rounds)
         {
             if (!_world.TryGetTarget(v.Target, out var target) || !target.IsAlive) return false;
-            var blast = new ExplosionDef(60f * (1f + (v.Gear?.Stat(StatId.SummonPower) ?? 0f)), 4f, 0f, ExplosionTier.Medium);
+            var blast = new ExplosionDef(60f * (1f + (v.Gear?.Stat(StatId.SummonPower) ?? 0f)) * ModuleScale(v), 4f, 0f, ExplosionTier.Medium);
             for (var k = 0; k < rounds; k++)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
@@ -551,17 +565,46 @@ namespace MachineBrigade.Sim.Abilities
             if (g.Has(TraitId.SetHitAndRun)) g.HitRunUntil = now + 2.0;
             if (g.Has(TraitId.SetDeepStrike) && Vector2.Distance(v.Position, aimAt) > weapon.Range * 0.7f) mods.Scale *= 1f + g.Trait(TraitId.SetDeepStrike).A;
             if (g.Has(TraitId.SetGhostNet) && (wasHidden || _world.Strikes.InSmoke(v.Position))) mods.Scale *= 1f + g.Trait(TraitId.SetGhostNet).A;
-            if (g.Has(TraitId.MomentumGun) && target.IsValid && g.StreakTarget == target && g.Streak > 0)
-                mods.Scale *= 1f + g.Trait(TraitId.MomentumGun).A * Math.Min(5, g.Streak);
-            if (!pull) return mods;
+            if (g.Has(TraitId.MomentumGun) && target.IsValid && g.StreakTarget == target && g.StreakCarry > 0f)
+                mods.Scale *= 1f + g.Trait(TraitId.MomentumGun).A * MathF.Min(5f, g.StreakCarry);
+            // Twin Feed on a gun of one or two rounds a pull (and machine guns): every round harder
+            // instead of another round (a salvo of three or more gets one more round, see ExtraRounds).
+            if (g.Has(TraitId.TwinFeed) && weapon.Burst <= 2) mods.Scale *= 1f + TwinSingle(g.Trait(TraitId.TwinFeed));
+            if (!pull)
+            {
+                // The rest of a salvo: the opening window, a heavy round's salvo, the bomblets' first rounds.
+                if (g.Has(TraitId.OpeningSalvo) && now <= g.OpeningUntil && target == g.LastTarget) mods.Scale *= 1f + g.Trait(TraitId.OpeningSalvo).A;
+                if (g.HeavyRoundsLeft > 0)
+                {
+                    g.HeavyRoundsLeft--;
+                    mods.Scale *= 1f + g.HeavyBonus;
+                    mods.ExtraSplash = 4f;
+                }
+                if (g.Has(TraitId.ClusterWarhead) && weapon.Indirect)
+                {
+                    if (g.BombletRoundsLeft > 0) g.BombletRoundsLeft--;
+                    else mods.NoCluster = true;
+                }
+                return mods;
+            }
 
             g.Shots++;
-            if (g.Has(TraitId.OpeningSalvo) && target.IsValid && target != g.LastTarget)
+            // Opening Salvo: the first pull at a new target and every round fired at it in the next
+            // moment (a fast gun's first burst, a slow gun's first shell).
+            if (g.Has(TraitId.OpeningSalvo) && target.IsValid)
             {
-                mods.Scale *= 1f + g.Trait(TraitId.OpeningSalvo).A;
-                Proc(v, TraitId.OpeningSalvo);
+                if (target != g.LastTarget)
+                {
+                    // A gun firing more than a round a second: its first burst of rounds (1.5 s), a slower gun its first shot.
+                    g.OpeningUntil = HitInterval(weapon) < 1f ? now + OpeningWindow : now;
+                    mods.Scale *= 1f + g.Trait(TraitId.OpeningSalvo).A;
+                    Proc(v, TraitId.OpeningSalvo);
+                }
+                else if (now <= g.OpeningUntil) mods.Scale *= 1f + g.Trait(TraitId.OpeningSalvo).A;
             }
             if (target.IsValid) g.LastTarget = target;
+            // Cluster Warhead: a salvo's first rounds carry the bomblets (a bomber's run is not a carpet of them).
+            if (g.Has(TraitId.ClusterWarhead) && weapon.Indirect) g.BombletRoundsLeft = ClusterRounds - 1;
             if (g.Has(TraitId.ShootAndScoot))
             {
                 if (!v.IsMoving && now - v.StillSince <= 1.5 && g.ScootShotAt < v.StillSince)
@@ -594,6 +637,9 @@ namespace MachineBrigade.Sim.Abilities
             {
                 mods.Scale *= 1f + bonus;
                 mods.ExtraSplash = 4f;
+                // A salvo's heavy pull is heavy in every round (a flak burst, a rocket ripple), not its first alone.
+                g.HeavyRoundsLeft = weapon.Burst - 1;
+                g.HeavyBonus = bonus;
                 Proc(v, key);
             }
             return mods;
@@ -608,7 +654,9 @@ namespace MachineBrigade.Sim.Abilities
             var rounds = weapon.Burst;
             float total = rounds;
             var extra = 0;
-            if (g.Has(TraitId.TwinFeed))
+            // Twin Feed on a salvo of three or more: one round more, the salvo a share harder in all.
+            // Guns of one or two rounds get harder rounds instead (see Shot).
+            if (g.Has(TraitId.TwinFeed) && rounds >= 3)
             {
                 extra++;
                 total = rounds * (1f + g.Trait(TraitId.TwinFeed).A);
@@ -739,17 +787,22 @@ namespace MachineBrigade.Sim.Abilities
             var g = v.Gear!;
             if (!p.Main) return;
             var weapon = p.Weapon;
+            // The proc coefficient (prompt 8 I.3): a gun that hits often gets less out of each hit,
+            // a slow heavy gun more, so every line is worth about as much on every weapon.
+            var c = ProcCoefficient(weapon);
+            var gap = HitInterval(weapon);
             if (target is Vehicle tv)
             {
                 if (g.Has(TraitId.MomentumGun))
                 {
-                    if (g.StreakTarget == tv.Id) g.Streak = Math.Min(5, g.Streak + 1);
+                    if (g.StreakTarget == tv.Id) g.StreakCarry = MathF.Min(5f, g.StreakCarry + c);
                     else
                     {
                         g.StreakTarget = tv.Id;
-                        g.Streak = 1;
+                        g.StreakCarry = MathF.Min(5f, c);
                     }
-                    if (g.Streak == 5) Proc(v, TraitId.MomentumGun);
+                    g.Streak = (int)g.StreakCarry;
+                    if (g.StreakCarry >= 5f) Proc(v, TraitId.MomentumGun);
                 }
                 if (dealt > 0f && tv.IsAlive)
                 {
@@ -758,32 +811,51 @@ namespace MachineBrigade.Sim.Abilities
                     {
                         var seconds = weapon.Projectile == ProjectileKind.Flame ? 6f : 4f;
                         var share = g.Has(TraitId.IncendiaryRounds) ? g.Trait(TraitId.IncendiaryRounds).A : 0.1f;
-                        _world.Status.Burn(tv, dealt * share * (1f + g.Stat(StatId.BurnDamage)) / seconds, seconds, v.Team, v.Id, firestorm);
+                        // Each hit's fire adds to the one burning (a fast gun's many small fires are one big one).
+                        _world.Status.Burn(tv, dealt * share * (1f + g.Stat(StatId.BurnDamage)) / seconds, seconds, v.Team, v.Id, firestorm, stack: true);
                         if (g.Has(TraitId.IncendiaryRounds)) Proc(v, TraitId.IncendiaryRounds);
                     }
                     if (g.Has(TraitId.ShredderRounds))
                     {
-                        _world.Status.Shred(tv, g.Trait(TraitId.ShredderRounds).A, 5f);
+                        // A fast gun needs several hits for one stack, a slow gun lays several at once and they last its reload.
+                        _world.Status.Shred(tv, g.Trait(TraitId.ShredderRounds).A, MathF.Max(5f, gap * 2f), 5, c);
                         if (tv.Statuses[(int)StatusKind.Shred].Stacks >= 5) Proc(v, TraitId.ShredderRounds);
                     }
                     if (g.Has(TraitId.SuppressionRounds))
                     {
-                        _world.Status.Slow(tv, g.Trait(TraitId.SuppressionRounds).A, 2f);
+                        _world.Status.Slow(tv, g.Trait(TraitId.SuppressionRounds).A, MathF.Max(2f, gap * 1.25f));
                         Proc(v, TraitId.SuppressionRounds);
+                    }
+                    if (g.Has(TraitId.SuppressiveFire))
+                    {
+                        _world.Status.Suppress(tv, g.Trait(TraitId.SuppressiveFire).A, MathF.Max(3f, gap * 1.25f));
+                        Proc(v, TraitId.SuppressiveFire);
                     }
                     if (g.Has(TraitId.LaserDesignator))
                     {
                         var t = g.Trait(TraitId.LaserDesignator);
-                        _world.Status.Mark(tv, t.A, t.B, v.Team, 0.1f);
+                        _world.Status.Mark(tv, t.A, MathF.Max(t.B, gap * 1.5f), v.Team, 0.1f);
                         Proc(v, TraitId.LaserDesignator);
                     }
                 }
             }
-            if (g.Has(TraitId.RicochetShells) && target is Vehicle struck && (weapon.Cooldown >= 0.35f || weapon.Burst > 1)) Ricochet(p, v, g, struck);
+            if (g.Has(TraitId.RicochetShells) && target is Vehicle struck && !p.Bounce)
+            {
+                // Every hit earns part of a bounce (a heavy shell a whole one, a fast gun's round a sliver),
+                // and a bounce carries the damage share of all the hits that earned it: a fast gun bounces
+                // seldom but hard, so every weapon gets about the same share of its damage back (I.3).
+                var earned = MathF.Min(1f, c);
+                g.RicochetCarry += earned;
+                if (g.RicochetCarry >= 1f)
+                {
+                    g.RicochetCarry -= 1f;
+                    Ricochet(p, v, g, struck, 1f / MathF.Max(0.05f, earned));
+                }
+            }
         }
 
         /// <summary>Ricochet Shells: the round bounces on to the nearest other enemy close by, at a share of its damage.</summary>
-        private void Ricochet(Projectile p, Vehicle v, GearState g, Vehicle struck)
+        private void Ricochet(Projectile p, Vehicle v, GearState g, Vehicle struck, float hits = 1f)
         {
             var t = g.Trait(TraitId.RicochetShells);
             Vehicle? next = null;
@@ -798,9 +870,10 @@ namespace MachineBrigade.Sim.Abilities
             }
             if (next == null) return;
             var travel = MathF.Max(0.05f, MathF.Sqrt(best) / MathF.Max(1f, p.Weapon.ProjectileSpeed));
+            // The bounce strikes its target only: no blast, no piercing, no bomblets.
             var bounce = new Projectile(p.Owner, p.OwnerTeam, p.Weapon, next.Position, next.Id, travel, next.Flying)
             {
-                Origin = struck.Position, DamageScale = p.DamageScale * t.A, Shooter = v, NoProc = true, Tandem = p.Tandem,
+                Origin = struck.Position, DamageScale = p.DamageScale * t.A * hits, Shooter = v, NoProc = true, Tandem = p.Tandem, Bounce = true, NoCluster = true,
             };
             _world.Combat.AddProjectile(bounce);
             Proc(v, TraitId.RicochetShells);
@@ -857,7 +930,11 @@ namespace MachineBrigade.Sim.Abilities
                 if (g.Has(TraitId.TandemWarhead) && target.Armor == ArmorClass.Heavy && hit.Weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)
                     m += g.Trait(TraitId.TandemWarhead).A;
                 if (g.CrownStacks > 0) m += g.Trait(TraitId.DarkCrown).A * g.CrownStacks;
+                m += OutgoingLines(attacker, g, target, hit);
             }
+            // Vengeance: an ally fell close by.
+            ref var avenging = ref attacker.Statuses[(int)StatusKind.Avenging];
+            if (avenging.Until > now) m += avenging.Value;
             if (target is Vehicle aimed && IsFixedDefence(attacker) && attacker.Team is 0 or 1 && hit.Kind is HitKind.Direct or HitKind.Splash or HitKind.Pierce)
                 m += FireLink(attacker, aimed, hit, now);
             if (target is Vehicle victim && hit.Known)
@@ -967,6 +1044,7 @@ namespace MachineBrigade.Sim.Abilities
             if (g.Anchored) cut += g.Trait(TraitId.SiegeAnchor).A;
             if (g.Has(TraitId.SetBulwark) && !v.IsMoving && now - v.StillSince >= 2.0) cut += g.Trait(TraitId.SetBulwark).A;
             if (g.Has(TraitId.RapidDeployment) && now - g.SpawnedAt < g.Trait(TraitId.RapidDeployment).A) cut += 0.2f;
+            cut += IncomingLines(v, g, hit);
             m *= 1f - Math.Clamp(cut, 0f, 0.7f);
             if (hit.Kind != HitKind.Direct) return m;
 
@@ -1036,8 +1114,11 @@ namespace MachineBrigade.Sim.Abilities
         {
             var g = v.Gear!;
             if (!g.Has(TraitId.Unbreakable) || g.UnbreakableUsed || v.Dummy) return false;
+            // Just saved by a dome or an overheal shield: this blow is not saved a second time.
+            if (v.LastStandUntil > _world.Time) return false;
             g.UnbreakableUsed = true;
             v.ImmuneUntil = _world.Time + g.Trait(TraitId.Unbreakable).A;
+            v.LastStandUntil = v.ImmuneUntil + LastStandGap;
             Proc(v, TraitId.Unbreakable);
             return true;
         }
@@ -1066,14 +1147,16 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (kg.Has(TraitId.KillReload))
                 {
+                    // Up to two seconds off the main gun's reload (all of a fast gun's, a share of a slow
+                    // gun's), a round into an empty magazine, and faster fire for a while.
                     var state = killer.Weapons[0];
-                    state.Cooldown = 0f;
+                    state.Cooldown = MathF.Max(0f, state.Cooldown - KillReadySeconds);
                     if (state.Ammo == 0)
                     {
-                        state.Ammo = killer.Arms[0].Ammo;
+                        state.Ammo = 1;
                         state.ReloadLeft = 0f;
                     }
-                    kg.KillFireUntil = now + 4.0;
+                    kg.KillFireUntil = now + MathF.Max(4f, HitInterval(killer.Arms[0]) * 1.5f);
                     Proc(killer, TraitId.KillReload);
                 }
                 if (kg.Has(TraitId.SalvageTeam))
@@ -1084,9 +1167,8 @@ namespace MachineBrigade.Sim.Abilities
                         if (!ally.IsAlive || ally.Team != killer.Team || ally.Hp >= ally.MaxHp) continue;
                         var self = ally == killer;
                         if (!self && Vector2.DistanceSquared(ally.Position, killer.Position) > 100f) continue;
-                        var amount = MathF.Min(ally.MaxHp - ally.Hp, ally.MaxHp * share * (self ? 1f : 0.5f) * RepairFactor(ally, now));
+                        var amount = Heal(ally, ally.MaxHp * share * (self ? 1f : 0.5f) * RepairFactor(ally, now));
                         if (amount <= 0f) continue;
-                        ally.Hp += amount;
                         _world.Emit(SimEvent.RepairedBy(ally, amount));
                     }
                     Proc(killer, TraitId.SalvageTeam);
@@ -1101,11 +1183,14 @@ namespace MachineBrigade.Sim.Abilities
             if (victim.Gear is { } g && g.Has(TraitId.VolatileFuelTanks))
             {
                 var t = g.Trait(TraitId.VolatileFuelTanks);
-                _world.Damage.Queue(victim.Position, new ExplosionDef(victim.MaxHp * t.A, t.B > 0f ? t.B : 8f, 0f, ExplosionTier.Large), 0.15, victim.Team,
+                // Sized to the vehicle's price, and never more than a heavy shell's worth on a big hull.
+                var blast = MathF.Min(FuelBlastCap, victim.MaxHp * t.A * ModuleScale(victim));
+                _world.Damage.Queue(victim.Position, new ExplosionDef(blast, t.B > 0f ? t.B : 8f, 0f, ExplosionTier.Large), 0.15, victim.Team,
                     victim, HitKind.Splash, victim.Id);
                 _world.Emit(SimEvent.Proc(victim, GearKeys.Trait(TraitId.VolatileFuelTanks)));
             }
             if (victim.Special == SpecialModule.EmpPayload) EmpPayload(victim, now);
+            DeathLines(victim, now);
             // Modular: the first tower of its type to fall this battle is flown back in free (the base decides whether it is the first).
             if (victim.Gear is { } mg && mg.Has(TraitId.TowerModular) && _world.Bases.FreeRedrop(victim, mg.Trait(TraitId.TowerModular).A))
                 _world.Emit(SimEvent.Proc(victim, GearKeys.Trait(TraitId.TowerModular)));
@@ -1116,7 +1201,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (Vector2.DistanceSquared(v.Position, victim.Position) > 25f * 25f) continue;
                 var t = v.Gear.Trait(TraitId.DarkCrown);
                 v.Gear.CrownStacks = Math.Min(5, v.Gear.CrownStacks + 1);
-                v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * t.B);
+                Heal(v, v.MaxHp * t.B);
                 Proc(v, TraitId.DarkCrown);
             }
 
@@ -1146,7 +1231,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!other.IsAlive || other.Team == victim.Team || other.Team < 0 || other.Flying || other.Def.Boss) continue;
                 if (Vector2.Distance(other.Position, victim.Position) > radius + other.Def.HullRadius) continue;
-                _world.Status.Stun(other, now + victim.SpecialPower);
+                _world.Status.Stun(other, now + victim.SpecialPower * ModuleScale(victim));
                 other.ClearPath();
                 other.Speed = 0f;
                 other.RefreshEffects(now);

@@ -74,12 +74,13 @@ namespace MachineBrigade.Tests
                 var p = new Projectile(shooter.Id, 0, shooter.Weapon, target.Position, target.Id, 0f) { Origin = shooter.Position, Shooter = shooter, Main = true };
                 world.Damage.ResolveImpact(p);
             }
-            Assert.AreEqual(3, shooter.Gear.Streak);
+            // A gun firing once a second counts two thirds of a step a hit (the proc coefficient).
+            Assert.AreEqual(2, shooter.Gear.Streak);
             var near = world.Gear.Shot(shooter, 0, target.Id, shooter.Position + new Vector2(5f, 0f), shooter.Weapon, false);
-            Assert.AreEqual(1.15f, near.Scale, 1e-4f);
+            Assert.AreEqual(1.1f, near.Scale, 1e-3f);
             // Deep Strike: beyond 70 % of the range.
             var far = world.Gear.Shot(shooter, 0, target.Id, shooter.Position + new Vector2(18f, 0f), shooter.Weapon, false);
-            Assert.AreEqual(1.15f * 1.15f, far.Scale, 1e-4f);
+            Assert.AreEqual(1.1f * 1.15f, far.Scale, 1e-3f);
             // Tandem: missiles, not shells; and more against heavy armour.
             Assert.IsFalse(near.Tandem);
             Assert.IsTrue(world.Gear.Shot(shooter, 0, target.Id, target.Position, TestWorlds.Missile, false).Tandem);

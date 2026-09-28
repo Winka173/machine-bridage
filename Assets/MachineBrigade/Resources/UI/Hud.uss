@@ -2605,3 +2605,6 @@
 .wave-chip.elite { background-color: #3a2a0c; border-width: 1px; border-color: #f2a33a; }
 .wave-chip.elite .wave-chip-count { color: #f5b55e; }
 .wave-preview-held { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: #a9b4ba; margin-top: 2px; white-space: nowrap; }
+/* Prompt 8: pieces that do nothing for the chosen branch, and the classes the branch holds. */
+.gear-cell.unfit { opacity: 0.38; }
+.menu .gear-branch-classes { font-size: 22px; color: var(--text-mid); white-space: normal; margin: 0 0 8px 0; }

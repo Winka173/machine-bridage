@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Match
     /// chosen match it runs the menu over an AI-versus-AI battle. Restarting reloads the scene,
     /// which resets every system and view in one go (V2 rule 9).
     /// </summary>
-    public sealed class MatchRunner : MonoBehaviour
+    public sealed partial class MatchRunner : MonoBehaviour
     {
         private const int PlayerTeam = 0;
         private const int EnemyTeam = 1;
@@ -196,6 +196,8 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
+                // The elite budget is part of that pace, not on top of it (prompt 8 H).
+                edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
@@ -427,6 +429,9 @@ namespace MachineBrigade.Game.Match
                 if (catalog.EliteVariant(id) is { } elite) Add(elite);
                 foreach (var skill in def.Skills)
                     if (skill.Unit != null) Add(skill.Unit);
+                // A boss's guards and the troops it lands (prompt 8).
+                foreach (var guard in def.Guards) Add(guard.Def);
+                if (def.Landing != null) foreach (var unit in def.Landing.Units) Add(unit);
             }
             for (var team = 0; team <= 1; team++)
                 if (_world.TryGetEconomy(team, out var economy))
@@ -922,6 +927,7 @@ namespace MachineBrigade.Game.Match
                         _views.Add(vehicle);
                         // A boss comes onto the field: the camera goes to meet it.
                         if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
+                        EliteArrived(vehicle);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
@@ -935,6 +941,7 @@ namespace MachineBrigade.Game.Match
                         {
                             DailyMissions.Record("kills");
                             if (slain.Elite) DailyMissions.Record("elites");
+                            if (slain.Elite && !slain.Boss) _elitesSlain.Add(slain.EliteOf ?? slain.Id);
                             if (slain.Boss) DailyMissions.Record("bosses");
                         }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
@@ -954,6 +961,22 @@ namespace MachineBrigade.Game.Match
                         }
                         // Its new form: drawn again with the phase's model.
                         else if (phased.Form != null) _views.Rebuild(phased);
+                        break;
+                    // Prompt 8 bosses: a part broken, the Earth Worm diving and the ground cracking, a landing.
+                    case SimEventKind.PartBroken when !_menu && _world.TryGetVehicle(e.Entity, out var broken) && e.Mount < broken.Def.Parts.Count:
+                        _hud.Toast(Strings.Format("toast.partBroken", Strings.Get("part." + broken.Def.Parts[e.Mount].Kind), Strings.Card(broken.Def.Id)), seconds: 3f);
+                        Haptics.Pulse(90, 220);
+                        break;
+                    case SimEventKind.Burrowing when !_menu:
+                        if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f);
+                        else if (e.Value < 1.5f && _world.TryGetVehicle(e.Entity, out var borer) && borer.Def.Burrow is { } bore)
+                        {
+                            _warnings.Add((new Vector2(e.Position.X, e.Position.Y), bore.Radius, Time.time + e.Target.X + 0.5f));
+                            _hud.Toast(Strings.Get("toast.cracking"), error: true, seconds: 2.5f);
+                        }
+                        break;
+                    case SimEventKind.TroopsLanding when !_menu:
+                        _hud.Toast(Strings.Format("toast.landing", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f);
                         break;
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);
@@ -1296,6 +1319,8 @@ namespace MachineBrigade.Game.Match
                     minimap.Boss(new Vector2(v.Position.X, v.Position.Y));
                     continue;
                 }
+                // An enemy elite has a symbol of its own (a gold ring round its blip).
+                if (v.Def.Elite && v.Team != PlayerTeam) minimap.Elite(new Vector2(v.Position.X, v.Position.Y), v.Flying, !seen);
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
@@ -1324,6 +1349,7 @@ namespace MachineBrigade.Game.Match
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;
+            Rewards.AddElites(_reward, outcome.Rows, _elitesSlain, _world.Catalog, _elitesSlain.Count * 7919 + (int)_world.Time);
             RewardView view = null;
             if (_reward != null)
             {

@@ -59,6 +59,7 @@ namespace MachineBrigade.Sim
             Damage = new DamageSystem(this);
             Status = new StatusSystem(this);
             Gear = new Abilities.GearSystem(this);
+            Bosses = new MachineBrigade.Sim.Bosses.BossSystem(this);
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
@@ -145,6 +146,12 @@ namespace MachineBrigade.Sim
         /// <summary>Equipment traits and modules in battle.</summary>
         internal Abilities.GearSystem Gear { get; }
 
+        /// <summary>Boss parts, boring, landings, the supergun's shot and boss guards (prompt 8).</summary>
+        /// <summary>A side's elite budget (prompt 8 H): the modes set its share, cap and general.</summary>
+        public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
+
+        internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
+
         internal CombatSystem Combat => _combat;
 
         /// <summary>Some round is flying at this vehicle.</summary>
@@ -166,6 +173,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>A guided missile or drone is flying at this vehicle.</summary>
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
+
+        /// <summary>A guided missile (not a drone) is flying at this ground vehicle.</summary>
+        internal bool AtgmIncoming(EntityId vehicle) => _combat.AtgmIncoming(vehicle);
 
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
         /// <summary>
@@ -354,6 +364,8 @@ namespace MachineBrigade.Sim
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
+            // Its parts, a boss's timers, radio line and guards (prompt 8).
+            Bosses.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -639,6 +651,7 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
             _combat.Step(dt);
@@ -678,6 +691,7 @@ namespace MachineBrigade.Sim
             CrushVegetation();
             Lap(4);
             _abilities.Step(dt);
+            Bosses.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
@@ -944,7 +958,13 @@ namespace MachineBrigade.Sim
                 var mask = 0;
                 // A stealthy aircraft shows only close up, or for a moment after it fires.
                 var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
-                if (target.Dummy)
+                // A boss boring underground: only its own side knows where it is.
+                if (target.Burrowed && !RevealAll)
+                {
+                    target.SeenByMask = target.VisibleToMask = target.Team is >= 0 and < 31 ? 1 << target.Team : 0;
+                    continue;
+                }
+                if (target.Dummy || RevealAll)
                 {
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
@@ -990,6 +1010,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;
+
+        /// <summary>Measurements only (the equipment lab's duels): every vehicle is in everyone's sight, as a firing-range target is.</summary>
+        internal bool RevealAll { get; set; }
 
         /// <summary>
         /// A fixed defence (a camp bastion, a point's tower, an Assault sector's guns, a fortress's

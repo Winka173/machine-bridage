@@ -112,9 +112,8 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var v in world.VehicleList)
                 {
                     if (!v.IsAlive || v.Team != holder || v.Def.Boss || Vector2.Distance(v.Position, crate.Position) > 25f) continue;
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * CrateRepair);
+                    var amount = world.Gear.Heal(v, v.MaxHp * CrateRepair);
                     if (amount <= 0f) continue;
-                    v.Hp += amount;
                     world.Announce(SimEvent.RepairedBy(v, amount));
                 }
                 world.Announce(SimEvent.CrateClaimed(crate, holder));

@@ -82,8 +82,11 @@ namespace MachineBrigade.Tests
                 if (def.Model != def.Id || Resources.Load<GameObject>("Models/" + def.Model) == null) continue;
                 var root = Load(def.Id).transform;
                 // A structure with nothing to fire (an obstacle, a minefield, a module) needs no muzzle.
+                // A melee weapon strikes with the hull's front instead: the bulldozer's Blade, the borer's drill.
                 foreach (var mount in def.Mounts)
-                    if (mount.Weapon.Damage > 0f)
+                    if (mount.Weapon.Melee)
+                        Assert.IsNotNull(Find(root, "Blade") ?? Find(root, "Part_drill"), $"{def.Id} has no Blade or drill for {mount.Weapon.Id}");
+                    else if (mount.Weapon.Damage > 0f)
                         Assert.IsNotNull(Find(root, "Muzzle_" + mount.Slot), $"{def.Id} has no Muzzle_{mount.Slot} for {mount.Weapon.Id}");
             }
         }

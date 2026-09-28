@@ -79,6 +79,7 @@ namespace MachineBrigade.Game.Hud
             _warnings.Clear();
             _marks.Clear();
             _bosses.Clear();
+            _elites.Clear();
             _hasView = false;
         }
 
@@ -88,6 +89,11 @@ namespace MachineBrigade.Game.Hud
         public void Boss(Vector2 world) => _bosses.Add(world);
 
         private readonly List<Vector2> _bosses = new();
+
+        /// <summary>An enemy elite: a gold ring round its blip (drawn over the blips).</summary>
+        public void Elite(Vector2 world, bool air, bool dim) => _elites.Add((world, air, dim));
+
+        private readonly List<(Vector2 at, bool air, bool dim)> _elites = new();
 
         public void Point(Vector2 world, float radius, int owner, float progress) => _points.Add((world, radius, owner, progress));
 
@@ -207,6 +213,23 @@ namespace MachineBrigade.Game.Hud
                     p.Arc(c, 2.5f, 0f, 360f);
                 }
                 p.Fill();
+            }
+
+            // Elites: a gold ring with a dark edge round the blip, dimmer out of sight.
+            foreach (var (at, air, dim) in _elites)
+            {
+                var c = ToLocal(at);
+                var r = air ? 6.4f : 5.6f;
+                p.strokeColor = new Color(0.05f, 0.06f, 0.06f, dim ? 0.4f : 0.8f);
+                p.lineWidth = 3.2f;
+                p.BeginPath();
+                p.Arc(c, r, 0f, 360f);
+                p.Stroke();
+                p.strokeColor = new Color(1f, 0.78f, 0.25f, dim ? 0.5f : 1f);
+                p.lineWidth = 1.7f;
+                p.BeginPath();
+                p.Arc(c, r, 0f, 360f);
+                p.Stroke();
             }
 
             // Mission targets on top of everything, as diamonds (the markers over them in the battle).
