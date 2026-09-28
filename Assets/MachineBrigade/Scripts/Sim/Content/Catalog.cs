@@ -245,6 +245,7 @@ namespace MachineBrigade.Sim.Content
                     def.Stealth = v.Bool("stealth", false);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
+                    def.AttackHold = def.FixedWing ? v.Float("attackHold", 0f) : 0f;
                     def.Kamikaze = v.Bool("kamikaze", false);
                     def.DroneArmor = v.Float("droneArmor", 1f);
                     def.MineProof = v.Bool("mineProof", false);
