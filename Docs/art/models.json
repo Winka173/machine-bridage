@@ -43,6 +43,10 @@
     "file": "aps_tank.glb",
     "triangles": 8164
   },
+  "armored_bulldozer": {
+    "file": "armored_bulldozer.glb",
+    "triangles": 9418
+  },
   "armored_car": {
     "file": "armored_car.glb",
     "triangles": 6064
