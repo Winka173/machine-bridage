@@ -1,0 +1,15 @@
+{
+  "map": "rustyard",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map 11e182a7 app 0.1.0",
+  "ticks": 4119,
+  "journal": [],
+  "records": [
+    {"vehicle": 454, "def": "mlrs", "team": 0, "startTick": 1230, "start": 61.5, "end": 72, "seconds": 10.5, "x": -50.51, "y": -38.33, "goalX": -35.265, "goalY": -5.086, "order": "Move", "cause": "BlockedByFriend", "detail": "scout_jeep#460 moving", "area": "field+gate", "lanes": "route+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@2.8 aa_vehicle(moving)@7.9 scout_jeep(moving)@4.9 rail_tanker@7"},
+    {"vehicle": 470, "def": "light_tank", "team": 0, "startTick": 2720, "start": 136, "end": 144.5, "seconds": 8.5, "x": 40.146, "y": 80.251, "goalX": 53, "goalY": 119, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "siege_tank#462 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@7.7 siege_tank(parked)@3.0 scout_jeep(moving)@9.0 ifv(moving)@6.2 base_wall@8"},
+    {"vehicle": 456, "def": "command_vehicle", "team": 1, "startTick": 2780, "start": 139, "end": 148, "seconds": 9, "x": 105.67, "y": 102.045, "goalX": 109.942, "goalY": 112.381, "order": "Move", "cause": "BlockedByFriend", "detail": "twin_tank#455 parked", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "twin_tank(parked)@5.3 mobile_fortress(parked)@10.0 counter_battery_radar(moving)@3.2 elite_heavy_tank(moving)@7.5"}
+  ],
+  "rescues": []
+}

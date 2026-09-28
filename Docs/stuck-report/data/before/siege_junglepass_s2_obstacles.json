@@ -1,0 +1,20 @@
+{
+  "map": "junglepass",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 667412d4 map 0fc01c56 app 0.1.0",
+  "ticks": 12311,
+  "journal": [],
+  "records": [
+    {"vehicle": 992, "def": "siege_tank", "team": 0, "startTick": 1390, "start": 69.5, "end": 89, "seconds": 19.5, "x": 31.999, "y": -24.973, "goalX": 46.356, "goalY": -15.034, "order": "Move", "cause": "BlockedByFriend", "detail": "ifv#1005 parked", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ifv(parked)@6.3 aa_vehicle(moving)@4.2 light_tank(moving)@8.2 ruin@8 river_water@8"},
+    {"vehicle": 1007, "def": "scout_jeep", "team": 0, "startTick": 1800, "start": 90, "end": 98.5, "seconds": 8.5, "x": 31.872, "y": -22.969, "goalX": 60, "goalY": -11, "order": "Attack", "cause": "OffRoute", "detail": "to (33.0,-21.0) past ruin", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@5.3 main_battle_tank(parked)@5.2 armored_car(moving)@3.1 main_battle_tank(parked)@9.7 aa_vehicle(parked)@8.1 light_tank(parked)@9.0 ifv(parked)@6.7 scout_jeep(moving)@2.9 aa_vehicle(parked)@4.7 aa_vehicle(parked)@8.4 ruin@10 river_water@10"},
+    {"vehicle": 1026, "def": "scout_jeep", "team": 0, "startTick": 1910, "start": 95.5, "end": 104, "seconds": 8.5, "x": 31.989, "y": -24.357, "goalX": 60, "goalY": -11, "order": "Attack", "cause": "OffRoute", "detail": "to (33.0,-21.0) past ruin", "area": "field", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@5.9 main_battle_tank(moving)@3.6 armored_car(parked)@2.6 scout_jeep(parked)@8.6 light_tank(moving)@9.6 ifv(moving)@3.9 aa_vehicle(moving)@5.2 aa_vehicle(moving)@7.6 aa_vehicle(moving)@9.7 ruin@9 river_water@9"},
+    {"vehicle": 997, "def": "main_battle_tank", "team": 0, "startTick": 2080, "start": 104, "end": 112.5, "seconds": 8.5, "x": 31.182, "y": -27.313, "goalX": 20.538, "goalY": 18.139, "order": "AttackMove", "cause": "Unknown", "detail": "speed 2.8 strikes 0", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ruin@8 river_water@9 river_water@9 river_water@6"},
+    {"vehicle": 1094, "def": "ifv", "team": 0, "startTick": 5590, "start": 279.5, "end": 299, "seconds": 19.5, "x": 43.864, "y": 26.794, "goalX": 95, "goalY": 61, "order": "AttackMove", "cause": "OffRoute", "detail": "to (53.0,45.0) past wreck_car", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mlrs(moving)@4.5 wreck_car@6"},
+    {"vehicle": 1077, "def": "siege_tank", "team": 0, "startTick": 6660, "start": 333, "end": 341.5, "seconds": 8.5, "x": 7.555, "y": -7.066, "goalX": 35.627, "goalY": 34.013, "order": "Move", "cause": "BlockedByFriend", "detail": "armored_car#1122 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "light_tank(parked)@4.6 armored_car(moving)@3.4 tank_trap@7 tank_trap@5"},
+    {"vehicle": 1133, "def": "counter_battery_radar", "team": 1, "startTick": 7070, "start": 353.5, "end": 363.5, "seconds": 10, "x": 100.051, "y": 103.191, "goalX": 89.361, "goalY": 102.512, "order": "Move", "cause": "BlockedByDefence", "detail": "repair_bay#956 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "repair_bay(fixed)@6.3 mobile_fortress(parked)@8.5"},
+    {"vehicle": 1069, "def": "twin_tank", "team": 1, "startTick": 7310, "start": 365.5, "end": 391, "seconds": 25.5, "x": 120.841, "y": 106.242, "goalX": 110.416, "goalY": 125.689, "order": "Idle", "cause": "NoPath", "detail": "goal (110.4,125.7) in open ground, other region (9 cells), fortress", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "c_ram(fixed)@8.3 elite_heavy_tank(moving)@9.8"}
+  ],
+  "rescues": []
+}

@@ -1,0 +1,17 @@
+{
+  "map": "frostpeak",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 667412d4 map 20977604 app 0.1.0",
+  "ticks": 10897,
+  "journal": [],
+  "records": [
+    {"vehicle": 630, "def": "light_tank", "team": 0, "startTick": 2080, "start": 104, "end": 113, "seconds": 9, "x": 9.99, "y": -8.213, "goalX": 27.042, "goalY": 22.917, "order": "AttackMove", "cause": "Unknown", "detail": "speed 3.3 strikes 0", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@7.1 tank_trap@6 tank_trap@8 tank_trap@5"},
+    {"vehicle": 638, "def": "aa_vehicle", "team": 0, "startTick": 2080, "start": 104, "end": 113, "seconds": 9, "x": 13.519, "y": -2, "goalX": 81, "goalY": -11.5, "order": "Attack", "cause": "Unknown", "detail": "speed 0.0 strikes 0", "area": "field", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(parked)@3.4 light_tank(moving)@7.1 tank_trap@5 tank_trap@9 tank_trap@2"},
+    {"vehicle": 662, "def": "counter_battery_radar", "team": 1, "startTick": 4360, "start": 218, "end": 226.5, "seconds": 8.5, "x": 105.892, "y": 110.009, "goalX": 113, "goalY": 119, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#680", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(parked)@2.4 command_vehicle(parked)@7.6 thermobaric_launcher(moving)@5.4 mobile_fortress(parked)@8.2 counter_battery_radar(moving)@4.4"},
+    {"vehicle": 662, "def": "counter_battery_radar", "team": 1, "startTick": 5080, "start": 254, "end": 263.5, "seconds": 9.5, "x": 94.687, "y": 104.934, "goalX": 105.022, "goalY": 110.095, "order": "Move", "cause": "BlockedByFriend", "detail": "engineer_vehicle#620 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@6.7 command_vehicle(moving)@8.2 rocket_technical(moving)@5.0 shahed_truck(moving)@9.2 counter_battery_radar(moving)@3.9 wheeled_gun(moving)@8.2"},
+    {"vehicle": 740, "def": "siege_tank", "team": 0, "startTick": 8600, "start": 430, "end": 438.5, "seconds": 8.5, "x": -6.567, "y": -11.619, "goalX": -35.305, "goalY": -40.18, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#739 moving", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.6 scout_jeep(moving)@7.0 ifv(moving)@5.7 ifv(moving)@7.8 aa_vehicle(moving)@9.1"}
+  ],
+  "rescues": []
+}

@@ -1,0 +1,14 @@
+{
+  "map": "landingbeach",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 667412d4 map 26acc679 app 0.1.0",
+  "ticks": 5990,
+  "journal": [],
+  "records": [
+    {"vehicle": 935, "def": "titan_tank", "team": 0, "startTick": 2890, "start": 144.5, "end": 155.5, "seconds": 11, "x": -98.804, "y": -92.004, "goalX": 57, "goalY": 51, "order": "AttackMove", "cause": "OffRoute", "detail": "to (-103.9,-89.9) past ew_tower(defence)", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ew_tower(fixed)@5.7 titan_tank(moving)@9.0 main_battle_tank(moving)@6.1 artillery(moving)@7.3"},
+    {"vehicle": 971, "def": "aa_vehicle", "team": 0, "startTick": 5640, "start": 282, "end": 292.5, "seconds": 10.5, "x": -94.211, "y": -92.426, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ew_tower(fixed)@5.7 armored_bulldozer(moving)@7.8 heavy_tank(moving)@5.5 armored_bulldozer(moving)@4.3 aa_vehicle(moving)@4.0"}
+  ],
+  "rescues": []
+}

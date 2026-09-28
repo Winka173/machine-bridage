@@ -1,0 +1,17 @@
+{
+  "map": "ironport",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 667412d4 map e12a4875 app 0.1.0",
+  "ticks": 7538,
+  "journal": [],
+  "records": [
+    {"vehicle": 522, "def": "armored_bulldozer", "team": 0, "startTick": 3340, "start": 167, "end": 178, "seconds": 11, "x": 31.272, "y": 61.985, "goalX": 4.622, "goalY": 36.536, "order": "Move", "cause": "BlockedByFriend", "detail": "armored_bulldozer#528 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@4.5 artillery(moving)@7.3 siege_tank(moving)@7.2 artillery(moving)@5.0"},
+    {"vehicle": 540, "def": "siege_tank", "team": 0, "startTick": 3480, "start": 174, "end": 182.5, "seconds": 8.5, "x": 26.487, "y": 57.783, "goalX": 35.949, "goalY": 80.056, "order": "Move", "cause": "StalePath", "detail": "leg 3/3 to (35.9,80.1) crosses fortress_gate (corner)", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@8.7 heavy_tank(moving)@9.7 artillery(moving)@3.6 artillery(moving)@5.1 armored_bulldozer(moving)@5.1"},
+    {"vehicle": 533, "def": "heavy_tank", "team": 0, "startTick": 3720, "start": 186, "end": 195, "seconds": 9, "x": 34.864, "y": 67.609, "goalX": 32.423, "goalY": 80.253, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "siege_tank#545 moving", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "artillery(moving)@7.8 main_battle_tank(moving)@7.9 siege_tank(moving)@5.0 fortress_gate@6"},
+    {"vehicle": 541, "def": "main_battle_tank", "team": 0, "startTick": 4490, "start": 224.5, "end": 234.5, "seconds": 10, "x": 101.225, "y": 79.553, "goalX": 117, "goalY": 115, "order": "Attack", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(parked)@6.7 titan_tank(moving)@5.3 base_wall@6 base_wall@5"},
+    {"vehicle": 602, "def": "armored_car", "team": 1, "startTick": 7120, "start": 356, "end": 367, "seconds": 11, "x": 119.017, "y": 116, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind elite_heavy_tank#579", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "elite_heavy_tank(parked)@6.8 elite_heavy_tank(parked)@5.3 light_tank(parked)@4.1"}
+  ],
+  "rescues": []
+}
