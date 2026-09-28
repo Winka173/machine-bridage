@@ -66,6 +66,21 @@ namespace MachineBrigade.Game.Hud
         }
 
         /// <summary>
+        /// The curtain is down, black, at once (no fade): the first scene of a session is built
+        /// behind it like every other, instead of its build showing frame by frame (test feedback
+        /// 11D: the first open stuttered, the curtain only went up once the menu was built).
+        /// </summary>
+        public static void Cover()
+        {
+            var curtain = Ensure(1f);
+            if (curtain._then != null) return;
+            curtain._alpha = curtain._target = 1f;
+            curtain._holdFrames = 0;
+            if (curtain._progress < 0f) curtain._progress = 0f;
+            curtain.Apply();
+        }
+
+        /// <summary>
         /// Lifts the curtain once this scene has drawn a few frames. The first scene of a session
         /// starts behind it too, so the game fades in instead of popping up.
         /// </summary>

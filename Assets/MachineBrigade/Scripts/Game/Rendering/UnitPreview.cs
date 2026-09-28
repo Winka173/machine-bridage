@@ -98,17 +98,23 @@ namespace MachineBrigade.Game.Rendering
             _camera.enabled = true;
             if (Audio != null)
             {
-                _range.Sounds = Audio.Consume;
+                _range.Sounds = Audio.ConsumeRange;
                 Audio.ViewOverride = _camera;
                 Audio.ReachOverride = 90f;
             }
+            // The range's shots carry the sound: the menu music steps back under them.
+            MachineBrigade.Game.Audio.MusicDirector.Current?.Duck(RangeMusic);
         }
+
+        /// <summary>The menu music's level while the In action range plays.</summary>
+        private const float RangeMusic = 0.45f;
 
         private void CloseRange()
         {
             if (_range == null) return;
             _range.Dispose();
             _range = null;
+            MachineBrigade.Game.Audio.MusicDirector.Current?.Duck(1f);
             if (Audio != null)
             {
                 Audio.FocusOverride = null;

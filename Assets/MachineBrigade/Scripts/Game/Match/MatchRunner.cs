@@ -133,6 +133,9 @@ namespace MachineBrigade.Game.Match
 #endif
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Time.timeScale = 1f;
+            // The build happens behind the curtain, the first scene of a session too: shown once before the work starts.
+            Curtain.Cover();
+            yield return null;
             MatchSettings.Load();
             _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);
             ApplyDebugFlags();
@@ -181,12 +184,16 @@ namespace MachineBrigade.Game.Match
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
             var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
+            Curtain.Progress(0.05f);
+            yield return null;
             // A campaign mission names its own battlefield and version of it.
             var mission = !_menu && kind == GameModeKind.Campaign ? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0] : null;
             var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
             // A mission that returns to a map from the other side plays it reversed.
             var map = mission != null ? Campaign.LoadMap(mission) : GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
+            Curtain.Progress(0.1f);
+            yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
@@ -316,7 +323,7 @@ namespace MachineBrigade.Game.Match
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
             // The soundtrack: the menu theme, the siege track for fortress battles, else a battle track.
             var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless;
-            _music = new MusicDirector(worldRoot, _menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
+            _music = MusicDirector.Play(_menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
                 System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
@@ -633,7 +640,6 @@ namespace MachineBrigade.Game.Match
             _perf?.End(PerfProbe.Section.Effects);
             _perf?.Begin();
             _audio.Tick(_views);
-            _music?.Tick(Time.unscaledDeltaTime);
             _perf?.End(PerfProbe.Section.Audio);
             _perf?.Begin();
             _commander?.Update();
