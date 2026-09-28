@@ -2294,7 +2294,7 @@ def fortress_buildings(L, name, count=14, reach=None):
 
 
 UNIT_SPOT = {'guard_tower': 4.0, 'gun_turret': 5.5, 'aa_turret': 5.0, 'rocket_turret': 5.0, 'mg_bunker': 4.5,
-             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'missile_battery': 9.5}
+             'artillery_emplacement': 7.0, 'heavy_turret': 8.5, 'flak_tower': 8.5, 'aa_turret.flak': 8.5, 'missile_battery': 9.5}
 
 
 def siege_targets(L):

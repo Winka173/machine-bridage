@@ -292,7 +292,7 @@ namespace MachineBrigade.Sim.Content
                 props.Add(Wrap(p, () => new PropDef(
                     p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width") * propScale, p.Float("depth") * propScale,
                     p.Bool("blocks", false), ParseExplosion(p, "explosion", propBlasts), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
-                { Scale = propScale, Crushable = p.Bool("crush", false) }));
+                { Scale = propScale, Crushable = p.Bool("crush", false), Collapse = p.Float("collapse", 0f) }));
             }
 
             var supports = new List<SupportDef>();

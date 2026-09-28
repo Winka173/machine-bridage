@@ -25,6 +25,9 @@ namespace MachineBrigade.Sim.Combat
         private readonly SimWorld _world;
         private readonly List<PendingExplosion> _pending = new();
 
+        /// <summary>Toppling walls: when each one's ground opens (see <see cref="PropDef.Collapse"/>).</summary>
+        private readonly List<(double due, Prop prop)> _collapsing = new();
+
         public DamageSystem(SimWorld world) => _world = world;
 
         public int PendingCount => _pending.Count;
@@ -290,6 +293,13 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Detonates every explosion that has come due; new ones may be queued as a result.</summary>
         public void Step()
         {
+            for (var k = _collapsing.Count - 1; k >= 0; k--)
+            {
+                var (due, fallen) = _collapsing[k];
+                if (due > _world.Time) continue;
+                _collapsing.RemoveAt(k);
+                _world.Grid.RemoveBlocker(fallen.Position, fallen.Width, fallen.Depth, SimWorld.ObstacleClearance);
+            }
             var i = 0;
             while (i < _pending.Count)
             {
@@ -419,7 +429,9 @@ namespace MachineBrigade.Sim.Combat
 
         private void OnPropDestroyed(Prop prop)
         {
-            if (prop.Def.BlocksMovement)
+            // A wall that topples opens its ground once it is down (see PropDef.Collapse).
+            if (prop.Def.BlocksMovement && prop.Def.Collapse > 0f) _collapsing.Add((_world.Time + prop.Def.Collapse, prop));
+            else if (prop.Def.BlocksMovement)
                 _world.Grid.RemoveBlocker(prop.Position, prop.Width, prop.Depth, SimWorld.ObstacleClearance);
             if (prop.Def.BlocksFire) _world.Cover.Remove(prop);
             _world.Emit(SimEvent.PropLost(prop));

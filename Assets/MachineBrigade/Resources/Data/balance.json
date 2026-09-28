@@ -479,6 +479,10 @@
       "secondary": [ { "weapon": "twin_30_flak", "slot": "mg", "aim": "Free" }, { "weapon": "twin_30_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 260, "radius": 14, "delay": 0.8, "tier": "Ultimate" } },
+    // The fortress super-gun (Siege and Defend): a giant twin gun the fortress fires on a countdown at the attackers'
+    // army or camp (SiegeMode drives it; it has no gun of its own). Destroying it is a side objective.
+    { "id": "super_gun", "class": "Defense", "static": true, "model": "heavy_turret", "scale": 1.8, "armor": "Structure", "hp": 5200, "speed": 0, "turnRate": 1, "turretTurnRate": 12, "radius": 7, "length": 8, "width": 8, "cp": 0, "vision": 40,
+      "weapon": "none", "deathExplosion": { "damage": 380, "radius": 18, "delay": 0.6, "tier": "Ultimate" } },
     { "id": "spawn_bastion", "class": "Defense", "static": true, "model": "heavy_turret", "armor": "Heavy", "hp": 5000, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 44,
       "firesWhileMoving": true, "weapon": "bastion_gun",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ] },
@@ -695,6 +699,8 @@
     // Premium (bought with coins): a line of fire.
     { "id": "napalm_strike",     "kind": "Airstrike",     "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 10, "duration": 1.4, "damage": 150, "blast": 9,  "tier": "Huge", "length": 55, "damageType": "Fire" },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
+    // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).
+    { "id": "super_gun_shell",   "kind": "Barrage",       "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 620, "blast": 15, "tier": "Ultimate" },
     { "id": "air_raid",          "kind": "Airstrike",     "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 14, "duration": 2.4, "damage": 210, "blast": 8, "tier": "Huge", "length": 70 },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },
@@ -830,8 +836,12 @@
       "explosion": { "damage": 500, "radius": 24, "delay": 0.8, "tier": "Ultimate" } },
     { "id": "shield_generator","armor": "Structure", "hp": 2400, "width": 7,    "depth": 7,    "blocks": true,
       "explosion": { "damage": 320, "radius": 16, "delay": 0.6, "tier": "Ultimate" } },
-    { "id": "base_wall",     "armor": "Structure", "hp": 1500, "width": 8,    "depth": 1.2,  "blocks": true },
+    // A fortress wall segment topples into passable rubble; its ground opens once it is down (1.4 s).
+    { "id": "base_wall",     "armor": "Structure", "hp": 1500, "width": 8,    "depth": 1.2,  "blocks": true, "collapse": 1.4 },
     { "id": "base_gate",     "armor": "Structure", "hp": 1000000, "width": 9, "depth": 2 },
+    // A fortress gate: steel doors in a wall's gateway that block the way (and direct fire) until they are blown in.
+    { "id": "fortress_gate", "armor": "Structure", "hp": 3200, "width": 10,   "depth": 1.4,  "blocks": true,
+      "explosion": { "damage": 60, "radius": 6, "delay": 0.15, "tier": "Huge" } },
     { "id": "floodlight_mast","armor": "Structure","hp": 300,  "width": 1.2,  "depth": 1.2,  "blocks": true, "blocksFire": false },
     { "id": "fuel_depot",    "armor": "Structure", "hp": 600,  "width": 10,   "depth": 8,    "blocks": true,
       "explosion": { "damage": 380, "radius": 20, "delay": 0.5, "tier": "Ultimate" } },
