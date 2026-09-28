@@ -296,7 +296,7 @@ namespace MachineBrigade.Game.Hud
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke());
             _safe.Add(_pause.Root);
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
-                () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke());
+                () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke());
             _safe.Add(_result.Root);
             _choice = new ChoicePanel();
             _safe.Add(_choice.Root);
@@ -360,6 +360,9 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The result screen's "back to the checkpoint" button (a lost multi-stage mission).</summary>
         public event Action CheckpointPressed;
+
+        /// <summary>The result screen's "open the deck" button under a defeat's hints: back to the menu, on the Army tab's deck.</summary>
+        public event Action DeckPressed;
 
         private ChoicePanel _choice;
 
@@ -462,10 +465,14 @@ namespace MachineBrigade.Game.Hud
             if (_pause != null) _pause.Visible = paused;
         }
 
-        public void ShowResult(int outcome, string subtitle, IReadOnlyList<(string, string)> rows, RewardView reward = null)
+        /// <param name="title">The mission's name or the mode's.</param>
+        /// <param name="note">A line under the title (an endless run's record); null for none.</param>
+        /// <param name="hints">After a defeat: one or two things to change, with a button to the deck.</param>
+        public void ShowResult(int outcome, string title, IReadOnlyList<(string, string)> rows, RewardView reward = null,
+            string note = null, IReadOnlyList<string> hints = null)
         {
             if (_pause != null) _pause.Visible = false;
-            _result?.Show(outcome, subtitle, rows, reward);
+            _result?.Show(outcome, title, rows, reward, note, hints);
         }
 
         private VisualElement _letterTop, _letterBottom;

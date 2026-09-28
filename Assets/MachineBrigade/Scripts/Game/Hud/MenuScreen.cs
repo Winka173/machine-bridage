@@ -117,6 +117,8 @@ namespace MachineBrigade.Game.Hud
             Root.Add(_note);
 
             // A language change rebuilds the menu; come back to the page the player was on.
+            if (_reopenDeck) _armyView = ArmyView.Deck;
+            _reopenDeck = false;
             ShowTab(_reopenTab);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
@@ -167,6 +169,14 @@ namespace MachineBrigade.Game.Hud
         }
 
         private static bool _reopenSettings;
+        private static bool _reopenDeck;
+
+        /// <summary>The next menu opens on the Army tab's deck (the result screen's "open the deck" after a defeat).</summary>
+        internal static void OpenDeckNext()
+        {
+            _reopenTab = Tab.Army;
+            _reopenDeck = true;
+        }
         private static Tab _reopenTab = Tab.Home;
 
         public VisualElement Root { get; }

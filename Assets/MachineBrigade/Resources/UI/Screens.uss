@@ -360,3 +360,52 @@
 .fc-menu.menu .base-view .menu-caps { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-view .menu-note { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-view .gear-art-level { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); }
+
+/* ================================================================ E10 result, the choice between stages, pause */
+/* One card over the dimmed battle: the outcome and the name on the left with the numbers, what it paid and
+   (after a defeat) what to change on the right, the buttons along the bottom (secondary, Claim, the main one). */
+.fc-result__card { width: 1100px; max-width: 94%; max-height: 94%; padding: var(--fc-space-6); }
+.fc-result__scroll { flex-grow: 1; flex-shrink: 1; }
+.fc-result__columns { flex-direction: row; align-items: flex-start; }
+.fc-result__main { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; }
+.fc-result__side { width: 420px; flex-shrink: 0; margin-left: var(--fc-space-6); }
+.fc-result__outcome { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-1); }
+.fc-result__outcome > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); --icon-color: var(--fc-text-2); }
+.fc-result__outcome--win > .fc-icon { --icon-color: var(--fc-positive); }
+.fc-result__outcome--win > .fc-caption { color: var(--fc-positive); }
+.fc-result__outcome--loss > .fc-icon { --icon-color: var(--fc-danger); }
+.fc-result__outcome--loss > .fc-caption { color: var(--fc-danger-text); }
+.fc-result__title { margin-bottom: var(--fc-space-2); }
+.fc-result__note { margin-bottom: var(--fc-space-2); }
+.fc-result__stars { margin-bottom: var(--fc-space-3); }
+.fc-result__stars > .fc-star { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-1); }
+.fc-result__rows { margin-top: var(--fc-space-2); }
+.fc-result__row {
+    flex-direction: row; align-items: center; justify-content: space-between; min-height: 40px;
+    border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border);
+}
+.fc-result__value { margin-left: var(--fc-space-4); -unity-text-align: middle-right; flex-shrink: 1; }
+.fc-result__block { padding: var(--fc-space-4); margin-bottom: var(--fc-space-3); background-color: var(--fc-panel); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
+.fc-result__reward { flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: var(--fc-space-2); }
+.fc-result__pay { flex-direction: row; align-items: center; margin-right: var(--fc-space-6); }
+.fc-result__pay > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); }
+.fc-result__coin { --icon-color: var(--fc-coin); }
+.fc-result__doubled { margin-left: var(--fc-space-2); }
+.fc-result__claim { flex-direction: row; margin-top: var(--fc-space-3); }
+.fc-result__unlocks { margin-top: var(--fc-space-2); }
+.fc-result__unlocks > .fc-tag { margin: var(--fc-space-1) var(--fc-space-2) 0 0; }
+.fc-result__hint { flex-direction: row; align-items: flex-start; margin-top: var(--fc-space-2); }
+.fc-result__hint > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin: var(--fc-space-1) var(--fc-space-2) 0 0; --icon-color: var(--fc-danger); }
+.fc-result__hints > .fc-btn { align-self: flex-start; margin-top: var(--fc-space-2); }
+.fc-result__buttons { flex-direction: row; justify-content: flex-end; align-items: center; flex-wrap: wrap; flex-shrink: 0; margin-top: var(--fc-space-4); }
+.fc-result__buttons > * { margin-left: var(--fc-space-3); }
+
+.fc-choice__card { width: 760px; }
+.fc-choice__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); }
+.fc-choice__option { margin-top: var(--fc-space-3); }
+.fc-choice__option > .fc-btn { align-self: stretch; }
+.fc-choice__detail { margin-top: var(--fc-space-1); }
+
+.fc-pause__card { width: 520px; }
+.fc-pause__card > .fc-row > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); }
+.fc-pause__buttons > .fc-btn { align-self: stretch; margin-top: var(--fc-space-3); }

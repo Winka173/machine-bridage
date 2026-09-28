@@ -222,7 +222,7 @@ namespace MachineBrigade.Game.Hud
             var cover = Kit.Box("fc-army__overview-part fc-grow");
             cover.Add(Kit.Text(Kit.Caps(Strings.Get("army.roles")), "fc-caption fc-mb-2"));
             var roles = Kit.Box("fc-row fc-row--wrap");
-            foreach (var (key, icon, has) in RoleCover())
+            foreach (var (key, icon, has) in DeckRoles.Of(_catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports).Rows)
                 roles.Add(Tag(has ? icon : "info", Strings.Get(key), has ? "fc-tag--ok" : "fc-tag--missing"));
             cover.Add(roles);
             _deckOverview.Add(cover);
@@ -256,33 +256,6 @@ namespace MachineBrigade.Game.Hud
             foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
             _sortButton.Value = SortName(_sort);
             BuildCollection();
-        }
-
-        /// <summary>The deck's role cover: tank killers, anti-air, artillery, repair, recon, each there or missing.</summary>
-        private List<(string key, string icon, bool has)> RoleCover()
-        {
-            bool antiTank = false, air = false, artillery = false, repair = false, recon = false;
-            foreach (var id in MatchSettings.DeckVehicles)
-            {
-                if (!_catalog.Vehicles.TryGetValue(id, out var def)) continue;
-                foreach (var m in def.Mounts)
-                    if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Flak || def.Class == UnitClass.AntiAir)) air = true;
-                if (def.Class is UnitClass.TankHunter or UnitClass.Heavy or UnitClass.Tank || def.Weapon.DamageType == DamageType.ArmorPiercing) antiTank = true;
-                if (def.Weapon.MinRange > 0f) artillery = true;
-                if (def.RepairAura != null) repair = true;
-                if (def.Class == UnitClass.Scout || def.VisionRange >= 44f) recon = true;
-            }
-            foreach (var id in MatchSettings.DeckSupports)
-            {
-                if (id is "repair_drop" or "field_repair") repair = true;
-                if (id is "uav_scan") recon = true;
-                if (id is "artillery_barrage") artillery = true;
-            }
-            return new List<(string, string, bool)>
-            {
-                ("army.role.antiTank", "destroyer", antiTank), ("army.role.antiAir", "aa", air), ("army.role.artillery", "artillery", artillery),
-                ("army.role.repair", "repair", repair), ("army.role.recon", "eye", recon),
-            };
         }
 
         /// <summary>The collection: owned cards (sorted), then the locked ones with where they unlock.</summary>

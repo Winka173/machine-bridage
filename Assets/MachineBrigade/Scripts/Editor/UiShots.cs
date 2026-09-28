@@ -119,6 +119,130 @@ namespace MachineBrigade.Editor
             }
         }
 
+        /// <summary>The battle's own screens (E10 and G): the result after a win and a loss, the checkpoint's offer, pause, the choice between stages.</summary>
+        public static readonly string[] BattleScreenNames = { "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice" };
+
+        /// <summary>The battle's screens with the demo profile, in Vietnamese at the four shapes, and a few in Large text and in English.</summary>
+        public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> BattleScreens()
+        {
+            var catalog = GameContent.LoadCatalog();
+            Builder Battle(string screen, bool vi, bool large) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildBattle(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            foreach (var screen in BattleScreenNames) yield return ("battle-" + screen + "-vi", Battle(screen, true, false), Shapes, 0);
+            foreach (var screen in new[] { "result-win", "result-loss" })
+            {
+                yield return ("battle-" + screen + "-vi-large", Battle(screen, true, true), new[] { Shapes[0] }, 0);
+                yield return ("battle-" + screen + "-en", Battle(screen, false, false), new[] { Shapes[0] }, 0);
+            }
+        }
+
+        /// <summary>A battle screen over the battlefield's picture, as BattleHud lays it out (the sheets on the root, the panels in the safe area).</summary>
+        public static VisualElement BuildBattle(Catalog catalog, string screen, out VisualElement safe)
+        {
+            var host = new VisualElement();
+            host.AddToClassList("hud");
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
+            var battle = new VisualElement();
+            battle.style.position = Position.Absolute;
+            battle.style.left = battle.style.top = battle.style.right = battle.style.bottom = 0;
+            if (MapArt.For(MatchSettings.CurrentMap.Id) is { } picture) battle.style.backgroundImage = Background.FromTexture2D(picture);
+            battle.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            host.Add(battle);
+            safe = new VisualElement();
+            safe.style.position = Position.Absolute;
+            safe.style.left = safe.style.top = safe.style.right = safe.style.bottom = 0;
+            host.Add(safe);
+            switch (screen)
+            {
+                case "pause":
+                    var pause = new PausePanel(null, null, null);
+                    safe.Add(pause.Root);
+                    pause.Visible = true;
+                    break;
+                case "choice":
+                    var choice = new ChoicePanel();
+                    safe.Add(choice.Root);
+                    choice.Show(Strings.Get("choice.title"), new List<(string, string)>
+                    {
+                        (Strings.Get("mode.assault"), Strings.Get("mode.assaultSub")),
+                        (Strings.Get("mode.defend"), Strings.Get("mode.defendSub")),
+                    }, _ => { });
+                    choice.SetTime(12f);
+                    break;
+                default:
+                    var result = new ResultPanel(null, null, null, null, null, null);
+                    safe.Add(result.Root);
+                    ShowDemoResult(catalog, result, screen);
+                    break;
+            }
+            return host;
+        }
+
+        private static string Clock(int seconds) => $"{seconds / 60}:{seconds % 60:00}";
+
+        private static void ShowDemoResult(Catalog catalog, ResultPanel result, string screen)
+        {
+            switch (screen)
+            {
+                case "result-win":
+                {
+                    var mission = Campaign.All[Campaign.Next];
+                    var reward = new RewardView { Coins = 1250, Xp = 320, Stars = 2, CanDouble = true, HasNext = true };
+                    reward.Unlocked.Add(Strings.Card("tank_destroyer"));
+                    reward.Crates.Add(Strings.Get("crate.silver"));
+                    reward.Extras.Add(("star", $"{Strings.Get("result.prints")} +3"));
+                    result.Show(1, Strings.Get("mission." + mission.Id + ".name"), new List<(string, string)>
+                    {
+                        (Strings.Get("result.kills"), "42"), (Strings.Get("result.losses"), "7"), (Strings.Get("result.time"), Clock(504)),
+                        (Strings.Get("result.stages"), "3"),
+                    }, reward);
+                    break;
+                }
+                case "result-endless":
+                {
+                    var reward = new RewardView { Coins = 640, Xp = 150, CanDouble = true };
+                    result.Show(-1, Strings.Get("mode.endless"), new List<(string, string)>
+                    {
+                        (Strings.Get("result.kills"), "96"), (Strings.Get("result.losses"), "38"), (Strings.Get("result.time"), Clock(1122)),
+                        (Strings.Get("result.waves"), "14"), (Strings.Get("endless.best"), "14"),
+                    }, reward, Strings.Format("endless.record", 14), DemoHints(catalog));
+                    break;
+                }
+                default:
+                {
+                    var checkpoint = screen == "result-checkpoint";
+                    var reward = new RewardView { Coins = 180, Xp = 60, CanDouble = true, CanResume = checkpoint, Stars = checkpoint ? 0 : -1 };
+                    var title = checkpoint ? Strings.Get("mission." + Campaign.All[Campaign.Next].Id + ".name") : Strings.Get("mode.conquest");
+                    var rows = new List<(string, string)>();
+                    if (!checkpoint) rows.Add((Strings.Get("stat.score"), Strings.Format("result.sides", 0, 331)));
+                    rows.Add((Strings.Get("result.kills"), "18"));
+                    rows.Add((Strings.Get("result.losses"), "31"));
+                    rows.Add((Strings.Get("result.time"), Clock(760)));
+                    result.Show(-1, title, rows, reward, null, DemoHints(catalog));
+                    break;
+                }
+            }
+        }
+
+        /// <summary>The hints of a lost battle against many aircraft and heavy armour, with the demo deck (seven of eight).</summary>
+        private static List<string> DemoHints(Catalog catalog)
+        {
+            var tally = new BattleTally();
+            var air = catalog.Vehicles.Values.First(v => v.Flying && !v.Boss && !v.Elite);
+            var heavy = catalog.Vehicles.Values.First(v => v.Class == UnitClass.Heavy && !v.Boss && !v.Elite);
+            for (var i = 0; i < 6; i++) tally.Saw(air);
+            for (var i = 0; i < 10; i++) tally.Saw(heavy);
+            return DefeatHints.For(tally, catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports, MatchSettings.DeckVehicleSlots, 18, 31, false);
+        }
+
         /// <summary>The menu as BattleHud lays it out (the old HUD sheet on the root, the backdrop under the safe area), opened on a screen.</summary>
         public static VisualElement BuildMenu(Catalog catalog, string screen, out VisualElement safe)
         {
@@ -159,6 +283,7 @@ namespace MachineBrigade.Editor
             var list = new List<(string file, Builder build, Shape[] shapes, int tallHeight)>();
             if (set is "all" or "kit") list.AddRange(Screens());
             if (set is "all" or "menu") list.AddRange(MenuScreens());
+            if (set is "all" or "battle") list.AddRange(BattleScreens());
             var only = Argument("-mbShotsOnly");
             if (only != null) list = list.FindAll(s => s.file.Contains(only));
             var count = 0;

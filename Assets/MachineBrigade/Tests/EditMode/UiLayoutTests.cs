@@ -365,5 +365,35 @@ namespace MachineBrigade.Tests
             }
             Assert.IsEmpty(failures, string.Join("\n", failures.Distinct().Take(60)));
         }
+
+        public static IEnumerable<string> BattleScreenNames => MachineBrigade.Editor.UiShots.BattleScreenNames;
+
+        /// <summary>The battle's screens (the result, pause, the choice between stages), like the menu's: each has its one main action.</summary>
+        [Test]
+        public void EveryBattleScreenPassesEveryCheck([ValueSource(nameof(BattleScreenNames))] string screen)
+        {
+            var failures = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                    foreach (var (name, size) in shapes)
+                    {
+                        Strings.Vietnamese = vietnamese;
+                        MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                        var host = MachineBrigade.Editor.UiShots.BuildBattle(_catalog, screen, out _);
+                        Lay(host, size);
+                        var label = $"{name}{(vietnamese ? "" : " en")}{(large ? " large" : "")}";
+                        failures.AddRange(Check(host, label, size, large, 1));
+                    }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Assert.IsEmpty(failures, string.Join("\n", failures.Distinct().Take(60)));
+        }
     }
 }
