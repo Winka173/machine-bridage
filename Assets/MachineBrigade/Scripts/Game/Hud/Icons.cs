@@ -32,6 +32,10 @@ namespace MachineBrigade.Game.Hud
             ["flag"] = "<path d=\"M5 22V3h14l-3 5 3 5H5\"/>",
             ["check"] = "<path d=\"m5 12 4 4L19 6\"/>",
             ["expand"] = "<path d=\"M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5\"/>",
+            // Field Command 2.0 kit: the dropdown caret (the fonts have no ▾), sort, and a loading arc.
+            ["caret"] = "<path d=\"m6 9 6 6 6-6\"/>",
+            ["sort"] = "<path d=\"M4 6h16M7 12h10M10 18h4\"/>",
+            ["spinner"] = "<path d=\"M12 3a9 9 0 1 1-9 9\"/>",
             ["info"] = "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v6M12 7.5v.5\"/>",
             ["attack"] = "<path d=\"M20 4 9 15M20 4h-5M20 4v5M7 13l4 4M4 20l4-4\"/>",
             // Machine Brigade additions in the same style.
