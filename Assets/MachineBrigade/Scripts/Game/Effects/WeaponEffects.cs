@@ -23,6 +23,7 @@ namespace MachineBrigade.Game.Effects
         private readonly Emitters _emitters;
         private readonly MuzzleFx _muzzle;
         private readonly Action<Vector3, float> _shake;
+        private readonly LaserBeams _lasers;
         private readonly bool _hasMissile, _hasRocket, _hasBomb;
 
         /// <summary>
@@ -33,8 +34,9 @@ namespace MachineBrigade.Game.Effects
         private readonly System.Collections.Generic.Dictionary<(MachineBrigade.Sim.Core.EntityId, int), (float at, int count)> _sameFrame = new();
 
         public WeaponEffects(Catalog catalog, ModelLibrary models, TracerPool tracers, ProjectilePool projectiles, Emitters emitters,
-            MuzzleFx muzzle, Action<Vector3, float> shake)
+            MuzzleFx muzzle, Action<Vector3, float> shake, LaserBeams lasers = null)
         {
+            _lasers = lasers;
             _catalog = catalog;
             _models = models;
             _tracers = tracers;
@@ -109,6 +111,13 @@ namespace MachineBrigade.Game.Effects
             }
             if (weapon != null && weapon.Beam)
             {
+                if (_lasers != null)
+                {
+                    // A laser: one held beam onto the target, charged up, glowing and burning (LaserBeams).
+                    var flies = views.TryGet(targetId, out var lit) && lit.Flying;
+                    _lasers.Fire(shooter, e.Mount, from, to, targetId, flies, weapon, now, Mathf.Max(0.1f, weapon.Cooldown) * 1.6f);
+                    return;
+                }
                 // A laser: a hard bright bar for a moment, the glow of the director at the muzzle.
                 _tracers.Beam(from, to, 0.08f, 0.09f, now);
                 _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.6f, groundY);

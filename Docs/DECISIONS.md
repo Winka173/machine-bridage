@@ -1645,3 +1645,88 @@ library with its preview screen, the card renders and the UI checks. The screens
   switch on the settings page, map preview pictures for the map dropdown (the kit shows card
   renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
   `UiShots.Screens` and to the strict checks (then removing its old-screen report).
+
+### 11A. Test feedback: explosions, flame, laser (2026-09-28)
+
+The owner's play-test found tank-round and bomb blasts too small, the cruise missile's blast
+smaller than the ground it wrecks, the flame tank's fire ugly and the Iron Beam's laser weak. All
+of it is the view's: no simulation code, damage or radius changed (balance.json untouched).
+
+- **Enlarging without blowing sprites up.** The flipbook sheets are 1024 px with 8 x 8 frames, so a
+  frame is 128 px: a fireball simply drawn half as big again goes soft and its quad shows.
+  `ExplosionEffect.Play` takes a second factor, `grow`, beside the old `scale`. Fire, smoke and dust
+  come in more quads spread wider, each only a little bigger (size x grow^0.65, count x grow^1.4, at
+  most 2.6 times, spread over 0.14 x (grow - 1) of their own size), so a big blast is a wider,
+  lumpier cluster, and its secondary fireballs roll out further. Sparks, debris, dirt and embers
+  come in greater numbers (x grow^1.5) thrown faster (x grow^0.8). The flash, shockwave rings, ground
+  light and crater glow are drawn shapes, sharp at any size, so they simply grow. Chunks fly out
+  x sqrt(grow). At grow 1 every factor is the old one, bit for bit.
+- **Low stays cheap without losing anything.** A recipe's own particles are always emitted in full
+  on every tier (explosions are never reduced); only the extra that enlarging adds is scaled by
+  tier: High 100 %, Medium 75 %, Low 40 % (`ExplosionEffect.Density`, the pattern the boss-part fires
+  already use for Low).
+- **The flash and the air ring are pulled 30 m and 20 m towards the camera** (their own copies of the
+  Flash and Shockwave materials). An enlarged flash is tens of metres across and the ground sliced
+  it along a straight line; they are additive light, drawn over everything anyway.
+- **Tank rounds** (armour-piercing shells) had only a spark spray and a dust puff (a Small blast at
+  0.6 or 0.9, 13 particles, plus 16 or 36 sparks). They now play their own hit,
+  `ExplosionEffect.CreateShellHit`: a white-hot flash, a small hot fireball bursting off the plate and
+  a second one rolling out of it, 24 sparks, black smoke, a dust puff, metal flakes, embers, a snap
+  of air and a little ground light, and the old spark burst. Enlarged by the tank's class
+  (`BlastSizes.TankShell`): light tank and wheeled gun x1.3, main battle tank, tank destroyers,
+  twin tank and the 120 mm turrets x1.4, heavy, elite heavy, titan (super-heavy) and the siege tank
+  x1.5; any other gun by its damage. The siege tank's 203 mm is a high-explosive shell, so its
+  artillery-style blast grows x1.5 instead. The spark burst grows by the same factor (count and
+  speed). Kept tight on purpose: a kill's hulk blast after it is still the big one.
+- **Bombs** by weight (`BlastSizes.Bomb`): GBU-12 (the small guided bomb), cluster bomblets and
+  napalm canisters x1.3, carpet bombing (the heavy bomber's dozen) x1.45, FAB-500, JDAM and the
+  strike jet's Mk 84s (airstrike, air raid) x1.5, any other bomb x1.4. The shock ring, the smoke
+  column and the scorch mark grow with them. Barrages, SEAD and other strikes are shells or
+  missiles and stay as they were.
+- **The cruise missile and the MOAB** are drawn as wide as their blast radius: the Ultimate
+  recipe's ground shockwave reaches 10.9 m at scale 1 (`BlastSizes.UltimateReach`), so grow is
+  radius / 10.9 (1.65 for the cruise missile's 18 m, 2.47 for the MOAB's 27 m), with almost no random
+  variation (0.97 to 1.03 instead of 0.85 to 1.2). Before, the cruise missile's ring reached about
+  9.8 m of its 18 m and the MOAB's 14.7 m of its 27 m. The fireball cluster now fills about three
+  quarters of the radius and the dust skirt rolls out to its edge. The air-launched cruise missile
+  and JASSM (Huge, 5 to 6 m splash) already matched and are unchanged.
+- **Particles per blast** at High / Low (before: the recipe alone): tank round x1.3 / x1.4 / x1.5
+  about 55 / 62 / 69 against 42 on Low, plus 21 / 50 / 54 sparks (before 13 + 16 or 36); GBU-12 (Large
+  x1.3) 245 / 197 (168); FAB, Mk 84 (Huge x1.5) 502 / 366 (276); JDAM (Ultimate x1.5) 675 / 490 (371);
+  cruise missile (x1.65) 774 / 530 (371); MOAB (x2.47) 1358 / 765 (371). The contact sheet's log
+  prints them (`BlastRig.Budget`).
+- **The flame tank.** The stream's balls of fire were the fire sheet's upright flames spun to random
+  angles, which read as orange petals, round a thin white rod that read as a laser. Now: the rod is
+  a thicker orange stream (0.5 to 0.7 m, spreading x0.45 to x2.2, shorter streaks); the rolling
+  fireballs are the blast sheet's burning frames in a napalm-red material (`FxMaterials.FlameBall`),
+  small at the nozzle and swelling as they fly, and they fly until they reach the target, then brake
+  hard and billow up off it with the wind (`Emitters.Splash`), so the fire splashes onto the target
+  instead of flying through it; upright flames lick up the target and the ground by it (never
+  spun); an orange heat halo wraps the stream, the ground is lit where it lands, embers fly up; black
+  smoke rolls off the far half and the target (10 a second, bigger and blacker than the 7 before).
+  Rates: rod 90, balls 42 (as before), smoke 10, heat 24 a second (x Density). A hull's damage fire
+  also stays upright now (it was spun the same way).
+- **The laser** (`LaserBeams`, a new beam shader `MachineBrigade/Beam`). Before: a 0.09 m bar for
+  0.08 s at every 0.1 s shot and a machine-gun flash. Now one held beam per emitter, following its
+  turret and its target between shots: a white-hot core (0.26 m), a coloured glow (1.25 m) and a wide
+  faint haze (3.4 m) on camera-facing lines, with energy ripples running down them and the width
+  pulsing and the light flickering every frame; a 0.22 s charge-up when it starts (a ball of light
+  swelling past its size at the emitter, sparks drawn in, the beam growing from a thin pilot line);
+  at the hit a white-hot spot in a halo, 50 + 70 x Density sparks a second (one in four a molten drop
+  that arcs down and bounces), smoke curling off the burn, the ground lit and a scorch mark every
+  0.7 s where it has moved on; a 0.28 s afterglow when it stops (the core goes at once, the glow
+  widens and fades, the burn cools, ionised air hangs along the line). Iron Beam and point defence
+  are red; the silver bug's saucer laser is green and half as heavy again. Point-defence
+  interceptions draw their own beam (mount -1), so they never steal the main one.
+- **Contact sheets** (`EffectShots`, batch with graphics): `Impacts` (new: tank rounds, bombs and
+  the cruise missile before and after in pairs of rows, the Mk 84 and the MOAB after, with red
+  circles of the blast radius), `Lasers` (new: the Iron Beam on a helicopter, the saucer laser into
+  the ground), `Flames` and `Blasts` as before.
+- **Tests** (EditMode, `BlastSizeTests`): the class and bomb factors, grow 1 is the old blast, no tier
+  ever loses a particle of its recipe, enlarged fireballs are more quads rather than only bigger ones,
+  the cruise missile's ring reaches its blast radius, the flame stream's layers all emit and its
+  flames stand upright, a laser is one beam while it fires and goes after its afterglow.
+- **Left for the testing phase:** frame time on a Low-tier phone with several cruise missiles or a
+  carpet-bombing run on screen (the fill of the enlarged smoke is the thing to watch; the counts above
+  are within the old per-tier caps' growth); the first laser's pipeline build (line renderers are not
+  in `WarmUpPipelines`, which only draws particle systems).

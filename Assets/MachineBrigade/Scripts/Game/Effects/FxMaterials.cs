@@ -79,6 +79,19 @@ namespace MachineBrigade.Game.Effects
             Napalm.SetFloat("_SmokeShadow", 0.18f);
             Napalm.SetFloat("_SmokeLight", 0.55f);
 
+            // A flamethrower's rolling balls of burning fuel: the blast sheet's fire, napalm-red and
+            // hot for longer, rolling up into black smoke.
+            FlameBall = Make(shader, "FlameBall", blast, FxQueue.Flames, depthPull: 9f);
+            FlameBall.SetColor("_FireDeep", new Color(0.6f, 0.05f, 0f));
+            FlameBall.SetColor("_FireMid", new Color(1f, 0.34f, 0.03f));
+            FlameBall.SetColor("_FireHot", new Color(1f, 0.8f, 0.4f));
+            FlameBall.SetFloat("_FireIntensity", 3.8f);
+            FlameBall.SetFloat("_HeatScale", 1.6f);
+            FlameBall.SetFloat("_FireOpacity", 0.6f);
+            FlameBall.SetFloat("_Density", 1.25f);
+            FlameBall.SetFloat("_SmokeShadow", 0.16f);
+            FlameBall.SetFloat("_SmokeLight", 0.5f);
+
             // Explosion fireballs rolling up into smoke.
             Blast = Make(shader, "Blast", blast, FxQueue.Fireball, depthPull: 10f);
             Blast.SetFloat("_FireIntensity", 3.8f);
@@ -140,6 +153,7 @@ namespace MachineBrigade.Game.Effects
 
         public Material Flames { get; }
         public Material Napalm { get; }
+        public Material FlameBall { get; }
         public Material Blast { get; }
         public Material HotBlast { get; }
         public Material Smoke { get; }
