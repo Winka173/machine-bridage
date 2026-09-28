@@ -102,6 +102,8 @@
     /* ---- component sizes */
     --fc-card-width: 184px;
     --fc-card-art: 150px;
+    --fc-card-compact-width: 136px;
+    --fc-card-compact-art: 100px;
     --fc-gear-width: 164px;
     --fc-gear-art: 104px;
     --fc-dialog-width: 620px;
@@ -139,6 +141,11 @@
 .fc-root Label, .fc-text {
     white-space: normal;
     text-overflow: clip;
+    flex-shrink: 0;                           /* a text never gives up height: it pushes, it is never squashed */
+}
+/* In a row a text may give up width, and wraps instead. */
+.fc-btn__row > .fc-text, .fc-toast > .fc-text, .fc-chip__face > .fc-text, .fc-type-row > .fc-text, .fc-compare-row > .fc-text,
+.fc-toggle > .fc-text, .fc-preview__top > .fc-text, .fc-currency > .fc-text, .fc-sample__rank .fc-text, .fc-root .fc-row-text {
     flex-shrink: 1;
 }
 .fc-icon { --icon-color: var(--fc-text); flex-shrink: 0; }
@@ -323,9 +330,10 @@
 .fc-tab--selected .fc-tab__label { color: var(--fc-text); }
 
 /* ---- filter chips: chosen = text-colour face with dark text; the rest an outline -------------- */
-.fc-chip-row { flex-direction: row; align-items: center; flex-wrap: wrap; }
+.fc-chip-row { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .fc-chip-row__chips { flex-direction: row; flex-wrap: wrap; flex-grow: 1; flex-shrink: 1; align-items: center; }
-.fc-chip-row__divider { width: var(--fc-line); height: 40px; margin: 0 var(--fc-space-3); background-color: var(--fc-border-strong); }
+.fc-chip-row__divider { width: var(--fc-line); height: 40px; margin: 21px var(--fc-space-3) 0 var(--fc-space-3); flex-shrink: 0; background-color: var(--fc-border-strong); }
+.fc-chip-row > .fc-sort { flex-shrink: 0; margin-right: 0; }
 .fc-chip {
     min-height: var(--fc-touch); min-width: var(--fc-touch);
     justify-content: center; align-items: center;
@@ -434,6 +442,12 @@
 .fc-vcard--locked .fc-vcard__lock { display: flex; }
 .fc-vcard__lock > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); --icon-color: var(--fc-text-2); }
 .fc-vcard__lock-text { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text); }
+/* The compact card: the home screen's deck strip (8 + 2 in a row), name and cost only. */
+.fc-vcard--compact { width: var(--fc-card-compact-width); margin-right: var(--fc-space-2); }
+.fc-vcard--compact .fc-vcard__art { height: var(--fc-card-compact-art); }
+.fc-vcard--compact .fc-vcard__name { font-size: var(--fc-fs-small); }
+.fc-vcard--compact .fc-vcard__level { display: none; }
+.fc-vcard--compact .fc-vcard__body { padding: var(--fc-space-2); }
 
 /* ---- gear cards: a picture per item type in a rarity frame, the short main stat, the level ---- */
 .fc-gcard {
@@ -479,7 +493,7 @@
 .fc-dot { position: absolute; top: var(--fc-space-2); right: var(--fc-space-2); width: var(--fc-dot); height: var(--fc-dot); background-color: var(--fc-danger); }
 
 /* ---- navigation rail item (the left rail): chosen = selected panel, a 3 px accent bar, accent icon and text */
-.fc-nav { width: var(--fc-nav-width); background-color: var(--fc-bg-2); border-right-width: var(--fc-line); border-right-color: var(--fc-border); }
+.fc-nav { width: var(--fc-nav-width); flex-shrink: 0; background-color: var(--fc-bg-2); border-right-width: var(--fc-line); border-right-color: var(--fc-border); }
 .fc-nav-item {
     min-height: 92px;
     align-items: center; justify-content: center;
@@ -535,7 +549,38 @@
 .fc-preview__specimen { align-items: flex-start; }
 .fc-preview__specimen-label { margin-bottom: var(--fc-space-1); }
 .fc-preview__group { flex-direction: row; align-items: center; margin-left: var(--fc-space-4); }
-.fc-swatch { width: 200px; margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3); }
+.fc-preview__group > .fc-caption { margin-right: var(--fc-space-2); }
+.fc-swatch { width: 240px; margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3); padding: var(--fc-space-2); background-color: var(--fc-panel-raised); }
+/* The preview swatches: each paints its token (the colour comes from here, not from code). */
+.fc-swatch--fc-bg { background-color: var(--fc-bg); }
+.fc-swatch--fc-bg-2 { background-color: var(--fc-bg-2); }
+.fc-swatch--fc-panel { background-color: var(--fc-panel); }
+.fc-swatch--fc-panel-raised { background-color: var(--fc-panel-raised); }
+.fc-swatch--fc-panel-selected { background-color: var(--fc-panel-selected); }
+.fc-swatch--fc-panel-field { background-color: var(--fc-panel-field); }
+.fc-swatch--fc-border { background-color: var(--fc-border); }
+.fc-swatch--fc-border-strong { background-color: var(--fc-border-strong); }
+.fc-swatch--fc-text { background-color: var(--fc-text); }
+.fc-swatch--fc-text-2 { background-color: var(--fc-text-2); }
+.fc-swatch--fc-text-dim { background-color: var(--fc-text-dim); }
+.fc-swatch--fc-accent { background-color: var(--fc-accent); }
+.fc-swatch--fc-accent-press { background-color: var(--fc-accent-press); }
+.fc-swatch--fc-coin { background-color: var(--fc-coin); }
+.fc-swatch--fc-danger { background-color: var(--fc-danger); }
+.fc-swatch--fc-danger-text { background-color: var(--fc-danger-text); }
+.fc-swatch--fc-positive { background-color: var(--fc-positive); }
+.fc-swatch--fc-ally { background-color: var(--fc-ally); }
+.fc-swatch--fc-enemy { background-color: var(--fc-enemy); }
+.fc-swatch--fc-branch-armor { background-color: var(--fc-branch-armor); }
+.fc-swatch--fc-branch-light { background-color: var(--fc-branch-light); }
+.fc-swatch--fc-branch-artillery { background-color: var(--fc-branch-artillery); }
+.fc-swatch--fc-branch-air { background-color: var(--fc-branch-air); }
+.fc-swatch--fc-branch-support { background-color: var(--fc-branch-support); }
+.fc-swatch--fc-rarity-common { background-color: var(--fc-rarity-common); }
+.fc-swatch--fc-rarity-uncommon { background-color: var(--fc-rarity-uncommon); }
+.fc-swatch--fc-rarity-rare { background-color: var(--fc-rarity-rare); }
+.fc-swatch--fc-rarity-epic { background-color: var(--fc-rarity-epic); }
+.fc-swatch--fc-rarity-legendary { background-color: var(--fc-rarity-legendary); }
 .fc-swatch__colour { height: 44px; border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
 .fc-type-row { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-2); }
 .fc-type-row__name { width: 220px; }
@@ -544,8 +589,11 @@
 .fc-sample__rank > .fc-icon { width: 36px; height: 36px; margin-right: var(--fc-space-3); }
 .fc-sample__xp { width: 160px; margin-top: var(--fc-space-1); }
 .fc-sample__body { flex-direction: row; flex-grow: 1; }
-.fc-sample__column { flex-grow: 1; flex-shrink: 1; padding: var(--fc-space-4); }
-.fc-sample__side { width: 440px; flex-shrink: 1; padding: var(--fc-space-4); justify-content: space-between; }
+.fc-sample__column { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; padding: var(--fc-space-4); }
+.fc-sample__side { width: 440px; flex-shrink: 0; padding: var(--fc-space-4); }
+.fc-sample__side-scroll { flex-grow: 1; flex-shrink: 1; }
+.fc-sample__deck { flex-grow: 0; flex-shrink: 0; margin-top: var(--fc-space-2); }
+.fc-sample__deck .unity-scroll-view__content-container { flex-direction: row; }
 .fc-sample__column--end { justify-content: flex-end; }
 .fc-preview__row--center { align-items: center; }
 .fc-preview__nav-row { flex-direction: row; width: auto; align-self: flex-start; border-right-width: 0; }
@@ -568,3 +616,6 @@
 .fc-mt-4 { margin-top: var(--fc-space-4); }
 .fc-ml-2 { margin-left: var(--fc-space-2); }
 .fc-ml-4 { margin-left: var(--fc-space-4); }
+.fc-keep { flex-shrink: 0; }
+.fc-preview__specimen > .fc-nav-item { width: var(--fc-nav-width); }
+.fc-scroll .unity-scroll-view__content-container { width: 100%; }

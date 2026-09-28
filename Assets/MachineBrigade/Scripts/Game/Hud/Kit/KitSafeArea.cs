@@ -35,11 +35,11 @@ namespace MachineBrigade.Game.Hud
         }
 
         /// <summary>Follows the device's safe area (a rotation, another screen) while the element is on a panel.</summary>
-        public static void Track(VisualElement element)
+        public static IVisualElementScheduledItem Track(VisualElement element)
         {
             Rect applied = default;
             var size = Vector2.zero;
-            element.schedule.Execute(() =>
+            return element.schedule.Execute(() =>
             {
                 var root = element.panel?.visualTree;
                 if (root == null) return;

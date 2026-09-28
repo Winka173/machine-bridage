@@ -66,10 +66,11 @@ namespace MachineBrigade.Game.Hud
     {
         public const string BaseClass = "fc-vcard";
 
-        public KitVehicleCard(VehicleCardData data, Action onClick = null)
+        public KitVehicleCard(VehicleCardData data, Action onClick = null, bool compact = false)
         {
             Data = data;
             AddToClassList(BaseClass);
+            EnableInClassList("fc-vcard--compact", compact);
             EnableInClassList("fc-vcard--locked", data.Locked);
             var content = Kit.Box("fc-vcard__content");
             content.Add(Kit.Box("fc-vcard__bar " + KitBranches.ColourClass(data.Branch)));
@@ -77,10 +78,14 @@ namespace MachineBrigade.Game.Hud
             if (data.Art != null) art.style.backgroundImage = Background.FromTexture2D(data.Art);
             else art.Add(Kit.Icon(data.ClassIcon, "fc-vcard__fallback"));
             art.Add(Kit.Icon(data.ClassIcon, "fc-vcard__class"));
-            var cp = Kit.Box("fc-vcard__cp");
-            cp.Add(Kit.Text(data.Cp.ToString(), "fc-vcard__cp-value"));
-            cp.Add(Kit.Text("CP", "fc-vcard__cp-unit"));
-            art.Add(cp);
+            // Towers, elites and bosses are never bought: no cost box.
+            if (data.Cp > 0)
+            {
+                var cp = Kit.Box("fc-vcard__cp");
+                cp.Add(Kit.Text(data.Cp.ToString(), "fc-vcard__cp-value"));
+                cp.Add(Kit.Text("CP", "fc-vcard__cp-unit"));
+                art.Add(cp);
+            }
             if (data.CanUpgrade && !data.Locked)
             {
                 var upgrade = Kit.Box("fc-vcard__upgrade");

@@ -52,8 +52,17 @@ namespace MachineBrigade.Game.Hud
             Root.pickingMode = PickingMode.Position;
             _safe = Kit.Box("fc-safe");
             Root.Add(_safe);
-            KitSafeArea.Track(_safe);
+            _safeTracking = KitSafeArea.Track(_safe);
             Build();
+        }
+
+        private readonly IVisualElementScheduledItem _safeTracking;
+
+        /// <summary>Fixed safe-area insets in panel pixels instead of the device's (the screenshot tool's notch and punch hole).</summary>
+        public void SetSafeInsets(Vector4 insets)
+        {
+            _safeTracking?.Pause();
+            KitSafeArea.Apply(_safe, insets);
         }
 
         public VisualElement Root { get; }
@@ -100,14 +109,8 @@ namespace MachineBrigade.Game.Hud
             column.Add(TopBar());
             var main = Kit.Box("fc-preview__main");
             main.Add(Rail());
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
-            {
-                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-                verticalScrollerVisibility = ScrollerVisibility.Hidden,
-                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
-            };
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical);
             scroll.AddToClassList("fc-preview__content");
-            MouseDragScroll.Attach(scroll);
             var body = Kit.Box("fc-preview__page");
             switch (Current)
             {
@@ -196,9 +199,9 @@ namespace MachineBrigade.Game.Hud
 
         private static readonly (string cls, string name)[] TypeScale =
         {
-            ("fc-title", "--fc-fs-title"), ("fc-panel-title", "--fc-fs-panel-title"), ("fc-body", "--fc-fs-body"),
-            ("fc-body-2", "--fc-fs-body"), ("fc-dim", "--fc-fs-body"), ("fc-small", "--fc-fs-small"), ("fc-caption", "--fc-fs-small"),
-            ("fc-number", "--fc-fs-number"), ("fc-number-small", "--fc-fs-number-small"),
+            ("fc-title", "fc-fs-title"), ("fc-panel-title", "fc-fs-panel-title"), ("fc-body", "fc-fs-body"),
+            ("fc-body-2", "fc-fs-body"), ("fc-dim", "fc-fs-body"), ("fc-small", "fc-fs-small"), ("fc-caption", "fc-fs-small"),
+            ("fc-number", "fc-fs-number"), ("fc-number-small", "fc-fs-number-small"),
         };
 
         private void TokensPage(VisualElement page)
@@ -210,8 +213,8 @@ namespace MachineBrigade.Game.Hud
             {
                 var swatch = Kit.Box("fc-swatch");
                 var ratio = Kit.Text("", "fc-small");
-                swatch.Add(new KitSwatch(token, "fc-panel-raised", ratio));
-                swatch.Add(Kit.Text("--" + token, "fc-small"));
+                swatch.Add(new KitSwatch(token, ratio));
+                swatch.Add(Kit.Text(token, "fc-small"));
                 swatch.Add(ratio);
                 grid.Add(swatch);
             }
@@ -230,7 +233,7 @@ namespace MachineBrigade.Game.Hud
                 type.Add(row);
             }
             var primary = Kit.Box("fc-type-row");
-            primary.Add(Kit.Text("--fc-fs-primary", "fc-small fc-type-row__name"));
+            primary.Add(Kit.Text("fc-fs-primary", "fc-small fc-type-row__name"));
             var face = new KitButton(ButtonTier.Primary, Strings.Get("kit.sample.deploy"), null);
             var holder = Kit.Box(Kit.SpecimenClass);
             holder.Add(face);
@@ -389,9 +392,9 @@ namespace MachineBrigade.Game.Hud
             }, new KitSortButton(GearQuery.SortName(GearQuery.Sort.Rarity), null)));
             var compare = Section(page, "kit.preview.compare");
             compare.AddToClassList("fc-preview__w-compare");
-            compare.Add(new KitCompareRow(GearText.Line(StatId.Damage, 0.08f), "+8%", "+12%", 1));
-            compare.Add(new KitCompareRow(GearText.Line(StatId.Range, 0.05f), "+5%", "+3%", -1));
-            compare.Add(new KitCompareRow(GearText.Line(StatId.Speed, 0.04f), "+4%", "+4%", 0));
+            compare.Add(new KitCompareRow(Strings.Get("kit.preview.statDamage"), "+8%", "+12%", 1));
+            compare.Add(new KitCompareRow(Strings.Get("kit.preview.statRange"), "+5%", "+3%", -1));
+            compare.Add(new KitCompareRow(Strings.Get("kit.preview.statSpeed"), "+4%", "+4%", 0));
         }
 
         private void FeedbackPage(VisualElement page)
@@ -404,6 +407,14 @@ namespace MachineBrigade.Game.Hud
             ready.AddToClassList("fc-mt-4");
             progress.Add(ready);
             progress.Add(new KitProgress(1f, true));
+            var dots = Row(progress);
+            dots.AddToClassList("fc-mt-4");
+            var shop = new KitIconButton("shop", Strings.Get("kit.sample.shop"), null);
+            KitDot.Attach(shop, true);
+            Specimen(dots, Strings.Get("kit.preview.dotFree"), shop);
+            var army = new KitNavItem("tank", Strings.Get("kit.sample.army"), false, null);
+            army.ShowDot(true);
+            Specimen(dots, Strings.Get("kit.preview.dotUpgrade"), army);
 
             var surfaces = Section(page, "kit.preview.surfaces");
             var row = Row(surfaces);
@@ -469,13 +480,17 @@ namespace MachineBrigade.Game.Hud
             deckHead.Add(new KitButton(ButtonTier.Text, Strings.Get("kit.sample.editDeck"), null));
             left.Add(deckHead);
             left.Add(Kit.Small(Strings.Get("kit.sample.deckShort")));
-            var deck = Kit.Box("fc-preview__row fc-mt-2");
-            foreach (var id in new[] { "main_battle_tank", "attack_helicopter", "mlrs", "aa_vehicle" })
-                deck.Add(new KitVehicleCard(Card(id), () => { }));
+            var deck = Kit.Scroll(ScrollViewMode.Horizontal);
+            deck.AddToClassList("fc-sample__deck");
+            foreach (var id in new[] { "main_battle_tank", "attack_helicopter", "mlrs", "aa_vehicle", "tank_destroyer", "ifv", "artillery", "scout_jeep" })
+                deck.Add(new KitVehicleCard(Card(id), () => { }, compact: true));
             left.Add(deck);
             body.Add(left);
 
+            // The right column scrolls when the text is large; the mode and the main button stay at the bottom.
             var side = Kit.Box("fc-sample__side");
+            var sideScroll = Kit.Scroll(ScrollViewMode.Vertical);
+            sideScroll.AddToClassList("fc-sample__side-scroll");
             var campaign = Kit.Tappable(KitPanel.SurfaceClass + " fc-panel", null);
             campaign.Add(Kit.Caption(Strings.Get("kit.sample.campaign")));
             campaign.Add(Kit.Text(Kit.Caps(Strings.Get("kit.sample.campaignCard")), "fc-panel-title"));
@@ -483,15 +498,18 @@ namespace MachineBrigade.Game.Hud
             var chapter = new KitProgress(6f / 9f);
             chapter.AddToClassList("fc-mt-2");
             campaign.Add(chapter);
-            side.Add(campaign);
-            var daily = KitPanel.Create(Strings.Get("kit.sample.daily"), out var dailyBody);
+            sideScroll.Add(campaign);
+            var daily = KitPanel.Create(null, out var dailyBody);
             daily.AddToClassList("fc-mt-3");
-            dailyBody.Add(Kit.Small(Strings.Get("kit.sample.dailyBody")));
+            var dailyHead = Kit.Box("fc-preview__row fc-preview__row--center fc-nowrap");
+            dailyHead.Add(Kit.Text(Kit.Caps(Strings.Get("kit.sample.daily")), "fc-panel-title fc-row-text"));
             var claim = new KitButton(ButtonTier.Claim, Strings.Get("kit.sample.claim"), null);
-            claim.AddToClassList("fc-mt-2");
-            claim.AddToClassList("fc-self-start");
-            dailyBody.Add(claim);
-            side.Add(daily);
+            claim.AddToClassList("fc-keep");
+            dailyHead.Add(claim);
+            dailyBody.Add(dailyHead);
+            dailyBody.Add(Kit.Small(Strings.Get("kit.sample.dailyBody")));
+            sideScroll.Add(daily);
+            side.Add(sideScroll);
             var launch = Kit.Box("fc-mt-3");
             var modeRow = Kit.Box("fc-preview__row fc-nowrap");
             var mode = new KitDropdown(Strings.Get("kit.sample.mode"), new[] { new KitOption(Strings.Get("kit.sample.modeConquest")) }, 0, null);

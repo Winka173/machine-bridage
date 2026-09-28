@@ -197,14 +197,8 @@ namespace MachineBrigade.Game.Hud
             VisualElement scrim = null;
             var sheet = Kit.Box("fc-surface fc-picker", PickingMode.Position);
             sheet.Add(Kit.Text(Kit.Caps(_label), "fc-panel-title fc-panel__title"));
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
-            {
-                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-                verticalScrollerVisibility = ScrollerVisibility.Hidden,
-                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
-            };
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical);
             scroll.AddToClassList("fc-picker__scroll");
-            MouseDragScroll.Attach(scroll);
             for (var i = 0; i < _options.Count; i++)
             {
                 var index = i;

@@ -83,43 +83,23 @@ namespace MachineBrigade.Game.Hud
         public static float RequiredContrast(float panelPx) => panelPx >= 24f * Kit.PanelPxPerReferencePx - 0.01f ? 3f : 4.5f;
     }
 
-    /// <summary>A colour swatch for the kit preview: it paints the colour of a token it reads from the stylesheet (no colour in code).</summary>
+    /// <summary>
+    /// A colour swatch for the kit preview: a box with the token's own class, so the stylesheet
+    /// paints it; once drawn, its label shows the token's contrast on the swatch's backdrop.
+    /// </summary>
     public sealed class KitSwatch : VisualElement
     {
-        private readonly CustomStyleProperty<Color> _token, _against;
-        private Color _colour, _backdrop;
-        private readonly Label _ratio;
-
-        public KitSwatch(string token, string against = "fc-panel-raised", Label ratio = null)
+        public KitSwatch(string token, Label ratio = null)
         {
-            _token = new CustomStyleProperty<Color>("--" + token);
-            _against = new CustomStyleProperty<Color>("--" + against);
-            _ratio = ratio;
             AddToClassList("fc-swatch__colour");
-            generateVisualContent += Paint;
-            RegisterCallback<CustomStyleResolvedEvent>(e =>
+            AddToClassList("fc-swatch--" + token);
+            if (ratio == null) return;
+            RegisterCallback<GeometryChangedEvent>(_ =>
             {
-                e.customStyle.TryGetValue(_token, out _colour);
-                e.customStyle.TryGetValue(_against, out _backdrop);
-                if (_ratio != null)
-                    _ratio.text = KitTokens.Contrast(KitTokens.Over(_colour, _backdrop), _backdrop).ToString("0.0", CultureInfo.InvariantCulture) + ":1";
-                MarkDirtyRepaint();
+                var backdrop = parent?.resolvedStyle.backgroundColor ?? Color.black;
+                var colour = KitTokens.Over(resolvedStyle.backgroundColor, backdrop);
+                ratio.text = KitTokens.Contrast(colour, backdrop).ToString("0.0", CultureInfo.InvariantCulture) + ":1";
             });
-        }
-
-        private void Paint(MeshGenerationContext context)
-        {
-            var r = contentRect;
-            if (r.width <= 0f || r.height <= 0f) return;
-            var p = context.painter2D;
-            p.fillColor = _colour;
-            p.BeginPath();
-            p.MoveTo(r.min);
-            p.LineTo(new Vector2(r.xMax, r.yMin));
-            p.LineTo(r.max);
-            p.LineTo(new Vector2(r.xMin, r.yMax));
-            p.ClosePath();
-            p.Fill();
         }
     }
 }

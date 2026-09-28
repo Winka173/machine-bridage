@@ -89,6 +89,24 @@ namespace MachineBrigade.Game.Hud
             return element;
         }
 
+        /// <summary>
+        /// A touch-dragged scroll view without scrollbars. A vertical one keeps its content to the
+        /// viewport's width, so rows inside wrap and shrink instead of running off the side.
+        /// </summary>
+        public static ScrollView Scroll(ScrollViewMode mode, string classes = null)
+        {
+            var scroll = new ScrollView(mode)
+            {
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Hidden,
+                touchScrollBehavior = ScrollView.TouchScrollBehavior.Clamped,
+            };
+            scroll.AddToClassList(mode == ScrollViewMode.Vertical ? "fc-scroll" : "fc-scroll-h");
+            UiKit.AddClasses(scroll, classes);
+            MouseDragScroll.Attach(scroll);
+            return scroll;
+        }
+
         /// <summary>Uppercase for the condensed display labels (USS has no text-transform); Vietnamese capitals keep their marks.</summary>
         public static string Caps(string text) => string.IsNullOrEmpty(text) ? text ?? "" : text.ToUpper(Culture);
 

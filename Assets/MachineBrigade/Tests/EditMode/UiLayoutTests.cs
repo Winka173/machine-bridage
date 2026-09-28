@@ -84,22 +84,46 @@ namespace MachineBrigade.Tests
             return string.Join(">", path);
         }
 
-        /// <summary>Texts cut with an ellipsis, or one line that runs out of its box.</summary>
-        internal static List<string> CutTexts(VisualElement root)
+        /// <summary>
+        /// Texts that do not show in full: cut with an ellipsis, one line running out of its box, a
+        /// wrapped text squashed shorter than its lines, a word too wide for its box (UI Toolkit then
+        /// breaks it inside the word), or a text below the bottom of the screen outside a scroll view.
+        /// </summary>
+        internal static List<string> CutTexts(VisualElement root, Vector2? screen = null)
         {
             var found = new List<string>();
             root.Query<Label>().ForEach(label =>
             {
                 if (string.IsNullOrEmpty(label.text) || !Shown(label)) return;
+                var text = label.text;
+                var box = label.contentRect;
                 if (label.isElided)
                 {
-                    found.Add($"elided \"{label.text}\" ({Describe(label)})");
+                    found.Add($"elided \"{text}\" ({Describe(label)})");
                     return;
                 }
-                if (label.resolvedStyle.whiteSpace != WhiteSpace.NoWrap) return;
-                var width = label.MeasureTextSize(label.text, 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).x;
-                if (width > label.contentRect.width + 1.5f)
-                    found.Add($"cut \"{label.text}\" {width:0}>{label.contentRect.width:0} ({Describe(label)})");
+                if (label.resolvedStyle.whiteSpace == WhiteSpace.NoWrap)
+                {
+                    var width = label.MeasureTextSize(text, 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).x;
+                    if (width > box.width + 1.5f) found.Add($"cut \"{text}\" {width:0}>{box.width:0} ({Describe(label)})");
+                }
+                else
+                {
+                    var height = label.MeasureTextSize(text, box.width, VisualElement.MeasureMode.Exactly, 0, VisualElement.MeasureMode.Undefined).y;
+                    if (height > box.height + 1.5f) found.Add($"squashed \"{text}\" {height:0}>{box.height:0} ({Describe(label)})");
+                    // A hyphen is a fair place to break ("COUNTER-/BATTERY"); inside a word is not.
+                    foreach (var word in System.Text.RegularExpressions.Regex.Split(text, @"\s+|(?<=-)"))
+                    {
+                        if (word.Length < 2) continue;
+                        var w = label.MeasureTextSize(word, 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).x;
+                        if (w <= box.width + 1.5f) continue;
+                        found.Add($"word broken \"{word}\" {w:0}>{box.width:0} in \"{text}\" ({Describe(label)})");
+                        break;
+                    }
+                }
+                if (screen is { } size && label.GetFirstAncestorOfType<ScrollView>() == null &&
+                    (label.worldBound.yMax > size.y + 0.5f || label.worldBound.xMax > size.x + 0.5f))
+                    found.Add($"off screen \"{text}\" at {label.worldBound.xMax:0},{label.worldBound.yMax:0} ({Describe(label)})");
             });
             return found;
         }
@@ -180,20 +204,58 @@ namespace MachineBrigade.Tests
                 var preview = new KitPreview(_catalog, null, page, vietnamese, large);
                 Lay(preview.Root, size);
                 var root = preview.Root;
-                failures.AddRange(CutTexts(root).Select(f => $"{name}: {f}"));
+                failures.AddRange(CutTexts(root, size).Select(f => $"{name}: {f}"));
                 failures.AddRange(SmallTargets(root, Kit.TouchTarget).Select(f => $"{name}: small target {f}"));
                 failures.AddRange(SmallTexts(root, SmallestText(large)).Select(f => $"{name}: small text {f}"));
                 var primaries = Primaries(root);
                 if (primaries > 1) failures.Add($"{name}: {primaries} primary buttons");
                 if (page == KitPreview.Page.Sample && primaries != 1) failures.Add($"{name}: the sample screen has {primaries} primary buttons, not one");
-                // Nothing hangs off the right edge of the screen (outside the scrolling page).
+                // Nothing sticks out of the side of a vertical scroll view: it would be clipped, and never scrolls into view.
+                root.Query<ScrollView>().ForEach(scroll =>
+                {
+                    if (scroll.mode != ScrollViewMode.Vertical || !Shown(scroll)) return;
+                    var view = scroll.contentViewport.worldBound;
+                    scroll.contentContainer.Query<VisualElement>().ForEach(e =>
+                    {
+                        if (e.GetFirstAncestorOfType<ScrollView>() != scroll || !Shown(e)) return;
+                        if (e.worldBound.xMax > view.xMax + 0.5f || e.worldBound.xMin < view.xMin - 0.5f)
+                            failures.Add($"{name}: clipped at the side of a scroll view: {Describe(e)} {e.worldBound.xMin:0}-{e.worldBound.xMax:0} outside {view.xMin:0}-{view.xMax:0}");
+                    });
+                });
+                // Nothing hangs off the edge of the screen (outside a scroll view).
                 root.Query(className: Tap.TargetClass).ForEach(e =>
                 {
-                    if (Shown(e) && e.worldBound.xMax > size.x + 0.5f && e.GetFirstAncestorOfType<ScrollView>() == null)
-                        failures.Add($"{name}: off screen {Describe(e)} at x {e.worldBound.xMax:0}");
+                    if (Shown(e) && (e.worldBound.xMax > size.x + 0.5f || e.worldBound.yMax > size.y + 0.5f) && e.GetFirstAncestorOfType<ScrollView>() == null)
+                        failures.Add($"{name}: off screen {Describe(e)} at {e.worldBound.xMax:0},{e.worldBound.yMax:0}");
                 });
             }
             Assert.IsEmpty(failures, string.Join("\n", failures.Distinct()));
+        }
+
+        [Test]
+        public void TheChecksCatchCutTextsSmallTargetsAndExtraPrimaries()
+        {
+            var host = Kit.Root("fc-screen");
+            var elided = Kit.Body("A label far too long for its box");
+            elided.style.width = 60;
+            elided.style.whiteSpace = WhiteSpace.NoWrap;
+            elided.style.textOverflow = TextOverflow.Ellipsis;
+            elided.style.overflow = Overflow.Hidden;
+            host.Add(elided);
+            var word = Kit.Body("Unbreakablewordhere");
+            word.style.width = 50;
+            host.Add(word);
+            var small = UiKit.Button("tiny", null);
+            small.style.width = small.style.height = 40;
+            host.Add(small);
+            host.Add(new KitButton(ButtonTier.Primary, "One", null));
+            host.Add(new KitButton(ButtonTier.Primary, "Two", null));
+            Lay(host, Shapes[0].size);
+            var cut = CutTexts(host, Shapes[0].size);
+            Assert.IsTrue(cut.Any(c => c.StartsWith("elided") || c.StartsWith("cut")), string.Join(" | ", cut));
+            Assert.IsTrue(cut.Any(c => c.StartsWith("word broken")), string.Join(" | ", cut));
+            Assert.AreEqual(1, SmallTargets(host, Kit.TouchTarget).Count);
+            Assert.AreEqual(2, Primaries(host));
         }
 
         [Test]
@@ -279,7 +341,7 @@ namespace MachineBrigade.Tests
                                 lines.Add($"{where} {kind}: {f}");
                             }
                         }
-                        Add("cut", CutTexts(hud));
+                        Add("cut", CutTexts(hud, Shapes[0].size));
                         Add("small target", SmallTargets(hud, Kit.TouchTarget));
                         Add("small text", SmallTexts(hud, SmallestText(false)));
                         var primaries = Primaries(hud);
