@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
     {
         private const float Step = 0.05f;
 
-        private const string Json = @"{ ""missions"": [ {
+        internal const string Json = @"{ ""missions"": [ {
             ""id"": ""op"", ""map"": ""ashfield"", ""goal"": ""Survive"", ""surviveSeconds"": 4,
             ""enemyAi"": ""none"", ""reinforcements"": 0, ""playerCp"": 5, ""playerIncome"": 0,
             ""units"": [ { ""def"": ""main_battle_tank"", ""team"": 0, ""x"": -60, ""z"": -60 } ],

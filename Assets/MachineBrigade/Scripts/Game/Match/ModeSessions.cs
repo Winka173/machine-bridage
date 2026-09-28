@@ -176,7 +176,8 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>The session for the chosen mode (or the menu's AI-versus-AI battle).</summary>
-        public static ModeSession Create(GameModeKind kind, bool menu, SimWorld world, int seed)
+        /// <param name="mission">A campaign mission to play (tests, a replay); null: the one chosen on the menu.</param>
+        public static ModeSession Create(GameModeKind kind, bool menu, SimWorld world, int seed, MissionDef mission = null)
         {
             ModeSession session = menu ? new MenuSession() : kind switch
             {
@@ -189,7 +190,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
-                GameModeKind.Campaign => new MissionSession(Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
+                GameModeKind.Campaign => new MissionSession(mission ?? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;

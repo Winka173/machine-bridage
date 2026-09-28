@@ -76,7 +76,6 @@ namespace MachineBrigade.Game.Match
         /// <summary>The battle was brought back to a checkpoint (replayed before its views were built).</summary>
         private bool _resumed;
 
-        private int _replayCommand, _replayInput;
         private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
@@ -1217,53 +1216,15 @@ namespace MachineBrigade.Game.Match
         private IEnumerator Replay(ResumePoint resume)
         {
             _resumed = true;
-            _replayCommand = _replayInput = 0;
+            var replay = new CheckpointReplay(resume, _session, _world);
             var dt = (float)_clock.StepSeconds;
-            while (_world.Tick < resume.Tick && !_world.IsOver)
+            while (replay.Advance(dt, 500))
             {
-                FeedJournal(resume);
-                _session.Mode.Tick(_world, dt);
-                _session.TickAi(_world, dt);
-                _world.Step(dt);
-                _world.ClearEvents();
-                if (_world.Tick % 500 != 0) continue;
-                Curtain.Progress(0.15f + 0.25f * _world.Tick / Mathf.Max(1f, resume.Tick));
+                Curtain.Progress(0.15f + 0.25f * replay.Progress);
                 yield return null;
             }
-            FeedJournal(resume);
-            if (_world.StateHash() != resume.Hash)
+            if (!replay.Matches)
                 Debug.LogWarning($"Checkpoint replay drifted at step {_world.Tick}: {_world.StateHash():X16}, kept {resume.Hash:X16}");
-        }
-
-        /// <summary>The journal's commands and switches for the step the replay is on.</summary>
-        private void FeedJournal(ResumePoint resume)
-        {
-            while (_replayCommand < resume.Commands.Count && resume.Commands[_replayCommand].tick <= _world.Tick)
-                _world.SubmitPlayer(resume.Commands[_replayCommand++].command);
-            while (_replayInput < resume.Inputs.Count && resume.Inputs[_replayInput].tick <= _world.Tick)
-            {
-                var (_, input, value) = resume.Inputs[_replayInput++];
-                var ai = _session.PlayerAi;
-                if (input != "choose") MatchJournal.Record(_world, input, value);
-                switch (input)
-                {
-                    case "stance" when ai != null:
-                        ai.Stance = value == "defend" ? CommanderStance.Defend : CommanderStance.Attack;
-                        break;
-                    case "autoDeploy" when ai != null:
-                        ai.AutoDeploy = value == "1";
-                        break;
-                    case "autoStrike" when ai != null:
-                        ai.AutoStrike = value == "1";
-                        break;
-                    case "focus" when ai != null:
-                        ai.FocusPoint = string.IsNullOrEmpty(value) ? null : value;
-                        break;
-                    case "choose":
-                        (_session as MissionSession)?.Choose(_world, value);
-                        break;
-                }
-            }
         }
 
         /// <summary>The camera keeps to the play area as it is now (the whole map when there is none).</summary>
