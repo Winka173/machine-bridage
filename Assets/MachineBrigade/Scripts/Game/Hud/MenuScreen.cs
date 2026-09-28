@@ -122,11 +122,12 @@ namespace MachineBrigade.Game.Hud
             ShowTab(_reopenTab);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
-            // Device check of a detail page: -mb-detail=apc (and -mb-detail-guide for its Guide tab).
+            // Device check of a detail page: -mb-detail=apc (and -mb-detail-guide for its Guide tab, -mb-detail-firing for In action).
             var detail = Match.DebugFlags.Value("-mb-detail=");
             if (!string.IsNullOrEmpty(detail) && (catalog.Vehicles.ContainsKey(detail) || catalog.TryGetSupport(detail, out _)))
             {
                 if (Match.DebugFlags.Has("-mb-detail-guide")) _detailTab = DetailTab.Guide;
+                if (Match.DebugFlags.Has("-mb-detail-firing")) _detailTab = DetailTab.Firing;
                 OpenDetail(detail);
                 Refresh();
             }
@@ -574,7 +575,7 @@ namespace MachineBrigade.Game.Hud
         internal static readonly string[] ScreenNames =
         {
             "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base", "detail-tower", "detail-module",
-            "detail", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
+            "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -609,16 +610,21 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Army);
                     break;
                 case "detail":
+                case "detail-action":
                     ShowTab(Tab.Army);
+                    // The In action tab: the theatre (DECISIONS 12E).
+                    if (screen == "detail-action") _detailTab = DetailTab.Firing;
                     OpenDetail("main_battle_tank");
                     break;
                 case "detail-tower":
                 case "detail-module":
-                    // A structure's page, opened from the base screen (its Equipment tab: branches and gear; a module's numbers).
+                case "detail-tower-action":
+                case "detail-module-action":
+                    // A structure's page, opened from the base screen (its Equipment tab: branches and gear; a module's numbers; or In action).
                     _armyView = ArmyView.Base;
                     ShowTab(Tab.Army);
-                    _detailTab = screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
-                    OpenDetail(screen == "detail-tower" ? "aa_turret" : "repair_bay");
+                    _detailTab = screen.EndsWith("-action") ? DetailTab.Firing : screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
+                    OpenDetail(screen.StartsWith("detail-tower") ? "aa_turret" : "repair_bay");
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));
