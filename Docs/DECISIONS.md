@@ -2219,3 +2219,137 @@ jammer was the example).
 - **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
+
+## 12F. Test feedback 2: aircraft attack AI (2026-09-29)
+
+The owner's second play-test: a jet should be able to stand in the air and pour its machine gun
+and missiles into enemy aircraft, then fly a loop and come back; the strafing pass wasted its
+firepower. Then: the same for every similar vehicle. Since 11C the jets' cannons fire 20-25-round
+streams from a 3.5-3.6 s magazine, but a pass kept the target on the nose for 1-1.4 s.
+
+### A. The attack hold (aeroplanes)
+
+New vehicle data `attackHold` (seconds, fixed-wing only; 0 or absent: plain strafing passes).
+An aeroplane with one, its target in reach of its guns (95 %) and within 35 degrees of the nose,
+holds its guns on the target for that long (`MovementSystem.AttackHold`):
+
+- **A VTOL jet (the fighter) hovers.** It glides in to 60 % of its cannon's reach (about 21 m),
+  stops, and turns on the spot at 1.4x its turn rate to keep the nose on the target. The owner
+  asked for it to stand still: it does, fully (speed 0), since the F-35B/Harrier can.
+- **Any other jet crawls.** It slows to a pace that brings it over the target just as the hold
+  ends (15-50 % of its speed: 6.3-6.4 m/s for the attack jet and the A-10), nose on the target, then
+  pulls through over it (the bombs fall on the way) and flies on. It never stops dead: it is no VTOL.
+- **Then the loop.** Full power straight out (a hovering jet first turns 63 degrees away, to
+  alternate sides, instead of flying through its target), out to 2.2 turn radii, round and back in,
+  easing off from 1.5x its reach so it arrives at half speed; then the next hold (at least 1.5 s
+  after the last). A cycle takes 7.5-8 s, 3.6-4 s of it firing (it was about 5 s with 1 s firing).
+- **Inside a flak gun's reach (+6 m) it never hangs** (the old VTOL rule, now for all): the hold
+  becomes a half-speed run, over the target in about a second. SAMs do not stop a hold.
+- **A fast jet is chased, not held on.** Behind an aeroplane flying faster than 35 % of its own
+  speed, the fighter matches the target's speed to keep it at 55 % of its cannon's reach on the
+  nose. A target that gets out of 125 % of the reach ends a hold and the chase resumes.
+- **Passes are flown to the guns' reach** (`AttackReach`: the shortest hull gun that can hit the
+  target, else the main weapon). This changed only the fighter, whose passes were laid out for its
+  60 m missile: it pulled through at 18 m and hovered at 48 m, beyond its 30 m cannon.
+
+| Aircraft | `attackHold` | Before | After |
+|---|---|---|---|
+| fighter_jet (VTOL) | 4 s | strafing passes; a 6 s hover every 18 s at 48 m (cannon out of reach) | hovers at ~21 m for 4 s: AAM, cannon stream (3.5 s), wvr AAM; breaks away, loops, back |
+| attack_jet | 3.6 s | 1 s passes at 27-32 m/s | crawls in at 6.4 m/s: rockets, bombs, then the cannon (2-2.5 s) as it comes over the target |
+| tank_buster (A-10) | 4 s | 1.4 s passes | crawls in at 6.3 m/s: rockets, Maverick, gatling (up to 3.2 s) |
+| strike_drone | 3.5 s | passes (8 missiles a minute) | slows to half speed (9.5 m/s) with its nose on the target: 12 missiles and 5 guided bombs a minute |
+| recon_drone, bombers | 0 | passes | unchanged: their weapons' reloads (8-14 s) are longer than a loop, so a pass wastes nothing |
+| sky_gunship, sky_fortress | 0 (orbit) | pylon turn | unchanged: the target stays in the side guns' arc and reach all the time; the 25 mm gun's short streams come from the fire rhythm (it takes turns with the 105 and 40 mm), not from the flight |
+
+**The view** (`VehicleView`, flight pose): in the hold the nose dips at the target (a third of the
+angle down to it, at most 12 degrees), the bob grows and the airframe rocks 2 degrees; a jet slowed
+right down (hovering) turns without banking. Breaking away it climbs 5 m pitching up (up to 12
+degrees) and comes back down nose first into the next run. `AirHoldShots` (editor, graphics)
+renders six moments of a hold for the fighter, the attack jet and the A-10.
+
+### B. Helicopters
+
+A helicopter held at 90 % of its **main** weapon's reach: the attack helicopter at ~31 m with a
+34 m ATGM, so its 26 m gun (nearly half its firepower) and 30 m rockets never fired unless the
+target drove up to it. It now hovers at 90 % of the shortest reach of the weapons it faces the
+target with (`HoverReach`: not the door guns, not an empty launcher or one that cannot hit this
+target), never nearer than 60 % of the main weapon's: the attack helicopter and the elite at ~23 m,
+the gunship helicopter at ~25 m (its 28 mm gun), the scout unchanged (its main gun is the shortest).
+The Ka-52 keeps its standoff (by design since 9: outside the reach of anti-air it outranges); its
+gun and rockets fire only when a target comes near. Helicopters already hover and turn to face
+their target (unchanged).
+
+### C. Fire rules
+
+Unchanged (no `CombatSystem` change): no two weapons of a vehicle fire in the same instant, the
+machine gun pauses round heavy rounds, and an aeroplane's cannon takes turns with its rockets,
+missiles and bombs (11C). In a hold the heavy weapons go first (a 1 s rocket ripple, the bombs),
+then the cannon streams; the fighter's cannon streams its whole magazine (3.5 s), the A-10's 3.2 s,
+the attack jet's 2-2.5 s (its rockets and bombs take the first 1.5 s of the hold). Giving the
+cannon the right of way was not needed.
+
+### D. Measured
+
+`AirAttackMeasure` (explicit, run by name): each aircraft attack-moved at a target that never
+fires back or dies, from out of reach, 60 s, all mounts (so the approach, holds and loops count).
+"Recommended" is with the per-round damage change in E (tried locally, not committed).
+
+| Shooter (target) | DPS before | DPS after | after, recommended damage | Cannon rounds / 60 s | Longest cannon stream |
+|---|---|---|---|---|---|
+| attack_jet (main_battle_tank) | 146 | 474 | 197 (+35 %) | 80 → 317 | 1.05 → 2.55 s |
+| tank_buster (main_battle_tank) | 277 | 573 | 383 (+38 %) | 218 → 510 | 1.40 → 3.20 s |
+| fighter_jet (attack_helicopter) | 136 | 385 | 211 (+55 %) | 76 → 497 | 0.95 → 3.50 s |
+| strike_drone (main_battle_tank) | 58 | 80 (+37 %) | 80 | - | - |
+| attack_helicopter (ifv, from 50 m) | 65 | 122 (+88 %: its gun now fires, 0 → 164 rounds) | 122 | - | - |
+| elite_attack_helicopter (ifv) | 92 | 167 | 167 | - | - |
+| gunship_heli (ifv) | 140 | 147 | 147 | - | - |
+| heavy_attack_heli, scout_heli, recon_drone, heavy_bomber, stealth_bomber, sky_gunship | 52, 82, 18, 178, 158, 320 | same | same | - | - |
+
+The helicopters' "after" is what 11C's `FireRhythmMeasure` (which starts them inside gun reach)
+already assumed: 122 against its 124 for the attack helicopter.
+
+Real fights (`AirAttackMeasure.PrintRealFights`, open field, attack-move, seeds 1 and 2):
+
+| Fight | Before | After | After, recommended damage |
+|---|---|---|---|
+| 2 fighters vs 2 attack helicopters | won 14 s, 81-91 % hp left | won 5-6 s, 97 % | won 7-11 s, 94-95 % |
+| 2 fighters vs 2 attack jets | won 6-7 s | won 7-9 s | won 8 s |
+| 2 fighters vs 2 fighters | won 6-11 s, 0-1 lost | won 16-17 s, 1 lost | won 15-17 s, 1 lost |
+| 2 attack jets vs 3 MBT + IFV | won 32-35 s, 71-75 % hp | won 15 s, 87 % | won 23-24 s, 79-80 % |
+| 2 attack jets vs 3 MBT + AA vehicle | won 35-36 s, 27-30 % | won 12 s, 36-48 % | lost 16 s (both jets) / won 26 s (one jet, 5 %) |
+| A-10 vs 3 MBT + IFV | won 55-60 s, 43-49 % | won 24-28 s, 84-87 % | won 32-33 s, 78-81 % |
+| A-10 vs 3 MBT + AA vehicle | won 44-51 s, 20-32 % | won 22-27 s, 23-36 % | won 30-34 s, 8-21 % |
+| A-10 vs 2 MBT + 2 AA vehicles | lost 12-13 s | **won** 19-21 s, 10-27 % | lost 17 s |
+| 2 attack helicopters vs 3 IFV | won 28-43 s | won 24 s, 93 % | same |
+| 2 attack helicopters vs 2 IFV + AA vehicle | won 33 s, 52-58 % | won 24-25 s, 75-83 % | same |
+| 2 gunship helicopters vs 3 MBT | won 51-52 s, untouched | won 30-31 s, 84-85 % (tank MGs now reach them) | same |
+| 2 strike drones vs 3 MBT | won 65 s / lost 72 s | won 50-53 s, 32-42 % | same |
+| AC-130 vs 3 IFV + AA vehicle | won 25 s | same | same |
+
+### E. Fairness, and the weapon change it needs (not made: weapon entries are the fire-rhythm lane)
+
+With the hold the jets' cannons fire 4x (attack jet), 2.3x (A-10) and 6.5x (fighter) as many rounds
+a minute, and their per-round damage was set in 11C so that a 1 s pass did what the old burst did.
+Without a change the jets' DPS is 2-3x and a lone A-10 beats two AA vehicles: air would dominate.
+**Needed: per-round damage `jet_cannon` 64 → 22, `gau_gatling` 44 → 27, `fighter_cannon` 22 → 8**
+(x0.34, x0.61, x0.36 of the current values; recompute from `AirAttackMeasure` if the magazines
+change). With it: jets +35-55 % DPS over before (the magazines are used, as the owner asked),
+columns without anti-air fall 30-45 % faster, and anti-air matters more than before (a jet
+holding over a column with an AA vehicle often dies; one A-10 against two AA vehicles loses again).
+The helicopters' and the strike drone's gains need no change: the helicopters get back the DPS the
+11C rhythm was balanced for, and the drone gains 37 % (its missiles were idle through its loops).
+
+### F. Left for the testing phase
+
+- Apply the damage in E, then sweep seeds: `ConquestBattleTests`, `CounterTests` (air against AA,
+  AA against air), air-heavy campaign missions and the boss missions with jets (bosses' flak turns
+  the hold into a quick run).
+- "2 attack jets vs a column + AA" split 1-1 over two seeds with the damage in E: sweep more seeds
+  to see whether AA is now too strong against holding jets.
+- Helicopters at gun reach take tank and IFV machine-gun fire (the gunship helicopter went from
+  untouched to 15 % lost): helicopter loss rates in real matches.
+- The fighter against enemy fighters took longer (6-11 s → 15-17 s, the chase of a circling jet);
+  watch air-to-air in matches.
+- The owner's feel: the crawl speed (6.3 m/s for the attack jets), the hover distance (21 m), the
+  4 s hold and the 7.5-8 s loop; the pose on the device (nose dip, climb away).
+- Performance: 2.3-6.5x more cannon rounds (tracers, `WeaponFired` events) a minute per jet.
