@@ -540,6 +540,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A hull knocks it down by driving into it (trees, bushes, hedges, fences).</summary>
         public bool Crushable { get; set; }
 
+        /// <summary>
+        /// Seconds a destroyed one takes to come down (a fortress wall toppling into rubble): its
+        /// ground opens only then, so nothing drives through the falling wall. 0: at once.
+        /// </summary>
+        public float Collapse { get; set; }
+
         /// <summary>Terrain (rock, earth) that no weapon can realistically destroy; never an attack target.</summary>
         public bool Indestructible => MaxHp >= 100000f;
 

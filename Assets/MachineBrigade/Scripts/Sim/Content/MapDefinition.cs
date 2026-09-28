@@ -76,8 +76,9 @@ namespace MachineBrigade.Sim.Content
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
             IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null,
-            IReadOnlyList<BaseSiteDef>? bases = null)
+            IReadOnlyList<BaseSiteDef>? bases = null, FortressDef? fortress = null)
         {
+            Fortress = fortress;
             Bases = bases ?? Array.Empty<BaseSiteDef>();
             Decor = decor ?? Array.Empty<PropPlacement>();
             SiegeRings = siegeRings ?? Array.Empty<float>();
@@ -107,6 +108,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Each side's camp: its headquarters and hardpoints (empty on maps without bases).</summary>
         public IReadOnlyList<BaseSiteDef> Bases { get; }
+
+        /// <summary>A siege map's fortress: its ground, tower hardpoints by ring, super-gun and line in (null elsewhere).</summary>
+        public FortressDef? Fortress { get; }
 
         /// <summary>A side's camp in the map data, or null.</summary>
         public BaseSiteDef? BaseOf(int team)
@@ -246,8 +250,9 @@ namespace MachineBrigade.Sim.Content
             if (root.Has("bases"))
                 foreach (var b in root.Array("bases"))
                     bases.Add(BaseSiteDef.Parse(b));
+            var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor, bases);
+                boundary, rings, decor, bases, fortress);
         }
     }
 }

@@ -131,7 +131,8 @@ namespace MachineBrigade.Game.Views
                 var casts = shadows != Match.ShadowLevel.Off &&
                             (prop.Def.Width * prop.Def.Depth >= 3f || (vegetation ? treeShadows : clutterShadows));
                 var movingBefore = _moving.Count;
-                var instance = id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
+                var instance = id == "fortress_gate" ? GateDoors(casts)
+                    : id is "oil_pump" or "radar_station" or "control_tower" or "command_hq" ? SpawnMoving(model, casts, rng) : Spawn(model, casts);
                 // Towers on the battlefield are cut down to size so they do not hide the fighting
                 // from the high camera (the skyline beyond the edge keeps them full height).
                 if (id is "highrise_a" or "highrise_b" or "skyscraper") instance.transform.localScale = new Vector3(1f, 0.62f, 1f);
@@ -147,7 +148,8 @@ namespace MachineBrigade.Game.Views
                 _props.Add(prop.Id, new PropView(prop, instance, model, rubble, debris));
                 // Buildings, vehicles and street furniture never move: batch them (not trees, whose
                 // wind sway needs their own transforms, nor props with spinning parts).
-                if (!vegetation && _moving.Count == movingBefore) still.Add(instance);
+                // (A fortress gate's doors are not batched: they are blown in, not left as rubble.)
+                if (!vegetation && _moving.Count == movingBefore && id != "fortress_gate") still.Add(instance);
             }
             BuildDecor(world, rng, still, shadows);
             // Static batching: one shared vertex buffer per material instead of a draw per prop. A
@@ -241,6 +243,9 @@ namespace MachineBrigade.Game.Views
             public Vector3 Position, Scale, Heap, Axis;
             public Quaternion Rotation;
             public float Start, Seconds, Tilt, Seed;
+
+            /// <summary>It topples over whole (a fortress wall) instead of sinking into its own dust.</summary>
+            public bool Topple;
         }
 
         private readonly List<Collapse> _collapses = new();
@@ -327,8 +332,20 @@ namespace MachineBrigade.Game.Views
                 fall *= fall;
                 var shake = (0.05f + 0.1f * hold) * (1f - fall);
                 var jitter = new Vector3(Mathf.Sin(time * 47f + c.Seed) * shake, 0f, Mathf.Cos(time * 53f + c.Seed * 1.7f) * shake);
-                c.Ghost.localScale = new Vector3(c.Scale.x * (1f + 0.08f * fall), c.Scale.y * Mathf.Max(0.04f, 1f - fall), c.Scale.z * (1f + 0.08f * fall));
-                c.Ghost.SetPositionAndRotation(c.Position + jitter + Vector3.down * (1.2f * fall), Quaternion.AngleAxis(c.Tilt * fall, c.Axis) * c.Rotation);
+                if (c.Topple)
+                {
+                    // A wall section: it rocks, leans, then goes over on its long side, cracks on the
+                    // ground and settles into its rubble.
+                    var lean = Mathf.Clamp01((t - 0.1f) / 0.55f);
+                    var angle = c.Tilt * lean * lean - (t > 0.65f ? Mathf.Sin(Mathf.Clamp01((t - 0.65f) / 0.12f) * Mathf.PI) * 5f : 0f);
+                    var settle = Mathf.Clamp01((t - 0.7f) / 0.16f);
+                    c.Ghost.SetPositionAndRotation(c.Position + jitter * 2f + Vector3.down * (0.9f * settle), Quaternion.AngleAxis(angle, c.Axis) * c.Rotation);
+                }
+                else
+                {
+                    c.Ghost.localScale = new Vector3(c.Scale.x * (1f + 0.08f * fall), c.Scale.y * Mathf.Max(0.04f, 1f - fall), c.Scale.z * (1f + 0.08f * fall));
+                    c.Ghost.SetPositionAndRotation(c.Position + jitter + Vector3.down * (1.2f * fall), Quaternion.AngleAxis(c.Tilt * fall, c.Axis) * c.Rotation);
+                }
                 if (c.Rubble != null)
                 {
                     var grow = Mathf.Clamp01((t - 0.3f) / 0.56f);
@@ -417,6 +434,41 @@ namespace MachineBrigade.Game.Views
             return best;
         }
 
+        /// <summary>
+        /// A fortress gate's doors (procedural: two steel leaves with ribs, a hazard band and a seam,
+        /// 10 m across and 3.6 m high between the gateway's pillars), one object that can be blown in.
+        /// </summary>
+        private GameObject GateDoors(bool castShadows)
+        {
+            var go = new GameObject("fortress_gate");
+            go.transform.SetParent(_root.transform, false);
+            var box = Own(Primitives.Box());
+            var parts = new List<(Material material, Vector3 centre, Vector3 size)>();
+            var steel = _materials.ForModel("MetalSheet", -1);
+            var frame = _materials.ForModel("Armor", -1);
+            var hazard = _materials.ForModel("Hazard", -1);
+            foreach (var s in new[] { -1f, 1f })
+            {
+                parts.Add((steel, new Vector3(s * 2.5f, 1.85f, 0f), new Vector3(4.92f, 3.5f, 0.34f)));
+                for (var k = 0; k < 4; k++) parts.Add((frame, new Vector3(s * 2.5f, 0.55f + k * 0.95f, 0f), new Vector3(4.96f, 0.16f, 0.46f)));
+                parts.Add((frame, new Vector3(s * 4.85f, 1.85f, 0f), new Vector3(0.22f, 3.6f, 0.5f)));
+                parts.Add((hazard, new Vector3(s * 2.5f, 0.28f, 0f), new Vector3(4.9f, 0.3f, 0.4f)));
+                parts.Add((frame, new Vector3(s * 1.2f, 1.9f, 0f), new Vector3(0.12f, 3.3f, 0.42f)));
+            }
+            foreach (var (material, centre, size) in parts)
+            {
+                var piece = new GameObject("leaf");
+                piece.transform.SetParent(go.transform, false);
+                piece.transform.localPosition = centre;
+                piece.transform.localScale = size;
+                piece.AddComponent<MeshFilter>().sharedMesh = box;
+                var renderer = piece.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            }
+            return go;
+        }
+
         /// <summary>Swaps a destroyed prop for its rubble (or hides it) and returns its view for debris.</summary>
         public bool TryGetProp(EntityId id, out PropView view) => _props.TryGetValue(id, out view);
 
@@ -424,6 +476,19 @@ namespace MachineBrigade.Game.Views
         {
             if (!_props.TryGetValue(id, out view)) return false;
             var transform = view.Transform;
+            if (view.Prop.Def.Id == "fortress_gate")
+            {
+                // Blown in: the doors go over inwards and lie there (the way is open).
+                var inward = _world.Map.Fortress is { } f ? new Vector3(f.Hq.X - view.Prop.Position.X, 0f, f.Hq.Y - view.Prop.Position.Y) : Vector3.forward;
+                var across = view.Prop.Rotation % 180 == 0 ? Vector3.forward : Vector3.right;
+                var fall = Vector3.Dot(inward, across) >= 0f ? across : -across;
+                _topples.Add(new Felled
+                {
+                    Ghost = transform, Rest = transform.rotation, Position = transform.position, Start = Time.time,
+                    Axis = Vector3.Cross(Vector3.up, fall), Height = 1.5f,
+                });
+                return true;
+            }
             if (view.RubbleModel != null)
             {
                 var rubble = Spawn(view.RubbleModel, true);
@@ -439,13 +504,24 @@ namespace MachineBrigade.Game.Views
                 ghost.SetPositionAndRotation(transform.position, transform.rotation);
                 ghost.localScale = transform.lossyScale;
                 var bearing = (float)_collapseRng.NextDouble() * Mathf.PI * 2f;
+                var wall = view.Prop.Def.Id == "base_wall";
+                if (wall)
+                {
+                    // A wall section's rubble: a low, wide heap of broken panels along its line.
+                    heap = new Vector3(1.05f, 0.55f, 3.2f / 8f);
+                    rubble.transform.localScale = new Vector3(heap.x, heap.y * 0.08f, heap.z);
+                }
+                // It goes over on its long side, one way or the other (its long axis is its local x).
+                var longAxis = transform.rotation * Vector3.right;
                 _collapses.Add(new Collapse
                 {
                     Ghost = ghost, Rubble = rubble.transform, Position = transform.position, Rotation = transform.rotation,
                     Scale = transform.lossyScale, Heap = heap, Start = Time.time,
-                    Seconds = Mathf.Lerp(1.3f, 2.1f, Mathf.InverseLerp(4f, 12f, view.Prop.Radius)),
-                    Axis = new Vector3(Mathf.Cos(bearing), 0f, Mathf.Sin(bearing)), Tilt = 4f + (float)_collapseRng.NextDouble() * 7f,
-                    Seed = (float)_collapseRng.NextDouble() * 100f,
+                    Seconds = wall ? view.Prop.Def.Collapse + 0.3f : Mathf.Lerp(1.3f, 2.1f, Mathf.InverseLerp(4f, 12f, view.Prop.Radius)),
+                    Axis = wall ? longAxis : new Vector3(Mathf.Cos(bearing), 0f, Mathf.Sin(bearing)),
+                    Tilt = wall ? (_collapseRng.NextDouble() < 0.5 ? -1f : 1f) * (78f + (float)_collapseRng.NextDouble() * 10f)
+                        : 4f + (float)_collapseRng.NextDouble() * 7f,
+                    Seed = (float)_collapseRng.NextDouble() * 100f, Topple = wall,
                 });
                 view.GameObject.SetActive(false);
                 view.GameObject = rubble;
@@ -546,8 +622,10 @@ namespace MachineBrigade.Game.Views
             // Siege fortress.
             "command_hq" => ("command_hq", "rubble_large", new[] { "debris_concrete", "debris_metal", "debris_concrete", "debris_roof",
                 "debris_concrete", "debris_metal", "debris_concrete", "debris_metal", "debris_plaster", "debris_concrete" }),
-            "base_wall" => ("base_wall", null, new[] { "debris_concrete", "debris_concrete", "debris_concrete", "debris_concrete",
-                "debris_concrete" }),
+            "base_wall" => ("base_wall", "rubble_small", new[] { "debris_concrete", "debris_concrete", "debris_concrete", "debris_concrete",
+                "debris_concrete", "debris_metal" }),
+            "fortress_gate" => ("fortress_gate", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal",
+                "debris_metal", "debris_concrete" }),
             "base_gate" or "helipad" => (defId, null, Array.Empty<string>()),
             "floodlight_mast" => ("floodlight_mast", null, SteelDebris),
             "fuel_depot" => ("fuel_depot", null, new[] { "debris_metal", "debris_metal", "debris_metal", "debris_metal", "debris_metal",

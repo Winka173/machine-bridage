@@ -80,6 +80,9 @@ namespace MachineBrigade.Game.Match
         private MissionMarkers _markers;
         private PlayAreaView _playArea;
 
+        /// <summary>A siege fortress's set pieces (dome, line in, searchlights, super-gun); null elsewhere.</summary>
+        private FortressView _fortress;
+
         /// <summary>The battle was brought back to a checkpoint (replayed before its views were built).</summary>
         private bool _resumed;
 
@@ -323,6 +326,12 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
+            _session.SetNight(weather == WeatherKind.Night);
+            if (!_menu && _session.Mode is MachineBrigade.Sim.Modes.SiegeMode siegeMode && _world.Map.Fortress != null)
+            {
+                _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
+                _fortress.SetNight(weather == WeatherKind.Night);
+            }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -402,6 +411,8 @@ namespace MachineBrigade.Game.Match
             var theme = MapTheme.For(_world.Map.Theme);
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
+            _session.SetNight(next == WeatherKind.Night);
+            _fortress?.SetNight(next == WeatherKind.Night);
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -576,6 +587,7 @@ namespace MachineBrigade.Game.Match
                 _lastInput = Time.unscaledTime;
             }
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
+            if (!_menu && !_paused && _fortress != null && Time.time >= _fortressCheckAt) FortressCheck();
             if (!_menu && !_paused && DebugFlags.Has("-mb-towerwatch")) WatchTower();
             if (!_menu && !_paused && DebugFlags.Has("-mb-bastion")) WatchBastion();
             if (!_menu && !_paused && DebugFlags.Has("-mb-smokescreen") && Time.time >= _smokeAt)
@@ -645,6 +657,7 @@ namespace MachineBrigade.Game.Match
             if (!DebugFlags.Has("-mb-no-scenery")) _surroundings.Draw();
             _map.Animate(Time.time);
             _map.DrawShields(_camera.Rotation, Time.time);
+            _fortress?.Tick(Time.time, Time.deltaTime);
             _crates?.Update(_world);
             _mineViews?.Update(_world);
             _perf?.End(PerfProbe.Section.Scenery);
@@ -657,6 +670,73 @@ namespace MachineBrigade.Game.Match
         }
 
         private float _demolishAt = 8f;
+
+        private float _fortressCheckAt = 1.5f;
+        private int _fortressStep;
+
+        /// <summary>
+        /// Device checks of the siege set pieces (debug flags, one at a time): -mb-fortress looks over
+        /// the walls and the keep; -mb-breach blows in the gate nearest the attackers and the wall
+        /// beside it on camera; -mb-domedown takes out the relays, then the generators, so the dome
+        /// drops; -mb-arrival brings the fortress's reinforcements in by its line; -mb-supergun has the
+        /// super-gun fire in 12 s at the player's army.
+        /// </summary>
+        private void FortressCheck()
+        {
+            _fortressCheckAt = float.MaxValue;
+            if (_session.Mode is not SiegeMode siege || _world.Map.Fortress is not { } fortress) return;
+            var step = _fortressStep++;
+            void Look(System.Numerics.Vector2 at, float zoom)
+            {
+                _camera.FocusOn(new Vector3(at.X, 0f, at.Y));
+                _camera.ZoomBy(zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                _lastInput = float.MaxValue;
+            }
+            if (DebugFlags.Has("-mb-fortress") && step == 0)
+            {
+                _camera.MaxZoom = 90f;
+                Look(new System.Numerics.Vector2(70f, 70f), 0.4f);
+            }
+            if (DebugFlags.Has("-mb-breach"))
+            {
+                MachineBrigade.Sim.Entities.Prop gate = null;
+                foreach (var (id, ring, _) in siege.Gates)
+                    if (ring == 2 && _world.TryGetProp(id, out var g) && g.IsAlive && (gate == null || g.Position.X < gate.Position.X)) gate = g;
+                if (gate == null) return;
+                if (step == 0)
+                {
+                    Look(gate.Position, 1.6f);
+                    _fortressCheckAt = Time.time + 3f;
+                    return;
+                }
+                _world.DebugDestroyProp(gate);
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && prop.Def.Id == "base_wall" && System.Numerics.Vector2.Distance(prop.Position, gate.Position) < 14f)
+                        _world.DebugDestroyProp(prop);
+            }
+            if (DebugFlags.Has("-mb-domedown"))
+            {
+                if (step == 0)
+                {
+                    Look(siege.DomeCentre, 0.8f);
+                    _fortressCheckAt = Time.time + 5f;
+                    return;
+                }
+                foreach (var prop in _world.Props)
+                    if (prop.IsAlive && (step == 1 ? prop.Def.Id == "radar_station" : prop.Def.Id == "shield_generator")) _world.DebugDestroyProp(prop);
+                if (step == 1) _fortressCheckAt = Time.time + 2f;
+            }
+            if (DebugFlags.Has("-mb-arrival") && fortress.Arrival is { } line)
+            {
+                Look(line.Stop, 1.2f);
+                siege.DebugReinforce(_world, "main_battle_tank", "ifv", "light_tank", "armored_car");
+            }
+            if (DebugFlags.Has("-mb-supergun") && step == 0)
+            {
+                siege.DebugFireSuperGunIn(_world, 12f);
+                Look(siege.SuperGunAt, 0.7f);
+            }
+        }
         private MachineBrigade.Sim.Entities.Vehicle _watched;
         private float _watchHitAt, _watchUntil, _raidAt = 6f;
 
@@ -802,6 +882,7 @@ namespace MachineBrigade.Game.Match
             _leavingWeather?.Dispose();
             _weather?.Dispose();
             _effects?.Dispose();
+            _fortress?.Dispose();
             _audio?.Dispose();
             _music?.Dispose();
             _views?.Dispose();
@@ -897,14 +978,16 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
-                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
+                        // A fortress alarm is bad news for the player (Team 1) or good (0: the enemy's gate blown in).
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert && e.Team == 1);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.TraitProc when !_menu:
                         ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
-                        _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
+                        _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", _ => "toast.bounty" },
+                            Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
@@ -940,6 +1023,7 @@ namespace MachineBrigade.Game.Match
                 }
             }
             if (!DebugFlags.Has("-mb-no-fx")) _effects.Consume(_world.Events, _views, _map);
+            _fortress?.Consume(_world.Events);
             _audio.Consume(_world.Events);
             _radio?.Consume(_world, _world.Events);
             _world.ClearEvents();

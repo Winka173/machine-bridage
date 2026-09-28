@@ -194,6 +194,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Knocked out by an EMP: cannot drive or fire.</summary>
         public bool Stunned { get; private set; }
 
+        /// <summary>Holds its fire (a fortress keep's gun under its shield dome: nothing gets in or out).</summary>
+        public bool HoldFire { get; internal set; }
+
         /// <summary>A barrage skill is running: the guns fire much faster.</summary>
         public bool Barraging { get; private set; }
 

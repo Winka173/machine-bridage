@@ -136,6 +136,9 @@ namespace MachineBrigade.Sim.Navigation
         /// Rebuilds the map when walkability changed since the last build (a wall or a defence
         /// fell), at most once every two seconds of battle; the first build is immediate.
         /// </summary>
+        /// <summary>The next rebuild comes at once, whatever the last one (a fortress wall has just come down).</summary>
+        internal void Hurry() => _nextAllowed = double.MinValue;
+
         internal void RebuildIfDirty(SimWorld world)
         {
             if (_grid.Version == _version) return;
@@ -159,6 +162,10 @@ namespace MachineBrigade.Sim.Navigation
             StampRoutes(world);
             FindDoorways();
             MarkNoPark();
+            // A wall that fell made a breach where a gun had booked its firing spot: the spot is a
+            // doorway now, so the booking goes and the gun picks another.
+            foreach (var v in world.VehicleList)
+                if (v.Traffic.HasReservation && NoParkAt(v.Traffic.ReservedAt)) Release(v);
         }
 
         /// <summary>Multi-source breadth-first search from every blocked cell and the map's edge (a brushfire).</summary>

@@ -92,6 +92,13 @@ namespace MachineBrigade.Sim
             }
         }
 
+        /// <summary>Rebuilds the lanes now (a wall came down and opened a breach: nobody may park in it).</summary>
+        internal void RebuildLanesNow()
+        {
+            _lanes.Hurry();
+            _lanes.RebuildIfDirty(this);
+        }
+
         /// <summary>Whether <paramref name="shooter"/> has a clear line of fire at <paramref name="target"/> with <paramref name="weapon"/>.</summary>
         internal bool HasLineOfFire(Vehicle shooter, IDamageable target, WeaponDef weapon) => _combat.HasLineOfFire(shooter, target, weapon);
 

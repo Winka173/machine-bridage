@@ -53,6 +53,15 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>The share of the usual cooldown a free re-drop waits (0: none).</summary>
         public float FreeWait { get; internal set; } = 1f;
+
+        /// <summary>The fortress ring (line) it stands in: 1 the outer line, 2 the walls, 3 the keep; 0 in a camp or an outpost.</summary>
+        public int Ring { get; internal set; }
+
+        /// <summary>Its ring is lost to the attacker: it is never flown back in.</summary>
+        public bool Lost { get; internal set; }
+
+        /// <summary>How much tougher and harder-hitting a tower raised here is (a fortress's inner lines).</summary>
+        internal float HealthScale = 1f, DamageScale = 1f;
     }
 
     /// <summary>A side's base in the battle: its role, its HQ, its hardpoints and its outposts.</summary>
@@ -187,6 +196,58 @@ namespace MachineBrigade.Sim.Modes
             return b;
         }
 
+        /// <summary>
+        /// A siege fortress as a side's base: no HQ of its own (the command HQ is a building the mode
+        /// watches, at <paramref name="hq"/>), and every hardpoint of every ring filled from the
+        /// loadout, its towers over again where the fortress has more hardpoints than the loadout has
+        /// towers (<see cref="BaseLoadout.TowerForFortress"/>), each utility module once. A ring's
+        /// towers are <paramref name="health"/> and <paramref name="damage"/> times the usual (by
+        /// ring, 1 up): the inner lines are the stronger. With <paramref name="manning"/> under 1 only
+        /// that share of the outer rings' tower hardpoints is filled. The modules work round the command HQ.
+        /// </summary>
+        public TeamBase EstablishFortress(int team, BaseLoadout loadout, BaseRole role, Vector2 hq, IReadOnlyList<FortressSlotDef> slots,
+            IReadOnlyList<float>? health = null, IReadOnlyList<float>? damage = null, float manning = 1f)
+        {
+            var catalog = _world.Catalog;
+            var fitted = loadout.Fitted(catalog);
+            var b = new TeamBase(team, role, fitted) { HqPosition = hq };
+            _bases[team] = b;
+            var seen = new int[3];
+            var utility = 0;
+            for (var i = 0; i < slots.Count; i++)
+            {
+                var def = slots[i].Hardpoint;
+                var ring = slots[i].Ring;
+                var state = new HardpointState(def, i)
+                {
+                    Ring = ring, HealthScale = ByRing(health, ring), DamageScale = ByRing(damage, ring),
+                };
+                var id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
+                // An undermanned fortress (an easier one) leaves some tower hardpoints of its outer rings empty, spread evenly.
+                if (def.Kind == HardpointKind.Tower && ring < 3 && manning < 1f && Unmanned(i, manning)) id = null;
+                if (id != null && def.Kind == HardpointKind.Tower && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
+                if (id != null && catalog.Vehicles.ContainsKey(id)) state.Tower = id;
+                b.Slots.Add(state);
+            }
+            foreach (var slot in b.Slots)
+                if (slot.Tower != null) Raise(b, slot);
+            return b;
+        }
+
+        /// <summary>Whether the <paramref name="index"/>-th hardpoint stays empty when only <paramref name="manning"/> of them are filled (evenly spread).</summary>
+        private static bool Unmanned(int index, float manning) => MathF.Floor((index + 1) * manning) == MathF.Floor(index * manning);
+
+        private static float ByRing(IReadOnlyList<float>? scale, int ring) =>
+            scale == null || scale.Count == 0 ? 1f : scale[Math.Clamp(ring - 1, 0, scale.Count - 1)];
+
+        /// <summary>A fortress ring has fallen: its hardpoints are never flown back in.</summary>
+        public void LoseRing(int team, int ring)
+        {
+            if (!_bases.TryGetValue(team, out var b)) return;
+            foreach (var slot in b.Slots)
+                if (slot.Ring == ring) slot.Lost = true;
+        }
+
         /// <summary>A structure's footprint across (metres), as the hardpoint sizes count it.</summary>
         public static float Footprint(VehicleDef def) => MathF.Max(def.Length, def.Width);
 
@@ -194,6 +255,12 @@ namespace MachineBrigade.Sim.Modes
         {
             var tower = _world.SpawnVehicle(slot.Tower!, b.Team, slot.Def.Position, slot.Def.Facing);
             _world.AnchorDefence(tower);
+            if (slot.HealthScale != 1f)
+            {
+                tower.HpScale *= slot.HealthScale;
+                tower.Hp = tower.MaxHp;
+            }
+            tower.DamageBoost *= slot.DamageScale;
             slot.Structure = tower.Id;
             slot.Down = false;
             slot.LandsAt = double.NaN;
@@ -229,7 +296,7 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>Whether a destroyed tower here can be called back in now.</summary>
-        public bool CanCall(HardpointState slot) => slot.Down && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt;
+        public bool CanCall(HardpointState slot) => slot.Down && !slot.Lost && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt;
 
         /// <summary>The destroyed hardpoints of a side that can be called back in now, front first (camp, then outposts).</summary>
         public IReadOnlyList<HardpointState> Callable(int team)

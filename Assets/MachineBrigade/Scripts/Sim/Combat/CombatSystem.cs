@@ -60,7 +60,7 @@ namespace MachineBrigade.Sim.Combat
                 ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
-                if (v.Stunned || v.Lowered || v.Def.Passive)
+                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive)
                 {
                     v.Target = EntityId.None;
                     continue;

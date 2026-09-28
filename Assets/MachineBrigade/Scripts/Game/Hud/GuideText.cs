@@ -715,6 +715,24 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: pháo nặng hai nòng bắn [[loạt đôi]] tới 40 m, pháo phòng không đôi 30 mm và súng máy đồng trục canh bầu trời; quân mới được thả dù quanh nó.\n" +
                 "Mạnh / yếu: cực lì; ở Chiếm cứ điểm, Giữ đồi và Tử chiến nó [[không thể bị phá]], ở Tấn công và Công thành nó là [[mục tiêu]], ở Phòng thủ và Vô tận mất nó là thua.\n" +
                 "Mẹo: [[cấp sở chỉ huy]] (1–5) mở các ô tháp nhỏ, vừa, lớn và ô tiện ích của căn cứ; đặt tháp vào chúng ở màn Căn cứ trong thẻ Quân đội."),
+            ["guide.super_gun"] = (
+                "[[Super-gun]] · fixed defence · the fortress's giant gun\n" +
+                "How it fights: on a countdown shown at the top of the screen it fires one huge [[shell]] at the attackers' thickest knot (their camp when nobody is out), 4 s after the warning circle shows.\n" +
+                "Strong / weak: one shell wrecks a column of light vehicles; it has no gun for anything near it.\n" +
+                "Tip: [[spread out]] when the countdown runs low; destroying it is a side objective that pays CP at once and coins at the end.",
+                "[[Siêu pháo]] · công sự cố định · khẩu pháo khổng lồ của pháo đài\n" +
+                "Cách đánh: theo đồng hồ đếm ngược ở đầu màn hình, nó bắn một quả [[đạn cực lớn]] vào chỗ quân tấn công đông nhất (vào trại nếu không ai ở ngoài), 4 giây sau khi vòng cảnh báo hiện ra.\n" +
+                "Mạnh / yếu: một phát xóa sổ cả đoàn xe nhẹ; nó không có súng bắn gần.\n" +
+                "Mẹo: [[tản quân]] khi đồng hồ sắp hết; phá được nó là nhiệm vụ phụ, thưởng CP ngay và xu cuối trận."),
+            ["guide.super_gun_shell"] = (
+                "[[Super-gun shell]] · the fortress's · one huge round\n" +
+                "How it fights: lands 4 s after its warning circle shows, 15 m across.\n" +
+                "Strong / weak: wrecks light vehicles and groups; aircraft are safe.\n" +
+                "Tip: move out of the circle, or destroy the gun.",
+                "[[Đạn siêu pháo]] · của pháo đài · một quả đạn cực lớn\n" +
+                "Cách đánh: rơi xuống 4 giây sau khi vòng cảnh báo hiện, rộng 15 m.\n" +
+                "Mạnh / yếu: phá nát xe nhẹ và đám đông; máy bay an toàn.\n" +
+                "Mẹo: chạy khỏi vòng tròn, hoặc phá khẩu pháo."),
             ["guide.spawn_bastion"] = (
                 "[[Camp bastion]] · fixed defence · guards a base\n" +
                 "How it fights: never moves; a twin heavy gun fires two-shot [[volleys]] out to 40 m, and a coaxial MG also fires at aircraft.\n" +

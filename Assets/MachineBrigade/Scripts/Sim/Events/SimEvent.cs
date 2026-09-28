@@ -109,6 +109,14 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A charged weapon (Mount) of Entity began powering up; it fires in Value seconds at Target.</summary>
         WeaponCharging,
+
+        /// <summary>
+        /// A fortress's reinforcements are on their way in by its line (DefId "rail" or "runway"):
+        /// the train or aircraft gets to Position (the stop) in Value seconds, facing Target (a unit
+        /// vector); Team is whose they are. The vehicles aboard come as DeploymentQueued events with
+        /// Mount 1 (no parachute) and land when it stops.
+        /// </summary>
+        Arrival,
     }
 
     /// <summary>
@@ -200,6 +208,16 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
             new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team);
 
+        /// <summary>A delivery that comes by a fortress's line (Mount 1): it gets off at Position when the train or aircraft stops.</summary>
+        internal static SimEvent DeploymentRouted(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
+            new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team, mount: 1);
+
+        /// <summary>Whether a DeploymentQueued event is a delivery by a fortress's line (no parachute).</summary>
+        public bool ByLine => Kind == SimEventKind.DeploymentQueued && Mount == 1;
+
+        internal static SimEvent ArrivalInbound(int team, string kind, Vector2 stop, Vector2 facing, float seconds) =>
+            new(SimEventKind.Arrival, EntityId.None, stop, facing, seconds, default, kind, team);
+
         internal static SimEvent StrikeWarning(int team, SupportDef support, Vector2 at, Vector2 towards, float seconds) =>
             new(SimEventKind.StrikeWarning, EntityId.None, at, towards, seconds, support.Tier, support.Id, team);
 
@@ -243,8 +261,9 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent Stage(int stage, Vector2 at, string key) =>
             new(SimEventKind.StageCleared, default, at, default, stage, default, key, 0);
 
-        internal static SimEvent Alert(Vector2 at, string key) =>
-            new(SimEventKind.FortressAlert, default, at, default, 0f, default, key, 1);
+        /// <summary>A fortress's alarm (its sirens): Team 1 when it is bad news for the player, 0 when good (a gate of the enemy's blown in).</summary>
+        internal static SimEvent Alert(Vector2 at, string key, bool bad = true) =>
+            new(SimEventKind.FortressAlert, default, at, default, 0f, default, key, bad ? 1 : 0);
 
         internal static SimEvent CrateClaimed(Crate c, int team) =>
             new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);

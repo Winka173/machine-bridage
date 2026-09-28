@@ -195,6 +195,26 @@ namespace MachineBrigade.Sim.Economy
 
         public EconomySystem(SimWorld world) => _world = world;
 
+        /// <summary>
+        /// A side whose ground deliveries come in by the fortress's line (a train, or an aircraft
+        /// onto a runway) instead of by parachute: when the next one gets in, where the vehicles get
+        /// off and the way along the platform they line up (null for the side: the usual drop).
+        /// </summary>
+        internal Func<int, (double due, Vector2 at, Vector2 along)?>? Route { get; set; }
+
+        /// <summary>A routed delivery's landing and time, or false for the usual parachute drop.</summary>
+        private bool Routed(int team, VehicleDef def, int index, out double due, out Vector2 landing)
+        {
+            due = 0;
+            landing = default;
+            if (def.Flying || Route?.Invoke(team) is not { } route) return false;
+            // Off the train (or out of the aircraft) one behind another along the platform.
+            var k = index % 6;
+            landing = route.at + route.along * ((k % 2 == 0 ? 1f : -1f) * (2f + (k / 2) * 5f));
+            due = MathF.Max((float)(_world.Time + 1.0), (float)route.due);
+            return true;
+        }
+
         public void Enable(TeamEconomy economy) => _teams[economy.Team] = economy;
 
         public bool TryGet(int team, out TeamEconomy economy) => _teams.TryGetValue(team, out economy!);
@@ -223,6 +243,14 @@ namespace MachineBrigade.Sim.Economy
                 defId = elite;
             // Deliveries fan out around the zone so consecutive ones do not stack.
             var index = _deliveries++;
+            if (Routed(team, def, index, out var due, out var routed))
+            {
+                _pending.Add((team, defId, due, routed));
+                economy.ArmyCp = ArmyCp(team);
+                economy.VehicleCount = VehicleCount(team);
+                _world.Emit(SimEvent.DeploymentRouted(team, defId, routed, Inward(zone), (float)(due - _world.Time)));
+                return CommandResult.Ok;
+            }
             var angle = index * 2.39996f;
             var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
             _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
@@ -250,8 +278,14 @@ namespace MachineBrigade.Sim.Economy
         /// </summary>
         public void Airlift(int team, string defId, Vector2 near, bool ally = false)
         {
-            if (!_world.Catalog.Vehicles.ContainsKey(defId)) return;
+            if (!_world.Catalog.Vehicles.TryGetValue(defId, out var def)) return;
             var index = _deliveries++;
+            if (!ally && Routed(team, def, index, out var due, out var routed))
+            {
+                _pending.Add((team, defId, due, routed));
+                _world.Emit(SimEvent.DeploymentRouted(team, defId, routed, Inward(near), (float)(due - _world.Time)));
+                return;
+            }
             var angle = index * 2.39996f;
             var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
             _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));

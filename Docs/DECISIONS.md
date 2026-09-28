@@ -1000,3 +1000,132 @@ those draws is a full state change on the CPU: draws, not triangles, are the cos
     who steers the army takes longer.
   - The arsenal edge is zero in these runs (rank 1 cards). A real player's ranks make the campaign easier, because the
     enemy matches only 55 % of the edge.
+## 5S. Siege and Defend upgrades
+
+- **The outline stays as it was carved.** The battlefield's outline is still carved round the first
+  fortress plan (the old `fortify`, now used only for that), so the Conquest and Survival versions, the
+  camps and every campaign mission are byte for byte what they were. The new fortress
+  (`Tools/maps/fortress.py`) is built into the finished siege battlefield, inside that outline. Why: a
+  bigger fortress in the carve would have moved every map's edge (the carve is point-symmetric) and
+  with it the campaign's balance.
+- **"40-50 % of the map" is the ground behind the outer line.** The outer line runs square to the
+  camp-to-camp diagonal (`x + z = c`), `c` found per map so that 45 % of the play area inside the
+  outline lies behind it (45.0-45.5 % on the twelve maps). The map file stores it as `fortress.area`
+  (a polygon) and `fortress.outerLine`. The walls and the keep stay square round the HQ (walls can only
+  be axis-aligned 8 m pieces), so the ground between the outer line and the walls is the fortress's
+  outer works: the battlefield as it was, with the strongpoints, obstacle belts and the line in.
+- **Rings.** Ring 1, the outer line: 3 relay stations near its middle (50 m apart; flank relays 85 m
+  out made the attack march up and down the line), a strongpoint every 26 m (small and medium tower
+  hardpoints behind sandbags), belts of tank traps and wire with gaps. Ring 2, the walls: an L at
+  x = z = 40, each arm with a closed main gate on the road to the keep and an open sally port far out
+  on its flank, 3 shield generators, the super-gun, fuel depots and ammunition dumps (they chain
+  when hit), stores and barracks (bounties). Ring 3, the keep (walls from
+  83.4 to 134, a closed south gate and an open west one): the HQ, large towers and the utility
+  modules. `siegeRings` are the distances to the wall lines (85 and 41.6).
+- **No set piece closes every way.** The sally ports (open gateways) are the long way into each ring,
+  so with every gate shut and every hardpoint filled the HQ, the relays, the generators, the super-gun,
+  the line's stop and the defenders' rally can all be reached; the generator checks it, and again with
+  every wall down, and warns if the walls would not hold with the sally ports shut too (none do). A
+  hardpoint that cuts a route off is dropped, the one whose going opens it.
+- **The attack breaks the gate first.** While the current stage's objective is behind the walls and
+  nobody has broken them (no gate blown, no wall down) and the attacking army is outside, the
+  attacking commander's goal is the walls' standing gate nearest it and its target that gate
+  (`SiegeMode.AttackGoal`, `AttackTarget`); once breached, the objective. In stage 3 the enemy in
+  Defend also blows in the keep's gate first; the player's army in Siege uses the keep's open gate
+  (`KeepGateFirst`: going round to the shut one cost the sieges their last minutes). Stage objectives
+  are the ones nearest the attacking army (not its camp). Gates are centred on odd metres so that,
+  blown in, each leaves three navigation cells.
+- **Gates and walls.** `fortress_gate` (3200 hp) blocks the way and direct fire until blown in; a
+  `base_wall` piece keeps blocking for 1.4 s while it topples (`PropDef.Collapse`), then its rubble is
+  passable. The view: a gate is two steel doors that go over inwards; a wall section rocks, goes over
+  on its long side and settles into a low heap, in dust and fire.
+- **Breaches and parked guns.** A wall coming down rebuilds the lane map at once, and every rebuild
+  releases a firing spot that has become a doorway (the gun picks another): artillery must not park
+  in a fresh breach. Shared code (LaneMap, TacticalAi), so noted for the merge.
+- **The dome.** While a generator stands the dome covers the keep: its towers and the HQ cannot be
+  hurt, and the keep's towers hold their fire (`Vehicle.HoldFire`). Invulnerable guns firing out
+  through the dome killed most of the attackers in stage 2. It drops with a flash and a shockwave when
+  the last generator dies (an alert, and the keep fight begins).
+- **The super-gun** is a static `super_gun` (the heavy fortress model at 1.8x, 5200 hp, no gun of its
+  own) in the walls' yard. It fires one `super_gun_shell` (450 damage, 15 m, 4 s warning circle) on a
+  countdown at the attackers' thickest knot (their camp when nobody is out): first after 150 s, then
+  every 90 s in Siege (90/75 s by default). Destroying it pays the attacker 25 CP at once and, in
+  Siege, 100 coins at the end. In Defend it is the player's and fires at the waves.
+- **The line in.** Every siege map has a runway (ashfield, dunebreak, redrock, greenvale, emberridge,
+  skyhold, junglepass: its rail line could not be reached) or a rail line (frostpeak, ironport,
+  whiteout, rustyard, metrocity, redrock: no room for a runway). It lies in the outer works by the west
+  sally port, coming in over the north edge (rail) or from the west (runway). While the fortress holds
+  its walls, the AI defender's ground deliveries come in by it: a train or a transport is announced
+  (`SimEvent.Arrival`) 10 s before it stops, the vehicles get off at the stop when it does (at least
+  16 s between two), no parachute. The player's own fortress (Defend) keeps the usual drops.
+- **Searchlights and sirens.** At night up to 16 floodlight masts in the fortress sweep a light cone
+  and a pool over the approaches and lock on to attackers within 42 m (view only). Every fortress alarm
+  sounds the siren (the existing sound): gates blown in, a wall breached, the dome down, the super-gun
+  firing or destroyed, a line lost, a wave; at night the fortress also sounds it when it spots
+  attackers on its ground (at most once a minute; the session tells the mode when night falls).
+- **The fortress's towers are a base loadout.** The fortress is its side's `TeamBase`
+  (`BaseSystem.EstablishFortress`): its hardpoints by ring (about 11/12/8, 3 utility), the k-th of a
+  size taking the loadout's towers of that size in order and over again (a fortress has more
+  hardpoints than a camp); a size the loadout has none of takes the next smaller size's; each utility
+  module once. Siege: the enemy's `BaseLoadout.ForAi(difficulty, style, seed)`; Defend: exactly the
+  player's `PlayerProfile.BaseLoadout` (with its branches, ranks and gear, which the player's boosts
+  add). Inner rings are tougher (health and damage by ring: default 1/1.25/1.5 and 1/1.1/1.2; Siege
+  1/1.15/1.25 and 1/1.05/1.1; Defend 1/1.4/1.8 and 1/1.2/1.35).
+  An AI fortress never flies towers back in (rebuilt keep towers made it untakeable); the player's can.
+  Siege on Normal leaves a quarter of the outer two rings' tower hardpoints empty (`Manning`: Easy
+  0.6, Normal 0.75, Hard 1).
+- **Defend's lines.** The three rings are the outer, middle and inner line, the HQ the last stand
+  (its 75/50/25 % phases). Losing a line (its relays, then its generators) blows up its remaining
+  towers one after another, marks its hardpoints lost and pays the player a retreat reward (24, then
+  32 CP in Defend, a toast). The HUD says "Line n/3". Defend's relays and generators are twice as
+  tough (`LineHardening`) and its HQ 4.5 times (Siege 1.2).
+- **Waves are swarms, drawn one ahead.** Defend and Endless waves are mostly cheap vehicles (armoured
+  cars, rocket and ZU-23 technicals, FPV drone trucks, light tanks, car bombs, jeeps) growing wave on
+  wave (Normal: 5, then +1.4 a wave, at most 36; Hard +1.6, Endless +2), a heavy vehicle for every third wave (at most a
+  quarter of the wave), elites from wave 6 in Endless. The next wave is drawn when the last is sent,
+  with its own random numbers, so the HUD's preview (icons and counts, elites marked) is exactly what
+  lands. `SiegeRules.MaxAlive` (48) caps the attackers alive at once: a wave's vehicles beyond it wait
+  off the map and come in as attackers fall (the preview shows how many wait).
+- **HUD.** Two self-contained elements under the top bar, styled in Hud.uss: `SuperGunTimer` (red in
+  the last 10 s, mint when it is the player's) and `WavePreview`. They sit at 104 px, below the boss
+  bar's place; the theme rebuild can move them.
+- **Weekly fortress.** It gets the new fortress (its map is a siege map) with the enemy's loadout;
+  the session's other changes are kept to that and the gate goal, for the merge with the weekly
+  ledger.
+- **Campaign.** Mission m13 (Emberridge siege variant) raises the fortress's towers for the enemy
+  (they were map units before); it still wins (14.1 min on its test seed).
+- **Balance, 5 seeds on Normal** (`SiegeBalanceTests`, `MB_BALANCE=1`; ashfield, dunebreak, ironport,
+  redrock, metrocity):
+  - Siege: 5/5 won, in 14.0, 17.8, 12.8, 15.7 and 9.7 min (the run before: 5/5, 9.5-17.8 min; and
+    `ModeEndingTests` on Ashfield: 5/5 won, 13.9-18.7 min). Stage 1 falls at 1.2-1.5 min, stage 2 at
+    3.6-4.7 min; the keep takes the rest. The bank is 8 + 6 + 6 min, at most 15 min on the clock at
+    once (Hard 7, Easy 9 to start), so no siege goes past about 21.5 min with its overtime.
+  - Defend: 3/5 held on the five maps in the last two runs (Ashfield and Metro City fell at 9.8-10.2
+    min, just before the enemy's clock of 10.5 min ran out; the run before those: 4/5), and 5/5 held on
+    Greenvale (`ModeEndingTests`, 9.0-10.5 min). So `SiegeBalanceTests.DefendIsHeldOnNormal` (4/5
+    wanted) is still failing when run by hand; it is behind `MB_BALANCE=1`, so the normal suite is
+    green. Candidate fixes, unmeasured: stage bonuses of 45/60 s instead of 60/90 (the clock would
+    end at 9.75 min, before both losses), or a slower third line. Defend stays short on purpose: a
+    10-minute enemy clock let it finish the HQ in every seed.
+  - Endless: the HQ falls after 10.3-11.7 min (5 seeds on Ironport).
+  - What made the difference, in order: the relays moved in (the attack stalled marching along a 400 m
+    line), the keep's guns silent under the dome, a smaller Siege garrison (12 CP, 0.6 CP/s, supply 26
+    on Normal; with 20 CP and 0.85 CP/s it outnumbered the attack and killed it outside the walls),
+    no rebuilt towers in an AI fortress, a quarter of the outer hardpoints empty on Normal, more CP for
+    the attacker (38 CP, 2.4 CP/s, supply 44), more time, the HQ at 1.2x and the keep's open gate;
+    for Defend a bigger purse for the player (30 CP, 1.35 CP/s) against a smaller one for the enemy
+    (22 CP, 1.1 CP/s), tougher relays, generators, HQ and inner lines, bigger retreat rewards.
+  - The sim is chaotic: the same settings went 3/5 to 5/5 and 2/5 to 4/5 with small map changes, so
+    the lead should run the two tests again after merging other balance work.
+
+- **Merging the fortress with the eight new maps (lead).**
+  - The fortress generator was built on the first twelve maps. On the causeway battlefields,
+    Swamp and Coral Isles, its walls cut every causeway: with the gates shut, nothing reaches the
+    HQ. Those two keep the classic corner fortress in Siege (`CLASSIC_SIEGE` in build_maps.py),
+    with its defences as map units. SiegeMode and the views accept a map without a fortress plan.
+    The tests expect the classic fortress there.
+  - All 20 maps were regenerated together from the merged generator, so the Conquest, Survival and
+    Siege versions share one outline again. The Conquest versions moved a little from the committed
+    ones (a few hardpoints by about 2 m, some building variants), because the merged generator
+    draws its random numbers in a different order.
+  - The campaign sweeps run again in the testing phase.
