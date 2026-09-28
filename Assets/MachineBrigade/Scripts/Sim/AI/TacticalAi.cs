@@ -234,6 +234,7 @@ namespace MachineBrigade.Sim.AI
             GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
+            BreachObstacles(world, front, objective);
             FocusBoss(world);
             FocusDemolition(world);
             ShootBuildings(world);
@@ -413,6 +414,76 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
+        private readonly HashSet<EntityId> _refitting = new();
+
+        /// <summary>Health share under which an aircraft goes back to the airfield, and the share it waits for.</summary>
+        private const float RefitBelow = 0.35f, RefitUntil = 0.9f;
+
+        /// <summary>
+        /// An aircraft's trip to the airfield (see UtilityDef.AirRepair): sent there empty or below
+        /// 35 % health, released once at 90 % and rearmed, or when the airfield is gone.
+        /// </summary>
+        private bool Refit(SimWorld world, Vehicle v)
+        {
+            Vehicle? field = null;
+            foreach (var m in world.VehicleList)
+                if (m.IsAlive && m.Team == _team && m.Def.Utility is { AirRepair: > 0f }) { field = m; break; }
+            if (field == null)
+            {
+                _refitting.Remove(v.Id);
+                return false;
+            }
+            var hurt = v.Hp < v.MaxHp * RefitBelow;
+            if (!_refitting.Contains(v.Id) && (hurt || v.OutOfAmmo)) _refitting.Add(v.Id);
+            if (!_refitting.Contains(v.Id)) return false;
+            if (v.Hp >= v.MaxHp * RefitUntil && !v.NeedsAmmo)
+            {
+                _refitting.Remove(v.Id);
+                return false;
+            }
+            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)
+                Issue(world, CommandType.Move, v.Id, field.Position);
+            return true;
+        }
+
+        /// <summary>
+        /// Dragon's teeth in the way: when the line is near a known obstacle between it and the
+        /// objective and no other enemy is round it, the line and the engineers knock it down (the
+        /// engineers breach three times as fast).
+        /// </summary>
+        private void BreachObstacles(SimWorld world, Vector2 front, Vector2 objective)
+        {
+            if (_line.Count == 0) return;
+            Vehicle? block = null;
+            var best = BreachReach;
+            var toGoal = objective - front;
+            if (toGoal.LengthSquared() < 1f) return;
+            var dir = Vector2.Normalize(toGoal);
+            foreach (var e in _enemies)
+            {
+                if (!e.Def.Obstacle) continue;
+                var off = e.Position - front;
+                var along = Vector2.Dot(off, dir);
+                if (along < -4f || (off - dir * along).Length() > 18f) continue;
+                var d = off.Length();
+                if (d >= best) continue;
+                best = d;
+                block = e;
+            }
+            if (block == null) return;
+            foreach (var e in _enemies)
+                if (!e.Def.Obstacle && !e.Def.Passive && Vector2.Distance(e.Position, block.Position) < 25f) return;
+            _ids.Clear();
+            foreach (var v in _line)
+                if (v.Target != block.Id) _ids.Add(v.Id);
+            foreach (var v in _support)
+                if (v.Def.RepairAura != null && v.Target != block.Id) _ids.Add(v.Id);
+            foreach (var id in _ids) Issue(world, CommandType.Attack, id, block.Position, block.Id);
+        }
+
+        /// <summary>How near the front an obstacle must be for the line to breach it.</summary>
+        private const float BreachReach = 30f;
+
         /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
@@ -482,6 +553,9 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Vehicles the player is steering by hand are left alone.
                 if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
+                // and stay until mended and rearmed (the airfield repairs and rearms them).
+                if (v.Flying && Refit(world, v)) continue;
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
                 if (!v.Flying && v.OutOfAmmo)
                 {

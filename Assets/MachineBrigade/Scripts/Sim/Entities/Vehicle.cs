@@ -88,6 +88,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Weapon reach from equipment effects of the moment (a siege anchor dug in).</summary>
         internal float RangeFactor = 1f;
 
+        /// <summary>A guard tower's range aura on this tower this step (1: none).</summary>
+        internal float TowerRange = 1f;
+
         /// <summary>Repairs it receives (regeneration, auras) are multiplied by this.</summary>
         internal float RepairReceived = 1f;
 
@@ -196,6 +199,15 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
         internal float CommandFire = 1f;
+
+        /// <summary>A gun pit down in its hole (see VehicleDef.Hidden): it cannot fire and is hard to see.</summary>
+        public bool Lowered { get; internal set; }
+
+        /// <summary>A gun pit just risen: its next shot hits harder (the Ambush branch).</summary>
+        internal bool AmbushReady;
+
+        /// <summary>A fixed minefield has laid its first mines.</summary>
+        internal bool MinesLaid;
 
         /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
         internal float FireBoost = 1f;

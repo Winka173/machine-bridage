@@ -714,6 +714,9 @@ namespace MachineBrigade.Sim
         private const double StealthReveal = 2.5;
 
         private readonly List<float> _sight = new();
+
+        /// <summary>Bases with a working radar station this step: their side and HQ position.</summary>
+        internal readonly List<(int team, Vector2 at)> _radarBases = new();
         private readonly List<float> _thermal = new();
 
         private void RefreshVisibility()
@@ -761,6 +764,10 @@ namespace MachineBrigade.Sim
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
                     var range = _sight[i] * sight;
                     if (hidden) range = MathF.Min(range, GhillieReveal);
+                    // A gun pit down in its hole: only a scout or a radar sees it from afar.
+                    if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
+                    // A guard tower sees stealth and hidden units within its guns' reach.
+                    if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
                     else
                     {
@@ -775,6 +782,9 @@ namespace MachineBrigade.Sim
                 if (reveal.Until > Time) mask |= reveal.Stacks;
                 // A UAV scan: everything under it, stealth and hidden too.
                 mask |= Strikes.ScanMask(target.Position, target.Team);
+                // A base's radar: anything in the base shows.
+                foreach (var (team, at) in _radarBases)
+                    if (team != target.Team && Vector2.DistanceSquared(at, target.Position) < HomeRadius * HomeRadius) mask |= 1 << team;
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }
@@ -791,7 +801,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         internal void AnchorDefence(Vehicle v)
         {
-            if (!v.Def.Static || v.BlocksRoutes) return;
+            if (!v.Def.Static || v.BlocksRoutes || v.Def.Passable) return;
             v.BlocksRoutes = true;
             Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
         }

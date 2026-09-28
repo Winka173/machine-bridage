@@ -327,6 +327,56 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A helicopter that fights from the edge of its missiles' reach and keeps out of short-range anti-air.</summary>
         public bool Standoff { get; internal set; }
 
+        /// <summary>An obstacle (dragon's teeth): it blocks the way and fights nothing; engineers breach it three times as fast.</summary>
+        public bool Obstacle { get; internal set; }
+
+        /// <summary>Never a target (a fixed minefield: its mines are what matter).</summary>
+        public bool Untargetable { get; internal set; }
+
+        /// <summary>A fixed structure vehicles drive through (a minefield, wire, a helipad): it blocks no route.</summary>
+        public bool Passable { get; internal set; }
+
+        /// <summary>Sees stealth and hidden units within its guns' reach (the guard tower).</summary>
+        public bool RevealStealth { get; internal set; }
+
+        /// <summary>Friendly towers within Radius reach Rate further (the guard tower; the best aura counts).</summary>
+        public AuraDef? TowerRangeAura { get; internal set; }
+
+        /// <summary>Enemy ground vehicles within Radius move Rate slower (wire).</summary>
+        public AuraDef? SlowAura { get; internal set; }
+
+        /// <summary>A tower that hides until an enemy comes close (the gun pit).</summary>
+        public HiddenDef? Hidden { get; internal set; }
+
+        /// <summary>A base's utility module.</summary>
+        public UtilityDef? Utility { get; internal set; }
+
+        /// <summary>A drone (light towers' anti-air guns hit it harder).</summary>
+        public bool Drone { get; internal set; }
+
+        /// <summary>No weapon that does damage (an obstacle, a minefield, a jammer, a utility module): it never fires.</summary>
+        public bool Passive
+        {
+            get
+            {
+                foreach (var m in Mounts)
+                    if (m.Weapon.Damage > 0f) return false;
+                return true;
+            }
+        }
+
+        /// <summary>The longest reach of its damaging weapons (0 for none).</summary>
+        public float GunReach
+        {
+            get
+            {
+                var reach = 0f;
+                foreach (var m in Mounts)
+                    if (m.Weapon.Damage > 0f) reach = MathF.Max(reach, m.Weapon.Range);
+                return reach;
+            }
+        }
+
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }
 

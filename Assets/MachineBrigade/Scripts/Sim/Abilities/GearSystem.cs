@@ -214,6 +214,26 @@ namespace MachineBrigade.Sim.Abilities
                 v.SpeedGear = speed;
                 v.FireGear = fire;
             }
+            // A guard tower lends the friendly towers round it reach (the best aura counts).
+            for (var i = 0; i < list.Count; i++)
+            {
+                var g = list[i];
+                var reach = g.Def.TowerRangeAura;
+                if (reach == null || !g.IsAlive) continue;
+                for (var k = 0; k < list.Count; k++)
+                {
+                    var t = list[k];
+                    if (t == g || !t.IsAlive || t.Team != g.Team || t.Def.Fort == null || t.Def.Passive) continue;
+                    if (Vector2.DistanceSquared(t.Position, g.Position) > reach.Radius * reach.Radius) continue;
+                    t.TowerRange = MathF.Max(t.TowerRange, 1f + reach.Rate);
+                }
+            }
+            for (var i = 0; i < list.Count; i++)
+                if (list[i].TowerRange > 1f)
+                {
+                    list[i].RangeFactor *= list[i].TowerRange;
+                    list[i].TowerRange = 1f;
+                }
         }
 
         private void StepGear(Vehicle v, GearState g, double now, bool aura, ref float speed, ref float fire)

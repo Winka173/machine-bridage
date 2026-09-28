@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Content
             var vehicleBlasts = Tune("firepower", "vehicleBlasts");
 
             var weapons = new Dictionary<string, WeaponDef>();
-            foreach (var w in root.Array("weapons"))
+            foreach (var w in Inherited(root.Array("weapons"), model: false))
             {
                 var def = Wrap(w, () => new WeaponDef(
                     w.String("id"), w.Enum<DamageType>("damageType"), w.Float("damage"), w.Float("cooldown"),
@@ -156,7 +156,7 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
-            foreach (var v in Inherited(root.Array("vehicles")))
+            foreach (var v in Inherited(root.Array("vehicles"), model: true))
             {
                 var weapon = Weapon(weapons, v, "weapon");
                 var secondary = new List<WeaponMount>();
@@ -245,12 +245,41 @@ namespace MachineBrigade.Sim.Content
                     def.BranchOf = v.Has("branchOf") ? v.String("branchOf") : null;
                     def.MaxPerSide = v.Int("maxPerSide", 0);
                     def.Standoff = v.Bool("standoff", false);
+                    def.Obstacle = v.Bool("obstacle", false);
+                    def.Untargetable = v.Bool("untargetable", false);
+                    def.Passable = v.Bool("passable", false);
+                    def.RevealStealth = v.Bool("revealStealth", false);
+                    def.Drone = v.Bool("drone", false);
+                    if (v.Has("towerRangeAura"))
+                    {
+                        var a = v.Object("towerRangeAura");
+                        def.TowerRangeAura = new AuraDef(a.Float("radius"), a.Float("range"));
+                    }
+                    if (v.Has("slowAura"))
+                    {
+                        var a = v.Object("slowAura");
+                        def.SlowAura = new AuraDef(a.Float("radius"), a.Float("share"));
+                    }
+                    if (v.Has("hidden"))
+                    {
+                        var h = v.Object("hidden");
+                        def.Hidden = new HiddenDef(h.Float("rise"), h.Float("cut", 0.6f), h.Float("firstShot", 1f));
+                    }
+                    if (v.Has("utility"))
+                    {
+                        var u = v.Object("utility");
+                        def.Utility = new UtilityDef
+                        {
+                            Repair = u.Float("repair", 0f), Rearm = u.Float("rearm", 0f), AirRepair = u.Float("airRepair", 0f),
+                            AirReach = u.Float("airReach", 14f), Supply = u.Int("supply", 0), RevealBase = u.Bool("revealBase", false),
+                        };
+                    }
                     if (v.Has("mines"))
                     {
                         var m = v.Object("mines");
                         def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
                             new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
-                            m.Float("trigger", 2f));
+                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
                     }
                     return def;
                 }));
@@ -301,7 +330,7 @@ namespace MachineBrigade.Sim.Content
         /// Vehicle entries with "inherits" (a tower's rank-7 branch) take the named def's fields,
         /// theirs on top; the parent's model too, unless they name their own. In data order.
         /// </summary>
-        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries)
+        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model)
         {
             var list = new List<JsonObject>(entries);
             var byId = new Dictionary<string, JsonObject>();
@@ -315,7 +344,7 @@ namespace MachineBrigade.Sim.Content
                 if (!byId.TryGetValue(parentId, out var parent)) throw new FormatException($"{v.Path}.inherits: unknown vehicle '{parentId}'");
                 var baseDef = Resolve(parent, depth + 1);
                 var merged = baseDef.Under(v);
-                if (!v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
+                if (model && !v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
                 return merged;
             }
             foreach (var v in list) yield return Resolve(v, 0);

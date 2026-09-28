@@ -147,7 +147,10 @@ namespace MachineBrigade.Game.Rendering
         /// Parts that are hidden or moved on their own (the strike jet's bombs, a pumpjack's beam, a
         /// launcher's erector, a tower's sweeping searchlight).
         /// </summary>
-        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight)(\.\d+)?$");
+        private static readonly Regex LoosePattern = new(@"^(Bombs|Pump_beam|Erector|Searchlight|Lift)(\.\d+)?$");
+
+        /// <summary>Models whose radar turns slower than the usual 120 degrees a second (an EW tower's jammer head).</summary>
+        private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f };
 
         /// <summary>
         /// Turret parts that elevate with the gun: barrels, muzzle brakes, mortar tubes, rocket and
@@ -264,7 +267,8 @@ namespace MachineBrigade.Game.Rendering
                     list.Add(t);
                 }
                 foreach (var (name, axis, speed) in SpinnerPatterns)
-                    if (name.IsMatch(t.name)) spinners.Add(new Spinner(t, axis, speed));
+                    if (name.IsMatch(t.name))
+                        spinners.Add(new Spinner(t, axis, t.name.StartsWith("Radar") && SlowRadars.TryGetValue(id, out var slow) ? slow : speed));
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
             else if (turret == null) muzzle = RoofFront(root.transform);

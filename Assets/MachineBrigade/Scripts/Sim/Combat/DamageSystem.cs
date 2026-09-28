@@ -98,10 +98,15 @@ namespace MachineBrigade.Sim.Combat
         internal static float BonusFor(WeaponDef weapon, Vehicle attacker, IDamageable target, double now)
         {
             var bonuses = weapon.Bonuses;
-            if (bonuses.Count == 0) return 1f;
             var best = 1f;
             var worst = 1f;
             var vehicle = target as Vehicle;
+            // A light tower's anti-air gun: +25 % on helicopters and drones.
+            if (vehicle != null && vehicle.Flying && attacker.Def.Fort is { Size: SlotSize.Small } && weapon.CanTarget(true) &&
+                (vehicle.Def.Class == UnitClass.Helicopter || vehicle.Def.Drone))
+                best = LightTowerAirBonus;
+            // Engineers breach obstacles three times as fast.
+            if (vehicle != null && vehicle.Def.Obstacle && attacker.Def.RepairAura != null) best = MathF.Max(best, EngineerBreach);
             for (var i = 0; i < bonuses.Count; i++)
             {
                 var b = bonuses[i];
@@ -115,6 +120,9 @@ namespace MachineBrigade.Sim.Combat
             }
             return best * worst;
         }
+
+        internal const float LightTowerAirBonus = 1.25f;
+        internal const float EngineerBreach = 3f;
 
         internal const float SideFactor = 1.25f;
         internal const float RearFactor = 1.6f;
@@ -223,6 +231,8 @@ namespace MachineBrigade.Sim.Combat
             if (!(damage > 0f)) return 0f;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
+            // A gun pit down in its hole takes much less.
+            if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut;
 
             switch (target)
             {

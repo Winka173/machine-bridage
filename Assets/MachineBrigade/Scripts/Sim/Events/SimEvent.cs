@@ -237,6 +237,10 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent MineLaid(Mine m) =>
             new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);
 
+        /// <summary>An engineer cleared a mine (it just goes; no blast).</summary>
+        internal static SimEvent MineCleared(Mine m) =>
+            new(SimEventKind.MineDetonated, m.Id, m.Position, default, 0f, ExplosionTier.Small, null, m.Team);
+
         internal static SimEvent MineDetonated(Mine m) =>
             new(SimEventKind.MineDetonated, m.Id, m.Position, default, m.Def.Blast.Radius, m.Def.Blast.Tier, null, m.Team);
 

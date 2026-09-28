@@ -2168,7 +2168,7 @@ SIEGE_RALLY = (58.0, 58.0)          # the defenders' camp in Siege: the keep's y
 def fortress_defences():
     """(vehicle, x, z) of every fixed defence, facing the player's corner; mirrored pairs across the diagonal."""
     heavy = model_or('heavy_turret', 'gun_turret')
-    flak = model_or('flak_tower', 'aa_turret')
+    flak = 'aa_turret.flak'  # the flak tower is the AA tower's rank-7 branch now
     battery = model_or('missile_battery', 'aa_turret')
     pairs = [
         # Stage 1, the outer line: bunkers on the line, towers, guns and AA behind it.
