@@ -541,7 +541,7 @@
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
-    "triangles": 8704
+    "triangles": 9216
   },
   "lava_vent": {
     "file": "lava_vent.glb",

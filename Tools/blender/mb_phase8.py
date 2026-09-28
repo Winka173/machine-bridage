@@ -1403,6 +1403,18 @@ def landing_hovercraft(a):
         a.part('Nav_green' if s < 0 else 'Nav_red', 'SignalGreen' if s < 0 else 'LavaGlow').box(
             (.12, .24, .14), loc=(s * 6.85, -9.8, 4.2), bevel=0)
         a.part('Stern_lights', 'Lamp').box((.2, .06, .14), loc=(s * 6.0, 10.02, 3.9), bevel=0)
+    # Rub rail round the hull, crew doors and hatches on the inner walls, bollards on the roofs.
+    rub = a.part('Rub_rail', 'Armor')
+    for s in (-1, 1):
+        rub.box((.14, 25.2, .16), loc=(s * 6.95, 0, 1.92), bevel=.02, seg=1)
+        for y in (-5.0, 3.0):
+            fbox(armor, '-x' if s > 0 else '+x', (s * 3.8, y, 3.0), (.9, .06, 1.8), out=.02, bevel=.012)
+            fbox(steel, '-x' if s > 0 else '+x', (s * 3.8, y + .3, 3.0), (.06, .06, .2), out=.06)
+        for y in (8.9,):
+            steel.cyl(.12, .3, loc=(s * 6.2, y, 4.45), seg=8, bevel=0)
+            steel.cyl(.18, .05, loc=(s * 6.2, y, 4.62), seg=8, bevel=0)
+    for e in (-1, 1):
+        rub.box((13.6, .14, .16), loc=(0, e * 12.55, 1.92), bevel=.02, seg=1)
     # Stern ramp (raised) with hazard edges, bow sill.
     armor.box((6.8, .2, 2.0), loc=(0, 12.45, 3.0), rot=(-.12, 0, 0), bevel=.03, seg=1)
     for s in (-1, 1):
