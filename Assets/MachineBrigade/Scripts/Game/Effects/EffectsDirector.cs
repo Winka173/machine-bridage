@@ -34,7 +34,7 @@ namespace MachineBrigade.Game.Effects
     /// Turns simulation events into fire, smoke, shells, debris, wrecks and camera shake.
     /// It only ever reads events: nothing here can change the battle (V2 rule 6).
     /// </summary>
-    public sealed class EffectsDirector : IDisposable
+    public sealed partial class EffectsDirector : IDisposable
     {
         private readonly Transform _root;
         private readonly MaterialLibrary _materials;
@@ -272,6 +272,15 @@ namespace MachineBrigade.Game.Effects
                         }
                         break;
 
+                    // A boss's part (prompt 9): its own blast at the part, and the sim's blast event after it skipped.
+                    case SimEventKind.PartBroken:
+                        PartBroke(e, views, now);
+                        break;
+                    case SimEventKind.PartRepaired:
+                        PartBack(e, views);
+                        break;
+                    case SimEventKind.Explosion when _partBlasts.Remove(e.Entity):
+                        break;
                     case SimEventKind.Explosion:
                         if (_dyingBosses.Remove(e.Entity))
                         {
@@ -323,6 +332,7 @@ namespace MachineBrigade.Game.Effects
                         // big blast does not look like this one restarting.
                         var blowsUp = e.DefId != null && _catalog.Vehicles.TryGetValue(e.DefId, out var lost) && lost.DeathExplosion != null;
                         // A boss goes up in stages until its great blast (the Explosion event, 2.6 s on).
+                        if (view.Def.Boss) BossPartsDied(view, now);
                         if (view.Def.Boss && blowsUp) BossDeath(view, now);
                         if (view.Def.Static) FellDefence(view, now);
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
@@ -434,6 +444,7 @@ namespace MachineBrigade.Game.Effects
             KickUpDust(views, now);
             PrintTracks(views);
             ShowDamage(views, now);
+            TickBossParts(views, now, Time.deltaTime);
 
             var markerAge = Time.unscaledTime - _markerStart;
             if (markerAge < 0.6f) _marker.Set(new Color(0.7f, 2f, 1.3f, 1f), Color.white, markerAge / 0.6f);

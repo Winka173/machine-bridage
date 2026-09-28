@@ -28,7 +28,7 @@ namespace MachineBrigade.Game.Views
                     _bladeRest = t.localRotation;
                     break;
                 }
-            InitBossParts(models);
+            InitBossParts(models, meshes, materials);
             EliteRepaint(materials);
         }
 

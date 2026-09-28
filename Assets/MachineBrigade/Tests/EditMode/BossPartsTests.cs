@@ -404,6 +404,43 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void ABossNeverCarriesMoreFirePointsThanTheCap()
+        {
+            // Every part of the biggest boss broken and its body burning: 9 + 3 points, merged to 8 (5 on Low).
+            var points = new List<Game.Effects.FireBudget.Point>();
+            for (var i = 0; i < 12; i++) points.Add(new Game.Effects.FireBudget.Point(new UnityEngine.Vector3(i * 1.5f, 3f, i % 3), 0.8f, i % 2));
+            var merged = Game.Effects.FireBudget.Merge(points, Game.Effects.FireBudget.Cap);
+            Assert.AreEqual(Game.Effects.FireBudget.Cap, merged.Count);
+            Assert.AreEqual(8, Game.Effects.FireBudget.Cap);
+            Assert.AreEqual(5, Game.Effects.FireBudget.Merge(points, Game.Effects.FireBudget.LowCap).Count);
+            Assert.AreEqual(12, points.Count, "the input is left as it is");
+            // The fire is conserved roughly: merged sizes grow as the square root of the sum of squares.
+            var before = points.Sum(p => p.Size * p.Size);
+            var after = merged.Sum(p => p.Size * p.Size);
+            Assert.AreEqual(before, after, 1e-3f);
+            // Under the cap nothing changes.
+            Assert.AreEqual(3, Game.Effects.FireBudget.Merge(points.Take(3).ToList(), 8).Count);
+        }
+
+        [Test]
+        public void EveryBossHasAGuideTipAndItsPartsReadInWords()
+        {
+            foreach (var id in Expected.Keys)
+            {
+                var def = C.Vehicle(id);
+                Assert.IsTrue(Game.Hud.Strings.Has("guide.parts.tip." + id), id + " has a tip for its parts");
+                foreach (var p in def.Parts)
+                {
+                    var words = Game.Hud.MenuScreen.PartEffects(def, p);
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(words), $"{id}.{p.Id}");
+                    Assert.IsFalse(words.Contains("part.fx"), $"{id}.{p.Id}: no raw key in '{words}'");
+                }
+                foreach (var p in def.Parts)
+                    if (p.Radio != null) Assert.IsTrue(Game.Hud.Strings.Has(p.Radio), $"{id}.{p.Id}: its radio line {p.Radio}");
+            }
+        }
+
+        [Test]
         public void TheFireAndSmokeAtTheBreaksNeverBlockSightOrAim()
         {
             var world = Lab.Field(2);

@@ -263,6 +263,8 @@ namespace MachineBrigade.Game.Hud
                     _detailBody.Add(label);
                 }
             }
+            // A boss's parts and what breaking each does (prompt 9).
+            if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
         }
 
         private string LockReasonShort(string id)

@@ -963,9 +963,11 @@ namespace MachineBrigade.Game.Match
                         else if (phased.Form != null) _views.Rebuild(phased);
                         break;
                     // Prompt 8 bosses: a part broken, the Earth Worm diving and the ground cracking, a landing.
-                    case SimEventKind.PartBroken when !_menu && _world.TryGetVehicle(e.Entity, out var broken) && e.Mount < broken.Def.Parts.Count:
-                        _hud.Toast(Strings.Format("toast.partBroken", Strings.Get("part." + broken.Def.Parts[e.Mount].Kind), Strings.Card(broken.Def.Id)), seconds: 3f);
-                        Haptics.Pulse(90, 220);
+                    case SimEventKind.PartBroken when !_menu:
+                        PartBrokenToast(e);
+                        break;
+                    case SimEventKind.PartRepaired when !_menu:
+                        PartRepairedToast(e);
                         break;
                     case SimEventKind.Burrowing when !_menu:
                         if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f);
@@ -1168,6 +1170,7 @@ namespace MachineBrigade.Game.Match
                     : Strings.Get("toast.focusClear"));
             };
             _selection.Rejected += _hud.ShowError;
+            WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
             _selection.BoxHidden += _hud.HideSelectionBox;
@@ -1292,6 +1295,7 @@ namespace MachineBrigade.Game.Match
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
             UpdateMinimap();
+            UpdateBossPartOutline();
         }
 
         private void UpdateMinimap()

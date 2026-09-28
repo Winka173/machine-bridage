@@ -497,6 +497,9 @@ namespace MachineBrigade.Sim
         private readonly List<(long tick, Command command)> _journal = new();
 
         /// <summary>A command from the player's screen: carried out and written in the journal.</summary>
+        /// <summary>The side's part order (prompt 9): the boss and the index of the part its units in reach aim at, if one stands.</summary>
+        public bool TryGetPartFocus(int team, out EntityId boss, out int part) => Bosses.TryGetFocus(team, out boss, out part);
+
         public CommandResult SubmitPlayer(Command command)
         {
             _journal.Add((Tick, command));
