@@ -2251,5 +2251,20 @@ sit at or under the bombers' ratio (model `scale` only):
 | heavy_attack_heli (Ka-52) | 0.56 -> 0.48 | -15 % | 9.0 -> 7.7 m |
 | scout_heli | 0.63 -> 0.57 | -10 % | 5.6 -> 5.1 m |
 
+The owner then asked for the other aircraft too, where needed. Ground vehicles are drawn at 0.65-0.9 of the real
+thing; the big aircraft sat at 0.46-0.53 but fly 40-46 m up, nearer the camera, so they still read large (a 26 m
+bomber), and the strike drone was now bigger than the fighter:
+
+| Aircraft | Scale | Change | Biggest extent |
+|---|---|---|---|
+| heavy_bomber | 1.44 -> 1.22 | -15 % | 26.0 -> 22.0 m |
+| stealth_bomber | 1.52 -> 1.29 | -15 % | 24.4 -> 20.7 m |
+| sky_gunship (also the troop transport's model) | 1.25 -> 1.06 | -15 % | 21.4 -> 18.2 m |
+| strike_drone | 0.98 -> 0.78 | -20 % | 10.9 -> 8.7 m |
+| recon_drone | 0.54 -> 0.49 | -10 % | 6.5 -> 5.9 m |
+
+Flying bosses (the heavy gunship, the Spectre, the drone mothership, the command airship) keep their size: a boss is
+meant to dwarf the rest.
+
 The sim's `radius`, `length` and `width` are unchanged (hits, spacing and blasts behave as before); muzzles and parts are
 model nodes, so they follow the smaller model.
