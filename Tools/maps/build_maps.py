@@ -32,6 +32,29 @@ gaps and tree placement, so the output is stable.
   * Metro City (urban): a grid of 16 m avenues between high-rise blocks, skyscrapers round the
     central plaza, a park and a parking lot as the side objectives, buses and traffic lights.
 
+Round 4M added eight more, laid out on the battlefield itself (world_layout) rather than on the
+design grid, so causeways, bridges and walls are drawn to the metre:
+  * Landing Beach (temperate): the player's camp on a beach along the south shore (sea, surf,
+    hedgehogs, wire, dunes, a broken sea wall), a band of rock bluffs broken by four exits, the
+    enemy on the plateau above with a coastal village round its church square and hedged fields.
+  * Hydro Dam (temperate): the reservoir in the north held by a dam whose crest is one crossing,
+    the river south through a gorge past the power station and the switchyard, a road bridge at
+    the centre and a ford by a hamlet: the only three ways across.
+  * Capital (urban): the government quarter on a river island (the palace and the domed
+    parliament on the palace square, ministries along the Mall), one bridge to each bank, dense
+    blocks between avenues, boulevards to the royal gardens and the central station.
+  * Silver Bug Launch Site (desert): a fenced launch complex: the rocket and its gantries on the
+    pad at the centre, rail lines in from the assembly building and the propellant farm, radar
+    dishes, blockhouses, a perimeter road inside the razor-wire fence.
+  * Salt Flats (desert): open flats with long sight lines and a few rock clusters as stepping
+    stones; a salt works, a survey beacon and brine pumps.
+  * Border Bridge (temperate): a broad river with the Great Bridge at its narrows (the choke
+    point), a ford and an old bridge far out on the flanks, border posts, a village and a depot.
+  * Swamp (jungle): hummocks in impassable water joined by 12 m causeways, main bridges and
+    8 m footbridges (the narrow passes), a sunken temple and two stilt villages.
+  * Coral Isles (desert): islands with sand beaches in a lagoon, joined by causeways, bridges
+    and footbridges, a lighthouse on the centre island, fishing villages.
+
 Lava pools, river water and fords are 4 m surface tiles (lava and deep water block, fords do
 not); the map view merges them into smooth surfaces.
 
@@ -2060,6 +2083,1179 @@ def metrocity(seed=151):
     return finish(L)
 
 
+# ------------------------------------------------------------------------ battlefields of round 4M
+# The eight battlefields added in round 4M are laid out on the battlefield itself (300 m, world
+# coordinates) rather than on the 160 m design grid: their causeways, bridges, sea walls and city
+# blocks are drawn to the metre. Camps, objectives and roads are where the builder puts them, and
+# nothing stands within 41 m of a camp (the design grid's 22 m, spread by S).
+CAMP_0 = (-58.0 * S, -58.0 * S)
+CAMP_1 = (58.0 * S, 58.0 * S)
+
+
+def world_layout(seed, points, clear=()):
+    """A layout made on the battlefield itself (see the note above): scale_layout leaves it alone."""
+    L = Layout(seed, [CAMP_0, CAMP_1], points, clear)
+    L.half = HALF
+    L.camp_clear = 22.0 * S
+    L.world = True
+    return L
+
+
+def mirror(x, z):
+    return -x, -z
+
+
+def world_tiles(L, kind_at, road_gap=1.0, camp_gap=24.0, ignore_points=False):
+    """Surface tiles (river water, fords, lava) on the battlefield's 4 m grid: `kind_at(x, z)` names
+    the tile for each cell centre, or None. Unlike `tiles` they may come up to the camps (the sea
+    beside a beach camp), but not within `camp_gap` of a rally; deep tiles keep `road_gap` off
+    the roads (a road over water is a causeway or a bridge) and, unless `ignore_points`, out of
+    the objectives; no tile goes into an open square or onto a prop already placed. Returns
+    tiles placed."""
+    placed = 0
+    n = int(HALF * 2 / 4.0)
+    for gx in range(n):
+        x = -HALF + 4.0 * (gx + 0.5)
+        for gz in range(n):
+            z = -HALF + 4.0 * (gz + 0.5)
+            kind = kind_at(x, z)
+            if kind is None:
+                continue
+            x0, z0, x1, z1 = x - 2.0, z - 2.0, x + 2.0, z + 2.0
+            if any(math.hypot(x - tx, z - tz) < camp_gap for tx, tz in L.teams):
+                continue
+            if any(x1 > c0 and x0 < c1 and z1 > d0 and z0 < d1 for c0, d0, c1, d1 in L.clear):
+                continue
+            deep = PROPS[kind].get('blocks', False)
+            if deep and not ignore_points and any(
+                    math.hypot(min(max(px, x0), x1) - px, min(max(pz, z0), z1) - pz) < r - 1 for px, pz, r in L.points):
+                continue
+            if deep and road_gap is not None and L.near_road(x0, z0, x1, z1, road_gap):
+                continue
+            if not L.fits(x0, z0, x1, z1, 0.0):
+                continue
+            L.force(kind, x, z)
+            placed += 1
+    return placed
+
+
+def poly_band(pts, half):
+    """The outline of a band `half` metres either side of a polyline (for water channels, dunes)."""
+    left, right = [], []
+    for i, (x, z) in enumerate(pts):
+        (ax, az), (bx, bz) = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
+        length = math.hypot(bx - ax, bz - az)
+        nx, nz = -(bz - az) / length, (bx - ax) / length
+        left.append((x + nx * half, z + nz * half))
+        right.append((x - nx * half, z - nz * half))
+    return left + right[::-1]
+
+
+def polyline_distance(x, z, pts):
+    """Distance from a point to a polyline of (x, z) vertices."""
+    return min(segment_distance(x, z, ax, az, bx, bz) for (ax, az), (bx, bz) in zip(pts, pts[1:]))
+
+
+def both_halves(fn, *spots):
+    """Calls fn(x, z, *rest) for every spot (x, z, *rest) and for its mirror image through the centre."""
+    for spot in spots:
+        x, z, *rest = spot
+        fn(x, z, *rest)
+        fn(-x, -z, *rest)
+
+
+def lines_of(L, kind, x0, z0, x1, z1, gap, rot=None, pad=0.2, road_gap=0.5, ignore_points=False, gates=()):
+    """Copies of a prop along a straight line, `gap` metres apart end to end, broken where `gates`
+    ((u0, u1) distances along the line) keeps a way through. Returns pieces placed."""
+    length = math.hypot(x1 - x0, z1 - z0)
+    ux, uz = (x1 - x0) / length, (z1 - z0) / length
+    if rot is None:
+        rot = 0 if abs(ux) >= abs(uz) else 90
+    w, d = Layout.size(kind, rot)
+    along = w if abs(ux) >= abs(uz) else d
+    placed = 0
+    u = along / 2
+    while u <= length - along / 2 + 1e-6:
+        if any(a - along / 2 < u < b + along / 2 for a, b in gates):
+            u += 0.5
+            continue
+        if L.add(kind, x0 + ux * u, z0 + uz * u, rot, pad=pad, road_gap=road_gap, ignore_points=ignore_points):
+            placed += 1
+        u += along + gap
+    return placed
+
+
+def rock_wall(L, x0, x1, line, rows=2, kinds=('cliff_a', 'cliff_b'), seam=0.6, depth=10.3, jitter=1.2, scree=0.35,
+              axis='x'):
+    """A solid band of rock from x0 to x1 along the curve z = line(x) (its near edge): `rows` rows
+    of rock pieces set edge to edge (the obstacle clearance seals the seams), the rows staggered
+    by half a piece, with a little jitter so the face is broken; scree tumbled along the near
+    foot. With axis 'z' the same along x = line(z) from z = x0 to x1. A piece that does not fit
+    (a road, a camp) leaves its place empty. Returns pieces placed."""
+    placed = 0
+    for r in range(rows):
+        u = x0 + (r % 2) * 5.0
+        while True:
+            kind = L.rng.choice(kinds)
+            w, d = Layout.size(kind, 0)
+            along, across = (w, d) if axis == 'x' else (d, w)
+            if u + along > x1 + 1e-6:
+                # The end of the row: the shortest piece that still fits.
+                for kind in sorted(kinds, key=lambda k: Layout.size(k, 0)[0 if axis == 'x' else 1]):
+                    w, d = Layout.size(kind, 0)
+                    along, across = (w, d) if axis == 'x' else (d, w)
+                    if u + along <= x1 + 1e-6:
+                        break
+                else:
+                    break
+            c = u + along / 2
+            # Only the near face is broken (the jitter moves it out, never into the row behind).
+            v = line(c) + r * depth + across / 2 - (L.rng.uniform(0.0, jitter) if r == 0 else 0.0)
+            x, z = (c, v) if axis == 'x' else (v, c)
+            if L.add(kind, x, z, L.rng.choice((0, 180)), pad=0.1, road_gap=1.0):
+                placed += 1
+                u += along + seam
+            else:
+                u += 1.0
+    if scree:
+        u = x0 + 2.0
+        while u < x1 - 2.0:
+            if L.rng.random() < scree:
+                v = line(u) - L.rng.uniform(1.5, 3.0)
+                x, z = (u, v) if axis == 'x' else (v, u)
+                if L.add('boulders', x, z, L.rng.choice((0, 90)), pad=0.1, road_gap=1.0):
+                    placed += 1
+            u += 4.5
+    return placed
+
+
+def landing_shore(x):
+    """Landing Beach's waterline: the sea lies south of it."""
+    return -127.0 + 4.0 * math.sin(x / 29.0 + 0.5) + 2.0 * math.sin(x / 11.0)
+
+
+def landing_bluff(x):
+    """The foot of Landing Beach's bluffs: climbing gently to the east, and set back in the west
+    where the beach widens round the landing camp."""
+    return -60.0 + 0.08 * x + 4.0 * math.sin(x / 37.0) + 20.0 * math.exp(-((x + 112.0) / 34.0) ** 2)
+
+
+def landingbeach(seed=167):
+    """Landing Beach (temperate): the player lands on a long beach along the south shore, with
+    the sea behind the camp, surf at the waterline, rows of hedgehogs and wire on the sand, dunes
+    and a broken sea wall at the top of the beach. A band of rock bluffs closes the beach off;
+    four exits (draws) lead up through it onto the plateau, where the enemy holds the bluff tops, a
+    coastal village round its church square and the hedged fields behind it. The objectives: the
+    beach strongpoint (east), the head of the main draw (centre) and the village square (west)."""
+    beach, village = (58.0, -92.0), (-52.0, 84.0)
+    vx, vz = village
+    points = [(*village, 13.0), (0.0, 0.0, 16.0), (*beach, 13.0)]
+    square = (vx - 17.0, vz - 17.0, vx + 17.0, vz + 17.0)
+    L = world_layout(seed, points, clear=((-8, -8, 8, 8), square))
+    shore, bluff = landing_shore, landing_bluff
+    exits = ((-124.0, -100.0), (-60.0, -40.0), (-14.0, 14.0), (50.0, 72.0))
+
+    # Roads: the beach road along the top of the sand; the main road up the central draw to the
+    # centre and on to the enemy's camp; tracks up the other exits; the village's two streets
+    # and the lanes across the plateau.
+    def along(x):
+        return x, round(bluff(x) - 22.0, 1)
+    L.road(6, *CAMP_0, *along(-112), *along(-80), *along(-50), *along(-20), *along(0), *along(30), *along(61), *along(90),
+           *along(120), *along(148))
+    L.road(5, *along(61), *beach)
+    L.road(7, *along(0), 0, -40, 2, -20, 0, 0, 8, 36, 30, 62, 64, 80, *CAMP_1)
+    L.road(5, *along(-112), -112, -40, -108, -10, -100, 30, -104, 60, -112, 84)
+    L.road(5, *along(-50), -50, -44, -44, -24, -30, -8, 0, 0)
+    L.road(5, *along(61), 62, -34, 70, -20, 84, 10, 100, 60, *CAMP_1)
+    L.road(6, -112, 84, -20, 84, 8, 36)
+    L.road(5, vx, 42, vx, 132)
+    L.road(5, -20, 84, 30, 112, 70, 126)
+    L.road(5, 84, 10, 40, 20, 8, 36)
+
+    # The sea and the surf: deep water off the beach, two tiles of shallows at the waterline, the
+    # landing camp on a spit of sand.
+    def sea(x, z):
+        line = shore(x)
+        if z < line - 7.0:
+            return 'river_water'
+        if z < line:
+            return 'river_ford'
+        return None
+    world_tiles(L, sea, road_gap=None, camp_gap=26.0)
+
+    # The bluffs: a band of rock 18 m deep from the west edge to the east edge, broken only at
+    # the four exits.
+    edges = [-156.0] + [v for pair in exits for v in pair] + [156.0]
+    for x0, x1 in zip(edges[0::2], edges[1::2]):
+        rock_wall(L, x0 + 1.0, x1 - 1.0, lambda x: bluff(x) + 1.0)
+
+    # The beach: hedgehogs in two staggered rows above the surf, wire behind them, dunes, the sea
+    # wall at the top of the sand (broken every 34 m and at every exit), knocked-out vehicles in
+    # the shallows.
+    for row, off in ((0, 8.0), (1, 15.0)):
+        x = -140.0 + row * 13.0
+        while x < 146.0:
+            z = shore(x) + off
+            for k in range(3):
+                L.add('tank_trap', x + k * 3.4, z + (1.2 if k % 2 else -1.2), 0, pad=0.3, road_gap=1.0)
+            x += 28.0
+    x = -134.0
+    while x < 140.0:
+        L.add('razor_wire', x, shore(x) + 22.0, 0, pad=0.3, road_gap=1.0)
+        x += 23.0
+    for x0 in range(-136, 140, 34):
+        z = bluff(x0 + 12) - 10.0
+        if any(a - 8 < x0 + 12 < b + 8 for a, b in exits):
+            continue
+        lines_of(L, 'wall', x0, z, x0 + 25, z, 0.6, pad=0.2, road_gap=1.0)
+    for x in range(-130, 146, 12):
+        z = shore(x) + 27.0 + L.rng.uniform(0.0, max(0.0, bluff(x) - shore(x) - 56.0))
+        for k in range(L.rng.randint(1, 3)):
+            L.add('dirt_mound', x + L.rng.uniform(-4, 4), z + k * 3.5, L.rng.choice((0, 90)), pad=0.3, road_gap=1.0)
+    for kind, x, off, rot in (('wreck_truck', -70.0, 3.0, 90), ('wreck_tank', -20.0, 5.0, 0), ('wreck_truck', 26.0, 4.0, 0),
+                              ('wreck_tank', 96.0, 6.0, 90), ('wreck_car', 128.0, 5.0, 0), ('wreck_tank', -44.0, 13.0, 0)):
+        L.add(kind, x, shore(x) + off, rot, pad=0.8, road_gap=None)
+
+    # The beach strongpoint (east objective): a concrete casemate either side, a command post
+    # behind, sandbags round the middle.
+    bx, bz = beach
+    for dx, dz, kind, rot in ((-19.0, 10.0, 'garage', 0), (20.0, 12.0, 'garage', 0), (0.0, 23.0, 'ruin_tower', 0),
+                              (-8.0, -6.0, 'sandbags', 0), (8.0, 6.0, 'sandbags', 0), (6.0, -8.0, 'sandbags', 90)):
+        L.add(kind, bx + dx, bz + dz, rot, pad=0.6, road_gap=0.6, ignore_points=True)
+    L.scatter('ammo_crate', bx, bz, 3, 10, 4, pad=0.3)
+
+    # The bluff tops: bunkers, trenches and sandbag nests looking down on the beach, a watchtower
+    # at the head of each exit, and the head of the main draw ringed by barriers.
+    for x in (-86.0, -26.0, 30.0, 100.0, 132.0):
+        top = bluff(x) + 37.0
+        L.near('garage', x, top, 4, 0, pad=0.8)
+        L.add('sandbags', x + 9.0, top - 1.0, 0, pad=0.4, road_gap=0.5)
+        L.add('trench_straight', x - 9.0, top + 1.0, 90, pad=0.4, road_gap=0.5)
+    for a, b in exits:
+        L.near('watchtower', b + 9.0, bluff(b) + 30.0, 4, pad=0.6)
+    for dx, dz, kind, rot in ((-12.0, 8.0, 'sandbags', 90), (12.0, -6.0, 'sandbags', 90), (-6.0, -12.0, 'jersey_barrier', 0),
+                              (7.0, 12.0, 'jersey_barrier', 0)):
+        L.add(kind, dx, dz, rot, pad=0.4, road_gap=0.3, ignore_points=True)
+    L.near('radar_station', 26.0, 6.0, 5, 0, pad=0.8)
+    L.near('ruin_tower', -24.0, 14.0, 4, 0, pad=0.8)
+
+    # The coastal village on the plateau: the church on the square (the west objective), houses
+    # facing its two streets either side of the square, a farm on the lanes beyond.
+    L.add('church', vx + 30.0, vz + 22.0, 90, pad=0.6, must=True)
+    houses = ['cottage', 'house_small', 'townhouse', 'house_large', 'cottage', 'shop', 'house_small', 'townhouse']
+    for axis, line, spans in (('x', vz, ((vx - 19.0, -110.0), (vx + 19.0, -24.0))), ('z', vx, ((vz + 19.0, 130.0), (vz - 19.0, 44.0)))):
+        for start, end in spans:
+            for side in (1, -1):
+                kinds = houses[:]
+                L.rng.shuffle(kinds)
+                L.frontage(axis, line, side, start, end, kinds, setback=1.6, road_half=3.0, alley_every=(2, 3), cars=0.3)
+    for x, z, facing in ((-118.0, 118.0, 90), (-4.0, 124.0, 0), (44.0, 50.0, 90), (122.0, -10.0, 270)):
+        L.farmstead(x, z, facing)
+
+    # The bocage: hedgerows round the fields on the plateau, gates where the lanes cross.
+    for x0, z0, x1, z1 in ((-140.0, 16.0, -76.0, 16.0), (-76.0, 16.0, -76.0, 56.0), (-36.0, 20.0, -36.0, 58.0),
+                           (20.0, 10.0, 76.0, 10.0), (100.0, 20.0, 100.0, 44.0), (26.0, 90.0, 26.0, 140.0),
+                           (40.0, -8.0, 120.0, -8.0), (-140.0, -6.0, -80.0, -6.0), (120.0, 30.0, 146.0, 30.0),
+                           (60.0, 100.0, 60.0, 140.0), (-30.0, 104.0, 10.0, 104.0), (-20.0, 40.0, 30.0, 40.0)):
+        hedgerow(L, x0, z0, x1, z1, kind='hedge', gates=(14.0, 34.0), gate=10.0, trees=0.35)
+    for cx, cz, r, d in ((-134.0, 136.0, 12.0, 0.14), (134.0, -30.0, 9.0, 0.12), (-10.0, 142.0, 8.0, 0.1),
+                         (80.0, 40.0, 8.0, 0.1), (-84.0, 30.0, 8.0, 0.1), (134.0, 60.0, 9.0, 0.1)):
+        L.forest(cx, cz, r, d)
+    return finish(L)
+
+
+DAM_Z = 96.0          # the dam's crest road runs along z = 96 ...
+DAM_X = 50.0          # ... from x = -50 to 50
+DAM_HALF = 6.0        # the crest is 12 m of dry concrete
+
+
+def dam_river_x(z):
+    """Hydro Dam's river below the dam: its centre line, running north to south."""
+    return 6.0 * math.sin(z / 31.0) - 0.04 * z
+
+
+def dam_river_half(z):
+    """The river's half width: a narrow gorge below the dam, wider down the valley."""
+    return 9.0 if z > 40.0 else 9.0 + min(3.0, (40.0 - z) / 12.0)
+
+
+def dam_lake_south(x):
+    """The reservoir's south shore west of the dam (it floods everything north of this)."""
+    return 104.0 + 5.0 * math.sin(x / 17.0) + 0.06 * max(0.0, -x - 60.0)
+
+
+def dam_lake_east(z):
+    """The reservoir's east shore, north of the dam's east end."""
+    return 56.0 + 4.0 * math.sin(z / 9.0)
+
+
+def hydrodam(seed=173):
+    """Hydro Dam (temperate): a river valley dammed at its head. The reservoir fills the
+    north-west, held by the dam whose crest road is one crossing; below it the river runs south
+    through a rocky gorge past the power station (west bank, the west objective) and the
+    switchyard (east bank), under the road bridge at the centre (the centre objective) and over a
+    broad ford by a hamlet (east bank, the east objective) out of the valley. The river splits the
+    battlefield: the dam, the bridge and the ford are the only ways across."""
+    station, ford = (-40.0, 64.0), (36.0, -98.0)
+    points = [(*station, 12.0), (0.0, 0.0, 16.0), (*ford, 12.0)]
+    L = world_layout(seed, points)
+    rx, rh = dam_river_x, dam_river_half
+    bridge = (-22.0, -8.5, 22.0, 8.5)
+    ford_z = (-116.0, -84.0)
+
+    # Roads: the valley road from camp to camp over the bridge; the dam road along the west
+    # bank and over the crest to the enemy's camp; the ford road; a road down each bank.
+    L.road(7, *CAMP_0, -80, -60, -52, -12, -30, 0, 30, 0, 52, 12, 80, 60, *CAMP_1)
+    L.road(6, *CAMP_0, -126, -60, -112, 20, -84, 60, -60, 84, -50, DAM_Z, DAM_X, DAM_Z, 70, 98, *CAMP_1)
+    L.road(6, *CAMP_0, -60, -104, -20, -100, 20, -100, *ford, 70, -80, 112, -20, 126, 60, *CAMP_1)
+    L.road(5, *station, -60, 84)
+    L.road(5, -52, -12, -60, 30, *station)
+    L.road(5, 52, 12, 66, 44, 68, 80, 70, 98)
+
+    # The water: the reservoir north of the dam and its shores, the river down the gorge and the
+    # valley, shallows at the ford, and under the bridge (drawn as water beneath the deck).
+    def water(x, z):
+        if abs(x) <= DAM_X + 2.0 and abs(z - DAM_Z) < DAM_HALF:
+            return None                                   # the crest
+        if z > DAM_Z + DAM_HALF - 0.1 and (x < -DAM_X and z > dam_lake_south(x) or -DAM_X <= x < dam_lake_east(z)):
+            return 'river_water'
+        if z < DAM_Z - DAM_HALF and abs(x - rx(z)) < rh(z):
+            if ford_z[0] < z < ford_z[1]:
+                return 'river_ford'
+            if bridge[0] < x < bridge[2] and bridge[1] < z < bridge[3]:
+                return 'river_ford'
+            return 'river_water'
+        return None
+    world_tiles(L, water, road_gap=None, camp_gap=40.0, ignore_points=True)
+    # The bridge deck over the river, two lanes side by side.
+    for x in (-10.0, 10.0):
+        for z in (-4.2, 4.2):
+            L.force('bridge_road', x, z, 90)
+
+    # The dam: its concrete faces either side of the crest, lamps along the crest, the intake
+    # towers on the lake side and the spillway blocks below.
+    for zf in (DAM_Z - DAM_HALF - 0.6, DAM_Z + DAM_HALF + 0.6):
+        x = -DAM_X
+        while x + 8.0 <= DAM_X + 1e-6:
+            L.force('base_wall', x + 4.0, zf, 0)
+            x += 8.0
+    for x in range(-44, 45, 11):
+        L.add('lamp_post', float(x), DAM_Z + 4.6, 0, pad=0.1, road_gap=None, ignore_points=True)
+    for x in (-24.0, 24.0):
+        L.force('water_tower', x, DAM_Z + DAM_HALF + 5.0)
+
+    # West bank, the power station at the foot of the dam: the turbine hall against the gorge,
+    # transformer yard, offices, the penstock pipes down from the dam and its fuel store.
+    sx, sz = station
+    L.add('factory', -21.0, 81.0, 0, pad=0.5, road_gap=0.8, must=True)
+    L.near('warehouse', -66.0, 48.0, 4, 90, pad=0.8)
+    L.near('office_block', -76.0, 90.0, 4, 0, pad=0.8)
+    for z in (72.0, 64.0):
+        L.add('pipeline', -16.0, z, 90, pad=0.3, road_gap=0.5, ignore_points=True)
+    for dx, dz in ((-6.0, -8.0), (6.0, -9.0)):
+        L.add('fuel_tank', sx + dx, sz + dz, 0, pad=0.6, ignore_points=True)
+    L.add('sandbags', sx + 8.0, sz + 2.0, 90, pad=0.4, ignore_points=True)
+    L.scatter('barrel', sx, sz, 3, 10, 5, pad=0.3)
+    L.scatter('truck', sx, sz, 5, 11, 1, pad=0.8)
+
+    # East bank, the switchyard: pylons in rows inside a fence, transformers between them, the
+    # power line marching off east.
+    for i in range(3):
+        for j in range(3):
+            L.add('power_pylon', 28.0 + i * 9.0, 62.0 + j * 9.0, 0, pad=0.3, road_gap=0.8)
+    for x, z in ((32.5, 66.5), (41.5, 75.5)):
+        L.add('container', x, z, 90, pad=0.3, road_gap=0.8)
+    for x0, z0, x1, z1 in ((22.0, 56.0, 58.0, 56.0), (22.0, 88.0, 58.0, 88.0), (22.0, 56.0, 22.0, 88.0)):
+        hedgerow(L, x0, z0, x1, z1, kind='fence', gates=(18.0,), gate=8.0)
+    for k, (x, z) in enumerate(((74.0, 70.0), (100.0, 60.0), (126.0, 50.0))):
+        L.add('power_pylon', x, z, 0, pad=1.0, road_gap=1.5)
+
+    # The gorge: broken rock along both banks below the dam, the valley opening further down.
+    for z, side in ((50.0, -1), (40.0, 1), (30.0, -1)):
+        formation(L, rx(z) + side * (rh(z) + 7.0), z, 'cliff_b', 3, 2)
+    for z in (84.0, 70.0, 56.0):
+        outcrop(L, rx(z) + rh(z) + 5.0, z, 3, 2, pad=0.4)
+    for z, side in ((30.0, 1), (16.0, -1), (-30.0, 1), (-46.0, -1), (-64.0, 1), (-140.0, -1), (-136.0, 1)):
+        outcrop(L, rx(z) + side * (rh(z) + 8.0), z, 5, 3, pad=0.5)
+
+    # The ford: a hamlet on the east bank (the east objective) with a mill, cottages and a jetty,
+    # a farm on the west bank.
+    fx, fz = ford
+    for dx, dz, kind, rot in ((24.0, -18.0, 'barn', 90), (30.0, 10.0, 'cottage', 90), (-2.0, 26.0, 'cottage', 0),
+                              (8.0, -28.0, 'house_small', 0)):
+        L.near(kind, fx + dx, fz + dz, 4, rot, pad=0.8)
+    L.scatter('ammo_crate', fx, fz, 3, 9, 3, pad=0.3)
+    L.add('sandbags', fx - 9.0, fz + 3.0, 90, pad=0.4, ignore_points=True)
+    L.farmstead(-58.0, -128.0, 0)
+
+    # The bridge's approaches: barriers and a checkpoint hut either end.
+    for sign in (1, -1):
+        L.add('jersey_barrier', sign * 26.0, sign * 12.0, 90, pad=0.4, road_gap=0.3, ignore_points=True)
+        L.add('sandbags', sign * 30.0, sign * -11.0, 0, pad=0.4, road_gap=0.3, ignore_points=True)
+        L.near('garage', sign * 40.0, sign * -20.0, 4, 0, pad=0.8)
+
+    # Woods on the valley sides and round the lake, fields and hedges on the valley floor.
+    for cx, cz, r, d in ((-130.0, 84.0, 14.0, 0.18), (-96.0, 20.0, 12.0, 0.16), (-140.0, -10.0, 9.0, 0.14),
+                         (130.0, -84.0, 14.0, 0.18), (96.0, -20.0, 12.0, 0.16), (140.0, 10.0, 9.0, 0.14),
+                         (86.0, 140.0, 10.0, 0.16), (-60.0, 40.0, 8.0, 0.12), (60.0, -40.0, 8.0, 0.12),
+                         (-40.0, -60.0, 8.0, 0.12), (40.0, 30.0, 7.0, 0.1), (-86.0, -130.0, 8.0, 0.12),
+                         (86.0, -130.0, 8.0, 0.12), (-30.0, 130.0, 8.0, 0.1)):
+        L.forest(cx, cz, r, d)
+    for x0, z0, x1, z1 in ((-100.0, -76.0, -40.0, -76.0), (-36.0, -76.0, -36.0, -30.0), (100.0, 76.0, 40.0, 76.0),
+                           (36.0, 30.0, 36.0, 50.0), (-100.0, -20.0, -100.0, 10.0), (100.0, 20.0, 100.0, -10.0)):
+        hedgerow(L, x0, z0, x1, z1, kind='hedge', gates=(14.0,), gate=10.0, trees=0.3)
+    return finish(L)
+
+
+def city_block(L, x0, z0, x1, z1, kinds, gap=1.0, pad=0.3, road_gap=0.8):
+    """Fills a city block with buildings in rows, a metre apart (the obstacle clearance closes the
+    seams, so the block is one solid mass with its streets round it), each the biggest of `kinds`
+    that still fits the room left. Returns buildings placed."""
+    placed = 0
+    z = z0
+    while z < z1 - 5.0:
+        x, depth = x0, 0.0
+        while x < x1 - 5.0:
+            options = [(k, r) for k in kinds for r in (0, 90)]
+            L.rng.shuffle(options)
+            smallest = min(Layout.size(k, 0)[0] for k in kinds) + gap
+
+            def fill(o):
+                # Pieces that leave either no room at the end of the row or room for another first.
+                left = x1 - x - Layout.size(*o)[0]
+                return 0 if left < 3.0 or left >= smallest else 1
+            options.sort(key=fill)
+            for kind, rot in options:
+                w, d = Layout.size(kind, rot)
+                if x + w > x1 + 1e-6 or z + d > z1 + 1e-6 or (depth and d > depth + 3.0):
+                    continue
+                if L.add(kind, x + w / 2, z + d / 2, rot, pad=pad, road_gap=road_gap):
+                    placed += 1
+                    x += w + gap
+                    depth = max(depth, d)
+                    break
+            else:
+                x += 2.0
+        z += (depth or 4.0) + gap
+    return placed
+
+
+def capital(seed=179):
+    """Capital (urban): the government quarter stands on an island between two arms of the river,
+    joined to each bank by one bridge: the west bridge over the north arm and the east bridge over
+    the south arm, so every way across goes over the island. On the island the Mall, a boulevard
+    lined with trees, runs through the palace square (the centre objective) between the palace
+    (north) and the domed parliament (south), with ministries along it. On the banks, dense blocks
+    of offices, flats, shops and towers between avenues; a boulevard from each bridge to the
+    royal gardens on the north bank (the west objective) or the central station's square on the
+    south bank (the east objective), a park, and a plaza by each camp. The streets, the river and
+    the blocks mirror through the centre."""
+    gardens, station = (-84.0, 100.0), (84.0, -100.0)
+    points = [(*gardens, 13.0), (0.0, 0.0, 16.0), (*station, 13.0)]
+    square = (-28.0, -12.0, 28.0, 12.0)
+    plazas = ((62.0, -122.0, 106.0, -80.0), (-106.0, 80.0, -62.0, 122.0))
+    L = world_layout(seed, points, clear=(square,) + plazas)
+    arm = (36.0, 52.0)                       # the arms of the river: z = 36..52 and -52..-36
+    bridges = [(-84.0, 1), (84.0, -1)]       # (x, which arm: 1 north, -1 south)
+
+    def at(sign, x, z):
+        return sign * x, sign * z
+
+    def box(sign, x0, z0, x1, z1):
+        (a, b), (c, d) = at(sign, x0, z0), at(sign, x1, z1)
+        return min(a, c), min(b, d), max(a, c), max(b, d)
+
+    # Streets, the same on either half: the Mall on the island and its cross streets; on each
+    # bank the embankment, the avenue, the cross streets and the boulevard from its bridge.
+    L.road(24, -146, 0, -30, 0)                                                         # the Mall, either
+    L.road(24, 30, 0, 146, 0)                                                           # side of the square
+    for x in (-120, -36, 36, 120):
+        for z in (1, -1):
+            L.road(10, x, 12 * z, x, 34 * z)
+    for sign in (1, -1):
+        L.road(20, *at(sign, 84, -12), *at(sign, 84, -60))                               # bridge street and bridge
+        L.road(10, *at(sign, -146, -60), *at(sign, 146, -60))                            # embankment
+        L.road(16, *at(sign, -58, -104), *at(sign, 60, -104))                            # avenue, either side
+        L.road(16, *at(sign, 108, -104), *at(sign, 146, -104))                           # of the square
+        L.road(12, *at(sign, 60, -104), *at(sign, 60, -118), *at(sign, 108, -118), *at(sign, 108, -104))
+        L.road(24, *at(sign, 84, -60), *at(sign, 84, -78))                               # the boulevard
+        for x in (0, 40, 124):
+            L.road(12, *at(sign, x, -60), *at(sign, x, -146))                            # cross streets
+        L.road(12, *at(sign, -40, -60), *at(sign, -40, -104))
+    L.road(10, *CAMP_0, -96, -60)
+    L.road(10, *CAMP_0, -58, -104)
+    L.road(10, *CAMP_1, 96, 60)
+    L.road(10, *CAMP_1, 58, 104)
+
+    # The river: two arms from the west edge to the east edge, water under each bridge's deck.
+    def water(x, z):
+        if not arm[0] <= abs(z) <= arm[1]:
+            return None
+        for bx, which in bridges:
+            if abs(x - bx) < 13.0 and z * which > 0:
+                return 'river_ford'
+        return 'river_water'
+    world_tiles(L, water, road_gap=None, camp_gap=30.0)
+    for bx, which in bridges:
+        for dx in (-8.35, 0.0, 8.35):
+            L.force('bridge_road', bx + dx, which * 44.0, 0)
+
+    # The palace (north of the square) and the domed parliament (south), wing to wing.
+    L.add('apartment', 0.0, 27.0, 0, pad=0.3, road_gap=0.5, must=True)
+    for x in (-14.2, 14.2):
+        L.add('office_block', x, 27.0, 0, pad=0.3, road_gap=0.5, must=True)
+    L.add('radar_dome', 0.0, -25.0, 0, pad=0.3, road_gap=0.5, must=True)
+    for x in (-10.2, 10.2):
+        L.add('office_block', x, -27.0, 0, pad=0.3, road_gap=0.5, must=True)
+    for x in (-24.0, 24.0):
+        L.add('apartment', x, -23.0, 90, pad=0.3, road_gap=0.5)
+    # The ministries along the Mall, and its avenue trees.
+    kinds_ministry = ('office_block', 'apartment', 'townhouse', 'shop')
+    for sign in (1, -1):
+        for x0, z0, x1, z1 in ((42.5, 13.5, 113.5, 34.0), (126.5, 13.5, 147.0, 34.0), (42.5, -34.0, 72.5, -13.5),
+                               (95.5, -34.0, 113.5, -13.5), (126.5, -34.0, 147.0, -13.5)):
+            city_block(L, *box(sign, x0, z0, x1, z1), kinds_ministry)
+    for x in range(-136, 137, 12):
+        if abs(x) > 30:
+            for z in (10.0, -10.0):
+                L.add('tree', float(x), z, 0, pad=0.2, road_gap=None)
+
+    # The banks: blocks of flats, offices, shops and towers between the streets (round the
+    # gardens the blocks give way to the park), a park by the embankment, the camp plaza.
+    kinds_bank = ('apartment', 'office_block', 'highrise_a', 'highrise_b', 'shop', 'townhouse', 'skyscraper')
+    for sign in (1, -1):
+        blocks = [(7.0, -94.5, 33.0, -66.5), (47.0, -94.5, 70.5, -66.5), (97.5, -94.5, 117.0, -66.5),
+                  (131.0, -94.5, 147.0, -66.5), (-44.5, -147.0, -7.0, -113.5), (7.0, -147.0, 33.0, -113.5),
+                  (47.0, -147.0, 52.5, -113.5), (115.5, -147.0, 117.0, -113.5), (131.0, -147.0, 147.0, -113.5)]
+        for b in blocks:
+            city_block(L, *box(sign, *b), kinds_bank)
+        for u in range(-46, -8, 5):
+            for v in (-70.0, -92.0):
+                L.add('tree', *at(sign, float(u), v), 0, pad=0.2, road_gap=0.5)
+        for v in range(-88, -71, 5):
+            for u in (-46.0, -10.0):
+                L.add('tree', *at(sign, u, float(v)), 0, pad=0.2, road_gap=0.5)
+        for u, v, rot in ((-28.0, -76.0, 0), (-28.0, -86.0, 0), (-36.0, -81.0, 90), (-20.0, -81.0, 90)):
+            L.add('hedge', *at(sign, u, v), rot, pad=0.2, road_gap=0.5)
+        # Boulevard trees and street furniture, buses and parked cars.
+        for v in range(-66, -92, -8):
+            for u in (74.5, 93.5):
+                L.add('tree', *at(sign, u, float(v)), 0, pad=0.2, road_gap=None)
+        for u in range(-50, 147, 16):
+            for v in (-54.0, -66.0, -95.0, -113.0):
+                L.add('lamp_post', *at(sign, float(u), v), 0, pad=0.2, road_gap=0.1)
+        for u, v, rot in ((20.0, -100.0, 0), (104.0, -100.0, 0), (60.0, -57.0, 0), (-3.5, -130.0, 90), (127.5, -84.0, 90)):
+            L.add('bus', *at(sign, u, v), rot, pad=0.4, road_gap=None)
+        for u, v, rot in ((-30.0, -108.0, 0), (30.0, -108.0, 0), (130.0, -108.0, 0), (43.5, -80.0, 90), (3.5, -76.0, 90),
+                          (120.5, -128.0, 90), (60.0, -63.0, 0), (-20.0, -63.0, 0)):
+            L.add('car', *at(sign, u, v), rot, pad=0.4, road_gap=None)
+        for u, v in ((0.0, -60.0), (40.0, -60.0), (124.0, -60.0), (0.0, -104.0), (40.0, -104.0), (124.0, -104.0)):
+            for du, dv in ((-9.0, -9.0), (9.0, 9.0)):
+                L.add('traffic_light', *at(sign, u + du, v + dv), 0, pad=0.2, road_gap=0.1)
+        for u, v in ((-124.0, -80.0), (-80.0, -130.0), (-134.0, -134.0)):
+            L.forest(*at(sign, u, v), 6, 0.1)
+
+    # The west objective, the royal gardens: hedged parterres and tree walks round a lawn, the
+    # chapel and the orangery behind.
+    gx, gz = gardens
+    for dx in (-24.0, -12.0, 12.0, 24.0):
+        for dz in (-20.0, 20.0):
+            L.add('hedge', gx + dx, gz + dz, 0, pad=0.2, road_gap=0.5)
+    for dz in (-12.0, 0.0, 12.0):
+        for dx in (-30.0, 30.0):
+            L.add('hedge', gx + dx, gz + dz, 90, pad=0.2, road_gap=0.5)
+    for u in range(-36, 37, 6):
+        for v in (-28.0, 28.0):
+            L.add('tree', gx + u, gz + v, 0, pad=0.2, road_gap=0.5)
+    L.near('church', gx, gz + 40.0, 3, 90, pad=0.8)
+    L.forest(gx - 44.0, gz + 2.0, 8, 0.12)
+    # The east objective, the central station: the train hall behind the square, offices either
+    # side, buses and taxis on the square.
+    sx, sz = station
+    L.near('warehouse', sx, sz - 38.0, 3, 0, pad=0.8)
+    for x in (sx - 18.0, sx + 18.0):
+        L.near('office_block', x, sz - 38.0, 2, 0, pad=0.8)
+    for x in (sx - 16.0, sx + 16.0):
+        L.add('bus', x, sz + 2.0, 90, pad=0.4, road_gap=None, ignore_points=True)
+    for dx, dz in ((-6.0, 8.0), (6.0, 8.0), (-8.0, -6.0), (8.0, -6.0)):
+        L.add('car', sx + dx, sz + dz, 0, pad=0.4, road_gap=None, ignore_points=True)
+
+    # The palace square: planters, lamps and barricades thrown up across the Mall.
+    for dx, dz, kind, rot in ((-20.0, 8.0, 'jersey_barrier', 90), (20.0, -8.0, 'jersey_barrier', 90), (-8.0, 0.0, 'sandbags', 90),
+                              (8.0, 0.0, 'sandbags', 90), (-14.0, -9.0, 'tree', 0), (14.0, 9.0, 'tree', 0)):
+        L.force(kind, dx, dz, rot)
+    return finish(L)
+
+
+LAUNCH_FENCE = 104.0      # the perimeter fence runs along x and z = +-104
+
+
+def launchsite(seed=181):
+    """Silver Bug launch site (desert): a secret launch complex behind a perimeter fence of razor
+    wire, gated where the roads come in. At the centre the launch pad (the centre objective): the
+    rocket standing between two umbilical gantries, flame pits either side, blockhouses round it.
+    Two rail lines come in to the pad, mirrored: from the assembly building in the north-west (the
+    west objective), where the rocket's stages wait on their transporter, and from the propellant
+    farm in the south-east (the east objective) with its tank train. Radar dishes and a tracking
+    station stand between the pad and each camp; a perimeter road runs inside the fence."""
+    vab, farm = (-50.0, 80.0), (50.0, -80.0)
+    points = [(*vab, 13.0), (0.0, 0.0, 16.0), (*farm, 13.0)]
+    L = world_layout(seed, points, clear=((-6, -6, 6, 6),))
+    f = LAUNCH_FENCE
+
+    def at(sign, x, z):
+        return sign * x, sign * z
+
+    # Roads: from each camp through its gate to the pad, the perimeter road inside the fence,
+    # service roads to the assembly building and the farm; the two rail lines.
+    for sign in (1, -1):
+        L.road(8, *at(sign, -58 * S, -58 * S), *at(sign, -88, -88), *at(sign, -40, -40), *at(sign, -14, -14))
+        L.road(6, *at(sign, -96, -96), *at(sign, 96, -96))
+        L.road(6, *at(sign, -96, -96), *at(sign, -96, 96))
+        L.road(6, *at(sign, -40, -40), *at(sign, 20, -60), *at(sign, *farm))
+        L.road(6, *at(sign, -40, -40), *at(sign, -70, 10), *at(sign, -96, 40))
+        L.road(6, *at(sign, 96, -40), *at(sign, 124, -30), *at(sign, 146, -26))           # side gates
+        L.road(6, *at(sign, 40, -96), *at(sign, 30, -124), *at(sign, 26, -146))
+        L.road(3, *at(sign, -80, 150), *at(sign, -80, 30), *at(sign, -16, 30))                       # the rail line
+
+    # The launch pad: the rocket (a tall stack) on the north edge of the apron with the fixed
+    # service gantry behind it, the mobile service tower drawn back to the south edge, flame pits
+    # either side of the rocket, propellant tanks, blockhouses and sandbag walls round the apron.
+    L.add('refinery_tower', 0.0, 12.0, 0, pad=0.3, road_gap=None, ignore_points=True, must=True)
+    L.add('gantry_crane', 0.0, 21.0, 0, pad=0.3, road_gap=None, ignore_points=True, must=True)
+    L.add('gantry_crane', 0.0, -22.0, 0, pad=0.3, road_gap=None, ignore_points=True, must=True)
+    L.add('tank_ditch', 0.0, 3.5, 90, pad=0.3, road_gap=None, ignore_points=True)
+    for sign in (1, -1):
+        L.add('crater_large', sign * 30.0, sign * 30.0, 0, pad=0.3, road_gap=None)
+        for x, z in ((-40.0, 28.0), (36.0, 40.0)):
+            L.add('fuel_tank', *at(sign, x, z), 0, pad=0.6, road_gap=0.5)
+        for x, z, rot in ((-46.0, 12.0, 0), (42.0, -14.0, 90)):
+            L.near('garage', *at(sign, x, z), 6, rot, pad=0.8)
+        L.add('sandbag_wall', *at(sign, -26.0, 40.0), 0, pad=0.4, road_gap=0.5)
+
+    # The rail lines: the rocket's stages on their transporter by the pad, wagons in the sidings.
+    for sign in (1, -1):
+        transporter = ['rail_tanker', 'rail_tanker', 'rail_boxcar']
+        if sign > 0:
+            train(L, 30.0, -60.0, -20.0, transporter, gap=(0.6, 0.8))
+            train(L, None, 112.0, 148.0, ['rail_boxcar', 'rail_boxcar', 'rail_tanker'], gap=(0.8, 1.4), rot=90, x=-80.0)
+        else:
+            train(L, -30.0, 20.0, 60.0, ['rail_tanker', 'rail_tanker', 'rail_tanker'], gap=(0.6, 0.8))
+            train(L, None, -148.0, -112.0, ['rail_tanker', 'rail_tanker', 'rail_boxcar'], gap=(0.8, 1.4), rot=90, x=80.0)
+
+    # West, the assembly building: the tall hall the rail line runs into, offices and a crane.
+    vx, vz = vab
+    L.add('hangar', -80.0, 84.0, 90, pad=0.8, road_gap=None, must=True)
+    L.near('office_block', vx + 10.0, vz - 24.0, 6, 0, pad=0.8)
+    L.near('warehouse', vx + 30.0, vz + 4.0, 6, 0, pad=0.8)
+    L.add('gantry_crane', -80.0, 56.0, 90, pad=0.5, road_gap=None)
+    L.scatter('ammo_crate', vx, vz, 3, 10, 4, pad=0.3)
+    # East, the propellant farm: storage tanks, fuel tanks and pipes.
+    fx, fz = farm
+    for x, z in ((61.5, -58.0), (72.5, -58.0), (72.5, -47.0)):
+        L.add('storage_tank', x, z, 0, pad=0.8, road_gap=0.8)
+    for dx, dz in ((20.0, 6.0), (-20.0, 8.0)):
+        L.add('fuel_tank', fx + dx, fz + dz, 0, pad=0.6, road_gap=0.5)
+    L.add('pipeline', fx + 12.0, fz - 8.0, 0, pad=0.3, road_gap=0.5, ignore_points=True)
+    L.add('pipeline', fx - 12.0, fz - 8.0, 0, pad=0.3, road_gap=0.5, ignore_points=True)
+    L.scatter('barrel', fx, fz, 3, 10, 6, pad=0.3)
+
+    # Radar dishes and a tracking station between the pad and each camp, mirrored.
+    for sign in (1, -1):
+        for x, z in ((-66.0, -26.0), (-82.0, -6.0), (-54.0, -54.0)):
+            L.near('radar_station', *at(sign, x, z), 8, 0, pad=0.8)
+        L.near('radar_dome', *at(sign, -8.0, -58.0), 8, 0, pad=0.8)
+        L.near('office_block', *at(sign, 30.0, -76.0), 6, 0, pad=0.8)
+        L.near('ammo_dump', *at(sign, -20.0, -62.0), 4, 0, pad=0.8)
+        L.near('watchtower', *at(sign, -f + 16.0, 60.0), 4, pad=0.6)
+        L.near('watchtower', *at(sign, 60.0, -f + 16.0), 4, pad=0.6)
+
+    # The perimeter fence: razor wire along x and z = +-104, gated wherever a road crosses it and
+    # at the camps' corners.
+    for sign in (1, -1):
+        for axis in ('x', 'z'):
+            u = -f
+            while u + 8.0 <= f + 1e-6:
+                x, z = (u + 4.0, -f) if axis == 'x' else (-f, u + 4.0)
+                L.add('razor_wire', *at(sign, x, z), 0 if axis == 'x' else 90, pad=0.1, road_gap=2.0)
+                u += 9.0
+
+    # The desert round the complex: rock formations, scrub, a few palms by the offices.
+    for sign in (1, -1):
+        for kind, x, z in (('mesa', -128.0, 40.0), ('cliff_b', -40.0, -128.0), ('mesa', 20.0, 128.0), ('cliff_b', -128.0, -20.0)):
+            formation(L, *at(sign, x, z), kind, 8, 3)
+        for x, z in ((-86.0, -30.0), (-30.0, -86.0), (-70.0, 80.0), (10.0, -80.0), (-84.0, 10.0)):
+            outcrop(L, *at(sign, x, z), 5, 3, pad=0.6)
+        for x, z, r in ((-120.0, 90.0, 8.0), (80.0, -130.0, 7.0), (-10.0, 120.0, 6.0)):
+            L.forest(*at(sign, x, z), r, 0.1, kind='cactus')
+    return finish(L)
+
+
+def saltflat(seed=163):
+    """Salt Flats (desert): open salt flats with long sight lines for the guns and missiles, broken
+    only by a few rock clusters set as stepping stones along the approaches, so short-range
+    vehicles can close in from cover to cover. A salt works and a brine pumping station hold the
+    side objectives (the same ground, mirrored), a survey beacon the centre."""
+    west, east = (-56.0, 88.0), (56.0, -88.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=((-6, -6, 6, 6),))
+
+    # Tracks across the flat: camp to camp over the beacon, the cross track from the works to the
+    # pumps, and each camp's track out to its nearer objective.
+    L.road(6, *CAMP_0, -60, -60, 60, 60, *CAMP_1)
+    L.road(5, *west, -30, 42, 30, -42, *east)
+    L.road(5, -96, -86, -40, -94, *east)
+    L.road(5, 96, 86, 40, 94, *west)
+
+    # The survey beacon at the centre: a mast, the survey huts, a weather radar either side, and
+    # sandbags dug in round them.
+    L.add('radio_mast', 3.5, 9.0, 0, pad=0.5, road_gap=0.5, ignore_points=True)
+    for x, z, kind, rot in ((-24.0, 17.0, 'radar_station', 0), (-9.0, 6.0, 'container', 90), (6.0, -12.0, 'container', 0),
+                            (12.0, 4.0, 'sandbags', 90), (-4.0, 13.0, 'sandbags', 0)):
+        for sx, sz in ((x, z), (-x, -z)):
+            L.add(kind, sx, sz, rot, pad=0.5, road_gap=0.4, ignore_points=True)
+
+    # The works and the pumps: the same ground mirrored, the sheds and tanks beyond the objective
+    # (away from the centre) and behind it, the flanks left open for the outposts. Salt heaps and
+    # the evaporation pans' low walls at the works; pump jacks and a pipeline at the pumps.
+    for sign, works in ((1, True), (-1, False)):
+        px, pz = west if works else east
+
+        def at(dx, dz):
+            return px + sign * dx, pz + sign * dz
+        L.near('warehouse' if works else 'factory', *at(-6.0, 30.0), 3, 0, pad=0.8)
+        L.near('garage', *at(22.0, 22.0), 3, 0, pad=0.8)
+        L.near('storage_tank', *at(-30.0, 8.0), 3, 0, pad=0.8)
+        for dx, dz in ((-6.0, 6.0), (7.0, -4.0)):
+            if works:
+                L.add('dirt_mound', *at(dx, dz), 0, pad=0.4, road_gap=0.4, ignore_points=True)
+            else:
+                L.add('oil_pump', *at(dx, dz), 0, pad=0.8, road_gap=0.6, ignore_points=True)
+        if works:
+            for dz in (44.0, 50.0):
+                lines_of(L, 'stone_wall', *at(-24.0, dz), *at(8.0, dz), 1.5, pad=0.2)
+        else:
+            lines_of(L, 'pipeline', *at(-26.0, 46.0), *at(8.0, 46.0), 2.0, pad=0.3)
+        L.scatter('barrel', px, pz, 3, 10, 5, pad=0.3)
+        L.scatter('ammo_crate', px, pz, 3, 10, 3, pad=0.3)
+
+    # The rock clusters: stepping stones 40-60 m apart along every approach (the straight run
+    # between the camps stays open), a mesa or a cliff with scree at its foot, or a boulder heap.
+    # The same on either half, mirrored through the centre.
+    stones = (
+        # camp to the beacon, either side of the track
+        ('mesa', -110.0, -58.0), ('cliff_b', -58.0, -110.0), ('boulders', -58.0, -26.0), ('boulders', -26.0, -58.0),
+        # out along the west flank to the far objective
+        ('cliff_b', -118.0, 6.0), ('mesa', -104.0, 70.0),
+        # to the near objective
+        ('cliff_a', 4.0, -120.0),
+        # the middle of the flanks, between the objectives and the beacon
+        ('mesa', -62.0, 34.0), ('boulders', -24.0, 60.0),
+    )
+    for kind, x, z in stones:
+        for sx, sz in ((x, z), (-x, -z)):
+            if kind == 'boulders':
+                outcrop(L, sx, sz, 5, 4, pad=0.6)
+            else:
+                formation(L, sx, sz, kind, 8, 3)
+    return finish(L)
+
+
+def border_bank(x):
+    """Border Bridge's river: its north bank (the south bank is the mirror image, -border_bank(-x)).
+    The river is 50 m across, narrowing to 24 m at the Great Bridge (a bridge is built at the
+    narrows)."""
+    return 24.0 + 3.0 * math.sin(x / 25.0) - 12.0 * math.exp(-(x / 30.0) ** 2)
+
+
+def borderbridge(seed=191):
+    """Border Bridge (temperate): a broad river on the border runs across the battlefield from
+    west to east. The Great Bridge carries the highway over it at the centre (the centre
+    objective), a border post at either end; the only other ways across are long detours at the
+    far flanks: a ford in the west and a narrow old bridge in the east. A border village holds the
+    north bank (the west objective), the customs depot the south bank (the east objective)."""
+    village, depot = (-60.0, 84.0), (60.0, -84.0)
+    points = [(*village, 13.0), (0.0, 0.0, 14.0), (*depot, 13.0)]
+    L = world_layout(seed, points)
+    great = (-22.0, 22.0)                     # the Great Bridge's span of the river (x)
+    small = (116.0, 128.0)                    # the old bridge's (the east flank)
+    ford = (-138.0, -112.0)                   # the ford's (the west flank)
+
+    # Roads: the highway over the Great Bridge from camp to camp, the embankment road along each
+    # bank, the detour roads out to the ford and the old bridge, and lanes to the objectives.
+    L.road(10, *CAMP_0, -70, -70, -8, -40, 0, -30, 0, 30, 8, 40, 70, 70, *CAMP_1)
+    for sign in (1, -1):
+        L.road(6, -146 * sign, -38 * sign, 146 * sign, -38 * sign)
+    L.road(6, -125, -38, -125, 38)                                                     # the ford track
+    L.road(5, 122, -38, 122, 38)                                                       # the old bridge
+    L.road(6, *CAMP_0, -118, -60, -125, -38)
+    L.road(6, *CAMP_1, 118, 60, 122, 38)
+    L.road(6, *CAMP_0, -40, -110, 20, -96, *depot, 100, -60, 122, -38)
+    L.road(6, *CAMP_1, 40, 110, -20, 96, *village, -100, 60, -125, 38)
+    L.road(5, *village, -40, 50, -8, 40)
+    L.road(5, *depot, 40, -50, 8, -40)
+
+    # The river: deep water from edge to edge, fords at the ford, water drawn under both
+    # bridges' decks.
+    def water(x, z):
+        if not -border_bank(-x) < z < border_bank(x):
+            return None
+        if ford[0] < x < ford[1] or great[0] < x < great[1] or small[0] < x < small[1]:
+            return 'river_ford'
+        return 'river_water'
+    world_tiles(L, water, road_gap=None, camp_gap=40.0, ignore_points=True)
+    for x in (-16.7, -8.35, 0.0, 8.35, 16.7):
+        for z in (-10.0, 10.0):
+            L.force('bridge_road', x, z, 0)
+    for z in (-20.0, 0.0, 20.0):
+        L.force('bridge_road', 122.0, z, 0)
+
+    # Keep the decks and the ford clear of the battlefield dressing that follows.
+    L.clear = ((great[0], -20.0, great[1], 20.0), (small[0], -26.0, small[1], 26.0), (ford[0], -26.0, ford[1], 26.0))
+
+    # The border posts at either end of the Great Bridge: customs houses, barrier booths, a
+    # watchtower and the flag masts, mirrored.
+    for sign in (1, -1):
+        def at(x, z, s=sign):
+            return s * x, s * z
+        L.add('checkpoint', *at(-14.0, -46.0), 0, pad=0.4, road_gap=0.3)
+        L.add('checkpoint', *at(14.0, -50.0), 180, pad=0.4, road_gap=0.3)
+        L.near('office_block', *at(-34.0, -58.0), 5, 0, pad=0.8)
+        L.near('garage', *at(30.0, -60.0), 5, 0, pad=0.8)
+        L.near('watchtower', *at(-26.0, -46.0), 4, pad=0.6)
+        for x in (-6.0, 6.0):
+            L.add('floodlight_mast', *at(x, -33.0), 0, pad=0.3, road_gap=0.2)
+        for x in range(-60, 61, 12):
+            if abs(x) > 24:
+                L.add('fence', *at(float(x), -31.0), 0, pad=0.2, road_gap=0.5)
+        L.add('jersey_barrier', *at(-16.0, -64.0), 90, pad=0.4, road_gap=0.3)
+        L.add('jersey_barrier', *at(16.0, -66.0), 90, pad=0.4, road_gap=0.3)
+        # The old bridge's and the ford's posts: a sandbagged hut each.
+        L.near('garage', *at(136.0, -50.0), 4, 0, pad=0.8)
+        L.add('sandbags', *at(112.0, -46.0), 0, pad=0.4, road_gap=0.5)
+        L.near('garage', *at(-104.0, -52.0), 4, 0, pad=0.8)
+
+    # The border village (north bank): houses round its green, a church, a farm.
+    vx, vz = village
+    L.add('church', vx + 2.0, vz + 30.0, 90, pad=0.6)
+    for dx, dz, kind, rot in ((-26.0, 12.0, 'cottage', 90), (-24.0, -12.0, 'house_small', 90), (26.0, 14.0, 'townhouse', 270),
+                              (24.0, -14.0, 'cottage', 270), (-4.0, -26.0, 'house_small', 0), (-30.0, 34.0, 'barn', 0),
+                              (32.0, 36.0, 'house_large', 0)):
+        L.near(kind, vx + dx, vz + dz, 4, rot, pad=0.8)
+    L.farmstead(-114.0, 118.0, 90)
+    # The customs depot (south bank): warehouses, a truck park and containers, trucks at the gate.
+    dx0, dz0 = depot
+    for dx, dz, kind, rot in ((0.0, -30.0, 'warehouse', 0), (-28.0, -14.0, 'warehouse', 90), (28.0, 14.0, 'office_block', 0),
+                              (26.0, -16.0, 'container_stack', 90), (30.0, -6.0, 'container_stack', 90), (-26.0, 16.0, 'garage', 0)):
+        L.near(kind, dx0 + dx, dz0 + dz, 4, rot, pad=0.8)
+    L.scatter('truck', dx0, dz0, 5, 11, 3, pad=0.8)
+    L.scatter('ammo_crate', dx0, dz0, 3, 10, 4, pad=0.3)
+    L.farmstead(114.0, -118.0, 270)
+
+    # The banks: hedged fields, woods on the flanks, a line of poplars along each embankment.
+    for sign in (1, -1):
+        for x0, z0, x1, z1 in ((-100.0, -70.0, -40.0, -70.0), (40.0, -60.0, 100.0, -60.0), (-90.0, -130.0, -90.0, -84.0),
+                               (80.0, -140.0, 80.0, -100.0), (-40.0, -140.0, -40.0, -100.0)):
+            hedgerow(L, sign * x0, sign * z0, sign * x1, sign * z1, kind='hedge', gates=(14.0,), gate=10.0, trees=0.3)
+        for x, z, r, d in ((-136.0, -86.0, 10.0, 0.16), (-70.0, -130.0, 9.0, 0.14), (100.0, -130.0, 8.0, 0.12),
+                           (136.0, -70.0, 9.0, 0.14), (-20.0, -120.0, 7.0, 0.1)):
+            L.forest(sign * x, sign * z, r, d)
+        for x in range(-140, 141, 9):
+            L.add('tree', float(x), sign * -45.0, 0, pad=0.2, road_gap=1.0)
+    return finish(L)
+
+
+class Archipelago:
+    """Dry ground in water, for the swamp and the islands: hummocks or islands (discs with a
+    wobbly shore), the camps' own ground (squares round the rallies), causeways (bands along
+    polylines) and bridges (bands of shallows under a deck across a channel, from one end to the
+    other); everything else is deep water. Given for one half of the battlefield and mirrored
+    through the centre. `beach` rings every island with that many metres of shallows (walkable
+    sand at the water's edge)."""
+
+    def __init__(self, discs, causeways, bridges, camp_half=50.0, beach=0.0, seed=1):
+        self.discs = discs + [(-x, -z, r) for x, z, r in discs if (x, z) != (0.0, 0.0)]
+        self.causeways = causeways + [([(-x, -z) for x, z in pts], half) for pts, half in causeways]
+        self.bridges = bridges + [((-a[0], -a[1]), (-b[0], -b[1]), half) for a, b, half in bridges]
+        self.camp_half = camp_half
+        self.beach = beach
+        self.seed = seed
+
+    def shore(self, x, z, cx, cz, r):
+        """How far inside the disc's wobbly shore a point is (negative outside)."""
+        a = math.atan2(z - cz, x - cx)
+        k = cx * 0.13 + cz * 0.07 + self.seed
+        wobble = 1.0 + 0.1 * math.sin(3 * a + k) + 0.06 * math.sin(5 * a - 2 * k)
+        return r * wobble - math.hypot(x - cx, z - cz)
+
+    def island_depth(self, x, z):
+        """Metres inside the islands and camps' ground (the largest over them), negative outside."""
+        best = -1e9
+        for cx, cz in (CAMP_0, CAMP_1):
+            best = max(best, self.camp_half - max(abs(x - cx), abs(z - cz)))
+        for cx, cz, r in self.discs:
+            best = max(best, self.shore(x, z, cx, cz, r))
+        return best
+
+    def depth(self, x, z):
+        """Metres inside the dry ground (the largest over every shape), negative in the water."""
+        best = self.island_depth(x, z)
+        for pts, half in self.causeways:
+            best = max(best, half - polyline_distance(x, z, pts))
+        return best
+
+    def in_bridge(self, x, z):
+        for (ax, az), (bx, bz), half in self.bridges:
+            length = math.hypot(bx - ax, bz - az)
+            ux, uz = (bx - ax) / length, (bz - az) / length
+            u = (x - ax) * ux + (z - az) * uz
+            if -1.0 <= u <= length + 1.0 and abs((x - ax) * uz - (z - az) * ux) < half:
+                return True
+        return False
+
+    def tile(self, x, z):
+        """The surface tile for the 4 m cell centred on (x, z), or None for dry ground."""
+        if self.in_bridge(x, z):
+            return 'river_ford'
+        if self.depth(x, z) >= 0.0:
+            return None
+        # Beaches ring the islands, not the causeways (they keep their width).
+        return 'river_ford' if self.island_depth(x, z) > -self.beach else 'river_water'
+
+    def lay(self, L):
+        """Lays the water, and a deck along every bridge (lanes side by side, end to end)."""
+        world_tiles(L, self.tile, road_gap=None, camp_gap=40.0, ignore_points=True)
+        for (ax, az), (bx, bz), half in self.bridges:
+            length = math.hypot(bx - ax, bz - az)
+            ux, uz = (bx - ax) / length, (bz - az) / length
+            rot = round(math.degrees(math.atan2(ux, uz))) % 180
+            lanes = max(1, int(round(half * 2 / 8.35)))
+            pieces = max(1, int(math.ceil((length + 2.0) / 20.0)))
+            cx, cz = (ax + bx) / 2, (az + bz) / 2
+            for i in range(lanes):
+                for k in range(pieces):
+                    u = (k - (pieces - 1) / 2) * 20.0
+                    v = (i - (lanes - 1) / 2) * 8.35
+                    L.force('bridge_road', round(cx + ux * u + uz * v, 2), round(cz + uz * u - ux * v, 2), rot)
+
+    def dry(self, x, z, margin=0.0):
+        return self.depth(x, z) >= margin and not self.in_bridge(x, z)
+
+
+def swamp_layout():
+    """Swamp's hummocks, causeways and bridges (one half; the other is its mirror image). The
+    causeways and bridges run square to the 4 m water grid and on it, so their width is exact:
+    12 m of dry ground (four walkable 2 m cells, the obstacle clearance off either bank) for a
+    causeway or a main bridge, 8 m (two cells: a narrow pass) for a wooden footbridge."""
+    discs = [(0.0, 0.0, 34.0), (62.0, -86.0, 28.0), (-66.0, -22.0, 16.0), (-22.0, -66.0, 16.0), (-108.0, 30.0, 14.0)]
+    causeways = [
+        ([(-68.0, -48.0), (-68.0, -32.0)], 6.0),                  # camp - west hummock
+        ([(-48.0, -68.0), (-32.0, -68.0)], 6.0),                  # camp - south hummock
+        ([(-8.0, -64.0), (10.0, -64.0)], 6.0),                    # south hummock - footbridge ...
+        ([(26.0, -64.0), (46.0, -64.0)], 6.0),                    # ... - near objective
+        ([(-48.0, -104.0), (-10.0, -104.0)], 6.0),                # camp - footbridge ...
+        ([(10.0, -104.0), (42.0, -104.0)], 6.0),                  # ... - near objective
+        ([(-108.0, -48.0), (-108.0, 0.0)], 6.0),                  # the west detour: camp - footbridge ...
+        ([(-108.0, 40.0), (-108.0, 76.0), (-86.0, 76.0)], 6.0),   # ... the hummock beyond - far objective
+        ([(-84.0, -20.0), (-104.0, -20.0)], 6.0),                 # west hummock - the detour
+        ([(-20.0, -84.0), (-20.0, -104.0)], 6.0),                 # south hummock - the camp's causeway
+    ]
+    # Bridges across the channels: (one end, the other, half width), a deck on shallows. The main
+    # bridges (12 m, half 6) to the centre, footbridges (8 m, half 4: narrow passes) where a
+    # causeway crosses a channel.
+    bridges = [
+        ((-50.0, -20.0), (-26.0, -20.0), 6.0),                   # west hummock - centre
+        ((-20.0, -50.0), (-20.0, -26.0), 6.0),                   # south hummock - centre
+        ((8.0, -66.0), (28.0, -66.0), 4.0),                      # footbridge to the near objective
+        ((-12.0, -102.0), (12.0, -102.0), 4.0),                  # footbridge on the camp's causeway
+        ((-106.0, -2.0), (-106.0, 18.0), 4.0),                   # footbridge on the west detour
+    ]
+    return Archipelago(discs, causeways, bridges, camp_half=62.0)
+
+
+SWAMP = swamp_layout()
+
+
+def swamp(seed=193):
+    """Swamp (jungle): hummocks of dry ground in brown swamp water, joined by raised causeways and
+    short wooden bridges over the channels; the water is impassable, so every route is a chain of
+    narrow ways. The biggest hummock holds the centre objective (a sunken temple); the side
+    objectives are fishing villages on stilts on their own hummocks, reached from the camps by a
+    causeway and a bridge each, and from the far camp by a long detour."""
+    A = SWAMP
+    west, east = (-62.0, 86.0), (62.0, -86.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points)
+
+    # Roads: muddy tracks along the causeways and over the bridges.
+    for pts, half in A.causeways:
+        L.road(5, *[v for p in pts for v in p])
+    for a, b, half in A.bridges:
+        L.road(5, *a, *b)
+    A.lay(L)
+
+    # The sunken temple on the central hummock, its fallen gatehouse, broken walls.
+    L.add('temple_ruin', *diag(0, 12), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
+    L.add('ruin', *diag(0, -12), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
+    for sign in (1, -1):
+        for x, z, kind, rot in ((-10, 10, 'wall', 0), (10, 10, 'stone_wall', 90), (3, 11, 'wall', 0)):
+            L.add(kind, sign * x, sign * z, rot, pad=0.4, road_gap=0.3, ignore_points=True)
+        L.near('ruin', *diag(sign * -4, sign * 26), 4, 0, pad=0.6)
+    # The stilt villages on the side objectives' hummocks, and huts on the others.
+    for sign in (1, -1):
+        px, pz = (east if sign > 0 else west)
+        for dx, dz, rot in ((-14.0, 10.0, 0), (14.0, -10.0, 90), (-4.0, 20.0, 90), (6.0, -20.0, 0), (-20.0, -4.0, 0)):
+            L.near('stilt_hut', px + sign * dx, pz + sign * dz, 4, rot, pad=0.8)
+        L.near('watchtower', px + sign * 12.0, pz + sign * 12.0, 4, pad=0.6)
+        L.scatter('barrel', px, pz, 4, 11, 5, pad=0.3)
+        L.scatter('ammo_crate', px, pz, 4, 11, 3, pad=0.3)
+        for x, z in ((-66.0, -22.0), (-22.0, -66.0), (-108.0, 30.0)):
+            L.near('stilt_hut', sign * (x - 4.0), sign * (z + 4.0), 4, 0, pad=0.8)
+
+    # The swamp forest: jungle trees and bamboo over the dry ground, reeds (ferns) at the edges.
+    def species(x, z):
+        return 'bamboo_clump' if A.depth(x, z) < 5.0 and L.rng.random() < 0.6 else L.rng.choice(
+            ('jungle_tree_a', 'jungle_tree_b', 'jungle_tree_c', 'jungle_tree_a'))
+    clearings = [(0, 0, 22), (*west, 18), (*east, 18)]
+    mixed_woods(L, [(-150, -150), (150, -150), (150, 150), (-150, 150)], 0.012, species, clearings, edge=0)
+    mixed_woods(L, [(-150, -150), (150, -150), (150, 150), (-150, 150)], 0.006, ('fern_bush',), clearings, edge=0, clumps=0.3)
+    return finish(L)
+
+
+def coral_layout():
+    """Coral Isles' islands, causeways and bridges (one half; the other is its mirror image), laid
+    square to the 4 m water grid like the swamp's (12 m causeways and main bridges, 8 m footbridges)."""
+    discs = [(0.0, 0.0, 30.0), (62.0, -86.0, 26.0), (-70.0, -20.0, 14.0), (-20.0, -70.0, 14.0), (-112.0, 22.0, 12.0)]
+    causeways = [
+        ([(-56.0, -20.0), (-26.0, -20.0)], 6.0),                  # west islet - centre
+        ([(-48.0, -68.0), (-34.0, -68.0)], 6.0),                  # camp - south islet
+        ([(-8.0, -72.0), (8.0, -72.0)], 6.0),                     # south islet - bridge ...
+        ([(24.0, -72.0), (44.0, -72.0)], 6.0),                    # ... - near island
+        ([(-48.0, -108.0), (46.0, -108.0)], 6.0),                 # the long causeway: camp - near island
+        ([(-112.0, -48.0), (-112.0, 8.0)], 6.0),                  # the west detour: camp - islet ...
+        ([(-112.0, 50.0), (-112.0, 76.0), (-90.0, 76.0)], 6.0),   # ... - far island
+        ([(-84.0, -20.0), (-104.0, -20.0)], 6.0),                 # west islet - the detour
+        ([(-20.0, -84.0), (-20.0, -108.0)], 6.0),                 # south islet - the long causeway
+    ]
+    bridges = [
+        ((-68.0, -48.0), (-68.0, -32.0), 6.0),                   # camp - west islet
+        ((-20.0, -58.0), (-20.0, -28.0), 6.0),                   # south islet - centre
+        ((6.0, -70.0), (26.0, -70.0), 4.0),                      # footbridge to the near island
+        ((-110.0, 32.0), (-110.0, 52.0), 4.0),                   # footbridge on the west detour
+    ]
+    return Archipelago(discs, causeways, bridges, camp_half=60.0, beach=6.0, seed=5)
+
+
+CORAL = coral_layout()
+
+
+def coralisles(seed=197):
+    """Coral Isles (desert): a chain of coral islands in a turquoise lagoon, joined by fixed stone
+    causeways and bridges (no boats): the camps on the two big islands, the centre island with its
+    lighthouse on the headland (the centre objective), a fishing village on the west and east
+    islands (the side objectives), islets between. Sand beaches ring every island; palms, coral
+    rock and huts on them."""
+    A = CORAL
+    west, east = (-62.0, 86.0), (62.0, -86.0)
+    points = [(*west, 13.0), (0.0, 0.0, 15.0), (*east, 13.0)]
+    L = world_layout(seed, points)
+    for pts, half in A.causeways:
+        L.road(5, *[v for p in pts for v in p])
+    for a, b, half in A.bridges:
+        L.road(5, *a, *b)
+    A.lay(L)
+
+    # The lighthouse on the centre island's north headland: the white tower, its lamp mast, the
+    # keeper's cottage and a walled yard; an old coral-stone fort on the south headland.
+    L.add('silo', -10.0, 20.0, 0, pad=0.4, road_gap=None, ignore_points=True, must=True)
+    L.add('floodlight_mast', -6.5, 20.0, 0, pad=0.1, road_gap=None, ignore_points=True)
+    L.near('cottage', -2.0, 27.0, 3, 0, pad=0.6)
+    for x, z, rot in ((-19.0, 24.0, 90), (-14.0, 29.5, 0)):
+        L.add('stone_wall', x, z, rot, pad=0.2, road_gap=0.5, ignore_points=True)
+    L.near('ruin', 10.0, -21.0, 3, 0, pad=0.6)
+    for x, z, rot in ((18.0, -24.0, 90), (4.0, -28.0, 0)):
+        L.add('stone_wall', x, z, rot, pad=0.2, road_gap=0.5, ignore_points=True)
+    for sign in (1, -1):
+        L.add('sandbags', sign * 8.0, sign * -4.0, 90, pad=0.4, road_gap=0.3, ignore_points=True)
+        # The fishing villages: huts round the landing, nets (camouflage nets), a watchtower.
+        px, pz = (east if sign > 0 else west)
+        for dx, dz, kind, rot in ((-14.0, 10.0, 'adobe_house', 0), (14.0, -10.0, 'adobe_house', 90), (-4.0, 20.0, 'stilt_hut', 90),
+                                  (6.0, -20.0, 'stilt_hut', 0)):
+            L.near(kind, px + sign * dx, pz + sign * dz, 4, rot, pad=0.8)
+        L.near('camo_net', px - sign * 10.0, pz - sign * 6.0, 4, 0, pad=0.4)
+        L.near('watchtower', px + sign * 14.0, pz + sign * 14.0, 4, pad=0.6)
+        L.scatter('barrel', px, pz, 4, 11, 5, pad=0.3)
+        L.scatter('ammo_crate', px, pz, 4, 11, 3, pad=0.3)
+
+    # Palms and coral rock over the islands, thickest inland of the beaches.
+    def species(x, z):
+        return 'palm'
+    clearings = [(0, 0, 20), (*west, 18), (*east, 18)]
+    mixed_woods(L, [(-150, -150), (150, -150), (150, 150), (-150, 150)], 0.012, species, clearings, edge=0, road_gap=1.5)
+    for sign in (1, -1):
+        for x, z in ((-70.0, -20.0), (-20.0, -70.0), (-112.0, 22.0), (-128.0, -80.0), (-80.0, -128.0), (40.0, -100.0)):
+            outcrop(L, sign * x, sign * z, 5, 2, pad=0.6)
+    return finish(L)
+
+
+MAPS_4M = [
+    # id, builder, theme, point names (west, town, east), conquest comment, survival comment
+    ('landingbeach', landingbeach, 'temperate', ('village', 'draw', 'beach'),
+     'Landing Beach for Conquest: a beach under rock bluffs, four exits up to a coastal village on the plateau.',
+     'Landing Beach for Survival: the same beach, holding out against waves from the north-east.'),
+    ('hydrodam', hydrodam, 'temperate', ('power_station', 'bridge', 'ford'),
+     'Hydro Dam for Conquest: a dammed river valley, crossed only on the dam crest, at the road bridge and over a ford.',
+     'Hydro Dam for Survival: the same valley, holding out against waves from the north-east.'),
+    ('capital', capital, 'urban', ('gardens', 'palace_square', 'station'),
+     'Capital for Conquest: the government quarter on a river island, one bridge to each bank, dense blocks and boulevards.',
+     'Capital for Survival: the same city, holding out against waves from the north-east.'),
+    ('launchsite', launchsite, 'desert', ('assembly_building', 'launch_pad', 'propellant_farm'),
+     'Silver Bug Launch Site for Conquest: a fenced launch complex, the pad at the centre, rail lines in from assembly and fuel.',
+     'Silver Bug Launch Site for Survival: the same complex, holding out against waves from the north-east.'),
+    ('saltflat', saltflat, 'desert', ('salt_works', 'survey_beacon', 'brine_pumps'),
+     'Salt Flats for Conquest: open salt flats with long sight lines, a few rock clusters as stepping stones.',
+     'Salt Flats for Survival: the same flats, holding out against waves from the north-east.'),
+    ('borderbridge', borderbridge, 'temperate', ('border_village', 'great_bridge', 'customs_depot'),
+     'Border Bridge for Conquest: a broad river crossed by the Great Bridge at the centre, a ford and an old bridge far out on the flanks.',
+     'Border Bridge for Survival: the same river, holding out against waves from the north-east.'),
+    ('swamp', swamp, 'jungle', ('west_village', 'sunken_temple', 'east_village'),
+     'Swamp for Conquest: hummocks of dry ground joined by causeways and wooden bridges over impassable water.',
+     'Swamp for Survival: the same swamp, holding out against waves from the north-east.'),
+    ('coralisles', coralisles, 'desert', ('west_isle', 'lighthouse', 'east_isle'),
+     'Coral Isles for Conquest: coral islands in a lagoon joined by causeways and bridges, a lighthouse on the centre island.',
+     'Coral Isles for Survival: the same islands, holding out against waves from the north-east.'),
+]
+
+# The open flats keep their long sight lines: no tree clumps or hamlets, a few boulder heaps, a
+# third of the wrecks and no pylon line.
+WAR_4M = {
+    'coralisles': dict(pylons=False, poles=False, dead_trees=6, where=lambda x, z: CORAL.depth(x, z) >= 12.0),
+    # On the water maps nothing solid is dropped on a causeway, a bridge or a narrow shore.
+    'swamp': dict(pylons=False, where=lambda x, z: SWAMP.depth(x, z) >= 12.0),
+    'launchsite': dict(pylons=False),
+    'landingbeach': dict(pylons=False, ditch=False),
+    'saltflat': dict(pylons=False, wrecks=6, craters=10, dead_trees=8),
+}
+DENSIFY_4M = {
+    # The islands grow palms and coral rock; fishing huts, not adobe towns.
+    'coralisles': dict(trees=('palm',), houses=('stilt_hut', 'adobe_house'), yard=None, clumps=12, outcrops=4, hamlets=2,
+                       where=lambda x, z: CORAL.depth(x, z) >= 12.0),
+    # The swamp's hummocks are wooded by hand: a few more clumps, huts instead of hamlets.
+    'swamp': dict(clumps=10, outcrops=4, hamlets=2, where=lambda x, z: SWAMP.depth(x, z) >= 12.0),
+    # The launch complex is secret ground: no hamlets, only scrub and a few rocks.
+    'launchsite': dict(clumps=10, outcrops=6, hamlets=0),
+    # The capital is built block by block: no hamlets, a few tree clumps in the plazas.
+    'capital': dict(clumps=6, hamlets=0),
+    # The beach stays sand: trees and rock only on the plateau above the bluffs; the village is
+    # built by hand, so no hamlets.
+    'landingbeach': dict(clumps=24, outcrops=0, hamlets=0, where=lambda x, z: z > landing_bluff(x) + 16.0),
+    'saltflat': dict(clumps=0, outcrops=4, hamlets=0),
+}
+
+
+# ------------------------------------------------------------------------ end of round 4M
+
+
 # ---------------------------------------------------------------------------------- siege
 # The enemy fortress fills the north-east quadrant round (42, 42): a 56 m ring of wall with a
 # gate in the west and south walls (the sides facing the player), guard towers in the corners,
@@ -2964,6 +4160,11 @@ MAPS = [
      'Metro City for Survival: the same city, holding out against waves from the north-east.'),
 ]
 
+
+# The battlefields of round 4M (see world_layout), and what they change in the kit and the fill.
+MAPS += MAPS_4M
+MAP_WAR.update(WAR_4M)
+MAP_DENSIFY.update(DENSIFY_4M)
 
 def plan_bases(map_id, layout, siege):
     """The bases (see hardpoints.py): both camps and the outposts on the Conquest battlefield (which
