@@ -196,3 +196,67 @@ bottom of each section.
   of its two branches. The first pick is free and a change costs 800 coins. The loadout carries the
   pick into battle (`BaseLoadout.Branches`), and the tower is raised as its branch in its own slot.
   A branch shows as "tower · branch" (`branch.<id>` texts).
+
+## 3D. Tower equipment
+
+- **Three more slots, not a second item type.** Tower pieces are ordinary `GearItem`s whose slot is
+  one of three new `GearSlot` values after Special: `TowerWeapon`, `TowerStructure`,
+  `TowerSystems` (`Gear.IsTower`). The save format, the bag, levels, merging (three of one slot and
+  rarity), sub-stats, traits and the menus' line code all work unchanged, and the slot alone says
+  which kind a piece is. A separate item class or a kind flag would have made slot 0 mean two things
+  and every consumer check both. Vehicle loadouts keep their 7 slots a branch; the vehicle API
+  refuses tower pieces and has no tower slots.
+- **Their own catalogue beside the vehicle one** (`GearCatalog.TowerBases`, `TowerTraits`, a tower
+  sub-stat table), so the 34 vehicle base types, 42 traits and every vehicle roll are untouched.
+  13 base types: Weapon (damage; the ammunition hoist rate of fire) with range, damage against heavy
+  armour, against aircraft, blast or shell speed as the implicit line; Structure (health; blast
+  walls and slat screens less damage taken, as plating; the engineer bay repairs out of combat) with
+  a resistance or a shorter repair delay; Systems (vision; traverse motors turret turn rate at 1.5×;
+  ammunition handling magazine reload at 1.5×) with accuracy or magazine size. Main-stat values are
+  the vehicle tables' (a base type can now name its main stat: `BaseTypeDef.Main`).
+- **No brands on tower pieces.** Sets are a six-slot vehicle loadout's; with three slots a four-piece
+  bonus could never be worn, and half the brand stats (speed, capture, summons) mean nothing to a tower.
+- **Tower caps** (`GearCatalog.TowerStatCap`): the vehicle caps, except range +10 % (vehicles +12 %:
+  a base's reach is what attackers and the AI's tower sense plan round) and regeneration 1 % a second
+  (vehicles 2 %: siege fire must still be able to crack a tower). The card's rank multiplies on top.
+- **The tower lines' numbers** (Epic / Legendary; the brief's numbers are the Legendary ones):
+  - Fire Link +10 / +15 % damage while another friendly fixed defence hit the same target within 3 s.
+    The HQ counts as a friendly tower (it is part of the base's fire net); the other tower needs no
+    trait of its own.
+  - Counter-Battery: artillery (a weapon with a minimum range) that hits the tower, directly or with
+    its blast, is shown to the tower's side for 4 / 6 s. It reuses the radar's reveal status with no
+    damage bonus; a called barrage has no gun to show.
+  - Modular: once a battle a side's first tower of the type to fall is flown back in free; Epic waits
+    half the cooldown, Legendary none. The 4 s flight stays. Towers going down with a lost outpost do
+    not spend it.
+  - Smoke Launchers: 10 m for 12 s / 14 m for 16 s, once a life (a re-dropped tower has its own).
+  - Backup Generator: stuns and EMP knock-outs 50 % shorter at Epic, none at Legendary. Every stun
+    setter (EMP skills and payload through `StatusSystem.Stun`, the EMP and SEAD strikes) asks
+    `GearSystem.StunSeconds`; the SEAD strike's damage still lands.
+  - Tower pools also carry five vehicle traits that work on a fixed defence, so an Epic piece has
+    three to choose from: Executioner and Opening Salvo (Weapon), Aegis Barrier and Ablative Layer
+    (Structure), Laser Designator (Systems), at their vehicle numbers.
+- **Fit comes from the data** (`TowerFit`). A tower's weapons say what it has: a weapon that does
+  damage (Armed), one for ground targets, one for aircraft, a magazine. The main weapon counts for
+  everything it can target; a secondary only for what it is made for, so a gun tower's coaxial
+  machine gun does not make it anti-air, while an AA tower's SAM box does. A stat line needs what it
+  acts on (damage against aircraft needs a weapon for aircraft; health nothing; speed never fits a
+  tower); a base type needs what its main and implicit lines need; a trait says its need in the
+  catalogue. Sub-stats and traits are only rolled within the base type's need, so every line of a
+  piece works on every tower the piece fits. An obstacle with no weapon takes Structure pieces only.
+  `TowerFit.Matrix` lists, for every tower card and branch, the base types and traits that work for it.
+- **Fit is checked against the def the tower fights as** (its rank-7 branch when one is chosen).
+  Equipping an unfit piece is refused. A piece already on a tower whose branch changes stays on
+  (a line with nothing to act on does nothing); `PlayerProfile.TowerFits` lets the screen flag it.
+- **One loadout per tower type, shared** by every tower of that type in the camp and on outposts,
+  re-dropped ones and its branch def included, and also by a field tower of that type dropped as a
+  support (the same card). A piece is worn by one tower type at a time. The HQ and utility modules
+  take none.
+- **Crates:** a fifth of all equipment rolls are tower pieces, in every crate kind. The rarity is
+  rolled first at the unchanged odds, so the pity counters and the rarity table stay as they were;
+  the odds screen adds a line with the split and the chance of at least one tower piece. Tower pieces
+  favour base types that work for a tower of the player's base (3 to 1), as vehicle pieces favour the
+  deck's branches. The existing crate tests needed no change: the number of rolls, the pity and the
+  rarity odds are the same.
+- **Pictures:** tower pieces borrow their vehicle counterparts' slot pictures (weapon, armour or
+  plating, optics) until they have their own `Resources/UI/Gear/<base id>.png`.
