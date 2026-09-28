@@ -86,13 +86,14 @@ namespace MachineBrigade.Game.Effects
         public ShieldVisual(string name, Transform parent, Shape shape, float radius)
         {
             _shape = shape;
-            var level = Level(shape, radius);
+            var lite = LiteNow;
+            var level = Level(shape, radius, lite);
             var go = new GameObject(name);
             Transform = go.transform;
             Transform.SetParent(parent, false);
             go.AddComponent<MeshFilter>().sharedMesh = MeshFor(level, shape == Shape.Dome);
             _renderer = go.AddComponent<MeshRenderer>();
-            _renderer.sharedMaterial = MaterialFor(LiteNow);
+            _renderer.sharedMaterial = MaterialFor(lite);
             _renderer.shadowCastingMode = ShadowCastingMode.Off;
             _renderer.receiveShadows = false;
             _renderer.lightProbeUsage = LightProbeUsage.Off;
@@ -271,14 +272,24 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Builds the meshes a shield of this shape and size will use now (not the first time one appears mid-battle).</summary>
         public static void Prepare(Shape shape, float radius)
         {
-            MeshFor(Level(shape, radius), shape == Shape.Dome);
-            MaterialFor(LiteNow);
+            var lite = LiteNow;
+            MeshFor(Level(shape, radius, lite), shape == Shape.Dome);
+            MaterialFor(lite);
         }
 
         // ------------------------------------------------------------------ material and meshes
 
-        private static int Level(Shape shape, float radius) =>
-            shape == Shape.Bubble ? 2 : Mathf.Clamp(Mathf.RoundToInt(Mathf.Log(Mathf.Max(1f, radius * IcosahedronEdge / 5f), 2f)), 2, 4);
+        /// <summary>
+        /// How finely the sphere is tiled: tiles about five metres across on a dome, a metre or
+        /// two on a bubble. Low graphics draws no lattice, so a dome there takes one level fewer
+        /// (its tiles only show as it shatters).
+        /// </summary>
+        private static int Level(Shape shape, float radius, bool lite)
+        {
+            if (shape == Shape.Bubble) return 2;
+            var level = Mathf.Clamp(Mathf.RoundToInt(Mathf.Log(Mathf.Max(1f, radius * IcosahedronEdge / 5f), 2f)), 2, 4);
+            return lite ? Mathf.Max(2, level - 1) : level;
+        }
 
         private static Material MaterialFor(bool lite)
         {

@@ -153,7 +153,8 @@ namespace MachineBrigade.Game.Effects
                 for (var d = 0; d < _itemDomes.Count && !covered; d++)
                 {
                     var dome = _itemDomes[d];
-                    if (dome.Falling || dome.Team != view.Team) continue;
+                    // Its shatter too: the shields it gave run out with it, so no bubble pops up as it goes.
+                    if (dome.Team != view.Team) continue;
                     var flat = new Vector2(view.Position.x - dome.Centre.x, view.Position.z - dome.Centre.z);
                     covered = flat.magnitude <= dome.Radius - 1f && view.Position.y < dome.Radius * ItemDomeHeight * 0.7f;
                 }
