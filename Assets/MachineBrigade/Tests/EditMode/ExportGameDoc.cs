@@ -35,7 +35,9 @@ namespace MachineBrigade.Tests
                 {
                     ["language"] = Strings.Vietnamese ? "vi" : "en",
                     ["damageTable"] = DamageTable(catalog),
-                    ["vehicles"] = catalog.Vehicles.Values.Where(v => !v.Static && !v.Boss && !v.Elite).OrderBy(v => v.CpCost).ThenBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
+                    ["vehicles"] = catalog.Vehicles.Values.Where(v => !v.Static && !v.Boss && !v.Elite && v.Card).OrderBy(v => v.CpCost).ThenBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
+                    // Vehicles that are no card (the Gunship item's AC-130): with the items, not the deck.
+                    ["itemVehicles"] = catalog.Vehicles.Values.Where(v => !v.Static && !v.Boss && !v.Elite && !v.Card).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
                     ["elites"] = catalog.Vehicles.Values.Where(v => v.Elite).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
                     ["bosses"] = catalog.Vehicles.Values.Where(v => v.Boss).OrderBy(v => v.MaxHp).Select(v => Vehicle(catalog, v)).ToList(),
                     ["towers"] = catalog.Vehicles.Values.Where(v => v.Static).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
@@ -101,7 +103,7 @@ namespace MachineBrigade.Tests
                 var w = m.Weapon;
                 if (w.Damage <= 0f) continue;
                 // Prompt 13 A.1: over a whole load (salvos, magazines and their change, a launcher's reload).
-                var raw = MachineBrigade.Sim.Combat.FirePower.Sustained(w);
+                var raw = MachineBrigade.Sim.Combat.FirePower.Sustained(w, v);
                 weapons.Add(new Dictionary<string, object>
                 {
                     ["id"] = w.Id, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,

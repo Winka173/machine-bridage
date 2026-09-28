@@ -176,6 +176,12 @@ namespace MachineBrigade.Sim.Content
         public float Rearm { get; internal set; }
         public float AirRepair { get; internal set; }
         public float AirReach { get; internal set; }
+
+        /// <summary>A landing pad's rearm against the plain pad's (prompt 13 F.1: its rank-7 fast branch; 1 plain).</summary>
+        public float AirRearm { get; internal set; } = 1f;
+
+        /// <summary>Aircraft its side may have out at once, over the usual (its rank-7 hangar branch).</summary>
+        public int AirCap { get; internal set; }
         public int Supply { get; internal set; }
         public bool RevealBase { get; internal set; }
     }

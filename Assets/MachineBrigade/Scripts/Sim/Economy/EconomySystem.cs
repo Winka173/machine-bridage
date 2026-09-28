@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.Economy
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
-            if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
+            if (def.Flying && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= price;
@@ -430,6 +430,18 @@ namespace MachineBrigade.Sim.Economy
             foreach (var (pendingTeam, defId, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
+        }
+
+        /// <summary>
+        /// The most aircraft a side may have up (and on the way): <see cref="TeamEconomy.MaxAircraft"/>, and
+        /// one more for each landing pad of its that took the hangar branch (prompt 13 F.1).
+        /// </summary>
+        public int AircraftCap(int team)
+        {
+            var cap = TeamEconomy.MaxAircraft;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team == team && v.Def.Utility is { AirCap: > 0 } u) cap += u.AirCap;
+            return cap;
         }
 
         /// <summary>Aircraft a side has up, plus those on the way.</summary>

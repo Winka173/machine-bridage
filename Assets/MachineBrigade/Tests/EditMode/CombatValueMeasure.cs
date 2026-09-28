@@ -18,7 +18,7 @@ namespace MachineBrigade.Tests
 {
     /// <summary>
     /// Prompt 13 A: the combat value of every buyable vehicle, measured in the simulation rather
-    /// than on paper. Each vehicle (rank 1, no equipment), in a group of about 14 CP of its kind led
+    /// than on paper. Each vehicle (rank 1, no equipment), in a group of about 18 CP of its kind led
     /// by the tactical AI, attacks a reference group on an open field for 90 s from arrival: a
     /// cluster of light vehicles, a pair of tanks, a gun turret with a bunker, or a helicopter and an
     /// attack jet; aircraft fight each ground group with and without an anti-aircraft vehicle in it.
@@ -38,7 +38,7 @@ namespace MachineBrigade.Tests
     /// </summary>
     public class CombatValueMeasure
     {
-        private const float Budget = 14f;
+        private const float Budget = 18f;
 
         /// <summary>
         /// The fixed seed of every scenario (the owner's rule: one run); MB_CV_SEEDS (a comma list) averages
@@ -63,6 +63,7 @@ namespace MachineBrigade.Tests
                 Id = runs[0].Id, Scenario = runs[0].Scenario, Count = runs[0].Count, Cp = runs[0].Cp, Seconds = runs[0].Seconds,
                 Light = runs.Average(r => r.Light), Heavy = runs.Average(r => r.Heavy), Air = runs.Average(r => r.Air), Structure = runs.Average(r => r.Structure),
                 OnTarget = runs.Average(r => r.OnTarget), Survival = runs.Average(r => r.Survival), Value = runs.Average(r => r.Value),
+                Leaving = runs.Average(r => r.Leaving), Holding = runs.Average(r => r.Holding), LongestLeave = runs.Max(r => r.LongestLeave),
                 FirstKill = kills.Count > 0 ? kills.Average(r => r.FirstKill) : -1f, Ready = runs.Average(r => r.Ready),
             };
         }
@@ -101,6 +102,9 @@ namespace MachineBrigade.Tests
 
             /// <summary>Aircraft: the share of their time attacking or ready to (in reach or on the way in with ammunition), and the flight to the holding pattern.</summary>
             public float Ready = -1f;
+
+            /// <summary>Aircraft (prompt 13 C): shares of their time flying out to rearm and rearming, and the longest flight out (s).</summary>
+            public float Leaving, Holding, LongestLeave;
 
             public float Total => Light + Heavy + Air + Structure;
 
@@ -199,6 +203,79 @@ namespace MachineBrigade.Tests
             return string.IsNullOrEmpty(path) ? GameContent.LoadCatalog() : Catalog.FromJson(File.ReadAllText(path));
         }
 
+        /// <summary>
+        /// Prompt 13 E.2: what point defence is worth. Four battle tanks that cannot die (holding their fire)
+        /// stand under 45 s of missiles, drones, rockets and a helicopter (two ATGM carriers, an MLRS, a
+        /// Lancet truck, an FPV carrier and an attack helicopter, all undying); the health they lose alone,
+        /// then with an Iron Beam, two AA vehicles or a C-RAM beside them (the same 8-9 CP). Three seeds.
+        /// </summary>
+        [Test, Explicit("a measurement: run it by name with MB_BALANCE=1"), Category("Balance")]
+        public void PrintPointDefenceValue()
+        {
+            if (Environment.GetEnvironmentVariable("MB_BALANCE") != "1") Assert.Ignore("point defence: set MB_BALANCE=1");
+            var catalog = LoadCatalog();
+            var sb = new StringBuilder();
+            float? alone = null;
+            foreach (var (name, guards, cp) in new[] { ("none", new string[0], 0), ("iron_beam", new[] { "iron_beam" }, 9), ("2 aa_vehicle", new[] { "aa_vehicle", "aa_vehicle" }, 8), ("c_ram", new[] { "c_ram" }, 0) })
+            {
+                var lost = 0f;
+                var intercepts = 0;
+                foreach (var seed in new[] { 13, 14, 15 })
+                {
+                    var world = Field(catalog, seed);
+                    world.RevealAll = true;
+                    var tanks = new List<Vehicle>();
+                    for (var i = 0; i < 4; i++)
+                    {
+                        var t = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-9f + i * 6f, 0f), 0f);
+                        world.MakeSparring(t);
+                        t.HoldFire = true;
+                        tanks.Add(t);
+                    }
+                    for (var i = 0; i < guards.Length; i++)
+                    {
+                        var g = world.SpawnVehicle(guards[i], 0, new Vector2(-3f + i * 6f, -6f), 0f);
+                        world.MakeSparring(g);
+                    }
+                    var attackers = new[] { "atgm_carrier", "atgm_carrier", "mlrs", "lancet_truck", "fpv_carrier", "attack_helicopter" };
+                    for (var i = 0; i < attackers.Length; i++)
+                    {
+                        var a = world.SpawnVehicle(attackers[i], 1, new Vector2(-20f + i * 8f, attackers[i] == "mlrs" ? 70f : 38f), MathF.PI);
+                        world.MakeSparring(a);
+                        world.Submit(new Sim.Commands.Command(Sim.Commands.CommandType.Attack, 1, new[] { a.Id }, tanks[i % 4].Position, tanks[i % 4].Id));
+                    }
+                    var taken = 0f;
+                    DamageSystem.DamageLog = (by, victim, amount, kind, weapon) =>
+                    {
+                        if (victim.Team == 0 && tanks.Contains(victim)) taken += amount;
+                    };
+                    try
+                    {
+                        for (var t = 0f; t < 45f; t += TestWorlds.Step)
+                        {
+                            world.Step(TestWorlds.Step);
+                            foreach (var e in world.Events)
+                                if (e.Kind == SimEventKind.Intercepted && e.Team == 0) intercepts++;
+                            world.ClearEvents();
+                        }
+                    }
+                    finally
+                    {
+                        DamageSystem.DamageLog = null;
+                    }
+                    lost += taken / 3f;
+                }
+                alone ??= lost;
+                var saved = alone.Value - lost;
+                sb.AppendLine($"{name,-14} tanks lost {lost,7:0} HP in 45 s, saved {saved,7:0}{(cp > 0 ? $" ({saved / cp:0} a CP)" : "")}, {intercepts / 3f:0.0} interceptions");
+            }
+            TestContext.Out.WriteLine(sb.ToString());
+            UnityEngine.Debug.Log("[CombatValueMeasure.PointDefence]\n" + sb);
+            var dir = Environment.GetEnvironmentVariable("MB_CV_OUT");
+            if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "point_defence_" + (Environment.GetEnvironmentVariable("MB_CV_TAG") ?? "now") + ".txt"), sb.ToString());
+            Assert.Pass();
+        }
+
         private static SimWorld Field(Catalog catalog, int seed) =>
             new SimWorld(catalog, new MapDefinition("range", 300f,
                 new[] { new TeamStart(0, new Vector2(0f, -130f)), new TeamStart(1, new Vector2(0f, 130f)) },
@@ -213,7 +290,7 @@ namespace MachineBrigade.Tests
             // Everything in sight of everyone (artillery has no spotter of its own here), except for a
             // stealthy shooter, whose point is not being seen.
             world.RevealAll = !def.Stealth;
-            var count = Math.Clamp((int)MathF.Round(Budget / def.CpCost), 1, 5);
+            var count = Math.Clamp((int)MathF.Round(Budget / def.CpCost), 1, 8);
             var ours = new List<Vehicle>();
             var startY = def.Flying ? -95f : -45f;
             for (var i = 0; i < count; i++)
@@ -252,6 +329,9 @@ namespace MachineBrigade.Tests
             var aliveSteps = 0;
             var onTargetSteps = 0;
             var readySteps = 0;
+            var leavingSteps = 0;
+            var holdingSteps = 0;
+            var leaveStart = new double[count];
             var alive = new float[count];
             var waveDownAt = -1.0;
             try
@@ -272,6 +352,14 @@ namespace MachineBrigade.Tests
                             if (v.Arm(m).Damage > 0f && v.MountTarget(m).IsValid) onTarget = true;
                         if (onTarget) onTargetSteps++;
                         if (v.Flying && Ready(v, onTarget)) readySteps++;
+                        if (v.Supply == SupplyState.Leaving)
+                        {
+                            leavingSteps++;
+                            if (leaveStart[i] <= 0) leaveStart[i] = world.Time;
+                            result.LongestLeave = MathF.Max(result.LongestLeave, (float)(world.Time - leaveStart[i]));
+                        }
+                        else leaveStart[i] = 0;
+                        if (v.Supply == SupplyState.Holding) holdingSteps++;
                     }
                     if (ours.All(v => !v.IsAlive)) break;
                     if (theirs.All(v => !v.IsAlive))
@@ -295,6 +383,8 @@ namespace MachineBrigade.Tests
             result.OnTarget = aliveSteps > 0 ? onTargetSteps / (float)aliveSteps : 0f;
             result.Survival = alive.Average();
             if (def.Flying) result.Ready = aliveSteps > 0 ? readySteps / (float)aliveSteps : 0f;
+            result.Leaving = aliveSteps > 0 ? leavingSteps / (float)aliveSteps : 0f;
+            result.Holding = aliveSteps > 0 ? holdingSteps / (float)aliveSteps : 0f;
             var aliveShare = result.Survival / scenario.Seconds;
             result.Value = result.Total * (1f + aliveShare) * 0.5f / result.Cp;
             return result;
@@ -307,21 +397,19 @@ namespace MachineBrigade.Tests
         private static bool Ready(Vehicle v, bool onTarget)
         {
             if (onTarget || v.InAttackHold) return true;
-            return ReadyHook?.Invoke(v) ?? true;
+            // Prompt 13 C: flying out to rearm is not ready; holding with half its stores back is.
+            return v.Supply == SupplyState.Fighting || (v.Supply == SupplyState.Holding && v.StoresShare >= 0.5f);
         }
-
-        /// <summary>Set by the ammunition work (prompt 13 C): whether an aircraft not on target is ready to attack.</summary>
-        internal static Func<Vehicle, bool> ReadyHook;
 
         private static string F(float v) => v.ToString("0.##", CultureInfo.InvariantCulture);
 
         internal static string Tsv(List<Result> results)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("id\tscenario\tcount\tcp\tlight\theavy\tair\tstructure\ttotal\tonTarget\tsurvival\tfirstKill\tready\tvalue\trealDps");
+            sb.AppendLine("id\tscenario\tcount\tcp\tlight\theavy\tair\tstructure\ttotal\tonTarget\tsurvival\tfirstKill\tready\tvalue\trealDps\tleaving\tholding\tlongestLeave");
             foreach (var r in results)
                 sb.AppendLine(string.Join("\t", r.Id, r.Scenario, r.Count, r.Cp, F(r.Light), F(r.Heavy), F(r.Air), F(r.Structure), F(r.Total),
-                    F(r.OnTarget), F(r.Survival), F(r.FirstKill), F(r.Ready), F(r.Value), F(r.RealDps)));
+                    F(r.OnTarget), F(r.Survival), F(r.FirstKill), F(r.Ready), F(r.Value), F(r.RealDps), F(r.Leaving), F(r.Holding), F(r.LongestLeave)));
             return sb.ToString();
         }
 
