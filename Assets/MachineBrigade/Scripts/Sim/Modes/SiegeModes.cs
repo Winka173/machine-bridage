@@ -481,8 +481,7 @@ namespace MachineBrigade.Sim.Modes
             for (var i = 0; i < count; i++)
             {
                 var id = roster[(Wave * 3 + i * 5) % roster.Count];
-                if (elite > 0f && world.Catalog.EliteVariant(id) is { } better && world.Random.NextDouble() < elite) id = better;
-                world.Economy.Airlift(Attacker, id, camp);
+                world.Economy.Airlift(Attacker, world.Economy.ForWave(Attacker, id, elite), camp);
             }
             // Endless: both sides grow each wave, the enemy faster (4 %) than the player (2 %, to +30 %).
             if (_rules.Endless && world.TryGetEconomy(Attacker, out var economy)) economy.IncomeScale *= 1.04f;

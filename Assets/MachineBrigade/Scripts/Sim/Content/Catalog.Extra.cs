@@ -15,6 +15,18 @@ namespace MachineBrigade.Sim.Content
         /// <summary>An elite costs its base card's CP times this (and refunds its kill at that price).</summary>
         public float CostScale { get; internal set; } = 1.6f;
 
+        /// <summary>An elite's health against its base card's (the data's elite "hp" is set to it; a test holds them to it).</summary>
+        public float HpScale { get; internal set; } = 1.6f;
+
+        /// <summary>Everything an elite fires hits this many times as hard as its base card's gun would.</summary>
+        public float DamageScale { get; internal set; } = 1.25f;
+
+        /// <summary>A general's elites: the cards it does not favour get this share of the budget (the favoured ones all of it).</summary>
+        public float OtherShare { get; internal set; } = 0.5f;
+
+        /// <summary>At most this many elites a battle pay their bounty (so a long battle's pay stays on the prompt 7 curve).</summary>
+        public int BountyCap { get; internal set; } = 4;
+
         internal Dictionary<string, float> Budget { get; set; } = new();
         internal Dictionary<string, int> Cap { get; set; } = new();
 
@@ -65,6 +77,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var p in ElitePrefer)
             {
                 if (p == "Drone" && Catalog.FliesDrones(def)) return true;
+                if (p == "Air" && def.Flying) return true;
                 if (Enum.TryParse<UnitClass>(p, out var c) && def.Class == c) return true;
             }
             return false;
@@ -117,6 +130,8 @@ namespace MachineBrigade.Sim.Content
         private static void ParseExtras(JsonObject v, VehicleDef def)
         {
             def.MineArmor = Math.Clamp(v.Float("mineArmor", 1f), 0f, 1f);
+            // 0 until FinishExtras fills in the elite default (or 1).
+            def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");
@@ -250,7 +265,8 @@ namespace MachineBrigade.Sim.Content
                 var rules = new EliteRules
                 {
                     CostScale = e.Float("costScale", 1.6f), Coins = e.Int("coins", 15), BlueprintChance = e.Float("blueprintChance", 0.08f),
-                    PowerRatio = e.Float("powerRatio", 2f),
+                    PowerRatio = e.Float("powerRatio", 2f), HpScale = e.Float("hpScale", 1.6f), DamageScale = e.Float("damageScale", 1.25f),
+                    OtherShare = Math.Clamp(e.Float("otherShare", 0.5f), 0f, 1f), BountyCap = Math.Max(0, e.Int("bountyCap", 4)),
                 };
                 if (e.Has("budget"))
                 {
@@ -264,10 +280,13 @@ namespace MachineBrigade.Sim.Content
                 }
                 Elites = rules;
             }
-            // An elite counts (army value, kill refunds) at its elite price.
+            // An elite counts (army value, kill refunds) at its elite price, and hits harder by the elite scale.
             foreach (var v in _vehicles.Values)
+            {
                 if (v.EliteOf != null && _vehicles.TryGetValue(v.EliteOf, out var original))
                     v.ArmyCost = EliteCost(original);
+                if (v.DamageScale <= 0f) v.DamageScale = v.Elite && v.EliteOf != null ? Elites.DamageScale : 1f;
+            }
 
             if (root.Has("generals"))
             {

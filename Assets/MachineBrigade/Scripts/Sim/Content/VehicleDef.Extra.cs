@@ -14,6 +14,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The army branch whose equipment loadout it wears (see <see cref="ArmyBranch"/>).</summary>
         public ArmyBranch Branch { get; internal set; }
 
+        /// <summary>
+        /// Everything it fires hits this many times as hard (an elite: balance.json "elites.damageScale",
+        /// 1.25, unless the def names its own "damageScale"); 1 for the rest.
+        /// </summary>
+        public float DamageScale { get; internal set; } = 1f;
+
         /// <summary>Share of a mine's blast that gets through (the armoured bulldozer's belly plate: 0.5).</summary>
         public float MineArmor { get; internal set; } = 1f;
 

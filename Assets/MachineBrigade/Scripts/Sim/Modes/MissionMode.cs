@@ -385,7 +385,7 @@ namespace MachineBrigade.Sim.Modes
             else if (!world.TryGetRally(EnemyTeam, out origin)) return;
             for (var i = 0; i < count; i++)
             {
-                var def = waves.Roster[(_wave * 3 + i) % waves.Roster.Count];
+                var def = world.Economy.ForWave(EnemyTeam, waves.Roster[(_wave * 3 + i) % waves.Roster.Count]);
                 var angle = i * SimMath.Tau / Math.Max(1, count);
                 var at = world.ClampToMap(origin + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 8f);
                 world.SpawnVehicle(def, EnemyTeam, at, SimMath.DegToRad(225f));
@@ -415,7 +415,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 var id = roster[(_reinforced * 5 + i * 3) % roster.Count];
                 if (i == 0 && answerAir && FirstAntiAir(world, roster) is { } aa) id = aa;
-                world.Economy.Airlift(EnemyTeam, id, camp);
+                world.Economy.Airlift(EnemyTeam, world.Economy.ForWave(EnemyTeam, id), camp);
             }
             _reinforced++;
             _nextReinforce = world.Time + ReinforceGap;

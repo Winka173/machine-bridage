@@ -70,6 +70,28 @@
     "Air": ["Helicopter", "Plane"]
   },
 
+  // The enemy's elites (prompt 8 H): an elite has its base card's health times hpScale and hits
+  // damageScale times as hard; it costs the enemy costScale times the base card's CP (and refunds its
+  // kill at that price). Instead of a chance per delivery, a share of the enemy's spending ("budget")
+  // may go on elites, with a cap on how many are out at once, both by difficulty; a general's
+  // favoured cards get the whole share, the rest otherShare of it. Each elite destroyed pays "coins"
+  // after the battle (the first bountyCap of them) and may drop a blueprint of its base card.
+  "elites": {
+    "costScale": 1.6, "hpScale": 1.6, "damageScale": 1.25, "powerRatio": 2.0, "otherShare": 0.5,
+    "budget": { "Easy": 0.05, "Normal": 0.10, "Hard": 0.15, "Heroic": 0.20, "Iron": 0.25 },
+    "cap": { "Easy": 1, "Normal": 2, "Hard": 3, "Heroic": 4, "Iron": 5 },
+    "coins": 10, "bountyCap": 4, "blueprintChance": 0.06
+  },
+
+  // The enemy generals: which of their cards they make elites of first (class names; "Drone" for
+  // drone carriers and UAVs, "Air" for every aircraft), and cards always in their deck.
+  "generals": {
+    "varga": { "elites": ["Tank", "Heavy"], "deck": ["armored_bulldozer"] },
+    "orlov": { "elites": ["Artillery"] },
+    "sen": { "elites": ["Drone"] },
+    "quaden": { "elites": ["Air"] }
+  },
+
   "damageTable": {
     "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.3, "Structure": 0.3 },
     "ArmorPiercing": { "Light": 0.75, "Heavy": 1.00, "Air": 0.3, "Structure": 0.6 },
@@ -174,15 +196,15 @@
     { "id": "flak_quad",         "damageType": "Flak",          "damage": 22,  "cooldown": 1.2,  "range": 46, "projectileSpeed": 300, "splash": 3.5, "spread": 1.6, "impactTier": "Medium", "projectile": "Bullet", "targets": "All", "burst": 12, "burstInterval": 0.05 },
     { "id": "sam_battery",       "projectileModel": "patriot", "damageType": "Flak",          "damage": 240, "cooldown": 7.0,  "range": 90, "minRange": 20, "projectileSpeed": 72, "splash": 2.5, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.45 },
     { "id": "bastion_gun",       "damageType": "ArmorPiercing", "damage": 284, "cooldown": 4.57,  "range": 40, "projectileSpeed": 200, "splash": 2.5, "spread": 0.3, "impactTier": "Large", "burst": 2, "burstInterval": 0.05, "impactScale": 1.5 },
-    { "id": "gun_152_heat",      "damageType": "ArmorPiercing", "damage": 400, "cooldown": 6.43,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large" },
-    { "id": "gun_105_apfsds",    "damageType": "ArmorPiercing", "damage": 457, "cooldown": 5.14,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium" },
-    { "id": "hellfire_volley",   "projectileModel": "hellfire_longbow", "damageType": "ArmorPiercing", "damage": 170, "cooldown": 6.0,  "range": 34, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.45 },
-    { "id": "twin_35_ahead",     "damageType": "Flak",          "damage": 46,  "cooldown": 1.1,  "range": 46, "projectileSpeed": 300, "splash": 4, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.06 },
-    { "id": "grad_cluster",      "projectileModel": "grad_cluster", "damageType": "HighExplosive", "damage": 18,  "cooldown": 12,   "range": 78, "minRange": 18, "projectileSpeed": 52, "splash": 3, "spread": 8, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08, "ammo": 3,
-      "cluster": { "count": 4, "radius": 5, "damage": 14, "splash": 2.2, "tier": "Small" } },
-    { "id": "gun_125_elite",     "damageType": "ArmorPiercing", "damage": 250, "cooldown": 4.0,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.5, "impactTier": "Large" },
-    { "id": "mlrs_elite",        "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 50,  "cooldown": 9,    "range": 75, "minRange": 20, "projectileSpeed": 52, "splash": 5, "spread": 5, "impactTier": "Large", "projectile": "Rocket", "burst": 16, "burstInterval": 0.14, "ammo": 6,
-      "cluster": { "count": 5, "radius": 6, "damage": 24, "splash": 2.6, "tier": "Small" } },
+    { "id": "gun_152_heat",      "damageType": "ArmorPiercing", "damage": 325, "cooldown": 6.43,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large" },
+    { "id": "gun_105_apfsds",    "damageType": "ArmorPiercing", "damage": 345, "cooldown": 5.57,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium" },
+    { "id": "hellfire_volley",   "projectileModel": "hellfire_longbow", "damageType": "ArmorPiercing", "damage": 128, "cooldown": 5.0,  "range": 34, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.45 },
+    { "id": "twin_35_ahead",     "damageType": "Flak",          "damage": 16,  "cooldown": 1.1,  "range": 46, "projectileSpeed": 300, "splash": 4, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.06 },
+    { "id": "grad_cluster",      "projectileModel": "grad_cluster", "damageType": "HighExplosive", "damage": 19,  "cooldown": 12,   "range": 78, "minRange": 18, "projectileSpeed": 52, "splash": 3, "spread": 8, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08, "ammo": 3,
+      "cluster": { "count": 4, "radius": 5, "damage": 15, "splash": 2.2, "tier": "Small" } },
+    { "id": "gun_125_elite",     "damageType": "ArmorPiercing", "damage": 205, "cooldown": 4.8,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.5, "impactTier": "Large" },
+    { "id": "mlrs_elite",        "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 13,  "cooldown": 9,    "range": 75, "minRange": 20, "projectileSpeed": 52, "splash": 5, "spread": 5, "impactTier": "Large", "projectile": "Rocket", "burst": 16, "burstInterval": 0.14, "ammo": 6,
+      "cluster": { "count": 5, "radius": 6, "damage": 6, "splash": 2.6, "tier": "Small" } },
     { "id": "autocannon_40",     "damageType": "Kinetic",       "damage": 51,  "cooldown": 1.43,  "range": 28, "projectileSpeed": 210, "splash": 1, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.14 },
     // Roster cleanup (prompt 2): the wheeled tank hunter's 105 mm (harder on a flank or rear), the
     // long-range SAM's big missile, the ATGM tower's twin launcher.
@@ -481,37 +503,46 @@
     { "id": "long_sam", "scale": 0.85, "class": "AntiAir", "armor": "Light", "hp": 440, "speed": 6, "turnRate": 60, "turretTurnRate": 60, "radius": 2.8, "length": 11.0, "width": 3.0, "cp": 11, "vision": 80,
       "firesWhileMoving": false, "weapon": "sam_48n6", "mainSlot": "missile", "captureRate": 0,
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armor": "Heavy", "hp": 1500, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
-      "firesWhileMoving": true, "weapon": "gun_125_elite", "skills": ["elite_shield", "elite_smoke"],
+    { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armor": "Heavy", "hp": 1440, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
+      "firesWhileMoving": true, "weapon": "gun_125_elite", "skills": ["elite_shield"],
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_heavy_tank", "scale": 0.85, "class": "Heavy", "elite": true, "eliteOf": "heavy_tank", "armor": "Heavy", "hp": 2600, "speed": 4.6, "turnRate": 45, "turretTurnRate": 45, "radius": 2.9, "length": 9.97, "width": 4.44, "cp": 0, "vision": 36,
-      "firesWhileMoving": true, "weapon": "gun_152_heat", "skills": ["elite_repair", "elite_overdrive"],
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+    { "id": "elite_heavy_tank", "scale": 0.85, "class": "Heavy", "elite": true, "eliteOf": "heavy_tank", "armor": "Heavy", "hp": 2560, "speed": 4.6, "turnRate": 45, "turretTurnRate": 45, "radius": 2.9, "length": 9.97, "width": 4.44, "cp": 0, "vision": 36,
+      "firesWhileMoving": true, "weapon": "gun_152_heat", "skills": ["elite_overdrive"],
+      "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 10, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "elite_tank_destroyer", "scale": 0.85, "class": "TankHunter", "elite": true, "eliteOf": "tank_destroyer", "armor": "Heavy", "hp": 900, "speed": 7.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.7, "length": 8.58, "width": 4.03, "cp": 0, "vision": 40,
+    { "id": "elite_tank_destroyer", "scale": 0.85, "class": "TankHunter", "elite": true, "eliteOf": "tank_destroyer", "armor": "Heavy", "hp": 992, "speed": 7.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.7, "length": 8.58, "width": 4.03, "cp": 0, "vision": 40,
       "firesWhileMoving": true, "weapon": "gun_105_apfsds", "skills": ["elite_barrage", "elite_smoke"],
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "elite_attack_helicopter", "scale": 0.81, "elite": true, "eliteOf": "attack_helicopter", "armor": "Air", "hp": 850, "speed": 15, "turnRate": 120, "turretTurnRate": 360, "radius": 3.5, "cp": 0, "vision": 42,
+    { "id": "elite_attack_helicopter", "scale": 0.81, "elite": true, "eliteOf": "attack_helicopter", "armor": "Air", "hp": 800, "speed": 15, "turnRate": 120, "turretTurnRate": 360, "radius": 3.5, "cp": 0, "vision": 42,
       "firesWhileMoving": true, "weapon": "hellfire_volley", "mainSlot": "missile", "flying": true, "altitude": 15, "captureRate": 0, "skills": ["elite_flares", "elite_barrage"],
       "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" },
                      { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" } ],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "elite_mlrs", "scale": 0.85,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "armor": "Light", "hp": 550, "speed": 6.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.5, "length": 8.66, "width": 3.05, "cp": 0, "vision": 30,
+    { "id": "elite_mlrs", "scale": 0.85,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "armor": "Light", "hp": 512, "speed": 6.5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.5, "length": 8.66, "width": 3.05, "cp": 0, "vision": 30,
       "firesWhileMoving": false, "weapon": "mlrs_elite", "secondary": [{"weapon": "hmg_roof", "slot": "mg", "aim": "Free"}], "skills": ["elite_barrage"],
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "elite_aa", "scale": 1.05,         "class": "AntiAir", "elite": true, "eliteOf": "aa_vehicle", "armor": "Light", "hp": 600, "speed": 8.5, "turnRate": 90, "turretTurnRate": 240, "radius": 2.3, "length": 5.88, "width": 3.22, "cp": 0, "vision": 60,
+    { "id": "elite_aa", "scale": 1.05,         "class": "AntiAir", "elite": true, "eliteOf": "aa_vehicle", "armor": "Light", "hp": 560, "speed": 8.5, "turnRate": 90, "turretTurnRate": 240, "radius": 2.3, "length": 5.88, "width": 3.22, "cp": 0, "vision": 60,
       "firesWhileMoving": true, "weapon": "twin_35_ahead", "skills": ["elite_overdrive"],
       "secondary": [ { "weapon": "sam", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "elite_apc", "scale": 0.85,        "class": "Light", "elite": true, "eliteOf": "ifv", "armor": "Light", "hp": 800, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 8.23, "width": 3.27, "cp": 0, "vision": 34,
-      "firesWhileMoving": true, "weapon": "autocannon_40", "skills": ["elite_smoke", "elite_emp"],
-      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm_heavy", "slot": "missile", "aim": "Turret" } ],
+    { "id": "elite_apc", "scale": 0.85,        "class": "Light", "elite": true, "eliteOf": "ifv", "armor": "Light", "hp": 832, "speed": 9, "turnRate": 110, "turretTurnRate": 160, "radius": 2.5, "length": 8.23, "width": 3.27, "cp": 0, "vision": 34,
+      "firesWhileMoving": true, "weapon": "autocannon_30", "skills": ["elite_emp"],
+      "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "elite_grad", "scale": 0.95,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "model": "grad_truck", "armor": "Light", "hp": 460, "speed": 8.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.52, "width": 2.55, "cp": 0, "vision": 30,
+    { "id": "elite_grad", "scale": 0.95,       "class": "Artillery", "elite": true, "eliteOf": "mlrs", "model": "grad_truck", "armor": "Light", "hp": 512, "speed": 8.5, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 7.52, "width": 2.55, "cp": 0, "vision": 30,
       "firesWhileMoving": false, "weapon": "grad_cluster", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ], "skills": ["elite_barrage"],
       "deathExplosion": { "damage": 150, "radius": 10, "delay": 0.35, "tier": "Ultimate" } },
+    // Prompt 8 H.2: elites of the enemy decks' commonest cards that had none, on their base card's
+    // model (dark armour, gold trim, the gold health bar): health 1.6 times. Their one skill is worth
+    // more than the others' (measured power, duel damage times time alive, 1.8-2.2 times the base
+    // card's), so their damage scale is below the elites' 1.25: the jet's long flares already double
+    // its life under missile fire, so it hits no harder than the plain jet.
+    { "id": "elite_fpv_carrier", "inherits": "fpv_carrier", "elite": true, "eliteOf": "fpv_carrier", "cp": 0, "hp": 672, "skills": ["elite_barrage"], "damageScale": 1.1 },
+    { "id": "elite_attack_jet", "inherits": "attack_jet", "elite": true, "eliteOf": "attack_jet", "cp": 0, "hp": 736, "skills": ["elite_flares"], "damageScale": 1.0 },
+    { "id": "elite_long_sam", "inherits": "long_sam", "elite": true, "eliteOf": "long_sam", "cp": 0, "hp": 704, "skills": ["elite_overdrive"], "damageScale": 1.2 },
+    { "id": "elite_artillery", "inherits": "artillery", "elite": true, "eliteOf": "artillery", "cp": 0, "hp": 480, "skills": ["elite_barrage"], "damageScale": 1.15 },
 
     // Fixed defences (Siege mode): they never move, and every one of them goes up in flames.
     // The camp headquarters (replaces the two spawn bastions): the drop zone round it, a twin gun and flak on its roof.
@@ -779,7 +810,7 @@
   // Skills of elite units and bosses, used automatically when the trigger is met (see SkillDef).
   // Once = a boss phase: fires a single time when the boss drops below the threshold.
   "skills": [
-    { "id": "elite_shield",     "kind": "Shield",    "trigger": "UnderFire",       "cooldown": 20, "duration": 5,  "amount": 0.6 },
+    { "id": "elite_shield",     "kind": "Shield",    "trigger": "UnderFire",       "cooldown": 20, "duration": 5,  "amount": 0.3 },
     { "id": "elite_smoke",      "kind": "Smoke",     "trigger": "HpBelow",         "threshold": 0.55, "cooldown": 30, "duration": 8, "radius": 9 },
     { "id": "elite_repair",     "kind": "Repair",    "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.3 },
     { "id": "elite_overdrive",  "kind": "Overdrive", "trigger": "EnemyInRange",    "cooldown": 25, "duration": 6,  "amount": 1.5 },

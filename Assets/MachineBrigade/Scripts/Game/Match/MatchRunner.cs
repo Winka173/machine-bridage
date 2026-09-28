@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Match
     /// chosen match it runs the menu over an AI-versus-AI battle. Restarting reloads the scene,
     /// which resets every system and view in one go (V2 rule 9).
     /// </summary>
-    public sealed class MatchRunner : MonoBehaviour
+    public sealed partial class MatchRunner : MonoBehaviour
     {
         private const int PlayerTeam = 0;
         private const int EnemyTeam = 1;
@@ -183,6 +183,8 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
+                // The elite budget is part of that pace, not on top of it (prompt 8 H).
+                edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
@@ -790,6 +792,7 @@ namespace MachineBrigade.Game.Match
                 {
                     case SimEventKind.VehicleSpawned when _world.TryGetVehicle(e.Entity, out var vehicle):
                         _views.Add(vehicle);
+                        EliteArrived(vehicle);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
@@ -803,6 +806,7 @@ namespace MachineBrigade.Game.Match
                         {
                             DailyMissions.Record("kills");
                             if (slain.Elite) DailyMissions.Record("elites");
+                            if (slain.Elite && !slain.Boss) _elitesSlain.Add(slain.EliteOf ?? slain.Id);
                             if (slain.Boss) DailyMissions.Record("bosses");
                         }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
@@ -1170,6 +1174,8 @@ namespace MachineBrigade.Game.Match
                     minimap.Boss(new Vector2(v.Position.X, v.Position.Y));
                     continue;
                 }
+                // An enemy elite has a symbol of its own (a gold ring round its blip).
+                if (v.Def.Elite && v.Team != PlayerTeam) minimap.Elite(new Vector2(v.Position.X, v.Position.Y), v.Flying, !seen);
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
@@ -1198,6 +1204,7 @@ namespace MachineBrigade.Game.Match
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;
+            Rewards.AddElites(_reward, outcome.Rows, _elitesSlain, _world.Catalog, _elitesSlain.Count * 7919 + (int)_world.Time);
             RewardView view = null;
             if (_reward != null)
             {

@@ -63,9 +63,12 @@ namespace MachineBrigade.Tests
             Battle(catalog, defence, army, seed, minutes, out _);
 
         /// <summary>One battle (see <see cref="Score"/>), and the share of the base's towers the attackers knocked down.</summary>
-        internal static float Battle(Catalog catalog, BaseLoadout defence, string[] army, int seed, float minutes, out float towersDown)
+        internal static float Battle(Catalog catalog, BaseLoadout defence, string[] army, int seed, float minutes, out float towersDown,
+            Func<VehicleDef, VehicleBoost> defenceBoost = null)
         {
             var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: seed);
+            // The defender's tower equipment (prompt 8 I.9's one-tower bases in Legendary gear).
+            if (defenceBoost != null) world.SetBoosts(1, defenceBoost);
             var b = world.Bases.Establish(1, defence, BaseRole.Target);
             // The attackers have scouted the base: they know where every structure is.
             foreach (var v in world.VehicleList)

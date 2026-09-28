@@ -140,6 +140,9 @@ namespace MachineBrigade.Sim
         internal Abilities.GearSystem Gear { get; }
 
         /// <summary>Boss parts, boring, landings, the supergun's shot and boss guards (prompt 8).</summary>
+        /// <summary>A side's elite budget (prompt 8 H): the modes set its share, cap and general.</summary>
+        public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
+
         internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
 
         internal CombatSystem Combat => _combat;

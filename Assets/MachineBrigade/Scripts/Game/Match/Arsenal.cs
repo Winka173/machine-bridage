@@ -362,6 +362,18 @@ namespace MachineBrigade.Game.Match
             return n == 0 ? 100 : Mathf.RoundToInt(100f * sum / n);
         }
 
+        /// <summary>
+        /// The elite budget's edge taken out of a matched boost (prompt 8 H): elites make the enemy
+        /// <paramref name="eliteEdge"/> stronger per CP, so the boost that keeps pace with the
+        /// arsenal is that much smaller (split evenly between health and damage, never below none).
+        /// </summary>
+        public static VehicleBoost WithElites(VehicleBoost matched, float eliteEdge)
+        {
+            if (eliteEdge <= 0f) return matched;
+            var f = Mathf.Sqrt(1f + eliteEdge);
+            return new VehicleBoost(Mathf.Max(1f, matched.Hp / f), Mathf.Max(1f, matched.Damage / f), 1f, 1f, 1f, 0f, SpecialModule.None, 0f);
+        }
+
         public static VehicleBoost Match(IEnumerable<VehicleBoost> deck, float share)
         {
             var tough = 0f;

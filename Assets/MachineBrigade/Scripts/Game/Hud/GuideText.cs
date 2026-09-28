@@ -463,22 +463,22 @@ namespace MachineBrigade.Game.Hud
             // Elite enemy variants (never bought): tips on beating them.
             ["guide.elite_mbt"] = (
                 "[[Elite battle tank]] · enemy only · tougher, with skills\n" +
-                "How it fights: a fast-firing 125 mm gun; under fire it raises a [[shield]] (60% less damage for 5 s), and when hurt it pops [[smoke]].\n" +
+                "How it fights: a 125 mm gun that hits a quarter harder than a battle tank's, with 60% more health; under fire it raises a [[shield]] (30% less damage for 5 s).\n" +
                 "Strong / weak: beats battle tanks and light vehicles one on one; tank hunters and helicopters bring it down.\n" +
                 "Tip: its shield lasts 5 s and needs 20 s to come back: let it fade, then hit hard with [[tank hunters]].",
                 "[[Tăng chủ lực tinh nhuệ]] · chỉ phe địch · lì hơn, có kỹ năng\n" +
-                "Cách đánh: pháo 125 mm bắn nhanh; khi bị bắn thì bật [[khiên]] (giảm 60% sát thương trong 5 giây), khi yếu thì thả [[khói]].\n" +
+                "Cách đánh: pháo 125 mm đánh đau hơn tăng chủ lực một phần tư, máu nhiều hơn 60%; khi bị bắn thì bật [[khiên]] (giảm 30% sát thương trong 5 giây).\n" +
                 "Mạnh / yếu: thắng tăng chủ lực và xe nhẹ khi đấu tay đôi; xe diệt tăng và trực thăng hạ được nó.\n" +
                 "Mẹo: khiên chỉ kéo dài 5 giây và 20 giây mới có lại: chờ khiên tắt rồi dồn hỏa lực [[xe diệt tăng]]."),
             ["guide.elite_heavy_tank"] = (
                 "[[Elite heavy tank]] · enemy only · very tough\n" +
-                "How it fights: a 152 mm gun with a big blast; with a target in range it goes into [[overdrive]], and at half health it [[repairs]] 30%.\n" +
+                "How it fights: a 152 mm gun with a big blast, a quarter harder-hitting, with 60% more health; with a target in range it goes into [[overdrive]] (faster, firing faster, for 6 s).\n" +
                 "Strong / weak: crushes battle tanks, light vehicles and towers; tank hunters, artillery and aircraft are how you kill it.\n" +
-                "Tip: once it drops below half, burst it down before its repair (30% over 8 s) undoes your work.",
+                "Tip: meet its overdrive from out of its reach (tank destroyers at 40 m, artillery), then close in once it has spent it.",
                 "[[Tăng hạng nặng tinh nhuệ]] · chỉ phe địch · cực lì\n" +
-                "Cách đánh: pháo 152 mm sức nổ lớn; có mục tiêu trong tầm là [[tăng tốc]] (chạy nhanh, bắn dồn), còn nửa máu thì tự [[hồi máu]] 30%.\n" +
+                "Cách đánh: pháo 152 mm sức nổ lớn, đánh đau hơn một phần tư, máu nhiều hơn 60%; có mục tiêu trong tầm là [[tăng tốc]] (chạy nhanh, bắn dồn trong 6 giây).\n" +
                 "Mạnh / yếu: nghiền nát tăng chủ lực, xe nhẹ và tháp canh; muốn hạ phải dùng xe diệt tăng, pháo binh và máy bay.\n" +
-                "Mẹo: khi nó còn dưới nửa máu, dồn hỏa lực kết liễu trước khi đợt hồi 30% trong 8 giây kịp xóa công sức."),
+                "Mẹo: đón đợt tăng tốc của nó từ ngoài tầm (xe diệt tăng bắn 40 m, pháo binh), rồi áp sát khi nó đã dùng xong."),
             ["guide.elite_tank_destroyer"] = (
                 "[[Elite tank destroyer]] · enemy only · outranges every tank (46 m)\n" +
                 "How it fights: a 105 mm gun that hits from 46 m; with a target in range it fires a rapid [[barrage]] (2.2× rate), and pops [[smoke]] when hurt.\n" +
@@ -526,13 +526,50 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: giữ máy bay ta tránh xa cho tới khi xe tăng hoặc pháo binh hạ được nó."),
             ["guide.elite_apc"] = (
                 "[[Elite EW carrier]] · enemy only · stuns with EMP\n" +
-                "How it fights: a 40 mm autocannon and paired anti-tank missiles (42 m); enemies within 14 m get hit by an [[EMP]] that [[stuns]] them for 3.5 s.\n" +
+                "How it fights: the IFV's autocannon and anti-tank missile, a quarter harder-hitting; enemies within 14 m get hit by an [[EMP]] that [[stuns]] them for 3.5 s.\n" +
                 "Strong / weak: beats light vehicles, scouts and AA, and its missiles hurt tanks; massed tanks and tank hunters beat it.\n" +
                 "Tip: fight it from beyond 14 m (tank destroyers, artillery, aircraft) so the EMP never reaches you.",
                 "[[Xe bọc thép tinh nhuệ]] · chỉ phe địch · gây choáng bằng EMP\n" +
-                "Cách đánh: pháo tự động 40 mm và cặp tên lửa chống tăng (42 m); địch vào trong 14 m là dính [[EMP]], bị [[choáng]] 3,5 giây.\n" +
+                "Cách đánh: pháo tự động và tên lửa chống tăng của xe chiến đấu bộ binh, đánh đau hơn một phần tư; địch vào trong 14 m là dính [[EMP]], bị [[choáng]] 3,5 giây.\n" +
                 "Mạnh / yếu: thắng xe nhẹ, trinh sát và phòng không, tên lửa còn hại được xe tăng; thua cụm xe tăng đông và xe diệt tăng.\n" +
                 "Mẹo: đánh từ ngoài 14 m (xe diệt tăng, pháo binh, máy bay) để EMP không chạm tới quân ta."),
+            // Prompt 8 H.2: elites of cards that had none (the base card's model in dark armour and gold trim).
+            ["guide.elite_fpv_carrier"] = (
+                "[[Elite FPV carrier]] · enemy only · drone swarms, faster\n" +
+                "How it fights: the FPV carrier's [[kamikaze drones]] 12–75 m out, a tenth harder-hitting, with 60% more health; with armour in range it launches in a rapid [[barrage]] (2.2× rate for 6 s).\n" +
+                "Strong / weak: wrecks tanks and heavy tanks from afar; APS tanks, laser AA and jammers stop its drones, and fast vehicles that reach it kill it.\n" +
+                "Tip: spread your tanks when the gold ring shows up, and send armoured cars or a helicopter straight at it.",
+                "[[Xe phóng drone FPV tinh nhuệ]] · chỉ phe địch · bầy drone dồn dập\n" +
+                "Cách đánh: [[drone cảm tử]] như xe phóng FPV, tầm 12–75 m, đánh đau hơn một phần mười, máu nhiều hơn 60%; có thiết giáp trong tầm là phóng [[dồn dập]] (nhanh gấp 2,2 lần trong 6 giây).\n" +
+                "Mạnh / yếu: phá nát xe tăng và tăng nặng từ xa; tăng APS, laser phòng không và xe gây nhiễu chặn drone, xe nhanh áp sát là hạ được.\n" +
+                "Mẹo: thấy vòng vàng thì dàn xe tăng ra, tung xe bọc thép hoặc trực thăng lao thẳng vào nó."),
+            ["guide.elite_attack_jet"] = (
+                "[[Elite attack jet]] · enemy only · long-lasting flares\n" +
+                "How it fights: the attack jet's cannon, rockets and bombs, with 60% more health; its [[flares]] come back every 14 s and last twice as long.\n" +
+                "Strong / weak: guts ground columns and towers; flak guns ignore flares, and fighters catch it.\n" +
+                "Tip: missiles struggle against it: answer with [[flak]] (AA vehicle, Tunguska) or a fighter.",
+                "[[Cường kích tinh nhuệ]] · chỉ phe địch · mồi nhiệt bền\n" +
+                "Cách đánh: pháo, rocket và bom như máy bay cường kích, máu nhiều hơn 60%; [[mồi nhiệt]] 14 giây lại có và kéo dài gấp đôi.\n" +
+                "Mạnh / yếu: xé nát đoàn xe mặt đất và tháp canh; pháo cao xạ không bị mồi nhiệt lừa, tiêm kích đuổi kịp nó.\n" +
+                "Mẹo: tên lửa khó hạ nó: đáp trả bằng [[cao xạ]] (xe phòng không, Tunguska) hoặc tiêm kích."),
+            ["guide.elite_long_sam"] = (
+                "[[Elite long-range SAM]] · enemy only · 95 m reach, overdrive\n" +
+                "How it fights: the long-range SAM's big missile at [[aircraft only]], a fifth harder-hitting, with 60% more health; with aircraft in range it goes into [[overdrive]] (faster reloads for 6 s).\n" +
+                "Strong / weak: closes the sky to helicopters, jets and bombers; helpless on the ground and inside 20 m.\n" +
+                "Tip: keep your aircraft home and kill it with tanks, artillery or a fast raid on the ground.",
+                "[[Tên lửa phòng không tầm xa tinh nhuệ]] · chỉ phe địch · tầm 95 m, tăng tốc\n" +
+                "Cách đánh: tên lửa lớn như bản thường, [[chỉ bắn máy bay]], đánh đau hơn một phần năm, máu nhiều hơn 60%; có máy bay trong tầm là [[tăng tốc]] (nạp nhanh hơn trong 6 giây).\n" +
+                "Mạnh / yếu: khóa kín bầu trời với trực thăng, máy bay và oanh tạc cơ; bất lực trước mặt đất và trong vòng 20 m.\n" +
+                "Mẹo: giữ máy bay ta ở nhà, hạ nó bằng xe tăng, pháo binh hoặc một đòn đánh nhanh trên mặt đất."),
+            ["guide.elite_artillery"] = (
+                "[[Elite SP howitzer]] · enemy only · shoot-and-scoot, barrage\n" +
+                "How it fights: the SP howitzer's 155 mm shells 25–90 m out, 15% harder-hitting, with 60% more health; with targets in range a rapid [[barrage]], and it moves 15–20 m after every three rounds.\n" +
+                "Strong / weak: breaks massed light vehicles and towers; counter-battery fire misses it once it has moved, and anything that reaches it wins.\n" +
+                "Tip: don't sit still inside its range; send fast vehicles or aircraft to where it went, not where it fired from.",
+                "[[Pháo tự hành tinh nhuệ]] · chỉ phe địch · bắn rồi chạy, bắn dồn\n" +
+                "Cách đánh: đạn 155 mm như pháo tự hành, tầm 25–90 m, đánh đau hơn 15%, máu nhiều hơn 60%; có mục tiêu là [[bắn dồn dập]], cứ ba phát lại chạy 15–20 m.\n" +
+                "Mạnh / yếu: phá cụm xe nhẹ và tháp canh; phản pháo trượt khi nó đã đổi chỗ, thứ gì áp sát được là thắng.\n" +
+                "Mẹo: đừng đứng yên trong tầm của nó; tung xe nhanh hoặc máy bay tới chỗ nó vừa chạy tới, không phải chỗ nó vừa bắn."),
 
             // Fixed defences: tips on breaking them.
             ["guide.command_vehicle"] = (

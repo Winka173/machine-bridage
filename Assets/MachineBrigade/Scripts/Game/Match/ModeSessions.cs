@@ -51,6 +51,25 @@ namespace MachineBrigade.Game.Match
 
         public AiDifficulty Difficulty { get; protected set; } = AiDifficulty.Normal;
 
+        /// <summary>The key the enemy's elite budget goes by (prompt 8 H): Easy, Normal, Hard, or a mission tier's Heroic and Iron.</summary>
+        public virtual string EliteDifficulty => Difficulty.ToString();
+
+        /// <summary>The enemy's general (a campaign mission's), whose favoured cards become elites first; null for none.</summary>
+        public virtual string EnemyGeneral => null;
+
+        /// <summary>The elite budget's key for a difficulty and a mission tier (0 as written, 1 Heroic, 2 Iron).</summary>
+        public static string EliteKey(string difficulty, int tier) => tier switch { 1 => "Heroic", 2 => "Iron", _ => difficulty ?? "Normal" };
+
+        /// <summary>A side's elite budget from the catalog's rules for a difficulty key, and its general.</summary>
+        public static void SetElites(SimWorld world, int team, string key, string general)
+        {
+            var rules = world.Catalog.Elites;
+            var budget = world.Elites(team);
+            budget.Share = rules.BudgetFor(key);
+            budget.Cap = rules.CapFor(key);
+            budget.General = general != null && world.Catalog.Generals.TryGetValue(general, out var g) ? g : null;
+        }
+
         public void TickAi(SimWorld world, float dt)
         {
             foreach (var c in Commanders) c.Tick(world, dt);
@@ -223,10 +242,10 @@ namespace MachineBrigade.Game.Match
             session.Build(world, seed);
             // Supply drops everywhere; no bomber raids in Boss Rush (they hit the army massed round the boss).
             if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed, raids: kind != GameModeKind.BossRush);
-            // Elite crews turn up more often the harder the enemy (and now and then in the menu battle).
-            var elite = menu ? 0.15f : session.Difficulty switch { AiDifficulty.Hard => 0.25f, AiDifficulty.Normal => 0.1f, _ => 0f };
-            if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.EliteChance = elite;
-            if (menu && world.TryGetEconomy(PlayerTeam, out var ours)) ours.EliteChance = elite;
+            // Elites (prompt 8 H): a share of the enemy's spending by difficulty, not a chance per
+            // delivery (both sides in the menu battle).
+            SetElites(world, EnemyTeam, menu ? "Normal" : session.EliteDifficulty, menu ? null : session.EnemyGeneral);
+            if (menu) SetElites(world, PlayerTeam, "Normal", null);
             // Doctrines: the player's choice; a hard enemy picks one of its own.
             if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
                 world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));
@@ -834,6 +853,17 @@ namespace MachineBrigade.Game.Match
         public override string Subtitle => Strings.Get("goal." + _def.Goal.ToString().ToLowerInvariant());
         public override string StartToast => Strings.Get("mission." + _def.Id + ".brief");
 
+        public override string EliteDifficulty => EliteKey(_def.Difficulty, _tier);
+        public override string EnemyGeneral => GeneralOf(_def);
+
+        /// <summary>
+        /// The mission's enemy general. Merge bridge: the campaign rework gives MissionDef its own
+        /// "General"; until it is on this branch it is read if there, and after the merge this is
+        /// simply <c>def.General</c>.
+        /// </summary>
+        internal static string GeneralOf(MissionDef def) =>
+            def == null ? null : typeof(MissionDef).GetProperty("General")?.GetValue(def) as string;
+
         protected override void Build(SimWorld world, int seed)
         {
             Difficulty = System.Enum.TryParse<AiDifficulty>(_def.Difficulty, out var d) ? d : AiDifficulty.Normal;
@@ -844,6 +874,10 @@ namespace MachineBrigade.Game.Match
                 var deck = new List<string>();
                 foreach (var id in _def.EnemyDeck)
                     if (world.Catalog.Vehicles.ContainsKey(id)) deck.Add(id);
+                // A general's own cards join a mission's deck (Varga's armoured bulldozer).
+                if (deck.Count > 0 && GeneralOf(_def) is { } general && world.Catalog.Generals.TryGetValue(general, out var g))
+                    foreach (var id in g.Deck)
+                        if (!deck.Contains(id) && world.Catalog.Vehicles.ContainsKey(id)) deck.Add(id);
                 var supports = new List<string>();
                 foreach (var id in MatchSettings.AllSupports)
                     if (world.Catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) && id != "cruise_missile") supports.Add(id);

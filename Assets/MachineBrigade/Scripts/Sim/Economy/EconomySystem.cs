@@ -126,9 +126,6 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>CP value of this side's army on the field plus deliveries on the way.</summary>
         public int ArmyCp { get; internal set; }
 
-        /// <summary>Chance that a delivered vehicle arrives as its elite version (enemy difficulty).</summary>
-        public float EliteChance { get; set; }
-
         /// <summary>Single-use items this side carries into the match (bought with coins), by support id.</summary>
         public Dictionary<string, int> Items { get; } = new();
 
@@ -161,7 +158,7 @@ namespace MachineBrigade.Sim.Economy
     /// they give a beaten side the time and means to come back.
     /// </para>
     /// </summary>
-    internal sealed class EconomySystem
+    internal sealed partial class EconomySystem
     {
         /// <summary>The underdog's biggest reinforcement boost (0.5: half again the income).</summary>
         public const float MaxCatchUp = 0.5f;
@@ -217,10 +214,10 @@ namespace MachineBrigade.Sim.Economy
             // Charged exactly once, when accepted (T03).
             economy.Cp -= price;
             if (def.Flying) _world.CountAircraft(team);
-            // Veteran crews: some deliveries turn up as the refurbished elite version. Decided now,
-            // with the landing point, so the drop the game draws is the vehicle that lands.
-            if (economy.EliteChance > 0f && _world.Catalog.EliteVariant(defId) is { } elite && _world.Random.NextDouble() < economy.EliteChance)
-                defId = elite;
+            // Veteran crews: a delivery turns up as the refurbished elite version while the side's
+            // elite budget has room (prompt 8 H), for the elite's dearer price. Decided now, with the
+            // landing point, so the drop the game draws is the vehicle that lands.
+            defId = Promote(team, economy, def);
             // Deliveries fan out around the zone so consecutive ones do not stack.
             var index = _deliveries++;
             var angle = index * 2.39996f;
@@ -301,7 +298,7 @@ namespace MachineBrigade.Sim.Economy
         {
             // Quartermaster's four-piece: part of its own cost comes back when it falls.
             if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
-                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.CpCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
+                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))

@@ -316,7 +316,7 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[(int)a] += raw * Catalog.Damage.Multiplier(w.DamageType, a) * bonus;
+                    dps[(int)a] += raw * v.DamageScale * Catalog.Damage.Multiplier(w.DamageType, a) * bonus;
                 }
             }
             return dps;
@@ -414,8 +414,8 @@ namespace MachineBrigade.Tests
                 var duelE = Lab.Dps(new Lab.Duel { Shooter = e.Id, Count = 1, Targets = targets }, 3);
                 var duelB = Lab.Dps(new Lab.Duel { Shooter = b.Id, Count = 1, Targets = targets }, 3);
                 var attackers = e.Flying ? new[] { "aa_vehicle", "aa_vehicle", "heavy_aa" } : new[] { "main_battle_tank", "ifv", "armored_car" };
-                var soakE = Lab.TimePerLife(new Lab.Soak { Target = e.Id, Attackers = attackers }, 3);
-                var soakB = Lab.TimePerLife(new Lab.Soak { Target = b.Id, Attackers = attackers }, 3);
+                var soakE = Lab.TimePerLife(new Lab.Soak { Target = e.Id, Attackers = attackers, Seconds = 480f }, 3);
+                var soakB = Lab.TimePerLife(new Lab.Soak { Target = b.Id, Attackers = attackers, Seconds = 480f }, 3);
                 var dx = duelB > 0f ? duelE / duelB : 0f;
                 var sx = soakB > 0f ? soakE / soakB : 0f;
                 sb.AppendLine($"| {e.Id} | {b.Id} | {e.MaxHp / b.MaxHp:0.00} | {paper:0.00} ({(ArmorClass)best}) | {dx:0.00} | {sx:0.00} | {dx * sx:0.00} | " +

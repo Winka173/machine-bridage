@@ -22,6 +22,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Cards this battle unlocks (a campaign mission's first win).</summary>
         public List<string> Unlocks { get; } = new();
 
+        /// <summary>Blueprints the elites destroyed dropped (a card id each), paid with the rest.</summary>
+        public List<string> Blueprints { get; } = new();
+
         public bool Claimed { get; private set; }
 
         /// <summary>Ranks reached while claiming (each already paid its coin bonus).</summary>
@@ -35,6 +38,7 @@ namespace MachineBrigade.Game.Match
             PlayerProfile.AddCoins(Coins * multiplier);
             RanksGained.AddRange(PlayerProfile.AddXp(Xp));
             foreach (var id in Unlocks) PlayerProfile.Unlock(id);
+            foreach (var id in Blueprints) PlayerProfile.AddBlueprints(id, 1);
             if (MissionId != null) PlayerProfile.RecordMission(MissionId, Stars, Tier);
         }
     }
@@ -79,6 +83,30 @@ namespace MachineBrigade.Game.Match
             if (mission.StarTime <= 0f || seconds <= mission.StarTime) stars++;
             if (mission.Challenge != null ? challenge : mission.StarLosses < 0 || losses <= mission.StarLosses) stars++;
             return stars;
+        }
+
+        /// <summary>
+        /// The elites destroyed (prompt 8 H.5): a small bounty each, for the first few (the data's
+        /// elites.bountyCap, so a long battle's pay stays near the curve prompt 7 set), and a small
+        /// chance each of a blueprint of the elite's base card (a card the player can own). Rows for
+        /// the result card. <paramref name="seed"/> makes the drops repeatable.
+        /// </summary>
+        public static void AddElites(MatchReward reward, List<(string label, string value)> rows, IReadOnlyList<string> baseCards,
+            Catalog catalog, int seed)
+        {
+            if (reward == null || baseCards.Count == 0) return;
+            var rules = catalog.Elites;
+            var paid = Mathf.Min(baseCards.Count, rules.BountyCap);
+            var coins = paid * rules.Coins;
+            reward.Coins += coins;
+            rows?.Add((Hud.Strings.Get("result.elites"), Hud.Strings.Format("result.elitesValue", baseCards.Count, coins)));
+            var random = new System.Random(seed);
+            foreach (var card in baseCards)
+            {
+                if (random.NextDouble() >= rules.BlueprintChance || System.Array.IndexOf(MatchSettings.AllVehicles, card) < 0) continue;
+                reward.Blueprints.Add(card);
+                rows?.Add((Hud.Strings.Get("result.blueprint"), Hud.Strings.Card(card)));
+            }
         }
 
         /// <summary>Reward multiplier of a mission tier: Heroic pays half as much again, Iron double.</summary>

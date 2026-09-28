@@ -617,7 +617,7 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
-            damageScale *= shooter.DamageBoost * shooter.CommandDamage;
+            damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
             // A gun pit's first shot on rising (the Ambush branch).
             if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
             {
