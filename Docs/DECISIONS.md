@@ -1691,7 +1691,8 @@ of it is the view's: no simulation code, damage or radius changed (balance.json 
   quarters of the radius and the dust skirt rolls out to its edge. The air-launched cruise missile
   and JASSM (Huge, 5 to 6 m splash) already matched and are unchanged.
 - **Particles per blast** at High / Low (before: the recipe alone): tank round x1.3 / x1.4 / x1.5
-  about 55 / 62 / 69 against 42 on Low, plus 21 / 50 / 54 sparks (before 13 + 16 or 36); GBU-12 (Large
+  59 / 69 / 75 on High and 49 / 51 / 54 on Low (its recipe is 42), plus 21 / 50 / 54 sparks on High
+  (before: 13 and 16 or 36 sparks); GBU-12 (Large
   x1.3) 245 / 197 (168); FAB, Mk 84 (Huge x1.5) 502 / 366 (276); JDAM (Ultimate x1.5) 675 / 490 (371);
   cruise missile (x1.65) 774 / 530 (371); MOAB (x2.47) 1358 / 765 (371). The contact sheet's log
   prints them (`BlastRig.Budget`).
@@ -1708,7 +1709,7 @@ of it is the view's: no simulation code, damage or radius changed (balance.json 
   also stays upright now (it was spun the same way).
 - **The laser** (`LaserBeams`, a new beam shader `MachineBrigade/Beam`). Before: a 0.09 m bar for
   0.08 s at every 0.1 s shot and a machine-gun flash. Now one held beam per emitter, following its
-  turret and its target between shots: a white-hot core (0.26 m), a coloured glow (1.25 m) and a wide
+  turret and its target between shots: a white-hot core (0.3 m), a coloured glow (1.25 m) and a wide
   faint haze (3.4 m) on camera-facing lines, with energy ripples running down them and the width
   pulsing and the light flickering every frame; a 0.22 s charge-up when it starts (a ball of light
   swelling past its size at the emitter, sparks drawn in, the beam growing from a thin pilot line);
