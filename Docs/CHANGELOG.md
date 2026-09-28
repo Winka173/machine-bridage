@@ -1,5 +1,25 @@
 # Changelog
 
+## Prompt 9: boss parts
+
+- Every boss is a body and parts (its guns, launchers, engines, shield and EMP emitters, a locomotive,
+  a drill, a ramp, an antenna...), each with its own health and a small bar in a row of icons under the
+  boss bar. A broken part's weapon or skill stops for the battle, its mechanism with it (the
+  supergun's shot, the Earth Worm's dives, the hovercraft's landings, the Supreme Commander's aura),
+  and the body loses 30 % of the part's health. Only direct hits damage parts. Body health is lower to
+  keep the fights about as long.
+- Tap a part on the boss, or its icon, and every unit in reach targets it until it breaks (tap again to
+  cancel); it is outlined in gold.
+- The Iron Train's and the Bastion's self-repair now patches one broken part (its heaviest gun) back
+  to half health, once.
+- The Bastion's four autocannon turrets each cover their own quarter.
+- Boss Rush pays 2 CP for each part broken.
+- Fire and smoke at the breaks: hurt parts smoke and spark, broken ones burn until the end of the
+  battle, the body burns under two thirds and a third of its health, flying bosses trail smoke, every
+  fire flares when the boss dies and the wreck burns on. At most 8 fire points a boss (5 on Low).
+- Radio lines when a main gun, a shield generator, a drone bay or a locomotive breaks; each boss's
+  Guide tab lists its parts and what breaking each does.
+
 ## Prompt 8: new content, elites and equipment
 
 ### New vehicles and mechanisms
