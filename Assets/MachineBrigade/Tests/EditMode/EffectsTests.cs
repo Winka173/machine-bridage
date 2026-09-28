@@ -198,7 +198,8 @@ namespace MachineBrigade.Tests
             for (var i = 0; i < 200; i++) fires.Ignite(new Vector3(i, 0f, 0f), 1f, 10f, 0f);
             Assert.LessOrEqual(fires.Burning, 160, "a hard cap keeps a long battle bounded");
             fires.Tick(1f, 0.5f);
-            Assert.Greater(Layer("Flames").particleCount, 0);
+            // Fires on the ground burn in the ground layer (12A: vehicles over them draw on top).
+            Assert.Greater(Layer("Flames").particleCount + Layer("Ground Flames").particleCount, 0);
             fires.Tick(15f, 0.5f);
             Assert.Greater(fires.Burning, 0, "still smouldering after the flames die");
             fires.Tick(120f, 0.5f);
