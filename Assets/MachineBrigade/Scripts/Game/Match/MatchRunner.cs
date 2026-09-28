@@ -54,6 +54,13 @@ namespace MachineBrigade.Game.Match
         private ModeSession _session;
         private MatchReward _reward;
         private readonly Cinematics _cinematics = new();
+
+        /// <summary>The campaign's radio chatter (null outside a mission).</summary>
+        private RadioDirector _radio;
+
+        /// <summary>A story moment the camera goes to (a boss, reinforcements, a general): where, and until when.</summary>
+        private Vector3 _storyFocus;
+        private float _storyUntil;
         private float _cinematicZoom;
         private SimClock _clock;
         private MaterialLibrary _materials;
@@ -189,6 +196,17 @@ namespace MachineBrigade.Game.Match
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             if (!_menu) ApplyRankDiscounts(catalog, mission != null);
+            if (!_menu && _session is MissionSession storySession)
+            {
+                _radio = new RadioDirector(storySession.Def, seed);
+                _radio.Spoke += line => _hud?.Radio(line);
+                _radio.GeneralAppeared += general =>
+                {
+                    // A general's first words: the camera goes to their camp for a moment.
+                    if (_world.Bases.Of(EnemyTeam) is { } camp && camp.Hq.IsValid) StoryPan(camp.HqPosition);
+                    else if (_world.TryGetRally(EnemyTeam, out var rally)) StoryPan(rally);
+                };
+            }
             Curtain.Progress(0.15f);
             yield return null;
             // A campaign tier holds for the one mission it was chosen for.
@@ -551,7 +569,9 @@ namespace MachineBrigade.Game.Match
             }
             if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             else if (_menu) Attract();
+            else if (Time.unscaledTime < _storyUntil) _camera.Follow(_storyFocus, Time.unscaledDeltaTime, 0.7f);
             else FollowTheFight();
+            if (_radio != null && _session is MissionSession radioSession && !_paused) _radio.Tick(_world, radioSession);
             _selection.Tick();
             _perf?.Begin();
             if (!_paused)
@@ -692,6 +712,19 @@ namespace MachineBrigade.Game.Match
             _world.DebugDestroyProp(best);
         }
 
+        /// <summary>
+        /// A story moment (a boss or the enemy's reinforcements arriving, a general's first words):
+        /// the camera pans there for a few seconds under the letterbox, unless the player is busy
+        /// with the view; a touch hands it straight back.
+        /// </summary>
+        private void StoryPan(System.Numerics.Vector2 at)
+        {
+            if (_menu || !_cinematics.Enabled || Time.unscaledTime - _lastInput < 2f) return;
+            _storyFocus = new Vector3(at.X, 0f, at.Y);
+            _storyUntil = Time.unscaledTime + 3.5f;
+            _camera.StopFollowing();
+        }
+
         /// <summary>A slow-motion moment on a blast that is on screen.</summary>
         private void StartCinematic(System.Numerics.Vector2 at, bool force = false)
         {
@@ -789,6 +822,8 @@ namespace MachineBrigade.Game.Match
                 {
                     case SimEventKind.VehicleSpawned when _world.TryGetVehicle(e.Entity, out var vehicle):
                         _views.Add(vehicle);
+                        // A boss comes onto the field: the camera goes to meet it.
+                        if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
@@ -814,7 +849,8 @@ namespace MachineBrigade.Game.Match
                         _views.Rebuild(turned);
                         break;
                     case SimEventKind.Radio when !_menu && e.DefId != null:
-                        _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
+                        // In a campaign mission the radio panel speaks it (the director hears it below).
+                        if (_radio == null) _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
                         break;
                     case SimEventKind.StageStarted when !_menu && e.Value > 1f && _session is MissionSession staged:
                         _hud.ShowBanner(Strings.Format("stage.kicker", (int)e.Value), staged.StageTitle(e.DefId, (int)e.Value),
@@ -824,6 +860,10 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.AreaChanged:
                         _playArea?.Show(_world.PlayArea);
                         if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f);
+                        break;
+                    case SimEventKind.FortressAlert when !_menu && e.DefId == "toast.enemyReinforce":
+                        _hud.Toast(Strings.Get(e.DefId), error: true);
+                        StoryPan(e.Position);
                         break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
@@ -871,6 +911,7 @@ namespace MachineBrigade.Game.Match
             }
             if (!DebugFlags.Has("-mb-no-fx")) _effects.Consume(_world.Events, _views, _map);
             _audio.Consume(_world.Events);
+            _radio?.Consume(_world, _world.Events);
             _world.ClearEvents();
         }
 

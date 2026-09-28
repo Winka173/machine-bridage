@@ -291,6 +291,9 @@ BOSS_FILES = [
     ('silver_bug', ('Silver Bug', 'Silver Bug'),
      ('Aurel\'s saucer: a laser, coilguns, a shield, an EMP and drones of its own. The first one seen breaks off and runs when hurt. The one on the launch pad is complete.',
       'Chiếc đĩa bay của Aurel: laser, súng điện từ, khiên, xung EMP và cả bầy drone riêng. Chiếc đầu tiên xuất hiện bị thương là bỏ chạy. Chiếc trên bệ phóng đã hoàn chỉnh.')),
+    ('silver_bug_complete', ('Silver Bug, Complete', 'Silver Bug hoàn chỉnh'),
+     ('S.B. 01, the first and only finished Silver Bug: a second shield layer, a reactor that lets it hang over a city for a year, and the warhead from the Doomsday Train. It never left its pad.',
+      'S.B. 01, chiếc Silver Bug đầu tiên và duy nhất được hoàn thiện: lớp khiên thứ hai, lò phản ứng cho phép nó lơ lửng trên một thành phố suốt một năm, và đầu đạn lấy từ Đoàn Tàu Tận Thế. Nó chưa bao giờ rời được bệ phóng.')),
     ('command_airship', ('Command Airship', 'Khinh Hạm Chỉ Huy'),
      ('Quạ Đen\'s flying headquarters over Skyhold: radar, missiles and a hangar for drones. It directs every Hegemon aircraft on the coast.',
       'Sở chỉ huy bay của Quạ Đen trên Skyhold: radar, tên lửa và một khoang chứa drone. Nó điều khiển mọi máy bay Hegemon trên dải duyên hải.')),
@@ -340,3 +343,56 @@ T('radio.enemyWeakened', 'Their supply is burning. They will feel that for the r
 
 # Speakers' names on the radio panel.
 SPEAKERS = ['khai', 'mai', 'dieuhau', 'linh', 'hung', 'varga', 'orlov', 'kessler', 'sen', 'quaden', 'aurel', 'hq']
+
+# ------------------------------------------------------------------------------------------ the campaign's screens
+
+UI = {
+    'campaign.dossier': ('Dossier', 'Hồ sơ'),
+    'campaign.chapterKicker': ('{0} · Chapter {1}', '{0} · Chương {1}'),
+    'campaign.missionKicker': ('Chapter {0} · Mission {1} · {2}', 'Chương {0} · Nhiệm vụ {1} · {2}'),
+    'campaign.side': ('Side mission', 'Nhiệm vụ phụ'),
+    'campaign.operation': ('Operation', 'Chiến dịch lớn'),
+    'campaign.continue': ('Continue', 'Tiếp tục'),
+    'campaign.deploy': ('Deploy', 'Xuất kích'),
+    'campaign.back': ('Back', 'Quay lại'),
+    'campaign.opponent': ('Opposing commander: {0}', 'Chỉ huy đối phương: {0}'),
+    'campaign.noMap': ('Battlefield in the next update', 'Chiến trường có ở bản cập nhật tới'),
+    'campaign.rewardFirst': ('Reward: {0} xu · {1} blueprints', 'Thưởng: {0} xu · {1} bản thiết kế'),
+    'campaign.rewardReplay': ('Replay reward: {0} xu · {1} blueprints', 'Thưởng chơi lại: {0} xu · {1} bản thiết kế'),
+    'campaign.hqLevel': ('Opens HQ level {0}', 'Mở cấp sở chỉ huy {0}'),
+    'campaign.rareReward': ('{0} rare blueprints', '{0} bản thiết kế hiếm'),
+    'campaign.gearReward': ('A tower piece: {0}', 'Một trang bị tháp: {0}'),
+    'campaign.progressChapter': ('{0}/10', '{0}/10'),
+    'campaign.epilogueGo': ('To the Operations room', 'Tới phòng Chiến dịch'),
+    'campaign.sideAfter': ('Opens after mission {0}', 'Mở sau nhiệm vụ {0}'),
+    'dossier.people': ('People', 'Nhân vật'),
+    'dossier.bosses': ('Boss files', 'Hồ sơ trùm'),
+    'dossier.timeline': ('Timeline', 'Dòng thời gian'),
+    'dossier.files': ('Story files', 'Tư liệu'),
+    'dossier.locked': ('Not met yet.', 'Chưa gặp mặt.'),
+    'dossier.lockedBoss': ('Beat it to open its file.', 'Hạ gục nó để mở hồ sơ.'),
+    'dossier.lockedChapter': ('Not yet written.', 'Chưa được viết nên.'),
+    'dossier.before': ('Before the landing', 'Trước cuộc đổ bộ'),
+    'dossier.chapterFiles': ('Chapter {0}', 'Chương {0}'),
+    'dossier.empty': ('Every mission won adds a file here.', 'Mỗi nhiệm vụ giành thắng lợi sẽ thêm một tư liệu vào đây.'),
+    'goal.outpost': ('Set up an outpost', 'Lập tiền đồn'),
+    'goal.relieve': ('Break the siege', 'Giải vây'),
+    'goal.evacuate': ('Evacuate', 'Sơ tán'),
+    'goal.duel': ('Destroy the general\'s HQ', 'Phá sở chỉ huy của tướng địch'),
+    'result.prints': ('Blueprints', 'Bản thiết kế'),
+    'result.fragment': ('New in the dossier: {0}', 'Hồ sơ mới: {0}'),
+    'result.hqLevel': ('HQ level {0} open', 'Đã mở cấp sở chỉ huy {0}'),
+    'result.towerPiece': ('Tower piece', 'Trang bị tháp'),
+    'camp.levelLocked': ('Opens in the campaign: mission {0}', 'Mở trong chiến dịch: nhiệm vụ {0}'),
+    # The four battlefields built for the story (their names also come with the maps branch).
+    'map.landingbeach': ('Landing Beach', 'Bãi Đổ Bộ'),
+    'map.landingbeach.sub': ('Beach and bluffs · Coast', 'Bãi biển và vách đá · Bờ biển'),
+    'map.hydrodam': ('Hydro Dam', 'Đập Thủy Điện'),
+    'map.hydrodam.sub': ('Dam and gorge · Temperate', 'Đập và hẻm sông · Ôn đới'),
+    'map.capital': ('Capital', 'Thủ Đô'),
+    'map.capital.sub': ('Government quarter · Urban', 'Khu chính phủ · Đô thị'),
+    'map.launchsite': ('Silver Bug Launch Site', 'Bãi Phóng Silver Bug'),
+    'map.launchsite.sub': ('Launch complex · Desert', 'Tổ hợp phóng · Sa mạc'),
+}
+for key, (en, vi) in UI.items():
+    T(key, en, vi)

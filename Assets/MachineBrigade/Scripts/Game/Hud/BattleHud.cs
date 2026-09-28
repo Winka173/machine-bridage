@@ -264,6 +264,13 @@ namespace MachineBrigade.Game.Hud
             _banner = UiKit.Box("banner");
             _safe.Add(_banner);
 
+            // Campaign radio chatter: a portrait and one line (a tap skips it).
+            if (mode == HudMode.Mission)
+            {
+                _radio = new RadioPanel();
+                _safe.Add(_radio.Root);
+            }
+
             _toast = UiKit.Box("toast");
             var toastBox = UiKit.Box("toast-box");
             _toastText = UiKit.Text("", "toast-text");
@@ -286,6 +293,11 @@ namespace MachineBrigade.Game.Hud
         }
 
         public HudMode Mode { get; }
+
+        private readonly RadioPanel _radio;
+
+        /// <summary>A line of radio chatter (campaign missions; ignored elsewhere).</summary>
+        internal void Radio(Match.RadioLine line) => _radio?.Say(line);
 
         /// <summary>Null in the menu.</summary>
         public Minimap Minimap { get; }
@@ -667,6 +679,7 @@ namespace MachineBrigade.Game.Hud
 
         public void Tick()
         {
+            _radio?.Tick();
             _words?.Tick();
             if (_flashLevel > 0f)
             {

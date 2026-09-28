@@ -110,10 +110,16 @@ namespace MachineBrigade.Game.Match
                 // The HQ level chosen, as far as the campaign has opened (every level in a test build).
                 var loadout = new Sim.Modes.BaseLoadout { HqLevel = Mathf.Clamp(D.baseLevel > 0 ? D.baseLevel : 5, 1, Campaign.HqLevelCap) };
                 var empty = !D.baseEdited && D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
-                loadout.Small.AddRange(empty ? DefaultSmall : D.baseSmall);
-                loadout.Medium.AddRange(empty ? DefaultMedium : D.baseMedium);
-                loadout.Large.AddRange(empty ? DefaultLarge : D.baseLarge);
-                loadout.Utilities.AddRange(D.baseUtilities);
+                // A tower or module not unlocked yet leaves its slot empty (every card is open in a test build).
+                static IEnumerable<string> Owned(IEnumerable<string> ids)
+                {
+                    foreach (var id in ids) yield return string.IsNullOrEmpty(id) || IsUnlocked(id) ? id : Sim.Modes.BaseLoadout.Empty;
+                }
+                loadout.Small.AddRange(Owned(empty ? DefaultSmall : D.baseSmall));
+                loadout.Medium.AddRange(Owned(empty ? DefaultMedium : D.baseMedium));
+                loadout.Large.AddRange(Owned(empty ? DefaultLarge : D.baseLarge));
+                foreach (var id in D.baseUtilities)
+                    if (IsUnlocked(id)) loadout.Utilities.Add(id);
                 foreach (var id in loadout.Towers)
                     if (TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
                 if (D.baseOutpost.Count > 0)

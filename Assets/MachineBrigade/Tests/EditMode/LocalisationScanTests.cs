@@ -24,7 +24,7 @@ namespace MachineBrigade.Tests
         public void EveryTextHasBothLanguagesWithTheSamePlaceholders()
         {
             var bad = new List<string>();
-            foreach (var (key, (en, vi)) in Strings.Texts.Concat(GuideText.Table))
+            foreach (var (key, (en, vi)) in Strings.Texts.Concat(GuideText.Table).Concat(CampaignText.Table))
             {
                 if (string.IsNullOrWhiteSpace(en) || string.IsNullOrWhiteSpace(vi)) bad.Add(key + ": empty");
                 else if (!Placeholders(en).SequenceEqual(Placeholders(vi))) bad.Add(key + ": placeholders differ");

@@ -297,9 +297,10 @@ namespace MachineBrigade.Game.Match
             if (index < 0 || index >= All.Count) return false;
             var mission = All[index];
             if (PlayerProfile.Completed(mission.Id)) return true;
-            if (mission.Side) return mission.After == null || PlayerProfile.Completed(mission.After);
+            if (mission.Side) return mission.After == null || PlayerProfile.Completed(mission.After) || !MapExists(Get(mission.After));
+            // A mission whose battlefield is not in this build does not hold the ones after it back.
             for (var i = index - 1; i >= 0; i--)
-                if (!All[i].Side && !All[i].Optional) return PlayerProfile.Completed(All[i].Id);
+                if (!All[i].Side && !All[i].Optional && MapExists(All[i])) return PlayerProfile.Completed(All[i].Id);
             return true;
         }
 
