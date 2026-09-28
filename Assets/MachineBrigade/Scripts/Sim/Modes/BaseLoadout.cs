@@ -186,7 +186,9 @@ namespace MachineBrigade.Sim.Modes
         /// for them when the style has any, so a base mixes all three. Anti-air is always in it.
         /// Deterministic for a seed.
         /// </summary>
-        public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null)
+        /// <param name="allowed">Only towers it lets through (prompt 14's Auto-arrange: the player's own towers); null: any.</param>
+        public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null,
+            Predicate<string>? allowed = null)
         {
             var rules = catalog.Base;
             var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel) };
@@ -195,6 +197,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var def in catalog.Vehicles.Values)
             {
                 if (def.Fort is not { Kind: FortKind.Tower } fort || !TowerCards.IsLoadoutTower(def.Id)) continue;
+                if (allowed != null && !allowed(def.Id)) continue;
                 var weight = weights.TryGetValue(def.Id, out var w) ? w : weights.TryGetValue("*", out var any) ? any : 0f;
                 if (weight > 0f) pool.Add((def.Id, fort.Size, weight));
             }
