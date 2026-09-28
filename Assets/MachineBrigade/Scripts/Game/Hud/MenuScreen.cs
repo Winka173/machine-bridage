@@ -675,10 +675,10 @@ namespace MachineBrigade.Game.Hud
         };
     }
 
-    /// <summary>Which icon each card shows.</summary>
+    /// <summary>Which icon each card shows. Towers, modules, the HQ and fixed defences have their own (<see cref="TowerIcons"/>).</summary>
     public static class CardIcons
     {
-        public static string For(string id) => id switch
+        public static string For(string id) => TowerIcons.For(id) ?? id switch
         {
             "scout_jeep" => "jeep",
             "artillery" => "artillery",
@@ -748,17 +748,6 @@ namespace MachineBrigade.Game.Hud
             "cruise_missile" => "missile",
             "smoke_screen" => "smoke",
             "repair_drop" => "repair",
-            // Tower cards (the base screen); a branch shows its tower's icon.
-            "guard_tower" => "tower",
-            "mg_bunker" => "mg",
-            "aa_turret" => "aa",
-            "gun_turret" => "cannon",
-            "rocket_turret" => "mlrs",
-            "atgm_tower" => "atgm",
-            "artillery_emplacement" => "artillery",
-            "missile_battery" => "sam",
-            "heavy_turret" => "siegegun",
-            "headquarters" => "hq",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

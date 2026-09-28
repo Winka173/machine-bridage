@@ -240,12 +240,11 @@ namespace MachineBrigade.Game.Hud
             _towersBody.Add(grid);
         }
 
-        /// <summary>A tower's or module's card: its render, name and rank, its size (or the module mark) in the corner, the upgrade mark when it can rank up.</summary>
+        /// <summary>A tower's or module's card: its render, name and rank, its own line icon in the corner (TowerIcons), the upgrade mark when it can rank up.</summary>
         private VisualElement TowerCard(string id)
         {
             var def = _catalog.Vehicles[id];
             var data = VehicleCardData.From(def);
-            data.ClassIcon = def.Fort.Kind == FortKind.Utility ? "module" : BaseScreen.SizeIcon(def.Fort.Size);
             data.Cp = 0;
             return new KitVehicleCard(data, () => OpenDetail(id));
         }
