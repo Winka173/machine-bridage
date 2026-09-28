@@ -35,9 +35,13 @@ gaps and tree placement, so the output is stable.
 Lava pools, river water and fords are 4 m surface tiles (lava and deep water block, fords do
 not); the map view merges them into smooth surfaces.
 
-Every map also gets a Siege version (`fortify`): the enemy fortress fills the north-east
-quadrant (a walled 56 m square with two gates, the command HQ, depots, dumps, hangars and an
-outer line of bunkers and obstacles), with its fixed defences as team-1 map units.
+Every map also gets a Siege version (fortress.py `fortify`, built into the finished siege
+battlefield): the enemy fortress holds 45 % of the play area in the north-east, in three rings (an
+outer line across the map with relays and strongpoints, walls with closed gates and open sally
+ports, the keep round the command HQ), its towers on sized hardpoints by ring, a super-gun and a rail
+line or runway, all written into the map file's "fortress" block. The outline is carved round the
+first, smaller fortress plan (`fortify` here, kept only for that), so the other versions and the
+campaign are unchanged.
 
 Every map has its own outline inside the 160 m square (`boundary.py`): the edge is carved in
 per map (valleys, bays, a canyon rim, trimmed corners) and never into the camps, objectives,

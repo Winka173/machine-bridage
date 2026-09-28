@@ -259,14 +259,19 @@ namespace MachineBrigade.Tests
             Assert.LessOrEqual(world.Movement.PathNodesMaxTick, Sim.Movement.MovementSystem.PathNodeBudgetPerTick);
         }
 
-        /// <summary>Research scenario 5: every siege gate leaves at least three walkable 2 m cells across (with the fixed defences on their ground).</summary>
+        /// <summary>
+        /// Research scenario 5: every siege gateway leaves at least three walkable 2 m cells across
+        /// (with the fixed defences on their ground): the sally ports as they are, the gates once
+        /// their doors are blown in.
+        /// </summary>
         [TestCaseSource(nameof(SiegeMaps))]
         public void EverySiegeGateLeavesThreeCells(string map)
         {
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(map + "_siege"), 1);
             new SiegeMode(new SiegeRules()).Setup(world);
+            foreach (var doors in world.Props.Where(p => p.IsAlive && p.Def.Id == "fortress_gate").ToList()) world.DebugDestroyProp(doors);
             var gates = world.Props.Where(p => p.Def.Id == "base_gate").ToList();
-            Assert.AreEqual(4, gates.Count, "two ring gates and two keep gates");
+            Assert.AreEqual(6, gates.Count, "the walls' two gates and two sally ports, the keep's two gates");
             foreach (var gate in gates)
             {
                 var along = gate.Rotation == 90 ? new Vector2(0f, 1f) : new Vector2(1f, 0f);
@@ -316,6 +321,9 @@ namespace MachineBrigade.Tests
                     world.Step(Step);
                     world.ClearEvents();
                     if (i % 10 != 0) continue;
+                    // The lane map as it is now first (a wall that just fell makes a doorway, and a
+                    // booking in it is released when the map is rebuilt), then the bookings.
+                    _ = world.Lanes;
                     var guns = world.VehicleList.Where(v => v.IsAlive && v.Team == 0 && v.Def.Weapon.MinRange > 0f && LaneMap.InUse(v)).ToList();
                     foreach (var g in guns)
                     {

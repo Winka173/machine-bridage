@@ -883,6 +883,13 @@ namespace MachineBrigade.Sim.AI
             var weapon = a.Def.Weapon;
             var distance = Vector2.Distance(a.Position, target) - radius;
             var inRange = distance <= weapon.Range - 0.5f && distance >= weapon.MinRange + 1f;
+            // A wall fell and opened a breach where the gun stands: its spot is a doorway now, and it
+            // moves off it to a new one rather than block the way in.
+            if (a.Traffic.HasReservation && world.Lanes.NoParkAt(a.Traffic.ReservedAt))
+            {
+                world.Lanes.Release(a);
+                inRange = false;
+            }
             if (inRange && !Exposed(a.Position, 1f))
             {
                 if (a.Order.Kind != OrderKind.Attack || a.Order.Target != targetId) Issue(world, CommandType.Attack, a.Id, target, targetId);

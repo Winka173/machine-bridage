@@ -299,6 +299,7 @@ namespace MachineBrigade.Sim.Combat
                 if (due > _world.Time) continue;
                 _collapsing.RemoveAt(k);
                 _world.Grid.RemoveBlocker(fallen.Position, fallen.Width, fallen.Depth, SimWorld.ObstacleClearance);
+                _world.RebuildLanesNow();
             }
             var i = 0;
             while (i < _pending.Count)

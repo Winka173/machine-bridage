@@ -38,6 +38,9 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The HQ is this many times tougher than the building's catalogue health.</summary>
         public float Hardening { get; set; } = 2.5f;
 
+        /// <summary>The relay stations and the shield generators are this many times tougher (Defend's lines hold longer).</summary>
+        public float LineHardening { get; set; } = 1f;
+
         /// <summary>The fortress guardian that rolls out of the keep when stage 3 begins (null: none).</summary>
         public string? Guardian { get; set; } = "mobile_fortress";
 
@@ -131,6 +134,13 @@ namespace MachineBrigade.Sim.Modes
         /// fire never fell).
         /// </summary>
         public bool? Rebuild { get; set; }
+
+        /// <summary>
+        /// Whether the attack blows in the keep's gate before going for the HQ (null: when the enemy
+        /// attacks, in Defend; the player's army in Siege uses the keep's open gate). The walls' gate
+        /// always comes first.
+        /// </summary>
+        public bool? KeepGateFirst { get; set; }
 
         /// <summary>The gates (blocking until blown in) and the wall segments (toppling into rubble).</summary>
         public string Gate { get; set; } = "fortress_gate";
@@ -344,8 +354,11 @@ namespace MachineBrigade.Sim.Modes
                     if (_rules.Hardening > 1f) prop.Harden(_rules.Hardening);
                     Fortress ??= prop.Position;
                 }
-                else if (prop.Def.Id == _rules.Relay) _relays.Add(prop.Id);
-                else if (prop.Def.Id == _rules.Generator) _generators.Add(prop.Id);
+                else if (prop.Def.Id == _rules.Relay || prop.Def.Id == _rules.Generator)
+                {
+                    (prop.Def.Id == _rules.Relay ? _relays : _generators).Add(prop.Id);
+                    if (_rules.LineHardening > 1f) prop.Harden(_rules.LineHardening);
+                }
             }
             Fortress ??= _fortress?.Hq;
             if (Fortress == null && world.TryGetRally(Defender, out var rally)) Fortress = rally;
@@ -598,6 +611,7 @@ namespace MachineBrigade.Sim.Modes
         public EntityId GateToBreak(SimWorld world)
         {
             if (Stage is < 2 or > 3 || Breached(world, Stage)) return EntityId.None;
+            if (Stage == 3 && !(_rules.KeepGateFirst ?? _rules.PlayerDefends)) return EntityId.None;
             var front = TryAttackerCentre(world, out var centre) ? centre : world.TryGetRally(Attacker, out var rally) ? rally : Vector2.Zero;
             if (InsideRing(world, front, Stage)) return EntityId.None;
             var best = EntityId.None;

@@ -456,17 +456,19 @@ namespace MachineBrigade.Game.Match
             var easy = Difficulty == AiDifficulty.Easy;
             var defender = PlayerSide(30f, 1.35f);
             defender.ArmyCap = 38;
-            var attacker = EnemySide(22f, hard ? 1.45f : easy ? 1f : 1.2f, Difficulty, world.Catalog);
+            var attacker = EnemySide(22f, hard ? 1.35f : easy ? 0.95f : 1.1f, Difficulty, world.Catalog);
             attacker.ArmyCap = 40;
             _mode = new SiegeMode(new SiegeRules
             {
                 PlayerDefends = true, Endless = _endless,
                 // The clock the enemy has to break in: longer the harder it is.
                 StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
-                WaveSeconds = _endless ? 55f : 70f, StageCp = 12f,
+                WaveSeconds = _endless ? 55f : 70f, StageCp = 12f, Hardening = 4.5f, LineHardening = 2f, RetreatCp = new[] { 24f, 32f },
+                // The player's inner lines are the strong ones.
+                LineHealth = new[] { 1f, 1.4f, 1.8f }, LineDamage = new[] { 1f, 1.2f, 1.35f },
                 // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
                 WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
-                WaveStart = hard ? 6 : easy ? 4 : 5, WaveGrowth = _endless ? 2f : 1.6f, WaveMax = 36, HeavyEvery = 3,
+                WaveStart = hard ? 6 : easy ? 4 : 5, WaveGrowth = _endless ? 2f : hard ? 1.6f : 1.4f, WaveMax = 36, HeavyEvery = 3,
                 EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
                 // The player's fortress: exactly their own base loadout in its lines' hardpoints.
                 FortressLoadout = PlayerProfile.BaseLoadout,
@@ -624,7 +626,7 @@ namespace MachineBrigade.Game.Match
             _mode = new SiegeMode(new SiegeRules
             {
                 StartSeconds = start, StageBonus = new[] { 360f, 360f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
-                Hardening = 1.5f, LineHealth = new[] { 1f, 1.15f, 1.25f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
+                Hardening = 1.2f, LineHealth = new[] { 1f, 1.15f, 1.25f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
                 // An easier fortress leaves some of its outer hardpoints empty.
                 Manning = Difficulty switch { AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.75f },
                 Attacker = attacker, Defender = defender,

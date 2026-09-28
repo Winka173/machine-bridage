@@ -47,7 +47,10 @@ KEEP = (83.4, 83.4, 134.0)     # the keep's west and south wall lines, and its n
 KEEP_GATE = 113.0              # its gates' centre, in the west and south walls
 RING = 40.0                    # the walls along x = RING and z = RING
 RING_START = RING + 0.6        # the first wall piece starts here (a floodlight mast stands in the corner)
-MAIN_GATE = RING_START + 3 * SEGMENT + GATE / 2    # three pieces from the corner to the main gate
+# The main gate three pieces out from the corner, centred on an odd metre (the middle of a 2 m
+# navigation cell): its 10 m opening then leaves three whole walkable cells once blown in (the odd
+# 1.4 m before it is a seam behind the gateway's pillar).
+MAIN_GATE = 71.0
 SHARE = 0.45                   # the fortress's share of the play area
 SHARE_RANGE = (0.40, 0.50)
 ROAD = 7.0
@@ -478,7 +481,8 @@ def fortify(L, name, theme, poly):
     # The outer line: relays, strongpoints and obstacle belts.
     outer_works(F, c, half)
 
-    # The fortress's stores and barracks in the ring's yard.
+    # The fortress's stores (they go up in a chain when hit) and its barracks in the ring's yard.
+    stores(F)
     buildings(F)
 
     # Searchlight masts along the walls.
@@ -715,6 +719,34 @@ def outer_works(F, c, half):
                 x, z = spot[0] + 7.0, spot[1] - 7.0
 
 
+STORES = [
+    ('fuel_depot', 2, [(62.0, 96.0), (96.0, 62.0), (130.0, 76.0), (76.0, 130.0), (140.0, 50.0), (50.0, 140.0)]),
+    ('ammo_dump', 2, [(48.0, 96.0), (96.0, 48.0), (140.0, 62.0), (62.0, 140.0), (120.0, 46.0), (46.0, 120.0)]),
+    ('vehicle_hangar', 2, [(104.0, 142.0), (142.0, 104.0), (80.0, 142.0), (142.0, 80.0), (60.0, 80.0), (80.0, 60.0)]),
+]
+
+
+def stores(F):
+    """Fuel depots, ammunition dumps and vehicle hangars in the walls' yard, off the lanes: the
+    fortress's stores, each a bounty for the attacker and a blast when it goes."""
+    L = F.L
+    before = set(F.missing(F.grid(gates=True)))
+    for kind, count, prefs in STORES:
+        placed = 0
+        for x, z in prefs:
+            if placed >= count:
+                break
+            w, d = L.size(kind, 0)
+            at = F.spot(x, z, max(w, d), reach=10.0, gap=3.0, road=1.5)
+            if at and L.put(kind, *at, 0, pad=0.5):
+                if set(F.missing(F.grid(gates=True))) - before:
+                    L.remove(lambda a0, b0, a1, b1, hx=at[0], hz=at[1]: a0 <= hx <= a1 and b0 <= hz <= b1)
+                    continue
+                placed += 1
+        if placed < count:
+            L.failed.append((f'{count - placed} {kind}', *prefs[0]))
+
+
 def buildings(F, count=12):
     """Stores and barracks in the ring's yard (bounties for the attacker, cover for the
     defenders), flush against something solid or well clear of it, off the lanes."""
@@ -724,6 +756,7 @@ def buildings(F, count=12):
     x0 = KEEP[0]
     placed = 0
     tries = 0
+    before = set(F.missing(F.grid(gates=True)))
     while placed < count and tries < 4000:
         tries += 1
         kind = rng.choice(BUILDINGS)
@@ -743,7 +776,7 @@ def buildings(F, count=12):
         if alley_with(L, *rect) is not None:
             continue
         if L.put(kind, x, z, rot, pad=0.3):
-            if F.missing(F.grid(gates=True)):
+            if set(F.missing(F.grid(gates=True))) - before:
                 L.remove(lambda a0, b0, a1, b1, hx=x, hz=z: a0 <= hx <= a1 and b0 <= hz <= b1)
                 continue
             placed += 1
