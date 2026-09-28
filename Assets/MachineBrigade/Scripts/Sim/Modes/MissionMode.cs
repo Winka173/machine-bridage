@@ -205,7 +205,7 @@ namespace MachineBrigade.Sim.Modes
                 if (_enemy != null) world.EnableEconomy(_enemy.Build(EnemyTeam));
                 foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
                 // A siege battlefield's fortress is the enemy's, its towers in their hardpoints (drawn for the mission's difficulty).
-                if (_enemy != null && world.Map.Fortress is { Slots.Count: > 0 } fortress && world.Bases.Of(EnemyTeam) == null)
+                if (_enemy != null && world.Map.Fortress is { } fortress && fortress.Slots.Count > 0 && world.Bases.Of(EnemyTeam) == null)
                     world.Bases.EstablishFortress(EnemyTeam, BaseLoadout.ForAi(world.Catalog, _def.Difficulty), BaseRole.Target, fortress.Hq, fortress.Slots);
             }
             foreach (var unit in _def.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);

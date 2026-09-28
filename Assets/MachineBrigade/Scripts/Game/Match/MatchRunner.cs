@@ -292,6 +292,7 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
+            _session.SetNight(weather == WeatherKind.Night);
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
             _crates = new CrateViews(_models, worldRoot);
@@ -371,6 +372,7 @@ namespace MachineBrigade.Game.Match
             var theme = MapTheme.For(_world.Map.Theme);
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
             _effects.Night = next == WeatherKind.Night;
+            _session.SetNight(next == WeatherKind.Night);
             _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
@@ -825,14 +827,16 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
-                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
+                        // A fortress alarm is bad news for the player (Team 1) or good (0: the enemy's gate blown in).
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert && e.Team == 1);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.TraitProc when !_menu:
                         ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
-                        _hud.Toast(Strings.Format("toast.bounty", Mathf.RoundToInt(e.Value)), seconds: 2f);
+                        _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", _ => "toast.bounty" },
+                            Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)

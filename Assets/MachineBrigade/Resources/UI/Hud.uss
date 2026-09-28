@@ -2448,3 +2448,48 @@
 .base-confirm-buttons { flex-direction: row; }
 .menu .wide.base-confirm-button { flex-grow: 1; flex-basis: 0; height: 72px; justify-content: center; margin: 0 8px 0 0; }
 .menu .wide.base-confirm-button.primary { margin-right: 0; }
+
+/* ================================================================ fortress set pieces (Siege, Defend): self-contained, one block each */
+/* The panel under the top bar (below the boss bar's place): the super-gun's countdown, then the next wave. */
+.fortress-panel {
+    position: absolute; top: 104px; left: 22%; right: 22%;
+    flex-direction: row; justify-content: center; align-items: flex-start;
+}
+/* Super-gun countdown (SuperGunTimer). */
+.gun-timer {
+    flex-direction: row; align-items: center; height: 44px; padding: 0 12px; margin: 0 4px;
+    background-color: rgba(27, 33, 38, 0.92); border-radius: 2px;
+    border-width: 1px; border-color: rgba(242, 163, 58, 0.55);
+}
+.gun-timer .icon { width: 22px; height: 22px; margin-right: 8px; --icon-color: #f2a33a; }
+.gun-timer-text { flex-direction: row; align-items: center; }
+.gun-timer-name { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; letter-spacing: 1px; color: #f2a33a; white-space: nowrap; }
+.gun-timer-clock { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 24px; color: #edeff0; margin-left: 8px; }
+.gun-timer.urgent { background-color: #992211; border-color: #e5533c; }
+.gun-timer.urgent .gun-timer-name { color: #ffe6e0; }
+.gun-timer.urgent .icon { --icon-color: #ffe6e0; }
+.gun-timer.ours { border-color: rgba(143, 214, 148, 0.55); }
+.gun-timer.ours .gun-timer-name { color: #8fd694; }
+.gun-timer.ours .icon { --icon-color: #8fd694; }
+.gun-timer.down { border-color: rgba(143, 214, 148, 0.8); }
+.gun-timer.down .gun-timer-name { color: #8fd694; }
+/* The next wave's make-up (WavePreview). */
+.wave-preview {
+    padding: 4px 10px 6px 10px; margin: 0 4px;
+    background-color: rgba(27, 33, 38, 0.92); border-radius: 2px;
+    border-width: 1px; border-color: rgba(229, 83, 60, 0.5);
+}
+.wave-preview-head { flex-direction: row; align-items: center; justify-content: space-between; }
+.wave-preview-title { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 11px; letter-spacing: 1px; color: #e5533c; white-space: nowrap; }
+.wave-preview-clock { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 18px; color: #edeff0; margin-left: 10px; }
+.wave-preview-clock.urgent { color: #ff6a4d; }
+.wave-preview-chips { flex-direction: row; flex-wrap: wrap; margin-top: 2px; }
+.wave-chip {
+    flex-direction: row; align-items: center; height: 30px; padding: 0 6px; margin: 2px 4px 0 0;
+    background-color: #232b31; border-radius: 2px;
+}
+.wave-chip .icon { width: 22px; height: 22px; }
+.wave-chip-count { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 18px; color: #edeff0; margin-left: 3px; white-space: nowrap; }
+.wave-chip.elite { background-color: #3a2a0c; border-width: 1px; border-color: #f2a33a; }
+.wave-chip.elite .wave-chip-count { color: #f5b55e; }
+.wave-preview-held { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 10px; color: #a9b4ba; margin-top: 2px; white-space: nowrap; }

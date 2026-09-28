@@ -56,6 +56,8 @@ namespace MachineBrigade.Game.Hud
         private readonly ScoreBar _score;
         private readonly MissionBar _missionBar;
         private readonly BossBar _boss;
+        private readonly SuperGunTimer _superGun;
+        private readonly WavePreview _wavePreview;
         private readonly VisualElement _attackStance, _defendStance, _autoDeploy, _autoStrike;
         private readonly VisualElement _towerButton;
         private readonly Label _towerLabel;
@@ -162,6 +164,13 @@ namespace MachineBrigade.Game.Hud
             {
                 _boss = new BossBar();
                 _safe.Add(_boss.Root);
+                // The fortress modes' set pieces: the super-gun's countdown and the next wave.
+                var fortress = UiKit.Box("fortress-panel");
+                _superGun = new SuperGunTimer();
+                fortress.Add(_superGun.Root);
+                _wavePreview = new WavePreview(DescribeVehicle);
+                fortress.Add(_wavePreview.Root);
+                _safe.Add(fortress);
             }
 
             // Left column: minimap and tools -------------------------------------------------------
@@ -385,6 +394,20 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);
+
+        /// <summary>The fortress super-gun's countdown (negative seconds: none standing).</summary>
+        public void SetSuperGun(float seconds, bool down, bool ours) => _superGun?.Set(seconds, down, ours);
+
+        /// <summary>The next enemy wave's make-up, its countdown and number, and vehicles of earlier waves still waiting.</summary>
+        public void SetWavePreview(IReadOnlyList<(string id, int count)> wave, float seconds, int number, int held) =>
+            _wavePreview?.Set(wave, seconds, number, held);
+
+        /// <summary>A vehicle's card icon (an elite's is its base vehicle's), and whether it is an elite.</summary>
+        private (string icon, bool elite) DescribeVehicle(string id)
+        {
+            if (Catalog == null || !Catalog.Vehicles.TryGetValue(id, out var def)) return (CardIcons.For(id), false);
+            return (CardIcons.For(def.Elite && def.EliteOf != null ? def.EliteOf : id), def.Elite);
+        }
 
         public void SetDeck(float cp, float bank, float earning, float upkeep, IReadOnlyList<CardState> states) =>
             _deck?.Update(cp, bank, earning, upkeep, states);
