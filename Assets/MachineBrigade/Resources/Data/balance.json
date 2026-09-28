@@ -101,7 +101,7 @@
     { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 52,  "cooldown": 3.57,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "burst": 10, "burstInterval": 0.05 },
     { "id": "jet_rockets",       "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 61,  "cooldown": 7,    "range": 36, "projectileSpeed": 75, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
     { "id": "jet_bombs",         "projectileModel": "bomb_fab", "damageType": "HighExplosive", "damage": 351, "cooldown": 12,   "range": 26, "projectileSpeed": 35, "splash": 8, "spread": 3, "impactTier": "Huge", "projectile": "Bomb", "burst": 2, "burstInterval": 0.25 },
-    { "id": "drone_missile",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 270, "cooldown": 4,    "range": 48, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile" },
+    { "id": "drone_missile",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 270, "cooldown": 4,    "range": 48, "projectileSpeed": 45, "impactTier": "Medium", "projectile": "Missile", "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
     // Second wave of vehicles.
     { "id": "gun_155_sph",       "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 214, "cooldown": 8.57,  "range": 100, "minRange": 25, "projectileSpeed": 50, "splash": 8, "spread": 4.5, "impactTier": "Huge", "ammo": 16 },
     { "id": "thermobaric_rockets", "projectileModel": "tos_rocket", "damageType": "HighExplosive", "damage": 70, "cooldown": 14,  "range": 38, "minRange": 12, "projectileSpeed": 45, "splash": 7, "spread": 6, "impactTier": "Huge", "projectile": "Rocket", "burst": 12, "burstInterval": 0.14, "ammo": 4 },
@@ -121,7 +121,7 @@
     { "id": "rockets_300mm",     "damageType": "HighExplosive", "damage": 130, "cooldown": 16,   "range": 140, "minRange": 30, "projectileSpeed": 50, "splash": 8, "spread": 9, "impactTier": "Huge", "projectile": "Rocket", "burst": 12, "burstInterval": 0.25, "ammo": 3 },
     { "id": "ballistic_missile", "damageType": "HighExplosive", "damage": 700, "cooldown": 25,   "range": 180, "minRange": 40, "projectileSpeed": 45, "splash": 12, "spread": 5, "impactTier": "Ultimate", "projectile": "Rocket", "burst": 2, "burstInterval": 1.5, "ammo": 2 },
     { "id": "mortar_240",        "projectileModel": "mortar_bomb", "projectileScale": 1.8, "damageType": "HighExplosive", "damage": 543, "cooldown": 17.14,   "range": 85, "minRange": 20, "projectileSpeed": 38, "splash": 10, "spread": 5, "impactTier": "Ultimate", "ammo": 8 },
-    { "id": "fpv_swarm",         "damageType": "ArmorPiercing", "damage": 140, "cooldown": 10,   "range": 75, "minRange": 12, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 4, "burstInterval": 0.35, "ammo": 4 },
+    { "id": "fpv_swarm",         "damageType": "ArmorPiercing", "damage": 140, "cooldown": 10,   "range": 75, "minRange": 12, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 4, "burstInterval": 0.35, "ammo": 4, "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
     { "id": "air_to_air",        "projectileModel": "aim120", "damageType": "Flak",          "damage": 351, "cooldown": 5,    "range": 60, "projectileSpeed": 74, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "ammo": 4 },
     // Real armament (Docs research 2026-09-27): dogfight and self-defence air-to-air missiles,
     // stand-off missiles for the bombers, the Mi-24P's fixed cannon and door guns, AC-130J missiles.
@@ -143,7 +143,7 @@
       "bonuses": [ { "armor": "Structure", "mult": 0.5 } ] },
     { "id": "zu23",              "damageType": "Flak",          "damage": 14,  "cooldown": 0.8,  "range": 32, "projectileSpeed": 240, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 12, "burstInterval": 0.045 },
     { "id": "lancet",            "projectileModel": "lancet", "damageType": "ArmorPiercing", "damage": 240, "cooldown": 12,   "range": 85, "projectileSpeed": 28, "impactTier": "Medium", "projectile": "Drone", "ammo": 6,
-      "bonuses": [ { "class": "Artillery", "mult": 2 }, { "still": 3, "mult": 2 } ] },
+      "bonuses": [ { "class": "Artillery", "mult": 2 }, { "still": 3, "mult": 2 }, { "armor": "Structure", "mult": 1.5 } ] },
     { "id": "shahed",            "projectileModel": "shahed", "damageType": "HighExplosive", "damage": 320, "cooldown": 30,   "range": 150, "minRange": 20, "projectileSpeed": 20, "splash": 6, "impactTier": "Huge", "projectile": "Drone", "burst": 5, "burstInterval": 1.0, "ammo": 1 },
     { "id": "hel_beam",          "damageType": "Flak",          "damage": 7,   "cooldown": 0.1,  "range": 45, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true },
     { "id": "railgun",           "charge": 0.9, "projectileModel": "rail_slug", "damageType": "ArmorPiercing", "damage": 474, "cooldown": 7,    "range": 90, "projectileSpeed": 700, "spread": 0.4, "impactTier": "Large", "projectile": "Bullet", "pierce": true, "impactScale": 1.4 },

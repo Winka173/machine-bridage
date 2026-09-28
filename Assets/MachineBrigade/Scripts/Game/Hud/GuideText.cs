@@ -607,6 +607,105 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: máy bay phóng tên lửa chống bức xạ vào [[phòng không địch]] gần điểm đánh dấu nhất (trong 20 m): 500 sát thương, và nó [[tê liệt]] 8 giây.\n" +
                 "Mạnh / yếu: mở đường trên trời cho máy bay ta; phí công nếu không có phòng không.\n" +
                 "Mẹo: gọi ngay trước khi trực thăng hoặc oanh tạc cơ của ta xông vào."),
+            ["guide.ew_tower"] = (
+                "[[EW tower]] · small tower · jams, does not shoot\n" +
+                "How it fights: guided missiles, drones and fire support aimed within 30 m of it go wide; it has no gun.\n" +
+                "Strong / weak: blunts ATGMs, Lancets and strikes on the base; anything that just drives up and shoots kills it.\n" +
+                "Tip: put it by the towers the enemy's missiles go for; branches: a 45 m drone jammer, or a spoofer that finds guns.",
+                "[[Tháp gây nhiễu EW]] · tháp nhỏ · gây nhiễu, không bắn\n" +
+                "Cách đánh: tên lửa điều khiển, drone và hỏa lực yểm trợ nhắm vào trong vòng 30 m quanh nó bị lệch; không có súng.\n" +
+                "Mạnh / yếu: làm cùn tên lửa chống tăng, Lancet và các đòn không kích vào căn cứ; thứ gì chỉ cần lái tới bắn là hạ được nó.\n" +
+                "Mẹo: đặt cạnh các tháp mà tên lửa địch hay nhắm; nhánh: máy gây nhiễu drone 45 m, hoặc máy đánh lừa radar tìm pháo."),
+            ["guide.dragons_teeth"] = (
+                "[[Dragon's teeth]] · small obstacle · blocks the way\n" +
+                "How it fights: rows of concrete teeth that no vehicle drives through; it fights nothing and is shot at last.\n" +
+                "Strong / weak: turns an approach into a detour under your guns; engineers breach it three times as fast.\n" +
+                "Tip: close the gap the enemy will come through; the wire branch slows instead of blocking.",
+                "[[Răng rồng]] · vật cản nhỏ · chặn đường\n" +
+                "Cách đánh: các hàng khối bê tông không xe nào đi qua được; không đánh gì và bị bắn sau cùng.\n" +
+                "Mạnh / yếu: biến lối vào thành đường vòng dưới họng súng của ta; công binh phá nhanh gấp ba.\n" +
+                "Mẹo: bịt lỗ hổng địch sẽ đi qua; nhánh rào thép gai thì làm chậm thay vì chặn."),
+            ["guide.minefield"] = (
+                "[[Minefield]] · small obstacle · six mines\n" +
+                "How it fights: six anti-tank mines within 5 m, laid again every minute; the field itself is no target.\n" +
+                "Strong / weak: punishes vehicles that rush in; scouts, engineers and a UAV scan see the mines, and engineers clear them.\n" +
+                "Tip: put it on the road into your base, behind the guns that make the enemy slow down.",
+                "[[Bãi mìn]] · vật cản nhỏ · sáu quả mìn\n" +
+                "Cách đánh: sáu quả mìn chống tăng trong vòng 5 m, rải lại mỗi phút; bãi mìn không phải mục tiêu.\n" +
+                "Mạnh / yếu: trừng phạt xe lao vào ồ ạt; trinh sát, công binh và UAV quét thấy mìn, công binh gỡ được.\n" +
+                "Mẹo: đặt trên đường vào căn cứ, sau các họng súng buộc địch phải chậm lại."),
+            ["guide.c_ram"] = (
+                "[[C-RAM]] · medium tower · shoots rounds down\n" +
+                "How it fights: shoots down rockets, missiles, drones and about a third of the shells aimed within 35 m, two interceptors at a time; a 20 mm gatling at aircraft.\n" +
+                "Strong / weak: shields the base from artillery, rockets and drones; it has nothing for vehicles on the ground.\n" +
+                "Tip: put it where the enemy's artillery would hurt most, among your towers.",
+                "[[Trạm C-RAM]] · tháp vừa · bắn hạ đạn bay tới\n" +
+                "Cách đánh: bắn hạ rocket, tên lửa, drone và khoảng một phần ba đạn pháo nhắm vào trong 35 m, hai quả đánh chặn cùng lúc; pháo gatling 20 mm bắn máy bay.\n" +
+                "Mạnh / yếu: che căn cứ khỏi pháo binh, rocket và drone; không có gì đánh xe mặt đất.\n" +
+                "Mẹo: đặt nơi pháo địch sẽ gây hại nhất, giữa các tháp của ta."),
+            ["guide.gun_pit"] = (
+                "[[Hidden gun pit]] · medium tower · ambush\n" +
+                "How it fights: a 105 mm gun down in a hole: while no enemy is within 35 m it cannot fire, takes 60 % less damage and shows only to scouts, radars and scans; then it rises and fires.\n" +
+                "Strong / weak: surprises tanks that come close; artillery with a spotter, or a UAV scan, finds and breaks it.\n" +
+                "Tip: put it where the enemy has to pass close; the Ambush branch doubles its first shot.",
+                "[[Ụ pháo ẩn]] · tháp vừa · phục kích\n" +
+                "Cách đánh: pháo 105 mm dưới hố: khi không có địch trong 35 m thì không bắn, chịu ít hơn 60 % sát thương và chỉ lộ với trinh sát, radar và UAV quét; địch tới gần thì trồi lên nhả đạn.\n" +
+                "Mạnh / yếu: bất ngờ với xe tăng tới gần; pháo binh có trinh sát, hoặc UAV quét, tìm ra và phá được nó.\n" +
+                "Mẹo: đặt nơi địch buộc phải đi sát qua; nhánh Phục kích gấp đôi phát đầu."),
+            ["guide.drone_hangar"] = (
+                "[[Drone hangar]] · large tower · FPV drones\n" +
+                "How it fights: sends two FPV kamikaze drones every 20 s at enemies out to 70 m, heavy on armour and structures.\n" +
+                "Strong / weak: wears down whatever sits outside the other towers' reach; APS, lasers and jammers stop its drones.\n" +
+                "Tip: the Lancet branch reaches 85 m and hunts artillery; the Swarm branch sends four at a time.",
+                "[[Hangar drone]] · tháp lớn · drone FPV\n" +
+                "Cách đánh: cứ 20 giây phóng hai drone FPV cảm tử vào địch xa tới 70 m, mạnh lên giáp và công trình.\n" +
+                "Mạnh / yếu: bào mòn thứ gì đứng ngoài tầm các tháp khác; APS, laser và máy gây nhiễu chặn được drone.\n" +
+                "Mẹo: nhánh Lancet bắn tới 85 m và săn pháo binh; nhánh Bầy đàn phóng bốn chiếc một lần."),
+            ["guide.repair_bay"] = (
+                "[[Repair bay]] · utility module\n" +
+                "How it fights: vehicles within 35 m of your HQ mend 1.5 % of their health a second, even in the middle of a fight.\n" +
+                "Strong / weak: keeps a defending army on its feet; it does nothing for vehicles out in the field.\n" +
+                "Tip: pair it with a base that fights at home (Defend, Siege, a pressed Conquest).",
+                "[[Xưởng sửa chữa]] · mô-đun tiện ích\n" +
+                "Cách đánh: xe trong vòng 35 m quanh sở chỉ huy hồi 1,5 % máu mỗi giây, kể cả giữa trận.\n" +
+                "Mạnh / yếu: giữ quân phòng thủ đứng vững; không giúp gì xe ở ngoài chiến trường.\n" +
+                "Mẹo: dùng khi căn cứ phải đánh tại nhà (Phòng thủ, Công thành, Chiếm cứ điểm bị ép)."),
+            ["guide.ammo_depot"] = (
+                "[[Ammunition depot]] · utility module\n" +
+                "How it fights: vehicles rearm at home twice as fast.\n" +
+                "Strong / weak: great for launchers and artillery that empty their magazines; it blows up hard when destroyed.\n" +
+                "Tip: take it with an army of rocket artillery.",
+                "[[Kho đạn]] · mô-đun tiện ích\n" +
+                "Cách đánh: xe nạp đạn tại căn cứ nhanh gấp đôi.\n" +
+                "Mạnh / yếu: rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạnh khi bị phá.\n" +
+                "Mẹo: mang theo khi bộ bài nhiều pháo phản lực."),
+            ["guide.airfield"] = (
+                "[[Airfield]] · utility module\n" +
+                "How it fights: aircraft over it repair 3 % a second and rearm; your commander sends them back below 35 % health or empty.\n" +
+                "Strong / weak: keeps helicopters and jets flying longer; they still have to fly out to fight and can be shot down on the way.\n" +
+                "Tip: take it with two or more aircraft in the deck.",
+                "[[Sân bay dã chiến]] · mô-đun tiện ích\n" +
+                "Cách đánh: máy bay bay trên nó hồi 3 % máu mỗi giây và nạp đạn; chỉ huy tự đưa chúng về khi dưới 35 % máu hoặc hết đạn.\n" +
+                "Mạnh / yếu: giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải ra trận và có thể bị bắn rơi trên đường.\n" +
+                "Mẹo: mang theo khi bộ bài có từ hai máy bay trở lên."),
+            ["guide.logistics_station"] = (
+                "[[Logistics station]] · utility module\n" +
+                "How it fights: your army's supply grows by 8 CP before upkeep slows your income.\n" +
+                "Strong / weak: lets a big army keep its full income; nothing for a small one.\n" +
+                "Tip: take it when your deck is full of expensive vehicles.",
+                "[[Trạm hậu cần]] · mô-đun tiện ích\n" +
+                "Cách đánh: mức tiếp tế của quân ta tăng thêm 8 CP trước khi phí duy trì làm giảm thu nhập.\n" +
+                "Mạnh / yếu: cho đội quân lớn giữ nguyên thu nhập; vô ích với đội quân nhỏ.\n" +
+                "Mẹo: mang theo khi bộ bài toàn xe đắt tiền."),
+            ["guide.radar_station"] = (
+                "[[Radar station]] · utility module\n" +
+                "How it fights: anything inside your base shows, stealth and hidden units too, and enemy guns firing within 120 m show for 8 s.\n" +
+                "Strong / weak: exposes stealth bombers and hidden guns over your base; it cannot see beyond it.\n" +
+                "Tip: take it against stealth aircraft and artillery-heavy enemies.",
+                "[[Trạm radar]] · mô-đun tiện ích\n" +
+                "Cách đánh: mọi thứ trong căn cứ đều lộ, kể cả tàng hình và ẩn nấp, và pháo địch khai hỏa trong 120 m bị lộ 8 giây.\n" +
+                "Mạnh / yếu: làm lộ oanh tạc cơ tàng hình và pháo ẩn trên căn cứ; không nhìn được ra ngoài.\n" +
+                "Mẹo: mang theo khi địch dùng máy bay tàng hình và nhiều pháo binh."),
             ["guide.headquarters"] = (
                 "[[Headquarters]] · fixed defence · the heart of a base\n" +
                 "How it fights: a twin heavy gun fires two-shot [[volleys]] out to 40 m, twin 30 mm flak and a coaxial MG cover the sky; new vehicles are dropped round it.\n" +

@@ -196,3 +196,84 @@ bottom of each section.
   of its two branches. The first pick is free and a change costs 800 coins. The loadout carries the
   pick into battle (`BaseLoadout.Branches`), and the tower is raised as its branch in its own slot.
   A branch shows as "tower · branch" (`branch.<id>` texts).
+- **Roster** (size): guard tower, MG bunker, AA tower, EW tower, dragon's teeth, minefield (small);
+  gun tower, ATGM tower, rocket battery, C-RAM, hidden gun pit (medium); artillery emplacement,
+  Patriot, drone hangar, heavy fortress (large).
+- **Merges.**
+  - The flak tower is the AA tower's "Flak tower" branch (its quad 35 mm, no missiles; the siege
+    fortresses use it).
+  - The capture point's watchtower is a guard tower with double health while neutral.
+  - The missile battery is the Patriot (90 m, not inside 20 m).
+  - The coastal twin turret is the heavy fortress.
+  - Old ids stay in `TowerCards` as not-cards so any leftover reference fails loudly in tests,
+    not in play.
+- **What each new tower does.**
+  - EW tower: jams guided rounds and fire support aimed within 30 m (the EW jammer's code), no
+    gun.
+  - Dragon's teeth: blocks the way, fights nothing, is a last-choice target. Engineers do ×3 to
+    it, and the commander has the line and its engineers knock it down when it stands between
+    them and the objective with no other enemy round it.
+  - Minefield: no target, no blocker. It lays its six mines at once within 5 m and lays the
+    whole field again every 60 s.
+  - C-RAM: an active protection of 35 m taking missiles, drones, all rockets and 30 % of shells,
+    2 interceptors every 1.5 s, and a 20 mm gatling at aircraft.
+  - Gun pit:
+    - It stays down while no enemy on the ground is within 35 m. Down, it cannot fire, takes
+      60 % less damage, and is seen only within 8 m, except by a scout, a counter-battery radar,
+      a guard tower or a UAV scan.
+    - It rises when an enemy comes that close.
+    - The view lowers its `Lift` 1.6 m.
+  - Drone hangar: 2 FPV drones every 20 s out to 70 m.
+- **Light towers' own jobs.**
+  - Guard tower: sees stealth and hidden units within its guns' reach, and gives friendly towers
+    within 25 m 10 % more range (the best aura counts).
+  - Every small tower with an anti-air weapon does +25 % to helicopters and drones (new `drone`
+    flag on vehicles).
+  - Light towers come back cheaper and sooner (see sized slots).
+- **Cannon towers' weaknesses.** Gun tower and heavy fortress turrets turn at 28°/s and 20°/s,
+  and reload in 6.0 s and 8.6 s (were 4.57 s and 7.14 s). Their coaxial guns no longer shoot
+  aircraft (`mg_coax_ground`).
+- **Branches (rank 7), each a trade, for a different fight:**
+  - guard tower: Watchtower (sight, a stronger aura) / Gun nest (25 mm cannon, less sight);
+  - MG bunker: Twin HMG / Flame bunker;
+  - AA tower: Flak tower / SAM post;
+  - EW tower: Drone jammer (45 m) / Radar spoofer (also finds guns within 80 m);
+  - dragon's teeth: Hedgehogs (×2 health) / Wire and ditch (no block, slows by half);
+  - minefield: Anti-tank field (4 heavier mines) / Scatter field (10 lighter);
+  - gun tower: Long barrel / Autoloader;
+  - ATGM tower: Top attack (×1.4 on heavy) / Multi-role (also aircraft, ×0.8 on heavy);
+  - rocket battery: Cluster / Thermobaric;
+  - C-RAM: Centurion (3 interceptors) / Hunter (45 m gatling, 1 interceptor);
+  - gun pit: Ambush (first shot ×2) / Deep pit (−75 %, rises at 30 m);
+  - artillery: Counter-battery / Extended range;
+  - Patriot: PAC-3 (×1.4, 72 m) / Long-range radar (100 m);
+  - drone hangar: Lancet / Swarm;
+  - heavy fortress: Coastal battery (60 m) / Bastion (+55 % health).
+  Weapons inherit the same way as vehicles (`"inherits"` in the weapons list), so a branch's
+  weapon is its tower's with a change or two.
+- **Utility modules** (utility slots):
+  - repair bay: 1.5 %/s to vehicles within 35 m of the HQ, even under fire;
+  - ammunition depot: reloads at home twice as fast;
+  - airfield: aircraft within 14 m repair 3 %/s and rearm. The commander sends an aircraft back
+    below 35 % health or out of ammunition and releases it at 90 % and rearmed;
+  - logistics station: +8 supply through `TeamEconomy.SupplyBonus`;
+  - radar station: everything in the base shows, and guns firing within 120 m show for 8 s.
+  They reuse the map kit's hangar, ammunition dump, helipad, fuel depot and radar dome models.
+- **Engineers** also repair friendly towers (at half their vehicle rate) and clear the enemy mines
+  they see within their repair radius, one at a time.
+- **Counter-buying against a base (supplement 5).** The commander reads the enemy towers it knows.
+  Two or more cannon towers raise light fast vehicles, drones and artillery that outranges them.
+  Two or more MG towers raise heavy armour. Two or more anti-air towers lower aircraft and raise
+  artillery. Weighted by their share of the base. The player's auto-buy uses the same commander.
+- **What a defence is worth to the AI.** It was the structure's health ÷ 250, so an HQ counted
+  as a 90 CP army and no attack ever judged itself strong enough. It is now set by size: HQ 14,
+  large 11, medium 7, small 4, and 1 for a module or anything with no gun. It is also weighed by
+  what of the attacking group the defence can hit: only its ground or air share, and a slow
+  cannon counts half against fast vehicles.
+- **Drones on emplacements.** FPV drones, Lancets and the strike drone's missiles do ×1.5 on
+  structures: precision munitions made for dug-in targets, and what the light swarm needs against
+  a base of heavy guns.
+- **Measured over 5 seeds, 8-minute battles.**
+  - A fast light swarm with drones (49 CP) destroys every tower of a medium-and-large-only base
+    and brings its HQ to 33–55 %.
+  - Against the mixed base it destroys 13 % of the towers and leaves the HQ untouched.

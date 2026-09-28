@@ -403,7 +403,19 @@ namespace MachineBrigade.Sim.Content
         /// never bought (defences, mission units) an estimate from their toughness. Bosses count
         /// as nothing here, because the army fights them whatever the odds.
         /// </summary>
-        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
+        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Fort is { } fort ? FortPower(fort) : Static ? MaxHp / 250f : MaxHp / 150f;
+
+        /// <summary>
+        /// A base structure's worth in CP for the AI's odds: an HQ 14, a large tower 11, a medium one
+        /// 7, a light one 4; a module or anything with no gun 1 (its health alone once counted it as
+        /// a whole army: an HQ was worth 90).
+        /// </summary>
+        private float FortPower(FortDef fort)
+        {
+            if (fort.Kind == FortKind.Hq) return 14f;
+            if (fort.Kind == FortKind.Utility || Passive) return 1f;
+            return fort.Size switch { SlotSize.Large => 11f, SlotSize.Medium => 7f, _ => 4f };
+        }
 
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
         public string Model { get; internal set; }

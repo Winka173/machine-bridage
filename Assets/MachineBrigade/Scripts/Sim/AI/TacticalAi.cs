@@ -1000,19 +1000,50 @@ namespace MachineBrigade.Sim.AI
         private bool StrongEnough(SimWorld world, Vector2 target, Vector2 from, float odds = AssaultOdds)
         {
             var ours = 0f;
-            foreach (var v in _line)
-                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
-            foreach (var v in _fast)
-                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+            var fast = 0f;
+            var air = 0f;
+            void Count(Vehicle v)
+            {
+                if (Vector2.Distance(v.Position, from) >= 35f) return;
+                var p = v.Def.Power * (v.Hp / v.MaxHp);
+                ours += p;
+                if (v.Flying) air += p;
+                else if (v.Def.Speed >= FastSpeed) fast += p;
+            }
+            foreach (var v in _line) Count(v);
+            foreach (var v in _fast) Count(v);
             var theirs = 0f;
             foreach (var d in _defences)
             {
                 var reach = GroundReach(d) + d.Radius + 8f;
-                if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp);
+                if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp) * Threat(d, ours, fast, air);
             }
             foreach (var e in _enemies)
                 if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < 30f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
             return theirs <= 0.5f || ours >= theirs * odds;
+        }
+
+        /// <summary>
+        /// How much of our group a defence can really fight (0-1): its share of our ground force if it
+        /// fires on the ground, of our aircraft if it fires at the air; a slow-turning cannon (a gun or
+        /// heavy tower) counts half against fast vehicles, which run rings round it.
+        /// </summary>
+        private static float Threat(Vehicle d, float ours, float fast, float air)
+        {
+            if (ours <= 0f) return 1f;
+            bool ground = false, sky = false;
+            foreach (var m in d.Def.Mounts)
+            {
+                if (m.Weapon.Damage <= 0f) continue;
+                ground |= m.Weapon.CanTarget(false);
+                sky |= m.Weapon.CanTarget(true);
+            }
+            var slowCannon = d.Def.TurretTurnRate < 60f && d.Def.Weapon.Projectile == ProjectileKind.Shell && d.Def.Weapon.MinRange <= 0f;
+            var groundShare = (ours - air) / ours;
+            var share = 0f;
+            if (ground) share += groundShare - (slowCannon ? 0.5f * fast / ours : 0f);
+            if (sky) share += air / ours;
+            return Math.Clamp(share, 0f, 1f);
         }
 
         /// <summary>The last point on the way from <paramref name="from"/> to <paramref name="target"/> outside every known defence's reach.</summary>

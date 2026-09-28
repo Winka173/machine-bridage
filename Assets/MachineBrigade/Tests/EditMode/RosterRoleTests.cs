@@ -53,7 +53,7 @@ namespace MachineBrigade.Tests
             Run(world, 3.5f);
             Assert.AreEqual(2f, DamageSystem.BonusFor(lancet, hunter, tank, world.Time), 1e-4f, "parked 3 s: double");
             Assert.AreEqual(2f, DamageSystem.BonusFor(lancet, hunter, gun, world.Time), 1e-4f, "never more than double (the bonuses do not stack)");
-            Assert.AreEqual(1f, DamageSystem.BonusFor(lancet, hunter, tower, world.Time), 1e-4f, "a fixed defence does not count as parked");
+            Assert.AreEqual(1.5f, DamageSystem.BonusFor(lancet, hunter, tower, world.Time), 1e-4f, "a fixed defence does not count as parked (its x1.5 is the drones' on structures)");
         }
 
         [Test]

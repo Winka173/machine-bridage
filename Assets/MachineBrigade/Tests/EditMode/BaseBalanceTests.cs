@@ -58,7 +58,11 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>One battle: the defence at side 1's camp of Ashfield, the army at side 0's rally going for the HQ.</summary>
-        internal static float Score(Catalog catalog, BaseLoadout defence, string[] army, int seed, float minutes = 5f)
+        internal static float Score(Catalog catalog, BaseLoadout defence, string[] army, int seed, float minutes = 5f) =>
+            Battle(catalog, defence, army, seed, minutes, out _);
+
+        /// <summary>One battle (see <see cref="Score"/>), and the share of the base's towers the attackers knocked down.</summary>
+        internal static float Battle(Catalog catalog, BaseLoadout defence, string[] army, int seed, float minutes, out float towersDown)
         {
             var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: seed);
             var b = world.Bases.Establish(1, defence, BaseRole.Target);
@@ -78,8 +82,15 @@ namespace MachineBrigade.Tests
                 world.ClearEvents();
             }
             var killed = attackers.Where(v => !v.IsAlive).Sum(v => v.Def.CpCost) / (float)Math.Max(1, cp);
+            var standing = b.Slots.Count(s => s.Tower != null);
+            towersDown = standing > 0 ? b.Slots.Count(s => s.Tower != null && s.Down) / (float)standing : 0f;
+            if (Verbose)
+                Debug.Log($"BATTLE seed {seed}: HQ {(hq.IsAlive ? hq.Hp / hq.MaxHp : 0f):P0}, towers left {b.Slots.Count(s => s.Tower != null && !s.Down)}/{b.Slots.Count(s => s.Tower != null)}, " +
+                          $"attackers lost {killed:P0}, closest to HQ {attackers.Where(v => v.IsAlive).Select(v => Vector2.Distance(v.Position, b.HqPosition)).DefaultIfEmpty(-1f).Min():0} m, time {world.Time / 60f:0.0} min");
             return (hq.IsAlive ? hq.Hp / hq.MaxHp : 0f) + killed;
         }
+
+        internal static bool Verbose;
 
         private static float Mean(Catalog catalog, BaseLoadout defence, string[] army, int seeds) =>
             Enumerable.Range(1, seeds).Average(s => Score(catalog, defence, army, s));
@@ -118,11 +129,20 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             var heavy = new BaseLoadout { HqLevel = 5, Medium = { "gun_turret", "gun_turret", "rocket_turret" }, Large = { "heavy_turret", "artillery_emplacement" } };
             var army = Enemies["light+drones"];
-            var heavyScore = Mean(catalog, heavy, army, 5);
-            var mixedScore = Mean(catalog, Mixed(), army, 5);
-            Debug.Log($"SWARM vs medium+large only {heavyScore:0.00}, vs mixed {mixedScore:0.00}");
-            Assert.Less(heavyScore, 1f, "the swarm breaks a base of only medium and large guns (its HQ falls or most of the swarm lives)");
-            Assert.Greater(mixedScore, heavyScore, "a base with light towers holds better against it");
+            float heavyDown = 0f, mixedDown = 0f, heavyScore = 0f, mixedScore = 0f;
+            Verbose = true;
+            for (var seed = 1; seed <= 5; seed++)
+            {
+                heavyScore += Battle(catalog, heavy, army, seed, 8f, out var h) / 5f;
+                heavyDown += h / 5f;
+                mixedScore += Battle(catalog, Mixed(), army, seed, 8f, out var m) / 5f;
+                mixedDown += m / 5f;
+            }
+            Verbose = false;
+            Debug.Log($"SWARM vs medium+large only: towers down {heavyDown:P0}, score {heavyScore:0.00}; vs mixed: towers down {mixedDown:P0}, score {mixedScore:0.00}");
+            Assert.GreaterOrEqual(heavyDown, 0.6f, "the swarm overwhelms a base of only medium and large guns: most of its towers fall");
+            Assert.Less(mixedDown, heavyDown, "a base with light towers loses fewer to it");
+            Assert.Greater(mixedScore, heavyScore, "and holds better");
         }
 
         /// <summary>
