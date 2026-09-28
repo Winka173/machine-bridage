@@ -58,6 +58,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>The campaign's radio chatter (null outside a mission).</summary>
         private RadioDirector _radio;
 
+        /// <summary>The stuck detector of the internal build (prompt 12; null in a release build and on the menu).</summary>
+        private StuckReporter _stuck;
+
         /// <summary>A story moment the camera goes to (a boss, reinforcements, a general): where, and until when.</summary>
         private Vector3 _storyFocus;
         private float _storyUntil;
@@ -211,6 +214,7 @@ namespace MachineBrigade.Game.Match
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
+            _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
             if (!_menu) ApplyRankDiscounts(catalog, mission != null);
             if (!_menu && _session is MissionSession storySession)
             {
@@ -599,6 +603,7 @@ namespace MachineBrigade.Game.Match
                 _session.Mode.Tick(_world, dt);
                 _session.TickAi(_world, dt);
                 _world.Step(dt);
+                _stuck?.Observe(_world);
                 _views.SnapshotAll();
                 _perf?.End(PerfProbe.Section.Sim);
                 _perf?.Begin();
@@ -903,6 +908,7 @@ namespace MachineBrigade.Game.Match
 
         private void OnDestroy()
         {
+            _stuck?.Finish(_world);
             PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
@@ -1380,6 +1386,7 @@ namespace MachineBrigade.Game.Match
             if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
+            _stuck?.Finish(_world);
             if (outcome.Result > 0) DailyMissions.Record("wins");
             _resultShown = true;
             Time.timeScale = 1f;

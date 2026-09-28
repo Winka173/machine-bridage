@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace MachineBrigade.Sim.Navigation
@@ -52,8 +53,13 @@ namespace MachineBrigade.Sim.Navigation
         /// Marks a footprint as blocked, grown by <paramref name="clearance"/> on every side so
         /// vehicles keep their hulls out of walls without per-vehicle grids.
         /// </summary>
-        public void AddBlocker(Vector2 center, float width, float depth, float clearance) =>
+        public void AddBlocker(Vector2 center, float width, float depth, float clearance)
+        {
             ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, +1);
+            // (Routes planned across this ground are stale now: the movement system looks at these.)
+            var half = new Vector2(width * 0.5f + clearance, depth * 0.5f + clearance);
+            _closed.Add((center - half, center + half));
+        }
 
         public void RemoveBlocker(Vector2 center, float width, float depth, float clearance) =>
             ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);
@@ -79,6 +85,200 @@ namespace MachineBrigade.Sim.Navigation
                 _blockers[i] = Math.Max(0, _blockers[i] + delta);
             }
             Version++;
+        }
+
+        // ------------------------------------------------------------------ closed ground (prompt 12)
+
+        private readonly List<(Vector2 min, Vector2 max)> _closed = new();
+
+        /// <summary>
+        /// Every rectangle closed by <see cref="AddBlocker"/> so far, in order (a tower raised, a
+        /// wreck anchored): routes planned before one of them may run into it now. Readers keep
+        /// their own count of the ones they have seen.
+        /// </summary>
+        public IReadOnlyList<(Vector2 min, Vector2 max)> Closed => _closed;
+
+        // ------------------------------------------------------------------ regions (prompt 12)
+
+        private int[] _region = Array.Empty<int>();
+        private int[] _queue = Array.Empty<int>();
+        private readonly List<int> _regionSizes = new();
+        private int _regionVersion = -1;
+        private int _mainRegion;
+
+        /// <summary>
+        /// The connected open ground the cell belongs to (numbered from 1; 0 for a blocked cell or
+        /// one off the grid). Two cells of one region are joined by a route; cells of two regions are
+        /// not (a pocket sealed by walls, a yard behind a shut gate). Worked out again after
+        /// walkability changes, when first asked. Four-neighbour, as the route search's corner rule
+        /// makes it.
+        /// </summary>
+        public int RegionOf(int x, int y)
+        {
+            if (!InBounds(x, y)) return 0;
+            Label();
+            return _region[Index(x, y)];
+        }
+
+        public int RegionOf(Vector2 p)
+        {
+            var (x, y) = CellOf(p);
+            return RegionOf(x, y);
+        }
+
+        /// <summary>Open cells in a region (a pocket's size in the stuck report).</summary>
+        public int RegionSize(int region)
+        {
+            Label();
+            return region > 0 && region < _regionSizes.Count ? _regionSizes[region] : 0;
+        }
+
+        /// <summary>The largest region: the battlefield's open ground (the rest are pockets sealed off from it).</summary>
+        public int MainRegion
+        {
+            get
+            {
+                Label();
+                return _mainRegion;
+            }
+        }
+
+        private void Label()
+        {
+            if (_regionVersion == Version && _region.Length > 0) return;
+            _regionVersion = Version;
+            var n = Width * Height;
+            if (_region.Length != n)
+            {
+                _region = new int[n];
+                _queue = new int[n];
+            }
+            Array.Clear(_region, 0, n);
+            _regionSizes.Clear();
+            _regionSizes.Add(0);
+            _mainRegion = 0;
+            var next = 0;
+            for (var start = 0; start < n; start++)
+            {
+                if (_region[start] != 0 || _blockers[start] != 0) continue;
+                next++;
+                _region[start] = next;
+                int head = 0, tail = 0;
+                _queue[tail++] = start;
+                while (head < tail)
+                {
+                    var i = _queue[head++];
+                    int x = i % Width, y = i / Width;
+                    if (x + 1 < Width && Fill(i + 1)) _queue[tail++] = i + 1;
+                    if (x > 0 && Fill(i - 1)) _queue[tail++] = i - 1;
+                    if (y + 1 < Height && Fill(i + Width)) _queue[tail++] = i + Width;
+                    if (y > 0 && Fill(i - Width)) _queue[tail++] = i - Width;
+                }
+                _regionSizes.Add(tail);
+                if (tail > _regionSizes[_mainRegion]) _mainRegion = next;
+
+                bool Fill(int j)
+                {
+                    if (_region[j] != 0 || _blockers[j] != 0) return false;
+                    _region[j] = next;
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Like <see cref="TryNearestWalkable(Vector2, int, out Vector2)"/>, but only open ground of
+        /// <paramref name="region"/> counts (0: any): where a vehicle standing in that region can
+        /// actually get to near the point. The point itself when it is in the region.
+        /// </summary>
+        public bool TryNearestInRegion(Vector2 point, int region, int maxRings, out Vector2 result)
+        {
+            if (region <= 0) return TryNearestWalkable(point, maxRings, out result);
+            var (cx, cy) = CellOf(point);
+            if (RegionOf(cx, cy) == region)
+            {
+                result = point;
+                return true;
+            }
+            // Rings are squares: once one holds a cell, the rings out to 1.42 times as far may still
+            // hold a nearer one (a wall's side beats the pocket's corner).
+            var found = float.MaxValue;
+            var last = maxRings;
+            result = default;
+            for (var ring = 1; ring <= last; ring++)
+            {
+                for (var y = cy - ring; y <= cy + ring; y++)
+                for (var x = cx - ring; x <= cx + ring; x++)
+                {
+                    if (Math.Abs(x - cx) != ring && Math.Abs(y - cy) != ring) continue;
+                    if (RegionOf(x, y) != region) continue;
+                    var center = CellCenter(x, y);
+                    var d = Vector2.DistanceSquared(center, point);
+                    if (d >= found) continue;
+                    if (found == float.MaxValue) last = Math.Min(maxRings, (int)MathF.Ceiling(ring * 1.42f));
+                    found = d;
+                    result = center;
+                }
+            }
+            return found < float.MaxValue;
+        }
+
+        // ------------------------------------------------------------------ distances over the ground (prompt 12)
+
+        private int[] _steps = Array.Empty<int>();
+        private int[] _stepStamp = Array.Empty<int>();
+        private int _stepSearch;
+
+        /// <summary>
+        /// Walks the open ground out from <paramref name="origin"/> (four-neighbour, at most
+        /// <paramref name="radius"/> metres out as the crow flies); <see cref="StepsTo"/> then tells
+        /// how many cells away over the ground each cell is. A group's slots stay on the near side
+        /// of a wall with it (see <see cref="Formation"/>).
+        /// </summary>
+        public void WalkFrom(Vector2 origin, float radius)
+        {
+            var n = Width * Height;
+            if (_steps.Length != n)
+            {
+                _steps = new int[n];
+                _stepStamp = new int[n];
+                if (_queue.Length != n) _queue = new int[n];
+                Label();
+            }
+            _stepSearch++;
+            var (ox, oy) = CellOf(origin);
+            if (!IsWalkable(ox, oy)) return;
+            var reach = (int)MathF.Ceiling(radius / CellSize);
+            int head = 0, tail = 0;
+            var start = Index(ox, oy);
+            _steps[start] = 0;
+            _stepStamp[start] = _stepSearch;
+            _queue[tail++] = start;
+            while (head < tail)
+            {
+                var i = _queue[head++];
+                int x = i % Width, y = i / Width;
+                var d = _steps[i] + 1;
+                for (var k = 0; k < 4; k++)
+                {
+                    int nx = x + (k == 0 ? 1 : k == 1 ? -1 : 0), ny = y + (k == 2 ? 1 : k == 3 ? -1 : 0);
+                    if (!InBounds(nx, ny) || Math.Abs(nx - ox) > reach || Math.Abs(ny - oy) > reach) continue;
+                    var j = Index(nx, ny);
+                    if (_stepStamp[j] == _stepSearch || _blockers[j] != 0) continue;
+                    _stepStamp[j] = _stepSearch;
+                    _steps[j] = d;
+                    _queue[tail++] = j;
+                }
+            }
+        }
+
+        /// <summary>Cells over the ground from the last <see cref="WalkFrom"/> origin to the cell under <paramref name="p"/> (-1: not reached).</summary>
+        public int StepsTo(Vector2 p)
+        {
+            var (x, y) = CellOf(p);
+            if (!InBounds(x, y) || _stepStamp.Length == 0) return -1;
+            var i = Index(x, y);
+            return _stepStamp[i] == _stepSearch ? _steps[i] : -1;
         }
 
         /// <summary>

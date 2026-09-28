@@ -1,0 +1,13 @@
+{
+  "map": "skyhold",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map c1d786b1 app 0.1.0",
+  "ticks": 3726,
+  "journal": [],
+  "records": [
+    {"vehicle": 482, "def": "scout_jeep", "team": 0, "startTick": 560, "start": 28, "end": 37, "seconds": 9, "x": 30.503, "y": -38, "goalX": 43, "goalY": -17, "order": "Attack", "cause": "BlockedByFriend", "detail": "scout_jeep#483 parked", "area": "field", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(parked)@4.1 light_tank(parked)@4.0 radar_dome@9"}
+  ],
+  "rescues": []
+}

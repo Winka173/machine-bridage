@@ -1,0 +1,14 @@
+{
+  "map": "metrocity",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map 1159c5f9 app 0.1.0",
+  "ticks": 3884,
+  "journal": [],
+  "records": [
+    {"vehicle": 453, "def": "armored_bulldozer", "team": 0, "startTick": 3220, "start": 161, "end": 169.5, "seconds": 8.5, "x": -90.788, "y": -92.662, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "artillery#461 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@9.0 artillery(moving)@7.1"},
+    {"vehicle": 429, "def": "armored_bulldozer", "team": 0, "startTick": 3440, "start": 172, "end": 181.5, "seconds": 9.5, "x": 79.652, "y": 93.477, "goalX": 103.035, "goalY": 108.677, "order": "AttackMove", "cause": "YieldWait", "detail": "behind armored_bulldozer#415", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@8.9 heavy_tank(moving)@7.8 ifv(moving)@4.3 base_wall@7"}
+  ],
+  "rescues": []
+}
