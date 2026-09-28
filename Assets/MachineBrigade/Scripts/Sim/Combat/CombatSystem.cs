@@ -498,7 +498,7 @@ namespace MachineBrigade.Sim.Combat
                 state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
                 return false;
             }
-            if (v.Def.Boss) return v.AnyMount == index || now - v.AnyRoundAt > 0.01;
+            if (v.Def.Boss) return BossTurn(v, index, now);
             if (SalvoUnderWay(v, index) || StreamUnderWay(v, index)) return false;
             // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: an
             // armoured car's or an IFV's cannon fires on for seconds); the others wait for its magazine change.
@@ -536,6 +536,43 @@ namespace MachineBrigade.Sim.Combat
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// A boss's mounts take turns one step at a time: never two mounts in the same instant (the
+        /// rounds of one step are one mount's, a stream's two or a salvo's). A mount held off by
+        /// another's round has the next step, the one waiting longest first (test feedback 2: a gun
+        /// streaming every step would otherwise starve the mounts after it, so the mega gunship's,
+        /// the hovercraft's and the bosses' flak and cannons could not stream).
+        /// </summary>
+        private static bool BossTurn(Vehicle v, int index, double now)
+        {
+            var state = v.Weapons[index];
+            if (now - v.AnyRoundAt < 0.01)
+            {
+                if (v.AnyMount == index) return true;
+                Hold(state, now);
+                return false;
+            }
+            var since = Held(state, now) ? state.WaitingSince : now;
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var other = v.Weapons[i];
+                if (i == index || !Held(other, now) || other.WaitingSince >= since) continue;
+                Hold(state, now);
+                return false;
+            }
+            state.HeldAt = double.NegativeInfinity;
+            return true;
+        }
+
+        /// <summary>Held off this step or the one before (a mount no longer ready stops waiting).</summary>
+        private static bool Held(WeaponState state, double now) => now - state.HeldAt < 0.08;
+
+        private static void Hold(WeaponState state, double now)
+        {
+            if (!Held(state, now)) state.WaitingSince = now;
+            state.HeldAt = now;
         }
 
         /// <summary>

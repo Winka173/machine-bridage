@@ -210,7 +210,7 @@
     { "id": "gun_125_elite",     "damageType": "ArmorPiercing", "damage": 205, "cooldown": 4.8,  "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.5, "impactTier": "Large" },
     { "id": "mlrs_elite",        "projectileModel": "gmlrs", "damageType": "HighExplosive", "damage": 13,  "cooldown": 9,    "range": 75, "minRange": 20, "projectileSpeed": 52, "splash": 5, "spread": 5, "impactTier": "Large", "projectile": "Rocket", "burst": 16, "burstInterval": 0.14, "ammo": 6,
       "cluster": { "count": 5, "radius": 6, "damage": 6, "splash": 2.6, "tier": "Small" } },
-    { "id": "autocannon_40",     "damageType": "Kinetic",       "damage": 51,  "cooldown": 1.43,  "range": 28, "projectileSpeed": 210, "splash": 1, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 3, "burstInterval": 0.14 },
+    { "id": "autocannon_40",     "damageType": "Kinetic",       "damage": 27.9,  "cooldown": 0.2,  "range": 28, "projectileSpeed": 210, "splash": 1, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 12, "clipReload": 1.5, "roundWeight": 51 },
     // Roster cleanup (prompt 2): the wheeled tank hunter's 105 mm (harder on a flank or rear), the
     // long-range SAM's big missile, the ATGM tower's twin launcher.
     { "id": "gun_105_wheeled",   "damageType": "ArmorPiercing", "damage": 300, "cooldown": 4.6,  "range": 38, "projectileSpeed": 230, "spread": 0.4, "impactTier": "Medium",
@@ -258,7 +258,7 @@
     { "id": "boss_howitzer",     "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 286, "cooldown": 6.43,  "range": 60, "projectileSpeed": 60, "splash": 9, "spread": 3, "impactTier": "Huge" },
     { "id": "boss_rockets",      "projectileModel": "grad", "damageType": "HighExplosive", "damage": 45,  "cooldown": 7,    "range": 45, "projectileSpeed": 55, "splash": 4, "spread": 5, "impactTier": "Medium", "projectile": "Rocket", "burst": 16, "burstInterval": 0.08 },
     { "id": "boss_missiles",     "projectileModel": "atgm_kornet", "damageType": "ArmorPiercing", "damage": 180, "cooldown": 5,    "range": 45, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "targets": "Ground" },
-    { "id": "boss_flak",         "damageType": "Flak",          "damage": 21,  "cooldown": 0.9,  "range": 40, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "burst": 10, "burstInterval": 0.05 },
+    { "id": "boss_flak",         "damageType": "Flak",          "damage": 13.9,  "cooldown": 0.05,  "range": 40, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 50, "clipReload": 1.2, "roundWeight": 21 },
     { "id": "train_gun",         "damageType": "ArmorPiercing", "damage": 286, "cooldown": 4.57,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" },
     { "id": "agl_40", "damageType": "HighExplosive", "damage": 9.6, "cooldown": 3.43, "range": 30, "projectileSpeed": 70, "splash": 2, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "burst": 3, "burstInterval": 0.2 },
     { "id": "guided_bomb", "projectileModel": "gbu12", "damageType": "HighExplosive", "damage": 297, "cooldown": 10, "range": 30, "projectileSpeed": 40, "splash": 6, "spread": 1, "impactTier": "Large", "projectile": "Bomb", "ammo": 4 },
@@ -278,14 +278,17 @@
     { "id": "borer_drill",       "melee": true, "damageType": "ArmorPiercing", "damage": 260, "cooldown": 1.5, "range": 7, "projectileSpeed": 400, "impactTier": "Large",
       "projectile": "Bullet", "targets": "Ground", "bonuses": [ { "armor": "Structure", "mult": 2 } ] },
     { "id": "borer_cannon",      "damageType": "ArmorPiercing", "damage": 150, "cooldown": 2.6, "range": 34, "projectileSpeed": 170, "splash": 1.5, "spread": 0.7, "impactTier": "Medium" },
-    { "id": "airship_flak",      "damageType": "Flak", "damage": 26, "cooldown": 1.1, "range": 48, "projectileSpeed": 280, "splash": 3, "spread": 1.4, "impactTier": "Medium",
-      "projectile": "Bullet", "targets": "All", "burst": 8, "burstInterval": 0.08 },
+    { "id": "airship_flak",      "damageType": "Flak", "damage": 20.25, "cooldown": 0.1, "range": 48, "projectileSpeed": 280, "splash": 3, "spread": 1.4, "impactTier": "Medium",
+      "projectile": "Bullet", "targets": "All", "clip": 24, "clipReload": 1.5, "roundWeight": 26 },
     { "id": "airship_drones",    "damageType": "ArmorPiercing", "damage": 140, "cooldown": 8, "range": 70, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Large",
       "projectile": "Drone", "burst": 3, "burstInterval": 0.35 },
-    // Test feedback 11C: the mega gunship's own guns at the old cadence (see the minigun and heli_gun above).
-    { "id": "boss_heli_gun",     "inherits": "heli_gun", "damage": 16, "cooldown": 0.22, "roundWeight": 16, "clip": 0 },
-    { "id": "boss_minigun",      "inherits": "minigun", "damage": 7, "cooldown": 0.07, "roundWeight": 7, "clip": 0 },
-    { "id": "hover_ciws",        "damageType": "Kinetic", "damage": 10, "cooldown": 0.07, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" }
+    // Test feedback 2 (12D): the bosses' guns stream too (a boss's mounts take turns step by step, the one
+    // waiting longest first). A boss's machine gun used to fire one round a second (its runs never started),
+    // so its rounds are light to keep the damage it did; boss_hmg is the roof gun for the bosses.
+    { "id": "boss_heli_gun",     "inherits": "heli_gun", "damage": 6, "roundWeight": 16 },
+    { "id": "boss_minigun",      "inherits": "minigun", "damage": 2.25, "cooldown": 0.05, "roundWeight": 7, "clip": 60, "clipReload": 1.2 },
+    { "id": "boss_hmg",          "inherits": "hmg_roof", "damage": 2.5 },
+    { "id": "hover_ciws",        "damageType": "Kinetic", "damage": 1.83, "cooldown": 0.06, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 50, "clipReload": 1.2, "roundWeight": 10 }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -695,7 +698,7 @@
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "armored_train", "scale": 1.15, "armor": "Heavy", "hp": 4400, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 19.85, "width": 3.4, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "skills": ["train_smoke", "train_patch"],
-      "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" },
+      "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" } ],
       "parts": [
         {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "wreck": "wreck_stump", "at": [0, 7.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
@@ -896,8 +899,8 @@
     // faster; an elite guard rides with it and more come at 60 %.
     { "id": "supreme_command", "boss": true, "general": "hung", "radioSpawn": "radio.hung.supreme", "armor": "Heavy", "hp": 5850, "speed": 4, "turnRate": 30,
       "turretTurnRate": 200, "radius": 4.5, "length": 14.6, "width": 4.2, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
-      "firesWhileMoving": true, "weapon": "hmg_roof", "mainSlot": "mg", "mainAim": "Free",
-      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "firesWhileMoving": true, "weapon": "boss_hmg", "mainSlot": "mg", "mainAim": "Free",
+      "secondary": [ { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" } ],
       "commandAura": { "radius": 40, "fireRate": 0.2, "damage": 0.2 },
       "skills": ["supreme_guard", "boss_bulwark"],
       "phases": [ { "at": 0.5, "transform": 3, "heal": 0.08, "radio": "radio.hung.supreme.half" } ],
