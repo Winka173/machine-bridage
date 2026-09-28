@@ -106,13 +106,18 @@ namespace MachineBrigade.Sim.Content
     /// <summary>An objective circle from the map (Conquest).</summary>
     public readonly struct CapturePointDef
     {
-        public CapturePointDef(string id, string name, System.Numerics.Vector2 position, float radius)
+        public CapturePointDef(string id, string name, System.Numerics.Vector2 position, float radius,
+            IReadOnlyList<HardpointDef>? outpost = null)
         {
             Id = id;
             Name = name;
             Position = position;
             Radius = radius;
+            Outpost = outpost ?? Array.Empty<HardpointDef>();
         }
+
+        /// <summary>Hardpoints beside the point for an outpost (1-2, tower slots), where the map has them.</summary>
+        public IReadOnlyList<HardpointDef> Outpost { get; }
 
         public string Id { get; }
 

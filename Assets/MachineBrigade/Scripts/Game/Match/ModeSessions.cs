@@ -119,6 +119,33 @@ namespace MachineBrigade.Game.Match
             return (vehicles.ToArray(), supports.ToArray());
         }
 
+        /// <summary>
+        /// Both sides' bases for a mode (balance.json "base.roles" for what they are for): the
+        /// player's own loadout, and the enemy's drawn for its difficulty (a commander personality
+        /// names its style later). Assault's defender is the target; everywhere else an Anchor.
+        /// </summary>
+        protected BaseSetup Bases(SimWorld world, GameModeKind kind, int seed, int attacker = PlayerTeam, bool menu = false)
+        {
+            var rules = world.Catalog.Base;
+            var role = rules.RoleFor(kind.ToString());
+            var setup = new BaseSetup();
+            var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed);
+            var playerLoadout = menu ? BaseLoadout.ForAi(world.Catalog, "Normal", "default", seed + 5) : PlayerProfile.BaseLoadout;
+            if (role == BaseRole.Target)
+            {
+                // The side attacking holds its camp; the side attacked has the base to lose.
+                var defender = 1 - attacker;
+                setup.Set(attacker, attacker == PlayerTeam ? playerLoadout : enemyLoadout, BaseRole.Anchor);
+                setup.Set(defender, defender == PlayerTeam ? playerLoadout : enemyLoadout, BaseRole.Target);
+                return setup;
+            }
+            var each = role == BaseRole.None ? BaseRole.None : BaseRole.Anchor;
+            return setup.Set(PlayerTeam, playerLoadout, each).Set(EnemyTeam, enemyLoadout, each);
+        }
+
+        /// <summary>The enemy commander's base style (balance.json "base.ai.styles"); commanders with personalities choose their own.</summary>
+        protected string EnemyStyle { get; set; } = "default";
+
         protected static SideSetup PlayerSide(float cp, float income) => new()
         {
             StartCp = cp, Income = income, Vehicles = MatchSettings.DeckVehicles.ToArray(), Supports = MatchSettings.DeckSupports.ToArray(),
@@ -197,6 +224,7 @@ namespace MachineBrigade.Game.Match
             {
                 PlayerVehicles = MatchSettings.AllVehicles, PlayerSupports = MatchSettings.AllSupports,
                 EnemyVehicles = MatchSettings.AllVehicles, EnemySupports = MatchSettings.AllSupports,
+                Bases = Bases(world, GameModeKind.Conquest, seed, menu: true),
             });
             Mode = mode;
             mode.Setup(world);
@@ -224,6 +252,7 @@ namespace MachineBrigade.Game.Match
             {
                 PlayerVehicles = MatchSettings.DeckVehicles.ToArray(), PlayerSupports = MatchSettings.DeckSupports.ToArray(),
                 EnemyVehicles = vehicles, EnemySupports = supports,
+                Bases = Bases(world, GameModeKind.Conquest, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -263,6 +292,7 @@ namespace MachineBrigade.Game.Match
             _mode = new DeathmatchMode(new DeathmatchRules
             {
                 Player = PlayerSide(18f, 1.35f), Enemy = EnemySide(18f, 1.35f, Difficulty, world.Catalog),
+                Bases = Bases(world, GameModeKind.Deathmatch, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -302,6 +332,7 @@ namespace MachineBrigade.Game.Match
             _mode = new KingOfTheHillMode(new KingOfTheHillRules
             {
                 Player = PlayerSide(16f, 1.2f), Enemy = EnemySide(16f, 1.2f, Difficulty, world.Catalog),
+                Bases = Bases(world, GameModeKind.KingOfTheHill, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -344,6 +375,7 @@ namespace MachineBrigade.Game.Match
             _mode = new AssaultMode(new AssaultRules
             {
                 StartSeconds = start, Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(26f, 1.05f, Difficulty, world.Catalog),
+                Bases = Bases(world, GameModeKind.Assault, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -415,6 +447,7 @@ namespace MachineBrigade.Game.Match
                 StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
                 WaveSeconds = _endless ? 55f : 75f, StageCp = 12f,
                 Attacker = attacker, Defender = defender,
+                AttackerBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -549,6 +582,7 @@ namespace MachineBrigade.Game.Match
             _mode = new SiegeMode(new SiegeRules
             {
                 StartSeconds = start, Attacker = attacker, Defender = EnemySide(20f, Difficulty == AiDifficulty.Hard ? 1.05f : 0.85f, Difficulty, world.Catalog),
+                AttackerBase = PlayerProfile.BaseLoadout,
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -772,6 +806,23 @@ namespace MachineBrigade.Game.Match
             _mode = new MissionMode(_tier > 0 ? _def.Harder(1.3f) : _def, playerSide, enemy);
             Mode = _mode;
             _mode.Setup(world);
+            // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
+            if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
+                BaseDefences.Build(world, new BaseSetup()
+                    .Set(PlayerTeam, PlayerProfile.BaseLoadout, _def.PlayerBase)
+                    .Set(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed), _def.EnemyBase), PlayerTeam, EnemyTeam);
+            if (_def.Outposts.Count > 0)
+            {
+                world.Bases.Ensure(PlayerTeam, PlayerProfile.BaseLoadout);
+                world.Bases.Ensure(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed));
+                foreach (var id in _def.Outposts) world.Bases.OutpostPoints.Add(id);
+                world.Bases.PointOwner = id =>
+                {
+                    foreach (var p in _mode.Points)
+                        if (p.Def.Id == id) return p.Owner;
+                    return -1;
+                };
+            }
 
             if (commander)
             {

@@ -75,8 +75,10 @@ namespace MachineBrigade.Sim.Content
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
-            IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null)
+            IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null,
+            IReadOnlyList<BaseSiteDef>? bases = null)
         {
+            Bases = bases ?? Array.Empty<BaseSiteDef>();
             Decor = decor ?? Array.Empty<PropPlacement>();
             SiegeRings = siegeRings ?? Array.Empty<float>();
             Boundary = boundary ?? Array.Empty<Vector2>();
@@ -102,6 +104,17 @@ namespace MachineBrigade.Sim.Content
         /// simulated (nothing reaches them), so the country goes on past the edge.
         /// </summary>
         public IReadOnlyList<PropPlacement> Decor { get; }
+
+        /// <summary>Each side's camp: its headquarters and hardpoints (empty on maps without bases).</summary>
+        public IReadOnlyList<BaseSiteDef> Bases { get; }
+
+        /// <summary>A side's camp in the map data, or null.</summary>
+        public BaseSiteDef? BaseOf(int team)
+        {
+            foreach (var b in Bases)
+                if (b.Team == team) return b;
+            return null;
+        }
 
         /// <summary>Objectives for Conquest (may be empty for other modes).</summary>
         public IReadOnlyList<CapturePointDef> Points { get; }
@@ -173,8 +186,14 @@ namespace MachineBrigade.Sim.Content
             if (root.Has("points"))
             {
                 foreach (var c in root.Array("points"))
+                {
+                    var outpost = new List<HardpointDef>();
+                    if (c.Has("outpost"))
+                        foreach (var s in c.Array("outpost"))
+                            outpost.Add(BaseSiteDef.ParseSlot(s));
                     points.Add(new CapturePointDef(c.String("id"), c.Has("name") ? c.String("name") : c.String("id"),
-                        new Vector2(c.Float("x"), c.Float("z")), c.Float("radius", 10f)));
+                        new Vector2(c.Float("x"), c.Float("z")), c.Float("radius", 10f), outpost));
+                }
             }
 
             var roads = new List<RoadDef>();
@@ -206,8 +225,12 @@ namespace MachineBrigade.Sim.Content
                     var rotation = ((p.Int("rot", 0) % 360) + 360) % 360;
                     decor.Add(new PropPlacement(p.String("def"), new Vector2(p.Float("x"), p.Float("z")), rotation - rotation % 45));
                 }
+            var bases = new List<BaseSiteDef>();
+            if (root.Has("bases"))
+                foreach (var b in root.Array("bases"))
+                    bases.Add(BaseSiteDef.Parse(b));
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor);
+                boundary, rings, decor, bases);
         }
     }
 }

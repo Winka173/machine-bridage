@@ -60,7 +60,45 @@ namespace MachineBrigade.Game.Match
             public int dealDay;
             public bool freeDealClaimed;
             public bool goldDealBought;
+
+            /// <summary>The base loadout (see BaseLoadout): HQ level, towers front first, utility modules, outpost towers.</summary>
+            public int baseLevel;
+            public List<string> baseTowers = new();
+            public List<string> baseUtilities = new();
+            public List<string> baseOutpost = new();
         }
+
+        /// <summary>
+        /// The base the player takes into battle, like the deck: every HQ level is open for now
+        /// (the campaign unlocks them later), so a new profile starts at the top level with a mix
+        /// of towers. The sim cuts it to what the level allows.
+        /// </summary>
+        public static Sim.Modes.BaseLoadout BaseLoadout
+        {
+            get
+            {
+                var loadout = new Sim.Modes.BaseLoadout { HqLevel = D.baseLevel > 0 ? D.baseLevel : 5 };
+                loadout.Towers.AddRange(D.baseTowers.Count > 0 ? D.baseTowers : DefaultTowers);
+                loadout.Utilities.AddRange(D.baseUtilities);
+                if (D.baseOutpost.Count > 0)
+                {
+                    loadout.Outpost.Clear();
+                    loadout.Outpost.AddRange(D.baseOutpost);
+                }
+                return loadout;
+            }
+            set
+            {
+                D.baseLevel = value.HqLevel;
+                D.baseTowers = new List<string>(value.Towers);
+                D.baseUtilities = new List<string>(value.Utilities);
+                D.baseOutpost = new List<string>(value.Outpost);
+                Save();
+            }
+        }
+
+        /// <summary>A new profile's towers (13 of 14 points): a gun line, anti-air, a bunker and watchtowers.</summary>
+        public static readonly string[] DefaultTowers = { "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "guard_tower", "aa_turret" };
 
         private const string Key = "mb.profile";
         private static Data _data;

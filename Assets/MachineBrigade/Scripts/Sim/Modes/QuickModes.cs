@@ -19,6 +19,9 @@ namespace MachineBrigade.Sim.Modes
 
         public SideSetup Player { get; set; } = new() { StartCp = 18f, Income = 1.35f };
         public SideSetup Enemy { get; set; } = new() { StartCp = 18f, Income = 1.35f };
+
+        /// <summary>Each side's base loadout and role; null: a bare HQ each.</summary>
+        public BaseSetup? Bases { get; set; }
     }
 
     /// <summary>
@@ -50,7 +53,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
-            BaseDefences.Build(world, PlayerTeam, EnemyTeam);
+            BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
         }
 
         public void Tick(SimWorld world, float dt)
@@ -83,6 +86,9 @@ namespace MachineBrigade.Sim.Modes
 
         public SideSetup Player { get; set; } = new() { StartCp = 16f, Income = 1.2f };
         public SideSetup Enemy { get; set; } = new() { StartCp = 16f, Income = 1.2f };
+
+        /// <summary>Each side's base loadout and role; null: a bare HQ each.</summary>
+        public BaseSetup? Bases { get; set; }
     }
 
     /// <summary>
@@ -122,7 +128,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
-            BaseDefences.Build(world, PlayerTeam, EnemyTeam);
+            BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
             _outposts = new Outposts(world, _points, neutral: true);
         }
 
@@ -174,6 +180,12 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>The Defend mode: the enemy attacks and the player holds the sectors.</summary>
         public bool PlayerDefends { get; set; }
+
+        /// <summary>
+        /// Each side's base loadout and role. The attacker's camp is an Anchor; the defender's base
+        /// is the target: destroying its HQ wins as well as taking the last sector. Null: bare HQs.
+        /// </summary>
+        public BaseSetup? Bases { get; set; }
     }
 
     /// <summary>
@@ -233,7 +245,8 @@ namespace MachineBrigade.Sim.Modes
             BuildSectors(world);
             _deadline = _rules.StartSeconds;
             if (_rules.Defences) Fortify(world);
-            BaseDefences.Build(world, Attacker);
+            var bases = _rules.Bases ?? new BaseSetup().Set(Attacker, null, BaseRole.Anchor).Set(Defender, null, BaseRole.Target);
+            BaseDefences.Build(world, bases, Attacker, Defender);
             _outposts = new Outposts(world, _points, built: true);
         }
 
@@ -250,7 +263,8 @@ namespace MachineBrigade.Sim.Modes
             _outposts?.Tick(world);
             if (world.TryGetEconomy(Attacker, out var e0)) e0.Bonus = 0.25f * Sector;
 
-            if (Sector >= _sectors.Count) Result = new MatchResult(Attacker);
+            // The defending HQ destroyed: the attack has won, whatever the sectors.
+            if (Sector >= _sectors.Count || world.Bases.Of(Defender)?.HqFallen == true) Result = new MatchResult(Attacker);
             else if (world.Time >= _deadline)
             {
                 // Overtime: the attack goes on while it is still pushing on a live point.

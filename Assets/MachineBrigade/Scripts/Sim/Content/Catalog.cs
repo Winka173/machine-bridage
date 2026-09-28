@@ -43,6 +43,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Multiplies every side's CP income, objective bonuses included (balance.json "economy.income").</summary>
         public float IncomeScale { get; internal set; } = 1f;
 
+        /// <summary>Bases: the HQ, hardpoint budgets, tower rebuilds, roles by mode (balance.json "base").</summary>
+        public BaseRules Base { get; internal set; } = new();
+
         /// <summary>Multiplies every side's supply line, the army kept up at full income ("economy.supply").</summary>
         public float SupplyScale { get; internal set; } = 1f;
 
@@ -189,6 +192,14 @@ namespace MachineBrigade.Sim.Content
                     def.DroneArmor = v.Float("droneArmor", 1f);
                     def.MineProof = v.Bool("mineProof", false);
                     if (v.Has("fortify")) def.FortifyAura = ParseAura(v.Object("fortify"));
+                    if (v.Has("fort"))
+                    {
+                        var f = v.Object("fort");
+                        def.Fort = new FortDef(f.Int("points", 1), f.Has("weight") ? f.String("weight") : "Light", f.Enum("kind", FortKind.Tower))
+                        {
+                            Tier = f.Int("tier", 1),
+                        };
+                    }
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");
@@ -237,6 +248,7 @@ namespace MachineBrigade.Sim.Content
             {
                 IncomeScale = Tune("economy", "income"),
                 SupplyScale = Tune("economy", "supply"),
+                Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
         }
 

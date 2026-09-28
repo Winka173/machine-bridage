@@ -149,6 +149,25 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Visible enemy vehicles, refreshed every decision.</summary>
         public IReadOnlyList<Vehicle> KnownEnemies => _enemies;
 
+        /// <summary>
+        /// Tower sense (on by default; off only to measure what it changes): towers weigh in the
+        /// odds of going into their reach, the line waits at the edge of their guns until it is
+        /// strong enough and the artillery has shelled them, and flankers and crate runners keep
+        /// out of their reach.
+        /// </summary>
+        public static bool TowerSense = true;
+
+        /// <summary>Our strength at the edge of a defended area must be this many times the defences' there to go in.</summary>
+        private const float AssaultOdds = 1.4f;
+
+        /// <summary>Seconds the line gives its artillery on the towers before going in with the strength it has.</summary>
+        private const double ShellingTime = 35.0;
+
+        /// <summary>After waiting this long at the edge, it goes in anyway if it is at least a match for the towers.</summary>
+        private const double EdgePatience = 70.0;
+
+        private double _atEdgeSince = double.NaN;
+
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
             _team = team;
@@ -313,6 +332,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var crate in world.CrateList)
             {
                 if (!crate.IsAlive || world.Time < crate.LandsAt) continue;
+                // A crate under enemy guns is bait: nobody goes for it alone.
+                if (TowerSense && Exposed(crate.Position, 2f)) continue;
                 if (!_crateRunners.TryGetValue(crate.Id, out var runnerId) || !world.TryGetVehicle(runnerId, out var runner) || !runner.IsAlive ||
                     runner.Team != _team)
                 {
@@ -798,6 +819,12 @@ namespace MachineBrigade.Sim.AI
             }
             var side = new Vector2(-forward.Y, forward.X) * _flankSide;
             var flankPoint = Clamp(world, objective + side * FlankOffset - forward * 6f);
+            // A flank that runs into a tower's guns is no flank: they fight with the main body.
+            if (TowerSense && _defences.Count > 0 && Exposed(flankPoint, 2f))
+            {
+                _line.AddRange(_fast);
+                return;
+            }
             _ids.Clear();
             _otherIds.Clear();
             foreach (var f in _fast)
@@ -840,7 +867,12 @@ namespace MachineBrigade.Sim.AI
                 // Those already standing on the objective stay put rather than being re-sent every decision.
                 for (var i = _ids.Count - 1; i >= 0; i--)
                     if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f) _ids.RemoveAt(i);
-                if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, Clamp(world, objective));
+                // An enemy fighting under its towers: go in only with the strength for both, else
+                // hold at the edge of their guns and let the enemy (and the artillery) come.
+                var into = Clamp(world, objective);
+                if (TowerSense && _defences.Count > 0 && Exposed(into, 2f) && !StrongEnough(world, into, lead.Position))
+                    into = EdgeBefore(world, into, lead.Position);
+                if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, into);
                 return;
             }
             if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
@@ -856,8 +888,21 @@ namespace MachineBrigade.Sim.AI
                 var gathered = 0;
                 foreach (var v in _line)
                     if (Vector2.Distance(v.Position, edge) < 16f) gathered++;
-                goal = gathered >= MathF.Ceiling(_line.Count * 0.8f) ? Clamp(world, objective) : edge;
+                var together = gathered >= MathF.Ceiling(_line.Count * 0.8f);
+                if (TowerSense)
+                {
+                    // At the edge: go in once together and strong enough for the towers there (after
+                    // the artillery has had its time on them), or, after waiting long, as a match for them.
+                    if (together && double.IsNaN(_atEdgeSince)) _atEdgeSince = world.Time;
+                    var waited = double.IsNaN(_atEdgeSince) ? 0.0 : world.Time - _atEdgeSince;
+                    var shelled = _artillery.Count == 0 || waited >= ShellingTime;
+                    var go = together && ((shelled && StrongEnough(world, objective, edge)) || (waited >= EdgePatience && StrongEnough(world, objective, edge, 1f)));
+                    goal = go ? Clamp(world, objective) : edge;
+                    if (go) _atEdgeSince = double.NaN;
+                }
+                else goal = together ? Clamp(world, objective) : edge;
             }
+            else _atEdgeSince = double.NaN;
             // Those already on their way to this rendezvous keep their route, and those standing at
             // it stay put: sending them again would reshuffle the slots and keep everyone moving.
             for (var i = _ids.Count - 1; i >= 0; i--)
@@ -865,6 +910,37 @@ namespace MachineBrigade.Sim.AI
                     ((going.Order.Kind == OrderKind.AttackMove && Vector2.Distance(going.Order.Point, goal) < SameRendezvous) ||
                      (going.Order.Kind == OrderKind.Idle && Vector2.Distance(going.Position, goal) < SameRendezvous))) _ids.RemoveAt(i);
             if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, goal);
+        }
+
+        /// <summary>
+        /// Our line near <paramref name="from"/> (health counted) is at least <paramref name="odds"/>
+        /// times the known defences covering <paramref name="target"/> and the enemies round it.
+        /// </summary>
+        private bool StrongEnough(SimWorld world, Vector2 target, Vector2 from, float odds = AssaultOdds)
+        {
+            var ours = 0f;
+            foreach (var v in _line)
+                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+            foreach (var v in _fast)
+                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+            var theirs = 0f;
+            foreach (var d in _defences)
+            {
+                var reach = GroundReach(d) + d.Radius + 8f;
+                if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp);
+            }
+            foreach (var e in _enemies)
+                if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < 30f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
+            return theirs <= 0.5f || ours >= theirs * odds;
+        }
+
+        /// <summary>The last point on the way from <paramref name="from"/> to <paramref name="target"/> outside every known defence's reach.</summary>
+        private Vector2 EdgeBefore(SimWorld world, Vector2 target, Vector2 from)
+        {
+            var edge = target;
+            var back = Direction(target, from);
+            for (var step = 0; step < 16 && Exposed(edge, 2f); step++) edge += back * 4f;
+            return Clamp(world, edge);
         }
 
         /// <summary>A vehicle this far from the army and this close to home is a reinforcement still to join.</summary>

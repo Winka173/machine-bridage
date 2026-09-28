@@ -9,6 +9,7 @@ using MachineBrigade.Game.Rendering;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.AI;
+using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
@@ -907,6 +908,13 @@ namespace MachineBrigade.Game.Match
                 playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
                 _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
             };
+            _hud.TowerPressed += () =>
+            {
+                var callable = _world.Bases.Callable(PlayerTeam);
+                if (callable.Count == 0) return;
+                var result = _world.Submit(new Command(CommandType.CallTower, PlayerTeam, System.Array.Empty<MachineBrigade.Sim.Core.EntityId>(), callable[0].Def.Position));
+                if (result.Accepted) _hud.Toast(Strings.Get("toast.towerCalled")); else _hud.ShowError(result.Error);
+            };
             _hud.AutoDeployToggled += () =>
             {
                 MatchSettings.AutoDeploy = playerAi.AutoDeploy = !playerAi.AutoDeploy;
@@ -1028,6 +1036,11 @@ namespace MachineBrigade.Game.Match
 
         private void UpdateStatus()
         {
+            if (!_menu)
+            {
+                var callable = _world.Bases.Callable(PlayerTeam);
+                _hud.SetTowers(callable.Count, callable.Count > 0 ? _world.Bases.CostOf(callable[0]) : 0);
+            }
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
             if (_menu) return;
 

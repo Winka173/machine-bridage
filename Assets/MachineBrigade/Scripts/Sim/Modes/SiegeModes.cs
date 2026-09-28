@@ -76,6 +76,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>What the waves are made of (empty: the attacker's deck).</summary>
         public IReadOnlyList<string> WaveRoster { get; set; } = Array.Empty<string>();
+
+        /// <summary>The attacking side's camp (an Anchor base at the camp outside the walls); null: a bare HQ.</summary>
+        public BaseLoadout? AttackerBase { get; set; }
     }
 
     /// <summary>
@@ -209,6 +212,9 @@ namespace MachineBrigade.Sim.Modes
             _nextWave = _rules.WaveSeconds > 0f ? _rules.WaveSeconds * 0.75f : double.MaxValue;
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             Shield(world);
+            // The attacker's own camp outside the walls (the map's side 0): its HQ and towers.
+            if (world.Map.BaseOf(0) != null && world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
+                world.Bases.Establish(Attacker, _rules.AttackerBase ?? BaseLoadout.HqOnly(), Content.BaseRole.Anchor, siteTeam: 0);
         }
 
         /// <summary>Which ring a point lies in: 1 outer line, 2 walls, 3 keep.</summary>

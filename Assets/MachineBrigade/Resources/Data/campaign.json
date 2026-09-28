@@ -91,7 +91,7 @@
       "enemyDeck": ["light_tank", "main_battle_tank", "heavy_tank", "aa_vehicle", "sam_launcher", "gunship_heli", "mlrs"],
       "coins": 600, "xp": 420, "unlocks": ["gunship_heli", "cruise_missile"], "starTime": 600, "starLosses": 12, "challenge": {"kind": "NoAircraft"} },
 
-    { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
+    { "id": "m10", "map": "ironport", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"], "outposts": ["town"],
       "enemyOwns": ["west", "town", "east"], "timeLimit": 1000,
       "enemyAi": "commander", "enemyStance": "Defend", "difficulty": "Hard", "enemyCp": 15, "enemyIncome": 0.7, "playerCp": 26, "playerIncome": 1.85,
       "enemyDeck": ["main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "sam_launcher", "mlrs", "attack_helicopter", "artillery"],
@@ -130,7 +130,7 @@
                  "roster": ["main_battle_tank", "apc", "attack_helicopter", "elite_mbt"] },
       "coins": 650, "xp": 420, "unlocks": ["twin_tank", "siege_mortar"], "starTime": 600, "starLosses": 14 },
 
-    { "id": "m14", "map": "junglepass", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"],
+    { "id": "m14", "map": "junglepass", "weather": "Rain", "goal": "Capture", "points": ["west", "town", "east"], "outposts": ["west"],
       "enemyOwns": ["town", "east"], "timeLimit": 1100,
       "enemyAi": "both", "enemyStance": "Defend", "difficulty": "Normal", "enemyCp": 14, "playerCp": 24, "playerIncome": 1.35, "playerCap": 36,
       "enemyDeck": ["light_tank", "apc", "main_battle_tank", "flame_tank", "attack_helicopter", "tank_destroyer"],

@@ -303,6 +303,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Lays mines as it goes (mine layers).</summary>
         public MineLayerDef? Mines { get; internal set; }
 
+        /// <summary>Its place in a base loadout (towers, utility modules, the HQ); null for everything else.</summary>
+        public FortDef? Fort { get; internal set; }
+
         /// <summary>Active protection: shoots down incoming missiles and rockets (see <see cref="ApsDef"/>).</summary>
         public ApsDef? Aps { get; internal set; }
 

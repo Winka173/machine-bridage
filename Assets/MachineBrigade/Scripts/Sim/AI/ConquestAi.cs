@@ -179,8 +179,49 @@ namespace MachineBrigade.Sim.AI
             if (_timer > 0f || world.IsOver) return;
             _timer = Interval;
             if (!world.TryGetEconomy(_team, out var economy)) return;
+            if (AutoDeploy && TryRebuild(world, economy)) return;
             if (AutoStrike && TryStrike(world, economy)) return;
             if (AutoDeploy) TryDeploy(world, economy);
+        }
+
+        /// <summary>
+        /// Flies a destroyed tower back into its hardpoint, the front one first, once the army has
+        /// some body (a side with next to nothing on the field buys vehicles first) and the CP
+        /// left over still buys a vehicle soon; sets a marked point up as an outpost the same way.
+        /// </summary>
+        private bool TryRebuild(SimWorld world, TeamEconomy economy)
+        {
+            var bases = world.Bases;
+            if (bases.Of(_team) is not { } ours) return false;
+            var callable = bases.Callable(_team);
+            if (callable.Count > 0 && economy.ArmyCp >= 12)
+            {
+                var slot = callable[0];
+                var cost = bases.CostOf(slot);
+                if (economy.Cp >= cost + 4f && world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slot.Def.Position)).Accepted)
+                    return true;
+            }
+            // Outposts on marked points we hold: set up, then their towers.
+            if (_mode == null || bases.OutpostPoints.Count == 0) return false;
+            foreach (var point in _mode.Points)
+            {
+                if (point.Owner != _team || !bases.OutpostPoints.Contains(point.Def.Id) || point.Def.Outpost.Count == 0) continue;
+                if (!ours.Outposts.TryGetValue(point.Def.Id, out var slots))
+                {
+                    if (economy.Cp >= world.Catalog.Base.OutpostCp + 6f &&
+                        world.Submit(new Command(CommandType.Outpost, _team, Array.Empty<EntityId>(), defId: point.Def.Id)).Accepted) return true;
+                    continue;
+                }
+                for (var i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].Tower != null) continue;
+                    var tower = ours.Loadout.Outpost.Count > 0 ? ours.Loadout.Outpost[i % ours.Loadout.Outpost.Count] : "guard_tower";
+                    if (!world.Catalog.Vehicles.TryGetValue(tower, out var def)) continue;
+                    if (economy.Cp < world.Catalog.Base.RebuildCost(def) + 4f) return false;
+                    if (world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slots[i].Def.Position, defId: tower)).Accepted) return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

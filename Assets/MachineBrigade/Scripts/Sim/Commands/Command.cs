@@ -19,6 +19,12 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Calls fire support (DefId) on Point; airstrikes fly from Point towards Point2.</summary>
         Strike,
+
+        /// <summary>Flies a tower into the base hardpoint at Point (a destroyed one back in; an outpost's with DefId).</summary>
+        CallTower,
+
+        /// <summary>Sets the captured point DefId up as an outpost.</summary>
+        Outpost,
     }
 
     /// <summary>

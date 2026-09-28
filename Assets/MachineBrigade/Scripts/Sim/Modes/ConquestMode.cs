@@ -45,8 +45,11 @@ namespace MachineBrigade.Sim.Modes
 
         public float PointIncome { get; set; } = 0.3f;
 
-        /// <summary>Spawn bastions and home zones at both camps (see <see cref="Modes.BaseDefences"/>).</summary>
+        /// <summary>Bases and home zones at both camps (see <see cref="Modes.BaseDefences"/>).</summary>
         public bool BaseDefences { get; set; } = true;
+
+        /// <summary>Each side's base loadout and role; null: a bare HQ each.</summary>
+        public BaseSetup? Bases { get; set; }
 
         /// <summary>A neutral watchtower on each point, firing on both sides (see <see cref="Modes.Outposts"/>).</summary>
         public bool Outposts { get; set; } = true;
@@ -105,11 +108,19 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(new TeamEconomy(PlayerTeam, _rules.StartCp, vehicles: _rules.PlayerVehicles, supports: _rules.PlayerSupports));
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
-            if (_rules.BaseDefences) BaseDefences.Build(world, PlayerTeam, EnemyTeam);
+            if (_rules.BaseDefences) BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
+            world.Bases.PointOwner = OwnerOf;
             if (_rules.Outposts) _outposts = new Outposts(world, _points, neutral: true);
         }
 
         private Outposts? _outposts;
+
+        private int OwnerOf(string id)
+        {
+            foreach (var p in _points)
+                if (p.Def.Id == id) return p.Owner;
+            return -1;
+        }
 
         public void Tick(SimWorld world, float dt)
         {

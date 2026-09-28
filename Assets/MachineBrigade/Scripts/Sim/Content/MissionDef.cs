@@ -173,6 +173,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Third star: won losing at most this many vehicles (negative: always).</summary>
         public int StarLosses { get; set; } = -1;
 
+        /// <summary>Capture points the player can set up as outposts once taken (hardpoints for towers, a second drop zone).</summary>
+        public IReadOnlyList<string> Outposts { get; set; } = Array.Empty<string>();
+
+        /// <summary>The player's base in this mission (None: no camp, the default), and the enemy's.</summary>
+        public BaseRole PlayerBase { get; set; } = BaseRole.None;
+        public BaseRole EnemyBase { get; set; } = BaseRole.None;
+
         /// <summary>
         /// The mission's own third star, instead of the losses rule: "NoStrikes" (no fire support
         /// called), "NoAircraft" (no aircraft bought), "Kills" (at least <see cref="ChallengeValue"/>
@@ -249,6 +256,9 @@ namespace MachineBrigade.Sim.Content
                 Optional = m.Bool("optional", false),
                 StarTime = m.Float("starTime", 0f),
                 StarLosses = m.Int("starLosses", -1),
+                Outposts = Strings(m, "outposts"),
+                PlayerBase = m.Enum("playerBase", BaseRole.None),
+                EnemyBase = m.Enum("enemyBase", BaseRole.None),
             };
             if (m.Has("challenge"))
             {

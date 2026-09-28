@@ -189,7 +189,8 @@ namespace MachineBrigade.Sim.Economy
             if (defId == null || !_world.Catalog.Vehicles.TryGetValue(defId, out var def))
                 return CommandResult.Rejected(CommandError.UnknownCard);
             if (economy.Vehicles.Count > 0 && !Contains(economy.Vehicles, defId)) return CommandResult.Rejected(CommandError.UnknownCard);
-            if (!_world.TryGetRally(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
+            // The drop zone: round the HQ, or a forward one (an outpost, a command vehicle).
+            if (!_world.Bases.TryGetDropZone(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
             // A ranked card costs less to call (the army's value, upkeep and refunds keep its full price).
             var price = economy.CostOf(defId, def.CpCost);
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
