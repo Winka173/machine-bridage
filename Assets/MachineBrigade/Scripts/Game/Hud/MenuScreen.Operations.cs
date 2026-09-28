@@ -1,57 +1,239 @@
+using System;
 using System.Collections.Generic;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Modes;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The Operations part of the Tác chiến tab (prompt 6): this week's operation with its two
-    /// mutators and reward, the list of battles the campaign has opened for replay, the four tier
-    /// chips (Legend locked until the campaign's last operation is won), the record per tier, and
-    /// one start button.
+    /// E8, the Tác chiến tab: everything played again and again. On the left the entries, each with
+    /// its picture, a line of what it is and its clock: this week's operation, the campaign's
+    /// operations to replay, the weekly fortress, Boss Rush and today's challenges. On the right the
+    /// chosen one: its rules as they are now, its reward, its tiers and records, and the one main
+    /// button, START (the challenges have claim buttons instead).
     /// </summary>
     internal sealed partial class MenuScreen
     {
         /// <summary>The modes the Tác chiến tab starts itself (with the operations), for the menu's coverage test.</summary>
         internal static readonly GameModeKind[] OperationsModes = { GameModeKind.Weekly, GameModeKind.BossRush, GameModeKind.Campaign };
 
-        private VisualElement _opsList, _opsTiers, _opsWeekly;
-        private Label _opsDetail, _opsWeeklyTitle, _opsWeeklySub;
-        private int _opsSelected = -1, _opsTier;
-        private bool _opsWeeklySelected;
-
-        private void BuildOperations(VisualElement into)
+        private enum OpsEntry
         {
-            into.Add(UiKit.Text(Strings.Get("ops.title"), "menu-caps"));
-            into.Add(UiKit.Text(Strings.Get("ops.sub"), "menu-note"));
+            WeeklyOperation,
+            Operations,
+            WeeklyFortress,
+            BossRush,
+            Daily,
+        }
 
-            _opsWeekly = UiKit.Button("ops-weekly", () =>
+        private VisualElement _opsEntries, _opsDetail;
+        private OpsEntry _opsEntry = OpsEntry.WeeklyOperation;
+        private int _opsSelected = -1, _opsTier;
+
+        private void BuildOperationsPage()
+        {
+            var page = TabPage(Tab.Operations, "fc-page--opaque fc-ops");
+            var list = Kit.Scroll(ScrollViewMode.Vertical, "fc-ops__list");
+            _opsEntries = list.contentContainer;
+            page.Add(list);
+            _opsDetail = Kit.Box(KitPanel.SurfaceClass + " fc-ops__detail", PickingMode.Position);
+            page.Add(_opsDetail);
+            page.schedule.Execute(() =>
             {
-                if (Operations.ThisWeek is not { } week) return;
-                _opsWeeklySelected = true;
-                _opsSelected = IndexOfReplayable(week.mission.Id);
-                RefreshOperations();
+                if (_tab == Tab.Operations && _overlays.Count == 0)
+                    foreach (var clock in _opsEntries.Query<Label>(className: "fc-ops__clock").ToList()) clock.text = WeekResetText();
+            }).Every(1000);
+        }
+
+        /// <summary>The time left this ISO week (UTC): the weekly operation and fortress change then.</summary>
+        private static string WeekResetText()
+        {
+            var now = DateTime.UtcNow;
+            var daysToMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
+            if (daysToMonday == 0) daysToMonday = 7;
+            var left = now.Date.AddDays(daysToMonday) - now;
+            return Strings.Format("ops.weekLeft", left.Days, left.Hours);
+        }
+
+        private void RefreshOperationsTab()
+        {
+            if (_opsEntries == null || _tab != Tab.Operations) return;
+            if (_opsEntry == OpsEntry.WeeklyOperation && Operations.ThisWeek == null) _opsEntry = OpsEntry.Operations;
+            _opsEntries.Clear();
+            if (Operations.ThisWeek is { } week)
+                _opsEntries.Add(OpsCard(OpsEntry.WeeklyOperation, MapArt.For(week.mission.Map), Strings.Get("ops.weekly"),
+                    Strings.Get("mission." + week.mission.Id + ".name"), true));
+            var replay = Operations.Replayable;
+            _opsEntries.Add(OpsCard(OpsEntry.Operations, replay.Count > 0 ? MapArt.For(replay[0].Map) : null, Strings.Get("ops.replayTitle"),
+                Strings.Format("ops.count", replay.Count), false));
+            _opsEntries.Add(OpsCard(OpsEntry.WeeklyFortress, MapArt.For(WeeklyFortress.MapId), Strings.Get("mode.weekly"),
+                Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week)), true));
+            _opsEntries.Add(OpsCard(OpsEntry.BossRush, CardArt.For("behemoth"), Strings.Get("mode.bossrush"),
+                Strings.Format("mode.bossrushSub", BossRushRules.Kinds.Count), false));
+            var dailyCard = OpsCard(OpsEntry.Daily, null, Strings.Get("daily.titleShort"), DailyResetText(), false);
+            KitDot.Attach(dailyCard, DailyClaimable());
+            _opsEntries.Add(dailyCard);
+            FillOpsDetail();
+        }
+
+        private VisualElement OpsCard(OpsEntry entry, Texture2D picture, string title, string line, bool weekly)
+        {
+            var card = Kit.Tappable(KitPanel.SurfaceClass + " fc-ops__card" + (entry == _opsEntry ? " fc-ops__card--chosen" : ""), () =>
+            {
+                _opsEntry = entry;
+                Refresh();
             });
-            _opsWeeklyTitle = UiKit.Text("", "ops-weekly-title");
-            _opsWeeklySub = UiKit.Text("", "ops-weekly-sub");
-            _opsWeekly.Add(_opsWeeklyTitle);
-            _opsWeekly.Add(_opsWeeklySub);
-            into.Add(_opsWeekly);
+            var art = Kit.Box("fc-ops__art");
+            if (picture != null) art.style.backgroundImage = Background.FromTexture2D(picture);
+            else art.Add(Kit.Icon(entry == OpsEntry.Daily ? "check" : "swords", "fc-ops__art-icon"));
+            card.Add(art);
+            var text = Kit.Box("fc-ops__text");
+            text.Add(Kit.Text(Kit.Caps(title), "fc-panel-title"));
+            text.Add(Kit.Small(line));
+            if (weekly)
+            {
+                var clock = Kit.Box("fc-row fc-mt-1");
+                clock.Add(Kit.Icon("restart", "fc-rule-icon"));
+                clock.Add(Kit.Text(WeekResetText(), "fc-small fc-ops__clock fc-ml-2"));
+                text.Add(clock);
+            }
+            card.Add(text);
+            return card;
+        }
 
-            _opsList = UiKit.Box("ops-list");
-            into.Add(_opsList);
+        private void FillOpsDetail()
+        {
+            _opsDetail.Clear();
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-ops__detail-scroll");
+            var body = Kit.Box("fc-ops__detail-body");
+            scroll.Add(body);
+            _opsDetail.Add(scroll);
+            KitButton start = null;
+            switch (_opsEntry)
+            {
+                case OpsEntry.WeeklyOperation when Operations.ThisWeek is { } week:
+                    body.Add(Kit.Caption(Strings.Get("ops.weekly")));
+                    body.Add(Kit.Text(Kit.Caps(Strings.Get("mission." + week.mission.Id + ".name")), "fc-title"));
+                    body.Add(Kit.Text(Strings.Format("ops.weeklySub", Strings.Get("mutator." + week.a.Id), Strings.Get("mutator." + week.b.Id),
+                        Kit.Count(Operations.Data.WeeklyOperationReward)), "fc-body fc-mt-2"));
+                    body.Add(Rule("restart", WeekResetText()));
+                    body.Add(Rule("coin", Strings.Format("ops.reward", Kit.Count(Operations.Data.WeeklyOperationReward))));
+                    OpsTiers(body);
+                    start = new KitButton(ButtonTier.Primary, Strings.Get("ops.start"), () =>
+                    {
+                        _opsSelected = IndexOfReplayable(week.mission.Id);
+                        StartOperation(true);
+                    }, "play");
+                    break;
+                case OpsEntry.WeeklyFortress:
+                    body.Add(Kit.Caption(Strings.Get("mode.weekly")));
+                    body.Add(Kit.Text(Kit.Caps(Strings.Get("map." + WeeklyFortress.MapId)), "fc-title"));
+                    body.Add(Kit.Text(Strings.Get("mode.weeklySub"), "fc-body fc-mt-2"));
+                    body.Add(Rule("home", Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week))));
+                    body.Add(Rule("restart", WeekResetText()));
+                    body.Add(Rule("coin", Strings.Format("ops.rewardFirstWin", Kit.Count(WeeklyFortress.Reward))));
+                    start = PlayButton(GameModeKind.Weekly);
+                    break;
+                case OpsEntry.BossRush:
+                    body.Add(Kit.Caption(Strings.Get("mode.bossrush")));
+                    body.Add(Kit.Text(Kit.Caps(Strings.Format("mode.bossrushSub", BossRushRules.Kinds.Count)), "fc-title"));
+                    body.Add(Kit.Text(Strings.Format("ops.bossRushRules", BossRushRules.Kinds.Count, Mathf.RoundToInt(new BossRushRules().TimeLimit / 60f)), "fc-body fc-mt-2"));
+                    var bosses = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-3");
+                    foreach (var kind in BossRushRules.Kinds)
+                    {
+                        var id = kind[0];
+                        bosses.Add(new KitVehicleCard(new VehicleCardData
+                        {
+                            Id = id, Name = Strings.Unit(id), Branch = KitBranch.Armor, ClassIcon = "skull", Art = CardArt.For(id), Level = 1,
+                        }, null, compact: true));
+                    }
+                    body.Add(bosses);
+                    start = PlayButton(GameModeKind.BossRush);
+                    break;
+                case OpsEntry.Daily:
+                    body.Add(Kit.Caption(Strings.Get("daily.titleShort")));
+                    body.Add(Kit.Text(DailyResetText(), "fc-body-2 fc-mb-3"));
+                    var tasks = DailyMissions.Current;
+                    for (var i = 0; i < tasks.Count; i++) body.Add(DailyRow(i, tasks[i]));
+                    body.Add(Kit.Small(Strings.Get("events.dailyNote")));
+                    break;
+                default:
+                    OperationsDetail(body);
+                    start = new KitButton(ButtonTier.Primary, Strings.Get("ops.start"), () => StartOperation(false), "play");
+                    break;
+            }
+            if (start == null) return;
+            start.AddToClassList("fc-ops__start");
+            _opsDetail.Add(start);
+        }
 
-            var foot = UiKit.Box("ops-foot");
-            _opsTiers = UiKit.Box("ops-tiers");
-            foot.Add(_opsTiers);
-            _opsDetail = UiKit.Text("", "ops-detail");
-            foot.Add(_opsDetail);
-            var play = UiKit.Button("event-play primary", StartOperation);
-            play.Add(UiKit.Icon("play", UiKit.Ink, 2f));
-            play.Add(UiKit.Text(Strings.Get("events.play"), "event-play-text"));
-            foot.Add(play);
-            into.Add(foot);
+        private static VisualElement Rule(string icon, string text)
+        {
+            var row = Kit.Box("fc-row fc-mt-2");
+            row.Add(Kit.Icon(icon, "fc-rule-icon"));
+            row.Add(Kit.Text(text, "fc-body fc-row-text fc-ml-2"));
+            return row;
+        }
+
+        private KitButton PlayButton(GameModeKind mode) => new(ButtonTier.Primary, Strings.Get("ops.start"), () =>
+        {
+            MatchSettings.Mode = mode;
+            MatchSettings.Save();
+            _play();
+        }, "play");
+
+        /// <summary>The campaign's operations to replay: the list, the tier chips and the record per tier.</summary>
+        private void OperationsDetail(VisualElement body)
+        {
+            var list = Operations.Replayable;
+            body.Add(Kit.Caption(Strings.Get("ops.replayTitle")));
+            body.Add(Kit.Text(Strings.Get("ops.sub"), "fc-body-2 fc-mb-3"));
+            if (list.Count == 0) body.Add(Kit.Body2(Strings.Get("ops.none")));
+            if (_opsSelected >= list.Count) _opsSelected = -1;
+            if (_opsSelected < 0 && list.Count > 0) _opsSelected = 0;
+            for (var i = 0; i < list.Count; i++)
+            {
+                var index = i;
+                var m = list[i];
+                var row = Kit.Tappable("fc-mission" + (i == _opsSelected ? " fc-mission--chosen" : "") + (Operations.Unlocked(m) ? "" : " fc-mission--locked"), () =>
+                {
+                    _opsSelected = index;
+                    Refresh();
+                });
+                row.Add(Kit.Icon(m.Operation ? "flag" : "swords", "fc-mission__icon"));
+                var text = Kit.Box("fc-mission__text");
+                text.Add(Kit.Text(Strings.Get("mission." + m.Id + ".name"), "fc-body"));
+                var best = PlayerProfile.BestScore(m.Id, _opsTier);
+                text.Add(Kit.Small(!Operations.Unlocked(m) ? Strings.Get("ops.locked") : best > 0 ? $"{Strings.Get("ops.best")} {Kit.Count(best)}" : Strings.Get("ops.noRecord")));
+                row.Add(text);
+                body.Add(row);
+            }
+            OpsTiers(body);
+        }
+
+        private void OpsTiers(VisualElement body)
+        {
+            body.Add(Kit.Text(Kit.Caps(Strings.Get("campaign.tierTitle")), "fc-panel-title fc-section__title fc-mt-4"));
+            var chips = new List<VisualElement>();
+            for (var t = 0; t < Operations.Data.Tiers.Count; t++)
+            {
+                var tier = t;
+                chips.Add(new KitChip(Strings.Get("tier." + t), t == _opsTier, () =>
+                {
+                    _opsTier = tier;
+                    Refresh();
+                }, Operations.TierOpen(t) ? null : "lock"));
+            }
+            body.Add(new KitChipRow(chips));
+            var list = Operations.Replayable;
+            var detail = !Operations.TierOpen(_opsTier) ? Strings.Get("ops.legendLocked")
+                : _opsSelected >= 0 && _opsSelected < list.Count && PlayerProfile.BestTime(list[_opsSelected].Id, _opsTier) is var time && time > 0f
+                    ? $"{Strings.Get("ops.best")}: {Kit.Count(PlayerProfile.BestScore(list[_opsSelected].Id, _opsTier))} · {(int)time / 60}:{(int)time % 60:00}"
+                    : "";
+            if (detail.Length > 0) body.Add(Kit.Small(detail));
         }
 
         private static int IndexOfReplayable(string id)
@@ -62,7 +244,7 @@ namespace MachineBrigade.Game.Hud
             return -1;
         }
 
-        private void StartOperation()
+        private void StartOperation(bool weekly)
         {
             var list = Operations.Replayable;
             if (_opsSelected < 0 || _opsSelected >= list.Count) return;
@@ -80,64 +262,9 @@ namespace MachineBrigade.Game.Hud
             MatchSettings.Mode = GameModeKind.Campaign;
             MatchSettings.Mission = mission.Id;
             MatchSettings.MissionTier = _opsTier;
-            MatchSettings.Run = Operations.Run(mission, _opsTier, _opsWeeklySelected);
+            MatchSettings.Run = Operations.Run(mission, _opsTier, weekly);
             MatchSettings.Save();
             _play();
-        }
-
-        private void RefreshOperations()
-        {
-            if (_opsList == null) return;
-            var list = Operations.Replayable;
-            if (Operations.ThisWeek is { } week)
-            {
-                _opsWeekly.style.display = DisplayStyle.Flex;
-                _opsWeeklyTitle.text = Strings.Get("ops.weekly") + ": " + Strings.Get("mission." + week.mission.Id + ".name");
-                _opsWeeklySub.text = Strings.Format("ops.weeklySub", Strings.Get("mutator." + week.a.Id), Strings.Get("mutator." + week.b.Id),
-                    Operations.Data.WeeklyOperationReward);
-                _opsWeekly.EnableInClassList("chosen", _opsWeeklySelected);
-            }
-            else _opsWeekly.style.display = DisplayStyle.None;
-
-            _opsList.Clear();
-            if (list.Count == 0) _opsList.Add(UiKit.Text(Strings.Get("ops.none"), "menu-note"));
-            if (_opsSelected >= list.Count) _opsSelected = -1;
-            if (_opsSelected < 0 && list.Count > 0) _opsSelected = 0;
-            for (var i = 0; i < list.Count; i++)
-            {
-                var index = i;
-                var m = list[i];
-                var row = UiKit.Button(i == _opsSelected ? "ops-row chosen" : "ops-row", () =>
-                {
-                    _opsSelected = index;
-                    _opsWeeklySelected = Operations.ThisWeek is { } w && w.mission.Id == list[index].Id && _opsWeeklySelected;
-                    RefreshOperations();
-                });
-                row.Add(UiKit.Icon(m.Operation ? "flag" : "swords", UiKit.Ink, 1.6f));
-                row.Add(UiKit.Text(Strings.Get("mission." + m.Id + ".name"), "ops-row-name"));
-                var best = PlayerProfile.BestScore(m.Id, _opsTier);
-                row.Add(UiKit.Text(!Operations.Unlocked(m) ? Strings.Get("ops.locked") : best > 0 ? $"{Strings.Get("ops.best")} {best:N0}" : "", "ops-row-best"));
-                row.EnableInClassList("locked", !Operations.Unlocked(m));
-                _opsList.Add(row);
-            }
-
-            _opsTiers.Clear();
-            for (var t = 0; t < Operations.Data.Tiers.Count; t++)
-            {
-                var tier = t;
-                var chip = UiKit.Button(t == _opsTier ? "tier-chip chosen" : "tier-chip", () =>
-                {
-                    _opsTier = tier;
-                    RefreshOperations();
-                });
-                chip.Add(UiKit.Text(Strings.Get("tier." + t), "tier-name"));
-                chip.EnableInClassList("locked", !Operations.TierOpen(t));
-                _opsTiers.Add(chip);
-            }
-            _opsDetail.text = !Operations.TierOpen(_opsTier) ? Strings.Get("ops.legendLocked")
-                : _opsSelected >= 0 && _opsSelected < list.Count && PlayerProfile.BestTime(list[_opsSelected].Id, _opsTier) is var time && time > 0f
-                    ? $"{Strings.Get("ops.best")}: {PlayerProfile.BestScore(list[_opsSelected].Id, _opsTier):N0} · {(int)time / 60}:{(int)time % 60:00}"
-                    : "";
         }
     }
 }

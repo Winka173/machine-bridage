@@ -1585,7 +1585,7 @@ library with its preview screen, the card renders and the UI checks. The screens
   frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
-- **Proper names kept in Vietnamese** (checked by `UiLanguageTests`, every other unmarked Latin word in a Vietnamese text counts as English): `CP`, `HQ`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `AC-130`, `Ka-52`, `Grad`, `Griffin`, `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`, `radar`, `drone`, `boss`, `Machine Brigade`, and the unit `mm` and the Vietnamese abbreviations `PK` (phòng không) and `TT` (trực thăng).
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
 - **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
   `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
   The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
@@ -1640,11 +1640,147 @@ library with its preview screen, the card renders and the UI checks. The screens
   width (`Kit.Scroll`). A column beside a scrolling strip needs `flex-basis: 0`, or the strip's
   content widens it. When Large text does not fit a column, the column scrolls and the main
   button stays pinned below it (the sample screen's right column).
-- **Left for the screen rebuild:** sections D (navigation), E (each screen on the kit), G (the
+- **Left for the screen rebuild** (done, see 10b): sections D (navigation), E (each screen on the kit), G (the
   battle HUD on the kit and the field panel), H (names: map names, "coin", "Skin"), the text-size
   switch on the settings page, map preview pictures for the map dropdown (the kit shows card
   renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
   `UiShots.Screens` and to the strict checks (then removing its old-screen report).
+
+
+### 10b. Field Command 2.0: the screens (D, E1-E11, G, H)
+
+- **Sheets: a theme's imports lose to every other sheet.** UI Toolkit counts each sheet a theme
+  (`Theme.tss`) imports as a *default* sheet, and a default sheet's rules lose to any rule of a
+  normal sheet whatever the selectors' specificity or order (found when the base screen's
+  overrides never won over Hud.uss, even with three-class selectors and literal values; only
+  properties Hud.uss does not set got through). So `Screens.uss` is not in the theme: `BattleHud`
+  loads it on the HUD's root after `Hud.uss`, and the screenshot tool and the checks do the same.
+  `Tokens.uss` stays in the theme (its `:root` variables must reach every panel); its component
+  rules still lose to a Hud.uss rule on the same element, which is why kit icons drop the old
+  `icon` class and why screen-specific colours for icons live in Screens.uss.
+- **D, navigation.** One top bar (the logo at home, the screen's title elsewhere, the rank badge
+  with its XP bar, the coins with their plus, the one settings gear) and a left rail of five items
+  (Home, Campaign, Operations, Army, Shop), the chosen one on the selected panel with the 3 px
+  accent bar. Army has three tabs (Deck, Equipment, Base). Operations gathers the replays of the big
+  operations, the weekly fortress, Boss Rush and the daily challenges. Skirmish and the challenge
+  modes are picked in the home screen's mode dropdown. A page opened over the tabs (detail,
+  settings, the shop's sheets) hides the tab under it and the rail; Back (and the Android back
+  button) closes the top dialog, page or chapter.
+- **E1 home.** The live battle behind at 38 %; the campaign card is the whole way in (no separate
+  button); today's challenges with the time to the reset and Claim buttons; the deck strip with the
+  renders and a short-deck reminder; the mode, battlefield, difficulty and weather as dropdowns
+  beside DEPLOY, the one main button.
+- **E7 match setup = the home's dropdowns.** The prompt's match setup screen is those four
+  dropdowns: each mode with its full name and a one-line description, each battlefield with its
+  picture (made from the map data by `Tools/maps/map_thumbs.py`, `Resources/UI/Maps/`), difficulty
+  and weather beside them on the same screen. No separate setup page, so there is nothing to scroll
+  to. The open mode and map pickers have their own screenshots (`setup-mode`, `setup-map`).
+- **E2 campaign.** Nine chapter cards in three acts (picture, progress, stars, the chapter's boss,
+  the lock); a chapter's missions (mid-chapter boss, the big operation and side missions marked) with
+  the briefing panel: objectives, three stars, Normal / Heroic / Iron, recommended power, rewards with
+  the cards they unlock, START. The detail panel is never half empty: the briefing and unlock cards
+  fill it.
+- **E3 deck.** The 8 + 2 deck with full cards, the overview (count, average CP) and the role cover
+  (tank killer, anti-air, artillery, repair, recon; a missing role in the warning colour,
+  `DeckRoles`, shared with the defeat hints), the doctrines (the old row of icons, the "sample decks")
+  in a dropdown with their names and what each does, branch filter chips with a separate Sort button,
+  the collection as vehicle cards.
+- **E4 detail.** The same five tabs for every card (Stats, Guide, Weapons, In action, Equipment);
+  every stat bar marks its class's average; the equipment's gain and the next level's are shown and
+  labelled apart; blueprints have / need with "Enough to level up"; the armour, branch and CP tags under
+  the name; the role description is not repeated between Guide and Stats.
+- **Towers and structures have the detail page too** (the owner's request). The base screen's
+  picked tower, placed slot or utility module has an info button that opens it; the arrows step
+  through the base's structures. A tower shows its model, numbers against the towers of its size,
+  weapons, In action, guide and rank; its Equipment tab lists its branches (which is chosen, the rank
+  they open at) and its three gear slots, changed on the base screen, which the page's button opens
+  with the tower picked. A utility module shows its model, health and what it does for the base
+  (repair, reload, aircraft, supply, radar, from its data); no weapons or gear. Towers need no unlock.
+- **E5 equipment** on gear cards: a slot tapped lists the fitting pieces with the comparison to the
+  worn one at once; the slot names follow the design document ("Quang học", not "Lớp phủ").
+- **E6 base** on the tokens over BaseScreen's own classes (its tests and drag code read them):
+  every control a full touch target; the frames 82 / 88 / 96 px (small, medium, large) and the HQ 88,
+  told apart by the size icon in each corner as much as by size (larger frames did not fit the camp
+  on a 16:9 screen); the level's slot counts are the legend over the camp, so the toolbar does not
+  repeat them; the hint has its own line under the legend.
+- **E8 operations.** Each entry has its picture, the rules as they are now (Boss Rush runs one boss
+  of each of the ten kinds: "10 trùm liên tiếp", from the data), a clock when it has a deadline, and
+  its reward.
+- **E9 shop.** Tabs; crates are renders of the crate model tinted by rank
+  (`CardRenders.RenderShopArt`), coin packs are pictures (`Tools/art/shop_art.py`); every tile says
+  its price and what is in it, a crate's odds a tap away before anything is bought; the "Skin" tab is
+  "Ngụy trang".
+- **E10 result.** The title is the mission's name or the mode's, never both (the old kicker "Chiến
+  dịch 02 / Giữ cứ điểm" is gone); a score says whose is whose ("Ta 0 · Địch 331"); after a defeat
+  one or two hints from the battle (`DefeatHints`: the enemy's aircraft and heavy armour against the
+  deck's role cover, a fortress without artillery, a short deck, heavy losses without repair) and a
+  button that opens the Army tab's deck; CONTINUE after a win (the next mission, or the menu) and PLAY
+  AGAIN after a loss are the one main button, back to the menu is secondary; doubling the coins with
+  an ad is a Claim button beside the coins. A lost multi-stage mission with a checkpoint plays again
+  from the checkpoint (the main button, with a line that says so) or from the start (secondary).
+  Pause and the choice between stages are kit dialogs.
+- **E11 settings** on kit rows, with Text size (Normal / Large).
+- **G battle HUD.** Everything on the field surface with a hairline. Attack / Defend with their full
+  names, the one on in the text colour with dark text; Auto buy and Support are the kit's switches
+  (no green of their own). The card tray: the 3D render, the full name and the CP of each card; a card
+  the points pay for is bright, one they do not is dimmed with the CP missing ("Thiếu 3"); cooldowns
+  are a clock sweep with the seconds; the CP box has the points in big figures, the income a second
+  and the supply penalty in words ("Quá tiếp tế −29%", or "Tăng viện +15%" for the side behind); a
+  tap on it explains. The boss bar has the name, the health in numbers, the phase marks and the
+  prompt 9 parts row (icons at touch size; its calls are kept: both `SetBoss` overloads,
+  `SetBossParts`, `BossPartTapped`; `SetBossHp` is new). Notices, air-raid warnings, elite arrivals
+  and radio chatter share one toast style and one place: the column under the top bar (under the
+  boss). Every control is a full 82 px touch target, so the layout is: minimap and its tools (two by
+  two) top left, the score top centre, pause top right, the commander's rail down the right, the deck
+  (one height, 160 px, 196 in Large text) along the bottom, the selection's orders beside the rail
+  above the deck, the hint and the strike prompt above the deck on the left. `BattleHud` can build
+  into a given root (the screenshots and the checks lay it out without a scene).
+- **H names.** One Vietnamese name for each battlefield, used in every screen, story and briefing:
+
+  | Map | English | Vietnamese |
+  | --- | --- | --- |
+  | ashfield | Ashfield | Đồng Tro |
+  | dunebreak | Dunebreak | Đồi Cát |
+  | frostpeak | Frostpeak | Đỉnh Sương Giá |
+  | ironport | Ironport | Cảng Thép |
+  | redrock | Redrock Canyon | Hẻm Đá Đỏ |
+  | whiteout | Whiteout Pass | Đèo Bão Tuyết |
+  | greenvale | Greenvale | Lũng Xanh |
+  | rustyard | Rust Yard | Bãi Sắt Gỉ |
+  | emberridge | Ember Ridge | Sườn Dung Nham |
+  | junglepass | Jungle Pass | Đèo Rừng Rậm |
+  | skyhold | Skyhold Airbase | Căn Cứ Tầng Mây |
+  | metrocity | Metro City | Đô Thành |
+  | landingbeach | Landing Beach | Bãi Đổ Bộ |
+  | hydrodam | Hydro Dam | Đập Thủy Điện |
+  | capital | Capital | Thủ Đô |
+  | launchsite | Silver Bug Launch Site | Bãi Phóng Bọ Bạc |
+  | saltflat | Salt Flats | Sa Mạc Muối |
+  | borderbridge | Border Bridge | Cầu Biên Giới |
+  | swamp | Swamp | Đầm Lầy |
+  | coralisles | Coral Isles | Quần Đảo San Hô |
+
+  In the Vietnamese texts "coin" is "xu" and "skin" "ngụy trang"; the loanwords are written the
+  Vietnamese way (rốc-két, la-de, nhà chứa, pháo điện từ, súng máy nhiều nòng, công-te-nơ,
+  mê-ga-oát, boong-ke); the Silver Bug boss is "Bọ Bạc", Nitro Dash "Bứt tốc". The names kept are
+  the allow-list line above. `UiLanguageTests` now covers the campaign's texts too and is strict for
+  every Vietnamese text.
+- **The checks cover every rebuilt screen.** `UiLayoutTests.EveryRebuiltScreenPassesEveryCheck` runs
+  each menu screen (`MenuScreen.ScreenNames`, 21 of them with the setup pickers and the tower and
+  module pages) and `EveryBattleScreenPassesEveryCheck` each battle screen (the HUD in three modes,
+  four results, pause, the stage choice) with the demo profile (`DemoProfile`: rank 12, two and a bit
+  chapters won, levelled cards, crates, worn gear, a daily challenge to claim; nothing saved), in
+  Vietnamese at the four shapes and in Large text and English at 16:9: no cut or squashed text, every
+  tap target 80.2 px, no text under the secondary size, exactly one main button where the screen has
+  one (none on the HUD), nothing clipped or off screen. `UiThemeTests` checks Screens.uss for literal
+  colours and font sizes like the kit's rules. The old-menu report is gone.
+- **Screenshots** of every screen in `Docs/ui-screens/`: `screen-*` (menus), `battle-*` (HUD,
+  results, pause, choice), `kit-*` (the kit), at 16:9, 19.5:9 with a notch, 20:9 with a punch hole
+  and 4:3, some also in Large text and English (`-mbShotsSet menu|battle|kit`, `-mbShotsOnly`,
+  `-mbShotsShape` to take a part).
+- **Left for the testing phase** (long checks, not run here): the HUD's frame rate on Low graphics
+  against the old HUD on a phone; the safe area on a device with a notch and one with a punch-hole
+  camera (the screenshots use the same inset code, but not a real device); a full EditMode run.
 
 ## 11B. Test feedback: muzzles, projectile flight, projectile sizes (2026-09-28)
 

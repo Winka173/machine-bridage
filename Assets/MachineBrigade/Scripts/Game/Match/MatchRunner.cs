@@ -104,6 +104,9 @@ namespace MachineBrigade.Game.Match
         private Vector3 _attractFocus;
         private int _announcedWave, _kills, _losses;
         private bool _warnedAir;
+
+        /// <summary>What the enemy brought (for a defeat's hints).</summary>
+        private readonly BattleTally _tally = new();
         private float _lastInput;
         private PerfProbe _perf;
         private CrowdCheck _crowd;
@@ -930,6 +933,7 @@ namespace MachineBrigade.Game.Match
                         // A boss comes onto the field: the camera goes to meet it.
                         if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
                         EliteArrived(vehicle);
+                        if (vehicle.Team == EnemyTeam) _tally.Saw(vehicle.Def);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
@@ -1104,6 +1108,14 @@ namespace MachineBrigade.Game.Match
                 if (Curtain.Busy) return;
                 ClaimReward();
                 MatchSettings.InMatch = false;
+                Reload("loading.base");
+            };
+            _hud.DeckPressed += () =>
+            {
+                if (Curtain.Busy) return;
+                ClaimReward();
+                MatchSettings.InMatch = false;
+                MenuScreen.OpenDeckNext();
                 Reload("loading.base");
             };
             _hud.CheckpointPressed += () =>
@@ -1381,7 +1393,10 @@ namespace MachineBrigade.Game.Match
                 view.HasNext = outcome.Result > 0 && _session is MissionSession && Campaign.NextAfter(MatchSettings.Mission) >= 0;
                 view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
             }
-            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);
+            if (outcome.Result <= 0)
+                outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,
+                    MatchSettings.DeckVehicleSlots, _kills, _losses, _session is SiegeSession or AssaultSession or WeeklySession));
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, outcome.Note, outcome.Hints);
             _music?.Result(outcome.Result > 0);
         }
 

@@ -7,21 +7,21 @@ namespace MachineBrigade.Game.Hud
     /// <summary>
     /// A boss's Guide tab (prompt 9 D): its parts and what breaking each does, read from the data, with
     /// the general rule, its lock or self-repair if it has one, and a tip for fighting it part by part.
-    /// Kept apart from MenuScreen.Detail.cs so the two change independently.
+    /// Kept apart from MenuScreen.Detail.cs so the two change independently. On the kit's text styles (Field Command 2.0).
     /// </summary>
     internal sealed partial class MenuScreen
     {
         private void BossPartsGuide(VehicleDef def)
         {
             if (def.Parts.Count == 0) return;
-            _detailBody.Add(UiKit.Text(Strings.Get("guide.parts"), "menu-caps"));
-            _detailBody.Add(UiKit.Text(Strings.Get("guide.parts.rule"), "detail-note guide-line"));
+            _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("guide.parts")), "fc-caption fc-mt-4"));
+            _detailBody.Add(Kit.Text(Strings.Get("guide.parts.rule"), "fc-body fc-mt-2"));
             if (def.PartLock != null)
-                _detailBody.Add(UiKit.Text(Strings.Format("guide.parts.lock", Strings.Get("part." + def.PartLock.Kind)), "detail-note guide-line"));
+                _detailBody.Add(Kit.Text(Strings.Format("guide.parts.lock", Strings.Get("part." + def.PartLock.Kind)), "fc-body fc-mt-2"));
             foreach (var skill in def.Skills)
                 if (skill.Kind == SkillKind.Patch)
                 {
-                    _detailBody.Add(UiKit.Text(Strings.Get("guide.parts.patch"), "detail-note guide-line"));
+                    _detailBody.Add(Kit.Text(Strings.Get("guide.parts.patch"), "fc-body fc-mt-2"));
                     break;
                 }
             // One line a kind of part and what it does ("flak gun ×2: its guns fall silent").
@@ -41,13 +41,13 @@ namespace MachineBrigade.Game.Hud
             {
                 var bits = line.Split('\u0001');
                 var name = counts[line] > 1 ? bits[0] + " ×" + counts[line] : bits[0];
-                var label = UiKit.Text(Strings.Highlight("[[" + name + "]]") + " " + bits[1], "detail-note guide-line");
+                var label = Kit.Text(Strings.Highlight("[[" + name + "]]") + " " + bits[1], "fc-body fc-mt-2");
                 label.enableRichText = true;
                 _detailBody.Add(label);
             }
             if (Strings.Has("guide.parts.tip." + def.Id))
             {
-                var tip = UiKit.Text(Strings.Highlight(Strings.Get("guide.parts.tip." + def.Id)), "detail-note guide-line");
+                var tip = Kit.Text(Strings.Highlight(Strings.Get("guide.parts.tip." + def.Id)), "fc-body fc-mt-2");
                 tip.enableRichText = true;
                 _detailBody.Add(tip);
             }

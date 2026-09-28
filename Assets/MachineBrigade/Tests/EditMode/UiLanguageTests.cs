@@ -14,7 +14,7 @@ namespace MachineBrigade.Tests
     /// Field Command 2.0, words and letters: no English left in the Vietnamese texts except the
     /// proper names listed in Docs/DECISIONS.md (section 10); the bundled Barlow fonts carry every
     /// Vietnamese letter and every character of the kit's texts; every font ships with its licence.
-    /// The kit's texts are checked strictly, the rest of the game's are reported for the rebuild.
+    /// Every text is checked strictly (the kit's and, since the screen rebuild, the rest of the game's).
     /// </summary>
     public class UiLanguageTests
     {
@@ -55,7 +55,8 @@ namespace MachineBrigade.Tests
         }
 
         private static IEnumerable<(string key, string en, string vi)> AllTexts() =>
-            Strings.Texts.Select(t => (t.Key, t.Value.en, t.Value.vi)).Concat(GuideText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)));
+            Strings.Texts.Select(t => (t.Key, t.Value.en, t.Value.vi)).Concat(GuideText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)))
+                .Concat(CampaignText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)));
 
         [Test]
         public void TheKitsVietnameseHasNoEnglish()
@@ -70,23 +71,22 @@ namespace MachineBrigade.Tests
             Assert.IsEmpty(bad, string.Join("\n", bad));
         }
 
+        /// <summary>
+        /// Section H: every Vietnamese text of the game (the menus', the guides', the campaign's) is
+        /// Vietnamese: one Vietnamese name per map, "xu" not "coin", "Ngụy trang" not "Skin", the
+        /// loanwords written the Vietnamese way (rốc-két, la-de, nhà chứa); only the listed names stay.
+        /// </summary>
         [Test]
-        public void OldTextsEnglishInVietnameseReport()
+        public void EveryVietnameseTextHasNoEnglish()
         {
             var allowed = AllowedNames();
             var bad = new List<string>();
-            var words = new Dictionary<string, int>();
             foreach (var (key, _, vi) in AllTexts().Where(t => !t.key.StartsWith(KitPrefix)))
             {
                 var english = EnglishIn(vi, allowed);
-                if (english.Count == 0) continue;
-                bad.Add($"{key}: {string.Join(", ", english)}");
-                foreach (var w in english) words[w] = words.TryGetValue(w, out var n) ? n + 1 : 1;
+                if (english.Count > 0) bad.Add($"{key}: {string.Join(", ", english)}");
             }
-            Debug.Log($"[UiLanguageTests] {bad.Count} Vietnamese texts with English words\n" + string.Join("\n", bad));
-            if (bad.Count > 0)
-                Assert.Ignore($"Report only (section H of the rebuild): {bad.Count} Vietnamese texts hold English words. Most common: " +
-                              string.Join(", ", words.OrderByDescending(p => p.Value).Take(25).Select(p => $"{p.Key} ×{p.Value}")));
+            Assert.IsEmpty(bad, string.Join("\n", bad.Take(80)));
         }
 
         [Test]

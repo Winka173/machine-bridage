@@ -175,6 +175,22 @@ namespace MachineBrigade.Tests
             Assert.IsEmpty(bad, string.Join("\n", bad));
         }
 
+        /// <summary>The rebuilt screens' sheet (Screens.uss) holds no literal colour, font size, font file or ellipsis either: tokens only.</summary>
+        [Test]
+        public void TheScreensRulesUseTokensOnly()
+        {
+            var text = File.ReadAllText(ProjectPath("Assets/MachineBrigade/Resources/UI/Screens.uss"));
+            var bad = new List<string>();
+            foreach (var line in KitTokens.StripComments(text).Split('\n'))
+            {
+                if (LiteralColour.IsMatch(line)) bad.Add("colour: " + line.Trim());
+                if (LiteralFontSize.IsMatch(line)) bad.Add("font size: " + line.Trim());
+                if (Regex.IsMatch(line, @"text-overflow:\s*ellipsis")) bad.Add("ellipsis: " + line.Trim());
+                if (Regex.IsMatch(line, @"-unity-font:\s*resource")) bad.Add("font: " + line.Trim());
+            }
+            Assert.IsEmpty(bad, string.Join("\n", bad));
+        }
+
         private static readonly Regex[] CodeColour =
         {
             new(@"new\s+Color\(\s*-?[\d.]+f?\s*,"), new(@"new\s+Color32\("),

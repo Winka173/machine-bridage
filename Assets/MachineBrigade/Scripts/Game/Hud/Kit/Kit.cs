@@ -113,7 +113,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A count with the language's digit grouping (12,450 / 12.450).</summary>
         public static string Count(int value) => value.ToString("N0", Culture);
 
-        private static CultureInfo Culture => Strings.Vietnamese ? Vietnamese : CultureInfo.InvariantCulture;
+        internal static CultureInfo Culture => Strings.Vietnamese ? Vietnamese : CultureInfo.InvariantCulture;
 
         private static readonly CultureInfo Vietnamese = new("vi-VN");
 

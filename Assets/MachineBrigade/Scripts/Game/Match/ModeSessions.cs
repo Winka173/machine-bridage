@@ -14,8 +14,16 @@ namespace MachineBrigade.Game.Match
         /// <summary>1 victory, 0 draw, -1 defeat.</summary>
         public int Result { get; set; }
 
+        /// <summary>The result's title: the mission's name, or the mode's (never both: not "Operation 02 / Conquest").</summary>
         public string Subtitle { get; set; }
+
+        /// <summary>A line under the title (an endless run's record); null for none.</summary>
+        public string Note { get; set; }
+
         public List<(string label, string value)> Rows { get; } = new();
+
+        /// <summary>After a defeat: one or two things to change, from how the battle went (filled by the runner).</summary>
+        public List<string> Hints { get; } = new();
         public MatchReward Reward { get; set; }
     }
 
@@ -117,6 +125,7 @@ namespace MachineBrigade.Game.Match
             if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");
             var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
             hud.SetBossParts(boss, focused);
+            hud.SetBossHp(boss.Hp, boss.MaxHp);
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);
@@ -172,6 +181,9 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.losses"), losses.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
         }
+
+        /// <summary>A score that says whose is whose: "Us 0 · Enemy 331".</summary>
+        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", us, enemy);
 
         protected static int OutcomeOf(MatchResult result) => result.IsDraw ? 0 : result.WinningTeam == PlayerTeam ? 1 : -1;
 
@@ -342,9 +354,9 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.conquest") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.tickets"), $"{_mode.Tickets(PlayerTeam)} : {_mode.Tickets(EnemyTeam)}"));
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Tickets(PlayerTeam), _mode.Tickets(EnemyTeam))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -383,7 +395,8 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.deathmatch") };
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Kills(PlayerTeam), _mode.Kills(EnemyTeam))));
             AddRows(outcome, world, kills, losses);
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
@@ -423,9 +436,9 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.hill") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.score"), $"{_mode.Score(PlayerTeam)} : {_mode.Score(EnemyTeam)}"));
+            outcome.Rows.Add((Strings.Get("stat.score"), Sides(_mode.Score(PlayerTeam), _mode.Score(EnemyTeam))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -467,7 +480,7 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.assault") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -574,14 +587,14 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get(_endless ? "mode.endless" : "mode.defend") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             if (_endless)
             {
                 var best = BestWave;
                 if (_mode.Wave > best) UnityEngine.PlayerPrefs.SetInt(BestKey, _mode.Wave);
-                outcome.Subtitle = Strings.Format(_mode.Wave > best ? "endless.record" : "endless.reached", _mode.Wave);
+                outcome.Note = Strings.Format(_mode.Wave > best ? "endless.record" : "endless.reached", _mode.Wave);
                 outcome.Rows.Add((Strings.Get("endless.best"), UnityEngine.Mathf.Max(best, _mode.Wave).ToString()));
                 outcome.Reward = Rewards.Survival(Difficulty, _mode.Wave, kills);
                 return outcome;
@@ -646,7 +659,7 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.weekly") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -728,7 +741,7 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.siege") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.siege.goal"), $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%"));
             outcome.Rows.Add((Strings.Get("stat.razed"), _mode.BuildingsRazed.ToString()));
@@ -795,7 +808,7 @@ namespace MachineBrigade.Game.Match
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Kicker };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.bossrush") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
@@ -843,7 +856,7 @@ namespace MachineBrigade.Game.Match
             if (_over || world.Time <= 5.0 || !Lost(world)) return null;
             _over = true;
             world.IsOver = true;
-            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("result.over") };
+            var outcome = new MatchOutcome { Result = -1, Subtitle = Strings.Get("mode.survival"), Note = Strings.Get("result.over") };
             outcome.Rows.Add((Strings.Get("result.waves"), _mode.Wave.ToString()));
             outcome.Rows.Add((Strings.Get("result.kills"), kills.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));

@@ -9,10 +9,14 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The Army tab: the battle deck across the top (eight vehicles, two supports, its average cost
-    /// and what it lacks), the collection below with filters (Clash Royale's deck screen), the
-    /// equipment loadouts, and the base (<see cref="BaseScreen"/>). Tapping a card offers Info or
-    /// Use; Info opens its detail page.
+    /// The Army tab, three tabs: Deck, Equipment, Base.
+    /// E3, Deck: the eight vehicles and two supports as full cards; beside them the deck's overview
+    /// (how many, the average cost) and its role cover (tank killers, anti-air, artillery, repair,
+    /// recon; what is missing in the warning colour), the doctrines with their names; then the
+    /// branch filter chips with the sort button apart, and the collection as cards.
+    /// E5, Equipment: the branch, its seven slots as gear cards; picking a slot lists at once what
+    /// fits it with its change against what is worn; picking a piece shows its lines and actions.
+    /// E6, Base: <see cref="BaseScreen"/>.
     /// </summary>
     internal sealed partial class MenuScreen
     {
@@ -33,173 +37,133 @@ namespace MachineBrigade.Game.Hud
             Support,
         }
 
-        private VisualElement _deckView, _gearView, _deckSlots, _collection, _gearSlots, _gearGrid, _gearInfo, _popover, _gearSets;
-        private Label _deckSummary, _deckWarnings, _popoverText, _gearTotal;
-        private VisualElement _popoverInfo, _popoverUse;
+        private enum CardSort
+        {
+            Cost,
+            Level,
+            Name,
+        }
+
+        private VisualElement _deckView, _gearView, _deckRow, _deckOverview, _collection, _gearSlots, _gearList, _gearInfo;
+        private KitTabs _armyTabs;
+        private KitSortButton _sortButton;
+        private readonly List<(KitChip chip, CardFilter filter)> _filterChips = new();
+        private readonly List<(KitChip chip, GearBranch branch)> _branchChips = new();
         private ArmyView _armyView = ArmyView.Deck;
         private CardFilter _filter = CardFilter.All;
-        private bool _sortByRank;
-        private string _popoverCard;
+        private CardSort _sort = CardSort.Cost;
+        private GearQuery.Sort _gearSort = GearQuery.Sort.Rarity;
         private GearBranch _branch = GearBranch.Armor;
         private GearItem _gearSelected;
         private GearSlot? _slotFilter;
-        private readonly List<(VisualElement card, string id)> _collectionCards = new();
         private BaseScreen _base;
 
         private void BuildArmyPage()
         {
-            var page = TabPage(Tab.Army, "army-page opaque");
-            var views = UiKit.Box("segments army-views");
-            foreach (var (view, icon, key) in new[]
-                     {
-                         (ArmyView.Deck, "deck", "army.deck"), (ArmyView.Equipment, "gear", "army.equipment"), (ArmyView.Base, "hq", "army.base"),
-                     })
-                views.Add(Choice(Segment(icon, Strings.Get(key), () =>
-                {
-                    _armyView = view;
-                    HidePopover();
-                    Refresh();
-                }, view == ArmyView.Base), () => _armyView == view));
-            page.Add(views);
-
-            // Deck and collection --------------------------------------------------------------
-            _deckView = UiKit.Box("army-deck");
-            var strip = UiKit.Box("deck-strip");
-            _deckSlots = UiKit.Box("deck-slots");
-            strip.Add(_deckSlots);
-            var summary = UiKit.Box("deck-summary");
-            _deckSummary = UiKit.Text("", "deck-summary-text");
-            _deckWarnings = UiKit.Text("", "deck-warnings");
-            summary.Add(_deckSummary);
-            summary.Add(_deckWarnings);
-            // The doctrine for the next battle rides with the deck.
-            var doctrines = UiKit.Box("doctrine-chips");
-            foreach (var doctrine in Doctrine.All)
+            var page = TabPage(Tab.Army, "fc-page--opaque fc-army");
+            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.equipment"), Strings.Get("army.base") }, 0, i =>
             {
-                var id = doctrine.Id;
-                var chip = UiKit.Button("doctrine-chip", () =>
-                {
-                    if (!Progression.DoctrineOwned(id))
-                    {
-                        Note(Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Progression.DoctrinePrice.ToString("N0")), true);
-                        return;
-                    }
-                    MatchSettings.Doctrine = id;
-                    MatchSettings.Save();
-                    Note(Strings.Get("doctrine." + id + ".info"));
-                    Refresh();
-                });
-                chip.Add(UiKit.Icon(DoctrineIcon(id), UiKit.Ink, 1.7f));
-                chip.tooltip = Strings.Get("doctrine." + id);
-                doctrines.Add(Choice(chip, () => MatchSettings.Doctrine == id));
-            }
-            summary.Add(doctrines);
-            strip.Add(summary);
-            _deckView.Add(strip);
+                _armyView = (ArmyView)i;
+                Refresh();
+            });
+            page.Add(_armyTabs);
 
-            var filters = UiKit.Box("army-filters");
-            foreach (var (filter, icon, key) in new[]
-                     {
-                         (CardFilter.All, "deck", "filter.all"), (CardFilter.Armor, "heavytank", "gear.branch.armor"),
-                         (CardFilter.Light, "armoredcar", "gear.branch.light"), (CardFilter.Artillery, "artillery", "gear.branch.artillery"),
-                         (CardFilter.Air, "jet", "gear.branch.air"), (CardFilter.Support, "barrage", "filter.support"),
-                     })
+            // Deck and collection ---------------------------------------------------------------------
+            _deckView = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            var deckBody = Kit.Box("fc-page__body");
+            var deckStrip = Kit.Scroll(ScrollViewMode.Horizontal, "fc-army__deck-strip");
+            _deckRow = deckStrip.contentContainer;
+            deckBody.Add(deckStrip);
+            _deckOverview = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-army__overview");
+            deckBody.Add(_deckOverview);
+            var chips = new List<VisualElement>();
+            foreach (CardFilter filter in Enum.GetValues(typeof(CardFilter)))
             {
                 var f = filter;
-                filters.Add(Choice(Segment(icon, Strings.Get(key), () =>
-                {
-                    _filter = f;
-                    HidePopover();
-                    BuildCollection();
-                    Refresh();
-                }), () => _filter == f));
+                var chip = filter == CardFilter.All
+                    ? new KitChip(Strings.Get("filter.all"), true, () => SetFilter(f))
+                    : KitChip.Branch(BranchOf(filter), false, () => SetFilter(f));
+                _filterChips.Add((chip, filter));
+                chips.Add(chip);
             }
-            filters.Add(Choice(Segment("upgrade", Strings.Get("filter.byRank"), () =>
-            {
-                _sortByRank = !_sortByRank;
-                BuildCollection();
-                Refresh();
-            }, true), () => _sortByRank));
-            _deckView.Add(filters);
-            var scroll = Scroller("army-scroll");
-            _collection = scroll.contentContainer;
-            _deckView.Add(scroll);
+            _sortButton = new KitSortButton(SortName(_sort), PickSort);
+            deckBody.Add(new KitChipRow(chips, _sortButton));
+            _collection = Kit.Box("fc-army__collection");
+            deckBody.Add(_collection);
+            _deckView.Add(deckBody);
             page.Add(_deckView);
 
-            // Equipment ------------------------------------------------------------------------
-            _gearView = UiKit.Box("army-gear");
-            var branches = UiKit.Box("gear-branches");
+            // Equipment ---------------------------------------------------------------------------------
+            _gearView = Kit.Box("fc-army__gear");
+            var gearLeft = Kit.Scroll(ScrollViewMode.Vertical, "fc-army__gear-left");
+            var left = Kit.Box("fc-page__body");
+            var branches = new List<VisualElement>();
             foreach (GearBranch branch in Enum.GetValues(typeof(GearBranch)))
             {
                 var b = branch;
-                var button = UiKit.Button("gear-branch", () =>
+                var chip = KitChip.Branch(KitOf(branch), branch == _branch, () =>
                 {
                     _branch = b;
+                    _gearSelected = null;
                     Refresh();
                 });
-                button.Add(UiKit.Icon(BranchIcon(branch), UiKit.Ink, 1.9f));
-                button.Add(UiKit.Text(Strings.Get("gear.branch." + branch.ToString().ToLowerInvariant()), "gear-branch-name"));
-                // Which classes of vehicle wear this branch's loadout (data: balance.json "branches").
-                button.tooltip = GearText.BranchClasses(branch);
-                branches.Add(Choice(button, () => _branch == b));
+                _branchChips.Add((chip, branch));
+                branches.Add(chip);
             }
-            _gearView.Add(branches);
-            var centre = UiKit.Box("gear-centre");
-            centre.Add(UiKit.Text(Strings.Get("gear.loadout"), "menu-caps"));
-            _gearClasses = UiKit.Text("", "gear-branch-classes");
-            centre.Add(_gearClasses);
-            _gearSlots = UiKit.Box("gear-slots");
-            centre.Add(_gearSlots);
-            _gearTotal = UiKit.Text("", "gear-total");
-            centre.Add(_gearTotal);
-            _gearSets = UiKit.Box("gear-sets");
-            centre.Add(_gearSets);
-            _gearView.Add(centre);
-            var inventory = UiKit.Box("gear-inventory");
-            _gearInfo = UiKit.Box("gear-info");
-            inventory.Add(_gearInfo);
-            var tools = UiKit.Box("gear-tools");
-            tools.Add(UiKit.Text(Strings.Get("gear.inventory"), "menu-caps"));
-            tools.Add(UiKit.WideButton("wide small-wide", "upgrade", Strings.Get("gear.mergeAll"), null, () =>
-            {
-                var merges = PlayerProfile.MergeAll();
-                Note(merges > 0 ? Strings.Format("gear.merged", merges) : Strings.Get("gear.nothingToMerge"), merges == 0);
-                Refresh();
-            }));
-            inventory.Add(tools);
-            var gearScroll = Scroller("gear-scroll");
-            _gearGrid = gearScroll.contentContainer;
-            inventory.Add(gearScroll);
-            _gearView.Add(inventory);
+            left.Add(new KitChipRow(branches));
+            _gearSlots = Kit.Box("fc-army__slots");
+            left.Add(_gearSlots);
+            gearLeft.Add(left);
+            _gearView.Add(gearLeft);
+            var gearRight = Kit.Box(KitPanel.SurfaceClass + " fc-army__gear-right", PickingMode.Position);
+            _gearInfo = Kit.Box("fc-army__gear-info");
+            gearRight.Add(_gearInfo);
+            var listScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-army__gear-list");
+            _gearList = listScroll.contentContainer;
+            gearRight.Add(listScroll);
+            _gearView.Add(gearRight);
             page.Add(_gearView);
 
-            // Base ---------------------------------------------------------------------------------
-            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh);
+            // Base ---------------------------------------------------------------------------------------
+            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh) { OpenDetail = OpenDetail };
+            _base.Root.AddToClassList("fc-army__base");
             page.Add(_base.Root);
+        }
 
-            // The card popover: Info or Use.
-            _popover = UiKit.Box("card-popover", PickingMode.Position);
-            _popoverText = UiKit.Text("", "popover-text");
-            _popover.Add(_popoverText);
-            var buttons = UiKit.Box("popover-buttons");
-            _popoverInfo = UiKit.WideButton("wide popover-button", "info", Strings.Get("army.info"), null, () =>
+        private static KitBranch BranchOf(CardFilter filter) => filter switch
+        {
+            CardFilter.Armor => KitBranch.Armor,
+            CardFilter.Light => KitBranch.Light,
+            CardFilter.Artillery => KitBranch.Artillery,
+            CardFilter.Air => KitBranch.Air,
+            _ => KitBranch.Support,
+        };
+
+        private static KitBranch KitOf(GearBranch branch) => branch switch
+        {
+            GearBranch.Armor => KitBranch.Armor,
+            GearBranch.Artillery => KitBranch.Artillery,
+            GearBranch.Air => KitBranch.Air,
+            _ => KitBranch.Light,
+        };
+
+        private void SetFilter(CardFilter filter)
+        {
+            _filter = filter;
+            Refresh();
+        }
+
+        private static string SortName(CardSort sort) => Strings.Get("army.sort." + sort.ToString().ToLowerInvariant());
+
+        private void PickSort()
+        {
+            var options = new List<KitOption>();
+            foreach (CardSort s in Enum.GetValues(typeof(CardSort))) options.Add(new KitOption(SortName(s)));
+            new KitDropdown(Strings.Get("army.sortTitle"), options, (int)_sort, i => Set(() =>
             {
-                var id = _popoverCard;
-                HidePopover();
-                OpenDetail(id);
-            });
-            _popoverUse = UiKit.WideButton("wide primary popover-button", "deck", "", null, () =>
-            {
-                var id = _popoverCard;
-                HidePopover();
-                ToggleInDeck(id);
-            });
-            buttons.Add(_popoverInfo);
-            buttons.Add(_popoverUse);
-            _popover.Add(buttons);
-            _popover.style.display = DisplayStyle.None;
-            page.Add(_popover);
-            BuildCollection();
+                _sort = (CardSort)i;
+                _sortButton.Value = SortName(_sort);
+            })) { name = "sort-picker" }.OpenIn(Root);
         }
 
         private static bool IsSupport(string id) => MatchSettings.AllSupports.Contains(id);
@@ -222,89 +186,127 @@ namespace MachineBrigade.Game.Hud
         private int CostOf(string id) =>
             IsSupport(id) ? _catalog.TryGetSupport(id, out var s) ? s.CpCost : 0 : _catalog.Vehicles.TryGetValue(id, out var v) ? v.CpCost : 0;
 
-        /// <summary>The collection grid: owned cards (sorted), then the locked ones with how to get them.</summary>
+        private void RefreshArmy()
+        {
+            if (_armyTabs == null) return;
+            _armyTabs.Select((int)_armyView, false);
+            _deckView.style.display = _armyView == ArmyView.Deck ? DisplayStyle.Flex : DisplayStyle.None;
+            _gearView.style.display = _armyView == ArmyView.Equipment ? DisplayStyle.Flex : DisplayStyle.None;
+            var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
+            _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
+            // Leaving the base (another view, tab or page) saves what was changed there.
+            if (!onBase) _base.Leave();
+            if (_tab != Tab.Army) return;
+            if (_armyView == ArmyView.Deck) RefreshDeck();
+            else if (_armyView == ArmyView.Equipment) RefreshGear();
+            else _base.Refresh();
+        }
+
+        // ------------------------------------------------------------------ E3: the deck
+
+        private void RefreshDeck()
+        {
+            _deckRow.Clear();
+            foreach (var id in MatchSettings.DeckLayout(false)) _deckRow.Add(DeckCard(id, false, compact: true, showLevel: true));
+            _deckRow.Add(Kit.Box("fc-deck-divider"));
+            foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true));
+
+            // The overview band: how many and how dear, the role cover, the doctrine for the next battle.
+            _deckOverview.Clear();
+            var summary = Kit.Box("fc-army__overview-part");
+            summary.Add(Kit.Text(Kit.Caps(Strings.Get("army.overview")), "fc-panel-title fc-mb-2"));
+            var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
+            summary.Add(Kit.Body(Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
+                MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-")));
+            _deckOverview.Add(summary);
+            var cover = Kit.Box("fc-army__overview-part fc-grow");
+            cover.Add(Kit.Text(Kit.Caps(Strings.Get("army.roles")), "fc-caption fc-mb-2"));
+            var roles = Kit.Box("fc-row fc-row--wrap");
+            foreach (var (key, icon, has) in DeckRoles.Of(_catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports).Rows)
+                roles.Add(Tag(has ? icon : "info", Strings.Get(key), has ? "fc-tag--ok" : "fc-tag--missing"));
+            cover.Add(roles);
+            _deckOverview.Add(cover);
+            var doctrines = new List<KitOption>();
+            var chosen = 0;
+            for (var i = 0; i < Doctrine.All.Count; i++)
+            {
+                var id = Doctrine.All[i].Id;
+                if (id == MatchSettings.Doctrine) chosen = i;
+                doctrines.Add(new KitOption(Strings.Get("doctrine." + id), Progression.DoctrineOwned(id)
+                    ? Strings.Get("doctrine." + id + ".info")
+                    : Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Kit.Count(Progression.DoctrinePrice))));
+            }
+            var doctrine = new KitDropdown(Strings.Get("doctrine.title"), doctrines, chosen, i =>
+            {
+                var id = Doctrine.All[i].Id;
+                if (!Progression.DoctrineOwned(id))
+                {
+                    Note(Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Kit.Count(Progression.DoctrinePrice)), true);
+                    Refresh();
+                    return;
+                }
+                MatchSettings.Doctrine = id;
+                MatchSettings.Save();
+                Note(Strings.Get("doctrine." + id + ".info"));
+                Refresh();
+            });
+            doctrine.AddToClassList("fc-army__doctrine");
+            _deckOverview.Add(doctrine);
+
+            foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
+            _sortButton.Value = SortName(_sort);
+            BuildCollection();
+        }
+
+        /// <summary>The collection: owned cards (sorted), then the locked ones with where they unlock.</summary>
         private void BuildCollection()
         {
             _collection.Clear();
-            _collectionCards.Clear();
             var all = MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
             var owned = all.Where(PlayerProfile.IsUnlocked).ToList();
-            owned = _sortByRank
-                ? owned.OrderByDescending(PlayerProfile.Rank).ThenBy(CostOf).ToList()
-                : owned.OrderBy(IsSupport).ThenBy(CostOf).ToList();
-            var grid = UiKit.Box("collection-grid");
+            owned = _sort switch
+            {
+                CardSort.Level => owned.OrderByDescending(PlayerProfile.Rank).ThenBy(CostOf).ToList(),
+                CardSort.Name => owned.OrderBy(Strings.Card, StringComparer.CurrentCulture).ToList(),
+                _ => owned.OrderBy(IsSupport).ThenBy(CostOf).ToList(),
+            };
+            var grid = Kit.Box("fc-army__grid");
             foreach (var id in owned) grid.Add(CollectionCard(id));
             _collection.Add(grid);
             var locked = all.Where(id => !PlayerProfile.IsUnlocked(id)).ToList();
-            if (locked.Count > 0)
-            {
-                _collection.Add(UiKit.Text(Strings.Format("army.locked", locked.Count), "menu-caps"));
-                var lockedGrid = UiKit.Box("collection-grid");
-                foreach (var id in locked) lockedGrid.Add(CollectionCard(id));
-                _collection.Add(lockedGrid);
-            }
+            if (locked.Count == 0) return;
+            _collection.Add(Kit.Caption(Strings.Format("army.locked", locked.Count)));
+            var lockedGrid = Kit.Box("fc-army__grid fc-mt-2");
+            foreach (var id in locked) lockedGrid.Add(CollectionCard(id));
+            _collection.Add(lockedGrid);
         }
 
         private VisualElement CollectionCard(string id)
         {
-            var card = UiKit.Button("unit-card-big", () => CardTapped(id));
-            if (IsSupport(id)) card.AddToClassList("support");
-            var art = UiKit.Box("unit-card-art");
-            art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            card.Add(art);
-            card.Add(UiKit.Text(Strings.Short(id), "unit-card-name"));
-            var cost = UiKit.Box("unit-card-cost");
-            cost.Add(UiKit.Text(CostOf(id).ToString(), "unit-card-cost-text"));
-            card.Add(cost);
-            card.Add(UiKit.Text("", "unit-card-rank"));
-            // The blueprint bar; ready to rank up, it turns green with the upgrade arrow at its end.
-            var foot = UiKit.Box("unit-card-foot");
-            var track = UiKit.Box("unit-card-track");
-            track.Add(UiKit.Box("unit-card-fill"));
-            foot.Add(track);
-            var up = UiKit.Box("unit-card-up");
-            up.Add(UiKit.Icon("upgrade", UiKit.Ink, 2.4f));
-            foot.Add(up);
-            card.Add(foot);
-            var check = UiKit.Box("unit-card-check");
-            check.Add(UiKit.Icon("check", UiKit.Ink, 2.2f));
-            card.Add(check);
-            var lockBadge = UiKit.Box("unit-card-lock");
-            lockBadge.Add(UiKit.Icon("lock", UiKit.Ink, 1.8f));
-            card.Add(lockBadge);
-            _collectionCards.Add((card, id));
+            var card = new KitVehicleCard(CardData(id), () => CardTapped(id));
+            card.Chosen = MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id);
             return card;
         }
 
-        private void RefreshCard(VisualElement card, string id)
-        {
-            var unlocked = PlayerProfile.IsUnlocked(id);
-            var rank = PlayerProfile.Rank(id);
-            var need = CardRanks.BlueprintsToNext(rank);
-            card.EnableInClassList("locked", !unlocked);
-            card.EnableInClassList("in-deck", MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id));
-            card.EnableInClassList("upgradable", PlayerProfile.CanRankUp(id));
-            card.Q<Label>(className: "unit-card-rank").text = unlocked ? Strings.Format("arsenal.rank", rank) : "";
-            var fill = card.Q(className: "unit-card-fill");
-            fill.style.width = Length.Percent(need <= 0 ? 100f : Mathf.Clamp01(PlayerProfile.Blueprints(id) / (float)need) * 100f);
-        }
-
+        /// <summary>A card tapped: its name and what can be done with it (details, into or out of the deck).</summary>
         private void CardTapped(string id)
         {
-            _popoverCard = id;
             var unlocked = PlayerProfile.IsUnlocked(id);
             var inDeck = MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id);
-            _popoverText.text = unlocked ? Strings.Card(id) : LockReason(id);
-            _popoverUse.style.display = unlocked ? DisplayStyle.Flex : DisplayStyle.None;
-            _popoverUse.Q<Label>(className: "wide-title").text = Strings.Get(inDeck ? "army.remove" : "army.use");
-            _popover.style.display = DisplayStyle.Flex;
-            _popover.BringToFront();
-            UiKit.Uppercase(_popover);
-        }
-
-        private void HidePopover()
-        {
-            if (_popover != null) _popover.style.display = DisplayStyle.None;
+            VisualElement scrim = null;
+            var details = new KitButton(ButtonTier.Secondary, Strings.Get("army.info"), () =>
+            {
+                scrim?.RemoveFromHierarchy();
+                OpenDetail(id);
+            }, "info");
+            var buttons = new List<VisualElement> { details };
+            if (unlocked)
+                buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get(inDeck ? "army.remove" : "army.use"), () =>
+                {
+                    scrim?.RemoveFromHierarchy();
+                    ToggleInDeck(id);
+                }, "deck"));
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Card(id), unlocked ? Strings.Get("army.cardHint") : LockReason(id), buttons.ToArray()));
         }
 
         /// <summary>Puts a card in the deck (the first empty slot) or takes it out of its slot; the others stay where they are.</summary>
@@ -331,278 +333,237 @@ namespace MachineBrigade.Game.Hud
             Refresh();
         }
 
-        private void RefreshArmy()
-        {
-            _deckView.style.display = _armyView == ArmyView.Deck ? DisplayStyle.Flex : DisplayStyle.None;
-            _gearView.style.display = _armyView == ArmyView.Equipment ? DisplayStyle.Flex : DisplayStyle.None;
-            var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
-            _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
-            // Leaving the base (another view, tab or page) saves what was changed there.
-            if (!onBase) _base.Leave();
-            if (_armyView == ArmyView.Deck) RefreshDeck();
-            else if (_armyView == ArmyView.Equipment) RefreshGear();
-            else _base.Refresh();
-        }
-
-        private void RefreshDeck()
-        {
-            _deckSlots.Clear();
-            foreach (var id in MatchSettings.DeckLayout(false)) _deckSlots.Add(DeckSlot(id, false));
-            _deckSlots.Add(UiKit.Box("deck-divider"));
-            foreach (var id in MatchSettings.DeckLayout(true)) _deckSlots.Add(DeckSlot(id, true));
-            var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
-            _deckSummary.text = Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
-                MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-");
-            _deckWarnings.text = DeckWarnings();
-            foreach (var (card, id) in _collectionCards) RefreshCard(card, id);
-        }
-
-        private VisualElement DeckSlot(string id, bool support)
-        {
-            if (id == null)
-            {
-                var empty = UiKit.Box(support ? "deck-slot empty support" : "deck-slot empty");
-                empty.Add(UiKit.Icon("plus", UiKit.Ink, 2f));
-                return empty;
-            }
-            var slot = UiKit.Button(support ? "deck-slot support" : "deck-slot", () => CardTapped(id));
-            slot.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            slot.Add(UiKit.Text(Strings.Format("arsenal.rank", PlayerProfile.Rank(id)), "deck-slot-rank"));
-            var cost = UiKit.Box("unit-card-cost");
-            cost.Add(UiKit.Text(CostOf(id).ToString(), "unit-card-cost-text"));
-            slot.Add(cost);
-            return slot;
-        }
-
-        /// <summary>What the deck lacks: nothing against aircraft, nothing that kills heavy armour, no artillery.</summary>
-        private string DeckWarnings()
-        {
-            bool air = false, armour = false, artillery = false;
-            foreach (var id in MatchSettings.DeckVehicles)
-            {
-                if (!_catalog.Vehicles.TryGetValue(id, out var def)) continue;
-                foreach (var m in def.Mounts)
-                    if (m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak) air = true;
-                if (def.Class is UnitClass.TankHunter or UnitClass.Heavy or UnitClass.Tank || def.Weapon.DamageType == DamageType.ArmorPiercing) armour = true;
-                if (def.Weapon.MinRange > 0f) artillery = true;
-            }
-            var warnings = new List<string>();
-            if (!air) warnings.Add(Strings.Get("army.noAir"));
-            if (!armour) warnings.Add(Strings.Get("army.noArmour"));
-            if (!artillery) warnings.Add(Strings.Get("army.noArtillery"));
-            return warnings.Count == 0 ? Strings.Get("army.balanced") : string.Join("   ", warnings);
-        }
-
-        // ------------------------------------------------------------------ equipment
-
-        private Label _gearClasses;
+        // ------------------------------------------------------------------ E5: equipment
 
         private void RefreshGear()
         {
-            if (_gearClasses != null) _gearClasses.text = GearText.BranchClasses(_branch);
+            foreach (var (chip, branch) in _branchChips) chip.Selected = branch == _branch;
             _gearSlots.Clear();
+            _gearSlots.Add(Kit.Text(GearText.BranchClasses(_branch), "fc-small fc-mb-3"));
+            var grid = Kit.Box("fc-army__grid");
             for (var s = 0; s < Gear.Slots; s++)
             {
                 var slot = (GearSlot)s;
                 var item = PlayerProfile.Equipped(_branch, slot);
-                var tile = UiKit.Button(slot == GearSlot.Special ? "gear-slot2 special" : "gear-slot2", () =>
+                var cell = Kit.Box("fc-army__slot");
+                cell.Add(Kit.Caption(GearText.SlotName(slot)));
+                VisualElement card;
+                if (item != null)
                 {
-                    _slotFilter = _slotFilter == slot ? null : slot;
-                    _gearSelected = PlayerProfile.Equipped(_branch, slot);
-                    Refresh();
-                });
-                tile.Add(item != null ? GearArt.Tile(item, slot == GearSlot.Special ? 104 : 92) : GearArt.Empty(slot, slot == GearSlot.Special ? 104 : 92));
-                tile.Add(UiKit.Text(item != null ? StatText(item) : Strings.Get("gear.slot." + slot.ToString().ToLowerInvariant()), "gear-slot-value"));
-                tile.EnableInClassList("chosen", _slotFilter == slot);
-                _gearSlots.Add(tile);
-            }
-            var worn = new List<string>();
-            for (var s = 0; s < Gear.Slots; s++)
-                if (PlayerProfile.Equipped(_branch, (GearSlot)s) is { } piece)
-                    worn.Add(StatText(piece));
-            _gearTotal.text = worn.Count == 0 ? Strings.Get("gear.totalNone") : Strings.Format("gear.total", string.Join("  ·  ", worn));
-            FillSetChips(_gearSets, _branch);
-            _gearGrid.Clear();
-            // Tower pieces are worn by tower types (the base screen), not by the army's branches.
-            var items = PlayerProfile.VehicleGearOwned.Where(g => _slotFilter == null || g.Slot == _slotFilter)
-                .OrderByDescending(g => g.rarity).ThenBy(g => g.slot).ThenByDescending(g => g.level).ToList();
-            if (items.Count == 0) _gearGrid.Add(UiKit.Text(Strings.Get(_slotFilter == null ? "gear.none" : "gear.noneForSlot"), "menu-note"));
-            var grid = UiKit.Box("gear-grid2");
-            foreach (var item in items)
-            {
-                var g = item;
-                var tile = UiKit.Button("gear-cell", () =>
+                    var data = GearCardData.From(item);
+                    data.Equipped = true;
+                    card = new KitGearCard(data, () => PickSlot(slot));
+                }
+                else
                 {
-                    _gearSelected = g;
-                    Refresh();
-                });
-                tile.Add(GearArt.Tile(item, 92));
-                tile.EnableInClassList("chosen", item == _gearSelected);
-                tile.EnableInClassList("equipped", PlayerProfile.IsEquipped(item));
-                // A piece that does nothing for this branch is shown dimmed and cannot go on (prompt 8 I.1).
-                tile.EnableInClassList("unfit", !Gear.FitsBranch(item, _branch));
-                grid.Add(tile);
+                    card = Kit.Tappable("fc-gcard fc-gcard--empty", () => PickSlot(slot));
+                    var art = Kit.Box("fc-gcard__art");
+                    var picture = Kit.Box("fc-gcard__picture");
+                    if (GearArt.Picture(SlotPictureName(slot)) is { } tex) picture.style.backgroundImage = Background.FromTexture2D(tex);
+                    art.Add(picture);
+                    card.Add(art);
+                    var body = Kit.Box("fc-gcard__body");
+                    body.Add(Kit.Text(Strings.Get("gear.empty"), "fc-gcard__stat"));
+                    card.Add(body);
+                }
+                card.EnableInClassList("fc-gcard--chosen", _slotFilter == slot);
+                cell.Add(card);
+                grid.Add(cell);
             }
-            _gearGrid.Add(grid);
+            _gearSlots.Add(grid);
+            _gearSlots.Add(Kit.Text(Kit.Caps(Strings.Get("gear.setsTitle")), "fc-caption fc-mt-3 fc-mb-2"));
+            _gearSlots.Add(SetChips(_branch));
+            _gearSlots.Add(KitButton.Danger(Strings.Get("gear.mergeAll"),
+                new KitConfirm(Strings.Get("gear.mergeAllTitle"), Strings.Get("gear.mergeAllBody"), Strings.Get("gear.merge")), () =>
+                {
+                    var merges = PlayerProfile.MergeAll();
+                    Note(merges > 0 ? Strings.Format("gear.merged", merges) : Strings.Get("gear.nothingToMerge"), merges == 0);
+                    Refresh();
+                }, "upgrade"));
+            FillGearList();
             GearInfo();
         }
 
-        /// <summary>The selected piece: what it does, against what is equipped in its slot now, and what can be done with it.</summary>
+        private static string SlotPictureName(GearSlot slot) => slot switch
+        {
+            GearSlot.Special => "reactivearmor",
+            GearSlot.Optics => "veterancrew",
+            _ => slot.ToString().ToLowerInvariant(),
+        };
+
+        private void PickSlot(GearSlot slot)
+        {
+            _slotFilter = _slotFilter == slot ? null : slot;
+            _gearSelected = _slotFilter != null ? PlayerProfile.Equipped(_branch, slot) : null;
+            Refresh();
+        }
+
+        /// <summary>The pieces that fit the picked slot (or all), sorted, each with its change against the worn one.</summary>
+        private void FillGearList()
+        {
+            _gearList.Clear();
+            var head = Kit.Box("fc-row fc-row--spread fc-mb-2");
+            head.Add(Kit.Text(Kit.Caps(_slotFilter is { } s ? GearText.SlotName(s) : Strings.Get("gear.inventory")), "fc-panel-title fc-row-text"));
+            head.Add(new KitSortButton(GearQuery.SortName(_gearSort), () =>
+            {
+                var options = new List<KitOption>();
+                foreach (GearQuery.Sort sort in Enum.GetValues(typeof(GearQuery.Sort))) options.Add(new KitOption(GearQuery.SortName(sort)));
+                new KitDropdown(Strings.Get("army.sortTitle"), options, (int)_gearSort, i => Set(() => _gearSort = (GearQuery.Sort)i)).OpenIn(Root);
+            }));
+            _gearList.Add(head);
+            var items = GearQuery.Sorted(GearQuery.Filter(PlayerProfile.VehicleGearOwned, _slotFilter), _gearSort);
+            if (items.Count == 0)
+            {
+                _gearList.Add(Kit.Body2(Strings.Get(_slotFilter == null ? "gear.none" : "gear.noneForSlot")));
+                return;
+            }
+            var grid = Kit.Box("fc-army__grid");
+            foreach (var item in items)
+            {
+                var g = item;
+                var worn = PlayerProfile.Equipped(_branch, item.Slot);
+                var data = GearCardData.From(item, worn);
+                data.Equipped = PlayerProfile.IsEquipped(item);
+                var card = new KitGearCard(data, () =>
+                {
+                    _gearSelected = g;
+                    Refresh();
+                }) { Chosen = item == _gearSelected };
+                // A piece that does nothing for this branch is dimmed (prompt 8 I.1).
+                card.EnableInClassList("fc-gcard--unfit", !Gear.FitsBranch(item, _branch));
+                grid.Add(card);
+            }
+            _gearList.Add(grid);
+        }
+
+        /// <summary>The picked piece: its lines against the worn one, and what can be done with it.</summary>
         private void GearInfo()
         {
             _gearInfo.Clear();
             var item = _gearSelected != null ? PlayerProfile.FindGear(_gearSelected.id) : null;
             if (item == null)
             {
-                _gearInfo.Add(UiKit.Text(Strings.Get(_slotFilter == null ? "gear.pick" : "gear.pickFor2"), "menu-note"));
+                _gearInfo.Add(Kit.Body2(Strings.Get(_slotFilter == null ? "gear.pick" : "gear.pickFor2")));
                 return;
             }
-            var head = UiKit.Box("gear-info-head");
-            head.Add(GearArt.Tile(item, 84, showLevel: false));
-            var names = UiKit.Box("gear-info-names");
-            var title = UiKit.Text(GearName(item), "gear-info-title");
-            title.style.color = GearArt.Colors[item.rarity];
-            names.Add(title);
-            names.Add(UiKit.Text(Strings.Format("gear.detail", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), item.level,
-                Gear.LevelCap[item.rarity], StatText(item)), "gear-info-line"));
-            // The slot and brand under the name ("Weapon · Ironclad Works").
+            var head = Kit.Box("fc-row fc-row--top");
+            var data = GearCardData.From(item);
+            data.Equipped = PlayerProfile.IsEquipped(item);
+            head.Add(new KitGearCard(data));
+            var names = Kit.Box("fc-row-text fc-grow");
+            names.Add(Kit.Text(Kit.Caps(GearText.Name(item)), "fc-panel-title fc-rarity-text-" + item.rarity));
+            names.Add(Kit.Small(Strings.Format("gear.detail", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), item.level,
+                Gear.LevelCap[item.rarity], StatText(item))));
             var brand = GearCatalog.Brand(item.brand);
-            names.Add(UiKit.Text(GearText.SlotName(item.Slot) + (brand != null ? "  ·  " + GearText.BrandName(brand) : ""), "gear-info-line gear-base-line"));
-            var current = PlayerProfile.Equipped(_branch, item.Slot);
-            if (current != null && current != item)
-                names.Add(UiKit.Text(Strings.Format("gear.compare", StatText(current), StatText(item)), "gear-info-compare"));
+            names.Add(Kit.Small(GearText.SlotName(item.Slot) + (brand != null ? "  ·  " + GearText.BrandName(brand) : "")));
             var partners = PlayerProfile.GearOwned.Count(g => g != item && Gear.CanMerge(g, item));
-            names.Add(UiKit.Text(item.rarity < (int)Rarity.Legendary ? Strings.Format("gear.mergeHint", partners + 1) : Strings.Get("gear.top"), "gear-info-merge"));
+            names.Add(Kit.Small(item.rarity < (int)Rarity.Legendary ? Strings.Format("gear.mergeHint", partners + 1) : Strings.Get("gear.top")));
             head.Add(names);
             _gearInfo.Add(head);
+            var current = PlayerProfile.Equipped(_branch, item.Slot);
+            if (current != null && current != item)
+            {
+                _gearInfo.Add(Kit.Text(Kit.Caps(Strings.Get("kit.preview.compare")), "fc-caption fc-mt-2"));
+                _gearInfo.Add(new KitCompareRow(GearText.SlotName(item.Slot), StatText(current), StatText(item),
+                    Math.Sign(Gear.Value(item) - Gear.Value(current))));
+            }
             _gearInfo.Add(GearLines(item));
             var fits = Gear.FitsBranch(item, _branch);
-            _gearInfo.Add(UiKit.Text(GearText.FitLine(item), fits ? "gear-line gear-line-dim" : "gear-line gear-line-penalty"));
-            var actions = UiKit.Box("gear-actions");
+            _gearInfo.Add(Kit.Text(GearText.FitLine(item), fits ? "fc-small" : "fc-small fc-danger-text"));
+            var actions = Kit.Box("fc-row fc-row--wrap fc-mt-2 fc-gap-2");
             var equipped = current == item;
-            actions.Add(UiKit.WideButton(equipped ? "wide" : fits ? "wide primary" : "wide", equipped ? "close" : "check",
-                equipped ? Strings.Get("gear.unequip") : Strings.Get("gear.equipShort"), null, () =>
-                {
-                    if (equipped) PlayerProfile.Unequip(_branch, item.Slot);
-                    else if (!PlayerProfile.Equip(_branch, item))
-                        Note(Strings.Format("gear.notForBranch", Strings.Get("gear.branch." + _branch.ToString().ToLowerInvariant())), true);
-                    Refresh();
-                }));
+            var equip = new KitButton(ButtonTier.Secondary, Strings.Get(equipped ? "gear.unequip" : "gear.equipShort"), () =>
+            {
+                if (equipped) PlayerProfile.Unequip(_branch, item.Slot);
+                else if (!PlayerProfile.Equip(_branch, item))
+                    Note(Strings.Format("gear.notForBranch", Strings.Get("gear.branch." + _branch.ToString().ToLowerInvariant())), true);
+                Refresh();
+            }, equipped ? "close" : "check");
+            if (!equipped && !fits) equip.Disable(Strings.Get("gear.unfitShort"));
+            actions.Add(equip);
             var cost = Gear.LevelCost(item);
             if (cost > 0)
-                actions.Add(UiKit.WideButton("wide upgrade-button", "upgrade", Strings.Format("gear.levelUp", cost.ToString("N0")), null, () =>
+            {
+                var level = new KitButton(ButtonTier.Secondary, Strings.Get("gear.levelUpShort"), () =>
                 {
                     if (!PlayerProfile.TryLevelGear(item)) Note(Strings.Get("arsenal.needCoins"), true);
                     Refresh();
-                }));
+                }, "upgrade");
+                if (PlayerProfile.Coins < cost) level.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(cost - PlayerProfile.Coins)));
+                else level.Label = Strings.Format("gear.levelUp", Kit.Count(cost));
+                actions.Add(level);
+            }
             if (partners >= 2)
-                actions.Add(UiKit.WideButton("wide upgrade-button", "upgrade", Strings.Get("gear.merge"), null, () =>
+                actions.Add(new KitButton(ButtonTier.Secondary, Strings.Get("gear.merge"), () =>
                 {
                     if (PlayerProfile.TryMerge(item) is { } merged)
                     {
                         _gearSelected = merged;
-                        Note(Strings.Format("gear.mergedInto", GearName(merged)));
+                        Note(Strings.Format("gear.mergedInto", GearText.Name(merged)));
                     }
                     Refresh();
-                }));
+                }, "upgrade"));
             _gearInfo.Add(actions);
         }
 
-        private static string BranchIcon(GearBranch branch) => branch switch
-        {
-            GearBranch.Armor => "heavytank",
-            GearBranch.Light => "armoredcar",
-            GearBranch.Artillery => "artillery",
-            _ => "jet",
-        };
-
-        private static string GearName(GearItem item) => GearText.Name(item);
-
         /// <summary>A piece's main effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m", or a module's name.</summary>
-        private static string StatText(GearItem item)
-        {
-            var v = Gear.Value(item);
-            return item.Slot switch
-            {
-                GearSlot.Weapon => Strings.Format("stat.gear.damage", Pct(v)),
-                GearSlot.Loader => Strings.Format("stat.gear.fire", Pct(v)),
-                GearSlot.Armor when Gear.MainStat(item) == StatId.DamageTaken => Strings.Format("stat.gear.taken", Pct(v)),
-                GearSlot.Armor => Strings.Format("stat.gear.hp", Pct(v)),
-                GearSlot.Optics => Strings.Format("stat.gear.vision", Pct(v)),
-                GearSlot.Engine => Strings.Format("stat.gear.speed", Pct(v)),
-                GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0")),
-                _ => item.Module == SpecialModule.SmokeDischarger ? Strings.Format("stat.gear.smoke", Mathf.RoundToInt(v))
-                    : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0"))
-                    : item.Module == SpecialModule.ReactiveArmor ? Strings.Format("stat.gear.taken", Pct(v))
-                    : item.Module == SpecialModule.VeteranCrew ? Strings.Format("stat.gear.crew", Pct(v))
-                    : GearText.Name(item),
-            };
-        }
-
-        // ------------------------------------------------------------------ gear rework: lines, trait, sets
-        // (Kept apart so the menu restyle can move them; styles are in the gear block at the end of Hud.uss.)
+        private static string StatText(GearItem item) => GearCardData.ShortStat(item);
 
         /// <summary>A piece's affix lines: main stat, implicit, drawback, sub-stats with their roll bars, the trait and the brand.</summary>
         private static VisualElement GearLines(GearItem item)
         {
-            var box = UiKit.Box("gear-lines");
+            var box = Kit.Box("fc-gear-lines");
             if (item.Slot == GearSlot.Special)
             {
-                box.Add(UiKit.Text(GearText.ModuleEffect(item), "gear-line gear-line-trait"));
+                box.Add(Kit.Body(GearText.ModuleEffect(item)));
                 return box;
             }
             foreach (var line in Gear.Lines(item))
             {
-                var row = UiKit.Box("gear-line-row");
-                var kind = line.Kind switch
+                var row = Kit.Box("fc-gear-line");
+                var cls = line.Kind switch
                 {
-                    Gear.LineKind.Main => "gear-line-main",
-                    Gear.LineKind.Implicit => "gear-line-implicit",
-                    Gear.LineKind.Penalty => "gear-line-penalty",
-                    _ => "gear-line-sub",
+                    Gear.LineKind.Main => "fc-body",
+                    Gear.LineKind.Penalty => "fc-body fc-danger-text",
+                    _ => "fc-body-2",
                 };
-                row.Add(UiKit.Text(GearText.Line(line), "gear-line " + kind));
+                row.Add(Kit.Text(GearText.Line(line), cls + " fc-row-text"));
+                // The Division's roll bar: where the sub-stat landed between its worst and best roll.
                 if (line.Quality >= 0f)
                 {
-                    // The Division's roll bar: where the sub-stat landed between its worst and best roll.
-                    var bar = UiKit.Box("gear-roll");
-                    var fill = UiKit.Box("gear-roll-fill");
-                    fill.style.width = Length.Percent(Mathf.Lerp(8f, 100f, line.Quality));
-                    bar.Add(fill);
+                    var bar = new KitProgress(Mathf.Lerp(0.08f, 1f, line.Quality));
+                    bar.AddToClassList("fc-gear-line__roll");
                     row.Add(bar);
                 }
                 box.Add(row);
             }
-            // What sets a base type apart when it has no implicit line (the Monolith Plate: a bigger main stat, no sub-stats).
-            if (Gear.BaseOf(item) is { } baseType && GearText.BaseNote(baseType) is { Length: > 0 } note) box.Add(UiKit.Text(note, "gear-line gear-line-implicit"));
+            if (Gear.BaseOf(item) is { } baseType && GearText.BaseNote(baseType) is { Length: > 0 } note) box.Add(Kit.Body2(note));
             var trait = GearText.TraitLine(item);
-            if (trait.Length > 0) box.Add(UiKit.Text(trait, "gear-line gear-line-trait"));
-            else if (item.rarity < (int)Rarity.Epic) box.Add(UiKit.Text(Strings.Get("gear.traitAtEpic"), "gear-line gear-line-dim"));
+            if (trait.Length > 0) box.Add(Kit.Body(trait));
+            else if (item.rarity < (int)Rarity.Epic) box.Add(Kit.Small(Strings.Get("gear.traitAtEpic")));
             var brand = GearCatalog.Brand(item.brand);
-            if (brand != null) box.Add(UiKit.Text(GearText.BrandName(brand) + "  ·  " + GearText.BrandBonuses(brand), "gear-line gear-line-set"));
+            if (brand != null) box.Add(Kit.Small(GearText.BrandName(brand) + "  ·  " + GearText.BrandBonuses(brand)));
             return box;
         }
 
-        /// <summary>The loadout's set chips ("Ironclad 2/4"), lit when the two-piece bonus is on.</summary>
-        private static void FillSetChips(VisualElement row, GearBranch branch)
+        /// <summary>The loadout's set chips ("Ironclad 2/4"): a filled chip once the two-piece bonus is on.</summary>
+        private static VisualElement SetChips(GearBranch branch)
         {
-            row.Clear();
+            var row = Kit.Box("fc-row fc-row--wrap");
             var chips = PlayerProfile.SetChips(branch);
             if (chips.Count == 0)
             {
-                row.Add(UiKit.Text(Strings.Get("gear.setNone"), "gear-set-none"));
-                return;
+                row.Add(Kit.Small(Strings.Get("gear.setNone")));
+                return row;
             }
             foreach (var chip in chips)
             {
-                var label = UiKit.Text(GearText.Chip(chip), "gear-set-chip");
-                label.EnableInClassList("active", chip.TwoPiece);
-                label.EnableInClassList("full", chip.FourPiece);
-                label.tooltip = GearText.BrandBonuses(chip.Brand);
-                row.Add(label);
+                var tag = Tag(chip.FourPiece ? "star" : chip.TwoPiece ? "check" : null, GearText.Chip(chip), chip.TwoPiece ? "fc-tag--ok" : null);
+                tag.tooltip = GearText.BrandBonuses(chip.Brand);
+                row.Add(tag);
             }
+            return row;
         }
 
-        private static string Pct(float v) => Mathf.RoundToInt(v * 100f).ToString();
     }
 }

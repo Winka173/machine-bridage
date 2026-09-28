@@ -1,5 +1,30 @@
 # Changelog
 
+## Prompt 10: Field Command 2.0 (the interface)
+
+- New look everywhere, on one theme of tokens (colours, Barlow fonts, type sizes, spacing, touch
+  size): flat graphite panels, square corners, 1 px borders, one amber main button a screen.
+- Navigation: a top bar (title, rank and XP, coins, settings) and a rail of five: Home, Campaign,
+  Operations, Army, Shop. Army has Deck, Equipment and Base.
+- Home: the battle behind, the campaign card, today's challenges, the deck strip with 3D renders,
+  and the match setup as four dropdowns (mode with its description, battlefield with its picture,
+  difficulty, weather) beside DEPLOY.
+- Campaign: chapters in three acts with pictures, progress, stars and bosses; each mission's
+  briefing, stars, tiers, recommended power and rewards.
+- Army: deck overview with role cover, filter chips and sort, cards with renders; equipment with gear
+  cards and comparisons; the base screen at touch size.
+- Detail pages for every card with the same five tabs, class averages and the gains told apart, and
+  now for towers and base modules as well (from the base screen's info button).
+- Shop with crate renders and coin pack pictures; "Ngụy trang" instead of "Skin".
+- Results: the mission's or mode's name, the score by side, hints after a defeat with a button to the
+  deck, CONTINUE or PLAY AGAIN, and doubling the coins as a Claim button.
+- Battle HUD: full-name Attack / Defend, on/off switches for Auto buy and Support, cards with renders,
+  names, CP, what is missing and a cooldown clock, the CP box with income and the supply penalty in
+  words, the boss bar with health in numbers, phases and parts, one style for notices and radio.
+- Settings: Text size (Normal / Large).
+- Vietnamese: one name per battlefield (Đồng Tro, Cảng Thép, Đô Thành...), "xu" for coins, no
+  English words left except the listed names.
+
 ## Prompt 9: boss parts
 
 - Every boss is a body and parts (its guns, launchers, engines, shield and EMP emitters, a locomotive,

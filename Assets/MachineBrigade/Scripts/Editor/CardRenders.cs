@@ -186,6 +186,69 @@ namespace MachineBrigade.Editor
             return done.Count;
         }
 
+        /// <summary>The shop's crate pictures (Resources/UI/Shop/crate_&lt;kind&gt;.png): renders of the crate models through the card camera.</summary>
+        /// <summary>The battle crate is the air-dropped supply crate; the others the ammunition crate in their metal's colour.</summary>
+        public static readonly (string kind, string model, string tint)[] ShopCrates =
+        {
+            ("battle", "supply_crate", null), ("silver", "ammo_crate", "#c9d2da"), ("gold", "ammo_crate", "#e8c15a"), ("legendary", "ammo_crate", "#ff7a2e"),
+        };
+
+        [MenuItem("Machine Brigade/Render Shop Crates")]
+        public static void RenderShopArt()
+        {
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
+            {
+                Debug.LogError("[CardRenders] needs a graphics device: run the batch without -nographics.");
+                return;
+            }
+            const string folder = "Assets/MachineBrigade/Resources/UI/Shop";
+            Directory.CreateDirectory(folder);
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var materials = new MaterialLibrary();
+            var library = new ModelLibrary(materials);
+            var stage = new Stage();
+            try
+            {
+                foreach (var (kind, model, tint) in ShopCrates)
+                {
+                    var png = stage.Render(library, model, 0);
+                    if (tint != null && ColorUtility.TryParseHtmlString(tint, out var colour)) png = Tint(png, colour);
+                    File.WriteAllBytes(Path.Combine(folder, "crate_" + kind + ".png"), png);
+                }
+            }
+            finally
+            {
+                stage.Dispose();
+                library.Dispose();
+                materials.Dispose();
+            }
+            AssetDatabase.Refresh();
+            Debug.Log("[CardRenders] rendered " + ShopCrates.Length + " crate pictures into " + folder);
+        }
+
+        /// <summary>Recolours a picture towards a metal: its shading kept, its hue replaced (the shadow untouched).</summary>
+        private static byte[] Tint(byte[] png, Color tint)
+        {
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tex.LoadImage(png);
+            var pixels = tex.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var p = pixels[i];
+                if (p.a == 0) continue;
+                var lum = (0.3f * p.r + 0.59f * p.g + 0.11f * p.b) / 255f;
+                if (lum < 0.03f) continue;
+                var k = Mathf.Clamp01(lum * 1.7f);
+                pixels[i] = new Color32((byte)Mathf.Clamp(tint.r * k * 255f, 0, 255), (byte)Mathf.Clamp(tint.g * k * 255f, 0, 255),
+                    (byte)Mathf.Clamp(tint.b * k * 255f, 0, 255), p.a);
+            }
+            tex.SetPixels32(pixels);
+            tex.Apply(false);
+            var result = tex.EncodeToPNG();
+            Object.DestroyImmediate(tex);
+            return result;
+        }
+
         public static CardArt.Manifest ReadManifest()
         {
             var path = Path.Combine(OutFolder, "manifest.json");
