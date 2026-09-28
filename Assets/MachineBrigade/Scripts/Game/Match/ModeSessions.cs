@@ -857,6 +857,9 @@ namespace MachineBrigade.Game.Match
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, PlayerProfile.BaseLoadout, _def.PlayerBase)
                     .Set(EnemyTeam, enemyBase, _def.EnemyBase), PlayerTeam, EnemyTeam);
+            // A duel's HQ is as tough as the mission says (its towers are the general's full base).
+            if (_def.Goal == MissionGoal.Duel && System.Math.Abs(_def.TargetHealth - 1f) > 1e-3f)
+                MissionMode.HardenHq(world, EnemyTeam, _def.TargetHealth);
             // Outposts: the marked points, and a point to set one up on (the mission's or a stage's goal).
             var outposts = new List<string>(_def.Outposts);
             void AddSite(MissionDef m)

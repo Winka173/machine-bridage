@@ -472,7 +472,7 @@ namespace MachineBrigade.Tests
             var mission = session.Mission;
             Debug.Log($"Mission {id} ({def.Goal}): {(won ? "WON" : session.Mode.Result == null ? "UNFINISHED" : "LOST")} " +
                       $"after {minutes:0.0} min, progress {mission.Progress(world):P0}, losses {mission.Losses}, kills {mission.Kills}" +
-                      (session.Operation != null ? $", stages {string.Join(">", session.Operation.Path.Select(i => def.Stages[i].Id))}" : ""));
+                      (def.Stages.Count > 0 ? $", stages {string.Join(">", session.Operation.Path.Select(i => def.Stages[i].Id))}" : ""));
             Assert.IsNotNull(session.Mode.Result, "a mission always ends (win, clock or defeat)");
         }
 
@@ -502,7 +502,7 @@ namespace MachineBrigade.Tests
                 durations.Add(minutes);
                 var mission = session.Mission;
                 text += $" s{seed}:{(won ? "W" : "L")}{minutes:0.0}m/{mission.Progress(world):P0}/peak {peak}";
-                if (session.Operation != null) text += "/" + string.Join(">", session.Operation.Path.Select(i => def.Stages[i].Id));
+                if (def.Stages.Count > 0) text += "/" + string.Join(">", session.Operation.Path.Select(i => def.Stages[i].Id));
                 foreach (var v in world.VehicleList)
                     if (!won && v.IsAlive && v.Marked) text += $" [{v.Def.Id} at {v.Position.X:0},{v.Position.Y:0} hp {v.Hp / v.MaxHp:P0}]";
                 if (!won && world.TryGetVehicle(mission.Boss, out var boss) && boss.IsAlive)

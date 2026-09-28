@@ -187,6 +187,10 @@ add_mission(m('c1m10', 1, 'ashfield', 'Destroy', 'Fog', variant='siege', operati
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 55}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
                   {'stage': 'bastion', 'goal': 'Boss', 'boss': scripted('fortress_bastion', (92, 92), heading=225, health=0.55), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.mai.c1m10.s3'}]},
+                  {'stage': 'counter', 'goal': 'Survive', 'surviveSeconds': 240, 'cp': 8,
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c1m10.s4'},
+                              {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'mortar_carrier', 'light_tank']},
+                              {'at': '140', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'rocket_technical', 'ifv']}]},
                   {'stage': 'hq', 'goal': 'Destroy', 'targets': ['command_hq'], 'targetHealth': 0.8,
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'mortar_carrier']}]},
               ],
@@ -202,12 +206,14 @@ add_mission(m('c1m10', 1, 'ashfield', 'Destroy', 'Fog', variant='siege', operati
             [say('khai', 'Start', 'This is what we landed for. The fortress falls today.', 'Ta đổ bộ là vì hôm nay. Pháo đài phải thất thủ.'),
              say('khai', 'Win', 'Ashfield is ours. Chapter one of a long book, Brigade.', 'Ashfield là của ta. Chương đầu của một cuốn sách dài, Lữ đoàn ạ.')],
             stages_text={'depot': ('Burn the Fuel Depot', 'Đốt kho nhiên liệu'), 'dump': ('Blow the Ammunition Dumps', 'Cho nổ kho đạn'),
-                         'radar': ('Knock Out the Radar', 'Phá trạm radar'), 'bastion': ('The Bastion', 'Bastion'), 'hq': ('Level the HQ', 'San phẳng sở chỉ huy')},
+                         'radar': ('Knock Out the Radar', 'Phá trạm radar'), 'bastion': ('The Bastion', 'Bastion'), 'counter': ('The Garrison Strikes Back', 'Quân đồn trú phản kích'),
+                         'hq': ('Level the HQ', 'San phẳng sở chỉ huy')},
             choices_text={'dump': (('Blow the ammunition dumps', 'Cho nổ kho đạn'), ('The garrison earns 30 % less for the rest of the battle.', 'Quân địch kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')),
                           'radar': (('Knock out the radar', 'Phá trạm radar'), ('Diều Hâu can reach the fortress: a free airstrike about every minute.', 'Diều Hâu bay tới được pháo đài: một đợt không kích miễn phí khoảng mỗi phút.'))})
 # Stage lines of the operation.
 from campaign_kit import T
 T('radio.khai.c1m10.s1', 'Fuel depot first. Light it up and their tanks go hungry.', 'Kho nhiên liệu trước. Đốt nó đi, xe tăng của chúng sẽ đói.')
+T('radio.khai.c1m10.s4', 'The garrison is coming back out of the kilns. Hold where you stand.', 'Quân đồn trú đang tràn ra từ các lò nung. Giữ nguyên vị trí.')
 T('radio.mai.c1m10.s3', 'That is the Bastion. Early model: thin rear plates. Hit it from behind!', 'Đó là Bastion. Mẫu đời đầu: giáp sau mỏng. Đánh từ phía sau!')
 
 add_mission(m('c1s1', 1, 'greenvale', 'Recon', 'Fog', side=True, after='c1m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=840, reinforcements=1,
@@ -367,9 +373,9 @@ add_mission(m('c2m08', 2, 'dunebreak', 'Hold', 'Night', points=['town'], holdSec
             [say('khai', 'Start', 'Four minutes in the yard. Do not chase them out.', 'Bốn phút trong sân. Đừng đuổi theo chúng ra ngoài.'),
              say('varga', 'At', 'Burn them out of my refinery!', 'Đốt chúng ra khỏi nhà máy của ta!', at=100)])
 
-add_mission(m('c2m09', 2, 'redrock', 'Duel', 'Sandstorm', general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1200,
-              enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=14, enemyIncome=0.9,
-              playerCp=26, playerIncome=1.5, playerCap=38, playerBase='Anchor', starTime=780, starLosses=12),
+add_mission(m('c2m09', 2, 'redrock', 'Duel', 'Sandstorm', targetHealth=0.4, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.54,
+              playerCp=26, playerIncome=1.9, playerCap=38, playerBase='Anchor', starTime=780, starLosses=12),
             ('Varga\'s Camp', 'Trại của Varga'),
             ('Varga has dug his headquarters into the far end of the canyon: anti-tank guns, his favourite tanks, and his temper. '
              'Level his HQ. He will run; let him know we are coming.',
@@ -390,14 +396,21 @@ add_mission(m('c2m10', 2, 'dunebreak', 'Capture', 'Overcast', legacy='m05', oper
                   {'stage': 'fields', 'goal': 'Capture', 'points': ['east', 'west'], 'enemyOwns': ['east', 'west'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c2m10.s1'}],
                    'choices': [{'key': 'tanks', 'next': 'tanks'}, {'key': 'oasis', 'next': 'oasis'}]},
-                  {'stage': 'tanks', 'goal': 'Destroy', 'targets': ['fuel_tank'], 'targetX': 65, 'targetZ': 29, 'targetRadius': 20, 'targetHealth': 2, 'cp': 6, 'next': 'refinery',
+                  {'stage': 'tanks', 'goal': 'Destroy', 'targets': ['fuel_tank'], 'targetX': 65, 'targetZ': 29, 'targetRadius': 20, 'targetHealth': 2, 'cp': 6, 'next': 'wells',
                    'events': [{'at': 'end', 'kind': 'Income', 'team': 1, 'amount': 0.7}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.enemyWeakened'}]},
-                  {'stage': 'oasis', 'goal': 'Hold', 'points': ['west'], 'holdSeconds': 90, 'cp': 6, 'next': 'refinery',
+                  {'stage': 'oasis', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 90, 'cp': 6, 'next': 'wells',
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 55}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
+                  {'stage': 'wells', 'goal': 'Destroy', 'targets': ['oil_pump'], 'targetX': 56, 'targetZ': -86, 'targetRadius': 40, 'targetHealth': 2, 'cp': 6},
                   {'stage': 'refinery', 'goal': 'Destroy', 'targets': ['refinery_tower', 'storage_tank'], 'targetX': 0, 'targetZ': 0, 'targetRadius': 40, 'targetHealth': 2, 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'tank_destroyer', 'flame_tank']}]},
-                  {'stage': 'inferno', 'goal': 'Boss', 'boss': scripted('behemoth_inferno', (30, 30), heading=225, health=1.2),
+                  {'stage': 'yard', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 240, 'cp': 8,
+                   'events': [{'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'flame_tank']}]},
+                  {'stage': 'inferno', 'goal': 'Boss', 'boss': scripted('behemoth_inferno', (30, 30), heading=225, health=1.4), 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.varga.c2m10.s5'}]},
+                  {'stage': 'counter', 'goal': 'Survive', 'surviveSeconds': 480,
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.varga.c2m10.s6'},
+                              {'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'tank_destroyer', 'ifv', 'mlrs']},
+                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'flame_tank', 'heavy_tank']}]},
               ],
               towerGear=None, starTime=1320, starLosses=16),
             ('Refinery Raid', 'Đột kích nhà máy lọc dầu'),
@@ -411,10 +424,13 @@ add_mission(m('c2m10', 2, 'dunebreak', 'Capture', 'Overcast', legacy='m05', oper
             [say('khai', 'Start', 'The refinery burns today, Brigade. Everything inside it too.', 'Hôm nay nhà máy lọc dầu phải cháy, Lữ đoàn. Cả những gì bên trong nó.'),
              say('khai', 'Win', 'Varga is running out of fuel, and out of monsters.', 'Varga đang cạn dầu, và cạn cả quái vật.')],
             stages_text={'fields': ('The Oil Field and the Oasis', 'Mỏ dầu và ốc đảo'), 'tanks': ('Burn the Fuel Tanks', 'Đốt bồn nhiên liệu'),
-                         'oasis': ('Hold the Oasis Radio', 'Giữ đài phát ốc đảo'), 'refinery': ('Blow the Refinery', 'Cho nổ nhà máy'), 'inferno': ('Inferno', 'Inferno')},
+                         'oasis': ('Hold the Oasis Radio', 'Giữ đài phát ốc đảo'), 'wells': ('Blow the Wellheads', 'Phá các đầu giếng'),
+                         'refinery': ('Blow the Refinery', 'Cho nổ nhà máy'), 'yard': ('Hold the Refinery Yard', 'Giữ sân nhà máy'), 'inferno': ('Inferno', 'Inferno'),
+                         'counter': ('Varga\'s Counterattack', 'Varga phản kích')},
             choices_text={'tanks': (('Burn the fuel tanks', 'Đốt bồn nhiên liệu'), ('Varga\'s army earns 30 % less for the rest of the battle.', 'Quân Varga kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')),
                           'oasis': (('Hold the oasis radio', 'Giữ đài phát ốc đảo'), ('Hold it 90 s: Diều Hâu\'s airstrikes, free, about every minute.', 'Giữ 90 giây: không kích miễn phí của Diều Hâu, khoảng mỗi phút một lượt.'))})
 T('radio.khai.c2m10.s1', 'Oil field and oasis first. Then we choose.', 'Mỏ dầu và ốc đảo trước. Rồi ta sẽ chọn.')
+T('radio.varga.c2m10.s6', 'Every tank I have left, to the refinery. Now!', 'Toàn bộ xe tăng còn lại, tới nhà máy lọc dầu. Ngay!')
 T('radio.varga.c2m10.s5', 'You want fire, Colonel? Here is fire.', 'Muốn lửa hả, đại tá? Lửa đây.')
 
 add_mission(m('c2s1', 2, 'dunebreak', 'Recon', 'Night', side=True, after='c2m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=840, reinforcements=1,
@@ -502,7 +518,7 @@ add_mission(m('c3m04', 3, 'whiteout', 'Outpost', 'Night', points=['town'], holdS
              say('orlov', 'At', 'A base on a lake. How poetic. How flammable.', 'Căn cứ trên mặt hồ. Thật nên thơ. Thật dễ cháy.', at=120)])
 
 add_mission(m('c3m05', 3, 'whiteout', 'Boss', 'Clear', legacy='m03', general='orlov', timeLimit=1140, reinforcements=2,
-              boss=scripted('mega_gunship', (84, 84), heading=225, route=[(60, 60), (-20, 60), (-40, -10), (30, -30)], health=0.8),
+              boss=scripted('mega_gunship', (84, 84), heading=225, route=[(60, 60), (-20, 60), (-40, -10), (30, -30)], health=1.6),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85,
               enemyDeck=['light_tank', 'main_battle_tank', 'ifv', 'mortar_carrier', 'aa_vehicle', 'attack_helicopter'],
               playerCp=26, playerIncome=1.45, playerCap=36, playerBase='Anchor',
@@ -537,7 +553,7 @@ add_mission(m('c3m06', 3, 'frostpeak', 'Hunt', 'Night', general='orlov', timeLim
             [say('linh', 'Start', 'Three batteries. They shoot, they move, they shoot. Be quicker than the second shot.', 'Ba khẩu đội. Chúng bắn, chúng chạy, chúng lại bắn. Phải nhanh hơn loạt thứ hai.'),
              say('orlov', 'At', 'You found my guns. Remarkable. Also irrelevant.', 'Ngươi tìm ra pháo của ta. Đáng nể. Nhưng cũng chẳng để làm gì.', at=150)])
 
-add_mission(m('c3m07', 3, 'whiteout', 'Protect', 'Fog', targets=['log_cabin', 'barn'], protectNeeded=1, targetHealth=8, surviveSeconds=420, general='orlov', reinforcements=2,
+add_mission(m('c3m07', 3, 'whiteout', 'Protect', 'Fog', targets=['log_cabin', 'barn'], protectNeeded=1, targetHealth=14, surviveSeconds=420, general='orlov', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=10, enemyIncome=0.8,
               enemyDeck=ORLOV, playerCp=26, playerIncome=1.4, playerCap=36, playerBase='Anchor',
               waves=waves(['light_tank', 'ifv', 'mortar_carrier', 'main_battle_tank', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
@@ -568,9 +584,9 @@ add_mission(m('c3m08', 3, 'whiteout', 'Boss', 'Snow', legacy='m18', general='var
             [say('mai', 'Start', 'They patched it. Badly. The rear plates are still mine.', 'Chúng vá lại nó rồi. Vá ẩu. Giáp sau vẫn là của tôi.'),
              say('varga', 'Boss', 'I fixed her, Colonel. I always fix her.', 'Ta đã sửa lại nó, đại tá. Ta luôn sửa được nó.')])
 
-add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', general='orlov', enemyBase='Target', enemyHq=4, replay=True, reinforcements=3, timeLimit=1200,
-              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.95,
-              playerCp=28, playerIncome=1.55, playerCap=38, playerBase='Anchor', starTime=840, starLosses=12),
+add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', targetHealth=0.4, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.56,
+              playerCp=28, playerIncome=1.95, playerCap=38, playerBase='Anchor', starTime=840, starLosses=12),
             ('Orlov\'s Gun Line', 'Trận địa pháo của Orlov'),
             ('Orlov\'s headquarters sits behind a wall of artillery emplacements, where he can see the whole valley. Break through and level it. He will not wait for you.',
              'Sở chỉ huy của Orlov nằm sau một bức tường ụ pháo, nơi hắn nhìn thấy cả thung lũng. Chọc thủng và san phẳng nó. Hắn sẽ không chờ ta đâu.'),
@@ -595,25 +611,28 @@ add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Overcast', variant='siege', l
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 50}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
                   {'stage': 'fortress', 'goal': 'Boss', 'boss': scripted('mobile_fortress', (90, 90), heading=225, health=1.3), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.orlov.c3m10.s4'}]},
-                  {'stage': 'hq', 'goal': 'Destroy', 'targets': ['command_hq'], 'targetHealth': 0.9,
-                   'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'mlrs', 'sam_launcher']}]},
+                  {'stage': 'gate', 'goal': 'Survive', 'surviveSeconds': 360,
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.orlov.c3m10.s5'},
+                              {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'mlrs', 'sam_launcher', 'main_battle_tank']},
+                              {'at': '190', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'artillery', 'ifv']}]},
               ],
               starTime=1380, starLosses=16),
             ('The Frostpeak Line', 'Tuyến Frostpeak'),
             ('The last station of the radar line, the fortress behind it, and the Ice Fortress guarding its gate. '
-             'Blind the hill radar, choose your second blow, destroy the Ice Fortress and level Orlov\'s command HQ.',
+             'Blind the hill radar, choose your second blow, destroy the Ice Fortress, and hold its gate against Orlov\'s counterattack.',
              'Trạm cuối của tuyến radar, pháo đài phía sau nó, và Pháo Đài Băng canh cổng. '
-             'Làm mù radar trên đồi, chọn đòn thứ hai, tiêu diệt Pháo Đài Băng và san phẳng sở chỉ huy của Orlov.'),
+             'Làm mù radar trên đồi, chọn đòn thứ hai, tiêu diệt Pháo Đài Băng, rồi giữ cổng trước đợt phản kích của Orlov.'),
             (('Spring', 'Mùa xuân'),
              ('The day the Frostpeak line fell, the thaw began. The engineers swear the two are not connected. The villagers do not believe the engineers.',
               'Ngày tuyến Frostpeak sụp đổ, băng bắt đầu tan. Công binh thề rằng hai chuyện chẳng liên quan gì nhau. Dân làng không tin công binh.')),
             [say('khai', 'Start', 'The line breaks today, or the winter wins. Move.', 'Hôm nay tuyến phải vỡ, không thì mùa đông thắng. Tiến lên.'),
              say('khai', 'Win', 'The highlands are open. Act one is done, Brigade.', 'Cao nguyên đã mở. Hồi thứ nhất khép lại rồi, Lữ đoàn.')],
             stages_text={'radar': ('Blind the Hill Radar', 'Làm mù radar trên đồi'), 'depots': ('Blow the Fuel Depots', 'Cho nổ kho nhiên liệu'),
-                         'radars': ('The Fortress Radars', 'Radar của pháo đài'), 'fortress': ('The Ice Fortress', 'Pháo Đài Băng'), 'hq': ('Level the HQ', 'San phẳng sở chỉ huy')},
+                         'radars': ('The Fortress Radars', 'Radar của pháo đài'), 'fortress': ('The Ice Fortress', 'Pháo Đài Băng'), 'gate': ('Hold the Gate', 'Giữ cổng')},
             choices_text={'depots': (('Blow the fuel depots', 'Cho nổ kho nhiên liệu'), ('Orlov\'s army earns 30 % less for the rest of the battle.', 'Quân Orlov kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')),
                           'radars': (('Destroy the fortress radars', 'Phá radar của pháo đài'), ('Free airstrikes about every 50 s for the rest of the battle.', 'Không kích miễn phí khoảng mỗi 50 giây trong suốt phần còn lại của trận.'))})
 T('radio.khai.c3m10.s1', 'The hill radar first. Without it, his guns fire blind.', 'Radar trên đồi trước. Mất nó, pháo của hắn bắn mù.')
+T('radio.orlov.c3m10.s5', 'All batteries, the gate. Bury them in it.', 'Toàn bộ khẩu đội, nhắm cổng. Chôn chúng ở đó.')
 T('radio.orlov.c3m10.s4', 'The Ice Fortress will hold the gate. It always has.', 'Pháo Đài Băng sẽ giữ cổng. Xưa nay vẫn thế.')
 
 add_mission(m('c3s1', 3, 'frostpeak', 'Recon', 'Fog', side=True, after='c3m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=840, reinforcements=1,

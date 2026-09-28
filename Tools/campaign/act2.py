@@ -86,7 +86,7 @@ add_mission(m('c4m04', 4, 'rustyard', 'Recon', 'Fog', legacy='m19', points=['wes
             [say('linh', 'Start', 'Three looks. Count the wagons if you can.', 'Ba lần quan sát. Đếm được toa tàu thì càng tốt.')])
 
 add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLimit=1200, general='kessler', reinforcements=3,
-              boss=scripted('armored_train', (128, 106.8), heading=270, route=[(75, 106.8), (0, 106.8), (-75, 106.8), (-138.75, 106.8)]),
+              boss=scripted('armored_train', (128, 106.8), heading=270, route=[(75, 106.8), (0, 106.8), (-75, 106.8), (-138.75, 106.8)], health=1.6),
               units=[{'def': 'main_battle_tank', 'team': 0, 'x': -93.75, 'z': 56.25, 'heading': 45}, {'def': 'light_tank', 'team': 0, 'x': -82.5, 'z': 63.75, 'heading': 45},
                      {'def': 'tank_destroyer', 'team': 0, 'x': -101.25, 'z': 71.25, 'heading': 45}, {'def': 'tank_destroyer', 'team': 0, 'x': -71.25, 'z': 82.5, 'heading': 45},
                      {'def': 'mlrs', 'team': 0, 'x': -112.5, 'z': 41.25, 'heading': 45}, {'def': 'heavy_tank', 'team': 0, 'x': -56.25, 'z': 86.25, 'heading': 90},
@@ -106,7 +106,7 @@ add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLi
 
 add_mission(m('c4m06', 4, 'rustyard', 'Intercept', 'Clear', timeLimit=1200, launchSeconds=45, general='kessler', reinforcements=3,
               boss=scripted('rail_supergun', (140, 11.25), heading=270, route=[(90, 11.25), (30, 11.25), (-30, 11.25), (-80, 11.25)],
-                            fallback='armored_train', fallbackHealth=1.3, name='rail_supergun'),
+                            fallback='armored_train', fallbackHealth=1.8, name='rail_supergun'),
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_tank', 'wheeled_gun'], (-70, -40), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor', starTime=540, starLosses=10),
@@ -119,7 +119,7 @@ add_mission(m('c4m06', 4, 'rustyard', 'Intercept', 'Clear', timeLimit=1200, laun
             [say('linh', 'Start', 'The supergun is moving west on the middle track. It needs forty-five seconds to set up.', 'Siêu pháo đang di chuyển về phía tây trên đường ray giữa. Nó cần bốn mươi lăm giây để triển khai.'),
              say('mai', 'BossHalf', 'The tractors are the weak point. Kill the tractors, the gun stops.', 'Đầu kéo là điểm yếu. Diệt đầu kéo là khẩu pháo đứng im.')])
 
-add_mission(m('c4m07', 4, 'ironport', 'Protect', 'Overcast', reversed=True, targets=['factory', 'office_block'], protectNeeded=1, targetHealth=6, surviveSeconds=420,
+add_mission(m('c4m07', 4, 'ironport', 'Protect', 'Overcast', reversed=True, targets=['factory', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='kessler', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=11, enemyIncome=0.85, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor',
@@ -135,11 +135,11 @@ add_mission(m('c4m07', 4, 'ironport', 'Protect', 'Overcast', reversed=True, targ
               'Ông đốc công bám trụ ở vị trí suốt trận tấn công. Hỏi vì sao, ông bảo: "Phải có người tắt lò cho đúng cách. Bọn Hegemon chẳng bao giờ làm."')),
             [say('khai', 'Start', 'The factories are the objective. Everything else is noise.', 'Khu nhà máy là mục tiêu. Mọi thứ khác chỉ là tiếng ồn.')])
 
-add_mission(m('c4m08', 4, 'rustyard', 'Hunt', 'Night', general='kessler', timeLimit=1100, targetHealth=2.5, reinforcements=2,
+add_mission(m('c4m08', 4, 'rustyard', 'Hunt', 'Night', general='kessler', timeLimit=1500, targetHealth=1.5, reinforcements=2,
               hunt=[scripted('mine_layer', (60, 70), route=[(90, 60), (40, 80), (60, 40)]),
                     scripted('mine_layer', (-20, 90), route=[(-50, 100), (0, 70), (-30, 60)]),
-                    scripted('engineer_vehicle', (100, -20), route=[(120, -50), (80, 0), (110, 20)])],
-              units=units(1, ['main_battle_tank', 'sam_launcher'], (60, 70), 7) + units(1, ['wheeled_gun', 'ifv'], (-20, 90), 6) + units(1, ['heavy_tank', 'aa_vehicle'], (100, -20), 6),
+                    scripted('mine_layer', (80, -10), route=[(90, -30), (60, 10), (90, 25)])],
+              units=units(1, ['main_battle_tank', 'sam_launcher'], (60, 70), 7) + units(1, ['wheeled_gun', 'ifv'], (-20, 90), 6) + units(1, ['heavy_tank', 'aa_vehicle'], (80, -10), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor', starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
             ('Minelayers', 'Tàu rải mìn trên cạn'),
@@ -150,9 +150,9 @@ add_mission(m('c4m08', 4, 'rustyard', 'Hunt', 'Night', general='kessler', timeLi
               'Mìn của Kessler được đánh số, ghi ngày và vào sổ. Công binh của hắn có thể chỉ cho ta chính xác vị trí từng quả. Và họ đã chỉ, đổi lấy mỗi người một bữa ăn nóng.')),
             [say('linh', 'Start', 'Three marked vehicles, moving slowly. Where they have been, drive carefully.', 'Ba xe được đánh dấu, đi chậm. Đường chúng đã qua, lái cẩn thận.')])
 
-add_mission(m('c4m09', 4, 'ironport', 'Duel', 'Storm', general='kessler', enemyBase='Target', enemyHq=4, replay=True, reinforcements=3, timeLimit=1200,
-              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95,
-              playerCp=30, playerIncome=1.6, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
+add_mission(m('c4m09', 4, 'ironport', 'Duel', 'Storm', targetHealth=0.4, general='kessler', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
+              playerCp=30, playerIncome=2.0, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
             ('The Admiral\'s Quarters', 'Tổng hành dinh của Đô đốc'),
             ('Kessler\'s headquarters stands behind the container stacks at the north end of the port, a little of every defence and mines everywhere. '
              'Break it in the storm and level his HQ.',
@@ -176,13 +176,16 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
                    'choices': [{'key': 'crane', 'next': 'crane'}, {'key': 'signal', 'next': 'signal'}]},
                   {'stage': 'crane', 'goal': 'Destroy', 'targets': ['fuel_tank', 'rail_tanker'], 'targetX': 45, 'targetZ': -85, 'targetRadius': 30, 'targetHealth': 2, 'cp': 6, 'next': 'factories',
                    'events': WEAKEN},
-                  {'stage': 'signal', 'goal': 'Hold', 'points': ['east'], 'holdSeconds': 100, 'cp': 6, 'next': 'factories', 'events': strikes(55)},
-                  {'stage': 'factories', 'goal': 'Capture', 'points': ['town', 'west'], 'cp': 10,
+                  {'stage': 'signal', 'goal': 'Survive', 'points': ['east'], 'surviveSeconds': 150, 'cp': 6, 'next': 'factories', 'events': strikes(55)},
+                  {'stage': 'factories', 'goal': 'Capture', 'points': ['town', 'west'], 'enemyOwns': ['town', 'west'], 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'wheeled_gun', 'sam_launcher']}]},
-                  {'stage': 'tempest', 'goal': 'Boss', 'boss': scripted('behemoth_tempest', (-56, 100), heading=180, health=1.3), 'cp': 8,
+                  {'stage': 'works', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 240, 'cp': 8,
+                   'events': [{'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'mine_layer']}]},
+                  {'stage': 'tempest', 'goal': 'Boss', 'boss': scripted('behemoth_tempest', (-56, 100), heading=180, health=1.8), 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.kessler.c4m10.s4'}]},
-                  {'stage': 'quay', 'goal': 'Hold', 'points': ['west'], 'holdSeconds': 150,
-                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'atgm_carrier', 'mlrs']}]},
+                  {'stage': 'quay', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 480,
+                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'atgm_carrier', 'mlrs']},
+                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'wheeled_gun', 'sam_launcher']}]},
               ],
               starTime=1380, starLosses=18),
             ('Take the Port', 'Chiếm bến cảng'),
@@ -196,9 +199,10 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
             [say('khai', 'Start', 'The port, Brigade. All of it, by tonight.', 'Bến cảng, Lữ đoàn. Toàn bộ, trước đêm nay.'),
              say('khai', 'Win', 'Ironport is free. Kessler\'s timetable is ours now.', 'Ironport tự do rồi. Thời gian biểu của Kessler giờ thuộc về ta.')],
             stages_text={'yard': ('The Rail Yard', 'Bãi đường sắt'), 'crane': ('Burn the Fuel Wagons', 'Đốt các toa nhiên liệu'), 'signal': ('Hold the Signal Box', 'Giữ trạm tín hiệu'),
-                         'factories': ('The Factories and the Docks', 'Khu nhà máy và bến tàu'), 'tempest': ('Tempest', 'Tempest'), 'quay': ('Hold the Quay', 'Giữ cầu tàu')},
+                         'factories': ('The Factories and the Docks', 'Khu nhà máy và bến tàu'), 'works': ('Hold the Factories', 'Giữ khu nhà máy'),
+                         'tempest': ('Tempest', 'Tempest'), 'quay': ('Hold the Quay', 'Giữ cầu tàu')},
             choices_text={'crane': choice_income('Burn the fuel wagons', 'Đốt các toa nhiên liệu', 'Kessler', 'Kessler'),
-                          'signal': choice_strikes('Hold the signal box (100 s)', 'Giữ trạm tín hiệu (100 giây)', 55)})
+                          'signal': choice_strikes('Hold the signal box (150 s)', 'Giữ trạm tín hiệu (150 giây)', 55)})
 T('radio.khai.c4m10.s1', 'The rail yard first: it is the key to the rest.', 'Bãi đường sắt trước: nó là chìa khóa cho phần còn lại.')
 T('radio.kessler.c4m10.s4', 'Tempest, clear the docks. On schedule.', 'Tempest, dọn sạch bến tàu. Đúng lịch.')
 
@@ -217,7 +221,7 @@ add_mission(m('c4s1', 4, 'rustyard', 'Escort', 'Rain', side=True, after='c4m03',
               'Tám mươi tư tù binh được đưa ra khỏi đường tránh. Đêm đó Linh đọc từng cái tên trên sóng phát thanh, để gia đình họ được nghe.')),
             [say('linh', 'Start', 'The prisoners are at the scrapyard. Bring them home.', 'Tù binh đang ở bãi phế liệu. Đưa họ về nhà.')])
 
-add_mission(m('c4s2', 4, 'ironport', 'Hunt', 'Clear', side=True, reversed=True, after='c4m07', speaker='linh', timeLimit=1000, targetHealth=2.5, reinforcements=1,
+add_mission(m('c4s2', 4, 'ironport', 'Hunt', 'Clear', side=True, reversed=True, after='c4m07', speaker='linh', timeLimit=1300, targetHealth=1.8, reinforcements=1,
               hunt=[scripted('command_vehicle', (60, 60), route=[(80, 40), (40, 80), (70, 90)]),
                     scripted('command_vehicle', (-30, 90), route=[(-60, 100), (0, 80), (-20, 60)])],
               units=units(1, ['main_battle_tank', 'aa_vehicle', 'ifv'], (60, 60), 7) + units(1, ['wheeled_gun', 'sam_launcher'], (-30, 90), 6),
@@ -264,10 +268,10 @@ add_mission(m('c5m02', 5, 'emberridge', 'Hunt', 'Night', general='sen', timeLimi
             [say('linh', 'Start', 'Three launch trucks. Kill the trucks and the swarms stop coming.', 'Ba xe phóng. Diệt được xe là bầy drone thôi kéo tới.')])
 
 add_mission(m('c5m03', 5, 'junglepass', 'Escort', 'Fog', convoyCount=5, convoyNeeded=3, timeLimit=1100, reinforcements=2,
-              convoy=scripted('supply_truck', (-100, -100), route=[(-82.2, -71.6), (-50.4, -50.4), (-19.9, -27.8), (0, 0), (-40, 30), (-75, 63.75)], heading=45),
+              convoy=scripted('supply_truck', (-100, -100), route=[(-82.2, -71.6), (-50.4, -50.4), (-77, -13), (-82, 34), (-75, 63)], heading=45),
               units=units(0, ['main_battle_tank', 'heavy_aa', 'ifv', 'heavy_tank'], (-88, -90), 6),
               enemyAi='waves', difficulty='Normal',
-              waves=waves(['strike_drone', 'fpv_carrier', 'ifv', 'light_tank', 'attack_helicopter'], first=20, interval=28, size=3, grow=0.5, max_size=7, max_alive=16,
+              waves=waves(['ifv', 'light_tank', 'strike_drone', 'armored_car', 'fpv_carrier'], first=35, interval=32, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 80), (95, 20), (20, 110)]),
               unlocks=['ew_jammer'], starTime=360, starLosses=8, challenge={'kind': 'Kills', 'value': 22}),
             ('River Road', 'Đường ven sông'),
@@ -332,7 +336,7 @@ add_mission(m('c5m07', 5, 'junglepass', 'ShootDown', 'Clear', killsNeeded=14, ti
               'Lũ drone biến mất được một tuần thì chim chóc quay về đèo. Diều Hâu khẳng định chúng đợi anh.')),
             [say('dieuhau', 'Start', 'Drones, lots of them. Keep the anti-air moving under the trees.', 'Drone, nhiều lắm. Cho phòng không di chuyển liên tục dưới tán cây.')])
 
-add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, targets=['storage_tank'], protectNeeded=1, targetHealth=6, surviveSeconds=420,
+add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, targets=['storage_tank'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='sen', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=11, enemyIncome=0.85, enemyDeck=SEN,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor',
@@ -346,9 +350,9 @@ add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, ta
               'Chặn thu được, Sen gửi Aurel: "Nhà máy là nguồn điện dân sự. Tôi sẽ không đánh nó." Aurel trả lời: "Vậy sẽ có người khác đánh." Và đã có người khác đánh.')),
             [say('linh', 'Start', 'These drones are not Sen\'s launch codes. Aurel is running them himself.', 'Những drone này không dùng mã phóng của Sen. Aurel đang tự điều khiển chúng.')])
 
-add_mission(m('c5m09', 5, 'junglepass', 'Duel', 'Night', general='sen', enemyBase='Target', enemyHq=4, replay=True, reinforcements=3, timeLimit=1200,
-              enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=16, enemyIncome=0.95,
-              playerCp=30, playerIncome=1.6, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet'], starTime=900, starLosses=14),
+add_mission(m('c5m09', 5, 'junglepass', 'Duel', 'Night', targetHealth=0.4, general='sen', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
+              playerCp=30, playerIncome=2.0, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet'], starTime=900, starLosses=14),
             ('The Hangars of the Pass', 'Những nhà chứa trên đèo'),
             ('Sen\'s field headquarters is ringed with drone hangars and jammers. Break it at night and level her HQ. Linh thinks she may not fight to the end.',
              'Sở chỉ huy dã chiến của Sen được bao quanh bởi những nhà chứa drone và xe gây nhiễu. Phá nó trong đêm và san phẳng sở chỉ huy. Linh nghĩ bà ấy có thể sẽ không đánh tới cùng.'),
@@ -368,14 +372,16 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
                   {'stage': 'causeways', 'goal': 'Capture', 'points': ['west', 'east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c5m10.s1'}],
                    'choices': [{'key': 'fuel', 'next': 'fuel'}, {'key': 'relay', 'next': 'relay'}]},
-                  {'stage': 'fuel', 'goal': 'Destroy', 'targets': ['storage_tank'], 'targetX': 36, 'targetZ': 20, 'targetRadius': 36, 'targetHealth': 2, 'cp': 6, 'next': 'swarm',
+                  {'stage': 'fuel', 'goal': 'Destroy', 'targets': ['storage_tank'], 'targetX': 36, 'targetZ': 20, 'targetRadius': 36, 'targetHealth': 2, 'cp': 6, 'next': 'plant',
                    'events': WEAKEN},
-                  {'stage': 'relay', 'goal': 'Hold', 'points': ['town'], 'enemyOwns': [], 'holdSeconds': 100, 'cp': 6, 'next': 'swarm', 'events': strikes(55)},
-                  {'stage': 'swarm', 'goal': 'Survive', 'surviveSeconds': 200, 'cp': 8,
+                  {'stage': 'relay', 'goal': 'Survive', 'points': ['town'], 'enemyOwns': [], 'surviveSeconds': 120, 'cp': 6, 'next': 'plant', 'events': strikes(55)},
+                  {'stage': 'plant', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 300, 'cp': 8,
+                   'events': [{'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['ifv', 'main_battle_tank', 'fpv_carrier']}]},
+                  {'stage': 'swarm', 'goal': 'Survive', 'surviveSeconds': 480, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c5m10.s3'},
                               {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['strike_drone', 'strike_drone', 'fpv_carrier', 'ifv']},
                               {'at': '110', 'kind': 'Reinforce', 'team': 1, 'units': ['strike_drone', 'lancet_truck', 'main_battle_tank', 'ew_jammer']}]},
-                  {'stage': 'mothership', 'goal': 'Boss', 'boss': scripted('drone_mothership', (84, 84), heading=225, health=0.8),
+                  {'stage': 'mothership', 'goal': 'Boss', 'boss': scripted('drone_mothership', (84, 84), heading=225, health=1.6),
                    'events': [{'at': 'end', 'kind': 'Radio', 'key': 'radio.sen.c5m10.end'}]},
               ],
               starTime=1380, starLosses=18),
@@ -390,9 +396,9 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
             [say('khai', 'Start', 'The mothership falls today. Everything else is on the way to it.', 'Hôm nay tàu mẹ phải rơi. Mọi thứ khác chỉ là đường tới nó.'),
              say('khai', 'Win', 'Sen is surrendering, Colonel? ...Bring her in. Carefully.', 'Sen ra hàng à? ...Đưa bà ấy về. Cẩn thận.')],
             stages_text={'causeways': ('The Causeways', 'Các đường đắp'), 'fuel': ('Burn the Drone Fuel', 'Đốt nhiên liệu drone'), 'relay': ('Hold the Relay', 'Giữ trạm tiếp sóng'),
-                         'swarm': ('The Swarm', 'Bầy drone'), 'mothership': ('The Mothership', 'Tàu mẹ')},
+                         'plant': ('Hold the Geothermal Plant', 'Giữ nhà máy địa nhiệt'), 'swarm': ('The Swarm', 'Bầy drone'), 'mothership': ('The Mothership', 'Tàu mẹ')},
             choices_text={'fuel': choice_income('Burn the drone fuel', 'Đốt nhiên liệu drone', 'Sen\'s army', 'Quân của Sen'),
-                          'relay': choice_strikes('Hold the relay (100 s)', 'Giữ trạm tiếp sóng (100 giây)', 55)})
+                          'relay': choice_strikes('Hold the relay (120 s)', 'Giữ trạm tiếp sóng (120 giây)', 55)})
 T('radio.khai.c5m10.s1', 'The causeways first. They are the only roads over the lava.', 'Các đường đắp trước. Đó là những con đường duy nhất vượt qua dung nham.')
 T('radio.sen.c5m10.s3', 'Aurel has taken the swarm from me. I cannot stop it. Survive it.', 'Aurel đã lấy bầy drone khỏi tay tôi. Tôi không dừng nó được. Hãy trụ vững.')
 T('radio.sen.c5m10.end', 'Colonel. This is Sen. I am coming out. Do not shoot.', 'Đại tá. Sen đây. Tôi đang đi ra. Đừng bắn.')
@@ -464,7 +470,7 @@ add_mission(m('c6m02', 6, 'whiteout', 'Evacuate', 'Snow', reversed=True, convoyC
              say('linh', 'At', 'Half the trucks are out. Varga is pushing harder.', 'Một nửa số xe đã thoát. Varga đang dồn ép mạnh hơn.', at=80)])
 
 add_mission(m('c6m03', 6, 'ashfield', 'Escort', 'Clear', reversed=True, convoyCount=1, convoyNeeded=1, timeLimit=1100, speaker='mai', general='varga', reinforcements=3,
-              convoy=scripted('behemoth', (-100, -100), route=[(-78.75, -78.75), (-31.9, -31.9), (0, 0), (31.9, 31.9), (78.75, 78.75)], heading=45),
+              convoy=scripted('behemoth', (-100, -100), route=[(-78.75, -78.75), (-31.9, -31.9), (0, 0), (31.9, 0)], heading=45, health=4.0),
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_aa', 'ifv'], (-88, -80), 7),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
@@ -495,7 +501,7 @@ add_mission(m('c6m04', 6, 'hydrodam', 'Capture', 'Rain', points=['west', 'town',
             [say('linh', 'Start', 'Varga\'s scouts are at the power station already.', 'Trinh sát của Varga đã tới trạm phát điện rồi.')])
 
 add_mission(m('c6m05', 6, 'whiteout', 'Boss', 'Night', reversed=True, general='varga', timeLimit=1200, reinforcements=3,
-              boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=0.8),
+              boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=1.8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer'],
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', unlocks=['recon_drone'], starTime=780, starLosses=12),
@@ -554,9 +560,9 @@ add_mission(m('c6m08', 6, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, gene
             [say('linh', 'Start', 'Seismic contact under the valley, moving west. That is Sâu Đất.', 'Tín hiệu địa chấn dưới thung lũng, đang di chuyển về phía tây. Đó là Sâu Đất.'),
              say('mai', 'Boss', 'Hit it when it surfaces. The drill head is armour; the back is not.', 'Đánh nó khi nó trồi lên. Đầu khoan là giáp; phía sau thì không.')])
 
-add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', reversed=True, general='varga', enemyBase='Target', enemyHq=5, replay=True, reinforcements=3, timeLimit=1200,
-              enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=16, enemyIncome=1.0,
-              playerCp=30, playerIncome=1.65, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
+add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', targetHealth=0.4, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.59,
+              playerCp=30, playerIncome=2.05, playerCap=40, playerBase='Anchor', starTime=900, starLosses=14),
             ('Varga\'s Winter Camp', 'Trại mùa đông của Varga'),
             ('Varga has made his winter camp in the south of the pass, in our old positions, and dug in every anti-tank gun he has. Level his HQ, and his counterstrike has no head.',
              'Varga dựng trại mùa đông ở phía nam đèo, ngay trên các vị trí cũ của ta, và đào sẵn mọi khẩu pháo chống tăng hắn có. San phẳng sở chỉ huy, đợt phản công của hắn sẽ mất đầu.'),
@@ -573,15 +579,15 @@ add_mission(m('c6m10', 6, 'hydrodam', 'Hold', 'Storm', operation=True, replay=Tr
               waves=waves(['main_battle_tank', 'heavy_tank', 'ifv', 'twin_tank', 'mlrs', 'flame_tank'], first=60, interval=55, size=3, grow=0.4, max_size=6, max_alive=16),
               ally={'x': -100, 'z': -60, 'heading': 45},
               stages=[
-                  {'stage': 'crest', 'goal': 'Hold', 'points': ['town'], 'holdSeconds': 150, 'cp': 8,
+                  {'stage': 'crest', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 240, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c6m10.s1'}],
                    'choices': [{'key': 'spillway', 'next': 'spillway'}, {'key': 'station', 'next': 'station'}]},
                   {'stage': 'spillway', 'goal': 'Destroy', 'targets': ['fuel_bladder', 'barn', 'cottage'], 'targetX': 60, 'targetZ': -100, 'targetRadius': 45, 'targetHealth': 2, 'cp': 6,
                    'next': 'monster', 'events': WEAKEN},
-                  {'stage': 'station', 'goal': 'Hold', 'points': ['west'], 'holdSeconds': 100, 'cp': 6, 'next': 'monster', 'events': strikes(55)},
+                  {'stage': 'station', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 150, 'cp': 6, 'next': 'monster', 'events': strikes(55)},
                   {'stage': 'monster', 'goal': 'Boss', 'boss': scripted('behemoth', (90, 90), heading=225, route=[(50, 40), (10, 10), (-20, -20)], health=3.0, name='frost_monster'), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.varga.c6m10.s3'}]},
-                  {'stage': 'relief', 'goal': 'Survive', 'surviveSeconds': 240,
+                  {'stage': 'relief', 'goal': 'Survive', 'surviveSeconds': 360,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.hung.c6m10.s4'},
                               {'at': '40', 'kind': 'AllyReinforce', 'units': ['main_battle_tank', 'main_battle_tank', 'ifv', 'aa_vehicle']},
                               {'at': '60', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'twin_tank', 'mlrs', 'flame_tank']},
@@ -601,7 +607,7 @@ add_mission(m('c6m10', 6, 'hydrodam', 'Hold', 'Storm', operation=True, replay=Tr
             stages_text={'crest': ('Hold the Crest', 'Giữ mặt đập'), 'spillway': ('Burn Varga\'s Depot', 'Đốt kho của Varga'), 'station': ('Hold the Power Station', 'Giữ trạm phát điện'),
                          'monster': ('The Frost Monster', 'Quái Vật Băng'), 'relief': ('Until Relief Arrives', 'Chờ cứu viện')},
             choices_text={'spillway': choice_income('Burn Varga\'s depot at the ford', 'Đốt kho của Varga ở bến lội', 'Varga', 'Varga'),
-                          'station': choice_strikes('Hold the power station (100 s)', 'Giữ trạm phát điện (100 giây)', 55)})
+                          'station': choice_strikes('Hold the power station (150 s)', 'Giữ trạm phát điện (150 giây)', 55)})
 T('radio.khai.c6m10.s1', 'The crest first. Whoever holds the dam holds the valley.', 'Mặt đập trước. Ai giữ con đập thì giữ cả thung lũng.')
 T('radio.varga.c6m10.s3', 'Meet my masterpiece, Colonel.', 'Chào kiệt tác của ta đi, đại tá.')
 T('radio.hung.c6m10.s4', 'Khải! Hùng here, the Northern Army is on the road. Hold on, we are coming.', 'Khải! Hùng đây, Tập đoàn quân Phương Bắc đang trên đường. Cố lên, chúng tôi đang tới.')

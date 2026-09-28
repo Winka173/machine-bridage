@@ -169,7 +169,8 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Outpost => MathF.Min(1f, _outpostHeld / MathF.Max(1f, _def.HoldSeconds)),
             MissionGoal.Relieve => _hunted.Count == 0 ? 1f : 1f - AliveHunted(world) / (float)_hunted.Count,
             MissionGoal.Evacuate => MathF.Min(1f, _arrived / (float)Math.Max(1, _def.ConvoyNeeded)),
-            MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { } camp && world.TryGetVehicle(camp.Hq, out var hq) ? (hq.IsAlive ? 1f - hq.Hp / hq.MaxHp : 1f) : 0f,
+            MissionGoal.Duel => world.Bases.Of(EnemyTeam) is not { } camp ? 0f
+                : camp.HqFallen || !world.TryGetVehicle(camp.Hq, out var hq) || !hq.IsAlive ? 1f : 1f - hq.Hp / hq.MaxHp,
             _ => BossFled ? 1f : world.TryGetVehicle(_boss, out var boss) ? 1f - boss.Hp / boss.MaxHp : _boss.IsValid ? 1f : 0f,
         };
 
@@ -534,6 +535,12 @@ namespace MachineBrigade.Sim.Modes
                 _convoySpawned++;
                 var truck = world.SpawnVehicle(convoy.Def, PlayerTeam, convoy.Position, convoy.Heading);
                 truck.Scripted = true;
+                // A convoy vehicle can be tougher than its def (the Behemoth Mai plated up for the road).
+                if (MathF.Abs(convoy.Health - 1f) > 1e-3f && convoy.Health > 0f)
+                {
+                    truck.HpScale *= convoy.Health;
+                    truck.Hp = truck.MaxHp;
+                }
                 _convoy.Add((truck.Id, 0));
                 if (convoy.Route.Count > 0) Drive(world, truck, convoy.Route[0]);
             }
@@ -612,11 +619,24 @@ namespace MachineBrigade.Sim.Modes
             return alive;
         }
 
-        /// <summary>The demolition target the player's commander should shoot at, or none.</summary>
-        public EntityId PlayerDemolish(SimWorld world) => _def.Goal == MissionGoal.Destroy ? NearestTargetId(world) : EntityId.None;
+        /// <summary>The demolition target the player's commander should shoot at (a duel: the general's HQ), or none.</summary>
+        public EntityId PlayerDemolish(SimWorld world) => _def.Goal switch
+        {
+            MissionGoal.Destroy => NearestTargetId(world),
+            MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { HqFallen: false } camp ? camp.Hq : EntityId.None,
+            _ => EntityId.None,
+        };
 
         /// <summary>Protect: the building the enemy goes for (the one nearest its army), or none.</summary>
         public EntityId EnemyDemolish(SimWorld world) => _def.Goal == MissionGoal.Protect ? NearestTargetId(world, EnemyCentre(world)) : EntityId.None;
+
+        /// <summary>A side's HQ made tougher or weaker (a duel's target), at full health.</summary>
+        public static void HardenHq(SimWorld world, int team, float scale)
+        {
+            if (scale <= 0f || world.Bases.Of(team) is not { } camp || !world.TryGetVehicle(camp.Hq, out var hq)) return;
+            hq.HpScale *= scale;
+            hq.Hp = hq.MaxHp;
+        }
 
         /// <summary>The markers the game draws: what to destroy, keep standing or scout.</summary>
         public void Marks(SimWorld world, List<MissionMark> into)
@@ -627,6 +647,8 @@ namespace MachineBrigade.Sim.Modes
                 if (world.TryGetProp(id, out var p) && p.IsAlive) into.Add(new MissionMark(kind, id, true, p.Position, 0f));
             foreach (var (id, _) in _hunted)
                 if (world.TryGetVehicle(id, out var v) && v.IsAlive) into.Add(new MissionMark(MissionMarkKind.Attack, id, false, v.Position, 0f));
+            if (_def.Goal == MissionGoal.Duel && world.Bases.Of(EnemyTeam) is { HqFallen: false } camp && world.TryGetVehicle(camp.Hq, out var hq) && hq.IsAlive)
+                into.Add(new MissionMark(MissionMarkKind.Attack, hq.Id, false, hq.Position, 0f));
             if (_def.Goal == MissionGoal.Recon)
                 foreach (var point in _points)
                     if (point.Owner != PlayerTeam)
