@@ -50,6 +50,22 @@ SHAPES = {
     'skyhold':    (3.0, 3.0, 40.0, [(135, 24, 14, 'force'), (100, 10, 8)]),
     # A city on a river: the embankment cuts deep into two corners.
     'metrocity':  (3.0, 3.0, 40.0, [(135, 36, 16, 'force'), (170, 14, 8, 'force')]),
+    # Round 4M. A beach under bluffs: the sea's edge left alone, the headlands trimmed.
+    'landingbeach': (3.0, 5.0, 26.0, [(0, 16, 12), (160, 20, 14)]),
+    # A dammed valley: steep sides trimmed in on both flanks.
+    'hydrodam':   (4.0, 7.0, 20.0, [(160, 22, 16), (20, 18, 14)]),
+    # A capital: the city goes on past the edge; the embankments cut in on the flanks.
+    'capital':    (3.0, 3.0, 40.0, [(165, 30, 12, 'force'), (80, 12, 10)]),
+    # A launch complex in the desert: dunes and mesas close in on the flanks outside the fence.
+    'launchsite': (5.0, 8.0, 22.0, [(135, 24, 22), (0, 14, 12), (90, 14, 12)]),
+    # A border river: wooded hills trim the corners by the camps and the flanks beyond the detours.
+    'borderbridge': (4.0, 6.0, 24.0, [(135, 26, 22), (90, 12, 14)]),
+    # A swamp: the jungle closes in on every side, deepest round the camps' corners.
+    'swamp':      (5.0, 10.0, 16.0, [(135, 30, 24), (90, 14, 12), (0, 14, 12)]),
+    # A lagoon: the reef's rim, low and ragged, closes it in.
+    'coralisles': (5.0, 9.0, 18.0, [(135, 26, 26), (90, 12, 12), (0, 12, 12)]),
+    # Salt flats: the rim of a dry lake, broad shallow bays.
+    'saltflat':   (4.0, 6.0, 34.0, [(135, 24, 34), (90, 14, 20), (0, 14, 20)]),
 }
 
 KEEP_CAMP = 20.0

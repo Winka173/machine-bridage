@@ -54,6 +54,7 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
+                if (v.Transforming && now >= v.TransformUntil) CompletePhase(v, now);
                 v.RefreshEffects(now);
                 if (v.Def.Jammer > 0f) _jammers.Add(v);
                 // Standing still (entrenchment counts from here).
@@ -82,7 +83,13 @@ namespace MachineBrigade.Sim.Abilities
             var skillTick = _skillTimer <= 0f;
             if (skillTick) _skillTimer += 0.25f;
 
-            if (auraTick) CommandAuras();
+            if (auraTick)
+            {
+                CommandAuras();
+                BaseModules();
+                SlowAuras();
+            }
+            HideGunPits(now);
             _summons.Clear();
             foreach (var v in _world.VehicleList)
             {
@@ -157,7 +164,8 @@ namespace MachineBrigade.Sim.Abilities
         {
             if (!v.NeedsAmmo || !_world.TryGetRally(v.Team, out var home)) return;
             if (Vector2.Distance(v.Position, home) > HomeReach) return;
-            v.RearmProgress += AuraInterval / HomeRearmSeconds;
+            var depot = v.Team is 0 or 1 ? _rearmBoost[v.Team] : 1f;
+            v.RearmProgress += AuraInterval / HomeRearmSeconds * depot;
             TopUp(v);
         }
 
@@ -165,17 +173,28 @@ namespace MachineBrigade.Sim.Abilities
         {
             var repair = engineer.Def.RepairAura;
             var rearm = engineer.Def.RearmAura;
+            // Mines: an engineer clears the enemy mines it can see round it, one at a time.
+            if (repair != null)
+                foreach (var m in _mines)
+                    if (m.IsAlive && m.Team != engineer.Team && m.IsVisibleTo(engineer.Team) && Vector2.Distance(m.Position, engineer.Position) <= repair.Radius)
+                    {
+                        m.IsAlive = false;
+                        _world.Emit(SimEvent.MineCleared(m));
+                        break;
+                    }
             foreach (var v in _world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != engineer.Team || v.Flying || v.Def.Static) continue;
+                // Towers too (at half the rate): an engineer patches up its side's defences.
+                if (!v.IsAlive || v.Team != engineer.Team || v.Flying || (v.Def.Static && v.Def.Fort == null)) continue;
                 var distance = Vector2.Distance(v.Position, engineer.Position);
-                if (repair != null && distance <= repair.Radius && !v.Def.Boss && v.Hp < v.MaxHp)
+                if (repair != null && distance <= repair.Radius + (v.Def.Static ? v.Def.HullBound : 0f) && !v.Def.Boss && v.Hp < v.MaxHp)
                 {
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * repair.Rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
+                    var rate = repair.Rate * (v.Def.Static ? 0.5f : 1f);
+                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
                     v.Hp += amount;
                     _world.Emit(SimEvent.RepairedBy(v, amount));
                 }
-                if (rearm != null && distance <= rearm.Radius && v.NeedsAmmo)
+                if (rearm != null && distance <= rearm.Radius && v.NeedsAmmo && !v.Def.Static)
                 {
                     v.RearmProgress += AuraInterval / rearm.Rate;
                     TopUp(v);
@@ -188,6 +207,96 @@ namespace MachineBrigade.Sim.Abilities
         /// slow (a tower takes minutes), so a defended line can be kept standing but not made
         /// unbreakable; the repair shows over the defence being worked on.
         /// </summary>
+        /// <summary>
+        /// Gun pits stay down while no enemy on the ground is within their rise distance, and come
+        /// up (their next shot an ambush) when one is.
+        /// </summary>
+        private void HideGunPits(double now)
+        {
+            foreach (var v in _world.VehicleList)
+            {
+                var hide = v.Def.Hidden;
+                if (hide == null || !v.IsAlive) continue;
+                var near = false;
+                foreach (var e in _world.VehicleList)
+                {
+                    if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Def.Static) continue;
+                    if (Vector2.DistanceSquared(e.Position, v.Position) <= hide.Rise * hide.Rise) { near = true; break; }
+                }
+                if (v.Lowered && near && hide.FirstShot > 1f) v.AmbushReady = true;
+                v.Lowered = !near;
+            }
+        }
+
+        /// <summary>Wire round an obstacle: enemy ground vehicles within it move slower.</summary>
+        private void SlowAuras()
+        {
+            foreach (var w in _world.VehicleList)
+            {
+                var aura = w.Def.SlowAura;
+                if (aura == null || !w.IsAlive) continue;
+                foreach (var v in _world.VehicleList)
+                {
+                    if (!v.IsAlive || v.Team == w.Team || v.Team < 0 || v.Flying || v.Def.Static) continue;
+                    if (Vector2.DistanceSquared(v.Position, w.Position) <= aura.Radius * aura.Radius) _world.Status.Slow(v, aura.Rate, AuraInterval * 2f);
+                }
+            }
+        }
+
+        /// <summary>
+        /// A base's utility modules at work (see UtilityDef): the repair bay and the ammunition depot
+        /// for vehicles in the base (within the home radius of the HQ), the airfield for aircraft over
+        /// it, the logistics station's supply, and the radar's watch over the base.
+        /// </summary>
+        private void BaseModules()
+        {
+            _world._radarBases.Clear();
+            for (var team = 0; team <= 1; team++)
+            {
+                var repair = 0f;
+                var supply = 0;
+                _rearmBoost[team] = 1f;
+                var home = _world.Bases.Of(team) is { } b ? b.HqPosition : (Vector2?)null;
+                foreach (var m in _world.VehicleList)
+                {
+                    var u = m.Def.Utility;
+                    if (u == null || !m.IsAlive || m.Team != team) continue;
+                    repair = MathF.Max(repair, u.Repair);
+                    supply += u.Supply;
+                    _rearmBoost[team] = MathF.Max(_rearmBoost[team], u.Rearm);
+                    if (u.RevealBase && home is { } hq) _world._radarBases.Add((team, hq));
+                    if (u.AirRepair > 0f) ServeAircraft(m, u);
+                }
+                if (_world.TryGetEconomy(team, out var economy)) economy.SupplyBonus = supply;
+                if (repair <= 0f || home is not { } at) continue;
+                foreach (var v in _world.VehicleList)
+                {
+                    if (!v.IsAlive || v.Team != team || v.Flying || v.Def.Static || v.Hp >= v.MaxHp) continue;
+                    if (Vector2.DistanceSquared(v.Position, at) > SimWorld.HomeRadius * SimWorld.HomeRadius) continue;
+                    v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * repair * AuraInterval);
+                }
+            }
+        }
+
+        /// <summary>An airfield: aircraft over it repair and rearm.</summary>
+        private void ServeAircraft(Vehicle field, UtilityDef u)
+        {
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != field.Team || !v.Flying) continue;
+                if (Vector2.DistanceSquared(v.Position, field.Position) > u.AirReach * u.AirReach) continue;
+                if (v.Hp < v.MaxHp) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * u.AirRepair * AuraInterval);
+                if (v.NeedsAmmo)
+                {
+                    v.RearmProgress += AuraInterval / HomeRearmSeconds;
+                    TopUp(v);
+                }
+            }
+        }
+
+        /// <summary>A side's reload speed at home from its ammunition depot (1: none).</summary>
+        private readonly float[] _rearmBoost = { 1f, 1f };
+
         /// <summary>Command vehicles: friendly vehicles within reach of one fire faster (the best aura counts, they never add up).</summary>
         private void CommandAuras()
         {
@@ -270,6 +379,12 @@ namespace MachineBrigade.Sim.Abilities
         {
             var def = v.MineLayer!;
             if (v.Flying || now < v.NextMineAt) return;
+            // A fixed minefield: its whole field at once, and again each interval for any lost.
+            if (def.Spread > 0f)
+            {
+                LayField(v, def, now);
+                return;
+            }
             // A Mine Dispenser module drops its mines only on the move.
             if (v.Def.Mines == null && !v.IsMoving) return;
             v.NextMineAt = now + def.Interval;
@@ -288,6 +403,32 @@ namespace MachineBrigade.Sim.Abilities
             var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 2.0);
             _mines.Add(laid);
             _world.Emit(SimEvent.MineLaid(laid));
+        }
+
+        private void LayField(Vehicle v, MineLayerDef def, double now)
+        {
+            var alive = 0;
+            foreach (var m in _mines)
+                if (m.IsAlive && m.Layer == v.Id) alive++;
+            // The whole field is laid again each interval (the ones set off or cleared come back).
+            var wanted = def.Max;
+            v.MinesLaid = true;
+            v.NextMineAt = now + def.Interval;
+            for (var tries = 0; alive < wanted && tries < 40; tries++)
+            {
+                var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
+                var r = def.Spread * MathF.Sqrt(0.2f + 0.8f * (float)_world.Random.NextDouble());
+                var at = v.Position + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r;
+                if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) continue;
+                var clear = true;
+                foreach (var m in _mines)
+                    if (m.IsAlive && Vector2.DistanceSquared(m.Position, at) < 4f) clear = false;
+                if (!clear) continue;
+                var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 1.0);
+                _mines.Add(laid);
+                _world.Emit(SimEvent.MineLaid(laid));
+                alive++;
+            }
         }
 
         private void TriggerMines(double now)
@@ -322,6 +463,36 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled);
                 _mines.RemoveAt(i);
             }
+        }
+
+        // ------------------------------------------------------------------ boss phases
+
+        /// <summary>A multi-phase boss reached its next mark: it transforms, untouchable, before fighting on.</summary>
+        internal void BeginPhase(Vehicle v)
+        {
+            var phase = v.Def.Phases[v.Phase];
+            var now = _world.Time;
+            v.Transforming = true;
+            v.TransformUntil = now + MathF.Max(0f, phase.Transform);
+            v.ImmuneUntil = Math.Max(v.ImmuneUntil, v.TransformUntil);
+            _world.Emit(SimEvent.BossPhase(v, v.Phase + 2, true, phase.Radio));
+            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, v.Radius * 1.6f, 0f, ExplosionTier.Huge), v.Id));
+            if (phase.Transform <= 0f) CompletePhase(v, now);
+        }
+
+        private void CompletePhase(Vehicle v, double now)
+        {
+            var phase = v.Def.Phases[v.Phase];
+            v.Phase++;
+            v.Transforming = false;
+            v.DamageBoost *= phase.Damage;
+            v.PhaseSpeed *= phase.Speed;
+            v.DamageTaken *= phase.Armor;
+            if (phase.Heal > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * phase.Heal);
+            if (phase.Model != null) v.Form = phase.Model;
+            foreach (var skill in phase.Skills) Fire(v, skill, now);
+            v.RefreshEffects(now);
+            _world.Emit(SimEvent.BossPhase(v, v.Phase + 1, false, null));
         }
 
         // ------------------------------------------------------------------ skills

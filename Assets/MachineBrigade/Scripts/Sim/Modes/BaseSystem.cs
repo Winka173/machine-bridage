@@ -44,6 +44,15 @@ namespace MachineBrigade.Sim.Modes
         public double LandsAt { get; internal set; } = double.NaN;
 
         public bool Incoming => !double.IsNaN(LandsAt);
+
+        /// <summary>
+        /// Its next call is free (a Modular tower, the first of its type to fall this battle), and
+        /// the wait before it is this share of the usual one (<see cref="FreeWait"/>).
+        /// </summary>
+        public bool FreeCall { get; internal set; }
+
+        /// <summary>The share of the usual cooldown a free re-drop waits (0: none).</summary>
+        public float FreeWait { get; internal set; } = 1f;
     }
 
     /// <summary>A side's base in the battle: its role, its HQ, its hardpoints and its outposts.</summary>
@@ -69,6 +78,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>The HQ was destroyed (only a Target or Defend base can be).</summary>
         public bool HqFallen { get; internal set; }
+
+        /// <summary>Tower types (card ids) whose Modular free re-drop this battle has been used.</summary>
+        public HashSet<string> ModularUsed { get; } = new();
     }
 
     /// <summary>
@@ -144,29 +156,35 @@ namespace MachineBrigade.Sim.Modes
                 b.Hq = hq.Id;
             }
             b.HqPosition = hqAt;
+            // The hardpoints the HQ level opens: the first so many of each size (the map lists the
+            // most important first), each taking the loadout's tower for that slot of that size.
             if (site != null)
+            {
+                var seen = new int[3];
+                var utility = 0;
                 for (var i = 0; i < site.Slots.Count; i++)
-                    b.Slots.Add(new HardpointState(site.Slots[i], i));
-            // The towers, in order, each into the first free hardpoint of its kind it fits.
-            Assign(b, fitted.Towers, HardpointKind.Tower);
-            Assign(b, fitted.Utilities, HardpointKind.Utility);
+                {
+                    var def = site.Slots[i];
+                    if (def.Kind == HardpointKind.Utility)
+                    {
+                        if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
+                        var state = new HardpointState(def, i);
+                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1])) state.Tower = fitted.Utilities[utility - 1];
+                        b.Slots.Add(state);
+                        continue;
+                    }
+                    var k = seen[(int)def.Class]++;
+                    if (k >= catalog.Base.Slots(fitted.HqLevel, def.Class)) continue;
+                    var slot = new HardpointState(def, i);
+                    var list = fitted.Of(def.Class);
+                    // A tower past rank 7 fights as its chosen branch (it stays in its tower's slot).
+                    if (k < list.Count && !string.IsNullOrEmpty(list[k])) slot.Tower =catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
+                    b.Slots.Add(slot);
+                }
+            }
             foreach (var slot in b.Slots)
                 if (slot.Tower != null) Raise(b, slot);
             return b;
-        }
-
-        private void Assign(TeamBase b, List<string> ids, HardpointKind kind)
-        {
-            foreach (var id in ids)
-            {
-                var def = _world.Catalog.Vehicles[id];
-                foreach (var slot in b.Slots)
-                {
-                    if (slot.Tower != null || slot.Def.Kind != kind || Footprint(def) > slot.Def.Size + 0.01f) continue;
-                    slot.Tower = id;
-                    break;
-                }
-            }
         }
 
         /// <summary>A structure's footprint across (metres), as the hardpoint sizes count it.</summary>
@@ -181,9 +199,34 @@ namespace MachineBrigade.Sim.Modes
             slot.LandsAt = double.NaN;
         }
 
-        /// <summary>CP to fly a tower back into this hardpoint.</summary>
+        /// <summary>CP to fly a tower back into this hardpoint (nothing for a Modular tower's free re-drop).</summary>
         public int CostOf(HardpointState slot) =>
-            slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCost(def) : 0;
+            !slot.FreeCall && slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCost(def) : 0;
+
+        /// <summary>
+        /// Modular (tower equipment): a tower that carries it has just been destroyed. If it is the
+        /// first of its type (card) its side has lost this battle, its hardpoint's next call is free
+        /// and waits <c>1 - cut</c> of the usual cooldown. Returns whether it was.
+        /// </summary>
+        internal bool FreeRedrop(Vehicle tower, float cut)
+        {
+            if (_clearingOutpost || !_bases.TryGetValue(tower.Team, out var b)) return false;
+            var slot = SlotOf(b, tower.Id);
+            if (slot == null || !b.ModularUsed.Add(tower.Def.CardId)) return false;
+            slot.FreeCall = true;
+            slot.FreeWait = Math.Clamp(1f - cut, 0f, 1f);
+            return true;
+        }
+
+        private static HardpointState? SlotOf(TeamBase b, EntityId structure)
+        {
+            foreach (var s in b.Slots)
+                if (s.Structure == structure) return s;
+            foreach (var outpost in b.Outposts.Values)
+                foreach (var s in outpost)
+                    if (s.Structure == structure) return s;
+            return null;
+        }
 
         /// <summary>Whether a destroyed tower here can be called back in now.</summary>
         public bool CanCall(HardpointState slot) => slot.Down && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt;
@@ -221,9 +264,11 @@ namespace MachineBrigade.Sim.Modes
             }
             if (!CanCall(slot)) return CommandResult.Rejected(slot.Incoming || slot.Structure.IsValid ? CommandError.InvalidPoint : CommandError.OnCooldown);
             if (!_world.Economy.TrySpend(command.Team, CostOf(slot))) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            slot.FreeCall = false;
+            slot.FreeWait = 1f;
             var rules = _world.Catalog.Base;
             slot.LandsAt = _world.Time + rules.RebuildDelay;
-            slot.ReadyAt = _world.Time + rules.RebuildCooldown;
+            slot.ReadyAt = _world.Time + rules.RebuildCooldown(_world.Catalog.Vehicles[slot.Tower!]);
             _world.Emit(SimEvent.DeploymentQueued(command.Team, slot.Tower!, slot.Def.Position, SimMath.Forward(slot.Def.Facing), rules.RebuildDelay));
             return CommandResult.Ok;
         }
@@ -261,11 +306,16 @@ namespace MachineBrigade.Sim.Modes
                 if (p.Id == id) point = p;
             if (point == null || point.Value.Outpost.Count == 0) return CommandResult.Rejected(CommandError.InvalidPoint);
             if (!_world.Economy.TrySpend(command.Team, _world.Catalog.Base.OutpostCp)) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            // The slots in the loadout's order, small first, whatever order the map lists them in.
+            var hardpoints = new List<HardpointDef>();
+            foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+                foreach (var h in point.Value.Outpost)
+                    if (h.Class == size) hardpoints.Add(h);
             var slots = new List<HardpointState>();
-            var count = Math.Min(point.Value.Outpost.Count, _world.Catalog.Base.OutpostSlots);
+            var count = Math.Min(hardpoints.Count, _world.Catalog.Base.OutpostSlots);
             for (var i = 0; i < count; i++)
             {
-                var slot = new HardpointState(point.Value.Outpost[i], i, id) { ReadyAt = _world.Time };
+                var slot = new HardpointState(hardpoints[i], i, id) { ReadyAt = _world.Time };
                 slots.Add(slot);
             }
             b.Outposts[id] = slots;
@@ -325,8 +375,11 @@ namespace MachineBrigade.Sim.Modes
                     if (PointOwner != null && PointOwner(id) != b.Team)
                     {
                         _lost.Add(id);
+                        // Towers going down with a lost outpost never spend a Modular free re-drop.
+                        _clearingOutpost = true;
                         foreach (var slot in slots)
                             if (_world.TryGetVehicle(slot.Structure, out var tower) && tower.IsAlive) _world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);
+                        _clearingOutpost = false;
                         continue;
                     }
                     foreach (var slot in slots) Watch(b, slot);
@@ -336,6 +389,7 @@ namespace MachineBrigade.Sim.Modes
         }
 
         private readonly List<string> _lost = new();
+        private bool _clearingOutpost;
 
         private void Watch(TeamBase b, HardpointState slot)
         {
@@ -348,7 +402,9 @@ namespace MachineBrigade.Sim.Modes
             // Knocked down: it can be called back in once the cooldown is over.
             slot.Structure = EntityId.None;
             slot.Down = true;
-            slot.ReadyAt = Math.Max(slot.ReadyAt, _world.Time + _world.Catalog.Base.RebuildCooldown);
+            var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : 30f;
+            // A Modular tower's free re-drop waits only its share of the cooldown, whatever the last call left.
+            slot.ReadyAt = slot.FreeCall ? _world.Time + cooldown * slot.FreeWait : Math.Max(slot.ReadyAt, _world.Time + cooldown);
         }
 
         /// <summary>Every tower standing in a side's base (camp and outposts).</summary>

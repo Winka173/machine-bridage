@@ -84,6 +84,8 @@ namespace MachineBrigade.Game.Hud
             "nav-tab-label", "crate-button-text", "upgrade-big-text", "event-play-text", "menu-caps", "home-card-caps", "map-name",
             "unit-card-name", "shop-name", "tier-name", "deploy-text", "home-card-title", "mission-name", "detail-name",
             "event-card-title", "gear-info-title", "weapon-name", "detail-role", "crate-name", "loot-title",
+            "base-tower-name", "base-head-name", "base-map-name", "base-branch-name", "base-front-text", "base-slot-caption",
+            "base-hq-level", "base-branch-tag", "base-gear-name",
         };
 
         public static void Uppercase(VisualElement root)

@@ -120,6 +120,13 @@ namespace MachineBrigade.Game.Hud
                 OpenDetail(detail);
                 Refresh();
             }
+            // Device check of the base screen: -mb-base (-mb-base-map=redrock, -mb-base-gear, -mb-base-pick=aa_turret).
+            if (Match.DebugFlags.Has("-mb-base"))
+            {
+                _armyView = ArmyView.Base;
+                ShowTab(Tab.Army);
+                _base.DebugOpen();
+            }
         }
 
         private static bool _reopenSettings;
@@ -207,6 +214,7 @@ namespace MachineBrigade.Game.Hud
                 HidePopover();
                 return true;
             }
+            if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Base && _base.Back()) return true;
             if (_overlays.Count > 0)
             {
                 CloseTop();
@@ -607,6 +615,18 @@ namespace MachineBrigade.Game.Hud
             "cruise_missile" => "missile",
             "smoke_screen" => "smoke",
             "repair_drop" => "repair",
+            // Tower cards (the base screen); a branch shows its tower's icon.
+            "guard_tower" => "tower",
+            "mg_bunker" => "mg",
+            "aa_turret" => "aa",
+            "gun_turret" => "cannon",
+            "rocket_turret" => "mlrs",
+            "atgm_tower" => "atgm",
+            "artillery_emplacement" => "artillery",
+            "missile_battery" => "sam",
+            "heavy_turret" => "siegegun",
+            "headquarters" => "hq",
+            _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };
     }

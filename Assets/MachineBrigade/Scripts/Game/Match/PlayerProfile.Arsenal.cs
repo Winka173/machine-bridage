@@ -18,7 +18,9 @@ namespace MachineBrigade.Game.Match
         {
             while (d.ranks.Count < d.rankIds.Count) d.ranks.Add(1);
             while (d.prints.Count < d.rankIds.Count) d.prints.Add(0);
+            while (d.branchChoices.Count < d.branchTowers.Count) d.branchChoices.Add("");
             while (d.loadout.Count < Branches * Gear.Slots) d.loadout.Add(0);
+            FixTowerGear(d);
             var kinds = Enum.GetValues(typeof(CrateKind)).Length;
             while (d.crates.Count < kinds) d.crates.Add(0);
             while (d.sinceEpic.Count < kinds) d.sinceEpic.Add(0);
@@ -231,8 +233,9 @@ namespace MachineBrigade.Game.Match
             Save();
         }
 
-        /// <summary>The piece equipped in a branch's slot, or null.</summary>
-        public static GearItem Equipped(GearBranch branch, GearSlot slot) => FindGear(A.loadout[(int)branch * Gear.Slots + (int)slot]);
+        /// <summary>The piece equipped in a branch's slot, or null (always null for a tower slot).</summary>
+        public static GearItem Equipped(GearBranch branch, GearSlot slot) =>
+            (int)slot < Gear.Slots ? FindGear(A.loadout[(int)branch * Gear.Slots + (int)slot]) : null;
 
         public static IEnumerable<GearItem> Loadout(GearBranch branch)
         {
@@ -240,10 +243,10 @@ namespace MachineBrigade.Game.Match
                 if (FindGear(A.loadout[(int)branch * Gear.Slots + s]) is { } item) yield return item;
         }
 
-        /// <summary>Equips a piece in its own slot of a branch (taking it off another branch that had it).</summary>
+        /// <summary>Equips a piece in its own slot of a branch (taking it off another branch that had it). Tower pieces go on tower types (<see cref="EquipTower(string, GearItem)"/>).</summary>
         public static void Equip(GearBranch branch, GearItem item)
         {
-            if (item == null || !A.gear.Contains(item)) return;
+            if (item == null || !A.gear.Contains(item) || Gear.IsTower(item.Slot)) return;
             for (var i = 0; i < A.loadout.Count; i++)
                 if (A.loadout[i] == item.id) A.loadout[i] = 0;
             A.loadout[(int)branch * Gear.Slots + item.slot] = item.id;
@@ -252,11 +255,13 @@ namespace MachineBrigade.Game.Match
 
         public static void Unequip(GearBranch branch, GearSlot slot)
         {
+            if ((int)slot >= Gear.Slots) return;
             A.loadout[(int)branch * Gear.Slots + (int)slot] = 0;
             Save();
         }
 
-        public static bool IsEquipped(GearItem item) => item != null && A.loadout.Contains(item.id);
+        /// <summary>Whether a branch or a tower type wears the piece.</summary>
+        public static bool IsEquipped(GearItem item) => item != null && item.id > 0 && (A.loadout.Contains(item.id) || A.towerGear.Contains(item.id));
 
         public static bool TryLevelGear(GearItem item)
         {
@@ -290,6 +295,8 @@ namespace MachineBrigade.Game.Match
                 A.coins += Gear.Spent(f);
                 for (var i = 0; i < A.loadout.Count; i++)
                     if (A.loadout[i] == f.id) A.loadout[i] = 0;
+                for (var i = 0; i < A.towerGear.Count; i++)
+                    if (A.towerGear[i] == f.id) A.towerGear[i] = 0;
                 A.gear.Remove(f);
             }
             keep.rarity++;
@@ -348,8 +355,44 @@ namespace MachineBrigade.Game.Match
         /// <summary>The set brands a branch's loadout wears, for chips such as "Ironclad 2/4".</summary>
         public static List<Gear.SetChip> SetChips(GearBranch branch) => Gear.SetChips(Loadout(branch));
 
-        /// <summary>What the player's upgrades do to a vehicle of this card: its rank and its branch's loadout.</summary>
-        public static VehicleBoost BoostFor(VehicleDef def) => Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
+        /// <summary>
+        /// What the player's upgrades do to a vehicle of this card: its rank and its branch's loadout;
+        /// a tower (or its branch def) its card's rank and its type's three pieces, under the tower caps.
+        /// </summary>
+        public static VehicleBoost BoostFor(VehicleDef def) =>
+            def.Fort != null ? Gear.TowerBoost(Rank(def.CardId), TowerGear(def.CardId)) : Gear.Boost(Rank(def.Id), Loadout(Gear.BranchOf(def)));
+
+        // ------------------------------------------------------------------ tower cards
+
+        /// <summary>The branch def a tower fights as, once its card reached rank 7 and one was chosen; null otherwise.</summary>
+        public static string TowerBranch(string towerId)
+        {
+            var i = A.branchTowers.IndexOf(towerId);
+            if (i < 0 || Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return null;
+            return A.branchChoices[i];
+        }
+
+        /// <summary>Coins to change a tower's branch once one was chosen (the first choice is free).</summary>
+        public const int BranchSwapCoins = 800;
+
+        /// <summary>Chooses a tower's branch (rank 7 and up): free the first time, <see cref="BranchSwapCoins"/> to change it.</summary>
+        public static bool TryChooseBranch(string towerId, string branchId)
+        {
+            if (Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return false;
+            var d = A;
+            var i = d.branchTowers.IndexOf(towerId);
+            if (i >= 0 && d.branchChoices[i] == branchId) return true;
+            if (i >= 0 && !TrySpend(BranchSwapCoins)) return false;
+            // One reference for both lists: A re-checks them between reads.
+            if (i < 0)
+            {
+                d.branchTowers.Add(towerId);
+                d.branchChoices.Add(branchId);
+            }
+            else d.branchChoices[i] = branchId;
+            Save();
+            return true;
+        }
 
         /// <summary>How much harder a strike card hits at its rank.</summary>
         public static float StrikeBoost(string supportId) => 1f + CardRanks.Bonus(Rank(supportId));
@@ -382,7 +425,7 @@ namespace MachineBrigade.Game.Match
                 if (IsUnlocked(id) && Rank(id) < CardRanks.Max) cards.Add(id);
             var sinceEpic = A.sinceEpic[(int)kind];
             var sinceLegendary = A.sinceLegendary[(int)kind];
-            var loot = Crates.Open(kind, rng, cards, ref sinceEpic, ref sinceLegendary, NextGearId, DeckBranches);
+            var loot = Crates.Open(kind, rng, cards, ref sinceEpic, ref sinceLegendary, NextGearId, DeckBranches, BaseTowerNeeds());
             A.sinceEpic[(int)kind] = sinceEpic;
             A.sinceLegendary[(int)kind] = sinceLegendary;
             A.coins += loot.Coins;

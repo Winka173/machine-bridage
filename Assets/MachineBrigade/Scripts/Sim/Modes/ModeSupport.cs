@@ -146,7 +146,10 @@ namespace MachineBrigade.Sim.Modes
     /// </summary>
     public sealed class Outposts
     {
-        public const string Tower = "point_tower";
+        /// <summary>A point's watchtower: a guard tower, with twice the health while it is neutral.</summary>
+        public const string Tower = "guard_tower";
+
+        private const float NeutralHealth = 2f;
         public const float BuildSeconds = 8f;
         public const float RebuildSeconds = 35f;
         public const float RespawnSeconds = 100f;
@@ -258,6 +261,11 @@ namespace MachineBrigade.Sim.Modes
         private static void Raise(SimWorld world, Site site, int team)
         {
             var tower = world.SpawnVehicle(Tower, team, site.Spot, site.Heading);
+            if (team == Teams.Hostile)
+            {
+                tower.HpScale *= NeutralHealth;
+                tower.Hp = tower.MaxHp;
+            }
             world.AnchorDefence(tower);
             site.Tower = tower.Id;
             site.Team = team;

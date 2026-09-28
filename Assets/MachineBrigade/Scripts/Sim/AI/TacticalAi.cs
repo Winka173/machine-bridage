@@ -168,11 +168,28 @@ namespace MachineBrigade.Sim.AI
 
         private double _atEdgeSince = double.NaN;
 
+        /// <summary>This AI commands the allied commander's units (and only those); the player's commands the rest.</summary>
+        public bool Allies
+        {
+            get => _allies;
+            set
+            {
+                // The ally thinks a quarter of an interval after the player's commander (see the constructor).
+                if (value && !_allies) _timer += DecisionInterval * 0.25f;
+                _allies = value;
+            }
+        }
+
+        private bool _allies;
+
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
             _team = team;
             _enemyTeam = enemyTeam;
             _flankSide = new Random(seed).Next(2) == 0 ? -1f : 1f;
+            // The two sides' commanders think on different steps, so their heaviest steps (orders,
+            // routes for a whole group) do not land on the same one.
+            _timer = team == 1 ? DecisionInterval * 0.5f : 0f;
         }
 
         public void Tick(SimWorld world, float dt)
@@ -234,6 +251,7 @@ namespace MachineBrigade.Sim.AI
             GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
+            BreachObstacles(world, front, objective);
             FocusBoss(world);
             FocusDemolition(world);
             ShootBuildings(world);
@@ -413,6 +431,76 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
+        private readonly HashSet<EntityId> _refitting = new();
+
+        /// <summary>Health share under which an aircraft goes back to the airfield, and the share it waits for.</summary>
+        private const float RefitBelow = 0.35f, RefitUntil = 0.9f;
+
+        /// <summary>
+        /// An aircraft's trip to the airfield (see UtilityDef.AirRepair): sent there empty or below
+        /// 35 % health, released once at 90 % and rearmed, or when the airfield is gone.
+        /// </summary>
+        private bool Refit(SimWorld world, Vehicle v)
+        {
+            Vehicle? field = null;
+            foreach (var m in world.VehicleList)
+                if (m.IsAlive && m.Team == _team && m.Def.Utility is { AirRepair: > 0f }) { field = m; break; }
+            if (field == null)
+            {
+                _refitting.Remove(v.Id);
+                return false;
+            }
+            var hurt = v.Hp < v.MaxHp * RefitBelow;
+            if (!_refitting.Contains(v.Id) && (hurt || v.OutOfAmmo)) _refitting.Add(v.Id);
+            if (!_refitting.Contains(v.Id)) return false;
+            if (v.Hp >= v.MaxHp * RefitUntil && !v.NeedsAmmo)
+            {
+                _refitting.Remove(v.Id);
+                return false;
+            }
+            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)
+                Issue(world, CommandType.Move, v.Id, field.Position);
+            return true;
+        }
+
+        /// <summary>
+        /// Dragon's teeth in the way: when the line is near a known obstacle between it and the
+        /// objective and no other enemy is round it, the line and the engineers knock it down (the
+        /// engineers breach three times as fast).
+        /// </summary>
+        private void BreachObstacles(SimWorld world, Vector2 front, Vector2 objective)
+        {
+            if (_line.Count == 0) return;
+            Vehicle? block = null;
+            var best = BreachReach;
+            var toGoal = objective - front;
+            if (toGoal.LengthSquared() < 1f) return;
+            var dir = Vector2.Normalize(toGoal);
+            foreach (var e in _enemies)
+            {
+                if (!e.Def.Obstacle) continue;
+                var off = e.Position - front;
+                var along = Vector2.Dot(off, dir);
+                if (along < -4f || (off - dir * along).Length() > 18f) continue;
+                var d = off.Length();
+                if (d >= best) continue;
+                best = d;
+                block = e;
+            }
+            if (block == null) return;
+            foreach (var e in _enemies)
+                if (!e.Def.Obstacle && !e.Def.Passive && Vector2.Distance(e.Position, block.Position) < 25f) return;
+            _ids.Clear();
+            foreach (var v in _line)
+                if (v.Target != block.Id) _ids.Add(v.Id);
+            foreach (var v in _support)
+                if (v.Def.RepairAura != null && v.Target != block.Id) _ids.Add(v.Id);
+            foreach (var id in _ids) Issue(world, CommandType.Attack, id, block.Position, block.Id);
+        }
+
+        /// <summary>How near the front an obstacle must be for the line to breach it.</summary>
+        private const float BreachReach = 30f;
+
         /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
@@ -480,8 +568,11 @@ namespace MachineBrigade.Sim.AI
                     }
                     continue;
                 }
-                // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
+                if (v.Team != _team || v.Scripted || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
+                // and stay until mended and rearmed (the airfield repairs and rearms them).
+                if (v.Flying && Refit(world, v)) continue;
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
                 if (!v.Flying && v.OutOfAmmo)
                 {
@@ -926,19 +1017,50 @@ namespace MachineBrigade.Sim.AI
         private bool StrongEnough(SimWorld world, Vector2 target, Vector2 from, float odds = AssaultOdds)
         {
             var ours = 0f;
-            foreach (var v in _line)
-                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
-            foreach (var v in _fast)
-                if (Vector2.Distance(v.Position, from) < 35f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+            var fast = 0f;
+            var air = 0f;
+            void Count(Vehicle v)
+            {
+                if (Vector2.Distance(v.Position, from) >= 35f) return;
+                var p = v.Def.Power * (v.Hp / v.MaxHp);
+                ours += p;
+                if (v.Flying) air += p;
+                else if (v.Def.Speed >= FastSpeed) fast += p;
+            }
+            foreach (var v in _line) Count(v);
+            foreach (var v in _fast) Count(v);
             var theirs = 0f;
             foreach (var d in _defences)
             {
                 var reach = GroundReach(d) + d.Radius + 8f;
-                if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp);
+                if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp) * Threat(d, ours, fast, air);
             }
             foreach (var e in _enemies)
                 if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < 30f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
             return theirs <= 0.5f || ours >= theirs * odds;
+        }
+
+        /// <summary>
+        /// How much of our group a defence can really fight (0-1): its share of our ground force if it
+        /// fires on the ground, of our aircraft if it fires at the air; a slow-turning cannon (a gun or
+        /// heavy tower) counts half against fast vehicles, which run rings round it.
+        /// </summary>
+        private static float Threat(Vehicle d, float ours, float fast, float air)
+        {
+            if (ours <= 0f) return 1f;
+            bool ground = false, sky = false;
+            foreach (var m in d.Def.Mounts)
+            {
+                if (m.Weapon.Damage <= 0f) continue;
+                ground |= m.Weapon.CanTarget(false);
+                sky |= m.Weapon.CanTarget(true);
+            }
+            var slowCannon = d.Def.TurretTurnRate < 60f && d.Def.Weapon.Projectile == ProjectileKind.Shell && d.Def.Weapon.MinRange <= 0f;
+            var groundShare = (ours - air) / ours;
+            var share = 0f;
+            if (ground) share += groundShare - (slowCannon ? 0.5f * fast / ours : 0f);
+            if (sky) share += air / ours;
+            return Math.Clamp(share, 0f, 1f);
         }
 
         /// <summary>The last point on the way from <paramref name="from"/> to <paramref name="target"/> outside every known defence's reach.</summary>

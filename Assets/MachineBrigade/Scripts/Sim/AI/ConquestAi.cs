@@ -216,6 +216,17 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (slots[i].Tower != null) continue;
                     var tower = ours.Loadout.Outpost.Count > 0 ? ours.Loadout.Outpost[i % ours.Loadout.Outpost.Count] : "guard_tower";
+                    // A tower that does not fit the slot gives way to one of the loadout's that does.
+                    if (world.Catalog.Vehicles.TryGetValue(tower, out var wanted) && wanted.Fort is { } fort && !fort.Fits(slots[i].Def.Class))
+                    {
+                        tower = "guard_tower";
+                        foreach (var other in ours.Loadout.Outpost)
+                            if (world.Catalog.Vehicles.TryGetValue(other, out var o) && o.Fort is { } f && f.Fits(slots[i].Def.Class))
+                            {
+                                tower = other;
+                                break;
+                            }
+                    }
                     if (!world.Catalog.Vehicles.TryGetValue(tower, out var def)) continue;
                     if (economy.Cp < world.Catalog.Base.RebuildCost(def) + 4f) return false;
                     if (world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slots[i].Def.Position, defId: tower)).Accepted) return true;
@@ -456,6 +467,55 @@ namespace MachineBrigade.Sim.AI
             return false;
         }
 
+        /// <summary>The enemy's known towers by what they are good at, and the furthest reach among its cannon towers.</summary>
+        private (int cannon, int machineGun, int antiAir) ReadBase(out float cannonReach)
+        {
+            int cannon = 0, mg = 0, aa = 0;
+            cannonReach = 0f;
+            foreach (var e in _tactics.KnownEnemies)
+            {
+                if (!e.IsAlive || !e.Def.Static || e.Def.Fort is not { Kind: FortKind.Tower } || e.Def.Passive) continue;
+                var w = e.Def.Weapon;
+                if (MachineBrigade.Sim.Strikes.StrikeSystem.IsAirDefence(e.Def) || w.Targets == TargetLayers.Air) aa++;
+                else if (w.DamageType == DamageType.Kinetic || w.Projectile == ProjectileKind.Bullet) mg++;
+                else if (w.MinRange <= 0f && w.Projectile == ProjectileKind.Shell)
+                {
+                    cannon++;
+                    cannonReach = MathF.Max(cannonReach, w.Range);
+                }
+            }
+            return (cannon, mg, aa);
+        }
+
+        /// <summary>
+        /// What a card is worth against the enemy's base (supplement 5): against cannon towers (slow
+        /// turrets, long reloads, nothing for aircraft) fast light vehicles, drones and artillery
+        /// that outranges them; against machine-gun towers heavy armour; against a base full of
+        /// anti-air fewer aircraft and more artillery. Nothing when no towers are known.
+        /// </summary>
+        private static float BaseCounter(VehicleDef def, (int cannon, int machineGun, int antiAir) towers, float cannonReach)
+        {
+            var total = towers.cannon + towers.machineGun + towers.antiAir;
+            if (total == 0) return 0f;
+            float Share(int n) => n / (float)total;
+            var score = 0f;
+            var drones = def.Drone;
+            foreach (var m in def.Mounts) drones |= m.Weapon.Projectile == ProjectileKind.Drone;
+            if (towers.cannon >= 2)
+            {
+                if (def.Speed >= 11f && def.Armor == ArmorClass.Light) score += 1.6f * Share(towers.cannon);
+                if (drones) score += 1.6f * Share(towers.cannon);
+                if (def.Weapon.MinRange > 0f && def.Weapon.Range > cannonReach + 5f) score += 1.4f * Share(towers.cannon);
+            }
+            if (towers.machineGun >= 2 && def.Armor == ArmorClass.Heavy && !def.Flying) score += 1.8f * Share(towers.machineGun);
+            if (towers.antiAir >= 2)
+            {
+                if (def.Flying) score -= 2.2f * Share(towers.antiAir);
+                if (def.Weapon.MinRange > 0f) score += 1.2f * Share(towers.antiAir);
+            }
+            return score;
+        }
+
         /// <summary>Aircraft up, or in the deck with the CP to call one soon.</summary>
         private bool FlyingOrWillFly(SimWorld world, TeamEconomy economy)
         {
@@ -561,6 +621,7 @@ namespace MachineBrigade.Sim.AI
             var enemyGuns = 0;
             foreach (var e in _tactics.KnownEnemies)
                 if (e.IsAlive && !e.Def.Static && e.Def.Weapon.MinRange > 0f) enemyGuns++;
+            var towers = ReadBase(out var towerReach);
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -591,7 +652,7 @@ namespace MachineBrigade.Sim.AI
                 var def = world.Catalog.Vehicles[id];
                 // Bosses and mission trucks cost nothing and are never bought.
                 if (def.Boss || def.CpCost <= 0) continue;
-                if (economy.VehicleCount >= TeamEconomy.MaxVehicles) continue;
+                if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 if (def.Flying && airFull) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
@@ -615,6 +676,7 @@ namespace MachineBrigade.Sim.AI
                         if (main.DamageType == DamageType.HighExplosive) score += 1.6f;
                         if (def.Class == UnitClass.AntiAir) score -= 1.5f;
                     }
+                    score += BaseCounter(def, towers, towerReach);
                     // A command vehicle pays once there is an army round it to lead.
                     if (def.CommandAura != null) score += ownTotal >= 5 ? 1.4f : -2f;
                     // A counter-battery radar only where the enemy has guns to find.

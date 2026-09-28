@@ -81,8 +81,10 @@ namespace MachineBrigade.Tests
                 // still to come, are checked when their own model lands.
                 if (def.Model != def.Id || Resources.Load<GameObject>("Models/" + def.Model) == null) continue;
                 var root = Load(def.Id).transform;
+                // A structure with nothing to fire (an obstacle, a minefield, a module) needs no muzzle.
                 foreach (var mount in def.Mounts)
-                    Assert.IsNotNull(Find(root, "Muzzle_" + mount.Slot), $"{def.Id} has no Muzzle_{mount.Slot} for {mount.Weapon.Id}");
+                    if (mount.Weapon.Damage > 0f)
+                        Assert.IsNotNull(Find(root, "Muzzle_" + mount.Slot), $"{def.Id} has no Muzzle_{mount.Slot} for {mount.Weapon.Id}");
             }
         }
 

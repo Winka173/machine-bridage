@@ -80,6 +80,21 @@ namespace MachineBrigade.Sim.Content
 
         public IEnumerable<string> Keys => _values.Keys;
 
+        /// <summary>This object's fields with <paramref name="child"/>'s on top (a def that inherits another's data).</summary>
+        internal JsonObject Under(JsonObject child)
+        {
+            var merged = new Dictionary<string, object?>(_values);
+            foreach (var pair in child._values) merged[pair.Key] = pair.Value;
+            return new JsonObject(merged, child.Path);
+        }
+
+        /// <summary>A copy with one field set (a merged def's resolved model).</summary>
+        internal JsonObject With(string key, object? value)
+        {
+            var copy = new Dictionary<string, object?>(_values) { [key] = value };
+            return new JsonObject(copy, Path);
+        }
+
         private FormatException Invalid(string key, string expected) =>
             new FormatException($"{Path}.{key}: expected {expected}.");
     }

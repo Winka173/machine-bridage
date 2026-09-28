@@ -138,6 +138,42 @@ namespace MachineBrigade.Sim.Content
         public float Shells { get; internal set; }
     }
 
+    /// <summary>
+    /// A tower that hides (the gun pit): it stays down while no enemy on the ground is within
+    /// <see cref="Rise"/>, taking <see cref="Cut"/> less damage and seen only by scouts, radars,
+    /// scans and guard towers; up, it fires, its first shot <see cref="FirstShot"/> times as hard.
+    /// </summary>
+    public sealed class HiddenDef
+    {
+        public HiddenDef(float rise, float cut, float firstShot)
+        {
+            Rise = Guard.Positive(rise, "hidden", nameof(rise));
+            Cut = Math.Clamp(cut, 0f, 0.95f);
+            FirstShot = MathF.Max(1f, firstShot);
+        }
+
+        public float Rise { get; }
+        public float Cut { get; }
+        public float FirstShot { get; }
+    }
+
+    /// <summary>
+    /// A base's utility module: what it does for its side (each field 0 when it does not):
+    /// vehicles in the base repair <see cref="Repair"/> of their health a second; reload
+    /// <see cref="Rearm"/> times as fast there; aircraft within <see cref="AirReach"/> repair
+    /// <see cref="AirRepair"/> a second and rearm; the side's supply grows by <see cref="Supply"/>;
+    /// stealth in the base shows (<see cref="RevealBase"/>).
+    /// </summary>
+    public sealed class UtilityDef
+    {
+        public float Repair { get; internal set; }
+        public float Rearm { get; internal set; }
+        public float AirRepair { get; internal set; }
+        public float AirReach { get; internal set; }
+        public int Supply { get; internal set; }
+        public bool RevealBase { get; internal set; }
+    }
+
     /// <summary>A command vehicle's aura: friendly vehicles within Radius fire FireRate faster (several auras do not add up).</summary>
     public sealed class CommandAuraDef
     {
@@ -205,5 +241,8 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>An enemy ground vehicle this close sets the mine off.</summary>
         public float Trigger { get; }
+
+        /// <summary>A fixed minefield lays its mines anywhere within this many metres of itself (0: a mine layer drops them behind it).</summary>
+        public float Spread { get; internal set; }
     }
 }

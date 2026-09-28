@@ -1,0 +1,45 @@
+// Operations (prompt 6): the big operations and the notable story battles played again, on four
+// tiers, scored, with this week's two mutators. Every number here is data; Game/Match/Operations.cs
+// reads it.
+{
+  // Tiers: the enemy's CP and income scale, the player's income, whether fire support is allowed,
+  // and the score multiplier. Legend opens once the last operation of the campaign is won.
+  "tiers": [
+    { "id": "normal", "enemy": 1.0, "playerIncome": 1.0, "supports": true,  "score": 1.0 },
+    { "id": "heroic", "enemy": 1.3, "playerIncome": 1.0, "supports": true,  "score": 1.3 },
+    { "id": "iron",   "enemy": 1.3, "playerIncome": 0.8, "supports": false, "score": 1.6 },
+    { "id": "legend", "enemy": 1.6, "playerIncome": 0.75, "supports": false, "score": 2.0 }
+  ],
+
+  // Score of a won battle: win + time x (1 - minutes / par, at least 0) + losses x (1 - lost / lossesAtZero)
+  // + hq x the HQ's health left (1 without an HQ); then x the tier's and the mutators' multipliers.
+  // A lost battle scores 0.
+  "score": { "win": 5000, "time": 3000, "par": 1500, "losses": 2000, "lossesAtZero": 20, "hq": 2000 },
+
+  // The weekly rewards, one ledger for both: the first win of the week of the fortress and of the
+  // operation with its mutators each pay once.
+  "weekly": { "fortress": 600, "operation": 800 },
+
+  // Mutators: combinable, data-driven. score: added to the score multiplier. excludes: mutators it
+  // is never paired with (the weekly draw skips those pairs).
+  "mutators": [
+    { "id": "storm",          "score": 0.05, "weather": "Storm" },
+    { "id": "enemy_air",      "score": 0.25, "enemyAir": true, "excludes": ["no_air", "armour_only", "light_deck"] },
+    { "id": "no_support",     "score": 0.20, "noSupports": true },
+    { "id": "two_bosses",     "score": 0.30, "extraBoss": true, "excludes": ["time_attack"] },
+    { "id": "towers_x2",      "score": 0.20, "towerHp": 2.0, "towerDamage": 1.5 },
+    { "id": "no_repair",      "score": 0.15, "noRepair": true },
+    { "id": "general_boost",  "score": 0.25, "enemyCp": 1.5, "enemyIncome": 1.3, "excludes": ["veterans"] },
+    { "id": "light_deck",     "score": 0.20, "playerMaxCp": 8, "excludes": ["armour_only"] },
+    { "id": "armour_only",    "score": 0.15, "playerHeavy": true, "excludes": ["light_deck", "enemy_air"] },
+    { "id": "no_air",         "score": 0.10, "noAir": true, "excludes": ["enemy_air"] },
+    { "id": "glass_cannon",   "score": 0.10, "bothDamage": 1.5, "bothHp": 0.75 },
+    { "id": "veterans",       "score": 0.20, "enemyHp": 1.25, "excludes": ["general_boost"] },
+    { "id": "time_attack",    "score": 0.20, "timeScale": 0.7, "excludes": ["two_bosses"] },
+    { "id": "lean_logistics", "score": 0.20, "playerIncome": 0.75 },
+    { "id": "iron_rain",      "score": 0.10, "raids": true },
+    { "id": "swarm",          "score": 0.20, "swarm": true },
+    { "id": "empty_base",     "score": 0.25, "emptyBase": true, "excludes": ["towers_x2"] },
+    { "id": "night_ops",      "score": 0.05, "weather": "Night", "excludes": ["storm"] }
+  ]
+}

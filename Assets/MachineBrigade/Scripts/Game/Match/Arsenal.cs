@@ -15,7 +15,11 @@ namespace MachineBrigade.Game.Match
         Legendary,
     }
 
-    /// <summary>The six equipment slots of a loadout, and the seventh, special one.</summary>
+    /// <summary>
+    /// The six equipment slots of a vehicle loadout and the seventh, special one; then the three
+    /// slots of a tower type (<see cref="TowerWeapon"/>, <see cref="TowerStructure"/>,
+    /// <see cref="TowerSystems"/>), which only tower pieces go into (see Gear.Tower.cs).
+    /// </summary>
     public enum GearSlot
     {
         /// <summary>Main gun upgrade: more damage.</summary>
@@ -38,6 +42,15 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A special module with its own ability (epic and legendary only).</summary>
         Special,
+
+        /// <summary>A tower's gun: more damage (one base type: rate of fire).</summary>
+        TowerWeapon,
+
+        /// <summary>A tower's walls: more health (screens: less damage taken; an engineer bay: repairs).</summary>
+        TowerStructure,
+
+        /// <summary>A tower's sensors and drives: vision, turret traverse, magazine handling.</summary>
+        TowerSystems,
     }
 
     /// <summary>Loadouts are per branch of the army, so changing the deck never undoes them.</summary>
@@ -199,6 +212,7 @@ namespace MachineBrigade.Game.Match
         {
             if (item.Slot == GearSlot.Special) return ModulePower(item.Module, item.Rarity);
             var b = BaseOf(item);
+            if (IsTower(item.Slot)) return TowerTop(MainStat(item), item.rarity) * (b?.MainScale ?? 1f) * LevelShare(item);
             var top = b != null && b.Plating ? PlatingTop[item.rarity] : Top[item.slot][item.rarity];
             return top * (b?.MainScale ?? 1f) * LevelShare(item);
         }
@@ -230,7 +244,13 @@ namespace MachineBrigade.Game.Match
         /// (trade-off drawbacks after the cap); the traits, the four-piece set behaviours and the
         /// special module ride along for the battle.
         /// </summary>
-        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout)
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout) => Boost(rank, loadout, GearCatalog.StatCap);
+
+        /// <summary>
+        /// A loadout's boost with these caps per stat (a vehicle's <see cref="GearCatalog.StatCap"/>,
+        /// a tower type's <see cref="GearCatalog.TowerStatCap"/>).
+        /// </summary>
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps)
         {
             var count = (int)StatId.Count;
             var sum = new float[count];
@@ -281,7 +301,7 @@ namespace MachineBrigade.Game.Match
             var any = false;
             for (var i = 0; i < count; i++)
             {
-                stats[i] = Mathf.Min(sum[i], GearCatalog.StatCap[i]) + penalty[i];
+                stats[i] = Mathf.Min(sum[i], caps[i]) + penalty[i];
                 any |= stats[i] != 0f;
             }
             var rankBonus = CardRanks.Bonus(rank);
@@ -392,11 +412,18 @@ namespace MachineBrigade.Game.Match
         public static readonly int[] CoinPrice = { 0, 900, 3000, 8000 };
 
         /// <summary>
+        /// The share of equipment rolls that are tower equipment, per crate (the rest are vehicle
+        /// equipment). The rarity is rolled first, at the same odds for both, so the pity counters
+        /// and the rarity table are the same whichever kind comes out.
+        /// </summary>
+        public static readonly float[] TowerShare = { 0.2f, 0.2f, 0.2f, 0.2f };
+
+        /// <summary>
         /// Opens a crate: coins, blueprints for cards the player has, and equipment rolls. The pity
         /// counters (crates opened since the last epic, the last legendary) are advanced and reset.
         /// </summary>
         public static Loot Open(CrateKind kind, System.Random rng, IReadOnlyList<string> cards, ref int sinceEpic, ref int sinceLegendary, Func<int> nextId,
-            BranchMask deck = BranchMask.All)
+            BranchMask deck = BranchMask.All, IReadOnlyList<TowerNeed> towers = null)
         {
             var k = (int)kind;
             var loot = new Loot { Coins = rng.Next(CoinsLow[k], CoinsHigh[k] + 1) };
@@ -425,10 +452,7 @@ namespace MachineBrigade.Game.Match
             var bestLegendary = false;
             for (var roll = 0; roll < Rolls[k]; roll++)
             {
-                var table = roll == 0 && kind == CrateKind.Gold ? GoldGuaranteed
-                    : roll == 0 && kind == CrateKind.Legendary ? LegendaryGuaranteed
-                    : Odds[k];
-                var rarity = Pick(table, rng);
+                var rarity = Pick(TableFor(kind, roll), rng);
                 // Pity on the last roll: the run without one is over.
                 if (roll == Rolls[k] - 1)
                 {
@@ -437,7 +461,9 @@ namespace MachineBrigade.Game.Match
                 }
                 if (rarity >= Rarity.Epic) bestEpic = true;
                 if (rarity >= Rarity.Legendary) bestLegendary = true;
-                loot.Gear.Add(Roll(rarity, rng, nextId(), deck));
+                // Then whether it is a tower piece (favouring the towers of the player's base) or a vehicle one.
+                var tower = rng.NextDouble() < TowerShare[k];
+                loot.Gear.Add(tower ? Gear.CreateTower(rarity, rng, nextId(), towers) : Roll(rarity, rng, nextId(), deck));
             }
             sinceEpic = bestEpic ? 0 : sinceEpic + 1;
             sinceLegendary = bestLegendary ? 0 : sinceLegendary + 1;
@@ -470,14 +496,36 @@ namespace MachineBrigade.Game.Match
             var none = 1f;
             for (var roll = 0; roll < Rolls[k]; roll++)
             {
-                var table = roll == 0 && kind == CrateKind.Gold ? GoldGuaranteed
-                    : roll == 0 && kind == CrateKind.Legendary ? LegendaryGuaranteed
-                    : Odds[k];
+                var table = TableFor(kind, roll);
                 var p = 0f;
                 for (var r = (int)rarity; r < table.Length; r++) p += table[r];
                 none *= 1f - p;
             }
             return 1f - none;
+        }
+
+        /// <summary>The rarity table of one roll of a crate (the gold and legendary crates' first roll is their guaranteed one).</summary>
+        public static float[] TableFor(CrateKind kind, int roll) =>
+            roll == 0 && kind == CrateKind.Gold ? GoldGuaranteed
+            : roll == 0 && kind == CrateKind.Legendary ? LegendaryGuaranteed
+            : Odds[(int)kind];
+
+        /// <summary>
+        /// The chance that one roll of a crate is a piece of this rarity and kind (tower or vehicle
+        /// equipment): the rarity's odds times the kind's share. Over every rarity and both kinds a
+        /// roll's odds add up to 1.
+        /// </summary>
+        public static float PieceOdds(CrateKind kind, int roll, Rarity rarity, bool tower)
+        {
+            var share = TowerShare[(int)kind];
+            return TableFor(kind, roll)[(int)rarity] * (tower ? share : 1f - share);
+        }
+
+        /// <summary>The chance of at least one tower piece from one crate (for the odds screen).</summary>
+        public static float AtLeastOneTower(CrateKind kind)
+        {
+            var k = (int)kind;
+            return 1f - Mathf.Pow(1f - TowerShare[k], Rolls[k]);
         }
     }
 

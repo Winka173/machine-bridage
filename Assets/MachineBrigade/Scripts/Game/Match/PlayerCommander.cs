@@ -83,7 +83,7 @@ namespace MachineBrigade.Game.Match
                 point -= along * (support.Length * 0.5f);
                 towards = point + along;
             }
-            var result = _world.Submit(Command.Strike(_team, id, point, towards));
+            var result = _world.SubmitPlayer(Command.Strike(_team, id, point, towards));
             if (!result.Accepted) _hud.ShowError(result.Error);
             else Disarm();
             return true;
@@ -147,7 +147,7 @@ namespace MachineBrigade.Game.Match
             var card = _cards[index];
             if (!card.Support)
             {
-                var result = _world.Submit(Command.Deploy(_team, card.Id));
+                var result = _world.SubmitPlayer(Command.Deploy(_team, card.Id));
                 if (result.Accepted) _hud.Toast(Strings.Format("toast.deployed", Strings.Unit(card.Id)));
                 else _hud.ShowError(result.Error);
                 return;

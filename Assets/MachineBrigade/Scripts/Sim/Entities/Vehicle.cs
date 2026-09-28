@@ -88,11 +88,20 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Weapon reach from equipment effects of the moment (a siege anchor dug in).</summary>
         internal float RangeFactor = 1f;
 
+        /// <summary>A guard tower's range aura on this tower this step (1: none).</summary>
+        internal float TowerRange = 1f;
+
         /// <summary>Repairs it receives (regeneration, auras) are multiplied by this.</summary>
         internal float RepairReceived = 1f;
 
         /// <summary>Takes no damage until then (Unbreakable, Aegis Dome).</summary>
         internal double ImmuneUntil = double.NegativeInfinity;
+
+        /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
+        internal float StunResist;
+
+        /// <summary>The fixed defences of each side (0 and 1) that last hit it, for Fire Link.</summary>
+        internal readonly TowerFireMark[] TowerFire = new TowerFireMark[2];
 
         /// <summary>Hit points left in an absorbing barrier (Aegis Barrier, Shared Shield), for the view.</summary>
         public float Barrier => Statuses[(int)StatusKind.Barrier].Value;
@@ -189,13 +198,34 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear * PhaseSpeed;
+
+        /// <summary>A multi-phase boss: the phases it has passed (0: the first bar).</summary>
+        public int Phase { get; internal set; }
+
+        /// <summary>Transforming between two phases (untouchable until <see cref="TransformUntil"/>).</summary>
+        public bool Transforming { get; internal set; }
+
+        internal double TransformUntil;
+        internal float PhaseSpeed = 1f;
+
+        /// <summary>The model it wears now if a phase changed it (null: its own).</summary>
+        public string? Form { get; internal set; }
 
         /// <summary>Fire-rate multiplier from skills.</summary>
         internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire;
 
         /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
         internal float CommandFire = 1f;
+
+        /// <summary>A gun pit down in its hole (see VehicleDef.Hidden): it cannot fire and is hard to see.</summary>
+        public bool Lowered { get; internal set; }
+
+        /// <summary>A gun pit just risen: its next shot hits harder (the Ambush branch).</summary>
+        internal bool AmbushReady;
+
+        /// <summary>A fixed minefield has laid its first mines.</summary>
+        internal bool MinesLaid;
 
         /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
         internal float FireBoost = 1f;
@@ -211,7 +241,10 @@ namespace MachineBrigade.Sim.Entities
 
         public EntityId Id { get; }
         public VehicleDef Def { get; }
-        public int Team { get; }
+        public int Team { get; internal set; }
+
+        /// <summary>One of the allied commander's (a multi-stage mission): its own AI commands it, the player's does not.</summary>
+        public bool Ally { get; internal set; }
         public Vector2 Position { get; internal set; }
 
         /// <summary>Hull heading in radians (see <see cref="SimMath"/> for the convention).</summary>
@@ -317,6 +350,12 @@ namespace MachineBrigade.Sim.Entities
 
         internal int PathIndex;
         internal bool PathCompleted;
+
+        /// <summary>Its new route waits for a step with path-finding to spare (see SimWorld.PathsPerStep).</summary>
+        internal bool PathQueued;
+
+        /// <summary>Where the waiting route goes.</summary>
+        internal Vector2 QueuedGoal;
         internal Vector2 PathGoal;
         internal float RepathTimer;
 
@@ -429,6 +468,7 @@ namespace MachineBrigade.Sim.Entities
         internal void SetPath(List<Vector2> points, Vector2 goal)
         {
             PathTrace?.Invoke(this, $"SetPath {points.Count} to {goal}");
+            PathQueued = false;
             Path.Clear();
             Path.AddRange(points);
             PathIndex = 0;
@@ -443,6 +483,7 @@ namespace MachineBrigade.Sim.Entities
         internal void ClearPath()
         {
             PathTrace?.Invoke(this, "ClearPath");
+            PathQueued = false;
             Path.Clear();
             PathIndex = 0;
             PathCompleted = true;

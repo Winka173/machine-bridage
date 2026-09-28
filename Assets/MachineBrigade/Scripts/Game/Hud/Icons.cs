@@ -153,6 +153,13 @@ namespace MachineBrigade.Game.Hud
             ["blueprint"] = "<path d=\"M6 3h9l4 4v14H6Z\"/><path d=\"M15 3v4h4M9 12h7M9 16h5\"/>",
             ["upgrade"] = "<path d=\"M6 14l6-6 6 6M6 20l6-6 6 6\"/>",
             ["skull"] = "<path d=\"M12 3a8 8 0 0 0-5 14v3h10v-3a8 8 0 0 0-5-14Z\"/><circle cx=\"9\" cy=\"11\" r=\"1.5\"/><circle cx=\"15\" cy=\"11\" r=\"1.5\"/><path d=\"M10 20v-2M14 20v-2\"/>",
+            // Hardpoint sizes (the base screen): the same corner brackets, the footprint inside grows.
+            ["slot_small"] = "<path d=\"M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5\"/><rect x=\"9\" y=\"9\" width=\"6\" height=\"6\" rx=\"1\"/>",
+            ["slot_medium"] = "<path d=\"M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5\"/><rect x=\"7\" y=\"7\" width=\"10\" height=\"10\" rx=\"1\"/>",
+            ["slot_large"] = "<path d=\"M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5\"/><rect x=\"5.5\" y=\"5.5\" width=\"13\" height=\"13\" rx=\"1\"/>",
+            // The headquarters (a command post with its flag) and a utility module (a chip).
+            ["hq"] = "<path d=\"M3 21h18M5 21v-9l7-5 7 5v9M10 21v-5h4v5M12 7V2l5 2-5 2\"/>",
+            ["module"] = "<rect x=\"6\" y=\"6\" width=\"12\" height=\"12\" rx=\"1\"/><rect x=\"10\" y=\"10\" width=\"4\" height=\"4\"/><path d=\"M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4\"/>",
         };
 
         private static readonly Dictionary<string, List<Shape>> Parsed = new();

@@ -192,6 +192,38 @@ namespace MachineBrigade.Sim.Content
         public string? ProjectileModel { get; internal set; }
     }
 
+    /// <summary>
+    /// One mark on a multi-phase boss's health bar: when its health reaches <see cref="At"/> the
+    /// boss transforms for <see cref="Transform"/> seconds (untouchable), then fights on with the
+    /// phase's changes.
+    /// </summary>
+    public sealed class BossPhaseDef
+    {
+        /// <summary>The share of full health the phase begins at (0-1).</summary>
+        public float At { get; set; }
+
+        public float Transform { get; set; } = 3f;
+
+        /// <summary>Health given back when the transformation ends (a share of full health).</summary>
+        public float Heal { get; set; }
+
+        /// <summary>Its damage, speed and damage taken from then on (multiplied in).</summary>
+        public float Damage { get; set; } = 1f;
+
+        public float Speed { get; set; } = 1f;
+
+        public float Armor { get; set; } = 1f;
+
+        /// <summary>Skills it uses at once when the phase begins (summons, a shield, a barrage...).</summary>
+        public IReadOnlyList<SkillDef> Skills { get; set; } = Array.Empty<SkillDef>();
+
+        /// <summary>A new model for the boss from this phase (its new form), or null.</summary>
+        public string? Model { get; set; }
+
+        /// <summary>Its general's radio line when the phase begins (a text key), or null.</summary>
+        public string? Radio { get; set; }
+    }
+
     public sealed class VehicleDef
     {
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
@@ -294,6 +326,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Skills the vehicle uses on its own (elite units, boss phases).</summary>
         public IReadOnlyList<SkillDef> Skills { get; internal set; } = Array.Empty<SkillDef>();
 
+        /// <summary>A boss's health phases, highest mark first (empty: one bar).</summary>
+        public IReadOnlyList<BossPhaseDef> Phases { get; internal set; } = Array.Empty<BossPhaseDef>();
+
+        /// <summary>The enemy general behind a boss (its radio lines and portrait), or null.</summary>
+        public string? General { get; internal set; }
+
         /// <summary>Repairs friendly vehicles around it (engineers).</summary>
         public AuraDef? RepairAura { get; internal set; }
 
@@ -327,6 +365,56 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A helicopter that fights from the edge of its missiles' reach and keeps out of short-range anti-air.</summary>
         public bool Standoff { get; internal set; }
 
+        /// <summary>An obstacle (dragon's teeth): it blocks the way and fights nothing; engineers breach it three times as fast.</summary>
+        public bool Obstacle { get; internal set; }
+
+        /// <summary>Never a target (a fixed minefield: its mines are what matter).</summary>
+        public bool Untargetable { get; internal set; }
+
+        /// <summary>A fixed structure vehicles drive through (a minefield, wire, a helipad): it blocks no route.</summary>
+        public bool Passable { get; internal set; }
+
+        /// <summary>Sees stealth and hidden units within its guns' reach (the guard tower).</summary>
+        public bool RevealStealth { get; internal set; }
+
+        /// <summary>Friendly towers within Radius reach Rate further (the guard tower; the best aura counts).</summary>
+        public AuraDef? TowerRangeAura { get; internal set; }
+
+        /// <summary>Enemy ground vehicles within Radius move Rate slower (wire).</summary>
+        public AuraDef? SlowAura { get; internal set; }
+
+        /// <summary>A tower that hides until an enemy comes close (the gun pit).</summary>
+        public HiddenDef? Hidden { get; internal set; }
+
+        /// <summary>A base's utility module.</summary>
+        public UtilityDef? Utility { get; internal set; }
+
+        /// <summary>A drone (light towers' anti-air guns hit it harder).</summary>
+        public bool Drone { get; internal set; }
+
+        /// <summary>No weapon that does damage (an obstacle, a minefield, a jammer, a utility module): it never fires.</summary>
+        public bool Passive
+        {
+            get
+            {
+                foreach (var m in Mounts)
+                    if (m.Weapon.Damage > 0f) return false;
+                return true;
+            }
+        }
+
+        /// <summary>The longest reach of its damaging weapons (0 for none).</summary>
+        public float GunReach
+        {
+            get
+            {
+                var reach = 0f;
+                foreach (var m in Mounts)
+                    if (m.Weapon.Damage > 0f) reach = MathF.Max(reach, m.Weapon.Range);
+                return reach;
+            }
+        }
+
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }
 
@@ -339,6 +427,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>For an elite: the vehicle it is a refurbished version of.</summary>
         public string? EliteOf { get; internal set; }
 
+        /// <summary>For a tower's rank-7 branch: the tower it is a branch of (its card, rank and equipment are that tower's).</summary>
+        public string? BranchOf { get; internal set; }
+
+        /// <summary>The card this def counts as: the tower a branch belongs to, else itself.</summary>
+        public string CardId => BranchOf ?? Id;
+
         /// <summary>What it counts against the army cap and pays out as a kill (an elite counts as its base unit).</summary>
         public int ArmyCost { get; internal set; }
 
@@ -347,7 +441,19 @@ namespace MachineBrigade.Sim.Content
         /// never bought (defences, mission units) an estimate from their toughness. Bosses count
         /// as nothing here, because the army fights them whatever the odds.
         /// </summary>
-        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Static ? MaxHp / 250f : MaxHp / 150f;
+        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Fort is { } fort ? FortPower(fort) : Static ? MaxHp / 250f : MaxHp / 150f;
+
+        /// <summary>
+        /// A base structure's worth in CP for the AI's odds: an HQ 14, a large tower 11, a medium one
+        /// 7, a light one 4; a module or anything with no gun 1 (its health alone once counted it as
+        /// a whole army: an HQ was worth 90).
+        /// </summary>
+        private float FortPower(FortDef fort)
+        {
+            if (fort.Kind == FortKind.Hq) return 14f;
+            if (fort.Kind == FortKind.Utility || Passive) return 1f;
+            return fort.Size switch { SlotSize.Large => 11f, SlotSize.Medium => 7f, _ => 4f };
+        }
 
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
         public string Model { get; internal set; }

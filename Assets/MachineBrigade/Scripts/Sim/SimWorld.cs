@@ -278,6 +278,8 @@ namespace MachineBrigade.Sim
             economy.SupplyScale = Catalog.SupplyScale;
             // A mode that set no supply of its own takes the data's for it.
             if (economy.BaseArmyCap <= 0) economy.BaseArmyCap = Catalog.ArmyCapFor(ModeTag);
+            // The enemy of the big modes may field more (the player keeps the ordinary ceiling).
+            if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
             Economy.Enable(economy);
         }
 
@@ -325,12 +327,22 @@ namespace MachineBrigade.Sim
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
-            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts && (_boostAll[team] || (!def.Boss && !def.Static)))
+            // A side's own loadout towers carry their card's rank and equipment; other fixed defences
+            // (a fortress, a point's watchtower) only when the side boosts everything.
+            if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
+                (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
                 Upgrade(vehicle, boosts(def));
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
                 vehicle.DoctrineSpeed = doctrine.Speed * vehicle.BoostSpeed;
+            }
+            // A mutator's change to a side's strength (the Operations mode's weekly twists).
+            if (team >= 0 && team < _mutators.Length && _mutators[team] is { } mutate)
+            {
+                var (hp, damage) = mutate(def);
+                vehicle.HpScale *= hp;
+                vehicle.DamageBoost *= damage;
             }
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
@@ -344,6 +356,13 @@ namespace MachineBrigade.Sim
         }
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
+        private readonly Func<VehicleDef, (float hp, float damage)>?[] _mutators = new Func<VehicleDef, (float, float)>?[3];
+
+        /// <summary>A side's vehicles enter with this health and damage (by def) on top of everything else; null: none.</summary>
+        public void SetMutators(int team, Func<VehicleDef, (float hp, float damage)>? strength)
+        {
+            if (team >= 0 && team < _mutators.Length) _mutators[team] = strength;
+        }
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
         private readonly bool[] _boostAll = new bool[3];
 
@@ -449,6 +468,84 @@ namespace MachineBrigade.Sim
             return at;
         }
 
+        /// <summary>
+        /// The player's own commands (from the screen, not the AI) with the step each was given at:
+        /// replaying them into a fresh battle of the same seed brings it back to any moment (a
+        /// multi-stage mission's checkpoints).
+        /// </summary>
+        public IReadOnlyList<(long tick, Command command)> Journal => _journal;
+
+        private readonly List<(long tick, Command command)> _journal = new();
+
+        /// <summary>A command from the player's screen: carried out and written in the journal.</summary>
+        public CommandResult SubmitPlayer(Command command)
+        {
+            _journal.Add((Tick, command));
+            return Submit(command);
+        }
+
+        /// <summary>
+        /// A fingerprint of the battle now (every vehicle's id, side, place and health, every side's
+        /// CP): two battles with the same fingerprint are in the same state as far as anyone can tell.
+        /// </summary>
+        public ulong StateHash()
+        {
+            unchecked
+            {
+                var h = 14695981039346656037UL;
+                void Mix(long v)
+                {
+                    h ^= (ulong)v;
+                    h *= 1099511628211UL;
+                }
+                Mix(Tick);
+                foreach (var v in _vehicleList)
+                {
+                    if (!v.IsAlive) continue;
+                    Mix(v.Id.Value);
+                    Mix(v.Team);
+                    Mix((long)MathF.Round(v.Position.X * 100f));
+                    Mix((long)MathF.Round(v.Position.Y * 100f));
+                    Mix((long)MathF.Round(v.Hp * 10f));
+                }
+                for (var team = 0; team <= 1; team++)
+                    if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
+                return h;
+            }
+        }
+
+        /// <summary>
+        /// A vehicle changes sides (an ally betrays the player): it drops its orders and targets and
+        /// fights for <paramref name="team"/> from now on.
+        /// </summary>
+        /// <summary>
+        /// Where the player's side (team 0) may go: its moves stop at the edge (null: the whole map).
+        /// A multi-stage mission opens more of the map as it goes (<see cref="Expand"/>).
+        /// </summary>
+        public PlayArea? PlayArea { get; private set; }
+
+        /// <summary>Sets the play area (null: the whole map) and tells the view.</summary>
+        public void Expand(PlayArea? area)
+        {
+            PlayArea = area;
+            Emit(SimEvent.AreaChanged(area));
+        }
+
+        public void Defect(Vehicle v, int team)
+        {
+            if (!v.IsAlive || v.Team == team) return;
+            Lanes.Release(v);
+            v.ClearPath();
+            v.SetOrder(Order.Idle);
+            v.ManualOrder = false;
+            for (var i = 0; i < v.Weapons.Length; i++) v.Weapons[i].Target = EntityId.None;
+            v.Engaged = EntityId.None;
+            v.Team = team;
+            v.Ally = false;
+            v.VisibleToMask = 0;
+            Emit(SimEvent.Defected(v));
+        }
+
         public CommandResult Submit(Command command)
         {
             if (IsOver) return CommandResult.Rejected(CommandError.MatchOver);
@@ -523,6 +620,12 @@ namespace MachineBrigade.Sim
         {
             Tick++;
             Time += dt;
+            ServeQueuedPaths();
+            if (Profile != null)
+            {
+                ProfiledStep(dt);
+                return;
+            }
             RefreshVisibility();
             Economy.Step(dt);
             Bases.Step();
@@ -535,6 +638,53 @@ namespace MachineBrigade.Sim
             Strikes.Step();
             Damage.Step();
             RemoveDead();
+        }
+
+        /// <summary>The systems of a step, in order (the names of <see cref="Profile"/>'s columns).</summary>
+        public static readonly string[] ProfileSections =
+            { "visibility", "economy", "bases", "movement", "crush", "abilities", "status", "gear", "combat", "strikes", "damage", "remove" };
+
+        /// <summary>
+        /// When set (a measurement, never in play): each step adds one row of each system's time in
+        /// milliseconds, in <see cref="ProfileSections"/> order.
+        /// </summary>
+        public List<double[]>? Profile { get; set; }
+
+        private void ProfiledStep(float dt)
+        {
+            var row = new double[ProfileSections.Length];
+            var ticks = System.Diagnostics.Stopwatch.GetTimestamp();
+            void Lap(int i)
+            {
+                var now = System.Diagnostics.Stopwatch.GetTimestamp();
+                row[i] = (now - ticks) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+                ticks = now;
+            }
+            RefreshVisibility();
+            Lap(0);
+            Economy.Step(dt);
+            Lap(1);
+            Bases.Step();
+            Lap(2);
+            _movement.Step(dt);
+            Lap(3);
+            CrushVegetation();
+            Lap(4);
+            _abilities.Step(dt);
+            Lap(5);
+            Status.Step(dt);
+            Lap(6);
+            Gear.Step(dt);
+            Lap(7);
+            _combat.Step(dt);
+            Lap(8);
+            Strikes.Step();
+            Lap(9);
+            Damage.Step();
+            Lap(10);
+            RemoveDead();
+            Lap(11);
+            Profile!.Add(row);
         }
 
         internal void Emit(in SimEvent e) => _events.Add(e);
@@ -593,10 +743,27 @@ namespace MachineBrigade.Sim
         /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
         public void Announce(in SimEvent e) => _events.Add(e);
 
-        /// <summary>Paths a vehicle towards <paramref name="goal"/>; on failure it simply stops.</summary>
+        /// <summary>
+        /// Most ground routes found in one step. The rest wait for the next steps, first come first
+        /// served, keeping the route they had: a commander ordering thirty vehicles at once (and
+        /// their re-plans half a second later) made a step's worst case several times its mean.
+        /// </summary>
+        internal const int PathsPerStep = 6;
+
+        private int _pathsThisStep;
+        private readonly List<Vehicle> _pathQueue = new();
+
+        /// <summary>Ground routes waiting for their step (for measurements).</summary>
+        internal int QueuedPaths => _pathQueue.Count;
+
+        /// <summary>
+        /// Paths a vehicle towards <paramref name="goal"/>; on failure it simply stops. A ground
+        /// route over this step's budget is found in a coming step (true: it is on its way).
+        /// </summary>
         internal bool PathTo(Vehicle vehicle, Vector2 goal)
         {
             vehicle.RepathTimer = 0.5f;
+            if (vehicle.Team == 0 && PlayArea is { } area) goal = area.Clamp(goal);
             if (vehicle.Flying)
             {
                 // Aircraft fly straight over buildings, wrecks and rivers.
@@ -605,6 +772,33 @@ namespace MachineBrigade.Sim
                 vehicle.SetPath(_pathBuffer, goal);
                 return true;
             }
+            if (_pathsThisStep >= PathsPerStep)
+            {
+                if (!vehicle.PathQueued) _pathQueue.Add(vehicle);
+                vehicle.PathQueued = true;
+                vehicle.QueuedGoal = goal;
+                return true;
+            }
+            return FindPath(vehicle, goal);
+        }
+
+        /// <summary>The routes waiting from earlier steps, in the order they were asked for, as far as this step's budget goes.</summary>
+        private void ServeQueuedPaths()
+        {
+            _pathsThisStep = 0;
+            var served = 0;
+            while (served < _pathQueue.Count && _pathsThisStep < PathsPerStep)
+            {
+                var v = _pathQueue[served++];
+                if (v.PathQueued && v.IsAlive) FindPath(v, v.QueuedGoal);
+            }
+            _pathQueue.RemoveRange(0, served);
+        }
+
+        private bool FindPath(Vehicle vehicle, Vector2 goal)
+        {
+            _pathsThisStep++;
+            vehicle.PathQueued = false;
             if (_pathFinder.TryFindPath(vehicle.Position, goal, _pathBuffer))
             {
                 vehicle.SetPath(_pathBuffer, goal);
@@ -711,6 +905,9 @@ namespace MachineBrigade.Sim
         private const double StealthReveal = 2.5;
 
         private readonly List<float> _sight = new();
+
+        /// <summary>Bases with a working radar station this step: their side and HQ position.</summary>
+        internal readonly List<(int team, Vector2 at)> _radarBases = new();
         private readonly List<float> _thermal = new();
 
         private void RefreshVisibility()
@@ -758,6 +955,10 @@ namespace MachineBrigade.Sim
                     if (!spotter.IsAlive || spotter.Team < 0 || spotter.Team > 30) continue;
                     var range = _sight[i] * sight;
                     if (hidden) range = MathF.Min(range, GhillieReveal);
+                    // A gun pit down in its hole: only a scout or a radar sees it from afar.
+                    if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
+                    // A guard tower sees stealth and hidden units within its guns' reach.
+                    if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
                     else
                     {
@@ -772,6 +973,9 @@ namespace MachineBrigade.Sim
                 if (reveal.Until > Time) mask |= reveal.Stacks;
                 // A UAV scan: everything under it, stealth and hidden too.
                 mask |= Strikes.ScanMask(target.Position, target.Team);
+                // A base's radar: anything in the base shows.
+                foreach (var (team, at) in _radarBases)
+                    if (team != target.Team && Vector2.DistanceSquared(at, target.Position) < HomeRadius * HomeRadius) mask |= 1 << team;
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }
@@ -788,7 +992,7 @@ namespace MachineBrigade.Sim
         /// </summary>
         internal void AnchorDefence(Vehicle v)
         {
-            if (!v.Def.Static || v.BlocksRoutes) return;
+            if (!v.Def.Static || v.BlocksRoutes || v.Def.Passable) return;
             v.BlocksRoutes = true;
             Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
         }

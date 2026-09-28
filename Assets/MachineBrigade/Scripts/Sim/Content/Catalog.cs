@@ -54,6 +54,12 @@ namespace MachineBrigade.Sim.Content
 
         internal Dictionary<string, int> ArmyCaps { get; set; } = new();
 
+        internal Dictionary<string, int> VehicleCaps { get; set; } = new();
+
+        /// <summary>The enemy's vehicle ceiling in a mode (balance.json economy.vehicleCap): its entry, else "default", else 32.</summary>
+        public int VehicleCapFor(string? mode) =>
+            mode != null && VehicleCaps.TryGetValue(mode, out var cap) ? cap : VehicleCaps.TryGetValue("default", out var d) ? d : Economy.TeamEconomy.MaxVehicles;
+
         /// <summary>The army supply (CP) of a mode that does not set its own: its entry, else "default", else 24.</summary>
         public int ArmyCapFor(string? mode) =>
             mode != null && ArmyCaps.TryGetValue(mode, out var cap) ? cap : ArmyCaps.TryGetValue("default", out var d) ? d : 24;
@@ -106,7 +112,7 @@ namespace MachineBrigade.Sim.Content
             var vehicleBlasts = Tune("firepower", "vehicleBlasts");
 
             var weapons = new Dictionary<string, WeaponDef>();
-            foreach (var w in root.Array("weapons"))
+            foreach (var w in Inherited(root.Array("weapons"), model: false))
             {
                 var def = Wrap(w, () => new WeaponDef(
                     w.String("id"), w.Enum<DamageType>("damageType"), w.Float("damage"), w.Float("cooldown"),
@@ -156,7 +162,7 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
-            foreach (var v in root.Array("vehicles"))
+            foreach (var v in Inherited(root.Array("vehicles"), model: true))
             {
                 var weapon = Weapon(weapons, v, "weapon");
                 var secondary = new List<WeaponMount>();
@@ -203,6 +209,26 @@ namespace MachineBrigade.Sim.Content
                             list.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{v.Path}.skills: unknown skill '{id}'."));
                         def.Skills = list;
                     }
+                    if (v.Has("phases"))
+                    {
+                        var phases = new List<BossPhaseDef>();
+                        foreach (var p in v.Array("phases"))
+                        {
+                            var phaseSkills = new List<SkillDef>();
+                            if (p.Has("skills"))
+                                foreach (var id in p.StringArray("skills"))
+                                    phaseSkills.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{p.Path}.skills: unknown skill '{id}'."));
+                            phases.Add(new BossPhaseDef
+                            {
+                                At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
+                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f),
+                                Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
+                            });
+                        }
+                        phases.Sort((a, b) => b.At.CompareTo(a.At));
+                        def.Phases = phases;
+                    }
+                    if (v.Has("general")) def.General = v.String("general");
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);
@@ -218,7 +244,7 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("fort"))
                     {
                         var f = v.Object("fort");
-                        def.Fort = new FortDef(f.Int("points", 1), f.Has("weight") ? f.String("weight") : "Light", f.Enum("kind", FortKind.Tower))
+                        def.Fort = new FortDef(f.Enum("size", SlotSize.Small), f.Enum("kind", FortKind.Tower))
                         {
                             Tier = f.Int("tier", 1),
                         };
@@ -242,14 +268,44 @@ namespace MachineBrigade.Sim.Content
                         def.CounterBattery = new CounterBatteryDef(c.Float("range"), c.Float("seconds"), c.Float("bonus", 0f));
                     }
                     def.ForwardDrop = v.Float("forwardDrop", 0f);
+                    def.BranchOf = v.Has("branchOf") ? v.String("branchOf") : null;
                     def.MaxPerSide = v.Int("maxPerSide", 0);
                     def.Standoff = v.Bool("standoff", false);
+                    def.Obstacle = v.Bool("obstacle", false);
+                    def.Untargetable = v.Bool("untargetable", false);
+                    def.Passable = v.Bool("passable", false);
+                    def.RevealStealth = v.Bool("revealStealth", false);
+                    def.Drone = v.Bool("drone", false);
+                    if (v.Has("towerRangeAura"))
+                    {
+                        var a = v.Object("towerRangeAura");
+                        def.TowerRangeAura = new AuraDef(a.Float("radius"), a.Float("range"));
+                    }
+                    if (v.Has("slowAura"))
+                    {
+                        var a = v.Object("slowAura");
+                        def.SlowAura = new AuraDef(a.Float("radius"), a.Float("share"));
+                    }
+                    if (v.Has("hidden"))
+                    {
+                        var h = v.Object("hidden");
+                        def.Hidden = new HiddenDef(h.Float("rise"), h.Float("cut", 0.6f), h.Float("firstShot", 1f));
+                    }
+                    if (v.Has("utility"))
+                    {
+                        var u = v.Object("utility");
+                        def.Utility = new UtilityDef
+                        {
+                            Repair = u.Float("repair", 0f), Rearm = u.Float("rearm", 0f), AirRepair = u.Float("airRepair", 0f),
+                            AirReach = u.Float("airReach", 14f), Supply = u.Int("supply", 0), RevealBase = u.Bool("revealBase", false),
+                        };
+                    }
                     if (v.Has("mines"))
                     {
                         var m = v.Object("mines");
                         def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
                             new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
-                            m.Float("trigger", 2f));
+                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
                     }
                     return def;
                 }));
@@ -292,8 +348,42 @@ namespace MachineBrigade.Sim.Content
                 SupplyScale = Tune("economy", "supply"),
                 EnemyScaling = Tune("economy", "enemyScaling"),
                 ArmyCaps = ReadArmyCaps(root),
+                VehicleCaps = ReadCaps(root, "vehicleCap", 32),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
+        }
+
+        /// <summary>
+        /// Vehicle entries with "inherits" (a tower's rank-7 branch) take the named def's fields,
+        /// theirs on top; the parent's model too, unless they name their own. In data order.
+        /// </summary>
+        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model)
+        {
+            var list = new List<JsonObject>(entries);
+            var byId = new Dictionary<string, JsonObject>();
+            foreach (var v in list)
+                if (v.Has("id")) byId[v.String("id")] = v;
+            JsonObject Resolve(JsonObject v, int depth)
+            {
+                if (!v.Has("inherits")) return v;
+                if (depth > 4) throw new FormatException($"{v.Path}: inherits too deep");
+                var parentId = v.String("inherits");
+                if (!byId.TryGetValue(parentId, out var parent)) throw new FormatException($"{v.Path}.inherits: unknown vehicle '{parentId}'");
+                var baseDef = Resolve(parent, depth + 1);
+                var merged = baseDef.Under(v);
+                if (model && !v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
+                return merged;
+            }
+            foreach (var v in list) yield return Resolve(v, 0);
+        }
+
+        private static Dictionary<string, int> ReadCaps(JsonObject root, string key, int fallback)
+        {
+            var caps = new Dictionary<string, int>();
+            if (!root.Has("economy") || !root.Object("economy").Has(key)) return caps;
+            var o = root.Object("economy").Object(key);
+            foreach (var k in o.Keys) caps[k] = o.Int(k, fallback);
+            return caps;
         }
 
         private static Dictionary<string, int> ReadArmyCaps(JsonObject root)

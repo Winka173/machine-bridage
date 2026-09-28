@@ -30,6 +30,15 @@ namespace MachineBrigade.Game.Match
             public int weeklyId;
             public int weeklyStage = 1;
             public bool weeklyClaimed;
+
+            /// <summary>The week's rewards paid ("fortress", "operation"): one ledger for every weekly reward.</summary>
+            public List<string> weeklyClaims = new();
+
+            /// <summary>The Operations mode's records: battle, tier, best score, fastest win (seconds).</summary>
+            public List<string> opsIds = new();
+            public List<int> opsTiers = new();
+            public List<int> opsScores = new();
+            public List<float> opsTimes = new();
             public List<string> itemIds = new();
             public int dailyDay;
             public List<int> dailyProgress = new();
@@ -64,11 +73,32 @@ namespace MachineBrigade.Game.Match
             /// <summary>1: progress on the merged and retired cards has been moved (see CardMerges).</summary>
             public int rosterVersion;
 
-            /// <summary>The base loadout (see BaseLoadout): HQ level, towers front first, utility modules, outpost towers.</summary>
+            /// <summary>
+            /// The base loadout (see BaseLoadout): HQ level, a tower for each hardpoint by size,
+            /// utility modules, outpost towers. baseTowers is the old point loadout (one list),
+            /// moved into the sized lists once (baseVersion 2).
+            /// </summary>
             public int baseLevel;
+            public int baseVersion;
+            public List<string> baseSmall = new();
+            public List<string> baseMedium = new();
+            public List<string> baseLarge = new();
             public List<string> baseTowers = new();
+
+            /// <summary>Towers whose rank-7 branch was chosen, and the branch def each fights as.</summary>
+            public List<string> branchTowers = new();
+            public List<string> branchChoices = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
+
+            /// <summary>
+            /// Tower equipment (see PlayerProfile.TowerGear.cs): the tower types that have a loadout,
+            /// and for each three piece ids in towerGear (Weapon, Structure, Systems; 0: empty).
+            /// </summary>
+            public List<string> towerGearIds = new();
+            public List<int> towerGear = new();
+            /// <summary>The player has set the base up on the base screen: an empty camp stays empty.</summary>
+            public bool baseEdited;
         }
 
         /// <summary>
@@ -81,8 +111,13 @@ namespace MachineBrigade.Game.Match
             get
             {
                 var loadout = new Sim.Modes.BaseLoadout { HqLevel = D.baseLevel > 0 ? D.baseLevel : 5 };
-                loadout.Towers.AddRange(D.baseTowers.Count > 0 ? D.baseTowers : DefaultTowers);
+                var empty = !D.baseEdited && D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
+                loadout.Small.AddRange(empty ? DefaultSmall : D.baseSmall);
+                loadout.Medium.AddRange(empty ? DefaultMedium : D.baseMedium);
+                loadout.Large.AddRange(empty ? DefaultLarge : D.baseLarge);
                 loadout.Utilities.AddRange(D.baseUtilities);
+                foreach (var id in loadout.Towers)
+                    if (TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
                 if (D.baseOutpost.Count > 0)
                 {
                     loadout.Outpost.Clear();
@@ -93,15 +128,46 @@ namespace MachineBrigade.Game.Match
             set
             {
                 D.baseLevel = value.HqLevel;
-                D.baseTowers = new List<string>(value.Towers);
+                D.baseSmall = new List<string>(value.Small);
+                D.baseMedium = new List<string>(value.Medium);
+                D.baseLarge = new List<string>(value.Large);
+                D.baseTowers.Clear();
+                D.baseVersion = BaseVersion;
                 D.baseUtilities = new List<string>(value.Utilities);
                 D.baseOutpost = new List<string>(value.Outpost);
+                D.baseEdited = true;
                 Save();
             }
         }
 
-        /// <summary>A new profile's towers (13 of 14 points): a gun line, anti-air, a bunker and watchtowers.</summary>
-        public static readonly string[] DefaultTowers = { "gun_turret", "aa_turret", "rocket_turret", "mg_bunker", "guard_tower", "aa_turret" };
+        /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>
+        public static readonly string[] DefaultSmall = { "guard_tower", "aa_turret", "mg_bunker", "guard_tower", "aa_turret", "mg_bunker" };
+
+        public static readonly string[] DefaultMedium = { "gun_turret", "rocket_turret", "atgm_tower" };
+
+        /// <summary>
+        /// The heavy fortress and the artillery emplacement: measured best of the candidates against
+        /// a mixed army with the attackers knowing the towers (DECISIONS 3, "Base table").
+        /// </summary>
+        public static readonly string[] DefaultLarge = { "heavy_turret", "artillery_emplacement" };
+
+        /// <summary>2: the base loadout is in sized lists (see <see cref="Data.baseVersion"/>).</summary>
+        internal const int BaseVersion = 2;
+
+        /// <summary>Moves a base loadout saved as one list of towers (fortification points) into the sized lists, once.</summary>
+        private static void MigrateBase(Data d)
+        {
+            if (d.baseVersion >= BaseVersion) return;
+            if (d.baseTowers.Count > 0)
+            {
+                var moved = Sim.Modes.BaseLoadout.FromTowerList(GameContent.LoadCatalog(), d.baseLevel > 0 ? d.baseLevel : 5, d.baseTowers, d.baseUtilities, d.baseOutpost.Count > 0 ? d.baseOutpost : null);
+                d.baseSmall = new List<string>(moved.Small);
+                d.baseMedium = new List<string>(moved.Medium);
+                d.baseLarge = new List<string>(moved.Large);
+                d.baseTowers.Clear();
+            }
+            d.baseVersion = BaseVersion;
+        }
 
         private const string Key = "mb.profile";
         private static Data _data;
@@ -312,20 +378,15 @@ namespace MachineBrigade.Game.Match
         /// <summary>The stage reached on this week's fortress (1 at the start of a week).</summary>
         public static int WeeklyStage(int week) => D.weeklyId == week ? D.weeklyStage : 1;
 
-        public static bool WeeklyClaimed(int week) => D.weeklyId == week && D.weeklyClaimed;
+        public static bool WeeklyClaimed(int week) => WeeklyPaid(week, "fortress");
 
         /// <summary>Records an attack on the weekly fortress; returns true when it pays its weekly reward (the first win of the week).</summary>
         public static bool RecordWeekly(int week, int stage, bool won)
         {
-            if (D.weeklyId != week)
-            {
-                D.weeklyId = week;
-                D.weeklyStage = 1;
-                D.weeklyClaimed = false;
-            }
+            WeekOf(week);
             D.weeklyStage = Math.Max(D.weeklyStage, Math.Clamp(stage, 1, 3));
-            var pays = won && !D.weeklyClaimed;
-            if (pays) D.weeklyClaimed = true;
+            // The same weekly ledger as the Operations mode's weekly operation.
+            var pays = won && ClaimWeekly(week, "fortress");
             if (won) D.weeklyStage = 1;
             Save();
             return pays;
@@ -349,6 +410,7 @@ namespace MachineBrigade.Game.Match
             while (_data.missionTiers.Count < _data.missionIds.Count) _data.missionTiers.Add(0);
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
             FixArsenal(_data);
+            MigrateBase(_data);
         }
 
         public static void Save()
@@ -384,6 +446,7 @@ namespace MachineBrigade.Game.Match
             _data = JsonUtility.FromJson<Data>(json) ?? new Data();
             _noSave = true;
             FixArsenal(_data);
+            MigrateBase(_data);
         }
 
         /// <summary>Tests: the profile as it would be saved.</summary>

@@ -71,6 +71,12 @@ namespace MachineBrigade.Game.Match
         private ViewRegistry _views;
         private ObjectiveView _objectives;
         private MissionMarkers _markers;
+        private PlayAreaView _playArea;
+
+        /// <summary>The battle was brought back to a checkpoint (replayed before its views were built).</summary>
+        private bool _resumed;
+
+        private int _replayCommand, _replayInput;
         private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
@@ -186,6 +192,21 @@ namespace MachineBrigade.Game.Match
             // A campaign tier holds for the one mission it was chosen for.
             if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;
             _clock = new SimClock();
+            // The player's switches as the battle starts, so a replay starts from the same ones.
+            MatchJournal.Inputs.Clear();
+            var resume = MatchJournal.Pending;
+            MatchJournal.Pending = null;
+            if (!_menu && _session.PlayerAi != null)
+            {
+                MatchJournal.Record(_world, "autoDeploy", _session.PlayerAi.AutoDeploy ? "1" : "0");
+                MatchJournal.Record(_world, "autoStrike", _session.PlayerAi.AutoStrike ? "1" : "0");
+            }
+            // Back to a checkpoint: the battle so far, replayed behind the loading screen.
+            if (resume != null && !_menu && mission != null && resume.Mission == mission.Id)
+            {
+                var replay = Replay(resume);
+                while (replay.MoveNext()) yield return replay.Current;
+            }
 
             var worldRoot = new GameObject("Battlefield").transform;
             _materials = new MaterialLibrary();
@@ -203,6 +224,12 @@ namespace MachineBrigade.Game.Match
             yield return null;
             _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot, options);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
+            // A replayed battle's vehicles were raised with nobody watching: their views are made now.
+            if (_resumed)
+                foreach (var v in _world.Vehicles)
+                    if (v.IsAlive) _views.Add(v);
+            _playArea = new PlayAreaView(_materials, worldRoot);
+            _playArea.Show(_world.PlayArea);
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
                 _objectives = new ObjectiveView(_session.Objectives, _meshes, _materials, worldRoot);
             if (_session is MissionSession) _markers = new MissionMarkers(_meshes, _materials, worldRoot);
@@ -213,6 +240,7 @@ namespace MachineBrigade.Game.Match
             {
                 ShakeScale = MatchSettings.ShakeScale,
             };
+            FitCameraToArea();
             _attractFocus = start;
             // Device check of the scenery: the north-west corner, zoomed right out.
             // Device check of the whole battlefield: its outline, terrain and objectives in one view.
@@ -259,6 +287,8 @@ namespace MachineBrigade.Game.Match
                 System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
+                // An Operations mutator's weather over the mission's own.
+                : mission != null && MatchSettings.Run?.Mission == mission.Id && System.Enum.TryParse<WeatherKind>(MatchSettings.Run.Weather, out var mutated) ? mutated
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
                 : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
@@ -781,6 +811,34 @@ namespace MachineBrigade.Game.Match
                             Haptics.Pulse(180, 255);
                         }
                         break;
+                    case SimEventKind.BossPhase when !_menu && _world.TryGetVehicle(e.Entity, out var phased):
+                        if (e.Mount == 1)
+                        {
+                            // The boss transforms: the camera goes to it, its general speaks.
+                            StartCinematic(e.Position, force: true);
+                            Haptics.Pulse(160, 255);
+                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", Strings.Card(phased.Def.Id), (int)e.Value),
+                                error: true, seconds: 5f);
+                        }
+                        // Its new form: drawn again with the phase's model.
+                        else if (phased.Form != null) _views.Rebuild(phased);
+                        break;
+                    case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
+                        _views.Rebuild(turned);
+                        break;
+                    case SimEventKind.Radio when !_menu && e.DefId != null:
+                        _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
+                        break;
+                    case SimEventKind.StageStarted when !_menu && e.Value > 1f && _session is MissionSession staged:
+                        _hud.ShowBanner(Strings.Format("stage.kicker", (int)e.Value), staged.StageTitle(e.DefId, (int)e.Value),
+                            Strings.Get("goal." + staged.Mission.Def.Goal.ToString().ToLowerInvariant()));
+                        Haptics.Pulse(90, 200);
+                        break;
+                    case SimEventKind.AreaChanged:
+                        _playArea?.Show(_world.PlayArea);
+                        FitCameraToArea();
+                        if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f);
+                        break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
                         if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert);
@@ -880,6 +938,15 @@ namespace MachineBrigade.Game.Match
                 MatchSettings.InMatch = false;
                 Reload("loading.base");
             };
+            _hud.CheckpointPressed += () =>
+            {
+                if (Curtain.Busy || _session is not MissionSession staged) return;
+                var point = MatchJournal.Checkpoint(_world, MatchSettings.Mission, MatchSettings.MissionTier, staged.Operation);
+                if (point == null) return;
+                ClaimReward();
+                MatchJournal.Pending = point;
+                Reload("loading.checkpoint", DeployDetail());
+            };
             _hud.NextMissionPressed += () =>
             {
                 if (Curtain.Busy) return;
@@ -906,28 +973,32 @@ namespace MachineBrigade.Game.Match
             _hud.StancePressed += defend =>
             {
                 playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
+                MatchJournal.Record(_world, "stance", defend ? "defend" : "attack");
                 _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
             };
             _hud.TowerPressed += () =>
             {
                 var callable = _world.Bases.Callable(PlayerTeam);
                 if (callable.Count == 0) return;
-                var result = _world.Submit(new Command(CommandType.CallTower, PlayerTeam, System.Array.Empty<MachineBrigade.Sim.Core.EntityId>(), callable[0].Def.Position));
+                var result = _world.SubmitPlayer(new Command(CommandType.CallTower, PlayerTeam, System.Array.Empty<MachineBrigade.Sim.Core.EntityId>(), callable[0].Def.Position));
                 if (result.Accepted) _hud.Toast(Strings.Get("toast.towerCalled")); else _hud.ShowError(result.Error);
             };
             _hud.AutoDeployToggled += () =>
             {
                 MatchSettings.AutoDeploy = playerAi.AutoDeploy = !playerAi.AutoDeploy;
+                MatchJournal.Record(_world, "autoDeploy", playerAi.AutoDeploy ? "1" : "0");
                 MatchSettings.Save();
             };
             _hud.AutoStrikeToggled += () =>
             {
                 MatchSettings.AutoStrike = playerAi.AutoStrike = !playerAi.AutoStrike;
+                MatchJournal.Record(_world, "autoStrike", playerAi.AutoStrike ? "1" : "0");
                 MatchSettings.Save();
             };
             _hud.PointPressed += id =>
             {
                 playerAi.FocusPoint = playerAi.FocusPoint == id ? null : id;
+                MatchJournal.Record(_world, "focus", playerAi.FocusPoint ?? "");
                 _hud.Toast(playerAi.FocusPoint != null
                     ? Strings.Format("toast.focus", Strings.Get("point." + id))
                     : Strings.Get("toast.focusClear"));
@@ -1130,9 +1201,78 @@ namespace MachineBrigade.Game.Match
                 }
                 var index = _session is MissionSession ? Campaign.IndexOf(MatchSettings.Mission) : -1;
                 view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
+                view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
             }
             _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);
             _music?.Result(outcome.Result > 0);
+        }
+
+        /// <summary>
+        /// Brings the battle back to a checkpoint: from the same seed, the player's commands and
+        /// switches are fed in at the steps they were given, and the battle is stepped as it was
+        /// played, with nothing drawn, up to the checkpoint's step. The fingerprint there must match
+        /// the one kept; if it does not, the battle goes on from where the replay reached, and the
+        /// difference is logged.
+        /// </summary>
+        private IEnumerator Replay(ResumePoint resume)
+        {
+            _resumed = true;
+            _replayCommand = _replayInput = 0;
+            var dt = (float)_clock.StepSeconds;
+            while (_world.Tick < resume.Tick && !_world.IsOver)
+            {
+                FeedJournal(resume);
+                _session.Mode.Tick(_world, dt);
+                _session.TickAi(_world, dt);
+                _world.Step(dt);
+                _world.ClearEvents();
+                if (_world.Tick % 500 != 0) continue;
+                Curtain.Progress(0.15f + 0.25f * _world.Tick / Mathf.Max(1f, resume.Tick));
+                yield return null;
+            }
+            FeedJournal(resume);
+            if (_world.StateHash() != resume.Hash)
+                Debug.LogWarning($"Checkpoint replay drifted at step {_world.Tick}: {_world.StateHash():X16}, kept {resume.Hash:X16}");
+        }
+
+        /// <summary>The journal's commands and switches for the step the replay is on.</summary>
+        private void FeedJournal(ResumePoint resume)
+        {
+            while (_replayCommand < resume.Commands.Count && resume.Commands[_replayCommand].tick <= _world.Tick)
+                _world.SubmitPlayer(resume.Commands[_replayCommand++].command);
+            while (_replayInput < resume.Inputs.Count && resume.Inputs[_replayInput].tick <= _world.Tick)
+            {
+                var (_, input, value) = resume.Inputs[_replayInput++];
+                var ai = _session.PlayerAi;
+                if (input != "choose") MatchJournal.Record(_world, input, value);
+                switch (input)
+                {
+                    case "stance" when ai != null:
+                        ai.Stance = value == "defend" ? CommanderStance.Defend : CommanderStance.Attack;
+                        break;
+                    case "autoDeploy" when ai != null:
+                        ai.AutoDeploy = value == "1";
+                        break;
+                    case "autoStrike" when ai != null:
+                        ai.AutoStrike = value == "1";
+                        break;
+                    case "focus" when ai != null:
+                        ai.FocusPoint = string.IsNullOrEmpty(value) ? null : value;
+                        break;
+                    case "choose":
+                        (_session as MissionSession)?.Choose(_world, value);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>The camera keeps to the play area as it is now (the whole map when there is none).</summary>
+        private void FitCameraToArea()
+        {
+            if (_camera == null) return;
+            if (_world.PlayArea is { } area)
+                _camera.SetArea(new Vector2(area.Min.X, area.Min.Y), new Vector2(area.Max.X, area.Max.Y));
+            else _camera.SetArea(null, null);
         }
 
         /// <summary>Pays the battle's reward if the player leaves without claiming it.</summary>

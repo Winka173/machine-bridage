@@ -51,8 +51,11 @@ namespace MachineBrigade.Game.Hud
         private static string SlotPicture(GearSlot slot, bool plating = false) => slot switch
         {
             GearSlot.Special => "reactivearmor",
-            GearSlot.Optics => "veterancrew",
-            GearSlot.Armor when plating => "plating",
+            GearSlot.Optics or GearSlot.TowerSystems => "veterancrew",
+            GearSlot.Armor or GearSlot.TowerStructure when plating => "plating",
+            // Tower pieces borrow their vehicle counterparts' pictures until they have their own.
+            GearSlot.TowerWeapon => "weapon",
+            GearSlot.TowerStructure => "armor",
             _ => slot.ToString().ToLowerInvariant(),
         };
 

@@ -42,6 +42,14 @@ namespace MachineBrigade.Game.Views
 
         public bool TryGet(EntityId id, out VehicleView view) => _views.TryGetValue(id, out view);
 
+        /// <summary>Draws a vehicle again from scratch (it changed sides: new colours, new markings).</summary>
+        public VehicleView Rebuild(Vehicle vehicle)
+        {
+            var old = Detach(vehicle.Id);
+            if (old != null) Object.Destroy(old.Root.gameObject);
+            return Add(vehicle);
+        }
+
         /// <summary>Stops tracking a view (it becomes a wreck owned by the effects).</summary>
         public VehicleView Detach(EntityId id)
         {

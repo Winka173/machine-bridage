@@ -18,6 +18,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Crates the battle paid (their names).</summary>
         public List<string> Crates { get; } = new();
 
+        /// <summary>A lost multi-stage mission with a checkpoint: offer to go back to it.</summary>
+        public bool CanResume { get; set; }
+
         /// <summary>A rewarded ad may double the coins.</summary>
         public bool CanDouble { get; set; }
 
@@ -32,10 +35,10 @@ namespace MachineBrigade.Game.Hud
     internal sealed class ResultPanel
     {
         private readonly Label _title, _subtitle, _coins, _xp, _doubled;
-        private readonly VisualElement _rows, _head, _reward, _stars, _unlocks, _double, _next, _again;
+        private readonly VisualElement _rows, _head, _reward, _stars, _unlocks, _double, _next, _again, _checkpoint;
         private readonly IconElement _icon;
 
-        public ResultPanel(Action again, Action menu, Action doubleCoins, Action next)
+        public ResultPanel(Action again, Action menu, Action doubleCoins, Action next, Action checkpoint)
         {
             Root = UiKit.Box("overlay", PickingMode.Position);
             Root.RegisterCallback<AttachToPanelEvent>(_ => UiKit.Uppercase(Root));
@@ -76,6 +79,8 @@ namespace MachineBrigade.Game.Hud
             buttons.Add(_double);
             _next = UiKit.WideButton("wide primary", "arrow", Strings.Get("result.next"), null, next);
             buttons.Add(_next);
+            _checkpoint = UiKit.WideButton("wide primary", "flag", Strings.Get("result.checkpoint"), null, checkpoint);
+            buttons.Add(_checkpoint);
             _again = UiKit.WideButton("wide primary", "restart", Strings.Get("result.again"), null, again);
             buttons.Add(_again);
             buttons.Add(UiKit.WideButton("wide", "home", Strings.Get("result.menu"), null, menu));
@@ -140,7 +145,9 @@ namespace MachineBrigade.Game.Hud
             _double.style.display = hasReward && reward.CanDouble && reward.Coins > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             var next = hasReward && reward.HasNext;
             _next.style.display = next ? DisplayStyle.Flex : DisplayStyle.None;
-            _again.EnableInClassList("primary", !next);
+            var checkpoint = hasReward && reward.CanResume;
+            _checkpoint.style.display = checkpoint ? DisplayStyle.Flex : DisplayStyle.None;
+            _again.EnableInClassList("primary", !next && !checkpoint);
             Root.style.display = DisplayStyle.Flex;
         }
 
@@ -151,6 +158,53 @@ namespace MachineBrigade.Game.Hud
             _doubled.style.display = doubled ? DisplayStyle.Flex : DisplayStyle.None;
             _double.style.display = DisplayStyle.None;
         }
+    }
+
+    /// <summary>
+    /// A multi-stage mission's branching point: the ways on, and the seconds left before the first
+    /// is taken. The battle does not stop for it.
+    /// </summary>
+    internal sealed class ChoicePanel
+    {
+        private readonly Label _title, _time;
+        private readonly VisualElement _buttons;
+
+        public ChoicePanel()
+        {
+            Root = UiKit.Box("overlay", PickingMode.Position);
+            var card = UiKit.Box("result-card");
+            var head = UiKit.Box("result-head");
+            head.Add(UiKit.Icon("flag", UiKit.Ink, 1.8f));
+            _title = UiKit.Text("", "result-title");
+            head.Add(_title);
+            card.Add(head);
+            _time = UiKit.Text("", "result-sub");
+            card.Add(_time);
+            _buttons = UiKit.Box("result-buttons");
+            card.Add(_buttons);
+            Root.Add(card);
+            Root.style.display = DisplayStyle.None;
+        }
+
+        public VisualElement Root { get; }
+
+        public bool Visible => Root.style.display == DisplayStyle.Flex;
+
+        public void Show(string title, IReadOnlyList<(string label, string detail)> options, Action<int> chosen)
+        {
+            _title.text = title.ToUpperInvariant();
+            _buttons.Clear();
+            for (var i = 0; i < options.Count; i++)
+            {
+                var index = i;
+                _buttons.Add(UiKit.WideButton(i == 0 ? "wide primary" : "wide", "arrow", options[i].label, options[i].detail, () => chosen(index)));
+            }
+            Root.style.display = DisplayStyle.Flex;
+        }
+
+        public void SetTime(float seconds) => _time.text = Strings.Format("choice.auto", UnityEngine.Mathf.CeilToInt(seconds));
+
+        public void Hide() => Root.style.display = DisplayStyle.None;
     }
 
     /// <summary>Pause menu: resume, restart or leave.</summary>

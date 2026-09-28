@@ -24,6 +24,14 @@ namespace MachineBrigade.Tests
         [TestCase("junglepass")]
         [TestCase("skyhold")]
         [TestCase("metrocity")]
+        [TestCase("landingbeach")]
+        [TestCase("hydrodam")]
+        [TestCase("capital")]
+        [TestCase("launchsite")]
+        [TestCase("saltflat")]
+        [TestCase("borderbridge")]
+        [TestCase("swamp")]
+        [TestCase("coralisles")]
         public void AiVersusAiConquestUsesTheWholeRosterAndFinishes(string mapId)
         {
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap(mapId + "_conquest"), seed: 77);

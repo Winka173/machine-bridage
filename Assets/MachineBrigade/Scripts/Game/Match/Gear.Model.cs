@@ -28,17 +28,13 @@ namespace MachineBrigade.Game.Match
         /// <summary>A piece's base type (null for a piece that has none, such as one built by hand in a test).</summary>
         public static BaseTypeDef BaseOf(GearItem item) => item == null ? null : GearCatalog.Base(item.baseType);
 
-        /// <summary>The stat a piece's main line raises.</summary>
-        public static StatId MainStat(GearItem item) => item.Slot switch
+        /// <summary>The stat a piece's main line raises: its slot's, or its base type's own (plating, an ammunition hoist).</summary>
+        public static StatId MainStat(GearItem item)
         {
-            GearSlot.Weapon => StatId.Damage,
-            GearSlot.Loader => StatId.FireRate,
-            GearSlot.Armor => BaseOf(item)?.Plating == true ? StatId.DamageTaken : StatId.Health,
-            GearSlot.Optics => StatId.Vision,
-            GearSlot.Engine => StatId.Speed,
-            GearSlot.Repair => StatId.Regen,
-            _ => StatId.Count,
-        };
+            var b = BaseOf(item);
+            if (b != null && b.Main != StatId.Count) return b.Main;
+            return DefaultMain(item.Slot, b?.Plating == true);
+        }
 
         /// <summary>How far up its rarity's levels a piece is: 40 % of the top at level 1, all of it at the cap.</summary>
         public static float LevelShare(GearItem item)
@@ -89,7 +85,7 @@ namespace MachineBrigade.Game.Match
         public static GearTrait TraitOf(GearItem item)
         {
             if (item == null || item.rarity < (int)Rarity.Epic || item.Slot == GearSlot.Special) return default;
-            var def = GearCatalog.Trait(item.trait);
+            var def = GearCatalog.TraitFor(item.Slot, item.trait);
             return def?.At(item.Rarity) ?? default;
         }
 
@@ -233,13 +229,17 @@ namespace MachineBrigade.Game.Match
             var b = BaseOf(item);
             var want = b != null && b.NoSubs ? 0 : SubCount[Mathf.Clamp(item.rarity, 0, 4)];
             var main = MainStat(item);
+            // A tower piece's sub-stats never ask more of a tower than its base type does.
+            var tower = IsTower(item.Slot);
+            var limit = tower ? TowerLimit(item) : TowerNeed.None;
             while (item.subs.Count < want)
             {
                 var pool = new List<SubDef>();
                 var total = 0f;
                 foreach (var s in GearCatalog.Subs)
                 {
-                    if (!s.RollsOn(item.Slot) || s.Stat == main || (b != null && (s.Stat == b.Implicit || s.Stat == b.Penalty))) continue;
+                    if (!GearCatalog.RollsOn(s, item.Slot) || s.Stat == main || (b != null && (s.Stat == b.Implicit || s.Stat == b.Penalty))) continue;
+                    if (tower && !TowerFit.Within(TowerFit.Need(s.Stat), limit)) continue;
                     var taken = false;
                     foreach (var have in item.subs)
                         if (have.stat == (int)s.Stat)
@@ -288,7 +288,7 @@ namespace MachineBrigade.Game.Match
         public static void RollTrait(GearItem item, System.Random rng, BranchMask deck)
         {
             if (item.Slot == GearSlot.Special || item.rarity < (int)Rarity.Epic) return;
-            item.traitOptions = TraitCandidates(item.Slot, deck == BranchMask.None ? BranchMask.All : deck, rng);
+            item.traitOptions = IsTower(item.Slot) ? TowerTraitCandidates(item, rng) : TraitCandidates(item.Slot, deck == BranchMask.None ? BranchMask.All : deck, rng);
             item.trait = item.traitOptions.Count > 0 ? item.traitOptions[rng.Next(item.traitOptions.Count)] : "";
         }
 

@@ -68,7 +68,8 @@ namespace MachineBrigade.Game.Views
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
-            _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
+            // A boss in a later form wears that form's model.
+            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
             ModelBounds = Measure(_model.Root.transform, _body);
@@ -179,7 +180,9 @@ namespace MachineBrigade.Game.Views
             {
                 if (t.name == "Erector") _erector = t;
                 else if (t.name == "Searchlight") _searchlight = t;
+                else if (t.name == "Lift") _lift = t;
             }
+            if (_lift != null) _liftRest = _lift.localPosition;
             if (_erector != null) _erectorRest = _erector.localRotation;
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
             _shieldMaterial = materials.Shockwave;
@@ -874,6 +877,15 @@ namespace MachineBrigade.Game.Views
             _reloadFill.localPosition = new Vector3(-BarWidth * (1f - progress) * 0.5f, -BarHeight * 0.5f - 0.14f, -0.02f);
         }
 
+        private Transform _lift;
+        private Vector3 _liftRest;
+        private float _liftDown;
+
+        /// <summary>How far a gun pit's lift sinks (the model is built raised: its gun clears the berm by this).</summary>
+        private const float PitDepth = 1.6f;
+
+        private const float LiftSeconds = 0.9f;
+
         private void AnimateParts(Quaternion cameraRotation)
         {
             // The missile rises on its erector as the launch countdown runs.
@@ -881,6 +893,12 @@ namespace MachineBrigade.Game.Views
             // Searchlights sweep back and forth, each tower on its own rhythm.
             if (_searchlight != null)
                 _searchlight.localRotation = _searchlightRest * Quaternion.Euler(0f, Mathf.Sin(Time.time * 0.45f + Id.Value) * 75f, 0f);
+            // A gun pit sinks into its hole while it hides and comes up in a second when an enemy is close.
+            if (_lift != null)
+            {
+                _liftDown = Mathf.MoveTowards(_liftDown, Sim.Lowered ? 1f : 0f, Time.deltaTime / LiftSeconds);
+                _lift.localPosition = _liftRest + Vector3.down * (PitDepth * Mathf.SmoothStep(0f, 1f, _liftDown));
+            }
 
             if (Sim.ShieldUp)
             {

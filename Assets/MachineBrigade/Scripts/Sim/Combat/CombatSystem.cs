@@ -58,8 +58,9 @@ namespace MachineBrigade.Sim.Combat
                 // Cooldowns run regardless of movement or retargeting, so micro cannot create free shots.
                 for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
                 ReloadMagazines(v, dt);
-                // Knocked out by an EMP: the crew can do nothing until it wears off.
-                if (v.Stunned)
+                // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
+                // minefield or a module has nothing to fire; a gun pit down in its hole waits.
+                if (v.Stunned || v.Lowered || v.Def.Passive)
                 {
                     v.Target = EntityId.None;
                     continue;
@@ -221,6 +222,8 @@ namespace MachineBrigade.Sim.Combat
                 // anti-aircraft weapons go for aircraft first.
                 if (other.Flying != IsAntiAir(weapon)) score *= 0.02f;
                 if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
+                // An obstacle only when there is nothing else (the commander orders a breach itself).
+                if (other.Def.Obstacle) score *= 0.05f;
                 if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
                 // Ironclad's Bulwark: a dug-in tank draws the fire of enemies round it.
                 if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;
@@ -277,7 +280,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && !target.Invulnerable && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
+            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
             HasLineOfFire(v, target, weapon);
 
         /// <summary>
@@ -585,6 +588,12 @@ namespace MachineBrigade.Sim.Combat
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
             damageScale *= shooter.DamageBoost;
+            // A gun pit's first shot on rising (the Ambush branch).
+            if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
+            {
+                damageScale *= pit.FirstShot;
+                shooter.AmbushReady = false;
+            }
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying)
             {
                 DamageScale = damageScale, Origin = origin, Shooter = shooter, Main = index == 0, Tandem = mods.Tandem, ExtraSplash = mods.ExtraSplash,

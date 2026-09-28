@@ -274,8 +274,10 @@ namespace MachineBrigade.Game.Hud
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke());
             _safe.Add(_pause.Root);
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
-                () => NextMissionPressed?.Invoke());
+                () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke());
             _safe.Add(_result.Root);
+            _choice = new ChoicePanel();
+            _safe.Add(_choice.Root);
 
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);
@@ -329,6 +331,20 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The result screen's "next mission" button (campaign).</summary>
         public event Action NextMissionPressed;
 
+        /// <summary>The result screen's "back to the checkpoint" button (a lost multi-stage mission).</summary>
+        public event Action CheckpointPressed;
+
+        private ChoicePanel _choice;
+
+        /// <summary>A multi-stage mission's branching point: the ways on (a name and a line each).</summary>
+        public void ShowChoice(string title, IReadOnlyList<(string, string)> options, Action<int> chosen) => _choice?.Show(title, options, chosen);
+
+        public void SetChoiceTime(float seconds) => _choice?.SetTime(seconds);
+
+        public void HideChoice() => _choice?.Hide();
+
+        public bool ChoiceShown => _choice != null && _choice.Visible;
+
         /// <summary>Shows the commander's current intent.</summary>
         public void SetCommander(bool defend, bool autoDeploy, bool autoStrike, string focus)
         {
@@ -369,6 +385,10 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);
+
+        /// <summary>A multi-phase boss: its bar marked at each phase, the phase it is in, and whether it is transforming.</summary>
+        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming) =>
+            _boss?.Set(name, health, phase, marks, transforming);
 
         public void SetDeck(float cp, float bank, float earning, float upkeep, IReadOnlyList<CardState> states) =>
             _deck?.Update(cp, bank, earning, upkeep, states);

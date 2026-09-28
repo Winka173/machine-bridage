@@ -81,10 +81,11 @@ namespace MachineBrigade.Game.Hud
     /// <summary>A boss's name and health across the top of the screen while it lives.</summary>
     internal sealed class BossBar
     {
-        private readonly Label _name;
-        private readonly VisualElement _fill;
+        private readonly Label _name, _phase;
+        private readonly VisualElement _fill, _track;
         private string _shownName;
-        private int _shownFill = -1;
+        private int _shownFill = -1, _shownPhase = -1;
+        private readonly List<VisualElement> _marks = new();
 
         public BossBar()
         {
@@ -93,15 +94,47 @@ namespace MachineBrigade.Game.Hud
             head.Add(UiKit.Icon("skull", UiKit.Ink, 1.8f));
             _name = UiKit.Text("", "boss-name");
             head.Add(_name);
+            _phase = UiKit.Text("", "boss-phase");
+            _phase.style.display = DisplayStyle.None;
+            head.Add(_phase);
             Root.Add(head);
-            var track = UiKit.Box("boss-track");
+            _track = UiKit.Box("boss-track");
             _fill = UiKit.Box("boss-fill");
-            track.Add(_fill);
-            Root.Add(track);
+            _track.Add(_fill);
+            Root.Add(_track);
             Root.style.display = DisplayStyle.None;
         }
 
         public VisualElement Root { get; }
+
+        /// <summary>
+        /// A multi-phase boss: the bar marked where each phase begins (<paramref name="marks"/>, shares of full
+        /// health) and "Phase n/N" beside its name; <paramref name="transforming"/> while it changes form.
+        /// </summary>
+        public void Set(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming)
+        {
+            Set(name, health);
+            if (name == null) return;
+            var count = marks?.Count ?? 0;
+            if (_marks.Count != count)
+            {
+                foreach (var m in _marks) m.RemoveFromHierarchy();
+                _marks.Clear();
+                for (var i = 0; i < count; i++)
+                {
+                    var mark = UiKit.Box("boss-mark");
+                    mark.style.left = Length.Percent(marks[i] * 100f);
+                    _track.Add(mark);
+                    _marks.Add(mark);
+                }
+            }
+            var shown = count == 0 ? -1 : phase + (transforming ? 1000 : 0);
+            if (shown == _shownPhase) return;
+            _shownPhase = shown;
+            _phase.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _phase.text = transforming ? Strings.Get("boss.transforming") : Strings.Format("boss.phase", phase + 1, count + 1);
+            Root.EnableInClassList("transforming", transforming);
+        }
 
         public void Set(string name, float health)
         {
