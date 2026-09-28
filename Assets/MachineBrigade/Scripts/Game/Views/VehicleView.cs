@@ -138,12 +138,20 @@ namespace MachineBrigade.Game.Views
             _previousMount = new float[mounts.Count];
             _currentMount = new float[mounts.Count];
             var sameSlot = new Dictionary<string, int>();
+            _ownBarrel = new int[mounts.Count];
+            var onMainSlot = 0;
+            foreach (var m in mounts)
+                if (m.Slot == mounts[0].Slot) onMainSlot++;
             for (var i = 0; i < mounts.Count; i++)
             {
                 // The k-th mount of a slot in the data is the k-th Mount_/Muzzle_ of it in the model.
                 var slot = mounts[i].Slot;
                 var k = sameSlot.TryGetValue(slot, out var seen) ? seen : 0;
                 sameSlot[slot] = k + 1;
+                // Two weapons on the main gun's slot of a twin-barrelled model (the Inferno's two
+                // flame projectors): each fires from its own barrel, the k-th, instead of both from
+                // the muzzle between them (DECISIONS 12A).
+                _ownBarrel[i] = _barrelTips != null && onMainSlot > 1 && slot == mounts[0].Slot ? k % _barrelTips.Length : -1;
                 if (_model.MountLists.TryGetValue(slot, out var mountList) && mountList.Count > 1) _mounts[i] = mountList[k % mountList.Count];
                 else _model.Mounts.TryGetValue(slot, out _mounts[i]);
                 if (_model.MuzzleLists.TryGetValue(slot, out var muzzleList) && muzzleList.Count > 1) _muzzles[i] = muzzleList[k % muzzleList.Count];
@@ -550,12 +558,13 @@ namespace MachineBrigade.Game.Views
                 var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
                 return Anchored(point.transform, point.transform.position + point.transform.parent.TransformVector(jitter));
             }
-            if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
+            var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
+            if ((index == 0 || own >= 0) && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
             {
-                // The barrel firing now: the main muzzle moved across to that barrel's line.
+                // The barrel firing now (or the mount's own barrel): the main muzzle moved across to that barrel's line.
                 var centre = _muzzles[0].position;
-                var along = DirectionOf(0);
-                var offset = BarrelTip(_barrel) - centre;
+                var along = DirectionOf(index);
+                var offset = BarrelTip(own >= 0 ? own : _barrel) - centre;
                 return Anchored(_muzzles[0], centre + offset - along * Vector3.Dot(offset, along));
             }
             // An aircraft's air-to-air missile marked only on the centreline (a hint for the
@@ -769,7 +778,8 @@ namespace MachineBrigade.Game.Views
         public void Recoil()
         {
             _recoilTime = Time.time;
-            if (_barrelTips != null) _barrel = (_barrel + 1) % _barrelTips.Length;
+            // Barrels fire in turn, unless each belongs to its own weapon mount.
+            if (_barrelTips != null && _ownBarrel[0] < 0) _barrel = (_barrel + 1) % _barrelTips.Length;
         }
 
         /// <summary>Barrels that really stand apart (a twin gun), not one barrel modelled in segments.</summary>
@@ -792,6 +802,9 @@ namespace MachineBrigade.Game.Views
         private readonly int[] _barrelOf;
         private Transform[] _barrelTips;
         private int _barrel;
+
+        /// <summary>Per mount: the barrel of a twin-barrelled main gun it fires from alone, or -1 (see the constructor).</summary>
+        private readonly int[] _ownBarrel;
 
         /// <summary>Eases the attack-hold pose in and out, and the climb away from the hold (see VehicleDef.AttackHold).</summary>
         private void HoldPose()

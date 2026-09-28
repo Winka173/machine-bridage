@@ -2322,6 +2322,21 @@ burn 20 % shorter, napalm excepted.
 - **Not changed (other lanes):** a laser's beam re-reads its muzzle in `LaserBeams.Tick`, before
   the views are drawn (a frame behind a moving emitter); the napalm strike's fire wall is an
   explosion (`ExplosionEffect.CreateNapalm`) and still draws over vehicles for its few seconds.
+- **After the fire-rhythm merge (12D).** `FlashTests` reported a drone mothership flak flash
+  lit 12-13 m off its round. The flash was right: each shot's anchor is taken from that shot's own
+  `MuzzleOf(mount)` (per shot and per mount, not per view), and every flash rode the part its round
+  left from. The test was wrong. It paired the frame's rounds and flashes by order, and since 12D a
+  stream's second round in one frame (boss flak: 20 rounds a second, a 50-round clip) is launched
+  without a flash of its own, so from then on each flash was compared with the next round, the
+  other flak gun's. Each flash is now paired with the round it is lit for, and the test also
+  asserts that it rides that round's part (`MuzzleFx.Flashed` passes the anchor). Mounts sharing a
+  slot each have their own muzzle (behemoth, mothership, mega gunship, fortresses, trains). One real
+  fault was found: the Inferno's two flame projectors (mount 0 and a second mount on slot "main")
+  both fired from `Muzzle_main`, which sits between the nozzles, and mount 0 also swapped nozzles
+  shot by shot. Now each fires from its own nozzle, 1.5 m apart (`VehicleView._ownBarrel`;
+  `FlashTests.TwinMainMountsFireFromTheirOwnBarrels`). The armored train's two MG mounts share
+  its one `Muzzle_mg`, and its `train_gun` shares `Muzzle_main` with the main gun: the model has
+  only one of each (Blender lane).
 
 ## 12B. Test feedback 2: missile plumes, sizes and speed (2026-09-29)
 
