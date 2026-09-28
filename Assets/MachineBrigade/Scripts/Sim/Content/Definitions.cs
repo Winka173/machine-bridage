@@ -224,7 +224,7 @@ namespace MachineBrigade.Sim.Content
         public string? Radio { get; set; }
     }
 
-    public sealed class VehicleDef
+    public sealed partial class VehicleDef
     {
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
             float turretTurnRateDegrees, float radius, int cpCost, float visionRange, bool firesWhileMoving,

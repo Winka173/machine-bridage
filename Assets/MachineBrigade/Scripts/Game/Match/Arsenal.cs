@@ -232,11 +232,11 @@ namespace MachineBrigade.Game.Match
         public static bool CanMerge(GearItem a, GearItem b) =>
             a.slot == b.slot && a.rarity == b.rarity && a.rarity < (int)Rarity.Legendary;
 
-        public static GearBranch BranchOf(VehicleDef def) =>
-            def.Flying ? GearBranch.Air
-            : def.Weapon.MinRange > 0f ? GearBranch.Artillery
-            : def.Class is UnitClass.Tank or UnitClass.Heavy or UnitClass.TankHunter ? GearBranch.Armor
-            : GearBranch.Light;
+        /// <summary>
+        /// The branch whose loadout a vehicle wears: data (balance.json "branches", see
+        /// <see cref="VehicleDef.Branch"/>): aircraft Air, guns that lob over cover Artillery, the rest by class.
+        /// </summary>
+        public static GearBranch BranchOf(VehicleDef def) => (GearBranch)(int)def.Branch;
 
         /// <summary>
         /// What a card's rank and its branch's loadout do to a vehicle: every piece's main stat,

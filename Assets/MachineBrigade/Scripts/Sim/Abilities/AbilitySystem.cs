@@ -460,7 +460,9 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Emit(SimEvent.MineDetonated(m));
                 _world.Emit(SimEvent.Exploded(m.Position, m.Def.Blast, m.Id));
                 // A mine roller sets it off out in front of the tracks: the roller takes the blast.
-                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled);
+                // The blast is a mine's (mine resistances and the mine sweep see it as one).
+                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled,
+                    info: new Combat.HitInfo(null, m.Team, null, m.Position, Combat.HitKind.Mine, false));
                 _mines.RemoveAt(i);
             }
         }

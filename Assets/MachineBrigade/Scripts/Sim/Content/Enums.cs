@@ -61,6 +61,20 @@ namespace MachineBrigade.Sim.Content
         Boss,
     }
 
+    /// <summary>
+    /// The four branches of the army an equipment loadout belongs to (Armour, Light, Artillery,
+    /// Air). Which classes each holds is data (balance.json "branches"): an aircraft is always Air,
+    /// a vehicle whose main weapon lobs over cover (a minimum range) always Artillery, the rest by
+    /// class. The game's GearBranch has the same order.
+    /// </summary>
+    public enum ArmyBranch
+    {
+        Armor,
+        Light,
+        Artillery,
+        Air,
+    }
+
     /// <summary>Which layers a weapon can engage.</summary>
     [System.Flags]
     public enum TargetLayers

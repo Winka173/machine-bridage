@@ -29,6 +29,13 @@ namespace MachineBrigade.Sim.Combat
 
         public int PendingCount => _pending.Count;
 
+        /// <summary>
+        /// Measurements only (never set in play, like <see cref="Entities.Vehicle.PathTrace"/>): told of
+        /// every hit point a vehicle loses, with who dealt it, how and with what (the equipment lab
+        /// attributes damage to the vehicle that dealt it).
+        /// </summary>
+        internal static Action<Vehicle?, Vehicle, float, HitKind, WeaponDef?>? DamageLog;
+
         public void ResolveImpact(Projectile p)
         {
             var weapon = p.Weapon;
@@ -258,6 +265,8 @@ namespace MachineBrigade.Sim.Combat
             else if (hit.Kind != HitKind.Redirect)
             {
                 damage *= vehicle.DamageTaken;
+                // A belly plate (the armoured bulldozer's) takes part of a mine's blast.
+                if (hit.Kind == HitKind.Mine) damage *= vehicle.Def.MineArmor;
                 if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
                 if (vehicle.GraceUntil > now) damage *= 0.2f;
                 // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
@@ -284,6 +293,7 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
             vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+            DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
             if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);

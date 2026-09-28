@@ -923,7 +923,7 @@ namespace MachineBrigade.Sim
                 var mask = 0;
                 // A stealthy aircraft shows only close up, or for a moment after it fires.
                 var sight = target.Def.Stealth && Time - target.LastFiredAt > StealthReveal ? VehicleDef.StealthSight : 1f;
-                if (target.Dummy)
+                if (target.Dummy || RevealAll)
                 {
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
@@ -969,6 +969,9 @@ namespace MachineBrigade.Sim
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;
+
+        /// <summary>Measurements only (the equipment lab's duels): every vehicle is in everyone's sight, as a firing-range target is.</summary>
+        internal bool RevealAll { get; set; }
 
         /// <summary>
         /// A fixed defence (a camp bastion, a point's tower, an Assault sector's guns, a fortress's
