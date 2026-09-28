@@ -650,6 +650,8 @@ namespace MachineBrigade.Game.Match
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            // Rounds leave from the barrels as they have just been drawn.
+            _effects.LaunchShots(_views);
             _perf?.End(PerfProbe.Section.Views);
             _perf?.Begin();
             _objectives?.Render(Time.time);

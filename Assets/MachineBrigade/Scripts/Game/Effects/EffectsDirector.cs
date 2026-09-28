@@ -137,20 +137,10 @@ namespace MachineBrigade.Game.Effects
                 switch (e.Kind)
                 {
                     case SimEventKind.WeaponCharging:
-                        _weapons.Charging(e, views, now);
-                        break;
-
                     case SimEventKind.WeaponFired:
-                        // Shots entirely off screen are not drawn (the sound still plays).
-                        if (_cull.Visible(Ground(e.Position, 1f), 0.15f) || _cull.Visible(Ground(e.Target, 1f), 0.15f))
-                        {
-                            _weapons.Fired(e, views, now);
-                            // At night the flash lights the ground at the muzzle.
-                            if (views.TryGet(e.Entity, out var gunner) && !gunner.Flying && e.DefId != null &&
-                                _catalog.Weapons.TryGetValue(e.DefId, out var fired))
-                                _night.Flash(gunner.Position + gunner.Root.forward * gunner.Sim.Radius,
-                                    fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
-                        }
+                        // Drawn once the vehicles are (see LaunchShots); the shooter is held now, in
+                        // case it dies later in this step.
+                        _shots.Add((e, views.TryGet(e.Entity, out var gunner) ? gunner : null));
                         break;
 
                     case SimEventKind.DeploymentQueued:
@@ -398,6 +388,39 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>Draws what is not a scene object (flying debris); call every frame, paused or not.</summary>
         public void Draw() => _debris.Draw(Time.time);
+
+        /// <summary>This frame's shots and charges, waiting for the vehicles to be drawn (see <see cref="LaunchShots"/>).</summary>
+        private readonly List<(SimEvent e, VehicleView shooter)> _shots = new();
+
+        /// <summary>
+        /// Starts this frame's shots; called right after the vehicles are drawn (their frame's hull,
+        /// turret, barrel and flight pose), so every round, flash and trail leaves from where its
+        /// barrel's tip is on screen in this frame. Read during the step instead, the muzzle was
+        /// the one drawn the frame before, a step behind the turret and the hull: rounds started
+        /// off the barrel by however far the vehicle had moved, turned or climbed since.
+        /// </summary>
+        public void LaunchShots(ViewRegistry views)
+        {
+            if (_shots.Count == 0) return;
+            var now = Time.time;
+            foreach (var (e, shooter) in _shots)
+            {
+                if (e.Kind == SimEventKind.WeaponCharging)
+                {
+                    _weapons.Charging(e, shooter, now);
+                    continue;
+                }
+                // Shots entirely off screen are not drawn (the sound still plays).
+                if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
+                _weapons.Fired(e, shooter, views, now);
+                // At night the flash lights the ground at the muzzle.
+                if (shooter != null && shooter.Root != null && !shooter.Flying && e.DefId != null &&
+                    _catalog.Weapons.TryGetValue(e.DefId, out var fired))
+                    _night.Flash(shooter.Position + shooter.Root.forward * shooter.Sim.Radius,
+                        fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
+            }
+            _shots.Clear();
+        }
 
         /// <summary>Brief ring at a commanded destination, confirming the order landed.</summary>
         public void ShowMoveMarker(Vector3 point)

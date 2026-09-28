@@ -257,6 +257,8 @@ namespace MachineBrigade.Game.Rendering
             _mines.Update(_world);
             Frame(dt);
             _views.Render(_accumulator / Step, _camera.transform.rotation);
+            // Rounds leave from the barrels as they have just been drawn.
+            _effects.LaunchShots(_views);
             // New effects and views are made on the default layer: move them onto the preview's.
             if (Time.unscaledTime >= _layerAt)
             {

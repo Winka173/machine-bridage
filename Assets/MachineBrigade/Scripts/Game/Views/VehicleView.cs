@@ -529,9 +529,9 @@ namespace MachineBrigade.Game.Views
                 var list = _launchers[index];
                 var point = list[_nextLauncher[index]++ % list.Count];
                 var spread = point.Spread;
-                if (spread == Vector2.zero) return point.transform.position;
+                if (spread == Vector2.zero) return Anchored(point.transform, point.transform.position);
                 var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
-                return point.transform.position + point.transform.parent.TransformVector(jitter);
+                return Anchored(point.transform, point.transform.position + point.transform.parent.TransformVector(jitter));
             }
             if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
             {
@@ -539,21 +539,35 @@ namespace MachineBrigade.Game.Views
                 var centre = _muzzles[0].position;
                 var along = DirectionOf(0);
                 var offset = BarrelTip(_barrel) - centre;
-                return centre + offset - along * Vector3.Dot(offset, along);
+                return Anchored(_muzzles[0], centre + offset - along * Vector3.Dot(offset, along));
             }
             // An aircraft's air-to-air missile marked only on the centreline (a hint for the
             // builder, not a rail): it leaves from the wingtip rails instead.
             if (Def.Flying && index > 0 && Def.Mounts[index].Slot == "aam" && _muzzles[index] != null &&
                 Mathf.Abs(_body.InverseTransformPoint(_muzzles[index].position).x) < 0.1f && AirframeStore(index, "aam", out var rail))
-                return rail;
-            if (index < _muzzles.Length && _muzzles[index] != null) return _muzzles[index].position;
-            if (index == 0) return MuzzleWorld;
+                return Anchored(_body, rail);
+            if (index < _muzzles.Length && _muzzles[index] != null) return Anchored(_muzzles[index], _muzzles[index].position);
+            if (index == 0) return Anchored(_body, MuzzleWorld);
             var slot = Def.Mounts[index].Slot;
-            if (Def.Flying && AirframeStore(index, slot, out var store)) return store;
+            if (Def.Flying && AirframeStore(index, slot, out var store)) return Anchored(_body, store);
             var pivot = _mounts[index] != null ? _mounts[index] : _model.Turret != null ? _model.Turret : _body;
-            if (slot == "coax") return _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f;
+            if (slot == "coax") return Anchored(pivot, _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f);
             var top = pivot.position + Vector3.up * (pivot == _body ? MuzzleHeight + 0.6f : 0.8f);
-            return top + DirectionOf(index) * 0.8f;
+            return Anchored(pivot, top + DirectionOf(index) * 0.8f);
+        }
+
+        /// <summary>
+        /// Tests and tools: the part the last <see cref="MuzzleOf"/> point rides on and that point in
+        /// the part's own space, so where the barrel's tip is drawn can be found again later.
+        /// </summary>
+        internal Transform LastMuzzleNode { get; private set; }
+        internal Vector3 LastMuzzleLocal { get; private set; }
+
+        private Vector3 Anchored(Transform node, Vector3 world)
+        {
+            LastMuzzleNode = node;
+            LastMuzzleLocal = node.InverseTransformPoint(world);
+            return world;
         }
 
         /// <summary>
