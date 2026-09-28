@@ -286,6 +286,8 @@ namespace MachineBrigade.Game.Match
                 System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
+                // An Operations mutator's weather over the mission's own.
+                : mission != null && MatchSettings.Run?.Mission == mission.Id && System.Enum.TryParse<WeatherKind>(MatchSettings.Run.Weather, out var mutated) ? mutated
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
                 : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.

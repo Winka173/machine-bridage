@@ -214,6 +214,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Where the player's side may go at the start (null: the whole map).</summary>
         public PlayArea? PlayArea { get; set; }
+
+        /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
+        public bool Operation { get; set; }
+
+        /// <summary>A notable story battle (a siege, a defence, a duel with a general) the Operations mode offers again once won.</summary>
+        public bool Replay { get; set; }
         public string Map { get; set; } = "ashfield";
 
         /// <summary>Which version of the map: "conquest" (objectives) or "sandbox".</summary>
@@ -352,6 +358,8 @@ namespace MachineBrigade.Sim.Content
                 {
                     First = Waves.First, Interval = Waves.Interval, Size = (int)Math.Ceiling(Waves.Size * enemy), Grow = Waves.Grow * enemy,
                     MaxSize = (int)Math.Ceiling(Waves.MaxSize * enemy), MaxAlive = (int)Math.Ceiling(Waves.MaxAlive * enemy),
+                    // The waves stay what they were (they were lost here: a harder tier's waves never came).
+                    Roster = Waves.Roster, Spawns = Waves.Spawns,
                 };
             return copy;
         }
@@ -439,6 +447,8 @@ namespace MachineBrigade.Sim.Content
             if (m.Has("units")) def.Units = Placements(m, "units");
             def.EnemyCap = m.Int("enemyCap", 0);
             def.PlayArea = Content.PlayArea.Read(m, "playArea");
+            def.Operation = m.Bool("operation", false);
+            def.Replay = m.Bool("replay", false);
             if (m.Has("ally"))
             {
                 var a = m.Object("ally");

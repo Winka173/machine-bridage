@@ -25,9 +25,16 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
             (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),
             (GameModeKind.Survival, "people", "mode.survival", "mode.survivalSub"),
-            (GameModeKind.Weekly, "home", "mode.weekly", "mode.weeklySub"),
-            (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
         };
+
+        /// <summary>The modes the battle setup offers (skirmishes and challenges), for the menu's coverage test.</summary>
+        internal static IEnumerable<GameModeKind> BattleModes
+        {
+            get
+            {
+                foreach (var m in QuickModes) yield return m.kind;
+            }
+        }
 
         private VisualElement _setup;
         private Label _campaignCardTitle, _campaignCardSub, _modeName, _modeMap, _modeChips, _setupInfo;
@@ -144,6 +151,7 @@ namespace MachineBrigade.Game.Hud
             if (!Campaign.IsOpen(next)) return;
             MatchSettings.Mode = GameModeKind.Campaign;
             MatchSettings.Mission = Campaign.All[next].Id;
+            MatchSettings.Run = null;
             MatchSettings.Save();
             _play();
         }

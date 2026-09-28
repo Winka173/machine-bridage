@@ -10,7 +10,8 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public static class WeeklyFortress
     {
-        public const int Reward = 600;
+        /// <summary>The first win of the week pays this (operations.json "weekly", one ledger with the weekly operation).</summary>
+        public static int Reward => Operations.Data.WeeklyFortressReward;
 
         /// <summary>This week, as year x 100 + ISO week number.</summary>
         public static int Week

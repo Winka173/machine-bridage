@@ -2415,6 +2415,20 @@
 }
 .base-gear-choice.worn { border-color: var(--text-mid); }
 .base-gear-choice.off { background-color: var(--surface-2); }
+.ops-weekly { padding: 10px 12px; margin-bottom: 8px; background-color: var(--surface-2); border-left-width: 4px; border-left-color: var(--line-3); min-height: 72px; }
+.ops-weekly.chosen { border-left-color: #f2a33a; }
+.ops-weekly-title { font-size: 20px; color: var(--text-hi); -unity-font-style: bold; white-space: normal; }
+.ops-weekly-sub { font-size: 16px; color: var(--text-mid); white-space: normal; }
+.ops-list { flex-shrink: 1; margin-bottom: 8px; }
+.ops-row { flex-direction: row; align-items: center; min-height: 72px; padding: 0 12px; margin-bottom: 4px; background-color: var(--surface-2); }
+.ops-row.chosen { background-color: var(--surface-3); border-left-width: 3px; border-left-color: #f2a33a; }
+.ops-row.locked { opacity: 0.45; }
+.ops-row-name { flex-grow: 1; margin-left: 10px; font-size: 18px; color: var(--text-hi); white-space: normal; }
+.ops-row-best { font-size: 16px; color: var(--text-mid); white-space: normal; }
+.ops-foot { flex-direction: row; align-items: center; margin-bottom: 12px; }
+.ops-tiers { flex-direction: row; }
+.ops-tiers .tier-chip.locked { opacity: 0.45; }
+.ops-detail { flex-grow: 1; margin: 0 10px; font-size: 16px; color: var(--text-mid); white-space: normal; }
 .boss-phase { margin-left: 10px; font-size: 18px; color: #f2c14e; -unity-font-style: bold; }
 .boss-mark { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background-color: rgba(10, 12, 14, 0.9); }
 .boss-bar.transforming .boss-fill { background-color: #f2c14e; }

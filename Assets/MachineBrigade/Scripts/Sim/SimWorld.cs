@@ -337,6 +337,13 @@ namespace MachineBrigade.Sim
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
                 vehicle.DoctrineSpeed = doctrine.Speed * vehicle.BoostSpeed;
             }
+            // A mutator's change to a side's strength (the Operations mode's weekly twists).
+            if (team >= 0 && team < _mutators.Length && _mutators[team] is { } mutate)
+            {
+                var (hp, damage) = mutate(def);
+                vehicle.HpScale *= hp;
+                vehicle.DamageBoost *= damage;
+            }
             vehicle.Hp = vehicle.MaxHp;
             _vehicles.Add(vehicle.Id, vehicle);
             _vehicleList.Add(vehicle);
@@ -349,6 +356,13 @@ namespace MachineBrigade.Sim
         }
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
+        private readonly Func<VehicleDef, (float hp, float damage)>?[] _mutators = new Func<VehicleDef, (float, float)>?[3];
+
+        /// <summary>A side's vehicles enter with this health and damage (by def) on top of everything else; null: none.</summary>
+        public void SetMutators(int team, Func<VehicleDef, (float hp, float damage)>? strength)
+        {
+            if (team >= 0 && team < _mutators.Length) _mutators[team] = strength;
+        }
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
         private readonly bool[] _boostAll = new bool[3];
 

@@ -144,6 +144,9 @@ namespace MachineBrigade.Game.Match
 
         public static int MissionTier { get; set; }
 
+        /// <summary>An Operations battle (its tier, mutators, week), or null for a campaign mission.</summary>
+        internal static OperationRun Run { get; set; }
+
 
         public static GameModeKind Mode { get; set; } = GameModeKind.Conquest;
 

@@ -30,6 +30,15 @@ namespace MachineBrigade.Game.Match
             public int weeklyId;
             public int weeklyStage = 1;
             public bool weeklyClaimed;
+
+            /// <summary>The week's rewards paid ("fortress", "operation"): one ledger for every weekly reward.</summary>
+            public List<string> weeklyClaims = new();
+
+            /// <summary>The Operations mode's records: battle, tier, best score, fastest win (seconds).</summary>
+            public List<string> opsIds = new();
+            public List<int> opsTiers = new();
+            public List<int> opsScores = new();
+            public List<float> opsTimes = new();
             public List<string> itemIds = new();
             public int dailyDay;
             public List<int> dailyProgress = new();
@@ -369,20 +378,15 @@ namespace MachineBrigade.Game.Match
         /// <summary>The stage reached on this week's fortress (1 at the start of a week).</summary>
         public static int WeeklyStage(int week) => D.weeklyId == week ? D.weeklyStage : 1;
 
-        public static bool WeeklyClaimed(int week) => D.weeklyId == week && D.weeklyClaimed;
+        public static bool WeeklyClaimed(int week) => WeeklyPaid(week, "fortress");
 
         /// <summary>Records an attack on the weekly fortress; returns true when it pays its weekly reward (the first win of the week).</summary>
         public static bool RecordWeekly(int week, int stage, bool won)
         {
-            if (D.weeklyId != week)
-            {
-                D.weeklyId = week;
-                D.weeklyStage = 1;
-                D.weeklyClaimed = false;
-            }
+            WeekOf(week);
             D.weeklyStage = Math.Max(D.weeklyStage, Math.Clamp(stage, 1, 3));
-            var pays = won && !D.weeklyClaimed;
-            if (pays) D.weeklyClaimed = true;
+            // The same weekly ledger as the Operations mode's weekly operation.
+            var pays = won && ClaimWeekly(week, "fortress");
             if (won) D.weeklyStage = 1;
             Save();
             return pays;

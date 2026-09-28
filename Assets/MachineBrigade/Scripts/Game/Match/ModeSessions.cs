@@ -829,19 +829,32 @@ namespace MachineBrigade.Game.Match
             }
             var playerSide = PlayerSide(_def.PlayerCp, _def.PlayerIncome);
             playerSide.ArmyCap = _def.PlayerCap;
-            // Heroic and Iron: the enemy comes stronger; Iron also leaves the player poorer and without fire support.
-            _tier = System.Math.Clamp(MatchSettings.MissionTier, 0, 2);
+            // An Operations battle: its tier (Legend too) and its mutators (null: a campaign mission).
+            _run = MatchSettings.Run != null && MatchSettings.Run.Mission == _def.Id ? MatchSettings.Run : null;
+            // Heroic and Iron (and Legend): the enemy comes stronger; Iron and Legend also leave the
+            // player poorer and without fire support (operations.json "tiers").
+            _tier = System.Math.Clamp(MatchSettings.MissionTier, 0, _run != null && Operations.LegendOpen ? Operations.Legend : 2);
+            var tier = Operations.Tier(_tier);
             if (_tier > 0 && enemy != null)
             {
-                enemy.StartCp *= 1.3f;
-                enemy.Income *= 1.25f;
+                enemy.StartCp *= tier.Enemy;
+                enemy.Income *= 1f + (tier.Enemy - 1f) * 0.8333f;
             }
-            if (_tier == 2)
+            playerSide.Income *= tier.PlayerIncome;
+            if (!tier.Supports) playerSide.Supports = System.Array.Empty<string>();
+            var def = _tier > 0 ? _def.Harder(tier.Enemy) : _def;
+            if (_run != null && _run.Mutators.Count > 0)
             {
-                playerSide.Income *= 0.8f;
-                playerSide.Supports = System.Array.Empty<string>();
+                var owned = new List<string>();
+                foreach (var id in MatchSettings.AllVehicles)
+                    if (PlayerProfile.IsUnlocked(id) && !Progression.IsPremium(id)) owned.Add(id);
+                Mutators.Apply(playerSide, enemy, _run.Mutators, world.Catalog, owned);
+                def = Mutators.Apply(def, _run.Mutators, world.Catalog);
+                world.SetMutators(PlayerTeam, Mutators.Strength(_run.Mutators, PlayerTeam));
+                world.SetMutators(EnemyTeam, Mutators.Strength(_run.Mutators, EnemyTeam));
+                foreach (var m in _run.Mutators)
+                    if (m.Raids) Events = new BattleEvents(seed, raids: true);
             }
-            var def = _tier > 0 ? _def.Harder(1.3f) : _def;
             // Stages, or an allied commander: the operation runs them (each stage a mission of its own).
             if (def.Stages.Count > 0 || def.Ally != null)
             {
@@ -857,7 +870,7 @@ namespace MachineBrigade.Game.Match
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
-                    .Set(PlayerTeam, PlayerProfile.BaseLoadout, _def.PlayerBase)
+                    .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadout), _def.PlayerBase)
                     .Set(EnemyTeam, BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed), _def.EnemyBase), PlayerTeam, EnemyTeam);
             if (_def.Outposts.Count > 0)
             {
@@ -895,8 +908,36 @@ namespace MachineBrigade.Game.Match
                     Objective = w => _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null),
                 };
             Configure(world);
+            // Two bosses: a second one from the enemy's camp (the mission's own kind, else a Behemoth).
+            if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair))
+            {
+                var bossId = def.Boss?.Def ?? "behemoth";
+                if (world.Catalog.Vehicles.ContainsKey(bossId)) world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
+            }
             // Each stage sets the commanders for its own goal, in the step it begins.
             if (_op != null) _op.StageChanged += _ => Configure(world);
+        }
+
+        private OperationRun _run;
+
+        /// <summary>The player's base under the run's mutators: no towers (empty base), no repair bay (no repair).</summary>
+        private BaseLoadout MutatedBase(BaseLoadout loadout)
+        {
+            if (_run == null) return loadout;
+            var b = loadout;
+            foreach (var m in _run.Mutators)
+            {
+                if (!m.EmptyBase && !m.NoRepair) continue;
+                if (b == loadout) b = loadout.Clone();
+                if (m.EmptyBase)
+                {
+                    b.Small.Clear();
+                    b.Medium.Clear();
+                    b.Large.Clear();
+                }
+                if (m.NoRepair) b.Utilities.Remove("repair_bay");
+            }
+            return b;
         }
 
         /// <summary>The commanders set for the goal of the mission (or of the stage now being played).</summary>
@@ -967,6 +1008,33 @@ namespace MachineBrigade.Game.Match
             else hud.SetBoss(null, 0f);
         }
 
+        /// <summary>
+        /// An Operations battle's ending: its score (time, losses, the HQ's health; the tier's and
+        /// the mutators' multipliers), the record, the mutators, and the week's reward on this
+        /// week's operation (the one weekly ledger shared with the weekly fortress).
+        /// </summary>
+        private void OperationRows(MatchOutcome outcome, SimWorld world, bool won)
+        {
+            var hq = 1f;
+            if (world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hqVehicle))
+                hq = hqVehicle.IsAlive ? hqVehicle.Hp / hqVehicle.MaxHp : 0f;
+            var score = Operations.Data.Scoring.Score(won, world.Time, Losses, hq, Operations.Tier(_tier), _run.Mutators);
+            var best = PlayerProfile.BestScore(_def.Id, _tier);
+            var record = PlayerProfile.RecordOperation(_def.Id, _tier, score, (float)world.Time);
+            outcome.Subtitle = Strings.Format("ops.resultTitle", Title, Strings.Get("tier." + _tier));
+            outcome.Rows.Insert(0, (Strings.Get("ops.score"), score.ToString("N0")));
+            outcome.Rows.Insert(1, (Strings.Get("ops.best"), record ? Strings.Get("ops.newRecord") : best.ToString("N0")));
+            if (_run.Mutators.Count > 0)
+            {
+                var names = new List<string>();
+                foreach (var m in _run.Mutators) names.Add(Strings.Get("mutator." + m.Id));
+                outcome.Rows.Add((Strings.Get("ops.mutators"), string.Join(" · ", names)));
+            }
+            if (!won || !_run.Weekly || !PlayerProfile.ClaimWeekly(WeeklyFortress.Week, "operation") || outcome.Reward == null) return;
+            outcome.Reward.Coins += Operations.Data.WeeklyOperationReward;
+            outcome.Rows.Add((Strings.Get("ops.weekly"), Strings.Format("weekly.reward", Operations.Data.WeeklyOperationReward)));
+        }
+
         /// <summary>The choice dialog while a stage waits on the player's pick; the first option goes ahead by itself.</summary>
         private void ShowChoice(BattleHud hud, SimWorld world)
         {
@@ -1003,7 +1071,8 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
             if (_op != null && _op.StageCount > 1)
                 outcome.Rows.Add((Strings.Get("result.stages"), won ? _op.Path.Count.ToString() : UnityEngine.Mathf.Max(0, _op.Path.Count - 1).ToString()));
-            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), _tier);
+            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2));
+            if (_run != null) OperationRows(outcome, world, won);
             if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));
             return outcome;
         }

@@ -53,11 +53,12 @@ namespace MachineBrigade.Game.Hud
             columns.Add(left);
 
             var right = UiKit.Box("events-right");
+            // Tác chiến (prompt 6): the operations, then the weekly fortress and the boss rush.
+            // Survival and Endless are challenges chosen on the battle setup with the skirmishes.
+            BuildOperations(right);
             right.Add(UiKit.Text(Strings.Get("events.special"), "menu-caps"));
             right.Add(EventCard("home", "mode.weekly", "mode.weeklySub", GameModeKind.Weekly, out _weeklyStage));
             right.Add(EventCard("skull", "mode.bossrush", "mode.bossrushSub", GameModeKind.BossRush, out _));
-            right.Add(EventCard("trophy", "mode.endless", "mode.endlessSub", GameModeKind.Endless, out _endlessBest));
-            right.Add(EventCard("people", "mode.survival", "mode.survivalSub", GameModeKind.Survival, out _));
             columns.Add(right);
             page.Add(columns);
         }
@@ -101,6 +102,7 @@ namespace MachineBrigade.Game.Hud
             }
             if (_endlessBest != null)
                 _endlessBest.text = DefendSession.BestWave > 0 ? Strings.Format("events.endlessBest", DefendSession.BestWave) : "";
+            RefreshOperations();
             if (_weeklyStage != null)
                 _weeklyStage.text = Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week));
         }

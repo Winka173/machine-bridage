@@ -214,6 +214,7 @@ namespace MachineBrigade.Game.Hud
             if (_selectedMission < 0 || !Campaign.IsOpen(_selectedMission)) return;
             MatchSettings.Mode = GameModeKind.Campaign;
             MatchSettings.Mission = Campaign.All[_selectedMission].Id;
+            MatchSettings.Run = null;
             MatchSettings.Save();
             _play();
         }
