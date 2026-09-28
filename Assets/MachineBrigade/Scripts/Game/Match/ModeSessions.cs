@@ -913,8 +913,9 @@ namespace MachineBrigade.Game.Match
         {
             var def = _mode.Def;
             var player = PlayerAi;
-            // A demolition inside a fortress is a siege: guns to break it from outside its reach.
-            player.RoleMix = def.Goal == MissionGoal.Destroy && def.Variant == "siege" ? ConquestAi.SiegeMix : null;
+            // A demolition inside a fortress is a siege: guns to break it from outside its reach. So is
+            // a duel, against a general's base.
+            player.RoleMix = (def.Goal == MissionGoal.Destroy && def.Variant == "siege") || def.Goal == MissionGoal.Duel ? ConquestAi.SiegeMix : null;
             // Holding a point (or an outpost on one): fight whatever comes at it, but never wander off and leave it open.
             player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? 32f : null;
             player.DefendPoint = null;
