@@ -344,6 +344,9 @@ namespace MachineBrigade.Game.Match
             {
                 _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
                 _fortress.SetNight(weather == WeatherKind.Night);
+                // The objectives' shields are the defender's (blue when the player holds the fortress).
+                _map.ShieldTeam = siegeMode.Defender;
+                _map.PlayerTeam = PlayerTeam;
             }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;

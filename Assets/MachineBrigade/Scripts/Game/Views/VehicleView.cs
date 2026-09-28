@@ -71,10 +71,8 @@ namespace MachineBrigade.Game.Views
         private readonly Transform _erector, _searchlight;
         private readonly Quaternion _erectorRest, _searchlightRest;
 
-        // A shimmering ring round a vehicle while a shield skill soaks up damage.
-        private Transform _shield;
-        private readonly Material _shieldMaterial;
-        private static Mesh _shieldMesh;
+        /// <summary>Its side is the player's (its shield is drawn blue, else red-orange).</summary>
+        private readonly bool _ours;
 
         public VehicleView(Vehicle vehicle, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials,
             Transform parent, int playerTeam)
@@ -210,7 +208,7 @@ namespace MachineBrigade.Game.Views
             if (_lift != null) _liftRest = _lift.localPosition;
             if (_erector != null) _erectorRest = _erector.localRotation;
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
-            _shieldMaterial = materials.Shockwave;
+            _ours = vehicle.Team == playerTeam;
             AddRotorBlur(materials);
             InitParts(models, meshes, materials);
             // Elite enemies wear a gold health bar.
@@ -1049,33 +1047,7 @@ namespace MachineBrigade.Game.Views
                 _lift.localPosition = _liftRest + Vector3.down * (PitDepth * Mathf.SmoothStep(0f, 1f, _liftDown));
             }
 
-            if (Sim.ShieldUp)
-            {
-                if (_shield == null)
-                {
-                    _shieldMesh ??= ShieldQuad();
-                    _shield = CreateMesh("Shield", Root, _shieldMesh, _shieldMaterial, false);
-                }
-                if (!_shield.gameObject.activeSelf) _shield.gameObject.SetActive(true);
-                var size = (Def.HullBound + 1.2f) * 2.4f * (1f + Mathf.Sin(Time.time * 9f) * 0.04f);
-                _shield.position = Root.position + Vector3.up * (Altitude + 1.2f);
-                _shield.rotation = cameraRotation;
-                _shield.localScale = new Vector3(size, size, 1f);
-            }
-            else if (_shield != null && _shield.gameObject.activeSelf) _shield.gameObject.SetActive(false);
-        }
-
-        /// <summary>A camera-facing quad tinted shield blue, for the particle shader's ring shape.</summary>
-        private static Mesh ShieldQuad()
-        {
-            var colour = Primitives.Linear(new Color(0.35f, 0.85f, 1f, 0.9f));
-            var mesh = new Mesh { name = "ShieldQuad" };
-            mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
-            mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
-            mesh.SetColors(new[] { colour, colour, colour, colour });
-            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
-            mesh.RecalculateBounds();
-            return mesh;
+            AnimateShield(cameraRotation);
         }
 
         /// <summary>Freezes the view as a burnt-out hulk; the simulation entity is gone.</summary>
@@ -1094,6 +1066,7 @@ namespace MachineBrigade.Game.Views
             if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
             Selected = false;
+            HideShield();
             _wreck = true;
             if (Flying)
             {
