@@ -2219,3 +2219,201 @@ jammer was the example).
 - **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
+
+## 12B. Test feedback 2: missile plumes, sizes and speed (2026-09-29)
+
+The owner's second play test: the SAM launcher's missiles were a little too big and had no fire or
+smoke at the tail ("nên làm lửa bự và dài": make the flame big and long); other missiles lacked the
+tail flame too; missiles, above all those fired by helicopters and jets, should fly slower still.
+
+### A. Motor plumes
+
+Before, a flying missile or rocket emitted one small fire puff a frame 0.6 m behind its pivot (life
+0.08-0.16 s, 0.3-0.6 m) and small grey trail puffs 0.55 m apart that lived 0.6-1.1 s. It hardly
+showed at battle zoom. Now every missile and rocket burns a plume from its model's tail while its
+motor burns (`MotorPlumes`, a new file; `Plume.For` picks the plume by type):
+
+- **Hot core:** a white-yellow point on the nozzle.
+- **Tongue:** a short yellow stretched quad.
+- **Flame cone:** one to five stretched fire quads end to end, yellow at the nozzle and red at the
+  tip, tapering and flickering every frame (length ±18 %, width ±12 %). It is about 60 % of its full
+  length off the rail and full length at cruise, so it stretches with speed. It is fattest off the
+  rail, where the boost motor burns.
+- **Glow:** a soft orange stretched glow under the whole cone. It feeds the bloom and joins the
+  quads.
+- **Smoke trail:** a smoke trail leaves the tip of the flame. Each puff starts warm-white, turns pale
+  grey, grows to 3.6 times its size and drifts off with the wind, rising slowly.
+
+The plume's size is measured in lengths of the munition as drawn:
+
+| Munition | Flame length | Width at nozzle | Burns | Puff spacing |
+|---|---|---|---|---|
+| Ground SAMs (`sam`, `sam_long`, `sam_battery`, `sam_48n6`) | 2.6 | 0.24 | whole flight | 0.3 puffs |
+| Air-to-air | 2.1 | 0.22 | whole flight | 0.3 |
+| MANPADS (Stinger, Igla) | 2.0 | 0.28 | whole flight | 0.3 |
+| Air-to-ground (Hellfire, Vikhr, Maverick, Griffin) | 1.6 | 0.27 | whole flight | 0.3 |
+| Ground ATGMs (TOW, Kornet, Ataka) | 1.3 | 0.28 | whole flight | 0.3 |
+| Direct-fire rockets (Hydra, S-8) | 1.7 | 0.3 | whole flight | 0.4 |
+| Artillery rockets (Grad, GMLRS, TOS, 300 mm, 107 mm) | 1.6 | 0.26 | 85 % | 0.45 |
+| Ballistic missile | 1.5 | 0.24 | 75 % | 0.3 |
+| Cruise missiles, JASSM (a jet engine) | 0.6 | 0.13 | whole flight | 0.35 |
+| Drones (propellers, electric motors) | none | | | |
+
+So a 2.6 m SAM burns a flame about 6.7 m long, a 7 m ballistic missile one of about 10 m, and a
+1.1 m ATGM a short, sharp flame of about 1.5 m. The support strike's cruise missile gets the cruise
+plume (`StrikeEffects.LaunchCruise`, one line). Drones keep their old small motor puff and trail,
+and so do shells and railgun slugs (no plume).
+
+**Particle budget by graphics tier** (per motor, per frame; flame particles live 2.4 frames,
+0.05-0.12 s):
+
+| Tier | Cone quads | Tongue + core | Glow | Per frame | Smoke spacing | Smoke life |
+|---|---|---|---|---|---|---|
+| High | up to 5 | 2 | 1 | 4-8 | x1 | 3.2 s |
+| Medium | up to 4 | 2 | 1 | 4-7 | x1.25 | 2.5 s |
+| Low | up to 2 | 2 | none | 3-4 | x1.6 | 1.7 s |
+| Before | | | | 1 puff | 0.55 m | 0.85 s |
+
+Caps: 6000 / 4000 / 2500 smoke puffs (High, Medium, Low), 2400 cone quads, 900 tongues and cores,
+600 glows. A Grad salvo (20 rockets) leaves about 2200 puffs on High. Low still carries more fire
+and smoke than before, as the rule says: more flame particles a frame, and puffs that live twice as
+long, closer together (0.24 m for a Hellfire against 0.55 m).
+
+**Two things found on the way:**
+
+- **Stretched billboards trail behind their particle.** Unity draws a stretched billboard from its
+  particle backwards, against its velocity, not centred on the particle. A cone placed as if centred
+  started half a quad behind the tail, which showed as a gap on thick rocket flames. The plume
+  places each quad by its front end (`MotorPlumes.Head`). `MuzzleFx`'s tongue assumes centred quads,
+  so its flame probably sits half inside the barrel. That is the muzzle work's to check.
+- **One frame of lead.** Effects tick in `Update`, before Unity's particle update, so a particle
+  emitted this frame is moved on by one frame before it is drawn. The flame's particles fly with the
+  missile, so the plume stays on its tail as it moves. They are therefore emitted one frame back.
+  Without that, a rocket's flame showed up to one body length ahead of it.
+
+### B. Drawn sizes
+
+Each missile was measured against its launcher: the missile model, the store on the launcher's
+rails or its box or tube (glTF node bounds times the vehicle's scale), and the renders. The type
+table `WeaponEffects.SizeOf` is unchanged (ATGM/MANPADS 1.1, rockets 1.15, AGM/SAM/AAM/cruise 1.2,
+drones 2). The fit is per weapon, in balance.json's `projectileScale`. The worst cases were the
+aircraft stores: an aircraft is drawn at 0.55-0.8 of its size, but the munition models are full
+size, so a flying Hellfire was twice the one on the pylon. The plume now makes a missile readable,
+so its model can match its launcher. Where a store shows on the launcher, a flying missile is drawn
+at up to about 1.25 times that store.
+
+| Weapon | Model | Launcher (store/box as drawn) | Drawn before | Drawn after | projectileScale |
+|---|---|---|---|---|---|
+| `sam_long` | Buk 3.6 m | SAM launcher's box 2.45 m | 4.32 m | 2.59 m | 0.6 |
+| `sam` | SHORAD dart 2.2 m / Stinger (AA vehicle's mount) | heavy AA pack 2.0 m, AA vehicle launcher 1.0 m | 2.64 / 1.43 m | 1.98 / 1.07 m | 0.75 |
+| `sam_battery` (+`sam_pac3`, `sam_battery_lrr`) | Patriot 3.4 m | canister 3.7 m | 4.08 m | 3.75 m | 0.92 |
+| `atgm` | TOW 1.3 m | IFV 0.89 m, Titan and elite APC 0.98 m | 1.43 m | 1.14 m | 0.8 |
+| `ataka` | Ataka 1.5 m | BMPT box 1.36 m | 1.65 m | 1.45 m | 0.88 |
+| `heli_atgm` | Hellfire 1.4 m | Apache rack 0.81 m | 1.68 m | 1.04 m | 0.62 |
+| `hellfire_volley` | Longbow 1.4 m | elite Apache rack 0.89 m | 1.68 m | 1.09 m | 0.65 |
+| `drone_missile` | Hellfire 1.4 m | strike drone rack 0.88 m | 1.68 m | 1.09 m | 0.65 |
+| `recon_missile` | MAM-L 1.0 m | recon drone rack 0.57 m | 1.20 m | 0.72 m | 0.6 |
+| `vikhr` | Ataka 1.5 m | Ka-52 tubes 1.12 m | 1.80 m | 1.30 m | 0.72 |
+| `maverick`, `kh29` | Maverick 2.0 m | A-10 rack 1.10 m | 2.40 m | 1.39 m | 0.58 |
+| `air_to_air` | AIM-120 2.6 m | fighter (a quarter of its length, as real) | 3.12 m | 2.65 m | 0.85 |
+| `wvr_aam` | AIM-9 2.2 m | fighter | 2.64 m | 2.11 m | 0.8 |
+| `aim9` | AIM-9 2.2 m | A-10 | 2.64 m | 1.85 m | 0.7 |
+| `r60` | R-60 1.6 m | attack jet rail 1.0 m | 1.92 m | 1.25 m | 0.65 |
+| `stinger_atas` | Stinger 1.3 m | Apache | 1.43 m | 1.00 m | 0.7 |
+| `igla_v` | Igla 1.3 m | Ka-52 tubes 0.95 m | 1.43 m | 1.12 m | 0.78 |
+| `scout_rockets` | Hydra 1.0 m | scout heli pod 0.69 m | 1.15 m | 0.83 m | 0.72 |
+| `gunship_rockets`, `s8_pods`, `hind_rockets` | S-8 1.2 m | pods 1.09-1.16 m | 1.38 m | 1.24 m | 0.9 |
+| `ballistic_missile` | 7.1 m | the launcher's missile, about 6.3 m | 8.19 m | 6.96 m | 0.85 |
+
+These fit their launchers already and are unchanged:
+
+| Weapon | Drawn |
+|---|---|
+| `sam_48n6` | 5.3 m, the launcher tube 6.7 m |
+| `atgm_heavy`, `kornet_twin`, `atgm_post`, `boss_missiles` | 1.43 m, launchers 1.5-1.9 m |
+| `griffin` | 1.2 m, off the AC-130's ramp |
+| JASSM | 3.6 m |
+| cruise missile | 4.8 m |
+| GMLRS | 3.2 m, the pod 3.1 m |
+| TOS | 2.8 m, the launcher 4.2 m |
+| 300 mm rocket | 4.1 m, the tubes 5.0 m |
+| Grad (turret) | 2.5 m, the box 2.6 m |
+| 107 mm rocket | 1.0 m |
+| Hydra (Apache, A-10) | 1.15 m, the pods 1.13-1.15 m |
+| drones | 2x, as before |
+
+### C. Speed
+
+Ground-launched guided missiles are about a fifth slower again. Aircraft-launched missiles are 28-30
+% slower. The aircraft's unguided rockets are a fifth slower: they miss a moving target more when
+slower, so they lose less. The cruise missiles lose 15 %, since they were already the slowest.
+Artillery rockets, the ballistic missile, drones and ground direct-fire rockets are unchanged.
+
+| Missile | Weapons | Speed (m/s): 11C → now | Flight at full range | Cooldown |
+|---|---|---|---|---|
+| ATGM | `atgm`, `atgm_heavy`, `ataka`, `atgm_post`, `boss_missiles` | 24 → 19 (-21 %) | 34 m: 1.42 → 1.79 s; 45 m: 1.88 → 2.37 s | 5-14 s |
+| Kornet | `kornet_twin` (+`kornet_top`, `kornet_multi`) | 25 → 20 (-20 %) | 50 m: 2.0 → 2.5 s | 9 s |
+| SHORAD | `sam` | 40 → 32 (-20 %) | 44 m: 1.1 → 1.38 s | 6 s |
+| Medium/long SAM | `sam_long`, `sam_battery` (+`sam_pac3`, `sam_battery_lrr`) | 46 → 37 (-20 %) | 55 m: 1.2 → 1.49 s; 100 m: 2.17 → 2.7 s | 5.5-7 s |
+| S-400 48N6 | `sam_48n6` | 62 → 50 (-19 %) | 95 m: 1.53 → 1.9 s | 8 s |
+| Hellfire class (aircraft) | `heli_atgm`, `hellfire_volley`, `drone_missile`, `griffin`, `recon_missile` | 30 → 21 (-30 %) | 34 m: 1.13 → 1.62 s; 50 m: 1.67 → 2.38 s | 4-8 s |
+| Vikhr (Ka-52) | `vikhr` | 34 → 24 (-29 %) | 55 m: 1.62 → 2.29 s | 6.5 s |
+| Maverick / Kh-29 | `maverick`, `kh29` | 32 → 23 (-28 %) | 40 m: 1.25 → 1.74 s | 8-14 s |
+| Air-to-air | `air_to_air`, `wvr_aam`, `r60`, `aim9` | 48 → 34 (-29 %) | 60 m: 1.25 → 1.76 s; 30 m: 0.62 → 0.88 s | 2.5-8 s |
+| Helicopter MANPADS | `stinger_atas`, `igla_v` | 40 → 29 (-28 %) | 32 m: 0.8 → 1.1 s | 8-10 s |
+| Cruise / stand-off | `air_cruise_missile`, `jassm` | 20 → 17 (-15 %) | 110 m: 5.5 → 6.5 s; 90 m: 4.5 → 5.3 s | 14 / 10 s |
+| Aircraft rockets | `heli_rockets`, `gunship_rockets`, `scout_rockets`, `jet_rockets`, `s8_pods`, `hind_rockets` | 60 → 48 (-20 %) | 36 m: 0.6 → 0.75 s | 7-9 s |
+
+- **No flight reaches its cooldown.** This is checked for every missile and rocket in
+  `MissileFlightTests`. The closest is the AC-130's Griffin: 2.38 s of flight on a 4 s cooldown
+  (60 %).
+- **Guided missiles still hit moving targets.** A guided round lands on its target's position at
+  impact (`DamageSystem.ResolveImpact`), and the view bends onto the live target. APS intercepts at
+  impact and does not depend on speed. The fire-control lead (`GearSystem.Lead`) reads the speed.
+- **Flares.** A missile is decoyed by flares out at impact or put out while it flew
+  (`Projectile.LaunchedAt`, 11C). Longer flights (an AAM now takes 1.76 s at 60 m) overlap a flare's
+  1.5-3 s burn more often. Missiles at flaring aircraft are therefore decoyed somewhat more often.
+  That is left for the testing phase.
+
+### D. Flight: boost, then cruise
+
+The view flew a missile as (1-b)t + bt², slow off the rail and speeding up for its whole flight, so
+it arrived at its fastest. With slower missiles that read as a missile creeping and then darting.
+Now a boosted round leaves the rail at 20 % of its cruise speed and speeds up evenly to cruise over
+the first `boost x 0.35` of its flight: 19 % for missiles, 21 % for the ballistic missile, 10 % for
+direct-fire rockets, 7 % for artillery rockets. It then cruises at a steady speed, 3-8 % above its
+average, and still arrives on the simulation's time (`ProjectilePool.Progress`). The flame
+stretches as it speeds up (`SpeedAt`). The ballistic missile wobbles less than an artillery rocket (0.3,
+not 0.7) and has a longer boost (0.6).
+
+### E. Tools and tests
+
+- **Contact sheets:** `MachineBrigade.Editor.MissileShots.Run -mbShotsOut <folder>
+  [-mbShotsIds a+b]`, run in batch mode with graphics. It renders 30 launchers, six to a sheet
+  (`missiles_1.png` to `missiles_5.png`), each firing its first missile or rocket at a target (a
+  helicopter for anti-air weapons). The first frame shows the missile beside its launcher at 0.2 s,
+  to judge its size. The next three close on the missile at 25, 50 and 80 % of its flight, with its
+  flame and trail. `missiles.txt` lists each flight time and drawn length. It is a new file, apart
+  from `MuzzleShots`.
+- **`MissileFlightTests` (EditMode, new):**
+  - The boost-then-cruise curve arrives on time, always moves forward, leaves at rail speed and
+    cruises steadily.
+  - Every missile and rocket burns a plume, and a SAM's plume is longer than an ATGM's; drones have
+    none.
+  - The new speeds are pinned, and every missile and rocket flight at full range is shorter than its
+    cooldown.
+  - The drawn sizes of the SAM launcher, the Apache's Hellfire and the A-10's Maverick are pinned.
+- **Unchanged:** the `MuzzleTests` size table, since `SizeOf` is unchanged.
+
+### F. Left for the testing phase
+
+- Missile hit rates in battle with the slower missiles: flares against AAMs and SAMs, APS, and
+  jammers.
+- Aircraft rockets against moving columns: they are unguided, and 25 % more flight time means more
+  misses.
+- FPS on the device with many plumes: a Grad and MLRS barrage alongside helicopter salvos, on the Low
+  and Medium tiers.
+- The plume on dark maps and at night. It was judged on the sand stage only.
+- Whether the owner finds the aircraft missiles too small now. They were cut to 55-75 % of their
+  11B size to match their pylons. If so, raise their `projectileScale` a little; the plume already
+  carries the eye.
