@@ -2214,10 +2214,11 @@
     --base-slot-face: #161b1f;
     --base-slot-closed: #111518;
     --base-hq-face: #1d2225;
+    --base-card-face: #14191d;
     --base-lit-face: rgba(237, 230, 214, 0.1);
     --base-picked-face: rgba(237, 230, 214, 0.16);
     --base-hover-face: rgba(156, 203, 94, 0.14);
-    --base-scrim: rgba(10, 13, 16, 0.62);
+    --base-scrim: rgba(8, 10, 12, 0.78);
     --base-save-off: #3b3226;
     --base-save-off-text: #7d7262;
 }
@@ -2413,13 +2414,13 @@
 .base-gear-empty .icon { width: 36px; height: 36px; --icon-color: #69747b; }
 .menu .base-gear-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 16px; letter-spacing: 0.5px; color: var(--text-mid); margin-top: 4px; -unity-text-align: middle-center; white-space: normal; }
 .base-outpost {
-    flex-shrink: 0; margin-top: 8px; padding: 8px 10px; background-color: var(--surface-2);
+    flex-direction: row; align-items: flex-end; flex-shrink: 0; margin-top: 8px; padding: 8px 10px; background-color: var(--surface-2);
     border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-1);
 }
-.base-outpost-row { flex-direction: row; align-items: flex-end; }
 .base-outpost-slots { flex-direction: row; align-items: flex-end; flex-shrink: 0; }
 .menu .base-outpost-slot { margin-right: 8px; }
-.menu .base-outpost-info { flex-shrink: 1; margin: 0 0 0 4px; font-size: 13px; }
+.base-outpost-text { flex-grow: 1; flex-shrink: 1; align-self: stretch; margin-left: 4px; }
+.menu .base-outpost-info { margin: 0; font-size: 13px; }
 
 /* the tower under the finger while dragging */
 .base-ghost {
@@ -2432,7 +2433,7 @@
 /* changing a branch costs coins: asked first */
 .base-confirm { position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center; background-color: var(--base-scrim); }
 .base-confirm-card {
-    width: 480px; padding: 20px; background-color: var(--surface-1);
+    width: 480px; padding: 20px; background-color: var(--base-card-face);
     border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);
 }
 .menu .base-confirm-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 24px; letter-spacing: 0.5px; color: var(--text-hi); white-space: normal; margin-bottom: 16px; }

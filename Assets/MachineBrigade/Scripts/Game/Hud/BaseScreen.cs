@@ -286,9 +286,8 @@ namespace MachineBrigade.Game.Hud
             MouseDragScroll.Attach(panelScroll);
             _panelBody = panelScroll.contentContainer;
             right.Add(panelScroll);
+            // The outpost: its two slots, with its caption and what it is beside them.
             var outpost = UiKit.Box("base-outpost");
-            outpost.Add(UiKit.Text(Strings.Get("camp.outpost"), "menu-caps base-caps"));
-            var outpostRow = UiKit.Box("base-outpost-row");
             var outpostSlots = UiKit.Box("base-outpost-slots");
             for (var i = 0; i < BaseLayout.DefaultOutpost.Length; i++)
             {
@@ -297,9 +296,11 @@ namespace MachineBrigade.Game.Hud
                 outpostSlots.Add(view.Element);
                 _outpostViews.Add(view);
             }
-            outpostRow.Add(outpostSlots);
-            outpostRow.Add(UiKit.Text(Strings.Get("camp.outpostInfo"), "base-note base-outpost-info"));
-            outpost.Add(outpostRow);
+            outpost.Add(outpostSlots);
+            var outpostText = UiKit.Box("base-outpost-text");
+            outpostText.Add(UiKit.Text(Strings.Get("camp.outpost"), "menu-caps base-caps"));
+            outpostText.Add(UiKit.Text(Strings.Get("camp.outpostInfo"), "base-note base-outpost-info"));
+            outpost.Add(outpostText);
             right.Add(outpost);
             body.Add(right);
             Root.Add(body);
@@ -844,12 +845,15 @@ namespace MachineBrigade.Game.Hud
                 var line = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(fort.Size), PlayerProfile.Rank(id));
                 if (branch != null) line += " · " + Strings.Branch(branch);
                 row.Q<Label>(className: "base-tower-line").text = line;
-                var placed = BaseLayout.Placed(_layout, id) + _layout.Outpost.Count(o => o == id) + _layout.Utilities.Count(u => u == id);
+                var placed = PlacedCount(id);
                 var count = row.Q<Label>(className: "base-tower-count");
                 count.text = placed > 0 ? "×" + placed : "";
                 count.EnableInClassList("base-hidden", placed == 0);
             }
         }
+
+        /// <summary>How many places hold a card: the camp's (every HQ level's), the outpost's and the utility slots.</summary>
+        private int PlacedCount(string id) => BaseLayout.Placed(_layout, id) + _layout.Outpost.Count(o => o == id) + _layout.Utilities.Count(u => u == id);
 
         private void RefreshHint(string carrying)
         {
@@ -881,7 +885,7 @@ namespace MachineBrigade.Game.Hud
             var branch = PlayerProfile.TowerBranch(id);
             _headLine.text = Strings.Format("camp.cardLine", module ? Strings.Get("camp.utility") : SizeName(def.Fort.Size), PlayerProfile.Rank(id)) +
                              (branch != null ? " · " + Strings.Branch(branch) : "");
-            _headCount.text = Strings.Format("camp.inCamp", BaseLayout.Placed(_layout, id) + _layout.Utilities.Count(u => u == id));
+            _headCount.text = Strings.Format("camp.inCamp", PlacedCount(id));
             if (_tab == PanelTab.Branch) BranchPanel(id);
             else GearPanel(id);
         }
