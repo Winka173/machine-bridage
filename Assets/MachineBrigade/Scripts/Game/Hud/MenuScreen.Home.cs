@@ -300,6 +300,7 @@ namespace MachineBrigade.Game.Hud
             {
                 Id = id,
                 Name = Strings.Card(id),
+                ShortName = Strings.Short(id),
                 Branch = KitBranch.Support,
                 ClassIcon = CardIcons.For(id),
                 Cp = CostOf(id),

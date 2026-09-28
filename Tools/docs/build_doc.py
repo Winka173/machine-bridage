@@ -487,7 +487,10 @@ def build(game, imgdir):
                "ô chọn, công tắc, thanh chỉ số, hộp thoại, thông báo). Điều hướng 5 mục bên trái: Trang chủ, Chiến dịch, Tác chiến, Quân đội, Cửa hàng; "
                "thanh trên cùng có cấp, kinh nghiệm, xu và cài đặt. Ảnh thẻ render từ mô hình 3D thật. Mỗi màn được kiểm tra tự động ở 4 tỉ lệ màn hình "
                "(16:9, 19,5:9 tai thỏ, 20:9 đục lỗ, 4:3) và cỡ chữ Lớn: không chữ bị cắt, không thành phần chồng nhau, vùng chạm đủ lớn. "
-               "Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).</p>")
+               "Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).</p>"
+               "<p><b>Prompt 11:</b> HUD gọn trong trận (mặc định bật, tắt được trong Cài đặt): khi giao tranh HUD chỉ chiếm 26-28 % màn hình 16:9 "
+               "và 21-23 % ở 20:9 (HUD đầy đủ 51-64 %). Mọi xe, tháp, công trình, thẻ hỗ trợ và vật phẩm có tên ngắn (tối đa khoảng 14 ký tự) "
+               "dùng ở chỗ chật; mọi thẻ có vùng tên cao cố định 2 dòng nên ảnh, CP và cấp luôn thẳng hàng. Khiên vẽ lại bằng một shader.</p>")
     out.append("<h3>Trang chủ và thiết lập trận</h3>"
                + one('screen-home-vi-16x9.png', 'Trang chủ: trận AI làm nền, nhiệm vụ chiến dịch tiếp theo, thử thách hôm nay, bộ bài, bốn ô chọn chế độ / chiến trường / độ khó / thời tiết và nút XUẤT KÍCH.')
                + pair('screen-setup-mode-vi-16x9.png', 'Chọn chế độ: tên đầy đủ và mô tả một dòng.',
@@ -499,6 +502,7 @@ def build(game, imgdir):
                                                                                 'mỗi mục có ảnh, luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'))
     out.append("<h3>Quân đội</h3>"
                + one('screen-army-deck-vi-16x9.png', 'Bộ bài: thẻ render 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), học thuyết.')
+               + one('screen-army-towers-vi-16x9.png', 'Tháp và mô-đun: thẻ render 3D xếp theo cỡ, tên cao cố định 2 dòng, cấp và dòng mở khóa thẳng hàng.')
                + one('screen-army-base-vi-16x9.png', 'Căn cứ: sơ đồ sở chỉ huy với ô nhỏ / vừa / lớn / tiện ích, chỉ sáng ô hợp lệ; panel tháp có hạng, nhánh, 3 ô đồ và nút xem chi tiết.'))
     out.append("<h3>Chi tiết phương tiện, tháp và công trình</h3>"
                + one('screen-detail-vi-16x9.png', 'Chi tiết phương tiện: mô hình 3D xoay, thanh chỉ số tách gốc / trang bị / cấp sau, vạch trung bình của nhóm; các tab Hướng dẫn, Vũ khí, Xem bắn, Trang bị.')
@@ -508,11 +512,17 @@ def build(game, imgdir):
                + pair('screen-shop-deals-vi-16x9.png', 'Ưu đãi.', 'screen-shop-skins-vi-16x9.png', 'Ngụy trang (trước đây là Skin).')
                + pair('screen-shop-units-vi-16x9.png', 'Đơn vị.', 'screen-shop-items-vi-16x9.png', 'Vật phẩm dùng một lần.')
                + one('screen-settings-vi-16x9.png', 'Cài đặt: đồ họa, âm thanh, điều khiển, ngôn ngữ và cỡ chữ Thường / Lớn.'))
-    out.append("<h3>Trong trận</h3>"
-               + one('battle-hud-mission-vi-16x9.png', 'HUD nhiệm vụ boss: thanh máu boss có số máu, vạch pha và hàng bộ phận (bộ phận vỡ bị gạch, chạm để bắn tập trung); '
-                                                     'thông báo chung một kiểu; CP to với thu nhập mỗi giây và phạt tiếp tế ghi bằng chữ; thẻ có ảnh 3D, tên đầy đủ, CP, thiếu CP thì mờ và ghi "Thiếu 3".')
-               + pair('battle-hud-score-vi-16x9.png', 'HUD Chiếm cứ điểm: điểm hai phe, cứ điểm, xe đang chọn.',
-                      'battle-hud-waves-vi-16x9.png', 'HUD đợt địch: đang nhắm hỗ trợ hỏa lực, thẻ đang hồi có đồng hồ quét.')
+    out.append("<h3>Trong trận: HUD gọn (prompt 11)</h3>"
+               + one('battle-hud-mission-vi-16x9.png', 'Đánh trùm: thanh máu trùm hẹp một nửa với vạch pha và hàng bộ phận nhỏ; nhiệm vụ và đồng hồ gộp một dải ở mép trên; '
+                                                     'thông báo nhỏ dưới dải, tự tắt sau khoảng 3 giây; khay thẻ thấp hơn 35 %: ảnh, CP và tên ngắn một dòng (giữ thẻ để xem tên đầy đủ); '
+                                                     'phạt tiếp tế là chip nhỏ trên ô CP, chỉ hiện khi bị phạt.')
+               + pair('battle-hud-boss-open-vi-16x9.png', 'Chạm thanh máu trùm để mở rộng tạm thời: số máu và các bộ phận cỡ đầy đủ, chạm bộ phận để bắn tập trung.',
+                      'battle-hud-score-vi-16x9.png', 'Chiếm cứ điểm: dải điểm hai phe, cứ điểm và đồng hồ; bản đồ nhỏ hơn 40 % với hai nút nhỏ ở góc; Tấn công / Phòng thủ là một nút gạt icon, '
+                                                      'Tự mua và Yểm trợ là hai icon bật/tắt; xe đang chọn là một dải ngay trên khay thẻ; gợi ý chỉ ở vài trận đầu.')
+               + pair('battle-hud-siege-vi-16x9.png', 'Công thành: giai đoạn, tiến độ, đồng hồ, đếm ngược siêu pháo.',
+                      'battle-hud-defend-vi-16x9.png', 'Phòng thủ: tuyến, đợt, siêu pháo ta, đợt tới kèm thành phần; nút đưa tháp trở lại.')
+               + pair('battle-hud-waves-vi-16x9.png', 'Sinh tồn: quân ta, địch, đợt và đếm ngược trong một dải; đang nhắm hỗ trợ hỏa lực.',
+                      'battle-hud-score-full-vi-16x9.png', 'HUD đầy đủ (tắt HUD gọn trong Cài đặt) để so sánh.')
                + pair('battle-choice-vi-16x9.png', 'Lựa chọn giữa các giai đoạn (tự chọn sau 15 giây).', 'battle-pause-vi-16x9.png', 'Tạm dừng.')
                + pair('battle-result-win-vi-16x9.png', 'Kết quả thắng: TIẾP TỤC là nút chính, nhận đôi xu cạnh số xu.',
                       'battle-result-loss-vi-16x9.png', 'Kết quả thua: tiêu đề là tên nhiệm vụ, điểm ghi rõ phe, 1-2 gợi ý rút từ trận và nút mở bộ bài; CHƠI LẠI là nút chính.')
@@ -520,7 +530,8 @@ def build(game, imgdir):
     out.append("<h3>Bốn tỉ lệ màn hình và cỡ chữ Lớn</h3>"
                + pair('screen-home-vi-19.5x9-notch.png', '19,5:9 có tai thỏ: nội dung tránh vùng an toàn.', 'screen-home-vi-20x9-punchhole.png', '20:9 có lỗ camera và thanh cử chỉ.')
                + pair('screen-home-vi-4x3.png', '4:3 (máy tính bảng).', 'screen-home-vi-large-16x9.png', 'Cỡ chữ Lớn.')
-               + pair('battle-hud-mission-vi-4x3.png', 'HUD ở 4:3.', 'battle-hud-mission-en-16x9.png', 'HUD tiếng Anh.'))
+               + pair('battle-hud-mission-vi-4x3.png', 'HUD ở 4:3.', 'battle-hud-mission-en-16x9.png', 'HUD tiếng Anh.')
+               + pair('battle-hud-siege-vi-20x9-punchhole.png', 'HUD gọn ở 20:9.', 'battle-hud-mission-vi-large-16x9.png', 'HUD gọn, cỡ chữ Lớn: tên thẻ được xuống 2 dòng.'))
     out.append("<h3>Bộ thành phần</h3>"
                + pair('kit-tokens-vi-16x9.png', 'Token màu và chữ.', 'kit-buttons-vi-16x9.png', 'Nút.')
                + pair('kit-cards-vi-16x9.png', 'Thẻ.', 'kit-controls-vi-16x9.png', 'Điều khiển: tab, ô chọn, công tắc, thanh trượt.'))
@@ -536,6 +547,10 @@ def build(game, imgdir):
             ('flame.png', 'Súng phun lửa làm lại: luồng nhiên liệu cong, cầu lửa cuộn, khói đen.'), ('railgun.png', 'Railgun: nạp năng lượng, tia sáng lưu lại.'),
             ('boss_death.png', 'Boss chết: nổ nhiều đợt, lóe trắng, sóng xung kích.'), ('muzzle_audit.png', 'Kiểm tra đầu nòng: mỗi chấm màu là nơi một vũ khí bắn ra.')]
     out.append("<div class='section'><h2>19. Hình ảnh</h2>")
+    shield = img(Path(__file__).resolve().parents[2] / 'Docs' / 'art' / 'shields' / 'shields.png', 'shot')
+    if shield:
+        out.append(f"{shield}<div class='caption'>Khiên vẽ lại (prompt 11): vòm lưới lục giác sáng ở viền, giữa trong suốt; địch đỏ cam, ta xanh; "
+                   "gợn sóng chỗ trúng đạn, chập chờn khi máy phát khiên hư, sụp vỡ khi tắt; bong bóng quanh xe và trùm; bản rút gọn cho đồ họa Thấp.</div>")
     for name, cap in pics:
         tag = img(r6 / name, 'shot')
         if tag:

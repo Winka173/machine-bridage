@@ -107,6 +107,36 @@ namespace MachineBrigade.Game.Hud
             return scroll;
         }
 
+        /// <summary>
+        /// Holds a label at exactly <paramref name="lines"/> lines of its own type, top-aligned (prompt 11 B2: a
+        /// card's name area is two lines high on every card, so the picture, the cost and the level sit in the same
+        /// place whatever the name). The height follows the text size. When the text needs more lines at the label's
+        /// width it is replaced by <paramref name="fallback"/> (the short name), never cut.
+        /// </summary>
+        public static void FixedLines(Label label, int lines, string fallback = null)
+        {
+            void Fit()
+            {
+                if (label.panel == null) return;
+                var line = label.MeasureTextSize("Ág", 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).y;
+                if (line <= 0.5f) return;
+                var text = UnityEngine.Mathf.Ceil(line * lines);
+                var height = text + label.resolvedStyle.paddingTop + label.resolvedStyle.paddingBottom;
+                if (UnityEngine.Mathf.Abs(label.resolvedStyle.height - height) > 0.5f)
+                {
+                    label.style.height = height;
+                    label.style.minHeight = height;
+                    label.style.maxHeight = height;
+                }
+                var width = label.contentRect.width;
+                if (fallback == null || label.text == fallback || width < 1f) return;
+                var need = label.MeasureTextSize(label.text, width, VisualElement.MeasureMode.Exactly, 0, VisualElement.MeasureMode.Undefined).y;
+                if (need > text + 1f) label.text = fallback;
+            }
+            label.AddToClassList("fc-lines-" + lines);
+            label.RegisterCallback<GeometryChangedEvent>(_ => Fit());
+        }
+
         /// <summary>Uppercase for the condensed display labels (USS has no text-transform); Vietnamese capitals keep their marks.</summary>
         public static string Caps(string text) => string.IsNullOrEmpty(text) ? text ?? "" : text.ToUpper(Culture);
 

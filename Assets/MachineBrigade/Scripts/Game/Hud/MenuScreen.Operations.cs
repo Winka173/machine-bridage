@@ -147,7 +147,7 @@ namespace MachineBrigade.Game.Hud
                         var id = kind[0];
                         bosses.Add(new KitVehicleCard(new VehicleCardData
                         {
-                            Id = id, Name = Strings.Unit(id), Branch = KitBranch.Armor, ClassIcon = "skull", Art = CardArt.For(id), Level = 1,
+                            Id = id, Name = Strings.Unit(id), ShortName = Strings.Short(id), Branch = KitBranch.Armor, ClassIcon = "skull", Art = CardArt.For(id), Level = 1,
                         }, null, compact: true));
                     }
                     body.Add(bosses);

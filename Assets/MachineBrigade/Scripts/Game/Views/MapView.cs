@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.Entities;
@@ -354,49 +355,63 @@ namespace MachineBrigade.Game.Views
             }
         }
 
-        private readonly Dictionary<EntityId, Transform> _shields = new();
-        private static Mesh _shieldQuad;
+        private readonly Dictionary<EntityId, ShieldVisual> _shields = new();
+
+        /// <summary>Whose the objectives' shields are (the fortress's defender; set by the match), and the player's side.</summary>
+        public int ShieldTeam { get; set; } = -1;
+
+        public int PlayerTeam { get; set; }
 
         /// <summary>
-        /// A shimmering energy shield round every prop that cannot be hurt yet (a siege objective
-        /// whose stage has not come): a pulsing ring facing the camera, gone once the shield drops.
+        /// An energy dome (the shared shield look) over every prop that cannot be hurt yet (a
+        /// siege objective whose stage has not come): it comes up, ripples where rounds strike
+        /// it, and shatters when its stage comes and the shield drops.
         /// </summary>
         public void DrawShields(Quaternion cameraRotation, float time)
         {
             foreach (var prop in _world.Props)
             {
                 var shielded = prop.IsAlive && prop.Invulnerable;
-                _shields.TryGetValue(prop.Id, out var ring);
-                if (!shielded)
+                _shields.TryGetValue(prop.Id, out var shield);
+                if (shield == null)
                 {
-                    if (ring != null && ring.gameObject.activeSelf) ring.gameObject.SetActive(false);
-                    continue;
+                    if (!shielded) continue;
+                    shield = PropShield(prop);
+                    _shields[prop.Id] = shield;
                 }
-                if (ring == null)
+                if (shielded) shield.Raise(time);
+                else if (shield.Standing)
                 {
-                    _shieldQuad ??= ShieldQuad();
-                    ring = VehicleView.CreateMesh("Shield", _root.transform, _shieldQuad, _materials.Shockwave, false);
-                    _shields[prop.Id] = ring;
+                    if (prop.IsAlive) shield.Collapse(time);
+                    else shield.Hide();
                 }
-                if (!ring.gameObject.activeSelf) ring.gameObject.SetActive(true);
-                var size = (prop.Radius + 2.5f) * 2.3f * (1f + Mathf.Sin(time * 3.1f + prop.Id.Value) * 0.04f);
-                ring.position = new Vector3(prop.Position.X, prop.Radius * 0.6f + 1f, prop.Position.Y);
-                ring.rotation = cameraRotation;
-                ring.localScale = new Vector3(size, size, 1f);
+                shield.Tick(time);
             }
         }
 
-        /// <summary>A camera-facing quad tinted shield blue, for the particle shader's ring shape.</summary>
-        private static Mesh ShieldQuad()
+        /// <summary>A round struck the prop <paramref name="id"/>: its shield, if up, ripples there.</summary>
+        public void ShieldHit(EntityId id, Vector3 at, float now)
         {
-            var colour = Primitives.Linear(new Color(0.35f, 0.85f, 1f, 0.8f));
-            var mesh = new Mesh { name = "PropShield" };
-            mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
-            mesh.SetUVs(0, new[] { new UnityEngine.Vector2(0f, 0f), new UnityEngine.Vector2(1f, 0f), new UnityEngine.Vector2(1f, 1f), new UnityEngine.Vector2(0f, 1f) });
-            mesh.SetColors(new[] { colour, colour, colour, colour });
-            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
-            mesh.RecalculateBounds();
-            return mesh;
+            if (_shields.TryGetValue(id, out var shield)) shield.Hit(at, now);
+        }
+
+        /// <summary>A dome over the prop: its footprint with room round it, and tall enough for its model.</summary>
+        private ShieldVisual PropShield(Prop prop)
+        {
+            var radius = prop.Radius * 1.15f + 1.8f;
+            var height = radius * 0.8f;
+            if (_props.TryGetValue(prop.Id, out var view) && view.GameObject != null)
+            {
+                var top = 0f;
+                foreach (var r in view.GameObject.GetComponentsInChildren<Renderer>())
+                    top = Mathf.Max(top, r.bounds.max.y);
+                height = Mathf.Max(height, top * 1.25f + 0.8f);
+            }
+            var shield = new ShieldVisual("Shield", _root.transform, ShieldVisual.Shape.Dome, radius);
+            shield.Transform.position = new Vector3(prop.Position.X, 0f, prop.Position.Y);
+            shield.Transform.localScale = new Vector3(radius, height, radius);
+            shield.SetSide(ShieldTeam >= 0 && ShieldTeam == PlayerTeam);
+            return shield;
         }
 
         public void Animate(float time)

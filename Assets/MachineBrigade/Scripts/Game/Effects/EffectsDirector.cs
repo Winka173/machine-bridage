@@ -171,6 +171,8 @@ namespace MachineBrigade.Game.Effects
                     }
 
                     case SimEventKind.ProjectileImpact:
+                        // The shield it struck ripples (prompt 11C).
+                        ShieldImpact(e, views, map, now);
                         if (e.Airborne)
                         {
                             // Flak and missiles bursting around an aircraft, at its height (a killing
@@ -201,9 +203,12 @@ namespace MachineBrigade.Game.Effects
 
                     case SimEventKind.StrikeImpact when IsGentle(e.DefId):
                         Pulse(e.DefId, Ground(e.Position, 0.3f));
+                        if (_catalog.TryGetSupport(e.DefId, out var gentle) && gentle.Kind == SupportKind.ShieldDome)
+                            RaiseItemDome(e, gentle, views, now);
                         break;
 
                     case SimEventKind.StrikeImpact:
+                        RippleItemDomes(e.Position, 1.5f, now);
                         var hit = Ground(e.Position, 0.3f);
                         var huge = e.Tier >= ExplosionTier.Ultimate;
                         // Drawn as big as the strike reaches (a heavier bomb, a bigger fireball).
@@ -325,6 +330,15 @@ namespace MachineBrigade.Game.Effects
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
                         Ring(Ground(e.Position, 0.3f), 30f, new Color(0.45f, 0.8f, 2.4f, 1f));
+                        break;
+
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Shield:
+                        // A shield skill: how long it lasts, so it flickers out in its last second.
+                        if (views.TryGet(e.Entity, out var shielded)) shielded.ShieldFor(e.Value, now);
+                        break;
+
+                    case SimEventKind.Damaged:
+                        ShieldDamaged(e, views);
                         break;
 
                     case SimEventKind.VehicleRetired:
@@ -459,6 +473,7 @@ namespace MachineBrigade.Game.Effects
         public void Tick(ViewRegistry views)
         {
             var now = Time.time;
+            TickShields(views, now);
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _weapons.Tick(now);
@@ -627,6 +642,7 @@ namespace MachineBrigade.Game.Effects
         public void Prewarm()
         {
             WarmUpPipelines();
+            WarmUpShields();
             foreach (var id in new[] { "missile", "rocket", "bomb", "cruise_missile" })
                 if (_models.Has(id)) _models.Merged(id);
             foreach (var id in new[] { "debris_concrete", "debris_plaster", "debris_roof", "debris_wood", "debris_metal", "debris_leaves" })
@@ -709,7 +725,7 @@ namespace MachineBrigade.Game.Effects
                     Ring(at, support.Radius * 1.4f, new Color(0.9f, 1.4f, 3f, 1f));
                     break;
                 case SupportKind.ShieldDome:
-                    Ring(at, support.Radius * 2f, new Color(0.35f, 1.6f, 2.2f, 1f));
+                    // Its dome comes up instead, with a ring in its side's colour (RaiseItemDome).
                     break;
                 case SupportKind.Escort:
                     // An aircraft on its way: a small mark where it was called, no gust of dust.

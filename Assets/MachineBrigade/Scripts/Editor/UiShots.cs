@@ -121,9 +121,17 @@ namespace MachineBrigade.Editor
             }
         }
 
-        /// <summary>The battle's own screens (E10 and G): the result after a win and a loss, the checkpoint's offer, pause, the choice between stages.</summary>
+        /// <summary>
+        /// The battle's own screens (E10 and G, prompt 11 A): the compact HUD in Conquest (hud-score), a boss battle
+        /// (hud-mission, and hud-boss-open with its bar opened by a tap), Siege, Defend and Survival (hud-waves), the full
+        /// HUD for comparison (hud-*-full), the result after a win and a loss, the checkpoint's offer, pause, the choice
+        /// between stages.
+        /// </summary>
         public static readonly string[] BattleScreenNames =
-            { "hud-score", "hud-mission", "hud-waves", "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice" };
+        {
+            "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
+            "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
+        };
 
         /// <summary>The battle screens with no main action: the HUD itself.</summary>
         public static bool WithoutPrimary(string screen) => screen.StartsWith("hud-");
@@ -141,8 +149,9 @@ namespace MachineBrigade.Editor
                 insets = v => KitSafeArea.Apply(safe, v);
                 return host;
             };
-            foreach (var screen in BattleScreenNames) yield return ("battle-" + screen + "-vi", Battle(screen, true, false), Shapes, 0);
-            foreach (var screen in new[] { "hud-score", "hud-mission", "result-win", "result-loss" })
+            foreach (var screen in BattleScreenNames)
+                yield return ("battle-" + screen + "-vi", Battle(screen, true, false), screen.EndsWith("-full") ? new[] { Shapes[0], Shapes[2] } : Shapes, 0);
+            foreach (var screen in new[] { "hud-score", "hud-mission", "hud-siege", "hud-defend", "result-win", "result-loss" })
             {
                 yield return ("battle-" + screen + "-vi-large", Battle(screen, true, true), new[] { Shapes[0] }, 0);
                 yield return ("battle-" + screen + "-en", Battle(screen, false, false), new[] { Shapes[0] }, 0);
@@ -216,12 +225,17 @@ namespace MachineBrigade.Editor
             var supports = MatchSettings.DeckSupports.Any(id => catalog.TryGetSupport(id, out _)) ? (IEnumerable<string>)MatchSettings.DeckSupports : Progression.StarterSupports;
             foreach (var id in supports)
                 if (catalog.TryGetSupport(id, out var sup)) cards.Add(new CardInfo(id, true, sup.CpCost, CardIcons.For(id)));
+            // The compact HUD unless the shot is of the full one; the first-match hint only on Conquest's.
+            var full = screen.EndsWith("-full");
+            if (full) screen = screen.Substring(0, screen.Length - "-full".Length);
             var spec = screen switch
             {
-                "hud-mission" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
+                "hud-mission" or "hud-boss-open" or "hud-siege" or "hud-defend" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
                 "hud-waves" => new HudSpec { Mode = HudMode.Waves },
                 _ => new HudSpec { Mode = HudMode.Score, ScoreLabel = "stat.tickets" },
             };
+            spec.Compact = !full;
+            spec.StartHint = screen == "hud-score";
             var hud = new BattleHud(spec, cards, catalog, host);
             const float cp = 7.4f;
             var states = new List<CardState>();
@@ -237,7 +251,26 @@ namespace MachineBrigade.Editor
             var points = new List<PointInfo> { new("west", 0, 1f, false), new("town", -1, 0.35f, true), new("east", 1, -1f, false) };
             switch (screen)
             {
+                case "hud-siege":
+                    hud.SetMission(Strings.Format("mode.siege.stage", 2, Strings.Get("siege.goal2")), "46%", 0.46f, 522f, new List<PointInfo>());
+                    hud.SetSuperGun(38f, false, false);
+                    hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(4, "siege_tank", 3100f, 3600f));
+                    hud.Toast(Strings.Get("toast.raid"), error: true, seconds: 5f);
+                    break;
+                case "hud-defend":
+                {
+                    hud.SetMission(Strings.Format("base.line", 1, Strings.Get("base.goal1")), Strings.Format("base.waveOf", 4) + "  ·  82%", 0.82f, 431f,
+                        new List<PointInfo>());
+                    var wave = new List<(string, int)> { ("armored_car", 4), ("rocket_technical", 3), ("light_tank", 2), ("fpv_carrier", 1) };
+                    var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
+                    wave.Add((elite.Id, 1));
+                    hud.SetWavePreview(wave, 21f, 5, 3);
+                    hud.SetSuperGun(64f, false, true);
+                    hud.SetTowers(1, 40);
+                    break;
+                }
                 case "hud-mission":
+                case "hud-boss-open":
                 {
                     hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", 2, 1), 0.45f, 312f, new List<PointInfo>());
                     var boss = catalog.Vehicles.Values.Where(v => v.Boss && v.Parts.Count >= 5).OrderBy(v => v.Id).First();
@@ -251,6 +284,7 @@ namespace MachineBrigade.Editor
                         broken.Add(i == 1);
                     }
                     hud.PreviewBossParts(boss, shares, broken, 2);
+                    if (screen == "hud-boss-open") hud.PreviewBossExpanded();
                     var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
                     hud.Toast(Strings.Format("radio.elite", Strings.Card(elite.Id)), error: true, seconds: 5f);
                     break;

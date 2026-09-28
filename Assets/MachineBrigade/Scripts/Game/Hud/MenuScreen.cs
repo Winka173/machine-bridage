@@ -403,6 +403,8 @@ namespace MachineBrigade.Game.Hud
                     _reopenSettings = true;
                     SettingsChanged?.Invoke();
                 }));
+            // Prompt 11 A9: the compact battle HUD, on by default; off shows the full one.
+            display.Add(ToggleRow("expand", "settings.compactHud", () => MatchSettings.CompactHud, on => MatchSettings.CompactHud = on));
             display.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
                 () => MatchSettings.ColorBlind ? 1 : 0, i => MatchSettings.ColorBlind = i == 1));
 

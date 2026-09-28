@@ -344,6 +344,9 @@ namespace MachineBrigade.Game.Match
             {
                 _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
                 _fortress.SetNight(weather == WeatherKind.Night);
+                // The objectives' shields are the defender's (blue when the player holds the fortress).
+                _map.ShieldTeam = siegeMode.Defender;
+                _map.PlayerTeam = PlayerTeam;
             }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
@@ -355,7 +358,14 @@ namespace MachineBrigade.Game.Match
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
-            _hud = new BattleHud(_session.Hud, cards, catalog)
+            var hudSpec = _session.Hud;
+            if (!_menu)
+            {
+                // The standing hint shows in the player's first few matches only (prompt 11 A7).
+                hudSpec.StartHint = MatchSettings.ShowStartHint;
+                MatchSettings.CountHintMatch();
+            }
+            _hud = new BattleHud(hudSpec, cards, catalog)
             {
                 ShowFps = MatchSettings.ShowFps,
             };

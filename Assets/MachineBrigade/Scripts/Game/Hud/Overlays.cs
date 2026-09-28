@@ -288,10 +288,16 @@ namespace MachineBrigade.Game.Hud
         public void Hide() => Root.style.display = DisplayStyle.None;
     }
 
-    /// <summary>Pause menu on the kit: resume (the main action), restart or leave.</summary>
+    /// <summary>
+    /// Pause menu on the kit: resume (the main action), restart or leave, and the commander's two
+    /// switches, Auto buy and Support (prompt 11 A2: the compact HUD shows them as small icons, so
+    /// they are here in words as well).
+    /// </summary>
     internal sealed class PausePanel
     {
-        public PausePanel(Action resume, Action restart, Action menu)
+        private readonly KitToggle _autoDeploy, _autoStrike;
+
+        public PausePanel(Action resume, Action restart, Action menu, Action autoDeployToggled = null, Action autoStrikeToggled = null)
         {
             Root = Kit.Root(KitDialog.ScrimClass + " fc-pause");
             Root.pickingMode = PickingMode.Position;
@@ -305,11 +311,25 @@ namespace MachineBrigade.Game.Hud
             buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.again"), restart, "restart"));
             buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.menu"), menu, "home"));
             card.Add(buttons);
+            var commander = Kit.Box("fc-pause__commander");
+            commander.Add(Kit.Caption(Strings.Get("pause.commander")));
+            _autoDeploy = new KitToggle(Strings.Get("rail.buy"), Match.MatchSettings.AutoDeploy, _ => autoDeployToggled?.Invoke());
+            commander.Add(_autoDeploy);
+            _autoStrike = new KitToggle(Strings.Get("rail.support"), Match.MatchSettings.AutoStrike, _ => autoStrikeToggled?.Invoke());
+            commander.Add(_autoStrike);
+            card.Add(commander);
             Root.Add(card);
             Root.style.display = DisplayStyle.None;
         }
 
         public VisualElement Root { get; }
+
+        /// <summary>The commander's switches as they are (the HUD calls this with its own).</summary>
+        public void SetCommander(bool autoDeploy, bool autoStrike)
+        {
+            if (_autoDeploy.On != autoDeploy) _autoDeploy.On = autoDeploy;
+            if (_autoStrike.On != autoStrike) _autoStrike.On = autoStrike;
+        }
 
         public bool Visible
         {
