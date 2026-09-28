@@ -47,5 +47,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Sustained fire: rounds left in the magazine (-1: a full one not yet started), and when the last round went.</summary>
         public int ClipLeft = -1;
         public double LastRoundAt = double.NegativeInfinity;
+
+        /// <summary>
+        /// A boss's mount held off by another mount's round (test feedback 2): when it was last held
+        /// off, and since when it has been waiting (the one waiting longest has the next step).
+        /// </summary>
+        public double HeldAt = double.NegativeInfinity;
+        public double WaitingSince = double.NegativeInfinity;
     }
 }

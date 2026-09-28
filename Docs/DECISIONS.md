@@ -2521,6 +2521,132 @@ not 0.7) and has a longer boost (0.6).
   11B size to match their pylons. If so, raise their `projectileScale` a little; the plume already
   carries the eye.
 
+## 12D. Test feedback 2: sustained fire for AA and guns (2026-09-29)
+
+The owner liked the jets' new cannon streams (11C C) and asked for the same on many more
+weapons, anti-air first: "bắn nhiều để cho đã" (fire a lot, so it's satisfying). Every AA gun,
+machine gun, helicopter gun and the one burst-firing autocannon now fire from a magazine (11C's
+`clip` / `clipReload`): a stream of 2.5-4 s at 8-33 rounds a second, then a 1-1.5 s change. Each
+weapon's damage a second is kept by lighter rounds (`roundWeight` keeps the old tracer, flash
+and report), measured with `FireRhythmMeasure` (60 s against a dummy; it now also covers the AA
+vehicles and towers, the headquarters, bunkers, the guard tower and the bosses' guns).
+
+### A. What changed
+
+| Group | Weapon | Measured on (target) | Rhythm before | Rhythm after | Damage/round | Rounds/s (60 s) | DPS before -> after | Longest stream |
+|---|---|---|---|---|---|---|---|---|
+| AA | `zu23` | zu23_technical (attack_helicopter) | 12 @ 22/s every 1.29 s | 20/s x 60, 1.5 s change | 14 -> 9.7 | 9.3 -> 13.4 | 194.6 -> 194.5 (-0 %) | 0.50 -> 3.05 s |
+| AA | `flak_35` | aa_vehicle (attack_helicopter) | 10 @ 18/s every 1.40 s | 18.2/s x 50, 1.2 s change | 11 -> 6.85 | 7.2 -> 12.6 | 118.3 -> 129.3 (+9 %, see B.4) | 0.50 -> 2.80 s |
+| AA | `twin_30_flak` | heavy_aa (attack_helicopter) | 16 @ 25/s every 1.60 s | 25/s x 80, 1.2 s change | 22 -> 12.75 | 10.1 -> 17.8 | 334.4 -> 339.8 (+2 %, B.4) | 0.60 -> 3.20 s |
+| AA | `twin_30_flak` | aa_turret (attack_helicopter) | 16 @ 25/s every 1.60 s | 25/s x 80, 1.2 s change | 22 -> 12.75 | 10.1 -> 17.8 | 418.0 -> 424.7 (+2 %, B.4) | 0.60 -> 3.20 s |
+| AA | `hq_flak` (was `twin_30_flak`) | headquarters (attack_helicopter), 2 mounts | 16 @ 25/s every 1.60 s | 25/s x 80, 1.2 s change | 22 -> 15.8 | 16.0 -> 22.4 | 660.0 -> 661.1 (+0 %) | 0.60 -> 3.20 s |
+| AA | `flak_quad` | aa_turret.flak (attack_helicopter) | 12 @ 20/s every 1.75 s | 22.2/s x 90, 1.5 s change | 22 -> 9.15 | 6.8 -> 16.4 | 280.5 -> 281.1 (+0 %) | 0.55 -> 4.05 s |
+| AA | `twin_35_ahead` | elite_aa (attack_helicopter) | 8 @ 17/s every 1.52 s | 16.7/s x 45, 1.2 s change | 16 -> 8.3 | 5.5 -> 12.2 | 164.0 -> 190.4 (+16 %, B.4) | 0.45 -> 2.70 s |
+| AA | `c_ram_gatling` (+ `_long`) | c_ram (attack_helicopter) | 12 @ 33/s every 1.03 s | 33.3/s x 100, 1 s change | 7 -> 3.22 | 11.5 -> 25.0 | 120.8 -> 120.8 (+0 %) | 0.35 -> 3.00 s |
+| AA | `hover_ciws` | landing_hovercraft (ifv), 2 mounts | 1 round a second (B.6) | 16.7/s x 50, 1.2 s change | 10 -> 1.83 | 2.0 -> 18.2 | 33.4 -> 33.2 (-1 %) | 0 -> 5.5 s |
+| AA | `boss_flak` | behemoth (attack_helicopter), 2 mounts | 10 @ 20/s every 1.35 s | 20/s x 50, 1.2 s change | 21 -> 13.9 | 14.9 -> 22.4 | 468.3 -> 467.7 (-0 %) | 0.45 -> 4.00 s |
+| AA | `airship_flak` | command_airship (attack_helicopter), 2 mounts | 8 @ 12/s every 1.66 s | 10/s x 24, 1.5 s change | 26 -> 20.25 | 6.6 -> 8.5 | 258.7 -> 258.7 (+0 %) | 0.60 -> 2.70 s |
+| Air | `heli_gun` | attack_helicopter (ifv) | runs of 6-10 @ 8.3/s, ~1 s pause (x1.7 damage) | 10/s x 30, 1.2 s change | 12 -> 10 | 2.8 -> 5.8 | 57.8 -> 57.8 (+0 %) | 1.35 -> 2.95 s |
+| Air | `minigun` | scout_heli (armored_car) | runs @ 22.2/s | 22.2/s x 70, 1 s change | 5.6 -> 3.05 | 5.1 -> 16.1 | 48.9 -> 49.1 (+0 %) | 0.70 -> 3.15 s |
+| Air | `gsh_23v` | nominal (the Mi-24's standoff keeps it out of its reach in the test) | runs @ 22.2/s | 22.2/s x 60, 1.2 s change | 9.3 -> 6.2 | 6.1 -> 15.6 | 96 -> 96 (nominal) | - |
+| Air | `door_gun` | nominal (side guns, the dummy is ahead) | runs @ 14.3/s | 16.7/s x 50, 1.2 s change | 6.4 -> 4.8 | 5.4 -> 12.1 | 58 -> 58 (nominal) | - |
+| Air | `boss_heli_gun` | mega_gunship (ifv), 2 mounts | 1 round a second (B.6) | 10/s x 30, 1.2 s change | 16 -> 6 | 1.9 -> 8.5 | 50.8 -> 51.0 (+0 %) | 0 -> 6.3 s |
+| Air | `boss_minigun` | mega_gunship (ifv), 2 mounts | 1 round a second (B.6) | 20/s x 60, 1.2 s change | 7 -> 2.25 | 1.9 -> 10.2 | 23.0 -> 22.9 (-0 %) | 0 -> 10.2 s |
+| Air | `bomber_tail_guns` | heavy_bomber (attack_helicopter) | runs @ 5/s | 8.3/s x 25, 1.5 s change | 15 -> 12.4 | 1.4 -> 2.9 | 10.7 -> 10.7 (+0 %) | 2.05 -> 2.90 s |
+| MG | `mg_coax` (+ `mg_coax_ground`) | main_battle_tank (ifv) | runs @ 10/s | 10/s x 30, 1.2 s change | 4.8 -> 5.8 | 3.1 -> 2.2 | 25.2 -> 13.0 (-48 %; the roof gun +33 %, the pair -5 %) | 1.30 -> 2.90 s |
+| MG | `mg_coax` | armored_car / ifv (same) | runs @ 10/s | same | 4.8 -> 5.8 | 1.8 -> 2.4 / 1.5 -> 2.8 | 14.7 -> 13.7 (-7 %) / 12.5 -> 15.9 (+27 %) | ~1 s (fills the cannon's change) |
+| MG | `mg_coax_ground` | gun_turret (armored_car) | runs @ 10/s | same | 4.8 -> 5.8 | 3.9 -> 6.5 | 32.0 -> 37.7 (+18 %) | 1.15 -> 2.95 s |
+| MG | `hmg_roof` | guard_tower (armored_car) | runs @ 7.7/s | 8.3/s x 25, 1.4 s change | 8.8 -> 8.25 | 3.1 -> 5.8 | 46.9 -> 47.9 (+2 %) | 1.35 -> 2.95 s |
+| MG | `hmg_roof` | main_battle_tank (ifv) | runs @ 7.7/s | same | 8.8 -> 8.25 | 1.9 -> 4.6 | 28.7 -> 38.2 (+33 %) | 1.35 -> 2.95 s |
+| MG | `boss_hmg` (was `hmg_roof`) | supreme_command (armored_car), 2 mounts | 1 round a second (B.6) | 8.3/s x 25, 1.4 s change | 8.8 -> 2.5 | 1.9 -> 11.5 | 29.2 -> 28.8 (-1 %) | 0 -> 3.15 s |
+| MG | `mg_jeep` | scout_jeep (armored_car) | runs @ 8.3/s | 10/s x 30, 1.2 s change | 7.7 -> 6.7 | 3.7 -> 7.3 | 48.9 -> 48.7 (-0 %) | 1.35 -> 2.95 s |
+| MG | `bunker_hmg` | mg_bunker / bulwark_post (armored_car) | runs @ 12.5/s | 12.5/s x 40, 1.2 s change | 11.6 -> 9.4 | 4.3 -> 9.2 | 84.8 -> 86.5 (+2 %) / 88.1 -> 86.5 (-2 %) | 0.90 -> 3.20 s |
+| MG | `bunker_hmg_twin` | mg_bunker.twin (armored_car) | runs @ 22.2/s | 22.2/s x 70, 1.2 s change | 11.2 -> 6.5 | 5.4 -> 15.8 | 102.5 -> 102.8 (+0 %) | 0.50 -> 3.15 s |
+| Cannon | `autocannon_40` | fortress_bastion (attack_helicopter), 2 mounts | 3 @ 7/s every 1.71 s | 5/s x 12, 1.5 s change | 51 -> 27.9 | 3.5 -> 6.4 | 53.6 -> 53.6 (+0 %) | 0.30 -> 2.40 s |
+
+Rounds a second are the 60 s average in the measurement (turn-taking, changes and pauses
+included); the cadence in a stream is the "Rhythm after" figure. A machine gun's old damage was
+multiplied by 1.7 in flight (its pauses, `RunDamage`); a magazine's damage is its own, so the
+light guns' per-round figures fell less than their round counts rose.
+
+Whole vehicles, all mounts (DPS before -> after): attack helicopter 124 -> 131 (+5 %: its gun is
+level, its missiles hit once more in the minute), scout helicopter 84 -> 86, armoured car 61 -> 61,
+IFV 84 -> 85, BMPT 122 -> 123, main battle tank 86 -> 84 (-3 %), jeep 49 -> 49, heavy AA
+376 -> 376, AA vehicle 160 -> 161, ZU-23 technical 195 -> 194, elite AA 230 -> 230, AA tower
+470 -> 471, quad-flak tower 280 -> 281, C-RAM 120 -> 120, headquarters 660 -> 661, MG bunker
+92 -> 92, twin bunker 109 -> 110, bulwark post 88 -> 86, gun turret 60 -> 63 (+5 %), guard tower
+54 -> 55, hovercraft 33 -> 33, mega gunship 193 -> 192, behemoth 468 -> 468, airship 259 -> 259,
+supreme command 29 -> 29, armoured train 241 -> 247 (+2 %). Against a helicopter: the armoured
+car's and the IFV's coaxial gun 10 -> 13 (+26 %), the tank's machine guns 20 -> 17 (-16 %).
+
+### B. Rules changed (the owner's request wins over round 6 where they clash)
+
+1. **AA guns stream** (round 6: "AA guns keep their 8-16-round bursts"). A dedicated AA vehicle's
+   or tower's gun is its main weapon, so its stream has the right of way (11C's rule for a ground
+   vehicle's main magazine gun): the SAM goes first if it is lined up when the stream would start,
+   else it fires in the magazine change.
+2. **Machine guns fire magazines** (round 6: runs of 6-10 rounds and a 1 s pause). They still take
+   turns: quiet 0.45 s after a heavy round, silent 0.3 s before a heavy weapon lined up is due,
+   broken off when one stands ready, and two guns never fire in the same instant (all kept;
+   `WeaponTurnTests` and `WeaponRhythmTests` pass unchanged).
+3. **The main gun's stream first:** a secondary gun (the coaxial gun, now on a magazine) breaks off
+   when the main magazine gun stands ready and is held off by it (`Vehicle.LeadWaitingAt`, as a
+   machine gun does for a heavy weapon), and makes way when the main gun's change is nearly done.
+   Without it the armoured car's and the IFV's cannons lost a quarter of their fire to their
+   coaxial guns' 3 s magazines. Other secondary magazine guns no longer count as "about to fire"
+   for each other (they would break each other's streams); they take turns by the handover.
+4. **Secondary magazine guns share the gaps:** at the start of a stream a gun gives way to another
+   secondary magazine gun, at least as strong (`SustainedDps`), that could fire and has been quiet
+   longer (`QuieterGunReady`). The headquarters' two flak guns alternate magazine by magazine; its
+   small coaxial gun only fills in (as before; letting it take full turns cost the flak 27 %). A
+   tank's coaxial and roof guns share the gaps between main-gun rounds; which gets more depends on
+   the target (the pair is within 5 % of before).
+5. **SAMs beside a stream fire about a fifth less often in gun reach** (they wait for the change):
+   AA vehicles' flak rounds are heavier to keep the vehicle's total (the table's +2 to +16 % on
+   the gun is the SAM's loss). The missile entries are not touched (another lane).
+6. **Bosses take turns fairly:** a boss's mounts still fire one mount a step, but a mount held off
+   by another's round has the next step, the one waiting longest first (`BossTurn`,
+   `WeaponState.HeldAt` / `WaitingSince`). 11C kept the mega gunship's guns because a gun firing
+   every step would starve the mounts after it; now it cannot, so the boss guns stream too
+   (rockets and missiles keep their rate: mega gunship rockets 92 -> 91 DPS). **Found on the way:**
+   a boss's machine guns fired one round a second, not in runs (the boss rule returned before a
+   run started, so every round was followed by the 1 s pause), since bosses have had machine guns.
+   Their damage a second is kept (hence the light rounds: the hovercraft's CIWS 1.83, the mega
+   gunship's minigun 2.25, `boss_hmg` 2.5); raising it would be a boss balance decision for the owner.
+7. **New entries:** `hq_flak` (the headquarters' roof guns: `twin_30_flak` with 15.8 damage, since
+   its two mounts alternate) and `boss_hmg` (`hmg_roof` with 2.5 damage for the supreme command and
+   the armoured train, B.6). Both inherit everything else, so they look and sound the same.
+8. **A turret magazine gun chases aircraft** for a tank with nothing on the ground, as its machine
+   gun did (`CoaxAirTarget` takes `IsGun`).
+
+### C. Kept as they were, and why
+
+- **The jets** (`jet_cannon`, `gau_gatling`, `fighter_cannon`): already streams; the 1-1.4 s per
+  pass waits for the owner's call on reach or the dive (11C). Movement and reach not touched.
+- **Already on magazines** (11C): `autocannon_25`, `autocannon_30`, `twin_30_bmpt`, `gsh30k`,
+  `gunship_25mm`.
+- **`gunship_40mm`** (the sky gunship's Bofors, 3-round clips): a heavy HE gun there; as a magazine
+  gun it would take the 25 mm stream's turns. **`agl_40`** (grenade launcher, BMPT and guard tower):
+  lobbed heavy rounds; on the BMPT it would take the coaxial gun's turns. **`gun_57mm`**: the light
+  tank's main gun (tank guns keep round 6's cadence). **Lasers** (`hel_beam`, `saucer_laser`): beams.
+  **`drone_gun`**: no carrier.
+
+### D. Left for the testing phase
+
+- Air raids on a base and on an army (the AA streams stop when the target stops bearing, so
+  against fast jets a stream may deliver less than the burst did): survival of attack helicopters
+  and jets against the heavy AA, the ZU-23, the AA tower and the headquarters; C-RAM interceptions
+  are the APS's, not the gun's (unchanged).
+- Device performance: rounds and tracers a second rose about 1.5-2.5x for AA guns and machine guns
+  and 5-9x for the bosses' guns (the C-RAM 11.5 -> 25 a second, the heavy AA 10 -> 18, the
+  hovercraft 2 -> 18). `-mb-perf` in a big battle with several AA and a boss, and the
+  `WeaponFired` event count.
+- Campaign and Boss Rush winnability over seeds (the rhythm changed who fires when; the DPS is kept
+  per weapon in the measurement, not in battle).
+- The tank's coaxial/roof split (B.4) and the machine guns against helicopters (-16 % for the
+  tank's pair, +26 % for the armoured car's and IFV's coaxial gun).
+- The boss machine guns' damage (B.6): whether the owner wants them at the data's intended rate.
+
 ## 12E. Test feedback 2: the in-action preview (2026-09-29)
 
 Play-test findings: on the detail page the In action clip (Xem bắn) was too small to watch, and the
