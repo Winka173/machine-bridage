@@ -24,7 +24,7 @@ namespace MachineBrigade.Sim.Economy
     {
         internal readonly Dictionary<string, double> ReadyAt = new();
 
-        public TeamEconomy(int team, float startCp = 12f, float income = 1f, float bank = 30f, int armyCap = 24,
+        public TeamEconomy(int team, float startCp = 12f, float income = 1f, float bank = 30f, int armyCap = 0,
             IReadOnlyList<string>? vehicles = null, IReadOnlyList<string>? supports = null)
         {
             Team = team;
@@ -49,7 +49,17 @@ namespace MachineBrigade.Sim.Economy
         public float SupplyScale { get; internal set; } = 1f;
 
         private readonly float _income;
-        private readonly int _armyCap;
+        /// <summary>The mode's supply before doctrine and scale (0 until the world fills it in from the catalog).</summary>
+        private int _armyCap;
+
+        /// <summary>Extra supply from the side's base (a logistics station) or anything else that adds to it.</summary>
+        public int SupplyBonus { get; set; }
+
+        internal int BaseArmyCap
+        {
+            get => _armyCap;
+            set => _armyCap = value;
+        }
 
         /// <summary>The commander's doctrine for this battle, or none.</summary>
         public Content.Doctrine? Doctrine { get; set; }
@@ -60,7 +70,7 @@ namespace MachineBrigade.Sim.Economy
         public float Bank { get; }
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0)) * SupplyScale);
+        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0) + SupplyBonus) * SupplyScale);
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
         public const int MaxVehicles = 32;
@@ -195,6 +205,7 @@ namespace MachineBrigade.Sim.Economy
             var price = economy.CostOf(defId, def.CpCost);
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= TeamEconomy.MaxVehicles) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
             if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
@@ -213,6 +224,17 @@ namespace MachineBrigade.Sim.Economy
             economy.VehicleCount = VehicleCount(team);
             _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), DeliverySeconds));
             return CommandResult.Ok;
+        }
+
+        /// <summary>How many of a vehicle a side has in the field or on its way.</summary>
+        internal int Fielded(int team, string defId)
+        {
+            var n = 0;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team == team && v.Def.Id == defId) n++;
+            foreach (var p in _pending)
+                if (p.Item1 == team && p.Item2 == defId) n++;
+            return n;
         }
 
         /// <summary>

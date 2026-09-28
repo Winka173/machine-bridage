@@ -243,6 +243,18 @@ namespace MachineBrigade.Sim
             Time - v.StillSince >= EntrenchSeconds;
 
         /// <summary>Whether a point lies in another side's home zone (strikes cannot be called there).</summary>
+        /// <summary>Whether a point lies in the other side's camp, whatever the mode lets be shelled there (a tower is never dropped into it).</summary>
+        internal bool InEnemyCamp(Vector2 point, int team)
+        {
+            foreach (var start in Map.Teams)
+            {
+                if (start.Team == team) continue;
+                if (Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+                if (Bases.Of(start.Team) is { } b && Vector2.Distance(b.HqPosition, point) < HomeRadius) return true;
+            }
+            return false;
+        }
+
         internal bool InEnemyHome(Vector2 point, int team)
         {
             if (!HomeZones) return false;
@@ -256,11 +268,16 @@ namespace MachineBrigade.Sim
             return false;
         }
 
+        /// <summary>The mode being played ("Conquest", "Siege"...; null in tests), for data that differs by mode.</summary>
+        public string? ModeTag { get; set; }
+
         public void EnableEconomy(TeamEconomy economy)
         {
             // The catalog sets the pace of every economy (see balance.json "economy").
             economy.IncomeScale = Catalog.IncomeScale;
             economy.SupplyScale = Catalog.SupplyScale;
+            // A mode that set no supply of its own takes the data's for it.
+            if (economy.BaseArmyCap <= 0) economy.BaseArmyCap = Catalog.ArmyCapFor(ModeTag);
             Economy.Enable(economy);
         }
 
@@ -336,17 +353,25 @@ namespace MachineBrigade.Sim
         /// left as they are unless <paramref name="everything"/> (a campaign enemy keeping pace
         /// with the player's arsenal: its boss and towers too).
         /// </summary>
-        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false)
+        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false,
+            Func<string, int>? strikeRank = null)
         {
             if (team < 0 || team >= _boosts.Length) return;
             _boosts[team] = boosts;
             _strikeBoosts[team] = strikeDamage;
+            _strikeRanks[team] = strikeRank;
             _boostAll[team] = everything;
         }
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
         internal float StrikeDamage(int team, string supportId) =>
             team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
+
+        /// <summary>The rank of a side's fire-support card (1 when the side has no ranks).</summary>
+        internal int StrikeRank(int team, string supportId) =>
+            team >= 0 && team < _strikeRanks.Length && _strikeRanks[team] is { } rank ? rank(supportId) : 1;
+
+        private readonly Func<string, int>?[] _strikeRanks = new Func<string, int>?[3];
 
         private void Upgrade(Vehicle v, VehicleBoost b)
         {
@@ -745,6 +770,8 @@ namespace MachineBrigade.Sim
                 // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
                 ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
                 if (reveal.Until > Time) mask |= reveal.Stacks;
+                // A UAV scan: everything under it, stealth and hidden too.
+                mask |= Strikes.ScanMask(target.Position, target.Team);
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }

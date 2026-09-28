@@ -12,19 +12,37 @@ namespace MachineBrigade.Sim.Content
         Utility,
     }
 
+    /// <summary>A hardpoint's size class: small takes light towers, medium light or medium, large any.</summary>
+    public enum SlotSize
+    {
+        Small,
+        Medium,
+        Large,
+    }
+
     /// <summary>
     /// A fixed spot in a camp (or at an outpost) that can take one tower or module: placed by the
     /// map builder so that no tower in it blocks a road, a gate or a narrow pass.
     /// </summary>
     public readonly struct HardpointDef
     {
-        public HardpointDef(Vector2 position, HardpointKind kind, float size, float facing)
+        public HardpointDef(Vector2 position, HardpointKind kind, float size, float facing, SlotSize sizeClass = SlotSize.Large)
         {
             Position = position;
             Kind = kind;
             Size = size;
             Facing = facing;
+            Class = sizeClass;
         }
+
+        /// <summary>Its size class (what towers it takes).</summary>
+        public SlotSize Class { get; }
+
+        /// <summary>Metres across each size class keeps clear of lanes (what a structure in it may cover).</summary>
+        public static float Across(SlotSize size) => size switch { SlotSize.Small => 5f, SlotSize.Medium => 6.5f, _ => 9f };
+
+        /// <summary>The class of an old slot given in metres across.</summary>
+        public static SlotSize ClassOf(float metres) => metres <= 5.5f ? SlotSize.Small : metres <= 7.5f ? SlotSize.Medium : SlotSize.Large;
 
         public Vector2 Position { get; }
         public HardpointKind Kind { get; }
@@ -58,10 +76,16 @@ namespace MachineBrigade.Sim.Content
 
         public IReadOnlyList<HardpointDef> Slots { get; }
 
-        internal static HardpointDef ParseSlot(JsonObject s) =>
-            new(new Vector2(s.Float("x"), s.Float("z")),
-                s.Has("kind") && s.String("kind").Equals("utility", StringComparison.OrdinalIgnoreCase) ? HardpointKind.Utility : HardpointKind.Tower,
-                s.Float("size", 8f), Core.SimMath.DegToRad(s.Float("facing", 0f)));
+        /// <summary>A slot: its size a class ("small", "medium", "large") or, in older data, metres across.</summary>
+        internal static HardpointDef ParseSlot(JsonObject s)
+        {
+            var kind = s.Has("kind") && s.String("kind").Equals("utility", StringComparison.OrdinalIgnoreCase) ? HardpointKind.Utility : HardpointKind.Tower;
+            SlotSize size;
+            if (!s.Has("size")) size = SlotSize.Large;
+            else if (s.IsString("size")) size = Enum.TryParse<SlotSize>(s.String("size"), true, out var c) ? c : throw new FormatException($"{s.Path}.size: small, medium or large");
+            else size = HardpointDef.ClassOf(s.Float("size"));
+            return new HardpointDef(new Vector2(s.Float("x"), s.Float("z")), kind, HardpointDef.Across(size), Core.SimMath.DegToRad(s.Float("facing", 0f)), size);
+        }
 
         internal static BaseSiteDef Parse(JsonObject b)
         {

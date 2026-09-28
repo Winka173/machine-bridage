@@ -38,12 +38,14 @@ import mb_mapkit  # noqa: E402
 import mb_new_tracked  # noqa: E402
 import mb_new_trucks  # noqa: E402
 import mb_new_wheeled  # noqa: E402
+import mb_phase2  # noqa: E402
 import mb_props  # noqa: E402
 import mb_siege  # noqa: E402
 import mb_support  # noqa: E402
 import mb_terrain  # noqa: E402
 import mb_themes  # noqa: E402
 import mb_themes2  # noqa: E402
+import mb_towers3  # noqa: E402
 import mb_town  # noqa: E402
 import mb_vehicles  # noqa: E402
 import mb_vehicles2  # noqa: E402
@@ -64,9 +66,9 @@ def all_builders():
                 **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
                 **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
                 **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
-                **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS,
+                **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
-                **mb_round6.BUILDERS, **mb_bosses2.BUILDERS}
+                **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

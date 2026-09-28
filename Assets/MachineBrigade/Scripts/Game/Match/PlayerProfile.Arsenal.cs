@@ -25,6 +25,7 @@ namespace MachineBrigade.Game.Match
             while (d.sinceLegendary.Count < kinds) d.sinceLegendary.Add(0);
             foreach (var g in d.gear) d.nextGearId = Math.Max(d.nextGearId, g.id + 1);
             if (d.gearVersion < GearVersion) MigrateGear(d);
+            if (d.rosterVersion < RosterVersion) MigrateRoster(d);
             // Gems are gone (one currency now): a save that still holds some gets coins for them.
             if (d.gems > 0)
             {
@@ -35,6 +36,84 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Coins for each gem an old save still held (a legendary crate was 500 gems, now 8,000 coins).</summary>
         public const int GemToCoins = 15;
+
+        /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
+        internal const int RosterVersion = 1;
+
+        /// <summary>
+        /// Moves progress off the cards folded into others or retired (once per save). A merged
+        /// card's unlock and blueprints go to the card it became, which keeps the higher of the two
+        /// ranks; the coins and blueprints spent on the lower rank come back (the blueprints as the
+        /// new card's). A retired card's coins come back and its blueprints turn universal. Cards
+        /// bought with coins that no longer exist are refunded. Owners of the APS tank get an Epic
+        /// Trophy APS module.
+        /// </summary>
+        private static void MigrateRoster(Data d)
+        {
+            foreach (var pair in CardMerges.Into)
+            {
+                var from = pair.Key;
+                var to = pair.Value;
+                var bought = d.owned.RemoveAll(id => id == from) > 0;
+                var had = d.unlocked.RemoveAll(id => id == from) > 0 || bought;
+                if (bought && CardMerges.PremiumPrices.TryGetValue(from, out var price)) d.coins += price;
+                if (had && !Progression.IsStarter(to))
+                {
+                    var list = Progression.IsPremium(to) ? d.owned : d.unlocked;
+                    if (!list.Contains(to)) list.Add(to);
+                }
+                var ranked = MergeRank(d, from, to);
+                if (from == CardMerges.ApsTank && (had || ranked))
+                {
+                    var module = SpecialModule.TrophyAps;
+                    d.gear.Add(new GearItem
+                    {
+                        id = d.nextGearId++, slot = (int)GearSlot.Special, rarity = (int)Rarity.Epic, level = 1,
+                        special = (int)module, baseType = GearKeys.Module(module), seed = unchecked(d.nextGearId * 7919 + 17) | 1,
+                    });
+                }
+            }
+            foreach (var gone in CardMerges.Retired)
+            {
+                if (d.owned.RemoveAll(id => id == gone) > 0 && CardMerges.PremiumPrices.TryGetValue(gone, out var price)) d.coins += price;
+                d.unlocked.RemoveAll(id => id == gone);
+                var i = d.rankIds.IndexOf(gone);
+                if (i < 0) continue;
+                var rank = Mathf.Clamp(d.ranks[i], 1, CardRanks.Max);
+                d.coins += CardRanks.CoinsSpent(rank);
+                d.universal += d.prints[i] + CardRanks.BlueprintsSpent(rank);
+                d.rankIds.RemoveAt(i);
+                d.ranks.RemoveAt(i);
+                d.prints.RemoveAt(i);
+            }
+            d.rosterVersion = RosterVersion;
+        }
+
+        /// <summary>Folds one card's rank and blueprints into another's; false when the old card had none.</summary>
+        private static bool MergeRank(Data d, string from, string to)
+        {
+            var i = d.rankIds.IndexOf(from);
+            if (i < 0) return false;
+            var fromRank = Mathf.Clamp(d.ranks[i], 1, CardRanks.Max);
+            var fromPrints = d.prints[i];
+            d.rankIds.RemoveAt(i);
+            d.ranks.RemoveAt(i);
+            d.prints.RemoveAt(i);
+            var j = d.rankIds.IndexOf(to);
+            if (j < 0)
+            {
+                d.rankIds.Add(to);
+                d.ranks.Add(1);
+                d.prints.Add(0);
+                j = d.rankIds.Count - 1;
+            }
+            var toRank = Mathf.Clamp(d.ranks[j], 1, CardRanks.Max);
+            var lower = Math.Min(fromRank, toRank);
+            d.ranks[j] = Math.Max(fromRank, toRank);
+            d.prints[j] += fromPrints + CardRanks.BlueprintsSpent(lower);
+            d.coins += CardRanks.CoinsSpent(lower);
+            return true;
+        }
 
         /// <summary>The equipment model the save is in (see <see cref="Data.gearVersion"/>).</summary>
         internal const int GearVersion = 2;

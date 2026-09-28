@@ -368,8 +368,8 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>CP per second.</summary>
         public float Income { get; set; } = 1f;
 
-        /// <summary>Most CP the army may field at once.</summary>
-        public int ArmyCap { get; set; } = 24;
+        /// <summary>The army supply in CP (upkeep above 1.5x it); 0: the data's for the mode.</summary>
+        public int ArmyCap { get; set; }
 
         /// <summary>Most CP the side can hold unspent (a start or a bounty above it is not lost).</summary>
         public float Bank { get; set; } = 30f;

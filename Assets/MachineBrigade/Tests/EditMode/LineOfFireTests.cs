@@ -29,7 +29,7 @@ namespace MachineBrigade.Tests
         {
             var world = FieldWith("house_large");
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -16f), 0f);
-            var howitzer = world.SpawnVehicle("howitzer", 0, new Vector2(-4f, -40f), 0f);
+            var howitzer = world.SpawnVehicle("artillery", 0, new Vector2(-4f, -40f), 0f);
             var enemy = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 16f), 3.14f);
             Assert.IsTrue(OnlyProp(world).Def.BlocksFire);
             Assert.IsFalse(world.HasLineOfFire(tank, enemy, tank.Def.Weapon), "the house is in the way");

@@ -169,14 +169,14 @@ namespace MachineBrigade.Game.Match
             var map = GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
-            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost);
+            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
             if (mission != null)
             {
                 var deck = new List<VehicleBoost>();
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
-                var edge = EnemyScaling.Match(deck);
+                var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
@@ -636,7 +636,7 @@ namespace MachineBrigade.Game.Match
             if (Time.time < _raidAt) return;
             _raidAt = Time.time + 18f;
             var at = bastion.Position + new System.Numerics.Vector2(20f, 20f);
-            foreach (var id in new[] { "light_tank", "apc", "armored_car", "attack_helicopter" })
+            foreach (var id in new[] { "light_tank", "ifv", "armored_car", "attack_helicopter" })
                 _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);
         }
         private float _smokeAt = 10f;

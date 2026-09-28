@@ -25,10 +25,29 @@ namespace MachineBrigade.Game.Effects
             public int Used;
             public float Start, Impact, End, Radius;
             public bool Active;
+            public Color Edge = WarningColor, Fill = WarningFill;
         }
 
         private static readonly Color WarningColor = new(2.4f, 0.32f, 0.18f, 0.95f);
         private static readonly Color WarningFill = new(2.6f, 0.9f, 0.3f, 1f);
+
+        // Support that harms no one where it lands is marked in its own colours: a scan's circle
+        // in radar cyan, a tower's drop point in white.
+        private static readonly Color ScanColor = new(0.3f, 1.6f, 2.2f, 0.8f);
+        private static readonly Color ScanFill = new(0.4f, 1.2f, 1.6f, 0.5f);
+        private static readonly Color DropColor = new(1.8f, 1.8f, 1.7f, 0.85f);
+
+        /// <summary>A UAV scan's drone: flies in, then circles the mark until the scan ends.</summary>
+        private sealed class ScanDrone
+        {
+            public GameObject Root;
+            public Vector3 From, Centre;
+            public float Arrive, End, Radius;
+            public bool Active;
+        }
+
+        private readonly List<ScanDrone> _drones = new();
+        private const float DroneAltitude = 22f;
 
         private const int RingsPerTelegraph = 10;
 
@@ -96,6 +115,7 @@ namespace MachineBrigade.Game.Effects
                 case SimEventKind.AircraftPass:
                     if (!_catalog.TryGetSupport(e.DefId, out var pass)) return;
                     if (pass.Kind == SupportKind.CruiseMissile) LaunchCruise(e, now);
+                    else if (pass.Kind == SupportKind.Scan) LaunchScanDrone(e, pass, now);
                     else LaunchJet(e, now);
                     break;
 
@@ -122,9 +142,37 @@ namespace MachineBrigade.Game.Effects
                 var breathe = 1f + 0.05f * Mathf.Sin(now * Mathf.Lerp(6f, 20f, urgency));
                 for (var r = 0; r < t.Used; r++)
                 {
-                    t.Rings[r].Set(WarningColor, WarningFill, progress, urgency);
+                    t.Rings[r].Set(t.Edge, t.Fill, progress, urgency);
                     t.Rings[r].Transform.localScale = Vector3.one * t.Radius * breathe;
                 }
+            }
+
+            foreach (var d in _drones)
+            {
+                if (!d.Active) continue;
+                if (now >= d.End)
+                {
+                    d.Active = false;
+                    d.Root.SetActive(false);
+                    continue;
+                }
+                Vector3 p, ahead;
+                if (now < d.Arrive)
+                {
+                    // Flying in to the start of its circle.
+                    var entry = d.Centre + Vector3.back * d.Radius;
+                    p = Vector3.Lerp(d.From, entry, Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(d.Arrive - 3f, d.Arrive, now)));
+                    ahead = entry - d.From;
+                }
+                else
+                {
+                    // A slow circle (about 16 s a lap), banked into the turn.
+                    var a = (now - d.Arrive) * 0.4f;
+                    p = d.Centre + new Vector3(-Mathf.Sin(a), 0f, -Mathf.Cos(a)) * d.Radius;
+                    ahead = new Vector3(-Mathf.Cos(a), 0f, Mathf.Sin(a));
+                }
+                d.Root.transform.position = p;
+                if (ahead.sqrMagnitude > 1e-4f) d.Root.transform.rotation = Quaternion.LookRotation(ahead) * Quaternion.Euler(0f, 0f, now < d.Arrive ? 0f : 14f);
             }
 
             foreach (var jet in _jets)
@@ -205,6 +253,14 @@ namespace MachineBrigade.Game.Effects
             t.Used = 1;
             // A loaned aircraft only needs its arrival point marked, not the ground it may cover.
             t.Radius = support.Kind == SupportKind.Escort ? Mathf.Min(support.Radius, 5f) : support.Radius;
+            (t.Edge, t.Fill) = support.Kind switch
+            {
+                SupportKind.Scan => (ScanColor, ScanFill),
+                SupportKind.Tower => (DropColor, DropColor),
+                _ => (WarningColor, WarningFill),
+            };
+            // A scan's circle stays up while the drone watches it.
+            if (support.Kind == SupportKind.Scan) t.End = now + delay + support.Duration;
             t.Rings[0].Transform.position = point + Vector3.up * 0.1f;
             t.Rings[0].Transform.localScale = Vector3.one * t.Radius;
             t.Rings[0].Visible = true;
@@ -228,8 +284,7 @@ namespace MachineBrigade.Game.Effects
         private void LaunchJet(in SimEvent e, float now)
         {
             if (!_hasJet) return;
-            // Carpet bombing comes from a heavy bomber once its model is in.
-            var model = e.DefId == "carpet_bombing" && _models.Has("heavy_bomber") ? "heavy_bomber" : "strike_jet";
+            const string model = "strike_jet";
             var jet = _jets.Find(j => !j.Active && j.Model == model);
             if (jet == null)
             {
@@ -248,6 +303,25 @@ namespace MachineBrigade.Game.Effects
             jet.Duration = Mathf.Max(0.5f, e.Value);
             jet.NextPuff = now;
             jet.Active = true;
+        }
+
+        private void LaunchScanDrone(in SimEvent e, SupportDef scan, float now)
+        {
+            if (!_models.Has("recon_drone")) return;
+            var d = _drones.Find(x => !x.Active);
+            if (d == null)
+            {
+                d = new ScanDrone { Root = _models.Spawn("recon_drone", e.Team, _root).Root };
+                if (_catalog.Vehicles.TryGetValue("recon_drone", out var sized)) d.Root.transform.localScale = Vector3.one * sized.Scale;
+                _drones.Add(d);
+            }
+            d.Root.SetActive(true);
+            d.Centre = Ground(e.Target) + Vector3.up * DroneAltitude;
+            d.From = Ground(e.Position) + Vector3.up * DroneAltitude;
+            d.Radius = Mathf.Clamp(scan.Radius * 0.55f, 8f, 20f);
+            d.Arrive = now + Mathf.Max(0.3f, e.Value);
+            d.End = d.Arrive + scan.Duration + 0.5f;
+            d.Active = true;
         }
 
         private void LaunchCruise(in SimEvent e, float now)

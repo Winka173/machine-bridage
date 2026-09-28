@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -12f), 0f);
-            var target = world.SpawnVehicle("apc", 1, new Vector2(0f, 6f), 0f);
+            var target = world.SpawnVehicle("ifv", 1, new Vector2(0f, 6f), 0f);
             target.HpScale = 1000f;
             target.Hp = target.MaxHp;
             double lastMain = double.NegativeInfinity, lastGun = double.NegativeInfinity;

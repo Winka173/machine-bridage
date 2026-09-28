@@ -15,7 +15,7 @@ namespace MachineBrigade.Tests
     public class SiegeModeTests
     {
         private static readonly string[] Army =
-            { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_mortar", "attack_helicopter", "engineer_vehicle" };
+            { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_tank", "attack_helicopter", "engineer_vehicle" };
 
         /// <summary>
         /// The real fortress, in three stages: the attackers break the outer line (its relays),
@@ -28,7 +28,7 @@ namespace MachineBrigade.Tests
             var mode = new SiegeMode(new SiegeRules
             {
                 Attacker = new SideSetup { StartCp = 30f, Income = 1.6f, ArmyCap = 36, Vehicles = Army },
-                Defender = new SideSetup { StartCp = 16f, Income = 0.8f, Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle" } },
+                Defender = new SideSetup { StartCp = 16f, Income = 0.8f, Vehicles = new[] { "main_battle_tank", "ifv", "aa_vehicle" } },
             });
             mode.Setup(world);
             Assert.AreEqual(1, mode.Stage, "the siege opens on the outer line");
@@ -74,7 +74,7 @@ namespace MachineBrigade.Tests
             var mode = new SiegeMode(new SiegeRules
             {
                 Attacker = new SideSetup { StartCp = 30f, Income = 1.5f, ArmyCap = 34, Vehicles = Army },
-                Defender = new SideSetup { StartCp = 10f, Income = 0.6f, Vehicles = new[] { "main_battle_tank", "apc" } },
+                Defender = new SideSetup { StartCp = 10f, Income = 0.6f, Vehicles = new[] { "main_battle_tank", "ifv" } },
             });
             mode.Setup(world);
             var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 3) { Stance = CommanderStance.Defend, DefendPoint = mode.Fortress };
@@ -102,7 +102,7 @@ namespace MachineBrigade.Tests
             var mode = new SiegeMode(new SiegeRules
             {
                 Attacker = new SideSetup { StartCp = 26f, Income = 1.5f, ArmyCap = 34, Vehicles = Army },
-                Defender = new SideSetup { StartCp = 20f, Income = 0.95f, Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle", "light_tank" } },
+                Defender = new SideSetup { StartCp = 20f, Income = 0.95f, Vehicles = new[] { "main_battle_tank", "ifv", "aa_vehicle", "light_tank" } },
             });
             mode.Setup(world);
             var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 3) { Stance = CommanderStance.Defend, DefendPoint = mode.Fortress };

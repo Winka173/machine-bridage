@@ -212,8 +212,9 @@ namespace MachineBrigade.Sim.Modes
             _nextWave = _rules.WaveSeconds > 0f ? _rules.WaveSeconds * 0.75f : double.MaxValue;
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             Shield(world);
-            // The attacker's own camp outside the walls (the map's side 0): its HQ and towers.
-            if (world.Map.BaseOf(0) != null && world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
+            // The attacker's own camp outside the walls (the map's side 0): its HQ and towers. Only
+            // when the player attacks (Siege): the waves of Defend come without a camp of their own.
+            if (Attacker == PlayerTeam && world.Map.BaseOf(0) != null && world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
                 world.Bases.Establish(Attacker, _rules.AttackerBase ?? BaseLoadout.HqOnly(), Content.BaseRole.Anchor, siteTeam: 0);
         }
 

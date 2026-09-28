@@ -60,7 +60,7 @@ namespace MachineBrigade.Tests
                 Id = "test", Goal = MissionGoal.Survive, SurviveSeconds = 600f, EnemyAi = "none",
                 Reinforcements = 2, ReinforceSize = 3,
             };
-            var enemy = new SideSetup { Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle" } };
+            var enemy = new SideSetup { Vehicles = new[] { "main_battle_tank", "ifv", "aa_vehicle" } };
             var mode = new MissionMode(def, new SideSetup(), enemy);
             mode.Setup(world);
             world.SpawnVehicle("main_battle_tank", 0, new Vector2(-80f, -80f), 0f);

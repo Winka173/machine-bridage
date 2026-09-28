@@ -90,6 +90,9 @@ namespace MachineBrigade.Sim.Commands
         AirAtCapacity,
         OnCooldown,
         NotAvailable,
+
+        /// <summary>The side already has as many of this vehicle as it may field (a command vehicle: one).</summary>
+        UnitLimit,
     }
 
     public readonly struct CommandResult

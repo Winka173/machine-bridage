@@ -57,6 +57,8 @@ namespace MachineBrigade.Game.Hud
 
         public static string Line(StatId stat, float value, bool penalty = false)
         {
+            // No stat of its own (the Monolith Plate): nothing to print rather than a raw key.
+            if (stat == StatId.Count) return "";
             var key = GearKeys.Snake(stat.ToString());
             var amount = stat switch
             {
@@ -83,6 +85,17 @@ namespace MachineBrigade.Game.Hud
             var t = Gear.TraitOf(item);
             return t.Id == TraitId.None ? "" : TraitName(GearKeys.Trait(t.Id)) + ": " + TraitEffect(t);
         }
+
+        /// <summary>What a base type does besides its main stat, for a codex (the Monolith Plate: a bigger main stat, no sub-stats).</summary>
+        public static string BaseNote(BaseTypeDef b)
+        {
+            if (b.MainScale != 1f && b.NoSubs) return Strings.Format("gear.base.bigMain", ((b.MainScale - 1f) * 100f).ToString("0"));
+            return "";
+        }
+
+        /// <summary>What a module does at a rarity, with its numbers (no piece needed).</summary>
+        public static string ModuleEffect(SpecialModule module, Rarity rarity) =>
+            ModuleEffect(new GearItem { slot = (int)GearSlot.Special, rarity = (int)rarity, special = (int)module, baseType = GearKeys.Module(module) });
 
         /// <summary>What a special module does at the piece's rarity, with its numbers.</summary>
         public static string ModuleEffect(GearItem item)

@@ -14,7 +14,7 @@ namespace MachineBrigade.Tests
     public class EconomyBalanceTests
     {
         private static readonly string[] Army =
-            { "main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "artillery", "apc", "mlrs", "attack_helicopter" };
+            { "main_battle_tank", "heavy_tank", "tank_destroyer", "aa_vehicle", "artillery", "ifv", "mlrs", "attack_helicopter" };
 
         private static readonly string[] Strikes = { "artillery_barrage", "airstrike" };
 

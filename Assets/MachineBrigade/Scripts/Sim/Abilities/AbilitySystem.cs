@@ -82,6 +82,7 @@ namespace MachineBrigade.Sim.Abilities
             var skillTick = _skillTimer <= 0f;
             if (skillTick) _skillTimer += 0.25f;
 
+            if (auraTick) CommandAuras();
             _summons.Clear();
             foreach (var v in _world.VehicleList)
             {
@@ -187,6 +188,36 @@ namespace MachineBrigade.Sim.Abilities
         /// slow (a tower takes minutes), so a defended line can be kept standing but not made
         /// unbreakable; the repair shows over the defence being worked on.
         /// </summary>
+        /// <summary>Command vehicles: friendly vehicles within reach of one fire faster (the best aura counts, they never add up).</summary>
+        private void CommandAuras()
+        {
+            var list = _world.VehicleList;
+            foreach (var v in list) v.CommandFire = 1f;
+            foreach (var c in list)
+            {
+                var aura = c.Def.CommandAura;
+                if (aura == null || !c.IsAlive || c.Stunned) continue;
+                var boost = 1f + aura.FireRate;
+                foreach (var v in list)
+                {
+                    if (!v.IsAlive || v.Team != c.Team || v.Def.Boss || v.CommandFire >= boost) continue;
+                    if (Vector2.DistanceSquared(v.Position, c.Position) <= aura.Radius * aura.Radius) v.CommandFire = boost;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scatters a mine owned by a side (a remote minefield): harmless for the first moments,
+        /// cleared by itself at <paramref name="expires"/>.
+        /// </summary>
+        internal void AddMine(int team, Vector2 at, MineLayerDef def, double armedAt, double expires)
+        {
+            if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) return;
+            var laid = new Mine(new EntityId(_nextMine++), team, EntityId.None, at, def, armedAt) { ExpiresAt = expires };
+            _mines.Add(laid);
+            _world.Emit(SimEvent.MineLaid(laid));
+        }
+
         private void Fortify(Vehicle sapper)
         {
             var aura = sapper.Def.FortifyAura!;
@@ -264,12 +295,13 @@ namespace MachineBrigade.Sim.Abilities
             for (var i = _mines.Count - 1; i >= 0; i--)
             {
                 var m = _mines[i];
-                if (!m.IsAlive)
+                if (!m.IsAlive || now >= m.ExpiresAt)
                 {
                     _mines.RemoveAt(i);
                     continue;
                 }
-                var mask = 1 << m.Team;
+                // A UAV scan shows the mines under it too.
+                var mask = (1 << m.Team) | _world.Strikes.ScanMask(m.Position, m.Team);
                 var armed = now >= m.ArmedAt;
                 var rolled = EntityId.None;
                 foreach (var v in _world.VehicleList)

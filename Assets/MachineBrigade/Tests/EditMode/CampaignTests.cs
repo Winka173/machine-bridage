@@ -64,7 +64,9 @@ namespace MachineBrigade.Tests
                 if (id != null && deck.Count < 6) deck.Add(id);
             }
             Take(d => d.Flying);
-            Take(d => d.Class == UnitClass.AntiAir);
+            // Anti-air that also fights on the ground first (a long-range SAM is for an air-heavy enemy).
+            Take(d => d.Class == UnitClass.AntiAir && d.Mounts.Any(m => m.Weapon.CanTarget(false)));
+            if (!deck.Any(v => catalog.Vehicle(v).Class == UnitClass.AntiAir)) Take(d => d.Class == UnitClass.AntiAir);
             Take(d => d.Class == UnitClass.Artillery || d.Weapon.MinRange > 0f);
             foreach (var id in byCost)
                 if (deck.Count < 6 && !deck.Contains(id) && !catalog.Vehicle(id).Flying) deck.Add(id);

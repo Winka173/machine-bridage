@@ -49,6 +49,9 @@ namespace MachineBrigade.Sim.Events
         /// <summary>A vehicle left the battle without being destroyed (a loaned escort flying home).</summary>
         VehicleRetired,
 
+        /// <summary>A counter-battery radar (Entity) found an enemy gun (Other) that fired: shown to the radar's side for Value seconds.</summary>
+        GunRevealed,
+
         /// <summary>A supply crate is parachuting down onto Position, landing in Value seconds.</summary>
         CrateIncoming,
 
@@ -227,6 +230,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent CrateClaimed(Crate c, int team) =>
             new(SimEventKind.CrateClaimed, c.Id, c.Position, default, 0f, default, null, team);
+
+        internal static SimEvent Revealed(Vehicle radar, Vehicle gun, float seconds) =>
+            new(SimEventKind.GunRevealed, radar.Id, gun.Position, default, seconds, default, gun.Def.Id, radar.Team, other: gun.Id);
 
         internal static SimEvent MineLaid(Mine m) =>
             new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);

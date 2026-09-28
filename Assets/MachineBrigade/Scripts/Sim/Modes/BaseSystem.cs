@@ -287,6 +287,18 @@ namespace MachineBrigade.Sim.Modes
                 zone = forward;
                 best = Vector2.Distance(forward, enemy);
             }
+            // A command vehicle that has stood still long enough: deliveries land beside it (on its home side).
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != team || v.Def.ForwardDrop <= 0f || v.IsMoving || v.Stunned) continue;
+                if (_world.Time - v.StillSince < v.Def.ForwardDrop) continue;
+                var back = zone - v.Position;
+                var spot = _world.ClampToMap(v.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 7f);
+                var d = Vector2.Distance(spot, enemy);
+                if (d >= best) continue;
+                best = d;
+                zone = spot;
+            }
             if (!_bases.TryGetValue(team, out var b)) return true;
             foreach (var (id, _) in b.Outposts)
                 foreach (var p in _world.Map.Points)

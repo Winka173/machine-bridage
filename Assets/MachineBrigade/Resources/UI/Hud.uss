@@ -824,6 +824,8 @@
 .mission-tier { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 9px; color: var(--amber); margin-right: 4px; }
 .mission-tier.iron { color: #d9dde2; }
 .detail-reward { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--n100); }
+.detail-power { margin: 4px 14px 0 14px; font-size: 12px; color: var(--n100); }
+.detail-power.power-low { color: #f2a33a; }
 .detail-unlocks { margin: 6px 14px 0 14px; }
 .unlock-chip {
     flex-direction: row; align-items: center; height: 28px; padding: 0 10px; margin-top: 4px;

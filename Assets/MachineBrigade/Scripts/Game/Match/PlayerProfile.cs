@@ -61,6 +61,9 @@ namespace MachineBrigade.Game.Match
             public bool freeDealClaimed;
             public bool goldDealBought;
 
+            /// <summary>1: progress on the merged and retired cards has been moved (see CardMerges).</summary>
+            public int rosterVersion;
+
             /// <summary>The base loadout (see BaseLoadout): HQ level, towers front first, utility modules, outpost towers.</summary>
             public int baseLevel;
             public List<string> baseTowers = new();

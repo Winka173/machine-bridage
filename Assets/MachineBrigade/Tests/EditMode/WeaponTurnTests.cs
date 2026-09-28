@@ -31,7 +31,7 @@ namespace MachineBrigade.Tests
                 if (def.Boss || def.Mounts.Count(m => m.Weapon.Damage > 0f) < 2) continue;
                 var world = Range(catalog);
                 var shooter = world.SpawnVehicle(def.Id, 0, new Vector2(0f, -12f), 0f);
-                foreach (var (id, at) in new[] { ("main_battle_tank", new Vector2(-4f, 12f)), ("apc", new Vector2(5f, 15f)), ("attack_helicopter", new Vector2(8f, 6f)) })
+                foreach (var (id, at) in new[] { ("main_battle_tank", new Vector2(-4f, 12f)), ("ifv", new Vector2(5f, 15f)), ("attack_helicopter", new Vector2(8f, 6f)) })
                     world.MakeDummy(world.SpawnVehicle(id, 1, at, System.MathF.PI));
                 var last = new Dictionary<int, double>();
                 var heavyAt = double.NegativeInfinity;

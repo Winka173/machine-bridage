@@ -22,7 +22,7 @@ namespace MachineBrigade.Sim.Modes
 
         private static readonly string[] WaveRoster =
         {
-            "light_tank", "scout_jeep", "armored_car", "apc", "rocket_technical", "main_battle_tank", "attack_helicopter", "tank_destroyer",
+            "light_tank", "scout_jeep", "armored_car", "ifv", "rocket_technical", "main_battle_tank", "attack_helicopter", "tank_destroyer",
             "flame_tank", "scout_heli", "mortar_carrier", "artillery", "aa_vehicle", "mlrs", "gunship_heli", "heavy_tank", "attack_jet",
         };
         private static readonly string[] ReinforceRoster = { "main_battle_tank", "light_tank", "aa_vehicle", "artillery", "scout_jeep" };

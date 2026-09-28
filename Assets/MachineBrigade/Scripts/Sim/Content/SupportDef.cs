@@ -32,6 +32,18 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>An aircraft (Units) joins the fight for Duration seconds, then leaves.</summary>
         Escort,
+
+        /// <summary>A drone circles the point: everything within Radius, stealth and hidden too, shows to the caller's side for Duration seconds.</summary>
+        Scan,
+
+        /// <summary>Count mines are scattered within Radius; each blows up for Damage (Blast radius) and clears itself after Duration seconds.</summary>
+        Minefield,
+
+        /// <summary>A light tower (Units[0], Units[1] from card rank UnitRank) is dropped on the point for Duration seconds. Never into the enemy camp.</summary>
+        Tower,
+
+        /// <summary>An anti-radiation missile on the enemy anti-air nearest the point within Radius: Damage, and knocked out for Duration seconds.</summary>
+        Sead,
     }
 
     /// <summary>
@@ -101,6 +113,14 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Vehicles dropped (Reinforce) or flown in (Escort).</summary>
         public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
+
+        /// <summary>A Tower drop: from this card rank (0: never) it drops its second tower.</summary>
+        public int UnitRank { get; internal set; }
+
+        /// <summary>From this card rank (0: never) an airstrike's bomb line is <see cref="LineScale"/> times as long, with as many more bombs.</summary>
+        public int LineRank { get; internal set; }
+
+        public float LineScale { get; internal set; } = 1f;
     }
 
     /// <summary>An objective circle from the map (Conquest).</summary>

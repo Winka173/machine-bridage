@@ -54,7 +54,7 @@ namespace MachineBrigade.Editor
                 new Shooter("main_battle_tank", MuzzleFx.Kind.Cannon, new Vector3(-9f, 0f, 6f)),
                 new Shooter("heavy_tank", MuzzleFx.Kind.Cannon, new Vector3(3f, 0f, 9f), scale: 1.25f),
                 new Shooter("artillery", MuzzleFx.Kind.Artillery, new Vector3(-12f, 0f, -6f)),
-                new Shooter("apc", MuzzleFx.Kind.Autocannon, new Vector3(0f, 0f, -2f)),
+                new Shooter("ifv", MuzzleFx.Kind.Autocannon, new Vector3(0f, 0f, -2f)),
                 new Shooter("scout_jeep", MuzzleFx.Kind.MachineGun, new Vector3(9f, 0f, 2f)),
                 new Shooter("sam_launcher", MuzzleFx.Kind.Missile, new Vector3(-3f, 0f, -12f)),
                 new Shooter("attack_helicopter", MuzzleFx.Kind.Autocannon, new Vector3(10f, 0f, -9f), altitude: 7f),

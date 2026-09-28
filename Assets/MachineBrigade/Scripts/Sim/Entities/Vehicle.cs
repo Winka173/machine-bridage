@@ -192,7 +192,10 @@ namespace MachineBrigade.Sim.Entities
         internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear;
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear;
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire;
+
+        /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
+        internal float CommandFire = 1f;
 
         /// <summary>A mode's own multiplier on fire rate (a fortress browned out, or making its last stand).</summary>
         internal float FireBoost = 1f;

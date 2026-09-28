@@ -413,7 +413,7 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
-        /// <summary>Engineers and jammers keep a little behind the middle of the army.</summary>
+        /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
             var spot = Clamp(world, front - forward * 9f);
@@ -488,7 +488,9 @@ namespace MachineBrigade.Sim.AI
                     _rearming.Add(v);
                     continue;
                 }
-                if (v.Def.RepairAura != null || v.Def.Jammer > 0f) _support.Add(v);
+                // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
+                // stand) and counter-battery radars keep a little behind the middle of the army.
+                if (v.Def.RepairAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
@@ -702,8 +704,8 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Standing at its firing spot (a move order it has as good as finished).</summary>
         private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 3f;
 
-        /// <summary>Firing-spot scoring: on a road, per main route through the cell, per friend parked within 7 m, booked by another gun, open ground.</summary>
-        private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotReservedPenalty = 1000f, SpotOpenBonus = 6f;
+        /// <summary>Firing-spot scoring: on a road, per main route through the cell, per friend parked within 7 m, open ground (another gun's booked spot is out).</summary>
+        private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;
 
         /// <summary>
         /// A spot to fire at <paramref name="target"/> from: inside our range (just short of it,
@@ -715,6 +717,8 @@ namespace MachineBrigade.Sim.AI
         /// other parked friends (fewer jams, less splash), and not on a spot another gun has
         /// booked. The chosen spot is booked (Company of Heroes reserves destinations the same way).
         /// </summary>
+        private static readonly float[] SpotRings = { 0.95f, 0.85f, 0.75f, 0.65f, 0.55f };
+
         private Vector2? FiringSpot(SimWorld world, Vehicle shooter, Vector2 target, float targetRadius)
         {
             var weapon = shooter.Def.Weapon;
@@ -723,7 +727,8 @@ namespace MachineBrigade.Sim.AI
             Vector2? best = null;
             var bestScore = float.MaxValue;
             var start = SimMath.HeadingOf(shooter.Position - target);
-            foreach (var fraction in new[] { 0.95f, 0.85f, 0.75f })
+            // Nearer rings (0.65, 0.55) only matter when the outer ones are all exposed or booked.
+            foreach (var fraction in SpotRings)
             {
                 var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * 0.5f);
                 if (distance > weapon.Range + targetRadius) continue;
@@ -742,8 +747,10 @@ namespace MachineBrigade.Sim.AI
                                 ((f & LaneFlags.Route) != 0 ? SpotRoutePenalty * lanes.RouteCountAt(p) : 0f) -
                                 (lanes.ClearanceAt(p) >= 4 ? SpotOpenBonus : 0f);
                     if (score >= bestScore) continue;
-                    score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter) +
-                             (lanes.ReservedByOther(p, shooter.Id, world) ? SpotReservedPenalty : 0f);
+                    // Another gun's booked spot is never taken, even as the only safe one left (a
+                    // short-ranged siege gun round a fortress has few): the gun waits instead.
+                    if (lanes.ReservedByOther(p, shooter.Id, world)) continue;
+                    score += SpotCrowdPenalty * FriendsParkedNear(world, p, 7f, shooter);
                     if (score >= bestScore) continue;
                     bestScore = score;
                     best = p;

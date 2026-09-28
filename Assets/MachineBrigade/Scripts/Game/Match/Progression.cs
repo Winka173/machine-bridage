@@ -30,7 +30,7 @@ namespace MachineBrigade.Game.Match
         public static bool TestUnlockAll = true;
 
         public static readonly string[] StarterVehicles =
-            { "scout_jeep", "armored_car", "apc", "light_tank", "main_battle_tank", "aa_vehicle", "artillery" };
+            { "scout_jeep", "armored_car", "ifv", "light_tank", "main_battle_tank", "aa_vehicle", "artillery" };
 
         public static readonly string[] StarterSupports = { "artillery_barrage", "smoke_screen" };
 
@@ -38,13 +38,11 @@ namespace MachineBrigade.Game.Match
         {
             ["titan_tank"] = 3000,
             ["heavy_bomber"] = 4000,
-            ["sky_gunship"] = 4500,
             ["stealth_bomber"] = 5000,
             ["siege_tank"] = 4500,
             ["ballistic_launcher"] = 5000,
             ["heavy_attack_heli"] = 3500,
             ["napalm_strike"] = 1500,
-            ["carpet_bombing"] = 3000,
         };
 
         /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>
@@ -107,6 +105,24 @@ namespace MachineBrigade.Game.Match
         private static IReadOnlyList<MissionDef> _all;
 
         public static IReadOnlyList<MissionDef> All => _all ??= GameContent.LoadCampaign();
+
+        /// <summary>
+        /// The deck power (see EnemyScaling.Power) a mission is tuned for: the campaign is meant to be
+        /// played climbing from rank 1 cards at its start to about rank 7 at its end, so each mission
+        /// asks for the power of the ranks expected by then; hard missions and the Heroic and Iron
+        /// tiers ask for more.
+        /// </summary>
+        public static int RecommendedPower(MissionDef mission, int tier = 0)
+        {
+            var index = 0;
+            for (var i = 0; i < All.Count; i++)
+                if (All[i].Id == mission.Id) index = i;
+            var rank = 1f + 6f * index / System.Math.Max(1, All.Count - 1);
+            var edge = 1f + 0.05f * (rank - 1f);
+            var hard = mission.Difficulty switch { "Hard" => 1.06f, "Easy" => 0.96f, _ => 1f };
+            var tierFactor = tier switch { 1 => 1.08f, 2 => 1.16f, _ => 1f };
+            return (int)System.Math.Round(100f * edge * hard * tierFactor / 5f) * 5;
+        }
 
         public static MissionDef Get(string id)
         {

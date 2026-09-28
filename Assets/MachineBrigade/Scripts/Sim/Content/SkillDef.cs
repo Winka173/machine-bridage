@@ -130,6 +130,62 @@ namespace MachineBrigade.Sim.Content
         public float Radius { get; }
         public int Charges { get; }
         public float Recharge { get; }
+
+        /// <summary>Also takes artillery rockets (a point-defence laser), not only direct-fire ones.</summary>
+        public bool Rockets { get; internal set; }
+
+        /// <summary>Share of incoming shells and mortar bombs it can also take (0: none; a C-RAM).</summary>
+        public float Shells { get; internal set; }
+    }
+
+    /// <summary>A command vehicle's aura: friendly vehicles within Radius fire FireRate faster (several auras do not add up).</summary>
+    public sealed class CommandAuraDef
+    {
+        public CommandAuraDef(float radius, float fireRate)
+        {
+            Radius = Guard.Positive(radius, "commandAura", nameof(radius));
+            FireRate = Guard.NonNegative(fireRate, "commandAura", nameof(fireRate));
+        }
+
+        public float Radius { get; }
+        public float FireRate { get; }
+    }
+
+    /// <summary>
+    /// A counter-battery radar: enemy artillery firing within Range is shown to the radar's side
+    /// for Seconds, and that side's artillery does Bonus more damage to it.
+    /// </summary>
+    public sealed class CounterBatteryDef
+    {
+        public CounterBatteryDef(float range, float seconds, float bonus)
+        {
+            Range = Guard.Positive(range, "counterBattery", nameof(range));
+            Seconds = Guard.Positive(seconds, "counterBattery", nameof(seconds));
+            Bonus = Guard.NonNegative(bonus, "counterBattery", nameof(bonus));
+        }
+
+        public float Range { get; }
+        public float Seconds { get; }
+        public float Bonus { get; }
+    }
+
+    /// <summary>
+    /// A weapon's extra damage against some targets: a class (the Lancet on artillery), an armour
+    /// (a car bomb on structures), a target that has stood still a while, or a hit from the side or
+    /// rear. Every condition set must hold. Of the bonuses that apply the biggest counts, of the
+    /// penalties the smallest (they never stack).
+    /// </summary>
+    public sealed class DamageBonus
+    {
+        public float Mult { get; internal set; } = 1f;
+        public UnitClass? Class { get; internal set; }
+        public ArmorClass? Armor { get; internal set; }
+
+        /// <summary>The target has not moved for at least this many seconds (0: any).</summary>
+        public float StillFor { get; internal set; }
+
+        /// <summary>Only a hit on the target's side or rear.</summary>
+        public bool Flank { get; internal set; }
     }
 
     /// <summary>A mine layer's charges: laid every Interval seconds, at most Max alive per layer.</summary>

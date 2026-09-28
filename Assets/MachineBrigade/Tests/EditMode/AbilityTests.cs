@@ -62,7 +62,7 @@ namespace MachineBrigade.Tests
         public void VehiclesRearmAtHome()
         {
             var world = Field();
-            var mortar = world.SpawnVehicle("siege_mortar", 0, new Vector2(-58f, -58f), 0f);
+            var mortar = world.SpawnVehicle("mortar_carrier", 0, new Vector2(-58f, -58f), 0f);
             mortar.Weapons[0].Ammo = 0;
             Run(world, 12f);
             Assert.AreEqual(mortar.Def.Mounts[0].Weapon.Ammo, mortar.Ammo(0), "back at the rally point the empty mortar reloads its whole magazine three times as fast");
@@ -92,7 +92,7 @@ namespace MachineBrigade.Tests
             Assert.GreaterOrEqual(world.Mines.Count, 2, "mines are dropped along the way");
             var mine = world.Mines[0];
             Assert.IsFalse(mine.IsVisibleTo(1), "the enemy cannot see a mine from afar");
-            var victim = world.SpawnVehicle("apc", 1, mine.Position + new Vector2(0f, 12f), 3.14f);
+            var victim = world.SpawnVehicle("armored_car", 1, mine.Position + new Vector2(0f, 12f), 3.14f);
             world.Submit(new Command(CommandType.Move, 1, new[] { victim.Id }, mine.Position - new Vector2(0f, 10f)));
             var detonated = false;
             for (var t = 0f; t < 8f && !detonated; t += TestWorlds.Step)

@@ -120,6 +120,22 @@ namespace MachineBrigade.Game.Match
 
         public static int BlueprintsToNext(int rank) => rank >= 1 && rank < Max ? Prints[rank] : 0;
 
+        /// <summary>Coins spent to bring a card from rank 1 to <paramref name="rank"/>.</summary>
+        public static int CoinsSpent(int rank)
+        {
+            var total = 0;
+            for (var r = 1; r < Mathf.Clamp(rank, 1, Max); r++) total += Coins[r];
+            return total;
+        }
+
+        /// <summary>Blueprints spent to bring a card from rank 1 to <paramref name="rank"/>.</summary>
+        public static int BlueprintsSpent(int rank)
+        {
+            var total = 0;
+            for (var r = 1; r < Mathf.Clamp(rank, 1, Max); r++) total += Prints[r];
+            return total;
+        }
+
         /// <summary>The extra health and damage a card of this rank brings (0.05 a rank above the first).</summary>
         public static float Bonus(int rank) => 0.05f * (Mathf.Clamp(rank, 1, Max) - 1);
 
@@ -292,10 +308,29 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public static class EnemyScaling
     {
-        /// <summary>How much of the player's edge the enemy matches.</summary>
-        public const float Share = 0.8f;
+        /// <summary>How much of the player's edge the enemy matches by default (the data's economy.enemyScaling wins).</summary>
+        public const float Share = 0.55f;
 
-        public static VehicleBoost Match(IEnumerable<VehicleBoost> deck)
+        public static VehicleBoost Match(IEnumerable<VehicleBoost> deck) => Match(deck, Share);
+
+        /// <summary>
+        /// A deck's power as one number: 100 for rank 1 cards with no equipment, then the average
+        /// over its vehicles of the square root of toughness times firepower (a rank 5 card, +20 %
+        /// health and damage, is 120).
+        /// </summary>
+        public static int Power(IEnumerable<VehicleBoost> deck)
+        {
+            var sum = 0f;
+            var n = 0;
+            foreach (var b in deck)
+            {
+                sum += Mathf.Sqrt(b.Hp / Mathf.Max(0.1f, b.DamageTaken) * b.Damage * b.FireRate);
+                n++;
+            }
+            return n == 0 ? 100 : Mathf.RoundToInt(100f * sum / n);
+        }
+
+        public static VehicleBoost Match(IEnumerable<VehicleBoost> deck, float share)
         {
             var tough = 0f;
             var fire = 0f;
@@ -307,8 +342,8 @@ namespace MachineBrigade.Game.Match
                 n++;
             }
             if (n == 0) return VehicleBoost.None;
-            var hp = 1f + Mathf.Max(0f, tough / n - 1f) * Share;
-            var damage = 1f + Mathf.Max(0f, fire / n - 1f) * Share;
+            var hp = 1f + Mathf.Max(0f, tough / n - 1f) * share;
+            var damage = 1f + Mathf.Max(0f, fire / n - 1f) * share;
             return new VehicleBoost(hp, damage, 1f, 1f, 1f, 0f, SpecialModule.None, 0f);
         }
     }

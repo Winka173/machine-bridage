@@ -102,21 +102,23 @@ namespace MachineBrigade.Game.Match
 
         public static readonly string[] AllVehicles =
         {
-            "scout_jeep", "armored_car", "rocket_technical", "apc", "light_tank", "main_battle_tank", "heavy_tank",
+            "scout_jeep", "armored_car", "rocket_technical", "light_tank", "main_battle_tank", "heavy_tank",
             "tank_destroyer", "flame_tank", "mortar_carrier", "artillery", "mlrs", "aa_vehicle", "sam_launcher",
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
-            "ifv", "howitzer", "thermobaric_launcher", "heavy_aa", "titan_tank",
-            "heavy_bomber", "stealth_bomber", "sky_gunship",
-            "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher", "siege_mortar",
-            "grad_truck", "atgm_carrier", "aps_tank",
+            "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
+            "heavy_bomber", "stealth_bomber",
+            "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
+            "atgm_carrier",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
             "turtle_tank", "bmpt", "sapper",
+            "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
         };
 
         public static readonly string[] AllSupports =
-            { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike", "carpet_bombing" };
+            { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike",
+              "uav_scan", "remote_mines", "field_tower", "sead_strike" };
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;
@@ -445,11 +447,12 @@ namespace MachineBrigade.Game.Match
             var saved = PlayerPrefs.GetString(key, "");
             if (string.IsNullOrEmpty(saved)) return;
             Array.Clear(layout, 0, layout.Length);
-            var positions = saved.Split(',');
+            // Merged cards come back as the card they became (once: a second copy is dropped).
+            var positions = Array.ConvertAll(saved.Split(','), CardMerges.Resolve);
             for (var i = 0; i < positions.Length && i < layout.Length; i++)
-                if (Array.IndexOf(all, positions[i]) >= 0 && PlayerProfile.IsUnlocked(positions[i])) layout[i] = positions[i];
+                if (Array.IndexOf(all, positions[i]) >= 0 && PlayerProfile.IsUnlocked(positions[i]) && Array.IndexOf(layout, positions[i]) < 0) layout[i] = positions[i];
             var cards = new List<string>();
-            foreach (var id in saved.Split(','))
+            foreach (var id in positions)
                 if (Array.IndexOf(all, id) >= 0 && PlayerProfile.IsUnlocked(id) && !cards.Contains(id) && cards.Count < slots) cards.Add(id);
             // Decks saved before the deck grew to 8 vehicles are topped up from the defaults once;
             // a deck the player deliberately left short stays as it is.

@@ -88,6 +88,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds a charged weapon (a railgun) powers up, target in sight, before each shot; 0 for none.</summary>
         public float Charge { get; internal set; }
 
+        /// <summary>Extra damage against some targets (see <see cref="DamageBonus"/>).</summary>
+        public IReadOnlyList<DamageBonus> Bonuses { get; internal set; } = System.Array.Empty<DamageBonus>();
+
         /// <summary>The model its rounds fly as (a missile, rocket, bomb, shell or drone), or null for the default of its kind.</summary>
         public string? ProjectileModel { get; internal set; }
 
@@ -308,6 +311,21 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Active protection: shoots down incoming missiles and rockets (see <see cref="ApsDef"/>).</summary>
         public ApsDef? Aps { get; internal set; }
+
+        /// <summary>A command vehicle's fire-rate aura for friendly vehicles round it (null: none).</summary>
+        public CommandAuraDef? CommandAura { get; internal set; }
+
+        /// <summary>After standing still this many seconds it is a forward drop zone for its side (0: never).</summary>
+        public float ForwardDrop { get; internal set; }
+
+        /// <summary>How many of it a side may have in the field at once, deliveries included (0: no limit).</summary>
+        public int MaxPerSide { get; internal set; }
+
+        /// <summary>Counter-battery radar carried (null: none).</summary>
+        public CounterBatteryDef? CounterBattery { get; internal set; }
+
+        /// <summary>A helicopter that fights from the edge of its missiles' reach and keeps out of short-range anti-air.</summary>
+        public bool Standoff { get; internal set; }
 
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }

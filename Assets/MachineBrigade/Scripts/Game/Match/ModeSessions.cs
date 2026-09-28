@@ -175,6 +175,7 @@ namespace MachineBrigade.Game.Match
                 _ => new ConquestSession(),
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
+            world.ModeTag = menu ? "Menu" : kind.ToString();
             session.Build(world, seed);
             // Supply drops everywhere; no bomber raids in Boss Rush (they hit the army massed round the boss).
             if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed, raids: kind != GameModeKind.BossRush);
@@ -447,7 +448,6 @@ namespace MachineBrigade.Game.Match
                 StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
                 WaveSeconds = _endless ? 55f : 75f, StageCp = 12f,
                 Attacker = attacker, Defender = defender,
-                AttackerBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
             });
             Mode = _mode;
             _mode.Setup(world);

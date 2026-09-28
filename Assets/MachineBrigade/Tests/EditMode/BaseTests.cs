@@ -240,7 +240,7 @@ namespace MachineBrigade.Tests
                         var world = new SimWorld(catalog, GameContent.LoadMap(map), seed: seed);
                         var bases = new BaseSetup().Set(0, BaseLoadout.ForAi(catalog, "Hard", "default", seed), BaseRole.Anchor)
                             .Set(1, BaseLoadout.ForAi(catalog, "Hard", "armour", seed + 11), BaseRole.Anchor);
-                        var deck = new[] { "main_battle_tank", "light_tank", "apc", "armored_car", "tank_destroyer", "mlrs", "aa_vehicle", "artillery" };
+                        var deck = new[] { "main_battle_tank", "light_tank", "ifv", "armored_car", "tank_destroyer", "mlrs", "aa_vehicle", "artillery" };
                         var mode = new ConquestMode(new ConquestRules
                         {
                             Bases = bases, PlayerVehicles = deck, EnemyVehicles = deck,
