@@ -240,6 +240,7 @@ namespace MachineBrigade.Game.Match
             {
                 ShakeScale = MatchSettings.ShakeScale,
             };
+            FitCameraToArea();
             _attractFocus = start;
             // Device check of the scenery: the north-west corner, zoomed right out.
             // Device check of the whole battlefield: its outline, terrain and objectives in one view.
@@ -835,6 +836,7 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.AreaChanged:
                         _playArea?.Show(_world.PlayArea);
+                        FitCameraToArea();
                         if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f);
                         break;
                     case SimEventKind.StageCleared when !_menu:
@@ -1262,6 +1264,15 @@ namespace MachineBrigade.Game.Match
                         break;
                 }
             }
+        }
+
+        /// <summary>The camera keeps to the play area as it is now (the whole map when there is none).</summary>
+        private void FitCameraToArea()
+        {
+            if (_camera == null) return;
+            if (_world.PlayArea is { } area)
+                _camera.SetArea(new Vector2(area.Min.X, area.Min.Y), new Vector2(area.Max.X, area.Max.Y));
+            else _camera.SetArea(null, null);
         }
 
         /// <summary>Pays the battle's reward if the player leaves without claiming it.</summary>

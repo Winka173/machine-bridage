@@ -33,6 +33,28 @@ namespace MachineBrigade.Game.CameraControl
 
         private readonly Camera _camera;
         private readonly float _halfSize;
+
+        /// <summary>Where the view may centre (the play area and a margin; the whole map by default).</summary>
+        private Vector2 _min, _max;
+
+        /// <summary>How far past the play area's edge the view may go, so the edge itself shows.</summary>
+        private const float AreaMargin = 12f;
+
+        /// <summary>Keeps the view to a play area (null: the whole map again).</summary>
+        public void SetArea(Vector2? min, Vector2? max)
+        {
+            if (min is { } a && max is { } b)
+            {
+                _min = new Vector2(Mathf.Max(-_halfSize, a.x - AreaMargin), Mathf.Max(-_halfSize, a.y - AreaMargin));
+                _max = new Vector2(Mathf.Min(_halfSize, b.x + AreaMargin), Mathf.Min(_halfSize, b.y + AreaMargin));
+            }
+            else
+            {
+                _min = new Vector2(-_halfSize, -_halfSize);
+                _max = new Vector2(_halfSize, _halfSize);
+            }
+            Clamp();
+        }
         private float _trauma;
         private float _noiseTime;
 
@@ -40,6 +62,8 @@ namespace MachineBrigade.Game.CameraControl
         {
             _camera = camera;
             _halfSize = halfSize;
+            _min = new Vector2(-halfSize, -halfSize);
+            _max = new Vector2(halfSize, halfSize);
             _camera.orthographic = true;
             _camera.nearClipPlane = 1f;
             _camera.farClipPlane = 320f + DepthShift;
@@ -160,7 +184,7 @@ namespace MachineBrigade.Game.CameraControl
 
         private void Clamp()
         {
-            Focus = new Vector3(Mathf.Clamp(Focus.x, -_halfSize, _halfSize), 0f, Mathf.Clamp(Focus.z, -_halfSize, _halfSize));
+            Focus = new Vector3(Mathf.Clamp(Focus.x, _min.x, _max.x), 0f, Mathf.Clamp(Focus.z, _min.y, _max.y));
         }
 
         private float Noise(int channel) => (Mathf.PerlinNoise(_noiseTime, channel * 10.3f) - 0.5f) * 2f;

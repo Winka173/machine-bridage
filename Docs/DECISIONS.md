@@ -218,6 +218,18 @@ bottom of each section.
   - Growing a map past its old edge into the decor ring needs the map to be larger than its
     first play area. The new operation maps set their outer ground up that way (the map agents'
     part).
+- **Growing the battlefield mid-battle.**
+  - A big operation starts on part of its 300 m battlefield and opens the rest stage by stage
+    (the `Expand` event). The camera keeps to the open area (with a 12 m margin, so the edge
+    shows) and follows it as it opens.
+  - The navigation grid and the traffic lanes already cover the whole battlefield, so an opened
+    area needs no new navigation data.
+  - The ring outside the 300 m square was not opened. It is scenery: mountains, forest and city
+    blocks placed for their silhouette from the camera, with no roads, cover or objectives, and
+    the map builder's reachability, traffic and base checks all work inside the square. Making
+    it playable would mean a second, larger generator per map. If an operation ever needs more
+    room, the way is a larger `_operation` version of its map from the builder, with the old
+    square as its first play area.
 - **The enemy's vehicle ceiling.**
   - The existing 32 vehicles a side stays for the player and the ordinary modes. The enemy in
     Siege, Defend, Endless and the big operations may field 48 (balance.json
@@ -261,6 +273,80 @@ bottom of each section.
     a quiet machine and on a real low-end phone.
   - The step profiler (`SimWorld.Profile`, off in play) shows movement at about half of a
     step's time and combat at about a third.
+
+## 6. Operations and the menu groups
+
+- **Where it lives.**
+  - The old Events tab is now **Tác chiến**. It holds this week's operation, the battles opened
+    for replay, the weekly fortress, the boss rush and the daily challenges.
+  - The skirmishes (Giữ cứ điểm, Vua đồi, Tử chiến, Công phá, Công thành, Phòng thủ) and the
+    challenges (Sinh tồn, Vô tận) stay on the battle setup's mode list.
+  - This is the navigation prompt 10 asks for: five items, with skirmishes and challenges
+    chosen from the home screen's mode picker. So the four-group menu of prompt 6 was built
+    straight into that shape rather than twice.
+  - A test checks that every mode is still reachable.
+- **What can be replayed.** The campaign's missions flagged `"operation": true` (each chapter's
+  big operation) and `"replay": true` (the notable sieges, defences and duels with a general),
+  once won in the campaign.
+- **Tiers** (operations.json):
+
+  | tier | enemy CP and income | player income | fire support | score |
+  |---|---|---|---|---|
+  | Normal | ×1 | ×1 | yes | ×1 |
+  | Heroic | ×1.3 | ×1 | yes | ×1.3 |
+  | Iron | ×1.3 | ×0.8 | no | ×1.6 |
+  | Legend | ×1.6 | ×0.75 | no | ×2 |
+
+  - Legend opens once the campaign's last big operation is won.
+  - Heroic and Iron are the campaign's own tiers, unchanged.
+  - A Legend win pays the Iron reward: its reward is the score and the record.
+- **Score** of a won battle, out of about 12,000 before multipliers:
+  - 5,000 for the win;
+  - up to 3,000 for time under a 25-minute par;
+  - up to 2,000 for losses, with 20 losses scoring 0 on this part;
+  - up to 2,000 for the HQ's health (full marks where there is no HQ).
+  - All of it is multiplied by the tier's multiplier plus each mutator's share.
+  - A loss scores 0, so it never sets a record.
+  - The best score and the fastest win are kept per battle and tier.
+- **Mutators.** 18, all data, combinable, each adding 5–30 % to the score multiplier:
+  - Stormy night and Night operation, which change only the weather;
+  - All-air enemy;
+  - No fire support;
+  - Two bosses;
+  - Enemy towers ×2 (double health, 50 % more fire);
+  - No repairs;
+  - Reinforced general;
+  - Under 8 CP;
+  - Armour only;
+  - Grounded (no aircraft on either side);
+  - Glass cannons;
+  - Veteran enemy;
+  - Against the clock;
+  - Lean logistics;
+  - Iron rain (bomber raids on both sides);
+  - Swarm;
+  - Empty base.
+
+  A mutator that empties the player's deck (Under 8 CP, Armour only, Grounded) tops it up
+  from the vehicles the player owns, so there is always something to field. The weather
+  mutators are cosmetic by design: nothing is tied to weather (prompt 8's rule).
+- **The weekly rotation.**
+  - 26 weeks, each an operation (round the list) and a pair of mutators. The pairs are a fixed
+    shuffle of all the allowed pairs (no excluded pair, no two weather mutators), taken so that
+    every mutator comes up before any comes up a third time.
+  - The week number (ISO week, UTC) picks the entry, so everyone gets the same week and the
+    same data always gives the same table.
+  - A test covers determinism, coverage, exclusions and no repeated pair. A 5-seed balance test
+    plays every entry of the table; it runs once the campaign data flags its operations.
+- **One weekly reward system.** The weekly fortress and the weekly operation share one ledger
+  (`PlayerProfile.ClaimWeekly(week, key)`): each first win of the week pays once, 600 and 800
+  coins, both read from operations.json. The fortress's old "claimed" flag is honoured, so
+  nothing is paid twice after the update.
+- **Result screen** of an Operations battle: the mission and the tier as its title, the score,
+  the record (or "Kỷ lục mới!"), the mutators, and the week's reward when it paid.
+- **A bug found on the way:** `MissionDef.Harder` (Heroic and Iron) rebuilt a mission's waves
+  without their roster and spawn points, so a harder tier's waves never came. It keeps them now,
+  with a test.
 
 ## 7. Sized slots (the supplementary prompt; replaces fortification points)
 
