@@ -9,11 +9,15 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The Army tab, three tabs: Deck, Equipment, Base.
+    /// The Army tab, four tabs: Deck, Towers &amp; modules, Equipment, Base.
     /// E3, Deck: the eight vehicles and two supports as full cards; beside them the deck's overview
     /// (how many, the average cost) and its role cover (tank killers, anti-air, artillery, repair,
     /// recon; what is missing in the warning colour), the doctrines with their names; then the
     /// branch filter chips with the sort button apart, and the collection as cards.
+    /// E3b, Towers &amp; modules (test feedback 2, DECISIONS 12E): the base's towers by size and its
+    /// utility modules as cards (render, rank, size, the upgrade mark), beside the vehicles, since
+    /// both level up and wear gear; a tap opens the same detail page as a vehicle's, where the rank,
+    /// the branch and the three gear slots are changed. The Base tab still places them.
     /// E5, Equipment: the branch, its seven slots as gear cards; picking a slot lists at once what
     /// fits it with its change against what is worn; picking a piece shows its lines and actions.
     /// E6, Base: <see cref="BaseScreen"/>.
@@ -23,6 +27,7 @@ namespace MachineBrigade.Game.Hud
         private enum ArmyView
         {
             Deck,
+            Towers,
             Equipment,
             Base,
         }
@@ -44,7 +49,7 @@ namespace MachineBrigade.Game.Hud
             Name,
         }
 
-        private VisualElement _deckView, _gearView, _deckRow, _deckOverview, _collection, _gearSlots, _gearList, _gearInfo;
+        private VisualElement _deckView, _gearView, _deckRow, _deckOverview, _collection, _gearSlots, _gearList, _gearInfo, _towersView, _towersBody;
         private KitTabs _armyTabs;
         private KitSortButton _sortButton;
         private readonly List<(KitChip chip, CardFilter filter)> _filterChips = new();
@@ -61,7 +66,7 @@ namespace MachineBrigade.Game.Hud
         private void BuildArmyPage()
         {
             var page = TabPage(Tab.Army, "fc-page--opaque fc-army");
-            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.equipment"), Strings.Get("army.base") }, 0, i =>
+            _armyTabs = new KitTabs(new[] { Strings.Get("army.deck"), Strings.Get("army.towers"), Strings.Get("army.equipment"), Strings.Get("army.base") }, 0, i =>
             {
                 _armyView = (ArmyView)i;
                 Refresh();
@@ -92,6 +97,12 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(_collection);
             _deckView.Add(deckBody);
             page.Add(_deckView);
+
+            // Towers and modules ------------------------------------------------------------------------
+            _towersView = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            _towersBody = Kit.Box("fc-page__body");
+            _towersView.Add(_towersBody);
+            page.Add(_towersView);
 
             // Equipment ---------------------------------------------------------------------------------
             _gearView = Kit.Box("fc-army__gear");
@@ -192,14 +203,51 @@ namespace MachineBrigade.Game.Hud
             _armyTabs.Select((int)_armyView, false);
             _deckView.style.display = _armyView == ArmyView.Deck ? DisplayStyle.Flex : DisplayStyle.None;
             _gearView.style.display = _armyView == ArmyView.Equipment ? DisplayStyle.Flex : DisplayStyle.None;
+            _towersView.style.display = _armyView == ArmyView.Towers ? DisplayStyle.Flex : DisplayStyle.None;
             var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
             _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
             // Leaving the base (another view, tab or page) saves what was changed there.
             if (!onBase) _base.Leave();
             if (_tab != Tab.Army) return;
             if (_armyView == ArmyView.Deck) RefreshDeck();
+            else if (_armyView == ArmyView.Towers) RefreshTowers();
             else if (_armyView == ArmyView.Equipment) RefreshGear();
             else _base.Refresh();
+        }
+
+        // ------------------------------------------------------------------ E3b: towers and modules
+
+        /// <summary>The base's towers by size, then its utility modules, as cards; a tap opens the structure's detail page.</summary>
+        private void RefreshTowers()
+        {
+            _towersBody.Clear();
+            _towersBody.Add(Kit.Body2(Strings.Get("army.towersHint")));
+            var structures = Structures();
+            foreach (SlotSize size in System.Enum.GetValues(typeof(SlotSize)))
+            {
+                var towers = structures.Where(id => _catalog.Vehicles[id].Fort is { Kind: not FortKind.Utility } fort && fort.Size == size).ToList();
+                if (towers.Count > 0) TowerSection(Strings.Format("army.towerSize", SizeWord(size)), towers);
+            }
+            var modules = structures.Where(id => _catalog.Vehicles[id].Fort is { Kind: FortKind.Utility }).ToList();
+            if (modules.Count > 0) TowerSection(Strings.Get("army.modules"), modules);
+        }
+
+        private void TowerSection(string title, List<string> ids)
+        {
+            _towersBody.Add(Kit.Text(Kit.Caps(title), "fc-caption fc-mt-4 fc-mb-2"));
+            var grid = Kit.Box("fc-army__grid");
+            foreach (var id in ids) grid.Add(TowerCard(id));
+            _towersBody.Add(grid);
+        }
+
+        /// <summary>A tower's or module's card: its render, name and rank, its size (or the module mark) in the corner, the upgrade mark when it can rank up.</summary>
+        private VisualElement TowerCard(string id)
+        {
+            var def = _catalog.Vehicles[id];
+            var data = VehicleCardData.From(def);
+            data.ClassIcon = def.Fort.Kind == FortKind.Utility ? "module" : BaseScreen.SizeIcon(def.Fort.Size);
+            data.Cp = 0;
+            return new KitVehicleCard(data, () => OpenDetail(id));
         }
 
         // ------------------------------------------------------------------ E3: the deck

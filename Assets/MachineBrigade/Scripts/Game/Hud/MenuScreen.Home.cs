@@ -26,7 +26,14 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
             (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),
             (GameModeKind.Survival, "people", "mode.survival", "mode.survivalSub"),
+            // Also on Operations (test feedback 2, DECISIONS 12E); it fights on the chosen map's sandbox.
+            // The weekly fortress stays on Operations only: its map and stage are the week's, not the picker's.
+            (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
         };
+
+        /// <summary>A mode's one line under its name in the picker (Boss Rush says how many bosses).</summary>
+        private static string ModeLine(GameModeKind kind, string key) =>
+            kind == GameModeKind.BossRush ? Strings.Format(key, MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count) : Strings.Get(key);
 
         /// <summary>The modes the home screen's mode dropdown offers (skirmishes and challenges), for the menu's coverage test.</summary>
         internal static IEnumerable<GameModeKind> BattleModes
@@ -92,7 +99,7 @@ namespace MachineBrigade.Game.Hud
             var launch = Kit.Box("fc-home__launch");
             var grid = Kit.Box("fc-home__grid");
             var modes = new List<KitOption>();
-            foreach (var (_, _, name, sub) in QuickModes) modes.Add(new KitOption(Strings.Get(name), Strings.Get(sub)));
+            foreach (var (kind, _, name, sub) in QuickModes) modes.Add(new KitOption(Strings.Get(name), ModeLine(kind, sub)));
             _modeDrop = new KitDropdown(Strings.Get("setup.mode"), modes, 0, i => Set(() => MatchSettings.Mode = QuickModes[i].kind));
             grid.Add(_modeDrop);
             _homeMaps = new List<MapInfo>();
@@ -150,7 +157,8 @@ namespace MachineBrigade.Game.Hud
 
         private void Deploy()
         {
-            if (MatchSettings.Mode == GameModeKind.Campaign) MatchSettings.Mode = GameModeKind.Conquest;
+            // What the picker shows is what starts (a campaign run or the weekly fortress left behind reads as Conquest there).
+            MatchSettings.Mode = QuickModes[_modeDrop.Selected].kind;
             MatchSettings.Save();
             _play();
         }

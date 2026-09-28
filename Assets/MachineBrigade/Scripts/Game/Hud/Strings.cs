@@ -1010,6 +1010,13 @@ namespace MachineBrigade.Game.Hud
             ["army.added"] = ("{0} joined the deck.", "Đã thêm {0} vào bộ bài."),
             // The base loadout screen (Army tab, Base view).
             ["army.base"] = ("Base", "Căn cứ"),
+            ["army.towers"] = ("Towers & modules", "Tháp & mô-đun"),
+            ["army.towersHint"] = ("Towers and utility modules level up and wear gear like vehicles. Tap one for its page: its rank, branch and gear. The Base tab places them.",
+                "Tháp và mô-đun tiện ích lên cấp và gắn trang bị như xe. Chạm vào một thẻ để xem chi tiết: cấp, nhánh và trang bị. Mục Căn cứ để đặt chúng."),
+            ["army.towerSize"] = ("{0} towers", "Tháp {0}"),
+            ["army.modules"] = ("Utility modules", "Mô-đun tiện ích"),
+            ["detail.gearTap"] = ("Tap a slot to choose its piece: every tower of this type wears it.", "Chạm vào một ô để chọn món: mọi tháp loại này đều mang."),
+            ["detail.branchTap"] = ("Tap a branch to choose it.", "Chạm vào một nhánh để chọn."),
             ["camp.level"] = ("HQ level", "Cấp sở chỉ huy"),
             ["camp.hqLevel"] = ("HQ {0}", "SCH {0}"),
             ["camp.opens"] = ("Opens {0} small · {1} medium · {2} large · {3} utility slots", "Mở {0} ô nhỏ · {1} ô vừa · {2} ô lớn · {3} ô tiện ích"),

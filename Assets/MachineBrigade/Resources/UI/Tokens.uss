@@ -121,6 +121,8 @@
     --fc-topbar: 96px;
     --fc-home-column: 440px;
     --fc-detail-column: 520px;
+    --fc-detail-stage: 300px;                 /* the turntable's box on the detail page's left */
+    --fc-detail-side: 440px;                  /* the In action theatre's info column beside the big preview */
     --fc-scrim-home: rgba(8, 10, 12, 0.38);   /* the home screen's battle, dimmed 38 % */
 }
 

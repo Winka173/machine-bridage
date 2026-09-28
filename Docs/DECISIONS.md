@@ -2220,6 +2220,79 @@ jammer was the example).
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
 
+## 12E. Test feedback 2: the in-action preview (2026-09-29)
+
+Play-test findings: on the detail page the In action clip (Xem bắn) was too small to watch, and the
+previous / next buttons covered a third of it. Two requests came with it: tower information was
+hard to find (only the base screen's info button led to it), and Boss Rush was missing from the
+home screen's mode picker.
+
+- **The layout: a theatre on the In action tab.** The other four tabs keep their two columns. On
+  In action the page turns into a theatre: the preview leaves the left column and fills the whole
+  space under the tabs, and a narrower side column (`--fc-detail-side`, 440 px) holds the name
+  with the arrows, the firing note and the weapon rows, the deck toggle, and the dock (blueprints
+  over the level-up button, which stays the page's one main button). The tags and counters are
+  hidden there (every other tab shows them). The same elements move between the columns
+  (`ArrangeDetail`), so the page's refresh fills both layouts. Towers and modules (the same page)
+  get it too. Considered and turned down: a preview across the page's full height (the tab row
+  needs about 700 px at Large text, which leaves a tall, narrow box that cuts the clips' sides on
+  4:3), and a full-width preview over the dock (the dock's 120 px would come out of the height,
+  and the height sets how big the vehicle looks).
+- **Sizes (panel pixels at the 1280 x 720 reference).** Before: 480 x 300 on every shape, with
+  82 px arrow faces over it on both sides. The theatre: about 808 x 517 at 16:9, 1024 x 517 at
+  19.5:9 with the notch, 1080 x 493 at 20:9 with the punch hole and gesture bar, and 808 x 757 on
+  a 4:3 tablet. That is 2.9 times the area at 16:9. The turntable box on the other tabs stays
+  480 x 300 (`--fc-detail-stage`).
+- **The arrows.** They are the kit's plain icon buttons: a 44 px face inside the full 82 px
+  touch target, beside the name (previous is the arrow turned round, instead of the old U-turn
+  icon), off the picture in both layouts. They keep their width next to a long name at Large text
+  (`flex-shrink: 0`; the strict check caught 77 px at first).
+- **The render texture follows its box.** `UnitPreview.Fit` sizes it to the stage's size on
+  screen when the stage's geometry changes: the box's shape, and its pixels up to a longest side
+  of 1600 and about 1280 x 720 (921,600) pixels. It uses 4x MSAA up to 520,000 pixels and 2x
+  above. On a 1080p 16:9 phone the theatre gets about 1200 x 768 at 2x (was 640 x 480 at 4x,
+  stretched and cropped into the box). A 2400 x 1080 phone gets about 1420 x 650, and a 1440 x 1080
+  tablet 909 x 853. The turntable box gets 720 x 450 at 4x. Rendering it at 2x keeps the samples
+  near the old texture's (about 1.8 M against 1.2 M) and it runs only while the tab is open. The
+  development range capture (`-mb-range-hd`) pins its own size.
+- **What the clips show is unchanged.** The old texture was 4:3, and the page cropped it to fill
+  the box. The camera now renders that crop directly (`UnitPreview.Project`, a projection matrix
+  with the field of view scaled by `max(0.8, (4/3) / aspect)`). The range and the turntable still
+  frame the vehicle by the camera's field of view, so `FiringRange` is not touched. At the 1.6 box
+  the view is exactly the old one, and the turntable looks as it did. A wider box sees across as
+  much as the 4:3 frame and at most 20 % less top to bottom (the old page cut 17 %). A taller box
+  (4:3 tablet) sees the frame's full width and more above and below. So the vehicle is about 1.7
+  times as big on screen on every shape.
+- **Towers beside the vehicles.** The Army tab has a fourth tab, **Tháp & mô-đun** (Towers &
+  modules), between Deck and Equipment. It lists the base's towers by size and then its utility
+  modules, as the same cards as vehicles: render, rank, size icon in the corner, the upgrade mark
+  when a rank-up is affordable, and the lock line with where a locked one is won. A tap opens the
+  same detail page, whose arrows step through the structures. The base screen's info button stays.
+- **Rank, branch and gear on the tower's page.** The rank-up was already the dock's main button.
+  On the Equipment tab, a tap on a branch now chooses it. The branch needs rank 7, the first choice
+  is free, and a change asks first because it costs 800 coins (the base screen's rules,
+  `PlayerProfile.TryChooseBranch`). A tap on a gear slot lists the bag's pieces that fit it, with
+  the worn one ticked, and the first row takes the worn piece off
+  (`TowerGearFor` / `EquipTower` / `UnequipTower`). The base layout reads the branch from the
+  profile, so the base screen shows the change without anything else to do. "Đặt ở căn cứ" still
+  opens the base screen with the structure picked.
+- **Boss Rush in the mode picker.** Boss Rush is the ninth entry in the home screen's Chế độ
+  picker, with its line ("10 trùm liên tiếp"), and it stays on Tác chiến too. It fights on the chosen
+  map's sandbox, so the map picker still means something. **Deploy now starts the picker's
+  mode.** Before this, after a weekly fortress played from Tác chiến, the picker read Conquest but
+  XUẤT KÍCH started the weekly fortress again.
+- **The weekly fortress stays on Tác chiến only.** Its map and stage are the week's, not the
+  picker's, and its screen is what shows the stage reached. In the picker the map and difficulty
+  choices would do nothing.
+- **Checks and shots.** There are new screen names for the strict checks and UiShots: `detail-action`,
+  `detail-tower-action`, `detail-module-action` and `army-towers`. Each runs at the 4 shapes, at
+  Large text and in English, like the others. `KitInteractionTests.TheSetupModePickerOffersBossRush`
+  opens the picker, finds Boss Rush and its line, taps it, and checks the mode. PlaySmoke's
+  `-mbSmokePreview <png>` writes the preview texture at the end of the menu step (with
+  `-mb-detail=<id> -mb-detail-firing`, the In action theatre). In batch mode (a 640 x 480 screen)
+  it gave a 404 x 378 texture for the 4:3 theatre box, with the tank firing on the range in frame.
+  `-mb-detail-firing` also opens a device check on the In action tab.
+
 ## 12G. Test feedback 2: the troop transport's route (2026-09-29)
 
 The owner saw the transport that drops the enemy's bought vehicles fly for a while and then vanish mid-map. It flew a

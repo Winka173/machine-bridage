@@ -114,7 +114,7 @@ namespace MachineBrigade.Editor
                 return host;
             };
             foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
-            foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-base", "detail", "detail-tower", "settings", "shop-crates" })
+            foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "detail", "detail-tower", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);
                 yield return ("screen-" + screen + "-en", Menu(screen, false, false), new[] { Shapes[0] }, 0);

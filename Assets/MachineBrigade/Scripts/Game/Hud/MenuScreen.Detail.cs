@@ -19,6 +19,10 @@ namespace MachineBrigade.Game.Hud
     /// modules have the same page (the owner's request): the model, the numbers, the weapons, the
     /// guide, the rank; a tower's Equipment tab is its branches and its three gear slots, a module's
     /// numbers are what it does for the base.
+    /// The In action tab turns the page into a theatre (test feedback 2, DECISIONS 12E): the preview
+    /// leaves the left column and fills the space under the tabs; the name with the arrows, the
+    /// weapons, the deck toggle and the dock stand in a narrower column beside it. The arrows are
+    /// small faces beside the name, off the picture, in both layouts.
     /// </summary>
     internal sealed partial class MenuScreen
     {
@@ -32,6 +36,8 @@ namespace MachineBrigade.Game.Hud
         }
 
         private VisualElement _detail, _detailPreview, _detailArt, _detailTags, _detailCounters, _detailBody, _detailDock, _detailDeck;
+        private VisualElement _detailStage, _detailLeft, _detailLeftBody, _detailRight, _detailScroll;
+        private bool _detailTheatre;
         private Label _detailName;
         private KitTabs _detailTabs;
         private DetailTab _detailTab = DetailTab.Stats;
@@ -41,32 +47,37 @@ namespace MachineBrigade.Game.Hud
         private void BuildDetailPage()
         {
             _detail = FullPage("fc-detail");
-            var leftScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-detail__left");
-            var left = Kit.Box("fc-detail__left-body");
-            leftScroll.Add(left);
-            var stage = Kit.Box("fc-detail__stage");
+            _detailLeft = Kit.Box("fc-detail__left");
+            var leftScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-detail__left-scroll");
+            _detailLeftBody = Kit.Box("fc-detail__left-body");
+            leftScroll.Add(_detailLeftBody);
+            _detailLeft.Add(leftScroll);
+            _detailStage = Kit.Box("fc-detail__stage");
             _detailArt = Kit.Box("fc-detail__art");
-            stage.Add(_detailArt);
+            _detailStage.Add(_detailArt);
             _detailPreview = Kit.Box("fc-detail__preview");
-            stage.Add(_detailPreview);
-            var previous = new KitIconButton("retreat", Strings.Get("detail.previous"), () => StepDetail(-1));
-            previous.AddToClassList("fc-detail__arrow--left");
-            stage.Add(previous);
-            var next = new KitIconButton("arrow", Strings.Get("detail.next"), () => StepDetail(1));
-            next.AddToClassList("fc-detail__arrow--right");
-            stage.Add(next);
-            left.Add(stage);
-            _detailName = Kit.Text("", "fc-title");
-            left.Add(_detailName);
-            _detailTags = Kit.Box("fc-row fc-row--wrap fc-mt-2");
-            left.Add(_detailTags);
+            _detailStage.Add(_detailPreview);
+            // The texture follows the stage's shape and size (the theatre is much bigger than the turntable's box).
+            _detailStage.RegisterCallback<GeometryChangedEvent>(_ => FitPreview());
+            _detailLeftBody.Add(_detailStage);
+            // The name, and beside it the arrows through the collection: small faces in full touch targets, off the picture.
+            var head = Kit.Box("fc-row fc-detail__head");
+            _detailName = Kit.Text("", "fc-title fc-row-text fc-grow");
+            head.Add(_detailName);
+            var previous = new KitIconButton("arrow", Strings.Get("detail.previous"), () => StepDetail(-1), plain: true);
+            previous.AddToClassList("fc-detail__previous");
+            head.Add(previous);
+            head.Add(new KitIconButton("arrow", Strings.Get("detail.next"), () => StepDetail(1), plain: true));
+            _detailLeftBody.Add(head);
+            _detailTags = Kit.Box("fc-row fc-row--wrap fc-mt-2 fc-detail__tags");
+            _detailLeftBody.Add(_detailTags);
             _detailDeck = Kit.Box("fc-mt-3");
-            left.Add(_detailDeck);
-            _detailCounters = Kit.Box("fc-mt-3");
-            left.Add(_detailCounters);
-            _detail.Add(leftScroll);
+            _detailLeftBody.Add(_detailDeck);
+            _detailCounters = Kit.Box("fc-mt-3 fc-detail__counters");
+            _detailLeftBody.Add(_detailCounters);
+            _detail.Add(_detailLeft);
 
-            var right = Kit.Box("fc-detail__right");
+            var right = _detailRight = Kit.Box("fc-detail__right");
             _detailTabs = new KitTabs(new[] { Strings.Get("detail.stats"), Strings.Get("detail.guide"), Strings.Get("detail.weaponsTab"),
                 Strings.Get("detail.firing"), Strings.Get("army.equipment") }, 0, i =>
             {
@@ -75,13 +86,48 @@ namespace MachineBrigade.Game.Hud
                 Refresh();
             });
             right.Add(_detailTabs);
-            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            _detailScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll fc-detail__body-scroll");
             _detailBody = Kit.Box("fc-page__body");
-            scroll.Add(_detailBody);
-            right.Add(scroll);
+            _detailScroll.Add(_detailBody);
+            right.Add(_detailScroll);
             _detailDock = Kit.Box("fc-detail__dock");
             right.Add(_detailDock);
             _detail.Add(right);
+        }
+
+        /// <summary>
+        /// The In action tab's theatre, or the other tabs' two columns: the stage, the tab's body and
+        /// the dock move between the columns (the same elements, so Refresh fills them either way).
+        /// </summary>
+        private void ArrangeDetail()
+        {
+            var theatre = _detailTab == DetailTab.Firing;
+            if (theatre == _detailTheatre) return;
+            _detailTheatre = theatre;
+            _detail.EnableInClassList("fc-detail--theatre", theatre);
+            if (theatre)
+            {
+                _detailRight.Insert(_detailRight.IndexOf(_detailScroll), _detailStage);
+                _detailLeftBody.Insert(_detailLeftBody.IndexOf(_detailDeck), _detailBody);
+                _detailLeft.Add(_detailDock);
+            }
+            else
+            {
+                _detailLeftBody.Insert(0, _detailStage);
+                _detailScroll.Add(_detailBody);
+                _detailRight.Add(_detailDock);
+            }
+        }
+
+        /// <summary>Sizes the preview's texture to the stage on screen (its shape, about its pixels, within the preview's caps).</summary>
+        private void FitPreview()
+        {
+            if (Preview == null || _detailStage.panel == null) return;
+            var box = _detailStage.layout.size;
+            var panel = _detailStage.panel.visualTree.layout.size;
+            if (box.x < 2f || box.y < 2f || panel.x < 2f || float.IsNaN(box.x)) return;
+            var scale = Screen.width / panel.x;
+            if (Preview.Fit(box.x * scale, box.y * scale)) _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
         }
 
         /// <summary>A slot size as a word inside a sentence ("nhỏ" in Vietnamese; English keeps its capital at the start).</summary>
@@ -122,6 +168,8 @@ namespace MachineBrigade.Game.Hud
         private void ShowPreview()
         {
             var vehicle = _detailId != null && _catalog.Vehicles.TryGetValue(_detailId, out var def) ? def : null;
+            ArrangeDetail();
+            FitPreview();
             _detailArt.style.backgroundImage = _detailId != null && CardArt.For(_detailId) is { } art ? Background.FromTexture2D(art) : new StyleBackground(StyleKeyword.None);
             // A fire support's In action tab: the support called on a range.
             if (vehicle == null && _detailId != null && Preview != null && _detailTab == DetailTab.Firing && _catalog.TryGetSupport(_detailId, out _))
@@ -160,6 +208,7 @@ namespace MachineBrigade.Game.Hud
             var unlocked = structure || PlayerProfile.IsUnlocked(id);
             var rank = PlayerProfile.Rank(structure ? vehicle.CardId : id);
             _detailTabs.Select((int)_detailTab, false);
+            ArrangeDetail();
 
             // Left: the name, the tags under it, the counters.
             _detailName.text = Kit.Caps(Strings.Card(id));
@@ -230,7 +279,7 @@ namespace MachineBrigade.Game.Hud
             var need = CardRanks.BlueprintsToNext(rank);
             var have = PlayerProfile.Blueprints(id) + PlayerProfile.UniversalBlueprints;
             var enough = need > 0 && have >= need;
-            var head = Kit.Box("fc-row");
+            var head = Kit.Box("fc-row fc-row--wrap");
             head.Add(Kit.Icon("blueprint", "fc-rule-icon"));
             head.Add(Kit.Text(need <= 0 ? Strings.Get("arsenal.maxRank") : Strings.Format("detail.prints", have, need), "fc-body fc-row-text fc-ml-2"));
             if (enough) head.Add(Kit.Text(Strings.Get("detail.enoughPrints"), "fc-small fc-positive-text fc-ml-2"));
@@ -504,8 +553,10 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>
         /// A structure's Equipment tab: a tower's branches (what each does, which is chosen, the rank
-        /// they open at) and its type's three gear slots with what they wear; a module's note. They are
-        /// changed on the base screen, which the button under them opens with the structure picked.
+        /// they open at) and its type's three gear slots with what they wear; a module's note. Both are
+        /// changed right here (DECISIONS 12E): a tap on a branch chooses it (a change asks first, it
+        /// costs coins), a tap on a slot lists the bag's pieces that fit it. The base screen, which the
+        /// button under them opens with the structure picked, changes them too.
         /// </summary>
         private void StructureEquipment(VehicleDef def, bool module)
         {
@@ -520,10 +571,12 @@ namespace MachineBrigade.Game.Hud
                 else
                 {
                     _detailBody.Add(Kit.Body2(rank < TowerCards.BranchRank ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
-                        : chosen == null ? Strings.Get("camp.branchFree") : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0"))));
+                        : (chosen == null ? Strings.Get("camp.branchFree") : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0")))
+                          + " " + Strings.Get("detail.branchTap")));
                     foreach (var b in branches)
                     {
-                        var row = Kit.Box(KitPanel.SurfaceClass + " fc-weapon" + (b == chosen ? " fc-weapon--chosen" : ""));
+                        var branchId = b;
+                        var row = Kit.Tappable(KitPanel.SurfaceClass + " fc-weapon" + (b == chosen ? " fc-weapon--chosen" : ""), () => ChooseTowerBranch(card, branchId));
                         row.Add(Kit.Icon(b == chosen ? "check" : rank < TowerCards.BranchRank ? "lock" : "upgrade", "fc-weapon__icon"));
                         var text = Kit.Box("fc-row-text fc-grow");
                         text.Add(Kit.Text(Kit.Caps(Strings.Branch(b)), "fc-panel-title"));
@@ -533,17 +586,18 @@ namespace MachineBrigade.Game.Hud
                     }
                 }
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("camp.gear")), "fc-caption fc-mt-4 fc-mb-2"));
-                var grid = Kit.Box("fc-army__grid");
+                _detailBody.Add(Kit.Body2(Strings.Get("detail.gearTap")));
+                var grid = Kit.Box("fc-army__grid fc-mt-2");
                 for (var i = 0; i < BaseScreen.GearSlots.Length; i++)
                 {
                     var cell = Kit.Box("fc-army__slot");
                     var slot = BaseScreen.TowerSlotOf(i);
                     cell.Add(Kit.Caption(GearText.TowerSlotName(slot)));
                     var item = BaseScreen.TowerGearIn(card, i);
-                    if (item != null) cell.Add(new KitGearCard(GearCardData.From(item), () => OpenInBase(card, gear: true)));
+                    if (item != null) cell.Add(new KitGearCard(GearCardData.From(item), () => PickTowerGear(card, slot)));
                     else
                     {
-                        var empty = Kit.Tappable("fc-gcard fc-gcard--empty", () => OpenInBase(card, gear: true));
+                        var empty = Kit.Tappable("fc-gcard fc-gcard--empty", () => PickTowerGear(card, slot));
                         var body = Kit.Box("fc-gcard__body");
                         body.Add(Kit.Text(Strings.Get("gear.empty"), "fc-gcard__stat"));
                         empty.Add(body);
@@ -554,6 +608,75 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(grid);
             }
             else _detailBody.Add(Kit.Body2(Strings.Get("detail.moduleNoGear")));
+        }
+
+        /// <summary>A tower's branch from its detail page: rank 7 first; the first choice is free, a change asks before it spends coins.</summary>
+        private void ChooseTowerBranch(string card, string branchId)
+        {
+            if (PlayerProfile.Rank(card) < TowerCards.BranchRank)
+            {
+                Note(Strings.Format("camp.branchNeedRank", TowerCards.BranchRank), true);
+                return;
+            }
+            var chosen = PlayerProfile.TowerBranch(card);
+            if (chosen == branchId) return;
+            if (chosen == null)
+            {
+                ApplyTowerBranch(card, branchId);
+                return;
+            }
+            VisualElement scrim = null;
+            var change = new KitButton(ButtonTier.Primary, Strings.Get("camp.change"), () =>
+            {
+                scrim?.RemoveFromHierarchy();
+                ApplyTowerBranch(card, branchId);
+            }, "upgrade");
+            var cancel = new KitButton(ButtonTier.Secondary, Strings.Get("camp.cancel"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Branch(branchId),
+                Strings.Format("camp.branchConfirm", Strings.Card(card), Strings.Branch(branchId), PlayerProfile.BranchSwapCoins.ToString("N0")), cancel, change));
+        }
+
+        private void ApplyTowerBranch(string card, string branchId)
+        {
+            if (!PlayerProfile.TryChooseBranch(card, branchId))
+            {
+                Note(Strings.Get("arsenal.needCoins"), true);
+                return;
+            }
+            Note(Strings.Format("camp.branchChosen", Strings.Card(card), Strings.Branch(branchId)));
+            Refresh();
+        }
+
+        /// <summary>One of a tower type's gear slots from its detail page: the bag's pieces that fit it (the worn one ticked), or take it off.</summary>
+        private void PickTowerGear(string card, GearSlot slot)
+        {
+            var worn = PlayerProfile.TowerEquipped(card, slot);
+            var pieces = PlayerProfile.TowerGearFor(card, slot);
+            if (pieces.Count == 0 && worn == null)
+            {
+                Note(Strings.Get("camp.gearNoPieces"), true);
+                return;
+            }
+            // The first row takes the worn piece off (or leaves the slot empty): nothing is ticked by mistake.
+            var options = new List<KitOption> { new(Strings.Get(worn != null ? "camp.gearOff" : "camp.empty")) };
+            var chosen = 0;
+            foreach (var piece in pieces)
+            {
+                if (piece == worn) chosen = options.Count;
+                options.Add(new KitOption(GearText.Name(piece), Strings.Format("gear.detail", Strings.Get("rarity." + piece.Rarity.ToString().ToLowerInvariant()),
+                    piece.level, Gear.LevelCap[piece.rarity], GearCardData.ShortStat(piece))));
+            }
+            new KitDropdown(GearText.TowerSlotName(slot), options, chosen, i =>
+            {
+                if (i == 0)
+                {
+                    if (worn == null) return;
+                    PlayerProfile.UnequipTower(card, slot);
+                    Note(Strings.Format("camp.gearRemoved", GearText.TowerSlotName(slot), Strings.Card(card)));
+                }
+                else if (PlayerProfile.EquipTower(card, pieces[i - 1])) Note(Strings.Format("camp.gearWorn", Strings.Card(card)));
+                Refresh();
+            }, thumbnail: false) { name = "tower-gear-picker" }.OpenIn(Root);
         }
 
         /// <summary>The base screen with a structure picked (its Gear tab when asked), from its detail page.</summary>

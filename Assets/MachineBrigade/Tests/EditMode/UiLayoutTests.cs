@@ -335,7 +335,11 @@ namespace MachineBrigade.Tests
         public static IEnumerable<string> MenuScreenNames => MenuScreen.ScreenNames;
 
         /// <summary>The screens with one main action (the rest, lists and settings, have none).</summary>
-        private static readonly HashSet<string> WithPrimary = new() { "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "army-base", "shop-skins", "shop-units", "shop-items" };
+        private static readonly HashSet<string> WithPrimary = new()
+        {
+            "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
+            "army-base", "shop-skins", "shop-units", "shop-items",
+        };
 
         /// <summary>
         /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes, and in
