@@ -53,14 +53,14 @@ if str(HERE) not in sys.path:
 
 from frontier_kit import chamfered  # noqa: E402
 from mb_air import _prop_blade, _revolve  # noqa: E402
-from mb_bosses import _headlamp, _hull2d, _plate_bolts, _railing, _sec6, track_shoes, track_unit  # noqa: E402
+from mb_bosses import _headlamp, _hull2d, _plate_bolts, _railing, track_shoes, track_unit  # noqa: E402
 from mb_phase2 import _suffixed, dotted  # noqa: E402
-from mb_siege import bag_arc, bag_run, flag, flood_head, generator, lattice, loop_rail  # noqa: E402
+from mb_siege import bag_run, flag, flood_head, generator, lattice  # noqa: E402
 from mb_support import _beacon, _lpda, _ram, _telescopic_mast, _whip  # noqa: E402
 from mb_themes import ladder  # noqa: E402
 from mb_town import fbox  # noqa: E402
-from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _cable, _dish, _frame, _glacis, _hatch, _headlight,  # noqa: E402
-                         _jerrycans, _periscopes, _perimeter, _slats, _stowage_bin, _taillight, _wheel)
+from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _dish, _frame, _glacis, _hatch, _headlight,  # noqa: E402
+                         _periscopes, _slats, _stowage_bin, _taillight, _wheel)
 from mb_vehicles2 import _axis  # noqa: E402
 
 TAU = math.tau
@@ -462,23 +462,22 @@ SG_DECK = 3.56                   # top of the lower carriage's deck
 
 
 def rail_supergun(a):
-    """Super-heavy railway gun (Schwerer Gustav / K5 lineage), 52 x 7.8 m, muzzle 15.9 m up at rest: it stands on
-    two parallel standard-gauge tracks of its own ballasted bed (rail heads 0.36 m up, 30 m long). The
-    lower carriage: per track four four-axle bogies under two span bolsters and a Team box girder, cross
-    girders, a deck with hazard-striped headstocks, buffers, walkways, railings and ladders at the ends. On
-    a slewing ring amidships the upper carriage (`Turret`, it traverses): a base, two tall Team side walls
-    carrying the trunnion bosses, a raised breech platform, a rear loading platform with a crew cabin and
-    shells on a trolley. The 41.9 m, 80 cm gun rests at 10 degrees: a Team jacket with steel hoops over the
-    rear third, a tapering chase with a muzzle swell (`Muzzle_main` at the bore), a sliding-block breech,
-    the cradle with recoil cylinders on top, two toothed elevating arcs hanging under the trunnion and a
-    queen-post truss over the barrel against droop (the Paris gun's). Every elevating part is named
-    Main_cannon*, and the arcs put the game's elevation pivot within 0.3 m of the trunnion.
+    """Super-heavy railway gun (Schwerer Gustav / K5 lineage), 52.9 x 8.8 m (carriage 7 m wide), muzzle 15.7 m up at
+    rest: it stands on two parallel standard-gauge tracks of its own ballasted bed (rail heads 0.36 m up, 30 m
+    long). The lower carriage: per track four four-axle bogies under two span bolsters and a Team box girder, cross
+    girders, a deck with hazard-striped headstocks, buffers, walkways, railings and ladders at the ends. On a
+    slewing ring amidships the upper carriage (`Turret`, it traverses): a base, two tall Team side walls carrying
+    the trunnion bosses, a raised breech platform, a rear loading platform with a crew cabin and shells on a
+    trolley. The 41.9 m, 80 cm gun rests at 10 degrees: a Team jacket with steel hoops over the rear third, a
+    tapering chase with a muzzle swell (`Muzzle_main` at the bore), a sliding-block breech, the cradle with recoil
+    cylinders on top, two toothed elevating arcs hanging under the trunnion and a queen-post truss over the barrel
+    against droop (the Paris gun's). Every elevating part is named Main_cannon*, and the arcs put the game's
+    elevation pivot within 0.3 m of the trunnion.
 
-    Boss parts: `Part_main` (the whole upper carriage and gun, holding `Turret`) on the slewing ring;
-    `Part_gun` / `Part_gun.001`: 40 mm guns on pedestals at the front corners of the deck (left, right; on
-    `Mount_gun` / `Mount_gun.001` with `Muzzle_gun` / `Muzzle_gun.001`); `Part_generator`: the diesel
-    generator set on the rear deck; `Part_crane`: the ammunition jib crane on the loading platform (under
-    the Turret, it turns with it)."""
+    Boss parts: `Part_main` (the whole upper carriage and gun, holding `Turret`) on the slewing ring; `Part_gun` /
+    `Part_gun.001`: 40 mm guns on pedestals at the front corners of the deck (left, right; on `Mount_gun` /
+    `Mount_gun.001` with `Muzzle_gun` / `Muzzle_gun.001`); `Part_generator`: the diesel generator set on the rear
+    deck; `Part_crane`: the ammunition jib crane on the loading platform (under the Turret, it turns with it)."""
     _suffixed(a)
     armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
     dark, team = a.part('Chassis', 'Undercarriage'), a.part('Hull', 'Team')
@@ -668,7 +667,7 @@ def _hood_ring(y, w, z0, zs, wt, zt):
 
 def rail_tractor(a):
     """Armoured diesel shunting locomotive (Wehrmacht V 36 / D 311 "Panzerlok" lineage), one of the supergun's two
-    tractors: 10.9 m over the buffers, 3.1 m wide, cab roof 3.9 m, wheels on the rail heads at z = 0 (on the
+    tractors: 11.4 m over the buffers, 3.05 m wide, cab roof 4.0 m, wheels on the rail heads at z = 0 (on the
     supergun's own bed its rails top out at 0.36 m). A centre cab between a long front hood and a short rear
     hood, all in chamfered Team armour: the front hood with an armoured radiator grille and louvres, a
     headlamp, side louvres and access doors, an exhaust stack with a spark arrestor; the cab with vision slits
@@ -777,7 +776,7 @@ def rail_tractor(a):
 # ----------------------------------------------------------------------------- targeting_station
 def targeting_station(a):
     """The supergun's fire-control post (Wurzburg-Riese radar and a coast-artillery rangefinder post lineage),
-    8 x 6.5 m on a concrete pad, mast 10.3 m: a hardened Team cabin with lit vision slits under visors, a
+    8 x 6.5 m on a concrete pad, mast 11 m: a hardened Team cabin with lit vision slits under visors, a
     door and steps, an air vent and a stereoscopic rangefinder on the roof (a 4 m tube with end windows on a
     pedestal, a ladder up to it); sandbag walls along the front; a generator set and a cable reel.
 
@@ -903,7 +902,7 @@ def _axial_plates(part, y0, y1, R, angles, width, t=.08, zc=EB_ZC):
 
 
 def earth_borer(a):
-    """"Earth Worm" boring machine (Soviet "Battle Mole" / tunnel-boring machine lineage), 22.9 x 5.3 m, 6.2 m: a
+    """"Earth Worm" boring machine (Soviet "Battle Mole" / tunnel-boring machine lineage), 23.5 x 5.8 m, 6.9 m: a
     long armoured body of three segments joined by ribbed rubber bellows, each segment a barrel of revolution
     under longitudinal Team armour plates with dark end bands, riding on its own pair of short track units
     under fenders. Big spoil pipes run along both flanks from the shield to the tail, clamped at every
@@ -1152,7 +1151,7 @@ def _ca_hangar(a, name, muzzle, x):
 
 
 def command_airship(a):
-    """Armoured command airship ("Sky Admiral"), 45.9 x 31.4 m, 17 m tall: a flying battleship. A dark armoured
+    """Armoured command airship ("Sky Admiral"), 45.6 x 31.5 m, 16.1 m tall: a flying battleship. A dark armoured
     spine hull with a raked prow runs between two Team gas envelopes (belted with armour plates and bands)
     and carries the command: a three-tier bridge tower amidships with a glazed, lit command deck, bridge
     wings, searchlights and a radar mast on top; a gun turret on the bow deck and one on the stern deck; a
@@ -1330,7 +1329,7 @@ def _rounded_rect(hx, hy, r, n=6):
 
 
 def landing_hovercraft(a):
-    """Air-cushion landing craft (LCAC / Zubr lineage), 28.3 x 16 m, 9.2 m to the mast top: a buoyancy hull
+    """Air-cushion landing craft (LCAC / Zubr lineage), 29.3 x 15.9 m, 9.1 m to the fans' tops: a buoyancy hull
     riding on a black bag skirt with fingers round its foot; an open cargo deck the full length between two
     Team side structures (hazard lines and chevrons, tie-down rings, a raised stern ramp); on the side
     structures the turbine intakes and exhausts, life-raft canisters along their outer walls, handrails, and
@@ -1496,17 +1495,17 @@ SC_AXLES = (-4.6, -2.9, 2.5, 4.2)
 
 def supreme_command(a):
     """"Supreme Commander" super-heavy command vehicle (MZKT-7930 chassis / armoured mobile headquarters lineage),
-    14.4 x 4.2 m, 5.6 m roof, 11.2 m to the mast head: four axles of 1.9 m tyres in two pairs, a wide faceted
-    armoured cab with three thick windscreens, a VIP light bar with blue escort lights, a bull bar, headlights,
-    a gilded star on the nose and two Team pennants on staffs at the front corners; behind it the two-deck
-    armoured command citadel: a Team lower module with bolted plates, a side door and ladders, and on it the
-    war room with a lit window band under armoured louvres all round; a generator at the rear with its
-    exhaust, a rear door and steps. Deliberately light armament: two small remote machine guns.
+    14.6 x 4.2 m (5 m over the mirrors), 5.6 m roof, 11.2 m to the mast head: four axles of 1.9 m tyres in two
+    pairs, a wide faceted armoured cab with three thick windscreens, a VIP light bar with blue escort lights, a bull
+    bar, headlights, a gilded star on the nose and two Team pennants on staffs at the front corners; behind it the
+    two-deck armoured command citadel: a Team lower module with bolted plates, a side door and ladders, and on it
+    the war room with a lit window band under armoured louvres all round; a generator at the rear with its exhaust,
+    a rear door and steps. Deliberately light armament: two small remote machine guns.
 
-    Boss parts: `Part_antenna` (origin at the mast foot on the rear roof) holds the command antenna farm: the
-    raised telescopic mast with a log-periodic array and a crossed-dipole head, the SATCOM radome on the war
-    room, two link dishes and four whips; `Part_mg` / `Part_mg.001`: remote machine guns on the war room's front
-    corners (left, right) on `Mount_mg` / `Mount_mg.001` with `Muzzle_mg` / `Muzzle_mg.001`."""
+    Boss parts: `Part_antenna` (origin at the mast foot on the rear roof) holds the command antenna farm: the raised
+    telescopic mast with a log-periodic array and a crossed-dipole head, the SATCOM radome on the war room, two link
+    dishes and four whips; `Part_mg` / `Part_mg.001`: remote machine guns on the war room's front corners (left,
+    right) on `Mount_mg` / `Mount_mg.001` with `Muzzle_mg` / `Muzzle_mg.001`."""
     _suffixed(a)
     armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
     dark, team = a.part('Chassis', 'Undercarriage'), a.part('Citadel', 'Team')
@@ -1706,16 +1705,12 @@ def wreck_barrel(a):
         _on_tube(bare, tuple(kink), p2, 1.0, k * 2.1 + .4, .19, (.08, .1, .03))
 
 
-def _octagon(w, d, c):
-    return chamfered(w, d, c)
-
-
 def wreck_turret(a):
-    """Blown-open small turret, 2.4 x 2.6 m: origin at the centre of its ring on the deck. A charred octagonal
-    house standing a little askew on a scorched ring, its roof torn open: two plates left (the rear one with
-    the empty ring of the hatch that was blown off, its hinge bent up), a third peeled back on its hinge with
-    bare metal under it, jagged bare edges round the hole and embers glowing inside; the mantlet with a short
-    snapped barrel drooping, a side plate hanging off, rust streaks and soot."""
+    """Blown-open small turret, a 2.2 x 2.4 m house (3.7 m long with its barrel stub): origin at the centre of its
+    ring on the deck. A charred octagonal house standing a little askew on a scorched ring, its roof torn open: two
+    plates left (the rear one with the empty ring of the hatch that was blown off, its hinge bent up), a third
+    peeled back on its hinge with bare metal under it, jagged bare edges round the hole and embers glowing inside;
+    the mantlet with a short snapped barrel drooping, a side plate hanging off, rust streaks and soot."""
     _suffixed(a)
     rng = random.Random(802)
     char, rust = a.part('Turret', 'Charred'), a.part('Rust', 'Rust')
@@ -1724,7 +1719,7 @@ def wreck_turret(a):
     soot.cyl(1.2, .02, loc=(0, 0, .01), seg=20, bevel=0)                                               # scorch
     tilt = (.05, -.04, .12)
     m = _frame((0, 0, .16), tilt)
-    outline = _octagon(2.2, 2.4, .55)
+    outline = chamfered(2.2, 2.4, .55)
     char.shell(outline, .95, .12, loc=tuple(m @ Vector((0, 0, 0))), rot=tilt, taper=.86, floor=.08, bevel=.02)
     zt = .95
     # Roof: the rear plate with the empty hatch ring, the left front plate, one plate peeled back.
@@ -1769,10 +1764,10 @@ def wreck_turret(a):
 
 
 def wreck_launcher(a):
-    """Twisted rocket / missile launcher box, 2.6 m: origin at the centre of its pedestal's foot. A charred
-    pedestal and trunnion yoke; the box, sagging 12 degrees off its trunnion, is torn into three segments that
-    twist further round its long axis (0, 11 and 24 degrees) with bare metal at the tears; its front face
-    a grid of dark tube mouths, two tubes burst open, one missile half out of its tube and bent down, torn
+    """Twisted rocket / missile launcher box, 3.3 m with the hanging missile: origin at the centre of its pedestal's
+    foot. A charred pedestal and trunnion yoke; the box, sagging 12 degrees off its trunnion, is torn into three
+    segments that twist further round its long axis (0, 11 and 24 degrees) with bare metal at the tears; its front
+    face a grid of dark tube mouths, two tubes burst open, one missile half out of its tube and bent down, torn
     frame ribs sticking out, rust and soot."""
     _suffixed(a)
     rng = random.Random(803)
@@ -1869,11 +1864,10 @@ def wreck_stump(a):
 
 
 def wreck_engine(a):
-    """Burnt-out engine nacelle, 3.1 m long: origin at its middle, axis along Y (the front at -Y) so it replaces
-    an engine part. The front and rear cowlings charred and rust-streaked, the middle cowling gone: bare frame
-    rings and stringers over the blackened engine with embers glowing between them; two cowl panels hanging
-    peeled off, the propeller hub with three snapped, bent blade stubs, soot-caked exhaust stubs and a torn
-    cable."""
+    """Burnt-out engine nacelle, 3.6 m long with the hub: origin at its middle, axis along Y (the front at -Y) so it
+    replaces an engine part. The front and rear cowlings charred and rust-streaked, the middle cowling gone: bare
+    frame rings and stringers over the blackened engine with embers glowing between them; two cowl panels hanging
+    peeled off, the propeller hub with three snapped, bent blade stubs, soot-caked exhaust stubs and a torn cable."""
     _suffixed(a)
     rng = random.Random(805)
     char, rust = a.part('Nacelle', 'Charred'), a.part('Rust', 'Rust')
