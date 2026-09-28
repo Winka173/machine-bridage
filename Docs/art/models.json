@@ -675,9 +675,17 @@
     "file": "rail_boxcar.glb",
     "triangles": 2572
   },
+  "rail_supergun": {
+    "file": "rail_supergun.glb",
+    "triangles": 25352
+  },
   "rail_tanker": {
     "file": "rail_tanker.glb",
     "triangles": 2498
+  },
+  "rail_tractor": {
+    "file": "rail_tractor.glb",
+    "triangles": 5508
   },
   "railgun_truck": {
     "file": "railgun_truck.glb",
@@ -886,6 +894,10 @@
   "tank_trap": {
     "file": "tank_trap.glb",
     "triangles": 248
+  },
+  "targeting_station": {
+    "file": "targeting_station.glb",
+    "triangles": 4286
   },
   "telegraph_pole": {
     "file": "telegraph_pole.glb",

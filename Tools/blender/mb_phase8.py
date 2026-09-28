@@ -53,7 +53,7 @@ if str(HERE) not in sys.path:
 
 from frontier_kit import chamfered  # noqa: E402
 from mb_air import _prop_blade, _revolve  # noqa: E402
-from mb_bosses import _hull2d, _plate_bolts, _railing, _sec6, track_shoes, track_unit  # noqa: E402
+from mb_bosses import _headlamp, _hull2d, _plate_bolts, _railing, _sec6, track_shoes, track_unit  # noqa: E402
 from mb_phase2 import _suffixed, dotted  # noqa: E402
 from mb_siege import bag_arc, bag_run, flag, flood_head, generator, lattice, loop_rail  # noqa: E402
 from mb_support import _beacon, _lpda, _ram, _whip  # noqa: E402
@@ -101,8 +101,9 @@ def rws(a, mount, loc, parent=None, length=1.05, ammo=1, body='Armor'):
     with two glass eyes on the left, an ammunition box on side `ammo` and a smoke bank. The muzzle
     (Muzzle_mg ...) sits at the hider's face. Returns the pivot key."""
     key, mkey, tag = _slot_names(mount)
-    a.part(f'RWS_socket_{tag}', 'Steel', parent).cyl(.3, .08, loc=_v(loc, dz=.03), seg=14, bevel=.01, bseg=1)
-    m = a.pivot(key, loc, dotted(parent) if parent else None)
+    pk = dotted(parent) if parent else None
+    a.part(f'RWS_socket_{tag}', 'Steel', pk).cyl(.3, .08, loc=_v(loc, dz=.03), seg=14, bevel=.01, bseg=1)
+    m = a.pivot(key, loc, pk)
     steel = a.part(f'RWS_steel_{tag}', 'Steel', m)
     arm = a.part(f'RWS_body_{tag}', body, m)
     dark = a.part(f'RWS_dark_{tag}', 'Undercarriage', m)
@@ -136,9 +137,10 @@ def autocannon(a, mount, loc, parent=None, length=3.0, r=.075, body='Team', size
     sloped faces, a cylindrical mantlet, one long autocannon barrel with cooling rings and a slotted muzzle
     brake round a dark bore, a sight and a vent. The muzzle sits at the brake's face. Returns the pivot key."""
     key, mkey, tag = _slot_names(mount)
+    pk = dotted(parent) if parent else None
     w, d, h = size
-    a.part(f'Gun_ring_{tag}', 'Armor', parent).cyl(w * .5, .1, loc=_v(loc, dz=.03), seg=18, bevel=.02, bseg=1)
-    m = a.pivot(key, loc, dotted(parent) if parent else None)
+    a.part(f'Gun_ring_{tag}', 'Armor', pk).cyl(w * .5, .1, loc=_v(loc, dz=.03), seg=18, bevel=.02, bseg=1)
+    m = a.pivot(key, loc, pk)
     house = a.part(f'Gun_house_{tag}', body, m)
     arm = a.part(f'Gun_armor_{tag}', 'Armor', m)
     steel = a.part(f'Gun_steel_{tag}', 'Steel', m)
@@ -366,8 +368,524 @@ def armored_bulldozer(a):
     _ram(a, _rel((-1.66, -1.3, .62), o), _rel((-1.3, -3.28, 1.45), o), .07, parent=b)           # tilt brace
 
 
+# ----------------------------------------------------------------------------- railway helpers
+TREAD = .7525        # wheel tread / rail head centre either side of a track's centre line (1.435 m gauge)
+RAIL_TOP = .36       # the supergun's rail heads, on its own ballasted track bed
+
+
+def _track_bed(a, xs, y0, y1, pitch=.66):
+    """Ballasted standard-gauge track for each track centre x in xs, from y0 to y1: a ballast bank with
+    sloped shoulders, timber sleepers every `pitch` metres and two rails (steel head, dark foot) whose heads
+    top out at RAIL_TOP."""
+    bal, sleeper = a.part('Ballast', 'Concrete'), a.part('Sleepers', 'Wood')
+    rail, foot = a.part('Rails', 'Steel'), a.part('Rail_feet', 'Undercarriage')
+    L, yc = y1 - y0, (y0 + y1) / 2
+    n = int(L / pitch)
+    for x in xs:
+        bal.prism([(x - 1.95, -.05), (x + 1.95, -.05), (x + 1.45, .15), (x - 1.45, .15)], L, loc=(0, yc, 0),
+                  axis='Y', bevel=.03, seg=1)
+        for k in range(n):
+            sleeper.box((2.6, .24, .14), loc=(x, y0 + (k + .5) * L / n, .19), bevel=.01, seg=1)
+        for s in (-1, 1):
+            rail.box((.07, L, .1), loc=(x + s * TREAD, yc, .31), bevel=.01, seg=1)
+            foot.box((.15, L, .03), loc=(x + s * TREAD, yc, .265), bevel=0)
+
+
+def _rail_bogie(a, x0, y, axles, pitch, r, z0=0.0, frame_len=None):
+    """Railway bogie centred at (x0, y) with its wheel treads on rail heads at height z0: axles, wheels on the
+    1.435 m gauge (treads at x0 +- 0.7525), hubs, axle boxes, side frames with springs and a bolster."""
+    wheel, under, steel = a.part('Wheels', 'Steel'), a.part('Bogies', 'Undercarriage'), a.part('Bogie_steel', 'Steel')
+    frame_len = frame_len or (axles - 1) * pitch + 2 * r + .3
+    zc = z0 + r
+    for i in range(axles):
+        ay = y + (i - (axles - 1) / 2) * pitch
+        steel.cyl(.08, 1.9, loc=(x0, ay, zc), rot=ACROSS, seg=8, bevel=0)                        # axle
+        for s in (-1, 1):
+            wheel.cyl(r, .13, loc=(x0 + s * TREAD, ay, zc), rot=ACROSS, seg=12, bevel=0)
+            under.cyl(r * .42, .16, loc=(x0 + s * (TREAD + .05), ay, zc), rot=ACROSS, seg=6, bevel=0)  # hub
+            under.box((.22, .3, .3), loc=(x0 + s * .98, ay, zc), bevel=0)                         # axle box
+    for s in (-1, 1):
+        under.box((.14, frame_len, .42), loc=(x0 + s * 1.1, y, zc + .12), bevel=.03, seg=1)      # side frame
+        for k in range(axles - 1):
+            steel.cyl(.08, .3, loc=(x0 + s * 1.1, y + (k + .5 - (axles - 1) / 2) * pitch, zc + .48), seg=8, bevel=0)
+    under.box((2.1, .5, .26), loc=(x0, y, zc + .5), bevel=.03, seg=1)                             # bolster
+
+
+def _headstock(a, x0, face, end, z0=0.0, width=2.9):
+    """Hazard-striped headstock across a track at the carriage end `face` (end -1 front, +1 rear), buffers
+    reaching out 0.38 m and a coupler; rails at height z0."""
+    zb = z0 + 1.06
+    c = face - end * .1
+    a.part('Headstocks', 'SafetyStripe').box((width, .2, .5), loc=(x0, c, zb), bevel=.02, seg=1)
+    bars = a.part('Headstock_bars', 'Charred')
+    n = int(width / .4)
+    for k in range(n):
+        bars.box((.13, .02, .56), loc=(x0 - (n - 1) * .2 + k * .4, face + end * .005, zb), rot=(0, .6, 0), bevel=0)
+    steel = a.part('Buffers', 'Steel')
+    for s in (-1, 1):
+        steel.cyl(.1, .34, loc=(x0 + s * .85, face + end * .15, zb), rot=FORWARD, seg=8, bevel=0)
+        steel.cyl(.22, .06, loc=(x0 + s * .85, face + end * .345, zb), rot=FORWARD, seg=12, bevel=.015, bseg=1)
+    a.part('Couplers', 'Armor').box((.26, .3, .2), loc=(x0, face + end * .12, zb - .05), bevel=.03, seg=1)
+
+
+def _genset(a, parent, loc, size=(2.6, 1.4, 1.45)):
+    """Diesel generator set on a skid along X at loc (its base centre, relative to `parent`): a housing with
+    Team service doors on both long sides, a radiator grille at +X, louvres, an exhaust stack with a rain
+    cap, a control panel, lifting eyes and a hazard stripe along the skid."""
+    x, y, z = loc
+    w, d, h = size
+    a.part('Genset_skid', 'Undercarriage', parent).box((w + .2, d + .1, .16), loc=(x, y, z + .08), bevel=.02, seg=1)
+    a.part('Genset_stripe', 'Hazard', parent).box((w + .22, .02, .06), loc=(x, y - d / 2 - .05, z + .1), bevel=0)
+    body = a.part('Genset_body', 'Armor', parent)
+    body.box((w, d, h - .16), loc=(x, y, z + .16 + (h - .16) / 2), bevel=.04, seg=1)
+    doors = a.part('Genset_doors', 'Team', parent)
+    for sy in (-1, 1):
+        for dx in (-.55, .25):
+            doors.box((.72, .04, h - .5), loc=(x + dx * w / 2, y + sy * (d / 2 + .005), z + .16 + (h - .16) / 2),
+                      bevel=.01, seg=1)
+    a.part('Genset_grille', 'Undercarriage', parent).grille(d - .3, h - .5, loc=(x + w / 2 + .02, y, z + .2 + h / 2),
+                                                            rot=(0, 0, R90), slats=5, depth=.05, thickness=.04)
+    steel = a.part('Genset_steel', 'Steel', parent)
+    steel.cyl(.09, .7, loc=(x - w * .3, y + d * .2, z + h + .3), seg=8, bevel=0)                  # exhaust stack
+    steel.cyl(.13, .05, loc=(x - w * .3, y + d * .2, z + h + .66), seg=8, bevel=0)                # rain cap
+    for dx in (-w * .38, w * .38):
+        steel.tube([(x + dx - .08, y, z + h - .02), (x + dx - .08, y, z + h + .08), (x + dx + .08, y, z + h + .08),
+                    (x + dx + .08, y, z + h - .02)], .02, seg=4)
+    a.part('Genset_panel', 'Glass', parent).box((.3, .03, .2), loc=(x - w * .38, y - d / 2 - .01, z + h * .7), bevel=0)
+
+
+# ----------------------------------------------------------------------------- rail_supergun
+SG_TRACKS = (2.5, -2.5)          # track centres (left, right)
+SG_BOGIES = (-9.75, -3.25, 3.25, 9.75)
+SG_END = 13.2                    # headstock faces at y = +-SG_END
+SG_DECK = 3.56                   # top of the lower carriage's deck
+
+
+def rail_supergun(a):
+    """Super-heavy railway gun (Schwerer Gustav / K5 lineage), 52 x 7.8 m, muzzle 15.9 m up at rest: it stands on
+    two parallel standard-gauge tracks of its own ballasted bed (rail heads 0.36 m up, 30 m long). The
+    lower carriage: per track four four-axle bogies under two span bolsters and a Team box girder, cross
+    girders, a deck with hazard-striped headstocks, buffers, walkways, railings and ladders at the ends. On
+    a slewing ring amidships the upper carriage (`Turret`, it traverses): a base, two tall Team side walls
+    carrying the trunnion bosses, a raised breech platform, a rear loading platform with a crew cabin and
+    shells on a trolley. The 41.9 m, 80 cm gun rests at 10 degrees: a Team jacket with steel hoops over the
+    rear third, a tapering chase with a muzzle swell (`Muzzle_main` at the bore), a sliding-block breech,
+    the cradle with recoil cylinders on top, two toothed elevating arcs hanging under the trunnion and a
+    queen-post truss over the barrel against droop (the Paris gun's). Every elevating part is named
+    Main_cannon*, and the arcs put the game's elevation pivot within 0.3 m of the trunnion.
+
+    Boss parts: `Part_main` (the whole upper carriage and gun, holding `Turret`) on the slewing ring;
+    `Part_gun` / `Part_gun.001`: 40 mm guns on pedestals at the front corners of the deck (left, right; on
+    `Mount_gun` / `Mount_gun.001` with `Muzzle_gun` / `Muzzle_gun.001`); `Part_generator`: the diesel
+    generator set on the rear deck; `Part_crane`: the ammunition jib crane on the loading platform (under
+    the Turret, it turns with it)."""
+    _suffixed(a)
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    dark, team = a.part('Chassis', 'Undercarriage'), a.part('Hull', 'Team')
+    rt = RAIL_TOP
+    _track_bed(a, SG_TRACKS, -15.0, 15.0)
+    for x in SG_TRACKS:
+        for y in SG_BOGIES:
+            _rail_bogie(a, x, y, 4, 1.25, .5, z0=rt)
+        for yc in (-6.5, 6.5):
+            dark.box((2.0, 11.6, .5), loc=(x, yc, rt + 1.35), bevel=.03, seg=1)                  # span bolsters
+            for yb in (yc - 3.25, yc + 3.25):
+                steel.cyl(.42, .16, loc=(x, yb, rt + 1.08), seg=12, bevel=0)                      # centre pivots
+        team.box((1.7, 2 * SG_END - .3, 1.5), loc=(x, 0, rt + 2.35), bevel=.05, seg=1)            # main girder
+        s = 1 if x > 0 else -1
+        for y in (-11.5, -8.0, -4.8, -1.6, 1.6, 4.8, 8.0, 11.5):                                  # girder ribs
+            armor.box((.08, .22, 1.3), loc=(x + s * .87, y, rt + 2.35), bevel=0)
+        _plate_bolts(steel, x + s * .9, [y + dy for y in (-9.75, -3.25, 3.25, 9.75) for dy in (-.8, .8)], rt + 3.0,
+                     r=.04, h=.04)
+        for end, face in ((-1, -SG_END), (1, SG_END)):
+            _headstock(a, x, face, end, rt)
+    for y in (-12.0, -8.0, -1.8, 1.8, 8.0, 12.0):
+        dark.box((3.4, .5, 1.2), loc=(0, y, 2.8), bevel=.02, seg=1)                               # cross girders
+    armor.box((7.0, 2 * SG_END - .2, .14), loc=(0, 0, SG_DECK - .07), bevel=.03, seg=1)          # deck
+    tread = a.part('Deck_tread', 'Undercarriage')
+    for s in (-1, 1):
+        tread.box((.8, 2 * SG_END - 1.0, .02), loc=(s * 3.0, 0, SG_DECK + .005), bevel=0)
+    for yc in (-10.6, 10.6):                                                                       # Team deck plates
+        if yc > 0:
+            team.box((1.6, 4.2, .04), loc=(2.4, yc, SG_DECK), bevel=0)
+            team.box((1.6, 4.2, .04), loc=(-2.4, yc, SG_DECK), bevel=0)
+        else:
+            team.box((1.8, 3.8, .04), loc=(0, yc - .2, SG_DECK), bevel=0)
+    rail = a.part('Railings', 'Steel')
+    for s in (-1, 1):                          # railings only beyond the upper carriage's sweep
+        _railing(rail, [(s * 3.42, -8.4, SG_DECK), (s * 3.42, -12.9, SG_DECK)], every=1.5)
+        _railing(rail, [(s * 3.42, 8.4, SG_DECK), (s * 3.42, 12.9, SG_DECK)], every=1.5)
+        for end in (-1, 1):
+            ladder(a.part('Ladders', 'Steel'), (s * 3.62, end * 12.5, rt), SG_DECK + .9, 0, width=.44, step=.34,
+                   rung=.03)
+    steel.cyl(2.9, .16, loc=(0, 0, SG_DECK + .06), seg=32, bevel=.02, bseg=1)                     # slewing ring
+    for k in range(16):
+        u = k * TAU / 16
+        steel.box((.2, .3, .12), loc=(math.cos(u) * 3.05, math.sin(u) * 3.05, SG_DECK + .04), rot=(0, 0, u), bevel=0)
+    # Boss parts on the lower carriage: the two 40 mm guns, the generator set.
+    for name, x in (('Part_gun', 2.6), ('Part_gun.001', -2.6)):
+        pg = pv(a, name, (x, -11.3, SG_DECK))
+        tag = name[5:].replace('.', '_')
+        a.part(f'Pedestal_{tag}', 'Armor', pg).cyl(.8, .8, loc=(0, 0, .4), seg=18, bevel=.04, bseg=1)
+        a.part(f'Pedestal_band_{tag}', 'SafetyStripe', pg).cyl(.82, .12, loc=(0, 0, .62), seg=18, bevel=0)
+        autocannon(a, name.replace('Part_', 'Mount_'), (0, 0, .8), parent=name, length=2.4, r=.065, size=(1.1, 1.3, .6))
+    pgen = pv(a, 'Part_generator', (0, 11.2, SG_DECK))
+    _genset(a, pgen, (0, 0, 0))
+
+    # Upper carriage on `Turret`, inside Part_main.
+    pm = pv(a, 'Part_main', (0, 0, SG_DECK))
+    t = a.pivot('Turret', (0, 0, .14), pm)
+    tarm, tsteel = a.part('Turret_armor', 'Armor', t), a.part('Turret_steel', 'Steel', t)
+    tteam, tdark = a.part('Turret_walls', 'Team', t), a.part('Turret_dark', 'Undercarriage', t)
+    tarm.box((6.2, 13.5, .6), loc=(0, .25, .3), bevel=.05, seg=1)                                 # base y -6.5 .. 7
+    tsteel.cyl(2.75, .12, loc=(0, 0, .02), seg=32, bevel=0)
+    wall = [(-6.2, .55), (6.9, .55), (6.9, 3.4), (4.6, 5.5), (3.0, 6.7), (-.8, 6.7), (-2.8, 5.0), (-6.2, 2.2)]
+    T = Vector((0, 1.0, 5.2))                                                                      # trunnion
+    for s in (-1, 1):
+        tteam.prism(wall, .9, loc=(s * 2.05, 0, 0), axis='X', bevel=.06, seg=1)
+        for y, h in ((-5.0, 1.9), (-3.0, 3.3), (4.2, 3.9), (6.2, 2.6)):                           # ribs
+            tarm.box((.1, .26, h), loc=(s * 2.53, y, .55 + h / 2), bevel=0)
+        tsteel.cyl(1.05, .22, loc=(s * 2.6, T.y, T.z), rot=ACROSS, seg=20, bevel=.03, bseg=1)       # trunnion boss
+        tarm.cyl(.55, .3, loc=(s * 2.68, T.y, T.z), rot=ACROSS, seg=14, bevel=.03, bseg=1)
+        _plate_bolts(tsteel, s * 2.72, (T.y - .8, T.y + .8), T.z - .8, r=.05, h=.05)
+        tarm.box((.1, 3.6, .14), loc=(s * 2.53, 1.1, 6.62), bevel=0)                               # coping
+        ladder(a.part('Turret_ladders', 'Steel', t), (s * 2.62, -5.3, .6), 2.9, 0, width=.44, step=.34, rung=.03)
+        # Elevation gearboxes (the arcs of the cradle mesh with their pinions).
+        tdark.box((.46, 1.0, 1.4), loc=(s * 1.4, .45, 1.3), bevel=.03, seg=1)
+    # Breech platform between the walls, the rear loading platform on struts, its railings.
+    tarm.box((3.1, 2.7, .25), loc=(0, 5.55, 2.72), bevel=.02, seg=1)
+    for x in (-1.2, 1.2):
+        tsteel.box((.14, .14, 2.1), loc=(x, 5.0, 1.6), bevel=0)
+        tsteel.box((.14, .14, 2.1), loc=(x, 6.6, 1.6), bevel=0)
+    tarm.box((6.2, 3.8, .3), loc=(0, 8.8, 1.75), bevel=.03, seg=1)                                # y 6.9 .. 10.7
+    for x in (-2.7, -.9, .9, 2.7):
+        tsteel.limb((x, 6.7, .55), (x, 9.8, 1.62), .16, .16, bevel=0)                              # struts
+    trail = a.part('Turret_rails', 'Steel', t)
+    _railing(trail, [(-3.0, 7.0, 1.9), (-3.0, 10.6, 1.9), (3.0, 10.6, 1.9), (3.0, 7.0, 1.9)], every=1.3)
+    ladder(a.part('Turret_ladders', 'Steel', t), (0, 6.95, 1.9), 2.95, 0, width=.5, step=.3, rung=.03)  # to the breech
+    # Crew cabin on the left of the loading platform.
+    cab = a.part('Cabin', 'Team', t)
+    cab.box((1.9, 2.3, 2.0), loc=(2.0, 9.25, 2.9), bevel=.05, seg=1)
+    tarm.box((2.1, 2.5, .12), loc=(2.0, 9.25, 3.95), bevel=.02, seg=1)
+    cglass = a.part('Cabin_glass', 'Glass', t)
+    for y in (8.7, 9.8):
+        cglass.box((.04, .7, .5), loc=(2.96, y, 3.2), bevel=0)
+    cglass.box((1.2, .04, .5), loc=(2.0, 8.09, 3.2), bevel=0)
+    fbox(tarm, '-x', (1.05, 9.3, 2.85), (.8, .05, 1.7), out=.02, bevel=.01)                         # door
+    _antenna(a, t, 2.7, 10.2, 4.0, 2.2)
+    # Shells and charge cases on a trolley (Gilded brass cases, used sparingly).
+    trol = a.part('Trolley', 'Undercarriage', t)
+    trol.box((1.0, 4.2, .2), loc=(-.4, 8.8, 2.1), bevel=.02, seg=1)
+    for y in (7.2, 10.4):
+        for x in (-.8, 0.0):
+            a.part('Trolley_wheels', 'Steel', t).cyl(.14, .08, loc=(x, y, 2.0), rot=ACROSS, seg=8, bevel=0)
+    shell = a.part('Shell', 'Steel', t)
+    shell.lathe([(.38, 0), (.38, 2.1), (.3, 2.8), (.12, 3.25), (0, 3.35)], loc=(-.4, 10.55, 2.6), rot=FORWARD, seg=14)
+    a.part('Shell_bands', 'Hazard', t).cyl(.395, .16, loc=(-.4, 10.1, 2.6), rot=FORWARD, seg=14, bevel=0)
+    a.part('Charges', 'Gilded', t).cyl(.34, 1.3, loc=(-.4, 7.9, 2.55), rot=FORWARD, seg=12, bevel=.02, bseg=1)
+    # Ammunition jib crane (Part_crane) on the loading platform's right rear corner.
+    pc = pv(a, 'Part_crane', (-2.3, 10.0, 1.9), 'Turret')
+    crane = a.part('Crane', 'Hazard', pc)
+    csteel = a.part('Crane_steel', 'Steel', pc)
+    csteel.cyl(.36, .2, loc=(0, 0, .1), seg=14, bevel=.02, bseg=1)
+    crane.cyl(.2, 3.4, loc=(0, 0, 1.9), seg=12, bevel=.02, bseg=1)                                   # post
+    crane.limb((0, 0, 3.4), (1.7, -2.6, 3.4), .26, .34, bevel=.03)                                    # jib
+    crane.limb((0, 0, 2.2), (.9, -1.4, 3.25), .14, .14, bevel=0)                                     # brace
+    csteel.box((.4, .5, .3), loc=(-.1, .3, 3.4), bevel=.02, seg=1)                                   # winch
+    csteel.tube([(1.62, -2.48, 3.22), (1.62, -2.48, 1.55)], .025, seg=4)                             # hook cable
+    csteel.box((.2, .16, .26), loc=(1.62, -2.48, 1.45), bevel=0)                                      # hook block
+    csteel.tube([(1.52, -2.48, 1.32), (1.2, -2.48, .98), (2.04, -2.48, .98), (1.72, -2.48, 1.32)], .02, seg=4)  # sling
+
+    # The gun: every elevating part is a Main_cannon* child of the Turret.
+    p = math.radians(10)
+    at = _axis(T, p)
+    crot, brot = (R90 - p, 0, 0), (-p, 0, 0)
+    tube = a.part('Main_cannon', 'Armor', t)
+    tube.lathe([(1.02, 0), (1.02, 15.3), (.93, 15.8), (.64, 38.0), (0, 38.0)], loc=tuple(at(.6)), rot=crot,
+               seg=24)                                                                               # s .6 .. 38.6
+    a.part('Muzzle_brake', 'Armor', t).lathe([(.64, 0), (.74, .12), (.74, .85), (.42, .85), (.42, .3), (0, .3)],
+                                            loc=tuple(at(38.55)), rot=crot, seg=24)                 # swell, to 39.4
+    a.part('Main_cannon_bore', 'Charred', t).cyl(.415, .02, loc=tuple(at(38.87)), rot=crot, seg=16, bevel=0)
+    a.part('Main_cannon_jacket', 'Team', t).cyl(1.1, 15.0, loc=tuple(at(8.1)), rot=crot, seg=24, bevel=.03, bseg=1)
+    hoops = a.part('Main_cannon_hoops', 'Steel', t)
+    for sv in (1.2, 5.0, 9.0, 13.0, 15.45):
+        hoops.cyl(1.17, .3, loc=tuple(at(sv)), rot=crot, seg=24, bevel=.01, bseg=1)
+    for sv in (23.0, 31.0):
+        r = .93 - (sv - 16.4) * (.29 / 22)
+        hoops.cyl(r + .06, .25, loc=tuple(at(sv)), rot=crot, seg=20, bevel=0)
+    breech = a.part('Main_cannon_breech', 'Armor', t)
+    breech.box((2.5, 3.1, 2.5), loc=tuple(at(-.95)), rot=brot, bevel=.08, seg=1)                     # s -2.5 .. .6
+    bsteel = a.part('Main_cannon_block', 'Steel', t)
+    bsteel.box((3.1, .7, .8), loc=tuple(at(-1.9, .1)), rot=brot, bevel=.03, seg=1)                   # sliding block
+    bsteel.box((.5, .3, .5), loc=tuple(at(-2.6, .4, .6)), rot=brot, bevel=.02, seg=1)                # firing gear
+    cradle = a.part('Main_cannon_cradle', 'Armor', t)
+    cradle.box((2.8, 10.0, .3), loc=tuple(at(5.0, -1.35)), rot=brot, bevel=.03, seg=1)                # bottom plate
+    for sd in (-1.4, 1.4):
+        cradle.box((.3, 10.0, 2.3), loc=tuple(at(5.0, -.25, sd)), rot=brot, bevel=.03, seg=1)        # side plates
+    recoil = a.part('Main_cannon_recoil', 'Steel', t)
+    for sd in (-.62, .62):
+        recoil.cyl(.32, 8.6, loc=tuple(at(4.6, 1.4, sd)), rot=crot, seg=14, bevel=.02, bseg=1)
+    recoil.box((2.1, .5, .5), loc=tuple(at(8.9, 1.3)), rot=brot, bevel=.03, seg=1)                   # front yoke
+    recoil.cyl(.4, 3.3, loc=tuple(T), rot=ACROSS, seg=16, bevel=.02, bseg=1)                          # trunnion pin
+    # Toothed elevating arcs under the trunnion (radius 2.9), one inside each wall.
+    arc = a.part('Main_cannon_arcs', 'Steel', t)
+    down = -Vector((0, math.sin(p), math.cos(p)))
+    fwd = Vector((0, -math.cos(p), math.sin(p)))
+    R = 2.9
+    for sd in (-1.4, 1.4):
+        pts = []
+        for k in range(12):
+            ph = math.radians(55) * k / 11
+            pts.append(T + (down * math.cos(ph) + fwd * math.sin(ph)) * R)
+        for q0, q1 in zip(pts, pts[1:]):
+            arc.limb((sd, q0.y, q0.z), (sd, q1.y, q1.z), .2, .3, bevel=0)
+        for q in (pts[0], pts[5], pts[11]):                                                         # spokes
+            arc.limb((sd, T.y, T.z), (sd, q.y, q.z), .16, .16, bevel=0)
+    for sd in (-1.4, 1.4):                                                                         # pinions
+        q = T + down * (R + .38)
+        tsteel.cyl(.32, .3, loc=(sd, q.y, q.z), rot=ACROSS, seg=12, bevel=0)
+    # Queen-post truss over the barrel.
+    truss = a.part('Main_cannon_truss', 'Steel', t)
+    tops = []
+    for sv, h in ((12.0, 3.3), (25.0, 2.7)):
+        truss.limb(tuple(at(sv, 1.0)), tuple(at(sv, h)), .22, .22, bevel=.02)
+        truss.cyl(1.08 if sv < 16 else .88, .3, loc=tuple(at(sv)), rot=crot, seg=20, bevel=0)      # clamp ring
+        tops.append(at(sv, h))
+    truss.limb(tuple(tops[0]), tuple(tops[1]), .16, .16, bevel=0)
+    truss.tube([tuple(at(2.0, 1.12)), tuple(tops[0])], .06, seg=6)
+    truss.tube([tuple(tops[1]), tuple(at(35.0, .7))], .06, seg=6)
+    a.pivot('Muzzle_main', tuple(at(39.4)), t)
+
+
+# ----------------------------------------------------------------------------- rail_tractor
+RT_AXLES = (-3.0, -1.4, .2)      # three coupled axles; the jackshaft behind them
+
+
+def _hood_ring(y, w, z0, zs, wt, zt):
+    """Hood cross-section at y: flat sides to zs, chamfered to a roof of half-width wt at zt."""
+    return [(-w, y, z0), (w, y, z0), (w, y, zs), (wt, y, zt), (-wt, y, zt), (-w, y, zs)]
+
+
+def rail_tractor(a):
+    """Armoured diesel shunting locomotive (Wehrmacht V 36 / D 311 "Panzerlok" lineage), one of the supergun's two
+    tractors: 10.9 m over the buffers, 3.1 m wide, cab roof 3.9 m, wheels on the rail heads at z = 0 (on the
+    supergun's own bed its rails top out at 0.36 m). A centre cab between a long front hood and a short rear
+    hood, all in chamfered Team armour: the front hood with an armoured radiator grille and louvres, a
+    headlamp, side louvres and access doors, an exhaust stack with a spark arrestor; the cab with vision slits
+    behind visors, side doors and steps, a roof lamp, horn and whip; the rear hood with the fuel filler and
+    tool boxes. Running boards with handrails and a hazard-striped headstock with buffers at each end. Below:
+    three coupled axles in an outside frame with red side rods and cranks and a jackshaft with its big
+    crank disc (the V 36's drive), sand boxes and brake gear. No weapon, no pivots."""
+    _suffixed(a)
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    dark, team = a.part('Chassis', 'Undercarriage'), a.part('Hull', 'Team')
+    red = a.part('Rods', 'BarrelRed')
+    r = .55
+    for y in RT_AXLES:
+        steel.cyl(.09, 1.98, loc=(0, y, r), rot=ACROSS, seg=8, bevel=0)                            # axle
+        for s in (-1, 1):
+            a.part('Wheels', 'Steel').cyl(r, .13, loc=(s * TREAD, y, r), rot=ACROSS, seg=16, bevel=.012, bseg=1)
+            red.cyl(r * .78, .15, loc=(s * TREAD, y, r), rot=ACROSS, seg=14, bevel=0)             # wheel centres
+            dark.box((.14, .32, .34), loc=(s * .92, y, r), bevel=.02, seg=1)                       # axle boxes
+    jy = 2.1                                                                                       # jackshaft
+    steel.cyl(.12, 2.2, loc=(0, jy, .72), rot=ACROSS, seg=10, bevel=0)
+    for s in (-1, 1):
+        # Quartered cranks: the left pins stand up, the right ones forward.
+        off = Vector((0, 0, .26)) if s > 0 else Vector((0, -.26, 0))
+        pins = []
+        for y in RT_AXLES:
+            c = Vector((s * 1.02, y, r))
+            red.limb(tuple(c), tuple(c + off), .06, .16, bevel=0)                                  # crank arms
+            pins.append(c + off)
+            steel.cyl(.05, .1, loc=tuple(Vector((s * 1.06, 0, 0)) + Vector((0, (c + off).y, (c + off).z))), rot=ACROSS,
+                      seg=6, bevel=0)
+        red.box((.06, pins[-1].y - pins[0].y + .24, .12), loc=(s * 1.09, (pins[0].y + pins[-1].y) / 2, pins[0].z),
+                bevel=.01, seg=1)                                                                  # coupling rod
+        jc = Vector((s * 1.02, jy, .72))
+        red.cyl(.4, .08, loc=tuple(jc), rot=ACROSS, seg=16, bevel=.01, bseg=1)                     # jackshaft disc
+        jp = jc + off * 1.15
+        red.limb((s * 1.15, pins[-1].y, pins[-1].z), (s * 1.15, jp.y, jp.z), .07, .14, bevel=0)    # connecting rod
+        armor.box((.08, 7.6, .62), loc=(s * .92, -.3, .98), bevel=.015, seg=1)                     # outside frame
+        _plate_bolts(steel, s * .97, (-3.8, -2.2, -.6, 1.0, 2.8), 1.18, r=.03, h=.03)
+        for y in (-3.8, -.6):
+            dark.box((.3, .4, .25), loc=(s * 1.2, y, 1.075), bevel=.02, seg=1)                     # sand boxes
+        dark.box((.06, .2, .5), loc=(s * .85, -2.2, .55), rot=(.2, 0, 0), bevel=0)                 # brake hangers
+    armor.box((3.0, 10.3, .12), loc=(0, 0, 1.26), bevel=.02, seg=1)                                # running boards
+    for s in (-1, 1):
+        armor.box((.05, 10.1, .2), loc=(s * 1.5, 0, 1.16), bevel=0)                                 # valances
+    for end in (-1, 1):
+        _headstock(a, 0, end * 5.3, end, 0.0, width=2.9)
+        for s in (-1, 1):
+            steel.box((.32, .24, .04), loc=(s * 1.28, end * 4.95, .82), bevel=0)                    # end steps
+            steel.box((.04, .04, .5), loc=(s * 1.42, end * 4.95, 1.02), bevel=0)
+    # Long front hood.
+    hood = [_hood_ring(-4.8, .92, 1.32, 2.45, .6, 2.95), _hood_ring(-1.25, .95, 1.32, 2.5, .62, 3.0)]
+    team.loft(hood, bevel=.05, seg=1)
+    armor.box((1.7, .16, 1.2), loc=(0, -4.84, 1.98), bevel=.03, seg=1)                            # grille frame
+    for k in range(6):
+        armor.box((1.56, .16, .05), loc=(0, -4.95, 1.5 + k * .19), rot=(-.55, 0, 0), bevel=0)      # louvres
+    dark.box((1.5, .04, 1.1), loc=(0, -4.9, 1.98), bevel=0)
+    _headlamp(a, (0, -4.86, 2.75), r=.16)
+    for s in (-1, 1):
+        for end in (-1, 1):                                          # marker lamps: white ahead, red behind
+            armor.box((.22, .16, .22), loc=(s * 1.2, end * 5.07, 1.43), bevel=.02, seg=1)
+            a.part('Lamps' if end < 0 else 'Tail_lamps', 'Lamp' if end < 0 else 'LavaGlow').box(
+                (.14, .04, .12), loc=(s * 1.2, end * 5.155, 1.45), bevel=0)
+        a.part('Hood_louvres', 'Undercarriage').grille(1.2, .45, loc=(s * .955, -3.6, 2.0), rot=(0, 0, s * R90),
+                                                        slats=4, depth=.05, thickness=.035)
+        fbox(armor, '+x' if s > 0 else '-x', (s * .93, -2.2, 1.9), (.9, .05, .8), out=.02, bevel=.01)   # doors
+        steel.box((.04, .14, .04), loc=(s * .99, -1.9, 1.9), bevel=0)
+    steel.cyl(.14, .7, loc=(0, -2.1, 3.3), seg=10, bevel=0)                                        # exhaust stack
+    a.part('Soot', 'Charred').cyl(.2, .22, loc=(0, -2.1, 3.7), seg=10, bevel=.02, bseg=1)          # spark arrestor
+    armor.box((1.0, .9, .08), loc=(0, -3.6, 2.99), bevel=.02, seg=1)                               # roof hatch
+    # Centre cab with sloped armour.
+    cab = [_hood_ring(-1.3, 1.42, 1.32, 3.3, 1.0, 3.95), _hood_ring(1.3, 1.42, 1.32, 3.3, 1.0, 3.95)]
+    team.loft(cab, bevel=.06, seg=1)
+    glass, visor = a.part('Vision_slits', 'Glass'), a.part('Visors', 'Armor')
+    for end in (-1, 1):
+        for x in (-.6, .6):
+            glass.box((.5, .04, .16), loc=(x, end * 1.31, 3.35), bevel=0)
+            visor.box((.62, .18, .04), loc=(x, end * 1.36, 3.46), bevel=0)
+    for s in (-1, 1):
+        fbox(armor, '+x' if s > 0 else '-x', (s * 1.42, 0, 2.2), (.8, .05, 1.6), out=.02, bevel=.01)   # doors
+        glass.box((.04, .4, .14), loc=(s * 1.44, 0, 3.2), bevel=0)
+        for k in range(2):
+            steel.box((.3, .5, .04), loc=(s * 1.35, 0, .82 + k * .25), bevel=0)                     # steps
+        steel.tube([(s * 1.47, -.5, 1.4), (s * 1.47, -.5, 2.8)], .02, seg=4)                        # grab rails
+        steel.tube([(s * 1.47, .5, 1.4), (s * 1.47, .5, 2.8)], .02, seg=4)
+    armor.box((2.2, 2.9, .1), loc=(0, 0, 3.98), bevel=.03, seg=1)                                  # cab roof
+    a.part('Roof_lamp', 'Lamp').cyl(.12, .05, loc=(.5, -1.5, 4.12), rot=FORWARD, seg=10, bevel=0)
+    armor.cyl(.16, .2, loc=(.5, -1.42, 4.12), rot=FORWARD, seg=10, bevel=.02, bseg=1)
+    armor.box((.1, .5, .14), loc=(.5, -1.2, 4.06), bevel=0)
+    steel.cyl(.05, .3, r2=.09, loc=(-.5, -1.25, 4.15), rot=FORWARD, seg=8, bevel=0)                # horn
+    _whip(a, -.8, 1.1, 4.03, 1.4)
+    # Short rear hood.
+    team.loft([_hood_ring(1.25, .9, 1.32, 2.2, .58, 2.7), _hood_ring(4.8, .88, 1.32, 2.15, .56, 2.62)], bevel=.05, seg=1)
+    steel.cyl(.12, .1, loc=(.4, 3.4, 2.72), seg=8, bevel=0)                                        # fuel filler
+    for s in (-1, 1):
+        _stowage_bin(a, (s * 1.15, 3.3, 1.32), (.4, 1.2, .5), latch_side=s)
+    a.part('Lamps', 'Lamp').box((.3, .04, .14), loc=(0, 4.82, 2.45), bevel=0)
+    # Handrails along both hoods.
+    rail = a.part('Handrails', 'Steel')
+    for s in (-1, 1):
+        for y0, y1 in ((-4.7, -1.45), (1.45, 4.7)):
+            rail.tube([(s * 1.42, y0, 2.3), (s * 1.42, y1, 2.3)], .02, seg=4)
+            for y in (y0, (y0 + y1) / 2, y1):
+                rail.box((.03, .03, 1.0), loc=(s * 1.42, y, 1.82), bevel=0)
+
+
+# ----------------------------------------------------------------------------- targeting_station
+def targeting_station(a):
+    """The supergun's fire-control post (Wurzburg-Riese radar and a coast-artillery rangefinder post lineage),
+    8 x 6.5 m on a concrete pad, mast 10.3 m: a hardened Team cabin with lit vision slits under visors, a
+    door and steps, an air vent and a stereoscopic rangefinder on the roof (a 4 m tube with end windows on a
+    pedestal, a ladder up to it); sandbag walls along the front; a generator set and a cable reel.
+
+    Boss parts: `Part_radar` holds the fire-control radar: a pedestal and, spinning on `Radar`, a turntable,
+    a yoke and a 3.4 m parabolic dish tilted up 25 degrees with its feed horn on four struts and the receiver
+    box behind; `Part_antenna` holds the guyed lattice mast with its dipole head, a link dish, a floodlight
+    and the obstruction light."""
+    _suffixed(a)
+    rng = random.Random(88)
+    a.part('Pad', 'Concrete').prism(chamfered(8.0, 6.5, .5), .3, loc=(0, 0, .1), axis='Z', bevel=.04, seg=1)  # z -.05 .. .25
+    z0 = .25
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    # Cabin.
+    cx, cy, cw, cd, ch = -1.6, .2, 3.4, 2.8, 2.6
+    a.part('Cabin', 'Team').box((cw, cd, ch), loc=(cx, cy, z0 + ch / 2), bevel=.06, seg=1)
+    a.part('Cabin_roof', 'Team').box((cw + .3, cd + .3, .14), loc=(cx, cy, z0 + ch + .05), bevel=.03, seg=1)  # roof slab
+    armor.box((cw + .34, .12, .1), loc=(cx, cy - cd / 2 - .1, z0 + ch + .1), bevel=0)             # drip edge
+    lit, visor = a.part('Lit_slits', 'Lamp'), a.part('Visors', 'Armor')
+    for x in (-2.6, -1.6, -.6):
+        fbox(lit, '-y', (x, cy - cd / 2, z0 + 1.75), (.6, .05, .16), out=.015)
+        fbox(visor, '-y', (x, cy - cd / 2, z0 + 1.92), (.8, .3, .05), out=.14)
+    for y in (-.4, .8):
+        fbox(lit, '-x', (cx - cw / 2, y, z0 + 1.75), (.5, .05, .16), out=.015)
+        fbox(visor, '-x', (cx - cw / 2, y, z0 + 1.92), (.7, .3, .05), out=.14)
+    fbox(armor, '+x', (cx + cw / 2, cy + .3, z0 + 1.05), (.9, .06, 2.0), out=.025, bevel=.015)      # door
+    fbox(steel, '+x', (cx + cw / 2, cy - .02, z0 + 1.0), (.05, .06, .2), out=.06)
+    armor.box((.5, 1.2, .08), loc=(cx + cw / 2 + .22, cy + .3, z0 + 2.25), bevel=.02, seg=1)        # door canopy
+    a.part('Vent', 'Undercarriage').grille(.8, .5, loc=(cx, cy + cd / 2 + .02, z0 + 2.1), rot=(0, 0, math.pi), slats=4,
+                                           depth=.05, thickness=.035)
+    ladder(a.part('Ladder', 'Steel'), (cx - .9, cy + cd / 2 + .12, z0), z0 + ch + .9, 0, width=.44, step=.32, rung=.03)
+    # Stereoscopic rangefinder on the roof.
+    rz = z0 + ch + .12
+    armor.cyl(.3, .5, loc=(cx, cy - .3, rz + .25), seg=12, bevel=.03, bseg=1)                      # pedestal
+    armor.box((.7, .6, .45), loc=(cx, cy - .3, rz + .7), bevel=.04, seg=1)                          # eyepiece box
+    rf = a.part('Rangefinder', 'Team')
+    rf.cyl(.17, 3.4, loc=(cx, cy - .3, rz + .8), rot=ACROSS, seg=12, bevel=.02, bseg=1)
+    for s in (-1, 1):
+        armor.box((.3, .4, .4), loc=(cx + s * 1.75, cy - .3, rz + .8), bevel=.03, seg=1)            # end heads
+        a.part('Rangefinder_glass', 'Glass').box((.2, .04, .2), loc=(cx + s * 1.75, cy - .52, rz + .8), bevel=0)
+    # Sandbags along the front edge, a generator set and a cable reel.
+    bags = a.part('Sandbags', 'Sandbag')
+    for course in range(2):
+        bag_run(bags, rng, (-3.8, -2.85), (0.2, -2.85), z0 + .13 + course * .24, half=course % 2 == 1)
+    generator(a, (1.6, 2.55, z0), yaw=0, size=(2.0, 1.0, 1.2))
+    reel = a.part('Cable_reel', 'Rubber')
+    reel.cyl(.3, .5, loc=(-.2, 2.5, z0 + .38), rot=ACROSS, seg=12, bevel=.02, bseg=1)
+    for dx in (-.28, .28):
+        steel.cyl(.4, .04, loc=(-.2 + dx, 2.5, z0 + .38), rot=ACROSS, seg=14, bevel=0)
+    a.part('Cables', 'Rubber').tube([(-.2, 2.2, z0 + .1), (-.3, 1.7, z0 + .04), (-.1, 1.62, z0 + .6)], .04, seg=5)
+
+    # Part_radar: pedestal and the dish spinning on `Radar`.
+    rx, ry = 2.45, -.25
+    pr = pv(a, 'Part_radar', (rx, ry, z0))
+    pbody = a.part('Radar_pedestal', 'Armor', pr)
+    pbody.cyl(.7, .3, loc=(0, 0, .15), seg=16, bevel=.03, bseg=1)
+    pbody.cyl(.36, 1.1, loc=(0, 0, .8), seg=14, bevel=.03, bseg=1)
+    a.part('Radar_ring', 'Steel', pr).cyl(.46, .08, loc=(0, 0, 1.38), seg=16, bevel=0)
+    rr = pv(a, 'Radar', (0, 0, 1.42), 'Part_radar')
+    rsteel, rarm = a.part('Radar_steel', 'Steel', rr), a.part('Radar_yoke', 'Armor', rr)
+    rsteel.cyl(.44, .1, loc=(0, 0, .05), seg=16, bevel=.01, bseg=1)
+    rarm.box((.9, .6, .5), loc=(0, .15, .35), bevel=.04, seg=1)
+    for s in (-1, 1):
+        rarm.limb((s * .38, .1, .5), (s * .5, .1, 1.35), .14, .2, bevel=.02)                          # yoke arms
+    tilt = math.radians(25)
+    dc = Vector((0, .05, 1.45))                                                                         # dish back
+    _dish(a.part('Radar_dish', 'Medical', rr), tuple(dc), 1.7, 1.7, depth=.55, seg=18, tilt=tilt)
+    rsteel.cyl(.06, 1.1, loc=(0, .05, 1.45), rot=ACROSS, seg=8, bevel=0)                             # elevation axis
+    axis = Vector((0, -math.cos(tilt), math.sin(tilt)))
+    focus = dc + axis * 1.45
+    ring = []
+    for k in range(4):
+        u = math.pi / 4 + k * R90
+        side = Vector((math.cos(u), 0, 0)) * 1.3
+        up = Vector((0, math.sin(tilt), math.cos(tilt))) * math.sin(u) * 1.3
+        ring.append(dc + axis * .5 + side + up)
+    for q in ring:
+        rsteel.limb(tuple(q), tuple(focus), .04, .04, bevel=0)                                        # feed struts
+    rarm.cyl(.13, .3, loc=tuple(focus), rot=(R90 - tilt, 0, 0), seg=10, bevel=.02, bseg=1)             # feed horn
+    rarm.box((.7, .5, .6), loc=tuple(dc - axis * .45 + Vector((0, 0, -.1))), rot=(-tilt, 0, 0), bevel=.03, seg=1)
+    a.part('Radar_cable', 'Undercarriage', rr).tube([(.2, .4, .5), (.25, .55, .9), (.2, .45, 1.2)], .035, seg=5)
+
+    # Part_antenna: guyed lattice mast behind the cabin.
+    mx, my = -3.0, 2.45
+    pa = pv(a, 'Part_antenna', (mx, my, z0))
+    a.part('Mast_footing', 'Concrete', pa).box((1.1, 1.1, .2), loc=(0, 0, .08), bevel=.02, seg=1)
+    lattice(a.part('Mast', 'Steel', pa), 0, 0, .15, 9.4, .42, .2, 6, leg=.13, brace=.035)
+    head = a.part('Mast_head', 'Armor', pa)
+    head.box((.5, .5, .3), loc=(0, 0, 9.5), bevel=.02, seg=1)
+    dip = a.part('Dipoles', 'Steel', pa)
+    dip.cyl(.04, 1.0, loc=(0, 0, 10.1), seg=6, bevel=0)
+    for z in (9.8, 10.2):
+        dip.cyl(.025, 1.6, loc=(0, 0, z), rot=ACROSS, seg=5, bevel=0)
+        dip.cyl(.025, 1.6, loc=(0, 0, z), rot=(R90, 0, 0), seg=5, bevel=0)
+    a.part('Obstruction_light', 'LavaGlow', pa).sphere(.08, loc=(0, 0, 10.65), seg=8, rings=5)
+    _dish(a.part('Link_dish', 'Medical', pa), (.25, -.3, 8.2), .45, .45, depth=.16, seg=12, tilt=.1)
+    head.box((.2, .3, .2), loc=(.2, -.12, 8.2), bevel=0)
+    flood_head(a, (.3, -.35, 6.2), yaw=.5, tilt=.6, size=(.5, .26, .36), parent=pa)
+    guys = a.part('Guy_wires', 'Steel', pa)
+    for gx, gy in ((-.85, -.7), (.85, -.7), (-.7, .55), (.85, .6)):
+        guys.tube([(0, 0, 8.0), (gx, gy, .1)], .012, seg=4)
+        a.part('Guy_anchors', 'Steel', pa).box((.14, .14, .12), loc=(gx, gy, .06), bevel=0)
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
+    'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
+    'rail_tractor': (rail_tractor, dict(ao_distance=.8, grime_height=.7)),
+    'targeting_station': (targeting_station, dict(ao_distance=.9, grime_height=.6)),
 }
 
 
