@@ -206,6 +206,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 var v = list[i];
                 if (!v.IsAlive) continue;
+                if (v.Def.CounterBattery != null && (v.Gear == null || !v.Gear.Has(TraitId.CounterBatteryRadar))) _radars.Add(v);
                 var speed = 1f - StatusSystem.SlowShare(v, now);
                 var fire = 1f;
                 v.RangeFactor = 1f;
@@ -610,15 +611,30 @@ namespace MachineBrigade.Sim.Abilities
             var now = _world.Time;
             foreach (var radar in _radars)
             {
-                if (!radar.IsAlive || radar.Team == shooter.Team || radar.Team < 0 || radar.Team > 30) continue;
-                var t = radar.Gear!.Trait(TraitId.CounterBatteryRadar);
-                if (Vector2.Distance(radar.Position, shooter.Position) > t.B) continue;
+                if (!radar.IsAlive || radar.Team == shooter.Team || radar.Team < 0 || radar.Team > 30 || radar.Stunned) continue;
+                // The radar vehicle's own set, or the equipment trait (the better of the two when both).
+                float bonus, range, seconds;
+                var gear = radar.Gear != null && radar.Gear.Has(TraitId.CounterBatteryRadar);
+                if (gear)
+                {
+                    var t = radar.Gear!.Trait(TraitId.CounterBatteryRadar);
+                    (bonus, range, seconds) = (t.A, t.B, t.C);
+                    if (radar.Def.CounterBattery is { } own)
+                        (bonus, range, seconds) = (MathF.Max(bonus, own.Bonus), MathF.Max(range, own.Range), MathF.Max(seconds, own.Seconds));
+                }
+                else
+                {
+                    var own = radar.Def.CounterBattery!;
+                    (bonus, range, seconds) = (own.Bonus, own.Range, own.Seconds);
+                }
+                if (Vector2.Distance(radar.Position, shooter.Position) > range) continue;
                 ref var s = ref shooter.Statuses[(int)StatusKind.Reveal];
                 if (s.Until <= now) s.Stacks = 0;
                 s.Stacks |= 1 << radar.Team;
-                s.Value = MathF.Max(s.Until > now ? s.Value : 0f, t.A);
-                s.Until = Math.Max(s.Until, now + t.C);
-                Proc(radar, TraitId.CounterBatteryRadar);
+                s.Value = MathF.Max(s.Until > now ? s.Value : 0f, bonus);
+                s.Until = Math.Max(s.Until, now + seconds);
+                if (gear) Proc(radar, TraitId.CounterBatteryRadar);
+                else _world.Emit(SimEvent.Revealed(radar, shooter, seconds));
             }
         }
 

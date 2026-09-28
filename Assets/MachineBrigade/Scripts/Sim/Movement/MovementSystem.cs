@@ -426,9 +426,75 @@ namespace MachineBrigade.Sim.Movement
             }
         }
 
+        /// <summary>
+        /// A standoff helicopter (the Ka-52): it holds between 60 % and 92 % of its missiles' reach
+        /// from the target while no known enemy anti-air it outranges can reach it, and otherwise
+        /// moves round the target to the spot on that ring furthest out of such guns' reach
+        /// (smallest turn first). Anti-air that reaches as far as its missiles is not avoided:
+        /// there is no standing outside it.
+        /// </summary>
+        private bool Standoff(Vehicle v, IDamageable target)
+        {
+            var reach = v.Def.Weapon.Range;
+            var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
+            _shortAa.Clear();
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || !e.IsVisibleTo(v.Team)) continue;
+                var aa = 0f;
+                foreach (var m in e.Def.Mounts)
+                    if (m.Weapon.CanTarget(true)) aa = MathF.Max(aa, m.Weapon.Range);
+                if (aa > 0f && aa < reach - 2f) _shortAa.Add((e.Position, aa));
+            }
+            float Exposure(Vector2 at)
+            {
+                var worst = 0f;
+                foreach (var (p, r) in _shortAa) worst += MathF.Max(0f, r + StandoffMargin - Vector2.Distance(at, p));
+                return worst;
+            }
+            // The best spot on two rings round the target (82 % and 95 % of reach), smallest turn first.
+            var bearing = SimMath.HeadingOf(v.Position - target.Position);
+            var best = v.Position;
+            var bestExposure = float.MaxValue;
+            var bestScore = float.MaxValue;
+            foreach (var share in Rings)
+            {
+                var ring = reach * share + target.Radius;
+                for (var k = -4; k <= 4; k++)
+                {
+                    var spot = _world.ClampToMap(target.Position + SimMath.Forward(bearing + k * SimMath.DegToRad(22.5f)) * ring);
+                    var exposure = Exposure(spot);
+                    var score = exposure * 10f + MathF.Abs(k);
+                    if (score >= bestScore) continue;
+                    bestScore = score;
+                    bestExposure = exposure;
+                    best = spot;
+                }
+            }
+            // In the band and no better placed anywhere on the rings: hold and fire.
+            if (distance <= reach * 0.97f && distance >= reach * 0.6f && Exposure(v.Position) <= bestExposure + 0.5f &&
+                _world.HasLineOfFire(v, target, v.Def.Weapon))
+            {
+                v.ClearPath();
+                return true;
+            }
+            if (v.RepathTimer > 0f && v.HasPath) return true;
+            v.RepathTimer = RepathInterval;
+            _world.PathTo(v, best);
+            return true;
+        }
+
+        private static readonly float[] Rings = { 0.82f, 0.95f };
+
+        /// <summary>Metres a standoff helicopter keeps beyond the reach of anti-air it outranges.</summary>
+        private const float StandoffMargin = 5f;
+
+        private readonly List<(Vector2 at, float reach)> _shortAa = new();
+
         /// <summary>Holds position once in range; otherwise (re)paths towards the target.</summary>
         private void CloseIn(Vehicle v, IDamageable target)
         {
+            if (v.Flying && v.Def.Standoff && Standoff(v, target)) return;
             var weapon = v.Def.Weapon;
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
             if (weapon.MinRange > 0f && distance < weapon.MinRange + 1f)

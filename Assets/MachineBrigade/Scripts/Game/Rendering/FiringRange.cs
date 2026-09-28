@@ -102,7 +102,7 @@ namespace MachineBrigade.Game.Rendering
                 if (_support != null && _support.Kind is SupportKind.Repair or SupportKind.ShieldDome)
                     for (var i = 0; i < 3; i++)
                     {
-                        var friend = _world.SpawnVehicle(i == 1 ? "main_battle_tank" : "apc", 0, new Vector2(-6f + i * 6f, -2f), 0f);
+                        var friend = _world.SpawnVehicle(i == 1 ? "main_battle_tank" : "ifv", 0, new Vector2(-6f + i * 6f, -2f), 0f);
                         _world.DebugDamage(friend, 0.65f / Mathf.Max(0.01f, friend.Def.Armor == ArmorClass.Heavy ? 0.6f : 1f));
                     }
                 SetLayer(_root);
@@ -163,8 +163,14 @@ namespace MachineBrigade.Game.Rendering
             var fresh = new TeamEconomy(0, 999f, income: 50f, bank: 999f);
             if (_support.Consumable) fresh.Items[_support.Id] = 9;
             _world.EnableEconomy(fresh);
-            var at = _far + new Vector2(0f, 2f);
-            var towards = _support.IsLine ? at + new Vector2(1f, 0f) : default;
+            // A field tower lands on our side of the targets; remote mines across the runner's road.
+            var at = _support.Kind switch
+            {
+                SupportKind.Tower => new Vector2(-6f, -14f),
+                SupportKind.Minefield => new Vector2(0f, -8f),
+                _ => _far + new Vector2(0f, 2f),
+            };
+            var towards = _support.IsLine ? at + new Vector2(1f, 0f) : _support.Kind == SupportKind.Tower ? at + new Vector2(0f, 1f) : default;
             _world.Submit(Command.Strike(0, _support.Id, at, towards));
             var gap = _support.Kind is SupportKind.Escort or SupportKind.Reinforce ? 14.0 : _support.Kind == SupportKind.Smoke ? 10.0 : 7.0;
             _nextStrike = _world.Time + gap + _support.Delay + _support.Duration * 0.5;
@@ -182,11 +188,33 @@ namespace MachineBrigade.Game.Rendering
             if (_ground)
             {
                 Target("main_battle_tank", _far + new Vector2(-4f, 0f));
-                Target("apc", _far + new Vector2(5f, 3f));
+                Target("ifv", _far + new Vector2(5f, 3f));
                 Target("heavy_tank", _far + new Vector2(0f, 9f));
             }
             if (_air) Target("attack_helicopter", _far + new Vector2(_ground ? 10f : 0f, _ground ? -6f : 0f));
+            // SEAD wants an air defence to hit.
+            if (_support != null && _support.Kind == SupportKind.Sead) Target("aa_vehicle", _far + new Vector2(8f, 4f));
         }
+
+        /// <summary>Remote mines' clip: an armoured car drives to and fro across the minefield (a new one when a mine gets it).</summary>
+        private void RunTheMines()
+        {
+            if (_support == null || _support.Kind != SupportKind.Minefield || !_targetsUp) return;
+            if (_runner == null || !_runner.IsAlive)
+            {
+                if (_world.Time < _runnerAt) return;
+                _runner = _world.SpawnVehicle("armored_car", 1, new Vector2(-24f, -8f), MathF.PI * 0.5f);
+                _runnerLeg = 1;
+            }
+            if (_runner.IsMoving || _runner.Order.Kind == Sim.Entities.OrderKind.Move) return;
+            _runnerLeg = -_runnerLeg;
+            _world.Submit(new Command(CommandType.Move, 1, new[] { _runner.Id }, new Vector2(24f * -_runnerLeg, -8f)));
+            _runnerAt = _world.Time + 3.0;
+        }
+
+        private Vehicle _runner;
+        private int _runnerLeg = 1;
+        private double _runnerAt;
 
         private void Target(string id, Vector2 at)
         {
@@ -204,6 +232,7 @@ namespace MachineBrigade.Game.Rendering
                 _accumulator -= Step;
                 PlaceTargets();
                 CallSupport();
+                RunTheMines();
                 if (_shooter != null) Order();
                 _world.Step(Step);
                 _views.SnapshotAll();
@@ -255,7 +284,7 @@ namespace MachineBrigade.Game.Rendering
                 // An enemy vehicle (a real one, not a range target: those stand still) drives
                 // across the field and the mines go off under it.
                 _intruder = true;
-                var apc = _world.SpawnVehicle("apc", 1, new Vector2(2f, _far.Y), MathF.PI);
+                var apc = _world.SpawnVehicle("ifv", 1, new Vector2(2f, _far.Y), MathF.PI);
                 _world.Submit(new Command(CommandType.Move, 1, new[] { apc.Id }, new Vector2(0f, _start.Y - 6f)));
             }
             return true;

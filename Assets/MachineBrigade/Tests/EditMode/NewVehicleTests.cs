@@ -93,8 +93,8 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             var gun = world.SpawnVehicle("railgun_truck", 0, new Vector2(-24f, 0f), 1.57f);
-            var first = world.SpawnVehicle("apc", 1, new Vector2(10f, 0f), 0f);
-            var second = world.SpawnVehicle("apc", 1, new Vector2(18f, 0.5f), 0f);
+            var first = world.SpawnVehicle("ifv", 1, new Vector2(10f, 0f), 0f);
+            var second = world.SpawnVehicle("ifv", 1, new Vector2(18f, 0.5f), 0f);
             var a = first.Hp;
             var b = second.Hp;
             world.Submit(new MachineBrigade.Sim.Commands.Command(MachineBrigade.Sim.Commands.CommandType.Attack, 0, new[] { gun.Id }, default, first.Id));

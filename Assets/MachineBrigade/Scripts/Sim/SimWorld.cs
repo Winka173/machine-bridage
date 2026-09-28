@@ -64,6 +64,7 @@ namespace MachineBrigade.Sim
             _abilities = new Abilities.AbilitySystem(this);
             Economy = new EconomySystem(this);
             Strikes = new StrikeSystem(this);
+            Bases = new Modes.BaseSystem(this);
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
@@ -142,6 +143,9 @@ namespace MachineBrigade.Sim
         /// <summary>Some round is flying at this vehicle.</summary>
         internal bool RoundIncoming(EntityId vehicle) => _combat.RoundIncoming(vehicle);
         internal EconomySystem Economy { get; }
+
+        /// <summary>Each side's base: HQ, hardpoints, outposts (see <see cref="Modes.BaseSystem"/>).</summary>
+        public Modes.BaseSystem Bases { get; }
         internal StrikeSystem Strikes { get; }
         internal Abilities.AbilitySystem Abilities => _abilities;
 
@@ -239,19 +243,41 @@ namespace MachineBrigade.Sim
             Time - v.StillSince >= EntrenchSeconds;
 
         /// <summary>Whether a point lies in another side's home zone (strikes cannot be called there).</summary>
+        /// <summary>Whether a point lies in the other side's camp, whatever the mode lets be shelled there (a tower is never dropped into it).</summary>
+        internal bool InEnemyCamp(Vector2 point, int team)
+        {
+            foreach (var start in Map.Teams)
+            {
+                if (start.Team == team) continue;
+                if (Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+                if (Bases.Of(start.Team) is { } b && Vector2.Distance(b.HqPosition, point) < HomeRadius) return true;
+            }
+            return false;
+        }
+
         internal bool InEnemyHome(Vector2 point, int team)
         {
             if (!HomeZones) return false;
             foreach (var start in Map.Teams)
-                if (start.Team != team && Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+            {
+                // A base that is the objective (Assault, a siege) or that can be lost may be shelled.
+                if (start.Team == team || Bases.RoleOf(start.Team) is Content.BaseRole.Target or Content.BaseRole.Defend) continue;
+                if (Vector2.Distance(start.Rally, point) < HomeRadius) return true;
+                if (Bases.Of(start.Team) is { } b && Vector2.Distance(b.HqPosition, point) < HomeRadius) return true;
+            }
             return false;
         }
+
+        /// <summary>The mode being played ("Conquest", "Siege"...; null in tests), for data that differs by mode.</summary>
+        public string? ModeTag { get; set; }
 
         public void EnableEconomy(TeamEconomy economy)
         {
             // The catalog sets the pace of every economy (see balance.json "economy").
             economy.IncomeScale = Catalog.IncomeScale;
             economy.SupplyScale = Catalog.SupplyScale;
+            // A mode that set no supply of its own takes the data's for it.
+            if (economy.BaseArmyCap <= 0) economy.BaseArmyCap = Catalog.ArmyCapFor(ModeTag);
             Economy.Enable(economy);
         }
 
@@ -327,17 +353,25 @@ namespace MachineBrigade.Sim
         /// left as they are unless <paramref name="everything"/> (a campaign enemy keeping pace
         /// with the player's arsenal: its boss and towers too).
         /// </summary>
-        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false)
+        public void SetBoosts(int team, Func<VehicleDef, VehicleBoost>? boosts, Func<string, float>? strikeDamage = null, bool everything = false,
+            Func<string, int>? strikeRank = null)
         {
             if (team < 0 || team >= _boosts.Length) return;
             _boosts[team] = boosts;
             _strikeBoosts[team] = strikeDamage;
+            _strikeRanks[team] = strikeRank;
             _boostAll[team] = everything;
         }
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
         internal float StrikeDamage(int team, string supportId) =>
             team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
+
+        /// <summary>The rank of a side's fire-support card (1 when the side has no ranks).</summary>
+        internal int StrikeRank(int team, string supportId) =>
+            team >= 0 && team < _strikeRanks.Length && _strikeRanks[team] is { } rank ? rank(supportId) : 1;
+
+        private readonly Func<string, int>?[] _strikeRanks = new Func<string, int>?[3];
 
         private void Upgrade(Vehicle v, VehicleBoost b)
         {
@@ -420,6 +454,8 @@ namespace MachineBrigade.Sim
             if (IsOver) return CommandResult.Rejected(CommandError.MatchOver);
             if (command.Type == CommandType.Deploy) return Economy.Deploy(command.Team, command.DefId);
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
+            if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
+            if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
 
             _unitBuffer.Clear();
             foreach (var id in command.Units)
@@ -489,6 +525,7 @@ namespace MachineBrigade.Sim
             Time += dt;
             RefreshVisibility();
             Economy.Step(dt);
+            Bases.Step();
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
@@ -733,6 +770,8 @@ namespace MachineBrigade.Sim
                 // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
                 ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
                 if (reveal.Until > Time) mask |= reveal.Stacks;
+                // A UAV scan: everything under it, stealth and hidden too.
+                mask |= Strikes.ScanMask(target.Position, target.Team);
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }

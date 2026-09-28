@@ -9,6 +9,7 @@ using MachineBrigade.Game.Rendering;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.AI;
+using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Economy;
@@ -168,14 +169,14 @@ namespace MachineBrigade.Game.Match
             var map = GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
-            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost);
+            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
             if (mission != null)
             {
                 var deck = new List<VehicleBoost>();
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
-                var edge = EnemyScaling.Match(deck);
+                var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
@@ -635,7 +636,7 @@ namespace MachineBrigade.Game.Match
             if (Time.time < _raidAt) return;
             _raidAt = Time.time + 18f;
             var at = bastion.Position + new System.Numerics.Vector2(20f, 20f);
-            foreach (var id in new[] { "light_tank", "apc", "armored_car", "attack_helicopter" })
+            foreach (var id in new[] { "light_tank", "ifv", "armored_car", "attack_helicopter" })
                 _world.SpawnVehicle(id, EnemyTeam, at + new System.Numerics.Vector2(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-6f, 6f)), 3.9f);
         }
         private float _smokeAt = 10f;
@@ -907,6 +908,13 @@ namespace MachineBrigade.Game.Match
                 playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
                 _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
             };
+            _hud.TowerPressed += () =>
+            {
+                var callable = _world.Bases.Callable(PlayerTeam);
+                if (callable.Count == 0) return;
+                var result = _world.Submit(new Command(CommandType.CallTower, PlayerTeam, System.Array.Empty<MachineBrigade.Sim.Core.EntityId>(), callable[0].Def.Position));
+                if (result.Accepted) _hud.Toast(Strings.Get("toast.towerCalled")); else _hud.ShowError(result.Error);
+            };
             _hud.AutoDeployToggled += () =>
             {
                 MatchSettings.AutoDeploy = playerAi.AutoDeploy = !playerAi.AutoDeploy;
@@ -1028,6 +1036,11 @@ namespace MachineBrigade.Game.Match
 
         private void UpdateStatus()
         {
+            if (!_menu)
+            {
+                var callable = _world.Bases.Callable(PlayerTeam);
+                _hud.SetTowers(callable.Count, callable.Count > 0 ? _world.Bases.CostOf(callable[0]) : 0);
+            }
             if (Time.unscaledDeltaTime > 0f) _fps = Mathf.Lerp(_fps, 1f / Time.unscaledDeltaTime, 0.05f);
             if (_menu) return;
 

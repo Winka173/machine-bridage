@@ -242,7 +242,14 @@ namespace MachineBrigade.Game.Effects
                         // Active protection: a launcher on the turret fires, and the incoming round
                         // bursts in the air a few metres short of the tank.
                         var interceptAt = Ground(e.Position, 1.8f);
-                        if (views.TryGet(e.Entity, out var guard))
+                        if (views.TryGet(e.Entity, out var guard) && guard.Def.Weapon.Beam)
+                        {
+                            // A point-defence laser: the beam burns the round out of the air.
+                            var emitter = guard.MuzzleOf(0);
+                            _tracers.Beam(emitter, interceptAt, 0.14f, 0.12f, now);
+                            _muzzle.Fire(MuzzleFx.Kind.MachineGun, emitter, interceptAt - emitter, now, 0.7f, guard.Position.y);
+                        }
+                        else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
                             _tracers.Launch(from, interceptAt, 0.06f, 0f, 0.12f, 1.2f, now);
@@ -250,6 +257,11 @@ namespace MachineBrigade.Game.Effects
                         }
                         Pop(_pop, interceptAt, now);
                         _emitters.Flak(interceptAt);
+                        break;
+
+                    case SimEventKind.GunRevealed:
+                        // A counter-battery radar found a gun that fired: a red ping on it.
+                        Ring(Ground(e.Position, 0.3f), 7f, new Color(2.4f, 0.4f, 0.25f, 0.8f));
                         break;
 
                     case SimEventKind.Repaired:
@@ -625,7 +637,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Items that do no damage (EMP, shield dome, airdrops, loaned escorts) show a pulse, not a blast.</summary>
         private bool IsGentle(string defId) =>
             defId != null && _catalog.TryGetSupport(defId, out var support) &&
-            support.Kind is SupportKind.Emp or SupportKind.ShieldDome or SupportKind.Reinforce or SupportKind.Escort;
+            support.Kind is SupportKind.Emp or SupportKind.ShieldDome or SupportKind.Reinforce or SupportKind.Escort
+                or SupportKind.Scan or SupportKind.Tower or SupportKind.Minefield;
 
         private void Pulse(string defId, Vector3 at)
         {
@@ -643,6 +656,17 @@ namespace MachineBrigade.Game.Effects
                 case SupportKind.Escort:
                     // An aircraft on its way: a small mark where it was called, no gust of dust.
                     Ring(at, 6f, new Color(0.7f, 1.2f, 1.6f, 0.6f));
+                    break;
+                case SupportKind.Scan:
+                    // The drone's sensor sweep: a radar-cyan ring the size of what it sees.
+                    Ring(at, support.Radius * 2f, new Color(0.3f, 1.4f, 2f, 0.7f));
+                    break;
+                case SupportKind.Minefield:
+                    // Each mine thuds into the ground in a small puff of dirt.
+                    Ring(at, 2.2f, new Color(1.1f, 0.95f, 0.75f, 0.7f));
+                    break;
+                case SupportKind.Tower:
+                    Ring(at, 8f, new Color(1.2f, 1.1f, 0.9f, 0.8f));
                     break;
                 default:
                     // Airdrops land in a gust of dust.

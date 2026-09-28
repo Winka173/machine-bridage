@@ -742,8 +742,9 @@ namespace MachineBrigade.Game.Views
                     _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * (_barrelTips == null || _barrelOf[i] == _barrel ? kick : 0f);
             }
 
-            // Free weapon mounts turn on their own; their parent may be the turret or the hull.
-            for (var i = 1; i < _mounts.Length; i++)
+            // Free weapon mounts turn on their own; their parent may be the turret or the hull (the
+            // main one too when it is a free roof gun, as on the command vehicle).
+            for (var i = 0; i < _mounts.Length; i++)
             {
                 var mount = _mounts[i];
                 if (mount == null || Def.Mounts[i].Aim != MountAim.Free) continue;

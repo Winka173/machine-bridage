@@ -32,6 +32,9 @@ namespace MachineBrigade.Sim.Entities
 
         public bool IsAlive { get; internal set; } = true;
 
+        /// <summary>When a scattered mine clears itself (never for a mine layer's).</summary>
+        internal double ExpiresAt { get; set; } = double.PositiveInfinity;
+
         /// <summary>Bit per team that can see it: always the owner, the enemy only up close.</summary>
         public int VisibleToMask { get; internal set; }
 

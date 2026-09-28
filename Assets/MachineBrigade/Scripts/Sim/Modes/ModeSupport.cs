@@ -91,9 +91,27 @@ namespace MachineBrigade.Sim.Modes
     {
         public const string Bastion = "spawn_bastion";
 
-        public static void Build(SimWorld world, params int[] teams)
+        public static void Build(SimWorld world, params int[] teams) => Build(world, null, teams);
+
+        /// <summary>
+        /// Each side's base (see <see cref="BaseSystem"/>): its HQ with the drop zone round it
+        /// (standing in for the old pair of bastions) and its loadout's towers in the camp's
+        /// hardpoints, plus the home zone. A setup names each side's loadout and role (an Anchor HQ
+        /// cannot fall); without one each side gets a bare, unbreakable HQ.
+        /// </summary>
+        public static void Build(SimWorld world, BaseSetup? setup, params int[] teams)
         {
             world.HomeZones = true;
+            if (world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
+            {
+                foreach (var team in teams)
+                {
+                    var role = setup?.Role(team) ?? BaseRole.Anchor;
+                    if (role == BaseRole.None) continue;
+                    world.Bases.Establish(team, setup?.Loadout(team) ?? BaseLoadout.HqOnly(), role);
+                }
+                return;
+            }
             if (!world.Catalog.Vehicles.ContainsKey(Bastion)) return;
             foreach (var team in teams)
             {
@@ -324,6 +342,25 @@ namespace MachineBrigade.Sim.Modes
     }
 
     /// <summary>Command Points, deck and income for one side of a mode.</summary>
+    /// <summary>The two sides' bases for a mode: each side's loadout and its role (by team).</summary>
+    public sealed class BaseSetup
+    {
+        private readonly BaseLoadout?[] _loadouts = new BaseLoadout?[2];
+        private readonly BaseRole[] _roles = { BaseRole.Anchor, BaseRole.Anchor };
+
+        public BaseSetup Set(int team, BaseLoadout? loadout, BaseRole role)
+        {
+            if (team is < 0 or > 1) return this;
+            _loadouts[team] = loadout;
+            _roles[team] = role;
+            return this;
+        }
+
+        public BaseLoadout? Loadout(int team) => team is 0 or 1 ? _loadouts[team] : null;
+
+        public BaseRole Role(int team) => team is 0 or 1 ? _roles[team] : BaseRole.None;
+    }
+
     public sealed class SideSetup
     {
         public float StartCp { get; set; } = 14f;
@@ -331,8 +368,8 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>CP per second.</summary>
         public float Income { get; set; } = 1f;
 
-        /// <summary>Most CP the army may field at once.</summary>
-        public int ArmyCap { get; set; } = 24;
+        /// <summary>The army supply in CP (upkeep above 1.5x it); 0: the data's for the mode.</summary>
+        public int ArmyCap { get; set; }
 
         /// <summary>Most CP the side can hold unspent (a start or a bounty above it is not lost).</summary>
         public float Bank { get; set; } = 30f;

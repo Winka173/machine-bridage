@@ -85,12 +85,21 @@ namespace MachineBrigade.Tests
                     ["id"] = w.Id, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
                     ["cooldown"] = w.Cooldown, ["range"] = w.Range, ["minRange"] = w.MinRange, ["splash"] = w.SplashRadius,
                     ["targets"] = w.Targets.ToString(), ["dps"] = raw, ["projectile"] = w.Projectile.ToString(),
+                    ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
+                    {
+                        ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
+                    }).ToList(),
                 });
                 foreach (ArmorClass a in Enum.GetValues(typeof(ArmorClass)))
                 {
                     var air = a == ArmorClass.Air;
                     if (!w.CanTarget(air)) continue;
-                    dps[a.ToString()] += raw * catalog.Damage.Multiplier(w.DamageType, a);
+                    // A bonus on an armour class alone counts in (a bunker-buster on structures); ones that
+                    // depend on the target's class, standing still or a flank are listed with the weapon.
+                    var bonus = 1f;
+                    foreach (var b in w.Bonuses)
+                        if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
+                    dps[a.ToString()] += raw * catalog.Damage.Multiplier(w.DamageType, a) * bonus;
                 }
             }
             return new Dictionary<string, object>
@@ -115,20 +124,22 @@ namespace MachineBrigade.Tests
             var bases = GearCatalog.Bases.Select(b => (object)new Dictionary<string, object>
             {
                 ["id"] = b.Id, ["name"] = Text("gear.base." + b.Id), ["slot"] = b.Slot.ToString(), ["implicit"] = b.Implicit.ToString(),
-                ["implicitName"] = GearText.Line(b.Implicit, b.Top[b.Top.Length - 1]), ["top"] = b.Top,
-                ["lines"] = b.Top.Select(v => GearText.Line(b.Implicit, v)).ToList(),
+                ["implicitName"] = b.Implicit == StatId.Count ? GearText.BaseNote(b) : GearText.Line(b.Implicit, b.Top[b.Top.Length - 1]), ["top"] = b.Top,
+                ["lines"] = b.Implicit == StatId.Count ? new List<string>() : b.Top.Select(v => GearText.Line(b.Implicit, v)).ToList(),
                 ["penaltyLine"] = b.TradeOff && b.PenaltyTop != null ? GearText.Line(b.Penalty, b.PenaltyTop[b.PenaltyTop.Length - 1], true) : "",
                 ["tradeOff"] = b.TradeOff, ["penalty"] = b.TradeOff ? b.Penalty.ToString() : "", ["minRarity"] = b.MinRarity,
             }).ToList();
             var traits = GearCatalog.Traits.Select(t => (object)new Dictionary<string, object>
             {
-                ["id"] = t.Id.ToString(), ["key"] = t.Key, ["name"] = Text("trait." + t.Key), ["effect"] = Text("trait." + t.Key + ".info"),
+                ["id"] = t.Id.ToString(), ["key"] = t.Key, ["name"] = Text("trait." + t.Key), ["effect"] = GearText.TraitEffect(t.At(Rarity.Legendary)),
                 ["effectEpic"] = GearText.TraitEffect(t.At(Rarity.Epic)), ["effectLegendary"] = GearText.TraitEffect(t.At(Rarity.Legendary)),
                 ["slot"] = t.Slot.ToString(), ["epic"] = t.Epic, ["legendary"] = t.Legendary,
             }).ToList();
             var modules = GearCatalog.Modules.Select(m => (object)new Dictionary<string, object>
             {
-                ["id"] = m.Module.ToString(), ["key"] = m.Key, ["name"] = Text("special." + m.Key), ["effect"] = Text("special." + m.Key + ".info"),
+                ["id"] = m.Module.ToString(), ["key"] = m.Key, ["name"] = Text("special." + m.Key),
+                ["effect"] = GearText.ModuleEffect(m.Module, Rarity.Legendary),
+                ["effectEpic"] = GearText.ModuleEffect(m.Module, Rarity.Epic), ["effectLegendary"] = GearText.ModuleEffect(m.Module, Rarity.Legendary),
                 ["epic"] = m.Epic, ["legendary"] = m.Legendary,
             }).ToList();
             var brands = new List<object>();

@@ -22,6 +22,9 @@ namespace MachineBrigade.Sim.Content
 
         public bool Has(string key) => _values.TryGetValue(key, out var v) && v != null;
 
+        /// <summary>The value at <paramref name="key"/> is a string (data that takes a word or a number).</summary>
+        public bool IsString(string key) => _values.TryGetValue(key, out var v) && v is string;
+
         public float Float(string key) =>
             _values.TryGetValue(key, out var v) && v is double d ? (float)d : throw Invalid(key, "a number");
 

@@ -8,19 +8,20 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Tests
 {
-    /// <summary>Capture modes protect each camp: indestructible bastions, a home zone that repairs, no strikes on a camp.</summary>
+    /// <summary>Capture modes protect each camp: an HQ that cannot fall (it replaced the two bastions), a home zone that repairs, no strikes on a camp.</summary>
     public class BaseDefenceTests
     {
         [Test]
-        public void EachCampHasTwoIndestructibleBastionsAndAHomeZone()
+        public void EachCampHasAnUnbreakableHeadquartersAndAHomeZone()
         {
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("ashfield_conquest"), seed: 3);
             var mode = new ConquestMode(new ConquestRules());
             mode.Setup(world);
-            var bastions = world.VehicleList.Where(v => v.Def.Id == BaseDefences.Bastion).ToList();
-            Assert.AreEqual(2, bastions.Count(v => v.Team == 0), "two bastions at the player's camp");
-            Assert.AreEqual(2, bastions.Count(v => v.Team == 1), "and two at the enemy's");
-            Assert.IsTrue(bastions.All(v => v.Invulnerable), "that cannot be destroyed");
+            var hqs = world.VehicleList.Where(v => v.Def.Id == world.Catalog.Base.HqId).ToList();
+            Assert.AreEqual(1, hqs.Count(v => v.Team == 0), "an HQ at the player's camp");
+            Assert.AreEqual(1, hqs.Count(v => v.Team == 1), "and one at the enemy's");
+            Assert.IsTrue(hqs.All(v => v.Invulnerable), "that cannot be destroyed in Conquest");
+            Assert.IsFalse(world.VehicleList.Any(v => v.Def.Id == BaseDefences.Bastion), "the old bastions are gone");
 
             // No strike can be called onto the enemy's camp.
             world.TryGetRally(1, out var enemyCamp);

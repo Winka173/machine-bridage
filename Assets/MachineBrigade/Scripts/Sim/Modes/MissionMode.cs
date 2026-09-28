@@ -60,6 +60,12 @@ namespace MachineBrigade.Sim.Modes
         private const float CaptureSeconds = 10f;
         private const float WaypointReach = 5f;
 
+        /// <summary>Seconds a route boss may make no headway before it is sent on again.</summary>
+        private const double BossStall = 12.0;
+
+        private float _bossBest = float.MaxValue;
+        private double _bossProgressAt;
+
         private readonly MissionDef _def;
         private readonly SideSetup _player;
         private readonly SideSetup? _enemy;
@@ -476,7 +482,26 @@ namespace MachineBrigade.Sim.Modes
             var route = _def.Boss?.Route;
             if (route == null || route.Count == 0 || _bossWaypoint >= route.Count) return;
             if (!world.TryGetVehicle(_boss, out var boss) || !boss.IsAlive) return;
-            if (Vector2.Distance(boss.Position, route[_bossWaypoint]) > WaypointReach) return;
+            var left = Vector2.Distance(boss.Position, route[_bossWaypoint]);
+            if (left > WaypointReach)
+            {
+                // Pushed off its line (it steers round vehicles parked on it) and getting no nearer:
+                // sent on again to the same waypoint, with a fresh route.
+                if (left < _bossBest - 1f)
+                {
+                    _bossBest = left;
+                    _bossProgressAt = world.Time;
+                }
+                else if (world.Time - _bossProgressAt > BossStall)
+                {
+                    _bossBest = left;
+                    _bossProgressAt = world.Time;
+                    Drive(world, boss, route[_bossWaypoint]);
+                }
+                return;
+            }
+            _bossBest = float.MaxValue;
+            _bossProgressAt = world.Time;
             _bossWaypoint++;
             // A boss fight's route is a patrol, flown round and round (it does not park on the drop zone).
             if (_def.Goal == MissionGoal.Boss && _bossWaypoint >= route.Count) _bossWaypoint = 0;

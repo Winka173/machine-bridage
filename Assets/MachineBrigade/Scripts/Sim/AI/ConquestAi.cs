@@ -179,8 +179,49 @@ namespace MachineBrigade.Sim.AI
             if (_timer > 0f || world.IsOver) return;
             _timer = Interval;
             if (!world.TryGetEconomy(_team, out var economy)) return;
+            if (AutoDeploy && TryRebuild(world, economy)) return;
             if (AutoStrike && TryStrike(world, economy)) return;
             if (AutoDeploy) TryDeploy(world, economy);
+        }
+
+        /// <summary>
+        /// Flies a destroyed tower back into its hardpoint, the front one first, once the army has
+        /// some body (a side with next to nothing on the field buys vehicles first) and the CP
+        /// left over still buys a vehicle soon; sets a marked point up as an outpost the same way.
+        /// </summary>
+        private bool TryRebuild(SimWorld world, TeamEconomy economy)
+        {
+            var bases = world.Bases;
+            if (bases.Of(_team) is not { } ours) return false;
+            var callable = bases.Callable(_team);
+            if (callable.Count > 0 && economy.ArmyCp >= 12)
+            {
+                var slot = callable[0];
+                var cost = bases.CostOf(slot);
+                if (economy.Cp >= cost + 4f && world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slot.Def.Position)).Accepted)
+                    return true;
+            }
+            // Outposts on marked points we hold: set up, then their towers.
+            if (_mode == null || bases.OutpostPoints.Count == 0) return false;
+            foreach (var point in _mode.Points)
+            {
+                if (point.Owner != _team || !bases.OutpostPoints.Contains(point.Def.Id) || point.Def.Outpost.Count == 0) continue;
+                if (!ours.Outposts.TryGetValue(point.Def.Id, out var slots))
+                {
+                    if (economy.Cp >= world.Catalog.Base.OutpostCp + 6f &&
+                        world.Submit(new Command(CommandType.Outpost, _team, Array.Empty<EntityId>(), defId: point.Def.Id)).Accepted) return true;
+                    continue;
+                }
+                for (var i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].Tower != null) continue;
+                    var tower = ours.Loadout.Outpost.Count > 0 ? ours.Loadout.Outpost[i % ours.Loadout.Outpost.Count] : "guard_tower";
+                    if (!world.Catalog.Vehicles.TryGetValue(tower, out var def)) continue;
+                    if (economy.Cp < world.Catalog.Base.RebuildCost(def) + 4f) return false;
+                    if (world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slots[i].Def.Position, defId: tower)).Accepted) return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -313,6 +354,9 @@ namespace MachineBrigade.Sim.AI
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
+            // The new supports first, each where it is worth its CP.
+            if (TryUtilityStrike(world, economy, supports)) return true;
+
             var foundCluster = FindCluster(world, out var cluster, out var size);
             // A boss is worth the biggest strike on its own: aimed at its far side from our own
             // vehicles fighting it, so the bombs are not seen falling on them.
@@ -334,7 +378,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in supports)
             {
                 var s = world.Catalog.Supports[id];
-                if (s.Kind is SupportKind.Repair or SupportKind.Smoke || !Ready(world, economy, s)) continue;
+                if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead ||
+                    !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
                 if (pick == null || s.CpCost > pick.CpCost) pick = s;
@@ -352,6 +397,103 @@ namespace MachineBrigade.Sim.AI
             else if (OwnWithin(world, cluster, pick.Radius + StrikeMargin) && !Boss(cluster)) return false;
             var start = pick.IsLine ? cluster - along * (pick.Length * 0.5f) : cluster;
             return world.Submit(Command.Strike(_team, pick.Id, world.ClampToMap(start), start + along)).Accepted;
+        }
+
+        /// <summary>
+        /// The supports that are not blasts on a cluster:
+        /// SEAD on enemy air defence when we fly aircraft (or have them in the deck);
+        /// a field tower on a point we hold that the enemy is coming for;
+        /// remote mines across the way of an enemy group closing on our line;
+        /// a UAV scan over where the army is about to fight, or over stealth that hurt us.
+        /// </summary>
+        private bool TryUtilityStrike(SimWorld world, TeamEconomy economy, IEnumerable<string> supports)
+        {
+            foreach (var id in supports)
+            {
+                var s = world.Catalog.Supports[id];
+                if (!Ready(world, economy, s)) continue;
+                switch (s.Kind)
+                {
+                    case SupportKind.Sead when FlyingOrWillFly(world, economy):
+                        foreach (var e in _tactics.KnownEnemies)
+                        {
+                            if (!e.IsAlive || e.Flying || !MachineBrigade.Sim.Strikes.StrikeSystem.IsAirDefence(e.Def) || world.InEnemyHome(e.Position, _team)) continue;
+                            if (world.Submit(Command.Strike(_team, id, e.Position)).Accepted) return true;
+                        }
+                        break;
+
+                    case SupportKind.Tower when _mode != null:
+                        foreach (var p in _mode.Points)
+                        {
+                            if (p.Owner != _team) continue;
+                            var threat = 0;
+                            foreach (var e in _tactics.KnownEnemies)
+                                if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < 45f) threat++;
+                            if (threat < 2) continue;
+                            world.TryGetRally(_team, out var home);
+                            var back = home - p.Def.Position;
+                            var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 5f);
+                            if (world.Submit(Command.Strike(_team, id, at, at + (p.Def.Position - home))).Accepted) return true;
+                        }
+                        break;
+
+                    case SupportKind.Minefield:
+                        if (FindCluster(world, out var group, out _) && OwnCentroid(world, group, 55f, out var line))
+                        {
+                            var gap = Vector2.Distance(group, line);
+                            if (gap < 22f) break;
+                            var at = group + Vector2.Normalize(line - group) * MathF.Min(14f, gap * 0.4f);
+                            if (OwnWithin(world, at, s.Radius + 3f)) break;
+                            if (world.Submit(Command.Strike(_team, id, world.ClampToMap(at))).Accepted) return true;
+                        }
+                        break;
+
+                    case SupportKind.Scan:
+                        if (ScanTarget(world, out var look) && world.Submit(Command.Strike(_team, id, look)).Accepted) return true;
+                        break;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>Aircraft up, or in the deck with the CP to call one soon.</summary>
+        private bool FlyingOrWillFly(SimWorld world, TeamEconomy economy)
+        {
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _team && v.Flying) return true;
+            foreach (var id in economy.Vehicles)
+                if (world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying && economy.Cp >= def.CpCost * 0.6f) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Where a scan pays: our vehicle hit in the last seconds by nothing we can see (stealth,
+        /// a hidden gun), else the objective our army is closing on while no enemy there is seen.
+        /// </summary>
+        private bool ScanTarget(SimWorld world, out Vector2 at)
+        {
+            at = default;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Flying || world.Time - v.LastHitTime > 2.0) continue;
+                if (!world.TryGetVehicle(v.LastAttacker, out var shooter) || !shooter.IsAlive || shooter.IsVisibleTo(_team)) continue;
+                at = world.ClampToMap(v.Position + (shooter.Position - v.Position) * 0.6f);
+                return true;
+            }
+            if (_mode == null || !OwnCentroid(world, world.ClampToMap(Vector2.Zero), 1000f, out var army)) return false;
+            foreach (var p in _mode.Points)
+            {
+                if (p.Owner == _team) continue;
+                var d = Vector2.Distance(p.Def.Position, army);
+                if (d > 45f || d < 12f) continue;
+                var seen = false;
+                foreach (var e in _tactics.KnownEnemies)
+                    if (e.IsAlive && Vector2.Distance(e.Position, p.Def.Position) < 25f) seen = true;
+                if (seen) continue;
+                at = p.Def.Position;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>Room left round a strike's blast before our own vehicles count as under it.</summary>
@@ -416,6 +558,9 @@ namespace MachineBrigade.Sim.AI
             CountOwn(world, out var ownAa, out var ownArtillery, out var ownAir, out var ownTotal);
             var enemy = EnemyMix();
             var answer = OwnAnswers(world);
+            var enemyGuns = 0;
+            foreach (var e in _tactics.KnownEnemies)
+                if (e.IsAlive && !e.Def.Static && e.Def.Weapon.MinRange > 0f) enemyGuns++;
             var neutral = 0;
             if (_mode != null)
                 foreach (var p in _mode.Points)
@@ -447,6 +592,7 @@ namespace MachineBrigade.Sim.AI
                 // Bosses and mission trucks cost nothing and are never bought.
                 if (def.Boss || def.CpCost <= 0) continue;
                 if (economy.VehicleCount >= TeamEconomy.MaxVehicles) continue;
+                if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 if (def.Flying && airFull) continue;
                 var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
                 if (_difficulty != AiDifficulty.Easy)
@@ -469,6 +615,10 @@ namespace MachineBrigade.Sim.AI
                         if (main.DamageType == DamageType.HighExplosive) score += 1.6f;
                         if (def.Class == UnitClass.AntiAir) score -= 1.5f;
                     }
+                    // A command vehicle pays once there is an army round it to lead.
+                    if (def.CommandAura != null) score += ownTotal >= 5 ? 1.4f : -2f;
+                    // A counter-battery radar only where the enemy has guns to find.
+                    if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.

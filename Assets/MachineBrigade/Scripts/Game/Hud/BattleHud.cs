@@ -57,6 +57,8 @@ namespace MachineBrigade.Game.Hud
         private readonly MissionBar _missionBar;
         private readonly BossBar _boss;
         private readonly VisualElement _attackStance, _defendStance, _autoDeploy, _autoStrike;
+        private readonly VisualElement _towerButton;
+        private readonly Label _towerLabel;
         private readonly DeckBar _deck;
         private readonly ResultPanel _result;
         private readonly PausePanel _pause;
@@ -186,6 +188,12 @@ namespace MachineBrigade.Game.Hud
             _autoDeploy = Toggle(autos, "reinforce", Strings.Get("rail.buy"), () => AutoDeployToggled?.Invoke(), "switch");
             _autoStrike = Toggle(autos, "barrage", Strings.Get("rail.support"), () => AutoStrikeToggled?.Invoke(), "switch");
             commander.Add(autos);
+            // Destroyed towers can be flown back in: shown only while one can.
+            var towers = UiKit.Box("rail-group");
+            _towerButton = Toggle(towers, "reinforce", Strings.Get("rail.tower"), () => TowerPressed?.Invoke());
+            _towerLabel = _towerButton.Q<Label>(className: "toggle-label");
+            _towerButton.style.display = DisplayStyle.None;
+            commander.Add(towers);
             _safe.Add(commander);
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
@@ -298,6 +306,17 @@ namespace MachineBrigade.Game.Hud
         public event Action<Vector2> MinimapClicked;
         public event Action<bool> StancePressed;
         public event Action AutoDeployToggled;
+
+        /// <summary>The player asks for the front destroyed tower to be flown back in.</summary>
+        public event Action TowerPressed;
+
+        /// <summary>How many destroyed towers can be flown back in now, and the next one's price (0: hide the button).</summary>
+        public void SetTowers(int count, int cost)
+        {
+            if (_towerButton == null) return;
+            _towerButton.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            if (count > 0) _towerLabel.text = Strings.Format("rail.towerCost", count, cost);
+        }
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
 

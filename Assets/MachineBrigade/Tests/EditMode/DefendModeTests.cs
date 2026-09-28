@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
             var mode = new SiegeMode(new SiegeRules
             {
                 PlayerDefends = true, Endless = endless, StartSeconds = seconds, WaveSeconds = 20f,
-                Attacker = new SideSetup { StartCp = 0f, Income = 0.01f, Vehicles = new[] { "main_battle_tank", "apc" } },
+                Attacker = new SideSetup { StartCp = 0f, Income = 0.01f, Vehicles = new[] { "main_battle_tank", "ifv" } },
                 Defender = new SideSetup { StartCp = 20f, Income = 1f },
             });
             mode.Setup(world);

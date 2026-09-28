@@ -28,7 +28,7 @@ namespace MachineBrigade.Sim.Content
             {
                 if (v.EliteOf == null || !_vehicles.TryGetValue(v.EliteOf, out var original)) continue;
                 v.ArmyCost = original.CpCost;
-                _elites[v.EliteOf] = v.Id;
+                _elites.TryAdd(v.EliteOf, v.Id);
             }
         }
 
@@ -43,8 +43,20 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Multiplies every side's CP income, objective bonuses included (balance.json "economy.income").</summary>
         public float IncomeScale { get; internal set; } = 1f;
 
+        /// <summary>Bases: the HQ, hardpoint budgets, tower rebuilds, roles by mode (balance.json "base").</summary>
+        public BaseRules Base { get; internal set; } = new();
+
         /// <summary>Multiplies every side's supply line, the army kept up at full income ("economy.supply").</summary>
         public float SupplyScale { get; internal set; } = 1f;
+
+        /// <summary>The share of the player's arsenal edge a campaign enemy matches (balance.json economy.enemyScaling).</summary>
+        public float EnemyScaling { get; internal set; } = 0.55f;
+
+        internal Dictionary<string, int> ArmyCaps { get; set; } = new();
+
+        /// <summary>The army supply (CP) of a mode that does not set its own: its entry, else "default", else 24.</summary>
+        public int ArmyCapFor(string? mode) =>
+            mode != null && ArmyCaps.TryGetValue(mode, out var cap) ? cap : ArmyCaps.TryGetValue("default", out var d) ? d : 24;
 
         public DamageTable Damage { get; }
 
@@ -109,6 +121,20 @@ namespace MachineBrigade.Sim.Content
                     ProjectileScale = w.Float("projectileScale", 1f),
                     Charge = w.Float("charge", 0f),
                 });
+                if (w.Has("bonuses"))
+                {
+                    var bonuses = new List<DamageBonus>();
+                    foreach (var b in w.Array("bonuses"))
+                        bonuses.Add(new DamageBonus
+                        {
+                            Mult = b.Float("mult", 1f),
+                            Class = b.Has("class") ? b.Enum<UnitClass>("class") : null,
+                            Armor = b.Has("armor") ? b.Enum<ArmorClass>("armor") : null,
+                            StillFor = b.Float("still", 0f),
+                            Flank = b.Bool("flank", false),
+                        });
+                    def.Bonuses = bonuses;
+                }
                 if (w.Has("cluster"))
                 {
                     var c = w.Object("cluster");
@@ -189,11 +215,35 @@ namespace MachineBrigade.Sim.Content
                     def.DroneArmor = v.Float("droneArmor", 1f);
                     def.MineProof = v.Bool("mineProof", false);
                     if (v.Has("fortify")) def.FortifyAura = ParseAura(v.Object("fortify"));
+                    if (v.Has("fort"))
+                    {
+                        var f = v.Object("fort");
+                        def.Fort = new FortDef(f.Int("points", 1), f.Has("weight") ? f.String("weight") : "Light", f.Enum("kind", FortKind.Tower))
+                        {
+                            Tier = f.Int("tier", 1),
+                        };
+                    }
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");
-                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"));
+                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"))
+                        {
+                            Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f),
+                        };
                     }
+                    if (v.Has("commandAura"))
+                    {
+                        var c = v.Object("commandAura");
+                        def.CommandAura = new CommandAuraDef(c.Float("radius"), c.Float("fireRate"));
+                    }
+                    if (v.Has("counterBattery"))
+                    {
+                        var c = v.Object("counterBattery");
+                        def.CounterBattery = new CounterBatteryDef(c.Float("range"), c.Float("seconds"), c.Float("bonus", 0f));
+                    }
+                    def.ForwardDrop = v.Float("forwardDrop", 0f);
+                    def.MaxPerSide = v.Int("maxPerSide", 0);
+                    def.Standoff = v.Bool("standoff", false);
                     if (v.Has("mines"))
                     {
                         var m = v.Object("mines");
@@ -229,6 +279,9 @@ namespace MachineBrigade.Sim.Content
                         Consumable = s.Bool("consumable", false),
                         EventOnly = s.Bool("event", false),
                         Units = s.Has("units") ? s.StringArray("units") : Array.Empty<string>(),
+                        UnitRank = s.Int("unitRank", 0),
+                        LineRank = s.Has("rankLine") ? s.Object("rankLine").Int("rank", 0) : 0,
+                        LineScale = s.Has("rankLine") ? s.Object("rankLine").Float("scale", 1f) : 1f,
                     }));
                 }
             }
@@ -237,7 +290,19 @@ namespace MachineBrigade.Sim.Content
             {
                 IncomeScale = Tune("economy", "income"),
                 SupplyScale = Tune("economy", "supply"),
+                EnemyScaling = Tune("economy", "enemyScaling"),
+                ArmyCaps = ReadArmyCaps(root),
+                Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
+        }
+
+        private static Dictionary<string, int> ReadArmyCaps(JsonObject root)
+        {
+            var caps = new Dictionary<string, int>();
+            if (!root.Has("economy") || !root.Object("economy").Has("armyCap")) return caps;
+            var o = root.Object("economy").Object("armyCap");
+            foreach (var key in o.Keys) caps[key] = o.Int(key, 24);
+            return caps;
         }
 
         private static WeaponDef Weapon(Dictionary<string, WeaponDef> weapons, JsonObject owner, string key)

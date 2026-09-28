@@ -19,6 +19,12 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Calls fire support (DefId) on Point; airstrikes fly from Point towards Point2.</summary>
         Strike,
+
+        /// <summary>Flies a tower into the base hardpoint at Point (a destroyed one back in; an outpost's with DefId).</summary>
+        CallTower,
+
+        /// <summary>Sets the captured point DefId up as an outpost.</summary>
+        Outpost,
     }
 
     /// <summary>
@@ -84,6 +90,9 @@ namespace MachineBrigade.Sim.Commands
         AirAtCapacity,
         OnCooldown,
         NotAvailable,
+
+        /// <summary>The side already has as many of this vehicle as it may field (a command vehicle: one).</summary>
+        UnitLimit,
     }
 
     public readonly struct CommandResult

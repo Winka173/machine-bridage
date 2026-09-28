@@ -78,7 +78,7 @@ namespace MachineBrigade.Tests
             foreach (var table in Crates.Odds) Assert.AreEqual(1f, table.Sum(), 1e-4f);
             Assert.AreEqual(1f, Crates.GoldGuaranteed.Sum(), 1e-4f);
             Assert.AreEqual(1f, Crates.LegendaryGuaranteed.Sum(), 1e-4f);
-            var cards = new List<string> { "main_battle_tank", "apc", "artillery" };
+            var cards = new List<string> { "main_battle_tank", "ifv", "artillery" };
             var id = 1;
             // Whatever the luck, five gold crates in a row hold an epic and four legendary crates a legendary.
             for (var seed = 0; seed < 40; seed++)

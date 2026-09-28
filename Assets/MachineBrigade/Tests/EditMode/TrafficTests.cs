@@ -296,9 +296,9 @@ namespace MachineBrigade.Tests
                     Attacker = new SideSetup
                     {
                         StartCp = 40f, Income = 1.6f, ArmyCap = 36,
-                        Vehicles = new[] { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_mortar", "mlrs", "engineer_vehicle" },
+                        Vehicles = new[] { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_tank", "mlrs", "engineer_vehicle" },
                     },
-                    Defender = new SideSetup { StartCp = 16f, Income = 0.8f, Vehicles = new[] { "main_battle_tank", "apc", "aa_vehicle" } },
+                    Defender = new SideSetup { StartCp = 16f, Income = 0.8f, Vehicles = new[] { "main_battle_tank", "ifv", "aa_vehicle" } },
                 });
                 mode.Setup(world);
                 var defender = new ConquestAi(mode, 1, 0, AiDifficulty.Normal, 3) { Stance = CommanderStance.Defend, DefendPoint = mode.Fortress };
@@ -355,7 +355,7 @@ namespace MachineBrigade.Tests
 
         private static long Battle(out int nodes, out double wait, out int yields)
         {
-            var kinds = new[] { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_mortar", "mlrs", "light_tank", "apc", "aa_vehicle" };
+            var kinds = new[] { "main_battle_tank", "heavy_tank", "tank_destroyer", "siege_tank", "mlrs", "light_tank", "ifv", "aa_vehicle" };
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("greenvale_conquest"), seed: 3);
             var mode = new ConquestMode(new ConquestRules
             {

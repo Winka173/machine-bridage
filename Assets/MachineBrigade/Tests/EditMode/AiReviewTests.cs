@@ -89,7 +89,8 @@ namespace MachineBrigade.Tests
             Run(world, 120f, () =>
             {
                 ai.Tick(world, TestWorlds.Step);
-                closest = MathF.Min(closest, Vector2.Distance(tank.Position, turret.Position));
+                // While the turret stands (once it is down the tank drives on past its wreck).
+                if (turret.IsAlive) closest = MathF.Min(closest, Vector2.Distance(tank.Position, turret.Position));
             });
             Assert.IsTrue(turret.IsVisibleTo(0), "a fixed defence once seen stays known");
             Assert.Greater(closest, reach, "the siege tank never drives into the turret's reach");
@@ -100,7 +101,7 @@ namespace MachineBrigade.Tests
         public void EmptyLauncherStandsStillAndReloadsItsWholeMagazine()
         {
             var world = Field();
-            var grad = world.SpawnVehicle("grad_truck", 0, new Vector2(0f, 0f), 0f);
+            var grad = world.SpawnVehicle("mlrs", 0, new Vector2(0f, 0f), 0f);
             grad.Weapons[0].Ammo = 0;
             var ai = new TacticalAi(0, 1);
             var seconds = Sim.Combat.CombatSystem.ReloadSeconds(grad.Def.Mounts[0].Weapon);

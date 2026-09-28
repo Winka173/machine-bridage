@@ -50,8 +50,16 @@ namespace MachineBrigade.Sim.Strikes
             /// <summary>Spread multiplier: fire support called into an enemy jammer's bubble lands wide.</summary>
             public float Scatter = 1f;
 
+            /// <summary>An airstrike's bomb line, bombs and seconds over it (longer from the card's rank: see SupportDef.LineRank).</summary>
+            public float Length, Duration;
+            public int Count;
+
             /// <summary>Where each round of a barrage lands, aimed a moment before it does (so it can be seen coming down).</summary>
             public readonly List<Vector2> Planned = new();
+
+            /// <summary>A SEAD strike's quarry, picked as its missile fires (none: nothing in reach).</summary>
+            public EntityId Victim = EntityId.None;
+            public bool Aimed;
         }
 
         /// <summary>Seconds a fire-support round is seen falling before it lands.</summary>
@@ -60,6 +68,35 @@ namespace MachineBrigade.Sim.Strikes
         private readonly SimWorld _world;
         private readonly List<Strike> _strikes = new();
         private readonly List<SmokeZone> _smoke = new();
+
+        /// <summary>A UAV over a circle: everything in it shows to Team until Until.</summary>
+        private readonly struct ScanZone
+        {
+            public ScanZone(Vector2 centre, float radius, double until, int team)
+            {
+                Centre = centre;
+                Radius = radius;
+                Until = until;
+                Team = team;
+            }
+
+            public Vector2 Centre { get; }
+            public float Radius { get; }
+            public double Until { get; }
+            public int Team { get; }
+        }
+
+        private readonly List<ScanZone> _scans = new();
+        private readonly Dictionary<string, MineLayerDef> _mineDefs = new();
+
+        /// <summary>The teams (a mask) whose UAV scan covers a point, other than <paramref name="owner"/>'s own.</summary>
+        public int ScanMask(Vector2 at, int owner)
+        {
+            var mask = 0;
+            foreach (var z in _scans)
+                if (z.Team != owner && z.Team >= 0 && z.Team < 31 && Vector2.DistanceSquared(z.Centre, at) <= z.Radius * z.Radius) mask |= 1 << z.Team;
+            return mask;
+        }
 
         public StrikeSystem(SimWorld world) => _world = world;
 
@@ -71,8 +108,10 @@ namespace MachineBrigade.Sim.Strikes
                 return CommandResult.Rejected(CommandError.UnknownCard);
             if (!SimMath.IsFinite(command.Point)) return CommandResult.Rejected(CommandError.InvalidPoint);
             if (!_world.Map.Contains(command.Point)) return CommandResult.Rejected(CommandError.OutOfBounds);
-            // Home zones: no strikes on the enemy's camp.
+            // Home zones: no strikes on the enemy's camp (and never a tower dropped into it).
             if (_world.InEnemyHome(command.Point, command.Team)) return CommandResult.Rejected(CommandError.InvalidPoint);
+            if (support.Kind == SupportKind.Tower && (_world.InEnemyCamp(command.Point, command.Team) || !_world.Grid.IsWalkable(command.Point)))
+                return CommandResult.Rejected(CommandError.InvalidPoint);
 
             var economy = _world.Economy.TryGet(command.Team, out var e) ? e : null;
             if (support.Consumable)
@@ -102,14 +141,18 @@ namespace MachineBrigade.Sim.Strikes
         {
             var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
+            var line = support.LineRank > 0 && _world.StrikeRank(team, support.Id) >= support.LineRank ? support.LineScale : 1f;
             var strike = new Strike
             {
                 Support = support, Team = team, Point = point, Direction = direction,
                 Start = _world.Time + support.Delay, Scatter = team >= 0 && _world.Abilities.Jammed(point, team) ? 2.2f : 1f,
+                Length = support.Length * line, Duration = support.Duration * line, Count = (int)MathF.Round(support.Count * line),
             };
             _strikes.Add(strike);
-            var end = support.IsLine ? point + direction * support.Length : point;
+            var end = support.IsLine ? point + direction * strike.Length : point;
             _world.Emit(SimEvent.StrikeWarning(team, support, point, end, support.Delay));
+            if (support.Kind == SupportKind.Tower && TowerOf(support, team) is { } tower)
+                _world.Emit(SimEvent.DeploymentQueued(team, tower, point, -direction, support.Delay));
         }
 
         public void Step()
@@ -117,6 +160,8 @@ namespace MachineBrigade.Sim.Strikes
             var now = _world.Time;
             for (var i = _smoke.Count - 1; i >= 0; i--)
                 if (_smoke[i].Until <= now) _smoke.RemoveAt(i);
+            for (var i = _scans.Count - 1; i >= 0; i--)
+                if (_scans[i].Until <= now) _scans.RemoveAt(i);
 
             for (var i = _strikes.Count - 1; i >= 0; i--)
             {
@@ -188,12 +233,12 @@ namespace MachineBrigade.Sim.Strikes
 
                 case SupportKind.Airstrike:
                 {
-                    var end = s.Point + s.Direction * support.Length;
+                    var end = s.Point + s.Direction * s.Length;
                     // The aircraft flies the bomb line at the speed the bombs walk along it, and is
                     // over each bomb as it lands (bombs keep its forward speed as they fall): it
                     // comes in from far enough back to be seen, but never later than the first bomb.
-                    var speed = support.Length / MathF.Max(0.2f, support.Duration);
-                    var lead = MathF.Min(Approach + support.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));
+                    var speed = s.Length / MathF.Max(0.2f, s.Duration);
+                    var lead = MathF.Min(Approach + s.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));
                     if (!s.Announced && now >= s.Start - lead / speed)
                     {
                         var from = s.Point - s.Direction * lead;
@@ -202,15 +247,15 @@ namespace MachineBrigade.Sim.Strikes
                         s.Announced = true;
                     }
                     if (now < s.Start) return false;
-                    var interval = support.Count > 1 ? support.Duration / (support.Count - 1) : 0f;
-                    while (s.Done < support.Count && now >= s.Start + s.Done * interval)
+                    var interval = s.Count > 1 ? s.Duration / (s.Count - 1) : 0f;
+                    while (s.Done < s.Count && now >= s.Start + s.Done * interval)
                     {
-                        var along = support.Count > 1 ? s.Done / (float)(support.Count - 1) : 0.5f;
+                        var along = s.Count > 1 ? s.Done / (float)(s.Count - 1) : 0.5f;
                         var side = new Vector2(-s.Direction.Y, s.Direction.X) * (((float)_world.Random.NextDouble() - 0.5f) * support.Radius);
                         Blast(s, Vector2.Lerp(s.Point, end, along) + side);
                         s.Done++;
                     }
-                    return s.Done >= support.Count;
+                    return s.Done >= s.Count;
                 }
 
                 case SupportKind.CruiseMissile:
@@ -297,9 +342,136 @@ namespace MachineBrigade.Sim.Strikes
                     return true;
                 }
 
+                case SupportKind.Scan:
+                    // The drone arrives over the point and circles it for the scan's length.
+                    if (!s.Announced && now >= s.Start - RunIn)
+                    {
+                        var from = s.Point - s.Direction * (Approach + 30f);
+                        _world.Emit(SimEvent.AircraftPass(s.Team, support, from, s.Point, RunIn));
+                        s.Announced = true;
+                    }
+                    if (now < s.Start) return false;
+                    _scans.Add(new ScanZone(s.Point, support.Radius, now + support.Duration, s.Team));
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    return true;
+
+                case SupportKind.Minefield:
+                {
+                    // Rocket-scattered mines: each comes down on its spot, then lies armed.
+                    while (s.Planned.Count < support.Count)
+                    {
+                        var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
+                        var r = support.Radius * MathF.Sqrt(0.1f + 0.9f * (float)_world.Random.NextDouble());
+                        s.Planned.Add(_world.ClampToMap(s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r));
+                    }
+                    if (!s.Announced && now >= s.Start - ShellFall)
+                    {
+                        s.Announced = true;
+                        for (var k = 0; k < s.Planned.Count; k++)
+                            _world.Emit(SimEvent.ShellInbound(s.Team, support, s.Planned[k], FireFrom(s), (float)Math.Max(0.15, s.Start - now + k * 0.06)));
+                    }
+                    if (now < s.Start) return false;
+                    var def = MinesOf(support);
+                    foreach (var at in s.Planned)
+                    {
+                        _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
+                        _world.Abilities.AddMine(s.Team, at, def, now + 1.0, now + support.Duration);
+                    }
+                    return true;
+                }
+
+                case SupportKind.Tower:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    if (TowerOf(support, s.Team) is not { } id) return true;
+                    var tower = _world.SpawnVehicle(id, s.Team, s.Point, SimMath.HeadingOf(-s.Direction));
+                    tower.ExpiresAt = now + support.Duration;
+                    return true;
+                }
+
+                case SupportKind.Sead:
+                {
+                    // The jet runs in, and its anti-radiation missile homes on the nearest enemy
+                    // air-defence radar: picked as it fires, followed to where it is when it hits.
+                    if (!s.Announced && now >= s.Start - RunIn)
+                    {
+                        var from = s.Point - s.Direction * (Approach + 40f);
+                        _world.Emit(SimEvent.AircraftPass(s.Team, support, from, s.Point + s.Direction * Approach, RunIn * 1.6f));
+                        s.Announced = true;
+                    }
+                    if (!s.Aimed && now >= s.Start - ShellFall)
+                    {
+                        s.Aimed = true;
+                        s.Victim = NearestAirDefence(s.Point, s.Team, support.Radius);
+                        var aim = _world.TryGetVehicle(s.Victim, out var marked) ? marked.Position : s.Point;
+                        _world.Emit(SimEvent.ShellInbound(s.Team, support, aim, FireFrom(s), (float)Math.Max(0.15, s.Start - now)));
+                    }
+                    if (now < s.Start) return false;
+                    if (_world.TryGetVehicle(s.Victim, out var radar) && radar.IsAlive)
+                    {
+                        _world.Emit(SimEvent.StrikeImpact(s.Team, support, radar.Position));
+                        var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
+                        _world.Damage.Apply(radar, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, radar.Position, Combat.HitKind.Strike, true));
+                        if (radar.IsAlive)
+                        {
+                            radar.StunnedUntil = Math.Max(radar.StunnedUntil, now + support.Duration);
+                            radar.ClearPath();
+                            radar.Speed = 0f;
+                        }
+                    }
+                    else Land(s, s.Point);
+                    return true;
+                }
+
                 default:
                     return true;
             }
+        }
+
+        /// <summary>The tower a Tower drop brings for this side: the better one from its card rank.</summary>
+        private string? TowerOf(SupportDef support, int team)
+        {
+            var units = support.Units;
+            if (units.Count == 0) return null;
+            var better = support.UnitRank > 0 && units.Count > 1 && _world.StrikeRank(team, support.Id) >= support.UnitRank;
+            var id = better ? units[1] : units[0];
+            return _world.Catalog.Vehicles.ContainsKey(id) ? id : units[0];
+        }
+
+        private MineLayerDef MinesOf(SupportDef support)
+        {
+            if (_mineDefs.TryGetValue(support.Id, out var def)) return def;
+            def = new MineLayerDef(1f, Math.Max(1, support.Count), new ExplosionDef(support.Damage, MathF.Max(1f, support.BlastRadius), 0f, support.Tier), 2.2f);
+            _mineDefs[support.Id] = def;
+            return def;
+        }
+
+        /// <summary>The enemy air defence (an anti-air vehicle, or a fixed defence with an anti-air weapon) nearest a point within reach.</summary>
+        private EntityId NearestAirDefence(Vector2 at, int team, float reach)
+        {
+            var best = EntityId.None;
+            var bestD = reach * reach;
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team == team || v.Team < 0 || v.Flying || v.Def.Boss) continue;
+                if (!IsAirDefence(v.Def)) continue;
+                var d = Vector2.DistanceSquared(v.Position, at);
+                if (d > bestD) continue;
+                bestD = d;
+                best = v.Id;
+            }
+            return best;
+        }
+
+        /// <summary>A vehicle or tower whose job is shooting aircraft down (not a tank whose machine gun can).</summary>
+        internal static bool IsAirDefence(VehicleDef def)
+        {
+            if (def.Class == UnitClass.AntiAir) return true;
+            if (!def.Static) return false;
+            foreach (var m in def.Mounts)
+                if (m.Weapon.Targets == TargetLayers.Air || (m.Weapon.CanTarget(true) && m.Weapon.Projectile == ProjectileKind.Missile)) return true;
+            return false;
         }
 
         private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));

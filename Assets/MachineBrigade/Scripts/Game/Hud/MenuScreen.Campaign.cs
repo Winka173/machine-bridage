@@ -10,7 +10,7 @@ namespace MachineBrigade.Game.Hud
     {
         private VisualElement _campaign, _detailArt, _detailUnlocks, _detailStars, _startMission, _detailTiers;
         private int _tier;
-        private Label _detailKicker, _detailName, _detailGoal, _detailBrief, _detailReward, _detailRules, _detailWeather;
+        private Label _detailKicker, _detailName, _detailGoal, _detailBrief, _detailReward, _detailRules, _detailWeather, _detailPower;
         private IconElement _detailMapIcon, _detailGoalIcon, _detailWeatherIcon;
         private readonly List<(VisualElement row, int index)> _missionRows = new();
         private int _selectedMission = -1;
@@ -69,8 +69,10 @@ namespace MachineBrigade.Game.Hud
             var reward = UiKit.Box("detail-line reward-line");
             reward.Add(UiKit.Icon("coin", UiKit.Ink, 1.7f));
             _detailReward = UiKit.Text("", "detail-reward");
+            _detailPower = UiKit.Text("", "detail-power");
             reward.Add(_detailReward);
             detail.Add(reward);
+            detail.Add(_detailPower);
             _detailUnlocks = UiKit.Box("detail-unlocks");
             detail.Add(_detailUnlocks);
             _startMission = UiKit.WideButton("wide primary big campaign-start", "play", Strings.Get("campaign.play"), null, StartMission);
@@ -184,6 +186,14 @@ namespace MachineBrigade.Game.Hud
             _detailReward.text = first
                 ? Strings.Format("campaign.rewards", UnityEngine.Mathf.RoundToInt(m.RewardCoins * Rewards.TierPay(_tier)))
                 : Strings.Format("campaign.replayRewards", UnityEngine.Mathf.RoundToInt(m.RewardCoins * (PlayerProfile.MissionTier(m.Id) < _tier ? 1f : 0.35f) * Rewards.TierPay(_tier)));
+            // Recommended power against the deck's (see Campaign.RecommendedPower).
+            var deck = new System.Collections.Generic.List<Sim.Content.VehicleBoost>();
+            foreach (var id in MatchSettings.DeckVehicles)
+                if (_catalog.Vehicles.TryGetValue(id, out var card)) deck.Add(PlayerProfile.BoostFor(card));
+            var ours = EnemyScaling.Power(deck);
+            var wanted = Campaign.RecommendedPower(m, _tier);
+            _detailPower.text = Strings.Format("campaign.power", wanted, ours);
+            _detailPower.EnableInClassList("power-low", ours < wanted);
             _detailUnlocks.Clear();
             foreach (var id in m.Unlocks)
             {

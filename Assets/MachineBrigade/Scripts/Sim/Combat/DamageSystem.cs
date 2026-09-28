@@ -94,6 +94,28 @@ namespace MachineBrigade.Sim.Combat
             return off <= FrontArc ? 1f : off >= MathF.PI - RearArc ? RearFactor : SideFactor;
         }
 
+        /// <summary>A weapon's own bonus against this target (see <see cref="DamageBonus"/>): the best bonus that applies times the worst penalty.</summary>
+        internal static float BonusFor(WeaponDef weapon, Vehicle attacker, IDamageable target, double now)
+        {
+            var bonuses = weapon.Bonuses;
+            if (bonuses.Count == 0) return 1f;
+            var best = 1f;
+            var worst = 1f;
+            var vehicle = target as Vehicle;
+            for (var i = 0; i < bonuses.Count; i++)
+            {
+                var b = bonuses[i];
+                if (b.Class is { } c && (vehicle == null || vehicle.Def.Class != c)) continue;
+                if (b.Armor is { } a && target.Armor != a) continue;
+                // Standing still: a vehicle parked a while (a fixed defence does not count).
+                if (b.StillFor > 0f && (vehicle == null || vehicle.Def.Static || vehicle.IsMoving || now - vehicle.StillSince < b.StillFor)) continue;
+                if (b.Flank && (vehicle == null || FacingFactor(vehicle, attacker.Position) <= 1f)) continue;
+                if (b.Mult >= 1f) best = MathF.Max(best, b.Mult);
+                else worst = MathF.Min(worst, b.Mult);
+            }
+            return best * worst;
+        }
+
         internal const float SideFactor = 1.25f;
         internal const float RearFactor = 1.6f;
         private static readonly float FrontArc = SimMath.DegToRad(50f);
@@ -123,13 +145,21 @@ namespace MachineBrigade.Sim.Combat
         {
             var weapon = p.Weapon;
             var kind = weapon.Projectile;
-            if (p.TargetFlying || !(weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f))) return false;
+            if (p.TargetFlying) return false;
+            // Every system takes missiles, drones and direct-fire rockets; a point-defence laser
+            // artillery rockets too, a C-RAM a share of the shells.
+            var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
+            var rocket = kind == ProjectileKind.Rocket;
+            var shell = kind == ProjectileKind.Shell && weapon.Indirect;
+            if (!direct && !rocket && !shell) return false;
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
-                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0) continue;
+                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
+                if (!direct && rocket && !aps.Rockets) continue;
+                if (!direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
                 v.ApsCharges--;
                 v.ApsLeft = !v.ApsLeft;
                 // The interceptor meets the round a few metres out, on the side it came from.
@@ -192,6 +222,7 @@ namespace MachineBrigade.Sim.Combat
             var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
             if (!(damage > 0f)) return 0f;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
+            if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
 
             switch (target)
             {
@@ -317,8 +348,12 @@ namespace MachineBrigade.Sim.Combat
                 if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
                 Blame(v, p.Owner, p.OwnerTeam);
                 Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
+                PierceVictims++;
             }
         }
+
+        /// <summary>Vehicles hit by a piercing round beyond the one it was aimed at, over the battle (balance measurements).</summary>
+        internal int PierceVictims { get; private set; }
 
         /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
         private const double FlareDecoy = 0.35;

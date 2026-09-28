@@ -71,6 +71,10 @@
     "file": "atgm_carrier.glb",
     "triangles": 7356
   },
+  "atgm_tower": {
+    "file": "atgm_tower.glb",
+    "triangles": 4958
+  },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
     "triangles": 7350
@@ -167,6 +171,10 @@
     "file": "bush.glb",
     "triangles": 80
   },
+  "c_ram": {
+    "file": "c_ram.glb",
+    "triangles": 5806
+  },
   "cactus": {
     "file": "cactus.glb",
     "triangles": 354
@@ -207,6 +215,10 @@
     "file": "command_tent.glb",
     "triangles": 1998
   },
+  "command_vehicle": {
+    "file": "command_vehicle.glb",
+    "triangles": 7966
+  },
   "container": {
     "file": "container.glb",
     "triangles": 796
@@ -222,6 +234,10 @@
   "cottage": {
     "file": "cottage.glb",
     "triangles": 2228
+  },
+  "counter_battery_radar": {
+    "file": "counter_battery_radar.glb",
+    "triangles": 8216
   },
   "crater_large": {
     "file": "crater_large.glb",
@@ -267,6 +283,14 @@
     "file": "dock_bollards.glb",
     "triangles": 762
   },
+  "dragons_teeth": {
+    "file": "dragons_teeth.glb",
+    "triangles": 1508
+  },
+  "drone_hangar": {
+    "file": "drone_hangar.glb",
+    "triangles": 7138
+  },
   "drone_mothership": {
     "file": "drone_mothership.glb",
     "triangles": 18242
@@ -306,6 +330,10 @@
   "ew_jammer": {
     "file": "ew_jammer.glb",
     "triangles": 6516
+  },
+  "ew_tower": {
+    "file": "ew_tower.glb",
+    "triangles": 5104
   },
   "factory": {
     "file": "factory.glb",
@@ -383,6 +411,10 @@
     "file": "guard_tower.glb",
     "triangles": 4656
   },
+  "gun_pit": {
+    "file": "gun_pit.glb",
+    "triangles": 6598
+  },
   "gun_turret": {
     "file": "gun_turret.glb",
     "triangles": 6112
@@ -394,6 +426,10 @@
   "hangar": {
     "file": "hangar.glb",
     "triangles": 4976
+  },
+  "headquarters": {
+    "file": "headquarters.glb",
+    "triangles": 14260
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
@@ -507,6 +543,10 @@
     "file": "log_cabin.glb",
     "triangles": 2946
   },
+  "long_sam": {
+    "file": "long_sam.glb",
+    "triangles": 11284
+  },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
     "triangles": 8068
@@ -538,6 +578,10 @@
   "mine_layer": {
     "file": "mine_layer.glb",
     "triangles": 8164
+  },
+  "minefield": {
+    "file": "minefield.glb",
+    "triangles": 3150
   },
   "missile": {
     "file": "missile.glb",
@@ -926,6 +970,10 @@
   "water_tower": {
     "file": "water_tower.glb",
     "triangles": 2368
+  },
+  "wheeled_gun": {
+    "file": "wheeled_gun.glb",
+    "triangles": 7664
   },
   "wreck_car": {
     "file": "wreck_car.glb",
