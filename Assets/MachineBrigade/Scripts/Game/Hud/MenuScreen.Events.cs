@@ -53,12 +53,13 @@ namespace MachineBrigade.Game.Hud
             columns.Add(left);
 
             var right = UiKit.Box("events-right");
-            // Tác chiến (prompt 6): the operations, then the weekly fortress and the boss rush.
-            // Survival and Endless are challenges chosen on the battle setup with the skirmishes.
-            BuildOperations(right);
+            // Tác chiến (prompt 6): the weekly fortress and the boss rush first (under the operations
+            // block they were out of sight), then the operations. Survival and Endless are challenges
+            // chosen on the battle setup with the skirmishes.
             right.Add(UiKit.Text(Strings.Get("events.special"), "menu-caps"));
             right.Add(EventCard("home", "mode.weekly", "mode.weeklySub", GameModeKind.Weekly, out _weeklyStage));
             right.Add(EventCard("skull", "mode.bossrush", "mode.bossrushSub", GameModeKind.BossRush, out _));
+            BuildOperations(right);
             columns.Add(right);
             page.Add(columns);
         }

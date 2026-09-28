@@ -207,8 +207,9 @@ def build(game, imgdir):
         'Campaign': 'Chiến dịch 9 chương, 108 nhiệm vụ (xem phần 3); chơi lại các trận lớn ở Tác chiến (phần 5).',
         'Siege': 'Công thành: pháo đài chiếm 45% bản đồ, 3 giai đoạn (trạm radar tuyến ngoài → máy phát khiên trong tường → sở chỉ huy), cổng, tường sập, vòm khiên, '
                  'siêu pháo, chi viện bằng tàu hỏa hoặc đường băng (phần 7).',
-        'BossRush': 'Săn trùm: lần lượt 5 loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: xe tăng siêu nặng (Behemoth / Inferno / Tempest), '
-                    'trực thăng-máy bay pháo (Chim sắt / Spectre), pháo đài di động (Pháo đài băng / Hive / Bastion), phi thuyền drone, đĩa bay Silver Bug. '
+        'BossRush': 'Săn trùm: lần lượt 10 loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: xe tăng siêu nặng (Behemoth / Inferno / Tempest), '
+                    'trực thăng-máy bay pháo (Chim sắt / Spectre), pháo đài di động (Pháo đài băng / Hive / Bastion), phi thuyền drone, đĩa bay Silver Bug, '
+                    'siêu pháo đường ray, Giun Đất, phi thuyền chỉ huy, tàu đệm khí đổ bộ và Tổng Tư Lệnh. Thưởng thêm 2 CP mỗi bộ phận boss bị phá. '
                     'Thưởng CP khi boss mất 25/50/75% máu (8 CP mỗi mốc) và 12 CP khi hạ; không có không kích ngẫu nhiên.',
         'Defend': 'Phòng thủ: pháo đài là loadout căn cứ của bạn, ba tuyến lùi (mất tuyến được thưởng CP rút lui) và sở chỉ huy là trận chốt; đợt địch hiện trước bằng icon.',
         'Weekly': 'Pháo đài tuần: một cuộc công thành mà vòng thành đã phá được giữ nguyên cả tuần; thắng lần đầu trong tuần có thưởng.',

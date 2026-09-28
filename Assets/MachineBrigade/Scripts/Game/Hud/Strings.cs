@@ -1532,7 +1532,7 @@ namespace MachineBrigade.Game.Hud
             ["comeback.theirs"] = ("The enemy fields a Behemoth!", "Địch tung siêu tăng Behemoth!"),
             ["siege.laststand"] = ("Last stand: the fortress guns fire faster", "Liều chết: pháo đài bắn nhanh hơn"),
             ["mode.bossrush"] = ("Boss Rush", "Săn trùm"),
-            ["mode.bossrushSub"] = ("Four bosses in a row", "Bốn trùm liên tiếp"),
+            ["mode.bossrushSub"] = ("Ten bosses in a row", "10 trùm liên tiếp"),
             ["mode.bossrush.kicker"] = ("BOSS RUSH", "SĂN TRÙM"),
             ["mode.bossrush.sub"] = ("Every boss, one after another, with elite escorts", "Lần lượt từng trùm, kèm hộ tống tinh nhuệ"),
             ["mode.bossrush.toast"] = ("The bosses are coming. Each one you bring down pays a CP bounty.", "Các trùm đang tới. Hạ mỗi trùm được thưởng CP."),
