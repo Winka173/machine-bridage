@@ -43,5 +43,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>A charged weapon powering up: seconds still to go (0: not charging).</summary>
         public float ChargeLeft;
+
+        /// <summary>Sustained fire: rounds left in the magazine (-1: a full one not yet started), and when the last round went.</summary>
+        public int ClipLeft = -1;
+        public double LastRoundAt = double.NegativeInfinity;
     }
 }

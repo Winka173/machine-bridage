@@ -379,7 +379,7 @@ namespace MachineBrigade.Game.Audio
                 case ProjectileKind.Flame:
                     return Sound.Flame;
                 case ProjectileKind.Bullet:
-                    return weapon.DamageType == DamageType.Flak ? Sound.Flak : weapon.Damage >= 20f ? Sound.Autocannon : Sound.MachineGun;
+                    return weapon.DamageType == DamageType.Flak ? Sound.Flak : weapon.RoundWeight >= 20f ? Sound.Autocannon : Sound.MachineGun;
             }
             if (weapon.MinRange > 0f) return Sound.Howitzer;
             return weapon.Damage >= 100f ? Sound.HeavyCannon : Sound.Cannon;

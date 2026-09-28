@@ -40,11 +40,11 @@ namespace MachineBrigade.Game.Match
         private static Dictionary<string, float> _best;
         private static Catalog _bestFor;
 
-        /// <summary>Damage of one trigger pull of the main weapon (the whole salvo).</summary>
-        public static float Volley(WeaponDef w) => w.Damage * Mathf.Max(1, w.Burst);
+        /// <summary>Damage of one trigger pull of the main weapon (the whole salvo, or a whole magazine).</summary>
+        public static float Volley(WeaponDef w) => w.Damage * Mathf.Max(1, w.RoundsPerCycle);
 
-        /// <summary>The main weapon's damage a second (salvos over their cooldown).</summary>
-        public static float Dps(WeaponDef w) => Volley(w) / Mathf.Max(0.1f, w.Cooldown + (w.Burst - 1) * w.BurstInterval);
+        /// <summary>The main weapon's damage a second (salvos over their cooldown, magazines over their change).</summary>
+        public static float Dps(WeaponDef w) => Volley(w) / Mathf.Max(0.1f, w.CycleSeconds);
 
         public static List<Stat> For(Catalog catalog, VehicleDef def, VehicleBoost boost)
         {

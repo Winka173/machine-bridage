@@ -477,8 +477,10 @@ namespace MachineBrigade.Game.Hud
                 row.Add(Kit.Icon(lines[i].Icon, "fc-weapon__icon"));
                 var text = Kit.Box("fc-row-text fc-grow");
                 text.Add(Kit.Text(Kit.Caps(lines[i].Name + (i == 0 ? "  ·  " + Strings.Get("detail.main") : "")), "fc-panel-title"));
-                var burst = w.Burst > 1 ? $" × {w.Burst}" : "";
-                text.Add(Kit.Body2(Strings.Format("detail.weaponLine", w.Damage.ToString("N0") + burst, w.Cooldown.ToString("0.#"), Mathf.RoundToInt(w.Range),
+                var burst = w.RoundsPerCycle > 1 ? $" × {w.RoundsPerCycle}" : "";
+                // A magazine gun: its rounds, then the magazine change.
+                var pause = w.Clip > 0 ? w.ClipReload : w.Cooldown;
+                text.Add(Kit.Body2(Strings.Format("detail.weaponLine", w.Damage.ToString("N0") + burst, pause.ToString("0.#"), Mathf.RoundToInt(w.Range),
                     lines[i].Targets)));
                 if (lines[i].Ammo > 0) text.Add(Kit.Small(Strings.Format("detail.ammo", lines[i].Ammo)));
                 row.Add(text);

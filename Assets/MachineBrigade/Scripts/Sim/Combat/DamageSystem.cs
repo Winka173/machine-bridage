@@ -53,8 +53,10 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them).
-                var decoyed = weapon.Guided && ((target is Vehicle { FlaresUp: true } && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
+                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them):
+                // flares out now, or put out while it flew (a slow missile outlasts a flare's burn).
+                var flared = target is Vehicle decoy && (decoy.FlaresUp || decoy.FlaresUntil > p.LaunchedAt);
+                var decoyed = weapon.Guided && ((flared && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
                 // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
                 var lure = default(Vector2);
                 var lured = !decoyed && target is Vehicle guarded && _world.Gear.Lure(guarded, p, out lure);

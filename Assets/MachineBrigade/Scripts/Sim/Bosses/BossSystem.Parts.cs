@@ -114,9 +114,9 @@ namespace MachineBrigade.Sim.Bosses
             w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Multiplier(w.DamageType, ArmorClass.Light),
                 _world.Catalog.Damage.Multiplier(w.DamageType, ArmorClass.Heavy)) : 0f;
 
-        /// <summary>A weapon's damage a second on paper (its volley over its cycle).</summary>
+        /// <summary>A weapon's damage a second on paper (its volley or magazine over its cycle).</summary>
         internal static float Firepower(WeaponDef w) =>
-            w.Damage * Math.Max(1, w.Burst) / MathF.Max(0.1f, w.Cooldown + (Math.Max(1, w.Burst) - 1) * w.BurstInterval);
+            w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(0.1f, w.CycleSeconds);
 
         // ================================================================== the part order
 
