@@ -64,7 +64,8 @@ namespace MachineBrigade.Tests
             var world = Field();
             var mortar = world.SpawnVehicle("mortar_carrier", 0, new Vector2(-58f, -58f), 0f);
             mortar.Weapons[0].Ammo = 0;
-            Run(world, 12f);
+            // Three times as fast as its reload in the field (plus the half-second aura tick).
+            Run(world, Sim.Combat.CombatSystem.ReloadSeconds(mortar.Def.Mounts[0].Weapon) / 3f + 1f);
             Assert.AreEqual(mortar.Def.Mounts[0].Weapon.Ammo, mortar.Ammo(0), "back at the rally point the empty mortar reloads its whole magazine three times as fast");
         }
 
