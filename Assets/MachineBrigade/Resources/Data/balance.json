@@ -105,9 +105,9 @@
   // clip: a magazine fired as a stream, one round per cooldown at the target it bears on, then clipReload s to change it.
   // roundWeight: how heavy a round looks and sounds (tracer, report) when its damage is not its calibre's (a faster gun's lighter rounds).
   "weapons": [
-    { "id": "mg_jeep",       "damageType": "Kinetic",       "damage": 7.7,   "cooldown": 0.12, "range": 22, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 9 },
-    { "id": "mg_coax",       "damageType": "Kinetic",       "damage": 4.8,   "cooldown": 0.1, "range": 20, "projectileSpeed": 240, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 6 },
-    { "id": "hmg_roof",      "damageType": "Kinetic",       "damage": 8.8,  "cooldown": 0.13,  "range": 30, "projectileSpeed": 230, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 11 },
+    { "id": "mg_jeep",       "damageType": "Kinetic",       "damage": 6.7,   "cooldown": 0.1, "range": 22, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 9, "clip": 30, "clipReload": 1.2 },
+    { "id": "mg_coax",       "damageType": "Kinetic",       "damage": 5.8,   "cooldown": 0.1, "range": 20, "projectileSpeed": 240, "spread": 1.0, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 6, "clip": 30, "clipReload": 1.2 },
+    { "id": "hmg_roof",      "damageType": "Kinetic",       "damage": 8.25,  "cooldown": 0.12,  "range": 30, "projectileSpeed": 230, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 11, "clip": 25, "clipReload": 1.4 },
     { "id": "autocannon_30", "damageType": "Kinetic",       "damage": 22.4,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 200, "spread": 0.8, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 10, "clipReload": 1.8, "roundWeight": 32 },
     { "id": "gun_57mm",      "damageType": "ArmorPiercing", "damage": 79,  "cooldown": 2.86,  "range": 28, "projectileSpeed": 150, "spread": 0.8, "impactTier": "Medium" },
     { "id": "gun_120mm",     "damageType": "ArmorPiercing", "damage": 200, "cooldown": 4.57,  "range": 32, "projectileSpeed": 170, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" },
@@ -120,7 +120,7 @@
     { "id": "flak_35",       "damageType": "Flak",          "damage": 6.85,  "cooldown": 0.055, "range": 36, "projectileSpeed": 260, "splash": 2.5, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 50, "clipReload": 1.2, "roundWeight": 11 },
     { "id": "sam",           "projectileModel": "shorad_dart", "damageType": "Flak",          "damage": 210, "cooldown": 6.0,  "range": 44, "projectileSpeed": 40, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air" },
     { "id": "heli_atgm",     "projectileModel": "hellfire", "damageType": "ArmorPiercing", "damage": 256, "cooldown": 5.0,  "range": 34, "projectileSpeed": 30, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "heli_gun",      "damageType": "Kinetic",       "damage": 12,  "cooldown": 0.12, "range": 26, "projectileSpeed": 220, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 16 },
+    { "id": "heli_gun",      "damageType": "Kinetic",       "damage": 10,  "cooldown": 0.1, "range": 26, "projectileSpeed": 220, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 16, "clip": 30, "clipReload": 1.2 },
     { "id": "heli_rockets",  "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 40,  "cooldown": 8.0,  "range": 30, "projectileSpeed": 60, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12 },
     { "id": "autocannon_25",     "damageType": "Kinetic",       "damage": 15.5,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 12, "clipReload": 1.6, "roundWeight": 22 },
     { "id": "gun_105_long",      "damageType": "ArmorPiercing", "damage": 357, "cooldown": 5.57,  "range": 40, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium" },
@@ -132,7 +132,7 @@
     { "id": "grad_rockets",  "projectileModel": "grad", "damageType": "HighExplosive", "damage": 26,  "cooldown": 14,   "range": 55, "minRange": 18, "projectileSpeed": 52, "splash": 3.5, "spread": 7, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.08, "ammo": 3 },
     { "id": "atgm_heavy",    "projectileModel": "atgm_tow", "damageType": "ArmorPiercing", "damage": 200, "cooldown": 8.0,  "range": 42, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.7 },
     { "id": "gunship_rockets",   "projectileModel": "s8", "damageType": "HighExplosive", "damage": 42,  "cooldown": 9,    "range": 34, "projectileSpeed": 60, "splash": 3.2, "spread": 3.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 12, "burstInterval": 0.1 },
-    { "id": "minigun",           "damageType": "Kinetic",       "damage": 5.6,   "cooldown": 0.045, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7 },
+    { "id": "minigun",           "damageType": "Kinetic",       "damage": 3.05,   "cooldown": 0.045, "range": 24, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7, "clip": 70, "clipReload": 1 },
     { "id": "scout_rockets",     "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 47,  "cooldown": 8,    "range": 28, "projectileSpeed": 60, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 7, "burstInterval": 0.11 },
     { "id": "jet_cannon",        "damageType": "ArmorPiercing", "damage": 64,  "cooldown": 0.05,  "range": 30, "projectileSpeed": 300, "spread": 2.5, "impactTier": "Small", "projectile": "Bullet", "clip": 70, "clipReload": 1 },
     { "id": "jet_rockets",       "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 61,  "cooldown": 7,    "range": 36, "projectileSpeed": 60, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.08 },
@@ -148,7 +148,7 @@
     { "id": "gun_140_twin",      "damageType": "ArmorPiercing", "damage": 299, "cooldown": 4.86,  "range": 40, "projectileSpeed": 200, "splash": 2, "spread": 0.5, "impactTier": "Large", "burst": 2, "burstInterval": 0.05 },
     // Premium aircraft (bought with coins).
     { "id": "bomber_payload",    "projectileModel": "bomb", "damageType": "HighExplosive", "damage": 400, "cooldown": 11,   "range": 28, "projectileSpeed": 35, "splash": 10, "spread": 7, "impactTier": "Huge", "projectile": "Bomb", "burst": 12, "burstInterval": 0.12 },
-    { "id": "bomber_tail_guns",  "damageType": "Kinetic",       "damage": 15,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 240, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "roundWeight": 19 },
+    { "id": "bomber_tail_guns",  "damageType": "Kinetic",       "damage": 12.4,  "cooldown": 0.12,  "range": 30, "projectileSpeed": 240, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "roundWeight": 19, "clip": 25, "clipReload": 1.5 },
     { "id": "stealth_payload",   "projectileModel": "jdam", "damageType": "HighExplosive", "damage": 850, "cooldown": 14,   "range": 30, "projectileSpeed": 40, "splash": 13, "spread": 2, "impactTier": "Ultimate", "projectile": "Bomb", "burst": 3, "burstInterval": 0.3 },
     { "id": "gunship_105",       "damageType": "HighExplosive", "damage": 347, "cooldown": 5.0,  "range": 58, "projectileSpeed": 120, "splash": 6.5, "spread": 3, "impactTier": "Huge" },
     { "id": "gunship_40mm",      "damageType": "HighExplosive", "damage": 79,  "cooldown": 1.29,  "range": 55, "projectileSpeed": 200, "splash": 3, "spread": 2.5, "impactTier": "Medium", "burst": 3, "burstInterval": 0.2 },
@@ -175,8 +175,8 @@
     { "id": "kh29",              "projectileModel": "maverick", "damageType": "ArmorPiercing", "damage": 260, "cooldown": 14,   "range": 38, "projectileSpeed": 32, "impactTier": "Large", "projectile": "Missile", "ammo": 2 },
     { "id": "s8_pods",           "projectileModel": "s8", "damageType": "HighExplosive", "damage": 22,  "cooldown": 7,    "range": 34, "projectileSpeed": 60, "splash": 3, "spread": 4.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 20, "burstInterval": 0.05 },
     { "id": "gsh30k",            "damageType": "ArmorPiercing", "damage": 15.8,  "cooldown": 0.08,  "range": 28, "projectileSpeed": 300, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "clip": 30, "clipReload": 1.2, "roundWeight": 41 },
-    { "id": "gsh_23v",           "damageType": "Kinetic",       "damage": 9.3,  "cooldown": 0.045, "range": 26, "projectileSpeed": 240, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14 },
-    { "id": "door_gun",          "damageType": "Kinetic",       "damage": 6.4,   "cooldown": 0.07,  "range": 22, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7 },
+    { "id": "gsh_23v",           "damageType": "Kinetic",       "damage": 6.2,  "cooldown": 0.045, "range": 26, "projectileSpeed": 240, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14, "clip": 60, "clipReload": 1.2 },
+    { "id": "door_gun",          "damageType": "Kinetic",       "damage": 4.8,   "cooldown": 0.06,  "range": 22, "projectileSpeed": 220, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 7, "clip": 50, "clipReload": 1.2 },
     // Round 5 vehicles: car bomb, twin 23 mm, loitering munitions, Shahed, laser, railgun, BMPT guns.
     { "id": "detonator",         "damageType": "HighExplosive", "damage": 700, "cooldown": 1,    "range": 3, "projectileSpeed": 100, "splash": 7.5, "impactTier": "Ultimate",
       "bonuses": [ { "armor": "Structure", "mult": 0.5 } ] },
@@ -229,7 +229,7 @@
     { "id": "c_ram_gatling",     "damageType": "Flak", "damage": 3.22, "cooldown": 0.03, "range": 32, "projectileSpeed": 380, "splash": 1.2, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "clip": 100, "clipReload": 1, "roundWeight": 7 },
     { "id": "gun_pit_105",       "damageType": "ArmorPiercing", "damage": 290, "cooldown": 5.6, "range": 36, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium" },
     { "id": "fpv_hangar",        "inherits": "fpv_swarm", "cooldown": 20, "range": 70, "minRange": 8, "burst": 2, "burstInterval": 1.0, "ammo": 0 },
-    { "id": "bunker_hmg_twin",   "inherits": "bunker_hmg", "cooldown": 0.045, "range": 28, "damage": 11.2 },
+    { "id": "bunker_hmg_twin",   "inherits": "bunker_hmg", "cooldown": 0.045, "range": 28, "damage": 6.5, "clip": 70, "clipReload": 1.2 },
     { "id": "bunker_flame",      "inherits": "flamethrower", "range": 16, "damage": 26 },
     { "id": "turret_gun_120_long", "inherits": "turret_gun_120", "range": 38.4, "cooldown": 6.9 },
     { "id": "turret_gun_120_auto", "inherits": "turret_gun_120", "damage": 170, "cooldown": 4.45 },
@@ -247,7 +247,7 @@
     { "id": "gun_155_twin_long", "inherits": "gun_155_twin", "range": 60 },
     // Fixed defences (Siege mode).
     { "id": "turret_rockets",    "projectileModel": "grad", "damageType": "HighExplosive", "damage": 40,  "cooldown": 7,    "range": 55, "minRange": 8, "projectileSpeed": 55, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.12, "impactScale": 1.3 },
-    { "id": "bunker_hmg",        "damageType": "Kinetic",       "damage": 11.6,  "cooldown": 0.08, "range": 32, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14 },
+    { "id": "bunker_hmg",        "damageType": "Kinetic",       "damage": 9.4,  "cooldown": 0.08, "range": 32, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14, "clip": 40, "clipReload": 1.2 },
     // New bosses.
     { "id": "saucer_laser",      "damageType": "Fire",          "damage": 9,   "cooldown": 0.1,  "range": 36, "projectileSpeed": 3000, "splash": 1.5, "impactTier": "Small", "projectile": "Bullet", "beam": true },
     { "id": "coilgun",           "charge": 0.5, "damageType": "ArmorPiercing", "damage": 250, "cooldown": 4.29,    "range": 55, "projectileSpeed": 420, "spread": 0.6, "impactTier": "Large", "projectile": "Bullet", "targets": "All", "burst": 2, "burstInterval": 0.25 },
@@ -283,8 +283,8 @@
     { "id": "airship_drones",    "damageType": "ArmorPiercing", "damage": 140, "cooldown": 8, "range": 70, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Large",
       "projectile": "Drone", "burst": 3, "burstInterval": 0.35 },
     // Test feedback 11C: the mega gunship's own guns at the old cadence (see the minigun and heli_gun above).
-    { "id": "boss_heli_gun",     "inherits": "heli_gun", "damage": 16, "cooldown": 0.22, "roundWeight": 16 },
-    { "id": "boss_minigun",      "inherits": "minigun", "damage": 7, "cooldown": 0.07, "roundWeight": 7 },
+    { "id": "boss_heli_gun",     "inherits": "heli_gun", "damage": 16, "cooldown": 0.22, "roundWeight": 16, "clip": 0 },
+    { "id": "boss_minigun",      "inherits": "minigun", "damage": 7, "cooldown": 0.07, "roundWeight": 7, "clip": 0 },
     { "id": "hover_ciws",        "damageType": "Kinetic", "damage": 10, "cooldown": 0.07, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All" }
   ],
 

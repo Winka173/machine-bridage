@@ -267,8 +267,8 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>
         /// An aircraft for a turret machine gun (a tank's coaxial gun) while the main gun has
-        /// nothing: the first turret mount that is a machine gun able to hit aircraft picks the
-        /// best one in its reach.
+        /// nothing: the first turret mount that is a machine gun (firing in runs or from a magazine,
+        /// test feedback 2) able to hit aircraft picks the best one in its reach.
         /// </summary>
         private Vehicle? CoaxAirTarget(Vehicle v)
         {
@@ -277,7 +277,7 @@ namespace MachineBrigade.Sim.Combat
             for (var i = 1; i < mounts.Count; i++)
             {
                 var weapon = v.Arms[i];
-                if (mounts[i].Aim != MountAim.Turret || !IsMachineGun(weapon) || !weapon.CanTarget(true)) continue;
+                if (mounts[i].Aim != MountAim.Turret || !IsGun(weapon) || !weapon.CanTarget(true)) continue;
                 if (_world.TryGetVehicle(v.CoaxAir, out var current) && current.Flying && IsValidAutoTarget(v, current, weapon)) return current;
                 var best = BestInRange(v, weapon, EntityId.None);
                 return best != null && best.Flying ? best : null;
@@ -507,12 +507,24 @@ namespace MachineBrigade.Sim.Combat
             {
                 if (now - v.HeavyRoundAt < GunAfterHeavy) return false;
                 if (now - v.HeavyWaitingAt < 0.15) return false;
-                // A machine gun also makes way for a magazine gun about to open up (the main gun's stream).
-                if (HeavyDue(v, index, IsMachineGun(weapon))) return false;
+                var leads = Leads(v, index);
+                // The main gun's stream ready to open up but held off by a secondary gun's magazine:
+                // that gun breaks off for it, as a machine gun does for a heavy weapon (test feedback 2).
+                if (!leads && now - v.LeadWaitingAt < 0.15) return false;
+                // A machine gun or a secondary magazine gun also makes way for the main gun's stream about
+                // to open up (test feedback 2: the coaxial gun, now on a magazine, for the autocannon's).
+                if (HeavyDue(v, index, !leads)) return false;
                 // Before a leading magazine gun opens up, a heavy weapon lined up goes first (an IFV's
                 // or a BMPT's missile, then its cannon).
-                if (Leads(v, index) && HeavyReady(v, index)) return false;
-                if (v.GunMount != index && now - v.GunRoundAt < GunHandover) return false;
+                if (leads && HeavyReady(v, index)) return false;
+                if (v.GunMount != index && now - v.GunRoundAt < GunHandover)
+                {
+                    if (leads) v.LeadWaitingAt = now;
+                    return false;
+                }
+                // Secondary magazine guns take turns magazine by magazine: the one quiet the longest opens
+                // up first (test feedback 2: a tank's coaxial gun would otherwise take every gap from its roof gun).
+                if (!leads && weapon.Clip > 0 && !Streaming(v, index) && QuieterGunReady(v, index)) return false;
                 if (IsMachineGun(weapon) && state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
                 return true;
             }
@@ -550,6 +562,24 @@ namespace MachineBrigade.Sim.Combat
             return false;
         }
 
+        /// <summary>
+        /// Another secondary magazine gun of the vehicle could open up now and has been quiet longer
+        /// than mount <paramref name="index"/> (test feedback 2: the guns share the gaps between heavy rounds).
+        /// </summary>
+        private bool QuieterGunReady(Vehicle v, int index)
+        {
+            var mine = v.Weapons[index].LastRoundAt;
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                if (i == index || v.Arms[i].Clip <= 0 || Leads(v, i) || !v.MountWorks(i)) continue;
+                var other = v.Weapons[i];
+                if (other.LastRoundAt >= mine || other.Ammo == 0 || other.Cooldown > 0f) continue;
+                var id = i == 0 ? v.Target : other.Target;
+                if (id.IsValid && _world.TryGetTarget(id, out var t) && t.IsAlive && CanFire(v, i, t)) return true;
+            }
+            return false;
+        }
+
         /// <summary>Mount <paramref name="index"/> is a magazine gun firing: rounds left and its last round a cadence ago.</summary>
         private bool Streaming(Vehicle v, int index)
         {
@@ -576,14 +606,16 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>
         /// A heavy weapon with a target is about to fire: its reload is nearly done. With
-        /// <paramref name="streams"/>, a magazine gun firing or about to counts too.
+        /// <paramref name="streams"/>, the leading magazine gun (the main gun's stream) firing or about to
+        /// counts too; other magazine guns take turns by the handover instead (test feedback 2: two
+        /// secondary streams waiting on each other's change would break each other up).
         /// </summary>
         private static bool HeavyDue(Vehicle v, int except, bool streams)
         {
             for (var i = 0; i < v.Weapons.Length; i++)
             {
                 var state = v.Weapons[i];
-                if (i == except || IsMachineGun(v.Arms[i]) || (!streams && v.Arms[i].Clip > 0) || state.Ammo == 0) continue;
+                if (i == except || IsMachineGun(v.Arms[i]) || (v.Arms[i].Clip > 0 && !(streams && Leads(v, i))) || state.Ammo == 0) continue;
                 var aimed = i == 0 ? v.Target.IsValid : state.Target.IsValid;
                 if (aimed && state.Cooldown is > 0f and <= GunBeforeHeavy) return true;
             }

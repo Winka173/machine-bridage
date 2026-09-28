@@ -34,7 +34,7 @@ namespace MachineBrigade.Tests
             ("mg_bunker", "armored_car", 18f), ("mg_bunker.twin", "armored_car", 18f), ("bulwark_post", "armored_car", 18f),
             ("gun_turret", "armored_car", 16f), ("guard_tower", "armored_car", 18f), ("guard_tower.nest", "armored_car", 18f),
             ("fortress_bastion", "attack_helicopter", 20f), ("behemoth", "attack_helicopter", 25f), ("heavy_bomber", "attack_helicopter", 20f),
-            ("main_battle_tank", "attack_helicopter", 14f), ("scout_jeep", "attack_helicopter", 14f),
+            ("main_battle_tank", "attack_helicopter", 14f), ("scout_jeep", "attack_helicopter", 14f), ("heavy_attack_heli", "armored_car", 12f),
         };
 
         [Test, Explicit("a measurement: run it by name")]

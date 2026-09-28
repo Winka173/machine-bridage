@@ -472,6 +472,9 @@ namespace MachineBrigade.Sim.Entities
         internal double GunRoundAt = double.NegativeInfinity;
         internal int GunMount = -1;
         internal double HeavyWaitingAt = double.NegativeInfinity;
+
+        /// <summary>When the main gun's stream last stood ready but was held off by a secondary gun's magazine (test feedback 2).</summary>
+        internal double LeadWaitingAt = double.NegativeInfinity;
         internal double AnyRoundAt = double.NegativeInfinity;
         internal int AnyMount = -1;
 
