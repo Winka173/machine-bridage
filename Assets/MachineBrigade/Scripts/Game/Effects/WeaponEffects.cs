@@ -47,14 +47,22 @@ namespace MachineBrigade.Game.Effects
             _hasBomb = models.Has("bomb");
         }
 
-        public void Fired(in SimEvent e, ViewRegistry views, float now)
+        /// <summary>Tests and tools: every round's start point as it is launched (shooter, mount, point).</summary>
+        internal static Action<VehicleView, int, Vector3> Launched;
+
+        public void Fired(in SimEvent e, ViewRegistry views, float now) =>
+            Fired(e, views.TryGet(e.Entity, out var shooter) ? shooter : null, views, now);
+
+        /// <summary>A shot by <paramref name="shooter"/> (null when it is not drawn): call once the shooter is drawn this frame.</summary>
+        public void Fired(in SimEvent e, VehicleView shooter, ViewRegistry views, float now)
         {
             var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
             Vector3 from;
             float? groundY = 0f;
             var pitch = float.NaN;
             var barrel = Vector3.zero;
-            if (views.TryGet(e.Entity, out var shooter))
+            if (shooter != null && shooter.Root == null) shooter = null;
+            if (shooter != null)
             {
                 // A blow (the bulldozer's blade): the blade strokes, no flash or tracer; the impact shows the hit.
                 if (weapon != null && weapon.Melee)
@@ -71,6 +79,7 @@ namespace MachineBrigade.Game.Effects
                 }
                 from = shooter.MuzzleOf(e.Mount);
                 groundY = shooter.Flying ? null : shooter.Position.y;
+                Launched?.Invoke(shooter, e.Mount, from);
             }
             else
             {
@@ -198,9 +207,13 @@ namespace MachineBrigade.Game.Effects
         /// A charged weapon powering up: sparks drawn into the muzzle, a glow at the barrel's end
         /// that grows until it fires (see <see cref="Rail"/>).
         /// </summary>
-        public void Charging(in SimEvent e, ViewRegistry views, float now)
+        public void Charging(in SimEvent e, ViewRegistry views, float now) =>
+            Charging(e, views.TryGet(e.Entity, out var shooter) ? shooter : null, now);
+
+        /// <summary>A charge starting on <paramref name="shooter"/>: call once the shooter is drawn this frame.</summary>
+        public void Charging(in SimEvent e, VehicleView shooter, float now)
         {
-            if (!views.TryGet(e.Entity, out var shooter)) return;
+            if (shooter == null || shooter.Root == null) return;
             var muzzle = shooter.MuzzleOf(e.Mount);
             var back = -shooter.DirectionOf(e.Mount);
             _charges.Add((shooter, e.Mount, now, now + e.Value));
