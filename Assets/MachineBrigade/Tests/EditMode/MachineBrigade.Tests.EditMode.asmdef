@@ -4,8 +4,11 @@
     "references": [
         "MachineBrigade.Sim",
         "MachineBrigade.Game",
+        "MachineBrigade.Editor",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Unity.UI.TestFramework.Runtime",
+        "Unity.UI.TestFramework.Editor"
     ],
     "includePlatforms": [
         "Editor"

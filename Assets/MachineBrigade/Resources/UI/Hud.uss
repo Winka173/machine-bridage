@@ -19,7 +19,7 @@
     --n300: #a9b4ba;
     --n200: #cfd7dc;
     --n100: #edeff0;
-    --amber: #f2a33a;
+    --amber: var(--fc-accent); /* Tokens.uss */
     --amber-light: #f5b55e;
     --amber-dark: #d98620;
     --amber-deep: #b86814;
@@ -1577,7 +1577,7 @@
     --text-mid: #a3adb3;
     --text-lo: #69747b;
     --ink: #16110a;
-    --accent: #f2a33a;
+    --accent: var(--fc-accent); /* Tokens.uss */
     --accent-press: #d48a24;
     --bone: #ede6d6;
     --bone-press: #d8d0be;

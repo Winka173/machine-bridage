@@ -1340,3 +1340,143 @@ Score: HQ health left plus share of the attackers destroyed (0-2), 3 seeds, 5 mi
 - The lab (MB_BALANCE=1): `EquipmentLabTests` (roster DPS, elite power, offensive lines, Twin Feed), `EquipmentRiskLab` (risky combinations, defensive lines and modules, the sponge, the scoot, one-tower bases), `EquipmentDocsExport` (writes EQUIPMENT_FIT.md and EQUIPMENT_VALUES.md).
 - Risky combinations measured (the full table is in EQUIPMENT_VALUES.md): Twin Feed on the battle tank +14 %, on the railgun +22 %; ricochet on flak +16 % and heavy flak +8 %, shredder on flak +9 %; cluster on the bomber within noise, on the MLRS +11 %; the drone escort module about the same per CP on a jeep as on a tank; War Profiteer with the Quartermaster four-piece capped at a 45 % refund (it would be 50 %), the Quartermaster's own-loss refund 10 % under the 15 % cap; Wolfpack on six jeeps +17 %, on three tanks +18 % (it is not a swarm tool only); the SP gun with the laser designator +8 %, the counter-battery radar adding nothing in a duel (it answers enemy artillery); Unbreakable, emergency kit and Phoenix on a heavy tank +36 % time alive.
 - Not run (left to the testing phase by the lead's instruction): the five-seed campaign sweep after the elite budget, the Boss Rush and Conquest ending sweeps (the Boss Rush cap in `ModeEndingTests` is now 55 minutes for its ten bosses), the snowball measurement after the refund caps, the rerun of the offensive lines after the last retune of Twin Feed's salvo share.
+## 10. Field Command 2.0: foundation
+
+The foundation of the prompt-10 rebuild: the token theme, fonts and type scale, the component
+library with its preview screen, the card renders and the UI checks. The screens themselves
+(sections D, E, G and H) are rebuilt on it afterwards.
+
+- **One theme file.** `Resources/UI/Tokens.uss` holds every colour, font, type size, spacing step,
+  border and control size as a `--fc-*` variable (the `:root` block, and `.fc-text-large` for the
+  Large text size), then the kit's component classes (`fc-*`), which use `var()` only.
+  `Theme.tss` imports it, so every panel of the game has the tokens at its root. `UiThemeTests`
+  fails on a literal colour or font size below the token blocks, on an ellipsis, and on a colour,
+  font size or spacing set from the kit's C#. In Hud.uss only the accent equals a token exactly, so
+  `--amber` and `--accent` now read `var(--fc-accent)` (a pure rename; a test checks the old menu
+  still resolves it); its other colours differ slightly from the brief's, and renaming them would
+  restyle the old screens, so the rebuild moves them over screen by screen.
+- **Units: 1 reference px = 1.114 panel px.** The brief's sizes are given at a 1400 px reference
+  width. The game's panels are authored at 1280 x 720 and scale with the height on phones
+  (`BattleHud.MatchFor`), so a 19.5:9 phone shows a panel 1560 px wide. The brief's device targets
+  (44 pt touch targets, 11-12 pt body text) only hold if the 1400 px is that phone class's width,
+  so the factor is 1560 / 1400. Converted: main button 42 px (37.7 at the reference), screen title
+  30 (26.9), panel title and button labels 23 (20.6), body 21 (18.8), secondary 19 (17.1; nothing is
+  smaller), big numbers 36; touch target 82 px (72 at the reference is 80.2; 44 pt on a 390 pt tall
+  phone is 81.2), the main button's chamfer 20 px (18). Hairlines, bars and the spacing scale keep
+  their literal values (1 px borders, the 2 px tab underline, the 3 px branch and nav bars, 4 px
+  progress bars, the 8 px dot, spacing 4/8/12/16/20/24/32): converting them would only blur them.
+- **Large text** (Settings > Text size: Thường / Lớn, `MatchSettings.TextSize`, saved as
+  `mb.textSize`) is about 1.15x: 48 / 34 / 26 / 24 / 22, numbers 41. `Kit.ApplyTextSize` puts the
+  `fc-text-large` class on a kit root; only type sizes change, so layouts must wrap, not overflow.
+  The settings screen gets the option when it is rebuilt.
+- **Contrast fixes.** Every text token was checked on every surface (and the battlefield panel
+  over black, grey and white ground). One pair of the brief fails: danger red `#e0513a` reads
+  4.45:1 on the panel and 3.98:1 on the selected panel (4.5 needed). It stays for borders, the
+  notification dot and icons (3:1 for graphics); text in danger colour uses a new
+  `--fc-danger-text: #ea6a55` (4.92:1 on the selected panel). Dim text `#8a939b` passes 4.5:1 on
+  every surface, but is still only used from the body size up, as the brief says. Dark text on
+  the accent, coin and bone faces is `--fc-ink: #101317` (6.7:1 or better).
+- **Our side and theirs.** The brief asks for a bright blue for us and red for them, different in
+  lightness too: `--fc-ally: #6cc0ff` (luminance 0.48) against `--fc-enemy: #e0513a` (0.22), a
+  1.96:1 ratio between them; the test asks for at least 1.8.
+- **Rarity colours.** Common `#9aa3ab`, uncommon `#6fbf5a`, rare `#4f9be8`, epic `#a877e8`,
+  legendary `#ff7a2e` (redder than the accent, as asked). `GearArt`'s old frame colours stay
+  until the equipment screen is rebuilt on `KitGearCard`.
+- **Extra tokens** the brief did not name: `--fc-positive: #9ccb5e` (better in a comparison), the
+  coin face's pressed `#cfa640` and pulse `#f3d67f`, a scrim, a pressed wash and a transparent
+  `--fc-clear`.
+- **Fonts.** Barlow Condensed SemiBold/Bold for titles, labels and big numbers; Barlow Regular,
+  Medium and SemiBold for text, from the Google Fonts `ofl/barlow` release (OFL 1.1). All five
+  carry every Vietnamese letter (checked with fontTools and by `UiLanguageTests` through
+  `Font.HasCharacter`), but none has `▾`, so the dropdown and sort carets are drawn as the new
+  `caret` icon, never typed. The licences moved to `Resources/Licenses/` (`OFL-<family>.txt` for
+  every bundled family, including the older Be Vietnam Pro, Inter and JetBrains Mono);
+  `UiLanguageTests` checks that each font family has one. Be Vietnam Pro stays for the old screens
+  until they are rebuilt.
+- **Corners and faces.** Square corners and 1 px borders everywhere. The main button is the only
+  shape: a 9-sliced white face with the top-left and bottom-right corners cut (`fc_primary.png`,
+  `Tools/art/ui_kit.py`), tinted by the accent token.
+- **Touch targets larger than faces.** Chips, the plus beside the coins and text-only buttons
+  have a smaller visible face (64 px, 44 px) inside a full 82 px target, so rows of chips do not
+  turn into slabs.
+- **Pressed.** Darker and 2 px down; phones have no hover. The kit's press rules are scoped under
+  `.fc-root` so the old menu's `.menu .pressed` (scale 0.96) cannot win inside the menu.
+- **Kit icons** carry `fc-icon` instead of the old `icon` class, whose colour rule in Hud.uss
+  would otherwise override the kit's. Taps: every element with the `Tap` manipulator now carries
+  the class `mb-tap`, so the checks can find the touch targets of old and new screens alike.
+- **Danger buttons always ask.** `KitButton.Danger` needs a `KitConfirm` (title, text, confirm
+  label); the dialog has Cancel (secondary) and a red confirm. A danger button cannot be built
+  without one.
+- **Disabled buttons say why.** `Disable(reason)` refuses an empty reason; the reason shows
+  under the label ("Thiếu 320 xu", "Cần Sở chỉ huy cấp 3": the brief's "Cần cấp HQ 3" written
+  without the English abbreviation).
+- **Accent use.** Only the main button, the chosen navigation item and the chosen tab, plus the
+  two uses the brief itself names (text-only buttons, a progress bar that is full enough to act).
+  A chosen chip is bone with dark text; a chosen dropdown option has a check mark.
+- **Upgrade mark** on a vehicle card: a bone square with a dark arrow, shown only when
+  `PlayerProfile.CanRankUp` (blueprints and coins both there) and never on a locked card. Locked
+  cards dim their art, name and cost to 45 % but keep the unlock line at full contrast.
+- **The preview screen** (`KitPreview`): six pages (colour and type, buttons, controls, cards,
+  frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
+  switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
+  hidden developer entry is five quick taps on the rank badge of the menu's top bar.
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests`, every other unmarked Latin word in a Vietnamese text counts as English): `CP`, `HQ`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `AC-130`, `Ka-52`, `Grad`, `Griffin`, `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`, `radar`, `drone`, `boss`, `Machine Brigade`, and the unit `mm` and the Vietnamese abbreviations `PK` (phòng không) and `TT` (trực thăng).
+- **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
+  `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
+  The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
+  structure with a `fort` (towers, their branches, the HQ, the utility modules): 122 cards over 92
+  models. Each picture is one model: the high-detail variant (`<id>_hd.glb`, through
+  `ModelLibrary.HighDetail`) where it ships, else the model, in the player's colours; elites and
+  bosses (never the player's) wear the enemy's. One orthographic camera at pitch 26° and yaw -142°
+  (the front to the right, like the battle's three-quarter view but lower), framed on the drawn
+  silhouette (renderer bounds were loose on masts and antennas) with a margin; a key, a fill and a
+  rim light and a flat ambient, no fog or post-processing; drawn at 1024 px with 4x MSAA and halved
+  to 512 px with premultiplied alpha, so the edges are clean on any background. The soft shadow is
+  the model's footprint seen from straight above, blurred and projected onto the ground under the
+  model on the CPU: it needs no shadow map, so it looks the same for a jeep and a boss.
+- **Staying fresh.** `Resources/UI/Cards/manifest.json` records, per card, the model, the source
+  file and its SHA-1 (with the render version). `CardRenderWatch` renders a changed model again on
+  import in an editor with graphics and logs a warning in batch; `CardRenderTests` fails while any
+  card lacks a picture or its model file has changed, so a model change cannot ship with an old
+  picture. `CardArt.For(cardId)` gives the picture at run time. The pictures import as UI textures
+  (no mipmaps, clamped, 512 px, high-quality compression): 13 MB of PNG in the repository.
+- **The class icons stay** the single-colour line icons (`KitBranches.ClassIcon`, the old
+  `MenuScreen.ClassIcon`) for small places: chips, the card's corner, the minimap, tags.
+- **Screenshots** (`MachineBrigade.Editor.UiShots.KitScreens`, batch with graphics). A runtime panel
+  with the game's panel settings (1280 x 720, `BattleHud.MatchFor`'s match) renders into a texture
+  through the UI test framework's `RuntimePanelSimulator`, so no scene, camera or play mode is
+  needed. The four shapes are 1920 x 1080 (16:9), 2340 x 1080 (19.5:9) with a 96 px notch on the
+  left, 2400 x 1080 (20:9) with a 72 px punch hole on the left and the 36 px gesture bar, and
+  1440 x 1080 (4:3); the safe area comes from `KitSafeArea.Insets`, the same code the device uses.
+  "-full" shots grow the panel to the page's scroll height so a long page can be read at once.
+  The screen rebuild adds its screens to `UiShots.Screens`. The render and screenshot runs were
+  made with the emulator running; it kept running (the editor uses D3D11, not OpenGL).
+- **The UI test framework** (`com.unity.ui.test-framework`, built into 6000.6) is now a package of
+  the project: its editor panel lays screens out in EditMode tests without a window, and its
+  runtime panel renders the screenshots. Only the test and editor assemblies reference it.
+- **The checks.** Strict for the kit (every preview page, both languages, both text sizes, all four
+  shapes): no ellipsis, no one-line text running out of its box, no wrapped text squashed shorter
+  than its lines, no word broken inside (a hyphen is a fair break), nothing off the screen outside a
+  scroll view or clipped at the side of one, every `mb-tap` element at least 80.2 panel px both
+  ways, no text under the secondary size, at most one primary (a preview specimen documents a
+  state and does not count; the sample screen must have exactly one). `UiThemeTests` checks the
+  brief's colours, every text/background pair, the type scale, touch target and spacing, and no
+  literal colour or font size in the kit's rules or colour, font size or spacing in its C#;
+  `UiLanguageTests` checks the Vietnamese texts for English words (unmarked Latin words that are
+  not Vietnamese syllables, minus the names listed above), the fonts' coverage and the licences.
+  For the old screens the same checks run and report (they are ignored, with the counts), because
+  the rebuild replaces those screens: the five menu tabs at 16:9 have 154 touch targets under
+  80 px and 664 texts under 19 px (none cut there); the Hud C# files hold 44 hard-coded colours or
+  font sizes and Hud.uss 338 literal colours and 265 literal font sizes; 172 Vietnamese texts still
+  hold English words (mostly weapon and model names such as rocket, laser, Lancet, Hellfire,
+  Stinger, the English map names, and "coin" 12 times).
+- **The layout rules the checks taught.** A text never shrinks in height (`flex-shrink: 0`); in a
+  row it may give up width and wrap. A vertical scroll view keeps its content to the viewport's
+  width (`Kit.Scroll`). A column beside a scrolling strip needs `flex-basis: 0`, or the strip's
+  content widens it. When Large text does not fit a column, the column scrolls and the main
+  button stays pinned below it (the sample screen's right column).
+- **Left for the screen rebuild:** sections D (navigation), E (each screen on the kit), G (the
+  battle HUD on the kit and the field panel), H (names: map names, "coin", "Skin"), the text-size
+  switch on the settings page, map preview pictures for the map dropdown (the kit shows card
+  renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
+  `UiShots.Screens` and to the strict checks (then removing its old-screen report).

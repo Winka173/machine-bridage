@@ -127,6 +127,35 @@ namespace MachineBrigade.Game.Hud
                 ShowTab(Tab.Army);
                 _base.DebugOpen();
             }
+            // The UI kit preview (Field Command 2.0): -mb-ui-kit[=page], or five quick taps on the rank badge.
+            _profile.pickingMode = PickingMode.Position;
+            _profile.RegisterCallback<PointerDownEvent>(_ => CountKitTap());
+            var kitPage = Match.DebugFlags.Value(KitPreview.DebugFlag + "=");
+            if (Match.DebugFlags.Has(KitPreview.DebugFlag) || !string.IsNullOrEmpty(kitPage))
+                OpenKitPreview(KitPreview.ParsePage(kitPage), Match.DebugFlags.Has("-mb-ui-large"));
+        }
+
+        private int _kitTaps;
+        private float _kitTapStart;
+
+        private void CountKitTap()
+        {
+            if (Time.unscaledTime - _kitTapStart > 3f)
+            {
+                _kitTapStart = Time.unscaledTime;
+                _kitTaps = 0;
+            }
+            if (++_kitTaps < 5) return;
+            _kitTaps = 0;
+            OpenKitPreview(KitPreview.Page.Buttons, MatchSettings.LargeText);
+        }
+
+        /// <summary>The kit preview over the menu (a developer page: not in the navigation).</summary>
+        private void OpenKitPreview(KitPreview.Page page, bool large)
+        {
+            var preview = new KitPreview(_catalog, null, page, Strings.Vietnamese, large);
+            Root.Add(preview.Root);
+            preview.Root.BringToFront();
         }
 
         private static bool _reopenSettings;

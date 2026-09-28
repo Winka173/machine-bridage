@@ -1,0 +1,621 @@
+/* Field Command 2.0: the design tokens and the component classes of the UI kit (Game/Hud/Kit).
+
+   This is the one theme file. Every colour, font, type size, spacing step, border and control
+   size is a --fc-* variable in the two blocks at the top; everything below uses var() only, so a
+   colour or size changes here and nowhere else (UiThemeTests fails on a literal colour or font
+   size outside these blocks). Theme.tss imports this file, so every panel of the game has the
+   tokens at its root.
+
+   Units. The game's panels are authored for 1280 x 720 and scale with the screen height on phones
+   (BattleHud.MatchFor), so a 19.5:9 phone shows a panel 1560 px wide. The brief's sizes are given
+   at a 1400 px reference width, the width of that phone class, so one reference pixel is
+   1560 / 1400 = 1.114 panel pixels. Sizes of 16 px and up (type, touch targets, the chamfer) are
+   converted with that factor; hairlines, bars and the spacing scale keep their literal values.
+   The comments give the reference value first. */
+
+:root {
+    /* ---- A. colour: surfaces */
+    --fc-bg: #101317;                         /* nền */
+    --fc-bg-2: #121519;                       /* nền phụ */
+    --fc-panel: #171b20;                      /* panel */
+    --fc-panel-raised: #1b2026;               /* panel nổi: dialogs, toasts, tooltips, cards */
+    --fc-panel-selected: #1f252c;             /* panel được chọn */
+    --fc-panel-field: rgba(18, 22, 27, 0.93); /* panel trên chiến trường: #12161b at 93 % */
+    --fc-border: #2c333b;                     /* viền */
+    --fc-border-strong: #3a424b;              /* viền đậm */
+    --fc-scrim: rgba(8, 10, 12, 0.72);        /* behind a dialog */
+    --fc-wash: rgba(233, 230, 223, 0.08);     /* a pressed ghost button */
+    --fc-danger-wash: rgba(224, 81, 58, 0.14);
+    --fc-clear: rgba(0, 0, 0, 0);             /* no fill, no line */
+
+    /* ---- A. colour: text */
+    --fc-text: #e9e6df;                       /* chữ chính */
+    --fc-text-2: #aab2ba;                     /* chữ phụ */
+    --fc-text-dim: #8a939b;                   /* chữ mờ: only at the body size and up */
+    --fc-ink: #101317;                        /* dark text on the accent, coin and text fills */
+
+    /* ---- A. colour: accent and meaning */
+    --fc-accent: #f2a33a;                     /* the one main button, the chosen nav item and tab */
+    --fc-accent-press: #d88a22;
+    --fc-coin: #e8c15a;                       /* coins and rewards */
+    --fc-coin-press: #cfa640;
+    --fc-coin-glow: #f3d67f;                  /* the claim button's slow pulse */
+    --fc-danger: #e0513a;                     /* danger, notices, defeat: borders, the dot, icons */
+    --fc-danger-text: #ea6a55;                /* danger as text: #e0513a reads 4.45:1 on a panel (needs 4.5) */
+    --fc-positive: #9ccb5e;                   /* better in a comparison */
+    --fc-ally: #6cc0ff;                       /* our side (minimap, HUD): brighter than the enemy */
+    --fc-enemy: #e0513a;                      /* their side */
+
+    /* ---- A. colour: vehicle branches (always shown with the class icon) */
+    --fc-branch-armor: #8fb3d6;
+    --fc-branch-light: #a9cf7a;
+    --fc-branch-artillery: #e0956a;
+    --fc-branch-air: #bba6e6;
+    --fc-branch-support: #cfc8b8;
+
+    /* ---- A. colour: rarity (legendary is redder than the accent, so it never reads as the main button) */
+    --fc-rarity-common: #9aa3ab;
+    --fc-rarity-uncommon: #6fbf5a;
+    --fc-rarity-rare: #4f9be8;
+    --fc-rarity-epic: #a877e8;
+    --fc-rarity-legendary: #ff7a2e;
+
+    /* ---- B. fonts: Barlow Condensed 600/700 for titles, labels and big numbers; Barlow 400/500/600 for text */
+    --fc-font-display: resource("Fonts/BarlowCondensed-Bold");
+    --fc-font-display-semi: resource("Fonts/BarlowCondensed-SemiBold");
+    --fc-font-text: resource("Fonts/Barlow-Regular");
+    --fc-font-text-medium: resource("Fonts/Barlow-Medium");
+    --fc-font-text-semi: resource("Fonts/Barlow-SemiBold");
+
+    /* ---- B. type scale, Normal text size (reference px at 1400 wide in brackets) */
+    --fc-fs-primary: 42px;                    /* main button: 36-40 (37.7) */
+    --fc-fs-title: 30px;                      /* screen title: 26-30 (26.9) */
+    --fc-fs-panel-title: 23px;                /* panel title: 20-22 (20.6) */
+    --fc-fs-button: 23px;                     /* other buttons, tabs, chips: panel title size */
+    --fc-fs-body: 21px;                       /* body text: 18-20 (18.8) */
+    --fc-fs-small: 19px;                      /* secondary text: 16 at least (17.1); nothing smaller */
+    --fc-fs-number: 36px;                     /* big numbers (32.3) */
+    --fc-fs-number-small: 23px;               /* numbers in a row of text */
+
+    /* ---- B. touch targets, corners, borders */
+    --fc-touch: 82px;                         /* 72 px at 1400 wide (80.2), 44 pt on a 390 pt tall phone (81.2) */
+    --fc-control: 64px;                       /* the visible face of a chip, text button or plus inside its touch target */
+    --fc-icon: 28px;
+    --fc-icon-small: 22px;
+    --fc-chamfer: 20px;                       /* the main button's two cut corners: 18 px (20.0) */
+    --fc-line: 1px;                           /* every border */
+    --fc-underline: 2px;                      /* the chosen tab */
+    --fc-bar: 3px;                            /* the branch bar on a card, the chosen nav item's accent */
+    --fc-progress: 4px;                       /* progress bars: 3-4 px */
+    --fc-dot: 8px;                            /* notification dot */
+    --fc-press-shift: 2px;                    /* a pressed button sinks by this */
+
+    /* ---- B. spacing scale 4 / 8 / 12 / 16 / 20 / 24 / 32 */
+    --fc-space-1: 4px;
+    --fc-space-2: 8px;
+    --fc-space-3: 12px;
+    --fc-space-4: 16px;
+    --fc-space-5: 20px;
+    --fc-space-6: 24px;
+    --fc-space-7: 32px;
+
+    /* ---- component sizes */
+    --fc-card-width: 184px;
+    --fc-card-art: 150px;
+    --fc-card-compact-width: 136px;
+    --fc-card-compact-art: 100px;
+    --fc-gear-width: 164px;
+    --fc-gear-art: 104px;
+    --fc-dialog-width: 620px;
+    --fc-tooltip-width: 380px;
+    --fc-thumb-width: 112px;
+    --fc-thumb-height: 63px;
+    --fc-nav-width: 148px;
+    --fc-switch-width: 64px;
+    --fc-switch-height: 34px;
+    --fc-knob: 24px;
+}
+
+/* ---- B. type scale, Large text size (Settings > Text size > Large), about 1.15x */
+.fc-text-large {
+    --fc-fs-primary: 48px;
+    --fc-fs-title: 34px;
+    --fc-fs-panel-title: 26px;
+    --fc-fs-button: 26px;
+    --fc-fs-body: 24px;
+    --fc-fs-small: 22px;
+    --fc-fs-number: 41px;
+    --fc-fs-number-small: 26px;
+}
+
+/* ================================================================================================
+   Components. Nothing below this line may hold a literal colour or font size.
+   ================================================================================================ */
+
+/* ---- roots and text: every label wraps; nothing is ever cut with an ellipsis ------------------ */
+.fc-root {
+    -unity-font: var(--fc-font-text);
+    font-size: var(--fc-fs-body);
+    color: var(--fc-text);
+}
+.fc-root Label, .fc-text {
+    white-space: normal;
+    text-overflow: clip;
+    flex-shrink: 0;                           /* a text never gives up height: it pushes, it is never squashed */
+}
+/* In a row a text may give up width, and wraps instead. */
+.fc-btn__row > .fc-text, .fc-toast > .fc-text, .fc-chip__face > .fc-text, .fc-type-row > .fc-text, .fc-compare-row > .fc-text,
+.fc-toggle > .fc-text, .fc-preview__top > .fc-text, .fc-currency > .fc-text, .fc-sample__rank .fc-text, .fc-root .fc-row-text {
+    flex-shrink: 1;
+}
+.fc-icon { --icon-color: var(--fc-text); flex-shrink: 0; }
+/* A tap never scales a kit control (the old menu's ".menu .pressed" does). */
+.fc-root .mb-tap.pressed { scale: 1 1; }
+.fc-screen { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: var(--fc-bg); }
+.fc-safe { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+
+.fc-title { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-title); color: var(--fc-text); letter-spacing: 1.5px; }
+.fc-panel-title { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); letter-spacing: 1px; }
+.fc-body { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-body); color: var(--fc-text); }
+.fc-body-2 { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-body); color: var(--fc-text-2); }
+.fc-dim { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-body); color: var(--fc-text-dim); }
+.fc-small { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
+.fc-caption { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); letter-spacing: 1.5px; }
+.fc-number { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-number); color: var(--fc-text); }
+.fc-number-small { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-number-small); color: var(--fc-text); }
+.fc-danger-text { color: var(--fc-danger-text); }
+.fc-coin-text { color: var(--fc-coin); }
+.fc-positive-text { color: var(--fc-positive); }
+
+/* ---- surfaces: panels, dialogs, toasts and tooltips share one border and background ------------ */
+.fc-surface {
+    background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-surface--field { background-color: var(--fc-panel-field); }
+.fc-panel { padding: var(--fc-space-4); }
+.fc-panel__title { margin-bottom: var(--fc-space-3); }
+.fc-panel__body { flex-shrink: 1; }
+
+.fc-scrim {
+    position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+    align-items: center; justify-content: center;
+    background-color: var(--fc-scrim);
+}
+.fc-dialog { width: var(--fc-dialog-width); max-width: 92%; padding: var(--fc-space-6); }
+.fc-dialog__title { margin-bottom: var(--fc-space-3); }
+.fc-dialog__body { margin-bottom: var(--fc-space-6); }
+.fc-dialog__buttons { flex-direction: row; justify-content: flex-end; flex-wrap: wrap; }
+.fc-dialog__buttons > * { margin-left: var(--fc-space-3); }
+
+.fc-toast {
+    flex-direction: row; align-items: center;
+    padding: var(--fc-space-3) var(--fc-space-5);
+    min-height: var(--fc-control);
+}
+.fc-toast > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-3); }
+.fc-toast--reward > .fc-icon { --icon-color: var(--fc-coin); }
+.fc-toast--alert > .fc-icon { --icon-color: var(--fc-danger); }
+.fc-toast-host {
+    position: absolute; left: 0; right: 0; bottom: var(--fc-space-7);
+    align-items: center;
+}
+
+.fc-tooltip { max-width: var(--fc-tooltip-width); padding: var(--fc-space-3) var(--fc-space-4); }
+.fc-tooltip__title { margin-bottom: var(--fc-space-1); }
+
+/* ---- buttons: five tiers, each normal / pressed / disabled (with a reason) / loading --------- */
+.fc-btn {
+    min-height: var(--fc-touch); min-width: var(--fc-touch);
+    padding: var(--fc-space-2) var(--fc-space-6);
+    align-items: center; justify-content: center;
+    background-color: var(--fc-clear);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-clear); border-right-color: var(--fc-clear); border-bottom-color: var(--fc-clear); border-left-color: var(--fc-clear);
+    translate: 0 0;
+    transition-property: translate, background-color, -unity-background-image-tint-color;
+    transition-duration: 0.06s;
+}
+.fc-btn__row { flex-direction: row; align-items: center; justify-content: center; flex-shrink: 1; }
+.fc-btn__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); }
+.fc-btn__label {
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 1.2px;
+    -unity-text-align: middle-center; color: var(--fc-text);
+}
+.fc-btn__reason {
+    -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2);
+    -unity-text-align: middle-center; margin-top: var(--fc-space-1);
+    display: none;
+}
+.fc-btn__spinner { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); display: none; }
+.fc-btn--disabled .fc-btn__reason { display: flex; }
+.fc-btn--loading .fc-btn__spinner { display: flex; }
+.fc-btn--loading .fc-btn__icon { display: none; }
+.fc-root .fc-btn.pressed, .fc-btn--pressed { translate: 0 var(--fc-press-shift); scale: 1 1; }
+.fc-root .fc-btn--disabled.pressed { translate: 0 0; scale: 1 1; }
+
+/* Primary: the accent face with two opposite corners cut. At most one on a screen. */
+.fc-btn--primary {
+    min-height: 96px; padding: var(--fc-space-2) var(--fc-space-7);
+    background-image: resource("UI/Skin/fc_primary");
+    -unity-slice-left: 40; -unity-slice-top: 40; -unity-slice-right: 40; -unity-slice-bottom: 40; -unity-slice-scale: 0.5px;
+    -unity-background-image-tint-color: var(--fc-accent);
+}
+.fc-btn--primary .fc-btn__label { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-primary); color: var(--fc-ink); letter-spacing: 3px; }
+.fc-btn--primary .fc-btn__icon, .fc-btn--primary .fc-btn__spinner { --icon-color: var(--fc-ink); width: 34px; height: 34px; margin-right: var(--fc-space-3); }
+.fc-btn--primary .fc-btn__reason { color: var(--fc-ink); }
+.fc-root .fc-btn--primary.pressed, .fc-btn--primary.fc-btn--pressed { -unity-background-image-tint-color: var(--fc-accent-press); scale: 1 1; }
+.fc-btn--primary.fc-btn--disabled { -unity-background-image-tint-color: var(--fc-border-strong); }
+.fc-btn--primary.fc-btn--disabled .fc-btn__label, .fc-btn--primary.fc-btn--disabled .fc-btn__reason { color: var(--fc-text-2); }
+.fc-btn--primary.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
+
+/* Secondary: an outline in the text colour, no fill. */
+.fc-btn--secondary { border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-root .fc-btn--secondary.pressed, .fc-btn--secondary.fc-btn--pressed { background-color: var(--fc-panel-selected); scale: 1 1; }
+.fc-btn--secondary.fc-btn--disabled { border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-btn--secondary.fc-btn--disabled .fc-btn__label { color: var(--fc-text-2); }
+.fc-btn--secondary.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
+
+/* Claim reward: the coin face, dark text, a coin icon and a slow pulse; only while there is a reward. */
+.fc-btn--claim {
+    background-color: var(--fc-coin);
+    transition-property: translate, background-color;
+    transition-duration: 0.06s, 0.9s;
+}
+.fc-btn--claim.fc-btn--glow { background-color: var(--fc-coin-glow); }
+.fc-btn--claim .fc-btn__label, .fc-btn--claim .fc-btn__reason { color: var(--fc-ink); }
+.fc-btn--claim .fc-btn__icon, .fc-btn--claim .fc-btn__spinner { --icon-color: var(--fc-ink); }
+.fc-root .fc-btn--claim.pressed, .fc-btn--claim.fc-btn--pressed { background-color: var(--fc-coin-press); scale: 1 1; }
+.fc-btn--claim.fc-btn--disabled { background-color: var(--fc-border-strong); }
+.fc-btn--claim.fc-btn--disabled .fc-btn__label, .fc-btn--claim.fc-btn--disabled .fc-btn__reason { color: var(--fc-text-2); }
+.fc-btn--claim.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
+
+/* Text only: the accent colour, no face, still a full touch target. */
+.fc-btn--text { padding: 0 var(--fc-space-3); }
+.fc-btn--text .fc-btn__label { color: var(--fc-accent); -unity-font: var(--fc-font-display-semi); }
+.fc-btn--text .fc-btn__icon, .fc-btn--text .fc-btn__spinner { --icon-color: var(--fc-accent); }
+.fc-root .fc-btn--text.pressed .fc-btn__label, .fc-btn--text.fc-btn--pressed .fc-btn__label { color: var(--fc-accent-press); scale: 1 1; }
+.fc-btn--text.fc-btn--disabled .fc-btn__label { color: var(--fc-text-2); }
+.fc-btn--text.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
+
+/* Danger: a red outline; it always asks first (Merge all, Sell, Change tower branch, Reset). */
+.fc-btn--danger { border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger); }
+.fc-btn--danger .fc-btn__label { color: var(--fc-danger-text); }
+.fc-btn--danger .fc-btn__icon, .fc-btn--danger .fc-btn__spinner { --icon-color: var(--fc-danger-text); }
+.fc-root .fc-btn--danger.pressed, .fc-btn--danger.fc-btn--pressed { background-color: var(--fc-danger-wash); scale: 1 1; }
+.fc-btn--danger.fc-btn--disabled { border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-btn--danger.fc-btn--disabled .fc-btn__label { color: var(--fc-text-2); }
+.fc-btn--danger.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
+
+/* ---- icon buttons: a fixed square, always with an accessibility label ------------------------ */
+.fc-icon-btn {
+    width: var(--fc-touch); height: var(--fc-touch);
+    align-items: center; justify-content: center;
+    background-color: var(--fc-panel);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    translate: 0 0;
+}
+.fc-icon-btn > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); }
+.fc-root .fc-icon-btn.pressed, .fc-icon-btn.fc-btn--pressed { background-color: var(--fc-panel-selected); translate: 0 var(--fc-press-shift); scale: 1 1; }
+.fc-icon-btn.fc-btn--disabled > .fc-icon { --icon-color: var(--fc-text-dim); }
+/* A plus beside a number (buy coins): a small face inside the full target. */
+.fc-icon-btn--plain { background-color: var(--fc-clear); border-top-color: var(--fc-clear); border-right-color: var(--fc-clear); border-bottom-color: var(--fc-clear); border-left-color: var(--fc-clear); }
+.fc-icon-btn__face {
+    width: 44px; height: 44px; align-items: center; justify-content: center;
+    background-color: var(--fc-panel-selected);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-icon-btn__face > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); }
+.fc-root .fc-icon-btn--plain.pressed .fc-icon-btn__face { background-color: var(--fc-border-strong); scale: 1 1; }
+
+/* ---- tabs: panel background, the chosen one underlined in the accent ------------------------- */
+.fc-tabs {
+    flex-direction: row; align-items: stretch;
+    background-color: var(--fc-panel);
+    border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border);
+}
+.fc-tab {
+    min-height: var(--fc-touch); min-width: var(--fc-touch);
+    padding: 0 var(--fc-space-6);
+    align-items: center; justify-content: center;
+    border-bottom-width: var(--fc-underline); border-bottom-color: var(--fc-clear);
+    margin-bottom: -1px;
+}
+.fc-tab__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 1.2px; color: var(--fc-text-2); -unity-text-align: middle-center; }
+.fc-root .fc-tab.pressed { background-color: var(--fc-panel-raised); scale: 1 1; }
+.fc-tab--selected { border-bottom-color: var(--fc-accent); }
+.fc-tab--selected .fc-tab__label { color: var(--fc-text); }
+
+/* ---- filter chips: chosen = text-colour face with dark text; the rest an outline -------------- */
+.fc-chip-row { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
+.fc-chip-row__chips { flex-direction: row; flex-wrap: wrap; flex-grow: 1; flex-shrink: 1; align-items: center; }
+.fc-chip-row__divider { width: var(--fc-line); height: 40px; margin: 21px var(--fc-space-3) 0 var(--fc-space-3); flex-shrink: 0; background-color: var(--fc-border-strong); }
+.fc-chip-row > .fc-sort { flex-shrink: 0; margin-right: 0; }
+.fc-chip {
+    min-height: var(--fc-touch); min-width: var(--fc-touch);
+    justify-content: center; align-items: center;
+    margin-right: var(--fc-space-2);
+}
+.fc-chip__face {
+    min-height: var(--fc-control);
+    flex-direction: row; align-items: center; justify-content: center;
+    padding: 0 var(--fc-space-4);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-chip__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 1px; color: var(--fc-text); -unity-text-align: middle-center; }
+.fc-chip__icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
+.fc-chip__swatch { width: 12px; height: 12px; margin-right: var(--fc-space-2); }
+.fc-root .fc-chip.pressed .fc-chip__face { background-color: var(--fc-panel-selected); scale: 1 1; }
+.fc-chip--selected .fc-chip__face {
+    background-color: var(--fc-text);
+    border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text);
+}
+.fc-chip--selected .fc-chip__label { color: var(--fc-ink); }
+.fc-chip--selected .fc-chip__icon { --icon-color: var(--fc-ink); }
+.fc-root .fc-chip--selected.pressed .fc-chip__face { background-color: var(--fc-text-2); scale: 1 1; }
+/* The sort button stands apart from the filter chips: a caret instead of a state. */
+.fc-sort .fc-chip__face { background-color: var(--fc-panel); }
+.fc-sort .fc-chip__caret { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-left: var(--fc-space-2); }
+
+/* Branch colours: a swatch or a bar, never alone (the class icon goes with it). */
+.fc-branch--armor { background-color: var(--fc-branch-armor); }
+.fc-branch--light { background-color: var(--fc-branch-light); }
+.fc-branch--artillery { background-color: var(--fc-branch-artillery); }
+.fc-branch--air { background-color: var(--fc-branch-air); }
+.fc-branch--support { background-color: var(--fc-branch-support); }
+
+/* ---- dropdowns: label, current value, caret, an optional thumbnail --------------------------- */
+.fc-dropdown {
+    min-height: var(--fc-touch);
+    flex-direction: row; align-items: center;
+    padding: var(--fc-space-2) var(--fc-space-4) var(--fc-space-2) var(--fc-space-2);
+    background-color: var(--fc-panel);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    translate: 0 0;
+}
+.fc-root .fc-dropdown.pressed, .fc-dropdown.fc-btn--pressed { background-color: var(--fc-panel-selected); translate: 0 var(--fc-press-shift); scale: 1 1; }
+.fc-dropdown__thumb { width: var(--fc-thumb-width); height: var(--fc-thumb-height); margin-right: var(--fc-space-3); -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
+.fc-dropdown__text { flex-grow: 1; flex-shrink: 1; padding-left: var(--fc-space-2); }
+.fc-dropdown__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); letter-spacing: 1.5px; color: var(--fc-text-2); }
+.fc-dropdown__value { -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-body); color: var(--fc-text); }
+.fc-dropdown__caret { width: var(--fc-icon); height: var(--fc-icon); margin-left: var(--fc-space-3); }
+/* The list a dropdown opens (in a dialog surface). */
+.fc-picker { width: var(--fc-dialog-width); max-width: 92%; max-height: 90%; padding: var(--fc-space-4); }
+.fc-picker__scroll { flex-shrink: 1; }
+.fc-option {
+    min-height: var(--fc-touch);
+    flex-direction: row; align-items: center;
+    padding: var(--fc-space-2) var(--fc-space-3);
+    border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border);
+}
+.fc-root .fc-option.pressed { background-color: var(--fc-panel-selected); scale: 1 1; }
+.fc-option--selected { background-color: var(--fc-panel-selected); }
+.fc-option__text { flex-grow: 1; flex-shrink: 1; }
+.fc-option__check { width: var(--fc-icon); height: var(--fc-icon); margin-left: var(--fc-space-3); visibility: hidden; }
+.fc-option--selected .fc-option__check { visibility: visible; }
+
+/* ---- vehicle cards ------------------------------------------------------------------------------ */
+.fc-vcard {
+    width: var(--fc-card-width);
+    background-color: var(--fc-panel-raised);
+    border-top-width: 0; border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border);
+    margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3);
+    translate: 0 0;
+}
+.fc-root .fc-vcard.pressed { translate: 0 var(--fc-press-shift); background-color: var(--fc-panel-selected); scale: 1 1; }
+.fc-vcard--chosen { background-color: var(--fc-panel-selected); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-vcard__bar { height: var(--fc-bar); }
+.fc-vcard__art { height: var(--fc-card-art); -unity-background-scale-mode: scale-to-fit; background-color: var(--fc-bg-2); }
+.fc-vcard__class { position: absolute; left: var(--fc-space-2); top: var(--fc-space-2); width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text-2); }
+.fc-vcard__cp {
+    position: absolute; right: 0; top: 0;
+    flex-direction: row; align-items: center;
+    padding: var(--fc-space-1) var(--fc-space-2);
+    background-color: var(--fc-bg);
+    border-left-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong);
+}
+.fc-vcard__cp-value { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-number-small); color: var(--fc-text); }
+.fc-vcard__cp-unit { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); margin-left: var(--fc-space-1); }
+.fc-vcard__upgrade {
+    position: absolute; right: var(--fc-space-2); bottom: var(--fc-space-2);
+    width: 32px; height: 32px; align-items: center; justify-content: center;
+    background-color: var(--fc-text);
+}
+.fc-vcard__upgrade > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-ink); }
+.fc-vcard__body { padding: var(--fc-space-2) var(--fc-space-3) var(--fc-space-3) var(--fc-space-3); }
+.fc-vcard__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); letter-spacing: 0.5px; color: var(--fc-text); }
+.fc-vcard__level { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); margin-top: var(--fc-space-1); }
+.fc-vcard__content { transition-property: opacity; transition-duration: 0.1s; }
+.fc-vcard--locked .fc-vcard__content { opacity: 0.45; }
+.fc-vcard__lock {
+    flex-direction: row; align-items: center;
+    padding: var(--fc-space-2) var(--fc-space-3);
+    border-top-width: var(--fc-line); border-top-color: var(--fc-border);
+    display: none;
+}
+.fc-vcard--locked .fc-vcard__lock { display: flex; }
+.fc-vcard__lock > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); --icon-color: var(--fc-text-2); }
+.fc-vcard__lock-text { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text); }
+/* The compact card: the home screen's deck strip (8 + 2 in a row), name and cost only. */
+.fc-vcard--compact { width: var(--fc-card-compact-width); margin-right: var(--fc-space-2); }
+.fc-vcard--compact .fc-vcard__art { height: var(--fc-card-compact-art); }
+.fc-vcard--compact .fc-vcard__name { font-size: var(--fc-fs-small); }
+.fc-vcard--compact .fc-vcard__level { display: none; }
+.fc-vcard--compact .fc-vcard__body { padding: var(--fc-space-2); }
+
+/* ---- gear cards: a picture per item type in a rarity frame, the short main stat, the level ---- */
+.fc-gcard {
+    width: var(--fc-gear-width);
+    background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-bar); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3);
+    translate: 0 0;
+}
+.fc-root .fc-gcard.pressed { translate: 0 var(--fc-press-shift); background-color: var(--fc-panel-selected); scale: 1 1; }
+.fc-gcard--chosen { background-color: var(--fc-panel-selected); }
+.fc-rarity-0 { border-top-color: var(--fc-rarity-common); border-right-color: var(--fc-rarity-common); border-bottom-color: var(--fc-rarity-common); border-left-color: var(--fc-rarity-common); }
+.fc-rarity-1 { border-top-color: var(--fc-rarity-uncommon); border-right-color: var(--fc-rarity-uncommon); border-bottom-color: var(--fc-rarity-uncommon); border-left-color: var(--fc-rarity-uncommon); }
+.fc-rarity-2 { border-top-color: var(--fc-rarity-rare); border-right-color: var(--fc-rarity-rare); border-bottom-color: var(--fc-rarity-rare); border-left-color: var(--fc-rarity-rare); }
+.fc-rarity-3 { border-top-color: var(--fc-rarity-epic); border-right-color: var(--fc-rarity-epic); border-bottom-color: var(--fc-rarity-epic); border-left-color: var(--fc-rarity-epic); }
+.fc-rarity-4 { border-top-color: var(--fc-rarity-legendary); border-right-color: var(--fc-rarity-legendary); border-bottom-color: var(--fc-rarity-legendary); border-left-color: var(--fc-rarity-legendary); }
+.fc-gcard__art { height: var(--fc-gear-art); align-items: center; justify-content: center; background-color: var(--fc-bg-2); }
+.fc-gcard__picture { width: 88px; height: 88px; -unity-background-scale-mode: scale-to-fit; }
+.fc-gcard__level {
+    position: absolute; left: 0; top: 0;
+    padding: var(--fc-space-1) var(--fc-space-2);
+    background-color: var(--fc-bg);
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text);
+}
+.fc-gcard__equipped { position: absolute; right: var(--fc-space-1); top: var(--fc-space-1); width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text); }
+.fc-gcard__body { padding: var(--fc-space-2) var(--fc-space-3) var(--fc-space-3) var(--fc-space-3); }
+.fc-gcard__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); letter-spacing: 0.5px; color: var(--fc-text); }
+.fc-gcard__stat { -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); margin-top: var(--fc-space-1); }
+.fc-gcard__compare { -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-small); margin-top: var(--fc-space-1); color: var(--fc-text-2); }
+.fc-gcard__compare--better { color: var(--fc-positive); }
+.fc-gcard__compare--worse { color: var(--fc-danger-text); }
+/* The comparison rows beside a picked piece: stat, worn, this one, change. */
+.fc-compare-row { flex-direction: row; align-items: center; min-height: 40px; border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border); }
+.fc-compare-row__stat { flex-grow: 1; flex-shrink: 1; }
+.fc-compare-row__value { width: 96px; -unity-text-align: middle-right; }
+
+/* ---- progress bars: 3-4 px, a border-coloured track, a text-2 fill; the accent once it is enough */
+.fc-progress { height: var(--fc-progress); background-color: var(--fc-border); overflow: hidden; }
+.fc-progress__fill { height: 100%; width: 0; background-color: var(--fc-text-2); }
+.fc-progress--ready .fc-progress__fill { background-color: var(--fc-accent); }
+
+/* ---- the notification dot: a red 8 px square, only for something to do now ------------------- */
+.fc-dot { position: absolute; top: var(--fc-space-2); right: var(--fc-space-2); width: var(--fc-dot); height: var(--fc-dot); background-color: var(--fc-danger); }
+
+/* ---- navigation rail item (the left rail): chosen = selected panel, a 3 px accent bar, accent icon and text */
+.fc-nav { width: var(--fc-nav-width); flex-shrink: 0; background-color: var(--fc-bg-2); border-right-width: var(--fc-line); border-right-color: var(--fc-border); }
+.fc-nav-item {
+    min-height: 92px;
+    align-items: center; justify-content: center;
+    padding: var(--fc-space-2) var(--fc-space-1);
+    border-left-width: var(--fc-bar); border-left-color: var(--fc-clear);
+}
+.fc-nav-item > .fc-icon { width: 32px; height: 32px; --icon-color: var(--fc-text-2); }
+.fc-nav-item__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); letter-spacing: 1px; color: var(--fc-text-2); margin-top: var(--fc-space-1); -unity-text-align: middle-center; }
+.fc-root .fc-nav-item.pressed { background-color: var(--fc-panel); scale: 1 1; }
+.fc-nav-item--selected { background-color: var(--fc-panel-selected); border-left-color: var(--fc-accent); }
+.fc-nav-item--selected > .fc-icon { --icon-color: var(--fc-accent); }
+.fc-nav-item--selected .fc-nav-item__label { color: var(--fc-accent); }
+
+/* ---- the coin count with its plus -------------------------------------------------------------- */
+.fc-currency { flex-direction: row; align-items: center; }
+.fc-currency > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); --icon-color: var(--fc-coin); margin-right: var(--fc-space-2); }
+.fc-currency__value { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-number-small); color: var(--fc-text); }
+
+/* ---- on/off switch (settings, Auto buy, Support) ------------------------------------------------ */
+.fc-toggle { min-height: var(--fc-touch); flex-direction: row; align-items: center; }
+.fc-toggle__label { flex-grow: 1; flex-shrink: 1; margin-right: var(--fc-space-4); }
+.fc-toggle__track {
+    width: var(--fc-switch-width); height: var(--fc-switch-height);
+    padding: 0 4px; justify-content: center;
+    background-color: var(--fc-panel);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-toggle__knob { width: var(--fc-knob); height: var(--fc-knob); background-color: var(--fc-text-2); translate: 0 0; transition-property: translate; transition-duration: 0.1s; }
+.fc-toggle__state { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); width: 56px; -unity-text-align: middle-right; margin-right: var(--fc-space-3); }
+.fc-toggle--on .fc-toggle__track {
+    background-color: var(--fc-text);
+    border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text);
+}
+.fc-toggle--on .fc-toggle__knob { background-color: var(--fc-ink); translate: 30px 0; }
+.fc-toggle--on .fc-toggle__state { color: var(--fc-text); }
+
+/* ---- the kit preview (debug: -mb-ui-kit) --------------------------------------------------------- */
+.fc-preview__top {
+    flex-direction: row; align-items: center;
+    min-height: 96px; padding: 0 var(--fc-space-4);
+    background-color: var(--fc-bg-2);
+    border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border);
+}
+.fc-preview__title { flex-grow: 1; flex-shrink: 1; }
+.fc-preview__main { flex-grow: 1; flex-direction: row; }
+.fc-preview__content { flex-grow: 1; flex-shrink: 1; }
+.fc-preview__page { padding: var(--fc-space-6); }
+.fc-preview__section { margin-bottom: var(--fc-space-7); }
+.fc-preview__section-title { margin-bottom: var(--fc-space-3); }
+.fc-preview__row { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+.fc-preview__row > * { margin-right: var(--fc-space-4); margin-bottom: var(--fc-space-4); }
+.fc-preview__specimen { align-items: flex-start; }
+.fc-preview__specimen-label { margin-bottom: var(--fc-space-1); }
+.fc-preview__group { flex-direction: row; align-items: center; margin-left: var(--fc-space-4); }
+.fc-preview__group > .fc-caption { margin-right: var(--fc-space-2); }
+.fc-swatch { width: 240px; margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3); padding: var(--fc-space-2); background-color: var(--fc-panel-raised); }
+/* The preview swatches: each paints its token (the colour comes from here, not from code). */
+.fc-swatch--fc-bg { background-color: var(--fc-bg); }
+.fc-swatch--fc-bg-2 { background-color: var(--fc-bg-2); }
+.fc-swatch--fc-panel { background-color: var(--fc-panel); }
+.fc-swatch--fc-panel-raised { background-color: var(--fc-panel-raised); }
+.fc-swatch--fc-panel-selected { background-color: var(--fc-panel-selected); }
+.fc-swatch--fc-panel-field { background-color: var(--fc-panel-field); }
+.fc-swatch--fc-border { background-color: var(--fc-border); }
+.fc-swatch--fc-border-strong { background-color: var(--fc-border-strong); }
+.fc-swatch--fc-text { background-color: var(--fc-text); }
+.fc-swatch--fc-text-2 { background-color: var(--fc-text-2); }
+.fc-swatch--fc-text-dim { background-color: var(--fc-text-dim); }
+.fc-swatch--fc-accent { background-color: var(--fc-accent); }
+.fc-swatch--fc-accent-press { background-color: var(--fc-accent-press); }
+.fc-swatch--fc-coin { background-color: var(--fc-coin); }
+.fc-swatch--fc-danger { background-color: var(--fc-danger); }
+.fc-swatch--fc-danger-text { background-color: var(--fc-danger-text); }
+.fc-swatch--fc-positive { background-color: var(--fc-positive); }
+.fc-swatch--fc-ally { background-color: var(--fc-ally); }
+.fc-swatch--fc-enemy { background-color: var(--fc-enemy); }
+.fc-swatch--fc-branch-armor { background-color: var(--fc-branch-armor); }
+.fc-swatch--fc-branch-light { background-color: var(--fc-branch-light); }
+.fc-swatch--fc-branch-artillery { background-color: var(--fc-branch-artillery); }
+.fc-swatch--fc-branch-air { background-color: var(--fc-branch-air); }
+.fc-swatch--fc-branch-support { background-color: var(--fc-branch-support); }
+.fc-swatch--fc-rarity-common { background-color: var(--fc-rarity-common); }
+.fc-swatch--fc-rarity-uncommon { background-color: var(--fc-rarity-uncommon); }
+.fc-swatch--fc-rarity-rare { background-color: var(--fc-rarity-rare); }
+.fc-swatch--fc-rarity-epic { background-color: var(--fc-rarity-epic); }
+.fc-swatch--fc-rarity-legendary { background-color: var(--fc-rarity-legendary); }
+.fc-swatch__colour { height: 44px; border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-type-row { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-2); }
+.fc-type-row__name { width: 220px; }
+.fc-sample__top { flex-direction: row; align-items: center; min-height: 96px; padding: 0 var(--fc-space-4); background-color: var(--fc-bg-2); border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border); }
+.fc-sample__rank { flex-direction: row; align-items: center; flex-grow: 1; flex-shrink: 1; }
+.fc-sample__rank > .fc-icon { width: 36px; height: 36px; margin-right: var(--fc-space-3); }
+.fc-sample__xp { width: 160px; margin-top: var(--fc-space-1); }
+.fc-sample__body { flex-direction: row; flex-grow: 1; }
+.fc-sample__column { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; padding: var(--fc-space-4); }
+.fc-sample__side { width: 440px; flex-shrink: 0; padding: var(--fc-space-4); }
+.fc-sample__side-scroll { flex-grow: 1; flex-shrink: 1; }
+.fc-sample__deck { flex-grow: 0; flex-shrink: 0; margin-top: var(--fc-space-2); }
+.fc-sample__deck .unity-scroll-view__content-container { flex-direction: row; }
+.fc-sample__column--end { justify-content: flex-end; }
+.fc-preview__row--center { align-items: center; }
+.fc-preview__nav-row { flex-direction: row; width: auto; align-self: flex-start; border-right-width: 0; }
+.fc-preview__nav-row > .fc-nav-item { width: var(--fc-nav-width); }
+.fc-preview__w-wide { width: 460px; }
+.fc-preview__w-narrow { width: 280px; }
+.fc-preview__w-toggle { width: 380px; }
+.fc-preview__w-compare { width: 560px; }
+.fc-preview__w-panel { width: 360px; }
+.fc-vcard__art { align-items: center; justify-content: center; }
+.fc-vcard__fallback { width: 72px; height: 72px; --icon-color: var(--fc-text-2); }
+
+/* ---- layout helpers on the spacing scale ---------------------------------------------------------- */
+.fc-grow { flex-grow: 1; flex-shrink: 1; }
+.fc-nowrap { flex-wrap: nowrap; }
+.fc-self-start { align-self: flex-start; }
+.fc-mt-1 { margin-top: var(--fc-space-1); }
+.fc-mt-2 { margin-top: var(--fc-space-2); }
+.fc-mt-3 { margin-top: var(--fc-space-3); }
+.fc-mt-4 { margin-top: var(--fc-space-4); }
+.fc-ml-2 { margin-left: var(--fc-space-2); }
+.fc-ml-4 { margin-left: var(--fc-space-4); }
+.fc-keep { flex-shrink: 0; }
+.fc-preview__specimen > .fc-nav-item { width: var(--fc-nav-width); }
+.fc-scroll .unity-scroll-view__content-container { width: 100%; }

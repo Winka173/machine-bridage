@@ -106,6 +106,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Raised by every button built here, for the UI click sound.</summary>
         public static event Action Clicked;
 
+        /// <summary>For tappable elements built elsewhere (the Field Command 2.0 kit): the same click sound.</summary>
+        internal static void RaiseClicked() => Clicked?.Invoke();
+
         /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()

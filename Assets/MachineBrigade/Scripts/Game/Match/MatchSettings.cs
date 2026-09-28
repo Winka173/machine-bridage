@@ -87,6 +87,13 @@ namespace MachineBrigade.Game.Match
         Vietnamese,
     }
 
+    /// <summary>Text size (Settings: Normal / Large, vi Thường / Lớn): which type scale the UI kit uses (Tokens.uss).</summary>
+    public enum TextSize
+    {
+        Normal,
+        Large,
+    }
+
     /// <summary>
     /// What the next match should be (chosen in the menu) and the player's settings. The match
     /// choice lives for the session; settings and the deck are saved with PlayerPrefs, so they
@@ -345,6 +352,11 @@ namespace MachineBrigade.Game.Match
 
         public static float UiScale => UiSize switch { 0 => 0.9f, 2 => 1.1f, _ => 1f };
 
+        /// <summary>Text size: Large switches every kit screen to the larger type scale (Kit.ApplyTextSize).</summary>
+        public static TextSize TextSize { get; set; } = TextSize.Normal;
+
+        public static bool LargeText => TextSize == TextSize.Large;
+
         public static GraphicsQuality DetectTier()
         {
             if (!Application.isMobilePlatform) return GraphicsQuality.High;
@@ -382,6 +394,7 @@ namespace MachineBrigade.Game.Match
                 ColorBlind = PlayerPrefs.GetInt("mb.colorblind", 0) == 1;
                 MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 UiSize = Mathf.Clamp(PlayerPrefs.GetInt("mb.uiSize", 1), 0, 2);
+                TextSize = (TextSize)Mathf.Clamp(PlayerPrefs.GetInt("mb.textSize", 0), 0, 1);
                 BatterySaver = Mathf.Clamp(PlayerPrefs.GetInt("mb.battery", 2), 0, 2);
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
                 Map = PlayerPrefs.GetString("mb.map", Map);
@@ -423,6 +436,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.colorblind", ColorBlind ? 1 : 0);
                 MachineBrigade.Game.Rendering.TeamColors.Palette = ColorBlind ? 1 : 0;
                 PlayerPrefs.SetInt("mb.uiSize", UiSize);
+                PlayerPrefs.SetInt("mb.textSize", (int)TextSize);
                 PlayerPrefs.SetInt("mb.battery", BatterySaver);
                 PlayerPrefs.SetInt("mb.brightness", Brightness);
                 PlayerPrefs.SetString("mb.map", Map);
