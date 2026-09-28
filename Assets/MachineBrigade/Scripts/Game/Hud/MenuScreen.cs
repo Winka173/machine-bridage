@@ -574,7 +574,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
@@ -604,9 +604,10 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Operations);
                     break;
                 case "army-deck":
+                case "army-towers":
                 case "army-gear":
                 case "army-base":
-                    _armyView = screen == "army-deck" ? ArmyView.Deck : screen == "army-gear" ? ArmyView.Equipment : ArmyView.Base;
+                    _armyView = screen switch { "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, _ => ArmyView.Base };
                     ShowTab(Tab.Army);
                     break;
                 case "detail":
