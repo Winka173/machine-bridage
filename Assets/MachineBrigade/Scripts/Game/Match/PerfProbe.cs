@@ -80,6 +80,9 @@ namespace MachineBrigade.Game.Match
 
         public void CountSteps(int steps) => _steps += steps;
 
+        /// <summary>Extra state for each report (the vehicles' detail levels).</summary>
+        public Func<string> Detail { get; set; }
+
         /// <summary>Call once per frame, at the end of LateUpdate.</summary>
         public void EndFrame(int vehicles)
         {
@@ -117,7 +120,7 @@ namespace MachineBrigade.Game.Match
                          $"gc={GC.CollectionCount(0) - _gcStart} alloc/frame={_allocTotal / _frameCount / 1024f:0.0}KB " +
                          $"draws={_drawTotal / _frameCount} batches={(_batches.Valid ? _batches.LastValue : 0)} " +
                          $"setpass={(_setPass.Valid ? _setPass.LastValue : 0)} tris={(_triangles.Valid ? _triangles.LastValue / 1000 : 0)}k " +
-                         $"main={(_mainThread.Valid ? _mainThread.LastValue / 1e6 : 0):0.0}ms vehicles={vehicles} | ");
+                         $"main={(_mainThread.Valid ? _mainThread.LastValue / 1e6 : 0):0.0}ms vehicles={vehicles} {Detail?.Invoke()} | ");
             AppendSections(_sectionTotal, _frameCount);
             _text.Append("| ");
             for (var i = 0; i < _markers.Length; i++)

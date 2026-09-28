@@ -96,6 +96,7 @@ namespace MachineBrigade.Game.Match
         private bool _warnedAir;
         private float _lastInput;
         private PerfProbe _perf;
+        private CrowdCheck _crowd;
         private FrameRateGovernor _frameRate;
 
         /// <summary>The rate the governor settled on carries over to the next scene load.</summary>
@@ -126,6 +127,7 @@ namespace MachineBrigade.Game.Match
             _frameRate = new FrameRateGovernor(_frameRateTarget, MatchSettings.SavingBattery ? 30 : MatchSettings.Options.FrameRate);
             ApplyDebugFlags();
             _perf = PerfProbe.Create();
+            if (_perf != null) _perf.Detail = () => _views?.LodSummary();
             if (!_debugStarted && DebugFlags.Has("-mb-play"))
             {
                 // Device testing: skip the menu once and play straight away.
@@ -250,6 +252,13 @@ namespace MachineBrigade.Game.Match
                 _camera.FocusOn(Vector3.zero);
                 _lastInput = float.MaxValue;
             }
+            // Device check at a chosen zoom (-mb-zoom=42: the widest the player can go).
+            if (float.TryParse(DebugFlags.Value("-mb-zoom="), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var zoom) && zoom > 0f)
+            {
+                _camera.MaxZoom = Mathf.Max(_camera.MaxZoom, zoom);
+                _camera.ZoomBy(_camera.Zoom / zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            }
+            if (!_menu) _crowd = CrowdCheck.Create(_world, start);
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
@@ -540,6 +549,12 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
+            if (_crowd != null && !_paused)
+            {
+                // The crowd check holds the view on the two armies.
+                _crowd.Tick(_world, Time.time);
+                _lastInput = Time.unscaledTime;
+            }
             if (!_menu && !_paused && DebugFlags.Has("-mb-demolish") && Time.time >= _demolishAt) Demolish();
             if (!_menu && !_paused && DebugFlags.Has("-mb-towerwatch")) WatchTower();
             if (!_menu && !_paused && DebugFlags.Has("-mb-bastion")) WatchBastion();
