@@ -100,7 +100,8 @@ namespace MachineBrigade.Tests
             {
                 var w = m.Weapon;
                 if (w.Damage <= 0f) continue;
-                var raw = UnitStats.Dps(w);
+                // Prompt 13 A.1: over a whole load (salvos, magazines and their change, a launcher's reload).
+                var raw = MachineBrigade.Sim.Combat.FirePower.Sustained(w);
                 weapons.Add(new Dictionary<string, object>
                 {
                     ["id"] = w.Id, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,

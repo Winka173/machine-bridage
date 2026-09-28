@@ -35,5 +35,8 @@ namespace MachineBrigade.Sim.Content
         });
 
         public float Multiplier(DamageType damage, ArmorClass armor) => _multipliers[(int)damage, (int)armor];
+
+        /// <summary>What one of this weapon's rounds does against an armour class (its damage type's row).</summary>
+        public float Multiplier(WeaponDef weapon, ArmorClass armor) => Multiplier(weapon.DamageType, armor);
     }
 }

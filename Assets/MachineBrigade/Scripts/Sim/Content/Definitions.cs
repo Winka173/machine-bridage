@@ -128,6 +128,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds a charged weapon (a railgun) powers up, target in sight, before each shot; 0 for none.</summary>
         public float Charge { get; internal set; }
 
+        /// <summary>
+        /// Prompt 13 (the owner's slower SAMs): the share of flare decoys a guided missile's seeker sees
+        /// through, 0 to 1 (0: an old infrared seeker, pulled off by flares about one time in three;
+        /// a radar-guided SAM sees through most of them).
+        /// </summary>
+        public float FlareResist { get; internal set; }
+
         /// <summary>Extra damage against some targets (see <see cref="DamageBonus"/>).</summary>
         public IReadOnlyList<DamageBonus> Bonuses { get; internal set; } = System.Array.Empty<DamageBonus>();
 
@@ -175,6 +182,7 @@ namespace MachineBrigade.Sim.Content
                 // Everything else the equipment does not change travels with the copy (the charge,
                 // the bonuses and the round's model were once lost on a tuned weapon).
                 Charge = Charge,
+                FlareResist = FlareResist,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,
