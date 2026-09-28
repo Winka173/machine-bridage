@@ -97,6 +97,22 @@ namespace MachineBrigade.Game.Audio
         private float _drumsTarget;
 
         /// <summary>
+        /// The menu's lobby (no player side): its battle is not heard at all, no guns, blasts,
+        /// rotors or fires, only a soft wind (test feedback 11D). The detail page's In action range
+        /// is heard through <see cref="ConsumeRange"/>, a little under a battle's level.
+        /// </summary>
+        private readonly bool _lobby;
+
+        /// <summary>The lobby's wind against a battle's.</summary>
+        private const float LobbyAmbience = 0.45f;
+
+        /// <summary>The In action range's shots and blasts against a battle's (the menu music is ducked under them).</summary>
+        public const float RangeGain = 0.6f;
+
+        /// <summary>The events being played are the In action range's (see <see cref="ConsumeRange"/>).</summary>
+        private bool _ranging;
+
+        /// <summary>
         /// Somewhere else to listen from, while the detail page's In action range plays: its look
         /// point, its camera (for left and right) and how far it hears. Null: the battlefield camera.
         /// </summary>
@@ -112,6 +128,7 @@ namespace MachineBrigade.Game.Audio
             _camera = camera;
             _catalog = catalog;
             _playerTeam = playerTeam;
+            _lobby = playerTeam < 0;
             _root = new GameObject("Audio");
             _root.transform.SetParent(parent, false);
 
@@ -149,7 +166,7 @@ namespace MachineBrigade.Game.Audio
                 _voices[i] = new Voice { Source = source, Filter = filter };
             }
             _ambient = Loop("Wind", "wind_loop", () => SoundSynth.Wind(9));
-            _ambient.volume = 0.16f;
+            _ambient.volume = _lobby ? 0.16f * LobbyAmbience : 0.16f;
             _ambient.Play();
             _rotor = Loop("Rotors", "rotor_loop", () => SoundSynth.Rotor(3));
             _rotor.volume = 0f;
@@ -170,6 +187,29 @@ namespace MachineBrigade.Game.Audio
             _ui.clip = _clicks[0];
             // Menu clicks still sound while the game (and every other source) is paused.
             _ui.ignoreListenerPause = true;
+            Preload();
+        }
+
+        /// <summary>
+        /// Decompresses every clip now, behind the loading curtain. The recorded effects are set to
+        /// load on first play, which decoded each one on the main thread the first time it sounded:
+        /// a stall in the first seconds of a battle or of the In action range (test feedback 11D).
+        /// </summary>
+        private void Preload()
+        {
+            foreach (var bank in _banks.Values)
+                foreach (var clip in bank.Clips)
+                    Load(clip);
+            foreach (var clip in _thunder) Load(clip);
+            foreach (var clip in _clicks) Load(clip);
+            Load(_siren);
+            foreach (var source in new[] { _ambient, _rotor, _jetLoop, _rain, _fire, _drums })
+                Load(source.clip);
+        }
+
+        private static void Load(AudioClip clip)
+        {
+            if (clip != null && clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
         }
 
         /// <summary>War drums while a boss is on the field; they fade in and out.</summary>
@@ -182,7 +222,7 @@ namespace MachineBrigade.Game.Audio
         public float AmbientLevel
         {
             get => _ambient.volume;
-            set => _ambient.volume = value;
+            set => _ambient.volume = _lobby ? value * LobbyAmbience : value;
         }
 
         /// <summary>Rain loop level (0 = dry).</summary>
@@ -199,7 +239,28 @@ namespace MachineBrigade.Game.Audio
         /// <summary>Thunder after a lightning flash, delayed by the distance of the strike.</summary>
         public void Thunder(float delay) => _thunderAt.Add(Time.unscaledTime + delay);
 
+        /// <summary>The battle's events: its shots, blasts and radio chimes (none in the menu's lobby).</summary>
         public void Consume(IReadOnlyList<SimEvent> events)
+        {
+            if (_lobby) return;
+            Play(events);
+        }
+
+        /// <summary>The detail page's In action range: its own shots and blasts, at <see cref="RangeGain"/>.</summary>
+        public void ConsumeRange(IReadOnlyList<SimEvent> events)
+        {
+            _ranging = true;
+            try
+            {
+                Play(events);
+            }
+            finally
+            {
+                _ranging = false;
+            }
+        }
+
+        private void Play(IReadOnlyList<SimEvent> events)
         {
             foreach (var e in events)
             {
@@ -294,6 +355,8 @@ namespace MachineBrigade.Game.Audio
                 else nearest = Mathf.Min(nearest, distance);
             }
             var reach = Reach(0f);
+            // The lobby's aircraft and fires are not heard (its views are the lobby battle's).
+            if (_lobby) nearest = nearestJet = float.MaxValue;
             var target = nearest < float.MaxValue ? Mathf.Clamp01(1f - nearest / reach) * 0.5f : 0f;
             _rotor.volume = Mathf.MoveTowards(_rotor.volume, target, Time.unscaledDeltaTime * 0.8f);
             var jetTarget = nearestJet < float.MaxValue ? Mathf.Clamp01(1f - nearestJet / (reach + 20f)) * 0.4f : 0f;
@@ -322,7 +385,7 @@ namespace MachineBrigade.Game.Audio
                 var near = Mathf.Clamp01(1f - Vector3.Distance(view.Position, Focus) / reach);
                 fire += near * near * Mathf.Min(1f, 0.25f * view.Sim.BrokenParts);
             }
-            var fireTarget = Mathf.Min(0.55f, fire * 0.3f);
+            var fireTarget = _lobby ? 0f : Mathf.Min(0.55f, fire * 0.3f);
             _fire.volume = Mathf.MoveTowards(_fire.volume, fireTarget, Time.unscaledDeltaTime * 0.5f);
             if (_fire.volume > 0f && !_fire.isPlaying) _fire.Play();
             else if (_fire.volume <= 0f && _fire.isPlaying) _fire.Stop();
@@ -400,6 +463,7 @@ namespace MachineBrigade.Game.Audio
         private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay)
         {
             if (_scheduled.Count > 24) return;
+            if (_ranging) volume *= RangeGain;
             _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), sound, at, volume));
         }
 
@@ -408,6 +472,7 @@ namespace MachineBrigade.Game.Audio
 
         private void Play(Sound sound, System.Numerics.Vector2 at, float volume, float reachBonus = 0f)
         {
+            if (_ranging) volume *= RangeGain;
             var bank = _banks[sound];
             var now = Time.unscaledTime;
             if (now - bank.LastPlayed < bank.Cooldown) return;

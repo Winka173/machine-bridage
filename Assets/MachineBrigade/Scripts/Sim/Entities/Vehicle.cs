@@ -323,6 +323,13 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public bool Dummy { get; internal set; }
 
+        /// <summary>
+        /// A firing-range sparring partner (the detail page's demo of an ability, such as a jammer
+        /// or an interceptor, working on real fire): it moves and fires as usual but, like a
+        /// <see cref="Dummy"/>, cannot be destroyed.
+        /// </summary>
+        public bool Sparring { get; internal set; }
+
         /// <summary>A car bomb that set itself off: its own blast was the explosion (no second one as it dies).</summary>
         internal bool Detonated { get; set; }
 

@@ -2108,3 +2108,114 @@ charge, bonuses, round model and scale; it keeps them now.
   tracers a second).
 - Equipment that fits "salvo" weapons (`SalvoInterval`) no longer fits the jets' and autocannons'
   magazines (they have no salvo); the fire-rate equipment speeds up a magazine's cadence.
+
+## 11D. Test feedback: menu loading, music, in-action clips (2026-09-28)
+
+Play-test findings: the first open of the game stuttered into the menu; several music tracks
+seemed to play at once; the menu's background battle was heard (fire and explosions); the detail
+page's In action clip (Xem bắn) showed only shooting, not the vehicle's special ability (the EW
+jammer was the example).
+
+- **How it was measured.** `MachineBrigade.Editor.StartupProbe` plays the menu from a cold start in
+  batch mode with the profiler recording and reads every frame back (`ProfilerDriver`
+  hierarchy views): the frame's time, the game's share of it (the frame less the editor's own
+  `EditorLoop`, which throttles batch mode to 30-60 fps), the heaviest markers of each slow
+  frame, when the curtain lifted, and once a second every audio source playing. It can also open
+  In action ranges and log their simulation events. Runs are `-nographics`: the preview
+  camera's render texture crashed the null device (a native crash in `ScriptableRenderContext.Submit`),
+  so the probe drives the range with a camera that never draws. GPU work (shader and pipeline
+  creation) is therefore not in these numbers, and editor numbers are not phone numbers.
+- **The stutter's cause.** On the first open there was no curtain. `Curtain.Open` at the end of
+  `MatchRunner.Start` was what created it (`Ensure(1f)`), and every `Curtain.Progress` before it
+  did nothing because no curtain existed yet. So the build ran on screen: a 3.4 s first frame
+  (catalogue, map, world), then 14 frames of 100-450 ms each (models, the prewarm loop, effects),
+  then a 1041 ms frame (audio, weather, the interface's UI Toolkit panels: `UIElements.UpdateStyle`
+  125 ms, `UIDocument.OnEnable`) and a 146 ms first `Update`, all drawn half-built, and then a
+  black curtain popped up and faded away. Scene loads from inside the game were fine because
+  `Curtain.Close` had put the curtain up first.
+- **The fix.** `Curtain.Cover` puts the curtain up black at once (no fade, the bar at zero), and
+  `MatchRunner.Start` calls it first, then yields one frame so the curtain is drawn before any
+  work. Two more yields split the old 3.4 s first step (after the catalogue, after the world), so
+  the bar moves. The rest of the build already yielded. Only the curtain's timing and loading
+  logic changed, not its look.
+- **The effect sounds decoded on first play.** The recorded effects import as Decompress On Load
+  without preload or background loading, so each clip was decoded on the main thread the first
+  time it sounded: a stall in the first seconds of a battle or of an In action range.
+  `AudioDirector.Preload` now calls `LoadAudioData` on every clip while the curtain is down
+  (about 90 ms in the editor, `SoundManager.LoadFMODSound`). The import settings are unchanged.
+- **Measured (editor, batch mode, profiler).** Before: frames 0-15 of the first open, all on
+  screen, took 3216, 433, 169, 133, 127, 110, 140, 110, 145, 186, 294, 151, 82, 92, ~1000 and
+  119 ms of game time. After: the same work (0.4 s, then 2.8 s for the map and world, then 12
+  frames of 85-330 ms, a 507 ms frame and a 116 ms first update) is all behind the curtain. After
+  the curtain lifts, the first 5 s of the menu: game time p50 3.2-3.4 ms, p95 4.6-7.6 ms, max
+  8.8-24.5 ms over two runs, no frame over 33 ms; over 34 s of menu with two In action ranges:
+  p99 9.7 ms, max 24.6 ms. Opening an In action range builds its little world in one frame (up
+  to about 60 ms in the editor, 5 frames over 33 ms across twelve ranges): left as it is, since it
+  follows a tap.
+- **Left for the device test phase:** frame times of the first seconds on a real phone
+  (`-mb-perf` logs hitches with a breakdown), and GPU pipeline warm-up. `EffectsDirector.Prewarm`
+  already draws every effect layer once behind the curtain; the preview camera's first In
+  action frame compiled several shader variants in the editor (438 ms, `Shader.EditorCompileVariant`),
+  which on a phone would be pipeline creation. A `GraphicsStateCollection` warm-up is the tool if
+  the device shows it.
+- **One music player.** `MusicDirector` is now one player for the whole session
+  (`MusicDirector.Play(mood, seed)`), kept across scene loads (`DontDestroyOnLoad`) and driven by its
+  own host in real time. The same track carries on (a rebuilt menu keeps its theme instead of
+  restarting it); a new one cross-fades over 2 s on the second deck; a deck still fading is cut
+  before a third track starts, so at most two tracks overlap, only during a cross-fade. A new track
+  stops the last result stinger. With domain reload off, the static is reset at
+  `SubsystemRegistration` and any stray player is destroyed when a new one is made.
+  `Dispose` is kept as a no-op, so `MatchRunner`'s clean-up is untouched.
+- **The audit.** Every sound in the game goes through `AudioDirector` (effects, loops, radio
+  chimes, sirens, thunder, clicks) or `MusicDirector` (tracks and stingers). No screen (shop,
+  detail, story panels, results, bosses) plays audio of its own; the detail page had no music of
+  its own either. What was heard as a detail track was the In action range's guns on top of the
+  menu theme and the lobby battle. Boss fights switch the music to the boss track; the old war-drum
+  loop (`AudioDirector.BossMusic`) is never switched on.
+- **The menu is silent but for wind.** The lobby's `AudioDirector` (no player side) now ignores
+  the lobby battle's events and keeps its rotor, jet and fire loops at zero; only the wind plays,
+  at 45 % of a battle's (0.07). Wind was chosen over nothing so the menu does not feel dead, and
+  it cannot be mistaken for combat.
+- **The In action range keeps its sounds, quieter.** `AudioDirector.ConsumeRange` plays the
+  range's shots and blasts at 0.6 of a battle's level (delayed and scheduled sounds carry the same
+  gain), and `UnitPreview` ducks the music to 45 % while the range plays, easing back when it
+  closes. The range is a demonstration, so its weapons are heard, but it should not drown the menu.
+- **Abilities in the In action clips.** `FiringRange.Abilities.cs` gives each vehicle or support with
+  a special ability a scene of its own, chosen from its definition (not its id), with the real
+  simulation doing the work. It adds friendly vehicles to repair, fortify or lead, and enemy
+  sparring partners: `Vehicle.Sparring` (`SimWorld.MakeSparring`) is a unit that moves and fires
+  as usual but, like a range dummy, cannot be destroyed. A scene can also add dragon's teeth for a
+  breacher. A ring on the ground (`EffectsDirector.AbilityRing`, the existing shockwave ring)
+  marks an aura. The scenes are:
+  jammer (enemy ATGMs and a Lancet at its friends, out of their machine guns' reach, lose their
+  lock), interceptor (rockets and missiles at its friends, burnt down by the laser), repair or
+  rearm aura (two wounded friends, knocked down again once healed), fortify (a battered friendly
+  guard tower), command aura (two light tanks under it), counter-battery radar (an enemy mortar
+  shells its side, gets pinged, and a friendly mortar answers), breacher (a row of dragon's teeth
+  ploughed, then another), flares (an enemy SAM vehicle at the aircraft), smoke when under fire
+  (an armoured car opens up on it), recon drone (spotting pings on what it sees), EMP (the targets
+  are real tanks shelling two friends, silenced by the blast), shield dome (enemy tanks fire on the
+  friends under it). The mine layer, car bomb, remote mines and drone carriers already showed
+  theirs. The smoke generator did not (its skill waits for an enemy within 11 m and the targets
+  stand 21 m off), so it has the smoke scene too.
+- **Checked headless** (`StartupProbe -mbProbeRange`, event counts per clip): jammer, 5 guided
+  shots at its friends and none hit (`RangeSceneTests` checks the same with and without the
+  jammer); interceptor, 4 interceptions; engineer, 52 repairs; sapper, 26; counter-battery, 3
+  guns revealed and 3 rounds back; breacher, 8 obstacles ploughed; attack helicopter, 2 flare
+  salvos; IFV and smoke generator, 2 smoke screens each; EMP and shield dome, the strike lands on
+  the attackers or the friends; mine layer, 3 mines and one set off. With graphics
+  (`-mbProbeShots`, the range camera rendered twice a second) the jammer, interceptor, command,
+  breacher, counter-battery and EMP clips were looked at frame by frame. The jammer's attackers
+  stood outside the frame and its ring pulsed too rarely to be seen, so its view was widened and
+  it pulses every second; the breacher's row of teeth now waits 3 s before going up again,
+  because each fall uses the big "defence falls" blast and eight in 14 s filled the frame.
+- **Seen but not changed (other lanes):** the command vehicle's own machine gun never fired on
+  the range (attack order on a target, not stunned, not moving), while the counter-battery radar
+  with the same weapon and mount did; its clip shows the aura and the tanks it leads. A long menu
+  (over a minute of lobby battle) logs thousands of "Quaternion To Matrix conversion failed"
+  asserts from `DebrisPool.Draw`: the debris rotations drift off unit length as they spin (fixed
+  meanwhile on lead/integration by 8e7d43c, which renormalises them each step). Dragon's teeth ploughed by a breacher go up in the defence-falls
+  fireball; a concrete-crumble effect would suit them better.
+- **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
+  turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
+  shoot-and-scoot (it already relocates on the range after three rounds).

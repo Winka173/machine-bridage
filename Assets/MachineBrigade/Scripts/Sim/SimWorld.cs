@@ -725,6 +725,9 @@ namespace MachineBrigade.Sim
             v.RefreshEffects(Time);
         }
 
+        /// <summary>Turns a vehicle into a firing-range sparring partner (see <see cref="Vehicle.Sparring"/>).</summary>
+        public void MakeSparring(Vehicle v) => v.Sparring = true;
+
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
 

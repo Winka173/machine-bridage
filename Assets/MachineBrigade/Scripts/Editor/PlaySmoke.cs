@@ -66,7 +66,7 @@ namespace MachineBrigade.Editor
                 return;
             }
             if (now - _stepStart < Steps[_step].seconds) return;
-            Line($"  done after {now - _stepStart:0} s, {Time.frameCount - _frames} frames, {State()}, {Errors.Count} errors so far");
+            Line($"  done after {now - _stepStart:0} s, {Time.frameCount - _frames} frames, {State()}, {Errors.Count} errors so far, {Playing()}");
             _frames = Time.frameCount;
             _step++;
             if (_step >= Steps.Count)
@@ -126,6 +126,20 @@ namespace MachineBrigade.Editor
                 else t1++;
             }
             return $"in match {MatchSettings.InMatch}, mode {MatchSettings.Mode}, tick {world.Tick} ({world.Tick / 20f:0} s), vehicles {alive} ({t0} v {t1})";
+        }
+
+        /// <summary>The audio sources playing now (test feedback 11D: one music track at a time, a silent lobby).</summary>
+        private static string Playing()
+        {
+            var music = new List<string>();
+            var effects = 0;
+            foreach (var source in UnityEngine.Object.FindObjectsByType<AudioSource>())
+            {
+                if (!source.isPlaying || source.volume <= 0.001f || source.clip == null) continue;
+                if (source.gameObject.name == "Music") music.Add(source.clip.name);
+                else if (source.gameObject.name.StartsWith("Voice")) effects++;
+            }
+            return $"music playing [{string.Join(" ", music)}], effect voices {effects}";
         }
 
         private static void Line(string text)

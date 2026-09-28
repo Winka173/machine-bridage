@@ -19,7 +19,7 @@ namespace MachineBrigade.Game.Rendering
     /// seen by the preview camera. It runs only while the tab is open, when the lobby battle is
     /// resting, and everything in it lives on the preview camera's layer, so the two never mix.
     /// </summary>
-    public sealed class FiringRange : IDisposable
+    public sealed partial class FiringRange : IDisposable
     {
         private const float Step = 0.05f;
 
@@ -104,7 +104,9 @@ namespace MachineBrigade.Game.Rendering
                     {
                         var friend = _world.SpawnVehicle(i == 1 ? "main_battle_tank" : "ifv", 0, new Vector2(-6f + i * 6f, -2f), 0f);
                         _world.DebugDamage(friend, 0.65f / Mathf.Max(0.01f, friend.Def.Armor == ArmorClass.Heavy ? 0.6f : 1f));
+                        _friends.Add(friend);
                     }
+                _scene = SceneFor(_support);
                 SetLayer(_root);
                 return;
             }
@@ -115,6 +117,7 @@ namespace MachineBrigade.Game.Rendering
             _air = HitsAir(def);
             _far = new Vector2(0f, distance * 0.5f);
             _reach = distance;
+            _scene = SceneFor(def);
             SetLayer(_root);
         }
 
@@ -233,12 +236,14 @@ namespace MachineBrigade.Game.Rendering
                 PlaceTargets();
                 CallSupport();
                 RunTheMines();
-                if (_shooter != null) Order();
+                Stage();
+                if (_shooter != null && !Directs()) Order();
                 _world.Step(Step);
                 _views.SnapshotAll();
                 foreach (var e in _world.Events)
                     if (e.Kind == Sim.Events.SimEventKind.VehicleSpawned && _world.TryGetVehicle(e.Entity, out var spawned))
                         _views.Add(spawned);
+                foreach (var e in _world.Events) Watch(e);
                 if (Log != null)
                     foreach (var e in _world.Events)
                         Log((float)_world.Time, e);
@@ -255,6 +260,7 @@ namespace MachineBrigade.Game.Rendering
             }
             _effects.Tick(_views);
             _mines.Update(_world);
+            Pulse();
             Frame(dt);
             _views.Render(_accumulator / Step, _camera.transform.rotation);
             // Rounds leave from the barrels as they have just been drawn.
