@@ -1088,6 +1088,8 @@ namespace MachineBrigade.Game.Hud
             ["camp.auto"] = ("Auto-arrange", "Tự xếp"),
             ["camp.autoDone"] = ("Arranged the way the enemy would, with your towers. Saved.", "Đã xếp theo cách của địch, bằng tháp của bạn. Đã lưu."),
             ["camp.custom"] = ("This map on its own", "Chỉnh riêng cho map này"),
+            ["camp.customShort"] = ("Own setup", "Chỉnh riêng"),
+            ["camp.rangesShort"] = ("Ranges", "Tầm bắn"),
             ["camp.customOn"] = ("This map is now set up on its own.", "Map này giờ được xếp riêng."),
             ["camp.customOff"] = ("This map follows the base set again.", "Map này theo lại bộ căn cứ chung."),
             ["camp.customMark"] = ("Set up on its own", "Chỉnh riêng"),
