@@ -96,6 +96,21 @@ namespace MachineBrigade.Game.Views
 
         private int _cards;
 
+        /// <summary>How many vehicles are at each detail level and how many cards were drawn in how many draws (for -mb-perf).</summary>
+        public string LodSummary()
+        {
+            int full = 0, simple = 0, cards = 0;
+            foreach (var view in _list)
+                switch (view.Level)
+                {
+                    case VehicleLod.Full: full++; break;
+                    case VehicleLod.Simple: simple++; break;
+                    default: cards++; break;
+                }
+            return _impostors == null ? $"lod=off({full})"
+                : $"lod={full}/{simple}/{cards} cards={_impostors.LastDrawn} in {_impostors.LastDraws} pages={_impostors.Pages.Count} ppm={VehicleLod.PixelsPerMetre:0.0}";
+        }
+
         /// <summary>Whether a vehicle's card may be on screen (its middle within the view, with room for its size).</summary>
         private bool OnScreen(VehicleView view)
         {

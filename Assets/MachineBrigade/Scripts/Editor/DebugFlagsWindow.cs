@@ -35,12 +35,15 @@ namespace MachineBrigade.Editor
             ("-mb-overview", "Overview: the whole battlefield in one view"),
             ("-mb-far", "Far: the north-west corner, zoomed right out"),
             ("-mb-perf", "Performance probe"),
+            ("-mb-crowd", "Crowd: a hundred vehicles fighting in view (with -mb-zoom=42 for the widest view)"),
+            ("-mb-lod-colours", "Detail level colours: simplified models cyan, impostors magenta"),
         };
 
         private static readonly (string Flag, string Label)[] Off =
         {
             ("-mb-no-shake", "Camera shake"), ("-mb-no-post", "Post-processing"), ("-mb-no-shadows", "Shadows"),
             ("-mb-no-fx", "Effects"), ("-mb-no-hud", "HUD"), ("-mb-no-cinematics", "Cinematic cameras"),
+            ("-mb-no-lod", "Vehicle detail levels (LOD)"),
         };
 
         private HashSet<string> _flags;
