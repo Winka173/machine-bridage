@@ -42,6 +42,23 @@ namespace MachineBrigade.Game.Views
         private float _previousSpeed, _currentSpeed;
         private float _recoilTime = -10f;
         private float _pitch, _bank;
+
+        /// <summary>An aeroplane's attack hold eased in and out (0-1), and the height it has climbed breaking away from one (see VehicleDef.AttackHold).</summary>
+        private float _hold, _climb, _climbRate;
+
+        /// <summary>Metres an aeroplane climbs as it breaks away from its attack hold (and dives back down coming in again).</summary>
+        private const float BreakClimb = 5f;
+
+        /// <summary>
+        /// Editor shot tools (AirHoldShots): the step, in seconds, the flight pose animates by each
+        /// render, and the clock it reads; negative, the real frame time (the game).
+        /// </summary>
+        public static float ShotStep = -1f;
+
+        public static float ShotClock;
+
+        private static float FrameStep => ShotStep >= 0f ? ShotStep : Time.deltaTime;
+        private static float FrameTime => ShotStep >= 0f ? ShotClock : Time.time;
         private float _bouncePhase;
         private float _spin;
         private float _crashStart = -1f;
@@ -758,6 +775,16 @@ namespace MachineBrigade.Game.Views
         private Transform[] _barrelTips;
         private int _barrel;
 
+        /// <summary>Eases the attack-hold pose in and out, and the climb away from the hold (see VehicleDef.AttackHold).</summary>
+        private void HoldPose()
+        {
+            var dt = FrameStep;
+            _hold = Mathf.MoveTowards(_hold, Sim.InAttackHold ? 1f : 0f, dt * 2.5f);
+            var climbed = _climb;
+            _climb = Mathf.MoveTowards(_climb, Def.AttackHold > 0f && Sim.Breaking ? BreakClimb : 0f, dt * 4f);
+            _climbRate = dt > 0f ? (_climb - climbed) / dt : 0f;
+        }
+
         public void Render(float alpha, Quaternion cameraRotation)
         {
             if (_wreck)
@@ -769,16 +796,19 @@ namespace MachineBrigade.Game.Views
             var hull = Mathf.LerpAngle(_previousHeading, _currentHeading, alpha);
             var position = Vector3.Lerp(_previousPosition, _currentPosition, alpha);
             var acceleration = (_currentSpeed - _previousSpeed) * 20f;
-            var ease = 1f - Mathf.Exp(-Time.deltaTime * 6f);
+            var ease = 1f - Mathf.Exp(-FrameStep * 6f);
             if (!Flying) Steady(ref position, ref hull);
 
             if (Flying)
             {
                 // Fly in from behind (never out of the ground), then hover with a slow bob, nose
                 // down when speeding up and bank into turns.
-                var arrive = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                var arrive = ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
                 var above = 1f - arrive;
-                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * arrive;
+                if (Def.FixedWing) HoldPose();
+                // A jet hanging on its target bobs a little more than one flying level.
+                var bob = Mathf.Sin(FrameTime * 1.3f + Id.Value) * 0.25f + Mathf.Sin(FrameTime * 2.3f + Id.Value * 0.7f) * 0.2f * _hold;
+                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
                 if (above > 0f)
                 {
                     // It flies in along its heading from behind, dropping to its height as it comes.
@@ -788,9 +818,16 @@ namespace MachineBrigade.Game.Views
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
                 {
-                    // Aeroplanes fly level and bank hard into their turns.
-                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(acceleration * 0.5f, -4f, 4f), ease);
-                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f), ease);
+                    // Aeroplanes fly level and bank hard into their turns. In an attack hold the nose
+                    // dips at the target and a jet slowed right down (a hovering VTOL jet) turns without
+                    // banking, rocking a little; breaking away it pitches up into the climb, and comes
+                    // back down nose first.
+                    var flown = Mathf.Clamp01(_currentSpeed / (Def.Speed * 0.6f));
+                    var dip = _hold * Mathf.Clamp(Mathf.Atan2(Def.Altitude - Sim.AimHeight, Mathf.Max(4f, Sim.AimDistance)) * Mathf.Rad2Deg * 0.35f, 0f, 12f);
+                    var level = Mathf.Clamp(acceleration * 0.5f, -4f, 4f) * (1f - _hold);
+                    _pitch = Mathf.Lerp(_pitch, level + dip - Mathf.Clamp(_climbRate * 2.5f, -12f, 12f), ease);
+                    var rock = Mathf.Sin(FrameTime * 1.7f + Id.Value) * 2f * _hold;
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f) * flown + rock, ease);
                 }
                 else
                 {
