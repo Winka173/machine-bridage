@@ -22,3 +22,10 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Electric arcs on broken energy parts | Glow points along a jagged line (`Emitters.Charge`) and blue sparks | A proper arc (line renderer with a noise texture) |
 | Fire crackle | The shared fire loop, louder near a burning boss | Its own crackle for a boss's fires |
 | Rail Supergun's tractors | Their broken piece is a stump on their deck | A burnt-out tractor model |
+
+## Prompt 13
+
+| What | Uses now | Needs |
+|---|---|---|
+| Ammunition carrier (`ammo_carrier`) | The supply truck's model (`truck`), at 0.9 scale, with its hull measurements | Its own model: a cargo truck with ammunition crates and a loading crane in the bed (a Kamaz-style resupply truck), muzzle `Muzzle_mg` for its roof HMG |
+| Landing pad branches (`airfield.hangar`, `airfield.service`) | The landing pad's model (`helipad`) | A hangar beside the pad; a fuel and ammunition point on the service branch |
