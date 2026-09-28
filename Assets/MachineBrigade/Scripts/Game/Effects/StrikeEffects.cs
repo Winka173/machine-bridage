@@ -328,7 +328,8 @@ namespace MachineBrigade.Game.Effects
         {
             var from = Ground(e.Position) + Vector3.up * 40f;
             var to = Ground(e.Target);
-            if (_hasCruise) _projectiles.Launch(_models.Merged("cruise_missile"), from, to, e.Value, 4f, 1.2f, now);
+            if (_hasCruise) _projectiles.Launch(_models.Merged("cruise_missile"), from, to, e.Value, 4f, 1.2f, now,
+                plume: Plume.For(null, MachineBrigade.Sim.Content.ProjectileKind.Missile, "cruise_missile", true));
         }
 
         /// <summary>Device check (<c>-mb-smokescreen</c>): a smoke screen with no strike behind it.</summary>

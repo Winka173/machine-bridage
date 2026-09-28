@@ -157,11 +157,13 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 case ProjectileKind.Missile:
-                    // Guided: the missile bends towards wherever its target is now.
-                    // It leaves the rail slowly and speeds up (launch, then boost), arriving on time.
+                    // Guided: the missile bends towards wherever its target is now. It leaves the
+                    // rail slowly, boosts hard and cruises, arriving on time, its motor burning a
+                    // flame cone and leaving a smoke trail (Plume).
                     var missile = Model("missile");
+                    var airborne = shooter != null && shooter.Flying;
                     if (_hasMissile) _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
-                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, shooter != null && shooter.Flying));
+                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), plume: Plume.For(weapon, kind, missile, airborne));
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     Flash(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
                     _shake(from, 0.05f);
@@ -187,9 +189,10 @@ namespace MachineBrigade.Game.Effects
                         _ => "rocket",
                     });
                     if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
-                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f,
-                        boost: artillery ? 0.2f : 0.3f, scale: scale * SizeOf(weapon, kind, rocket, false),
-                        control: artillery && weapon.Id != "ballistic_missile" ? Bend(from, to, barrel) : null);
+                    var ballistic = weapon?.Id == "ballistic_missile";
+                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery && !ballistic ? 0.7f : 0.3f,
+                        boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: scale * SizeOf(weapon, kind, rocket, false),
+                        control: artillery && !ballistic ? Bend(from, to, barrel) : null, plume: Plume.For(weapon, kind, rocket, false));
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
