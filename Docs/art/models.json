@@ -1007,9 +1007,25 @@
     "file": "wheeled_gun.glb",
     "triangles": 7664
   },
+  "wreck_barrel": {
+    "file": "wreck_barrel.glb",
+    "triangles": 1068
+  },
   "wreck_car": {
     "file": "wreck_car.glb",
     "triangles": 1344
+  },
+  "wreck_engine": {
+    "file": "wreck_engine.glb",
+    "triangles": 1238
+  },
+  "wreck_launcher": {
+    "file": "wreck_launcher.glb",
+    "triangles": 1848
+  },
+  "wreck_stump": {
+    "file": "wreck_stump.glb",
+    "triangles": 932
   },
   "wreck_tank": {
     "file": "wreck_tank.glb",
@@ -1018,6 +1034,10 @@
   "wreck_truck": {
     "file": "wreck_truck.glb",
     "triangles": 2228
+  },
+  "wreck_turret": {
+    "file": "wreck_turret.glb",
+    "triangles": 1112
   },
   "zu23_technical": {
     "file": "zu23_technical.glb",

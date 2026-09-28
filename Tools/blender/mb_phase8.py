@@ -1629,6 +1629,288 @@ def supreme_command(a):
         _whip(a, x, y, 0, h, parent=pa)
 
 
+# ----------------------------------------------------------------------------- wreck pieces
+def _frame_axes(Y, Z):
+    """Euler rotation of a frame whose local Y and Z point along the given vectors (Z is made square to Y)."""
+    Y = Vector(Y).normalized()
+    Z = (Vector(Z) - Y * Vector(Z).dot(Y)).normalized()
+    X = Y.cross(Z)
+    return Matrix((X, Y, Z)).transposed().to_euler('XYZ')
+
+
+def _bore(pitch):
+    """Unit vectors of a bore pitched up by `pitch` (negative droops): along it, up across it, and X."""
+    return (Vector((0, -math.cos(pitch), math.sin(pitch))), Vector((0, math.sin(pitch), math.cos(pitch))),
+            Vector((1, 0, 0)))
+
+
+def _on_tube(part, base, pitch, s, u, r, size, bevel=0.0):
+    """Plate `size` (across, along, thick) lying on a tube of radius r whose axis runs from `base` pitched by
+    `pitch`, s metres along it at angle u round it (0 = top, positive towards +X)."""
+    d, up, side = _bore(pitch)
+    rad = side * math.sin(u) + up * math.cos(u)
+    loc = Vector(base) + d * s + rad * (r + size[2] / 2 - .01)
+    part.box(size, loc=tuple(loc), rot=_frame_axes(d, rad), bevel=bevel)
+
+
+def _petals(outer, inner, glow, end, pitch, r, n=4, length=(.5, .34), lean=(.7, 1.3), rng=None, width=.26):
+    """A barrel end burst open like a peeled banana at `end` (the tube's end, pitched by `pitch`): n torn petals
+    curling outwards in two segments, charred outside and bare metal inside, and a glowing core in the bore."""
+    d, up, side = _bore(pitch)
+    for k in range(n):
+        u = math.pi / n + k * TAU / n + (rng.uniform(-.25, .25) if rng else 0)
+        rad = side * math.sin(u) + up * math.cos(u)
+        p = Vector(end) + rad * r * .92
+        for seg, (L, b) in enumerate(zip(length, lean)):
+            b = b + (rng.uniform(-.2, .2) if rng else 0)
+            along = d * math.cos(b) + rad * math.sin(b)
+            normal = rad * math.cos(b) - d * math.sin(b)
+            c = p + along * (L / 2)
+            w = width * (1 - .3 * seg)
+            outer.box((w, L, .05), loc=tuple(c + normal * .02), rot=_frame_axes(along, normal), bevel=0)
+            inner.box((w * .86, L * .9, .02), loc=tuple(c - normal * .015), rot=_frame_axes(along, normal), bevel=0)
+            p = p + along * L * .94
+    glow.cyl(r * .5, .03, loc=tuple(Vector(end) - d * .04), rot=(R90 - pitch, 0, 0), seg=10, bevel=0)
+
+
+def wreck_barrel(a):
+    """Broken gun barrel stub, 3.1 m: origin at its root (the rear face of the collar, on the bore axis) so it
+    replaces a destroyed gun at its mount; the barrel runs along -Y. A charred collar with a rust band, a
+    straight charred run with rust blotches and soot rings, a crumpled kink, a second run drooping 24 degrees
+    and the end burst open in four torn petals, bare metal inside them and a glowing core in the bore."""
+    _suffixed(a)
+    rng = random.Random(801)
+    char, rust = a.part('Barrel', 'Charred'), a.part('Rust', 'Rust')
+    soot, bare, glow = a.part('Soot', 'Undercarriage'), a.part('Bare_metal', 'Steel'), a.part('Embers', 'LavaGlow')
+    char.cyl(.32, .3, loc=(0, -.15, 0), rot=FORWARD, seg=16, bevel=.02, bseg=1)                          # collar
+    rust.cyl(.335, .08, loc=(0, -.22, 0), rot=FORWARD, seg=16, bevel=0)
+    base1 = (0, -.28, 0)
+    d1, _, _ = _bore(0.0)
+    char.cyl(.2, 1.35, loc=tuple(Vector(base1) + d1 * .675), rot=FORWARD, seg=14, bevel=.01, bseg=1)
+    for s, h in ((.3, .1), (.95, .07)):
+        soot.cyl(.205, h, loc=tuple(Vector(base1) + d1 * s), rot=FORWARD, seg=14, bevel=0)
+    for k in range(4):
+        _on_tube(rust, base1, 0.0, rng.uniform(.2, 1.2), rng.uniform(-1.2, 1.4), .2, (.14, .26, .03))
+    kink = Vector(base1) + d1 * 1.35
+    char.sphere((.24, .26, .22), loc=tuple(kink), seg=12, rings=8)
+    bare.box((.3, .06, .05), loc=tuple(kink + Vector((0, 0, .21))), rot=(.3, 0, .2), bevel=0)             # crease
+    p2 = -math.radians(24)
+    d2, _, _ = _bore(p2)
+    char.cyl(.19, 1.05, loc=tuple(kink + d2 * .52), rot=(R90 - p2, 0, 0), seg=14, bevel=.01, bseg=1)
+    for k in range(3):
+        _on_tube(rust, tuple(kink), p2, rng.uniform(.15, .85), rng.uniform(-1.0, 1.0), .19, (.12, .22, .03))
+    end = kink + d2 * 1.05
+    soot.cyl(.1, .03, loc=tuple(end + d2 * .005), rot=(R90 - p2, 0, 0), seg=10, bevel=0)                   # bore
+    _petals(char, rust, glow, tuple(end), p2, .19, length=(.38, .24), rng=rng)
+    for k in range(3):                                                                                 # torn bare edges
+        _on_tube(bare, tuple(kink), p2, 1.0, k * 2.1 + .4, .19, (.08, .1, .03))
+
+
+def _octagon(w, d, c):
+    return chamfered(w, d, c)
+
+
+def wreck_turret(a):
+    """Blown-open small turret, 2.4 x 2.6 m: origin at the centre of its ring on the deck. A charred octagonal
+    house standing a little askew on a scorched ring, its roof torn open: two plates left (the rear one with
+    the empty ring of the hatch that was blown off, its hinge bent up), a third peeled back on its hinge with
+    bare metal under it, jagged bare edges round the hole and embers glowing inside; the mantlet with a short
+    snapped barrel drooping, a side plate hanging off, rust streaks and soot."""
+    _suffixed(a)
+    rng = random.Random(802)
+    char, rust = a.part('Turret', 'Charred'), a.part('Rust', 'Rust')
+    soot, bare, glow = a.part('Soot', 'Undercarriage'), a.part('Bare_metal', 'Steel'), a.part('Embers', 'LavaGlow')
+    char.cyl(1.05, .16, loc=(0, 0, .08), seg=20, bevel=.02, bseg=1)                                    # ring
+    soot.cyl(1.2, .02, loc=(0, 0, .01), seg=20, bevel=0)                                               # scorch
+    tilt = (.05, -.04, .12)
+    m = _frame((0, 0, .16), tilt)
+    outline = _octagon(2.2, 2.4, .55)
+    char.shell(outline, .95, .12, loc=tuple(m @ Vector((0, 0, 0))), rot=tilt, taper=.86, floor=.08, bevel=.02)
+    zt = .95
+    # Roof: the rear plate with the empty hatch ring, the left front plate, one plate peeled back.
+    def on(p, rot=(0, 0, 0)):
+        return tuple(m @ Vector(p)), tuple(Vector(tilt) + Vector(rot))
+    loc, rot = on((0, .55, zt + .02))
+    char.box((1.8, 1.0, .08), loc=loc, rot=rot, bevel=.01, seg=1)
+    loc, rot = on((.5, -.45, zt + .02))
+    char.box((.8, .9, .08), loc=loc, rot=rot, bevel=.01, seg=1)
+    loc, rot = on((.35, .6, zt + .07))
+    rust.cyl(.34, .06, loc=loc, rot=rot, seg=14, bevel=0)                                              # hatch ring
+    soot.cyl(.26, .065, loc=loc, rot=rot, seg=14, bevel=0)
+    loc, rot = on((.35, .98, zt + .14), (-.9, 0, 0))
+    bare.box((.26, .05, .12), loc=loc, rot=rot, bevel=0)                                               # bent hinge
+    loc, rot = on((-.5, -.95, zt + .45), (1.05, .2, 0))                                                # peeled plate
+    char.box((.9, .95, .07), loc=loc, rot=rot, bevel=0)
+    loc, rot = on((-.5, -.93, zt + .41), (1.05, .2, 0))
+    bare.box((.8, .85, .02), loc=loc, rot=rot, bevel=0)
+    for k in range(6):                                                                                  # jagged edges
+        loc, rot = on((rng.uniform(-.8, .1), rng.uniform(-.8, .1), zt + .04), (rng.uniform(-.5, .5), rng.uniform(-.5, .5),
+                                                                              rng.uniform(0, 3)))
+        bare.box((rng.uniform(.15, .3), .05, .04), loc=loc, rot=rot, bevel=0)
+    for k in range(4):                                                                                  # embers inside
+        loc, rot = on((rng.uniform(-.6, .1), rng.uniform(-.7, .1), .14))
+        glow.box((.18, .14, .06), loc=loc, rot=(rot[0], rot[1], rng.uniform(0, 3)), bevel=0)
+    soot.box((1.6, 1.6, .03), loc=on((0, 0, .1))[0], rot=on((0, 0, .1))[1], bevel=0)                  # burnt floor
+    # Mantlet and the snapped barrel, drooping.
+    loc, rot = on((0, -1.18, .5))
+    char.box((.6, .36, .46), loc=loc, rot=rot, bevel=.03, seg=1)
+    root = m @ Vector((0, -1.36, .5))
+    p = -math.radians(16) + tilt[0]
+    d, _, _ = _bore(p)
+    char.cyl(.09, .85, loc=tuple(root + d * .42), rot=(R90 - p, 0, 0), seg=10, bevel=0)
+    _petals(char, rust, glow, tuple(root + d * .85), p, .09, n=3, length=(.2, .14), width=.12, rng=rng)
+    # A side plate torn loose and hanging, rust streaks on the walls.
+    loc, rot = on((1.18, .2, .45), (0, .5, .15))
+    char.box((.08, .9, .7), loc=loc, rot=rot, bevel=0)
+    for k in range(5):
+        u = rng.uniform(0, TAU)
+        loc, rot = on((math.cos(u) * 1.02, math.sin(u) * 1.12, .5), (0, 0, u + R90))
+        rust.box((.2, .05, .5), loc=loc, rot=rot, bevel=0)
+
+
+def wreck_launcher(a):
+    """Twisted rocket / missile launcher box, 2.6 m: origin at the centre of its pedestal's foot. A charred
+    pedestal and trunnion yoke; the box, sagging 12 degrees off its trunnion, is torn into three segments that
+    twist further round its long axis (0, 11 and 24 degrees) with bare metal at the tears; its front face
+    a grid of dark tube mouths, two tubes burst open, one missile half out of its tube and bent down, torn
+    frame ribs sticking out, rust and soot."""
+    _suffixed(a)
+    rng = random.Random(803)
+    char, rust = a.part('Launcher_box', 'Charred'), a.part('Rust', 'Rust')
+    soot, bare, glow = a.part('Soot', 'Undercarriage'), a.part('Bare_metal', 'Steel'), a.part('Embers', 'LavaGlow')
+    char.cyl(.5, .14, loc=(0, 0, .07), seg=16, bevel=.02, bseg=1)
+    char.cyl(.32, .55, loc=(0, 0, .4), seg=14, bevel=.02, bseg=1)                                      # pedestal
+    soot.cyl(.65, .02, loc=(0, 0, .01), seg=16, bevel=0)
+    for s in (-1, 1):
+        char.box((.1, .5, .6), loc=(s * .55, .1, .9), bevel=.02, seg=1)                                # yoke
+    bare.cyl(.07, 1.2, loc=(0, .1, 1.05), rot=ACROSS, seg=8, bevel=0)                                  # trunnion
+    sag = math.radians(12)
+    hinge = Vector((0, .6, 1.1))
+    d, up, side = _bore(-sag)
+    twists = (0.0, math.radians(11), math.radians(24))
+    L = .8
+    for k, tw in enumerate(twists):
+        c = hinge + d * (L * (k + .5)) + up * .05 * k
+        rot = _frame_axes(d, up * math.cos(tw) + side * math.sin(tw))
+        char.box((1.5, L - .05, .9), loc=tuple(c), rot=rot, bevel=.03, seg=1)
+        if k:
+            bare.box((1.4, .06, .8), loc=tuple(c - d * (L / 2)), rot=rot, bevel=0)                    # tear
+        _on_tube(rust, tuple(hinge), -sag, L * (k + .5), rng.uniform(-.6, .6), .45, (.3, .4, .03))
+        _on_tube(a.part('Paint', 'Armor'), tuple(hinge), -sag, L * (k + .5) + .1, rng.uniform(1.8, 2.6), .45,
+                 (.4, .3, .03))                                                                    # unburnt paint
+    # Front face: tube mouths on the last segment.
+    tw = twists[-1]
+    face = hinge + d * (3 * L) + up * .1
+    nrm = d                                                          # the front face looks along the bore
+    ax = side * math.cos(tw) - up * math.sin(tw)
+    ay = up * math.cos(tw) + side * math.sin(tw)
+    char.box((1.5, .06, .9), loc=tuple(face + nrm * .01), rot=_frame_axes(d, ay), bevel=0)
+    for i in range(4):
+        for j in range(2):
+            p = face + ax * ((i - 1.5) * .34) + ay * ((j - .5) * .4) + nrm * .03
+            if (i, j) in ((1, 1), (3, 0)):
+                _petals(char, rust, glow, tuple(p - nrm * .02), -sag, .12, n=3, length=(.16, .1), width=.12, rng=rng)
+                continue
+            soot.cyl(.13, .03, loc=tuple(p), rot=(R90 + sag, 0, 0), seg=10, bevel=0)
+            _revolve(rust, [(.12, -.03), (.16, -.03), (.16, .03), (.12, .03)], tuple(p), (R90 + sag, 0, 0), 10)
+    # A missile half out of its tube, bent down; torn frame ribs.
+    mp = face + ax * (-.51) + ay * (-.2)
+    bend = -sag - math.radians(28)
+    dm, _, _ = _bore(bend)
+    char.cyl(.11, .9, loc=tuple(mp + dm * .45), rot=(R90 - bend, 0, 0), seg=10, bevel=0)
+    a.part('Missile_band', 'Hazard').cyl(.115, .1, loc=tuple(mp + dm * .3), rot=(R90 - bend, 0, 0), seg=10, bevel=0)
+    char.cyl(.11, .25, r2=.02, loc=tuple(mp + dm * 1.02), rot=(R90 - bend, 0, 0), seg=10, bevel=0)
+    for k in range(3):
+        p = hinge + d * rng.uniform(.3, 2.2) + side * rng.choice((-.78, .78)) + up * rng.uniform(-.3, .3)
+        bare.box((.05, .5, .06), loc=tuple(p), rot=(rng.uniform(-.8, .8), 0, rng.uniform(-.6, .6)), bevel=0)
+
+
+def wreck_stump(a):
+    """Charred weapon-mount stump, 1.5 m across: origin at the centre of its foot on the deck. A scorched ring
+    and base plate, the torn pedestal with a jagged top ringed by bare-metal shards and embers glowing inside,
+    a bent bracket and five torn cables curling out and down with bare copper ends."""
+    _suffixed(a)
+    rng = random.Random(804)
+    char, rust = a.part('Stump', 'Charred'), a.part('Rust', 'Rust')
+    soot, bare, glow = a.part('Soot', 'Undercarriage'), a.part('Bare_metal', 'Steel'), a.part('Embers', 'LavaGlow')
+    soot.cyl(.78, .02, loc=(0, 0, .01), seg=18, bevel=0)                                               # scorch
+    char.cyl(.62, .12, loc=(0, 0, .07), seg=18, bevel=.02, bseg=1)                                     # ring
+    rust.cyl(.63, .04, loc=(0, 0, .1), seg=18, bevel=0)
+    n = 14
+    tops = [.42 + rng.uniform(0, .38) * (1 if k % 3 else .4) for k in range(n)]
+
+    def ring(r, zs):
+        return [(math.cos(k * TAU / n) * r, math.sin(k * TAU / n) * r, zs[k]) for k in range(n)]
+    # Hollow torn pedestal: outer wall up to the jagged rim, inner wall down to a recessed floor.
+    char.loft([ring(.36, [.12] * n), ring(.33, tops), ring(.25, [t - .03 for t in tops]), ring(.25, [.32] * n)],
+              bevel=0)
+    glow.cyl(.22, .03, loc=(0, 0, .33), seg=12, bevel=0)
+    for k in range(n):
+        if k % 2:
+            continue
+        u = k * TAU / n
+        bare.box((.1, .03, .18), loc=(math.cos(u) * .35, math.sin(u) * .35, tops[k] + .03), rot=(0, 0, u + R90),
+                 bevel=0)
+    bare.box((.08, .3, .06), loc=(.42, -.1, .32), rot=(0, -.6, .3), bevel=0)                           # bent bracket
+    bare.box((.08, .06, .3), loc=(.55, -.22, .22), rot=(.4, 0, .3), bevel=0)
+    cable = a.part('Cables', 'Rubber')
+    tips = a.part('Copper', 'Gilded')
+    for k in range(5):
+        u = rng.uniform(0, TAU)
+        z0 = rng.uniform(.45, .7)
+        r1 = rng.uniform(.55, .8)
+        pts = [(math.cos(u) * .25, math.sin(u) * .25, z0), (math.cos(u) * .4, math.sin(u) * .4, z0 + .15),
+               (math.cos(u + .3) * r1 * .8, math.sin(u + .3) * r1 * .8, z0 * .7),
+               (math.cos(u + .5) * r1, math.sin(u + .5) * r1, .16)]
+        cable.tube(pts, .03, seg=5)
+        tips.sphere(.035, loc=pts[-1], seg=6, rings=4)
+    for k in range(3):
+        _on_tube(rust, (0, 0, .3), R90, 0, rng.uniform(0, TAU), .35, (.12, .2, .03))
+
+
+def wreck_engine(a):
+    """Burnt-out engine nacelle, 3.1 m long: origin at its middle, axis along Y (the front at -Y) so it replaces
+    an engine part. The front and rear cowlings charred and rust-streaked, the middle cowling gone: bare frame
+    rings and stringers over the blackened engine with embers glowing between them; two cowl panels hanging
+    peeled off, the propeller hub with three snapped, bent blade stubs, soot-caked exhaust stubs and a torn
+    cable."""
+    _suffixed(a)
+    rng = random.Random(805)
+    char, rust = a.part('Nacelle', 'Charred'), a.part('Rust', 'Rust')
+    soot, bare, glow = a.part('Soot', 'Undercarriage'), a.part('Bare_metal', 'Steel'), a.part('Embers', 'LavaGlow')
+    char.lathe([(0, -1.55), (.35, -1.48), (.62, -1.2), (.74, -.7), (.74, -.35), (.5, -.3), (.5, -.25), (0, -.25)],
+               rot=BACKWARD, seg=16)                                                                   # front cowl
+    char.lathe([(0, .45), (.5, .45), (.5, .5), (.74, .55), (.72, 1.0), (.5, 1.4), (.22, 1.55), (0, 1.58)],
+               rot=BACKWARD, seg=16)                                                                   # rear cowl
+    soot.cyl(.48, .9, loc=(0, .1, 0), rot=BACKWARD, seg=12, bevel=0)                                   # engine core
+    for y in (-.3, .1, .5):
+        _revolve(bare, [(.66, -.04), (.74, -.03), (.74, .03), (.66, .04)], (0, y, 0), BACKWARD, 16)    # frame rings
+    for u in (.5, 2.2, 4.0):
+        bare.box((.06, .85, .06), loc=(math.sin(u) * .7, .1, math.cos(u) * .7), rot=(0, u, 0), bevel=0)  # stringers
+    for k in range(5):
+        u = rng.uniform(0, TAU)
+        glow.box((.12, .2, .08), loc=(math.sin(u) * .5, rng.uniform(-.2, .4), math.cos(u) * .5), rot=(0, u, 0), bevel=0)
+    for k in range(6):
+        u = rng.uniform(0, TAU)
+        y = rng.choice((rng.uniform(-1.1, -.45), rng.uniform(.6, 1.0)))
+        rust.box((.18, .3, .03), loc=(math.sin(u) * .74, y, math.cos(u) * .74), rot=(0, u, 0), bevel=0)
+    for u, sw in ((1.2, .9), (-2.3, -1.1)):                                                            # peeled panels
+        p = Vector((math.sin(u) * .76, .1, math.cos(u) * .76))
+        out = Vector((math.sin(u), 0, math.cos(u)))
+        char.box((.5, .8, .04), loc=tuple(p + out * .25), rot=(0, u + sw, .2), bevel=0)
+    # Hub with three snapped blade stubs, exhaust stubs, a torn cable.
+    char.lathe([(.28, 0), (.28, .15), (.18, .35), (0, .5)], loc=(0, -1.5, 0), rot=FORWARD, seg=12)
+    for k in range(3):
+        u = k * TAU / 3 + .4
+        root = Vector((math.cos(u) * .25, -1.65, math.sin(u) * .25))
+        tip = Vector((math.cos(u + .3) * .8, -1.55 + rng.uniform(-.1, .15), math.sin(u + .3) * .8))
+        char.limb(tuple(root), tuple(tip), .08, .3, bevel=0)
+        bare.box((.1, .05, .1), loc=tuple(tip), rot=(rng.uniform(0, 1), 0, rng.uniform(0, 1)), bevel=0)
+    for k in range(3):
+        soot.cyl(.08, .28, loc=(.72, -.5 + k * .35, .18), rot=(0, R90, 0), seg=6, bevel=0)
+    a.part('Cables', 'Rubber').tube([(-.3, .3, -.5), (-.55, .45, -.85), (-.5, .7, -1.25)], .035, seg=5)
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
     'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
@@ -1638,6 +1920,11 @@ BUILDERS = {
     'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
     'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=.8)),
     'supreme_command': (supreme_command, dict(ao_distance=.9, grime_height=.8)),
+    'wreck_barrel': (wreck_barrel, dict(ao_distance=.35, ground=False)),
+    'wreck_turret': (wreck_turret, dict(ao_distance=.5, grime_height=.3)),
+    'wreck_launcher': (wreck_launcher, dict(ao_distance=.5, grime_height=.3)),
+    'wreck_stump': (wreck_stump, dict(ao_distance=.35, grime_height=.2)),
+    'wreck_engine': (wreck_engine, dict(ao_distance=.45, ground=False)),
 }
 
 
