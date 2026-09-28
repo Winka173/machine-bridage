@@ -56,7 +56,7 @@ from mb_air import _prop_blade, _revolve  # noqa: E402
 from mb_bosses import _headlamp, _hull2d, _plate_bolts, _railing, _sec6, track_shoes, track_unit  # noqa: E402
 from mb_phase2 import _suffixed, dotted  # noqa: E402
 from mb_siege import bag_arc, bag_run, flag, flood_head, generator, lattice, loop_rail  # noqa: E402
-from mb_support import _beacon, _lpda, _ram, _whip  # noqa: E402
+from mb_support import _beacon, _lpda, _ram, _telescopic_mast, _whip  # noqa: E402
 from mb_themes import ladder  # noqa: E402
 from mb_town import fbox  # noqa: E402
 from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _cable, _dish, _frame, _glacis, _hatch, _headlight,  # noqa: E402
@@ -1490,6 +1490,145 @@ def landing_hovercraft(a):
         ciws(a, name.replace('Part_', 'Mount_'), (0, 0, 0), parent=name)
 
 
+# ----------------------------------------------------------------------------- supreme_command
+SC_AXLES = (-4.6, -2.9, 2.5, 4.2)
+
+
+def supreme_command(a):
+    """"Supreme Commander" super-heavy command vehicle (MZKT-7930 chassis / armoured mobile headquarters lineage),
+    14.4 x 4.2 m, 5.6 m roof, 11.2 m to the mast head: four axles of 1.9 m tyres in two pairs, a wide faceted
+    armoured cab with three thick windscreens, a VIP light bar with blue escort lights, a bull bar, headlights,
+    a gilded star on the nose and two Team pennants on staffs at the front corners; behind it the two-deck
+    armoured command citadel: a Team lower module with bolted plates, a side door and ladders, and on it the
+    war room with a lit window band under armoured louvres all round; a generator at the rear with its
+    exhaust, a rear door and steps. Deliberately light armament: two small remote machine guns.
+
+    Boss parts: `Part_antenna` (origin at the mast foot on the rear roof) holds the command antenna farm: the
+    raised telescopic mast with a log-periodic array and a crossed-dipole head, the SATCOM radome on the war
+    room, two link dishes and four whips; `Part_mg` / `Part_mg.001`: remote machine guns on the war room's front
+    corners (left, right) on `Mount_mg` / `Mount_mg.001` with `Muzzle_mg` / `Muzzle_mg.001`."""
+    _suffixed(a)
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    dark, team = a.part('Chassis', 'Undercarriage'), a.part('Citadel', 'Team')
+    for y in SC_AXLES:
+        for s in (-1, 1):
+            _wheel(a, s * 1.62, y, .95, .7, seg=18)
+            dark.box((.5, .36, .36), loc=(s * 1.1, y, .95), bevel=.03, seg=1)                          # hub carriers
+        dark.box((2.0, .3, .26), loc=(0, y, .95), bevel=.02, seg=1)                                     # axles
+    dark.box((1.4, 13.6, .6), loc=(0, 0, 1.3), bevel=.04, seg=1)                                         # frame
+    for s in (-1, 1):
+        for y0, y1 in ((-5.75, -1.75), (1.35, 5.35)):                                                   # mudguards
+            armor.box((.9, y1 - y0, .08), loc=(s * 1.62, (y0 + y1) / 2, 2.0), bevel=.02, seg=1)
+            armor.box((.9, .08, .5), loc=(s * 1.62, y0 - .02, 1.78), rot=(-.4, 0, 0), bevel=0)
+            armor.box((.9, .08, .5), loc=(s * 1.62, y1 + .02, 1.78), rot=(.4, 0, 0), bevel=0)
+        team.box((.12, 2.9, .95), loc=(s * 1.98, -.2, 1.5), bevel=.02, seg=1)                            # skirts
+        _plate_bolts(steel, s * 2.05, (-1.3, -.2, .9), 1.8, r=.03, h=.03)
+    # Cab: faceted, raked front with three armoured windscreens.
+    cab = a.part('Cab', 'Armor')
+    prof = [(-7.15, 2.0), (-7.35, 2.55), (-6.45, 3.78), (-4.2, 3.95), (-4.2, 2.0)]
+    cab.prism(prof, 4.16, axis='X', bevel=.06, seg=1)
+    team.box((4.2, 1.1, .5), loc=(0, -4.75, 3.72), bevel=.03, seg=1)                                     # cab roof band
+    G0, G1 = (-7.35, 2.55), (-6.45, 3.78)
+    wr = _glacis(G0, G1, 0, 0)[2]
+    glass, frame = a.part('Windscreens', 'Glass'), a.part('Screen_frames', 'Armor')
+    for x in (-1.3, 0, 1.3):
+        gy, gz, _ = _glacis(G0, G1, .55, .02)
+        frame.box((1.2, .9, .08), loc=(x, gy, gz), rot=(wr, 0, 0), bevel=.02, seg=1)
+        gy, gz, _ = _glacis(G0, G1, .55, .065)
+        glass.box((1.0, .7, .04), loc=(x, gy, gz), rot=(wr, 0, 0), bevel=0)
+    for s in (-1, 1):
+        glass.box((.05, 1.2, .5), loc=(s * 2.09, -5.4, 3.2), bevel=0)                                    # side windows
+        frame.box((.06, 1.4, .1), loc=(s * 2.1, -5.4, 3.5), bevel=0)
+        _headlight(a, s * 1.55, -7.3, 2.35, guard=True)
+        steel.limb((s * 2.08, -6.0, 3.2), (s * 2.4, -6.2, 3.3), .05, .05, bevel=0)
+        armor.box((.1, .22, .34), loc=(s * 2.44, -6.2, 3.2), bevel=.02, seg=1)                           # mirrors
+        flag(a, s * 1.9, -6.95, 3.3, 1.7, w=.7, h=.45, phase=s * .7, yaw=R90)                            # pennants
+    steel.box((4.0, .16, .5), loc=(0, -7.5, 1.55), bevel=.03, seg=1)                                     # bull bar
+    for x in (-1.4, -.5, .5, 1.4):
+        steel.box((.1, .12, .8), loc=(x, -7.46, 1.9), bevel=0)
+    sy, sz, _ = _glacis(G0, G1, .1, .03)
+    a.part('Emblem', 'Gilded').cyl(.3, .06, loc=(0, sy, sz), rot=(wr, 0, 0), seg=5, bevel=0)             # nose star
+    # VIP light bar on the cab roof.
+    armor.box((2.6, .3, .14), loc=(0, -5.9, 3.93), bevel=.02, seg=1)
+    for x in (-1.1, -.7, .7, 1.1):
+        a.part('Escort_lights', 'Energy').box((.28, .24, .1), loc=(x, -5.9, 4.03), bevel=0)
+    a.part('Light_bar_lamps', 'Lamp').box((.5, .24, .1), loc=(0, -5.9, 4.03), bevel=0)
+    for s in (-1, 1):
+        _whip(a, s * 1.9, -4.5, 3.95, 1.6)
+    # Citadel: the lower module with plates, door, ladders; the war room with its window band.
+    team.box((4.1, 11.1, 2.1), loc=(0, 1.25, 3.05), bevel=.07, seg=1)                                    # y -4.3 .. 6.8
+    for s in (-1, 1):
+        for y0, y1 in ((-3.9, -1.5), (-1.3, 1.3), (1.5, 3.9), (4.1, 6.4)):
+            armor.box((.06, y1 - y0, .7), loc=(s * 2.06, (y0 + y1) / 2, 2.55), bevel=.012, seg=1)
+            _plate_bolts(steel, s * 2.1, (y0 + .15, y1 - .15), 2.8, r=.03, h=.03)
+        _periscopes(a, [(s * 2.04, y, 3.55, s * R90) for y in (-2.6, .1, 2.8)])
+    fbox(armor, '-x', (-2.05, 5.2, 2.9), (.9, .06, 1.7), out=.02, bevel=.012)                            # side door
+    for k in range(3):
+        steel.box((.5, .8, .05), loc=(-2.3, 5.2, .7 + k * .45), bevel=0)                                 # door steps
+    ladder(a.part('Ladders', 'Steel'), (-1.4, 6.95, .7), 4.3, 0, width=.44, step=.34, rung=.03)
+    wr_ = a.part('War_room', 'Team')
+    wr_.box((3.5, 6.6, 1.4), loc=(0, -.1, 4.8), bevel=.06, seg=1, taper=(.95, .96))                     # y -3.4 .. 3.2
+    lit, louv = a.part('War_room_windows', 'Lamp'), a.part('Louvres', 'Armor')
+    for s in (-1, 1):
+        for y in (-2.4, -.8, .8, 2.4):
+            lit.box((.05, 1.2, .38), loc=(s * 1.72, y, 4.8), bevel=0)
+            for dz in (-.1, .1):
+                louv.box((.1, 1.3, .05), loc=(s * 1.76, y, 4.8 + dz), rot=(0, s * .5, 0), bevel=0)
+    for x in (-1.0, 0, 1.0):
+        lit.box((.8, .05, .38), loc=(x, -3.35, 4.8), bevel=0)
+        louv.box((.9, .1, .05), loc=(x, -3.4, 4.9), rot=(-.5, 0, 0), bevel=0)
+    team.box((3.4, 6.4, .1), loc=(0, -.1, 5.52), bevel=.03, seg=1)                                      # war room roof
+    armor.box((3.44, .12, .14), loc=(0, -3.28, 5.55), bevel=0)                                          # roof brow
+    # Command tent rolled along the left upper edge, air-conditioning units on the right.
+    for y in (-2.6, 0, 2.6):
+        steel.box((.2, .06, .3), loc=(2.12, y, 3.75), bevel=0)
+    a.part('Tent_roll', 'Canvas').cyl(.2, 6.2, loc=(2.2, 0, 3.85), rot=FORWARD, seg=10, bevel=.04, bseg=1)
+    for y in (-2.8, 2.8):
+        a.part('Tent_straps', 'Charred').cyl(.215, .1, loc=(2.2, y * .8, 3.85), rot=FORWARD, seg=10, bevel=0)
+    for y in (-1.6, 1.6):
+        a.part('Aircon', 'Fuel').box((.36, 1.0, .7), loc=(-2.2, y, 3.55), bevel=.03, seg=1)
+        a.part('Aircon_grilles', 'Undercarriage').grille(.8, .5, loc=(-2.39, y, 3.55), rot=(0, 0, -R90), slats=4,
+                                                          depth=.04, thickness=.03)
+    _hatch(a, 0, -1.2, 5.55, .34)
+    for s in (-1, 1):
+        a.part('Gilt_stripes', 'Gilded').box((.03, 6.0, .05), loc=(s * 1.74, -.1, 5.15), bevel=0)
+    # Rear: generator with exhaust, rear door, tail lights.
+    gen = a.part('Generator', 'Armor')
+    gen.box((1.8, 1.0, 1.1), loc=(.9, 6.4, 4.65), bevel=.04, seg=1)
+    a.part('Generator_grille', 'Undercarriage').grille(.9, .6, loc=(.9, 6.92, 4.65), rot=(0, 0, math.pi), slats=4,
+                                                        depth=.05, thickness=.035)
+    steel.cyl(.08, .8, loc=(1.6, 6.2, 5.5), seg=8, bevel=0)
+    fbox(armor, '+y', (-.2, 6.8, 2.9), (1.2, .06, 1.7), out=.02, bevel=.012)                             # rear door
+    for s in (-1, 1):
+        _taillight(a, s * 1.8, 6.82, 2.3)
+        steel.box((.14, .2, .14), loc=(s * .9, 6.95, 1.55), bevel=.02, seg=1)                            # tow eyes
+
+    # Part_mg / Part_mg.001: remote machine guns on the war room's front corners.
+    for name, x in (('Part_mg', 1.15), ('Part_mg.001', -1.15)):
+        pv(a, name, (x, -2.75, 5.57))
+        rws(a, name.replace('Part_', 'Mount_'), (0, 0, 0), parent=name, length=.85, ammo=-1 if x > 0 else 1)
+
+    # Part_antenna: the command antenna farm, origin at the mast foot on the rear roof.
+    pa = pv(a, 'Part_antenna', (-.6, 4.9, 4.1))
+    top = _telescopic_mast(a, 0, 0, 0, ((.16, 2.0), (.13, 1.9), (.1, 1.8)), parent=pa)
+    _lpda(a, 0, 0, top + .1, parent=pa, length=1.8, elements=8)
+    dip = a.part('Dipoles', 'Steel', pa)
+    dip.cyl(.035, .9, loc=(0, 0, top + .6), seg=6, bevel=0)
+    for u in (0, R90):
+        dip.cyl(.02, 1.4, loc=(0, 0, top + .9), rot=(R90, 0, u), seg=5, bevel=0)
+    a.part('Mast_beacon', 'LavaGlow', pa).sphere(.07, loc=(0, 0, top + 1.1), seg=8, rings=5)
+    for gx, gy in ((-1.25, -1.1), (1.25, -1.1), (-1.25, 1.0), (.45, .95)):                            # mast guys
+        a.part('Guys', 'Steel', pa).tube([(0, 0, top - 1.8), (gx, gy, .02)], .01, seg=4)
+    rad = a.part('Satcom', 'Medical', pa)
+    rad.cyl(.95, .14, loc=(.6, -3.6, 1.5), seg=18, bevel=.02, bseg=1)
+    rad.sphere((.9, .9, .72), loc=(.6, -3.6, 1.56), seg=18, rings=8, cut=0)
+    for dx, dy, h in ((-.5, .9, .5), (2.5, -1.2, .5)):
+        a.part('Dish_posts', 'Steel', pa).cyl(.06, h, loc=(dx, dy, h / 2), seg=8, bevel=0)
+        _dish(a.part('Link_dishes', 'Medical', pa), (dx, dy + .05, h + .25), .38, .38, depth=.14, seg=12, tilt=.5)
+    for x, y, h in ((-1.3, 1.8, 2.4), (2.55, 1.85, 2.1), (-1.3, -.6, 1.8), (2.4, -.6, 1.5)):
+        _whip(a, x, y, 0, h, parent=pa)
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
     'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
@@ -1498,6 +1637,7 @@ BUILDERS = {
     'earth_borer': (earth_borer, dict(ao_distance=1.0, grime_height=.8)),
     'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
     'landing_hovercraft': (landing_hovercraft, dict(ao_distance=1.0, grime_height=.8)),
+    'supreme_command': (supreme_command, dict(ao_distance=.9, grime_height=.8)),
 }
 
 

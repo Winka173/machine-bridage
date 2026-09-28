@@ -887,6 +887,10 @@
     "file": "supply_pile.glb",
     "triangles": 1888
   },
+  "supreme_command": {
+    "file": "supreme_command.glb",
+    "triangles": 9118
+  },
   "tank_buster": {
     "file": "tank_buster.glb",
     "triangles": 8958
