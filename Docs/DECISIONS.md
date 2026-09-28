@@ -3891,7 +3891,7 @@ none are drawn; the drop zone is drawn by the UI.
 - Large text fixes found there: the top bar is 87 px (47.7 pt, inside the 44-48 range) at Large so the rank
   and XP keep two lines; the home column is 520 px at Large (440 Normal) so two dropdowns share a row and
   the campaign card keeps its room; the deck panel's base-set chips drop their caption at Large; the Base
-  map's two switches stack in its corner and show icons only at Large (their names as tooltips); "Saved"
+  map's two switches stack in its corner in short words ("Chỉnh riêng", "Tầm bắn"; the full names as tooltips) and show icons only at Large; "Saved"
   floats at the bar's end instead of wrapping to a row of its own.
 
 ### Not done, and why
