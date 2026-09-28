@@ -42,6 +42,10 @@ namespace MachineBrigade.Tests
 
         private static float Reference(float panelPx) => panelPx / Kit.PanelPxPerReferencePx;
 
+        private static float Points(float panelPx) => panelPx / Kit.PanelPxPerPoint;
+
+        private static Dictionary<string, string> HudTokens => KitTokens.Declarations(KitTokens.Block(TokensText, ".fc-hud"));
+
         [Test]
         public void TheBriefsColoursAreTheTokens()
         {
@@ -128,28 +132,48 @@ namespace MachineBrigade.Tests
             Assert.GreaterOrEqual((ally + 0.05f) / (enemy + 0.05f), 1.8f, "ally blue clearly lighter than enemy red");
         }
 
+        /// <summary>
+        /// Prompt 14: the out-of-battle type scale and sizes in device points (main button 18-20 pt, screen title
+        /// 17-20, panel title 14-15, body 13-14, secondary 11 and nothing under 10; top bar 44-48, rail 72-80 with
+        /// 22-24 pt icons, tabs about 40, buttons 40-44, targets 44), Large about 1.2 times, and the battle HUD
+        /// keeping its own sizes (prompt 11).
+        /// </summary>
         [Test]
         public void TheTypeScaleAndTouchTargetsMatchTheBrief()
         {
             var normal = RootTokens;
-            Assert.That(Reference(Px(normal, "fc-fs-primary")), Is.InRange(36f, 40f), "main button 36-40");
-            Assert.That(Reference(Px(normal, "fc-fs-title")), Is.InRange(26f, 30f), "screen title 26-30");
-            Assert.That(Reference(Px(normal, "fc-fs-panel-title")), Is.InRange(20f, 22f), "panel title 20-22");
-            Assert.That(Reference(Px(normal, "fc-fs-body")), Is.InRange(18f, 20f), "body 18-20");
-            Assert.GreaterOrEqual(Reference(Px(normal, "fc-fs-small")), 16f, "secondary text at least 16");
-            Assert.GreaterOrEqual(Reference(Px(normal, "fc-touch")), 72f, "touch target 72 px at 1400");
+            Assert.AreEqual(44f, Points(Kit.TouchTarget), 0.01f, "the checked touch target is 44 pt");
+            Assert.That(Points(Px(normal, "fc-fs-primary")), Is.InRange(18f, 20f), "main button 18-20 pt");
+            Assert.That(Points(Px(normal, "fc-fs-title")), Is.InRange(17f, 20f), "screen title 17-20 pt");
+            Assert.That(Points(Px(normal, "fc-fs-panel-title")), Is.InRange(14f, 15f), "panel title 14-15 pt");
+            Assert.That(Points(Px(normal, "fc-fs-body")), Is.InRange(13f, 14f), "body 13-14 pt");
+            Assert.That(Points(Px(normal, "fc-fs-small")), Is.InRange(10.5f, 11.5f), "secondary 11 pt");
+            foreach (var t in normal.Keys.Where(k => k.StartsWith("fc-fs-")))
+                Assert.GreaterOrEqual(Points(Px(normal, t)), 10f, "nothing under 10 pt: --" + t);
+            Assert.That(Points(Px(normal, "fc-topbar")), Is.InRange(44f, 48f), "top bar 44-48 pt");
+            Assert.That(Points(Px(normal, "fc-nav-width")), Is.InRange(72f, 80f), "rail 72-80 pt");
+            Assert.That(Points(Px(normal, "fc-nav-icon")), Is.InRange(22f, 24f), "rail icons 22-24 pt");
+            Assert.That(Points(Px(normal, "fc-tab")), Is.InRange(38f, 42f), "tabs about 40 pt");
+            Assert.That(Points(Px(normal, "fc-touch")), Is.InRange(44f, 44.8f), "buttons and targets 44 pt");
             Assert.GreaterOrEqual(Px(normal, "fc-touch"), Kit.TouchTarget, "the token reaches the checked minimum");
+            // The battle HUD keeps prompt 11's sizes (it scales with the screen, not in points).
+            var hud = HudTokens;
+            Assert.AreEqual(21f, Px(hud, "fc-fs-body"), "the HUD's body text");
+            Assert.AreEqual(82f, Px(hud, "fc-touch"), "the HUD's touch target");
             Assert.That(Reference(Px(normal, "fc-chamfer")), Is.InRange(16.5f, 19.5f), "chamfer about 18");
             Assert.That(Px(normal, "fc-progress"), Is.InRange(3f, 4f), "progress 3-4 px");
             Assert.AreEqual(8f, Px(normal, "fc-dot"));
             Assert.AreEqual(1f, Px(normal, "fc-line"));
             var spacing = Enumerable.Range(1, 7).Select(i => Px(normal, "fc-space-" + i)).ToArray();
             CollectionAssert.AreEqual(new[] { 4f, 8f, 12f, 16f, 20f, 24f, 32f }, spacing);
-            // Large: every type size grows, none shrinks; the smallest stays the smallest.
+            // Large: the whole scale about 1.2 times.
             var large = LargeTokens;
             foreach (var t in new[] { "fc-fs-primary", "fc-fs-title", "fc-fs-panel-title", "fc-fs-button", "fc-fs-body", "fc-fs-small", "fc-fs-number", "fc-fs-number-small" })
-                Assert.Greater(Px(large, t), Px(normal, t), "Large --" + t);
-            foreach (var t in large.Keys) Assert.IsTrue(t.StartsWith("fc-fs-"), "Large changes type sizes only: --" + t);
+                Assert.That(Px(large, t) / Px(normal, t), Is.InRange(1.12f, 1.28f), "Large --" + t);
+            // Type sizes only, and the top bar a few points taller (44-48 pt) for the rank's two lines at Large text.
+            foreach (var t in large.Keys) Assert.IsTrue(t.StartsWith("fc-fs-") || t == "fc-topbar", "Large changes type sizes only: --" + t);
+            if (large.ContainsKey("fc-topbar"))
+                Assert.That(Px(large, "fc-topbar") / Kit.PanelPxPerPoint, Is.InRange(44f, 48f), "the Large top bar in points");
         }
 
         // ------------------------------------------------------------------ nothing hard-coded

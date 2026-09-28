@@ -178,7 +178,12 @@ namespace MachineBrigade.Game.Rendering
                 _pipeline.useSRPBatcher = _originalSrpBatcher;
             }
             if (_sun != null) _sun.shadows = _originalSunShadows;
-            if (_reflection != null) Object.Destroy(_reflection);
+            if (_reflection != null)
+            {
+                // Editor renders (BaseMapShots, LodShots) build it outside Play mode.
+                if (Application.isPlaying) Object.Destroy(_reflection);
+                else Object.DestroyImmediate(_reflection);
+            }
         }
 
         /// <summary>

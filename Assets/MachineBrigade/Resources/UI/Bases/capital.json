@@ -1,0 +1,74 @@
+{
+    "version": 1,
+    "map": "capital",
+    "source": "Data/maps/capital_conquest",
+    "sha1": "814854c231acd9908c5599ad3a683e196e2804ea",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -102.044,
+        "z": -77.748
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 224.053,
+    "metresHigh": 140.033,
+    "hq": {
+        "x": -122.5,
+        "z": -111.0
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -140.043,
+            "z": -70.405
+        },
+        {
+            "x": -126.068,
+            "z": -138.127
+        },
+        {
+            "x": -82.916,
+            "z": -146.518
+        },
+        {
+            "x": -60.882,
+            "z": -123.324
+        },
+        {
+            "x": -48.194,
+            "z": -92.662
+        },
+        {
+            "x": -44.397,
+            "z": -69.876
+        },
+        {
+            "x": -136.318,
+            "z": -17.021
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -54.224,
+                "z": -107.234
+            },
+            "dir": {
+                "x": -1.0,
+                "z": -0.024
+            },
+            "routes": 4
+        }
+    ],
+    "brightness": 0.399,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

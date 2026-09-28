@@ -1585,7 +1585,7 @@ library with its preview screen, the card renders and the UI checks. The screens
   frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
-- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `Sprut`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
 - **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
   `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
   The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
@@ -3747,3 +3747,158 @@ attack helicopter's). Its model is the supply truck's for now (**asset debt**, `
 render, In-action scene and short name come with the UI part (C.9, G).
 
 No other vehicle or building was added for the stores.
+
+## 13D. Prompt 14: Base screen, out-of-battle sizes (2026-09-29)
+
+The owner found the menus oversized on a phone and the Base screen a diagram that did not look like the
+camp. No game logic or balance data changed: the Base screen reads the sim's camps, ranges and base
+strength, and the one sim change is an optional filter on the enemy AI's base picker (G5).
+
+### A. Out-of-battle sizes in device points
+
+- **One point, one size on every phone.** `Kit.PanelPxPerPoint` = `Kit.TouchTarget / 44` (1.823 panel px a
+  point; the 80.2 px target is 44 pt). The menu panel is `ConstantPixelSize` at
+  `BattleHud.MenuScale(width, height, dpi, mobile)` = dpi / (160 x 1.823) screen px a panel px, so a point is
+  a 160th of an inch (Android's dp; iOS's point is a 163rd, 2 % off). Where the density is unknown or not a
+  phone's (under 100 dpi, the editor, a desktop, the screenshots) the screen is taken for a phone
+  `Kit.ReferencePhonePoints` (395 pt) high, the height scaling the menus had before, so the screenshots
+  and layout checks measure what a phone shows. Settings > UI size multiplies it as before. A tablet now
+  shows more around the same sized controls instead of everything bigger.
+- **The battle HUD keeps its scaling** (ScaleWithScreenSize with the height, prompt 11's layout and its
+  30 % cover check): `.fc-hud` in Tokens.uss sets its own type and 82 px target, its Large block keeps the
+  old Large sizes, and `.fc-hud .fc-overlay` gives the result, pause, choice, ad and dialog overlays (they
+  are menus shown over the battle: classed `fc-overlay`) the menu sizes again.
+- **The scale, Normal text** (panel px, points in brackets; the brief's range): main button text 35 (19;
+  18-20), screen title 33 (18; 17-20), panel title and buttons 26 (14.3; 14-15), body 24 (13.2; 13-14),
+  secondary 20 (11), a card's name 22 (12; a new `--fc-fs-card`, between secondary and panel title, since
+  cards are narrow), big numbers 36, numbers in text 25; nothing under 10 pt. Large multiplies the type by
+  1.2 (UiThemeTests keeps it to type only, and the top bar: see J). Top bar 81 (44.4 pt), rail 132 (72 pt)
+  with 42 px icons (23 pt) and 11 pt labels, tabs 73 (40 pt; their targets reach 44 pt through negative
+  margins), buttons 81 (44 pt), the main button 96 (52.7 pt). Spacing stays 4 / 8 / 12 / 16 / 20 / 24 / 32
+  panel px (the brief's 4 / 8 / 12 / 16 / 24 in points would be 7 / 15 / 22 / 29 / 44 px: too loose on a
+  phone next to the smaller type; the steps are kept, 2.2 / 4.4 / 6.6 / 8.8 / 13 pt).
+- **Cards in lists 22 % smaller**: vehicle cards 184 -> 144 px wide (79 pt), compact 136 -> 112, gear
+  164 -> 128 (gear names may take three lines in Large text, their fixed name area is three lines there).
+  `Kit.FixedLines` also falls back to the short name when one word is wider than the card (a Large-text
+  case the line count alone missed).
+- **Main content >= 70 %** (`UiLayoutTests.TheContentKeepsSeventyPercentOfTheScreen`: the shown page
+  less its row of tabs, over the screen, every menu screen, 16:9 and 20:9): 70.5-88.8 % at 16:9 and
+  72.1-88.8 % at 20:9 (the Army and Shop pages with tabs are the 70.5 / 72.1; home, campaign and setup 79.6 /
+  81.4; details 78.6; settings 88.8). The 1280 x 720 reference phone is 702 x 395 pt.
+- The top bar's coin and settings buttons are plain icon buttons with 44 pt targets.
+
+### B-F. The Base screen
+
+- **Layout**: a bar (the HQ badge, the map picker, the three base sets, Auto-arrange, "Saved"), then the
+  tray (left), the camp map (centre), the panel (right), and the cover strip along the bottom.
+- **The map is the camp's real picture** (`BaseMapArt`, below): the player's camp on the chosen map from
+  above, the enemy's approach as red arrows, the slots at their real positions. It opens framed on the camp
+  (the HQ, every slot and the arrows' heads with a 12 px margin: `CampMap.Focus`), not the whole picture
+  with its margins, so the slots are as large as they can be at the default zoom; pinch or the wheel zooms
+  (up to 3x), a drag on the ground pans, and the view keeps where the player left it until the map changes.
+- **Slot faces sized 1 / 1.4 / 2** (small / medium / large; utility 1.4 as a hexagon; the HQ mark 1.6),
+  in metres on the picture so they zoom with it. The small face is 0.9 x the closest pair's centre
+  distance shared by their ratios, at most 12 m, per map (`BaseScreen.FaceMetres`), so no two faces touch
+  on any of the 20 camps (`BaseScreenTests.SlotFacesKeepTheirRatioAndNeverTouch`); most camps get 11-12 m.
+  Every face has a transparent 44 pt target round it.
+- **A slot shows** its tower's render, rank ticks and a branch mark; empty, its size in words ("Nhỏ",
+  "Vừa", "Lớn", "Tiện ích") under it; closed (the HQ level is too low), a lock and the level it opens at
+  inside the face, and no tower even if the plan has one there (it does not fight at this level).
+- **Tray** (C): tabs by size (Small / Medium / Large / Utility), compact cards with the render, the short
+  name and "Used n" or where it unlocks ("Mở ở nhiệm vụ 62", "Mở ở cửa hàng"), locked cards dimmed. Drag a
+  card onto a slot, or tap the card then a slot; while one is carried only the slots it fits light up. A
+  tap on a filled slot selects it; dragging a tower off the map takes it out.
+- **Ranges** (B7): the "Show ranges" switch paints every open tower's cover as one union (no darker
+  overlaps): ground amber (`--fc-range-ground`, 30 %), air light blue (`--fc-range-air`, 36 %), told apart by
+  lightness as well as hue; a tapped tower draws its reach as a ring (the longer of ground and air; the
+  panel's reach line gives both) and a minimum range as a thinner inner ring. Ranges are `BaseRoles.Reach(def)` from the weapon data (the largest ground and air
+  range of the weapons that do damage, the smallest minimum range), after the branch is applied; the test
+  checks the drawn circle against it.
+- **Panel** (D): the render, name, size, rank and branch; Health / DPS / Range bars against the best of
+  the same size (the stats are `UnitStats`, so they follow prompt 13's corrected DPS); the reach line;
+  Branch and Gear tabs (a module has no gear; one with rank-7 branches, the landing pad since 13 F.1,
+  shows them); Replace (opens the tray on that size), Remove and Details (the detail page). With nothing
+  chosen: an overview, the how-to and the strength with what it means.
+- **Cover strip** (E1): the base's roles (`BaseRoles.Of` from the data: anti-light, anti-tank, anti-air,
+  rocket/missile intercept, stealth detection, repair/resupply), a missing one in the danger colour with
+  an info mark; "Sức mạnh căn cứ" and the counts in words ("Nhỏ 3/3 · Vừa 1/1 · Lớn 0/0 · Tiện ích 0/1").
+- **Strength** (E2) is `BaseStrength.Score(catalog, PlayerProfile.BaseLoadoutFor(map), PlayerProfile.BoostFor)`,
+  the same number Defend and Endless scale their waves with (100 = the Normal enemy base at HQ 3 with no
+  upgrades; `BaseScreenTests.TheStrengthShownIsTheOneTheWavesScaleWith`).
+- **HQ** (F1): a badge with the level and the next level's gain ("Lên cấp 2: thêm 1 ô nhỏ, 1 ô vừa")
+  instead of the HQ tabs; the level is `Campaign.HqLevelCap` (the campaign opens levels; the chooser went
+  with F.1).
+- **Map picker** (F2): a dropdown whose list has each map's picture, a dot and a note on maps set up on
+  their own or with towers that did not fit; closed, it is the name only (the bar stays one row).
+- **Autosave** (F3): every change saves at once and "Đã lưu" shows for 1.6 s at the bar's end.
+
+### G. One loadout for every map
+
+- **By place, not by slot index.** `SlotPlaces.Keys(site)` labels a camp's slots: distance from the HQ over
+  the furthest slot and bearing against the way the HQ faces the enemy. Under 0.4: beside the HQ; more than
+  110 degrees round: rear; at 0.7 or more and within 40 degrees of the front: gate; at 0.7 or more
+  otherwise: outer ring; the rest inner ring; utilities apart. Each gets an ordinal by bearing within its
+  place and size (`PlaceKey` = place, size, ordinal).
+- **A `BasePlan`** maps place keys to towers and is resolved on each map (`Resolve(mapId, site, level)`): a
+  key the map has takes its tower; one it lacks goes to the nearest free key of the same size (place
+  distance first, then ordinal); what finds no slot is a misfit, and the map picker marks that map with a
+  warning dot. A map can be set up on its own (`Custom`: the slot list as it is, "Chỉnh riêng cho map
+  này", marked in the picker); switching it off returns the map to the plan.
+- **Three sets** (`PlayerProfile.BasePlanCount`), switched on the Base screen's bar and on the home
+  screen's deck panel (chips "Bộ 1 / 2 / 3": a fifth dropdown squashed the home column in Large text); the
+  set in use is what `PlayerProfile.BaseLoadoutOn(map, team)` gives the match (`ModeSessions`: four call
+  sites).
+- **Auto-arrange** (G5) fills the plan's towers with `BaseLoadout.ForAi("Normal", "default", seed,
+  allowed: PlayerProfile.IsUnlocked)`: the enemy AI's own picker, limited to the player's towers (the new
+  optional `Predicate<string> allowed` in the sim; the AI's calls are unchanged). Utilities are kept.
+- **Migration** (version 2 -> 3, `PlayerProfile.MigrateToPlans`): the old sized lists become set 1's places
+  on the reference camp; every map whose old slot-by-index result differs from the plan's is kept as its
+  own (Custom) so no battle changes: for the test's version 2 profile 11 places and 19 of 20 maps kept on their own
+  (`BasePlanTests.TheOldLoadoutBecomesThePlanAndNoMapChanges`). An unedited profile takes the defaults with
+  no custom maps. `PlayerProfile.BaseLoadout` (get/set) stays for old callers, now on set 1's plan; it
+  moved to PlayerProfile.BasePlans.cs (13 F.1's module-branch line ported there).
+
+### H. Outpost
+
+A separate Army tab: the outpost's two slots (small and medium) as faces round the point, a tray with the
+Small and Medium tabs, and how the outpost works in words; it edits `BasePlan.Outpost` (on every map) with
+autosave.
+
+### I. Tower icons (helper)
+
+Every tower, branch and module has an icon of its own in `Icons.cs` (`t_` prefix) through `TowerIcons.For(id)`, which `CardIcons.For` asks first. A branch uses its tower's icon; the
+rail supergun shares `t_supergun` (the supergun timer too); the Army > Towers cards' corner shows the
+structure icon; renders are unchanged. `TowerIconTests.EveryStructureHasALineIconOfItsOwn` checks every tower and module has one;
+`Docs/ui-screens/kit-tower-icons.png` is the sheet.
+
+### B1-B2. The camp pictures and arrows (helper)
+
+`Machine Brigade > Render Base Map Pictures (stale / all)` (`BaseMapShots`) renders each map's player camp from above to
+`Resources/UI/Bases/<map>.png` (1024 x 640, 16:10) with a JSON frame (the picture's rectangle in metres,
+the approach arrows, the drop zone). The frame is the camp's slots and HQ with an 18 m margin and 30 m more
+in front; the look is the game's camera lighting at -0.35 EV and -8 saturation with the ground outside the
+map dimmed 50 %, so the slots read over it. Arrows are where the enemy's lanes (`LaneFlags.Route`) cross
+into the frame, merged within 22 m. A SHA-1 of the map and camp data marks a picture stale
+(`BaseMapArtTests`). Normal-quality compression. Conquest camps have no walls or gates in their data, so
+none are drawn; the drop zone is drawn by the UI.
+
+### J. Screenshots, Large text
+
+- `Docs/ui-screens/`: every menu and battle screen at the four shapes, a set in Large text and in English
+  (241 files), with the new `screen-army-base`, `-base-picked`, `-base-ranges`, `screen-army-outpost`,
+  `screen-army-towers`, `screen-detail-tower`, `screen-detail-module` (and their In action tabs),
+  `kit-tower-icons.png` and `basemaps-sheet.png`.
+- Large text fixes found there: the top bar is 87 px (47.7 pt, inside the 44-48 range) at Large so the rank
+  and XP keep two lines; the home column is 520 px at Large (440 Normal) so two dropdowns share a row and
+  the campaign card keeps its room; the deck panel's base-set chips drop their caption at Large; the Base
+  map's two switches stack in its corner in short words ("Chỉnh riêng", "Tầm bắn"; the full names as tooltips) and show icons only at Large; "Saved"
+  floats at the bar's end instead of wrapping to a row of its own.
+
+### Not done, and why
+
+- **Moving the utility slots apart**: their places are map data (the camps); the Base screen shows them
+  where they are.
+- **Walls and gates on Conquest camps**: not in the camp data; nothing to draw.
+- **FPS and touch on a real phone**: to measure (the owner's override: no device run in this pass).
+- **Short names**: the landing pad's hangar branch (13 F.1) gets "Nhà chứa" (the full "Nhà chứa máy bay" is
+  16 characters).

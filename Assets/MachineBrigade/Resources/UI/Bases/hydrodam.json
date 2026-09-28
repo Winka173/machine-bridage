@@ -1,0 +1,89 @@
+{
+    "version": 1,
+    "map": "hydrodam",
+    "source": "Data/maps/hydrodam_conquest",
+    "sha1": "ebbf4c3600c743fae990e52a2b54fd45de9cc0b8",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -103.592,
+        "z": -81.539
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 223.337,
+    "metresHigh": 139.585,
+    "hq": {
+        "x": -121.5,
+        "z": -114.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -138.248,
+            "z": -40.44
+        },
+        {
+            "x": -135.979,
+            "z": -83.551
+        },
+        {
+            "x": -127.977,
+            "z": -144.138
+        },
+        {
+            "x": -74.802,
+            "z": -125.231
+        },
+        {
+            "x": -34.388,
+            "z": -87.127
+        },
+        {
+            "x": -55.12,
+            "z": -66.394
+        },
+        {
+            "x": -90.226,
+            "z": -41.614
+        },
+        {
+            "x": -112.751,
+            "z": -33.73
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -68.338,
+                "z": -57.064
+            },
+            "dir": {
+                "x": -0.604,
+                "z": -0.797
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -52.951,
+                "z": -104.629
+            },
+            "dir": {
+                "x": -0.996,
+                "z": -0.091
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.512,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

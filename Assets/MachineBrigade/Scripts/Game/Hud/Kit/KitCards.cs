@@ -43,7 +43,8 @@ namespace MachineBrigade.Game.Hud
                 Name = Strings.Card(def.Id),
                 ShortName = Strings.Short(def.Id),
                 Branch = KitBranches.Of(def),
-                ClassIcon = KitBranches.ClassIcon(def.Class),
+                // A structure (tower, module, the HQ, a fixed defence) shows its own line icon, never a vehicle class's.
+                ClassIcon = def.Fort != null || def.Static ? TowerIcons.For(def.Id) ?? "module" : KitBranches.ClassIcon(def.Class),
                 Cp = def.CpCost,
                 Level = PlayerProfile.Rank(def.Id),
                 CanUpgrade = !locked && PlayerProfile.CanRankUp(def.Id),
@@ -228,8 +229,9 @@ namespace MachineBrigade.Game.Hud
             if (data.Equipped) art.Add(Kit.Icon("check", "fc-gcard__equipped", 2.4f));
             Add(art);
             var body = Kit.Box("fc-gcard__body");
+            // Equipment names are long ("Giáp tổng hợp gắn thêm") and have no short form: three lines on every card.
             var name = Kit.Text(Kit.Caps(data.Name), "fc-gcard__name");
-            Kit.FixedLines(name, 2);
+            Kit.FixedLines(name, 3);
             body.Add(name);
             if (!string.IsNullOrEmpty(data.MainStat)) body.Add(Kit.Text(data.MainStat, "fc-gcard__stat"));
             if (!string.IsNullOrEmpty(data.Compare))

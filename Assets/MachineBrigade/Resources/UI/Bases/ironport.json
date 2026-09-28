@@ -1,0 +1,88 @@
+{
+    "version": 1,
+    "map": "ironport",
+    "source": "Data/maps/ironport_conquest",
+    "sha1": "20034f4d3032e78ca956ea301ef03fcbce08f2b5",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -93.661,
+        "z": -107.146
+    },
+    "up": {
+        "x": 0.695,
+        "z": 0.719
+    },
+    "metresWide": 209.085,
+    "metresHigh": 130.678,
+    "hq": {
+        "x": -115.5,
+        "z": -120.5
+    },
+    "heading": 44.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -141.163,
+            "z": -140.385
+        },
+        {
+            "x": -29.192,
+            "z": -134.492
+        },
+        {
+            "x": -53.142,
+            "z": -90.373
+        },
+        {
+            "x": -101.671,
+            "z": -41.844
+        },
+        {
+            "x": -126.38,
+            "z": -52.825
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -92.798,
+                "z": -50.717
+            },
+            "dir": {
+                "x": -0.246,
+                "z": -0.969
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -71.315,
+                "z": -72.2
+            },
+            "dir": {
+                "x": -0.766,
+                "z": -0.643
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -48.669,
+                "z": -98.612
+            },
+            "dir": {
+                "x": -0.986,
+                "z": -0.164
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.452,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

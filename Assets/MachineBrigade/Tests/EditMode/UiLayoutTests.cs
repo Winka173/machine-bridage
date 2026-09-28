@@ -195,7 +195,7 @@ namespace MachineBrigade.Tests
             Lay(preview.Root, Shapes[0].size);
             var body = preview.Root.Q<Label>(className: "fc-body");
             Assert.IsNotNull(body);
-            Assert.AreEqual(21f, body.resolvedStyle.fontSize, 0.01f, "--fc-fs-body reaches a body label");
+            Assert.AreEqual(24f, body.resolvedStyle.fontSize, 0.01f, "--fc-fs-body reaches a body label");
             Assert.AreEqual("Barlow-Regular", body.resolvedStyle.unityFont?.name ?? body.resolvedStyle.unityFontDefinition.fontAsset?.name, "--fc-font-text");
             var title = preview.Root.Q<Label>(className: "fc-title");
             Assert.AreEqual("BarlowCondensed-Bold", title.resolvedStyle.unityFont?.name, "--fc-font-display");
@@ -203,7 +203,7 @@ namespace MachineBrigade.Tests
             preview.Rebuild(KitPreview.Page.Tokens, false, true);
             for (var i = 0; i < 2; i++) _panel.FrameUpdate();
             body = preview.Root.Q<Label>(className: "fc-body");
-            Assert.AreEqual(24f, body.resolvedStyle.fontSize, 0.01f, "Large text size");
+            Assert.AreEqual(29f, body.resolvedStyle.fontSize, 0.01f, "Large text size");
         }
 
         /// <summary>Every check on a laid-out screen: cut texts, small targets and texts, primaries, clipping, the screen's edges.</summary>
@@ -341,7 +341,7 @@ namespace MachineBrigade.Tests
         private static readonly HashSet<string> WithPrimary = new()
         {
             "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
-            "army-base", "shop-skins", "shop-units", "shop-items",
+            "shop-skins", "shop-units", "shop-items",
         };
 
         /// <summary>
@@ -547,6 +547,60 @@ namespace MachineBrigade.Tests
                 }
             }
             return found;
+        }
+
+        /// <summary>
+        /// Prompt 14 A5: at 16:9 and 20:9 the main content of every out-of-battle screen (the shown page, less a row of
+        /// tabs across its top) covers at least 70 % of the screen: the top bar, the rail and the tabs take the rest.
+        /// </summary>
+        [Test]
+        public void TheContentKeepsSeventyPercentOfTheScreen()
+        {
+            var failures = new List<string>();
+            var report = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                Strings.Vietnamese = true;
+                MatchSettings.TextSize = TextSize.Normal;
+                foreach (var screen in MenuScreen.ScreenNames)
+                    foreach (var (name, size) in new[] { Shapes[0], Shapes[2] })
+                    {
+                        var host = MachineBrigade.Editor.UiShots.BuildMenu(_catalog, screen, out _);
+                        Lay(host, size);
+                        var share = ContentShare(host, size);
+                        report.Add($"{screen} {name} {share * 100f:0.0}%");
+                        if (share < 0.695f) failures.Add($"{screen} {name}: content {share * 100f:0.0}% of the screen (70% wanted)");
+                    }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Debug.Log("[ContentShare] " + string.Join(" | ", report));
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
+
+        /// <summary>The top shown page's area less the row of tabs along its top, over the screen's.</summary>
+        internal static float ContentShare(VisualElement root, Vector2 size)
+        {
+            VisualElement page = null;
+            root.Query(className: "fc-page").ForEach(p =>
+            {
+                if (Shown(p)) page = p;
+            });
+            if (page == null) return 0f;
+            var area = page.worldBound;
+            var top = area.yMin;
+            page.Query(className: "fc-tabs").ForEach(t =>
+            {
+                if (Shown(t) && t.worldBound.yMin <= top + 1f && t.worldBound.width > area.width * 0.5f) top = Mathf.Max(top, t.worldBound.yMax);
+            });
+            var height = Mathf.Max(0f, Mathf.Min(area.yMax, size.y) - top);
+            var width = Mathf.Max(0f, Mathf.Min(area.xMax, size.x) - Mathf.Max(0f, area.xMin));
+            return width * height / (size.x * size.y);
         }
 
         /// <summary>The screens with rows of cards: the deck strips, the collection, towers, equipment, a chapter's unlocks, the battle's tray.</summary>
