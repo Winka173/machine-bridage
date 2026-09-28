@@ -168,7 +168,7 @@ namespace MachineBrigade.Game.Hud
             if (aside is { } a)
             {
                 Portraits.Set(_general, a.general);
-                _aside.text = Strings.Get("char." + a.general + ".name").ToUpperInvariant() + "  " + a.line;
+                _aside.text = Strings.Get("char." + a.general + ".name").ToUpperInvariant() + ": " + a.line;
             }
             _primary = primary.act;
             _secondary = secondary?.act;

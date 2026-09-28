@@ -2516,7 +2516,7 @@
 
 /* --- radio chatter in battle ---------------------------------------------------------------------------------- */
 .radio-panel {
-    position: absolute; left: 236px; top: 78px; width: 440px; min-height: 76px; flex-direction: row; align-items: center; padding: 6px 12px 6px 6px;
+    position: absolute; left: 236px; top: 108px; width: 440px; min-height: 76px; flex-direction: row; align-items: center; padding: 6px 12px 6px 6px;
     background-color: var(--glass); border-left-width: 3px; border-left-color: var(--mint); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px;
     border-top-color: rgba(237, 234, 227, 0.12); border-right-color: rgba(237, 234, 227, 0.12); border-bottom-color: rgba(237, 234, 227, 0.12);
 }
