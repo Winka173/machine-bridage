@@ -9,6 +9,7 @@ using NUnit.Framework;
 using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Modes;
 
 namespace MachineBrigade.Tests
 {
@@ -47,6 +48,26 @@ namespace MachineBrigade.Tests
                     {
                         ["id"] = m.Id, ["name"] = Strings.Get("map." + m.Id), ["sub"] = Text("map." + m.Id + ".sub"), ["theme"] = m.Theme,
                     }).ToList(),
+                    ["chapters"] = Campaign.Chapters.Select(c => (object)new Dictionary<string, object>
+                    {
+                        ["number"] = c.Number, ["act"] = c.Act, ["title"] = Text("chapter." + c.Number + ".title"), ["summary"] = Text("chapter." + c.Number + ".summary"),
+                        ["maps"] = c.Maps.Select(id => Strings.Get("map." + id)).ToList(), ["general"] = c.General ?? "",
+                        ["missions"] = Campaign.All.Count(m => m.Chapter == c.Number),
+                    }).ToList(),
+                    ["characters"] = new[] { "khai", "mai", "dieuhau", "linh", "hung", "varga", "orlov", "kessler", "sen", "quaden", "aurel" }
+                        .Select(id => (object)new Dictionary<string, object>
+                        {
+                            ["id"] = id, ["name"] = Text("char." + id + ".name"), ["role"] = Text("char." + id + ".role"), ["bio"] = Text("char." + id + ".bio"),
+                        }).ToList(),
+                    ["timeline"] = Enumerable.Range(0, 20).Select(i => Text("timeline." + i)).Where(s => s.Length > 0).Cast<object>().ToList(),
+                    ["generals"] = Campaign.Generals.Select(g => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = g.Id, ["name"] = Text("char." + g.Id + ".name"), ["style"] = g.Style, ["stance"] = g.Stance,
+                        ["deck"] = g.Deck.Select(Strings.Card).ToList(), ["supports"] = g.Supports.Select(Strings.Support).ToList(),
+                        ["elitesPrefer"] = catalog.Generals.TryGetValue(g.Id, out var rules) ? rules.ElitePrefer.ToList() : new List<string>(),
+                    }).ToList(),
+                    ["base"] = BaseData(catalog),
+                    ["operations"] = OperationsData(),
                 };
                 File.WriteAllText(path, Json(doc), new UTF8Encoding(false));
             }
@@ -109,6 +130,9 @@ namespace MachineBrigade.Tests
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
+                ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
+                ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object> { ["id"] = p.Id, ["kind"] = p.Kind, ["hp"] = p.Hp }).ToList(),
+                ["size"] = v.Fort?.Size.ToString() ?? "", ["bossFile"] = Text("bossfile." + v.Id),
             };
         }
 
@@ -191,10 +215,76 @@ namespace MachineBrigade.Tests
         private static object Mission(MissionDef m) => new Dictionary<string, object>
         {
             ["id"] = m.Id, ["name"] = Text("mission." + m.Id + ".name"), ["brief"] = Text("mission." + m.Id + ".brief"), ["map"] = m.Map,
+            ["mapName"] = Strings.Get("map." + m.Map), ["variant"] = m.Variant,
             ["goal"] = m.Goal.ToString(), ["goalName"] = Text("goal." + m.Goal.ToString().ToLowerInvariant()), ["weather"] = m.Weather,
             ["difficulty"] = m.Difficulty, ["coins"] = m.RewardCoins, ["xp"] = m.RewardXp, ["unlocks"] = m.Unlocks.Select(Strings.Card).ToList(),
             ["timeLimit"] = m.TimeLimit, ["boss"] = m.Boss != null ? Strings.Card(m.Boss.Def) : "",
+            ["chapter"] = m.Chapter, ["side"] = m.Side, ["general"] = m.General ?? "", ["operation"] = m.Operation, ["replay"] = m.Replay,
+            ["hqLevel"] = m.HqLevel, ["legacy"] = m.Legacy ?? "",
+            ["stages"] = m.Stages.Select(s => (object)new Dictionary<string, object>
+            {
+                ["id"] = s.Id, ["goal"] = s.Mission.Goal.ToString(), ["goalName"] = Text("goal." + s.Mission.Goal.ToString().ToLowerInvariant()),
+                ["title"] = Text("stage." + m.Id + "." + s.Id), ["cp"] = s.Cp, ["choices"] = s.Choices.Select(c => Text("choice." + m.Id + "." + c.Key)).ToList(),
+                ["events"] = s.Events.Select(e => e.Kind.ToString()).Distinct().ToList(),
+            }).ToList(),
+            ["ally"] = m.Ally != null,
         };
+
+        private static object BaseData(Catalog catalog)
+        {
+            var rules = catalog.Base;
+            var levels = Enumerable.Range(1, 5).Select(l => (object)new Dictionary<string, object>
+            {
+                ["level"] = l, ["small"] = rules.Slots(l, SlotSize.Small), ["medium"] = rules.Slots(l, SlotSize.Medium),
+                ["large"] = rules.Slots(l, SlotSize.Large), ["utility"] = rules.UtilitySlots(l),
+            }).ToList();
+            var towers = TowerCards.All(catalog).Select(id =>
+            {
+                var def = catalog.Vehicles[id];
+                return (object)new Dictionary<string, object>
+                {
+                    ["id"] = id, ["name"] = Strings.Card(id), ["size"] = def.Fort?.Size.ToString() ?? "", ["hp"] = def.MaxHp,
+                    ["rebuildCp"] = rules.RebuildCost(def), ["rebuildSeconds"] = rules.RebuildCooldown(def), ["guide"] = Text("guide." + id),
+                    ["branches"] = TowerCards.Branches(catalog, id).Select(b => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = b, ["name"] = Text("branch." + b), ["info"] = Text("branch." + b + ".info"),
+                    }).ToList(),
+                };
+            }).ToList();
+            var modules = catalog.Vehicles.Values.Where(v => v.Fort is { Kind: FortKind.Utility }).OrderBy(v => v.Id).Select(v => (object)new Dictionary<string, object>
+            {
+                ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["guide"] = Text("guide." + v.Id),
+            }).ToList();
+            return new Dictionary<string, object> { ["levels"] = levels, ["towers"] = towers, ["modules"] = modules };
+        }
+
+        private static object OperationsData()
+        {
+            var data = Operations.Data;
+            return new Dictionary<string, object>
+            {
+                ["tiers"] = data.Tiers.Select((t, i) => (object)new Dictionary<string, object>
+                {
+                    ["id"] = t.Id, ["name"] = Text("tier." + i), ["enemy"] = t.Enemy, ["playerIncome"] = t.PlayerIncome, ["supports"] = t.Supports, ["score"] = t.Score,
+                }).ToList(),
+                ["scoring"] = new Dictionary<string, object>
+                {
+                    ["win"] = data.Scoring.Win, ["time"] = data.Scoring.Time, ["par"] = data.Scoring.Par, ["losses"] = data.Scoring.Losses,
+                    ["lossesAtZero"] = data.Scoring.LossesAtZero, ["hq"] = data.Scoring.Hq,
+                },
+                ["weekly"] = new Dictionary<string, object> { ["fortress"] = data.WeeklyFortressReward, ["operation"] = data.WeeklyOperationReward },
+                ["mutators"] = data.Mutators.Select(m => (object)new Dictionary<string, object>
+                {
+                    ["id"] = m.Id, ["name"] = Text("mutator." + m.Id), ["info"] = Text("mutator." + m.Id + ".info"), ["score"] = m.Score,
+                }).ToList(),
+                ["replayable"] = Operations.Replayable.Select(m => Text("mission." + m.Id + ".name")).Cast<object>().ToList(),
+                ["rotation"] = data.Rotation(Math.Max(1, Operations.Big.Count)).Select(e => (object)new Dictionary<string, object>
+                {
+                    ["operation"] = Operations.Big.Count > 0 ? Text("mission." + Operations.Big[e.operation].Id + ".name") : "",
+                    ["a"] = Text("mutator." + e.a.Id), ["b"] = Text("mutator." + e.b.Id),
+                }).ToList(),
+            };
+        }
 
         // A small JSON writer (dictionaries, lists, arrays, strings, numbers, booleans).
         private static string Json(object value)
