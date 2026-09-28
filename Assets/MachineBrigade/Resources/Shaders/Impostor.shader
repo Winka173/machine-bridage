@@ -22,13 +22,14 @@ Shader "MachineBrigade/Impostor"
             Tags { "LightMode" = "UniversalForward" }
             Cull Off
             ZWrite On
+            // With MSAA the coverage smooths the card's outline as the meshes' edges are smoothed.
+            AlphaToMask On
 
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
@@ -70,6 +71,29 @@ Shader "MachineBrigade/Impostor"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+            // URP's own UniversalFragmentPBR takes the sun's strength and the lights in reach from
+            // per-renderer data that instanced draws do not get (the sun came out black), so the
+            // card is lit here: the sun with its shadow, every visible light, ambient and reflections.
+            half3 Shade(InputData inputData, SurfaceData data)
+            {
+                BRDFData brdf;
+                half alpha = 1.0h;
+                InitializeBRDFData(data.albedo, data.metallic, half3(0.0h, 0.0h, 0.0h), data.smoothness, alpha, brdf);
+                half3 color = GlobalIllumination(brdf, inputData.bakedGI, data.occlusion, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
+                Light sun = GetMainLight(inputData.shadowCoord, inputData.positionWS, inputData.shadowMask);
+                sun.distanceAttenuation = 1.0h;
+                color += LightingPhysicallyBased(brdf, sun, inputData.normalWS, inputData.viewDirectionWS);
+            #if defined(_ADDITIONAL_LIGHTS) || defined(_ADDITIONAL_LIGHTS_VERTEX)
+                uint lights = (uint)_AdditionalLightsCount.x;
+                for (uint i = 0u; i < lights; i++)
+                {
+                    Light light = GetAdditionalPerObjectLight((int)i, inputData.positionWS);
+                    color += LightingPhysicallyBased(brdf, light, inputData.normalWS, inputData.viewDirectionWS);
+                }
+            #endif
+                return color;
+            }
+
             float OrthoFog(float3 positionWS)
             {
                 return ComputeFogFactorZ0ToFar(-TransformWorldToView(positionWS).z);
@@ -94,7 +118,7 @@ Shader "MachineBrigade/Impostor"
                 output.positionWS = positionWS;
                 float2 inCell = (input.positionOS.xy + 0.5) * shape.y;
                 output.uv = float4(cells.xy + inCell, cells.zw + inCell);
-                output.fogAndVertexLight = half4(OrthoFog(positionWS), VertexLighting(positionWS, half3(-GetViewForwardDir())));
+                output.fogAndVertexLight = half4(OrthoFog(positionWS), 0.0h, 0.0h, 0.0h);
                 return output;
             }
 
@@ -105,7 +129,9 @@ Shader "MachineBrigade/Impostor"
                 half4 tint = (half4)UNITY_ACCESS_INSTANCED_PROP(Props, _ImpTint);
                 half4 albedo = lerp(SAMPLE_TEXTURE2D(_Albedo, sampler_Albedo, input.uv.xy), SAMPLE_TEXTURE2D(_Albedo, sampler_Albedo, input.uv.zw), (half)shape.x);
                 half4 surface = lerp(SAMPLE_TEXTURE2D(_Surface, sampler_Surface, input.uv.xy), SAMPLE_TEXTURE2D(_Surface, sampler_Surface, input.uv.zw), (half)shape.x);
-                clip(albedo.a - 0.5h);
+                clip(albedo.a - 0.1h);
+                // Coverage sharpened to a pixel-wide ramp round 0.5 (alpha to coverage).
+                half edge = saturate((albedo.a - 0.5h) / max(fwidth(albedo.a), 0.0001h) + 0.5h);
                 // Stored premultiplied by coverage (so the mip chain does not darken the edges).
                 half inverse = 1.0h / max(albedo.a, 0.01h);
                 albedo.rgb *= inverse;
@@ -134,11 +160,11 @@ Shader "MachineBrigade/Impostor"
                 data.alpha = 1.0h;
                 data.normalTS = half3(0, 0, 1);
 
-                half4 color = UniversalFragmentPBR(inputData, data);
-                color.rgb = min(color.rgb, MaxReflected) + data.albedo * surface.w * 16.0h;
-                color.rgb = lerp(color.rgb, half3(1.25h, 1.2h, 1.1h), (1.0h - tint.a) * 0.3h);
-                color.rgb = MixFog(color.rgb, inputData.fogCoord);
-                return half4(color.rgb, 1.0h);
+                half3 color = Shade(inputData, data);
+                color = min(color, MaxReflected) + data.albedo * surface.w * 16.0h;
+                color = lerp(color, half3(1.25h, 1.2h, 1.1h), (1.0h - tint.a) * 0.3h);
+                color = MixFog(color, inputData.fogCoord);
+                return half4(color, edge);
             }
             ENDHLSL
         }

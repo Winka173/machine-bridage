@@ -273,8 +273,8 @@ namespace MachineBrigade.Game.Rendering
             sheet.Tints.Add(tint);
         }
 
-        /// <summary>Draws the frame's cards, one instanced draw per sheet (per <see cref="MaxBatch"/> cards).</summary>
-        public void Flush()
+        /// <summary>Draws the frame's cards, one instanced draw per sheet (per <see cref="MaxBatch"/> cards), in every camera or only <paramref name="camera"/>.</summary>
+        public void Flush(Camera camera = null)
         {
             LastDrawn = 0;
             LastDraws = 0;
@@ -306,6 +306,7 @@ namespace MachineBrigade.Game.Rendering
                         shadowCastingMode = ShadowCastingMode.Off,
                         receiveShadows = true,
                         worldBounds = new Bounds(Vector3.zero, Vector3.one * 5000f),
+                        camera = camera,
                     };
                     Graphics.RenderMeshInstanced(rp, _quad, 0, _batch, count);
                     LastDrawn += count;

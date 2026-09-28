@@ -82,6 +82,10 @@ namespace MachineBrigade.Editor
             var rt = new RenderTexture(cell, cell, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
             camera.targetTexture = rt;
             var frame = new Texture2D(cell, cell, TextureFormat.RGB24, false);
+            // Cards are queued instanced draws, which stay queued for the rest of the editor frame:
+            // they go to a camera of their own (whose first frames come out black, so it is warmed up).
+            var cards = Twin(camera, root);
+            for (var i = 0; i < 3; i++) cards.Render();
             for (var row = 0; row < Models.Length; row++)
             {
                 var id = Models[row];
@@ -99,14 +103,19 @@ namespace MachineBrigade.Editor
                 camera.orthographicSize = cell / (2f * pixels / size);
                 camera.transform.position = centre - camera.transform.forward * 80f;
                 atmosphere.FitShadows(camera);
+                cards.transform.position = camera.transform.position;
+                cards.orthographicSize = camera.orthographicSize;
+                cards.nearClipPlane = camera.nearClipPlane;
+                if (row == 0) camera.Render(); // the first render compiles shaders
                 for (var level = 0; level < levels; level++)
                 {
                     foreach (var r in model.Renderers) r.enabled = level == 0;
                     foreach (var r in model.Lod1Renderers) r.gameObject.SetActive(level == 1);
+                    var shot = level >= 2 ? cards : camera;
                     atlas.Begin();
-                    if (level == 2 && page != null) atlas.Add(page, t.position + Vector3.up * page.Centre.y, 1f, t.eulerAngles.y, Color.white);
-                    atlas.Flush();
-                    camera.Render();
+                    if (level >= 2 && page != null) atlas.Add(page, t.position + Vector3.up * page.Centre.y, 1f, t.eulerAngles.y, Color.white);
+                    atlas.Flush(shot);
+                    shot.Render();
                     RenderTexture.active = rt;
                     frame.ReadPixels(new Rect(0, 0, cell, cell), 0, 0);
                     frame.Apply();
@@ -118,8 +127,7 @@ namespace MachineBrigade.Editor
                 }
                 Object.DestroyImmediate(model.Root);
             }
-            atlas.Begin();
-            atlas.Flush();
+            Object.DestroyImmediate(cards.gameObject);
             sheet.Apply();
             File.WriteAllBytes(Path.Combine(folder, name), sheet.EncodeToPNG());
             Debug.Log($"[LodShots] wrote {Path.Combine(folder, name)} ({pixels:0} px across)");
@@ -135,22 +143,31 @@ namespace MachineBrigade.Editor
             var index = 0;
             foreach (var (albedo, surface) in atlas.Sheets())
             {
-                foreach (var (texture, kind) in new[] { (albedo, "albedo"), (surface, "surface") })
+                if (albedo == null) continue;
+                Color[] Read(RenderTexture texture, bool linear)
                 {
-                    if (texture == null) continue;
-                    var read = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false, kind == "surface");
+                    var read = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false, linear);
                     RenderTexture.active = texture;
                     read.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
                     read.Apply();
                     RenderTexture.active = null;
-                    // Coverage shown against grey, so empty cells read as empty.
                     var pixels = read.GetPixels();
-                    for (var i = 0; i < pixels.Length; i++)
-                        pixels[i] = Color.Lerp(new Color(0.3f, 0.3f, 0.32f), new Color(pixels[i].r, pixels[i].g, pixels[i].b), pixels[i].a > 0f ? 1f : 0f);
-                    read.SetPixels(pixels);
-                    read.Apply();
-                    File.WriteAllBytes(Path.Combine(folder, $"atlas_{index}_{kind}.png"), read.EncodeToPNG());
                     Object.DestroyImmediate(read);
+                    return pixels;
+                }
+                var colour = Read(albedo, false);
+                var data = Read(surface, true);
+                foreach (var (pixels, kind) in new[] { (colour, "albedo"), (data, "surface") })
+                {
+                    // Coverage (the albedo's alpha) shown against grey, so empty cells read as empty.
+                    var shown = new Color[pixels.Length];
+                    for (var i = 0; i < pixels.Length; i++)
+                        shown[i] = colour[i].a > 0f ? new Color(pixels[i].r, pixels[i].g, pixels[i].b) : new Color(0.3f, 0.3f, 0.32f);
+                    var png = new Texture2D(albedo.width, albedo.height, TextureFormat.RGB24, false);
+                    png.SetPixels(shown);
+                    png.Apply();
+                    File.WriteAllBytes(Path.Combine(folder, $"atlas_{index}_{kind}.png"), png.EncodeToPNG());
+                    Object.DestroyImmediate(png);
                 }
                 index++;
             }
@@ -186,6 +203,7 @@ namespace MachineBrigade.Editor
             using var setPass = ProfilerRecorder.StartNew(ProfilerCategory.Render, "SetPass Calls Count");
             for (var level = 0; level < 3; level++)
             {
+                var shot = level == 2 ? Twin(camera, root) : camera;
                 foreach (var m in spawned)
                 {
                     foreach (var r in m.Renderers) r.enabled = level == 0;
@@ -202,9 +220,9 @@ namespace MachineBrigade.Editor
                             var t = spawned[i].Root.transform;
                             atlas.Add(pages[i], t.position + Vector3.up * pages[i].Centre.y, 1f, t.eulerAngles.y, Color.white);
                         }
-                    atlas.Flush();
+                    atlas.Flush(shot);
                     if (f == 2) watch.Start();
-                    camera.Render();
+                    shot.Render();
                 }
                 watch.Stop();
                 long tris = 0, meshTris = 0;
@@ -224,12 +242,13 @@ namespace MachineBrigade.Editor
                                   $"stats: draws={UnityStats.drawCalls} setpass={UnityStats.setPassCalls} tris={UnityStats.triangles} " +
                                   $"cpu={watch.Elapsed.TotalMilliseconds / frames:0.00} ms/frame");
                 RenderTexture.active = rt;
-                var shot = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
-                shot.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
-                shot.Apply();
+                var image = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
+                image.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+                image.Apply();
                 RenderTexture.active = null;
-                File.WriteAllBytes(Path.Combine(folder, $"crowd_lod{level}.png"), shot.EncodeToPNG());
-                Object.DestroyImmediate(shot);
+                File.WriteAllBytes(Path.Combine(folder, $"crowd_lod{level}.png"), image.EncodeToPNG());
+                Object.DestroyImmediate(image);
+                if (shot != camera) Object.DestroyImmediate(shot.gameObject);
             }
             File.WriteAllText(Path.Combine(folder, "crowd_stats.txt"), report.ToString());
             Debug.Log("[LodShots] crowd\n" + report);
@@ -266,6 +285,18 @@ namespace MachineBrigade.Editor
                 volume.sharedProfile = profile;
             }
             return sun;
+        }
+
+        /// <summary>A fresh camera placed and aimed like <paramref name="camera"/> (a clone does not carry URP's camera data over).</summary>
+        private static Camera Twin(Camera camera, Transform root)
+        {
+            var twin = Camera(root);
+            twin.transform.SetPositionAndRotation(camera.transform.position, camera.transform.rotation);
+            twin.orthographicSize = camera.orthographicSize;
+            twin.nearClipPlane = camera.nearClipPlane;
+            twin.farClipPlane = camera.farClipPlane;
+            twin.targetTexture = camera.targetTexture;
+            return twin;
         }
 
         private static Camera Camera(Transform root)
