@@ -59,7 +59,7 @@ from mb_siege import bag_arc, bag_run, flag, flood_head, generator, lattice, loo
 from mb_support import _beacon, _lpda, _ram, _whip  # noqa: E402
 from mb_themes import ladder  # noqa: E402
 from mb_town import fbox  # noqa: E402
-from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _cable, _dish, _frame, _glacis, _headlight,  # noqa: E402
+from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _cable, _dish, _frame, _glacis, _hatch, _headlight,  # noqa: E402
                          _jerrycans, _periscopes, _perimeter, _slats, _stowage_bin, _taillight, _wheel)
 from mb_vehicles2 import _axis  # noqa: E402
 
@@ -881,11 +881,171 @@ def targeting_station(a):
         a.part('Guy_anchors', 'Steel', pa).box((.14, .14, .12), loc=(gx, gy, .06), bevel=0)
 
 
+# ----------------------------------------------------------------------------- earth_borer
+EB_ZC = 3.3                      # body axis height
+EB_SEGMENTS = ((-5.8, -1.6), (-.9, 4.1), (4.8, 9.8))
+
+
+def _profile_r(profile, z):
+    """Radius of a (radius, z) lathe profile at z (linear between its points)."""
+    for (r0, z0), (r1, z1) in zip(profile, profile[1:]):
+        if z0 <= z <= z1:
+            return r0 + (r1 - r0) * (z - z0) / max(1e-6, z1 - z0)
+    return profile[-1][0]
+
+
+def _axial_plates(part, y0, y1, R, angles, width, t=.08, zc=EB_ZC):
+    """Armour plates laid along a body of revolution about Y (radius R, axis at height zc) from y0 to y1, one at
+    each angle (radians from the top, positive towards +X)."""
+    for u in angles:
+        loc = (math.sin(u) * (R + t / 2 - .02), (y0 + y1) / 2, zc + math.cos(u) * (R + t / 2 - .02))
+        part.box((width, y1 - y0, t), loc=loc, rot=(0, u, 0), bevel=.02, seg=1)
+
+
+def earth_borer(a):
+    """"Earth Worm" boring machine (Soviet "Battle Mole" / tunnel-boring machine lineage), 22.9 x 5.3 m, 6.2 m: a
+    long armoured body of three segments joined by ribbed rubber bellows, each segment a barrel of revolution
+    under longitudinal Team armour plates with dark end bands, riding on its own pair of short track units
+    under fenders. Big spoil pipes run along both flanks from the shield to the tail, clamped at every
+    segment. At the front a shield collar with headlamps, the driver's vision blocks and hatch behind it,
+    and the huge drill head: a stepped cone with three steel spiral flights studded with carbide teeth, a
+    gauge ring of cutters round its base and a pilot bit. At the rear a tapered tail cap with the spoil
+    conveyor chute and tail lights.
+
+    Rig: the drill head spins on `Propeller` (the game spins Propeller* about the model's front-back axis,
+    which is the drill's axis) at the drill base (0, -6.8, 3.3). Boss parts: `Part_drill` (the drill head
+    and its spinner, origin at the drill base on the axis); `Part_gun` / `Part_gun.001`: 57 mm turrets on
+    barbettes on the left front and right rear shoulders of the middle segment (`Mount_gun` / `Muzzle_gun`,
+    `Mount_gun.001` / `Muzzle_gun.001`); `Part_engine`: the raised engine deck on the rear segment with its
+    grilles, fans and four exhaust stacks."""
+    _suffixed(a)
+    zc = EB_ZC
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    team, dark = a.part('Hull', 'Team'), a.part('Chassis', 'Undercarriage')
+    rubber = a.part('Bellows', 'Rubber')
+    body = a.part('Body', 'Armor')
+    bands = a.part('Bands', 'Undercarriage')
+    # Segments, bellows and plates.
+    for i, (y0, y1) in enumerate(EB_SEGMENTS):
+        L = y1 - y0
+        if i == 0:
+            prof = [(2.45, 0), (2.4, .6), (2.27, 1.4), (2.24, 3.0), (2.1, L)]
+        else:
+            prof = [(2.1, 0), (2.22, .3), (2.25, L / 2), (2.22, L - .3), (2.1, L)]
+        body.lathe(prof, loc=(0, y0, zc), rot=BACKWARD, seg=28)
+        R = 2.25
+        p0, p1 = (y0 + 1.4, y0 + 3.1) if i == 0 else (y0 + .45, y1 - .35)          # where the barrel is 2.25 m
+        _axial_plates(team, p0, p1, R, [math.radians(d) for d in (-60, -40, -20, 0, 20, 40, 60)], .72)
+        _axial_plates(armor, p0, p1, R, [math.radians(d) for d in (-112, -80, 80, 112)], .72)
+        for yb in (y0 + .22, y1 - .15):
+            _revolve(bands, [(_profile_r(prof, yb - y0) - .02, -.12), (_profile_r(prof, yb - y0) + .1, -.1),
+                             (_profile_r(prof, yb - y0) + .1, .1), (_profile_r(prof, yb - y0) - .02, .12)],
+                     (0, yb, zc), BACKWARD, 28)
+        if i < 2:
+            j0 = y1 - .1
+            j1 = EB_SEGMENTS[i + 1][0] + .1
+            n = 5
+            pts = []
+            for k in range(2 * n + 1):
+                pts.append((2.08 if k % 2 else 1.92, (j1 - j0) * k / (2 * n)))
+            rubber.lathe(pts, loc=(0, j0, zc), rot=BACKWARD, seg=24)
+        # Track units under each segment, fenders over them.
+        yc = (y0 + y1) / 2
+        for s in (-1, 1):
+            track_unit(a, s * 1.55, yc, L - .6, .85, 1.35, .42, .36, .6, .3, 5, s, pitch=.32, sprocket=-1)
+            armor.box((1.25, L - .4, .1), loc=(s * 1.55, yc, 1.45), bevel=.02, seg=1)
+            dark.box((.3, L - 1.0, .5), loc=(s * .95, yc, 1.3), bevel=.02, seg=1)                   # track frames
+    # Spoil pipes along both flanks, clamped at every segment.
+    pipe = a.part('Spoil_pipes', 'Armor')
+    for s in (-1, 1):
+        pipe.cyl(.32, 15.6, loc=(s * 2.45, 2.0, zc - .2), rot=BACKWARD, seg=14, bevel=.02, bseg=1)   # y -5.8 .. 9.8
+        for y in (-4.6, -2.6, .5, 2.6, 6.0, 8.4):
+            steel.cyl(.38, .2, loc=(s * 2.45, y, zc - .2), rot=BACKWARD, seg=14, bevel=0)
+            dark.box((.3, .16, .3), loc=(s * 2.24, y, zc - .2), bevel=0)
+        pipe.limb((s * 2.45, -5.8, zc - .2), (s * 2.2, -6.3, zc + .6), .5, .5, bevel=.03)            # intakes
+    # Shield collar at the front, lamps, vision blocks and hatches on the front segment.
+    armor.lathe([(2.35, 0), (2.7, .12), (2.7, 1.05), (2.45, 1.3)], loc=(0, -6.95, zc), rot=BACKWARD, seg=32)
+    for k in range(12):
+        u = k * TAU / 12 + TAU / 24
+        steel.box((.24, .5, .16), loc=(math.sin(u) * 2.72, -6.4, zc + math.cos(u) * 2.72), rot=(0, u, 0), bevel=0)
+    for s in (-1, 1):
+        _headlamp(a, (s * 1.4, -6.2, zc + 2.45), r=.16)
+        _headlamp(a, (s * 2.62, -6.2, zc + .9), r=.14, hood=False)
+    _periscopes(a, [(x, -4.9, zc + 2.3, 0) for x in (-.4, 0, .4)])
+    armor.box((1.4, .5, .18), loc=(0, -4.75, zc + 2.3), bevel=.03, seg=1)                          # vision block hood
+    _hatch(a, .8, -3.6, zc + 2.31, .32)
+    _hatch(a, -.8, -3.4, zc + 2.31, .3)
+    _antenna(a, None, -1.4, -2.6, zc + 1.7, 1.2)
+    # Tail cap, conveyor chute, tail lights, whips.
+    body.lathe([(2.1, 0), (2.02, .3), (1.6, .8), (1.1, 1.0), (0, 1.02)], loc=(0, 9.8, zc), rot=BACKWARD, seg=28)
+    chute = a.part('Conveyor', 'Hazard')
+    chute.limb((0, 10.3, zc + .9), (0, 11.5, zc - .4), .9, .3, bevel=.03)
+    for s in (-1, 1):
+        steel.limb((s * .5, 10.2, zc + 1.0), (s * .5, 11.4, zc - .3), .1, .45, bevel=0)             # chute sides
+        a.part('Tail_lamps', 'LavaGlow').box((.2, .05, .14), loc=(s * 1.2, 10.55, zc + 1.2), rot=(-.9, 0, 0), bevel=0)
+    _whip(a, 1.1, 9.4, zc + 1.88, 1.6)
+    _whip(a, -1.1, 9.4, zc + 1.88, 1.3)
+
+    # Part_drill: the drill head spinning on `Propeller` at its base.
+    pd = pv(a, 'Part_drill', (0, -6.8, zc))
+    pr = a.pivot('Propeller', (0, 0, 0), pd)
+    prof = [(2.55, -.3), (2.55, .35), (2.3, .6), (1.8, 1.6), (1.2, 2.8), (.62, 3.9), (.3, 4.4), (0, 4.75)]
+    a.part('Drill_cone', 'Armor', pr).lathe(prof, rot=FORWARD, seg=28)
+    _revolve(a.part('Drill_ring', 'SafetyStripe', pr), [(2.5, -.12), (2.74, -.12), (2.74, .3), (2.5, .3)], (0, 0, 0),
+             FORWARD, 32)
+    cut = a.part('Drill_cutters', 'Steel', pr)
+    for k in range(18):
+        u = k * TAU / 18
+        cut.box((.22, .3, .22), loc=(math.cos(u) * 2.78, -.12, math.sin(u) * 2.78), rot=(0, -u, 0), bevel=0)
+    flights = a.part('Drill_flights', 'Steel', pr)
+    teeth = a.part('Drill_teeth', 'Charred', pr)
+    for f in range(3):
+        pts = []
+        for k in range(34):
+            z = .65 + (4.2 - .65) * k / 33
+            ang = f * TAU / 3 + 1.15 * TAU * k / 33
+            rr = _profile_r(prof, z) + .1
+            pts.append((math.cos(ang) * rr, -z, math.sin(ang) * rr))
+        flights.tube(pts, .13, seg=6)
+        for k in range(2, 34, 4):
+            x, y, z = pts[k]
+            n = Vector((x, 0, z)).normalized()
+            teeth.box((.2, .2, .2), loc=(x + n.x * .14, y, z + n.z * .14), rot=(0, math.atan2(x, z), 0), bevel=0)
+    a.part('Drill_tip', 'Steel', pr).lathe([(.34, 4.3), (.24, 4.7), (0, 5.05)], rot=FORWARD, seg=12)
+
+    # Part_gun / Part_gun.001: 57 mm turrets on barbettes on the middle segment's shoulders.
+    for name, x, y in (('Part_gun', 1.3, -.2), ('Part_gun.001', -1.3, 3.2)):
+        pg = pv(a, name, (x, y, zc + 2.33))
+        tag = name[5:].replace('.', '_')
+        a.part(f'Barbette_{tag}', 'Armor', pg).cyl(.72, 1.5, loc=(0, 0, -.75), seg=18, bevel=.03, bseg=1)
+        a.part(f'Barbette_band_{tag}', 'SafetyStripe', pg).cyl(.74, .1, loc=(0, 0, -.12), seg=18, bevel=0)
+        autocannon(a, name.replace('Part_', 'Mount_'), (0, 0, 0), parent=name, length=1.6, r=.07, size=(1.1, 1.2, .58))
+
+    # Part_engine: raised engine deck on the rear segment.
+    pe = pv(a, 'Part_engine', (0, 7.3, zc + 1.6))
+    deck = a.part('Engine_deck', 'Team', pe)
+    deck.box((2.6, 4.2, .85), loc=(0, 0, .425), bevel=.05, seg=1, taper=(.96, .98))
+    grille = a.part('Engine_grilles', 'Undercarriage', pe)
+    for y in (-1.2, .1):
+        grille.grille(1.9, 1.0, loc=(0, y, .87), rot=(-R90, 0, 0), slats=6, depth=.06, thickness=.04)
+    for x in (-.55, .55):
+        a.part('Engine_fans', 'Rubber', pe).cyl(.42, .04, loc=(x, 1.35, .86), seg=14, bevel=0)
+        a.part('Engine_fan_guards', 'Steel', pe).cyl(.46, .05, loc=(x, 1.35, .9), seg=14, bevel=0)
+    es = a.part('Engine_stacks', 'Steel', pe)
+    soot = a.part('Engine_soot', 'Charred', pe)
+    for x in (-1.0, 1.0):
+        for y in (1.2, 1.8):
+            es.cyl(.13, 1.3, loc=(x, y, 1.3), seg=10, bevel=0)
+            soot.cyl(.15, .12, loc=(x, y, 1.97), seg=10, bevel=0)
+    a.part('Engine_armor', 'Armor', pe).box((2.8, .3, .5), loc=(0, -2.0, .55), bevel=.03, seg=1)   # front bulkhead
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
     'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
     'rail_tractor': (rail_tractor, dict(ao_distance=.8, grime_height=.7)),
     'targeting_station': (targeting_station, dict(ao_distance=.9, grime_height=.6)),
+    'earth_borer': (earth_borer, dict(ao_distance=1.0, grime_height=.8)),
 }
 
 

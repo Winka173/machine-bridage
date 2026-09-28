@@ -299,6 +299,10 @@
     "file": "drone_mothership.glb",
     "triangles": 18242
   },
+  "earth_borer": {
+    "file": "earth_borer.glb",
+    "triangles": 22590
+  },
   "elite_aa": {
     "file": "elite_aa.glb",
     "triangles": 8460
