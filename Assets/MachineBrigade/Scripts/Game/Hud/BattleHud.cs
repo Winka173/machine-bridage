@@ -93,6 +93,10 @@ namespace MachineBrigade.Game.Hud
             _root = document.rootVisualElement;
             if (Match.DebugFlags.Has("-mb-no-hud")) _root.style.display = DisplayStyle.None;
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            // The screens' sheet after the old HUD sheet. It is not in the theme: UI Toolkit counts every sheet
+            // a theme imports as a default sheet, which loses to any other sheet whatever its selectors, so the
+            // screens could not restyle an old class there (Field Command 2.0, DECISIONS 10).
+            _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
             _root.pickingMode = PickingMode.Ignore;
             // Colour-blind safe teams re-tint every ally and enemy colour in the styles.
             _root.EnableInClassList("cb", Match.MatchSettings.ColorBlind);

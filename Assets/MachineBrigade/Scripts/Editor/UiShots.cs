@@ -125,6 +125,7 @@ namespace MachineBrigade.Editor
             var host = new VisualElement();
             host.AddToClassList("hud");
             host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
             var battle = new VisualElement();
             battle.style.position = Position.Absolute;
             battle.style.left = battle.style.top = battle.style.right = battle.style.bottom = 0;

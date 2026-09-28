@@ -53,10 +53,6 @@ namespace MachineBrigade.Game.Hud
             _play = play;
             Root = Kit.Root("menu fc-menu");
             Root.pickingMode = PickingMode.Ignore;
-            // The kit's and the screens' sheets on the menu itself: a sheet on an element outranks the
-            // old HUD sheet on its ancestor, whatever the selectors' specificity (UI Toolkit's order).
-            Root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Tokens"));
-            Root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
 
             // Behind every opaque page: nothing of the battle shows through, so the lobby can rest.
             // BattleHud puts it under the safe area, so it covers a notch's side too.

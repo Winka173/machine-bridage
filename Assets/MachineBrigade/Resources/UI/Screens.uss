@@ -1,6 +1,8 @@
 /* Field Command 2.0: the screens' layout on the kit (Tokens.uss). Colours, fonts, type sizes and
    spacing come from the tokens only (UiThemeTests checks this file like the kit's rules); what is
-   written here is where things sit and how wide the columns are. Panel pixels at 1280 x 720. */
+   written here is where things sit and how wide the columns are. Panel pixels at 1280 x 720.
+   BattleHud loads it on the HUD's root after Hud.uss, not from the theme: UI Toolkit counts a sheet
+   the theme imports as a default sheet, which loses to Hud.uss whatever the selectors. */
 
 /* ================================================================ menu chrome: top bar, left rail, pages */
 .fc-menu { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
@@ -262,14 +264,15 @@
 
 /* ================================================================ E6 base: BaseScreen restyled over its own classes */
 /* BaseScreen keeps its classes (its tests and drag code read them); these rules put it on the tokens:
-   frames of three sizes that are all full touch targets (small 82, medium 96, large 110, the HQ 100),
+   frames of three sizes that are all full touch targets (small 82, medium 88, large 96, the HQ 88: the
+   size icon in each corner tells them apart as much as the size),
    every control at the touch size, the kit's type scale and surfaces. The ".fc-menu.menu" prefix
    outranks the old sheet's ".menu" rules. */
 .fc-menu {
     --base-frame-small: 82px;
-    --base-frame-medium: 96px;
-    --base-frame-large: 110px;
-    --base-hq: 100px;
+    --base-frame-medium: 88px;
+    --base-frame-large: 96px;
+    --base-hq: 88px;
     --base-slot-face: var(--fc-panel-raised);
     --base-slot-closed: var(--fc-bg-2);
     --base-hq-face: var(--fc-panel-selected);
@@ -287,7 +290,10 @@
 .fc-menu.menu .base-level { width: var(--fc-touch); height: var(--fc-touch); margin-right: var(--fc-space-1); }
 .fc-menu.menu .base-level-text { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-number-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-level.chosen .base-level-text { color: var(--fc-text); }
-.fc-menu.menu .base-level-info { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
+/* What the level opens is the legend's counts over the camp (open slots of each size): not repeated in the bar. */
+.fc-menu.menu .base-level-info { display: none; }
+.fc-menu.menu .base-level-box { flex-grow: 1; flex-shrink: 1; }
+.fc-menu.menu .base-map-text { width: 180px; margin: 0 var(--fc-space-1); }
 .fc-menu.menu .base-map-arrow { width: var(--fc-touch); height: var(--fc-touch); }
 .fc-menu.menu .base-map-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
 .fc-menu.menu .wide.base-save {
@@ -303,16 +309,17 @@
 .fc-menu.menu .wide.base-save.disabled .wide-title { color: var(--fc-text-2); }
 .fc-menu.menu .wide.base-save.disabled .icon { --icon-color: var(--fc-text-2); }
 .fc-menu.menu .base-caps, .fc-menu.menu .base-list-caps { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-left { width: 300px; }
-.fc-menu.menu .base-tower { min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); }
+.fc-menu.menu .base-left { width: 240px; margin-right: var(--fc-space-3); }
+.fc-menu.menu .base-tower { flex-shrink: 0; min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); }
 .fc-menu.menu .base-tower.chosen, .fc-menu.menu .base-tower.armed { background-color: var(--fc-panel-selected); border-left-color: var(--fc-text); }
 .fc-menu.menu .base-tower-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); color: var(--fc-text); }
 .fc-menu.menu .base-tower-line { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-tower-count { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); background-color: var(--fc-bg); border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-centre { background-color: var(--fc-panel); border-color: var(--fc-border); }
-.fc-menu.menu .base-legend { border-bottom-color: var(--fc-border); }
+.fc-menu.menu .base-centre { margin-right: var(--fc-space-3); background-color: var(--fc-panel); border-color: var(--fc-border); }
+/* The hint gets a line of its own under the size counts, so it is never squeezed beside them. */
+.fc-menu.menu .base-legend { flex-wrap: wrap; padding: var(--fc-space-1) var(--fc-space-3); border-bottom-color: var(--fc-border); }
 .fc-menu.menu .base-legend-count { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); }
-.fc-menu.menu .base-hint { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
+.fc-menu.menu .base-hint { width: 100%; flex-grow: 0; flex-shrink: 0; margin: 0 0 var(--fc-space-1) 0; -unity-text-align: middle-left; -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-front-text { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-slot { border-color: var(--fc-border-strong); }
 .fc-menu.menu .base-slot.filled { background-color: var(--fc-panel-selected); }
@@ -324,15 +331,15 @@
 .fc-menu.menu .base-slot.dim .base-slot-caption { color: var(--fc-text-2); }
 .fc-menu.menu .base-hq { border-color: var(--fc-border-strong); }
 .fc-menu.menu .base-hq-level { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-right { min-width: 360px; max-width: 440px; }
+.fc-menu.menu .base-right { min-width: 360px; max-width: 400px; }
 .fc-menu.menu .base-head { min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border-strong); }
 .fc-menu.menu .base-head-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
 .fc-menu.menu .base-head-line { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
 .fc-menu.menu .base-head-count { color: var(--fc-text-2); }
 .fc-menu.menu .base-takeout { width: var(--fc-touch); height: var(--fc-touch); }
 .fc-menu.menu .base-tab { height: var(--fc-touch); min-width: var(--fc-touch); }
-.fc-menu.menu .base-note { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-branch { min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border); }
+.fc-menu.menu .base-note { flex-shrink: 0; -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
+.fc-menu.menu .base-branch { flex-shrink: 0; min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border); }
 .fc-menu.menu .base-branch.chosen { background-color: var(--fc-panel-selected); border-color: var(--fc-text); }
 .fc-menu.menu .base-branch-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); color: var(--fc-text); }
 .fc-menu.menu .base-branch-tag { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); }
