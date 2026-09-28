@@ -16,6 +16,8 @@ namespace MachineBrigade.Editor
     /// exception and failed assertion to a report. Exit code 0 when none were logged.
     /// -executeMethod MachineBrigade.Editor.PlaySmoke.Run -mbSmokeOut &lt;path&gt;
     /// [-mbSmokeSteps "menu:20,Conquest:60,Campaign=c4m06:60"] (a mode, optionally =mission, and seconds).
+    /// [-mbSmokePreview &lt;png&gt;]: at the end of the first menu step, the detail page's preview texture
+    /// (with -mb-detail=id -mb-detail-firing, the In action theatre) is written there and its size reported.
     /// </summary>
     public static class PlaySmoke
     {
@@ -67,6 +69,7 @@ namespace MachineBrigade.Editor
             }
             if (now - _stepStart < Steps[_step].seconds) return;
             Line($"  done after {now - _stepStart:0} s, {Time.frameCount - _frames} frames, {State()}, {Errors.Count} errors so far, {Playing()}");
+            if (_step == 0 && Arg("-mbSmokePreview") is { } png) SavePreview(png);
             _frames = Time.frameCount;
             _step++;
             if (_step >= Steps.Count)
@@ -140,6 +143,27 @@ namespace MachineBrigade.Editor
                 else if (source.gameObject.name.StartsWith("Voice")) effects++;
             }
             return $"music playing [{string.Join(" ", music)}], effect voices {effects}";
+        }
+
+        /// <summary>The unit preview camera's texture as a PNG, and its size, samples and the screen's.</summary>
+        private static void SavePreview(string path)
+        {
+            var camera = GameObject.Find("Preview Camera")?.GetComponent<Camera>();
+            var rt = camera != null ? camera.targetTexture : null;
+            if (rt == null)
+            {
+                Line("  preview: no preview camera or texture");
+                return;
+            }
+            var active = RenderTexture.active;
+            RenderTexture.active = rt;
+            var shot = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
+            shot.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+            shot.Apply(false);
+            RenderTexture.active = active;
+            File.WriteAllBytes(path, shot.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(shot);
+            Line($"  preview: texture {rt.width}x{rt.height}, {rt.antiAliasing}x MSAA, camera aspect {camera.aspect:0.00}, enabled {camera.enabled}, screen {Screen.width}x{Screen.height} -> {path}");
         }
 
         private static void Line(string text)
