@@ -1,0 +1,88 @@
+{
+    "version": 1,
+    "map": "dunebreak",
+    "source": "Data/maps/dunebreak_conquest",
+    "sha1": "4c056e91d3814d66f2c64043e1bb571d32cd513b",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -92.623,
+        "z": -104.984
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 217.345,
+    "metresHigh": 135.841,
+    "hq": {
+        "x": -120.5,
+        "z": -115.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -141.801,
+            "z": -140.86
+        },
+        {
+            "x": -40.849,
+            "z": -130.17
+        },
+        {
+            "x": -59.85,
+            "z": -75.542
+        },
+        {
+            "x": -99.463,
+            "z": -40.59
+        },
+        {
+            "x": -124.479,
+            "z": -68.107
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -87.642,
+                "z": -51.02
+            },
+            "dir": {
+                "x": -0.405,
+                "z": -0.914
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -70.432,
+                "z": -66.205
+            },
+            "dir": {
+                "x": -0.658,
+                "z": -0.753
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -48.921,
+                "z": -106.964
+            },
+            "dir": {
+                "x": -1.0,
+                "z": -0.017
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.642,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}
