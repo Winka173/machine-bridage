@@ -211,6 +211,10 @@
     "file": "cliff_b.glb",
     "triangles": 688
   },
+  "command_airship": {
+    "file": "command_airship.glb",
+    "triangles": 21340
+  },
   "command_hq": {
     "file": "command_hq.glb",
     "triangles": 5982

@@ -1040,12 +1040,262 @@ def earth_borer(a):
     a.part('Engine_armor', 'Armor', pe).box((2.8, .3, .5), loc=(0, -2.0, .55), bevel=.03, seg=1)   # front bulkhead
 
 
+# ----------------------------------------------------------------------------- command_airship
+CA_ENV_X, CA_ENV_Z = 7.8, 2.0            # envelope axes (x = +-7.8), 45 m long
+CA_DECK, CA_KEEL = 2.2, -2.2             # the spine hull's deck and keel
+CA_ENVELOPE = [(0, 0), (1.3, .6), (2.4, 1.8), (3.3, 3.8), (3.8, 6.5), (4.0, 10.0), (4.0, 28.0), (3.7, 33.0),
+               (3.0, 37.5), (2.0, 41.0), (1.0, 43.6), (0, 45.0)]           # (radius, distance from the nose)
+
+
+def _env_radius(y):
+    """Envelope radius at y (the nose at y = -22.5)."""
+    d = y + 22.5
+    for (r0, d0), (r1, d1) in zip(CA_ENVELOPE, CA_ENVELOPE[1:]):
+        if d0 <= d <= d1:
+            return r0 + (r1 - r0) * (d - d0) / max(1e-6, d1 - d0)
+    return 0.0
+
+
+def _ca_drone(body, rotors, x, y, z):
+    """Quad-rotor strike drone hanging nose-forward in a hangar at (x, y, z): an X frame, four motor pods with
+    rotor discs and a warhead slung under the body."""
+    body.box((.36, .56, .18), loc=(x, y, z), bevel=.03, seg=1)
+    body.cyl(.09, .36, loc=(x, y - .12, z - .16), rot=FORWARD, seg=8, bevel=0)                     # warhead
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            px, py = x + sx * .42, y + sy * .42
+            body.limb((x, y, z), (px, py, z + .02), .06, .05, bevel=0)
+            rotors.cyl(.24, .02, loc=(px, py, z + .1), seg=10, bevel=0)
+
+
+def _ca_plate(part, cx, y0, y1, a0, a1, out=.07, inn=.03, na=6):
+    """Curved armour plate on the envelope whose axis runs along Y at (cx, CA_ENV_Z), from y0 to y1 and angles
+    a0..a1 about the axis (0 = top, positive towards +X), standing `out` proud of the skin."""
+    ys = [y0] + [d - 22.5 for _, d in CA_ENVELOPE if y0 + .05 < d - 22.5 < y1 - .05] + [y1]
+    loops = []
+    for y in ys:
+        r = _env_radius(y)
+        ang = [a0 + (a1 - a0) * i / (na - 1) for i in range(na)]
+        outer = [(cx + (r + out) * math.sin(u), y, CA_ENV_Z + (r + out) * math.cos(u)) for u in ang]
+        inner = [(cx + (r - inn) * math.sin(u), y, CA_ENV_Z + (r - inn) * math.cos(u)) for u in reversed(ang)]
+        loops.append(outer + inner)
+    part.loft(loops, bevel=.015, seg=1)
+
+
+def _ca_nacelle(a, name, prop, x, y, z, k=1.18):
+    """Engine nacelle `name` (a Part_engine empty at the nacelle's middle) on an outrigger from the envelope at
+    (x, y, z), `k` times the base size: a streamlined Team pod with armour bands, a chin radiator, exhaust
+    stubs, the pylon and a brace to the envelope, and a four-blade tractor propeller on `prop` at its nose
+    (spins about Y)."""
+    s = 1 if x > 0 else -1
+    tag = name[5:].replace('.', '_')
+    pe = pv(a, name, (x, y, z))
+    a.part(f'Nacelle_{tag}', 'Team', pe).lathe([(r * k, zz * k) for r, zz in ((0, -2.55), (.45, -2.45), (.8, -2.0),
+                                                (.95, -1.0), (.95, .8), (.7, 1.9), (.35, 2.5), (0, 2.65))],
+                                               rot=BACKWARD, seg=16)
+    band = a.part(f'Nacelle_bands_{tag}', 'Armor', pe)
+    for yy in (-1.6, .2):
+        _revolve(band, [(.93 * k, -.12), (1.0 * k, -.1), (1.0 * k, .1), (.93 * k, .12)], (0, yy * k, 0), BACKWARD, 16)
+    band.box((.7 * k, 1.4 * k, .4 * k), loc=(0, -.9 * k, -.9 * k), bevel=.05, seg=1, taper=(.85, .9))  # radiator
+    a.part(f'Nacelle_grille_{tag}', 'Undercarriage', pe).box((.56 * k, .05, .26 * k), loc=(0, -1.62 * k, -.92 * k),
+                                                             bevel=0)
+    steel = a.part(f'Nacelle_steel_{tag}', 'Steel', pe)
+    for j in range(3):
+        steel.cyl(.08, .3, loc=(s * .92 * k, (-.4 + j * .45) * k, .2 * k), rot=(0, s * R90, 0), seg=6, bevel=0)
+    r = _env_radius(y)
+    pyl = a.part(f'Pylon_{tag}', 'Armor', pe)
+    pyl.limb((s * (CA_ENV_X + r * .96) - x, .2, CA_ENV_Z - z + .2), (0, .2, .7 * k), .5, 1.8, bevel=.04)
+    low = CA_ENV_X + math.sqrt(max(.01, r * r - 1.6 ** 2)) * .98
+    pyl.limb((s * low - x, .4, CA_ENV_Z - 1.6 - z), (0, .4, -.62 * k), .16, .16, bevel=0)             # brace
+    pr = a.pivot(prop, (0, -2.72 * k, 0), pe)
+    a.part(f'{prop}_hub', 'Steel', pr).lathe([(.4, .3), (.4, 0), (.26, -.35), (0, -.6)], rot=BACKWARD, seg=10)
+    bl = a.part(f'{prop}_blades', 'Armor', pr)
+    for j in range(4):
+        _prop_blade(bl, math.pi / 4 + j * R90, .3, 1.95, .48, .26, .1, .035, .75, .3)
+
+
+def _ca_hangar(a, name, muzzle, x):
+    """Drone hangar bay `name` under the spine keel beside the centre line at x: an armoured box with hazard
+    sills, both bottom doors hinged open, three drones on a rail and `muzzle` just below the opening."""
+    tag = name[5:].replace('.', '_')
+    yc, L, w, h, top = 3.0, 9.6, 2.3, 1.9, 1.5            # the walls rise into the hull up to its bilge knuckle
+    ph = pv(a, name, (x, yc, CA_KEEL))
+    box = a.part(f'Hangar_{tag}', 'Armor', ph)
+    for s in (-1, 1):
+        box.box((.12, L, h + top), loc=(s * (w / 2), 0, (top - h) / 2), bevel=.02, seg=1)
+    for e in (-1, 1):
+        box.box((w + .12, .12, h + top), loc=(0, e * L / 2, (top - h) / 2), bevel=.02, seg=1)
+    a.part(f'Hangar_roof_{tag}', 'Undercarriage', ph).box((w, L, .06), loc=(0, 0, -.1), bevel=0)
+    sill = a.part(f'Hangar_sills_{tag}', 'SafetyStripe', ph)
+    for s in (-1, 1):
+        sill.box((.16, L + .14, .12), loc=(s * w / 2, 0, -h + .1), bevel=0)
+    for e in (-1, 1):
+        sill.box((w + .16, .16, .12), loc=(0, e * L / 2, -h + .1), bevel=0)
+    doors = a.part(f'Hangar_doors_{tag}', 'Team', ph)
+    for s in (-1, 1):
+        c = Vector((s * w / 2, 0, -h + .05)) + Vector((s * math.sin(.3), 0, -math.cos(.3))) * .6
+        doors.box((.06, L - .2, 1.2), loc=tuple(c), rot=(0, -s * .3, 0), bevel=.01, seg=1)
+    a.part(f'Hangar_rail_{tag}', 'Steel', ph).box((.12, L - .6, .1), loc=(0, 0, -.2), bevel=0)
+    body, rotors = a.part(f'Drones_{tag}', 'Armor', ph), a.part(f'Drone_rotors_{tag}', 'Charred', ph)
+    for k in range(3):
+        _ca_drone(body, rotors, 0, -3.0 + k * 3.0, -.62)
+        a.part(f'Drone_lights_{tag}', 'TeamGlow', ph).box((.1, .04, .05), loc=(0, -3.0 + k * 3.0 - .29, -.6), bevel=0)
+        a.part(f'Hangar_rail_{tag}', 'Steel', ph).box((.05, .05, .36), loc=(0, -3.0 + k * 3.0, -.36), bevel=0)
+    # Launch trapeze lowered through the opening with the next drone on it; the muzzle at the cradle's front.
+    zl = -h - .15
+    cradle = a.part(f'Launch_cradle_{tag}', 'Steel', ph)
+    cradle.box((.3, 1.2, .1), loc=(0, -.9, zl), bevel=0)
+    for yy in (-1.3, -.5):
+        cradle.box((.06, .06, 1.5), loc=(0, yy, zl + .75), bevel=0)
+    _ca_drone(body, rotors, 0, -.9, zl - .22)
+    a.pivot(dotted(muzzle), (0, -1.5, zl), ph)
+
+
+def command_airship(a):
+    """Armoured command airship ("Sky Admiral"), 45.9 x 31.4 m, 17 m tall: a flying battleship. A dark armoured
+    spine hull with a raked prow runs between two Team gas envelopes (belted with armour plates and bands)
+    and carries the command: a three-tier bridge tower amidships with a glazed, lit command deck, bridge
+    wings, searchlights and a radar mast on top; a gun turret on the bow deck and one on the stern deck; a
+    command flag; railings and antennas. Girders tie the envelopes to the spine, a biplane-style tailplane
+    joins their tails over the stern, each envelope has an upper and a lower fin. Four engine nacelles on
+    outriggers from the envelopes' outer flanks turn tractor propellers; two drone hangar bays hang under the
+    keel with their doors open. Origin at the spine hull's centre (it flies).
+
+    Boss parts (and pivots): `Part_engine` (front left), `Part_engine.001` (front right), `Part_engine.002`
+    (rear left), `Part_engine.003` (rear right), each with its `Propeller` / `Propeller_2` / `Propeller_3` /
+    `Propeller_4`; `Part_hangar` (left bay, `Muzzle_door_l`) and `Part_hangar.001` (right bay,
+    `Muzzle_door_r`); `Part_radar` (the mast and the spinning `Radar` array); `Part_gun` (bow turret,
+    `Mount_gun` / `Muzzle_gun`) and `Part_gun.001` (stern turret, `Mount_gun.001` / `Muzzle_gun.001`)."""
+    _suffixed(a)
+    armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
+    team, dark = a.part('Envelopes', 'Team'), a.part('Undercarriage', 'Undercarriage')
+    glow = a.part('Nav_lights', 'TeamGlow')
+    # Envelopes with armour belts, bands, nose caps and a dark keel strip.
+    for s in (-1, 1):
+        ex = s * CA_ENV_X
+        team.lathe([(r, d) for r, d in CA_ENVELOPE], loc=(ex, -22.5, CA_ENV_Z), rot=BACKWARD, seg=32)
+        armor.lathe([(0, 0), (1.3, .6), (2.1, 1.5), (2.0, 1.62), (0, 1.62)], loc=(ex, -22.55, CA_ENV_Z), rot=BACKWARD,
+                    seg=24)                                                                           # nose cap
+        for y in (-16.0, -11.5, -7.0, -2.5, 2.0, 6.5, 11.0):
+            r = _env_radius(y)
+            _revolve(armor, [(r - .02, -.16), (r + .08, -.13), (r + .08, .13), (r - .02, .16)], (ex, y, CA_ENV_Z),
+                     BACKWARD, 32)
+        bands = (-16.0, -11.5, -7.0, -2.5, 2.0, 6.5, 11.0)
+        for y0, y1 in zip(bands, bands[1:]):                                   # curved plates between the bands
+            _ca_plate(armor, ex, y0 + .2, y1 - .2, -.32, .32)
+            _ca_plate(armor, ex, y0 + .2, y1 - .2, s * .95, s * 1.62)
+        dark.box((.5, 30.0, .1), loc=(ex, -2.0, CA_ENV_Z - 4.02), bevel=.02, seg=1)                     # keel strip
+        glow.sphere(.14, loc=(ex, 22.55, CA_ENV_Z), seg=8, rings=5)                                    # tail light
+        # Upper and lower fins.
+        for up in (1, -1):
+            fin = [(18.0, 0), (22.0, 0), (22.4, up * 3.6), (20.6, up * 3.8)]
+            team.prism([(yy, CA_ENV_Z + up * (_env_radius(yy) - .3) + zz) for yy, zz in fin], .22, loc=(ex, 0, 0),
+                       axis='X', bevel=.03, seg=1)
+            armor.prism([(21.9, CA_ENV_Z + up * 1.4), (22.75, CA_ENV_Z + up * 1.4), (23.0, CA_ENV_Z + up * 3.6),
+                         (22.35, CA_ENV_Z + up * 3.65)], .16, loc=(ex, 0, 0), axis='X', bevel=.02, seg=1)  # rudder
+    # Tailplane joining both tails over the stern, with elevators; outboard stubs.
+    tp = [(-12.4, 18.6), (12.4, 18.6), (12.4, 21.4), (-12.4, 21.4)]
+    team.prism([(x, y) for x, y in tp], .26, loc=(0, 0, 3.0), axis='Z', bevel=.04, seg=1)
+    armor.prism([(-12.2, 21.35), (12.2, 21.35), (12.2, 22.3), (-12.2, 22.3)], .16, loc=(0, 0, 3.0), axis='Z',
+                bevel=.02, seg=1)
+    for s in (-1, 1):
+        glow.box((.1, .5, .12), loc=(s * 12.45, 20.0, 3.0), bevel=0)
+    # Spine hull: raked prow, straight hull, tapering stern.
+    def sec(y, k=1.0, top=CA_DECK):
+        w, wb = 2.6 * k, 1.2 * k
+        return [(-wb, y, CA_KEEL * (.6 + .4 * k)), (wb, y, CA_KEEL * (.6 + .4 * k)), (w, y, -.6), (w, y, top),
+                (-w, y, top), (-w, y, -.6)]
+    hull = a.part('Spine', 'Armor')
+    hull.loft([sec(-21.8, .12, CA_DECK + .6), sec(-20.0, .5, CA_DECK + .35), sec(-17.5, .92), sec(-15.5, 1.0),
+               sec(15.0, 1.0), sec(17.5, .7, CA_DECK - .2), sec(18.6, .35, CA_DECK - .5)], bevel=.06, seg=2)
+    deck = a.part('Deck', 'Undercarriage')
+    deck.box((4.9, 32.0, .04), loc=(0, -.5, CA_DECK + .02), bevel=0)
+    stripe = a.part('Deck_lines', 'Hazard')
+    for s in (-1, 1):
+        stripe.box((.1, 32.0, .02), loc=(s * 2.2, -.5, CA_DECK + .045), bevel=0)
+    _plate_bolts(steel, 2.63, [y for y in range(-14, 15, 2)], .8, r=.05, h=.05)
+    _plate_bolts(steel, -2.63, [y for y in range(-14, 15, 2)], .8, r=.05, h=.05)
+    for s in (-1, 1):
+        armor.box((.1, 29.0, .7), loc=(s * 2.62, 0, 1.2), bevel=.02, seg=1)                              # side belt
+        a.part('Portholes', 'Lamp').bolts([(s * 2.68, y, 0.0) for y in (-13, -11, -9, 9, 11, 13)], r=.12, h=.04,
+                                          rot=(0, R90, 0), seg=8, bevel=0)
+        # Girders to the envelopes, with diagonal braces.
+        for y in (-14.0, -3.0, 8.0, 15.0):
+            r = _env_radius(y)
+            inner = CA_ENV_X - math.sqrt(max(.01, r * r - (1.6 - CA_ENV_Z) ** 2))
+            x0, x1 = 2.45, inner + .45
+            armor.box((x1 - x0, .5, .6), loc=(s * (x0 + x1) / 2, y, 1.6), bevel=.03, seg=1)
+            low = CA_ENV_X - math.sqrt(max(.01, r * r - (.9 - CA_ENV_Z) ** 2))
+            steel.limb((s * 2.5, y, -.4), (s * (low + .3), y, .9), .2, .2, bevel=0)
+    rail = a.part('Railings', 'Steel')
+    for s in (-1, 1):
+        _railing(rail, [(s * 2.48, -16.5, CA_DECK), (s * 2.48, -8.0, CA_DECK)], h=.8, every=1.6)
+        _railing(rail, [(s * 2.48, 0.0, CA_DECK), (s * 2.48, 15.0, CA_DECK)], h=.8, every=1.6)
+    for s in (-1, 1):                                                                                      # prow stars
+        a.part('Emblem', 'Gilded').cyl(.34, .08, loc=(s * 1.7, -19.2, 1.2), rot=(0, R90, -s * .41), seg=5, bevel=0)
+    # Bridge tower amidships: three tiers, the glazed command deck, bridge wings, searchlights.
+    br = a.part('Bridge', 'Armor')
+    br.box((4.2, 6.0, 1.6), loc=(0, -4.0, CA_DECK + .8), bevel=.06, seg=1, taper=(.95, .95))
+    br.box((3.6, 4.8, 1.5), loc=(0, -3.8, CA_DECK + 2.3), bevel=.06, seg=1, taper=(.95, .95))
+    a.part('Bridge_band', 'Team').box((3.7, 4.9, .3), loc=(0, -3.8, CA_DECK + 1.8), bevel=.02, seg=1)
+    cd = a.part('Command_deck', 'Armor')
+    cd.box((3.2, 3.6, 1.3), loc=(0, -3.6, CA_DECK + 3.7), bevel=.05, seg=1, taper=(.92, .92))
+    lit = a.part('Command_windows', 'Lamp')
+    for x in (-1.0, 0, 1.0):
+        lit.box((.8, .06, .5), loc=(x, -5.43, CA_DECK + 3.75), rot=(-.1, 0, 0), bevel=0)
+    for s in (-1, 1):
+        lit.box((.06, 2.6, .5), loc=(s * 1.62, -3.6, CA_DECK + 3.75), rot=(0, s * .1, 0), bevel=0)
+        armor.box((1.2, 1.0, .12), loc=(s * 2.2, -5.2, CA_DECK + 3.2), bevel=.02, seg=1)                  # bridge wings
+        steel.box((.06, .9, .7), loc=(s * 2.75, -5.2, CA_DECK + 3.55), bevel=0)
+        flood_head(a, (s * 2.3, -5.5, CA_DECK + 3.55), yaw=s * .3, tilt=.25, size=(.46, .26, .34))
+    armor.box((3.5, 3.9, .12), loc=(0, -3.6, CA_DECK + 4.4), bevel=.03, seg=1)                             # roof
+    for x, y, h in ((-1.5, -1.9, 2.0), (1.5, -1.9, 1.6)):
+        _antenna(a, None, x, y, CA_DECK + 4.46, h)
+    # Command flag on a staff at the stern.
+    flag(a, 0, 16.0, CA_DECK - .3, 4.2, w=2.4, h=1.4, phase=.6, yaw=R90)
+
+    # Part_radar: mast and the spinning bedspring array on the bridge roof.
+    prd = pv(a, 'Part_radar', (0, -3.2, CA_DECK + 4.46))
+    mast = a.part('Radar_mast', 'Steel', prd)
+    lattice(mast, 0, 0, 0, 1.6, .5, .3, 2, leg=.13, brace=.035)
+    a.part('Radar_platform', 'Armor', prd).box((1.1, 1.1, .14), loc=(0, 0, 1.65), bevel=.02, seg=1)
+    rp = pv(a, 'Radar', (0, 0, 1.72), 'Part_radar')
+    a.part('Radar_turntable', 'Steel', rp).cyl(.36, .12, loc=(0, 0, .06), seg=14, bevel=.01, bseg=1)
+    a.part('Radar_post', 'Armor', rp).box((.3, .3, .8), loc=(0, 0, .5), bevel=.02, seg=1)
+    arr = a.part('Radar_array', 'Armor', rp)
+    arr.box((4.0, .16, 1.5), loc=(0, -.1, 1.55), rot=(-.18, 0, 0), bevel=.03, seg=1)
+    grid = a.part('Radar_grid', 'Medical', rp)
+    for k in range(9):
+        grid.box((.04, .06, 1.4), loc=(-1.8 + k * .45, -.21, 1.56), rot=(-.18, 0, 0), bevel=0)
+    for k in range(4):
+        grid.box((3.9, .06, .04), loc=(0, -.2 - (k - 1.5) * .06, 1.0 + k * .37), rot=(-.18, 0, 0), bevel=0)
+    a.part('Radar_iff', 'Undercarriage', rp).box((3.2, .12, .2), loc=(0, -.02, 2.42), bevel=0)
+
+    # Part_gun (bow) and Part_gun.001 (stern): 57 mm turrets on barbettes on the centre line.
+    for name, y in (('Part_gun', -13.2), ('Part_gun.001', 10.2)):
+        pg = pv(a, name, (0, y, CA_DECK + .8))
+        tag = name[5:].replace('.', '_')
+        a.part(f'Barbette_{tag}', 'Armor', pg).cyl(.95, .9, loc=(0, 0, -.44), seg=20, bevel=.04, bseg=1)
+        a.part(f'Barbette_band_{tag}', 'SafetyStripe', pg).cyl(.97, .12, loc=(0, 0, -.2), seg=20, bevel=0)
+        autocannon(a, name.replace('Part_', 'Mount_'), (0, 0, 0), parent=name, length=2.4, r=.08, size=(1.4, 1.5, .64))
+
+    # Engines and hangars.
+    for name, prop, x, y in (('Part_engine', 'Propeller', 14.3, -9.0), ('Part_engine.001', 'Propeller_2', -14.3, -9.0),
+                             ('Part_engine.002', 'Propeller_3', 14.3, 8.0),
+                             ('Part_engine.003', 'Propeller_4', -14.3, 8.0)):
+        _ca_nacelle(a, name, prop, x, y, 1.0)
+    _ca_hangar(a, 'Part_hangar', 'Muzzle_door_l', 1.3)
+    _ca_hangar(a, 'Part_hangar.001', 'Muzzle_door_r', -1.3)
+    dark.box((.4, 10.0, .3), loc=(0, 3.0, CA_KEEL - .1), bevel=0)                                      # keel between bays
+
+
 BUILDERS = {
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.7, grime_height=.6)),
     'rail_supergun': (rail_supergun, dict(ao_distance=1.4, grime_height=.8)),
     'rail_tractor': (rail_tractor, dict(ao_distance=.8, grime_height=.7)),
     'targeting_station': (targeting_station, dict(ao_distance=.9, grime_height=.6)),
     'earth_borer': (earth_borer, dict(ao_distance=1.0, grime_height=.8)),
+    'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
 }
 
 
