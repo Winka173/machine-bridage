@@ -9,7 +9,7 @@ mb_bosses, mb_siege and mb_air.
     empty at the push arms' trunnions (0, -0.7, 0.58): pitching it about local X raises the blade. A remote
     heavy machine gun on the cab roof turns on `Mount_mg` (`Muzzle_mg` at its flash hider).
   * rail_supergun: super-heavy railway gun (Schwerer Gustav / K5 lineage) on its own double-track bed (see
-    the rail_supergun docstring for the rig and the boss parts).
+    the rail_supergun docstring for the rig, the boss parts and where its two tractors couple).
   * rail_tractor, targeting_station: the gun's two armoured shunting locomotives and its fire-control post,
     separate models.
   * earth_borer, command_airship, landing_hovercraft, supreme_command: bosses; see each builder's docstring.
@@ -462,10 +462,11 @@ SG_DECK = 3.56                   # top of the lower carriage's deck
 
 
 def rail_supergun(a):
-    """Super-heavy railway gun (Schwerer Gustav / K5 lineage), 52.9 x 8.8 m (carriage 7 m wide), muzzle 15.7 m up at
-    rest: it stands on two parallel standard-gauge tracks of its own ballasted bed (rail heads 0.36 m up, 30 m
-    long). The lower carriage: per track four four-axle bogies under two span bolsters and a Team box girder, cross
-    girders, a deck with hazard-striped headstocks, buffers, walkways, railings and ladders at the ends. On a
+    """Super-heavy railway gun (Schwerer Gustav / K5 lineage), 63.9 x 8.8 m with its bed (carriage 27 x 7 m), muzzle
+    15.7 m up at rest: it stands on two parallel standard-gauge tracks of its own ballasted bed (rail heads 0.36 m
+    up, 41 m long: it runs on 11 m behind the carriage, so the two rail_tractor models stand coupled to its rear
+    buffers). The lower carriage: per track four four-axle bogies under two span bolsters and a Team box girder,
+    cross girders, a deck with hazard-striped headstocks, buffers, walkways, railings and ladders at the ends. On a
     slewing ring amidships the upper carriage (`Turret`, it traverses): a base, two tall Team side walls carrying
     the trunnion bosses, a raised breech platform, a rear loading platform with a crew cabin and shells on a
     trolley. The 41.9 m, 80 cm gun rests at 10 degrees: a Team jacket with steel hoops over the rear third, a
@@ -477,12 +478,16 @@ def rail_supergun(a):
     Boss parts: `Part_main` (the whole upper carriage and gun, holding `Turret`) on the slewing ring; `Part_gun` /
     `Part_gun.001`: 40 mm guns on pedestals at the front corners of the deck (left, right; on `Mount_gun` /
     `Mount_gun.001` with `Muzzle_gun` / `Muzzle_gun.001`); `Part_generator`: the diesel generator set on the rear
-    deck; `Part_crane`: the ammunition jib crane on the loading platform (under the Turret, it turns with it)."""
+    deck; `Part_crane`: the ammunition jib crane on the loading platform (under the Turret, it turns with it).
+
+    Its two tractors couple to the rear buffers: a rail_tractor at (2.5, 19.26, 0.36) and one at (-2.5, 19.26, 0.36)
+    in the gun's frame, facing the same way (their wheels sit at z = 0 in their own model, the bed's rail heads at
+    0.36 m)."""
     _suffixed(a)
     armor, steel = a.part('Armor', 'Armor'), a.part('Steel', 'Steel')
     dark, team = a.part('Chassis', 'Undercarriage'), a.part('Hull', 'Team')
     rt = RAIL_TOP
-    _track_bed(a, SG_TRACKS, -15.0, 15.0)
+    _track_bed(a, SG_TRACKS, -15.0, 26.0)                  # runs on behind the gun under its two tractors
     for x in SG_TRACKS:
         for y in SG_BOGIES:
             _rail_bogie(a, x, y, 4, 1.25, .5, z0=rt)
