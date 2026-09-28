@@ -402,7 +402,9 @@ namespace MachineBrigade.Game.Effects
                 _projectiles.Launch(_models.Merged(model), from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale,
                     control: Bend(from, to, barrel));
             else _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
-            Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, 1f, groundY);
+            // A mortar's flash is small: at the artillery size it covered the carrier seen from above.
+            var mortar = weapon != null && weapon.Id.Contains("mortar");
+            Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, mortar ? 0.55f : 1f, groundY);
             _shake(from, 0.12f);
         }
     }

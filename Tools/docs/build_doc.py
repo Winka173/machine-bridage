@@ -132,6 +132,10 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .guide { font-size: 9pt; margin-top: 3pt; border-left: 2px solid #f2a33a; padding-left: 5pt; }
 .guide div { margin: 1pt 0; }
 .guide .hl { color: #b86e0b; font-weight: 700; }
+.behav { font-size: 8.5pt; margin-top: 4pt; border-left: 2px solid #5b7fa6; padding-left: 5pt; }
+.behav ul { margin: 2pt 0 0 0; padding-left: 12pt; }
+.behav li { margin: 1pt 0; }
+.behav .hl { color: #2f5d8a; font-weight: 700; }
 """
 
 
@@ -143,9 +147,26 @@ def guide_html(text):
     return "<div class='guide'>" + ''.join(f"<div>{'<b>' + l + '</b>' if i == 0 else l}</div>" for i, l in enumerate(lines)) + "</div>"
 
 
+def lines_html(title, lines, cls):
+    """A titled list of short lines (Behaviour, Ammo), key words ([[word]]) highlighted."""
+    if not lines:
+        return ''
+    items = ''.join('<li>' + re.sub(r'\[\[(.+?)\]\]', lambda m: f"<span class='hl'>{m.group(1)}</span>", esc(l)) + '</li>' for l in lines)
+    return f"<div class='{cls}'><b>{esc(title)}</b><ul>{items}</ul></div>"
+
+
+def weapon_cycle(w):
+    """A weapon's cycle in words: a magazine and its change, a burst, or a single shot and its cooldown."""
+    if w.get('clip'):
+        return f"băng {w['clip']} viên, {1 / max(0.001, w['cooldown']):.0f} viên/s, thay {w['clipReload']:g} s"
+    if w['burst'] > 1:
+        return f"loạt {w['burst']}, hồi {w['cooldown']:g} s"
+    return f"hồi {w['cooldown']:g} s"
+
+
 def vehicle_card(v, imgdir):
-    weapons = [[esc(w['id']), TYPE_VI.get(w['type'], w['type']), num(w['damage']) + (f" ×{w['burst']}" if w['burst'] > 1 else ''),
-                f"{w['cooldown']:g} s", f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
+    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), num(w['damage']), weapon_cycle(w),
+                f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
                 TARGET_VI.get(w['targets'], w['targets']), f"{w['dps']:.0f}"] for w in v['weapons']]
     d = v['dpsVs']
     stats = (f"<div class='stats'><div>Máu <b>{num(v['hp'])}</b></div><div>Giáp <b>{ARMOR_VI.get(v['armor'], v['armor'])}</b></div>"
@@ -160,7 +181,9 @@ def vehicle_card(v, imgdir):
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
-            + (table(['Vũ khí', 'Loại', 'Sát thương', 'Hồi', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '') + "</div>")
+            + (table(['Vũ khí', 'Loại', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
+            + "<div class='two'>" + lines_html('Hành vi', v.get('behavior'), 'behav') + lines_html('Đạn và nạp đạn', v.get('ammo'), 'behav') + "</div>"
+            + "</div>")
 
 
 def build(game, imgdir):
@@ -263,10 +286,12 @@ def build(game, imgdir):
     armors = ['Light', 'Heavy', 'Air', 'Structure']
     rows = [[TYPE_VI.get(t, t)] + [f"×{dt[t][a]:g}" for a in armors] for t in dt]
     weapons = {}
+    branch_names = {b['id']: f"{t['name']} · {b['name']}" for t in game['base']['towers'] for b in t['branches']}
     for group in ('vehicles', 'elites', 'bosses', 'towers'):
         for v in game[group]:
+            owner = branch_names.get(v['id']) or (v['short'] if not str(v['short']).startswith('support.') else v['name'])
             for w in v['weapons']:
-                weapons.setdefault(w['id'], (w, v['short']))
+                weapons.setdefault(w['id'], (w, owner))
     def volley(w):
         return f"băng {w['clip']} · thay {w['clipReload']:g} s" if w.get('clip') else w['burst']
     wrows = [[f"<code>{esc(w['id'])}</code>", TYPE_VI.get(w['type'], w['type']), num(w['damage']), volley(w), f"{w['cooldown']:g}",
@@ -286,9 +311,29 @@ def build(game, imgdir):
                  esc(', '.join(w['id'] for w in v['weapons'])), f"{v['dpsVs']['Light']:.0f} / {v['dpsVs']['Heavy']:.0f} / {v['dpsVs']['Air']:.0f}",
                  esc(', '.join(v['skills']))] for v in vs]
     head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng']
+
+    def tower_groups(towers):
+        # A tower's branch variants (aa_turret.flak) follow their tower, named after it and the branch.
+        base = {t['id']: t for t in towers}
+        branch = {b['id']: (t['id'], b['name']) for t in game['base']['towers'] for b in t['branches']}
+        ordered = []
+        for t in towers:
+            if t['id'] in branch:
+                continue
+            ordered.append(t)
+            for bid, (owner, bname) in branch.items():
+                if owner == t['id'] and bid in base:
+                    ordered.append(dict(base[bid], name=f"{t['name']} · nhánh {bname}", size=t.get('size', '')))
+        towers = ordered
+        sizes = [('Small', 'Tháp ô nhỏ'), ('Medium', 'Tháp ô vừa'), ('Large', 'Tháp ô lớn')]
+        known = {s for s, _ in sizes}
+        return [(label, [t for t in towers if t.get('size') == s]) for s, label in sizes] + \
+               [('Công sự khác (trung lập, pháo đài, boss)', [t for t in towers if t.get('size') not in known])]
     out.append("<div class='section'><h2>11. Tháp canh, xe tinh nhuệ và boss</h2>"
                "<h3>Tháp và công sự</h3><p>Tháp cố định chặn lưới đường đi khi xuất hiện; trong Chiếm cứ điểm mỗi cứ điểm có tháp trung lập bắn mọi phe và dựng lại "
-               "sau một thời gian; căn cứ có ụ phòng thủ (bastion) bất tử.</p>" + table(head, simple_rows(game['towers']))
+               "sau một thời gian; căn cứ có ụ phòng thủ (bastion) bất tử. Tháp của căn cứ người chơi xếp theo cỡ ô (phần 6), có hạng, nhánh ở hạng 7 và 3 ô đồ.</p>"
+               + ''.join(f"<h4>{esc(label)} ({len(ts)})</h4>" + ''.join(vehicle_card(t, imgdir) for t in ts)
+                         for label, ts in tower_groups(game['towers']) if ts)
                + "<h3>Xe tinh nhuệ</h3><p>Phiên bản tân trang: +60% máu, +25% sát thương, 1–2 kỹ năng tinh nhuệ, thanh máu vàng và vòng vàng trên bản đồ nhỏ; "
                "sức mạnh thực đo được 1,8–2,2 lần bản thường. Địch không còn nhận tinh nhuệ theo xác suất mà theo <b>ngân sách</b>: tinh nhuệ giá 1,6 lần, phần chi tiêu "
                "theo độ khó (Dễ 5%, Thường 10%, Khó 15%, Anh hùng 20%, Thép 25%), trần 1–5 xe cùng lúc; tướng ưu tiên loại xe của mình. Hạ tinh nhuệ hoàn CP theo giá thật "
