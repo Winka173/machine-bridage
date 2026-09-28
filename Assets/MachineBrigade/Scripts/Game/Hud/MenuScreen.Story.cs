@@ -24,30 +24,23 @@ namespace MachineBrigade.Game.Hud
         }
 
         private VisualElement _dossier, _dossierBody;
-        private readonly List<(VisualElement button, DossierTab tab)> _dossierTabs = new();
+        private KitTabs _dossierTabs;
         private DossierTab _dossierTab;
         private bool _dossierAll;
 
         private void BuildDossierPage()
         {
-            _dossier = FullPage("dossier-page");
-            var tabs = UiKit.Box("dossier-tabs");
-            foreach (var (tab, key) in new[] { (DossierTab.People, "dossier.people"), (DossierTab.Bosses, "dossier.bosses"),
-                         (DossierTab.Timeline, "dossier.timeline"), (DossierTab.Files, "dossier.files") })
-            {
-                var t = tab;
-                var button = UiKit.Button("segment dossier-tab", () =>
+            _dossier = FullPage("fc-dossier");
+            _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files") },
+                0, i =>
                 {
-                    _dossierTab = t;
+                    _dossierTab = (DossierTab)i;
                     FillDossier();
                 });
-                button.Add(UiKit.Text(Strings.Get(key), "segment-label"));
-                tabs.Add(button);
-                _dossierTabs.Add((button, tab));
-            }
-            _dossier.Add(tabs);
-            var scroll = Scroller("dossier-scroll");
-            _dossierBody = scroll.contentContainer;
+            _dossier.Add(_dossierTabs);
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            _dossierBody = Kit.Box("fc-page__body");
+            scroll.Add(_dossierBody);
             _dossier.Add(scroll);
             _dossierAll = DebugFlags.Has("-mb-dossier-all");
             Root.schedule.Execute(DebugStory).StartingIn(300);
@@ -55,13 +48,13 @@ namespace MachineBrigade.Game.Hud
 
         private void OpenDossier()
         {
-            Open(_dossier, Strings.Get("campaign.dossier").ToUpperInvariant());
+            Open(_dossier, Strings.Get("campaign.dossier"));
             FillDossier();
         }
 
         private void FillDossier()
         {
-            foreach (var (button, tab) in _dossierTabs) button.EnableInClassList("chosen", tab == _dossierTab);
+            _dossierTabs.Select((int)_dossierTab, false);
             _dossierBody.Clear();
             switch (_dossierTab)
             {
@@ -101,28 +94,25 @@ namespace MachineBrigade.Game.Hud
                         if (m.Chapter != chapter)
                         {
                             chapter = m.Chapter;
-                            _dossierBody.Add(UiKit.Text(Strings.Format("dossier.chapterFiles", chapter).ToUpperInvariant(), "menu-caps dossier-caps"));
+                            _dossierBody.Add(Kit.Caption(Strings.Format("dossier.chapterFiles", chapter)));
                         }
                         any = true;
                         _dossierBody.Add(Entry(m.Speaker, Strings.Get($"mission.{m.Id}.fragment.title"), Campaign.Label(m) + " · " + Strings.Get($"mission.{m.Id}.name"),
                             Strings.Get($"mission.{m.Id}.fragment"), false, false));
                     }
-                    if (!any) _dossierBody.Add(UiKit.Text(Strings.Get("dossier.empty"), "dossier-empty"));
+                    if (!any) _dossierBody.Add(Kit.Body2(Strings.Get("dossier.empty")));
                     break;
             }
-            UiKit.Uppercase(_dossier);
         }
 
         private static VisualElement Entry(string portrait, string title, string sub, string body, bool locked, bool enemy)
         {
-            var card = UiKit.Box("dossier-entry");
-            card.EnableInClassList("locked", locked);
-            card.EnableInClassList("enemy", enemy);
-            if (portrait != null) card.Add(Portraits.Element(portrait, "dossier-portrait"));
-            var text = UiKit.Box("dossier-text");
-            text.Add(UiKit.Text(title, "dossier-title"));
-            if (!string.IsNullOrEmpty(sub)) text.Add(UiKit.Text(sub, "dossier-sub"));
-            text.Add(UiKit.Text(body, "dossier-body"));
+            var card = Kit.Box(KitPanel.SurfaceClass + " fc-dossier__entry" + (locked ? " fc-dossier__entry--locked" : "") + (enemy ? " fc-dossier__entry--enemy" : ""));
+            if (portrait != null) card.Add(Portraits.Element(portrait, "fc-portrait"));
+            var text = Kit.Box("fc-dossier__text");
+            text.Add(Kit.Text(Kit.Caps(title), "fc-panel-title"));
+            if (!string.IsNullOrEmpty(sub)) text.Add(Kit.Caption(sub));
+            text.Add(Kit.Text(body, locked ? "fc-body-2" : "fc-body"));
             card.Add(text);
             return card;
         }
@@ -200,16 +190,19 @@ namespace MachineBrigade.Game.Hud
             {
                 ShowTab(Tab.Campaign);
                 _selectedMission = Campaign.IndexOf(mission.Id);
-                Refresh();
+                OpenChapter(System.Math.Max(1, mission.Chapter));
                 ShowBriefing(mission);
                 return;
             }
             // The campaign page itself, a mission chosen: -mb-campaign (-mb-campaign=c5m10).
             if (DebugFlags.Has("-mb-campaign") || DebugFlags.Value("-mb-campaign=") != null)
             {
-                if (Campaign.Get(DebugFlags.Value("-mb-campaign=")) is { } chosen) _selectedMission = Campaign.IndexOf(chosen.Id);
-                _scrolledToNext = false;
                 ShowTab(Tab.Campaign);
+                if (Campaign.Get(DebugFlags.Value("-mb-campaign=")) is { } chosen)
+                {
+                    _selectedMission = Campaign.IndexOf(chosen.Id);
+                    OpenChapter(System.Math.Max(1, chosen.Chapter));
+                }
             }
         }
     }

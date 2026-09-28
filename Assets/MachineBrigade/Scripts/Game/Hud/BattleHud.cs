@@ -118,6 +118,8 @@ namespace MachineBrigade.Game.Hud
                 _menu.SettingsChanged += () => SettingsChanged?.Invoke();
                 _menu.VolumeChanged += () => VolumeChanged?.Invoke();
                 _menu.SkinPreviewed += id => SkinPreviewed?.Invoke(id);
+                // The menu's opaque backdrop spans the whole screen, the notch's side too; its pages sit in the safe area.
+                hud.Insert(0, _menu.Backdrop);
                 _safe.Add(_menu.Root);
                 _toast = UiKit.Box("toast");
                 _toastText = UiKit.Text("", "toast-text");

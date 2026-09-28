@@ -66,11 +66,12 @@ namespace MachineBrigade.Game.Hud
     {
         public const string BaseClass = "fc-vcard";
 
-        public KitVehicleCard(VehicleCardData data, Action onClick = null, bool compact = false)
+        public KitVehicleCard(VehicleCardData data, Action onClick = null, bool compact = false, bool showLevel = false)
         {
             Data = data;
             AddToClassList(BaseClass);
             EnableInClassList("fc-vcard--compact", compact);
+            EnableInClassList("fc-vcard--show-level", showLevel);
             EnableInClassList("fc-vcard--locked", data.Locked);
             var content = Kit.Box("fc-vcard__content");
             content.Add(Kit.Box("fc-vcard__bar " + KitBranches.ColourClass(data.Branch)));
@@ -146,12 +147,12 @@ namespace MachineBrigade.Game.Hud
                 Picture = GearArt.PictureFor(item),
                 Rarity = Mathf.Clamp(item.rarity, 0, 4),
                 Level = item.level,
-                MainStat = MainLine(item),
+                MainStat = ShortStat(item),
             };
             if (worn != null && worn != item && Gear.MainStat(worn) == Gear.MainStat(item))
             {
                 var delta = MainValue(item) - MainValue(worn);
-                data.CompareSign = Mathf.Abs(delta) < 1e-4f ? 0 : delta > 0f ? 1 : -1;
+                data.CompareSign = Mathf.RoundToInt(Mathf.Abs(delta) * 100f) == 0 ? 0 : delta > 0f ? 1 : -1;
                 data.Compare = data.CompareSign == 0 ? Strings.Get("kit.same") : (delta > 0f ? "+" : "−") + Mathf.RoundToInt(Mathf.Abs(delta) * 100f) + "%";
             }
             return data;
@@ -163,6 +164,28 @@ namespace MachineBrigade.Game.Hud
             foreach (var line in Gear.Lines(item))
                 if (line.Stat == main && line.Kind != Gear.LineKind.Penalty) return line.Value;
             return 0f;
+        }
+
+        /// <summary>A piece's main effect in a few characters: "+8% damage", "-5% taken", "Smoke 8 m", or a module's name.</summary>
+        public static string ShortStat(GearItem item)
+        {
+            var v = Gear.Value(item);
+            string Pct() => Mathf.RoundToInt(v * 100f).ToString();
+            return item.Slot switch
+            {
+                GearSlot.Weapon => Strings.Format("stat.gear.damage", Pct()),
+                GearSlot.Loader => Strings.Format("stat.gear.fire", Pct()),
+                GearSlot.Armor when Gear.MainStat(item) == StatId.DamageTaken => Strings.Format("stat.gear.taken", Pct()),
+                GearSlot.Armor => Strings.Format("stat.gear.hp", Pct()),
+                GearSlot.Optics => Strings.Format("stat.gear.vision", Pct()),
+                GearSlot.Engine => Strings.Format("stat.gear.speed", Pct()),
+                GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0")),
+                _ => item.Module == SpecialModule.SmokeDischarger ? Strings.Format("stat.gear.smoke", Mathf.RoundToInt(v))
+                    : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0"))
+                    : item.Module == SpecialModule.ReactiveArmor ? Strings.Format("stat.gear.taken", Pct())
+                    : item.Module == SpecialModule.VeteranCrew ? Strings.Format("stat.gear.crew", Pct())
+                    : MainLine(item),
+            };
         }
 
         private static string MainLine(GearItem item)

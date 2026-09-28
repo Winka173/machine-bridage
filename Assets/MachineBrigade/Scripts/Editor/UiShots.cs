@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
+using MachineBrigade.Sim.Content;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -54,6 +55,14 @@ namespace MachineBrigade.Editor
             new("4x3", 1440, 1080),
         };
 
+        private static string Argument(string name)
+        {
+            var args = Environment.GetCommandLineArgs();
+            for (var i = 0; i < args.Length - 1; i++)
+                if (args[i] == name) return args[i + 1];
+            return null;
+        }
+
         public static string OutputFolder()
         {
             var args = Environment.GetCommandLineArgs();
@@ -85,7 +94,55 @@ namespace MachineBrigade.Editor
             yield return ("kit-sample-en", Kit(KitPreview.Page.Sample, false, false), new[] { Shapes[0] }, 0);
         }
 
-        [MenuItem("Machine Brigade/UI Screenshots (kit preview)")]
+        /// <summary>
+        /// The rebuilt menu screens (MenuScreen.ScreenNames) with the demo profile, in Vietnamese at the
+        /// four shapes, and a few in Large text and in English. Home's live battle is stood in for
+        /// by its battlefield's picture.
+        /// </summary>
+        public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> MenuScreens()
+        {
+            var catalog = GameContent.LoadCatalog();
+            Builder Menu(string screen, bool vi, bool large) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildMenu(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
+            foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "detail", "settings", "shop-crates" })
+            {
+                yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);
+                yield return ("screen-" + screen + "-en", Menu(screen, false, false), new[] { Shapes[0] }, 0);
+            }
+        }
+
+        /// <summary>The menu as BattleHud lays it out (the old HUD sheet on the root, the backdrop under the safe area), opened on a screen.</summary>
+        public static VisualElement BuildMenu(Catalog catalog, string screen, out VisualElement safe)
+        {
+            var host = new VisualElement();
+            host.AddToClassList("hud");
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            var battle = new VisualElement();
+            battle.style.position = Position.Absolute;
+            battle.style.left = battle.style.top = battle.style.right = battle.style.bottom = 0;
+            if (MapArt.For(MatchSettings.CurrentMap.Id) is { } picture) battle.style.backgroundImage = Background.FromTexture2D(picture);
+            battle.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            host.Add(battle);
+            var menu = new MenuScreen(catalog, () => { });
+            host.Add(menu.Backdrop);
+            safe = new VisualElement();
+            safe.style.position = Position.Absolute;
+            safe.style.left = safe.style.top = safe.style.right = safe.style.bottom = 0;
+            safe.Add(menu.Root);
+            host.Add(safe);
+            menu.DebugShow(screen);
+            return host;
+        }
+
+        [MenuItem("Machine Brigade/UI Screenshots")]
         public static void KitScreens()
         {
             if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
@@ -96,12 +153,21 @@ namespace MachineBrigade.Editor
             var folder = OutputFolder();
             Directory.CreateDirectory(folder);
             var was = Strings.Vietnamese;
+            var textSize = MatchSettings.TextSize;
+            var set = Argument("-mbShotsSet") ?? "all";
+            var list = new List<(string file, Builder build, Shape[] shapes, int tallHeight)>();
+            if (set is "all" or "kit") list.AddRange(Screens());
+            if (set is "all" or "menu") list.AddRange(MenuScreens());
+            var only = Argument("-mbShotsOnly");
+            if (only != null) list = list.FindAll(s => s.file.Contains(only));
             var count = 0;
             try
             {
-                foreach (var (file, build, shapes, tall) in Screens())
+                var onlyShape = Argument("-mbShotsShape");
+                foreach (var (file, build, shapes, tall) in list)
                     foreach (var shape in shapes)
                     {
+                        if (onlyShape != null && !shape.Name.StartsWith(onlyShape)) continue;
                         var suffix = shapes.Length > 1 ? "-" + shape.Name : tall > 0 ? "" : "-" + shape.Name;
                         var path = Path.Combine(folder, file + suffix + ".png");
                         File.WriteAllBytes(path, Shoot(build, shape, tall > 0));
@@ -111,6 +177,8 @@ namespace MachineBrigade.Editor
             finally
             {
                 Strings.Vietnamese = was;
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
             }
             Debug.Log($"[UiShots] wrote {count} screenshots to {folder}");
         }

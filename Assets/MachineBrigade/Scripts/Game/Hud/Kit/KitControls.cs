@@ -147,9 +147,11 @@ namespace MachineBrigade.Game.Hud
         private readonly Action<int> _changed;
         private readonly Label _value;
         private readonly VisualElement _thumb;
+        private readonly bool _showThumbnail;
 
-        public KitDropdown(string label, IReadOnlyList<KitOption> options, int selected, Action<int> changed)
+        public KitDropdown(string label, IReadOnlyList<KitOption> options, int selected, Action<int> changed, bool thumbnail = true)
         {
+            _showThumbnail = thumbnail;
             _label = label;
             _options = options;
             _changed = changed;
@@ -178,7 +180,7 @@ namespace MachineBrigade.Game.Hud
             Selected = Mathf.Clamp(index, 0, _options.Count - 1);
             var option = _options[Selected];
             _value.text = option.Label;
-            var hasThumb = _options.Count > 0 && HasThumbnails();
+            var hasThumb = _showThumbnail && _options.Count > 0 && HasThumbnails();
             _thumb.style.display = hasThumb ? DisplayStyle.Flex : DisplayStyle.None;
             _thumb.style.backgroundImage = option.Thumbnail != null ? Background.FromTexture2D(option.Thumbnail) : new StyleBackground(StyleKeyword.None);
             if (notify) _changed?.Invoke(Selected);
@@ -192,7 +194,10 @@ namespace MachineBrigade.Game.Hud
         }
 
         /// <summary>The list of choices, over the screen; a tap on one picks it and closes the list.</summary>
-        public VisualElement Open()
+        public VisualElement Open() => OpenIn(this);
+
+        /// <summary>The list of choices over the kit root <paramref name="anchor"/> belongs to (a dropdown that is not on screen itself: a sort picker).</summary>
+        public VisualElement OpenIn(VisualElement anchor)
         {
             VisualElement scrim = null;
             var sheet = Kit.Box("fc-surface fc-picker", PickingMode.Position);
@@ -223,7 +228,7 @@ namespace MachineBrigade.Game.Hud
                 scroll.Add(row);
             }
             sheet.Add(scroll);
-            scrim = KitDialog.Present(this, sheet);
+            scrim = KitDialog.Present(anchor, sheet);
             return scrim;
         }
     }

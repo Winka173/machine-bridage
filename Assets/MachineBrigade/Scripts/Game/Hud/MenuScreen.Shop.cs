@@ -9,10 +9,11 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The Shop tab, sectioned down a rail on the left as mobile shops are (Clash Royale, Brawl
-    /// Stars): today's deals (the first one free), crates (their odds one tap away, before anything
-    /// is bought or opened), gems, army skins, premium units and early unlocks, and single-use
-    /// items. The currency pills' + buttons open the matching section.
+    /// E9, the shop, in tabs: Deals (the first one free), Crates (with their pictures, what one
+    /// holds and the odds a tap away, before anything is bought or opened), Coins (the packs'
+    /// pictures), Camouflage, Units (premium cards and early unlocks) and Items. Every tile says
+    /// its price, contents and, for crates, its odds; what is bought with the action button
+    /// (camouflage, units, items) is picked first, and the page's one main button buys it.
     /// </summary>
     internal sealed partial class MenuScreen
     {
@@ -26,13 +27,11 @@ namespace MachineBrigade.Game.Hud
             Items,
         }
 
-        private VisualElement _shopGrid, _shopAction, _lootPanel, _lootList;
-        private Label _shopNote, _lootTitle;
+        private VisualElement _shopGrid, _shopDock;
+        private KitTabs _shopTabs;
+        private Label _shopNote;
         private ShopTab _shopTab = ShopTab.Deals;
         private string _shopSelected;
-        private readonly List<(VisualElement card, string id)> _shopCards = new();
-        private readonly List<(CrateKind kind, Label count, VisualElement open)> _crateCounts = new();
-        private Label _adCrateLabel, _freeDealLabel, _goldDealLabel;
 
         /// <summary>A skin is being tried on (null: back to the equipped one).</summary>
         public event Action<string> SkinPreviewed;
@@ -41,107 +40,149 @@ namespace MachineBrigade.Game.Hud
 
         private void BuildShopPage()
         {
-            var page = TabPage(Tab.Shop, "shop-page opaque");
-            var rail = UiKit.Box("shop-rail");
-            foreach (var (tab, icon, key) in new[]
-                     {
-                         (ShopTab.Deals, "star", "shop.deals"), (ShopTab.Crates, "crate", "arsenal.crates"), (ShopTab.Coins, "coin", "shop.coins"),
-                         (ShopTab.Skins, "paint", "shop.skins"), (ShopTab.Units, "tank", "shop.units"), (ShopTab.Items, "bomb", "shop.items"),
-                     })
-            {
-                var t = tab;
-                var button = UiKit.Button("rail-button", () => OpenShop(t));
-                button.Add(UiKit.Icon(icon, UiKit.Ink, 1.9f));
-                button.Add(UiKit.Text(Strings.Get(key), "rail-label"));
-                rail.Add(Choice(button, () => _shopTab == t));
-            }
-            page.Add(rail);
-            var main = UiKit.Box("shop-main");
-            _shopNote = UiKit.Text("", "menu-note");
-            main.Add(_shopNote);
-            var scroll = Scroller("shop-scroll");
-            _shopGrid = scroll.contentContainer;
-            main.Add(scroll);
-            var dock = UiKit.Box("shop-dock");
-            _shopAction = UiKit.WideButton("wide primary big shop-buy", "coin", "", null, ShopAction);
-            dock.Add(_shopAction);
-            main.Add(dock);
-            page.Add(main);
-            BuildLootPanel();
-            BuildShopGrid();
+            var page = TabPage(Tab.Shop, "fc-page--opaque fc-shop");
+            _shopTabs = new KitTabs(new[] { Strings.Get("shop.deals"), Strings.Get("arsenal.crates"), Strings.Get("shop.coins"), Strings.Get("shop.skins"),
+                Strings.Get("shop.units"), Strings.Get("shop.items") }, 0, i => OpenShop((ShopTab)i));
+            page.Add(_shopTabs);
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            var body = Kit.Box("fc-page__body");
+            _shopNote = Kit.Text("", "fc-body-2 fc-mb-3");
+            body.Add(_shopNote);
+            _shopGrid = Kit.Box("fc-shop__grid");
+            body.Add(_shopGrid);
+            scroll.Add(body);
+            page.Add(scroll);
+            _shopDock = Kit.Box("fc-shop__dock");
+            page.Add(_shopDock);
         }
 
-        /// <summary>Opens the Shop tab on a section (the currency pills' + buttons, "get blueprints").</summary>
+        /// <summary>Opens the shop on a section (the coins' plus, "get blueprints").</summary>
         private void OpenShop(ShopTab tab)
         {
             _shopTab = tab;
             _shopSelected = null;
             SkinPreviewed?.Invoke(null);
-            BuildShopGrid();
             if (_tab != Tab.Shop || _overlays.Count > 0) ShowTab(Tab.Shop);
             else Refresh();
         }
 
-        private void BuildShopGrid()
+        private bool BuysWithAction => _shopTab is ShopTab.Skins or ShopTab.Units or ShopTab.Items;
+
+        private void RefreshShop()
         {
-            _shopGrid.Clear();
-            _shopCards.Clear();
-            _crateCounts.Clear();
-            _adCrateLabel = _freeDealLabel = _goldDealLabel = null;
+            if (_shopGrid == null || _tab != Tab.Shop) return;
+            _shopTabs.Select((int)_shopTab, false);
             _shopNote.text = _shopTab switch
             {
                 ShopTab.Items => Strings.Get("shop.itemsNote"),
                 ShopTab.Crates => Strings.Get("arsenal.cratesNote") + " " + Strings.Get("arsenal.cratesHint"),
                 ShopTab.Deals => Strings.Get("shop.dealsNote"),
+                ShopTab.Skins => Strings.Get("shop.skinsNote"),
                 _ => "",
             };
             _shopNote.style.display = string.IsNullOrEmpty(_shopNote.text) ? DisplayStyle.None : DisplayStyle.Flex;
-            var grid = UiKit.Box("shop-grid");
+            _shopGrid.Clear();
             switch (_shopTab)
             {
                 case ShopTab.Deals:
-                    grid.Add(DealCard("free", "crate", Strings.Get("deal.free"), Strings.Get("crate.battle"), out _freeDealLabel, ClaimFreeDeal));
-                    grid.Add(DealCard("ad", "ad", Strings.Get("crate.ad"), "", out _adCrateLabel, WatchAdCrate));
-                    grid.Add(DealCard("gold", "crate", Strings.Get("deal.gold"), Strings.Get("crate.gold"), out _goldDealLabel, BuyGoldDeal));
+                    _shopGrid.Add(FreeDealTile());
+                    _shopGrid.Add(AdCrateTile());
+                    _shopGrid.Add(GoldDealTile());
                     break;
                 case ShopTab.Crates:
-                    foreach (CrateKind kind in Enum.GetValues(typeof(CrateKind))) grid.Add(CrateTile(kind));
+                    foreach (CrateKind kind in Enum.GetValues(typeof(CrateKind))) _shopGrid.Add(CrateTile(kind));
                     break;
                 case ShopTab.Coins:
-                    foreach (var (id, coins, price) in CoinStore.Packs) grid.Add(CoinCard(id, coins, price));
+                    var index = 0;
+                    foreach (var (id, coins, price) in CoinStore.Packs) _shopGrid.Add(CoinTile(id, coins, price, index++));
                     break;
                 case ShopTab.Skins:
-                    foreach (var skin in Skins.All) grid.Add(SkinCard(skin));
+                    foreach (var skin in Skins.All) _shopGrid.Add(SkinTile(skin));
                     break;
                 case ShopTab.Units:
-                    foreach (var id in PremiumCards) grid.Add(UnitCard(id, premium: true));
+                    foreach (var id in PremiumCards) _shopGrid.Add(UnitTile(id, premium: true));
                     foreach (var doctrine in Doctrine.All)
-                        if (doctrine.Id != "armor") grid.Add(DoctrineCard(doctrine.Id));
+                        if (doctrine.Id != "armor") _shopGrid.Add(DoctrineTile(doctrine.Id));
                     foreach (var id in MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports))
-                        if (Progression.Route(id) == CardRoute.Campaign) grid.Add(UnitCard(id, premium: false));
+                        if (Progression.Route(id) == CardRoute.Campaign) _shopGrid.Add(UnitTile(id, premium: false));
                     break;
                 default:
-                    foreach (var id in Progression.Items) grid.Add(ItemCard(id));
+                    foreach (var id in Progression.Items) _shopGrid.Add(ItemTile(id));
                     break;
             }
-            _shopGrid.Add(grid);
+            FillShopDock();
         }
 
-        private bool BuysWithAction => _shopTab is ShopTab.Skins or ShopTab.Units or ShopTab.Items;
+        /// <summary>A shop tile: a picture, the name, what it holds, and its buttons or its price.</summary>
+        private VisualElement ShopTile(string classes, Texture2D picture, string icon, string name, string contents, Action tap = null, bool chosen = false)
+        {
+            var tile = tap != null ? Kit.Tappable(KitPanel.SurfaceClass + " fc-shop__tile " + classes, tap) : Kit.Box(KitPanel.SurfaceClass + " fc-shop__tile " + classes);
+            tile.EnableInClassList("fc-shop__tile--chosen", chosen);
+            var art = Kit.Box("fc-shop__art");
+            if (picture != null) art.style.backgroundImage = Background.FromTexture2D(picture);
+            else if (icon != null) art.Add(Kit.Icon(icon, "fc-shop__art-icon"));
+            tile.Add(art);
+            var body = Kit.Box("fc-shop__body");
+            body.Add(Kit.Text(Kit.Caps(name), "fc-panel-title"));
+            if (!string.IsNullOrEmpty(contents)) body.Add(Kit.Small(contents));
+            tile.Add(body);
+            return tile;
+        }
+
+        private static VisualElement PriceLine(int price, string status = null)
+        {
+            var row = Kit.Box("fc-row fc-shop__price");
+            var coin = Kit.Box("fc-currency");
+            coin.Add(Kit.Icon("coin"));
+            coin.Add(Kit.Text(Kit.Count(price), "fc-currency__value"));
+            row.Add(coin);
+            if (!string.IsNullOrEmpty(status)) row.Add(Kit.Text(status, "fc-small fc-ml-4"));
+            return row;
+        }
+
+        private static VisualElement Buttons(VisualElement tile, params VisualElement[] buttons)
+        {
+            var row = Kit.Box("fc-row fc-row--wrap fc-gap-2 fc-shop__buttons");
+            foreach (var b in buttons) row.Add(b);
+            tile.Q(className: "fc-shop__body").Add(row);
+            return tile;
+        }
 
         // ------------------------------------------------------------------ deals
 
-        private static VisualElement DealCard(string kind, string icon, string title, string sub, out Label status, Action act)
+        private VisualElement FreeDealTile()
         {
-            var card = UiKit.Button("shop-card deal-card " + kind, act);
-            var art = UiKit.Box("deal-art");
-            art.Add(UiKit.Icon(icon, UiKit.Ink, 1.8f));
-            card.Add(art);
-            card.Add(UiKit.Text(title, "shop-name"));
-            if (!string.IsNullOrEmpty(sub)) card.Add(UiKit.Text(sub, "shop-sub"));
-            status = UiKit.Text("", "deal-status");
-            card.Add(status);
-            return card;
+            var ready = PlayerProfile.FreeDealReady;
+            var tile = ShopTile("", ShopArt.Crate(CrateKind.Battle), "crate", Strings.Get("deal.free"), Strings.Get("crate.battle"));
+            var claim = new KitButton(ButtonTier.Claim, Strings.Get("deal.open"), ClaimFreeDeal);
+            if (!ready) claim.Disable(Strings.Get("deal.tomorrow"));
+            return Buttons(tile, claim);
+        }
+
+        private VisualElement AdCrateTile()
+        {
+            var left = PlayerProfile.AdCratesLeft;
+            var wait = PlayerProfile.AdCrateWait;
+            var line = left <= 0 ? Strings.Get("crate.adDone")
+                : wait > TimeSpan.Zero ? Strings.Format("crate.adWait", left, $"{(int)wait.TotalMinutes}:{wait.Seconds:00}")
+                : Strings.Format("crate.adLeft", left, Strings.Get("crate." + DailyCrates.AdCrate(DailyCrates.AdCrates - left).ToString().ToLowerInvariant()));
+            var tile = ShopTile("", ShopArt.Crate(CrateKind.Silver), "ad", Strings.Get("crate.ad"), line);
+            var watch = new KitButton(ButtonTier.Claim, Strings.Get("crate.watch"), WatchAdCrate, "ad");
+            if (left <= 0) watch.Disable(Strings.Get("crate.adDoneShort"));
+            else if (wait > TimeSpan.Zero) watch.Disable(Strings.Format("crate.readyIn", $"{(int)wait.TotalMinutes}:{wait.Seconds:00}"));
+            return Buttons(tile, watch);
+        }
+
+        private VisualElement GoldDealTile()
+        {
+            var tile = ShopTile("", ShopArt.Crate(CrateKind.Gold), "crate", Strings.Get("deal.gold"),
+                PlayerProfile.GoldDealReady
+                    ? Strings.Format("deal.goldPrice", Kit.Count(PlayerProfile.GoldDealPrice), Kit.Count(Crates.CoinPrice[(int)CrateKind.Gold]))
+                    : Strings.Get("deal.tomorrow"));
+            var buy = new KitButton(ButtonTier.Secondary, Kit.Count(PlayerProfile.GoldDealPrice), BuyGoldDeal, "coin");
+            if (!PlayerProfile.GoldDealReady) buy.Disable(Strings.Get("deal.tomorrow"));
+            else if (PlayerProfile.Coins < PlayerProfile.GoldDealPrice) buy.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(PlayerProfile.GoldDealPrice - PlayerProfile.Coins)));
+            return Buttons(tile, buy);
         }
 
         private void ClaimFreeDeal()
@@ -169,53 +210,44 @@ namespace MachineBrigade.Game.Hud
             OpenCrate(CrateKind.Gold);
         }
 
-        // ------------------------------------------------------------------ crates and gems
+        // ------------------------------------------------------------------ crates and coins
 
         private VisualElement CrateTile(CrateKind kind)
         {
-            var k = kind;
-            var tile = UiKit.Box("crate-tile " + kind.ToString().ToLowerInvariant());
-            var top = UiKit.Box("crate-top");
-            top.Add(UiKit.Icon("crate", UiKit.Ink, 1.8f));
-            var texts = UiKit.Box("crate-texts");
-            texts.Add(UiKit.Text(Strings.Get("crate." + kind.ToString().ToLowerInvariant()), "crate-name"));
-            var count = UiKit.Text("", "crate-count");
-            texts.Add(count);
-            top.Add(texts);
-            var odds = UiKit.Button("crate-odds", () => ShowOdds(k));
-            odds.Add(UiKit.Icon("info", UiKit.Ink, 1.8f));
-            top.Add(odds);
-            tile.Add(top);
-            var buttons = UiKit.Box("crate-buttons");
-            var open = CrateButton("primary", "crate", Strings.Get("crate.open"), () => OpenCrate(k));
+            var k = (int)kind;
+            var owned = PlayerProfile.CrateCount(kind);
+            var contents = Strings.Format("odds.contents", Crates.CoinsLow[k], Crates.CoinsHigh[k], Crates.PrintCount[k], Crates.PrintCards[k], Crates.Rolls[k]);
+            var tile = ShopTile("fc-rarity-frame-" + Mathf.Min(4, k + 1), ShopArt.Crate(kind), "crate",
+                Strings.Get("crate." + kind.ToString().ToLowerInvariant()), contents);
+            var best = Rarity.Legendary;
+            while (best > Rarity.Common && Crates.AtLeastOne(kind, best) < 0.001f) best--;
+            tile.Q(className: "fc-shop__body").Add(Kit.Small(Strings.Format("shop.bestOdds", Strings.Get("rarity." + best.ToString().ToLowerInvariant()),
+                (Crates.AtLeastOne(kind, best) * 100f).ToString("0.#"))));
+            tile.Q(className: "fc-shop__body").Add(Kit.Text(Strings.Format("crate.owned", owned), "fc-body fc-mt-1"));
+            var buttons = new List<VisualElement>();
+            var open = new KitButton(ButtonTier.Claim, Strings.Get("crate.open"), () => OpenCrate(kind), "crate");
+            if (owned <= 0) open.Disable(Strings.Get("crate.noneShort"));
             buttons.Add(open);
-            if (Crates.CoinPrice[(int)kind] > 0)
-                buttons.Add(CrateButton("", "coin", Crates.CoinPrice[(int)kind].ToString("N0"), () => BuyCrate(k)));
-            tile.Add(buttons);
-            _crateCounts.Add((kind, count, open));
-            return tile;
+            if (Crates.CoinPrice[k] > 0)
+            {
+                var buy = new KitButton(ButtonTier.Secondary, Kit.Count(Crates.CoinPrice[k]), () => BuyCrate(kind), "coin");
+                if (PlayerProfile.Coins < Crates.CoinPrice[k]) buy.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(Crates.CoinPrice[k] - PlayerProfile.Coins)));
+                buttons.Add(buy);
+            }
+            buttons.Add(new KitButton(ButtonTier.Text, Strings.Get("crate.odds"), () => ShowOdds(kind)));
+            return Buttons(tile, buttons.ToArray());
         }
 
-        private VisualElement CoinCard(string id, int coins, string price)
+        private VisualElement CoinTile(string id, int coins, string price, int index)
         {
             var pack = id;
-            var card = UiKit.Button("shop-card coin-card", () => CoinStore.Buy(pack, ok =>
+            var tile = ShopTile("", ShopArt.CoinPack(index), "coin", Strings.Format("coins.packName", Kit.Count(coins)),
+                CoinStore.TestPurchases ? Strings.Format("coins.testPrice", price) : price);
+            return Buttons(tile, new KitButton(ButtonTier.Secondary, price, () => CoinStore.Buy(pack, ok =>
             {
-                Note(ok ? Strings.Format("coins.bought", coins.ToString("N0")) : Strings.Get("coins.soon"), !ok);
+                Note(ok ? Strings.Format("coins.bought", Kit.Count(coins)) : Strings.Get("coins.soon"), !ok);
                 Refresh();
-            }));
-            card.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
-            card.Add(UiKit.Text(coins.ToString("N0"), "shop-name"));
-            card.Add(UiKit.Text(CoinStore.TestPurchases ? price + "  ·  TEST" : price, "shop-sub"));
-            return card;
-        }
-
-        private static VisualElement CrateButton(string extra, string icon, string text, Action onClick)
-        {
-            var button = UiKit.Button("crate-button " + extra, onClick);
-            button.Add(UiKit.Icon(icon, UiKit.Ink, 1.7f));
-            button.Add(UiKit.Text(text, "crate-button-text"));
-            return button;
+            })));
         }
 
         private void OpenCrate(CrateKind kind)
@@ -256,186 +288,132 @@ namespace MachineBrigade.Game.Hud
             });
         }
 
-        /// <summary>The odds screen: what one crate holds and the chance of every rarity, with the player's pity counters.</summary>
+        /// <summary>The odds: what one crate holds and the chance of every rarity, with the player's pity counters.</summary>
         private void ShowOdds(CrateKind kind)
         {
             var k = (int)kind;
-            _lootList.Clear();
-            _lootTitle.text = Strings.Format("odds.title", Strings.Get("crate." + kind.ToString().ToLowerInvariant()));
-            Line(Strings.Format("odds.contents", Crates.CoinsLow[k], Crates.CoinsHigh[k], Crates.PrintCount[k], Crates.PrintCards[k], Crates.Rolls[k]), null);
+            var body = Kit.Box("");
+            body.Add(Kit.Body(Strings.Format("odds.contents", Crates.CoinsLow[k], Crates.CoinsHigh[k], Crates.PrintCount[k], Crates.PrintCards[k], Crates.Rolls[k])));
             for (var r = 0; r < 5; r++)
             {
                 var rarity = (Rarity)r;
-                Line(Strings.Format("odds.roll", Strings.Get("rarity." + rarity.ToString().ToLowerInvariant()), (Crates.Odds[k][r] * 100f).ToString("0.#"),
-                    (Crates.AtLeastOne(kind, rarity) * 100f).ToString("0.#")), GearArt.Colors[r]);
+                body.Add(Kit.Text(Strings.Format("odds.roll", Strings.Get("rarity." + rarity.ToString().ToLowerInvariant()), (Crates.Odds[k][r] * 100f).ToString("0.#"),
+                    (Crates.AtLeastOne(kind, rarity) * 100f).ToString("0.#")), "fc-body fc-mt-2 fc-rarity-text-" + r));
             }
-            // Which kind of equipment each roll is: vehicle or tower, at the same rarity odds.
             var tower = Crates.TowerShare[k];
-            Line(Strings.Format("odds.towerShare", ((1f - tower) * 100f).ToString("0.#"), (tower * 100f).ToString("0.#"),
-                (Crates.AtLeastOneTower(kind) * 100f).ToString("0.#")), null);
-            if (kind == CrateKind.Gold) Line(Strings.Get("odds.goldGuaranteed"), null);
-            if (kind == CrateKind.Legendary) Line(Strings.Get("odds.legendaryGuaranteed"), null);
+            body.Add(Kit.Body2(Strings.Format("odds.towerShare", ((1f - tower) * 100f).ToString("0.#"), (tower * 100f).ToString("0.#"),
+                (Crates.AtLeastOneTower(kind) * 100f).ToString("0.#"))));
+            if (kind == CrateKind.Gold) body.Add(Kit.Body2(Strings.Get("odds.goldGuaranteed")));
+            if (kind == CrateKind.Legendary) body.Add(Kit.Body2(Strings.Get("odds.legendaryGuaranteed")));
             if (Crates.EpicPity[k] > 0)
-                Line(Strings.Format("odds.pityEpic", Crates.EpicPity[k], Math.Max(1, Crates.EpicPity[k] - PlayerProfile.SinceEpic(kind))), null);
+                body.Add(Kit.Body2(Strings.Format("odds.pityEpic", Crates.EpicPity[k], Math.Max(1, Crates.EpicPity[k] - PlayerProfile.SinceEpic(kind)))));
             if (Crates.LegendaryPity[k] > 0)
-                Line(Strings.Format("odds.pityLegendary", Crates.LegendaryPity[k], Math.Max(1, Crates.LegendaryPity[k] - PlayerProfile.SinceLegendary(kind))), null);
-            Line(Strings.Get("odds.special"), null);
-            Line(Strings.Get("odds.updated"), null);
-            _lootPanel.style.display = DisplayStyle.Flex;
-            _lootPanel.BringToFront();
+                body.Add(Kit.Body2(Strings.Format("odds.pityLegendary", Crates.LegendaryPity[k], Math.Max(1, Crates.LegendaryPity[k] - PlayerProfile.SinceLegendary(kind)))));
+            body.Add(Kit.Small(Strings.Get("odds.special")));
+            body.Add(Kit.Small(Strings.Get("odds.updated")));
+            ShowSheet(Strings.Format("odds.title", Strings.Get("crate." + kind.ToString().ToLowerInvariant())), body);
         }
 
-        private void BuildLootPanel()
+        /// <summary>A scrolling sheet over the screen with a title and one button to close it.</summary>
+        private void ShowSheet(string title, VisualElement content)
         {
-            _lootPanel = UiKit.Box("overlay loot-overlay", PickingMode.Position);
-            var card = UiKit.Box("loot-card", PickingMode.Position);
-            _lootTitle = UiKit.Text("", "loot-title");
-            card.Add(_lootTitle);
-            var scroll = Scroller("loot-scroll");
-            _lootList = scroll.contentContainer;
-            card.Add(scroll);
-            card.Add(UiKit.WideButton("wide primary", "check", Strings.Get("loot.ok"), null, () =>
+            VisualElement scrim = null;
+            var sheet = Kit.Box(KitPanel.SurfaceClass + " fc-picker fc-sheet", PickingMode.Position);
+            sheet.Add(Kit.Text(Kit.Caps(title), "fc-panel-title fc-panel__title"));
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-picker__scroll");
+            scroll.Add(content);
+            sheet.Add(scroll);
+            var row = Kit.Box("fc-dialog__buttons fc-mt-3");
+            row.Add(new KitButton(ButtonTier.Secondary, Strings.Get("loot.ok"), () =>
             {
-                _lootPanel.style.display = DisplayStyle.None;
+                scrim?.RemoveFromHierarchy();
                 Refresh();
-            }));
-            _lootPanel.Add(card);
-            _lootPanel.style.display = DisplayStyle.None;
-            Root.Add(_lootPanel);
+            }, "check"));
+            sheet.Add(row);
+            scrim = KitDialog.Present(Root, sheet);
         }
 
-        /// <summary>What came out of a crate, one line after another (the best last, for the drumroll), equipment with its picture.</summary>
+        /// <summary>What came out of a crate, one line after another (the best last, for the drumroll), equipment as cards.</summary>
         private void ShowLoot(CrateKind kind, Crates.Loot loot)
         {
-            _lootList.Clear();
-            _lootTitle.text = Strings.Get("crate." + kind.ToString().ToLowerInvariant());
-            var gear = UiKit.Box("loot-gear");
-            _lootList.Add(gear);
-            var rows = new List<VisualElement> { Line(Strings.Format("loot.coins", loot.Coins.ToString("N0")), null, "coin") };
-            foreach (var (card, count) in loot.Blueprints) rows.Add(Line(Strings.Format("loot.prints", count, Strings.Card(card)), null, "blueprint"));
-            if (loot.Universal > 0) rows.Add(Line(Strings.Format("loot.universal", loot.Universal), null, "blueprint"));
+            var body = Kit.Box("");
+            var rows = new List<VisualElement>();
+            VisualElement Line(string icon, string text)
+            {
+                var row = Kit.Box("fc-row fc-mb-2");
+                row.Add(Kit.Icon(icon, "fc-rule-icon"));
+                row.Add(Kit.Text(text, "fc-body fc-row-text fc-ml-2"));
+                body.Add(row);
+                rows.Add(row);
+                return row;
+            }
+            Line("coin", Strings.Format("loot.coins", Kit.Count(loot.Coins)));
+            foreach (var (card, count) in loot.Blueprints) Line("blueprint", Strings.Format("loot.prints", count, Strings.Card(card)));
+            if (loot.Universal > 0) Line("blueprint", Strings.Format("loot.universal", loot.Universal));
+            var gear = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-2");
             foreach (var item in loot.Gear.OrderBy(g => g.rarity))
             {
-                var cell = UiKit.Box("loot-gear-cell");
-                cell.Add(GearArt.Tile(item, 96));
-                var name = UiKit.Text(GearName(item), "loot-gear-name");
-                name.style.color = GearArt.Colors[item.rarity];
-                cell.Add(name);
-                cell.Add(UiKit.Text(StatText(item), "loot-gear-stat"));
-                gear.Add(cell);
-                rows.Add(cell);
+                var card = new KitGearCard(GearCardData.From(item));
+                gear.Add(card);
+                rows.Add(card);
             }
-            gear.style.display = loot.Gear.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            if (loot.Gear.Count > 0) body.Add(gear);
+            // Revealed one by one.
             for (var i = 0; i < rows.Count; i++)
             {
                 var row = rows[i];
-                // Revealed one by one.
                 row.style.opacity = 0f;
                 row.schedule.Execute(() => row.style.opacity = 1f).StartingIn(150 + i * 240);
             }
-            _lootPanel.style.display = DisplayStyle.Flex;
-            _lootPanel.BringToFront();
+            ShowSheet(Strings.Get("crate." + kind.ToString().ToLowerInvariant()), body);
         }
 
-        private VisualElement Line(string text, Color? colour, string icon = null)
+        // ------------------------------------------------------------------ camouflage, units, items (bought with the action button)
+
+        private VisualElement SkinTile(Skin skin)
         {
-            var row = UiKit.Box("loot-row");
-            if (icon != null) row.Add(UiKit.Icon(icon, colour ?? UiKit.Ink, 1.6f));
-            var label = UiKit.Text(text, "loot-text");
-            if (colour is { } c) label.style.color = c;
-            row.Add(label);
-            _lootList.Add(row);
-            return row;
+            var tile = ShopTile("", null, null, Strings.Get("skin." + skin.Id), "", () => SelectShop(skin.Id), skin.Id == _shopSelected);
+            var art = tile.Q(className: "fc-shop__art");
+            art.Add(new KitPaintSample(new[] { skin.Base, skin.Second, skin.Third }, skin.Metallic > 0.6f));
+            var owned = PlayerProfile.Owns(skin.Id);
+            var equipped = PlayerProfile.EquippedSkin == skin.Id;
+            tile.Q(className: "fc-shop__body").Add(PriceLine(skin.Price, equipped ? Strings.Get("shop.equipped") : owned ? Strings.Get("shop.owned") : null));
+            return tile;
         }
 
-        // ------------------------------------------------------------------ skins, units, items (bought with the action button)
-
-        private VisualElement SkinCard(Skin skin)
-        {
-            var card = UiKit.Button("shop-card skin-card", () => SelectShop(skin.Id));
-            var swatch = UiKit.Box("skin-swatch");
-            foreach (var colour in new[] { skin.Base, skin.Second, skin.Third, skin.Base })
-            {
-                var band = UiKit.Box("skin-band");
-                band.style.backgroundColor = colour;
-                swatch.Add(band);
-            }
-            if (skin.Metallic > 0.6f) swatch.AddToClassList("metal");
-            card.Add(swatch);
-            card.Add(UiKit.Text(Strings.Get("skin." + skin.Id), "shop-name"));
-            card.Add(PriceTag(skin.Price));
-            _shopCards.Add((card, skin.Id));
-            return card;
-        }
-
-        private VisualElement UnitCard(string id, bool premium)
+        private VisualElement UnitTile(string id, bool premium)
         {
             var available = _catalog.Vehicles.ContainsKey(id) || _catalog.TryGetSupport(id, out _);
-            var card = UiKit.Button("shop-card unit-card", () =>
-            {
-                if (available) SelectShop(id);
-                else Note(Strings.Format("shop.soon", Strings.Card(id)), true);
-            });
-            card.EnableInClassList("soon", !available);
-            var art = UiKit.Box("unit-art" + (premium ? " premium" : ""));
-            art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            card.Add(art);
-            card.Add(UiKit.Text(Strings.Card(id), "shop-name"));
-            if (!premium)
-            {
-                var mission = Progression.UnlockMission(id);
-                card.Add(UiKit.Text(mission != null ? Strings.Format("shop.fromMission", Campaign.Label(mission)) : "", "shop-sub"));
-            }
-            card.Add(available ? PriceTag(Progression.Price(id, _catalog)) : UiKit.Text(Strings.Get("shop.comingSoon"), "shop-soon"));
-            _shopCards.Add((card, id));
-            return card;
+            var mission = premium ? null : Progression.UnlockMission(id);
+            var tile = ShopTile(premium ? "fc-shop__tile--premium" : "", CardArt.For(id), CardIcons.For(id), Strings.Card(id),
+                premium ? Strings.Get("shop.premium") : mission != null ? Strings.Format("shop.fromMission", Campaign.Label(mission)) : "",
+                () =>
+                {
+                    if (available) SelectShop(id);
+                    else Note(Strings.Format("shop.soon", Strings.Card(id)), true);
+                }, id == _shopSelected);
+            tile.Q(className: "fc-shop__body").Add(available
+                ? PriceLine(Progression.Price(id, _catalog), PlayerProfile.IsUnlocked(id) ? Strings.Get("shop.owned") : null)
+                : Kit.Small(Strings.Get("shop.comingSoon")));
+            return tile;
         }
 
-        private VisualElement ItemCard(string id)
+        private VisualElement ItemTile(string id)
         {
-            var card = UiKit.Button("shop-card unit-card", () =>
-            {
-                SelectShop(id);
-                Note(Strings.Get("item." + id + ".info"));
-            });
-            var art = UiKit.Box("unit-art premium");
-            art.Add(UiKit.Icon(CardIcons.For(id), UiKit.Ink, 1.6f));
-            card.Add(art);
-            card.Add(UiKit.Text(Strings.Support(id), "shop-name"));
-            card.Add(UiKit.Text(Strings.Format("shop.ownedCount", PlayerProfile.ItemCount(id)), "shop-sub item-owned"));
-            card.Add(PriceTag(Progression.ItemPrice(id)));
-            _shopCards.Add((card, id));
-            return card;
+            var tile = ShopTile("", null, CardIcons.For(id), Strings.Support(id), Strings.Get("item." + id + ".info"), () => SelectShop(id), id == _shopSelected);
+            tile.Q(className: "fc-shop__body").Add(PriceLine(Progression.ItemPrice(id), Strings.Format("shop.ownedCount", PlayerProfile.ItemCount(id))));
+            return tile;
         }
 
-        private VisualElement DoctrineCard(string doctrine)
+        private VisualElement DoctrineTile(string doctrine)
         {
             var id = "doctrine." + doctrine;
-            var card = UiKit.Button("shop-card unit-card", () =>
-            {
-                SelectShop(id);
-                Note(Strings.Get(id + ".info"));
-            });
-            var art = UiKit.Box("unit-art premium");
-            art.Add(UiKit.Icon(DoctrineIcon(doctrine), UiKit.Ink, 1.6f));
-            card.Add(art);
-            card.Add(UiKit.Text(Strings.Get(id), "shop-name"));
-            card.Add(UiKit.Text(Strings.Get("doctrine.title"), "shop-sub"));
-            card.Add(PriceTag(Progression.DoctrinePrice));
-            _shopCards.Add((card, id));
-            return card;
+            var tile = ShopTile("", null, DoctrineIcon(doctrine), Strings.Get(id), Strings.Get(id + ".info"), () => SelectShop(id), id == _shopSelected);
+            tile.Q(className: "fc-shop__body").Add(PriceLine(Progression.DoctrinePrice, PlayerProfile.Owns(id) ? Strings.Get("shop.owned") : null));
+            return tile;
         }
 
         private static bool IsDoctrine(string id) => id.StartsWith("doctrine.");
-
-        private static VisualElement PriceTag(int price)
-        {
-            var tag = UiKit.Box("price-tag");
-            tag.Add(UiKit.Icon("coin", UiKit.Ink, 1.8f));
-            tag.Add(UiKit.Text(price.ToString("N0"), "price-value"));
-            tag.Add(UiKit.Text("", "price-status"));
-            return tag;
-        }
 
         private void SelectShop(string id)
         {
@@ -447,73 +425,33 @@ namespace MachineBrigade.Game.Hud
         private bool IsItemTab => _shopTab == ShopTab.Items;
         private bool IsSkinTab => _shopTab == ShopTab.Skins;
 
-        private bool Owned(string id) => IsItemTab ? false : IsSkinTab || IsDoctrine(id) ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id);
+        private bool Owned(string id) => !IsItemTab && (IsSkinTab || IsDoctrine(id) ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id));
 
         private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id) : IsDoctrine(id) ? Progression.DoctrinePrice
             : IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
 
-        private void RefreshShop()
+        /// <summary>The page's one main button for camouflage, units and items: buy (or use) the picked one.</summary>
+        private void FillShopDock()
         {
-            foreach (var (kind, count, open) in _crateCounts)
-            {
-                count.text = Strings.Format("crate.owned", PlayerProfile.CrateCount(kind));
-                // Nothing to open: the button greys (a tap still says why).
-                open.EnableInClassList("empty", PlayerProfile.CrateCount(kind) <= 0);
-            }
-            if (_adCrateLabel != null)
-            {
-                var left = PlayerProfile.AdCratesLeft;
-                var wait = PlayerProfile.AdCrateWait;
-                _adCrateLabel.text = left <= 0 ? Strings.Get("crate.adDone")
-                    : wait > TimeSpan.Zero ? Strings.Format("crate.adWait", left, $"{(int)wait.TotalMinutes}:{wait.Seconds:00}")
-                    : Strings.Format("crate.adLeft", left, Strings.Get("crate." + DailyCrates.AdCrate(DailyCrates.AdCrates - left).ToString().ToLowerInvariant()));
-            }
-            if (_freeDealLabel != null) _freeDealLabel.text = Strings.Get(PlayerProfile.FreeDealReady ? "deal.claim" : "deal.tomorrow");
-            if (_goldDealLabel != null)
-                _goldDealLabel.text = PlayerProfile.GoldDealReady
-                    ? Strings.Format("deal.goldPrice", PlayerProfile.GoldDealPrice.ToString("N0"), Crates.CoinPrice[(int)CrateKind.Gold].ToString("N0"))
-                    : Strings.Get("deal.tomorrow");
-            foreach (var (card, id) in _shopCards)
-            {
-                var owned = Owned(id);
-                var equipped = IsSkinTab && PlayerProfile.EquippedSkin == id;
-                card.EnableInClassList("chosen", id == _shopSelected);
-                card.EnableInClassList("owned", owned);
-                card.EnableInClassList("equipped", equipped);
-                var status = card.Q<Label>(className: "price-status");
-                if (status != null) status.text = equipped ? Strings.Get("shop.equipped") : owned ? Strings.Get("shop.owned") : "";
-                var count = card.Q<Label>(className: "item-owned");
-                if (count != null) count.text = Strings.Format("shop.ownedCount", PlayerProfile.ItemCount(id));
-            }
-            _shopAction.parent.style.display = BuysWithAction ? DisplayStyle.Flex : DisplayStyle.None;
+            _shopDock.Clear();
+            _shopDock.style.display = BuysWithAction ? DisplayStyle.Flex : DisplayStyle.None;
             if (!BuysWithAction) return;
-            var title = _shopAction.Q<Label>(className: "wide-title");
-            if (_shopSelected == null)
-            {
-                title.text = Strings.Get("shop.pick");
-                _shopAction.EnableInClassList("disabled", true);
-                return;
-            }
-            var price = PriceOf(_shopSelected);
-            var have = Owned(_shopSelected);
-            var enough = PlayerProfile.Coins >= price;
-            if (have)
-            {
-                var equipped = IsSkinTab && PlayerProfile.EquippedSkin == _shopSelected;
-                title.text = IsSkinTab ? Strings.Get(equipped ? "shop.equipped" : "shop.equip") : Strings.Get("shop.owned");
-                _shopAction.EnableInClassList("disabled", !IsSkinTab || equipped);
-            }
-            else if (IsItemTab)
-            {
-                title.text = enough ? Strings.Format("shop.buyItems", Progression.ItemPack, price.ToString("N0"))
-                    : Strings.Format("shop.short", (price - PlayerProfile.Coins).ToString("N0"));
-                _shopAction.EnableInClassList("disabled", !enough);
-            }
+            var action = new KitButton(ButtonTier.Primary, Strings.Get("shop.buyShort"), ShopAction, "coin");
+            if (_shopSelected == null) action.Disable(Strings.Get("shop.pick"));
             else
             {
-                title.text = enough ? Strings.Format("shop.buy", price.ToString("N0")) : Strings.Format("shop.short", (price - PlayerProfile.Coins).ToString("N0"));
-                _shopAction.EnableInClassList("disabled", !enough);
+                var price = PriceOf(_shopSelected);
+                if (Owned(_shopSelected))
+                {
+                    var equipped = IsSkinTab && PlayerProfile.EquippedSkin == _shopSelected;
+                    action.Label = IsSkinTab ? Strings.Get("shop.equip") : Strings.Get("shop.owned");
+                    if (!IsSkinTab) action.Disable(Strings.Get("shop.ownedShort"));
+                    else if (equipped) action.Disable(Strings.Get("shop.equipped"));
+                }
+                else if (PlayerProfile.Coins < price) action.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(price - PlayerProfile.Coins)));
+                else action.Label = IsItemTab ? Strings.Format("shop.buyItems", Progression.ItemPack, Kit.Count(price)) : Strings.Format("shop.buy", Kit.Count(price));
             }
+            _shopDock.Add(action);
         }
 
         private void ShopAction()
@@ -535,7 +473,6 @@ namespace MachineBrigade.Game.Hud
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);
                 Note(Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : IsDoctrine(id) ? Strings.Get(id) : Strings.Card(id)));
-                BuildCollection();
             }
             else
             {

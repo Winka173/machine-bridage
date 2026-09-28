@@ -99,47 +99,56 @@ namespace MachineBrigade.Game.Hud
     }
 
     /// <summary>
-    /// A story card over a page: a kicker, a title, portraits, a few sentences and one or two
-    /// actions. The chapter openings, the mission briefings and the epilogue use it.
+    /// A story card over a page (the kit's dialog surface on a scrim): a kicker, a title, the
+    /// battlefield's picture, the speaker's portrait and a few sentences, tags, an enemy general's
+    /// line, and one or two actions (Back, then the one main button). The chapter openings, the
+    /// mission briefings and the epilogue use it.
     /// </summary>
     internal sealed class StoryCard
     {
         private readonly Label _kicker, _title, _speaker, _role, _body, _aside;
-        private readonly VisualElement _portrait, _general, _asideBox, _buttons, _chips;
+        private readonly VisualElement _art, _portrait, _general, _asideBox, _buttons, _chips, _who;
         private Action _primary, _secondary;
 
-        public StoryCard()
+        public StoryCard(VisualElement host = null)
         {
-            Root = UiKit.Box("story-scrim", PickingMode.Position);
-            var card = UiKit.Box("story-card");
-            var head = UiKit.Box("story-head");
-            _kicker = UiKit.Text("", "story-kicker");
-            _title = UiKit.Text("", "story-title");
-            head.Add(_kicker);
-            head.Add(_title);
-            card.Add(head);
-            var main = UiKit.Box("story-main");
-            _portrait = Portraits.Element("khai", "story-portrait");
-            main.Add(_portrait);
-            var column = UiKit.Box("story-column");
-            _speaker = UiKit.Text("", "story-speaker");
-            _role = UiKit.Text("", "story-role");
-            _body = UiKit.Text("", "story-body");
-            column.Add(_speaker);
-            column.Add(_role);
-            column.Add(_body);
-            _chips = UiKit.Box("story-chips");
-            column.Add(_chips);
-            main.Add(column);
-            card.Add(main);
-            _asideBox = UiKit.Box("story-aside");
-            _general = Portraits.Element("varga", "story-aside-portrait");
+            Root = Kit.Box(KitDialog.ScrimClass + " fc-story-scrim", PickingMode.Position);
+            var card = Kit.Box(KitPanel.SurfaceClass + " fc-story", PickingMode.Position);
+            _art = Kit.Box("fc-story__art");
+            card.Add(_art);
+            // The text scrolls when it is long or the type is large; the buttons stay under it.
+            var column = Kit.Box("fc-story__column");
+            var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-story__scroll");
+            var main = Kit.Box("fc-story__main");
+            scroll.Add(main);
+            column.Add(scroll);
+            _kicker = Kit.Caption("");
+            main.Add(_kicker);
+            _title = Kit.Text("", "fc-title");
+            main.Add(_title);
+            _who = Kit.Box("fc-story__who");
+            _portrait = Portraits.Element("khai", "fc-portrait");
+            _who.Add(_portrait);
+            var names = Kit.Box("fc-row-text");
+            _speaker = Kit.Text("", "fc-panel-title");
+            _role = Kit.Small("");
+            names.Add(_speaker);
+            names.Add(_role);
+            _who.Add(names);
+            main.Add(_who);
+            _body = Kit.Body("");
+            main.Add(_body);
+            _chips = Kit.Box("fc-row fc-row--wrap fc-mt-3");
+            main.Add(_chips);
+            _asideBox = Kit.Box("fc-story__aside");
+            _general = Portraits.Element("varga", "fc-portrait fc-portrait--small");
             _asideBox.Add(_general);
-            _aside = UiKit.Text("", "story-aside-text");
+            _aside = Kit.Text("", "fc-body-2 fc-row-text");
             _asideBox.Add(_aside);
-            card.Add(_asideBox);
-            _buttons = UiKit.Box("story-buttons");
-            card.Add(_buttons);
+            main.Add(_asideBox);
+            _buttons = Kit.Box("fc-dialog__buttons fc-story__buttons");
+            column.Add(_buttons);
+            card.Add(column);
             Root.Add(card);
             Root.style.display = DisplayStyle.None;
         }
@@ -150,32 +159,42 @@ namespace MachineBrigade.Game.Hud
 
         /// <param name="speaker">A portrait id, or null for none.</param>
         /// <param name="aside">An enemy general and a line of theirs under the card, or null.</param>
+        /// <param name="map">The battlefield whose picture heads the card, or null.</param>
         public void Show(string kicker, string title, string speaker, string body, IReadOnlyList<string> chips,
-            (string general, string line)? aside, (string label, Action act) primary, (string label, Action act)? secondary)
+            (string general, string line)? aside, (string label, Action act) primary, (string label, Action act)? secondary, string map = null)
         {
-            _kicker.text = kicker.ToUpperInvariant();
-            _title.text = title;
-            _portrait.style.display = speaker != null ? DisplayStyle.Flex : DisplayStyle.None;
-            if (speaker != null) Portraits.Set(_portrait, speaker);
-            _speaker.text = speaker != null ? Strings.Get("char." + speaker + ".name").ToUpperInvariant() : "";
-            _role.text = speaker != null ? Strings.Get("char." + speaker + ".role") : "";
-            _speaker.style.display = _role.style.display = speaker != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _kicker.text = Kit.Caps(kicker);
+            _title.text = Kit.Caps(title);
+            var picture = map != null ? MapArt.For(map) : null;
+            _art.style.display = picture != null ? DisplayStyle.Flex : DisplayStyle.None;
+            if (picture != null) _art.style.backgroundImage = Background.FromTexture2D(picture);
+            _who.style.display = speaker != null ? DisplayStyle.Flex : DisplayStyle.None;
+            if (speaker != null)
+            {
+                Portraits.Set(_portrait, speaker);
+                _speaker.text = Kit.Caps(Strings.Get("char." + speaker + ".name"));
+                _role.text = Strings.Get("char." + speaker + ".role");
+            }
             _body.text = body;
             _chips.Clear();
             if (chips != null)
-                foreach (var chip in chips) _chips.Add(UiKit.Text(chip, "story-chip"));
+                foreach (var chip in chips)
+                {
+                    var tag = Kit.Box("fc-tag");
+                    tag.Add(Kit.Text(chip, "fc-small"));
+                    _chips.Add(tag);
+                }
             _asideBox.style.display = aside != null ? DisplayStyle.Flex : DisplayStyle.None;
             if (aside is { } a)
             {
                 Portraits.Set(_general, a.general);
-                _aside.text = Strings.Get("char." + a.general + ".name").ToUpperInvariant() + ": " + a.line;
+                _aside.text = Strings.Get("char." + a.general + ".name") + ": " + a.line;
             }
             _primary = primary.act;
             _secondary = secondary?.act;
             _buttons.Clear();
-            if (secondary is { } back) _buttons.Add(UiKit.WideButton("wide story-back", "retreat", back.label, null, () => Close(_secondary)));
-            _buttons.Add(UiKit.WideButton("wide primary story-go", "play", primary.label, null, () => Close(_primary)));
-            UiKit.Uppercase(_buttons);
+            if (secondary is { } back) _buttons.Add(new KitButton(ButtonTier.Secondary, back.label, () => Close(_secondary), "retreat"));
+            _buttons.Add(new KitButton(ButtonTier.Primary, primary.label, () => Close(_primary), "play"));
             Root.style.display = DisplayStyle.Flex;
             Root.BringToFront();
         }

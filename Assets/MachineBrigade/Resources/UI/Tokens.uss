@@ -114,6 +114,12 @@
     --fc-switch-width: 64px;
     --fc-switch-height: 34px;
     --fc-knob: 24px;
+
+    /* ---- screen layout (Screens.uss) */
+    --fc-topbar: 96px;
+    --fc-home-column: 440px;
+    --fc-detail-column: 520px;
+    --fc-scrim-home: rgba(8, 10, 12, 0.38);   /* the home screen's battle, dimmed 38 % */
 }
 
 /* ---- B. type scale, Large text size (Settings > Text size > Large), about 1.15x */
@@ -401,7 +407,7 @@
 
 /* ---- vehicle cards ------------------------------------------------------------------------------ */
 .fc-vcard {
-    width: var(--fc-card-width);
+    width: var(--fc-card-width); flex-shrink: 0;
     background-color: var(--fc-panel-raised);
     border-top-width: 0; border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
     border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border);
@@ -447,11 +453,13 @@
 .fc-vcard--compact .fc-vcard__art { height: var(--fc-card-compact-art); }
 .fc-vcard--compact .fc-vcard__name { font-size: var(--fc-fs-small); }
 .fc-vcard--compact .fc-vcard__level { display: none; }
+.fc-vcard--compact .fc-vcard__cp-unit { display: none; }
+.fc-vcard--compact.fc-vcard--show-level .fc-vcard__level { display: flex; }
 .fc-vcard--compact .fc-vcard__body { padding: var(--fc-space-2); }
 
 /* ---- gear cards: a picture per item type in a rarity frame, the short main stat, the level ---- */
 .fc-gcard {
-    width: var(--fc-gear-width);
+    width: var(--fc-gear-width); flex-shrink: 0;
     background-color: var(--fc-panel-raised);
     border-top-width: var(--fc-bar); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
     margin-right: var(--fc-space-3); margin-bottom: var(--fc-space-3);
@@ -619,3 +627,25 @@
 .fc-keep { flex-shrink: 0; }
 .fc-preview__specimen > .fc-nav-item { width: var(--fc-nav-width); }
 .fc-scroll .unity-scroll-view__content-container { width: 100%; }
+
+/* ---- kit variants the screens need ---------------------------------------------------------------- */
+.fc-rarity-text-0 { color: var(--fc-rarity-common); }
+.fc-rarity-text-1 { color: var(--fc-rarity-uncommon); }
+.fc-rarity-text-2 { color: var(--fc-rarity-rare); }
+.fc-rarity-text-3 { color: var(--fc-rarity-epic); }
+.fc-rarity-text-4 { color: var(--fc-rarity-legendary); }
+.fc-vcard--empty {
+    min-height: 180px; align-items: center; justify-content: center;
+    border-top-width: var(--fc-line); border-top-color: var(--fc-border);
+    background-color: var(--fc-bg-2);
+}
+.fc-vcard__plus { width: 36px; height: 36px; --icon-color: var(--fc-text-2); }
+.fc-gcard--empty { border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); border-top-width: var(--fc-line); min-height: 150px; }
+.fc-gcard--unfit { opacity: 0.45; }
+.fc-portrait { width: 88px; height: 88px; flex-shrink: 0; margin-right: var(--fc-space-3); -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-portrait--small { width: 56px; height: 56px; }
+.fc-star { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-border-strong); }
+.fc-star--on { --icon-color: var(--fc-coin); }
+.fc-stars { flex-direction: row; }
+.fc-rule-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text-2); }
+.fc-paint { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }

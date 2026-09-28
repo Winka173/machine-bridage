@@ -154,11 +154,18 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>The old menu's amber main-action classes (Hud.uss "menu v5"), and the kit's.</summary>
-        private static readonly string[] PrimaryClasses = { KitButton.PrimaryClass, "deploy-button", "campaign-start", "upgrade-big", "shop-buy" };
+        private static readonly string[] PrimaryClasses = { KitButton.PrimaryClass, "deploy-button", "campaign-start", "upgrade-big", "shop-buy", "base-save" };
 
         /// <summary>Primary buttons on screen (a kit preview specimen does not count: it documents a state).</summary>
         internal static int Primaries(VisualElement root)
         {
+            // Under an open dialog the page is not the screen any more: count the top dialog's only.
+            VisualElement modal = null;
+            root.Query(className: KitDialog.ScrimClass).ForEach(scrim =>
+            {
+                if (Shown(scrim)) modal = scrim;
+            });
+            if (modal != null) root = modal;
             var count = 0;
             foreach (var cls in PrimaryClasses)
                 root.Query(className: cls).ForEach(e =>
@@ -194,6 +201,37 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(24f, body.resolvedStyle.fontSize, 0.01f, "Large text size");
         }
 
+        /// <summary>Every check on a laid-out screen: cut texts, small targets and texts, primaries, clipping, the screen's edges.</summary>
+        internal static List<string> Check(VisualElement root, string name, Vector2 size, bool large, int? primariesExpected = null)
+        {
+            var failures = new List<string>();
+            failures.AddRange(CutTexts(root, size).Select(f => $"{name}: {f}"));
+            failures.AddRange(SmallTargets(root, Kit.TouchTarget).Select(f => $"{name}: small target {f}"));
+            failures.AddRange(SmallTexts(root, SmallestText(large)).Select(f => $"{name}: small text {f}"));
+            var primaries = Primaries(root);
+            if (primaries > 1) failures.Add($"{name}: {primaries} primary buttons");
+            if (primariesExpected is { } expected && primaries != expected) failures.Add($"{name}: {primaries} primary buttons, not {expected}");
+            // Nothing sticks out of the side of a vertical scroll view: it would be clipped, and never scrolls into view.
+            root.Query<ScrollView>().ForEach(scroll =>
+            {
+                if (scroll.mode != ScrollViewMode.Vertical || !Shown(scroll)) return;
+                var view = scroll.contentViewport.worldBound;
+                scroll.contentContainer.Query<VisualElement>().ForEach(e =>
+                {
+                    if (e.GetFirstAncestorOfType<ScrollView>() != scroll || !Shown(e)) return;
+                    if (e.worldBound.xMax > view.xMax + 0.5f || e.worldBound.xMin < view.xMin - 0.5f)
+                        failures.Add($"{name}: clipped at the side of a scroll view: {Describe(e)} {e.worldBound.xMin:0}-{e.worldBound.xMax:0} outside {view.xMin:0}-{view.xMax:0}");
+                });
+            });
+            // Nothing hangs off the edge of the screen (outside a scroll view).
+            root.Query(className: Tap.TargetClass).ForEach(e =>
+            {
+                if (Shown(e) && (e.worldBound.xMax > size.x + 0.5f || e.worldBound.yMax > size.y + 0.5f) && e.GetFirstAncestorOfType<ScrollView>() == null)
+                    failures.Add($"{name}: off screen {Describe(e)} at {e.worldBound.xMax:0},{e.worldBound.yMax:0}");
+            });
+            return failures;
+        }
+
         [Test]
         public void EveryKitPreviewPagePassesEveryCheck(
             [Values] KitPreview.Page page, [Values(false, true)] bool vietnamese, [Values(false, true)] bool large)
@@ -203,31 +241,7 @@ namespace MachineBrigade.Tests
             {
                 var preview = new KitPreview(_catalog, null, page, vietnamese, large);
                 Lay(preview.Root, size);
-                var root = preview.Root;
-                failures.AddRange(CutTexts(root, size).Select(f => $"{name}: {f}"));
-                failures.AddRange(SmallTargets(root, Kit.TouchTarget).Select(f => $"{name}: small target {f}"));
-                failures.AddRange(SmallTexts(root, SmallestText(large)).Select(f => $"{name}: small text {f}"));
-                var primaries = Primaries(root);
-                if (primaries > 1) failures.Add($"{name}: {primaries} primary buttons");
-                if (page == KitPreview.Page.Sample && primaries != 1) failures.Add($"{name}: the sample screen has {primaries} primary buttons, not one");
-                // Nothing sticks out of the side of a vertical scroll view: it would be clipped, and never scrolls into view.
-                root.Query<ScrollView>().ForEach(scroll =>
-                {
-                    if (scroll.mode != ScrollViewMode.Vertical || !Shown(scroll)) return;
-                    var view = scroll.contentViewport.worldBound;
-                    scroll.contentContainer.Query<VisualElement>().ForEach(e =>
-                    {
-                        if (e.GetFirstAncestorOfType<ScrollView>() != scroll || !Shown(e)) return;
-                        if (e.worldBound.xMax > view.xMax + 0.5f || e.worldBound.xMin < view.xMin - 0.5f)
-                            failures.Add($"{name}: clipped at the side of a scroll view: {Describe(e)} {e.worldBound.xMin:0}-{e.worldBound.xMax:0} outside {view.xMin:0}-{view.xMax:0}");
-                    });
-                });
-                // Nothing hangs off the edge of the screen (outside a scroll view).
-                root.Query(className: Tap.TargetClass).ForEach(e =>
-                {
-                    if (Shown(e) && (e.worldBound.xMax > size.x + 0.5f || e.worldBound.yMax > size.y + 0.5f) && e.GetFirstAncestorOfType<ScrollView>() == null)
-                        failures.Add($"{name}: off screen {Describe(e)} at {e.worldBound.xMax:0},{e.worldBound.yMax:0}");
-                });
+                failures.AddRange(Check(preview.Root, name, size, large, page == KitPreview.Page.Sample ? 1 : null));
             }
             Assert.IsEmpty(failures, string.Join("\n", failures.Distinct()));
         }
@@ -314,62 +328,42 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(26.67f, insets.w, 0.01f);
         }
 
-        // ------------------------------------------------------------------ the old menu: report only
+        // ------------------------------------------------------------------ the rebuilt menu screens: strict
 
+        public static IEnumerable<string> MenuScreenNames => MenuScreen.ScreenNames;
+
+        /// <summary>The screens with one main action (the rest, lists and settings, have none).</summary>
+        private static readonly HashSet<string> WithPrimary = new() { "home", "campaign-chapter", "briefing", "operations", "detail", "army-base", "shop-skins", "shop-units", "shop-items" };
+
+        /// <summary>
+        /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes, and in
+        /// Large text and in English at 16:9, passes every check.
+        /// </summary>
         [Test]
-        public void OldMenuScreensReport()
+        public void EveryRebuiltScreenPassesEveryCheck([ValueSource(nameof(MenuScreenNames))] string screen)
         {
-            PlayerProfile.LoadForTests("{}");
-            var lines = new List<string>();
-            var counts = new Dictionary<string, int> { ["cut"] = 0, ["small target"] = 0, ["small text"] = 0, ["over one primary"] = 0 };
+            var failures = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
             try
             {
-                foreach (var large in new[] { false, true })
-                {
-                    var hud = Kit.Box("hud");
-                    hud.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
-                    Kit.ApplyTextSize(hud, large);
-                    MenuScreen menu;
-                    try
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                    foreach (var (name, size) in shapes)
                     {
-                        menu = new MenuScreen(_catalog, null);
+                        Strings.Vietnamese = vietnamese;
+                        MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                        var host = MachineBrigade.Editor.UiShots.BuildMenu(_catalog, screen, out _);
+                        Lay(host, size);
+                        var label = $"{name}{(vietnamese ? "" : " en")}{(large ? " large" : "")}";
+                        failures.AddRange(Check(host, label, size, large, WithPrimary.Contains(screen) ? 1 : 0));
                     }
-                    catch (Exception e)
-                    {
-                        Assert.Ignore("Report only: the old menu could not be built without a scene (" + e.GetType().Name + ": " + e.Message + ")");
-                        return;
-                    }
-                    hud.Add(menu.Root);
-                    Lay(hud, Shapes[0].size);
-                    foreach (MenuScreen.Tab tab in Enum.GetValues(typeof(MenuScreen.Tab)))
-                    {
-                        menu.ShowTab(tab);
-                        for (var i = 0; i < 2; i++) _panel.FrameUpdate();
-                        var where = $"{tab}{(large ? " (Large)" : "")}";
-                        void Add(string kind, IEnumerable<string> found)
-                        {
-                            foreach (var f in found)
-                            {
-                                counts[kind]++;
-                                lines.Add($"{where} {kind}: {f}");
-                            }
-                        }
-                        Add("cut", CutTexts(hud, Shapes[0].size));
-                        Add("small target", SmallTargets(hud, Kit.TouchTarget));
-                        Add("small text", SmallTexts(hud, SmallestText(false)));
-                        var primaries = Primaries(hud);
-                        if (primaries > 1) Add("over one primary", new[] { primaries + " primary buttons" });
-                    }
-                }
             }
             finally
             {
-                PlayerProfile.Load();
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
             }
-            Debug.Log("[UiLayoutTests] old menu at 16:9\n" + string.Join("\n", lines));
-            if (lines.Count > 0)
-                Assert.Ignore("Report only (the screen rebuild fixes these), the five tabs at 16:9 in Normal and Large: " +
-                              string.Join(", ", counts.Select(p => $"{p.Value} {p.Key}")));
+            Assert.IsEmpty(failures, string.Join("\n", failures.Distinct().Take(60)));
         }
     }
 }
