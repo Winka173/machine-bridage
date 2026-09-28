@@ -40,14 +40,23 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The towers of one size's hardpoints.</summary>
         public List<string> Of(SlotSize size) => size switch { SlotSize.Small => Small, SlotSize.Medium => Medium, _ => Large };
 
-        /// <summary>Every tower in the loadout, large slots first.</summary>
+        /// <summary>
+        /// An entry for a slot left empty on purpose (the base screen): it keeps the towers after it
+        /// in their own slots instead of moving them up one.
+        /// </summary>
+        public const string Empty = "";
+
+        /// <summary>Every tower in the loadout, large slots first (empty slots left out).</summary>
         public IEnumerable<string> Towers
         {
             get
             {
-                foreach (var id in Large) yield return id;
-                foreach (var id in Medium) yield return id;
-                foreach (var id in Small) yield return id;
+                foreach (var id in Large)
+                    if (!string.IsNullOrEmpty(id)) yield return id;
+                foreach (var id in Medium)
+                    if (!string.IsNullOrEmpty(id)) yield return id;
+                foreach (var id in Small)
+                    if (!string.IsNullOrEmpty(id)) yield return id;
             }
         }
 
@@ -56,7 +65,8 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>
         /// This loadout cut to what its HQ level allows: in each size's list only towers that fit
-        /// that size, and only as many as the level opens; utility modules up to the slots.
+        /// that size, and only as many as the level opens; utility modules up to the slots. An
+        /// <see cref="Empty"/> entry keeps its slot empty (trailing ones are dropped).
         /// </summary>
         public BaseLoadout Fitted(Catalog catalog)
         {
@@ -66,19 +76,30 @@ namespace MachineBrigade.Sim.Modes
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
                 var open = rules.Slots(level, size);
+                var list = fitted.Of(size);
                 foreach (var id in Of(size))
                 {
-                    if (fitted.Of(size).Count >= open) break;
-                    if (IsTower(catalog, id, out var fort) && fort.Fits(size)) fitted.Of(size).Add(id);
+                    if (list.Count >= open) break;
+                    if (string.IsNullOrEmpty(id)) list.Add(Empty);
+                    else if (IsTower(catalog, id, out var fort) && fort.Fits(size)) list.Add(id);
                 }
+                TrimGaps(list);
             }
             var slots = rules.UtilitySlots(level);
             foreach (var id in Utilities)
             {
                 if (fitted.Utilities.Count >= slots) break;
-                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Fort is { Kind: FortKind.Utility }) fitted.Utilities.Add(id);
+                if (string.IsNullOrEmpty(id)) fitted.Utilities.Add(Empty);
+                else if (catalog.Vehicles.TryGetValue(id, out var def) && def.Fort is { Kind: FortKind.Utility }) fitted.Utilities.Add(id);
             }
+            TrimGaps(fitted.Utilities);
             return fitted;
+        }
+
+        /// <summary>Drops the empty entries at the end of a list (they mean nothing there).</summary>
+        internal static void TrimGaps(List<string> list)
+        {
+            while (list.Count > 0 && string.IsNullOrEmpty(list[list.Count - 1])) list.RemoveAt(list.Count - 1);
         }
 
         private static bool IsTower(Catalog catalog, string id, out FortDef fort)

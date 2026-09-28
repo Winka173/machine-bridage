@@ -157,7 +157,7 @@ namespace MachineBrigade.Sim.Modes
                     {
                         if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
                         var state = new HardpointState(def, i);
-                        if (utility - 1 < fitted.Utilities.Count) state.Tower = fitted.Utilities[utility - 1];
+                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1])) state.Tower = fitted.Utilities[utility - 1];
                         b.Slots.Add(state);
                         continue;
                     }
@@ -166,7 +166,7 @@ namespace MachineBrigade.Sim.Modes
                     var slot = new HardpointState(def, i);
                     var list = fitted.Of(def.Class);
                     // A tower past rank 7 fights as its chosen branch (it stays in its tower's slot).
-                    if (k < list.Count) slot.Tower = catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
+                    if (k < list.Count && !string.IsNullOrEmpty(list[k])) slot.Tower =catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
                     b.Slots.Add(slot);
                 }
             }

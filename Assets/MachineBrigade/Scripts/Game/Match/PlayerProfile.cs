@@ -81,6 +81,9 @@ namespace MachineBrigade.Game.Match
             public List<string> branchChoices = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
+
+            /// <summary>The player has set the base up on the base screen: an empty camp stays empty.</summary>
+            public bool baseEdited;
         }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace MachineBrigade.Game.Match
             get
             {
                 var loadout = new Sim.Modes.BaseLoadout { HqLevel = D.baseLevel > 0 ? D.baseLevel : 5 };
-                var empty = D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
+                var empty = !D.baseEdited && D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
                 loadout.Small.AddRange(empty ? DefaultSmall : D.baseSmall);
                 loadout.Medium.AddRange(empty ? DefaultMedium : D.baseMedium);
                 loadout.Large.AddRange(empty ? DefaultLarge : D.baseLarge);
@@ -117,6 +120,7 @@ namespace MachineBrigade.Game.Match
                 D.baseVersion = BaseVersion;
                 D.baseUtilities = new List<string>(value.Utilities);
                 D.baseOutpost = new List<string>(value.Outpost);
+                D.baseEdited = true;
                 Save();
             }
         }
