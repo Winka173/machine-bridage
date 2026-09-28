@@ -172,6 +172,22 @@ namespace MachineBrigade.Game.Views
                     Graphics.RenderMeshInstanced(parameters, mesh, submesh, matrices, Mathf.Min(1023, matrices.Length - start), start);
         }
 
+        /// <summary>
+        /// Submits the instanced scenery for one camera only. Editor renders need it: outside Play
+        /// mode queued draws stay queued for the rest of the editor frame, so a render of the next
+        /// map would draw this one's scenery too.
+        /// </summary>
+        public void Draw(Camera only)
+        {
+            foreach (var (mesh, submesh, matrices, parameters) in _draws)
+            {
+                var forOne = parameters;
+                forOne.camera = only;
+                for (var start = 0; start < matrices.Length; start += 1023)
+                    Graphics.RenderMeshInstanced(forOne, mesh, submesh, matrices, Mathf.Min(1023, matrices.Length - start), start);
+            }
+        }
+
         public void Dispose()
         {
             if (_root != null) Object.Destroy(_root);

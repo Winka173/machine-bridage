@@ -1,0 +1,96 @@
+{
+    "version": 1,
+    "map": "junglepass",
+    "source": "Data/maps/junglepass_conquest",
+    "sha1": "49355875d9ea33395e5051b1456ea5e5dcedc9c9",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -97.7,
+        "z": -89.142
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 190.002,
+    "metresHigh": 118.752,
+    "hq": {
+        "x": -121.0,
+        "z": -114.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -137.251,
+            "z": -44.888
+        },
+        {
+            "x": -126.413,
+            "z": -118.948
+        },
+        {
+            "x": -97.948,
+            "z": -129.03
+        },
+        {
+            "x": -58.896,
+            "z": -127.914
+        },
+        {
+            "x": -44.327,
+            "z": -108.046
+        },
+        {
+            "x": -51.905,
+            "z": -85.31
+        },
+        {
+            "x": -89.352,
+            "z": -57.492
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -90.337,
+                "z": -57.233
+            },
+            "dir": {
+                "x": -0.301,
+                "z": -0.954
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -69.256,
+                "z": -72.421
+            },
+            "dir": {
+                "x": -0.698,
+                "z": -0.716
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -51.535,
+                "z": -86.42
+            },
+            "dir": {
+                "x": -0.952,
+                "z": -0.307
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.298,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

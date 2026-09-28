@@ -1,0 +1,92 @@
+{
+    "version": 1,
+    "map": "metrocity",
+    "source": "Data/maps/metrocity_conquest",
+    "sha1": "cd054f7cc86920a87cfa38bd9fbb620517bbc957",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -97.257,
+        "z": -99.257
+    },
+    "up": {
+        "x": 0.707,
+        "z": 0.707
+    },
+    "metresWide": 237.455,
+    "metresHigh": 148.409,
+    "hq": {
+        "x": -120.0,
+        "z": -117.0
+    },
+    "heading": 45.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -144.281,
+            "z": -143.754
+        },
+        {
+            "x": -87.585,
+            "z": -146.021
+        },
+        {
+            "x": -43.272,
+            "z": -138.068
+        },
+        {
+            "x": -41.938,
+            "z": -114.052
+        },
+        {
+            "x": -61.572,
+            "z": -62.786
+        },
+        {
+            "x": -139.66,
+            "z": -46.709
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -96.421,
+                "z": -55.611
+            },
+            "dir": {
+                "x": -0.236,
+                "z": -0.972
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -63.694,
+                "z": -62.349
+            },
+            "dir": {
+                "x": -0.723,
+                "z": -0.691
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -50.107,
+                "z": -92.721
+            },
+            "dir": {
+                "x": -1.0,
+                "z": 0.003
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.421,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

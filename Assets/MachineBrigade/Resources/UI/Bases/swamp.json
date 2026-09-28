@@ -1,0 +1,96 @@
+{
+    "version": 1,
+    "map": "swamp",
+    "source": "Data/maps/swamp_conquest",
+    "sha1": "86a6309db0d9e410d1fe970b5c63cf3d5ff6ee3b",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -92.857,
+        "z": -97.857
+    },
+    "up": {
+        "x": 0.707,
+        "z": 0.707
+    },
+    "metresWide": 183.601,
+    "metresHigh": 114.751,
+    "hq": {
+        "x": -120.0,
+        "z": -116.5
+    },
+    "heading": 45.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -132.228,
+            "z": -72.806
+        },
+        {
+            "x": -125.354,
+            "z": -121.499
+        },
+        {
+            "x": -54.654,
+            "z": -136.478
+        },
+        {
+            "x": -56.02,
+            "z": -106.417
+        },
+        {
+            "x": -59.367,
+            "z": -84.107
+        },
+        {
+            "x": -98.583,
+            "z": -46.011
+        },
+        {
+            "x": -122.155,
+            "z": -55.178
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -107.0,
+                "z": -49.284
+            },
+            "dir": {
+                "x": 0.0,
+                "z": -1.0
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -82.364,
+                "z": -61.767
+            },
+            "dir": {
+                "x": -0.536,
+                "z": -0.844
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -56.01,
+                "z": -106.638
+            },
+            "dir": {
+                "x": -0.984,
+                "z": -0.179
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.298,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

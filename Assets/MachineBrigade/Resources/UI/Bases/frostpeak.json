@@ -1,0 +1,100 @@
+{
+    "version": 1,
+    "map": "frostpeak",
+    "source": "Data/maps/frostpeak_conquest",
+    "sha1": "a76bff9c625c0b93926ebe480b246077efcab3f8",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -94.596,
+        "z": -94.973
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 185.258,
+    "metresHigh": 115.786,
+    "hq": {
+        "x": -120.5,
+        "z": -115.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -138.799,
+            "z": -61.082
+        },
+        {
+            "x": -125.605,
+            "z": -120.169
+        },
+        {
+            "x": -97.934,
+            "z": -129.0
+        },
+        {
+            "x": -76.558,
+            "z": -129.0
+        },
+        {
+            "x": -44.0,
+            "z": -124.177
+        },
+        {
+            "x": -44.0,
+            "z": -98.361
+        },
+        {
+            "x": -81.96,
+            "z": -63.564
+        },
+        {
+            "x": -106.273,
+            "z": -41.567
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -106.739,
+                "z": -41.846
+            },
+            "dir": {
+                "x": 0.008,
+                "z": -1.0
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -72.362,
+                "z": -72.362
+            },
+            "dir": {
+                "x": -0.707,
+                "z": -0.707
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -49.756,
+                "z": -93.084
+            },
+            "dir": {
+                "x": -0.98,
+                "z": -0.2
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.768,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}
