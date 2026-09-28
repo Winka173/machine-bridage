@@ -326,13 +326,13 @@ namespace MachineBrigade.Game.Match
         public static readonly TraitDef[] Traits =
         {
             // Weapon
-            new(TraitId.TwinFeed, GearSlot.Weapon, Armed, V(0.08f, 0.15f), V(0.12f, 0.2f)),
-            new(TraitId.IncendiaryRounds, GearSlot.Weapon, Armed, V(0.1f), V(0.14f)),
+            new(TraitId.TwinFeed, GearSlot.Weapon, Armed, V(0.15f, 0.15f), V(0.2f, 0.2f)),
+            new(TraitId.IncendiaryRounds, GearSlot.Weapon, Armed, V(0.18f), V(0.25f)),
             new(TraitId.RicochetShells, GearSlot.Weapon, VehicleNeed.HitsGround, V(0.35f, 8f), V(0.5f, 10f)),
-            new(TraitId.ClusterWarhead, GearSlot.Weapon, VehicleNeed.Lobs, V(4f), V(6f)),
+            new(TraitId.ClusterWarhead, GearSlot.Weapon, VehicleNeed.Lobs, V(5f), V(8f)),
             new(TraitId.ShredderRounds, GearSlot.Weapon, Armed, V(0.03f), V(0.04f)),
-            new(TraitId.OpeningSalvo, GearSlot.Weapon, Armed, V(0.5f), V(0.8f)),
-            new(TraitId.MomentumGun, GearSlot.Weapon, Armed, V(0.03f), V(0.04f)),
+            new(TraitId.OpeningSalvo, GearSlot.Weapon, Armed, V(0.35f), V(0.5f)),
+            new(TraitId.MomentumGun, GearSlot.Weapon, Armed, V(0.05f), V(0.07f)),
             new(TraitId.Executioner, GearSlot.Weapon, Armed, V(0.4f), V(0.6f)),
             new(TraitId.TandemWarhead, GearSlot.Weapon, VehicleNeed.RocketLike, V(0.1f), V(0.15f)),
             new(TraitId.SuppressionRounds, GearSlot.Weapon, Armed, V(0.15f), V(0.25f)),

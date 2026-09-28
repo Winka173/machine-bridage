@@ -841,18 +841,21 @@ namespace MachineBrigade.Sim.Abilities
             }
             if (g.Has(TraitId.RicochetShells) && target is Vehicle struck && !p.Bounce)
             {
-                // Every hit earns part of a bounce (a heavy shell a whole one, a fast gun's round a sliver).
-                g.RicochetCarry += MathF.Min(1f, c);
+                // Every hit earns part of a bounce (a heavy shell a whole one, a fast gun's round a sliver),
+                // and a bounce carries the damage share of all the hits that earned it: a fast gun bounces
+                // seldom but hard, so every weapon gets about the same share of its damage back (I.3).
+                var earned = MathF.Min(1f, c);
+                g.RicochetCarry += earned;
                 if (g.RicochetCarry >= 1f)
                 {
                     g.RicochetCarry -= 1f;
-                    Ricochet(p, v, g, struck);
+                    Ricochet(p, v, g, struck, 1f / MathF.Max(0.05f, earned));
                 }
             }
         }
 
         /// <summary>Ricochet Shells: the round bounces on to the nearest other enemy close by, at a share of its damage.</summary>
-        private void Ricochet(Projectile p, Vehicle v, GearState g, Vehicle struck)
+        private void Ricochet(Projectile p, Vehicle v, GearState g, Vehicle struck, float hits = 1f)
         {
             var t = g.Trait(TraitId.RicochetShells);
             Vehicle? next = null;
@@ -870,7 +873,7 @@ namespace MachineBrigade.Sim.Abilities
             // The bounce strikes its target only: no blast, no piercing, no bomblets.
             var bounce = new Projectile(p.Owner, p.OwnerTeam, p.Weapon, next.Position, next.Id, travel, next.Flying)
             {
-                Origin = struck.Position, DamageScale = p.DamageScale * t.A, Shooter = v, NoProc = true, Tandem = p.Tandem, Bounce = true, NoCluster = true,
+                Origin = struck.Position, DamageScale = p.DamageScale * t.A * hits, Shooter = v, NoProc = true, Tandem = p.Tandem, Bounce = true, NoCluster = true,
             };
             _world.Combat.AddProjectile(bounce);
             Proc(v, TraitId.RicochetShells);

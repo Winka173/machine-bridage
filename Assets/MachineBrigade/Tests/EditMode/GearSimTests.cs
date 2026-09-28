@@ -210,9 +210,10 @@ namespace MachineBrigade.Tests
             first.Hp = first.MaxHp;
             dealt = Shoot(world, shooter, first);
             var events = Run(world, 0.5f);
-            // Half the round's damage, striking the second from where the first stood (armour facing).
-            var bounced = TestWorlds.Gun.Damage * 0.5f * DamageSystem.FacingFactor(second, first.Position);
-            Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the hit bounces on to the nearest enemy");
+            // Half the damage of the hits that earned it (one and a half hits' worth: 1 / (2/3)), striking the
+            // second from where the first stood (armour facing).
+            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * DamageSystem.FacingFactor(second, first.Position);
+            Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the earning hits' damage bounces on to the nearest enemy");
             Assert.AreEqual(TestWorlds.Gun.Damage * DamageSystem.FacingFactor(first, shooter.Position), dealt, 1e-2f);
             Assert.AreEqual(far.MaxHp, far.Hp, "only one bounce, to the nearest");
             Assert.AreEqual(first.MaxHp - dealt, first.Hp, 1e-3f);

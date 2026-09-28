@@ -480,7 +480,7 @@
     // Prompt 8 A.1: an armoured combat bulldozer (D9R). Only a roof machine gun; the blade rams structures down
     // at three times the damage, it ploughs dragon's teeth flat as it drives into them, and takes half a mine's
     // blast. The commander sends it ahead of the line into an enemy base. 3,500 health in game.
-    { "id": "armored_bulldozer", "scale": 0.85, "class": "Heavy", "armor": "Heavy", "hp": 1400, "speed": 5, "turnRate": 55, "turretTurnRate": 200, "radius": 3.4,
+    { "id": "armored_bulldozer", "scale": 0.85, "class": "Heavy", "armor": "Heavy", "hp": 1300, "speed": 5, "turnRate": 55, "turretTurnRate": 200, "radius": 3.4,
       "length": 7.9, "width": 4.3, "cp": 7, "vision": 30, "captureRate": 1,
       "firesWhileMoving": true, "weapon": "dozer_blade", "mainAim": "Hull", "mainSlot": "blade", "breacher": true, "mineArmor": 0.5,
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
