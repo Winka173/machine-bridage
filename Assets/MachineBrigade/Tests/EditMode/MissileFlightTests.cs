@@ -67,7 +67,7 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             var speeds = new Dictionary<string, float>
             {
-                { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 32f }, { "sam_long", 37f }, { "sam_battery", 37f }, { "sam_48n6", 50f },
+                { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 40f }, { "sam_long", 46f }, { "sam_battery", 46f }, { "sam_48n6", 62f },
                 { "heli_atgm", 21f }, { "hellfire_volley", 21f }, { "drone_missile", 21f }, { "vikhr", 24f }, { "maverick", 23f },
                 { "air_to_air", 34f }, { "wvr_aam", 34f }, { "stinger_atas", 29f }, { "air_cruise_missile", 17f },
                 { "heli_rockets", 48f }, { "s8_pods", 48f },
