@@ -93,13 +93,13 @@ namespace MachineBrigade.Game.Effects
             var kind = weapon?.Projectile ?? (e.Tier == ExplosionTier.Small ? ProjectileKind.Bullet : ProjectileKind.Shell);
             var targetId = e.Other;
             var lag = 0f;
-            if (weapon != null && weapon.Burst > 1 && weapon.BurstInterval < 0.1f)
+            if (weapon != null && weapon.RoundGap is > 0f and < 0.1f)
             {
                 var key = (e.Entity, e.Mount);
                 var count = _sameFrame.TryGetValue(key, out var seen) && Mathf.Approximately(seen.at, now) ? seen.count + 1 : 0;
                 _sameFrame[key] = (now, count);
                 if (_sameFrame.Count > 256) _sameFrame.Clear();
-                lag = count * weapon.BurstInterval;
+                lag = count * weapon.RoundGap;
             }
 
             if (weapon != null && weapon.Charge > 0f && kind == ProjectileKind.Bullet)
@@ -256,7 +256,7 @@ namespace MachineBrigade.Game.Effects
 
         private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now, float lag = 0f)
         {
-            var damage = weapon?.Damage ?? 9f;
+            var damage = weapon?.RoundWeight ?? 9f;
             var forward = new Vector3(aim.x, 0f, aim.z);
             forward = forward.sqrMagnitude > 1e-4f ? forward.normalized : Vector3.forward;
             var side = Vector3.Cross(Vector3.up, forward);

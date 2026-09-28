@@ -72,6 +72,43 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Shots per trigger pull (rocket salvo, machine-gun burst); the cooldown starts after the last.</summary>
         public int Burst { get; }
 
+        /// <summary>
+        /// Sustained fire (test feedback 11C): a magazine of this many rounds, fired one at a time
+        /// <see cref="Cooldown"/> apart at whatever the mount is laid on (it tracks its target, unlike a
+        /// salvo, and stops when the target stops bearing), then <see cref="ClipReload"/> seconds to change
+        /// magazines. A pause of that long tops a part-used magazine up. 0: no magazine (a single shot,
+        /// a salvo, or a machine gun's runs of fire). Only for single-round weapons (burst 1).
+        /// </summary>
+        public int Clip { get; internal set; }
+
+        /// <summary>Seconds to change an empty magazine (see <see cref="Clip"/>).</summary>
+        public float ClipReload { get; internal set; }
+
+        /// <summary>
+        /// How heavy one round looks and sounds (its tracer, muzzle flash and report): its damage,
+        /// unless the data gives "roundWeight" (a gun made to fire faster with lighter rounds still
+        /// looks and sounds like its calibre).
+        /// </summary>
+        public float RoundWeight
+        {
+            get => _roundWeight > 0f ? _roundWeight : Damage;
+            internal set => _roundWeight = value;
+        }
+
+        private float _roundWeight;
+
+        /// <summary>Rounds one trigger pull or one magazine fires off: the magazine, else the salvo.</summary>
+        public int RoundsPerCycle => Clip > 0 ? Clip : Burst;
+
+        /// <summary>Seconds from one magazine's or salvo's first round to the next one's first round.</summary>
+        public float CycleSeconds => Clip > 0 ? (Clip - 1) * Cooldown + ClipReload : Cooldown + (Burst - 1) * BurstInterval;
+
+        /// <summary>Damage a second over a whole cycle (reload included), before damage tables and bonuses.</summary>
+        public float SustainedDps => Damage * RoundsPerCycle / MathF.Max(0.05f, CycleSeconds);
+
+        /// <summary>Gap between rounds a view draws inside one step: a fast salvo's interval, a magazine's cadence; 0 for neither.</summary>
+        public float RoundGap => Burst > 1 ? BurstInterval : Clip > 0 ? Cooldown : 0f;
+
         public float BurstInterval { get; }
 
         /// <summary>Layers this weapon can engage: ground vehicles, aircraft or both.</summary>
@@ -135,6 +172,15 @@ namespace MachineBrigade.Sim.Content
                 Pierce = Pierce,
                 Beam = Beam,
                 Melee = Melee,
+                // Everything else the equipment does not change travels with the copy (the charge,
+                // the bonuses and the round's model were once lost on a tuned weapon).
+                Charge = Charge,
+                Bonuses = Bonuses,
+                ProjectileModel = ProjectileModel,
+                ProjectileScale = ProjectileScale,
+                Clip = Clip,
+                ClipReload = ClipReload,
+                _roundWeight = _roundWeight,
             };
             return copy;
         }

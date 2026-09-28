@@ -66,7 +66,10 @@ namespace MachineBrigade.Sim.Combat
                 if (!v.IsAlive) continue;
                 var mounts = v.Def.Mounts;
                 // Cooldowns run regardless of movement or retargeting, so micro cannot create free shots.
-                for (var i = 0; i < mounts.Count; i++) v.Weapons[i].Cooldown = MathF.Max(0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
+                // A magazine's cadence may be finer than the step: its cooldown keeps up to one step of
+                // credit, so a 20-round-a-second gun fires two rounds in some steps (see Stream).
+                for (var i = 0; i < mounts.Count; i++)
+                    v.Weapons[i].Cooldown = MathF.Max(v.Arms[i].Clip > 0 ? -dt : 0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
                 ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
@@ -367,6 +370,11 @@ namespace MachineBrigade.Sim.Combat
             if (state.Ammo > 0) state.Ammo--;
             // Shoot-and-scoot (the SP gun): rounds fired from this spot.
             if (index == 0 && v.Def.Scoot != null) v.ScootShots++;
+            if (weapon.Clip > 0)
+            {
+                Stream(v, index, target);
+                return;
+            }
             var machineGun = IsMachineGun(weapon);
             var scale = machineGun ? RunDamage : 1f;
             // Equipment on the main weapon: extra rounds per pull (Twin Feed, Strafing Run).
@@ -403,9 +411,44 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Seconds between a single-shot gun's round and the second one Twin Feed adds.</summary>
         private const float TwinGap = 0.15f;
 
-        /// <summary>A machine gun: bullets fired faster than three a second, one at a time.</summary>
+        /// <summary>
+        /// Sustained fire from a magazine (test feedback 11C): the rounds due this step, one
+        /// cadence apart, at the target the mount is laid on; then, when the magazine is empty,
+        /// the pause to change it. A lull as long as that pause tops a part-used magazine up.
+        /// Machine-gun equipment applies (Strafing Run's doubled rounds, Twin Feed's harder ones);
+        /// the data's damage is each round's own (no run factor).
+        /// </summary>
+        private void Stream(Vehicle v, int index, IDamageable target)
+        {
+            var state = v.Weapons[index];
+            var weapon = v.Arms[index];
+            var now = _world.Time;
+            // Picking up again after a pause: no credit from the idle time.
+            if (now - state.LastRoundAt > weapon.Cooldown + 0.06) state.Cooldown = MathF.Max(0f, state.Cooldown);
+            if (state.ClipLeft <= 0 || now - state.LastRoundAt >= MathF.Max(0.5f, weapon.ClipReload)) state.ClipLeft = weapon.Clip;
+            var flying = IsFlying(target);
+            // At most three rounds a step (60 a second): the cadence, not the frame, sets the rate.
+            for (var k = 0; k < 3 && state.Cooldown <= 0f && state.ClipLeft > 0; k++)
+            {
+                var scale = index == 0 && v.Gear != null ? _world.Gear.MachineGunRound(v) : 1f;
+                Launch(v, index, target.Position, target.Id, flying, scale, true, target);
+                state.ClipLeft--;
+                state.Cooldown += weapon.Cooldown * Jitter();
+            }
+            state.LastRoundAt = now;
+            // An empty magazine: the pause to change it (a little different every time).
+            if (state.ClipLeft <= 0) state.Cooldown = MathF.Max(state.Cooldown, weapon.ClipReload * (0.9f + 0.2f * (float)_world.Random.NextDouble()));
+        }
+
+        /// <summary>A machine gun: bullets fired faster than three a second, one at a time, in runs (not from a magazine).</summary>
         private static bool IsMachineGun(WeaponDef weapon) =>
-            weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < 0.35f && weapon.Burst <= 1;
+            weapon.Clip <= 0 && weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < 0.35f && weapon.Burst <= 1;
+
+        /// <summary>
+        /// A gun in the fire rhythm: a machine gun, or a gun firing from a magazine. Guns take turns
+        /// with each other and give way to heavy weapons (main guns, missiles, rockets).
+        /// </summary>
+        private static bool IsGun(WeaponDef weapon) => weapon.Clip > 0 || IsMachineGun(weapon);
 
         /// <summary>Rounds per run of machine-gun fire, and the pause after it.</summary>
         private const int RunShortest = 6, RunLongest = 10;
@@ -448,7 +491,7 @@ namespace MachineBrigade.Sim.Combat
             var weapon = v.Arms[index];
             var now = _world.Time;
             var state = v.Weapons[index];
-            var gun = IsMachineGun(weapon);
+            var gun = IsGun(weapon);
             if (gun && !state.Started)
             {
                 state.Started = true;
@@ -456,14 +499,21 @@ namespace MachineBrigade.Sim.Combat
                 return false;
             }
             if (v.Def.Boss) return v.AnyMount == index || now - v.AnyRoundAt > 0.01;
-            if (SalvoUnderWay(v, index)) return false;
+            if (SalvoUnderWay(v, index) || StreamUnderWay(v, index)) return false;
+            // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: a
+            // jet's cannon fires on for seconds); the others wait for its magazine change.
+            if (Leads(v, index) && Streaming(v, index)) return true;
             if (gun)
             {
                 if (now - v.HeavyRoundAt < GunAfterHeavy) return false;
                 if (now - v.HeavyWaitingAt < 0.15) return false;
-                if (HeavyDue(v)) return false;
+                // A machine gun also makes way for a magazine gun about to open up (the main gun's stream).
+                if (HeavyDue(v, index, IsMachineGun(weapon))) return false;
+                // Before a leading magazine gun opens up, a heavy weapon lined up goes first (a jet's
+                // rockets or bombs, then its cannon for the rest of the run; an IFV's missile, then its cannon).
+                if (Leads(v, index) && HeavyReady(v, index)) return false;
                 if (v.GunMount != index && now - v.GunRoundAt < GunHandover) return false;
-                if (state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
+                if (IsMachineGun(weapon) && state.RunLeft <= 0) state.RunLeft = _world.Random.Next(RunShortest, RunLongest + 1);
                 return true;
             }
             if (v.HeavyMount != index && now - v.HeavyRoundAt < HeavyAfterHeavy) return false;
@@ -476,6 +526,46 @@ namespace MachineBrigade.Sim.Combat
             return true;
         }
 
+        /// <summary>
+        /// A magazine gun that has the right of way once it has opened up: a ground vehicle's or a
+        /// helicopter's main weapon (an armoured car's or an IFV's cannon). An aeroplane's cannon and
+        /// secondary magazine guns (a gunship's side guns) take turns like a machine gun: an
+        /// aeroplane's pass is short, and its rockets and bombs must still get their turn in it.
+        /// </summary>
+        private static bool Leads(Vehicle v, int index) => index == 0 && v.Arms[index].Clip > 0 && !v.Def.FixedWing;
+
+        /// <summary>A heavy weapon (not a gun) could fire now or is about to: loaded, its target alive and lined up.</summary>
+        private bool HeavyReady(Vehicle v, int except)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                if (i == except || IsGun(v.Arms[i]) || !v.MountWorks(i)) continue;
+                var state = v.Weapons[i];
+                if (state.Ammo == 0 || state.Cooldown > GunBeforeHeavy || v.Arms[i].Damage <= 0f) continue;
+                // A mount that has no target yet would take the main weapon's (it chooses after the main gun, this step).
+                var id = i == 0 || !state.Target.IsValid ? v.Target : state.Target;
+                if (!id.IsValid || !_world.TryGetTarget(id, out var t) || !t.IsAlive) continue;
+                if (state.Cooldown > 0f ? state.Target.IsValid || i == 0 : CanFire(v, i, t)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>Mount <paramref name="index"/> is a magazine gun firing: rounds left and its last round a cadence ago.</summary>
+        private bool Streaming(Vehicle v, int index)
+        {
+            var state = v.Weapons[index];
+            var weapon = v.Arms[index];
+            return state.ClipLeft > 0 && _world.Time - state.LastRoundAt <= weapon.Cooldown * 1.1f + 0.06f;
+        }
+
+        /// <summary>Another mount is a leading magazine gun in the middle of its magazine.</summary>
+        private bool StreamUnderWay(Vehicle v, int index)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+                if (i != index && Leads(v, i) && Streaming(v, i)) return true;
+            return false;
+        }
+
         /// <summary>Another mount of the vehicle is in the middle of a salvo.</summary>
         private static bool SalvoUnderWay(Vehicle v, int index)
         {
@@ -484,13 +574,16 @@ namespace MachineBrigade.Sim.Combat
             return false;
         }
 
-        /// <summary>A heavy weapon with a target is about to fire: its reload is nearly done.</summary>
-        private static bool HeavyDue(Vehicle v)
+        /// <summary>
+        /// A heavy weapon with a target is about to fire: its reload is nearly done. With
+        /// <paramref name="streams"/>, a magazine gun firing or about to counts too.
+        /// </summary>
+        private static bool HeavyDue(Vehicle v, int except, bool streams)
         {
             for (var i = 0; i < v.Weapons.Length; i++)
             {
                 var state = v.Weapons[i];
-                if (IsMachineGun(v.Arms[i]) || state.Ammo == 0) continue;
+                if (i == except || IsMachineGun(v.Arms[i]) || (!streams && v.Arms[i].Clip > 0) || state.Ammo == 0) continue;
                 var aimed = i == 0 ? v.Target.IsValid : state.Target.IsValid;
                 if (aimed && state.Cooldown is > 0f and <= GunBeforeHeavy) return true;
             }
@@ -555,7 +648,7 @@ namespace MachineBrigade.Sim.Combat
             shooter.LastFiredAt = _world.Time;
             shooter.AnyRoundAt = _world.Time;
             shooter.AnyMount = index;
-            if (IsMachineGun(weapon))
+            if (IsGun(weapon))
             {
                 shooter.GunRoundAt = _world.Time;
                 shooter.GunMount = index;
@@ -636,7 +729,7 @@ namespace MachineBrigade.Sim.Combat
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying)
             {
                 DamageScale = damageScale, Origin = origin, Shooter = shooter, Main = index == 0, Tandem = mods.Tandem, ExtraSplash = mods.ExtraSplash,
-                NoCluster = mods.NoCluster, Part = part,
+                NoCluster = mods.NoCluster, Part = part, LaunchedAt = _world.Time,
             };
             if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
             {

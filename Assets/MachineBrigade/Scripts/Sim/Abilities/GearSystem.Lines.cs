@@ -48,10 +48,11 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Seconds between a weapon's rounds (a salvo's rounds counted one by one; a machine gun's pauses between runs counted in).</summary>
         internal static float HitInterval(WeaponDef w)
         {
-            var cycle = w.Cooldown + (w.Burst - 1) * w.BurstInterval + w.Charge;
-            var interval = cycle / MathF.Max(1, w.Burst);
+            // A salvo over its cooldown, or a magazine over its change (test feedback 11C).
+            var cycle = w.CycleSeconds + w.Charge;
+            var interval = cycle / MathF.Max(1, w.RoundsPerCycle);
             // A machine gun fires in runs with pauses (CombatSystem's RunDamage of 1.7).
-            if (w.Projectile == ProjectileKind.Bullet && w.Cooldown < 0.35f && w.Burst <= 1) interval *= 1.7f;
+            if (w.Clip <= 0 && w.Projectile == ProjectileKind.Bullet && w.Cooldown < 0.35f && w.Burst <= 1) interval *= 1.7f;
             return MathF.Max(0.02f, interval);
         }
 
