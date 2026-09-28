@@ -79,6 +79,9 @@ namespace MachineBrigade.Game.Effects
         private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
+        /// <summary>Half the map's side, for the troop transports' way in and out.</summary>
+        public float MapHalfSize { set => _drops.HalfSize = value; }
+
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {

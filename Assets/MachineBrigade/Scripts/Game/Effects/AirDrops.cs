@@ -24,17 +24,30 @@ namespace MachineBrigade.Game.Effects
             public bool Down;
         }
 
+        /// <summary>
+        /// A transport's flight: in from the nearest map edge to over the drop (<see cref="Over"/>, at
+        /// <see cref="OverAt"/>), a climbing U-turn of <see cref="TurnRadius"/>, and out by the same edge.
+        /// </summary>
         private sealed class Plane
         {
             public GameObject Root;
-            public Vector3 From, To;
-            public float Start, End;
+            public Vector3 Entry, Over, Inward, Side;
+            public float Start, OverAt, TurnEnd, ExitEnd, ApproachSpeed, ExitLength;
             public int Team;
         }
 
         /// <summary>The transport's height and speed over the drop.</summary>
         private const float PlaneAltitude = 44f;
         private const float PlaneSpeed = 70f;
+
+        /// <summary>How far past the map's edge a transport appears and is removed (out of the battle's view).</summary>
+        private const float EdgeMargin = 45f;
+
+        /// <summary>The radius of the transport's turn home after the drop.</summary>
+        private const float TurnRadius = 32f;
+
+        /// <summary>The fastest a transport may come in, when the delivery leaves it little time to reach the drop.</summary>
+        private const float MaxApproachSpeed = 160f;
 
         /// <summary>The vehicle leaves the transport this long before it lands (the rest of the delivery the plane is on its way).</summary>
         private const float Descent = 2.3f;
@@ -51,6 +64,9 @@ namespace MachineBrigade.Game.Effects
         private readonly List<Drop> _drops = new();
         private readonly List<Plane> _planes = new();
         private readonly bool _hasTransport;
+
+        /// <summary>Half the map's side (the map is square, centred on the origin): where transports come in and leave.</summary>
+        public float HalfSize { get; set; } = 150f;
 
         public AirDrops(Catalog catalog, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials, Emitters emitters, Transform parent)
         {
@@ -78,7 +94,7 @@ namespace MachineBrigade.Game.Effects
             var release = land - Mathf.Min(Descent, e.Value * 0.8f);
 
             // One transport serves every drop of its side released within a second of each other.
-            var flight = FlightFor(e.Team, landing, inward, release);
+            var flight = FlightFor(e.Team, landing, release, now);
 
             var model = _models.Spawn(def.Model, e.Team, _root, castShadows: false);
             var drop = new Drop
@@ -90,45 +106,100 @@ namespace MachineBrigade.Game.Effects
             model.Root.SetActive(false);
             drop.Chute = BuildChute(model.Root.transform, def);
             _drops.Add(drop);
-            if (flight != null) flight.End = Mathf.Max(flight.End, release + 2.5f);
         }
 
-        private Plane FlightFor(int team, Vector3 landing, Vector3 inward, float release)
+        private Plane FlightFor(int team, Vector3 landing, float release, float now)
         {
             if (!_hasTransport) return null;
             foreach (var p in _planes)
-                if (p.Team == team && Mathf.Abs(Overhead(p) - release) < 1f) return p;
-            // It flies in along the line into the battlefield and passes over the landing point as the vehicle drops.
-            var over = landing + Vector3.up * PlaneAltitude;
-            var from = over - inward * PlaneSpeed * 1.6f;
-            var to = over + inward * PlaneSpeed * 2.2f;
-            var plane = new Plane { Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root, From = from, To = to, Team = team };
+                if (p.Team == team && Mathf.Abs(p.OverAt - release) < 1f) return p;
+            var plane = Route(HalfSize, landing, release, now);
+            plane.Team = team;
+            plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
             if (_catalog.Vehicles.TryGetValue(TransportModel, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
-            plane.Start = release - 1.6f;
-            plane.End = release + 2.2f;
-            plane.Root.transform.SetPositionAndRotation(from, Quaternion.LookRotation(inward));
+            plane.Root.transform.SetPositionAndRotation(plane.Entry, Quaternion.LookRotation(plane.Inward));
             _planes.Add(plane);
             return plane;
         }
 
-        private static float Overhead(Plane p) => p.Start + 1.6f;
+        /// <summary>
+        /// The transport's route for a drop at <paramref name="landing"/> released at <paramref name="release"/>:
+        /// the shortest way over the map, in from the edge nearest the drop and square to it, over the drop,
+        /// a climbing U-turn and out by the same edge.
+        /// </summary>
+        private static Plane Route(float halfSize, Vector3 landing, float release, float now)
+        {
+            var toEdgeX = halfSize - Mathf.Abs(landing.x);
+            var toEdgeZ = halfSize - Mathf.Abs(landing.z);
+            var inward = toEdgeX < toEdgeZ ? new Vector3(landing.x >= 0f ? -1f : 1f, 0f, 0f) : new Vector3(0f, 0f, landing.z >= 0f ? -1f : 1f);
+            var outside = Mathf.Max(0f, Mathf.Min(toEdgeX, toEdgeZ)) + EdgeMargin;
+            var over = landing + Vector3.up * PlaneAltitude;
+            // It turns home towards the middle of the edge, so it does not run along it.
+            var side = Vector3.Cross(Vector3.up, inward);
+            if (Vector3.Dot(side, -new Vector3(landing.x, 0f, landing.z)) < 0f) side = -side;
+            // It must be over the drop when the vehicle leaves; when the delivery is short it comes in faster.
+            var speed = Mathf.Clamp(outside / Mathf.Max(0.3f, release - now), PlaneSpeed, MaxApproachSpeed);
+            var plane = new Plane
+            {
+                Entry = over - inward * outside, Over = over, Inward = inward, Side = side, ApproachSpeed = speed, OverAt = release,
+                Start = release - outside / speed, ExitLength = outside,
+            };
+            plane.TurnEnd = release + Mathf.PI * TurnRadius / PlaneSpeed;
+            plane.ExitEnd = plane.TurnEnd + outside / PlaneSpeed;
+            return plane;
+        }
+
+        /// <summary>For tests: the transport's positions from <paramref name="now"/> to its removal, every <paramref name="step"/> seconds.</summary>
+        internal static List<Vector3> SampleRoute(float halfSize, Vector3 landing, float release, float now, float step)
+        {
+            var plane = Route(halfSize, landing, release, now);
+            var points = new List<Vector3>();
+            for (var t = Mathf.Max(now, plane.Start); t <= plane.ExitEnd; t += step) points.Add(Pose(plane, t).at);
+            points.Add(Pose(plane, plane.ExitEnd).at);
+            return points;
+        }
+
+        /// <summary>Where the transport is at <paramref name="now"/>, which way it flies and how far it banks.</summary>
+        private static (Vector3 at, Vector3 heading, float bank) Pose(Plane p, float now)
+        {
+            if (now <= p.OverAt)
+            {
+                // The run in, level, over the drop at OverAt.
+                var k = Mathf.Clamp01(1f - (p.OverAt - now) * p.ApproachSpeed / Mathf.Max(0.01f, (p.Over - p.Entry).magnitude));
+                return (Vector3.Lerp(p.Entry, p.Over, k), p.Inward, 0f);
+            }
+            if (now <= p.TurnEnd)
+            {
+                // A half circle towards Side, climbing, banked into the turn.
+                var theta = Mathf.PI * (now - p.OverAt) / Mathf.Max(0.01f, p.TurnEnd - p.OverAt);
+                var centre = p.Over + p.Side * TurnRadius;
+                var at = centre - p.Side * (TurnRadius * Mathf.Cos(theta)) + p.Inward * (TurnRadius * Mathf.Sin(theta));
+                var heading = p.Side * Mathf.Sin(theta) + p.Inward * Mathf.Cos(theta);
+                var bank = 35f * Mathf.Sin(Mathf.Min(1f, theta / (Mathf.PI * 0.2f)) * Mathf.PI * 0.5f) * Mathf.Min(1f, (Mathf.PI - theta) / (Mathf.PI * 0.2f));
+                return (at + Vector3.up * (14f * theta / Mathf.PI), heading, bank);
+            }
+            // Home the way it came, still climbing, until it is past the edge.
+            var s = Mathf.Clamp01((now - p.TurnEnd) / Mathf.Max(0.01f, p.ExitEnd - p.TurnEnd));
+            var start = p.Over + p.Side * (2f * TurnRadius) + Vector3.up * 14f;
+            return (start - p.Inward * (p.ExitLength * s) + Vector3.up * (10f * s), -p.Inward, 0f);
+        }
 
         public void Tick(float now)
         {
             for (var i = _planes.Count - 1; i >= 0; i--)
             {
                 var p = _planes[i];
-                var total = (p.To - p.From).magnitude / PlaneSpeed;
-                var k = (now - p.Start) / total;
-                if (k >= 1f && now > p.End)
+                if (now >= p.ExitEnd)
                 {
                     Object.Destroy(p.Root);
                     _planes.RemoveAt(i);
                     continue;
                 }
-                // Climbing away gently once past.
-                var at = Vector3.LerpUnclamped(p.From, p.To, k) + Vector3.up * Mathf.Max(0f, k - 0.45f) * 14f;
-                p.Root.transform.position = at;
+                var (at, heading, bank) = Pose(p, now);
+                // Banked into the turn: a right turn (Side to the right of the run in) rolls right.
+                var rightTurn = Vector3.Dot(Vector3.Cross(p.Inward, p.Side), Vector3.up) > 0f;
+                var roll = rightTurn ? -bank : bank;
+                p.Root.transform.SetPositionAndRotation(at, Quaternion.LookRotation(heading) * Quaternion.Euler(0f, 0f, roll));
             }
 
             for (var i = _drops.Count - 1; i >= 0; i--)

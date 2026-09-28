@@ -2219,3 +2219,17 @@ jammer was the example).
 - **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
+
+## 12G. Test feedback 2: the troop transport's route (2026-09-29)
+
+The owner saw the transport that drops the enemy's bought vehicles fly for a while and then vanish mid-map. It flew a
+straight line along the side's way into the battle, 112 m before the drop and 154 m after it, and was removed at the end
+of that line, often over the battlefield.
+
+- It now takes the shortest way over the map: in from the map edge nearest the drop, square to it, from 45 m beyond the
+  edge (out of the battle's view); over the drop as the vehicle leaves it; a 32 m climbing U-turn, banked 35 degrees,
+  towards the middle of that edge; and home the way it came, removed 45 m past the edge.
+- When the delivery leaves it little time (the drop is released about 1.2 s after the order on a 3.5 s delivery), it comes
+  in faster (up to 160 m/s) so it still starts beyond the edge, instead of appearing half-way.
+- View only (`AirDrops`); the sim's delivery time and landing point are unchanged. `TransportRouteTests` checks that it
+  appears and leaves beyond the edge, passes over the drop and never goes further in than the drop and its turn.
