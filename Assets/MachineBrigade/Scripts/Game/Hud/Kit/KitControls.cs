@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Hud
     /// <summary>
     /// A filter chip: an outline, or when chosen a text-colour face with dark text. A branch chip
     /// adds the branch's colour swatch and its class icon (a colour is never shown alone). The
-    /// face is smaller than the chip's 80 px touch target.
+    /// face is smaller than the chip's touch target.
     /// </summary>
     public sealed class KitChip : VisualElement
     {

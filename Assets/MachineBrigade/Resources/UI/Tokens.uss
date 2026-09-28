@@ -78,8 +78,8 @@
     --fc-fs-number-small: 23px;               /* numbers in a row of text */
 
     /* ---- B. touch targets, corners, borders */
-    --fc-touch: 80px;                         /* 72 px at 1400 wide, about 44 pt on a phone */
-    --fc-control: 64px;                       /* the visible face of a chip, text button or plus inside its 80 px target */
+    --fc-touch: 82px;                         /* 72 px at 1400 wide (80.2), 44 pt on a 390 pt tall phone (81.2) */
+    --fc-control: 64px;                       /* the visible face of a chip, text button or plus inside its touch target */
     --fc-icon: 28px;
     --fc-icon-small: 22px;
     --fc-chamfer: 20px;                       /* the main button's two cut corners: 18 px (20.0) */
@@ -264,7 +264,7 @@
 .fc-btn--claim.fc-btn--disabled .fc-btn__label, .fc-btn--claim.fc-btn--disabled .fc-btn__reason { color: var(--fc-text-2); }
 .fc-btn--claim.fc-btn--disabled .fc-btn__icon { --icon-color: var(--fc-text-2); }
 
-/* Text only: the accent colour, no face, still an 80 px target. */
+/* Text only: the accent colour, no face, still a full touch target. */
 .fc-btn--text { padding: 0 var(--fc-space-3); }
 .fc-btn--text .fc-btn__label { color: var(--fc-accent); -unity-font: var(--fc-font-display-semi); }
 .fc-btn--text .fc-btn__icon, .fc-btn--text .fc-btn__spinner { --icon-color: var(--fc-accent); }
@@ -546,3 +546,25 @@
 .fc-sample__body { flex-direction: row; flex-grow: 1; }
 .fc-sample__column { flex-grow: 1; flex-shrink: 1; padding: var(--fc-space-4); }
 .fc-sample__side { width: 440px; flex-shrink: 1; padding: var(--fc-space-4); justify-content: space-between; }
+.fc-sample__column--end { justify-content: flex-end; }
+.fc-preview__row--center { align-items: center; }
+.fc-preview__nav-row { flex-direction: row; width: auto; align-self: flex-start; border-right-width: 0; }
+.fc-preview__nav-row > .fc-nav-item { width: var(--fc-nav-width); }
+.fc-preview__w-wide { width: 460px; }
+.fc-preview__w-narrow { width: 280px; }
+.fc-preview__w-toggle { width: 380px; }
+.fc-preview__w-compare { width: 560px; }
+.fc-preview__w-panel { width: 360px; }
+.fc-vcard__art { align-items: center; justify-content: center; }
+.fc-vcard__fallback { width: 72px; height: 72px; --icon-color: var(--fc-text-2); }
+
+/* ---- layout helpers on the spacing scale ---------------------------------------------------------- */
+.fc-grow { flex-grow: 1; flex-shrink: 1; }
+.fc-nowrap { flex-wrap: nowrap; }
+.fc-self-start { align-self: flex-start; }
+.fc-mt-1 { margin-top: var(--fc-space-1); }
+.fc-mt-2 { margin-top: var(--fc-space-2); }
+.fc-mt-3 { margin-top: var(--fc-space-3); }
+.fc-mt-4 { margin-top: var(--fc-space-4); }
+.fc-ml-2 { margin-left: var(--fc-space-2); }
+.fc-ml-4 { margin-left: var(--fc-space-4); }

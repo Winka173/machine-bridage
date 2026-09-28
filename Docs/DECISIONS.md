@@ -652,3 +652,84 @@ slots and 3 utility slots, and an outpost (1 medium + 1 small) at every point.
   every drop zone to every capture point and the other drop zone, and in Siege to the command HQ,
   with the movement system's pathfinder; the map lists of the base, traffic and battle tests take
   the eight new ids.
+
+## 10. Field Command 2.0: foundation
+
+The foundation of the prompt-10 rebuild: the token theme, fonts and type scale, the component
+library with its preview screen, the card renders and the UI checks. The screens themselves
+(sections D, E, G and H) are rebuilt on it afterwards.
+
+- **One theme file.** `Resources/UI/Tokens.uss` holds every colour, font, type size, spacing step,
+  border and control size as a `--fc-*` variable (the `:root` block, and `.fc-text-large` for the
+  Large text size), then the kit's component classes (`fc-*`), which use `var()` only.
+  `Theme.tss` imports it, so every panel of the game has the tokens at its root. `UiThemeTests`
+  fails on a literal colour or font size below the token blocks, on an ellipsis, and on a colour,
+  font size or spacing set from the kit's C#. Hud.uss keeps its own variables for now: none of its
+  colours equals a token exactly except the accent, so a "pure rename" would have restyled the old
+  screens; the rebuild moves them over screen by screen.
+- **Units: 1 reference px = 1.114 panel px.** The brief's sizes are given at a 1400 px reference
+  width. The game's panels are authored at 1280 x 720 and scale with the height on phones
+  (`BattleHud.MatchFor`), so a 19.5:9 phone shows a panel 1560 px wide. The brief's device targets
+  (44 pt touch targets, 11-12 pt body text) only hold if the 1400 px is that phone class's width,
+  so the factor is 1560 / 1400. Converted: main button 42 px (37.7 at the reference), screen title
+  30 (26.9), panel title and button labels 23 (20.6), body 21 (18.8), secondary 19 (17.1; nothing is
+  smaller), big numbers 36; touch target 82 px (72 at the reference is 80.2; 44 pt on a 390 pt tall
+  phone is 81.2), the main button's chamfer 20 px (18). Hairlines, bars and the spacing scale keep
+  their literal values (1 px borders, the 2 px tab underline, the 3 px branch and nav bars, 4 px
+  progress bars, the 8 px dot, spacing 4/8/12/16/20/24/32): converting them would only blur them.
+- **Large text** (Settings > Text size: Thường / Lớn, `MatchSettings.TextSize`, saved as
+  `mb.textSize`) is about 1.15x: 48 / 34 / 26 / 24 / 22, numbers 41. `Kit.ApplyTextSize` puts the
+  `fc-text-large` class on a kit root; only type sizes change, so layouts must wrap, not overflow.
+  The settings screen gets the option when it is rebuilt.
+- **Contrast fixes.** Every text token was checked on every surface (and the battlefield panel
+  over black, grey and white ground). One pair of the brief fails: danger red `#e0513a` reads
+  4.45:1 on the panel and 3.98:1 on the selected panel (4.5 needed). It stays for borders, the
+  notification dot and icons (3:1 for graphics); text in danger colour uses a new
+  `--fc-danger-text: #ea6a55` (4.92:1 on the selected panel). Dim text `#8a939b` passes 4.5:1 on
+  every surface, but is still only used from the body size up, as the brief says. Dark text on
+  the accent, coin and bone faces is `--fc-ink: #101317` (6.7:1 or better).
+- **Our side and theirs.** The brief asks for a bright blue for us and red for them, different in
+  lightness too: `--fc-ally: #6cc0ff` (luminance 0.48) against `--fc-enemy: #e0513a` (0.22), a
+  1.96:1 ratio between them; the test asks for at least 1.8.
+- **Rarity colours.** Common `#9aa3ab`, uncommon `#6fbf5a`, rare `#4f9be8`, epic `#a877e8`,
+  legendary `#ff7a2e` (redder than the accent, as asked). `GearArt`'s old frame colours stay
+  until the equipment screen is rebuilt on `KitGearCard`.
+- **Extra tokens** the brief did not name: `--fc-positive: #9ccb5e` (better in a comparison), the
+  coin face's pressed `#cfa640` and pulse `#f3d67f`, a scrim, a pressed wash and a transparent
+  `--fc-clear`.
+- **Fonts.** Barlow Condensed SemiBold/Bold for titles, labels and big numbers; Barlow Regular,
+  Medium and SemiBold for text, from the Google Fonts `ofl/barlow` release (OFL 1.1). All five
+  carry every Vietnamese letter (checked with fontTools and by `UiLanguageTests` through
+  `Font.HasCharacter`), but none has `▾`, so the dropdown and sort carets are drawn as the new
+  `caret` icon, never typed. The licences moved to `Resources/Licenses/` (`OFL-<family>.txt` for
+  every bundled family, including the older Be Vietnam Pro, Inter and JetBrains Mono);
+  `UiLanguageTests` checks that each font family has one. Be Vietnam Pro stays for the old screens
+  until they are rebuilt.
+- **Corners and faces.** Square corners and 1 px borders everywhere. The main button is the only
+  shape: a 9-sliced white face with the top-left and bottom-right corners cut (`fc_primary.png`,
+  `Tools/art/ui_kit.py`), tinted by the accent token.
+- **Touch targets larger than faces.** Chips, the plus beside the coins and text-only buttons
+  have a smaller visible face (64 px, 44 px) inside a full 82 px target, so rows of chips do not
+  turn into slabs.
+- **Pressed.** Darker and 2 px down; phones have no hover. The kit's press rules are scoped under
+  `.fc-root` so the old menu's `.menu .pressed` (scale 0.96) cannot win inside the menu.
+- **Kit icons** carry `fc-icon` instead of the old `icon` class, whose colour rule in Hud.uss
+  would otherwise override the kit's. Taps: every element with the `Tap` manipulator now carries
+  the class `mb-tap`, so the checks can find the touch targets of old and new screens alike.
+- **Danger buttons always ask.** `KitButton.Danger` needs a `KitConfirm` (title, text, confirm
+  label); the dialog has Cancel (secondary) and a red confirm. A danger button cannot be built
+  without one.
+- **Disabled buttons say why.** `Disable(reason)` refuses an empty reason; the reason shows
+  under the label ("Thiếu 320 xu", "Cần Sở chỉ huy cấp 3": the brief's "Cần cấp HQ 3" written
+  without the English abbreviation).
+- **Accent use.** Only the main button, the chosen navigation item and the chosen tab, plus the
+  two uses the brief itself names (text-only buttons, a progress bar that is full enough to act).
+  A chosen chip is bone with dark text; a chosen dropdown option has a check mark.
+- **Upgrade mark** on a vehicle card: a bone square with a dark arrow, shown only when
+  `PlayerProfile.CanRankUp` (blueprints and coins both there) and never on a locked card. Locked
+  cards dim their art, name and cost to 45 % but keep the unlock line at full contrast.
+- **The preview screen** (`KitPreview`): six pages (colour and type, buttons, controls, cards,
+  frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
+  switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
+  hidden developer entry is five quick taps on the rank badge of the menu's top bar.
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests`, every other unmarked Latin word in a Vietnamese text counts as English): `CP`, `HQ`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `AC-130`, `Ka-52`, `Grad`, `Griffin`, `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`, `radar`, `drone`, `boss`, `Machine Brigade`, and the unit `mm` and the Vietnamese abbreviations `PK` (phòng không) and `TT` (trực thăng).

@@ -10,7 +10,7 @@ namespace MachineBrigade.Game.Hud
     /// Field Command 2.0: the UI kit's shared builders. Every component is styled by the classes
     /// of Resources/UI/Tokens.uss (the one theme file) and sets no colour or font size in code;
     /// C# decides structure, text and state classes only. Labels wrap and are never cut with an
-    /// ellipsis; every tappable element is at least a touch target (80 panel px, about 44 pt).
+    /// ellipsis; every tappable element is at least a touch target (82 panel px: 72 px at the 1400 px reference, 44 pt).
     /// </summary>
     public static class Kit
     {
