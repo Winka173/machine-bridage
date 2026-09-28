@@ -12,5 +12,8 @@ namespace MachineBrigade.Game.Rendering
     {
         public string Slot;
         public Vector2 Spread;
+
+        /// <summary>Turned along its tubes or rail from the model's geometry (else it faces the model's front).</summary>
+        public bool Measured;
     }
 }

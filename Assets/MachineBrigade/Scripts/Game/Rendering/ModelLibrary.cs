@@ -435,6 +435,7 @@ namespace MachineBrigade.Game.Rendering
             }
             var template = Object.Instantiate(Prefab(modelId), _templateRoot, false);
             template.name = modelId;
+            AlignMuzzles(template.transform);
             var raise = AddElevation(template.transform);
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
             AddLaunchPoints(template.transform);
@@ -488,10 +489,11 @@ namespace MachineBrigade.Game.Rendering
                 // Only launchers round the slot's own muzzle: a model can carry other pods and
                 // tubes elsewhere (a boss with sponson pods and a rear rocket box).
                 var at = root.InverseTransformPoint(muzzle.position);
-                List<(Vector3 front, Vector2 half)> found = null;
+                var hint = root.InverseTransformDirection(muzzle.forward);
+                List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> found = null;
                 var face = false;
                 foreach (var part in pairs)
-                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters) is { Count: >= 2 } groups &&
+                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters, hint) is { Count: >= 2 } groups &&
                         (AroundMuzzle(groups, at) || (part is "Ordnance_bodies" or "Bomb_bodies" && Straddles(groups, at))))
                     {
                         found = groups;
@@ -499,32 +501,34 @@ namespace MachineBrigade.Game.Rendering
                     }
                 if (found == null)
                     foreach (var part in faces)
-                        if (byName.TryGetValue(part, out var filters) && WholeFace(root, filters) is var whole && Vector3.Distance(whole.front, at) < 1.6f)
+                        if (byName.TryGetValue(part, out var filters) && WholeFace(root, filters, hint) is var whole && Vector3.Distance(whole.front, at) < 1.6f)
                         {
-                            found = new List<(Vector3, Vector2)> { whole };
+                            found = new List<(Vector3, Vector2, Vector3, bool)> { whole };
                             face = true;
                             break;
                         }
                 if (found == null) continue;
                 for (var i = 0; i < found.Count; i++)
                 {
-                    var (front, half) = found[i];
+                    var (front, half, axis, measured) = found[i];
                     var point = new GameObject($"Launch_{slot}_{i}").transform;
                     point.SetParent(muzzle.parent, false);
                     point.position = root.TransformPoint(front);
-                    point.rotation = muzzle.rotation;
+                    // Along its tubes (a tilted box's face is square to them), else the muzzle's way.
+                    point.rotation = measured ? root.rotation * Quaternion.LookRotation(axis, Vector3.up) : muzzle.rotation;
                     var launch = point.gameObject.AddComponent<LaunchPoint>();
                     launch.Slot = slot;
                     launch.Spread = face ? half * 0.8f : Vector2.zero;
+                    launch.Measured = measured || Aligned(muzzle);
                 }
             }
         }
 
         /// <summary>Whether a row of launchers is the one a muzzle stands for: level with it, and spread either side of it.</summary>
-        private static bool AroundMuzzle(List<(Vector3 front, Vector2 half)> groups, Vector3 muzzle)
+        private static bool AroundMuzzle(List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> groups, Vector3 muzzle)
         {
             float y = 0f, z = 0f, left = float.MaxValue, right = float.MinValue;
-            foreach (var (front, _) in groups)
+            foreach (var (front, _, _, _) in groups)
             {
                 y += front.y;
                 z += front.z;
@@ -537,10 +541,10 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>Stores hung either side of the centreline a muzzle marks (a drone's bombs under its wings, well behind the hint).</summary>
-        private static bool Straddles(List<(Vector3 front, Vector2 half)> groups, Vector3 muzzle)
+        private static bool Straddles(List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> groups, Vector3 muzzle)
         {
             float left = float.MaxValue, right = float.MinValue;
-            foreach (var (front, _) in groups)
+            foreach (var (front, _, _, _) in groups)
             {
                 left = Mathf.Min(left, front.x);
                 right = Mathf.Max(right, front.x);
@@ -548,46 +552,202 @@ namespace MachineBrigade.Game.Rendering
             return left < muzzle.x && right > muzzle.x;
         }
 
-        /// <summary>The front face of a box of tubes: its middle (root space) and its half width and height.</summary>
-        private static (Vector3 front, Vector2 half) WholeFace(Transform root, List<MeshFilter> filters)
+        /// <summary>The front face of a box of tubes: its middle (root space), its half width and height, and the tubes' axis.</summary>
+        private static (Vector3 front, Vector2 half, Vector3 axis, bool measured) WholeFace(Transform root, List<MeshFilter> filters, Vector3 hint)
         {
-            var lo = Vector3.positiveInfinity;
-            var hi = Vector3.negativeInfinity;
+            var points = new List<Vector3>();
             foreach (var filter in filters)
                 foreach (var v in filter.sharedMesh.vertices)
-                {
-                    var p = root.InverseTransformPoint(filter.transform.TransformPoint(v));
-                    lo = Vector3.Min(lo, p);
-                    hi = Vector3.Max(hi, p);
-                }
-            return (new Vector3((lo.x + hi.x) * 0.5f, (lo.y + hi.y) * 0.5f, hi.z), new Vector2((hi.x - lo.x) * 0.5f, (hi.y - lo.y) * 0.5f));
+                    points.Add(root.InverseTransformPoint(filter.transform.TransformPoint(v)));
+            return Front(points, hint);
         }
 
-        /// <summary>The launchers in a set of meshes, left to right: the middle of each one's front face (root space) and its half width and height.</summary>
-        private static List<(Vector3 front, Vector2 half)> LauncherGroups(Transform root, List<MeshFilter> filters)
+        /// <summary>The launchers in a set of meshes, left to right: the middle of each one's front face (root space), its half width and height, and its axis.</summary>
+        private static List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> LauncherGroups(Transform root, List<MeshFilter> filters, Vector3 hint)
         {
             var points = new List<Vector3>();
             foreach (var filter in filters)
                 foreach (var v in filter.sharedMesh.vertices)
                     points.Add(root.InverseTransformPoint(filter.transform.TransformPoint(v)));
             points.Sort((a, b) => a.x.CompareTo(b.x));
-            var groups = new List<(Vector3, Vector2)>();
+            var groups = new List<(Vector3, Vector2, Vector3, bool)>();
             var start = 0;
             for (var i = 1; i <= points.Count; i++)
             {
                 if (i < points.Count && points[i].x - points[i - 1].x < 0.35f) continue;
-                var lo = points[start];
-                var hi = points[start];
-                for (var k = start; k < i; k++)
-                {
-                    lo = Vector3.Min(lo, points[k]);
-                    hi = Vector3.Max(hi, points[k]);
-                }
-                groups.Add((new Vector3((lo.x + hi.x) * 0.5f, (lo.y + hi.y) * 0.5f, hi.z), new Vector2((hi.x - lo.x) * 0.5f, (hi.y - lo.y) * 0.5f)));
+                groups.Add(Front(points.GetRange(start, i - start), hint));
                 start = i;
             }
             return groups;
         }
+
+        /// <summary>
+        /// The front of a launcher (a pod, a stored missile, a box of tubes or its face) from its
+        /// vertices: its axis is its long axis when it is long and thin, the normal of its face when
+        /// it is flat, else <paramref name="hint"/> (the muzzle's way); the point is its middle on the
+        /// plane square to that axis through its front-most vertex, with its half width and height
+        /// in that plane. A tilted box of tubes (a raised MLRS pod) is square to its tubes, so its
+        /// front is not the front of its bounding box (DECISIONS 13E).
+        /// </summary>
+        internal static (Vector3 front, Vector2 half, Vector3 axis, bool measured) Front(List<Vector3> points, Vector3 hint)
+        {
+            hint = hint.sqrMagnitude > 1e-6f ? hint.normalized : Vector3.forward;
+            var axis = hint;
+            var measured = false;
+            if (Principal(points, out _, out var e1, out var e3, out var l1, out var l2, out var l3))
+            {
+                // A flat face first (a wide face of tubes is also longer across than it is tall),
+                // then a long pod or missile; only one facing roughly the muzzle's way.
+                foreach (var (a0, fits) in new[] { (e3, l3 < 0.3f * l2), (e1, l1 > 2.5f * l2) })
+                {
+                    if (!fits) continue;
+                    var a = Vector3.Dot(a0, hint) < 0f ? -a0 : a0;
+                    if (Vector3.Angle(a, hint) >= 60f) continue;
+                    axis = a;
+                    measured = true;
+                    break;
+                }
+            }
+            var far = float.MinValue;
+            var sum = Vector3.zero;
+            foreach (var p in points)
+            {
+                far = Mathf.Max(far, Vector3.Dot(p, axis));
+                sum += p;
+            }
+            var centre = sum / Mathf.Max(1, points.Count);
+            var front = centre + axis * (far - Vector3.Dot(centre, axis));
+            var across = Vector3.Cross(Vector3.up, axis);
+            across = across.sqrMagnitude > 1e-6f ? across.normalized : Vector3.right;
+            var up = Vector3.Cross(axis, across);
+            var half = Vector2.zero;
+            foreach (var p in points)
+            {
+                var d = p - front;
+                half = Vector2.Max(half, new Vector2(Mathf.Abs(Vector3.Dot(d, across)), Mathf.Abs(Vector3.Dot(d, up))));
+            }
+            return (front, half, axis, measured);
+        }
+
+        /// <summary>
+        /// Principal axes of a point cloud: its mean, the axes of most and least spread and the
+        /// three spreads (variances), largest first. False for fewer than four points.
+        /// </summary>
+        internal static bool Principal(List<Vector3> points, out Vector3 mean, out Vector3 major, out Vector3 minor, out float l1, out float l2, out float l3)
+        {
+            mean = Vector3.zero;
+            major = Vector3.forward;
+            minor = Vector3.up;
+            l1 = l2 = l3 = 0f;
+            if (points.Count < 4) return false;
+            foreach (var p in points) mean += p;
+            mean /= points.Count;
+            double xx = 0, xy = 0, xz = 0, yy = 0, yz = 0, zz = 0;
+            foreach (var p in points)
+            {
+                var d = p - mean;
+                xx += d.x * d.x;
+                xy += d.x * d.y;
+                xz += d.x * d.z;
+                yy += d.y * d.y;
+                yz += d.y * d.z;
+                zz += d.z * d.z;
+            }
+            var n = (double)points.Count;
+            var c = new[,] { { xx / n, xy / n, xz / n }, { xy / n, yy / n, yz / n }, { xz / n, yz / n, zz / n } };
+            var trace = c[0, 0] + c[1, 1] + c[2, 2];
+            if (trace <= 1e-12) return false;
+            // Power iteration on the covariance for the largest axis, then on what is left for the second.
+            var v1 = Power(c, new[] { 0.3, 0.2, 1.0 }, null);
+            var a1 = Rayleigh(c, v1);
+            var v2 = Power(c, new[] { 1.0, 0.3, 0.2 }, v1);
+            var a2 = Rayleigh(c, v2);
+            var v3 = new[] { v1[1] * v2[2] - v1[2] * v2[1], v1[2] * v2[0] - v1[0] * v2[2], v1[0] * v2[1] - v1[1] * v2[0] };
+            var a3 = Rayleigh(c, v3);
+            major = new Vector3((float)v1[0], (float)v1[1], (float)v1[2]).normalized;
+            minor = new Vector3((float)v3[0], (float)v3[1], (float)v3[2]).normalized;
+            l1 = (float)a1;
+            l2 = (float)a2;
+            l3 = (float)Math.Max(0.0, a3);
+            return true;
+        }
+
+        private static double[] Power(double[,] c, double[] v, double[] orthogonalTo)
+        {
+            for (var it = 0; it < 64; it++)
+            {
+                if (orthogonalTo != null)
+                {
+                    var dot = v[0] * orthogonalTo[0] + v[1] * orthogonalTo[1] + v[2] * orthogonalTo[2];
+                    for (var k = 0; k < 3; k++) v[k] -= dot * orthogonalTo[k];
+                }
+                var w = new double[3];
+                for (var r = 0; r < 3; r++) w[r] = c[r, 0] * v[0] + c[r, 1] * v[1] + c[r, 2] * v[2];
+                var len = Math.Sqrt(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+                if (len < 1e-15) break;
+                for (var k = 0; k < 3; k++) v[k] = w[k] / len;
+            }
+            var norm = Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+            if (norm > 0) for (var k = 0; k < 3; k++) v[k] /= norm;
+            return v;
+        }
+
+        private static double Rayleigh(double[,] c, double[] v)
+        {
+            double s = 0;
+            for (var r = 0; r < 3; r++)
+                for (var k = 0; k < 3; k++) s += v[r] * c[r, k] * v[k];
+            return s;
+        }
+
+        /// <summary>
+        /// Turns every `Muzzle_` empty along the barrel it sits on (the Blender tools place them by
+        /// position only, facing the model's front): a part beside it, under the same pivot, long
+        /// and thin, whose axis runs through the muzzle and whose front end is at it. A mortar tube,
+        /// a raised rocket box, a door gun or a flak barrel built pointing up then fires and flashes
+        /// the way it is drawn (<see cref="VehicleView.DrawnBarrelOf"/>). Muzzles with no such part
+        /// (a gun inside a merged hull mesh) keep facing the front (DECISIONS 13E).
+        /// </summary>
+        private static void AlignMuzzles(Transform root)
+        {
+            foreach (var muzzle in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (!MuzzlePattern.IsMatch(muzzle.name) || muzzle.parent == null) continue;
+                var at = muzzle.position;
+                var best = float.MaxValue;
+                var axis = Vector3.zero;
+                foreach (Transform sibling in muzzle.parent)
+                {
+                    var filter = sibling.GetComponent<MeshFilter>();
+                    if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
+                    var points = new List<Vector3>();
+                    foreach (var v in filter.sharedMesh.vertices) points.Add(filter.transform.TransformPoint(v));
+                    if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
+                    if (Vector3.Dot(major, at - mean) < 0f) major = -major;
+                    // Its front end, and how far the muzzle is off its axis and from that end.
+                    var far = float.MinValue;
+                    foreach (var p in points) far = Mathf.Max(far, Vector3.Dot(p - mean, major));
+                    var d = at - mean;
+                    var along = Vector3.Dot(d, major);
+                    var off = (d - major * along).magnitude;
+                    var radius = Mathf.Sqrt(2f * l2);
+                    var length = far;
+                    if (off > Mathf.Max(0.06f, radius * 1.2f) || along < length * 0.75f || along > length + Mathf.Max(0.15f, length * 0.25f)) continue;
+                    var score = off + Mathf.Abs(along - length) * 0.5f;
+                    if (score >= best) continue;
+                    best = score;
+                    axis = major;
+                }
+                // Barrels built along the model's front keep it exactly: a whole gun's principal axis
+                // (its body, feed and barrel) wanders a few degrees off its bore.
+                if (axis == Vector3.zero || Vector3.Angle(axis, muzzle.forward) < 10f) continue;
+                muzzle.rotation = Quaternion.LookRotation(axis, Mathf.Abs(axis.y) > 0.95f ? muzzle.forward : Vector3.up);
+                muzzle.gameObject.AddComponent<AlignedMuzzle>();
+            }
+        }
+
+        /// <summary>Whether a muzzle was turned along its barrel by <see cref="AlignMuzzles"/>.</summary>
+        internal static bool Aligned(Transform muzzle) => muzzle != null && muzzle.GetComponent<AlignedMuzzle>() != null;
 
         private void MergeRigidParts(Transform root)
         {
@@ -707,6 +867,9 @@ namespace MachineBrigade.Game.Rendering
             go.transform.localPosition = pivot;
             foreach (var part in parts) part.SetParent(go.transform, true);
             var aim = turret.InverseTransformPoint(muzzle.position) - pivot;
+            // A muzzle turned along its barrel (AlignMuzzles) gives the barrel's own pitch; the line
+            // from the trunnion to the muzzle runs several degrees off a tilted tube or box (13E).
+            if (Aligned(muzzle)) aim = turret.InverseTransformDirection(muzzle.forward);
             var pitch = Mathf.Atan2(aim.y, Mathf.Max(0.01f, new Vector2(aim.x, aim.z).magnitude)) * Mathf.Rad2Deg;
             return (pitch, kind);
         }
