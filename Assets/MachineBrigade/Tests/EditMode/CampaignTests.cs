@@ -135,9 +135,10 @@ namespace MachineBrigade.Tests
         internal static void PlayerAt(MissionDef mission, Catalog catalog)
         {
             PlayerProfile.ResetForTests();
+            // Off first: while every card counts as open, Unlock keeps nothing.
+            Progression.TestUnlockAll = false;
             foreach (var m in Before(mission)) PlayerProfile.RecordMission(m.Id, 2);
             foreach (var id in Owned(mission)) PlayerProfile.Unlock(id);
-            Progression.TestUnlockAll = false;
             PlayerProfile.BaseLoadout = RealisticBase(mission, catalog);
             var (vehicles, supports) = RealisticDeck(mission.Id);
             MatchSettings.DeckVehicles.Clear();
@@ -532,10 +533,14 @@ namespace MachineBrigade.Tests
                 return (w, (MissionSession)ModeSession.Create(GameModeKind.Campaign, false, w, 7));
             }
             var chosen = def.Stages.First(s => s.Choices.Count > 1).Choices[1].Key;
+            // The player picks the second branch as soon as the choice comes up.
+            void Feed(SimWorld w, MissionSession s)
+            {
+                if (s.Operation.PendingChoice != null) s.Choose(w, chosen);
+            }
             void Step(SimWorld w, MissionSession s)
             {
-                // The player picks the second branch as soon as the choice comes up.
-                if (s.Operation.PendingChoice != null) s.Choose(w, chosen);
+                Feed(w, s);
                 s.Mode.Tick(w, 0.05f);
                 s.TickAi(w, 0.05f);
                 w.Step(0.05f);
@@ -547,6 +552,8 @@ namespace MachineBrigade.Tests
             var checkpoint = session.Operation.Checkpoints[1];
             var (again, replay) = Start();
             while (again.Tick < checkpoint.Tick) Step(again, replay);
+            // The checkpoint was taken after that step's input (here the pick), so the replay feeds it too, as MatchRunner's does.
+            Feed(again, replay);
             Assert.AreEqual(checkpoint.Hash, again.StateHash(), "the same battle, step for step");
             CollectionAssert.AreEqual(session.Operation.Path.Take(2).ToArray(), replay.Operation.Path.Take(2).ToArray(), "and the same branch");
         }
