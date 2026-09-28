@@ -409,3 +409,220 @@
 .fc-pause__card { width: 520px; }
 .fc-pause__card > .fc-row > .fc-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); }
 .fc-pause__buttons > .fc-btn { align-self: stretch; margin-top: var(--fc-space-3); }
+
+/* ================================================================ G the battle HUD on the kit */
+/* The battlefield owns the middle: the minimap and its tools top left, the score (or the mission, or the waves)
+   top centre with the boss and the fortress pieces under it, pause top right, the commander's rail down the right,
+   the deck along the bottom, the selection's orders beside the rail. Panels on the battlefield are the field
+   surface with a hairline; every control is a full touch target. Panel pixels at 1280 x 720. */
+.hud.fc-hud { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-body); color: var(--fc-text); }
+.fc-hud-flash { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: var(--fc-flash); }
+.cb { --fc-enemy: var(--fc-enemy-cb); }
+
+/* top: score, mission or waves; pause and the frame rate in the corner */
+.fc-hud__top { position: absolute; top: var(--fc-space-3); left: 244px; right: 124px; flex-direction: row; justify-content: center; align-items: flex-start; }
+.fc-hud__corner { position: absolute; top: var(--fc-space-3); right: var(--fc-space-3); flex-direction: row; align-items: center; }
+.fc-hud__fps { margin-right: var(--fc-space-2); }
+.fc-hud__stats { flex-direction: row; }
+.fc-hud__stat { flex-direction: row; align-items: center; min-height: 64px; padding: var(--fc-space-2) var(--fc-space-4); margin: 0 var(--fc-space-1); }
+.fc-hud__stat-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-3); }
+.fc-hud__stat--ours .fc-hud__stat-icon { --icon-color: var(--fc-ally); }
+.fc-hud__stat--theirs .fc-hud__stat-icon { --icon-color: var(--fc-enemy); }
+.fc-hud__clock { padding: 0 var(--fc-space-2); margin-top: var(--fc-space-1); background-color: var(--fc-panel-field); -unity-text-align: middle-center; }
+.fc-hud__clock--urgent { color: var(--fc-danger-text); }
+
+.fc-score { flex-direction: row; align-items: flex-start; }
+.fc-score__side { flex-direction: row; align-items: center; width: 200px; min-height: 64px; padding: var(--fc-space-2) var(--fc-space-3); }
+.fc-score__side--theirs { justify-content: flex-end; }
+.fc-score__number { margin: 0 var(--fc-space-2); }
+.fc-score__side--ours .fc-score__number { color: var(--fc-ally); }
+.fc-score__side--theirs .fc-score__number { color: var(--fc-enemy); }
+.fc-score__column { flex-grow: 1; flex-shrink: 1; }
+.fc-score__side--theirs .fc-caption { -unity-text-align: upper-right; }
+.fc-score__track { height: var(--fc-progress); margin-top: var(--fc-space-1); background-color: var(--fc-border); overflow: hidden; }
+.fc-score__fill { height: 100%; width: 100%; background-color: var(--fc-ally); }
+.fc-score__side--theirs .fc-score__track { flex-direction: row-reverse; }
+.fc-score__side--theirs .fc-score__fill { background-color: var(--fc-enemy); }
+.fc-score__centre { align-items: center; margin: 0 var(--fc-space-2); }
+.fc-score__chips { flex-direction: row; }
+
+/* an objective: a full touch target, its ring and letter inside */
+.fc-point {
+    width: var(--fc-touch); height: var(--fc-touch); padding: var(--fc-space-2); margin: 0 var(--fc-space-1);
+    --point-ours: var(--fc-ally); --point-theirs: var(--fc-enemy); --point-track: var(--fc-border-strong);
+}
+.fc-point__face { flex-grow: 1; align-items: center; justify-content: center; background-color: var(--fc-panel-field); border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; }
+.fc-point--ours .fc-point__letter { color: var(--fc-ally); }
+.fc-point--theirs .fc-point__letter { color: var(--fc-enemy); }
+.fc-point--contested .fc-point__face { background-color: var(--fc-panel-selected); }
+.fc-point--focus .fc-point__face { border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+
+.fc-mission-bar { flex-direction: row; align-items: center; min-height: 64px; padding: var(--fc-space-2) var(--fc-space-3); }
+.fc-mission-bar__text { width: 320px; flex-shrink: 1; }
+.fc-mission-bar__goal { color: var(--fc-accent); }
+.fc-mission-bar__progress { margin-top: var(--fc-space-2); }
+.fc-mission-bar > .fc-score__chips { margin-left: var(--fc-space-2); }
+.fc-mission-bar > .fc-hud__clock { margin: 0 0 0 var(--fc-space-3); }
+
+/* under the top bar: the boss, then the fortress pieces */
+.fc-hud__under { position: absolute; top: 128px; left: 25%; right: 25%; align-items: center; }
+.fc-boss { width: 100%; padding: var(--fc-space-2) var(--fc-space-3); margin-bottom: var(--fc-space-2); border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger); }
+.fc-boss__head { flex-direction: row; align-items: center; }
+.fc-boss__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); --icon-color: var(--fc-danger); }
+.fc-boss__name { flex-grow: 1; }
+.fc-boss__phase { margin-left: var(--fc-space-2); color: var(--fc-accent); }
+.fc-boss__hp { margin-left: var(--fc-space-3); color: var(--fc-text-2); }
+.fc-boss__track { height: 10px; margin-top: var(--fc-space-1); background-color: var(--fc-border); }
+.fc-boss__fill { height: 100%; width: 100%; background-color: var(--fc-danger); }
+.fc-boss__mark { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background-color: var(--fc-text); }
+.fc-boss--transforming .fc-boss__fill { background-color: var(--fc-accent); }
+.fc-boss-parts { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-2); }
+.fc-boss-part {
+    width: var(--fc-touch); height: var(--fc-touch); margin: 0 var(--fc-space-1) var(--fc-space-1) 0; padding: var(--fc-space-2);
+    align-items: center; justify-content: space-between; background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border);
+}
+.fc-boss-part__icon { width: 36px; height: 36px; }
+.fc-boss-part__track { width: 100%; height: var(--fc-progress); background-color: var(--fc-border); }
+.fc-boss-part__fill { height: 100%; width: 100%; background-color: var(--fc-text-2); }
+.fc-boss-part__cross { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 2px; margin-left: -1px; background-color: var(--fc-danger); rotate: 45deg; display: none; }
+.fc-boss-part__cross--flip { rotate: -45deg; }
+.fc-boss-part--broken { opacity: 0.45; }
+.fc-boss-part--broken .fc-boss-part__cross { display: flex; }
+.fc-boss-part--focused { background-color: var(--fc-panel-selected); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-hud .fortress-panel { position: relative; top: 0; left: 0; right: 0; }
+.fc-hud .gun-timer, .fc-hud .wave-preview { background-color: var(--fc-panel-field); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.fc-hud .gun-timer { min-height: 64px; }
+.fc-hud .gun-timer-name, .fc-hud .wave-preview-title { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); }
+.fc-hud .gun-timer-clock, .fc-hud .wave-preview-clock, .fc-hud .wave-chip-count { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-number-small); }
+.fc-hud .wave-chip { height: 36px; background-color: var(--fc-panel-raised); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.fc-hud .wave-preview-held { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); white-space: normal; }
+
+/* left: minimap and its tools (two by two) */
+.fc-hud__left { position: absolute; left: var(--fc-space-3); top: var(--fc-space-3); width: 216px; }
+.fc-hud .minimap { border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; background-color: var(--fc-panel-field); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-hud__tools { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-2); }
+.fc-hud__tools > .fc-icon-btn { margin: 0 var(--fc-space-2) var(--fc-space-2) 0; background-color: var(--fc-panel-field); }
+.fc-icon-btn--on { background-color: var(--fc-text); }
+.fc-icon-btn--on > .fc-icon { --icon-color: var(--fc-ink); }
+.fc-hud .item-strip { left: var(--fc-space-3); top: 404px; flex-direction: row; flex-wrap: wrap; width: 216px; }
+.fc-hud .item { width: var(--fc-touch); height: var(--fc-touch); margin: 0 var(--fc-space-2) var(--fc-space-2) 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; background-color: var(--fc-panel-field); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-hud .item.selected { background-color: var(--fc-text); }
+.fc-hud .item-count { background-color: var(--fc-bg); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.fc-hud .item-count-text { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); }
+.fc-hud .item-cooldown { background-color: var(--fc-scrim); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+/* right: the commander's rail */
+.fc-hud__rail { position: absolute; right: var(--fc-space-3); top: 106px; width: 244px; }
+.fc-hud__group { padding: var(--fc-space-1); margin-bottom: var(--fc-space-2); }
+.fc-stance { flex-direction: row; align-items: center; min-height: var(--fc-touch); padding: 0 var(--fc-space-3); margin-bottom: var(--fc-space-1); }
+.fc-stance__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-3); }
+.fc-stance__label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); color: var(--fc-text); letter-spacing: 1px; }
+.fc-root .fc-stance.pressed { background-color: var(--fc-panel-selected); }
+.fc-stance--on { background-color: var(--fc-text); }
+.fc-stance--on > .fc-stance__icon { --icon-color: var(--fc-ink); }
+.fc-stance--on > .fc-stance__label { color: var(--fc-ink); }
+.fc-root .fc-stance--on.pressed { background-color: var(--fc-text-2); }
+.fc-hud__switches { padding: 0 var(--fc-space-2); }
+.fc-hud__switches .fc-toggle__label { margin-right: var(--fc-space-2); }
+.fc-hud__switches .fc-toggle__state { margin-right: var(--fc-space-2); }
+.fc-hud__tower { align-self: stretch; background-color: var(--fc-panel-field); }
+
+/* the selection: who, their health, weapons, and the three hand orders */
+.fc-hud__command { position: absolute; right: 268px; bottom: 180px; width: 440px; padding: var(--fc-space-3); display: none; }
+.fc-hud__command-head { flex-direction: row; justify-content: space-between; margin-bottom: var(--fc-space-2); }
+.fc-hud__details { flex-direction: row; align-items: center; }
+.fc-hud__portrait { width: 96px; height: 64px; margin-right: var(--fc-space-3); align-items: center; justify-content: center; background-color: var(--fc-panel-raised); -unity-background-scale-mode: scale-to-fit; }
+.fc-hud__portrait-icon { width: 36px; height: 36px; --icon-color: var(--fc-ally); }
+.fc-hud__details-text { flex-grow: 1; flex-shrink: 1; }
+.fc-hud__hp { height: var(--fc-progress); margin: var(--fc-space-1) 0; background-color: var(--fc-border); }
+.fc-hud__hp-fill { height: 100%; width: 100%; background-color: var(--fc-positive); }
+.fc-hud__hp-fill--hurt { background-color: var(--fc-accent); }
+.fc-hud__hp-fill--critical { background-color: var(--fc-danger); }
+.fc-hud__weapons { margin-top: var(--fc-space-2); }
+.fc-hud__counter { margin-top: var(--fc-space-1); }
+.fc-hud__orders { flex-direction: row; margin-top: var(--fc-space-2); }
+.fc-hud__order {
+    flex-grow: 1; flex-basis: 0; min-height: var(--fc-touch); margin-right: var(--fc-space-1);
+    align-items: center; justify-content: center; background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-hud__order-icon { width: var(--fc-icon); height: var(--fc-icon); margin-bottom: var(--fc-space-1); }
+.fc-hud__order-label { -unity-text-align: middle-center; }
+.fc-root .fc-hud__order.pressed { background-color: var(--fc-panel-selected); }
+.fc-hud__order--armed { background-color: var(--fc-text); }
+.fc-hud__order--armed > .fc-hud__order-icon { --icon-color: var(--fc-ink); }
+.fc-hud__order--armed > .fc-stance__label { color: var(--fc-ink); }
+
+/* the deck: the CP box, then the cards (a gap before the support cards) */
+/* Every card and the CP box are one height (160), so what sits above the deck clears it by the same amount. */
+.fc-deck { position: absolute; left: var(--fc-space-3); right: var(--fc-space-3); bottom: var(--fc-space-3); height: 160px; flex-direction: row; justify-content: center; align-items: stretch; }
+.fc-cpbox { width: 180px; margin-right: var(--fc-space-2); padding: var(--fc-space-2) var(--fc-space-3); justify-content: center; }
+.fc-cpbox__head { flex-direction: row; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.fc-cpbox > * { flex-shrink: 0; }
+.fc-cpbox__value { color: var(--fc-accent); }
+.fc-cpbox__bank { margin: var(--fc-space-1) 0; }
+.fc-cpbox__bank .fc-progress__fill { background-color: var(--fc-accent); }
+.fc-root .fc-cpbox.pressed { background-color: var(--fc-panel-selected); }
+.fc-deck__cards { flex-direction: row; align-items: stretch; flex-shrink: 1; }
+.fc-deck__gap { width: var(--fc-space-3); }
+.fc-hcard {
+    width: 100px; margin-left: var(--fc-space-1); padding-bottom: var(--fc-space-1);
+    background-color: var(--fc-panel-field);
+    border-top-width: var(--fc-bar); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-hcard--support { border-top-color: var(--fc-branch-support); }
+.fc-hcard__art { height: 72px; overflow: hidden; align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; background-color: var(--fc-panel-raised); }
+.fc-hcard__icon { width: 40px; height: 40px; }
+.fc-hcard__sweep { position: absolute; left: 0; top: 0; right: 0; bottom: 0; color: var(--fc-scrim); }
+.fc-hcard__seconds { position: absolute; left: 0; right: 0; top: 18px; -unity-text-align: middle-center; display: none; }
+.fc-hcard--cooling .fc-hcard__seconds { display: flex; }
+.fc-hcard__lock { position: absolute; width: var(--fc-icon); height: var(--fc-icon); display: none; }
+.fc-hcard--locked .fc-hcard__lock { display: flex; }
+.fc-hcard__short { position: absolute; left: 0; right: 0; bottom: 0; -unity-text-align: middle-center; color: var(--fc-danger-text); background-color: var(--fc-panel-field); display: none; }
+.fc-hcard--short .fc-hcard__short { display: flex; }
+.fc-hcard__cost { position: absolute; top: 0; right: 0; min-width: 34px; padding: 0 var(--fc-space-1); align-items: center; background-color: var(--fc-bg); }
+.fc-hcard__cost > .fc-number-small { color: var(--fc-accent); }
+.fc-hcard__name { margin: var(--fc-space-1) var(--fc-space-1) 0 var(--fc-space-1); -unity-text-align: upper-center; color: var(--fc-text); }
+.fc-hcard--short .fc-hcard__art, .fc-hcard--locked .fc-hcard__art, .fc-hcard--short .fc-hcard__name, .fc-hcard--locked .fc-hcard__name { opacity: 0.45; }
+.fc-hcard--short .fc-hcard__cost > .fc-number-small { color: var(--fc-text-2); }
+.fc-hcard--armed { border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); background-color: var(--fc-panel-selected); }
+.fc-root .fc-hcard.pressed { translate: 0 var(--fc-press-shift); }
+
+/* the hint, the strike prompt, the banner, notices and radio chatter */
+.fc-hud__hint { position: absolute; left: 244px; right: 720px; bottom: 180px; align-items: center; opacity: 1; transition-property: opacity; transition-duration: 0.5s; }
+.fc-hud__hint--gone { opacity: 0; }
+.fc-hud__hint-face { padding: var(--fc-space-2) var(--fc-space-4); }
+.fc-hud__hint-face > .fc-text { -unity-text-align: middle-center; }
+.fc-hud__targeting { position: absolute; left: 244px; right: 720px; bottom: 180px; align-items: center; }
+.fc-hud__targeting-face { flex-direction: row; align-items: center; padding: var(--fc-space-1) var(--fc-space-1) var(--fc-space-1) var(--fc-space-4); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-hud__targeting-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-3); --icon-color: var(--fc-accent); }
+.fc-hud__targeting-face > .fc-text { margin-right: var(--fc-space-3); }
+.fc-hud__banner { position: absolute; top: 200px; left: 244px; right: 268px; align-items: center; opacity: 0; transition-property: opacity; transition-duration: 0.4s; }
+.fc-hud__banner--visible { opacity: 1; }
+.fc-hud__banner-face { padding: var(--fc-space-4) var(--fc-space-7); align-items: center; border-left-width: var(--fc-bar); border-left-color: var(--fc-accent); }
+.fc-hud__banner-kicker { color: var(--fc-accent); }
+/* Notices and radio chatter stack in the column under the top bar, under the boss when there is one. */
+.fc-hud__toast { width: 100%; align-items: center; margin-top: var(--fc-space-2); opacity: 0; transition-property: opacity; transition-duration: 0.2s; }
+.fc-hud__toast--visible { opacity: 1; }
+.fc-hud__toast-face { max-width: 640px; }
+.fc-hud__toast-icon { --icon-color: var(--fc-text-2); }
+.fc-toast--alert > .fc-hud__toast-icon { --icon-color: var(--fc-danger); }
+.fc-toast--alert { border-left-width: var(--fc-bar); border-left-color: var(--fc-danger); }
+.fc-radio {
+    width: 100%; margin-top: var(--fc-space-2); min-height: var(--fc-touch);
+    flex-direction: row; align-items: center; padding: var(--fc-space-2) var(--fc-space-4) var(--fc-space-2) var(--fc-space-2);
+    border-left-width: var(--fc-bar); border-left-color: var(--fc-ally);
+}
+.fc-radio--enemy { border-left-color: var(--fc-enemy); }
+.fc-radio__portrait { width: 64px; height: 64px; flex-shrink: 0; margin-right: var(--fc-space-3); }
+.fc-radio__text { flex-grow: 1; flex-shrink: 1; }
+.fc-radio__name { color: var(--fc-ally); }
+.fc-radio--enemy .fc-radio__name { color: var(--fc-danger-text); }
+.fc-ad__count { margin-bottom: var(--fc-space-4); }
+/* Large text: the deck grows to hold its bigger type, and what sits above it moves up with it. */
+.fc-hud.fc-text-large .fc-deck { height: 196px; }
+.fc-hud.fc-text-large .fc-hud__command, .fc-hud.fc-text-large .fc-hud__hint, .fc-hud.fc-text-large .fc-hud__targeting { bottom: 216px; }

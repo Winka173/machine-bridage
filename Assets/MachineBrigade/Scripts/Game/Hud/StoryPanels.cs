@@ -48,12 +48,13 @@ namespace MachineBrigade.Game.Hud
 
         public RadioPanel()
         {
-            Root = UiKit.Button("radio-panel", Skip);
-            _portrait = Portraits.Element("hq", "radio-portrait");
+            // The battle's one toast style (Field Command 2.0, G): radio chatter, air-raid warnings and elite notices.
+            Root = Kit.Tappable(KitPanel.SurfaceClass + " fc-surface--field fc-radio", Skip);
+            _portrait = Portraits.Element("hq", "fc-radio__portrait");
             Root.Add(_portrait);
-            var text = UiKit.Box("radio-text");
-            _name = UiKit.Text("", "radio-name");
-            _text = UiKit.Text("", "radio-line");
+            var text = Kit.Box("fc-radio__text");
+            _name = Kit.Text("", "fc-caption fc-radio__name");
+            _text = Kit.Text("", "fc-body fc-row-text");
             text.Add(_name);
             text.Add(_text);
             Root.Add(text);
@@ -89,9 +90,9 @@ namespace MachineBrigade.Game.Hud
             }
             var line = _queue.Dequeue();
             Portraits.Set(_portrait, line.Speaker);
-            _name.text = Strings.Get("char." + line.Speaker + ".name").ToUpperInvariant();
+            _name.text = Kit.Caps(Strings.Get("char." + line.Speaker + ".name"));
             _text.text = Strings.Get(line.Key);
-            Root.EnableInClassList("enemy", line.Enemy);
+            Root.EnableInClassList("fc-radio--enemy", line.Enemy);
             Root.style.display = DisplayStyle.Flex;
             _showing = true;
             _until = Time.unscaledTime + Mathf.Max(Seconds, 1.5f + _text.text.Length * 0.045f);

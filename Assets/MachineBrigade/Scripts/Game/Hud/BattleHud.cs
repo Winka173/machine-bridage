@@ -58,9 +58,10 @@ namespace MachineBrigade.Game.Hud
         private readonly BossBar _boss;
         private readonly SuperGunTimer _superGun;
         private readonly WavePreview _wavePreview;
-        private readonly VisualElement _attackStance, _defendStance, _autoDeploy, _autoStrike;
-        private readonly VisualElement _towerButton;
-        private readonly Label _towerLabel;
+        private readonly VisualElement _attackStance, _defendStance;
+        private readonly KitToggle _autoDeploy, _autoStrike;
+        private readonly KitButton _towerButton;
+        private readonly VisualElement _portrait;
         private readonly DeckBar _deck;
         private readonly ResultPanel _result;
         private readonly PausePanel _pause;
@@ -70,27 +71,39 @@ namespace MachineBrigade.Game.Hud
         private bool _attackArmed, _boxMode;
         private Rect _appliedSafeArea;
 
-        public BattleHud(HudSpec spec, IReadOnlyList<CardInfo> cards, Catalog catalog)
+        public BattleHud(HudSpec spec, IReadOnlyList<CardInfo> cards, Catalog catalog) : this(spec, cards, catalog, null)
+        {
+        }
+
+        /// <summary>
+        /// The HUD built into <paramref name="root"/> instead of a UIDocument of its own (the screenshot
+        /// tool and the UI checks lay it out in their own panels); null makes the document.
+        /// </summary>
+        internal BattleHud(HudSpec spec, IReadOnlyList<CardInfo> cards, Catalog catalog, VisualElement root)
         {
             var mode = spec.Mode;
             Mode = mode;
             Catalog = catalog;
-            if (EventSystem.current == null)
-                _eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            if (root != null) _root = root;
+            else
+            {
+                if (EventSystem.current == null)
+                    _eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
 
-            _settings = ScriptableObject.CreateInstance<PanelSettings>();
-            _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
-            _settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
-            _settings.referenceResolution = new Vector2Int(1280, 720);
-            _settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
-            _settings.match = MatchFor(Screen.width, Screen.height);
-            _settings.scale = Match.MatchSettings.UiScale;
-            _settings.sortingOrder = 10;
+                _settings = ScriptableObject.CreateInstance<PanelSettings>();
+                _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
+                _settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+                _settings.referenceResolution = new Vector2Int(1280, 720);
+                _settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
+                _settings.match = MatchFor(Screen.width, Screen.height);
+                _settings.scale = Match.MatchSettings.UiScale;
+                _settings.sortingOrder = 10;
 
-            _host = new GameObject("HUD");
-            var document = _host.AddComponent<UIDocument>();
-            document.panelSettings = _settings;
-            _root = document.rootVisualElement;
+                _host = new GameObject("HUD");
+                var document = _host.AddComponent<UIDocument>();
+                document.panelSettings = _settings;
+                _root = document.rootVisualElement;
+            }
             if (Match.DebugFlags.Has("-mb-no-hud")) _root.style.display = DisplayStyle.None;
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             // The screens' sheet after the old HUD sheet. It is not in the theme: UI Toolkit counts every sheet
@@ -102,16 +115,15 @@ namespace MachineBrigade.Game.Hud
             _root.EnableInClassList("cb", Match.MatchSettings.ColorBlind);
 
             // The flash of a huge blast: a warm wash over the battlefield, under every control.
-            _flash = new VisualElement { pickingMode = PickingMode.Ignore };
-            _flash.style.position = Position.Absolute;
-            _flash.style.left = _flash.style.top = _flash.style.right = _flash.style.bottom = 0;
-            _flash.style.backgroundColor = new Color(1f, 0.9f, 0.72f);
+            _flash = Kit.Box("fc-hud-flash");
             _flash.style.opacity = 0f;
             _root.Add(_flash);
             // Equipment proc words over vehicles, under every control.
             if (mode != HudMode.Menu) _words = new TraitWords(_root);
 
             var hud = UiKit.Box("hud");
+            // The battle's controls are a kit root (Field Command 2.0, G): the kit's fonts, sizes and text size.
+            if (mode != HudMode.Menu) hud = Kit.Root("hud fc-hud");
             _root.Add(hud);
             _safe = UiKit.Box("safe");
             hud.Add(_safe);
@@ -131,168 +143,174 @@ namespace MachineBrigade.Game.Hud
                 return;
             }
 
-            // Top bar ---------------------------------------------------------------------------
-            var top = UiKit.Box("topbar");
-            _safe.Add(top);
-            top.Add(UiKit.Box("topbar-left"));
-
-            var stats = UiKit.Box("stats");
+            // Top bar: the score (or the mission, or the waves) in the middle, pause in the corner ----------
+            var top = Kit.Box("fc-hud__top");
             if (mode == HudMode.Score)
             {
                 _score = new ScoreBar(spec.ScoreLabel);
-                stats.Add(_score.Root);
+                top.Add(_score.Root);
             }
             else if (mode == HudMode.Mission)
             {
                 _missionBar = new MissionBar();
                 _missionBar.PointPressed += id => PointPressed?.Invoke(id);
-                stats.Add(_missionBar.Root);
+                top.Add(_missionBar.Root);
             }
             else
             {
-                _allies = Stat(stats, "tank", Strings.Get("stat.allies"), UiKit.Mint);
-                stats.Add(UiKit.Box("stat-divider"));
-                _enemies = Stat(stats, "crosshair", Strings.Get("stat.enemies"), UiKit.Danger);
-                stats.Add(UiKit.Box("stat-divider"));
-                _wave = Stat(stats, "flag", Strings.Get("stat.wave"), UiKit.Amber);
-                stats.Add(UiKit.Box("stat-divider"));
-                _next = Stat(stats, "bolt", Strings.Get("stat.next"), UiKit.Ink);
+                var stats = Kit.Box("fc-hud__stats");
+                _allies = Stat(stats, "tank", Strings.Get("stat.allies"), "fc-hud__stat--ours");
+                _enemies = Stat(stats, "crosshair", Strings.Get("stat.enemies"), "fc-hud__stat--theirs");
+                _wave = Stat(stats, "flag", Strings.Get("stat.wave"), null);
+                _next = Stat(stats, "bolt", Strings.Get("stat.next"), null);
+                top.Add(stats);
             }
-            top.Add(stats);
+            _safe.Add(top);
 
-            var right = UiKit.Box("topbar-right", PickingMode.Position);
-            _fps = UiKit.Text("", "fps");
-            right.Add(_fps);
-            right.Add(UiKit.IconButton("pause", () => PausePressed?.Invoke()));
-            top.Add(right);
+            var corner = Kit.Box("fc-hud__corner");
+            _fps = Kit.Text("", "fc-small fc-hud__fps");
+            corner.Add(_fps);
+            corner.Add(new KitIconButton("pause", Strings.Get("pause.title"), () => PausePressed?.Invoke()));
+            _safe.Add(corner);
 
+            // Under the top bar: the boss, then the fortress modes' set pieces (the super-gun's countdown, the next wave).
+            var under = Kit.Box("fc-hud__under");
             if (mode == HudMode.Mission)
             {
                 _boss = new BossBar();
                 _boss.Parts.Tapped += (boss, part) => BossPartTapped?.Invoke(boss, part);
-                _safe.Add(_boss.Root);
-                // The fortress modes' set pieces: the super-gun's countdown and the next wave.
+                under.Add(_boss.Root);
                 var fortress = UiKit.Box("fortress-panel");
                 _superGun = new SuperGunTimer();
                 fortress.Add(_superGun.Root);
                 _wavePreview = new WavePreview(DescribeVehicle);
                 fortress.Add(_wavePreview.Root);
-                _safe.Add(fortress);
+                under.Add(fortress);
             }
+            _safe.Add(under);
 
-            // Left column: minimap and tools -------------------------------------------------------
-            var left = UiKit.Box("left-column");
+            // Left column: the minimap and the map tools ---------------------------------------------
+            var left = Kit.Box("fc-hud__left");
             Minimap = new Minimap();
             Minimap.Clicked += p => MinimapClicked?.Invoke(p);
             left.Add(Minimap);
-            var tools = UiKit.Box("tools");
-            tools.Add(Tool("people", "", () => SelectAllPressed?.Invoke()));
-            _boxTool = Tool("expand", "", () => BoxModeToggled?.Invoke());
+            var tools = Kit.Box("fc-hud__tools");
+            tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke()));
+            _boxTool = new KitIconButton("expand", Strings.Get("hud.boxSelect"), () => BoxModeToggled?.Invoke());
             tools.Add(_boxTool);
-            tools.Add(Tool("plus", "", () => ZoomPressed?.Invoke(1.25f)));
-            tools.Add(Tool("minus", "", () => ZoomPressed?.Invoke(0.8f)));
+            tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f)));
+            tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f)));
             left.Add(tools);
             _safe.Add(left);
 
-            // Commander panel: the army fights on its own; the player sets intent -------------------
-            var commander = UiKit.Box("rail", PickingMode.Position);
-            var stance = UiKit.Box("rail-group");
-            _attackStance = Toggle(stance, "attack", Strings.Get("rail.attack"), () => StancePressed?.Invoke(false));
-            _defendStance = Toggle(stance, "shield", Strings.Get("rail.defend"), () => StancePressed?.Invoke(true));
+            // Commander panel: the army fights on its own; the player sets intent ---------------------------
+            // Attack / Defend with their full names (the one on is the text colour with dark text), then
+            // Auto buy and Support as the kit's on/off switches.
+            var commander = Kit.Box("fc-hud__rail", PickingMode.Position);
+            var stance = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__group");
+            _attackStance = Stance(stance, "attack", Strings.Get("rail.attack"), () => StancePressed?.Invoke(false));
+            _defendStance = Stance(stance, "shield", Strings.Get("rail.defend"), () => StancePressed?.Invoke(true));
             commander.Add(stance);
-            var autos = UiKit.Box("rail-group");
-            _autoDeploy = Toggle(autos, "reinforce", Strings.Get("rail.buy"), () => AutoDeployToggled?.Invoke(), "switch");
-            _autoStrike = Toggle(autos, "barrage", Strings.Get("rail.support"), () => AutoStrikeToggled?.Invoke(), "switch");
+            var autos = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__group fc-hud__switches");
+            _autoDeploy = new KitToggle(Strings.Get("rail.buy"), false, _ => AutoDeployToggled?.Invoke());
+            autos.Add(_autoDeploy);
+            _autoStrike = new KitToggle(Strings.Get("rail.support"), false, _ => AutoStrikeToggled?.Invoke());
+            autos.Add(_autoStrike);
             commander.Add(autos);
             // Destroyed towers can be flown back in: shown only while one can.
-            var towers = UiKit.Box("rail-group");
-            _towerButton = Toggle(towers, "reinforce", Strings.Get("rail.tower"), () => TowerPressed?.Invoke());
-            _towerLabel = _towerButton.Q<Label>(className: "toggle-label");
+            _towerButton = new KitButton(ButtonTier.Secondary, Strings.Get("rail.tower"), () => TowerPressed?.Invoke(), "reinforce");
+            _towerButton.AddToClassList("fc-hud__tower");
             _towerButton.style.display = DisplayStyle.None;
-            commander.Add(towers);
+            commander.Add(_towerButton);
             _safe.Add(commander);
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
-            // Command panel (hand orders for selected vehicles) -------------------------------------
-            var command = UiKit.Box("command", PickingMode.Position);
+            // Command panel (hand orders for selected vehicles) ---------------------------------------------
+            var command = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__command", PickingMode.Position);
             _command = command;
-            var header = UiKit.Box("command-header");
-            header.Add(UiKit.Text(Strings.Get("panel.selection"), "caps"));
-            _selectedCount = UiKit.Text("", "caps");
+            var header = Kit.Box("fc-hud__command-head");
+            header.Add(Kit.Caption(Strings.Get("panel.selection")));
+            _selectedCount = Kit.Text("", "fc-caption");
             header.Add(_selectedCount);
             command.Add(header);
-            var commandBody = UiKit.Box("command-body");
-            command.Add(commandBody);
 
-            var details = UiKit.Box("details");
-            var portrait = UiKit.Box("portrait");
-            _portraitIcon = UiKit.Icon("tank", UiKit.Mint, 1.6f);
-            portrait.Add(_portraitIcon);
-            details.Add(portrait);
-            var detailsText = UiKit.Box("details-text");
-            _unitName = UiKit.Text("", "unit-name");
+            var details = Kit.Box("fc-hud__details");
+            _portrait = Kit.Box("fc-hud__portrait");
+            _portraitIcon = Kit.Icon("tank", "fc-hud__portrait-icon");
+            _portrait.Add(_portraitIcon);
+            details.Add(_portrait);
+            var detailsText = Kit.Box("fc-hud__details-text");
+            _unitName = Kit.Text("", "fc-panel-title fc-row-text");
             detailsText.Add(_unitName);
-            var track = UiKit.Box("hp-track");
-            _hpFill = UiKit.Box("hp-fill");
+            var track = Kit.Box("fc-hud__hp");
+            _hpFill = Kit.Box("fc-hud__hp-fill");
             track.Add(_hpFill);
             detailsText.Add(track);
-            _hpText = UiKit.Text("", "hp-text");
+            _hpText = Kit.Text("", "fc-small");
             detailsText.Add(_hpText);
             details.Add(detailsText);
-            commandBody.Add(details);
-            _weapons = UiKit.Box("weapon-row");
-            commandBody.Add(_weapons);
-            _counterText = UiKit.Text("", "counter-text");
-            commandBody.Add(_counterText);
+            command.Add(details);
+            _weapons = Kit.Box("fc-row fc-row--wrap fc-hud__weapons");
+            command.Add(_weapons);
+            _counterText = Kit.Text("", "fc-small fc-hud__counter");
+            command.Add(_counterText);
 
-            var buttons = UiKit.Box("buttons");
-            _attackMove = Command(buttons, "crosshair", Strings.Get("cmd.attackShort"), () => AttackMovePressed?.Invoke());
-            Command(buttons, "stop", Strings.Get("cmd.stopShort"), () => StopPressed?.Invoke());
-            Command(buttons, "retreat", Strings.Get("cmd.retreatShort"), () => RetreatPressed?.Invoke()).AddToClassList("last");
-            commandBody.Add(buttons);
+            var buttons = Kit.Box("fc-hud__orders");
+            _attackMove = Order(buttons, "crosshair", Strings.Get("cmd.attackShort"), () => AttackMovePressed?.Invoke());
+            Order(buttons, "stop", Strings.Get("cmd.stopShort"), () => StopPressed?.Invoke());
+            Order(buttons, "retreat", Strings.Get("cmd.retreatShort"), () => RetreatPressed?.Invoke());
+            command.Add(buttons);
             _safe.Add(command);
 
-            // Deck -------------------------------------------------------------------------------
+            // Deck -------------------------------------------------------------------------------------------
             if (cards != null && cards.Count > 0)
             {
                 _deck = new DeckBar(cards);
                 _deck.CardPressed += i => CardPressed?.Invoke(i);
+                _deck.CpTapped += () => Toast(Strings.Get("hud.cpInfo"), seconds: 5f);
                 _safe.Add(_deck.Root);
             }
 
-            // Overlays -----------------------------------------------------------------------------
+            // Overlays -----------------------------------------------------------------------------------------
             _autoHint = spec.HintKey;
-            _hint = UiKit.Text(Strings.Get(_autoHint), "hint");
+            _hint = Kit.Text(Strings.Get(_autoHint), "fc-small fc-row-text");
             // The standing hint is for the first moments of a match only; mode hints (attack-move,
             // box select) and strike targeting bring it back while they are active.
             _hintUntil = Time.unscaledTime + 9f;
-            _hintBar = UiKit.Box("hint-bar");
-            _hintBar.Add(_hint);
+            _hintBar = Kit.Box("fc-hud__hint");
+            var hintFace = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__hint-face");
+            hintFace.Add(_hint);
+            _hintBar.Add(hintFace);
             _safe.Add(_hintBar);
 
-            _targeting = UiKit.Box("targeting", PickingMode.Position);
-            _targetingText = UiKit.Text("", "targeting-text");
-            _targeting.Add(_targetingText);
-            _targeting.Add(UiKit.WideButton("wide small-wide", "close", Strings.Get("target.cancel"), null, () => TargetCancelled?.Invoke()));
+            _targeting = Kit.Box("fc-hud__targeting", PickingMode.Ignore);
+            var targetFace = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__targeting-face", PickingMode.Position);
+            targetFace.Add(Kit.Icon("crosshair", "fc-hud__targeting-icon"));
+            _targetingText = Kit.Text("", "fc-body fc-row-text");
+            targetFace.Add(_targetingText);
+            targetFace.Add(new KitButton(ButtonTier.Secondary, Strings.Get("target.cancel"), () => TargetCancelled?.Invoke(), "close"));
+            _targeting.Add(targetFace);
             _targeting.style.display = DisplayStyle.None;
             _safe.Add(_targeting);
 
-            _banner = UiKit.Box("banner");
+            _banner = Kit.Box("fc-hud__banner");
             _safe.Add(_banner);
 
-            // Campaign radio chatter: a portrait and one line (a tap skips it).
+            // Campaign radio chatter: a portrait and one line (a tap skips it), in the toasts' style.
             if (mode == HudMode.Mission)
             {
                 _radio = new RadioPanel();
-                _safe.Add(_radio.Root);
+                under.Add(_radio.Root);
             }
 
-            _toast = UiKit.Box("toast");
-            var toastBox = UiKit.Box("toast-box");
-            _toastText = UiKit.Text("", "toast-text");
+            // Notices (a point lost, air raids, an elite's arrival): the kit's toast on the battlefield.
+            _toast = Kit.Box("fc-hud__toast");
+            var toastBox = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-toast fc-hud__toast-face");
+            toastBox.Add(Kit.Icon("info", "fc-hud__toast-icon"));
+            _toastText = Kit.Text("", "fc-body fc-row-text");
             toastBox.Add(_toastText);
             _toast.Add(toastBox);
-            _safe.Add(_toast);
+            under.Add(_toast);
 
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke());
             _safe.Add(_pause.Root);
@@ -348,7 +366,7 @@ namespace MachineBrigade.Game.Hud
         {
             if (_towerButton == null) return;
             _towerButton.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            if (count > 0) _towerLabel.text = Strings.Format("rail.towerCost", count, cost);
+            if (count > 0) _towerButton.Label = Strings.Format("rail.towerCost", count, cost);
         }
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
@@ -383,10 +401,10 @@ namespace MachineBrigade.Game.Hud
         public void SetCommander(bool defend, bool autoDeploy, bool autoStrike, string focus)
         {
             if (_attackStance == null) return;
-            _attackStance.EnableInClassList("on", !defend);
-            _defendStance.EnableInClassList("on", defend);
-            _autoDeploy.EnableInClassList("on", autoDeploy);
-            _autoStrike.EnableInClassList("on", autoStrike);
+            _attackStance.EnableInClassList("fc-stance--on", !defend);
+            _defendStance.EnableInClassList("fc-stance--on", defend);
+            if (_autoDeploy.On != autoDeploy) _autoDeploy.On = autoDeploy;
+            if (_autoStrike.On != autoStrike) _autoStrike.On = autoStrike;
             _score?.SetFocus(focus);
         }
 
@@ -403,7 +421,11 @@ namespace MachineBrigade.Game.Hud
                 if (seconds != _shownSeconds) _next.text = $"{(_shownSeconds = seconds) / 60}:{seconds % 60:00}";
             }
             var shownFps = ShowFps ? Mathf.RoundToInt(fps) : -1;
-            if (_fps != null && shownFps != _shownFps) _fps.text = (_shownFps = shownFps) >= 0 ? $"{shownFps} FPS" : "";
+            if (_fps != null && shownFps != _shownFps)
+            {
+                _fps.text = (_shownFps = shownFps) >= 0 ? $"{shownFps} FPS" : "";
+                _fps.style.display = shownFps >= 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         private int _shownAllies = -1, _shownEnemies = -1, _shownWave = -1, _shownSeconds = -1, _shownFps = -2;
@@ -426,6 +448,16 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A multi-phase boss: its bar marked at each phase, the phase it is in, and whether it is transforming.</summary>
         public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming) =>
             _boss?.Set(name, health, phase, marks, transforming);
+        /// <summary>The safe area the controls sit in (the screenshot tool sets its insets).</summary>
+        internal VisualElement SafeArea => _safe;
+
+        /// <summary>The boss's parts without a battle (the screenshot tool): each part's share of health and whether it is broken.</summary>
+        internal void PreviewBossParts(VehicleDef def, IReadOnlyList<float> shares, IReadOnlyList<bool> broken, int focused) =>
+            _boss?.Parts.Preview(def, shares, broken, focused);
+
+        /// <summary>The boss's health in numbers beside its name (after <see cref="SetBoss(string, float)"/>).</summary>
+        public void SetBossHp(float hp, float maxHp) => _boss?.SetHp(hp, maxHp);
+
         /// <summary>The fortress super-gun's countdown (negative seconds: none standing).</summary>
         public void SetSuperGun(float seconds, bool down, bool ours) => _superGun?.Set(seconds, down, ours);
 
@@ -518,16 +550,18 @@ namespace MachineBrigade.Game.Hud
         {
             if (_ad == null)
             {
-                _ad = UiKit.Box("overlay ad-screen", PickingMode.Position);
-                var card = UiKit.Box("ad-card");
-                card.Add(UiKit.Icon("ad", UiKit.Ink, 1.8f));
-                card.Add(UiKit.Text(Strings.Get("ad.title"), "ad-title"));
-                card.Add(UiKit.Text(Strings.Get("ad.body"), "ad-body"));
-                _adCount = UiKit.Text("", "ad-count");
+                _ad = Kit.Root(KitDialog.ScrimClass + " fc-ad");
+                _ad.pickingMode = PickingMode.Position;
+                var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog", PickingMode.Position);
+                card.Add(Kit.Text(Kit.Caps(Strings.Get("ad.title")), "fc-panel-title fc-dialog__title"));
+                card.Add(Kit.Text(Strings.Get("ad.body"), "fc-body-2 fc-dialog__body"));
+                _adCount = Kit.Text("", "fc-number fc-ad__count");
                 card.Add(_adCount);
-                _adClaim = UiKit.WideButton("wide primary", "coin", Strings.Get("ad.claim"), null, () => CloseAd(true));
-                card.Add(_adClaim);
-                card.Add(UiKit.WideButton("wide", "close", Strings.Get("ad.close"), null, () => CloseAd(false)));
+                var row = Kit.Box("fc-dialog__buttons");
+                row.Add(new KitButton(ButtonTier.Secondary, Strings.Get("ad.close"), () => CloseAd(false), "close"));
+                _adClaim = new KitButton(ButtonTier.Claim, Strings.Get("ad.claim"), () => CloseAd(true));
+                row.Add(_adClaim);
+                card.Add(row);
                 _ad.Add(card);
                 _safe.Add(_ad);
             }
@@ -564,14 +598,12 @@ namespace MachineBrigade.Game.Hud
         {
             if (_banner == null) return;
             _banner.Clear();
-            var strip = UiKit.Box("mission-strip");
-            strip.Add(UiKit.Text(kicker, "kicker"));
-            strip.Add(UiKit.Text(title, "mission-title"));
-            strip.Add(UiKit.Text(subtitle, "mission-sub"));
-            var mission = UiKit.Box("mission");
-            mission.Add(strip);
-            _banner.Add(mission);
-            _banner.AddToClassList("visible");
+            var strip = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__banner-face");
+            if (!string.IsNullOrEmpty(kicker)) strip.Add(Kit.Text(Kit.Caps(kicker), "fc-caption fc-hud__banner-kicker"));
+            strip.Add(Kit.Text(Kit.Caps(title), "fc-title"));
+            if (!string.IsNullOrEmpty(subtitle)) strip.Add(Kit.Text(subtitle, "fc-body-2"));
+            _banner.Add(strip);
+            _banner.AddToClassList("fc-hud__banner--visible");
             _bannerUntil = Time.unscaledTime + seconds;
         }
 
@@ -592,26 +624,26 @@ namespace MachineBrigade.Game.Hud
             {
                 _selectedCount.text = "";
                 _unitName.text = Strings.Get("panel.none");
-                _unitName.AddToClassList("empty");
                 _hpText.text = Strings.Get("panel.noneHint");
-                _hpText.AddToClassList("hint-text");
                 _hpFill.style.width = Length.Percent(0f);
                 _portraitIcon.Name = "tank";
-                _portraitIcon.Tint = new Color(UiKit.Mint.r, UiKit.Mint.g, UiKit.Mint.b, 0.35f);
+                _portrait.style.backgroundImage = StyleKeyword.None;
+                _portraitIcon.style.display = DisplayStyle.Flex;
                 _counterText.text = "";
                 return;
             }
 
-            _unitName.RemoveFromClassList("empty");
-            _hpText.RemoveFromClassList("hint-text");
-            _selectedCount.text = Strings.Format("panel.selected", summary.Count);
-            _unitName.text = summary.DefId != null ? Strings.Unit(summary.DefId) : Strings.Get("panel.mixed");
+            _selectedCount.text = Kit.Caps(Strings.Format("panel.selected", summary.Count));
+            _unitName.text = Kit.Caps(summary.DefId != null ? Strings.Unit(summary.DefId) : Strings.Get("panel.mixed"));
             _portraitIcon.Name = summary.DefId != null ? CardIcons.For(summary.DefId) : "people";
-            _portraitIcon.Tint = UiKit.Mint;
+            // The vehicle's render where there is one (a mixed group keeps the icon).
+            var render = summary.DefId != null ? CardArt.For(summary.DefId) : null;
+            _portrait.style.backgroundImage = render != null ? new StyleBackground(render) : new StyleBackground(StyleKeyword.None);
+            _portraitIcon.style.display = render != null ? DisplayStyle.None : DisplayStyle.Flex;
             var health = summary.MaxHp > 0f ? Mathf.Clamp01(summary.Hp / summary.MaxHp) : 0f;
             _hpFill.style.width = Length.Percent(health * 100f);
-            _hpFill.EnableInClassList("hurt", health < 0.6f && health >= 0.3f);
-            _hpFill.EnableInClassList("critical", health < 0.3f);
+            _hpFill.EnableInClassList("fc-hud__hp-fill--hurt", health < 0.6f && health >= 0.3f);
+            _hpFill.EnableInClassList("fc-hud__hp-fill--critical", health < 0.3f);
             _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
             // What this unit is for: who it beats and who beats it; and what it fights with.
             VehicleDef def = null;
@@ -621,14 +653,13 @@ namespace MachineBrigade.Game.Hud
             {
                 _weaponsFor = summary.DefId;
                 _weapons.Clear();
+                // Its weapons in one line ("120 mm gun · machine gun"), so the panel stays low over the battlefield.
                 if (known)
-                    foreach (var line in WeaponInfo.Of(def))
-                    {
-                        var chip = UiKit.Box("weapon-chip");
-                        chip.Add(UiKit.Icon(line.Icon, UiKit.Ink, 1.7f));
-                        chip.Add(UiKit.Text(line.Name, "weapon-name"));
-                        _weapons.Add(chip);
-                    }
+                {
+                    var names = new List<string>();
+                    foreach (var line in WeaponInfo.Of(def)) names.Add(line.Name);
+                    if (names.Count > 0) _weapons.Add(Kit.Text(string.Join(" · ", names), "fc-body fc-row-text"));
+                }
             }
         }
 
@@ -657,8 +688,8 @@ namespace MachineBrigade.Game.Hud
             if (_attackMove == null || (_attackArmed == attackMoveArmed && _boxMode == boxMode)) return;
             _attackArmed = attackMoveArmed;
             _boxMode = boxMode;
-            _attackMove.EnableInClassList("armed", attackMoveArmed);
-            _boxTool.EnableInClassList("on", boxMode);
+            _attackMove.EnableInClassList("fc-hud__order--armed", attackMoveArmed);
+            _boxTool.EnableInClassList("fc-icon-btn--on", boxMode);
             _hint.text = Strings.Get(attackMoveArmed ? "hint.attackMove" : boxMode ? "hint.box" : _autoHint);
             if (attackMoveArmed || boxMode) _hintUntil = float.MaxValue;
             else if (_hintUntil == float.MaxValue) _hintUntil = Time.unscaledTime;
@@ -672,7 +703,7 @@ namespace MachineBrigade.Game.Hud
         /// </summary>
         public void Toast(string message, bool error = false, float seconds = 2.2f)
         {
-            var busy = _toast.ClassListContains("visible") && Time.unscaledTime - _toastShownAt < 1.2f;
+            var busy = _toast.ClassListContains("fc-hud__toast--visible") && Time.unscaledTime - _toastShownAt < 1.2f;
             if (busy && !error)
             {
                 if (_toastQueue.Count < 3 && _toastText.text != message) _toastQueue.Enqueue((message, false, seconds));
@@ -687,8 +718,8 @@ namespace MachineBrigade.Game.Hud
         private void ShowToast(string message, bool error, float seconds)
         {
             _toastText.text = message;
-            _toastText.parent?.EnableInClassList("error", error);
-            _toast.AddToClassList("visible");
+            _toastText.parent?.EnableInClassList("fc-toast--alert", error);
+            _toast.AddToClassList("fc-hud__toast--visible");
             _toastShownAt = Time.unscaledTime;
             _toastUntil = Time.unscaledTime + seconds;
         }
@@ -738,15 +769,15 @@ namespace MachineBrigade.Game.Hud
                 var (message, error, seconds) = _toastQueue.Dequeue();
                 ShowToast(message, error, seconds);
             }
-            else if (_toast.ClassListContains("visible") && Time.unscaledTime > _toastUntil)
+            else if (_toast.ClassListContains("fc-hud__toast--visible") && Time.unscaledTime > _toastUntil)
             {
-                _toast.RemoveFromClassList("visible");
+                _toast.RemoveFromClassList("fc-hud__toast--visible");
             }
-            if (_banner != null && _banner.ClassListContains("visible") && Time.unscaledTime > _bannerUntil)
-                _banner.RemoveFromClassList("visible");
-            _hintBar?.EnableInClassList("gone", Time.unscaledTime > _hintUntil);
+            if (_banner != null && _banner.ClassListContains("fc-hud__banner--visible") && Time.unscaledTime > _bannerUntil)
+                _banner.RemoveFromClassList("fc-hud__banner--visible");
+            _hintBar?.EnableInClassList("fc-hud__hint--gone", Time.unscaledTime > _hintUntil);
             TickAd();
-            if (Screen.width != _screenWidth || Screen.height != _screenHeight)
+            if (_settings != null && (Screen.width != _screenWidth || Screen.height != _screenHeight))
             {
                 // A new screen shape (another device, a rotated tablet, a resized Game view).
                 _screenWidth = Screen.width;
@@ -754,7 +785,7 @@ namespace MachineBrigade.Game.Hud
                 _settings.match = MatchFor(_screenWidth, _screenHeight);
                 _appliedSafeArea = default;
             }
-            if (Screen.safeArea != _appliedSafeArea) ApplySafeArea();
+            if (_settings != null && Screen.safeArea != _appliedSafeArea) ApplySafeArea();
         }
 
         private int _screenWidth, _screenHeight;
@@ -799,41 +830,35 @@ namespace MachineBrigade.Game.Hud
             _safe.style.bottom = Mathf.Max(0f, ToPanel(new Vector2(0f, 0f)).y - max.y);
         }
 
-        private static Label Stat(VisualElement parent, string icon, string label, Color tint)
+        private static Label Stat(VisualElement parent, string icon, string label, string side)
         {
-            var stat = UiKit.Box("stat");
-            stat.Add(UiKit.Icon(icon, tint, 1.7f));
-            var column = UiKit.Box("stat-text");
-            var number = UiKit.Text("0", "stat-number");
+            var stat = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__stat" + (side != null ? " " + side : ""));
+            stat.Add(Kit.Icon(icon, "fc-hud__stat-icon"));
+            var column = Kit.Box("fc-hud__stat-text");
+            var number = Kit.Text("0", "fc-number-small");
             column.Add(number);
-            column.Add(UiKit.Text(label, "stat-label"));
+            column.Add(Kit.Caption(label));
             stat.Add(column);
             parent.Add(stat);
             return number;
         }
 
-        private static VisualElement Tool(string icon, string label, Action onClick)
+        /// <summary>One of Attack / Defend: its icon and its full name; the one on is the text colour with dark text.</summary>
+        private static VisualElement Stance(VisualElement parent, string icon, string label, Action onClick)
         {
-            var tool = UiKit.Button("tool", onClick);
-            tool.Add(UiKit.Icon(icon, UiKit.Ink, 1.7f));
-            if (!string.IsNullOrEmpty(label)) tool.Add(UiKit.Text(label, "tool-label"));
-            return tool;
+            var option = Kit.Tappable("fc-stance", onClick);
+            option.Add(Kit.Icon(icon, "fc-stance__icon"));
+            option.Add(Kit.Text(Kit.Caps(label), "fc-stance__label fc-row-text"));
+            parent.Add(option);
+            return option;
         }
 
-        private static VisualElement Toggle(VisualElement parent, string icon, string label, Action onClick, string extra = null)
+        /// <summary>A hand order for the selected vehicles (attack-move, stop, back): an icon over its name.</summary>
+        private static VisualElement Order(VisualElement parent, string icon, string label, Action onClick)
         {
-            var toggle = UiKit.Button(extra == null ? "toggle" : "toggle " + extra, onClick);
-            toggle.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
-            toggle.Add(UiKit.Text(label, "toggle-label"));
-            parent.Add(toggle);
-            return toggle;
-        }
-
-        private static VisualElement Command(VisualElement parent, string icon, string label, Action onClick)
-        {
-            var button = UiKit.Button("cmd", onClick);
-            button.Add(UiKit.Icon(icon, UiKit.Ink, 1.7f));
-            button.Add(UiKit.Text(label, "cmd-label"));
+            var button = Kit.Tappable("fc-hud__order", onClick);
+            button.Add(Kit.Icon(icon, "fc-hud__order-icon"));
+            button.Add(Kit.Text(Kit.Caps(label), "fc-stance__label fc-hud__order-label"));
             parent.Add(button);
             return button;
         }

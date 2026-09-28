@@ -122,7 +122,11 @@ namespace MachineBrigade.Editor
         }
 
         /// <summary>The battle's own screens (E10 and G): the result after a win and a loss, the checkpoint's offer, pause, the choice between stages.</summary>
-        public static readonly string[] BattleScreenNames = { "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice" };
+        public static readonly string[] BattleScreenNames =
+            { "hud-score", "hud-mission", "hud-waves", "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice" };
+
+        /// <summary>The battle screens with no main action: the HUD itself.</summary>
+        public static bool WithoutPrimary(string screen) => screen.StartsWith("hud-");
 
         /// <summary>The battle's screens with the demo profile, in Vietnamese at the four shapes, and a few in Large text and in English.</summary>
         public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> BattleScreens()
@@ -138,7 +142,7 @@ namespace MachineBrigade.Editor
                 return host;
             };
             foreach (var screen in BattleScreenNames) yield return ("battle-" + screen + "-vi", Battle(screen, true, false), Shapes, 0);
-            foreach (var screen in new[] { "result-win", "result-loss" })
+            foreach (var screen in new[] { "hud-score", "hud-mission", "result-win", "result-loss" })
             {
                 yield return ("battle-" + screen + "-vi-large", Battle(screen, true, true), new[] { Shapes[0] }, 0);
                 yield return ("battle-" + screen + "-en", Battle(screen, false, false), new[] { Shapes[0] }, 0);
@@ -158,6 +162,13 @@ namespace MachineBrigade.Editor
             if (MapArt.For(MatchSettings.CurrentMap.Id) is { } picture) battle.style.backgroundImage = Background.FromTexture2D(picture);
             battle.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
             host.Add(battle);
+            if (screen.StartsWith("hud-"))
+            {
+                // The HUD builds itself into the host, sheets and safe area included.
+                var hud = BuildHud(catalog, screen, host);
+                safe = hud.SafeArea;
+                return host;
+            }
             safe = new VisualElement();
             safe.style.position = Position.Absolute;
             safe.style.left = safe.style.top = safe.style.right = safe.style.bottom = 0;
@@ -189,6 +200,73 @@ namespace MachineBrigade.Editor
         }
 
         private static string Clock(int seconds) => $"{seconds / 60}:{seconds % 60:00}";
+
+        /// <summary>
+        /// The battle HUD with the demo deck, part-way through a battle: the CP box over supply, cards the
+        /// points pay for and cards they do not, a support card cooling down and one being aimed; the score
+        /// with three objectives (hud-score, a selection open), a boss with its phases and parts and an elite
+        /// notice (hud-mission), the waves with the strike prompt and a tower to fly back in (hud-waves).
+        /// </summary>
+        private static BattleHud BuildHud(Catalog catalog, string screen, VisualElement host)
+        {
+            var cards = new List<CardInfo>();
+            foreach (var id in MatchSettings.DeckVehicles)
+                if (catalog.Vehicles.TryGetValue(id, out var v)) cards.Add(new CardInfo(id, false, v.CpCost, CardIcons.For(id)));
+            foreach (var id in MatchSettings.DeckSupports)
+                if (catalog.TryGetSupport(id, out var sup)) cards.Add(new CardInfo(id, true, sup.CpCost, CardIcons.For(id)));
+            var spec = screen switch
+            {
+                "hud-mission" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
+                "hud-waves" => new HudSpec { Mode = HudMode.Waves },
+                _ => new HudSpec { Mode = HudMode.Score, ScoreLabel = "stat.tickets" },
+            };
+            var hud = new BattleHud(spec, cards, catalog, host);
+            const float cp = 7.4f;
+            var states = new List<CardState>();
+            for (var i = 0; i < cards.Count; i++)
+            {
+                var card = cards[i];
+                var aiming = screen == "hud-waves" && card.Support && states.Count(s => s.Selected) == 0;
+                var cooling = card.Support && !aiming && i == cards.Count - 1;
+                states.Add(new CardState(card.Cost <= cp, false, cooling ? 0.4f : 0f, aiming, cooling ? 12f : 0f));
+            }
+            hud.SetDeck(cp, 20f, 2.4f, 0.71f, states);
+            hud.SetCommander(false, true, false, "town");
+            var points = new List<PointInfo> { new("west", 0, 1f, false), new("town", -1, 0.35f, true), new("east", 1, -1f, false) };
+            switch (screen)
+            {
+                case "hud-mission":
+                {
+                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", 2, 1), 0.45f, 312f, new List<PointInfo>());
+                    var boss = catalog.Vehicles.Values.Where(v => v.Boss && v.Parts.Count >= 5).OrderBy(v => v.Id).First();
+                    hud.SetBoss(Strings.Card(boss.Id), 0.62f, 1, new List<float> { 0.66f, 0.33f }, false);
+                    hud.SetBossHp(37200f, 60000f);
+                    var shares = new List<float>();
+                    var broken = new List<bool>();
+                    for (var i = 0; i < boss.Parts.Count; i++)
+                    {
+                        shares.Add(i == 1 ? 0f : 1f - 0.15f * i);
+                        broken.Add(i == 1);
+                    }
+                    hud.PreviewBossParts(boss, shares, broken, 2);
+                    var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
+                    hud.Toast(Strings.Format("radio.elite", Strings.Card(elite.Id)), error: true, seconds: 5f);
+                    break;
+                }
+                case "hud-waves":
+                    hud.SetStats(14, 23, 6, 34f, 60f);
+                    hud.SetTowers(1, 40);
+                    var aimed = cards.First(c => c.Support);
+                    hud.SetTargeting(Strings.Format("target.hint", Strings.Support(aimed.Id)));
+                    break;
+                default:
+                    hud.SetScore(412, 356, 600, points);
+                    hud.SetTimer(245f);
+                    hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(3, "main_battle_tank", 1450f, 2000f));
+                    break;
+            }
+            return hud;
+        }
 
         private static void ShowDemoResult(Catalog catalog, ResultPanel result, string screen)
         {

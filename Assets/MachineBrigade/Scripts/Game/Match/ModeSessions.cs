@@ -125,6 +125,7 @@ namespace MachineBrigade.Game.Match
             if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");
             var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
             hud.SetBossParts(boss, focused);
+            hud.SetBossHp(boss.Hp, boss.MaxHp);
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);

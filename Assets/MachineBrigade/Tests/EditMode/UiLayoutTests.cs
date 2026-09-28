@@ -370,7 +370,7 @@ namespace MachineBrigade.Tests
 
         public static IEnumerable<string> BattleScreenNames => MachineBrigade.Editor.UiShots.BattleScreenNames;
 
-        /// <summary>The battle's screens (the result, pause, the choice between stages), like the menu's: each has its one main action.</summary>
+        /// <summary>The battle's screens (the HUD, the result, pause, the choice between stages), like the menu's: each overlay has its one main action, the HUD none.</summary>
         [Test]
         public void EveryBattleScreenPassesEveryCheck([ValueSource(nameof(BattleScreenNames))] string screen)
         {
@@ -387,7 +387,7 @@ namespace MachineBrigade.Tests
                         var host = MachineBrigade.Editor.UiShots.BuildBattle(_catalog, screen, out _);
                         Lay(host, size);
                         var label = $"{name}{(vietnamese ? "" : " en")}{(large ? " large" : "")}";
-                        failures.AddRange(Check(host, label, size, large, 1));
+                        failures.AddRange(Check(host, label, size, large, MachineBrigade.Editor.UiShots.WithoutPrimary(screen) ? 0 : 1));
                     }
             }
             finally

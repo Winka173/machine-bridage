@@ -45,6 +45,8 @@
     --fc-positive: #9ccb5e;                   /* better in a comparison */
     --fc-ally: #6cc0ff;                       /* our side (minimap, HUD): brighter than the enemy */
     --fc-enemy: #e0513a;                      /* their side */
+    --fc-enemy-cb: #f29a3a;                   /* their side for colour-blind players (Settings: orange against our blue) */
+    --fc-flash: #ffe6b8;                      /* the flash of a huge blast over the battlefield */
 
     /* ---- A. colour: vehicle branches (always shown with the class icon) */
     --fc-branch-armor: #8fb3d6;
