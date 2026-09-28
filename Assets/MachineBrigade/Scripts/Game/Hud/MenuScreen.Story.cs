@@ -10,7 +10,8 @@ namespace MachineBrigade.Game.Hud
     /// The Dossier ("Hồ sơ"): the people of the story (their bios once met), the boss files (once the
     /// boss is beaten), the timeline (a line for each chapter finished) and the story files every
     /// won mission adds. Device checks: -mb-dossier (-mb-dossier-tab=bosses, -mb-dossier-all shows
-    /// everything), -mb-chapter=3 (a chapter's opening card), -mb-brief=c3m05 (a briefing card).
+    /// everything), -mb-chapter=3 (a chapter's opening card), -mb-brief=c3m05 (a briefing card),
+    /// -mb-campaign (the campaign page; -mb-campaign=c5m10 with that mission chosen).
     /// </summary>
     internal sealed partial class MenuScreen
     {
@@ -201,6 +202,14 @@ namespace MachineBrigade.Game.Hud
                 _selectedMission = Campaign.IndexOf(mission.Id);
                 Refresh();
                 ShowBriefing(mission);
+                return;
+            }
+            // The campaign page itself, a mission chosen: -mb-campaign (-mb-campaign=c5m10).
+            if (DebugFlags.Has("-mb-campaign") || DebugFlags.Value("-mb-campaign=") != null)
+            {
+                if (Campaign.Get(DebugFlags.Value("-mb-campaign=")) is { } chosen) _selectedMission = Campaign.IndexOf(chosen.Id);
+                _scrolledToNext = false;
+                ShowTab(Tab.Campaign);
             }
         }
     }

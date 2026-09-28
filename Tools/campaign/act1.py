@@ -337,7 +337,7 @@ add_mission(m('c2m06', 2, 'redrock', 'Hunt', 'Sandstorm', legacy='m17', timeLimi
               'Các khẩu đội của Varga tự gọi mình là Bọ Cạp và vẽ một cái đuôi lên mỗi bệ phóng. Sau buổi chiều hôm đó, chẳng còn cái đuôi nào để vẽ nữa.')),
             [say('linh', 'Start', 'Three batteries, marked. They move; we move faster.', 'Ba khẩu đội, đã đánh dấu. Chúng di chuyển; ta di chuyển nhanh hơn.')])
 
-add_mission(m('c2m07', 2, 'redrock', 'Relieve', 'Night', reinforcements=2, timeLimit=1000,
+add_mission(m('c2m07', 2, 'redrock', 'Relieve', 'Night', targetHealth=3.0, reinforcements=2, timeLimit=1000,
               ally={'x': 0, 'z': 0, 'hq': 'headquarters', 'structures': units(0, ['mg_bunker', 'gun_turret', 'guard_tower'], (0, 0), 14),
                     'units': units(0, ['ifv', 'light_tank'], (-6, -6), 4)},
               hunt=[scripted(d, p) for d, p in zip(['main_battle_tank', 'tank_destroyer', 'light_tank', 'mortar_carrier', 'ifv', 'main_battle_tank'],
@@ -553,7 +553,7 @@ add_mission(m('c3m06', 3, 'frostpeak', 'Hunt', 'Night', general='orlov', timeLim
             [say('linh', 'Start', 'Three batteries. They shoot, they move, they shoot. Be quicker than the second shot.', 'Ba khẩu đội. Chúng bắn, chúng chạy, chúng lại bắn. Phải nhanh hơn loạt thứ hai.'),
              say('orlov', 'At', 'You found my guns. Remarkable. Also irrelevant.', 'Ngươi tìm ra pháo của ta. Đáng nể. Nhưng cũng chẳng để làm gì.', at=150)])
 
-add_mission(m('c3m07', 3, 'whiteout', 'Protect', 'Fog', targets=['log_cabin', 'barn'], protectNeeded=1, targetHealth=14, surviveSeconds=420, general='orlov', reinforcements=2,
+add_mission(m('c3m07', 3, 'whiteout', 'Protect', 'Fog', targets=['log_cabin', 'barn'], protectNeeded=1, targetHealth=22, surviveSeconds=390, general='orlov', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=10, enemyIncome=0.8,
               enemyDeck=ORLOV, playerCp=26, playerIncome=1.4, playerCap=36, playerBase='Anchor',
               waves=waves(['light_tank', 'ifv', 'mortar_carrier', 'main_battle_tank', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
@@ -584,9 +584,9 @@ add_mission(m('c3m08', 3, 'whiteout', 'Boss', 'Snow', legacy='m18', general='var
             [say('mai', 'Start', 'They patched it. Badly. The rear plates are still mine.', 'Chúng vá lại nó rồi. Vá ẩu. Giáp sau vẫn là của tôi.'),
              say('varga', 'Boss', 'I fixed her, Colonel. I always fix her.', 'Ta đã sửa lại nó, đại tá. Ta luôn sửa được nó.')])
 
-add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', targetHealth=0.4, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=3, timeLimit=1500,
+add_mission(m('c3m09', 3, 'frostpeak', 'Duel', 'Clear', targetHealth=0.4, general='orlov', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1500,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.56,
-              playerCp=28, playerIncome=1.95, playerCap=38, playerBase='Anchor', starTime=840, starLosses=12),
+              playerCp=28, playerIncome=2.25, playerCap=38, playerBase='Anchor', starTime=840, starLosses=12),
             ('Orlov\'s Gun Line', 'Trận địa pháo của Orlov'),
             ('Orlov\'s headquarters sits behind a wall of artillery emplacements, where he can see the whole valley. Break through and level it. He will not wait for you.',
              'Sở chỉ huy của Orlov nằm sau một bức tường ụ pháo, nơi hắn nhìn thấy cả thung lũng. Chọc thủng và san phẳng nó. Hắn sẽ không chờ ta đâu.'),
@@ -611,7 +611,7 @@ add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Overcast', variant='siege', l
                    'events': [{'at': 'end', 'kind': 'Strike', 'team': 0, 'support': 'airstrike', 'every': 50}, {'at': 'end', 'kind': 'Radio', 'key': 'radio.alliedStrikes'}]},
                   {'stage': 'fortress', 'goal': 'Boss', 'boss': scripted('mobile_fortress', (90, 90), heading=225, health=1.3), 'cp': 10,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.orlov.c3m10.s4'}]},
-                  {'stage': 'gate', 'goal': 'Survive', 'surviveSeconds': 360,
+                  {'stage': 'gate', 'goal': 'Survive', 'surviveSeconds': 300,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.orlov.c3m10.s5'},
                               {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'mlrs', 'sam_launcher', 'main_battle_tank']},
                               {'at': '190', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'artillery', 'ifv']}]},

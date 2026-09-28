@@ -18,6 +18,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Crates the battle paid (their names).</summary>
         public List<string> Crates { get; } = new();
 
+        /// <summary>The campaign's other pay-outs, as they read (blueprints, an HQ level, a tower piece, the Dossier's new file), each with its icon.</summary>
+        public List<(string icon, string text)> Extras { get; } = new();
+
         /// <summary>A lost multi-stage mission with a checkpoint: offer to go back to it.</summary>
         public bool CanResume { get; set; }
 
@@ -140,8 +143,15 @@ namespace MachineBrigade.Game.Hud
                     chip.Add(UiKit.Text(Strings.Format("result.crate", name), "unlock-text"));
                     _unlocks.Add(chip);
                 }
+                foreach (var (icon, text) in reward.Extras)
+                {
+                    var chip = UiKit.Box("unlock-chip");
+                    chip.Add(UiKit.Icon(icon, UiKit.Ink, 1.6f));
+                    chip.Add(UiKit.Text(text, "unlock-text"));
+                    _unlocks.Add(chip);
+                }
             }
-            _unlocks.style.display = hasReward && reward.Unlocked.Count + reward.Crates.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _unlocks.style.display = hasReward && reward.Unlocked.Count + reward.Crates.Count + reward.Extras.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             _double.style.display = hasReward && reward.CanDouble && reward.Coins > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             var next = hasReward && reward.HasNext;
             _next.style.display = next ? DisplayStyle.Flex : DisplayStyle.None;

@@ -320,7 +320,7 @@ namespace MachineBrigade.Game.Match
             get
             {
                 for (var i = 0; i < All.Count; i++)
-                    if (!All[i].Side && !PlayerProfile.Completed(All[i].Id) && IsOpen(i)) return i;
+                    if (!All[i].Side && !PlayerProfile.Completed(All[i].Id) && IsOpen(i) && MapExists(All[i])) return i;
                 for (var i = 0; i < All.Count; i++)
                     if (!PlayerProfile.Completed(All[i].Id)) return i;
                 return All.Count - 1;

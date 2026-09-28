@@ -138,14 +138,15 @@ namespace MachineBrigade.Game.Hud
             _play();
         }
 
+        /// <summary>The home card's next mission: the campaign page's way in (the chapter card, the briefing, deploy).</summary>
         private void StartNextMission()
         {
             var next = Campaign.Next;
             if (!Campaign.IsOpen(next)) return;
-            MatchSettings.Mode = GameModeKind.Campaign;
-            MatchSettings.Mission = Campaign.All[next].Id;
-            MatchSettings.Save();
-            _play();
+            _selectedMission = next;
+            _tier = 0;
+            ShowTab(Tab.Campaign);
+            StartMission();
         }
 
         private VisualElement _homeDeck;

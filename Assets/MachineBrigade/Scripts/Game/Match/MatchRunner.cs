@@ -1219,6 +1219,12 @@ namespace MachineBrigade.Game.Match
                     CanDouble = Ads.Rewarded.Ready,
                 };
                 foreach (var id in _reward.Unlocks) view.Unlocked.Add(Strings.Card(id));
+                // The campaign's other pay-outs.
+                if (_reward.Prints > 0) view.Extras.Add(("star", $"{Strings.Get("result.prints")} +{_reward.Prints}"));
+                if (_reward.RarePrints > 0) view.Extras.Add(("star", Strings.Format("campaign.rareReward", _reward.RarePrints)));
+                if (_reward.TowerGear != null) view.Extras.Add(("shield", $"{Strings.Get("result.towerPiece")} · {Strings.Get("rarity." + _reward.TowerGear.ToLowerInvariant())}"));
+                if (_reward.HqLevel > 0) view.Extras.Add(("home", Strings.Format("result.hqLevel", _reward.HqLevel)));
+                if (_reward.Fragment != null) view.Extras.Add(("eye", Strings.Format("result.fragment", Strings.Get("mission." + _reward.Fragment + ".fragment.title"))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));
                 if (outcome.Result > 0 && _reward.MissionId != null && !PlayerProfile.Completed(_reward.MissionId))
