@@ -235,7 +235,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 if (!IsValidAutoTarget(v, other, weapon)) continue;
                 if (arcMount >= 0 && !InArc(v, arcMount, other.Position)) continue;
-                var effect = _world.Catalog.Damage.Multiplier(weapon.DamageType, other.Armor);
+                var effect = _world.Catalog.Damage.Multiplier(weapon, other.Armor);
                 if (effect <= 0f) continue;
                 var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
                 // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
@@ -806,7 +806,7 @@ namespace MachineBrigade.Sim.Combat
             };
             if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
             {
-                projectile.Incoming = weapon.Damage * damageScale * _world.Catalog.Damage.Multiplier(weapon.DamageType, aimedAt.Armor);
+                projectile.Incoming = weapon.Damage * damageScale * _world.Catalog.Damage.Multiplier(weapon, aimedAt.Armor);
                 _incoming[target] = (_incoming.TryGetValue(target, out var already) ? already : 0f) + projectile.Incoming;
             }
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.

@@ -127,7 +127,9 @@ namespace MachineBrigade.Sim.Content
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f),
-                    Charge = w.Float("charge", 0f),
+                    Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
+                    Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
+                    RealName = w.Has("real") ? w.String("real") : null,
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                 });
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
@@ -434,7 +436,15 @@ namespace MachineBrigade.Sim.Content
                 var row = table.Object(d.ToString());
                 foreach (var a in armorClasses) values[(int)d, (int)a] = row.Float(a.ToString());
             }
-            return new DamageTable(values);
+            // Prompt 13 B.6: autocannon rounds (kinetic, 20-57 mm) have their own row.
+            float[]? autocannon = null;
+            if (table.Has("Autocannon"))
+            {
+                var row = table.Object("Autocannon");
+                autocannon = new float[armorClasses.Length];
+                foreach (var a in armorClasses) autocannon[(int)a] = row.Float(a.ToString());
+            }
+            return new DamageTable(values, autocannon);
         }
 
         /// <summary>Re-throws definition validation errors with the JSON path attached.</summary>

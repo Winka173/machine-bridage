@@ -128,6 +128,32 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Seconds a charged weapon (a railgun) powers up, target in sight, before each shot; 0 for none.</summary>
         public float Charge { get; internal set; }
 
+        /// <summary>
+        /// Prompt 13 (the owner's slower SAMs): the share of flare decoys a guided missile's seeker sees
+        /// through, 0 to 1 (0: an old infrared seeker, pulled off by flares about one time in three;
+        /// a radar-guided SAM sees through most of them).
+        /// </summary>
+        public float FlareResist { get; internal set; }
+
+        /// <summary>
+        /// Prompt 13 B: the weapon family its round belongs to (mg, autocannon, tank_gun, howitzer, mortar,
+        /// rocket, atgm, aa_missile, bomb, cruise, ballistic, drone, flame, laser, railgun, grenade, melee),
+        /// or null. Within a family damage per round rises with <see cref="Size"/>.
+        /// </summary>
+        public string? Family { get; internal set; }
+
+        /// <summary>The round's size in its family: the calibre in mm, or a missile's, bomb's or drone's kg.</summary>
+        public float Size { get; internal set; }
+
+        /// <summary>The real weapon it is (M256 120 mm, 9M133 Kornet), for the detail screen; null when none.</summary>
+        public string? RealName { get; internal set; }
+
+        /// <summary>
+        /// A 20-57 mm cannon firing kinetic rounds (prompt 13 B.6): it hits armour harder than a machine gun
+        /// of the same damage type, by the damage table's "Autocannon" row, and less than a tank gun.
+        /// </summary>
+        public bool Autocannon => Family == "autocannon" && DamageType == DamageType.Kinetic;
+
         /// <summary>Extra damage against some targets (see <see cref="DamageBonus"/>).</summary>
         public IReadOnlyList<DamageBonus> Bonuses { get; internal set; } = System.Array.Empty<DamageBonus>();
 
@@ -175,6 +201,10 @@ namespace MachineBrigade.Sim.Content
                 // Everything else the equipment does not change travels with the copy (the charge,
                 // the bonuses and the round's model were once lost on a tuned weapon).
                 Charge = Charge,
+                FlareResist = FlareResist,
+                Family = Family,
+                Size = Size,
+                RealName = RealName,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,

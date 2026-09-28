@@ -53,10 +53,11 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
                 // them); everything else lands where it was aimed.
-                // Flares pull a missile off about one time in three (radar-guided missiles mostly see through them):
-                // flares out now, or put out while it flew (a slow missile outlasts a flare's burn).
+                // Flares pull a missile off about one time in three, less as its seeker sees through them
+                // (a radar-guided SAM mostly does: WeaponDef.FlareResist): flares out now, or put out
+                // while it flew (a slow missile outlasts a flare's burn). One roll per missile.
                 var flared = target is Vehicle decoy && (decoy.FlaresUp || decoy.FlaresUntil > p.LaunchedAt);
-                var decoyed = weapon.Guided && ((flared && _world.Random.NextDouble() < FlareDecoy) || p.Jammed || p.Failed);
+                var decoyed = weapon.Guided && ((flared && _world.Random.NextDouble() < FlareDecoy * (1f - weapon.FlareResist)) || p.Jammed || p.Failed);
                 // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
                 var lure = default(Vector2);
                 var lured = !decoyed && target is Vehicle guarded && _world.Gear.Lure(guarded, p, out lure);
@@ -246,7 +247,7 @@ namespace MachineBrigade.Sim.Combat
             if (!target.IsAlive || !(amount > 0f)) return 0f;
             if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
             var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
-            var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor);
+            var damage = raw ? amount : amount * _world.Catalog.Damage.Multiplier(type, target.Armor, hit.Weapon);
             if (!(damage > 0f)) return 0f;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
