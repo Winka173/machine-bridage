@@ -97,6 +97,21 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Takes no damage until then (Unbreakable, Aegis Dome).</summary>
         internal double ImmuneUntil = double.NegativeInfinity;
 
+        /// <summary>
+        /// A last stand (Unbreakable, Aegis Dome) or an overheal shield (Phoenix Recovery) saved it
+        /// recently: until then none of the three may save it again (they never chain on one blow).
+        /// </summary>
+        internal double LastStandUntil = double.NegativeInfinity;
+
+        /// <summary>Driving to a new firing spot (shoot-and-scoot): the order waits until it is there.</summary>
+        internal bool Relocating;
+
+        /// <summary>Shoot-and-scoot: rounds fired from the current spot.</summary>
+        internal int ScootShots;
+
+        /// <summary>A boss part's index this hit struck (set by the damage system for the length of one hit; -1: the body).</summary>
+        internal int PartStruck = -1;
+
         /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
         internal float StunResist;
 

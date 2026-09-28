@@ -139,11 +139,15 @@ namespace MachineBrigade.Game.Hud
                 });
                 button.Add(UiKit.Icon(BranchIcon(branch), UiKit.Ink, 1.9f));
                 button.Add(UiKit.Text(Strings.Get("gear.branch." + branch.ToString().ToLowerInvariant()), "gear-branch-name"));
+                // Which classes of vehicle wear this branch's loadout (data: balance.json "branches").
+                button.tooltip = GearText.BranchClasses(branch);
                 branches.Add(Choice(button, () => _branch == b));
             }
             _gearView.Add(branches);
             var centre = UiKit.Box("gear-centre");
             centre.Add(UiKit.Text(Strings.Get("gear.loadout"), "menu-caps"));
+            _gearClasses = UiKit.Text("", "gear-branch-classes");
+            centre.Add(_gearClasses);
             _gearSlots = UiKit.Box("gear-slots");
             centre.Add(_gearSlots);
             _gearTotal = UiKit.Text("", "gear-total");
@@ -391,8 +395,11 @@ namespace MachineBrigade.Game.Hud
 
         // ------------------------------------------------------------------ equipment
 
+        private Label _gearClasses;
+
         private void RefreshGear()
         {
+            if (_gearClasses != null) _gearClasses.text = GearText.BranchClasses(_branch);
             _gearSlots.Clear();
             for (var s = 0; s < Gear.Slots; s++)
             {
@@ -432,6 +439,8 @@ namespace MachineBrigade.Game.Hud
                 tile.Add(GearArt.Tile(item, 92));
                 tile.EnableInClassList("chosen", item == _gearSelected);
                 tile.EnableInClassList("equipped", PlayerProfile.IsEquipped(item));
+                // A piece that does nothing for this branch is shown dimmed and cannot go on (prompt 8 I.1).
+                tile.EnableInClassList("unfit", !Gear.FitsBranch(item, _branch));
                 grid.Add(tile);
             }
             _gearGrid.Add(grid);
@@ -467,13 +476,16 @@ namespace MachineBrigade.Game.Hud
             head.Add(names);
             _gearInfo.Add(head);
             _gearInfo.Add(GearLines(item));
+            var fits = Gear.FitsBranch(item, _branch);
+            _gearInfo.Add(UiKit.Text(GearText.FitLine(item), fits ? "gear-line gear-line-dim" : "gear-line gear-line-penalty"));
             var actions = UiKit.Box("gear-actions");
             var equipped = current == item;
-            actions.Add(UiKit.WideButton(equipped ? "wide" : "wide primary", equipped ? "close" : "check",
+            actions.Add(UiKit.WideButton(equipped ? "wide" : fits ? "wide primary" : "wide", equipped ? "close" : "check",
                 equipped ? Strings.Get("gear.unequip") : Strings.Get("gear.equipShort"), null, () =>
                 {
                     if (equipped) PlayerProfile.Unequip(_branch, item.Slot);
-                    else PlayerProfile.Equip(_branch, item);
+                    else if (!PlayerProfile.Equip(_branch, item))
+                        Note(Strings.Format("gear.notForBranch", Strings.Get("gear.branch." + _branch.ToString().ToLowerInvariant())), true);
                     Refresh();
                 }));
             var cost = Gear.LevelCost(item);
@@ -561,6 +573,8 @@ namespace MachineBrigade.Game.Hud
                 }
                 box.Add(row);
             }
+            // What sets a base type apart when it has no implicit line (the Monolith Plate: a bigger main stat, no sub-stats).
+            if (Gear.BaseOf(item) is { } baseType && GearText.BaseNote(baseType) is { Length: > 0 } note) box.Add(UiKit.Text(note, "gear-line gear-line-implicit"));
             var trait = GearText.TraitLine(item);
             if (trait.Length > 0) box.Add(UiKit.Text(trait, "gear-line gear-line-trait"));
             else if (item.rarity < (int)Rarity.Epic) box.Add(UiKit.Text(Strings.Get("gear.traitAtEpic"), "gear-line gear-line-dim"));

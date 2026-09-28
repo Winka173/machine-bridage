@@ -250,7 +250,13 @@ namespace MachineBrigade.Game.Match
         /// A loadout's boost with these caps per stat (a vehicle's <see cref="GearCatalog.StatCap"/>,
         /// a tower type's <see cref="GearCatalog.TowerStatCap"/>).
         /// </summary>
-        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps)
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps) => Boost(rank, loadout, caps, null);
+
+        /// <summary>
+        /// A loadout's boost; <paramref name="brandCounts"/> overrides the brand pieces counted for the
+        /// set bonuses (a tower type's Bulwark pieces count across the whole base), null counts the loadout's own.
+        /// </summary>
+        public static VehicleBoost Boost(int rank, IEnumerable<GearItem> loadout, float[] caps, int[] brandCounts)
         {
             var count = (int)StatId.Count;
             var sum = new float[count];
@@ -276,6 +282,7 @@ namespace MachineBrigade.Game.Match
                 if (b != null)
                 {
                     if (b.Implicit != StatId.Count) sum[(int)b.Implicit] += ImplicitValue(item);
+                    if (b.Implicit2 != StatId.Count) sum[(int)b.Implicit2] += Implicit2Value(item);
                     if (b.TradeOff) penalty[(int)b.Penalty] += PenaltyValue(item);
                     if (b.Extra != TraitId.None && item.rarity >= b.ExtraFrom) traits.Add(new GearTrait(b.Extra, 1f));
                 }
@@ -290,11 +297,16 @@ namespace MachineBrigade.Game.Match
                 var trait = TraitOf(item);
                 if (trait.Id != TraitId.None) traits.Add(trait);
             }
-            var brands = BrandCounts(worn);
+            var brands = brandCounts ?? BrandCounts(worn);
             for (var i = 1; i < brands.Length; i++)
             {
                 var brand = GearCatalog.Brand(i);
-                if (brands[i] >= 2) sum[(int)brand.Stat] += brand.Value;
+                if (brand == null) continue;
+                if (brands[i] >= 2)
+                {
+                    if (brand.Stat != StatId.Count) sum[(int)brand.Stat] += brand.Value;
+                    if (brand.TwoPiece.Id != TraitId.None) traits.Add(brand.TwoPiece);
+                }
                 if (brands[i] >= 4) traits.Add(brand.FourPiece);
             }
             var stats = new float[count];

@@ -301,12 +301,21 @@ namespace MachineBrigade.Sim.Economy
         {
             // Quartermaster's four-piece: part of its own cost comes back when it falls.
             if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
-                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.CpCost * victim.Gear.Trait(TraitId.SetSalvageRights).B);
+                own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.CpCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
             if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillReward * Bounty(economy, victim) * KillerBonus(killer, team));
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillShare(Bounty(economy, victim), KillerBonus(killer, team)));
         }
+
+        /// <summary>The most a kill may refund, as a share of the victim's price, whatever pays it (prompt 8 I.6).</summary>
+        internal const float KillRefundCap = 0.45f;
+
+        /// <summary>The most one's own loss may refund (Quartermaster's four pieces), as a share of its price.</summary>
+        internal const float LossRefundCap = 0.15f;
+
+        /// <summary>A kill's refund as a share of the victim's price: the base quarter, the odds, the killer's equipment, capped.</summary>
+        internal static float KillShare(float bounty, float killerBonus) => MathF.Min(KillRefundCap, KillReward * bounty * killerBonus);
 
         /// <summary>A killer's equipment that pays more for its kills (War Profiteer, Quartermaster's four-piece).</summary>
         private static float KillerBonus(Vehicle? killer, int team)

@@ -65,5 +65,17 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>A bounce or a drone from equipment: it sets off no further hit traits.</summary>
         public bool NoProc { get; set; }
+
+        /// <summary>A ricochet: it strikes its target only (no blast, no piercing, no bomblets).</summary>
+        public bool Bounce { get; set; }
+
+        /// <summary>Carries no bomblets (a cluster salvo's rounds after its first few, see Cluster Warhead).</summary>
+        public bool NoCluster { get; set; }
+
+        /// <summary>
+        /// The boss part it was fired at (its index in the boss's parts), or -1 for the body: a direct
+        /// hit strikes the part while it stands, and its blast lands on the body only.
+        /// </summary>
+        public int Part { get; set; } = -1;
     }
 }

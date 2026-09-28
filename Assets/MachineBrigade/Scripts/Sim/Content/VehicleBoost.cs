@@ -113,6 +113,22 @@ namespace MachineBrigade.Sim.Content
         BurnDamage,
         SummonPower,
         RepairReceived,
+
+        // Prompt 8 (appended: saves keep stat ids as numbers).
+        /// <summary>More damage on a hit from the side or rear (Flanking Rounds).</summary>
+        DamageFlank,
+        /// <summary>More damage to drones, and a share of the rockets, missiles and drones aimed at it shot down (Airburst Rounds).</summary>
+        DamageVsDrone,
+        /// <summary>Share of an empty magazine that comes back at once, once a life (Spare Magazine).</summary>
+        SpareMagazine,
+        /// <summary>Enemy missiles must be this share closer to lock on (Radar-Absorbent Coating).</summary>
+        LockRange,
+        /// <summary>Smoke radius thrown when an anti-tank missile locks on, every 20 s (Laser Warning).</summary>
+        LaserWarning,
+        /// <summary>Faster in reverse, and backs off from enemies that close in, nose on (Reverse Gearbox).</summary>
+        ReverseSpeed,
+        /// <summary>Less damage from blasts and mines, not direct hits (Underbelly Armour).</summary>
+        ResistBlast,
         Count,
     }
 
@@ -196,6 +212,15 @@ namespace MachineBrigade.Sim.Content
         TowerModular,
         TowerSmokeLaunchers,
         TowerBackupGenerator,
+
+        // Prompt 8: new unique lines, the new brands' behaviours.
+        Vengeance,
+        SuppressiveFire,
+        Rearguard,
+        SetPackHunt,
+        SetPackFocus,
+        SetPhoenix,
+        SetBulwarkPost,
         Count,
     }
 

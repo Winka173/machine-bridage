@@ -78,12 +78,24 @@ namespace MachineBrigade.Tests
             public Func<VehicleDef, VehicleBoost> Boost;
             public string[] Targets = { "main_battle_tank", "ifv", "armored_car" };
             public float Distance = -1f;
-            public float Seconds = 90f;
+            public float Seconds = 180f;
             public bool Moving = true;
-            public float Spacing = 8f;
+            public float Spacing = 9f;
+
+            /// <summary>Only the shooters' main weapon fires (a line that acts on the main weapon measured on it alone).</summary>
+            public bool MainOnly;
+
+            /// <summary>Seconds before a destroyed target is replaced.</summary>
+            public float Respawn = 0.5f;
 
             /// <summary>Called every step (a test's own hook: a mark, a smoke screen).</summary>
             public Action<SimWorld, List<Vehicle>, List<Vehicle>> Each;
+
+            public Duel With(Func<VehicleDef, VehicleBoost> boost) => new()
+            {
+                Shooter = Shooter, Count = Count, Boost = boost, Targets = Targets, Distance = Distance, Seconds = Seconds, Moving = Moving,
+                Spacing = Spacing, MainOnly = MainOnly, Respawn = Respawn, Each = Each,
+            };
         }
 
         public sealed class DuelResult
@@ -109,12 +121,23 @@ namespace MachineBrigade.Tests
             var distance = d.Distance > 0f ? d.Distance : DistanceFor(def);
             var shooters = new List<Vehicle>();
             for (var i = 0; i < d.Count; i++)
-                shooters.Add(world.SpawnVehicle(d.Shooter, 0, new Vector2((i - (d.Count - 1) * 0.5f) * 9f, -distance * 0.5f), 0f));
+            {
+                var s = world.SpawnVehicle(d.Shooter, 0, new Vector2((i - (d.Count - 1) * 0.5f) * 9f, -distance * 0.5f), 0f);
+                // Main weapon only: the other mounts are left with an empty magazine that never refills.
+                if (d.MainOnly)
+                    for (var m = 1; m < s.Weapons.Length; m++) s.Weapons[m].Ammo = 0;
+                shooters.Add(s);
+            }
             var slots = new List<Vector2>();
             for (var i = 0; i < d.Targets.Length; i++) slots.Add(new Vector2((i - (d.Targets.Length - 1) * 0.5f) * d.Spacing, distance * 0.5f));
             var targets = new List<Vehicle>();
             for (var i = 0; i < d.Targets.Length; i++) targets.Add(world.SpawnVehicle(d.Targets[i], 1, slots[i], MathF.PI));
             var respawnAt = new double[targets.Count];
+            // Each target drives between spots round its own, on its own clock (seeded), so salvos and
+            // the targets' moves never fall into one rhythm.
+            var rng = new System.Random(seed * 7919 + 13);
+            var nextMove = new double[targets.Count];
+            for (var i = 0; i < nextMove.Length; i++) nextMove[i] = rng.NextDouble() * 4.0;
             var result = new DuelResult();
             DamageSystem.DamageLog = (attacker, victim, amount, kind, weapon) =>
             {
@@ -125,17 +148,16 @@ namespace MachineBrigade.Tests
                 foreach (var s in shooters)
                     if (s.Flying) world.Submit(new Command(CommandType.AttackMove, 0, new[] { s.Id }, new Vector2(0f, distance * 0.5f)));
                 var steps = (int)(d.Seconds / Step);
-                var side = 1f;
                 for (var k = 0; k < steps; k++)
                 {
-                    // Targets drift across the shooters' front, 12 m each way, every six seconds.
-                    if (d.Moving && k % (int)(6f / Step) == 0)
-                    {
-                        side = -side;
+                    if (d.Moving)
                         for (var i = 0; i < targets.Count; i++)
-                            if (targets[i].IsAlive)
-                                world.Submit(new Command(CommandType.Move, 1, new[] { targets[i].Id }, slots[i] + new Vector2(12f * side, 0f)));
-                    }
+                        {
+                            if (!targets[i].IsAlive || world.Time < nextMove[i]) continue;
+                            nextMove[i] = world.Time + 3.0 + rng.NextDouble() * 4.0;
+                            var spot = slots[i] + new Vector2((float)(rng.NextDouble() * 2.0 - 1.0) * 14f, (float)(rng.NextDouble() * 2.0 - 1.0) * 6f);
+                            world.Submit(new Command(CommandType.Move, 1, new[] { targets[i].Id }, spot));
+                        }
                     d.Each?.Invoke(world, shooters, targets);
                     world.Step(Step);
                     foreach (var e in world.Events)
@@ -146,7 +168,7 @@ namespace MachineBrigade.Tests
                         if (targets[i].IsAlive) continue;
                         if (respawnAt[i] <= 0.0)
                         {
-                            respawnAt[i] = world.Time + 1.5;
+                            respawnAt[i] = world.Time + d.Respawn;
                             result.Kills++;
                         }
                         else if (world.Time >= respawnAt[i])
@@ -166,7 +188,7 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>Mean damage a second over the seeds.</summary>
-        public static float Dps(Duel d, int seeds = 3)
+        public static float Dps(Duel d, int seeds = 5)
         {
             var sum = 0f;
             for (var s = 1; s <= seeds; s++) sum += Run(d, s * 7 + 1).Dps;
@@ -174,10 +196,10 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>What a boost adds to a duel's damage a second, as a share (0.12 = +12 %), over the seeds.</summary>
-        public static float Gain(Duel d, Func<VehicleDef, VehicleBoost> boost, int seeds = 3, float? baseline = null)
+        public static float Gain(Duel d, Func<VehicleDef, VehicleBoost> boost, int seeds = 5, float? baseline = null)
         {
-            var plain = baseline ?? Dps(new Duel { Shooter = d.Shooter, Count = d.Count, Targets = d.Targets, Distance = d.Distance, Seconds = d.Seconds, Moving = d.Moving, Each = d.Each }, seeds);
-            var with = Dps(new Duel { Shooter = d.Shooter, Count = d.Count, Targets = d.Targets, Distance = d.Distance, Seconds = d.Seconds, Moving = d.Moving, Boost = boost, Each = d.Each }, seeds);
+            var plain = baseline ?? Dps(d.With(null), seeds);
+            var with = Dps(d.With(boost), seeds);
             return plain > 0f ? with / plain - 1f : 0f;
         }
 

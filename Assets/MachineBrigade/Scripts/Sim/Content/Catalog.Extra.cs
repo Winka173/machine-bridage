@@ -100,15 +100,17 @@ namespace MachineBrigade.Sim.Content
         };
 
         /// <summary>
-        /// A vehicle's equipment branch: an aircraft is Air, one whose main weapon has a minimum range
-        /// (it lobs over cover) is Artillery, the rest by class; a def may name its own ("branch").
+        /// A vehicle's equipment branch: an aircraft is Air, the rest by class (balance.json
+        /// "branches": the long-range SAM is anti-air and so Light, the FPV carrier a tank hunter and so
+        /// Armour); a class the table does not name goes by its gun (a minimum range: Artillery, else
+        /// Light); a def may name its own ("branch").
         /// </summary>
         internal static ArmyBranch BranchFor(VehicleDef def, IReadOnlyDictionary<UnitClass, ArmyBranch> byClass, ArmyBranch? own)
         {
             if (own is { } named) return named;
             if (def.Flying) return ArmyBranch.Air;
-            if (def.Weapon.MinRange > 0f) return ArmyBranch.Artillery;
-            return byClass.TryGetValue(def.Class, out var branch) ? branch : ArmyBranch.Light;
+            if (byClass.TryGetValue(def.Class, out var branch)) return branch;
+            return def.Weapon.MinRange > 0f ? ArmyBranch.Artillery : ArmyBranch.Light;
         }
 
         /// <summary>Prompt 8's vehicle fields (see VehicleDef.Extra.cs).</summary>

@@ -36,6 +36,11 @@ namespace MachineBrigade.Sim.Combat
 
         public bool MissileIncoming(EntityId vehicle) => _missileTargets.Contains(vehicle);
 
+        /// <summary>Ground vehicles a guided missile (not a drone) is flying at this step: an anti-tank missile's lock (Laser Warning's cue).</summary>
+        private readonly HashSet<EntityId> _atgmTargets = new();
+
+        public bool AtgmIncoming(EntityId vehicle) => _atgmTargets.Contains(vehicle);
+
         /// <summary>Some round is on its way to this vehicle (a Decoy Launcher's cue).</summary>
         public bool RoundIncoming(EntityId vehicle) => _incoming.ContainsKey(vehicle);
 
@@ -45,8 +50,13 @@ namespace MachineBrigade.Sim.Combat
         public void Step(float dt)
         {
             _missileTargets.Clear();
+            _atgmTargets.Clear();
             foreach (var p in _projectiles)
-                if (p.Weapon.Guided && p.Target.IsValid) _missileTargets.Add(p.Target);
+            {
+                if (!p.Weapon.Guided || !p.Target.IsValid) continue;
+                _missileTargets.Add(p.Target);
+                if (p.Weapon.Projectile == ProjectileKind.Missile && !p.TargetFlying) _atgmTargets.Add(p.Target);
+            }
             _focus.Clear();
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Target.IsValid) _focus.Add((v.Team, v.Target));
@@ -299,7 +309,10 @@ namespace MachineBrigade.Sim.Combat
         {
             if (!weapon.CanTarget(IsFlying(target))) return false;
             var distance = Vector2.Distance(v.Position, target.Position);
-            return distance >= weapon.MinRange && distance - target.Radius <= weapon.Range * _world.Gear.Reach(v, target, weapon);
+            var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
+            // Radar-absorbent coating: a missile must come closer to lock on.
+            if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, 0.5f);
+            return distance >= weapon.MinRange && distance - target.Radius <= reach;
         }
 
         private static bool IsFlying(IDamageable target) => target is Vehicle vehicle && vehicle.Flying;
@@ -567,6 +580,9 @@ namespace MachineBrigade.Sim.Combat
                     state.BracketShots = 0;
                 }
                 spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));
+                // A target its side has marked (a designator's laser, a radar's fix, a UAV over it): the
+                // SP gun's rounds fall almost on the mark (prompt 8 A.2).
+                if (index == 0 && shooter.Def.MarkedSpread < 1f && aimTarget is Vehicle marked && Marked(marked, shooter.Team)) spread *= shooter.Def.MarkedSpread;
             }
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
@@ -597,6 +613,7 @@ namespace MachineBrigade.Sim.Combat
             var projectile = new Projectile(shooter.Id, shooter.Team, weapon, aim, target, travel, targetFlying)
             {
                 DamageScale = damageScale, Origin = origin, Shooter = shooter, Main = index == 0, Tandem = mods.Tandem, ExtraSplash = mods.ExtraSplash,
+                NoCluster = mods.NoCluster,
             };
             if (target.IsValid && _world.TryGetVehicle(target, out var aimedAt))
             {
@@ -614,6 +631,20 @@ namespace MachineBrigade.Sim.Combat
             }
             _projectiles.Add(projectile);
             _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target));
+        }
+
+        /// <summary>
+        /// A target <paramref name="team"/> has marked: a laser designator's mark, a counter-battery
+        /// radar's reveal, or a UAV scan over it.
+        /// </summary>
+        internal bool Marked(Vehicle target, int team)
+        {
+            var now = _world.Time;
+            ref var mark = ref target.Statuses[(int)StatusKind.Mark];
+            if (mark.Until > now && mark.Team == team) return true;
+            ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
+            if (reveal.Until > now && team is >= 0 and < 31 && (reveal.Stacks & (1 << team)) != 0) return true;
+            return team is >= 0 and < 31 && (_world.Strikes.ScanMask(target.Position, target.Team) & (1 << team)) != 0;
         }
 
         private void UpdateProjectiles(float dt)

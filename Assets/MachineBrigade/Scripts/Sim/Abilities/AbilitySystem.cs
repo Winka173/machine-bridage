@@ -106,10 +106,10 @@ namespace MachineBrigade.Sim.Abilities
                 }
                 // Upgrades: self-repair out of combat (sooner with a toolbox, part of it under fire with a
                 // combat welder, half while burning), and smoke dischargers at half health.
-                if (v.Regen > 0f && v.Hp < v.MaxHp)
+                if (v.Regen > 0f)
                 {
                     var rate = Regenerating(v, now);
-                    if (rate > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * v.Regen * rate * dt);
+                    if (rate > 0f) _world.Gear.Heal(v, v.MaxHp * v.Regen * rate * dt);
                 }
                 if (v.Special == SpecialModule.SmokeDischarger && !v.SmokeUsed && v.Hp < v.MaxHp * 0.5f)
                 {
@@ -117,11 +117,7 @@ namespace MachineBrigade.Sim.Abilities
                     _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
                     _world.Gear.Proc(v, SpecialModule.SmokeDischarger);
                 }
-                if (v.Healing > 0f && v.HealUntil > now)
-                {
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.Healing * GearSystem.RepairFactor(v, now) * dt);
-                    if (amount > 0f) v.Hp += amount;
-                }
+                if (v.Healing > 0f && v.HealUntil > now) _world.Gear.Heal(v, v.Healing * GearSystem.RepairFactor(v, now) * dt);
             }
             // Loaned escorts fly home when their time is up (no wreck, no kill).
             foreach (var v in _world.VehicleList)
@@ -190,8 +186,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (repair != null && distance <= repair.Radius + (v.Def.Static ? v.Def.HullBound : 0f) && !v.Def.Boss && v.Hp < v.MaxHp)
                 {
                     var rate = repair.Rate * (v.Def.Static ? 0.5f : 1f);
-                    var amount = MathF.Min(v.MaxHp - v.Hp, v.MaxHp * rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
-                    v.Hp += amount;
+                    var amount = _world.Gear.Heal(v, v.MaxHp * rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
                     _world.Emit(SimEvent.RepairedBy(v, amount));
                 }
                 if (rearm != null && distance <= rearm.Radius && v.NeedsAmmo && !v.Def.Static)

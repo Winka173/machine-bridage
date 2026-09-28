@@ -2451,3 +2451,7 @@
 .base-confirm-buttons { flex-direction: row; }
 .menu .wide.base-confirm-button { flex-grow: 1; flex-basis: 0; height: 72px; justify-content: center; margin: 0 8px 0 0; }
 .menu .wide.base-confirm-button.primary { margin-right: 0; }
+
+/* Prompt 8: pieces that do nothing for the chosen branch, and the classes the branch holds. */
+.gear-cell.unfit { opacity: 0.38; }
+.menu .gear-branch-classes { font-size: 22px; color: var(--text-mid); white-space: normal; margin: 0 0 8px 0; }

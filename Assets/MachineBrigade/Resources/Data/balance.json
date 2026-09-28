@@ -61,6 +61,15 @@
     }
   },
 
+  // Equipment branches: the classes whose vehicles wear each branch's loadout (prompt 8 I.1). An aircraft is
+  // always Air; the long-range SAM is anti-air (Light) and the FPV carrier a tank hunter (Armour).
+  "branches": {
+    "Armor": ["Tank", "Heavy", "TankHunter"],
+    "Light": ["Light", "Scout", "AntiAir", "Support"],
+    "Artillery": ["Artillery"],
+    "Air": ["Helicopter", "Plane"]
+  },
+
   "damageTable": {
     "Kinetic":       { "Light": 1.00, "Heavy": 0.25, "Air": 0.3, "Structure": 0.3 },
     "ArmorPiercing": { "Light": 0.75, "Heavy": 1.00, "Air": 0.3, "Structure": 0.6 },
@@ -302,7 +311,7 @@
       "secondary": [ { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" }, { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" },
                      { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "strike_drone", "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.98,     "armor": "Air",  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
+    { "id": "strike_drone", "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.98, "drone": true, "armor": "Air",  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
         { "id": "thermobaric_launcher", "scale": 0.85, "armor": "Heavy", "hp": 900, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 7.4, "width": 3.65, "cp": 9, "vision": 30,
@@ -379,7 +388,7 @@
       "secondary": [ { "weapon": "jet_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "maverick", "slot": "missile", "aim": "Hull" },
                      { "weapon": "aim9", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 100, "radius": 8, "delay": 0.6, "tier": "Huge" } },
-    { "id": "recon_drone", "strongVs": ["Scout", "Artillery"], "scale": 0.54,      "armor": "Air",  "hp": 220, "speed": 18, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
+    { "id": "recon_drone", "strongVs": ["Scout", "Artillery"], "scale": 0.54, "drone": true, "armor": "Air",  "hp": 220, "speed": 18, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
       "firesWhileMoving": true, "weapon": "recon_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
     { "id": "heavy_attack_heli", "strongVs": ["Tank", "Heavy", "Helicopter"], "scale": 0.56, "armor": "Air", "hp": 1250, "speed": 12, "turnRate": 80, "turretTurnRate": 360, "radius": 4.2, "cp": 14, "vision": 40,
@@ -573,6 +582,11 @@
       "weapon": "bunker_hmg", "secondary": [{"weapon": "atgm_post", "slot": "missile", "aim": "Free"}], "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     { "id": "artillery_emplacement", "fort": { "size": "Large" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 3.0, "length": 6.5, "width": 6.5, "cp": 0, "vision": 30,
       "weapon": "howitzer", "secondary": [{"weapon": "mg_coax", "slot": "mg", "aim": "Free"}], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.4, "tier": "Huge" } },
+    // Bulwark Engineering (tower equipment, four pieces in the base): a fallen tower leaves this machine-gun
+    // post for 20 s. Not a base tower: it takes no hardpoint and no equipment.
+    { "id": "bulwark_post", "class": "Defense", "static": true, "model": "mg_bunker", "armor": "Structure", "hp": 500, "speed": 0, "turnRate": 1, "turretTurnRate": 160,
+      "radius": 1.6, "length": 3.4, "width": 3.4, "scale": 0.8, "cp": 0, "vision": 34, "weapon": "bunker_hmg",
+      "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     { "id": "guard_tower",      "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60, "revealStealth": true, "towerRangeAura": { "radius": 25, "range": 0.1 },
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
 

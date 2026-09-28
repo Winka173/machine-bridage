@@ -44,19 +44,30 @@ namespace MachineBrigade.Game.Match
             return 0.4f + 0.6f * (level - 1) / Mathf.Max(1, cap - 1);
         }
 
-        /// <summary>The base type's implicit line now (grows with level like the main stat).</summary>
+        /// <summary>The base type's implicit line now (grows with level like the main stat, unless it is a flat one).</summary>
         public static float ImplicitValue(GearItem item)
         {
             var b = BaseOf(item);
             if (b == null || b.Implicit == StatId.Count) return 0f;
-            return b.Top[Mathf.Clamp(item.rarity, 0, 4)] * LevelShare(item);
+            return b.Top[Mathf.Clamp(item.rarity, 0, 4)] * (b.Flat ? 1f : LevelShare(item));
         }
 
-        /// <summary>A trade-off's drawback (negative, fixed at every level).</summary>
+        /// <summary>A merged base type's second implicit line now (grows with level).</summary>
+        public static float Implicit2Value(GearItem item)
+        {
+            var b = BaseOf(item);
+            if (b == null || b.Implicit2 == StatId.Count || b.Top2 == null) return 0f;
+            return b.Top2[Mathf.Clamp(item.rarity, 0, 4)] * LevelShare(item);
+        }
+
+        /// <summary>
+        /// A trade-off's drawback (negative). It grows with the piece's level as its gain does (prompt 8
+        /// I.7: a fresh piece is no longer all drawback), and with its rarity, always less than the gain.
+        /// </summary>
         public static float PenaltyValue(GearItem item)
         {
             var b = BaseOf(item);
-            return b != null && b.TradeOff ? b.PenaltyTop[Mathf.Clamp(item.rarity, 0, 4)] : 0f;
+            return b != null && b.TradeOff ? b.PenaltyTop[Mathf.Clamp(item.rarity, 0, 4)] * LevelShare(item) : 0f;
         }
 
         /// <summary>Growth steps a piece's sub-stats have had: one at each of levels 5, 10, 15 and 20, up to one per rarity above Common.</summary>
@@ -133,6 +144,7 @@ namespace MachineBrigade.Game.Match
             lines.Add(new Line(LineKind.Main, MainStat(item), Value(item)));
             var b = BaseOf(item);
             if (b != null && b.Implicit != StatId.Count) lines.Add(new Line(LineKind.Implicit, b.Implicit, ImplicitValue(item)));
+            if (b != null && b.Implicit2 != StatId.Count) lines.Add(new Line(LineKind.Implicit, b.Implicit2, Implicit2Value(item)));
             if (b != null && b.TradeOff) lines.Add(new Line(LineKind.Penalty, b.Penalty, PenaltyValue(item)));
             if (item.subs != null)
                 foreach (var sub in item.subs)
@@ -142,7 +154,7 @@ namespace MachineBrigade.Game.Match
 
         // ------------------------------------------------------------------ sets
 
-        /// <summary>Pieces of each brand among a loadout's six normal slots (index = brand, 1 to 10).</summary>
+        /// <summary>Pieces of each brand among a loadout's normal slots (index = brand, 1 to 13).</summary>
         public static int[] BrandCounts(IEnumerable<GearItem> loadout)
         {
             var counts = new int[GearCatalog.Brands.Length + 1];
@@ -193,7 +205,8 @@ namespace MachineBrigade.Game.Match
             var total = 0f;
             foreach (var b in GearCatalog.BasesFor(slot))
             {
-                if ((int)rarity < b.MinRarity) continue;
+                // Only what works for at least one branch drops (prompt 8 I.1).
+                if ((int)rarity < b.MinRarity || b.Branches == BranchMask.None) continue;
                 var w = (b.Branches & deck) != 0 ? 3f : 1f;
                 pool.Add((b, w));
                 total += w;
@@ -211,15 +224,17 @@ namespace MachineBrigade.Game.Match
         public static SpecialModule PickModule(System.Random rng, BranchMask deck)
         {
             var total = 0f;
-            foreach (var m in GearCatalog.Modules) total += (m.Branches & deck) != 0 ? 3f : 1f;
+            foreach (var m in GearCatalog.Modules) total += ModuleWeight(m, deck);
             var x = (float)rng.NextDouble() * total;
             foreach (var m in GearCatalog.Modules)
             {
-                x -= (m.Branches & deck) != 0 ? 3f : 1f;
+                x -= ModuleWeight(m, deck);
                 if (x < 0f) return m.Module;
             }
             return GearCatalog.Modules[GearCatalog.Modules.Length - 1].Module;
         }
+
+        private static float ModuleWeight(ModuleDef m, BranchMask deck) => m.Branches == BranchMask.None ? 0f : (m.Branches & deck) != 0 ? 3f : 1f;
 
         /// <summary>Rolls sub-stats until the piece has as many as its rarity allows (never the main stat, the implicit or a repeat).</summary>
         public static void FillSubs(GearItem item, System.Random rng)
@@ -238,7 +253,7 @@ namespace MachineBrigade.Game.Match
                 var total = 0f;
                 foreach (var s in GearCatalog.Subs)
                 {
-                    if (!GearCatalog.RollsOn(s, item.Slot) || s.Stat == main || (b != null && (s.Stat == b.Implicit || s.Stat == b.Penalty))) continue;
+                    if (!GearCatalog.RollsOn(s, item.Slot) || s.Stat == main || (b != null && (s.Stat == b.Implicit || s.Stat == b.Implicit2 || s.Stat == b.Penalty))) continue;
                     if (tower && !TowerFit.Within(TowerFit.Need(s.Stat), limit)) continue;
                     var taken = false;
                     foreach (var have in item.subs)
@@ -264,12 +279,22 @@ namespace MachineBrigade.Game.Match
             }
         }
 
-        /// <summary>Up to <paramref name="count"/> different traits from a slot's pool, those for the deck's branches first.</summary>
-        public static List<string> TraitCandidates(GearSlot slot, BranchMask deck, System.Random rng, int count = 3)
+        /// <summary>
+        /// Up to <paramref name="count"/> different traits from a slot's pool that work for a branch the
+        /// piece fits (<paramref name="fits"/>: its base type's branches), those for the deck's branches first.
+        /// </summary>
+        public static List<string> TraitCandidates(GearSlot slot, BranchMask deck, System.Random rng, int count = 3, BranchMask fits = BranchMask.All,
+            BaseTypeDef baseType = null)
         {
             var suited = new List<TraitDef>();
             var others = new List<TraitDef>();
-            foreach (var t in GearCatalog.TraitsFor(slot)) ((t.Branches & deck) != 0 ? suited : others).Add(t);
+            foreach (var t in GearCatalog.TraitsFor(slot))
+            {
+                // It must work together with the piece's base type, on some class's vehicles.
+                var together = baseType != null ? VehicleFit.BranchesFor(baseType, t) : t.Branches;
+                if ((together & fits) == 0) continue;
+                ((t.Branches & deck) != 0 ? suited : others).Add(t);
+            }
             var picks = new List<string>();
             foreach (var list in new[] { suited, others })
                 while (picks.Count < count && list.Count > 0)
@@ -288,7 +313,10 @@ namespace MachineBrigade.Game.Match
         public static void RollTrait(GearItem item, System.Random rng, BranchMask deck)
         {
             if (item.Slot == GearSlot.Special || item.rarity < (int)Rarity.Epic) return;
-            item.traitOptions = IsTower(item.Slot) ? TowerTraitCandidates(item, rng) : TraitCandidates(item.Slot, deck == BranchMask.None ? BranchMask.All : deck, rng);
+            var fits = BaseOf(item)?.Branches ?? BranchMask.All;
+            if (fits == BranchMask.None) fits = BranchMask.All;
+            item.traitOptions = IsTower(item.Slot) ? TowerTraitCandidates(item, rng)
+                : TraitCandidates(item.Slot, deck == BranchMask.None ? BranchMask.All : deck, rng, 3, fits, BaseOf(item));
             item.trait = item.traitOptions.Count > 0 ? item.traitOptions[rng.Next(item.traitOptions.Count)] : "";
         }
 
@@ -319,7 +347,7 @@ namespace MachineBrigade.Game.Match
                 return item;
             }
             item.baseType = PickBase((GearSlot)slot, rarity, rng, deck)?.Id ?? "";
-            item.brand = 1 + rng.Next(GearCatalog.Brands.Length);
+            item.brand = 1 + rng.Next(GearCatalog.VehicleBrandCount);
             FillSubs(item, rng);
             if (rarity >= Rarity.Epic) RollTrait(item, rng, deck);
             return item;
@@ -355,7 +383,7 @@ namespace MachineBrigade.Game.Match
         // ------------------------------------------------------------------ old saves
 
         /// <summary>The plating base types, one of which an old Plating piece becomes (its main stat stays the same).</summary>
-        private static readonly string[] OldPlating = { "slat_cage", "frontal_wedge", "overhead_screen", "mine_rollers" };
+        private static readonly string[] OldPlating = { "slat_cage", "frontal_wedge", "overhead_screen", "underbelly_armor" };
 
         /// <summary>
         /// Brings a piece from before the affix model up to date: a Plating piece moves to the Armor
@@ -392,7 +420,7 @@ namespace MachineBrigade.Game.Match
                     if (!b.TradeOff && !b.Plating) plain.Add(b);
                 if (plain.Count > 0) item.baseType = plain[Mathf.Abs(item.id) % plain.Count].Id;
             }
-            if (item.brand <= 0) item.brand = 1 + rng.Next(GearCatalog.Brands.Length);
+            if (item.brand <= 0) item.brand = 1 + rng.Next(GearCatalog.VehicleBrandCount);
             FillSubs(item, rng);
             if (item.rarity >= (int)Rarity.Epic && string.IsNullOrEmpty(item.trait)) RollTrait(item, rng, BranchMask.All);
         }

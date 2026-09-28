@@ -42,6 +42,9 @@ namespace MachineBrigade.Sim.Combat
             var hit = EntityId.None;
             var at = p.AimPoint;
             if (!p.Tandem && TryIntercept(p)) return;
+            // Airburst Rounds: the target's own airburst fire takes down some of what is flying at it.
+            if (!p.Tandem && !p.TargetFlying && p.Target.IsValid && _world.TryGetVehicle(p.Target, out var shooting) && shooting.Gear != null &&
+                _world.Gear.ShootDown(p, shooting)) return;
             var info = HitInfo.Of(p, HitKind.Direct);
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
@@ -71,10 +74,10 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
 
-            if (weapon.Pierce && !p.TargetFlying) PierceLine(p, at, hit);
+            if (weapon.Pierce && !p.TargetFlying && !p.Bounce) PierceLine(p, at, hit);
 
-            // Every blast is a little different: its reach varies by up to 15 %.
-            if (weapon.SplashRadius > 0f)
+            // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
+            if (weapon.SplashRadius > 0f && !p.Bounce)
                 Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
                     weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
             // A heavy round from equipment bursts round its target too, at half its weight.
@@ -83,7 +86,7 @@ namespace MachineBrigade.Sim.Combat
                     info.As(HitKind.Splash));
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
-            if (weapon.Cluster != null && !p.TargetFlying) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale, p.Shooter);
+            if (weapon.Cluster != null && !p.TargetFlying && !p.NoCluster) Scatter(weapon.Cluster, at, p.OwnerTeam, p.DamageScale, p.Shooter);
         }
 
         /// <summary>
@@ -275,6 +278,7 @@ namespace MachineBrigade.Sim.Combat
                 damage *= _world.Gear.Incoming(vehicle, type, hit);
                 if (!(damage > 0f)) return 0f;
                 if (!(hit.Projectile?.Tandem ?? false)) damage = _world.Status.Absorb(vehicle, damage);
+                damage = _world.Gear.AbsorbOverheal(vehicle, damage);
                 if (vehicle.Gear != null) damage = _world.Gear.Soak(vehicle, damage);
                 damage = _world.Gear.Redirect(vehicle, damage, hit);
             }

@@ -235,6 +235,14 @@ namespace MachineBrigade.Sim.Movement
 
         private void UpdateOrder(Vehicle v)
         {
+            // Relocating (the SP gun's shoot-and-scoot): it drives to its new spot whatever the
+            // order says, then takes the order up again from there.
+            if (v.Relocating)
+            {
+                if (v.HasPath || v.PathQueued) return;
+                v.Relocating = false;
+                if (v.Order.Kind == OrderKind.Idle) v.GuardPoint = v.Position;
+            }
             switch (v.Order.Kind)
             {
                 case OrderKind.Move:

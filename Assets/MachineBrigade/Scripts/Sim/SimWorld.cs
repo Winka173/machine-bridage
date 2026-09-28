@@ -160,6 +160,9 @@ namespace MachineBrigade.Sim
         /// <summary>A guided missile or drone is flying at this vehicle.</summary>
         internal bool MissileIncoming(EntityId vehicle) => _combat.MissileIncoming(vehicle);
 
+        /// <summary>A guided missile (not a drone) is flying at this ground vehicle.</summary>
+        internal bool AtgmIncoming(EntityId vehicle) => _combat.AtgmIncoming(vehicle);
+
         /// <summary>Gives a side Command Points and a deck; modes without an economy never call this.</summary>
         /// <summary>
         /// Home zones (the capture modes): within <see cref="HomeRadius"/> of its own camp a

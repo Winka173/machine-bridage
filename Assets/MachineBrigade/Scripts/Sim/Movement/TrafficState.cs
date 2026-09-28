@@ -91,6 +91,10 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>Whom it is backing out for (none for a plain back-off when wedged).</summary>
         public EntityId ReverseFor;
 
+        /// <summary>Backing away from an enemy (the Reverse Gearbox): the nose kept towards this point.</summary>
+        public bool ReverseFacing;
+        public System.Numerics.Vector2 ReverseFace;
+
         /// <summary>Waits where it is until then (after backing out of a doorway).</summary>
         public double HoldUntil = double.NegativeInfinity;
 
