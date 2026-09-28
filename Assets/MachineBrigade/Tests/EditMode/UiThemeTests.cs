@@ -170,7 +170,10 @@ namespace MachineBrigade.Tests
             var large = LargeTokens;
             foreach (var t in new[] { "fc-fs-primary", "fc-fs-title", "fc-fs-panel-title", "fc-fs-button", "fc-fs-body", "fc-fs-small", "fc-fs-number", "fc-fs-number-small" })
                 Assert.That(Px(large, t) / Px(normal, t), Is.InRange(1.12f, 1.28f), "Large --" + t);
-            foreach (var t in large.Keys) Assert.IsTrue(t.StartsWith("fc-fs-"), "Large changes type sizes only: --" + t);
+            // Type sizes only, and the top bar a few points taller (44-48 pt) for the rank's two lines at Large text.
+            foreach (var t in large.Keys) Assert.IsTrue(t.StartsWith("fc-fs-") || t == "fc-topbar", "Large changes type sizes only: --" + t);
+            if (large.ContainsKey("fc-topbar"))
+                Assert.That(Px(large, "fc-topbar") / Kit.PanelPxPerPoint, Is.InRange(44f, 48f), "the Large top bar in points");
         }
 
         // ------------------------------------------------------------------ nothing hard-coded

@@ -152,9 +152,9 @@ namespace MachineBrigade.Game.Hud
             _map.Moved += PlaceSlots;
             _mapBox.Add(_map);
             var tools = Kit.Box("fc-base__map-tools");
-            _customChip = new KitChip(Strings.Get("camp.custom"), false, ToggleCustom, "settings");
+            _customChip = new KitChip(Strings.Get("camp.custom"), false, ToggleCustom, "settings") { tooltip = Strings.Get("camp.custom") };
             tools.Add(_customChip);
-            _rangeChip = new KitChip(Strings.Get("camp.ranges"), false, ToggleRanges, "crosshair");
+            _rangeChip = new KitChip(Strings.Get("camp.ranges"), false, ToggleRanges, "crosshair") { tooltip = Strings.Get("camp.ranges") };
             tools.Add(_rangeChip);
             _mapBox.Add(tools);
             _legend = Kit.Box(KitPanel.SurfaceClass + " fc-base__legend");

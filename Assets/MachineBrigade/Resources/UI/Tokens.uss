@@ -126,7 +126,7 @@
 
     /* ---- screen layout (Screens.uss) */
     --fc-topbar: 81px;                        /* the top bar: 44.4 pt (44-48) */
-    --fc-home-column: 400px;
+    --fc-home-column: 440px;
     --fc-detail-column: 470px;
     --fc-detail-stage: 250px;                 /* the turntable's box on the detail page's left */
     --fc-detail-side: 400px;                  /* the In action theatre's info column beside the big preview */
@@ -144,6 +144,7 @@
     --fc-fs-number: 43px;
     --fc-fs-number-small: 30px;
     --fc-fs-card: 26px;
+    --fc-topbar: 87px;                        /* 47.7 pt: the rank's two lines at Large text */
 }
 
 /* ---- the battle HUD keeps its own type and target sizes (prompt 11; it scales with the screen's height) */

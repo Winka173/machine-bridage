@@ -24,7 +24,8 @@
 .fc-top__rank > .fc-icon { width: 34px; height: 34px; margin-right: var(--fc-space-3); --icon-color: var(--fc-text); }
 .fc-top__rank-text { width: 250px; }
 .fc-top__xp { margin-top: var(--fc-space-1); }
-.fc-top__xp-text { margin-top: var(--fc-space-1); }
+.fc-top__xp-text { margin-top: var(--fc-space-1); white-space: nowrap; }
+.fc-text-large .fc-top__rank-text { width: 330px; }
 .fc-top__gear { margin-left: var(--fc-space-4); }
 .fc-menu-nav { position: absolute; left: 0; top: var(--fc-topbar); bottom: 0; padding-top: var(--fc-space-2); }
 .fc-page { position: absolute; left: var(--fc-nav-width); top: var(--fc-topbar); right: 0; bottom: 0; }
@@ -57,13 +58,17 @@
 .fc-home__launch { margin-top: var(--fc-space-3); flex-shrink: 0; }
 .fc-home__grid { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
 .fc-home__grid > .fc-dropdown { width: 49%; margin-bottom: var(--fc-space-2); }
-/* Large text: one dropdown a row (two did not hold "Conquest" at 13 pt Large). */
-.fc-text-large .fc-home__grid > .fc-dropdown { width: 100%; }
+/* Large text: a wider column keeps two dropdowns a row, so the campaign card above them keeps its room. */
+.fc-text-large .fc-home__right { width: 520px; }
+.fc-text-large .fc-home__deck { right: 552px; }
 /* The base set in the home's deck panel: three small chips. */
 .fc-home__plans { flex-direction: row; align-items: center; flex-shrink: 1; }
 .fc-home__plans > .fc-caption { margin-right: var(--fc-space-2); }
 .fc-home__plans > .fc-chip { margin-right: var(--fc-space-1); }
 .fc-home__plans .fc-chip__face { padding: 0 var(--fc-space-2); min-height: 48px; }
+.fc-home__deck-head Label { white-space: nowrap; }
+/* Large text: the chips say which set without the caption before them (the deck panel is narrower). */
+.fc-text-large .fc-home__plans > .fc-caption { display: none; }
 .fc-home__deck {
     position: absolute; left: var(--fc-space-4); bottom: var(--fc-space-4); right: 472px;
     padding: var(--fc-space-3) var(--fc-space-4);
@@ -300,17 +305,22 @@
 .fc-base__plans > .fc-chip { margin-right: var(--fc-space-1); }
 .fc-base__plans .fc-chip__face { padding: 0 var(--fc-space-3); }
 .fc-base__bar > .fc-btn { padding: var(--fc-space-1) var(--fc-space-3); }
-.fc-base__saved { flex-direction: row; align-items: center; margin-left: var(--fc-space-3); opacity: 0; transition-property: opacity; transition-duration: 0.3s; }
+/* "Saved" floats at the bar's end: it never takes a row of its own when the bar is full. */
+.fc-base__saved { position: absolute; right: 0; top: 0; bottom: 0; flex-direction: row; align-items: center; opacity: 0; transition-property: opacity; transition-duration: 0.3s; }
 .fc-base__saved--on { opacity: 1; }
 .fc-base__saved-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-1); --icon-color: var(--fc-positive); }
 .fc-base__body { flex-direction: row; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
 .fc-base__tray { width: 290px; flex-shrink: 0; margin-right: var(--fc-space-2); }
 .fc-base__centre { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; margin-right: var(--fc-space-2); }
 /* The map's two switches in its bottom corner, where the picture is off the battlefield. */
-.fc-base__map-tools { position: absolute; right: var(--fc-space-1); bottom: -8px; flex-direction: row; }
-.fc-base__map-tools > .fc-chip { margin-right: 0; margin-left: var(--fc-space-1); }
+.fc-base__map-tools { position: absolute; right: var(--fc-space-1); bottom: -8px; flex-direction: column; align-items: flex-end; }
+.fc-base__map-tools > .fc-chip { margin: -14px 0 0 0; }
 .fc-base__map-tools > .fc-chip .fc-chip__face { background-color: var(--fc-panel-field); padding: 0 var(--fc-space-2); min-height: 48px; }
 .fc-base__map-tools .fc-chip__label { font-size: var(--fc-fs-small); }
+/* Large text: the two switches keep their icons only (their names on a long press), off the camp's slots. */
+.fc-text-large .fc-base__map-tools .fc-chip__label { display: none; }
+.fc-text-large .fc-base__map-tools > .fc-chip { margin: var(--fc-space-1) 0 0 0; }
+.fc-text-large .fc-base__hq { width: 400px; }
 .fc-base__map-tools > .fc-chip.fc-chip--selected .fc-chip__face { background-color: var(--fc-text); }
 .fc-base__legend { position: absolute; left: var(--fc-space-1); top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-2); }
 .fc-base__swatch { width: 18px; height: 12px; margin-right: var(--fc-space-2); flex-shrink: 0; }
