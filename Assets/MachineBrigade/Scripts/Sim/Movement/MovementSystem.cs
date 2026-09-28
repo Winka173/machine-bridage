@@ -647,12 +647,29 @@ namespace MachineBrigade.Sim.Movement
             if (target != null && def.Vtol && Hover(v, target, dt)) return;
             Vector2 goal;
             var throttle = 1f;
+            var half = _world.Map.HalfSize;
+            var margin = turnRadius * 1.3f + 4f;
+            var circling = false;
             if (target != null && def.Orbit)
             {
                 // A gunship's pylon turn: round and round the target, anticlockwise so it stays on
                 // the left where the guns are, far enough out to see it and to stay clear of the
-                // short-range anti-aircraft round it.
-                goal = OrbitAround(v, target.Position, MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f));
+                // short-range anti-aircraft round it. The circle is kept inside the map (a target
+                // near the edge is circled from the inside), and its centre glides to a new target
+                // at a few metres a second, so the turn never jerks.
+                var radius = MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f);
+                var limit = MathF.Max(0f, half - radius - 4f);
+                var want = new Vector2(Math.Clamp(target.Position.X, -limit, limit), Math.Clamp(target.Position.Y, -limit, limit));
+                if (!v.Orbiting)
+                {
+                    v.OrbitCentre = want;
+                    v.Orbiting = true;
+                }
+                var shift = want - v.OrbitCentre;
+                var glide = OrbitGlide * dt;
+                v.OrbitCentre = shift.LengthSquared() <= glide * glide ? want : v.OrbitCentre + Vector2.Normalize(shift) * glide;
+                goal = OrbitAround(v, v.OrbitCentre, radius);
+                circling = true;
             }
             else if (target != null)
             {
@@ -688,16 +705,19 @@ namespace MachineBrigade.Sim.Movement
                 goal = OrbitPoint(v, MathF.Max(14f, turnRadius * 1.6f));
             }
 
-            // Turn back towards the middle before running out of map.
-            var half = _world.Map.HalfSize;
-            var margin = turnRadius * 1.3f + 4f;
+            if (!circling) v.Orbiting = false;
+            // Turn back towards the middle before running out of map (a pylon turn is already
+            // kept inside it; turning it back as well made it jerk between the two).
             var nearEdge = MathF.Abs(v.Position.X) > half - margin || MathF.Abs(v.Position.Y) > half - margin;
-            if (nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
+            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
             v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
+
+        /// <summary>How fast the centre of a pylon turn follows its target, in metres a second.</summary>
+        private const float OrbitGlide = 6f;
 
         /// <summary>Seconds a VTOL jet holds in the air to shoot, and how long before it can again.</summary>
         private const double HoverSeconds = 6.0, HoverRest = 12.0;

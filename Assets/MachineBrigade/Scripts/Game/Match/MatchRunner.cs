@@ -258,6 +258,8 @@ namespace MachineBrigade.Game.Match
             {
                 _preview = new UnitPreview(catalog, _materials, _meshes, _models, worldRoot);
                 _hud.MenuPreview = _preview;
+                _preview.Audio = _audio;
+                RangeCapture.TryStart(gameObject, _preview, catalog);
             }
             if (!_menu) _effects.Flash = strength => _hud?.Flash(strength);
             if (_hud.Minimap != null)
@@ -416,7 +418,7 @@ namespace MachineBrigade.Game.Match
             }
             _frameRate.Tick();
             _frameRateTarget = _frameRate.Target;
-            _preview?.Tick(Time.unscaledDeltaTime);
+            if (!RangeCapture.Active) _preview?.Tick(Time.unscaledDeltaTime);
             // A menu page covering the whole lobby: its battle rests and its camera stops drawing.
             var covered = _menu && _hud.MenuCoversBattle;
             if (covered != _lobbyCovered)

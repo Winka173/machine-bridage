@@ -203,9 +203,10 @@ namespace MachineBrigade.Game.Effects
                 return;
             }
             t.Used = 1;
-            t.Radius = support.Radius;
+            // A loaned aircraft only needs its arrival point marked, not the ground it may cover.
+            t.Radius = support.Kind == SupportKind.Escort ? Mathf.Min(support.Radius, 5f) : support.Radius;
             t.Rings[0].Transform.position = point + Vector3.up * 0.1f;
-            t.Rings[0].Transform.localScale = Vector3.one * support.Radius;
+            t.Rings[0].Transform.localScale = Vector3.one * t.Radius;
             t.Rings[0].Visible = true;
         }
 

@@ -96,6 +96,17 @@ namespace MachineBrigade.Game.Audio
         private float _duckUntil;
         private float _drumsTarget;
 
+        /// <summary>
+        /// Somewhere else to listen from, while the detail page's In action range plays: its look
+        /// point, its camera (for left and right) and how far it hears. Null: the battlefield camera.
+        /// </summary>
+        public Vector3? FocusOverride { get; set; }
+        public Camera ViewOverride { get; set; }
+        public float ReachOverride { get; set; }
+
+        private Vector3 Focus => FocusOverride ?? _camera.Focus;
+        private Camera View => ViewOverride != null ? ViewOverride : _camera.Camera;
+
         public AudioDirector(RtsCamera camera, Transform parent, Catalog catalog, int playerTeam)
         {
             _camera = camera;
@@ -233,7 +244,7 @@ namespace MachineBrigade.Game.Audio
                         break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
                         // The fortress's own alarm: heard as far as the fortress is near the view.
-                        var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), _camera.Focus);
+                        var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);
                         if (alarm < 120f) _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
                         break;
                     case SimEventKind.StageCleared when _playerTeam >= 0:
@@ -278,7 +289,7 @@ namespace MachineBrigade.Game.Audio
             {
                 var view = all[i];
                 if (!view.Flying) continue;
-                var distance = Vector3.Distance(view.Position, _camera.Focus);
+                var distance = Vector3.Distance(view.Position, Focus);
                 if (view.Def.FixedWing) nearestJet = Mathf.Min(nearestJet, distance);
                 else nearest = Mathf.Min(nearest, distance);
             }
@@ -300,7 +311,7 @@ namespace MachineBrigade.Game.Audio
                     _fires.RemoveAt(i);
                     continue;
                 }
-                var near = Mathf.Clamp01(1f - Vector3.Distance(at, _camera.Focus) / reach);
+                var near = Mathf.Clamp01(1f - Vector3.Distance(at, Focus) / reach);
                 fire += near * near * Mathf.Clamp01((until - now) / 6f);
             }
             var fireTarget = Mathf.Min(0.55f, fire * 0.3f);
@@ -366,7 +377,7 @@ namespace MachineBrigade.Game.Audio
             return weapon.Damage >= 100f ? Sound.HeavyCannon : Sound.Cannon;
         }
 
-        private float Reach(float bonus) => _camera.Zoom * 2.6f + 30f + bonus;
+        private float Reach(float bonus) => (ReachOverride > 0f ? ReachOverride : _camera.Zoom * 2.6f + 30f) + bonus;
 
         private static float DuckLevel(float left) => Mathf.Lerp(1f, 0.5f, Mathf.Clamp01(left / 0.35f));
 
@@ -392,7 +403,7 @@ namespace MachineBrigade.Game.Audio
             var bank = _banks[sound];
             var now = Time.unscaledTime;
             if (now - bank.LastPlayed < bank.Cooldown) return;
-            var distance = Vector3.Distance(new Vector3(at.X, 0f, at.Y), _camera.Focus);
+            var distance = Vector3.Distance(new Vector3(at.X, 0f, at.Y), Focus);
             if (distance >= Reach(reachBonus) * 0.98f) return;
             bank.LastPlayed = now;
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
@@ -406,7 +417,7 @@ namespace MachineBrigade.Game.Audio
             var bank = _banks[sound];
             var now = Time.unscaledTime;
             var world = new Vector3(at.X, 0f, at.Y);
-            var distance = Vector3.Distance(world, _camera.Focus);
+            var distance = Vector3.Distance(world, Focus);
             var reach = Reach(reachBonus);
             var attenuation = Mathf.Clamp01(1f - distance / reach);
             if (attenuation <= 0.02f) return;
@@ -415,7 +426,7 @@ namespace MachineBrigade.Game.Audio
             var voice = PickVoice(bank, level);
             if (voice == null) return;
             if (bank.Priority >= 4) _duckUntil = now + 0.35f;
-            var screen = _camera.Camera.WorldToViewportPoint(world);
+            var screen = View.WorldToViewportPoint(world);
             voice.Bank = bank;
             voice.Level = level;
             voice.Started = now;

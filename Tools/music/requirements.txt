@@ -1,0 +1,7 @@
+# Offline music build (Python 3.11). None of these ship with the game.
+numpy>=2.0        # BSD-3-Clause
+scipy>=1.13       # BSD-3-Clause
+soundfile>=0.12   # BSD-3-Clause (libsndfile: LGPL-2.1, used offline)
+mido>=1.3         # MIT
+pyloudnorm>=0.1   # MIT
+matplotlib>=3.8   # PSF/BSD-style, only for QA spectrograms

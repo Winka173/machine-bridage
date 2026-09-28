@@ -25,6 +25,13 @@ namespace MachineBrigade.Game.Effects
         private readonly Action<Vector3, float> _shake;
         private readonly bool _hasMissile, _hasRocket, _hasBomb;
 
+        /// <summary>
+        /// Rounds of one mount already drawn this frame: a burst faster than the simulation's step
+        /// (an anti-aircraft gun's 20 rounds a second) arrives several at once, and each later
+        /// one is held back by one burst interval so the stream flows out of the barrel.
+        /// </summary>
+        private readonly System.Collections.Generic.Dictionary<(MachineBrigade.Sim.Core.EntityId, int), (float at, int count)> _sameFrame = new();
+
         public WeaponEffects(Catalog catalog, ModelLibrary models, TracerPool tracers, ProjectilePool projectiles, Emitters emitters,
             MuzzleFx muzzle, Action<Vector3, float> shake)
         {
@@ -45,9 +52,17 @@ namespace MachineBrigade.Game.Effects
             var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
             Vector3 from;
             float? groundY = 0f;
+            var pitch = float.NaN;
+            var barrel = Vector3.zero;
             if (views.TryGet(e.Entity, out var shooter))
             {
                 if (e.Mount == 0) shooter.Recoil();
+                // The barrel is laid first, so the round leaves from where its muzzle now is.
+                if (e.Mount == 0 && !shooter.Flying)
+                {
+                    pitch = shooter.LayForShot();
+                    barrel = shooter.BarrelDirectionOf(0);
+                }
                 from = shooter.MuzzleOf(e.Mount);
                 groundY = shooter.Flying ? null : shooter.Position.y;
             }
@@ -64,6 +79,15 @@ namespace MachineBrigade.Game.Effects
             var aim = to - from; // the barrel's direction: down from an aircraft, up at one
             var kind = weapon?.Projectile ?? (e.Tier == ExplosionTier.Small ? ProjectileKind.Bullet : ProjectileKind.Shell);
             var targetId = e.Other;
+            var lag = 0f;
+            if (weapon != null && weapon.Burst > 1 && weapon.BurstInterval < 0.1f)
+            {
+                var key = (e.Entity, e.Mount);
+                var count = _sameFrame.TryGetValue(key, out var seen) && Mathf.Approximately(seen.at, now) ? seen.count + 1 : 0;
+                _sameFrame[key] = (now, count);
+                if (_sameFrame.Count > 256) _sameFrame.Clear();
+                lag = count * weapon.BurstInterval;
+            }
 
             if (weapon != null && weapon.Beam)
             {
@@ -75,7 +99,7 @@ namespace MachineBrigade.Game.Effects
             switch (kind)
             {
                 case ProjectileKind.Bullet:
-                    Bullets(weapon, from, to, aim, groundY, e.Value, now);
+                    Bullets(weapon, from, to, aim, groundY, e.Value, now, lag);
                     break;
 
                 case ProjectileKind.Missile:
@@ -96,7 +120,7 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Rocket:
                     var artillery = weapon != null && weapon.MinRange > 0f;
-                    var arc = artillery ? distance * 0.28f : distance * 0.02f;
+                    var arc = artillery ? ArcFor(pitch, distance, 0.28f) : distance * 0.02f;
                     // Heavy rockets and ballistic missiles fly their own models where they exist.
                     var rocket = weapon?.Id switch
                     {
@@ -107,7 +131,7 @@ namespace MachineBrigade.Game.Effects
                     if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
                     if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
-                    _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? forward + Vector3.up * 0.8f : aim, now, artillery ? 1.2f : 0.9f, groundY);
+                    _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
                     break;
 
@@ -118,12 +142,12 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 case ProjectileKind.Flame:
-                    _emitters.FlameJet(from, to, Mathf.Max(0.15f, e.Value));
+                    _emitters.FlameJet(from, to, Mathf.Max(0.15f, e.Value), weapon != null ? Mathf.Clamp(weapon.Cooldown, 0.1f, 0.4f) : 0.25f, now);
                     _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.8f, groundY);
                     break;
 
                 default:
-                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now);
+                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now, pitch, barrel);
                     break;
             }
         }
@@ -139,7 +163,7 @@ namespace MachineBrigade.Game.Effects
             return new Vector3(e.Target.X, height, e.Target.Y);
         }
 
-        private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now)
+        private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now, float lag = 0f)
         {
             var damage = weapon?.Damage ?? 9f;
             var forward = new Vector3(aim.x, 0f, aim.z);
@@ -148,20 +172,37 @@ namespace MachineBrigade.Game.Effects
             // Light machine guns show a pair of tracers per burst (nearly every vehicle carries one
             // now, firing five bursts a second); cannons one heavier tracer per shot.
             var rounds = damage < 12f ? 2 : 1;
-            // Rifle-calibre tracers are thin streaks; autocannon ones a little heavier.
-            var thickness = Mathf.Lerp(0.05f, 0.12f, Mathf.InverseLerp(6f, 30f, damage));
-            var length = Mathf.Lerp(1.1f, 2.0f, Mathf.InverseLerp(6f, 30f, damage));
+            // Rifle-calibre tracers are fine streaks; autocannon ones a little heavier.
+            var thickness = Mathf.Lerp(0.026f, 0.11f, Mathf.InverseLerp(6f, 30f, damage));
+            var length = Mathf.Lerp(0.75f, 1.9f, Mathf.InverseLerp(6f, 30f, damage));
             for (var i = 0; i < rounds; i++)
             {
                 var scatter = rounds > 1 ? side * UnityEngine.Random.Range(-0.7f, 0.7f) + forward * UnityEngine.Random.Range(-0.6f, 0.9f) : Vector3.zero;
-                _tracers.Launch(from, to + scatter, travel, 0f, thickness, length, now, i * MuzzleFx.RoundInterval);
+                _tracers.Launch(from, to + scatter, travel, 0f, thickness, length, now, lag + i * MuzzleFx.RoundInterval);
             }
+            // Later rounds of the same frame's burst: the flash of the first stands for them.
+            if (lag > 0f) return;
             if (rounds > 1) _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 1f, groundY);
             else _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, aim, now, Mathf.Lerp(0.85f, 1.2f, Mathf.InverseLerp(12f, 30f, damage)), groundY);
         }
 
+        /// <summary>
+        /// The peak height of a lobbed round's path that leaves at the barrel's angle: the path
+        /// rises at 4 x peak / distance at the start, so the peak is distance x tan(angle) / 4.
+        /// Without a barrel angle, the old fixed share of the distance.
+        /// </summary>
+        private static float ArcFor(float pitch, float distance, float fallback)
+        {
+            if (float.IsNaN(pitch)) return distance * fallback;
+            return distance * Mathf.Tan(Mathf.Clamp(pitch, 12f, 80f) * Mathf.Deg2Rad) * 0.25f;
+        }
+
+        /// <summary>The way a lobbing weapon's blast goes: up its barrel, else the old fixed slant.</summary>
+        private static Vector3 Launch(Vector3 barrel, Vector3 forward, float rise) =>
+            barrel.sqrMagnitude > 0.01f && barrel.y > 0.05f ? barrel : forward + Vector3.up * rise;
+
         private void Shells(WeaponDef weapon, in SimEvent e, Vector3 from, Vector3 to, Vector3 forward, Vector3 aim, float? groundY,
-            float distance, float now)
+            float distance, float now, float pitch, Vector3 barrel)
         {
             // Only guns that lob their shells (artillery with a minimum range, howitzers) fly an arc;
             // a tank or turret gun fires straight down its barrel however big its shell is.
@@ -176,9 +217,9 @@ namespace MachineBrigade.Game.Effects
                 _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
                 return;
             }
-            // Artillery: a high arc with a thick trail.
-            _tracers.Launch(from, to, e.Value, distance * 0.3f, 0.32f, 1.1f, now, 0f, 1.2f);
-            _muzzle.Fire(MuzzleFx.Kind.Artillery, from, forward + Vector3.up * 0.9f, now, 1f, groundY);
+            // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas.
+            _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
+            _muzzle.Fire(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, 1f, groundY);
             _shake(from, 0.12f);
         }
     }

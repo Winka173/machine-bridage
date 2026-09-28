@@ -119,16 +119,31 @@ namespace MachineBrigade.Game.Views
             _nextLauncher = new int[mounts.Count];
             _previousMount = new float[mounts.Count];
             _currentMount = new float[mounts.Count];
+            var sameSlot = new Dictionary<string, int>();
             for (var i = 0; i < mounts.Count; i++)
             {
-                _model.Mounts.TryGetValue(mounts[i].Slot, out _mounts[i]);
-                _model.Muzzles.TryGetValue(mounts[i].Slot, out _muzzles[i]);
+                // The k-th mount of a slot in the data is the k-th Mount_/Muzzle_ of it in the model.
+                var slot = mounts[i].Slot;
+                var k = sameSlot.TryGetValue(slot, out var seen) ? seen : 0;
+                sameSlot[slot] = k + 1;
+                if (_model.MountLists.TryGetValue(slot, out var mountList) && mountList.Count > 1) _mounts[i] = mountList[k % mountList.Count];
+                else _model.Mounts.TryGetValue(slot, out _mounts[i]);
+                if (_model.MuzzleLists.TryGetValue(slot, out var muzzleList) && muzzleList.Count > 1) _muzzles[i] = muzzleList[k % muzzleList.Count];
+                else _model.Muzzles.TryGetValue(slot, out _muzzles[i]);
                 // Rockets, missiles and drones leave from the pods and rails on both sides in turn;
-                // twin miniguns from both guns.
+                // twin miniguns from both guns. With two mounts of a slot, each has the pods on it.
                 var kind = mounts[i].Weapon.Projectile;
-                if (_model.Launchers.TryGetValue(mounts[i].Slot, out var launchers) &&
-                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || mounts[i].Slot == "gun"))
-                    _launchers[i] = launchers;
+                if (_model.Launchers.TryGetValue(slot, out var launchers) &&
+                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                {
+                    var own = launchers;
+                    if (sameSlot[slot] > 0 && mountList != null && mountList.Count > 1 && _mounts[i] != null)
+                    {
+                        own = launchers.FindAll(p => p.transform.IsChildOf(_mounts[i]));
+                        if (own.Count == 0) own = launchers;
+                    }
+                    _launchers[i] = own;
+                }
             }
 
             _ring = new GroundMark("Selection", Root, meshes, materials, GroundMark.Style.Selection);
@@ -223,6 +238,9 @@ namespace MachineBrigade.Game.Views
         {
             var b = ModelBounds;
             var size = Mathf.Max(0.12f, b.size.x * 0.018f);
+            // The airframe without its rotors and propellers: the lights go on its real wingtips.
+            var frame = Airframe(out var tipLeft, out var tipRight);
+            if (frame.size.x > 0.5f) size = Mathf.Max(0.12f, frame.size.x * 0.018f);
             // The model's left is -X in the engine (Blender's +X), the nose +Z.
             Transform Light(string name, Material material, Vector3 at)
             {
@@ -231,11 +249,68 @@ namespace MachineBrigade.Game.Views
                 light.localScale = Vector3.one * (size / Mathf.Max(0.01f, Def.Scale));
                 return light;
             }
-            var wingZ = b.center.z;
-            Light("Nav_left", materials.NavRed, new Vector3(b.min.x, b.center.y, wingZ));
-            Light("Nav_right", materials.NavGreen, new Vector3(b.max.x, b.center.y, wingZ));
+            if (frame.size.x > 0.5f)
+            {
+                Light("Nav_left", materials.NavRed, tipLeft);
+                Light("Nav_right", materials.NavGreen, tipRight);
+                b = frame;
+            }
+            else
+            {
+                Light("Nav_left", materials.NavRed, new Vector3(b.min.x, b.center.y, b.center.z));
+                Light("Nav_right", materials.NavGreen, new Vector3(b.max.x, b.center.y, b.center.z));
+            }
             _navStrobe = Light("Nav_strobe", materials.NavWhite, new Vector3(b.center.x, b.max.y * 0.8f, b.min.z));
             if (!Def.FixedWing) _navBeacon = Light("Nav_beacon", materials.NavRed, new Vector3(b.center.x, b.max.y, b.center.z));
+        }
+
+        /// <summary>
+        /// Bounds of the airframe in the body's space, rotors and propellers left out, and the
+        /// middle of the outermost part on each side (the wingtips, a helicopter's stub wings).
+        /// </summary>
+        private Bounds Airframe(out Vector3 left, out Vector3 right)
+        {
+            left = right = Vector3.zero;
+            var bounds = new Bounds();
+            var first = true;
+            var minX = float.MaxValue;
+            var maxX = float.MinValue;
+            foreach (var filter in _model.Root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null || OnSpinner(filter.transform)) continue;
+                var mb = filter.sharedMesh.bounds;
+                var partMin = Vector3.positiveInfinity;
+                var partMax = Vector3.negativeInfinity;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = mb.center + Vector3.Scale(mb.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                    var p = _body.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                    partMin = Vector3.Min(partMin, p);
+                    partMax = Vector3.Max(partMax, p);
+                    if (first) bounds = new Bounds(p, Vector3.zero);
+                    else bounds.Encapsulate(p);
+                    first = false;
+                }
+                var mid = (partMin + partMax) * 0.5f;
+                if (partMin.x < minX)
+                {
+                    minX = partMin.x;
+                    left = new Vector3(partMin.x, mid.y, mid.z);
+                }
+                if (partMax.x > maxX)
+                {
+                    maxX = partMax.x;
+                    right = new Vector3(partMax.x, mid.y, mid.z);
+                }
+            }
+            return bounds;
+        }
+
+        private bool OnSpinner(Transform t)
+        {
+            foreach (var spinner in _model.Spinners)
+                if (spinner.Transform != null && t.IsChildOf(spinner.Transform)) return true;
+            return false;
         }
 
         private void AnimateNavLights()
@@ -397,13 +472,59 @@ namespace MachineBrigade.Game.Views
                 var offset = BarrelTip(_barrel) - centre;
                 return centre + offset - along * Vector3.Dot(offset, along);
             }
+            // An aircraft's air-to-air missile marked only on the centreline (a hint for the
+            // builder, not a rail): it leaves from the wingtip rails instead.
+            if (Def.Flying && index > 0 && Def.Mounts[index].Slot == "aam" && _muzzles[index] != null &&
+                Mathf.Abs(_body.InverseTransformPoint(_muzzles[index].position).x) < 0.1f && AirframeStore(index, "aam", out var rail))
+                return rail;
             if (index < _muzzles.Length && _muzzles[index] != null) return _muzzles[index].position;
             if (index == 0) return MuzzleWorld;
             var slot = Def.Mounts[index].Slot;
+            if (Def.Flying && AirframeStore(index, slot, out var store)) return store;
             var pivot = _mounts[index] != null ? _mounts[index] : _model.Turret != null ? _model.Turret : _body;
             if (slot == "coax") return _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f;
             var top = pivot.position + Vector3.up * (pivot == _body ? MuzzleHeight + 0.6f : 0.8f);
             return top + DirectionOf(index) * 0.8f;
+        }
+
+        /// <summary>
+        /// Where an aircraft's store without a muzzle of its own leaves: an air-to-air missile from
+        /// the outermost pylon or rail of the wing, left and right in turn; anything else from
+        /// the other stores' muzzle (the bomb bay, the pylons).
+        /// </summary>
+        private bool AirframeStore(int index, string slot, out Vector3 at)
+        {
+            at = default;
+            if (slot == "aam")
+            {
+                var outer = Vector3.zero;
+                var found = false;
+                foreach (var list in _model.Launchers.Values)
+                    foreach (var point in list)
+                    {
+                        var local = _body.InverseTransformPoint(point.transform.position);
+                        if (!found || Mathf.Abs(local.x) > Mathf.Abs(outer.x)) outer = local;
+                        found = true;
+                    }
+                foreach (var muzzle in _model.Muzzles.Values)
+                {
+                    var local = _body.InverseTransformPoint(muzzle.position);
+                    if (!found || Mathf.Abs(local.x) > Mathf.Abs(outer.x)) outer = local;
+                    found = true;
+                }
+                if (!found || Mathf.Abs(outer.x) < 0.3f) return false;
+                // A little further out than the outermost store: the wingtip rail.
+                var side = (_nextLauncher[index]++ & 1) == 0 ? 1f : -1f;
+                at = _body.TransformPoint(new Vector3(Mathf.Abs(outer.x) * 1.12f * side, outer.y, outer.z));
+                return true;
+            }
+            foreach (var other in new[] { "missile", "rocket", "main", "gun" })
+            {
+                if (other == slot || !_model.Muzzles.TryGetValue(other, out var muzzle)) continue;
+                at = muzzle.position;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>World-space direction weapon mount <paramref name="index"/> points in.</summary>
@@ -469,13 +590,13 @@ namespace MachineBrigade.Game.Views
         /// tilt a few degrees with range. Idle, artillery rests slightly raised. The angle
         /// moves at a gun-laying speed, not in a snap.
         /// </summary>
-        private void Elevate()
+        private void Elevate(bool snap = false)
         {
             var pivot = _model.Elevation;
             if (pivot == null) return;
             var weapon = Def.Weapon;
             var indirect = weapon.MinRange > 0f || weapon.Projectile == ProjectileKind.Bomb;
-            var aiming = Sim.Target.IsValid && Sim.AimDistance > 0f;
+            var aiming = Sim.Aiming && Sim.AimDistance > 0f;
             float want;
             if (Def.Flying)
             {
@@ -499,9 +620,31 @@ namespace MachineBrigade.Game.Views
             else if (_model.Barrel == BarrelKind.Mortar) want = Mathf.Max(_model.RestPitch, 40f);
             else want = indirect ? 10f : weapon.Targets == TargetLayers.Air ? 18f : 0f;
             if (float.IsNaN(_elevation)) _elevation = _model.RestPitch;
-            var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 80f : indirect ? 32f : 45f;
-            _elevation = Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);
+            var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 150f : indirect ? 32f : 60f;
+            _elevation = snap ? want : Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);
             pivot.localRotation = Quaternion.Euler(-(_elevation - _model.RestPitch), 0f, 0f);
+        }
+
+        /// <summary>
+        /// A shot is leaving the turret: the barrel is laid where it must point at once (a gun
+        /// still swinging up after an aircraft, a mortar still rising), so the round and the
+        /// barrel agree. Returns the barrel's angle above level in degrees, or NaN for a model
+        /// whose barrel does not elevate.
+        /// </summary>
+        public float LayForShot()
+        {
+            if (_model.Elevation == null) return float.NaN;
+            Elevate(snap: true);
+            return _elevation;
+        }
+
+        /// <summary>World-space direction the elevated barrel of mount <paramref name="index"/> points (level for a mount that does not elevate).</summary>
+        public Vector3 BarrelDirectionOf(int index)
+        {
+            var flat = DirectionOf(index);
+            if (index != 0 || _model.Elevation == null || float.IsNaN(_elevation)) return flat;
+            var pitch = _elevation * Mathf.Deg2Rad;
+            return (flat * Mathf.Cos(pitch) + Vector3.up * Mathf.Sin(pitch)).normalized;
         }
 
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>

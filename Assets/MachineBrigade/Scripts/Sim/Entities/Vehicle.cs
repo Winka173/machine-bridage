@@ -323,6 +323,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Distance to what the main weapon is aimed at (0 with no target); drives the barrel's elevation.</summary>
         public float AimDistance { get; internal set; }
 
+        /// <summary>The turret is laid on something: the main weapon's target, or an aircraft its coaxial gun is chasing.</summary>
+        public bool Aiming => Target.IsValid || CoaxAir.IsValid;
+
         /// <summary>Flight height of the aircraft the main weapon is aimed at (0 for ground targets).</summary>
         public float AimHeight { get; internal set; }
 
@@ -391,8 +394,25 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
 
-        /// <summary>When the last main-gun, missile or rocket shot left this vehicle (its weapons take turns).</summary>
-        internal double HeavyShotAt = double.NegativeInfinity;
+        /// <summary>
+        /// Its weapons take turns: when the last round of a main gun, missile or rocket (a salvo's
+        /// rounds included) and of a machine gun left, from which mount, and when a heavy weapon
+        /// last stood ready but held off for a machine gun's run.
+        /// </summary>
+        internal double HeavyRoundAt = double.NegativeInfinity;
+        internal int HeavyMount = -1;
+        internal double GunRoundAt = double.NegativeInfinity;
+        internal int GunMount = -1;
+        internal double HeavyWaitingAt = double.NegativeInfinity;
+        internal double AnyRoundAt = double.NegativeInfinity;
+        internal int AnyMount = -1;
+
+        /// <summary>The centre of a gunship's pylon turn: it glides after the target instead of jumping (a new target, one on the move).</summary>
+        internal System.Numerics.Vector2 OrbitCentre;
+        internal bool Orbiting;
+
+        /// <summary>An aircraft the coaxial machine gun is chasing while the main gun has nothing on the ground (the turret follows it).</summary>
+        internal EntityId CoaxAir;
 
         /// <summary>Which way round an obstacle the hull is edging (+1 or -1), and until when it keeps to it.</summary>
         internal float SlideSide;

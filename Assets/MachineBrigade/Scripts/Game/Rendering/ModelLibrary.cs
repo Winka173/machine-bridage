@@ -57,6 +57,13 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>`Muzzle_&lt;slot&gt;` empties by lower-case slot name (main, coax, mg, missile, rocket, gun, aam, door_l, door_r, ramp).</summary>
         public IReadOnlyDictionary<string, Transform> Muzzles { get; }
 
+        /// <summary>
+        /// Every `Muzzle_&lt;slot&gt;` and `Mount_&lt;slot&gt;` of a slot in name order (Muzzle_mg,
+        /// Muzzle_mg.001, ...): the k-th mount of a slot in the vehicle's data is the k-th here.
+        /// </summary>
+        public IReadOnlyDictionary<string, List<Transform>> MuzzleLists { get; internal set; } = new Dictionary<string, List<Transform>>();
+        public IReadOnlyDictionary<string, List<Transform>> MountLists { get; internal set; } = new Dictionary<string, List<Transform>>();
+
         /// <summary>Launchers on both sides for a slot (pods, rails), left to right; see <see cref="LaunchPoint"/>.</summary>
         public IReadOnlyDictionary<string, List<LaunchPoint>> Launchers { get; internal set; } = new Dictionary<string, List<LaunchPoint>>();
 
@@ -234,17 +241,33 @@ namespace MachineBrigade.Game.Rendering
 
             var muzzles = new Dictionary<string, Transform>();
             var mounts = new Dictionary<string, Transform>();
+            var muzzleLists = new Dictionary<string, List<Transform>>();
+            var mountLists = new Dictionary<string, List<Transform>>();
             var spinners = new List<Spinner>();
             foreach (var t in root.GetComponentsInChildren<Transform>(true))
             {
                 var m = MuzzlePattern.Match(t.name);
-                if (m.Success) muzzles[m.Groups[1].Value.ToLowerInvariant()] = t;
+                if (m.Success)
+                {
+                    var slot = m.Groups[1].Value.ToLowerInvariant();
+                    // The plain name wins for the single lookup (Muzzle_mg before Muzzle_mg.001).
+                    if (!muzzles.ContainsKey(slot) || !m.Groups[2].Success) muzzles[slot] = t;
+                    if (!muzzleLists.TryGetValue(slot, out var list)) muzzleLists[slot] = list = new List<Transform>();
+                    list.Add(t);
+                }
                 var mount = MountPattern.Match(t.name);
-                if (mount.Success) mounts[mount.Groups[1].Value.ToLowerInvariant()] = t;
+                if (mount.Success)
+                {
+                    var slot = mount.Groups[1].Value.ToLowerInvariant();
+                    if (!mounts.ContainsKey(slot) || !mount.Groups[2].Success) mounts[slot] = t;
+                    if (!mountLists.TryGetValue(slot, out var list)) mountLists[slot] = list = new List<Transform>();
+                    list.Add(t);
+                }
                 foreach (var (name, axis, speed) in SpinnerPatterns)
                     if (name.IsMatch(t.name)) spinners.Add(new Spinner(t, axis, speed));
             }
             if (muzzles.TryGetValue("main", out var main)) muzzle = root.transform.InverseTransformPoint(main.position);
+            else if (turret == null) muzzle = RoofFront(root.transform);
             _elevations.TryGetValue(id, out var raise);
             var launchers = new Dictionary<string, List<LaunchPoint>>();
             foreach (var point in root.GetComponentsInChildren<LaunchPoint>(true))
@@ -252,8 +275,13 @@ namespace MachineBrigade.Game.Rendering
                 if (!launchers.TryGetValue(point.Slot, out var list)) launchers[point.Slot] = list = new List<LaunchPoint>();
                 list.Add(point);
             }
+            foreach (var list in muzzleLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+            foreach (var list in mountLists.Values) list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
             return new ModelInstance(root, turret, recoil, muzzle, renderers, muzzles, mounts, spinners, elevation,
-                raise.pitch, elevation != null ? raise.kind : BarrelKind.None) { Launchers = launchers };
+                raise.pitch, elevation != null ? raise.kind : BarrelKind.None)
+            {
+                Launchers = launchers, MuzzleLists = muzzleLists, MountLists = mountLists,
+            };
         }
 
         /// <summary>
@@ -384,9 +412,9 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         private static readonly (string slot, string[] pairs, string[] faces)[] Launchers =
         {
-            ("rocket", new[] { "Pods", "Rocket_pod", "Rocket_pods" },
+            ("rocket", new[] { "Pods", "Rocket_pod", "Rocket_pods", "Standoff_missile", "Ordnance_bodies", "Bomb_bodies" },
                 new[] { "Pod_face", "Tubes_bore", "Rocket_tubes_face", "Box_face", "Launcher_face", "Launcher_tubes_bore", "Tubes" }),
-            ("missile", new[] { "Missiles", "Launch_tubes", "Missile_pack", "ATGM_pod", "Standoff_missile", "Missile_racks" },
+            ("missile", new[] { "Missiles", "Launch_tubes", "Missile_pack", "ATGM_pod", "Standoff_missile", "Missile_racks", "Bomb_bodies", "Ordnance_bodies" },
                 new[] { "Tubes_bore", "Launcher_tubes_bore", "Launcher_covers", "Tubes" }),
             ("gun", new[] { "Miniguns" }, new string[0]),
             ("main", new[] { "Pods" },
@@ -424,7 +452,8 @@ namespace MachineBrigade.Game.Rendering
                 List<(Vector3 front, Vector2 half)> found = null;
                 var face = false;
                 foreach (var part in pairs)
-                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters) is { Count: >= 2 } groups && AroundMuzzle(groups, at))
+                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters) is { Count: >= 2 } groups &&
+                        (AroundMuzzle(groups, at) || (part is "Ordnance_bodies" or "Bomb_bodies" && Straddles(groups, at))))
                     {
                         found = groups;
                         break;
@@ -466,6 +495,18 @@ namespace MachineBrigade.Game.Rendering
             y /= groups.Count;
             z /= groups.Count;
             return Mathf.Abs(muzzle.y - y) < 1.2f && Mathf.Abs(muzzle.z - z) < 2f && muzzle.x > left - 0.6f && muzzle.x < right + 0.6f;
+        }
+
+        /// <summary>Stores hung either side of the centreline a muzzle marks (a drone's bombs under its wings, well behind the hint).</summary>
+        private static bool Straddles(List<(Vector3 front, Vector2 half)> groups, Vector3 muzzle)
+        {
+            float left = float.MaxValue, right = float.MinValue;
+            foreach (var (front, _) in groups)
+            {
+                left = Mathf.Min(left, front.x);
+                right = Mathf.Max(right, front.x);
+            }
+            return left < muzzle.x && right > muzzle.x;
         }
 
         /// <summary>The front face of a box of tubes: its middle (root space) and its half width and height.</summary>
@@ -629,6 +670,30 @@ namespace MachineBrigade.Game.Rendering
             var aim = turret.InverseTransformPoint(muzzle.position) - pivot;
             var pitch = Mathf.Atan2(aim.y, Mathf.Max(0.01f, new Vector2(aim.x, aim.z).magnitude)) * Mathf.Rad2Deg;
             return (pitch, kind);
+        }
+
+        /// <summary>
+        /// Where a model with neither a turret nor a Muzzle_main fires from (a supply truck's
+        /// self-defence gun): on its roof towards the front, not out of the middle of its side.
+        /// </summary>
+        private static Vector3 RoofFront(Transform root)
+        {
+            var lo = Vector3.positiveInfinity;
+            var hi = Vector3.negativeInfinity;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null) continue;
+                var b = filter.sharedMesh.bounds;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                    var p = root.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                    lo = Vector3.Min(lo, p);
+                    hi = Vector3.Max(hi, p);
+                }
+            }
+            if (lo.x > hi.x) return new Vector3(0f, 1.5f, 1f);
+            return new Vector3((lo.x + hi.x) * 0.5f, hi.y + 0.15f, Mathf.Lerp((lo.z + hi.z) * 0.5f, hi.z, 0.6f));
         }
 
         private static bool HasCannon(List<Transform> parts)

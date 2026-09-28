@@ -52,6 +52,15 @@ namespace MachineBrigade.Game.Match
             return _flags.Contains(flag);
         }
 
+        /// <summary>The rest of the first switch that starts with <paramref name="prefix"/> (<c>-mb-range=apc</c>: "apc"), or null.</summary>
+        public static string Value(string prefix)
+        {
+            Has(prefix);
+            foreach (var flag in _flags)
+                if (flag.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) return flag.Substring(prefix.Length);
+            return null;
+        }
+
         private static void Add(string text)
         {
             if (string.IsNullOrEmpty(text)) return;

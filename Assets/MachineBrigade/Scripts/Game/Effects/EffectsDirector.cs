@@ -106,7 +106,8 @@ namespace MachineBrigade.Game.Effects
             _blasts.Add(_pop);
             _collapse = ExplosionEffect.CreateCollapse(_layers);
             _blasts.Add(_collapse);
-            _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 192);
+            // Anti-aircraft guns fire 10-16 round bursts, every round a tracer.
+            _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 320);
             _emitters = new Emitters(materials, _root);
             _tracks = new TrackMarks(materials, _root);
             _night = new NightLights(materials, _emitters, _root);
@@ -379,6 +380,7 @@ namespace MachineBrigade.Game.Effects
             var now = Time.time;
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
+            _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
             _drops.Tick(now);
             JetTrails(views, now);
@@ -616,6 +618,10 @@ namespace MachineBrigade.Game.Effects
                     break;
                 case SupportKind.ShieldDome:
                     Ring(at, support.Radius * 2f, new Color(0.35f, 1.6f, 2.2f, 1f));
+                    break;
+                case SupportKind.Escort:
+                    // An aircraft on its way: a small mark where it was called, no gust of dust.
+                    Ring(at, 6f, new Color(0.7f, 1.2f, 1.6f, 0.6f));
                     break;
                 default:
                     // Airdrops land in a gust of dust.

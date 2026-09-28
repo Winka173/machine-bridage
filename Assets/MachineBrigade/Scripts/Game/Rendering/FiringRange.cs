@@ -39,13 +39,27 @@ namespace MachineBrigade.Game.Rendering
         private Vector3 _look;
         private float _reach;
 
+        /// <summary>Development capture: how much closer than usual the camera frames the vehicle (1: as on the detail page).</summary>
+        public static float Zoom = 1f;
+
+        /// <summary>The range's events for the sound (its shots and blasts), step by step.</summary>
+        public System.Action<IReadOnlyList<Sim.Events.SimEvent>> Sounds;
+
+        /// <summary>Where the camera looks: the range is heard from here.</summary>
+        public Vector3 Look => _look;
+
+        /// <summary>Development capture: every simulation event of the range, as it happens (time, event).</summary>
+        public static System.Action<float, Sim.Events.SimEvent> Log;
+
         public FiringRange(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, Camera camera, int layer,
             string vehicleId)
         {
             _camera = camera;
             _layer = layer;
             _root = new GameObject("Firing Range").transform;
-            var map = new MapDefinition("range", 90f,
+            var flier = catalog.Vehicles[vehicleId].Flying;
+            // An aircraft needs room for its circuit: a pylon turn is 40-70 m across.
+            var map = new MapDefinition("range", flier ? 220f : 90f,
                 new[] { new TeamStart(0, new Vector2(0f, -70f)), new TeamStart(1, new Vector2(0f, 70f)) },
                 new List<PropPlacement>(), new List<UnitPlacement>());
             _world = new SimWorld(catalog, map, seed: 11);
@@ -134,6 +148,10 @@ namespace MachineBrigade.Game.Rendering
                 foreach (var e in _world.Events)
                     if (e.Kind == Sim.Events.SimEventKind.VehicleSpawned && _world.TryGetVehicle(e.Entity, out var spawned))
                         _views.Add(spawned);
+                if (Log != null)
+                    foreach (var e in _world.Events)
+                        Log((float)_world.Time, e);
+                Sounds?.Invoke(_world.Events);
                 _effects.Consume(_world.Events, _views, null);
                 _world.ClearEvents();
             }
@@ -158,7 +176,11 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Keeps the vehicle attacking the nearest target it can hit (a car bomb goes round again: it is rebuilt).</summary>
         private void Order()
         {
-            if (!_shooter.IsAlive || _world.Tick % 20 != 1) return;
+            // Not before the views are up: the first shot would leave from nowhere.
+            if (!_shooter.IsAlive || _world.Tick % 20 != 1 || _world.Time < 0.6) return;
+            // Stay on the target being shot at until it goes down (an aircraft circling it would
+            // otherwise be sent to whichever target happened to be nearest).
+            if (_world.TryGetVehicle(_shooter.Order.Target, out var current) && current.IsAlive && _shooter.Def.Weapon.CanTarget(current.Flying)) return;
             Vehicle best = null;
             var bestDistance = float.MaxValue;
             foreach (var t in _targets)
@@ -180,9 +202,10 @@ namespace MachineBrigade.Game.Rendering
         {
             var from = _views.TryGet(_shooter.Id, out var view) ? view.Position : new Vector3(0f, 0f, -_reach * 0.5f);
             var to = new Vector3(0f, 0f, _reach * 0.5f);
+            if (Zoom > 1f) to = Vector3.Lerp(from, to, 1f / Zoom);
             var centre = (from + to) * 0.5f + Vector3.up * 1.5f;
             _look = _look == Vector3.zero ? centre : Vector3.Lerp(_look, centre, 1f - Mathf.Exp(-dt * 3f));
-            var span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + 8f, 14f);
+            var span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + 8f / Zoom, 14f / Zoom);
             var distance = span / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 0.95f;
             _camera.transform.position = _look + new Vector3(0.95f, 0.75f, -0.45f).normalized * distance;
             _camera.transform.LookAt(_look);
