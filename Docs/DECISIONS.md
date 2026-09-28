@@ -2219,3 +2219,117 @@ jammer was the example).
 - **Passive abilities with no scene:** stealth (the stealth bomber gets the flares scene), the
   turtle tank's mine and drone armour, the command vehicle's forward drop point, the artillery's
   shoot-and-scoot (it already relocates on the range after three rounds).
+
+## 12C. Test feedback 2: explosion size and life (2026-09-29)
+
+The owner's second play test: tank-round explosions vanish too fast, every explosion should be a
+tenth bigger, drone blasts should be bigger by the drone, and the fire-support cards all bring
+the same round down (the smoke screen looked exactly like the artillery barrage). All of it is
+the view's: no simulation code, damage, radius or balance.json changed.
+
+- **Tank rounds linger by the tank's class** (`BlastSizes.ShellLife`, the same classes as the 11A
+  sizes): light tank and wheeled gun +20 %; main battle tank, tank destroyers (and the elite one),
+  twin tank, elite MBT and the 120 mm turrets +25 %; heavy, elite heavy, titan and the siege tank
+  +30 %. The siege tank's 203 mm is a high-explosive landing, so its blast lingers +30 % too
+  (`BlastSizes.GroundLife`); other artillery is unchanged.
+- **How it lingers.** `ExplosionEffect.Play` takes a `life` factor. It stretches the lifetimes of
+  the fire, smoke and dust layers (fireballs, rolling fireballs, smoke, dust, dust skirt) and the
+  embers. The flash, sparks, air snap, ground light, metal flakes and the spark burst keep their
+  0.07 to 0.4 s, and every burst still starts on time, so the hit stays snappy and only what
+  follows it hangs on. The fireball flipbooks play over their life, so the flame itself rolls a
+  fifth to a third slower into its smoke. That is what makes it read as lingering, and it reads
+  heavier on the bigger guns. The white-hot pop in front of it is unchanged.
+- **Low stays cheap: the extra life is scaled by tier** like the extra particles of 11A
+  (`ExplosionEffect.Linger`, the extra over 1 times `Density`): High gets all of it, Medium 75 %,
+  Low 40 % (so +8, +10 and +12 % on Low). A recipe's own life is never shortened.
+- **Every blast a tenth bigger** (`BlastSizes.Bigger` = 1.1), multiplied onto every other factor:
+  tank class, bomb weight, drone type, the cruise missile's radius match. So tank rounds are x1.43,
+  x1.54 and x1.65; bombs x1.43 to x1.65; artillery, rockets, missiles and vehicle deaths, which had
+  no factor, are x1.1. It is applied in `EffectsDirector.Explode` for every tier above Small, and
+  to pops (bomblets, cook-offs, interceptions, the killing hit), airbursts, the napalm and
+  thermobaric fire, the boss's great blast and the tank shell hit. It uses the existing `grow`, so
+  the blasts get more quads spread wider rather than bigger sprites, and the flash, rings and glows
+  grow. The Small tier is not a blast (bullets, flak, an autocannon's sparks) and keeps its size,
+  and so do falling buildings (their dust). The bomb's ground ring and smoke column and the HE
+  shell's ring and smoke grow with it; scorch marks do not (they are craters, not the blast).
+- **The cruise missile and MOAB rings.** +10 % would put the ground shockwave 10 % past the
+  damage radius (19.8 m on the cruise missile's 18 m). **Decision: the ring stays on the radius,
+  and the fireball grows.** The ring is how a player reads the ground the strike wrecks, so it
+  keeps matching the damage. The fireball cluster, smoke, dust skirt, flash, air ring and glows
+  take the extra tenth: the fire now fills about 82 % of the radius instead of 75 %, and the dust
+  rolls a little past the edge. `Play` takes the ring's own grow (`ring`), and EffectsDirector
+  passes `BlastSizes.Reach(radius)` for it. The tests check that the ring is still within 0.95 to
+  1.1 of the radius and that the flash is 10 % bigger.
+- **Drones by type** (`BlastSizes.Drone`), times the general 1.1: FPV drones (the carrier's swarm,
+  the hangars' and the airship's) x1.2, so x1.32; the Lancet (and the Lancet hangar) x1.25, so
+  x1.375; the Shahed and the strike drone's missiles x1.3, so x1.43. **Decision:** the drone
+  mothership's attack drones are loitering munitions like the Lancet (150 damage, a Large blast),
+  so they get the Lancet's x1.25. The two factors multiply, like every other factor above.
+- **Particles per blast, High / Medium / Low** (particles, then particle-seconds of the lingering
+  layers + the rest, from `BlastRig.Budget`). Tank round, light: 11A 59 / 55 / 49 (29+41, 26+39,
+  24+34 ps), now 71 / 61 / 52 (44+49, 33+44, 28+35). Main: 11A 69 / 59 / 51 (37+46, 29+41, 26+35),
+  now 78 / 69 / 55 (49+54, 44+46, 29+39). Heavy: 11A 75 / 68 / 54 (40+51, 37+45, 26+38), now
+  86 / 75 / 58 (58+60, 48+51, 32+40). The spark burst on top is 23 / 21 / 19 (light) and 55 / 51 / 44 to
+  59 / 54 / 45 (the others). Siege 203 mm: 11A 502 / 446 / 366, now 574 / 502 / 393 (lingering
+  454 to 669 ps on High, 333 to 399 on Low). Medium (a missile or rocket) 72 to 81 / 79 / 75;
+  GBU-12 283 / 252 / 213 (11A 245 / 197 on High and Low); Mk 84 574 / 502 / 393 (11A 502 / 366);
+  JDAM 774 / 677 / 530 (11A 675 / 490); cruise missile 891 / 761 / 582 (11A 774 / 530); MOAB
+  1544 / 1247 / 840 (11A 1358 / 765); FPV 105 / 98 / 85, Lancet 113 / 104 / 88, Shahed 467 / 416 / 352
+  (the Shahed was a plain Huge blast of 276). On Low a heavy round's lingering fill grows 23 %
+  (26 to 32 ps), against 45 % on High.
+- **Lifetimes, High / Medium / Low** (the shell hit, heavy class): hot fireball 1.05 to 1.3 s, now
+  1.37 to 1.69 / 1.29 to 1.59 / 1.18 to 1.46 s; smoke 1.8 to 2.6 s, now 2.34 to 3.38 / 2.21 to 3.19 /
+  2.02 to 2.91 s; embers 1.5 to 3.5 s, now up to 4.55 / 4.29 / 3.92 s; dust 1 to 1.8 s, now up to 2.34 s
+  on High. The light class is +20 % (+15 % Medium, +8 % Low), the main class +25 % (+19 %, +10 %).
+  The flash (0.07 to 0.1 s), air snap (0.12 to 0.16 s) and sparks (0.4 to 1.2 s) are as before.
+- **Each fire-support card brings its own round down** (`StrikeEffects`, self-contained; AirDrops
+  untouched, ProjectilePool only called through `Launch`). EffectsDirector hands every
+  ShellInbound to `StrikeEffects.Inbound` first and draws the glowing shell only when that does
+  not draw its own round.
+
+  | Card | Coming down | Arriving |
+  |---|---|---|
+  | Artillery barrage | 155 mm HE shells nose-first inside their glowing tracer, steeply from the guns' side | HE blasts (Large, x1.1), dust rings |
+  | Super-gun shells (events) | the same shell at 3.2 times the size, in its tracer | Ultimate blast |
+  | Smoke screen | five white canister shells trailing a white wisp, no glow; each bursts open about 6 m up in a white puff | the canisters pour white smoke where they land and the screen builds from them; no HE blast |
+  | Remote mines | a salvo of 107 mm rockets on a low arc, motors burning and trailing smoke | each mine thuds in with a dirt puff and a small ring |
+  | SEAD strike | the jet passes and fires an anti-radiation missile (Maverick model) with its motor and trail | a Large blast on the radar |
+  | Airstrike | the strike jet drops Mk 84s (the Mk 84 model, not the generic bomb) | Huge blasts x1.65 |
+  | Bombing raid (air raid event) | a heavy bomber at 32 m (not the strike jet) drops FAB-500s: the carpet bombing | Huge blasts |
+  | Napalm strike | the strike jet releases silver, finless canisters that tumble end over end | a rolling wall of fire, burning ground |
+  | Cluster strike | four dispensers fall from the wings and split open 14 m up (sparks and a grey puff); forty yellow bomblets tumble onto their own marks | many small blasts along the line |
+  | Cruise missile | the cruise missile diving in with its motor and trail (as before) | the Ultimate blast, its ring on the 18 m radius |
+  | MOAB | a transport passes over 55 m up; the GBU-43 (the Mk 84 model x2.8) rolls out on a drogue chute, which is cut away as it pitches over, and falls nose-first | the Ultimate blast, its ring on the 27 m radius |
+  | EMP | a blue energy warhead drops from high, a ball of light with a crackling blue trail | a blue-white flash and electric arcs, then the two blue rings |
+  | Repair drop | a supply crate (the repair crate model, with its own canopy) drifting down | a dust puff; the crate stays for the 6 s it repairs, green sparkle on each vehicle |
+  | Reinforcements | an airlift: the transport passes over and the two tanks and the IFV come down under canopies onto the spots they are handed over at, facing +X as the simulation spawns them | dust puffs; the real vehicles take over at touchdown and the chutes sag away |
+  | Field tower | parachuted by AirDrops (as before) | white ring |
+  | UAV scan | the recon drone flies in and circles (as before) | cyan ring |
+  | Gunship support | the gunship's own view already flies in from behind as it spawns (VehicleView); a ghost ahead of it would pop, so nothing is added | small ring |
+  | Shield dome, field repair | no round: a projected dome, a repair across the whole map | cyan ring; sparkle on each vehicle |
+
+  The owner's list also named a rocket barrage, JDAM and carpet bombing. None of them is a card:
+  the rocket artillery vehicles' rockets already fly with plumes, the JDAM is the stealth bomber's
+  weapon, and carpet bombing is the heavy bomber's. The bombing-raid event now uses that bomber.
+  Some choices go by support id (air raid, MOAB, the Mk 84 for the airstrike), like
+  `BlastSizes`. Napalm is recognised by its fire damage, and a cluster strike by two dozen or more
+  bombs. A support called with no direction runs along +X, as StrikeSystem's does (Point2 equal to
+  Point gives UnitX), so the airlifted vehicles land facing the way the real ones spawn.
+- **Contact sheets** (batch, with graphics): `EffectShots.Impacts` now compares 11A with 12C: tank
+  rounds, the siege tank's and a howitzer's shell landing, drones (FPV, Lancet, Shahed), bombs and
+  the cruise missile, before and after, then the Mk 84 and the MOAB. It is frozen at 0.04, 0.14,
+  0.35, 0.9, 1.5, 2.5 and 3.2 s, so the longer life shows: at 1.5 s the 11A tank round is gone and
+  the 12C one still burns; at 2.5 s the heavy round's smoke still hangs. `EffectShots.Supports` (new,
+  through `SupportRig`, which replays StrikeSystem's timings) has one card a row from 1.3 s
+  before its first impact to 1.6 s after. `BlastRig`'s "before" now means as after 11A.
+- **Tests** (EditMode, `BlastSizeTests`): the life factors by class and the drone factors; a
+  lingering shell hit stretches its fire, smoke, dust and embers by the factor on High and by 40 %
+  of it on Low while its flash, sparks, air shock and ground light keep their life; the MOAB's
+  flash is 10 % bigger while its ground ring stays put, and no tier loses a particle at x1.1; the
+  cruise missile's ring still reaches its radius with the tenth added; each fire-support card
+  draws its own round (smoke, mines and SEAD instead of the glowing shell; napalm, cluster, MOAB,
+  EMP, repair drop and airlift come down as something of their own) and the rounds are cleared
+  once down.
+- **Left for the testing phase:** frame time on a Low phone in a tank battle (shell hits are the
+  most frequent blasts, and their lingering fill is +23 % on Low); the cluster strike's forty
+  bomblet objects (made and destroyed per strike, not pooled: it is a single-use item).
