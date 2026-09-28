@@ -10,8 +10,9 @@ namespace MachineBrigade.Game.Hud
 {
     /// <summary>
     /// The Army tab: the battle deck across the top (eight vehicles, two supports, its average cost
-    /// and what it lacks), the collection below with filters (Clash Royale's deck screen), and the
-    /// equipment loadouts. Tapping a card offers Info or Use; Info opens its detail page.
+    /// and what it lacks), the collection below with filters (Clash Royale's deck screen), the
+    /// equipment loadouts, and the base (<see cref="BaseScreen"/>). Tapping a card offers Info or
+    /// Use; Info opens its detail page.
     /// </summary>
     internal sealed partial class MenuScreen
     {
@@ -19,6 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             Deck,
             Equipment,
+            Base,
         }
 
         private enum CardFilter
@@ -42,18 +44,22 @@ namespace MachineBrigade.Game.Hud
         private GearItem _gearSelected;
         private GearSlot? _slotFilter;
         private readonly List<(VisualElement card, string id)> _collectionCards = new();
+        private BaseScreen _base;
 
         private void BuildArmyPage()
         {
             var page = TabPage(Tab.Army, "army-page opaque");
             var views = UiKit.Box("segments army-views");
-            foreach (var (view, icon, key) in new[] { (ArmyView.Deck, "deck", "army.deck"), (ArmyView.Equipment, "gear", "army.equipment") })
+            foreach (var (view, icon, key) in new[]
+                     {
+                         (ArmyView.Deck, "deck", "army.deck"), (ArmyView.Equipment, "gear", "army.equipment"), (ArmyView.Base, "hq", "army.base"),
+                     })
                 views.Add(Choice(Segment(icon, Strings.Get(key), () =>
                 {
                     _armyView = view;
                     HidePopover();
                     Refresh();
-                }, view == ArmyView.Equipment), () => _armyView == view));
+                }, view == ArmyView.Base), () => _armyView == view));
             page.Add(views);
 
             // Deck and collection --------------------------------------------------------------
@@ -162,6 +168,10 @@ namespace MachineBrigade.Game.Hud
             inventory.Add(gearScroll);
             _gearView.Add(inventory);
             page.Add(_gearView);
+
+            // Base ---------------------------------------------------------------------------------
+            _base = new BaseScreen(_catalog, (text, warn) => Note(text, warn), Refresh);
+            page.Add(_base.Root);
 
             // The card popover: Info or Use.
             _popover = UiKit.Box("card-popover", PickingMode.Position);
@@ -321,8 +331,13 @@ namespace MachineBrigade.Game.Hud
         {
             _deckView.style.display = _armyView == ArmyView.Deck ? DisplayStyle.Flex : DisplayStyle.None;
             _gearView.style.display = _armyView == ArmyView.Equipment ? DisplayStyle.Flex : DisplayStyle.None;
+            var onBase = _tab == Tab.Army && _armyView == ArmyView.Base && _overlays.Count == 0;
+            _base.Root.style.display = _armyView == ArmyView.Base ? DisplayStyle.Flex : DisplayStyle.None;
+            // Leaving the base (another view, tab or page) saves what was changed there.
+            if (!onBase) _base.Leave();
             if (_armyView == ArmyView.Deck) RefreshDeck();
-            else RefreshGear();
+            else if (_armyView == ArmyView.Equipment) RefreshGear();
+            else _base.Refresh();
         }
 
         private void RefreshDeck()

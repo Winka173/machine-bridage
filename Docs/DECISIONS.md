@@ -369,3 +369,71 @@ bottom of each section.
   rarity odds are the same.
 - **Pictures:** tower pieces borrow their vehicle counterparts' slot pictures (weapon, armour or
   plating, optics) until they have their own `Resources/UI/Gear/<base id>.png`.
+
+## 3F. Base loadout screen
+
+- **Where it lives.** A third view of the Army tab (Deck | Equipment | Base, vi "Căn cứ"), next to the
+  deck and equipment screens, because the base is the other loadout a battle takes. Device checks:
+  `-mb-base` opens it; `-mb-base-map=<map>`, `-mb-base-gear` (Gear tab), `-mb-base-pick=<tower>` (a
+  tower armed, its slots lit) and `-mb-base-confirm` (the branch-change question) go with it;
+  `-mb-en` / `-mb-vi` force a language.
+- **Layout.** Top: HQ level 1–5 (all open for now) with what the level opens, the map picker and Save.
+  Left: the tower cards (size icon, rank, branch, how many are placed). Middle: the camp, under a
+  legend that counts filled/open slots per size (so there is no fortification points bar), a "front"
+  marker and a hint for what to do next. Right: the picked tower card with Branch and Gear tabs (and
+  Take out when a filled slot is picked), then the outpost's two slots. The right column is a quarter of
+  the width (320–420 px), so the camp gets what is left on 16:9 and gains on wider phones.
+- **The camp diagram** is drawn from the map's conquest data for team 0, turned so the camp's front
+  (the HQ's heading, towards the enemy) points up. All camps face north-east, so this matches the
+  battle camera and the minimap. The grid, the map's roads and edge, and a tick for each tower's facing
+  are drawn under the frames; frames are opaque so the roads never show through them.
+- **Frames are not to scale.** A hardpoint is 5–9 m across, a few pixels on the diagram, so frames get a
+  size per class (small 72, medium 84, large 96, HQ 86 px) that is still a finger target, 1 px borders for
+  small and 2 px for the others, and the size icon in the corner. Where two frames would overlap they are
+  pushed apart (a relaxation, then the smallest frame in the way moves to the nearest free spot), so the
+  diagram keeps the camp's shape without frames on top of each other. `BaseScreenTests` checks every map
+  at the 16:9 and the wide panel size.
+- **Size icons.** The same corner brackets for all three sizes with a footprint square inside that grows
+  (`slot_small`, `slot_medium`, `slot_large`), plus `hq` and `module` (utility), 24-unit stroke SVG.
+- **Placing.** Drag a tower onto a slot, or tap a tower and then a slot, or tap a slot and then a tower.
+  While a tower is carried only the open slots it fits light up (bone); the one under the finger turns
+  green; the rest go dark. Dropping replaces what was there. A placed tower is dragged to another slot (a
+  swap when both fit, otherwise its old slot is left empty) or back onto the tower list to take it out; a
+  picked slot also shows Take out. In the list a mostly vertical pull scrolls and a sideways pull
+  (towards the camp) starts a drag, so the list stays scrollable on touch.
+- **Empty slots stay empty.** A loadout list may now hold an empty entry (`BaseLoadout.Empty`), kept by
+  `Fitted` and skipped by `BaseSystem.Establish`, so emptying the second small slot does not move the
+  third small tower into it. A tower that does not fit is still dropped as before (`HqLevelsOpenSizedSlots`).
+- **The rules are in the Sim** (`BaseLayout`): which place each hardpoint reads (the i-th of its size,
+  as the battle raises them; `BaseLayoutTests` compares it with `Establish` on every map), what fits,
+  place, clear, move, and the layout that is saved.
+- **Closed slots** (beyond the HQ level) are greyed with the level that opens them and keep their towers
+  (shown dim): the saved layout is cut to the top level's slots, not the chosen level's, so lowering the
+  HQ level and raising it again loses nothing. Closed slots are not drop targets.
+- **Utility slots** are hatched "soon" slots while the catalog has no utility module. Once modules exist
+  (the tower roster adds them) they are listed under Utility and only they light the utility slots up;
+  the screen needs no change for that.
+- **Outpost.** Its two places (small, then medium, the order of `BaseLoadout.Outpost`) are drop targets
+  like the camp's but are never emptied: an outpost always flies in with two towers, so they are
+  replaced, not cleared. An invalid saved outpost falls back to guard tower + gun turret.
+- **Saving.** Save is the screen's one amber action; it writes `BaseLayout.ForSaving` (lists cut to the
+  top level, what does not fit becomes a gap, trailing gaps dropped) through `PlayerProfile.BaseLoadout`.
+  Leaving the view (another view, tab or page) saves too, so nothing is lost. The profile now remembers
+  that the base was edited (`baseEdited`), so a camp cleared on purpose does not come back as the
+  default loadout.
+- **Branch choice** is on the picked tower card: its branches with name and info; locked below rank 7
+  (with the rank to reach); the first pick is free and applies at once; a change asks first (the price
+  in the question) and spends `PlayerProfile.BranchSwapCoins`. Only the AA turret has branches on this
+  branch; the others say so.
+- **Gear tab.** Weapon, Structure and Systems for the tower type. `PlayerProfile.TowerGear` is empty on
+  this branch, so the slots show empty with a note. The one connection point is
+  `BaseScreen.TowerGearIn(towerId, slot)`. The tower equipment API (feature/visual-overhaul) was not
+  merged here: the merge was refused by the permission system, so the connection is left to the merge
+  (see the hand-off note).
+- **Style.** Field Command: graphite surfaces, hairlines, square corners. Amber only for Save and the
+  chosen tab or level; lit slots in bone, the drop target in green. Every colour and size is in the
+  stylesheet (`--base-*` and `--camp-*` properties; the diagram reads its colours from them); C# sets
+  only positions. Tap targets are at least 72 px and text wraps instead of being cut with an ellipsis,
+  as the coming Field Command 2.0 rules ask.
+- **Tower icons.** `CardIcons.For` now has icons for the tower cards (a branch takes its tower's), which
+  used to fall back to the tank. The HQ guide text speaks of sized hardpoints, not fortification points.

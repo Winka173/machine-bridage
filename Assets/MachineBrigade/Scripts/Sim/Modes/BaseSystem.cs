@@ -169,7 +169,7 @@ namespace MachineBrigade.Sim.Modes
                     {
                         if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
                         var state = new HardpointState(def, i);
-                        if (utility - 1 < fitted.Utilities.Count) state.Tower = fitted.Utilities[utility - 1];
+                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1])) state.Tower = fitted.Utilities[utility - 1];
                         b.Slots.Add(state);
                         continue;
                     }
@@ -178,7 +178,7 @@ namespace MachineBrigade.Sim.Modes
                     var slot = new HardpointState(def, i);
                     var list = fitted.Of(def.Class);
                     // A tower past rank 7 fights as its chosen branch (it stays in its tower's slot).
-                    if (k < list.Count) slot.Tower = catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
+                    if (k < list.Count && !string.IsNullOrEmpty(list[k])) slot.Tower =catalog.Vehicles.ContainsKey(fitted.DefFor(list[k])) ? fitted.DefFor(list[k]) : list[k];
                     b.Slots.Add(slot);
                 }
             }
@@ -306,11 +306,16 @@ namespace MachineBrigade.Sim.Modes
                 if (p.Id == id) point = p;
             if (point == null || point.Value.Outpost.Count == 0) return CommandResult.Rejected(CommandError.InvalidPoint);
             if (!_world.Economy.TrySpend(command.Team, _world.Catalog.Base.OutpostCp)) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            // The slots in the loadout's order, small first, whatever order the map lists them in.
+            var hardpoints = new List<HardpointDef>();
+            foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
+                foreach (var h in point.Value.Outpost)
+                    if (h.Class == size) hardpoints.Add(h);
             var slots = new List<HardpointState>();
-            var count = Math.Min(point.Value.Outpost.Count, _world.Catalog.Base.OutpostSlots);
+            var count = Math.Min(hardpoints.Count, _world.Catalog.Base.OutpostSlots);
             for (var i = 0; i < count; i++)
             {
-                var slot = new HardpointState(point.Value.Outpost[i], i, id) { ReadyAt = _world.Time };
+                var slot = new HardpointState(hardpoints[i], i, id) { ReadyAt = _world.Time };
                 slots.Add(slot);
             }
             b.Outposts[id] = slots;

@@ -216,6 +216,17 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (slots[i].Tower != null) continue;
                     var tower = ours.Loadout.Outpost.Count > 0 ? ours.Loadout.Outpost[i % ours.Loadout.Outpost.Count] : "guard_tower";
+                    // A tower that does not fit the slot gives way to one of the loadout's that does.
+                    if (world.Catalog.Vehicles.TryGetValue(tower, out var wanted) && wanted.Fort is { } fort && !fort.Fits(slots[i].Def.Class))
+                    {
+                        tower = "guard_tower";
+                        foreach (var other in ours.Loadout.Outpost)
+                            if (world.Catalog.Vehicles.TryGetValue(other, out var o) && o.Fort is { } f && f.Fits(slots[i].Def.Class))
+                            {
+                                tower = other;
+                                break;
+                            }
+                    }
                     if (!world.Catalog.Vehicles.TryGetValue(tower, out var def)) continue;
                     if (economy.Cp < world.Catalog.Base.RebuildCost(def) + 4f) return false;
                     if (world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slots[i].Def.Position, defId: tower)).Accepted) return true;
