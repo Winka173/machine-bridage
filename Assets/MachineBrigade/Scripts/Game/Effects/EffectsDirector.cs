@@ -154,11 +154,13 @@ namespace MachineBrigade.Game.Effects
 
                     case SimEventKind.ShellInbound:
                     {
-                        // Fire support coming down: a glowing round (a smoke shell trailing white) falls
-                        // steeply out of the sky from its guns' side onto the spot it hits.
+                        // Fire support coming down: a glowing round falls steeply out of the sky from its
+                        // guns' side onto the spot it hits. Smoke shells, mine rockets and the SEAD
+                        // missile are drawn by StrikeEffects as what they are instead (DECISIONS 12C).
                         var land = Ground(e.Position, 0.2f);
                         var from = land + new Vector3(e.Target.X, 0f, e.Target.Y) * 24f + Vector3.up * 58f;
                         if (!_cull.Visible(land, 0.6f)) break;
+                        if (_strikes.Inbound(e, from, land, now)) break;
                         var smoke = _catalog.TryGetSupport(e.DefId, out var inbound) && inbound.Kind == SupportKind.Smoke;
                         _tracers.Launch(from, land, e.Value, 0f, smoke ? 0.4f : 0.34f, smoke ? 2.2f : 3.6f, now, 0f, smoke ? 1.1f : 0.5f);
                         break;
@@ -712,6 +714,7 @@ namespace MachineBrigade.Game.Effects
                 case SupportKind.Minefield:
                     // Each mine thuds into the ground in a small puff of dirt.
                     Ring(at, 2.2f, new Color(1.1f, 0.95f, 0.75f, 0.7f));
+                    _emitters.Dust(at, 2f);
                     break;
                 case SupportKind.Tower:
                     Ring(at, 8f, new Color(1.2f, 1.1f, 0.9f, 0.8f));

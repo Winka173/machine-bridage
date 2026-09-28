@@ -224,6 +224,44 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0, lasers.ActiveBeams, "then gone");
         }
 
+        [Test]
+        public void EachFireSupportCardBringsItsOwnRoundDown()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(_materials);
+            try
+            {
+                var emitters = new Emitters(_materials, _root.transform);
+                var strikes = new StrikeEffects(catalog, _materials, meshes, models, emitters, new ProjectilePool(_root.transform, 16), new SmokeScreens(),
+                    _root.transform);
+                var land = Vector3.zero;
+                var from = land + Vector3.left * 24f + Vector3.up * 58f;
+                // Smoke shells, mine rockets and the SEAD missile are their own rounds, not the barrage's glowing HE shell.
+                foreach (var id in new[] { "smoke_screen", "remote_mines", "sead_strike" })
+                    Assert.IsTrue(strikes.Inbound(catalog.Supports[id], Vector3.left, from, land, 0.9f, 0f), id + " draws its own round");
+                Assert.IsFalse(strikes.Inbound(catalog.Supports["artillery_barrage"], Vector3.left, from, land, 0.9f, 0f),
+                    "a barrage keeps its glowing HE shell (with the shell inside)");
+                var rounds = _root.transform.Find("Strikes");
+                var before = rounds.childCount;
+                // Napalm canisters, cluster dispensers and bomblets, the MOAB, the EMP warhead, the repair crate, the airlift.
+                foreach (var id in new[] { "napalm_strike", "cluster_strike", "moab", "emp_blast", "repair_drop", "reinforcements" })
+                {
+                    var count = rounds.childCount;
+                    strikes.Warned(catalog.Supports[id], 0, land, land + Vector3.right * 50f, 3f, 0f);
+                    Assert.Greater(rounds.childCount, count, id + " comes down as something of its own");
+                }
+                // They fall and are cleared away once down.
+                for (var t = 0f; t < 20f; t += 0.1f) strikes.Tick(t);
+                Assert.LessOrEqual(rounds.childCount, before + 4, "rounds are cleared once they land (aircraft stay pooled)");
+            }
+            finally
+            {
+                // (MeshLibrary.Dispose destroys in play mode only; its few meshes are left to the editor.)
+                models.Dispose();
+            }
+        }
+
         private int CountAfterSimulate(string name)
         {
             var ps = Layer(name);

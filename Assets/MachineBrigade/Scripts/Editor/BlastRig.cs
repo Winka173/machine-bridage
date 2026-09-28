@@ -219,6 +219,9 @@ namespace MachineBrigade.Editor
             if (round.ImpactTier >= ExplosionTier.Medium) _decals.Place(at, (round.ImpactTier >= ExplosionTier.Large ? 5f : 2.2f) * bomb);
         }
 
+        /// <summary>A tinted ground ring, as EffectsDirector's pulses draw them (an EMP's, a mine thudding in).</summary>
+        public void Mark(Vector3 at, float size, Color colour) => Ring(at, size, colour);
+
         private void Ring(Vector3 at, float size, Color colour) =>
             _layers.Shockwave.Emit(new ParticleSystem.EmitParams
             {

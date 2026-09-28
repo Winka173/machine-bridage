@@ -280,8 +280,46 @@ namespace MachineBrigade.Editor
             materials.Dispose();
         }
 
+        /// <summary>
+        /// Every fire-support card's own round (DECISIONS 12C), one card a row, each row timed so
+        /// its first impact falls at 0: mid-fall (the aircraft or rounds on their way in), bursting
+        /// or opening, arriving and after, frozen at <see cref="SupportMoments"/> seconds from it.
+        /// Batch mode (with graphics): -executeMethod MachineBrigade.Editor.EffectShots.Supports
+        /// -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Support Shots")]
+        public static void Supports()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/supports.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260929);
+            var materials = new MaterialLibrary();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root, 1900f);
+            var rig = new BlastRig(materials, meshes, models, root);
+            var supports = new SupportRig(rig, materials, meshes, models, root);
+            var scenes = new System.Collections.Generic.List<BlastScene>();
+            // Rows one behind another along Z: the aircraft run along X and stay in their own row.
+            for (var i = 0; i < SupportRig.Cards.Length; i++)
+            {
+                var (id, view) = SupportRig.Cards[i];
+                scenes.Add(supports.Scene(id, new Vector3(0f, 0f, -845f + i * 130f), view));
+            }
+            Render(rig, root, scenes.ToArray(), output, SupportMoments, supports.Tick);
+            rig.Dispose();
+            models.Dispose();
+            meshes.Dispose();
+            materials.Dispose();
+        }
+
+        private static readonly float[] SupportMoments = { -1.3f, -0.5f, -0.15f, 0.06f, 0.45f, 1.6f };
+
         /// <summary>Renders <paramref name="scenes"/> as rows of a sheet frozen at <see cref="BlastMoments"/>.</summary>
-        private static void Render(BlastRig rig, Transform root, BlastScene[] scenes, string output, float[] moments)
+        /// <param name="tick">More to run each step (fire support); its new particle systems are picked up as they appear.</param>
+        private static void Render(BlastRig rig, Transform root, BlastScene[] scenes, string output, float[] moments,
+            System.Action<float, float> tick = null)
         {
             var size = new Vector2Int(480, 270);
             var sheet = new Texture2D(size.x * moments.Length, size.y * scenes.Length, TextureFormat.RGB24, false);
@@ -301,6 +339,11 @@ namespace MachineBrigade.Editor
                     time += step;
                     foreach (var scene in scenes) scene.Run(time);
                     rig.Tick(time, step);
+                    if (tick != null)
+                    {
+                        tick(time, step);
+                        systems = root.GetComponentsInChildren<ParticleSystem>(false);
+                    }
                     foreach (var ps in systems) ps.Simulate(step, false, false, false);
                 }
                 for (var row = 0; row < scenes.Length; row++)
