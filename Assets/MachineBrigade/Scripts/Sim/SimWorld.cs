@@ -452,6 +452,84 @@ namespace MachineBrigade.Sim
             return at;
         }
 
+        /// <summary>
+        /// The player's own commands (from the screen, not the AI) with the step each was given at:
+        /// replaying them into a fresh battle of the same seed brings it back to any moment (a
+        /// multi-stage mission's checkpoints).
+        /// </summary>
+        public IReadOnlyList<(long tick, Command command)> Journal => _journal;
+
+        private readonly List<(long tick, Command command)> _journal = new();
+
+        /// <summary>A command from the player's screen: carried out and written in the journal.</summary>
+        public CommandResult SubmitPlayer(Command command)
+        {
+            _journal.Add((Tick, command));
+            return Submit(command);
+        }
+
+        /// <summary>
+        /// A fingerprint of the battle now (every vehicle's id, side, place and health, every side's
+        /// CP): two battles with the same fingerprint are in the same state as far as anyone can tell.
+        /// </summary>
+        public ulong StateHash()
+        {
+            unchecked
+            {
+                var h = 14695981039346656037UL;
+                void Mix(long v)
+                {
+                    h ^= (ulong)v;
+                    h *= 1099511628211UL;
+                }
+                Mix(Tick);
+                foreach (var v in _vehicleList)
+                {
+                    if (!v.IsAlive) continue;
+                    Mix(v.Id.Value);
+                    Mix(v.Team);
+                    Mix((long)MathF.Round(v.Position.X * 100f));
+                    Mix((long)MathF.Round(v.Position.Y * 100f));
+                    Mix((long)MathF.Round(v.Hp * 10f));
+                }
+                for (var team = 0; team <= 1; team++)
+                    if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
+                return h;
+            }
+        }
+
+        /// <summary>
+        /// A vehicle changes sides (an ally betrays the player): it drops its orders and targets and
+        /// fights for <paramref name="team"/> from now on.
+        /// </summary>
+        /// <summary>
+        /// Where the player's side (team 0) may go: its moves stop at the edge (null: the whole map).
+        /// A multi-stage mission opens more of the map as it goes (<see cref="Expand"/>).
+        /// </summary>
+        public PlayArea? PlayArea { get; private set; }
+
+        /// <summary>Sets the play area (null: the whole map) and tells the view.</summary>
+        public void Expand(PlayArea? area)
+        {
+            PlayArea = area;
+            Emit(SimEvent.AreaChanged(area));
+        }
+
+        public void Defect(Vehicle v, int team)
+        {
+            if (!v.IsAlive || v.Team == team) return;
+            Lanes.Release(v);
+            v.ClearPath();
+            v.SetOrder(Order.Idle);
+            v.ManualOrder = false;
+            for (var i = 0; i < v.Weapons.Length; i++) v.Weapons[i].Target = EntityId.None;
+            v.Engaged = EntityId.None;
+            v.Team = team;
+            v.Ally = false;
+            v.VisibleToMask = 0;
+            Emit(SimEvent.Defected(v));
+        }
+
         public CommandResult Submit(Command command)
         {
             if (IsOver) return CommandResult.Rejected(CommandError.MatchOver);
@@ -600,6 +678,7 @@ namespace MachineBrigade.Sim
         internal bool PathTo(Vehicle vehicle, Vector2 goal)
         {
             vehicle.RepathTimer = 0.5f;
+            if (vehicle.Team == 0 && PlayArea is { } area) goal = area.Clamp(goal);
             if (vehicle.Flying)
             {
                 // Aircraft fly straight over buildings, wrecks and rivers.

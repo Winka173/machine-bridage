@@ -32,6 +32,9 @@ namespace MachineBrigade.Game.Match
         protected readonly List<ConquestAi> Commanders = new();
         protected TacticalAi Waves;
 
+        /// <summary>The allied commander of a multi-stage mission (its own units only; null when there is none).</summary>
+        protected TacticalAi AllyAi;
+
         public IGameMode Mode { get; protected set; }
 
         /// <summary>The player's own commander (the army fights on its own); null on the menu.</summary>
@@ -52,6 +55,7 @@ namespace MachineBrigade.Game.Match
         {
             foreach (var c in Commanders) c.Tick(world, dt);
             Waves?.Tick(world, dt);
+            AllyAi?.Tick(world, dt);
             Events?.Tick(world, dt);
         }
 
@@ -757,12 +761,32 @@ namespace MachineBrigade.Game.Match
     internal sealed class MissionSession : ModeSession
     {
         private readonly MissionDef _def;
-        private MissionMode _mode;
+        private MissionMode _single;
+        private OperationMode _op;
+        private ConquestAi _enemyAi;
 
         public MissionSession(MissionDef def) => _def = def;
 
         public MissionDef Def => _def;
+
+        /// <summary>The mission being played: the whole of a one-goal mission, the current stage of a staged one.</summary>
         public MissionMode Mission => _mode;
+
+        /// <summary>The stages of a multi-stage mission (or one with an ally); null otherwise.</summary>
+        public OperationMode Operation => _op;
+
+        private MissionMode _mode => _op != null ? _op.Current : _single;
+
+        private int Kills => _op != null ? _op.Kills : _single.Kills;
+        private int Losses => _op != null ? _op.Losses : _single.Losses;
+
+        /// <summary>A stage's name (its own text, else "Stage n").</summary>
+        public string StageTitle(string stageId, int number)
+        {
+            var key = "stage." + _def.Id + "." + stageId;
+            var text = Strings.Get(key);
+            return text != key ? text : Strings.Format("stage.kicker", number);
+        }
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
         public override string Kicker => Strings.Format("campaign.kicker", Campaign.IndexOf(_def.Id) + 1);
@@ -803,9 +827,19 @@ namespace MachineBrigade.Game.Match
                 playerSide.Income *= 0.8f;
                 playerSide.Supports = System.Array.Empty<string>();
             }
-            _mode = new MissionMode(_tier > 0 ? _def.Harder(1.3f) : _def, playerSide, enemy);
-            Mode = _mode;
-            _mode.Setup(world);
+            var def = _tier > 0 ? _def.Harder(1.3f) : _def;
+            // Stages, or an allied commander: the operation runs them (each stage a mission of its own).
+            if (def.Stages.Count > 0 || def.Ally != null)
+            {
+                _op = new OperationMode(def, playerSide, enemy);
+                Mode = _op;
+            }
+            else
+            {
+                _single = new MissionMode(def, playerSide, enemy);
+                Mode = _single;
+            }
+            Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
@@ -827,32 +861,59 @@ namespace MachineBrigade.Game.Match
             if (commander)
             {
                 var stance = _def.EnemyStance == "Defend" ? CommanderStance.Defend : CommanderStance.Attack;
-                var enemyAi = AddEnemyCommander(_mode, seed, stance);
-                enemyAi.Goal = w => _mode.EnemyGoal(w);
-                // Protect: the enemy comes to knock the player's buildings down.
-                if (_def.Goal == MissionGoal.Protect) enemyAi.Demolish = w => _mode.EnemyDemolish(w);
+                _enemyAi = AddEnemyCommander(Objectives, seed, stance);
+                _enemyAi.Goal = w => _mode.EnemyGoal(w);
             }
             else if (_def.EnemyAi == "waves")
             {
                 world.TryGetRally(PlayerTeam, out var home);
                 Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => _mode.EnemyGoal(w) ?? home };
-                if (_def.Goal == MissionGoal.Protect) Waves.Demolish = w => _mode.EnemyDemolish(w);
             }
-            var player = AddPlayerCommander(_mode, seed);
+            var player = AddPlayerCommander(Objectives, seed);
             if (_tier == 2) player.AutoStrike = false;
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
+            // The allied commander goes where the player's goal is, with its own units only.
+            if (def.Ally != null)
+                AllyAi = new TacticalAi(PlayerTeam, EnemyTeam, seed + 11)
+                {
+                    Allies = true,
+                    Objective = w => _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null),
+                };
+            Configure(world);
+            // Each stage sets the commanders for its own goal, in the step it begins.
+            if (_op != null) _op.StageChanged += _ => Configure(world);
+        }
+
+        /// <summary>The commanders set for the goal of the mission (or of the stage now being played).</summary>
+        private void Configure(SimWorld world)
+        {
+            var def = _mode.Def;
+            var player = PlayerAi;
             // A demolition inside a fortress is a siege: guns to break it from outside its reach.
-            if (_def.Goal == MissionGoal.Destroy && _def.Variant == "siege") player.RoleMix = ConquestAi.SiegeMix;
+            player.RoleMix = def.Goal == MissionGoal.Destroy && def.Variant == "siege" ? ConquestAi.SiegeMix : null;
             // Holding a point: fight whatever comes at it, but never wander off and leave it open.
-            if (_def.Goal == MissionGoal.Hold) player.Leash = 32f;
-            if (_def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
+            player.Leash = def.Goal == MissionGoal.Hold ? 32f : null;
+            player.DefendPoint = null;
+            if (def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
             {
                 foreach (var p in world.Map.Points)
-                    if (_def.Points.Count > 0 && p.Id == _def.Points[0]) player.DefendPoint = p.Position;
+                    if (def.Points.Count > 0 && p.Id == def.Points[0]) player.DefendPoint = p.Position;
                 if (player.DefendPoint == null && world.TryGetRally(PlayerTeam, out var home) && world.TryGetRally(EnemyTeam, out var threat))
                     player.DefendPoint = Vector2.Lerp(home, threat, 0.33f);
             }
+            // Protect: the enemy comes to knock the player's buildings down.
+            System.Func<SimWorld, MachineBrigade.Sim.Core.EntityId> demolish = def.Goal == MissionGoal.Protect ? w => _mode.EnemyDemolish(w) : null;
+            if (_enemyAi != null) _enemyAi.Demolish = demolish;
+            if (Waves != null) Waves.Demolish = demolish;
+        }
+
+        /// <summary>The player picks a branch at a stage's end (the choice dialog), written in the journal for a replay.</summary>
+        public void Choose(SimWorld world, string key)
+        {
+            if (_op?.PendingChoice == null) return;
+            MatchJournal.Record(world, "choose", key);
+            _op.Choose(world, key);
         }
 
         private int _nextTip;
@@ -863,7 +924,7 @@ namespace MachineBrigade.Game.Match
         {
             "NoStrikes" => world.StrikesCalled(PlayerTeam) == 0,
             "NoAircraft" => world.AircraftBought(PlayerTeam) == 0,
-            "Kills" => _mode.Kills >= _def.ChallengeValue,
+            "Kills" => Kills >= _def.ChallengeValue,
             _ => true,
         };
 
@@ -874,30 +935,61 @@ namespace MachineBrigade.Game.Match
                 hud.Toast(Strings.Get(_def.Tips[_nextTip++].key), seconds: 6f);
             hud.SetStats(0, 0, 0, 0f, fps);
             FillPoints(_mode, scratch);
+            ShowChoice(hud, world);
+            var goal = _mode.Def.Goal;
             var (done, needed) = _mode.Count(world);
-            var detail = _def.Goal switch
+            var detail = goal switch
             {
                 MissionGoal.Hold or MissionGoal.Survive or MissionGoal.Protect => $"{Clock(done)} / {Clock(needed)}",
                 MissionGoal.Intercept when _mode.LaunchIn(world) >= 0f => Strings.Format("mission.launchIn", Clock(_mode.LaunchIn(world))),
                 MissionGoal.Boss or MissionGoal.Intercept => $"{UnityEngine.Mathf.RoundToInt(_mode.Progress(world) * 100f)}%",
                 _ => $"{done} / {needed}",
             };
-            hud.SetMission(Strings.Get("goal." + _def.Goal.ToString().ToLowerInvariant()), detail, _mode.Progress(world),
-                _mode.SecondsLeft(world), scratch);
+            var goalText = Strings.Get("goal." + goal.ToString().ToLowerInvariant());
+            if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
+            hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive)
                 hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
             else hud.SetBoss(null, 0f);
         }
 
+        /// <summary>The choice dialog while a stage waits on the player's pick; the first option goes ahead by itself.</summary>
+        private void ShowChoice(BattleHud hud, SimWorld world)
+        {
+            if (_op?.PendingChoice is not { } stage)
+            {
+                if (hud.ChoiceShown) hud.HideChoice();
+                return;
+            }
+            if (!hud.ChoiceShown)
+            {
+                var options = new List<(string, string)>();
+                foreach (var c in stage.Choices)
+                {
+                    var key = "choice." + _def.Id + "." + c.Key;
+                    var info = Strings.Get(key + ".info");
+                    options.Add((Strings.Get(key), info != key + ".info" ? info : null));
+                }
+                hud.ShowChoice(Strings.Get("choice.title"), options, index =>
+                {
+                    Choose(world, stage.Choices[index].Key);
+                    hud.HideChoice();
+                });
+            }
+            hud.SetChoiceTime(_op.ChoiceLeft(world));
+        }
+
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
-            if (_mode.Result is not { } result) return null;
+            if (Mode.Result is not { } result) return null;
             var won = result.WinningTeam == PlayerTeam;
             var outcome = new MatchOutcome { Result = won ? 1 : -1, Subtitle = Title };
-            outcome.Rows.Add((Strings.Get("result.kills"), _mode.Kills.ToString()));
-            outcome.Rows.Add((Strings.Get("result.losses"), _mode.Losses.ToString()));
+            outcome.Rows.Add((Strings.Get("result.kills"), Kills.ToString()));
+            outcome.Rows.Add((Strings.Get("result.losses"), Losses.ToString()));
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
-            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, _mode.Losses, ChallengeMet(world), _tier);
+            if (_op != null && _op.StageCount > 1)
+                outcome.Rows.Add((Strings.Get("result.stages"), won ? _op.Path.Count.ToString() : UnityEngine.Mathf.Max(0, _op.Path.Count - 1).ToString()));
+            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), _tier);
             if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));
             return outcome;
         }

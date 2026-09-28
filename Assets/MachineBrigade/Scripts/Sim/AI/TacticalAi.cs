@@ -168,6 +168,9 @@ namespace MachineBrigade.Sim.AI
 
         private double _atEdgeSince = double.NaN;
 
+        /// <summary>This AI commands the allied commander's units (and only those); the player's commands the rest.</summary>
+        public bool Allies { get; set; }
+
         public TacticalAi(int team, int enemyTeam, int seed = 7)
         {
             _team = team;
@@ -551,8 +554,8 @@ namespace MachineBrigade.Sim.AI
                     }
                     continue;
                 }
-                // Vehicles the player is steering by hand are left alone.
-                if (v.Team != _team || v.Scripted || v.Def.Static || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
+                if (v.Team != _team || v.Scripted || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
                 if (v.Flying && Refit(world, v)) continue;

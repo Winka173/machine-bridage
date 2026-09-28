@@ -52,6 +52,18 @@ namespace MachineBrigade.Sim.Events
         /// <summary>A counter-battery radar (Entity) found an enemy gun (Other) that fired: shown to the radar's side for Value seconds.</summary>
         GunRevealed,
 
+        /// <summary>A vehicle changed sides (Team: its new side): drawn again in its new colours.</summary>
+        Defected,
+
+        /// <summary>A multi-stage mission moved on: DefId is the new stage's id, Value its number (1 up).</summary>
+        StageStarted,
+
+        /// <summary>The play area changed (Position its lower corner, Target its upper; Value 0 for the whole map).</summary>
+        AreaChanged,
+
+        /// <summary>A radio message for the player (DefId: its text key).</summary>
+        Radio,
+
         /// <summary>A supply crate is parachuting down onto Position, landing in Value seconds.</summary>
         CrateIncoming,
 
@@ -233,6 +245,18 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Revealed(Vehicle radar, Vehicle gun, float seconds) =>
             new(SimEventKind.GunRevealed, radar.Id, gun.Position, default, seconds, default, gun.Def.Id, radar.Team, other: gun.Id);
+
+        internal static SimEvent Defected(Vehicle v) =>
+            new(SimEventKind.Defected, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team);
+
+        internal static SimEvent AreaChanged(Content.PlayArea? area) =>
+            new(SimEventKind.AreaChanged, EntityId.None, area?.Min ?? default, area?.Max ?? default, area.HasValue ? 1f : 0f, default, null, 0);
+
+        internal static SimEvent RadioMessage(string key, int team = 0) =>
+            new(SimEventKind.Radio, EntityId.None, default, default, 0f, default, key, team);
+
+        internal static SimEvent StageBegan(string stageId, int number) =>
+            new(SimEventKind.StageStarted, EntityId.None, default, default, number, default, stageId, 0);
 
         internal static SimEvent MineLaid(Mine m) =>
             new(SimEventKind.MineLaid, m.Id, m.Position, default, 0f, default, null, m.Team);

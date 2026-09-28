@@ -231,9 +231,9 @@ namespace MachineBrigade.Sim.Economy
         {
             var n = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team && v.Def.Id == defId) n++;
+                if (v.IsAlive && v.Team == team && !v.Ally && v.Def.Id == defId) n++;
             foreach (var p in _pending)
-                if (p.Item1 == team && p.Item2 == defId) n++;
+                if (p.Item1 == team && p.Item2 == defId && !_allyLandings.Contains(p.Item4)) n++;
             return n;
         }
 
@@ -242,13 +242,14 @@ namespace MachineBrigade.Sim.Economy
         /// vehicle does, dropped by parachute near <paramref name="near"/> (aircraft fly in over the
         /// edge), and needs no economy for the side.
         /// </summary>
-        public void Airlift(int team, string defId, Vector2 near)
+        public void Airlift(int team, string defId, Vector2 near, bool ally = false)
         {
             if (!_world.Catalog.Vehicles.ContainsKey(defId)) return;
             var index = _deliveries++;
             var angle = index * 2.39996f;
             var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
             _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
+            if (ally) _allyLandings.Add(landing);
             _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(near), DeliverySeconds));
         }
 
@@ -280,7 +281,9 @@ namespace MachineBrigade.Sim.Economy
                 var (team, defId, due, landing) = _pending[i];
                 if (due > _world.Time) continue;
                 _pending.RemoveAt(i);
-                Deliver(team, defId, landing);
+                var delivered = Deliver(team, defId, landing);
+                // The ally's reinforcements belong to the ally's commander.
+                if (delivered != null && _allyLandings.Remove(landing)) delivered.Ally = true;
             }
         }
 
@@ -347,9 +350,11 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>From a team's zone towards the middle of the map.</summary>
         private static Vector2 Inward(Vector2 zone) => zone.LengthSquared() > 0.01f ? Vector2.Normalize(-zone) : Vector2.UnitY;
 
-        private void Deliver(int team, string defId, Vector2 landing)
+        private readonly List<Vector2> _allyLandings = new();
+
+        private Vehicle? Deliver(int team, string defId, Vector2 landing)
         {
-            if (!_world.TryGetRally(team, out var zone)) return;
+            if (!_world.TryGetRally(team, out var zone)) return null;
             var inward = Inward(zone);
             var at = landing;
             // Aircraft fly in over the map's edge behind the zone instead of appearing on it.
@@ -358,6 +363,7 @@ namespace MachineBrigade.Sim.Economy
             _single.Clear();
             _single.Add(vehicle.Id);
             _world.Submit(new Command(CommandType.Move, team, _single, _world.ClampToMap(landing + inward * RollIn)));
+            return vehicle;
         }
 
         /// <summary>The map's edge straight behind a zone (looking in from it), just inside the square.</summary>
@@ -374,9 +380,9 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team) total += v.Def.ArmyCost;
-            foreach (var (pendingTeam, defId, _, _) in _pending)
-                if (pendingTeam == team) total += _world.Catalog.Vehicle(defId).CpCost;
+                if (v.IsAlive && v.Team == team && !v.Ally) total += v.Def.ArmyCost;
+            foreach (var (pendingTeam, defId, _, landing) in _pending)
+                if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
         }
 

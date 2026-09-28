@@ -277,6 +277,33 @@ bottom of each section.
   - A fast light swarm with drones (49 CP) destroys every tower of a medium-and-large-only base
     and brings its HQ to 33–55 %.
   - Against the mixed base it destroys 13 % of the towers and leaves the HQ untouched.
+- **Base table** (level 5, 5 seeds, score = HQ health left + share of the attackers destroyed,
+  0–2). The mixed base scores 2.00 / 1.83 / 1.73 / 2.00 / 2.00 against the mixed, armour,
+  light-and-drones, artillery and air armies. Against the mixed army it beats every one-tower
+  base, the best of which is 1.94 (ATGM towers only). No one-tower base is best against all five.
+  For example, ATGM towers only score 1.96 against armour but 1.07 against the swarm, and heavy
+  fortresses only score 2.00 against armour but 1.19 against the swarm.
+- **Pick rates.**
+  - The first measurement searched outward from the mixed base. It was worthless, because the
+    mixed base already scores the full 2.00 against a single army, so nothing could beat it.
+  - Now each army is doubled and a level-5 base is filled from empty, one slot at a time (large,
+    then medium, then small). Each slot takes whichever tower that fits scores best over 2 seeds.
+    Towers within 0.02 of the best share the slot's credit. The attackers know where every
+    structure is from the start.
+  - Light towers are measured in the small slots, where they compete (an even share is 1 in 6):
+    guard tower 32 %, AA tower 22 %, MG bunker 19 %, dragon's teeth 11 %, EW tower 10 %,
+    minefield 7 %.
+  - **The minefield was under 10 %, so it was buffed.** It now keeps 8 mines (was 6) and lays the
+    field again every 45 s (was 60 s). Its branches moved with it so they stay trades: the
+    anti-tank field has 5 heavy mines (was 4) every 45 s, and the scatter field 10 light mines
+    every 35 s.
+  - The EW tower sits at exactly 10 % and is left as it is. Its worth is against guided
+    weapons and strikes, which only two of the five armies bring.
+- **Towers against vehicles of equal value** (small 5 CP, medium 8, large 12; 15 fights each).
+  Most towers hold every fight. The C-RAM and the artillery emplacement hold none, and that is
+  their design: the C-RAM has no gun for the ground, and the emplacement cannot fire inside its
+  minimum range. They are specialists that protect a base under the cover of its other towers.
+  Neither is buffed for a duel it is not built for.
 
 
 ## 3D. Tower equipment

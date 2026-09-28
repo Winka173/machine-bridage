@@ -75,9 +75,142 @@ namespace MachineBrigade.Sim.Content
     }
 
     /// <summary>One campaign mission, read from campaign.json.</summary>
+    /// <summary>
+    /// A stage of a multi-stage mission (see Modes.OperationMode): its goal is a mission of its own
+    /// (the stage's fields laid over the mission's), what it pays on completion, what happens at its
+    /// start, end and on its clock, where it leads (the next stage, or a choice of two).
+    /// </summary>
+    public sealed class StageDef
+    {
+        public string Id { get; set; } = "";
+        public MissionDef Mission { get; set; } = null!;
+
+        /// <summary>CP paid to the player when the stage is done.</summary>
+        public int Cp { get; set; }
+
+        public IReadOnlyList<StageEventDef> Events { get; set; } = Array.Empty<StageEventDef>();
+
+        /// <summary>The stage that follows (null: the next in the list).</summary>
+        public string? Next { get; set; }
+
+        /// <summary>A branching point: the player picks one (the first after a while if nobody does).</summary>
+        public IReadOnlyList<StageChoiceDef> Choices { get; set; } = Array.Empty<StageChoiceDef>();
+
+        /// <summary>A checkpoint is kept at its end.</summary>
+        public bool Checkpoint { get; set; } = true;
+    }
+
+    /// <summary>When a stage event happens.</summary>
+    public enum StageMoment
+    {
+        Start,
+        End,
+
+        /// <summary><see cref="StageEventDef.Seconds"/> into the stage.</summary>
+        Time,
+    }
+
+    /// <summary>What a stage event does.</summary>
+    public enum StageEventKind
+    {
+        /// <summary>Units flown in for a side (Team) near Position (default: its drop zone).</summary>
+        Reinforce,
+
+        /// <summary>Units flown in for the ally near its site.</summary>
+        AllyReinforce,
+
+        /// <summary>The battlefield grows into its outer area (Expansion: the map's expansion id).</summary>
+        Expand,
+
+        /// <summary>The ally changes sides: its units and structures join the enemy.</summary>
+        Betrayal,
+
+        /// <summary>A radio message (Key: the text).</summary>
+        Radio,
+
+        /// <summary>CP for a side.</summary>
+        Cp,
+    }
+
+    public sealed class StageEventDef
+    {
+        public StageMoment At { get; set; }
+        public double Seconds { get; set; }
+        public StageEventKind Kind { get; set; }
+        public int Team { get; set; } = 1;
+        public IReadOnlyList<string> Units { get; set; } = Array.Empty<string>();
+        public Vector2? Position { get; set; }
+        public string? Key { get; set; }
+
+        /// <summary>Expand: the play area from now on.</summary>
+        public PlayArea? Area { get; set; }
+
+        public float Amount { get; set; }
+    }
+
+    /// <summary>
+    /// The part of the map the player's side may go into (a multi-stage mission opens the rest as
+    /// it goes): a rectangle, in metres.
+    /// </summary>
+    public readonly struct PlayArea
+    {
+        public PlayArea(Vector2 min, Vector2 max)
+        {
+            Min = Vector2.Min(min, max);
+            Max = Vector2.Max(min, max);
+        }
+
+        public Vector2 Min { get; }
+        public Vector2 Max { get; }
+
+        public bool Contains(Vector2 p) => p.X >= Min.X && p.X <= Max.X && p.Y >= Min.Y && p.Y <= Max.Y;
+
+        public Vector2 Clamp(Vector2 p) => Vector2.Clamp(p, Min, Max);
+
+        internal static PlayArea? Read(JsonObject o, string key)
+        {
+            if (!o.Has(key)) return null;
+            var a = o.Object(key);
+            return new PlayArea(new Vector2(a.Float("minX"), a.Float("minZ")), new Vector2(a.Float("maxX"), a.Float("maxZ")));
+        }
+    }
+
+    public sealed class StageChoiceDef
+    {
+        public string Key { get; set; } = "";
+        public string Next { get; set; } = "";
+    }
+
+    /// <summary>
+    /// An allied commander (a multi-stage mission): its own camp (Site) and units on the player's
+    /// side, commanded by its own AI; reinforcements flown in on a schedule; it may change sides.
+    /// </summary>
+    public sealed class AllyDef
+    {
+        public Vector2 Site { get; set; }
+        public float Heading { get; set; }
+        public IReadOnlyList<UnitPlacement> Units { get; set; } = Array.Empty<UnitPlacement>();
+        public IReadOnlyList<(double at, IReadOnlyList<string> units)> Reinforcements { get; set; } = Array.Empty<(double, IReadOnlyList<string>)>();
+
+        /// <summary>The ally's own HQ at its site (the defector's base when it changes sides).</summary>
+        public string? Hq { get; set; }
+    }
+
     public sealed class MissionDef
     {
         public string Id { get; set; } = "";
+
+        /// <summary>The stages of a multi-stage mission, in order (empty: a mission of one goal).</summary>
+        public IReadOnlyList<StageDef> Stages { get; set; } = Array.Empty<StageDef>();
+
+        /// <summary>The allied commander, if the mission has one.</summary>
+        public AllyDef? Ally { get; set; }
+
+        /// <summary>Most enemy vehicles on the field at once (0: the usual cap). Large battles raise it.</summary>
+        public int EnemyCap { get; set; }
+
+        /// <summary>Where the player's side may go at the start (null: the whole map).</summary>
+        public PlayArea? PlayArea { get; set; }
         public string Map { get; set; } = "ashfield";
 
         /// <summary>Which version of the map: "conquest" (objectives) or "sandbox".</summary>
@@ -196,6 +329,17 @@ namespace MachineBrigade.Sim.Content
         public MissionDef Harder(float enemy)
         {
             var copy = (MissionDef)MemberwiseClone();
+            if (Stages.Count > 0)
+            {
+                var stages = new List<StageDef>();
+                foreach (var s in Stages)
+                    stages.Add(new StageDef
+                    {
+                        Id = s.Id, Mission = s.Mission.Harder(enemy), Cp = s.Cp, Events = s.Events, Next = s.Next,
+                        Choices = s.Choices, Checkpoint = s.Checkpoint,
+                    });
+                copy.Stages = stages;
+            }
             copy.EnemyCp = EnemyCp * enemy;
             copy.EnemyIncome = EnemyIncome * (1f + (enemy - 1f) * 0.8f);
             copy.Reinforcements = Reinforcements + 1;
@@ -289,15 +433,75 @@ namespace MachineBrigade.Sim.Content
                     Spawns = w.Has("spawns") ? Points2(w.FloatArray("spawns")) : Array.Empty<Vector2>(),
                 };
             }
-            if (m.Has("units"))
+            if (m.Has("units")) def.Units = Placements(m, "units");
+            def.EnemyCap = m.Int("enemyCap", 0);
+            def.PlayArea = Content.PlayArea.Read(m, "playArea");
+            if (m.Has("ally"))
             {
-                var units = new List<UnitPlacement>();
-                foreach (var u in m.Array("units"))
-                    units.Add(new UnitPlacement(u.String("def"), u.Int("team", 0), new Vector2(u.Float("x"), u.Float("z")),
-                        SimMath.DegToRad(u.Float("heading", 0f))));
-                def.Units = units;
+                var a = m.Object("ally");
+                var reinforcements = new List<(double, IReadOnlyList<string>)>();
+                foreach (var r in a.Array("reinforcements")) reinforcements.Add((r.Float("at"), Strings(r, "units")));
+                def.Ally = new AllyDef
+                {
+                    Site = new Vector2(a.Float("x"), a.Float("z")), Heading = SimMath.DegToRad(a.Float("heading", 0f)),
+                    Units = a.Has("units") ? Placements(a, "units") : Array.Empty<UnitPlacement>(),
+                    Reinforcements = reinforcements, Hq = a.Has("hq") ? a.String("hq") : null,
+                };
+            }
+            // Stages: each is a mission of its own, its fields laid over the mission's ("stage" names it).
+            // What a stage fights (its units, boss, hunted vehicles, convoy, waves) is its own; the
+            // mission's units are placed once, at the start.
+            if (m.Has("stages"))
+            {
+                var parent = m.With("stages", null).With("units", null).With("boss", null).With("hunt", null)
+                    .With("convoy", null).With("waves", null).With("tips", null).With("ally", null);
+                var stages = new List<StageDef>();
+                foreach (var s in m.Array("stages"))
+                {
+                    var stage = new StageDef
+                    {
+                        Id = s.Has("stage") ? s.String("stage") : "s" + (stages.Count + 1),
+                        Mission = Parse(parent.Under(s)),
+                        Cp = s.Int("cp", 0),
+                        Next = s.Has("next") ? s.String("next") : null,
+                        Checkpoint = s.Bool("checkpoint", true),
+                    };
+                    var events = new List<StageEventDef>();
+                    foreach (var e in s.Array("events"))
+                    {
+                        var at = e.Has("at") ? e.String("at") : "start";
+                        var timed = double.TryParse(at, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var seconds);
+                        events.Add(new StageEventDef
+                        {
+                            At = timed ? StageMoment.Time : (StageMoment)Enum.Parse(typeof(StageMoment), at, true),
+                            Seconds = timed ? seconds : 0.0,
+                            Kind = e.Enum<StageEventKind>("kind"),
+                            Team = e.Int("team", 1),
+                            Units = Strings(e, "units"),
+                            Position = e.Has("x") ? new Vector2(e.Float("x"), e.Float("z")) : null,
+                            Key = e.Has("key") ? e.String("key") : null,
+                            Area = Content.PlayArea.Read(e, "area"),
+                            Amount = e.Float("amount", 0f),
+                        });
+                    }
+                    stage.Events = events;
+                    var choices = new List<StageChoiceDef>();
+                    foreach (var c in s.Array("choices")) choices.Add(new StageChoiceDef { Key = c.String("key"), Next = c.String("next") });
+                    stage.Choices = choices;
+                    stages.Add(stage);
+                }
+                def.Stages = stages;
             }
             return def;
+        }
+
+        private static IReadOnlyList<UnitPlacement> Placements(JsonObject m, string key)
+        {
+            var units = new List<UnitPlacement>();
+            foreach (var u in m.Array(key))
+                units.Add(new UnitPlacement(u.String("def"), u.Int("team", 0), new Vector2(u.Float("x"), u.Float("z")),
+                    SimMath.DegToRad(u.Float("heading", 0f))));
+            return units;
         }
 
         private static ScriptedUnitDef Scripted(JsonObject o) => new()

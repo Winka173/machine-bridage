@@ -626,12 +626,12 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: biến lối vào thành đường vòng dưới họng súng của ta; công binh phá nhanh gấp ba.\n" +
                 "Mẹo: bịt lỗ hổng địch sẽ đi qua; nhánh rào thép gai thì làm chậm thay vì chặn."),
             ["guide.minefield"] = (
-                "[[Minefield]] · small obstacle · six mines\n" +
-                "How it fights: six anti-tank mines within 5 m, laid again every minute; the field itself is no target.\n" +
+                "[[Minefield]] · small obstacle · eight mines\n" +
+                "How it fights: eight anti-tank mines within 5 m, laid again every 45 s; the field itself is no target.\n" +
                 "Strong / weak: punishes vehicles that rush in; scouts, engineers and a UAV scan see the mines, and engineers clear them.\n" +
                 "Tip: put it on the road into your base, behind the guns that make the enemy slow down.",
-                "[[Bãi mìn]] · vật cản nhỏ · sáu quả mìn\n" +
-                "Cách đánh: sáu quả mìn chống tăng trong vòng 5 m, rải lại mỗi phút; bãi mìn không phải mục tiêu.\n" +
+                "[[Bãi mìn]] · vật cản nhỏ · tám quả mìn\n" +
+                "Cách đánh: tám quả mìn chống tăng trong vòng 5 m, rải lại mỗi 45 giây; bãi mìn không phải mục tiêu.\n" +
                 "Mạnh / yếu: trừng phạt xe lao vào ồ ạt; trinh sát, công binh và UAV quét thấy mìn, công binh gỡ được.\n" +
                 "Mẹo: đặt trên đường vào căn cứ, sau các họng súng buộc địch phải chậm lại."),
             ["guide.c_ram"] = (

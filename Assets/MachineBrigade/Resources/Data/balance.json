@@ -498,8 +498,8 @@
     { "id": "aa_turret",        "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,
       "weapon": "twin_30_flak", "secondary": [{"weapon": "sam", "slot": "missile", "aim": "Turret"}], "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // Towers (prompt 3). An EW tower jams guided rounds and fire support; dragon's teeth block the
-    // way (engineers breach them three times as fast); a fixed minefield keeps six mines round it
-    // and lays a new one each minute; a C-RAM shoots down rockets, missiles, drones and some shells;
+    // way (engineers breach them three times as fast); a fixed minefield keeps eight mines round it
+    // and lays the field again every 45 s; a C-RAM shoots down rockets, missiles, drones and some shells;
     // a hidden gun pit stays down (60 % less damage, seen only by scouts, radars and scans) until an
     // enemy is within 35 m; a drone hangar sends two FPV drones every 20 s.
     { "id": "ew_tower",         "fort": { "size": "Small" }, "static": true, "armor": "Structure", "hp": 800, "speed": 0, "turnRate": 1, "turretTurnRate": 60, "radius": 1.8, "length": 4, "width": 4, "cp": 0, "vision": 50,
@@ -507,7 +507,7 @@
     { "id": "dragons_teeth",    "fort": { "size": "Small" }, "static": true, "obstacle": true, "armor": "Structure", "hp": 2400, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "length": 5, "width": 2.5, "cp": 0, "vision": 8,
       "weapon": "none" },
     { "id": "minefield",        "fort": { "size": "Small" }, "static": true, "untargetable": true, "passable": true, "armor": "Structure", "hp": 400, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.4, "length": 5, "width": 5, "cp": 0, "vision": 10,
-      "weapon": "none", "mines": { "interval": 60, "max": 6, "damage": 450, "radius": 5, "tier": "Large", "trigger": 2.2, "spread": 5 } },
+      "weapon": "none", "mines": { "interval": 45, "max": 8, "damage": 450, "radius": 5, "tier": "Large", "trigger": 2.2, "spread": 5 } },
     { "id": "c_ram",            "fort": { "size": "Medium" }, "static": true, "armor": "Structure", "hp": 1300, "speed": 0, "turnRate": 1, "turretTurnRate": 240, "radius": 2.5, "length": 5.5, "width": 5.5, "cp": 0, "vision": 60,
       "weapon": "c_ram_gatling", "aps": { "radius": 35, "charges": 2, "recharge": 1.5, "rockets": true, "shells": 0.3 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
@@ -525,8 +525,8 @@
     { "id": "ew_tower.spoof",    "inherits": "ew_tower", "branchOf": "ew_tower", "counterBattery": { "range": 80, "seconds": 6, "bonus": 0 } },
     { "id": "dragons_teeth.hedgehog", "inherits": "dragons_teeth", "branchOf": "dragons_teeth", "hp": 4800 },
     { "id": "dragons_teeth.wire", "inherits": "dragons_teeth", "branchOf": "dragons_teeth", "passable": true, "slowAura": { "radius": 6, "share": 0.5 } },
-    { "id": "minefield.at",      "inherits": "minefield", "branchOf": "minefield", "mines": { "interval": 60, "max": 4, "damage": 720, "radius": 5, "tier": "Huge", "trigger": 2.2, "spread": 5 } },
-    { "id": "minefield.scatter", "inherits": "minefield", "branchOf": "minefield", "mines": { "interval": 45, "max": 10, "damage": 315, "radius": 4, "tier": "Large", "trigger": 2.2, "spread": 6 } },
+    { "id": "minefield.at",      "inherits": "minefield", "branchOf": "minefield", "mines": { "interval": 45, "max": 5, "damage": 720, "radius": 5, "tier": "Huge", "trigger": 2.2, "spread": 5 } },
+    { "id": "minefield.scatter", "inherits": "minefield", "branchOf": "minefield", "mines": { "interval": 35, "max": 10, "damage": 315, "radius": 4, "tier": "Large", "trigger": 2.2, "spread": 6 } },
     { "id": "gun_turret.long",   "inherits": "gun_turret", "branchOf": "gun_turret", "weapon": "turret_gun_120_long" },
     { "id": "gun_turret.auto",   "inherits": "gun_turret", "branchOf": "gun_turret", "weapon": "turret_gun_120_auto" },
     { "id": "atgm_tower.top",    "inherits": "atgm_tower", "branchOf": "atgm_tower", "weapon": "kornet_top" },

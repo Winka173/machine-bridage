@@ -229,7 +229,10 @@ namespace MachineBrigade.Sim.Entities
 
         public EntityId Id { get; }
         public VehicleDef Def { get; }
-        public int Team { get; }
+        public int Team { get; internal set; }
+
+        /// <summary>One of the allied commander's (a multi-stage mission): its own AI commands it, the player's does not.</summary>
+        public bool Ally { get; internal set; }
         public Vector2 Position { get; internal set; }
 
         /// <summary>Hull heading in radians (see <see cref="SimMath"/> for the convention).</summary>

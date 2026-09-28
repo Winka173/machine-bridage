@@ -108,13 +108,13 @@ namespace MachineBrigade.Game.Input
         {
             if (Intercepted(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
-            if (picked != null && picked.Team == _team)
+            if (picked != null && Mine(picked))
             {
                 _selected.Clear();
                 _selected.Add(picked.Id);
                 return;
             }
-            if (_selected.Count == 0) return;
+            if (_selected.Count == 0 || (picked != null && picked.Team == _team)) return;
 
             if (picked != null)
             {
@@ -143,7 +143,7 @@ namespace MachineBrigade.Game.Input
         {
             if (Intercepted(screen)) return;
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
-            if (picked == null || picked.Team != _team)
+            if (picked == null || !Mine(picked))
             {
                 // A quick second tap on the ground or an enemy is still an order.
                 OnTap(screen);
@@ -152,7 +152,7 @@ namespace MachineBrigade.Game.Input
             _selected.Clear();
             var viewport = new Rect(0f, 0f, Screen.width, Screen.height);
             foreach (var view in _views.All)
-                if (view.Team == _team && view.DefId == picked.DefId && OnScreen(view, viewport)) _selected.Add(view.Id);
+                if (Mine(view) && view.DefId == picked.DefId && OnScreen(view, viewport)) _selected.Add(view.Id);
         }
 
         public void OnPan(Vector2 fromScreen, Vector2 toScreen) =>
@@ -176,7 +176,7 @@ namespace MachineBrigade.Game.Input
                 Mathf.Max(startScreen.x, endScreen.x), Mathf.Max(startScreen.y, endScreen.y));
             var found = new List<EntityId>();
             foreach (var view in _views.All)
-                if (view.Team == _team && OnScreen(view, rect)) found.Add(view.Id);
+                if (Mine(view) && OnScreen(view, rect)) found.Add(view.Id);
             if (found.Count == 0) return;
             _selected.Clear();
             foreach (var id in found) _selected.Add(id);
@@ -188,7 +188,7 @@ namespace MachineBrigade.Game.Input
         {
             _selected.Clear();
             foreach (var view in _views.All)
-                if (view.Team == _team) _selected.Add(view.Id);
+                if (Mine(view)) _selected.Add(view.Id);
         }
 
         public void Stop() => Issue(new Command(CommandType.Stop, _team, Selection(), manual: true));
@@ -213,9 +213,12 @@ namespace MachineBrigade.Game.Input
             if (_selected.Count == 0) AttackMoveArmed = false;
         }
 
+        /// <summary>The player's own vehicle (not the allied commander's).</summary>
+        private bool Mine(VehicleView view) => view.Team == _team && !view.Sim.Ally;
+
         private bool Issue(Command command)
         {
-            var result = _world.Submit(command);
+            var result = _world.SubmitPlayer(command);
             if (!result.Accepted) Rejected?.Invoke(result.Error);
             return result.Accepted;
         }

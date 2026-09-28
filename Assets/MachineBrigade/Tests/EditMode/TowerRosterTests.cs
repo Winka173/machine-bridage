@@ -142,15 +142,15 @@ namespace MachineBrigade.Tests
             var field = Tower(world, "minefield", 0, new Vector2(0f, 0f));
             Run(world, 1f);
             var mines = world.Mines.Where(m => m.IsAlive && m.Layer == field.Id).ToList();
-            Assert.AreEqual(6, mines.Count, "six mines at once");
+            Assert.AreEqual(8, mines.Count, "eight mines at once");
             Assert.IsTrue(mines.All(m => Vector2.Distance(m.Position, field.Position) <= 5.01f), "round it");
             Assert.IsTrue(field.Def.Untargetable && field.Def.Passable && field.Def.Passive, "no target, no blocker, no gun");
             var victim = world.SpawnVehicle("armored_car", 1, mines[0].Position + new Vector2(0f, 10f), 3.14f);
             world.Submit(new Command(CommandType.Move, 1, new[] { victim.Id }, mines[0].Position - new Vector2(0f, 8f)));
             Run(world, 6f);
-            Assert.Less(world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), 6, "one went off");
-            Run(world, 61f);
-            Assert.AreEqual(6, world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), "and a new one is laid within a minute");
+            Assert.Less(world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), 8, "one went off");
+            Run(world, 46f);
+            Assert.AreEqual(8, world.Mines.Count(m => m.IsAlive && m.Layer == field.Id), "and the field is laid again within 45 s");
         }
 
         [Test]

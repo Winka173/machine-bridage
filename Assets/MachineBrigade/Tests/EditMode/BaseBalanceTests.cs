@@ -66,6 +66,9 @@ namespace MachineBrigade.Tests
         {
             var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_conquest"), seed: seed);
             var b = world.Bases.Establish(1, defence, BaseRole.Target);
+            // The attackers have scouted the base: they know where every structure is.
+            foreach (var v in world.VehicleList)
+                if (v.Team == 1 && v.Def.Static) v.VisibleToMask |= 1;
             world.TryGetRally(0, out var start);
             var toward = Vector2.Normalize(b.HqPosition - start);
             var side = new Vector2(-toward.Y, toward.X);
@@ -98,7 +101,7 @@ namespace MachineBrigade.Tests
         private static readonly string[] Weaponed =
             { "guard_tower", "mg_bunker", "aa_turret", "gun_turret", "atgm_tower", "rocket_turret", "c_ram", "gun_pit", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" };
 
-        [Test, Category("Balance")]
+        [Test, Category("Balance"), Timeout(7200000)]
         public void AMixedBaseIsBestAgainstAMixedArmyAndNoOneTowerBaseBeatsEverything()
         {
             Gate();
@@ -122,7 +125,7 @@ namespace MachineBrigade.Tests
                     $"{name} is not the best base against every army");
         }
 
-        [Test, Category("Balance")]
+        [Test, Category("Balance"), Timeout(7200000)]
         public void AFastLightSwarmWithDronesOverwhelmsABaseOfOnlyHeavyGuns()
         {
             Gate();
@@ -146,45 +149,58 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>
-        /// Which towers an optimiser picks: for each army, one pass of per-slot coordinate search
-        /// from the mixed base (large, then medium, then small slots), 2 seeds a try; the rate each
-        /// tower is chosen across the five armies' best bases.
+        /// Which towers an optimiser picks: for each army (doubled, so a good base does not simply
+        /// score the full 2.00 and leave nothing to choose between), a level-5 base is filled from
+        /// empty one slot at a time (large, then medium, then small), each slot taking whichever
+        /// tower that fits scores best over 2 seeds with the slots filled so far. Towers within 0.02
+        /// of the best share the slot's credit. Reported: the share of all slots, and of the small
+        /// slots (where the light towers compete; an even share there is 1 in 6).
         /// </summary>
-        [Test, Category("Balance")]
+        [Test, Category("Balance"), Timeout(7200000)]
         public void TowerPickRates()
         {
             Gate();
             var catalog = GameContent.LoadCatalog();
             var towers = TowerCards.All(catalog);
-            var picks = new Dictionary<string, int>();
-            var slots = 0;
-            var log = new StringBuilder("PICKS\n");
-            foreach (var (enemy, army) in Enemies)
+            var picks = new Dictionary<string, float>();
+            var smallPicks = new Dictionary<string, float>();
+            float slots = 0f, smallSlots = 0f;
+            var log = new StringBuilder("PICKS greedy from empty, armies doubled\n");
+            foreach (var (enemy, single) in Enemies)
             {
-                var best = Mixed();
-                var bestScore = Mean(catalog, best, army, 2);
+                var army = single.Concat(single).ToArray();
+                var best = new BaseLoadout { HqLevel = 5 };
+                var bestScore = 0f;
                 foreach (var size in new[] { SlotSize.Large, SlotSize.Medium, SlotSize.Small })
                     for (var k = 0; k < catalog.Base.Slots(5, size); k++)
+                    {
+                        var scores = new Dictionary<string, float>();
                         foreach (var t in towers.Where(t => catalog.Vehicles[t].Fort.Fits(size)))
                         {
-                            if (best.Of(size)[k] == t) continue;
                             var trial = best.Clone();
-                            trial.Of(size)[k] = t;
-                            var s = Mean(catalog, trial, army, 2);
-                            if (s <= bestScore) continue;
-                            best = trial;
-                            bestScore = s;
+                            trial.Of(size).Add(t);
+                            scores[t] = Mean(catalog, trial, army, 2);
                         }
+                        var top = scores.Values.Max();
+                        var tied = scores.Where(p => p.Value >= top - 0.02f).Select(p => p.Key).ToList();
+                        foreach (var t in tied)
+                        {
+                            picks[t] = picks.GetValueOrDefault(t) + 1f / tied.Count;
+                            if (size == SlotSize.Small) smallPicks[t] = smallPicks.GetValueOrDefault(t) + 1f / tied.Count;
+                        }
+                        slots++;
+                        if (size == SlotSize.Small) smallSlots++;
+                        var chosen = scores.First(p => p.Value == top).Key;
+                        best.Of(size).Add(chosen);
+                        bestScore = top;
+                    }
                 log.Append($"{enemy}: {bestScore:0.00} L[{string.Join(",", best.Large)}] M[{string.Join(",", best.Medium)}] S[{string.Join(",", best.Small)}]\n");
-                foreach (var t in best.Towers)
-                {
-                    picks[t] = picks.TryGetValue(t, out var n) ? n + 1 : 1;
-                    slots++;
-                }
             }
-            log.Append("rates: ").Append(string.Join(", ", towers.Select(t => $"{t} {(picks.TryGetValue(t, out var n) ? n : 0) * 100f / slots:0}%")));
+            log.Append("all slots: ").Append(string.Join(", ", towers.Select(t => $"{t} {picks.GetValueOrDefault(t) * 100f / slots:0}%"))).Append('\n');
+            log.Append("small slots: ").Append(string.Join(", ", towers.Where(t => catalog.Vehicles[t].Fort.Size == SlotSize.Small)
+                .Select(t => $"{t} {smallPicks.GetValueOrDefault(t) * 100f / smallSlots:0}%")));
             Debug.Log(log.ToString());
-            Assert.Greater(slots, 0);
+            Assert.Greater(slots, 0f);
         }
 
         /// <summary>

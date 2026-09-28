@@ -110,10 +110,18 @@ namespace MachineBrigade.Sim.Modes
             _def = def;
             _player = player;
             _enemy = enemy;
-            _ledger.Ignore = v => v.Scripted || v.Def.Boss;
+            _ledger.Ignore = v => v.Scripted || v.Def.Boss || v.Ally;
         }
 
         public MissionDef Def => _def;
+
+        /// <summary>When this mission (or stage) began: its clocks count from here.</summary>
+        public double StartedAt { get; private set; }
+
+        /// <summary>A stage of a longer mission: finishing it does not end the battle (the operation goes on).</summary>
+        internal bool Staged { get; set; }
+
+        private double Now(SimWorld world) => world.Time - StartedAt;
 
         public IReadOnlyList<ObjectiveState> Points => _points;
 
@@ -129,7 +137,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The boss vehicle once it is on the field (invalid before and after).</summary>
         public EntityId Boss => _boss;
 
-        public float SecondsLeft(SimWorld world) => _def.TimeLimit > 0f ? MathF.Max(0f, _def.TimeLimit - (float)world.Time) : -1f;
+        public float SecondsLeft(SimWorld world) => _def.TimeLimit > 0f ? MathF.Max(0f, _def.TimeLimit - (float)Now(world)) : -1f;
 
         /// <summary>Seconds until the boss launches, or -1 while it is still on its way.</summary>
         public float LaunchIn(SimWorld world) =>
@@ -142,7 +150,7 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => MathF.Min(1f, _held / MathF.Max(1f, _def.HoldSeconds)),
             MissionGoal.Destroy => _targets.Count == 0 ? 1f : 1f - AliveTargets(world) / (float)_targets.Count,
             MissionGoal.Escort => MathF.Min(1f, _arrived / (float)Math.Max(1, _def.ConvoyNeeded)),
-            MissionGoal.Survive or MissionGoal.Protect => MathF.Min(1f, (float)world.Time / MathF.Max(1f, _def.SurviveSeconds)),
+            MissionGoal.Survive or MissionGoal.Protect => MathF.Min(1f, (float)Now(world) / MathF.Max(1f, _def.SurviveSeconds)),
             MissionGoal.Hunt => _hunted.Count == 0 ? 1f : 1f - AliveHunted(world) / (float)_hunted.Count,
             MissionGoal.Recon => _points.Count == 0 ? 1f : PointCapture.Held(_points, PlayerTeam) / (float)_points.Count,
             MissionGoal.ShootDown => MathF.Min(1f, _ledger.AirKills(PlayerTeam) / (float)Math.Max(1, _def.KillsNeeded)),
@@ -156,7 +164,7 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => ((int)_held, (int)_def.HoldSeconds),
             MissionGoal.Destroy => (_targets.Count - AliveTargets(world), _targets.Count),
             MissionGoal.Escort => (_arrived, _def.ConvoyNeeded),
-            MissionGoal.Survive or MissionGoal.Protect => ((int)world.Time, (int)_def.SurviveSeconds),
+            MissionGoal.Survive or MissionGoal.Protect => ((int)Now(world), (int)_def.SurviveSeconds),
             MissionGoal.Hunt => (_hunted.Count - AliveHunted(world), _hunted.Count),
             MissionGoal.Recon => (PointCapture.Held(_points, PlayerTeam), _points.Count),
             MissionGoal.ShootDown => (Math.Min(_ledger.AirKills(PlayerTeam), _def.KillsNeeded), _def.KillsNeeded),
@@ -172,11 +180,31 @@ namespace MachineBrigade.Sim.Modes
             return alive;
         }
 
-        public void Setup(SimWorld world)
+        public void Setup(SimWorld world) => SetupStage(world, true, null);
+
+        /// <summary>The objectives' owners now (a stage hands them to the next).</summary>
+        internal Dictionary<string, int> Owners()
         {
-            world.EnableEconomy(_player.Build(PlayerTeam));
-            if (_enemy != null) world.EnableEconomy(_enemy.Build(EnemyTeam));
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            var owners = new Dictionary<string, int>();
+            foreach (var p in _points) owners[p.Def.Id] = p.Owner;
+            return owners;
+        }
+
+        /// <summary>
+        /// Sets the mission up; a later stage of an operation (<paramref name="first"/> false) keeps
+        /// the battle as it is (economies, the army, the map's units) and adds only its own units
+        /// and objectives, the points keeping the owners <paramref name="owners"/> hand on.
+        /// </summary>
+        internal void SetupStage(SimWorld world, bool first, IReadOnlyDictionary<string, int>? owners)
+        {
+            StartedAt = world.Time;
+            _nextReinforce = StartedAt + ReinforceFirst;
+            if (first)
+            {
+                world.EnableEconomy(_player.Build(PlayerTeam));
+                if (_enemy != null) world.EnableEconomy(_enemy.Build(EnemyTeam));
+                foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            }
             foreach (var unit in _def.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
 
             // Objectives: the listed ones (all of them when none are listed) for capture; the one
@@ -189,6 +217,7 @@ namespace MachineBrigade.Sim.Modes
                     var state = new ObjectiveState(p);
                     if (Contains(_def.EnemyOwns, p.Id) && _def.Goal != MissionGoal.Recon) PointCapture.Own(state, EnemyTeam);
                     else if (_def.Goal == MissionGoal.Hold) PointCapture.Own(state, PlayerTeam);
+                    else if (owners != null && owners.TryGetValue(p.Id, out var owner) && owner >= 0) PointCapture.Own(state, owner);
                     _points.Add(state);
                 }
             if (_def.Goal is MissionGoal.Destroy or MissionGoal.Protect)
@@ -251,7 +280,7 @@ namespace MachineBrigade.Sim.Modes
                 MissionGoal.Hold => (_held += _points.Count > 0 && _points[0].Owner == PlayerTeam ? dt : 0f) >= _def.HoldSeconds,
                 MissionGoal.Destroy => AliveTargets(world) == 0,
                 MissionGoal.Escort => _arrived >= _def.ConvoyNeeded,
-                MissionGoal.Survive or MissionGoal.Protect => world.Time >= _def.SurviveSeconds,
+                MissionGoal.Survive or MissionGoal.Protect => Now(world) >= _def.SurviveSeconds,
                 MissionGoal.Hunt => _hunted.Count > 0 && AliveHunted(world) == 0,
                 MissionGoal.Recon => _points.Count > 0 && PointCapture.Held(_points, PlayerTeam) == _points.Count,
                 MissionGoal.ShootDown => _ledger.AirKills(PlayerTeam) >= _def.KillsNeeded,
@@ -309,7 +338,7 @@ namespace MachineBrigade.Sim.Modes
 
         private bool Lost(SimWorld world)
         {
-            if (_def.TimeLimit > 0f && world.Time >= _def.TimeLimit && _def.Goal is not (MissionGoal.Survive or MissionGoal.Protect)) return true;
+            if (_def.TimeLimit > 0f && Now(world) >= _def.TimeLimit && _def.Goal is not (MissionGoal.Survive or MissionGoal.Protect)) return true;
             if (_def.Goal == MissionGoal.Protect && _targets.Count > 0 && AliveTargets(world) < Math.Min(_def.ProtectNeeded, _targets.Count)) return true;
             // The held objective is lost only when the enemy keeps it for a while: time to hit back.
             if (_def.Goal == MissionGoal.Hold && _points.Count > 0)
@@ -330,7 +359,7 @@ namespace MachineBrigade.Sim.Modes
                 if (train.Charge >= 1f) return true;
             }
             // The army wiped out for a while (nothing alive or on the way).
-            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
+            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && Now(world) > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             return _wipedSince >= 0 && world.Time - _wipedSince > 12.0;
         }
@@ -338,7 +367,7 @@ namespace MachineBrigade.Sim.Modes
         private void Finish(SimWorld world, int winner)
         {
             Result = new MatchResult(winner);
-            world.IsOver = true;
+            if (!Staged) world.IsOver = true;
         }
 
         private void SpawnWaves(SimWorld world, float dt)
