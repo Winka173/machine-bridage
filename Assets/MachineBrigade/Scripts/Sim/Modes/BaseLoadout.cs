@@ -211,6 +211,8 @@ namespace MachineBrigade.Sim.Modes
                     if (pick != null) loadout.Of(size).Add(pick);
                 }
             }
+            // Prompt 13 F.1: its first utility slot takes a landing pad (its aircraft rearm and mend there).
+            if (catalog.Base.UtilitySlots(loadout.HqLevel) > 0 && catalog.Vehicles.ContainsKey("airfield")) loadout.Utilities.Add("airfield");
             // Anti-air: the last small slot turns into the style's best anti-air tower if there is none.
             var hasAa = false;
             foreach (var id in loadout.Towers) hasAa |= IsAntiAir(catalog, id);

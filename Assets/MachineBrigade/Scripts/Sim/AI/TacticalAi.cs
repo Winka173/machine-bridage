@@ -392,9 +392,10 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>
         /// Empty launchers reload where they stand: the crew restocks only while the vehicle is
-        /// still, so the AI stops them. A supply vehicle close by is worth the short drive, and a
-        /// launcher with an enemy about to reach it moves out of reach first. Once the magazine
-        /// is back they rejoin their role at the next decision.
+        /// still, so the AI stops them. Prompt 13 C.7: an ammunition carrier or home (the camp, with
+        /// its depot) reloads three times as fast; the launcher drives there when the drive and the
+        /// reload there take less time than the reload in place. A launcher with an enemy about to
+        /// reach it moves out of reach first. Once the magazine is back they rejoin their role.
         /// </summary>
         private void SendToRearm(SimWorld world)
         {
@@ -403,16 +404,23 @@ namespace MachineBrigade.Sim.AI
             {
                 _rearmIds.Add(v.Id);
                 Vector2? depot = null;
-                var best = DepotReach;
-                foreach (var e in world.VehicleList)
+                var left = v.Weapons[0].ReloadLeft > 0f ? v.Weapons[0].ReloadLeft : Combat.CombatSystem.ReloadSeconds(v.Arm(0));
+                var speed = MathF.Max(1f, v.Def.Speed * 0.8f);
+                // Time in place, against the drive there and a reload three times as fast (2 s to settle).
+                var best = left;
+                void Offer(Vector2 at, float reach)
                 {
-                    if (!e.IsAlive || e.Team != _team || e.Def.RearmAura == null) continue;
-                    var d = Vector2.Distance(e.Position, v.Position);
-                    if (d >= best) continue;
-                    best = d;
-                    depot = e.Position;
+                    var d = MathF.Max(0f, Vector2.Distance(at, v.Position) - reach);
+                    if (d > DepotReach * 1.5f) return;
+                    var time = d / speed + left / 3f + 2f;
+                    if (time >= best) return;
+                    best = time;
+                    depot = at;
                 }
-                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f)
+                foreach (var e in world.VehicleList)
+                    if (e.IsAlive && e.Team == _team && e.Def.RearmAura != null && e != v) Offer(e.Position, e.Def.RearmAura.Radius * 0.6f);
+                if (world.TryGetRally(_team, out var camp)) Offer(camp, 12f);
+                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f && !world.InEnemyHome(depot.Value, _team))
                 {
                     if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > 6f)
                         Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
@@ -563,18 +571,52 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
-        /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
+        /// <summary>
+        /// Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.
+        /// Prompt 13 F.2: an ammunition carrier parks by the side's launchers and helicopters (a little
+        /// behind them, towards home), where they rearm off it; with none, behind the army too.
+        /// </summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
             var spot = Clamp(world, front - forward * 9f);
             _ids.Clear();
+            Vector2? resupply = null;
             foreach (var v in _support)
             {
+                var at = spot;
+                if (v.Def.RearmAura != null || v.Def.AirRearm != null)
+                {
+                    resupply ??= ResupplySpot(world, forward) ?? spot;
+                    at = resupply.Value;
+                    if (Vector2.Distance(v.Position, at) < 6f) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, at) < 5f) continue;
+                    Issue(world, CommandType.Move, v.Id, at);
+                    continue;
+                }
                 if (Vector2.Distance(v.Position, spot) < 10f) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
                 _ids.Add(v.Id);
             }
             if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, spot);
+        }
+
+        /// <summary>The middle of the side's launchers and helicopters, 6 m back towards home (null: it has none).</summary>
+        private Vector2? ResupplySpot(SimWorld world, Vector2 forward)
+        {
+            var sum = Vector2.Zero;
+            var n = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Ally != Allies) continue;
+                var launcher = !v.Flying && v.Arm(0).Ammo > 0;
+                var heli = v.Flying && !v.Def.FixedWing && v.HasStores;
+                if (!launcher && !heli) continue;
+                sum += v.Position;
+                n++;
+            }
+            if (n == 0) return null;
+            var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * 6f), 8f);
+            return Exposed(at, 2f) ? null : at;
         }
 
         /// <summary>Everyone in the line drives (not attack-moves) back to the fall-back point and waits there.</summary>
@@ -644,7 +686,7 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
                 // stand) and counter-battery radars keep a little behind the middle of the army.
-                if (v.Def.RepairAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
+                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);

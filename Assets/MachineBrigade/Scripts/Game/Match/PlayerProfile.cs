@@ -131,6 +131,9 @@ namespace MachineBrigade.Game.Match
                     if (IsUnlocked(id)) loadout.Utilities.Add(id);
                 foreach (var id in loadout.Towers)
                     if (TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
+                // A module's rank-7 branch too (the landing pad's, prompt 13 F.1).
+                foreach (var id in loadout.Utilities)
+                    if (!string.IsNullOrEmpty(id) && TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
                 if (D.baseOutpost.Count > 0)
                 {
                     loadout.Outpost.Clear();

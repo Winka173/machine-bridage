@@ -303,14 +303,23 @@ namespace MachineBrigade.Game.Hud
 
             // Support vehicles.
             ["guide.engineer_vehicle"] = (
-                "[[Engineer]] · heavy armour · repairs and re-arms\n" +
-                "How it fights: only a roof MG; it [[repairs]] friendly vehicles within 14 m (2.5% health a second) and [[re-arms]] their launchers.\n" +
+                "[[Engineer]] · heavy armour · repairs\n" +
+                "How it fights: only a roof MG; it [[repairs]] friendly vehicles within 14 m (2.5% health a second), clears the mines it sees and breaks obstacles three times as fast.\n" +
                 "Strong / weak: keeps a tank line alive much longer; alone it fights poorly, and scouts or armoured cars pick it off.\n" +
-                "Tip: park it just behind the front, or beside rocket artillery so empty launchers reload faster.",
-                "[[Xe công binh]] · giáp dày · sửa chữa và tiếp đạn\n" +
-                "Cách đánh: chỉ có súng máy nóc; [[sửa chữa]] xe ta trong vòng 14 m (2,5% máu mỗi giây) và [[tiếp đạn]] cho bệ phóng.\n" +
+                "Tip: park it just behind the front; the [[ammunition carrier]] is the one that reloads launchers.",
+                "[[Xe công binh]] · giáp dày · sửa chữa\n" +
+                "Cách đánh: chỉ có súng máy nóc; [[sửa chữa]] xe ta trong vòng 14 m (2,5% máu mỗi giây), gỡ mìn nó thấy và phá vật cản nhanh gấp ba.\n" +
                 "Mạnh / yếu: giúp tuyến xe tăng trụ lâu hơn hẳn; tự đánh thì yếu, trinh sát và xe bọc thép dễ bắt nạt nó.\n" +
-                "Mẹo: đỗ ngay sau tuyến đầu, hoặc cạnh pháo phản lực để bệ phóng hết đạn nạp lại nhanh hơn."),
+                "Mẹo: đỗ ngay sau tuyến đầu; nạp đạn cho bệ phóng là việc của [[xe tiếp đạn]]."),
+            ["guide.ammo_carrier"] = (
+                "[[Ammunition carrier]] · light armour · forward rearm point\n" +
+                "How it fights: only a roof MG; empty launchers and missile carriers within 14 m [[reload three times as fast]], and helicopters within 12 m take their missiles and rockets on [[twice as fast]].\n" +
+                "Strong / weak: keeps rocket artillery and helicopters firing; thin-skinned and it blows up hard, so keep it out of the fight.\n" +
+                "Tip: park it behind the launchers; your commander sends empty launchers to it when the drive is quicker than reloading in place.",
+                "[[Xe tiếp đạn]] · giáp mỏng · điểm nạp tiền phương\n" +
+                "Cách đánh: chỉ có súng máy nóc; bệ phóng và xe tên lửa hết đạn trong vòng 14 m [[nạp nhanh gấp ba]], trực thăng trong vòng 12 m hồi tên lửa và rốc-két [[nhanh gấp đôi]].\n" +
+                "Mạnh / yếu: giữ pháo phản lực và trực thăng bắn liên tục; giáp mỏng và nổ rất mạnh, nên giữ xa chỗ giao tranh.\n" +
+                "Mẹo: đỗ sau các bệ phóng; chỉ huy tự đưa bệ phóng hết đạn tới nó khi đi tới đó nhanh hơn nạp tại chỗ."),
             ["guide.sapper"] = (
                 "[[Fortification sapper]] · heavy armour · repairs defences\n" +
                 "How it fights: a roof MG; it slowly [[repairs]] friendly towers, turrets and bunkers within 12 m (0.6% health a second). It cannot fix vehicles.\n" +

@@ -116,7 +116,7 @@ namespace MachineBrigade.Game.Match
             "heavy_bomber", "stealth_bomber",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
             "atgm_carrier",
-            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
+            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
             "turtle_tank", "bmpt", "sapper",

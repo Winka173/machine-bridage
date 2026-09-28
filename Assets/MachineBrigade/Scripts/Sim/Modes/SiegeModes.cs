@@ -158,6 +158,12 @@ namespace MachineBrigade.Sim.Modes
         public float SuperGunCp { get; set; } = 25f;
 
         /// <summary>
+        /// CP the attacker gets for each of the fortress's landing pads it destroys (prompt 13 F.1: the
+        /// defender's aircraft then rearm and mend only at their holding patterns and the HQ).
+        /// </summary>
+        public float PadCp { get; set; } = 12f;
+
+        /// <summary>
         /// The defender's ground deliveries come in by the fortress's line (a train or an aircraft
         /// onto a runway) while it holds the walls, when the map has one and the defender is the AI.
         /// </summary>
@@ -374,6 +380,8 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var slot in fortressBase.Slots)
                 {
                     if (slot.Structure.IsValid) _defences[Math.Clamp(slot.Ring, 1, 3) - 1].Add(slot.Structure);
+                    if (slot.Structure.IsValid && world.TryGetVehicle(slot.Structure, out var module) && module.Def.Utility is { AirRepair: > 0f })
+                        _pads.Add((slot.Structure, module.Position));
                     if (!rebuild) slot.Lost = true;
                 }
             }
@@ -660,6 +668,7 @@ namespace MachineBrigade.Sim.Modes
             if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
             if (Stage == 3) KeepEvents(world);
             RunSuperGun(world);
+            PayForPads(world);
             WatchWorks(world);
             Watch(world);
             PayBounties(world);
@@ -860,6 +869,23 @@ namespace MachineBrigade.Sim.Modes
             SuperGun = gun.Id;
             _superGunAt = gun.Position;
             _superGunFireAt = _rules.SuperGunFirst;
+        }
+
+        /// <summary>The fortress's landing pads still to pay for when they fall (prompt 13 F.1).</summary>
+        private readonly List<(EntityId id, Vector2 at)> _pads = new();
+
+        /// <summary>A landing pad of the fortress destroyed: the attacker is paid (the defender's aircraft lose their fast rearm).</summary>
+        private void PayForPads(SimWorld world)
+        {
+            for (var i = _pads.Count - 1; i >= 0; i--)
+            {
+                var (id, at) = _pads[i];
+                if (world.TryGetVehicle(id, out var pad) && pad.IsAlive) continue;
+                _pads.RemoveAt(i);
+                if (_rules.PadCp <= 0f || !world.TryGetEconomy(Attacker, out var economy)) continue;
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.PadCp);
+                world.Emit(SimEvent.BountyPaid(Attacker, "airfield", at, _rules.PadCp));
+            }
         }
 
         /// <summary>

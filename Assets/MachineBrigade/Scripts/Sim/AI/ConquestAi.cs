@@ -613,7 +613,7 @@ namespace MachineBrigade.Sim.AI
         private void TryDeploy(SimWorld world, TeamEconomy economy)
         {
             var cards = Cards(world, economy.Vehicles, world.Catalog.Vehicles.Keys);
-            var airFull = world.Economy.AircraftCount(_team) >= TeamEconomy.MaxAircraft;
+            var airFull = world.Economy.AircraftCount(_team) >= world.Economy.AircraftCap(_team);
             string? best = null, bestAffordable = null;
             var bestScore = float.MinValue;
             var bestAffordableScore = float.MinValue;
@@ -639,11 +639,14 @@ namespace MachineBrigade.Sim.AI
                     if (p.Owner != _team) neutral++;
             var owned = new Dictionary<string, int>();
             var capturers = 0;
+            var ownResupplied = 0;
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive || v.Team != _team) continue;
                 owned[v.Def.Id] = owned.TryGetValue(v.Def.Id, out var n) ? n + 1 : 1;
                 if (!v.Flying && v.Def.CaptureRate > 0f && !v.Def.Static) capturers++;
+                // Launchers (they run dry and reload) and helicopters (their stores): what a carrier feeds.
+                if ((!v.Flying && v.Arm(0).Ammo > 0) || (v.Flying && !v.Def.FixedWing && v.HasStores)) ownResupplied++;
             }
             // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
             var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
@@ -697,6 +700,8 @@ namespace MachineBrigade.Sim.AI
                     if (enemyBreachers > 0 && KillsArmour(def) && !def.Flying) score += MathF.Min(2f, enemyBreachers * 0.7f);
                     // A counter-battery radar only where the enemy has guns to find.
                     if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
+                    // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
+                    if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
