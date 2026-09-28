@@ -131,6 +131,10 @@ namespace MachineBrigade.Editor
             var holder = new GameObject(def.Id).transform;
             holder.SetParent(root, false);
             var found = new List<Finding>();
+            // The flight pose on a fixed clock: edit mode's frame time would otherwise move it.
+            var (step, clock) = (VehicleView.ShotStep, VehicleView.ShotClock);
+            VehicleView.ShotStep = 0f;
+            VehicleView.ShotClock = 0f;
             try
             {
                 var map = new MapDefinition("audit", 200f,
@@ -169,6 +173,8 @@ namespace MachineBrigade.Editor
             }
             finally
             {
+                VehicleView.ShotStep = step;
+                VehicleView.ShotClock = clock;
                 Object.DestroyImmediate(holder.gameObject);
             }
             return found;

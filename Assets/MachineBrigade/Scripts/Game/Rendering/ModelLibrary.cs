@@ -493,7 +493,7 @@ namespace MachineBrigade.Game.Rendering
                 List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> found = null;
                 var face = false;
                 foreach (var part in pairs)
-                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters, hint) is { Count: >= 2 } groups &&
+                    if (byName.TryGetValue(part, out var filters) && LauncherGroups(root, filters, hint, Aligned(muzzle)) is { Count: >= 2 } groups &&
                         (AroundMuzzle(groups, at) || (part is "Ordnance_bodies" or "Bomb_bodies" && Straddles(groups, at))))
                     {
                         found = groups;
@@ -563,7 +563,8 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>The launchers in a set of meshes, left to right: the middle of each one's front face (root space), its half width and height, and its axis.</summary>
-        private static List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> LauncherGroups(Transform root, List<MeshFilter> filters, Vector3 hint)
+        private static List<(Vector3 front, Vector2 half, Vector3 axis, bool measured)> LauncherGroups(Transform root, List<MeshFilter> filters, Vector3 hint,
+            bool alongMuzzle = false)
         {
             var points = new List<Vector3>();
             foreach (var filter in filters)
@@ -575,7 +576,24 @@ namespace MachineBrigade.Game.Rendering
             for (var i = 1; i <= points.Count; i++)
             {
                 if (i < points.Count && points[i].x - points[i - 1].x < 0.35f) continue;
-                groups.Add(Front(points.GetRange(start, i - start), hint));
+                if (alongMuzzle)
+                {
+                    // Raised tubes whose muzzle is turned along them: the front of each on its own axis.
+                    var (front, half, _, _) = Front(points.GetRange(start, i - start), hint, pca: false);
+                    groups.Add((front, half, hint, true));
+                    start = i;
+                    continue;
+                }
+                // Pods and rails sit level on their pylons: the front of each one's bounds (a raised
+                // rack's axis is left to its muzzle; see AlignMuzzles).
+                var lo = points[start];
+                var hi = points[start];
+                for (var k = start; k < i; k++)
+                {
+                    lo = Vector3.Min(lo, points[k]);
+                    hi = Vector3.Max(hi, points[k]);
+                }
+                groups.Add((new Vector3((lo.x + hi.x) * 0.5f, (lo.y + hi.y) * 0.5f, hi.z), new Vector2((hi.x - lo.x) * 0.5f, (hi.y - lo.y) * 0.5f), hint, false));
                 start = i;
             }
             return groups;
@@ -589,12 +607,12 @@ namespace MachineBrigade.Game.Rendering
         /// in that plane. A tilted box of tubes (a raised MLRS pod) is square to its tubes, so its
         /// front is not the front of its bounding box (DECISIONS 13E).
         /// </summary>
-        internal static (Vector3 front, Vector2 half, Vector3 axis, bool measured) Front(List<Vector3> points, Vector3 hint)
+        internal static (Vector3 front, Vector2 half, Vector3 axis, bool measured) Front(List<Vector3> points, Vector3 hint, bool pca = true)
         {
             hint = hint.sqrMagnitude > 1e-6f ? hint.normalized : Vector3.forward;
             var axis = hint;
             var measured = false;
-            if (Principal(points, out _, out var e1, out var e3, out var l1, out var l2, out var l3))
+            if (pca && Principal(points, out _, out var e1, out var e3, out var l1, out var l2, out var l3))
             {
                 // A flat face first (a wide face of tubes is also longer across than it is tall),
                 // then a long pod or missile; only one facing roughly the muzzle's way.
@@ -713,6 +731,8 @@ namespace MachineBrigade.Game.Rendering
             foreach (var muzzle in root.GetComponentsInChildren<Transform>(true))
             {
                 if (!MuzzlePattern.IsMatch(muzzle.name) || muzzle.parent == null) continue;
+                // Missile and rocket racks are found whole by AddLaunchPoints (their faces and pods).
+                if (muzzle.name.StartsWith("Muzzle_missile") || muzzle.name.StartsWith("Muzzle_rocket")) continue;
                 var at = muzzle.position;
                 var best = float.MaxValue;
                 var axis = Vector3.zero;
@@ -720,8 +740,9 @@ namespace MachineBrigade.Game.Rendering
                 {
                     var filter = sibling.GetComponent<MeshFilter>();
                     if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
-                    var points = new List<Vector3>();
-                    foreach (var v in filter.sharedMesh.vertices) points.Add(filter.transform.TransformPoint(v));
+                    var all = new List<Vector3>();
+                    foreach (var v in filter.sharedMesh.vertices) all.Add(filter.transform.TransformPoint(v));
+                    var points = Piece(all, at);
                     if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
                     if (Vector3.Dot(major, at - mean) < 0f) major = -major;
                     // Its front end, and how far the muzzle is off its axis and from that end.
@@ -744,6 +765,33 @@ namespace MachineBrigade.Game.Rendering
                 muzzle.rotation = Quaternion.LookRotation(axis, Mathf.Abs(axis.y) > 0.95f ? muzzle.forward : Vector3.up);
                 muzzle.gameObject.AddComponent<AlignedMuzzle>();
             }
+        }
+
+        /// <summary>
+        /// The piece of a part's vertices (world) round <paramref name="at"/>: split where they stand
+        /// 0.35 m or more apart across the model (a part holding both wings' missiles, twin barrels),
+        /// the piece whose span holds the point or is nearest it.
+        /// </summary>
+        private static List<Vector3> Piece(List<Vector3> points, Vector3 at)
+        {
+            points.Sort((a, b) => a.x.CompareTo(b.x));
+            List<Vector3> best = points;
+            var bestGap = float.MaxValue;
+            var start = 0;
+            for (var i = 1; i <= points.Count; i++)
+            {
+                if (i < points.Count && points[i].x - points[i - 1].x < 0.35f) continue;
+                var lo = points[start].x;
+                var hi = points[i - 1].x;
+                var gap = at.x < lo ? lo - at.x : at.x > hi ? at.x - hi : 0f;
+                if (gap < bestGap)
+                {
+                    bestGap = gap;
+                    best = points.GetRange(start, i - start);
+                }
+                start = i;
+            }
+            return best;
         }
 
         /// <summary>Whether a muzzle was turned along its barrel by <see cref="AlignMuzzles"/>.</summary>

@@ -776,11 +776,14 @@ namespace MachineBrigade.Game.Views
             if (aim is MountAim.Left or MountAim.Right) return DirectionOf(index);
             var node = aim == MountAim.Free && index < _mounts.Length && _mounts[index] != null ? _mounts[index]
                 : aim != MountAim.Hull && _model.Turret != null ? _model.Turret : _body;
+            // Another mount whose muzzle rides the main gun's elevating pivot (a boss's second main
+            // barrel, built along the model's front): the way that muzzle faces as drawn.
+            if (index > 0 && index < _muzzles.Length && _muzzles[index] != null && _model.Elevation != null && _muzzles[index].IsChildOf(_model.Elevation))
+                return _muzzles[index].forward;
             var forward = node.forward;
-            // The main gun's elevation, and that of another mount whose muzzle rides the same pivot
-            // (a boss's second main barrel).
-            var raised = index == 0 || (index < _muzzles.Length && _muzzles[index] != null && _model.Elevation != null && _muzzles[index].IsChildOf(_model.Elevation));
-            if (raised && _model.Elevation != null && !float.IsNaN(_elevation))
+            // The main gun's elevation, also for a second mount firing from one of its barrels.
+            var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
+            if ((index == 0 || own >= 0) && _model.Elevation != null && !float.IsNaN(_elevation))
                 forward = Quaternion.AngleAxis(-_elevation, node.right) * forward;
             return forward;
         }
