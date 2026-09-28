@@ -1645,3 +1645,64 @@ library with its preview screen, the card renders and the UI checks. The screens
   switch on the settings page, map preview pictures for the map dropdown (the kit shows card
   renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
   `UiShots.Screens` and to the strict checks (then removing its old-screen report).
+
+## 11B. Test feedback: muzzles, projectile flight, projectile sizes (2026-09-28)
+
+- **Why rounds started off the barrel (the real cause).** A shot's effects were started while
+  the simulation's events were dispatched, inside the step loop in `Update`. At that moment the
+  vehicle transforms were still last frame's: drawn from the previous pair of snapshots, a step
+  behind the turret, hull and flight pose the frame was about to show. The round, flash and trail
+  were placed there, and the vehicle was then drawn somewhere else. The gap is however far the
+  vehicle moved, turned or climbed in between. It is not tied to one heading in the world. It
+  shows most when the barrel lies across the screen and hides when the barrel points along the
+  camera's view, so it looked right at some headings and wrong at others. Measured (MuzzleTests,
+  30 fps, turret swinging onto a target 70 degrees off the hull): 0.10-0.24 m on tanks, IFVs,
+  artillery and turrets, 0.06-0.07 m on the SAM and MLRS, 2.4 m on a helicopter and 4.7 m on an
+  attack jet. Now 0.000 m for every vehicle and heading tested.
+- **The fix.** `EffectsDirector.Consume` queues `WeaponFired` and `WeaponCharging` with their
+  shooter's view. `EffectsDirector.LaunchShots(views)` starts them right after
+  `ViewRegistry.Render`: in `MatchRunner.LateUpdate` and in `FiringRange.Tick` (the detail page's
+  in-action clip). Every round, flash and trail then leaves from the muzzle node as it is drawn in
+  that frame: hull yaw, turret yaw, gun elevation (laid for the shot), recoil, flight pitch and
+  bank, the launch point in use. This covers aircraft, helicopters, launchers, racks, artillery
+  and towers alike. The shooter is held when it is queued, so a vehicle that fires and dies in
+  one step still fires from its barrel. The sim is unchanged: the sim's spawn point was never
+  used for drawing, and the sim's origin (hull centre plus radius) still only sets travel time
+  and walls.
+- **Recoil.** With shots started after the draw, the barrel's kick begins on the frame after the
+  round leaves. Before, the barrel was drawn fully recoiled (0.12-0.45 m back) on the round's
+  first frame, with the round and flash ahead of it.
+- **Tracer streaks.** A streak was centred on its round, so on its first frame half its length
+  (0.4-1.8 m) lay behind the muzzle, over the turret. The round is now the head of the streak.
+  On the first frame the streak reaches 40 % of its length out of the barrel's tip, then trails
+  its full length behind the round and ends on the target as it lands. Laser beams keep one
+  centred bar (`TracerPool.Beam`).
+- **Artillery in flight.** The shell model and its smoke puffs were already on one curve. What
+  did not match was the start: the aim point is scattered (spread, and the first rounds of a
+  bracket 1.6x wider), so the plain arc left the barrel up to about 10 degrees sideways, away from
+  its blast. Lobbed shells, mortar bombs and artillery rockets now fly one quadratic curve from the
+  drawn muzzle, through a point half the ground distance out along the laid barrel, onto the
+  landing point (`WeaponEffects.Bend`, `ProjectilePool.Launch(control:)`). That point gives the
+  same peak as the old arc for the barrel's angle. The model, its trail and its start agree along
+  the whole arc, and the flight time is still the simulation's. The ballistic missile keeps its
+  own high arc. Guided missiles keep homing.
+- **Sizes (drawn only, times the weapon's `projectileScale` in balance.json; speeds are the
+  data's).** Drones 2x: the FPV carrier's and drone hangar's FPVs, Lancets, Shaheds, and the drone
+  mothership's FPVs too. At 0.56 m, dropped from an airship 26 m up, they could not be seen.
+  Rockets 1.15x (Grad, GMLRS, Hydra, S-8, TOS, heavy and 107 mm). Ground-launched ATGMs and
+  MANPADS 1.1x (TOW, Kornet, Ataka, Stinger, Igla). Air-launched, surface-to-air, air-to-air and
+  cruise missiles 1.2x (Hellfire, Maverick, JASSM, cruise missile, SHORAD dart, Buk, Patriot,
+  AIM-9, AIM-120, R-60). AAMs are sorted with the SAMs as large radar or IR missiles.
+  `WeaponEffects.SizeOf` holds the table. The mothership's summoned strike drones are vehicles and
+  keep their own size.
+- **Tools.** `MuzzleTests` (EditMode): rounds start at the drawn barrel tip at headings
+  0/90/180/270 with the turret swung onto a target; streak ends; the bend leaves along the barrel;
+  the size table. `MachineBrigade.Editor.MuzzleShots.Run -mbShotsOut <folder>` (batch mode with
+  graphics): headings.png shows each shooter at four headings on the frame its first round leaves,
+  and flights.png shows artillery rounds and trails close up at four moments of flight.
+  `VehicleView.LastMuzzleNode/LastMuzzleLocal` and `WeaponEffects.Launched` exist for them.
+- **Left for the testing phase.** A play-mode check on the device at 30 fps with moving
+  columns. The measurement above steps a real sim and views, but EditMode time does not advance,
+  so the barrel's kick and the hull smoothing are frozen there. Also left: the aircraft stores'
+  fallback points, and the strike effects' cruise missiles (StrikeEffects, another lane), which
+  keep their sizes.
