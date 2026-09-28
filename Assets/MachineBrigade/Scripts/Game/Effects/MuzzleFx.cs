@@ -220,11 +220,11 @@ namespace MachineBrigade.Game.Effects
 
                 case Kind.Rocket:
                 case Kind.Missile:
-                    // Launch flash at the tube, flame and a smoke cloud thrown out behind.
+                    // A small ignition at the tube's mouth and the backblast behind it; the missile's
+                    // own motor plume (MotorPlumes) carries the fire, so no gun-like blast ahead.
                     var s = kind == Kind.Missile ? 0.9f * scale : scale;
-                    Core(from, 2.2f * s, 2.8f * s, 0.08f, 0.12f);
-                    Tongue(from, -dir, 1, 0.8f * s, 0.15f);
-                    Tongue(from, dir, 1, 0.5f * s, 0.1f);
+                    Core(from, 1.0f * s, 1.3f * s, 0.06f, 0.09f);
+                    Tongue(from, -dir, 1, 0.6f * s, 0.14f);
                     Sparks(from, -dir, 4, 3f, 9f, s);
                     Puffs(from, -dir, 6, new Vector2(2.5f, 6.5f), new Vector2(0.9f, 1.5f), new Vector2(1.6f, 2.6f), s);
                     Puffs(from, dir, 2, new Vector2(1f, 3f), new Vector2(0.6f, 1f), new Vector2(1f, 1.8f), s);
@@ -357,8 +357,10 @@ namespace MachineBrigade.Game.Effects
 
         private void Round(Vector3 from, Vector3 dir, float scale, bool smoke)
         {
-            Core(from, 1.25f * scale, 1.6f * scale, 0.05f, 0.075f);
-            Tongue(from, dir, 1, 0.48f * scale, 0.07f);
+            // A small core just ahead of the muzzle: a machine gun's flash is a flicker, not a blast
+            // (a tank's coax at the mantlet must not read as the main gun firing mid-barrel).
+            Core(from + dir * (0.3f * scale), 0.8f * scale, 1.05f * scale, 0.05f, 0.075f);
+            Tongue(from, dir, 1, 0.42f * scale, 0.07f);
             if (Random.value < 0.35f) Sparks(from, dir, 1, 4f, 9f, scale);
             if (smoke) Puffs(from, dir, 2, new Vector2(1.5f, 3.5f), new Vector2(0.4f, 0.6f), new Vector2(0.6f, 1f), scale);
         }
@@ -366,7 +368,8 @@ namespace MachineBrigade.Game.Effects
         private void Cannon(Vector3 from, Vector3 dir, float scale, float? groundY, bool artillery)
         {
             var s = artillery ? 1.35f * scale : scale;
-            Core(from, 3.8f * s, 4.5f * s, 0.09f, 0.12f);
+            // The core ahead of the tip, not centred on it: centred, half of it lay back over the barrel.
+            Core(from + dir * (1.1f * s), 3.2f * s, 3.8f * s, 0.09f, 0.12f);
             Tongue(from, dir, 2, 1.2f * s, 0.13f);
             // Side jets out of the muzzle brake.
             var side = Vector3.Cross(Vector3.up, dir);

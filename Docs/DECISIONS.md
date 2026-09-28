@@ -3031,3 +3031,26 @@ meant to dwarf the rest.
 
 The sim's `radius`, `length` and `width` are unchanged (hits, spacing and blasts behave as before); muzzles and parts are
 model nodes, so they follow the smaller model.
+
+## 12I. Play test 3: flashes that read wrong, longer plumes (2026-09-29)
+
+The owner (on the build before 12A/12B) saw flashes off the barrels and missiles without matching fire. Checked
+from the model files (every Muzzle_ node against the geometry on its firing line): the main guns' and launchers'
+muzzle nodes sit on the tips (armoured car, tanks 0.00 m, mortar 0.08 m in, rocket technical at the pod's face).
+What read wrong was how the flashes were drawn:
+
+- A tank gun's 3.8-4.5 m core was centred on the muzzle, half of it back over the barrel ("in the middle of the
+  gun"). It now sits 1.1 m x scale ahead of the tip, at 3.2-3.8 m.
+- A tank's coax MG flashes at the mantlet, 2-4 m behind the gun's tip, and with 12D's streams it read as the main
+  gun firing mid-barrel. Machine-gun cores are now 0.8-1.05 m (were 1.25-1.6), 0.3 m ahead of the muzzle.
+- A mortar used the artillery flash (5-6 m, over the carrier seen from above): mortars flash at 0.55 of it.
+- A rocket or missile launch was a gun-like 2.2-2.8 m core with a forward tongue: now a 1.0-1.3 m ignition at the
+  tube's mouth and the backblast; the missile's own motor plume carries the fire.
+- Every motor plume (12B) is 40 % longer and 20 % wider.
+- The flash test now measures a flash along its barrel's line (on the line, never behind the tip, at most 2.5 m
+  ahead) instead of on the tip.
+- Ground SAMs were not slowed further: 10 % slower (46 -> 41 m/s) and "SAM beats jets" fails outright (the jets'
+  flares decoy nearly every missile). A slower SAM needs flare resistance to go with it: handed to the balance pass
+  (13C), which owns the missile-versus-flare measurements.
+- The frozen-moment missile sheets show a gap between fast rockets and their flames; it comes from the sheet
+  jumping straight to each moment (one long frame). In the game the frame is short and the flame sits on the tail.

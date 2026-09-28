@@ -15,8 +15,9 @@ namespace MachineBrigade.Game.Effects
     {
         public Plume(float length, float width, float smoke, float burn, float puffs = 0.3f)
         {
-            Length = length;
-            Width = width;
+            // Play test 3: every plume 40 % longer and 20 % wider than first drawn (12B).
+            Length = length * 1.4f;
+            Width = width * 1.2f;
             Smoke = smoke;
             Burn = burn;
             Puffs = puffs;
