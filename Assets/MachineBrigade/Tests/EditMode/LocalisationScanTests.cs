@@ -85,6 +85,27 @@ namespace MachineBrigade.Tests
                     }
                     for (var i = 1; i <= GearCatalog.Brands.Length; i++)
                         texts.Add(("brand " + i, GearText.BrandBonuses(GearCatalog.Brand(i))));
+                    // Tower equipment: base types, the tower pools' traits and their proc words, slots, fit notes.
+                    foreach (var b in GearCatalog.TowerBases)
+                    {
+                        texts.Add((b.Id, Strings.Get("gear.base." + b.Id)));
+                        texts.Add((b.Id + " main", GearText.Line(Gear.MainStatOf(b), 0.1f)));
+                        texts.Add((b.Id + " implicit", GearText.Line(b.Implicit, b.Top[b.Top.Length - 1])));
+                    }
+                    foreach (var t in GearCatalog.TowerTraits)
+                    {
+                        texts.Add((t.Key, GearText.TraitName(t.Key)));
+                        texts.Add((t.Key + " proc", GearText.Proc(t.Key)));
+                        foreach (Rarity r in new[] { Rarity.Epic, Rarity.Legendary }) texts.Add((t.Key + " " + r, GearText.TraitEffect(t.At(r))));
+                    }
+                    foreach (var slot in Gear.TowerSlots)
+                    {
+                        texts.Add((slot + " slot", GearText.SlotName(slot)));
+                        texts.Add((slot + " tab", GearText.TowerSlotName(slot)));
+                        texts.Add((slot + " name", GearText.Name(new GearItem { slot = (int)slot })));
+                    }
+                    foreach (var need in new[] { TowerNeed.None, TowerNeed.Armed, TowerNeed.HitsGround, TowerNeed.HitsAir, TowerNeed.Magazine, TowerNeed.Mobile })
+                        texts.Add((need + " need", GearText.TowerNeedLine(need)));
                     foreach (StatId s in System.Enum.GetValues(typeof(StatId)))
                         if (s != StatId.Count) texts.Add((s.ToString(), GearText.Line(s, 0.1f)));
                     foreach (var (what, text) in texts)
