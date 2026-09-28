@@ -143,7 +143,8 @@ namespace MachineBrigade.Editor
                 views.SnapshotAll();
                 views.Render(1f, Quaternion.identity);
                 // As a shot does: the main gun is laid first (its idle angle here), then its muzzle read.
-                if (!view.Flying) view.LayForShot();
+                // (Aircraft too, so a flying boss's raised barrels do not depend on the frame time.)
+                view.LayForShot();
                 var parts = Geometry(models, view);
                 var modelRoot = view.Model.Root.transform;
                 var mainNodes = new HashSet<Transform>();
