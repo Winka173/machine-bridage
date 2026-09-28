@@ -339,6 +339,13 @@ namespace MachineBrigade.Sim.Content
         public bool Vtol { get; internal set; }
 
         /// <summary>
+        /// Seconds an aeroplane holds its guns on the target once it is in reach (test feedback 2,
+        /// DECISIONS 12F): a VTOL jet hovers, any other slows to a crawl with its nose on the target,
+        /// then it breaks away, comes round and holds again. 0: plain strafing passes (bombers).
+        /// </summary>
+        public float AttackHold { get; internal set; }
+
+        /// <summary>
         /// A suicide vehicle (car bomb): "firing" its main weapon at a target in reach blows it up,
         /// a blast of the weapon's damage and splash that spares its own side.
         /// </summary>
