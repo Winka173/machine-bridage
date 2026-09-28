@@ -43,6 +43,8 @@ namespace MachineBrigade.Game.Effects
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
+            // Missiles' and rockets' flame cones, glow and smoke trails (DECISIONS 12B).
+            Plumes = new MotorPlumes(m, parent);
             // Jets' vapour: thin white trails that spread and fade behind the engines and wingtips.
             _contrail = Continuous(parent, "Contrails", m.Smoke, 1600,
                 PB.Fade(new Color(0.97f, 0.98f, 1f), new Color(0.94f, 0.96f, 0.99f), new Color(0.9f, 0.92f, 0.96f), 0.5f), 0.45f, 2.4f);
@@ -125,6 +127,9 @@ namespace MachineBrigade.Game.Effects
             _dust = Continuous(parent, "Tread Dust", m.Smoke, 1500,
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
         }
+
+        /// <summary>The burning motors of missiles and rockets in flight.</summary>
+        public MotorPlumes Plumes { get; }
 
         public void Trail(Vector3 position, float size)
         {
