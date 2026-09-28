@@ -284,11 +284,9 @@ def build(game, imgdir):
                "theo độ khó (Dễ 5%, Thường 10%, Khó 15%, Anh hùng 20%, Thép 25%), trần 1–5 xe cùng lúc; tướng ưu tiên loại xe của mình. Hạ tinh nhuệ hoàn CP theo giá thật "
                "và thưởng một ít xu, có tỷ lệ nhỏ rơi bản thiết kế.</p>"
                + table(head, simple_rows(game['elites']))
-               + "<h3>Boss</h3><p>Boss có bộ phận riêng (máu riêng, gắn vũ khí hoặc kỹ năng; vỡ thì vũ khí đó im và thân mất thêm máu; chỉ phát trúng trực tiếp làm hại "
-               "bộ phận) và boss cuối chương có thanh máu nhiều pha. Số bộ phận và vạch pha ghi trên từng thẻ.</p>"
-               + ''.join(vehicle_card(v, imgdir) + (f"<p class='muted'>Bộ phận: {esc(', '.join(p['kind'] for p in v['parts']))}" if v.get('parts') else "<p class='muted'>")
-                         + (f" · pha ở {', '.join(f'{x * 100:g}%' for x in v['phases'])}" if v.get('phases') else '') + (f" · {esc(v['bossFile'])}" if v.get('bossFile') else '')
-                         + "</p>" for v in game['bosses']) + '</div>')
+               + "<h3>Boss</h3>" + programme.boss_rules(game, h)
+               + ''.join(vehicle_card(v, imgdir) + programme.boss_parts(v, h)
+                         + (f"<p class='muted'>{esc(v['bossFile'])}</p>" if v.get('bossFile') else '') for v in game['bosses']) + '</div>')
 
     # ------------------------------------------------------------------ supports
     rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>{guide_html(s.get('guide', ''))}", esc(s['kind']), s['cost'], f"{s['cooldown']:g} s",
