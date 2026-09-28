@@ -1645,3 +1645,178 @@ library with its preview screen, the card renders and the UI checks. The screens
   switch on the settings page, map preview pictures for the map dropdown (the kit shows card
   renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
   `UiShots.Screens` and to the strict checks (then removing its old-screen report).
+
+## 11C. Test feedback: weapon targets, missile speed, fire rhythm (2026-09-28)
+
+The owner's play-test found three things: the armoured car's main gun shooting at aircraft, every
+missile flying too fast (seen on the attack helicopter's Hellfire), and fighter jets' cannons firing
+a short blip and a long wait instead of a sustained stream.
+
+### A. What a weapon may shoot at
+
+The owner's rule (corrected during the work): **a dedicated anti-air vehicle or tower keeps its
+main weapon on aircraft; every other vehicle's main gun fights the ground. Machine guns (the coax,
+roof and hull guns: "the rifle") may still engage low aircraft and helicopters.** A tank with
+nothing on the ground already swings its turret after an aircraft for the coaxial gun (round 6);
+the armoured car, the IFV and the BMPT now do the same.
+
+| Weapon | Carried by | Was | Now | Why |
+|---|---|---|---|---|
+| `autocannon_25` | armoured car (main), guard tower "nest" branch (main) | All | Ground | The owner's report; a non-AA main gun. The nest is a guard tower, not an AA tower: the AA towers cover the air. |
+| `autocannon_30` | IFV and elite APC (main), heavy tanks (coax) | All | Ground | Same rule (the owner named the IFV). The heavy tank's coax only ever fired at the main gun's target. |
+| `twin_30_bmpt` | BMPT (main) | All | Ground | Same rule (named by the owner). |
+| `vikhr` | Ka-52 (main) | All | Ground | A non-AA main weapon; the Ka-52 keeps its Igla-V for aircraft. |
+| `boss_missiles` | Behemoth, Mobile Fortress, Mega Gunship | All | Ground | An ATGM (Kornet model): ATGMs fight the ground. Each boss keeps its flak or machine guns for aircraft. |
+
+Kept on purpose (checked): every flak gun and SAM (AA vehicles, AA towers, the C-RAM, the Iron
+Beam, the heavy AA, the ZU-23 technical, the elite AA); machine guns everywhere (a jeep's, the
+support vehicles' only guns, the helicopters' guns and door guns, the bunkers); the fighter's
+cannon (the fighter is the anti-air aircraft). Four kept with a reason: `kornet_multi` (the ATGM
+tower's "multi" branch exists to reach aircraft; without it the branch would be only its 0.8x
+penalty on armour), `coilgun` (a boss gun, not a main gun: the Tempest's only air defence),
+`autocannon_40` (the Bastion boss's corner turrets, its only air defence) and `hover_ciws` (a
+close-in weapon system is an anti-air gun). Tank guns, howitzers, mortars, rocket artillery,
+ATGMs, bombs and rockets were already ground only.
+
+The view: a turreted vehicle's main barrel elevates to its aircraft (8-78 degrees, `VehicleView.
+Elevate`, from the sim's aim height) and an anti-air main weapon rests at 18 degrees. A secondary
+launcher (the AA vehicle's and the heavy AA's SAM rack) does not pitch: its missile climbs from the
+rack. That is the muzzle and flight work's (not changed here).
+
+### B. Missile speed
+
+Every guided missile about a third slower (30-36 %); direct-fire rockets a fifth (unguided: slower
+rounds miss a moving target more, so they lose less). Artillery rockets, drones and the ballistic
+missile were already slow and stay. Flight time at the weapon's full range:
+
+| Missile | Weapons | Speed before → after (m/s) | Flight at full range |
+|---|---|---|---|
+| ATGM | `atgm`, `atgm_heavy`, `ataka`, `atgm_post`, `boss_missiles` | 36 → 24 (-33 %) | 34 m: 0.94 → 1.42 s; 45 m: 1.25 → 1.88 s |
+| Kornet | `kornet_twin` (+ `kornet_top`, `kornet_multi`) | 38 → 25 (-34 %) | 50 m: 1.32 → 2.0 s |
+| Hellfire class | `heli_atgm`, `hellfire_volley`, `drone_missile`, `griffin`, `recon_missile` | 45 → 30 (-33 %) | 34 m: 0.76 → 1.13 s; 50 m: 1.1 → 1.67 s |
+| Vikhr | `vikhr` | 50 → 34 (-32 %) | 55 m: 1.1 → 1.62 s |
+| Air-to-ground | `maverick`, `kh29` | 50 → 32 (-36 %) | 40 m: 0.8 → 1.25 s |
+| MANPADS / SHORAD | `sam`, `stinger_atas`, `igla_v` | 60 → 40 (-33 %) | 44 m: 0.73 → 1.1 s |
+| Medium / long SAM | `sam_long`, `sam_battery` (+ `sam_pac3`, `sam_battery_lrr`) | 72 → 46 (-36 %) | 55 m: 0.76 → 1.2 s; 100 m: 1.39 → 2.17 s |
+| S-400 48N6 | `sam_48n6` | 95 → 62 (-35 %) | 95 m: 1.0 → 1.53 s |
+| Air-to-air | `air_to_air`, `wvr_aam`, `r60`, `aim9` | 74 → 48 (-35 %) | 60 m: 0.81 → 1.25 s |
+| Cruise / stand-off | `air_cruise_missile`, `jassm` | 30 → 20 (-33 %) | 110 m: 3.7 → 5.5 s |
+| Direct-fire rockets | `heli_rockets`, `gunship_rockets`, `scout_rockets`, `jet_rockets`, `s8_pods`, `hind_rockets` | 75 → 60 (-20 %) | 34 m: 0.45 → 0.57 s |
+
+- **Still hitting moving targets:** a guided round lands on its target's position at impact
+  (`DamageSystem.ResolveImpact`), whatever its speed; `WeaponTests.GuidedMissileHitsATargetThatDrivesAway` passes.
+- **Flares:** a flare burns 1.5-3 s, and a slow missile's flight can now outlast it, so a missile
+  is decoyed by flares out at impact *or put out while it flew* (`Projectile.LaunchedAt`).
+- **APS:** it intercepts at impact, from its charges then; nothing depends on the speed (`ApsTests` passes).
+- **Flight time against cooldown:** no weapon's flight at full range reaches its cooldown (the
+  longest: the cruise missile, 5.5 s of 14 s; the stand-off JASSM 4.5 s of 10 s).
+- **Speed-dependent logic:** only the fire-control computer's lead (`GearSystem.Lead`), which reads
+  the speed, and the overkill check (more rounds in the air at once) use it. No range assumes a speed.
+- **The launch:** the view flies a missile slowly off the rail and speeding up over its whole
+  flight (`ProjectilePool`, boost 0.55), arriving on the sim's time: a 40-60 m Hellfire now takes
+  1.3-2 s, starting at about 14 m/s and ending at 46. A distinct boost-then-cruise curve would be
+  the flight view's change.
+
+### C. Fire rhythm
+
+**New: magazines.** Weapon data `clip` (rounds) and `clipReload` (seconds): the rounds are fired one
+at a time, `cooldown` apart, at the target the mount bears on (they track it; a salvo keeps its
+first aim point), and stop when it stops bearing; an empty magazine takes `clipReload` (±10 %) to
+change, and a lull that long tops a part-used one up. The cooldown keeps up to one step of credit,
+so a gun faster than the 20 Hz step fires two rounds in some steps; the view draws the rounds of one
+step one cadence apart (`WeaponDef.RoundGap`). Backwards compatible: no `clip`, no change. A
+magazine needs a single-round weapon (`burst` 1), checked at load. `roundWeight` sets how heavy a
+round looks and sounds (tracer thickness, muzzle flash, the autocannon/MG report) when the damage
+is not the calibre's: a gun made faster with lighter rounds still looks and sounds as before.
+Card stats (`UnitStats`), the detail page's weapon line, the proc coefficient and a boss part's
+firepower count a magazine over its change.
+
+**The round-6 rules, kept:** no two weapons of a vehicle fire in the same instant
+(`WeaponTurnTests`, all vehicles); the machine gun pauses round every heavy round and salvo; guns
+other than machine guns and AA keep their 30 % slower, harder round-6 cadence (tank guns, cannons,
+howitzers, rockets: unchanged); AA guns keep their 8-16-round bursts (flak, ZU-23, C-RAM unchanged).
+A magazine gun counts as a gun in the rhythm: it takes turns with machine guns and gives way to a
+heavy weapon lined up. **Where the owner's request wins:** the rapid-fire guns (jet cannons,
+autocannons, machine guns, gatlings, the gunships' guns) fire faster than round 6's slower
+cadence; and a ground vehicle's or a helicopter's main magazine gun, once it has opened up, keeps
+its stream until the magazine is empty or the target stops bearing (the other mounts wait for the
+change; a heavy weapon lined up still goes first when the stream would start). An aeroplane's
+cannon takes turns like a machine gun: a pass lasts under a second, and its rockets and bombs must
+still get their turn in it.
+
+The jets' cannons fire a stream (20-25 rounds a second) for as long as the target is on the nose,
+from a 3.5-3.6 s magazine, then a 1 s change; the magazine carries over between passes. **Limit:**
+on a strafing pass the target is on the nose and in reach for under a second (30-32 m of reach at
+27-32 m/s, and the pass pulls through at 9 m), so a pass shows a 1-1.4 s stream, not 3-4 s (before:
+a 0.45-0.55 s burst). The whole magazine shows only where the target stays on the nose (the VTOL
+fighter hovering, a long head-on approach). A longer stream per pass needs a longer cannon reach or
+a slower, longer attack run (movement and balance, not the weapon data): left for the owner.
+An attack jet's cannon was tried with the right of way too (its stream kept once started): its
+bombs then never dropped, and letting them cut in left the cannon fewer rounds, so it takes turns.
+Per-round damage was set from the measurement so each pass does what the old burst did.
+
+The mega gunship boss keeps its guns' old cadence (`boss_heli_gun`, `boss_minigun`): a boss's
+mounts take turns one step at a time, and a gun firing every step would starve the ones after it.
+
+DPS, measured (`FireRhythmMeasure`, explicit: each shooter against a dummy for 60 s, strafing runs,
+the rhythm and the damage tables included; the target in brackets):
+
+| Shooter (target) | Mount | Rhythm before | Rhythm after | DPS before | DPS after | Rounds/60 s | Longest stream |
+|---|---|---|---|---|---|---|---|
+| attack_jet (main_battle_tank) | `jet_cannon` | 10 x 52 @0.05, 3.57 s | stream 20/s x 70 (3.5 s), 1 s change, 64 | 101.0 | 99.9 | 130 → 80 | 0.45 → 1.05 s |
+| tank_buster (main_battle_tank) | `gau_gatling` | 14 x 62 @0.04, 3.14 s | stream 25/s x 90 (3.6 s), 1 s change, 44 | 190.1 | 189.8 | 168 → 218 | 0.55 → 1.40 s |
+| fighter_jet (attack_helicopter) | `fighter_cannon` | 8 x 30 @0.05, 1.2 s | stream 20/s x 70 (3.5 s), 1 s change, 22 | 54.0 | 54.5 | 72 → 99 | 0.35 → 0.95 s |
+| gunship_heli (ifv) | `gsh30k` | 6 x 41 @0.06, 2.14 s | stream 12.5/s x 30 (2.4 s), 1.2 s, 15.8 | 73.8 | 73.7 | 144 → 373 | 0.30 → 2.60 s |
+| attack_helicopter (ifv) | `heli_gun` | MG 0.22 s, 16 | MG 0.12 s, 12 | 60.3 | 57.8 | 133 → 170 | 2.25 → 1.35 s |
+| scout_heli (armored_car) | `minigun` | MG 0.07 s, 7 | MG 0.045 s (20/s), 5.6 | 47.6 | 48.9 | 241 → 308 | 1.15 → 0.70 s |
+| sky_gunship (ifv) | `gunship_25mm` | MG 0.12 s, 19 | stream 16.7/s x 50 (3 s), 1.2 s, 12.4 | 45.0 | 45.2 | 67 → 174 | 0.45 → 0.50 s |
+| armored_car (armored_car) | `autocannon_25` | 3 x 22 @0.1, 1.29 s | stream 5/s x 12 (2.2 s), 1.6 s, 15.5 | 44.0 | 46.5 | 121 → 180 | 0.20 → 2.25 s |
+| armored_car (armored_car) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 17.3 | 14.7 | 102 → 108 | 0.50 → 1.30 s |
+| armored_car (attack_helicopter) | `autocannon_25` | 3 x 22 @0.1, 1.29 s | stream 5/s x 12 (2.2 s), 1.6 s, 15.5 | 13.2 | 0.0 | 121 → 0 | 0.20 → 0.00 s |
+| armored_car (attack_helicopter) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 5.2 | 10.0 | 102 → 244 | 0.50 → 1.15 s |
+| ifv (ifv) | `autocannon_30` | 3 x 32 @0.12, 1.57 s | stream 5/s x 10 (1.8 s), 1.8 s, 22.4 | 52.8 | 59.7 | 99 → 160 | 0.25 → 1.90 s |
+| ifv (ifv) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 19.6 | 12.5 | 115 → 92 | 0.80 → 1.40 s |
+| ifv (attack_helicopter) | `autocannon_30` | 3 x 32 @0.12, 1.57 s | stream 5/s x 10 (1.8 s), 1.8 s, 22.4 | 15.8 | 0.0 | 99 → 0 | 0.25 → 0.00 s |
+| ifv (attack_helicopter) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 6.9 | 10.0 | 136 → 244 | 0.80 → 1.15 s |
+| bmpt (ifv) | `twin_30_bmpt` | 4 x 30 @0.08, 1.29 s | stream 6.7/s x 16 (2.25 s), 1.6 s, 21.3 | 74.0 | 84.5 | 148 → 238 | 0.25 → 2.35 s |
+| bmpt (ifv) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 15.3 | 9.5 | 90 → 70 | 0.50 → 0.95 s |
+| main_battle_tank (ifv) | `mg_coax` | MG 0.16 s, 6 | MG 0.1 s, 4.8 | 19.2 | 25.2 | 113 → 185 | 1.60 → 1.30 s |
+| main_battle_tank (ifv) | `hmg_roof` | MG 0.2 s, 11 | MG 0.13 s, 8.8 | 34.0 | 28.7 | 110 → 115 | 2.05 → 1.35 s |
+| scout_jeep (armored_car) | `mg_jeep` | MG 0.18 s, 9 | MG 0.12 s, 7.7 | 49.0 | 48.9 | 192 → 224 | 1.80 → 1.35 s |
+
+| Shooter (target) | All mounts, DPS before → after |
+|---|---|
+| attack_jet (main_battle_tank) | 158 → 153 (-3 %) |
+| tank_buster (main_battle_tank) | 273 → 273 (-0 %) |
+| fighter_jet (attack_helicopter) | 159 → 153 (-4 %) |
+| gunship_heli (ifv) | 159 → 152 (-5 %) |
+| attack_helicopter (ifv) | 133 → 124 (-7 %) |
+| heavy_attack_heli (ifv) | 52 → 52 (+0 %) |
+| scout_heli (armored_car) | 84 → 84 (+1 %) |
+| sky_gunship (ifv) | 325 → 325 (+0 %) |
+| armored_car (armored_car) | 61 → 61 (-0 %) |
+| armored_car (attack_helicopter) | 18 → 10 (-46 %) |
+| ifv (ifv) | 84 → 84 (-0 %) |
+| ifv (attack_helicopter) | 23 → 10 (-56 %) |
+| bmpt (ifv) | 122 → 122 (-0 %) |
+| main_battle_tank (ifv) | 88 → 86 (-2 %) |
+| scout_jeep (armored_car) | 49 → 49 (-0 %) |
+| heavy_aa (attack_helicopter) | 376 → 376 (+0 %) |
+| aa_vehicle (attack_helicopter) | 166 → 160 (-3 %) |
+| zu23_technical (attack_helicopter) | 195 → 195 (+0 %) |
+
+**Also fixed:** `WeaponDef.Tuned` (the per-vehicle copy equipment makes) dropped the weapon's
+charge, bonuses, round model and scale; it keeps them now.
+
+### D. Left for the testing phase
+
+- Campaign winnability (the usual seeds) and the boss missions with the Ka-52, the jets and the
+  IFVs: the IFV and BMPT no longer shoot helicopters with their main guns, and bosses no longer
+  shoot aircraft with their Kornets.
+- DPS parity in real battles (the measurement is one shooter against one dummy): attack-jet and
+  A-10 time-to-kill on tanks; the fighter against helicopters (hovering, it now streams its cannon).
+- Missile hit rates with flares and APS in battle; SAMs against jets at long range.
+- Performance on the device with faster machine guns and streams (more `WeaponFired` events and
+  tracers a second).
+- Equipment that fits "salvo" weapons (`SalvoInterval`) no longer fits the jets' and autocannons'
+  magazines (they have no salvo); the fire-rate equipment speeds up a magazine's cadence.
