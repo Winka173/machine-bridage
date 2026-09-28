@@ -61,7 +61,7 @@ namespace MachineBrigade.Game.Effects
                     var antiAir = weapon != null && weapon.CanTarget(true) && !weapon.CanTarget(false);
                     if (antiAir) return airLaunched ? new Plume(2.1f, 0.22f, 1.7f, 1f) : new Plume(2.6f, 0.24f, 1.9f, 1f);
                     // Anti-tank and air-to-ground missiles: a short, sharp flame.
-                    return airLaunched ? new Plume(1.3f, 0.27f, 1.6f, 1f) : new Plume(1.05f, 0.28f, 1.6f, 1f);
+                    return airLaunched ? new Plume(1.6f, 0.27f, 1.6f, 1f) : new Plume(1.3f, 0.28f, 1.6f, 1f);
                 default:
                     return default;
             }
@@ -85,8 +85,17 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The hot inner tongue's length in its widths.</summary>
         private const float TongueStretch = 3f;
 
+        /// <summary>The glow's length in its widths: a soft body under the whole flame that bridges its quads.</summary>
+        private const float GlowStretch = 4f;
+
+        /// <summary>
+        /// Where along a stretched quad its particle sits, from the quad's front: Unity draws a
+        /// stretched billboard trailing back from its particle, against its velocity (the missile's).
+        /// </summary>
+        private const float Head = 0f;
+
         /// <summary>How much of a flame quad's length the fire shader fills (it tears the ends away).</summary>
-        private const float Fill = 0.6f;
+        private const float Fill = 0.5f;
 
         private static Material _fire;
 
@@ -121,8 +130,9 @@ namespace MachineBrigade.Game.Effects
                 _fire = new Material(m.Fire) { name = "Motor Fire", hideFlags = HideFlags.DontSave };
                 _fire.SetFloat("_Intensity", 2.5f);
             }
-            _glow = Shared(root, "Motor Glow", m.Glow, 600, ParticleSystemRenderMode.Billboard);
-            PB.Colors(_glow, Flat(0.5f));
+            _glow = Shared(root, "Motor Glow", m.Glow, 600, ParticleSystemRenderMode.Stretch);
+            PB.Colors(_glow, Flat(0.6f));
+            Stretch(_glow, GlowStretch);
             _cone = Shared(root, "Motor Flame", _fire, 2400, ParticleSystemRenderMode.Stretch);
             PB.Colors(_cone, Flat(1f));
             Stretch(_cone, ConeStretch);
@@ -158,7 +168,7 @@ namespace MachineBrigade.Game.Effects
             var tier = MatchSettings.Tier;
             SmokeSpacing = tier switch { GraphicsQuality.Low => 1.6f, GraphicsQuality.Medium => 1.25f, _ => 1f };
             _smokeLife = tier switch { GraphicsQuality.Low => 1.7f, GraphicsQuality.Medium => 2.5f, _ => 3.2f };
-            _segments = tier switch { GraphicsQuality.Low => 2, GraphicsQuality.Medium => 3, _ => 4 };
+            _segments = tier switch { GraphicsQuality.Low => 2, GraphicsQuality.Medium => 4, _ => 5 };
             _glowOn = tier != GraphicsQuality.Low;
         }
 
@@ -171,7 +181,7 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public void Burn(Vector3 nozzle, Vector3 forward, Vector3 velocity, float length, float width, float speed, float dt)
         {
-            var life = Mathf.Clamp(dt * 1.8f, 0.04f, 0.1f);
+            var life = Mathf.Clamp(dt * 2.4f, 0.05f, 0.12f);
             // Emitted one frame back: the particles fly with the missile and are moved on by this
             // frame's particle update before they are drawn (effects tick in Update).
             nozzle -= velocity * dt;
@@ -188,7 +198,9 @@ namespace MachineBrigade.Game.Effects
             var taper = 0f;
             for (var i = 0; i < segments; i++) taper += 1f - 0.45f * i / Mathf.Max(1, segments - 1);
             var baseWidth = Mathf.Clamp(total / (step * taper), width * 0.6f, width * 1.6f) * fat;
-            var along = -baseWidth * 0.3f;
+            // The first quad reaches forward over the nozzle by the end its fire leaves unfilled,
+            // so the flame starts on the tail.
+            var along = -baseWidth * ConeStretch * (1f - Fill) * 0.5f;
             for (var i = 0; i < segments; i++)
             {
                 var k = segments > 1 ? i / (segments - 1f) : 0f;
@@ -197,17 +209,19 @@ namespace MachineBrigade.Game.Effects
                 var dir = (axis + Random.insideUnitSphere * 0.04f).normalized;
                 var colour = Color.Lerp(new Color(1f, 0.7f, 0.3f), new Color(1f, 0.3f, 0.05f), k);
                 colour.a = Mathf.Lerp(1f, 0.75f, k);
-                Emit(_cone, nozzle + dir * (along + l * 0.5f), velocity, w, life, colour);
+                Emit(_cone, nozzle + dir * (along + l * Head), velocity, w, life, colour);
                 along += l * Fill;
             }
             // The hot tongue at the nozzle and a white core on it.
             var tongue = baseWidth * 0.7f * Random.Range(0.9f, 1.1f);
-            Emit(_tongue, nozzle + axis * (tongue * TongueStretch * 0.4f), velocity, tongue, life, new Color(1f, 0.86f, 0.52f));
-            Emit(_core, nozzle + axis * (baseWidth * 0.15f), velocity, baseWidth * 1.5f * Random.Range(0.9f, 1.1f), life, new Color(1f, 0.95f, 0.8f));
-            // A soft glow round the flame for the bloom (skipped on Low).
+            Emit(_tongue, nozzle + axis * (tongue * TongueStretch * (Head - 0.1f)), velocity, tongue, life, new Color(1f, 0.86f, 0.52f));
+            Emit(_core, nozzle + axis * (baseWidth * 0.1f), velocity, baseWidth * 0.8f * Random.Range(0.9f, 1.1f), life, new Color(1f, 0.9f, 0.62f));
+            // A soft orange body under the whole flame for the bloom (skipped on Low).
             if (_glowOn)
-                Emit(_glow, nozzle + axis * (total * 0.3f), velocity, Mathf.Max(total * 0.9f, baseWidth * 4f), life * 1.2f,
-                    new Color(1f, 0.55f, 0.22f, 0.85f));
+            {
+                var glow = Mathf.Max(baseWidth * 1.7f, total * 1.05f / GlowStretch);
+                Emit(_glow, nozzle + axis * (glow * GlowStretch * (Head - 0.08f)), velocity, glow, life * 1.2f, new Color(1f, 0.5f, 0.16f, 0.9f));
+            }
         }
 
         /// <summary>
