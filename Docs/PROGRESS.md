@@ -2,6 +2,54 @@
 
 Short record of what each milestone delivered and what is still missing. Newest first.
 
+## 2026-09-28 (afternoon): Round 6 (playtest list): weapons, munitions, effects, bosses, economy, guide, music
+
+The user's sixth list: guns of one vehicle firing together, rounds not leaving from the barrels,
+guns too fast, rifle tracers, In action without sound, the flame tank's fire, mortar and artillery
+shells off their smoke, AA and missile speeds (researched), the heavy gunship against the attack
+helicopter, the attack jet's role, the AC-130's jerky orbit and aircraft sizes, look-alike models,
+the railgun, the mine layer, In action for fire supports, clear descriptions, more round models
+and explosion kinds, tanks' machine guns against aircraft, Boss Rush economy and every mode's,
+enemies and bosses on the minimap, bigger boss deaths, the gunship item's ring, more bosses (up to
+three of a kind), the loading screen, a rank-based call cost, our own music, and the PDF.
+
+### Done
+
+**Weapons**
+- No two weapons of a vehicle fire in the same instant: a machine gun keeps quiet round every heavy round and salvo, two machine guns hand over, a lined-up heavy weapon has the right of way (`WeaponTurnTests` checks every vehicle). A tank's coaxial gun chases aircraft when nothing is left on the ground.
+- Guns other than machine guns and flak fire 30 % slower and hit harder (same DPS). AA guns fire real bursts (8-16 tracer rounds at 16-25 a second, then a pause). Missiles fly slow enough to be seen (ATGM 36, air-launched 45, SAM 60-72, AAM 74, cruise 30, rockets 45-75) and leave slowly before speeding up.
+- Rounds leave from the real barrels: the barrel is laid as the shot fires (a mortar's shell follows its tube and its smoke), twin mounts of a slot fire from their own guns, air-to-air missiles from the wingtip rails, bombs from the stores. `MuzzleAudit` renders where every mount fires from, for all vehicles.
+- Railguns charge 0.9 s (coils glowing), then a beam that hangs; the flamethrower is a rod of burning fuel with rolling fire and black smoke.
+
+**Munitions and explosions**
+- 35 round models (`Tools/blender/mb_munitions.py`), every weapon flies its own (per-mount overrides).
+- Impacts by kind: darts strike sparks, HEAT flashes, HE shells throw earth and black smoke, thermobaric fuel ignites a second fireball, bombs a shock ring and a column. Bosses die in stages, then a white flash and shock rings.
+
+**Aircraft and models**
+- One size curve for aircraft (the AC-130 twice a fighter, the Hind bigger than the Apache); the pylon turn stays inside the map and glides, no more jerks.
+- Ka-52 replaces the second Hind (stand-off Vikhr sniper), the Mi-24P is the flying IFV (captures points), the Su-25 replaces the A-10 clone, a KV-2/Sturmtiger siege tank replaces the artillery look-alike.
+- Five new bosses: Inferno, Tempest, Hive, Bastion, Spectre; Boss Rush draws one variant of each kind. Every boss mount has its own gun in the model.
+
+**Economy**
+- Pace 0.95 / supply 1.05; Survival 0.9, Defend/Endless 1.2 (Endless: player +2 %/wave, enemy +4 %); Boss Rush 2.0 with a 45 CP bank, a bounty at 75/50/25 % boss health, no raids; boss flak 21; fighter 10 CP, attack jet 13, turtle tank 8; VTOL jets never hover inside flak reach; no interceptors bought against ground-only enemies.
+- A card's rank cuts its call cost: -5 % at rank 7, -10 % from rank 9 (cards of 5 CP or less never change); the campaign enemy gets 80 % of the deck's cut as income.
+
+**Interface and sound**
+- A Guide tab on every detail page (role, how it fights, strong/weak, a tip, key words highlighted; 100 entries). Aircraft show what they really beat.
+- In action: gun sounds, the mine layer sowing mines (an enemy drives in), clips for every fire support.
+- Minimap: every enemy (dimmed out of sight), bosses as a pulsing red marker. The gunship item marks only its arrival point.
+- The loading screen moves (the battle builds over several frames).
+- Our own music (`Tools/music`, MIDI + FluidSynth + an MIT SoundFont): menu, three battle tracks, siege, boss, victory, defeat; a music volume in the settings.
+
+**Review document**: `Docs/Machine_Brigade_Design_Review.pdf` rebuilt (85 pages): guide lines on every card, the economy per mode and the rank discount, the boss variants, a round 6 picture section.
+
+**Tests and balance**: 377 tests, 352 pass, 25 skipped, none failing. Five-seed campaign: 110/115 (109 before the m13 retune; m21 now 5/5, was 2/5; m22 4/5, m17 4/5); m13 (destroying the HQ inside a fortress) is 2/5 after its retune: the scripted player army holds the middle instead of breaking in.
+
+### Known limitations
+- m13: the player commander does not press into the fortress (an AI issue, not the numbers).
+- Frame rate on a real phone is still to be measured (more tracers, round models, music streaming).
+- The music was checked by measurement only; it needs a listening pass.
+
 ## 2026-09-28: Round 5 (playtest list): real armament, new vehicles, campaign depth, Defend as a base
 
 The user's fifth list: bugs, one currency, real weapons for every vehicle, new vehicles (car

@@ -95,7 +95,8 @@ namespace MachineBrigade.Tests
             }
             return new Dictionary<string, object>
             {
-                ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["short"] = Strings.Short(v.Id), ["note"] = Text("note." + v.Id),
+                ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["short"] = Strings.Short(v.Id), ["note"] = Text("note." + v.Id), ["guide"] = Text("guide." + v.Id),
+                ["rounds"] = v.Mounts.Select(m => m.ProjectileModel ?? m.Weapon.ProjectileModel ?? "").ToList(),
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
@@ -104,7 +105,7 @@ namespace MachineBrigade.Tests
 
         private static object Support(SupportDef s) => new Dictionary<string, object>
         {
-            ["id"] = s.Id, ["name"] = Strings.Support(s.Id), ["info"] = Text("support." + s.Id + ".info"), ["kind"] = s.Kind.ToString(),
+            ["id"] = s.Id, ["name"] = Strings.Support(s.Id), ["info"] = Text("support." + s.Id + ".info"), ["kind"] = s.Kind.ToString(), ["guide"] = Text("guide." + s.Id),
             ["cost"] = s.CpCost, ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
             ["duration"] = s.Duration, ["type"] = s.DamageType.ToString(),
         };
@@ -148,6 +149,12 @@ namespace MachineBrigade.Tests
             ["rankCoins"] = Enumerable.Range(1, CardRanks.Max - 1).Select(CardRanks.CoinsToNext).ToList(),
             ["rankPrints"] = Enumerable.Range(1, CardRanks.Max - 1).Select(CardRanks.BlueprintsToNext).ToList(),
             ["rankBonus"] = Enumerable.Range(1, CardRanks.Max).Select(CardRanks.Bonus).ToList(),
+            ["rankCut"] = Enumerable.Range(1, CardRanks.Max).Select(CardRanks.CutBasisPoints).ToList(),
+            ["callCost"] = new[] { 4, 6, 8, 10, 12, 14, 16, 20, 22 }.Select(c => (object)new Dictionary<string, object>
+            {
+                ["cost"] = c, ["rank7"] = CardRanks.CallCost(c, 7), ["rank9"] = CardRanks.CallCost(c, 9),
+            }).ToList(),
+            ["bossKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
             ["crateCoinPrice"] = Crates.CoinPrice, ["crateRolls"] = Crates.Rolls, ["crateOdds"] = Crates.Odds,
             ["crateCoinsLow"] = Crates.CoinsLow, ["crateCoinsHigh"] = Crates.CoinsHigh,
             ["coinPacks"] = CoinStore.Packs.Select(p => (object)new Dictionary<string, object> { ["id"] = p.id, ["coins"] = p.coins, ["price"] = p.price }).ToList(),
