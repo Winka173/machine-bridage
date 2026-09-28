@@ -39,9 +39,12 @@ namespace MachineBrigade.Tests
 
         private sealed class Tally
         {
-            public int Flashes, Particles, Streams;
+            public int Flashes, Particles, Streams, OtherMount;
             public float Lit, Riding, Axis, Aim, Nozzle, RodBehind;
-            public string LitAt = "", RidingAt = "", AxisAt = "", NozzleAt = "", RodAt = "";
+            public string LitAt = "", RidingAt = "", AxisAt = "", NozzleAt = "", RodAt = "", OtherMountAt = "";
+
+            /// <summary>Vehicles with two mounts on one slot: the parts each mount's flashes rode.</summary>
+            public readonly SortedDictionary<string, SortedSet<string>> Shared = new();
 
             public void Max(ref float field, ref string at, float value, string where)
             {
@@ -134,6 +137,51 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// The Inferno's two flame projectors are two mounts on the main slot of a twin-barrelled
+        /// model: each fires from its own nozzle, not both from the muzzle between them.
+        /// </summary>
+        [Test]
+        public void TwinMainMountsFireFromTheirOwnBarrels()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var materials = new MaterialLibrary();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Twin Test").transform;
+            try
+            {
+                var map = new MapDefinition("twin", 200f,
+                    new[] { new TeamStart(0, new Vector2(0f, -80f)), new TeamStart(1, new Vector2(0f, 80f)) },
+                    new List<PropPlacement>(), new List<UnitPlacement>());
+                var world = new SimWorld(catalog, map, seed: 3);
+                var views = new ViewRegistry(models, meshes, materials, root, 0);
+                var view = views.Add(world.SpawnVehicle("behemoth_inferno", 0, Vector2.Zero, 0.4f));
+                views.SnapshotAll();
+                views.SnapshotAll();
+                views.Render(1f, Quaternion.identity);
+                var def = catalog.Vehicles["behemoth_inferno"];
+                var second = Enumerable.Range(1, def.Mounts.Count - 1).First(i => def.Mounts[i].Slot == def.Mounts[0].Slot);
+                var first = new List<Vector3>();
+                for (var k = 0; k < 4; k++)
+                {
+                    view.Recoil();
+                    first.Add(view.MuzzleOf(0));
+                }
+                var other = view.MuzzleOf(second);
+                var apart = Vector3.Distance(first[0], other);
+                Debug.Log($"TWIN inferno: mount 0 moves {first.Max(p => Vector3.Distance(p, first[0])):0.000} m between shots, mount {second} fires {apart:0.00} m from it");
+                Assert.Less(first.Max(p => Vector3.Distance(p, first[0])), 0.01f, "mount 0 keeps to its own nozzle");
+                Assert.Greater(apart, 1f, "the second projector fires from the other nozzle");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         [Test]
         public void FlashesRideTheDrawnMuzzleOfEveryWeapon()
         {
@@ -169,10 +217,12 @@ namespace MachineBrigade.Tests
                     $"tongue axis {before.Axis:0.0} deg ({before.AxisAt}), flash vs drawn barrel at lighting {before.Aim:0.0} deg; flame origin {before.Nozzle:0.00} m ({before.NozzleAt}), rod behind the nozzle {before.RodBehind:0.00} m ({before.RodAt})" +
                     $"\nAFTER {after.Flashes} flashes, {after.Particles} particle-frames: lit {after.Lit:0.000} m ({after.LitAt}), riding {after.Riding:0.000} m ({after.RidingAt}), " +
                     $"tongue axis {after.Axis:0.0} deg ({after.AxisAt}), flash vs drawn barrel at lighting {after.Aim:0.0} deg; flame origin {after.Nozzle:0.000} m ({after.NozzleAt}), rod behind the nozzle {after.RodBehind:0.000} m ({after.RodAt})" +
-                    $"\nno flash: {string.Join(", ", silent)}");
+                    $"\nno flash: {string.Join(", ", silent)}" +
+                    $"\nmounts sharing a slot (mount:part#instance): {string.Join("; ", after.Shared.Select(p => $"{p.Key} {string.Join(" ", p.Value)}"))}");
                 Assert.Greater(after.Flashes, 500, "the vehicles fired");
                 Assert.Greater(after.Streams, 10, "the flamethrowers fired");
                 Assert.Less(after.Lit, Tolerance, $"a flash lit off the round's start: {after.LitAt}");
+                Assert.AreEqual(0, after.OtherMount, $"a flash riding another part than its round's muzzle: {after.OtherMountAt}");
                 Assert.Less(after.Riding, Tolerance, $"a flash off its drawn barrel tip: {after.RidingAt}");
                 Assert.Less(after.Axis, AxisTolerance, $"a flame tongue off its barrel: {after.AxisAt}");
                 Assert.Less(after.Aim, 1f, "gun flashes are lit along the drawn barrel");
@@ -248,10 +298,17 @@ namespace MachineBrigade.Tests
                         new Vector2(Mathf.Sin(heading), Mathf.Cos(heading)) * 70f));
 
                 var shots = new List<SimEvent>();
-                var lit = new List<(VehicleView view, int mount, Vector3 from)>();
-                var flashed = new List<(Vector3 point, Vector3 dir)>();
-                WeaponEffects.Launched = (view, mount, from) => lit.Add((view, mount, from));
-                MuzzleFx.Flashed = (point, dir) => flashed.Add((point, dir));
+                // Each flash is paired with the round it is lit for: the last one launched before it.
+                // (Not by order in the frame: a later round of a mount's stream in the same frame
+                // is launched without a flash of its own, DECISIONS 12A.)
+                (VehicleView view, int mount, Vector3 from, Transform node)? last = null;
+                var flashed = new List<((VehicleView view, int mount, Vector3 from, Transform node) round, Vector3 point, Vector3 dir, Transform node)>();
+                WeaponEffects.Launched = (view, mount, from) => last = (view, mount, from, view.LastMuzzleNode);
+                MuzzleFx.Flashed = (point, dir, node) =>
+                {
+                    if (last.HasValue) flashed.Add((last.Value, point, dir, node));
+                    last = null;
+                };
                 var measured = new List<MuzzleFx.Measured>();
                 var nozzles = new List<(Vector3 from, Vector3 nozzle)>();
                 var rods = new List<(Vector3 tail, Vector3 axis, float age)>();
@@ -288,14 +345,20 @@ namespace MachineBrigade.Tests
                     foreach (var e in shots) weapons.Fired(e, drawn, views, now);
                     shots.Clear();
 
-                    // Each flash as it is lit: on the round's start, facing along the drawn barrel.
-                    for (var i = 0; i < Mathf.Min(lit.Count, flashed.Count); i++)
+                    // Each flash as it is lit: on its round's start, riding the part that round left
+                    // from (its own mount's muzzle, even with two alike on one slot), facing along the
+                    // drawn barrel.
+                    foreach (var ((view, mount, from, roundNode), point, dir, node) in flashed)
                     {
-                        var (view, mount, from) = lit[i];
-                        var (point, dir) = flashed[i];
                         tally.Flashes++;
                         fired++;
                         tally.Max(ref tally.Lit, ref tally.LitAt, Vector3.Distance(point, from), $"{def.Id} mount {mount}");
+                        if (node != roundNode && tally.OtherMount++ == 0) tally.OtherMountAt = $"{def.Id} mount {mount}";
+                        if (node != null && def.Mounts.Count(m => m.Slot == def.Mounts[mount].Slot) > 1)
+                        {
+                            if (!tally.Shared.TryGetValue(def.Id, out var parts)) tally.Shared[def.Id] = parts = new SortedSet<string>();
+                            parts.Add($"m{mount}:{node.name}#{System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(node) & 0xffff:x}<{node.parent?.name}>");
+                        }
                         var weapon = def.Mounts[mount].Weapon;
                         var gun = weapon.Projectile is ProjectileKind.Bullet or ProjectileKind.Flame || (weapon.Projectile == ProjectileKind.Shell && !weapon.Indirect && !weapon.Id.Contains("howitzer"));
                         if (gun)
@@ -305,7 +368,7 @@ namespace MachineBrigade.Tests
                             tally.Max(ref tally.Aim, ref ignored, off, "");
                         }
                     }
-                    lit.Clear();
+                    last = null;
                     flashed.Clear();
 
                     // Every live flash particle against its muzzle as drawn now.

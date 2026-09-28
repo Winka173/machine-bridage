@@ -100,8 +100,8 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Tests: false leaves flashes where they were lit (the old behaviour), for before-and-after measurements.</summary>
         internal static bool RideMuzzles = true;
 
-        /// <summary>Tests and tools: every flash as it is lit (muzzle point, the direction it faces).</summary>
-        internal static System.Action<Vector3, Vector3> Flashed;
+        /// <summary>Tests and tools: every flash as it is lit (muzzle point, the direction it faces, the part it rides or null).</summary>
+        internal static System.Action<Vector3, Vector3, Transform> Flashed;
 
         /// <summary>Gap between machine-gun rounds; matches the tracer burst.</summary>
         public const float RoundInterval = 0.055f;
@@ -191,7 +191,7 @@ namespace MachineBrigade.Game.Effects
         public void Fire(Kind kind, Vector3 from, Vector3 direction, float now, Anchor anchor, float scale = 1f, float? groundY = null)
         {
             var dir = direction.sqrMagnitude > 1e-4f ? direction.normalized : Vector3.forward;
-            Flashed?.Invoke(from, dir);
+            Flashed?.Invoke(from, dir, anchor.Node);
             _anchor = anchor;
             _now = now;
             switch (kind)
