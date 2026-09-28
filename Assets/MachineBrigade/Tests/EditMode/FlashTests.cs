@@ -377,7 +377,16 @@ namespace MachineBrigade.Tests
                     foreach (var m in measured)
                     {
                         tally.Particles++;
-                        var off = Vector3.Distance(m.Flash, m.Muzzle);
+                        // On the barrel's line: a gun's core sits a little ahead of the tip (play test 3),
+                        // never beside the barrel, behind the tip or more than 2.5 m out.
+                        var d = m.Flash - m.Muzzle;
+                        var off = d.magnitude;
+                        if (m.Barrel.sqrMagnitude > 1e-6f)
+                        {
+                            var b = m.Barrel.normalized;
+                            var along = Vector3.Dot(d, b);
+                            off = (d - b * along).magnitude + Mathf.Max(0f, -along) + Mathf.Max(0f, along - 2.5f);
+                        }
                         worst = Mathf.Max(worst, off);
                         tally.Max(ref tally.Riding, ref tally.RidingAt, off, $"{def.Id} s{scenario} {(m.Tongue ? "tongue" : "core")}");
                         if (m.Forward) tally.Max(ref tally.Axis, ref tally.AxisAt, Vector3.Angle(m.Axis, m.Barrel), $"{def.Id} s{scenario}");
