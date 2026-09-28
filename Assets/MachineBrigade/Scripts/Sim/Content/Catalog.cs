@@ -209,6 +209,26 @@ namespace MachineBrigade.Sim.Content
                             list.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{v.Path}.skills: unknown skill '{id}'."));
                         def.Skills = list;
                     }
+                    if (v.Has("phases"))
+                    {
+                        var phases = new List<BossPhaseDef>();
+                        foreach (var p in v.Array("phases"))
+                        {
+                            var phaseSkills = new List<SkillDef>();
+                            if (p.Has("skills"))
+                                foreach (var id in p.StringArray("skills"))
+                                    phaseSkills.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{p.Path}.skills: unknown skill '{id}'."));
+                            phases.Add(new BossPhaseDef
+                            {
+                                At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
+                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f),
+                                Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
+                            });
+                        }
+                        phases.Sort((a, b) => b.At.CompareTo(a.At));
+                        def.Phases = phases;
+                    }
+                    if (v.Has("general")) def.General = v.String("general");
                     if (v.Has("repair")) def.RepairAura = ParseAura(v.Object("repair"));
                     if (v.Has("rearm")) def.RearmAura = ParseAura(v.Object("rearm"));
                     def.Jammer = v.Float("jammer", 0f);

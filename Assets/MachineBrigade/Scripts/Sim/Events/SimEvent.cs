@@ -55,6 +55,12 @@ namespace MachineBrigade.Sim.Events
         /// <summary>A vehicle changed sides (Team: its new side): drawn again in its new colours.</summary>
         Defected,
 
+        /// <summary>
+        /// A multi-phase boss (Entity) reached a phase: Value its number (2 up), Mount 1 as its
+        /// transformation begins and 0 when it fights on, DefId its general's radio line (or null).
+        /// </summary>
+        BossPhase,
+
         /// <summary>A multi-stage mission moved on: DefId is the new stage's id, Value its number (1 up).</summary>
         StageStarted,
 
@@ -245,6 +251,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Revealed(Vehicle radar, Vehicle gun, float seconds) =>
             new(SimEventKind.GunRevealed, radar.Id, gun.Position, default, seconds, default, gun.Def.Id, radar.Team, other: gun.Id);
+
+        internal static SimEvent BossPhase(Vehicle v, int number, bool begins, string? radio) =>
+            new(SimEventKind.BossPhase, v.Id, v.Position, default, number, default, radio, v.Team, mount: begins ? 1 : 0);
 
         internal static SimEvent Defected(Vehicle v) =>
             new(SimEventKind.Defected, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team);

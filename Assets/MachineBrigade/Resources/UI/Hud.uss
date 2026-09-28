@@ -2415,6 +2415,9 @@
 }
 .base-gear-choice.worn { border-color: var(--text-mid); }
 .base-gear-choice.off { background-color: var(--surface-2); }
+.boss-phase { margin-left: 10px; font-size: 18px; color: #f2c14e; -unity-font-style: bold; }
+.boss-mark { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background-color: rgba(10, 12, 14, 0.9); }
+.boss-bar.transforming .boss-fill { background-color: #f2c14e; }
 .base-gear-empty {
     width: 84px; height: 84px; align-items: center; justify-content: center; background-color: var(--base-slot-closed);
     border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: var(--line-2);

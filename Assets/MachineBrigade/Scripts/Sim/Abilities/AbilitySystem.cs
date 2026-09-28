@@ -54,6 +54,7 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
+                if (v.Transforming && now >= v.TransformUntil) CompletePhase(v, now);
                 v.RefreshEffects(now);
                 if (v.Def.Jammer > 0f) _jammers.Add(v);
                 // Standing still (entrenchment counts from here).
@@ -462,6 +463,36 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled);
                 _mines.RemoveAt(i);
             }
+        }
+
+        // ------------------------------------------------------------------ boss phases
+
+        /// <summary>A multi-phase boss reached its next mark: it transforms, untouchable, before fighting on.</summary>
+        internal void BeginPhase(Vehicle v)
+        {
+            var phase = v.Def.Phases[v.Phase];
+            var now = _world.Time;
+            v.Transforming = true;
+            v.TransformUntil = now + MathF.Max(0f, phase.Transform);
+            v.ImmuneUntil = Math.Max(v.ImmuneUntil, v.TransformUntil);
+            _world.Emit(SimEvent.BossPhase(v, v.Phase + 2, true, phase.Radio));
+            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, v.Radius * 1.6f, 0f, ExplosionTier.Huge), v.Id));
+            if (phase.Transform <= 0f) CompletePhase(v, now);
+        }
+
+        private void CompletePhase(Vehicle v, double now)
+        {
+            var phase = v.Def.Phases[v.Phase];
+            v.Phase++;
+            v.Transforming = false;
+            v.DamageBoost *= phase.Damage;
+            v.PhaseSpeed *= phase.Speed;
+            v.DamageTaken *= phase.Armor;
+            if (phase.Heal > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * phase.Heal);
+            if (phase.Model != null) v.Form = phase.Model;
+            foreach (var skill in phase.Skills) Fire(v, skill, now);
+            v.RefreshEffects(now);
+            _world.Emit(SimEvent.BossPhase(v, v.Phase + 1, false, null));
         }
 
         // ------------------------------------------------------------------ skills

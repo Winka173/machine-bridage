@@ -808,6 +808,18 @@ namespace MachineBrigade.Game.Match
                             Haptics.Pulse(180, 255);
                         }
                         break;
+                    case SimEventKind.BossPhase when !_menu && _world.TryGetVehicle(e.Entity, out var phased):
+                        if (e.Mount == 1)
+                        {
+                            // The boss transforms: the camera goes to it, its general speaks.
+                            StartCinematic(e.Position, force: true);
+                            Haptics.Pulse(160, 255);
+                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", Strings.Card(phased.Def.Id), (int)e.Value),
+                                error: true, seconds: 5f);
+                        }
+                        // Its new form: drawn again with the phase's model.
+                        else if (phased.Form != null) _views.Rebuild(phased);
+                        break;
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);
                         break;

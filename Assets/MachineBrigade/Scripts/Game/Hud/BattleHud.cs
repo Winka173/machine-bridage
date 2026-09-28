@@ -386,6 +386,10 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
         public void SetBoss(string name, float health) => _boss?.Set(name, health);
 
+        /// <summary>A multi-phase boss: its bar marked at each phase, the phase it is in, and whether it is transforming.</summary>
+        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming) =>
+            _boss?.Set(name, health, phase, marks, transforming);
+
         public void SetDeck(float cp, float bank, float earning, float upkeep, IReadOnlyList<CardState> states) =>
             _deck?.Update(cp, bank, earning, upkeep, states);
 

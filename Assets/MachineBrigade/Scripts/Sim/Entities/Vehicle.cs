@@ -198,7 +198,19 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear * PhaseSpeed;
+
+        /// <summary>A multi-phase boss: the phases it has passed (0: the first bar).</summary>
+        public int Phase { get; internal set; }
+
+        /// <summary>Transforming between two phases (untouchable until <see cref="TransformUntil"/>).</summary>
+        public bool Transforming { get; internal set; }
+
+        internal double TransformUntil;
+        internal float PhaseSpeed = 1f;
+
+        /// <summary>The model it wears now if a phase changed it (null: its own).</summary>
+        public string? Form { get; internal set; }
 
         /// <summary>Fire-rate multiplier from skills.</summary>
         internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire;

@@ -86,6 +86,20 @@ namespace MachineBrigade.Game.Match
             return ai;
         }
 
+        /// <summary>A boss's bar: its name, health, and for a multi-phase boss the marks and the phase it is in.</summary>
+        protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss)
+        {
+            var phases = boss.Def.Phases;
+            if (phases.Count == 0)
+            {
+                hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+                return;
+            }
+            var marks = new List<float>(phases.Count);
+            foreach (var p in phases) marks.Add(p.At);
+            hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp, boss.Phase, marks, boss.Transforming);
+        }
+
         protected static void FillPoints(IObjectiveMode mode, List<PointInfo> scratch)
         {
             scratch.Clear();
@@ -668,7 +682,7 @@ namespace MachineBrigade.Game.Match
             scratch.Clear();
             hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
                 _mode.SecondsLeft(world), scratch);
-            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+            if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss);
             else hud.SetBoss(null, 0f);
         }
 
@@ -949,7 +963,7 @@ namespace MachineBrigade.Game.Match
             if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive)
-                hud.SetBoss(Strings.Card(boss.Def.Id), boss.Hp / boss.MaxHp);
+                ShowBoss(hud, boss);
             else hud.SetBoss(null, 0f);
         }
 

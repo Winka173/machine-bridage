@@ -68,7 +68,8 @@ namespace MachineBrigade.Game.Views
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
-            _model = models.Spawn(vehicle.Def.Model, vehicle.Team, _body);
+            // A boss in a later form wears that form's model.
+            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
             ModelBounds = Measure(_model.Root.transform, _body);

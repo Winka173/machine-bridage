@@ -192,6 +192,38 @@ namespace MachineBrigade.Sim.Content
         public string? ProjectileModel { get; internal set; }
     }
 
+    /// <summary>
+    /// One mark on a multi-phase boss's health bar: when its health reaches <see cref="At"/> the
+    /// boss transforms for <see cref="Transform"/> seconds (untouchable), then fights on with the
+    /// phase's changes.
+    /// </summary>
+    public sealed class BossPhaseDef
+    {
+        /// <summary>The share of full health the phase begins at (0-1).</summary>
+        public float At { get; set; }
+
+        public float Transform { get; set; } = 3f;
+
+        /// <summary>Health given back when the transformation ends (a share of full health).</summary>
+        public float Heal { get; set; }
+
+        /// <summary>Its damage, speed and damage taken from then on (multiplied in).</summary>
+        public float Damage { get; set; } = 1f;
+
+        public float Speed { get; set; } = 1f;
+
+        public float Armor { get; set; } = 1f;
+
+        /// <summary>Skills it uses at once when the phase begins (summons, a shield, a barrage...).</summary>
+        public IReadOnlyList<SkillDef> Skills { get; set; } = Array.Empty<SkillDef>();
+
+        /// <summary>A new model for the boss from this phase (its new form), or null.</summary>
+        public string? Model { get; set; }
+
+        /// <summary>Its general's radio line when the phase begins (a text key), or null.</summary>
+        public string? Radio { get; set; }
+    }
+
     public sealed class VehicleDef
     {
         public VehicleDef(string id, ArmorClass armor, float maxHp, float speed, float turnRateDegrees,
@@ -293,6 +325,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Skills the vehicle uses on its own (elite units, boss phases).</summary>
         public IReadOnlyList<SkillDef> Skills { get; internal set; } = Array.Empty<SkillDef>();
+
+        /// <summary>A boss's health phases, highest mark first (empty: one bar).</summary>
+        public IReadOnlyList<BossPhaseDef> Phases { get; internal set; } = Array.Empty<BossPhaseDef>();
+
+        /// <summary>The enemy general behind a boss (its radio lines and portrait), or null.</summary>
+        public string? General { get; internal set; }
 
         /// <summary>Repairs friendly vehicles around it (engineers).</summary>
         public AuraDef? RepairAura { get; internal set; }

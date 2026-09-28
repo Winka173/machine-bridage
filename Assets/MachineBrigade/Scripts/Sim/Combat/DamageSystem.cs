@@ -272,7 +272,19 @@ namespace MachineBrigade.Sim.Combat
             if (!(damage > 0f)) return 0f;
             // Unbreakable: a killing blow once a life leaves it on a sliver, briefly untouchable.
             if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
+            // A multi-phase boss stops at its next phase's mark (what goes past it is lost) and transforms.
+            var phaseReached = false;
+            if (vehicle.Phase < vehicle.Def.Phases.Count && !vehicle.Transforming)
+            {
+                var mark = vehicle.Def.Phases[vehicle.Phase].At * vehicle.MaxHp;
+                if (vehicle.Hp > mark && vehicle.Hp - damage <= mark)
+                {
+                    damage = vehicle.Hp - mark;
+                    phaseReached = true;
+                }
+            }
             vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
+            if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
             if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
             _world.Emit(SimEvent.Damage(vehicle, damage));
