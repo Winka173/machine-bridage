@@ -32,7 +32,9 @@ namespace MachineBrigade.Sim.Modes
             var r = point.Def.Radius;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Flying || Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
+                // Aircraft cannot hold ground, except a helicopter that carries troops (the Mi-24's capture rate).
+                if (!v.IsAlive || (v.Flying && (v.Def.FixedWing || v.Def.CaptureRate <= 0f)) ||
+                    Vector2.DistanceSquared(v.Position, point.Def.Position) > r * r) continue;
                 if (v.Team == TeamA) power0 += v.CaptureRate;
                 else if (v.Team == TeamB) power1 += v.CaptureRate;
             }
@@ -332,10 +334,13 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Most CP the army may field at once.</summary>
         public int ArmyCap { get; set; } = 24;
 
+        /// <summary>Most CP the side can hold unspent (a start or a bounty above it is not lost).</summary>
+        public float Bank { get; set; } = 30f;
+
         public IReadOnlyList<string> Vehicles { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> Supports { get; set; } = Array.Empty<string>();
 
         internal Economy.TeamEconomy Build(int team) =>
-            new(team, StartCp, income: Income, armyCap: ArmyCap, vehicles: Vehicles, supports: Supports);
+            new(team, StartCp, income: Income, bank: MathF.Max(Bank, StartCp), armyCap: ArmyCap, vehicles: Vehicles, supports: Supports);
     }
 }

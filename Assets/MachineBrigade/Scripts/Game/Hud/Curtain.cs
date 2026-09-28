@@ -30,6 +30,16 @@ namespace MachineBrigade.Game.Hud
         private int _blackFrames;
         private int _holdFrames;
 
+        /// <summary>How far the new scene's build has come (0-1), or below 0 for the sweeping bar.</summary>
+        private float _progress = -1f;
+
+        /// <summary>The scene being built behind the curtain reports how far it has come: the bar fills.</summary>
+        public static void Progress(float done)
+        {
+            if (_instance == null) return;
+            _instance._progress = Mathf.Clamp01(done);
+        }
+
         /// <summary>The curtain is down or moving: a new request to leave the scene is ignored.</summary>
         public static bool Busy => _instance != null && (_instance._target > 0f || _instance._alpha > 0.001f);
 
@@ -49,6 +59,7 @@ namespace MachineBrigade.Game.Hud
             curtain._detail.text = detail ?? "";
             curtain._then = then;
             curtain._blackFrames = 0;
+            curtain._progress = -1f;
             curtain._target = 1f;
             curtain._cover.pickingMode = PickingMode.Position;
             curtain._cover.style.display = DisplayStyle.Flex;
@@ -154,8 +165,18 @@ namespace MachineBrigade.Game.Hud
                 var speed = _target > _alpha ? 1f / CloseSeconds : 1f / OpenSeconds;
                 _alpha = Mathf.MoveTowards(_alpha, _target, speed * dt);
             }
-            // The bar sweeps across while the curtain is down (it freezes during the load itself).
-            _bar.style.left = Mathf.Repeat(Time.unscaledTime * 180f, 290f) - 70f;
+            // While the new scene builds, the bar fills as it goes; otherwise it sweeps across.
+            if (_progress >= 0f)
+            {
+                _bar.style.left = 0f;
+                _bar.style.width = Mathf.Lerp(_bar.resolvedStyle.width > 0f ? _bar.resolvedStyle.width : 0f, 220f * _progress, 0.5f);
+                if (_target < _alpha && _alpha < 0.05f) _progress = -1f;
+            }
+            else
+            {
+                _bar.style.width = 70f;
+                _bar.style.left = Mathf.Repeat(Time.unscaledTime * 180f, 290f) - 70f;
+            }
             Apply();
 
             if (_then != null && _alpha >= 1f)

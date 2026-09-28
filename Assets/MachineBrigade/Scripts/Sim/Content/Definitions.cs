@@ -84,6 +84,15 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A laser: drawn as a beam from the muzzle to the target (it hits at once).</summary>
         public bool Beam { get; internal set; }
+
+        /// <summary>Seconds a charged weapon (a railgun) powers up, target in sight, before each shot; 0 for none.</summary>
+        public float Charge { get; internal set; }
+
+        /// <summary>The model its rounds fly as (a missile, rocket, bomb, shell or drone), or null for the default of its kind.</summary>
+        public string? ProjectileModel { get; internal set; }
+
+        /// <summary>How big that model is drawn (one shell model for 105, 155 and 203 mm).</summary>
+        public float ProjectileScale { get; internal set; } = 1f;
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -175,6 +184,9 @@ namespace MachineBrigade.Sim.Content
         public string Slot { get; }
 
         public MountAim Aim { get; }
+
+        /// <summary>This mount's own round model, over the weapon's (one missile type, two carriers' variants).</summary>
+        public string? ProjectileModel { get; internal set; }
     }
 
     public sealed class VehicleDef
@@ -296,6 +308,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>What the vehicle is for (counters, AI roles, card info).</summary>
         public UnitClass Class { get; internal set; }
+
+        /// <summary>What this unit really beats when its class's line would mislead (an attack jet hunts the ground, a fighter aircraft); null: its class's.</summary>
+        public IReadOnlyList<UnitClass>? StrongVs { get; internal set; }
 
         /// <summary>A veteran enemy variant: bigger, tougher, with skills; shown with an elite badge.</summary>
         public bool Elite { get; internal set; }

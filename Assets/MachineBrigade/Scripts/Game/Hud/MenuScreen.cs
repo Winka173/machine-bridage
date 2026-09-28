@@ -354,6 +354,9 @@ namespace MachineBrigade.Game.Hud
             body.Add(Stepper("volume", "volume", Strings.Get("settings.volume"),
                 () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",
                 step => MatchSettings.Volume = Mathf.Clamp01(Mathf.Round((MatchSettings.Volume + step * 0.1f) * 10f) / 10f)));
+            body.Add(Stepper("music", "volume", Strings.Get("settings.music"),
+                () => MatchSettings.MusicVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.MusicVolume * 100f)}%",
+                step => MatchSettings.MusicVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.MusicVolume + step * 0.1f) * 10f) / 10f)));
             body.Add(OptionRow("globe", "settings.language", new[] { Strings.Get("settings.auto"), "English", "Tiếng Việt" },
                 () => (int)MatchSettings.Language, i =>
                 {

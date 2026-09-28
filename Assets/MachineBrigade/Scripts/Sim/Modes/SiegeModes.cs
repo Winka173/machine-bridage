@@ -477,7 +477,9 @@ namespace MachineBrigade.Sim.Modes
                 if (elite > 0f && world.Catalog.EliteVariant(id) is { } better && world.Random.NextDouble() < elite) id = better;
                 world.Economy.Airlift(Attacker, id, camp);
             }
-            if (_rules.Endless && world.TryGetEconomy(Attacker, out var economy)) economy.IncomeScale *= 1.05f;
+            // Endless: both sides grow each wave, the enemy faster (4 %) than the player (2 %, to +30 %).
+            if (_rules.Endless && world.TryGetEconomy(Attacker, out var economy)) economy.IncomeScale *= 1.04f;
+            if (_rules.Endless && world.TryGetEconomy(Defender, out var ours) && Wave <= 15) ours.IncomeScale *= (1f + 0.02f * Wave) / (1f + 0.02f * (Wave - 1));
             world.Emit(SimEvent.Alert(camp, Key("wave")));
         }
 
@@ -535,6 +537,37 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The bosses, fought one after another.</summary>
         public IReadOnlyList<string> Bosses { get; set; } = new[] { "behemoth", "mega_gunship", "mobile_fortress", "drone_mothership", "silver_bug" };
 
+        /// <summary>
+        /// Every kind of boss and its variants (at most three of a kind): the super-heavy tank
+        /// (Behemoth, Inferno, Tempest), the gunship (Iron Bird, Spectre), the mobile fortress
+        /// (Citadel, Hive, Bastion), the drone mothership and the Silver Bug.
+        /// </summary>
+        public static readonly IReadOnlyList<string[]> Kinds = new[]
+        {
+            new[] { "behemoth", "behemoth_inferno", "behemoth_tempest" },
+            new[] { "mega_gunship", "sky_fortress" },
+            new[] { "mobile_fortress", "fortress_hive", "fortress_bastion" },
+            new[] { "drone_mothership" },
+            new[] { "silver_bug" },
+        };
+
+        /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
+        public static IReadOnlyList<string> Roster(int seed)
+        {
+            var random = new System.Random(seed);
+            var roster = new List<string>();
+            foreach (var kind in Kinds) roster.Add(kind[random.Next(kind.Length)]);
+            return roster;
+        }
+
+        /// <summary>Every boss Boss Rush may bring (for loading its models ahead).</summary>
+        public static IEnumerable<string> Everyone()
+        {
+            foreach (var kind in Kinds)
+                foreach (var id in kind)
+                    yield return id;
+        }
+
         /// <summary>Elite escorts that come with each boss, by boss.</summary>
         public IReadOnlyDictionary<string, string[]> Escorts { get; set; } = new Dictionary<string, string[]>
         {
@@ -543,6 +576,11 @@ namespace MachineBrigade.Sim.Modes
             ["mobile_fortress"] = new[] { "elite_heavy_tank", "elite_aa", "elite_mlrs" },
             ["drone_mothership"] = new[] { "elite_aa", "elite_apc", "elite_tank_destroyer" },
             ["silver_bug"] = new[] { "elite_aa", "elite_attack_helicopter", "elite_heavy_tank" },
+            ["behemoth_inferno"] = new[] { "elite_heavy_tank", "elite_heavy_tank" },
+            ["behemoth_tempest"] = new[] { "elite_tank_destroyer", "elite_tank_destroyer" },
+            ["sky_fortress"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
+            ["fortress_hive"] = new[] { "elite_aa", "elite_apc" },
+            ["fortress_bastion"] = new[] { "elite_heavy_tank", "elite_mlrs" },
         };
 
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
@@ -552,6 +590,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;
+
+        /// <summary>CP handed out each time the boss drops below 75, 50 and 25 % health (paid during the fight, BTD6 style).</summary>
+        public float StepBounty { get; set; }
 
         public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
     }
@@ -597,10 +638,19 @@ namespace MachineBrigade.Sim.Modes
             _nextBossAt = 10.0;
         }
 
+        /// <summary>Health steps of the boss on the field already paid for (75, 50, 25 %).</summary>
+        private int _stepsPaid;
+
         public void Tick(SimWorld world, float dt)
         {
             if (Result != null) return;
             _ledger.Update(world);
+            if (_rules.StepBounty > 0f && Boss.IsValid && world.TryGetVehicle(Boss, out var hurt) && hurt.IsAlive)
+            {
+                var steps = Math.Min(3, (int)MathF.Floor((1f - hurt.Hp / hurt.MaxHp) * 4f));
+                for (; _stepsPaid < steps; _stepsPaid++)
+                    if (world.TryGetEconomy(PlayerTeam, out var paid)) paid.Cp = MathF.Min(paid.Bank, paid.Cp + _rules.StepBounty);
+            }
             if (Boss.IsValid && (!world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
             {
                 Boss = EntityId.None;
@@ -631,6 +681,7 @@ namespace MachineBrigade.Sim.Modes
             var home = world.TryGetRally(PlayerTeam, out var h) ? h : Vector2.Zero;
             var heading = SimMath.HeadingOf(home - rally);
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
+            _stepsPaid = 0;
             if (!_rules.Escorts.TryGetValue(id, out var escorts)) return;
             for (var i = 0; i < escorts.Length; i++)
             {

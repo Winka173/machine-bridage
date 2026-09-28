@@ -732,7 +732,10 @@ namespace MachineBrigade.Sim.Movement
             var def = v.Def;
             var now = _world.Time;
             var distance = Vector2.Distance(v.Position, target.Position);
-            if (now >= v.HoverUntil && now >= v.HoverReadyAt && distance < def.Weapon.Range * 0.8f && distance > 6f)
+            // Never stop dead inside an anti-aircraft gun's reach (a boss's flak): fire from outside it.
+            var flak = UnderFlak(v);
+            if (flak && now < v.HoverUntil) v.HoverUntil = now;
+            if (!flak && now >= v.HoverUntil && now >= v.HoverReadyAt && distance < def.Weapon.Range * 0.8f && distance > 6f)
             {
                 v.HoverUntil = now + HoverSeconds;
                 v.HoverReadyAt = v.HoverUntil + HoverRest;
@@ -744,6 +747,24 @@ namespace MachineBrigade.Sim.Movement
             // Leaving the hover, it flies straight out before turning back in.
             if (now + dt >= v.HoverUntil) v.RunExtending = true;
             return true;
+        }
+
+        /// <summary>An enemy anti-aircraft gun (not a guided missile) has this aircraft within its reach and a little more.</summary>
+        private bool UnderFlak(Vehicle v)
+        {
+            foreach (var other in _world.VehicleList)
+            {
+                if (!other.IsAlive || other.Team == v.Team || other.Team < 0) continue;
+                var d2 = Vector2.DistanceSquared(other.Position, v.Position);
+                foreach (var mount in other.Def.Mounts)
+                {
+                    var w = mount.Weapon;
+                    if (w.Guided || !w.CanTarget(true) || !Combat.CombatSystem.IsAntiAir(w)) continue;
+                    var reach = w.Range + 6f;
+                    if (d2 < reach * reach) return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>A point ahead on an anticlockwise circle of <paramref name="radius"/> round <paramref name="centre"/> (the centre kept on the left).</summary>

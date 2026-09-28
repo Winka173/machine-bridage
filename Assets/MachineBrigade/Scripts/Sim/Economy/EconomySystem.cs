@@ -118,6 +118,15 @@ namespace MachineBrigade.Sim.Economy
 
         public int ItemCount(string supportId) => Items.TryGetValue(supportId, out var n) ? n : 0;
 
+        /// <summary>CP off a card's price for this side (its rank: see the game's CardRanks.CallCut), by card id.</summary>
+        public Dictionary<string, int> Discounts { get; } = new();
+
+        /// <summary>Scales this side's income (the campaign enemy keeping pace with a discounted deck).</summary>
+        public void ScaleIncome(float factor) => IncomeScale *= factor;
+
+        /// <summary>What calling this card costs this side: its price less its rank's cut, never below 1.</summary>
+        public int CostOf(string id, int price) => Discounts.TryGetValue(id, out var cut) ? Math.Max(1, price - cut) : price;
+
         public float CooldownLeft(string supportId, double now) =>
             ReadyAt.TryGetValue(supportId, out var ready) ? (float)Math.Max(0.0, ready - now) : 0f;
     }
@@ -181,12 +190,14 @@ namespace MachineBrigade.Sim.Economy
                 return CommandResult.Rejected(CommandError.UnknownCard);
             if (economy.Vehicles.Count > 0 && !Contains(economy.Vehicles, defId)) return CommandResult.Rejected(CommandError.UnknownCard);
             if (!_world.TryGetRally(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
-            if (economy.Cp < def.CpCost) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            // A ranked card costs less to call (the army's value, upkeep and refunds keep its full price).
+            var price = economy.CostOf(defId, def.CpCost);
+            if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= TeamEconomy.MaxVehicles) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
-            economy.Cp -= def.CpCost;
+            economy.Cp -= price;
             if (def.Flying) _world.CountAircraft(team);
             // Veteran crews: some deliveries turn up as the refurbished elite version. Decided now,
             // with the landing point, so the drop the game draws is the vehicle that lands.

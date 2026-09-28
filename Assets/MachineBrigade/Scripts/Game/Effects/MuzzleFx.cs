@@ -207,6 +207,10 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
+        /// <summary>A spray of sparks from <paramref name="from"/> along <paramref name="dir"/> (a dart striking armour, a railgun's hit).</summary>
+        public void SparkBurst(Vector3 from, Vector3 dir, int count, float minSpeed, float maxSpeed, float scale = 1f) =>
+            Sparks(from, dir, count, minSpeed, maxSpeed, scale);
+
         private void Sparks(Vector3 from, Vector3 dir, int count, float minSpeed, float maxSpeed, float scale)
         {
             for (var i = 0; i < count; i++)

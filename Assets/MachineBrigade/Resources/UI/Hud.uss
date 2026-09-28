@@ -2193,3 +2193,8 @@
 .menu .gear-set-none { color: var(--text-lo); }
 .menu .detail-gear-name { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 19px; letter-spacing: 0.5px; }
 .trait-pop { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; letter-spacing: 1px; }
+
+/* Round 6: the detail page's Guide tab. The headline, then one line each for how it fights, what
+   it beats and a tip; key words come highlighted (rich text) in the accent colour. */
+.menu .guide-headline { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 17px; color: var(--text-hi); white-space: normal; margin: 2px 0 10px 0; }
+.menu .guide-line { font-size: 14px; color: var(--text-mid); padding-left: 10px; border-left-width: 2px; border-left-color: var(--line-2); margin: 0 0 9px 0; }

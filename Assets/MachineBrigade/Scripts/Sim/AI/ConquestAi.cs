@@ -456,6 +456,8 @@ namespace MachineBrigade.Sim.AI
                     // Keep about a seventh of the army in the air: aircraft are fast and hit hard,
                     // but dear, and anti-air is what they are for.
                     if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
+                    // An interceptor with no enemy aircraft to hunt is dead weight (a fighter sent at a ground boss dies for nothing).
+                    if (def.Flying && def.Weapon.Targets == TargetLayers.Air && air <= 0) score -= 2.5f;
                     if (main.MinRange > 0f) score += ownArtillery * 5 < ownTotal ? 1.2f : -2f;
                     score += def.CaptureRate * neutral * 0.35f;
                     // Enough anti-air for the enemy's aircraft, not a car park of it.
@@ -481,14 +483,14 @@ namespace MachineBrigade.Sim.AI
                     best = id;
                     bestScore = score;
                 }
-                if (def.CpCost <= economy.Cp && score > bestAffordableScore)
+                if (economy.CostOf(id, def.CpCost) <= economy.Cp && score > bestAffordableScore)
                 {
                     bestAffordable = id;
                     bestAffordableScore = score;
                 }
             }
             if (best == null) return;
-            var bestCost = world.Catalog.Vehicles[best].CpCost;
+            var bestCost = economy.CostOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
                 world.Submit(Command.Deploy(_team, best));

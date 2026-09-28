@@ -18,6 +18,7 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _motor;
         private readonly ParticleSystem _flame;
         private readonly ParticleSystem _flameCore;
+        private readonly ParticleSystem _charge;
 
         /// <summary>A flamethrower's stream, fed until the next pull of the trigger.</summary>
         private sealed class FlameStream
@@ -60,6 +61,10 @@ namespace MachineBrigade.Game.Effects
             PB.Colors(_flameCore, PB.Fade(new Color(2.5f, 1.45f, 0.55f), new Color(2.3f, 0.85f, 0.16f), new Color(1.3f, 0.3f, 0.05f)));
             PB.Grow(_flameCore, 0.7f, 1.5f);
             _flameCore.Play();
+            // A railgun's coils glowing up before the shot: pale blue-white points of light.
+            // (The spark material: a flat additive glow, never faded where it meets the model.)
+            _charge = Continuous(parent, "Rail Charge", m.Sparks, 300,
+                PB.Fade(new Color(0.75f, 0.95f, 1f), new Color(0.6f, 0.85f, 1f), new Color(0.4f, 0.6f, 1f)), 1f, 0.4f);
             _flak = Continuous(parent, "Flak Bursts", m.Smoke, 200, PB.Plume(0.08f, 0.3f, 0.8f), 0.6f, 1.8f);
             _repair = Continuous(parent, "Repair", m.Sparks, 200,
                 PB.Fade(new Color(0.5f, 1.6f, 0.8f), new Color(0.3f, 1.2f, 0.6f), new Color(0.2f, 0.8f, 0.4f)), 1f, 0.3f);
@@ -138,6 +143,10 @@ namespace MachineBrigade.Game.Effects
                     Random.Range(1.4f, 2.1f), Random.Range(0.45f, 0.75f));
             }
         }
+
+        /// <summary>One point of a railgun's charge glow, <paramref name="size"/> across.</summary>
+        public void Charge(Vector3 position, float size) =>
+            Emit(_charge, position + Random.insideUnitSphere * 0.05f, Vector3.zero, size * Random.Range(0.8f, 1.2f), 0.12f);
 
         /// <summary>Per frame: feeds the flame streams from their nozzles.</summary>
         public void Tick(float now, float dt)

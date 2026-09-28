@@ -72,6 +72,13 @@ namespace MachineBrigade.Game.Effects
             }
 
             var to = AimPoint(e, views);
+            var mountModel = shooter != null && e.Mount < shooter.Def.Mounts.Count ? shooter.Def.Mounts[e.Mount].ProjectileModel : null;
+            string Model(string fallback)
+            {
+                var id = mountModel ?? weapon?.ProjectileModel;
+                return id != null && _models.Has(id) ? id : fallback;
+            }
+            var scale = weapon?.ProjectileScale ?? 1f;
             var flat = to - from;
             flat.y = 0f;
             var forward = flat.sqrMagnitude > 1e-4f ? flat.normalized : Vector3.forward;
@@ -89,6 +96,11 @@ namespace MachineBrigade.Game.Effects
                 lag = count * weapon.BurstInterval;
             }
 
+            if (weapon != null && weapon.Charge > 0f && kind == ProjectileKind.Bullet)
+            {
+                Rail(weapon, from, to, aim, groundY, e.Value, now, Model(null));
+                return;
+            }
             if (weapon != null && weapon.Beam)
             {
                 // A laser: a hard bright bar for a moment, the glow of the director at the muzzle.
@@ -104,7 +116,9 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Missile:
                     // Guided: the missile bends towards wherever its target is now.
-                    if (_hasMissile) _projectiles.Launch(_models.Merged("missile"), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId));
+                    // It leaves the rail slowly and speeds up (launch, then boost), arriving on time.
+                    if (_hasMissile) _projectiles.Launch(_models.Merged(Model("missile")), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
+                        boost: 0.55f, scale: scale);
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
                     _shake(from, 0.05f);
@@ -112,8 +126,9 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Drone:
                     // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at.
-                    var drone = _models.Has("fpv_drone") ? "fpv_drone" : _hasMissile ? "missile" : null;
-                    if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f);
+                    var drone = Model(_models.Has("fpv_drone") ? "fpv_drone" : _hasMissile ? "missile" : null);
+                    if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f,
+                        scale: scale);
                     else _tracers.Launch(from, to, e.Value, distance * 0.12f, 0.15f, 0.8f, now, 0f, 0.4f);
                     _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
                     break;
@@ -122,14 +137,15 @@ namespace MachineBrigade.Game.Effects
                     var artillery = weapon != null && weapon.MinRange > 0f;
                     var arc = artillery ? ArcFor(pitch, distance, 0.28f) : distance * 0.02f;
                     // Heavy rockets and ballistic missiles fly their own models where they exist.
-                    var rocket = weapon?.Id switch
+                    var rocket = Model(weapon?.Id switch
                     {
                         "rockets_300mm" when _models.Has("heavy_rocket") => "heavy_rocket",
                         "ballistic_missile" when _models.Has("ballistic_missile") => "ballistic_missile",
                         _ => "rocket",
-                    };
+                    });
                     if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
-                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f);
+                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery ? 0.7f : 0.3f,
+                        boost: artillery ? 0.2f : 0.3f, scale: scale);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
@@ -137,7 +153,7 @@ namespace MachineBrigade.Game.Effects
 
                 case ProjectileKind.Bomb:
                     // Released from the wing: it keeps some forward speed and falls onto the target.
-                    if (_hasBomb) _projectiles.Launch(_models.Merged("bomb"), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now);
+                    if (_hasBomb) _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale);
                     else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
 
@@ -147,8 +163,77 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 default:
-                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now, pitch, barrel);
+                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now, pitch, barrel, Model(null), scale);
                     break;
+            }
+        }
+
+        /// <summary>
+        /// A railgun (or the saucer's coilgun) lets go: a white core beam that hangs for a moment
+        /// and thins away, a wider glow round it, a plasma blast and a cone of sparks at the
+        /// muzzle, the slug riding the head of the beam; the barrel's charge glow is over.
+        /// </summary>
+        private void Rail(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now, string slug)
+        {
+            var heavy = weapon.Damage >= 300f;
+            _tracers.Beam(from, to, 0.1f, heavy ? 0.22f : 0.14f, now);
+            _tracers.Beam(from, to, 0.35f, heavy ? 0.11f : 0.07f, now, 0.1f);
+            _tracers.Beam(from, to, 0.5f, heavy ? 0.05f : 0.035f, now, 0.45f);
+            if (slug != null) _projectiles.Launch(_models.Merged(slug), from, to, Mathf.Max(0.08f, travel), 0f, 0.4f, now);
+            _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, heavy ? 1.8f : 1.2f, groundY);
+            _muzzle.SparkBurst(from, aim.normalized, heavy ? 40 : 20, 12f, 30f);
+            // Ionised air along the line, drifting off.
+            var length = Vector3.Distance(from, to);
+            for (var d = 3f; d < length; d += 4f) _emitters.Trail(Vector3.Lerp(from, to, d / length), heavy ? 0.5f : 0.35f);
+            _shake(from, heavy ? 0.12f : 0.06f);
+        }
+
+        /// <summary>
+        /// A charged weapon powering up: sparks drawn into the muzzle, a glow at the barrel's end
+        /// that grows until it fires (see <see cref="Rail"/>).
+        /// </summary>
+        public void Charging(in SimEvent e, ViewRegistry views, float now)
+        {
+            if (!views.TryGet(e.Entity, out var shooter)) return;
+            var muzzle = shooter.MuzzleOf(e.Mount);
+            var back = -shooter.DirectionOf(e.Mount);
+            _charges.Add((shooter, e.Mount, now, now + e.Value));
+
+            _muzzle.SparkBurst(muzzle + back * 0.4f, back, 6, 1f, 3f, 0.6f);
+        }
+
+        private readonly System.Collections.Generic.List<(VehicleView view, int mount, float start, float end)> _charges = new();
+
+        /// <summary>Per frame: charged weapons glow brighter and draw sparks in, faster towards the shot.</summary>
+        public void Tick(float now)
+        {
+            for (var i = _charges.Count - 1; i >= 0; i--)
+            {
+                var (view, mount, start, end) = _charges[i];
+                if (now >= end || view == null || view.Root == null)
+                {
+
+                    _charges.RemoveAt(i);
+                    continue;
+                }
+                var k = Mathf.InverseLerp(start, end, now);
+                var muzzle = view.MuzzleOf(mount);
+                var dir = view.DirectionOf(mount);
+                // The coils along the barrel light up one after another, breech to muzzle, and a
+                // ball of light swells at the muzzle, flickering faster towards the shot.
+                // (A little above the rails, so the glow is never buried in the barrel it sits on.)
+                var lift = Vector3.up * 0.35f;
+                for (var coil = 0; coil < 5; coil++)
+                    if (k >= coil / 5f)
+                        _emitters.Charge(muzzle - dir * (0.8f * (4 - coil)) + lift, 0.5f + 0.2f * k);
+                var flicker = 0.85f + 0.3f * Mathf.Sin(now * (18f + 40f * k));
+                _emitters.Charge(muzzle + dir * 0.4f + lift, Mathf.Lerp(0.6f, 1.9f, k) * flicker);
+                var sparks = Mathf.RoundToInt(1 + 3 * k);
+                for (var s = 0; s < sparks; s++)
+                {
+                    var ring = UnityEngine.Random.onUnitSphere * (1.6f - 0.8f * k);
+                    _muzzle.SparkBurst(muzzle + ring, -ring.normalized, 1, 3f + 5f * k, 6f + 8f * k, 0.6f);
+                }
             }
         }
 
@@ -202,7 +287,7 @@ namespace MachineBrigade.Game.Effects
             barrel.sqrMagnitude > 0.01f && barrel.y > 0.05f ? barrel : forward + Vector3.up * rise;
 
         private void Shells(WeaponDef weapon, in SimEvent e, Vector3 from, Vector3 to, Vector3 forward, Vector3 aim, float? groundY,
-            float distance, float now, float pitch, Vector3 barrel)
+            float distance, float now, float pitch, Vector3 barrel, string model = null, float scale = 1f)
         {
             // Only guns that lob their shells (artillery with a minimum range, howitzers) fly an arc;
             // a tank or turret gun fires straight down its barrel however big its shell is.
@@ -217,8 +302,10 @@ namespace MachineBrigade.Game.Effects
                 _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
                 return;
             }
-            // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas.
-            _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
+            // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas;
+            // the shell or mortar bomb itself where it has a model.
+            if (model != null) _projectiles.Launch(_models.Merged(model), from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale);
+            else _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
             _muzzle.Fire(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, 1f, groundY);
             _shake(from, 0.12f);
         }

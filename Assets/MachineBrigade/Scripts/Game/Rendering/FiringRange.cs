@@ -25,6 +25,7 @@ namespace MachineBrigade.Game.Rendering
 
         private readonly SimWorld _world;
         private readonly ViewRegistry _views;
+        private readonly MineViews _mines;
         private readonly EffectsDirector _effects;
         private readonly Transform _root;
         private readonly Camera _camera;
@@ -66,6 +67,7 @@ namespace MachineBrigade.Game.Rendering
             _world.EnableEconomy(new TeamEconomy(0));
             _world.EnableEconomy(new TeamEconomy(1));
             _views = new ViewRegistry(models, meshes, materials, _root, 0);
+            _mines = new MineViews(models, _root, -1);
             // The effects need a battlefield camera for culling and the view's focus; this one only
             // wraps the preview camera, which is put back the way the preview wants it below.
             var rts = new RtsCamera(camera, 90f, Vector3.zero);
@@ -84,16 +86,9 @@ namespace MachineBrigade.Game.Rendering
             _id = vehicleId;
             _start = new Vector2(0f, -distance * 0.5f);
             _shooter = _world.SpawnVehicle(vehicleId, 0, _start, 0f);
-            var ground_ = HitsGround(def);
-            var air = HitsAir(def);
-            var far = new Vector2(0f, distance * 0.5f);
-            if (ground_)
-            {
-                Target("main_battle_tank", far + new Vector2(-4f, 0f));
-                Target("apc", far + new Vector2(5f, 3f));
-                Target("heavy_tank", far + new Vector2(0f, 9f));
-            }
-            if (air) Target("attack_helicopter", far + new Vector2(ground_ ? 10f : 0f, ground_ ? -6f : 0f));
+            _ground = HitsGround(def);
+            _air = HitsAir(def);
+            _far = new Vector2(0f, distance * 0.5f);
             _reach = distance;
             SetLayer(_root);
         }
@@ -128,6 +123,27 @@ namespace MachineBrigade.Game.Rendering
             return false;
         }
 
+        private readonly bool _ground, _air;
+        private readonly Vector2 _far;
+        private bool _targetsUp;
+
+        /// <summary>
+        /// The targets are set up a moment after the vehicle, once it is drawn on its spot: a
+        /// first shot fired in the first instant would leave from a vehicle not yet seen.
+        /// </summary>
+        private void PlaceTargets()
+        {
+            if (_targetsUp || _world.Time < 0.8) return;
+            _targetsUp = true;
+            if (_ground)
+            {
+                Target("main_battle_tank", _far + new Vector2(-4f, 0f));
+                Target("apc", _far + new Vector2(5f, 3f));
+                Target("heavy_tank", _far + new Vector2(0f, 9f));
+            }
+            if (_air) Target("attack_helicopter", _far + new Vector2(_ground ? 10f : 0f, _ground ? -6f : 0f));
+        }
+
         private void Target(string id, Vector2 at)
         {
             var target = _world.SpawnVehicle(id, 1, at, MathF.PI);
@@ -142,6 +158,7 @@ namespace MachineBrigade.Game.Rendering
             while (_accumulator >= Step)
             {
                 _accumulator -= Step;
+                PlaceTargets();
                 Order();
                 _world.Step(Step);
                 _views.SnapshotAll();
@@ -163,6 +180,7 @@ namespace MachineBrigade.Game.Rendering
                 _shooter = _world.SpawnVehicle(_id, 0, _start, 0f);
             }
             _effects.Tick(_views);
+            _mines.Update(_world);
             Frame(dt);
             _views.Render(_accumulator / Step, _camera.transform.rotation);
             // New effects and views are made on the default layer: move them onto the preview's.
@@ -173,9 +191,37 @@ namespace MachineBrigade.Game.Rendering
             }
         }
 
+        /// <summary>
+        /// A mine layer shows what it is for: it drives to and fro across the range sowing its
+        /// mines, and a while later an enemy vehicle drives into the field.
+        /// </summary>
+        private bool LayMines()
+        {
+            if (_shooter.Def.Mines == null) return false;
+            if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
+            var y = _start.Y + 6f;
+            var left = new Vector2(-10f, y);
+            var right = new Vector2(10f, y);
+            var going = _shooter.Order.Kind == OrderKind.Move ? _shooter.Order.Point : right;
+            if (Vector2.Distance(_shooter.Position, going) < 2.5f || _shooter.Order.Kind != OrderKind.Move)
+                _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, going == right ? left : right));
+            if (_world.Time > 8 && !_intruder)
+            {
+                // An enemy vehicle (a real one, not a range target: those stand still) drives
+                // across the field and the mines go off under it.
+                _intruder = true;
+                var apc = _world.SpawnVehicle("apc", 1, new Vector2(2f, _far.Y), MathF.PI);
+                _world.Submit(new Command(CommandType.Move, 1, new[] { apc.Id }, new Vector2(0f, _start.Y - 6f)));
+            }
+            return true;
+        }
+
+        private bool _intruder;
+
         /// <summary>Keeps the vehicle attacking the nearest target it can hit (a car bomb goes round again: it is rebuilt).</summary>
         private void Order()
         {
+            if (LayMines()) return;
             // Not before the views are up: the first shot would leave from nowhere.
             if (!_shooter.IsAlive || _world.Tick % 20 != 1 || _world.Time < 0.6) return;
             // Stay on the target being shot at until it goes down (an aircraft circling it would

@@ -321,9 +321,24 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
 
+            // A charged weapon powering up: it fires when the charge is full, whatever it aims at
+            // by then (the charge is the target's warning); lost targets let it wait at full charge.
+            if (state.ChargeLeft > 0f)
+            {
+                state.ChargeLeft -= dt;
+                if (state.ChargeLeft > 0f) return;
+                state.ChargeLeft = 0f;
+                if (target == null || !InReach(v, target, weapon)) return;
+            }
             // Limited ammunition: one round per trigger pull (a whole salvo counts as one). An empty
             // launcher never takes its turn from the machine gun.
-            if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
+            else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) || !InRhythm(v, index)) return;
+            else if (weapon.Charge > 0f)
+            {
+                state.ChargeLeft = weapon.Charge;
+                _world.Emit(SimEvent.Charging(v, index, weapon.Charge, target.Position));
+                return;
+            }
             if (state.Ammo > 0) state.Ammo--;
             var machineGun = IsMachineGun(weapon);
             var scale = machineGun ? RunDamage : 1f;

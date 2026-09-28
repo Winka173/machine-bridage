@@ -19,6 +19,7 @@ namespace MachineBrigade.Game.Hud
         private enum DetailTab
         {
             Stats,
+            Guide,
             Weapons,
             Firing,
             Equipment,
@@ -58,7 +59,8 @@ namespace MachineBrigade.Game.Hud
 
             var right = UiKit.Box("detail-right");
             var tabs = UiKit.Box("segments detail-tabs");
-            foreach (var (tab, icon, key) in new[] { (DetailTab.Stats, "gauge", "detail.stats"), (DetailTab.Weapons, "cannon", "detail.weaponsTab"),
+            foreach (var (tab, icon, key) in new[] { (DetailTab.Stats, "gauge", "detail.stats"), (DetailTab.Guide, "info", "detail.guide"),
+                         (DetailTab.Weapons, "cannon", "detail.weaponsTab"),
                          (DetailTab.Firing, "crosshair", "detail.firing"), (DetailTab.Equipment, "gear", "army.equipment") })
                 tabs.Add(Choice(Segment(icon, Strings.Get(key), () =>
                 {
@@ -160,7 +162,7 @@ namespace MachineBrigade.Game.Hud
             _detailCounters.Clear();
             if (vehicle != null)
             {
-                CounterRow("detail.strongVs", Counters.StrongVs(vehicle.Class), "strong");
+                CounterRow("detail.strongVs", Counters.StrongVs(vehicle), "strong");
                 CounterRow("detail.weakVs", Counters.WeakVs(vehicle.Class), "weak");
             }
 
@@ -177,6 +179,9 @@ namespace MachineBrigade.Game.Hud
                     }
                     if (vehicle != null) VehicleStats(vehicle, rank);
                     else StrikeStats(id, rank);
+                    break;
+                case DetailTab.Guide:
+                    Guide(id);
                     break;
                 case DetailTab.Weapons:
                     if (vehicle != null) VehicleWeapons(vehicle);
@@ -207,6 +212,33 @@ namespace MachineBrigade.Game.Hud
                 : rank >= CardRanks.Max ? Strings.Get("arsenal.maxRank")
                 : have + PlayerProfile.UniversalBlueprints < need ? Strings.Get("detail.getPrints")
                 : Strings.Format("detail.rankUp", rank + 1, CardRanks.CoinsToNext(rank).ToString("N0"));
+        }
+
+        /// <summary>
+        /// The Guide tab: the unit's role, how it fights, what it beats and fears, and a tip, one
+        /// block each, key words highlighted; the real vehicle it is based on underneath.
+        /// </summary>
+        private void Guide(string id)
+        {
+            if (!Strings.Has("guide." + id))
+            {
+                if (Strings.Has("note." + id)) _detailBody.Add(UiKit.Text(Strings.Get("note." + id), "detail-note role-note"));
+                return;
+            }
+            var lines = Strings.Get("guide." + id).Split('\n');
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = Strings.Highlight(lines[i].Trim());
+                if (line.Length == 0) continue;
+                var label = UiKit.Text(line, i == 0 ? "guide-headline" : "detail-note guide-line");
+                label.enableRichText = true;
+                _detailBody.Add(label);
+            }
+            if (Strings.Has("note." + id))
+            {
+                _detailBody.Add(UiKit.Text(Strings.Get("detail.notes"), "menu-caps"));
+                _detailBody.Add(UiKit.Text(Strings.Get("note." + id), "detail-note role-note"));
+            }
         }
 
         private string LockReasonShort(string id)
@@ -267,7 +299,10 @@ namespace MachineBrigade.Game.Hud
             // Words for what the bars cannot say.
             var info = UiKit.Box("stat-facts");
             info.Add(Fact("shield", Strings.Format("detail.armour", Strings.Get("armor." + def.Armor.ToString().ToLowerInvariant()))));
-            info.Add(Fact("cp", Strings.Format("detail.cost", def.CpCost)));
+            var price = CardRanks.CallCost(def.CpCost, rank);
+            info.Add(Fact("cp", price < def.CpCost
+                ? Strings.Format("detail.costCut", price, def.CpCost, CardRanks.CutBasisPoints(rank) / 100)
+                : Strings.Format("detail.cost", def.CpCost)));
             if (def.Weapon.Ammo > 0) info.Add(Fact("ammo", Strings.Format("detail.magazine", def.Weapon.Ammo, Mathf.RoundToInt(def.Weapon.MagazineReload))));
             if (def.Weapon.MinRange > 0f) info.Add(Fact("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
             if (now.Special != SpecialModule.None) info.Add(Fact("star", Strings.Get("special." + GearKeys.Module(now.Special))));

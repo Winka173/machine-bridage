@@ -22,7 +22,7 @@ namespace MachineBrigade.Game.Effects
             public MeshRenderer Renderer;
             public Vector3 From, To;
             public Func<Vector3?> Homing;
-            public float Start, Duration, Arc, Trail, PuffT, PuffStep, Wobble;
+            public float Start, Duration, Arc, Trail, PuffT, PuffStep, Wobble, Boost;
             public bool Flame, Active;
         }
 
@@ -53,8 +53,10 @@ namespace MachineBrigade.Game.Effects
         /// <param name="homing">Current aim point of a guided missile, or null once its target is gone.</param>
         /// <param name="arc">Peak height of the flight path above the straight line.</param>
         /// <param name="trail">Smoke puff size; 0 for none.</param>
+        /// <param name="boost">0: flies at one speed. Up to 1: leaves slowly and speeds up (a missile's launch and boost), arriving on time.</param>
+        /// <param name="scale">How big the model is drawn.</param>
         public void Launch(ChunkModel model, Vector3 from, Vector3 to, float duration, float arc, float trail, float now,
-            Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f)
+            Func<Vector3?> homing = null, float wobble = 0f, float delay = 0f, float boost = 0f, float scale = 1f)
         {
             // A free slot if there is one, so a missile in flight does not teleport.
             var shot = _shots[_next];
@@ -74,6 +76,8 @@ namespace MachineBrigade.Game.Effects
             shot.Arc = arc;
             shot.Trail = trail;
             shot.Wobble = wobble;
+            shot.Boost = Mathf.Clamp01(boost);
+            shot.Transform.localScale = Vector3.one * scale;
             shot.Flame = trail > 0f;
             shot.PuffT = 0f;
             shot.PuffStep = TrailSpacing / Mathf.Max(1f, Vector3.Distance(from, to) + arc);
@@ -113,6 +117,8 @@ namespace MachineBrigade.Game.Effects
 
         private static Vector3 PositionAt(Shot shot, float t)
         {
+            // A boosted missile covers its path as (1-b)t + b t^2: slow off the rail, fastest at the end.
+            if (shot.Boost > 0f) t = (1f - shot.Boost) * t + shot.Boost * t * t;
             var p = Vector3.Lerp(shot.From, shot.To, t) + Vector3.up * (shot.Arc * 4f * t * (1f - t));
             if (shot.Wobble > 0f)
             {

@@ -149,7 +149,8 @@ namespace MachineBrigade.Game.Match
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             session.Build(world, seed);
-            if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed);
+            // Supply drops everywhere; no bomber raids in Boss Rush (they hit the army massed round the boss).
+            if (menu || kind != GameModeKind.Campaign) session.Events = new BattleEvents(seed, raids: kind != GameModeKind.BossRush);
             // Elite crews turn up more often the harder the enemy (and now and then in the menu battle).
             var elite = menu ? 0.15f : session.Difficulty switch { AiDifficulty.Hard => 0.25f, AiDifficulty.Normal => 0.1f, _ => 0f };
             if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.EliteChance = elite;
@@ -403,7 +404,7 @@ namespace MachineBrigade.Game.Match
         {
             var hard = Difficulty == AiDifficulty.Hard;
             var easy = Difficulty == AiDifficulty.Easy;
-            var defender = PlayerSide(24f, 1.15f);
+            var defender = PlayerSide(24f, 1.2f);
             defender.ArmyCap = 36;
             var attacker = EnemySide(26f, hard ? 1.6f : easy ? 1.15f : 1.35f, Difficulty, world.Catalog);
             attacker.ArmyCap = 40;
@@ -542,6 +543,7 @@ namespace MachineBrigade.Game.Match
             // The attacker has the bigger purse (a siege needs numbers); the fortress has its guns.
             var attacker = PlayerSide(34f, 1.8f);
             attacker.ArmyCap = 40;
+            attacker.Bank = 40f;
             // The time bank: harder sieges start with less on the clock.
             var start = Difficulty switch { AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
             _mode = new SiegeMode(new SiegeRules
@@ -594,9 +596,13 @@ namespace MachineBrigade.Game.Match
         protected override void Build(SimWorld world, int seed)
         {
             // A bigger opening purse and income than the old 30 CP and 1.6: playtests found the rush too hard to win.
-            var player = PlayerSide(40f, Difficulty == AiDifficulty.Hard ? 1.55f : 1.8f);
+            // Round 6: 1.8 -> 2.0 (Hard 1.55 -> 1.75), a 45 CP bank so the start and bounties are not clipped.
+            var player = PlayerSide(40f, Difficulty == AiDifficulty.Hard ? 1.75f : 2f);
             player.ArmyCap = 36;
-            _mode = new BossRushMode(new BossRushRules { Player = player, Bounty = 25f });
+            player.Bank = 45f;
+            // One boss of each kind, which variant drawn by the battle's seed.
+            // The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            _mode = new BossRushMode(new BossRushRules { Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed) });
             Mode = _mode;
             _mode.Setup(world);
             world.TryGetRally(PlayerTeam, out var home);
@@ -662,7 +668,7 @@ namespace MachineBrigade.Game.Match
             };
             Mode = _mode;
             _mode.Setup(world);
-            world.EnableEconomy(new Sim.Economy.TeamEconomy(PlayerTeam, 16f, income: 0.8f,
+            world.EnableEconomy(new Sim.Economy.TeamEconomy(PlayerTeam, 16f, income: 0.9f,
                 vehicles: MatchSettings.DeckVehicles.ToArray(), supports: MatchSettings.DeckSupports.ToArray()));
             Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed);
             // The commander holds a line a third of the way towards the enemy.

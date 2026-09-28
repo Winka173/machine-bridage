@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.CameraControl;
@@ -72,6 +73,7 @@ namespace MachineBrigade.Game.Match
         private readonly List<MissionMark> _marks = new();
         private EffectsDirector _effects;
         private AudioDirector _audio;
+        private MusicDirector _music;
         private Weather _weather;
         private Weather _leavingWeather;
         private RtsCamera _camera;
@@ -97,7 +99,12 @@ namespace MachineBrigade.Game.Match
         /// <summary>Seconds without touching the screen before the camera starts following the fighting.</summary>
         private const float AutoCameraDelay = 8f;
 
-        private void Awake()
+        /// <summary>
+        /// Builds the battle over several frames behind the loading curtain (world, map, models,
+        /// effects, interface), so its bar moves instead of the whole build freezing one frame;
+        /// nothing runs in Update until it is done.
+        /// </summary>
+        private IEnumerator Start()
         {
             // Nothing needs PhysX: debris, turrets and wrecks move on their own kinematics.
             Physics.simulationMode = SimulationMode.Script;
@@ -172,6 +179,9 @@ namespace MachineBrigade.Game.Match
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
+            if (!_menu) ApplyRankDiscounts(catalog, mission != null);
+            Curtain.Progress(0.15f);
+            yield return null;
             // A campaign tier holds for the one mission it was chosen for.
             if (kind != GameModeKind.Campaign) MatchSettings.MissionTier = 0;
             _clock = new SimClock();
@@ -188,6 +198,8 @@ namespace MachineBrigade.Game.Match
             // Buildings already down before the battle (the weekly fortress's broken rings) show as rubble.
             foreach (var prop in _world.Props)
                 if (!prop.IsAlive) _map.TryDestroy(prop.Id, out _);
+            Curtain.Progress(0.4f);
+            yield return null;
             _surroundings = new Surroundings(_world, _models, _materials, theme, worldRoot, options);
             _views = new ViewRegistry(_models, _meshes, _materials, worldRoot, PlayerTeam);
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
@@ -224,13 +236,26 @@ namespace MachineBrigade.Game.Match
             // Build the merged models of every vehicle this battle can field now, not on first use
             // mid-battle, and only those: the catalogue holds bosses, elites and defences most
             // battles never see, and every merged model costs load time and memory on a phone.
-            foreach (var id in Fieldable(catalog, mission)) _models.Prewarm(catalog.Vehicles[id].Model);
+            var fieldable = new List<string>(Fieldable(catalog, mission));
+            for (var i = 0; i < fieldable.Count; i++)
+            {
+                _models.Prewarm(catalog.Vehicles[fieldable[i]].Model);
+                if (i % 6 != 5) continue;
+                Curtain.Progress(0.45f + 0.3f * i / fieldable.Count);
+                yield return null;
+            }
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             // The transport that flies reinforcements in (see AirDrops).
             if (_models.Has("sky_gunship")) _models.Prewarm("sky_gunship");
             _effects.Prewarm();
+            Curtain.Progress(0.85f);
+            yield return null;
             // The menu battle has no player side, so no alarms or chimes.
             _audio = new AudioDirector(_camera, worldRoot, catalog, _menu ? -1 : PlayerTeam);
+            // The soundtrack: the menu theme, the siege track for fortress battles, else a battle track.
+            var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless;
+            _music = new MusicDirector(worldRoot, _menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
+                System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
@@ -285,6 +310,8 @@ namespace MachineBrigade.Game.Match
 
             DispatchEvents();
             // Built: lift the curtain once this scene has drawn a few frames.
+            _built = true;
+            Curtain.Progress(1f);
             Curtain.Open();
         }
 
@@ -345,12 +372,36 @@ namespace MachineBrigade.Game.Match
             }
             // Boss Rush brings its bosses and their escorts later.
             if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
-                foreach (var boss in new BossRushRules().Bosses)
+                foreach (var boss in BossRushRules.Everyone())
                 {
                     Add(boss);
                     if (new BossRushRules().Escorts.TryGetValue(boss, out var escorts)) foreach (var e in escorts) Add(e);
                 }
             return ids;
+        }
+
+        /// <summary>
+        /// Ranked cards cost the player less to call (rank 7: -5 %, rank 9: -10 %; see
+        /// CardRanks.CallCost). In the campaign the enemy gets 80 % of the deck's average cut as
+        /// extra income, as it gets 80 % of the arsenal's edge.
+        /// </summary>
+        private void ApplyRankDiscounts(Catalog catalog, bool campaign)
+        {
+            if (!_world.TryGetEconomy(PlayerTeam, out var mine)) return;
+            float full = 0f, paid = 0f;
+            void Card(string id, int cost)
+            {
+                var price = CardRanks.CallCost(cost, PlayerProfile.Rank(id));
+                if (price < cost) mine.Discounts[id] = cost - price;
+                full += cost;
+                paid += price;
+            }
+            foreach (var id in MatchSettings.DeckVehicles)
+                if (catalog.Vehicles.TryGetValue(id, out var v)) Card(id, v.CpCost);
+            foreach (var id in MatchSettings.DeckSupports)
+                if (catalog.TryGetSupport(id, out var s)) Card(id, s.CpCost);
+            if (campaign && full > 0f && paid < full && _world.TryGetEconomy(1, out var foe))
+                foe.ScaleIncome(1f + 0.8f * (1f - paid / full));
         }
 
         private string _builtGraphics;
@@ -405,8 +456,12 @@ namespace MachineBrigade.Game.Match
 
         private void OnDisable() => _gestures?.Disable();
 
+        /// <summary>The battle is built (see <see cref="Start"/>): until then nothing ticks.</summary>
+        private bool _built;
+
         private void Update()
         {
+            if (!_built) return;
             // No battlefield input under the pause and result screens.
             if (!_paused && !_resultShown) _gestures?.Tick(Time.unscaledTime);
             // Android's back button arrives as Escape: close a menu page, or pause and resume.
@@ -474,12 +529,14 @@ namespace MachineBrigade.Game.Match
                     _leavingWeather.Dispose();
                     _leavingWeather = null;
                 }
-                if (!_menu && Time.frameCount % 15 == 0) _audio.BossMusic = BossOnField();
+                // A boss on the field: the boss track (the old war-drum loop stays silent).
+                if (!_menu && Time.frameCount % 15 == 0) _music.Boss = BossOnField();
                 if (_world.Time >= _nextWeatherShift) ShiftWeather();
             }
             _perf?.End(PerfProbe.Section.Effects);
             _perf?.Begin();
             _audio.Tick(_views);
+            _music?.Tick(Time.unscaledDeltaTime);
             _perf?.End(PerfProbe.Section.Audio);
             _perf?.Begin();
             _commander?.Update();
@@ -491,6 +548,7 @@ namespace MachineBrigade.Game.Match
 
         private void LateUpdate()
         {
+            if (!_built) return;
             _camera.Apply(Time.unscaledDeltaTime);
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
@@ -652,6 +710,7 @@ namespace MachineBrigade.Game.Match
             _weather?.Dispose();
             _effects?.Dispose();
             _audio?.Dispose();
+            _music?.Dispose();
             _views?.Dispose();
             _map?.Dispose();
             _surroundings?.Dispose();
@@ -988,10 +1047,18 @@ namespace MachineBrigade.Game.Match
                 if (Time.time > _warnings[i].until) _warnings.RemoveAt(i);
                 else minimap.Warning(_warnings[i].at, _warnings[i].radius);
             }
+            // Every enemy is on the map (the radar picture): the ones in sight bright, the rest dim;
+            // a boss always, as a big marker.
             foreach (var v in _world.Vehicles)
             {
-                if (!v.IsAlive || (v.Team != PlayerTeam && !v.IsVisibleTo(PlayerTeam))) continue;
-                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying);
+                if (!v.IsAlive) continue;
+                var seen = v.Team == PlayerTeam || v.IsVisibleTo(PlayerTeam);
+                if (v.Def.Boss && v.Team != PlayerTeam)
+                {
+                    minimap.Boss(new Vector2(v.Position.X, v.Position.Y));
+                    continue;
+                }
+                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
             foreach (var mark in _marks) minimap.Mark(new Vector2(mark.Position.X, mark.Position.Y), (int)mark.Kind);
@@ -1039,6 +1106,7 @@ namespace MachineBrigade.Game.Match
                 view.HasNext = outcome.Result > 0 && index >= 0 && index + 1 < Campaign.All.Count;
             }
             _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view);
+            _music?.Result(outcome.Result > 0);
         }
 
         /// <summary>Pays the battle's reward if the player leaves without claiming it.</summary>

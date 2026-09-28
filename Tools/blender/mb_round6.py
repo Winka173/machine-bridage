@@ -103,7 +103,7 @@ def uniform_scale(k):
     return step
 
 
-def build(builders, names=(), out=OUT):
+def build(builders, names=(), out=OUT, extra=None):
     for o in list(bpy.context.scene.objects):
         bpy.data.objects.remove(o)
     root = kit.workspace()
@@ -111,7 +111,9 @@ def build(builders, names=(), out=OUT):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     report = {}
-    for name, (fn, options) in builders.items():
+    # Extra builders (high-detail variants) are only built when named.
+    todo = dict(builders, **{k: v for k, v in (extra or {}).items() if k in names})
+    for name, (fn, options) in todo.items():
         if names and name not in names:
             continue
         a = kit.Asset(name, root, **options)
@@ -124,14 +126,14 @@ def build(builders, names=(), out=OUT):
     return report
 
 
-def main(builders):
+def main(builders, extra=None):
     args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
     out = OUT
     if '--out' in args:
         i = args.index('--out')
         out = Path(args[i + 1])
         args = args[:i] + args[i + 2:]
-    build(builders, tuple(args), out)
+    build(builders, tuple(args), out, extra)
     print('MB_ROUND_COMPLETE')
 
 
@@ -599,7 +601,12 @@ BUILDERS = {
     'attack_jet': (attack_jet, dict(ao_distance=.6, ground=False)),
     'siege_tank': (siege_tank, dict(ao_distance=.7, grime_height=.6)),
 }
+# Built only when named: the high-detail Su-25 that should replace the A-10 attack_jet_hd.glb (same pivots
+# as attack_jet, so ModelTests.HighDetailVariantsKeepThePivots holds).
+EXTRA = {
+    'attack_jet_hd': (lambda a: attack_jet(a, detail=True), dict(ao_distance=.6, ground=False)),
+}
 
 
 if __name__ == '__main__':
-    main(BUILDERS)
+    main(BUILDERS, EXTRA)
