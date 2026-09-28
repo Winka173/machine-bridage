@@ -25,6 +25,12 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Sets the captured point DefId up as an outpost.</summary>
         Outpost,
+
+        /// <summary>
+        /// Prompt 9: the side's units in reach aim at part DefId of boss Target until it breaks or the
+        /// order is cancelled (DefId null or empty); Units may be empty.
+        /// </summary>
+        FocusPart,
     }
 
     /// <summary>
@@ -45,6 +51,10 @@ namespace MachineBrigade.Sim.Commands
             DefId = defId;
             Point2 = point2;
         }
+
+        /// <summary>Every unit of <paramref name="team"/> in reach aims at <paramref name="partId"/> of the boss (null cancels).</summary>
+        public static Command FocusPart(int team, EntityId boss, string? partId) =>
+            new(CommandType.FocusPart, team, Array.Empty<EntityId>(), target: boss, defId: partId);
 
         public static Command Deploy(int team, string vehicleId) =>
             new(CommandType.Deploy, team, Array.Empty<EntityId>(), defId: vehicleId);

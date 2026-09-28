@@ -171,7 +171,14 @@ namespace MachineBrigade.Sim.Content
                         foreach (var m in p.FloatArray("affects")) affects.Add((int)m);
                         part.Affects = affects;
                     }
-                    part.BreakDamage = p.Float("breakDamage", 0f);
+                    part.BreakDamage = Math.Clamp(p.Float("breakDamage", 0.3f), 0f, 1f);
+                    // Prompt 9: what else it drives, how it breaks in the view, its radio line.
+                    if (p.Has("stops")) part.Stops = p.StringArray("stops");
+                    part.Turn = Math.Clamp(p.Float("turn", 1f), 0.05f, 2f);
+                    part.Cadence = Math.Clamp(p.Float("cadence", 1f), 0.2f, 5f);
+                    if (p.Has("radio")) part.Radio = p.String("radio");
+                    part.Fx = p.Has("fx") ? p.String("fx") : BossPartDef.FxFor(part.Kind);
+                    part.Attachment = p.Int("attach", -1);
                     parts.Add(part);
                 }
                 def.Parts = parts;
@@ -315,6 +322,9 @@ namespace MachineBrigade.Sim.Content
                         if (m < 0 || m >= def.Mounts.Count) throw new FormatException($"{def.Id}.parts.{part.Id}: no weapon mount {m}.");
                     foreach (var m in part.Affects)
                         if (m < 0 || m >= def.Mounts.Count) throw new FormatException($"{def.Id}.parts.{part.Id}: no weapon mount {m} to affect.");
+                    foreach (var stop in part.Stops)
+                        if (Array.IndexOf(BossPartDef.Mechanisms, stop) < 0) throw new FormatException($"{def.Id}.parts.{part.Id}: unknown mechanism '{stop}'.");
+                    if (part.Attachment >= def.Attachments.Count) throw new FormatException($"{def.Id}.parts.{part.Id}: no attached model {part.Attachment}.");
                     foreach (var s in part.Skills)
                     {
                         var found = false;

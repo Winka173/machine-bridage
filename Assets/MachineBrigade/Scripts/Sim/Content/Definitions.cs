@@ -194,6 +194,15 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>This mount's own round model, over the weapon's (one missile type, two carriers' variants).</summary>
         public string? ProjectileModel { get; internal set; }
+
+        /// <summary>
+        /// A firing arc of its own (radians, clockwise from the nose; data "arc": [centre, half] in
+        /// degrees): it aims like a broadside gun, only within <see cref="ArcHalf"/> of <see cref="ArcCentre"/>
+        /// (the Bastion's corner turrets, each covering its own quarter). 0: no arc of its own.
+        /// </summary>
+        public float ArcCentre { get; internal set; }
+
+        public float ArcHalf { get; internal set; }
     }
 
     /// <summary>

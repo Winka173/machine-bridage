@@ -526,7 +526,11 @@ namespace MachineBrigade.Sim
                     Mix((long)MathF.Round(v.Position.X * 100f));
                     Mix((long)MathF.Round(v.Position.Y * 100f));
                     Mix((long)MathF.Round(v.Hp * 10f));
+                    // A boss's parts (prompt 9): a checkpoint's replay must bring every part back the same.
+                    for (var i = 0; i < v.PartCount; i++)
+                        Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
+                Bosses.Mix(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -572,6 +576,7 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
+            if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 
             _unitBuffer.Clear();
             foreach (var id in command.Units)

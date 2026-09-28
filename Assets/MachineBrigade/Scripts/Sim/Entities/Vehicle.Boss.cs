@@ -7,19 +7,32 @@ using MachineBrigade.Sim.Core;
 namespace MachineBrigade.Sim.Entities
 {
     /// <summary>
-    /// A boss's runtime state for prompt 8's mechanisms: its parts (health, broken or not, what they
-    /// switch off when they break), boring underground, landing troops, and its guards. General: any
-    /// vehicle whose def has parts gets them (prompt 9 gives every boss its own).
+    /// A boss's runtime state for prompt 8's mechanisms: its parts (health, broken or not, patched or
+    /// not, what they switch off when they break), boring underground, landing troops, and its
+    /// guards. General: any vehicle whose def has parts gets them (prompt 9 gives every boss its own).
     /// </summary>
     public sealed partial class Vehicle
     {
-        /// <summary>Each part's health now (empty: no parts).</summary>
-        internal float[] PartHp = Array.Empty<float>();
-
-        /// <summary>Each part's full health.</summary>
-        internal float[] PartMax = Array.Empty<float>();
+        /// <summary>
+        /// Each part's health as a share of its full health (empty: no parts). Its full health is a
+        /// share of the body's full health, so a boss made tougher after it spawned (a campaign's
+        /// scaling, a mission's stronger form) has tougher parts too.
+        /// </summary>
+        internal float[] PartFrac = Array.Empty<float>();
 
         internal bool[] PartBroken = Array.Empty<bool>();
+
+        /// <summary>Parts a self-repair has put back (each at most once).</summary>
+        internal bool[] PartPatched = Array.Empty<bool>();
+
+        /// <summary>Turning from broken parts (a tail rotor), already folded into <see cref="TurnFactor"/> and <see cref="TurretFactor"/>.</summary>
+        internal float PartTurn = 1f;
+
+        /// <summary>The bombard's and the landings' intervals from broken parts (the supergun's tractors).</summary>
+        internal float PartCadence = 1f;
+
+        /// <summary>Mechanisms a broken part has stopped (see <see cref="BossPartDef.Stops"/>).</summary>
+        internal bool BombardOff, SpotterOff, BurrowOff, LandingOff, AuraOff;
 
         /// <summary>Weapon mounts that no longer fire (their part broke).</summary>
         internal bool[] MountOff = Array.Empty<bool>();
@@ -34,15 +47,33 @@ namespace MachineBrigade.Sim.Entities
         internal float[] MountSpread = Array.Empty<float>();
         internal float[] MountFail = Array.Empty<float>();
 
-        public bool HasParts => PartHp.Length > 0;
+        public bool HasParts => PartFrac.Length > 0;
 
-        public int PartCount => PartHp.Length;
+        public int PartCount => PartFrac.Length;
 
-        public float PartHealth(int i) => i >= 0 && i < PartHp.Length ? PartHp[i] : 0f;
+        /// <summary>Part <paramref name="i"/>'s full health: its share of the body's full health.</summary>
+        public float PartFullHealth(int i) => i >= 0 && i < PartFrac.Length ? MaxHp * Def.Parts[i].Hp : 0f;
 
-        public float PartFullHealth(int i) => i >= 0 && i < PartMax.Length ? PartMax[i] : 0f;
+        public float PartHealth(int i) => i >= 0 && i < PartFrac.Length ? PartFrac[i] * PartFullHealth(i) : 0f;
+
+        /// <summary>Part <paramref name="i"/>'s health as a share of its full health (0 broken).</summary>
+        public float PartShare(int i) => i >= 0 && i < PartFrac.Length ? PartFrac[i] : 0f;
 
         public bool IsPartBroken(int i) => i >= 0 && i < PartBroken.Length && PartBroken[i];
+
+        /// <summary>A self-repair has put part <paramref name="i"/> back once.</summary>
+        public bool IsPartPatched(int i) => i >= 0 && i < PartPatched.Length && PartPatched[i];
+
+        /// <summary>How many of its parts are broken now.</summary>
+        public int BrokenParts
+        {
+            get
+            {
+                var n = 0;
+                foreach (var b in PartBroken) if (b) n++;
+                return n;
+            }
+        }
 
         /// <summary>Whether mount <paramref name="index"/> still fires (its part, if any, stands).</summary>
         public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || !MountOff[index];
@@ -64,7 +95,7 @@ namespace MachineBrigade.Sim.Entities
             get
             {
                 var lockDef = Def.PartLock;
-                if (lockDef == null || PartHp.Length == 0) return false;
+                if (lockDef == null || PartFrac.Length == 0) return false;
                 var broken = 0;
                 for (var i = 0; i < Def.Parts.Count; i++)
                     if (PartBroken[i] && Def.Parts[i].Kind == lockDef.Kind) broken++;
@@ -82,10 +113,10 @@ namespace MachineBrigade.Sim.Entities
             for (var i = 0; i < MountSpread.Length; i++) MountSpread[i] = 1f;
             SkillOff = new bool[Def.Skills.Count];
             if (parts.Count == 0) return;
-            PartHp = new float[parts.Count];
-            PartMax = new float[parts.Count];
+            PartFrac = new float[parts.Count];
             PartBroken = new bool[parts.Count];
-            for (var i = 0; i < parts.Count; i++) PartMax[i] = PartHp[i] = MaxHp * parts[i].Hp;
+            PartPatched = new bool[parts.Count];
+            for (var i = 0; i < parts.Count; i++) PartFrac[i] = 1f;
         }
 
         // ------------------------------------------------------------ boring underground (the Earth Worm)
