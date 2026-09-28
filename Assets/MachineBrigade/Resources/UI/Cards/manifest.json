@@ -361,6 +361,13 @@
             "hash": "v2:612f3db572307f063e868e14ee7dfd64c3063567"
         },
         {
+            "id": "armored_bulldozer",
+            "kind": "vehicle",
+            "model": "armored_bulldozer",
+            "source": "Models/armored_bulldozer",
+            "hash": "v2:6f439e6d4d764f0b24c6703402dcd29614ece17b"
+        },
+        {
             "id": "aa_turret",
             "kind": "tower",
             "model": "aa_turret",
@@ -487,6 +494,13 @@
             "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
         },
         {
+            "id": "command_airship",
+            "kind": "boss",
+            "model": "command_airship",
+            "source": "Models/command_airship",
+            "hash": "v2:49647ed5d17c45801ef0f14181e4628f76cfcfdb"
+        },
+        {
             "id": "dragons_teeth",
             "kind": "tower",
             "model": "dragons_teeth",
@@ -536,6 +550,13 @@
             "hash": "v2:635e894f2b698bedbd344e58544f0e5a00401e24"
         },
         {
+            "id": "earth_borer",
+            "kind": "boss",
+            "model": "earth_borer",
+            "source": "Models/earth_borer",
+            "hash": "v2:8b2688931aedcb047cfacf5b58194c20c5f92712"
+        },
+        {
             "id": "elite_aa",
             "kind": "elite",
             "model": "elite_aa",
@@ -550,11 +571,32 @@
             "hash": "v2:ce3664000e3b1a1ee730e022c58bc76b857393fb"
         },
         {
+            "id": "elite_artillery",
+            "kind": "elite",
+            "model": "artillery",
+            "source": "Models/artillery_hd",
+            "hash": "v2:53ea4c91b7376ba94b5548a5a82632876617b4a3"
+        },
+        {
             "id": "elite_attack_helicopter",
             "kind": "elite",
             "model": "elite_attack_helicopter",
             "source": "Models/elite_attack_helicopter",
             "hash": "v2:da807bbe58cee61835edf15e91b787ef13116d9c"
+        },
+        {
+            "id": "elite_attack_jet",
+            "kind": "elite",
+            "model": "attack_jet",
+            "source": "Models/attack_jet_hd",
+            "hash": "v2:32d1d8e42e5bd6990f2e2b09befc7ab0eb347d19"
+        },
+        {
+            "id": "elite_fpv_carrier",
+            "kind": "elite",
+            "model": "fpv_carrier",
+            "source": "Models/fpv_carrier",
+            "hash": "v2:a65c5f59f84c0e06d0feda062e280aa3d2331d6c"
         },
         {
             "id": "elite_grad",
@@ -569,6 +611,13 @@
             "model": "elite_heavy_tank",
             "source": "Models/elite_heavy_tank",
             "hash": "v2:6ed8a476656aa5c5cc33007285da46c33ed5fdcd"
+        },
+        {
+            "id": "elite_long_sam",
+            "kind": "elite",
+            "model": "long_sam",
+            "source": "Models/long_sam",
+            "hash": "v2:612f3db572307f063e868e14ee7dfd64c3063567"
         },
         {
             "id": "elite_mbt",
@@ -718,6 +767,13 @@
             "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
         },
         {
+            "id": "landing_hovercraft",
+            "kind": "boss",
+            "model": "landing_hovercraft",
+            "source": "Models/landing_hovercraft",
+            "hash": "v2:349fa994c89cd1c0b67ecc4ec5684a16f3bc2ae9"
+        },
+        {
             "id": "logistics_station",
             "kind": "tower",
             "model": "fuel_depot",
@@ -816,6 +872,13 @@
             "hash": "v2:5d58aa11d9f447e550b1402b8689b6c9d930780a"
         },
         {
+            "id": "rail_supergun",
+            "kind": "boss",
+            "model": "rail_supergun",
+            "source": "Models/rail_supergun",
+            "hash": "v2:f90fc3544ac0266cb7eea18443a03186ae78e606"
+        },
+        {
             "id": "repair_bay",
             "kind": "tower",
             "model": "vehicle_hangar",
@@ -856,6 +919,13 @@
             "model": "sky_fortress",
             "source": "Models/sky_fortress",
             "hash": "v2:0403326f84a0a720a86ad3a33b4e624d34b4e41c"
+        },
+        {
+            "id": "supreme_command",
+            "kind": "boss",
+            "model": "supreme_command",
+            "source": "Models/supreme_command",
+            "hash": "v2:37349e5dff243fc8331c21ba09b1cb3e1c9ffd06"
         }
     ]
 }
