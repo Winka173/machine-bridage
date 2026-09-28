@@ -116,6 +116,8 @@ namespace MachineBrigade.Game.Hud
             Add(Word);
             Lock = Kit.Icon("lock", "fc-base-face__lock");
             Add(Lock);
+            Need = Kit.Text("", "fc-base-face__need");
+            Add(Need);
             Branch = Kit.Icon("upgrade", "fc-base-face__branch");
             Add(Branch);
             generateVisualContent += Draw;
@@ -131,6 +133,9 @@ namespace MachineBrigade.Game.Hud
         public VisualElement Art { get; }
         public Label Word { get; }
         public IconElement Lock { get; }
+
+        /// <summary>A closed slot's HQ level, inside its face (the lock at its corner).</summary>
+        public Label Need { get; }
         public IconElement Branch { get; }
 
         /// <summary>The tower's rank as ticks along the face's foot (0: none).</summary>
@@ -215,6 +220,8 @@ namespace MachineBrigade.Game.Hud
         private float _pinchDistance;
         private UnityEngine.Vector2 _dragFrom;
         private bool _panning;
+        private Rect? _focus;
+        private bool _moved;
 
         public CampMap()
         {
@@ -274,6 +281,8 @@ namespace MachineBrigade.Game.Hud
                 _frame = value;
                 _zoom = 1f;
                 _pan = UnityEngine.Vector2.zero;
+                _focus = null;
+                _moved = false;
                 _world.style.backgroundImage = value?.Picture != null ? new StyleBackground(value.Picture) : new StyleBackground(StyleKeyword.None);
                 _scrim.style.opacity = value?.Picture != null ? Mathf.Clamp((value.Brightness - 0.3f) * 1.1f, 0f, 0.55f) : 0f;
                 Layout();
@@ -328,8 +337,31 @@ namespace MachineBrigade.Game.Hud
             }
         }
 
+        /// <summary>
+        /// The view the map opens on: this part of the picture (0..1) filling the box, the rest a pinch away (the camp,
+        /// not the whole picture with its margins, so the slots are as big as they can be at the default zoom).
+        /// </summary>
+        public void Focus(Rect picture)
+        {
+            _focus = picture;
+            _moved = false;
+            Layout();
+        }
+
+        private void ApplyFocus()
+        {
+            if (_focus is not { } r || _moved) return;
+            var box = contentRect.size;
+            var fit = FitSize();
+            if (box.x < 2f || fit.x < 2f || r.width <= 0f || r.height <= 0f) return;
+            _zoom = Mathf.Clamp(Mathf.Min(box.x / (r.width * fit.x), box.y / (r.height * fit.y)), MinZoom, MaxZoom);
+            var size = fit * _zoom;
+            _pan = new UnityEngine.Vector2(size.x * (0.5f - r.center.x), size.y * (0.5f - r.center.y));
+        }
+
         private void Layout()
         {
+            ApplyFocus();
             ClampPan();
             var size = WorldSize;
             var origin = WorldOrigin;
@@ -356,6 +388,7 @@ namespace MachineBrigade.Game.Hud
             var before = _zoom;
             _zoom = Mathf.Clamp(_zoom * factor, MinZoom, MaxZoom);
             if (Mathf.Approximately(before, _zoom)) return;
+            _moved = true;
             // Keep the point under the fingers where it was.
             var centre = contentRect.size * 0.5f;
             _pan = (_pan - (local - centre)) * (_zoom / before) + (local - centre);
@@ -366,6 +399,7 @@ namespace MachineBrigade.Game.Hud
         {
             _zoom = 1f;
             _pan = UnityEngine.Vector2.zero;
+            _moved = false;
             Layout();
         }
 
@@ -410,6 +444,7 @@ namespace MachineBrigade.Game.Hud
             if (!_panning && delta.sqrMagnitude < 144f) return;
             if (!DragsGround) return;
             _panning = true;
+            _moved = true;
             _pan += delta;
             _dragFrom = e.localPosition;
             Layout();

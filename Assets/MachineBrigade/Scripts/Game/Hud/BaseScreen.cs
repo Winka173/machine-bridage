@@ -290,7 +290,30 @@ namespace MachineBrigade.Game.Hud
                 _slots.Add(view);
             }
             _map.Frame = _frame;
+            _map.Focus(CampRect());
             Refresh();
+        }
+
+        /// <summary>The camp in picture space: the HQ and every slot, with a margin for the faces and the arrows' heads.</summary>
+        private Rect CampRect()
+        {
+            var min = _frame.ToPicture(_site.Hq);
+            var max = min;
+            foreach (var s in _site.Slots)
+            {
+                var p = _frame.ToPicture(s.Position);
+                min = UnityEngine.Vector2.Min(min, p);
+                max = UnityEngine.Vector2.Max(max, p);
+            }
+            foreach (var (at, _) in _frame.Arrows)
+            {
+                min = UnityEngine.Vector2.Min(min, at);
+                max = UnityEngine.Vector2.Max(max, at);
+            }
+            var margin = new UnityEngine.Vector2(12f / Mathf.Max(1f, _frame.Width), 12f / Mathf.Max(1f, _frame.Height));
+            min -= margin;
+            max += margin;
+            return Rect.MinMaxRect(Mathf.Max(0f, min.x), Mathf.Max(0f, min.y), Mathf.Min(1f, max.x), Mathf.Min(1f, max.y));
         }
 
         /// <summary>
@@ -716,7 +739,8 @@ namespace MachineBrigade.Game.Hud
                 options.Add(new KitOption(Strings.Get("map." + id), MapNote(id), MapArt.For(id)));
             }
             _dropHost.Clear();
-            _mapDrop = new KitDropdown(Strings.Get("camp.map"), options, selected, i => ShowMap(maps[i].Id));
+            // The pictures are in the list it opens; closed, it is the map's name only (the bar stays one row).
+            _mapDrop = new KitDropdown(Strings.Get("camp.map"), options, selected, i => ShowMap(maps[i].Id), thumbnail: false);
             _dropHost.Add(_mapDrop);
             var mark = KitDot.Attach(_mapDrop, MapNote(_mapId) != null);
             mark.AddToClassList("fc-base__map-dot");
@@ -745,17 +769,20 @@ namespace MachineBrigade.Game.Hud
                 e.EnableInClassList("fc-base-slot--lit", lit);
                 e.EnableInClassList("fc-base-slot--dim", carrying != null && !lit);
                 e.EnableInClassList("fc-base-slot--picked", _picked == view.Hardpoint);
-                var render = tower != null ? CardArt.For(tower) : null;
+                // A closed slot keeps its tower for a higher level but does not show it: it does not fight.
+                var render = tower != null && view.Open ? CardArt.For(tower) : null;
                 face.Art.style.backgroundImage = render != null ? new StyleBackground(render) : new StyleBackground(StyleKeyword.None);
-                face.Art.style.display = tower != null ? DisplayStyle.Flex : DisplayStyle.None;
-                // An empty slot says what it takes in words (B5); a closed one the HQ level it needs (F1).
-                face.Word.text = !view.Open ? Strings.Format("camp.hqLevel", OpensAt(view))
-                    : tower == null ? (view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size)) : "";
+                face.Art.style.display = render != null ? DisplayStyle.Flex : DisplayStyle.None;
+                // An empty slot says what it takes in words under its face (B5); a closed one is locked with the HQ level
+                // it needs inside (F1).
+                face.Word.text = view.Open && tower == null ? (view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size)) : "";
                 face.Word.style.display = face.Word.text.Length > 0 ? DisplayStyle.Flex : DisplayStyle.None;
                 face.Lock.style.display = view.Open ? DisplayStyle.None : DisplayStyle.Flex;
-                face.Rank = tower != null ? PlayerProfile.Rank(tower) : 0;
-                face.Branch.style.display = tower != null && PlayerProfile.TowerBranch(tower) != null ? DisplayStyle.Flex : DisplayStyle.None;
-                e.tooltip = tower != null ? Strings.Card(tower) : view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size);
+                face.Need.text = view.Open ? "" : OpensAt(view).ToString();
+                face.Need.style.display = view.Open ? DisplayStyle.None : DisplayStyle.Flex;
+                face.Rank = tower != null && view.Open ? PlayerProfile.Rank(tower) : 0;
+                face.Branch.style.display = tower != null && view.Open && PlayerProfile.TowerBranch(tower) != null ? DisplayStyle.Flex : DisplayStyle.None;
+                e.tooltip = !view.Open ? Strings.Format("camp.closed", OpensAt(view)) : tower != null ? Strings.Card(tower) : view.Utility ? Strings.Get("camp.utility") : SizeName(view.Size);
             }
         }
 
@@ -1059,8 +1086,8 @@ namespace MachineBrigade.Game.Hud
         {
             _strip.Clear();
             var cover = Kit.Box("fc-base__cover");
-            cover.Add(Kit.Caption(Strings.Get("camp.cover")));
             var tags = Kit.Box("fc-row fc-row--wrap");
+            tags.Add(Kit.Text(Kit.Caps(Strings.Get("camp.cover")), "fc-caption fc-base__cover-title"));
             var roles = BaseRoles.Cover(_catalog, layout);
             foreach (var role in BaseRoles.All)
             {

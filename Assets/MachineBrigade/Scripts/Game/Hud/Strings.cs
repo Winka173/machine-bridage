@@ -1140,6 +1140,7 @@ namespace MachineBrigade.Game.Hud
             ["camp.outpostHowTitle"] = ("How an outpost works", "Tiền đồn hoạt động thế nào"),
             ["camp.outpostHow"] = ("When your army takes a point with room for an outpost, these two towers fly in: a small one and a medium one. They hold the point while the army moves on. The pair belongs to the base set in use.", "Khi quân ta chiếm một cứ điểm có chỗ dựng tiền đồn, hai tháp này được thả xuống đó: một tháp nhỏ và một tháp vừa. Chúng giữ cứ điểm khi quân ta tiến tiếp. Cặp tháp này thuộc bộ căn cứ đang dùng."),
             ["setup.base"] = ("Base", "Căn cứ"),
+            ["camp.planLine"] = ("{0} towers and modules · {1} maps set up on their own", "{0} tháp và mô-đun · {1} map chỉnh riêng"),
             ["short.vbied"] = ("Car bomb", "Xe bom"),
             ["unit.vbied"] = ("Armoured car bomb", "Xe bom tự sát bọc thép"),
             ["short.zu23_technical"] = ("ZU-23", "ZU-23"),

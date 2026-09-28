@@ -59,6 +59,11 @@
 .fc-home__grid > .fc-dropdown { width: 49%; margin-bottom: var(--fc-space-2); }
 /* Large text: one dropdown a row (two did not hold "Conquest" at 13 pt Large). */
 .fc-text-large .fc-home__grid > .fc-dropdown { width: 100%; }
+/* The base set in the home's deck panel: three small chips. */
+.fc-home__plans { flex-direction: row; align-items: center; flex-shrink: 1; }
+.fc-home__plans > .fc-caption { margin-right: var(--fc-space-2); }
+.fc-home__plans > .fc-chip { margin-right: var(--fc-space-1); }
+.fc-home__plans .fc-chip__face { padding: 0 var(--fc-space-2); min-height: 48px; }
 .fc-home__deck {
     position: absolute; left: var(--fc-space-4); bottom: var(--fc-space-4); right: 472px;
     padding: var(--fc-space-3) var(--fc-space-4);
@@ -284,29 +289,30 @@
 /* ================================================================ prompt 14: the Base and Outpost screens */
 /* The bar along the top, the tray, the map and the panel side by side, the cover strip along the bottom. The
    slots sit on the map at their real places: a transparent 44 pt target round a face sized by class. */
-.fc-base {
-    flex-direction: column; padding: var(--fc-space-2) var(--fc-space-3);
-    --base-arrow: var(--fc-danger); --base-range-ground: var(--fc-range-ground); --base-range-air: var(--fc-range-air);
-    --base-ring: var(--fc-text); --base-drop: var(--fc-coin);
-}
+.fc-base { flex-direction: column; padding: var(--fc-space-2) var(--fc-space-3); }
 .fc-base__bar { flex-direction: row; align-items: center; flex-wrap: wrap; flex-shrink: 0; margin-bottom: var(--fc-space-1); }
-.fc-base__hq { flex-direction: row; align-items: center; width: 300px; flex-shrink: 1; margin-right: var(--fc-space-3); }
+.fc-base__hq { flex-direction: row; align-items: center; width: 320px; flex-shrink: 1; margin-right: var(--fc-space-3); }
 .fc-base__hq-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); flex-shrink: 0; }
 .fc-base__hq-text { flex-grow: 1; flex-shrink: 1; }
-.fc-base__map-pick { width: 300px; flex-shrink: 1; margin-right: var(--fc-space-3); }
+.fc-base__map-pick { width: 250px; flex-shrink: 1; margin-right: var(--fc-space-3); }
 .fc-base__map-dot { top: var(--fc-space-1); right: var(--fc-space-1); }
 .fc-base__plans { flex-direction: row; margin-right: var(--fc-space-2); }
+.fc-base__plans > .fc-chip { margin-right: var(--fc-space-1); }
+.fc-base__plans .fc-chip__face { padding: 0 var(--fc-space-3); }
+.fc-base__bar > .fc-btn { padding: var(--fc-space-1) var(--fc-space-3); }
 .fc-base__saved { flex-direction: row; align-items: center; margin-left: var(--fc-space-3); opacity: 0; transition-property: opacity; transition-duration: 0.3s; }
 .fc-base__saved--on { opacity: 1; }
 .fc-base__saved-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-1); --icon-color: var(--fc-positive); }
 .fc-base__body { flex-direction: row; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
 .fc-base__tray { width: 290px; flex-shrink: 0; margin-right: var(--fc-space-2); }
 .fc-base__centre { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; margin-right: var(--fc-space-2); }
-.fc-base__map-tools { position: absolute; right: 0; top: -9px; flex-direction: row; }
+/* The map's two switches in its bottom corner, where the picture is off the battlefield. */
+.fc-base__map-tools { position: absolute; right: var(--fc-space-1); bottom: -8px; flex-direction: row; }
 .fc-base__map-tools > .fc-chip { margin-right: 0; margin-left: var(--fc-space-1); }
-.fc-base__map-tools > .fc-chip .fc-chip__face { background-color: var(--fc-panel-field); padding: 0 var(--fc-space-3); }
+.fc-base__map-tools > .fc-chip .fc-chip__face { background-color: var(--fc-panel-field); padding: 0 var(--fc-space-2); min-height: 48px; }
+.fc-base__map-tools .fc-chip__label { font-size: var(--fc-fs-small); }
 .fc-base__map-tools > .fc-chip.fc-chip--selected .fc-chip__face { background-color: var(--fc-text); }
-.fc-base__legend { position: absolute; left: var(--fc-space-2); bottom: var(--fc-space-2); padding: var(--fc-space-1) var(--fc-space-2); }
+.fc-base__legend { position: absolute; left: var(--fc-space-1); top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-2); }
 .fc-base__swatch { width: 18px; height: 12px; margin-right: var(--fc-space-2); flex-shrink: 0; }
 .fc-base__swatch--ground { background-color: var(--fc-range-ground); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
 .fc-base__swatch--air { background-color: var(--fc-range-air); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-ally); border-right-color: var(--fc-ally); border-bottom-color: var(--fc-ally); border-left-color: var(--fc-ally); }
@@ -341,14 +347,18 @@
 .fc-base__strength-big > .fc-number { color: var(--fc-accent); }
 .fc-base__strip { flex-direction: row; align-items: center; flex-shrink: 0; margin-top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-3); }
 .fc-base__cover { flex-grow: 1; flex-shrink: 1; }
-.fc-base__cover > .fc-row > .fc-tag { margin-bottom: 0; margin-top: var(--fc-space-1); }
+.fc-base__cover > .fc-row > .fc-tag { margin: var(--fc-space-1) var(--fc-space-1) 0 0; padding: 0 var(--fc-space-2); }
+.fc-base__cover-title { margin: var(--fc-space-1) var(--fc-space-2) 0 0; }
 .fc-base__numbers { align-items: flex-end; flex-shrink: 0; margin-left: var(--fc-space-3); }
 .fc-base__strength { margin-left: var(--fc-space-2); color: var(--fc-accent); }
 .fc-base__ghost { position: absolute; width: 72px; height: 72px; align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; }
 .fc-base__ghost-icon { width: var(--fc-icon); height: var(--fc-icon); }
 
 /* the map */
-.fc-base-map { flex-grow: 1; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
+.fc-base-map {
+    --base-arrow: var(--fc-danger); --base-range-ground: var(--fc-range-ground); --base-range-air: var(--fc-range-air);
+    --base-ring: var(--fc-text); --base-drop: var(--fc-coin);
+    flex-grow: 1; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
 .fc-base-map__world { -unity-background-scale-mode: stretch-to-fill; }
 .fc-base-map__scrim { background-color: var(--fc-bg); }
 .fc-base-hq { position: absolute; align-items: center; justify-content: center; background-color: var(--fc-panel-selected); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
@@ -377,7 +387,13 @@
     -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); -unity-text-align: upper-center;
     white-space: nowrap; -unity-text-outline-width: 1px; -unity-text-outline-color: var(--fc-bg);
 }
-.fc-base-face__lock { width: 50%; height: 50%; --icon-color: var(--fc-text-2); }
+.fc-base-face__lock { position: absolute; left: -5px; top: -5px; width: 16px; height: 16px; background-color: var(--fc-bg); --icon-color: var(--fc-text-2); }
+/* The level a closed slot needs, centred on its face in a box of its own (a small face is shorter than the figure). */
+.fc-base-face__need {
+    position: absolute; left: -12px; right: -12px; top: 50%; height: 36px; margin-top: -18px;
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); -unity-text-align: middle-center;
+    -unity-text-outline-width: 1px; -unity-text-outline-color: var(--fc-bg);
+}
 .fc-base-face__branch { position: absolute; right: -6px; top: -6px; width: var(--fc-icon-small); height: var(--fc-icon-small); background-color: var(--fc-bg); --icon-color: var(--fc-accent); }
 
 /* the tray */
