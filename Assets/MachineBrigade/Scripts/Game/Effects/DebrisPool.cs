@@ -113,7 +113,8 @@ namespace MachineBrigade.Game.Effects
                 }
                 p.Velocity.y -= Gravity * dt;
                 p.Position += p.Velocity * dt;
-                p.Rotation = Quaternion.Euler(p.Spin * dt) * p.Rotation;
+                // Renormalised each frame: the product drifts off unit length and TRS then asserts.
+                p.Rotation = Quaternion.Normalize(Quaternion.Euler(p.Spin * dt) * p.Rotation);
                 if (burning && trails != null) trails.Fly(ref p.FlameDebt, ref p.SmokeDebt, p.Position, p.Fuel, dt);
                 if (p.Position.y > p.Rest || p.Velocity.y > 0f) continue;
                 p.Position.y = p.Rest;

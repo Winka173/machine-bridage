@@ -1701,6 +1701,11 @@ library with its preview screen, the card renders and the UI checks. The screens
   graphics): headings.png shows each shooter at four headings on the frame its first round leaves,
   and flights.png shows artillery rounds and trails close up at four moments of flight.
   `VehicleView.LastMuzzleNode/LastMuzzleLocal` and `WeaponEffects.Launched` exist for them.
+- **Debris rotation (found by the play smoke run).** `DebrisPool` multiplied each piece's spin
+  into its rotation every frame without renormalising it. Over a long battle the quaternion
+  drifted off unit length and `Matrix4x4.TRS` asserted: 47 errors in 40 s of Conquest. It is
+  now normalised each step, a one-line change. PlaySmoke (menu 15 s, Conquest 40 s, Siege 40 s):
+  0 errors.
 - **Left for the testing phase.** A play-mode check on the device at 30 fps with moving
   columns. The measurement above steps a real sim and views, but EditMode time does not advance,
   so the barrel's kick and the hull smoothing are frozen there. Also left: the aircraft stores'
