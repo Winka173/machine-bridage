@@ -13,6 +13,9 @@ namespace MachineBrigade.Game.Match
 
         public static System.Collections.Generic.IReadOnlyList<MissionDef> LoadCampaign() => MissionDef.ListFromJson(Load("Data/campaign"));
 
+        /// <summary>The campaign file itself (its chapters and generals are read from it too).</summary>
+        public static string CampaignJson => Load("Data/campaign");
+
         private static string Load(string path)
         {
             var asset = Resources.Load<TextAsset>(path);

@@ -210,6 +210,9 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (economy.Cp >= world.Catalog.Base.OutpostCp + 6f &&
                         world.Submit(new Command(CommandType.Outpost, _team, Array.Empty<EntityId>(), defId: point.Def.Id)).Accepted) return true;
+                    // Held and not yet set up: with an army on the field, save up for it rather
+                    // than spend every CP as it comes in (it never reached the price otherwise).
+                    if (economy.ArmyCp >= 16) return true;
                     continue;
                 }
                 for (var i = 0; i < slots.Count; i++)

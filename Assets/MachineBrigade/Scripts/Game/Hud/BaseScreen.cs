@@ -600,6 +600,12 @@ namespace MachineBrigade.Game.Hud
 
         internal void SetLevel(int level)
         {
+            // Levels above what the campaign has opened stay shut (every level in a test build).
+            if (level > Campaign.HqLevelCap)
+            {
+                if (Campaign.HqLevelMission(level) is { } opens) _hint.text = Strings.Format("camp.levelLocked", Campaign.Label(opens));
+                return;
+            }
             if (_layout.HqLevel == level) return;
             _layout.HqLevel = level;
             _dirty = true;
@@ -797,7 +803,11 @@ namespace MachineBrigade.Game.Hud
         {
             var rules = _catalog.Base;
             var level = _layout.HqLevel;
-            foreach (var (button, l) in _levelButtons) button.EnableInClassList("chosen", l == level);
+            foreach (var (button, l) in _levelButtons)
+            {
+                button.EnableInClassList("chosen", l == level);
+                button.EnableInClassList("locked", l > Campaign.HqLevelCap);
+            }
             _levelInfo.text = Strings.Format("camp.opens", rules.Slots(level, SlotSize.Small), rules.Slots(level, SlotSize.Medium),
                 rules.Slots(level, SlotSize.Large), rules.UtilitySlots(level));
             _save.EnableInClassList("disabled", !_dirty);

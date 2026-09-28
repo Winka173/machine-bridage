@@ -22,6 +22,23 @@ namespace MachineBrigade.Game.Match
         /// <summary>Cards this battle unlocks (a campaign mission's first win).</summary>
         public List<string> Unlocks { get; } = new();
 
+        /// <summary>Blueprints for the cards of the main deck (split among them), universal blueprints, and a tower piece's rarity.</summary>
+        public int Prints { get; set; }
+
+        public int RarePrints { get; set; }
+
+        public string TowerGear { get; set; }
+
+        /// <summary>The HQ level this win opens (0: none) and the story fragment it adds to the dossier (a mission id; null: none).</summary>
+        public int HqLevel { get; set; }
+
+        public string Fragment { get; set; }
+
+        /// <summary>What the claim handed out, for the result screen: the blueprints by card, and the tower piece.</summary>
+        public List<(string card, int count)> PrintsPaid { get; } = new();
+
+        public GearItem GearPaid { get; private set; }
+
         public bool Claimed { get; private set; }
 
         /// <summary>Ranks reached while claiming (each already paid its coin bonus).</summary>
@@ -35,6 +52,16 @@ namespace MachineBrigade.Game.Match
             PlayerProfile.AddCoins(Coins * multiplier);
             RanksGained.AddRange(PlayerProfile.AddXp(Xp));
             foreach (var id in Unlocks) PlayerProfile.Unlock(id);
+            if (Prints > 0) PrintsPaid.AddRange(PlayerProfile.AddDeckBlueprints(Prints));
+            if (RarePrints > 0) PlayerProfile.AddUniversalBlueprints(RarePrints);
+            if (TowerGear != null && System.Enum.TryParse<Rarity>(TowerGear, out var rarity))
+            {
+                // The same mission always pays the same piece (its id seeds the roll).
+                var seed = 17;
+                foreach (var c in MissionId ?? "") seed = seed * 31 + c;
+                GearPaid = Gear.CreateTower(rarity, new System.Random(seed), PlayerProfile.NextGearId(), PlayerProfile.BaseTowerNeeds());
+                PlayerProfile.AddGear(GearPaid);
+            }
             if (MissionId != null) PlayerProfile.RecordMission(MissionId, Stars, Tier);
         }
     }
@@ -99,7 +126,19 @@ namespace MachineBrigade.Game.Match
             var share = first ? 1f : 0.35f;
             reward.Coins = Mathf.RoundToInt((mission.RewardCoins * share + 50 * stars) * TierPay(tier));
             reward.Xp = Mathf.RoundToInt((mission.RewardXp * share + 30 * stars) * TierPay(tier));
-            if (!PlayerProfile.Completed(mission.Id)) reward.Unlocks.AddRange(mission.Unlocks);
+            // The story campaign's first win: the cards, blueprints for the main deck, a side mission's
+            // rare blueprints or tower piece, an HQ level, the dossier's fragment. A replay pays a
+            // third of the blueprints.
+            var firstEver = !PlayerProfile.Completed(mission.Id);
+            reward.Prints = firstEver ? mission.Prints : mission.Prints / 3;
+            if (firstEver)
+            {
+                reward.Unlocks.AddRange(mission.Unlocks);
+                reward.RarePrints = mission.RarePrints;
+                reward.TowerGear = mission.TowerGear;
+                reward.HqLevel = mission.HqLevel;
+                if (mission.Chapter > 0) reward.Fragment = mission.Id;
+            }
             return reward;
         }
     }

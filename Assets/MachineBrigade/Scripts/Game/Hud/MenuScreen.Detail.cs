@@ -253,7 +253,7 @@ namespace MachineBrigade.Game.Hud
         private string LockReasonShort(string id)
         {
             var mission = Progression.UnlockMission(id);
-            return mission != null ? Strings.Format("detail.unlockMission", Campaign.IndexOf(mission.Id) + 1) : Strings.Get("detail.unlockShop");
+            return mission != null ? Strings.Format("detail.unlockMission", Campaign.Label(mission)) : Strings.Get("detail.unlockShop");
         }
 
         private void UpgradeDetail()

@@ -157,6 +157,23 @@ namespace MachineBrigade.Sim.Content
             return inside;
         }
 
+        /// <summary>
+        /// The same battlefield with the two sides' camps swapped: side 0 starts where side 1 did,
+        /// with its camp, hardpoints and the units placed there (a fortress's towers too). A campaign
+        /// mission that comes back to a map from the other side plays on this.
+        /// </summary>
+        public MapDefinition Reversed()
+        {
+            static int Swap(int team) => team == 0 ? 1 : team == 1 ? 0 : team;
+            var teams = new List<TeamStart>();
+            foreach (var t in Teams) teams.Add(new TeamStart(Swap(t.Team), t.Rally));
+            var units = new List<UnitPlacement>();
+            foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading));
+            var bases = new List<BaseSiteDef>();
+            foreach (var b in Bases) bases.Add(new BaseSiteDef(Swap(b.Team), b.Hq, b.Heading, b.Slots));
+            return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases);
+        }
+
         public static MapDefinition FromJson(string json)
         {
             var root = new JsonObject(MiniJson.Parse(json), "map");

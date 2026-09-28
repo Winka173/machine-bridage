@@ -2465,3 +2465,99 @@
 .base-confirm-buttons { flex-direction: row; }
 .menu .wide.base-confirm-button { flex-grow: 1; flex-basis: 0; height: 72px; justify-content: center; margin: 0 8px 0 0; }
 .menu .wide.base-confirm-button.primary { margin-right: 0; }
+
+/* ================================================================ the story campaign (prompt 4) */
+/* Campaign page by chapter, briefing and chapter cards, radio chatter in battle, the Dossier. Field Command:
+   graphite surfaces, 1 px hairlines, square corners, amber only for the one action; touch targets 72 px and
+   up; text wraps, never cut with an ellipsis. Portraits are square images (Resources/UI/Portraits). */
+.campaign-left { flex-basis: 56%; flex-grow: 0; flex-shrink: 0; padding-right: 8px; }
+.campaign-left .campaign-list { flex-basis: auto; flex-grow: 1; flex-shrink: 1; padding-right: 0; }
+.campaign-top { flex-direction: row; align-items: center; justify-content: space-between; min-height: 72px; }
+.campaign-top-title { flex-shrink: 1; white-space: normal; }
+.dossier-button {
+    flex-direction: row; align-items: center; min-height: 72px; min-width: 150px; padding: 0 18px;
+    background-color: var(--surface-2); border-width: 1px; border-color: var(--line-2); border-radius: 2px;
+}
+.dossier-button > .icon { width: 26px; height: 26px; margin-right: 10px; --icon-color: #ede6d6; }
+.dossier-button-text { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 18px; letter-spacing: 1.2px; color: var(--text-hi); }
+.dossier-button.pressed { scale: 0.96 0.96; }
+.act-header {
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; letter-spacing: 2.4px; color: var(--accent);
+    margin-top: 16px; padding-bottom: 4px; border-bottom-width: 1px; border-bottom-color: var(--line-2); white-space: normal;
+}
+.chapter-header { flex-direction: row; align-items: center; min-height: 64px; margin-top: 10px; margin-bottom: 4px; padding: 6px 10px; background-color: var(--surface-2); }
+.chapter-header.locked { opacity: 0.55; }
+.chapter-header.done .chapter-number { background-color: var(--positive); color: var(--ink); }
+.chapter-number {
+    width: 40px; height: 40px; margin-right: 12px; -unity-text-align: middle-center; background-color: var(--surface-3);
+    -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 24px; color: var(--text-hi);
+}
+.chapter-text { flex-grow: 1; flex-shrink: 1; }
+.chapter-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; letter-spacing: 1.2px; color: var(--text-hi); white-space: normal; }
+.chapter-maps { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 11px; color: var(--text-mid); white-space: normal; }
+.chapter-progress { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 18px; color: var(--text-mid); margin: 0 10px; }
+.chapter-general { width: 48px; height: 48px; border-width: 1px; border-color: var(--line-2); }
+.campaign-page .mission-row { min-height: 72px; }
+.campaign-page .mission-name, .campaign-page .mission-goal-text { white-space: normal; text-overflow: clip; }
+.campaign-page .mission-row.operation { border-left-width: 3px; border-left-color: var(--accent); }
+.campaign-page .mission-row.side .mission-number { color: var(--info); }
+.campaign-page .mission-row.side { margin-left: 18px; }
+.campaign-page .detail-name { white-space: normal; text-overflow: clip; overflow: visible; }
+.detail-briefing { flex-direction: row; align-items: flex-start; margin: 8px 14px 0 14px; }
+.detail-speaker { width: 56px; height: 56px; flex-shrink: 0; margin-right: 10px; border-width: 1px; border-color: var(--line-2); }
+.detail-briefing .detail-brief { margin: 0; flex-shrink: 1; font-size: 12px; }
+.detail-opponent { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 11px; color: var(--negative); margin: 6px 14px 0 14px; white-space: normal; }
+
+/* --- story cards: chapter openings, briefings, the epilogue ------------------------------------------------ */
+.story-scrim { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(8, 10, 12, 0.82); align-items: center; justify-content: center; }
+.story-card { width: 72%; max-width: 920px; min-width: 560px; background-color: var(--surface-2); border-width: 1px; border-color: var(--line-2); padding: 22px 26px; }
+.story-head { border-bottom-width: 1px; border-bottom-color: var(--line-1); padding-bottom: 10px; margin-bottom: 14px; }
+.story-kicker { -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 15px; letter-spacing: 2px; color: var(--accent); white-space: normal; }
+.story-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 36px; letter-spacing: 1px; color: var(--text-hi); white-space: normal; }
+.story-main { flex-direction: row; align-items: flex-start; }
+.story-portrait { width: 132px; height: 132px; flex-shrink: 0; margin-right: 18px; border-width: 1px; border-color: var(--line-3); }
+.story-column { flex-grow: 1; flex-shrink: 1; }
+.story-speaker { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 18px; letter-spacing: 1.4px; color: var(--bone); white-space: normal; }
+.story-role { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 12px; color: var(--text-mid); margin-bottom: 8px; white-space: normal; }
+.story-body { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 16px; color: var(--text-hi); white-space: normal; }
+.story-chips { flex-direction: row; flex-wrap: wrap; margin-top: 12px; }
+.story-chip {
+    -unity-font: resource("Fonts/BarlowCondensed-SemiBold"); font-size: 14px; letter-spacing: 1px; color: var(--text-hi);
+    padding: 4px 10px; margin: 0 8px 8px 0; border-width: 1px; border-color: var(--line-2); background-color: var(--surface-3);
+}
+.story-aside { flex-direction: row; align-items: center; margin-top: 14px; padding: 8px 10px; background-color: rgba(229, 83, 60, 0.12); border-left-width: 3px; border-left-color: var(--negative); }
+.story-aside-portrait { width: 56px; height: 56px; flex-shrink: 0; margin-right: 12px; }
+.story-aside-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 14px; color: var(--text-hi); white-space: normal; flex-shrink: 1; }
+.story-buttons { flex-direction: row; justify-content: flex-end; margin-top: 18px; }
+.story-buttons .wide { min-height: 72px; min-width: 200px; margin-left: 12px; }
+
+/* --- radio chatter in battle ---------------------------------------------------------------------------------- */
+.radio-panel {
+    position: absolute; left: 236px; top: 108px; width: 440px; min-height: 76px; flex-direction: row; align-items: center; padding: 6px 12px 6px 6px;
+    background-color: var(--glass); border-left-width: 3px; border-left-color: var(--mint); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px;
+    border-top-color: rgba(237, 234, 227, 0.12); border-right-color: rgba(237, 234, 227, 0.12); border-bottom-color: rgba(237, 234, 227, 0.12);
+}
+.radio-panel.enemy { border-left-color: var(--danger); }
+.radio-portrait { width: 64px; height: 64px; flex-shrink: 0; margin-right: 10px; }
+.radio-text { flex-grow: 1; flex-shrink: 1; }
+.radio-name { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 15px; letter-spacing: 1.2px; color: var(--mint); }
+.radio-panel.enemy .radio-name { color: var(--danger); }
+.radio-line { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 14px; color: var(--chalk); white-space: normal; }
+
+/* --- the Dossier ---------------------------------------------------------------------------------------------- */
+.dossier-page { padding: 72px 24px 12px 24px; }
+.dossier-tabs { flex-direction: row; margin-bottom: 10px; }
+.dossier-tab { min-height: 72px; min-width: 150px; margin-right: 8px; justify-content: center; align-items: center; background-color: var(--surface-2); border-bottom-width: 3px; border-bottom-color: rgba(0, 0, 0, 0); }
+.dossier-tab.chosen { border-bottom-color: var(--accent); background-color: var(--surface-3); }
+.dossier-tab .segment-label { font-size: 18px; color: var(--text-hi); }
+.dossier-scroll { flex-grow: 1; }
+.dossier-caps { margin-top: 12px; }
+.dossier-entry { flex-direction: row; align-items: flex-start; padding: 12px 14px; margin-bottom: 8px; background-color: var(--surface-1); border-left-width: 3px; border-left-color: var(--ally); }
+.dossier-entry.enemy { border-left-color: var(--danger-dark); }
+.dossier-entry.locked { opacity: 0.5; }
+.dossier-portrait { width: 88px; height: 88px; flex-shrink: 0; margin-right: 14px; border-width: 1px; border-color: var(--line-2); }
+.dossier-text { flex-grow: 1; flex-shrink: 1; }
+.dossier-title { -unity-font: resource("Fonts/BarlowCondensed-Bold"); font-size: 20px; letter-spacing: 1px; color: var(--text-hi); white-space: normal; }
+.dossier-sub { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 12px; color: var(--accent); white-space: normal; margin-bottom: 4px; }
+.dossier-body { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 14px; color: var(--text-mid); white-space: normal; }
+.dossier-empty { -unity-font: resource("Fonts/BeVietnamPro-Medium"); font-size: 14px; color: var(--text-mid); white-space: normal; margin-top: 12px; }

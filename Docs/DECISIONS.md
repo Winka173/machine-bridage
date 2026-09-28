@@ -823,3 +823,180 @@ those draws is a full state change on the CPU: draws, not triangles, are the cos
 
     These are relative numbers from a desktop editor, not phone timings. A phone has to confirm
     them.
+## 4. Campaign
+
+- **The story is data written by a script.** `Tools/campaign/build_campaign.py` builds `Resources/Data/campaign.json` and
+  `Scripts/Game/Hud/CampaignText.cs` from `story.py` (people, generals, chapters, boss files, timeline, the brigade's usual
+  radio lines, the screens' labels) and `act1.py`–`act3.py` (the missions and their texts). It also turns reversed missions
+  round, sets every mission's pay and checks the rules below, failing the build when one breaks. Why: 108 missions and 900
+  texts in two languages are easier to keep consistent in one place than in a hand-edited JSON and a 1,500-line table.
+  The texts live in their own table (`CampaignText`, read after `Strings` and `GuideText`), so `Strings.cs` hardly changes
+  (fewer merge conflicts).
+- **Setting names.** The coast is Lam Hải; its capital, Lam Thành (the map stays "Thủ Đô"). Hegemon's rule is the
+  "Protectorate" (Chính quyền Bảo hộ), from the Night of Steel (Đêm Thép) two years ago. Lữ đoàn Cơ giới 7's nickname in
+  Vietnamese is "Lữ Đoàn Máy".
+- **Ids.** Main missions are `c<chapter>m<nn>` (c3m05), side missions `c<chapter>s<n>`; the menu shows 3-5 and 3-S1.
+  Missions are listed chapter by chapter, the ten main ones, then the two side ones.
+- **Order and gating.** A main mission opens when the main mission before it is won; the first of a chapter when the last
+  chapter's operation is won. A side mission opens when the main mission it follows (`after`) is won, and never holds
+  anything back. A won mission is always open. In this build a mission whose battlefield file is missing does not hold the
+  missions after it back (the four story maps are on the maps branch), and its Start button says the battlefield is coming.
+- **The chapters** (each: the fifth mission a boss, the tenth a multi-stage operation with a choice of two):
+
+| Ch | Title (vi) | Maps | General | Mid-chapter boss | Operation | Cards unlocked | HQ level / module |
+|---|---|---|---|---|---|---|---|
+| 1 | Bờ biển lửa | Bãi Đổ Bộ, Lũng Xanh, Ashfield | (garrison) | Landing hovercraft | Ashfield fortress, Bastion (55 % health) | rocket technical, mortar, repair drop, rocket battery, tank destroyer, ZU-23, minefield | HQ 1 / repair bay |
+| 2 | Vàng đen | Dunebreak, Hẻm Đá Đỏ | Varga | Behemoth | Refinery raid, Inferno | MLRS, SAM, flame tank, airstrike, heavy tank, ATGM tower, engineer | ammunition depot |
+| 3 | Mùa đông dài | Frostpeak, Đèo Bão Tuyết | Orlov | Iron Bird | Frostpeak line, Ice Fortress | gun-SAM, attack helicopter, UAV scan, dragon's teeth, ATGM carrier, artillery emplacement, Patriot | HQ 2 / radar station |
+| 4 | Cảng thép | Ironport, Bãi Sắt Gỉ | Kessler | Steel train | Take the port, Tempest | command vehicle, attack jet, wheeled gun, counter-battery radar, thermobaric, field tower, gun pit | logistics station |
+| 5 | Lửa rừng | Sườn Dung Nham, Đèo Rừng Rậm | Sen | The Hive | Hive mothership; Sen defects | strike drone, FPV carrier, jammer, twin tank, long SAM, fighter, drone hangar | HQ 3 / airfield |
+| 6 | Tổng phản công | Đập Thủy Điện, Whiteout and Ashfield reversed | Varga | Spectre | Defend the dam, Frost Monster, Hùng's relief | C-RAM, EW tower, scout heli, recon UAV, Lancet, smoke carrier | Epic tower piece |
+| 7 | Chiến tranh trên không | Skyhold, Frostpeak reversed | Quạ Đen | Silver Bug (flees at 50 %) | Storm Skyhold, command airship | SEAD, heavy MLRS, gunship, Iron Beam, remote mines | HQ 4 / Epic tower piece |
+| 8 | Thủ đô | Thành Phố Metro, Thủ Đô | Aurel | Doomsday Train | Liberate the capital; Hùng betrays | VBIED, turtle tank, BMPT, Shahed truck, sapper | Epic tower piece |
+| 9 | Bãi phóng | Bãi Phóng Silver Bug, Dunebreak reversed | each in turn, Aurel | Silver Bug II | Silver Sky Falls: Tổng Tư Lệnh, Silver Bug complete | railgun, cruise missile, heavy fortress, tank buster, minelayer | HQ 5 / Legendary tower piece |
+
+- **Cards.** The 56 campaign cards (38 vehicles, 7 supports, 11 towers) are each unlocked once, 5–7 a chapter, in an order
+  where every flying boss (Iron Bird, the Hive mothership, Spectre, Silver Bug, the command airship) and every shoot-down
+  mission comes after the player has at least two ground cards that shoot at aircraft in a sensible deck
+  (`CampaignTests.NoMissionNeedsALockedCard`). New starter towers: guard tower, MG bunker, AA tower, gun tower (what HQ
+  level 1's three small slots and one medium slot need). A tower or module not unlocked yet leaves its slot empty in
+  battle, and the base screen keeps HQ levels above what the campaign opened shut (every level stays open while
+  `TestUnlockAll` is on).
+- **Only five utility modules exist**, so chapters 1–5 open one each and chapters 6–9 pay a tower piece on their
+  operation instead (Epic, and Legendary for the last), the base reward nearest a module.
+- **HQ levels** come with the first outpost (c1m04, level 1) and the bosses of chapters 3, 5, 7 and the Varga duel of
+  chapter 9 (levels 2–5). `Campaign.HqLevelCap` is what the save has opened; the balance tests play every mission with
+  the level and the towers a player has by then (`CampaignTests.RealisticBase`).
+- **Generals are AI configurations** (`generals` in campaign.json): a signature deck used when a mission names none, the
+  fire support they call (`enemySupports` overrides it) and their base style (section 7). Their taunts and defeat lines
+  are radio texts; their portraits are in `Resources/UI/Portraits`.
+- **The old campaign.** The 23 old missions live on inside the new one (`legacy`): m00→c1m03, m01→c1m08, m02→c1m09,
+  m03→c3m05 (Iron Bird: the boss decides over the map), m04→c2m01, m05→c2m10, m06→c2m05, m07→c3m02, m08→c3m03,
+  m09→c3m10, m10→c4m02, m11→c4m03, m12→c4m05, m13→c5m06, m14→c5m01, m15→c5m10, m16→c8m05, m17→c2m06, m18→c3m08,
+  m19→c4m04, m20→c7m07, m21→c9m05, m22→c1m07. Their briefings were rewritten for the story.
+- **Save migration** (`PlayerProfile.MigrateCampaign`, once, `campaignVersion` 2): each old mission's stars and best tier
+  move to the mission it became (the better of the two if both were played); cards won stay unlocked (they are kept by
+  id). A won mission is always open, so the new missions around the old ones can be played in any order the gating
+  allows. Old ids still resolve (`Campaign.Get("m09")`, `-mb-m09`).
+- **New mission types** (`MissionGoal`): *Outpost* (take a point, set it up, keep it standing N seconds), *Relieve* (destroy
+  the marked besiegers before the allied HQ falls), *Evacuate* (evacuees leave a site one every few seconds and run for the
+  exit without waiting for an escort; the army holds the site, then covers the road), *Duel* (level the general's HQ, a
+  Target base). Also: a boss's health can be scaled (a weak Bastion, the Frost Monster at 3×), a boss can flee at a share of
+  its health (the fight is won; it becomes untouchable and leaves the map in 8 s), a Defend base loses the mission when its
+  HQ falls whatever the goal, and a convoy vehicle can be tougher than its def (Mai's plated Behemoth). A hunt with no
+  targets of its own goes after marked vehicles (the traitor's base).
+- **Bosses still being modelled** (landing hovercraft, rail supergun, earth borer, command airship, Tổng Tư Lệnh) are named
+  in the data with a stand-in (`fallback`, `fallbackHealth`): the mobile fortress at half health, the armoured train ×1.8,
+  the Behemoth ×1.4, Spectre ×0.9, the Bastion. Once their defs exist in balance.json the real boss is fielded with no data
+  change. The Frost Monster is the Behemoth at 3× health and Silver Bug's complete form Silver Bug at 2.2×, each with its own
+  name (`boss.<name>`), so the lead's multi-phase health bars can be added on those defs or on new ones.
+- **Operations.** 4–7 stages each (a branch counts once). Every operation has one choice of two with different
+  consequences: blow a depot (the enemy's income ×0.7 for the rest of the battle, `Income` event) or take a radio/radar
+  point (a free airstrike every 50–55 s for the rest of the battle, a repeating `Strike` event). The auto commander clears a
+  capture or demolition stage in one to three minutes, so each operation has 8–12 minutes of timed stages (the enemy's
+  counterattack, holding a crest or a quay) to land in its 15–25 minute window (the last one 15–30). Holds inside an
+  operation are defended points (Survive with a point): one point lost for 25 s must not end a 20-minute battle. The two
+  siege operations (chapters 3 and 7) end by holding the gate against the counterattack instead of levelling the keep's HQ,
+  which the auto commander never reached in 34 minutes; chapter 1's siege keeps its HQ stage (won in 15–18 min).
+  `"operation": true` marks the nine for the Operations mode; `"replay": true` the duels and the base defences.
+- **Chapter 8's betrayal.** General Hùng's army fights beside the player with its own HQ and towers (`ally.hq`,
+  `ally.structures`); when the palace is taken, a `Betrayal` event turns them: his units and towers join the enemy, his HQ
+  and towers are marked, the player holds for five minutes, then the last stage is a hunt of the traitor's base.
+- **Map reuse.** Two missions on one battlefield differ in at least two of: direction (reversed), base (variant and base
+  roles), weather, play area and goal. The builder and `CampaignTests.EveryReturnToAMapChangesItsSetUp` check every pair.
+- **Reversed missions** play on `MapDefinition.Reversed()`: the sides swap camps, hardpoints and the units placed there (a
+  fortress's towers become the player's: c6m01 defends the Ashfield fortress taken in chapter 1). They are written in the
+  player's frame (the player's camp south-west) and turned round by the builder.
+- **Duels.** The auto commander never reached a general's HQ behind a level 4–5 base (0–11 % in 20 minutes). A trace
+  showed why: the army swung back and forth at mid-map for 29 minutes, because the general's field army and its
+  reinforcements matched it, so it never got to the base. What changed:
+  - the AI's demolition target may now be a fixed defence, so the HQ is shelled from safety like a building;
+  - the general fights on the Defend stance behind his full base: level 2 or 3 in chapters 2–6, level 3 in act III
+    (not 4–5: the auto commander cannot crack those in 30 minutes);
+  - the general's strength is his base, not his field army: his income is ×0.6 and he gets one wave of reinforcements;
+  - the player starts with a heavy battery (two artillery pieces and an MLRS) in the camp;
+  - the HQ has 0.3 of its health, with 30 minutes on the clock.
+  The two early duels (Varga in c2m09, Sen in c5m09) already won 5/5 without these changes and keep the gentler set-up:
+  HQ 0.4, 25 minutes, full income, three reinforcements. The siege unit mix (artillery first) was tried on the duels and
+  reverted: c5m09 dropped from 5/5 to 2/5, because the general's army has to be beaten in the field first.
+- **Relief of the capital** (c8m03): the besiegers have 2.2× health, not the 3× of the other reliefs; at 3× the allied HQ
+  fell in one seed of five with one tank of the ring left (4/5; 5/5 at 2.2×).
+- **Outposts.** The commander held the lake in c3m04 for five minutes and never set the outpost up: it spent every CP as it
+  came in. Holding a marked point with 16 CP of army on the field, it now saves up for the set-up.
+- **Rewards.** Every main mission pays coins, XP, blueprints for the main deck (spread over the battle deck and the base's
+  first six tower types, the cards furthest behind first; a replay pays a third), the story fragment of the Dossier; side
+  missions pay rare (universal) blueprints or a tower piece (Rare, then Epic from chapter 4, Legendary at the end), once.
+  "coin" is "xu" in every new Vietnamese text.
+- **Economy curve.** A campaign-only player (every mission won once with two stars, the silver crate of each first clear,
+  the rank-up coin bonuses, spending at once on the lowest card of a 14-card main deck) should have the deck at about rank 7
+  as act III begins. The builder searches the two scales (coins, blueprints) that land there and a little over 8 at the end:
+  coins 100 × (1 + index/30) (bosses ×1.5, operations ×2.4, side missions ×1.15 of the main before them), blueprints
+  3 × (1 + index/22) with the same factors (side missions ×0.6).
+
+  | Chapter | Missions | Coins | Coins so far | Deck blueprints | Blueprints so far | Deck rank at the end | Player level |
+  |---|---|---|---|---|---|---|---|
+  | 1 | 12 | 2,105 | 2,105 | 55 | 55 | 4.0 | 5 |
+  | 2 | 12 | 2,685 | 4,790 | 74 | 129 | 5.0 | 7 |
+  | 3 | 12 | 3,365 | 8,155 | 100 | 229 | 5.3 | 9 |
+  | 4 | 12 | 3,955 | 12,110 | 120 | 349 | 6.1 | 11 |
+  | 5 | 12 | 4,425 | 16,535 | 137 | 486 | 6.3 | 13 |
+  | 6 | 12 | 5,155 | 21,690 | 163 | 649 | 7.0 | 14 |
+  | 7 | 12 | 5,585 | 27,275 | 177 | 826 | 7.1 | 16 |
+  | 8 | 12 | 6,175 | 33,450 | 199 | 1,025 | 7.6 | 18 |
+  | 9 | 12 | 6,750 | 40,200 | 218 | 1,243 | 8.1 | 19 |
+
+  Chart: `Docs/art/campaign_economy.png` (the builder prints the same curve per mission). Not counted: daily missions,
+  win crates and ad crates, so a real player is a little ahead of the curve.
+- **Radio chatter** (`RadioDirector`, presentation only): the mission's lines by trigger (start, a time, a point taken
+  or lost, the boss arriving or at half, the HQ at half, a stage, enemy reinforcements, win, lose), each once; a moment with
+  no line of its own gets one of the brigade's usual lines, at most one every 35 s (the one-off moments once). Stage radio
+  events and the Sim's messages (betrayal, a boss fleeing, allied strikes) are spoken by whoever the key names. The panel is
+  a portrait, a name and one line under the top bar; a tap skips it; at most three wait.
+- **Story camera.** When a boss arrives, enemy reinforcements land or a general speaks for the first time, the camera
+  glides there for 3.5 s (not when the player touched the view in the last 2 s; a touch hands it back). The slow-motion
+  moment on a boss's death is unchanged.
+- **Mobile storytelling.** No cutscenes: the Start button shows the chapter's opening card the first time a chapter is
+  played (act, title, four sentences, its maps, the general), then the mission's briefing card (the speaker's portrait,
+  the briefing, goal, weather and map chips, the general and one of their taunts), then deploys. The epilogue shows once
+  after the last operation. The Dossier (campaign page, "Hồ sơ") has people (bios once met), boss files (once beaten),
+  the timeline (a line per chapter finished) and the story files (a fragment per won mission). Device checks: `-mb-dossier`
+  (`-mb-dossier-tab=bosses`, `-mb-dossier-all`), `-mb-chapter=3`, `-mb-brief=c3m05`, a mission `-mb-c3m05`.
+- **Portraits** are drawn by `Tools/campaign/portraits.py` (PIL, 4× supersampled): flat busts on a teal ground for the
+  Alliance, dark red for Hegemon, each with its own headgear, insignia and one feature to know them by at 48 px.
+- **Style.** The new screens use the Field Command tokens (`--surface-*`, `--line-*`, `--text-*`, `--accent`), Barlow
+  Condensed for caps and titles, Be Vietnam Pro for text; touch targets 72 px or more; text wraps, never an ellipsis. All in
+  one block at the end of Hud.uss for the coming token theme.
+
+- **Balance** (`CampaignTests.WinRateOverFiveSeeds`, run with `MB_BALANCE=1`; five seeds, the auto commander, the deck and
+  base a player has by then, cards at rank 1 so the arsenal edge the enemy matches is zero, Normal):
+  87 of 87 measured missions win all five seeds (the whole run: 16 minutes). Not measured, because their battlefield is
+  on the maps branch (Assert.Ignore until it is merged): c1m01, c1m02, c1m05, c1s2, c6m04, c6m06, c6m08, c6m10, c6s2,
+  c8m02, c8m06, c8m08, c8m09, c8m10, c8s2, c9m02, c9m04, c9m06, c9m08, c9m10, c9s1. The test prints one `SEEDS <id>:`
+  line per mission (each seed's result, minutes, goal progress, peak army). Half the missions average under 3.5
+  minutes. The operations:
+
+  | Operation | Wins | Durations (min) | Window |
+  |---|---|---|---|
+  | c1m10 | 5/5 | 20.0, 17.3, 19.4, 18.9, 19.7 | 15–25 |
+  | c2m10 | 5/5 | 16.9, 18.2, 19.0, 17.0, 16.4 | 15–25 |
+  | c3m10 | 5/5 | 24.2, 19.7, 19.2, 18.5, 21.6 | 15–25 |
+  | c4m10 | 5/5 | 15.9, 19.0, 18.1, 17.9, 16.1 | 15–25 |
+  | c5m10 | 5/5 | 17.0, 17.1, 20.1, 19.7, 16.9 | 15–25 |
+  | c7m10 | 5/5 | 18.2, 17.6, 18.6, 18.7, 17.1 | 15–25 |
+
+- **How the missions were tuned** (never by cutting fire or explosions):
+  - One seed per mission first (`MissionPlaysToAnEnd`), then five (`WinRateOverFiveSeeds`), six rounds.
+  - Operations were far too short at first (5–7 minutes: the auto commander clears a capture or demolition stage in one to
+    three). Timed stages brought them to 15–25 minutes.
+  - Protect targets fell early: 14–22× building health (the old m22 had 12×).
+  - Mid-bosses died in 1–2 minutes: Iron Bird 1.6×, Spectre 3.5×, Silver Bug 4.4× (it flees at half), Silver Bug II 2.4×,
+    the steel train 1.6×.
+  - Relief rings broke in 30 s: besiegers at 3×.
+  - Hunts whose last target never came near the army: inner routes, 1.5–1.8× (was 2.5×), more time.
+  - The jungle convoy's route crossed the river: it now keeps to the pass road.
+  - Duels (see above) went from 0–11 % of the HQ in 20 minutes to 5/5.
+- **Seen in the runs, left as they are:**
+  - Many ordinary missions end in 1–4 minutes under the auto commander. The brief sets no length for them, and a player
+    who steers the army takes longer.
+  - The arsenal edge is zero in these runs (rank 1 cards). A real player's ranks make the campaign easier, because the
+    enemy matches only 55 % of the edge.

@@ -384,7 +384,7 @@ namespace MachineBrigade.Game.Hud
             if (!premium)
             {
                 var mission = Progression.UnlockMission(id);
-                card.Add(UiKit.Text(mission != null ? Strings.Format("shop.fromMission", Campaign.IndexOf(mission.Id) + 1) : "", "shop-sub"));
+                card.Add(UiKit.Text(mission != null ? Strings.Format("shop.fromMission", Campaign.Label(mission)) : "", "shop-sub"));
             }
             card.Add(available ? PriceTag(Progression.Price(id, _catalog)) : UiKit.Text(Strings.Get("shop.comingSoon"), "shop-soon"));
             _shopCards.Add((card, id));
