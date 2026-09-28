@@ -189,6 +189,13 @@ namespace MachineBrigade.Sim.Content
         SetSalvageRights,
         SetGhostNet,
         SetHeavyRound,
+
+        // Tower equipment's own lines (the Weapon, Structure and Systems slots of a tower type)
+        TowerFireLink,
+        TowerCounterBattery,
+        TowerModular,
+        TowerSmokeLaunchers,
+        TowerBackupGenerator,
         Count,
     }
 

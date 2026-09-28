@@ -66,6 +66,13 @@ namespace MachineBrigade.Game.Match
 
         public int ExtraFrom { get; set; } = 99;
 
+        /// <summary>
+        /// The stat its main line raises when it is not its slot's (<see cref="StatId.Count"/>: the
+        /// slot's own). Tower base types use it: an ammunition hoist raises rate of fire, traverse
+        /// motors the turret's turn rate.
+        /// </summary>
+        public StatId Main { get; set; } = StatId.Count;
+
         public bool TradeOff => Penalty != StatId.Count;
     }
 
@@ -87,6 +94,9 @@ namespace MachineBrigade.Game.Match
         public float[] Epic { get; }
         public float[] Legendary { get; }
         public string Key => GearKeys.Trait(Id);
+
+        /// <summary>What a tower must have for it to do anything (tower pools only; see <see cref="TowerFit"/>).</summary>
+        public TowerNeed Need { get; set; }
 
         public GearTrait At(Rarity rarity)
         {
@@ -164,7 +174,7 @@ namespace MachineBrigade.Game.Match
     /// traits and 10 brands. Numbers are at the top level; level 1 has 40 % of a main stat or
     /// implicit line.
     /// </summary>
-    public static class GearCatalog
+    public static partial class GearCatalog
     {
         private const BranchMask Arm = BranchMask.Armor, Lgt = BranchMask.Light, Art = BranchMask.Artillery, Air = BranchMask.Air, All = BranchMask.All;
         private static readonly float[] None5 = { 0f, 0f, 0f, 0f, 0f };
@@ -397,7 +407,10 @@ namespace MachineBrigade.Game.Match
         static GearCatalog()
         {
             foreach (var b in Bases) BaseById[b.Id] = b;
+            foreach (var b in TowerBases) BaseById[b.Id] = b;
             foreach (var t in Traits) TraitById[t.Id] = t;
+            // The tower-only lines (a vehicle trait in a tower pool keeps its vehicle entry here).
+            foreach (var t in TowerTraits) TraitById.TryAdd(t.Id, t);
             foreach (var m in Modules) ModuleById[m.Module] = m;
         }
 

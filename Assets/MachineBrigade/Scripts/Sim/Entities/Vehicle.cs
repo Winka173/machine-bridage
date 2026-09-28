@@ -94,6 +94,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Takes no damage until then (Unbreakable, Aegis Dome).</summary>
         internal double ImmuneUntil = double.NegativeInfinity;
 
+        /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
+        internal float StunResist;
+
+        /// <summary>The fixed defences of each side (0 and 1) that last hit it, for Fire Link.</summary>
+        internal readonly TowerFireMark[] TowerFire = new TowerFireMark[2];
+
         /// <summary>Hit points left in an absorbing barrier (Aegis Barrier, Shared Shield), for the view.</summary>
         public float Barrier => Statuses[(int)StatusKind.Barrier].Value;
 

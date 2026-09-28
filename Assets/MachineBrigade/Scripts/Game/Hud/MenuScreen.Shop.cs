@@ -269,6 +269,10 @@ namespace MachineBrigade.Game.Hud
                 Line(Strings.Format("odds.roll", Strings.Get("rarity." + rarity.ToString().ToLowerInvariant()), (Crates.Odds[k][r] * 100f).ToString("0.#"),
                     (Crates.AtLeastOne(kind, rarity) * 100f).ToString("0.#")), GearArt.Colors[r]);
             }
+            // Which kind of equipment each roll is: vehicle or tower, at the same rarity odds.
+            var tower = Crates.TowerShare[k];
+            Line(Strings.Format("odds.towerShare", ((1f - tower) * 100f).ToString("0.#"), (tower * 100f).ToString("0.#"),
+                (Crates.AtLeastOneTower(kind) * 100f).ToString("0.#")), null);
             if (kind == CrateKind.Gold) Line(Strings.Get("odds.goldGuaranteed"), null);
             if (kind == CrateKind.Legendary) Line(Strings.Get("odds.legendaryGuaranteed"), null);
             if (Crates.EpicPity[k] > 0)

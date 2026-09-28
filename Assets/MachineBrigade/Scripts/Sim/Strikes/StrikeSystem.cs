@@ -308,7 +308,9 @@ namespace MachineBrigade.Sim.Strikes
                     {
                         if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Boss) continue;
                         if (Vector2.Distance(v.Position, s.Point) > support.Radius + v.Def.HullRadius) continue;
-                        v.StunnedUntil = Math.Max(v.StunnedUntil, now + support.Duration);
+                        var knocked = _world.Gear.StunSeconds(v, support.Duration);
+                        if (knocked <= 0f) continue;
+                        v.StunnedUntil = Math.Max(v.StunnedUntil, now + knocked);
                         v.ClearPath();
                         v.Speed = 0f;
                     }
@@ -413,9 +415,10 @@ namespace MachineBrigade.Sim.Strikes
                         _world.Emit(SimEvent.StrikeImpact(s.Team, support, radar.Position));
                         var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
                         _world.Damage.Apply(radar, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, radar.Position, Combat.HitKind.Strike, true));
-                        if (radar.IsAlive)
+                        var knocked = radar.IsAlive ? _world.Gear.StunSeconds(radar, support.Duration) : 0f;
+                        if (knocked > 0f)
                         {
-                            radar.StunnedUntil = Math.Max(radar.StunnedUntil, now + support.Duration);
+                            radar.StunnedUntil = Math.Max(radar.StunnedUntil, now + knocked);
                             radar.ClearPath();
                             radar.Speed = 0f;
                         }

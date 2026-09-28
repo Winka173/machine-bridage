@@ -24,6 +24,8 @@ namespace MachineBrigade.Game.Hud
             ["set_salvage_rights"] = "pp", ["set_heavy_round"] = "np",
             ["auto_repair"] = "q", ["smoke_discharger"] = "m", ["trophy_aps"] = "ns", ["flare_dispenser"] = "ss", ["drone_escort"] = "ns", ["emp_payload"] = "sm",
             ["mine_dispenser"] = "ns", ["rally_horn"] = "pm", ["aegis_dome"] = "s", ["decoy_launcher"] = "ss", ["uplink_barrage"] = "ns",
+            ["tower_fire_link"] = "ps", ["tower_counter_battery"] = "s", ["tower_modular"] = "p", ["tower_smoke_launchers"] = "ms",
+            ["tower_backup_generator"] = "p",
         };
 
         private static string Number(char kind, float v) => kind switch
@@ -52,6 +54,23 @@ namespace MachineBrigade.Game.Hud
 
         public static string SlotName(GearSlot slot) => Strings.Get("gear.slot." + slot.ToString().ToLowerInvariant());
 
+        /// <summary>A tower slot's short name on a tower type's screen: "Weapon", "Structure", "Systems".</summary>
+        public static string TowerSlotName(GearSlot slot) => Strings.Get("gear.towerSlot." + slot.ToString().ToLowerInvariant());
+
+        /// <summary>Which of these tower types a tower piece works for, by name ("Guard Tower, AA Tower"), or a note that none can use it.</summary>
+        public static string TowerFitLine(GearItem item, IEnumerable<string> towerIds)
+        {
+            var names = new List<string>();
+            foreach (var id in towerIds)
+                if (PlayerProfile.TowerFits(id, item))
+                    names.Add(Strings.Card(id));
+            return names.Count == 0 ? Strings.Get("gear.towerFitsNone") : string.Join(", ", names);
+        }
+
+        /// <summary>"Worn by: Guard Tower" for a tower piece a tower type wears, else empty.</summary>
+        public static string TowerWornLine(GearItem item) =>
+            PlayerProfile.TowerWearing(item) is { } tower ? Strings.Format("gear.towerWornBy", Strings.Card(tower)) : "";
+
         /// <summary>A stat line: "+8% range", "-6% speed" (a drawback), "-2 s regen delay".</summary>
         public static string Line(Gear.Line line) => Line(line.Stat, line.Value, line.Kind == Gear.LineKind.Penalty);
 
@@ -72,11 +91,24 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A trait's name ("Ricochet Shells").</summary>
         public static string TraitName(string key) => Strings.Get("trait." + key);
 
-        /// <summary>What a trait does, with its numbers.</summary>
+        /// <summary>What a trait does, with its numbers (a tower line at its full strength has its own words: "no wait", "immune").</summary>
         public static string TraitEffect(GearTrait t)
         {
             var key = GearKeys.Trait(t.Id);
-            return Strings.Format("trait." + key + ".info", Args(key, t.A, t.B, t.C));
+            var info = "trait." + key + ".info";
+            if (t.Id is TraitId.TowerModular or TraitId.TowerBackupGenerator && t.A >= 1f && Strings.Has(info + ".full")) info += ".full";
+            return Strings.Format(info, Args(key, t.A, t.B, t.C));
+        }
+
+        /// <summary>What a tower must have for a piece or line to work ("Needs a weapon that can hit aircraft"), for the tower equipment screens.</summary>
+        public static string TowerNeedLine(TowerNeed need)
+        {
+            if ((need & TowerNeed.Mobile) != 0) return Strings.Get("gear.towerNeed.never");
+            if (TowerFit.Within(TowerNeed.Magazine, need)) return Strings.Get("gear.towerNeed.magazine");
+            if (TowerFit.Within(TowerNeed.HitsAir, need)) return Strings.Get("gear.towerNeed.hitsAir");
+            if (TowerFit.Within(TowerNeed.HitsGround, need)) return Strings.Get("gear.towerNeed.hitsGround");
+            if (TowerFit.Within(TowerNeed.Armed, need)) return Strings.Get("gear.towerNeed.armed");
+            return Strings.Get("gear.towerNeed.none");
         }
 
         /// <summary>A piece's trait line: "Ricochet Shells: each hit bounces...", or empty.</summary>
