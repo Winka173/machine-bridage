@@ -103,6 +103,18 @@ namespace MachineBrigade.Sim.Modes
         public int Reinforced => _reinforced;
         private double _launchStarted = -1;
 
+        /// <summary>Outpost: seconds the set-up outpost has stood with its point held.</summary>
+        private float _outpostHeld;
+
+        /// <summary>The boss broke off and is getting away (a boss with <see cref="ScriptedUnitDef.FleeAt"/>).</summary>
+        public bool BossFled { get; private set; }
+
+        /// <summary>Seconds a fleeing boss takes to leave the battle.</summary>
+        private const double FleeSeconds = 8.0;
+
+        /// <summary>The allied commander's HQ (set by the operation; none without an ally). Relieve is lost when it falls.</summary>
+        internal EntityId AllyHq { get; set; }
+
         /// <param name="player">The player's CP and deck (the Game layer passes the unlocked cards).</param>
         /// <param name="enemy">The enemy's economy when it has a commander; null when it only sends waves.</param>
         public MissionMode(MissionDef def, SideSetup player, SideSetup? enemy)
@@ -154,7 +166,11 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hunt => _hunted.Count == 0 ? 1f : 1f - AliveHunted(world) / (float)_hunted.Count,
             MissionGoal.Recon => _points.Count == 0 ? 1f : PointCapture.Held(_points, PlayerTeam) / (float)_points.Count,
             MissionGoal.ShootDown => MathF.Min(1f, _ledger.AirKills(PlayerTeam) / (float)Math.Max(1, _def.KillsNeeded)),
-            _ => world.TryGetVehicle(_boss, out var boss) ? 1f - boss.Hp / boss.MaxHp : _boss.IsValid ? 1f : 0f,
+            MissionGoal.Outpost => MathF.Min(1f, _outpostHeld / MathF.Max(1f, _def.HoldSeconds)),
+            MissionGoal.Relieve => _hunted.Count == 0 ? 1f : 1f - AliveHunted(world) / (float)_hunted.Count,
+            MissionGoal.Evacuate => MathF.Min(1f, _arrived / (float)Math.Max(1, _def.ConvoyNeeded)),
+            MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { } camp && world.TryGetVehicle(camp.Hq, out var hq) ? (hq.IsAlive ? 1f - hq.Hp / hq.MaxHp : 1f) : 0f,
+            _ => BossFled ? 1f : world.TryGetVehicle(_boss, out var boss) ? 1f - boss.Hp / boss.MaxHp : _boss.IsValid ? 1f : 0f,
         };
 
         /// <summary>Goal counters for the objective panel: done out of needed (e.g. trucks, targets, seconds).</summary>
@@ -168,6 +184,9 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hunt => (_hunted.Count - AliveHunted(world), _hunted.Count),
             MissionGoal.Recon => (PointCapture.Held(_points, PlayerTeam), _points.Count),
             MissionGoal.ShootDown => (Math.Min(_ledger.AirKills(PlayerTeam), _def.KillsNeeded), _def.KillsNeeded),
+            MissionGoal.Outpost => ((int)_outpostHeld, (int)_def.HoldSeconds),
+            MissionGoal.Relieve => (_hunted.Count - AliveHunted(world), _hunted.Count),
+            MissionGoal.Evacuate => (_arrived, _def.ConvoyNeeded),
             _ => (Result?.WinningTeam == PlayerTeam ? 1 : 0, 1),
         };
 
@@ -208,12 +227,12 @@ namespace MachineBrigade.Sim.Modes
             foreach (var unit in _def.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
 
             // Objectives: the listed ones (all of them when none are listed) for capture; the one
-            // held for hold. Other goals fight over none.
-            if (_def.Goal is MissionGoal.Capture or MissionGoal.Hold or MissionGoal.Recon)
+            // held for hold (or set up as an outpost). Other goals fight over none.
+            if (_def.Goal is MissionGoal.Capture or MissionGoal.Hold or MissionGoal.Recon or MissionGoal.Outpost)
                 foreach (var p in world.Map.Points)
                 {
                     if (_def.Points.Count > 0 && !Contains(_def.Points, p.Id)) continue;
-                    if (_def.Goal == MissionGoal.Hold && _points.Count > 0) break;
+                    if ((_def.Goal is MissionGoal.Hold or MissionGoal.Outpost) && _points.Count > 0) break;
                     var state = new ObjectiveState(p);
                     if (Contains(_def.EnemyOwns, p.Id) && _def.Goal != MissionGoal.Recon) PointCapture.Own(state, EnemyTeam);
                     else if (_def.Goal == MissionGoal.Hold) PointCapture.Own(state, PlayerTeam);
@@ -232,6 +251,12 @@ namespace MachineBrigade.Sim.Modes
             {
                 var boss = world.SpawnVehicle(_def.Boss.Def, EnemyTeam, _def.Boss.Position, _def.Boss.Heading);
                 _boss = boss.Id;
+                // A weakened boss, or one in a stronger form than its def.
+                if (MathF.Abs(_def.Boss.Health - 1f) > 1e-3f && _def.Boss.Health > 0f)
+                {
+                    boss.HpScale *= _def.Boss.Health;
+                    boss.Hp = boss.MaxHp;
+                }
                 if (_def.Boss.Route.Count > 0)
                 {
                     boss.Scripted = true;
@@ -253,7 +278,13 @@ namespace MachineBrigade.Sim.Modes
                 hunted.Scripted = true;
                 Drive(world, hunted, h.Route[0]);
             }
+            // A hunt with nothing of its own goes after what is already marked (the traitor's base
+            // once the ally has turned).
+            if ((_def.Goal is MissionGoal.Hunt or MissionGoal.Relieve) && _def.Hunt.Count == 0)
+                foreach (var v in world.VehicleList)
+                    if (v.IsAlive && v.Marked && v.Team == EnemyTeam) _hunted.Add((v.Id, 0));
             _waveTimer = _def.Waves?.First ?? float.MaxValue;
+            _convoyTimer = 0f;
         }
 
         private static bool OnPlayerSide(SimWorld world, Vector2 at) =>
@@ -273,6 +304,8 @@ namespace MachineBrigade.Sim.Modes
             if (world.Tick % 20 == 0) CallReinforcements(world);
             DriveConvoy(world, dt);
             DriveBoss(world);
+            CheckFlee(world);
+            if (_def.Goal == MissionGoal.Outpost) HoldOutpost(world, dt);
 
             var won = _def.Goal switch
             {
@@ -284,7 +317,11 @@ namespace MachineBrigade.Sim.Modes
                 MissionGoal.Hunt => _hunted.Count > 0 && AliveHunted(world) == 0,
                 MissionGoal.Recon => _points.Count > 0 && PointCapture.Held(_points, PlayerTeam) == _points.Count,
                 MissionGoal.ShootDown => _ledger.AirKills(PlayerTeam) >= _def.KillsNeeded,
-                _ => _boss.IsValid && (!world.TryGetVehicle(_boss, out var b) || !b.IsAlive),
+                MissionGoal.Outpost => _outpostHeld >= _def.HoldSeconds,
+                MissionGoal.Relieve => _hunted.Count > 0 && AliveHunted(world) == 0,
+                MissionGoal.Evacuate => _arrived >= _def.ConvoyNeeded,
+                MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { HqFallen: true },
+                _ => BossFled || (_boss.IsValid && (!world.TryGetVehicle(_boss, out var b) || !b.IsAlive)),
             };
             if (won)
             {
@@ -304,6 +341,11 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hunt => NearestHunted(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Recon => NextSpot(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Protect => Threatened(world),
+            MissionGoal.Outpost => _points.Count > 0 ? _points[0].Def.Position : null,
+            // Break the ring where it presses the ally hardest.
+            MissionGoal.Relieve => NearestHunted(world, AllyHqPosition(world) ?? PlayerCentre(world) ?? Vector2.Zero),
+            MissionGoal.Evacuate => EvacuationPoint(world),
+            MissionGoal.Duel => world.Bases.Of(EnemyTeam) is { HqFallen: false } camp ? camp.HqPosition : null,
             _ => null,
         };
 
@@ -326,6 +368,14 @@ namespace MachineBrigade.Sim.Modes
                     return NextSpot(world, PlayerCentre(world) ?? Vector2.Zero);
                 case MissionGoal.Protect:
                     return world.TryGetProp(EnemyDemolish(world), out var building) ? building.Position : PlayerCentre(world);
+                case MissionGoal.Outpost:
+                    return _points.Count > 0 ? _points[0].Def.Position : null;
+                case MissionGoal.Relieve:
+                    // The besiegers press on the allied HQ.
+                    return AllyHqPosition(world) ?? PlayerCentre(world);
+                case MissionGoal.Evacuate:
+                    return EvacuationPoint(world);
+                case MissionGoal.Duel:
                 case MissionGoal.ShootDown:
                 case MissionGoal.Survive:
                 case MissionGoal.Boss:
@@ -347,8 +397,15 @@ namespace MachineBrigade.Sim.Modes
                 _heldByEnemySince = enemyHolds ? (_heldByEnemySince < 0 ? world.Time : _heldByEnemySince) : -1;
                 if (_heldByEnemySince >= 0 && world.Time - _heldByEnemySince > 25.0) return true;
             }
-            if (_def.Goal == MissionGoal.Escort && _convoySpawned >= _def.ConvoyCount && _arrived + ConvoyAlive(world) < _def.ConvoyNeeded)
+            if ((_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) && _convoySpawned >= _def.ConvoyCount &&
+                _arrived + ConvoyAlive(world) < _def.ConvoyNeeded)
                 return true;
+            // The allied base whose siege is to be broken has fallen.
+            if (_def.Goal == MissionGoal.Relieve && AllyHq.IsValid &&
+                (!world.TryGetVehicle(AllyHq, out var allyHq) || !allyHq.IsAlive || allyHq.Team != PlayerTeam))
+                return true;
+            // A base to defend (its role Defend): losing its HQ loses the mission, whatever the goal.
+            if (world.Bases.Of(PlayerTeam) is { Role: BaseRole.Defend, HqFallen: true }) return true;
             if (_def.Goal == MissionGoal.Intercept && world.TryGetVehicle(_boss, out var train) && train.IsAlive &&
                 _def.Boss != null && _bossWaypoint >= _def.Boss.Route.Count)
             {
@@ -465,12 +522,12 @@ namespace MachineBrigade.Sim.Modes
         private void DriveConvoy(SimWorld world, float dt)
         {
             var convoy = _def.Convoy;
-            if (convoy == null || _def.Goal != MissionGoal.Escort) return;
+            if (convoy == null || _def.Goal is not (MissionGoal.Escort or MissionGoal.Evacuate)) return;
             _convoyTimer -= dt;
             if (_convoySpawned < _def.ConvoyCount && _convoyTimer <= 0f)
             {
                 // One truck every few seconds, so they leave as a column instead of a pile.
-                _convoyTimer = 4f;
+                _convoyTimer = MathF.Max(1f, _def.ConvoyInterval);
                 _convoySpawned++;
                 var truck = world.SpawnVehicle(convoy.Def, PlayerTeam, convoy.Position, convoy.Heading);
                 truck.Scripted = true;
@@ -481,8 +538,9 @@ namespace MachineBrigade.Sim.Modes
             {
                 var (id, waypoint) = _convoy[i];
                 if (waypoint >= convoy.Route.Count || !world.TryGetVehicle(id, out var truck) || !truck.IsAlive) continue;
-                // Unescorted trucks stop and wait rather than drive alone into an ambush.
-                var escorted = Escorted(world, truck);
+                // Unescorted trucks stop and wait rather than drive alone into an ambush; evacuees
+                // run for it whatever (the army holds the site behind them).
+                var escorted = _def.Goal == MissionGoal.Evacuate || Escorted(world, truck);
                 if (!escorted && !_halted.Contains(id))
                 {
                     _halted.Add(id);
@@ -509,7 +567,7 @@ namespace MachineBrigade.Sim.Modes
         private void DriveBoss(SimWorld world)
         {
             var route = _def.Boss?.Route;
-            if (route == null || route.Count == 0 || _bossWaypoint >= route.Count) return;
+            if (BossFled || route == null || route.Count == 0 || _bossWaypoint >= route.Count) return;
             if (!world.TryGetVehicle(_boss, out var boss) || !boss.IsAlive) return;
             var left = Vector2.Distance(boss.Position, route[_bossWaypoint]);
             if (left > WaypointReach)
@@ -621,6 +679,7 @@ namespace MachineBrigade.Sim.Modes
         {
             for (var i = 0; i < _hunted.Count; i++)
             {
+                if (i >= _def.Hunt.Count) break;
                 var (id, waypoint) = _hunted[i];
                 var route = _def.Hunt[i].Route;
                 if (route.Count == 0 || !world.TryGetVehicle(id, out var v) || !v.IsAlive) continue;
@@ -652,6 +711,54 @@ namespace MachineBrigade.Sim.Modes
                 best = v.Position;
             }
             return best;
+        }
+
+        /// <summary>
+        /// A boss that breaks off at a share of its health (the first sight of a boss that is not yet
+        /// finished): once hit that hard it cannot be touched, turns for the far corner of the map and
+        /// leaves the battle a few seconds later. Driving it off wins the fight.
+        /// </summary>
+        private void CheckFlee(SimWorld world)
+        {
+            if (BossFled || _def.Boss is not { FleeAt: > 0f } boss || !world.TryGetVehicle(_boss, out var v) || !v.IsAlive) return;
+            if (v.Hp > v.MaxHp * boss.FleeAt) return;
+            BossFled = true;
+            v.Invulnerable = true;
+            v.Scripted = true;
+            v.ExpiresAt = world.Time + FleeSeconds;
+            var away = world.TryGetRally(EnemyTeam, out var camp) ? camp : v.Position;
+            var outward = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
+            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.HalfSize)));
+            world.Emit(SimEvent.RadioMessage("radio.bossFled", PlayerTeam));
+        }
+
+        /// <summary>Outpost: the clock runs while the point is the player's and its outpost stands.</summary>
+        private void HoldOutpost(SimWorld world, float dt)
+        {
+            if (_points.Count == 0) return;
+            var site = _points[0];
+            if (site.Owner != PlayerTeam) return;
+            if (world.Bases.Of(PlayerTeam) is { } ours && ours.Outposts.ContainsKey(site.Def.Id)) _outpostHeld += dt;
+        }
+
+        /// <summary>The allied HQ while it stands on the player's side.</summary>
+        private Vector2? AllyHqPosition(SimWorld world) =>
+            AllyHq.IsValid && world.TryGetVehicle(AllyHq, out var hq) && hq.IsAlive && hq.Team == PlayerTeam ? hq.Position : null;
+
+        /// <summary>
+        /// Evacuation: the site while evacuees are still to leave it, then the last of them still on
+        /// the road (the rearguard covers the column home).
+        /// </summary>
+        private Vector2? EvacuationPoint(SimWorld world)
+        {
+            if (_def.Convoy == null) return null;
+            if (_convoySpawned < _def.ConvoyCount) return _def.Convoy.Position;
+            for (var i = _convoy.Count - 1; i >= 0; i--)
+            {
+                var (id, waypoint) = _convoy[i];
+                if (waypoint < _def.Convoy.Route.Count && world.TryGetVehicle(id, out var truck) && truck.IsAlive) return truck.Position;
+            }
+            return null;
         }
 
         /// <summary>Protect: the building the enemy is closest to, where the army should stand.</summary>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Core;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
 
@@ -57,6 +58,12 @@ namespace MachineBrigade.Sim.Modes
         private int _dueStage = -1;
         private double _choiceDeadline, _startedAt;
 
+        /// <summary>Fire support that comes again and again (a choice opened allied air strikes): the event and its next time.</summary>
+        private readonly List<(StageEventDef e, double next)> _standing = new();
+
+        /// <summary>The ally's HQ (none without one).</summary>
+        private EntityId _allyHq;
+
         public OperationMode(MissionDef def, SideSetup player, SideSetup? enemy)
         {
             _def = def;
@@ -101,6 +108,12 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The ally has turned on the player.</summary>
         public bool Betrayed { get; private set; }
 
+        /// <summary>The allied commander's HQ (invalid when the mission has none).</summary>
+        public EntityId AllyHq => _allyHq;
+
+        /// <summary>Strikes called by the operation itself so far (allied air support), for the tests and the log.</summary>
+        public int FreeStrikes { get; private set; }
+
         /// <summary>A later stage began (its index): the commanders are set for its goal, in the same step.</summary>
         public event Action<int>? StageChanged;
 
@@ -113,11 +126,26 @@ namespace MachineBrigade.Sim.Modes
             if (_def.Stages.Count > 0)
                 foreach (var u in _def.Units) world.SpawnVehicle(u.DefId, u.Team, u.Position, u.Heading);
             if (_def.Ally is { } ally)
+            {
+                // The ally's camp: its HQ at the site and its towers round it, then its army.
+                if (ally.Hq != null && world.Catalog.Vehicles.ContainsKey(ally.Hq))
+                {
+                    var hq = world.SpawnVehicle(ally.Hq, PlayerTeam, ally.Site, ally.Heading);
+                    hq.Ally = true;
+                    _allyHq = hq.Id;
+                    Current.AllyHq = _allyHq;
+                }
+                foreach (var s in ally.Structures)
+                {
+                    var tower = world.SpawnVehicle(s.DefId, PlayerTeam, s.Position, s.Heading);
+                    tower.Ally = true;
+                }
                 foreach (var u in ally.Units)
                 {
                     var v = world.SpawnVehicle(u.DefId, PlayerTeam, u.Position, u.Heading);
                     v.Ally = true;
                 }
+            }
         }
 
         public void Tick(SimWorld world, float dt)
@@ -129,6 +157,7 @@ namespace MachineBrigade.Sim.Modes
                 _dueStage = -1;
             }
             AllyReinforcements(world);
+            StandingStrikes(world);
             if (PendingChoice != null)
             {
                 if (world.Time >= _choiceDeadline) Choose(world, PendingChoice.Choices[0].Key);
@@ -203,7 +232,7 @@ namespace MachineBrigade.Sim.Modes
             StageIndex = index;
             _path.Add(index);
             var stage = _stages[index];
-            Current = new MissionMode(stage.Mission, _player, _enemy) { Staged = true };
+            Current = new MissionMode(stage.Mission, _player, _enemy) { Staged = true, AllyHq = _allyHq };
             Current.SetupStage(world, first, owners);
             world.Emit(SimEvent.StageBegan(stage.Id, _path.Count));
             foreach (var e in stage.Events)
@@ -251,7 +280,72 @@ namespace MachineBrigade.Sim.Modes
                 case StageEventKind.Cp:
                     if (world.TryGetEconomy(e.Team, out var economy)) economy.Cp += e.Amount;
                     break;
+                case StageEventKind.Income:
+                    if (e.Amount > 0f && world.TryGetEconomy(e.Team, out var earner)) earner.ScaleIncome(e.Amount);
+                    break;
+                case StageEventKind.Strike:
+                    Strike(world, e);
+                    if (e.Every > 0.0) _standing.Add((e, world.Time + e.Every));
+                    break;
             }
+        }
+
+        /// <summary>Repeating fire support, on the operation's clock, while the battle lasts.</summary>
+        private void StandingStrikes(SimWorld world)
+        {
+            for (var i = 0; i < _standing.Count; i++)
+            {
+                var (e, next) = _standing[i];
+                if (world.Time < next) continue;
+                Strike(world, e);
+                _standing[i] = (e, next + e.Every);
+            }
+        }
+
+        /// <summary>
+        /// Fire support at no cost for a side: at the event's spot, else on the other side's biggest
+        /// group on the ground that none of the side's own vehicles stands near; nothing when there is none.
+        /// </summary>
+        private void Strike(SimWorld world, StageEventDef e)
+        {
+            if (e.Support == null || !world.Catalog.TryGetSupport(e.Support, out var support)) return;
+            var target = e.Position ?? StrikeTarget(world, e.Team, support.IsLine ? support.Length * 0.5f : support.Radius);
+            if (target is not { } at) return;
+            world.TryGetRally(e.Team, out var home);
+            var along = at - home;
+            along = along.LengthSquared() > 1f ? Vector2.Normalize(along) : Vector2.UnitX;
+            var start = support.IsLine ? at - along * (support.Length * 0.5f) : at;
+            world.Strikes.Launch(support, e.Team, world.ClampToMap(start), start + along);
+            FreeStrikes++;
+        }
+
+        /// <summary>The other side's vehicle with the most of its own round it (12 m), clear of <paramref name="team"/>'s by <paramref name="reach"/>.</summary>
+        private static Vector2? StrikeTarget(SimWorld world, int team, float reach)
+        {
+            var foe = team == PlayerTeam ? EnemyTeam : PlayerTeam;
+            Vector2? best = null;
+            var bestCount = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != foe || v.Flying) continue;
+                var count = 0;
+                var clear = true;
+                foreach (var o in world.VehicleList)
+                {
+                    if (!o.IsAlive || o.Flying) continue;
+                    var d = Vector2.DistanceSquared(o.Position, v.Position);
+                    if (o.Team == foe && d < 12f * 12f) count++;
+                    else if (o.Team == team && d < (reach + 4f) * (reach + 4f))
+                    {
+                        clear = false;
+                        break;
+                    }
+                }
+                if (!clear || count <= bestCount) continue;
+                bestCount = count;
+                best = v.Position;
+            }
+            return best;
         }
 
         /// <summary>
@@ -265,7 +359,12 @@ namespace MachineBrigade.Sim.Modes
             var turned = new List<Vehicle>();
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Ally) turned.Add(v);
-            foreach (var v in turned) world.Defect(v, EnemyTeam);
+            foreach (var v in turned)
+            {
+                world.Defect(v, EnemyTeam);
+                // The traitor's base (its HQ and towers) is marked: the one to strike back at.
+                if (v.Def.Static) v.Marked = true;
+            }
             world.Emit(SimEvent.RadioMessage("radio.betrayal"));
         }
 
