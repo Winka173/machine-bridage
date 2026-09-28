@@ -661,8 +661,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in cards)
             {
                 var def = world.Catalog.Vehicles[id];
-                // Bosses and mission trucks cost nothing and are never bought.
-                if (def.Boss || def.CpCost <= 0) continue;
+                // Bosses and mission trucks cost nothing and are never bought; an item's aircraft is no card.
+                if (def.Boss || def.CpCost <= 0 || !def.Card) continue;
                 if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 if (def.Flying && airFull) continue;

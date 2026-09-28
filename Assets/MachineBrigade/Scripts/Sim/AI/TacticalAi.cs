@@ -438,8 +438,11 @@ namespace MachineBrigade.Sim.AI
         private const float RefitBelow = 0.35f, RefitUntil = 0.9f;
 
         /// <summary>
-        /// An aircraft's trip to the airfield (see UtilityDef.AirRepair): sent there empty or below
-        /// 35 % health, released once at 90 % and rearmed, or when the airfield is gone.
+        /// An aircraft's trip to be mended: below 35 % health it goes to the landing pad (see
+        /// UtilityDef.AirRepair; it mends 3 % a second there), else to the HQ (1 % a second), and is
+        /// released at 90 %, or when neither stands. Prompt 13 C.4: never in the middle of an attack
+        /// (its salvo, hold or pass finishes first). Stores are the simulation's own business now
+        /// (SupplySystem: they come back over the field, no trip home needed).
         /// </summary>
         private bool Refit(SimWorld world, Vehicle v)
         {
@@ -447,14 +450,17 @@ namespace MachineBrigade.Sim.AI
             foreach (var m in world.VehicleList)
                 if (m.IsAlive && m.Team == _team && m.Def.Utility is { AirRepair: > 0f }) { field = m; break; }
             if (field == null)
+                foreach (var m in world.VehicleList)
+                    if (m.IsAlive && m.Team == _team && m.Def.Fort is { Kind: FortKind.Hq }) { field = m; break; }
+            if (field == null)
             {
                 _refitting.Remove(v.Id);
                 return false;
             }
             var hurt = v.Hp < v.MaxHp * RefitBelow;
-            if (!_refitting.Contains(v.Id) && (hurt || v.OutOfAmmo)) _refitting.Add(v.Id);
+            if (!_refitting.Contains(v.Id) && hurt && world.Supply.CanBreakOff(v)) _refitting.Add(v.Id);
             if (!_refitting.Contains(v.Id)) return false;
-            if (v.Hp >= v.MaxHp * RefitUntil && !v.NeedsAmmo)
+            if (v.Hp >= v.MaxHp * RefitUntil)
             {
                 _refitting.Remove(v.Id);
                 return false;
@@ -462,6 +468,22 @@ namespace MachineBrigade.Sim.AI
             if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)
                 Issue(world, CommandType.Move, v.Id, field.Position);
             return true;
+        }
+
+        /// <summary>
+        /// Prompt 13 C.4: an aircraft with its stores low (under a fifth) goes to rearm early when the
+        /// fight round it has a lull (no known enemy it can hit near it), so it is full for the next one.
+        /// </summary>
+        private void RearmInLulls(SimWorld world, Vehicle v)
+        {
+            if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= Abilities.SupplySystem.LowShare || v.RearmRequested) return;
+            if (v.Target.IsValid || world.Time - v.LastFiredAt < 4.0) return;
+            var reach = v.Def.VisionRange + 15f;
+            foreach (var e in _enemies)
+                if (Vector2.Distance(e.Position, v.Position) < reach) return;
+            _ids.Clear();
+            _ids.Add(v.Id);
+            world.Submit(new Command(CommandType.Rearm, _team, _ids));
         }
 
         /// <summary>
@@ -613,6 +635,7 @@ namespace MachineBrigade.Sim.AI
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
                 if (v.Flying && Refit(world, v)) continue;
+                if (v.Flying) RearmInLulls(world, v);
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
                 if (!v.Flying && v.OutOfAmmo)
                 {

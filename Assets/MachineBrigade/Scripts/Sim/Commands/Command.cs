@@ -31,6 +31,9 @@ namespace MachineBrigade.Sim.Commands
         /// order is cancelled (DefId null or empty); Units may be empty.
         /// </summary>
         FocusPart,
+
+        /// <summary>Prompt 13 C.4: sends aircraft with stores to rearm now (they finish what they are doing first).</summary>
+        Rearm,
     }
 
     /// <summary>

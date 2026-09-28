@@ -68,7 +68,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1f, DamageSystem.BonusFor(gun, hunter, facing, world.Time), 1e-4f);
             Assert.AreEqual(1.25f, DamageSystem.BonusFor(gun, hunter, side, world.Time), 1e-4f);
             var dps = gun.Damage / gun.Cooldown * world.Catalog.Damage.Multiplier(DamageType.ArmorPiercing, ArmorClass.Heavy);
-            Assert.That(dps, Is.InRange(60f, 70f), "about 65 damage a second on heavy armour");
+            Assert.That(dps, Is.InRange(65f, 80f), "about 70 damage a second on heavy armour");
         }
 
         [Test]
@@ -274,8 +274,9 @@ namespace MachineBrigade.Tests
                 });
                 return n;
             }
-            Assert.AreEqual(8, Bombs(6));
-            Assert.AreEqual(11, Bombs(7), "40 % more bombs along a 40 % longer line");
+            // Prompt 13 D.1: six Mk 84s a run (was eight), eight from rank 7.
+            Assert.AreEqual(6, Bombs(6));
+            Assert.AreEqual(8, Bombs(7), "40 % more bombs along a 40 % longer line");
         }
     }
 }

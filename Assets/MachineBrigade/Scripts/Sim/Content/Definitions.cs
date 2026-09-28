@@ -58,6 +58,14 @@ namespace MachineBrigade.Sim.Content
         public float Reload { get; internal set; }
 
         /// <summary>
+        /// Prompt 13 C: an aircraft's stores (bombs, missiles, rockets): rounds carried when fully
+        /// loaded (0: not stores). A salvo fires what is left of it; the rounds come back one at a time
+        /// over the field (<see cref="Abilities.SupplySystem"/>). A carrier's own "loads" may say otherwise
+        /// (<see cref="VehicleDef.LoadOf"/>). Guns never run out.
+        /// </summary>
+        public int Load { get; internal set; }
+
+        /// <summary>
         /// Seconds to reload the whole magazine in place: <see cref="Reload"/>, else two fifths of
         /// the time it takes to fire it off, between 10 and 28 s.
         /// </summary>
@@ -193,6 +201,7 @@ namespace MachineBrigade.Sim.Content
             {
                 Ammo = ammo,
                 Reload = reload,
+                Load = Load,
                 ImpactScale = ImpactScale,
                 Cluster = cluster,
                 Pierce = Pierce,
@@ -351,6 +360,32 @@ namespace MachineBrigade.Sim.Content
         public bool Static { get; }
 
         /// <summary>
+        /// A vehicle card a deck can hold (false: only an item's or a mission's vehicle, such as the Gunship
+        /// item's AC-130, prompt 13 E.3): never bought, never listed as a card.
+        /// </summary>
+        public bool Card { get; internal set; } = true;
+
+        /// <summary>Prompt 13 C: stores this aircraft carries of a weapon when fully loaded, over the weapon's own (weapon id: rounds).</summary>
+        public IReadOnlyDictionary<string, int> Loads { get; internal set; } = new Dictionary<string, int>();
+
+        /// <summary>
+        /// Rounds of <paramref name="weapon"/> this vehicle carries when fully loaded (0: not stores). Only
+        /// aircraft carry stores (bosses excepted: a boss fight is its own); ground launchers keep their
+        /// magazines and reloads in place.
+        /// </summary>
+        public int LoadOf(WeaponDef weapon)
+        {
+            if (!Flying || Boss) return 0;
+            return Loads.TryGetValue(weapon.Id, out var n) ? n : weapon.Load;
+        }
+
+        /// <summary>
+        /// Seconds from empty to fully loaded at the holding pattern's full rate (prompt 13 C.2; data
+        /// "rearmTime"): helicopters and drones about 8.5, fighters 11, attack jets 14, bombers 21.
+        /// </summary>
+        public float RearmTime { get; internal set; }
+
+        /// <summary>
         /// Circles its target instead of making strafing runs: a gunship's left-hand pylon turn,
         /// which keeps its side-firing guns on the target for as long as it likes.
         /// </summary>
@@ -431,8 +466,11 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Repairs friendly vehicles around it (engineers).</summary>
         public AuraDef? RepairAura { get; internal set; }
 
-        /// <summary>Re-arms friendly vehicles around it (engineers).</summary>
+        /// <summary>Re-arms friendly vehicles around it (the ammunition carrier; engineers before prompt 13).</summary>
         public AuraDef? RearmAura { get; internal set; }
+
+        /// <summary>A forward rearm point for helicopters (the ammunition carrier): their stores come back twice as fast beside it.</summary>
+        public AuraDef? AirRearm { get; internal set; }
 
         /// <summary>Radius in which enemy guided weapons and fire support are scrambled (0: no jammer).</summary>
         public float Jammer { get; internal set; }

@@ -131,7 +131,7 @@ namespace MachineBrigade.Game.Hud
                 "Strong / weak: kills [[tanks]], heavy tanks and [[bosses]] from outside their reach; fears artillery, and light cars that close in.\n" +
                 "Tip: keep it just behind your tanks so it fires first; the best answer to heavy armour and bosses.",
                 "[[Diệt tăng]] · giáp dày · tầm xa (40 m)\n" +
-                "Cách đánh: pháo 125 mm [[xuyên giáp]] (như 2S25 Sprut), vừa chạy vừa bắn, xa hơn và nạp nhanh hơn pháo tăng chủ lực; súng máy nóc cho mục tiêu nhỏ.\n" +
+                "Cách đánh: pháo 125 mm [[xuyên giáp]] (như pháo tự hành 2S25), vừa chạy vừa bắn, xa hơn và nạp nhanh hơn pháo tăng chủ lực; súng máy nóc cho mục tiêu nhỏ.\n" +
                 "Mạnh / yếu: hạ [[xe tăng]], tăng hạng nặng và [[trùm]] từ ngoài tầm với của chúng; sợ pháo binh và xe nhẹ áp sát.\n" +
                 "Mẹo: để ngay sau hàng xe tăng để nó bắn trước; khắc tinh của thiết giáp nặng và trùm."),
             ["guide.atgm_carrier"] = (
@@ -583,11 +583,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đỗ ngay sau đội xe tăng ở cứ điểm, ngoài tầm bắn thẳng của địch."),
             ["guide.wheeled_gun"] = (
                 "[[Wheeled tank hunter]] · light armour · fast (12 m/s)\n" +
-                "How it fights: a 120 mm [[armour-piercing]] gun (as on the Centauro II) on the move out to 38 m, about 65 damage a second on heavy armour, [[+25%]] on a flank or rear.\n" +
+                "How it fights: a 120 mm [[armour-piercing]] gun (as on the Centauro II) on the move out to 38 m, about 70 damage a second on heavy armour, [[+25%]] on a flank or rear.\n" +
                 "Strong / weak: runs round tank lines and punishes their sides; its thin armour loses any straight fight with a tank, and autocannons shred it.\n" +
                 "Tip: send it round the flank while your tanks hold the front: every hit on a side counts double work.",
                 "[[Pháo bánh lốp diệt tăng]] · giáp mỏng · nhanh (12 m/s)\n" +
-                "Cách đánh: pháo 120 mm [[xuyên giáp]] (như Centauro II) vừa chạy vừa bắn tới 38 m, khoảng 65 sát thương mỗi giây lên giáp dày, [[+25%]] khi trúng hông hoặc đuôi.\n" +
+                "Cách đánh: pháo 120 mm [[xuyên giáp]] (như Centauro II) vừa chạy vừa bắn tới 38 m, khoảng 70 sát thương mỗi giây lên giáp dày, [[+25%]] khi trúng hông hoặc đuôi.\n" +
                 "Mạnh / yếu: chạy vòng tuyến xe tăng và trừng phạt hai bên sườn; giáp mỏng nên đấu thẳng với tăng là thua, pháo tự động xé nát nó.\n" +
                 "Mẹo: vòng qua sườn trong lúc xe tăng giữ mặt trước: phát nào trúng hông cũng đáng giá."),
             ["guide.counter_battery_radar"] = (
