@@ -212,7 +212,9 @@ namespace MachineBrigade.Editor
             var cards = new List<CardInfo>();
             foreach (var id in MatchSettings.DeckVehicles)
                 if (catalog.Vehicles.TryGetValue(id, out var v)) cards.Add(new CardInfo(id, false, v.CpCost, CardIcons.For(id)));
-            foreach (var id in MatchSettings.DeckSupports)
+            // Another test may have left the deck without supports; the demo always shows the starter ones then.
+            var supports = MatchSettings.DeckSupports.Any(id => catalog.TryGetSupport(id, out _)) ? (IEnumerable<string>)MatchSettings.DeckSupports : Progression.StarterSupports;
+            foreach (var id in supports)
                 if (catalog.TryGetSupport(id, out var sup)) cards.Add(new CardInfo(id, true, sup.CpCost, CardIcons.For(id)));
             var spec = screen switch
             {
