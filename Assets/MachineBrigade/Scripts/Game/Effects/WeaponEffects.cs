@@ -52,6 +52,20 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Tests and tools: every round's start point as it is launched (shooter, mount, point).</summary>
         internal static Action<VehicleView, int, Vector3> Launched;
 
+        /// <summary>Tests: false points gun flashes at the aim point (the old behaviour) instead of along the drawn barrel.</summary>
+        internal static bool AlongBarrel = true;
+
+        /// <summary>The part the current shot's muzzle is drawn on, and its barrel as drawn (zero without a shooter).</summary>
+        private Transform _shotNode;
+        private Vector3 _shotBarrel;
+
+        /// <summary>The way a gun's flash faces: along its barrel as drawn, else at the aim point.</summary>
+        private Vector3 Barrel(Vector3 aim) => AlongBarrel && _shotBarrel.sqrMagnitude > 0.5f ? _shotBarrel : aim;
+
+        /// <summary>The muzzle flash of the current shot, riding the part its muzzle is drawn on.</summary>
+        private void Flash(MuzzleFx.Kind kind, Vector3 from, Vector3 direction, float now, float scale, float? groundY) =>
+            _muzzle.Fire(kind, from, direction, now, new MuzzleFx.Anchor(_shotNode, from, direction), scale, groundY);
+
         public void Fired(in SimEvent e, ViewRegistry views, float now) =>
             Fired(e, views.TryGet(e.Entity, out var shooter) ? shooter : null, views, now);
 
@@ -80,12 +94,16 @@ namespace MachineBrigade.Game.Effects
                     barrel = shooter.BarrelDirectionOf(0);
                 }
                 from = shooter.MuzzleOf(e.Mount);
+                _shotNode = shooter.LastMuzzleNode;
+                _shotBarrel = shooter.DrawnBarrelOf(e.Mount);
                 groundY = shooter.Flying ? null : shooter.Position.y;
                 Launched?.Invoke(shooter, e.Mount, from);
             }
             else
             {
                 from = new Vector3(e.Position.X, 1.5f, e.Position.Y);
+                _shotNode = null;
+                _shotBarrel = Vector3.zero;
             }
 
             var to = AimPoint(e, views);
@@ -129,7 +147,7 @@ namespace MachineBrigade.Game.Effects
                 }
                 // A laser: a hard bright bar for a moment, the glow of the director at the muzzle.
                 _tracers.Beam(from, to, 0.08f, 0.09f, now);
-                _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.6f, groundY);
+                Flash(MuzzleFx.Kind.MachineGun, from, Barrel(aim), now, 0.6f, groundY);
                 return;
             }
             switch (kind)
@@ -145,7 +163,7 @@ namespace MachineBrigade.Game.Effects
                     if (_hasMissile) _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
                         boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, shooter != null && shooter.Flying));
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
-                    _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
+                    Flash(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
                     _shake(from, 0.05f);
                     break;
 
@@ -155,7 +173,7 @@ namespace MachineBrigade.Game.Effects
                     if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f,
                         scale: scale * SizeOf(weapon, kind, drone, false));
                     else _tracers.Launch(from, to, e.Value, distance * 0.12f, 0.15f, 0.8f, now, 0f, 0.4f);
-                    _muzzle.Fire(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
+                    Flash(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
                     break;
 
                 case ProjectileKind.Rocket:
@@ -173,7 +191,7 @@ namespace MachineBrigade.Game.Effects
                         boost: artillery ? 0.2f : 0.3f, scale: scale * SizeOf(weapon, kind, rocket, false),
                         control: artillery && weapon.Id != "ballistic_missile" ? Bend(from, to, barrel) : null);
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
-                    _muzzle.Fire(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
+                    Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
                     break;
 
@@ -184,8 +202,10 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 case ProjectileKind.Flame:
-                    _emitters.FlameJet(from, to, Mathf.Max(0.15f, e.Value), weapon != null ? Mathf.Clamp(weapon.Cooldown, 0.1f, 0.4f) : 0.25f, now);
-                    _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 0.8f, groundY);
+                    // The stream rides the nozzle it leaves from (Emitters.FeedFlames), however the hull and turret move.
+                    _emitters.FlameJet(from, to, Mathf.Max(0.15f, e.Value), weapon != null ? Mathf.Clamp(weapon.Cooldown, 0.1f, 0.4f) : 0.25f, now,
+                        new MuzzleFx.Anchor(_shotNode, from, Barrel(aim)));
+                    Flash(MuzzleFx.Kind.MachineGun, from, Barrel(aim), now, 0.8f, groundY);
                     break;
 
                 default:
@@ -206,8 +226,8 @@ namespace MachineBrigade.Game.Effects
             _tracers.Beam(from, to, 0.35f, heavy ? 0.11f : 0.07f, now, 0.1f);
             _tracers.Beam(from, to, 0.5f, heavy ? 0.05f : 0.035f, now, 0.45f);
             if (slug != null) _projectiles.Launch(_models.Merged(slug), from, to, Mathf.Max(0.08f, travel), 0f, 0.4f, now);
-            _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, heavy ? 1.8f : 1.2f, groundY);
-            _muzzle.SparkBurst(from, aim.normalized, heavy ? 40 : 20, 12f, 30f);
+            Flash(MuzzleFx.Kind.Cannon, from, Barrel(aim), now, heavy ? 1.8f : 1.2f, groundY);
+            _muzzle.SparkBurst(from, Barrel(aim).normalized, heavy ? 40 : 20, 12f, 30f);
             // Ionised air along the line, drifting off.
             var length = Vector3.Distance(from, to);
             for (var d = 3f; d < length; d += 4f) _emitters.Trail(Vector3.Lerp(from, to, d / length), heavy ? 0.5f : 0.35f);
@@ -320,8 +340,8 @@ namespace MachineBrigade.Game.Effects
             }
             // Later rounds of the same frame's burst: the flash of the first stands for them.
             if (lag > 0f) return;
-            if (rounds > 1) _muzzle.Fire(MuzzleFx.Kind.MachineGun, from, aim, now, 1f, groundY);
-            else _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, aim, now, Mathf.Lerp(0.85f, 1.2f, Mathf.InverseLerp(12f, 30f, damage)), groundY);
+            if (rounds > 1) Flash(MuzzleFx.Kind.MachineGun, from, Barrel(aim), now, 1f, groundY);
+            else Flash(MuzzleFx.Kind.Autocannon, from, Barrel(aim), now, Mathf.Lerp(0.85f, 1.2f, Mathf.InverseLerp(12f, 30f, damage)), groundY);
         }
 
         /// <summary>
@@ -369,7 +389,7 @@ namespace MachineBrigade.Game.Effects
                 var big = e.Tier >= ExplosionTier.Large;
                 _tracers.Launch(from, to, e.Value, 0f, big ? 0.28f : heavy ? 0.22f : 0.16f, big ? 3.6f : heavy ? 3.2f : 2.6f, now, 0f,
                     big ? 1.1f : heavy ? 0.95f : 0.75f);
-                _muzzle.Fire(MuzzleFx.Kind.Cannon, from, aim, now, big ? 1.5f : heavy ? 1.25f : 1f, groundY);
+                Flash(MuzzleFx.Kind.Cannon, from, Barrel(aim), now, big ? 1.5f : heavy ? 1.25f : 1f, groundY);
                 _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
                 return;
             }
@@ -379,7 +399,7 @@ namespace MachineBrigade.Game.Effects
                 _projectiles.Launch(_models.Merged(model), from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale,
                     control: Bend(from, to, barrel));
             else _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
-            _muzzle.Fire(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, 1f, groundY);
+            Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, 1f, groundY);
             _shake(from, 0.12f);
         }
     }

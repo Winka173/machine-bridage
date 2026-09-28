@@ -112,7 +112,8 @@ namespace MachineBrigade.Game.Effects
             _blasts.Add(_shellHit);
             // Anti-aircraft guns fire 10-16 round bursts, every round a tracer.
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 320);
-            _emitters = new Emitters(materials, _root);
+            // Flame streams are fed from their nozzles once the vehicles are drawn (LaunchShots).
+            _emitters = new Emitters(materials, _root) { LateFeed = true };
             _tracks = new TrackMarks(materials, _root);
             _night = new NightLights(materials, _emitters, _root);
             _fires = new FireSpots(materials, _root);
@@ -219,7 +220,7 @@ namespace MachineBrigade.Game.Effects
                             for (var i = 0; i < 3; i++)
                             {
                                 var scatter = new Vector3(UnityEngine.Random.Range(-4f, 4f), 0f, UnityEngine.Random.Range(-4f, 4f));
-                                _fires.Ignite(hit + scatter, UnityEngine.Random.Range(1.2f, 1.8f), UnityEngine.Random.Range(24f, 34f), now);
+                                _fires.Ignite(hit + scatter, UnityEngine.Random.Range(1.2f, 1.8f), UnityEngine.Random.Range(24f, 34f), now, napalm: true);
                             }
                         }
                         if (huge)
@@ -413,8 +414,11 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public void LaunchShots(ViewRegistry views)
         {
-            if (_shots.Count == 0) return;
             var now = Time.time;
+            // Muzzle flashes ride their barrels' tips and flame streams their nozzles as just drawn (DECISIONS 12A).
+            _muzzle.Follow(now);
+            _emitters.FeedFlames(now, Time.deltaTime);
+            if (_shots.Count == 0) return;
             foreach (var (e, shooter) in _shots)
             {
                 if (e.Kind == SimEventKind.WeaponCharging)
