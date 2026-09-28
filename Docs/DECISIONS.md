@@ -664,9 +664,10 @@ library with its preview screen, the card renders and the UI checks. The screens
   Large text size), then the kit's component classes (`fc-*`), which use `var()` only.
   `Theme.tss` imports it, so every panel of the game has the tokens at its root. `UiThemeTests`
   fails on a literal colour or font size below the token blocks, on an ellipsis, and on a colour,
-  font size or spacing set from the kit's C#. Hud.uss keeps its own variables for now: none of its
-  colours equals a token exactly except the accent, so a "pure rename" would have restyled the old
-  screens; the rebuild moves them over screen by screen.
+  font size or spacing set from the kit's C#. In Hud.uss only the accent equals a token exactly, so
+  `--amber` and `--accent` now read `var(--fc-accent)` (a pure rename; a test checks the old menu
+  still resolves it); its other colours differ slightly from the brief's, and renaming them would
+  restyle the old screens, so the rebuild moves them over screen by screen.
 - **Units: 1 reference px = 1.114 panel px.** The brief's sizes are given at a 1400 px reference
   width. The game's panels are authored at 1280 x 720 and scale with the height on phones
   (`BattleHud.MatchFor`), so a 19.5:9 phone shows a panel 1560 px wide. The brief's device targets
@@ -733,3 +734,62 @@ library with its preview screen, the card renders and the UI checks. The screens
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
 - **Proper names kept in Vietnamese** (checked by `UiLanguageTests`, every other unmarked Latin word in a Vietnamese text counts as English): `CP`, `HQ`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `AC-130`, `Ka-52`, `Grad`, `Griffin`, `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`, `radar`, `drone`, `boss`, `Machine Brigade`, and the unit `mm` and the Vietnamese abbreviations `PK` (phòng không) and `TT` (trực thăng).
+- **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
+  `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
+  The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
+  structure with a `fort` (towers, their branches, the HQ, the utility modules): 122 cards over 92
+  models. Each picture is one model: the high-detail variant (`<id>_hd.glb`, through
+  `ModelLibrary.HighDetail`) where it ships, else the model, in the player's colours; elites and
+  bosses (never the player's) wear the enemy's. One orthographic camera at pitch 26° and yaw -142°
+  (the front to the right, like the battle's three-quarter view but lower), framed on the drawn
+  silhouette (renderer bounds were loose on masts and antennas) with a margin; a key, a fill and a
+  rim light and a flat ambient, no fog or post-processing; drawn at 1024 px with 4x MSAA and halved
+  to 512 px with premultiplied alpha, so the edges are clean on any background. The soft shadow is
+  the model's footprint seen from straight above, blurred and projected onto the ground under the
+  model on the CPU: it needs no shadow map, so it looks the same for a jeep and a boss.
+- **Staying fresh.** `Resources/UI/Cards/manifest.json` records, per card, the model, the source
+  file and its SHA-1 (with the render version). `CardRenderWatch` renders a changed model again on
+  import in an editor with graphics and logs a warning in batch; `CardRenderTests` fails while any
+  card lacks a picture or its model file has changed, so a model change cannot ship with an old
+  picture. `CardArt.For(cardId)` gives the picture at run time. The pictures import as UI textures
+  (no mipmaps, clamped, 512 px, high-quality compression): 13 MB of PNG in the repository.
+- **The class icons stay** the single-colour line icons (`KitBranches.ClassIcon`, the old
+  `MenuScreen.ClassIcon`) for small places: chips, the card's corner, the minimap, tags.
+- **Screenshots** (`MachineBrigade.Editor.UiShots.KitScreens`, batch with graphics). A runtime panel
+  with the game's panel settings (1280 x 720, `BattleHud.MatchFor`'s match) renders into a texture
+  through the UI test framework's `RuntimePanelSimulator`, so no scene, camera or play mode is
+  needed. The four shapes are 1920 x 1080 (16:9), 2340 x 1080 (19.5:9) with a 96 px notch on the
+  left, 2400 x 1080 (20:9) with a 72 px punch hole on the left and the 36 px gesture bar, and
+  1440 x 1080 (4:3); the safe area comes from `KitSafeArea.Insets`, the same code the device uses.
+  "-full" shots grow the panel to the page's scroll height so a long page can be read at once.
+  The screen rebuild adds its screens to `UiShots.Screens`. The render and screenshot runs were
+  made with the emulator running; it kept running (the editor uses D3D11, not OpenGL).
+- **The UI test framework** (`com.unity.ui.test-framework`, built into 6000.6) is now a package of
+  the project: its editor panel lays screens out in EditMode tests without a window, and its
+  runtime panel renders the screenshots. Only the test and editor assemblies reference it.
+- **The checks.** Strict for the kit (every preview page, both languages, both text sizes, all four
+  shapes): no ellipsis, no one-line text running out of its box, no wrapped text squashed shorter
+  than its lines, no word broken inside (a hyphen is a fair break), nothing off the screen outside a
+  scroll view or clipped at the side of one, every `mb-tap` element at least 80.2 panel px both
+  ways, no text under the secondary size, at most one primary (a preview specimen documents a
+  state and does not count; the sample screen must have exactly one). `UiThemeTests` checks the
+  brief's colours, every text/background pair, the type scale, touch target and spacing, and no
+  literal colour or font size in the kit's rules or colour, font size or spacing in its C#;
+  `UiLanguageTests` checks the Vietnamese texts for English words (unmarked Latin words that are
+  not Vietnamese syllables, minus the names listed above), the fonts' coverage and the licences.
+  For the old screens the same checks run and report (they are ignored, with the counts), because
+  the rebuild replaces those screens: the five menu tabs at 16:9 have 154 touch targets under
+  80 px and 664 texts under 19 px (none cut there); the Hud C# files hold 44 hard-coded colours or
+  font sizes and Hud.uss 338 literal colours and 265 literal font sizes; 172 Vietnamese texts still
+  hold English words (mostly weapon and model names such as rocket, laser, Lancet, Hellfire,
+  Stinger, the English map names, and "coin" 12 times).
+- **The layout rules the checks taught.** A text never shrinks in height (`flex-shrink: 0`); in a
+  row it may give up width and wrap. A vertical scroll view keeps its content to the viewport's
+  width (`Kit.Scroll`). A column beside a scrolling strip needs `flex-basis: 0`, or the strip's
+  content widens it. When Large text does not fit a column, the column scrolls and the main
+  button stays pinned below it (the sample screen's right column).
+- **Left for the screen rebuild:** sections D (navigation), E (each screen on the kit), G (the
+  battle HUD on the kit and the field panel), H (names: map names, "coin", "Skin"), the text-size
+  switch on the settings page, map preview pictures for the map dropdown (the kit shows card
+  renders as stand-ins), `GearArt` frames in the rarity tokens, and adding each rebuilt screen to
+  `UiShots.Screens` and to the strict checks (then removing its old-screen report).

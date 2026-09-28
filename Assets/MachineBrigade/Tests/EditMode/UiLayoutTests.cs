@@ -259,6 +259,19 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void TheOldStylesheetReadsTheAccentFromTheTokens()
+        {
+            var hud = Kit.Box("hud");
+            hud.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            var menu = Kit.Box("menu");
+            var tab = Kit.Box("nav-tab chosen");
+            menu.Add(tab);
+            hud.Add(menu);
+            Lay(hud, Shapes[0].size);
+            Assert.AreEqual("F2A33A", ColorUtility.ToHtmlStringRGB(tab.resolvedStyle.borderLeftColor), "--accent: var(--fc-accent) resolves");
+        }
+
+        [Test]
         public void TheUpgradeMarkShowsOnlyWhenAffordableAndLockedCardsSayWhere()
         {
             var ready = new KitVehicleCard(new VehicleCardData { Id = "mlrs", Name = "MLRS", CanUpgrade = true });
