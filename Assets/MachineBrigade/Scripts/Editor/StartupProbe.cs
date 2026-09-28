@@ -136,7 +136,10 @@ namespace MachineBrigade.Editor
             RangeLog.Clear();
             FiringRange.Log = (t, e) =>
             {
-                var key = e.Kind == Sim.Events.SimEventKind.SkillUsed ? "SkillUsed:" + e.Skill : e.Kind.ToString();
+                var key = e.Kind == Sim.Events.SimEventKind.SkillUsed ? "SkillUsed:" + e.Skill
+                    : e.Kind == Sim.Events.SimEventKind.WeaponFired ? e.Kind + ":t" + e.Team + ":" + e.DefId
+                    : e.Kind is Sim.Events.SimEventKind.Damaged or Sim.Events.SimEventKind.ProjectileImpact ? e.Kind + ":t" + e.Team
+                    : e.Kind.ToString();
                 RangeCounts[key] = RangeCounts.TryGetValue(key, out var n) ? n + 1 : 1;
                 if (e.Kind is Sim.Events.SimEventKind.WeaponFired or Sim.Events.SimEventKind.Damaged or Sim.Events.SimEventKind.ProjectileImpact) return;
                 if (RangeLog.Length < 3000) RangeLog.AppendLine($"    {t:0.00} {e.Kind} {e.DefId} team {e.Team}");

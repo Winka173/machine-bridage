@@ -687,6 +687,9 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>One expanding ground ring of the given size and colour (the shockwave layer, tinted).</summary>
+        /// <summary>An ability's pulse on the ground (a jammer's field, a command aura; the In action range): a ring <paramref name="size"/> across.</summary>
+        public void AbilityRing(Vector3 at, float size, Color colour) => Ring(at, size, colour);
+
         private void Ring(Vector3 at, float size, Color colour)
         {
             if (!_cull.Visible(at, 0.2f)) return;

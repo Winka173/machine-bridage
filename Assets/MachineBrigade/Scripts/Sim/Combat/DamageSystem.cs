@@ -321,7 +321,7 @@ namespace MachineBrigade.Sim.Combat
             DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
-            if (vehicle.Dummy) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
+            if (vehicle.Dummy || vehicle.Sparring) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
             _world.Emit(SimEvent.Damage(vehicle, damage));
             if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
             if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
