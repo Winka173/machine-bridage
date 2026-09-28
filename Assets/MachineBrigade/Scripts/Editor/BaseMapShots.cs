@@ -182,14 +182,22 @@ namespace MachineBrigade.Editor
                     done++;
                 }
             }
-            else done = RenderPictures(catalog, todo);
+            else
+            {
+                var rendered = RenderPictures(catalog, todo);
+                done = rendered.Count;
+                AssetDatabase.Refresh();
+                // A picture rewritten with the same bytes is not imported again by itself: force it,
+                // so the import settings below always hold.
+                foreach (var id in rendered) AssetDatabase.ImportAsset(PicturePath(id), ImportAssetOptions.ForceUpdate);
+            }
             AssetDatabase.Refresh();
             BaseMapArt.Reload();
             Debug.Log($"[BaseMapShots] wrote {done} of {todo.Count} base maps into {OutFolder}");
             return done;
         }
 
-        private static int RenderPictures(Catalog catalog, List<(string id, MapDefinition map, string hash)> todo)
+        private static List<string> RenderPictures(Catalog catalog, List<(string id, MapDefinition map, string hash)> todo)
         {
             var previousScene = EditorSceneManager.GetActiveScene().path;
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -237,7 +245,7 @@ namespace MachineBrigade.Editor
             var rt = new RenderTexture(big.x, big.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4, name = "Base Map" };
             var read = new Texture2D(big.x, big.y, TextureFormat.RGBA32, false);
             var cameras = new List<GameObject>();
-            var done = 0;
+            var done = new List<string>();
             try
             {
                 foreach (var (id, map, hash) in todo)
@@ -267,7 +275,7 @@ namespace MachineBrigade.Editor
                         File.WriteAllBytes(PicturePath(id), Downsample(read.GetPixels32(), big.x, big.y, outside, camp, out var brightness));
                         data.brightness = Round(brightness);
                         Write(id, data);
-                        done++;
+                        done.Add(id);
                         Debug.Log($"[BaseMapShots] {id}: {data.metresWide:F0} x {data.metresHigh:F0} m, {data.arrows.Count} arrows ({data.arrowsFrom})");
                     }
                     finally
@@ -665,7 +673,8 @@ namespace MachineBrigade.Editor
 
     /// <summary>
     /// Import settings for the base map pictures: opaque UI textures (no mipmaps, clamped,
-    /// bilinear), kept at 1024 x 640 (no power-of-two rescale), high-quality compression.
+    /// bilinear), kept at 1024 x 640 (no power-of-two rescale), normal-quality compression: a
+    /// ground picture under the interface needs no more (ASTC 6x6 on Android: about 290 KB each).
     /// </summary>
     public sealed class BaseMapArtImport : AssetPostprocessor
     {
@@ -681,7 +690,7 @@ namespace MachineBrigade.Editor
             importer.filterMode = FilterMode.Bilinear;
             importer.npotScale = TextureImporterNPOTScale.None;
             importer.maxTextureSize = BaseMapArt.Width;
-            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.textureCompression = TextureImporterCompression.Compressed;
         }
     }
 }
