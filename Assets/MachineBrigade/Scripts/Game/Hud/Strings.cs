@@ -2508,7 +2508,7 @@ namespace MachineBrigade.Game.Hud
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
             BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text) || BossText.Table.TryGetValue(key, out text) ||
-            SandboxText.Table.TryGetValue(key, out text) || NameText.Table.TryGetValue(key, out text)
+            SandboxText.Table.TryGetValue(key, out text) || CommanderText.Table.TryGetValue(key, out text) || NameText.Table.TryGetValue(key, out text)
                 // A support card's numbers come from its data (the balance pass after prompt 18, C.3); proper names come from NameText.
                 ? NameText.Expand(SupportLines.Fill(key, Vietnamese ? text.vi : text.en)) : key;
 
@@ -2609,7 +2609,7 @@ namespace MachineBrigade.Game.Hud
                 {
                     ("Strings", Table), ("GuideText", GuideText.Table), ("CampaignText", CampaignText.Table), ("UnitText", UnitText.Table),
                     ("BigAttackText", BigAttackText.Table), ("OrbitalText", OrbitalText.Table), ("BossText", BossText.Table), ("SandboxText", SandboxText.Table),
-                    ("NameText", NameText.Table),
+                    ("CommanderText", CommanderText.Table), ("NameText", NameText.Table),
                 };
                 foreach (var (name, table) in tables)
                     foreach (var kv in table)
@@ -2628,7 +2628,8 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
-            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key) || SandboxText.Table.ContainsKey(key) || NameText.Table.ContainsKey(key);
+            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key) || SandboxText.Table.ContainsKey(key) ||
+            CommanderText.Table.ContainsKey(key) || NameText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

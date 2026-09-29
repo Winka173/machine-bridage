@@ -11,7 +11,7 @@ namespace MachineBrigade.Game.Hud
     /// are modelled on, abbreviations) are written in the texts as they are; <see cref="Kept"/> lists them for the
     /// language scans, which allow them in both languages.
     /// </summary>
-    public static class NameText
+    public static partial class NameText
     {
         /// <summary>The story's Vietnamese names; a text writes <c>{@dieuhau}</c> for <c>name.dieuhau</c>.</summary>
         public static readonly Dictionary<string, (string en, string vi)> Table = new()

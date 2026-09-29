@@ -90,7 +90,7 @@ namespace MachineBrigade.Game.Hud
             }
             var line = _queue.Dequeue();
             Portraits.Set(_portrait, line.Speaker);
-            _name.text = Kit.Caps(Strings.Get("char." + line.Speaker + ".name"));
+            _name.text = Kit.Caps(CommanderText.SpeakerName(line.Speaker));
             _text.text = Strings.Get(line.Key);
             Root.EnableInClassList("fc-radio--enemy", line.Enemy);
             Root.style.display = DisplayStyle.Flex;

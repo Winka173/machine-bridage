@@ -149,3 +149,13 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The siege tank's card picture and "in action" clip | The old M110-style pictures | The lead's graphics run (`CardRenders.RenderBatch`); the clip should show it sieging |
 | The siege tank sieging | Braces, spades, gun, column and mortar move (VehicleView.Deploy); no dust or sound | Dust as the braces and spades bite, a hydraulic whine, a heavier mortar report |
 | The C-RAM's stream at a round | Tracers and a muzzle flash each step at the round's estimated place | Tracers that meet the drawn round exactly (the view has no link from a sim round to its drawn rocket) |
+
+## Prompt 22 F: commanders (DECISIONS 22F)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Portraits of the eight new commanders: Kaia Mendez (Rush), Piet Dahl (Longshot), Otto Brenn (Ledger), Tomas Adler (Flag), Ines Varro (Tide), August Reyn (Crown), Lena Quist (Magpie), Selma Okoye (Vault) | The HQ's placeholder portrait (`UI/Portraits/hq`: `Portraits.Get` falls back to it for `UI/Portraits/<id>`) | A portrait each, `Resources/UI/Portraits/<id>.png` (mendez, dahl, brenn, adler, varro, reyn, quist, okoye), in the story portraits' style |
+| Portraits of the six story commanders (Kade, Lind, Reyes, Kerr, Venn, Brandt) and the eight generals | The story's portraits (`khai`, `mai`, `dieuhau`, `linh`, `sen`, `brandt`, the generals' own) | New ones only if the story's renames (prompt 22 A) change a character's look |
+| The commander's face in the HUD | The portrait, cropped into the 44 px face | A small, high-contrast icon version of each portrait if the face reads poorly at 44 px |
+| The commanders' radio lines | Text only (the radio panel, the result card's note) | Voice lines, if the game gets voice |
+| Screenshots of the picker, the briefing with its general and the dossier's commander pages in `Docs/ui-screens/` | None (`UiShots` has the screens: `commanders`, `dossier-commanders`, `briefing`, `hud-commander`) | The lead's graphics run (`-mbShotsOnly commanders,dossier-commanders,briefing,hud-commander`), both languages |

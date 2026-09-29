@@ -165,7 +165,7 @@ namespace MachineBrigade.Sim.Abilities
             if (!v.NeedsAmmo || !_world.TryGetRally(v.Team, out var home)) return;
             if (Vector2.Distance(v.Position, home) > HomeReach) return;
             var depot = v.Team is 0 or 1 ? _rearmBoost[v.Team] : 1f;
-            v.RearmProgress += AuraInterval / HomeRearmSeconds * depot;
+            v.RearmProgress += AuraInterval / HomeRearmSeconds * depot * _world.RearmScaleOf(v);
             TopUp(v);
         }
 
@@ -189,13 +189,14 @@ namespace MachineBrigade.Sim.Abilities
                 var distance = Vector2.Distance(v.Position, engineer.Position);
                 if (repair != null && distance <= repair.Radius + (v.Def.Static ? v.Def.HullBound : 0f) && !v.Def.Boss && v.Hp < v.MaxHp)
                 {
-                    var rate = repair.Rate * (v.Def.Static ? 0.5f : 1f);
+                    // Prompt 22 F: Engineer Lind's engineers repair faster.
+                    var rate = repair.Rate * (v.Def.Static ? 0.5f : 1f) * _world.RepairScaleOf(engineer.Team);
                     var amount = _world.Gear.Heal(v, v.MaxHp * rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
                     _world.Emit(SimEvent.RepairedBy(v, amount));
                 }
                 if (rearm != null && distance <= rearm.Radius && v.NeedsAmmo && !v.Def.Static)
                 {
-                    v.RearmProgress += AuraInterval / rearm.Rate;
+                    v.RearmProgress += AuraInterval / rearm.Rate * _world.RearmScaleOf(v);
                     TopUp(v);
                 }
             }
@@ -268,6 +269,7 @@ namespace MachineBrigade.Sim.Abilities
                 }
                 if (_world.TryGetEconomy(team, out var economy)) economy.SupplyBonus = supply;
                 if (repair <= 0f || home is not { } at) continue;
+                repair *= _world.RepairScaleOf(team);
                 foreach (var v in _world.VehicleList)
                 {
                     if (!v.IsAlive || v.Team != team || v.Flying || v.Def.Static || v.Hp >= v.MaxHp) continue;
@@ -287,7 +289,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (v.Hp < v.MaxHp) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * u.AirRepair * AuraInterval);
                 if (v.NeedsAmmo)
                 {
-                    v.RearmProgress += AuraInterval / HomeRearmSeconds;
+                    v.RearmProgress += AuraInterval / HomeRearmSeconds * _world.RearmScaleOf(v);
                     TopUp(v);
                 }
             }

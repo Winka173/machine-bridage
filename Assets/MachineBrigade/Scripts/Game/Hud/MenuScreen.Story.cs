@@ -24,6 +24,9 @@ namespace MachineBrigade.Game.Hud
 
             /// <summary>Prompt 20 O.5 (DECISIONS 19L): every battlefield, its picture and its guide.</summary>
             Maps,
+
+            /// <summary>Prompt 22 F.4: a page for each of the player's commanders and each enemy general.</summary>
+            Commanders,
         }
 
         private VisualElement _dossier, _dossierBody;
@@ -34,7 +37,8 @@ namespace MachineBrigade.Game.Hud
         private void BuildDossierPage()
         {
             _dossier = FullPage("fc-dossier");
-            _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files"), Strings.Get("dossier.maps") },
+            _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files"), Strings.Get("dossier.maps"),
+                    Strings.Get("cmdr.dossier.tab") },
                 0, i =>
                 {
                     _dossierTab = (DossierTab)i;
@@ -47,6 +51,7 @@ namespace MachineBrigade.Game.Hud
             _dossier.Add(scroll);
             _dossierAll = DebugFlags.Has("-mb-dossier-all");
             Root.schedule.Execute(DebugStory).StartingIn(300);
+            BuildCommanderPage();
         }
 
         private void OpenDossier()
@@ -116,6 +121,9 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case DossierTab.Maps:
                     foreach (var map in MatchSettings.AllMaps) _dossierBody.Add(MapEntry(map.Id));
+                    break;
+                case DossierTab.Commanders:
+                    FillCommanderFiles();
                     break;
             }
         }

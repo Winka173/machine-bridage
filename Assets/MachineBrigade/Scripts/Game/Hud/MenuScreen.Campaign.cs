@@ -305,8 +305,12 @@ namespace MachineBrigade.Game.Hud
             briefText.Add(Kit.Text(Kit.Caps(Strings.Get("char." + (m.Speaker ?? "hq") + ".name")), "fc-caption"));
             briefText.Add(Kit.Text(Strings.Get("mission." + m.Id + ".brief"), "fc-body"));
             if (m.General != null) briefText.Add(Kit.Text(Strings.Format("campaign.opponent", Strings.Get("char." + m.General + ".name")), "fc-small fc-mt-2"));
+            // Prompt 22 F.4: the enemy general's strength and weakness.
+            if (GeneralLines(m) is { } general) briefText.Add(Kit.Text(general, "fc-small fc-row-text"));
             brief.Add(briefText);
             body.Add(brief);
+            // Prompt 22 F.1: the player's commander for it (the mission's own when the story sets one).
+            body.Add(CommanderSlot(m));
             // Play-test 6 (DECISIONS 21B): each boss it fights, a link to its file.
             foreach (var boss in MissionBosses(m))
                 body.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.file", Strings.Card(boss)), () => OpenBossGuide(boss), "skull"));
@@ -442,12 +446,16 @@ namespace MachineBrigade.Game.Hud
                 Strings.Get("map." + mission.Map),
             };
             if (mission.Operation) chips.Insert(0, Strings.Get("campaign.operation"));
+            // Prompt 22 F: who leads the player's side.
+            chips.Add(Strings.Format("cmdr.yours", ("name", CommanderText.Call(CommanderPick.ForBattle(mission)))));
             (string, string)? aside = null;
             if (mission.General != null)
             {
                 var n = 1;
                 foreach (var c in mission.Id) n = (n * 31 + c) % 997;
-                aside = (mission.General, Strings.Get($"radio.{mission.General}.taunt.{n % 3 + 1}"));
+                var taunt = Strings.Get($"radio.{mission.General}.taunt.{n % 3 + 1}");
+                // Prompt 22 F.4: the enemy general's strength and weakness under their line.
+                aside = (mission.General, GeneralLines(mission) is { } lines ? taunt + "\n" + lines : taunt);
             }
             _story.Show(Strings.Format("campaign.missionKicker", ("chapter", mission.Chapter), ("mission", Campaign.Label(mission)), ("map", Strings.Get("map." + mission.Map))),
                 Strings.Get("mission." + mission.Id + ".name"), mission.Speaker, Strings.Get("mission." + mission.Id + ".brief"), chips, aside,

@@ -195,6 +195,7 @@ namespace MachineBrigade.Game.Hud
             _safe.Add(top);
 
             var corner = Kit.Box("fc-hud__corner");
+            _corner = corner;
             _fps = Kit.Text("", "fc-small fc-hud__fps");
             corner.Add(_fps);
             corner.Add(new KitIconButton("pause", Strings.Get("pause.title"), () => PausePressed?.Invoke(), plain: Compact));
@@ -391,8 +392,9 @@ namespace MachineBrigade.Game.Hud
             _banner = Kit.Box("fc-hud__banner");
             _safe.Add(_banner);
 
-            // Campaign radio chatter: a portrait and one line (a tap skips it), in the toasts' style.
-            if (mode == HudMode.Mission)
+            // Radio chatter: a portrait and one line (a tap skips it), in the toasts' style. The campaign's, and in every
+            // battle the commander's words at the start and the end (prompt 22 F.4).
+            if (mode != HudMode.Menu && !spec.Sandbox)
             {
                 _radio = new RadioPanel();
                 under.Add(_radio.Root);
@@ -439,8 +441,27 @@ namespace MachineBrigade.Game.Hud
 
         private readonly RadioPanel _radio;
 
-        /// <summary>A line of radio chatter (campaign missions; ignored elsewhere).</summary>
+        /// <summary>A line of radio chatter (every battle but the menu's and the Sandbox's).</summary>
         internal void Radio(Match.RadioLine line) => _radio?.Say(line);
+
+        private readonly VisualElement _corner;
+        private CommanderBadge _commanderBadge;
+
+        /// <summary>Prompt 22 F.4: the side's commander as a small face beside pause; a tap shows its strength and weakness.</summary>
+        internal CommanderBadge ShowCommanderBadge(CommanderDef commander)
+        {
+            if (_corner == null || commander == null) return null;
+            if (_commanderBadge != null)
+            {
+                _commanderBadge.Face.RemoveFromHierarchy();
+                _commanderBadge.Card.RemoveFromHierarchy();
+            }
+            _commanderBadge = new CommanderBadge(commander);
+            // Before pause, after the frame counter.
+            _corner.Insert(Math.Max(0, _corner.childCount - 1), _commanderBadge.Face);
+            _safe.Add(_commanderBadge.Card);
+            return _commanderBadge;
+        }
 
         /// <summary>Null in the menu.</summary>
         public Minimap Minimap { get; }
@@ -1036,6 +1057,7 @@ namespace MachineBrigade.Game.Hud
         public void Tick()
         {
             _radio?.Tick();
+            _commanderBadge?.Tick();
             _words?.Tick();
             _boss?.Tick();
             if (_flashLevel > 0f)

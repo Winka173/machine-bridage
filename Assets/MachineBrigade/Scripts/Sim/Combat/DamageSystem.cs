@@ -432,6 +432,8 @@ namespace MachineBrigade.Sim.Combat
             if (!raw && type == DamageType.Energy && (_world.Strikes.InSmoke(target.Position) ||
                 (hit.Attacker != null && _world.Strikes.InSmoke(hit.Attacker.Position)))) damage *= 1f - SmokeEnergyCut;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
+            // Prompt 22 F: the attacking side's commander (Titan's wounded, Captain Kerr's exposed targets).
+            if (!raw) damage *= _world.CommanderOutgoing(hit.Attacker, hit.Team, target);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
             // A gun pit down in its hole takes much less (a thermobaric blast reaches half into it).
             if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? 0.5f : 1f);

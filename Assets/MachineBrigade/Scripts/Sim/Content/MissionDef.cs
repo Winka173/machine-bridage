@@ -455,6 +455,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The enemy general in command (balance of the enemy's deck, fire support and base; their portrait and lines).</summary>
         public string? General { get; set; }
 
+        /// <summary>
+        /// Prompt 22 F: the commander the story sets for this mission (chapter 10's duel is Hawk's); null: the player
+        /// picks one. campaign.json "commander".
+        /// </summary>
+        public string? Commander { get; set; }
+
         /// <summary>Who gives the briefing (a portrait id): the colonel, unless the mission says otherwise.</summary>
         public string Speaker { get; set; } = "khai";
 
@@ -583,6 +589,7 @@ namespace MachineBrigade.Sim.Content
                 After = m.Has("after") ? m.String("after") : null,
                 Reversed = m.Bool("reversed", false),
                 General = m.Has("general") ? m.String("general") : null,
+                Commander = m.Has("commander") ? m.String("commander") : null,
                 Speaker = m.Has("speaker") ? m.String("speaker") : "khai",
                 EnemySupports = Strings(m, "enemySupports"),
                 EnemyStyle = m.Has("enemyStyle") ? m.String("enemyStyle") : null,

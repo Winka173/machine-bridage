@@ -1,0 +1,28 @@
+/* Prompt 22 F.4: the commander's face and card in the battle HUD, and the commander rows of the picker, the deck
+   screen, the briefing and the dossier. The face is the compact HUD's small control (a 44 px face, --hud-face, in
+   a full 44 pt target, --fc-touch) beside pause; its card opens under the corner. Tokens only (Tokens.uss). */
+
+.fc-cmdr-badge { width: var(--fc-touch); height: var(--fc-touch); align-items: center; justify-content: center; flex-shrink: 0; }
+.fc-cmdr-badge__face { width: 44px; height: 44px; padding: 2px; align-items: center; justify-content: center; }
+.fc-cmdr-badge__portrait { width: 38px; height: 38px; -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
+.fc-root .fc-cmdr-badge.pressed .fc-cmdr-badge__face { translate: 0 var(--fc-press-shift); background-color: var(--fc-panel-selected); }
+
+.fc-cmdr-card { position: absolute; top: 60px; right: var(--fc-space-3); width: 320px; max-width: 46%; padding: var(--fc-space-3); }
+.fc-cmdr-card__call { margin-bottom: var(--fc-space-1); }
+.fc-cmdr-card__line { flex-direction: row; margin-top: var(--fc-space-2); padding-left: var(--fc-space-2); border-left-width: var(--fc-bar); }
+.fc-cmdr-card__good { border-left-color: var(--fc-positive); }
+.fc-cmdr-card__bad { border-left-color: var(--fc-enemy); }
+
+/* A commander's row: the picker, the deck screen, the briefing and the dossier. */
+.fc-cmdr-row { flex-direction: row; align-items: flex-start; padding: var(--fc-space-3); margin-bottom: var(--fc-space-2); }
+.fc-cmdr-row--chosen { border-left-width: var(--fc-bar); border-left-color: var(--fc-accent); }
+.fc-cmdr-row--enemy { border-left-width: var(--fc-bar); border-left-color: var(--fc-enemy); }
+.fc-cmdr-row--locked .fc-portrait { opacity: 0.45; }
+.fc-cmdr-row__text { flex-grow: 1; flex-shrink: 1; }
+.fc-cmdr-row__line { flex-direction: row; margin-top: var(--fc-space-1); padding-left: var(--fc-space-2); border-left-width: var(--fc-bar); }
+.fc-cmdr-row__good { border-left-color: var(--fc-positive); }
+.fc-cmdr-row__bad { border-left-color: var(--fc-enemy); }
+.fc-cmdr-row__act { flex-shrink: 0; margin-left: var(--fc-space-3); align-self: center; }
+.fc-cmdr-row__tags { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-1); }
+.fc-cmdr-slot { flex-direction: row; align-items: center; }
+.fc-cmdr-slot .fc-portrait { width: 56px; height: 56px; }

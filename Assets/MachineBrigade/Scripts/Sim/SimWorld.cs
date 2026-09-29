@@ -340,6 +340,8 @@ namespace MachineBrigade.Sim
             // The enemy of the big modes may field more (the player keeps the ordinary ceiling).
             if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
             Economy.Enable(economy);
+            // Prompt 22 F: a commander set before the economy was enabled.
+            ApplyCommander(economy);
         }
 
         public bool TryGetEconomy(int team, out TeamEconomy economy) => Economy.TryGet(team, out economy);
@@ -395,9 +397,13 @@ namespace MachineBrigade.Sim
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
             // (a fortress, a point's watchtower) only when the side boosts everything.
+            VehicleBoost? boost = null;
             if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
                 (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
-                Upgrade(vehicle, boosts(def));
+                boost = boosts(def);
+            // Prompt 22 F: the side's commander on top, through the loadout's caps.
+            boost = CommanderBoost(team, def, boost);
+            if (boost is { } upgrade) Upgrade(vehicle, upgrade);
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
@@ -1165,6 +1171,8 @@ namespace MachineBrigade.Sim
                     if (hidden) range = MathF.Min(range, GhillieReveal);
                     // A gun pit down in its hole: only a scout or a radar sees it from afar.
                     if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
+                    // Prompt 22 F: Captain Kerr's side sees the stealthy, camouflaged and hidden farther off.
+                    if ((sight < 1f || hidden || target.Lowered) && spotter.Team < _stealthSight.Length) range *= _stealthSight[spotter.Team];
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
                     // The Patriot's long-range radar (DECISIONS 19T): the air picture over a wide circle, stealth aircraft too.

@@ -567,7 +567,8 @@ namespace MachineBrigade.Sim.AI
                     !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
-                if (pick == null || s.CpCost > pick.CpCost) pick = s;
+                // The dearest strike, the commander's arm first (prompt 22 F.5: Hawk's airstrikes, Longshot's barrages).
+                if (pick == null || StrikeValue(s, economy) > StrikeValue(pick, economy)) pick = s;
             }
             if (pick == null) return false;
             world.TryGetRally(_team, out var home);
@@ -614,7 +615,8 @@ namespace MachineBrigade.Sim.AI
                             var threat = 0;
                             foreach (var e in _tactics.KnownEnemies)
                                 if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < 45f) threat++;
-                            if (threat < 2) continue;
+                            // Prompt 22 F.5: a tower commander (Bulwark) drops its towers at the first sign of a threat.
+                            if (threat < (CommanderRules.SupportFit(economy.Commander, s) > 0f ? 1 : 2)) continue;
                             world.TryGetRally(_team, out var home);
                             var back = home - p.Def.Position;
                             var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 5f);
@@ -895,20 +897,22 @@ namespace MachineBrigade.Sim.AI
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
                 // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).
                 score += def.CpCost * profile.Save;
+                // Prompt 22 F.5: the cards that suit the side's commander (the player's Auto-buy, an enemy general's army).
+                if (economy.Commander is { } commander) score += CommanderRules.Fit(commander, def) * CommanderFitWeight;
                 if (BuyScores != null) BuyScores[id] = score;
                 if (score > bestScore)
                 {
                     best = id;
                     bestScore = score;
                 }
-                if (economy.CostOf(id, def.CpCost) <= economy.Cp && score > bestAffordableScore)
+                if (economy.PriceOf(id, def.CpCost) <= economy.Cp && score > bestAffordableScore)
                 {
                     bestAffordable = id;
                     bestAffordableScore = score;
                 }
             }
             if (best == null) return;
-            var bestCost = economy.CostOf(best, world.Catalog.Vehicles[best].CpCost);
+            var bestCost = economy.PriceOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
                 world.Submit(Command.Deploy(_team, best));
@@ -938,7 +942,17 @@ namespace MachineBrigade.Sim.AI
         }
 
         private static bool Ready(SimWorld world, TeamEconomy economy, SupportDef s) =>
-            economy.Cp >= s.CpCost && economy.CooldownLeft(s.Id, world.Time) <= 0f;
+            economy.Cp >= economy.PriceOf(s.Id, s.CpCost) && economy.CooldownLeft(s.Id, world.Time) <= 0f;
+
+        /// <summary>
+        /// How much a card that suits the commander is worth to the buying score (a fit of 0.25: one point). The first
+        /// sweep's 10 made the AI buy nothing else and lose with the commanders in their own styles (DECISIONS 22F).
+        /// </summary>
+        internal const float CommanderFitWeight = 4f;
+
+        /// <summary>A strike's worth when choosing one: its CP, a third more for one that suits the commander's arm.</summary>
+        private static float StrikeValue(SupportDef s, TeamEconomy economy) =>
+            s.CpCost * (1f + MathF.Min(0.35f, CommanderRules.SupportFit(economy.Commander, s) * 2.5f));
 
         private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all)
         {
