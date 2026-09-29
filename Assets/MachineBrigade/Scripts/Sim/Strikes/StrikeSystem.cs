@@ -414,7 +414,8 @@ namespace MachineBrigade.Sim.Strikes
                     {
                         _world.Emit(SimEvent.StrikeImpact(s.Team, support, radar.Position));
                         var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
-                        _world.Damage.Apply(radar, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, radar.Position, Combat.HitKind.Strike, true));
+                        _world.Damage.Apply(radar, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, radar.Position, Combat.HitKind.Strike, true)
+                            .WithPen(support.Penetration, top: true, support.Thermobaric));
                         var knocked = radar.IsAlive ? _world.Gear.StunSeconds(radar, support.Duration) : 0f;
                         if (knocked > 0f)
                         {
@@ -497,7 +498,7 @@ namespace MachineBrigade.Sim.Strikes
             var support = s.Support;
             _world.Emit(SimEvent.StrikeImpact(s.Team, support, at));
             _world.Damage.Splash(at, support.BlastRadius, support.Damage * _world.StrikeDamage(s.Team, support.Id), support.DamageType, s.Team, EntityId.None,
-                info: new Combat.HitInfo(null, s.Team, null, at, Combat.HitKind.Strike, true));
+                info: new Combat.HitInfo(null, s.Team, null, at, Combat.HitKind.Strike, true).WithPen(support.Penetration, top: true, support.Thermobaric));
         }
 
         /// <summary>The side the rounds come from: the calling side's camp, else back along the strike.</summary>

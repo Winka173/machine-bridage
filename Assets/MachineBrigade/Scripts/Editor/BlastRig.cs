@@ -178,7 +178,7 @@ namespace MachineBrigade.Editor
         {
             var round = _catalog.Weapons[weapon];
             var grow = before ? 1f : BlastSizes.Drone(round);
-            if (round.DamageType == DamageType.ArmorPiercing)
+            if (round.PiercingLook)
             {
                 Explode(ExplosionTier.Medium, at + Vector3.up * 0.8f, now, 0.8f * round.ImpactScale, grow, before: before);
                 _muzzle.SparkBurst(at + Vector3.up, Vector3.up, 18, 10f, 22f);

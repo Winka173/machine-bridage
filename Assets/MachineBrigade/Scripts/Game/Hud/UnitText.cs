@@ -36,9 +36,10 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- a weapon
             ["ul.weapon"] = ("{0}: {1}, hits {2}", "{0}: {1}, bắn {2}"),
             ["ul.type.Kinetic"] = ("kinetic", "động năng"),
-            ["ul.type.ArmorPiercing"] = ("armour-piercing", "xuyên giáp"),
+            ["ul.type.ShapedCharge"] = ("shaped charge", "nổ lõm"),
             ["ul.type.HighExplosive"] = ("high explosive", "nổ mạnh"),
-            ["ul.type.Flak"] = ("flak", "phòng không"),
+            ["ul.type.Fragmentation"] = ("fragmentation", "mảnh"),
+            ["ul.type.Energy"] = ("energy", "năng lượng"),
             ["ul.type.Fire"] = ("fire", "lửa"),
             ["ul.damage"] = ("{0} damage a round", "Sát thương {0} mỗi phát"),
             ["ul.damageBurst"] = ("{0} damage a round, {1} rounds a salvo", "Sát thương {0} mỗi phát, {1} phát mỗi loạt"),

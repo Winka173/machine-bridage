@@ -497,7 +497,7 @@ namespace MachineBrigade.Sim.Modes
                 var worth = v.Def.Power;
                 if (BaseLoadout.IsAntiAir(world.Catalog, v.Def.Id)) aa += worth;
                 if (w.MinRange > 0f) artillery += worth;
-                else if (w.DamageType == DamageType.ArmorPiercing || w.Projectile == ProjectileKind.Missile) antiArmour += worth;
+                else if (w.AntiArmour || w.Projectile == ProjectileKind.Missile) antiArmour += worth;
                 else if (w.DamageType is DamageType.Kinetic or DamageType.Fire || w.Projectile == ProjectileKind.Bullet) guns += worth;
             }
             var total = MathF.Max(1f, aa + antiArmour + guns + artillery);

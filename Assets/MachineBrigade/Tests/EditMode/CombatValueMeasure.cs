@@ -179,7 +179,7 @@ namespace MachineBrigade.Tests
                         var bonus = 1f;
                         foreach (var b in w.Bonuses)
                             if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                        var k = catalog.Damage.Multiplier(w, a) * bonus;
+                        var k = Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
                         old[(int)a] += before * k;
                         now[(int)a] += after * k;
                     }

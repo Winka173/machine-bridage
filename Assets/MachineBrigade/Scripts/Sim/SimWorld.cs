@@ -443,7 +443,7 @@ namespace MachineBrigade.Sim
             switch (b.Special)
             {
                 case SpecialModule.ReactiveArmor:
-                    v.DamageTaken *= 1f - b.SpecialPower;
+                    // Prompt 15 C.9: shaped charges only, hit by hit (GearSystem.Incoming).
                     break;
                 case SpecialModule.AutoRepair:
                     v.Regen += b.SpecialPower;

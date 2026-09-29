@@ -923,7 +923,7 @@ namespace MachineBrigade.Sim.AI
         private static bool CanHitAir(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak) return true;
+                if (m.Weapon.CanTarget(true) && m.Weapon.DamageType is DamageType.Fragmentation or DamageType.Energy) return true;
             return false;
         }
 
@@ -1053,7 +1053,7 @@ namespace MachineBrigade.Sim.AI
         private static bool KillsArmour(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.DamageType == DamageType.ArmorPiercing && m.Weapon.CanTarget(false)) return true;
+                if (m.Weapon.AntiArmour && m.Weapon.CanTarget(false)) return true;
             return false;
         }
 
