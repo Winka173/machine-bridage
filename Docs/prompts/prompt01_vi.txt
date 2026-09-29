@@ -1,0 +1,21 @@
+Prompt 1: Khung căn cứ cho cả hai phe
+Nhiệm vụ: xây hệ căn cứ dạng loadout cho cả hai phe. Đây không phải thể loại xây nhà: người chơi chọn cấu hình trước trận như chọn bộ bài, trong trận không xây công trình.
+
+1. Sở chỉ huy (HQ) thay cho bastion bất tử hiện tại (Tháp căn cứ). Bãi thả dù nằm quanh HQ. HQ có máu, còn việc có bị phá được hay không thì cấu hình theo chế độ.
+2. Ô công sự cố định (hardpoint): mỗi bản đồ có các ô quanh HQ, định nghĩa trong dữ liệu map. Tự đặt ô cho cả 12 map sao cho tháp không chặn làn đường, cổng hay lối hẹp. Viết test kiểm tra đường đi vẫn thông khi mọi ô đều có tháp.
+3. Điểm công sự thay cho giới hạn số lượng: tháp nhẹ 1–2 điểm, vừa 3, nặng 4–5. HQ có cấp 1–5, lần lượt cho 6/8/10/12/14 điểm công sự và 1/1/2/2/3 ô tiện ích. Tạm để mọi cấp HQ mở; việc mở theo chương làm ở prompt 4.
+4. Tháp thả dù: tháp bị phá có thể gọi lại trong trận bằng CP (thả dù tháp đúc sẵn, có hồi chiêu). Khởi điểm: giá bằng 50% điểm công sự × 2 CP, hồi chiêu 45 giây.
+5. Vai trò căn cứ theo chế độ, cấu hình trong dữ liệu:
+   - Giữ cứ điểm / Vua đồi / Tử chiến: HQ không bị phá, chỉ làm chỗ dựa.
+   - Công phá / Công thành: căn cứ địch là mục tiêu.
+   - Phòng thủ / Vô tận: thua khi HQ ta vỡ.
+   - Sinh tồn: giữ nguyên, không có căn cứ.
+6. Tiền đồn: trong chiến dịch, cứ điểm được đánh dấu có thể nâng thành tiền đồn sau khi chiếm (có 1–2 ô hardpoint, người chơi thả dù tháp lên bằng CP). Tiền đồn cũng là bãi thả phụ.
+7. Luật hỏa lực: ở các chế độ giao tranh giữ nguyên luật không gọi hỏa lực vào vùng căn cứ địch. Ở Công thành và các nhiệm vụ chiến dịch được đánh dấu, cho phép gọi vào công trình.
+8. AI của cả phe địch lẫn Tự mua của người chơi:
+   - Đánh giá mối đe dọa của tháp; không đưa quân lẻ vào tầm tháp.
+   - Khi tấn công căn cứ: tập hợp đủ lực, ưu tiên dùng pháo tầm xa bắn tháp từ ngoài tầm.
+   - AI địch tự chọn loadout căn cứ theo độ khó và theo cá tính tướng (tướng sẽ làm ở prompt 4; chừa sẵn cấu trúc dữ liệu).
+9. Trong prompt này dùng các tháp hiện có. Roster tháp mới, hạng tháp và module tiện ích làm ở prompt 3, nhưng cấu trúc dữ liệu phải chừa chỗ cho chúng.
+
+Test: đường đi thông với mọi cấu hình ô; AI không tự sát vào tháp (đo tỷ lệ xe chết trong tầm tháp trước và sau); mọi chế độ vẫn kết thúc được trong giới hạn thời gian qua 5 seed; replay deterministic khớp.

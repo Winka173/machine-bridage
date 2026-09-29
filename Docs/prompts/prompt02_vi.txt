@@ -1,0 +1,69 @@
+Prompt 2: Roster phương tiện, thẻ hỗ trợ và cân bằng
+Nhiệm vụ: dọn roster phương tiện và thẻ hỗ trợ (bỏ những thứ trùng vai trò, thêm những thứ còn thiếu), rồi chạy vòng cân bằng. Làm xong phần này trước khi thêm tháp mới.
+
+A. BỎ HOẶC GỘP PHƯƠNG TIỆN
+Người chơi đã lên hạng thẻ bị bỏ thì được chuyển toàn bộ hạng và bản thiết kế sang thẻ đích. Nếu thẻ đích đã có hạng cao hơn thì hoàn xu tương đương. Xóa id khỏi bộ bài AI, chiến dịch và danh sách mở khóa. Viết test migration.
+
+1. Chở quân → gộp vào Xe bộ binh. Game không có bộ binh nên xe chở quân không có vai trò riêng; Bọc thép đã lo phần xe nhẹ rẻ và nhanh.
+2. Tăng APS → gộp vào Tăng chủ lực. Hai xe cùng chỉ số, APS đã có sẵn dưới dạng module "Hệ thống Trophy APS". Người chơi đang có Tăng APS được tặng 1 module Trophy APS Sử thi.
+3. Grad → gộp vào Phản lực (xe phóng rocket). Phản lực rẻ hơn, tầm xa hơn và DPS cao hơn Grad. Giữ Grad tinh nhuệ làm xe tinh nhuệ của địch.
+4. Lựu pháo → gộp vào Pháo tự hành. Hai xe gần như trùng hoàn toàn (tầm 90 và 100, cùng khoảng 29 DPS lên xe nặng).
+5. Cối 240 → gộp vào Pháo công thành. Cả hai cùng vai trò công phá công trình và cùng yếu ở vai trò đó.
+6. Pháo đài bay (thẻ xe) → bỏ. Vai trò này đã có ở vật phẩm "Pháo đài bay yểm trợ". Hoàn xu theo tổng đã đầu tư vào thẻ.
+
+B. ĐỔI VAI TRÒ
+7. Lancet → xe săn pháo binh: +100% sát thương lên pháo binh và mục tiêu đứng yên quá 3 giây. Hiện nó bị Drone FPV lấn át (FPV rẻ hơn, 64 DPS lên xe nặng so với 34).
+8. Laser PK → phòng thủ điểm: ưu tiên bắn hạ drone, tên lửa và rocket bay vào trong 30 m (mỗi tia hạ 1 mục tiêu, hồi 1,2 giây); DPS lên máy bay là vai trò phụ. Tự chỉnh giá theo giá trị đánh chặn đo được.
+9. Ka-52 → trực thăng đánh từ xa: tăng tầm tên lửa chống tăng lên 55 m và ưu tiên đứng ngoài tầm phòng không ngắn. Mục đích là tách khỏi TT hỏa lực (vai trò đánh cận).
+
+C. THÊM PHƯƠNG TIỆN (số khởi điểm)
+10. Xe chỉ huy (Hỗ trợ): 6 CP, 1.400 máu, giáp nhẹ, 8 m/s, súng máy nóc.
+    - Hào quang 25 m: đồng minh +10% tốc độ bắn.
+    - Đứng yên 5 giây thì thành bãi thả dù tiền phương: xe mới mua có thể thả xuống cạnh nó.
+    - Tối đa 1 chiếc mỗi phe.
+    Lý do: game đang thiếu cách đẩy tuyến thả quân lên phía trước, và xe này rất hợp với chủ đề căn cứ/tiền đồn.
+11. Xe pháo bánh lốp (Diệt tăng): 7 CP, 1.100 máu, giáp nhẹ, 12 m/s, pháo 105 mm xuyên giáp tầm 38 m, khoảng 65 DPS lên xe nặng, +25% sát thương vào hông và sau.
+    Lý do: mọi xe diệt tăng hiện đều chậm, game thiếu một xe đánh tạt sườn nhanh.
+12. Radar phản pháo (Hỗ trợ): 5 CP, 900 máu, giáp nhẹ, chỉ có súng máy.
+    - Pháo địch khai hỏa trong 120 m bị lộ 8 giây.
+    - Pháo ta bắn vào mục tiêu bị lộ +15% sát thương.
+    Lý do: hiện chỉ có đồ trang bị làm việc này, chưa có cách khắc chế pháo tầm xa bằng thẻ.
+13. SAM tầm xa (Phòng không): 11 CP, 1.100 máu, giáp nhẹ, 6 m/s, tầm 95 m, tầm tối thiểu 20 m, chỉ bắn máy bay, phát 600 sát thương mỗi 8 giây.
+    Lý do: phòng không di động hiện chỉ tới 55 m, không có gì chạm được oanh tạc cơ và máy bay tàng hình trước khi chúng thả bom.
+Mỗi xe mới cần có: dữ liệu, AI biết dùng, thẻ hướng dẫn trong tab Hướng dẫn, và model tạm (dùng lại mesh gần nhất và đổi màu nếu chưa có model riêng; ghi vào DECISIONS.md để làm model sau).
+
+D. THẺ HỖ TRỢ
+14. Bỏ Ném bom rải thảm (thứ ba trong nhóm "hàng bom", trùng với Không kích). Bù lại: Không kích từ hạng thẻ 7 có đường bom dài thêm 40%. Migrate như phần A.
+15. Thêm (số khởi điểm):
+    - UAV quét: 2 CP, hồi 45 giây. Lộ mọi thứ kể cả tàng hình trong bán kính 30 m trong 10 giây. Hiện chưa có thẻ trinh sát chủ động.
+    - Rải mìn từ xa: 5 CP, hồi 60 giây. 8 quả mìn trong bán kính 12 m, tồn tại 60 giây. Dùng để chặn đợt rush và mạnh khi phòng thủ.
+    - Tháp dã chiến: 6 CP, hồi 90 giây. Thả dù một tháp nhẹ (tháp canh hoặc tháp ATGM, theo hạng thẻ) tồn tại 60 giây. Không thả được vào vùng căn cứ địch.
+    - Chế áp phòng không: 7 CP, hồi 90 giây. Tên lửa chống radar đánh phòng không địch gần nhất (xe hoặc tháp) trong 20 m: 500 sát thương và vô hiệu 8 giây. Mục đích là giữ máy bay còn giá trị khi căn cứ nào cũng có tháp phòng không.
+    Mỗi thẻ mới có clip Xem bắn (tạm dùng lại clip gần nhất nếu cần) và được AI biết dùng.
+
+E. CÂN BẰNG (điểm khởi đầu, tự chỉnh theo mô phỏng 5 seed)
+16. Xe bom tự sát: sát thương lên công trình ×0,5, hoặc giá 3 → 4 CP. Hiện 3 chiếc phá được một tháp phòng không. Viết test "spam xe bom vào căn cứ" để chứng minh nó không còn là chiến thuật tối ưu.
+17. Pháo công thành (sau khi gộp Cối 240): cho sẵn hiệu ứng tương đương "Đạn phá boongke", đạt khoảng 150+ DPS lên công trình (hiện 81, trong khi Phản lực 300 giá 9 CP đạt 141). Có thể giảm xuống 12 CP.
+18. Máy bay mạnh hơn hẳn mặt đất tính theo sát thương lên xe nặng / CP:
+    - Máy bay diệt tăng 16 → 18 CP.
+    - TT hỏa lực: giảm khoảng 15% sát thương lên xe nặng, hoặc lên 14 CP.
+    - Máy bay tàng hình 22 → 20 CP.
+19. Railgun: đo số mục tiêu trung bình mỗi phát xuyên. Nếu dưới 2, giảm xuống 9 CP hoặc +25% sát thương.
+20. Tiếp tế: tự kiểm tra trong code mức 24 × 1,05 đang tính theo đơn vị gì.
+    - Nếu là tổng CP của quân trên sân thì nó quá thấp (2 xe nặng đã chạm trần). Nâng lên mức cho phép khoảng 8–10 xe tầm trung, đo lại nhịp trận.
+    - Cho cấu hình trần theo chế độ, và chừa hook cho module Trạm hậu cần.
+21. Scale địch trong chiến dịch: tham số hóa mức scale theo kho vũ khí (hiện 80%), đặt mặc định 55%. Tính "sức mạnh đề nghị" cho mỗi nhiệm vụ để hiện ở màn chọn nhiệm vụ.
+22. Sửa lỗi dữ liệu:
+    - Sửa key thô "stat.line.count" ở Tấm giáp nguyên khối.
+    - Thay các placeholder "{1}" còn sót trong mô tả module (APS, Mồi bẫy nhiệt, Drone hộ tống, Kèn tập hợp, Pháo kích vệ tinh, Máy rải mìn, Bệ phóng mồi nhử, Đầu nổ EMP).
+    - Viết test quét toàn bộ localization để bắt key thô và placeholder sót.
+
+Báo cáo: bảng DPS theo CP trước/sau cho toàn roster, và tỷ lệ thắng theo seed cho các nhiệm vụ bị ảnh hưởng.
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Kèm theo prompt 2 (28/09):
+- (28/09 05:33) nhớ làm model mới cho các phương tiện mới theo tiêu chuẩn, và nhớ làm đúng đạn bắn đúng chô

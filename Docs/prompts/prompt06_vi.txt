@@ -1,0 +1,36 @@
+Prompt 6: Chế độ Tác chiến và gộp menu
+Nhiệm vụ: thêm chế độ chơi lại các chiến dịch quy mô lớn, và gom menu chế độ lại cho gọn.
+
+1. Gộp menu thành 4 nhóm:
+   - Chiến dịch (kèm mục Hồ sơ).
+   - Tác chiến: chơi lại chiến dịch lớn + Pháo đài tuần + Săn trùm.
+   - Giao tranh: Giữ cứ điểm, Vua đồi, Tử chiến, Công phá.
+   - Thử thách: Sinh tồn, Vô tận.
+   Giữ nguyên logic của từng chế độ, chỉ đổi điều hướng.
+2. Tác chiến: mở 9 chiến dịch cuối chương và các trận Công thành/Phòng thủ/đấu tướng nổi bật trong story, sau khi người chơi đã thắng chúng trong chiến dịch. Dùng lại 3 cấp Thường / Anh hùng / Thép. Thêm cấp thứ tư "Huyền thoại", mở sau khi phá đảo chương 9.
+3. Tính điểm theo thời gian, tổn thất và máu HQ còn lại; lưu kỷ lục cá nhân cho từng cấp độ.
+4. Mutator hằng tuần, data-driven, tổ hợp được. Tự thiết kế ít nhất 15 mutator, ví dụ:
+   - Đêm bão.
+   - Địch toàn không quân.
+   - Không hỏa lực.
+   - Hai boss.
+   - Tháp địch ×2.
+   - Không có trạm sửa chữa.
+   - Tướng địch tăng cường.
+   - Chỉ dùng xe dưới 8 CP.
+   Mỗi tuần xoay vòng 1 chiến dịch + 2 mutator, chọn deterministic theo số tuần.
+5. Thưởng lần thắng đầu mỗi tuần, gộp chung cơ chế thưởng với Pháo đài tuần để tránh hai hệ thưởng tuần song song.
+6. Màn kết quả: điểm số, so sánh với kỷ lục, mutator đang áp dụng.
+
+Test: mọi tổ hợp mutator trong bảng xoay vòng đều thắng được qua 5 seed; chọn mutator theo tuần là deterministic; điểm số tính đúng; menu mới truy cập được đủ mọi chế độ cũ.
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Play-test 1, 28/09 (đã làm: DECISIONS 11A–11D):
+- (28/09 16:48) với mode boss rush của tôi đâu
+
+Play-test 2, 28/09 (đã làm: DECISIONS 12A–12H):
+- (28/09 17:58) boss rush đáng lẽ nên có trong list mode, check lại

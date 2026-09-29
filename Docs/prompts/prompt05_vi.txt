@@ -1,0 +1,32 @@
+Prompt 5: Chiến dịch lớn cuối chương và nâng cấp Công thành / Phòng thủ
+Nhiệm vụ: làm khung nhiệm vụ nhiều giai đoạn, rồi dùng nó để làm 9 chiến dịch cuối chương theo kịch bản ở prompt 4, và nâng cấp hai chế độ Công thành và Phòng thủ.
+
+1. Khung nhiều giai đoạn, data-driven: mỗi giai đoạn có mục tiêu, điều kiện chuyển, sự kiện kích hoạt (mở rộng map, chi viện địch, boss xuất hiện, chi viện ta, đồng minh phản bội) và thưởng CP. Mục tiêu 15–25 phút, 3–5 giai đoạn. Riêng chiến dịch cuối game được phép tới 30 phút.
+2. Checkpoint bắt buộc: chụp snapshot sim ở cuối mỗi giai đoạn và cho tiếp tục từ đó. Viết test đảm bảo khôi phục từ snapshot khớp deterministic với lần chạy liền mạch.
+3. Nhánh lựa chọn: mỗi chiến dịch lớn có ít nhất một giai đoạn cho người chơi chọn giữa 2 mục tiêu với hệ quả khác nhau. Ví dụ: phá kho đạn để địch yếu đi, hoặc chiếm đài radio để mở không kích của đồng minh.
+4. Chỉ huy AI đồng minh: có căn cứ và quân riêng, dùng lại AI chỉ huy hiện có; cùng mục tiêu với người chơi, không tranh bãi thả. Cho cấu hình các đợt chi viện của ta theo mốc. Hỗ trợ sự kiện "đồng minh đổi phe" cho chương 8: căn cứ, tháp và quân của đồng minh chuyển phe ngay trong trận.
+5. Mở rộng map giữa trận: nới biên camera và vùng chơi sang phần ngoài viền (hiện chỉ dựng để trang trí). Tự làm navmesh và làn đường cho các vùng mở rộng mà kịch bản cần.
+6. Nâng cấp Công thành:
+   - Pháo đài chiếm 40–50% map.
+   - Set-piece: tường sập có animation, cổng bị phá, máy phát khiên nổ làm tắt vòm khiên, siêu pháo bắn theo đồng hồ đếm ngược (phá nó là mục tiêu phụ), đèn pha và còi báo động ban đêm, chi viện địch đến bằng đường băng hoặc đường ray mà người chơi nhìn thấy.
+   - Căn cứ địch dùng roster tháp mới từ prompt 3.
+7. Nâng cấp Phòng thủ:
+   - Nhiều tuyến lùi: mất tuyến ngoài thì tháp ở đó bị phá nhưng người chơi được thưởng CP rút lui; tuyến trong có tháp mạnh hơn; HQ là trận chốt cuối.
+   - Hiện trước thành phần đợt địch tiếp theo bằng icon.
+   - Căn cứ người chơi dùng đúng loadout của họ.
+8. Địch đông:
+   - Dùng xe rẻ đi thành bầy thay vì tăng xe nặng.
+   - Cho phép nâng trần địch lên khoảng 48 xe chỉ ở các chế độ này và trong chiến dịch lớn.
+   - Thêm LOD / impostor cho xe ở xa.
+   - Đo thời gian tick trung bình và p99 trên cấu hình máy tầm thấp. Tự chọn trần cao nhất vẫn nằm trong ngân sách tick và ghi lại số đo.
+9. Boss cuối chương: thanh máu nhiều pha, có giai đoạn chuyển hình, và có radio chatter của tướng địch tương ứng.
+
+Test: mỗi chiến dịch lớn thắng được qua 5 seed ở độ khó Thường; thời lượng nằm trong khung đã đặt; checkpoint khớp deterministic; sự kiện đổi phe không làm lỗi AI hay pathfinding; hiệu năng nằm trong ngân sách tick.
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Play-test 2, 28/09 (đã làm: DECISIONS 12A–12H):
+- (28/09 17:58) khi tôi chơi tôi thấy máy bay mà thả quân cho địch bay 1 lúc là bị biến mất, không nên cho máy bay đó bay đường thẳng qua cả map mà bay hướng nào xuất hiện ngắn nhất

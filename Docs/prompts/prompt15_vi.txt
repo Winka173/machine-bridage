@@ -108,3 +108,11 @@ F. KIỂM TRA
 - Chạy lại mô phỏng 5 seed toàn bộ chiến dịch, chiến dịch lớn và các chế độ; chạy lại bộ đo giá trị thực chiến của prompt 13 nếu prompt 13 đã chạy, và cân bằng lại theo kết quả.
 - Chụp ảnh tự động các màn có icon mới (thẻ, chi tiết, tooltip địch, Độ phủ vai trò, Căn cứ, Hướng dẫn) ở 4 tỷ lệ màn hình; lưu vào docs/ui-screens/.
 - Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (bảng giáp, bảng xuyên, bảng loại sát thương, bảng khắc chế, bộ icon).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Kèm theo prompt 15 (29/09):
+- (29/09 03:01) nhớ toàn bộ icon phải vẽ mới từ đầu, và tiết kiệm token không cần chạy test nhiều

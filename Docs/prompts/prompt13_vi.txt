@@ -227,3 +227,20 @@ J. KIỂM TRA
 - Hiệu năng: nhiều máy bay cùng bay vòng chờ và hồi đạn không vượt ngân sách tick.
 - Migration: thẻ Pháo đài bay bị bỏ, vai trò xe công binh đổi, điểm Tử chiến đổi cách tính, tên độ khó đổi.
 - Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (bảng vũ khí, bảng DPS, giá trị thực chiến, hệ đạn và hồi đạn, màn chi tiết, AI, chế độ chơi, độ khó).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Play-test 1, 28/09 (đã làm: DECISIONS 11A–11D):
+- (28/09 16:47) armourd car trong detail inaction, súng chính không nên bán được phương tiện bay, chỉ súng trường
+- (28/09 16:47) các tên lửa nên giảm tốc độ bay, đang quá nhanh, đang coi attack helicopter, giảm cho toàn bộ các loại tên lửa
+- (28/09 16:47) fighter jet thì auto canon nên có thể bắn liên tục để nhìn cho đã, scan lại toàn bộ các vũ khí, 1 số phương tiện thì sẽ bắn nhanh hơn, như jet thì có thể bắn liên tục trong 3 4s rồi hồi đạn 1s, cân bằng lại damage
+- (28/09 16:53) về súng chính xe bọc thép không bắn máy bay: tôi nhầm, các phương tiện chuyên anti air thì súng chính vẫn chỉ lên bắn được
+
+Play-test 2, 28/09 (đã làm: DECISIONS 12A–12H):
+- (28/09 17:50) giảm tốc độ tên lửa bay nói chung (từ các máy bay)
+- (28/09 17:50) tương tự như auto canon lúc nãy trên jet, nhiều phương tiện khác cũng nên sửa như anti-air, bắn nhiều để cho đã
+- (28/09 17:58) AI của jet có thể đứng yên xả súng máy và tên lửa thẳng vào air của địch, sau đó bay đi 1 vòng và lặp lại, behavior này làm bị mất dps
+- (28/09 17:59) AI của tiêm kích, scan các AI các phương tiện tương tự luôn, tăng giới hạn agent lên 6
