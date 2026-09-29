@@ -16,6 +16,7 @@ namespace MachineBrigade.Game.Rendering
             ScorchQuad = Own(Primitives.Quad(new Color(0.05f, 0.04f, 0.035f, 0.85f)));
             Ring = Own(Primitives.Ring(0.82f, 1f, 48));
             ThinRing = Own(Primitives.Ring(0.955f, 1f, 96));
+            BadgeRing = Own(Primitives.Ring(0.6f, 1f, 32));
             Box = Own(Primitives.Box());
             GroundQuad = Own(FlatQuad());
         }
@@ -33,6 +34,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>A hairline ring for large circles (objectives, strike telegraphs).</summary>
         public Mesh ThinRing { get; }
+
+        /// <summary>Prompt 23 F.4: a thick ring for a small sign over a unit (the Meridian Accord's), lying on the ground.</summary>
+        public Mesh BadgeRing { get; }
 
         /// <summary>Unit cube centred on its origin.</summary>
         public Mesh Box { get; }

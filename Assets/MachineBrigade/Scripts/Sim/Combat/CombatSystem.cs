@@ -456,7 +456,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && target.Team != v.Team && target.IsVisibleTo(v.Team) &&
+            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && !target.Truce && target.Team != v.Team && target.IsVisibleTo(v.Team) &&
             // Prompt 16: a coastal battery's guns fire on ships only.
             (!v.Def.NavalOnly || target.Def.Naval != null) && InReach(v, target, weapon) && HasLineOfFire(v, target, weapon);
 

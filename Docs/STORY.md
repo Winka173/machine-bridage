@@ -117,6 +117,80 @@ Gungnir (c11m05), Kessler's last ship (c12m02).
   bargain (c12m02); Varga falls like a soldier, Matilda fights beside us, the tungsten rod, Icarus falls, and Aurel
   fights on in the wreck: "They still don't understand." (c12m10).
 
+## Mission events and the in-battle dialogue (prompt 23)
+
+**The event system.** A mission's battle is more than its goal. It plays events from one library
+(`Tools/campaign/events.py`, campaign.json's `eventLibrary`), and each mission names its events in
+`Tools/campaign/act10.py`.
+
+- **What an event is.** Each has a trigger: a time, the mission's progress, the boss's health, the units on the field,
+  another event, or the player being outnumbered. It also has a warning, lines for the dialogue and sometimes a reward.
+- **The kinds:**
+  - enemy waves from several directions, made up by the mission's general;
+  - Meridian Accord reinforcements;
+  - fire support for both sides;
+  - the enemy general taking the field;
+  - timed side objectives;
+  - convoys and loot;
+  - supply drops;
+  - Nadia's reports and the electronic storm;
+  - a mid-battle mini boss, and Kade's change of plan;
+  - the weather or night turning;
+  - two set pieces of the story's own: the Hollow Dam's ceasefire and the satellite's test rod.
+- **How many.** A mission has 2-4 events, a chapter's operation 5-8, an interlude's mission 2-3. No two missions in a row
+  play the same set.
+- **In the story's spirit.** Each chapter's events follow its story:
+  - Stormbeach's landings and the Accord's second wave;
+  - Dunebreak's oil convoys and Thorne's first support;
+  - Orlov's guns and the snow;
+  - Kessler's ships and trains;
+  - Venn's swarms and her electronic storm;
+  - Varga's counterattacks, Brandt's towers and the one morning Varga and Kade held their fire;
+  - Veyra's militia and Thorne's turned columns;
+  - Tartarus coming up out of the pit;
+  - landings and fog at sea;
+  - Raven's raids and nightfall over Skyhold;
+  - the drop pods and the first test rod at Skygate;
+  - at Helion, every old ally at once against reinforcements from every side.
+- **The story choices.** The ferries of Iron Harbor and the miners of Deepcut come only in the option of the chapter's
+  choice that saves them.
+- **The generals.** Every chapter with an enemy general has the general take the field in one of its missions. The
+  general drives an elite early on, their own mini boss later, and carries their passive. They break off at 30 % unless it
+  is their last battle.
+- **Determinism.** Everything follows the battle's seed, so a checkpoint's replay brings the events back as they were.
+
+**Reinforcements by difficulty (C.3).**
+
+| Difficulty | Enemy directions | Warning | Accord share of an enemy wave |
+|---|---|---|---|
+| Easy | 1-2 (smaller waves) | 15 s | about 70 % |
+| Normal | 2 | 10 s | about 50 % |
+| Hard | 2-3 | 8 s | about 30 % |
+| Very Hard | 3-4, with elites | 6 s | about 15 %, and one allied wave a mission |
+
+- Strength is prompt 13's combat value.
+- No enemy wave appears within 45 m of the player's units: another point in the same direction is used.
+- Reinforcements have their own cap, outside the army's.
+- An Accord wave takes the place of the losing side's free drop, never on top of it.
+- Chapter 12's Total Offensive is the one allied wave as strong as the enemy's.
+
+**The in-battle dialogue (H).**
+
+- **The line.** Every character speaks in one subtitle line just above the card tray: the speaker's short name in the
+  side's colour, then the words, on a dim strip. It is at most half the screen wide and two lines long. There is no
+  portrait and no voice.
+- **Priorities.** One line shows at a time. Story lines and warnings queue. Event lines and the generals' reactions show
+  only when the strip is free and not too soon after the last one.
+- **The log and the setting.** The pause menu keeps the last 20 lines. Settings choose Full, Important only or Off; story
+  lines always show.
+- **Story moments.** Six times in the campaign the battle slows to half speed for two or three lines:
+  - Varga's word at the Hollow Dam;
+  - Venn losing her swarm;
+  - Thorne's betrayal;
+  - Thorne on Typhon's bridge;
+  - Varga's fall;
+  - Icarus falling.
+
 ## The ending
 
 Icarus falls; Hegemon comes apart; after three years the Meridian Coast is free. Kade turns down a seat in the new

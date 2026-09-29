@@ -589,6 +589,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>A mission's hunted vehicle: the game draws a target marker over it.</summary>
         public bool Marked { get; internal set; }
 
+        /// <summary>
+        /// Prompt 23 E.1: under a ceasefire (the Hollow Dam's sworn column). No weapon picks it on its own; an ordered attack
+        /// still can, and breaks the ceasefire.
+        /// </summary>
+        public bool Truce { get; internal set; }
+
         /// <summary>The player took direct control of this vehicle recently.</summary>
         public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;
 

@@ -466,6 +466,10 @@ namespace MachineBrigade.Game.Hud
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
             game.Add(ToggleRow("bolt", "settings.haptics", () => MatchSettings.Haptics, on => MatchSettings.Haptics = on));
             game.Add(ToggleRow("camera", "settings.cinematic", () => MatchSettings.CinematicMoments, on => MatchSettings.CinematicMoments = on));
+            // Prompt 23 H.7: the battle's dialogue; story lines show whatever is chosen.
+            game.Add(OptionRow("info", "settings.dialogue",
+                new[] { Strings.Get("settings.dialogue.full"), Strings.Get("settings.dialogue.important"), Strings.Get("settings.off") },
+                () => (int)MatchSettings.Dialogue, i => MatchSettings.Dialogue = (DialogueSetting)i));
             game.Add(OptionRow("camera", "settings.camera",
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));

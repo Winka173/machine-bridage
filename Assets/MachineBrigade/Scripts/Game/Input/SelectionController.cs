@@ -301,8 +301,8 @@ namespace MachineBrigade.Game.Input
             if (_selected.Count == 0) AttackMoveArmed = false;
         }
 
-        /// <summary>The player's own vehicle (not the allied commander's).</summary>
-        private bool Mine(VehicleView view) => view.Team == _team && !view.Sim.Ally;
+        /// <summary>The player's own vehicle (not the allied commander's, nor a Meridian Accord reinforcement: prompt 23 F.4).</summary>
+        private bool Mine(VehicleView view) => view.Team == _team && !view.Sim.Ally && !view.AccordMarked;
 
         /// <summary>The live part of a boss nearest the tap on screen, within a finger's reach of it, or -1.</summary>
         private int PartUnder(VehicleView boss, Vector2 screen)

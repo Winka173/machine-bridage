@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Hud
     /// something is added); a card's extra badge goes in DeckBar's <c>fc-hcard__badges</c> row.
     /// </para>
     /// </summary>
-    public sealed class BattleHud : IDisposable
+    public sealed partial class BattleHud : IDisposable
     {
         /// <summary>The class on the HUD's kit root while the compact layout is in use.</summary>
         public const string CompactClass = "fc-hud--compact";
@@ -392,19 +392,20 @@ namespace MachineBrigade.Game.Hud
             _banner = Kit.Box("fc-hud__banner");
             _safe.Add(_banner);
 
-            // Radio chatter: a portrait and one line (a tap skips it), in the toasts' style. The campaign's, and in every
-            // battle the commander's words at the start and the end (prompt 22 F.4).
+            // Prompt 23 H: every character's line is one subtitle just above the tray (no portrait, no frame, no tap).
             if (mode != HudMode.Menu && !spec.Sandbox)
             {
-                _radio = new RadioPanel();
-                under.Add(_radio.Root);
+                _dialogue = new DialogueStrip();
+                _safe.Add(_dialogue.Root);
             }
 
             // Notices (a point lost, air raids, an elite's arrival): the kit's toast on the battlefield, in the
             // column under the top strip; compact: small, gone after about 3 s, one after another (prompt 11 A6).
+            // Prompt 23 F.1: an icon by kind of notice, one line.
             _toast = Kit.Box("fc-hud__toast");
             var toastBox = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-toast fc-hud__toast-face");
-            toastBox.Add(Kit.Icon("info", "fc-hud__toast-icon"));
+            _toastIcon = Kit.Icon("info", "fc-hud__toast-icon");
+            toastBox.Add(_toastIcon);
             _toastText = Kit.Text("", (Compact ? "fc-small" : "fc-body") + " fc-row-text fc-hud__toast-text");
             toastBox.Add(_toastText);
             _toast.Add(toastBox);
@@ -412,8 +413,15 @@ namespace MachineBrigade.Game.Hud
 
             // Pause holds Auto buy and Support too (prompt 11 A2), whatever the layout.
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(),
-                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke(), Relocalise);
+                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke(), Relocalise,
+                _dialogue != null ? () => _dialogueLog?.Show(DialogueLog?.Invoke()) : null);
             _safe.Add(_pause.Root);
+            // Prompt 23 H.6: the dialogue log, over the pause menu.
+            if (_dialogue != null)
+            {
+                _dialogueLog = new DialogueLogPanel(_dialogue);
+                _safe.Add(_dialogueLog.Root);
+            }
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
                 () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke());
             _safe.Add(_result.Root);
@@ -425,6 +433,8 @@ namespace MachineBrigade.Game.Hud
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);
 
+            // Prompt 23 F.2, F.3, F.5 (BattleHud.Events.cs).
+            BuildEventMarkers();
             SetSelection(default);
         }
 
@@ -439,10 +449,24 @@ namespace MachineBrigade.Game.Hud
         /// </summary>
         public VisualElement SelectionExtras { get; }
 
-        private readonly RadioPanel _radio;
+        private readonly DialogueStrip _dialogue;
+        private readonly DialogueLogPanel _dialogueLog;
+        private readonly IconElement _toastIcon;
 
-        /// <summary>A line of radio chatter (every battle but the menu's and the Sandbox's).</summary>
-        internal void Radio(Match.RadioLine line) => _radio?.Say(line);
+        /// <summary>Prompt 23 H: the dialogue's subtitle (null in the menu and the Sandbox).</summary>
+        internal DialogueStrip Dialogue => _dialogue;
+
+        /// <summary>Prompt 23 H.6: the pause menu's dialogue log (null in the menu and the Sandbox).</summary>
+        internal DialogueLogPanel DialogueLogView => _dialogueLog;
+
+        /// <summary>Prompt 23 H.6: the lines the log shows (the runner's dialogue director).</summary>
+        internal Func<IReadOnlyList<Match.DialogueEntry>> DialogueLog { get; set; }
+
+        /// <summary>Prompt 23 H.2: a line starts (every battle but the menu's and the Sandbox's).</summary>
+        internal void ShowLine(in Match.DialogueLine line) => _dialogue?.Show(line);
+
+        /// <summary>The line on show fades out.</summary>
+        internal void HideLine() => _dialogue?.Hide();
 
         private readonly VisualElement _corner;
         private CommanderBadge _commanderBadge;
@@ -473,6 +497,7 @@ namespace MachineBrigade.Game.Hud
         public void Relocalise(bool wasVietnamese)
         {
             Relabel.Apply(_root, wasVietnamese);
+            _dialogue?.Refresh();
             LanguageSwitched?.Invoke();
         }
 
@@ -745,7 +770,11 @@ namespace MachineBrigade.Game.Hud
             _targeting.style.display = message != null ? DisplayStyle.Flex : DisplayStyle.None;
             if (message != null) _targetingText.text = message;
             _hintBar.style.display = message != null ? DisplayStyle.None : DisplayStyle.Flex;
+            _targetingUp = message != null;
+            _dialogue?.Raise(_selectionUp, _targetingUp);
         }
+
+        private bool _selectionUp, _targetingUp;
 
         /// <summary>Closes an open menu page; false when there is none (main menu or in a match).</summary>
         public bool MenuBack() => _menu != null && _menu.Back();
@@ -765,6 +794,7 @@ namespace MachineBrigade.Game.Hud
         public void SetPaused(bool paused)
         {
             if (_pause != null) _pause.Visible = paused;
+            if (!paused) _dialogueLog?.Hide();
         }
 
         /// <param name="title">The mission's name or the mode's.</param>
@@ -878,6 +908,8 @@ namespace MachineBrigade.Game.Hud
         {
             if (_unitName == null) return;
             _command.style.display = summary.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _selectionUp = summary.Count > 0;
+            _dialogue?.Raise(_selectionUp, _targetingUp);
             // Only rebuild the panel when what it shows has changed (whole hit points).
             if (summary.Count == _shownSelection.Count && summary.DefId == _shownSelection.DefId &&
                 Mathf.CeilToInt(summary.Hp) == Mathf.CeilToInt(_shownSelection.Hp) &&
@@ -996,32 +1028,44 @@ namespace MachineBrigade.Game.Hud
         /// <summary>How long a compact notice stays up (prompt 11 A6: about 3 s), whatever the caller asked.</summary>
         private const float CompactToastMin = 2.5f, CompactToastMax = 3.5f;
 
+        /// <summary>A notice of <paramref name="kind"/> (its icon) at the top edge; see <see cref="Notice"/>.</summary>
+        public void Toast(string message, bool error = false, float seconds = 3f, NoticeKind kind = NoticeKind.Info,
+            System.Numerics.Vector2? direction = null) =>
+            Notice(new HudNotice(kind, message, error, seconds, direction));
+
         /// <summary>
-        /// Shows a message. One that arrives while another is fresh waits its turn (a few at
-        /// most), so "point lost" is not wiped by "APC on the way"; errors go straight up.
+        /// Shows a notice (prompt 23 F.1: an icon by kind, one line, gone by itself). One that arrives while another is fresh
+        /// waits its turn (a few at most), so "point lost" is not wiped by "APC on the way"; alerts go straight up.
         /// </summary>
-        public void Toast(string message, bool error = false, float seconds = 3f)
+        public void Notice(in HudNotice notice)
         {
-            if (Compact) seconds = Mathf.Clamp(seconds, CompactToastMin, CompactToastMax);
+            if (string.IsNullOrEmpty(notice.Text)) return;
+            NoticeArrow(notice);
             var busy = _toast.ClassListContains("fc-hud__toast--visible") && Time.unscaledTime - _toastShownAt < 1.2f;
-            if (busy && !error)
+            if (busy && !notice.Alert)
             {
-                if (_toastQueue.Count < 3 && _toastText.text != message) _toastQueue.Enqueue((message, false, seconds));
+                if (_toastQueue.Count < 4 && _toastText.text != notice.Text) _toastQueue.Enqueue(notice);
                 return;
             }
-            ShowToast(message, error, seconds);
+            ShowToast(notice);
         }
 
-        private readonly Queue<(string message, bool error, float seconds)> _toastQueue = new();
+        /// <summary>A notice went up (F.2's direction arrows read its <see cref="HudNotice.Direction"/>).</summary>
+        public event Action<HudNotice> NoticeShown;
+
+        private readonly Queue<HudNotice> _toastQueue = new();
         private float _toastShownAt = -10f;
 
-        private void ShowToast(string message, bool error, float seconds)
+        private void ShowToast(in HudNotice notice)
         {
-            _toastText.text = message;
-            _toastText.parent?.EnableInClassList("fc-toast--alert", error);
+            var seconds = Compact ? Mathf.Clamp(notice.Seconds, CompactToastMin, CompactToastMax) : notice.Seconds;
+            _toastText.text = notice.Text;
+            _toastText.parent?.EnableInClassList("fc-toast--alert", notice.Alert);
+            if (_toastIcon != null) _toastIcon.Name = HudNotice.Icon(notice.Kind);
             _toast.AddToClassList("fc-hud__toast--visible");
             _toastShownAt = Time.unscaledTime;
             _toastUntil = Time.unscaledTime + seconds;
+            NoticeShown?.Invoke(notice);
         }
 
         public void ShowSelectionBox(Vector2 fromScreen, Vector2 toScreen)
@@ -1056,7 +1100,6 @@ namespace MachineBrigade.Game.Hud
 
         public void Tick()
         {
-            _radio?.Tick();
             _commanderBadge?.Tick();
             _words?.Tick();
             _boss?.Tick();
@@ -1068,8 +1111,7 @@ namespace MachineBrigade.Game.Hud
             var toastDone = Time.unscaledTime > _toastUntil || (_toastQueue.Count > 0 && Time.unscaledTime - _toastShownAt > 1.2f);
             if (toastDone && _toastQueue.Count > 0)
             {
-                var (message, error, seconds) = _toastQueue.Dequeue();
-                ShowToast(message, error, seconds);
+                ShowToast(_toastQueue.Dequeue());
             }
             else if (_toast.ClassListContains("fc-hud__toast--visible") && Time.unscaledTime > _toastUntil)
             {
@@ -1078,6 +1120,7 @@ namespace MachineBrigade.Game.Hud
             if (_banner != null && _banner.ClassListContains("fc-hud__banner--visible") && Time.unscaledTime > _bannerUntil)
                 _banner.RemoveFromClassList("fc-hud__banner--visible");
             _hintBar?.EnableInClassList("fc-hud__hint--gone", Time.unscaledTime > _hintUntil);
+            TickEvents();
             TickAd();
             if (_settings != null && (Screen.width != _screenWidth || Screen.height != _screenHeight))
             {

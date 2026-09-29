@@ -1259,14 +1259,16 @@ namespace MachineBrigade.Game.Match
                     if (m.Raids) Events = new BattleEvents(seed, raids: true);
             }
             // Stages, or an allied commander: the operation runs them (each stage a mission of its own).
+            // Prompt 23: the events play at the mission's difficulty, one step up for each tier (C.3).
+            var eventLevel = EventLevels.From(_def.Difficulty, _tier);
             if (def.Stages.Count > 0 || def.Ally != null)
             {
-                _op = new OperationMode(def, playerSide, enemy);
+                _op = new OperationMode(def, playerSide, enemy) { EventLevel = eventLevel };
                 Mode = _op;
             }
             else
             {
-                _single = new MissionMode(def, playerSide, enemy);
+                _single = new MissionMode(def, playerSide, enemy) { EventLevel = eventLevel };
                 Mode = _single;
             }
             Mode.Setup(world);
@@ -1315,8 +1317,8 @@ namespace MachineBrigade.Game.Match
             if (_tier == 2) player.AutoStrike = false;
             player.Goal = w => _mode.PlayerGoal(w);
             player.Demolish = w => _mode.PlayerDemolish(w);
-            // The allied commander goes where the player's goal is, with its own units only.
-            if (def.Ally != null)
+            // The allied commander goes where the player's goal is, with its own units only (prompt 23 C.2: the Accord's waves too).
+            if (def.Ally != null || MissionEventSystem.NeedsAllies(def))
                 AllyAi = new TacticalAi(PlayerTeam, EnemyTeam, seed + 11)
                 {
                     Allies = true,
@@ -1327,8 +1329,9 @@ namespace MachineBrigade.Game.Match
             if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair) &&
                 ExtraBossFor(def, world.Catalog) is { } bossId)
                 world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
-            // Each stage sets the commanders for its own goal, in the step it begins.
+            // Each stage sets the commanders for its own goal, in the step it begins (prompt 23 D.8: and a new plan).
             if (_op != null) _op.StageChanged += _ => Configure(world);
+            if (_single != null) _single.Replanned += () => Configure(world);
         }
 
         private OperationRun _run;
@@ -1505,6 +1508,30 @@ namespace MachineBrigade.Game.Match
             hud.SetChoiceTime(_op.ChoiceLeft(world));
         }
 
+        /// <summary>
+        /// Prompt 23 D.3: what the side objectives paid (coins and blueprints on top of the mission's, won or lost: they are
+        /// optional), and how many were done; prompt 23 E: the intel file an interception names, for the dossier (paid on the claim).
+        /// </summary>
+        private static void EventRewards(MatchOutcome outcome, SimWorld world)
+        {
+            int done = 0, offered = 0;
+            foreach (var events in world.MissionEvents)
+            {
+                foreach (var s in events.States)
+                    if (s.Def.Kind == MissionEventKind.SideObjective && s.Fired > 0)
+                    {
+                        offered++;
+                        if (s.Phase == EventPhase.Done) done++;
+                    }
+                if (outcome.Reward == null) continue;
+                foreach (var (kind, amount, id) in events.Earned)
+                    if (kind == "coins") outcome.Reward.Coins += amount;
+                    else if (kind == "prints") outcome.Reward.RarePrints += amount;
+                    else if (kind == "intel" && id != null && !outcome.Reward.Intel.Contains(id)) outcome.Reward.Intel.Add(id);
+            }
+            if (offered > 0) outcome.Rows.Add((Strings.Get("result.sideObjectives"), $"{done} / {offered}"));
+        }
+
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
             if (Mode.Result is not { } result) return null;
@@ -1516,6 +1543,7 @@ namespace MachineBrigade.Game.Match
             if (_op != null && _op.StageCount > 1)
                 outcome.Rows.Add((Strings.Get("result.stages"), won ? _op.Path.Count.ToString() : UnityEngine.Mathf.Max(0, _op.Path.Count - 1).ToString()));
             outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2));
+            EventRewards(outcome, world);
             if (_run != null) OperationRows(outcome, world, won);
             if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));
             return outcome;

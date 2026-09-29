@@ -767,27 +767,72 @@
 .fc-hud__banner--visible { opacity: 1; }
 .fc-hud__banner-face { padding: var(--fc-space-4) var(--fc-space-7); align-items: center; border-left-width: var(--fc-bar); border-left-color: var(--fc-accent); }
 .fc-hud__banner-kicker { color: var(--fc-accent); }
-/* Notices and radio chatter stack in the column under the top bar, under the boss when there is one. */
+/* Notices stack in the column under the top bar, under the boss when there is one (prompt 23 F.1: an icon by kind, one line). */
 .fc-hud__toast { width: 100%; align-items: center; margin-top: var(--fc-space-2); opacity: 0; transition-property: opacity; transition-duration: 0.2s; }
 .fc-hud__toast--visible { opacity: 1; }
 .fc-hud__toast-face { max-width: 640px; }
 .fc-hud__toast-icon { --icon-color: var(--fc-text-2); }
 .fc-toast--alert > .fc-hud__toast-icon { --icon-color: var(--fc-danger); }
 .fc-toast--alert { border-left-width: var(--fc-bar); border-left-color: var(--fc-danger); }
-.fc-radio {
-    width: 100%; margin-top: var(--fc-space-2); min-height: var(--fc-touch);
-    flex-direction: row; align-items: center; padding: var(--fc-space-2) var(--fc-space-4) var(--fc-space-2) var(--fc-space-2);
-    border-left-width: var(--fc-bar); border-left-color: var(--fc-ally);
+/* Prompt 23 H.2: the battle's dialogue, one subtitle line centred just above the tray, at most half the screen wide, on a
+   dim strip that hugs the text (no panel, no portrait); it fades in and out and never takes a touch. The full HUD: beside
+   the selection panel while it is open (the panel fills the middle above the tray), above the strike prompt while aiming. */
+.fc-dialogue { position: absolute; left: 25%; right: 25%; bottom: 180px; align-items: center; opacity: 0; transition-property: opacity; transition-duration: 0.25s; }
+.fc-dialogue--visible { opacity: 1; }
+.fc-dialogue__strip {
+    max-width: 100%; padding: var(--fc-space-1) var(--fc-space-3); background-color: var(--fc-dialogue-strip);
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
 }
-.fc-radio--enemy { border-left-color: var(--fc-enemy); }
-.fc-radio__portrait { width: 64px; height: 64px; flex-shrink: 0; margin-right: var(--fc-space-3); }
-.fc-radio__text { flex-grow: 1; flex-shrink: 1; }
-.fc-radio__name { color: var(--fc-ally); }
-.fc-radio--enemy .fc-radio__name { color: var(--fc-danger-text); }
+.fc-dialogue__text { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-dialogue); color: var(--fc-text); -unity-text-align: middle-center; white-space: normal; }
+.fc-dialogue__probe { position: absolute; width: 0; height: 0; visibility: hidden; }
+.fc-dialogue__name--ally { color: var(--fc-dialogue-ally); }
+.fc-dialogue__name--enemy { color: var(--fc-dialogue-enemy); }
+.cb { --fc-dialogue-enemy: var(--fc-dialogue-enemy-cb); }
+.fc-dialogue--raised { left: var(--fc-space-3); right: 720px; }
+.fc-dialogue--high { bottom: 280px; }
+/* H.6: the log of the battle's last lines, over the pause menu */
+.fc-dialogue-log__card { width: 760px; max-height: 88%; }
+.fc-dialogue-log__scroll { flex-shrink: 1; margin: var(--fc-space-2) 0; }
+.fc-dialogue-log__row { margin-bottom: var(--fc-space-2); }
+/* Prompt 23 F.2: where reinforcements come from: a small round indicator at the screen's edge, its arrow pointing out
+   towards them (red: the enemy's; sky blue: the Meridian Accord's), placed by code clear of the HUD, never touched. */
+.fc-edge-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-edge-arrow {
+    position: absolute; left: 0; top: 0; width: 40px; height: 40px; align-items: center; justify-content: center;
+    background-color: var(--fc-panel-field);
+    border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger);
+}
+.fc-edge-arrow__icon { width: 24px; height: 24px; --icon-color: var(--fc-danger); }
+.fc-edge-arrow--ours { border-top-color: var(--fc-accord); border-right-color: var(--fc-accord); border-bottom-color: var(--fc-accord); border-left-color: var(--fc-accord); }
+.fc-edge-arrow--ours > .fc-edge-arrow__icon { --icon-color: var(--fc-accord); }
+.cb { --fc-accord: var(--fc-accord-cb); }
+/* F.5 and H.9: an enemy general's name over their vehicle, on the dialogue's dim strip; sound bars before it while they speak. */
+.fc-general-tags { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-general-tag {
+    position: absolute; flex-direction: row; align-items: center; translate: -50% -100%;
+    padding: 0 var(--fc-space-2); background-color: var(--fc-dialogue-strip);
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+}
+.fc-general-tag__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-dialogue-enemy); letter-spacing: 1px; white-space: nowrap; }
+.fc-general-tag__mark { width: 18px; height: 18px; margin-right: var(--fc-space-1); --icon-color: var(--fc-text); display: none; }
+.fc-general-tag--speaking > .fc-general-tag__mark { display: flex; }
+/* F.3: a side objective under the mission's goal: a flag, what to do, its clock. */
+.fc-mission-bar__side { flex-direction: row; align-items: center; margin-top: var(--fc-space-1); }
+.fc-mission-bar__side-icon { width: 18px; height: 18px; margin-right: var(--fc-space-1); flex-shrink: 0; --icon-color: var(--fc-text-2); }
+.fc-mission-bar__side > .fc-text { margin: 0; padding-top: 0; padding-bottom: 0; }
+.fc-mission-bar__side-text { flex-shrink: 0; white-space: nowrap; color: var(--fc-text); }
+.fc-mission-bar__side-count, .fc-mission-bar__side-clock { margin-left: var(--fc-space-2); flex-shrink: 0; white-space: nowrap; -unity-font: var(--fc-font-display-semi); }
+.fc-mission-bar__side-count { color: var(--fc-text); }
+.fc-mission-bar__side-clock { color: var(--fc-accent); }
+.fc-mission-bar__side-clock.fc-hud__clock--urgent { color: var(--fc-danger-text); }
 .fc-ad__count { margin-bottom: var(--fc-space-4); }
 /* Large text: the deck grows to hold its bigger type, and what sits above it moves up with it. */
 .fc-hud.fc-text-large .fc-deck { height: 196px; }
 .fc-hud.fc-text-large .fc-hud__command, .fc-hud.fc-text-large .fc-hud__hint, .fc-hud.fc-text-large .fc-hud__targeting { bottom: 216px; }
+.fc-hud.fc-text-large .fc-dialogue { bottom: 216px; }
+.fc-hud.fc-text-large .fc-dialogue--high { bottom: 320px; }
 
 /* ================================================================ prompt 11 A: the compact battle HUD */
 /* Settings > Compact battle HUD (on by default) puts fc-hud--compact on the HUD's root. The battlefield keeps
@@ -804,9 +849,12 @@
     --hud-card-art: 68px;
     --hud-above-deck: 124px;    /* the tray's margin, its height and a gap: what sits just above it */
     --hud-above-chip: 160px;    /* above the supply chip over the CP box as well */
+    --hud-dialogue: 124px;      /* prompt 23 H.2: the dialogue line just above the tray */
+    --hud-above-orders: 214px;  /* prompt 23 H.2: above the selection strip (the tray's top, a touch target and a gap) */
+    --hud-above-prompt: 262px;  /* ...and above the strike prompt over the supply chip */
 }
 /* Large text: the tray's names may take two lines (no card width fits every name on one line across the tray). */
-.fc-hud--compact.fc-text-large { --hud-deck: 134px; --hud-above-deck: 154px; --hud-above-chip: 194px; }
+.fc-hud--compact.fc-text-large { --hud-deck: 134px; --hud-above-deck: 154px; --hud-above-chip: 194px; --hud-dialogue: 216px; --hud-above-orders: 320px; --hud-above-prompt: 320px; }
 
 /* top: one strip; pause in the corner as a small face */
 .fc-hud--compact .fc-hud__top { top: var(--fc-space-2); left: var(--hud-edge); right: var(--hud-edge); }
@@ -946,8 +994,17 @@
 .fc-hud--compact .fc-hud__toast { margin-top: var(--fc-space-1); }
 .fc-hud--compact .fc-hud__toast-face { max-width: 600px; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
 .fc-hud--compact .fc-hud__toast-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
-.fc-hud--compact .fc-radio { width: auto; max-width: 520px; margin-top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-3) var(--fc-space-1) var(--fc-space-1); }
-.fc-hud--compact .fc-radio__portrait { width: 48px; height: 48px; margin-right: var(--fc-space-2); }
+/* Prompt 23 H.2: the dialogue line just above the tray; above the selection strip or the strike prompt while they are up. */
+.fc-hud.fc-hud--compact .fc-dialogue { left: 25%; right: 25%; bottom: var(--hud-dialogue); }
+.fc-hud.fc-hud--compact .fc-dialogue--raised { bottom: var(--hud-above-orders); }
+.fc-hud.fc-hud--compact .fc-dialogue--high { bottom: var(--hud-above-prompt); }
+/* Prompt 23 F.3: while a side objective's row is on the mission bar, the notices under the strip start below it. */
+.fc-hud .fc-hud--side-goal > .fc-hud__under { top: 164px; }
+.fc-hud.fc-text-large .fc-hud--side-goal > .fc-hud__under { top: 184px; }
+.fc-hud.fc-hud--compact .fc-hud--side-goal > .fc-hud__under, .fc-hud.fc-hud--compact .fc-hud--side-goal > .fc-hud__banner { top: 88px; }
+.fc-hud.fc-hud--compact .fc-hud--side-goal.fc-hud--boss-top > .fc-hud__under { top: 96px; }
+.fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal > .fc-hud__under, .fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal > .fc-hud__banner,
+.fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal.fc-hud--boss-top > .fc-hud__under { top: 108px; }
 .fc-hud--compact .fc-hud__banner { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
 .fc-hud--compact .fc-hud__banner-face { padding: var(--fc-space-2) var(--fc-space-5); }
 

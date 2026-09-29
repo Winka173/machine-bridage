@@ -9801,3 +9801,693 @@ touch: 32 of 32.
 balance.json (the sky_gunship row), Strings.cs (`note.sky_gunship`), GuideText.cs (`guide.sky_gunship`),
 EffectsDirector.cs (`ShowDamage`, `Dispose`), Lit.shader, build_assets.py and Docs/art/models.json (as always:
 `Tools/art/resolve_merge.py`), the card manifest.
+
+## 23H. In-battle dialogue: one subtitle line instead of the radio (2026-09-30)
+
+Prompt 23 H and F.1 (`Docs/prompts/prompt23_vi.txt`). Branch `feature/p23-dialogue` from lead 8e3af97. The mission
+event system (A-D) is built in parallel; it feeds this system through the contract below.
+
+### H.1: one system for every line
+
+**Decided.** Every character's line in a battle goes through one `DialogueDirector` (`Game/Match/Dialogue.cs`), owned
+by `MatchRunner` (`MatchRunner.Dialogue.cs`): the campaign's lines (`RadioDirector`: a mission's own lines, the usual
+ones, the general's reactions of prompt 22 D.4), the Radio events of every mode (a boss arriving, its tiers and escorts,
+naval events, the betrayal, a boss fleeing), a boss's general at a phase change, Command's report on a broken part,
+Recon's report on an elite, and the player's commander's first words (prompt 22 F.4). The old `RadioPanel` (portrait,
+frame, tap to skip) is gone; the portraits stay on the menu cards. The commander's win and loss words stay on the
+result card: they are said after the battle, not in it.
+
+**The texts are kept.** Older texts carry their speaker in the text (`Kessler: "…"`, `Command: …`, `Chỉ huy: …`);
+`DialogueText.Split` takes a known prefix off (and the quotes round the words) and uses it as the speaker, so the line
+reads `KESSLER: Stand still for me.` The speaker's name on the subtitle is one short name per character
+(`dialogue.name.<id>`: Command, Recon, Kade, Nadia, Mara, Hawk, Thorne, Wolff, Venn; the others their surname), so a
+character is not "Raven" in one line and "Wolff" in the next. 24 texts (20 keys) passed two lines at Large text on the
+narrowest screen and were shortened in the language that did (words cut, the meaning kept): Recon's elite report,
+Command's drone-hijack warning (Icarus), three of Kessler's Leviathan lines and his super-gun line, four part reports
+(main engine, CIWS, engine room, uplink) and ten mission lines. A broken part's report names the boss by its call sign (`Atlas`, not `Atlas · Super-Heavy
+Command Vehicle`), which is how the lines read anyway.
+
+**Priorities of today's lines** (`DialogueRules.PriorityOf`, `RadioDirector.PriorityOf`): the betrayal (`radio.betrayal`)
+is a story beat (0); a mission's own lines at the start, at a time, at a stage and at the end tell the mission's story
+(0); a boss's big-attack warnings (`radio.bigattack.*`, and any key with `.warn`) are warnings (1); a boss arriving, a
+phase, a tier, a broken part, an elite, naval events, a mission's lines on a capture or a loss, the usual lines and the
+commander's first words are event lines (2); the general's reactions are reactions (3). A Radio event's own priority
+wins.
+
+**Sides.** Command and Recon speak for us whatever the event's team. Varga, Orlov, Kessler, Aurel and Wolff are always
+the enemy; Brandt, Venn and Thorne are when they lead the mission's enemy (`MissionDef.General`) or the event is the
+enemy's (team 1): they change sides in the story. The player's commander is always ours, a general commander too.
+
+### The event system's contract
+
+- Game side: `MatchRunner.Say(key, priority, team, moment, unit, arg)` or `Say(DialogueLine)`; `MatchRunner.Dialogue`
+  is the director.
+- Sim side (no engine code needed): emit a `SimEventKind.Radio` event with `DefId` = the text key, `Team` = the side,
+  `Value` = priority + 1 (1 story, 2 warning, 3 event, 4 reaction; 0 lets the key decide), `Mount` = 1 to open a story
+  moment, `Entity` = the unit that speaks (optional). `DialogueRules.FromEvent` reads it; `RadioDirector` passes it on in
+  a campaign mission, `MatchRunner` in the other modes. A factory for it goes in `SimEvent.cs` with the event system
+  (that file is theirs).
+
+### H.2: the subtitle
+
+**Decided (`DialogueStrip`, `Screens.uss .fc-dialogue`).** One centred label just above the tray, in a box half the safe
+area wide (`left/right: 25%`), on a dim strip that hugs the text (`--fc-dialogue-strip`, rgba 8,10,12 at 62 %, 4 px
+corners, 4 x 12 px padding): no panel, no portrait, no border, no touch. Rich text: the name in capitals and bold in the
+side's colour, then the words in the main text colour. Side colours are new tokens: ours `--fc-dialogue-ally` #9ad4ff (a
+light blue, luminance about 0.6), theirs `--fc-dialogue-enemy` #ea6a55 (a darker red, about 0.25); colour-blind players
+get `--fc-dialogue-enemy-cb` #d9802a (a darker orange). The strip reads the colours from two hidden probe labels, so the
+stylesheet and the colour-blind class decide them. Type: `--fc-fs-dialogue`, the menus' body size of prompt 14 (24 px,
+13.2 pt; Large 29 px), not the HUD's smaller body (21 px); the HUD's own sizes are for labels read at a glance, a
+sentence needs the reading size.
+
+**Where.** Compact HUD: 12 px above the tray (`--hud-dialogue` 124 px from the bottom). While the selection strip is up
+it rises above it (`--hud-above-orders` 214 px), while the strike prompt is up above that (`--hud-above-prompt` 262 px).
+At Large text the full HUD's Large rules (a 196 px tray, the orders at 216 px) win over the compact ones, so the
+dialogue sits at 216, 320 and 320 px there. The top-edge notices end far above it. Full HUD (optional): above the tray;
+while its large selection panel is open the line moves beside it on the left (it may take a third line there, the one
+known limit), and above the strike prompt while aiming. It sits under the pause, result and choice overlays.
+
+**Two lines.** `DialogueLayoutTests.NoLineTakesMoreThanTwoLines` lays the HUD out on a real panel at 1280 x 720 (the
+narrowest the game supports: 16:9 and 4:3 are both 1280 panel px wide) and measures every in-battle line (every
+`radio.*` key but the briefing taunts, and the commanders' first words) in both languages, at Normal and Large text,
+with the longest boss call sign or elite name in its placeholder: none passes two lines. Long lines are shortened,
+never shrunk.
+
+### H.3-H.5: one line at a time
+
+**Decided (`DialogueDirector`).**
+- Story and warning lines queue, story first; a full queue (6) drops its newest warning, never a story line. A waiting
+  warning cuts an event or reaction line short once it has shown 1 s (a warning is time-bound; a story line waits for
+  the line on show to end). A warning that could not start within 12 s is stale and dropped.
+- Event and reaction lines are now or never: shown only when nothing is up or waiting and at least 9 s after the last
+  event or reaction line started; otherwise dropped, never queued until they no longer fit. In a boss battle (a boss on
+  the field) reactions wait 20 s. The campaign's own rationing (35 s for the usual lines, 25 s for reactions) stays on
+  top.
+- A line stays `1.75 + 0.05 x letters` seconds, 3 to 6 s (6 s from about 85 letters); it fades in and out in 0.25 s
+  (USS transition) and the next line starts after the fade. The clock is the runner's: real seconds that stop under
+  the pause and the result, so a line is read at the same pace in a story moment. Nothing waits for a tap.
+
+### H.6: the log
+
+The last 20 lines shown, oldest first in `DialogueDirector.Log`, newest first in the pause menu's **Dialogue log** (a
+secondary button under Main menu; `DialogueLogPanel` over the pause card, Back returns). Only from pause: nothing on
+the HUD opens it. Entries keep the key and value, so they read in the language on show. After a checkpoint resume the
+log starts empty: the replay behind the loading screen rebuilds the battle, not what was said.
+
+### H.7: the setting
+
+Settings, Game: **In-battle dialogue: Full / Important only / Off** (`MatchSettings.Dialogue`, `mb.dialogue`). Important
+only keeps story and warning lines; Off keeps story lines (always shown). Hidden lines are not logged. What the setting
+hides the notices still say: a boss's phase, a broken part and an elite each have their notice as well as their line.
+
+### H.8: story moments
+
+**Decided.** A line with `Moment` set slows the battle to 0.5x (eased in over 0.4 s, back over 0.6 s) while it and the
+story lines queued right after it play, three lines or 14 s at most (`DialogueDirector.TimeScale`). The hooks: by line,
+`DialogueRules.MomentKeys` (today the betrayal; the owner's other moments come with the event system's data), by event,
+`Mount` = 1 on the Radio event. **Sim-safe:** the runner applies it as Unity's time scale (the slower of it and a boss
+kill's cinematic), which only changes how many fixed 20 Hz steps run each real second (`SimClock.Advance`); the step
+length, the command journal and the checkpoint replay are untouched, so replays stay deterministic.
+
+### H.9: who is speaking
+
+`DialogueDirector.Speaker`, `IsSpeaking(speakerId)`, `IsSpeaking(EntityId)` and `SpeakingChanged(speaker, unit, on)`.
+F.5's name label on a general's vehicle asks `IsSpeaking(general)` (or the unit, when the event names it) and shows its
+small mark; no bubble on the unit.
+
+### H.10
+
+Text only: no voice and no radio sound. The capture and loss chimes (`SoundSynth.Radio`) are notices' sounds, not
+voices, and stay.
+
+### F.1: notices
+
+**Decided (`HudNotice`, `NoticeKind`, `BattleHud.Notice`).** The top-edge notice keeps prompt 11's compact form (a
+small field surface, one line, about 3 s) and now takes its icon from its kind: flag (captured, lost, objectives), jet
+(enemy aircraft), airstrike (air raid), barrage (enemy strike), reinforce, anchor (landing), skull (boss moments),
+elite, crosshair (parts), cloud (weather), crate, expand (play area), people (wave), coin (bounty), command (stance),
+check (a big attack broken), info otherwise. Alerts keep the red bar and icon and go straight up; others queue (4 at
+most, each up at least 1.2 s). `HudNotice.Direction` (a ground-plane unit vector, x east, y north) is carried for F.2's
+arrows and `BattleHud.NoticeShown` fires with every notice; nothing draws it yet. `Toast(...)` stays as the short form.
+New notice: `toast.elite` ("Enemy elite on the field: {card}").
+
+### Checks
+
+`DialogueTests` (the priorities, the drops and the gap, the log, the setting, a story moment, the event flags, the
+prefixes and sides) and `DialogueLayoutTests` (the two-line scan; the line above the tray, centred, clear of the
+notices, the selection strip and the strike prompt, at Normal and Large). The battle screens gain `hud-dialogue`
+(UiShots and the battle layout checks).
+
+## 23A. Mission events (A-D) (2026-09-30)
+
+Prompt 23 sections A-D: the event system, spawn points, reinforcements and the event groups, built as data and sim hooks.
+Section E (putting events into the campaign's missions), F.2-F.5 (arrows, the side-objective bar, the Accord mark, the
+generals' name labels) and H (the text dialogue, another agent's) come later or elsewhere; this pass leaves them what
+they need.
+
+### A. The library
+
+- **Where the data lives:** campaign.json's `eventLibrary` (`rules` and `events`), written by `Tools/campaign/events.py`
+  through `build_campaign.py`, read by `MissionDef.ListFromJson` (`EventLibrary`, `Content/EventDefs.cs`). It is one
+  file the game and the tests already load, so there is no new Resources file to keep in step.
+- **A mission names its events** in `missionEvents` (not `events`: a stage's `events` are already prompt 5's stage
+  events, and a stage inherits its mission's fields). Each entry is a library id or an object naming one with overrides.
+  The trigger, params, notices, lines and reward merge field by field, and `as` gives a second copy its own id (else it
+  becomes `id#2`). A staged mission's own events run over the whole operation (`OperationMode.Events`) and a stage's own
+  over that stage. A mission with an ally but no stages is its own single stage and runs its events there, once.
+- **An event** has a kind (18: C's two and one for each part of D), a trigger, params, a warning lead, a speaker and
+  priority, notice and line keys and a reward. The reward can be CP, a repair, coins, blueprints, an intel file, or a
+  column that joins the allies. The keys default by kind and moment: `event.<kind>[.<variant>].<moment>` and
+  `radio.<speaker>.ev.<kind>[.<variant>].<moment>`.
+- **Triggers** (A.1): a time, the mission's progress, the boss's health, the vehicles each side has on the field,
+  another event having happened (`after`), or the player being outnumbered (by combat value). Every condition given must
+  hold; `delay` counts from the first step they do; `every` and `times` repeat the event. An event that finds nothing to
+  do on its battlefield (no general, no target, no point) passes, logged as `skipped`.
+- **A.2's counts** (2-4 a mission, 5-8 an operation, 2-3 an interlude mission) are in `events.py`. The build checks them
+  once part E sets `COUNT_CHECK`. No mission plays events yet, so nothing in the campaign has changed.
+- **A.3, deterministic and journaled:** the events draw from their own `Random`, seeded from the battle's seed and a
+  stable hash of the mission id (never `string.GetHashCode`), and never from the world's. Their log (`Log`: step, event,
+  moment) and their state go into `SimWorld.StateHash`, with the blackout and the weather's sight. Prompt 5's checkpoint
+  (the same seed and the journal's commands) therefore brings back every event, whether warned or under way. The test
+  replays to step 700 with a wave, a general, a crate, the weather and a warned blackout in flight.
+- **A.4, the warnings:** the big events (waves, the general, a mini boss, a raid, a barrage, the blackout, the weather)
+  are warned by the C.3 table's seconds: Easy 15, Normal 10, Hard 8, Very Hard 6, and an air raid at most 6. The small
+  ones are announced as they happen. Enemy waves never come within 45 m of a player's vehicle (B.3). Each warning is a
+  sim `EventNotice` plus a line. The notice carries its key, where it happens, a unit direction and a bearing (front,
+  left, right, rear), the seconds, the priority, the kind for its icon, and whether it is bad news.
+- **Priorities and the dialogue (23H):** lines are `Radio` events in the form the dialogue reads
+  (`DialogueRules.FromEvent`). Value is the priority + 1 (priority 0 story, 1 warning, 2 event, 3 reaction; Value 0
+  lets the key decide), Mount 1 would open a story moment (none of these events do), and Entity is the speaking vehicle
+  (a general on the field). The notice is a sim event of its own, so the lead can map its direction to
+  `HudNotice.Direction`. For now `MatchRunner.MissionEvents.cs` shows it through the existing notice call, with its
+  countdown and direction in the words.
+
+### B. Spawn points
+
+- **Worked out at the battle's start, not written into the 96 map files** (`Navigation/SpawnPoints.cs`). Every
+  variant, a reversed map and the long battlefields have them without regenerating the maps. A map may add its own
+  (`spawns` in the map data); they are kept and swapped with a reversed map.
+- **Enemy points:**
+  - the open ground nearest the edge on 16 rays round the line from the player's camp to the enemy's (joined to the
+    battlefield's main region, off the no-parking lanes);
+  - the rail heads (a map's `rail` route, a fortress's arrival);
+  - the water: a sea's landing beaches, else the places where water props reach the edge (for boats);
+  - the landing zones: the enemy's drop zone, a fortress's forward drops, the objectives on the enemy's side;
+  - the transports' flight paths: in over a front or flank edge, with the drop 45 % of the way to the centre.
+  None is within 95 m of the player's camp.
+- **Allied points:** behind the player's camp, the drop zone, the objectives on the player's side.
+- **Bearings** (front is within 45 degrees of the axis, then left, right and rear) are what a wave's "directions" mean
+  and what a notice's direction says.
+- **B.3's fallback:** the spots 22 and 40 m either side of a point along the edge, then the other points of the same
+  side and bearing. A wave waits 3 s at a time, for at most 15 s, while every one has the player's units on it.
+- **Prompt 12's probe (one seed):** on all 72 battlefields (the Conquest, long and siege versions of the 24 maps), a
+  heavy hull from every ground point drives into the battle, watched by `StuckWatch`. The enemy's points and the
+  allies' run separately. None got stuck for 10 s or more. The first version ran both streams in one battle and they
+  jammed head-on in the middle, which is traffic, not a spawn problem. Goals spread 14-50 m apart keep parked probes off
+  each other's goals.
+
+### C. Reinforcements
+
+- **Enemy waves:**
+  - The size (the event's, times the table's `waveScale`) is split over 1-4 bearings by the table: the front first,
+    the flanks in either order, the rear only as a fourth.
+  - Each group comes in at the first of the general's ways in that its bearing has: Kessler the water, a rail head, a
+    landing zone, else the edge; Aurel drop pods or a flight path; Venn the edge or a flight path.
+  - The roster is the general's (Varga's armour, Orlov's guns, Kessler's mixed landing force, Venn's drones, Wolff's
+    aircraft, Thorne's turned Accord columns, Aurel's pods and drones), else a common one.
+  - On Very Hard every third vehicle is an elite. Otherwise the side's elite budget promotes them as for any wave.
+- **How they arrive:** over the edge, at a rail head or off the water, they drive in. At a landing zone or on a flight
+  path they come by parachute (the view's usual drop, `DeploymentQueued`). Pods fall under the pod warning. Aircraft come
+  in over the edge of their path. Each vehicle pushes on the mission's enemy goal for 40 s with its commander's hands
+  off, then belongs to the commander.
+- **Their own cap (C.4):** event vehicles carry `Vehicle.Reinforcement`, which keeps them out of the side's army value
+  and vehicle count. They have a cap of their own: 16 enemy and 10 allied alive at once, and a wave is cut to fit. The
+  caps are to be measured on a low-end phone in the testing phase.
+- **The Accord (C.2):**
+  - Allied waves are `Ally` and `Reinforcement` (`Vehicle.Accord`, F.4's mark) and follow the allied commander. The
+    session adds one when a mission has Accord waves or a rescue. They are never cards.
+  - Their strength is the table's share of the enemy wave they name, else of the mission's biggest: Easy 70 %, Normal
+    50 %, Hard 30 %, Very Hard 15 % and one wave a mission. Strength is prompt 13's measure: each vehicle's price times
+    its measured combat value per CP.
+  - The roster is filled biggest first up to the target (within half a vehicle). Chapter 12's Total Offensive sets
+    `share` to 1.
+- **Never with the underdog's drop:** a mission with Accord waves hands prompt 13's help for the side falling behind to
+  the next of them (`EconomySystem.UnderdogStandIn`). The income boost stays and the free drop does not come. Campaign
+  missions do not switch the underdog rules on today; the hook holds if one does.
+
+### D. The event groups
+
+- **D.1, fire support:**
+  - the enemy's barrage: three salvos over 18 m round the player's biggest group;
+  - its air raid: the quick modes' bomber run, now called by the enemy;
+  - counter-battery fire on a player's gun that has stood firing for 20 s (5 s warning, 45 s between);
+  - Hawk's air strike and the Accord's guns, on the enemy's biggest group clear of ours.
+- **D.2, the general on the field:**
+  - The general drives an elite of their card while the act plus the difficulty's step (Easy 0 to Very Hard 3) is
+    under 4, else a mini boss of their own from the catalog (never the mission's or a stage's boss). Two to five
+    escorts come with them by difficulty.
+  - While the general is on the field the enemy plays under their prompt 22 passive, set for the side and put back
+    when they leave. Units that arrived meanwhile keep the lines they got.
+  - At 30 % the general breaks off (untouchable, drives for the enemy's edge, gone 8 s later, with a line), unless it
+    is their last battle: the operation of their last chapter in the story's order (Varga 12, Orlov 11, Kessler 12,
+    Venn 5, Wolff 10, Thorne 9, Aurel 12), or an event that says `final`.
+  - The reward (15 CP and 100 coins in the library) is paid once they are gone, pushed back or killed.
+    `Vehicle.General` names the driver for F.5.
+- **D.3, side objectives** (optional and timed; the mission is never lost for them):
+  - intercept: the enemy's trucks with the files cross the map flank to flank; destroying them all in time pays, and
+    one getting out over the edge fails it;
+  - rescue: an allied column held on a flank with an enemy ring round it; once the ring is broken, the column joins
+    the Accord;
+  - protect: civilian trucks cross; enough getting through pays coins and blueprints.
+  `EventState` has the clock and count for F.3's bar.
+- **D.4, economy:** the neutral convoy's trucks are hostile to both sides and hold their fire; the side that last hit
+  a truck gets its CP, with the bounty notice. The loot crate is claimed as the battle events' crates are (two seconds
+  alone beside it), from the event's own list, so an Operations raid mutator's crates are not counted twice. The supply
+  raid goes for the player's CP supply station or depot, else the HQ, and passes a mission without a base.
+- **D.5-D.6:** the supply drop is the repair drop on the player's biggest group, and it rearms what stands under it.
+  Nadia's report reveals the area round the enemy's biggest unseen group for 8 s, like a UAV scan. The EW blackout (20 s)
+  takes away the side's radars, scans, counter-battery reveals, long-range air radar and lighthouse
+  (`SimWorld.BlackedOut`, and `BlackoutLeft` for the countdown); the minimap goes dark except for the camera's frame.
+- **D.7, the mini boss:** the one the event names, else the general's own (not the mission's boss), in over the front
+  edge and warned.
+- **D.8, a new plan:** in an operation it moves on to the stage it names, and the stage under way is not paid. In a
+  mission of one goal, the plan's fields become the goal (`MissionMode.ChangePlan`): objectives, targets and units are
+  set up again, the clock restarts, and `Replanned` resets the commanders. Its line is a story line by default.
+- **D.9, the weather:** the sim had no weather factors of its own (the weather belonged to the view; the only sim
+  numbers were the sea's sight and the story's team vision), so the event adds `SimWorld.WeatherSight`. Every spotter's
+  reach is multiplied by it. It moves from the mission's own weather (1) toward the new weather's share over the event's
+  20-30 s: Clear and Overcast 1, Rain 0.9, Snow 0.85, Storm 0.8, Sandstorm 0.75, Night 0.75, Fog 0.7. The view rolls the
+  new weather in over the same seconds (`Weather` takes the time; Low graphics keeps its thinner particles) and turns
+  night on. No terrain changes.
+
+### Hooks left
+
+- **Part E:** `events.add(mid, ...)` in the act files, and `COUNT_CHECK` for A.2. An interception's `reward.intel` names
+  its intel file: it is recorded in `MissionEventSystem.Earned`, and paying it into the dossier is E's job. The library
+  already has entries for the chapter set pieces (landing assault, rail reinforcements, drone swarm, drop pods, the
+  Total Offensive, the weathers).
+- **F.2:** `EventState.Arrows` (point, way in, bearing) while an event is warned, and the notice's `NoticeDirection` and
+  `NoticeBearing`.
+- **F.3:** a side objective's `SecondsLeft`, `Count` and `Needed`.
+- **F.4:** `Vehicle.Accord`.
+- **F.5:** `Vehicle.General`, and the speaking vehicle on a general's lines.
+- **The dialogue (H):** every line is a `Radio` event with its priority in Value; the blackout's countdown is
+  `BlackoutLeft`.
+
+### Starting points for the testing phase (5-seed sweeps, FPS on a low-end phone)
+
+- the C.3 table: directions, warnings, allied shares, wave scales, escorts, and the mini-boss threshold of 4;
+- the caps: 16 enemy and 10 allied;
+- the 45 m sight clearance and the 95 m camp clearance;
+- the 40 s push and the retreat at 30 %;
+- every library event's size, time and reward;
+- the counter-battery's 20 s, 5 s and 45 s;
+- the weather's sight shares;
+- the blackout's 20 s, and Nadia's 8 s and 30 m.
+
+### Tests
+
+New `Prompt23EventTests`, 22 tests:
+
+- one behaviour test per kind (18);
+- the table's warnings and allied shares at every difficulty;
+- the Accord wave standing in for the underdog's drop;
+- a journal replay bringing the events back;
+- every battlefield's spawn points, with the stuck probe;
+- the event texts in both languages.
+
+22 of 22 pass, in about two minutes (the probe takes 1:45).
+
+### Shared edits (merge by hand if they conflict)
+
+- Sim: SimEvent.cs (two kinds, the Radio factory), SimWorld.cs (the seed, the hash, visibility), MissionDef.cs,
+  MapDefinition.cs, MissionMode.cs, OperationMode.cs, EconomySystem.cs and EconomySystem.Assist.cs, StrikeSystem.cs.
+- Game: Strings.cs (the new table in Get, Has and Entries), MatchRunner.cs (two event cases, the weather shift, the
+  minimap), ModeSessions.cs (MissionSession), Weather.cs.
+- Data and tools: build_campaign.py, campaign.json.
+
+## 23F. Event HUD markers: direction arrows, the Accord's sign, generals' name labels, the side objective (2026-09-30)
+
+Prompt 23 F.2-F.5 (`Docs/prompts/prompt23_vi.txt`; F.1 is in 23H). Branch `feature/p23-hud` from lead c19fbc0, built
+beside the event system (23A-D, merged on the lead as 6511dc2 while this ran). Nothing here touches the simulation:
+every input is a HUD call, a view-side flag, or the game-side adapter below, which the lead fills from 23A's names.
+
+### The inputs (for the lead and the event system)
+
+- **`IEventHudSource`** (`Game/Match/EventHudSource.cs`), set on `MatchRunner.EventHudSource`, read four times a second:
+  `Accord(unit)` is 23A's `unit.Accord`; `General(unit)` is `unit.General`; `Arrows(list)` is `EventState.Arrows` (the
+  direction `-inward`, `At` the point, the warning's seconds left, the side); `SideObjectives(list)` is the running side
+  objectives from `EventState` (`SecondsLeft`, `Count`, `Needed`, the outcome, kept a moment after it ends so its
+  outcome is seen). With it set, the arrows come from it (their full warning time) and no longer from the notices.
+- Without it: `_hud.Toast(..., direction: d)` (23A's event notices already pass `e.NoticeDirection`) or
+  `BattleHud.Arrow(direction, seconds, enemy, at)`; `BattleHud.SideObjective(id, text, secondsLeft, count, needed,
+  announce)` and `SideObjectiveDone(id, success, announce)`; `MatchRunner.MarkAccord(unit)` and `MarkGeneral(unit, id)`.
+- **The Accord tag.** The simulation's allied-unit tag `Vehicle.Ally` already separates the allied AI's units from the
+  player's own, and 23A's `Vehicle.Accord` is `Reinforcement && Team == 0 && Ally`, so the Accord's reinforcements wear
+  the mark with no wiring. The view-side flag (`VehicleView.AccordMarked`, set through `MarkAccord` or the adapter) is
+  for reinforcements that stay ordinary units of ours.
+
+### F.2: where reinforcements come from
+
+**Decided (`DirectionArrows` in `Game/Hud/EventMarkers.cs`, `Minimap.DrawArrows`).** Each direction is two marks for as
+long as its warning runs: an arrowhead on the minimap at the map's edge on that side (at the point they come in when
+the event system knows it), pointing in, the way they come; and a small round indicator (40 px, the field surface, a
+2 px ring) at the screen's edge in that direction, its arrow pointing out towards them, the way to look. Red for the
+enemy's, sky blue for the Accord's. Up to four at once (C.3's hardest level warns from four sides); a second warning
+from within 20 degrees on the same side keeps the first one up longer instead of adding a fifth mark. They fade in
+over 0.2 s and out over the last 0.6 s, and beat gently for the first 2 s. The clock is the battle's (Unity's scaled
+time: it stops under the pause and slows in a story moment as the simulation does).
+
+- **The side.** From a notice: an alert (23A sends bad news with `error: e.Team == EnemyTeam`) is the enemy's; any other,
+  and `NoticeKind.Accord`, is ours. From the adapter: its own flag.
+- **How long.** A notice's arrow stays its seconds (at least 3 s); 23A's notices ask 3-4 s, not the warning time, which
+  is why the adapter reports the arrows with their seconds left (C.3: 15, 10, 8 or 6 s by difficulty).
+- **Where the indicator stands.** On the line from the screen's middle in the direction (the minimap's turn, so it
+  agrees with the minimap; from the view's middle to the point when the point is known), as far out as it can without
+  touching the HUD: the top strip's panels and the notices' place, the minimap and its tools, pause, the rail, the
+  selection strip, the tray and its supply chip, the hint and the strike prompt, the banner, and the dialogue line's
+  place two lines high whether a line shows or not (so nothing jumps when one starts). Blocked, it tries the edge a
+  little either side (up to 90 degrees, nearest first), then further in, then rings further in; its arrow always
+  points true. With nowhere clear it hides and the minimap's arrow says it alone (no layout the checks try does this).
+  The placement is worked out only when the HUD or the arrows change; each frame only moves five elements by
+  translate (no layout).
+
+### F.4: the Meridian Accord's sign
+
+**Decided (`VehicleView.Accord.cs`, `Minimap`, `TeamColors.Accord`).** An Accord unit on our side reads apart from the
+player's own in three places: its health bar fills sky blue (#6BC7FF, `TeamColors.Accord`; teal in the colour-blind
+palette, where ours is blue) instead of our green; the Accord's sign stands left of its bar, shown whether the bar is or
+not: a thick ring with its meridian through it on a dark square (the new `accord` icon's shape, from quads and one ring
+mesh, `MeshLibrary.BadgeRing`, so it batches like the other marks); and its minimap blip is sky blue in a thin ring.
+The player cannot select it (`SelectionController.Mine`): the allied AI commands it (C.2).
+- The prompt names the bar, the name or the ring: the bar and a sign beside it were chosen, since the player cannot
+  select these units (no ring) and a name over every reinforcement would crowd the field.
+- The allied commander's army (Thorne's, before the betrayal) and Mara's Behemoth are the Accord's allied AI too and
+  wear the sign; the betrayal rebuilds the turned units' views, so it comes off them.
+- A notice for the Accord's reinforcements can take `NoticeKind.Accord` (its icon is the sign) and its arrow is ours.
+
+### F.5 and H.9: an enemy general's name label
+
+**Decided (`GeneralTags` in `EventMarkers.cs`, `MatchRunner.EventHud.cs`).** Over an enemy unit a general drives: the
+general's short name (the dialogue's, in capitals: VARGA, KESSLER, WOLFF...) in the enemy speakers' red on the
+dialogue's dim strip, just above its health bar; while that general's line is on show (`DialogueDirector.IsSpeaking`
+of the general, or of the unit the line names) a small speaking mark (sound bars that beat) stands before the name. No
+bubble. Which units: a def with a general (`VehicleDef.General`: the generals' bosses and mini bosses), 23A's
+`Vehicle.General` through the adapter, or `MarkGeneral`. Only a unit the player can see gets a label, so a label never
+gives a hidden general away; four at most; hidden where it would touch the HUD's controls (it lies under them anyway).
+Found four times a second, placed every frame (a few labels).
+
+### F.3: the side objective
+
+**Decided (`BattleHud.SideObjective`, `MissionBar.ShowSide`).** One row under the mission's goal on the mission bar: a
+flag, what to do, how far along (2/5) and a clock in the accent colour, red in its last ten seconds; one line, never
+wrapped (the goals are short). While it shows, the notices under the strip start lower (compact 88 px, 96 with the boss
+bar in the row, 108 at Large text; full HUD 164 and 184 px) so the row never covers them. A notice when it starts
+("Side objective: ..."), and when it ends: complete (`toast.side.done`, the check icon) or failed at its time-out
+(`toast.side.failed`); either can be left out (`announce: false`) where 23A sends its own. One at a time: a new id takes
+the row. The simulation owns the outcome; the HUD's clock runs on the battle's time between the adapter's reports, and
+a clock that ran out with no word goes quietly after 5 s.
+
+### Checks
+
+`EventHudTests`: each marker shows on its input and goes when it ends (the arrows on the minimap and the edge, several
+at once and merged, each fading at its own warning's end; the Accord's sign and bar from the tag and from the flag,
+never on the enemy, and its blips; a general's label, its name and its speaking mark only while speaking; the side
+row, its count and clock, its notices, no second notice on an update). The layout check lays the HUD out at 1280 x 720
+(compact at Normal and Large, with and without the selection strip, with and without the boss bar in the top row; the full HUD at Normal and Large) with a two-line
+line up, a notice and the boss bar: indicators in all eight directions find a place and none overlaps the dialogue
+line, the notices, the mission or boss bar, the tray or its chip; the side row is one line and clear of the notices; a
+label over any of them is hidden. The battle screens gain `hud-events` (the UiShots battle set, vi at the four shapes
+and en at 16:9, and `UiLayoutTests.EveryBattleScreenPassesEveryCheck`).
+
+### Lead note at the merge (the adapter)
+
+`MissionEventHud` (Game/Match) fills `IEventHudSource` from 23A: the Accord mark and the general's label from
+`Vehicle.Accord` and `Vehicle.General`; an arrow for each direction of a warned event (`EventState.Arrows`, pointing
+`-inward`) until it starts, red for everything but an Accord wave; the side-objective row from each side objective's
+clock and count, done and failed from its phase. The runner sets it once a mission has events. The row does not announce
+(`announce: false`): 23A already sends the start, done and fail notices and lines. The row's short texts are new
+`event.sideObjective.<type>.row` keys. Untested beyond compiling and the HUD tests; the testing phase plays one mission
+with each event and looks at the markers.
+
+## 23E. Events in the campaign (2026-09-30)
+
+Prompt 23 E (putting the events into every mission), H.8 (the story moments) and the hook 23A left (an interception's
+intel file). Branch `feature/p23-campaign` from lead 6511dc2. The HUD markers (F.2-F.5) are another agent's.
+
+### E.1: every mission's events
+
+**Where.** `Tools/campaign/act10.py` writes them chapter by chapter with `events.add(mid, ...)` and a new
+`events.add_stage(mid, stage, ...)` for a stage of a staged mission. The new library entries are in `events.py`.
+campaign.json is rebuilt from the scripts. The new words are in `CampaignText.cs`, added by hand in their sorted place:
+a regeneration would also have put back five lines someone had edited by hand, so none of the existing lines was touched.
+The words are registered in act10.py as well, so a later build writes the same text.
+
+**How many.** 534 events over all 193 missions. E.1 says every mission, so side missions have events too, and they count as
+ordinary missions (2 each). Most main missions have 3. Short or simple ones (Recon, a boss fight, the first missions of a
+chapter) have 2. The chapter operations have 6, and c10m10 has 7. Each interlude mission has 2-3. The count check is on
+(`COUNT_CHECK`).
+
+**Operations.** Events go on the first stage and on the stages after the choice, never on the two stages the player
+chooses between, so every play meets them. The check counts what one play meets (the larger of the two alternatives, should
+one ever get events). An operation has one weather shift at most, because the operation's event system and each stage's
+track their own weather.
+
+**The signature events** (checked by the build, `events.SIGNATURES`):
+
+| Chapter | Signature | Where |
+|---|---|---|
+| 1 Coast of Fire | the enemy's landing craft from the sea; the Accord's second landing wave | c1m01, c1m02; c1m01, c1m10 (the counterattack) |
+| 2 Black Gold | neutral oil convoys; Thorne's first support | c2m01, c2m04, c2m10, c2m11; c2m06 (then c2m08, c2m11) |
+| 3 The Long Winter | Orlov's massed barrage; snowstorms | most of the chapter |
+| 4 Iron Harbor | landing ships; Kessler's trains; the families' column to the ferries | ironport and Beacon Bay; rustyard; c4m18 |
+| 5 Burning Canopy | drone swarms from several directions; Venn's electronic storm | most of the chapter |
+| 6 Counterstrike | counterattacks from every direction; the Hollow Dam's ceasefire; Brandt's line | c6m01, c6m11, c6m15, c6m10; c6m14; five missions |
+| 7 Veyra | Thorne's turned columns; the city's militia | c7m10 (the betrayal stage); 15 missions |
+| 8 Underworld | Tartarus surfacing; the held miners | c8m02, c8m11; c8m13 |
+| 9 Rough Water | landings from the sea; sea fog | most of the chapter |
+| 10 War in the Sky | Raven's raids again and again; Hawk's strikes; nightfall | most of the chapter |
+| 11 Skygate | drop pods from orbit; the satellite's test rod | most of the chapter; c11m04, c11m06, c11m13, c11m10 |
+| 12 Helion | reinforcements from every direction; the Total Offensive | six missions; c12m10 |
+| II | Locust's hunting packs from several sides | every mission |
+| III | Morrigan hunting Hawk; nightfall | i3m04 (and Raven flying it in i3m03); i3m02, i3m04 |
+
+**New kinds.** There are two, and the library now has 20 kinds and 53 entries.
+
+- **Ceasefire** (`ceasefire`, the Hollow Dam, c6m14, from 3 s):
+  - The general's sworn column (4 of Varga's vehicles) comes in at an edge on the enemy's front. It holds its fire, and
+    neither commander moves it.
+  - It carries `Vehicle.Truce`, and `CombatSystem.IsValidAutoTarget` skips such vehicles. No weapon of ours picks it on
+    its own, not even a tower beside it. An ordered attack still can, and a strike on it counts too.
+  - Whoever fires first loses their reward:
+    - We hit the column first: the enemy is paid (20 CP) and ours is lost.
+    - The column fires first (`breakAt`; nothing in the campaign uses it): ours is paid at once and theirs is lost.
+    - The clock runs out (150 s) with no shot fired: both sides are paid (20 CP and 150 coins for us, 20 CP for them), and
+      the column is let go against us.
+  - Drones sent by Aurel still attack during the ceasefire; the story's line at 45 s says they are not Varga's. The event
+    is a story event (priority 0), so its lines queue in the story moment.
+- **OrbitalStrike** (`test_rod`, chapter 11):
+  - It uses prompt 18's big-attack rules at a small size.
+  - It aims at the player's biggest group when it is warned. The warning is the C.3 table's notice and Nadia's warning
+    line, then a ring on the ground for the rod's 4 s fall (the Silver Bug rods' warning).
+  - The rod is a kinetic penetrator from above: 900 damage, penetration 4 on the roof, a 6 m radius falling off to the rim.
+    It hits every side but the enemy's. The Silver Bug's rods are five of 1600.
+
+**New options on existing kinds.**
+
+- **Any event** can take `general`, which names the general it is about. The general's roster, the way they come in, and
+  who speaks for the enemy then follow that general, not the mission's. This is how Brandt comes out in chapter 1, Thorne
+  turns in chapter 7, and Orlov takes the field at Skygate.
+- **AllyWave** takes several new options:
+  - `count`: a fixed squad.
+  - `scatter`: any allied point at random.
+  - `line`: towers raised in a row 16 m in front of the player's biggest group, facing the enemy. They come down as a
+    dropped tower does and stand where they land.
+  - `cap` and `max`: a cap of its own.
+  - `rosters`: groups, each coming in at its own allied point. The strength is shared by the groups that are filled to it,
+    and a group of one names one unit.
+- **MiniBoss** takes `surface`, which brings the boss up out of the ground between the player's biggest group and the
+  enemy's camp. The spot is on open ground, out of the player's close sight, and under a ring for the whole warning.
+- **SideObjective**: a rescue takes `column` for the vehicles it holds, apart from the besiegers' roster.
+
+**The set pieces.**
+
+- *Veyra's militia* (`militia`):
+  - Two vehicles at a time (rocket and ZU-23 technicals, jeeps, armoured cars) from anywhere on our side of the city.
+  - They come every 75 s, four times. Very Hard keeps its one allied wave a mission.
+- *Brandt's line* (`brandt_line`): two gun turrets, a machine-gun bunker and an AA turret, in five missions of chapter 6.
+- *Tartarus* surfaces in c8m02 and c8m11. It is hunted down as the boss of c8m05, and after that it never surfaces again.
+- *Thorne's turn* (c7m10's betrayal stage):
+  - At 25 s his columns come at us under the enemy's flag (his roster and ways in).
+  - At 40 % of the stage Thorne takes the field in the elite of his card, carrying his passive. He breaks off at 30 %
+    ("Not here. Not yet.").
+  - The stage's own lines and the betrayal were already there.
+- *The Total Offensive* (c12m10, the Varga stage):
+  - The enemy's wave from every side is warned 1 s into the stage and lands after the table's warning (10 s on Normal).
+    Three seconds later every old ally comes at once: Brandt's armour, Venn's drones, Hawk's air wing and Mara's
+    Behemoth, each group from its own allied point.
+  - Its strength is set to all of that wave's (share 1). This is the one time allied reinforcements match the enemy's.
+  - It has the enemy's cap (16 alive) and takes the place of the one wave Very Hard allows.
+  - The C.3 table's allied shares do not apply to it.
+  - Mara's line at the stage's start ("Matilda is in the fight") comes a few seconds before her Behemoth arrives.
+  - The first version sent the Offensive 4 s into the stage and the enemy's wave at 20 s. In the one-seed smoke run the
+    auto commanders reached the Varga stage within the first 190 s of the operation, and Behemoth Mk.2 fell before the
+    enemy's wave had come, so the enemy's wave now comes first.
+
+**The story choices (prompt 22 D.5).**
+
+- The families' column to the ferries (`ferries`, a protect objective) is in the harbour option (c4m18).
+- In the pursuit option (c4m17), Kessler takes the field instead.
+- The held miners (`miners_held`, a rescue whose column joins the Accord's reinforcements) are in the rescue option
+  (c8m13).
+- The build checks that each of these stays in its option (`CHOICE_EVENTS`).
+
+**D.8, once.** D.8 asks for plan changes to be rare. The operations' stages already carry the story's turns, so the
+campaign has one mission event plan change. It comes in c4m14, as the chapter's choice comes up: at 60 % Kade sends the
+brigade after the rail yard (Capture `town`), because Kessler is running for the harbour.
+
+**Interceptions.** Thirteen missions intercept a convoy of files, and each convoy carries one of prompt 22's intel files:
+
+| Mission | Intel file |
+|---|---|
+| c1m08 | Brandt's inspection report |
+| c2m04 | Varga's order of the day |
+| c3m06 | Orlov's firing tables |
+| i1m01 | Mara's initials |
+| c4m12 | Kessler's balance sheet |
+| c5m11 | Venn's notes |
+| c6m16 | Aurel's report to the board |
+| c7m02 | the letters from Veyra |
+| c8m12 | Thorne's letter |
+| c9m11 | Kessler's last timetable |
+| c10m02 | the Icarus Mk.0 report |
+| c11m02 | Aurel's memo |
+| c12m06 | the last letter |
+
+### E.2: the general on the field
+
+| Chapter | Mission | Form |
+|---|---|---|
+| 1 | c1m08 (Brandt) | elite; breaks off |
+| 2 | c2m04 (Varga shows himself at Dunebreak) | elite; breaks off |
+| 3 | c3m09 (Orlov) | elite; breaks off |
+| I | i1m04 (Varga) | elite; breaks off |
+| 4 | c4m09 (Kessler), and c4m17 in the pursuit option | by rule; breaks off |
+| 5 | c5m09 (Venn) | by rule; breaks off |
+| 6 | c6m06 (Varga at the dam) | by rule; breaks off |
+| 7 | c7m10 (Thorne, turned) | elite; breaks off |
+| 8 | c8m03 (Thorne) | by rule; breaks off |
+| 9 | c9m06 (Thorne) | by rule; breaks off |
+| III | i3m03 (Raven) | in Morrigan; breaks off ("Raven lets him go, this time") |
+| 10 | c10m09 (Raven) | elite jet, since Morrigan fell in c10m12; breaks off |
+| 11 | c11m03 (Orlov) | by rule; breaks off before his last battle (c11m05) |
+| 12 | c12m03 (Varga) | by rule; breaks off; his fall is c12m10's |
+
+- *By rule* is D.2's rule: an elite while act + the difficulty's step is under 4, else a mini boss of the general's own.
+- A general never breaks off in their last battle, which is the last chapter's operation. None of the missions above is one.
+- Interlude II has none: the story names no general for it (the Locusts hunt on their own).
+- Brandt has a row in the rules now: his garrison's roster, the elite of the main battle tank, and chapter 1's operation as
+  his last battle.
+- Raven's row names Morrigan as his mini boss.
+- The build checks a general on the field in every chapter that has one, in a mission every play meets. A story choice's
+  option does not count.
+- A general's lines come from the event's general. When that is not the mission's general, the general still speaks for
+  the enemy (`MissionEventSystem.Line`).
+
+### E.3: no two in a row
+
+**Decided.** An event set is the sorted list of library ids a mission names, its own and all of its stages'. No two
+missions next to each other in the order of play have the same set. This includes the two options of a choice, and a side
+mission and the mission it follows. The build checks it (`events.check`), and so does the test.
+
+### The other build checks
+
+Each event must be able to happen where it is put:
+
+- a general for a GeneralField;
+- a mini boss or a general for a MiniBoss, and never the mission's own boss;
+- a base the player has for a supply raid;
+- the electronic storm only in Venn's and Aurel's missions (D.6);
+- a weather shift only to a weather the battlefield can show and that differs from the mission's own;
+- every roster, column and boss a real vehicle.
+
+### H.8: six story moments
+
+`DialogueRules.MomentKeys` (by line) and `StoryKeys` (so the lines after the moment's first line queue in it as story
+lines):
+
+1. **The Hollow Dam** (c6m14, at the start): Varga's word, Kade's answer (moved from 8 s to 2 s so it is in the moment),
+   and Kade calling the ceasefire.
+2. **Venn loses her swarm** (c5m10, the swarm stage): "Aurel has taken the swarm from me", then Kade's new answer.
+3. **Thorne's betrayal** (c7m10): Nadia's warning, the betrayal and Thorne's first words.
+4. **Thorne on Typhon's bridge** (c9m10, the Typhon stage): "Typhon, surface. Fire everything.", then Nadia's new line.
+5. **Varga falls** (c12m10, the end of the Varga stage): "Well fought, Colonel. Look after my machines.", then the
+   countdown.
+6. **Icarus falls** (c12m10, the Silver Bug's crash): Aurel's crash line, then his "down" line.
+
+The ends of battles were left out: the result card covers them.
+
+### The intel hook (prompt 22 D.7)
+
+1. An interception's `reward.intel` lands in `MissionEventSystem.Earned`.
+2. `MissionSession.EventRewards` puts it in `MatchReward.Intel`. This happens won or lost, because the files were taken
+   either way.
+3. `MatchReward.Claim` records it (`PlayerProfile.RecoverIntel`, a new list `intelFiles` in the save).
+4. `Narrative.Found` counts a recovered file as found, whatever its own way of being found.
+5. The result card lists it with the mission's own files (`Narrative.FoundBy(reward, won)`, each file once).
+6. The dossier's Intel tab shows it as recovered. Its locked hint is unchanged: that is a UI text.
+
+### Found, not changed (for the F agent)
+
+`MatchRunner.MissionEvents.NoticeKindOf` switches on `enemy`, `ally`, `air`... but the keys' group is the kind's full name
+(`enemyWave`, `allyWave`, `airRaid`...). So every event notice gets the Info icon. The notice's own `Kind` (the sim event)
+is the better source.
+
+### For the testing phase (five seeds, a low-end phone)
+
+- **Winnable on Normal:** every mission with its new events, the chapter 6 missions with Brandt's line and the
+  all-directions waves (size 9) first among them, and the weather-shift missions (A.5, D.9).
+- **Difficulty before and after the events, mission by mission (G):** the 534 events are starting points.
+- **c12m10's Varga stage** is the heaviest battle: the Total Offensive (up to 16 allied) against the all-directions wave
+  (12, and 16 on the cap) plus Behemoth Mk.2 and the stage's own units. Measure FPS and tick time on a low-end phone, and
+  the C.4 caps (16 enemy, and 16 allied for this wave only). Measure how long the stage lasts too: in the one-seed smoke
+  run the auto commanders were past it and into the countdown 250 s into the operation.
+- **c6m14:** how often the player's side breaks the ceasefire by accident (strikes, ordered attacks), and the column's
+  weight after noon (4 vehicles).
+- **The test rod:** 900 damage and 6 m, and its 4 s ring after the lead.
+- **The militia:** squad size 2, every 75 s, four times.
+- **Tartarus surfacing:** at 45 % progress; check the spot is never in the player's close sight.
+- **c4m14's plan change:** whether it stays winnable.
+- **The ceasefire's CP and coins, and the interceptions' coins.**
+
+### Tests
+
+New `Prompt23CampaignEventTests`, 4 tests:
+
+- **The build's rules:** A.2's counts, the signatures, E.2, E.3, and every kind played somewhere.
+- **The ceasefire:** kept (nothing of ours fires on the column unordered, both sides are paid, the column is let go), broken
+  by an ordered attack, and broken by the enemy.
+- **The intel file:** the event, the reward, the claim, the dossier, shown once.
+- **One seed of three missions** with the auto commanders:
+  - c2m01: the oil convoy, Varga's wave, the sandstorm.
+  - c6m14: the ceasefire called and over by noon.
+  - c12m10: its first stage's and its own events; then the Varga stage (reached by the battle, or moved on to when it
+    has not been), with the Total Offensive and Mara's Behemoth against the enemy's wave from every side, at least 60 %
+    of its strength.
+
+Results: 4 of 4 pass. `Prompt23EventTests` (21 of its 22, without the 1:45 spawn probe) and `DialogueTests` (5) were run
+too, and all pass. No five-seed sweeps and no FPS runs.
+
+### Shared edits (merge by hand if they conflict)
+
+- **Sim:**
+  - `EventDefs.cs`: the two kinds, and Brandt's and Raven's rows.
+  - `MissionEvents.cs` and `MissionEvents.Kinds.cs`.
+  - `Vehicle.cs` (`Truce`) and `CombatSystem.cs` (one condition in `IsValidAutoTarget`).
+- **Game:**
+  - `Dialogue.cs` (`MomentKeys`, `StoryKeys`).
+  - `MatchRunner.cs` (one line: the result card's intel files).
+  - `ModeSessions.cs` (`EventRewards`).
+  - `Rewards.cs`, `Narrative.cs`, `PlayerProfile.cs` and `PlayerProfile.Story.cs`.
+  - `CampaignText.cs`: 62 keys added.
+- **Data and tools:** `build_campaign.py`, `events.py`, `act10.py` (new) and `campaign.json`.

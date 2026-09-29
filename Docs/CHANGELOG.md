@@ -7,6 +7,99 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.31.0: Prompt 23 (mission events and in-battle text dialogue) and the 264-page design review
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.30.0 (newest first): the design review PDF (264 pages, new 7c on events and
+dialogue); f585c2b prompt 23 E (events in all 193 missions); 0117138 the event HUD adapter; df75776 prompt 23 F (arrows, side
+objectives, Accord mark, general labels); 6511dc2 prompt 23 A-D (event library, spawn points, reinforcements, event groups);
+c19fbc0 prompt 23 H (text dialogue, compact notices). Balance of the events (5-seed campaign runs, FPS) waits for the testing
+phase; DECISIONS 23A and 23E list what it must measure.
+
+
+### Prompt 23 F: event HUD markers (DECISIONS 23F)
+
+- Reinforcements show where they come from for as long as their warning runs: an arrow at that side of the minimap and a
+  small round indicator at the screen's edge pointing towards them (red: the enemy's; sky blue: the Meridian Accord's),
+  up to four at once, kept clear of the notices, the dialogue line and the card tray.
+- The Accord's reinforcements (and the other allied-AI units) read apart from the player's own: a sky-blue health bar
+  with the Accord's sign beside it (teal for colour-blind players), sky-blue ringed blips on the minimap; the player
+  cannot select them.
+- An enemy general's vehicle on the field has a small name label (VARGA, KESSLER...) above it, with a small speaking mark
+  while that general's line is on show. No speech bubbles.
+- A side objective has its own row on the mission bar (what to do, 2/5, a clock that turns red in the last ten seconds)
+  and a short notice when it starts, is completed or fails.
+### Prompt 23 E: events in the campaign (DECISIONS 23E)
+
+- Every campaign mission now plays mission events, side missions included (534 in all): 2-4 in a mission, 5-8 in a
+  chapter's operation, 2-3 in an interlude. Each chapter has its own:
+  - Chapters 1-4: landing craft striking back from the sea and the Accord's second landing wave; oil convoys and
+    Thorne's first support; Orlov's massed guns and snowstorms; landing ships, Kessler's trains and the families' ferries.
+  - Chapters 5-8: drone swarms and Venn's electronic storms; counterattacks from every side, Brandt's lines of towers and
+    the Hollow Dam's ceasefire; Veyra's militia and Thorne's turned columns; Tartarus surfacing and the held miners.
+  - Chapters 9-12: landings and sea fog; Raven's raids again and again, Hawk's strikes and nightfall; drop pods and the
+    satellite's test rod; reinforcements from every side and the Total Offensive.
+  - Interlude II: Locust's hunting packs. Interlude III: Morrigan hunting Hawk.
+- The Hollow Dam's ceasefire: Varga's column holds its fire until noon and nothing of ours shoots it unless ordered to.
+  Whoever fires first loses the reward.
+- Chapter 12's Total Offensive: Brandt's armour, Venn's drones, Hawk's air wing and Mara's Behemoth come in at once, as
+  strong as the enemy's wave from every side.
+- The satellite's test rod follows the big-attack rules at a small size: a warning, a ring on the ground, a kinetic hit
+  from above.
+- The ferries and the held miners come in the option of their chapter's story choice that has them.
+- Every chapter with an enemy general has the general take the field in one of its missions (Brandt in chapter 1, Thorne
+  when he turns in Veyra, Raven in Morrigan in interlude III).
+- No two missions in a row play the same events. The campaign build checks this, the counts and each chapter's set pieces.
+- Six story moments slow the battle while their lines play: Varga's word at the Hollow Dam, Venn losing her swarm,
+  Thorne's betrayal, Thorne on Typhon's bridge, Varga's fall and Icarus falling.
+- An intercepted convoy of files now recovers one of the dossier's intel files, won or lost; the result card lists it.
+
+### Prompt 23 H: in-battle dialogue (DECISIONS 23H)
+
+- Every line a character says in battle is now one subtitle just above the card tray: the speaker's short name in bold
+  (ours light blue, the enemy's darker red), then the words, on a dim strip that hugs the text, at most half the screen
+  wide and two lines. The radio panel with its portrait and frame is gone.
+- One line at a time: story lines and warnings wait their turn (a warning cuts chatter short), other lines show only
+  when the strip is free and at least 9 s after the last (20 s for a general's reactions in a boss battle). A line stays
+  3-6 s by its length and fades; nothing waits for a tap.
+- Pause has a Dialogue log with the battle's last 20 lines. Settings, Game: In-battle dialogue (Full, Important only,
+  Off); story lines always show.
+- Story moments slow the battle to half speed while their lines play (the betrayal today; replays are unaffected).
+- Notices at the top edge have an icon by kind (a point, an air raid, a strike, a boss, an elite, the weather...) and
+  queue one after another; an elite's arrival has a short notice of its own.
+- Twenty lines that ran past two lines at Large text were shortened.
+### Prompt 23 A-D: mission events, spawn points, reinforcements and the event groups (DECISIONS 23A)
+
+- Mission events are data: a library in campaign.json (`eventLibrary`, built from `Tools/campaign/events.py`) with 18
+  kinds. Each event has a trigger (a time, the mission's progress, the boss's health, the units on the field, another
+  event, the player being outnumbered), a warning, lines and a reward. Missions list theirs in `missionEvents`; part E
+  fills the campaign. Events follow the battle's seed and are part of its fingerprint, so a checkpoint's replay brings
+  them back.
+- Every battlefield has spawn points, worked out from the map. The enemy gets its edges in every direction, rail heads,
+  water landings, landing zones and transport drop points; the allies get the area behind the player, the drop zone and
+  the outposts. Nothing spawns within 45 m of the player's units: another point in the same direction is used instead.
+  Prompt 12's stuck probe from every point on all 72 battlefields found nothing stuck.
+- Reinforcements:
+  - Enemy waves come from 1-4 directions by difficulty, warned 15/10/8/6 s ahead. The mission's general decides what
+    comes: Varga's tanks, Orlov's guns, Kessler's landings and trains, Venn's drones, Wolff's aircraft, Thorne's turned
+    columns, Aurel's drop pods.
+  - Meridian Accord waves come under the allied AI, worth 70/50/30/15 % of an enemy wave's combat value by difficulty.
+    They replace the losing side's free drop and never come on top of it.
+  - Reinforcements have their own cap, outside the army cap.
+- The event groups:
+  - fire support: enemy barrages, air raids and counter-battery fire; Hawk's air strikes and Accord artillery;
+  - the enemy general on the field, in an elite or their own mini boss and with their passive, breaking off at 30 %
+    unless it is their last battle;
+  - timed side objectives: intercept, rescue, protect;
+  - economy: a neutral supply convoy, loot crates, raids on the player's supplies;
+  - logistics and intelligence: supply drops, Nadia's reports, and the EW blackout with its countdown (radar and
+    minimap dark);
+  - a mid-battle mini boss, and Kade's change of plan;
+  - the weather or night turning over 20-30 s, with sight following it.
+- Every notice and line has English and Vietnamese text (`EventText`). Lines go to the in-battle dialogue with their
+  priority.
+
 ## v0.30.0: Prompts 19-22 (the Silver Bug as an orbital spacecraft; twelve chapters in four acts, boss templates, Boss Hunt; the Sandbox and bilingual text; the story rewrite, Commanders, narrative mechanics, new maps and bosses), play-tests 4-8, the boss and mode balance, and the 261-page design review
 
 2026-09-30 · merged into main

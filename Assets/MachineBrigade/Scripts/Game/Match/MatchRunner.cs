@@ -257,10 +257,11 @@ namespace MachineBrigade.Game.Match
             if (!_menu && kind != GameModeKind.Sandbox) ApplyRankDiscounts(catalog, mission != null);
             // Prompt 21 A.2: nothing in the Sandbox counts towards today's challenges.
             DailyMissions.Suspended = kind == GameModeKind.Sandbox && !_menu;
+            StartDialogue();
             if (!_menu && _session is MissionSession storySession)
             {
                 _radio = new RadioDirector(storySession.Def, seed);
-                _radio.Spoke += line => _hud?.Radio(line);
+                _radio.Spoke += line => Say(line.Key, line.Priority, line.Team, line.Moment, line.Unit, speaker: line.Speaker);
                 _radio.GeneralAppeared += general =>
                 {
                     // A general's first words: the camera goes to their camp for a moment.
@@ -463,11 +464,12 @@ namespace MachineBrigade.Game.Match
                 if (isActiveAndEnabled) _gestures.Enable();
             }
             Wire();
-            // Prompt 22 F.4: the commander's face beside pause, and its first words on the radio.
+            WireDialogue();
+            // Prompt 22 F.4: the commander's face beside pause, and its first words (prompt 23 H: an event line, on our side).
             if (!_menu && _playerCommander != null && _hud != null)
             {
                 _hud.ShowCommanderBadge(_playerCommander);
-                if (!_resumed) _hud.Radio(new RadioLine(_playerCommander.Portrait, "cmdr." + _playerCommander.Id + ".radio.start"));
+                if (!_resumed) Say(new DialogueLine("cmdr." + _playerCommander.Id + ".radio.start", DialoguePriority.Event, _playerCommander.Portrait, enemy: false));
             }
 
             DispatchEvents();
@@ -514,16 +516,22 @@ namespace MachineBrigade.Game.Match
             var random = new System.Random((int)_world.Tick);
             for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
             if (next == _weatherKind) return;
-            // The new weather rolls in over a few seconds while the old one thins out (see Weather).
+            ShiftWeatherTo(next, 0f);
+            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f, kind: NoticeKind.Weather);
+        }
+
+        /// <summary>The new weather rolls in over <paramref name="seconds"/> (0: the usual few) while the old one thins out (see Weather).</summary>
+        private void ShiftWeatherTo(WeatherKind next, float seconds)
+        {
+            if (next == _weatherKind || _weather == null) return;
             _leavingWeather?.Dispose();
             _leavingWeather = _weather;
             _weatherKind = next;
             var theme = MapTheme.For(_world.Map.Theme);
-            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather, seconds);
             _effects.Night = next == WeatherKind.Night;
             _session.SetNight(next == WeatherKind.Night);
             _fortress?.SetNight(next == WeatherKind.Night);
-            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
         /// <summary>Vehicles that can appear this battle: both decks (and their elite versions), units on the
@@ -691,7 +699,8 @@ namespace MachineBrigade.Game.Match
                 !(Mouse.current?.leftButton.isPressed ?? false) ? 2 : 1;
 
             // A cinematic moment slows the whole battle (sim, particles) for a second.
-            if (!_paused && !_resultShown) Time.timeScale = _cinematics.TimeScale(Time.unscaledTime);
+            // Prompt 23 H.8: a story moment slows it too (the slower of the two wins).
+            if (!_paused && !_resultShown) Time.timeScale = Mathf.Min(_cinematics.TimeScale(Time.unscaledTime), DialogueTimeScale);
             _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
             var steps = _paused || _lobbyCovered ? 0 : _sandbox != null ? _sandbox.Steps(Time.deltaTime, _clock) : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
@@ -736,6 +745,7 @@ namespace MachineBrigade.Game.Match
             else if (_camera.Held) _camera.ReturnHeld(Time.unscaledDeltaTime);
             else if (_sandbox == null) FollowTheFight();
             if (_radio != null && _session is MissionSession radioSession && !_paused) _radio.Tick(_world, radioSession);
+            TickDialogue();
             _selection.Tick();
             _sandbox?.Tick(Time.unscaledDeltaTime);
             _perf?.Begin();
@@ -784,6 +794,8 @@ namespace MachineBrigade.Game.Match
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            // Prompt 23 F.4 and F.5: the Accord's marks and the generals' name labels (MatchRunner.EventHud.cs).
+            TickEventHud();
             // Prompt 16: ships' wakes (and a ship that got away, hidden).
             if (_world.Map.Sea != null)
             {
@@ -1094,7 +1106,7 @@ namespace MachineBrigade.Game.Match
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
                         {
                             _warnedAir = true;
-                            _hud.Toast(Strings.Get("toast.airDefence"), error: true, seconds: 3f);
+                            _hud.Toast(Strings.Get("toast.airDefence"), error: true, seconds: 3f, kind: NoticeKind.Air);
                         }
                         break;
                     case SimEventKind.VehicleDestroyed:
@@ -1121,8 +1133,11 @@ namespace MachineBrigade.Game.Match
                             // The boss transforms: the camera goes to it, its general speaks.
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(160, 255);
-                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", ("card", Strings.Card(phased.Def.Id)), ("phase", (int)e.Value)),
-                                error: true, seconds: 5f);
+                            var spoken = e.DefId != null && e.DefId.StartsWith("radio.", System.StringComparison.Ordinal);
+                            if (spoken) Say(e.DefId, DialoguePriority.Event, phased.Team);
+                            _hud.Toast(e.DefId != null && !spoken ? Strings.Get(e.DefId)
+                                    : Strings.Format("toast.bossPhase", ("card", Strings.Card(phased.Def.Id)), ("phase", (int)e.Value)),
+                                error: true, seconds: spoken ? 3f : 5f, kind: NoticeKind.Boss);
                         }
                         // Its new form: drawn again with the phase's model.
                         else if (phased.Form != null) _views.Rebuild(phased);
@@ -1135,22 +1150,29 @@ namespace MachineBrigade.Game.Match
                         PartRepairedToast(e);
                         break;
                     case SimEventKind.Burrowing when !_menu:
-                        if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f);
+                        if (e.Value < 0.5f) _hud.Toast(Strings.Get("toast.burrow"), error: true, seconds: 3f, kind: NoticeKind.Boss);
                         else if (e.Value < 1.5f && _world.TryGetVehicle(e.Entity, out var borer) && borer.Def.Burrow is { } bore)
                         {
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), bore.Radius, Time.time + e.Target.X + 0.5f));
-                            _hud.Toast(Strings.Get("toast.cracking"), error: true, seconds: 2.5f);
+                            _hud.Toast(Strings.Get("toast.cracking"), error: true, seconds: 2.5f, kind: NoticeKind.Boss);
                         }
                         break;
                     case SimEventKind.TroopsLanding when !_menu:
-                        _hud.Toast(Strings.Format("toast.landing", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f);
+                        _hud.Toast(Strings.Format("toast.landing", Mathf.RoundToInt(e.Value)), error: true, seconds: 3f, kind: NoticeKind.Landing);
                         break;
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);
                         break;
+                    // Prompt 23: a mission event's notice, and the weather it turns.
+                    case SimEventKind.EventNotice when !_menu:
+                        MissionEventNotice(e);
+                        break;
+                    case SimEventKind.WeatherShift when !_menu:
+                        MissionWeather(e);
+                        break;
                     case SimEventKind.Radio when !_menu && e.DefId != null:
-                        // In a campaign mission the radio panel speaks it (the director hears it below).
-                        if (_radio == null) _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
+                        // Prompt 23 H: a line for the dialogue. In a campaign mission the radio director hears it (below).
+                        if (_radio == null) Say(DialogueRules.FromEvent(e.DefId, e.Team, e.Value, e.Mount, e.Entity, DialogueGeneral));
                         break;
                     case SimEventKind.StageStarted when !_menu && e.Value > 1f && _session is MissionSession staged:
                         _hud.ShowBanner(Strings.Format("stage.kicker", (int)e.Value), staged.StageTitle(e.DefId, (int)e.Value),
@@ -1160,16 +1182,16 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.AreaChanged:
                         _playArea?.Show(_world.PlayArea);
                         FitCameraToArea();
-                        if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f);
+                        if (!_menu && _world.Time > 1.0) _hud.Toast(Strings.Get(e.Value > 0f ? "toast.areaChanged" : "toast.areaOpened"), seconds: 4f, kind: NoticeKind.Area);
                         break;
                     case SimEventKind.FortressAlert when !_menu && e.DefId == "toast.enemyReinforce":
-                        _hud.Toast(Strings.Get(e.DefId), error: true);
+                        _hud.Toast(Strings.Get(e.DefId), error: true, kind: NoticeKind.Reinforce);
                         StoryPan(e.Position);
                         break;
                     case SimEventKind.StageCleared when !_menu:
                     case SimEventKind.FortressAlert when !_menu:
                         // A fortress alarm is bad news for the player (Team 1) or good (0: the enemy's gate blown in).
-                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert && e.Team == 1);
+                        if (e.DefId != null) _hud.Toast(Strings.Get(e.DefId), error: e.Kind == SimEventKind.FortressAlert && e.Team == 1, kind: NoticeKind.Objective);
                         if (e.Kind == SimEventKind.StageCleared) Haptics.Pulse(90, 200);
                         break;
                     case SimEventKind.TraitProc when !_menu:
@@ -1177,7 +1199,7 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
                         _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", "escort" => "toast.escort", _ => "toast.bounty" },
-                            Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f);
+                            Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f, kind: NoticeKind.Reward);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
                         if (e.DefId != null && _world.Catalog.Props.TryGetValue(e.DefId, out var fallen) && fallen.BlocksMovement)
@@ -1186,28 +1208,28 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.PointCaptured when !_menu:
                         if (e.Team == PlayerTeam) DailyMissions.Record("captures");
                         var letter = Strings.Get("point." + e.DefId);
-                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter));
-                        else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true);
+                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter), kind: NoticeKind.Captured);
+                        else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true, kind: NoticeKind.Lost);
                         break;
                     // Prompt 18 D.3: a short notice when the player cancels a boss's big attack (or makes the Spectre break off).
                     case SimEventKind.BigAttack when !_menu && e.Team == EnemyTeam && e.Mount is 2 or 3 && e.DefId != null:
-                        _hud.Toast(Strings.Get("bigattack." + e.DefId + ".cancelled"));
+                        _hud.Toast(Strings.Get("bigattack." + e.DefId + ".cancelled"), kind: NoticeKind.Done);
                         break;
                     // Prompt 19: a tiered boss leaves orbit, sends pods down, warns of its drone seizure.
                     case SimEventKind.TierChanged when !_menu && e.Team == EnemyTeam && e.DefId is "descend" or "pods" || e.DefId == "hijack" && e.Mount == 0:
                         if (_menu || e.Team != EnemyTeam) break;
                         _hud.Toast(Strings.Get(e.DefId == "descend" ? "toast.tier.descend" : e.DefId == "pods" ? "toast.pods" : "toast.hijack"),
-                            error: e.DefId != "pods", seconds: 3f);
+                            error: e.DefId != "pods", seconds: 3f, kind: NoticeKind.Boss);
                         break;
                     case SimEventKind.CrateIncoming when !_menu:
-                        _hud.Toast(Strings.Get("toast.crate"));
+                        _hud.Toast(Strings.Get("toast.crate"), kind: NoticeKind.Crate);
                         break;
                     case SimEventKind.CrateClaimed when !_menu:
-                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Get("toast.crateOurs"));
-                        else _hud.Toast(Strings.Get("toast.crateTheirs"), error: true);
+                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Get("toast.crateOurs"), kind: NoticeKind.Crate);
+                        else _hud.Toast(Strings.Get("toast.crateTheirs"), error: true, kind: NoticeKind.Crate);
                         break;
                     case SimEventKind.StrikeWarning when !_menu && e.Team == MachineBrigade.Sim.Entities.Teams.Environment:
-                        _hud.Toast(Strings.Get("toast.raid"), error: true);
+                        _hud.Toast(Strings.Get("toast.raid"), error: true, kind: NoticeKind.AirRaid);
                         if (_world.Catalog.TryGetSupport(e.DefId, out var raid))
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), raid.Length * 0.5f, Time.time + e.Value + raid.Duration + 0.5f));
                         break;
@@ -1216,8 +1238,9 @@ namespace MachineBrigade.Game.Match
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), support.IsLine ? support.Length * 0.5f : support.Radius,
                                 Time.time + e.Value + support.Duration + 0.5f));
                         // Prompt 16 F: a boss's escorts parachuting in have their own line.
-                        if (!_menu && e.Team == EnemyTeam && e.DefId.StartsWith("escort_drop", System.StringComparison.Ordinal)) _hud.Toast(Strings.Get("toast.escortDrop"), error: true);
-                        else if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
+                        if (!_menu && e.Team == EnemyTeam && e.DefId.StartsWith("escort_drop", System.StringComparison.Ordinal))
+                            _hud.Toast(Strings.Get("toast.escortDrop"), error: true, kind: NoticeKind.Reinforce);
+                        else if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true, kind: NoticeKind.Strike);
                         // An item was used: it is gone from the profile too.
                         if (!_menu && _sandbox == null && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
                         if (!_menu && e.Team == PlayerTeam && support != null) DailyMissions.Record(support.Consumable ? "items" : "strikes");
@@ -1346,7 +1369,7 @@ namespace MachineBrigade.Game.Match
             {
                 playerAi.Stance = defend ? CommanderStance.Defend : CommanderStance.Attack;
                 MatchJournal.Record(_world, "stance", defend ? "defend" : "attack");
-                _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"));
+                _hud.Toast(Strings.Get(defend ? "toast.defend" : "toast.attack"), kind: NoticeKind.Order);
             };
             _hud.TowerPressed += () =>
             {
@@ -1494,7 +1517,7 @@ namespace MachineBrigade.Game.Match
             if (wave != _announcedWave)
             {
                 _announcedWave = wave;
-                if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true);
+                if (_announcedWave > 0) _hud.Toast(Strings.Format("toast.wave", _announcedWave), error: true, kind: NoticeKind.Wave);
             }
             _session.UpdateHud(_hud, _world, _pointInfo, _fps);
             _hud.SetModes(_selection.AttackMoveArmed, _selection.BoxMode);
@@ -1516,6 +1539,13 @@ namespace MachineBrigade.Game.Match
             if (minimap == null || Time.unscaledTime < _minimapAt) return;
             _minimapAt = Time.unscaledTime + MinimapInterval;
             minimap.Begin(_world.Map.HalfSize);
+            // Prompt 23 D.6: an EW blackout: the minimap is dark but for the camera's frame.
+            if (!_menu && _world.BlackedOut(PlayerTeam))
+            {
+                MinimapView(minimap);
+                minimap.Flush();
+                return;
+            }
             if (_session.Objectives != null)
                 foreach (var p in _session.Objectives.Points)
                     minimap.Point(new Vector2(p.Def.Position.X, p.Def.Position.Y), p.Def.Radius, p.Owner, p.Progress);
@@ -1540,10 +1570,19 @@ namespace MachineBrigade.Game.Match
                 // Prompt 13 C.9: our aircraft's holding patterns, faint rings.
                 if (v.Team == PlayerTeam && v.HasStores && v.Supply != MachineBrigade.Sim.Entities.SupplyState.Fighting)
                     minimap.Holding(new Vector2(v.HoldPoint.X, v.HoldPoint.Y));
-                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
+                // Prompt 23 F.4: the Meridian Accord's units in their own colour.
+                var blip = v.Team == PlayerTeam ? IsAccord(v) ? Minimap.AccordTeam : 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1;
+                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), blip, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
             foreach (var mark in _marks) minimap.Mark(new Vector2(mark.Position.X, mark.Position.Y), (int)mark.Kind);
+            MinimapView(minimap);
+            minimap.Flush();
+        }
+
+        /// <summary>The camera's frame on the minimap.</summary>
+        private void MinimapView(Minimap minimap)
+        {
             var cam = _camera;
             var corners = new[] { new Vector2(0f, 0f), new Vector2(Screen.width, 0f), new Vector2(Screen.width, Screen.height), new Vector2(0f, Screen.height) };
             var ground = new Vector2[4];
@@ -1554,7 +1593,6 @@ namespace MachineBrigade.Game.Match
                 ground[i] = new Vector2(g.x, g.z);
             }
             if (ok) minimap.View(ground[0], ground[1], ground[2], ground[3]);
-            minimap.Flush();
         }
 
         /// <summary>Prompt 19 B.5: the tier a tapped tiered boss (or pod) of that def is at now (None: the ordinary matchup).</summary>
@@ -1616,8 +1654,9 @@ namespace MachineBrigade.Game.Match
                 // Prompt 22 D.6-D.7: why the story hands a card out, and the intel files a side objective recovered.
                 foreach (var id in _reward.Unlocks)
                     if (Narrative.LootReason(id) is { } reason) view.Extras.Add(("star", Strings.Get(reason)));
-                if (outcome.Result > 0 && _reward.MissionId != null)
-                    foreach (var file in Narrative.FoundBy(_reward.MissionId, _reward.Stars))
+                // Prompt 23 E: and the files an intercepted convoy carried, won or lost.
+                if (_reward.MissionId != null)
+                    foreach (var file in Narrative.FoundBy(_reward, outcome.Result > 0))
                         view.Extras.Add(("eye", Strings.Format("result.intel", ("title", Strings.Get($"intel.{file.Id}.title")))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));

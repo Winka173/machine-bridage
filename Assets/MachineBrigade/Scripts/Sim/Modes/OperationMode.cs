@@ -39,7 +39,7 @@ namespace MachineBrigade.Sim.Modes
     /// commander's units fight on the player's side under their own AI and may change sides.
     /// Losing a stage loses the mission; finishing the last wins it.
     /// </summary>
-    public sealed class OperationMode : IGameMode, IObjectiveMode
+    public sealed class OperationMode : IGameMode, IObjectiveMode, IMissionEventHost
     {
         public const int PlayerTeam = MissionMode.PlayerTeam;
         public const int EnemyTeam = MissionMode.EnemyTeam;
@@ -74,6 +74,34 @@ namespace MachineBrigade.Sim.Modes
         }
 
         public MissionDef Def => _def;
+
+        /// <summary>Prompt 23: the level its events and its stages' events play at (C.3; the session sets it before Setup).</summary>
+        public EventLevel EventLevel { get; set; }
+
+        /// <summary>Prompt 23 A: the operation's own events, over every stage (null: none).</summary>
+        public MissionEventSystem? Events { get; private set; }
+
+        /// <summary>When the operation began.</summary>
+        public double StartedAt => _startedAt;
+
+        /// <summary>How far the operation is: its stages done and the current one's share (0 to 1).</summary>
+        public float Progress(SimWorld world) =>
+            Math.Clamp((Math.Max(0, _path.Count - 1) + Current.Progress(world)) / Math.Max(1f, _stages.Count), 0f, 1f);
+
+        public EntityId Boss => Current.Boss;
+        public Vector2? PlayerGoal(SimWorld world) => Current.PlayerGoal(world);
+        public Vector2? EnemyGoal(SimWorld world) => Current.EnemyGoal(world);
+
+        /// <summary>D.8: a new plan moves the operation on to the stage it names (the stage under way is left unpaid).</summary>
+        public bool ChangePlan(SimWorld world, MissionEventDef e)
+        {
+            if (e.Stage == null || Result != null) return false;
+            var next = IndexOf(e.Stage);
+            if (next < 0) return false;
+            PendingChoice = null;
+            Begin(world, next, false);
+            return true;
+        }
 
         /// <summary>The stage being played (or the last one, once the mission is over).</summary>
         public MissionMode Current { get; private set; } = null!;
@@ -122,6 +150,9 @@ namespace MachineBrigade.Sim.Modes
             _startedAt = world.Time;
             if (_def.PlayArea is { } area) world.Expand(area);
             Begin(world, 0, true);
+            // Prompt 23: the operation's own events (its stages' own run in each stage).
+            // (A mission with an ally and no stages is its own one stage: that stage runs its events.)
+            if (_def.Stages.Count > 0 && _def.Events.Count > 0) Events = new MissionEventSystem(world, this, _def.Events, EventLevel);
             // A big operation's enemy may field more vehicles (its own ceiling, else the operations').
             if (_def.Stages.Count > 0 && world.TryGetEconomy(EnemyTeam, out var enemy))
                 enemy.VehicleCap = _def.EnemyCap > 0 ? _def.EnemyCap : world.Catalog.VehicleCapFor("Operation");
@@ -161,6 +192,7 @@ namespace MachineBrigade.Sim.Modes
             }
             AllyReinforcements(world);
             StandingStrikes(world);
+            Events?.Tick(world, dt);
             if (PendingChoice != null)
             {
                 if (world.Time >= _choiceDeadline) Choose(world, PendingChoice.Choices[0].Key);
@@ -235,7 +267,7 @@ namespace MachineBrigade.Sim.Modes
             StageIndex = index;
             _path.Add(index);
             var stage = _stages[index];
-            Current = new MissionMode(stage.Mission, _player, _enemy) { Staged = true, AllyHq = _allyHq };
+            Current = new MissionMode(stage.Mission, _player, _enemy) { Staged = true, AllyHq = _allyHq, EventLevel = EventLevel };
             Current.SetupStage(world, first, owners);
             world.Emit(SimEvent.StageBegan(stage.Id, _path.Count));
             foreach (var e in stage.Events)
@@ -323,7 +355,7 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>The other side's vehicle with the most of its own round it (12 m), clear of <paramref name="team"/>'s by <paramref name="reach"/>.</summary>
-        private static Vector2? StrikeTarget(SimWorld world, int team, float reach)
+        internal static Vector2? StrikeTarget(SimWorld world, int team, float reach)
         {
             var foe = team == PlayerTeam ? EnemyTeam : PlayerTeam;
             Vector2? best = null;
@@ -368,7 +400,7 @@ namespace MachineBrigade.Sim.Modes
                 // The traitor's base (its HQ and towers) is marked: the one to strike back at.
                 if (v.Def.Static) v.Marked = true;
             }
-            world.Emit(SimEvent.RadioMessage("radio.betrayal"));
+            world.Emit(SimEvent.RadioMessage("radio.betrayal", 0, LinePriority.Story));
         }
 
         /// <summary>The ally's own reinforcements, on the operation's clock.</summary>

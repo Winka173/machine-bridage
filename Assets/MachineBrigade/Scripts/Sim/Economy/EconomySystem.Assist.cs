@@ -29,6 +29,12 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>The side that got it (-1: nobody yet).</summary>
         public int UnderdogTeam { get; private set; } = -1;
 
+        /// <summary>
+        /// Prompt 23 C.2: a mission with scripted allied waves sends one of them instead of the free drop (true: it did, and
+        /// the drop is not given; the income boost stays). Null: the drop as usual.
+        /// </summary>
+        internal Func<int, bool>? UnderdogStandIn { get; set; }
+
         private void StepUnderdog()
         {
             if (Underdog is not { } rules || UnderdogTeam >= 0 || _world.Time < rules.After || _teams.Count != 2) return;
@@ -37,6 +43,11 @@ namespace MachineBrigade.Sim.Economy
             var weak = strong == a ? b : a;
             if (strong.ArmyCp < rules.MinimumArmy || strong.ArmyCp < rules.Ratio * Math.Max(1, weak.ArmyCp)) return;
             UnderdogTeam = weak.Team;
+            if (UnderdogStandIn?.Invoke(weak.Team) == true)
+            {
+                _world.Emit(Events.SimEvent.Alert(_world.TryGetRally(weak.Team, out var rally) ? rally : Vector2.Zero, weak.Team == 0 ? "assist.us" : "assist.them", bad: weak.Team != 0));
+                return;
+            }
             // The drop: the deck's vehicle nearest its average price, three of them for a cheap deck, two for a dear one.
             string? pick = null;
             var sum = 0f;

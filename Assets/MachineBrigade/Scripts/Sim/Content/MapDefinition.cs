@@ -73,6 +73,34 @@ namespace MachineBrigade.Sim.Content
     /// along the attack, the square's own ground where it always was and the rest to the north.
     /// Everything that keeps to the map uses the corners (<see cref="Contains"/>, <see cref="Clamp"/>).
     /// </summary>
+    /// <summary>Prompt 23 B: a spawn point a map sets by hand: whose (0 the player's side's allies, 1 the enemy), how they come, where.</summary>
+    public sealed class SpawnPointDef
+    {
+        public SpawnPointDef(int side, Navigation.SpawnKind kind, Vector2 position, Vector2? from)
+        {
+            Side = side;
+            Kind = kind;
+            Position = position;
+            From = from;
+        }
+
+        public int Side { get; }
+        public Navigation.SpawnKind Kind { get; }
+        public Vector2 Position { get; }
+
+        /// <summary>An air path's entry over the edge, or null.</summary>
+        public Vector2? From { get; }
+
+        internal static IReadOnlyList<SpawnPointDef> ParseAll(JsonObject root)
+        {
+            var list = new List<SpawnPointDef>();
+            foreach (var s in root.Array("spawns"))
+                list.Add(new SpawnPointDef(s.Int("team", 1), s.Enum<Navigation.SpawnKind>("kind", Navigation.SpawnKind.Edge),
+                    new Vector2(s.Float("x"), s.Float("z")), s.Has("fromX") ? new Vector2(s.Float("fromX"), s.Float("fromZ")) : null));
+            return list;
+        }
+    }
+
     public sealed class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
@@ -228,8 +256,10 @@ namespace MachineBrigade.Sim.Content
                 back.Reverse();
                 routes[key] = back;
             }
+            var spawns = new List<SpawnPointDef>();
+            foreach (var sp in Spawns) spawns.Add(new SpawnPointDef(Swap(sp.Side), sp.Kind, sp.Position, sp.From));
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
-                bounds: IsSquare ? null : (Min, Max)) { Routes = routes };
+                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns };
         }
 
         /// <summary>
@@ -243,6 +273,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
         public SeaDef? Sea { get; internal set; }
+
+        /// <summary>
+        /// Prompt 23 B: spawn points the map sets by hand (map data "spawns": [{"team", "kind", "x", "z", "fromX", "fromZ"}]),
+        /// on top of the ones worked out from the map (<see cref="Navigation.SpawnPoints"/>). Empty on most maps.
+        /// </summary>
+        public IReadOnlyList<SpawnPointDef> Spawns { get; internal set; } = Array.Empty<SpawnPointDef>();
         /// <summary>Whether the map is the plain square centred on the origin.</summary>
         private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
 
@@ -345,6 +381,7 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 16: a battlefield on the sea (Lighthouse Bay): its lanes, beaches and batteries.
                 Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,
                 Routes = routes,
+                Spawns = SpawnPointDef.ParseAll(root),
             };
         }
     }

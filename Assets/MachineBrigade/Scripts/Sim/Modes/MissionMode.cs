@@ -53,7 +53,7 @@ namespace MachineBrigade.Sim.Modes
         public float Progress { get; }
     }
 
-    public sealed class MissionMode : IGameMode, IObjectiveMode
+    public sealed class MissionMode : IGameMode, IObjectiveMode, IMissionEventHost
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
@@ -66,7 +66,7 @@ namespace MachineBrigade.Sim.Modes
         private float _bossBest = float.MaxValue;
         private double _bossProgressAt;
 
-        private readonly MissionDef _def;
+        private MissionDef _def;
         private readonly SideSetup _player;
         private readonly SideSetup? _enemy;
         private readonly List<ObjectiveState> _points = new();
@@ -123,9 +123,19 @@ namespace MachineBrigade.Sim.Modes
             _player = player;
             _enemy = enemy;
             _ledger.Ignore = v => v.Scripted || v.Def.Boss || v.Ally;
+            EventLevel = EventLevels.From(def.Difficulty);
         }
 
         public MissionDef Def => _def;
+
+        /// <summary>Prompt 23: the level its events play at (C.3: the mission's difficulty, one step up a tier; the session sets it).</summary>
+        public EventLevel EventLevel { get; set; }
+
+        /// <summary>Prompt 23 A: the mission's (or stage's) events (null: none).</summary>
+        public MissionEventSystem? Events { get; private set; }
+
+        /// <summary>D.8: the goal changed mid-battle (the commanders are set again for it).</summary>
+        public event Action? Replanned;
 
         /// <summary>When this mission (or stage) began: its clocks count from here.</summary>
         public double StartedAt { get; private set; }
@@ -303,6 +313,35 @@ namespace MachineBrigade.Sim.Modes
                     if (v.IsAlive && v.Marked && v.Team == EnemyTeam) _hunted.Add((v.Id, 0));
             _waveTimer = _def.Waves?.First ?? float.MaxValue;
             _convoyTimer = 0f;
+            // Prompt 23: the mission's (or the stage's) own events.
+            if (Events == null && _def.Events.Count > 0) Events = new MissionEventSystem(world, this, _def.Events, EventLevel);
+        }
+
+        /// <summary>
+        /// D.8: Kade's new plan for a mission of one goal: the plan's goal from now on (its objectives, targets and units; the
+        /// clock starts again), the battle as it is. The events run on.
+        /// </summary>
+        public bool ChangePlan(SimWorld world, MissionEventDef e)
+        {
+            if (e.Plan is not { } next || Result != null) return false;
+            var owners = Owners();
+            _points.Clear();
+            _targets.Clear();
+            _hunted.Clear();
+            _convoy.Clear();
+            _halted.Clear();
+            _scouting.Clear();
+            _held = _outpostHeld = 0f;
+            _arrived = _convoySpawned = 0;
+            _wave = 0;
+            _launchStarted = -1;
+            _bossWaypoint = 0;
+            if (next.Boss != null) _boss = EntityId.None;
+            next.EventRules = _def.EventRules;
+            _def = next;
+            SetupStage(world, false, owners);
+            Replanned?.Invoke();
+            return true;
         }
 
         private static bool OnPlayerSide(SimWorld world, Vector2 at) =>
@@ -320,6 +359,7 @@ namespace MachineBrigade.Sim.Modes
             if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = 0.25f * PointCapture.Held(_points, PlayerTeam);
             SpawnWaves(world, dt);
             if (world.Tick % 20 == 0) CallReinforcements(world);
+            Events?.Tick(world, dt);
             DriveConvoy(world, dt);
             DriveBoss(world);
             CheckFlee(world);

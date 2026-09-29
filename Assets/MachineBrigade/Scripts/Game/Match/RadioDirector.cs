@@ -4,32 +4,48 @@ using MachineBrigade.Game.Hud;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Events;
+using EntityId = MachineBrigade.Sim.Core.EntityId;
 
 namespace MachineBrigade.Game.Match
 {
-    /// <summary>One line of radio chatter: who speaks (a portrait id) and the text's key.</summary>
+    /// <summary>
+    /// One line the director says: who speaks (a speaker id) and the text's key, and for the dialogue (prompt 23 H) how
+    /// much it matters, the side it is said for (a Radio event's team), whether it opens a story moment, and the unit.
+    /// </summary>
     internal readonly struct RadioLine
     {
-        public RadioLine(string speaker, string key)
+        public RadioLine(string speaker, string key, DialoguePriority priority = DialoguePriority.Event, int team = 0, bool moment = false,
+            EntityId unit = default)
         {
             Speaker = speaker;
             Key = key;
+            Priority = priority;
+            Team = team;
+            Moment = moment;
+            Unit = unit;
         }
 
         public string Speaker { get; }
         public string Key { get; }
+        public DialoguePriority Priority { get; }
+        public int Team { get; }
+        public bool Moment { get; }
+        public EntityId Unit { get; }
 
         /// <summary>An enemy general is speaking.</summary>
         public bool Enemy => Speaker is "varga" or "orlov" or "kessler" or "sen" or "quaden" or "aurel";
     }
 
     /// <summary>
-    /// The battle's radio chatter in a campaign mission: the mission's own lines when their moment
+    /// The battle's lines in a campaign mission: the mission's own lines when their moment
     /// comes (the start, a time, a point taken or lost, the boss arriving or half down, the HQ half
     /// down, a stage, the enemy reinforcing, the end), and when a moment has no line of its own,
     /// one of the brigade's usual ones, now and then. Radio messages the battle sends (stage events,
     /// a betrayal, a boss that flees) are spoken by whoever the key names. Each line plays once;
-    /// what it shows is the HUD's business. Presentation only: nothing here touches the battle.
+    /// the in-battle dialogue (prompt 23 H, <see cref="DialogueDirector"/>) decides whether and when it
+    /// shows: the mission's lines at the start, a time, a stage and the end are its story beats, its
+    /// other lines and the usual ones event lines, the general's answers reactions, and a Radio event's
+    /// own priority is kept. Presentation only: nothing here touches the battle.
     /// </summary>
     internal sealed class RadioDirector
     {
@@ -115,10 +131,10 @@ namespace MachineBrigade.Game.Match
             if (!_ended && session.Mode.Result is { } result)
             {
                 _ended = true;
-                if (result.WinningTeam == 0 && _react.OnWin(world.Time) is { } fast) Say(fast);
+                if (result.WinningTeam == 0 && _react.OnWin(world.Time) is { } fast) Say(fast, DialoguePriority.Reaction);
                 Trigger(world, result.WinningTeam == 0 ? RadioTrigger.Win : RadioTrigger.Lose, null);
             }
-            else if (!_ended && _react.Next(world.Time) is { } answer) Say(answer);
+            else if (!_ended && _react.Next(world.Time) is { } answer) Say(answer, DialoguePriority.Reaction);
         }
 
         /// <summary>What the battle said this step.</summary>
@@ -140,7 +156,9 @@ namespace MachineBrigade.Game.Match
                         Trigger(world, RadioTrigger.Reinforce, null);
                         break;
                     case SimEventKind.Radio when e.DefId != null:
-                        Say(e.DefId);
+                        // The event system's priority and story moment ride on the event (DialogueRules.FromEvent).
+                        var heard = DialogueRules.FromEvent(e.DefId, e.Team, e.Value, e.Mount, e.Entity, _def.General);
+                        Say(e.DefId, heard.Priority, e.Team, heard.Moment, e.Entity);
                         break;
                     // Prompt 22 D.4: what the general answers.
                     case SimEventKind.DeploymentQueued when e.Team == 0 && e.DefId != null && world.Catalog.Vehicles.TryGetValue(e.DefId, out var sent):
@@ -185,7 +203,7 @@ namespace MachineBrigade.Game.Match
             _generic.TryGetValue(trigger, out var n);
             _generic[trigger] = n + 1;
             _lastGeneric = world.Time;
-            Say(keys[(n + _random.Next(keys.Count)) % keys.Count]);
+            Say(keys[(n + _random.Next(keys.Count)) % keys.Count], DialoguePriority.Event);
         }
 
         private static readonly Dictionary<string, List<string>> GenericCache = new();
@@ -205,15 +223,21 @@ namespace MachineBrigade.Game.Match
         private bool Play(RadioLineDef line)
         {
             if (!_played.Add(line)) return false;
-            Say(line.Key);
+            Say(line.Key, PriorityOf(line.On));
             return true;
         }
 
-        private void Say(string key)
+        /// <summary>A mission line's priority: at the start, a time, a stage and the end it tells the story; otherwise it answers an event.</summary>
+        public static DialoguePriority PriorityOf(RadioTrigger trigger) =>
+            trigger is RadioTrigger.Start or RadioTrigger.Time or RadioTrigger.Stage or RadioTrigger.Win or RadioTrigger.Lose
+                ? DialoguePriority.Story
+                : DialoguePriority.Event;
+
+        private void Say(string key, DialoguePriority priority, int team = 0, bool moment = false, EntityId unit = default)
         {
-            var line = new RadioLine(SpeakerOf(key), key);
+            var line = new RadioLine(SpeakerOf(key), key, priority, team, moment, unit);
             Spoke?.Invoke(line);
-            if (line.Enemy && _generalsHeard.Add(line.Speaker)) GeneralAppeared?.Invoke(line.Speaker);
+            if (DialogueRules.IsEnemy(line.Speaker, _def.General, team) && _generalsHeard.Add(line.Speaker)) GeneralAppeared?.Invoke(line.Speaker);
         }
     }
 }

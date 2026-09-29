@@ -355,6 +355,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Slow motion and letterbox for a second on the biggest blasts.</summary>
         public static bool CinematicMoments { get; set; } = true;
 
+        /// <summary>Prompt 23 H.7: Settings, In-battle dialogue (Full, Important only, Off; story lines always show).</summary>
+        public static DialogueSetting Dialogue { get; set; } = DialogueSetting.Full;
+
         /// <summary>Camera drag speed: 0 slow, 1 normal, 2 fast.</summary>
         public static int CameraSpeed { get; set; } = 1;
 
@@ -455,6 +458,7 @@ namespace MachineBrigade.Game.Match
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
+                Dialogue = (DialogueSetting)Mathf.Clamp(PlayerPrefs.GetInt("mb.dialogue", 0), 0, 2);
                 Doctrine = PlayerPrefs.GetString("mb.doctrine", "armor");
                 Haptics = PlayerPrefs.GetInt("mb.haptics", 1) == 1;
                 ColorBlind = PlayerPrefs.GetInt("mb.colorblind", 0) == 1;
@@ -506,6 +510,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
+                PlayerPrefs.SetInt("mb.dialogue", (int)Dialogue);
                 PlayerPrefs.SetString("mb.doctrine", Doctrine);
                 PlayerPrefs.SetInt("mb.haptics", Haptics ? 1 : 0);
                 PlayerPrefs.SetInt("mb.colorblind", ColorBlind ? 1 : 0);

@@ -523,6 +523,16 @@ namespace MachineBrigade.Sim.Content
         public float TargetRadius { get; set; } = 40f;
 
         /// <summary>
+        /// Prompt 23 A: the events this mission (or stage) plays, resolved from the library (campaign.json "missionEvents":
+        /// library ids, or objects naming one with overrides). A staged mission's own run over the whole operation; a
+        /// stage's own over that stage.
+        /// </summary>
+        public IReadOnlyList<MissionEventDef> Events { get; set; } = Array.Empty<MissionEventDef>();
+
+        /// <summary>The library's rules the events read (the C.3 table, the generals, the caps).</summary>
+        public EventRules EventRules { get; set; } = EventRules.Default;
+
+        /// <summary>
         /// A harder copy of the mission (the Heroic and Iron tiers): the enemy starts with more
         /// CP, earns more and sends bigger waves. The mission itself is left as it is.
         /// </summary>
@@ -558,12 +568,14 @@ namespace MachineBrigade.Sim.Content
         public static IReadOnlyList<MissionDef> ListFromJson(string json)
         {
             var root = new JsonObject(MiniJson.Parse(json), "campaign");
+            // Prompt 23 A: the event library first; the missions' events are resolved against it.
+            var library = root.Has("eventLibrary") ? EventLibrary.Parse(root.Object("eventLibrary")) : new EventLibrary();
             var missions = new List<MissionDef>();
-            foreach (var m in root.Array("missions")) missions.Add(Parse(m));
+            foreach (var m in root.Array("missions")) missions.Add(Parse(m, library));
             return missions;
         }
 
-        private static MissionDef Parse(JsonObject m)
+        private static MissionDef Parse(JsonObject m, EventLibrary library)
         {
             var def = new MissionDef
             {
@@ -633,6 +645,10 @@ namespace MachineBrigade.Sim.Content
                 TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
                 TargetRadius = m.Float("targetRadius", 40f),
             };
+            def.EventRules = library.Rules;
+            // A plan change's new goal is the mission's fields with the plan's on top (what it fights is the plan's own).
+            if (m.Has("missionEvents"))
+                def.Events = library.Resolve(m, "missionEvents", plan => Parse(Bare(m).Under(plan), library));
             if (m.Has("challenge"))
             {
                 var c = m.Object("challenge");
@@ -683,15 +699,14 @@ namespace MachineBrigade.Sim.Content
             // mission's units are placed once, at the start.
             if (m.Has("stages"))
             {
-                var parent = m.With("stages", null).With("units", null).With("boss", null).With("hunt", null)
-                    .With("convoy", null).With("waves", null).With("tips", null).With("ally", null).With("radio", null);
+                var parent = Bare(m).With("tips", null).With("ally", null).With("radio", null);
                 var stages = new List<StageDef>();
                 foreach (var s in m.Array("stages"))
                 {
                     var stage = new StageDef
                     {
                         Id = s.Has("stage") ? s.String("stage") : "s" + (stages.Count + 1),
-                        Mission = Parse(parent.Under(s)),
+                        Mission = Parse(parent.Under(s), library),
                         Cp = s.Int("cp", 0),
                         Next = s.Has("next") ? s.String("next") : null,
                         Checkpoint = s.Bool("checkpoint", true),
@@ -726,6 +741,11 @@ namespace MachineBrigade.Sim.Content
             }
             return def;
         }
+
+        /// <summary>A mission's fields without what it fights and its events (a stage's or a new plan's base).</summary>
+        private static JsonObject Bare(JsonObject m) =>
+            m.With("stages", null).With("units", null).With("boss", null).With("hunt", null).With("convoy", null).With("waves", null)
+                .With("missionEvents", null);
 
         private static IReadOnlyList<UnitPlacement> Placements(JsonObject m, string key)
         {

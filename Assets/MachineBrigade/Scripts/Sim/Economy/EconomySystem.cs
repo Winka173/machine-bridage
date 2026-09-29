@@ -515,7 +515,8 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team && !v.Ally) total += v.Def.ArmyCost;
+                // Prompt 23 C.4: a mission event's reinforcements are outside the army (they have a cap of their own).
+                if (v.IsAlive && v.Team == team && !v.Ally && !v.Reinforcement) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
@@ -548,7 +549,7 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted && !v.Ally) total++;
+                if (v.IsAlive && v.Team == team && !v.Def.Static && !v.Scripted && !v.Ally && !v.Reinforcement) total++;
             foreach (var (pendingTeam, _, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total++;
             return total;

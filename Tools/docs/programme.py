@@ -579,6 +579,106 @@ def boss_summary(game, h):
             + "</div>")
 
 
+KIND_VI = {'EnemyWave': 'viện quân địch', 'AllyWave': 'tiếp viện Accord', 'Barrage': 'pháo kích dồn', 'AirRaid': 'không kích địch',
+           'CounterBattery': 'phản pháo', 'AllyAirStrike': 'Hawk không kích', 'AllyArtillery': 'pháo Accord yểm trợ', 'GeneralField': 'tướng địch ra trận',
+           'SideObjective': 'mục tiêu phụ', 'NeutralConvoy': 'đoàn tiếp tế trung lập', 'LootDrop': 'kho thả dù', 'SupplyRaid': 'địch cướp tiếp tế',
+           'SupplyDrop': 'thả dù tiếp tế', 'IntelReveal': 'Nadia báo vị trí', 'Blackout': 'bão nhiễu điện tử', 'MiniBoss': 'mini boss giữa trận',
+           'PlanChange': 'đổi kế hoạch', 'WeatherShift': 'đổi thời tiết / ngày đêm', 'Ceasefire': 'đồng hồ ngừng bắn', 'OrbitalStrike': 'vệ tinh bắn thử'}
+
+
+def mission_events(game, h):
+    """Section 7c (prompt 23): the mission events, the reinforcement rules by difficulty and the in-battle dialogue."""
+    import json as _json
+    import collections
+    e, table = h['esc'], h['table']
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'campaign.json').read_text(encoding='utf-8-sig')
+    camp = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    lib = camp.get('eventLibrary', {})
+    rules, events = lib.get('rules', {}), lib.get('events', [])
+    diff_vi = {'Easy': 'Dễ', 'Normal': 'Thường', 'Hard': 'Khó', 'VeryHard': 'Cực khó'}
+    drows = []
+    for k, d in rules.get('difficulty', {}).items():
+        dirs = d.get('directions', [])
+        drows.append([diff_vi.get(k, k), f"{dirs[0]}–{dirs[-1]}" if dirs else '—', f"{d.get('warning', 0):g} s", f"{d.get('ally', 0) * 100:.0f}%",
+                      f"×{d.get('waveScale', 1):g}", 'có' if d.get('elites') else '—',
+                      'không giới hạn' if d.get('allyWaves', -1) < 0 else f"{d['allyWaves']} đợt", str(d.get('escorts', ''))])
+    gen_names = {x['id']: x.get('name', x['id']) for x in game.get('generals', []) + game.get('characters', [])}
+    gen_names = {**{k: v for k, v in game.get('bossGenerals', {}).items() if v}, **gen_names}
+    names = {v['id']: v.get('short') or v['name'] for v in game.get('vehicles', []) + game.get('elites', []) + game.get('bosses', [])}
+    grows = [[e(gen_names.get(g, g)), e(', '.join(names.get(u, u) for u in x.get('roster', []))), e(', '.join(x.get('delivery', []))),
+              e(names.get(x.get('elite', ''), x.get('elite', '') or '—')), str(x.get('lastChapter', '—'))]
+             for g, x in rules.get('generals', {}).items()]
+    words = {'at': lambda v: f"lúc {v:g} s", 'progress': lambda v: f"tiến độ {v * 100:.0f}%", 'bossHp': lambda v: f"máu boss {v * 100:.0f}%",
+             'delay': lambda v: f"trễ {v:g} s", 'repeat': lambda v: f"lặp mỗi {v:g} s"}
+
+    def trig(t):
+        out = []
+        for k, v in (t or {}).items():
+            if isinstance(v, (int, float)) and k in words:
+                out.append(words[k](v))
+            elif isinstance(v, (int, float, str)):
+                out.append(f"{k} {v}")
+            else:
+                out.append(k)
+        return ', '.join(out) or '—'
+
+    erows = [[f"<code>{e(x['id'])}</code>", e(KIND_VI.get(x['kind'], x['kind'])), e(trig(x.get('trigger'))),
+              e(', '.join(f"{k} {v}" for k, v in (x.get('params') or {}).items() if not isinstance(v, (dict, list)))[:90] or '—')] for x in events]
+    lib_kind = {x['id']: x['kind'] for x in events}
+    by_chapter = collections.OrderedDict()
+    for m in camp.get('missions', []):
+        b = by_chapter.setdefault(m.get('chapter'), {'missions': 0, 'events': 0, 'kinds': collections.Counter(), 'general': 0})
+        b['missions'] += 1
+        refs = []
+
+        def walk(o):
+            # A mission's own events and each stage's (an operation's stages carry their own).
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    if k == 'missionEvents' and isinstance(v, list):
+                        refs.extend(v)
+                    else:
+                        walk(v)
+            elif isinstance(o, list):
+                for x in o:
+                    walk(x)
+        walk(m)
+        for ref in refs:
+            k = lib_kind.get(ref if isinstance(ref, str) else ref.get('id', ''), '')
+            b['events'] += 1
+            b['kinds'][k] += 1
+            b['general'] += k == 'GeneralField'
+    chapters = {c.get('number'): c for c in game.get('chapters', [])}
+    crows = []
+    for ch, b in by_chapter.items():
+        c = chapters.get(ch, {})
+        top = ', '.join(f"{KIND_VI.get(k, k)} ×{n}" for k, n in b['kinds'].most_common(5) if k)
+        crows.append([str(ch), e(str(c.get('title') or c.get('id') or '')), str(b['missions']), str(b['events']), str(b['general']), e(top)])
+    total = sum(b['events'] for b in by_chapter.values())
+    caps = rules.get('caps', {})
+    sight = rules.get('weatherSight', {})
+    return ("<div class='section'><h2>7c. Sự kiện trong nhiệm vụ và thoại trong trận (prompt 23)</h2>"
+            f"<p>Mỗi nhiệm vụ ghép từ thư viện sự kiện dạng dữ liệu ({len(events)} sự kiện, {len(set(x['kind'] for x in events))} loại); cả chiến dịch có {total} sự kiện. "
+            "Sự kiện kích hoạt theo thời gian, tiến độ nhiệm vụ, máu boss, số quân trên sân hoặc sau một sự kiện khác; chạy theo seed và vào chuỗi lệnh của trận "
+            "nên replay và checkpoint khôi phục đúng. Mọi sự kiện lớn được báo trước bằng thông báo ở mép trên, một câu thoại và mũi tên hướng trên bản đồ nhỏ; "
+            f"quân địch không bao giờ xuất hiện trong vòng {rules.get('nearSight', 45)} m quanh quân người chơi. Viện quân có trần riêng ngoài trần quân thường: "
+            f"{caps.get('enemy', '—')} xe địch, {caps.get('ally', '—')} xe Accord. Tướng địch rút lui khi còn {rules.get('retreatAt', 0.3) * 100:.0f}% máu, trừ ở trận cuối của mình; "
+            f"từ chương {rules.get('miniFrom', 4)} tướng ra trận bằng mini boss thay vì xe tinh nhuệ. Các con số là điểm khởi đầu, chờ đợt mô phỏng 5 seed.</p>"
+            "<h3>Viện quân theo độ khó</h3>"
+            + table(['Độ khó', 'Số hướng', 'Cảnh báo', 'Tiếp viện ta (so với một đợt địch)', 'Cỡ đợt địch', 'Có tinh nhuệ', 'Số đợt tiếp viện ta', 'Hộ tống tướng'], drows)
+            + "<h3>Viện quân theo tướng</h3>" + table(['Tướng', 'Thành phần', 'Cách tới', 'Xe tinh nhuệ', 'Chương cuối'], grows)
+            + f"<h3>Thư viện sự kiện ({len(events)})</h3>" + table(['Id', 'Loại', 'Kích hoạt', 'Tham số'], erows, 'dps')
+            + "<h3>Sự kiện theo chương</h3>" + table(['Chương', 'Tên', 'Số màn', 'Số sự kiện', 'Tướng ra trận', 'Loại dùng nhiều nhất'], crows, 'dps')
+            + "<h3>Tầm nhìn theo thời tiết</h3>" + table(['Thời tiết', 'Hệ số tầm nhìn'], [[e(k), f"×{v:g}"] for k, v in sight.items()])
+            + "<h3>Thoại trong trận</h3><p>Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, "
+            "địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, không chân dung, không lồng tiếng. Một câu một lúc, "
+            "theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng "
+            "hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ "
+            "dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện "
+            "làm trận chậm 0,5 lần trong khi 2–3 câu liên tiếp chạy: Hollow Dam, Venn mất bầy drone, Thorne phản bội, Thorne trên Typhon, Varga ngã xuống, Icarus rơi.</p>"
+            + "</div>")
+
+
 def commanders(game, h):
     """Section 12c (prompt 22 F): the player's commanders and the enemy generals' passives, as the game words them."""
     e, table = h['esc'], h['table']
