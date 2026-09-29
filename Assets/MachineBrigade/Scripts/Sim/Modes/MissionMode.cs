@@ -271,6 +271,8 @@ namespace MachineBrigade.Sim.Modes
                     boss.HpScale *= health;
                     boss.Hp = boss.MaxHp;
                 }
+                // Prompt 22 E: a duel's boss flies in its duel mode (no escorts, the duel's big attack, dark spells).
+                if (_def.Duel) world.Bosses.Duel(boss);
                 if (_def.Boss.Route.Count > 0)
                 {
                     // Prompt 20: the mission's route over the battlefield's own (Kronos's).

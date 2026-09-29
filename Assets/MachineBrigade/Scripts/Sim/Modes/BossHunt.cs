@@ -406,8 +406,14 @@ namespace MachineBrigade.Sim.Modes
             if (!_checkpointDue) return;
             _checkpointDue = false;
             var map = _rules.HomeMap ?? world.Map.Id;
-            var cut = map.IndexOf('_');
-            var carry = Carry(world, cut > 0 ? map.Substring(0, cut) : map);
+            // The map's id without its version (prompt 22 E's "veyra_old_quarter" has underscores of its own).
+            foreach (var suffix in new[] { "_conquest", "_sandbox", "_siege", "_long" })
+                if (map.EndsWith(suffix, StringComparison.Ordinal))
+                {
+                    map = map.Substring(0, map.Length - suffix.Length);
+                    break;
+                }
+            var carry = Carry(world, map);
             carry.Checkpoint = true;
             Checkpoint = carry;
             CheckpointsTaken++;

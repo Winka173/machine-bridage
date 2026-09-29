@@ -319,6 +319,15 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Where the player's side may go at the start (null: the whole map).</summary>
         public PlayArea? PlayArea { get; set; }
 
+        /// <summary>
+        /// Prompt 22 E: a duel (chapter 10's Hawk and Raven): the mission's boss flies in its duel mode (BossSystem.Duel), and
+        /// the player's deck is its aircraft only (<see cref="PlayerDeck"/> "air").
+        /// </summary>
+        public bool Duel { get; set; }
+
+        /// <summary>Prompt 22 E: what the player's deck is cut to for this mission: "air" (its aircraft only), or null (the deck as it is).</summary>
+        public string? PlayerDeck { get; set; }
+
         /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
         public bool Operation { get; set; }
 
@@ -595,6 +604,8 @@ namespace MachineBrigade.Sim.Content
                 Radio = ParseRadio(m),
                 Legacy = m.Has("legacy") ? m.String("legacy") : null,
                 Operation = m.Bool("operation", false),
+                Duel = m.Bool("duel", false),
+                PlayerDeck = m.Has("playerDeck") ? m.String("playerDeck") : m.Bool("duel", false) ? "air" : null,
                 Replay = m.Bool("replay", false),
                 TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
                 TargetRadius = m.Float("targetRadius", 40f),

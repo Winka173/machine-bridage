@@ -74,6 +74,10 @@ SHAPES = {
     'openpit':    (5.0, 8.0, 22.0, [(135, 24, 22), (0, 12, 12), (90, 12, 12)]),
     # A spaceport on a snowy plateau: the mountains close in beyond the pads and on the flanks.
     'orbitalgate': (3.0, 5.0, 24.0, [(135, 20, 16), (100, 12, 12), (170, 12, 12)]),
+    # Prompt 22 E. A walled works: straight, clean edges, the far corners of the yards trimmed.
+    'foundry':    (3.0, 3.0, 40.0, [(135, 14, 10, 'force'), (0, 8, 8)]),
+    # An old town inside its broken wall: the edge follows the old wall's line, a little ragged.
+    'veyra_old_quarter': (3.0, 4.0, 30.0, [(135, 16, 12, 'force'), (100, 8, 8)]),
 }
 
 KEEP_CAMP = 20.0

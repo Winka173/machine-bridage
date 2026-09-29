@@ -41,6 +41,19 @@ its commits.
   until the maps come), Behemoth Mk.0 and Morrigan (fought as the Behemoth and Spectre until then), Mara's Behemoth in
   the last battle.
 
+### Prompt 22 E: new maps and bosses
+
+- Two battlefields: Foundry (Hegemon's old tank works: solid blocks of sheds cut by narrow 10 m factory lanes, a walled
+  casting hall and two walled yards) and Veyra Old Quarter (the capital's old town: bending narrow streets, the
+  cathedral, market and clock squares). Conquest, Survival, Siege and long versions, labelled hardpoints, map
+  pictures, Guide entries, the skirmish list; both pass the access check and the stuck probe.
+- Behemoth Mk.0 · Prototype Behemoth (Varga): a mini boss made from the Behemoth's data alone (main gun, flank guns,
+  rocket pod; no flak, no protection system).
+- Morrigan · Raven's Fighter (Wolff): a new stealth-fighter model and mini boss; its salvo sends homing missiles at your
+  aircraft and guided bombs at your anti-air (break its bays in the warning to stop it). A duel mode for a mission
+  where you fly aircraft only: no escorts, and it goes dark now and then.
+- Mara's Behemoth: an allied Behemoth for the campaign's last battle, never a card.
+- Both new mini bosses are in the Boss Hunt and the full Boss Hunt.
 
 ### Play-test 6 bugs (DECISIONS 21B)
 

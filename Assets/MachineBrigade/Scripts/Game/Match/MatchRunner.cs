@@ -393,7 +393,8 @@ namespace MachineBrigade.Game.Match
 
             // The Sandbox has no deck along the bottom: its own screen places and calls everything.
             var cards = _menu ? null : kind == GameModeKind.Sandbox ? PlayerCommander.Cards(_world, new List<string>(), new List<string>())
-                : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
+                : PlayerCommander.Cards(_world, MissionDecks.Vehicles(catalog, mission, MatchSettings.DeckVehicles, PlayerProfile.IsUnlocked),
+                    MissionDecks.Supports(mission, MatchSettings.DeckSupports));
             var hudSpec = _session.Hud;
             if (!_menu)
             {

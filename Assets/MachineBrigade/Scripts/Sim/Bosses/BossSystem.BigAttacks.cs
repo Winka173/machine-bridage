@@ -81,9 +81,9 @@ namespace MachineBrigade.Sim.Bosses
 
         // ================================================================== joining
 
-        private void JoinBig(Vehicle v)
+        private void JoinBig(Vehicle v, BigAttackDef? instead = null)
         {
-            if (v.Def.BigAttack is not { } def || !v.HasParts && def.Strikes[0].Parts.Count > 0) return;
+            if ((instead ?? v.Def.BigAttack) is not { } def || !v.HasParts && def.Strikes[0].Parts.Count > 0) return;
             var parts = new List<int>();
             foreach (var s in def.Strikes)
                 foreach (var id in s.Parts)
@@ -291,6 +291,19 @@ namespace MachineBrigade.Sim.Bosses
                     aim = list[0];
                     return true;
                 }
+                case BigAim.Prey:
+                {
+                    // Prompt 22 E: the first of its prey (an aircraft, else an anti-air unit) within reach; with none, the biggest group.
+                    foreach (var st in def.Strikes)
+                    {
+                        if (st.Prey == BigPrey.None || Armed(v, st) == 0) continue;
+                        var prey = Prey(v, st, def.Reach, 1);
+                        if (prey.Count == 0) continue;
+                        aim = prey[0].Position;
+                        return true;
+                    }
+                    return Spot(v, def.Reach, false, out aim) > 0;
+                }
                 default:
                     return Spot(v, def.Reach, false, out aim) > 0;
             }
@@ -381,6 +394,39 @@ namespace MachineBrigade.Sim.Bosses
         private static bool Target(Vehicle v, Vehicle e, bool still) =>
             e.IsAlive && e.Team != v.Team && e.Team >= 0 && !e.Flying && !e.Invulnerable && !e.Def.Untargetable && !e.Def.Obstacle && !e.Def.Boss &&
             (!still || e.Def.Static || !e.IsMoving);
+
+        /// <summary>
+        /// Prompt 22 E: a homing strike's prey within <paramref name="reach"/> of the boss (0: anywhere), best first, at most
+        /// <paramref name="max"/>: aircraft the dearest first (then the nearest); anti-air (vehicles and towers whose main
+        /// weapon hits aircraft) the strongest first. A hidden stealth unit counts only once it is seen.
+        /// </summary>
+        internal List<Vehicle> Prey(Vehicle v, BigStrikeDef st, float reach, int max)
+        {
+            var list = new List<Vehicle>();
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Invulnerable || e.Def.Untargetable || e.Def.Obstacle || e.Def.Boss) continue;
+                if (reach > 0f && Vector2.DistanceSquared(e.Position, v.Position) > reach * reach) continue;
+                var fits = st.Prey switch
+                {
+                    BigPrey.Air => e.Flying,
+                    BigPrey.AntiAir => !e.Flying && e.Arms.Length > 0 && e.Arms[0].CanTarget(true) && Combat.CombatSystem.IsAntiAir(e.Arms[0]),
+                    _ => false,
+                };
+                if (fits && e.IsVisibleTo(v.Team)) list.Add(e);
+            }
+            list.Sort((a, b) =>
+            {
+                var pa = a.Def.CpCost + (a.Def.Static ? 4f : 0f);
+                var pb = b.Def.CpCost + (b.Def.Static ? 4f : 0f);
+                if (MathF.Abs(pa - pb) > 1e-3f) return pb.CompareTo(pa);
+                var da = Vector2.DistanceSquared(a.Position, v.Position);
+                var db = Vector2.DistanceSquared(b.Position, v.Position);
+                return da != db ? da.CompareTo(db) : a.Id.Value.CompareTo(b.Id.Value);
+            });
+            if (list.Count > max) list.RemoveRange(max, list.Count - max);
+            return list;
+        }
 
         /// <summary>The other side's base for a volley: its HQ, its towers (the toughest first), then its biggest groups.</summary>
         private List<Vector2> BaseSpots(Vehicle v, int count)
@@ -942,17 +988,22 @@ namespace MachineBrigade.Sim.Bosses
 
         private void Swarm(Vehicle v, BigAttackState s, BigStrikeDef st, int n, float scale, double now)
         {
-            // Its targets: the heaviest armour in the group first (it strikes the roof), at most so many.
+            // Its targets: the heaviest armour in the group first (it strikes the roof), at most so many; a strike with
+            // prey (prompt 22 E) takes its prey within the attack's reach, and the group round the aim only with none.
             _picked.Clear();
             var area = MathF.Max(8f, st.Area);
-            foreach (var e in _world.VehicleList)
-                if (Target(v, e, false) && Vector2.DistanceSquared(e.Position, s.Aim) <= area * area) _picked.Add(e);
-            _picked.Sort((a, b) =>
+            if (st.Prey != BigPrey.None) _picked.AddRange(Prey(v, st, s.Def.Reach, st.Targets));
+            if (_picked.Count == 0)
             {
-                var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
-                var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
-                return pa != pb ? pb.CompareTo(pa) : a.Id.Value.CompareTo(b.Id.Value);
-            });
+                foreach (var e in _world.VehicleList)
+                    if (Target(v, e, false) && Vector2.DistanceSquared(e.Position, s.Aim) <= area * area) _picked.Add(e);
+                _picked.Sort((a, b) =>
+                {
+                    var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
+                    var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
+                    return pa != pb ? pb.CompareTo(pa) : a.Id.Value.CompareTo(b.Id.Value);
+                });
+            }
             var targets = Math.Min(_picked.Count, st.Targets);
             for (var k = 0; k < n; k++)
             {

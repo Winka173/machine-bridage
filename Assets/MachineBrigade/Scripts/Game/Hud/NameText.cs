@@ -27,6 +27,9 @@ namespace MachineBrigade.Game.Hud
             ["name.quaden"] = ("Raven", "Raven"),
             ["name.lamthanh"] = ("Veyra", "Veyra"),
             ["name.bagia"] = ("Matilda", "Matilda"),
+            // Prompt 22 E: the two new battlefields' names (the same in both languages).
+            ["name.foundry"] = ("Foundry", "Foundry"),
+            ["name.veyra_old_quarter"] = ("Veyra Old Quarter", "Veyra Old Quarter"),
         };
 
         /// <summary>

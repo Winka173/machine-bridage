@@ -8860,3 +8860,138 @@ missions by the story's pace). The story is summed up, chapter by chapter and mi
 - Runs: the new tests with the Prompt20Campaign, CampaignStart and L10n filters (and UiLanguage): 46 of 47
   (a duplicate `radio.betrayal`, fixed), then 50 of 50 with RadioDirector added; CampaignTests' data and shape tests with Prompt20Hunt's: 16 of 16.
   The 5-seed campaign runs wait for the testing phase.
+
+
+## 22E. Prompt 22 E: new maps and bosses (2026-09-30)
+
+Section E of `Docs/prompts/prompt22_vi.txt`, the new content only, on feature/p22-content from lead/integration 55aa1a6.
+The campaign's structure and placement, the renames and the story are P22-story's; the Commander system is
+P22-commanders'. Nothing of theirs is touched: no mission of campaign.json names the new content yet.
+
+### E.1-2 Two battlefields
+
+- **Ids** `foundry` and `veyra_old_quarter` (the brief's). The underscores are safe: the tools split versions with
+  `rpartition('_')` and the game strips the known suffixes; the one place that cut at the first `_` (the hunt's
+  checkpoint, `BossRushMode.HuntRestOver`) now strips `_conquest/_sandbox/_siege/_long` instead.
+- **Names through NameText.** `name.foundry` ("Foundry") and `name.veyra_old_quarter` ("Veyra Old Quarter"), the same in
+  both languages; `map.<id>` reads `{@<id>}`, so a later rename is one entry. The map words (`map.*`, `.sub`,
+  `guide.map.*`) sit at the end of `BossText` with the bosses' (as prompt 20's hunt words did), so the story pass's
+  renames of `Strings`/`GuideText` and these additions never touch the same lines.
+- **Foundry** (theme urban): Hegemon's old tank works. A grid of 10 m factory lanes (8.6 m of floor between the
+  buildings, four nav cells) cuts the ground into solid blocks of factories, warehouses, sheds, container stacks, tanks
+  and silos (`city_block`, one mass per block): every way across is a narrow passage. "Indoor" is drawn as walled halls
+  on open floors (the camera sees no roofs): the casting hall at the centre (the town point) walled round and opened
+  only where the four lanes run in, furnaces and ladles on the floor between the lanes; the press shop (west point)
+  and its image the rolling mill (east point) are walled yards with one 16 m doorway a side, off-centre so the
+  gantry crane and presses stand clear of them. The outer lanes stop short of the camps' yards (the HQ stands behind
+  the rally, where they crossed).
+- **Veyra Old Quarter** (theme urban): the capital's old town. Six 10 m streets each way, jogging 3 m every 36 m (the
+  old plots they bend round), townhouses, stone houses (offices), shops, cottages and sheds; the cathedral square at
+  the centre (the church on its north side, the old town hall facing it), the market square (west) and the clock
+  square (east), four small piazzas, lamps and stalls, the old wall's broken pieces on the edge. Nothing solid stands
+  in a street (only parked cars, which do not block).
+- **Siege versions.** Both dense maps build their Siege version with `siege=True` (`build_maps.SIEGE_OWN`, as Lighthouse
+  Bay): the blocks of the fortress's ground (beyond the first lanes in the north-east) stay open and only their images
+  are built, and the Foundry leaves out the casting hall's walls. Unblock-yourself choice: with the blocks built the
+  fortress could not reach its gates or place its relays (the first build said so); the fortress builds its own walls.
+- **Versions and checks.** Conquest, Survival and Siege from `build_maps.py` (`MAPS_P22`, `WAR_P22`, `DENSIFY_P22`, two
+  `boundary.SHAPES`), the long battlefield from `longmap.py`, the menu pictures from `map_thumbs.py`, both in
+  `MatchSettings.AllMaps` (skirmish, Survival, the Base screen, the weekly draw and the Boss Hunt, which fights on the
+  chosen battlefield). Camps 2/3/6 large/medium/small towers and 3 utilities a side, labelled by `SlotPlaces` as every
+  square map; outposts 2/1/2 on the Foundry (the casting hall's floor has room for one) and 2/2/2 on the Old Quarter;
+  the long bases 28 hardpoints each. `check_access`: 6/6 files pass (_conquest, _siege, _long of both). The Battlefields
+  tab of the dossier (19N) lists them from `AllMaps` with their guide.
+- Every other map's files are unchanged.
+
+### E.3 Behemoth Mk.0 · Behemoth nguyên mẫu (Varga)
+
+Data only, by the variant rules of 19E: `variantOf: behemoth`, size 0.7, keeps the main gun, the two 120 mm flank guns
+and the rocket pod (4 parts, 50 % of the body), `aps: null` (with its part gone the protection system would otherwise
+run for ever), front armour 3, speed 2.2, a primer tint, mark and name `mk0` (the prototype met before the Behemoth).
+No flak and no missiles: aircraft and missiles are the answer to it. Big attack `behemoth_mk0_barrage` from the
+Behemoth's barrage with four rounds (two pairs); the mini rank scales it. It comes after Mk.II in balance.json, so the
+Behemoth's mini version (the Sandbox's switch, `MiniVariant`) stays Mk.II.
+
+### E.3 Morrigan · Tiêm kích của Raven (Wolff)
+
+- **Model** `morrigan` (`Tools/blender/mb_p22_content.py`, 20.6 x 13.4 m, scale 0.62 in game, 1 312 triangles), from
+  real stealth fighters: the Northrop YF-23 Black Widow II (the diamond wing, the two tails canted out 50 degrees, the
+  exhaust troughs over the rear deck, the long flat-sided nose), the Su-57's tandem main bays between the intakes, and
+  a raven's look (a blade nose, a dark body with the army's colour on wings and tails, a feathered trailing edge). Boss
+  parts `Part_bay_l/r` (a missile each, `Muzzle_missile`, `Muzzle_missile.001`), `Part_bomb_bay` (`Muzzle_bomb`),
+  `Part_engines`; the cannon's `Muzzle_gun` on the left shoulder.
+- **Data**: a mini boss on the aircraft frame, fixed-wing, `stealth` (the aircraft rule: seen at 0.4 of a spotter's
+  sight unless it fired in the last 2.5 s), speed 44 (the fighters 40), air-to-air missiles in both bays, the guided
+  bomb, the cannon; `interceptor` and `sead` as the stealth fighter, so it hunts aircraft and then air defences.
+  7 400 hp before the mini share, armour 1.
+- **Its big attack** `morrigan_salvo` (prompt 18's rules: 3.5 s warning, 50 s cooldown, x1.3 as a mini; stopped by
+  breaking the carrying parts during the warning, cut by `abortDamage` 0.1, delayed 2 s by an EMP): six homing
+  air-to-air missiles from the two bays at up to six of the player's aircraft and two guided bombs from the centre bay
+  on the strongest anti-air. New in the library (`BigAttackDefs`): a swarm strike's `prey` (`air`: the other side's
+  aircraft, the dearest first; `antiAir`: its vehicles and towers whose main weapon hits aircraft) picked within the
+  attack's reach and only if seen (`BossSystem.Prey`), and the aim `prey` (the first prey, else the biggest group).
+  With no prey a strike falls on the ground group round its aim as before. Homing rounds leave no ring to step out of:
+  the answer is the interrupt, anti-air and point defence shooting them down (`Intercepted`), and spreading out.
+- **Duel mode** (`duel` in its data, `BossSystem.Duel`): a mission with `"duel": true` puts its boss into it on spawn:
+  its escorts go home, its big attack becomes `morrigan_duel_salvo` (the missiles only, 42 s), and it goes dark at 70 %
+  and 40 % of its health and every 45 s: 6 s of held fire and flares, so its stealth hides it again beyond close range
+  (radio `radio.quaden.morrigan.duel` / `.dark`). The same flag cuts the player's deck (`MissionDef.PlayerDeck` "air",
+  `Game/Match/MissionDecks`): its aircraft only, topped up to three from the unlocked fighters (the fighter jet always),
+  and no support cards (aircraft against aircraft). Chapter 10's duel mission is the story pass's to write; its
+  required commander (Hawk) is the Commander agent's.
+
+### E.4 Mara's Behemoth
+
+`mara_behemoth`: the Behemoth's model in the player's colours with a cold tint and `mark: accord`, the Behemoth's
+weapons (main gun, 120 mm, two flak, two missile racks, the protection system), 6 000 hp, not a boss (no bar, no
+parts). New flag `storyOnly`: never a card (`card` false), never bought or picked by an AI, `PlayerProfile.Unlock`
+refuses it, the Sandbox's palette never offers it, and it is in no card list. A mission places it with the existing
+`ally` block (`{"x", "z", "units": [{"def": "mara_behemoth", ...}]}`), whose allied AI drives it; the test fails if
+any mission outside chapter 12 names it. Placing it in chapter 12's final battle is the story pass's.
+
+### E.5 The Boss Hunts
+
+The hunts take every chapter slot of the chapters switched on (19N). Until the story pass lists the new minis in a
+chapter, `BossHunts.Unslotted` brings them in story order: Behemoth Mk.0 after chapter 3 (interlude I), Morrigan after
+chapter 9 (interlude III), each only while that chapter is on; once a chapter lists one, its slot wins. So the full
+hunt grows by two and the week's draw can pick them (both came up within the year's weeks tested). The old Boss Rush
+kinds gain the pair.
+
+### Strings (prompt 21's rules)
+
+Both languages, named placeholders, proper names through NameText (`{@foundry}`, `{@veyra_old_quarter}`, `{@mai}` for
+Mara); "Morrigan" joins `NameText.Kept` with the other bosses' code names. Keys: `unit/boss/short/note/bossfile/guide/
+guide.parts.tip` for both bosses, `unit/short/note.mara_behemoth`, the radio lines, both salvos' and the barrage's
+words, `guide.bigattack.target.air/.aironly`.
+
+### Tests
+
+One run of the targeted filter after a clean compile (94 tests): `Prompt22ContentTests` (8: the maps' versions, labels,
+names, guide and picture; Behemoth Mk.0 by data alone; Morrigan's data and stealth; its salvo's prey, warning,
+rounds, cooldown and interrupts; the duel mode; the duel's aircraft deck and the mission flag; Mara's Behemoth never a
+card and only in chapter 12; both minis in the hunts), `MapConnectivityTests` and `StuckTests` (the six-minute AI
+battle, the short stuck probe) on both maps, `VehicleLodTests` (6), `ModelTests`, `BossPartsTests`, `Prompt20HuntTests`
+(9), and the two boss-list tests. 86 passed. Mine failed once: the salvo test read the prey before the world had
+stepped (a unit is seen once the sight is worked out); fixed, and `Prompt22ContentTests` rerun: 8/8. The other seven
+failures touch nothing of this work (not rerun on the base branch): `ModelTests` muzzle counts of mobile_fortress, heavy_aa,
+gunship_heli and fighter_jet, `GearModelTests.AnOldSaveMigratesWithNothingLost` (caught by the filter's "ModelTests"),
+and `BossPartsTests`' Behemoth share and shooter tests (the Behemoth's own parts). `check_access` on both maps' six files: 6/6.
+
+### For the testing phase
+
+- 5 seeds of Behemoth Mk.0 and Morrigan kill times on Normal (mini 1.5-3 min), Morrigan against an air-heavy and a
+  ground-only deck (its fallback aim), and the duel against three fighters with Hawk.
+- `StuckBatch` on both maps, every version (conquest, sandbox, siege, long), both sides, 5 seeds; `BaseSiteTests`,
+  `TrafficTests`, `MapRouteTests` with the two maps added to their lists; `ConquestBattleTests` on them.
+- With graphics: card renders and in-action clips of the two bosses, `BaseMapShots`, a look at both maps' density.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (three vehicles after argus, three big attacks after argus_fire_call), `BigAttackDefs`,
+`BossSystem.BigAttacks` (JoinBig's override, the prey aim and targets), `BossSystem.cs` (one line), `Vehicle` (duel
+fields), `MissionDef` (`duel`, `playerDeck`), `MissionMode` (one line), `Catalog.Extra` (two calls), `BossHunt.cs`,
+`SiegeModes` (Kinds), `SandboxAccess`, `MatchRunner` (the deck line), `MatchSettings` (two maps), `PlayerProfile`
+(Unlock), `BossHunts`, `BossText`, `NameText`, `build_maps.py`, `boundary.py`, `build_assets.py`, `models.json`, the
+test lists (`BossPartsTests`, `Prompt20BossTests`, `Prompt20HuntTests`, `ModelTests`). New: `Catalog.P22.cs`,
+`BossSystem.P22.cs`, `MissionDecks.cs`, `mb_p22_content.py`, `Prompt22ContentTests.cs`, the maps' files and pictures,
+`morrigan.glb`.

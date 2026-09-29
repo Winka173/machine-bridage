@@ -80,6 +80,7 @@ namespace MachineBrigade.Sim.Bosses
             StepBig(now, dt);
             StepTiers(now);
             StepP20(now, dt);
+            StepDuels(now);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }

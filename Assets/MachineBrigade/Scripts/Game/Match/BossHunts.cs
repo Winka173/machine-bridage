@@ -54,9 +54,32 @@ namespace MachineBrigade.Game.Match
                         foreach (var b in Campaign.BossesOf(m))
                             Add(b.Def);
                     foreach (var id in slots) Add(id);
+                    // Prompt 22 E: a new mini boss no chapter lists yet comes after the chapter its interlude follows.
+                    foreach (var (id, after) in Unslotted)
+                        if (after == chapter.Number && !seen.Contains(id) && !Listed(id) && catalog.Vehicles.TryGetValue(id, out var def) && def.Boss &&
+                            seen.Add(id))
+                            list.Add(new HuntBoss(id, false, chapter.Number));
                 }
                 return list;
             }
+        }
+
+        /// <summary>
+        /// Prompt 22 E (DECISIONS 22E): the new mini bosses and the chapter whose interlude they fight in (Behemoth Mk.0 in
+        /// interlude I after chapter 3, Morrigan in interlude III after chapter 9), for the hunts until the campaign lists
+        /// them in a chapter's slots; once it does, the slot wins and this is not used.
+        /// </summary>
+        public static readonly (string id, int after)[] Unslotted = { ("behemoth_mk0", 3), ("morrigan", 9) };
+
+        private static bool Listed(string id)
+        {
+            foreach (var chapter in Campaign.Chapters)
+            {
+                if (chapter.Main == id) return true;
+                foreach (var mini in chapter.Minis)
+                    if (mini == id) return true;
+            }
+            return false;
         }
 
         /// <summary>A boss that runs on rails (the train frame): only its own mission's line suits it.</summary>
