@@ -1,0 +1,16 @@
+{
+  "map": "metrocity",
+  "mode": "Endless",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 1ad0f1f4 app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 417, "def": "aa_vehicle", "team": 0, "startTick": 1540, "start": 77, "end": 86, "seconds": 9, "x": 96.632, "y": 98.061, "goalX": 101, "goalY": 79, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#418 moving", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@9.0 repair_bay(fixed)@8.5 aa_vehicle(moving)@5.5 aa_vehicle(moving)@7.2 siege_tank(moving)@4.5 main_battle_tank(moving)@7.0"},
+    {"vehicle": 416, "def": "aa_vehicle", "team": 0, "startTick": 2140, "start": 107, "end": 119, "seconds": 12, "x": 82.712, "y": 102.001, "goalX": 91, "goalY": 97, "order": "Move", "cause": "YieldWait", "detail": "behind mlrs#438", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@4.7 aa_vehicle(parked)@9.5 aa_vehicle(moving)@4.9 aa_vehicle(moving)@7.8 main_battle_tank(moving)@3.6 mlrs(moving)@3.4 ifv(moving)@7.0 scout_jeep(moving)@6.1 base_wall@6"},
+    {"vehicle": 499, "def": "main_battle_tank", "team": 0, "startTick": 5400, "start": 270, "end": 281, "seconds": 11, "x": 53.027, "y": 63.331, "goalX": 33.919, "goalY": 35.085, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "main_battle_tank#497 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@4.9 siege_tank(moving)@6.5 main_battle_tank(moving)@3.8 ifv(moving)@9.4"},
+    {"vehicle": 529, "def": "aa_vehicle", "team": 0, "startTick": 6510, "start": 325.5, "end": 334, "seconds": 8.5, "x": 44.82, "y": 104.422, "goalX": 51.481, "goalY": 120.189, "order": "AttackMove", "cause": "YieldWait", "detail": "behind main_battle_tank#557", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "light_tank(parked)@5.2 main_battle_tank(moving)@7.6 base_wall@9 shield_generator@8"}
+  ],
+  "rescues": []
+}

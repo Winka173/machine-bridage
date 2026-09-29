@@ -114,8 +114,8 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>
         /// The turn a detour round a hull adds to the heading: its chosen side, or the other when
-        /// that side runs the nose into a wall within a couple of metres, or none when both do
-        /// (then it keeps to its route and the traffic rules sort the hull out). A titan steering
+        /// that side runs the nose into a wall just ahead and the other does not (both closed: the
+        /// chosen side, as before; steering straight on pushed into the hull and cost route searches). A titan steering
         /// round a parked friend into the fortress wall stood there, its nose off the waypoint, and
         /// never pivoted back (prompt 12).
         /// </summary>
@@ -127,7 +127,7 @@ namespace MachineBrigade.Sim.Movement
                 v.AvoidSide = -v.AvoidSide;
                 return -turn;
             }
-            return 0f;
+            return turn;
         }
 
         private bool OpenTowards(Vehicle v, float heading)

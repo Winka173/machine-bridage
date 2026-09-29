@@ -1,0 +1,6 @@
+mode,map,seed,config,minutes,result,stuck8,stuck10,worst_s,rescues,wall_s
+Siege,ashfield,1,full,4.8,won,1,0,9,0,3
+Siege,capital,1,obstacles,6.9,won,5,2,11,0,5
+Siege,metrocity,1,light,3.3,won,1,0,10,0,2
+Siege,landingbeach,1,full,5.6,won,1,0,10,0,4
+Siege,swamp,1,obstacles,6.3,won,5,4,29,5,4

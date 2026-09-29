@@ -1,0 +1,19 @@
+{
+  "map": "greenvale",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 667412d4 map dd0f3183 app 0.1.0",
+  "ticks": 7181,
+  "journal": [],
+  "records": [
+    {"vehicle": 598, "def": "siege_tank", "team": 0, "startTick": 2510, "start": 125.5, "end": 135.5, "seconds": 10, "x": 7.995, "y": 48.396, "goalX": 6.663, "goalY": 60.014, "order": "Move", "cause": "YieldWait", "detail": "behind siege_tank#615", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.0 ruin_tower@8"},
+    {"vehicle": 606, "def": "armored_bulldozer", "team": 0, "startTick": 2810, "start": 140.5, "end": 161.5, "seconds": 21, "x": 124, "y": 43.51, "goalX": 128, "goalY": 54, "order": "Attack", "cause": "OffRoute", "detail": "to (125.0,47.0) past base_wall", "area": "fortress+gate", "lanes": "narrow+nopark", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@4.5 titan_tank(parked)@7.4 base_wall@7 floodlight_mast@6"},
+    {"vehicle": 618, "def": "armored_bulldozer", "team": 0, "startTick": 3000, "start": 150, "end": 161.5, "seconds": 11.5, "x": 124, "y": 36.501, "goalX": 128, "goalY": 54, "order": "Attack", "cause": "OffRoute", "detail": "to (125.0,47.0) past base_wall", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@5.7 heavy_tank(parked)@6.7 titan_tank(parked)@8.6 base_wall@7"},
+    {"vehicle": 634, "def": "armored_bulldozer", "team": 0, "startTick": 3160, "start": 158, "end": 167, "seconds": 9, "x": -76.767, "y": -91.045, "goalX": 63, "goalY": 82, "order": "Attack", "cause": "BlockedByDefence", "detail": "aa_turret#590 parked", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_turret(fixed)@4.9 heavy_tank(moving)@6.5"},
+    {"vehicle": 610, "def": "titan_tank", "team": 0, "startTick": 3270, "start": 163.5, "end": 172, "seconds": 8.5, "x": 91.051, "y": 32.494, "goalX": 95, "goalY": 52, "order": "Idle", "cause": "Unknown", "detail": "speed 0.7 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "base_wall@8 base_wall@9 floodlight_mast@6"},
+    {"vehicle": 620, "def": "turtle_tank", "team": 1, "startTick": 3410, "start": 170.5, "end": 179, "seconds": 8.5, "x": 121.19, "y": 143.686, "goalX": 86.038, "goalY": 104.069, "order": "Move", "cause": "BlockedByFriend", "detail": "bmpt#629 moving", "area": "fortress", "lanes": "narrow", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(moving)@5.3 bmpt(moving)@5.0 base_wall@10"},
+    {"vehicle": 610, "def": "titan_tank", "team": 0, "startTick": 3600, "start": 180, "end": 199, "seconds": 19, "x": 109.534, "y": 35.973, "goalX": 95, "goalY": 52, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#616 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(parked)@9.6 titan_tank(parked)@7.3 base_wall@7"}
+  ],
+  "rescues": []
+}

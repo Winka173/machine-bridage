@@ -1,0 +1,133 @@
+  t556.0 #568 siege_tank (-22.6,-27.5) h-138 v1.8 Move->(-21,-37) path 0/1 next (-21.5,-36.5) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t556.0 #573 siege_tank (3.7,-22.0) h-130 v3.1 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t556.5 #568 siege_tank (-23.1,-27.9) h-144 v0.9 Move->(-21,-37) path 0/1 next (-21.5,-36.5) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t556.5 #573 siege_tank (2.4,-23.0) h-123 v3.3 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t557.0 #568 siege_tank (-23.4,-27.9) h-146 v0.6 Move->(-21,-37) path 0/1 next (-21.5,-36.5) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t557.0 #573 siege_tank (1.1,-24.2) h-134 v3.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t557.5 #568 siege_tank (-23.5,-28.0) h-147 v0.6 Move->(-21,-37) path 0/1 next (-21.5,-36.5) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t557.5 #573 siege_tank (-0.3,-25.1) h-115 v3.3 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t557.75 #568 (-23.5,-28.1) ClearPath | ClearPath < DetectStuck < Drive < Step
+t557.80 #568 (-23.5,-28.0) SetOrder Idle <0, 0> | SetOrder < UpdateOrder < Step < Step
+  t558.0 #568 siege_tank (-23.6,-27.9) h-147 v0.0 Idle->(0,0) path 0/0 next (-23.6,-27.9) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t558.0 #573 siege_tank (-2.0,-25.6) h-96 v3.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t558.5 #568 siege_tank (-23.6,-27.8) h-147 v0.0 Idle->(0,0) path 0/0 next (-23.6,-27.8) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t558.5 #573 siege_tank (-3.5,-25.7) h-85 v2.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t559.0 #568 siege_tank (-23.6,-27.9) h-147 v0.0 Idle->(0,0) path 0/0 next (-23.6,-27.9) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t559.0 #573 siege_tank (-4.8,-25.3) h-66 v3.4 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t559.5 #568 siege_tank (-23.4,-28.2) h-147 v0.0 Idle->(0,0) path 0/0 next (-23.4,-28.2) goal (-21,-37) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t559.5 #573 siege_tank (-6.4,-24.8) h-77 v3.3 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t559.50 #568 (-23.4,-28.2) SetOrder Move <-13.12131, -24.66449> | SetOrder < IssueGroupMove < Apply < Submit
+t559.50 #568 (-23.4,-28.2) SetPath 1 to <-13.12131, -24.66449> | SetPath < FindPath < PathTo < IssueGroupMove
+  t560.0 #568 siege_tank (-23.7,-29.0) h-166 v0.5 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t560.0 #573 siege_tank (-8.0,-24.1) h-58 v3.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t560.5 #568 siege_tank (-24.1,-29.8) h175 v1.5 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t560.5 #573 siege_tank (-9.5,-23.5) h-77 v3.1 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.0 #568 siege_tank (-24.2,-30.1) h156 v0.8 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t561.0 #573 siege_tank (-11.2,-23.4) h-96 v3.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.5 #568 siege_tank (-24.3,-30.5) h137 v0.9 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t561.5 #573 siege_tank (-12.8,-23.9) h-111 v2.9 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t562.0 #568 siege_tank (-24.2,-30.8) h118 v0.6 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t562.0 #573 siege_tank (-13.8,-24.5) h-130 v2.7 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t562.5 #568 siege_tank (-23.7,-30.9) h102 v0.8 Move->(-13,-25) path 0/1 next (-13.1,-24.7) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t562.5 #573 siege_tank (-14.6,-25.0) h-149 v1.3 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t562.60 #568 (-23.6,-30.9) Costed route round #595: 2 points, 12 m | ApplyCostedPath < RunPathQueue < Step < Step
+t562.60 #568 (-23.6,-30.9) SetPath 2 to <-13.12131, -24.66449> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t563.0 #568 siege_tank (-23.4,-31.0) h83 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t563.0 #573 siege_tank (-14.9,-25.0) h-153 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t563.5 #568 siege_tank (-22.6,-31.1) h64 v1.3 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t563.5 #573 siege_tank (-15.0,-25.3) h-152 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.0 #568 siege_tank (-21.6,-30.9) h80 v1.4 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.0 #573 siege_tank (-15.2,-25.7) h-149 v0.7 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.5 #568 siege_tank (-21.3,-31.2) h75 v0.7 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.5 #573 siege_tank (-15.2,-25.6) h-149 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.0 #568 siege_tank (-21.3,-31.0) h76 v0.6 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.0 #573 siege_tank (-15.0,-25.5) h-150 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.5 #568 siege_tank (-21.3,-31.0) h75 v0.6 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.5 #573 siege_tank (-15.0,-25.5) h-150 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t566.00 #573 (-14.9,-25.5) Costed route round #568: 1 points, 7 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t566.0 #568 siege_tank (-21.2,-31.0) h75 v0.6 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.0 #573 siege_tank (-14.9,-25.5) h-149 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.5 #568 siege_tank (-21.2,-31.0) h74 v0.6 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.5 #573 siege_tank (-14.8,-25.5) h-149 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.0 #568 siege_tank (-21.1,-31.0) h74 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.0 #573 siege_tank (-14.7,-25.5) h-149 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t567.25 #568 (-21.1,-31.0) Costed route round #573: 1 points, 10 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t567.5 #568 siege_tank (-21.1,-31.0) h73 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.5 #573 siege_tank (-14.6,-25.5) h-149 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.0 #568 siege_tank (-21.0,-31.0) h73 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.0 #573 siege_tank (-14.4,-25.6) h-148 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.5 #568 siege_tank (-21.0,-31.0) h72 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.5 #573 siege_tank (-14.3,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.0 #568 siege_tank (-20.9,-31.1) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.0 #573 siege_tank (-14.2,-25.7) h-146 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.5 #568 siege_tank (-20.9,-31.1) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.5 #573 siege_tank (-14.3,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t570.0 #568 siege_tank (-20.9,-31.0) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t570.0 #573 siege_tank (-14.3,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t570.5 #568 siege_tank (-20.9,-31.0) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t570.5 #573 siege_tank (-14.3,-25.6) h-148 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t571.0 #568 siege_tank (-20.9,-31.0) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t571.0 #573 siege_tank (-14.3,-25.6) h-148 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t571.5 #568 siege_tank (-20.9,-31.0) h71 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t571.5 #573 siege_tank (-14.2,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t572.0 #568 siege_tank (-20.9,-31.0) h72 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t572.0 #573 siege_tank (-14.2,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t572.20 #573 (-14.2,-25.7) Costed route round #568: 1 points, 7 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t572.5 #568 siege_tank (-20.9,-30.9) h72 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t572.5 #573 siege_tank (-14.1,-25.7) h-147 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t573.0 #568 siege_tank (-20.9,-30.9) h72 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t573.0 #573 siege_tank (-14.1,-25.8) h-146 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t573.45 #568 (-20.9,-30.8) Costed route round #573: 1 points, 10 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t573.5 #568 siege_tank (-20.9,-30.8) h73 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t573.5 #573 siege_tank (-14.0,-25.9) h-145 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t574.0 #568 siege_tank (-21.0,-30.7) h73 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t574.0 #573 siege_tank (-13.9,-25.9) h-144 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t574.5 #568 siege_tank (-21.0,-30.6) h74 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t574.5 #573 siege_tank (-13.8,-26.0) h-143 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t575.0 #568 siege_tank (-21.0,-30.6) h75 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t575.0 #573 siege_tank (-13.7,-26.2) h-142 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t575.5 #568 siege_tank (-21.0,-30.4) h76 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t575.5 #573 siege_tank (-13.6,-26.3) h-141 v0.5 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t576.0 #568 siege_tank (-20.9,-30.3) h76 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t576.0 #573 siege_tank (-13.4,-26.4) h-140 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t576.5 #568 siege_tank (-20.9,-30.2) h77 v0.4 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t576.5 #573 siege_tank (-13.3,-26.6) h-139 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t577.0 #568 siege_tank (-21.0,-30.1) h78 v0.2 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t577.0 #573 siege_tank (-13.2,-26.8) h-137 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t577.5 #568 siege_tank (-21.0,-30.1) h79 v0.4 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t577.5 #573 siege_tank (-13.2,-27.0) h-136 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t578.0 #568 siege_tank (-20.9,-30.3) h76 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t578.0 #573 siege_tank (-13.0,-27.3) h-134 v0.6 Move->(-20,-30) path 0/2 next (-21.0,-27.0) goal (-20,-30) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t578.5 #568 siege_tank (-20.9,-30.2) h76 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t578.5 #573 siege_tank (-13.0,-27.5) h-136 v0.7 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t579.0 #568 siege_tank (-21.1,-30.3) h78 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t579.0 #573 siege_tank (-13.4,-27.2) h-138 v0.7 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t579.5 #568 siege_tank (-21.4,-30.5) h80 v0.5 Move->(-13,-25) path 0/2 next (-19.0,-27.0) goal (-13,-25) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 573 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t579.5 #573 siege_tank (-13.9,-26.9) h-141 v0.6 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t580.0 #568 siege_tank (-21.6,-30.7) h91 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t580.0 #573 siege_tank (-14.4,-27.0) h-142 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t580.5 #568 siege_tank (-22.0,-31.0) h91 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t580.5 #573 siege_tank (-14.3,-27.8) h-132 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t581.0 #568 siege_tank (-22.1,-31.0) h92 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t581.0 #573 siege_tank (-14.1,-28.2) h-129 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t581.50 #573 (-13.8,-28.5) Costed route round #568: 1 points, 6 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t581.5 #568 siege_tank (-22.0,-30.9) h93 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t581.5 #573 siege_tank (-13.8,-28.6) h-125 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t582.0 #568 siege_tank (-22.0,-30.8) h93 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t582.0 #573 siege_tank (-13.6,-29.0) h-121 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t582.5 #568 siege_tank (-22.0,-30.7) h94 v0.5 Move->(-13,-25) path 0/3 next (-18.7,-27.7) goal (-13,-25) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t582.5 #573 siege_tank (-13.6,-29.2) h-120 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t582.75 #568 (-22.0,-30.7) ClearPath | ClearPath < GiveUp < OnNoProgress < DetectStuck
+t582.75 #568 (-22.0,-30.7) SetPath 1 to <-25.39956, -26.41597> | SetPath < FindPath < PathTo < GiveUp
+  t583.0 #568 siege_tank (-21.9,-30.6) h85 v0.6 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t583.0 #573 siege_tank (-13.4,-29.4) h-119 v0.0 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t583.5 #568 siege_tank (-21.5,-30.1) h66 v1.4 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t583.5 #573 siege_tank (-13.3,-29.5) h-104 v0.0 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t584.0 #568 siege_tank (-21.2,-29.1) h47 v1.8 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t584.0 #573 siege_tank (-13.3,-29.5) h-85 v0.0 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t584.5 #568 siege_tank (-21.2,-28.0) h28 v1.8 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t584.5 #573 siege_tank (-13.5,-29.5) h-71 v0.5 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t585.0 #568 siege_tank (-21.3,-26.7) h9 v1.8 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t585.0 #573 siege_tank (-14.0,-29.3) h-71 v1.0 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t585.5 #568 siege_tank (-21.4,-25.5) h-10 v2.5 Move->(-13,-25) path 0/1 next (-25.4,-26.4) goal (-25,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Route target 0 engaged 0
+  t585.5 #573 siege_tank (-14.2,-29.2) h-71 v0.0 Move->(-20,-30) path 0/3 next (-19.4,-27.5) goal (-20,-30) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 568 hold 0.0 rev 0.0 lanes None target 0 engaged 0

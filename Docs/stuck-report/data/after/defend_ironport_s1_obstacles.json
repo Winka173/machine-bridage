@@ -1,0 +1,24 @@
+{
+  "map": "ironport",
+  "mode": "Defend",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 1266ceae app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 516, "def": "main_battle_tank", "team": 0, "startTick": 3360, "start": 168, "end": 177, "seconds": 9, "x": 86.001, "y": 96.187, "goalX": 71.023, "goalY": 59.895, "order": "AttackMove", "cause": "OffRoute", "detail": "to (85.0,103.0) past base_wall", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "heavy_turret(fixed)@7.2 heavy_tank(moving)@7.1 aa_vehicle(moving)@7.4 aa_vehicle(moving)@4.6 aa_vehicle(moving)@9.7 base_wall@9 base_wall@3"},
+    {"vehicle": 535, "def": "aa_vehicle", "team": 0, "startTick": 3490, "start": 174.5, "end": 185.5, "seconds": 11, "x": 86.001, "y": 99.499, "goalX": 62.511, "goalY": 65.583, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#534 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "heavy_turret(fixed)@9.9 heavy_tank(moving)@9.2 aa_vehicle(moving)@3.4 aa_vehicle(moving)@4.7 siege_tank(moving)@9.9 base_wall@4"},
+    {"vehicle": 532, "def": "aa_vehicle", "team": 0, "startTick": 3890, "start": 194.5, "end": 205, "seconds": 10.5, "x": 56.058, "y": 67.803, "goalX": 51.606, "goalY": 73.382, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#533 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@9.8 main_battle_tank(parked)@6.6 aa_vehicle(moving)@3.3 aa_vehicle(parked)@4.8 aa_vehicle(parked)@5.9 aa_vehicle(moving)@4.4 aa_vehicle(parked)@7.5"},
+    {"vehicle": 537, "def": "siege_tank", "team": 0, "startTick": 4190, "start": 209.5, "end": 218.5, "seconds": 9, "x": 52.925, "y": 100.005, "goalX": 79, "goalY": 91, "order": "Move", "cause": "StalePath", "detail": "leg 2/4 to (55.0,99.0) crosses ammo_dump", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@7.1 ammo_dump@6 floodlight_mast@8"},
+    {"vehicle": 478, "def": "titan_tank", "team": 0, "startTick": 4260, "start": 213, "end": 222.5, "seconds": 9.5, "x": 47.853, "y": 86.041, "goalX": 32.907, "goalY": 43.525, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "gun_pit#455 parked", "area": "fortress+gate", "lanes": "narrow+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.1 aa_vehicle(moving)@4.1 aa_vehicle(moving)@9.9 base_wall@10 base_wall@8 ammo_dump@10"},
+    {"vehicle": 502, "def": "heavy_tank", "team": 0, "startTick": 6880, "start": 344, "end": 353, "seconds": 9, "x": 58.692, "y": 67.297, "goalX": 63.234, "goalY": 53.202, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#550 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(parked)@8.5 heavy_tank(moving)@4.9 ifv(moving)@6.0 titan_tank(parked)@8.8 aa_vehicle(parked)@6.8 aa_vehicle(parked)@5.5 aa_vehicle(moving)@9.1 ifv(parked)@8.0 aa_vehicle(moving)@9.9"},
+    {"vehicle": 502, "def": "heavy_tank", "team": 0, "startTick": 7090, "start": 354.5, "end": 363.5, "seconds": 9, "x": 62.14, "y": 67.646, "goalX": 63.234, "goalY": 53.202, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "ifv#577 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@9.4 heavy_tank(parked)@6.2 titan_tank(parked)@5.6 aa_vehicle(parked)@9.6 aa_vehicle(parked)@7.9 aa_vehicle(parked)@6.5 ifv(parked)@7.3 aa_vehicle(parked)@8.6 aa_vehicle(moving)@6.7"},
+    {"vehicle": 584, "def": "heavy_rocket_artillery", "team": 1, "startTick": 7690, "start": 384.5, "end": 393, "seconds": 8.5, "x": -26.675, "y": -22.164, "goalX": -22.727, "goalY": 0.428, "order": "Move", "cause": "Unknown", "detail": "speed 1.9 strikes 0", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "jersey_barrier@7"},
+    {"vehicle": 502, "def": "heavy_tank", "team": 0, "startTick": 9320, "start": 466, "end": 477.5, "seconds": 11.5, "x": 60.54, "y": 104.312, "goalX": 113.158, "goalY": 64.698, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "artillery#606 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "artillery(moving)@7.1 aa_vehicle(moving)@6.4 gun_pit(fixed)@4.3"}
+  ],
+  "rescues": [
+    "3524,516,main_battle_tank,0,ghost,86.0,96.2,86.0,96.2",
+    "3695,535,aa_vehicle,0,ghost,86.2,101.7,86.2,101.7"
+  ]
+}

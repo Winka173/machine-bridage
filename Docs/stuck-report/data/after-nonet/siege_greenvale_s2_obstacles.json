@@ -1,0 +1,14 @@
+{
+  "map": "greenvale",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map b3ea488f app 0.1.0",
+  "ticks": 10139,
+  "journal": [],
+  "records": [
+    {"vehicle": 565, "def": "main_battle_tank", "team": 0, "startTick": 2130, "start": 106.5, "end": 115, "seconds": 8.5, "x": 56.269, "y": 30.745, "goalX": 113, "goalY": 58, "order": "Attack", "cause": "Unknown", "detail": "speed 1.2 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_car(parked)@4.3 ifv(moving)@6.8 floodlight_mast@7"},
+    {"vehicle": 595, "def": "heavy_tank", "team": 1, "startTick": 6630, "start": 331.5, "end": 342.5, "seconds": 11, "x": 98.999, "y": 134.123, "goalX": 103.218, "goalY": 122.732, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.9 elite_heavy_tank(moving)@6.2 rocket_technical(parked)@8.5"}
+  ],
+  "rescues": []
+}

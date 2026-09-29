@@ -1,0 +1,14 @@
+{
+  "map": "greenvale",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map b3ea488f app 0.1.0",
+  "ticks": 6550,
+  "journal": [],
+  "records": [
+    {"vehicle": 596, "def": "mobile_fortress", "team": 1, "startTick": 4180, "start": 209, "end": 218, "seconds": 9, "x": 113.295, "y": 89.503, "goalX": 86.807, "goalY": 60.723, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "airfield#515 parked", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "fortress_gate@6"},
+    {"vehicle": 596, "def": "mobile_fortress", "team": 1, "startTick": 4590, "start": 229.5, "end": 238.5, "seconds": 9, "x": 112.091, "y": 85.536, "goalX": 108, "goalY": 108, "order": "Move", "cause": "BlockedByDefence", "detail": "airfield#515 parked", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": ""}
+  ],
+  "rescues": []
+}

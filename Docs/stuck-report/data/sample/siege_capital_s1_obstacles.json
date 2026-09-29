@@ -1,0 +1,17 @@
+{
+  "map": "capital",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 4dcd280f app 0.1.0",
+  "ticks": 8338,
+  "journal": [],
+  "records": [
+    {"vehicle": 853, "def": "heavy_tank", "team": 0, "startTick": 2300, "start": 115, "end": 123.5, "seconds": 8.5, "x": -93.946, "y": -90.909, "goalX": 62.838, "goalY": 2.278, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#852 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.0 titan_tank(moving)@4.9 main_battle_tank(parked)@7.6 main_battle_tank(moving)@5.8"},
+    {"vehicle": 862, "def": "main_battle_tank", "team": 0, "startTick": 2740, "start": 137, "end": 147, "seconds": 10, "x": -90.619, "y": -96.664, "goalX": 11, "goalY": 73, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#853 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@5.3 heavy_tank(moving)@6.3"},
+    {"vehicle": 853, "def": "heavy_tank", "team": 0, "startTick": 4040, "start": 202, "end": 212.5, "seconds": 10.5, "x": -88.447, "y": -97.508, "goalX": -97.118, "goalY": -92.114, "order": "Move", "cause": "BlockedByFriend", "detail": "titan_tank#852 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@5.5 titan_tank(moving)@6.4 heavy_tank(moving)@5.9 titan_tank(moving)@8.2"},
+    {"vehicle": 853, "def": "heavy_tank", "team": 0, "startTick": 6580, "start": 329, "end": 338, "seconds": 9, "x": -80.424, "y": -101.083, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#898 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@4.9 armored_bulldozer(moving)@6.3 armored_bulldozer(moving)@5.7"},
+    {"vehicle": 899, "def": "armored_bulldozer", "team": 0, "startTick": 7320, "start": 366, "end": 374.5, "seconds": 8.5, "x": -82.54, "y": -92, "goalX": -89.891, "goalY": -97.422, "order": "Move", "cause": "BlockedByDefence", "detail": "gun_pit#827 parked", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@5.5 aa_vehicle(moving)@9.0 aa_vehicle(moving)@8.0"}
+  ],
+  "rescues": []
+}

@@ -1,0 +1,19 @@
+{
+  "map": "whiteout",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 6a9f1427 app 0.1.0",
+  "ticks": 14939,
+  "journal": [],
+  "records": [
+    {"vehicle": 715, "def": "ew_jammer", "team": 1, "startTick": 4940, "start": 247, "end": 261, "seconds": 14, "x": 91.311, "y": 112.615, "goalX": 95, "goalY": 99, "order": "Move", "cause": "BlockedByFriend", "detail": "command_vehicle#739 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@5.0 command_vehicle(moving)@5.0 counter_battery_radar(moving)@8.2"},
+    {"vehicle": 739, "def": "command_vehicle", "team": 1, "startTick": 5090, "start": 254.5, "end": 265.5, "seconds": 11, "x": 89.531, "y": 108.056, "goalX": 93, "goalY": 99, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#788", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "ew_jammer(moving)@3.8 ammo_carrier(moving)@4.7 counter_battery_radar(moving)@6.2"},
+    {"vehicle": 739, "def": "command_vehicle", "team": 1, "startTick": 6050, "start": 302.5, "end": 313, "seconds": 10.5, "x": 80.781, "y": 78.74, "goalX": 89, "goalY": 83, "order": "Move", "cause": "BlockedByFriend", "detail": "counter_battery_radar#798 moving", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(parked)@8.0 counter_battery_radar(moving)@5.3"},
+    {"vehicle": 807, "def": "twin_tank", "team": 1, "startTick": 9750, "start": 487.5, "end": 497, "seconds": 9.5, "x": 104.494, "y": 97.667, "goalX": 74.845, "goalY": 77.84, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "airfield#666 parked", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "airfield(fixed)@5.4 engineer_vehicle(moving)@6.4 ammo_carrier(moving)@8.3 rocket_technical(moving)@8.1"}
+  ],
+  "rescues": [
+    "5291,739,command_vehicle,1,ghost,90.1,107.4,90.1,107.4",
+    "9923,807,twin_tank,1,ghost,104.5,97.6,104.5,97.6"
+  ]
+}

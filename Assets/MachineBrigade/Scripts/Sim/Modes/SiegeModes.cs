@@ -806,7 +806,9 @@ namespace MachineBrigade.Sim.Modes
                 _glyphUntil = world.Time + 6.0;
                 foreach (var elite in new[] { "elite_mbt", "elite_heavy_tank" })
                     if (world.Catalog.Vehicles.ContainsKey(elite))
-                        world.SpawnVehicle(elite, Defender, hq.Position + new Vector2(-8f, -8f), SimMath.DegToRad(225f));
+                        // (Where it has room: beside the HQ they came down in a pocket and never got out; prompt 12.)
+                        world.SpawnVehicle(elite, Defender, RoomFor(world, hq.Position + new Vector2(-8f, -8f), world.Catalog.Vehicle(elite)),
+                            SimMath.DegToRad(225f));
                 world.Emit(SimEvent.Alert(hq.Position, Key("glyph")));
             }
             else if (_hqPhase == 2 && health < 0.25f)

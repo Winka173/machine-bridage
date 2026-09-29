@@ -1,0 +1,11 @@
+{
+  "map": "ironport",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 1266ceae app 0.1.0",
+  "ticks": 8766,
+  "journal": [],
+  "records": [],
+  "rescues": []
+}

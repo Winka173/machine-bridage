@@ -1,0 +1,17 @@
+{
+  "map": "junglepass",
+  "mode": "Defend",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 4b12d3e3 app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 898, "def": "ifv", "team": 0, "startTick": 1490, "start": 74.5, "end": 85, "seconds": 10.5, "x": 97.962, "y": 97.304, "goalX": 108.652, "goalY": 95.243, "order": "Move", "cause": "OffRoute", "detail": "to (109.0,99.0) past repair_bay(defence)", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@9.4 repair_bay(fixed)@7.0 aa_vehicle(parked)@6.4 ifv(parked)@8.1 ifv(parked)@4.9 heavy_tank(parked)@8.0"},
+    {"vehicle": 916, "def": "titan_tank", "team": 0, "startTick": 2490, "start": 124.5, "end": 133, "seconds": 8.5, "x": 86.901, "y": 98.676, "goalX": 78.635, "goalY": 92.395, "order": "Move", "cause": "BlockedByFriend", "detail": "ifv#912 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@8.7 ifv(parked)@5.6 ifv(moving)@9.6 heavy_tank(moving)@8.3 ifv(parked)@9.0 aa_vehicle(moving)@6.0 siege_tank(moving)@5.6 base_wall@4"},
+    {"vehicle": 913, "def": "ifv", "team": 0, "startTick": 2560, "start": 128, "end": 136.5, "seconds": 8.5, "x": 83.085, "y": 107.545, "goalX": 91, "goalY": 97, "order": "Move", "cause": "BlockedByFriend", "detail": "ifv#912 parked", "area": "fortress", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "ifv(parked)@4.1 ifv(moving)@8.7 aa_vehicle(moving)@7.6"},
+    {"vehicle": 916, "def": "titan_tank", "team": 0, "startTick": 4540, "start": 227, "end": 235.5, "seconds": 8.5, "x": 94.196, "y": 99.24, "goalX": 51, "goalY": 57, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#971 moving", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@8.8 aa_vehicle(moving)@4.8 aa_vehicle(moving)@5.9"},
+    {"vehicle": 993, "def": "artillery", "team": 0, "startTick": 7050, "start": 352.5, "end": 361, "seconds": 8.5, "x": 78.376, "y": 60.819, "goalX": 89, "goalY": 61, "order": "Move", "cause": "YieldWait", "detail": "behind siege_tank#926", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "c_ram(fixed)@6.7 siege_tank(moving)@4.3 siege_tank(parked)@8.9"}
+  ],
+  "rescues": []
+}

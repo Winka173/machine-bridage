@@ -1,0 +1,16 @@
+{
+  "map": "rustyard",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 37ae0e97 app 0.1.0",
+  "ticks": 9538,
+  "journal": [],
+  "records": [
+    {"vehicle": 448, "def": "zu23_technical", "team": 1, "startTick": 4520, "start": 226, "end": 237, "seconds": 11, "x": 121.446, "y": 105.038, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#492", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "c_ram(fixed)@7.3 radar_station(fixed)@8.9 scout_jeep(moving)@2.4 scout_jeep(moving)@2.4"},
+    {"vehicle": 447, "def": "scout_jeep", "team": 1, "startTick": 4540, "start": 227, "end": 236, "seconds": 9, "x": 106.696, "y": 112.119, "goalX": 117.065, "goalY": 109.386, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#492", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_depot(fixed)@9.0 ew_jammer(moving)@4.6 command_vehicle(moving)@4.8 ew_jammer(moving)@8.3 twin_tank(moving)@8.1 mobile_fortress(parked)@7.1"}
+  ],
+  "rescues": [
+    "4722,448,zu23_technical,1,ghost,121.4,104.3,121.4,104.3"
+  ]
+}

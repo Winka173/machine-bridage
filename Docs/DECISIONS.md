@@ -3394,6 +3394,62 @@ raw keys on screen, and the shields ugly. No game logic or balance data changed.
 - **To measure** (testing phase, a real phone): the frame rate of the heaviest battle on Low graphics
   before and after the shield change, and the compact HUD's cost against the full one.
 
+## 13B. Prompt 12: stuck vehicles in bases (2026-09-29)
+
+Diagnosed first, then fixed at the causes; each cause has a test written to fail before its fix
+(`StuckCauseTests`, checked against d916258).
+
+**Tools.** `StuckWatch` (sim): a ground vehicle with somewhere to go that moves less than 2.5 m in 8 s is
+recorded with map, mode, seed, tick, side, place, goal, lane flags, what is within 10 m and why
+(embedded, no path, goal unreachable, stale route, off route, gate wait, yield wait, blocked by a friend,
+defence, enemy or wall). Its JSON carries seed, data hashes and the player's journal for a replay;
+`StuckBatch.One` replays and traces a case. `StuckReporter` keeps it in the editor and development
+builds (or `-mb-stuck`), writing to `persistentDataPath/stuck/`. Batches (`StuckBatch.Siege`, `.Modes`,
+Explicit): by the owner's rule a small set (Siege on all 20 maps, Defend, Endless and Weekly on six,
+two seeds, loadouts light, full and obstacles through `BaseSystem.LoadoutFor`), 76 battles, 6 min.
+`Tools/maps/stuck_report.py` writes heatmaps, the ten worst spots and tables to `Docs/stuck-report/`.
+
+**Causes found** (the spec's list): the 10 m sally ports took all two-way traffic of Defend, Endless
+and Weekly (the worst spots); every siege fortress had no route three cells wide for the big hulls with
+the gates shut and hardpoints full (0 of 20 passed), and the keep's drop zone led out through one- and
+two-cell gaps; a tower landing on vehicles left them on blocked ground; routes planned across ground
+closed since (a tower raised) were driven into it; goals behind a wall or in a sealed pocket failed the
+search and were re-sent for ever, and group slots spread over both sides of a wall; two hulls given each
+other's slot queued behind each other; a detour steered a titan into the wall; the keep's guardian and
+elites spawned in a pocket. Not causes: lane map or grid not updated after a fall (they are), the lane
+map disagreeing with the grid.
+
+**Fixes.** NavGrid regions: goals resolve to the start's region, slots stay on the group's side of a
+wall; slots untangled (groups up to 12); no queueing behind a hull queued behind us or oncoming;
+head-on in the open settled after 1 s by a step aside; detours keep off walls; routes across newly
+closed ground re-planned; a landing tower puts vehicles off its ground; spawns avoid sealed pockets;
+the guardian and elites spawn with room. Map data: double 18 m sally ports and keep gate, a clear yard,
+clear gateway mouths and main-gate roads, and `open_wide` (the builder removes clutter until, with every
+gate shut and every hardpoint holding the biggest tower, every drop zone and gateway mouth is reached
+three cells wide and every objective from within 15 m; it took 9 fuel depots, 1 ammunition dump, 8 of
+554 tower hardpoints and some wrecks, on the classic fortresses 4 towers). Swamp's causeways and main
+bridges 20 m, its centre opened. `Tools/maps/check_access.py` and `MapConnectivityTests` check all 40
+files: all pass. Maps were rebuilt with the campaign file of 394c762 so every Conquest and Sandbox file
+but Swamp's is unchanged (Rustyard's committed data was stale against today's c4m06).
+
+**Safety net** (`MovementSystem.Rescue`): after 10 s without headway, off blocked ground ("place"),
+else through its own side's hulls for 4 s and re-planned ("ghost"), then moved on along its route
+("hop"); every activation logged and in the report.
+
+**Numbers** (76 battles each; episodes of 8 s or more / over 10 s / over 20 s / worst):
+before 2076 / 1285 / 174 / 214 s; after, net off 705 / 378 / 9 / 34 s; after, net on 578 / 265 / 4 /
+28 s with 168 activations (162 ghost, 6 hop). Siege over 10 s: 329 -> 117 (net off) -> 87. On the
+branch before merging prompts 13-14 the net-off run was 574 / 286. A five-map Siege sample on the final
+code: 6 over 10 s, 5 activations (Swamp). Episodes over 10 s remain (queues in heavy traffic), so the
+spec's "none over 10 s" is not reached; nothing is stuck for good. Replay tests pass. Tick (quick run,
+48 enemies, desktop ms, mean / p99): lead 0.74-0.75 / 1.9-2.2, this branch 0.72-0.77 / 1.9-3.2 (the
+untangling unbounded had doubled the p99; limited to groups of 12).
+
+**Full sweep for the testing phase:** `StuckBatch` on all 20 maps for every mode (`MB_STUCK_MAPS`,
+`MB_STUCK_MODES=Siege,Defend,Endless,Weekly`), `MB_STUCK_SEEDS=1,2,3,4,5`, every loadout on every map,
+net on and off; `TickBudgetTests` in full; `SiegeBalanceTests`, `ModeEndingTests` and the Swamp and
+Coral Isles battles (the fortress changes touch balance).
+
 ## 13C. Prompt 13: combat-value balance, ammo, modes, AI difficulty (2026-09-29)
 
 One balance pass in the owner's order A → I. The owner's rule on test time wins over the brief's "5 seeds

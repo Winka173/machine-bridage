@@ -1,0 +1,16 @@
+{
+  "map": "coralisles",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 8c46efc6 app 0.1.0",
+  "ticks": 7603,
+  "journal": [],
+  "records": [
+    {"vehicle": 2560, "def": "armored_bulldozer", "team": 0, "startTick": 1300, "start": 65, "end": 78.5, "seconds": 13.5, "x": -86.011, "y": -87.734, "goalX": -5, "goalY": 75, "order": "AttackMove", "cause": "StalePath", "detail": "leg 2/11 to (-87.0,-85.0) crosses dragons_teeth(defence)", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@5.5 titan_tank(moving)@4.8 armored_bulldozer(moving)@8.7 heavy_tank(moving)@7.1"},
+    {"vehicle": 2569, "def": "armored_bulldozer", "team": 0, "startTick": 4840, "start": 242, "end": 251, "seconds": 9, "x": 32.56, "y": 19.985, "goalX": 31, "goalY": 3, "order": "Move", "cause": "YieldWait", "detail": "behind siege_tank#2566", "area": "field", "lanes": "road+route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@9.9 siege_tank(moving)@4.4 armored_bulldozer(moving)@5.3 river_water@9 river_water@8 river_water@8 river_water@9 river_water@9"},
+    {"vehicle": 2565, "def": "flame_tank", "team": 1, "startTick": 5260, "start": 263, "end": 275, "seconds": 12, "x": 99.564, "y": 101.192, "goalX": 109.358, "goalY": 105.646, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#2598", "area": "camp1", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(moving)@8.7 main_battle_tank(moving)@9.5 rocket_technical(moving)@5.0"},
+    {"vehicle": 2622, "def": "armored_bulldozer", "team": 0, "startTick": 6670, "start": 333.5, "end": 343, "seconds": 9.5, "x": -78.286, "y": -91.207, "goalX": -85.876, "goalY": -89.248, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@8.1 armored_bulldozer(moving)@8.0 armored_bulldozer(moving)@5.6 aa_vehicle(moving)@4.0"}
+  ],
+  "rescues": []
+}

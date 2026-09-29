@@ -1,0 +1,792 @@
+  t505.0 #919 main_battle_tank (37.3,132.0) h53 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t505.0 #1041 aa_vehicle (28.4,139.8) h140 v1.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t505.0 #992 aa_vehicle (34.7,127.4) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t505.0 #1072 heavy_tank (51.6,121.2) h-92 v4.2 AttackMove->(61,131) path 1/5 next (47.0,121.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t505.0 #1038 ifv (41.2,131.9) h34 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t505.35 #919 (37.2,132.0) Costed route round #1038: 7 points, 37 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t505.5 #919 main_battle_tank (37.0,132.0) h50 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t505.5 #1041 aa_vehicle (28.5,139.8) h141 v0.6 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t505.5 #992 aa_vehicle (34.7,127.5) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t505.5 #1072 heavy_tank (49.5,121.1) h-92 v4.2 AttackMove->(61,131) path 1/5 next (47.0,121.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t505.5 #1038 ifv (41.2,131.7) h78 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t505.80 #1072 (48.5,121.0) Arrive 1/5 d1.5 | Drive < Step < Step < Play
+  t506.0 #919 main_battle_tank (36.7,132.0) h62 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t506.0 #1041 aa_vehicle (28.7,139.7) h116 v0.2 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t506.0 #992 aa_vehicle (34.7,127.5) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t506.0 #1072 heavy_tank (47.9,121.1) h-83 v2.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t506.0 #1038 ifv (41.3,131.8) h78 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t506.5 #919 main_battle_tank (36.6,131.7) h80 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t506.5 #1041 aa_vehicle (29.7,139.6) h106 v3.6 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t506.5 #992 aa_vehicle (34.7,127.5) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t506.5 #1072 heavy_tank (47.1,121.3) h-61 v2.0 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t506.5 #1038 ifv (41.8,131.9) h78 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t507.0 #919 main_battle_tank (36.6,131.7) h56 v0.3 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t507.0 #1041 aa_vehicle (32.2,139.1) h103 v6.7 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t507.0 #992 aa_vehicle (34.7,127.5) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t507.0 #1072 heavy_tank (46.2,122.2) h-38 v3.0 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t507.0 #1038 ifv (41.9,132.0) h79 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t507.30 #1041 (33.9,138.4) Reverse 2.2 for #951 | StartReverse < ServeHeadOns < Step < Step
+  t507.5 #919 main_battle_tank (36.5,131.8) h74 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t507.5 #1041 aa_vehicle (33.9,138.4) h113 v3.1 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.8 lanes None target 0 engaged 0
+  t507.5 #992 aa_vehicle (34.7,127.5) h66 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t507.5 #1072 heavy_tank (46.0,122.3) h-14 v1.4 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t507.5 #1038 ifv (41.7,131.8) h77 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.0 #919 main_battle_tank (36.8,131.5) h55 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.0 #1041 aa_vehicle (33.2,138.8) h113 v-4.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.3 lanes None target 0 engaged 0
+  t508.0 #992 aa_vehicle (34.4,127.6) h67 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t508.0 #1072 heavy_tank (46.0,123.1) h-29 v2.9 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.0 #1038 ifv (41.8,131.3) h73 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.5 #919 main_battle_tank (37.4,131.9) h85 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.5 #1041 aa_vehicle (31.9,139.3) h113 v0.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 1.4 rev 0.0 lanes None target 0 engaged 0
+  t508.5 #992 aa_vehicle (34.3,127.6) h67 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t508.5 #1072 heavy_tank (46.0,123.2) h-8 v1.6 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t508.5 #1038 ifv (42.0,130.6) h65 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.0 #919 main_battle_tank (37.5,132.0) h96 v0.3 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.0 #1041 aa_vehicle (31.9,139.3) h113 v0.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.9 rev 0.0 lanes None target 0 engaged 0
+  t509.0 #992 aa_vehicle (34.1,127.5) h67 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t509.0 #1072 heavy_tank (46.0,123.6) h-11 v1.2 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.0 #1038 ifv (41.9,130.1) h61 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.5 #919 main_battle_tank (37.7,132.0) h102 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.5 #1041 aa_vehicle (31.9,139.3) h113 v0.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.4 rev 0.0 lanes None target 0 engaged 0
+  t509.5 #992 aa_vehicle (33.9,127.4) h112 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t509.5 #1072 heavy_tank (45.9,124.2) h-26 v2.1 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t509.5 #1038 ifv (42.1,129.9) h58 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t509.70 #992 (34.0,127.1) Costed route round #1071: 5 points, 36 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t510.0 #919 main_battle_tank (38.1,132.0) h132 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t510.0 #1041 aa_vehicle (32.0,139.2) h128 v1.0 AttackMove->(65,94) path 0/5 next (39.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t510.0 #992 aa_vehicle (33.6,126.5) h110 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t510.0 #1072 heavy_tank (45.3,125.1) h-38 v2.1 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t510.0 #1038 ifv (42.1,129.7) h56 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t510.15 #1041 (32.1,139.1) Wait for doorway 41 | StartGateWait < GateCheck < Drive < Step
+t510.15 #1041 (32.1,139.1) SetPath 1 to <27.73037, 136.6644> | SetPath < StartGateWait < GateCheck < Drive
+  t510.5 #919 main_battle_tank (38.4,132.0) h102 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t510.5 #1041 aa_vehicle (32.3,138.9) h178 v0.4 AttackMove->(65,94) path 0/1 next (27.7,136.7) goal (28,137) q0 strikes 0 gate 1/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t510.5 #992 aa_vehicle (33.7,125.7) h75 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t510.5 #1072 heavy_tank (44.7,125.9) h-33 v1.3 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t510.5 #1038 ifv (42.1,129.8) h56 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t510.80 #1038 (42.2,129.9) Costed route round #950: 5 points, 27 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t511.0 #919 main_battle_tank (38.5,132.0) h97 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t511.0 #1041 aa_vehicle (32.1,138.6) h-132 v0.5 AttackMove->(65,94) path 0/1 next (27.7,136.7) goal (28,137) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t511.0 #992 aa_vehicle (33.6,125.2) h60 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t511.0 #1072 heavy_tank (44.6,126.0) h-31 v0.6 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t511.0 #1038 ifv (42.1,130.0) h58 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t511.5 #919 main_battle_tank (38.6,132.0) h85 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t511.5 #1041 aa_vehicle (31.4,138.5) h-82 v3.0 AttackMove->(65,94) path 0/1 next (27.7,136.7) goal (28,137) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t511.5 #992 aa_vehicle (33.5,125.0) h59 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t511.5 #1072 heavy_tank (44.6,126.1) h-31 v0.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t511.5 #1038 ifv (42.0,130.0) h59 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t512.0 #919 main_battle_tank (38.6,132.0) h55 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t512.0 #1041 aa_vehicle (29.3,138.4) h-112 v3.9 AttackMove->(65,94) path 0/1 next (27.7,136.7) goal (28,137) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t512.0 #992 aa_vehicle (33.6,125.1) h59 v0.2 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t512.0 #1072 heavy_tank (44.6,126.4) h-30 v0.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t512.0 #1038 ifv (41.8,130.1) h60 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t512.05 #1041 (29.3,138.4) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t512.05 #1041 (29.3,138.4) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t512.5 #919 main_battle_tank (38.6,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t512.5 #1041 aa_vehicle (28.8,137.8) h-162 v1.4 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t512.5 #992 aa_vehicle (33.7,124.8) h59 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t512.5 #1072 heavy_tank (44.6,126.4) h-30 v0.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t512.5 #1038 ifv (41.6,130.0) h61 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t513.0 #919 main_battle_tank (38.6,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t513.0 #1041 aa_vehicle (28.7,137.8) h148 v0.8 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t513.0 #992 aa_vehicle (33.6,124.5) h58 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t513.0 #1072 heavy_tank (44.5,126.4) h-30 v0.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t513.0 #1038 ifv (41.5,130.0) h61 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t513.10 #919 (38.6,132.0) Costed route round #950: 5 points, 32 m | ApplyCostedPath < RunPathQueue < Step < Step
+t513.45 #1072 (44.5,126.5) Costed route round #1038: 4 points, 28 m | ApplyCostedPath < RunPathQueue < Step < Step
+t513.45 #1072 (44.5,126.5) SetPath 4 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t513.50 #1041 (29.0,137.4) Wait for doorway 41 | StartGateWait < GateCheck < Drive < Step
+t513.50 #1041 (29.0,137.4) SetPath 1 to <32.66057, 140.8528> | SetPath < StartGateWait < GateCheck < Drive
+  t513.5 #919 main_battle_tank (38.6,132.0) h54 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t513.5 #1041 aa_vehicle (29.1,137.4) h137 v1.6 AttackMove->(65,94) path 0/1 next (32.7,140.9) goal (33,141) q0 strikes 0 gate 1/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t513.5 #992 aa_vehicle (34.2,124.4) h56 v2.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t513.5 #1072 heavy_tank (44.5,126.5) h-27 v0.5 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t513.5 #1038 ifv (41.3,130.2) h64 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t514.00 #1041 (29.9,137.1) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t514.00 #1041 (29.9,137.1) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t514.0 #919 main_battle_tank (38.6,132.0) h66 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t514.0 #1041 aa_vehicle (30.1,137.1) h97 v3.5 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t514.0 #992 aa_vehicle (35.9,124.9) h71 v4.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t514.0 #1072 heavy_tank (44.4,126.7) h-5 v0.7 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t514.0 #1038 ifv (41.3,130.3) h65 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t514.05 #1041 (30.1,137.1) Reverse 2.2 for #1071 | StartReverse < ServeHeadOns < Step < Step
+  t514.5 #919 main_battle_tank (38.6,132.0) h60 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t514.5 #1041 aa_vehicle (29.3,137.2) h97 v-4.0 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.6 lanes None target 0 engaged 0
+  t514.5 #992 aa_vehicle (37.1,126.1) h96 v4.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t514.5 #1072 heavy_tank (44.4,127.1) h8 v0.2 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t514.5 #1038 ifv (41.4,130.3) h65 v0.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t514.95 #1041 (27.8,137.4) Yield to #1071 | StartYield < EndReverse < DriveReverse < Drive
+t514.95 #1041 (27.8,137.4) SetPath 1 to <24.39497, 133.2671> | SetPath < StartYield < EndReverse < DriveReverse
+  t515.0 #919 main_battle_tank (38.8,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.0 #1041 aa_vehicle (27.8,137.4) h102 v0.3 AttackMove->(65,94) path 0/1 next (24.4,133.3) goal (24,133) q0 strikes 0 gate 0/0 yieldTo 1071 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t515.0 #992 aa_vehicle (37.6,126.0) h99 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.0 #1072 heavy_tank (44.0,126.5) h5 v0.5 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.0 #1038 ifv (41.2,130.2) h65 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.5 #919 main_battle_tank (39.2,132.0) h66 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.5 #1041 aa_vehicle (28.1,137.2) h152 v0.9 AttackMove->(65,94) path 0/1 next (24.4,133.3) goal (24,133) q0 strikes 0 gate 0/0 yieldTo 1071 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t515.5 #992 aa_vehicle (38.0,126.1) h69 v2.3 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.5 #1072 heavy_tank (43.7,126.2) h4 v0.3 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t515.5 #1038 ifv (41.0,130.0) h70 v0.3 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t515.80 #1041 (28.1,137.0) Yield done | EndYield < UpdateYield < TrafficOverlay < Step
+t515.80 #1041 (28.1,137.0) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t516.0 #919 main_battle_tank (38.3,132.0) h54 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.0 #1041 aa_vehicle (28.1,136.5) h176 v2.9 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t516.0 #992 aa_vehicle (39.5,126.1) h94 v4.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.0 #1072 heavy_tank (44.1,125.5) h-5 v0.6 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.0 #1038 ifv (40.8,129.7) h108 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.5 #919 main_battle_tank (38.2,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.5 #1041 aa_vehicle (28.4,134.5) h167 v4.0 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t516.5 #992 aa_vehicle (40.7,126.0) h88 v1.4 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.5 #1072 heavy_tank (44.7,125.5) h-12 v0.8 AttackMove->(61,131) path 0/4 next (47.0,129.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t516.5 #1038 ifv (40.6,129.3) h102 v0.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t516.55 #1072 (44.7,125.5) Costed route round #1038: 6 points, 34 m | ApplyCostedPath < RunPathQueue < Step < Step
+t516.55 #1072 (44.7,125.5) SetPath 6 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t517.0 #919 main_battle_tank (38.4,131.9) h68 v1.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.0 #1041 aa_vehicle (29.0,132.8) h153 v2.6 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t517.0 #992 aa_vehicle (40.9,126.0) h87 v1.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.0 #1072 heavy_tank (44.6,125.7) h-11 v1.0 AttackMove->(61,131) path 0/6 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.0 #1038 ifv (40.5,129.1) h105 v0.9 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.5 #919 main_battle_tank (38.3,132.0) h51 v0.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.5 #1041 aa_vehicle (29.4,132.3) h148 v1.2 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t517.5 #992 aa_vehicle (41.1,126.0) h86 v1.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t517.5 #1072 heavy_tank (44.9,126.2) h-9 v1.9 AttackMove->(61,131) path 0/6 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t517.5 #1038 ifv (40.5,129.0) h112 v0.8 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.0 #919 main_battle_tank (38.4,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.0 #1041 aa_vehicle (29.6,132.0) h147 v1.0 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t518.0 #992 aa_vehicle (41.1,126.0) h86 v1.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.0 #1072 heavy_tank (44.7,127.2) h2 v2.1 AttackMove->(61,131) path 0/6 next (47.0,129.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t518.0 #1038 ifv (40.7,129.0) h111 v0.8 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.5 #919 main_battle_tank (38.5,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.5 #1041 aa_vehicle (29.6,131.8) h145 v1.0 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t518.5 #992 aa_vehicle (40.8,126.0) h87 v0.6 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1071 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t518.5 #1072 heavy_tank (44.9,128.0) h17 v1.0 AttackMove->(61,131) path 0/6 next (47.0,129.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t518.5 #1038 ifv (40.9,129.0) h111 v0.7 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t518.85 #1041 (29.6,131.7) Costed route round #1015: 8 points, 79 m | ApplyCostedPath < RunPathQueue < Step < Step
+t518.85 #1041 (29.6,131.7) SetPath 8 to <64.85507, 94.26988> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t518.90 #1041 (29.6,131.7) Wait for doorway 41 | StartGateWait < GateCheck < Drive < Step
+t518.90 #1041 (29.6,131.7) SetPath 1 to <26.03789, 135.2158> | SetPath < StartGateWait < GateCheck < Drive
+t519.00 #1072 (45.4,129.0) Arrive 0/6 d1.6 | Drive < Step < Step < Play
+t519.00 #992 (40.9,126.0) Costed route round #1072: 6 points, 30 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t519.0 #919 main_battle_tank (38.6,132.0) h51 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t519.0 #1041 aa_vehicle (29.7,131.7) h139 v0.9 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t519.0 #992 aa_vehicle (40.9,126.0) h87 v0.9 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t519.0 #1072 heavy_tank (45.5,129.0) h36 v1.1 AttackMove->(61,131) path 1/6 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t519.0 #1038 ifv (40.9,129.1) h112 v1.1 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t519.30 #919 (38.6,132.0) Costed route round #950: 5 points, 33 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t519.5 #919 main_battle_tank (38.5,132.0) h51 v0.4 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t519.5 #1041 aa_vehicle (30.0,131.8) h89 v1.2 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t519.5 #992 aa_vehicle (40.8,126.0) h87 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t519.5 #1072 heavy_tank (45.2,128.8) h14 v0.2 AttackMove->(61,131) path 1/6 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t519.5 #1038 ifv (41.1,129.1) h112 v0.8 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t520.0 #919 main_battle_tank (38.6,131.9) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t520.0 #1041 aa_vehicle (30.4,132.0) h39 v1.2 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t520.0 #992 aa_vehicle (40.8,126.0) h67 v0.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t520.0 #1072 heavy_tank (44.8,128.8) h-9 v0.6 AttackMove->(61,131) path 1/6 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t520.0 #1038 ifv (41.0,129.1) h111 v0.1 AttackMove->(61,131) path 0/5 next (46.3,131.5) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t520.10 #1038 (41.0,129.1) Costed route round #992: 5 points, 30 m | ApplyCostedPath < RunPathQueue < Step < Step
+t520.10 #1038 (41.0,129.1) SetPath 5 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t520.5 #919 main_battle_tank (38.6,132.0) h51 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t520.5 #1041 aa_vehicle (30.5,132.6) h-11 v1.2 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t520.5 #992 aa_vehicle (40.8,126.0) h87 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t520.5 #1072 heavy_tank (44.6,128.7) h-31 v0.5 AttackMove->(61,131) path 1/6 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t520.5 #1038 ifv (40.7,128.7) h92 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t521.0 #919 main_battle_tank (38.4,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t521.0 #1041 aa_vehicle (29.8,133.3) h-61 v3.3 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t521.0 #992 aa_vehicle (40.9,126.0) h77 v0.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t521.0 #1072 heavy_tank (44.9,128.6) h-42 v0.5 AttackMove->(61,131) path 1/6 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t521.0 #1038 ifv (40.3,128.6) h94 v0.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t521.25 #1072 (45.0,128.6) Costed route round #1038: 5 points, 25 m | ApplyCostedPath < RunPathQueue < Step < Step
+t521.25 #1072 (45.0,128.6) SetPath 5 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t521.5 #919 main_battle_tank (38.4,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t521.5 #1041 aa_vehicle (27.9,134.1) h-62 v3.5 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t521.5 #992 aa_vehicle (41.1,126.0) h67 v0.3 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t521.5 #1072 heavy_tank (45.1,128.6) h-34 v0.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t521.5 #1038 ifv (40.4,128.7) h93 v0.2 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t522.0 #919 main_battle_tank (38.2,132.0) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t522.0 #1041 aa_vehicle (26.9,134.7) h-62 v1.6 AttackMove->(65,94) path 0/1 next (26.0,135.2) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t522.0 #992 aa_vehicle (41.1,126.0) h40 v0.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t522.0 #1072 heavy_tank (45.1,128.8) h-12 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t522.0 #1038 ifv (40.8,129.5) h102 v0.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t522.20 #1041 (26.7,134.8) Arrive 0/1 d0.8 | Drive < Step < Step < Play
+  t522.5 #919 main_battle_tank (38.5,131.8) h50 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t522.5 #1041 aa_vehicle (26.6,134.8) h-62 v0.0 AttackMove->(65,94) path 1/1 next (26.6,134.8) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t522.5 #992 aa_vehicle (41.2,126.1) h86 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t522.5 #1072 heavy_tank (45.2,129.1) h-3 v0.7 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t522.5 #1038 ifv (41.1,129.3) h95 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.0 #919 main_battle_tank (38.7,131.6) h48 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.0 #1041 aa_vehicle (26.6,134.8) h-62 v0.0 AttackMove->(65,94) path 1/1 next (26.6,134.8) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t523.0 #992 aa_vehicle (41.4,126.0) h39 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.0 #1072 heavy_tank (45.3,129.1) h-4 v0.2 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t523.0 #1038 ifv (41.3,129.3) h91 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.5 #919 main_battle_tank (38.7,131.6) h49 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.5 #1041 aa_vehicle (26.6,134.8) h-62 v0.0 AttackMove->(65,94) path 1/1 next (26.6,134.8) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t523.5 #992 aa_vehicle (41.7,126.0) h38 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t523.5 #1072 heavy_tank (45.3,129.1) h-4 v0.4 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t523.5 #1038 ifv (41.3,129.4) h91 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t524.0 #919 main_battle_tank (38.6,131.7) h49 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t524.0 #1041 aa_vehicle (26.6,134.8) h-62 v0.0 AttackMove->(65,94) path 1/1 next (26.6,134.8) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t524.0 #992 aa_vehicle (42.0,126.1) h36 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t524.0 #1072 heavy_tank (45.3,129.2) h-3 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t524.0 #1038 ifv (41.3,129.5) h93 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t524.35 #1072 (45.3,129.1) Costed route round #1042: 4 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t524.5 #919 main_battle_tank (38.7,131.8) h50 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t524.5 #1041 aa_vehicle (25.8,134.5) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.8,134.5) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t524.5 #992 aa_vehicle (42.2,126.1) h35 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t524.5 #1072 heavy_tank (45.4,129.0) h-6 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t524.5 #1038 ifv (41.4,129.5) h94 v1.1 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t524.75 #1038 (41.4,129.5) Costed route round #1072: 5 points, 29 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t525.0 #919 main_battle_tank (38.6,131.9) h50 v1.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t525.0 #1041 aa_vehicle (25.5,134.3) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.5,134.3) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t525.0 #992 aa_vehicle (42.0,126.2) h54 v0.9 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t525.0 #1072 heavy_tank (45.4,128.9) h6 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t525.0 #1038 ifv (41.3,129.5) h95 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t525.20 #992 (41.7,126.3) Costed route round #1072: 6 points, 40 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t525.5 #919 main_battle_tank (38.8,131.7) h49 v0.9 AttackMove->(61,131) path 0/6 next (40.3,128.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t525.5 #1041 aa_vehicle (25.4,134.3) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.4,134.3) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t525.5 #992 aa_vehicle (41.0,126.0) h86 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t525.5 #1072 heavy_tank (45.2,129.4) h28 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t525.5 #1038 ifv (41.8,129.7) h61 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.0 #919 main_battle_tank (38.5,131.9) h79 v0.4 AttackMove->(61,131) path 0/6 next (40.3,128.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.0 #1041 aa_vehicle (25.3,134.1) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.3,134.1) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t526.0 #992 aa_vehicle (40.7,126.0) h88 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.0 #1072 heavy_tank (44.8,129.6) h51 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t526.0 #1038 ifv (41.4,129.3) h42 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.5 #919 main_battle_tank (38.6,131.8) h108 v0.9 AttackMove->(61,131) path 0/6 next (40.3,128.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.5 #1041 aa_vehicle (25.3,134.1) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.3,134.1) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t526.5 #992 aa_vehicle (40.8,126.0) h63 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t526.5 #1072 heavy_tank (44.3,129.8) h65 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t526.5 #1038 ifv (41.3,129.4) h45 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.0 #919 main_battle_tank (38.8,131.6) h109 v0.5 AttackMove->(61,131) path 0/6 next (40.3,128.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.0 #1041 aa_vehicle (25.3,134.1) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.3,134.1) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t527.0 #992 aa_vehicle (41.1,126.0) h86 v1.7 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.0 #1072 heavy_tank (43.5,129.4) h66 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.0 #1038 ifv (41.4,129.4) h45 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t527.05 #919 (38.8,131.6) ClearPath | ClearPath < GiveUp < OnNoProgress < DetectStuck
+t527.10 #919 (38.8,131.6) SetOrder Idle <0, 0> | SetOrder < UpdateAttackMove < UpdateOrder < Step
+t527.15 #919 (38.8,131.7) SetPath 3 to <33.84461, 138.6325> | SetPath < FindPath < PathTo < UpdateGuard
+t527.25 #919 (38.8,131.8) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t527.25 #919 (38.8,131.8) SetPath 5 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+  t527.5 #919 main_battle_tank (38.8,131.8) h104 v0.5 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.5 #1041 aa_vehicle (25.0,133.8) h-62 v0.0 AttackMove->(65,94) path 1/1 next (25.0,133.8) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t527.5 #992 aa_vehicle (42.4,126.0) h80 v1.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.5 #1072 heavy_tank (43.3,129.4) h66 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t527.5 #1038 ifv (41.0,129.3) h49 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.0 #919 main_battle_tank (38.7,131.8) h74 v0.7 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.0 #1041 aa_vehicle (24.9,133.6) h-62 v0.0 AttackMove->(65,94) path 1/1 next (24.9,133.6) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t528.0 #992 aa_vehicle (42.8,126.0) h77 v1.2 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.0 #1072 heavy_tank (43.4,129.3) h65 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.0 #1038 ifv (40.9,129.7) h57 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.5 #919 main_battle_tank (38.4,132.0) h65 v0.3 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.5 #1041 aa_vehicle (24.9,133.6) h-62 v0.0 AttackMove->(65,94) path 1/1 next (24.9,133.6) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t528.5 #992 aa_vehicle (43.0,126.0) h76 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.5 #1072 heavy_tank (43.2,129.2) h65 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t528.5 #1038 ifv (40.7,129.8) h60 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t528.80 #919 (38.4,132.0) Costed route round #950: 5 points, 33 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t529.0 #919 main_battle_tank (38.4,132.0) h65 v0.2 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.0 #1041 aa_vehicle (24.9,133.6) h-62 v0.0 AttackMove->(65,94) path 1/1 next (24.9,133.6) goal (26,135) q0 strikes 0 gate 0/41 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t529.0 #992 aa_vehicle (43.1,126.0) h75 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.0 #1072 heavy_tank (43.0,129.0) h64 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.0 #1038 ifv (40.4,130.0) h68 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t529.35 #1041 (24.9,133.6) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t529.35 #1041 (24.9,133.6) SetPath 4 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t529.5 #919 main_battle_tank (38.2,132.0) h64 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.5 #1041 aa_vehicle (24.8,133.7) h-42 v1.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t529.5 #992 aa_vehicle (43.3,126.0) h74 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.5 #1072 heavy_tank (43.0,128.9) h62 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t529.5 #1038 ifv (40.1,130.1) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.0 #919 main_battle_tank (38.0,132.0) h63 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.0 #1041 aa_vehicle (24.7,134.3) h8 v1.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t530.0 #992 aa_vehicle (43.4,126.0) h73 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.0 #1072 heavy_tank (43.0,128.8) h61 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.0 #1038 ifv (39.7,130.0) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.5 #919 main_battle_tank (37.6,132.0) h61 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.5 #1041 aa_vehicle (25.4,135.2) h58 v3.7 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t530.5 #992 aa_vehicle (43.5,126.1) h73 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.5 #1072 heavy_tank (43.0,129.0) h52 v0.7 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t530.5 #1038 ifv (39.5,130.0) h74 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t530.55 #1072 (43.0,129.0) Costed route round #1042: 5 points, 26 m | ApplyCostedPath < RunPathQueue < Step < Step
+t530.95 #1038 (39.5,130.0) Costed route round #1072: 5 points, 28 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t531.0 #919 main_battle_tank (37.4,132.0) h60 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.0 #1041 aa_vehicle (27.0,135.8) h82 v3.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t531.0 #992 aa_vehicle (43.6,126.1) h72 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.0 #1072 heavy_tank (43.6,129.5) h30 v1.2 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.0 #1038 ifv (39.5,129.9) h74 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t531.25 #1041 (27.8,135.7) Wait for doorway 40 | StartGateWait < GateCheck < Drive < Step
+t531.25 #1041 (27.8,135.7) SetPath 1 to <30.9263, 141.9781> | SetPath < StartGateWait < GateCheck < Drive
+t531.40 #992 (43.6,126.1) Costed route round #1072: 4 points, 28 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t531.5 #919 main_battle_tank (37.3,132.0) h59 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.5 #1041 aa_vehicle (28.4,135.9) h62 v1.2 AttackMove->(65,94) path 0/1 next (30.9,142.0) goal (31,142) q0 strikes 0 gate 0/40 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t531.5 #992 aa_vehicle (43.5,126.1) h67 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.5 #1072 heavy_tank (44.0,129.3) h15 v1.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t531.5 #1038 ifv (39.5,129.9) h72 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.0 #919 main_battle_tank (37.3,132.0) h62 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.0 #1041 aa_vehicle (29.0,136.9) h12 v3.9 AttackMove->(65,94) path 0/1 next (30.9,142.0) goal (31,142) q0 strikes 0 gate 0/40 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t532.0 #992 aa_vehicle (43.8,126.1) h25 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.0 #1072 heavy_tank (43.4,128.5) h9 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.0 #1038 ifv (39.5,129.9) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.5 #919 main_battle_tank (37.3,132.0) h62 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.5 #1041 aa_vehicle (30.2,138.7) h56 v5.0 AttackMove->(65,94) path 0/1 next (30.9,142.0) goal (31,142) q0 strikes 0 gate 0/40 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t532.5 #992 aa_vehicle (44.5,124.8) h17 v0.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.5 #1072 heavy_tank (42.9,128.2) h10 v0.7 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t532.5 #1038 ifv (39.4,130.0) h74 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.0 #919 main_battle_tank (37.4,132.0) h62 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.0 #1041 aa_vehicle (31.7,140.1) h42 v3.2 AttackMove->(65,94) path 0/1 next (30.9,142.0) goal (31,142) q0 strikes 0 gate 0/40 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t533.0 #992 aa_vehicle (44.8,124.2) h14 v0.6 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.0 #1072 heavy_tank (42.6,127.3) h5 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.0 #1038 ifv (39.0,129.9) h75 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t533.15 #1041 (31.9,140.3) Settle d2.0 | Drive < Step < Step < Play
+  t533.5 #919 main_battle_tank (37.5,132.0) h75 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.5 #1041 aa_vehicle (32.0,140.4) h42 v0.0 AttackMove->(65,94) path 1/1 next (32.0,140.4) goal (31,142) q0 strikes 0 gate 0/40 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t533.5 #992 aa_vehicle (44.7,124.1) h14 v0.3 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.5 #1072 heavy_tank (42.4,127.0) h4 v0.4 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t533.5 #1038 ifv (38.7,129.7) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t533.95 #1041 (32.0,140.4) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t533.95 #1041 (32.0,140.4) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t534.0 #919 main_battle_tank (37.4,132.0) h60 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.0 #1041 aa_vehicle (32.1,140.5) h52 v0.7 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t534.0 #992 aa_vehicle (44.4,124.0) h16 v0.3 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.0 #1072 heavy_tank (42.1,127.2) h6 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.0 #1038 ifv (38.5,129.6) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.5 #919 main_battle_tank (37.4,132.0) h84 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.5 #1041 aa_vehicle (32.7,140.6) h102 v2.2 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t534.5 #992 aa_vehicle (44.0,124.1) h18 v0.5 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.5 #1072 heavy_tank (42.1,128.0) h10 v2.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t534.5 #1038 ifv (38.3,129.5) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t535.00 #919 (37.4,132.0) Costed route round #1038: 6 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t535.0 #919 main_battle_tank (37.4,132.0) h60 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.0 #1041 aa_vehicle (33.9,140.1) h127 v1.3 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t535.0 #992 aa_vehicle (44.0,124.0) h18 v0.4 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.0 #1072 heavy_tank (41.8,128.6) h19 v1.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.0 #1038 ifv (38.0,129.4) h73 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.5 #919 main_battle_tank (37.3,132.0) h90 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.5 #1041 aa_vehicle (34.3,139.9) h129 v0.8 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t535.5 #992 aa_vehicle (44.0,124.0) h18 v0.7 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.5 #1072 heavy_tank (42.0,129.3) h25 v1.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t535.5 #1038 ifv (37.9,129.4) h78 v0.3 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.0 #919 main_battle_tank (37.8,131.9) h90 v0.9 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.0 #1041 aa_vehicle (34.7,140.1) h132 v0.6 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t536.0 #992 aa_vehicle (44.1,124.2) h18 v0.2 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.0 #1072 heavy_tank (41.8,129.7) h29 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.0 #1038 ifv (37.1,129.1) h113 v0.0 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.5 #919 main_battle_tank (38.3,131.9) h71 v0.6 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.5 #1041 aa_vehicle (35.4,140.8) h163 v0.5 AttackMove->(65,94) path 0/5 next (35.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t536.5 #992 aa_vehicle (44.1,125.4) h59 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.5 #1072 heavy_tank (41.6,130.0) h33 v0.6 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t536.5 #1038 ifv (37.2,129.3) h73 v0.4 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t536.75 #1072 (41.5,129.9) Costed route round #950: 5 points, 26 m | ApplyCostedPath < RunPathQueue < Step < Step
+t537.00 #1041 (35.8,141.0) Costed route round #951: 8 points, 79 m | ApplyCostedPath < RunPathQueue < Step < Step
+t537.00 #1041 (35.8,141.0) SetPath 8 to <64.85507, 94.26988> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t537.0 #919 main_battle_tank (38.7,132.0) h83 v0.5 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.0 #1041 aa_vehicle (35.8,141.0) h-175 v0.7 AttackMove->(65,94) path 0/8 next (33.0,141.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t537.0 #992 aa_vehicle (44.0,125.4) h67 v0.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.0 #1072 heavy_tank (41.5,129.9) h33 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.0 #1038 ifv (37.0,129.2) h73 v0.5 AttackMove->(61,131) path 0/5 next (43.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.5 #919 main_battle_tank (38.7,132.0) h68 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.5 #1041 aa_vehicle (35.4,140.6) h-125 v2.4 AttackMove->(65,94) path 0/8 next (33.0,141.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t537.5 #992 aa_vehicle (44.0,125.5) h67 v0.4 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.5 #1072 heavy_tank (41.6,129.8) h31 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t537.5 #1038 ifv (36.7,129.2) h117 v0.6 AttackMove->(61,131) path 0/6 next (43.3,129.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t537.85 #1041 (34.4,140.3) Arrive 0/8 d1.6 | Drive < Step < Step < Play
+  t538.0 #919 main_battle_tank (38.8,132.0) h68 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.0 #1041 aa_vehicle (33.7,140.0) h-110 v5.4 AttackMove->(65,94) path 1/8 next (29.0,137.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t538.0 #992 aa_vehicle (44.2,125.7) h53 v1.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.0 #1072 heavy_tank (41.7,129.5) h40 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.0 #1038 ifv (36.8,128.6) h131 v1.7 AttackMove->(61,131) path 0/6 next (43.3,129.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.5 #919 main_battle_tank (38.8,132.0) h71 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.5 #1041 aa_vehicle (30.7,138.1) h-124 v8.0 AttackMove->(65,94) path 1/8 next (29.0,137.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t538.5 #992 aa_vehicle (44.5,125.7) h65 v0.4 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.5 #1072 heavy_tank (42.0,129.7) h63 v0.3 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t538.5 #1038 ifv (37.1,127.7) h124 v2.0 AttackMove->(61,131) path 0/6 next (43.3,129.2) goal (61,131) q0 strikes 3 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t538.65 #1041 (30.0,137.7) Arrive 1/8 d1.2 | Drive < Step < Step < Play
+t538.70 #1038 (37.5,127.5) ClearPath | ClearPath < GiveUp < OnNoProgress < DetectStuck
+t538.75 #1038 (37.5,127.5) SetOrder Idle <0, 0> | SetOrder < UpdateAttackMove < UpdateOrder < Step
+t538.80 #1038 (37.6,127.5) SetPath 1 to <29.00497, 126.8591> | SetPath < FindPath < PathTo < UpdateGuard
+  t539.0 #919 main_battle_tank (38.7,132.0) h104 v0.3 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t539.0 #1041 aa_vehicle (28.8,136.2) h-159 v5.4 AttackMove->(65,94) path 2/8 next (31.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t539.0 #992 aa_vehicle (44.6,125.8) h65 v0.7 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t539.0 #1072 heavy_tank (42.0,129.9) h77 v0.4 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t539.0 #1038 ifv (37.9,127.3) h93 v0.3 Idle->(0,0) path 0/1 next (29.0,126.9) goal (29,127) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t539.25 #1038 (38.3,127.0) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t539.25 #1038 (38.3,127.0) SetPath 4 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+  t539.5 #919 main_battle_tank (38.6,131.9) h110 v0.5 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t539.5 #1041 aa_vehicle (28.1,133.8) h-178 v4.0 AttackMove->(65,94) path 2/8 next (31.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t539.5 #992 aa_vehicle (44.6,126.0) h65 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t539.5 #1072 heavy_tank (42.1,130.3) h82 v0.7 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t539.5 #1038 ifv (38.7,126.6) h53 v0.5 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.0 #919 main_battle_tank (38.2,132.0) h109 v0.5 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.0 #1041 aa_vehicle (28.1,131.8) h154 v4.0 AttackMove->(65,94) path 2/8 next (31.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t540.0 #992 aa_vehicle (44.7,126.5) h65 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t540.0 #1072 heavy_tank (43.0,130.1) h78 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.0 #1038 ifv (39.1,126.1) h49 v0.5 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.5 #919 main_battle_tank (38.3,132.0) h110 v0.6 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.5 #1041 aa_vehicle (28.9,130.0) h114 v4.0 AttackMove->(65,94) path 2/8 next (31.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t540.5 #992 aa_vehicle (44.7,126.6) h66 v0.9 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t540.5 #1072 heavy_tank (43.4,130.3) h78 v0.9 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t540.5 #1038 ifv (39.4,126.3) h49 v0.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t540.85 #1041 (29.8,129.3) Reverse 2.2 for #951 | StartReverse < ServeHeadOns < Step < Step
+  t541.0 #919 main_battle_tank (38.4,132.0) h111 v0.6 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t541.0 #1041 aa_vehicle (29.7,129.2) h86 v-0.4 AttackMove->(65,94) path 2/8 next (31.0,131.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.9 lanes None target 0 engaged 0
+  t541.0 #992 aa_vehicle (44.8,126.3) h64 v0.8 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t541.0 #1072 heavy_tank (43.7,130.5) h81 v0.8 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t541.0 #1038 ifv (39.6,126.5) h49 v0.8 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t541.20 #919 (38.4,132.0) Costed route round #1072: 5 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+t541.50 #1041 (28.2,129.0) Yield to #951 | StartYield < EndReverse < DriveReverse < Drive
+t541.50 #1041 (28.2,129.0) SetPath 1 to <23.56196, 119.967> | SetPath < StartYield < EndReverse < DriveReverse
+  t541.5 #919 main_battle_tank (38.3,132.0) h110 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t541.5 #1041 aa_vehicle (28.2,129.0) h86 v0.0 AttackMove->(65,94) path 0/1 next (23.6,120.0) goal (24,120) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t541.5 #992 aa_vehicle (44.8,126.3) h64 v1.0 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t541.5 #1072 heavy_tank (44.0,130.8) h70 v1.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t541.5 #1038 ifv (39.8,126.7) h49 v0.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t541.55 #1041 (28.2,129.0) Wait for doorway 40 | StartGateWait < GateCheck < Drive < Step
+t541.55 #1041 (28.2,129.0) SetPath 1 to <25.12159, 133.9799> | SetPath < StartGateWait < GateCheck < Drive
+  t542.0 #919 main_battle_tank (38.3,132.0) h110 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t542.0 #1041 aa_vehicle (28.5,128.9) h46 v1.1 AttackMove->(65,94) path 0/1 next (25.1,134.0) goal (25,134) q0 strikes 0 gate 0/40 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t542.0 #992 aa_vehicle (44.9,126.5) h63 v1.1 AttackMove->(61,131) path 1/5 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t542.0 #1072 heavy_tank (44.3,131.5) h53 v0.3 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t542.0 #1038 ifv (40.2,126.9) h48 v0.3 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t542.25 #992 (44.8,126.7) Costed route round #1042: 3 points, 27 m | ApplyCostedPath < RunPathQueue < Step < Step
+t542.25 #992 (44.8,126.7) SetPath 3 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t542.5 #919 main_battle_tank (38.3,132.0) h110 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t542.5 #1041 aa_vehicle (28.4,129.2) h11 v1.4 AttackMove->(65,94) path 0/1 next (25.1,134.0) goal (25,134) q0 strikes 0 gate 0/40 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t542.5 #992 aa_vehicle (44.9,126.6) h60 v0.8 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t542.5 #1072 heavy_tank (44.2,131.7) h57 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t542.5 #1038 ifv (40.4,126.9) h81 v0.7 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t542.80 #1041 (28.4,129.7) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t542.80 #1041 (28.4,129.7) SetPath 4 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+t542.95 #1072 (44.3,131.7) Costed route round #950: 5 points, 25 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t543.0 #919 main_battle_tank (38.4,132.0) h111 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t543.0 #1041 aa_vehicle (28.3,129.9) h35 v1.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t543.0 #992 aa_vehicle (45.0,126.5) h58 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t543.0 #1072 heavy_tank (44.3,131.8) h59 v1.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t543.0 #1038 ifv (40.7,126.8) h71 v0.8 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t543.5 #919 main_battle_tank (38.5,132.0) h112 v0.1 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t543.5 #1041 aa_vehicle (28.8,129.9) h85 v1.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t543.5 #992 aa_vehicle (45.0,126.7) h60 v0.1 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t543.5 #1072 heavy_tank (44.1,132.0) h63 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t543.5 #1038 ifv (40.8,126.9) h51 v0.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t543.90 #1038 (40.8,126.8) Costed route round #992: 4 points, 29 m | ApplyCostedPath < RunPathQueue < Step < Step
+t543.90 #1038 (40.8,126.8) SetPath 4 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t544.0 #919 main_battle_tank (38.6,132.0) h112 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t544.0 #1041 aa_vehicle (29.4,129.5) h135 v1.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t544.0 #992 aa_vehicle (45.2,126.7) h58 v0.2 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t544.0 #1072 heavy_tank (44.2,132.1) h65 v0.3 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t544.0 #1038 ifv (40.6,126.6) h91 v0.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t544.5 #919 main_battle_tank (38.5,132.0) h112 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t544.5 #1041 aa_vehicle (29.6,128.9) h119 v1.4 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t544.5 #992 aa_vehicle (45.0,126.8) h60 v0.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t544.5 #1072 heavy_tank (44.5,132.3) h71 v0.7 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t544.5 #1038 ifv (40.6,126.4) h44 v1.0 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t545.0 #919 main_battle_tank (38.5,132.0) h112 v0.5 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t545.0 #1041 aa_vehicle (29.9,128.5) h142 v1.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 951 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t545.0 #992 aa_vehicle (45.2,126.8) h58 v0.2 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t545.0 #1072 heavy_tank (44.1,132.3) h69 v0.4 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t545.0 #1038 ifv (41.1,126.8) h43 v0.9 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t545.40 #1041 (29.9,128.0) Yield done | EndYield < UpdateYield < TrafficOverlay < Step
+t545.40 #1041 (29.9,128.0) SetPath 4 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t545.5 #919 main_battle_tank (38.4,132.0) h97 v0.2 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t545.5 #1041 aa_vehicle (29.9,127.8) h93 v1.4 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t545.5 #992 aa_vehicle (45.2,126.8) h59 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t545.5 #1072 heavy_tank (43.7,131.8) h58 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t545.5 #1038 ifv (41.4,127.1) h65 v0.8 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.0 #919 main_battle_tank (38.4,132.0) h73 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.0 #1041 aa_vehicle (30.3,127.7) h93 v1.8 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t546.0 #992 aa_vehicle (45.6,126.8) h55 v0.2 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t546.0 #1072 heavy_tank (43.8,131.9) h60 v0.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.0 #1038 ifv (41.4,127.3) h75 v0.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.5 #919 main_battle_tank (38.3,132.0) h97 v0.2 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.5 #1041 aa_vehicle (30.5,127.6) h92 v0.4 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t546.5 #992 aa_vehicle (45.3,126.9) h58 v1.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t546.5 #1072 heavy_tank (43.9,132.0) h62 v0.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t546.5 #1038 ifv (42.2,127.8) h65 v1.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t546.90 #992 (45.8,126.9) Costed route round #1042: 4 points, 26 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t547.0 #919 main_battle_tank (38.3,132.0) h67 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t547.0 #1041 aa_vehicle (30.7,127.6) h92 v0.7 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t547.0 #992 aa_vehicle (45.7,126.8) h55 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t547.0 #1072 heavy_tank (44.0,132.3) h68 v0.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t547.0 #1038 ifv (42.5,128.2) h85 v0.5 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t547.40 #919 (38.2,132.0) Costed route round #1072: 5 points, 33 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t547.5 #919 main_battle_tank (38.2,132.0) h82 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t547.5 #1041 aa_vehicle (30.9,127.2) h81 v0.3 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t547.5 #992 aa_vehicle (45.8,126.6) h49 v0.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t547.5 #1072 heavy_tank (44.3,132.2) h67 v1.0 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t547.5 #1038 ifv (43.2,128.6) h86 v0.8 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.0 #919 main_battle_tank (38.2,132.0) h110 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.0 #1041 aa_vehicle (31.1,127.5) h56 v0.9 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t548.0 #992 aa_vehicle (45.5,126.8) h51 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t548.0 #1072 heavy_tank (44.2,132.8) h75 v1.5 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.0 #1038 ifv (43.8,129.3) h86 v2.1 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.5 #919 main_battle_tank (38.4,132.0) h101 v1.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.5 #1041 aa_vehicle (31.5,127.3) h91 v0.8 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t548.5 #992 aa_vehicle (45.2,126.6) h41 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t548.5 #1072 heavy_tank (45.0,133.4) h91 v2.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t548.5 #1038 ifv (43.8,129.8) h91 v0.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t549.0 #919 main_battle_tank (38.6,132.0) h71 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t549.0 #1041 aa_vehicle (32.0,127.2) h91 v1.5 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t549.0 #992 aa_vehicle (44.9,126.7) h40 v0.1 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t549.0 #1072 heavy_tank (45.9,133.6) h109 v2.1 AttackMove->(61,131) path 0/5 next (47.0,131.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t549.0 #1038 ifv (43.7,129.9) h93 v0.4 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t549.15 #1072 (46.2,133.6) Costed route round #1039: 5 points, 28 m | ApplyCostedPath < RunPathQueue < Step < Step
+t549.15 #1072 (46.2,133.6) SetPath 5 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t549.5 #919 main_battle_tank (38.7,132.0) h99 v1.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t549.5 #1041 aa_vehicle (32.4,127.2) h91 v1.3 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t549.5 #992 aa_vehicle (44.8,126.8) h60 v0.6 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t549.5 #1072 heavy_tank (46.7,133.7) h100 v0.6 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t549.5 #1038 ifv (43.8,129.9) h92 v1.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t550.0 #919 main_battle_tank (39.0,131.9) h93 v0.2 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t550.0 #1041 aa_vehicle (32.4,127.1) h90 v0.2 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t550.0 #992 aa_vehicle (44.8,126.6) h27 v0.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t550.0 #1072 heavy_tank (47.0,134.1) h77 v0.6 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t550.0 #1038 ifv (44.0,130.0) h91 v0.3 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t550.10 #1038 (44.0,130.0) Costed route round #1039: 6 points, 33 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t550.5 #919 main_battle_tank (39.0,132.0) h78 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t550.5 #1041 aa_vehicle (32.6,127.0) h90 v0.6 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t550.5 #992 aa_vehicle (44.6,127.0) h63 v1.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t550.5 #1072 heavy_tank (47.0,134.6) h55 v0.9 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t550.5 #1038 ifv (44.3,129.8) h86 v1.5 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.0 #919 main_battle_tank (39.2,132.0) h96 v0.2 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t551.0 #1041 aa_vehicle (32.9,127.1) h90 v0.8 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.0 #992 aa_vehicle (44.7,126.7) h38 v0.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.0 #1072 heavy_tank (46.6,134.8) h32 v0.6 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t551.0 #1038 ifv (44.1,129.9) h89 v0.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.5 #919 main_battle_tank (39.5,132.0) h82 v0.0 AttackMove->(61,131) path 0/5 next (41.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t551.5 #1041 aa_vehicle (32.7,127.1) h90 v0.5 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.5 #992 aa_vehicle (44.8,126.9) h51 v0.1 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t551.5 #1072 heavy_tank (46.9,135.6) h21 v1.0 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t551.5 #1038 ifv (44.1,129.9) h88 v0.1 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t551.55 #1041 (32.8,127.1) Costed route round #1015: 7 points, 130 m | ApplyCostedPath < RunPathQueue < Step < Step
+t551.90 #919 (39.7,132.0) Arrive 0/5 d1.6 | Drive < Step < Step < Play
+  t552.0 #919 main_battle_tank (39.8,132.0) h101 v0.4 AttackMove->(61,131) path 1/5 next (45.0,131.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t552.0 #1041 aa_vehicle (32.6,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.0 #992 aa_vehicle (44.7,126.8) h41 v0.5 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.0 #1072 heavy_tank (47.3,136.2) h31 v1.7 AttackMove->(61,131) path 0/6 next (49.1,136.4) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.0 #1038 ifv (44.2,130.0) h90 v0.8 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t552.25 #1072 (47.5,136.5) Arrive 0/6 d1.5 | Drive < Step < Step < Play
+t552.30 #1072 (47.6,136.5) Arrive 1/6 d1.6 | Drive < Step < Step < Play
+  t552.5 #919 main_battle_tank (40.5,131.9) h102 v1.6 AttackMove->(61,131) path 1/5 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t552.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.5 #992 aa_vehicle (45.2,127.1) h40 v1.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.5 #1072 heavy_tank (47.8,136.8) h31 v0.8 AttackMove->(61,131) path 2/6 next (47.0,139.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t552.5 #1038 ifv (45.1,130.1) h80 v1.9 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t553.0 #919 main_battle_tank (41.3,131.8) h102 v1.1 AttackMove->(61,131) path 1/5 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t553.0 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.0 #992 aa_vehicle (45.2,126.9) h13 v1.2 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1042 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.0 #1072 heavy_tank (48.2,137.9) h8 v2.1 AttackMove->(61,131) path 2/6 next (47.0,139.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.0 #1038 ifv (45.7,130.4) h73 v2.2 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t553.10 #992 (45.2,127.0) Costed route round #1038: 4 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+t553.15 #1072 (48.3,138.1) Arrive 2/6 d1.6 | Drive < Step < Step < Play
+  t553.5 #919 main_battle_tank (42.2,131.9) h107 v2.3 AttackMove->(61,131) path 1/5 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t553.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.5 #992 aa_vehicle (45.0,126.5) h13 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.5 #1072 heavy_tank (48.4,138.7) h20 v2.1 AttackMove->(61,131) path 3/6 next (51.0,143.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t553.5 #1038 ifv (46.7,130.8) h56 v2.6 AttackMove->(61,131) path 0/4 next (47.0,133.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t553.90 #1038 (47.6,131.6) Arrive 0/4 d1.5 | Drive < Step < Step < Play
+  t554.0 #919 main_battle_tank (43.4,131.1) h122 v3.0 AttackMove->(61,131) path 1/5 next (45.0,131.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t554.0 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t554.0 #992 aa_vehicle (45.4,126.8) h22 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t554.0 #1072 heavy_tank (49.1,139.7) h42 v3.0 AttackMove->(61,131) path 3/6 next (51.0,143.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t554.0 #1038 ifv (47.9,132.0) h34 v5.4 AttackMove->(61,131) path 1/4 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t554.10 #919 (43.4,130.9) Arrive 1/5 d1.6 | Drive < Step < Step < Play
+  t554.5 #919 main_battle_tank (43.9,130.6) h101 v0.5 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t554.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t554.5 #992 aa_vehicle (46.0,127.0) h54 v1.3 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t554.5 #1072 heavy_tank (50.6,140.8) h47 v3.9 AttackMove->(61,131) path 3/6 next (51.0,143.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t554.5 #1038 ifv (48.0,132.2) h26 v0.0 AttackMove->(61,131) path 1/4 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t554.80 #1072 (51.2,141.4) Arrive 3/6 d1.6 | Drive < Step < Step < Play
+  t555.0 #919 main_battle_tank (44.6,130.7) h75 v1.0 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t555.0 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t555.0 #992 aa_vehicle (45.7,127.4) h10 v0.9 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t555.0 #1072 heavy_tank (51.5,141.7) h51 v1.4 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t555.0 #1038 ifv (48.0,133.5) h13 v0.4 AttackMove->(61,131) path 1/4 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t555.30 #1038 (48.0,133.8) Arrive 1/4 d1.6 | Drive < Step < Step < Play
+  t555.5 #919 main_battle_tank (44.5,130.7) h76 v0.8 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t555.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t555.5 #992 aa_vehicle (45.8,127.6) h25 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t555.5 #1072 heavy_tank (51.8,142.0) h74 v1.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t555.5 #1038 ifv (48.1,134.1) h30 v0.0 AttackMove->(61,131) path 2/4 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t556.0 #919 main_battle_tank (45.1,130.9) h72 v2.2 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t556.0 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t556.0 #992 aa_vehicle (46.2,128.0) h39 v1.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t556.0 #1072 heavy_tank (52.7,142.2) h87 v2.3 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t556.0 #1038 ifv (48.5,134.4) h85 v0.9 AttackMove->(61,131) path 2/4 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t556.5 #919 main_battle_tank (45.6,131.6) h60 v2.3 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t556.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t556.5 #992 aa_vehicle (46.6,128.2) h4 v1.2 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t556.5 #1072 heavy_tank (53.8,142.3) h87 v2.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t556.5 #1038 ifv (49.3,134.0) h132 v0.0 AttackMove->(61,131) path 2/4 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t557.0 #919 main_battle_tank (46.7,132.1) h54 v1.2 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t557.0 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t557.0 #992 aa_vehicle (47.0,128.3) h0 v1.1 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t557.0 #1072 heavy_tank (54.6,142.4) h92 v1.2 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t557.0 #1038 ifv (49.7,134.1) h131 v1.9 AttackMove->(61,131) path 2/4 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+t557.25 #1038 (50.0,134.1) SetOrder AttackMove <32.50185, 116.8818> | SetOrder < IssueGroupMove < Apply < Submit
+t557.25 #1038 (50.0,134.1) SetPath 5 to <32.50185, 116.8818> | SetPath < FindPath < PathTo < IssueGroupMove
+t557.30 #1038 (50.0,134.1) Arrive 0/5 d1.3 | Drive < Step < Step < Play
+t557.40 #1072 (54.7,142.6) Reverse 3.1 for #950 | StartReverse < ServeHeadOns < Step < Step
+  t557.5 #919 main_battle_tank (47.1,132.0) h44 v0.8 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t557.5 #1041 aa_vehicle (32.5,127.0) h90 v0.0 AttackMove->(65,94) path 0/4 next (45.0,127.0) goal (65,94) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1015 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t557.5 #992 aa_vehicle (47.5,128.0) h-4 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t557.5 #1072 heavy_tank (54.6,142.7) h94 v-0.6 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 2.9 lanes None target 0 engaged 0
+  t557.5 #1038 ifv (50.4,134.3) h109 v1.2 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t557.75 #1041 (32.7,127.1) Costed route round #1071: 6 points, 62 m | ApplyCostedPath < RunPathQueue < Step < Step
+t557.75 #1041 (32.7,127.1) SetPath 6 to <64.85507, 94.26988> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t558.0 #919 main_battle_tank (46.7,131.5) h47 v0.7 AttackMove->(61,131) path 2/5 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1072 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t558.0 #1041 aa_vehicle (33.0,127.1) h90 v1.2 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t558.0 #992 aa_vehicle (47.8,127.9) h-6 v0.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t558.0 #1072 heavy_tank (53.7,142.7) h94 v-2.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 2.4 lanes None target 0 engaged 0
+  t558.0 #1038 ifv (50.9,134.1) h54 v1.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t558.35 #919 (46.9,131.8) Costed route round #1038: 5 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+t558.35 #919 (46.9,131.8) SetPath 5 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t558.5 #919 main_battle_tank (47.2,132.3) h17 v2.2 AttackMove->(61,131) path 0/5 next (47.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t558.5 #1041 aa_vehicle (33.2,127.1) h140 v0.9 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t558.5 #992 aa_vehicle (48.0,127.7) h-8 v1.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t558.5 #1072 heavy_tank (52.6,142.8) h94 v-2.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.9 lanes None target 0 engaged 0
+  t558.5 #1038 ifv (51.0,134.3) h-1 v1.1 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t559.0 #919 main_battle_tank (47.8,133.8) h-13 v3.0 AttackMove->(61,131) path 0/5 next (47.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t559.0 #1041 aa_vehicle (33.3,126.2) h-170 v3.2 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t559.0 #992 aa_vehicle (47.9,128.6) h-8 v2.7 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t559.0 #1072 heavy_tank (51.6,142.9) h94 v-2.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.4 lanes None target 0 engaged 0
+  t559.0 #1038 ifv (50.8,134.5) h-37 v0.3 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t559.5 #919 main_battle_tank (47.2,135.2) h-43 v2.3 AttackMove->(61,131) path 0/5 next (47.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t559.5 #1041 aa_vehicle (31.9,124.5) h-120 v4.8 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t559.5 #992 aa_vehicle (48.0,129.5) h35 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t559.5 #1072 heavy_tank (51.4,143.2) h94 v0.0 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 1.0 rev 0.0 lanes None target 0 engaged 0
+  t559.5 #1038 ifv (51.0,134.2) h-32 v1.1 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t559.75 #919 (47.0,135.4) Arrive 0/5 d1.6 | Drive < Step < Step < Play
+  t560.0 #919 main_battle_tank (46.6,135.7) h-32 v0.8 AttackMove->(61,131) path 1/5 next (49.0,139.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t560.0 #1041 aa_vehicle (29.6,124.4) h-70 v5.8 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t560.0 #992 aa_vehicle (48.0,129.2) h36 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t560.0 #1072 heavy_tank (50.8,143.5) h94 v0.0 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.5 rev 0.0 lanes None target 0 engaged 0
+  t560.0 #1038 ifv (51.3,134.1) h-31 v1.1 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t560.40 #1038 (51.7,134.1) Costed route round #950: 5 points, 31 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t560.5 #919 main_battle_tank (46.2,135.9) h-4 v0.8 AttackMove->(61,131) path 1/5 next (49.0,139.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 0 engaged 0
+  t560.5 #1041 aa_vehicle (27.4,126.9) h-20 v7.4 AttackMove->(65,94) path 0/7 next (27.5,128.2) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t560.5 #992 aa_vehicle (48.0,129.0) h32 v0.9 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 1038 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t560.5 #1072 heavy_tank (50.3,143.9) h94 v0.0 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t560.5 #1038 ifv (51.9,134.0) h-33 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t560.55 #1041 (27.4,126.9) Arrive 0/7 d1.4 | Drive < Step < Step < Play
+t560.85 #992 (48.0,129.1) Costed route round #1039: 5 points, 25 m | ApplyCostedPath < RunPathQueue < Step < Step
+  t561.0 #919 main_battle_tank (46.3,136.1) h-3 v0.8 AttackMove->(61,131) path 1/5 next (49.0,139.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t561.0 #1041 aa_vehicle (27.4,128.5) h25 v1.8 AttackMove->(65,94) path 1/7 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.0 #992 aa_vehicle (48.0,129.1) h36 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t561.0 #1072 heavy_tank (50.5,143.8) h117 v0.8 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.0 #1038 ifv (52.8,134.0) h-50 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t561.50 #919 (46.5,136.3) Costed route round #1070: 4 points, 28 m | ApplyCostedPath < RunPathQueue < Step < Step
+t561.50 #919 (46.5,136.3) SetPath 4 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t561.5 #919 main_battle_tank (46.5,136.3) h-3 v0.9 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t561.5 #1041 aa_vehicle (28.7,129.5) h55 v4.0 AttackMove->(65,94) path 1/7 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.5 #992 aa_vehicle (48.0,129.0) h16 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t561.5 #1072 heavy_tank (51.1,143.8) h139 v1.8 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t561.5 #1038 ifv (53.1,134.0) h-35 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t562.0 #919 main_battle_tank (46.1,136.9) h27 v1.4 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t562.0 #1041 aa_vehicle (30.4,130.7) h57 v4.0 AttackMove->(65,94) path 1/7 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t562.0 #992 aa_vehicle (48.0,128.7) h-9 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t562.0 #1072 heavy_tank (52.2,143.3) h162 v1.6 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t562.0 #1038 ifv (53.1,134.0) h-71 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t562.25 #1041 (31.1,131.1) Reverse 2.2 for #1015 | StartReverse < ServeHeadOns < Step < Step
+  t562.5 #919 main_battle_tank (46.2,137.7) h57 v2.4 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t562.5 #1041 aa_vehicle (31.0,131.1) h60 v-0.8 AttackMove->(65,94) path 1/7 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.8 lanes None target 0 engaged 0
+  t562.5 #992 aa_vehicle (48.0,128.3) h-9 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t562.5 #1072 heavy_tank (52.8,143.3) h175 v0.7 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t562.5 #1038 ifv (52.9,134.0) h-35 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t563.0 #919 main_battle_tank (46.9,138.1) h68 v2.4 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t563.0 #1041 aa_vehicle (29.5,130.2) h60 v-4.0 AttackMove->(65,94) path 1/7 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 1.3 lanes None target 0 engaged 0
+  t563.0 #992 aa_vehicle (48.0,127.9) h-8 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t563.0 #1072 heavy_tank (52.5,142.8) h153 v0.6 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t563.0 #1038 ifv (53.0,134.0) h-45 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t563.15 #1041 (29.2,130.0) Yield to #1015 | StartYield < EndReverse < DriveReverse < Drive
+t563.15 #1041 (29.2,130.0) SetPath 1 to <28.37965, 133.3977> | SetPath < StartYield < EndReverse < DriveReverse
+  t563.5 #919 main_battle_tank (47.3,138.4) h83 v1.9 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t563.5 #1041 aa_vehicle (29.4,130.4) h25 v2.3 AttackMove->(65,94) path 0/1 next (28.4,133.4) goal (28,133) q0 strikes 0 gate 0/0 yieldTo 1015 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t563.5 #992 aa_vehicle (48.0,127.7) h-8 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t563.5 #1072 heavy_tank (52.5,142.2) h130 v0.5 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t563.5 #1038 ifv (53.1,134.0) h-81 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.0 #919 main_battle_tank (47.7,138.6) h94 v1.6 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.0 #1041 aa_vehicle (29.5,132.0) h-5 v2.9 AttackMove->(65,94) path 0/1 next (28.4,133.4) goal (28,133) q0 strikes 0 gate 0/0 yieldTo 1015 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.0 #992 aa_vehicle (48.0,127.4) h-8 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.0 #1072 heavy_tank (52.3,142.1) h121 v0.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.0 #1038 ifv (53.3,134.0) h-81 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.5 #919 main_battle_tank (48.3,138.9) h112 v1.4 AttackMove->(61,131) path 0/4 next (49.0,137.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.5 #1041 aa_vehicle (29.2,133.0) h-30 v1.5 AttackMove->(65,94) path 0/1 next (28.4,133.4) goal (28,133) q0 strikes 0 gate 0/0 yieldTo 1015 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.5 #992 aa_vehicle (48.0,127.3) h-7 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t564.5 #1072 heavy_tank (52.5,141.9) h129 v1.2 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t564.5 #1038 ifv (53.9,134.0) h-82 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t564.60 #919 (48.5,138.9) Costed route round #950: 3 points, 19 m | ApplyCostedPath < RunPathQueue < Step < Step
+t564.60 #919 (48.5,138.9) SetPath 3 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t564.70 #1041 (29.1,133.2) Arrive 0/1 d0.8 | Drive < Step < Step < Play
+t565.00 #1041 (29.1,133.2) Yield done | EndYield < UpdateYield < TrafficOverlay < Step
+t565.00 #1041 (29.1,133.2) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t565.0 #919 main_battle_tank (48.8,139.0) h92 v0.9 AttackMove->(61,131) path 0/3 next (51.0,141.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t565.0 #1041 aa_vehicle (29.1,133.2) h-30 v0.3 AttackMove->(65,94) path 0/5 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.0 #992 aa_vehicle (48.0,127.1) h-7 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t565.0 #1072 heavy_tank (52.8,141.5) h129 v0.4 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.0 #1038 ifv (54.1,134.0) h-82 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.5 #919 main_battle_tank (49.0,139.4) h62 v1.1 AttackMove->(61,131) path 0/3 next (51.0,141.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t565.5 #1041 aa_vehicle (29.1,133.8) h20 v1.2 AttackMove->(65,94) path 0/5 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.5 #992 aa_vehicle (48.0,127.0) h-7 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t565.5 #1072 heavy_tank (52.9,141.2) h141 v1.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t565.5 #1038 ifv (53.8,134.0) h-82 v0.4 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t566.0 #919 main_battle_tank (49.3,140.7) h32 v2.2 AttackMove->(61,131) path 0/3 next (51.0,141.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.0 #1041 aa_vehicle (29.9,134.4) h70 v3.5 AttackMove->(65,94) path 0/5 next (45.0,127.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.0 #992 aa_vehicle (48.0,127.0) h-7 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t566.0 #1072 heavy_tank (53.3,140.3) h164 v2.1 AttackMove->(61,131) path 4/6 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.0 #1038 ifv (53.4,134.1) h-82 v0.4 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 950 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t566.05 #1041 (29.9,134.4) Wait for doorway 39 | StartGateWait < GateCheck < Drive < Step
+t566.05 #1041 (29.9,134.4) SetPath 1 to <32.09128, 138.874> | SetPath < StartGateWait < GateCheck < Drive
+t566.15 #919 (49.4,141.0) Arrive 0/3 d1.6 | Drive < Step < Step < Play
+t566.25 #1072 (53.5,139.8) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t566.25 #1072 (53.5,139.8) SetPath 2 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+  t566.5 #919 main_battle_tank (49.6,141.4) h56 v0.9 AttackMove->(61,131) path 1/3 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.5 #1041 aa_vehicle (31.4,135.7) h30 v5.2 AttackMove->(65,94) path 0/1 next (32.1,138.9) goal (32,139) q0 strikes 0 gate 0/39 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t566.5 #992 aa_vehicle (48.0,127.1) h38 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t566.5 #1072 heavy_tank (53.5,139.2) h166 v2.1 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t566.5 #1038 ifv (53.0,134.3) h-89 v1.1 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t566.80 #1041 (31.7,136.7) Doorway free | UpdateGateWait < TrafficOverlay < Step < Step
+t566.80 #1041 (31.7,136.7) SetPath 5 to <64.85507, 94.26988> | SetPath < FindPath < PathTo < ResumeOrder
+  t567.0 #919 main_battle_tank (49.6,141.6) h74 v0.4 AttackMove->(61,131) path 1/3 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.0 #1041 aa_vehicle (31.9,137.1) h35 v1.2 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.0 #992 aa_vehicle (48.0,127.4) h38 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t567.0 #1072 heavy_tank (53.8,139.2) h166 v0.7 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t567.0 #1038 ifv (52.4,134.0) h-126 v0.4 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t567.00 #1072 (53.8,139.2) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t567.00 #1072 (53.8,139.2) SetPath 2 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+  t567.5 #919 main_battle_tank (49.6,141.5) h74 v0.3 AttackMove->(61,131) path 1/3 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.5 #1041 aa_vehicle (32.5,137.4) h85 v2.0 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t567.5 #992 aa_vehicle (48.0,127.5) h38 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t567.5 #1072 heavy_tank (54.0,139.3) h167 v0.7 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t567.5 #1038 ifv (52.2,134.0) h-125 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t567.75 #919 (49.7,141.4) Costed route round #1019: 4 points, 25 m | ApplyCostedPath < RunPathQueue < Step < Step
+t567.75 #919 (49.7,141.4) SetPath 4 to <61, 131> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t567.75 #1072 (54.1,139.3) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t567.75 #1072 (54.1,139.3) SetPath 2 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+  t568.0 #919 main_battle_tank (49.8,141.3) h95 v0.6 AttackMove->(61,131) path 0/4 next (51.0,139.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.0 #1041 aa_vehicle (34.2,136.5) h135 v5.4 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.0 #992 aa_vehicle (48.0,127.3) h38 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t568.0 #1072 heavy_tank (54.2,139.2) h167 v0.7 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.0 #1038 ifv (52.1,134.0) h-125 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t568.5 #919 main_battle_tank (50.1,141.1) h112 v0.6 AttackMove->(61,131) path 0/4 next (51.0,139.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.5 #1041 aa_vehicle (34.6,135.7) h161 v0.8 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t568.5 #992 aa_vehicle (48.0,127.2) h39 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t568.5 #1072 heavy_tank (54.4,139.0) h167 v0.8 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t568.5 #1038 ifv (52.1,134.0) h-125 v0.3 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t568.50 #1072 (54.4,139.0) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t568.50 #1072 (54.4,139.0) SetPath 2 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+t568.60 #992 (48.0,127.2) Costed route round #1039: 5 points, 34 m | ApplyCostedPath < RunPathQueue < Step < Step
+t568.90 #919 (50.3,141.0) Wait for doorway 39 | StartGateWait < GateCheck < Drive < Step
+t568.90 #919 (50.3,141.0) SetPath 1 to <58.83525, 143.9093> | SetPath < StartGateWait < GateCheck < Drive
+  t569.0 #919 main_battle_tank (50.4,141.0) h124 v0.3 AttackMove->(61,131) path 0/1 next (58.8,143.9) goal (59,144) q0 strikes 0 gate 0/39 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.0 #1041 aa_vehicle (34.8,135.3) h161 v1.4 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t569.0 #992 aa_vehicle (48.0,126.9) h4 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t569.0 #1072 heavy_tank (54.4,139.1) h167 v0.4 AttackMove->(61,131) path 0/2 next (61.0,135.0) goal (61,131) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.0 #1038 ifv (52.0,134.0) h-125 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t569.25 #1072 (54.4,139.3) SetOrder AttackMove <61, 131> | SetOrder < IssueGroupMove < Apply < Submit
+t569.25 #1072 (54.4,139.3) SetPath 2 to <61, 131> | SetPath < FindPath < PathTo < IssueGroupMove
+t569.35 #1072 (54.4,139.3) Yield to #883 | StartYield < ServeYieldRequests < Step < Step
+t569.35 #1072 (54.4,139.3) SetPath 1 to <60.20569, 144.3606> | SetPath < StartYield < ServeYieldRequests < Step
+  t569.5 #919 main_battle_tank (50.1,140.8) h94 v0.4 AttackMove->(61,131) path 0/1 next (58.8,143.9) goal (59,144) q0 strikes 0 gate 0/39 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.5 #1041 aa_vehicle (34.9,135.0) h161 v0.5 AttackMove->(65,94) path 0/5 next (37.0,129.0) goal (65,94) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t569.5 #992 aa_vehicle (48.0,126.9) h39 v0.0 AttackMove->(61,131) path 0/3 next (47.0,135.0) goal (61,131) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 1039 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t569.5 #1072 heavy_tank (54.5,139.6) h160 v0.5 AttackMove->(61,131) path 0/1 next (60.2,144.4) goal (60,144) q0 strikes 0 gate 0/0 yieldTo 883 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t569.5 #1038 ifv (52.2,134.0) h-125 v0.0 AttackMove->(33,117) path 1/5 next (47.0,135.0) goal (33,117) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+t569.70 #1038 (52.2,134.0) Costed route round #1039: 5 points, 34 m | ApplyCostedPath < RunPathQueue < Step < Step
+t569.70 #1038 (52.2,134.0) SetPath 5 to <32.50185, 116.8818> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t569.75 #1038 (52.2,134.0) Arrive 0/5 d1.6 | Drive < Step < Step < Play

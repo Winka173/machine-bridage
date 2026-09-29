@@ -1,0 +1,23 @@
+{
+  "map": "swamp",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map befd816b app 0.1.0",
+  "ticks": 7561,
+  "journal": [],
+  "records": [
+    {"vehicle": 2534, "def": "siege_tank", "team": 0, "startTick": 1180, "start": 59, "end": 70.5, "seconds": 11.5, "x": -100.454, "y": -88.84, "goalX": -19.762, "goalY": -12.544, "order": "Move", "cause": "BlockedByFriend", "detail": "titan_tank#2526 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "gun_pit(fixed)@5.7 titan_tank(moving)@5.6 heavy_tank(moving)@6.7"},
+    {"vehicle": 2536, "def": "titan_tank", "team": 0, "startTick": 1690, "start": 84.5, "end": 93.5, "seconds": 9, "x": -93.807, "y": -81.667, "goalX": -93, "goalY": -93, "order": "Move", "cause": "YieldWait", "detail": "behind armored_bulldozer#2538", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(parked)@8.6 armored_bulldozer(moving)@4.8 heavy_tank(moving)@7.2 armored_bulldozer(moving)@9.0 artillery(moving)@4.4"},
+    {"vehicle": 2519, "def": "zu23_technical", "team": 1, "startTick": 1920, "start": 96, "end": 107, "seconds": 11, "x": 111.531, "y": 122.176, "goalX": 125.745, "goalY": 140.782, "order": "AttackMove", "cause": "YieldWait", "detail": "behind scout_jeep#2525", "area": "camp1", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "aa_turret(fixed)@7.0 scout_jeep(parked)@5.1 scout_jeep(parked)@3.1"},
+    {"vehicle": 2526, "def": "titan_tank", "team": 0, "startTick": 1930, "start": 96.5, "end": 110.5, "seconds": 14, "x": -93.402, "y": -88.379, "goalX": 20.064, "goalY": 68.352, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "artillery#2539 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "gun_pit(fixed)@7.3 armored_bulldozer(moving)@5.9 titan_tank(parked)@6.4 artillery(moving)@4.8 main_battle_tank(moving)@8.0 titan_tank(moving)@6.6"},
+    {"vehicle": 2519, "def": "zu23_technical", "team": 1, "startTick": 2210, "start": 110.5, "end": 139, "seconds": 28.5, "x": 112.239, "y": 121.541, "goalX": 118.49, "goalY": 147.788, "order": "AttackMove", "cause": "YieldWait", "detail": "behind scout_jeep#2525", "area": "camp1", "lanes": "", "outcome": "gave up", "rescues": 2, "rescueKinds": "hop", "nearby": "aa_turret(fixed)@7.8 scout_jeep(parked)@4.7 scout_jeep(parked)@3.0"}
+  ],
+  "rescues": [
+    "1376,2534,siege_tank,0,ghost,-101.1,-88.4,-101.1,-88.4",
+    "2121,2519,zu23_technical,1,ghost,111.5,122.2,111.5,122.2",
+    "2134,2526,titan_tank,0,ghost,-93.7,-90.5,-93.7,-90.5",
+    "2411,2519,zu23_technical,1,hop,112.2,121.5,113.0,121.0",
+    "2611,2519,zu23_technical,1,hop,112.2,121.5,113.0,121.0"
+  ]
+}

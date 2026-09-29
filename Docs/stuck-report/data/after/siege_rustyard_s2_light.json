@@ -1,0 +1,21 @@
+{
+  "map": "rustyard",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 37ae0e97 app 0.1.0",
+  "ticks": 11328,
+  "journal": [],
+  "records": [
+    {"vehicle": 436, "def": "heavy_tank", "team": 1, "startTick": 4170, "start": 208.5, "end": 217, "seconds": 8.5, "x": 77.632, "y": 61.798, "goalX": 45.355, "goalY": 28.579, "order": "AttackMove", "cause": "Unknown", "detail": "speed 2.3 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 501, "def": "ifv", "team": 0, "startTick": 5660, "start": 283, "end": 293, "seconds": 10, "x": -34.186, "y": -51.92, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mlrs#489 parked", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@4.1 siege_tank(moving)@9.5 mlrs(parked)@4.6 aa_vehicle(moving)@8.6 light_tank(moving)@7.7 mlrs(moving)@8.9 ruin_tower@7"},
+    {"vehicle": 505, "def": "light_tank", "team": 0, "startTick": 5800, "start": 290, "end": 299, "seconds": 9, "x": -34.123, "y": -41.337, "goalX": 112.814, "goalY": 125.576, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mlrs#489 moving", "area": "field+gate", "lanes": "route+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@3.6 siege_tank(moving)@7.9 mlrs(moving)@3.1 aa_vehicle(moving)@8.8 ifv(moving)@9.1 main_battle_tank(moving)@7.7 ifv(moving)@9.0 mlrs(moving)@8.4 rail_boxcar@8 ruin_tower@8"},
+    {"vehicle": 509, "def": "mlrs", "team": 0, "startTick": 5810, "start": 290.5, "end": 299, "seconds": 8.5, "x": -42.629, "y": -45.295, "goalX": -49.422, "goalY": -42.403, "order": "Move", "cause": "BlockedByFriend", "detail": "light_tank#503 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@9.9 siege_tank(moving)@8.4 mlrs(moving)@5.3 aa_vehicle(moving)@3.7 ifv(moving)@7.0 main_battle_tank(moving)@4.1 light_tank(moving)@3.5 light_tank(moving)@9.8 ifv(moving)@7.3 scout_jeep(moving)@4.1 scout_jeep(moving)@7.9 container_stack@7"},
+    {"vehicle": 502, "def": "main_battle_tank", "team": 0, "startTick": 5880, "start": 294, "end": 303.5, "seconds": 9.5, "x": -39.306, "y": -42.868, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "GateWait", "detail": "doorway 0", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.6 siege_tank(moving)@6.9 mlrs(moving)@8.4 aa_vehicle(moving)@4.9 ifv(moving)@8.9 ifv(moving)@3.6 mlrs(moving)@9.8 scout_jeep(moving)@4.4"},
+    {"vehicle": 455, "def": "elite_heavy_tank", "team": 1, "startTick": 7130, "start": 356.5, "end": 365, "seconds": 8.5, "x": 100.227, "y": 92.27, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "command_vehicle#429 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@7.0 command_vehicle(moving)@3.7 shahed_truck(moving)@7.4 base_wall@10"},
+    {"vehicle": 478, "def": "siege_tank", "team": 0, "startTick": 7550, "start": 377.5, "end": 386.5, "seconds": 9, "x": -4.993, "y": -19.81, "goalX": 4.356, "goalY": -7.257, "order": "Move", "cause": "BlockedByFriend", "detail": "main_battle_tank#521 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.8 main_battle_tank(moving)@5.4 light_tank(moving)@3.4 jersey_barrier@5"}
+  ],
+  "rescues": [
+    "6034,466,siege_tank,0,ghost,-34.6,-38.1,-34.6,-38.1"
+  ]
+}
