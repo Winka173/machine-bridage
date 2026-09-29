@@ -329,6 +329,31 @@ namespace MachineBrigade.Sim.Modes
         public static string LineKey(MissionEventDef e, string moment, string speaker, string? variant = null) =>
             e.Lines.TryGetValue(moment, out var own) ? own : $"radio.{speaker}.ev.{e.KindKey}{(variant != null ? "." + variant : "")}.{moment}";
 
+        /// <summary>The moments a kind shows a notice at (the text table has a key for each; the checks read them).</summary>
+        public static string[] NoticeMoments(MissionEventKind kind) => kind switch
+        {
+            MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid or MissionEventKind.CounterBattery
+                or MissionEventKind.MiniBoss or MissionEventKind.WeatherShift => new[] { "warn" },
+            MissionEventKind.GeneralField => new[] { "warn", "start", "retreat", "done" },
+            MissionEventKind.SideObjective or MissionEventKind.LootDrop => new[] { "start", "done", "fail" },
+            MissionEventKind.SupplyRaid => new[] { "warn", "done", "fail" },
+            MissionEventKind.Blackout => new[] { "warn", "start", "end" },
+            _ => new[] { "start" },
+        };
+
+        /// <summary>The moments a kind says a line at (when its speaker has one: a mini boss's start only with a general).</summary>
+        public static string[] LineMoments(MissionEventKind kind) => kind switch
+        {
+            MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid or MissionEventKind.CounterBattery
+                or MissionEventKind.SupplyRaid or MissionEventKind.WeatherShift => new[] { "warn" },
+            MissionEventKind.GeneralField => new[] { "warn", "start", "retreat" },
+            MissionEventKind.MiniBoss => new[] { "warn", "start" },
+            MissionEventKind.SideObjective => new[] { "start", "done", "fail" },
+            MissionEventKind.Blackout => new[] { "warn", "end" },
+            MissionEventKind.LootDrop => Array.Empty<string>(),
+            _ => new[] { "start" },
+        };
+
         /// <summary>The moments a kind speaks at (warn, start, done, fail, retreat, end) and who speaks each by default.</summary>
         public static string? DefaultSpeaker(MissionEventDef e, string moment, string? general)
         {

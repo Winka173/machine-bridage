@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Numerics;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
@@ -380,11 +381,12 @@ namespace MachineBrigade.Sim.Events
             new(SimEventKind.BigAttack, boss.Id, at, boss.Position, value, ExplosionTier.Huge, attack, boss.Team, stage);
 
         /// <summary>
-        /// A line for the player (DefId its text key "radio.&lt;speaker&gt;..."), with its priority (prompt 23 H.3: Mount, see
-        /// <see cref="Priority"/>) and the vehicle speaking, if any (Entity: a general on the field, for F.5's mark).
+        /// A line for the player (DefId its text key "radio.&lt;speaker&gt;..."), as the in-battle dialogue reads it (prompt 23 H,
+        /// DialogueRules.FromEvent): Value its priority + 1 (1 story, 2 warning, 3 event, 4 reaction; 0 lets the key decide),
+        /// Mount 1 to open a story moment (the battle slows for it), Entity the vehicle speaking (a general on the field), if any.
         /// </summary>
-        internal static SimEvent RadioMessage(string key, int team = 0, LinePriority priority = LinePriority.Event, EntityId speaker = default) =>
-            new(SimEventKind.Radio, speaker, default, default, 0f, default, key, team, (int)priority);
+        internal static SimEvent RadioMessage(string key, int team = 0, LinePriority? priority = null, EntityId speaker = default, bool storyMoment = false) =>
+            new(SimEventKind.Radio, speaker, default, default, priority.HasValue ? (int)priority.Value + 1 : 0f, default, key, team, storyMoment ? 1 : 0);
 
         internal static SimEvent EventNotice(string key, MissionEventKind kind, Vector2 at, Vector2 direction, int bearing, float seconds,
             LinePriority priority, int team, EntityId about = default) =>
@@ -394,8 +396,16 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent WeatherShifting(string weather, float seconds) =>
             new(SimEventKind.WeatherShift, EntityId.None, default, default, seconds, default, weather, 0);
 
-        /// <summary>A Radio line's or an EventNotice's priority (prompt 23 H.3).</summary>
-        public LinePriority Priority => (LinePriority)Mount;
+        /// <summary>
+        /// A Radio line's priority (its Value less one; a line without one is an Event line here, the dialogue decides by its key)
+        /// or an EventNotice's (its Mount), prompt 23 H.3.
+        /// </summary>
+        public LinePriority Priority => Kind == SimEventKind.Radio
+            ? Value > 0.5f ? (LinePriority)Math.Clamp((int)MathF.Round(Value) - 1, 0, 3) : LinePriority.Event
+            : (LinePriority)Mount;
+
+        /// <summary>A Radio line opens a story moment (prompt 23 H.8).</summary>
+        public bool StoryMoment => Kind == SimEventKind.Radio && Mount == 1;
 
         /// <summary>An EventNotice's event kind (the notice's icon).</summary>
         public MissionEventKind NoticeKind => (MissionEventKind)(int)Tier;

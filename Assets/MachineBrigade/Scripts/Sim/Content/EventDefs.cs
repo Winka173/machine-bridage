@@ -362,7 +362,20 @@ namespace MachineBrigade.Sim.Content
             },
         };
 
-        public Dictionary<string, GeneralEventDef> Generals { get; } = new();
+        /// <summary>The generals (the built-in rows are campaign.json's starting points; its library's rows replace them).</summary>
+        public Dictionary<string, GeneralEventDef> Generals { get; } = new()
+        {
+            ["varga"] = G("varga", 12, "heavy_tank", new[] { "edge" }, "light_tank", "main_battle_tank", "heavy_tank", "tank_destroyer", "twin_tank"),
+            ["orlov"] = G("orlov", 11, "mlrs", new[] { "edge" }, "mlrs", "artillery", "mortar_carrier", "heavy_rocket_artillery", "aa_vehicle"),
+            ["kessler"] = G("kessler", 12, "main_battle_tank", new[] { "sea", "rail", "landing", "edge" }, "ifv", "wheeled_gun", "main_battle_tank", "mine_layer", "sam_launcher"),
+            ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "lancet_truck", "recon_drone", "ew_jammer"),
+            ["quaden"] = G("quaden", 10, "attack_jet", new[] { "edge" }, "attack_helicopter", "gunship_heli", "attack_jet", "strike_drone"),
+            ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "bmpt", "aa_vehicle"),
+            ["aurel"] = G("aurel", 12, "heavy_tank", new[] { "pods", "air", "edge" }, "strike_drone", "fpv_carrier", "heavy_tank", "bmpt", "railgun_truck"),
+        };
+
+        private static GeneralEventDef G(string id, int last, string elite, string[] delivery, params string[] roster) =>
+            new() { Id = id, LastChapter = last, Elite = elite, Delivery = delivery, Roster = roster };
 
         /// <summary>A mission without a general sends these.</summary>
         public IReadOnlyList<string> GenericRoster { get; set; } = new[] { "armored_car", "ifv", "light_tank", "main_battle_tank", "aa_vehicle", "mlrs" };
