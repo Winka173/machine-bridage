@@ -1280,27 +1280,12 @@ namespace MachineBrigade.Sim.Modes
                     yield return id;
         }
 
-        /// <summary>Elite escorts that come with each boss, by boss.</summary>
-        public IReadOnlyDictionary<string, string[]> Escorts { get; set; } = new Dictionary<string, string[]>
-        {
-            ["behemoth"] = new[] { "elite_mbt", "elite_mbt" },
-            ["mega_gunship"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
-            ["mobile_fortress"] = new[] { "elite_heavy_tank", "elite_aa", "elite_mlrs" },
-            ["drone_mothership"] = new[] { "elite_aa", "elite_apc", "elite_tank_destroyer" },
-            ["silver_bug"] = new[] { "elite_aa", "elite_attack_helicopter", "elite_heavy_tank" },
-            ["behemoth_inferno"] = new[] { "elite_heavy_tank", "elite_heavy_tank" },
-            ["behemoth_tempest"] = new[] { "elite_tank_destroyer", "elite_tank_destroyer" },
-            ["sky_fortress"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
-            ["fortress_hive"] = new[] { "elite_aa", "elite_apc" },
-            ["fortress_bastion"] = new[] { "elite_heavy_tank", "elite_mlrs" },
-            // Prompt 8: the supergun has its walls and guns; the airship its drones; the hovercraft lands its own;
-            // the Supreme Commander rides with an elite guard.
-            ["rail_supergun"] = new[] { "elite_heavy_tank", "elite_tank_destroyer" },
-            ["earth_borer"] = new[] { "elite_mbt", "elite_mbt" },
-            ["command_airship"] = new[] { "elite_aa", "elite_attack_helicopter" },
-            ["landing_hovercraft"] = new[] { "elite_apc" },
-            ["supreme_command"] = new[] { "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer" },
-        };
+        /// <summary>
+        /// Prompt 16 F: the escorts are the general system's now (balance.json "escorts", the same tables as
+        /// in the campaign), smaller here: fewer alive at once, part of each wave's guards, as elites
+        /// (<see cref="EscortSettings.For"/>). The mode sets them unless the session already has.
+        /// </summary>
+        public EscortSettings? EscortSettings { get; set; }
 
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
@@ -1359,6 +1344,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             _ledger.Ignore = v => v.Def.Boss;
             _nextBossAt = 10.0;
+            world.EscortSettings ??= _rules.EscortSettings ?? EscortSettings.For(world.Catalog.EscortRules, "Normal", bossRush: true);
         }
 
         /// <summary>Health steps of the boss on the field already paid for (75, 50, 25 %).</summary>
@@ -1416,12 +1402,7 @@ namespace MachineBrigade.Sim.Modes
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
             _partsPaid = 0;
-            if (!_rules.Escorts.TryGetValue(id, out var escorts)) return;
-            for (var i = 0; i < escorts.Length; i++)
-            {
-                var angle = heading + (i - (escorts.Length - 1) * 0.5f) * 0.7f;
-                world.SpawnVehicle(escorts[i], EnemyTeam, world.ClampToMap(rally + SimMath.Forward(angle) * 14f), heading);
-            }
+            // Its escorts come with it from the boss's table (prompt 16 F).
         }
 
         private void Finish(SimWorld world, int winner)

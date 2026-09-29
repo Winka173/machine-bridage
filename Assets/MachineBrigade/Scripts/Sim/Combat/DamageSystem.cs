@@ -249,7 +249,8 @@ namespace MachineBrigade.Sim.Combat
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
-                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned) continue;
+                // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
+                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;

@@ -131,6 +131,7 @@ namespace MachineBrigade.Game.Match
             var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
             hud.SetBossParts(boss, focused);
             hud.SetBossHp(boss.Hp, boss.MaxHp);
+            hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);
@@ -279,6 +280,9 @@ namespace MachineBrigade.Game.Match
             // delivery (both sides in the menu battle).
             SetElites(world, EnemyTeam, menu ? "Normal" : session.EliteDifficulty, menu ? null : session.EnemyGeneral);
             if (menu) SetElites(world, PlayerTeam, "Normal", null);
+            // Boss escorts (prompt 16 F): how many alive at once by difficulty, fewer in Boss Rush.
+            if (!menu) world.EscortSettings = MachineBrigade.Sim.Content.EscortSettings.For(world.Catalog.EscortRules, session.EliteDifficulty,
+                bossRush: kind == GameModeKind.BossRush);
             // Doctrines: the player's choice; a hard enemy picks one of its own.
             if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
                 world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));

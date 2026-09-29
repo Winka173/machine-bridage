@@ -57,7 +57,7 @@
   },
   "armored_train": {
     "file": "armored_train.glb",
-    "triangles": 16798
+    "triangles": 21874
   },
   "artillery": {
     "file": "artillery.glb",
@@ -387,6 +387,10 @@
     "file": "floodlight_mast.glb",
     "triangles": 2240
   },
+  "fortress_bastion": {
+    "file": "fortress_bastion.glb",
+    "triangles": 21972
+  },
   "foxhole": {
     "file": "foxhole.glb",
     "triangles": 954
@@ -549,7 +553,7 @@
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
-    "triangles": 9216
+    "triangles": 16228
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -641,7 +645,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 18388
+    "triangles": 28030
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -697,7 +701,7 @@
   },
   "rail_supergun": {
     "file": "rail_supergun.glb",
-    "triangles": 26848
+    "triangles": 28756
   },
   "rail_tanker": {
     "file": "rail_tanker.glb",

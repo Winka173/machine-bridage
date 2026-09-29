@@ -301,7 +301,11 @@
     { "id": "boss_heli_gun", "real": "M230 30 mm", "family": "autocannon", "size": 30,     "pen": 2, "inherits": "heli_gun", "cooldown": 0.201, "clip": 13, "clipReload": 4.1 },
     { "id": "boss_minigun", "real": "GShG 7.62 mm", "family": "mg", "size": 7.62,      "pen": 0, "inherits": "minigun", "cooldown": 0.0611, "roundWeight": 7, "clip": 40, "clipReload": 4.38 },
     { "id": "boss_hmg", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "cooldown": 0.267, "clip": 10, "clipReload": 4.1, "roundWeight": 11 },
-    { "id": "hover_ciws", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 22, "cooldown": 0.422, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 7, "clipReload": 4.44 }
+    { "id": "hover_ciws", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 22, "cooldown": 0.422, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 7, "clipReload": 4.44 },
+    // Prompt 16 E: the old bosses' new weapons. The Iron Train's mortar car lobs over cover; the landing
+    // hovercraft's two 140 mm rocket launchers (Zubr's A-22 Ogon).
+    { "id": "train_mortar", "real": "2B11 120 mm (twin)", "family": "mortar", "size": 120,  "pen": 2, "projectileModel": "mortar_bomb", "damageType": "HighExplosive", "damage": 150, "cooldown": 7.5, "range": 60, "minRange": 10, "projectileSpeed": 32, "splash": 5, "spread": 4, "impactTier": "Large", "projectile": "Shell", "burst": 2, "burstInterval": 0.8 },
+    { "id": "hover_rockets", "real": "A-22 Ogon 140 mm", "family": "rocket", "size": 140,  "pen": 2, "projectileModel": "grad", "damageType": "HighExplosive", "damage": 65, "cooldown": 14, "range": 55, "minRange": 12, "projectileSpeed": 50, "splash": 4, "spread": 5.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 11, "burstInterval": 0.1 }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -687,11 +691,18 @@
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
+    // Prompt 16 F: the landing hovercraft's escort, a small air-cushion gunboat (it crosses land and water
+    // like the hovercraft). It borrows the hovercraft's model at a third of its size until the fleet's fast
+    // attack craft model lands (prompt 16 C).
+    { "id": "hover_gunboat", "class": "Light", "model": "landing_hovercraft", "scale": 0.34, "armour": 1, "hp": 520, "speed": 8.5, "turnRate": 70, "turretTurnRate": 160,
+      "radius": 3.0, "length": 9.96, "width": 5.4, "cp": 0, "vision": 46, "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "gun", "mainAim": "Free", "captureRate": 0,
+      "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     { "id": "supply_truck",     "class": "Support", "armour": 0, "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "length": 7.3, "width": 2.72, "cp": 0, "vision": 26,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "armed_truck",
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
-    { "id": "behemoth", "scale": 1.2, "armour": 4, "hp": 4950, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
-      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "skills": ["behemoth_escort", "boss_rage", "boss_bulwark"],
+    { "id": "behemoth", "scale": 1.2, "armour": 4, "hp": 4650, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "skills": ["boss_rage", "boss_bulwark"],
+      "aps": { "radius": 11, "charges": 2, "recharge": 4 },
       "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
@@ -701,10 +712,11 @@
         {"id": "flak_r", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]},
         {"id": "flak_l", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [-0.9, -1.15, 4.8], "radius": 1.8, "mounts": [3]},
         {"id": "missiles_r", "kind": "missiles", "hp": 0.09, "armour": 2, "wreck": "wreck_launcher", "at": [2.6, -2.5, 2.3], "radius": 2.0, "mounts": [4]},
-        {"id": "missiles_l", "kind": "missiles", "hp": 0.09, "armour": 2, "wreck": "wreck_launcher", "at": [-2.6, -2.5, 2.3], "radius": 2.0, "mounts": [5]} ],
+        {"id": "missiles_l", "kind": "missiles", "hp": 0.09, "armour": 2, "wreck": "wreck_launcher", "at": [-2.6, -2.5, 2.3], "radius": 2.0, "mounts": [5]},
+        {"id": "aps", "kind": "aps", "hp": 0.07, "armour": 1, "wreck": "wreck_stump", "at": [0, 0.6, 5.2], "radius": 1.6, "stops": ["aps"]} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "mobile_fortress", "scale": 1.2, "armour": 4, "hp": 7000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
-      "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "skills": ["fortress_escort", "fortress_barrage", "boss_emp"],
+      "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "skills": ["fortress_barrage", "boss_emp"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
@@ -717,19 +729,21 @@
         {"id": "missiles", "kind": "missiles", "hp": 0.08, "armour": 2, "wreck": "wreck_launcher", "at": [0, -6.05, 4.6], "radius": 1.8, "mounts": [5]},
         {"id": "emp", "kind": "emp", "hp": 0.1, "armour": 1, "node": "Radar", "wreck": "wreck_stump", "at": [0, -4.2, 7.7], "radius": 2.0, "skills": ["boss_emp"]} ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "armored_train", "scale": 1.15, "armour": [4, 3, 3, 2], "hp": 4400, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 19.85, "width": 3.4, "cp": 0, "vision": 50,
+    { "id": "armored_train", "scale": 1.15, "armour": [4, 3, 3, 2], "hp": 4150, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 19.85, "width": 3.4, "cp": 0, "vision": 50,
       "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "skills": ["train_smoke", "train_patch"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" },
-                     { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" } ],
+                     { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" },
+                     { "weapon": "train_mortar", "slot": "mortar", "aim": "Free" } ],
       "parts": [
         {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "armour": 4, "wreck": "wreck_stump", "at": [0, 7.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
         {"id": "gun_car_front", "kind": "maingun", "hp": 0.12, "armour": 3, "node": "Main_cannon|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, -3.2, 3.7], "radius": 3.0, "mounts": [0], "radio": "radio.part.maingun"},
         {"id": "gun_car_rear", "kind": "maingun", "hp": 0.12, "armour": 3, "wreck": "wreck_stump", "at": [0, 2.0, 3.0], "radius": 2.5, "mounts": [4]},
         {"id": "rocket_car", "kind": "rockets", "hp": 0.1, "armour": 2, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, -8.3, 3.0], "radius": 2.2, "mounts": [1]},
-        {"id": "flak_car", "kind": "flak", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -6.35, 3.2], "radius": 2.0, "mounts": [3]} ],
+        {"id": "flak_car", "kind": "flak", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -6.35, 3.2], "radius": 2.0, "mounts": [3]},
+        {"id": "mortar_car", "kind": "mortar", "hp": 0.1, "armour": 2, "node": "Part_mortar", "wreck": "wreck_launcher", "at": [0, -12.6, 2.6], "radius": 2.4, "mounts": [5]} ],
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "mega_gunship", "scale": 1.35,     "armour": 2,   "hp": 11500, "speed": 6, "turnRate": 50, "turretTurnRate": 360, "radius": 7, "cp": 0, "vision": 55,
-      "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "mainModel": "hydra", "flying": true, "altitude": 20, "captureRate": 0, "boss": true, "skills": ["boss_flares", "gunship_escort", "boss_rage"],
+      "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "mainModel": "hydra", "flying": true, "altitude": 20, "captureRate": 0, "boss": true, "skills": ["boss_flares", "boss_rage"],
       "secondary": [ { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" }, { "weapon": "gunship_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ],
@@ -757,14 +771,17 @@
         {"id": "flak_rear", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0, -3.4, 3.9], "radius": 1.8, "mounts": [3]},
         {"id": "shield", "kind": "shield", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -2.35, 5.2], "radius": 2.5, "skills": ["mothership_shield"], "radio": "radio.part.shield"} ],
       "deathExplosion": { "damage": 300, "radius": 14, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "nuke_train", "scale": 1.15, "boss": true, "armour": [4, 3, 3, 2], "hp": 5450, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 22, "width": 3.4, "cp": 0, "vision": 55,
-      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "skills": ["train_smoke", "nuke_escort"],
-      "secondary": [ { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
+    { "id": "nuke_train", "scale": 1.15, "boss": true, "armour": [4, 3, 3, 2], "hp": 4800, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 22, "width": 3.4, "cp": 0, "vision": 55,
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "skills": ["train_smoke"],
+      "secondary": [ { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "sam_battery", "slot": "missile", "aim": "Free" } ],
       "parts": [
         {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "armour": 4, "wreck": "wreck_stump", "at": [0, -8.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
         {"id": "twin_gun", "kind": "maingun", "hp": 0.14, "armour": 3, "node": "Main_cannon|Main_cannon_2|Muzzle_brake|Muzzle_brake_2", "wreck": "wreck_barrel", "at": [0, 5.5, 3.9], "radius": 3.0, "mounts": [0], "radio": "radio.part.maingun"},
         {"id": "flak_front", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-0.45, 8.3, 3.5], "radius": 2.0, "mounts": [1]},
-        {"id": "flak_rear", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0.45, 0.28, 3.5], "radius": 2.0, "mounts": [2]} ],
+        {"id": "flak_rear", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0.45, 0.28, 3.5], "radius": 2.0, "mounts": [2]},
+        {"id": "rocket_car", "kind": "rockets", "hp": 0.1, "armour": 2, "node": "Part_rocket", "wreck": "wreck_launcher", "at": [0, -10.5, 2.8], "radius": 2.4, "mounts": [3]},
+        {"id": "sam_car", "kind": "sam", "hp": 0.1, "armour": 2, "node": "Part_missile", "wreck": "wreck_launcher", "at": [0, -15.3, 3.0], "radius": 2.4, "mounts": [4]} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Silver Bug": what if the USAF had built Project 1794 (Avro VZ-9 Avrocar's big brother). A laser
     // that burns a line across the ground, rim coilguns, point-defence flak, drones from its bay, EMP.
@@ -783,29 +800,34 @@
       "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // Round 6 bosses: variants of the super-heavy tank, the mobile fortress and the gunship.
     // "Inferno": burns everything near it and lays the ground on fire; weak against aircraft.
-    { "id": "behemoth_inferno", "scale": 1.2, "armour": 4, "hp": 5800, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
-      "firesWhileMoving": true, "weapon": "boss_flamer", "captureRate": 0, "boss": true, "skills": ["behemoth_escort", "boss_rage", "train_smoke"],
+    { "id": "behemoth_inferno", "scale": 1.2, "armour": 4, "hp": 5550, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
+      "firesWhileMoving": true, "weapon": "boss_flamer", "captureRate": 0, "boss": true, "skills": ["boss_rage", "train_smoke"],
+      "fireTrail": { "every": 4, "seconds": 10, "radius": 3.5, "dps": 18 },
       "secondary": [ { "weapon": "boss_thermo", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flamer", "slot": "main", "aim": "Turret" } ],
       "parts": [
         {"id": "flamer_r", "kind": "flamer", "hp": 0.12, "armour": 2, "node": "Main_cannon|Main_cannon_hose|Main_cannon_jacket|Muzzle_brake|Muzzle_brake_glow|Muzzle_brake_pilot", "wreck": "wreck_barrel", "at": [0.62, 3.4, 4.1], "radius": 2.2, "mounts": [0], "radio": "radio.part.maingun"},
         {"id": "flamer_l", "kind": "flamer", "hp": 0.12, "armour": 2, "node": "Main_cannon_2|Main_cannon_2_hose|Main_cannon_2_jacket|Muzzle_brake_2|Muzzle_brake_2_glow|Muzzle_brake_2_pilot", "wreck": "wreck_barrel", "at": [-0.62, 3.4, 4.1], "radius": 2.2, "mounts": [3]},
         {"id": "thermo", "kind": "thermo", "hp": 0.12, "armour": 2, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, 3.45, 2.8], "radius": 2.2, "mounts": [1]},
-        {"id": "flak", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]} ],
+        {"id": "flak", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0.9, -1.15, 4.8], "radius": 1.8, "mounts": [2]},
+        {"id": "fuel", "kind": "fuel", "hp": 0.08, "armour": 1, "node": "Fuel_tanks|Tank_straps|Tank_hazard", "wreck": "wreck_stump", "at": [0, -4.6, 2.6], "radius": 2.6, "stops": ["trail"]} ],
       "deathExplosion": { "damage": 420, "radius": 19, "delay": 2.6, "tier": "Ultimate" } },
     // "Tempest": a railgun that charges and pierces a whole line from far off, coilguns, a shield.
-    { "id": "behemoth_tempest", "scale": 1.2, "armour": 4, "hp": 4750, "speed": 2.6, "turnRate": 25, "turretTurnRate": 28, "radius": 6.4, "length": 15.84, "width": 6.5, "cp": 0, "vision": 70,
+    { "id": "behemoth_tempest", "scale": 1.2, "armour": 4, "hp": 4450, "speed": 2.6, "turnRate": 25, "turretTurnRate": 28, "radius": 6.4, "length": 15.84, "width": 6.5, "cp": 0, "vision": 70,
       "firesWhileMoving": true, "weapon": "boss_railgun", "captureRate": 0, "boss": true, "skills": ["mothership_shield", "boss_bulwark", "boss_emp"],
+      "aps": { "radius": 26, "charges": 2, "recharge": 1.6, "rockets": true, "laser": true },
       "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "coilgun", "slot": "gun", "aim": "Free" } ],
       "parts": [
         {"id": "railgun", "kind": "railgun", "hp": 0.15, "armour": 3, "node": "Main_cannon*", "wreck": "wreck_barrel", "at": [0, 5.5, 4.1], "radius": 3.2, "mounts": [0], "radio": "radio.part.maingun"},
         {"id": "coil_l", "kind": "coilgun", "hp": 0.1, "armour": 3, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-0.9, 3.3, 2.9], "radius": 1.8, "mounts": [1]},
         {"id": "coil_r", "kind": "coilgun", "hp": 0.1, "armour": 3, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [0.9, 3.3, 2.9], "radius": 1.8, "mounts": [2]},
-        {"id": "shield", "kind": "shield", "hp": 0.12, "armour": 2, "node": "Radar", "wreck": "wreck_stump", "at": [0, -3.3, 5.9], "radius": 2.0, "skills": ["mothership_shield", "boss_bulwark"], "radio": "radio.part.shield"} ],
+        {"id": "shield", "kind": "shield", "hp": 0.12, "armour": 2, "node": "Radar", "wreck": "wreck_stump", "at": [0, -3.3, 5.9], "radius": 2.0, "skills": ["mothership_shield", "boss_bulwark"], "radio": "radio.part.shield"},
+        {"id": "interceptor", "kind": "laser", "hp": 0.08, "armour": 1, "node": "Aps_faces|Aps_tubes|Aps_tubes_bore", "wreck": "wreck_stump", "at": [0, -0.4, 4.4], "radius": 2.4, "stops": ["aps"], "fx": "energy"} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Hive": no big gun at all; drone swarms from two racks, a SAM battery, flak: deadly to aircraft.
-    { "id": "fortress_hive", "scale": 1.2, "armour": 4, "hp": 6350, "speed": 1.8, "turnRate": 20, "turretTurnRate": 60, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 75,
-      "firesWhileMoving": true, "weapon": "mothership_drones", "mainSlot": "missile", "captureRate": 0, "boss": true, "skills": ["mothership_launch", "fortress_escort", "boss_emp"],
+    { "id": "fortress_hive", "scale": 1.2, "armour": 4, "hp": 6050, "speed": 1.8, "turnRate": 20, "turretTurnRate": 60, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 75,
+      "firesWhileMoving": true, "weapon": "mothership_drones", "mainSlot": "missile", "captureRate": 0, "boss": true, "skills": ["mothership_launch", "boss_emp"],
+      "jammer": 30,
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "sam_battery", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
       "parts": [
@@ -814,19 +836,22 @@
         {"id": "sam", "kind": "sam", "hp": 0.1, "armour": 2, "node": "Mount_rocket", "wreck": "wreck_launcher", "at": [0, -3.6, 5.7], "radius": 2.0, "mounts": [2]},
         {"id": "flak_l", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-3.2, 6.0, 4.6], "radius": 1.8, "mounts": [3]},
         {"id": "flak_r", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [3.2, 6.0, 4.6], "radius": 1.8, "mounts": [4]},
-        {"id": "emp", "kind": "emp", "hp": 0.1, "armour": 1, "wreck": "wreck_stump", "at": [0, -1.0, 7.4], "radius": 2.2, "skills": ["boss_emp"]} ],
+        {"id": "emp", "kind": "emp", "hp": 0.1, "armour": 1, "wreck": "wreck_stump", "at": [0, -1.0, 7.4], "radius": 2.2, "skills": ["boss_emp"]},
+        {"id": "jammer", "kind": "ew", "hp": 0.08, "armour": 1, "wreck": "wreck_stump", "at": [0, 3.0, 6.6], "radius": 2.2, "stops": ["jammer"], "fx": "energy"} ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     // "Bastion": the toughest thing on the field; four autocannon turrets, a heavy mortar, it patches itself up.
-    { "id": "fortress_bastion", "scale": 1.2, "armour": 4, "hp": 9000, "speed": 1.5, "turnRate": 18, "turretTurnRate": 22, "radius": 7.5, "length": 16.57, "width": 9.1, "cp": 0, "vision": 64,
+    { "id": "fortress_bastion", "scale": 1.2, "armour": 4, "hp": 8600, "speed": 1.5, "turnRate": 18, "turretTurnRate": 22, "radius": 7.5, "length": 16.57, "width": 9.1, "cp": 0, "vision": 64,
       "firesWhileMoving": true, "weapon": "boss_mortar", "captureRate": 0, "boss": true, "skills": ["train_patch", "boss_bulwark", "fortress_barrage"],
       "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-45, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [45, 80] },
-                     { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-135, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [135, 80] } ],
+                     { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-135, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [135, 80] },
+                     { "weapon": "kornet_twin", "slot": "missile", "aim": "Free" } ],
       "parts": [
         {"id": "mortar", "kind": "mortar", "hp": 0.14, "armour": 3, "node": "Main_cannon*", "wreck": "wreck_barrel", "at": [0, -0.5, 7.5], "radius": 2.8, "mounts": [0], "skills": ["fortress_barrage"], "radio": "radio.part.maingun"},
         {"id": "turret_fl", "kind": "turret", "hp": 0.1, "armour": 3, "node": "Mount_gun", "wreck": "wreck_turret", "at": [-3.2, 6.0, 4.7], "radius": 1.8, "mounts": [1]},
         {"id": "turret_fr", "kind": "turret", "hp": 0.1, "armour": 3, "node": "Mount_gun.001", "wreck": "wreck_turret", "at": [3.2, 6.0, 4.7], "radius": 1.8, "mounts": [2]},
         {"id": "turret_rl", "kind": "turret", "hp": 0.1, "armour": 3, "node": "Mount_gun.002", "wreck": "wreck_turret", "at": [-2.6, -6.25, 4.7], "radius": 1.8, "mounts": [3]},
-        {"id": "turret_rr", "kind": "turret", "hp": 0.1, "armour": 3, "node": "Mount_gun.003", "wreck": "wreck_turret", "at": [2.6, -6.25, 4.7], "radius": 1.8, "mounts": [4]} ],
+        {"id": "turret_rr", "kind": "turret", "hp": 0.1, "armour": 3, "node": "Mount_gun.003", "wreck": "wreck_turret", "at": [2.6, -6.25, 4.7], "radius": 1.8, "mounts": [4]},
+        {"id": "kornet", "kind": "missiles", "hp": 0.08, "armour": 2, "node": "Part_missile", "wreck": "wreck_launcher", "at": [0, -3.5, 6.0], "radius": 1.8, "mounts": [5]} ],
       "deathExplosion": { "damage": 500, "radius": 21, "delay": 2.6, "tier": "Ultimate" } },
     // ----------------------------------------------------------------------------------------------------
     // Prompt 8 bosses (DECISIONS 8 E). "parts": destructible parts, each with its share of the body's health,
@@ -837,10 +862,11 @@
     // Kessler's rail supergun: it stands on its rails at the edge of the field; every 20 s one 80 cm shell at
     // the biggest group of enemy ground vehicles anywhere on the map, its landing marked 3 s ahead. Guns,
     // walls and its fire-control post round the bed (break the post and the shells fall wide).
-    { "id": "rail_supergun", "boss": true, "static": true, "general": "kessler", "radioSpawn": "radio.kessler.supergun", "armour": 3, "structure": false, "hp": 5500, "speed": 0,
+    { "id": "rail_supergun", "boss": true, "static": true, "general": "kessler", "radioSpawn": "radio.kessler.supergun", "armour": 3, "structure": false, "hp": 5300, "speed": 0,
       "turnRate": 1, "turretTurnRate": 12, "radius": 14, "length": 27, "width": 8, "scale": 1.0, "cp": 0, "vision": 90, "captureRate": 0,
       "weapon": "none",
-      "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" } ],
+      "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" },
+                     { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" }, { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" } ],
       "bombard": { "every": 20, "warn": 3, "damage": 1400, "radius": 14, "scatter": 3, "blindScatter": 2.5, "first": 10,
                    "weapon": "supergun_800", "warning": "supergun_shell" },
       "guards": [ { "def": "gun_turret", "at": [-16, 20] }, { "def": "gun_turret", "at": [16, 20] },
@@ -850,12 +876,14 @@
       "attach": [ { "model": "rail_tractor", "at": [2.5, 19.26, 0.36] }, { "model": "rail_tractor", "at": [-2.5, 19.26, 0.36] } ],
       "phases": [ { "at": 0.5, "transform": 3, "damage": 1.2, "radio": "radio.kessler.supergun.half" } ],
       "parts": [
-        {"id": "main_gun", "kind": "maingun", "hp": 0.15, "armour": 3, "node": "Main_cannon*|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, 6.0, 9.0], "radius": 5.0, "stops": ["bombard"], "radio": "radio.part.maingun"},
-        {"id": "tractor_l", "kind": "tractor", "hp": 0.1, "armour": 3, "wreck": "wreck_stump", "at": [-2.5, -13.2, 1.5], "radius": 3.0, "attach": 0, "cadence": 1.3},
-        {"id": "tractor_r", "kind": "tractor", "hp": 0.1, "armour": 3, "wreck": "wreck_stump", "at": [2.5, -13.2, 1.5], "radius": 3.0, "attach": 1, "cadence": 1.3},
-        {"id": "fire_control", "kind": "station", "hp": 0.12, "armour": 2, "node": "Part_generator", "wreck": "wreck_stump", "at": [0, -11.2, 4.5], "radius": 2.5, "stops": ["spotter"], "fx": "energy"},
+        {"id": "main_gun", "kind": "maingun", "hp": 0.14, "armour": 3, "node": "Main_cannon*|Muzzle_brake", "wreck": "wreck_barrel", "at": [0, 6.0, 9.0], "radius": 5.0, "stops": ["bombard"], "radio": "radio.part.maingun"},
+        {"id": "tractor_l", "kind": "tractor", "hp": 0.08, "armour": 3, "wreck": "wreck_stump", "at": [-2.5, -13.2, 1.5], "radius": 3.0, "attach": 0, "cadence": 1.3},
+        {"id": "tractor_r", "kind": "tractor", "hp": 0.08, "armour": 3, "wreck": "wreck_stump", "at": [2.5, -13.2, 1.5], "radius": 3.0, "attach": 1, "cadence": 1.3},
+        {"id": "fire_control", "kind": "station", "hp": 0.09, "armour": 2, "node": "Part_generator", "wreck": "wreck_stump", "at": [0, -11.2, 4.5], "radius": 2.5, "stops": ["spotter"], "fx": "energy"},
         {"id": "gun_l", "kind": "gun", "hp": 0.08, "armour": 3, "node": "Part_gun", "wreck": "wreck_turret", "at": [-2.6, 11.3, 4.4], "radius": 1.8, "mounts": [1]},
-        {"id": "gun_r", "kind": "gun", "hp": 0.08, "armour": 3, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [2.6, 11.3, 4.4], "radius": 1.8, "mounts": [2]} ],
+        {"id": "gun_r", "kind": "gun", "hp": 0.08, "armour": 3, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [2.6, 11.3, 4.4], "radius": 1.8, "mounts": [2]},
+        {"id": "aa_l", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg", "wreck": "wreck_turret", "at": [-2.6, -8.5, 4.4], "radius": 1.8, "mounts": [3]},
+        {"id": "aa_r", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg.001", "wreck": "wreck_turret", "at": [2.6, -8.5, 4.4], "radius": 1.8, "mounts": [4]} ],
       "deathExplosion": { "damage": 450, "radius": 22, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "targeting_station", "class": "Defense", "static": true, "armour": 1, "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.4,
       "length": 8, "width": 6.5, "cp": 0, "vision": 110, "weapon": "none",
@@ -901,19 +929,26 @@
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // The landing hovercraft: it runs its route (a mission's; in Boss Rush, at the army) and every 35 s stops,
     // drops its bow ramp and lands 3 or 4 vehicles, five times at most. Stop it before it has landed them all.
-    { "id": "landing_hovercraft", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.hovercraft", "armour": 3, "hp": 6500, "speed": 5.5,
+    { "id": "landing_hovercraft", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.hovercraft", "armour": 3, "hp": 5900, "speed": 5.5,
       "turnRate": 26, "turretTurnRate": 200, "radius": 9, "length": 29.3, "width": 15.9, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "gun", "mainAim": "Free",
-      "secondary": [ { "weapon": "hover_ciws", "slot": "gun", "aim": "Free" } ],
+      "secondary": [ { "weapon": "hover_ciws", "slot": "gun", "aim": "Free" }, { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" },
+                     { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" }, { "weapon": "hover_rockets", "slot": "rocket", "aim": "Free" },
+                     { "weapon": "hover_rockets", "slot": "rocket", "aim": "Free" } ],
+      "aps": { "radius": 22, "charges": 3, "recharge": 1.5, "rockets": true },
       "landing": { "every": 35, "stop": 6, "min": 3, "max": 4, "landings": 5, "first": 15,
                    "units": ["main_battle_tank", "ifv", "armored_car", "atgm_carrier", "aa_vehicle", "main_battle_tank", "ifv"], "ramp": [0, 16] },
       "phases": [ { "at": 0.5, "transform": 2.5, "speed": 1.2, "radio": "radio.kessler.hovercraft.half" } ],
       "parts": [
-        {"id": "ramp", "kind": "ramp", "hp": 0.14, "armour": 3, "node": "Part_ramp", "wreck": "wreck_stump", "at": [0, 12.5, 2.3], "radius": 3.0, "stops": ["landing"], "radio": "radio.part.ramp"},
-        {"id": "fan_l", "kind": "fan", "hp": 0.1, "armour": 1, "node": "Part_fan", "wreck": "wreck_engine", "at": [-5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
-        {"id": "fan_r", "kind": "fan", "hp": 0.1, "armour": 1, "node": "Part_fan.001", "wreck": "wreck_engine", "at": [5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
-        {"id": "gun_l", "kind": "gun", "hp": 0.1, "armour": 3, "node": "Part_gun", "wreck": "wreck_turret", "at": [-5.3, 6.4, 4.3], "radius": 1.8, "mounts": [0]},
-        {"id": "gun_r", "kind": "gun", "hp": 0.1, "armour": 3, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [5.3, 3.0, 4.3], "radius": 1.8, "mounts": [1]} ],
+        {"id": "ramp", "kind": "ramp", "hp": 0.12, "armour": 3, "node": "Part_ramp", "wreck": "wreck_stump", "at": [0, 12.5, 2.3], "radius": 3.0, "stops": ["landing"], "radio": "radio.part.ramp"},
+        {"id": "fan_l", "kind": "fan", "hp": 0.07, "armour": 1, "node": "Part_fan", "wreck": "wreck_engine", "at": [-5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
+        {"id": "fan_r", "kind": "fan", "hp": 0.07, "armour": 1, "node": "Part_fan.001", "wreck": "wreck_engine", "at": [5.3, -10.9, 6.5], "radius": 3.0, "speed": 0.7},
+        {"id": "gun_l", "kind": "gun", "hp": 0.07, "armour": 3, "node": "Part_gun", "wreck": "wreck_turret", "at": [-5.3, 6.4, 4.3], "radius": 1.8, "mounts": [0]},
+        {"id": "gun_r", "kind": "gun", "hp": 0.07, "armour": 3, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [5.3, 3.0, 4.3], "radius": 1.8, "mounts": [1]},
+        {"id": "ciws_l", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg", "wreck": "wreck_turret", "at": [-5.3, -4.0, 4.3], "radius": 1.8, "mounts": [2], "stops": ["aps"]},
+        {"id": "ciws_r", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg.001", "wreck": "wreck_turret", "at": [5.3, -4.0, 4.3], "radius": 1.8, "mounts": [3], "stops": ["aps"]},
+        {"id": "rockets_l", "kind": "rockets", "hp": 0.07, "armour": 2, "node": "Part_rocket", "wreck": "wreck_launcher", "at": [-5.3, 10.0, 3.6], "radius": 1.8, "mounts": [4]},
+        {"id": "rockets_r", "kind": "rockets", "hp": 0.07, "armour": 2, "node": "Part_rocket.001", "wreck": "wreck_launcher", "at": [5.3, 10.0, 3.6], "radius": 1.8, "mounts": [5]} ],
       "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // General Hùng's Supreme Commander (after his betrayal): a super-heavy armoured headquarters with two light
     // machine guns and nothing else, but every enemy unit within 40 m of it hits 20 % harder and fires 20 %
@@ -923,7 +958,7 @@
       "firesWhileMoving": true, "weapon": "boss_hmg", "mainSlot": "mg", "mainAim": "Free",
       "secondary": [ { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" } ],
       "commandAura": { "radius": 40, "fireRate": 0.2, "damage": 0.2 },
-      "skills": ["supreme_guard", "boss_bulwark"],
+      "skills": ["boss_bulwark"],
       "phases": [ { "at": 0.5, "transform": 3, "heal": 0.08, "radio": "radio.hung.supreme.half" } ],
       "parts": [
         {"id": "antenna", "kind": "antenna", "hp": 0.15, "armour": 1, "node": "Part_antenna", "wreck": "wreck_stump", "at": [0.6, -4.9, 4.1], "radius": 2.0, "stops": ["aura"], "radio": "radio.part.antenna", "fx": "energy"},
@@ -933,7 +968,7 @@
     // "Spectre": a boss AC-130; circles its prey high up, 105 mm, two 40 mm and a 25 mm down its left side, Griffins from the ramp.
     { "id": "sky_fortress", "scale": 1.3, "armour": 2, "hp": 9100, "speed": 13, "turnRate": 55, "turretTurnRate": 360, "radius": 9, "cp": 0, "vision": 80,
       "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "boss": true,
-      "skills": ["boss_flares", "gunship_escort", "boss_rage"],
+      "skills": ["boss_flares", "boss_rage"],
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" },
                      { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" }, { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ],
       "parts": [
@@ -969,22 +1004,88 @@
     { "id": "boss_bulwark",     "kind": "Shield",    "trigger": "HpBelow",         "threshold": 0.35, "cooldown": 30, "duration": 6, "amount": 0.5 },
     { "id": "boss_flares",      "kind": "Flares",    "trigger": "MissileIncoming", "cooldown": 10, "duration": 3 },
     { "id": "boss_emp",         "kind": "Emp",       "trigger": "EnemyInRange",    "radius": 22, "cooldown": 35, "duration": 4 },
-    { "id": "behemoth_escort",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.7, "once": true, "count": 2, "unit": "elite_mbt" },
-    { "id": "fortress_escort",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.66, "once": true, "count": 2, "unit": "elite_heavy_tank" },
     { "id": "fortress_barrage", "kind": "Barrage",   "trigger": "HpBelow",         "threshold": 0.4, "cooldown": 25, "duration": 8, "amount": 2 },
-    { "id": "gunship_escort",   "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 3, "unit": "elite_attack_helicopter" },
     { "id": "train_smoke",      "kind": "Smoke",     "trigger": "UnderFire",       "cooldown": 25, "duration": 8, "radius": 12 },
     { "id": "train_patch",      "kind": "Patch",     "trigger": "PartBroken",      "once": true, "amount": 0.5 },
-    { "id": "nuke_escort",      "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 4, "unit": "elite_apc" },
     { "id": "mothership_launch", "kind": "Summon",   "trigger": "EnemyInRange",    "radius": 70, "cooldown": 30, "count": 3, "unit": "strike_drone" },
     { "id": "mothership_shield", "kind": "Shield",   "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.5 },
     { "id": "saucer_emp",       "kind": "Emp",       "trigger": "EnemyInRange",    "radius": 12, "cooldown": 24, "duration": 2.5 },
     { "id": "saucer_drones",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.66, "once": true, "count": 4, "unit": "strike_drone" },
-    // Prompt 8 bosses: the airship's two drone bays launch a strike drone each (a bay broken, its launches stop);
-    // the Supreme Commander calls its elite guard.
+    // Prompt 8 bosses: the airship's two drone bays launch a strike drone each (a bay broken, its launches stop).
+    // Prompt 16 F: the old escort calls (behemoth_escort, fortress_escort, gunship_escort, nuke_escort,
+    // supreme_guard) are gone: every boss's escorts are the general system's, "escorts" below.
     { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
-    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
-    { "id": "supreme_guard",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.6, "once": true, "count": 2, "unit": "elite_mbt" }
+    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" }
+  ],
+
+  // Prompt 16 F: escorts for every boss (BossSystem.Escorts, DECISIONS 15B). A wave comes in with the boss
+  // ("arrive") and another at each phase change ("phase": the same wave every change; "phases": one per change,
+  // the last repeating). A change is the boss's own phase marks, else the table's "marks", else escortRules.marks;
+  // "on": "surface" counts the Earth Worm's break-outs instead. A wave is a list of units, or an object
+  // { "units", "drop" (beside / para / edge / place), "support" (a para drop's warning and parachutes; default
+  // "escort_drop.<unit>"), "halt" (seconds the boss stops for it), "refill" (only replaces its own losses),
+  // "radio" }. A unit: "unit", "role" (guard, repair, jam, cover, spot, smoke, raid), "elite" (always its elite),
+  // "slot" (flank, rear, screen, front; guards and raiders flank, helpers rear), "at" ([x right, y forward] in the
+  // boss's frame, for "place"), "count". Every wave has at least one helper (any role but guard and raid); the
+  // helpers of a wave come first when the cap is near. A table may set its own "leash" and "cap".
+  "escortRules": {
+    "cap": { "Easy": 4, "Normal": 5, "Hard": 6, "VeryHard": 6, "Heroic": 6, "Iron": 6 },
+    "bossRushCut": 2, "bossRushMin": 3, "bossRushGuards": 0.5,
+    "leash": 28, "bounty": 3, "helperBounty": 4, "repair": 0.003, "repairReach": 12,
+    "spotBonus": 0.15, "spotSpread": 0.6, "marks": [0.5], "dropWarn": 3
+  },
+  "escorts": [
+    { "boss": "armored_train",
+      "arrive": [ { "unit": "armored_car" }, { "unit": "armored_car", "role": "spot" } ],
+      "phase": { "halt": 6, "units": [ { "unit": "light_tank" }, { "unit": "light_tank" }, { "unit": "engineer_vehicle", "role": "repair" } ] } },
+    { "boss": "behemoth_tempest",
+      "arrive": [ { "unit": "ew_jammer", "role": "jam" }, { "unit": "ew_jammer", "role": "jam" }, { "unit": "sam_launcher", "role": "cover" } ],
+      "phase": { "refill": true, "units": [ { "unit": "ew_jammer", "role": "jam" }, { "unit": "ew_jammer", "role": "jam" } ] } },
+    { "boss": "behemoth",
+      "arrive": [ { "unit": "main_battle_tank" }, { "unit": "main_battle_tank" }, { "unit": "aa_vehicle", "role": "cover" } ],
+      "phase": [ { "unit": "heavy_tank", "elite": true }, { "unit": "engineer_vehicle", "role": "repair" } ] },
+    { "boss": "behemoth_inferno",
+      "arrive": [ { "unit": "flame_tank" }, { "unit": "flame_tank" }, { "unit": "smoke_carrier", "role": "smoke" } ],
+      "phase": [ { "unit": "flame_tank" }, { "unit": "flame_tank" }, { "unit": "engineer_vehicle", "role": "repair" } ] },
+    { "boss": "mega_gunship",
+      "arrive": [ { "unit": "attack_helicopter" }, { "unit": "attack_helicopter" }, { "unit": "scout_heli", "role": "spot" } ],
+      "phase": [ { "unit": "scout_heli", "role": "spot" } ] },
+    { "boss": "sky_fortress",
+      "arrive": [ { "unit": "fighter_jet", "role": "cover" }, { "unit": "fighter_jet", "role": "cover" }, { "unit": "recon_drone", "role": "spot" } ],
+      "phase": [ { "unit": "fighter_jet", "role": "cover" }, { "unit": "fighter_jet", "role": "cover" } ] },
+    { "boss": "mobile_fortress",
+      "arrive": [ { "unit": "heavy_tank" }, { "unit": "heavy_tank" }, { "unit": "engineer_vehicle", "role": "repair" } ],
+      "phase": [ { "unit": "engineer_vehicle", "role": "repair" } ] },
+    { "boss": "fortress_hive",
+      "arrive": [ { "unit": "heavy_aa", "role": "cover" }, { "unit": "sam_launcher", "role": "cover" } ],
+      "phase": [ { "unit": "fpv_carrier" }, { "unit": "fpv_carrier" }, { "unit": "recon_drone", "role": "spot" } ] },
+    { "boss": "fortress_bastion",
+      "arrive": { "drop": "para", "units": [ { "unit": "gun_turret" }, { "unit": "atgm_tower" }, { "unit": "c_ram", "role": "cover" } ] },
+      "phase": { "drop": "para", "units": [ { "unit": "gun_turret" }, { "unit": "aa_turret", "role": "cover" } ] } },
+    { "boss": "drone_mothership",
+      "arrive": [ { "unit": "strike_drone" }, { "unit": "strike_drone" }, { "unit": "recon_drone", "role": "spot" } ],
+      "phase": [ { "unit": "scout_heli", "role": "spot" } ] },
+    { "boss": "silver_bug", "marks": [0.66, 0.33],
+      "arrive": [ { "unit": "elite_heavy_tank" }, { "unit": "elite_grad" }, { "unit": "recon_drone", "role": "spot" } ],
+      "phases": [ { "units": [ { "unit": "elite_fpv_carrier" }, { "unit": "ew_jammer", "role": "jam" } ] },
+                  { "units": [ { "unit": "elite_attack_helicopter" }, { "unit": "engineer_vehicle", "role": "repair" } ] } ] },
+    { "boss": "nuke_train",
+      "arrive": [ { "unit": "ifv" }, { "unit": "ifv" }, { "unit": "scout_heli", "role": "spot" } ],
+      "phase": [ { "unit": "ifv" }, { "unit": "ifv" }, { "unit": "smoke_carrier", "role": "smoke" } ] },
+    { "boss": "rail_supergun",
+      "arrive": [ { "unit": "main_battle_tank" }, { "unit": "main_battle_tank" }, { "unit": "counter_battery_radar", "role": "spot" } ],
+      "phase": [ { "unit": "main_battle_tank" }, { "unit": "main_battle_tank" }, { "unit": "engineer_vehicle", "role": "repair" } ] },
+    { "boss": "earth_borer", "on": "surface",
+      "phase": { "drop": "para", "units": [ { "unit": "ifv" }, { "unit": "ifv" }, { "unit": "engineer_vehicle", "role": "repair" } ] } },
+    { "boss": "command_airship",
+      "arrive": [ { "unit": "fighter_jet", "role": "cover" }, { "unit": "fighter_jet", "role": "cover" } ],
+      "phase": [ { "unit": "attack_helicopter" }, { "unit": "scout_heli", "role": "spot" } ] },
+    { "boss": "landing_hovercraft",
+      "arrive": [ { "unit": "hover_gunboat" }, { "unit": "hover_gunboat", "role": "spot" } ],
+      "phase": [ { "unit": "hover_gunboat", "role": "spot" } ] },
+    // Kept as it was (the brief): no guard at first, two elite battle tanks at 60 %; its command aura is the help.
+    { "boss": "supreme_command", "marks": [0.6],
+      "phase": [ { "unit": "main_battle_tank", "elite": true }, { "unit": "main_battle_tank", "elite": true } ] }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
@@ -999,6 +1100,14 @@
     // Premium (bought with coins): a line of fire.
     { "id": "napalm_strike",     "kind": "Airstrike",     "pen": 1, "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 5,  "count": 8, "duration": 1.4, "damage": 150, "blast": 9,  "tier": "Huge", "length": 55, "damageType": "Fire" },
     // The rail supergun's shell: only its warning ring (the boss system fires it).
+    // Prompt 16 F: escorts air-dropped round a boss (the Bastion's towers, the Earth Worm's crews): only the drop's
+    // warning, transport and parachute (the boss system lands them).
+    { "id": "escort_drop.gun_turret",       "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["gun_turret"] },
+    { "id": "escort_drop.atgm_tower",       "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["atgm_tower"] },
+    { "id": "escort_drop.c_ram",            "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["c_ram"] },
+    { "id": "escort_drop.aa_turret",        "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["aa_turret"] },
+    { "id": "escort_drop.ifv",              "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["ifv"] },
+    { "id": "escort_drop.engineer_vehicle", "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["engineer_vehicle"] },
     { "id": "supergun_shell",    "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 3.0, "radius": 16, "count": 1, "duration": 0, "damage": 0, "blast": 14, "tier": "Ultimate" },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
     // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).

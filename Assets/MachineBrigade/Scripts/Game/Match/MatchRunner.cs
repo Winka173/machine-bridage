@@ -458,6 +458,12 @@ namespace MachineBrigade.Game.Match
                 // A boss's guards and the troops it lands (prompt 8).
                 foreach (var guard in def.Guards) Add(guard.Def);
                 if (def.Landing != null) foreach (var unit in def.Landing.Units) Add(unit);
+                // Its escorts (prompt 16 F).
+                if (catalog.Escorts.TryGetValue(id, out var escort))
+                {
+                    if (escort.Arrive != null) foreach (var u in escort.Arrive.Units) Add(u.Unit);
+                    foreach (var wave in escort.Phases) foreach (var u in wave.Units) Add(u.Unit);
+                }
             }
             for (var team = 0; team <= 1; team++)
                 if (_world.TryGetEconomy(team, out var economy))
@@ -477,11 +483,7 @@ namespace MachineBrigade.Game.Match
             }
             // Boss Rush brings its bosses and their escorts later.
             if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
-                foreach (var boss in BossRushRules.Everyone())
-                {
-                    Add(boss);
-                    if (new BossRushRules().Escorts.TryGetValue(boss, out var escorts)) foreach (var e in escorts) Add(e);
-                }
+                foreach (var boss in BossRushRules.Everyone()) Add(boss);
             return ids;
         }
 
@@ -1041,7 +1043,7 @@ namespace MachineBrigade.Game.Match
                         ShowTraitWord(e);
                         break;
                     case SimEventKind.Bounty when !_menu && e.Team == PlayerTeam:
-                        _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", _ => "toast.bounty" },
+                        _hud.Toast(Strings.Format(e.DefId switch { "retreat" => "toast.retreat", "super_gun" => "toast.superGun", "escort" => "toast.escort", _ => "toast.bounty" },
                             Mathf.RoundToInt(e.Value)), seconds: e.DefId == "retreat" ? 4f : 2f);
                         break;
                     case SimEventKind.PropDestroyed when !_menu:
@@ -1070,7 +1072,9 @@ namespace MachineBrigade.Game.Match
                         if (_world.Catalog.TryGetSupport(e.DefId, out var support))
                             _warnings.Add((new Vector2(e.Position.X, e.Position.Y), support.IsLine ? support.Length * 0.5f : support.Radius,
                                 Time.time + e.Value + support.Duration + 0.5f));
-                        if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
+                        // Prompt 16 F: a boss's escorts parachuting in have their own line.
+                        if (!_menu && e.Team == EnemyTeam && e.DefId.StartsWith("escort_drop", System.StringComparison.Ordinal)) _hud.Toast(Strings.Get("toast.escortDrop"), error: true);
+                        else if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
                         // An item was used: it is gone from the profile too.
                         if (!_menu && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
                         if (!_menu && e.Team == PlayerTeam && support != null) DailyMissions.Record(support.Consumable ? "items" : "strikes");

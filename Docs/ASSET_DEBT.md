@@ -23,6 +23,14 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Fire crackle | The shared fire loop, louder near a burning boss | Its own crackle for a boss's fires |
 | Rail Supergun's tractors | Their broken piece is a stump on their deck | A burnt-out tractor model |
 
+## Prompt 16 (old bosses' weapons, escorts)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Hover gunboat (`hover_gunboat`, the landing hovercraft's escort) | The landing hovercraft's model at 0.34 scale | The fleet's fast attack craft model (prompt 16 C) once it lands, or its own small air-cushion gunboat |
+| The Behemoth's protection system, the Hive's jamming mast | Places on the hull (no node) | Their own nodes (`Part_aps`, `Part_ew`) with a broken piece |
+| The trains' new cars | Rigid with the train, like its other cars (as the models always were) | Articulated cars that follow the rails' curves |
+
 ## Prompt 13
 
 | What | Uses now | Needs |
