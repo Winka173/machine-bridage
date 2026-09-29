@@ -130,3 +130,14 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 00:50) mọi boss đều có thể vào boss rush  [G]
 - (30/09 00:50) có bug boss phi tuyền mới vào do ở quỹ đạo thấp nên nó bị tràn, mới vào cho nó xuống luôn  [G]
 - (30/09 01:00) về pdf thêm kích thước khá hay, nhớ thêm cho toàn bộ từ phương tiện, công trình, và đạn luôn, và nhụp bắn nạp đạn đường đạn khá hay  [lead: PDF 10b]
+
+## Play-test 7, 30/09 (ưu tiên; agent sửa ưu tiên, DECISIONS 22P)
+
+- (30/09 01:20) phương tiện có nhiều súng thì không thể bắn cùng lúc, scan lại toàn bộ phương tiện, nên cho bắn cùng lúc
+- (30/09 01:20) heavy gunship và attack jet tên lửa vẫn quá nhanh, giảm 30% tốc
+- (30/09 01:20) siege tank sau khi vào siege, vị trí súng máy không hiển thị đúng, và súng cũ trước khi vào siege nên thu lại
+- (30/09 01:20) các phương tiện bắn xa mà có súng trường, giảm range có thể bắn 30-50 tùy xe, hoặc các xe không chuyên chiến đấu
+- (30/09 01:20) drone mothership, giảm tốc drone bay 30%
+- (30/09 01:20) tôi vẫn không thấy thẻ gunship, nó nằm ở đâu, như hình nó đáng lẽ trong list các phương tiện bay, đề nghị check kỹ, cái heavy gunship trong hình là không phải, tôi cần ac-130
+- (30/09 01:20) và các tháp canh vẫn chưa bỏ vũ khí phụ cho hợp lý, như gun turret và heavy fortress
+- (30/09 01:20) ưu tiên sửa các cái này để test tiếp
