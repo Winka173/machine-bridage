@@ -802,6 +802,9 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _combat, _enemyTip;
         private string _combatFor;
 
+        /// <summary>A tray card shown as held (the screenshots); -1 lets go.</summary>
+        internal void PreviewHeld(int index) => _deck?.PreviewHeld(index);
+
         /// <summary>
         /// Prompt 15 E5: a tapped enemy's front armour and each vehicle of our deck marked ✓ ~ ✕ by its main weapon
         /// against it. It stays 5 s (a tap on it closes it); a new tap replaces it.

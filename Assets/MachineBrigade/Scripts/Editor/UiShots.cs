@@ -130,6 +130,7 @@ namespace MachineBrigade.Editor
         public static readonly string[] BattleScreenNames =
         {
             "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
+            "hud-enemy",
             "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
         };
 
@@ -299,6 +300,13 @@ namespace MachineBrigade.Editor
                     hud.SetScore(412, 356, 600, points);
                     hud.SetTimer(245f);
                     hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(3, "main_battle_tank", 1450f, 2000f));
+                    if (screen == "hud-enemy")
+                    {
+                        // Prompt 15 E3 and E5: an enemy heavy tank tapped (our deck against it), and a tray card held.
+                        hud.ShowEnemyTip(catalog.Vehicles["heavy_tank"],
+                            MatchSettings.DeckVehicles.Where(catalog.Vehicles.ContainsKey).Select(id => catalog.Vehicles[id]));
+                        hud.PreviewHeld(1);
+                    }
                     break;
             }
             return hud;

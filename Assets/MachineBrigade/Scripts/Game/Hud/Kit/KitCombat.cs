@@ -300,7 +300,7 @@ namespace MachineBrigade.Game.Hud
 
         private readonly ArmourFaces _armour;
         private readonly bool _structure;
-        private Color _colour = Color.white;
+        private Color _colour;
 
         public ArmourDiagram(ArmourFaces armour, bool structure)
         {

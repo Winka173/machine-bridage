@@ -52,6 +52,124 @@ namespace MachineBrigade.Editor
             }
         }
 
+        /// <summary>
+        /// Prompt 15 D: the armour and weapon icon set at its smallest size (34 panel px, 18.7 pt: the card rows, the
+        /// chips, the HUD), each with its Vietnamese words, and sample chips with their corner marks. Written at 16:9
+        /// (kit-combat-icons.png, 1920 x 1080) and on the smallest screen, 1280 x 720, one panel pixel an image pixel
+        /// (kit-combat-icons-small.png). Batch with graphics: -executeMethod MachineBrigade.Editor.IconSheet.Combat.
+        /// </summary>
+        [MenuItem("Machine Brigade/Combat Icon Sheet")]
+        public static void Combat()
+        {
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
+            {
+                Debug.LogError("[IconSheet] needs a graphics device: run the batch without -nographics.");
+                return;
+            }
+            var was = Strings.Vietnamese;
+            Strings.Vietnamese = true;
+            try
+            {
+                var folder = UiShots.OutputFolder();
+                Directory.CreateDirectory(folder);
+                foreach (var (file, shape) in new[] { ("kit-combat-icons.png", new UiShots.Shape("sheet", 1920, 1080)), ("kit-combat-icons-small.png", new UiShots.Shape("sheet-small", 1280, 720)) })
+                {
+                    var path = Path.Combine(folder, file);
+                    File.WriteAllBytes(path, UiShots.Shoot((out Action<Vector4> insets) =>
+                    {
+                        insets = null;
+                        return BuildCombat();
+                    }, shape, false));
+                    Debug.Log("[IconSheet] wrote " + path);
+                }
+            }
+            finally
+            {
+                Strings.Vietnamese = was;
+            }
+        }
+
+        private static VisualElement BuildCombat()
+        {
+            var root = Kit.Root("fc-screen");
+            root.style.paddingLeft = root.style.paddingRight = 24;
+            root.style.paddingTop = root.style.paddingBottom = 12;
+            root.Add(Kit.Title("Biểu tượng giáp và vũ khí · cỡ nhỏ nhất 18,7 pt"));
+            var grid = Kit.Box("");
+            grid.style.flexDirection = FlexDirection.Row;
+            grid.style.flexWrap = Wrap.Wrap;
+            grid.style.marginTop = 6;
+            root.Add(grid);
+
+            void Group(string title)
+            {
+                var cell = Cell();
+                cell.Add(Kit.Text(Kit.Caps(title), "fc-caption"));
+                grid.Add(cell);
+            }
+
+            void Item(VisualElement icon, string words)
+            {
+                var cell = Cell();
+                icon.style.marginRight = 8;
+                cell.Add(icon);
+                var label = Kit.Text(words, "fc-small");
+                label.style.flexShrink = 1;
+                cell.Add(label);
+                grid.Add(cell);
+            }
+
+            IconElement Small(string name, float stroke = 1.8f) => Kit.Icon(name, "fc-cicon", stroke);
+
+            foreach (var kind in new[] { ArmourKind.Ground, ArmourKind.Air, ArmourKind.Structure })
+            {
+                Group(Strings.Get("legend.kind." + kind.ToString().ToLowerInvariant()));
+                for (var level = 0; level < CombatFacts.Levels; level++) Item(Small(CombatIcons.Armour(level, kind)), Strings.Get("armour.level." + level));
+            }
+            foreach (var (key, forms) in MenuScreen.LegendGroups)
+            {
+                Group(Strings.Get(key));
+                foreach (var form in forms) Item(Small(CombatIcons.Form(form)), CombatIcons.FormName(form));
+            }
+            Group(Strings.Get("legend.marks"));
+            foreach (var type in MenuScreen.DamageOrder)
+                if (CombatIcons.Types[type] is { } mark)
+                    Item(Small(mark, 2f), CombatIcons.TypeName(type));
+            Item(Small(CombatIcons.Thermobaric, 2f), Strings.Get("tag.thermo"));
+            Group(Strings.Get("legend.extras").Split('(')[0].Trim());
+            Item(Small(CombatIcons.TopAttack, 2f), Strings.Get("tag.top"));
+            Item(Small(CombatIcons.Guided, 2f), Strings.Get("tag.guided"));
+            Item(Small(CombatIcons.Splash, 2f), Strings.Get("tag.splash"));
+            foreach (var v in new[] { Verdict.Good, Verdict.Poor, Verdict.None })
+            {
+                var icon = KitCombat.VerdictIcon(v);
+                icon.AddToClassList("fc-cicon");
+                Item(icon, CombatIcons.VerdictName(v));
+            }
+            Group("Chip");
+            foreach (var (form, damage, thermo) in new[]
+                     {
+                         ("DoubleDart", "Kinetic", false), ("Atgm", "ShapedCharge", false), ("HeShell", "HighExplosive", false), ("RocketBig", "HighExplosive", true),
+                         ("Airburst", "Fragmentation", false), ("Flame", "Fire", false), ("Energy", "Energy", false),
+                     })
+            {
+                var w = new WeaponFacts { Form = form, Damage = damage, Thermobaric = thermo };
+                Item(KitCombat.Chip(w), CombatIcons.FormName(form));
+            }
+            return root;
+        }
+
+        private static VisualElement Cell()
+        {
+            var cell = Kit.Box("");
+            cell.style.flexDirection = FlexDirection.Row;
+            cell.style.alignItems = Align.Center;
+            cell.style.width = 154;
+            cell.style.height = 54;
+            cell.style.paddingRight = 4;
+            return cell;
+        }
+
         /// <summary>The structures in sheet order (the HQ, towers by size, modules, the other fixed defences), one entry an icon.</summary>
         private static List<(string icon, List<string> ids)> Groups(Catalog catalog)
         {
