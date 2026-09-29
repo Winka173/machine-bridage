@@ -288,7 +288,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         /// <summary>A deck card: the render, name, cost and level; an empty slot is a plus that opens the deck.</summary>
-        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false)
+        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false, bool combat = false)
         {
             if (id == null)
             {
@@ -300,7 +300,9 @@ namespace MachineBrigade.Game.Hud
                 empty.Add(Kit.Icon("plus", "fc-vcard__plus", 2.2f));
                 return empty;
             }
-            return new KitVehicleCard(CardData(id), () => OpenDetail(id), compact, showLevel);
+            var data = CardData(id);
+            data.Combat = combat;
+            return new KitVehicleCard(data, () => OpenDetail(id), compact, showLevel);
         }
 
         /// <summary>A base set in a line: its towers and modules, and how many maps it sets up on their own.</summary>

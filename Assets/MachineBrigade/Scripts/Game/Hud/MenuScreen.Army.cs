@@ -256,6 +256,7 @@ namespace MachineBrigade.Game.Hud
             var def = _catalog.Vehicles[id];
             var data = VehicleCardData.From(def);
             data.Cp = 0;
+            data.Combat = true;
             return new KitVehicleCard(data, () => OpenDetail(id));
         }
 
@@ -264,9 +265,9 @@ namespace MachineBrigade.Game.Hud
         private void RefreshDeck()
         {
             _deckRow.Clear();
-            foreach (var id in MatchSettings.DeckLayout(false)) _deckRow.Add(DeckCard(id, false, compact: true, showLevel: true));
+            foreach (var id in MatchSettings.DeckLayout(false)) _deckRow.Add(DeckCard(id, false, compact: true, showLevel: true, combat: true));
             _deckRow.Add(Kit.Box("fc-deck-divider"));
-            foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true));
+            foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true, combat: true));
 
             // The overview band: how many and how dear, the role cover, the doctrine for the next battle.
             _deckOverview.Clear();
@@ -340,7 +341,9 @@ namespace MachineBrigade.Game.Hud
 
         private VisualElement CollectionCard(string id)
         {
-            var card = new KitVehicleCard(CardData(id), () => CardTapped(id));
+            var data = CardData(id);
+            data.Combat = true;
+            var card = new KitVehicleCard(data, () => CardTapped(id));
             card.Chosen = MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id);
             return card;
         }

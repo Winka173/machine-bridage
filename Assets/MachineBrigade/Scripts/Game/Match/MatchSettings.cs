@@ -388,6 +388,12 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         public static bool CompactHud { get; set; } = true;
 
+        /// <summary>
+        /// Settings > "Hiện số chi tiết" (prompt 15 D.9, saved as mb.showNumbers, off by default): the armour and
+        /// weapon tooltips and the detail page add the armour and penetration levels and the multipliers.
+        /// </summary>
+        public static bool ShowCombatNumbers { get; set; }
+
         /// <summary>How many matches the standing hint ("your army fights on its own · tap A B C") is shown for.</summary>
         public const int StartHintMatches = 3;
 
@@ -448,6 +454,7 @@ namespace MachineBrigade.Game.Match
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;
                 CompactHud = PlayerPrefs.GetInt("mb.compactHud", 1) == 1;
+                ShowCombatNumbers = PlayerPrefs.GetInt("mb.showNumbers", 0) == 1;
                 HintMatchesSeen = Mathf.Max(0, PlayerPrefs.GetInt("mb.hintMatches", 0));
                 ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots, VehicleLayout);
                 ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots, SupportLayout);
@@ -493,6 +500,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.autoDeploy", AutoDeploy ? 1 : 0);
                 PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
                 PlayerPrefs.SetInt("mb.compactHud", CompactHud ? 1 : 0);
+                PlayerPrefs.SetInt("mb.showNumbers", ShowCombatNumbers ? 1 : 0);
                 // Saved slot by slot, empty slots as blanks, so the layout comes back as it was.
                 PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", Array.ConvertAll(DeckLayout(false), c => c ?? "")));
                 PlayerPrefs.SetString("mb.deck.supports", string.Join(",", Array.ConvertAll(DeckLayout(true), c => c ?? "")));
