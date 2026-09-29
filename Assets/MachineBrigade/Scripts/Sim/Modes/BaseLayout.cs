@@ -92,12 +92,12 @@ namespace MachineBrigade.Sim.Modes
                 var def = site.Slots[i];
                 if (def.Kind == HardpointKind.Utility)
                 {
-                    list.Add(new CampSlot(i, def, LoadoutSlot.Utility(utility, def.Class), utility < rules.UtilitySlots(level)));
+                    list.Add(new CampSlot(i, def, LoadoutSlot.Utility(utility, def.Class), utility < rules.UtilitySlots(level, site.Layered)));
                     utility++;
                     continue;
                 }
                 var k = seen[(int)def.Class]++;
-                list.Add(new CampSlot(i, def, LoadoutSlot.Tower(def.Class, k), k < rules.Slots(level, def.Class)));
+                list.Add(new CampSlot(i, def, LoadoutSlot.Tower(def.Class, k), k < rules.Slots(level, def.Class, site.Layered)));
             }
             return list;
         }

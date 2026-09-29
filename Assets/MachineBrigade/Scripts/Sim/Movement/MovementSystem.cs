@@ -790,7 +790,9 @@ namespace MachineBrigade.Sim.Movement
             if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;
             Vector2 goal;
             var throttle = 1f;
-            var half = _world.Map.HalfSize;
+            // The map's middle and half extents (a long battlefield's are its own, prompt 17).
+            var centre = _world.Map.Centre;
+            float halfX = _world.Map.Width * 0.5f, halfZ = _world.Map.Length * 0.5f;
             var margin = turnRadius * 1.3f + 4f;
             var circling = false;
             if (target != null && def.Orbit)
@@ -801,8 +803,10 @@ namespace MachineBrigade.Sim.Movement
                 // near the edge is circled from the inside), and its centre glides to a new target
                 // at a few metres a second, so the turn never jerks.
                 var radius = MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f);
-                var limit = MathF.Max(0f, half - radius - 4f);
-                var want = new Vector2(Math.Clamp(target.Position.X, -limit, limit), Math.Clamp(target.Position.Y, -limit, limit));
+                var limitX = MathF.Max(0f, halfX - radius - 4f);
+                var limitZ = MathF.Max(0f, halfZ - radius - 4f);
+                var want = new Vector2(Math.Clamp(target.Position.X, centre.X - limitX, centre.X + limitX),
+                    Math.Clamp(target.Position.Y, centre.Y - limitZ, centre.Y + limitZ));
                 if (!v.Orbiting)
                 {
                     v.OrbitCentre = want;
@@ -869,8 +873,9 @@ namespace MachineBrigade.Sim.Movement
             if (!circling) v.Orbiting = false;
             // Turn back towards the middle before running out of map (a pylon turn is already
             // kept inside it; turning it back as well made it jerk between the two).
-            var nearEdge = MathF.Abs(v.Position.X) > half - margin || MathF.Abs(v.Position.Y) > half - margin;
-            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
+            var fromCentre = v.Position - centre;
+            var nearEdge = MathF.Abs(fromCentre.X) > halfX - margin || MathF.Abs(fromCentre.Y) > halfZ - margin;
+            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), fromCentre) > 0f) goal = centre;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
             v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);

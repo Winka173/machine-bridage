@@ -1130,6 +1130,12 @@ namespace MachineBrigade.Game.Hud
             ["camp.place.hqside"] = ("Right by the HQ.", "Sát sở chỉ huy."),
             ["camp.place.rear"] = ("Behind the HQ.", "Phía sau sở chỉ huy."),
             ["camp.place.utility"] = ("A utility slot, for a module.", "Ô tiện ích, cho mô-đun."),
+            // Prompt 17 B.5: a long battlefield's layered base.
+            ["camp.place.outergate"] = ("Outer gate: behind the outer wall's gates.", "Cổng ngoài: sau các cổng của tường ngoài."),
+            ["camp.place.outerwall"] = ("Outer wall: along the wall, by its sally ports.", "Tường ngoài: dọc tường, cạnh các cửa ra."),
+            ["camp.place.yard"] = ("The yard between the two walls.", "Sân trong, giữa hai lớp tường."),
+            ["camp.place.innerwall"] = ("Inner wall: inside the keep, by its gate.", "Tường trong: trong thành, cạnh cổng."),
+            ["camp.longMap"] = ("{0} · long", "{0} · dài"),
             ["camp.takes"] = ("Takes a {0} tower or a smaller one.", "Đặt tháp {0} hoặc nhỏ hơn."),
             ["camp.takesModule"] = ("Takes a utility module.", "Đặt một mô-đun tiện ích."),
             ["camp.overview"] = ("Base overview", "Tổng quan căn cứ"),

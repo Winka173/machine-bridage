@@ -419,9 +419,9 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>The map's edge straight behind a zone (looking in from it), just inside the square.</summary>
         private Vector2 EdgeBehind(Vector2 zone, Vector2 inward)
         {
-            var limit = _world.Map.HalfSize - 2f;
+            var map = _world.Map;
             var p = zone;
-            for (var step = 0; step < 40 && MathF.Abs(p.X - inward.X * 4f) <= limit && MathF.Abs(p.Y - inward.Y * 4f) <= limit; step++)
+            for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
                 p -= inward * 4f;
             return p;
         }

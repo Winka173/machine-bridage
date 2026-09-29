@@ -46,8 +46,9 @@ namespace MachineBrigade.Sim
             Map = map ?? throw new ArgumentNullException(nameof(map));
             Generation = generation;
             Random = new Random(seed);
-            Grid = new NavGrid(map.Size, 2f);
-            Cover = new CoverGrid(map.Size);
+            // The map's own rectangle (a long battlefield's is 300 x 480 m, prompt 17).
+            Grid = new NavGrid(map.Min, map.Width, map.Length, 2f);
+            Cover = new CoverGrid(map.Min, map.Width, map.Length);
             if (map.Boundary.Count >= 3)
             {
                 // Beyond the outline is terrain: no driving there, and it stops direct fire.
@@ -909,7 +910,7 @@ namespace MachineBrigade.Sim
                     if (!Map.Contains(p) || !Grid.IsWalkable(p)) continue;
                     var moved = Vector2.Distance(p, v.Position);
                     if (moved < 4f) break;
-                    var edge = Map.HalfSize - MathF.Max(MathF.Abs(p.X), MathF.Abs(p.Y));
+                    var edge = Map.EdgeDistance(p);
                     // (It stops where it lands: not in a gate or a gap, where it would close the way.)
                     var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -
                                 (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
@@ -1110,10 +1111,6 @@ namespace MachineBrigade.Sim
 
         private EntityId NextId() => new EntityId(_nextId++);
 
-        internal Vector2 ClampToMap(Vector2 p)
-        {
-            var limit = Map.HalfSize - 1f;
-            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
-        }
+        internal Vector2 ClampToMap(Vector2 p) => Map.Clamp(p, 1f);
     }
 }

@@ -59,8 +59,9 @@ namespace MachineBrigade.Sim.Modes
             // Somewhere open in the middle band, well away from both rally points.
             for (var attempt = 0; attempt < 20; attempt++)
             {
-                var half = world.Map.HalfSize * 0.45f;
-                var at = new Vector2((float)(_random.NextDouble() * 2 - 1) * half, (float)(_random.NextDouble() * 2 - 1) * half);
+                var map = world.Map;
+                var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * 0.225f,
+                    (float)(_random.NextDouble() * 2 - 1) * map.Length * 0.225f);
                 if (!world.Grid.IsWalkable(at)) continue;
                 var clear = true;
                 foreach (var team in world.Map.Teams)

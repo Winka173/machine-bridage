@@ -96,6 +96,9 @@ namespace MachineBrigade.Game.Match
         private Weather _weather;
         private Weather _leavingWeather;
         private RtsCamera _camera;
+
+        /// <summary>Prompt 17 A.4: a long battlefield's default zoom and widest zoom (the square maps' are 19 and 42).</summary>
+        internal const float LongZoom = 21f, LongMaxZoom = 50f;
         private SelectionController _selection;
         private TouchGestures _gestures;
         private BattleHud _hud;
@@ -276,11 +279,17 @@ namespace MachineBrigade.Game.Match
             if (_session is MissionSession) _markers = new MissionMarkers(_meshes, _materials, worldRoot);
 
             _world.TryGetRally(PlayerTeam, out var rally);
-            var start = _menu ? Vector3.zero : new Vector3(rally.X + 16f, 0f, rally.Y + 16f);
-            _camera = new RtsCamera(Camera.main, map.HalfSize, start, _menu ? 30f : 19f)
+            // Prompt 17 A.4: a long battlefield is seen looking west (its length across the screen), from a little further
+            // out, and may be zoomed further out; the view starts ahead of the rally towards the enemy.
+            var longMap = map.IsLong;
+            var ahead = longMap ? new Vector3(0f, 0f, 22f) : new Vector3(16f, 0f, 16f);
+            var start = _menu ? new Vector3(map.Centre.X, 0f, map.Centre.Y) : new Vector3(rally.X, 0f, rally.Y) + ahead;
+            _camera = new RtsCamera(Camera.main, new Vector2(map.Min.X, map.Min.Y), new Vector2(map.Max.X, map.Max.Y), start,
+                _menu ? 30f : longMap ? LongZoom : 19f, longMap ? RtsCamera.LongYaw : RtsCamera.SquareYaw)
             {
                 ShakeScale = MatchSettings.ShakeScale,
             };
+            if (longMap) _camera.MaxZoom = LongMaxZoom;
             FitCameraToArea();
             _attractFocus = start;
             // Device check of the scenery: the north-west corner, zoomed right out.
@@ -289,7 +298,7 @@ namespace MachineBrigade.Game.Match
             {
                 _camera.MaxZoom = 95f;
                 _camera.ZoomBy(0.05f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-                _camera.FocusOn(Vector3.zero);
+                _camera.FocusOn(new Vector3(map.Centre.X, 0f, map.Centre.Y));
                 _lastInput = float.MaxValue;
             }
             // Device check at a chosen zoom (-mb-zoom=42: the widest the player can go).
@@ -303,13 +312,12 @@ namespace MachineBrigade.Game.Match
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
                 // The north-west edge: the boundary line and the country beyond it.
-                var edge = _world.Map.HalfSize * 0.8f;
-                _camera.FocusOn(new Vector3(-edge, 0f, edge));
+                _camera.FocusOn(new Vector3(map.Min.X + map.Width * 0.1f, 0f, map.Max.Y - map.Length * 0.1f));
                 _lastInput = float.MaxValue;
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
-            _effects.MapHalfSize = _world.Map.HalfSize;
+            _effects.SetMapBounds(new Vector3(map.Centre.X, 0f, map.Centre.Y), map.Width * 0.5f, map.Length * 0.5f);
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             // Build the merged models of every vehicle this battle can field now, not on first use
             // mid-battle, and only those: the catalogue holds bosses, elites and defences most
@@ -386,7 +394,7 @@ namespace MachineBrigade.Game.Match
             if (_hud.Minimap != null)
             {
                 _hud.Minimap.Ground = theme.Minimap;
-                _hud.Minimap.SetPicture(_map.MinimapTexture, _world.Map.HalfSize);
+                _hud.Minimap.SetPicture(_map.MinimapTexture, new Vector2(map.Min.X, map.Min.Y), new Vector2(map.Max.X, map.Max.Y), _camera.Yaw);
             }
             _selection = new SelectionController(_world, _views, _camera, _map, PlayerTeam);
             if (!_menu)

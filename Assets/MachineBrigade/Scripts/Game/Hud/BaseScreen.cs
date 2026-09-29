@@ -248,7 +248,8 @@ namespace MachineBrigade.Game.Hud
                 id = MatchSettings.AllMaps[0].Id;
                 site = BaseSites.CampOf(id);
             }
-            _mapId = BaseSites.MapKey(id);
+            // (A long battlefield's layered base is a base of its own: "ashfield_long", prompt 17 B.5.)
+            _mapId = BaseSites.PlanKey(id);
             _site = site;
             _picked = -1;
             _map.Slots.Clear();
@@ -503,7 +504,7 @@ namespace MachineBrigade.Game.Hud
             if (_site == null) return;
             var seed = 17;
             foreach (var c in _mapId) seed = seed * 31 + c;
-            var ai = BaseLoadout.ForAi(_catalog, "Normal", "default", seed, Level, PlayerProfile.IsUnlocked);
+            var ai = BaseLoadout.ForAi(_catalog, "Normal", "default", seed, Level, PlayerProfile.IsUnlocked, layered: _site.Layered);
             var towers = BasePlan.ToAssignment(_site, ai);
             for (var i = 0; i < towers.Length; i++)
                 if (_site.Slots[i].Kind == HardpointKind.Utility) towers[i] = Plan.At(_mapId, _site, i);
@@ -521,8 +522,9 @@ namespace MachineBrigade.Game.Hud
             var index = 0;
             foreach (var slot in BaseLayout.Camp(_site, rules, rules.MaxLevel))
                 if (slot.Hardpoint == view.Hardpoint) index = slot.Slot.Index;
+            var layered = _site.Layered;
             for (var l = 1; l <= rules.MaxLevel; l++)
-                if ((view.Utility ? rules.UtilitySlots(l) : rules.Slots(l, view.Size)) > index) return l;
+                if ((view.Utility ? rules.UtilitySlots(l, layered) : rules.Slots(l, view.Size, layered)) > index) return l;
             return rules.MaxLevel + 1;
         }
 
@@ -719,29 +721,38 @@ namespace MachineBrigade.Game.Hud
             else
             {
                 var more = new List<string>();
+                var layered = _site != null && _site.Layered;
                 foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
                 {
-                    var n = rules.Slots(level + 1, size) - rules.Slots(level, size);
+                    var n = rules.Slots(level + 1, size, layered) - rules.Slots(level, size, layered);
                     if (n > 0) more.Add(Strings.Format("camp.more." + size.ToString().ToLowerInvariant(), n));
                 }
-                var u = rules.UtilitySlots(level + 1) - rules.UtilitySlots(level);
+                var u = rules.UtilitySlots(level + 1, layered) - rules.UtilitySlots(level, layered);
                 if (u > 0) more.Add(Strings.Format("camp.more.utility", u));
                 _hqNext.text = Strings.Format("camp.hqNext", level, level + 1, more.Count > 0 ? string.Join(", ", more) : Strings.Get("camp.moreNothing"));
             }
             foreach (var (chip, plan) in _planChips) chip.Selected = plan == PlayerProfile.ActiveBasePlan;
             // The map picker: every map's picture, and a word on maps set up on their own or where the plan moved a tower.
-            var maps = MatchSettings.AllMaps.Where(m => BaseSites.CampOf(m.Id) != null).ToList();
+            // Prompt 17 B.5: each map with a long battlefield is in it twice, its camp and then its layered base.
+            var maps = new List<string>();
+            foreach (var m in MatchSettings.AllMaps)
+            {
+                if (BaseSites.CampOf(m.Id) != null) maps.Add(m.Id);
+                if (BaseSites.HasLong(m.Id)) maps.Add(m.Id + BaseSites.LongSuffix);
+            }
             var options = new List<KitOption>();
             var selected = 0;
             for (var i = 0; i < maps.Count; i++)
             {
-                var id = maps[i].Id;
+                var id = maps[i];
                 if (id == _mapId) selected = i;
-                options.Add(new KitOption(Strings.Get("map." + id), MapNote(id), MapArt.For(id)));
+                var key = BaseSites.MapKey(id);
+                var name = BaseSites.IsLong(id) ? Strings.Format("camp.longMap", Strings.Get("map." + key)) : Strings.Get("map." + key);
+                options.Add(new KitOption(name, MapNote(id), MapArt.For(key)));
             }
             _dropHost.Clear();
             // The pictures are in the list it opens; closed, it is the map's name only (the bar stays one row).
-            _mapDrop = new KitDropdown(Strings.Get("camp.map"), options, selected, i => ShowMap(maps[i].Id), thumbnail: false);
+            _mapDrop = new KitDropdown(Strings.Get("camp.map"), options, selected, i => ShowMap(maps[i]), thumbnail: false);
             _dropHost.Add(_mapDrop);
             var mark = KitDot.Attach(_mapDrop, MapNote(_mapId) != null);
             mark.AddToClassList("fc-base__map-dot");

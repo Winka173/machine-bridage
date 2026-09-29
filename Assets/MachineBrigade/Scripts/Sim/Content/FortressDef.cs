@@ -62,7 +62,8 @@ namespace MachineBrigade.Sim.Content
     public sealed class FortressDef
     {
         public FortressDef(Vector2 hq, IReadOnlyList<Vector2> area, IReadOnlyList<FortressSlotDef> slots, Vector2? superGun, float superGunHeading,
-            ArrivalDef? arrival)
+            ArrivalDef? arrival, IReadOnlyList<IReadOnlyList<Vector2>>? rings = null, IReadOnlyList<Vector2>? forwardDrops = null,
+            IReadOnlyList<Vector2>? firing = null)
         {
             Hq = hq;
             Area = area;
@@ -70,6 +71,45 @@ namespace MachineBrigade.Sim.Content
             SuperGun = superGun;
             SuperGunHeading = superGunHeading;
             Arrival = arrival;
+            Rings = rings ?? Array.Empty<IReadOnlyList<Vector2>>();
+            ForwardDrops = forwardDrops ?? Array.Empty<Vector2>();
+            Firing = firing ?? Array.Empty<Vector2>();
+        }
+
+        /// <summary>
+        /// A long battlefield's layered base (prompt 17 B): the ground inside its outer wall and inside its keep as
+        /// polygons (ring 2, ring 3); empty for the corner fortress, whose rings are distances from the HQ.
+        /// </summary>
+        public IReadOnlyList<IReadOnlyList<Vector2>> Rings { get; }
+
+        /// <summary>Whether this is a layered base (its rings are polygons, its hardpoints labelled by place).</summary>
+        public bool Layered => Rings.Count >= 2;
+
+        /// <summary>Where the attack's reinforcements land once a ring has fallen (B.2): after stage 1, after stage 2.</summary>
+        public IReadOnlyList<Vector2> ForwardDrops { get; }
+
+        /// <summary>The firing positions on the attacker's side of the buffer zone (B.3): earth-banked gun pits, the high ground.</summary>
+        public IReadOnlyList<Vector2> Firing { get; }
+
+        /// <summary>The ring a point lies in on a layered base (1 the forward works and beyond, 2 inside the outer wall, 3 the keep); 0 without ring polygons.</summary>
+        public int RingOf(Vector2 p)
+        {
+            if (!Layered) return 0;
+            if (Inside(Rings[1], p)) return 3;
+            return Inside(Rings[0], p) ? 2 : 1;
+        }
+
+        /// <summary>
+        /// The layered base as a camp for the Base screen and the player's plan: its HQ, facing the attack (south),
+        /// and its hardpoints but the forward works', in the map's order (the most important of each size first).
+        /// </summary>
+        public BaseSiteDef? Site(int team)
+        {
+            if (!Layered) return null;
+            var slots = new List<HardpointDef>();
+            foreach (var s in Slots)
+                if (!s.Hardpoint.Forward) slots.Add(s.Hardpoint);
+            return new BaseSiteDef(team, Hq, MathF.PI, slots, layered: true);
         }
 
         /// <summary>The fortress's centre: its command HQ.</summary>
@@ -89,9 +129,10 @@ namespace MachineBrigade.Sim.Content
         public ArrivalDef? Arrival { get; }
 
         /// <summary>Whether a point lies in the fortress's ground.</summary>
-        public bool Contains(Vector2 p)
+        public bool Contains(Vector2 p) => Inside(Area, p);
+
+        private static bool Inside(IReadOnlyList<Vector2> poly, Vector2 p)
         {
-            var poly = Area;
             if (poly.Count < 3) return false;
             var inside = false;
             for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
@@ -129,7 +170,24 @@ namespace MachineBrigade.Sim.Content
                 if (stop.Count != 2) throw new FormatException($"{a.Path}.stop: needs x, z.");
                 arrival = new ArrivalDef(kind, Points(a, "path"), new Vector2(stop[0], stop[1]), SimMath.DegToRad(a.Float("heading", 0f)));
             }
-            return new FortressDef(new Vector2(hq[0], hq[1]), area, slots, gun, gunHeading, arrival);
+            var rings = new List<IReadOnlyList<Vector2>>();
+            if (f.Has("rings"))
+                foreach (var flat in f.FloatArrays("rings"))
+                {
+                    if (flat.Count < 6 || flat.Count % 2 != 0) throw new FormatException($"{f.Path}.rings: each needs x, z pairs.");
+                    var poly = new List<Vector2>();
+                    for (var i = 0; i < flat.Count; i += 2) poly.Add(new Vector2(flat[i], flat[i + 1]));
+                    rings.Add(poly);
+                }
+            List<Vector2> Pairs(string key)
+            {
+                var list = new List<Vector2>();
+                if (!f.Has(key)) return list;
+                foreach (var xz in f.FloatArrays(key))
+                    if (xz.Count == 2) list.Add(new Vector2(xz[0], xz[1]));
+                return list;
+            }
+            return new FortressDef(new Vector2(hq[0], hq[1]), area, slots, gun, gunHeading, arrival, rings, Pairs("forward"), Pairs("firing"));
         }
 
         private static List<Vector2> Points(JsonObject o, string key)

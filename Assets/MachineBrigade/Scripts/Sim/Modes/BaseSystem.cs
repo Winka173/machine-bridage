@@ -222,20 +222,52 @@ namespace MachineBrigade.Sim.Modes
         {
             var catalog = _world.Catalog;
             if (LoadoutFor?.Invoke(team, loadout) is { } swapped) loadout = swapped;
+            // Prompt 17 B: the player's own layered base (Defend, Endless on a long battlefield) is laid out as a camp is:
+            // the k-th base hardpoint of a size takes the loadout's k-th tower of that size while the HQ level (the long
+            // table) opens it; its forward strongpoints repeat the towers. A fortress the AI holds fills every hardpoint.
+            var layered = false;
+            foreach (var s in slots) layered |= s.Hardpoint.Place != null;
+            var exact = layered && role == BaseRole.Defend;
+            if (exact && !loadout.Layered)
+            {
+                loadout = loadout.Clone();
+                loadout.Layered = true;
+            }
             var fitted = loadout.Fitted(catalog);
             var b = new TeamBase(team, role, fitted) { HqPosition = hq };
             _bases[team] = b;
             var seen = new int[3];
+            var forward = new int[3];
             var utility = 0;
             for (var i = 0; i < slots.Count; i++)
             {
                 var def = slots[i].Hardpoint;
                 var ring = slots[i].Ring;
+                string? id;
+                if (exact && !def.Forward)
+                {
+                    if (def.Kind == HardpointKind.Utility)
+                    {
+                        var u = utility++;
+                        if (u >= catalog.Base.UtilitySlots(fitted.HqLevel, true)) continue;
+                        id = u < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[u]) ? fitted.Utilities[u] : null;
+                    }
+                    else
+                    {
+                        var k = seen[(int)def.Class]++;
+                        if (k >= catalog.Base.Slots(fitted.HqLevel, def.Class, true)) continue;
+                        var list = fitted.Of(def.Class);
+                        id = k < list.Count && !string.IsNullOrEmpty(list[k]) ? list[k] : null;
+                    }
+                }
+                else if (exact)
+                    id = fitted.TowerForFortress(def.Class, forward[(int)def.Class]++);
+                else
+                    id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
                 var state = new HardpointState(def, i)
                 {
                     Ring = ring, HealthScale = ByRing(health, ring), DamageScale = ByRing(damage, ring),
                 };
-                var id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
                 // An undermanned fortress (an easier one) leaves some tower hardpoints of its outer rings empty, spread evenly.
                 if (def.Kind == HardpointKind.Tower && ring < 3 && manning < 1f && Unmanned(i, manning)) id = null;
                 if (id != null && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);

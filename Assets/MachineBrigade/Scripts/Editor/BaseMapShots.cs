@@ -71,7 +71,27 @@ namespace MachineBrigade.Editor
         private const float BandOut = 12f;
         private const float MergeDistance = 22f;
 
-        public static string MapFile(string mapId) => MapsFolder + "/" + mapId + "_conquest.json";
+        public static string MapFile(string mapId) => MapsFolder + "/" + mapId + (IsLong(mapId) ? ".json" : "_conquest.json");
+
+        /// <summary>A long battlefield's layered base (prompt 17 B.5): "ashfield_long", pictured from its own file.</summary>
+        private static bool IsLong(string mapId) => mapId.EndsWith("_long", StringComparison.Ordinal);
+
+        /// <summary>The base a picture is of: a long battlefield's layered base, else the map's player camp.</summary>
+        public static BaseSiteDef SiteOf(MapDefinition map) => map.Fortress is { Layered: true } f ? f.Site(0) : map.BaseOf(0);
+
+        /// <summary>The long battlefields' layered bases: ("ashfield_long", map).</summary>
+        public static List<(string id, MapDefinition map)> LongCamps()
+        {
+            var camps = new List<(string, MapDefinition)>();
+            foreach (var info in MatchSettings.AllMaps)
+            {
+                var id = info.Id + "_long";
+                if (!File.Exists(MapFile(id))) continue;
+                var map = GameContent.LoadMap(id);
+                if (SiteOf(map) != null) camps.Add((id, map));
+            }
+            return camps;
+        }
 
         public static string PicturePath(string mapId) => OutFolder + "/" + mapId + ".png";
 
@@ -103,6 +123,8 @@ namespace MachineBrigade.Editor
         /// <summary>The drop zone of a side: its rally point (deliveries land round it).</summary>
         public static NVector2 DropZone(MapDefinition map, int team = 0)
         {
+            // (A layered base is its map's side 1: its drop zone the keep's yard.)
+            if (map.Fortress is { Layered: true }) team = 1;
             foreach (var t in map.Teams)
                 if (t.Team == team) return t.Rally;
             return map.BaseOf(team)?.Hq ?? NVector2.Zero;
@@ -151,7 +173,7 @@ namespace MachineBrigade.Editor
             var catalog = GameContent.LoadCatalog();
             Directory.CreateDirectory(OutFolder);
             var todo = new List<(string id, MapDefinition map, string hash)>();
-            foreach (var (id, map) in Camps())
+            foreach (var (id, map) in Camps().Concat(LongCamps()))
             {
                 if (only != null && !only.Contains(id)) continue;
                 var hash = Hash(id);
@@ -318,10 +340,10 @@ namespace MachineBrigade.Editor
             _ = new MapView(world, models, materials, theme, root, ShadowLevel.High);
             var surroundings = new Surroundings(world, models, materials, theme, root, options);
 
-            // The HQ as the battle raises it (a static vehicle in the player's colours).
-            var site = map.BaseOf(0);
+            // The HQ as the battle raises it (a static vehicle in the player's colours); a layered base's is its command HQ building.
+            var site = SiteOf(map);
             var hqModel = catalog.Vehicles.TryGetValue(catalog.Base.HqId, out var hqDef) ? hqDef.Model : catalog.Base.HqId;
-            if (models.Has(hqModel))
+            if (models.Has(hqModel) && !site.Layered)
             {
                 var hq = models.Spawn(hqModel, 0, root);
                 hq.Root.transform.SetPositionAndRotation(new Vector3(site.Hq.X, 0f, site.Hq.Y), Quaternion.Euler(0f, site.Heading * Mathf.Rad2Deg, 0f));
@@ -361,7 +383,7 @@ namespace MachineBrigade.Editor
         /// <summary>The frame, the camp's edge, the drop zone and the approach arrows of one map.</summary>
         public static BaseMapArt.Data Describe(string mapId, MapDefinition map, SimWorld world, string hash)
         {
-            var site = map.BaseOf(0);
+            var site = SiteOf(map);
             var drop = DropZone(map);
             var frame = BaseMapArt.FrameFor(site, drop);
             var outline = BaseMapArt.Outline(site, drop);
@@ -374,7 +396,7 @@ namespace MachineBrigade.Editor
             }
             var data = new BaseMapArt.Data
             {
-                version = Version, map = mapId, source = "Data/maps/" + mapId + "_conquest", sha1 = hash,
+                version = Version, map = mapId, source = "Data/maps/" + mapId + (IsLong(mapId) ? "" : "_conquest"), sha1 = hash,
                 width = BaseMapArt.Width, height = BaseMapArt.Height,
                 centre = new BaseMapArt.XZ(frame.Centre), up = new BaseMapArt.XZ(frame.Up),
                 metresWide = Round(frame.MetresWide), metresHigh = Round(frame.MetresHigh),

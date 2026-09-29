@@ -73,6 +73,21 @@ namespace MachineBrigade.Sim.Content
             return result;
         }
 
+        /// <summary>An array of arrays of numbers (polygons, points as x, z pairs).</summary>
+        public IReadOnlyList<IReadOnlyList<float>> FloatArrays(string key)
+        {
+            if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of arrays of numbers");
+            var result = new List<IReadOnlyList<float>>(list.Count);
+            foreach (var item in list)
+            {
+                if (item is not List<object?> inner) throw Invalid(key, "an array of arrays of numbers");
+                var row = new List<float>(inner.Count);
+                foreach (var v in inner) row.Add(v is double d ? (float)d : throw Invalid(key, "an array of arrays of numbers"));
+                result.Add(row);
+            }
+            return result;
+        }
+
         public IReadOnlyList<string> StringArray(string key)
         {
             if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of strings");

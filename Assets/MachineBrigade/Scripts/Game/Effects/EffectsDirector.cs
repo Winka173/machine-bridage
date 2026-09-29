@@ -82,6 +82,14 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Half the map's side, for the troop transports' way in and out.</summary>
         public float MapHalfSize { set => _drops.HalfSize = value; }
 
+        /// <summary>The map's rectangle, for the troop transports' way in and out (a long battlefield's, prompt 17).</summary>
+        public void SetMapBounds(Vector3 centre, float halfX, float halfZ)
+        {
+            _drops.Centre = centre;
+            _drops.HalfX = halfX;
+            _drops.HalfZ = halfZ;
+        }
+
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {

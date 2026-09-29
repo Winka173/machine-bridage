@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MachineBrigade.Sim;
 using UnityEngine;
+using MapDefinition = MachineBrigade.Sim.Content.MapDefinition;
 using Random = System.Random;
 
 namespace MachineBrigade.Game.Views
@@ -55,32 +56,33 @@ namespace MachineBrigade.Game.Views
         {
             var theme = mapTheme.Palette;
             var map = world.Map;
-            var pixels = new Color[size * size];
-            var worldPerPixel = map.Size / size;
+            // The map's rectangle at the square's density: a long battlefield (prompt 17) is taller than wide.
+            var cv = Canvas.For(map, size);
+            var pixels = new Color[cv.W * cv.H];
 
-            for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
+            for (var y = 0; y < cv.H; y++)
+            for (var x = 0; x < cv.W; x++)
             {
-                var wx = (x + 0.5f) * worldPerPixel - map.HalfSize;
-                var wz = (y + 0.5f) * worldPerPixel - map.HalfSize;
-                pixels[y * size + x] = mapTheme.Paved ? Pavement(wx, wz, theme) : Surface(wx, wz, theme);
+                var wx = cv.WorldX(x);
+                var wz = cv.WorldZ(y);
+                pixels[y * cv.W + x] = mapTheme.Paved ? Pavement(wx, wz, theme) : Surface(wx, wz, theme);
             }
 
             var roads = Roads(world);
             var airfield = IsAirfield(world);
-            PaintRoads(pixels, size, map.HalfSize, worldPerPixel, roads, width => RoadColour(width, airfield, theme),
+            PaintRoads(pixels, cv, roads, width => RoadColour(width, airfield, theme),
                 airfield || mapTheme.Paved);
-            PaintFootprints(pixels, size, map.HalfSize, worldPerPixel, world, mapTheme);
-            if (mapTheme.Cracks > 0f) PaintCracks(pixels, size, map.HalfSize, worldPerPixel, Cracks(world, mapTheme));
+            PaintFootprints(pixels, cv, world, mapTheme);
+            if (mapTheme.Cracks > 0f) PaintCracks(pixels, cv, Cracks(world, mapTheme));
             var field = BoundaryField.For(map);
-            if (field.HasOutline) PaintWilds(pixels, size, map.HalfSize, worldPerPixel, field, theme);
-            Blur(pixels, size, 2);
-            if (mapTheme.Paved) PaintStreetMarkings(pixels, size, map.HalfSize, worldPerPixel, roads);
-            if (airfield) PaintAirfieldMarkings(pixels, size, map.HalfSize, worldPerPixel, roads);
-            Speckle(pixels, size, new Random(1482), mapTheme.SpeckleLight, mapTheme.SpeckleDark);
-            minimap = MinimapFrom(pixels, size, world, mapTheme, field);
+            if (field.HasOutline) PaintWilds(pixels, cv, field, theme);
+            Blur(pixels, cv, 2);
+            if (mapTheme.Paved) PaintStreetMarkings(pixels, cv, roads);
+            if (airfield) PaintAirfieldMarkings(pixels, cv, roads);
+            Speckle(pixels, cv, new Random(1482), mapTheme.SpeckleLight, mapTheme.SpeckleDark);
+            minimap = MinimapFrom(pixels, cv, world, mapTheme, field);
 
-            var texture = new Texture2D(size, size, TextureFormat.RGBA32, true, false)
+            var texture = new Texture2D(cv.W, cv.H, TextureFormat.RGBA32, true, false)
             {
                 name = "Ground",
                 wrapMode = TextureWrapMode.Clamp,
@@ -97,18 +99,18 @@ namespace MachineBrigade.Game.Views
         /// that fills the bays, with a dark rim of scree right along the edge. (Roads that ran on
         /// out there disappear under it.)
         /// </summary>
-        private static void PaintWilds(Color[] pixels, int size, float half, float worldPerPixel, BoundaryField field, TerrainTheme theme)
+        private static void PaintWilds(Color[] pixels, Canvas cv, BoundaryField field, TerrainTheme theme)
         {
             var wild = Color.Lerp(theme.Stone, theme.Dirt, 0.45f) * 0.82f;
             var scree = Color.Lerp(theme.Stone, Color.black, 0.35f);
-            for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
+            for (var y = 0; y < cv.H; y++)
+            for (var x = 0; x < cv.W; x++)
             {
-                var wx = (x + 0.5f) * worldPerPixel - half;
-                var wz = (y + 0.5f) * worldPerPixel - half;
+                var wx = cv.WorldX(x);
+                var wz = cv.WorldZ(y);
                 var d = field.Distance(new Vector2(wx, wz));
                 if (d < -0.6f) continue;
-                var i = y * size + x;
+                var i = y * cv.W + x;
                 var noise = Mathf.PerlinNoise(wx * 0.21f + 3.1f, wz * 0.21f + 8.7f);
                 var ground = Color.Lerp(wild, theme.Dirt * 0.9f, noise * 0.5f);
                 // A soft band of scree from just inside the edge to a metre or so out.
@@ -127,19 +129,20 @@ namespace MachineBrigade.Game.Views
         /// lava in their colours); beyond the outline it is transparent, so the minimap shows the
         /// map's real shape. North is up (+z), east right (+x).
         /// </summary>
-        private static Texture2D MinimapFrom(Color[] ground, int size, SimWorld world, MapTheme mapTheme, BoundaryField field)
+        private static Texture2D MinimapFrom(Color[] ground, Canvas cv, SimWorld world, MapTheme mapTheme, BoundaryField field)
         {
             const int factor = 4;
-            var n = size / factor;
+            // (A long battlefield's minimap keeps its rectangle: prompt 17 A.4.)
+            int n = cv.W / factor, m = cv.H / factor;
             var map = world.Map;
-            var pixels = new Color[n * n];
-            for (var y = 0; y < n; y++)
+            var pixels = new Color[n * m];
+            for (var y = 0; y < m; y++)
             for (var x = 0; x < n; x++)
             {
                 var sum = Color.clear;
                 for (var dy = 0; dy < factor; dy++)
                 for (var dx = 0; dx < factor; dx++)
-                    sum += ground[(y * factor + dy) * size + x * factor + dx];
+                    sum += ground[(y * factor + dy) * cv.W + x * factor + dx];
                 var c = sum / (factor * factor);
                 // Brighten and saturate a little: the minimap is small and seen at a glance.
                 c = Color.Lerp(c, c * 1.18f, 0.8f);
@@ -147,7 +150,7 @@ namespace MachineBrigade.Game.Views
                 pixels[y * n + x] = c;
             }
 
-            var perPixel = map.Size / n;
+            var perPixel = cv.Wpp * factor;
             var roof = new Color(0.36f, 0.33f, 0.31f, 1f);
             var rock = new Color(0.52f, 0.5f, 0.47f, 1f);
             var tree = new Color(0.16f, 0.3f, 0.14f, 1f);
@@ -169,11 +172,11 @@ namespace MachineBrigade.Game.Views
                 else colour = roof;
                 var hw = Mathf.Max(prop.Width * 0.5f, perPixel * 0.6f);
                 var hd = Mathf.Max(prop.Depth * 0.5f, perPixel * 0.6f);
-                var x0 = Mathf.FloorToInt((prop.Position.X - hw + map.HalfSize) / perPixel);
-                var x1 = Mathf.FloorToInt((prop.Position.X + hw + map.HalfSize) / perPixel);
-                var y0 = Mathf.FloorToInt((prop.Position.Y - hd + map.HalfSize) / perPixel);
-                var y1 = Mathf.FloorToInt((prop.Position.Y + hd + map.HalfSize) / perPixel);
-                for (var y = Mathf.Max(0, y0); y <= Mathf.Min(n - 1, y1); y++)
+                var x0 = Mathf.FloorToInt((prop.Position.X - hw - cv.X0) / perPixel);
+                var x1 = Mathf.FloorToInt((prop.Position.X + hw - cv.X0) / perPixel);
+                var y0 = Mathf.FloorToInt((prop.Position.Y - hd - cv.Z0) / perPixel);
+                var y1 = Mathf.FloorToInt((prop.Position.Y + hd - cv.Z0) / perPixel);
+                for (var y = Mathf.Max(0, y0); y <= Mathf.Min(m - 1, y1); y++)
                 for (var x = Mathf.Max(0, x0); x <= Mathf.Min(n - 1, x1); x++)
                     pixels[y * n + x] = colour;
             }
@@ -181,17 +184,17 @@ namespace MachineBrigade.Game.Views
             if (field.HasOutline)
             {
                 var rimColour = new Color(0.93f, 0.9f, 0.8f, 1f);
-                for (var y = 0; y < n; y++)
+                for (var y = 0; y < m; y++)
                 for (var x = 0; x < n; x++)
                 {
-                    var d = field.Distance(new Vector2((x + 0.5f) * perPixel - map.HalfSize, (y + 0.5f) * perPixel - map.HalfSize));
+                    var d = field.Distance(new Vector2((x + 0.5f) * perPixel + cv.X0, (y + 0.5f) * perPixel + cv.Z0));
                     var i = y * n + x;
                     if (d > perPixel * 1.2f) pixels[i] = Color.clear;
                     else if (d > -perPixel * 0.4f) pixels[i] = Color.Lerp(pixels[i], rimColour, 0.85f);
                 }
             }
 
-            var texture = new Texture2D(n, n, TextureFormat.RGBA32, false, false)
+            var texture = new Texture2D(n, m, TextureFormat.RGBA32, false, false)
             {
                 name = "Minimap",
                 wrapMode = TextureWrapMode.Clamp,
@@ -220,12 +223,14 @@ namespace MachineBrigade.Game.Views
             var cracks = new List<Vector2[]>();
             if (theme.Cracks <= 0f) return cracks;
             var rng = new Random(7331);
-            var half = world.Map.HalfSize - 3f;
-            var count = Mathf.RoundToInt(110 * theme.Cracks);
+            var map = world.Map;
+            var centre = new Vector2(map.Centre.X, map.Centre.Y);
+            float halfX = map.Width * 0.5f - 3f, halfZ = map.Length * 0.5f - 3f;
+            var count = Mathf.RoundToInt(110 * theme.Cracks * map.Width * map.Length / (300f * 300f));
             var points = new List<Vector2>();
             for (var attempt = 0; attempt < count * 8 && cracks.Count < count; attempt++)
             {
-                var p = new Vector2((float)(rng.NextDouble() * 2 - 1) * half, (float)(rng.NextDouble() * 2 - 1) * half);
+                var p = centre + new Vector2((float)(rng.NextDouble() * 2 - 1) * halfX, (float)(rng.NextDouble() * 2 - 1) * halfZ);
                 if (!CrackClear(world, p)) continue;
                 points.Clear();
                 points.Add(p);
@@ -236,7 +241,7 @@ namespace MachineBrigade.Game.Views
                     heading += (float)(rng.NextDouble() - 0.5) * 1.3f;
                     var step = 1.1f + (float)rng.NextDouble() * 1.9f;
                     var q = p + new Vector2(Mathf.Cos(heading), Mathf.Sin(heading)) * step;
-                    if (Mathf.Abs(q.x) > half || Mathf.Abs(q.y) > half || !CrackClear(world, q)) break;
+                    if (Mathf.Abs(q.x - centre.x) > halfX || Mathf.Abs(q.y - centre.y) > halfZ || !CrackClear(world, q)) break;
                     points.Add(q);
                     p = q;
                 }
@@ -352,7 +357,7 @@ namespace MachineBrigade.Game.Views
         /// avenue paints over the tracks that join it, and paved roads get a crisp kerb instead
         /// of a worn, wobbly edge.
         /// </param>
-        private static void PaintRoads(Color[] pixels, int size, float half, float worldPerPixel, List<(Vector2[] points, float width)> roads,
+        private static void PaintRoads(Color[] pixels, Canvas cv, List<(Vector2[] points, float width)> roads,
             Func<float, Color> colourOf, bool crisp)
         {
             const float feather = 2.2f;
@@ -369,19 +374,19 @@ namespace MachineBrigade.Game.Views
                     var reach = width + edge;
                     var a = points[s];
                     var b = points[s + 1];
-                    var minX = ToPixel(Mathf.Min(a.x, b.x) - reach, half, worldPerPixel, size);
-                    var maxX = ToPixel(Mathf.Max(a.x, b.x) + reach, half, worldPerPixel, size);
-                    var minY = ToPixel(Mathf.Min(a.y, b.y) - reach, half, worldPerPixel, size);
-                    var maxY = ToPixel(Mathf.Max(a.y, b.y) + reach, half, worldPerPixel, size);
+                    var minX = cv.PX(Mathf.Min(a.x, b.x) - reach);
+                    var maxX = cv.PX(Mathf.Max(a.x, b.x) + reach);
+                    var minY = cv.PY(Mathf.Min(a.y, b.y) - reach);
+                    var maxY = cv.PY(Mathf.Max(a.y, b.y) + reach);
                     for (var y = minY; y <= maxY; y++)
                     for (var x = minX; x <= maxX; x++)
                     {
-                        var p = new Vector2((x + 0.5f) * worldPerPixel - half, (y + 0.5f) * worldPerPixel - half);
+                        var p = new Vector2(cv.WorldX(x), cv.WorldZ(y));
                         var d = DistanceToSegment(p, a, b);
                         if (d > reach) continue;
                         var wobble = paved ? 0f : Mathf.PerlinNoise(p.x * 0.3f, p.y * 0.3f) * 0.8f;
                         var k = 1f - Mathf.Clamp01((d - width + wobble) / edge);
-                        var i = y * size + x;
+                        var i = y * cv.W + x;
                         pixels[i] = Color.Lerp(pixels[i], road, k * (paved ? 0.97f : 0.85f));
                     }
                 }
@@ -421,7 +426,7 @@ namespace MachineBrigade.Game.Views
         /// Trampled dirt round buildings and walls, concrete pads under tanks and industry, lawns
         /// under city trees, a black crust with an ember halo round lava, mud round river water.
         /// </summary>
-        private static void PaintFootprints(Color[] pixels, int size, float half, float worldPerPixel, SimWorld world,
+        private static void PaintFootprints(Color[] pixels, Canvas cv, SimWorld world,
             MapTheme mapTheme)
         {
             var theme = mapTheme.Palette;
@@ -484,21 +489,21 @@ namespace MachineBrigade.Game.Views
                 }
                 var hx = prop.Width * 0.5f + margin;
                 var hz = prop.Depth * 0.5f + margin;
-                var minX = ToPixel(prop.Position.X - hx, half, worldPerPixel, size);
-                var maxX = ToPixel(prop.Position.X + hx, half, worldPerPixel, size);
-                var minY = ToPixel(prop.Position.Y - hz, half, worldPerPixel, size);
-                var maxY = ToPixel(prop.Position.Y + hz, half, worldPerPixel, size);
+                var minX = cv.PX(prop.Position.X - hx);
+                var maxX = cv.PX(prop.Position.X + hx);
+                var minY = cv.PY(prop.Position.Y - hz);
+                var maxY = cv.PY(prop.Position.Y + hz);
                 for (var y = minY; y <= maxY; y++)
                 for (var x = minX; x <= maxX; x++)
                 {
-                    var wx = (x + 0.5f) * worldPerPixel - half - prop.Position.X;
-                    var wz = (y + 0.5f) * worldPerPixel - half - prop.Position.Y;
+                    var wx = cv.WorldX(x) - prop.Position.X;
+                    var wz = cv.WorldZ(y) - prop.Position.Y;
                     var edge = round
                         ? Mathf.Sqrt(wx * wx + wz * wz) - Mathf.Max(prop.Width, prop.Depth) * 0.5f
                         : Mathf.Max(Mathf.Abs(wx) - (hx - margin), Mathf.Abs(wz) - (hz - margin));
                     if (edge > margin) continue;
                     var k = 1f - Mathf.Clamp01(edge / margin);
-                    var i = y * size + x;
+                    var i = y * cv.W + x;
                     // Inside the footprint the pad colour; outside it the rim fades out.
                     pixels[i] = Color.Lerp(pixels[i], edge <= 0f ? colour : rim, k * strength);
                 }
@@ -506,15 +511,15 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Dark fissures under the glowing cracks, with a faint warm scorch round them.</summary>
-        private static void PaintCracks(Color[] pixels, int size, float half, float worldPerPixel, List<Vector2[]> cracks)
+        private static void PaintCracks(Color[] pixels, Canvas cv, List<Vector2[]> cracks)
         {
             var fissure = new Color(0.06f, 0.04f, 0.035f);
             var scorch = new Color(0.32f, 0.14f, 0.07f);
             foreach (var crack in cracks)
                 for (var i = 0; i < crack.Length - 1; i++)
                 {
-                    Stroke(pixels, size, half, worldPerPixel, crack[i], crack[i + 1], 2.0f, scorch, 0.35f);
-                    Stroke(pixels, size, half, worldPerPixel, crack[i], crack[i + 1], 0.7f, fissure, 0.9f);
+                    Stroke(pixels, cv, crack[i], crack[i + 1], 2.0f, scorch, 0.35f);
+                    Stroke(pixels, cv, crack[i], crack[i + 1], 0.7f, fissure, 0.9f);
                 }
         }
 
@@ -522,7 +527,7 @@ namespace MachineBrigade.Game.Views
         /// City streets: a dashed white centre line and solid edge lines on every avenue (left out
         /// where another street crosses), and zebra crossings on every approach to a junction.
         /// </summary>
-        private static void PaintStreetMarkings(Color[] pixels, int size, float half, float worldPerPixel,
+        private static void PaintStreetMarkings(Color[] pixels, Canvas cv,
             List<(Vector2[] points, float width)> roads)
         {
             var white = new Color(0.9f, 0.9f, 0.86f);
@@ -545,11 +550,11 @@ namespace MachineBrigade.Game.Views
                         if (InsideOtherRoad(roads, r, p, 1.2f)) continue;
                         var q = p + dir * 0.5f;
                         // Centre line: 3 m dashes, 3 m gaps.
-                        if (Mathf.Repeat(along + u, 6f) < 3f) Stroke(pixels, size, half, worldPerPixel, p, q, 0.24f, white, 0.9f);
+                        if (Mathf.Repeat(along + u, 6f) < 3f) Stroke(pixels, cv, p, q, 0.24f, white, 0.9f);
                         foreach (var offset in new[] { -1f, 1f })
                         {
                             var o = side * offset * (width * 0.5f - 0.75f);
-                            Stroke(pixels, size, half, worldPerPixel, p + o, q + o, 0.16f, white, 0.8f);
+                            Stroke(pixels, cv, p + o, q + o, 0.16f, white, 0.8f);
                         }
                     }
                     along += length;
@@ -567,7 +572,7 @@ namespace MachineBrigade.Game.Views
                         var start = centre + dir * sign * (other * 0.5f + 1.4f);
                         var end = centre + dir * sign * (other * 0.5f + 4.2f);
                         for (var t = -width * 0.5f + 1.2f; t <= width * 0.5f - 1.2f; t += 1.2f)
-                            Stroke(pixels, size, half, worldPerPixel, start + side * t, end + side * t, 0.55f, white, 0.9f);
+                            Stroke(pixels, cv, start + side * t, end + side * t, 0.55f, white, 0.9f);
                     }
                 }
         }
@@ -576,7 +581,7 @@ namespace MachineBrigade.Game.Views
         /// Runways: a dashed centre line, solid edge lines and piano-key threshold bars at both
         /// ends; taxiways and aprons: a solid yellow centre line.
         /// </summary>
-        private static void PaintAirfieldMarkings(Color[] pixels, int size, float half, float worldPerPixel,
+        private static void PaintAirfieldMarkings(Color[] pixels, Canvas cv,
             List<(Vector2[] points, float width)> roads)
         {
             var white = new Color(0.93f, 0.93f, 0.9f);
@@ -606,11 +611,11 @@ namespace MachineBrigade.Game.Views
                         {
                             var threshold = at < 16f || at > total - 16f;
                             if (!threshold && Mathf.Repeat(at, 14f) < 8f)
-                                Stroke(pixels, size, half, worldPerPixel, p, q, 0.9f, white, 0.92f);
+                                Stroke(pixels, cv, p, q, 0.9f, white, 0.92f);
                             foreach (var offset in new[] { -1f, 1f })
                             {
                                 var o = side * offset * (width * 0.5f - 1.1f);
-                                Stroke(pixels, size, half, worldPerPixel, p + o, q + o, 0.45f, white, 0.9f);
+                                Stroke(pixels, cv, p + o, q + o, 0.45f, white, 0.9f);
                             }
                             // Piano keys: bars along the runway from 3 m to 13 m in from each end.
                             if ((at > 3f && at < 13f) || (at > total - 13f && at < total - 3f))
@@ -618,12 +623,12 @@ namespace MachineBrigade.Game.Views
                                     foreach (var offset in new[] { -1f, 1f })
                                     {
                                         var o = side * offset * t;
-                                        Stroke(pixels, size, half, worldPerPixel, p + o, q + o, 0.95f, white, 0.92f);
+                                        Stroke(pixels, cv, p + o, q + o, 0.95f, white, 0.92f);
                                     }
                         }
                         else if (!InsideOtherRoad(roads, r, p, -2f, RunwayWidth))
                         {
-                            Stroke(pixels, size, half, worldPerPixel, p, q, 0.32f, yellow, 0.9f);
+                            Stroke(pixels, cv, p, q, 0.32f, yellow, 0.9f);
                         }
                     }
                     along += length;
@@ -684,29 +689,29 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>A soft-edged line of paint from a to b.</summary>
-        private static void Stroke(Color[] pixels, int size, float half, float worldPerPixel, Vector2 a, Vector2 b, float width,
+        private static void Stroke(Color[] pixels, Canvas cv, Vector2 a, Vector2 b, float width,
             Color colour, float alpha)
         {
             var r = width * 0.5f;
-            var feather = worldPerPixel * 0.75f;
-            var minX = ToPixel(Mathf.Min(a.x, b.x) - r - feather, half, worldPerPixel, size);
-            var maxX = ToPixel(Mathf.Max(a.x, b.x) + r + feather, half, worldPerPixel, size);
-            var minY = ToPixel(Mathf.Min(a.y, b.y) - r - feather, half, worldPerPixel, size);
-            var maxY = ToPixel(Mathf.Max(a.y, b.y) + r + feather, half, worldPerPixel, size);
+            var feather = cv.Wpp * 0.75f;
+            var minX = cv.PX(Mathf.Min(a.x, b.x) - r - feather);
+            var maxX = cv.PX(Mathf.Max(a.x, b.x) + r + feather);
+            var minY = cv.PY(Mathf.Min(a.y, b.y) - r - feather);
+            var maxY = cv.PY(Mathf.Max(a.y, b.y) + r + feather);
             for (var y = minY; y <= maxY; y++)
             for (var x = minX; x <= maxX; x++)
             {
-                var p = new Vector2((x + 0.5f) * worldPerPixel - half, (y + 0.5f) * worldPerPixel - half);
+                var p = new Vector2(cv.WorldX(x), cv.WorldZ(y));
                 var d = DistanceToSegment(p, a, b) - r;
                 if (d > feather) continue;
                 var k = d <= 0f ? 1f : 1f - d / feather;
-                var i = y * size + x;
+                var i = y * cv.W + x;
                 pixels[i] = Color.Lerp(pixels[i], colour, k * alpha);
             }
         }
 
         /// <summary>Separable box blur: turns noise thresholds into soft natural borders.</summary>
-        private static void Blur(Color[] pixels, int size, int radius)
+        private static void Blur(Color[] pixels, Canvas cv, int radius)
         {
             var temp = new Color[pixels.Length];
             for (var pass = 0; pass < 2; pass++)
@@ -714,31 +719,34 @@ namespace MachineBrigade.Game.Views
                 var horizontal = pass == 0;
                 var src = horizontal ? pixels : temp;
                 var dst = horizontal ? temp : pixels;
-                for (var a = 0; a < size; a++)
-                for (var b = 0; b < size; b++)
+                // Horizontal: a row a, along it b; vertical: a column a, down it b.
+                int rows = horizontal ? cv.H : cv.W, along = horizontal ? cv.W : cv.H;
+                for (var a = 0; a < rows; a++)
+                for (var b = 0; b < along; b++)
                 {
                     var sum = Color.clear;
                     var count = 0;
                     for (var k = -radius; k <= radius; k++)
                     {
-                        var c = Math.Clamp(b + k, 0, size - 1);
-                        sum += horizontal ? src[a * size + c] : src[c * size + a];
+                        var c = Math.Clamp(b + k, 0, along - 1);
+                        sum += horizontal ? src[a * cv.W + c] : src[c * cv.W + a];
                         count++;
                     }
-                    var i = horizontal ? a * size + b : b * size + a;
+                    var i = horizontal ? a * cv.W + b : b * cv.W + a;
                     dst[i] = sum / count;
                 }
             }
         }
 
         /// <summary>Faint light and dark dots of varied size, as in the reference's 16,000 speckles.</summary>
-        private static void Speckle(Color[] pixels, int size, Random rng, Color light, Color dark)
+        private static void Speckle(Color[] pixels, Canvas cv, Random rng, Color light, Color dark)
         {
-            var scale = size / 1024f;
-            for (var n = 0; n < 16000; n++)
+            var scale = cv.W / 1024f;
+            var total = (int)(16000L * cv.H / Math.Max(1, cv.W));
+            for (var n = 0; n < total; n++)
             {
-                var cx = rng.NextDouble() * size;
-                var cy = rng.NextDouble() * size;
+                var cx = rng.NextDouble() * cv.W;
+                var cy = rng.NextDouble() * cv.H;
                 var r = (1 + rng.NextDouble() * 10) * scale;
                 var bright = rng.NextDouble() > 0.5;
                 var alpha = (float)rng.NextDouble() * (bright ? 0.09f : 0.08f);
@@ -750,15 +758,46 @@ namespace MachineBrigade.Game.Views
                     if (dx * dx + dy * dy > r * r) continue;
                     var x = (int)cx + dx;
                     var y = (int)cy + dy;
-                    if (x < 0 || y < 0 || x >= size || y >= size) continue;
-                    var i = y * size + x;
+                    if (x < 0 || y < 0 || x >= cv.W || y >= cv.H) continue;
+                    var i = y * cv.W + x;
                     pixels[i] = Color.Lerp(pixels[i], colour, alpha);
                 }
             }
         }
 
-        private static int ToPixel(float world, float half, float worldPerPixel, int size) =>
-            Math.Clamp((int)((world + half) / worldPerPixel), 0, size - 1);
+        /// <summary>
+        /// The painted texture over the map's rectangle (prompt 17 A.4): <see cref="W"/> x <see cref="H"/> pixels from its
+        /// south-west corner, square pixels at the square map's density (the longer side of a 300 m map at the full size).
+        /// </summary>
+        internal readonly struct Canvas
+        {
+            public readonly int W, H;
+            public readonly float X0, Z0, Wpp;
+
+            private Canvas(int w, int h, float x0, float z0, float wpp)
+            {
+                W = w;
+                H = h;
+                X0 = x0;
+                Z0 = z0;
+                Wpp = wpp;
+            }
+
+            /// <summary>A square map at <paramref name="size"/> pixels as before; a long one as tall again as it is longer.</summary>
+            public static Canvas For(MapDefinition map, int size)
+            {
+                var wpp = map.Width / size;
+                var h = Math.Max(1, (int)Math.Round(map.Length / wpp));
+                // (A multiple of the minimap's factor, 4.)
+                h = (h + 3) / 4 * 4;
+                return new Canvas(size, h, map.Min.X, map.Min.Y, wpp);
+            }
+
+            public float WorldX(int x) => (x + 0.5f) * Wpp + X0;
+            public float WorldZ(int y) => (y + 0.5f) * Wpp + Z0;
+            public int PX(float world) => Math.Clamp((int)((world - X0) / Wpp), 0, W - 1);
+            public int PY(float world) => Math.Clamp((int)((world - Z0) / Wpp), 0, H - 1);
+        }
 
         internal static float DistanceToSegment(Vector2 p, Vector2 a, Vector2 b)
         {

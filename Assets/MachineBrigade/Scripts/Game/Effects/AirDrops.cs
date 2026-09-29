@@ -66,7 +66,21 @@ namespace MachineBrigade.Game.Effects
         private readonly bool _hasTransport;
 
         /// <summary>Half the map's side (the map is square, centred on the origin): where transports come in and leave.</summary>
-        public float HalfSize { get; set; } = 150f;
+        public float HalfSize
+        {
+            get => HalfX;
+            set
+            {
+                HalfX = HalfZ = value;
+                Centre = Vector3.zero;
+            }
+        }
+
+        /// <summary>The map's middle and half extents (a long battlefield's, prompt 17).</summary>
+        public Vector3 Centre { get; set; }
+
+        public float HalfX { get; set; } = 150f;
+        public float HalfZ { get; set; } = 150f;
 
         public AirDrops(Catalog catalog, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials, Emitters emitters, Transform parent)
         {
@@ -113,7 +127,9 @@ namespace MachineBrigade.Game.Effects
             if (!_hasTransport) return null;
             foreach (var p in _planes)
                 if (p.Team == team && Mathf.Abs(p.OverAt - release) < 1f) return p;
-            var plane = Route(HalfSize, landing, release, now);
+            var plane = Route(HalfX, HalfZ, landing - Centre, release, now);
+            plane.Entry += Centre;
+            plane.Over += Centre;
             plane.Team = team;
             plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
             if (_catalog.Vehicles.TryGetValue(TransportModel, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
@@ -127,10 +143,13 @@ namespace MachineBrigade.Game.Effects
         /// the shortest way over the map, in from the edge nearest the drop and square to it, over the drop,
         /// a climbing U-turn and out by the same edge.
         /// </summary>
-        private static Plane Route(float halfSize, Vector3 landing, float release, float now)
+        private static Plane Route(float halfSize, Vector3 landing, float release, float now) => Route(halfSize, halfSize, landing, release, now);
+
+        /// <summary>The run in to <paramref name="landing"/> (relative to the map's middle) over the nearest edge of a halfX by halfZ map.</summary>
+        private static Plane Route(float halfX, float halfZ, Vector3 landing, float release, float now)
         {
-            var toEdgeX = halfSize - Mathf.Abs(landing.x);
-            var toEdgeZ = halfSize - Mathf.Abs(landing.z);
+            var toEdgeX = halfX - Mathf.Abs(landing.x);
+            var toEdgeZ = halfZ - Mathf.Abs(landing.z);
             var inward = toEdgeX < toEdgeZ ? new Vector3(landing.x >= 0f ? -1f : 1f, 0f, 0f) : new Vector3(0f, 0f, landing.z >= 0f ? -1f : 1f);
             var outside = Mathf.Max(0f, Mathf.Min(toEdgeX, toEdgeZ)) + EdgeMargin;
             var over = landing + Vector3.up * PlaneAltitude;

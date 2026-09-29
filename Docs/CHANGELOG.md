@@ -1,5 +1,17 @@
 # Changelog
 
+## Prompt 17 A-B: long maps and layered bases
+
+- Siege, Defend, Endless and the weekly fortress play on long battlefields: 300 m across and 480 m along the attack, the
+  map's own battlefield in front and a layered base behind it (all 20 maps; the other modes keep their 300 m maps).
+- The layered base: a buffer zone of dragon's teeth, ditches, wire and firing positions, forward works with the relays,
+  an outer wall with a main gate and two sally ports, a yard, an inner wall (the keep) and the HQ; the defenders land in
+  the keep, the attack's reinforcements land further forward as each ring falls.
+- More slots on a long base: HQ level 1 to 5 open 4/1/0/1 up to 8/5/3/4 (small/medium/large/utility), plus forward
+  strongpoints. New slot places (outer gate, outer wall, yard, inner wall); one base plan fits both kinds of base, and
+  the Base screen shows each map's long base as its own entry.
+- The camera looks along a long map's length, zooms out further, and the minimap keeps its rectangle.
+
 ## Prompt 15 (battle rules): armour levels, penetration, six damage types
 
 - Every unit has armour 0-4 on its front, sides, rear and roof (towers, buildings and aircraft the same all round,
