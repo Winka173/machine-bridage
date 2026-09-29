@@ -151,7 +151,8 @@ namespace MachineBrigade.Sim.Modes
             if (_def.PlayArea is { } area) world.Expand(area);
             Begin(world, 0, true);
             // Prompt 23: the operation's own events (its stages' own run in each stage).
-            if (_def.Events.Count > 0) Events = new MissionEventSystem(world, this, _def.Events, EventLevel);
+            // (A mission with an ally and no stages is its own one stage: that stage runs its events.)
+            if (_def.Stages.Count > 0 && _def.Events.Count > 0) Events = new MissionEventSystem(world, this, _def.Events, EventLevel);
             // A big operation's enemy may field more vehicles (its own ceiling, else the operations').
             if (_def.Stages.Count > 0 && world.TryGetEconomy(EnemyTeam, out var enemy))
                 enemy.VehicleCap = _def.EnemyCap > 0 ? _def.EnemyCap : world.Catalog.VehicleCapFor("Operation");

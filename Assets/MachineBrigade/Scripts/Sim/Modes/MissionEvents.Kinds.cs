@@ -839,7 +839,8 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             if (plan.Retreating || !plan.Retreats || alive.Hp > alive.MaxHp * Rules.RetreatAt) return;
-            // Breaking off (D.2): it cannot be touched now, drives for the enemy's edge and leaves the battle; the push-back pays.
+            // Breaking off (D.2): it cannot be touched now, drives for the enemy's edge and leaves the battle; the push-back pays
+            // (as a kill would) once it is gone.
             plan.Retreating = true;
             alive.Invulnerable = true;
             alive.Scripted = true;
@@ -852,7 +853,6 @@ namespace MachineBrigade.Sim.Modes
             Notice(world, s, "retreat", 8f, alive.Id);
             Line(world, s, "retreat", alive.Id);
             Record(world, s, "retreat");
-            if (s.Def.Reward is { } reward) Pay(world, s, reward);
         }
 
         private void WatchConvoy(SimWorld world, EventState s)

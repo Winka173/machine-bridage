@@ -9801,3 +9801,191 @@ touch: 32 of 32.
 balance.json (the sky_gunship row), Strings.cs (`note.sky_gunship`), GuideText.cs (`guide.sky_gunship`),
 EffectsDirector.cs (`ShowDamage`, `Dispose`), Lit.shader, build_assets.py and Docs/art/models.json (as always:
 `Tools/art/resolve_merge.py`), the card manifest.
+
+## 23A. Mission events (A-D) (2026-09-30)
+
+Prompt 23 sections A-D: the event system, spawn points, reinforcements and the event groups, built as data and sim hooks.
+Section E (putting events into the campaign's missions), F.2-F.5 (arrows, the side-objective bar, the Accord mark, the
+generals' name labels) and H (the text dialogue, another agent's) come later or elsewhere; this pass leaves them what
+they need.
+
+### A. The library
+
+- **Where the data lives:** campaign.json's `eventLibrary` (`rules` and `events`), written by `Tools/campaign/events.py`
+  through `build_campaign.py`, read by `MissionDef.ListFromJson` (`EventLibrary`, `Content/EventDefs.cs`). It is one
+  file the game and the tests already load, so there is no new Resources file to keep in step.
+- **A mission names its events** in `missionEvents` (not `events`: a stage's `events` are already prompt 5's stage
+  events, and a stage inherits its mission's fields). Each entry is a library id or an object naming one with overrides.
+  The trigger, params, notices, lines and reward merge field by field, and `as` gives a second copy its own id (else it
+  becomes `id#2`). A staged mission's own events run over the whole operation (`OperationMode.Events`) and a stage's own
+  over that stage. A mission with an ally but no stages is its own single stage and runs its events there, once.
+- **An event** has a kind (18: C's two and one for each part of D), a trigger, params, a warning lead, a speaker and
+  priority, notice and line keys and a reward. The reward can be CP, a repair, coins, blueprints, an intel file, or a
+  column that joins the allies. The keys default by kind and moment: `event.<kind>[.<variant>].<moment>` and
+  `radio.<speaker>.ev.<kind>[.<variant>].<moment>`.
+- **Triggers** (A.1): a time, the mission's progress, the boss's health, the vehicles each side has on the field,
+  another event having happened (`after`), or the player being outnumbered (by combat value). Every condition given must
+  hold; `delay` counts from the first step they do; `every` and `times` repeat the event. An event that finds nothing to
+  do on its battlefield (no general, no target, no point) passes, logged as `skipped`.
+- **A.2's counts** (2-4 a mission, 5-8 an operation, 2-3 an interlude mission) are in `events.py`. The build checks them
+  once part E sets `COUNT_CHECK`. No mission plays events yet, so nothing in the campaign has changed.
+- **A.3, deterministic and journaled:** the events draw from their own `Random`, seeded from the battle's seed and a
+  stable hash of the mission id (never `string.GetHashCode`), and never from the world's. Their log (`Log`: step, event,
+  moment) and their state go into `SimWorld.StateHash`, with the blackout and the weather's sight. Prompt 5's checkpoint
+  (the same seed and the journal's commands) therefore brings back every event, whether warned or under way. The test
+  replays to step 700 with a wave, a general, a crate, the weather and a warned blackout in flight.
+- **A.4, the warnings:** the big events (waves, the general, a mini boss, a raid, a barrage, the blackout, the weather)
+  are warned by the C.3 table's seconds: Easy 15, Normal 10, Hard 8, Very Hard 6, and an air raid at most 6. The small
+  ones are announced as they happen. Enemy waves never come within 45 m of a player's vehicle (B.3). Each warning is a
+  sim `EventNotice` plus a line. The notice carries its key, where it happens, a unit direction and a bearing (front,
+  left, right, rear), the seconds, the priority, the kind for its icon, and whether it is bad news.
+- **Priorities and the dialogue (23H):** lines are `Radio` events in the form the dialogue reads
+  (`DialogueRules.FromEvent`). Value is the priority + 1 (priority 0 story, 1 warning, 2 event, 3 reaction; Value 0
+  lets the key decide), Mount 1 would open a story moment (none of these events do), and Entity is the speaking vehicle
+  (a general on the field). The notice is a sim event of its own, so the lead can map its direction to
+  `HudNotice.Direction`. For now `MatchRunner.MissionEvents.cs` shows it through the existing notice call, with its
+  countdown and direction in the words.
+
+### B. Spawn points
+
+- **Worked out at the battle's start, not written into the 96 map files** (`Navigation/SpawnPoints.cs`). Every
+  variant, a reversed map and the long battlefields have them without regenerating the maps. A map may add its own
+  (`spawns` in the map data); they are kept and swapped with a reversed map.
+- **Enemy points:**
+  - the open ground nearest the edge on 16 rays round the line from the player's camp to the enemy's (joined to the
+    battlefield's main region, off the no-parking lanes);
+  - the rail heads (a map's `rail` route, a fortress's arrival);
+  - the water: a sea's landing beaches, else the places where water props reach the edge (for boats);
+  - the landing zones: the enemy's drop zone, a fortress's forward drops, the objectives on the enemy's side;
+  - the transports' flight paths: in over a front or flank edge, with the drop 45 % of the way to the centre.
+  None is within 95 m of the player's camp.
+- **Allied points:** behind the player's camp, the drop zone, the objectives on the player's side.
+- **Bearings** (front is within 45 degrees of the axis, then left, right and rear) are what a wave's "directions" mean
+  and what a notice's direction says.
+- **B.3's fallback:** the spots 22 and 40 m either side of a point along the edge, then the other points of the same
+  side and bearing. A wave waits 3 s at a time, for at most 15 s, while every one has the player's units on it.
+- **Prompt 12's probe (one seed):** on all 72 battlefields (the Conquest, long and siege versions of the 24 maps), a
+  heavy hull from every ground point drives into the battle, watched by `StuckWatch`. The enemy's points and the
+  allies' run separately. None got stuck for 10 s or more. The first version ran both streams in one battle and they
+  jammed head-on in the middle, which is traffic, not a spawn problem. Goals spread 14-50 m apart keep parked probes off
+  each other's goals.
+
+### C. Reinforcements
+
+- **Enemy waves:**
+  - The size (the event's, times the table's `waveScale`) is split over 1-4 bearings by the table: the front first,
+    the flanks in either order, the rear only as a fourth.
+  - Each group comes in at the first of the general's ways in that its bearing has: Kessler the water, a rail head, a
+    landing zone, else the edge; Aurel drop pods or a flight path; Venn the edge or a flight path.
+  - The roster is the general's (Varga's armour, Orlov's guns, Kessler's mixed landing force, Venn's drones, Wolff's
+    aircraft, Thorne's turned Accord columns, Aurel's pods and drones), else a common one.
+  - On Very Hard every third vehicle is an elite. Otherwise the side's elite budget promotes them as for any wave.
+- **How they arrive:** over the edge, at a rail head or off the water, they drive in. At a landing zone or on a flight
+  path they come by parachute (the view's usual drop, `DeploymentQueued`). Pods fall under the pod warning. Aircraft come
+  in over the edge of their path. Each vehicle pushes on the mission's enemy goal for 40 s with its commander's hands
+  off, then belongs to the commander.
+- **Their own cap (C.4):** event vehicles carry `Vehicle.Reinforcement`, which keeps them out of the side's army value
+  and vehicle count. They have a cap of their own: 16 enemy and 10 allied alive at once, and a wave is cut to fit. The
+  caps are to be measured on a low-end phone in the testing phase.
+- **The Accord (C.2):**
+  - Allied waves are `Ally` and `Reinforcement` (`Vehicle.Accord`, F.4's mark) and follow the allied commander. The
+    session adds one when a mission has Accord waves or a rescue. They are never cards.
+  - Their strength is the table's share of the enemy wave they name, else of the mission's biggest: Easy 70 %, Normal
+    50 %, Hard 30 %, Very Hard 15 % and one wave a mission. Strength is prompt 13's measure: each vehicle's price times
+    its measured combat value per CP.
+  - The roster is filled biggest first up to the target (within half a vehicle). Chapter 12's Total Offensive sets
+    `share` to 1.
+- **Never with the underdog's drop:** a mission with Accord waves hands prompt 13's help for the side falling behind to
+  the next of them (`EconomySystem.UnderdogStandIn`). The income boost stays and the free drop does not come. Campaign
+  missions do not switch the underdog rules on today; the hook holds if one does.
+
+### D. The event groups
+
+- **D.1, fire support:**
+  - the enemy's barrage: three salvos over 18 m round the player's biggest group;
+  - its air raid: the quick modes' bomber run, now called by the enemy;
+  - counter-battery fire on a player's gun that has stood firing for 20 s (5 s warning, 45 s between);
+  - Hawk's air strike and the Accord's guns, on the enemy's biggest group clear of ours.
+- **D.2, the general on the field:**
+  - The general drives an elite of their card while the act plus the difficulty's step (Easy 0 to Very Hard 3) is
+    under 4, else a mini boss of their own from the catalog (never the mission's or a stage's boss). Two to five
+    escorts come with them by difficulty.
+  - While the general is on the field the enemy plays under their prompt 22 passive, set for the side and put back
+    when they leave. Units that arrived meanwhile keep the lines they got.
+  - At 30 % the general breaks off (untouchable, drives for the enemy's edge, gone 8 s later, with a line), unless it
+    is their last battle: the operation of their last chapter in the story's order (Varga 12, Orlov 11, Kessler 12,
+    Venn 5, Wolff 10, Thorne 9, Aurel 12), or an event that says `final`.
+  - The reward (15 CP and 100 coins in the library) is paid once they are gone, pushed back or killed.
+    `Vehicle.General` names the driver for F.5.
+- **D.3, side objectives** (optional and timed; the mission is never lost for them):
+  - intercept: the enemy's trucks with the files cross the map flank to flank; destroying them all in time pays, and
+    one getting out over the edge fails it;
+  - rescue: an allied column held on a flank with an enemy ring round it; once the ring is broken, the column joins
+    the Accord;
+  - protect: civilian trucks cross; enough getting through pays coins and blueprints.
+  `EventState` has the clock and count for F.3's bar.
+- **D.4, economy:** the neutral convoy's trucks are hostile to both sides and hold their fire; the side that last hit
+  a truck gets its CP, with the bounty notice. The loot crate is claimed as the battle events' crates are (two seconds
+  alone beside it), from the event's own list, so an Operations raid mutator's crates are not counted twice. The supply
+  raid goes for the player's CP supply station or depot, else the HQ, and passes a mission without a base.
+- **D.5-D.6:** the supply drop is the repair drop on the player's biggest group, and it rearms what stands under it.
+  Nadia's report reveals the area round the enemy's biggest unseen group for 8 s, like a UAV scan. The EW blackout (20 s)
+  takes away the side's radars, scans, counter-battery reveals, long-range air radar and lighthouse
+  (`SimWorld.BlackedOut`, and `BlackoutLeft` for the countdown); the minimap goes dark except for the camera's frame.
+- **D.7, the mini boss:** the one the event names, else the general's own (not the mission's boss), in over the front
+  edge and warned.
+- **D.8, a new plan:** in an operation it moves on to the stage it names, and the stage under way is not paid. In a
+  mission of one goal, the plan's fields become the goal (`MissionMode.ChangePlan`): objectives, targets and units are
+  set up again, the clock restarts, and `Replanned` resets the commanders. Its line is a story line by default.
+- **D.9, the weather:** the sim had no weather factors of its own (the weather belonged to the view; the only sim
+  numbers were the sea's sight and the story's team vision), so the event adds `SimWorld.WeatherSight`. Every spotter's
+  reach is multiplied by it. It moves from the mission's own weather (1) toward the new weather's share over the event's
+  20-30 s: Clear and Overcast 1, Rain 0.9, Snow 0.85, Storm 0.8, Sandstorm 0.75, Night 0.75, Fog 0.7. The view rolls the
+  new weather in over the same seconds (`Weather` takes the time; Low graphics keeps its thinner particles) and turns
+  night on. No terrain changes.
+
+### Hooks left
+
+- **Part E:** `events.add(mid, ...)` in the act files, and `COUNT_CHECK` for A.2. An interception's `reward.intel` names
+  its intel file: it is recorded in `MissionEventSystem.Earned`, and paying it into the dossier is E's job. The library
+  already has entries for the chapter set pieces (landing assault, rail reinforcements, drone swarm, drop pods, the
+  Total Offensive, the weathers).
+- **F.2:** `EventState.Arrows` (point, way in, bearing) while an event is warned, and the notice's `NoticeDirection` and
+  `NoticeBearing`.
+- **F.3:** a side objective's `SecondsLeft`, `Count` and `Needed`.
+- **F.4:** `Vehicle.Accord`.
+- **F.5:** `Vehicle.General`, and the speaking vehicle on a general's lines.
+- **The dialogue (H):** every line is a `Radio` event with its priority in Value; the blackout's countdown is
+  `BlackoutLeft`.
+
+### Starting points for the testing phase (5-seed sweeps, FPS on a low-end phone)
+
+- the C.3 table: directions, warnings, allied shares, wave scales, escorts, and the mini-boss threshold of 4;
+- the caps: 16 enemy and 10 allied;
+- the 45 m sight clearance and the 95 m camp clearance;
+- the 40 s push and the retreat at 30 %;
+- every library event's size, time and reward;
+- the counter-battery's 20 s, 5 s and 45 s;
+- the weather's sight shares;
+- the blackout's 20 s, and Nadia's 8 s and 30 m.
+
+### Tests
+
+New `Prompt23EventTests`, 22 tests:
+
+- one behaviour test per kind (18);
+- the table's warnings and allied shares at every difficulty;
+- the Accord wave standing in for the underdog's drop;
+- a journal replay bringing the events back;
+- every battlefield's spawn points, with the stuck probe;
+- the event texts in both languages.
+
+22 of 22 pass, in about two minutes (the probe takes 1:45).
+
+### Shared edits (merge by hand if they conflict)
+
+- Sim: SimEvent.cs (two kinds, the Radio factory), SimWorld.cs (the seed, the hash, visibility), MissionDef.cs,
+  MapDefinition.cs, MissionMode.cs, OperationMode.cs, EconomySystem.cs and EconomySystem.Assist.cs, StrikeSystem.cs.
+- Game: Strings.cs (the new table in Get, Has and Entries), MatchRunner.cs (two event cases, the weather shift, the
+  minimap), ModeSessions.cs (MissionSession), Weather.cs.
+- Data and tools: build_campaign.py, campaign.json.
