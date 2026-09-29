@@ -20,6 +20,9 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _text, _ally, _enemy;
         private DialogueLine? _line;
 
+        /// <summary>The line on show was drawn before the stylesheet reached the probes (no side colour yet).</summary>
+        private bool _uncoloured;
+
         public DialogueStrip()
         {
             Root = Kit.Box("fc-dialogue");
@@ -30,6 +33,11 @@ namespace MachineBrigade.Game.Hud
             Root.Add(strip);
             _ally = Probe(Root, false);
             _enemy = Probe(Root, true);
+            // A line shown before the first layout gets its side colour once the styles have reached the probes.
+            Root.RegisterCallback<GeometryChangedEvent>(_ =>
+            {
+                if (_uncoloured) Refresh();
+            });
         }
 
         public VisualElement Root { get; }
@@ -62,10 +70,15 @@ namespace MachineBrigade.Game.Hud
             Root.EnableInClassList("fc-dialogue--high", targeting);
         }
 
+        /// <summary>A side's name colour ("#RRGGBB"), or null before the first layout.</summary>
+        public string ColourFor(bool enemy) => Colour(enemy ? _enemy : _ally);
+
         private void Render()
         {
             var line = _line.Value;
-            _text.text = DialogueText.Subtitle(line.Name, line.Words, Colour(line.Enemy ? _enemy : _ally));
+            var colour = Colour(line.Enemy ? _enemy : _ally);
+            _uncoloured = colour == null;
+            _text.text = DialogueText.Subtitle(line.Name, line.Words, colour);
         }
 
         /// <summary>A hidden label in a side's name colour, read when a line is drawn.</summary>
@@ -78,7 +91,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A probe's colour as rich text wants it ("#RRGGBB"), or null before the stylesheet reached it.</summary>
         internal static string Colour(Label probe) =>
-            probe.panel == null ? null : "#" + ColorUtility.ToHtmlStringRGB(probe.resolvedStyle.color);
+            probe.panel == null || float.IsNaN(probe.layout.width) ? null : "#" + ColorUtility.ToHtmlStringRGB(probe.resolvedStyle.color);
     }
 
     /// <summary>
@@ -88,10 +101,12 @@ namespace MachineBrigade.Game.Hud
     internal sealed class DialogueLogPanel
     {
         private readonly VisualElement _rows;
-        private readonly Label _ally, _enemy;
+        private readonly DialogueStrip _strip;
 
-        public DialogueLogPanel()
+        /// <param name="strip">The battle's subtitle, whose side colours the log uses (it is laid out; the log opens hidden).</param>
+        public DialogueLogPanel(DialogueStrip strip)
         {
+            _strip = strip;
             Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-dialogue-log");
             Root.pickingMode = PickingMode.Position;
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog fc-dialogue-log__card", PickingMode.Position);
@@ -104,8 +119,6 @@ namespace MachineBrigade.Game.Hud
             buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("menu.back"), Hide, "retreat"));
             card.Add(buttons);
             Root.Add(card);
-            _ally = DialogueStrip.Probe(Root, false);
-            _enemy = DialogueStrip.Probe(Root, true);
             Root.style.display = DisplayStyle.None;
         }
 
@@ -130,7 +143,7 @@ namespace MachineBrigade.Game.Hud
             for (var i = log.Count - 1; i >= 0; i--)
             {
                 var line = log[i].Line;
-                var row = Kit.Text(DialogueText.Subtitle(line.Name, line.Words, DialogueStrip.Colour(line.Enemy ? _enemy : _ally)),
+                var row = Kit.Text(DialogueText.Subtitle(line.Name, line.Words, _strip?.ColourFor(line.Enemy)),
                     "fc-body fc-dialogue-log__row");
                 row.enableRichText = true;
                 _rows.Add(row);

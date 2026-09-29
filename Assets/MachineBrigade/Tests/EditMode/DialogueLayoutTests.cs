@@ -119,6 +119,13 @@ namespace MachineBrigade.Tests
             foreach (var large in new[] { false, true })
             {
                 var (hud, host) = Build(true, large);
+                // The name in its side's colour, the enemy's unlike ours (the line was shown before the first layout).
+                var enemyColour = Regex.Match(hud.Dialogue.Label.text, "<color=(#[0-9A-F]{6})>").Groups[1].Value;
+                hud.ShowLine(DialogueRules.Line("radio.khai.c9m02.1"));
+                var allyColour = Regex.Match(hud.Dialogue.Label.text, "<color=(#[0-9A-F]{6})>").Groups[1].Value;
+                if (enemyColour == "" || allyColour == "" || enemyColour == allyColour) failures.Add($"side colours \"{enemyColour}\" and \"{allyColour}\"");
+                hud.ShowLine(DialogueRules.Line("radio.kessler.leviathan", team: 1));
+                Frames();
                 var strip = hud.Dialogue.Label.parent.worldBound;
                 var tag = large ? "large" : "normal";
                 var deck = host.Q(className: "fc-deck").worldBound;

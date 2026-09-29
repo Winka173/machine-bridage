@@ -419,7 +419,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 23 H.6: the dialogue log, over the pause menu.
             if (_dialogue != null)
             {
-                _dialogueLog = new DialogueLogPanel();
+                _dialogueLog = new DialogueLogPanel(_dialogue);
                 _safe.Add(_dialogueLog.Root);
             }
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
