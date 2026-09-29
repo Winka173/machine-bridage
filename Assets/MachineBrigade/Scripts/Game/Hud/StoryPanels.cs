@@ -109,10 +109,13 @@ namespace MachineBrigade.Game.Hud
     {
         private readonly Label _kicker, _title, _speaker, _role, _body, _aside;
         private readonly VisualElement _art, _portrait, _general, _asideBox, _buttons, _chips, _who;
+        private readonly VisualElement _host;
         private Action _primary, _secondary;
 
+        /// <param name="host">Where the card lives: it goes back there if something took it out.</param>
         public StoryCard(VisualElement host = null)
         {
+            _host = host;
             Root = Kit.Box(KitDialog.ScrimClass + " fc-story-scrim", PickingMode.Position);
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-story", PickingMode.Position);
             _art = Kit.Box("fc-story__art");
@@ -196,6 +199,7 @@ namespace MachineBrigade.Game.Hud
             _buttons.Clear();
             if (secondary is { } back) _buttons.Add(new KitButton(ButtonTier.Secondary, back.label, () => Close(_secondary), "retreat"));
             _buttons.Add(new KitButton(ButtonTier.Primary, primary.label, () => Close(_primary), "play"));
+            if (Root.parent == null) _host?.Add(Root);
             Root.style.display = DisplayStyle.Flex;
             Root.BringToFront();
         }

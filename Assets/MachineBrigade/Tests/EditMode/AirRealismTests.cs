@@ -41,22 +41,27 @@ namespace MachineBrigade.Tests
             var gunship = world.SpawnVehicle("sky_gunship", 0, new Vector2(-40f, 0f), 0f);
             var tank = world.SpawnVehicle("heavy_tank", 1, new Vector2(0f, 0f), 0f);
             var full = tank.Hp;
-            Run(world, 12f);
+            // It reaches its orbit in about 2 s. Since the armour pass (toughness 2.2) and the play-test 5 gun
+            // rhythm it kills the heavy tank in about 12 s, so the orbit is sampled from its arrival until the
+            // kill (it waited 12 s before, found the tank dead and sampled nothing: 0/0, DECISIONS 21B).
+            Run(world, 3f);
             var onLeft = 0;
             var samples = 0;
-            for (var i = 0; i < 40; i++)
+            var farthest = 0f;
+            for (var i = 0; i < 40 && tank.IsAlive; i++)
             {
-                Run(world, 0.5f);
-                if (!tank.IsAlive) break;
                 var forward = Sim.Core.SimMath.Forward(gunship.Heading);
                 var to = tank.Position - gunship.Position;
                 // Headings turn clockwise, so the left of the nose is where the cross product is positive.
                 if (forward.X * to.Y - forward.Y * to.X > 0f) onLeft++;
+                farthest = System.Math.Max(farthest, to.Length());
                 samples++;
+                Run(world, 0.5f);
             }
             Assert.Less(tank.Hp, full, "its side guns hit the target");
+            Assert.GreaterOrEqual(samples, 8, "the orbit was watched for 4 s at least");
             Assert.Greater(onLeft, samples * 0.7f, $"the target stays on its left ({onLeft}/{samples})");
-            Assert.Less(Vector2.Distance(gunship.Position, tank.Position), 70f, "it circles, not flies away");
+            Assert.Less(farthest, 70f, "it circles, not flies away");
         }
 
         [Test]

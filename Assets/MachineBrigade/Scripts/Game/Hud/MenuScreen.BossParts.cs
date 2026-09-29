@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Hud
             var counts = new Dictionary<string, int>();
             foreach (var part in def.Parts)
             {
-                var line = Strings.Get("part." + part.Kind) + "\u0001" + PartEffects(def, part);
+                var line = Strings.Get("part." + part.Kind) + "\u0001" + BossFile.PartStats(def, part) + "\u0001" + PartEffects(def, part);
                 if (!counts.ContainsKey(line))
                 {
                     order.Add(line);
@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Hud
             {
                 var bits = line.Split('\u0001');
                 var name = counts[line] > 1 ? bits[0] + " ×" + counts[line] : bits[0];
-                var label = Kit.Text(Strings.Highlight("[[" + name + "]]") + " " + bits[1], "fc-body fc-mt-2");
+                var label = Kit.Text(Strings.Highlight("[[" + name + "]]") + " (" + bits[1] + ") " + bits[2], "fc-body fc-mt-2");
                 label.enableRichText = true;
                 _detailBody.Add(label);
             }
@@ -51,8 +51,6 @@ namespace MachineBrigade.Game.Hud
                 tip.enableRichText = true;
                 _detailBody.Add(tip);
             }
-            TiersGuide(def);
-            BigAttackGuide(def);
         }
 
         /// <summary>

@@ -7,6 +7,16 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 6 bugs (DECISIONS 21B)
+
+- Start on a campaign mission works again after a Back: Back no longer takes the hidden story card out of the menu
+  (it closes the topmost open dialog, and hides the story card). This was why mission 1-1's Start did nothing.
+- A boss's page is its boss file: no Equipment tab, no level, gear or next-level numbers, no deck or upgrade buttons;
+  its numbers, armour, parts with their armour and health, big attack, escorts and general. The campaign's mission
+  page links to each boss it fights, and the Sandbox shows the same file in a dialog.
+- The gunship realism test samples the orbit from its arrival (the AC-130 now kills its heavy tank in 12 s).
+- `MenuWalk`: a Play-mode walk through the real menu to a campaign battle.
+
 ### Play-test 6: UI, camera, audio
 
 - The Gunship is a deck card: the AC-130 on call for 12 CP, circling its mark for 20 s with its 105, 40 and 25 mm

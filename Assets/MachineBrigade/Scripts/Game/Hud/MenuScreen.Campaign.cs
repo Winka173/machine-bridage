@@ -262,6 +262,19 @@ namespace MachineBrigade.Game.Hud
             return row;
         }
 
+        /// <summary>The bosses a mission fights (its own, then its stages'), each once: the ones with a page.</summary>
+        private List<string> MissionBosses(MissionDef m)
+        {
+            var ids = new List<string>();
+            void Add(string id)
+            {
+                if (id != null && !ids.Contains(id) && _catalog.Vehicles.TryGetValue(id, out var def) && def.Boss) ids.Add(id);
+            }
+            Add(m.Boss?.Def);
+            foreach (var stage in m.Stages) Add(stage.Mission.Boss?.Def);
+            return ids;
+        }
+
         private static bool IsBossMission(MissionDef m) => m.Boss != null || m.Goal is MissionGoal.Boss or MissionGoal.Intercept;
 
         private void FillMissionDetail()
@@ -294,6 +307,9 @@ namespace MachineBrigade.Game.Hud
             if (m.General != null) briefText.Add(Kit.Text(Strings.Format("campaign.opponent", Strings.Get("char." + m.General + ".name")), "fc-small fc-mt-2"));
             brief.Add(briefText);
             body.Add(brief);
+            // Play-test 6 (DECISIONS 21B): each boss it fights, a link to its file.
+            foreach (var boss in MissionBosses(m))
+                body.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.file", Strings.Card(boss)), () => OpenBossGuide(boss), "skull"));
 
             // Three stars.
             body.Add(Kit.Text(Kit.Caps(Strings.Get("campaign.starsTitle")), "fc-panel-title fc-section__title fc-mt-4"));
