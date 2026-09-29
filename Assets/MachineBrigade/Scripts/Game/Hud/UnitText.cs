@@ -14,6 +14,25 @@ namespace MachineBrigade.Game.Hud
             ["detail.more"] = ("More", "Xem thêm"),
             ["detail.less"] = ("Less", "Thu gọn"),
 
+            ["settings.ammoIcons"] = ("Ammo icons", "Biểu tượng đạn"),
+            ["settings.ammoIcons.all"] = ("All units", "Mọi đơn vị"),
+            ["settings.ammoIcons.air"] = ("Aircraft only", "Chỉ máy bay"),
+            ["hud.stores.bombs"] = ("Bombs {0}/{1}", "Bom {0}/{1}"),
+            ["hud.stores.missiles"] = ("Missiles {0}/{1}", "Tên lửa {0}/{1}"),
+            ["hud.stores.rockets"] = ("Rockets {0}/{1}", "Rốc-két {0}/{1}"),
+            ["hud.stores.rounds"] = ("Ammo {0}/{1}", "Đạn {0}/{1}"),
+
+            ["detail.ammoIcons"] = ("Ammo icons", "Biểu tượng đạn"),
+            ["icons.low"] = ("Yellow magazine: running low (under 20 %)", "Băng đạn vàng: sắp hết đạn (dưới 20 %)"),
+            ["icons.empty"] = ("Red magazine, blinking: empty", "Băng đạn đỏ nhấp nháy: hết đạn"),
+            ["icons.leaving"] = ("Grey arrow: flying out to its holding pattern", "Mũi tên xám: đang ra vòng chờ"),
+            ["icons.rearming"] = ("Green ring: rearming, filling with the stores; dim at the slow rate, bright at the full one",
+                "Vòng xanh: đang hồi đạn, đầy dần theo lượng đạn; mờ khi hồi chậm, sáng khi hồi đầy đủ"),
+            ["icons.full"] = ("A short flash of the ring: full again", "Vòng lóe sáng: đã đầy đạn"),
+            ["icons.enemy"] = ("Enemies show only empty and flying out", "Địch chỉ hiện hết đạn và đang ra vòng chờ"),
+            ["tip.ammoIcons"] = ("Aircraft carry bombs, missiles and rockets that run out and come back on the field. Beside the health bar: a yellow magazine is running low, a red one empty, a grey arrow flies out to rearm, a green ring fills as the stores come back.",
+                "Máy bay mang bom, tên lửa và rốc-két có hạn, hồi dần ngay trên chiến trường. Cạnh thanh máu: băng đạn vàng là sắp hết, đỏ là hết, mũi tên xám là đang ra vòng chờ, vòng xanh đầy dần khi đang hồi đạn."),
+
             // ---------------------------------------------------------------- a weapon
             ["ul.weapon"] = ("{0}: {1}, hits {2}", "{0}: {1}, bắn {2}"),
             ["ul.type.Kinetic"] = ("kinetic", "động năng"),

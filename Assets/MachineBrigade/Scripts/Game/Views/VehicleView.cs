@@ -195,7 +195,8 @@ namespace MachineBrigade.Game.Views
             _barFill = CreateMesh("Fill", _bar, meshes.Quad,
                 vehicle.Team == playerTeam ? materials.BarAlly : vehicle.Team == Teams.Hostile ? materials.BarNeutral : materials.BarEnemy, false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
-            if (vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildAmmoGauge(meshes, materials);
+            // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
+            if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
             _bar.gameObject.SetActive(false);
 
@@ -917,22 +918,22 @@ namespace MachineBrigade.Game.Views
             NoteHealth(health);
             RenderHitFeedback();
             if (Time.time >= _trailHoldUntil && _trail > health) _trail = Mathf.MoveTowards(_trail, health, Time.deltaTime * 2f);
-            var reloading = _ammoGauge != null && Sim.OutOfAmmo;
             var repairing = Time.time < _repairUntil;
-            var showBar = Selected || health < 0.999f || reloading || repairing;
+            // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
+            var stores = _storesMark != null && StoresWanted();
+            var showBar = Selected || health < 0.999f || stores || repairing;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
-            if (_ammoGauge != null) RenderAmmoGauge(reloading);
+            RenderStoresMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);
             _barTrail.localPosition = new Vector3(-BarWidth * (1f - _trail) * 0.5f, 0f, -0.01f);
         }
 
-        private Transform _ammoGauge, _reloadFill;
         private Transform _repairMark;
         private float _repairUntil = -1f;
 
@@ -965,64 +966,6 @@ namespace MachineBrigade.Game.Views
             jaw.localPosition = new Vector3(0.23f, 0.23f, -0.02f);
             _repairMark.gameObject.SetActive(false);
         }
-        private MeshRenderer[] _shells;
-        private Material _ammoReload, _ammoEmpty, _ammoSpent;
-        private int _shownShells = -1;
-        private bool _shownEmptyLook;
-
-        /// <summary>
-        /// A small gauge left of the health bar for weapons that run dry (artillery, launchers):
-        /// three shells that go out as the magazine empties; once it is empty, a reload bar under
-        /// the health bar fills while the crew restocks, the shells glowing amber, or red and
-        /// blinking while the vehicle is on the move and the reload waits (Art of War 3 and
-        /// Warpath show the same at a glance).
-        /// </summary>
-        private void BuildAmmoGauge(MeshLibrary meshes, MaterialLibrary materials)
-        {
-            _ammoReload = materials.AmmoReload;
-            _ammoEmpty = materials.AmmoEmpty;
-            _ammoSpent = materials.AmmoSpent;
-            _ammoGauge = new GameObject("AmmoGauge").transform;
-            _ammoGauge.SetParent(_bar, false);
-            _ammoGauge.localPosition = new Vector3(-BarWidth * 0.5f - 0.5f, 0f, 0f);
-            var back = CreateMesh("Back", _ammoGauge, meshes.Quad, materials.BarBack, false);
-            back.localScale = new Vector3(0.74f, 0.6f, 1f);
-            _shells = new MeshRenderer[3];
-            for (var i = 0; i < _shells.Length; i++)
-            {
-                var shell = CreateMesh("Shell", _ammoGauge, meshes.Quad, materials.AmmoReload, false);
-                shell.localScale = new Vector3(0.14f, 0.42f, 1f);
-                shell.localPosition = new Vector3((i - 1) * 0.21f, 0f, -0.01f);
-                _shells[i] = shell.GetComponent<MeshRenderer>();
-            }
-            _reloadFill = CreateMesh("Reload", _bar, meshes.Quad, materials.AmmoReload, false);
-            _reloadFill.gameObject.SetActive(false);
-        }
-
-        private void RenderAmmoGauge(bool empty)
-        {
-            var max = Sim.Def.Mounts[0].Weapon.Ammo;
-            var left = Mathf.Max(0, Sim.Ammo(0));
-            // Three shells stand for the magazine: each one a third of it.
-            var lit = empty ? 3 : Mathf.CeilToInt(3f * left / Mathf.Max(1, max));
-            var waiting = empty && Sim.ReloadPaused;
-            var blinkOff = waiting && Mathf.Repeat(Time.time * 2.5f, 1f) > 0.5f;
-            var look = empty && !blinkOff;
-            if (lit != _shownShells || look != _shownEmptyLook || waiting)
-            {
-                _shownShells = lit;
-                _shownEmptyLook = look;
-                for (var i = 0; i < _shells.Length; i++)
-                    _shells[i].sharedMaterial = empty ? (blinkOff ? _ammoSpent : waiting ? _ammoEmpty : _ammoReload)
-                        : i < lit ? _ammoReload : _ammoSpent;
-            }
-            if (_reloadFill.gameObject.activeSelf != empty) _reloadFill.gameObject.SetActive(empty);
-            if (!empty) return;
-            var progress = Sim.ReloadProgress;
-            _reloadFill.localScale = new Vector3(BarWidth * Mathf.Max(0.02f, progress), 0.1f, 1f);
-            _reloadFill.localPosition = new Vector3(-BarWidth * (1f - progress) * 0.5f, -BarHeight * 0.5f - 0.14f, -0.02f);
-        }
-
         private Transform _lift;
         private Vector3 _liftRest;
         private float _liftDown;

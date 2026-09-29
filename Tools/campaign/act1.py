@@ -494,7 +494,9 @@ add_mission(m('c3m03', 3, 'frostpeak', 'Hold', 'Fog', legacy='m08', points=['tow
               enemyDeck=['light_tank', 'ifv', 'main_battle_tank', 'heavy_tank', 'mortar_carrier', 'flame_tank', 'attack_helicopter'],
               playerCp=24, playerIncome=1.2, playerCap=40, playerBase='Anchor',
               waves=waves(['light_tank', 'main_battle_tank', 'ifv', 'mortar_carrier', 'attack_helicopter', 'flame_tank'], first=45, interval=50, size=2, grow=0.3, max_size=4, max_alive=10),
-              unlocks=['uav_scan'], starTime=0, starLosses=10),
+              unlocks=['uav_scan', 'ammo_carrier'], starTime=0, starLosses=10,
+              # Prompt 13 C.9: the first mission with the player's own aircraft: the ammunition icons.
+              tips=[{'at': 20, 'key': 'tip.ammoIcons'}]),
             ('Village in the Fog', 'Ngôi làng trong sương'),
             ('The village in the valley is the only shelter for kilometres. Orlov wants it back, and the fog hides his guns. Hold it for three and a half minutes.',
              'Ngôi làng dưới thung lũng là chỗ trú duy nhất trong vòng nhiều cây số. Orlov muốn lấy lại, và sương mù che pháo của hắn. Giữ làng trong ba phút rưỡi.'),

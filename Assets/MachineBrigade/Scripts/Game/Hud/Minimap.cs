@@ -19,6 +19,9 @@ namespace MachineBrigade.Game.Hud
         private readonly List<(Vector2 at, int team, bool air, bool dim)> _blips = new();
         private readonly List<(Vector2 at, float radius, int owner, float progress)> _points = new();
         private readonly List<(Vector2 at, float radius)> _warnings = new();
+
+        /// <summary>Prompt 13 C.9: our aircraft's holding patterns, faint rings.</summary>
+        private readonly List<Vector2> _holds = new();
         private readonly List<(Vector2 at, int kind)> _marks = new();
         private readonly Vector2[] _view = new Vector2[4];
         private readonly VisualElement _picture;
@@ -77,6 +80,7 @@ namespace MachineBrigade.Game.Hud
             _blips.Clear();
             _points.Clear();
             _warnings.Clear();
+            _holds.Clear();
             _marks.Clear();
             _bosses.Clear();
             _elites.Clear();
@@ -98,6 +102,14 @@ namespace MachineBrigade.Game.Hud
         public void Point(Vector2 world, float radius, int owner, float progress) => _points.Add((world, radius, owner, progress));
 
         public void Warning(Vector2 world, float radius) => _warnings.Add((world, radius));
+
+        /// <summary>One of our aircraft's holding patterns (drawn once however many circle it).</summary>
+        public void Holding(Vector2 world)
+        {
+            foreach (var h in _holds)
+                if ((h - world).sqrMagnitude < 36f) return;
+            _holds.Add(world);
+        }
 
         /// <summary>A mission target: 0 destroy (red), 1 keep standing (blue), 2 scout (amber).</summary>
         public void Mark(Vector2 world, int kind) => _marks.Add((world, kind));
@@ -176,6 +188,15 @@ namespace MachineBrigade.Game.Hud
                 p.BeginPath();
                 p.Arc(ToLocal(at), Mathf.Max(5f, radius * Scale), 0f, 360f);
                 p.Fill();
+                p.Stroke();
+            }
+
+            foreach (var at in _holds)
+            {
+                p.strokeColor = new Color(UiKit.Mint.r, UiKit.Mint.g, UiKit.Mint.b, 0.45f);
+                p.lineWidth = 1.2f;
+                p.BeginPath();
+                p.Arc(ToLocal(at), Mathf.Max(4f, 12f * Scale), 0f, 360f);
                 p.Stroke();
             }
 

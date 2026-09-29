@@ -325,6 +325,7 @@ namespace MachineBrigade.Game.Hud
                     _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.behaviour")), "fc-caption fc-mt-4 fc-mb-2"));
                     foreach (var line in behaviour) _detailBody.Add(Kit.Body("· " + line));
                 }
+                if (unit.Flying || unit.Weapon.Ammo > 0 && !unit.Static) AmmoIconTable();
             }
             // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
             foreach (var elite in _catalog.Vehicles.Values)
@@ -335,6 +336,31 @@ namespace MachineBrigade.Game.Hud
             }
             // A boss's parts and what breaking each does (prompt 9).
             if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
+        }
+
+        /// <summary>Prompt 13 C.9: what the ammunition icons over units mean, with their colours.</summary>
+        private void AmmoIconTable()
+        {
+            _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.ammoIcons")), "fc-caption fc-mt-4 fc-mb-2"));
+            foreach (var (key, colour) in new[]
+                     {
+                         ("icons.low", new Color(1f, 0.8f, 0.22f)), ("icons.empty", new Color(1f, 0.26f, 0.18f)),
+                         ("icons.leaving", new Color(0.62f, 0.66f, 0.7f)), ("icons.rearming", new Color(0.36f, 0.9f, 0.5f)),
+                         ("icons.full", new Color(0.6f, 1f, 0.7f)),
+                     })
+            {
+                var row = Kit.Box("fc-row fc-mt-2");
+                var swatch = new VisualElement();
+                swatch.style.width = 12f;
+                swatch.style.height = 12f;
+                swatch.style.flexShrink = 0f;
+                swatch.style.marginRight = 8f;
+                swatch.style.backgroundColor = colour;
+                row.Add(swatch);
+                row.Add(Kit.Body(Strings.Get(key)));
+                _detailBody.Add(row);
+            }
+            _detailBody.Add(Kit.Small(Strings.Get("icons.enemy")));
         }
 
         private void GuideLines(string text)

@@ -99,6 +99,7 @@ namespace MachineBrigade.Game.Match
         private SelectionController _selection;
         private TouchGestures _gestures;
         private BattleHud _hud;
+        private StoresStrip _storesStrip;
         private PlayerCommander _commander;
         private readonly List<(Vector2 at, float radius, float until)> _warnings = new();
         private readonly List<PointInfo> _pointInfo = new();
@@ -1331,6 +1332,10 @@ namespace MachineBrigade.Game.Match
             if (playerAi != null)
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
+            // Prompt 13 C.9: the selection's ammunition bar under its health bar.
+            _storesStrip ??= new StoresStrip(_hud.SelectionExtras);
+            var (storesLeft, storesFull, storesKind, storesSlow) = _selection.Stores();
+            _storesStrip.Set(storesLeft, storesFull, storesKind, storesSlow, _hud.SelectionExtras);
             UpdateMinimap();
             UpdateBossPartOutline();
         }
@@ -1362,6 +1367,9 @@ namespace MachineBrigade.Game.Match
                 }
                 // An enemy elite has a symbol of its own (a gold ring round its blip).
                 if (v.Def.Elite && v.Team != PlayerTeam) minimap.Elite(new Vector2(v.Position.X, v.Position.Y), v.Flying, !seen);
+                // Prompt 13 C.9: our aircraft's holding patterns, faint rings.
+                if (v.Team == PlayerTeam && v.HasStores && v.Supply != MachineBrigade.Sim.Entities.SupplyState.Fighting)
+                    minimap.Holding(new Vector2(v.HoldPoint.X, v.HoldPoint.Y));
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
