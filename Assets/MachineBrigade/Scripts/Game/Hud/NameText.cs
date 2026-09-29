@@ -26,6 +26,9 @@ namespace MachineBrigade.Game.Hud
             ["name.quaden"] = ("Quạ Đen", "Quạ Đen"),
             ["name.lamthanh"] = ("Lam Thành", "Lam Thành"),
             ["name.bagia"] = ("Bà Già", "Bà Già"),
+            // Prompt 22 E: the two new battlefields' names (the same in both languages).
+            ["name.foundry"] = ("Foundry", "Foundry"),
+            ["name.veyra_old_quarter"] = ("Veyra Old Quarter", "Veyra Old Quarter"),
         };
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace MachineBrigade.Game.Hud
             // Bosses' and branches' code names.
             "Argus", "Atlas", "Bastion", "Behemoth", "Caspian", "Charybdis", "Daedalus", "Fenrir", "Gungnir", "Harpy", "Hive", "Icarus", "Inferno", "Ixion",
             "Juggernaut", "Jötunn", "Kronos", "Leviathan", "Locust", "Matriarch", "Moloch", "Nemesis", "Roc", "Scylla", "Spectre", "Tartarus", "Tempest",
-            "Typhon", "Titan", "Napalm",
+            "Typhon", "Titan", "Napalm", "Morrigan",
             // Equipment brands.
             "Ironclad", "Works", "Kestrel Dynamics", "Vulcan Arms", "Longbow Ordnance", "Aegis Systems", "Stormfront Aviation", "Hivemind Robotics",
             "Quartermaster", "Logistics", "Spectre Electronics", "Hammerfall Munitions", "Phoenix Recovery", "Wolfpack Tactics", "Bulwark Engineering",

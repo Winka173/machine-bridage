@@ -421,6 +421,93 @@ namespace MachineBrigade.Game.Hud
             ["guide.map.chapters"] = ("Campaign: chapter {chapter}", "Chiến dịch: chương {chapter}"),
             ["guide.map.skirmish"] = ("Skirmish only", "Chỉ ở giao tranh"),
             ["campaign.minis"] = ("{count|# mini boss|# mini bosses}", "{count} mini boss"),
+            // ---------------------------------------------------------------- prompt 22 E (DECISIONS 22E): new maps, bosses and the ally
+            // (Kept here, beside the bosses' other words, so the story pass's renames and these additions never touch the same lines.)
+            ["map.foundry"] = ("{@foundry}", "{@foundry}"),
+            ["map.foundry.sub"] = ("Tank works · Industrial", "Xưởng xe tăng · Công nghiệp"),
+            ["map.veyra_old_quarter"] = ("{@veyra_old_quarter}", "{@veyra_old_quarter}"),
+            ["map.veyra_old_quarter.sub"] = ("Old town · Urban", "Phố cổ · Đô thị"),
+            ["guide.map.foundry"] = (
+                "[[{@foundry}]] · industrial battlefield · an indoor tank works\n" +
+                "How it fights: Hegemon's old tank works, solid blocks of sheds and workshops cut by 10 m [[factory lanes]]: every way across is a narrow passage between walls. The casting hall at the centre (the centre point) opens only where the lanes run in; the press shop and the rolling mill (the side points) are walled yards with one doorway a side.\n" +
+                "Strong / weak: favours short-range armour, flamers and anti-tank vehicles waiting at the lane corners; long guns and artillery see little down the lanes, and big hulls queue in the doorways.\n" +
+                "Tip: hold the lane crossings round the hall, not the hall floor; bring a few light vehicles to take the yards through the side doors while the heavies hold the lanes.",
+                "[[{@foundry}]] · chiến trường công nghiệp · xưởng xe tăng trong nhà\n" +
+                "Cách đánh: xưởng xe tăng cũ của Hegemon, các dãy nhà xưởng liền khối bị cắt bởi các [[lối xưởng]] rộng 10 m: lối nào đi qua cũng là một hành lang hẹp giữa hai bức tường. Xưởng đúc ở giữa (cứ điểm giữa) chỉ mở ở chỗ các lối chạy vào; xưởng dập và xưởng cán (hai cứ điểm bên) là những sân có tường bao, mỗi mặt một cửa.\n" +
+                "Mạnh / yếu: có lợi cho thiết giáp tầm gần, xe phun lửa và xe chống tăng chờ ở góc lối; pháo tầm xa và pháo binh nhìn được rất ít trong các lối hẹp, còn xe lớn phải xếp hàng ở cửa.\n" +
+                "Mẹo: giữ các ngã tư quanh xưởng đúc chứ đừng giữ sàn xưởng; mang theo vài xe nhẹ để chiếm các sân qua cửa bên trong khi xe nặng giữ các lối."),
+            ["guide.map.veyra_old_quarter"] = (
+                "[[{@veyra_old_quarter}]] · city battlefield · narrow streets and squares\n" +
+                "How it fights: the capital's old town: 10 m [[streets]] that bend round the old plots between tall houses, opening on squares. The cathedral square is the centre point; the market square and the clock square are the side points; four small piazzas along the way.\n" +
+                "Strong / weak: favours armour that holds a street corner, anti-tank ambushes and mortars that drop over the roofs; the squares are killing grounds for anything caught crossing them in the open.\n" +
+                "Tip: clear the houses' corners before a square, and cross it under smoke; the bends hide what waits round them, so lead with a scout.",
+                "[[{@veyra_old_quarter}]] · chiến trường đô thị · phố hẹp và quảng trường\n" +
+                "Cách đánh: khu phố cổ của thủ đô: các [[con phố]] rộng 10 m uốn quanh những lô đất cũ giữa các dãy nhà cao, mở ra các quảng trường. Quảng trường nhà thờ lớn là cứ điểm giữa; quảng trường chợ và quảng trường tháp đồng hồ là hai cứ điểm bên; dọc đường có bốn quảng trường nhỏ.\n" +
+                "Mạnh / yếu: có lợi cho thiết giáp giữ góc phố, xe chống tăng phục kích và súng cối bắn qua mái nhà; quảng trường là bãi giết cho mọi thứ bị bắt gặp giữa chỗ trống.\n" +
+                "Mẹo: dọn các góc nhà trước khi vào quảng trường, và băng qua dưới màn khói; khúc cua che mất thứ đang chờ phía sau, nên cho xe trinh sát đi đầu."),
+
+            // Behemoth Mk.0: Varga's prototype Behemoth, a variant made from the Behemoth's data.
+            ["unit.behemoth_mk0"] = ("Behemoth Mk.0 · Prototype Behemoth", "Behemoth Mk.0 · Behemoth nguyên mẫu"),
+            ["boss.behemoth_mk0"] = ("Behemoth Mk.0 · Prototype Behemoth", "Behemoth Mk.0 · Behemoth nguyên mẫu"),
+            ["short.behemoth_mk0"] = ("Behemoth Mk.0", "Behemoth Mk.0"),
+            ["note.behemoth_mk0"] = ("Varga's first Behemoth off the factory line: its main gun, two flank guns and a rocket pod; no flak, no protection system.", "Behemoth đầu tiên của Varga ra khỏi dây chuyền: pháo chính, hai pháo sườn và một giàn rốc-két; không có pháo cao xạ, không có hệ thống bảo vệ chủ động."),
+            ["bossfile.behemoth_mk0"] = ("The Behemoth before it was finished: Varga tried it out on the factory floor where it was built.", "Behemoth khi chưa hoàn thiện: Varga cho nó chạy thử ngay trên sàn nhà máy nơi nó ra đời."),
+            ["guide.behemoth_mk0"] = (
+                "[[Mini boss]] · prototype Behemoth · unfinished\n" +
+                "How it fights: the Behemoth's first build, slower than the finished one: its main gun, two flank guns and a rocket pod on the same hull.\n" +
+                "Strong / weak: front armour [[3]]; no flak and no protection system, so aircraft and missiles meet nothing.\n" +
+                "Tip: bring aircraft and missiles; break the [[main gun]] to stop its barrage.",
+                "[[Mini boss]] · Behemoth nguyên mẫu · chưa hoàn thiện\n" +
+                "Cách đánh: bản lắp đầu tiên của Behemoth, chậm hơn bản hoàn chỉnh: pháo chính, hai pháo sườn và một giàn rốc-két trên cùng thân xe.\n" +
+                "Mạnh / yếu: mặt trước giáp cấp [[3]]; không có pháo cao xạ và hệ thống bảo vệ chủ động, nên máy bay và tên lửa không gặp cản trở nào.\n" +
+                "Mẹo: mang máy bay và tên lửa; phá [[pháo chính]] để chặn loạt pháo lớn."),
+            ["guide.parts.tip.behemoth_mk0"] = ("Tip: the [[main gun]] fires its barrage; with both [[flank guns]] broken it only fires ahead.", "Mẹo: [[pháo chính]] bắn loạt pháo lớn; phá cả hai [[pháo sườn]] thì nó chỉ còn bắn được phía trước."),
+            ["radio.varga.behemoth_mk0"] = ("Varga: \"The first one off the line. Let's see if it runs.\"", "Varga: \"Chiếc đầu tiên ra khỏi dây chuyền. Xem nó có chạy được không.\""),
+            ["bigattack.behemoth_mk0_barrage"] = ("Prototype Barrage", "Loạt pháo thử nghiệm"),
+            ["bigattack.behemoth_mk0_barrage.cancelled"] = ("Barrage cancelled", "Đã chặn loạt pháo"),
+            ["radio.bigattack.behemoth_mk0_barrage"] = ("Varga: \"Two pairs. Test fire.\"", "Varga: \"Hai cặp. Bắn thử.\""),
+            ["guide.bigattack.behemoth_mk0_barrage.how"] = ("Two pairs of heavy rounds from the main gun over your group.", "Hai cặp đạn pháo nặng từ pháo chính vào cụm quân của bạn."),
+            ["guide.bigattack.behemoth_mk0_barrage.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
+            ["guide.bigattack.behemoth_mk0_barrage.stop"] = ("Break the main gun during the warning.", "Phá pháo chính lúc cảnh báo."),
+
+            // Morrigan: Wolff's own stealth fighter.
+            ["unit.morrigan"] = ("Morrigan · Raven's Fighter", "Morrigan · Tiêm kích của Raven"),
+            ["boss.morrigan"] = ("Morrigan · Raven's Fighter", "Morrigan · Tiêm kích của Raven"),
+            ["short.morrigan"] = ("Morrigan", "Morrigan"),
+            ["note.morrigan"] = ("Wolff's own stealth fighter: fast, seen only close up, air-to-air missiles in two bays and a guided bomb.", "Tiêm kích tàng hình của chính Wolff: nhanh, chỉ bị phát hiện ở cự ly gần, tên lửa không đối không trong hai khoang và một quả bom dẫn đường."),
+            ["bossfile.morrigan"] = ("Named for the crow goddess of the old battlefields. Wolff flies it himself when a fight matters to him.", "Mang tên nữ thần quạ của những chiến trường xưa. Wolff tự lái nó khi trận đánh thật sự quan trọng với hắn."),
+            ["guide.morrigan"] = (
+                "[[Mini boss]] · stealth fighter · Wolff's own\n" +
+                "How it fights: faster than any fighter of ours and [[stealthy]]: seen only close up, or for a moment after it fires. Air-to-air missiles from two bays hunt your aircraft; a guided bomb hunts your anti-air.\n" +
+                "Strong / weak: very fast and hard to see; thin armour, and its bays and engines break.\n" +
+                "Tip: keep radar and anti-air near your aircraft so it is seen; shoot the moment it fires; break its [[missile bays]] to stop its salvo.",
+                "[[Mini boss]] · tiêm kích tàng hình · máy bay riêng của Wolff\n" +
+                "Cách đánh: nhanh hơn mọi tiêm kích của ta và [[tàng hình]]: chỉ bị phát hiện ở cự ly gần, hoặc trong chốc lát sau khi khai hỏa. Tên lửa không đối không từ hai khoang săn máy bay của bạn; bom dẫn đường săn xe phòng không.\n" +
+                "Mạnh / yếu: rất nhanh và khó thấy; giáp mỏng, các khoang và động cơ phá được.\n" +
+                "Mẹo: giữ ra-đa và phòng không gần máy bay để thấy được nó; bắn ngay lúc nó khai hỏa; phá các [[khoang tên lửa]] để chặn loạt phóng."),
+            ["guide.parts.tip.morrigan"] = ("Tip: break both [[missile bays]] and its salvo is gone; broken [[engines]] slow it down.", "Mẹo: phá cả hai [[khoang tên lửa]] là mất loạt phóng; phá [[động cơ]] thì nó chậm lại."),
+            ["radio.quaden.morrigan"] = ("Raven: \"Morrigan is up. I'll take this one myself.\"", "Raven: \"Morrigan đã cất cánh. Trận này ta tự bay.\""),
+            ["radio.quaden.morrigan.duel"] = ("Raven: \"Just you and me, Hawk. No escorts, no guns on the ground.\"", "Raven: \"Chỉ có ta và cậu, Hawk. Không hộ tống, không súng dưới đất.\""),
+            ["radio.quaden.morrigan.dark"] = ("Raven: \"Going dark. Find me if you can.\"", "Raven: \"Tắt tín hiệu. Tìm được ta thì tìm đi.\""),
+            ["bigattack.morrigan_salvo"] = ("Raven's Salvo", "Loạt phóng của Raven"),
+            ["bigattack.morrigan_salvo.cancelled"] = ("Salvo cancelled", "Đã chặn loạt phóng"),
+            ["radio.bigattack.morrigan_salvo"] = ("Raven: \"Every one of you, on my screen. Fox three.\"", "Raven: \"Tất cả các người đều trên màn hình của ta. Phóng.\""),
+            ["guide.bigattack.morrigan_salvo.how"] = ("Air-to-air missiles from both bays at up to six of your aircraft, and two guided bombs on your strongest anti-air. They home in: there is no circle to leave.", "Tên lửa không đối không từ hai khoang nhắm tới sáu máy bay của bạn, cùng hai quả bom dẫn đường vào xe phòng không mạnh nhất. Chúng tự dẫn: không có vùng tròn nào để tránh."),
+            ["guide.bigattack.morrigan_salvo.dodge"] = ("Keep anti-air and point defence near your aircraft to shoot the rounds down.", "Giữ phòng không và hệ thống đánh chặn gần máy bay để bắn hạ các quả đạn."),
+            ["guide.bigattack.morrigan_salvo.stop"] = ("Break both missile bays during the warning, or hurt it hard while it fires: it breaks off.", "Phá cả hai khoang tên lửa lúc cảnh báo, hoặc gây sát thương nặng lúc nó khai hỏa: nó sẽ bỏ dở."),
+            ["bigattack.morrigan_duel_salvo"] = ("Duel Salvo", "Loạt phóng tay đôi"),
+            ["bigattack.morrigan_duel_salvo.cancelled"] = ("Salvo cancelled", "Đã chặn loạt phóng"),
+            ["radio.bigattack.morrigan_duel_salvo"] = ("Raven: \"Six on your wing, Hawk. Break.\"", "Raven: \"Sáu quả sau cánh cậu đấy, Hawk. Né đi.\""),
+            ["guide.bigattack.morrigan_duel_salvo.how"] = ("In the duel: air-to-air missiles from both bays at up to six of your aircraft. They home in.", "Trong trận tay đôi: tên lửa không đối không từ hai khoang nhắm tới sáu máy bay của bạn. Chúng tự dẫn."),
+            ["guide.bigattack.morrigan_duel_salvo.dodge"] = ("Spread your aircraft; flares and a wingman soak some of them.", "Dàn máy bay ra; mồi bẫy nhiệt và máy bay yểm trợ gánh bớt một phần."),
+            ["guide.bigattack.morrigan_duel_salvo.stop"] = ("Break both missile bays during the warning.", "Phá cả hai khoang tên lửa lúc cảnh báo."),
+            ["guide.bigattack.target.air"] = ("your aircraft and anti-air", "máy bay và xe phòng không của bạn"),
+            ["guide.bigattack.target.aironly"] = ("your aircraft", "máy bay của bạn"),
+
+            // Mara's Behemoth: a scripted ally of chapter 12's last battle (never a card).
+            ["unit.mara_behemoth"] = ("{@mai}'s Behemoth · Allied Behemoth", "Behemoth của {@mai} · Behemoth đồng minh"),
+            ["short.mara_behemoth"] = ("{@mai}'s Behemoth", "Behemoth của {@mai}"),
+            ["note.mara_behemoth"] = ("A Behemoth rebuilt by {@mai} in our colours, fighting beside us in the last battle.", "Một chiếc Behemoth được {@mai} dựng lại mang màu cờ của ta, chiến đấu bên ta trong trận cuối."),
         };
     }
 }

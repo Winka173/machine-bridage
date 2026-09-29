@@ -316,6 +316,8 @@ namespace MachineBrigade.Game.Match
         /// <summary>Unlocks a card; returns false if it already was.</summary>
         public static bool Unlock(string cardId)
         {
+            // Prompt 22 E: a story unit (Mara's Behemoth) is never a card to unlock.
+            if (GameContent.LoadCatalog().Vehicles.TryGetValue(cardId, out var story) && story.StoryOnly) return false;
             if (IsUnlocked(cardId)) return false;
             D.unlocked.Add(cardId);
             Save();

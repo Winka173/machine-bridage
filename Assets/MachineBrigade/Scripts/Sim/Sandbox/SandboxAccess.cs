@@ -44,6 +44,8 @@ namespace MachineBrigade.Sim.Sandbox
         public bool Allowed(Catalog catalog, VehicleDef def)
         {
             if (Internal) return true;
+            // Prompt 22 E: a story unit (Mara's Behemoth) is only ever a mission's.
+            if (def.StoryOnly) return false;
             if (def.Boss) return BossOn(def.Id) && Beaten(def.Id);
             if (def.BranchOf != null) return Unlocked(def.BranchOf) && Unlocked(def.Id);
             if (def.Elite) return def.EliteOf != null && Unlocked(def.EliteOf);

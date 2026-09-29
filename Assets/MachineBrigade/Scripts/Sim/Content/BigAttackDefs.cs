@@ -41,6 +41,21 @@ namespace MachineBrigade.Sim.Content
         Hq,
         Base,
         Self,
+
+        /// <summary>Prompt 22 E (Morrigan): the other side's aircraft and anti-air within reach (else its biggest group on the ground).</summary>
+        Prey,
+    }
+
+    /// <summary>Prompt 22 E: what a homing strike (a swarm) picks for its targets instead of the ground group round its aim.</summary>
+    public enum BigPrey
+    {
+        None,
+
+        /// <summary>The other side's aircraft (air-to-air missiles), the dearest first.</summary>
+        Air,
+
+        /// <summary>The other side's anti-air: vehicles and towers whose main weapon hits aircraft (guided bombs), the strongest first.</summary>
+        AntiAir,
     }
 
     /// <summary>How a strip or a line lies: along the boss's heading (a train's rails, an airship's course), from the boss towards the aim, or across that.</summary>
@@ -132,6 +147,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A swarm's or a volley's distinct targets at most.</summary>
         public int Targets { get; internal set; } = 4;
+
+        /// <summary>Prompt 22 E: a swarm's targets are these within the attack's reach (none: the ground units round its aim).</summary>
+        public BigPrey Prey { get; internal set; }
 
         /// <summary>The weapon whose look it takes (its round, its flash); null: the part's own first mount.</summary>
         public string? Weapon { get; internal set; }
@@ -427,6 +445,7 @@ namespace MachineBrigade.Sim.Content
                 Speed = MathF.Max(1f, s.Float("speed", 26f)),
                 Flight = MathF.Max(0.5f, s.Float("flight", 8f)),
                 Targets = Math.Max(1, s.Int("targets", 4)),
+                Prey = s.Enum("prey", BigPrey.None),
                 Weapon = s.Has("weapon") ? s.String("weapon") : null,
                 Pass = s.Has("pass") ? s.String("pass") : null,
                 Stun = MathF.Max(0f, s.Float("stun", 0f)),
@@ -457,6 +476,7 @@ namespace MachineBrigade.Sim.Content
             if (strike.Shape == BigShape.Charge && (strike.Length <= 0f || strike.Duration <= 0f)) throw new FormatException($"{s.Path}: a charge needs a length and a duration.");
             if (strike.Shape == BigShape.Arc && strike.Width <= 0f) throw new FormatException($"{s.Path}: an arc needs its width in degrees.");
             if (strike.Seats > 0 && strike.Units.Count == 0) throw new FormatException($"{s.Path}: seats need units.");
+            if (strike.Prey != BigPrey.None && strike.Shape != BigShape.Swarm) throw new FormatException($"{s.Path}: only a swarm picks its prey.");
             return strike;
         }
     }

@@ -3936,6 +3936,265 @@ DENSIFY_P20 = {
 }
 
 
+# ------------------------------------------------------------------------ prompt 22 E: two new battlefields
+# Foundry and Veyra Old Quarter (DECISIONS 22E): both on the battlefield itself (world_layout), point-symmetric
+# through the centre like every square map, their names only in the game's tables (NameText, Strings).
+P22_LANES = (-112.0, -48.0, -16.0, 16.0, 48.0, 112.0)   # the Foundry's lanes, each way
+P22_LANE = 10.0                                        # a lane's width: 8.6 m of drivable floor between the buildings
+FOUNDRY_HALL = (-40.0, -32.0, 40.0, 32.0)              # the casting hall's walls (centrelines)
+FOUNDRY_SHOP = (-105.5, 54.5, -54.5, 105.5)              # the press shop's walls; the rolling mill is its image
+
+
+def p22_walls(L, x0, z0, x1, z1, doors=(), kind='wall', skip_roads=True):
+    """Walls round a rectangle (centrelines x0..x1, z0..z1), segment by segment. A segment is left out where
+    a lane runs through the wall (skip_roads: the lanes are the hall's doorways) or where it overlaps a door:
+    ('n'|'s'|'w'|'e', centre along the wall, opening in metres). Returns segments placed."""
+    w = PROPS[kind]['width']
+    placed = 0
+    for side, line, a, b, axis in (('s', z0, x0, x1, 'x'), ('n', z1, x0, x1, 'x'), ('w', x0, z0, z1, 'z'), ('e', x1, z0, z1, 'z')):
+        n = int((b - a + 1e-6) // w)
+        u = a + (b - a - n * w) / 2      # the odd metres split between the two corners (sealed by the clearance)
+        for _ in range(n):
+            c = u + w / 2
+            u += w
+            if any(s == side and abs(c - m) < (o + w) / 2 for s, m, o in doors):
+                continue
+            x, z, rot = (c, line, 0) if axis == 'x' else (line, c, 90)
+            ww, dd = Layout.size(kind, rot)
+            rect = (x - ww / 2, z - dd / 2, x + ww / 2, z + dd / 2)
+            if skip_roads and L.near_road(*rect, 1.0):
+                continue
+            L.force(kind, x, z, rot)
+            placed += 1
+    return placed
+
+
+def p22_minus(rect, holes, margin=1.5, least=8.0):
+    """What is left of a rectangle once `holes` (grown by `margin`) are cut out: rectangles at least `least` m
+    each way (a block partly inside a hall is built only outside it)."""
+    pieces = [rect]
+    for hx0, hz0, hx1, hz1 in holes:
+        hx0, hz0, hx1, hz1 = hx0 - margin, hz0 - margin, hx1 + margin, hz1 + margin
+        out = []
+        for x0, z0, x1, z1 in pieces:
+            if hx1 <= x0 or hx0 >= x1 or hz1 <= z0 or hz0 >= z1:
+                out.append((x0, z0, x1, z1))
+                continue
+            out += [(x0, z0, hx0, z1), (hx1, z0, x1, z1), (max(x0, hx0), z0, min(x1, hx1), hz0), (max(x0, hx0), hz1, min(x1, hx1), z1)]
+        pieces = [p for p in out if p[2] - p[0] >= least and p[3] - p[1] >= least]
+    return pieces
+
+
+def p22_blocks(lanes, half=HALF - 4.0, lane=P22_LANE):
+    """The blocks between a lane grid's lanes (and the edge), inside the lanes' edges."""
+    edges = [-half] + [v for c in lanes for v in (c - lane / 2, c + lane / 2)] + [half]
+    spans = [(edges[i], edges[i + 1]) for i in range(0, len(edges), 2)]
+    return [(x0, z0, x1, z1) for x0, x1 in spans for z0, z1 in spans]
+
+
+def foundry(seed=233, siege=False):
+    """Foundry (urban, prompt 22 E.1): Hegemon's old tank works, a walled complex of workshops and sheds
+    under one roofline, cut by 10 m factory lanes into solid blocks: every way across is a narrow passage
+    between walls. The casting hall at the centre (the town objective): its walls opened only where the
+    lanes run in, two furnaces, the ladles, a conveyor and a gantry over the casting floor. The press shop
+    in the north-west block (the west objective) and the rolling mill in the south-east one (the east
+    objective, its image): walled yards with one doorway a side, a gantry crane, presses and coil stacks.
+    Each camp has an open loading yard round it (the works' goods yard); the blocks are factories,
+    warehouses, sheds, container stacks, tanks and silos, pipe runs over the yards. The same ground on
+    either half, mirrored. The Siege version (siege=True) leaves the fortress's ground open: no hall walls,
+    nothing built in the blocks beyond the first lanes in the north-east (the fortress builds its own)."""
+    west, east = (-80.0, 80.0), (80.0, -80.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=((-15.0, -15.0, 15.0, 15.0),))
+    p22_lanes(L, P22_LANES)
+
+    # The casting hall's walls, open where the four lanes run in; the press shop's and the rolling
+    # mill's, one doorway a side (not on a lane: the lanes pass round the yards).
+    if not siege:
+        p22_walls(L, *FOUNDRY_HALL)
+    # The doorways sit off the middle of each wall (the yard's machines stand clear of them).
+    shop_doors = (('n', -66.0, 12.0), ('s', -94.0, 12.0), ('w', 94.0, 12.0), ('e', 66.0, 12.0))
+    image = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
+    mill_doors = tuple((image[s], -m, o) for s, m, o in shop_doors)
+    x0, z0, x1, z1 = FOUNDRY_SHOP
+    p22_walls(L, x0, z0, x1, z1, shop_doors, skip_roads=False)
+    p22_walls(L, -x1, -z1, -x0, -z0, mill_doors, skip_roads=False)
+    mill = (-x1, -z1, -x0, -z0)
+
+    # Inside the casting hall: the two furnaces (tall stacks) and their ladles, a conveyor run (a pipe
+    # line) and the gantry over the far floor; the objective's ring stays clear.
+    # (The lanes cross the hall: the machines stand in the floor between them.)
+    for x, z in ((-30.0, 0.0), (-30.0, 26.5)):
+        mirrored(L, 'refinery_tower', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for x, z in ((-36.0, 6.0), (-36.0, -6.0), (-24.0, 26.5)):
+        mirrored(L, 'silo', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for x, z in ((-5.0, 27.0), (5.0, 27.0)):
+        mirrored(L, 'container_stack', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for sign in (1, -1):
+        L.scatter('ammo_crate', sign * -30.0, sign * 12.0, 1, 4, 3, pad=0.2)
+
+    # The press shop (and its image, the rolling mill): the gantry crane across the yard, the presses
+    # (storage tanks) and coil stacks along the walls, crates by the doors; the objective's ring clear.
+    px, pz = west
+    mirrored(L, 'gantry_crane', px - 6.0, pz + 18.0, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for dx, dz in ((-18.0, -10.0), (18.0, 10.0)):
+        mirrored(L, 'storage_tank', px + dx, pz + dz, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for sign in (1, -1):
+        L.scatter('ammo_crate', sign * (px + 16.0), sign * (pz - 16.0), 1, 5, 4, pad=0.2)
+        L.scatter('barrel', sign * (px - 16.0), sign * (pz - 18.0), 1, 4, 3, pad=0.2)
+
+    # The blocks: factories and warehouses in solid rows, sheds and stacks where a big one does not fit,
+    # tanks and silos in the tank farm blocks by the loading yards. Nothing in the halls.
+    works = ('factory', 'warehouse', 'garage', 'container_stack')
+    farms = ('storage_tank', 'silo', 'container_stack', 'garage')
+    for b in p22_blocks(P22_LANES):
+        cx, cz = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        if cx < 0 or (cx == 0 and cz < 0):
+            continue     # the south-west half is the image of this one
+        kinds = farms if abs(cx) > 100 or abs(cz) > 100 else works
+        p22_fill(L, b, (FOUNDRY_HALL, FOUNDRY_SHOP, mill), kinds, siege)
+
+    # Pipe runs along the loading yards' edges and wrecked trucks in the lanes by the camps.
+    for x, z, rot in ((96.0, 74.0, 0), (74.0, 96.0, 90), (122.0, 70.0, 90)):
+        mirrored(L, 'truck', x, z, rot, radius=3.0, pad=0.5, road_gap=None)
+    for x, z in ((70.0, 120.0), (120.0, 40.0)):
+        since = len(L.props)
+        lines_of(L, 'pipeline', x, z, x + 16.0, z, 0.5, pad=0.2, road_gap=0.8)
+        mirror_new(L, since, pad=0.2, road_gap=0.8)
+    return finish(L)
+
+
+VEYRA_STREETS = (-108.0, -60.0, -18.0, 18.0, 60.0, 108.0)   # the old quarter's streets, each way (with their jogs)
+VEYRA_SQUARES = ((-94.0, 66.0, -66.0, 94.0), (-22.0, -18.0, 22.0, 18.0), (66.0, -94.0, 94.0, -66.0))
+VEYRA_PIAZZAS = ((34.0, 30.0, 46.0, 44.0), (-46.0, -44.0, -34.0, -30.0), (26.0, -122.0, 40.0, -110.0), (-40.0, 110.0, -26.0, 122.0))
+
+
+def p22_lanes(L, lanes, width=P22_LANE):
+    """A grid of straight lanes across the battlefield; the outer ones stop short of the camps' yards (the
+    camp's HQ stands behind its rally, where they would cross)."""
+    edge = HALF - 4.0
+    for c in lanes:
+        a, b = (-edge, 90.0) if c > 100 else (-90.0, edge) if c < -100 else (-edge, edge)
+        L.road(width, c, a, c, b)
+        L.road(width, a, c, b, c)
+
+
+def p22_fill(L, block, holes, kinds, siege, margin=1.5):
+    """Builds a block of the north-east half (what the halls or squares leave of it) and its image; in a
+    Siege version a block in the fortress's ground (beyond the first lanes in the north-east) stays open and
+    only its image is built."""
+    fortress = siege and block[0] >= 20.0 and block[1] >= 20.0
+    for piece in p22_minus(block, holes, margin=margin):
+        if fortress:
+            x0, z0, x1, z1 = piece
+            image = (-x1, -z1, -x0, -z0)
+            if not any(image[0] < h[2] and image[2] > h[0] and image[1] < h[3] and image[3] > h[1] for h in holes):
+                city_block(L, *image, kinds, gap=1.0, pad=0.3, road_gap=0.8)
+            continue
+        since = len(L.props)
+        city_block(L, *piece, kinds, gap=1.0, pad=0.3, road_gap=0.8)
+        mirror_new(L, since, pad=0.3, road_gap=0.8)
+
+
+def veyra_street(c, vertical, jog=3.0, step=36.0):
+    """One old-town street: straight on the grid line `c` with a jog of `jog` m every `step` m (the old
+    plots it bends round), laid for c >= 0 and mirrored through the centre for c < 0. Flat x, z points."""
+    edge = HALF - 4.0
+    sign = 1.0 if c >= 0 else -1.0
+    base = abs(c)
+    # The outer streets stop short of the camps' yards (see p22_lanes).
+    end = 86.0 if base > 100 else edge
+    pts = []
+    t = -edge
+    k = 0
+    while t < end:
+        off = (jog if (k % 2) else -jog) * (1.0 if base > 30 else 0.0)
+        pts.append((base + off, t) if vertical else (t, base + off))
+        t = min(end, t + step)
+        k += 1
+    pts.append((base, end) if vertical else (end, base))
+    if sign < 0:
+        pts = [(-x, -z) for x, z in pts]
+    return [v for p in pts for v in p]
+
+
+def veyra_old_quarter(seed=241, siege=False):
+    """Veyra Old Quarter (urban, prompt 22 E.2): the capital's old town, narrow streets between tall old
+    houses that bend round the old plots, opening on squares. The cathedral square at the centre (the town
+    objective): the cathedral on its north side, the old town hall facing it, market stalls and lamps. The
+    market square in the north-west (the west objective) and the clock square in the south-east (the east
+    objective, its image): stalls, trees, a well of cobbles. Four small piazzas along the way; a ring of
+    old wall pieces and gatehouses on the edge; barricades and burnt cars where the streets meet. The same
+    ground on either half, mirrored. The Siege version (siege=True) leaves the fortress's ground open (see
+    p22_fill)."""
+    west, east = (-80.0, 80.0), (80.0, -80.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=VEYRA_SQUARES + VEYRA_PIAZZAS)
+    for c in VEYRA_STREETS:
+        L.road(P22_LANE, *veyra_street(c, True))
+        L.road(P22_LANE, *veyra_street(c, False))
+    # Each camp's way into the town: a wider street from the camp's plaza.
+    for sign in (1, -1):
+        L.road(12, sign * CAMP_1[0], sign * CAMP_1[1], sign * 108.0, sign * 60.0)
+        L.road(12, sign * CAMP_1[0], sign * CAMP_1[1], sign * 60.0, sign * 108.0)
+
+    # The cathedral on the square's north side; the old town hall (offices round a tower) faces it.
+    L.add('church', 0.0, 30.0, 90, pad=0.3, road_gap=0.5, must=True)
+    L.add('office_block', 0.0, -30.0, 0, pad=0.3, road_gap=0.5, must=True)
+    # Market stalls, lamps and planted trees round every square, clear of the objective rings.
+    for x0, z0, x1, z1 in VEYRA_SQUARES:
+        for u in (0.18, 0.5, 0.82):
+            for x, z in ((x0 + (x1 - x0) * u, z0 + 1.2), (x0 + (x1 - x0) * u, z1 - 1.2)):
+                L.force('lamp_post', x, z)
+    for sx, sz in ((-80.0, 80.0), (80.0, -80.0)):
+        for dx, dz, rot in ((-11.0, -8.0, 0), (11.0, -8.0, 0), (-11.0, 8.0, 0), (11.0, 8.0, 0)):
+            L.force('market_stall', sx + dx, sz + dz, rot)
+    for x0, z0, x1, z1 in VEYRA_PIAZZAS:
+        cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+        L.force('tree', cx - 3.0, cz)
+        L.force('tree', cx + 3.0, cz)
+
+    # The houses: tall townhouses, stone houses of offices, shops on the ground floor, cottages and sheds where
+    # the plot is tight; a block is built only where the streets and squares leave room.
+    kinds = ('townhouse', 'cottage', 'office_block', 'shop', 'garage')
+    for b in p22_blocks(VEYRA_STREETS):
+        cx, cz = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        if cx < 0 or (cx == 0 and cz < 0):
+            continue
+        p22_fill(L, b, VEYRA_SQUARES + VEYRA_PIAZZAS, kinds, siege, margin=1.0)
+
+    # The old town wall's broken pieces on the edge, and a gatehouse (a ruined tower) by each camp road.
+    for sign in (1, -1):
+        for x in (-120.0, -80.0, -40.0, 0.0, 40.0):
+            L.add('stone_wall', sign * x, sign * -141.0, 0, pad=0.3, road_gap=0.8)
+            L.add('stone_wall', sign * 141.0, sign * -x, 90, pad=0.3, road_gap=0.8)
+        L.add('ruin_tower', sign * 120.0, sign * 72.0, 0, pad=0.4, road_gap=0.8)
+    # Cars parked along the side streets (nothing solid in a street: they are the only ways through).
+    for x, z, rot in ((104.0, 30.0, 90), (30.0, 104.0, 0), (56.0, -30.0, 90), (-30.0, 56.0, 0), (18.0, 84.0, 90)):
+        mirrored(L, 'car', x, z, rot, radius=2.0, pad=0.3, road_gap=None)
+    return finish(L)
+
+
+MAPS_P22 = [
+    ('foundry', foundry, 'urban', ('press_shop', 'casting_hall', 'rolling_mill'),
+     'Foundry for Conquest: an old Hegemon tank works, walled halls and solid blocks of sheds cut by narrow factory lanes.',
+     'Foundry for Survival: the same works, holding out against waves from the north-east.'),
+    ('veyra_old_quarter', veyra_old_quarter, 'urban', ('market_square', 'cathedral_square', 'clock_square'),
+     "Veyra Old Quarter for Conquest: the capital's old town, narrow bending streets between tall houses, three squares.",
+     'Veyra Old Quarter for Survival: the same old town, holding out against waves from the north-east.'),
+]
+WAR_P22 = {
+    # Indoor works and a packed old town: no pylons, poles or trench lines through the blocks.
+    'foundry': dict(pylons=False, poles=False, ditch=False),
+    'veyra_old_quarter': dict(pylons=False, poles=False, ditch=False),
+}
+DENSIFY_P22 = {
+    # Every block is built by hand: no hamlets or tree clumps (the fill only reaches the outer edge).
+    'foundry': dict(clumps=0, outcrops=0, hamlets=0, where=lambda x, z: max(abs(x), abs(z)) > HALF - 12.0),
+    'veyra_old_quarter': dict(clumps=2, outcrops=0, hamlets=0, where=lambda x, z: max(abs(x), abs(z)) > HALF - 12.0),
+}
+
+
 # ---------------------------------------------------------------------------------- siege
 # The enemy fortress fills the north-east quadrant round (42, 42): a 56 m ring of wall with a
 # gate in the west and south walls (the sides facing the player), guard towers in the corners,
@@ -4876,6 +5135,10 @@ MAP_DENSIFY.update(DENSIFY_P16)
 MAPS += MAPS_P20
 MAP_WAR.update(WAR_P20)
 MAP_DENSIFY.update(DENSIFY_P20)
+# Prompt 22 E: Foundry and Veyra Old Quarter.
+MAPS += MAPS_P22
+MAP_WAR.update(WAR_P22)
+MAP_DENSIFY.update(DENSIFY_P22)
 
 def plan_bases(map_id, layout, siege):
     """The bases (see hardpoints.py): both camps and the outposts on the Conquest battlefield (which
@@ -4944,6 +5207,9 @@ def plan_bases(map_id, layout, siege):
 # version keeps the classic walled square in the north-east corner (fortify_corner).
 # Lighthouse Bay (prompt 16): the sea fills the south-east, where the big fortress would stand in the water.
 CLASSIC_SIEGE = {'swamp', 'coralisles'}
+# Battlefields whose builder lays a Siege version of its own (siege=True): Lighthouse Bay (its coast), the two
+# dense maps of prompt 22 E (the fortress's ground left open).
+SIEGE_OWN = {'lighthousebay', 'foundry', 'veyra_old_quarter'}
 
 
 def sea_meta(map_id):
@@ -4969,7 +5235,7 @@ def main(only=()):
         # finished siege battlefield, inside that outline: see fortress.py.)
         classic = map_id in CLASSIC_SIEGE
         # Lighthouse Bay's Siege version leaves the fortress's corner of the coast bare.
-        siege_build = functools.partial(build, siege=True) if map_id == 'lighthousebay' else build
+        siege_build = functools.partial(build, siege=True) if map_id in SIEGE_OWN else build
         siege = densify(warzone(scale_layout(siege_build()), map_id, theme, poly), map_id, theme, poly)
         # The classic fortress is built before the outline is applied, as it always was.
         if classic:

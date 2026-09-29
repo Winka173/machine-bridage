@@ -272,6 +272,8 @@ namespace MachineBrigade.Sim.Content
             // Prompt 19: altitude tiers, drop pods, weapon ceilings, a Boss Rush arena.
             ParseP19(v, def);
             ParseP20(v, def);
+            // Prompt 22 E: a duel mode, a story-only unit.
+            ParseP22(v, def);
             // The tower-branch rework (DECISIONS 19T): tower shields, the loot depot, the radar's air picture, the branch art.
             ParseBranchRework(v, def);
         }
@@ -390,6 +392,8 @@ namespace MachineBrigade.Sim.Content
             ParseBigAttacks(root);
             // Prompt 19: the tiered bosses' pods and crash.
             CheckTiers();
+            // Prompt 22 E: the duels' big attacks.
+            FinishP22();
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>

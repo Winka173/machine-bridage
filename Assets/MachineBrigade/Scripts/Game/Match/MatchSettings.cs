@@ -224,6 +224,12 @@ namespace MachineBrigade.Game.Match
             // A snowbound spaceport: snow and night launches under the floodlights.
             new("orbitalgate", "snow", "globe",
                 new[] { WeatherKind.Snow, WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Night }),
+            // Prompt 22 E: Hegemon's old tank works (indoor lanes: rain on the roofs, smoke and night shifts) and the
+            // capital's old town.
+            new("foundry", "urban", "gear",
+                new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night, WeatherKind.Night }),
+            new("veyra_old_quarter", "urban", "tower",
+                new[] { WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm }),
         };
 
         public static string Map { get; set; } = "ashfield";

@@ -1356,7 +1356,37 @@
     { "id": "locust", "variantOf": "drone_mothership", "general": "sen", "bigAttack": "locust_swarm", "radioSpawn": "radio.sen.locust", "hp": 5200, "armour": 1, "speed": 5.2, "variant": {"size": 0.6, "keep": ["drone_bay", "flak_top"], "tint": [1.04, 0.92, 0.72], "mark": "locust", "tune": {"drone_bay": {"hp": 0.15}, "flak_top": {"hp": 0.15}}}},
     { "id": "behemoth_mk2", "variantOf": "behemoth", "general": "varga", "bigAttack": "behemoth_mk2_barrage", "radioSpawn": "radio.varga.behemoth_mk2", "armour": [4, 3, 2, 2], "variant": {"size": 0.72, "keep": ["main_gun", "flak_r", "flak_l", "aps"], "tint": [0.82, 0.93, 1.1], "mark": "mk2", "name": "mk2", "tune": {"main_gun": {"hp": 0.13}, "flak_r": {"hp": 0.09}, "flak_l": {"hp": 0.09}, "aps": {"hp": 0.08}}}},
     { "id": "icarus_mk0", "variantOf": "silver_bug", "general": "aurel", "bigAttack": "icarus_mk0_rods", "radioSpawn": "radio.aurel.icarus_mk0", "secondary": [], "aps": null, "arena": null, "tiers": {"opening": 0, "crash": null, "hijack": null, "marks": [0.5], "schedule": [{"steps": [{"tier": "high", "seconds": 18}, {"tier": "low", "seconds": 12}]}, {"steps": [{"tier": "high", "seconds": 12}, {"tier": "low", "seconds": 18}]}], "radio": {"phase2": "radio.aurel.icarus_mk0.phase2"}}, "pods": {"count": 1, "max": 4, "every": 18}, "variant": {"size": 0.65, "keep": ["main_laser", "pod_bay", "uplink"], "tint": [0.86, 0.86, 0.96], "mark": "mk0", "name": "mk0", "tune": {"main_laser": {"hp": 0.12}, "pod_bay": {"hp": 0.12}, "uplink": {"hp": 0.12}}}},
-    { "id": "argus", "variantOf": "command_airship", "general": "quaden", "bigAttack": "argus_fire_call", "radioSpawn": "radio.quaden.argus", "hp": 7200, "partLock": null, "spotAura": 0.5, "skills": [], "variant": {"size": 0.5, "keep": ["radar", "engine_fl", "engine_fr"], "tint": [0.92, 0.9, 0.8], "mark": "argus", "tune": {"radar": {"hp": 0.14, "stops": ["spotaura"], "radio": "radio.part.radar", "breakDamage": 0.3}, "engine_fl": {"hp": 0.1, "breakDamage": 0.3}, "engine_fr": {"hp": 0.1, "breakDamage": 0.3}}}}
+    { "id": "argus", "variantOf": "command_airship", "general": "quaden", "bigAttack": "argus_fire_call", "radioSpawn": "radio.quaden.argus", "hp": 7200, "partLock": null, "spotAura": 0.5, "skills": [], "variant": {"size": 0.5, "keep": ["radar", "engine_fl", "engine_fr"], "tint": [0.92, 0.9, 0.8], "mark": "argus", "tune": {"radar": {"hp": 0.14, "stops": ["spotaura"], "radio": "radio.part.radar", "breakDamage": 0.3}, "engine_fl": {"hp": 0.1, "breakDamage": 0.3}, "engine_fr": {"hp": 0.1, "breakDamage": 0.3}}}},
+    // ----------------------------------------------------------------------------------------------------
+    // Prompt 22 E (DECISIONS 22E). Behemoth Mk.0: Varga's prototype Behemoth, a variant made from the Behemoth's data
+    // alone (no model of its own): its main gun, the two 120 mm flank guns and the rocket pod; no flak, no missiles,
+    // no protection system (a prototype's gaps: aircraft and missiles). It comes after Mk.II in this list so the
+    // Behemoth's mini version (the Sandbox's switch) stays Mk.II.
+    { "id": "behemoth_mk0", "variantOf": "behemoth", "general": "varga", "bigAttack": "behemoth_mk0_barrage", "radioSpawn": "radio.varga.behemoth_mk0", "armour": [3, 3, 2, 1], "speed": 2.2, "aps": null, "skills": ["boss_bulwark"], "variant": {"size": 0.7, "keep": ["main_gun", "side_gun_l", "side_gun_r", "rocket_pod"], "tint": [0.94, 0.82, 0.66], "mark": "mk0", "name": "mk0", "tune": {"main_gun": {"hp": 0.14}, "side_gun_l": {"hp": 0.12}, "side_gun_r": {"hp": 0.12}, "rocket_pod": {"hp": 0.12}}}},
+    // Morrigan: Wolff's own stealth fighter (a new model, mb_p22_content.py), a mini boss on the aircraft frame. Fast and
+    // stealthy under the aircraft rules (seen only close up unless it has just fired), air-to-air missiles in two
+    // bays (its parts), a guided bomb in the centre bay, a cannon; it hunts aircraft first and anti-air when the sky
+    // is clear. Its big attack: a salvo at the player's aircraft and anti-air. In a duel mission it flies its duel
+    // mode ("duel": no escorts, the duel's salvo, and it goes dark at 70 % and 40 % and every 45 s).
+    { "id": "morrigan", "frame": "aircraft", "rank": "mini", "general": "quaden", "boss": true, "model": "morrigan", "bigAttack": "morrigan_salvo", "radioSpawn": "radio.quaden.morrigan", "scale": 0.62, "armour": 1, "hp": 7400, "speed": 44, "turnRate": 118, "turretTurnRate": 360, "radius": 5.2, "vision": 80,
+      "ceiling": "high", "weapon": "air_to_air", "mainSlot": "missile", "fixedWing": true, "altitude": 40, "attackHold": 4.0, "interceptor": true, "stealth": true, "sead": true, "skills": ["boss_flares"],
+      "secondary": [ { "weapon": "air_to_air", "slot": "missile", "aim": "Free" }, { "weapon": "guided_bomb", "slot": "bomb", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
+      "parts": [
+        { "id": "bay_l", "kind": "missiles", "hp": 0.13, "armour": 1, "node": "Part_bay_l", "wreck": "wreck_launcher", "at": [-0.28, 0.81, -0.37], "radius": 1.2, "mounts": [0] },
+        { "id": "bay_r", "kind": "missiles", "hp": 0.13, "armour": 1, "node": "Part_bay_r", "wreck": "wreck_launcher", "at": [0.28, 0.81, -0.37], "radius": 1.2, "mounts": [1] },
+        { "id": "bomb_bay", "kind": "bombbay", "hp": 0.13, "armour": 1, "node": "Part_bomb_bay", "wreck": "wreck_stump", "at": [0, -1.55, -0.35], "radius": 1.1, "mounts": [2] },
+        { "id": "engines", "kind": "engine", "hp": 0.13, "armour": 1, "node": "Part_engines", "wreck": "wreck_engine", "at": [0, -4.9, 0.19], "radius": 1.6, "speed": 0.7, "turn": 0.8, "radio": "radio.part.engines" } ],
+      "duel": { "bigAttack": "morrigan_duel_salvo", "escorts": false, "vanishAt": [0.7, 0.4], "vanishEvery": 45, "vanishSeconds": 6 },
+      "deathExplosion": { "damage": 120, "radius": 9, "delay": 0.8, "tier": "Huge" } },
+    // Mara's Behemoth: the Accord's rebuilt Behemoth, a scripted ally for chapter 12's last battle only (a mission's
+    // "ally" places it; its allied AI drives it). The Behemoth's model in the Accord's colours; never a card, never
+    // bought, never unlocked, never in a deck or the Sandbox's palette ("storyOnly").
+    { "id": "mara_behemoth", "storyOnly": true, "card": false, "class": "Heavy", "model": "behemoth", "tint": [0.74, 0.86, 1.0], "mark": "accord", "scale": 1.3, "armour": [4, 3, 3, 2], "hp": 6000, "speed": 2.6, "turnRate": 25, "turretTurnRate": 30, "radius": 6.9, "length": 12.59, "width": 6.5, "cp": 0, "vision": 55,
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 1,
+      "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
+                     { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
+      "aps": { "radius": 11, "charges": 2, "recharge": 4 },
+      "deathExplosion": { "damage": 300, "radius": 16, "delay": 2.6, "tier": "Ultimate" } }
   ],
 
   // Skills of elite units and bosses, used automatically when the trigger is met (see SkillDef).
@@ -1608,7 +1638,18 @@
     { "id": "locust_swarm", "from": "hive_swarm", "strikes": [{"parts": ["drone_bay"], "perPart": 10}]},
     { "id": "behemoth_mk2_barrage", "from": "behemoth_barrage", "strikes": [{"count": 4}]},
     { "id": "icarus_mk0_rods", "from": "bug_rod_rain", "strikes": [{"count": 3}]},
-    { "id": "argus_fire_call", "icon": "artillery", "warn": 4, "cooldown": 50, "aim": "group", "target": "packed", "strikes": [{"shape": "circle", "parts": ["radar"], "count": 10, "damage": 200, "type": "HighExplosive", "pen": 1, "radius": 5, "area": 14, "duration": 4, "weapon": "howitzer"}]}
+    { "id": "argus_fire_call", "icon": "artillery", "warn": 4, "cooldown": 50, "aim": "group", "target": "packed", "strikes": [{"shape": "circle", "parts": ["radar"], "count": 10, "damage": 200, "type": "HighExplosive", "pen": 1, "radius": 5, "area": 14, "duration": 4, "weapon": "howitzer"}]},
+    // Prompt 22 E: Behemoth Mk.0's barrage, four rounds (two pairs) of the Behemoth's six.
+    { "id": "behemoth_mk0_barrage", "from": "behemoth_barrage", "strikes": [{"count": 4}]},
+    // Morrigan's salvo: air-to-air missiles from both bays at up to six of the player's aircraft, and a guided bomb pair
+    // from the centre bay on the strongest anti-air; homing (no ring to leave): break the bays in the warning, shoot the
+    // rounds down, or hurt it 10 % while it fires (it breaks off). With no prey it falls on the biggest group.
+    { "id": "morrigan_salvo", "icon": "missile", "warn": 3.5, "cooldown": 50, "aim": "prey", "reach": 100, "target": "air", "exposed": 1.25, "abortDamage": 0.1, "empDelay": 2,
+      "strikes": [ { "shape": "swarm", "prey": "air", "parts": ["bay_l", "bay_r"], "perPart": 3, "targets": 6, "damage": 320, "type": "Fragmentation", "pen": 3, "radius": 2.5, "hp": 110, "speed": 30, "weapon": "air_to_air" },
+                   { "shape": "swarm", "prey": "antiAir", "parts": ["bomb_bay"], "count": 2, "targets": 2, "damage": 520, "type": "HighExplosive", "pen": 3, "top": true, "radius": 6, "hp": 160, "speed": 26, "weapon": "guided_bomb" } ] },
+    // The duel's salvo: the missiles only, at the player's aircraft (chapter 10's duel has nothing else).
+    { "id": "morrigan_duel_salvo", "icon": "missile", "warn": 3.5, "cooldown": 42, "aim": "prey", "reach": 110, "target": "aironly", "exposed": 1.25, "abortDamage": 0.1, "empDelay": 2,
+      "strikes": [ { "shape": "swarm", "prey": "air", "parts": ["bay_l", "bay_r"], "perPart": 3, "targets": 6, "damage": 300, "type": "Fragmentation", "pen": 3, "radius": 2.5, "hp": 110, "speed": 30, "weapon": "air_to_air" } ] }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a

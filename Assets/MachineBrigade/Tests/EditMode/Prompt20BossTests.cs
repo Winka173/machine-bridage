@@ -78,12 +78,12 @@ namespace MachineBrigade.Tests
                 ["drone_mothership"] = "sen", ["fortress_hive"] = "sen", ["locust"] = "sen", ["nuke_train"] = "hung", ["supreme_command"] = "hung",
                 ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung", ["command_airship"] = "quaden",
                 ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden", ["silver_bug"] = "aurel", ["daedalus"] = "aurel",
-                ["icarus_mk0"] = "aurel",
+                ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
-            Assert.AreEqual(31, bosses.Count, "12 main bosses and 19 mini bosses");
+            Assert.AreEqual(33, bosses.Count, "12 main bosses and 21 mini bosses (prompt 22 E's two)");
             Assert.AreEqual(12, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(19, bosses.Count(b => b.Rank == BossRank.Mini));
+            Assert.AreEqual(21, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");

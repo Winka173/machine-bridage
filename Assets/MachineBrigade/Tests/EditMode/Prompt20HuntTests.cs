@@ -83,6 +83,8 @@ namespace MachineBrigade.Tests
             Assert.That(story.Select(b => b.Chapter), Is.Ordered);
             var slots = Campaign.Chapters.SelectMany(c => c.Minis.Append(c.Main)).Where(id => id != null).Distinct()
                 .Where(id => !BossHunts.OnRails(GameContent.LoadCatalog().Vehicles[id])).ToList();
+            // Prompt 22 E: the new mini bosses no chapter lists yet come in at their interludes.
+            slots.AddRange(BossHunts.Unslotted.Select(u => u.id).Where(id => !slots.Contains(id)));
             CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains aside");
             Assert.AreEqual(12 - 1, story.Count(b => b.Main), "the twelve main bosses but Nemesis");
             // It opens once the last chapter on is done.
@@ -233,6 +235,8 @@ namespace MachineBrigade.Tests
             ["nuke_train"] = "hung", ["supreme_command"] = "hung", ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung",
             ["command_airship"] = "quaden", ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden",
             ["silver_bug"] = "aurel", ["daedalus"] = "aurel", ["icarus_mk0"] = "aurel",
+            // Prompt 22 E.
+            ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
         };
 
         [Test]

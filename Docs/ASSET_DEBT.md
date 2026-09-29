@@ -149,3 +149,14 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The siege tank's card picture and "in action" clip | The old M110-style pictures | The lead's graphics run (`CardRenders.RenderBatch`); the clip should show it sieging |
 | The siege tank sieging | Braces, spades, gun, column and mortar move (VehicleView.Deploy); no dust or sound | Dust as the braces and spades bite, a hydraulic whine, a heavier mortar report |
 | The C-RAM's stream at a round | Tracers and a muzzle flash each step at the round's estimated place | Tracers that meet the drawn round exactly (the view has no link from a sim round to its drawn rocket) |
+
+## Prompt 22 E (new maps and bosses, DECISIONS 22E)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Morrigan's model | A first pass from references (YF-23 planform and tails, Su-57 bays, feathered trailing edge; `mb_p22_content.py`, 1 312 triangles) | A detail pass to the 3d_astra bar: panel lines, the bay doors' saw-tooth edges, a raven emblem |
+| Card renders and "in action" clips: behemoth_mk0, morrigan (the salvo, the duel's dark spell) | None | The lead's graphics run (`CardRenders`) |
+| Mara's Behemoth's Accord mark, Behemoth Mk.0's primer look | A hull tint (`mark` "accord", "mk0" in the data) | A decal or emblem per `mark` |
+| Foundry's roofs and hall walls | Walls of the plain `wall` prop (low, fire passes over) round open floors | A factory-hall wall and a roof-truss prop (tall, blocks fire), glass skylights, furnaces with glow |
+| Veyra Old Quarter's old town | The kit's townhouses, cottages, offices and shops; a church as the cathedral | Old-town facades, a cathedral, a clock tower, cobbles, fountains and awnings |
+| Base map pictures of both maps (`BaseMapShots`) | None | A run with graphics |

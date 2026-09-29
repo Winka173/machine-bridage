@@ -313,6 +313,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Holds its fire (a fortress keep's gun under its shield dome: nothing gets in or out).</summary>
         public bool HoldFire { get; internal set; }
 
+        /// <summary>Prompt 22 E: a boss in its duel mode (BossSystem.Duel), and its dark spells (no fire, hidden by its stealth).</summary>
+        public bool InDuel { get; internal set; }
+
+        public bool DuelDark { get; internal set; }
+        internal int DuelMark;
+        internal double DuelNextDark, DuelDarkUntil;
+
         /// <summary>A barrage skill is running: the guns fire much faster.</summary>
         public bool Barraging { get; private set; }
 

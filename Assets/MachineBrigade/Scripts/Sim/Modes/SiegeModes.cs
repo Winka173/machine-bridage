@@ -1294,6 +1294,8 @@ namespace MachineBrigade.Sim.Modes
             new[] { "typhon" },
             new[] { "behemoth_mk2", "bastion_mk0", "fenrir", "ixion" },
             new[] { "locust", "argus", "icarus_mk0" },
+            // Prompt 22 E: the two new mini bosses.
+            new[] { "behemoth_mk0", "morrigan" },
             new[] { "scylla", "caspian" },
         };
 
