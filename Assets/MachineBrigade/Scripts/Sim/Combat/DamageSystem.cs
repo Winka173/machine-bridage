@@ -255,7 +255,14 @@ namespace MachineBrigade.Sim.Combat
         {
             var weapon = p.Weapon;
             var kind = weapon.Projectile;
-            if (p.TargetFlying) return false;
+            // Prompt 19 C.1: in the air only a tiered craft's own point defence guards it (its lasers take the SAMs and
+            // fighters' missiles flying at it); nothing else intercepts a round aimed at an aircraft.
+            var guarded = EntityId.None;
+            if (p.TargetFlying)
+            {
+                if (!_world.TryGetVehicle(p.Target, out var craft) || craft.Def.Tiers == null || craft.Aps == null) return false;
+                guarded = craft.Id;
+            }
             // Every system takes missiles, drones and direct-fire rockets; a point-defence laser
             // artillery rockets too, a C-RAM a share of the shells.
             // Prompt 15 C: never a beam (energy hits at once) nor a bullet.
@@ -270,6 +277,7 @@ namespace MachineBrigade.Sim.Combat
                 var aps = v.Aps;
                 // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
                 if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                if (guarded.IsValid && v.Id != guarded) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
@@ -556,9 +564,11 @@ namespace MachineBrigade.Sim.Combat
                 _world.TryGetVehicle(vehicle.LastAttacker, out var last)) killer = last;
             if (killer != null && killer.Team == vehicle.Team) killer = null;
             _world.Emit(SimEvent.VehicleLost(vehicle));
+            // Prompt 19 E.7: a tiered boss's last radio line.
+            if (vehicle.Def.Tiers?.RadioFor("down") is { } down) _world.Emit(SimEvent.RadioMessage(down, vehicle.Team));
             _world.Economy.OnVehicleDestroyed(vehicle, killer);
             if (vehicle.Def.DeathExplosion != null && !vehicle.Detonated) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
-            if (vehicle.Def.Flying) ScheduleCrash(vehicle, speed);
+            if (vehicle.Flying) ScheduleCrash(vehicle, speed);
             _world.Gear.OnDeath(vehicle, killer);
         }
 
@@ -571,7 +581,7 @@ namespace MachineBrigade.Sim.Combat
         private void ScheduleCrash(Vehicle vehicle, float speed)
         {
             var def = vehicle.Def;
-            var fall = MathF.Sqrt(2f * def.Altitude / (def.FixedWing ? 11f : 7f));
+            var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));
             var fade = def.FixedWing ? 0.35f : 0.5f;
             var glide = MathF.Min(fall, 1f / fade);
             var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);

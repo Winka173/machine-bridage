@@ -258,27 +258,38 @@ namespace MachineBrigade.Game.Hud
         /// The enemy tooltip (E5): the enemy's front armour, its name, then each vehicle of our deck with ✓ ~ ✕ by its
         /// main weapon against that front.
         /// </summary>
-        public static VisualElement EnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck)
+        public static VisualElement EnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck, AltitudeTier tier = AltitudeTier.None)
         {
             var tip = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-enemytip");
             var armour = CombatFacts.Armour(enemy);
             var head = Kit.Box("fc-row fc-enemytip__head");
             head.Add(ArmourIcon(armour.Front, armour.Kind, armour.Uniform ? -1 : 0));
             head.Add(Kit.Text(Strings.Short(enemy.Id), "fc-body fc-row-text"));
+            // Prompt 19 B.5: at altitude, ✓ its main weapon reaches the tier, ~ only another of its weapons, ✕ none.
+            if (tier != AltitudeTier.None)
+                head.Add(Kit.Text("· " + Strings.Get("tier." + tier.ToString().ToLowerInvariant()) + " · " + Strings.Get("hud.tier.reach"), "fc-small fc-row-text"));
             tip.Add(head);
             var grid = Kit.Box("fc-enemytip__grid");
+            var reached = 0;
             foreach (var mine in deck)
             {
-                var v = CombatFacts.Judge(mine, enemy);
+                var v = tier == AltitudeTier.None ? CombatFacts.Judge(mine, enemy) : TierRules.Verdict(mine, tier) switch
+                {
+                    2 => Verdict.Good,
+                    1 => Verdict.Poor,
+                    _ => Verdict.None,
+                };
+                if (v != Verdict.None) reached++;
                 var cell = Kit.Box("fc-row fc-enemytip__cell");
                 cell.Add(VerdictIcon(v));
                 var name = Strings.Short(mine.Id);
                 if (MatchSettings.ShowCombatNumbers) name += " " + CombatIcons.Times(CombatFacts.Against(mine, enemy));
                 cell.Add(Kit.Text(name, "fc-small fc-row-text"));
-                cell.tooltip = CombatIcons.VerdictName(v);
+                cell.tooltip = tier != AltitudeTier.None && v == Verdict.Poor ? Strings.Get("hud.tier.partial") : CombatIcons.VerdictName(v);
                 grid.Add(cell);
             }
             tip.Add(grid);
+            if (tier != AltitudeTier.None && reached == 0) tip.Add(Kit.Text(Strings.Get("hud.tier.none"), "fc-small"));
             return tip;
         }
     }

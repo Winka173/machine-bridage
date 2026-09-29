@@ -599,6 +599,30 @@ namespace MachineBrigade.Game.Hud
             _boss.Parts.SetCharging(charging ? big.Parts : null, Mathf.Repeat(Time.unscaledTime, 0.36f) < 0.18f);
         }
 
+        /// <summary>
+        /// Prompt 19 B.5: a tiered boss's altitude on its bar (its icon, the tier's name and the seconds to the next change;
+        /// none once it holds low with its main engine broken, or has crashed).
+        /// </summary>
+        public void SetBossTier(MachineBrigade.Sim.Entities.Vehicle boss, double now)
+        {
+            if (_boss == null) return;
+            if (boss?.Def.Tiers == null || boss.Crashed)
+            {
+                _boss.SetTier(null, null, null);
+                return;
+            }
+            var key = boss.Crashing ? "tier.ground" : boss.Shifting ? "tier.shift" : "tier." + boss.TierFrom.ToString().ToLowerInvariant();
+            var icon = boss.TierFrom switch
+            {
+                AltitudeTier.Orbit => "cbradar",
+                AltitudeTier.High => "sam",
+                _ => "aa",
+            };
+            var left = Mathf.CeilToInt((float)(boss.TierNext - now));
+            var text = Kit.Caps(Strings.Get(key)) + (boss.StuckLow || boss.Crashing || left <= 0 ? "" : "  " + left + "s");
+            _boss.SetTier(icon, text, Strings.Get("hud.tier"));
+        }
+
         /// <summary>The boss's health in numbers beside its name (after <see cref="SetBoss(string, float)"/>).</summary>
         public void SetBossHp(float hp, float maxHp) => _boss?.SetHp(hp, maxHp);
 
@@ -830,11 +854,12 @@ namespace MachineBrigade.Game.Hud
         /// Prompt 15 E5: a tapped enemy's front armour and each vehicle of our deck marked ✓ ~ ✕ by its main weapon
         /// against it. It stays 5 s (a tap on it closes it); a new tap replaces it.
         /// </summary>
-        public void ShowEnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck)
+        public void ShowEnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck, AltitudeTier tier = AltitudeTier.None)
         {
             if (enemy == null || _safe == null) return;
             _enemyTip?.RemoveFromHierarchy();
-            var tip = _enemyTip = KitCombat.EnemyTip(enemy, deck);
+            // Prompt 19 B.5: a boss on altitude tiers is judged by what reaches its tier now.
+            var tip = _enemyTip = KitCombat.EnemyTip(enemy, deck, tier);
             tip.AddToClassList("fc-hud__enemy-tip");
             tip.pickingMode = PickingMode.Position;
             tip.AddManipulator(new Tap(() => tip.RemoveFromHierarchy()));

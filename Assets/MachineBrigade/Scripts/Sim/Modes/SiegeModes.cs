@@ -1427,6 +1427,20 @@ namespace MachineBrigade.Sim.Modes
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
         }
 
+        /// <summary>Prompt 19: the battlefield a boss is fought on in the rush, or null (any).</summary>
+        private static string? ArenaOf(SimWorld world, string id) => world.Catalog.Vehicles.TryGetValue(id, out var def) ? def.Arena : null;
+
+        /// <summary>The battle is on this map (its id is the map's with the mode's suffix: "launchsite_sandbox").</summary>
+        private static bool On(SimWorld world, string map) => world.Map.Id == map || world.Map.Id.StartsWith(map + "_", StringComparison.Ordinal);
+
+        /// <summary>The battle is on some boss's own battlefield (to go home from after it).</summary>
+        private bool OnAnArena(SimWorld world)
+        {
+            foreach (var id in _rules.Bosses)
+                if (ArenaOf(world, id) is { } arena && On(world, arena)) return true;
+            return false;
+        }
+
         /// <summary>A boss that sails (prompt 16) needs a battlefield with a sea.</summary>
         private static bool Sails(SimWorld world, string id) => world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Naval != null;
 
@@ -1483,9 +1497,13 @@ namespace MachineBrigade.Sim.Modes
             if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total)
             {
                 // Prompt 16: a boss that sails is fought at sea; the next one back on the rush's own battlefield.
+                // Prompt 19 G.2: a boss with its own battlefield (the Silver Bug's Launch Site) is fought there, as the sea boss at sea.
                 var sails = Sails(world, _rules.Bosses[Defeated]);
+                var arena = ArenaOf(world, _rules.Bosses[Defeated]);
                 if (sails && world.Map.Sea == null) SwitchTo = Carry(world, _rules.SeaMap);
-                else if (!sails && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
+                else if (!sails && arena != null && !On(world, arena)) SwitchTo = Carry(world, arena);
+                else if (!sails && arena == null && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
+                else if (!sails && arena == null && _rules.HomeMap != null && !On(world, _rules.HomeMap) && OnAnArena(world)) SwitchTo = Carry(world, _rules.HomeMap);
                 else Spawn(world);
                 if (SwitchTo != null) return;
             }

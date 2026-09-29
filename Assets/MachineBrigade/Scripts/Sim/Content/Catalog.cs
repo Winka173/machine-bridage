@@ -75,6 +75,9 @@ namespace MachineBrigade.Sim.Content
 
         public bool TryGetSupport(string id, out SupportDef support) => _supports.TryGetValue(id, out support!);
 
+        /// <summary>Prompt 19: a prop by id, if there is one.</summary>
+        public bool TryGetProp(string id, out PropDef prop) => _props.TryGetValue(id, out prop!);
+
         public VehicleDef Vehicle(string id) =>
             _vehicles.TryGetValue(id, out var def) ? def : throw new KeyNotFoundException($"Unknown vehicle '{id}'.");
 
@@ -155,6 +158,7 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
                 ParseWeaponP17(w, def);
+                ParseWeaponP19(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))

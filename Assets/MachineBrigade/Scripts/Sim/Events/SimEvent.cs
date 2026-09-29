@@ -143,6 +143,14 @@ namespace MachineBrigade.Sim.Events
         /// firing), 4 an EMP delayed it by Value seconds, 5 a missile or drone of it was shot down at Position.
         /// </summary>
         BigAttack,
+
+        /// <summary>
+        /// Prompt 19: a boss on altitude tiers (Entity): DefId the moment ("descend" leaving orbit, "shift" a change
+        /// begins, "crash" it starts to fall to Target, "landed" it is down, "pods" drop pods on their way (Value how
+        /// many), "hijack" its drone seizure warned (Value seconds) or begun (Mount 1)); Mount otherwise the tier it goes
+        /// to; Value the seconds it takes; Position where the boss is.
+        /// </summary>
+        TierChanged,
     }
 
     /// <summary>
@@ -327,6 +335,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent AreaChanged(Content.PlayArea? area) =>
             new(SimEventKind.AreaChanged, EntityId.None, area?.Min ?? default, area?.Max ?? default, area.HasValue ? 1f : 0f, default, null, 0);
+
+        internal static SimEvent Tiered(Vehicle boss, string moment, int tier, float seconds, Vector2 target = default) =>
+            new(SimEventKind.TierChanged, boss.Id, boss.Position, target, seconds, ExplosionTier.Huge, moment, boss.Team, tier, airborne: boss.Flying);
 
         internal static SimEvent Big(Vehicle boss, string attack, int stage, Vector2 at, float value) =>
             new(SimEventKind.BigAttack, boss.Id, at, boss.Position, value, ExplosionTier.Huge, attack, boss.Team, stage);

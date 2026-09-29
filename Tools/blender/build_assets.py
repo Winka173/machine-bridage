@@ -26,7 +26,7 @@ import mb_air  # noqa: E402
 import mb_artillery  # noqa: E402
 import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
-import mb_boss_saucer  # noqa: E402
+import mb_orbital  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
 import mb_munitions  # noqa: E402
@@ -70,7 +70,7 @@ def all_builders():
                 **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
                 **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
                 **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
-                **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
+                **mb_orbital.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
                 **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS,
                 # Prompt 16: Leviathan, its fleet and Lighthouse Bay's props.

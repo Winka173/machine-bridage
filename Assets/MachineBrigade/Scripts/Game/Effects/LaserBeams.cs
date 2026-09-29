@@ -10,7 +10,7 @@ using PB = MachineBrigade.Game.Effects.ParticleBuilder;
 namespace MachineBrigade.Game.Effects
 {
     /// <summary>
-    /// Laser weapons (the Iron Beam, point-defence lasers, the silver bug's saucer laser) as one
+    /// Laser weapons (the Iron Beam, point-defence lasers, the Silver Bug's orbital laser) as one
     /// held beam per emitter, not a bar flashed for each 0.1 s shot (DECISIONS 11A):
     /// <list type="bullet">
     /// <item>Three camera-facing lines (MachineBrigade/Beam): a white-hot core, a coloured glow and
@@ -48,8 +48,8 @@ namespace MachineBrigade.Game.Effects
             public float Width { get; }
         }
 
-        /// <summary>The Iron Beam and point defence: white core in a red glow. The saucer's laser: green, and heavier.</summary>
-        private static Palette PaletteOf(WeaponDef weapon) => weapon != null && weapon.Id == "saucer_laser"
+        /// <summary>The Iron Beam and point defence: white core in a red glow. The Silver Bug's orbital laser: green, and heavier.</summary>
+        private static Palette PaletteOf(WeaponDef weapon) => weapon != null && weapon.Id == "orbital_laser"
             ? new Palette(new Color(0.85f, 1f, 0.9f), new Color(0.25f, 1f, 0.42f), 1.5f)
             : new Palette(new Color(1f, 0.93f, 0.86f), new Color(1f, 0.3f, 0.09f), 1f);
 

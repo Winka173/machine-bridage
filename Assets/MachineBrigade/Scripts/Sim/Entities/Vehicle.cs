@@ -408,7 +408,7 @@ namespace MachineBrigade.Sim.Entities
         internal float DoctrineSpeed = 1f;
         public float Radius => Def.Radius;
         public ArmorClass Armor => Def.Armor;
-        public TargetKind Kind => Def.Kind;
+        public TargetKind Kind => Crashed ? TargetKind.Ground : Def.Kind;
         public ArmourLevels Armour => Def.Armour;
 
         /// <summary>
@@ -420,6 +420,8 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Its armour level on a face with its equipment (never over 4).</summary>
         public float ArmourOn(ArmorFace face)
         {
+            // Prompt 19 C.2: a boss on altitude tiers has its armour by altitude (the belly faces the ground when low).
+            if (Def.Tiers != null && TierArmour() is var tiered && tiered >= 0f) return tiered;
             var up = ArmourAllUp + (face is ArmorFace.Side or ArmorFace.Rear ? ArmourSideUp : 0f);
             // Prompt 17 C: a bunker vehicle dug in has its front two levels thicker.
             if (face == ArmorFace.Front && Deploy == DeployState.Deployed && Def.Deploy is { } dug) up += dug.FrontUp;
@@ -428,7 +430,8 @@ namespace MachineBrigade.Sim.Entities
 
         public bool IsAlive => Hp > 0f;
         public bool IsMoving => Speed > 0.1f;
-        public bool Flying => Def.Flying;
+        /// <summary>It flies (prompt 19: a tiered boss that has crashed is on the ground now).</summary>
+        public bool Flying => Def.Flying && !Crashed;
 
         /// <summary>Current world heading of weapon mount <paramref name="index"/> (the turret for turret mounts).</summary>
         public float MountHeading(int index) => Def.Mounts[index].Aim switch

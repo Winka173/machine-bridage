@@ -43,8 +43,6 @@ namespace MachineBrigade.Tests
             ["heavy_bomber m2"] = "air_cruise_missile: no barrel, tube or pod round its line",
             ["mobile_fortress m2"] = "boss_rockets: no barrel, tube or pod round its line",
             ["mobile_fortress m5"] = "boss_missiles: no barrel, tube or pod round its line",
-            ["silver_bug m0"] = "saucer_laser: 0.05 m off the barrel's middle",
-            ["silver_bug m1"] = "coilgun: 0.52 m ahead of the open end",
         };
 
         [Test]

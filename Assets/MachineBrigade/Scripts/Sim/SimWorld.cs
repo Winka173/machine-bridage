@@ -1145,6 +1145,26 @@ namespace MachineBrigade.Sim
             _movement.ClearGround(v);
         }
 
+        /// <summary>
+        /// Prompt 19 E.5: a tiered boss down on the ground: its ground is closed to routes like a fixed defence's (the
+        /// same square, opened again when it dies) and whatever stood there is put off it (prompt 12).
+        /// </summary>
+        internal void AnchorCrash(Vehicle v)
+        {
+            if (v.BlocksRoutes) return;
+            v.BlocksRoutes = true;
+            Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+            _movement.ClearGround(v);
+        }
+
+        /// <summary>Prompt 19 E.5: cover dropped on the field (a crash's debris): a prop like the map's, spawned now.</summary>
+        internal Prop? AddCover(string defId, Vector2 at)
+        {
+            if (!Catalog.TryGetProp(defId, out _) || !Map.Contains(at)) return null;
+            SpawnProp(defId, at, 0);
+            return _propList[_propList.Count - 1];
+        }
+
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>
         private static float StaticFootprint(VehicleDef def) => MathF.Max(def.Length, def.Width) * 0.8f;
 

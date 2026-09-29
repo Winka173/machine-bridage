@@ -1365,8 +1365,10 @@ namespace MachineBrigade.Game.Hud
             ["detail.firing"] = ("In action", "Xem bắn"),
             ["detail.firingNote"] = ("Live fire at targets that cannot shoot back: every weapon it carries, as in battle.", "Bắn đạn thật vào mục tiêu không bắn trả: mọi vũ khí nó mang, như trong trận đấu."),
             ["detail.firingStrike"] = ("Fire support is called on the battlefield: pick a spot and it lands there.", "Hỏa lực yểm trợ được gọi trên chiến trường: chọn một điểm và nó rơi xuống đó."),
-            ["unit.silver_bug"] = ("Silver Bug", "Đĩa bay Bọ Bạc"),
+            ["unit.silver_bug"] = ("Silver Bug", "Phi thuyền Bọ Bạc"),
             ["short.silver_bug"] = ("Silver Bug", "Bọ Bạc"),
+            ["unit.drop_pod"] = ("Drop pod", "Khoang đổ bộ"),
+            ["short.drop_pod"] = ("Pod", "Khoang đổ bộ"),
             ["toast.enemyReinforce"] = ("Enemy reinforcements inbound!", "Địch được chi viện!"),
             ["toast.bounty"] = ("Fortress building destroyed: +{0} CP", "Phá công trình pháo đài: +{0} CP"),
             ["toast.escort"] = ("Boss escort destroyed: +{0} CP", "Hạ hộ tống của trùm: +{0} CP"),
@@ -1629,6 +1631,12 @@ namespace MachineBrigade.Game.Hud
             ["part.vls"] = ("missile cells", "ống phóng tên lửa"),
             ["part.flightdeck"] = ("flight deck", "sàn đáp trực thăng"),
             ["part.welldeck"] = ("well deck", "khoang đổ bộ"),
+            // Prompt 19: the orbital boss's parts (Silver Bug).
+            ["part.mainengine"] = ("main engine", "động cơ đẩy chính"),
+            ["part.thruster"] = ("manoeuvring thruster", "động cơ điều hướng"),
+            ["part.pdlaser"] = ("point-defence laser", "tháp la-de phòng thủ điểm"),
+            ["part.podbay"] = ("drop-pod bay", "cửa thả khoang đổ bộ"),
+            ["part.uplink"] = ("satellite uplink", "ăng-ten liên kết vệ tinh"),
             ["radio.part.maingun"] = ("Command: {0}'s main gun is down. It is fighting with what it has left: press it!", "Chỉ huy: pháo chính của {0} đã bị phá. Nó chỉ còn chút hỏa lực: dồn lên!"),
             ["radio.part.shield"] = ("Command: {0}'s shield generator is gone. No more shields: hit it with everything.", "Chỉ huy: máy phát khiên của {0} đã tan. Hết khiên rồi: dồn toàn bộ hỏa lực vào nó."),
             ["radio.part.bay"] = ("Command: a drone bay on {0} is wrecked. Fewer drones in the air from now on.", "Chỉ huy: một cửa thả drone của {0} đã bị phá. Từ giờ ít drone hơn."),
@@ -1636,6 +1644,9 @@ namespace MachineBrigade.Game.Hud
             ["radio.part.drill"] = ("Command: {0}'s drill head is shattered. It cannot dig under any more!", "Chỉ huy: mũi khoan của {0} đã vỡ. Nó không chui xuống đất được nữa!"),
             ["radio.part.ramp"] = ("Command: {0}'s landing ramp is wrecked. No more troops come ashore from it.", "Chỉ huy: cửa đổ bộ của {0} đã hỏng. Không còn quân nào đổ bộ từ nó nữa."),
             ["radio.part.antenna"] = ("Command: {0}'s command antenna is down. Its army has lost its edge!", "Chỉ huy: ăng-ten chỉ huy của {0} đã đổ. Quân của nó mất lợi thế rồi!"),
+            ["radio.part.mainengine"] = ("Command: {0}'s main engine is wrecked. It cannot climb back to high altitude: it stays low until it comes down!", "Chỉ huy: động cơ đẩy chính của {0} đã bị phá. Nó không lên lại tầng cao được nữa: giữ ở tầng thấp cho tới khi rơi!"),
+            ["radio.part.uplink"] = ("Command: {0}'s satellite uplink is down. No more rods falling from orbit!", "Chỉ huy: ăng-ten liên kết vệ tinh của {0} đã bị phá. Hết thanh tungsten rơi từ quỹ đạo!"),
+            ["radio.part.podbay"] = ("Command: {0}'s drop-pod bay is wrecked. No more pods coming down!", "Chỉ huy: cửa thả khoang đổ bộ của {0} đã bị phá. Hết khoang đổ bộ rơi xuống!"),
             ["toast.partRepaired"] = ("{1} patched its {0} back together", "{1} đã tự vá lại {0}"),
             ["toast.partFocus"] = ("Every unit in range: target the {0}", "Toàn quân trong tầm: ưu tiên bắn {0}"),
             ["toast.partFocusOff"] = ("Part order cancelled", "Đã hủy lệnh ưu tiên bộ phận"),
@@ -1653,7 +1664,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.fortress_hive"] = ("Tip: the two [[drone launchers]] feed its swarms: break both and the launches stop. Its [[jamming mast]] throws guided missiles wide within 30 m: break it with guns before you trust missiles. Its EMP emitter is worth breaking before a close assault.", "Mẹo: hai [[giàn phóng drone]] nuôi bầy drone của nó: phá cả hai là hết phóng. [[Cột gây nhiễu]] làm tên lửa dẫn đường trong 30 m bay lệch: phá nó bằng pháo trước khi trông vào tên lửa. Nên phá bộ phát EMP trước khi áp sát."),
             ["guide.parts.tip.mobile_fortress"] = ("Tip: break the [[howitzer]] to end its barrages, and the EMP emitter before your armour closes in.", "Mẹo: phá [[lựu pháo]] để chấm dứt các loạt pháo dồn, và phá bộ phát EMP trước khi thiết giáp ta áp sát."),
             ["guide.parts.tip.fortress_bastion"] = ("Tip: each [[autocannon turret]] covers one quarter: break the turrets on one side and attack from there. Its patch brings the mortar back first.", "Mẹo: mỗi [[tháp pháo tự động]] chỉ phủ một góc: phá các tháp ở một phía rồi đánh từ phía đó. Khi tự vá nó ưu tiên khẩu cối."),
-            ["guide.parts.tip.silver_bug"] = ("Tip: its [[shield generator]] and [[laser emitter]] are the prizes: fighters and anti-air should go for them before it dives on your column.", "Mẹo: [[máy phát khiên]] và [[bộ phát la-de]] là hai mục tiêu quý nhất: tiêm kích và phòng không nên nhắm chúng trước khi nó lao xuống đoàn xe ta."),
+            ["guide.parts.tip.silver_bug"] = ("Tip: break the [[main engine]] to trap it at low altitude, and the [[satellite uplink]] to stop the tungsten rods; its two [[point-defence lasers]] are worth clearing before you trust missiles.", "Mẹo: phá [[động cơ đẩy chính]] để nhốt nó ở tầng thấp, và phá [[ăng-ten liên kết vệ tinh]] để chặn thanh tungsten; nên dọn hai [[tháp la-de phòng thủ điểm]] trước khi trông vào tên lửa."),
             ["guide.parts.tip.sky_fortress"] = ("Tip: each [[engine]] broken slows its orbit by 15%: slower passes mean more time for your anti-air. Its 105 mm is the gun that kills tanks.", "Mẹo: mỗi [[động cơ]] bị phá làm vòng bay chậm 15%: bay chậm hơn là phòng không ta có thêm thời gian. Khẩu 105 mm là thứ giết xe tăng."),
             ["guide.parts.tip.mega_gunship"] = ("Tip: break the [[rear rotor]] and it turns half as fast and loses its aim; its rocket pods and chin guns are the parts hurting your ground units.", "Mẹo: phá [[cánh quạt sau]] là nó xoay chậm một nửa và khó ngắm; hộp rốc-két và pháo dưới mũi là thứ làm hại quân mặt đất."),
             ["guide.parts.tip.drone_mothership"] = ("Tip: break the [[drone bay]] and the [[UAV launch bay]] to stop its drones, and the [[shield generator]] before its health drops.", "Mẹo: phá [[cửa thả drone]] và [[khoang phóng UAV]] để chặn drone, và phá [[máy phát khiên]] trước khi nó xuống máu."),
@@ -1680,6 +1691,8 @@ namespace MachineBrigade.Game.Hud
             ["part.fx.stop.craft"] = ("it sends no more landing craft", "nó không thả tàu đổ bộ được nữa"),
             ["part.fx.stop.radar"] = ("its salvos and missiles fall wide and its CIWS misses now and then", "loạt pháo và tên lửa của nó rơi lệch, CIWS thỉnh thoảng bắn trượt"),
             ["part.fx.stop.trail"] = ("it leaves no more fire behind it", "nó không còn để lại vệt lửa phía sau"),
+            ["part.fx.stop.thrust"] = ("it can no longer climb to high altitude: it stays low until it crashes", "nó không lên lại tầng cao được nữa: giữ ở tầng thấp cho tới khi rơi"),
+            ["part.fx.stop.pods"] = ("it drops no more pods", "nó không thả khoang đổ bộ được nữa"),
             ["part.fx.speed"] = ("{0}% slower", "chậm hơn {0}%"),
             ["part.fx.turn"] = ("turns {0}% slower and tracks targets badly", "xoay chậm hơn {0}%, khó bám mục tiêu"),
             ["part.fx.cadence"] = ("fires {0}% less often", "bắn thưa hơn {0}%"),
@@ -2174,7 +2187,7 @@ namespace MachineBrigade.Game.Hud
             ["mission.m20.name"] = ("Air Raid", "Không Kích"),
             ["mission.m20.brief"] = ("Wave after wave of enemy aircraft is coming for Skyhold. Bring down sixteen of them.", "Từng đợt máy bay địch lao tới Tầng Mây. Bắn hạ mười sáu chiếc."),
             ["mission.m21.name"] = ("Silver Sky", "Bầu Trời Bạc"),
-            ["mission.m21.brief"] = ("A flying saucer, Project Silver Bug, has come down over Dune Break: a laser, coilguns and a shield. Bring it down.", "Một đĩa bay, dự án Bọ Bạc, xuất hiện trên Đồi Cát: la-de, súng điện từ và khiên. Hạ nó xuống."),
+            ["mission.m21.brief"] = ("Aurel's orbital spacecraft, Project Silver Bug, is dropping out of orbit over Dune Break to strike from the sky. Bring it down.", "Phi thuyền quỹ đạo của Aurel, dự án Bọ Bạc, đang hạ khỏi quỹ đạo trên Đồi Cát để tấn công từ trên không. Hạ nó xuống."),
             ["mission.m22.name"] = ("Harvest Guard", "Giữ Mùa Gặt"),
             ["mission.m22.brief"] = ("The enemy wants the silos and the water tower at the south end of Greenvale. Keep at least one standing for eight minutes.", "Địch muốn phá các kho và tháp nước ở phía nam Lũng Xanh. Giữ ít nhất một công trình đứng vững trong tám phút."),
             ["mission.m16.brief"] = ("A missile train is crossing Metro City to its launch site. Stop it before the countdown ends.", "Đoàn tàu tên lửa đang băng qua Đô Thành tới bãi phóng. Chặn nó trước khi đếm ngược kết thúc."),
@@ -2366,7 +2379,7 @@ namespace MachineBrigade.Game.Hud
 
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
-            BigAttackText.Table.TryGetValue(key, out text)
+            BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text)
                 ? (Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
@@ -2388,7 +2401,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
-            BigAttackText.Table.ContainsKey(key);
+            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

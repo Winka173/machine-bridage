@@ -175,6 +175,10 @@
     "file": "bridge_road.glb",
     "triangles": 2468
   },
+  "bug_satellite": {
+    "file": "bug_satellite.glb",
+    "triangles": 1670
+  },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
     "triangles": 6344
@@ -318,6 +322,10 @@
   "drone_mothership": {
     "file": "drone_mothership.glb",
     "triangles": 19436
+  },
+  "drop_pod": {
+    "file": "drop_pod.glb",
+    "triangles": 3004
   },
   "earth_borer": {
     "file": "earth_borer.glb",
@@ -889,7 +897,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 24035
+    "triangles": 25654
+  },
+  "silver_bug_wreck": {
+    "file": "silver_bug_wreck.glb",
+    "triangles": 27794
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",

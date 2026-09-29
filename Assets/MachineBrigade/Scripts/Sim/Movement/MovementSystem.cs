@@ -88,7 +88,9 @@ namespace MachineBrigade.Sim.Movement
                 // Fixed defences only turn their guns (the combat system does that); ships are the naval system's.
                 if (v.Def.Static || v.Def.Naval != null) continue;
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
-                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing)
+                // Prompt 19: a tiered boss falling to its crash site (the boss system moves it) or down on the ground,
+                // and a drop pod on its way down.
+                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing || v.Crashing || v.Crashed || v.IsPod)
                 {
                     v.Speed = 0f;
                     continue;
@@ -1395,7 +1397,7 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>
         private static float Yield(Vehicle v)
         {
-            if (v.Def.Static) return 0f;
+            if (v.Def.Static || v.Crashed) return 0f;
             var weight = v.HasPath ? 0.3f : 0.7f;
             return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
         }

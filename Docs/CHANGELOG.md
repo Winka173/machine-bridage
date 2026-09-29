@@ -12,6 +12,34 @@ its commits.
 - Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).
 - Every weapon table has penetration, form and tags. Section 10 adds a counters table and the icon legend.
 - Fixed: the combat-value table uses the current roster, Boss Rush's "{0} bosses", the HQ instead of the bastion, the map, mission and difficulty counts.
+### Prompt 19: the Silver Bug rebuilt as Aurel's orbital spacecraft (DECISIONS 18A)
+
+- The final boss keeps its id `silver_bug` (records, progress and achievements stay) and is now a big military shuttle:
+  new model, its crashed form, a satellite and a drop pod (`Tools/blender/mb_orbital.py`; the saucer builder is gone).
+- Altitude tiers, data any boss can opt into (`"tiers"`): 15 s in low orbit at the start (out of reach, guns held),
+  then a fixed cycle per phase, never back to orbit: phase 1 high 25 s / low 10 s, phase 2 high 15 s / low 20 s,
+  3.5 s per change (hit as the lower tier meanwhile). High altitude: only long-range SAMs, Patriot batteries, fighters
+  and stealth fighters (`"ceiling": "high"`); low: every anti-air weapon, helicopters, and railguns (`"ceiling": "low"`).
+- Parts (70 % of the body, 7 % each): the main engine (broken: it stays low), four manoeuvring thrusters (slower,
+  longer changes), two point-defence lasers (its APS against SAMs and fighters' missiles), the drop-pod bay, the
+  satellite uplink (its big attack) and the ventral laser turret. Armour by altitude: hull 4, belly 2 (low), 3 crashed.
+- Drop pods (`"pods"`): two at a time in orbit and at high altitude, 1-2 vehicles each, low-altitude targets while they
+  fall 6 s (shot down, nothing lands), at most six of their vehicles alive. Escorts come as it leaves orbit, with two
+  fighters; phase marks 70 % and 30 %.
+- Big attack `bug_rod_rain` replaces `bug_laser_sweep` (a new `rods` shape): five tungsten rods on the densest groups,
+  heavy armour first, 1 600 kinetic, penetration 4 on the roof, 6 m, 4 s of warning, every 60 s; the first from the craft
+  in orbit, the rest from its satellite; the uplink broken cancels or ends it; smoke and APS do nothing, domes absorb
+  part. No boss big attack is stopped by smoke now.
+- Phase 3: it falls to a set point mid-map and fights on as a ground fortress (a ground target, the wreck model, four
+  guns all round awake, passable debris that blocks fire, its ground closed to routes and cleared of units). Very Hard:
+  it seizes the player's drones and drone launchers for 6 s now and then; jammer and EW-tower cover keeps them.
+- HUD: an altitude chip with the seconds to the next change and the phase marks on the boss bar; tapping it lists the
+  deck ✓ ~ ✕ by what reaches its tier. The Guide has an altitude section; every text is new or rewritten in both
+  languages (`OrbitalText`, the campaign's chapter 9, the boss files, briefings and radio lines): no saucer is left.
+- Boss Rush fights it on the Launch Site (`"arena"`), as the sea boss at sea. Sandbox calls for prompt 21:
+  `JumpPhase`, `ForceTier`, `TriggerBig`, `SetBigOff`, `Break`.
+- Tests: `OrbitalBossTests` (10) and the boss tests it touched; the 5-seed runs, the stuck check round the crash site
+  and the FPS checks wait for the testing phase.
 
 ## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
 

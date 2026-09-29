@@ -75,7 +75,8 @@ namespace MachineBrigade.Sim.Combat
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
                 // Prompt 17 C: a bunker vehicle digging in or packing up does not fire either.
-                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy)
+                // Prompt 19: a tiered boss in orbit holds its fire (its big attack is the boss system's).
+                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy || v.Tier == AltitudeTier.Orbit)
                 {
                     v.Target = EntityId.None;
                     continue;
@@ -89,7 +90,7 @@ namespace MachineBrigade.Sim.Combat
                 v.CoaxAir = air?.Id ?? EntityId.None;
                 var laid = target ?? air;
                 v.AimDistance = laid != null ? Vector2.Distance(v.Position, laid.Position) : 0f;
-                v.AimHeight = laid is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
+                v.AimHeight = laid is Vehicle aimed && aimed.Flying ? aimed.Height : 0f;
                 // A supergun's barrel stays laid where its last shell went (its shots are the boss system's).
                 if (mounts[0].Aim == MountAim.Turret && !v.Def.LaysOwnTurret)
                 {
@@ -245,7 +246,8 @@ namespace MachineBrigade.Sim.Combat
                 var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
                 // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
                 // anti-aircraft weapons go for aircraft first.
-                if (other.Flying != IsAntiAir(weapon)) score *= 0.02f;
+                // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
+                if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
                 if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
                 // An obstacle only when there is nothing else (the commander orders a breach itself).
                 if (other.Def.Obstacle) score *= 0.05f;
@@ -384,7 +386,10 @@ namespace MachineBrigade.Sim.Combat
 
         private bool InReach(Vehicle v, IDamageable target, WeaponDef weapon)
         {
-            if (!weapon.CanTarget(IsFlying(target))) return false;
+            // Prompt 19 B: a target on altitude tiers is reached by the weapons for its tier (a railgun at low, only
+            // long-range SAMs and fighters at high, nothing in orbit); everything else by the ordinary air/ground rule.
+            if (target is Vehicle { Tier: not AltitudeTier.None } tiered ? !TierRules.Reaches(weapon, v.Def, tiered.Tier, true) : !weapon.CanTarget(IsFlying(target)))
+                return false;
             var distance = Vector2.Distance(v.Position, target.Position);
             var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
             // Radar-absorbent coating: a missile must come closer to lock on.

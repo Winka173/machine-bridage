@@ -136,6 +136,13 @@ namespace MachineBrigade.Game.Match
                 name += "  ·  " + Strings.Format("boss.escaping", $"{(int)boss.EscapeSeconds / 60}:{(int)boss.EscapeSeconds % 60:00}");
             hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
             hud.SetBossBigAttack(boss);
+            // Prompt 19 B.5: a tiered boss's altitude and countdown, and its phase marks on the bar.
+            hud.SetBossTier(boss, world?.Time ?? 0.0);
+            if (phases.Count == 0 && boss.Def.Tiers is { Marks: { Count: > 0 } tierMarks })
+            {
+                hud.SetBoss(name, boss.Hp / boss.MaxHp, boss.TierPhase, new List<float>(tierMarks), false);
+                return;
+            }
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);

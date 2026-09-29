@@ -171,7 +171,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var def = s.Def;
             var quake = def.Strikes[0].Shape == BigShape.Quake;
-            if (v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake) || v.Landing)
+            if (s.Off || v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake) || v.Landing)
             {
                 s.Next = now + 1.0;
                 return;
@@ -318,6 +318,55 @@ namespace MachineBrigade.Sim.Bosses
             return count;
         }
 
+        /// <summary>
+        /// Prompt 19 F: up to <paramref name="n"/> spots for rods of <paramref name="radius"/>: the middles of the other side's
+        /// densest groups within reach (0: anywhere), each unit weighing more the thicker its armour (heavy tanks first),
+        /// no two rings overlapping much; with fewer groups than rods the rest go on the heaviest units not yet under a
+        /// ring, then round the first spot. Deterministic (vehicle-list order, ties by id).
+        /// </summary>
+        private List<Vector2> RodSpots(Vehicle v, float reach, int n, float radius, Vector2 fallback)
+        {
+            var spots = new List<Vector2>();
+            var candidates = new List<(Vector2 at, float weight, int id)>();
+            var list = _world.VehicleList;
+            foreach (var e in list)
+            {
+                if (!Target(v, e, false) || (reach > 0f && Vector2.DistanceSquared(e.Position, v.Position) > reach * reach)) continue;
+                var sum = Vector2.Zero;
+                var weight = 0f;
+                var count = 0;
+                foreach (var o in list)
+                {
+                    if (!Target(v, o, false) || Vector2.DistanceSquared(o.Position, e.Position) > radius * radius) continue;
+                    weight += RodWeight(o);
+                    sum += o.Position;
+                    count++;
+                }
+                candidates.Add((sum / count, weight, e.Id.Value));
+            }
+            candidates.Sort((a, b) => a.weight != b.weight ? b.weight.CompareTo(a.weight) : a.id.CompareTo(b.id));
+            var apart = radius * 1.6f;
+            foreach (var c in candidates)
+            {
+                if (spots.Count >= n) break;
+                var clear = true;
+                foreach (var p in spots)
+                    if (Vector2.DistanceSquared(p, c.at) < apart * apart) clear = false;
+                if (clear) spots.Add(_world.ClampToMap(c.at));
+            }
+            // Fewer groups than rods: round the first spot, a ring's width out, evenly.
+            var centre = spots.Count > 0 ? spots[0] : fallback;
+            for (var k = 0; spots.Count < n && k < n * 2; k++)
+            {
+                var a = k * SimMath.Tau / Math.Max(1, n - 1);
+                spots.Add(_world.ClampToMap(centre + new Vector2(MathF.Cos(a), MathF.Sin(a)) * radius * 1.7f));
+            }
+            return spots;
+        }
+
+        /// <summary>How much a rod wants a unit: the thicker its armour the more (a heavy tank before a jeep), a tower a little.</summary>
+        private static float RodWeight(Vehicle o) => o.Def.Static ? 3f : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * 0.5f;
+
         /// <summary>What a big attack aims at: the other side's ground units and towers (not walls, not bosses).</summary>
         private static bool Target(Vehicle v, Vehicle e, bool still) =>
             e.IsAlive && e.Team != v.Team && e.Team >= 0 && !e.Flying && !e.Invulnerable && !e.Def.Untargetable && !e.Def.Obstacle && !e.Def.Boss &&
@@ -410,6 +459,21 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Drop:
                         s.ZoneList.Add(new BigZone(Offset(v, st.At), 8f, fire, false));
                         break;
+                    case BigShape.Rods:
+                    {
+                        // Prompt 19 F: one rod on each group, each its own ring and moment (a fifth of a second apart).
+                        var spots = RodSpots(v, def.Reach, RoundsOf(v, st), st.Radius, s.Aim);
+                        // The first from the craft itself (still in orbit), the rest from the satellite it left there.
+                        s.FromSatellite = v.HasSatellite;
+                        s.Origin = v.HasSatellite ? v.SatelliteAt : v.Position;
+                        for (var k = 0; k < spots.Count; k++)
+                        {
+                            var due = fire + 0.2 * k;
+                            s.Points.Add((spots[k], due));
+                            s.ZoneList.Add(new BigZone(spots[k], st.Radius, due, true));
+                        }
+                        break;
+                    }
                     case BigShape.Buff:
                         s.ZoneList.Add(new BigZone(v.Position, st.Reach, fire, false));
                         break;
@@ -575,6 +639,9 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Drop:
                         Drop(v, s, st, n);
                         break;
+                    case BigShape.Rods:
+                        for (var k = 0; k < s.Points.Count; k++) Round(v, s, st, s.Points[k].at, s.Points[k].due, scale, k);
+                        break;
                     case BigShape.Buff:
                         s.BuffUntil = now + st.Seconds;
                         s.EndsAt = Math.Max(s.EndsAt, s.BuffUntil);
@@ -641,7 +708,10 @@ namespace MachineBrigade.Sim.Bosses
         {
             var damage = s.Damage * scale;
             var now = _world.Time;
-            var info = new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
+            // Prompt 19 F: a rod is a kinetic penetrator, not a blast's fragments: its own penetration on the roof.
+            var info = s.Shape == BigShape.Rods
+                ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
+                : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
             var half = side.LengthSquared() > 0.01f;
             foreach (var e in _world.VehicleList)
             {

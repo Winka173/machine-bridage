@@ -223,7 +223,7 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>
-        /// A railgun (or the saucer's coilgun) lets go: a white core beam that hangs for a moment
+        /// A railgun (or a boss's coilgun) lets go: a white core beam that hangs for a moment
         /// and thins away, a wider glow round it, a plasma blast and a cone of sparks at the
         /// muzzle, the slug riding the head of the beam; the barrel's charge glow is over.
         /// </summary>
