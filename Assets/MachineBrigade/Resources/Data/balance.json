@@ -432,7 +432,7 @@
       "firesWhileMoving": true, "weapon": "hmg_roof", "repair": { "radius": 14, "rate": 0.025 },
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // Prompt 13 F.2: the ammunition carrier, a forward rearm point (the supply truck's model: asset debt).
-    { "id": "ammo_carrier", "value": 1, "model": "truck", "scale": 0.9, "class": "Support", "armor": "Light", "hp": 520, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 7.3, "width": 2.72, "cp": 4, "vision": 30,
+    { "id": "ammo_carrier", "value": 1, "model": "armed_truck", "scale": 0.9, "class": "Support", "armor": "Light", "hp": 520, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.0, "length": 7.3, "width": 2.72, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_roof", "captureRate": 1, "rearm": { "radius": 14, "rate": 4 }, "airRearm": { "radius": 12, "rate": 2 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
     { "id": "ew_jammer", "value": 1, "scale": 0.85,        "class": "Support", "armor": "Light", "hp": 380, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.24, "width": 3.39, "cp": 5, "vision": 40,
