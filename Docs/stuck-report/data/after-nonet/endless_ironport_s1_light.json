@@ -1,0 +1,18 @@
+{
+  "map": "ironport",
+  "mode": "Endless",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 1266ceae app 0.1.0",
+  "ticks": 7154,
+  "journal": [],
+  "records": [
+    {"vehicle": 446, "def": "titan_tank", "team": 0, "startTick": 4830, "start": 241.5, "end": 253.5, "seconds": 12, "x": 125.511, "y": 103.91, "goalX": 95.675, "goalY": 109.867, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#506 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "base_wall@8"},
+    {"vehicle": 550, "def": "elite_heavy_tank", "team": 0, "startTick": 5170, "start": 258.5, "end": 268.5, "seconds": 10, "x": 107.576, "y": 119.179, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "OffRoute", "detail": "to (125.0,115.0) past command_hq", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@6.1 titan_tank(moving)@4.2 ifv(moving)@5.1"},
+    {"vehicle": 550, "def": "elite_heavy_tank", "team": 0, "startTick": 5600, "start": 280, "end": 289.5, "seconds": 9.5, "x": 112.293, "y": 127.733, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "ifv#525 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(parked)@6.0 titan_tank(moving)@8.7 ifv(parked)@4.9 elite_mbt(parked)@7.8 base_wall@6"},
+    {"vehicle": 519, "def": "titan_tank", "team": 0, "startTick": 5820, "start": 291, "end": 300, "seconds": 9, "x": 110.159, "y": 116.635, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "ifv#504 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@6.5 ifv(moving)@5.1 titan_tank(moving)@7.8 ifv(parked)@9.6 elite_mbt(moving)@5.6 elite_heavy_tank(moving)@7.1 main_battle_tank(moving)@3.9"},
+    {"vehicle": 550, "def": "elite_heavy_tank", "team": 0, "startTick": 6060, "start": 303, "end": 312, "seconds": 9, "x": 107.709, "y": 118.078, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "main_battle_tank#552 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@6.2 titan_tank(parked)@9.4 ifv(parked)@8.7 ifv(parked)@7.2 elite_mbt(moving)@6.2 main_battle_tank(parked)@5.0 ifv(moving)@6.6"},
+    {"vehicle": 552, "def": "main_battle_tank", "team": 0, "startTick": 6720, "start": 336, "end": 346.5, "seconds": 10.5, "x": 105.443, "y": 129.962, "goalX": 101.201, "goalY": 141.919, "order": "AttackMove", "cause": "YieldWait", "detail": "behind titan_tank#505", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@8.7 ifv(moving)@4.4 aa_vehicle(moving)@8.0 base_wall@4"}
+  ],
+  "rescues": []
+}

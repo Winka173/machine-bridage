@@ -1,0 +1,24 @@
+{
+  "map": "capital",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 4dcd280f app 0.1.0",
+  "ticks": 11159,
+  "journal": [],
+  "records": [
+    {"vehicle": 851, "def": "aa_vehicle", "team": 0, "startTick": 1150, "start": 57.5, "end": 66, "seconds": 8.5, "x": -94.263, "y": -93.454, "goalX": 81, "goalY": 11, "order": "AttackMove", "cause": "Unknown", "detail": "speed 5.0 strikes 0", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "rocket_turret(fixed)@6.4 ifv(parked)@6.9 scout_jeep(parked)@9.6 scout_jeep(parked)@2.9"},
+    {"vehicle": 844, "def": "light_tank", "team": 0, "startTick": 3820, "start": 191, "end": 200.5, "seconds": 9.5, "x": 67.022, "y": -67.88, "goalX": -21.325, "goalY": -56.026, "order": "Move", "cause": "GateWait", "detail": "doorway 0", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ifv(moving)@6.1 ifv(moving)@6.6 wreck_truck@8"},
+    {"vehicle": 922, "def": "counter_battery_radar", "team": 1, "startTick": 6350, "start": 317.5, "end": 328.5, "seconds": 11, "x": 121.892, "y": 104.447, "goalX": 129, "goalY": 109, "order": "Move", "cause": "YieldWait", "detail": "behind ew_jammer#857", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "gun_pit(fixed)@6.8 engineer_vehicle(moving)@6.7 ew_jammer(parked)@2.7 counter_battery_radar(parked)@2.5"},
+    {"vehicle": 911, "def": "siege_tank", "team": 0, "startTick": 7000, "start": 350, "end": 359, "seconds": 9, "x": 70.091, "y": -67.762, "goalX": 27, "goalY": -57, "order": "Move", "cause": "Unknown", "detail": "speed 2.1 strikes 0", "area": "field", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "wreck_truck@10"},
+    {"vehicle": 843, "def": "engineer_vehicle", "team": 1, "startTick": 7040, "start": 352, "end": 365, "seconds": 13, "x": 122.528, "y": 112.933, "goalX": 114.182, "goalY": 112.694, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#929 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(moving)@3.8 counter_battery_radar(moving)@4.6 mobile_fortress(moving)@7.9"},
+    {"vehicle": 961, "def": "main_battle_tank", "team": 0, "startTick": 7830, "start": 391.5, "end": 400.5, "seconds": 9, "x": -73.134, "y": -88.237, "goalX": -94.588, "goalY": -95.147, "order": "Move", "cause": "BlockedByDefence", "detail": "minefield#831 parked", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "minefield(fixed)@4.2"},
+    {"vehicle": 922, "def": "counter_battery_radar", "team": 1, "startTick": 9470, "start": 473.5, "end": 482, "seconds": 8.5, "x": 122.894, "y": 100.383, "goalX": 112.269, "goalY": 106.575, "order": "Move", "cause": "BlockedByFriend", "detail": "command_vehicle#923 moving", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(moving)@8.0 command_vehicle(moving)@4.0 counter_battery_radar(moving)@8.6"},
+    {"vehicle": 843, "def": "engineer_vehicle", "team": 1, "startTick": 9690, "start": 484.5, "end": 495.5, "seconds": 11, "x": 115.656, "y": 112.299, "goalX": 126.256, "goalY": 98.432, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#986 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "counter_battery_radar(moving)@8.2 mobile_fortress(moving)@8.9 ammo_carrier(moving)@4.1"},
+    {"vehicle": 982, "def": "elite_heavy_tank", "team": 1, "startTick": 10910, "start": 545.5, "end": 557.5, "seconds": 12, "x": 116.394, "y": 113.485, "goalX": 92.823, "goalY": 61.418, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "elite_heavy_tank#981 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(parked)@9.5 counter_battery_radar(parked)@4.8 command_vehicle(parked)@7.9 elite_heavy_tank(moving)@6.4"}
+  ],
+  "rescues": [
+    "6548,922,counter_battery_radar,1,ghost,121.6,104.5,121.6,104.5",
+    "9887,843,engineer_vehicle,1,ghost,115.0,111.9,115.0,111.9"
+  ]
+}

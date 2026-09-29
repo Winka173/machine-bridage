@@ -1,0 +1,13 @@
+{
+  "map": "frostpeak",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map c782d9ea app 0.1.0",
+  "ticks": 4144,
+  "journal": [],
+  "records": [
+    {"vehicle": 544, "def": "titan_tank", "team": 0, "startTick": 900, "start": 45, "end": 54, "seconds": 9, "x": -86.669, "y": -88.521, "goalX": -93.324, "goalY": -93.064, "order": "Move", "cause": "YieldWait", "detail": "behind armored_bulldozer#545", "area": "camp0", "lanes": "road+route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@7.3 armored_bulldozer(parked)@7.7 titan_tank(moving)@9.5 heavy_tank(moving)@9.7"}
+  ],
+  "rescues": []
+}

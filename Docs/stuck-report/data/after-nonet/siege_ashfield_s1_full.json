@@ -1,0 +1,15 @@
+{
+  "map": "ashfield",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 91c11044 app 0.1.0",
+  "ticks": 6769,
+  "journal": [],
+  "records": [
+    {"vehicle": 443, "def": "armored_bulldozer", "team": 0, "startTick": 2880, "start": 144, "end": 152.5, "seconds": 8.5, "x": 50.496, "y": 38.524, "goalX": 54.51, "goalY": 32.049, "order": "Move", "cause": "GateWait", "detail": "doorway 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.7 titan_tank(moving)@5.8 titan_tank(moving)@6.4 siege_tank(moving)@8.3 aa_vehicle(moving)@3.9 floodlight_mast@9"},
+    {"vehicle": 448, "def": "titan_tank", "team": 0, "startTick": 3000, "start": 150, "end": 159.5, "seconds": 9.5, "x": 50.31, "y": 30.656, "goalX": 51, "goalY": 105, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#458 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@5.5 titan_tank(moving)@5.3 wreck_tank@8"},
+    {"vehicle": 489, "def": "ammo_carrier", "team": 1, "startTick": 4100, "start": 205, "end": 214, "seconds": 9, "x": 91.954, "y": 110.932, "goalX": 104.956, "goalY": 110.549, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#491 parked", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@4.0 mobile_fortress(parked)@9.7"}
+  ],
+  "rescues": []
+}

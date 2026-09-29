@@ -1,0 +1,11 @@
+{
+  "map": "saltflat",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map c87ef119 app 0.1.0",
+  "ticks": 9374,
+  "journal": [],
+  "records": [],
+  "rescues": []
+}

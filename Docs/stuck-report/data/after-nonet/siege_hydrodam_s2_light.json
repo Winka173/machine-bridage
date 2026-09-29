@@ -1,0 +1,15 @@
+{
+  "map": "hydrodam",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map e14651f6 app 0.1.0",
+  "ticks": 9724,
+  "journal": [],
+  "records": [
+    {"vehicle": 1308, "def": "engineer_vehicle", "team": 1, "startTick": 7590, "start": 379.5, "end": 388.5, "seconds": 9, "x": 68.737, "y": 36.686, "goalX": 61.942, "goalY": 23.146, "order": "Move", "cause": "BlockedByFriend", "detail": "rocket_technical#1447 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(moving)@6.1 counter_battery_radar(moving)@6.2 rocket_technical(moving)@3.3 rocket_technical(moving)@8.2 ammo_carrier(moving)@6.2"},
+    {"vehicle": 1369, "def": "elite_heavy_tank", "team": 1, "startTick": 8670, "start": 433.5, "end": 443, "seconds": 9.5, "x": 113.989, "y": 117.837, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind command_vehicle#1323", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(parked)@6.3 elite_heavy_tank(moving)@5.3"},
+    {"vehicle": 1443, "def": "siege_tank", "team": 0, "startTick": 8910, "start": 445.5, "end": 454.5, "seconds": 9, "x": 6.177, "y": -6.605, "goalX": 41.623, "goalY": 21.753, "order": "Move", "cause": "BlockedByFriend", "detail": "mlrs#1457 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mlrs(moving)@5.3 siege_tank(moving)@9.7 river_water@8 river_water@10 river_water@6 river_water@10 river_water@6"}
+  ],
+  "rescues": []
+}

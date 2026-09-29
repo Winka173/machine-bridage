@@ -1,0 +1,14 @@
+{
+  "map": "dunebreak",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 2b9718ef app 0.1.0",
+  "ticks": 8202,
+  "journal": [],
+  "records": [
+    {"vehicle": 612, "def": "fpv_carrier", "team": 1, "startTick": 4260, "start": 213, "end": 224, "seconds": 11, "x": 89.508, "y": 113.617, "goalX": 99.814, "goalY": 114.649, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#626", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "heavy_rocket_artillery(moving)@9.6"},
+    {"vehicle": 657, "def": "armored_bulldozer", "team": 0, "startTick": 6720, "start": 336, "end": 344.5, "seconds": 8.5, "x": -82.99, "y": -83.453, "goalX": -93.187, "goalY": -93.2, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "field", "lanes": "road+route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@4.9 aa_vehicle(moving)@8.1 aa_vehicle(moving)@5.7"}
+  ],
+  "rescues": []
+}

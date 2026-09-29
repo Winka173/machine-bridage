@@ -1,0 +1,28 @@
+{
+  "map": "junglepass",
+  "mode": "Defend",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 4b12d3e3 app 0.1.0",
+  "ticks": 5982,
+  "journal": [],
+  "records": [
+    {"vehicle": 941, "def": "armored_car", "team": 0, "startTick": 4230, "start": 211.5, "end": 221, "seconds": 9.5, "x": 126.161, "y": 104.104, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(moving)@6.7 armored_car(moving)@3.7 base_wall@8"},
+    {"vehicle": 943, "def": "scout_jeep", "team": 0, "startTick": 4250, "start": 212.5, "end": 223, "seconds": 10.5, "x": 116.67, "y": 112.374, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "mobile_fortress(parked)@9.1 aa_vehicle(parked)@8.0 scout_jeep(moving)@7.1 armored_car(moving)@5.0"},
+    {"vehicle": 942, "def": "scout_jeep", "team": 0, "startTick": 4410, "start": 220.5, "end": 231.5, "seconds": 11, "x": 119.046, "y": 105.365, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "armored_car(moving)@3.3"},
+    {"vehicle": 941, "def": "armored_car", "team": 0, "startTick": 4530, "start": 226.5, "end": 237.5, "seconds": 11, "x": 129.982, "y": 106.789, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "main_battle_tank(moving)@6.1 mobile_fortress(moving)@8.3 armored_car(moving)@2.2 base_wall@5 base_wall@7"},
+    {"vehicle": 947, "def": "armored_car", "team": 0, "startTick": 4530, "start": 226.5, "end": 240.5, "seconds": 14, "x": 128.009, "y": 105.79, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#924 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "main_battle_tank(moving)@4.6 mobile_fortress(moving)@7.5 armored_car(moving)@2.2 base_wall@6 base_wall@9"},
+    {"vehicle": 922, "def": "main_battle_tank", "team": 0, "startTick": 4700, "start": 235, "end": 246, "seconds": 11, "x": 125.335, "y": 100.44, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "mobile_fortress(parked)@8.0 base_wall@10 base_wall@9"},
+    {"vehicle": 987, "def": "light_tank", "team": 0, "startTick": 5440, "start": 272, "end": 280.5, "seconds": 8.5, "x": 103.243, "y": 110.385, "goalX": 102.03, "goalY": 101.948, "order": "Move", "cause": "Unknown", "detail": "speed 5.6 strikes 2", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.9 mobile_fortress(moving)@9.6 elite_heavy_tank(moving)@9.8 armored_car(moving)@8.2"},
+    {"vehicle": 896, "def": "siege_tank", "team": 0, "startTick": 5520, "start": 276, "end": 284.5, "seconds": 8.5, "x": 90.988, "y": 104.992, "goalX": 95.701, "goalY": 113.488, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#924", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(parked)@9.8 aa_vehicle(moving)@4.1"},
+    {"vehicle": 961, "def": "elite_heavy_tank", "team": 0, "startTick": 5660, "start": 283, "end": 294.5, "seconds": 11.5, "x": 113.993, "y": 126.08, "goalX": 118.984, "goalY": 146.058, "order": "AttackMove", "cause": "YieldWait", "detail": "behind elite_heavy_tank#962", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "elite_heavy_tank(moving)@7.9 base_wall@8"}
+  ],
+  "rescues": [
+    "4447,943,scout_jeep,0,ghost,116.4,112.4,116.4,112.4",
+    "4608,942,scout_jeep,0,ghost,120.3,106.3,120.3,106.3",
+    "4729,941,armored_car,0,ghost,129.9,107.8,129.9,107.8",
+    "4793,947,armored_car,0,ghost,128.7,105.3,128.7,105.3",
+    "4898,922,main_battle_tank,0,ghost,125.5,101.2,125.5,101.2",
+    "5859,961,elite_heavy_tank,0,ghost,113.4,125.4,113.4,125.4"
+  ]
+}

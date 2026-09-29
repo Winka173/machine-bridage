@@ -1,0 +1,17 @@
+{
+  "map": "redrock",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 6754,
+  "journal": [],
+  "records": [
+    {"vehicle": 686, "def": "heavy_tank", "team": 0, "startTick": 1340, "start": 67, "end": 75.5, "seconds": 8.5, "x": -81.109, "y": -88.107, "goalX": -92.091, "goalY": -94.38, "order": "Move", "cause": "BlockedByFriend", "detail": "titan_tank#684 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@8.6 titan_tank(moving)@5.0 titan_tank(moving)@5.5 armored_bulldozer(parked)@7.2"},
+    {"vehicle": 689, "def": "titan_tank", "team": 0, "startTick": 1380, "start": 69, "end": 81, "seconds": 12, "x": -80.565, "y": -92.5, "goalX": -91.103, "goalY": -95.613, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.6 titan_tank(moving)@5.9 heavy_tank(moving)@5.7 armored_bulldozer(moving)@6.5"},
+    {"vehicle": 682, "def": "sapper", "team": 1, "startTick": 3810, "start": 190.5, "end": 205, "seconds": 14.5, "x": 97.403, "y": 116.118, "goalX": 78.883, "goalY": 67.018, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#715 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(moving)@8.7 ammo_carrier(moving)@7.5 mobile_fortress(parked)@8.8"},
+    {"vehicle": 691, "def": "ew_jammer", "team": 1, "startTick": 3860, "start": 193, "end": 202, "seconds": 9, "x": 88.694, "y": 114.504, "goalX": 84.618, "goalY": 99.966, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#715 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "sapper(moving)@6.7 ammo_carrier(moving)@4.5 mobile_fortress(moving)@8.9"},
+    {"vehicle": 687, "def": "command_vehicle", "team": 1, "startTick": 3990, "start": 199.5, "end": 209.5, "seconds": 10, "x": 96.728, "y": 98.156, "goalX": 85.784, "goalY": 98.605, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#715", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "repair_bay(fixed)@8.4 rocket_technical(moving)@3.4 mobile_fortress(parked)@9.0 heavy_tank(moving)@5.7"}
+  ],
+  "rescues": []
+}

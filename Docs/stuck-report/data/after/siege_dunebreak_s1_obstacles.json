@@ -1,0 +1,26 @@
+{
+  "map": "dunebreak",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 2b9718ef app 0.1.0",
+  "ticks": 14707,
+  "journal": [],
+  "records": [
+    {"vehicle": 612, "def": "fpv_carrier", "team": 1, "startTick": 4260, "start": 213, "end": 223.5, "seconds": 10.5, "x": 89.508, "y": 113.617, "goalX": 99.814, "goalY": 114.649, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#626", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "heavy_rocket_artillery(moving)@9.6"},
+    {"vehicle": 626, "def": "mobile_fortress", "team": 1, "startTick": 6350, "start": 317.5, "end": 328, "seconds": 10.5, "x": 106.864, "y": 82.518, "goalX": 100.456, "goalY": 100.927, "order": "Move", "cause": "BlockedByDefence", "detail": "repair_bay#549 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": ""},
+    {"vehicle": 643, "def": "ammo_carrier", "team": 1, "startTick": 7710, "start": 385.5, "end": 396, "seconds": 10.5, "x": 86.271, "y": 122, "goalX": 103, "goalY": 139, "order": "Move", "cause": "BlockedByFriend", "detail": "heavy_rocket_artillery#609 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "drone_hangar(fixed)@7.6 heavy_rocket_artillery(parked)@5.7 elite_heavy_tank(moving)@8.9"},
+    {"vehicle": 656, "def": "counter_battery_radar", "team": 1, "startTick": 8020, "start": 401, "end": 409.5, "seconds": 8.5, "x": 107.88, "y": 106.209, "goalX": 100.945, "goalY": 112.908, "order": "Move", "cause": "BlockedByFriend", "detail": "elite_heavy_tank#636 moving", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "elite_heavy_tank(moving)@5.5"},
+    {"vehicle": 685, "def": "heavy_tank", "team": 0, "startTick": 9270, "start": 463.5, "end": 473, "seconds": 9.5, "x": -95.626, "y": -92.771, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "ifv#688 moving", "area": "camp0", "lanes": "road+route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@7.9 armored_bulldozer(moving)@6.2 ifv(moving)@6.0"},
+    {"vehicle": 673, "def": "elite_heavy_tank", "team": 1, "startTick": 9840, "start": 492, "end": 500.5, "seconds": 8.5, "x": 85.819, "y": 109.279, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#626 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "fpv_carrier(moving)@6.2 mobile_fortress(parked)@8.7"},
+    {"vehicle": 656, "def": "counter_battery_radar", "team": 1, "startTick": 9940, "start": 497, "end": 507.5, "seconds": 10.5, "x": 97.327, "y": 97.191, "goalX": 95.279, "goalY": 111.124, "order": "Move", "cause": "BlockedByFriend", "detail": "command_vehicle#693 moving", "area": "fortress", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "repair_bay(fixed)@7.4 mobile_fortress(parked)@9.2 command_vehicle(moving)@3.5 vbied(moving)@9.8"},
+    {"vehicle": 703, "def": "titan_tank", "team": 0, "startTick": 11010, "start": 550.5, "end": 561, "seconds": 10.5, "x": -83.012, "y": -91.765, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "armored_bulldozer(moving)@8.8 aa_vehicle(moving)@5.0"},
+    {"vehicle": 636, "def": "elite_heavy_tank", "team": 1, "startTick": 11770, "start": 588.5, "end": 600, "seconds": 11.5, "x": 97.887, "y": 112.809, "goalX": 64.461, "goalY": 86.699, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "command_vehicle#693 moving", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "ammo_carrier(moving)@7.5 counter_battery_radar(moving)@8.0 elite_heavy_tank(moving)@5.6 command_vehicle(moving)@6.0"}
+  ],
+  "rescues": [
+    "4458,612,fpv_carrier,1,ghost,91.0,114.1,91.0,114.1",
+    "6544,626,mobile_fortress,1,ghost,107.5,83.1,107.5,83.1",
+    "11207,703,titan_tank,0,ghost,-84.8,-92.4,-84.8,-92.4",
+    "11974,636,elite_heavy_tank,1,ghost,98.5,112.8,98.5,112.8"
+  ]
+}

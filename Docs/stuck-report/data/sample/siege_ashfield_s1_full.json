@@ -1,0 +1,13 @@
+{
+  "map": "ashfield",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 91c11044 app 0.1.0",
+  "ticks": 5718,
+  "journal": [],
+  "records": [
+    {"vehicle": 457, "def": "command_vehicle", "team": 1, "startTick": 4310, "start": 215.5, "end": 224.5, "seconds": 9, "x": 117.242, "y": 114.088, "goalX": 81.866, "goalY": 97.36, "order": "Idle", "cause": "BlockedByFriend", "detail": "elite_heavy_tank#494 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@8.5 mobile_fortress(moving)@9.2 elite_heavy_tank(parked)@6.9"}
+  ],
+  "rescues": []
+}
