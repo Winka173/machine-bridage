@@ -13,6 +13,15 @@ its commits.
 - Every weapon table has penetration, form and tags. Section 10 adds a counters table and the icon legend.
 - Fixed: the combat-value table uses the current roster, Boss Rush's "{0} bosses", the HQ instead of the bastion, the map, mission and difficulty counts.
 
+### Balance pass after prompt 18
+
+- The section-17 measurements ran in full: the campaign over 5 seeds, the stuck detector on 21 battlefields in 4 modes over 5 seeds (420 battles), the tick budget, every mode at every difficulty over 5 seeds (DECISIONS 19B, `Docs/balance/*p18*`, `tables_p18.md`).
+- Towers on the owner's DPS targets with weapons of their own (rhythm, magazines, the AA tower's flak fuzed for aircraft); the HQ's flak halved. The C-RAM, rocket battery and AA branches wait for the lead's merge.
+- Vehicles: Iron Beam 7 CP and faster, SAM launcher faster and tougher, wheeled gun +20 % and +250 HP, IFV +40 % rhythm, twin tank 96 on heavy, Lancet 100 m, thermobaric launcher 48 m (it could not reach forts), cheaper-to-tougher aircraft (fragmentation on aircraft 1.5 to 1.3, more health), attack jet and strike drone one store less and 1 CP more, flame tank 5, car bomb 3, Titan 16 CP.
+- Airstrike 6 x 400 at 6 m for 9 CP. Support texts take their numbers from the data (the air raid's "fourteen" bombs were 10, the cluster strike's "forty" bomblets 30), with a test; the boss supports have names.
+- Siege harder, Defend's outer line tougher and its first waves lighter, Normal's enemy income x0.7 and its deck of typical cards.
+- New measures: `TowerValueMeasure`, `BalancePassMeasure`, the combat value's artillery fight.
+
 ## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
 
 2026-09-29 · merged into main

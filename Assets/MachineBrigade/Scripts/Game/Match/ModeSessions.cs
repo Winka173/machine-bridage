@@ -586,11 +586,13 @@ namespace MachineBrigade.Game.Match
                 // The player's inner lines are the strong ones.
                 // Prompt 13 H.7: Defend's outer line 1 -> 1.45 and the inner ones 1.4 / 1.8 -> 1.25 / 1.4 (the outer line
                 // always fell and the HQ never did); Endless 1.2 / 1.3 / 1.5.
-                LineHealth = _endless ? new[] { 1.2f, 1.3f, 1.5f } : new[] { 1.45f, 1.25f, 1.4f },
-                LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.15f, 1.1f, 1.2f },
+                // The balance pass after prompt 18 (D.2): the outer line fell in every battle (15 of 15 at 3-5 minutes, the HQ
+                // always held): outer 1.45 -> 2.0 as tough and 1.15 -> 1.3 as hard-hitting, the first waves smaller; the inner as they were.
+                LineHealth = _endless ? new[] { 1.2f, 1.3f, 1.5f } : new[] { 2.0f, 1.25f, 1.4f },
+                LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.3f, 1.1f, 1.2f },
                 // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
                 WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
-                WaveStart = _endless ? (hard ? 6 : easy ? 4 : 5) : hard ? 5 : easy ? 3 : 4, WaveGrowth = _endless ? 1.2f : hard ? 1.9f : 1.7f, WaveCompound = _endless ? 0.06f : 0f, WaveMax = 36, HeavyEvery = 3,
+                WaveStart = _endless ? (hard ? 6 : easy ? 4 : 5) : hard ? 4 : easy ? 2 : 3, WaveGrowth = _endless ? 1.2f : hard ? 2.0f : 1.8f, WaveCompound = _endless ? 0.06f : 0f, WaveMax = 36, HeavyEvery = 3,
                 EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
                 // Prompt 13 H.7-H.8: the waves by the base they face, drawn against it, with siege breakers.
                 ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = 2, BreachEvery = 3,
@@ -750,7 +752,8 @@ namespace MachineBrigade.Game.Match
             // Its income is one base (0.6) times the difficulty's multiplier (ModeSession.Create; prompt 13 I.1).
             var hard = Difficulty >= AiDifficulty.Hard;
             // Prompt 13 H.5: the garrison 12 -> 16 CP (Hard 18 -> 22) and 0.6 -> 0.8 income.
-            var defender = EnemySide(hard ? 22f : 16f, 0.8f, Difficulty, world.Catalog, seed);
+            // The balance pass after prompt 18 (D.1): 16 -> 20 CP on Normal and Easy (the measured side won 13 sieges of 15).
+            var defender = EnemySide(hard ? 24f : 20f, 0.8f, Difficulty, world.Catalog, seed);
             defender.ArmyCap = hard ? 34 : 26;
             // The time bank: harder sieges start with less on the clock.
             var start = Difficulty switch { AiDifficulty.VeryHard => 400f, AiDifficulty.Hard => 420f, AiDifficulty.Easy => 540f, _ => 480f };
@@ -759,9 +762,10 @@ namespace MachineBrigade.Game.Match
                 // Prompt 13 H.5: 300 s more a ring broken (360 before), towers 1.2 -> 1.75 as tough, the inner rings
                 // more so, and Normal mans 90 % of the hardpoints.
                 StartSeconds = start, StageBonus = new[] { 300f, 300f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
-                Hardening = 1.75f, LineHealth = new[] { 1.1f, 1.25f, 1.4f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
+                // The balance pass after prompt 18 (D.1): towers 1.75 -> 2.1 as tough, the inner rings hit harder.
+                Hardening = 2.1f, LineHealth = new[] { 1.1f, 1.25f, 1.4f }, LineDamage = new[] { 1.05f, 1.15f, 1.25f },
                 // An easier fortress leaves some of its outer hardpoints empty.
-                Manning = Difficulty switch { >= AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.9f },
+                Manning = Difficulty switch { >= AiDifficulty.Normal => 1f, _ => 0.6f },
                 Attacker = attacker, Defender = defender,
                 AttackerBase = PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam),
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.

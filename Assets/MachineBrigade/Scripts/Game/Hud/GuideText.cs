@@ -591,39 +591,39 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: chặn xe tăng và giáp dày từ xa; APS và la-de phòng không bắn hạ được tên lửa của nó, pháo binh bắn xa hơn nó.\n" +
                 "Mẹo: nã pháo từ ngoài 50 m, hoặc cho tăng có APS hay Iron Beam đi cùng đợt tấn công."),
             ["guide.uav_scan"] = (
-                "[[UAV scan]] · recon · 2 CP\n" +
-                "How it fights: a drone circles the mark for 10 s and shows [[everything within 30 m]] to your side: stealth aircraft, hidden guns and mines too.\n" +
+                "[[UAV scan]] · recon · {{cp}} CP\n" +
+                "How it fights: a drone circles the mark for {{duration}} s and shows [[everything within {{radius}} m]] to your side: stealth aircraft, hidden guns and mines too.\n" +
                 "Strong / weak: cheap eyes for artillery and for a push into the unknown; it deals no damage.\n" +
                 "Tip: call it on an objective before the army goes in, or where something unseen is shooting at you.",
-                "[[UAV quét]] · trinh sát · 2 CP\n" +
-                "Cách đánh: một drone lượn vòng trên điểm đánh dấu trong 10 giây và cho phe ta thấy [[mọi thứ trong 30 m]]: cả máy bay tàng hình, pháo ẩn và mìn.\n" +
+                "[[UAV quét]] · trinh sát · {{cp}} CP\n" +
+                "Cách đánh: một drone lượn vòng trên điểm đánh dấu trong {{duration}} giây và cho phe ta thấy [[mọi thứ trong {{radius}} m]]: cả máy bay tàng hình, pháo ẩn và mìn.\n" +
                 "Mạnh / yếu: đôi mắt rẻ cho pháo binh và cho một đợt tiến vào nơi chưa rõ; không gây sát thương.\n" +
                 "Mẹo: gọi lên cứ điểm trước khi quân tiến vào, hoặc nơi có thứ gì vô hình đang bắn quân ta."),
             ["guide.remote_mines"] = (
-                "[[Remote mines]] · area denial · 5 CP\n" +
-                "How it fights: rockets scatter [[8 anti-tank mines]] within 12 m of the mark; each blows up under the first enemy vehicle over it, and they clear themselves after 60 s.\n" +
+                "[[Remote mines]] · area denial · {{cp}} CP\n" +
+                "How it fights: rockets scatter [[{{count}} anti-tank mines]] within {{radius}} m of the mark; each blows up under the first enemy vehicle over it, and they clear themselves after {{duration}} s.\n" +
                 "Strong / weak: stops a push on a road or a point; scouts, engineers and a UAV scan see them, and aircraft fly over.\n" +
                 "Tip: lay them across the way the enemy is coming, not on top of them.",
-                "[[Mìn rải từ xa]] · chặn khu vực · 5 CP\n" +
-                "Cách đánh: rốc-két rải [[8 quả mìn chống tăng]] trong vòng 12 m quanh điểm đánh dấu; mỗi quả nổ dưới xe địch đầu tiên đi qua, và tự hủy sau 60 giây.\n" +
+                "[[Mìn rải từ xa]] · chặn khu vực · {{cp}} CP\n" +
+                "Cách đánh: rốc-két rải [[{{count}} quả mìn chống tăng]] trong vòng {{radius}} m quanh điểm đánh dấu; mỗi quả nổ dưới xe địch đầu tiên đi qua, và tự hủy sau {{duration}} giây.\n" +
                 "Mạnh / yếu: chặn một đợt tiến theo đường hoặc vào cứ điểm; trinh sát, công binh và UAV quét nhìn thấy chúng, máy bay bay qua đầu.\n" +
                 "Mẹo: rải ngang đường địch đang tới, không phải ngay trên đầu chúng."),
             ["guide.field_tower"] = (
-                "[[Field tower]] · fixed defence by air · 6 CP\n" +
-                "How it fights: a [[guard tower]] is dropped by parachute on the mark and fights for 60 s; from card rank 5 it is an [[ATGM tower]]. Never into the enemy's camp.\n" +
+                "[[Field tower]] · fixed defence by air · {{cp}} CP\n" +
+                "How it fights: a [[guard tower]] is dropped by parachute on the mark and fights for {{duration}} s; from card rank {{unitRank}} it is an [[ATGM tower]]. Never into the enemy's camp.\n" +
                 "Strong / weak: holds a point you just took or plugs a gap in the line; artillery and heavy guns knock it down.\n" +
                 "Tip: drop it on a point the enemy is about to counter-attack.",
-                "[[Tháp dã chiến]] · công sự thả dù · 6 CP\n" +
-                "Cách đánh: một [[tháp canh]] được thả dù xuống điểm đánh dấu và chiến đấu trong 60 giây; từ cấp 5 của thẻ là [[tháp tên lửa chống tăng]]. Không bao giờ thả vào căn cứ địch.\n" +
+                "[[Tháp dã chiến]] · công sự thả dù · {{cp}} CP\n" +
+                "Cách đánh: một [[tháp canh]] được thả dù xuống điểm đánh dấu và chiến đấu trong {{duration}} giây; từ cấp {{unitRank}} của thẻ là [[tháp tên lửa chống tăng]]. Không bao giờ thả vào căn cứ địch.\n" +
                 "Mạnh / yếu: giữ cứ điểm vừa chiếm hoặc bịt lỗ hổng trên tuyến; pháo binh và pháo nặng hạ được nó.\n" +
                 "Mẹo: thả xuống cứ điểm mà địch sắp phản công."),
             ["guide.sead_strike"] = (
-                "[[SEAD strike]] · anti-radiation missile · 7 CP\n" +
-                "How it fights: a jet fires an anti-radiation missile at the [[enemy air defence]] nearest the mark (within 20 m): 500 damage, and it is [[knocked out]] for 8 s.\n" +
+                "[[SEAD strike]] · anti-radiation missile · {{cp}} CP\n" +
+                "How it fights: a jet fires an anti-radiation missile at the [[enemy air defence]] nearest the mark (within {{radius}} m): {{damage}} damage, and it is [[knocked out]] for {{duration}} s.\n" +
                 "Strong / weak: opens the sky for your aircraft; wasted where there is no anti-air.\n" +
                 "Tip: call it just before your helicopters or bombers go in.",
-                "[[Đòn SEAD]] · tên lửa chống bức xạ · 7 CP\n" +
-                "Cách đánh: máy bay phóng tên lửa chống bức xạ vào [[phòng không địch]] gần điểm đánh dấu nhất (trong 20 m): 500 sát thương, và nó [[tê liệt]] 8 giây.\n" +
+                "[[Đòn SEAD]] · tên lửa chống bức xạ · {{cp}} CP\n" +
+                "Cách đánh: máy bay phóng tên lửa chống bức xạ vào [[phòng không địch]] gần điểm đánh dấu nhất (trong {{radius}} m): {{damage}} sát thương, và nó [[tê liệt]] {{duration}} giây.\n" +
                 "Mạnh / yếu: mở đường trên trời cho máy bay ta; phí công nếu không có phòng không.\n" +
                 "Mẹo: gọi ngay trước khi trực thăng hoặc oanh tạc cơ của ta xông vào."),
             ["guide.ew_tower"] = (
@@ -736,11 +736,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: [[tản quân]] khi đồng hồ sắp hết; phá được nó là nhiệm vụ phụ, thưởng CP ngay và xu cuối trận."),
             ["guide.super_gun_shell"] = (
                 "[[Super-gun shell]] · the fortress's · one huge round\n" +
-                "How it fights: lands 4 s after its warning circle shows, 15 m across.\n" +
+                "How it fights: lands {{delay}} s after its warning circle shows, its blast {{blast}} m.\n" +
                 "Strong / weak: wrecks light vehicles and groups; aircraft are safe.\n" +
                 "Tip: move out of the circle, or destroy the gun.",
                 "[[Đạn siêu pháo]] · của pháo đài · một quả đạn cực lớn\n" +
-                "Cách đánh: rơi xuống 4 giây sau khi vòng cảnh báo hiện, rộng 15 m.\n" +
+                "Cách đánh: rơi xuống {{delay}} giây sau khi vòng cảnh báo hiện, vụ nổ {{blast}} m.\n" +
                 "Mạnh / yếu: phá nát xe nhẹ và đám đông; máy bay an toàn.\n" +
                 "Mẹo: chạy khỏi vòng tròn, hoặc phá khẩu pháo."),
             ["guide.spawn_bastion"] = (
@@ -1049,131 +1049,131 @@ namespace MachineBrigade.Game.Hud
 
             // Fire support cards.
             ["guide.artillery_barrage"] = (
-                "[[Artillery barrage]] · fire support · 5 CP\n" +
-                "How it fights: 1.5 s after you tap, twelve [[shells]] rain on a 10 m circle over 4 s, each a high-explosive blast.\n" +
+                "[[Artillery barrage]] · fire support · {{cp}} CP\n" +
+                "How it fights: {{delay}} s after you tap, {{count}} [[shells]] rain on a {{radius}} m circle over {{duration}} s, each a high-explosive blast.\n" +
                 "Strong / weak: good against groups, [[towers]] and parked artillery; fast vehicles drive out of it, and it cannot hit aircraft.\n" +
                 "Tip: aim at enemies that stand and fight or sit capturing a point; it never hurts your own vehicles.",
-                "[[Pháo kích]] · hỏa lực yểm trợ · 5 CP\n" +
-                "Cách đánh: 1,5 giây sau khi chạm, mười hai quả [[đạn pháo]] rơi xuống vùng tròn 10 m trong 4 giây, mỗi quả là một vụ nổ mạnh.\n" +
+                "[[Pháo kích]] · hỏa lực yểm trợ · {{cp}} CP\n" +
+                "Cách đánh: {{delay}} giây sau khi chạm, {{count}} quả [[đạn pháo]] rơi xuống vùng tròn {{radius}} m trong {{duration}} giây, mỗi quả là một vụ nổ mạnh.\n" +
                 "Mạnh / yếu: tốt với cụm địch, [[tháp canh]] và pháo binh đứng yên; xe nhanh chạy thoát được, và không đánh được máy bay.\n" +
                 "Mẹo: nhắm vào địch đang đứng giao chiến hoặc đang chiếm điểm; nó không bao giờ gây hại cho xe ta."),
             ["guide.airstrike"] = (
-                "[[Airstrike]] · a line of bombs · 8 CP\n" +
-                "How it fights: 2 s after you call it, a jet drops eight [[bombs]] along a 60 m line in the direction you [[drag]]; from card [[rank 7]] the line is 40% longer (84 m, eleven bombs).\n" +
+                "[[Airstrike]] · a line of bombs · {{cp}} CP\n" +
+                "How it fights: {{delay}} s after you call it, a jet drops {{count}} [[bombs]] along a {{length}} m line, {{width}} m wide, in the direction you [[drag]]; from card [[rank {{rank}}]] the line is {{linePercent}}% longer ({{rankLength}} m, {{rankCount}} bombs).\n" +
                 "Strong / weak: hits columns and towers along a road hard; a single vehicle off the line escapes, and aircraft are immune.\n" +
                 "Tip: drag it along the enemy's line of advance so every bomb finds a target.",
-                "[[Không kích]] · một hàng bom · 8 CP\n" +
-                "Cách đánh: 2 giây sau khi gọi, máy bay thả tám quả [[bom]] dọc một đường 60 m theo hướng bạn [[kéo]]; từ [[cấp 7]] của thẻ, đường bom dài hơn 40% (84 m, mười một quả).\n" +
+                "[[Không kích]] · một hàng bom · {{cp}} CP\n" +
+                "Cách đánh: {{delay}} giây sau khi gọi, máy bay thả {{count}} quả [[bom]] dọc một đường {{length}} m, rộng {{width}} m, theo hướng bạn [[kéo]]; từ [[cấp {{rank}}]] của thẻ, đường bom dài hơn {{linePercent}}% ({{rankLength}} m, {{rankCount}} quả).\n" +
                 "Mạnh / yếu: đánh mạnh vào đoàn xe và tháp canh dọc đường; xe lẻ nằm ngoài hàng bom sẽ thoát, máy bay thì miễn nhiễm.\n" +
                 "Mẹo: kéo dọc theo hướng tiến quân của địch để quả bom nào cũng trúng."),
             ["guide.cruise_missile"] = (
-                "[[Cruise missile]] · one huge blast · 14 CP\n" +
-                "How it fights: after a 3 s warning, one [[missile]] strikes the spot with an 18 m blast.\n" +
+                "[[Cruise missile]] · one huge blast · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, one [[missile]] strikes the spot with a {{blast}} m blast.\n" +
                 "Strong / weak: the best way to wipe out a crowd or a cluster of [[defences]]; moving targets may drive off before it lands.\n" +
                 "Tip: fire it where enemies stand still: a captured objective, a siege line, parked artillery. Enemy jammers throw it off.",
-                "[[Tên lửa hành trình]] · một vụ nổ cực lớn · 14 CP\n" +
-                "Cách đánh: sau 3 giây cảnh báo, một quả [[tên lửa]] đánh xuống điểm chọn với vụ nổ bán kính 18 m.\n" +
+                "[[Tên lửa hành trình]] · một vụ nổ cực lớn · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, một quả [[tên lửa]] đánh xuống điểm chọn với vụ nổ bán kính {{blast}} m.\n" +
                 "Mạnh / yếu: cách tốt nhất để xóa sổ một cụm quân hoặc cụm [[công sự]]; mục tiêu đang chạy có thể thoát trước khi nó rơi.\n" +
                 "Mẹo: bắn vào nơi địch đứng yên: cứ điểm đang chiếm, tuyến công thành, pháo binh đang đỗ. Xe gây nhiễu địch làm nó lệch."),
             ["guide.smoke_screen"] = (
-                "[[Smoke screen]] · blocks sight · 2 CP\n" +
-                "How it fights: after 1 s a 12 m cloud stands for 12 s; no one can see into or through it, so guns lose their [[line of sight]].\n" +
+                "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
+                "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +
                 "Strong / weak: saves units from long-range guns, ATGMs and railguns; it does no damage, and at point-blank range fighting goes on.\n" +
                 "Tip: drop it between your advancing tanks and the enemy's [[tank destroyers]], or over a unit pulling back.",
-                "[[Màn khói]] · che tầm nhìn · 2 CP\n" +
-                "Cách đánh: sau 1 giây, đám khói 12 m đứng trong 12 giây; không ai nhìn vào hay xuyên qua được, súng pháo mất [[tầm nhìn]].\n" +
+                "[[Màn khói]] · che tầm nhìn · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây, đám khói {{radius}} m đứng trong {{duration}} giây; không ai nhìn vào hay xuyên qua được, súng pháo mất [[tầm nhìn]].\n" +
                 "Mạnh / yếu: cứu quân ta khỏi pháo tầm xa, tên lửa chống tăng và pháo điện từ; không gây sát thương, sát sạt nhau thì vẫn đánh được.\n" +
                 "Mẹo: thả giữa xe tăng ta đang tiến và [[xe diệt tăng]] địch, hoặc che cho xe đang rút lui."),
             ["guide.repair_drop"] = (
-                "[[Repair]] · heals an area · 4 CP\n" +
-                "How it fights: repairs your vehicles within 12 m by 40% of their health, spread over 6 s.\n" +
+                "[[Repair]] · heals an area · {{cp}} CP\n" +
+                "How it fights: repairs your vehicles within {{radius}} m by {{percent}}% of their health, spread over {{duration}} s.\n" +
                 "Strong / weak: turns a close fight when your army is [[bunched up]]; wasted on units spread far apart.\n" +
                 "Tip: call it on your tank line in the middle of the fight, not after it.",
-                "[[Sửa chữa]] · hồi máu theo vùng · 4 CP\n" +
-                "Cách đánh: sửa cho xe ta trong vòng 12 m tổng cộng 40% máu, rải đều trong 6 giây.\n" +
+                "[[Sửa chữa]] · hồi máu theo vùng · {{cp}} CP\n" +
+                "Cách đánh: sửa cho xe ta trong vòng {{radius}} m tổng cộng {{percent}}% máu, rải đều trong {{duration}} giây.\n" +
                 "Mạnh / yếu: lật ngược trận giằng co khi quân ta [[đứng gần nhau]]; phí nếu quân dàn quá rộng.\n" +
                 "Mẹo: gọi xuống tuyến xe tăng ngay giữa trận, đừng đợi đánh xong."),
             ["guide.napalm_strike"] = (
-                "[[Napalm strike]] · a line of fire · 9 CP\n" +
-                "How it fights: a jet lays ten [[fire]] bombs along a 55 m line in the direction you drag; the ground is left burning.\n" +
+                "[[Napalm strike]] · a line of fire · {{cp}} CP\n" +
+                "How it fights: a jet lays {{count}} [[fire]] bombs along a {{length}} m line in the direction you drag; the ground is left burning.\n" +
                 "Strong / weak: fire burns [[light vehicles]] (125%) and buildings; heavy armour takes only half, and aircraft none.\n" +
                 "Tip: drag it through a column of light vehicles or a row of towers.",
-                "[[Bom napalm]] · một hàng lửa · 9 CP\n" +
-                "Cách đánh: máy bay thả mười quả [[bom lửa]] dọc đường 55 m theo hướng bạn kéo; mặt đất bị đốt cháy.\n" +
+                "[[Bom napalm]] · một hàng lửa · {{cp}} CP\n" +
+                "Cách đánh: máy bay thả {{count}} quả [[bom lửa]] dọc đường {{length}} m theo hướng bạn kéo; mặt đất bị đốt cháy.\n" +
                 "Mạnh / yếu: lửa thiêu [[xe nhẹ]] (125%) và nhà cửa; giáp dày chỉ nhận một nửa, máy bay thì không hề hấn gì.\n" +
                 "Mẹo: kéo xuyên qua một đoàn xe nhẹ hoặc một dãy tháp canh."),
             ["guide.air_raid"] = (
                 "[[Air raid]] · battle event · hits both sides\n" +
-                "How it fights: a neutral bomber wave lays fourteen [[bombs]] along a 70 m line over the busiest fight, 4 s after the warning.\n" +
+                "How it fights: a neutral bomber wave lays {{count}} [[bombs]] along a {{length}} m line over the busiest fight, {{delay}} s after the warning.\n" +
                 "Strong / weak: hurts everyone under it, yours and theirs alike; only aircraft are safe.\n" +
                 "Tip: when the warning shows, [[pull back]] from the main fight and let the bombs land on the enemy.",
                 "[[Không kích bất ngờ]] · sự kiện trận đấu · trúng cả hai phe\n" +
-                "Cách đánh: một đợt máy bay trung lập rải mười bốn quả [[bom]] dọc đường 70 m lên chỗ giao tranh ác liệt nhất, 4 giây sau cảnh báo.\n" +
+                "Cách đánh: một đợt máy bay trung lập rải {{count}} quả [[bom]] dọc đường {{length}} m lên chỗ giao tranh ác liệt nhất, {{delay}} giây sau cảnh báo.\n" +
                 "Mạnh / yếu: gây sát thương mọi thứ bên dưới, cả ta lẫn địch; chỉ máy bay là an toàn.\n" +
                 "Mẹo: khi thấy cảnh báo, [[rút quân]] khỏi điểm nóng và để bom rơi trúng địch."),
 
             // Items: single use, bought with coins.
             ["guide.moab"] = (
                 "[[MOAB]] · item · the biggest blast in the game\n" +
-                "How it fights: one use; 4 s after you tap, a huge bomb levels everything within about 27 m.\n" +
+                "How it fights: one use; {{delay}} s after you tap, a huge bomb levels everything within about {{blast}} m.\n" +
                 "Strong / weak: wipes out whole groups and towers and takes a big bite out of a [[boss]]; aircraft are safe.\n" +
                 "Tip: save it for a boss, or for the moment a huge enemy wave [[bunches up]] on an objective.",
                 "[[Bom MOAB]] · vật phẩm · vụ nổ lớn nhất trò chơi\n" +
-                "Cách đánh: dùng một lần; 4 giây sau khi chạm, quả bom khổng lồ san phẳng mọi thứ trong khoảng 27 m.\n" +
+                "Cách đánh: dùng một lần; {{delay}} giây sau khi chạm, quả bom khổng lồ san phẳng mọi thứ trong khoảng {{blast}} m.\n" +
                 "Mạnh / yếu: xóa sổ cả cụm quân và tháp canh, cắn một miếng lớn vào máu [[trùm]]; máy bay thì an toàn.\n" +
                 "Mẹo: để dành cho trùm, hoặc lúc cả đợt địch [[dồn cục]] trên một cứ điểm."),
             ["guide.cluster_strike"] = (
                 "[[Cluster bombs]] · item · covers a wide strip\n" +
-                "How it fights: one use; forty [[bomblets]] carpet a 60 m strip, 20 m wide, in the direction you drag.\n" +
+                "How it fights: one use; {{count}} [[bomblets]] carpet a {{length}} m strip, {{width}} m wide, in the direction you drag.\n" +
                 "Strong / weak: great against spread-out light vehicles and artillery; each bomblet is small, so heavy tanks take little.\n" +
                 "Tip: drag it along the enemy's rear, where their [[artillery]] and support trucks sit.",
                 "[[Bom chùm]] · vật phẩm · phủ một dải rộng\n" +
-                "Cách đánh: dùng một lần; bốn mươi [[bom con]] rải thảm một dải dài 60 m, rộng 20 m, theo hướng bạn kéo.\n" +
+                "Cách đánh: dùng một lần; {{count}} [[bom con]] rải thảm một dải dài {{length}} m, rộng {{width}} m, theo hướng bạn kéo.\n" +
                 "Mạnh / yếu: rất tốt với xe nhẹ và pháo binh dàn trải; mỗi bom con nhỏ nên tăng hạng nặng ít hề hấn.\n" +
                 "Mẹo: kéo dọc phía sau đội hình địch, nơi [[pháo binh]] và xe hỗ trợ của chúng đứng."),
             ["guide.reinforcements"] = (
-                "[[Airdropped armour]] · item · three free vehicles\n" +
-                "How it fights: one use; 3 s after you tap, two battle tanks and an IFV [[drop in]] at that spot, at no CP cost.\n" +
+                "[[Airdropped armour]] · item · {{units}} free vehicles\n" +
+                "How it fights: one use; {{delay}} s after you tap, two battle tanks and an IFV [[drop in]] at that spot, at no CP cost.\n" +
                 "Strong / weak: puts a strong group anywhere at once; once down, they are ordinary vehicles.\n" +
                 "Tip: drop them on an [[objective]] you must hold, or right behind the enemy's artillery.",
-                "[[Tiếp viện thả dù]] · vật phẩm · ba xe miễn phí\n" +
-                "Cách đánh: dùng một lần; 3 giây sau khi chạm, hai tăng chủ lực và một xe chiến đấu bộ binh [[thả dù]] xuống điểm đó, không tốn CP.\n" +
+                "[[Tiếp viện thả dù]] · vật phẩm · {{units}} xe miễn phí\n" +
+                "Cách đánh: dùng một lần; {{delay}} giây sau khi chạm, hai tăng chủ lực và một xe chiến đấu bộ binh [[thả dù]] xuống điểm đó, không tốn CP.\n" +
                 "Mạnh / yếu: có ngay một cụm quân mạnh ở bất kỳ đâu; tiếp đất rồi thì là xe bình thường.\n" +
                 "Mẹo: thả xuống [[cứ điểm]] cần giữ, hoặc ngay sau lưng pháo binh địch."),
             ["guide.field_repair"] = (
                 "[[Field repair]] · item · heals the whole army\n" +
-                "How it fights: one use; every vehicle you have, anywhere on the map, [[repairs]] half its health over 5 s.\n" +
+                "How it fights: one use; every vehicle you have, anywhere on the map, [[repairs]] {{percent}}% of its health over {{duration}} s.\n" +
                 "Strong / weak: turns a losing battle around; wasted if your army is still healthy.\n" +
                 "Tip: use it in the middle of a big fight, when most of your vehicles are [[damaged]].",
                 "[[Sửa chữa toàn quân]] · vật phẩm · hồi máu cả đội quân\n" +
-                "Cách đánh: dùng một lần; mọi xe của ta, ở bất kỳ đâu trên bản đồ, được [[hồi]] một nửa máu trong 5 giây.\n" +
+                "Cách đánh: dùng một lần; mọi xe của ta, ở bất kỳ đâu trên bản đồ, được [[hồi]] {{percent}}% máu trong {{duration}} giây.\n" +
                 "Mạnh / yếu: lật ngược trận đang thua; phí nếu quân ta còn khỏe.\n" +
                 "Mẹo: dùng giữa trận đánh lớn, khi phần lớn xe ta đã [[mất máu]]."),
             ["guide.emp_blast"] = (
                 "[[EMP blast]] · item · stuns the enemy\n" +
-                "How it fights: one use; 2 s after you tap, every enemy ground vehicle within 20 m is [[stunned]] for 6 s: no driving, no firing.\n" +
+                "How it fights: one use; {{delay}} s after you tap, every enemy ground vehicle within {{radius}} m is [[stunned]] for {{duration}} s: no driving, no firing.\n" +
                 "Strong / weak: freezes a whole enemy push; aircraft and bosses are not affected.\n" +
                 "Tip: fire it on the enemy's tank line, then hit the frozen group with artillery or an [[airstrike]].",
                 "[[Bom EMP]] · vật phẩm · làm tê liệt địch\n" +
-                "Cách đánh: dùng một lần; 2 giây sau khi chạm, mọi xe mặt đất địch trong 20 m bị [[choáng]] 6 giây: không chạy, không bắn.\n" +
+                "Cách đánh: dùng một lần; {{delay}} giây sau khi chạm, mọi xe mặt đất địch trong {{radius}} m bị [[choáng]] {{duration}} giây: không chạy, không bắn.\n" +
                 "Mạnh / yếu: đóng băng cả một đợt tấn công của địch; không tác dụng với máy bay và trùm.\n" +
                 "Mẹo: ném vào tuyến xe tăng địch, rồi nện cụm bị đóng băng bằng pháo binh hoặc [[không kích]]."),
             ["guide.shield_dome"] = (
                 "[[Shield dome]] · item · protects your army\n" +
-                "How it fights: one use; your vehicles within 16 m take 70% less damage for 10 s.\n" +
+                "How it fights: one use; your vehicles within {{radius}} m take {{percent}}% less damage for {{duration}} s.\n" +
                 "Strong / weak: saves a group from a boss, a barrage or a big strike; it only covers vehicles inside when it goes up.\n" +
                 "Tip: drop it on your [[tank line]] just as a big fight starts.",
                 "[[Khiên vòm]] · vật phẩm · che chắn quân ta\n" +
-                "Cách đánh: dùng một lần; xe ta trong vòng 16 m giảm 70% sát thương nhận vào trong 10 giây.\n" +
+                "Cách đánh: dùng một lần; xe ta trong vòng {{radius}} m giảm {{percent}}% sát thương nhận vào trong {{duration}} giây.\n" +
                 "Mạnh / yếu: cứu cụm quân khỏi trùm, loạt pháo hoặc đòn đánh lớn; chỉ che những xe đứng bên trong lúc khiên bật lên.\n" +
                 "Mẹo: thả lên [[tuyến xe tăng]] ngay khi trận đánh lớn bắt đầu."),
             ["guide.gunship_support"] = (
-                "[[Gunship on call]] · item · an AC-130 for 30 s\n" +
-                "How it fights: one use; a sky gunship arrives and [[orbits]] for 30 s, firing its 105, 40 and 25 mm guns at ground targets.\n" +
+                "[[Gunship on call]] · item · an AC-130 for {{duration}} s\n" +
+                "How it fights: one use; a sky gunship arrives and [[orbits]] for {{duration}} s, firing its 105, 40 and 25 mm guns at ground targets.\n" +
                 "Strong / weak: devastating on ground forces; it cannot hit aircraft, and enemy SAMs and fighters can shoot it down.\n" +
                 "Tip: call it over the main ground fight once the enemy's [[anti-air]] is cleared.",
-                "[[Pháo đài bay yểm trợ]] · vật phẩm · AC-130 trong 30 giây\n" +
-                "Cách đánh: dùng một lần; pháo đài bay tới và [[bay vòng]] 30 giây, pháo 105, 40 và 25 mm nã vào mục tiêu mặt đất.\n" +
+                "[[Pháo đài bay yểm trợ]] · vật phẩm · AC-130 trong {{duration}} giây\n" +
+                "Cách đánh: dùng một lần; pháo đài bay tới và [[bay vòng]] {{duration}} giây, pháo 105, 40 và 25 mm nã vào mục tiêu mặt đất.\n" +
                 "Mạnh / yếu: tàn phá quân mặt đất; không bắn được máy bay, tên lửa phòng không và tiêm kích địch có thể bắn hạ nó.\n" +
                 "Mẹo: gọi xuống trận đánh chính khi [[phòng không]] địch đã bị dọn sạch."),
 

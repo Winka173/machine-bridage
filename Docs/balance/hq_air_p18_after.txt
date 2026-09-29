@@ -1,0 +1,4 @@
+HQ level 5 alone vs air     (4 aircraft, 53 CP), 5 min: HQ left 27 % (held 5/5), aircraft destroyed 58 %
+HQ level 5 alone vs air x2  (8 aircraft, 106 CP), 5 min: HQ left 0 % (held 0/5), aircraft destroyed 58 %
+HQ level 3 alone vs air     (4 aircraft, 53 CP), 5 min: HQ left 27 % (held 5/5), aircraft destroyed 58 %
+HQ level 3 alone vs air x2  (8 aircraft, 106 CP), 5 min: HQ left 0 % (held 0/5), aircraft destroyed 58 %

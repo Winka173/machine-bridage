@@ -63,7 +63,8 @@ namespace MachineBrigade.Sim.AI
         public static BuyProfile For(AiDifficulty difficulty) => difficulty switch
         {
             AiDifficulty.Easy => new BuyProfile(3f, 0f, 0f, 0f, 0f, false, 0.8f),
-            AiDifficulty.Normal => new BuyProfile(0.8f, 1f, 0.5f, 0.6f, 0.04f, false, 1f),
+            // The balance pass after prompt 18 (D.5): Normal's income 1 -> 0.7 (the ladder's Normal won 28-37 %, below Hard's 48 %).
+            AiDifficulty.Normal => new BuyProfile(0.8f, 1f, 0.5f, 0.6f, 0.04f, false, 0.7f),
             AiDifficulty.Hard => new BuyProfile(0.6f, 1.25f, 1f, 1f, 0.1f, false, 1.2f),
             _ => new BuyProfile(0.4f, 1.4f, 1f, 1.2f, 0.12f, true, 1.4f),
         };
@@ -292,7 +293,11 @@ namespace MachineBrigade.Sim.AI
                     _ => c.Class == UnitClass.Support,
                 };
                 if (!fits) return float.MinValue;
-                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 1f : 0.4f);
+                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 0.5f : 0.4f);
+                // Normal (the balance pass after prompt 18, D.4): the role's typical cards, not any that fits, so one
+                // seed's deck is not far stronger or weaker than the next (Deathmatch swung from 2/6 to 8/12 on the
+                // eight cards a seed happened to draw).
+                if (difficulty == AiDifficulty.Normal) score -= MathF.Abs(c.CombatValue - 1f) * 1.2f;
                 // The value per CP (part A): Hard and Very Hard weigh it (Normal draws any card that fits the role).
                 if (difficulty >= AiDifficulty.Hard) score += c.CombatValue * 1.5f * BuyProfile.For(difficulty).Value;
                 // The support card a battle uses: repairs or ammunition.

@@ -287,7 +287,9 @@ def combat_value(game, h):
     runs = sorted((ROOT / 'Docs' / 'balance').glob('combat_value_*_summary.tsv'), key=lambda p: p.stat().st_mtime)
     if not runs:
         return ''
-    path = runs[-1]
+    # The balance pass after prompt 18 names its final measure (a fresh checkout gives every file the same time).
+    latest = ROOT / 'Docs' / 'balance' / 'combat_value_p18_after_summary.tsv'
+    path = latest if latest.exists() else runs[-1]
     lines = path.read_text(encoding='utf-8').splitlines()
     head = lines[0].split('\t')
     units = {v['id']: v for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
@@ -592,7 +594,9 @@ def testing(game, h):
         'Công thành, Phòng thủ (mục tiêu ≥ 4/5), Vô tận, Pháo đài tuần ở các độ khó và 7 bản đồ còn lại.',
         'Xe tinh nhuệ theo ngân sách: tỷ lệ sức mạnh 1,8–2,2 lần; chiến dịch và Săn trùm sau khi đổi sang ngân sách.',
         'Trang bị: độ chênh giữa các nhóm vũ khí (mục tiêu ≤ 1,5 lần), Nạp kép trên pháo tự động và giàn rocket, đầu đạn chùm lên công trình, cầu tuyết sau trần hoàn CP.',
-        'Boss: thời gian hạ trong +15% sau khi có bộ phận; mọi trận boss và Săn trùm thắng được.',
+        'Đã chạy trong đợt cân bằng sau prompt 18 (DECISIONS 19B, số liệu trong Docs/balance, tables_p18.md): quét 5 seed toàn chiến dịch trước/sau, '
+        'bộ phát hiện xe kẹt trên 21 bản đồ × 4 chế độ × 5 seed (420 trận), ngân sách tick, mọi chế độ ở 4 độ khó × 5 seed; còn lại ở đây là phần chưa đạt.',
+        'Boss: thời gian hạ trong +15% sau khi có bộ phận; mọi trận boss và Săn trùm thắng được (Săn trùm chạm trần 30 phút ở cả 10 trận đo, sau prompt 18).',
         'Hiệu năng: ngân sách tick đo lại trên máy yên tĩnh và điện thoại yếu thật; FPS trận boss nặng nhất ở mức đồ họa Thấp; đảo và đầm lầy (2.500 vật thể).',
         'Sau buổi chơi thử: khả năng thắng chiến dịch và trận boss khi súng chính xe thường không còn bắn máy bay; thời gian hạ tăng của máy bay cường kích và A-10 với nhịp bắn mới; '
         'tỷ lệ trúng của tên lửa chậm hơn khi có pháo sáng và APS; FPS khi nhiều tên lửa hành trình hoặc ném bom rải thảm cùng lúc ở đồ họa Thấp; khung hình những giây đầu trên điện thoại thật.',

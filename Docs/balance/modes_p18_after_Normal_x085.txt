@@ -1,0 +1,147 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Conquest       ashfield   s1: LOST   6.3 min  kills 46 losses 47 tickets 0:244
+Conquest       ashfield   s2: WON    5.6 min  kills 39 losses 46 tickets 256:0
+Conquest       ashfield   s3: LOST   6.6 min  kills 44 losses 51 tickets 0:223
+Conquest       ashfield   s4: LOST   6.3 min  kills 40 losses 60 tickets 0:221
+Conquest       ashfield   s5: LOST   5.0 min  kills 35 losses 38 tickets 0:293
+Conquest       dunebreak  s1: LOST   8.6 min  kills 69 losses 67 tickets 0:107
+Conquest       dunebreak  s2: WON    6.3 min  kills 48 losses 46 tickets 237:0
+Conquest       dunebreak  s3: WON    7.6 min  kills 55 losses 56 tickets 217:0
+Conquest       dunebreak  s4: LOST   6.5 min  kills 41 losses 68 tickets 0:240
+Conquest       dunebreak  s5: LOST   8.4 min  kills 63 losses 64 tickets 0:57
+Conquest       ironport   s1: WON    7.7 min  kills 67 losses 56 tickets 116:0
+Conquest       ironport   s2: WON    6.0 min  kills 42 losses 46 tickets 266:0
+Conquest       ironport   s3: LOST   8.4 min  kills 54 losses 83 tickets 0:11
+Conquest       ironport   s4: LOST   5.2 min  kills 34 losses 53 tickets 0:281
+Conquest       ironport   s5: WON    9.2 min  kills 75 losses 78 tickets 17:0
+Conquest       SUMMARY (Normal): won 6/15, median 6.5 min, range 5.0-9.2
+Deathmatch     ashfield   s1: LOST   9.0 min  kills 63 losses 78 score 390:485 of 480 (kills 63:78)
+Deathmatch     ashfield   s2: LOST   8.0 min  kills 68 losses 81 score 366:480 of 480 (kills 68:81)
+Deathmatch     ashfield   s3: LOST   7.8 min  kills 50 losses 81 score 310:481 of 480 (kills 50:81)
+Deathmatch     ashfield   s4: LOST   7.5 min  kills 36 losses 79 score 250:486 of 480 (kills 36:79)
+Deathmatch     ashfield   s5: LOST   6.8 min  kills 49 losses 79 score 296:485 of 480 (kills 49:79)
+Deathmatch     dunebreak  s1: LOST   9.0 min  kills 71 losses 80 score 422:481 of 480 (kills 71:80)
+Deathmatch     dunebreak  s2: WON    9.0 min  kills 81 losses 77 score 487:460 of 480 (kills 81:77)
+Deathmatch     dunebreak  s3: LOST   7.5 min  kills 44 losses 79 score 286:480 of 480 (kills 44:78)
+Deathmatch     dunebreak  s4: LOST   7.6 min  kills 51 losses 84 score 343:489 of 480 (kills 51:84)
+Deathmatch     dunebreak  s5: LOST   7.9 min  kills 69 losses 78 score 403:486 of 480 (kills 69:78)
+Deathmatch     ironport   s1: LOST   8.8 min  kills 77 losses 77 score 439:480 of 480 (kills 77:77)
+Deathmatch     ironport   s2: LOST   8.4 min  kills 66 losses 79 score 371:484 of 480 (kills 66:79)
+Deathmatch     ironport   s3: LOST   8.6 min  kills 60 losses 81 score 411:482 of 480 (kills 60:81)
+Deathmatch     ironport   s4: LOST   6.8 min  kills 38 losses 77 score 264:480 of 480 (kills 38:77)
+Deathmatch     ironport   s5: LOST   8.5 min  kills 67 losses 78 score 366:480 of 480 (kills 67:78)
+Deathmatch     SUMMARY (Normal): won 1/15, median 8.0 min, range 6.8-9.0
+KingOfTheHill  ashfield   s1: LOST   6.8 min  kills 61 losses 55 score 89:170 of 170
+KingOfTheHill  ashfield   s2: WON    4.8 min  kills 34 losses 38 score 170:4 of 170
+KingOfTheHill  ashfield   s3: LOST   8.2 min  kills 59 losses 77 score 153:170 of 170
+KingOfTheHill  ashfield   s4: LOST   7.7 min  kills 42 losses 76 score 83:170 of 170
+KingOfTheHill  ashfield   s5: LOST   6.4 min  kills 49 losses 54 score 61:170 of 170
+KingOfTheHill  dunebreak  s1: LOST   6.1 min  kills 52 losses 53 score 66:170 of 170
+KingOfTheHill  dunebreak  s2: WON    5.5 min  kills 46 losses 51 score 170:35 of 170
+KingOfTheHill  dunebreak  s3: WON    8.3 min  kills 61 losses 85 score 170:149 of 170
+KingOfTheHill  dunebreak  s4: LOST   6.7 min  kills 36 losses 71 score 82:170 of 170
+KingOfTheHill  dunebreak  s5: LOST   5.9 min  kills 49 losses 51 score 52:170 of 170
+KingOfTheHill  redrock    s1: LOST   5.4 min  kills 35 losses 53 score 20:170 of 170
+KingOfTheHill  redrock    s2: WON    6.5 min  kills 50 losses 59 score 170:83 of 170
+KingOfTheHill  redrock    s3: LOST   5.7 min  kills 35 losses 51 score 66:170 of 170
+KingOfTheHill  redrock    s4: LOST   6.8 min  kills 34 losses 72 score 59:170 of 170
+KingOfTheHill  redrock    s5: LOST   7.5 min  kills 60 losses 67 score 121:170 of 170
+KingOfTheHill  SUMMARY (Normal): won 4/15, median 6.5 min, range 4.8-8.3
+Assault        ironport   s1: WON    3.9 min  kills 53 losses 32 sectors 1@2.0 2@2.9 3@3.9 taken 4
+Assault        ironport   s2: WON    3.4 min  kills 46 losses 33 sectors 1@1.1 2@3.0 3@3.4 taken 4
+Assault        ironport   s3: WON    3.9 min  kills 49 losses 43 sectors 1@1.3 2@3.0 3@3.9 taken 4
+Assault        ironport   s4: LOST  13.0 min  kills 127 losses 200 sectors 1@1.0 2@5.6 taken 3
+Assault        ironport   s5: LOST  11.5 min  kills 140 losses 157 sectors 1@1.4 2@3.5 taken 3
+Assault        redrock    s1: LOST  10.7 min  kills 132 losses 129 sectors 1@1.2 2@2.7 taken 3
+Assault        redrock    s2: WON    3.1 min  kills 42 losses 33 sectors 1@0.3 2@1.8 3@3.1 taken 4
+Assault        redrock    s3: LOST  10.8 min  kills 146 losses 135 sectors 1@1.1 2@2.8 taken 3
+Assault        redrock    s4: WON    8.7 min  kills 100 losses 118 sectors 1@0.3 2@3.3 3@8.7 taken 4
+Assault        redrock    s5: WON    9.8 min  kills 116 losses 122 sectors 1@1.7 2@5.2 3@9.8 taken 4
+Assault        ashfield   s1: WON    7.6 min  kills 107 losses 78 sectors 1@1.6 2@4.7 3@7.6 taken 4
+Assault        ashfield   s2: WON    4.9 min  kills 61 losses 63 sectors 1@1.3 2@3.1 3@4.9 taken 4
+Assault        ashfield   s3: WON    7.9 min  kills 92 losses 95 sectors 1@1.9 2@3.4 3@7.9 taken 4
+Assault        ashfield   s4: WON    6.4 min  kills 61 losses 90 sectors 1@1.3 2@5.7 3@6.4 taken 4
+Assault        ashfield   s5: WON    4.0 min  kills 53 losses 35 sectors 1@2.5 2@3.2 3@4.0 taken 4
+Assault        SUMMARY (Normal): won 11/15, median 7.6 min, range 3.1-13.0
+Siege          ashfield   s1: WON    9.1 min  kills 58 losses 81 stages 2@1.6 3@5.2 4@9.1 waves 0 progress 100 %
+Siege          ashfield   s2: WON    9.4 min  kills 59 losses 98 stages 2@1.8 3@5.7 4@9.4 waves 0 progress 100 %
+Siege          ashfield   s3: LOST  18.0 min  kills 52 losses 314 stages 2@2.0 3@4.7 waves 0 progress 98 %
+Siege          ashfield   s4: LOST  18.0 min  kills 49 losses 426 stages 2@1.6 3@4.1 waves 0 progress 94 %
+Siege          ashfield   s5: WON    8.4 min  kills 34 losses 57 stages 2@2.2 3@4.8 4@8.3 waves 0 progress 100 %
+Siege          dunebreak  s1: LOST  18.0 min  kills 77 losses 335 stages 2@1.9 3@4.0 waves 0 progress 78 %
+Siege          dunebreak  s2: LOST  18.0 min  kills 66 losses 378 stages 2@1.8 3@4.1 waves 0 progress 89 %
+Siege          dunebreak  s3: WON    8.0 min  kills 41 losses 58 stages 2@2.2 3@4.8 4@7.9 waves 0 progress 100 %
+Siege          dunebreak  s4: LOST  18.0 min  kills 48 losses 498 stages 2@1.8 3@4.2 waves 0 progress 80 %
+Siege          dunebreak  s5: WON    9.5 min  kills 52 losses 88 stages 2@2.3 3@4.7 4@9.5 waves 0 progress 100 %
+Siege          ironport   s1: WON    6.8 min  kills 35 losses 65 stages 2@1.6 3@3.7 4@6.7 waves 0 progress 100 %
+Siege          ironport   s2: WON   11.2 min  kills 57 losses 101 stages 2@1.7 3@6.5 4@11.1 waves 0 progress 100 %
+Siege          ironport   s3: WON    9.5 min  kills 41 losses 92 stages 2@1.8 3@4.7 4@9.4 waves 0 progress 100 %
+Siege          ironport   s4: WON    8.4 min  kills 35 losses 107 stages 2@1.4 3@3.7 4@8.3 waves 0 progress 100 %
+Siege          ironport   s5: WON    9.8 min  kills 55 losses 128 stages 2@1.6 3@3.9 4@9.7 waves 0 progress 100 %
+Siege          SUMMARY (Normal): won 10/15, median 9.5 min, range 6.8-18.0
+Defend         ashfield   s1: WON    9.0 min  kills 145 losses 62 stages 2@5.7 waves 7 progress 44 % outer line lost at 5.7
+Defend         ashfield   s2: WON    9.0 min  kills 161 losses 69 stages 2@2.7 waves 7 progress 44 % outer line lost at 2.7
+Defend         ashfield   s3: WON    9.0 min  kills 143 losses 65 stages 2@4.0 waves 7 progress 44 % outer line lost at 4.0
+Defend         ashfield   s4: WON    9.0 min  kills 128 losses 80 stages 2@4.6 waves 7 progress 44 % outer line lost at 4.6
+Defend         ashfield   s5: WON    9.0 min  kills 150 losses 67 stages 2@5.2 waves 7 progress 33 % outer line lost at 5.2
+Defend         dunebreak  s1: WON    9.0 min  kills 152 losses 81 stages 2@4.7 waves 7 progress 33 % outer line lost at 4.7
+Defend         dunebreak  s2: WON    9.0 min  kills 152 losses 72 stages 2@2.2 waves 7 progress 56 % outer line lost at 2.2
+Defend         dunebreak  s3: WON    9.0 min  kills 141 losses 75 stages 2@2.8 waves 7 progress 44 % outer line lost at 2.8
+Defend         dunebreak  s4: WON    9.0 min  kills 144 losses 66 stages 2@5.5 waves 7 progress 44 % outer line lost at 5.5
+Defend         dunebreak  s5: WON    9.0 min  kills 143 losses 68 stages 2@4.2 waves 7 progress 44 % outer line lost at 4.2
+Defend         ironport   s1: WON    9.0 min  kills 156 losses 63 stages 2@4.1 waves 7 progress 33 % outer line lost at 4.1
+Defend         ironport   s2: WON    9.0 min  kills 152 losses 75 stages 2@2.7 waves 7 progress 56 % outer line lost at 2.7
+Defend         ironport   s3: WON    9.0 min  kills 153 losses 67 stages 2@5.0 waves 7 progress 33 % outer line lost at 5.0
+Defend         ironport   s4: WON    9.0 min  kills 145 losses 72 stages 2@4.5 waves 7 progress 44 % outer line lost at 4.5
+Defend         ironport   s5: WON    9.0 min  kills 140 losses 73 stages 2@6.7 waves 7 progress 44 % outer line lost at 6.7
+Defend         SUMMARY (Normal): won 15/15, median 9.0 min, range 9.0-9.0
+Endless        ashfield   s1: LOST  14.6 min  kills 421 losses 173 stages 2@5.6 3@12.4 4@14.5 waves 16 progress 100 % outer line lost at 5.6
+Endless        ashfield   s2: LOST  12.2 min  kills 357 losses 175 stages 2@2.8 3@9.4 4@12.2 waves 13 progress 100 % outer line lost at 2.8
+Endless        ashfield   s3: LOST  12.9 min  kills 382 losses 172 stages 2@3.4 3@10.3 4@12.8 waves 14 progress 100 % outer line lost at 3.4
+Endless        ashfield   s4: LOST  13.7 min  kills 388 losses 192 stages 2@4.2 3@11.4 4@13.6 waves 15 progress 100 % outer line lost at 4.2
+Endless        ashfield   s5: LOST  14.4 min  kills 438 losses 187 stages 2@3.9 3@12.0 4@14.3 waves 15 progress 100 % outer line lost at 3.9
+Endless        dunebreak  s1: LOST  13.7 min  kills 368 losses 177 stages 2@4.4 3@11.4 4@13.6 waves 15 progress 100 % outer line lost at 4.4
+Endless        dunebreak  s2: LOST  11.2 min  kills 319 losses 153 stages 2@2.6 3@8.8 4@11.1 waves 12 progress 100 % outer line lost at 2.6
+Endless        dunebreak  s3: LOST  15.0 min  kills 463 losses 195 stages 2@3.3 3@12.5 4@14.9 waves 16 progress 100 % outer line lost at 3.3
+Endless        dunebreak  s4: LOST  17.8 min  kills 541 losses 244 stages 2@4.3 3@15.4 4@17.7 waves 19 progress 100 % outer line lost at 4.3
+Endless        dunebreak  s5: LOST  15.8 min  kills 456 losses 209 stages 2@3.8 3@13.8 4@15.7 waves 17 progress 100 % outer line lost at 3.8
+Endless        SUMMARY (Normal): won 0/10, median 14.0 min, range 11.2-17.8
+Survival       ashfield   s1: LOST   7.8 min  kills 75 losses 77 wave 15
+Survival       ashfield   s2: LOST  12.4 min  kills 125 losses 133 wave 24
+Survival       ashfield   s3: LOST   7.6 min  kills 71 losses 78 wave 15
+Survival       ashfield   s4: LOST   9.7 min  kills 96 losses 102 wave 19
+Survival       ashfield   s5: LOST   7.4 min  kills 68 losses 73 wave 15
+Survival       greenvale  s1: LOST   9.1 min  kills 96 losses 91 wave 18
+Survival       greenvale  s2: LOST  14.0 min  kills 162 losses 125 wave 28
+Survival       greenvale  s3: LOST   9.3 min  kills 95 losses 88 wave 18
+Survival       greenvale  s4: LOST   9.0 min  kills 76 losses 93 wave 18
+Survival       greenvale  s5: LOST  13.2 min  kills 135 losses 137 wave 26
+Survival       SUMMARY (Normal): won 0/10, median 9.2 min, range 7.4-14.0
+BossRush       ashfield   s1: open  30.0 min  kills 71 losses 98 bosses 9/11, minutes each 1.7 2.0 0.6 1.8 0.9 0.6 0.9 2.3 0.6
+BossRush       ashfield   s2: open  30.0 min  kills 70 losses 114 bosses 9/11, minutes each 2.1 3.0 0.6 1.5 0.8 0.7 1.0 4.7 0.7
+BossRush       ashfield   s3: open  30.0 min  kills 73 losses 107 bosses 9/11, minutes each 1.8 2.5 1.0 1.7 1.0 0.6 1.0 1.9 0.6
+BossRush       ashfield   s4: open  30.0 min  kills 75 losses 134 bosses 9/11, minutes each 1.9 3.2 0.7 3.0 0.8 0.5 1.0 2.8 0.6
+BossRush       ashfield   s5: open  30.0 min  kills 66 losses 82 bosses 9/11, minutes each 1.4 2.0 0.5 1.7 1.0 0.5 1.1 1.8 0.6
+BossRush       dunebreak  s1: open  30.0 min  kills 101 losses 186 bosses 9/11, minutes each 2.2 2.0 0.5 8.7 0.9 0.6 1.0 4.0 0.7
+BossRush       dunebreak  s2: open  30.0 min  kills 67 losses 82 bosses 9/11, minutes each 1.6 2.1 0.6 2.0 1.0 0.6 1.1 1.8 0.5
+BossRush       dunebreak  s3: open  30.0 min  kills 89 losses 141 bosses 9/11, minutes each 1.6 2.1 1.0 4.8 0.6 0.7 0.9 2.6 0.5
+BossRush       dunebreak  s4: open  30.0 min  kills 99 losses 199 bosses 9/11, minutes each 1.5 2.6 1.0 5.0 2.2 2.5 0.9 4.8 0.6
+BossRush       dunebreak  s5: open  30.0 min  kills 64 losses 85 bosses 9/11, minutes each 1.3 1.7 0.5 0.9 0.7 0.5 1.0 2.9 0.8
+BossRush       SUMMARY (Normal): won 0/10, median 30.0 min, range 30.0-30.0
+Weekly         weekly@1   s1: LOST  14.0 min  kills 59 losses 189 stages 2@2.0 3@6.3 waves 0 progress 67 %
+Weekly         weekly@1   s2: LOST  14.0 min  kills 46 losses 191 stages 2@1.8 3@4.9 waves 0 progress 80 %
+Weekly         weekly@1   s3: WON    8.8 min  kills 47 losses 63 stages 2@2.8 3@5.0 4@8.7 waves 0 progress 100 %
+Weekly         weekly@1   s4: LOST  14.0 min  kills 45 losses 256 stages 2@2.0 3@6.0 waves 0 progress 67 %
+Weekly         weekly@1   s5: WON    9.6 min  kills 39 losses 46 stages 2@3.0 3@5.1 4@9.5 waves 0 progress 100 %
+Weekly         weekly@2   s1: WON    8.2 min  kills 30 losses 72 stages 3@4.4 4@8.2 waves 0 progress 100 %
+Weekly         weekly@2   s2: WON    8.5 min  kills 24 losses 84 stages 3@4.0 4@8.4 waves 0 progress 100 %
+Weekly         weekly@2   s3: LOST  14.0 min  kills 59 losses 177 stages 3@4.8 waves 0 progress 97 %
+Weekly         weekly@2   s4: LOST  14.0 min  kills 55 losses 267 stages 3@5.0 waves 0 progress 67 %
+Weekly         weekly@2   s5: WON    7.3 min  kills 26 losses 43 stages 3@3.7 4@7.2 waves 0 progress 100 %
+Weekly         weekly@3   s1: WON    4.7 min  kills 22 losses 42 stages 4@4.6 waves 0 progress 100 %
+Weekly         weekly@3   s2: WON    6.0 min  kills 14 losses 54 stages 4@6.0 waves 0 progress 100 %
+Weekly         weekly@3   s3: WON    5.5 min  kills 16 losses 51 stages 4@5.5 waves 0 progress 100 %
+Weekly         weekly@3   s4: LOST  14.0 min  kills 30 losses 316 stages waves 0 progress 73 %
+Weekly         weekly@3   s5: LOST  14.0 min  kills 20 losses 272 stages waves 0 progress 91 %
+Weekly         SUMMARY (Normal): won 8/15, median 9.6 min, range 4.7-14.0
+(952 s)

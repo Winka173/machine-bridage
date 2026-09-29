@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MachineBrigade.Sim.Commands;
 using UnityEngine;
@@ -1128,21 +1129,22 @@ namespace MachineBrigade.Game.Hud
             ["events.special"] = ("SPECIAL BATTLES", "TRẬN ĐẶC BIỆT"),
             ["events.play"] = ("Play", "Chơi"),
             ["events.weeklyStage"] = ("This week: stage {0} of 3", "Tuần này: giai đoạn {0}/3"),
-            ["support.artillery_barrage.info"] = ("Twelve shells rain on a circle over four seconds.", "Mười hai quả pháo rơi xuống một vùng tròn trong bốn giây."),
+            ["support.artillery_barrage.info"] = ("{{count}} shells rain on a {{radius}} m circle over {{duration}} s.", "{{count}} quả pháo rơi xuống một vùng tròn {{radius}} m trong {{duration}} giây."),
             ["support.airstrike.info"] = ("A jet drops a line of bombs along the direction you drag.", "Máy bay thả một hàng bom theo hướng bạn kéo."),
             ["support.cruise_missile.info"] = ("One huge blast after a long warning.", "Một vụ nổ cực lớn sau thời gian cảnh báo dài."),
-            ["support.smoke_screen.info"] = ("A cloud that hides everything inside it for twelve seconds.", "Màn khói che khuất mọi thứ bên trong trong mười hai giây."),
-            ["support.repair_drop.info"] = ("Repairs your vehicles in the area over six seconds.", "Sửa chữa xe phe ta trong vùng trong sáu giây."),
+            ["support.smoke_screen.info"] = ("A cloud that hides everything inside it for {{duration}} s.", "Màn khói che khuất mọi thứ bên trong trong {{duration}} giây."),
+            ["support.repair_drop.info"] = ("Repairs your vehicles in the area over {{duration}} s.", "Sửa chữa xe phe ta trong vùng trong {{duration}} giây."),
             ["support.napalm_strike.info"] = ("A line of fire bombs that leaves the ground burning.", "Một hàng bom lửa để lại mặt đất cháy rực."),
             ["support.carpet_bombing.info"] = ("A heavy bomber lays twenty-four bombs along a long line.", "Máy bay ném bom hạng nặng rải hai mươi tư quả bom dọc một đường dài."),
+            ["support.air_raid"] = ("Air raid", "Không kích bất ngờ"),
             ["support.air_raid.info"] = ("A battle event: a wave of bombers.", "Sự kiện trận đấu: một đợt máy bay ném bom."),
             ["support.moab.info"] = ("The biggest bomb there is: one use.", "Quả bom lớn nhất: dùng một lần."),
-            ["support.cluster_strike.info"] = ("Forty bomblets over a wide area: one use.", "Bốn mươi bom con phủ vùng rộng: dùng một lần."),
-            ["support.reinforcements.info"] = ("Three vehicles arrive at once: one use.", "Ba xe đến ngay lập tức: dùng một lần."),
+            ["support.cluster_strike.info"] = ("{{count}} bomblets over a wide area: one use.", "{{count}} bom con phủ vùng rộng: dùng một lần."),
+            ["support.reinforcements.info"] = ("{{units}} vehicles arrive at once: one use.", "{{units}} xe đến ngay lập tức: dùng một lần."),
             ["support.field_repair.info"] = ("Repairs your whole army: one use.", "Sửa chữa toàn quân: dùng một lần."),
-            ["support.emp_blast.info"] = ("Knocks out enemy vehicles in the area for six seconds: one use.", "Vô hiệu hóa xe địch trong vùng trong sáu giây: dùng một lần."),
+            ["support.emp_blast.info"] = ("Knocks out enemy vehicles in the area for {{duration}} s: one use.", "Vô hiệu hóa xe địch trong vùng trong {{duration}} giây: dùng một lần."),
             ["support.shield_dome.info"] = ("A dome that takes most of the damage off your vehicles inside: one use.", "Vòm khiên chặn phần lớn sát thương cho xe ta bên trong: dùng một lần."),
-            ["support.gunship_support.info"] = ("A gunship circles over your army for thirty seconds: one use.", "Pháo hạm bay vòng yểm trợ quân ta trong ba mươi giây: dùng một lần."),
+            ["support.gunship_support.info"] = ("A gunship circles over your army for {{duration}} s: one use.", "Pháo hạm bay vòng yểm trợ quân ta trong {{duration}} giây: dùng một lần."),
             ["gear.total"] = ("This set: {0}", "Cả bộ: {0}"),
             ["gear.totalNone"] = ("Nothing equipped for this branch yet.", "Nhánh này chưa lắp món nào."),
             ["army.lastSupport"] = ("The deck needs at least one support: add another before taking this one out.", "Bộ bài cần ít nhất một thẻ hỗ trợ: thêm thẻ khác trước khi bỏ thẻ này."),
@@ -1874,6 +1876,15 @@ namespace MachineBrigade.Game.Hud
             ["note.super_gun"] = ("The fortress's giant twin gun: one huge shell on the attackers' thickest knot on a countdown. Destroying it pays CP and coins.", "Pháo đôi khổng lồ của pháo đài: theo đồng hồ đếm ngược, bắn một quả đạn cực lớn vào chỗ quân tấn công đông nhất. Phá được nó thưởng CP và xu."),
             ["support.super_gun_shell"] = ("Super-gun shell", "Đạn siêu pháo"),
             ["support.super_gun_shell.info"] = ("The fortress super-gun's shell: one huge round.", "Đạn của siêu pháo pháo đài: một quả đạn cực lớn."),
+            // The balance pass after prompt 18 (C.4): the boss-only supports had no names (the supports table showed raw keys).
+            ["support.escort_drop"] = ("Escort drop: {0}", "Thả hộ tống: {0}"),
+            ["support.escort_drop.info"] = ("A boss's escort flown in and dropped by parachute beside it.", "Quân hộ tống của trùm được chở tới và thả dù xuống bên cạnh nó."),
+            ["support.supergun_shell"] = ("Rail supergun shell", "Đạn siêu pháo đường ray"),
+            ["support.supergun_shell.info"] = ("Where the rail supergun's next shell lands, marked ahead.", "Nơi quả đạn tiếp theo của siêu pháo đường ray sẽ rơi, đánh dấu trước."),
+            ["support.leviathan_shell"] = ("Leviathan's shell", "Đạn pháo Leviathan"),
+            ["support.leviathan_shell.info"] = ("Where a shell from Leviathan's guns lands, marked ahead.", "Nơi một quả đạn từ pháo của Leviathan sẽ rơi, đánh dấu trước."),
+            ["support.leviathan_cruise_mark"] = ("Leviathan's cruise missile", "Tên lửa hành trình Leviathan"),
+            ["support.leviathan_cruise_mark.info"] = ("Where one of Leviathan's cruise missiles is coming down, marked ahead.", "Nơi một tên lửa hành trình của Leviathan sắp đánh xuống, đánh dấu trước."),
             ["short.super_gun_shell"] = ("Super-gun", "Siêu pháo"),
             ["mode.deathmatch"] = ("Deathmatch", "Tử chiến"),
             ["mode.deathmatchSub"] = ("First to 480 CP of kills", "Hạ đủ 480 CP xe địch trước"),
@@ -2367,7 +2378,8 @@ namespace MachineBrigade.Game.Hud
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
             BigAttackText.Table.TryGetValue(key, out text)
-                ? (Vietnamese ? text.vi : text.en) : key;
+                // A support card's numbers come from its data (the balance pass after prompt 18, C.3).
+                ? SupportLines.Fill(key, Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
 
@@ -2384,7 +2396,17 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A tower branch's own name ("Flak tower").</summary>
         public static string Branch(string branchId) => Get("branch." + branchId);
 
-        public static string Support(string defId) => Get("support." + defId);
+        /// <summary>
+        /// A support's name. A boss escort's air drop ("escort_drop.&lt;unit&gt;", prompt 16 F) reads "Escort drop: the
+        /// unit's name", never its raw key (the balance pass after prompt 18, C.4).
+        /// </summary>
+        public static string Support(string defId)
+        {
+            const string drop = "escort_drop.";
+            if (defId.StartsWith(drop, StringComparison.Ordinal) && !Table.ContainsKey("support." + defId))
+                return Format("support.escort_drop", Unit(defId.Substring(drop.Length)));
+            return Get("support." + defId);
+        }
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||

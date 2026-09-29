@@ -1,0 +1,4 @@
+light      main-gun hits   99, on a side or the rear   36 (36 %)
+tanks      main-gun hits  113, on a side or the rear    8 (7 %)
+light+AA   main-gun hits   92, on a side or the rear   25 (27 %)
+tanks+AA   main-gun hits   99, on a side or the rear    7 (7 %)
