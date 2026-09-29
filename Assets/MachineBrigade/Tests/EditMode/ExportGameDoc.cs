@@ -41,7 +41,7 @@ namespace MachineBrigade.Tests
                     ["elites"] = catalog.Vehicles.Values.Where(v => v.Elite).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
                     ["bosses"] = catalog.Vehicles.Values.Where(v => v.Boss).OrderBy(v => v.MaxHp).Select(v => Vehicle(catalog, v)).ToList(),
                     ["towers"] = catalog.Vehicles.Values.Where(v => v.Static).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
-                    ["supports"] = catalog.Supports.Values.OrderBy(s => s.CpCost).Select(Support).ToList(),
+                    ["supports"] = catalog.Supports.Values.OrderBy(s => s.CpCost).Select(s => Support(catalog, s)).ToList(),
                     ["gear"] = Gear(),
                     ["economy"] = Economy(),
                     ["modes"] = Modes(),
@@ -265,6 +265,8 @@ namespace MachineBrigade.Tests
                 ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["short"] = Strings.Short(v.Id), ["note"] = Text("note." + v.Id), ["guide"] = Text("guide." + v.Id),
                 ["rounds"] = v.Mounts.Select(m => m.ProjectileModel ?? m.Weapon.ProjectileModel ?? "").ToList(),
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
+                // Play-test 8: how a card is had (starter, premium, campaign) and its price in coins.
+                ["route"] = Progression.Route(v.Id).ToString(), ["coins"] = v.Boss || v.Elite ? 0 : Progression.Price(v.Id, catalog),
                 // Prompt 15: armour by face, the kind of target, and the strong / weak summary.
                 ["armour"] = Armour(v.Armour), ["kind"] = v.Kind.ToString(),
                 ["strongVs"] = Matchup.Summary(catalog.Damage, v).StrongVs.Select(c => (object)c.ToString()).ToList(),
@@ -288,10 +290,12 @@ namespace MachineBrigade.Tests
             };
         }
 
-        private static object Support(SupportDef s) => new Dictionary<string, object>
+        private static object Support(Catalog catalog, SupportDef s) => new Dictionary<string, object>
         {
             ["id"] = s.Id, ["name"] = Strings.Support(s.Id), ["info"] = Text("support." + s.Id + ".info"), ["kind"] = s.Kind.ToString(), ["guide"] = Text("guide." + s.Id),
-            ["cost"] = s.CpCost, ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
+            ["cost"] = s.CpCost, ["consumable"] = s.Consumable, ["eventOnly"] = s.EventOnly, ["route"] = Progression.Route(s.Id).ToString(),
+            ["coins"] = Progression.IsItem(s.Id) ? Progression.ItemPrice(s.Id) : Progression.Price(s.Id, catalog),
+            ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
             ["duration"] = s.Duration, ["type"] = s.DamageType.ToString(), ["pen"] = s.Penetration, ["thermobaric"] = s.Thermobaric,
         };
 
@@ -345,6 +349,7 @@ namespace MachineBrigade.Tests
                 ["cost"] = c, ["rank7"] = CardRanks.CallCost(c, 7), ["rank9"] = CardRanks.CallCost(c, 9),
             }).ToList(),
             ["bossKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
+            ["itemPack"] = Progression.ItemPack, ["doctrinePrice"] = Progression.DoctrinePrice,
             ["crateCoinPrice"] = Crates.CoinPrice, ["crateRolls"] = Crates.Rolls, ["crateOdds"] = Crates.Odds,
             ["crateCoinsLow"] = Crates.CoinsLow, ["crateCoinsHigh"] = Crates.CoinsHigh,
             ["coinPacks"] = CoinStore.Packs.Select(p => (object)new Dictionary<string, object> { ["id"] = p.id, ["coins"] = p.coins, ["price"] = p.price }).ToList(),

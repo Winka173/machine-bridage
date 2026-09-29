@@ -48,6 +48,40 @@ THREAT_VI = {'SmallArms': 'súng bộ binh', 'HeavyMachineGuns': 'súng máy h�
 GOOD_AT, POOR_AT = 0.6, 0.12   # Matchup.GoodAt / PoorAt
 # What each unit was modelled on (real systems, films or games), keyed by unit id; see unit_refs.json's "_about".
 UNIT_REFS = json.loads((Path(__file__).resolve().parent / 'unit_refs.json').read_text(encoding='utf-8'))
+
+# A base tower's (and its branches') slot size and rebuild price, filled from game['base'] when the build starts.
+TOWER_INFO = {}
+SIZE_VI = {'Small': 'nhỏ', 'Medium': 'vừa', 'Large': 'lớn', 'Utility': 'tiện ích'}
+
+
+def unlock_text(route, coins):
+    """How a card is had: a starter, a premium card bought with coins, or a campaign card won or bought early."""
+    if route == 'Starter':
+        return 'có sẵn từ đầu'
+    money = f"{coins:,}".replace(',', '.')
+    if route == 'Premium':
+        return f"thẻ cao cấp, mua {money} xu"
+    return f"thắng màn mở khóa trong chiến dịch, hoặc mua sớm {money} xu"
+
+
+def price_of(v):
+    """A unit's price: the stat cell and the line under it (play-test 8: every card, tower, elite and boss says it)."""
+    raw = v.get('raw', {})
+    if raw.get('Boss'):
+        return '—', 'boss, không phải thẻ: không mua, không gọi được'
+    if raw.get('Elite'):
+        cp = raw.get('ArmyCost', 0)
+        return f"{cp} CP (địch)", f"địch trả {cp} CP trong ngân sách để đưa nó ra; hạ nó được hoàn CP theo giá này"
+    if v['id'] in TOWER_INFO:
+        t = TOWER_INFO[v['id']]
+        return (f"xây lại {t.get('rebuildCp', 0)} CP",
+                f"tháp ô {SIZE_VI.get(t.get('size'), t.get('size', ''))} của căn cứ; bị phá thì xây lại {t.get('rebuildCp', 0)} CP sau {t.get('rebuildSeconds', 0):g} s; "
+                f"mở khóa: {unlock_text(v.get('route'), v.get('coins', 0))}")
+    if raw.get('Static'):
+        return '—', 'công sự trung lập hoặc của bản đồ, không mua được'
+    if not raw.get('Card', True):
+        return '—', 'không phải thẻ: đến từ vật phẩm, hỗ trợ hoặc kịch bản'
+    return f"{v['cost']} CP", f"{v['cost']} CP mỗi lần gọi; mở khóa: {unlock_text(v.get('route'), v.get('coins', 0))}"
 # DamageTable's penetration steps (DECISIONS 20X): the round's level over the face's.
 PEN_STEP_VI = ['hơn từ 2 cấp', 'hơn 1 cấp', 'ngang cấp', 'thiếu 1 cấp', 'thiếu 2 cấp', 'thiếu từ 3 cấp']
 
@@ -266,7 +300,7 @@ def vehicle_card(v, imgdir):
                                         + (' (' + ', '.join(weapon_tags(w)) + ')' if weapon_tags(w) else '') for w in v['weapons']]
     d = v['dpsVs']
     stats = (f"<div class='stats'><div>Máu <b>{num(v['hp'])}</b></div><div>Giáp trước <b>{front_level(v)}</b></div>"
-             f"<div>Tốc độ <b>{v['speed']:g} m/s</b></div><div>Giá <b>{v['cost']} CP</b></div>"
+             f"<div>Tốc độ <b>{v['speed']:g} m/s</b></div><div>Giá <b>{esc(price_of(v)[0])}</b></div>"
              f"<div>Tầm nhìn <b>{v['vision']:g} m</b></div><div>DPS vs nhẹ <b>{d['Light']:.0f}</b></div>"
              f"<div>DPS vs nặng <b>{d['Heavy']:.0f}</b></div><div>DPS vs máy bay <b>{d['Air']:.0f}</b></div></div>")
     skills = ''.join(f"<span class='chip'>{esc(s)}</span>" for s in v['skills'])
@@ -278,6 +312,7 @@ def vehicle_card(v, imgdir):
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
+            f"<div class='note'><b>Giá:</b> {esc(price_of(v)[1])}</div>"
             f"<div class='note'><b>Giáp:</b> {esc(armour_text(v))}</div>"
             f"{ref_html}{matchup}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
@@ -312,6 +347,10 @@ def difficulty_table():
 
 
 def build(game, imgdir):
+    for t in game.get('base', {}).get('towers', []):
+        TOWER_INFO[t['id']] = t
+        for b in t.get('branches', []):
+            TOWER_INFO.setdefault(b['id'], t)
     imgdir = Path(imgdir)
     shots = imgdir / 'shots'
     ui = imgdir / 'ui'
@@ -463,10 +502,10 @@ def build(game, imgdir):
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):
-        return [[f"<b>{esc(v['name'])}</b>", esc(armour_text(v)), num(v['hp']), f"{v['speed']:g}",
+        return [[f"<b>{esc(v['name'])}</b>", esc(price_of(v)[0]), esc(armour_text(v)), num(v['hp']), f"{v['speed']:g}",
                  esc(', '.join(w['id'] for w in v['weapons'])), f"{v['dpsVs']['Light']:.0f} / {v['dpsVs']['Heavy']:.0f} / {v['dpsVs']['Air']:.0f}",
                  esc(', '.join(v['skills'])), esc(refs_text(v))] for v in vs]
-    head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng', 'Tham khảo']
+    head = ['Tên', 'Giá', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng', 'Tham khảo']
 
     def tower_groups(towers):
         # A tower's branch variants (aa_turret.flak) follow their tower, named after it and the branch.
@@ -500,14 +539,21 @@ def build(game, imgdir):
                          + (f"<p class='muted'>{esc(v['bossFile'])}</p>" if v.get('bossFile') else '') for v in game['bosses']) + '</div>')
 
     # ------------------------------------------------------------------ supports
-    rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>{guide_html(s.get('guide', ''))}", esc(s['kind']), s['cost'], f"{s['cooldown']:g} s",
+    def support_price(s):
+        if s.get('consumable'):
+            return f"vật phẩm: {s.get('coins', 0):,}".replace(',', '.') + f" xu / {game['economy'].get('itemPack', 2)} cái"
+        if s.get('eventOnly') or not s['cost']:
+            return 'không phải thẻ (boss, sự kiện)'
+        return f"{s['cost']} CP; mở khóa: {unlock_text(s.get('route'), s.get('coins', 0))}"
+    rows = [[f"<b>{esc(s['name'])}</b><br><span class='muted'>{esc(s['info'])}</span>{guide_html(s.get('guide', ''))}", esc(s['kind']), esc(support_price(s)), f"{s['cooldown']:g} s",
              num(s['damage']) if s['damage'] else '', f"{s['radius']:g}" if s['radius'] else '', s['count'] or '',
              f"{s['duration']:g}" if s['duration'] else ''] for s in game['supports']]
     out.append("<div class='section'><h2>12. Hỗ trợ hỏa lực</h2><p>Thẻ hỗ trợ trong bộ bài (2 ô), gọi vào một điểm trên bản đồ; không gọi được vào vùng căn cứ địch; "
                "vật phẩm dùng một lần mua bằng xu. Mỗi thẻ hỗ trợ có clip Xem bắn riêng (gọi hỏa lực lên một cụm mục tiêu).</p>"
-               + table(['Hỗ trợ', 'Loại', 'CP', 'Hồi', 'Sát thương', 'Bán kính', 'Số lượng', 'Thời gian'], rows)
+               + table(['Hỗ trợ', 'Loại', 'Giá', 'Hồi', 'Sát thương', 'Bán kính', 'Số lượng', 'Thời gian'], rows)
                + f"{img(imgdir / 'r6' / 'supports.png', 'shot')}<div class='caption'>Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên lửa hành trình, napalm, "
                "ném bom rải thảm, MOAB, bom chùm, máy bay pháo, EMP, khói, tiếp tế, chi viện).</div></div>")
+    out.append(programme.price_list(game, h, unlock_text))
 
     out.append(programme.ammo_system(game, h))
 
