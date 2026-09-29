@@ -1,0 +1,17 @@
+AI branch picks over 121 decks (share of the tower's picks)
+heavy_turret           coastal 24%  bastion 76%
+missile_battery        pac3 52%  lrr 48%
+atgm_tower             top 43%  multi 57%
+gun_turret             long 39%  auto 61%
+aa_turret              flak 32%  sam 68%
+ew_tower               drone 58%  spoof 42%
+dragons_teeth          hedgehog 28%  wire 72%
+minefield              at 49%  scatter 51%
+c_ram                  centurion 64%  dome 36%
+drone_hangar           lancet 57%  swarm 43%
+rocket_turret          cluster 23%  guided 77%
+mg_bunker              twin 49%  flame 51%
+artillery_emplacement  cb 63%  mortar 37%
+guard_tower            watch 52%  nest 48%
+shield_tower           bulwark 43%  ward 57%
+cp_relay               hardened 28%  loot 72%

@@ -395,7 +395,7 @@ namespace MachineBrigade.Tests
             }
 
             sb.AppendLine("ROCKET BATTERY behind a wall (60 s: damage dealt over it)");
-            foreach (var tower in new[] { "rocket_turret", "rocket_turret.cluster", "rocket_turret.thermo" })
+            foreach (var tower in new[] { "rocket_turret", "rocket_turret.cluster", "rocket_turret.guided" })
             {
                 var props = new List<PropPlacement>();
                 for (var x = -24f; x <= 24f; x += 8f) props.Add(new PropPlacement("base_wall", new Vector2(x, 6f), 0));

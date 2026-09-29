@@ -13,6 +13,34 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>An enemy CP relay is worth this much more as a target (prompt 17 C.8: the attackers go for the relays first).</summary>
         internal const float RelayPriority = 6f;
 
+        /// <summary>A counter-battery gun weighs enemy artillery just caught firing this much more (DECISIONS 19T).</summary>
+        internal const float CounterBatteryPriority = 12f;
+
+        /// <summary>The nearest enemy gun a counter-battery gun's side just caught firing, in its reach (null: none, or not such a gun).</summary>
+        private Vehicle? CounterBatteryTarget(Vehicle v, WeaponDef weapon)
+        {
+            if (v.Def.CounterBattery == null || !weapon.Indirect) return null;
+            Vehicle? best = null;
+            var bestD2 = float.MaxValue;
+            foreach (var other in _world.VehicleList)
+            {
+                if (!other.IsAlive || other.Team == v.Team || other.Flying || !other.Def.Weapon.Indirect || !RevealedTo(other, v.Team)) continue;
+                if (!IsValidAutoTarget(v, other, weapon)) continue;
+                var d2 = Vector2.DistanceSquared(v.Position, other.Position);
+                if (d2 >= bestD2) continue;
+                best = other;
+                bestD2 = d2;
+            }
+            return best;
+        }
+
+        /// <summary>A vehicle revealed to a side by a counter-battery radar right now.</summary>
+        private bool RevealedTo(Vehicle v, int team)
+        {
+            ref var s = ref v.Statuses[(int)StatusKind.Reveal];
+            return s.Until > _world.Time && team >= 0 && team < 31 && (s.Stacks & (1 << team)) != 0;
+        }
+
         /// <summary>A stealth fighter's bombs weigh an air defence this much more (it hunts them).</summary>
         internal const float SeadPriority = 3f;
 
@@ -23,9 +51,12 @@ namespace MachineBrigade.Sim.Combat
         internal WeaponDef RoundFor(WeaponDef weapon, EntityId target, IDamageable? aimTarget)
         {
             var he = weapon.HeRound;
-            if (he == null) return weapon;
+            if (he == null && weapon.AirRound == null) return weapon;
             var aimed = aimTarget;
             if (aimed == null && target.IsValid && _world.TryGetTarget(target, out var found)) aimed = found;
+            // The tower-branch rework: an air-burst round for a target in the air (the 57 mm gun's).
+            if (weapon.AirRound is { } air && aimed is Vehicle { Flying: true }) return air;
+            if (he == null) return weapon;
             return aimed switch
             {
                 null => weapon,
@@ -39,6 +70,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var f = _world.Domes.TargetWorth(v, other, weapon);
             if (other.Def.Relay != null) f *= RelayPriority;
+            // The tower-branch rework: a counter-battery gun goes for enemy artillery its side's radar just caught firing.
+            if (v.Def.CounterBattery != null && weapon.Indirect && !other.Flying && other.Def.Weapon.Indirect && RevealedTo(other, v.Team)) f *= CounterBatteryPriority;
             if (v.Def.Sead && weapon.Projectile == ProjectileKind.Bomb && !other.Flying && IsAirDefence(other.Def)) f *= SeadPriority;
             return f;
         }

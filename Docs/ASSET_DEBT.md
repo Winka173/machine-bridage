@@ -107,3 +107,13 @@ node), `silver_bug_wreck` (its crashed form for phase 3, 27.8k, with the six deb
 | Moloch's doors opening as vehicles drive out | The `Landed` event only | A door animation on `Part_door_l/r` |
 | Daedalus's mass-drop pods falling | Landing blasts only | The pod model falling on each ring |
 | Kronos's 120-degree swing warning | Three rings | A sector decal |
+
+## Tower branches (DECISIONS 19T), high priority
+
+| Missing | Stand-in | Needed |
+|---|---|---|
+| Models and icons of all 32 branches (`<tower>_a` / `<tower>_b`) | The tower's own model and icon (`BranchArt` falls back) | The art branch (feature/tower-art, DECISIONS 19U) |
+| Card renders of the branches, four of them new ids (`rocket_turret.guided`, `artillery_emplacement.mortar`, `shield_tower.ward`, `cp_relay.loot`) | The tower's render in the picker | `CardRenders.RenderBatch` with graphics, after the art merge (the lead) |
+| The steel fortress's two machine-gun turrets | Both fire from the heavy turret's one `mg` muzzle | `Mount_mg` / `Mount_mg2` on `heavy_turret_b` |
+| Tower shields' beams to each tower, the loot depot's pay-out, the radar's air picture | None (the rules work) | Effects on `Vehicle.WardHp` / `WardFrom`, `EconomySystem.LootPaid`, `VehicleDef.RevealAir` |
+| Screenshots of every branch and rank in Docs/ui-screens | None | The lead, after the art merge |

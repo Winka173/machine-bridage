@@ -968,22 +968,10 @@ namespace MachineBrigade.Game.Hud
             var locked = rank < TowerCards.BranchRank;
             _panelBody.Add(Kit.Text(locked ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
                 : chosen == null ? Strings.Get("camp.branchFree")
+                : PlayerProfile.FreeBranchSwap(id) ? Strings.Get("camp.branchFreeSwap")
                 : Strings.Format("camp.branchSwap", Kit.Count(PlayerProfile.BranchSwapCoins)), "fc-small fc-base__note"));
-            foreach (var b in branches)
-            {
-                var branchId = b;
-                var card = Kit.Tappable(KitPanel.SurfaceClass + " fc-base__branch", () => ChooseBranch(id, branchId));
-                card.EnableInClassList("fc-base__branch--locked", locked);
-                card.EnableInClassList("fc-base__branch--chosen", branchId == chosen);
-                var head = Kit.Box("fc-row");
-                if (TowerIcons.For(branchId) is { } branchIcon) head.Add(Kit.Icon(branchIcon));
-                head.Add(Kit.Text(Kit.Caps(Strings.Branch(branchId)), "fc-panel-title fc-row-text"));
-                if (locked) head.Add(Kit.Icon("lock", "fc-base__branch-lock"));
-                else if (branchId == chosen) head.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag"));
-                card.Add(head);
-                card.Add(Kit.Text(Strings.Get("branch." + branchId + ".info"), "fc-small"));
-                _panelBody.Add(card);
-            }
+            // The tower-branch rework (D.1): both branches side by side, from their data.
+            _panelBody.Add(BranchLines.Picker(_catalog, id, chosen, locked, b => ChooseBranch(id, b)));
         }
 
         private void ChooseBranch(string towerId, string branchId)
@@ -995,7 +983,7 @@ namespace MachineBrigade.Game.Hud
             }
             var chosen = PlayerProfile.TowerBranch(towerId);
             if (chosen == branchId) return;
-            if (chosen == null)
+            if (chosen == null || PlayerProfile.FreeBranchSwap(towerId))
             {
                 ApplyBranch(towerId, branchId);
                 return;

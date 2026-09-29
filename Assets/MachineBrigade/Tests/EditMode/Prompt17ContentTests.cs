@@ -223,9 +223,11 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(SlotSize.Large, catalog.Vehicles["shield_tower"].Fort.Size, "a large-slot tower");
             var branches = TowerCards.Branches(catalog, "shield_tower");
             Assert.AreEqual(2, branches.Count, "two rank-7 branches");
-            Assert.Less(catalog.Vehicles["shield_tower.bulwark"].Dome.Radius, catalog.Vehicles["shield_tower"].Dome.Radius, "the bulwark dome is smaller...");
-            Assert.Greater(catalog.Vehicles["shield_tower.bulwark"].Dome.Hp, catalog.Vehicles["shield_tower"].Dome.Hp, "...and tougher");
-            Assert.Less(catalog.Vehicles["shield_tower.pulse"].Dome.Recharge, catalog.Vehicles["shield_tower"].Dome.Recharge, "the pulse dome is back sooner");
+            // The tower-branch rework (DECISIONS 19T): A a stronger dome over the same area, B no dome but tower shields.
+            Assert.AreEqual(catalog.Vehicles["shield_tower"].Dome.Radius, catalog.Vehicles["shield_tower.bulwark"].Dome.Radius, 0.01f, "the shield dome covers the area...");
+            Assert.Greater(catalog.Vehicles["shield_tower.bulwark"].Dome.Hp, catalog.Vehicles["shield_tower"].Dome.Hp, "...and is tougher");
+            Assert.IsNull(catalog.Vehicles["shield_tower.ward"].Dome, "the tower shields branch has no dome");
+            Assert.IsNotNull(catalog.Vehicles["shield_tower.ward"].Wards, "but a shield on every tower near it");
 
             var world = Field();
             var generator = world.SpawnVehicle("shield_tower", 0, Vector2.Zero, 0f);

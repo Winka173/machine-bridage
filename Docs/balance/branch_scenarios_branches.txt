@@ -1,0 +1,21 @@
+scenario	branch	result
+base under ballistic missiles (damage taken, lower is better)	missile_battery.pac3	0
+base under ballistic missiles (damage taken, lower is better)	missile_battery.lrr	16612
+shield generator, direct fire: three tanks, a tower each (towers' health lost, lower is better)	shield_tower.bulwark	1281
+shield generator, direct fire: three tanks, a tower each (towers' health lost, lower is better)	shield_tower.ward	521
+shield generator, area fire: a barrage every 8 s (towers' health lost, lower is better)	shield_tower.bulwark	3735
+shield generator, area fire: a barrage every 8 s (towers' health lost, lower is better)	shield_tower.ward	4505
+CP relay, quiet (CP made in 3 min, higher is better)	cp_relay.hardened	14
+CP relay, quiet (CP made in 3 min, higher is better)	cp_relay.loot	0
+CP relay, attacked: 3 armoured cars every 12 s (CP made in 3 min, higher is better)	cp_relay.hardened	42
+CP relay, attacked: 3 armoured cars every 12 s (CP made in 3 min, higher is better)	cp_relay.loot	50
+a rush past the tower: six armoured cars within 5 m (damage dealt, higher is better)	mg_bunker.twin	1582
+a rush past the tower: six armoured cars within 5 m (damage dealt, higher is better)	mg_bunker.flame	1770
+a rush past the tower: six armoured cars within 5 m (damage dealt, higher is better)	gun_turret.long	670
+a rush past the tower: six armoured cars within 5 m (damage dealt, higher is better)	gun_turret.auto	1132
+guns standing at 70 m (damage dealt in 60 s, higher is better)	heavy_turret.coastal	7040
+guns standing at 70 m (damage dealt in 60 s, higher is better)	heavy_turret.bastion	0
+guns standing at 70 m (damage dealt in 60 s, higher is better)	rocket_turret.guided	2400
+guns standing at 70 m (damage dealt in 60 s, higher is better)	rocket_turret.cluster	0
+guns standing at 70 m (damage dealt in 60 s, higher is better)	gun_turret.long	0
+guns standing at 70 m (damage dealt in 60 s, higher is better)	gun_turret.auto	0

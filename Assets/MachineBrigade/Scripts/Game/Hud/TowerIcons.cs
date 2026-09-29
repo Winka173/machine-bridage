@@ -12,7 +12,8 @@ namespace MachineBrigade.Game.Hud
         public static string For(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
-            // A branch with an icon of its own (prompt 20 L.1); the others show their tower's.
+            // A branch with an icon of its own: its art's (DECISIONS 19T), else the Iron Dome's (prompt 20 L.1); the others show their tower's.
+            if (Match.BranchArt.Icon(id) is { } art) return art;
             if (id == "c_ram.dome") return "t_irondome";
             var dot = id.IndexOf('.');
             return (dot > 0 ? id.Substring(0, dot) : id) switch

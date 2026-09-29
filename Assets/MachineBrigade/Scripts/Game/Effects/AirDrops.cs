@@ -110,7 +110,7 @@ namespace MachineBrigade.Game.Effects
             // One transport serves every drop of its side released within a second of each other.
             var flight = FlightFor(e.Team, landing, release, now);
 
-            var model = _models.Spawn(def.Model, e.Team, _root, castShadows: false);
+            var model = _models.Spawn(Match.BranchArt.Model(def, _models), e.Team, _root, castShadows: false);
             var drop = new Drop
             {
                 Vehicle = model.Root, Landing = landing, Heading = Mathf.Atan2(inward.x, inward.z) * Mathf.Rad2Deg, Scale = def.Scale,

@@ -7,6 +7,15 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Tower branches
+
+- Every tower's two rank-7 branches now differ in what they hit, their reach or a mechanism (DECISIONS 19T): a sniper 120 mm or a 57 mm autocannon with air-burst rounds; cluster or guided long-range rockets; a counter-battery howitzer or a heavy mortar that fires over walls; the coastal battery or a steel fortress with two all-round machine guns; a PAC-3 that shoots down cruise, ballistic and boss missiles or a long-range radar that shows every aircraft; one shield dome or a shield on every tower; a steady CP relay or a loot depot paid by kills.
+- The C-RAM, rocket battery and AA tower branches tuned to the balance targets (the Centurion stops 90 % of an MLRS's rockets; the flak back on the calibre scale).
+- The AI picks branches by the deck it faces, and each general has favourites; every branch is picked 23 % or more.
+- The branch choice shows both branches side by side from their data, with when to pick each; the Guide has a block per branch.
+- Saves: remade branches move to the nearest new one, one free change per reworked tower, a one-time notice.
+- The branch models and icons come from the art branch by id (`<tower>_a` / `_b`); card renders later.
+
 ### Design document: armour, penetration and weapon forms
 
 - Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).

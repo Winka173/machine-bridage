@@ -279,6 +279,8 @@ namespace MachineBrigade.Sim.Content
                 Ceiling = Ceiling,
                 // Prompt 17 D.
                 HeRound = HeRound,
+                // Tower branches: the air-burst round.
+                AirRound = AirRound,
             };
             return copy;
         }

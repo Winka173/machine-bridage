@@ -343,10 +343,44 @@ namespace MachineBrigade.Sim.Economy
             if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
                 own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
-            if (team < 0 || team == victim.Team || _world.Time - victim.LastHitTime > 10.0) return;
-            if (_teams.TryGetValue(team, out var economy))
-                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * KillShare(Bounty(economy, victim), KillerBonus(killer, team)));
+            var paid = 0f;
+            if (team >= 0 && team != victim.Team && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            {
+                paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team));
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
+            }
+            else team = -1;
+            PayLoot(victim, team, paid);
         }
+
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T): an enemy vehicle destroyed within a loot depot's reach pays the depot's
+        /// side its share of the victim's price (the nearest depot only), the kill's own refund and this together never
+        /// past <see cref="KillRefundCap"/>.
+        /// </summary>
+        private void PayLoot(Vehicle victim, int paidTeam, float paid)
+        {
+            if (victim.Def.Static || victim.Def.ArmyCost <= 0) return;
+            Vehicle? depot = null;
+            var best = float.MaxValue;
+            foreach (var v in _world.VehicleList)
+            {
+                if (v.Def.Loot is not { } loot || !v.IsAlive || v.Team == victim.Team || v.Team < 0 || v.Stunned) continue;
+                var d2 = System.Numerics.Vector2.DistanceSquared(v.Position, victim.Position);
+                if (d2 > loot.Radius * loot.Radius || d2 >= best) continue;
+                depot = v;
+                best = d2;
+            }
+            if (depot == null || !_teams.TryGetValue(depot.Team, out var own)) return;
+            var room = KillRefundCap - (paidTeam == depot.Team ? paid : 0f);
+            var share = MathF.Min(depot.Def.Loot!.Share, MathF.Max(0f, room));
+            if (share <= 0f) return;
+            own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * share);
+            LootPaid?.Invoke(depot, victim, victim.Def.ArmyCost * share);
+        }
+
+        /// <summary>Tests and the HUD: a loot depot paid its side (the depot, the victim, the CP).</summary>
+        internal Action<Vehicle, Vehicle, float>? LootPaid;
 
         /// <summary>The most a kill may refund, as a share of the victim's price, whatever pays it (prompt 8 I.6).</summary>
         internal const float KillRefundCap = 0.45f;

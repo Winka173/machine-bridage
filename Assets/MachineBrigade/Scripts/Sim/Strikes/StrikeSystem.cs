@@ -267,6 +267,8 @@ namespace MachineBrigade.Sim.Strikes
                         s.Announced = true;
                     }
                     if (now < s.Start) return false;
+                    // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile down (items are bombs, not missiles).
+                    if (!support.Consumable && ShotDown(s)) return true;
                     Blast(s, s.Point);
                     return true;
                 }
@@ -479,6 +481,22 @@ namespace MachineBrigade.Sim.Strikes
         }
 
         private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));
+
+        /// <summary>A cruise-missile strike met over its mark by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
+        private bool ShotDown(Strike s)
+        {
+            foreach (var v in _world.VehicleList)
+            {
+                var aps = v.Aps;
+                if (aps == null || !aps.Heavy || !v.IsAlive || v.Team == s.Team || v.Team < 0 || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                if (Vector2.DistanceSquared(v.Position, s.Point) > aps.Radius * aps.Radius) continue;
+                v.ApsCharges--;
+                if (aps.Reload > 0f) v.ApsReload = 0f;
+                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, s.Point, v.ApsLeft = !v.ApsLeft));
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>Fire support called into an enemy jammer's bubble lands wide.</summary>
         private Vector2 Scattered(Strike s, Vector2 at)

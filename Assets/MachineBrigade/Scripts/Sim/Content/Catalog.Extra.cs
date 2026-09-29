@@ -272,6 +272,8 @@ namespace MachineBrigade.Sim.Content
             // Prompt 19: altitude tiers, drop pods, weapon ceilings, a Boss Rush arena.
             ParseP19(v, def);
             ParseP20(v, def);
+            // The tower-branch rework (DECISIONS 19T): tower shields, the loot depot, the radar's air picture, the branch art.
+            ParseBranchRework(v, def);
         }
 
         /// <summary>
