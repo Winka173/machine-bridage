@@ -4918,7 +4918,9 @@ and tags, `Matchup`) is the sim agent's (14A); the UI reads it and changes none 
   `DamageType` has an icon or mark entry, every weapon of the roster maps to one, no two icons share path data; the enemy
   tooltip's marks equal `Matchup.Against` through the sim's thresholds on eight enemies, all three marks seen), and the
   existing `UiLayoutTests` (all screens with `legend`, `detail-weapons`, `detail-armour`, `hud-enemy`; the cover check),
-  `CardsInARowLineUp`, `LocalisationScanTests`, `UiThemeTests`, `UiLanguageTests`, `TowerIconTests`: green.
+  `CardsInARowLineUp`, `LocalisationScanTests`, `UiThemeTests`, `UiLanguageTests`, `TowerIconTests`, with `CardRenderTests` and
+  the sim's `ArmourTests` after the merge: 108 green. Play mode: PlayShots' six real matches (the menu, Conquest three times,
+  Siege, Defend, Boss Rush) ran the new HUD code and logged no error; no separate PlaySmoke (the owner's token rule).
 - Two layout faults the checks found: "+N" laid out a line shorter than it measures at its 17 px box (now a no-wrap
   label without vertical padding), and the enemy tooltip's cells had no width to resolve against (now a fixed width).
 - Screenshots in `Docs/ui-screens/`: `kit-combat-icons.png` (16:9) and `kit-combat-icons-small.png` (the smallest screen),
