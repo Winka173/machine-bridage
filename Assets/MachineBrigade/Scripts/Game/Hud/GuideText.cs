@@ -1176,6 +1176,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: dùng một lần; xe ta trong vòng {{radius}} m giảm {{percent}}% sát thương nhận vào trong {{duration}} giây.\n" +
                 "Mạnh / yếu: cứu cụm quân khỏi boss, loạt pháo hoặc đòn đánh lớn; chỉ che những xe đứng bên trong lúc khiên bật lên.\n" +
                 "Mẹo: thả lên [[tuyến xe tăng]] ngay khi trận đánh lớn bắt đầu."),
+            ["guide.gunship_strike"] = (
+                "[[Gunship]] · AC-130 on call · {{cp}} CP\n" +
+                "How it fights: an AC-130 arrives over the mark and [[orbits]] it for {{duration}} s, firing its 105, 40 and 25 mm guns down on ground targets within {{radius}} m.\n" +
+                "Strong / weak: devastating on ground forces and towers; it cannot hit aircraft, and enemy SAMs and fighters can shoot it down.\n" +
+                "Tip: call it over the main ground fight once the enemy's [[anti-air]] is cleared.",
+                "[[Pháo hạm]] · AC-130 yểm trợ · {{cp}} CP\n" +
+                "Cách đánh: chiếc AC-130 tới trên điểm đánh dấu và [[bay vòng]] {{duration}} giây, pháo 105, 40 và 25 mm nã xuống mục tiêu mặt đất trong {{radius}} m.\n" +
+                "Mạnh / yếu: tàn phá quân mặt đất và tháp; không bắn được máy bay, tên lửa phòng không và tiêm kích địch có thể bắn hạ nó.\n" +
+                "Mẹo: gọi xuống trận đánh chính khi [[phòng không]] địch đã bị dọn sạch."),
             ["guide.gunship_support"] = (
                 "[[Gunship on call]] · item · an AC-130 for {{duration}} s\n" +
                 "How it fights: one use; a sky gunship arrives and [[orbits]] for {{duration}} s, firing its 105, 40 and 25 mm guns at ground targets.\n" +

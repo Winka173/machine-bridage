@@ -44,6 +44,8 @@ namespace MachineBrigade.Game.Match
             ["stealth_bomber"] = 5000,
             ["ballistic_launcher"] = 5000,
             ["napalm_strike"] = 1500,
+            // Play-test 6: the Gunship card, at the price the old sky gunship card had.
+            ["gunship_strike"] = 4500,
         };
 
         /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>

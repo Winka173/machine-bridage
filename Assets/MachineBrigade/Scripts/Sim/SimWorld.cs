@@ -511,6 +511,51 @@ namespace MachineBrigade.Sim
         }
 
         /// <summary>
+        /// Play-test 6: where a structure dropped by parachute (the field tower) lands: the nearest spot to the mark,
+        /// in rings 2 m apart out to 16 m, whose whole footprint is open ground (walkable at its centre and all round its
+        /// hull), clear of every vehicle and structure on the ground by both hulls, out of the gates and lane gaps, and
+        /// never in the enemy's camp; the mark itself when none is near. It used to land on the mark whatever stood there
+        /// and sat half inside a house or another tower.
+        /// </summary>
+        internal Vector2 ClearSpot(VehicleDef def, Vector2 at, int team)
+        {
+            var reach = def.HullBound + 0.5f;
+            for (var ring = 0; ring <= 8; ring++)
+            {
+                var steps = ring == 0 ? 1 : ring * 8;
+                for (var k = 0; k < steps; k++)
+                {
+                    var angle = k * SimMath.Tau / steps;
+                    var p = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2f);
+                    if (!Map.Contains(p) || !FootprintOpen(p, reach) || Lanes.NoParkAt(p)) continue;
+                    if (InEnemyCamp(p, team) || InEnemyHome(p, team)) continue;
+                    var clear = true;
+                    foreach (var other in _vehicleList)
+                    {
+                        if (!other.IsAlive || other.Flying) continue;
+                        var gap = def.HullBound + other.Def.HullBound + 0.5f;
+                        if (Vector2.DistanceSquared(other.Position, p) < gap * gap) { clear = false; break; }
+                    }
+                    if (clear) return p;
+                }
+            }
+            return at;
+        }
+
+        /// <summary>Open ground at <paramref name="p"/> and at eight points round it <paramref name="reach"/> out.</summary>
+        private bool FootprintOpen(Vector2 p, float reach)
+        {
+            if (!Grid.IsWalkable(p)) return false;
+            for (var k = 0; k < 8; k++)
+            {
+                var angle = k * SimMath.Tau / 8f;
+                var q = p + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
+                if (!Map.Contains(q) || !Grid.IsWalkable(q)) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// The nearest walkable spot to <paramref name="at"/> where a new hull does not land on top
         /// of another vehicle (searching outwards in rings), or <paramref name="at"/> if none is near.
         /// </summary>

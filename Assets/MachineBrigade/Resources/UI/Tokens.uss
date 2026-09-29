@@ -483,7 +483,29 @@
     translate: 0 0;
 }
 .fc-root .fc-vcard.pressed { translate: 0 var(--fc-press-shift); background-color: var(--fc-panel-selected); scale: 1 1; }
-.fc-vcard--chosen { background-color: var(--fc-panel-selected); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+/* Play-test 6: a card in the deck reads at a glance on a phone: a 4 px outline in the accent all round and a check
+   in an accent square on its picture (the old one-line light outline was hard to see). */
+.fc-vcard--chosen { background-color: var(--fc-panel-selected); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+/* The outline is drawn over the card (it does not move the card's parts, which line up across a row). */
+.fc-vcard__outline {
+    position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+    border-top-width: 4px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px;
+    border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent);
+    display: none;
+}
+.fc-vcard--chosen .fc-vcard__outline { display: flex; }
+.fc-vcard--chosen .fc-vcard__name { color: var(--fc-accent); }
+.fc-vcard__badge {
+    position: absolute; left: var(--fc-space-2); bottom: var(--fc-space-2);
+    width: 32px; height: 32px; align-items: center; justify-content: center;
+    background-color: var(--fc-accent);
+    display: none;
+}
+.fc-vcard__badge-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-ink); }
+.fc-vcard--chosen .fc-vcard__badge { display: flex; }
+/* In the deck strip a tap takes the card out: a remove mark on a dark square instead of the check. */
+.fc-vcard--removable .fc-vcard__badge { display: flex; background-color: var(--fc-bg); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-vcard--removable .fc-vcard__badge-icon { --icon-color: var(--fc-text); }
 .fc-vcard__bar { height: var(--fc-bar); }
 .fc-vcard__art { height: var(--fc-card-art); -unity-background-scale-mode: scale-to-fit; background-color: var(--fc-bg-2); }
 .fc-vcard__class { position: absolute; left: var(--fc-space-2); top: var(--fc-space-2); width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text-2); }

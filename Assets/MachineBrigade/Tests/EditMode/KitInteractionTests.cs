@@ -73,6 +73,55 @@ namespace MachineBrigade.Tests
         }
 
         /// <summary>
+        /// Play-test 6 (DECISIONS 21E): on the deck screen a tap on a card in the deck strip takes it out of the deck
+        /// at once, and the collection's cards in the deck carry the accent outline and check.
+        /// </summary>
+        [Test]
+        public void ATapOnACardInTheDeckStripTakesItOut()
+        {
+            // The tap saves the deck: saving is off for the check, which puts the deck back as it was.
+            MatchSettings.SaveSuspended = true;
+            var vehicles = MatchSettings.DeckVehicles.ToList();
+            var supports = MatchSettings.DeckSupports.ToList();
+            DemoProfile.Use();
+            try
+            {
+                MatchSettings.DeckVehicles.Clear();
+                MatchSettings.DeckVehicles.AddRange(new[] { "scout_jeep", "light_tank", "ifv" });
+                var host = new VisualElement();
+                host.AddToClassList("hud");
+                host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+                host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
+                var menu = new MenuScreen(GameContent.LoadCatalog(), () => { });
+                host.Add(menu.Root);
+                Mount(host);
+                menu.DebugShow("army-deck");
+                for (var i = 0; i < 2; i++) simulate.FrameUpdate();
+                var card = host.Q<KitVehicleCard>("deck-card-light_tank");
+                Assert.IsNotNull(card, "the light tank is in the deck strip");
+                Assert.IsTrue(card.Removable, "with a remove mark");
+                Assert.IsTrue(host.Q<KitVehicleCard>("collection-card-light_tank").Chosen, "marked in the collection");
+                Assert.IsFalse(host.Q<KitVehicleCard>("collection-card-armored_car").Chosen);
+                var scrims = rootVisualElement.Query(className: KitDialog.ScrimClass).ToList().Count;
+                simulate.Click(card);
+                for (var i = 0; i < 2; i++) simulate.FrameUpdate();
+                Assert.IsFalse(MatchSettings.DeckVehicles.Contains("light_tank"), "one tap took it out");
+                Assert.IsNull(host.Q<KitVehicleCard>("deck-card-light_tank"), "the strip shows its slot empty");
+                Assert.IsFalse(host.Q<KitVehicleCard>("collection-card-light_tank").Chosen);
+                Assert.AreEqual(scrims, rootVisualElement.Query(className: KitDialog.ScrimClass).ToList().Count, "no dialog in the way");
+            }
+            finally
+            {
+                MatchSettings.DeckVehicles.Clear();
+                MatchSettings.DeckVehicles.AddRange(vehicles);
+                MatchSettings.DeckSupports.Clear();
+                MatchSettings.DeckSupports.AddRange(supports);
+                MatchSettings.SaveSuspended = false;
+                DemoProfile.Restore();
+            }
+        }
+
+        /// <summary>
         /// Test feedback 2 (DECISIONS 12E): the home screen's mode picker lists Boss Rush with its line,
         /// and a tap on it sets the battle Deploy starts (Deploy starts the picker's mode).
         /// </summary>

@@ -125,6 +125,8 @@ namespace MachineBrigade.Game.Match
         protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss, string name = null, SimWorld world = null)
         {
             name ??= Strings.Card(boss.Def.Id);
+            // Play-test 6: the compact bar sits in the top row: the call sign only.
+            if (hud.Compact) name = BossBar.CallSign(name);
             var phases = boss.Def.Phases;
             // Prompt 9: the parts are icons under the bar now; the name only says when the hull is shut.
             if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");

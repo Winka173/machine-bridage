@@ -186,6 +186,17 @@ namespace MachineBrigade.Game.Hud
 
         public VisualElement Root { get; }
 
+        /// <summary>
+        /// A boss's call sign, the part of its name before " · " ("Juggernaut" of "Juggernaut · Armoured Train"): the
+        /// compact bar's name, on one line in the top row (play-test 6).
+        /// </summary>
+        public static string CallSign(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return name;
+            var cut = name.IndexOf(" · ", System.StringComparison.Ordinal);
+            return cut > 0 ? name.Substring(0, cut) : name;
+        }
+
         /// <summary>The boss's parts under the bar (prompt 9).</summary>
         public BossPartsRow Parts { get; } = new();
 

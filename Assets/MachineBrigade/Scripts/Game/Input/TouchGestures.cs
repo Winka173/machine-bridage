@@ -187,6 +187,20 @@ namespace MachineBrigade.Game.Input
                 _points.Add(Mouse.current.position.ReadValue());
         }
 
+        /// <summary>How much one wheel notch zooms (15 %).</summary>
+        internal const float WheelStep = 1.15f;
+
+        /// <summary>
+        /// The zoom factor for a frame's wheel movement. Play-test 6: the Input System reports a notch as 1 (its
+        /// uniform scroll setting, the default) where the old code expected 120, so a notch zoomed 0.1 % and the
+        /// owner had to scroll a long way; a notch is now one step either way (at most three a frame).
+        /// </summary>
+        internal static float WheelZoom(float scroll)
+        {
+            var notches = Mathf.Abs(scroll) >= 20f ? scroll / 120f : scroll;
+            return Mathf.Pow(WheelStep, Mathf.Clamp(notches, -3f, 3f));
+        }
+
         /// <summary>Editor conveniences: wheel zooms, right-drag pans.</summary>
         private void MouseExtras()
         {
@@ -194,7 +208,7 @@ namespace MachineBrigade.Game.Input
             if (mouse == null) return;
             var position = mouse.position.ReadValue();
             var scroll = mouse.scroll.ReadValue().y;
-            if (Mathf.Abs(scroll) > 0.01f && !_isOverUi(position)) _handler.OnPinch(Mathf.Pow(1.1f, scroll / 120f), position);
+            if (Mathf.Abs(scroll) > 0.01f && !_isOverUi(position)) _handler.OnPinch(WheelZoom(scroll), position);
 
             if (mouse.rightButton.isPressed)
             {

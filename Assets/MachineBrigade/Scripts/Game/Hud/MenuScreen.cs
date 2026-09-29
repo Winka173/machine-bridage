@@ -604,7 +604,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour",
         };
@@ -644,6 +644,12 @@ namespace MachineBrigade.Game.Hud
                         "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
                         _ => ArmyView.Base,
                     };
+                    ShowTab(Tab.Army);
+                    break;
+                case "army-deck-supports":
+                    // Play-test 6: the collection filtered to the supports (the Gunship card among them).
+                    _armyView = ArmyView.Deck;
+                    _filter = CardFilter.Support;
                     ShowTab(Tab.Army);
                     break;
                 case "army-base-picked":
@@ -799,6 +805,7 @@ namespace MachineBrigade.Game.Hud
             "emp_blast" => "bolt",
             "shield_dome" => "shield",
             "gunship_support" => "gunship",
+            "gunship_strike" => "ac130",
             "artillery_barrage" => "barrage",
             "airstrike" => "airstrike",
             "cruise_missile" => "missile",

@@ -66,6 +66,9 @@ namespace MachineBrigade.Game.Match
         private Vector3 _storyFocus;
         private float _storyUntil;
         private float _cinematicZoom;
+
+        /// <summary>The player moved the view during the slow-motion shot: it stops steering the camera.</summary>
+        private bool _viewTaken;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
@@ -695,9 +698,14 @@ namespace MachineBrigade.Game.Match
                 _smokeAt = Time.time + 9f;
                 _effects.DebugSmokeScreen(_camera.Focus + new Vector3(UnityEngine.Random.Range(-6f, 6f), 0f, UnityEngine.Random.Range(-6f, 6f)));
             }
-            if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            if (_cinematics.Active(Time.unscaledTime))
+            {
+                if (!_viewTaken) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            }
             else if (_menu) Attract();
             else if (Time.unscaledTime < _storyUntil) _camera.Follow(_storyFocus, Time.unscaledDeltaTime, 0.7f);
+            // Play-test 6: after a boss's shot the view goes back to where the player had it, at their zoom.
+            else if (_camera.Held) _camera.ReturnHeld(Time.unscaledDeltaTime);
             else if (_sandbox == null) FollowTheFight();
             if (_radio != null && _session is MissionSession radioSession && !_paused) _radio.Tick(_world, radioSession);
             _selection.Tick();
@@ -931,6 +939,20 @@ namespace MachineBrigade.Game.Match
             _storyFocus = new Vector3(at.X, 0f, at.Y);
             _storyUntil = Time.unscaledTime + seconds;
             _camera.StopFollowing();
+            _camera.Hold();
+        }
+
+        /// <summary>
+        /// The player panned or zoomed (or used the zoom buttons or the minimap): a story shot under way gives them the
+        /// view at once and does not pull it back afterwards (play-test 6).
+        /// </summary>
+        private void TakeTheView()
+        {
+            _lastInput = Time.unscaledTime;
+            _storyUntil = 0f;
+            _viewTaken = true;
+            _camera.Release();
+            _camera.StopFollowing();
         }
 
         /// <summary>A slow-motion moment on a blast that is on screen.</summary>
@@ -941,7 +963,10 @@ namespace MachineBrigade.Game.Match
             if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
             if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
             Haptics.Pulse(70, 190);
-            _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
+            // Play-test 6: the shot keeps the player's zoom (it used to close in to 82 %) and gives the view back after.
+            _camera.Hold();
+            _viewTaken = false;
+            _cinematicZoom = _camera.Zoom;
             _camera.AddTrauma(0.6f);
         }
 
@@ -1214,7 +1239,13 @@ namespace MachineBrigade.Game.Match
             _hud.RetreatPressed += _selection.Retreat;
             _hud.AttackMovePressed += _selection.ToggleAttackMove;
             _hud.BoxModeToggled += () => _selection.BoxMode = !_selection.BoxMode;
-            _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            _hud.ZoomPressed += factor =>
+            {
+                _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                TakeTheView();
+            };
+            _hud.DeselectPressed += _selection.Deselect;
+            _selection.ViewMoved += TakeTheView;
             _hud.RestartPressed += () =>
             {
                 if (Curtain.Busy) return;
@@ -1277,7 +1308,11 @@ namespace MachineBrigade.Game.Match
             };
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
-            _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+            _hud.MinimapClicked += p =>
+            {
+                _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+                TakeTheView();
+            };
             var playerAi = _session.PlayerAi;
             _hud.StancePressed += defend =>
             {

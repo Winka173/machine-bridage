@@ -1122,6 +1122,13 @@
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
             "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
+        },
+        {
+            "id": "gunship_strike",
+            "kind": "support",
+            "model": "sky_gunship",
+            "source": "Models/sky_gunship_hd",
+            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
         }
     ]
 }
