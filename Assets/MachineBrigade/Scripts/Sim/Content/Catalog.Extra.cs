@@ -256,6 +256,8 @@ namespace MachineBrigade.Sim.Content
                 }
                 def.Attachments = list;
             }
+            // Prompt 17 C: domes, deploying, wingmen, relays.
+            ParseP17(v, def);
         }
 
         /// <summary>

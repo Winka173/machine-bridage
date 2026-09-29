@@ -32,6 +32,9 @@ namespace MachineBrigade.Game.Hud
                 "missile_battery" => "t_patriot",
                 "drone_hangar" => "t_hangar",
                 "heavy_turret" => "t_fortress",
+                // Prompt 17 C.
+                "shield_tower" => "t_shieldgen",
+                "cp_relay" => "t_relay",
                 // Utility modules.
                 "repair_bay" => "t_repair",
                 "ammo_depot" => "t_ammo",

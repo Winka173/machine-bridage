@@ -336,7 +336,8 @@ namespace MachineBrigade.Sim.Modes
             if (slot == null) return CommandResult.Rejected(CommandError.InvalidPoint);
             if (slot.PointId != null && command.DefId != null && slot.Tower == null)
             {
-                if (!_world.Catalog.Vehicles.TryGetValue(command.DefId, out var pick) || pick.Fort is not { Kind: FortKind.Tower } ||
+                // Prompt 17 C: no CP relay on an outpost.
+                if (!_world.Catalog.Vehicles.TryGetValue(command.DefId, out var pick) || pick.Fort is not { Kind: FortKind.Tower } || pick.Relay != null ||
                     Footprint(pick) > slot.Def.Size + 0.01f)
                     return CommandResult.Rejected(CommandError.UnknownCard);
                 slot.Tower = command.DefId;

@@ -39,6 +39,7 @@ import mb_new_tracked  # noqa: E402
 import mb_new_trucks  # noqa: E402
 import mb_new_wheeled  # noqa: E402
 import mb_p16_arms  # noqa: E402
+import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
 import mb_phase8  # noqa: E402
 import mb_props  # noqa: E402
@@ -72,7 +73,9 @@ def all_builders():
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
                 **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS,
                 # Prompt 16: new weapon parts on five bosses; they wrap the builders above.
-                **mb_p16_arms.BUILDERS}
+                **mb_p16_arms.BUILDERS,
+                # Prompt 17's temporary stand-ins for the new units (asset debt).
+                **mb_p17_temp.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

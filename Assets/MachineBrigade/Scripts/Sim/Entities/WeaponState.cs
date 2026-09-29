@@ -59,5 +59,9 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public double HeldAt = double.NegativeInfinity;
         public double WaitingSince = double.NegativeInfinity;
+
+        /// <summary>Prompt 17 C: a ramping weapon (the focused laser): the target it is on, since when, and its last round on it.</summary>
+        public EntityId RampTarget;
+        public double RampSince, RampLastAt = double.NegativeInfinity;
     }
 }

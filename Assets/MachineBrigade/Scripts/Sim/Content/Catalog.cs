@@ -153,6 +153,7 @@ namespace MachineBrigade.Sim.Content
                     def.Penetration = pen;
                 }
                 if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
+                ParseWeaponP17(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))

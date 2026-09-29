@@ -421,6 +421,8 @@ namespace MachineBrigade.Sim.Entities
         public float ArmourOn(ArmorFace face)
         {
             var up = ArmourAllUp + (face is ArmorFace.Side or ArmorFace.Rear ? ArmourSideUp : 0f);
+            // Prompt 17 C: a bunker vehicle dug in has its front two levels thicker.
+            if (face == ArmorFace.Front && Deploy == DeployState.Deployed && Def.Deploy is { } dug) up += dug.FrontUp;
             return MathF.Min(ArmourLevels.Max, Def.Armour[face] + up);
         }
 
