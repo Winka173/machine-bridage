@@ -1,0 +1,91 @@
+Prompt 19: Thiết kế lại trùm cuối Bọ Bạc thành phi thuyền quỹ đạo
+
+Nhiệm vụ: thay boss đĩa bay Bọ Bạc (id silver_bug) bằng phi thuyền quỹ đạo, với cơ chế tầng độ cao theo lịch cố định, khoang đổ bộ từ trời, đòn lớn từ vệ tinh và pha rơi xuống thành pháo đài mặt đất. Giữ cơ chế đơn giản: không có mục tiêu phụ trên mặt đất phải đi phá hay chiếm. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 9 (bộ phận boss), 13 (thang cỡ nòng, giá trị thực chiến), 15 (cấp giáp, cấp xuyên, loại sát thương, icon), 16 (hộ tống), 17 (khiên, roster mới) và 18 (đòn lớn). Giữ id silver_bug để kỷ lục, tiến độ và thành tích cũ của người chơi vẫn đúng.
+
+A. BỐI CẢNH VÀ HÌNH ẢNH
+1. Bọ Bạc là phi thuyền quỹ đạo của dự án Aurel, phóng lên từ Bãi Phóng ở chương 9. Aurel dùng nó để tấn công từ quỹ đạo và thoát khỏi vùng chiến sự; người chơi phải kéo nó xuống.
+2. Hình dáng: thân dạng tàu con thoi quân sự cỡ lớn, cánh ngắn, vỏ màu bạc, động cơ đẩy lớn ở đuôi. Model mới hoàn toàn, có LOD; bản hư hại cho pha 3.
+3. Hiệu ứng:
+   - Khi ở quỹ đạo thấp (chỉ lúc mở màn): bóng khổng lồ của phi thuyền lướt qua map; bản thân phi thuyền chỉ là một chấm sáng trên trời.
+   - Khi hạ từ quỹ đạo xuống: thân sáng rực như lúc vào lại bầu khí quyển, lửa phụt từ động cơ đẩy, và một vệ tinh tách ra ở lại trên quỹ đạo (chấm sáng nhỏ trên trời).
+   - Khi đổi giữa tầng cao và tầng thấp: lửa và vệt khói động cơ.
+   - Pha 3: rơi xuống kèm vệt khói dài, đâm xuống tạo hố lớn, sau đó cháy và bốc khói ở các chỗ vỡ theo hiệu ứng prompt 9.
+4. Sửa mọi chỗ còn nhắc tới "đĩa bay": thẻ Hướng dẫn, hồ sơ boss trong mục Hồ sơ, briefing, thoại, cốt truyện chương 9, ảnh thẻ và clip Xem bắn.
+
+B. CƠ CHẾ TẦNG ĐỘ CAO
+1. Thêm vào mô phỏng khái niệm tầng độ cao của mục tiêu, và cho mỗi vũ khí khả năng bắn tới tầng nào. Chỉ Bọ Bạc (và các khoang đổ bộ đang rơi của nó) dùng khái niệm này; mọi đơn vị bay khác giữ nguyên như hiện tại.
+2. Ba tầng:
+   - Quỹ đạo thấp: không vũ khí nào của người chơi bắn tới.
+   - Tầng cao: chỉ SAM tầm xa, Patriot, tiêm kích và tiêm kích tàng hình bắn tới.
+   - Tầng thấp: mọi vũ khí bắn được máy bay, trực thăng, và pháo điện từ (ngoại lệ riêng cho boss này, dù pháo điện từ bình thường chỉ bắn mặt đất).
+3. Phi thuyền chỉ ở quỹ đạo thấp trong đoạn mở màn (phần E). Sau khi đã hạ xuống tầng cao, nó không bao giờ lên lại quỹ đạo; từ đó chỉ đổi giữa tầng cao và tầng thấp theo lịch cố định của từng pha, không phụ thuộc hành động của người chơi.
+4. Mỗi lần đổi tầng có hoạt cảnh lên hoặc xuống khoảng 3–4 giây; trong lúc đó bị bắn theo tầng thấp hơn trong hai tầng.
+5. Giao diện:
+   - Thanh máu boss có biểu tượng tầng hiện tại và đồng hồ đếm ngược tới lần đổi tầng tiếp theo, để người chơi biết khi nào sắp có cơ hội bắn.
+   - Chạm vào boss: tooltip hiện những xe nào trong bộ bài của ta bắn tới được ở tầng hiện tại (dùng ký hiệu ✓ ~ ✕ của prompt 15).
+   - Thẻ Hướng dẫn giải thích các tầng và loại vũ khí bắn tới mỗi tầng.
+
+C. BỘ PHẬN VÀ GIÁP
+1. Thay danh sách bộ phận cũ (bộ phát laser, pháo điện từ, cao xạ, cửa thả drone, máy phát khiên, bộ phát EMP) bằng:
+   - Động cơ đẩy chính: phá thì phi thuyền không lên lại tầng cao được nữa, bị giữ ở tầng thấp cho tới pha 3.
+   - 4 động cơ điều hướng: mỗi cái bị phá làm phi thuyền chậm hơn và đổi tầng lâu hơn.
+   - 2 tháp laser phòng thủ điểm: bắn hạ tên lửa phòng không của người chơi bay tới (như CIWS, nhưng là Năng lượng). Phá thì SAM, Patriot và tên lửa của tiêm kích trúng được nhiều hơn.
+   - Khoang đổ bộ: thả các khoang đổ bộ (phần D). Phá thì ngừng thả.
+   - Ăng-ten liên kết vệ tinh: điều khiển vệ tinh thả đòn lớn (phần F). Phá thì mất đòn lớn.
+   - Tháp laser chính: vũ khí bắn thường, Năng lượng, xuyên rất cao; bắn xuống mặt đất khi phi thuyền ở tầng cao hoặc thấp.
+2. Giáp (prompt 15): thân trên cấp 4, bụng cấp 2, động cơ cấp 1–2. Khi phi thuyền ở tầng thấp, bụng lộ ra là mặt bị trúng chủ yếu.
+3. Bỏ các vũ khí và kỹ năng cũ của đĩa bay không còn dùng (saucer_laser, coilgun, boss_flak, mothership_drones, saucer_emp, mothership_shield, saucer_drones) khỏi Bọ Bạc. Vũ khí nào vẫn được boss khác dùng thì giữ cho boss đó.
+4. Tổng máu bộ phận theo luật của prompt 9.
+
+D. KHOANG ĐỔ BỘ VÀ HỘ TỐNG
+1. Khoang đổ bộ: rơi từ phi thuyền xuống map, mỗi khoang chở 1–2 xe (có tinh nhuệ theo ngân sách tinh nhuệ của độ khó). Vùng rơi có cảnh báo. Trong lúc đang rơi, khoang là mục tiêu ở tầng thấp, có máu (khởi điểm khoảng 400); bắn hạ khoang thì xe bên trong không xuống được.
+2. Số xe từ khoang đổ bộ còn sống cùng lúc tối đa khoảng 6, tính riêng ngoài trần hộ tống của prompt 16.
+3. Hộ tống theo hệ của prompt 16: giữ tinh nhuệ đặc trưng của các tướng đã hạ trong chiến dịch (mỗi pha thêm tinh nhuệ của một tướng), cộng 2 tiêm kích bay quanh phi thuyền khi nó ở tầng cao hoặc thấp.
+
+E. MỞ MÀN, CÁC PHA VÀ LỊCH ĐỔI TẦNG (khởi điểm)
+1. Mở màn: phi thuyền xuất hiện ở quỹ đạo thấp khoảng 15 giây, không bắn được. Trong đoạn này nó thả đợt khoang đổ bộ đầu tiên và dùng đòn lớn lần đầu. Sau đó hạ xuống tầng cao, để lại vệ tinh trên quỹ đạo, và không lên lại quỹ đạo nữa.
+2. Pha 1 (100–70% máu): lặp chu kỳ tầng cao khoảng 25 giây → tầng thấp khoảng 10 giây. Ở tầng cao thả khoang đổ bộ và bắn tháp laser chính.
+3. Pha 2 (70–30%): lặp chu kỳ tầng cao khoảng 15 giây → tầng thấp khoảng 20 giây. Ở tầng thấp phi thuyền đứng nạp năng lượng; đây là lúc gây sát thương chính. Gọi hộ tống ở đầu pha.
+4. Nếu động cơ đẩy chính bị phá ở pha 1 hoặc 2, phi thuyền ở luôn tầng thấp cho tới pha 3.
+5. Pha 3 (dưới 30%): động cơ hỏng, phi thuyền rơi xuống và đáp khẩn cấp ở một điểm định sẵn giữa map, trở thành pháo đài mặt đất:
+   - Không bay được nữa; các bộ phận còn lại vẫn hoạt động; thêm pháo quay ra mọi hướng quanh thân (dùng lại các loại vũ khí boss có sẵn, theo thang cỡ nòng).
+   - Một đợt hộ tống cuối cùng.
+   - Đòn lớn vẫn dùng được nếu ăng-ten liên kết vệ tinh còn nguyên.
+   - Mặt đất quanh chỗ rơi có đống đổ nát làm vật che; chạy bộ phát hiện xe kẹt của prompt 12 cho khu vực này.
+6. Chỉ ở độ khó Cực khó: pha 3 có thêm đòn chiếm quyền điều khiển drone của người chơi trong vài giây (drone FPV, Lancet, UAV, drone hộ vệ, bầy drone của máy bay mẹ quay sang đánh phe ta). Xe gây nhiễu và tháp EW của người chơi ở gần thì drone trong tầm của chúng không bị chiếm. Có cảnh báo và radio trước khi dùng.
+7. Radio chatter của Aurel ở lúc xuất hiện, khi rời quỹ đạo, mỗi lần chuyển pha, khi phi thuyền rơi và khi bị hạ.
+
+F. ĐÒN LỚN: MƯA THANH TUNGSTEN (thay cho Tia laser quét trong prompt 18)
+1. Thả 5 thanh tungsten xuống các cụm quân của người chơi: lần đầu từ chính phi thuyền trong đoạn mở màn, các lần sau từ vệ tinh nó để lại trên quỹ đạo.
+2. Động năng, xuyên rất cao; mỗi thanh 1.600, bán kính 6 m.
+3. Cảnh báo: mỗi điểm rơi có cột sáng cảnh báo khoảng 4 giây. Hồi chiêu khoảng 60 giây (theo hệ số độ khó của prompt 18). Dùng được ở mọi pha, ở mọi tầng của phi thuyền.
+4. Khói và APS không chặn được. Khiên (xe phát khiên, máy phát khiên) hấp thụ một phần theo máu khiên.
+5. Ngắt: phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy đòn đang tới; phá hẳn ăng-ten thì mất đòn lớn cho tới hết trận (hoặc tới khi ăng-ten được vá theo luật tự vá của prompt 9). Ăng-ten bắn được khi phi thuyền ở tầng cao hoặc thấp, và ở pha 3.
+6. Mục tiêu chính: cụm quân, nhất là xe tăng giáp dày.
+7. Cập nhật prompt 18 trong dữ liệu và tài liệu: Bọ Bạc chuyển từ nhóm đối phó "dùng khói" sang nhóm "né khỏi vùng tròn". Ghi vào DECISIONS.md rằng hiện không còn boss nào có đòn chặn bằng khói, để cân nhắc sau.
+
+G. ĐƯA VÀO CHIẾN DỊCH VÀ CÁC CHẾ ĐỘ
+1. Chương 9, map Bãi Phóng: chiến dịch lớn cuối game mở đầu bằng cảnh phi thuyền rời bệ phóng lên quỹ đạo, rồi quay xuống tấn công. Viết lại briefing, thoại và phần kết cho khớp.
+2. Săn trùm, Tác chiến: dùng Bọ Bạc mới; nếu Săn trùm đánh mọi boss trên cùng một map, màn Bọ Bạc tự chuyển sang Bãi Phóng như cách làm với Leviathan ở prompt 16.
+3. Mutator của Tác chiến có nhắc tới Bọ Bạc: rà lại cho khớp cơ chế mới.
+
+H. CÂN BẰNG
+1. Đưa Bọ Bạc mới vào bộ đo giá trị thực chiến của prompt 13, tính cả đòn lớn và đoạn mở màn không bắn được.
+2. Mục tiêu: là boss khó nhất game, nhưng vẫn thắng được ở độ khó Thường với bộ bài tiêu chuẩn cuối chiến dịch; tỷ lệ thắng lần đầu khoảng 50–65% ở độ khó Thường; thời lượng trận nằm trong khung của chiến dịch lớn cuối game (prompt 5).
+3. Đoạn mở màn ở quỹ đạo không quá khoảng 15 giây. Chỉnh lịch đổi tầng ở phần E để người chơi luôn có vũ khí nào đó bắn được phi thuyền trong phần lớn thời gian trận.
+4. Người chơi không có SAM tầm xa, Patriot hay tiêm kích vẫn phải thắng được bằng cách đánh ở tầng thấp, bắn khoang đổ bộ và đánh pha 3; test riêng trường hợp này.
+
+I. KIỂM TRA
+- Tầng độ cao: mỗi loại vũ khí chỉ bắn tới đúng tầng quy định; pháo điện từ bắn được phi thuyền ở tầng thấp; phi thuyền không bao giờ lên lại quỹ đạo sau đoạn mở màn; đổi giữa tầng cao và tầng thấp đúng lịch từng pha, có hoạt cảnh, và luật bắn đúng trong lúc đổi.
+- Bộ phận: mỗi bộ phận khi vỡ tắt đúng chức năng (động cơ đẩy chính bị phá thì giữ ở tầng thấp; ăng-ten bị phá thì mất đòn lớn); giáp bụng và giáp thân đúng cấp.
+- Pha 3: phi thuyền rơi đúng điểm, chuyển thành pháo đài mặt đất; không xe nào kẹt quanh chỗ rơi.
+- Đòn lớn: lần đầu từ phi thuyền, các lần sau từ vệ tinh; 5 điểm rơi đúng; sát thương, bán kính, cảnh báo đúng; ngắt đúng theo F.5; khói và APS không chặn, khiên hấp thụ một phần.
+- Khoang đổ bộ: bắn hạ được khi đang rơi; không vượt trần 6 xe.
+- Cực khó: đòn chiếm quyền drone chỉ có ở Cực khó; xe gây nhiễu và tháp EW bảo vệ đúng drone trong tầm.
+- Không còn chỗ nào trong dữ liệu, thoại, Hướng dẫn, Hồ sơ hay test nhắc tới đĩa bay hoặc bộ phận cũ.
+- Mô phỏng 5 seed: chiến dịch lớn chương 9, Săn trùm, Tác chiến, ở mọi độ khó; báo cáo tỷ lệ thắng, thời lượng, và tỷ lệ thời gian phi thuyền ở mỗi tầng.
+- Hiệu năng: đo FPS lúc phi thuyền hạ từ quỹ đạo, lúc Mưa thanh tungsten, và lúc rơi ở pha 3, ở đồ họa Thấp trên máy tầm thấp.
+- Chụp ảnh tự động ở mỗi tầng độ cao và mỗi pha; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model phi thuyền, bản hư hại, vệ tinh, khoang đổ bộ) và tài liệu thiết kế (mục boss, chương 9).
