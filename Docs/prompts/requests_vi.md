@@ -141,3 +141,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 01:20) tôi vẫn không thấy thẻ gunship, nó nằm ở đâu, như hình nó đáng lẽ trong list các phương tiện bay, đề nghị check kỹ, cái heavy gunship trong hình là không phải, tôi cần ac-130
 - (30/09 01:20) và các tháp canh vẫn chưa bỏ vũ khí phụ cho hợp lý, như gun turret và heavy fortress
 - (30/09 01:20) ưu tiên sửa các cái này để test tiếp
+- (30/09 01:30) file pdf từng phương tiện nhớ ghi thêm là lấy ref từ cái gì ngoài đời thật / game luôn, toàn bộ từ phương tiện tới tháp canh tới boss  [agent tham khảo, chờ chỗ trống]
