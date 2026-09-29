@@ -9,7 +9,7 @@ grown by the 1.5 m obstacle clearance, fixed defences a square of 0.8 times thei
 everything outside the outline blocked. The same check runs in the game's tests on the sim's own
 grid (MapConnectivityTests).
 
-    python Tools/maps/check_access.py [map ids...]   (no ids: every map's _conquest and _siege file)
+    python Tools/maps/check_access.py [map ids...]   (no ids: every map's _conquest, _siege and _long file)
 
 build_maps.py runs it on every map it writes and stops on a failure.
 """
@@ -63,35 +63,43 @@ def balance():
 
 
 class Grid:
-    def __init__(self, size):
-        self.n = int(math.ceil(size / CELL))
-        self.half = self.n * CELL / 2
-        self.blocked = [[False] * self.n for _ in range(self.n)]
+    def __init__(self, size, bounds=None):
+        # A square map is centred on the origin; a long one (prompt 17) gives its bounds.
+        if bounds:
+            x0, z0, x1, z1 = bounds
+        else:
+            n = int(math.ceil(size / CELL))
+            x0 = z0 = -n * CELL / 2
+            x1 = z1 = n * CELL / 2
+        self.x0, self.z0 = x0, z0
+        self.nx = int(math.ceil((x1 - x0) / CELL))
+        self.nz = int(math.ceil((z1 - z0) / CELL))
+        self.blocked = [[False] * self.nx for _ in range(self.nz)]
 
     def cell(self, x, z):
-        return int(math.floor((x + self.half) / CELL)), int(math.floor((z + self.half) / CELL))
+        return int(math.floor((x - self.x0) / CELL)), int(math.floor((z - self.z0) / CELL))
 
     def centre(self, gx, gz):
-        return (gx + 0.5) * CELL - self.half, (gz + 0.5) * CELL - self.half
+        return self.x0 + (gx + 0.5) * CELL, self.z0 + (gz + 0.5) * CELL
 
     def block(self, x, z, w, d):
         """Like NavGrid.AddBlocker: every cell the footprint grown by the clearance touches."""
         hw, hd = w / 2 + CLEARANCE, d / 2 + CLEARANCE
         a0, b0 = self.cell(x - hw, z - hd)
         a1, b1 = self.cell(x + hw - 1e-4, z + hd - 1e-4)
-        for gz in range(max(0, b0), min(self.n - 1, b1) + 1):
-            for gx in range(max(0, a0), min(self.n - 1, a1) + 1):
+        for gz in range(max(0, b0), min(self.nz - 1, b1) + 1):
+            for gx in range(max(0, a0), min(self.nx - 1, a1) + 1):
                 self.blocked[gz][gx] = True
 
     def open(self, gx, gz):
-        return 0 <= gx < self.n and 0 <= gz < self.n and not self.blocked[gz][gx]
+        return 0 <= gx < self.nx and 0 <= gz < self.nz and not self.blocked[gz][gx]
 
     def wide(self, gx, gz):
         return all(self.open(gx + dx, gz + dz) for dx in (-1, 0, 1) for dz in (-1, 0, 1))
 
 
 def build_grid(m, props, footprint, fill=True, biggest=None):
-    g = Grid(m['size'])
+    g = Grid(m['size'], m.get('bounds'))
     for p in m['props']:
         w, d, blocks = props[p['def']]
         if not blocks:
@@ -117,8 +125,8 @@ def build_grid(m, props, footprint, fill=True, biggest=None):
     if m.get('boundary'):
         flat = m['boundary']
         poly = list(zip(flat[0::2], flat[1::2]))
-        for gz in range(g.n):
-            for gx in range(g.n):
+        for gz in range(g.nz):
+            for gx in range(g.nx):
                 if not outline_tools.inside(poly, *g.centre(gx, gz)):
                     g.blocked[gz][gx] = True
     return g
@@ -215,7 +223,7 @@ def main(ids):
     files = []
     for f in sorted((DATA / 'maps').glob('*.json')):
         map_id, _, variant = f.stem.rpartition('_')
-        if variant in ('conquest', 'siege') and (not ids or map_id in ids):
+        if variant in ('conquest', 'siege', 'long') and (not ids or map_id in ids):
             files.append(f)
     failed = 0
     for f in files:

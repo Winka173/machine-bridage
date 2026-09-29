@@ -215,11 +215,11 @@ namespace MachineBrigade.Tests
         public void RadarAbsorbentCoatingMakesMissilesComeCloser()
         {
             var world = World(Stat(StatId.LockRange, 0.2f), 1);
-            var carrier = world.SpawnVehicle("atgm_carrier", 0, new Vector2(0f, 0f), 0f);
+            var carrier = world.SpawnVehicle("atgm_tower", 0, new Vector2(0f, 0f), 0f);
             var range = carrier.Weapon.Range;
             var coated = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, range * 0.9f), MathF.PI);
             var plain = World(VehicleBoost.None, 1);
-            var carrier2 = plain.SpawnVehicle("atgm_carrier", 0, new Vector2(0f, 0f), 0f);
+            var carrier2 = plain.SpawnVehicle("atgm_tower", 0, new Vector2(0f, 0f), 0f);
             var bare = plain.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, range * 0.9f), MathF.PI);
             var fired = Run(world, 6f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == carrier.Id && e.Mount == 0);
             var fired2 = Run(plain, 6f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == carrier2.Id && e.Mount == 0);
@@ -233,7 +233,7 @@ namespace MachineBrigade.Tests
         {
             var world = World(Stat(StatId.LaserWarning, 8f));
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
-            var carrier = world.SpawnVehicle("atgm_carrier", 1, new Vector2(0f, 30f), MathF.PI);
+            var carrier = world.SpawnVehicle("atgm_tower", 1, new Vector2(0f, 30f), MathF.PI);
             world.SetBoosts(1, _ => Lab.Harmless);
             // The tank only has to be locked on to (its own guns would decide whether the carrier lives).
             tank.HoldFire = true;

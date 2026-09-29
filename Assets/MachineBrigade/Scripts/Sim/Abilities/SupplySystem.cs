@@ -351,11 +351,7 @@ namespace MachineBrigade.Sim.Abilities
             return best;
         }
 
-        private Vector2 ClampInside(Vector2 p, float margin)
-        {
-            var limit = MathF.Max(0f, _world.Map.HalfSize - margin);
-            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
-        }
+        private Vector2 ClampInside(Vector2 p, float margin) => _world.Map.Clamp(p, margin);
 
         /// <summary>
         /// How far into enemy anti-aircraft and fighter reach a point is (metres summed over the enemies

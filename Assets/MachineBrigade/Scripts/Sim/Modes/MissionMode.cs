@@ -200,7 +200,14 @@ namespace MachineBrigade.Sim.Modes
             return alive;
         }
 
-        public void Setup(SimWorld world) => SetupStage(world, true, null);
+        public void Setup(SimWorld world)
+        {
+            // Prompt 16 F: bosses bring their escorts (Normal's cap unless the session sets its difficulty's).
+            world.EscortSettings ??= Content.EscortSettings.For(world.Catalog.EscortRules, "Normal");
+            // Prompt 18: the bosses' big attacks (the session sets them by difficulty first).
+            world.BigAttackSettings ??= Content.BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
+            SetupStage(world, true, null);
+        }
 
         /// <summary>The objectives' owners now (a stage hands them to the next).</summary>
         internal Dictionary<string, int> Owners()
@@ -344,7 +351,10 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => _points.Count > 0 ? _points[0].Def.Position : null,
             MissionGoal.Destroy => NearestTarget(world),
             MissionGoal.Escort => ConvoyFront(world),
-            MissionGoal.Boss or MissionGoal.Intercept => world.TryGetVehicle(_boss, out var b) && b.IsAlive ? b.Position : null,
+            // A ship at sea (prompt 16): the pier head or the headland nearest it, as near as the land comes.
+            MissionGoal.Boss or MissionGoal.Intercept => world.TryGetVehicle(_boss, out var b) && b.IsAlive
+                ? b.Def.Naval != null && world.Map.Sea is { } sea ? sea.Approach(b.Position) : b.Position
+                : null,
             MissionGoal.Hunt => NearestHunted(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Recon => NextSpot(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Protect => Threatened(world),
@@ -411,6 +421,8 @@ namespace MachineBrigade.Sim.Modes
             if (_def.Goal == MissionGoal.Relieve && AllyHq.IsValid &&
                 (!world.TryGetVehicle(AllyHq, out var allyHq) || !allyHq.IsAlive || allyHq.Team != PlayerTeam))
                 return true;
+            // Prompt 16: a ship boss that gets away over the edge (Leviathan in its last phase) loses the mission.
+            if (_boss.IsValid && world.TryGetVehicle(_boss, out var fled) && fled.Escaped) return true;
             // A base to defend (its role Defend): losing its HQ loses the mission, whatever the goal.
             if (world.Bases.Of(PlayerTeam) is { Role: BaseRole.Defend, HqFallen: true }) return true;
             if (_def.Goal == MissionGoal.Intercept && world.TryGetVehicle(_boss, out var train) && train.IsAlive &&
@@ -756,7 +768,7 @@ namespace MachineBrigade.Sim.Modes
             v.ExpiresAt = world.Time + FleeSeconds;
             var away = world.TryGetRally(EnemyTeam, out var camp) ? camp : v.Position;
             var outward = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
-            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.HalfSize)));
+            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.Size * 0.5f)));
             world.Emit(SimEvent.RadioMessage("radio.bossFled", PlayerTeam));
         }
 

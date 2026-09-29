@@ -20,7 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             public VisualElement Root, Fill;
             public int ShownFill = -1;
-            public bool ShownBroken, ShownFocus;
+            public bool ShownBroken, ShownFocus, ShownCharging;
         }
 
         private readonly List<Cell> _cells = new();
@@ -59,7 +59,10 @@ namespace MachineBrigade.Game.Hud
         {
             "maingun" or "gun" or "turret" or "cannon" => "cannon",
             "flak" => "aa",
-            "missiles" => "missile",
+            "missiles" or "vls" => "missile",
+            "ciws" => "aa",
+            "flightdeck" => "helicopter",
+            "welldeck" => "reinforce",
             "rockets" => "mlrs",
             "thermo" => "thermo",
             "railgun" => "railgun",
@@ -79,8 +82,35 @@ namespace MachineBrigade.Game.Hud
             "antenna" => "command",
             "station" => "crosshair",
             "radar" => "cbradar",
+            // Prompt 16 E.
+            "aps" => "shield",
+            "fuel" => "flame",
+            "ew" => "jammer",
+            // Prompt 18 C.
+            "erector" => "ballistic",
+            "bombbay" => "bomb",
             _ => "gear",
         };
+
+        /// <summary>Prompt 18 D.1: the parts that carry the charging big attack flash (null: none), lit on <paramref name="on"/>.</summary>
+        public void SetCharging(IReadOnlyList<int> parts, bool on)
+        {
+            for (var i = 0; i < _cells.Count; i++)
+            {
+                var lit = on && parts != null && Contains(parts, i);
+                var cell = _cells[i];
+                if (lit == cell.ShownCharging) continue;
+                cell.ShownCharging = lit;
+                cell.Root.EnableInClassList("fc-boss-part--charging", lit);
+            }
+        }
+
+        private static bool Contains(IReadOnlyList<int> list, int x)
+        {
+            foreach (var y in list)
+                if (y == x) return true;
+            return false;
+        }
 
         /// <summary>Shows the boss's parts (null hides the row); <paramref name="focused"/> is the ordered part, or -1.</summary>
         public void Set(Vehicle boss, int focused)
@@ -140,6 +170,11 @@ namespace MachineBrigade.Game.Hud
                 var part = def.Parts[i];
                 var cell = Kit.Box("fc-boss-part", _mini ? PickingMode.Ignore : PickingMode.Position);
                 cell.Add(Kit.Icon(IconFor(part.Kind), "fc-boss-part__icon"));
+                // Prompt 15 E6: the part's armour, small in the corner (not on the closed bar's 20 px cells).
+                var (level, kind) = CombatFacts.PartArmour(def, i);
+                var armour = Kit.Icon(CombatIcons.Armour(level, kind), "fc-boss-part__armour");
+                armour.tooltip = CombatIcons.ArmourTip(level, kind);
+                cell.Add(armour);
                 var track = Kit.Box("fc-boss-part__track");
                 var fill = Kit.Box("fc-boss-part__fill");
                 track.Add(fill);
@@ -147,7 +182,7 @@ namespace MachineBrigade.Game.Hud
                 // The cross over a broken part (two thin bars, shown by the "broken" class).
                 cell.Add(Kit.Box("fc-boss-part__cross"));
                 cell.Add(Kit.Box("fc-boss-part__cross fc-boss-part__cross--flip"));
-                cell.tooltip = Strings.Get("part." + part.Kind);
+                cell.tooltip = Strings.Get("part." + part.Kind) + " · " + CombatIcons.ArmourTip(level, kind);
                 cell.AddManipulator(new Tap(() => Tapped?.Invoke(_boss, index)));
                 Root.Add(cell);
                 _cells.Add(new Cell { Root = cell, Fill = fill });

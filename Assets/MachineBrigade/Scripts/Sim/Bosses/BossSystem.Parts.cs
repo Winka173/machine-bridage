@@ -98,10 +98,12 @@ namespace MachineBrigade.Sim.Bosses
                 all += dps;
                 if (w.CanTarget(true)) toAir += dps;
                 if (w.CanTarget(shooter.Flying) && reach <= w.Range + boss.Radius)
-                    toShooter += dps * _world.Catalog.Damage.Multiplier(w, shooter.Armor);
+                    toShooter += dps * _world.Damage.Estimate(w, boss, shooter);
             }
             var score = (antiAir ? toAir : toShooter) + all * 0.15f;
             if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;
+            // Prompt 18: a part that carries the big attack counts too, far more while it charges (break it in time).
+            if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) score += big.Stage == BigStage.Charging ? 60f : 8f;
             return score;
         }
 
@@ -111,8 +113,8 @@ namespace MachineBrigade.Sim.Bosses
         /// flak burst's, whatever their rate).
         /// </summary>
         private float GroundFirepower(WeaponDef w) =>
-            w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Multiplier(w, ArmorClass.Light),
-                _world.Catalog.Damage.Multiplier(w, ArmorClass.Heavy)) : 0f;
+            w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Effective(w, 1, TargetKind.Ground),
+                _world.Catalog.Damage.Effective(w, 3, TargetKind.Ground)) : 0f;
 
         /// <summary>A weapon's damage a second on paper (its volley or magazine over its cycle).</summary>
         internal static float Firepower(WeaponDef w) =>
@@ -163,6 +165,11 @@ namespace MachineBrigade.Sim.Bosses
         {
             for (var team = 0; team <= 2; team++)
                 if (_focus.TryGetValue(team, out var f) && FocusOf(team, f.boss) >= 0) mix(f.boss.Value * 64 + f.part);
+            // Prompt 16: the escorts and the fire trails.
+            MixEscorts(mix);
+            mix(_trails.Count);
+            // Prompt 18: big attacks.
+            MixBig(mix);
         }
 
         // ================================================================== damage, breaking, patching
@@ -269,6 +276,23 @@ namespace MachineBrigade.Sim.Bosses
             var turn = 1f;
             var cadence = 1f;
             boss.BombardOff = boss.SpotterOff = boss.BurrowOff = boss.LandingOff = boss.AuraOff = false;
+            // Prompt 16: mechanisms that several parts may carry (the hovercraft's two CIWS) stop with the
+            // last of them; a protection system holds fewer interceptors with each one broken.
+            int apsParts = 0, apsStanding = 0, jamParts = 0, jamStanding = 0, trailParts = 0, trailStanding = 0;
+            for (var i = 0; i < parts.Count; i++)
+                foreach (var stop in parts[i].Stops)
+                    switch (stop)
+                    {
+                        case "aps": apsParts++; if (!boss.PartBroken[i]) apsStanding++; break;
+                        case "jammer": jamParts++; if (!boss.PartBroken[i]) jamStanding++; break;
+                        case "trail": trailParts++; if (!boss.PartBroken[i]) trailStanding++; break;
+                    }
+            boss.ApsOff = apsParts > 0 && apsStanding == 0;
+            boss.JammerOff = jamParts > 0 && jamStanding == 0;
+            boss.TrailOff = trailParts > 0 && trailStanding == 0;
+            boss.ApsMax = boss.Aps == null || apsParts == 0 ? int.MaxValue : (int)MathF.Ceiling(boss.Aps.Charges * apsStanding / (float)apsParts);
+            if (boss.ApsCharges > boss.ApsMax) boss.ApsCharges = boss.ApsMax;
+            boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (!boss.PartBroken[i]) continue;
@@ -291,8 +315,12 @@ namespace MachineBrigade.Sim.Bosses
                         case "burrow": boss.BurrowOff = true; break;
                         case "landing": boss.LandingOff = true; break;
                         case "aura": boss.AuraOff = true; break;
+                        case "cruise": boss.CruiseOff = true; break;
+                        case "craft": boss.CraftOff = true; break;
+                        case "radar": boss.RadarOff = true; break;
                     }
             }
+
             boss.PartSpeed = speed;
             boss.TurnFactor = boss.TurnFactor / boss.PartTurn * turn;
             boss.TurretFactor = boss.TurretFactor / boss.PartTurn * turn;

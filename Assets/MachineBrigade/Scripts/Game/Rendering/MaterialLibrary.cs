@@ -137,6 +137,7 @@ namespace MachineBrigade.Game.Rendering
             AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
             AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
             RepairMark = Unlit(unlit, "RepairMark", new Color(0.5f, 1.45f, 0.62f));
+            EscortMark = Unlit(unlit, "EscortMark", new Color(1.55f, 0.62f, 0.18f));
             // Prompt 13 C.9: the stores icons (low in the coin yellow, rearming in our side's green, bright at the
             // full rate and dim at the slow one, flying out in the secondary text grey; empty is AmmoEmpty).
             StoresLow = Unlit(unlit, "StoresLow", new Color(1f, 0.8f, 0.22f));
@@ -170,6 +171,9 @@ namespace MachineBrigade.Game.Rendering
             // Track marks: soft-edged dark oblongs on the ground, under every effect.
             Tread = Particle(particle, "Tread", additive: false, intensity: 1f, shape: 2f, softness: 0.55f);
             Tread.renderQueue = 2951;
+            // Prompt 16: ships' wakes, soft white foam on the water.
+            Foam = Particle(particle, "Foam", additive: false, intensity: 1f, shape: 0f, softness: 1.5f);
+            Foam.renderQueue = 2952;
             // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
             Scorch.renderQueue = 2950;
             Scorch.enableInstancing = true;
@@ -188,6 +192,9 @@ namespace MachineBrigade.Game.Rendering
         public Material Pebble { get; }
         public Material GrassTuft { get; }
         public Material Water { get; }
+
+        /// <summary>Prompt 16: a ship's wake (foam patches laid on the water).</summary>
+        public Material Foam { get; }
         public Material OuterGround { get; }
 
         /// <summary>The mountain range; its colours come from a palette texture indexed by UV.</summary>
@@ -227,6 +234,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>The green wrench over something being repaired (a sapper at a tower).</summary>
         public Material RepairMark { get; }
+
+        /// <summary>Prompt 16 F: the orange diamond beside a boss escort's health bar.</summary>
+        public Material EscortMark { get; }
 
         public Material StoresLow { get; }
         public Material StoresFull { get; }

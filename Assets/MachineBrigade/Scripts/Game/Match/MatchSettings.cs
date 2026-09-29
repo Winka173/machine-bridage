@@ -115,13 +115,15 @@ namespace MachineBrigade.Game.Match
             "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
-            "atgm_carrier",
+            // Prompt 17 D: the ATGM carrier, A-10, Ka-52 and sapper were folded into other cards (CardMerges).
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
-            "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
+            "fighter_jet", "recon_drone",
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
-            "turtle_tank", "bmpt", "sapper",
+            "turtle_tank", "bmpt",
             "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
             "armored_bulldozer",
+            // Prompt 17 C.
+            "stealth_fighter", "wingman_drone", "laser_tank", "shield_carrier", "bunker_vehicle", "swarm_carrier",
         };
 
         public static readonly string[] AllSupports =
@@ -210,6 +212,9 @@ namespace MachineBrigade.Game.Match
                 new[] { WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Storm, WeatherKind.Clear, WeatherKind.Night }),
             new("coralisles", "desert", "sun",
                 new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Storm, WeatherKind.Overcast, WeatherKind.Night }),
+            // Prompt 16: a rocky coast on the sea (Leviathan's battlefield), in the skirmish rotation too.
+            new("lighthousebay", "temperate", "anchor",
+                new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Night }),
         };
 
         public static string Map { get; set; } = "ashfield";
@@ -388,6 +393,12 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         public static bool CompactHud { get; set; } = true;
 
+        /// <summary>
+        /// Settings > "Hiện số chi tiết" (prompt 15 D.9, saved as mb.showNumbers, off by default): the armour and
+        /// weapon tooltips and the detail page add the armour and penetration levels and the multipliers.
+        /// </summary>
+        public static bool ShowCombatNumbers { get; set; }
+
         /// <summary>How many matches the standing hint ("your army fights on its own · tap A B C") is shown for.</summary>
         public const int StartHintMatches = 3;
 
@@ -448,6 +459,7 @@ namespace MachineBrigade.Game.Match
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;
                 CompactHud = PlayerPrefs.GetInt("mb.compactHud", 1) == 1;
+                ShowCombatNumbers = PlayerPrefs.GetInt("mb.showNumbers", 0) == 1;
                 HintMatchesSeen = Mathf.Max(0, PlayerPrefs.GetInt("mb.hintMatches", 0));
                 ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots, VehicleLayout);
                 ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots, SupportLayout);
@@ -493,6 +505,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.autoDeploy", AutoDeploy ? 1 : 0);
                 PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
                 PlayerPrefs.SetInt("mb.compactHud", CompactHud ? 1 : 0);
+                PlayerPrefs.SetInt("mb.showNumbers", ShowCombatNumbers ? 1 : 0);
                 // Saved slot by slot, empty slots as blanks, so the layout comes back as it was.
                 PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", Array.ConvertAll(DeckLayout(false), c => c ?? "")));
                 PlayerPrefs.SetString("mb.deck.supports", string.Join(",", Array.ConvertAll(DeckLayout(true), c => c ?? "")));

@@ -36,9 +36,10 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- a weapon
             ["ul.weapon"] = ("{0}: {1}, hits {2}", "{0}: {1}, bắn {2}"),
             ["ul.type.Kinetic"] = ("kinetic", "động năng"),
-            ["ul.type.ArmorPiercing"] = ("armour-piercing", "xuyên giáp"),
+            ["ul.type.ShapedCharge"] = ("shaped charge", "nổ lõm"),
             ["ul.type.HighExplosive"] = ("high explosive", "nổ mạnh"),
-            ["ul.type.Flak"] = ("flak", "phòng không"),
+            ["ul.type.Fragmentation"] = ("fragmentation", "mảnh"),
+            ["ul.type.Energy"] = ("energy", "năng lượng"),
             ["ul.type.Fire"] = ("fire", "lửa"),
             ["ul.damage"] = ("{0} damage a round", "Sát thương {0} mỗi phát"),
             ["ul.damageBurst"] = ("{0} damage a round, {1} rounds a salvo", "Sát thương {0} mỗi phát, {1} phát mỗi loạt"),
@@ -134,6 +135,22 @@ namespace MachineBrigade.Game.Hud
             ["ul.moduleRearm"] = ("Launchers in the base reload {0} times as fast", "Xe phóng trong căn cứ nạp đạn nhanh gấp {0} lần"),
             ["ul.moduleRepair"] = ("Repairs vehicles in the base", "Sửa xe trong căn cứ"),
             ["ul.moduleSupply"] = ("{0} more army supply", "Thêm {0} sức chứa quân"),
+
+            // Prompt 17 C: shield domes, deploying, wingmen, relays, the laser's ramp, the drone swarm.
+            ["ul.dome"] = ("Shield dome of {0} m: takes {1} damage for its side inside (not energy), back {2} s after its last hit; domes do not add up", "Vòm khiên {0} m: hấp thụ {1} sát thương cho phe ta bên trong (trừ năng lượng), hồi lại {2} giây sau đòn cuối; các vòm không cộng dồn"),
+            ["ul.deploy"] = ("Digs in when it stands with an enemy in reach or on guard ({0} s, no firing): front armour +{1} levels, reach x{2}, turret all round; packs up ({0} s) to move", "Tự triển khai khi dừng lại có địch trong tầm hoặc đang canh giữ ({0} giây, không bắn): giáp trước +{1} cấp, tầm ×{2}, tháp xoay 360°; thu lại ({0} giây) để đi tiếp"),
+            ["ul.deploy.arc"] = ("On its tracks its turret keeps within {0}° of the nose", "Khi di chuyển tháp pháo chỉ xoay trong {0}° hai bên mũi xe"),
+            ["ul.wingman"] = ("Flies on the wing of the nearest manned aircraft of its side within {0} m (patrols over the front with none)", "Bay kèm máy bay có người lái gần nhất của phe ta trong {0} m (không có thì tuần tra trên chiến tuyến)"),
+            ["ul.wingman.decoy"] = ("An enemy anti-air missile at its leader turns onto it {0} % of the time (within {1} m)", "Tên lửa phòng không địch nhắm vào máy bay dẫn có {0} % khả năng chuyển sang nó (trong {1} m)"),
+            ["ul.airCapFree"] = ("Not counted in the aircraft cap (at most {0} a side)", "Không tính vào trần máy bay (tối đa {0} chiếc mỗi phe)"),
+            ["ul.sead"] = ("With no aircraft about, it hunts air defences with its bombs", "Khi không có máy bay địch, nó săn phòng không bằng bom"),
+            ["ul.relay"] = ("Its side earns {0} CP a second more (a second relay {1}); nothing for {2} s after a hit; two to a base, never on an outpost", "Phe mình kiếm thêm {0} CP mỗi giây (trạm thứ hai {1}); ngừng {2} giây sau khi bị bắn; tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn"),
+            ["ul.ramp"] = ("Ramps from x{0} to x{1} over {2} s on one target; starts again on another", "Tăng từ ×{0} lên ×{1} trong {2} giây trên cùng một mục tiêu; đổi mục tiêu thì về lại"),
+            ["ul.swarm"] = ("Each drone picks its own target within {0} m of the aim, and another if its target is gone", "Mỗi drone tự chọn mục tiêu trong {0} m quanh điểm nhắm, và chọn mục tiêu khác nếu mục tiêu đã bị diệt"),
+            ["ul.heRound"] = ("Loads armour-piercing for armour and high explosive ({0}, {1} m blast) for structures and light vehicles, on its own", "Tự đổi đạn: đạn xuyên cho xe có giáp, đạn nổ mạnh ({0}, nổ {1} m) cho công trình và xe nhẹ"),
+            ["hud.deploying"] = ("Digging in", "Đang triển khai"),
+            ["hud.deployed"] = ("Dug in", "Đã triển khai"),
+            ["hud.packing"] = ("Packing up", "Đang thu lại"),
         };
     }
 }

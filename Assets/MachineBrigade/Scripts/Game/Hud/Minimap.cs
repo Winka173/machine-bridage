@@ -6,7 +6,8 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The battlefield from above, turned to match the camera (north-east is up). Under
+    /// The battlefield from above, turned to match the camera (the camera's forward is up: north-west on the square
+    /// maps, west on a long battlefield, whose rectangle it keeps, prompt 17 A.4). Under
     /// everything lies a picture of the map itself (<see cref="SetPicture"/>): the painted ground
     /// with roads, buildings, rock, trees, water and lava, in the map's real shape. On top it shows
     /// objectives, friendly and spotted enemy vehicles, incoming strikes and the camera's view;
@@ -27,6 +28,11 @@ namespace MachineBrigade.Game.Hud
         private readonly VisualElement _picture;
         private readonly VisualElement _overlay;
         private float _half = 80f;
+
+        // The map's rectangle and the camera's forward and right on the ground (the square maps': north-west, north-east).
+        private Vector2 _mapMin = new(-80f, -80f), _mapMax = new(80f, 80f);
+        private Vector2 _forward = new(-Cos45, Cos45), _right = new(Cos45, Cos45);
+        private float _turn = 45f;
         private bool _hasView;
         private bool _hasPicture;
 
@@ -39,7 +45,7 @@ namespace MachineBrigade.Game.Hud
             // The map picture, turned 45 degrees like the camera; sized and centred on layout.
             _picture = new VisualElement { pickingMode = PickingMode.Ignore };
             _picture.style.position = Position.Absolute;
-            _picture.style.rotate = new Rotate(45f);
+            _picture.style.rotate = new Rotate(_turn);
             _picture.style.display = DisplayStyle.None;
             Add(_picture);
 
@@ -64,9 +70,20 @@ namespace MachineBrigade.Game.Hud
         public Color Ground { get; set; } = new(0.25f, 0.33f, 0.24f, 0.85f);
 
         /// <summary>Shows the map's own picture (north up, transparent beyond its outline) under the marks.</summary>
-        public void SetPicture(Texture2D picture, float halfSize)
+        public void SetPicture(Texture2D picture, float halfSize) => SetPicture(picture, new Vector2(-halfSize, -halfSize), new Vector2(halfSize, halfSize), -45f);
+
+        /// <summary>The picture over a map's rectangle, the minimap turned so the camera's forward (its yaw, degrees) is up.</summary>
+        public void SetPicture(Texture2D picture, Vector2 mapMin, Vector2 mapMax, float cameraYaw)
         {
-            _half = halfSize;
+            _mapMin = mapMin;
+            _mapMax = mapMax;
+            _half = Mathf.Max(mapMax.x - mapMin.x, mapMax.y - mapMin.y) * 0.5f;
+            var yaw = cameraYaw * Mathf.Deg2Rad;
+            _forward = new Vector2(Mathf.Sin(yaw), Mathf.Cos(yaw));
+            _right = new Vector2(_forward.y, -_forward.x);
+            // The picture is north up: turned clockwise until the camera's forward points up.
+            _turn = -cameraYaw;
+            _picture.style.rotate = new Rotate(_turn);
             _hasPicture = picture != null;
             _picture.style.backgroundImage = picture != null ? new StyleBackground(picture) : new StyleBackground(StyleKeyword.None);
             _picture.style.display = _hasPicture ? DisplayStyle.Flex : DisplayStyle.None;
@@ -76,7 +93,6 @@ namespace MachineBrigade.Game.Hud
 
         public void Begin(float halfSize)
         {
-            _half = halfSize;
             _blips.Clear();
             _points.Clear();
             _warnings.Clear();
@@ -125,25 +141,38 @@ namespace MachineBrigade.Game.Hud
 
         public void Flush() => _overlay.MarkDirtyRepaint();
 
-        private float Scale => Mathf.Min(contentRect.width, contentRect.height) / (_half * 2f * 1.4142f) * 0.96f;
+        private Vector2 MapCentre => (_mapMin + _mapMax) * 0.5f;
 
-        /// <summary>The map square as a picture: its side on screen, centred, then turned by the style's rotation.</summary>
+        /// <summary>The turned map's box: how wide and tall the rectangle stands on the minimap.</summary>
+        private Vector2 Box
+        {
+            get
+            {
+                var size = _mapMax - _mapMin;
+                return new Vector2(Mathf.Abs(size.x * _right.x) + Mathf.Abs(size.y * _right.y), Mathf.Abs(size.x * _forward.x) + Mathf.Abs(size.y * _forward.y));
+            }
+        }
+
+        private float Scale => Mathf.Min(contentRect.width / Box.x, contentRect.height / Box.y) * 0.96f;
+
+        /// <summary>The map's rectangle as a picture: its sides on screen, centred, then turned by the style's rotation.</summary>
         private void FitPicture()
         {
             if (!_hasPicture || contentRect.width < 4f) return;
-            var side = _half * 2f * Scale;
+            var size = (_mapMax - _mapMin) * Scale;
             var c = contentRect.center;
-            _picture.style.width = side;
-            _picture.style.height = side;
-            _picture.style.left = c.x - side * 0.5f;
-            _picture.style.top = c.y - side * 0.5f;
+            _picture.style.width = size.x;
+            _picture.style.height = size.y;
+            _picture.style.left = c.x - size.x * 0.5f;
+            _picture.style.top = c.y - size.y * 0.5f;
         }
 
-        /// <summary>World (x, z) to local pixels: rotated -45 degrees so the camera's forward points up.</summary>
+        /// <summary>World (x, z) to local pixels: turned so the camera's forward points up.</summary>
         private Vector2 ToLocal(Vector2 w)
         {
-            var mx = (w.x + w.y) * Cos45;
-            var my = (w.y - w.x) * Cos45;
+            var d = w - MapCentre;
+            var mx = Vector2.Dot(d, _right);
+            var my = Vector2.Dot(d, _forward);
             var c = contentRect.center;
             return new Vector2(c.x + mx * Scale, c.y - my * Scale);
         }
@@ -153,7 +182,7 @@ namespace MachineBrigade.Game.Hud
             var c = contentRect.center;
             var mx = (local.x - c.x) / Scale;
             var my = -(local.y - c.y) / Scale;
-            return new Vector2((mx - my) * Cos45, (mx + my) * Cos45);
+            return MapCentre + _right * mx + _forward * my;
         }
 
         /// <summary>Without a picture: the plain map square, in the ground's colour.</summary>
@@ -165,10 +194,10 @@ namespace MachineBrigade.Game.Hud
             p.strokeColor = new Color(0.65f, 0.89f, 0.75f, 0.35f);
             p.lineWidth = 1.2f;
             p.BeginPath();
-            p.MoveTo(ToLocal(new Vector2(-_half, -_half)));
-            p.LineTo(ToLocal(new Vector2(_half, -_half)));
-            p.LineTo(ToLocal(new Vector2(_half, _half)));
-            p.LineTo(ToLocal(new Vector2(-_half, _half)));
+            p.MoveTo(ToLocal(_mapMin));
+            p.LineTo(ToLocal(new Vector2(_mapMax.x, _mapMin.y)));
+            p.LineTo(ToLocal(_mapMax));
+            p.LineTo(ToLocal(new Vector2(_mapMin.x, _mapMax.y)));
             p.ClosePath();
             p.Fill();
             p.Stroke();

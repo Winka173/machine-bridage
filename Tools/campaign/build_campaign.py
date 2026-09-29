@@ -125,7 +125,9 @@ def pay_base(missions):
         prints = (1.0 + index / 22.0) * kind
         m['_coins'], m['_prints'] = coins, prints
         last_main = (coins, prints)
-        index += 1
+        # An epilogue (prompt 16) pays like the chapter's boss where it stands and moves nobody else's pay.
+        if not m.get('epilogue'):
+            index += 1
 
 
 def simulate(missions, coin_scale, print_scale, stars=2):
@@ -215,8 +217,13 @@ def check(missions):
         fail('duplicate ids')
     main = [m for m in missions if not m.get('side')]
     side = [m for m in missions if m.get('side')]
-    if len(main) != 90 or len(side) != 18:
-        fail(f'{len(main)} main and {len(side)} side missions (want 90 and 18)')
+    # A chapter's epilogue (prompt 16: Leviathan after chapter 4's operation) is a main mission outside the count.
+    core = [m for m in main if not m.get('epilogue')]
+    if len(core) != 90 or len(side) != 18:
+        fail(f'{len(core)} main and {len(side)} side missions (want 90 and 18)')
+    for e in main:
+        if e.get('epilogue') and e['goal'] != 'Boss':
+            fail(f"{e['id']}: an epilogue is a boss fight")
     owned = set(STARTERS)
     per_chapter = {}
     for m in missions:
@@ -232,7 +239,8 @@ def check(missions):
             if u in owned:
                 fail(f"{m['id']}: {u} unlocked twice")
             owned.add(u)
-            if u not in MODULES:
+            # A tower branch opened (prompt 16: the long-range coastal battery) is no card.
+            if u not in MODULES and '.' not in u:
                 per_chapter[m['chapter']] = per_chapter.get(m['chapter'], 0) + 1
         bosses = [m.get('boss', {}).get('def')] + [s.get('boss', {}).get('def') for s in m.get('stages', [])]
         for b in bosses:
@@ -253,7 +261,7 @@ def check(missions):
     if sorted(modules) != sorted(MODULES):
         fail(f'modules {modules}')
     for c in range(1, 10):
-        ms = [m for m in missions if m['chapter'] == c and not m.get('side')]
+        ms = [m for m in missions if m['chapter'] == c and not m.get('side') and not m.get('epilogue')]
         if len(ms) != 10:
             fail(f'chapter {c} has {len(ms)} main missions')
         if not ms[9].get('operation') or not ms[9].get('stages'):

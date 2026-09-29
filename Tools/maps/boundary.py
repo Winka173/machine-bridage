@@ -62,6 +62,9 @@ SHAPES = {
     'borderbridge': (4.0, 6.0, 24.0, [(135, 26, 22), (90, 12, 14)]),
     # A swamp: the jungle closes in on every side, deepest round the camps' corners.
     'swamp':      (5.0, 10.0, 16.0, [(135, 30, 24), (90, 14, 12), (0, 14, 12)]),
+    # Prompt 16. A rocky coast on the sea: the pine hills close in on the landward corner (the bite's
+    # mirror falls in the sea, where build_maps keeps the square's edge: lb_open_sea).
+    'lighthousebay': (3.0, 5.0, 24.0, [(135, 22, 22), (180, 10, 10)]),
     # A lagoon: the reef's rim, low and ragged, closes it in.
     'coralisles': (5.0, 9.0, 18.0, [(135, 26, 26), (90, 12, 12), (0, 12, 12)]),
     # Salt flats: the rim of a dry lake, broad shallow bays.

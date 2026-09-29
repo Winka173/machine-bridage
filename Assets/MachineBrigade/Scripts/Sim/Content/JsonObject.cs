@@ -22,6 +22,9 @@ namespace MachineBrigade.Sim.Content
 
         public bool Has(string key) => _values.TryGetValue(key, out var v) && v != null;
 
+        /// <summary>The value at <paramref name="key"/> is an array (data that takes one number or several).</summary>
+        public bool IsArray(string key) => _values.TryGetValue(key, out var v) && v is List<object?>;
+
         /// <summary>The value at <paramref name="key"/> is a string (data that takes a word or a number).</summary>
         public bool IsString(string key) => _values.TryGetValue(key, out var v) && v is string;
 
@@ -67,6 +70,21 @@ namespace MachineBrigade.Sim.Content
             if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of numbers");
             var result = new List<float>(list.Count);
             foreach (var item in list) result.Add(item is double d ? (float)d : throw Invalid(key, "an array of numbers"));
+            return result;
+        }
+
+        /// <summary>An array of arrays of numbers (polygons, points as x, z pairs).</summary>
+        public IReadOnlyList<IReadOnlyList<float>> FloatArrays(string key)
+        {
+            if (!Has(key) || _values[key] is not List<object?> list) throw Invalid(key, "an array of arrays of numbers");
+            var result = new List<IReadOnlyList<float>>(list.Count);
+            foreach (var item in list)
+            {
+                if (item is not List<object?> inner) throw Invalid(key, "an array of arrays of numbers");
+                var row = new List<float>(inner.Count);
+                foreach (var v in inner) row.Add(v is double d ? (float)d : throw Invalid(key, "an array of arrays of numbers"));
+                result.Add(row);
+            }
             return result;
         }
 

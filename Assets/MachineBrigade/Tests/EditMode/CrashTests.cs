@@ -38,7 +38,7 @@ namespace MachineBrigade.Tests
             var heli = world.SpawnVehicle("attack_helicopter", 1, new Vector2(0f, 0f), 0f);
             var jeep = world.SpawnVehicle("scout_jeep", 0, new Vector2(0f, 0f), 0f);
             var full = jeep.Hp;
-            world.Damage.Apply(heli, 1e7f, DamageType.Flak);
+            world.Damage.Apply(heli, 1e7f, DamageType.Fragmentation);
             Run(world, 0.5f);
             Assert.IsFalse(heli.IsAlive);
             Assert.AreEqual(full, jeep.Hp, "nothing yet: it is still falling");

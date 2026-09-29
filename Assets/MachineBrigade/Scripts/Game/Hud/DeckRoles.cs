@@ -42,7 +42,7 @@ namespace MachineBrigade.Game.Hud
             {
                 if (!catalog.Vehicles.TryGetValue(id, out var def)) continue;
                 if (AntiAir(def)) air = true;
-                if (def.Class is UnitClass.TankHunter or UnitClass.Heavy or UnitClass.Tank || def.Weapon.DamageType == DamageType.ArmorPiercing) antiTank = true;
+                if (def.Class is UnitClass.TankHunter or UnitClass.Heavy or UnitClass.Tank || def.Weapon.AntiArmour) antiTank = true;
                 if (def.Weapon.MinRange > 0f) artillery = true;
                 if (def.RepairAura != null) repair = true;
                 if (def.Class == UnitClass.Scout || def.VisionRange >= 44f) recon = true;
@@ -60,7 +60,7 @@ namespace MachineBrigade.Game.Hud
         public static bool AntiAir(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Flak || def.Class == UnitClass.AntiAir)) return true;
+                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Fragmentation || def.Class == UnitClass.AntiAir)) return true;
             return false;
         }
     }

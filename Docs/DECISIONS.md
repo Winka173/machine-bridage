@@ -4431,3 +4431,1378 @@ them in the Blender builders (`Tools/blender`) and re-exports the models; 12 sta
     at which surfaces the face rays meet.
 - **Tests.** `MuzzleAuditTests.Known` is down to 12, and `TiltedLauncherFacesLaunchAlongTheirTubes` no longer skips
   the SAM launcher. The cards of every re-exported model were rendered again.
+
+## 14A. Prompt 15: armour levels, penetration, damage types (sim) (2026-09-29)
+
+The simulation and data half of prompt 15 (parts A, B, C, C.9, C.10 and the combat-value re-run); the icons and
+screens (D, E) are the interface half and are recorded on their own. The owner's rule on test time wins over the brief's
+"5 seeds for everything": the combat-value measure ran on one seed (13) and a campaign spot check on a few missions; the
+rest is listed for the testing phase (14A.Z). The pure helpers the interface reads are `Sim.Content.Matchup` and
+`Sim.Content.Armour`; `ExportGameDoc` carries every new field for the PDF.
+
+### A. Armour levels
+
+**A.1 The model.** Every unit has an armour level 0-4 on each face (`ArmourLevels`: front, side, rear, top). Data
+`"armour"`: one number, the front (a vehicle's side one less, rear and roof two less, never under 0; a tower, a building,
+an aircraft or a boss part the same all round), or four `[front, side, rear, top]` where the real vehicle differs. The
+old `"armor": "Light/Heavy/Air"` is gone from the vehicles; `ArmorClass` stays as a broad class the roles, the commander
+and the cards read, now worked out: Air (flying), Structure (a fixed defence that is no boss, unless `"structure": false`),
+Heavy from front level 3, Light for 0-2. The light tank, which the class inference would have turned Light, keeps
+`"class": "Tank"`. Props keep their class (Structure or a wreck's Heavy) with a level: 1 by default, `"armour"` for the few
+that differ.
+
+**A.1 table (front / side / rear / top; one number = the vehicle default or all round):**
+
+| Level | Vehicles |
+|---|---|
+| 0 | scout jeep, rocket technical, ZU-23 technical, car bomb, ammunition carrier, supply truck |
+| 1 | armoured car, SP artillery (an M109: aluminium), MLRS, heavy rocket artillery, ballistic launcher, mortar carrier, anti-air (Gepard), gun-missile AA, SAM launcher, long-range SAM, Iron Beam, ATGM carrier, FPV carrier, Lancet truck, Shahed truck, railgun truck, mine layer, smoke carrier, EW jammer, counter-battery radar |
+| 2 | light tank, IFV, wheeled gun, command vehicle, engineer vehicle, sapper |
+| 3 | battle tank, twin-barrel tank, BMPT, tank destroyer, flame tank (a tank hull), thermobaric launcher (a TOS-1A on a T-72 hull), siege tank; armoured bulldozer 3/3/2/2 (a D9R's cab is armoured all round) |
+| 4 | heavy tank, Titan; turtle tank 4/3/3/3 (its shed covers the sides and the roof) |
+
+| | Aircraft (all round) |
+|---|---|
+| 2 | A-10 (the "flying tank") |
+| 1 | Su-25 (attack jet), Mi-24 (heavy gunship), Ka-52, AH-64 (attack helicopter) |
+| 0 | scout helicopter, fighter, bombers, AC-130, drones |
+
+| | Towers and structures (all round; an embrasured front one more) |
+|---|---|
+| 4 | HQ; heavy fortress and camp bastion 4/3/3/3 (embrasured concrete) |
+| 3 | gun turret, super-gun, dragon's teeth |
+| 2 | ATGM tower, AA turret, drone hangar, repair bay, ammunition depot, airfield hangar; MG bunker and hidden gun pit 3/2/2/2 (embrasured) |
+| 1 | guard tower, fallback post (sandbags), artillery emplacement, rocket battery, C-RAM, Patriot battery, EW tower, airfield, logistics station, radar station, fire-control post |
+| 0 | minefield |
+
+Props: 1 (houses, walls, sandbags); a fortress gate, the base wall, the base gate and the command HQ 4 (the brief's
+"fortress walls, gates and HQ"); a tank or artillery wreck 3. A tower keeps the structure kind, so high explosive keeps its
+extra on it (C).
+
+**A.4 Aircraft** stay their own kind of target (air) and have a level. The brief's 1-2 for the armoured ones went in at 2
+first; the re-run (Z) showed every anti-air vehicle losing a fifth of its value per CP in the air group, so the Su-25, Mi-24
+and Ka-52 are 1 (they still shrug off rifle-calibre fire and much of the 23 mm) and only the A-10 keeps 2.
+
+**A.5 Boss parts** have their own level (data `"armour"` on each part), by kind, never more than the boss's front:
+drill and locomotive 4; guns, main guns, turrets, coilguns, railguns, mortars, howitzers, engines, tractors and ramps 3;
+flak, rockets, missiles, launchers, bays, hangars, shields, flamers, lasers, SAMs, stations 2; radars, antennas, fans,
+rotors, EMP emitters and UAV bays 1. Ground bosses are 4 (the trains 4/3/3/2, the hovercraft 3, the rail supergun 3 after
+the spot check, Z); air bosses 2.
+
+**A.6 Elites** are a level thicker in front than their card (at most 4; an aircraft at most 2) and take 1.35 times their
+card's health instead of 1.6. The power band of prompt 8 (1.8-2.2) holds: 1.35 health x about 1.25 for the thicker front
+(a gun that pierced by a level now does 0.75) x 1.25 damage is about 2.1. The elite heavy tank, already at 4, keeps 1.6.
+
+### B. Penetration and the damage a hit does
+
+**B.1 Penetration levels** (`WeaponDef.Penetration`, data `"pen"` on every weapon; `Armour.DefaultPenetration` gives the same
+by family and size for hand-built weapons): 0 a 7.62 mm machine gun; 1 12.7-14.5 mm, flamethrowers, 20-23 mm flak; 2
+autocannons 20-40 mm (and the 57 mm), 30-57 mm flak, unguided rockets 70-122 mm, 105-120 mm shells, 120 mm mortars, 110-250
+kg bombs, short-range anti-air missiles, the Iron Beam; 3 76-105 mm guns, light ATGMs (Konkurs, Griffin, MAM-L), FPV drones,
+the GAU-8's depleted uranium, 152-155 mm shells, 220-300 mm rockets, 500 kg bombs, the Shahed, cruise missiles, medium and
+long-range SAMs, the GBU-39 (a penetrator); 4 120 mm and up (darts), heavy ATGMs (TOW-2, Kornet, Ataka, Hellfire, Vikhr,
+Maverick, Kh-29), the Lancet, railguns, 203 mm shells, 240 mm mortars, 900 kg and up, the Iskander. Shaped charges pierce by
+their warhead, not their size.
+
+**B.2 The multiplier** by the round's level against the level of the face it strikes: a level or more above 1; level
+0.75; one under 0.4; two under 0.15; three or more under 0.05 (data `damageTable.penetration`). Equipment adds part
+levels (C.9): a part level lies between its two neighbours.
+
+**B.3 The face struck** (`DamageSystem.FaceOf`): direct fire by the shooter's bearing (within 50 degrees of the nose the
+front, of the tail the rear, else the side: the old arcs); the **roof** for top-attack weapons (`"topAttack"`: the
+top-attack Kornet, every diving drone), for bomblets, for everything lobbed or dropped (shells with a minimum range,
+artillery rockets, bombs), for called strikes and mines (under the belly), and for an aeroplane's direct fire (it dives on
+its target; a helicopter fires from low and stand-off and takes the face turned to it); a blast the face turned to it. The
+old facing factors (side x1.25, rear x1.6) are gone: the levels do it (the brief's A.2). Kept on purpose: the aeroplane's
+roof hit keeps the jets' cannons at what prompt 13 measured (the GAU-8 and the GSh-30 were armour-piercing, x1 on heavy;
+now pen 3 and 2 against a battle tank's roof, 1).
+
+**B.3 Blasts.** A blast's fragments pierce as a heavy machine gun (level 1, the brief's "fragments of high explosive")
+against vehicles on the ground, whatever made it: a shell's splash, a called strike, a cook-off. Against structures and
+aircraft a blast keeps its round's level (it is the blast that knocks a bunker down). A car bomb's blast carries its
+charge's level (4) for the same reason. Damage that says nothing of its round (no weapon, no level, no kind: a scripted
+kill, the firing range's damage, a test) meets the damage type's table only.
+
+**B.4 Prompt 13's autocannon row is gone** (penetration does it: a 30 mm is 2, 0.4 on a battle tank's front, 0.75 on its
+side). Prompt 13's calibre damage scale is kept as it was: no round's damage changed.
+
+**B.5 The damage a hit does** = the round's damage (the calibre scale) x the penetration multiplier x the damage type
+against the kind of target (C.7) x equipment, modules, elites, weapon bonuses and the rest as before. Targeting and the
+overkill check estimate the same way from where the shooter stands (`DamageSystem.Estimate`), so a gun prefers a target it
+pierces.
+
+### C. The six damage types
+
+**C.1-C.6** `DamageType`: Kinetic 0, ShapedCharge 1 (was ArmorPiercing), HighExplosive 2, Fire 3, Fragmentation 4 (was
+Flak), Energy 5 (new). The numbers stay where the meaning carried over because saved resistance lines are numbers
+(`StatId.ResistKinetic + type`; energy's resistance is appended, `Stats.Resist`).
+
+**C.7 The damage-type table** (data `damageTable`; armour is no longer in it):
+
+| Type | Ground | Air | Structure |
+|---|---|---|---|
+| Kinetic | 1.0 | 0.3 | 0.6 |
+| Shaped charge | 1.0 | 0.3 | 0.6 |
+| High explosive | 1.0 | 0 | 1.5 (thermobaric 2.0) |
+| Fire | 1.5 | 0 | 1.0 |
+| Fragmentation | 0.5 | 1.5 | 0.1 |
+| Energy | 1.0 | 1.5 | 0.5 |
+
+Reasons: kinetic and shaped charges on structures 0.6 keep a tank gun on a level-2 tower where the old AP row had it
+(0.6) and put a 12.7 mm (0.24) and a 30 mm (0.45) either side of the old 0.3 and 0.4; air 0.3 as before. Fragmentation on
+the ground 0.5 keeps flak where the old row was against armour (a Gepard 0.2 on a battle tank's front against 0.1, 0.5 on
+the unarmoured against 0.4) while level 0-1 targets are what it is strong against. Fire went in at 1.25 and is 1.5 after
+the re-run (its penetration of 1 makes it weak on thick armour, the brief's point; 1.5 makes it strong on 0-1). Energy 1.5
+in the air keeps the Iron Beam's damage.
+
+**C.3 The thermobaric tag** (`"thermobaric"`: the TOS-1A's rockets, the 122 mm thermobaric battery, the Inferno's): 2.0
+instead of 1.5 on structures; its blast falls off half as much (0.625 at the edge instead of 0.25); it reaches half into a
+gun pit's hole; cages do not stop it. The 122 mm battery's own x1.3 on structures was dropped (the tag gives x1.33).
+
+**C.4 Fire burns on:** a fire hit sets its target burning for 30 % of what got through, over 3 s (fires add up, as
+Incendiary Rounds do). It is worked out after armour, so it is weak on thick armour too.
+
+**C.8 Every weapon reclassified** (the full table is 14A.W): kinetic for machine guns, autocannons, every tank gun's dart
+(the old armour-piercing shells), the jets' cannons, railguns and the blows (blade, drill); shaped charge for anti-tank
+missiles, air-to-ground missiles, FPV drones, Lancets, the elite heavy tank's HEAT round and mines; high explosive for
+howitzers, mortars, rockets, bombs, cruise and ballistic missiles, the Shahed, the 40 mm grenade and the AC-130's and
+the Hive Carrier's HE cannons; fire for the flamethrowers; fragmentation for flak, airburst, C-RAM, the fighter's cannon and
+every anti-air missile; energy for the Iron Beam and the Silver Bug's laser (fire before). The view keeps the old looks:
+`"piercing"` marks the rounds that were armour-piercing (sparks on impact), and the Iron Beam keeps its flak sound.
+
+**C.9 The counters** (the brief's table, `ArmourTests.CountersFollowTheTable`):
+
+| Defence | Stops | Does not stop |
+|---|---|---|
+| Reactive armour (module) | 40 % (Epic) / 55 % (Legendary) of a shaped-charge hit; a tandem warhead defeats it | kinetic, high explosive, anything else; mines |
+| Reactive blocks (trait) | half a shaped-charge hit, a block at a time | kinetic rounds (they were "armour-piercing" before) |
+| Cage (Slat Cage, Slat Screens; the turtle tank's shed against drones) | its share of shaped charges on rockets, missiles and drones | kinetic rounds, a HEAT shell, thermobaric blasts, mines |
+| APS (Trophy, point defence) | missiles, drones, direct-fire rockets (a point-defence laser and the C-RAM also artillery rockets; the C-RAM a share of the shells) | tank shells, bullets, beams (energy); a point-defence laser in smoke, or aimed into it |
+| Flares | missiles (by their seeker's flare resistance) | drones, bullets, flak, beams |
+| Smoke | 80 % of a beam's damage into it or out of it | everything else |
+| Jammer | guided rounds (missiles and drones) go wide | unguided rounds, beams |
+
+The reactive armour module was 12-18 % off every hit; against shaped charges only it had to be stronger to be worth a
+slot, and it fits ground vehicles only now (there is nothing to stop on an aircraft).
+
+### C.9 Equipment by level, and the migration
+
+| Piece | Before | Now |
+|---|---|---|
+| Tungsten Penetrator (vehicles), Sabot Rounds (towers) | +4-15 % damage on heavy vehicles | +0.4-1 penetration level (a whole level at Legendary's top), all its weapons |
+| Appliqué Steel | -5-18 % kinetic damage | +0.4-1 armour level on the sides and rear |
+| Armoured Tub (aircraft) | -6-22 % flak damage | +0.4-1 armour level all round |
+| Composite Add-on, Composite Casemate | -4-15 % armour-piercing | -4-15 % shaped charges |
+| damage vs light / heavy vehicles (sub-stat) | by class | against a face of level 0-2 / 3-4 |
+| armour-piercing / flak resistance (sub-stat, brand) | | shaped-charge / fragmentation resistance (same saved numbers) |
+| Slat Cage (Resist Rocket) | rockets, missiles, drones | their shaped charges only, not thermobaric |
+| Tandem Warhead | +10-15 % on heavy vehicles | on a face of level 3-4 |
+| Reactive armour module | -12-18 % of everything, any vehicle | -40/55 % of shaped charges, ground vehicles |
+
+The Proximity Fuze and the Airburst Rounds keep "against aircraft" and "against drones": aircraft are still a kind of
+target. Levels print as levels ("+0.72 penetration level"). **Migration** (gear version 3 to 4,
+`Prompt15MigrationTests`): the base types and stat numbers keep their ids, so every piece keeps its id, slot, rarity and
+level and reads its new line; a piece a branch wears that no longer fits it (reactive armour on the Air branch) becomes one
+that fits in the same slot, of the same rarity and level, and stays on; a second load changes nothing.
+
+### C.10 The commander counter-picks by penetration and damage type
+
+`ConquestAi`'s counter score, for every AI with a counter weight (Normal and up; the prompt 13 buy scoring otherwise
+unchanged): the ground enemies it has seen (and the player's deck on Very Hard, at half weight) are counted by the armour
+they show, front x roof. A card's fit is its main weapon's penetration multiplier times the type against each of them
+(the roof for a weapon that strikes it and for an aeroplane), weighted by their value, a secondary at half; it scores
+(the ground share) x (its fit - 0.85 x the fit our army already has) x 8, which replaces the old "heavy" and "light"
+answers. Against the defences seen: APS cuts the missiles', rockets' and drones' cards (-2.5 at full cover), reactive armour
+or a cage the shaped charges' (-2), smoke the beams' (-2), jammers the guided (-2), flares the anti-air missiles' (by their
+seeker). The old class-based rules for aircraft, artillery raiders and anti-air stay. `CounterBuyTests` pass on it (against
+heavy tanks it buys tank destroyers and battle tanks, no anti-air).
+
+### R. The combat-value re-run and the rebalance
+
+Prompt 13's measure (`CombatValueMeasure.MeasureTheRoster`, `MB_BALANCE=1`), one seed (13), the whole roster, before and
+after: "Prompt 13" is its shipped F3 file, "first" the new rules on prompt 13's roster, "shipped" after the changes below.
+Ground value per CP unless marked "air" (raw files: `Docs/balance/combat_value_p15*.tsv`; the table in
+`Docs/COMBAT_VALUE.md` section 4).
+
+The mechanisms that moved things, measured: tank guns and cannons now do all their damage to the unarmoured and lightly
+armoured (the old AP row had 0.75 on light); 7.62 mm fire does a third of what it did to armoured cars; autocannons hit a
+tank's side three quarters and its front 0.4; fire is weak on thick armour; a blast's fragments pierce one level; armoured
+aircraft shrug off machine guns.
+
+| Changed | Why (first → shipped, value per CP) |
+|---|---|
+| IFV 5 → 6 CP | its 30 mm now pierces light armour and tank sides, and its level 2 shrugs off machine guns: 188 → 118 (+52 % → -4 %) |
+| light tank 4 → 3 CP, 400 → 460 HP | its 57 mm lost the old armour-piercing row (0.4 on a battle tank's front): 62 → 150 (-61 % → -6 %) |
+| flame tank 5 → 4 CP; fire on the ground 1.25 → 1.5; fire burns on (C.4) | fire of level 1 on thick armour: 190 → 289 (-47 % → -19 %; an anti-light specialist: light group 743) |
+| scout helicopter 5 → 4 CP | its 7.62 mm on armoured cars: 197 → 243 (-38 % → -23 %) |
+| car bomb 3 → 2 CP; its blast carries the charge's penetration (B.3) | fragments of level 1 on tanks and towers: 48 → 87 (-47 % → -4 %) |
+| rocket technical 190 → 230 HP | 192 → 209 (-21 % → -15 %) |
+| SAM launcher 400 → 460 HP | aeroplanes now hit its roof (level 0): air 150 → 155; `CounterTests` "SAM beats jets" failed at 400 and passes at 460 |
+| Su-25, Mi-24, Ka-52 armour 2 → 1 (A.4) | anti-air lost a fifth in the air: AA vehicle air 189 → 252 |
+| rail supergun armour 4 → 3 | the spot check lost its mission (c4m06) at 4: the player's army could not get through a level-4 front in 20 minutes; won at 3 (16.9 min) |
+| every card's `"value"` (the commander's weight) | recomputed from the shipped run the way prompt 13 did (per CP over its class's median, 0.5-1.5; anti-air and the fighter on air) |
+
+Tried and put back: the fighter at 14 CP and the long-range SAM at 13 (they rose +25 % and +33 % in the air on this seed with
+no mechanism behind it; the measure's groups are lumpy, 18 CP rounded to whole vehicles, and a CP step halved their groups).
+Left for a multi-seed look (Z): the long-range SAM (air +33 %), the fighter (+25 %), the gunship helicopter (-21 %, inside
+the helicopters' band), the wheeled gun (+27 %, now mid-band after being left under it on purpose), the sapper (-50 %:
+a support, judged by its aura) and the scout jeep (-26 %: a scout).
+
+After it, per role (value per CP): light 105-118; tanks and heavy 289-525; tank hunters 278-461; artillery 209-446;
+helicopters 243-415; aircraft 325-439 (the recon drone apart); mobile anti-air in the air 155-252, the long-range SAM 545.
+
+**The campaign spot check** (`CampaignTests.WinRateOverFiveSeeds`, `MB_SEEDS=1`): c1m02, c2m05 (Behemoth), c3m05 (Iron
+Bird), c5m06, c7m05 (Silver Bug), c8m05 (Doomsday Train) won; c4m06 (rail supergun) lost at level 4 and won at 3.
+**Siege** (`ModeBalanceMeasure`, `MB_MODES=Siege`, one seed): won 3 of 3, 7.1 / 16.2 / 9.4 min (prompt 13: 13.3 / 14.0 / 9.2).
+
+### T. Tests
+
+New: `ArmourTests` (every unit and weapon has the new fields and the data states each weapon's `"pen"`; the multiplier
+row, part levels, the high-explosive and thermobaric structure values; faces, top attack, the roof for lobbed rounds,
+round x penetration x type in battle, and the pure helpers against the battle; the counter table),
+`Prompt15MigrationTests` (an old save's pieces, lines and loadouts). Updated for the new rules: `CalibreTests` (the
+autocannon test reads penetration), `GearSimTests` (reactive blocks on a missile, shaped-charge resistance on a HEAT shell,
+the guardian's share of what gets through), `GearTraitTests` (the tandem target nose-on; expectations from the multiplier),
+`ElitePrompt8Tests` (1.35 or 1.6 health), and the compile-only renames in a dozen more. Run: Weapon, Combat, Calibre,
+Counter (and CounterBuy), Aps, Content, Stores, CheckpointReplay, Armour, Prompt15, GearSim, GearTrait, ElitePrompt8:
+all green. The full suite was not run (the owner's rule).
+
+### Z. Left for the testing phase
+
+- The full EditMode suite: suites that set exact damage numbers by the old table may need their expectations read from
+  the multiplier (as `GearTraitTests` now does); not run.
+- Five seeds for the combat value (the fighter, the long-range SAM, the gunship helicopter and the wheeled gun above), the
+  whole campaign, the big campaign and every mode; the rail supergun's mission at level 3 (won in 16.9 of 20 minutes).
+- Walls, gates and the HQ at level 4 in Siege and Defend (Siege won 3 of 3 on one seed; Defend not run).
+- The equipment lab (`EquipmentLab`) with the level lines, and the elites' power band measured rather than reasoned.
+- The design document export (`ExportGameDoc`) run for the PDF.
+
+### W. Every weapon (type, was, penetration, form, tags)
+
+K kinetic, SC shaped charge, HE high explosive, Frag fragmentation, En energy; "(was)" when it changed (AP armour-piercing). Tags: top (strikes the roof), guided, splash, cluster, thermobaric. Forms are `WeaponForm` (the icon's shape).
+
+| Weapon | Real weapon | Type (was) | Pen | Form | Tags |
+|---|---|---|---|---|---|
+| mg_jeep | M2 Browning 12.7 mm | K | 1 | BulletBig |  |
+| mg_coax | PKT / M240 7.62 mm | K | 0 | BulletSmall |  |
+| hmg_roof | M2 Browning 12.7 mm | K | 1 | BulletBig |  |
+| autocannon_30 | 2A42 30 mm | K | 2 | BeltedAutocannon |  |
+| gun_57mm | S-60 57 mm (2A91) | K (AP) | 2 | Dart |  |
+| gun_120mm | Rh-120 L/44 120 mm | K (AP) | 4 | DoubleDart | splash |
+| turret_gun_120 | Rh-120 L/44 120 mm | K (AP) | 4 | DoubleDart | splash |
+| atgm | BGM-71 TOW-2 | SC (AP) | 4 | Atgm | guided |
+| flamethrower | flamethrower | Fire | 1 | Flame | splash |
+| howitzer | M284 155 mm | HE | 3 | HeShell | splash |
+| mlrs_rockets | M31 GMLRS 227 mm | HE | 3 | RocketBig | splash |
+| flak_35 | Oerlikon KDA 35 mm (Gepard) | Frag (Flak) | 2 | Airburst | splash |
+| sam | Starstreak / Stinger SHORAD | Frag (Flak) | 2 | Sam | guided, splash |
+| heli_atgm | AGM-114 Hellfire | SC (AP) | 4 | Atgm | guided |
+| heli_gun | M230 30 mm | K | 2 | BeltedAutocannon |  |
+| heli_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| autocannon_25 | M242 Bushmaster 25 mm | K | 2 | BeltedAutocannon |  |
+| gun_105_long | 2A75 125 mm (2S25 Sprut) | K (AP) | 4 | DoubleDart |  |
+| gun_152 | 2A83 152 mm | K (AP) | 4 | DoubleDart | splash |
+| sam_long | 9M317 Buk | Frag (Flak) | 3 | Sam | guided, splash |
+| mortar_120 | 2B11 120 mm | HE | 2 | MortarBomb | splash |
+| technical_rockets | Type 63 107 mm | HE | 2 | RocketSmall | splash |
+| grad_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| atgm_heavy | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| gunship_rockets | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| minigun | M134 Minigun 7.62 mm | K | 0 | BulletSmall |  |
+| scout_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| jet_cannon | GSh-30-2 30 mm | K (AP) | 2 | BeltedAutocannon |  |
+| jet_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| jet_bombs | FAB-250 (250 kg) | HE | 2 | Bomb | splash |
+| drone_missile | AGM-114 Hellfire | SC (AP) | 4 | Atgm | guided |
+| gun_155_sph | M284 155 mm | HE | 3 | HeShell | splash |
+| thermobaric_rockets | TOS-1A 220 mm thermobaric | HE | 3 | RocketBig | thermobaric, splash |
+| twin_30_flak | 2A38 30 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| hq_flak | 2A38 30 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| gun_140_twin | NPzK 140 mm (twin) | K (AP) | 4 | DoubleDart | splash |
+| bomber_payload | FAB-500 (500 kg) | HE | 3 | Bomb | splash |
+| bomber_tail_guns | M3 12.7 mm (quad tail) | K | 1 | BulletBig |  |
+| stealth_payload | GBU-31 JDAM (907 kg) | HE | 4 | HeavyBomb | splash |
+| gunship_105 | M102 105 mm | HE | 2 | HeShell | splash |
+| gunship_40mm | Bofors L/60 40 mm | HE | 2 | BeltedAutocannon | splash |
+| gunship_25mm | GAU-12 Equalizer 25 mm | K | 2 | BeltedAutocannon |  |
+| gun_105_twin | L7 105 mm (twin) | K (AP) | 3 | Dart | splash |
+| gun_203_siege | M110 203 mm | HE | 4 | HeShell | splash |
+| rockets_300mm | 9M55 Smerch 300 mm | HE | 3 | RocketBig | splash |
+| ballistic_missile | 9M723 Iskander (700 kg) | HE | 4 | Ballistic | splash |
+| mortar_240 | 2B8 240 mm | HE | 4 | MortarBomb | splash |
+| fpv_swarm | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| air_to_air | AIM-120 AMRAAM | Frag (Flak) | 3 | Sam | guided, splash |
+| wvr_aam | AIM-9X Sidewinder | Frag (Flak) | 2 | Sam | guided, splash |
+| stinger_atas | FIM-92 Stinger (ATAS) | Frag (Flak) | 2 | Sam | guided, splash |
+| igla_v | 9K38 Igla-V | Frag (Flak) | 2 | Sam | guided, splash |
+| r60 | R-60 | Frag (Flak) | 2 | Sam | guided, splash |
+| aim9 | AIM-9 Sidewinder | Frag (Flak) | 2 | Sam | guided, splash |
+| jassm | AGM-158 JASSM (450 kg) | HE | 3 | Cruise | guided, splash |
+| air_cruise_missile | Kh-101 (400 kg) | HE | 3 | Cruise | guided, splash |
+| griffin | AGM-176 Griffin | SC (AP) | 3 | Atgm | guided |
+| kh29 | Kh-29 | SC (AP) | 4 | Atgm | guided |
+| s8_pods | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| gsh30k | GSh-30K 30 mm | K (AP) | 2 | BeltedAutocannon |  |
+| gsh_23v | GSh-23V 23 mm | K | 2 | BeltedAutocannon |  |
+| door_gun | PKT 7.62 mm | K | 0 | BulletSmall |  |
+| detonator | car bomb (900 kg) | HE | 4 | CarBomb | splash |
+| zu23 | ZU-23-2 23 mm | Frag (Flak) | 1 | Airburst |  |
+| lancet | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided |
+| shahed | Shahed-136 (50 kg) | HE | 3 | Shahed | top, guided, splash |
+| hel_beam | Iron Beam laser (100 kW) | En (Flak) | 2 | Energy |  |
+| railgun | railgun (32 MJ) | K (AP) | 4 | Rail |  |
+| twin_30_bmpt | 2A42 30 mm (twin) | K | 2 | BeltedAutocannon |  |
+| ataka | 9M120 Ataka | SC (AP) | 4 | Atgm | guided |
+| vikhr | 9K121 Vikhr | SC (AP) | 4 | Atgm | guided |
+| fighter_cannon | GAU-22/A 25 mm | Frag (Flak) | 2 | BeltedAutocannon |  |
+| gau_gatling | GAU-8 Avenger 30 mm | K (AP) | 3 | BeltedAutocannon |  |
+| maverick | AGM-65 Maverick | SC (AP) | 4 | Atgm | guided |
+| recon_missile | MAM-L | SC (AP) | 3 | Atgm | guided |
+| hind_rockets | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| gun_155_twin | M284 155 mm (twin) | HE | 3 | HeShell | splash |
+| flak_quad | ZSU-23-4 23 mm (quad) | Frag (Flak) | 1 | Airburst | splash |
+| sam_battery | MIM-104 Patriot PAC-2 | Frag (Flak) | 3 | Sam | guided, splash |
+| bastion_gun | 2A83 152 mm (twin) | K (AP) | 4 | DoubleDart | splash |
+| gun_152_heat | 2A83 152 mm HEAT | SC (AP) | 4 | DoubleDart | splash |
+| gun_105_apfsds | 2A75 125 mm APFSDS | K (AP) | 4 | DoubleDart |  |
+| hellfire_volley | AGM-114L Hellfire Longbow | SC (AP) | 4 | Atgm | guided |
+| twin_35_ahead | Skyranger 35 mm AHEAD | Frag (Flak) | 2 | Airburst | splash |
+| grad_cluster | BM-21 Grad 122 mm (cluster) | HE | 2 | Cluster | splash, cluster |
+| gun_125_elite | 2A46M-5 125 mm | K (AP) | 4 | DoubleDart | splash |
+| mlrs_elite | M30 GMLRS 227 mm (cluster) | HE | 3 | Cluster | splash, cluster |
+| autocannon_40 | Bofors 40 mm | K | 2 | BeltedAutocannon | splash |
+| gun_105_wheeled | Centauro II 120 mm | K (AP) | 4 | DoubleDart |  |
+| sam_48n6 | S-400 48N6 | Frag (Flak) | 3 | Sam | guided, splash |
+| kornet_twin | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| dozer_blade | dozer blade | K (AP) | 3 | Blade |  |
+| none |  | K | 0 | None |  |
+| mg_coax_ground | PKT / M240 7.62 mm | K | 0 | BulletSmall |  |
+| c_ram_gatling | Phalanx M61 20 mm | Frag (Flak) | 1 | Airburst | splash |
+| gun_pit_105 | Rh-120 L/44 120 mm (dug in) | K (AP) | 4 | DoubleDart |  |
+| fpv_hangar | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| bunker_hmg_twin | NSV 12.7 mm (twin) | K | 1 | BulletBig |  |
+| bunker_flame | flamethrower (bunker) | Fire | 1 | Flame | splash |
+| turret_gun_120_long | Rh-120 L/55 120 mm | K (AP) | 4 | DoubleDart | splash |
+| turret_gun_120_auto | Rh-120 L/44 120 mm (autoloader) | K (AP) | 4 | DoubleDart | splash |
+| kornet_top | 9M133 Kornet | SC (AP) | 4 | Atgm | top, guided |
+| kornet_multi | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| turret_rockets_cluster | BM-21 Grad 122 mm (cluster) | HE | 2 | Cluster | splash, cluster |
+| turret_thermobaric | 122 mm thermobaric | HE | 2 | RocketSmall | thermobaric, splash |
+| c_ram_gatling_long | Phalanx M61 20 mm | Frag (Flak) | 1 | Airburst | splash |
+| howitzer_cb | M284 155 mm | HE | 3 | HeShell | splash |
+| howitzer_ext | M284 155 mm (base bleed) | HE | 3 | HeShell | splash |
+| sam_pac3 | Patriot PAC-3 MSE | Frag (Flak) | 3 | Sam | guided, splash |
+| sam_battery_lrr | MIM-104 Patriot PAC-2 | Frag (Flak) | 3 | Sam | guided, splash |
+| lancet_hangar | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided |
+| fpv_hangar_swarm | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| gun_155_twin_long | M284 155 mm (twin, long) | HE | 3 | HeShell | splash |
+| turret_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| bunker_hmg | NSV 12.7 mm | K | 1 | BulletBig |  |
+| saucer_laser | laser (150 kW) | En (Fire) | 3 | Energy | splash |
+| coilgun | coilgun (10 MJ) | K (AP) | 4 | Rail |  |
+| mothership_cannon | AU-220 57 mm | HE | 2 | BeltedAutocannon | splash |
+| mothership_drones | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided, splash |
+| gun_behemoth | 2A65 152 mm (twin) | HE | 3 | HeShell | splash |
+| boss_howitzer | 2A44 203 mm | HE | 4 | HeShell | splash |
+| boss_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| boss_missiles | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| boss_flak | Oerlikon 35 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| train_gun | B-38 152 mm | K (AP) | 4 | DoubleDart | splash |
+| agl_40 | Mk 19 40 mm | HE | 2 | Grenade | splash |
+| guided_bomb | GBU-39 SDB (110 kg) | HE | 3 | GuidedBomb | splash |
+| atgm_post | 9M113 Konkurs | SC (AP) | 3 | Atgm | guided |
+| drone_gun | M3P 12.7 mm | K | 1 | BulletBig |  |
+| boss_flamer | flamethrower (heavy) | Fire | 2 | Flame | splash |
+| boss_thermo | TOS-1A 220 mm thermobaric | HE | 3 | RocketBig | thermobaric, splash |
+| boss_railgun | railgun (64 MJ) | K (AP) | 4 | Rail |  |
+| boss_mortar | 2B8 240 mm | HE | 4 | MortarBomb | splash |
+| supergun_800 | super-gun 800 mm | HE | 4 | SuperShell | splash |
+| borer_drill | drill head | K (AP) | 4 | Drill |  |
+| borer_cannon | 2A70 100/76 mm | K (AP) | 3 | Dart | splash |
+| airship_flak | S-60 57 mm | Frag (Flak) | 2 | Airburst | splash |
+| airship_drones | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| boss_heli_gun | M230 30 mm | K | 2 | BeltedAutocannon |  |
+| boss_minigun | GShG 7.62 mm | K | 0 | BulletSmall |  |
+| boss_hmg | NSV 12.7 mm | K | 1 | BulletBig |  |
+| hover_ciws | AK-630 30 mm | K | 2 | BeltedAutocannon |  |
+
+
+## 15A. Prompt 16: Lighthouse Bay, Leviathan and its fleet (2026-09-29)
+
+Part 1 of prompt 16 (A, B, C, D, G); E (the old bosses' new weapons) and F (one escort system for every boss) are the
+escort agent's (feature/p16-escorts). Leviathan's fleet is self-contained here, in the naval system; once both branches
+are in, it can move onto F's `escorts` data (corvettes as `cover` with their own `aps` and `slot: "screen"`, attack boats
+as `raid`, the jets as `drop: "edge"`). The fast attack boat's model id is `missile_boat` (for the hovercraft's escort
+in E). The owner's rule on test time: one small new suite, no sweeps (Z).
+
+### A. Lighthouse Bay (`lighthousebay`, Vịnh Hải Đăng)
+
+**A.1 Layout** (`build_maps.py` `lighthousebay`, world layout). The sea fills the south-east beyond a coast that runs
+diagonally between the two camps, so both sides meet it alike: the map is symmetric by the reflection through the
+north-west to south-east diagonal ((x, z) -> (-z, -x), which swaps the camps), not by the usual half-turn. Everything is
+laid out in the coast's frame (u along the coast, w out to sea). The sea is 36 % of the square (the brief's 35-40 %).
+The outline keeps the square's edge on the sea's side (`lb_open_sea`): ships sail in and out there.
+
+**A.2-A.3 Ground.** Two coves with sand beaches (surf tiles, fishing boats, net racks, a hamlet behind each, wrecks of
+an old landing) and a wooden pier each; between them the rocky headland with the lighthouse (the east objective); high
+cliffs by the camps with an abandoned coastal battery on each; a fishing village round the market (the town objective);
+the old fort on the pine hill (the west objective); pine woods, bunkers and trenches on the cliff tops.
+
+**A.2 Sea lanes** (map data `sea`, `SeaDef`): near, mid and far at w 92, 106 and 120 (70, 84 and 98 m off the cove
+beaches). Ships never touch the ground's grid: the naval system steers them in the coast's frame. The brief's "reuse the
+train's and hovercraft's fixed routes" is met by the same idea (a scripted line, never pathfinding), in the sea's own
+frame rather than as waypoints, because the ships need lanes, stations and a run for the edge, not one route.
+
+**A.4 Reach** (`Prompt16NavalTests.TheSeaLanesAreInReachAsDesigned`): a battle tank on a pier head (w 52) reaches a ship
+on the near lane (40 m less its 12 m hull); off the pier heads and the headland's tip no short-range direct fire
+(tanks, IFVs, armoured cars: 28-34 m) does; artillery on the shore, aircraft and the coastal batteries (135 m) reach the
+far lane. Decided: the headland's tip beside the lighthouse counts as a third pier head, and medium-range tank hunters
+(38-42 m) also reach the near lane from the headland's rocky flanks: the lighthouse point is the fight's centre.
+
+**A.3 The coastal batteries** (`NavalSystem.Batteries`): abandoned until a side's ground vehicles hold one alone for 10 s;
+then a `coastal_battery` (the heavy fortress's model and twin 155 mm, reach 135 m, `navalOnly`: it fires on ships only)
+stands there for that side; destroyed, the battery stands abandoned again after 60 s. **The lighthouse**: whoever holds
+it (the mode's point, else ground vehicles holding it alone) sees every ship within 170 m of its lamp. Ships show from
+further off than other vehicles (their hull's size is added to the spotter's reach).
+
+**A.5 Versions.** Conquest, Survival and Siege, with sized hardpoints and slot labels by hardpoints.py as every map. The
+Siege version keeps the big fortress (the classic walled square was tried first and walled the attacker out of its own
+coast); the sea comes back round the fortress's ground (`lb_refill_sea`) and walls, gates and hardpoints it put on the
+water are dropped. `check_access.py` passes both versions. Campaign: 4-11 (D). Skirmish: in `MatchSettings.AllMaps`.
+
+### B. Leviathan (`leviathan`)
+
+**B.1** A battleship hull with a missile cruiser's cells, 64 x 11 m (the biggest model; its LOD is ModelLibrary's
+automatic one): two twin 203 mm turrets, launch cells, a stepped superstructure with phased-array panels, a lattice mast
+with a spinning radar, a raked funnel, two CIWS, a hangar and helicopter deck, a well-deck gate (`mb_naval.py`, 5.4 k
+triangles). HP 11 000 (a starting point for the testing phase's kill-time measure).
+
+**B.2 Parts** (9; each 7-9 % of the body, prompt 9's band): the turrets (`maingun`, each one lays half the salvo), the
+launch cells (`vls`, stops the cruise missiles), two CIWS (`ciws`: a gun each, on part 2's `aps` mechanism: fewer interceptors with one broken, none with both),
+the radar (`radar`: salvos and cruise missiles fall 2.2 times as wide, the CIWS guns spread twice as wide and the APS
+misses 35 % of its interceptions), the flight deck (`flightdeck`: its helicopter launches), the well deck (`welldeck`:
+the landing craft), the engine room and funnel as one part (`engine`: 65 % speed, so its run is slower). New mechanisms
+`cruise`, `craft`, `radar` in `BossPartDef.Mechanisms` (the CIWS use part 2's `aps`).
+
+**B.3 Armour** `[4, 4, 3, 2]`: sides 4, deck 2. Bombs, shells, artillery rockets and top attacks strike the deck by
+prompt 15's rules; direct fire strikes the side. Decided: a pen-3 round on the side keeps prompt 15's 0.4 (weak, not
+nothing); pen 2 and less are 0.15 and 0.05 ("almost nothing"). Parts have their own levels (turrets and the engine room
+3, cells, CIWS and decks 2, the radar 1).
+
+**CIWS** (the ship's APS, radius 26, 3 interceptors, 2.2 s): missiles, rockets and drones, never shells, bullets or beams
+(prompt 15's APS rule). Phase 2: 5 interceptors, 1.3 s. Its salvo turrets are `"laid": true` weapons: the combat system
+never fires them; the naval system lays and fires them.
+
+**B.4 Phases** (marks 0.7 and 0.4, prompt 8's transformation): phase 1 on the far lane, salvos sweeping along the shore
+18 m a salvo the way it sails (a group of enemies within 24 m of the sweep draws it), marked 2.8 s ahead, every 12 s, two
+203 mm shells a turret (420 damage, the calibre scale). Phase 2 on the near lane: the well deck opens (3 landing craft,
+two tanks each, every 40 s), the flight deck launches an attack helicopter every 55 s, two attack jets fly in off the sea,
+cruise missiles at the biggest group every 50 s (marked 5 s ahead), the CIWS at its strongest; the salvos go for the
+biggest group in reach. Phase 3: four cruise missiles at the player's HQ and towers at once, smoke, and a run along the
+far lane to its farther end. **The clock**: set as the run begins from the route and the turn about (about 60-100 s),
+shown on the boss bar ("Escaping 1:24"); it gets away at the edge once the clock is out, later if it was slowed (engine
+room). Escaped: invulnerable, silent, hidden; the mission is lost (Boss Rush: it pays nothing and the rush goes on).
+
+**B.5 Sinking** (`ShipSinking`, view only): it lists for 5 s, then the big ship breaks its back (a second copy of the
+model is the stern half; the halves rear up and sink below the water, which hides what is under); smaller ships roll
+over. Prompt 9's fires on the broken parts and five magazine blasts along the hull (the sim's, 0.8-3.6 s) play meanwhile.
+
+**B.6 Radio**: Kessler on arrival, at each phase, when it runs, when it gets away and when it sinks; the part lines for
+the cells, the last CIWS, the radar, the flight deck, the well deck and the engine room; the batteries and the lighthouse.
+
+**B.7** Guide entries and part tips (GuideText, Strings), boss files for the dossier with the fleet under it, the boss bar
+with the part icons (their armour chips are prompt 15's). Not done: the card render and the In-action clip (Z).
+
+### C. The fleet
+
+`sea_corvette` (2): HP 1600, armour [3, 3, 3, 1], a 76 mm (OTO Melara, 95 m) on the shore, a CIWS whose APS (32 m) covers
+Leviathan while it keeps station 26 m off it on the same lane; in phase 3 it steams between Leviathan and the shore.
+`missile_boat` (3): HP 420, armour [1, 1, 1, 0], 12 m/s: waits on the mid lane, dashes to the pier head nearest it, holds
+8 s firing 80 mm rockets (55 m), runs back out: anything on the pier heads hits it there. `landing_craft`: runs two
+tanks up a cove beach, lands them, goes back and is hoisted in. The phase 2 aircraft: the existing attack helicopter
+(flight deck) and attack jet (two, off the sea). The fleet's ships are not bosses, cost nothing and are no cards; they
+show in the dossier under Leviathan.
+
+### D. Campaign and modes
+
+**D.1 Chapter 4.** Decided: an **epilogue** boss mission after the operation, 4-11 "Leviathan" at Lighthouse Bay
+(Overcast, Kessler, 25 min). The story is the brief's (the port lost, Kessler puts to sea), and the chapter already has
+two boss fights (4-5, 4-6) before its operation, so a second boss mission in the middle would crowd it, and the
+operation's final stage cannot change battlefield. The chapter's shape holds: an epilogue (`"epilogue": true`) is left
+out of "ten main missions, the tenth the operation" (build_campaign.py, CampaignTests, `Campaign.OperationOf` now takes
+the operation, not the last main mission); it pays like the chapter's boss and moves nobody else's pay (the economy tune
+is unchanged: 100 / 3.00). It opens after 4-10 and chapter 5 waits for it. CampaignText.cs keeps its hand edits: only
+the 16 new keys were added.
+
+**D.2 Boss Rush**: Leviathan is its own kind (eleven bosses, 57 minutes). On a battlefield without a sea the rush goes to
+Lighthouse Bay for it (the curtain: "Setting out to sea"), carrying the bosses beaten, the clock, the CP and the army
+(each vehicle's health share, landed at the drop zone), and back to its own battlefield for the next boss. Half the
+fleet sails there. The switch is a scene rebuild (`BossRushSession.Pending`); Boss Rush has no checkpoint replay, so
+determinism is per battlefield.
+
+**D.3 Operations**: 4-11 is replayable; two mutators in the rotation: **Sea storm** (the storm, and ships seen from 55 %
+as far) and **Fleet** (a flagship brings one more escort and two more attack boats; off the sea, and on it, the enemy
+earns 10 % more, so it means something on every battlefield the rotation draws).
+
+**D.4 Rewards**: 4-11 opens the heavy fortress's coastal branch, now **Long-range coastal battery** (72 m instead of
+60 m): a campaign-opened branch (`PlayerProfile.BranchOpen`) waits for its mission. A branch opened is not counted as a
+card in the chapter's 5-7. The boss file and the mission's fragment go in the dossier.
+
+**D.5** Lighthouse Bay is in the skirmish map list.
+
+### G. Performance
+
+Low graphics (shadows Low or Off) draws the water unlit and the wakes short (6 foam patches, no bow waves; 22 and bow
+waves otherwise; `WakeView`). The naval system's step with the whole fleet: 0.03 ms (EditMode, the fleet test). The FPS
+measure on a low-end phone in phase 2 is for the testing phase.
+
+### T. Tests
+
+`Prompt16NavalTests` (5, all pass): the lanes' reach (A.4); Leviathan and its fleet on the water, its armour by face and
+its parts; the CIWS takes missiles and never shells, and stops with both CIWS; phase 2 on the near lane, phase 3's clock
+runs down and it gets away; Boss Rush goes to sea and back with the army and the clock. `BossPartsTests.Expected` has
+Leviathan (9). Nothing else was run (the owner's rule).
+
+### Z. Left for the testing phase
+
+- The stuck detector on Lighthouse Bay (every version, 5 seeds, both sides); 5-seed runs of 4-11, Boss Rush with the
+  switch, and Operations with Sea storm and Fleet; Leviathan's kill time against prompt 9 and 13's band (HP 11 000 is a
+  first figure).
+- The suites this touches, not run: CampaignTests (the shape, 4-11 plays to an end), BossPartsTests, CalibreTests,
+  OperationsModeTests (the rotation with 20 mutators), TowerRosterTests, ContentTests; PlaySmoke (the owner said none).
+- The Base screen's map picture for Lighthouse Bay (`BaseMapShots`, graphics batch), Leviathan's and the fleet's card
+  renders and In-action clip, screenshots of the map and of Leviathan in each phase for Docs/ui-screens.
+- FPS on a low-end phone in phase 2 with the whole fleet, the helicopters, the landing craft and parts burning.
+- Moving the fleet onto prompt 16 F's escort data once both branches are in.
+## 14B. Prompt 15: armour and weapon icons, where they show (2026-09-29)
+
+The UI half of prompt 15 (D and E). The data (armour levels by face, penetration, the six damage types, weapon forms
+and tags, `Matchup`) is the sim agent's (14A); the UI reads it and changes none of it.
+
+### D. The icon set
+
+- **Drawn new, from scratch.** 57 icons in `Scripts/Game/Hud/Icons.Combat.cs`, generated by `Tools/art/combat_icons.py`
+  (the shapes are code: rounds and missiles are drawn along an axis and turned 45 degrees so they fly up and right,
+  shells and the ballistic missile stand, bombs fall nose down to the right, drones are seen from above). No existing
+  icon was reused or recoloured. The generator also writes a quick preview (`--preview out.png`, 33 and 96 px) for
+  drawing without Unity.
+- **The renderer grew fills.** The kit's icons were strokes only; the battery-style shields need solid parts, so the SVG
+  subset now takes `fill="1"` (non-zero), `fill="eo"` (even-odd: rivets and brick joints are holes), `stroke="0"`,
+  `sw` (a shape's own stroke width) and `dash` (flattened and cut into dashes at parse time). Old icons are unchanged.
+- **Armour, 15 icons**, "filling up like a battery": 0 a dashed hollow shield, 1 a hairline, 2 a double outline, 3 the lower
+  half filled, 4 filled with five rivets (holes). Aircraft: a narrower shield with three wing strokes each side (a winged
+  badge) in the same five states; a single wing silhouette was tried on paper, but it collides with the Shahed's delta
+  and cannot hold a double outline at 18 pt. Structures: the shield with brick courses; the filled levels keep the joints
+  as holes, so the bricks read at every level.
+- **30 weapon forms**, one per `WeaponForm` of the sim (the enum was read before it was committed, so the names match):
+  kinetic rounds show penetration by shape (a small ball with speed lines, a bullet, a round with its case and band, a
+  dart, a dart with two heads, a dart with two electric rings); HE shell (upright, fuze and driving band), finned mortar
+  round, airburst (a round with a spray of dots), grenade; small and heavy rockets; ATGM (short fat body, cone), SAM (slim,
+  mid wings), cruise (straight wings across), ballistic (big, sharp, standing); bomb, guided bomb (with its curve), cluster
+  (the case opening into dots), heavy bomb (fat, lattice fins), napalm (a finless canister and a flame); FPV (four rotors),
+  Shahed (delta with wingtip fins), Lancet (two X wings); flamethrower, energy beam (emitter, beam, glowing head); dozer
+  blade, drill, super-gun shell (leaving its shock rings), car-bomb charge (three sticks and a lit fuse).
+- **Marks.** Damage types in a chip's corner, bold and mostly filled for 17 px: shaped charge a cone with its jet rays, HE
+  an eight-point burst, fire a filled flame, fragmentation a cluster of seven dots, energy a ray with a four-point spark;
+  thermobaric its own (a smaller burst in a ring); kinetic has none. Extra marks (detail page and tooltips only): top
+  attack is an arrow down onto a turret (a bare arrow onto a line read as "download"), guided an S-curve with an
+  arrowhead, splash a ring with a dot. The enemy tooltip's verdicts are drawn too (the fonts have no ✓ or ✕): a check,
+  a tilde, a cross.
+- **No two alike.** `CombatIconTests` compares the path data of every icon of the game (kit, vehicles, towers, this set).
+- **Sizes.** `--fc-cicon` 34 px = 18.7 pt (the 18-20 pt of the brief) in cards, trays and the HUD; 52 px (28.5 pt) on the
+  detail page; marks 17 / 24 px. The sheet `kit-combat-icons-small.png` is the whole set at 34 px on the smallest screen
+  (1280 x 720, a panel pixel an image pixel): every shape reads apart there.
+- **Chips.** A chip is the form icon with the mark overlapping its bottom-right corner on a square of the surface's
+  colour (`--fc-chip-bg`: the card's, the field panel's in the HUD), so the mark cuts the lines under it.
+- **Tooltips.** Every icon carries its words ("Giáp dày · mặt trước", "Tên lửa chống tăng · Nổ lõm · Xuyên rất cao · Đánh
+  nóc · Dẫn đường"). A tap shows them where the icons are full touch targets or sit in one: the detail page's diagram,
+  each weapon row, the strong / weak lines and the table, the HUD's selection strip, the legend. In card rows the card
+  itself is the target (it opens the detail page, where every icon is tappable), so the row's icons are not separate
+  targets: 34 px icons in a row could not be 44 pt targets without overlapping.
+- **"Hiện số chi tiết"** (Settings > Display, `MatchSettings.ShowCombatNumbers`, `mb.showNumbers`, off by default): the
+  tooltips add the levels in brackets and the multipliers ("×0,75"), the table's cells print theirs, the enemy tooltip
+  its multipliers. Off, no number shows anywhere in the icons or their words.
+
+### E. Where they show
+
+- **Cards** (E1): a row between the name and the level, 34 px high: the front armour and the first two weapons, main
+  first, "+N" for the rest, on the Army deck, the collection and the towers; the deck row's compact cards (112 px wide)
+  take one chip and "+N" (two do not fit in 108 px). A card without a unit (a fire-support card) gets an empty row of the
+  same height, so `CardsInARowLineUp` stays green. The Base and Outpost trays' rows show armour and two chips under the
+  short name. The home deck strip does not (it is a strip, not the deck).
+- **Detail page** (E2): the armour tag under the name is the front's shield and words; the left column's old class
+  counters are replaced by the armour diagram (the unit from above, each face's border as thick as its level: dashed,
+  2, 4, 7, 10 px; the turret ring as the roof; a four-line legend beside it; aircraft and uniform structures get one
+  icon and "Như nhau mọi hướng") and "Mạnh với / Yếu trước" from `Matchup.Summary` (the columns its weapons pierce well
+  as shields; the threats as chips, top attack as its mark). The Weapons tab has each weapon's large chip with its extra
+  marks beside its name, and the effectiveness table after the list: the five shields, the winged shield (air, level 0)
+  and the brick shield (structures, level 2) head the columns, each cell a bar as long as `Matchup.EffectRow`'s real
+  multiplier (scaled to the table's largest, at least ×1). Screens `detail-armour` and `detail-weapons` scroll to them for
+  the checks and shots.
+- **Tray** (E3): nothing on the tray; a held card's tip shows the full name and the armour with every chip (up to four).
+- **Selection strip** (E4): armour and two chips beside the health bar, one tap target that says them in words. The
+  compact HUD's cover: Conquest 28.5 %, Siege 28.6 % at 16:9 (27.5 % both before), still under 30 %.
+- **Enemy tap** (E5): `SelectionController.EnemyTapped` (a new event; the tap still orders focus fire when units are
+  selected) makes `BattleHud.ShowEnemyTip`: the enemy's front armour and short name, then each deck vehicle with ✓ ~ ✕
+  from `Matchup.Verdict` (its main weapon against the enemy's front, or roof for rounds from above; ✓ from ×0.6, ~ from
+  ×0.12, the sim's thresholds). One column, 300 px, at the left edge; 5 s, or a tap closes it. Battle screen `hud-enemy`.
+- **Boss parts** (E6): a small armour icon (18 px) in each part's corner, from `Matchup.PartArmour`, in the opened bar and
+  the full HUD; the closed compact bar's 20 px cells stay state only (a second icon there would be unreadable).
+- **Cover** (E7): five shields on the deck's overview (beside its summary, where there was room) and on the Base screen's
+  cover strip for the towers: lit where a weapon pierces that level well (`Matchup.Effect` ≥ ×0.6), else dimmed, in the
+  warning colour and struck through (the state reads without colour).
+- **Legend** (E8): there is no menu-level Guide tab, so the legend is a page of its own, opened from every detail page's
+  Guide tab ("Biểu tượng giáp và vũ khí") and from Settings: the three armour families, the diagram, every form grouped
+  (kinetic from least to most piercing), the marks, the extra marks, the verdicts and the counter table (reactive armour
+  and cages cut shaped charges, APS stops them and partly artillery rockets, flares partly fragmentation missiles, smoke cuts
+  a beam by 80 %, a jammer sends guided rounds wide: the sim's table, 14A C.9; a note on thermobaric and cages). Screen
+  `legend`, shot tall as `screen-legend-vi-full.png`.
+- **Words.** Every new text has both languages; "icon" and "tooltip" are "biểu tượng" and "ô chú thích" in Vietnamese
+  (`UiLanguageTests`).
+
+### Checks and pictures
+
+- Tests (targeted, the owner's rule): `CombatIconTests` (every `WeaponForm`, armour level of the three kinds and
+  `DamageType` has an icon or mark entry, every weapon of the roster maps to one, no two icons share path data; the enemy
+  tooltip's marks equal `Matchup.Against` through the sim's thresholds on eight enemies, all three marks seen), and the
+  existing `UiLayoutTests` (all screens with `legend`, `detail-weapons`, `detail-armour`, `hud-enemy`; the cover check),
+  `CardsInARowLineUp`, `LocalisationScanTests`, `UiThemeTests`, `UiLanguageTests`, `TowerIconTests`, with `CardRenderTests` and
+  the sim's `ArmourTests` after the merge: 108 green. Play mode: PlayShots' six real matches (the menu, Conquest three times,
+  Siege, Defend, Boss Rush) ran the new HUD code and logged no error; no separate PlaySmoke (the owner's token rule).
+- Two layout faults the checks found: "+N" laid out a line shorter than it measures at its 17 px box (now a no-wrap
+  label without vertical padding), and the enemy tooltip's cells had no width to resolve against (now a fixed width).
+- Screenshots in `Docs/ui-screens/`: `kit-combat-icons.png` (16:9) and `kit-combat-icons-small.png` (the smallest screen),
+  `screen-army-deck-vi-16x9`, `screen-detail-armour-vi-16x9`, `screen-detail-weapons-vi-16x9`, `screen-legend-vi-full`,
+  `battle-hud-enemy-vi-16x9` (`IconSheet.Combat`; `UiShots -mbShotsOnly` now takes a comma list).
+
+### Helper tasks for the design document (the lead)
+
+- **Card pictures for every fixed defence.** The five utility modules already had renders, named after their models
+  (`helipad.png`, `vehicle_hangar.png`...); the design document's picture library looked them up by id. It now reads the
+  manifest (id to model). The fixed defences without a base slot (super-gun, spawn bastion, fallback post, targeting
+  station) were not cards at all, so `CardArt.For` gave them nothing: a "structure" kind in `CardRenders.Kinds` lists
+  them (three share their models' renders; the targeting station was rendered). 139 cards.
+- **In-battle pictures** (`MachineBrigade.Editor.PlayShots.Run`, batch with graphics, no -quit): real matches on fixed
+  maps and decks with the match's fixed seed, shot at a fixed sim tick, the camera put on a view worked out from the sim
+  (the closest ground fight, a base's HQ, the boss, the aircraft's centre, the barrage's target), Camera.main rendered into
+  a 1600 x 900 texture. The game's own HUD panel does not draw into a texture in batch mode, so for that frame the live
+  HUD's elements are lent to an off-screen runtime panel of the same size and theme (the UI test framework's, as
+  UiShots) and blended over (premultiplied). `battle3d-conquest`, `-siege`, `-defend` (and `-defend-base-hq`,
+  `-base-1`, `-base-2` close over the towers), `-boss`, `-air`, `-barrage`.
+
+### Left
+
+- The Base screen's shields and the Outpost tray were checked by the layout tests, not looked at in a picture.
+- On a phone (testing phase): the icons' legibility at 18.7 pt on a real 720p screen, and a tap on a moving enemy.
+
+## 15B. Prompt 16: old bosses' new weapons, escorts for every boss (2026-09-29)
+
+Prompt 16 parts E and F (branch feature/p16-escorts, from lead/integration 279c11e). Parts A-D (Lighthouse Bay,
+Leviathan and its fleet) are another branch; the escort system below is the one Leviathan's fleet can use.
+
+### E. The thin bosses' new weapons
+
+Every new weapon follows the calibre scale (13C) and the damage types and penetration levels (14A), and is a part
+(prompt 9) where the boss has a place for it, so breaking it takes it away. Parts stay 7-15 % of the body each and at
+most 70 % in all (prompt 9's rule; `BossPartsTests` holds it).
+
+| boss | new weapon | how it works | its part (share) | what breaking it does |
+|---|---|---|---|---|
+| Iron Train | mortar car (`train_mortar`, 2B11 120 mm twin, HE, pen 2) | a flatcar coupled behind the gun wagon; indirect, so it hits what hides behind cover (no line of fire needed) | `mortar_car` 10 % | the mortar falls silent |
+| Tempest | interceptor laser (APS, `laser: true`, `rockets: true`: 26 m, 2 shots, 1.6 s) | Energy: burns missiles, drones and rockets out of the air round it (and round anything of its side within 26 m); smoke blinds it (14A C.6) | `interceptor` 8 % (the modelled launchers on the turret sides) | no more interceptions |
+| Behemoth | hard-kill APS (11 m, 2 shots, 4 s) | direct-fire missiles and rockets only (a Trophy's): the anti-tank missile answer | `aps` 7 % (a place on the turret roof) | no more interceptions |
+| Inferno | fire trail (`fireTrail`: a patch every 4 m, 3.5 m across, 18 dps Burn) | lit for 10 s, burns 8 s: the ground fires' time a fifth shorter (12A), the same in the sim and the view | `fuel` 8 % (its fuel tanks) | no more trail |
+| Hive | jamming aura (`jammer: 30`) | the player's guided rounds fired from or aimed within 30 m of it are scrambled (they miss by 5-11 m: against its 7.5 m hull about half still hit) | `jammer` 8 % (a mast on the roof) | guided rounds fly true again |
+| Bastion | twin Kornet mount (`kornet_twin`) | a roof launcher, all round | `kornet` 8 % | silent |
+| Doomsday Train | rocket car (`boss_rockets`, Grad) and long-range SAM car (`sam_battery`, Patriot, 90 m) | two flatcars behind the missile wagon | `rocket_car` 10 %, `sam_car` 10 % | each falls silent |
+| Rail Supergun | two AA mounts (`ciws_aa`, AK-630, aircraft only) on the bed's rear corners | shoot aircraft | `aa_l`, `aa_r` 7 % each; tractors 10 → 8 %, fire control 12 → 9 %, main gun 15 → 14 % | each falls silent |
+| Landing hovercraft | two more CIWS (`ciws_aa`, aircraft only) that also intercept (APS 22 m, 2 shots, 3 s: missiles, drones, rockets; not shells, bullets or energy) and two 140 mm rocket launchers (`hover_rockets`, A-22 Ogon: 11 x 65, 55 m, every 22 s) | the Zubr's armament | `ciws_l`, `ciws_r`, `rockets_l`, `rockets_r` 7 % each; ramp 14 → 12 %, fans and guns 10 → 7 % | a CIWS broken halves its interceptors (rounded up), both: none; the rockets fall silent |
+
+Kept as they were (the brief): Iron Bird, Spectre, Ice Fortress, Hive Mothership, Silver Bug, Earth Worm, command
+airship; the Supreme Commander keeps no weapon worth the name.
+
+New part mechanisms (`stops`): `aps`, `jammer`, `trail`. Unlike the older ones (one part each), these may be carried by
+several parts and stop only with the last; a protection system holds its interceptors in proportion to the parts still
+standing (`Vehicle.ApsMax`). The view: the Tempest's interceptions are drawn as the Iron Beam's beam from its turret side;
+the trail's patches as ground fires (`SimEventKind.FireTrail`); new part kinds `aps`, `ciws`, `fuel`, `ew` have names and
+icons. Models (Blender, `Tools/blender/mb_p16_arms.py`, wrapping the current builders): the Iron Train's mortar flatcar,
+the Doomsday Train's rocket and SAM cars, the supergun's two CIWS, the hovercraft's two CIWS and two rocket launchers,
+the Bastion's Kornet launcher; the other new parts are modelled already (the Tempest's launchers, the Inferno's tanks) or
+places on the hull (the Behemoth's APS, the Hive's mast). The trains are longer with their cars (measured: the Iron
+Train 25.06 x 3.4 m, the Doomsday Train 31.61 x 3.44 m; their origins stay where they were, so the capsule sits 2.6 and
+4.8 m forward of the models' middle: the cars' last metres are outside it, ASSET_DEBT). The supergun's AA mounts stand
+at the rear corners clear of the traversing carriage; turned inboard their barrels would pass through the generator
+set, so each has a firing arc leaving that 60 degrees out (`arc: [-107, 150]` and `[107, 150]`). Two launchers of one
+slot on their own mounts (the hovercraft's rocket boxes) each get launch points from their own face of tubes now
+(`ModelLibrary.AddLaunchPoints`, a second pass over a slot's other muzzles on their own mounts); the mortar slot's
+muzzle is recognised (`MuzzlePattern`).
+
+**Health retuned** from a kill-time lab (the standard army of 15 against the boss alone, one seed, as prompt 9
+measured; `BossEscortTests.EachChangedBossStillFallsInAboutTheSameTime` logs it against lead/integration's data):
+
+| boss | health | kill time, before → now (with escorts) |
+|---|---|---|
+| Iron Train | 4400 → 4150 | 15.4 → 15.5 s, x1.01 (15.5) |
+| Tempest | 4750 → 4150 | 15.3 → 15.6 s, x1.02 (20.9) |
+| Behemoth | 4950 (kept) | 19.6 → 19.0 s, x0.97 (20.5) |
+| Inferno | 5800 → 6300 | 15.3 → 15.5 s, x1.01 (16.2) |
+| Hive | 6350 → 5800 | 23.4 → 24.1 s, x1.03 (24.4) |
+| Bastion | 9000 → 9600 | 25.0 → 27.5 s, x1.10 (31.0) |
+| Doomsday Train | 5450 → 6000 | 18.7 → 20.3 s, x1.09 (20.4) |
+| Rail Supergun | 5500 → 5300 | 18.8 → 18.3 s, x0.98 (19.1) |
+| Landing hovercraft | 6500 → 5200 | 15.3 → 15.2 s, x0.99 (14.8) |
+
+All within prompt 9's "now to +15 %" (three a few per cent under). The lab with a small army (six vehicles) showed the
+hovercraft's new weapons made it unkillable at first (the extra CIWS shredded tanks, the rockets every 14 s): the two
+new CIWS and the supergun's AA mounts fire at aircraft only (`ciws_aa`), the hovercraft's rockets reload in 22 s and
+its interceptors are 2 a 3 s; the Inferno's trail and the Tempest's laser needed health going the other way than the
+model said (the trail hurts the army less than feared, the laser more). Escorts add 0-20 % to a kill here (more with
+fewer shooters); missions and Boss Rush over five seeds are for the testing phase.
+
+### F. Escorts for every boss
+
+**One data-driven system** (`BossSystem.Escorts`, balance.json `escortRules` and `escorts`), replacing the old escort
+skills (`behemoth_escort`, `fortress_escort`, `gunship_escort`, `nuke_escort`, `supreme_guard`, removed) and Boss Rush's
+own escort list (`BossRushRules.Escorts`, removed).
+
+- **Two kinds of wave:** one with the boss (spawned the step after it joins, as the camera turns to it), and one at
+  each phase change: the boss's own phase marks (a change counts as its transformation begins), else the table's
+  `marks`, else the rules' `[0.5]` (the rage mark most bosses already have); the Earth Worm's (`"on": "surface"`) each
+  time it breaks out of the ground.
+- **A helper in every wave** (any role but guard and raid): `repair` (an engineer mends the boss 0.3 % of its health a
+  second within 12 m of its hull: the Support aura skips bosses, so this is the escorts' own), `jam` (an EW carrier's
+  jammer covers it), `cover` (anti-air: flak, SAMs, fighters, a C-RAM), `spot` (it marks every enemy it sees: the boss's
+  side deals 15 % more to them and a boss's guns scatter 0.6 as wide at a marked target), `smoke`. Where the brief's
+  wave had no helper one was added (below), so the player always chooses between the boss and its helpers.
+- **At most 4-6 alive** (`escortRules.cap`: Easy 4, Normal 5, Hard and Very Hard 6, Heroic and Iron 6), counted per
+  boss; a wave's helpers come first, then its guards while there is room. **Strength by difficulty:** each vehicle goes
+  through the side's elite budget (prompt 8 H, `ForWave`), so harder difficulties bring more elites; a unit marked
+  `elite` is always its elite (a boss's signature).
+- **Boss Rush:** two fewer alive (at least 3), half of each wave's guards (rounded up; the helpers all come), the guards
+  as elites (Boss Rush's escorts were all elites): fewer and stronger, so a fight does not drag.
+- **The leash** (28 m, a table may set its own; a raider 1.6 times it): a guard takes on the enemy nearest the boss
+  within the leash plus its own reach, those attacking the boss first (their target or order is the boss, or they hit
+  it last); past the leash it drops the chase and drives back to its station. **Stations:** guards beside the boss along
+  its heading (so a train's run parallel to its rails), helpers behind it away from the enemy (the nearest enemy it sees
+  within 80 m, else the enemy's rally), a screen between it and the enemy. The commander AIs leave escorts alone
+  (`Vehicle.IsEscort`); when the boss falls they are released to the commander.
+- **CP for kills:** 3 CP a guard, 4 a helper, to the side that destroyed it (on top of the usual refund), with a toast.
+- **Arrivals:** beside it (default), `para` (air-dropped round it after a 3 s warning ring, the transport and a
+  parachute from the unit's `escort_drop.<unit>` event support; a toast "escorts parachuting in"), `edge` (from the map
+  edge behind the boss, driving or flying in: for a fleet's aircraft), `place` (at an offset in its frame). A wave may
+  `halt` the boss (the Iron Train stops 6 s at a "station" to drop its light tanks) or only `refill` its own losses (the
+  Tempest's jammers).
+- **Interface (kept minimal, the UI agent owns the rest):** the boss bar shows a shield icon and the count of escorts
+  alive (`BattleHud.SetBossEscorts`); an escort wears an orange diamond left of its health bar, shown whether the bar
+  is or not (`VehicleView.RenderEscortMark`).
+- **Where it is on:** the world's `EscortSettings` (null: none, the bare test battles and the menu's lobby). Missions and
+  Boss Rush set Normal's by default; every session then sets its difficulty's (`ModeSession`), Boss Rush's smaller.
+- **Checkpoints:** the escorts' groups, waves and members go into `StateHash`; their orders are ordinary sim commands
+  (not journaled), so a replay rebuilds them.
+
+**The tables** (arrival · each phase change), from the brief, a helper added where it had none:
+
+| boss | arrival | phase change |
+|---|---|---|
+| Iron Train | 2 armoured cars beside the rails (one spots) | halts 6 s: 2 light tanks + an engineer |
+| Tempest | 2 EW jammers + a SAM launcher | 2 jammers, only replacing those lost |
+| Behemoth | 2 battle tanks + an AA gun | an elite heavy tank + an engineer |
+| Inferno | 2 flame tanks + a smoke carrier | 2 flame tanks + an engineer |
+| Iron Bird | 2 attack helicopters + a scout helicopter (spots) | a scout helicopter (spots) |
+| Spectre | 2 fighters (cover) + a recon UAV (spots: its guns tighter) | 2 fighters |
+| Ice Fortress | 2 heavy tanks + an engineer | an engineer |
+| Hive | a heavy AA gun + a SAM launcher (the "mixed air defence") | 2 FPV carriers + a recon UAV |
+| Bastion | air-dropped: a gun turret, an ATGM tower, a C-RAM (cover) | air-dropped: a gun turret + an AA turret |
+| Hive Mothership | 2 strike UAVs + a recon UAV | a scout helicopter (spots) |
+| Silver Bug (0.66, 0.33) | the beaten generals' elites: Varga's heavy tank, Orlov's Grad + a recon UAV | Sen's FPV carrier + a jammer; then Quạ Đen's attack helicopter + an engineer |
+| Doomsday Train | 2 IFVs beside the rails + a scout helicopter | 2 IFVs + a smoke carrier |
+| Rail Supergun | 2 patrol tanks + a counter-battery radar (spots); its fixed turrets are its guards, as before | 2 patrol tanks + an engineer |
+| Earth Worm | none | each break-out: 2 IFVs and an engineer air-dropped beside it |
+| Command airship | 2 fighters (cover) | an attack helicopter + a scout helicopter |
+| Landing hovercraft | 2 hover gunboats (one spots) | a gunboat (spots) |
+| Supreme Commander | kept as it was: none | at 60 %: 2 elite battle tanks (its command aura is the help) |
+
+The hovercraft's gunboats (`hover_gunboat`: 30 mm CIWS, 520 health, 8.5 m/s, crosses land and water like the
+hovercraft) borrow the hovercraft's model at a third of its size until the fleet's fast attack craft (part C) lands:
+then point the table at that def or give `hover_gunboat` its model.
+
+**For Leviathan (part C):** its fleet can be one table: `{ "boss": "leviathan", "leash": 60, "arrive": [ { "unit":
+"<corvette>", "role": "cover", "count": 2, "slot": "flank" }, { "unit": "<missile_boat>", "role": "raid", "count": 3 } ],
+"phases": [ { "units": [ ... landing craft, helicopters ... ], "radio": "..." }, { "units": [ { "unit": "<corvette>",
+"role": "cover", "slot": "screen" } ] } ] }` with `"drop": "edge"` for the strike aircraft coming in from the sea, and
+`"cap"` raised for it alone. The corvettes' CIWS cover of Leviathan is their own `aps` (it covers anything of their side
+within its radius already); "screen" puts them between Leviathan and the shore.
+
+### Tests (short, the owner's rule)
+
+`BossEscortTests`: the mortar car over a house; the three protection systems until their parts break; the fire trail and
+its tanks; the Hive's jammer; the new mounts firing (Kornet, rocket and SAM cars, supergun AA, hovercraft rockets); the
+escorts' timing, cap, Boss Rush's smaller waves; the leash; the engineer's repair and the escort bounty; every boss has a
+table with a helper in every wave; the kill time per changed boss (one seed, the boss alone). Suites kept green:
+BossParts, BossPhase, Counter, Armour, CheckpointReplay, Prompt8Content.
+
+Also fixed on the way: `BossPhaseTests` hit the boss with a default `HitInfo`, whose penetration is 0 since prompt 15
+(the constructors' is -1, unknown), so the armour table cut the blow; the tests now pass an explicit scripted blow.
+`MuzzleAuditTests`: the Ice Fortress's second rocket box (m1) fires from its own face now (the launch-point pass for a
+slot's second mount), so it left the known list. Failing on lead/integration already and left as they are (not this
+prompt's): `BossPartsTests.ShootersGoForThePartMostDangerousToThem` (a tank picks the Behemoth's flak before its main gun
+since prompt 15's armour levels) and three `ModelTests.RoundsLeaveFromTheLaunchersOnBothSides` cases (heavy_aa,
+gunship_heli, fighter_jet).
+
+### Left for the testing phase
+
+- Kill times over five seeds per boss with a standard deck, with and without escorts, and every boss mission and Boss
+  Rush on Normal inside its frame (escorts add enemies: the missions' pace may want the caps or the waves trimmed).
+- The escorts' formations on real maps (the trains' rails, the hovercraft's coast, the Bastion's towers dropped on
+  rough ground), and the stuck detector over boss missions with escorts.
+- FPS and tick time on the heaviest boss fight with a full escort and burning parts (Low, a low-end device).
+- The escort icon and bar count on a device (and the UI agent's own escort icons, if it makes them, replacing mine).
+
+## 16A. Prompt 17: long maps and layered bases (2026-09-29)
+
+Parts A and B only (C, D and E are later agents').
+
+### A. Map size by mode
+
+- **Which modes.** Conquest, Deathmatch, King of the Hill, Assault, Survival and Boss Rush keep their 300 x 300 m files,
+  byte for byte. Siege, Defend, Endless and the weekly fortress play on `<map>_long.json` when the map has one
+  (`ModeSession.MapFile` -> `Fortified`: long, else `_siege`, else `_conquest`). Campaign missions keep their variants.
+- **The long battlefield** (`Tools/maps/longmap.py`, all 20 maps with a siege version): 300 m across, 480 m along the
+  attack (x -150..150, z -150..330; map data `bounds`, `size` 480). South of z = 118 it is the map's own Conquest
+  battlefield where it always was (ground, dressing, the attacker's camp and its hardpoints, the three objectives), so
+  campaign and camp coordinates hold; the extra 180 m run north, where the base stands, and the flanks are no wider.
+  North of the seam a new outline (the map's own strip depth and noise, capped at 12 m, blended over 30 m) replaces the
+  square's edge; the square's decor that falls inside comes back as props ("the scenery beyond the edge is played on
+  now"), and the strip beyond the new edge gets the theme's trees, rocks and a house here and there.
+  Why not grow the corner fortress: its diagonal geometry (outer line x + z = c, L-shaped walls) does not stretch along
+  one axis; a base across the full width is what the owner's "outer wall with 2-3 gates" reads as.
+- **The sim on a rectangle.** `MapDefinition` has `Min`/`Max` (a square map keeps -half..half), `Width`, `Length`,
+  `Centre`, `IsLong`, `Clamp`, `EdgeDistance`; `Contains`, `ClampToMap`, the tactical AI's clamp, the supply drops, the
+  crate drops, the aircraft's edge turn and orbit clamp, the airlift's edge and the dodge scoring use them. `NavGrid` and
+  `CoverGrid` take an origin and a width and length (the old square constructors stay). Deterministic: no float order
+  changed on the square maps (same cells, same centres).
+- **Camera, zoom, minimap** (A.4). A long map is seen looking west (`RtsCamera.LongYaw` -90 degrees, the square maps
+  -45), so its length runs across the landscape screen, attacker left as before; default zoom 21 (19) and widest 50
+  (42); the view starts 22 m ahead of the rally. The camera clamps to the map's rectangle. The minimap keeps the
+  rectangle: `Minimap.SetPicture(picture, min, max, yaw)` fits the rotated rectangle and turns with the camera; the
+  ground paint (`TerrainPainter.Canvas`), the minimap picture, `BoundaryField`, the ground mesh, the skirt, pebbles and
+  grass, the lava and river contours, the troop transports' way in (`AirDrops` Centre/HalfX/HalfZ) and the scenery ring
+  (`Surroundings.Beyond`) work on the rectangle. The ground texture keeps the square's density (1024 x 1640 on a long map).
+- **Path memory and time** (A.5), measured by `LongMapTests` (desktop, editor Mono): see the numbers below. The grid is
+  150 x 240 cells (36,000; the square 22,500, x1.6). Memory a cell: NavGrid 12 B, the path finder 16 B, lanes and unit
+  costs about 11 B, cover 4 B a square metre. No coarser cells or hierarchical search were needed; the path queue
+  (6 routes a step) is unchanged. If the testing phase's tick budget on the long Siege shows path spikes, the next step
+  is a two-level search (sector graph over 16 x 16 cell blocks) in `PathFinder`, not coarser cells (gates and sally
+  ports are 3-7 cells wide).
+- **Unit caps unchanged** (A.6): 32 vehicles + 6 aircraft a side, Siege/Defend's 48.
+- **Operations** (A.3): the mechanism is prompt 5's `Expand` and `PlayArea`; no operation expands yet (every one plays
+  the 300 m square). A later stage that needs about 500 m would use a long file as its map (`variant: "long"`) with the
+  square as the first play area; left for the campaign agent, no mission data changed here.
+
+### B. Layered bases on the long maps
+
+- **Layout (B.1)**, north of the 300 m square, from the attack: the buffer zone (z 150-190), the forward works (the
+  three relays of stage 1 and eight strongpoints: 6 small, 2 medium, behind sandbags), the outer wall along z = 218
+  across the whole width with a closed main gate on the road and two open 18 m sally ports (x -103, 101), the yard (the
+  shield generators, the super-gun, fuel and ammunition stores, hangars and barracks, the line in: a runway along the
+  east yard or a rail line down the west yard), the inner wall (the keep: x -46.6..44.6 from z = 266, a closed south gate,
+  open 18 m gateways in both side walls), the command HQ at (0, 305) and the defenders' drop zone in the keep's yard
+  (0, 284). Each layer has its own hardpoints (map data `place`: outer_gate, outer_wall, yard, inner_wall, hq_side,
+  forward).
+- **Rings.** `fortress.rings` are polygons (inside the outer wall, inside the keep); `FortressDef.RingOf` and SiegeMode
+  use them on a layered base (gates' outward from their wall's run, the fortress's props from `fortress.area`);
+  `siegeRings` stay as axial distances for older readers. Stage 1 the forward relays, 2 the generators (yard), 3 the HQ.
+- **Drops (B.2).** The defender's drop is inside the keep. The attacker's camp is the square's south-west camp; on a long
+  map the attack's reinforcements (the player's purchases in Siege, the waves in Defend and Endless) land at the
+  fortress's forward drops once a ring has fallen: (0, 128) before the buffer after stage 1, (-1, 196) before the outer
+  wall after stage 2 (`SiegeMode.ForwardDrop`, through `BaseSystem.ForwardZone`); outposts and the command vehicle still
+  win when they are further forward.
+- **Buffer zone (B.3).** Two staggered rows of dragon's teeth (z 168), anti-tank ditches (z 178, painted dug ground),
+  wire (z 185), each belt with gaps before the main gate, both sally ports and two between; shell holes; up to four
+  firing positions on the attacker's side (z 136-140: earth banks open to the south, sandbags on the lip: the high
+  ground the attack's guns fire from; `fortress.firing`). 1-4 fit per map (the square's buildings take the rest);
+  the map stays static.
+- **Slots by HQ level (B.4)**, `balance.json base.longLevels`: 4/1/0/1, 5/2/1/1, 6/3/1/2, 7/4/2/3, 8/5/3/4
+  (small/medium/large/utility); every long base has exactly 8/5/3 + 4 utility base slots, listed most important first
+  per size (outer gate, inner wall, outer wall, yard; large: yard, beside the HQ). The forward strongpoints
+  (`longForward` 6 small, 2 medium) repeat the loadout's towers and do not count against the level. 300 m camps keep
+  their table. `BaseRules.Slots/UtilitySlots(level, size, layered)`, `BaseLoadout.Layered`, `BaseLayout.Camp` read it.
+- **Labels and the one loadout (B.5).** New `SlotPlace`s OuterGate, OuterWall, Yard, InnerWall (strings "Cổng ngoài",
+  "Tường ngoài", "Sân trong", "Tường trong"). The plan keeps both kinds of places; a camp ignores the long places and a
+  layered base the camps' own (beside the HQ and utility are shared). Until the player lays a long base out, its places
+  borrow the camp counterparts' towers (outer gate <- gate, outer wall <- outer ring, yard and inner wall <- inner
+  ring, over again, then any of the size): nobody's Defend base comes up empty. The first edit on a long base makes its
+  places the plan's own; a camp's Auto-arrange keeps them. A long base can be set up on its own like a camp (key
+  `<map>_long`). No save migration: old plans simply have no long places.
+- **The Base screen** lists each map with a long battlefield twice, its camp and "<map> · dài" (the layered base),
+  and shows the long table's locks and "Lên cấp" line there (`BaseSites.LongOf`, `PlanKey`). Its picture comes from
+  `BaseMapShots` (now also `<map>_long`); until the pictures are rendered the screen draws the base without one.
+- **Strength (B.6).** `BaseStrength.Power` of a layered loadout counts the extra slots and the forward repeats; Defend
+  and Endless scale their waves on what stands (`Score(world, team)`), which already counts every tower raised.
+- **Enemy fortress (B.7).** Siege and the weekly fortress raise the enemy's layered base from `BaseLoadout.ForAi(...,
+  layered: true)` over every hardpoint (the AI fills all 28, as the corner fortress filled all of its), rings tougher
+  inward as before; Defend raises exactly the player's plan on the layered base (`PlayerProfile.BaseLoadoutOnLayered`).
+
+### Measurements
+
+- **Path memory and time** (`LongMapTests`, desktop Ryzen 7 9700X, editor Mono, gates shut, every hardpoint holding the
+  biggest tower): ashfield_long, swamp_long and metrocity_long are 150 x 240 cells; navigation memory (NavGrid, cover,
+  the path finder's arrays, lanes and unit costs) 1.9 MB a map; a full-length route (the attack's camp to the HQ, the
+  relays, the generators and the keep's drop zone, and back; 32 searches) 5.9 / 5.6 / 5.2 ms mean. Every route found.
+- **Judgement.** Memory is well inside budget. Time: on the 6x slower phone a full-length route is about 35 ms, so a step
+  that plans several of them at once would pass the 16 ms p99 step budget; most re-plans are short (the path queue's
+  6 a step is unchanged). Not changed now (the owner's minimal rule); the testing phase's `TickBudgetTests` on the long
+  Siege decides. The fix if it is over: an expansion budget per step on long maps (`PathCosts.MaxExpansions` already
+  exists), then the two-level search above.
+- **Tests run once** (EditMode: LongMap, MapConnectivity, BasePlan, BaseStrength, SiegeMode, Traffic, CheckpointReplay,
+  Navigation, TransportRoute): 104 of 122 pass. The 18 failures are `TrafficTests.EverySiegeGateLeavesThreeCells` on the
+  square `_siege` maps (not the long ones): `SimWorld.DebugDestroyProp` no longer destroys a `fortress_gate` since
+  prompt 15 gave it armour 4 (its high-explosive blow is cut to 5 %), so the doors still stand. Not caused here; the
+  lead should make DebugDestroyProp kill outright. PlaySmoke skipped (the owner's update).
+
+### Merge notes (shared files touched)
+
+Sim: MapDefinition, NavGrid, CoverGrid, JsonObject (FloatArrays), SimWorld (grids, ClampToMap, dodge edge), TacticalAi
+(Clamp), SupplySystem, EconomySystem (EdgeBehind), BattleEvents (crate area), MissionMode (flee), MovementSystem
+(aircraft edge), BaseSites, FortressDef, BaseRules, BaseLoadout, BaseLayout, BaseStrength, BaseSystem
+(EstablishFortress), SiegeModes. Game: RtsCamera, Minimap, AirDrops, EffectsDirector, MapView, TerrainPainter,
+BoundaryField, Surroundings, MatchRunner, ModeSessions (MapFile, fortress loadouts), BasePlan, PlayerProfile.BasePlans,
+BaseScreen, Strings. Editor: BaseMapShots. Data: balance.json (base.longLevels, longForward), 20 new `*_long.json`.
+Tools: longmap.py (new), build_maps.py / fortress.py / check_access.py / plot_map.py (rectangular grids; the square maps
+build unchanged). No boss code touched.
+
+**Lighthouse Bay:** once the lead merges it into `build_maps.MAPS` (with its SHAPES entry), `python Tools/maps/longmap.py
+lighthousebay` writes `lighthousebay_long.json` (and runs check_access); nothing else is needed.
+
+### For the testing phase (not run, by the token rule)
+
+- `StuckBatch` on every `_long` map, Siege, Defend, Endless, Weekly, both sides, 5 seeds.
+- `SiegeBalanceTests` and `ModeEndingTests` (they now play the long files): Siege 12-16 min with 60-75 % player wins,
+  Defend's prompt 13 targets, Endless by base strength, the weekly's last stage; tune clocks and stage bonuses for the
+  longer march there.
+- `TickBudgetTests` on the heaviest long Siege; the base map pictures for the long bases (`BaseMapShots.RenderAll`
+  with graphics, `-mbBaseMaps ashfield_long,...`); BaseScreenTests' face-spacing check on the long bases.
+
+## 16C. Prompt 17: new units and towers (2026-09-29)
+
+Part C of prompt 17: six vehicles and two towers. Parts A-B (long maps, layered bases) are on feature/p17-longmaps and
+part D (the roster merges) comes after prompt 16's escorts, so this was built on lead/integration (db30d15) against the
+roster as it is. The owner's token rule applies: one behaviour test per item, one targeted run, no sweeps.
+
+### What each one is (data in balance.json)
+
+| Id | Card | CP | Armour (front/side/rear/top) | Weapons (real, damage type, pen, form) | Stores / reload |
+|---|---|---|---|---|---|
+| `stealth_fighter` | Plane, act III | 20 | 0 (air) | `air_to_air` AIM-120 (Frag, 3, Sam), `guided_bomb` GBU-39 110 kg (HE, 3, GuidedBomb), `fighter_cannon` GAU-22 25 mm (Frag, 2, BeltedAutocannon) | 4 AAM + 2 bombs, the fighters' 11 s rearm (prompt 13 C) |
+| `wingman_drone` | Plane (drone), act II | 6 | 0 (air) | `aim9` AIM-9 (Frag, 2, Sam) | 2 AAM, 11 s |
+| `laser_tank` | Tank hunter, act II | 10 | 3/2/1/1 | `focus_laser` 300 kW (Energy, 4, Energy) | a 80-pulse stream, 1.5 s between |
+| `shield_carrier` | Support, act II | 7 | 1/0/0/0 | `hmg_roof` M2 12.7 mm (K, 1, BulletBig) | magazine |
+| `bunker_vehicle` | Heavy, act II | 8 | 2/2/1/1, dug in 4/2/1/1 | `gun_105_bunker` L7 105 mm (K, 3, Dart), `mg_coax` 7.62 mm (K, 0, BulletSmall) | single shots, 4.6 s |
+| `swarm_carrier` | Plane, act III | 14 | 1 (air) | `swarm_drones` FPV 1.5 kg (SC, 3, Fpv; top attack, guided) | 8 drones a load, the bombers' 16 s rearm |
+| `shield_tower` | large tower, act III | - | 2 all round | none | - |
+| `cp_relay` | small tower, act II | - | 1 all round | none | - |
+
+No new weapon form was needed (the laser is `Energy`, the swarm `Fpv`), so `combat_icons.py` is unchanged; the towers have
+line icons of their own (`t_shieldgen`, `t_relay`) and the vehicles reuse their family's card icons.
+
+### Rules (Sim)
+
+- **Stealth fighter:** the existing aircraft stealth (seen at 0.4 of a spotter's sight, 2.5 s in plain sight after it fires,
+  shown by radar stations over their base, guard towers within their guns' reach and UAV scans). `"sead"`: with no
+  aircraft to fight and bombs left it goes for the nearest air defence it sees (`StrikeSystem.IsAirDefence`), and its
+  free bomb mount weighs air defences x3. The commander rates it higher the more anti-air the enemy shows, which offsets
+  the "interceptor with nothing to hunt" rule. Fewer stores than the fighter (4 AAM against 4 + 2) for 20 CP against 12:
+  it pays for being unseen. The brief's "4 AAM and 2 small bombs in the bay; 25 mm gun" is the data.
+- **Loyal wingman** (`"wingman"`): flies on the wing of the nearest manned aircraft of its side within 120 m (a leader with
+  wingmen already counts 40 m further per wingman; a slow leader is circled), patrols halfway to the enemy with none;
+  its own fights stay near the leader. **Decoy:** an anti-air missile fired at a manned aircraft with its wingman within
+  25 m turns onto the wingman at 40 % (one draw a missile, and only when a wingman is alive, so battles without one draw
+  the same numbers as before). **Cap:** `"airCapFree"` keeps it out of the six-aircraft count (deploy check, the AI's
+  "air full" check, `AircraftCount`), and `"maxPerSide": 4`. It is faster than the fighter (46 m/s) to hold the wing.
+- **Focused laser** (`"ramp"` on the weapon): x0.3 on a new target, rising linearly to x2 after 6 s on the same one; a new
+  target or 2 s without a pulse on it starts again (`CombatSystem.RampScale`, per mount). Energy: APS, reactive armour and
+  cages never stop it (prompt 15 C.9), smoke cuts it 80 %. Pen 4, so it pierces a heavy tank's front and a boss's hull.
+- **Shield domes** (`"dome"`: carrier 12 m, 1,000 HP, 20 s; generator 25 m, 3,000 HP, 30 s; `DomeSystem`): every hit but
+  energy (and burns, mines, redirected shares) on a ground unit or tower of its side inside is taken by the dome until its
+  HP is spent; what a breaking dome cannot take goes through to the unit, never to a second dome. **No stacking:** a unit
+  under two domes is covered by the one with most left. A shot from a ground vehicle inside the bubble passes. The dome is
+  back at full its recharge time after its last hit (or its break), and scales with the emitter's rank like its health.
+  Targeting: a covered unit is x0.3 for a weapon the dome stops, the emitter of a standing dome x2.5 (the generator first,
+  or energy), and the commander's counter score adds up to +2.5 for energy weapons against domes it has seen.
+- **Bunker vehicle** (`"deploy"`, `DeploySystem`): standing still 1 s with an enemy on the ground within its dug-in reach,
+  or 4 s on guard away from its drop zone (a point, a choke, a siege line), it digs in for 3 s (no driving, no firing,
+  moving armour); dug in: front +2 levels (4), reach x1.3 (34 → 44 m), turret all round; on its tracks the turret keeps
+  within 45 degrees of the nose. A route more than 6 m away packs it up (3 s, the same way; a route given mid-dig packs up
+  in the time it had dug), then it drives; while held it is never taken for stuck. The commander scores it up when
+  holding (Defend stance, or every point taken).
+- **Swarm carrier** (`"swarm"` on the weapon): a salvo of 8 FPV drones; each drone after the first takes the enemy on the
+  ground within 18 m of the aim with the least already coming at it for its health, and a drone whose target is gone
+  when it arrives strikes the nearest enemy within 18 m. The drones are projectiles, never aircraft (the six-aircraft cap
+  counts the carrier only). Its bay spent, it flies out to rearm like a bomber (16 s). Countered as asked: fighters and
+  SAMs shoot the carrier; APS (C-RAM, laser AA), EW towers and jammers stop or scramble its drones (the existing rules for
+  drones).
+- **Shield generator** (large slot): the dome above, two rank-7 branches by prompt 3's rule (a trade, not an upgrade):
+  **Bulwark** (19 m, 4,800 HP) and **Pulse** (25 m, 2,100 HP, back 14 s after its last hit); three equipment slots like
+  every tower (the tower gear system applies to every loadout tower). The enemy base picker draws it (default style 0.5,
+  armour style 0.8).
+- **CP relay** (small slot, `"relay"`, `EconomySystem.StepRelays`): +0.1 CP a second, the second relay +0.06, any more nothing
+  (`RelayDef.MaxPerBase` = 2: `BaseLoadout.Fitted` leaves a third slot empty, the AI's picker stops at two, a fortress
+  raises each relay once); nothing for 5 s after it is hit (the brief's "only while not under attack"); never on an outpost
+  (`BaseLayout.Fits`, `BaseSystem.CallTower`). Branches: **Hardened** (1,100 HP, level 2, 0.08/0.05) and **Express** (0.12/0.07,
+  450 HP, quiet 8 s). Attackers weigh an enemy relay x6 as a target. **Not a must-pick:** 0.16 CP a second is about 17 % of a
+  side's base income (0.95) in exchange for two defensive small slots; the AI takes it at weight 0.35 (it showed in some
+  of 40 seeded Hard bases, never in all: the test). Whether a human's optimal loadout always takes it is for the testing
+  phase (the brief's sweep was not run, the owner's rule).
+
+### AI use (both sides)
+
+The commander (`ConquestAi.NewCardScore`): a wingman only with a manned aircraft of ours up (-4 without), a shield carrier
+once the army is 5 vehicles (a second from 12), the bunker when holding, the stealth fighter by the enemy's anti-air; energy
+weapons against seen domes. Tactics: the shield carrier is a support vehicle kept 3 m behind the front line (its dome over
+the leading vehicles), the wingman is left to fly itself, the bunker digs in and packs up on its own. Counter-AI: domes pull
+fire onto their emitter and away from covered units, relays draw attackers, SEAD and anti-air answer the new aircraft
+through the existing rules (flares, SAM seekers, fighters hunting aircraft).
+
+### Interface
+
+Names, short names (15 letters at most), notes and Guide cards in both languages; the generated Behaviour lines cover the
+new rules (`ul.dome`, `ul.deploy`, `ul.wingman`, `ul.airCapFree`, `ul.sead`, `ul.relay`, the weapon lines `ul.ramp` and
+`ul.swarm`). Domes are drawn with prompt 11's shield (`EffectsDirector.Domes`: the sim's radius, follows the carrier,
+ripples on `DomeHit`, flickers when low, shatters on `DomeChanged`). The bunker shows its state left of the health bar (an
+amber bar filling while it digs in or packs up, a green bunker block dug in) and swings its spades down and raises its front
+plate. In-action clips: a `Dome` scene (two friends under the dome shelled by two tanks) and a `Wingman` scene (a friendly
+fighter and an enemy SAM vehicle); the laser, bunker, stealth fighter and swarm carrier use the plain range (their
+weapons show their behaviour). Engine plumes for the three new aircraft.
+
+### Tests
+
+`Prompt17ContentTests` (8, one per item): stealth reveal and detection (sight, after firing, UAV scan, radar station); the
+wingman on its leader's wing, pulling some SAMs, outside the cap; the laser's ramp (x0.3 to x2 within 6 s) and its reset on
+a new target; the carrier's dome (absorbs, energy through, no stacking, overflow to the unit, back after 20 s, in battle);
+the generator (covers 25 m, first target, placed by the AI, branches); the bunker's states and timings (3 s each way, armour
+2 → 4, reach x1.3, no fire while busy); the swarm carrier (8 drones spread over a group, the side at its six aircraft); the
+relay (pay, second relay, quiet after a hit, two to a base, not on outposts, the AI takes it sometimes and not always).
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`CombatSystem` (partial; the burst loop, `Launch`, target scoring, the stunned/busy check, the turret arc), `DamageSystem`
+(the dome in `HitVehicle`, the swarm retarget), `MovementSystem` (the deploy hold, the wingman's flight, SEAD, the dug-in
+reach), `EconomySystem` (relay income in `Earning`, the air cap exemption), `SimWorld` (two systems in the step),
+`BaseLoadout` (relay cap), `BaseLayout.Fits`, `BaseSystem.CallTower`, `ConquestAi` (partial; buy scoring), `TacticalAi`
+(support placement, wingmen), `WeaponDef`/`WeaponState`/`Projectile.Target` (now settable), `SimEvent` (two kinds appended),
+`Vehicle.ArmourOn`, balance.json (three weapons after `hover_ciws`, six vehicles after `long_sam`, towers after
+`guard_tower`, two base-style weights), campaign unlocks (act2.py, act3.py and campaign.json), `MatchSettings.AllVehicles`,
+`CardIcons`, `TowerIcons`, `Icons` (two SVGs), `EffectsDirector` (two cases, one tick, three engines), `VehicleView` (three
+lines), `FiringRange.Abilities` (two scenes), `UnitLines`, `Strings`/`GuideText`/`UnitText` (appended), `build_assets.py`
+(one import and builder merge).
+
+### Left (not done here, and why)
+
+- **C.9 balance with `CombatValueMeasure`:** not run (the coordinator's rule for this pass: one targeted test run). Part D
+  is not merged either, so the numbers above are starting values set by the calibre scale and by analogy (the stealth
+  fighter against the fighter at 12 CP, the laser tank against the tank destroyer, the swarm carrier against the FPV
+  carrier and the bombers). Run the measure after D, add the new ids to it, and set their `"value"` (all 1 now).
+- **Card renders** (`CardRenders.RenderBatch`, needs a batch run with graphics) for the eight new cards; `CardRenderTests`
+  will flag them until then.
+- The whole EditMode suite, `ModelTests`/`MuzzleAuditTests` on the new models, PlaySmoke, and the performance check of many
+  drone swarms (brief E): testing phase.
+- Long maps (A-B) will need the relay and the generator in their slot labels only through the existing size rules.
+
+## 16D. Prompt 17: roster review, merges, save migration (2026-09-29)
+
+Part D of prompt 17 on lead/integration (b2528d2, parts A-C merged), then C.9 for the new units and three follow-ups.
+The owner's token rule: one measure run (the whole roster takes 11 s, so C.9 was measured, not guessed), one targeted
+test run, no sweeps.
+
+### D.1-D.5 The merges (`CardMerges.Into`, roster version 2)
+
+Ids stay as they were (the surviving card keeps its id, display names live in the text tables), and the model of the
+card that went is kept in the model library, named on the survivor as `"altModels"` (`VehicleDef.AltModels`, never
+drawn now) for the camouflage prompt. The gone cards' defs are out of `balance.json` (as prompt 13's merges did); their
+`unit.`/`short.`/`note.` strings stay for that prompt, their Guide cards are gone.
+
+| Gone | Became | The merged card |
+|---|---|---|
+| `tank_buster` (A-10) | `attack_jet` "Cường kích" | The Su-25's model (it was already the "Cường kích" card, and its bombs are a loose part of that model); the A-10's kept. Weapons of both on the calibre scale: GSh-30-2 30 mm, S-8 80 mm pods, FAB-250 bombs, **two Kh-29L** (pen 4; the unused `kh29` is now a store of 2), two R-60s for self-defence. 460 → 700 HP and armour 1 → 2 (the A-10's toughness), 34 → 32 m/s. 13/16 → **15 CP**. |
+| `heavy_attack_heli` (Ka-52) | `attack_helicopter` "Trực thăng tấn công" | The Apache's model; the Ka-52's kept. The Ka-52's stand-off (`"standoff"`: it holds at 60-92 % of its missiles' reach, away from short-range AA) with a new `hellfire_standoff` (AGM-114L Longbow: the Vikhr's numbers, pairs from 55 m), the M230, Hydras and two Stingers (the self-defence AAM). 500 → 800 HP. 9/13 → **11 CP**. The Mi-24 (`gunship_heli`) stays its own card. A bought Ka-52 (3,500) is refunded. |
+| `atgm_carrier` | `fpv_carrier` | Unchanged. The ground anti-tank missile role is the IFV's, the BMPT's and the ATGM tower's. |
+| `sapper` | `engineer_vehicle` "Công binh" | The engineer already repaired vehicles (2.5 %/s within 14 m) and towers at half that (1.25 %/s, twice the sapper's fortify), cleared the mines it sees and broke obstacles x3 with its MG, and does not rearm (prompt 13). That is the brief: obstacles are the bulldozer's (its blade flattens teeth as it drives; the engineer's 12.7 mm against armour 3 is slow even at x3). 700 → 800 HP (the sapper's), 3 CP. The `fortify` aura stays in code, unused. |
+| `gun_pit` (tower) | `gun_turret` | The pit and its two branches are gone; the hidden-pit rule (`hidden`, `HideGunPits`) stays in code, unused. |
+
+**Migration** (`PlayerProfile.MigrateRoster`, `RosterVersion` 1 → 2). The prompt 13 loop is idempotent, so a version-1
+save runs it again with the new pairs: the unlock goes to the card it became (unless that is a starter), the higher rank
+stays, the coins and blueprints spent on the lower rank come back, a bought premium card is refunded. New,
+`MergeTower` (the gun pit): every slot holding it becomes the gun turret (the old sized lists, the three plans' slots,
+outposts and per-map set-ups); its pieces move into the turret's empty slot of the same kind when they fit it
+(`TowerFit.Fits`), otherwise they stay in the bag, owned and worn by nothing; its rank-7 branch choice is dropped (the
+turret keeps its own). Vehicle equipment is worn per branch, not per card: nothing to move. Saved decks already read
+merged ids through `CardMerges.Resolve`.
+
+**Everything that named them:** `MatchSettings.AllVehicles`, the shop's premium list and `Progression`'s prices, the
+enemy base style weights, the hovercraft's landing party (ATGM → FPV carrier), the campaign's enemy decks, generals,
+waves and reinforcements (the card each became; a deck naming a card twice keeps it once), unlocks (below), the range's
+jammer and interceptor scenes (an ATGM tower: missiles and no gun), the editor shot lists, and the tests (below).
+Elites and boss escorts named none of them.
+
+### D.6 Twin tank and heavy tank, told apart
+
+- **Twin tank = tank hunter:** `gun_120_twin` (two Rh-120 rounds of 240, one volley 0.05 s apart, 7 s reload, 34 m),
+  armour 3/2/1/1, 5.6 → 6 m/s, turret 55 → 65 degrees/s (the heavy tank: 4.2 m/s, 45).
+- **Heavy tank = breakthrough:** its 152 mm loads `gun_152_he` (HE-FRAG 320, 5 m blast, pen 3) for a structure, a
+  tower, a vehicle of front armour 1 or less, or a wall, and armour-piercing otherwise (`"he"` on the weapon,
+  `WeaponDef.HeRound`, `CombatSystem.RoundFor` at launch; the mount's cooldown is shared). Armour 4/3/2/2 (explicit now).
+  Its Behaviour line `ul.heRound`.
+- **The check** (the measure, one seed): time to destroy the two battle tanks: twin **37.9 s**, heavy 42.3, titan 42.7
+  (with AA: 44.6 / 48.3 / 52.7). Survival (share of the 90 s): heavy **82.8**, titan 82.6, twin 69.0. Structure value per
+  CP (fort): heavy **541** at 10 CP (451 at 12), titan 393, twin 274. The group is the turreted heavy tanks (twin,
+  heavy, titan); the siege tank (fort 808) is the 203 mm siege gun and the bunker vehicle a dug-in gun, neither a tank
+  of this group. Met; nothing to retune.
+- The HE round raised the heavy tank's ground value per CP from 497 (prompt 15) to 572, far over its class (median
+  404), so it went **10 → 12 CP** (477 projected: the group of two is the same at 12).
+- The Behaviour and Guide texts of both say what they are now.
+
+### C.9 Costs from the measure
+
+`CombatValueMeasure.MeasureTheRoster`, `MB_BALANCE=1`, the whole roster, seed 13 (408 runs, 11 s). Raw files:
+`Docs/balance/combat_value_p17d*.tsv` (`_final` after the costs). The rule is prompt 13's: within ±15 % of the role's
+median value per CP ("ground" for what fights the ground; the fighter and anti-air on "air"). Class medians this run:
+heavy 404, tank hunter 427, helicopter 302, strike aircraft 402, fighter (air) 353. `"value"` (the commander's weight) is
+per CP over the class median, as prompt 15 recomputed it.
+
+| Unit | CP | Measured per CP | Why |
+|---|---|---|---|
+| stealth fighter | 20 → **14** | air 148 + SEAD ground 69 at 20; 212 + 99 at 14 | The fighter does 353 in the air for 12 CP; the stealth fighter does both jobs, together 311 at 14 (-12 %). Weight 0.88. |
+| loyal wingman | **6** (kept) | 0 alone | A group of wingmen with no manned leader patrols and never engages; not measurable without a leader (testing phase). |
+| focused laser tank | **10** (kept) | 432 | In the tank hunters' band (427). Fort 667: strong on hard targets, as asked. |
+| shield carrier | **7** (kept) | support (0) | Judged by what it does for others, like the other support vehicles (testing phase: a dome measure). |
+| bunker vehicle | 8 → **6** | 277 at 8; 361 at 6 (count unchanged) | The attack scenarios see it packing and unpacking; at 6 it is the battle tank's value. Weight 0.89. Its dug-in defence is for the testing phase. |
+| swarm carrier | 14 → **8** | 205 at 14; 291 at 9 (final run); 327 at 8 | Next to the strike drone (325), the other drone platform, both under the strike band. Weight 0.81. |
+| attack jet (merged) | **15** | 478 at 14; 446 at 15 | Top of the strike band (+11 %). Weight 1.11. |
+| attack helicopter (merged) | **11** | 316 | In the helicopters' band (gunship 302). Weight 1.05. |
+| twin tank | 9 (kept) | 442 | +9 %. Weight 1.09. |
+| heavy tank | 10 → **12** | 572 at 10; 477 at 12 | See D.6. Weight 1.18. |
+
+The two new towers (shield generator, CP relay) take slots, not CP; nothing to set. The "air" reference group is the
+attack helicopter and the attack jet, both changed, so every anti-air value moved a little; no anti-air card was touched.
+
+### Follow-ups
+
+- **Campaign unlocks** (`build_campaign.py` failed its own "5 to 7 cards a chapter" rule since 16C: chapter 5 opened 10):
+  the recon drone c6m05 → c3m05 (the ATGM carrier's reward), the focused laser tank and the CP relay → c4m10 (the gun
+  pit's), the EW jammer c5m03 → c7m04, the smoke carrier c6m07 → c8m04, the counter-battery radar c4m03 → c8m06 (the
+  sapper's); the A-10's c9m04 unlock is gone (the attack jet opens at c4m02). Chapters open 6/6/7/7/7/7/6/6/7 cards;
+  coins and blueprints unchanged. `campaign.json` regenerated. **`CampaignText.cs` was left as committed:** the generator
+  would have undone hand-made Vietnamese fixes in it (Bọ Bạc, rốc-két); nothing in D changed its texts.
+- **Lighthouse Bay's long map:** `python Tools/maps/longmap.py lighthousebay` (28 hardpoints: base 8/5/3 and 4
+  utilities, 8 forward; 3 relays, 3 generators, 4 firing positions). The long-map modes pick
+  it up by name (`ModeSessions`).
+- **The hovercraft's escort** (`hover_gunboat`) wears the fast missile boat's model (`missile_boat`, its 14 x 3.8 m
+  hull, the CIWS on the boat's `mg` mount); it keeps its id, name and air cushion (it still crosses land). ASSET_DEBT says so.
+
+### Tests
+
+`Prompt17RosterTests` (5): the vehicle merges' migration (rank, blueprints, refunds, unlocks, once only), the gun pit's
+(rank, equipment into the empty slot and back to the bag, slots, outposts, map set-ups, branch), the merged cards' weapons
+and kept models, the heavy tank's round choice, Lighthouse Bay's long map and the escort's boat. Existing tests that named
+the old cards: missile shooters are the ATGM tower (a Kornet on mount 0, no gun: APS, radar-absorbent coating, laser
+warner, the jammer's range scene, Leviathan's CIWS) or the BMPT (Ataka beyond its cannons: boss protection parts, the
+Iron Beam value); the A-10 and Ka-52 cases are the attack jet's and the attack helicopter's (the stand-off test, the stores
+test, `CounterTests` "Attack jets beat heavy tanks", the measures); the sapper's tower repair is the engineer's; the gun
+pit's hiding test is gone. **The stores test** (a jet out of stores mid-attack finishes its hold before it leaves) now holds
+the in-flight refill off: out of danger the attack jet's 16-round S-8 pods refill about a round a second, so the jet is
+never dry at once (prompt 13's rule, not D's; the A-10 passed on timing). Run: `Prompt17RosterTests`, `RosterMergeTests`,
+the changed cases above, `UnitLinesTests`, `LocalisationScanTests`: 36 cases, 33 passed at first; the APS, jammer and
+stores cases were fixed and passed on a rerun.
+
+### Left for the testing phase
+
+- The whole EditMode suite (among the changed tests not run: `CounterTests`' new case, `CombatIconTests`,
+  `EquipmentLab`/`EquipmentRiskLab`, `BaseBalanceTests`, `CampaignTests`, `StuckBatch`), `ModelTests`/`MuzzleAuditTests`
+  (the attack jet's second missile mount, the twin tank's new gun), PlaySmoke.
+- `CampaignTests`' seeded sweeps: FPV carriers replace ATGM carriers in Kessler's and Varga's decks and early waves, the
+  heavy tank costs 12 from chapter 2, the moved unlocks.
+- A measure of the loyal wingman with a leader, of the shield carrier's dome, and of the bunker vehicle holding a line;
+  a multi-seed look at the swarm carrier and the stealth fighter (the biggest cost changes).
+- Card renders: unchanged ids, nothing new to render for D.
+- The first-shot reading of "opening shot" (the twin tank's burst on a fresh target) could use a duel measure if the owner
+  wants it sharper than the group numbers.
+
+### For the prompts on hold
+
+Stable ids apart from display names (the surviving card's id is unchanged, the merged ones resolve through
+`CardMerges`), `altModels` for the camouflage prompt, every new name and line in the text tables (`Strings`,
+`GuideText`, `UnitText`); no radio lines were added.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`balance.json` (the five defs out; attack jet, attack helicopter, twin tank, heavy tank, engineer rewritten; three
+weapons after `gun_105_bunker`; `kh29`, `gun_152`; the new units' costs; the hover gunboat; a style weight; the landing
+party), `CombatSystem.Launch` (one line) and `CombatSystem.P17` (`RoundFor`), `Catalog`/`Catalog.P17` (`he`,
+`altModels`), `WeaponDef.P17`/`VehicleDef.P17`/`Definitions` (copy), `CardMerges`, `PlayerProfile.Arsenal`
+(`MergeTower`), `MatchSettings.AllVehicles`, `Progression`, `MenuScreen.Shop`, `FiringRange.Abilities`, `UnitLines`/
+`UnitText`, `Strings` (five notes), `GuideText` (five cards rewritten, five dropped), Tools/campaign (act1-3, story) and
+`campaign.json`, the tests listed above.
+
+## 17A. Prompt 18: a big attack for every boss (2026-09-29)
+
+Prompt 18 on feature/p18-attacks from lead/integration 3661222 (prompts 9, 13, 15, 16 and 17 merged). The owner's
+token rule: compile, one targeted test run, no sweeps, no screenshots; the 5-seed runs are listed for the testing phase.
+
+### A. One system, data-driven (`BossSystem.BigAttacks`, `BigAttackDefs`)
+
+- Every boss names one entry of balance.json `"bigAttacks"` (`"bigAttack": "<id>"` on the boss). An entry is a list of
+  strikes, each a shape from one shared library (`BigShape`: circle, strip, line, sweep, swarm, missile, drop, buff,
+  quake) with its numbers. No class per boss: prompt 20 E.3 adds shapes to the same enum and system, prompt 19 F swaps
+  the Silver Bug's `bug_laser_sweep` for a rod-rain entry by changing one id, prompt 20 G gives a mini boss
+  `"bigAttackScale": { "damage": 0.7, "cooldown": 1.3 }` (parsed now, used by no boss yet). Damage, cooldown and warning
+  are separate fields and scale separately (`BigAttackScale`: difficulty first, then the boss's own).
+- Ids are stable and apart from display names: every name, radio line, cancel notice and guide line is a text key made
+  from the id (`bigattack.<id>`, `radio.bigattack.<id>`, `bigattack.<id>.cancelled`, `guide.bigattack.<id>.how/dodge/stop`)
+  in the new `BigAttackText` table (read by `Strings.Get/Has` and the localisation scan). No text is in code or data.
+- Rhythm: the first about 30 s after the boss appears (`bigAttackRules.first`), then one per cooldown, measured start to
+  start. Stunned, transforming, landing troops or underground (except the worm's own dive), it waits a second; with no
+  target in reach it looks again in 3 s; with every part carrying it broken it has lost it and looks again every 2 s, so
+  a self-repair (prompt 9) brings it back.
+- The warning (`BigStage.Charging`): the zones exactly as they will land (`BigZone`: circle, or rectangle along an
+  axis; a walking barrage and a missile volley also get one ring per point with its own countdown), the radio line,
+  an alarm and a whistle, and the parts that carry it: their mounts hold fire (A.2, `Vehicle.MountHeld`, also through
+  the firing), and mechanisms named in `"hold"` wait (the supergun's ordinary shell, the Leviathan's single cruise
+  missiles; if one of those is still in the air the big attack waits for it to land, so the two never stack).
+- Cancel (A.5): each strike lists its parts; with all of them broken during the warning the strike is cancelled (the
+  whole attack with all strikes gone: `SimEvent BigAttack` 2, the HUD's short notice). `"perPart"` gives each standing
+  part its own rounds, counted as it fires: a train gun car broken leaves 3 shells, a Hive rack 10 drones, an Iron Bird
+  pod 24 rockets, an Inferno flamer its half of the ring (`"sectors"`: each part covers the side it sits on). The
+  Supreme Commander's antenna carries both strikes; the hovercraft's rockets and ramp are separate strikes.
+- EMP (`"empDelay"`, Tempest 2 s, Silver Bug 2.5 s): each time the boss is stunned during the warning the charge and
+  every zone's countdown move on by that much.
+- Damage goes through the damage rules (prompt 15): blasts hit as called strikes (top face, fragments pierce level 1 at
+  most on vehicles, the strike's own level on structures, thermobaric tag, damage type table), a line or a sweep as a
+  pierce from the boss (the face turned to it, its own penetration), a drone as a direct top-attack hit. So smoke cuts
+  the laser to 20 % (the energy rule) and never the railgun, shield domes take everything but the beam, APS never sees
+  a beam. `"structure"` multiplies damage on buildings and towers; `"falloff"` is the share left at a blast's rim.
+  Everything scales with the boss (`DamageBoost`, `DamageScale`: campaign scaling, phases, elites) and the difficulty.
+- Missiles and drones fly (`BigFlyer`): every 0.25 s the other side's anti-air under one (any weapon that can target
+  aircraft, in its range) takes `aaHit` (0.5) of its paper damage a second off it, and each APS, C-RAM or
+  point-defence laser in reach spends an interceptor for `intercept` (150) health; a laser APS is blind in smoke.
+  Doomsday missile 600 health over 12 s, Leviathan missiles 250 over 8 s, Hive drones 60 at 26 m/s (they home on
+  their targets, split over at most four of the heaviest armour in the group; a jammer at the target throws half off).
+- Dodging (A.6): the other side's ground units inside a harmful zone (units that are not scripted, static or stunned)
+  make for the nearest way out, the zone's blast radius and 3 m past its edge, if they can reach it before it lands
+  and it is not inside another zone; after it has landed (and its burning ground is out) they go back to their earlier
+  order or where they stood, unless they were given another order since. All in vehicle-list order: deterministic.
+  Aircraft need no dodge: every big attack hits the ground only (as the ordinary ground blasts do).
+- Everywhere the boss appears (A.8): `SimWorld.BigAttackSettings`, set by `ModeSessions` from the session's difficulty
+  key for every mode (campaign, big campaign, Boss Rush, Operations), and by `MissionMode` and Boss Rush as Normal when
+  nothing set them; bare test battles have none (as with escorts), so older measures are unchanged.
+- Difficulty (A.7): Easy damage x0.8, cooldown x1.2, warning +1 s; Hard cooldown x0.9; Very Hard (and Heroic, Iron)
+  cooldown x0.8, damage x1.1 (`bigAttackRules.difficulty`).
+
+### B. Each boss (Normal, before armour)
+
+Numbers are the spec's except five: four set from a first estimate against our health scale before the run (Tempest,
+Inferno, Supreme Commander, Hive) and the Behemoth from the run's centre measure (section E). Aim `group` is the other side's
+densest spot of ground units and towers within the entry's reach.
+
+- Iron Train `train_broadside`: strip 60 x 12 along its heading, 6 x 330 HE (r 6), 3 a gun car; 3.5 s / 65 s.
+- Tempest `tempest_rail`: line 90 x 3 from the boss, 1 300 kinetic pen 4 (spec 1 400, which would take a battle tank at the
+  centre to 62 %; at 1 300 it measured 42 %), 15 % less each unit behind; 4 s / 60 s; EMP +2 s.
+- Behemoth `behemoth_barrage`: circle r 14, 3 pairs x 340 HE (r 8; spec 480: an IFV at the centre measured 103 %).
+- Doomsday Train `doomsday_missile`: erector 5 s, then one thermobaric missile (2 500, r 18, 30 % at the rim, 600 hp,
+  12 s) at the HQ, or at the biggest group when it holds 4 units or more; 90 s.
+- Rail Supergun `supergun_heavy`: one shell anywhere at the biggest group standing still, 1 800 (r 20), ground burning
+  8 s (25 a second, r 10); fire control broken: up to 15 m off and the ring as wide; 4 s / 60 s; ordinary shots kept.
+- Inferno `inferno_firestorm`: ring r 18 round it, 200 fire (spec 250) and the ground burning 10 s at 45 a second
+  (spec 60): burning ground is raw damage; at 200 an armoured car lost 40 % to the burst alone; 3 s / 60 s.
+- Supreme Commander `supreme_offensive`: its side within 60 m +35 % damage, +25 % fire rate for 12 s, and a bomber
+  (the neutral raid's model) lays 8 x 340 (spec 300; an IFV at the centre measured 45 %) in a 50 x 10 strip on the biggest group; 4 s / 75 s.
+- Hive `hive_swarm`: 20 drones x 180 (spec 150: four targets share the 20; at 180 a battle tank measured 32 %); 4 s / 70 s.
+- Landing Hovercraft `hover_assault`: 24 x 58 rockets on a 40 x 20 strip, then 6 vehicles off the ramp (2 battle tanks,
+  2 IFVs, 2 armoured cars, elites by the difficulty's budget; at most 6 of them alive, apart from the escort cap).
+- Ice Fortress `fortress_rocket_rain`: 32 x 58 over 4 s in r 25, 16 a box; shield domes absorb it.
+- Silver Bug `bug_laser_sweep`: 4 m beam down 120 m in 3 s, 900 energy once a unit; smoke 20 %; EMP +2.5 s.
+- Earth Worm `borer_quake`: its next dive is the big one (the burrow runs it: under the biggest group, the crack is
+  the 3 s warning), 700 (r 16, 30 % at the rim), 3 s stun on the ground; the drill broken, no dive, no quake.
+- Bastion `bastion_mortar_walk`: 6 x 460 (r 9, x2 on structures), one every 0.7 s down a 60 m line towards the target.
+- Spectre `spectre_orbit`: 8 s on one r 15 circle: 105 mm 300 every 1.5 s, each 40 mm 3 x 30 every 0.8 s, 25 mm 15
+  every 0.2 s; it takes 1.5x damage from the warning to the end (the "hit 50 % more" read as damage: only anti-air and
+  fighters reach it anyway), and breaks off after taking 8 % of its health while firing.
+- Iron Bird `ironbird_rocket_run`: 48 x 32 rockets down a 70 x 8 line, 24 a pod; 3 s / 60 s.
+- Hive Carrier `carrier_heavy_bomb`: one 850 bomb (r 14, x2 on structures) on a group within 40 m; it stops for the
+  3.5 s warning and takes 1.3x damage meanwhile.
+- Command Airship `airship_carpet`: 12 x 300 in a 70 x 12 strip along its course; 3.5 s / 70 s.
+- Leviathan `leviathan_volley`: 6 cruise missiles x 450 (r 8, x2 on structures, 250 hp, 8 s) at the HQ, the toughest
+  towers and the biggest group, in pairs; the launch cells broken in the warning cancel it. Its salvos, single cruise
+  missiles, landing craft and phase-3 volley are unchanged (the single missiles wait while the volley charges).
+
+### C. The three new parts
+
+`nuke_train.erector` (0.09, armour 2), `drone_mothership.bomb_bay` (0.09, armour 2), `command_airship.bomb_bay` (0.07,
+armour 2, no break damage like the rest of the airship's). Prompt 9's totals kept (each boss 0.70 of the body): the
+train's flak cars 0.10 to 0.08 and its rocket car 0.10 to 0.09; the carrier's gondola cannon and UAV bay 0.10 to 0.08,
+its shield 0.10 to 0.09; the airship's radar 0.08 to 0.07. Kinds `erector` (ballistic icon) and `bombbay` (bomb icon)
+on the parts row; the break effects are the generic blast and smoke at the break (prompt 9); breaking one reads "its
+big attack goes with it" in the Guide; each has a radio line. No model nodes yet (ASSET_DEBT).
+
+### D. HUD and guide
+
+- The boss bar has the attack's icon with a thin cooldown bar; it lights red with the seconds left while it charges,
+  and the part icons that carry it flash (D.1). No new frame in the middle of the screen (prompt 11).
+- Zones (`BigAttackZones`): one look for every boss, unlit HDR red outlines and strike rings whose fill runs to the
+  moment it lands, no fill over the player's units (D.2); the charging part pulses on the model (A.3).
+- A short notice when a big attack is cancelled or the Spectre breaks off (D.3). The Guide tab has a Big attack
+  section: name and numbers from the data, how it works, how to get out of it, how to stop it, who it is for (D.4).
+- Not done here: the "In action" clip with the big attack (D.5) and per-boss sounds (one alarm and whistle for all);
+  both in ASSET_DEBT.
+
+### E. Balance (first pass, one seed)
+
+`BigAttackTests.EachBigAttackAtItsCentreHurtsButNeverWipesOutAGroup` puts five of each attack's primary target (rank 1,
+standing, not dodging) at the centre and logs the share of one's health each lost. With the numbers of section B: train
+46 %, Doomsday 44 % (a gun turret), Behemoth 103 % (at 480; now 340), Tempest 42 %, Inferno 40 %, Hive 32 %, Ice Fortress 12 %,
+Bastion 19 % (a gun turret), Silver Bug 40 %, Spectre 33 %, Iron Bird 20 %, Hive Carrier 43 % (a turret), Supergun
+106 % (its ordinary shell landed with it: fixed by the hold, 60 % expected), Earth Worm 40 %, Airship 74 % (an
+armoured car; an IFV about 45 %), Hovercraft rockets 12 %, Supreme Commander 45 %, Leviathan 61 % (six missiles on one
+turret with no base on the test field). No attack wiped out the group. Still outside 40-60 % and left for the 5-seed
+tuning: the three 122/80 mm rocket attacks (Ice Fortress, Iron Bird, hovercraft: calibre-scale warheads spread over
+the spec's areas; tighten the areas or aim the rockets at units), the Bastion and the Hive Carrier on towers.
+The big attack's damage a second on paper (`BigAttackDef.Sustained`) is there for the combat-value meter (E.1); the
+kill times and win rates (E.2, E.3) need the testing phase's runs.
+
+### Tests
+
+New `BigAttackTests` (11): every boss's entry and words and the new parts; the difficulty's scales; first at 30 s then
+the cooldown; a broken part cancels it and it stays lost; each part its own rounds; EMP +2 s; every zone's shape and
+size from its data (all 18 bosses); the Doomsday missile shot down by C-RAMs; smoke cuts the beam to a fifth and not
+the slug (15 % less behind); units get out and back, twice the same; the centre measure. `BossPartsTests` updated (the
+three bosses' part counts; a part that carries the big attack does something), `LocalisationScanTests` reads the new
+table. One run of those (15 tests): 11 passed; the four failures fixed after it and not rerun (the owner's rule): the
+parts test (the new parts carry only the big attack), the guide words test (it already failed on lead: the
+Leviathan's `cruise`, `craft` and `radar` stops had no words; added), the rounds test (the Iron Train's self-repair
+put its gun car straight back: the test uses the Iron Bird now), and the dodge test (a unit that has arrived is idle,
+not on its move order: it now goes back from either).
+
+### Left for the testing phase
+
+- Rerun `BigAttackTests` and `BossPartsTests` (the four fixes above are unverified), then the suites.
+- 5 seeds at each difficulty: every boss mission of the campaign and the big campaign, Boss Rush, Operations with a
+  boss; win rates and kill times against prompts 9, 13 and 16's targets; tune the numbers in section E.
+- FPS at Low on a low-end device during the Hive's swarm, the rocket rains and the Leviathan's volley.
+- Screenshots of every big attack's warning into docs/ui-screens (F), and a look at the zones on every map and
+  weather; the missile and drone rounds keep flying on screen after the sim shoots them down (the pop shows where).
+- Whether auto-dodging suits the player's hand orders in play (it only moves units still on their earlier order).
+
+### For the prompts on hold
+
+Prompt 19 F: replace `bug_laser_sweep` with a new entry and point `silver_bug.bigAttack` at it (a rod rain is a circle
+or strip of rounds with `"top": true`). Prompt 20 E.3: new shapes go in `BigShape` and `BossSystem.BigAttacks`; G: a
+mini boss is a boss def with `"bigAttackScale"`. Prompt 23: the radio lines are one text key each.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`balance.json` (`"bigAttack"` on the 18 bosses, three new parts and the part shares above, `bigAttackRules` and
+`bigAttacks` after the escorts), `BossSystem` (Joined, Step, the burrow's crack and quake), `BossSystem.Parts` (the
+aim's danger, the fingerprint), `Vehicle.Boss` (`MountHeld`, `BigAttack`, `BigTaken`, `BigQuake`), `DamageSystem`
+(one line), `SimWorld` (`BigAttackSettings`), `SimEvent` (`BigAttack`), `VehicleDef.Extra`/`Catalog.Extra`,
+`MissionMode`, `SiegeModes`, `ModeSessions`, `MatchRunner`, `AudioDirector`, `EffectsDirector`, `BattleHud`,
+`MissionBar` (BossBar), `BossPartsRow`, `MenuScreen.BossParts`, `Strings` (the text hook, three stop words),
+`Screens.uss`, `BossPartsTests`, `LocalisationScanTests`.

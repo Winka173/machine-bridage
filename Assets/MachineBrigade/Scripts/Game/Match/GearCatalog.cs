@@ -235,7 +235,8 @@ namespace MachineBrigade.Game.Match
         {
             // Weapon: main stat +damage.
             new("long_barrel", GearSlot.Weapon, StatId.Range, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
-            new("tungsten_penetrator", GearSlot.Weapon, StatId.DamageVsHeavy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            // Prompt 15 C.9: a level of penetration at the top (part levels below it), not a share against heavy vehicles.
+            new("tungsten_penetrator", GearSlot.Weapon, StatId.Penetration, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("he_frag_filler", GearSlot.Weapon, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("proximity_fuze", GearSlot.Weapon, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("bunker_buster", GearSlot.Weapon, StatId.DamageVsStructure, V(0.06f, 0.09f, 0.13f, 0.18f, 0.24f)),
@@ -257,11 +258,13 @@ namespace MachineBrigade.Game.Match
             new("spare_magazine", GearSlot.Loader, StatId.SpareMagazine, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)) { Flat = true },
 
             // Armour: main stat +health.
-            new("composite_addon", GearSlot.Armor, StatId.ResistArmorPiercing, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            new("composite_addon", GearSlot.Armor, StatId.ResistShapedCharge, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
             new("spall_liner", GearSlot.Armor, StatId.ResistHighExplosive, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
-            new("applique_steel", GearSlot.Armor, StatId.ResistKinetic, V(0.05f, 0.08f, 0.11f, 0.15f, 0.18f)),
+            // Prompt 15 C.9: a level of side and rear armour at the top.
+            new("applique_steel", GearSlot.Armor, StatId.ArmourSide, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("fire_retardant_hull", GearSlot.Armor, StatId.ResistFire, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
-            new("armoured_tub", GearSlot.Armor, StatId.ResistFlak, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)),
+            // Prompt 15 C.9: an aircraft's armoured cockpit tub: a level of armour all round at the top.
+            new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("monolith_plate", GearSlot.Armor, StatId.Count, V(0f, 0f, 0f, 0f, 0f))
                 { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2, MainScale = 1.8f, NoSubs = true },
             // Prompt 8: enemy missiles must come closer to lock on.
@@ -307,7 +310,8 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         public static readonly ModuleDef[] Modules =
         {
-            new(SpecialModule.ReactiveArmor, Any, 0.12f, 0.18f),
+            // Prompt 15 C.9: reactive armour cuts shaped charges hard and nothing else (it was 12-18 % of everything).
+            new(SpecialModule.ReactiveArmor, Ground, 0.4f, 0.55f),
             new(SpecialModule.AutoRepair, Any, 0.012f, 0.018f),
             new(SpecialModule.VeteranCrew, Armed, 0.08f, 0.12f),
             new(SpecialModule.SmokeDischarger, Ground, 8f, 10f, 0f, 1f),
@@ -395,10 +399,10 @@ namespace MachineBrigade.Game.Match
             new(StatId.MagazineReload, V(0.04f, 0.06f, 0.08f, 0.1f), new[] { GearSlot.Loader, GearSlot.Repair }),
             new(StatId.Health, V(0.02f, 0.03f, 0.04f, 0.05f), new[] { GearSlot.Armor, GearSlot.Repair, GearSlot.Engine }),
             new(StatId.ResistKinetic, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistArmorPiercing, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
+            new(StatId.ResistShapedCharge, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
             new(StatId.ResistHighExplosive, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
             new(StatId.ResistFire, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistFlak, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
+            new(StatId.ResistFragmentation, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
             new(StatId.Speed, V(0.015f, 0.02f, 0.03f, 0.04f), new[] { GearSlot.Engine, GearSlot.Armor }),
             new(StatId.TurretRate, V(0.05f, 0.08f, 0.1f, 0.12f), new[] { GearSlot.Engine, GearSlot.Optics }),
             new(StatId.CaptureRate, V(0.05f, 0.08f, 0.1f, 0.12f), new[] { GearSlot.Engine, GearSlot.Optics }),
@@ -416,7 +420,7 @@ namespace MachineBrigade.Game.Match
             new(3, "vulcan", StatId.BurnDamage, 0.25f, new GearTrait(TraitId.SetFirestorm, 0.1f, 6f)),
             new(4, "longbow", StatId.Range, 0.05f, new GearTrait(TraitId.SetDeepStrike, 0.15f)),
             new(5, "aegis", StatId.DamageTaken, 0.05f, new GearTrait(TraitId.SetSharedShield, 0.12f, 25f, 12f)),
-            new(6, "stormfront", StatId.ResistFlak, 0.1f, new GearTrait(TraitId.SetStrafingRun, 4f, 30f)),
+            new(6, "stormfront", StatId.ResistFragmentation, 0.1f, new GearTrait(TraitId.SetStrafingRun, 4f, 30f)),
             new(7, "hivemind", StatId.SummonPower, 0.15f, new GearTrait(TraitId.SetSwarm, 10f)),
             new(8, "quartermaster", StatId.RepairReceived, 0.1f, new GearTrait(TraitId.SetSalvageRights, 0.2f, 0.1f)),
             new(9, "spectre", StatId.Vision, 0.08f, new GearTrait(TraitId.SetGhostNet, 0.15f)),
@@ -454,7 +458,12 @@ namespace MachineBrigade.Game.Match
             Set(StatId.ProjectileSpeed, 0.3f);
             Set(StatId.Magazine, 0.4f);
             Set(StatId.MagazineReload, 0.3f);
-            for (var r = StatId.ResistKinetic; r <= StatId.ResistFlak; r++) Set(r, 0.3f);
+            for (var r = StatId.ResistKinetic; r <= StatId.ResistFragmentation; r++) Set(r, 0.3f);
+            // Prompt 15 C.9: energy's resistance; penetration and armour in levels (a whole level at most).
+            Set(StatId.ResistEnergy, 0.3f);
+            Set(StatId.Penetration, 1f);
+            Set(StatId.ArmourSide, 1f);
+            Set(StatId.ArmourAll, 1f);
             Set(StatId.TurnRate, 0.3f);
             Set(StatId.TurretRate, 0.3f);
             Set(StatId.CaptureRate, 0.5f);

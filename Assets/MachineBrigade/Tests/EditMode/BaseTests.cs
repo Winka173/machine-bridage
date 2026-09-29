@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
             CollectionAssert.AreEqual(new[] { 3, 4, 4, 5, 6 }, Of(SlotSize.Small));
             CollectionAssert.AreEqual(new[] { 1, 2, 2, 3, 3 }, Of(SlotSize.Medium));
             CollectionAssert.AreEqual(new[] { 0, 0, 1, 1, 2 }, Of(SlotSize.Large));
-            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, Enumerable.Range(1, 5).Select(rules.UtilitySlots).ToArray());
+            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, Enumerable.Range(1, 5).Select(l => rules.UtilitySlots(l)).ToArray());
             var catalog = Catalog;
             var loadout = new BaseLoadout
             {
@@ -215,7 +215,7 @@ namespace MachineBrigade.Tests
                     }
                     Assert.Greater(a.Towers.Count(), 0, $"{difficulty}/{style} builds something");
                     if (a.HqLevel >= 3)
-                        Assert.IsTrue(a.Towers.Any(t => catalog.Vehicles[t].Mounts.Any(m => m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak)),
+                        Assert.IsTrue(a.Towers.Any(t => catalog.Vehicles[t].Mounts.Any(m => m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Fragmentation)),
                             $"{difficulty}/{style} brings anti-air");
                 }
             Assert.Less(catalog.Base.AiLevel("Easy"), catalog.Base.AiLevel("Hard"), "a harder enemy has the bigger HQ");

@@ -68,7 +68,9 @@ namespace MachineBrigade.Tests
             foreach (var e in elites)
             {
                 var b = catalog.Vehicle(e.EliteOf);
-                Assert.AreEqual(b.MaxHp * 1.6f, e.MaxHp, b.MaxHp * 0.02f, e.Id + ": 60% more health than " + b.Id);
+                // Prompt 15 A.6: an elite a level thicker in front than its card takes 35 % more health instead of 60 %.
+                var hpScale = e.Armour.Front > b.Armour.Front ? 1.35f : 1.6f;
+                Assert.AreEqual(b.MaxHp * hpScale, e.MaxHp, b.MaxHp * 0.02f, e.Id + ": more health than " + b.Id);
                 Assert.AreEqual(scale.TryGetValue(e.Id, out var own) ? own : 1.25f, e.DamageScale, 1e-3f, e.Id + ": 25% more damage (or its own scale)");
                 Assert.AreEqual(1f, b.DamageScale, 1e-3f, b.Id + " as it was");
                 Assert.AreEqual((int)Math.Round(b.CpCost * 1.6f), e.ArmyCost, e.Id + " costs 1.6 times " + b.Id);

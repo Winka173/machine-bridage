@@ -10,9 +10,9 @@ namespace MachineBrigade.Tests
     {
         public const float Step = 0.05f;
 
-        public static readonly WeaponDef Gun = new WeaponDef("gun", DamageType.ArmorPiercing, damage: 100f,
+        public static readonly WeaponDef Gun = new WeaponDef("gun", DamageType.Kinetic, damage: 100f,
             cooldown: 1f, range: 20f, minRange: 0f, projectileSpeed: 100f, splashRadius: 0f, spread: 0f,
-            ExplosionTier.Medium);
+            ExplosionTier.Medium) { Penetration = 4, PiercingLook = true };
 
         public static readonly WeaponDef Shell = new WeaponDef("shell", DamageType.HighExplosive, damage: 50f,
             cooldown: 2f, range: 25f, minRange: 0f, projectileSpeed: 100f, splashRadius: 6f, spread: 0f,
@@ -26,7 +26,7 @@ namespace MachineBrigade.Tests
             cooldown: 0.2f, range: 22f, minRange: 0f, projectileSpeed: 200f, splashRadius: 0f, spread: 0f,
             ExplosionTier.Small, ProjectileKind.Bullet, targets: TargetLayers.All);
 
-        public static readonly WeaponDef Flak = new WeaponDef("flak", DamageType.Flak, damage: 40f,
+        public static readonly WeaponDef Flak = new WeaponDef("flak", DamageType.Fragmentation, damage: 40f,
             cooldown: 0.5f, range: 30f, minRange: 0f, projectileSpeed: 250f, splashRadius: 3f, spread: 0f,
             ExplosionTier.Small, ProjectileKind.Bullet, targets: TargetLayers.All);
 
@@ -34,7 +34,7 @@ namespace MachineBrigade.Tests
             cooldown: 10f, range: 40f, minRange: 0f, projectileSpeed: 80f, splashRadius: 2f, spread: 0f,
             ExplosionTier.Medium, ProjectileKind.Rocket, burst: 6, burstInterval: 0.2f);
 
-        public static readonly WeaponDef Missile = new WeaponDef("missile", DamageType.ArmorPiercing, damage: 100f,
+        public static readonly WeaponDef Missile = new WeaponDef("missile", DamageType.ShapedCharge, damage: 100f,
             cooldown: 5f, range: 30f, minRange: 0f, projectileSpeed: 20f, splashRadius: 0f, spread: 0f,
             ExplosionTier.Medium, ProjectileKind.Missile);
 

@@ -4,7 +4,7 @@ from campaign_kit import T, add_mission, ring, say, scripted, units, waves
 from act2 import WEAKEN, choice_income, choice_strikes, strikes
 
 QUADEN = ['attack_helicopter', 'gunship_heli', 'attack_jet', 'fighter_jet', 'strike_drone', 'aa_vehicle', 'main_battle_tank', 'sam_launcher']
-AUREL = ['heavy_tank', 'bmpt', 'railgun_truck', 'heavy_attack_heli', 'long_sam', 'heavy_rocket_artillery', 'main_battle_tank', 'fighter_jet']
+AUREL = ['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'heavy_rocket_artillery', 'main_battle_tank', 'fighter_jet']
 AUREL_CITY = ['main_battle_tank', 'heavy_tank', 'bmpt', 'ifv', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'mlrs']
 HUNG = ['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer']
 
@@ -57,7 +57,7 @@ add_mission(m('c7m03', 7, 'frostpeak', 'Protect', 'Snow', reversed=True, targets
               'Trạm radar của Orlov vẫn còn những cốc cà phê của kíp trực trên bàn điều khiển. Người của lữ đoàn cứ thế dùng tiếp. Họ gọi đó là "cốc của Orlov", với chút kính nể.')),
             [say('khai', 'Start', 'The radar is our eyes. Keep them open.', 'Radar là mắt của ta. Giữ cho mắt mở.')])
 
-add_mission(m('c7m04', 7, 'skyhold', 'Destroy', 'Night', targets=['parked_jet'], targetX=-40, targetZ=80, targetRadius=60, targetHealth=3, timeLimit=900, general='quaden', reinforcements=2,
+add_mission(m('c7m04', 7, 'skyhold', 'Destroy', 'Night', targets=['parked_jet'], targetX=-40, targetZ=80, targetRadius=60, targetHealth=3, timeLimit=900, general='quaden', reinforcements=2, unlocks=['ew_jammer'],
               units=units(1, ['aa_vehicle', 'main_battle_tank', 'sam_launcher'], (-30, 75), 10),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, starTime=480, starLosses=10, challenge={'kind': 'NoStrikes'}),
@@ -248,7 +248,7 @@ add_mission(m('c8m03', 8, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, rein
               'Trời mưa cả ngày. Người dân ở quảng trường giương ô che cho thương binh trong khi xe tăng giao chiến quanh họ. Có người chụp lại; tới chiều tối, bức ảnh đã dán trên mọi bức tường.')),
             [say('khai', 'Start', 'The city is fighting for itself. We fight with it.', 'Thành phố đang tự chiến đấu. Ta chiến đấu cùng nó.')])
 
-add_mission(m('c8m04', 8, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2,
+add_mission(m('c8m04', 8, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2, unlocks=['smoke_carrier'],
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'bmpt', 'heavy_rocket_artillery', 'gunship_heli'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
@@ -282,7 +282,7 @@ add_mission(m('c8m06', 8, 'capital', 'Hold', 'Fog', points=['town'], holdSeconds
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.5, playerCap=44, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'bmpt', 'ifv', 'heavy_tank', 'gunship_heli'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
-              unlocks=['sapper'], starTime=0, starLosses=14),
+              unlocks=['counter_battery_radar'], starTime=0, starLosses=14),
             ('The Palace Square', 'Quảng trường cung điện'),
             ('A foothold in the capital: the palace square. Aurel\'s guard wants it back. Hold it in the fog for four minutes.',
              'Một chỗ đứng chân trong thủ đô: quảng trường cung điện. Vệ binh của Aurel muốn giành lại. Giữ nó trong sương mù bốn phút.'),
@@ -392,7 +392,7 @@ add_mission(m('c8s1', 8, 'metrocity', 'Recon', 'Overcast', side=True, after='c8m
 
 add_mission(m('c8s2', 8, 'capital', 'ShootDown', 'Storm', side=True, after='c8m06', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
-              waves=waves(['gunship_heli', 'attack_jet', 'heavy_attack_heli', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
+              waves=waves(['gunship_heli', 'attack_jet', 'attack_helicopter', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
               towerGear='Epic', starTime=600, starLosses=10),
             ('Storm over the Capital', 'Bão trên thủ đô'),
             ('Aurel\'s guard helicopters are hunting the resistance over the rooftops in the storm. Fourteen of them, down.',
@@ -405,8 +405,8 @@ add_mission(m('c8s2', 8, 'capital', 'ShootDown', 'Storm', side=True, after='c8m0
 # ================================================================================ CHAPTER 9: THE LAUNCH SITE
 
 add_mission(m('c9m01', 9, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, points=['west', 'town', 'east'], enemyOwns=['town'], general='varga', reinforcements=3,
-              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'bmpt', 'atgm_carrier', 'ifv'],
-              playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck'], starTime=720, starLosses=14),
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'bmpt', 'fpv_carrier', 'ifv'],
+              playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck', 'stealth_fighter'], starTime=720, starLosses=14),
             ('Back to Dunebreak', 'Trở lại Dunebreak'),
             ('The road to the launch site runs through Dunebreak again, from the south this time. Varga\'s last armour holds the refinery. Take the oasis, the refinery and the oil field.',
              'Con đường tới bãi phóng lại đi qua Dunebreak, lần này từ phía nam. Toán thiết giáp cuối cùng của Varga giữ nhà máy lọc dầu. Chiếm ốc đảo, nhà máy và mỏ dầu.'),
@@ -429,7 +429,7 @@ add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, gener
 
 add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
-              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret'], starTime=960, starLosses=16),
+              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret', 'shield_tower'], starTime=960, starLosses=16),
             ('The Last Behemoth Yard', 'Xưởng Behemoth cuối cùng'),
             ('Varga\'s final camp, in the dunes where he first built the Behemoth. Every anti-tank gun he has left, and every tank. Level his HQ.',
              'Trại cuối cùng của Varga, giữa những đồi cát nơi hắn chế tạo chiếc Behemoth đầu tiên. Mọi khẩu pháo chống tăng còn lại, và mọi chiếc xe tăng. San phẳng sở chỉ huy của hắn.'),
@@ -441,7 +441,7 @@ add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, revers
 
 add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
-              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['tank_buster'], starTime=960, starLosses=16),
+              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['swarm_carrier'], starTime=960, starLosses=16),
             ('Orlov\'s Last Line', 'Tuyến cuối của Orlov'),
             ('Orlov has taken the southern end of the launch site and filled it with guns. From the north this time, break his line and level his HQ.',
              'Orlov chiếm đầu nam bãi phóng và lấp kín nó bằng pháo. Lần này từ phía bắc, chọc thủng tuyến của hắn và san phẳng sở chỉ huy.'),
@@ -510,7 +510,7 @@ add_mission(m('c9m09', 9, 'dunebreak', 'Hold', 'Clear', reversed=True, points=['
               units=units(0, ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam', 'heavy_rocket_artillery'], (-6, -8), 9),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.95, enemyDeck=AUREL,
               playerCp=32, playerIncome=1.6, playerCap=46, playerBase='Anchor',
-              waves=waves(['heavy_tank', 'bmpt', 'main_battle_tank', 'heavy_attack_heli', 'railgun_truck'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
+              waves=waves(['heavy_tank', 'bmpt', 'main_battle_tank', 'attack_helicopter', 'railgun_truck'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12),
               starTime=0, starLosses=14),
             ('The Refinery Rearguard', 'Hậu vệ nhà máy lọc dầu'),
             ('While the brigade gathers for the final battle, Aurel throws his guard at the refinery, our supply depot now. Hold it for four minutes.',
@@ -524,7 +524,7 @@ add_mission(m('c9m10', 9, 'launchsite', 'Capture', 'Clear', operation=True, gene
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=18, enemyIncome=1.05, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.9, playerCap=46, playerBase='Anchor', towerGear='Legendary',
-              waves=waves(['heavy_tank', 'bmpt', 'railgun_truck', 'heavy_attack_heli', 'long_sam', 'main_battle_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
+              waves=waves(['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'main_battle_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
               stages=[
                   {'stage': 'approach', 'goal': 'Capture', 'points': ['east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c9m10.s1'}],
@@ -541,9 +541,9 @@ add_mission(m('c9m10', 9, 'launchsite', 'Capture', 'Clear', operation=True, gene
                   {'stage': 'countdown', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.linh.c9m10.s5'},
                               {'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam']},
-                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_attack_heli', 'heavy_tank', 'bmpt']}]},
+                              {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['attack_helicopter', 'heavy_tank', 'bmpt']}]},
                   {'stage': 'pad', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 180, 'cp': 10,
-                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'heavy_attack_heli', 'bmpt', 'titan_tank']},
+                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'attack_helicopter', 'bmpt', 'titan_tank']},
                               {'at': '100', 'kind': 'Reinforce', 'team': 1, 'units': ['railgun_truck', 'long_sam', 'heavy_tank']}]},
                   {'stage': 'bug', 'goal': 'Boss', 'boss': scripted('silver_bug', (0, 30), heading=180, route=[(0, 30), (-40, 0), (0, -40), (40, 0)], health=2.2, name='silver_bug_complete'),
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c9m10.s6'}, {'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c9m10.s6'}]},
@@ -584,7 +584,7 @@ add_mission(m('c9s1', 9, 'launchsite', 'Recon', 'Sandstorm', side=True, reversed
 add_mission(m('c9s2', 9, 'dunebreak', 'ShootDown', 'Sandstorm', side=True, reversed=True, after='c9m05', speaker='dieuhau', killsNeeded=16, timeLimit=1200,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='waves', difficulty='Normal', playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor',
-              waves=waves(['heavy_attack_heli', 'attack_jet', 'fighter_jet', 'strike_drone', 'gunship_heli', 'heavy_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
+              waves=waves(['attack_helicopter', 'attack_jet', 'fighter_jet', 'strike_drone', 'gunship_heli', 'heavy_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
               towerGear='Legendary', starTime=660, starLosses=10),
             ('The Last Air Wing', 'Phi đội cuối cùng'),
             ('What is left of Hegemon\'s air force is coming over the dunes for the brigade\'s supply lines. Sixteen of them, down, in the sandstorm.',

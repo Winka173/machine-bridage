@@ -36,13 +36,13 @@ namespace MachineBrigade.Tests
             return events;
         }
 
-        /// <summary>Every boss and how many parts it has (prompt 9 B, fitted to each model's guns).</summary>
+        /// <summary>Every boss and how many parts it has (prompt 9 B, fitted to each model's guns; prompt 16 E's new weapons are parts too).</summary>
         internal static readonly Dictionary<string, int> Expected = new()
         {
-            ["armored_train"] = 5, ["nuke_train"] = 4, ["behemoth"] = 6, ["behemoth_tempest"] = 4, ["behemoth_inferno"] = 4,
-            ["fortress_hive"] = 6, ["mobile_fortress"] = 7, ["fortress_bastion"] = 5, ["silver_bug"] = 6, ["sky_fortress"] = 9,
-            ["mega_gunship"] = 8, ["drone_mothership"] = 7, ["rail_supergun"] = 6, ["earth_borer"] = 4, ["command_airship"] = 7,
-            ["landing_hovercraft"] = 5, ["supreme_command"] = 3,
+            ["armored_train"] = 6, ["nuke_train"] = 7, ["behemoth"] = 7, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 5,
+            ["fortress_hive"] = 7, ["mobile_fortress"] = 7, ["fortress_bastion"] = 6, ["silver_bug"] = 6, ["sky_fortress"] = 9,
+            ["mega_gunship"] = 8, ["drone_mothership"] = 8, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 8,
+            ["landing_hovercraft"] = 9, ["supreme_command"] = 3, ["leviathan"] = 9,
         };
 
         private static Catalog C => GameContent.LoadCatalog();
@@ -62,7 +62,8 @@ namespace MachineBrigade.Tests
                 foreach (var p in def.Parts)
                 {
                     Assert.That(p.Hp, Is.InRange(0.07f, 0.15f), $"{id}.{p.Id}: 8-15 % of the body each");
-                    Assert.IsTrue(p.Mounts.Count > 0 || p.Skills.Count > 0 || p.Stops.Count > 0 || p.Speed < 1f || p.Turn < 1f || p.Cadence > 1f || p.Spread > 1f,
+                    Assert.IsTrue(p.Mounts.Count > 0 || p.Skills.Count > 0 || p.Stops.Count > 0 || p.Speed < 1f || p.Turn < 1f || p.Cadence > 1f || p.Spread > 1f ||
+                                  (def.BigAttack?.UsesPart(p.Id) ?? false),
                         $"{id}.{p.Id} does something when it breaks");
                     Assert.IsTrue(Game.Hud.Strings.Has("part." + p.Kind), $"{id}.{p.Id}: a name for its kind '{p.Kind}'");
                 }
@@ -123,7 +124,7 @@ namespace MachineBrigade.Tests
                 var world = Lab.Field(2);
                 var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
                 var before = boss.Hp;
-                world.Damage.Apply(boss, 500f, DamageType.ArmorPiercing, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
+                world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
                 if (id == "command_airship") Assert.AreEqual(before, boss.Hp, 1e-3f, "the airship's hull is shut until two engines are down");
                 else Assert.Less(boss.Hp, before, id + ": the body always takes damage");
             }

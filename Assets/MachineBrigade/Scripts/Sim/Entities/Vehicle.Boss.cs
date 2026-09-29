@@ -76,7 +76,19 @@ namespace MachineBrigade.Sim.Entities
         }
 
         /// <summary>Whether mount <paramref name="index"/> still fires (its part, if any, stands).</summary>
-        public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || !MountOff[index];
+        public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || (!MountOff[index] && !(index < MountHeld.Length && MountHeld[index]));
+
+        /// <summary>Prompt 18: mounts holding their fire while the big attack they carry charges and fires.</summary>
+        internal bool[] MountHeld = Array.Empty<bool>();
+
+        /// <summary>Prompt 18: its big attack as it runs, or null (no big attack).</summary>
+        public BigAttackState? BigAttack { get; internal set; }
+
+        /// <summary>Prompt 18: it takes this many times the damage while its big attack exposes it (1: not).</summary>
+        internal float BigTaken = 1f;
+
+        /// <summary>Prompt 18: the Earth Worm's next dive is its big attack's quake.</summary>
+        internal bool BigQuake;
 
         /// <summary>Where part <paramref name="i"/> is now, on the ground plane.</summary>
         public Vector2 PartPosition(int i)
@@ -110,6 +122,7 @@ namespace MachineBrigade.Sim.Entities
             MountOff = new bool[Def.Mounts.Count];
             MountSpread = new float[Def.Mounts.Count];
             MountFail = new float[Def.Mounts.Count];
+            MountHeld = new bool[Def.Mounts.Count];
             for (var i = 0; i < MountSpread.Length; i++) MountSpread[i] = 1f;
             SkillOff = new bool[Def.Skills.Count];
             if (parts.Count == 0) return;
@@ -158,5 +171,30 @@ namespace MachineBrigade.Sim.Entities
         // ------------------------------------------------------------ the supergun's shot
 
         internal double BombardNext;
+
+        // ------------------------------------------------------------ prompt 16: extra boss weapons and escorts
+
+        /// <summary>Its protection system's interceptors stopped (every part carrying "aps" broken).</summary>
+        internal bool ApsOff;
+
+        /// <summary>Its jamming aura stopped (every part carrying "jammer" broken).</summary>
+        internal bool JammerOff;
+
+        /// <summary>Its fire trail stopped (the part carrying "trail" broken).</summary>
+        internal bool TrailOff;
+
+        /// <summary>Interceptors it can hold now: the def's, cut in proportion to the "aps" parts broken.</summary>
+        internal int ApsMax = int.MaxValue;
+
+        /// <summary>Where it last dropped a patch of burning fuel (its fire trail).</summary>
+        internal Vector2 TrailFrom;
+
+        /// <summary>The boss it escorts (prompt 16 F), or none: the commander AI leaves escorts alone.</summary>
+        public EntityId EscortOf { get; internal set; }
+
+        /// <summary>What it does for its boss while it escorts one.</summary>
+        public EscortRole EscortRole { get; internal set; }
+
+        public bool IsEscort => EscortOf.IsValid;
     }
 }

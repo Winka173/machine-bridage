@@ -159,8 +159,8 @@ namespace MachineBrigade.Sim.Entities
         public int GlacisHits;
         public float Ablative;
         public bool UnbreakableUsed;
-        public readonly int[] Adapt = new int[5];
-        public readonly double[] AdaptUntil = new double[5];
+        public readonly int[] Adapt = new int[6];
+        public readonly double[] AdaptUntil = new double[6];
         public int CrownStacks;
 
         /// <summary>Siege Anchor: dug in, and until when it is still pulling the anchor up.</summary>

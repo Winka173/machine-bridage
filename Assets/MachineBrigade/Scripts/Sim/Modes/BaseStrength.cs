@@ -45,6 +45,11 @@ namespace MachineBrigade.Sim.Modes
             Add(catalog.Base.HqId);
             foreach (var id in fitted.Towers) Add(fitted.DefFor(id));
             foreach (var id in fitted.Utilities) Add(id);
+            // Prompt 17 B.6: a layered base's forward strongpoints repeat its towers (as the fortress raises them).
+            if (fitted.Layered)
+                foreach (var size in new[] { SlotSize.Small, SlotSize.Medium })
+                    for (var k = 0; k < catalog.Base.ForwardSlots(size); k++)
+                        Add(fitted.TowerForFortress(size, k) is { } id ? fitted.DefFor(id) : null);
             return total;
         }
 

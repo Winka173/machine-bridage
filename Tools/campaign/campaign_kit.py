@@ -71,6 +71,7 @@ WEATHER = {
     'hydrodam': {'Clear', 'Overcast', 'Rain', 'Storm', 'Fog', 'Night'},
     'capital': {'Night', 'Clear', 'Rain', 'Overcast', 'Fog', 'Storm'},
     'launchsite': {'Clear', 'Sandstorm', 'Overcast', 'Night'},
+    'lighthousebay': {'Overcast', 'Clear', 'Fog', 'Rain', 'Storm', 'Night'},
 }
 
 

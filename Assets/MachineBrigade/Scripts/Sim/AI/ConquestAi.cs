@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.AI
     /// the objective that is worth most. Difficulty changes how often it decides and how well it
     /// picks; it never gets free units or CP.
     /// </summary>
-    public sealed class ConquestAi
+    public sealed partial class ConquestAi
     {
         private const int ClusterSize = 3;
         private const float ClusterRadius = 9f;
@@ -277,7 +277,7 @@ namespace MachineBrigade.Sim.AI
                     }
             float Pick(VehicleDef c, string role)
             {
-                // Siege breakers (bulldozer, sapper) are the siege's tools, not a battle's; the fighting roles
+                // Siege breakers (the bulldozer) are the siege's tools, not a battle's; the fighting roles
                 // take only what fights (a recon drone is no air support, a bulldozer no front line).
                 if (c.Breacher) return float.MinValue;
                 var fights = Fights(c);
@@ -792,7 +792,7 @@ namespace MachineBrigade.Sim.AI
             CountEnemies(out var air, out var heavy, out var light);
             CountOwn(world, out var ownAa, out var ownArtillery, out var ownAir, out var ownTotal);
             var enemy = EnemyMix();
-            var answer = OwnAnswers(world);
+            var answer = OwnAnswers(world, enemy);
             var enemyGuns = 0;
             foreach (var e in _tactics.KnownEnemies)
                 if (e.IsAlive && !e.Def.Static && e.Def.Weapon.MinRange > 0f) enemyGuns++;
@@ -812,6 +812,7 @@ namespace MachineBrigade.Sim.AI
             var owned = new Dictionary<string, int>();
             var capturers = 0;
             var ownResupplied = 0;
+            var ownManned = 0;
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive || v.Team != _team) continue;
@@ -819,6 +820,7 @@ namespace MachineBrigade.Sim.AI
                 if (!v.Flying && v.Def.CaptureRate > 0f && !v.Def.Static) capturers++;
                 // Launchers (they run dry and reload) and helicopters (their stores): what a carrier feeds.
                 if ((!v.Flying && v.Arm(0).Ammo > 0) || (v.Flying && !v.Def.FixedWing && v.HasStores)) ownResupplied++;
+                if (v.Def.Manned) ownManned++;
             }
             // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
             var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
@@ -827,7 +829,7 @@ namespace MachineBrigade.Sim.AI
             var armyValue = 0f;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted) continue;
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort) continue;
                 _have[(int)RoleOf(v.Def)] += v.Def.CpCost;
                 armyValue += v.Def.CpCost;
             }
@@ -840,7 +842,8 @@ namespace MachineBrigade.Sim.AI
                 if (def.Boss || def.CpCost <= 0 || !def.Card) continue;
                 if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
-                if (def.Flying && airFull) continue;
+                // Prompt 17 C: a loyal wingman is outside the aircraft cap.
+                if (def.Flying && airFull && !def.AirCapFree) continue;
                 var profile = Profile;
                 var score = 1f + (float)_random.NextDouble() * profile.Noise;
                 // Prompt 13 I.2: the card's measured combat value per CP (1: the roster's middle).
@@ -848,7 +851,7 @@ namespace MachineBrigade.Sim.AI
                 if (_difficulty != AiDifficulty.Easy)
                 {
                     var main = def.Weapon;
-                    score += CounterScore(def, enemy, answer) * profile.Counter;
+                    score += CounterScore(world.Catalog.Damage, def, enemy, answer) * profile.Counter;
                     // Keep about a seventh of the army in the air: aircraft are fast and hit hard,
                     // but dear, and anti-air is what they are for.
                     if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
@@ -877,6 +880,7 @@ namespace MachineBrigade.Sim.AI
                     if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
                     // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
                     if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
+                    score += NewCardScore(def, owned.ContainsKey(id), ownManned, ownTotal, enemy, towers, neutral);
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
@@ -923,7 +927,7 @@ namespace MachineBrigade.Sim.AI
         private static bool CanHitAir(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak) return true;
+                if (m.Weapon.CanTarget(true) && m.Weapon.DamageType is DamageType.Fragmentation or DamageType.Energy) return true;
             return false;
         }
 
@@ -989,9 +993,78 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>The value (CP) of what the enemy fields that the AI has seen, by kind.</summary>
-        private struct Mix
+        private sealed class Mix
         {
             public float Air, Heavy, Light, Artillery, AntiAir, Total;
+
+            /// <summary>
+            /// Prompt 15 C.10: the ground enemies' value by the armour they show, front x 5 + roof (a weapon that
+            /// strikes the roof meets the roof), and in all.
+            /// </summary>
+            public readonly float[] Armour = new float[25];
+
+            public float Ground;
+
+            /// <summary>The value of the enemies behind each defence: APS (and point defence), reactive armour or a cage, smoke, jammers; aircraft with flares.</summary>
+            public float Aps, Reactive, Smoke, Jammers, AirFlares;
+
+            /// <summary>Prompt 17 C: shield domes seen (carriers and generators, by their worth): energy goes through them.</summary>
+            public float Domes;
+
+            /// <summary>Ours: the value of our army times how well it pierces the enemy's armour (<see cref="Fit"/>).</summary>
+            public float Pierce;
+        }
+
+        /// <summary>Counts a seen (or known) enemy's armour and defences into the mix.</summary>
+        private static void AddArmour(Mix mix, VehicleDef def, Vehicle? seen, float value)
+        {
+            if (!def.Flying)
+            {
+                mix.Armour[def.Armour.Front * 5 + def.Armour.Top] += value;
+                mix.Ground += value;
+            }
+            var aps = seen != null ? seen.Aps != null : def.Aps != null;
+            if (aps) mix.Aps += value;
+            var special = seen?.Special ?? SpecialModule.None;
+            var gear = seen?.Gear;
+            if (special == SpecialModule.ReactiveArmor || def.DroneArmor < 1f ||
+                (gear != null && (gear.Has(TraitId.ReactiveBlocks) || gear.Stat(StatId.ResistRocket) > 0f))) mix.Reactive += value;
+            if (special == SpecialModule.SmokeDischarger || HasSkill(def, SkillKind.Smoke)) mix.Smoke += value;
+            if (def.Jammer > 0f) mix.Jammers += value;
+            if (def.Flying && (special == SpecialModule.FlareDispenser || HasSkill(def, SkillKind.Flares))) mix.AirFlares += value;
+        }
+
+        private static bool HasSkill(VehicleDef def, SkillKind kind)
+        {
+            foreach (var s in def.Skills)
+                if (s.Kind == kind) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1: its main weapon's penetration against
+        /// the armour each shows (its roof to a weapon that strikes the roof) times the damage type, weighted by their
+        /// value; a secondary counts at half.
+        /// </summary>
+        private static float Fit(DamageTable table, VehicleDef def, Mix enemy)
+        {
+            if (enemy.Ground <= 0f) return 0f;
+            var sum = 0f;
+            for (var i = 0; i < enemy.Armour.Length; i++)
+            {
+                var value = enemy.Armour[i];
+                if (value <= 0f) continue;
+                var best = 0f;
+                for (var k = 0; k < def.Mounts.Count; k++)
+                {
+                    var w = def.Mounts[k].Weapon;
+                    if (w.Damage <= 0f || !w.CanTarget(false)) continue;
+                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % 5 : i / 5, TargetKind.Ground);
+                    best = MathF.Max(best, k == 0 ? effect : effect * 0.5f);
+                }
+                sum += value * best;
+            }
+            return sum / enemy.Ground;
         }
 
         private Mix EnemyMix()
@@ -1007,11 +1080,18 @@ namespace MachineBrigade.Sim.AI
                     else if (d.Armor == ArmorClass.Heavy) mix.Heavy += value;
                     else mix.Light += value;
                     if (CanHitAir(d)) mix.AntiAir += value;
+                    AddArmour(mix, d, null, value);
                     mix.Total += value;
                 }
             foreach (var e in _tactics.KnownEnemies)
             {
-                if (e.Def.Static) continue;
+                // A fixed defence's point defence (a C-RAM, an Iron Beam) shields what is near it.
+                if (e.Def.Static)
+                {
+                    if (e.Aps != null) mix.Aps += 4f;
+                    if (e.Def.Dome != null) mix.Domes += 8f;
+                    continue;
+                }
                 // A boss weighs as much as a small army of its kind.
                 var value = e.Def.Boss ? 30f : MathF.Max(1f, e.Def.CpCost);
                 if (e.Flying) mix.Air += value;
@@ -1019,24 +1099,27 @@ namespace MachineBrigade.Sim.AI
                 else if (e.Armor == ArmorClass.Heavy) mix.Heavy += value;
                 else mix.Light += value;
                 if (CanHitAir(e.Def)) mix.AntiAir += value;
+                AddArmour(mix, e.Def, e, value);
+                if (e.Def.Dome != null) mix.Domes += value * 2f;
                 mix.Total += value;
             }
             return mix;
         }
 
         /// <summary>The value (CP) of our own vehicles that answer each kind of enemy: anti-air (fighters included), anti-armour, anti-light, and hunters fast enough to catch artillery.</summary>
-        private Mix OwnAnswers(SimWorld world)
+        private Mix OwnAnswers(SimWorld world, Mix enemy)
         {
             var mix = new Mix();
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted) continue;
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort) continue;
                 var value = MathF.Max(1f, v.Def.CpCost);
                 if (CanHitAir(v.Def)) mix.Air += value;
                 if (KillsArmour(v.Def)) mix.Heavy += value;
                 if (v.Def.Weapon.DamageType is DamageType.Kinetic or DamageType.Fire or DamageType.HighExplosive && v.Def.Weapon.MinRange <= 0f)
                     mix.Light += value;
                 if (v.Def.Flying || v.Def.Speed >= 11f) mix.Artillery += value;
+                mix.Pierce += value * Fit(world.Catalog.Damage, v.Def, enemy);
                 mix.Total += value;
             }
             return mix;
@@ -1053,7 +1136,7 @@ namespace MachineBrigade.Sim.AI
         private static bool KillsArmour(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.DamageType == DamageType.ArmorPiercing && m.Weapon.CanTarget(false)) return true;
+                if (m.Weapon.AntiArmour && m.Weapon.CanTarget(false)) return true;
             return false;
         }
 
@@ -1064,7 +1147,7 @@ namespace MachineBrigade.Sim.AI
         /// that pierce it. Light vehicles: machine guns, flame and blast. Artillery: aircraft and fast
         /// raiders. An enemy thick with anti-air: fewer aircraft of our own.
         /// </summary>
-        private static float CounterScore(VehicleDef def, Mix enemy, Mix own)
+        private static float CounterScore(DamageTable table, VehicleDef def, Mix enemy, Mix own)
         {
             if (enemy.Total <= 0f) return 0f;
             var ours = MathF.Max(8f, own.Total);
@@ -1079,11 +1162,29 @@ namespace MachineBrigade.Sim.AI
                 // No aircraft over there: a dedicated anti-air vehicle is dead weight.
                 if (enemy.Air <= 0f && def.Class == UnitClass.AntiAir) score -= 2.5f;
             }
-            if (KillsArmour(def)) score += Short(enemy.Heavy, own.Heavy) * 6f;
-            if (def.Weapon.DamageType is DamageType.Kinetic or DamageType.Fire or DamageType.HighExplosive && def.Weapon.MinRange <= 0f)
-                score += Short(enemy.Light, own.Light) * 4f;
+            // Prompt 15 C.10: the ground enemies by the armour they show: what pierces it, against how well our army
+            // already does (heavy armour wants darts and heavy missiles, light armour anything).
+            if (enemy.Ground > 0f)
+            {
+                var ownFit = own.Total > 0f ? own.Pierce / own.Total : 0f;
+                var fit = Fit(table, def, enemy);
+                score += enemy.Ground / enemy.Total * (fit - ownFit * 0.85f) * 8f;
+            }
             if (def.Flying || def.Speed >= 11f) score += Short(enemy.Artillery, own.Artillery) * 4f;
             if (def.Flying && !antiAir) score -= enemy.AntiAir / enemy.Total * 4f;
+            // Their defences against what this card fires (the counter table): APS shoots down missiles, rockets
+            // and drones; reactive armour and cages cut shaped charges; smoke scatters beams; jammers turn guided
+            // rounds away; flares pull anti-air missiles off.
+            var main = def.Weapon;
+            var ground = MathF.Max(1f, enemy.Ground);
+            if (main.CanTarget(false) && (main.Guided || (main.Projectile == ProjectileKind.Rocket && main.MinRange <= 0f)))
+                score -= MathF.Min(1f, enemy.Aps / ground) * 2.5f;
+            if (main.DamageType == DamageType.ShapedCharge) score -= MathF.Min(1f, enemy.Reactive / ground) * 2f;
+            if (main.DamageType == DamageType.Energy) score -= MathF.Min(1f, enemy.Smoke / enemy.Total) * 2f;
+            // Prompt 17 C: shield domes stop everything but energy.
+            if (main.DamageType == DamageType.Energy && main.CanTarget(false)) score += MathF.Min(1f, enemy.Domes / MathF.Max(8f, enemy.Total)) * 2.5f;
+            if (main.Guided) score -= MathF.Min(1f, enemy.Jammers / enemy.Total) * 2f;
+            if (antiAir && main.Projectile == ProjectileKind.Missile && enemy.Air > 0f) score -= enemy.AirFlares / enemy.Air * (1f - main.FlareResist);
             return score;
         }
 

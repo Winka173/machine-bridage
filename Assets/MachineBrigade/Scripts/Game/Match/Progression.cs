@@ -44,7 +44,6 @@ namespace MachineBrigade.Game.Match
             ["stealth_bomber"] = 5000,
             ["siege_tank"] = 4500,
             ["ballistic_launcher"] = 5000,
-            ["heavy_attack_heli"] = 3500,
             ["napalm_strike"] = 1500,
         };
 
@@ -150,9 +149,14 @@ namespace MachineBrigade.Game.Match
         /// <summary>A chapter's big operation (its tenth main mission).</summary>
         public static MissionDef OperationOf(int chapter)
         {
+            // The chapter's operation (prompt 16: an epilogue boss may follow it); else its last main mission.
             MissionDef last = null;
             foreach (var m in All)
-                if (m.Chapter == chapter && !m.Side) last = m;
+            {
+                if (m.Chapter != chapter || m.Side) continue;
+                if (m.Operation) return m;
+                last = m;
+            }
             return last;
         }
 

@@ -194,7 +194,7 @@ namespace MachineBrigade.Sim.Abilities
         {
             var m = 0f;
             var flank = g.Stat(StatId.DamageFlank);
-            if (flank > 0f && hit.Kind == HitKind.Direct && !hit.Indirect && target is Vehicle side && DamageSystem.FacingFactor(side, hit.Origin) > 1f)
+            if (flank > 0f && hit.Kind == HitKind.Direct && !hit.Indirect && target is Vehicle side && DamageSystem.Flanked(side, hit.Origin))
                 m += flank;
             if (target is Vehicle drone && drone.Def.Drone) m += g.Stat(StatId.DamageVsDrone);
             if (g.Has(TraitId.SetPackHunt) && g.Pack > 0) m += g.Trait(TraitId.SetPackHunt).A * g.Pack;

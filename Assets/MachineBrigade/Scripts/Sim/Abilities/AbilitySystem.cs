@@ -56,7 +56,8 @@ namespace MachineBrigade.Sim.Abilities
                 if (!v.IsAlive) continue;
                 if (v.Transforming && now >= v.TransformUntil) CompletePhase(v, now);
                 v.RefreshEffects(now);
-                if (v.Def.Jammer > 0f) _jammers.Add(v);
+                // A boss's jamming aura stops with its jammer part (prompt 16).
+                if (v.Def.Jammer > 0f && !v.JammerOff) _jammers.Add(v);
                 // Standing still (entrenchment counts from here).
                 if (Vector2.DistanceSquared(v.Position, v.StillAt) > 0.04f)
                 {
@@ -69,7 +70,7 @@ namespace MachineBrigade.Sim.Abilities
                     v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.02f * dt);
                 // Active protection reloads one interceptor at a time.
                 var aps = v.Aps;
-                if (aps != null && v.ApsCharges < aps.Charges && (v.ApsReload += dt) >= aps.Recharge)
+                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt) >= aps.Recharge)
                 {
                     v.ApsCharges++;
                     v.ApsReload = 0f;
@@ -466,7 +467,8 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Emit(SimEvent.Exploded(m.Position, m.Def.Blast, m.Id));
                 // A mine roller sets it off out in front of the tracks: the roller takes the blast.
                 // The blast is a mine's (mine resistances and the mine sweep see it as one).
-                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled,
+                // Prompt 15: an anti-tank mine is a shaped charge under the belly (penetration 4, the roof's armour).
+                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ShapedCharge, m.Team, rolled,
                     info: new Combat.HitInfo(null, m.Team, null, m.Position, Combat.HitKind.Mine, false));
                 _mines.RemoveAt(i);
             }

@@ -57,6 +57,9 @@ namespace MachineBrigade.Game.Effects
         private readonly DecalPool _decals;
         private readonly DebrisPool _debris;
         private readonly WreckManager _wrecks;
+
+        /// <summary>Prompt 16: ships going down (they list, break and sink instead of leaving a wreck).</summary>
+        private readonly ShipSinking _sinking = new();
         private readonly Emitters _emitters;
         private readonly TrackMarks _tracks;
         private readonly NightLights _night;
@@ -81,6 +84,14 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>Half the map's side, for the troop transports' way in and out.</summary>
         public float MapHalfSize { set => _drops.HalfSize = value; }
+
+        /// <summary>The map's rectangle, for the troop transports' way in and out (a long battlefield's, prompt 17).</summary>
+        public void SetMapBounds(Vector3 centre, float halfX, float halfZ)
+        {
+            _drops.Centre = centre;
+            _drops.HalfX = halfX;
+            _drops.HalfZ = halfZ;
+        }
 
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
@@ -130,6 +141,7 @@ namespace MachineBrigade.Game.Effects
             _lasers = new LaserBeams(materials, _emitters, _decals, _root);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
+            _bigZones = new BigAttackZones(materials, meshes, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
@@ -263,6 +275,12 @@ namespace MachineBrigade.Game.Effects
                             var emitter = guard.MuzzleOf(0);
                             _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, guard.Def.Weapon, now, 0.16f);
                         }
+                        else if (guard != null && guard.Def.Aps is { Laser: true } && _catalog.Weapons.TryGetValue("hel_beam", out var pointBeam))
+                        {
+                            // Prompt 16 E: a boss's interceptor laser (the Tempest's) draws the Iron Beam's beam from its turret side.
+                            var emitter = guard.Position + Vector3.up * 3.4f + guard.Root.right * (e.Value * 1.6f);
+                            _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, pointBeam, now, 0.16f);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -293,6 +311,21 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.PartRepaired:
                         PartBack(e, views);
                         break;
+                    // Prompt 16: a patch of the Inferno's fire trail (FireSpots burns ground fires a fifth shorter).
+                    case SimEventKind.FireTrail:
+                    {
+                        var trailAt = Ground(e.Position, 0.05f);
+                        var trailRadius = e.Target.X;
+                        _fires.Ignite(trailAt, 0.9f, e.Value, now);
+                        for (var lick = 0; lick < 2; lick++)
+                        {
+                            var bearing = UnityEngine.Random.value * Mathf.PI * 2f;
+                            var reach = trailRadius * UnityEngine.Random.Range(0.35f, 0.7f);
+                            _fires.Ignite(trailAt + new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach), UnityEngine.Random.Range(0.45f, 0.7f),
+                                e.Value * UnityEngine.Random.Range(0.8f, 1f), now);
+                        }
+                        break;
+                    }
                     case SimEventKind.Explosion when _partBlasts.Remove(e.Entity):
                         break;
                     case SimEventKind.Explosion:
@@ -337,6 +370,12 @@ namespace MachineBrigade.Game.Effects
                         if (views.TryGet(e.Entity, out var shielded)) shielded.ShieldFor(e.Value, now);
                         break;
 
+                    // Prompt 17 C: the shield carrier's and generator's domes.
+                    case SimEventKind.DomeHit:
+                    case SimEventKind.DomeChanged:
+                        DomeEvent(e, views, now);
+                        break;
+
                     case SimEventKind.Damaged:
                         ShieldDamaged(e, views);
                         break;
@@ -361,7 +400,9 @@ namespace MachineBrigade.Game.Effects
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
                         // Aircraft burst into flames in the air, then fall (see Crash).
                         else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
-                        _wrecks.Add(view, now);
+                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck.
+                        if (view.Def.Naval != null) _sinking.Add(view, now);
+                        else _wrecks.Add(view, now);
                         break;
 
                     case SimEventKind.PropDestroyed when e.Tier == ExplosionTier.Small && e.Target != default:
@@ -474,6 +515,7 @@ namespace MachineBrigade.Game.Effects
         {
             var now = Time.time;
             TickShields(views, now);
+            TickUnitDomes(views, now);
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _weapons.Tick(now);
@@ -487,6 +529,8 @@ namespace MachineBrigade.Game.Effects
             }
             _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
+            _bigZones.Tick(views, now);
+            TickBigCharge(views, now);
             _drops.Tick(now);
             JetTrails(views, now);
             KeepBossInSight(views);
@@ -495,6 +539,7 @@ namespace MachineBrigade.Game.Effects
             _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
+            _sinking.Tick(now);
             _fires.Tick(now, Time.deltaTime);
             // Secondary explosions in burning hulks: small pops around the big blast, never another big one.
             while (_wrecks.TryCookOff(now, out var cookOff, out var pop))
@@ -834,8 +879,8 @@ namespace MachineBrigade.Game.Effects
             var from = new Vector3(e.Position.X, 0f, e.Position.Y);
             switch (round.Projectile)
             {
-                case ProjectileKind.Shell when round.DamageType == DamageType.ArmorPiercing:
-                case ProjectileKind.Bullet when round.DamageType == DamageType.ArmorPiercing && round.Damage >= 20f:
+                case ProjectileKind.Shell when round.PiercingLook:
+                case ProjectileKind.Bullet when round.PiercingLook && round.Damage >= 20f:
                 {
                     var heavy = round.Damage >= 150f;
                     if (round.Projectile == ProjectileKind.Shell)
@@ -859,8 +904,8 @@ namespace MachineBrigade.Game.Effects
                     _muzzle.SparkBurst(impact + Vector3.up * 1f, Vector3.up + UnityEngine.Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
                     return true;
                 }
-                case ProjectileKind.Missile when round.DamageType == DamageType.ArmorPiercing:
-                case ProjectileKind.Drone when round.DamageType == DamageType.ArmorPiercing:
+                case ProjectileKind.Missile when round.PiercingLook:
+                case ProjectileKind.Drone when round.PiercingLook:
                     // HEAT: a sharp star flash and a jet of sparks, a small black puff. Drones by the drone (DECISIONS 12C).
                     Explode(ExplosionTier.Medium, impact + Vector3.up * 0.8f, now, 0.8f * size, flash: false, grow: BlastSizes.Drone(round));
                     _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, 18, 10f, 22f);
@@ -993,6 +1038,10 @@ namespace MachineBrigade.Game.Effects
             "tank_buster" => (Engine.Fan, new[] { -0.17f, 0.17f }, -0.45f, 0.55f),
             "heavy_bomber" => (Engine.Smoky, new[] { -0.62f, -0.34f, 0.34f, 0.62f }, -0.05f, -0.2f),
             "stealth_bomber" => (Engine.Fan, new[] { -0.16f, 0.16f }, -0.25f, 0.3f),
+            // Prompt 17 C.
+            "stealth_fighter" => (Engine.Afterburner, new[] { -0.09f, 0.09f }, -1f, 0f),
+            "wingman_drone" => (Engine.Hot, new[] { 0f }, -1f, 0.1f),
+            "swarm_carrier" => (Engine.Prop, new[] { -0.55f, -0.28f, 0.28f, 0.55f }, 0.05f, 0.35f),
             "sky_gunship" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
             "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),
             "strike_jet" => (Engine.Hot, new[] { 0f }, -1f, 0f),

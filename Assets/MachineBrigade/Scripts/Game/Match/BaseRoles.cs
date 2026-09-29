@@ -40,10 +40,10 @@ namespace MachineBrigade.Game.Match
             {
                 var w = m.Weapon;
                 if (w == null || w.Damage <= 0f) continue;
-                if (w.CanTarget(true) && (w.DamageType == DamageType.Flak || w.Targets == TargetLayers.Air || w.Targets == (TargetLayers.Air | TargetLayers.Ground)))
+                if (w.CanTarget(true) && (w.DamageType == DamageType.Fragmentation || w.Targets == TargetLayers.Air || w.Targets == (TargetLayers.Air | TargetLayers.Ground)))
                     roles.Add(CoverRole.AntiAir);
                 if (!w.CanTarget(false)) continue;
-                if (w.DamageType == DamageType.ArmorPiercing) roles.Add(CoverRole.AntiTank);
+                if (w.AntiArmour) roles.Add(CoverRole.AntiTank);
                 else roles.Add(CoverRole.AntiLight);
             }
             if (def.Aps != null) roles.Add(CoverRole.Intercept);

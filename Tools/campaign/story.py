@@ -196,7 +196,7 @@ T('char.hq.role', 'Radio', 'Bộ đàm')
 
 # The generals as the AI plays them: signature deck, fire support habits, base style, and their lines.
 GENERALS = [
-    ('varga', ['light_tank', 'main_battle_tank', 'heavy_tank', 'tank_destroyer', 'ifv', 'flame_tank', 'twin_tank', 'atgm_carrier'],
+    ('varga', ['light_tank', 'main_battle_tank', 'heavy_tank', 'tank_destroyer', 'ifv', 'flame_tank', 'twin_tank', 'fpv_carrier'],
      ['artillery_barrage', 'airstrike', 'smoke_screen'], 'varga', 'Attack',
      [('Steel does not negotiate, Colonel.', 'Thép không biết thương lượng, đại tá ạ.'),
       ('Every tank you burn, I build two.', 'Ngươi đốt một chiếc, ta đóng hai chiếc.'),
@@ -208,7 +208,7 @@ GENERALS = [
       ('Fire mission. Grid one-seven. All batteries.', 'Nhiệm vụ bắn. Ô lưới một-bảy. Toàn bộ khẩu đội.'),
       ('Patience, Colonel. The snow is on my side.', 'Kiên nhẫn đi, đại tá. Tuyết đứng về phía ta.')],
      ('Recalculating. Withdraw the batteries to the next line.', 'Tính lại. Rút các khẩu đội về tuyến sau.')),
-    ('kessler', ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'atgm_carrier', 'mine_layer', 'mlrs'],
+    ('kessler', ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'fpv_carrier', 'mine_layer', 'mlrs'],
      ['remote_mines', 'artillery_barrage', 'smoke_screen'], 'kessler', 'Defend',
      [('You are four minutes behind schedule, Colonel.', 'Ngươi đang trễ bốn phút so với lịch, đại tá.'),
       ('Every road here is mined. I checked.', 'Mọi con đường ở đây đều có mìn. Ta đã kiểm tra rồi.'),
@@ -226,7 +226,7 @@ GENERALS = [
       ('Look up, Colonel. That is where you lose.', 'Nhìn lên đi, đại tá. Ông sẽ thua ở trên đó.'),
       ('The sky is mine. You can keep the mud.', 'Bầu trời là của ta. Bùn đất thì cứ giữ lấy.')],
      ('Eject, eject! ...Not like this.', 'Nhảy dù, nhảy dù! ...Không phải thế này chứ.')),
-    ('aurel', ['heavy_tank', 'bmpt', 'railgun_truck', 'heavy_attack_heli', 'long_sam', 'heavy_rocket_artillery', 'titan_tank', 'fighter_jet'],
+    ('aurel', ['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'heavy_rocket_artillery', 'titan_tank', 'fighter_jet'],
      ['cruise_missile', 'airstrike', 'napalm_strike', 'sead_strike'], 'aurel', 'Attack',
      [('Your brigade is a rounding error on my balance sheet.', 'Lữ đoàn của ông chỉ là sai số làm tròn trên bảng cân đối của tôi.'),
       ('Everyone has a price, Colonel. General Hùng had his.', 'Ai cũng có giá, đại tá. Tướng Hùng cũng có giá của ông ta.'),
@@ -300,6 +300,20 @@ BOSS_FILES = [
     ('nuke_train', ('Doomsday Train', 'Đoàn Tàu Tận Thế'),
      ('A missile train crossing Metro City to its launch site. When it gets there, the countdown starts. Do not let it get there.',
       'Một đoàn tàu tên lửa đang băng qua Thành Phố Metro tới bãi phóng. Tới nơi là đếm ngược bắt đầu. Đừng để nó tới nơi.')),
+    ('leviathan', ('Leviathan', 'Leviathan'),
+     ('Kessler\'s flagship: a battleship hull with a missile cruiser\'s cells, two 203 mm turrets, a flight deck and a well deck for landing craft. '
+      'Its sides stop tank shells; its deck does not. It never fights where it cannot leave.',
+      'Soái hạm của Kessler: thân thiết giáp hạm mang ống phóng của tuần dương hạm tên lửa, hai tháp pháo 203 mm, sàn đáp trực thăng và khoang chở tàu đổ bộ. '
+      'Hông tàu chặn được đạn xe tăng; boong thì không. Nó không bao giờ đánh ở nơi nó không rút được.')),
+    ('sea_corvette', ('Escort Corvette', 'Tàu hộ vệ'),
+     ('Leviathan\'s escorts: a 76 mm gun and a CIWS that covers the flagship too. Sink them first and the flagship\'s sky opens.',
+      'Tàu hộ vệ của Leviathan: pháo 76 mm và CIWS che chắn luôn cả tàu chính. Đánh chìm chúng trước thì bầu trời trên tàu chính mở ra.')),
+    ('missile_boat', ('Missile Boat', 'Xuồng tên lửa cao tốc'),
+     ('Fast, thin boats that dash in to the pier heads with a salvo of rockets and are gone before the smoke clears.',
+      'Những chiếc xuồng nhanh, vỏ mỏng, lao vào đầu cầu tàu bắn một loạt rốc-két rồi biến mất trước khi khói tan.')),
+    ('landing_craft', ('Landing Craft', 'Tàu đổ bộ'),
+     ('Leviathan\'s well deck carries three of them, each with two tanks for the beach.',
+      'Khoang đổ bộ của Leviathan chở ba chiếc, mỗi chiếc hai xe tăng cho bãi biển.')),
     ('supreme_command', ('Tổng Tư Lệnh', 'Tổng Tư Lệnh'),
      ('Aurel\'s personal command vehicle, "Tổng Tư Lệnh": the heaviest armour Hegemon ever built, around a communications suite that runs the whole launch site.',
       'Xe chỉ huy riêng của Aurel, "Tổng Tư Lệnh": lớp giáp nặng nhất Hegemon từng đúc, bao quanh hệ thống liên lạc điều hành toàn bộ bãi phóng.')),

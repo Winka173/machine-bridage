@@ -425,7 +425,8 @@ namespace MachineBrigade.Sim.Modes
             // Everything built into the fortress goes up with it at the end.
             if (Fortress is { } centre && rings.Count > 0)
                 foreach (var prop in world.Props)
-                    if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible && Chebyshev(prop.Position, centre) <= rings[0] + 4f)
+                    if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible &&
+                        (_fortress is { Layered: true } layered ? layered.Contains(prop.Position) : Chebyshev(prop.Position, centre) <= rings[0] + 4f))
                     {
                         _fortressProps.Add(prop.Id);
                         if (_rules.BountyBuildings.Contains(prop.Def.Id)) _bounty.Add(prop.Id);
@@ -452,6 +453,9 @@ namespace MachineBrigade.Sim.Modes
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             DomeUp = Stage <= 2 && _generators.Count > 0;
             Shield(world);
+            // Prompt 17 B.2: on a long battlefield the attack's reinforcements land further forward once a ring has fallen.
+            if (_fortress is { Layered: true } && _fortress.ForwardDrops.Count > 0)
+                world.Bases.ForwardZone = team => team == Attacker ? ForwardDrop : null;
             // The attacker's own camp outside the walls (the map's side 0): its HQ and towers. Only
             // when the player attacks (Siege): the waves of Defend come without a camp of their own.
             if (Attacker == PlayerTeam && world.Map.BaseOf(0) != null && world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
@@ -497,7 +501,7 @@ namespace MachineBrigade.Sim.Modes
                 var worth = v.Def.Power;
                 if (BaseLoadout.IsAntiAir(world.Catalog, v.Def.Id)) aa += worth;
                 if (w.MinRange > 0f) artillery += worth;
-                else if (w.DamageType == DamageType.ArmorPiercing || w.Projectile == ProjectileKind.Missile) antiArmour += worth;
+                else if (w.AntiArmour || w.Projectile == ProjectileKind.Missile) antiArmour += worth;
                 else if (w.DamageType is DamageType.Kinetic or DamageType.Fire || w.Projectile == ProjectileKind.Bullet) guns += worth;
             }
             var total = MathF.Max(1f, aa + antiArmour + guns + artillery);
@@ -542,7 +546,7 @@ namespace MachineBrigade.Sim.Modes
                 if (!prop.IsAlive) continue;
                 var gate = prop.Def.Id == _rules.Gate;
                 if (!gate && prop.Def.Id != _rules.Wall) continue;
-                var ring = Chebyshev(prop.Position, hq) >= split ? 2 : 3;
+                var ring = _fortress is { Layered: true } f ? Math.Max(2, f.RingOf(prop.Position)) : Chebyshev(prop.Position, hq) >= split ? 2 : 3;
                 if (ring == 3)
                 {
                     min = Vector2.Min(min, prop.Position);
@@ -553,9 +557,12 @@ namespace MachineBrigade.Sim.Modes
                     _walls.Add((prop.Id, ring));
                     continue;
                 }
-                // Outward: away from the HQ, square to the wall the gate stands in.
+                // Outward: away from the HQ, square to the wall the gate stands in (on a layered base, the wall's own
+                // run: its outer wall crosses the whole map, so the HQ's bearing does not say which wall it is).
                 var off = prop.Position - hq;
-                var outward = MathF.Abs(off.X) >= MathF.Abs(off.Y) ? new Vector2(MathF.Sign(off.X), 0f) : new Vector2(0f, MathF.Sign(off.Y));
+                var outward = _fortress is { Layered: true }
+                    ? prop.Rotation % 180 == 0 ? new Vector2(0f, MathF.Sign(off.Y)) : new Vector2(MathF.Sign(off.X), 0f)
+                    : MathF.Abs(off.X) >= MathF.Abs(off.Y) ? new Vector2(MathF.Sign(off.X), 0f) : new Vector2(0f, MathF.Sign(off.Y));
                 _gates.Add((prop.Id, ring, outward));
             }
             if (min.X <= max.X)
@@ -573,6 +580,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Which ring a point lies in: 1 outer line, 2 walls, 3 keep.</summary>
         private int RingOf(Vector2 p, IReadOnlyList<float> rings)
         {
+            if (_fortress is { Layered: true } layered) return layered.RingOf(p);
             if (Fortress is not { } centre || rings.Count < 2) return 1;
             var d = Chebyshev(p, centre);
             return d > rings[0] ? 1 : d > rings[1] ? 2 : 3;
@@ -689,6 +697,7 @@ namespace MachineBrigade.Sim.Modes
 
         private bool InsideRing(SimWorld world, Vector2 p, int ring)
         {
+            if (_fortress is { Layered: true } layered) return layered.RingOf(p) >= (ring == 2 ? 2 : 3);
             var rings = world.Map.SiegeRings;
             if (Fortress is not { } hq || rings.Count < 2) return true;
             return Chebyshev(p, hq) <= rings[ring == 2 ? 0 : 1];
@@ -1151,9 +1160,23 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>Flies in waiting wave vehicles while the attackers alive (and on their way) are under the ceiling.</summary>
+        /// <summary>
+        /// Prompt 17 B.2: where the attack's reinforcements land on a long battlefield once a ring has fallen (the
+        /// fortress's forward drops: before the buffer after stage 1, before the outer wall after stage 2); null before.
+        /// </summary>
+        public Vector2? ForwardDrop
+        {
+            get
+            {
+                if (_fortress is not { Layered: true } f || f.ForwardDrops.Count == 0 || Stage < 2) return null;
+                return f.ForwardDrops[Math.Min(Stage - 2, f.ForwardDrops.Count - 1)];
+            }
+        }
+
         private void ReleaseWaves(SimWorld world)
         {
             if (_reserve.Count == 0 || !world.TryGetRally(Attacker, out var camp)) return;
+            if (ForwardDrop is { } forward) camp = forward;
             for (var i = _inbound.Count - 1; i >= 0; i--)
                 if (_inbound[i] <= world.Time) _inbound.RemoveAt(i);
             var alive = _inbound.Count + AttackersAlive(world);
@@ -1260,6 +1283,8 @@ namespace MachineBrigade.Sim.Modes
             new[] { "earth_borer" },
             new[] { "command_airship" },
             new[] { "landing_hovercraft" },
+            // Prompt 16: Kessler's Leviathan, on the sea (Boss Rush switches to Lighthouse Bay for it).
+            new[] { "leviathan" },
             new[] { "supreme_command" },
         };
 
@@ -1280,33 +1305,18 @@ namespace MachineBrigade.Sim.Modes
                     yield return id;
         }
 
-        /// <summary>Elite escorts that come with each boss, by boss.</summary>
-        public IReadOnlyDictionary<string, string[]> Escorts { get; set; } = new Dictionary<string, string[]>
-        {
-            ["behemoth"] = new[] { "elite_mbt", "elite_mbt" },
-            ["mega_gunship"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
-            ["mobile_fortress"] = new[] { "elite_heavy_tank", "elite_aa", "elite_mlrs" },
-            ["drone_mothership"] = new[] { "elite_aa", "elite_apc", "elite_tank_destroyer" },
-            ["silver_bug"] = new[] { "elite_aa", "elite_attack_helicopter", "elite_heavy_tank" },
-            ["behemoth_inferno"] = new[] { "elite_heavy_tank", "elite_heavy_tank" },
-            ["behemoth_tempest"] = new[] { "elite_tank_destroyer", "elite_tank_destroyer" },
-            ["sky_fortress"] = new[] { "elite_attack_helicopter", "elite_attack_helicopter" },
-            ["fortress_hive"] = new[] { "elite_aa", "elite_apc" },
-            ["fortress_bastion"] = new[] { "elite_heavy_tank", "elite_mlrs" },
-            // Prompt 8: the supergun has its walls and guns; the airship its drones; the hovercraft lands its own;
-            // the Supreme Commander rides with an elite guard.
-            ["rail_supergun"] = new[] { "elite_heavy_tank", "elite_tank_destroyer" },
-            ["earth_borer"] = new[] { "elite_mbt", "elite_mbt" },
-            ["command_airship"] = new[] { "elite_aa", "elite_attack_helicopter" },
-            ["landing_hovercraft"] = new[] { "elite_apc" },
-            ["supreme_command"] = new[] { "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer" },
-        };
+        /// <summary>
+        /// Prompt 16 F: the escorts are the general system's now (balance.json "escorts", the same tables as
+        /// in the campaign), smaller here: fewer alive at once, part of each wave's guards, as elites
+        /// (<see cref="EscortSettings.For"/>). The mode sets them unless the session already has.
+        /// </summary>
+        public EscortSettings? EscortSettings { get; set; }
 
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
 
-        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five).</summary>
-        public float TimeLimit { get; set; } = 52 * 60f;
+        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five); eleven with Leviathan (prompt 16).</summary>
+        public float TimeLimit { get; set; } = 57 * 60f;
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;
@@ -1318,6 +1328,32 @@ namespace MachineBrigade.Sim.Modes
         public float PartBounty { get; set; } = 2f;
 
         public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
+
+        /// <summary>Prompt 16: the battlefield a boss that sails is fought on when the rush's own has no sea.</summary>
+        public string SeaMap { get; set; } = "lighthousebay";
+
+        /// <summary>The rush's own battlefield (the one chosen), to go back to after a sea boss; null: stay.</summary>
+        public string? HomeMap { get; set; }
+
+        /// <summary>Picked up again after a switch of battlefield: the bosses beaten, the seconds used, the army and CP carried over.</summary>
+        public BossRushCarry? Resume { get; set; }
+
+        /// <summary>The share of a flagship's fleet that sails with it here (fewer, so the fight stays short).</summary>
+        public float FleetShare { get; set; } = 0.5f;
+    }
+
+    /// <summary>What Boss Rush carries from one battlefield to the next (prompt 16 D.2): progress, time, army, CP.</summary>
+    public sealed class BossRushCarry
+    {
+        /// <summary>The battlefield to go to (a map id, without its version).</summary>
+        public string Map { get; set; } = "";
+
+        public int Defeated { get; set; }
+        public double TimeUsed { get; set; }
+        public float Cp { get; set; }
+
+        /// <summary>The player's vehicles (def, health share), landed again at the drop zone.</summary>
+        public List<(string def, float health)> Army { get; } = new();
     }
 
     /// <summary>
@@ -1350,15 +1386,59 @@ namespace MachineBrigade.Sim.Modes
         public int Kills => _ledger.Kills(PlayerTeam);
         public int Losses => _ledger.Losses(PlayerTeam);
 
-        public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)world.Time);
+        public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)(world.Time + TimeUsed));
+
+        /// <summary>Seconds of the rush played on earlier battlefields (prompt 16's switch).</summary>
+        public double TimeUsed { get; private set; }
+
+        /// <summary>The battlefield the rush must go to before its next boss (prompt 16), or null: the session switches and carries on.</summary>
+        public BossRushCarry? SwitchTo { get; private set; }
+
+        /// <summary>Sea bosses that got away (no bounty for them).</summary>
+        public int Escapes { get; private set; }
 
         public void Setup(SimWorld world)
         {
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(new SideSetup { StartCp = 0f, Income = 0.01f }.Build(EnemyTeam));
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
-            _ledger.Ignore = v => v.Def.Boss;
+            world.SeaRules.FleetShare = _rules.FleetShare;
+            _ledger.Ignore = v => v.Def.Boss || v.Def.Naval != null;
             _nextBossAt = 10.0;
+            world.EscortSettings ??= _rules.EscortSettings ?? EscortSettings.For(world.Catalog.EscortRules, "Normal", bossRush: true);
+            world.BigAttackSettings ??= BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
+            if (_rules.Resume is { } resume)
+            {
+                // Carried over from the last battlefield: the army lands at the drop zone, the bosses and the clock go on.
+                Defeated = resume.Defeated;
+                TimeUsed = resume.TimeUsed;
+                if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, resume.Cp);
+                world.TryGetRally(PlayerTeam, out var rally);
+                for (var i = 0; i < resume.Army.Count; i++)
+                {
+                    var (def, health) = resume.Army[i];
+                    if (!world.Catalog.Vehicles.ContainsKey(def)) continue;
+                    var angle = i * 2.4f;
+                    var v = world.SpawnVehicle(def, PlayerTeam, rally + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (4f + 1.2f * i), SimMath.DegToRad(45f));
+                    v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(health, 0.05f, 1f));
+                }
+                _nextBossAt = 6.0;
+                return;
+            }
+            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+        }
+
+        /// <summary>A boss that sails (prompt 16) needs a battlefield with a sea.</summary>
+        private static bool Sails(SimWorld world, string id) => world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Naval != null;
+
+        /// <summary>What the rush carries to the next battlefield: the bosses beaten, the time used, the army standing, the CP.</summary>
+        private BossRushCarry Carry(SimWorld world, string map)
+        {
+            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time };
+            if (world.TryGetEconomy(PlayerTeam, out var economy)) carry.Cp = economy.Cp;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == PlayerTeam && !v.Def.Static && !v.Scripted && v.Def.CpCost > 0)
+                    carry.Army.Add((v.Def.Id, v.Hp / v.MaxHp));
+            return carry;
         }
 
         /// <summary>Health steps of the boss on the field already paid for (75, 50, 25 %).</summary>
@@ -1384,11 +1464,15 @@ namespace MachineBrigade.Sim.Modes
                     _partsPaid |= 1UL << i;
                     if (world.TryGetEconomy(PlayerTeam, out var bounty)) bounty.Cp = MathF.Min(bounty.Bank, bounty.Cp + _rules.PartBounty);
                 }
-            if (Boss.IsValid && (!world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
+            if (SwitchTo != null) return;
+            var escaped = Boss.IsValid && world.TryGetVehicle(Boss, out var sailed) && sailed.IsAlive && sailed.Escaped;
+            if (Boss.IsValid && (escaped || !world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
             {
                 Boss = EntityId.None;
                 Defeated++;
-                if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty);
+                // A ship that got away pays nothing (prompt 16); the rush goes on.
+                if (escaped) Escapes++;
+                else if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty);
                 if (Defeated >= Total)
                 {
                     Finish(world, PlayerTeam);
@@ -1396,8 +1480,16 @@ namespace MachineBrigade.Sim.Modes
                 }
                 _nextBossAt = world.Time + _rules.Breather;
             }
-            if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total) Spawn(world);
-            if (world.Time >= _rules.TimeLimit)
+            if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total)
+            {
+                // Prompt 16: a boss that sails is fought at sea; the next one back on the rush's own battlefield.
+                var sails = Sails(world, _rules.Bosses[Defeated]);
+                if (sails && world.Map.Sea == null) SwitchTo = Carry(world, _rules.SeaMap);
+                else if (!sails && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
+                else Spawn(world);
+                if (SwitchTo != null) return;
+            }
+            if (world.Time + TimeUsed >= _rules.TimeLimit)
             {
                 Finish(world, EnemyTeam);
                 return;
@@ -1413,15 +1505,16 @@ namespace MachineBrigade.Sim.Modes
             var id = _rules.Bosses[Defeated];
             var home = world.TryGetRally(PlayerTeam, out var h) ? h : Vector2.Zero;
             var heading = SimMath.HeadingOf(home - rally);
+            // A ship comes in on the far lane, from the end away from the player's camp.
+            if (world.Map.Sea is { } sea && Sails(world, id) && sea.Lane("far") is { } far)
+            {
+                var side = sea.Frame(home).X <= 0f ? 1f : -1f;
+                rally = sea.At(side * far.Patrol, far.W);
+            }
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
             _partsPaid = 0;
-            if (!_rules.Escorts.TryGetValue(id, out var escorts)) return;
-            for (var i = 0; i < escorts.Length; i++)
-            {
-                var angle = heading + (i - (escorts.Length - 1) * 0.5f) * 0.7f;
-                world.SpawnVehicle(escorts[i], EnemyTeam, world.ClampToMap(rally + SimMath.Forward(angle) * 14f), heading);
-            }
+            // Its escorts come with it from the boss's table (prompt 16 F).
         }
 
         private void Finish(SimWorld world, int winner)

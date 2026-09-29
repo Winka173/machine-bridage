@@ -341,6 +341,7 @@ namespace MachineBrigade.Tests
         private static readonly HashSet<string> WithPrimary = new()
         {
             "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
+            "detail-weapons", "detail-armour",
             "shop-skins", "shop-units", "shop-items",
         };
 

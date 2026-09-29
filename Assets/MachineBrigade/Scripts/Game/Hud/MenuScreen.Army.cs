@@ -256,6 +256,7 @@ namespace MachineBrigade.Game.Hud
             var def = _catalog.Vehicles[id];
             var data = VehicleCardData.From(def);
             data.Cp = 0;
+            data.Combat = true;
             return new KitVehicleCard(data, () => OpenDetail(id));
         }
 
@@ -264,9 +265,9 @@ namespace MachineBrigade.Game.Hud
         private void RefreshDeck()
         {
             _deckRow.Clear();
-            foreach (var id in MatchSettings.DeckLayout(false)) _deckRow.Add(DeckCard(id, false, compact: true, showLevel: true));
+            foreach (var id in MatchSettings.DeckLayout(false)) _deckRow.Add(DeckCard(id, false, compact: true, showLevel: true, combat: true));
             _deckRow.Add(Kit.Box("fc-deck-divider"));
-            foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true));
+            foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true, combat: true));
 
             // The overview band: how many and how dear, the role cover, the doctrine for the next battle.
             _deckOverview.Clear();
@@ -275,6 +276,10 @@ namespace MachineBrigade.Game.Hud
             var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
             summary.Add(Kit.Body(Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
                 MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-")));
+            // Prompt 15 E7: the five shields, lit where the deck has a weapon that pierces that armour well.
+            var deckDefs = MatchSettings.DeckVehicles.Select(v => _catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null).ToList();
+            summary.Add(Kit.Text(Kit.Caps(Strings.Get("combat.armourCover")), "fc-caption fc-mt-3 fc-mb-1"));
+            summary.Add(KitCombat.CoverShields(level => KitCombat.Covers(deckDefs, level), "cover.deck"));
             _deckOverview.Add(summary);
             var cover = Kit.Box("fc-army__overview-part fc-grow");
             cover.Add(Kit.Text(Kit.Caps(Strings.Get("army.roles")), "fc-caption fc-mb-2"));
@@ -340,7 +345,9 @@ namespace MachineBrigade.Game.Hud
 
         private VisualElement CollectionCard(string id)
         {
-            var card = new KitVehicleCard(CardData(id), () => CardTapped(id));
+            var data = CardData(id);
+            data.Combat = true;
+            var card = new KitVehicleCard(data, () => CardTapped(id));
             card.Chosen = MatchSettings.DeckVehicles.Contains(id) || MatchSettings.DeckSupports.Contains(id);
             return card;
         }

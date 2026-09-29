@@ -51,7 +51,7 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             var towers = TowerCards.All(catalog);
             foreach (var id in new[] { "guard_tower", "mg_bunker", "aa_turret", "ew_tower", "dragons_teeth", "minefield", "gun_turret", "atgm_tower",
-                         "rocket_turret", "c_ram", "gun_pit", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" })
+                         "rocket_turret", "c_ram", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" })
             {
                 Assert.Contains(id, towers, id);
                 Assert.AreEqual(2, TowerCards.Branches(catalog, id).Count, $"{id} has two branches");
@@ -59,10 +59,11 @@ namespace MachineBrigade.Tests
                     Assert.AreEqual(catalog.Vehicles[id].Fort.Size, catalog.Vehicles[b].Fort.Size, $"{b} keeps {id}'s size");
             }
             Assert.IsFalse(catalog.Vehicles.ContainsKey("flak_tower") || catalog.Vehicles.ContainsKey("point_tower"), "the merged towers are gone");
+            Assert.IsFalse(catalog.Vehicles.ContainsKey("gun_pit"), "the hidden gun pit is gone (prompt 17 D.4)");
             var sizes = new Dictionary<string, SlotSize>
             {
                 ["ew_tower"] = SlotSize.Small, ["dragons_teeth"] = SlotSize.Small, ["minefield"] = SlotSize.Small,
-                ["c_ram"] = SlotSize.Medium, ["gun_pit"] = SlotSize.Medium, ["drone_hangar"] = SlotSize.Large,
+                ["c_ram"] = SlotSize.Medium, ["drone_hangar"] = SlotSize.Large,
             };
             foreach (var (id, size) in sizes) Assert.AreEqual(size, catalog.Vehicles[id].Fort.Size, id);
         }
@@ -71,7 +72,7 @@ namespace MachineBrigade.Tests
         public void CannonTowersCannotShootAircraftAndTurnSlowly()
         {
             var catalog = GameContent.LoadCatalog();
-            foreach (var id in new[] { "gun_turret", "heavy_turret", "gun_pit" })
+            foreach (var id in new[] { "gun_turret", "heavy_turret" })
             {
                 var def = catalog.Vehicles[id];
                 Assert.IsFalse(def.Mounts.Any(m => m.Weapon.Damage > 0f && m.Weapon.CanTarget(true)), $"{id} has nothing for aircraft");
@@ -110,29 +111,6 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1.25f, DamageSystem.BonusFor(aa.Def.Weapon, aa, heli, world.Time), 1e-4f, "a light tower on a helicopter");
             Assert.AreEqual(1f, DamageSystem.BonusFor(aa.Def.Weapon, aa, jet, world.Time), 1e-4f, "not on a jet");
             Assert.AreEqual(1f, DamageSystem.BonusFor(gun.Def.Weapon, gun, heli, world.Time), 1e-4f, "a medium tower gets none");
-        }
-
-        [Test]
-        public void AGunPitHidesUntilAnEnemyComesCloseThenAmbushes()
-        {
-            var world = Field();
-            var pit = Tower(world, "gun_pit.ambush", 1, new Vector2(0f, 0f));
-            var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -45f), 0f);
-            world.Submit(new Command(CommandType.Stop, 0, new[] { tank.Id }));
-            Run(world, 1f);
-            Assert.IsTrue(pit.Lowered, "down with the enemy 45 m away");
-            Assert.IsFalse(pit.IsVisibleTo(0), "and unseen by a tank");
-            var before = pit.Hp;
-            world.Damage.Apply(pit, 1000f, DamageType.HighExplosive);
-            var hidden = before - pit.Hp;
-            pit.Hp = pit.MaxHp;
-            world.Submit(new Command(CommandType.Move, 0, new[] { tank.Id }, new Vector2(0f, -30f)));
-            Run(world, 5f);
-            Assert.IsFalse(pit.Lowered, "up once the enemy is within 35 m");
-            Assert.IsTrue(pit.AmbushReady || pit.Weapons[0].Cooldown > 0f, "its first shot is an ambush (or already fired)");
-            before = pit.Hp;
-            world.Damage.Apply(pit, 1000f, DamageType.HighExplosive);
-            Assert.AreEqual(0.4f, hidden / (before - pit.Hp), 0.01f, "down, it takes 60 % less");
         }
 
         [Test]
@@ -223,7 +201,7 @@ namespace MachineBrigade.Tests
             world.TryGetEconomy(0, out var economy);
             var supply = economy.ArmyCap;
             var tank = world.SpawnVehicle("main_battle_tank", 0, b.HqPosition + new Vector2(8f, 0f), 0f);
-            world.Damage.Apply(tank, tank.MaxHp * 0.5f / world.Catalog.Damage.Multiplier(DamageType.ArmorPiercing, ArmorClass.Heavy), DamageType.ArmorPiercing);
+            world.Damage.Apply(tank, tank.MaxHp * 0.5f / world.Catalog.Damage.Type(DamageType.ShapedCharge, TargetKind.Ground), DamageType.ShapedCharge);
             var hurt = tank.Hp;
             Run(world, 2f);
             Assert.Greater(economy.ArmyCap, supply, "the logistics station adds supply");

@@ -119,7 +119,7 @@ namespace MachineBrigade.Game.Hud
                 {
                     UiKit.RaiseClicked();
                     CardPressed?.Invoke(index);
-                }, held => ShowTip(root, held ? Strings.Card(info.Id) : null)));
+                }, held => ShowTip(root, held ? info.Id : null)));
                 var art = Kit.Box("fc-hcard__art");
                 if (CardArt.For(info.Id) is { } render) art.style.backgroundImage = Background.FromTexture2D(render);
                 else art.Add(Kit.Icon(info.Icon, "fc-hcard__icon"));
@@ -159,19 +159,31 @@ namespace MachineBrigade.Game.Hud
             _tip = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-deck__tip");
             _tipName = Kit.Text("", "fc-body fc-row-text");
             _tip.Add(_tipName);
+            _tipRow = Kit.Box("fc-deck__tip-row");
+            _tip.Add(_tipRow);
             _tip.style.display = DisplayStyle.None;
             Root.Add(_tip);
         }
 
-        /// <summary>Shows a held card's full name over it (null hides it).</summary>
-        private void ShowTip(VisualElement card, string name)
+        /// <summary>
+        /// Prompt 15 E3: what a held card shows under its full name, its armour and every weapon's chip (the tray
+        /// itself shows none, to keep the HUD low). Set by the HUD, which has the catalog; null shows the name only.
+        /// </summary>
+        internal Func<string, VisualElement> TipRow;
+
+        private readonly VisualElement _tipRow;
+
+        /// <summary>Shows a held card's full name (and its armour and weapons) over it; null hides it.</summary>
+        private void ShowTip(VisualElement card, string id)
         {
-            if (name == null)
+            if (id == null)
             {
                 _tip.style.display = DisplayStyle.None;
                 return;
             }
-            _tipName.text = name;
+            _tipName.text = Strings.Card(id);
+            _tipRow.Clear();
+            if (TipRow?.Invoke(id) is { } row) _tipRow.Add(row);
             _tip.style.display = DisplayStyle.Flex;
             // Centred over the card, kept inside the tray.
             var x = card.worldBound.center.x - Root.worldBound.xMin;
@@ -182,7 +194,7 @@ namespace MachineBrigade.Game.Hud
         internal void PreviewHeld(int index)
         {
             if (index < 0 || index >= _cards.Count) ShowTip(null, null);
-            else ShowTip(_cards[index].Root, Strings.Card(_cards[index].Info.Id));
+            else ShowTip(_cards[index].Root, _cards[index].Info.Id);
         }
 
         public VisualElement Root { get; }

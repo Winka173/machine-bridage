@@ -103,7 +103,7 @@ namespace MachineBrigade.Sim.Content
             if (def.Flying) return def.FixedWing ? UnitClass.Plane : UnitClass.Helicopter;
             var weapon = def.Weapon;
             if (weapon.MinRange > 0f) return UnitClass.Artillery;
-            if (!weapon.CanTarget(false) || weapon.DamageType == DamageType.Flak) return UnitClass.AntiAir;
+            if (!weapon.CanTarget(false) || weapon.DamageType == DamageType.Fragmentation) return UnitClass.AntiAir;
             if (def.Armor == ArmorClass.Heavy) return def.MaxHp >= 1400f ? UnitClass.Heavy : UnitClass.Tank;
             return def.Speed >= 11f ? UnitClass.Scout : UnitClass.Light;
         }
@@ -143,7 +143,18 @@ namespace MachineBrigade.Sim.Content
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
+                    // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
+                    TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
+                    Laid = w.Bool("laid", false),
                 });
+                if (w.Has("pen"))
+                {
+                    var pen = w.Int("pen", 0);
+                    if (pen < 0 || pen > ArmourLevels.Max) throw new FormatException($"{w.Path}.pen: a penetration level 0 to {ArmourLevels.Max}.");
+                    def.Penetration = pen;
+                }
+                if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
+                ParseWeaponP17(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
@@ -164,10 +175,14 @@ namespace MachineBrigade.Sim.Content
                 {
                     var c = w.Object("cluster");
                     def.Cluster = new ClusterDef(c.Int("count", 4), c.Float("radius"),
-                        new ExplosionDef(c.Float("damage"), c.Float("splash"), 0f, c.Enum("tier", ExplosionTier.Small)));
+                        new ExplosionDef(c.Float("damage"), c.Float("splash"), 0f, c.Enum("tier", ExplosionTier.Small)))
+                    {
+                        Penetration = Math.Clamp(c.Int("pen", ClusterDef.DefaultPenetration), 0, ArmourLevels.Max),
+                    };
                 }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
+            ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -203,7 +218,7 @@ namespace MachineBrigade.Sim.Content
                     // not an easier target, a smaller-drawn tank not a harder one.
                     var scale = v.Float("scale", 1f);
                     var def = new VehicleDef(
-                        v.String("id"), v.Enum<ArmorClass>("armor"), v.Float("hp") * (v.Bool("boss", false) ? bossHp : vehicleHp),
+                        v.String("id"), v.Enum("armor", v.Bool("flying", false) ? ArmorClass.Air : ArmorClass.Light), v.Float("hp") * (v.Bool("boss", false) ? bossHp : vehicleHp),
                         v.Float("speed"), v.Float("turnRate"), v.Float("turretTurnRate"), v.Float("radius"), v.Int("cp", 0), v.Float("vision"),
                         v.Bool("firesWhileMoving", true), weapon, ParseExplosion(v, "deathExplosion", vehicleBlasts), secondary,
                         v.Bool("flying", false), v.Float("altitude", 0f), v.Float("captureRate", 1f),
@@ -211,6 +226,11 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("model")) def.Model = v.String("model");
                     if (v.Has("mainModel")) def.Mounts[0].ProjectileModel = v.String("mainModel");
                     def.Boss = v.Bool("boss", false);
+                    // Prompt 15 A: armour levels ("armour": the front, or [front, side, rear, top]); a fixed defence
+                    // that is no boss is a structure unless the data says otherwise; the broad class follows.
+                    var structure = v.Bool("structure", def.Static && !def.Boss ? true : v.Has("armor") && v.Enum<ArmorClass>("armor") == ArmorClass.Structure);
+                    if (v.Has("armour")) def.SetArmour(Levels(v, "armour", def.Flying || structure), structure);
+                    else def.SetArmour(structure ? ArmourLevels.Uniform(2) : def.Armour, structure);
                     def.Card = v.Bool("card", true);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
@@ -290,7 +310,7 @@ namespace MachineBrigade.Sim.Content
                         var a = v.Object("aps");
                         def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"))
                         {
-                            Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f),
+                            Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f), Laser = a.Bool("laser", false),
                         };
                     }
                     if (v.Has("commandAura"))
@@ -345,6 +365,7 @@ namespace MachineBrigade.Sim.Content
                             m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
                     }
                     ParseExtras(v, def);
+                    ParseNaval(v, def);
                     if (v.Has("branch")) ownBranches[def.Id] = v.Enum<ArmyBranch>("branch");
                     return def;
                 }));
@@ -358,6 +379,8 @@ namespace MachineBrigade.Sim.Content
                     p.String("id"), p.Enum<ArmorClass>("armor"), p.Float("hp"), p.Float("width") * propScale, p.Float("depth") * propScale,
                     p.Bool("blocks", false), ParseExplosion(p, "explosion", propBlasts), p.Has("blocksFire") ? p.Bool("blocksFire", true) : null)
                 { Scale = propScale, Crushable = p.Bool("crush", false), Collapse = p.Float("collapse", 0f) }));
+                // Prompt 15 A.3: a prop's armour level, the same all round.
+                if (p.Has("armour")) props[props.Count - 1].Armour = Levels(p, "armour", allRound: true);
             }
 
             var supports = new List<SupportDef>();
@@ -371,6 +394,8 @@ namespace MachineBrigade.Sim.Content
                         s.Enum("damageType", DamageType.HighExplosive), s.Enum("tier", ExplosionTier.Large), s.Float("length", 0f),
                         s.Float("blast", 0f))
                     {
+                        Penetration = s.Int("pen", -1),
+                        Thermobaric = s.Bool("thermobaric", false),
                         Consumable = s.Bool("consumable", false),
                         EventOnly = s.Bool("event", false),
                         Units = s.Has("units") ? s.StringArray("units") : Array.Empty<string>(),
@@ -391,6 +416,7 @@ namespace MachineBrigade.Sim.Content
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
             catalog.FinishExtras(root, ownBranches);
+            catalog.CheckNaval();
             return catalog;
         }
 
@@ -452,25 +478,47 @@ namespace MachineBrigade.Sim.Content
                 e.Enum<ExplosionTier>("tier")));
         }
 
+        /// <summary>
+        /// Prompt 15: the damage-type table (a row per type: Ground, Air, Structure), the penetration row
+        /// ("penetration": above, level, -1, -2, -3) and the thermobaric tag's structure multiplier.
+        /// </summary>
         private static DamageTable ParseDamageTable(JsonObject table)
         {
             var damageTypes = (DamageType[])Enum.GetValues(typeof(DamageType));
-            var armorClasses = (ArmorClass[])Enum.GetValues(typeof(ArmorClass));
-            var values = new float[damageTypes.Length, armorClasses.Length];
+            var kinds = (TargetKind[])Enum.GetValues(typeof(TargetKind));
+            var values = new float[damageTypes.Length, kinds.Length];
             foreach (var d in damageTypes)
             {
                 var row = table.Object(d.ToString());
-                foreach (var a in armorClasses) values[(int)d, (int)a] = row.Float(a.ToString());
+                foreach (var k in kinds) values[(int)d, (int)k] = row.Float(k.ToString());
             }
-            // Prompt 13 B.6: autocannon rounds (kinetic, 20-57 mm) have their own row.
-            float[]? autocannon = null;
-            if (table.Has("Autocannon"))
+            float[]? pen = null;
+            if (table.Has("penetration"))
             {
-                var row = table.Object("Autocannon");
-                autocannon = new float[armorClasses.Length];
-                foreach (var a in armorClasses) autocannon[(int)a] = row.Float(a.ToString());
+                var list = table.FloatArray("penetration");
+                pen = new float[list.Count];
+                for (var i = 0; i < list.Count; i++) pen[i] = list[i];
             }
-            return new DamageTable(values, autocannon);
+            return Wrap(table, () => new DamageTable(values, pen, table.Float("thermobaric", 2f)));
+        }
+
+        /// <summary>
+        /// Armour levels from data: one number (the front; with <paramref name="allRound"/> the same all round,
+        /// else the side one less and the rear and roof two less) or four [front, side, rear, top].
+        /// </summary>
+        internal static ArmourLevels Levels(JsonObject o, string key, bool allRound)
+        {
+            if (o.IsArray(key))
+            {
+                var a = o.FloatArray(key);
+                if (a.Count != 4) throw new FormatException($"{o.Path}.{key}: one level or four [front, side, rear, top].");
+                foreach (var x in a)
+                    if (x < 0f || x > ArmourLevels.Max || x != MathF.Round(x)) throw new FormatException($"{o.Path}.{key}: whole levels 0 to {ArmourLevels.Max}.");
+                return new ArmourLevels((int)a[0], (int)a[1], (int)a[2], (int)a[3]);
+            }
+            var front = o.Int(key, 0);
+            if (front < 0 || front > ArmourLevels.Max) throw new FormatException($"{o.Path}.{key}: a level 0 to {ArmourLevels.Max}.");
+            return allRound ? ArmourLevels.Uniform(front) : ArmourLevels.Vehicle(front);
         }
 
         /// <summary>Re-throws definition validation errors with the JSON path attached.</summary>

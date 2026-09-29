@@ -112,7 +112,10 @@ namespace MachineBrigade.Sim.Economy
         public float CatchUp { get; internal set; } = 1f;
 
         /// <summary>CP per second actually earned now: income and bonuses after upkeep, and the underdog's boost.</summary>
-        public float Earning => (Income + Bonus * IncomeScale) * Upkeep * CatchUp;
+        public float Earning => (Income + (Bonus + Relay) * IncomeScale) * Upkeep * CatchUp;
+
+        /// <summary>Prompt 17 C: CP per second its base's CP relays pay now (before the economy's pace, upkeep and the underdog's boost).</summary>
+        public float Relay { get; internal set; }
 
         /// <summary>Vehicles on the field plus deliveries on the way.</summary>
         public int VehicleCount { get; internal set; }
@@ -229,7 +232,8 @@ namespace MachineBrigade.Sim.Economy
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
-            if (def.Flying && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
+            // Prompt 17 C: a loyal wingman is outside the aircraft cap (its own limit of four holds).
+            if (def.Flying && !def.AirCapFree && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= price;
@@ -307,6 +311,7 @@ namespace MachineBrigade.Sim.Economy
                 economy.VehicleCount = VehicleCount(economy.Team);
             }
             StepUnderdog();
+            StepRelays();
             foreach (var economy in _teams.Values)
             {
                 // Prompt 13 H.12: a mode with the once-a-match help for the side behind gives its income
@@ -419,9 +424,9 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>The map's edge straight behind a zone (looking in from it), just inside the square.</summary>
         private Vector2 EdgeBehind(Vector2 zone, Vector2 inward)
         {
-            var limit = _world.Map.HalfSize - 2f;
+            var map = _world.Map;
             var p = zone;
-            for (var step = 0; step < 40 && MathF.Abs(p.X - inward.X * 4f) <= limit && MathF.Abs(p.Y - inward.Y * 4f) <= limit; step++)
+            for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
                 p -= inward * 4f;
             return p;
         }
@@ -453,9 +458,9 @@ namespace MachineBrigade.Sim.Economy
         {
             var total = 0;
             foreach (var v in _world.VehicleList)
-                if (v.IsAlive && v.Team == team && v.Flying && !v.Def.Boss && !v.Scripted) total++;
+                if (v.IsAlive && v.Team == team && v.Flying && !v.Def.Boss && !v.Scripted && !v.Def.AirCapFree) total++;
             foreach (var (pendingTeam, id, _, _) in _pending)
-                if (pendingTeam == team && _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying) total++;
+                if (pendingTeam == team && _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying && !def.AirCapFree) total++;
             return total;
         }
 

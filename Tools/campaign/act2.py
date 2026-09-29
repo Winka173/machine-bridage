@@ -5,9 +5,9 @@ build_campaign.py turns it round onto the battlefield."""
 
 from campaign_kit import T, add_mission, ring, say, scripted, units, waves
 
-KESSLER = ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'atgm_carrier', 'mine_layer', 'mlrs']
+KESSLER = ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'fpv_carrier', 'mine_layer', 'mlrs']
 SEN = ['strike_drone', 'fpv_carrier', 'lancet_truck', 'recon_drone', 'ew_jammer', 'ifv', 'main_battle_tank', 'aa_vehicle']
-VARGA_LATE = ['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'atgm_carrier', 'flame_tank', 'ifv', 'mlrs']
+VARGA_LATE = ['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'fpv_carrier', 'flame_tank', 'ifv', 'mlrs']
 
 
 def m(mid, chapter, map_, goal, weather, **kw):
@@ -64,7 +64,7 @@ add_mission(m('c4m03', 4, 'ironport', 'Escort', 'Fog', legacy='m11', convoyCount
               enemyAi='waves', difficulty='Normal',
               waves=waves(['armored_car', 'rocket_technical', 'light_tank', 'attack_helicopter', 'flame_tank'], first=20, interval=26, size=3, grow=0.6, max_size=7, max_alive=18,
                           spawns=[(60, 93), (93, 15), (-96, 60)]),
-              unlocks=['wheeled_gun', 'counter_battery_radar'], starTime=300, starLosses=8, challenge={'kind': 'Kills', 'value': 25}),
+              unlocks=['wheeled_gun'], starTime=300, starLosses=8, challenge={'kind': 'Kills', 'value': 25}),
             ('Dockside Convoy', 'Đoàn xe bến cảng'),
             ('Engineers and explosives for the docks, five trucks through the fogbound port. Three must reach the quay.',
              'Công binh và thuốc nổ cho bến tàu, năm xe tải xuyên qua bến cảng chìm trong sương. Phải tới được cầu tàu ba xe.'),
@@ -168,7 +168,7 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=KESSLER,
               playerCp=30, playerIncome=1.7, playerCap=42, playerBase='Anchor',
               waves=waves(['ifv', 'main_battle_tank', 'wheeled_gun', 'attack_helicopter', 'heavy_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
-              unlocks=['gun_pit'],
+              unlocks=['laser_tank', 'cp_relay'],
               stages=[
                   {'stage': 'yard', 'goal': 'Capture', 'points': ['east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c4m10.s1'}],
@@ -183,7 +183,7 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
                   {'stage': 'tempest', 'goal': 'Boss', 'boss': scripted('behemoth_tempest', (-56, 100), heading=180, health=1.8), 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.kessler.c4m10.s4'}]},
                   {'stage': 'quay', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 540,
-                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'atgm_carrier', 'mlrs']},
+                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'fpv_carrier', 'mlrs']},
                               {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'wheeled_gun', 'sam_launcher']}]},
               ],
               starTime=1380, starLosses=18),
@@ -204,6 +204,34 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
                           'signal': choice_strikes('Hold the signal box (150 s)', 'Giữ trạm tín hiệu (150 giây)', 55)})
 T('radio.khai.c4m10.s1', 'The rail yard first: it is the key to the rest.', 'Bãi đường sắt trước: nó là chìa khóa cho phần còn lại.')
 T('radio.kessler.c4m10.s4', 'Tempest, clear the docks. On schedule.', 'Tempest, dọn sạch bến tàu. Đúng lịch.')
+
+# Prompt 16: the chapter's epilogue. The port lost, Kessler puts to sea on Leviathan and shells the coast from the
+# bay; sink it before it gets away. After the operation (its tenth mission), so the chapter's shape holds: an
+# epilogue mission is a main mission the chapter's count and "the tenth is the operation" rule leave out.
+LEVIATHAN_START = (42.4, -127.3)   # the far lane (w 120) at u -60, in the coast's frame
+add_mission(m('c4m11', 4, 'lighthousebay', 'Boss', 'Overcast', epilogue=True, replay=True, timeLimit=1500, general='kessler', reinforcements=3,
+              boss=scripted('leviathan', LEVIATHAN_START, heading=45, name='leviathan'),
+              units=units(0, ['artillery', 'mlrs', 'main_battle_tank', 'aa_vehicle', 'tank_destroyer', 'ifv'], (-86, -86), 7),
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.7, enemyDeck=KESSLER,
+              playerCp=30, playerIncome=1.6, playerCap=38, playerBase='Anchor', unlocks=['heavy_turret.coastal'],
+              starTime=960, starLosses=12, challenge={'kind': 'Kills', 'value': 20}),
+            ('Leviathan', 'Leviathan'),
+            ('Ironport is ours, but Kessler got out by sea. He is aboard Leviathan, his battleship, off Lighthouse Bay, and he means to shell the '
+             'coast until we give the port back. Take the lighthouse to see his fleet, man the old coastal batteries, and sink it before it runs for open sea.',
+             'Ironport đã về tay ta, nhưng Kessler thoát được bằng đường biển. Hắn đang ở trên Leviathan, chiến hạm của hắn, ngoài khơi Vịnh Hải Đăng, '
+             'và định nã pháo vào bờ cho tới khi ta trả lại bến cảng. Chiếm ngọn hải đăng để thấy hạm đội của hắn, dùng các trận địa pháo bờ biển cũ, '
+             'và đánh chìm nó trước khi nó chạy ra khơi.'),
+            (('The timetable', 'Thời gian biểu'),
+             ('Divers brought up Leviathan\'s bridge clock a month later. It had stopped at 16:42, the minute the second magazine went. '
+              'Kessler\'s last order in the log, in his own hand: "Record the time."',
+              'Một tháng sau, thợ lặn vớt được chiếc đồng hồ trên cầu chỉ huy của Leviathan. Nó dừng ở 16 giờ 42, đúng phút kho đạn thứ hai phát nổ. '
+              'Mệnh lệnh cuối cùng trong sổ, chữ của chính Kessler: "Ghi lại thời gian."')),
+            [say('linh', 'Start', 'Leviathan is on the far lane. We cannot see its fleet from the beach: the lighthouse can.',
+                 'Leviathan đang ở tuyến xa. Từ bãi biển ta không thấy hạm đội của nó: ngọn hải đăng thì thấy.'),
+             say('mai', 'Start', 'Its sides will stop anything we have. Its deck will not: artillery and bombs.',
+                 'Hông tàu chặn được mọi thứ ta có. Boong thì không: pháo binh và bom.', at=20),
+             say('khai', 'BossHalf', 'It is coming in close. Tanks on the pier heads, now.', 'Nó đang áp sát. Đưa xe tăng ra đầu cầu tàu, ngay.'),
+             say('khai', 'Win', 'Kessler\'s timetable ends here.', 'Thời gian biểu của Kessler kết thúc ở đây.')])
 
 add_mission(m('c4s1', 4, 'rustyard', 'Escort', 'Rain', side=True, after='c4m03', speaker='linh', convoyCount=4, convoyNeeded=3, timeLimit=1000, reinforcements=1,
               convoy=scripted('supply_truck', (-100, -100), route=[(-82.5, -82.5), (-82.5, -60), (-40, -33.75), (20, -33.75), (63.75, -60), (63.75, -86.25)], heading=45),
@@ -272,7 +300,7 @@ add_mission(m('c5m03', 5, 'junglepass', 'Escort', 'Fog', convoyCount=5, convoyNe
               enemyAi='waves', difficulty='Normal',
               waves=waves(['ifv', 'light_tank', 'strike_drone', 'armored_car', 'fpv_carrier'], first=35, interval=32, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 80), (95, 20), (20, 110)]),
-              unlocks=['ew_jammer'], starTime=360, starLosses=8, challenge={'kind': 'Kills', 'value': 22}),
+              starTime=360, starLosses=8, challenge={'kind': 'Kills', 'value': 22}),
             ('River Road', 'Đường ven sông'),
             ('Bridging gear for the engineers, up the river road through the jungle fog to the west village. Three of five trucks must arrive; Sen\'s drones will be looking for them.',
              'Thiết bị bắc cầu cho công binh, ngược đường ven sông qua sương rừng tới làng phía tây. Năm xe phải tới được ba; drone của Sen sẽ săn lùng chúng.'),
@@ -351,7 +379,7 @@ add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, ta
 
 add_mission(m('c5m09', 5, 'junglepass', 'Duel', 'Night', targetHealth=0.4, general='sen', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1500,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
-              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet'], starTime=900, starLosses=14),
+              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet', 'wingman_drone'], starTime=900, starLosses=14),
             ('The Hangars of the Pass', 'Những nhà chứa trên đèo'),
             ('Sen\'s field headquarters is ringed with drone hangars and jammers. Break it at night and level her HQ. Linh thinks she may not fight to the end.',
              'Sở chỉ huy dã chiến của Sen được bao quanh bởi những nhà chứa drone và xe gây nhiễu. Phá nó trong đêm và san phẳng sở chỉ huy. Linh nghĩ bà ấy có thể sẽ không đánh tới cùng.'),
@@ -456,7 +484,7 @@ add_mission(m('c6m02', 6, 'whiteout', 'Evacuate', 'Snow', reversed=True, convoyC
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'flame_tank', 'mortar_carrier'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(80, 60), (40, 100), (100, 10)]),
-              unlocks=['armored_bulldozer', 'c_ram'], starTime=600, starLosses=10),
+              unlocks=['armored_bulldozer', 'c_ram', 'bunker_vehicle'], starTime=600, starLosses=10),
             ('Evacuate Whiteout', 'Sơ tán Đèo Bão Tuyết'),
             ('Varga\'s counterstrike is pouring over the pass. The villagers at the frozen lake have to get out: six trucks, one every few seconds, down the road to our camp. '
              'Hold the lake until the last one leaves, then cover the road. Four must get through.',
@@ -473,9 +501,9 @@ add_mission(m('c6m03', 6, 'ashfield', 'Escort', 'Clear', reversed=True, convoyCo
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_aa', 'ifv'], (-88, -80), 7),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
-              waves=waves(['tank_destroyer', 'atgm_carrier', 'main_battle_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12,
+              waves=waves(['tank_destroyer', 'fpv_carrier', 'main_battle_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 90), (90, 60), (100, 100)]),
-              unlocks=['ew_tower'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
+              unlocks=['ew_tower', 'shield_carrier'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
             ('Our Behemoth', 'Behemoth của ta'),
             ('Mai has done it: the Behemoth from the Ashfield yard runs, and it is ours. Escort it from the fortress across Ashfield to the front. '
              'Varga will do anything to stop his own machine.',
@@ -503,7 +531,7 @@ add_mission(m('c6m05', 6, 'whiteout', 'Boss', 'Night', reversed=True, general='v
               boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=3.5),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer'],
-              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', unlocks=['recon_drone'], starTime=780, starLosses=12),
+              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', starTime=780, starLosses=12),
             ('Spectre', 'Bóng ma Spectre'),
             ('Something is circling high over the pass at night, and every time it passes, a tank burns. Spectre: a gunship that never comes low. '
              'Only anti-air and fighters can reach it. Bring it down.',
@@ -536,7 +564,7 @@ add_mission(m('c6m07', 6, 'ashfield', 'Relieve', 'Overcast', targetHealth=3.0, r
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=11, enemyIncome=0.85, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'mortar_carrier', 'tank_destroyer'], first=70, interval=60, size=2, grow=0.3, max_size=4, max_alive=12, spawns=[(60, 80), (80, 30)]),
-              unlocks=['smoke_carrier'], starTime=540, starLosses=10),
+              starTime=540, starLosses=10),
             ('The Town Garrison', 'Đồn thị trấn'),
             ('Varga has ringed Ashfield town, where the Alliance militia keep their HQ. Break the ring before it falls; the besiegers are marked.',
              'Varga đã vây kín thị trấn Ashfield, nơi dân quân Liên minh đặt sở chỉ huy. Phá vòng vây trước khi nó thất thủ; quân vây được đánh dấu.'),
@@ -547,7 +575,7 @@ add_mission(m('c6m07', 6, 'ashfield', 'Relieve', 'Overcast', targetHealth=3.0, r
 
 add_mission(m('c6m08', 6, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, general='varga', reinforcements=3,
               boss=scripted('earth_borer', (100, 60), heading=270, route=[(60, 40), (20, 50), (-20, 60), (-40, 64)], fallback='behemoth', fallbackHealth=1.4, name='earth_borer'),
-              units=units(0, ['heavy_tank', 'tank_destroyer', 'atgm_carrier', 'main_battle_tank'], (-50, 20), 8),
+              units=units(0, ['heavy_tank', 'tank_destroyer', 'fpv_carrier', 'main_battle_tank'], (-50, 20), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=30, playerIncome=1.5, playerCap=40, playerBase='Anchor', starTime=600, starLosses=10, challenge={'kind': 'NoStrikes'}),
             ('Sâu Đất', 'Sâu Đất'),

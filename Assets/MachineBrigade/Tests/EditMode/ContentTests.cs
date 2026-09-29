@@ -43,7 +43,7 @@ namespace MachineBrigade.Tests
 
             Assert.AreEqual("gun_120mm", catalog.Vehicle("main_battle_tank").Weapon.Id);
             Assert.IsNotNull(catalog.Prop("fuel_tank").Explosion);
-            Assert.AreEqual(1.5f, catalog.Damage.Multiplier(DamageType.HighExplosive, ArmorClass.Structure));
+            Assert.AreEqual(1.5f, catalog.Damage.Type(DamageType.HighExplosive, TargetKind.Structure));
         }
 
         [Test]

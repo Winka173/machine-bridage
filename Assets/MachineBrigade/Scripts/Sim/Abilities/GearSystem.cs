@@ -67,6 +67,10 @@ namespace MachineBrigade.Sim.Abilities
             v.VisionFactor = 1f + g.Stat(StatId.Vision);
             v.CaptureFactor = 1f + g.Stat(StatId.CaptureRate);
             v.RepairReceived = 1f + g.Stat(StatId.RepairReceived);
+            // Prompt 15 C.9: part levels of penetration and armour.
+            v.PenetrationUp = g.Stat(StatId.Penetration);
+            v.ArmourSideUp = g.Stat(StatId.ArmourSide);
+            v.ArmourAllUp = g.Stat(StatId.ArmourAll);
             TuneWeapons(v, g);
             if (g.Has(TraitId.ReactiveBlocks)) g.Blocks = (int)g.Trait(TraitId.ReactiveBlocks).A;
             if (g.Has(TraitId.AblativeLayer)) g.Ablative = -1f;
@@ -170,7 +174,8 @@ namespace MachineBrigade.Sim.Abilities
                         break;
                     }
             if (template == null)
-                return new WeaponDef("gear_drone", DamageType.ArmorPiercing, damage, 1f, 80f, 0f, 26f, 2f, 0f, ExplosionTier.Medium, ProjectileKind.Drone);
+                return new WeaponDef("gear_drone", DamageType.ShapedCharge, damage, 1f, 80f, 0f, 26f, 2f, 0f, ExplosionTier.Medium, ProjectileKind.Drone)
+                    { Penetration = 3, TopAttack = true, Family = "drone", Size = 1.5f };
             return template.Tuned(80f, 1f, template.ProjectileSpeed, MathF.Min(template.SplashRadius, 2.5f), 0f, template.BurstInterval, TargetLayers.Ground,
                 0, 0f, null, damage, 1);
         }
@@ -915,19 +920,19 @@ namespace MachineBrigade.Sim.Abilities
             var g = attacker.Gear;
             if (g != null)
             {
-                m += target.Armor switch
+                // Prompt 15 C.9: light and heavy by the armour level of the face struck (0-2, 3-4).
+                m += target.Kind switch
                 {
-                    ArmorClass.Light => g.Stat(StatId.DamageVsLight),
-                    ArmorClass.Heavy => g.Stat(StatId.DamageVsHeavy),
-                    ArmorClass.Air => g.Stat(StatId.DamageVsAir),
-                    _ => g.Stat(StatId.DamageVsStructure),
+                    TargetKind.Air => g.Stat(StatId.DamageVsAir),
+                    TargetKind.Structure => g.Stat(StatId.DamageVsStructure),
+                    _ => HeavyFace(target, hit) ? g.Stat(StatId.DamageVsHeavy) : g.Stat(StatId.DamageVsLight),
                 };
                 if (g.Has(TraitId.Executioner) && target is Vehicle && target.Hp < target.MaxHp * 0.3f)
                 {
                     m += g.Trait(TraitId.Executioner).A;
                     if (hit.Kind == HitKind.Direct) Proc(attacker, TraitId.Executioner);
                 }
-                if (g.Has(TraitId.TandemWarhead) && target.Armor == ArmorClass.Heavy && hit.Weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)
+                if (g.Has(TraitId.TandemWarhead) && target.Kind == TargetKind.Ground && HeavyFace(target, hit) && hit.Weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)
                     m += g.Trait(TraitId.TandemWarhead).A;
                 if (g.CrownStacks > 0) m += g.Trait(TraitId.DarkCrown).A * g.CrownStacks;
                 m += OutgoingLines(attacker, g, target, hit);
@@ -1011,6 +1016,10 @@ namespace MachineBrigade.Sim.Abilities
             Proc(v, TraitId.TowerCounterBattery);
         }
 
+        /// <summary>Prompt 15 C.9: the face a hit strikes is heavy armour (level 3-4).</summary>
+        private static bool HeavyFace(IDamageable target, in HitInfo hit) =>
+            (target is Vehicle v ? v.ArmourOn(DamageSystem.FaceOf(v, hit)) : target.Armour.Front) >= 3f;
+
         /// <summary>Damage coming in: a multiplier from the victim's resistances, stances and effects (0: the hit bounced).</summary>
         public float Incoming(Vehicle v, DamageType type, in HitInfo hit)
         {
@@ -1023,12 +1032,18 @@ namespace MachineBrigade.Sim.Abilities
                 ref var burn = ref v.Statuses[(int)StatusKind.Burn];
                 if (burn.Flag && burn.Until > now) m *= 1.1f;
             }
+            // Prompt 15 C.9: reactive armour (the module) cuts shaped charges hard and nothing else; a tandem warhead defeats it.
+            if (v.Special == SpecialModule.ReactiveArmor && type == DamageType.ShapedCharge && hit.Kind is not (HitKind.Mine or HitKind.Burn) &&
+                !(hit.Projectile?.Tandem ?? false))
+                m *= 1f - Math.Clamp(v.SpecialPower, 0f, 0.8f);
             var g = v.Gear;
             if (g == null) return m;
-            var cut = g.Stat(StatId.ResistKinetic + (int)type) + Adapted(g, type, now);
+            var cut = g.Stat(Stats.Resist(type)) + Adapted(g, type, now);
             if (hit.Kind == HitKind.Burn) return m * (1f - Math.Clamp(cut, 0f, 0.6f));
             var weapon = hit.Weapon;
-            if (weapon != null && weapon.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone) cut += g.Stat(StatId.ResistRocket);
+            // Prompt 15 C.9: a cage takes shaped charges on rockets, missiles and drones; kinetic rounds and thermobaric blasts go through.
+            if (type == DamageType.ShapedCharge && hit.Kind != HitKind.Mine && !(weapon?.Thermobaric ?? false) &&
+                (weapon == null || weapon.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)) cut += g.Stat(StatId.ResistRocket);
             if (hit.Indirect) cut += g.Stat(StatId.ResistIndirect);
             if (hit.Kind == HitKind.Mine)
             {
@@ -1048,16 +1063,15 @@ namespace MachineBrigade.Sim.Abilities
             m *= 1f - Math.Clamp(cut, 0f, 0.7f);
             if (hit.Kind != HitKind.Direct) return m;
 
-            // Armour traits that work hit by hit.
-            if (g.Has(TraitId.ReactiveBlocks) && g.Blocks > 0 && !(hit.Projectile?.Tandem ?? false) &&
-                (type == DamageType.ArmorPiercing || weapon?.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile))
+            // Armour traits that work hit by hit: reactive blocks take shaped charges only (prompt 15).
+            if (g.Has(TraitId.ReactiveBlocks) && g.Blocks > 0 && !(hit.Projectile?.Tandem ?? false) && type == DamageType.ShapedCharge)
             {
                 if (g.Blocks >= (int)g.Trait(TraitId.ReactiveBlocks).A) g.BlockAt = now + g.Trait(TraitId.ReactiveBlocks).B * CooldownFactor(g);
                 g.Blocks--;
                 m *= 0.5f;
                 Proc(v, TraitId.ReactiveBlocks);
             }
-            if (g.Has(TraitId.AngledGlacis) && type is DamageType.ArmorPiercing or DamageType.Kinetic && !hit.Indirect &&
+            if (g.Has(TraitId.AngledGlacis) && type is DamageType.ShapedCharge or DamageType.Kinetic && !hit.Indirect &&
                 ++g.GlacisHits % Math.Max(2, (int)g.Trait(TraitId.AngledGlacis).A) == 0)
             {
                 Proc(v, TraitId.AngledGlacis);

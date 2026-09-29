@@ -278,7 +278,7 @@ namespace MachineBrigade.Sim.AI
             var ours = 0f;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Scripted) continue;
+                if (!v.IsAlive || v.Team != _team || v.Scripted || v.IsEscort) continue;
                 if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
             }
             // Fixed defences do not count: they cannot chase, and the army picks the range to fight
@@ -601,6 +601,15 @@ namespace MachineBrigade.Sim.AI
                     Issue(world, CommandType.Move, v.Id, at);
                     continue;
                 }
+                // Prompt 17 C: a shield carrier keeps just behind the front line, its dome over the leading vehicles.
+                if (v.Def.Dome != null)
+                {
+                    var cover = world.Lanes.OffLane(Clamp(world, front - forward * 3f), 6f);
+                    if (Vector2.Distance(v.Position, cover) < 5f) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, cover) < 4f) continue;
+                    Issue(world, CommandType.Move, v.Id, cover);
+                    continue;
+                }
                 if (Vector2.Distance(v.Position, spot) < 10f) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
                 _ids.Add(v.Id);
@@ -681,9 +690,12 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
-                if (v.Team != _team || v.Scripted || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // Escorts keep to their boss (prompt 16 F).
+                if (v.Team != _team || v.Scripted || v.IsEscort || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
+                // Prompt 17 C: a loyal wingman flies on its own (on a leader's wing, or over the front).
+                if (v.Def.Wingman != null) continue;
                 if (v.Flying && Refit(world, v)) continue;
                 if (v.Flying) RearmInLulls(world, v);
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
@@ -694,7 +706,8 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
                 // stand) and counter-battery radars keep a little behind the middle of the army.
-                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
+                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null ||
+                    (v.Def.Dome != null && !v.Def.Static)) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
@@ -855,7 +868,7 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 if (!Ready(v) || Busy(world, v)) continue;
                 var weapon = v.Def.Weapon;
-                if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) < 0.25f) continue;
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.25f) continue;
                 if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
                 Prop? best = null;
                 var bestDistance = weapon.Range + 2f;
@@ -1051,7 +1064,7 @@ namespace MachineBrigade.Sim.AI
         private bool ShellDefences(SimWorld world, Vehicle a)
         {
             var weapon = a.Def.Weapon;
-            if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) <= 0.2f) return false;
+            if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) <= 0.2f) return false;
             Vehicle? pick = null;
             var pickDistance = float.MaxValue;
             foreach (var d in _defences)
@@ -1463,10 +1476,6 @@ namespace MachineBrigade.Sim.AI
             return length > 0.01f ? d / length : Vector2.UnitX;
         }
 
-        private static Vector2 Clamp(SimWorld world, Vector2 p)
-        {
-            var limit = world.Map.HalfSize - EdgeMargin;
-            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
-        }
+        private static Vector2 Clamp(SimWorld world, Vector2 p) => world.Map.Clamp(p, EdgeMargin);
     }
 }

@@ -46,8 +46,9 @@ namespace MachineBrigade.Sim
             Map = map ?? throw new ArgumentNullException(nameof(map));
             Generation = generation;
             Random = new Random(seed);
-            Grid = new NavGrid(map.Size, 2f);
-            Cover = new CoverGrid(map.Size);
+            // The map's own rectangle (a long battlefield's is 300 x 480 m, prompt 17).
+            Grid = new NavGrid(map.Min, map.Width, map.Length, 2f);
+            Cover = new CoverGrid(map.Min, map.Width, map.Length);
             if (map.Boundary.Count >= 3)
             {
                 // Beyond the outline is terrain: no driving there, and it stops direct fire.
@@ -67,9 +68,12 @@ namespace MachineBrigade.Sim
             Economy = new EconomySystem(this);
             Strikes = new StrikeSystem(this);
             Bases = new Modes.BaseSystem(this);
+            Domes = new Abilities.DomeSystem(this);
+            Deploying = new Abilities.DeploySystem(this);
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
+            Naval = new MachineBrigade.Sim.Bosses.NavalSystem(this);
         }
 
         public Catalog Catalog { get; }
@@ -151,7 +155,28 @@ namespace MachineBrigade.Sim
         /// <summary>A side's elite budget (prompt 8 H): the modes set its share, cap and general.</summary>
         public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
 
+        /// <summary>
+        /// Prompt 16 F: the battle's boss escorts (the modes set them by difficulty; Boss Rush's are
+        /// smaller). Null: no escorts (the bare test battles).
+        /// </summary>
+        public Content.EscortSettings? EscortSettings { get; set; }
+
+        /// <summary>
+        /// Prompt 18: the battle's big attacks (the modes set them by difficulty). Null: no big attacks (the bare
+        /// test battles).
+        /// </summary>
+        public Content.BigAttackSettings? BigAttackSettings { get; set; }
+
+        /// <summary>How many escorts of this boss are alive now (the boss bar's count).</summary>
+        public int EscortsAlive(EntityId boss) => Bosses.EscortsAlive(boss);
+
         internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
+
+        /// <summary>Prompt 16: ships at sea, the coastal batteries and the lighthouse (made after the props: see the constructor).</summary>
+        internal MachineBrigade.Sim.Bosses.NavalSystem Naval { get; }
+
+        /// <summary>Prompt 16: the sea's rules for this battle (what the modes set, what they read).</summary>
+        public MachineBrigade.Sim.Bosses.NavalRules SeaRules => Naval.Rules;
 
         internal CombatSystem Combat => _combat;
 
@@ -166,6 +191,12 @@ namespace MachineBrigade.Sim
 
         /// <summary>Aircraft stores on the field and the holding pattern (prompt 13 C).</summary>
         internal Abilities.SupplySystem Supply { get; }
+
+        /// <summary>Prompt 17 C: shield domes (the shield carrier, the shield generator).</summary>
+        internal Abilities.DomeSystem Domes { get; }
+
+        /// <summary>Prompt 17 C: vehicles that dig in (the bunker vehicle).</summary>
+        internal Abilities.DeploySystem Deploying { get; }
 
         internal readonly List<Crate> CrateList = new();
 
@@ -352,13 +383,15 @@ namespace MachineBrigade.Sim
         public Vehicle SpawnVehicle(string defId, int team, Vector2 position, float heading)
         {
             var def = Catalog.Vehicle(defId);
-            var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            // A ship goes on the water where it is put (the naval system keeps it off the land).
+            var afloat = def.Naval != null && Map.Sea != null;
+            var at = def.Flying || afloat ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             // A landing in a pocket sealed off from the battlefield (between buildings, behind a wall
             // corner) would never get out: it comes down on the open ground nearest instead (prompt 12).
-            if (!def.Flying && !def.Static && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
+            if (!def.Flying && !def.Static && !afloat && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
                 Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))
                 at = open;
-            if (!def.Flying && !def.Static) at = FreeSpot(def, at);
+            if (!def.Flying && !def.Static && !afloat) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
             // (a fortress, a point's watchtower) only when the side boosts everything.
@@ -382,6 +415,7 @@ namespace MachineBrigade.Sim
             _vehicleList.Add(vehicle);
             // Its parts, a boss's timers, radio line and guards (prompt 8).
             Bosses.Joined(vehicle);
+            Naval.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -443,7 +477,7 @@ namespace MachineBrigade.Sim
             switch (b.Special)
             {
                 case SpecialModule.ReactiveArmor:
-                    v.DamageTaken *= 1f - b.SpecialPower;
+                    // Prompt 15 C.9: shaped charges only, hit by hit (GearSystem.Incoming).
                     break;
                 case SpecialModule.AutoRepair:
                     v.Regen += b.SpecialPower;
@@ -550,6 +584,7 @@ namespace MachineBrigade.Sim
                         Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
                 Bosses.Mix(Mix);
+                Naval.Mix(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -687,8 +722,11 @@ namespace MachineBrigade.Sim
             _abilities.Step(dt);
             Supply.Step(dt);
             Bosses.Step(dt);
+            Naval.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
+            Deploying.Step();
+            Domes.Step();
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
@@ -728,10 +766,13 @@ namespace MachineBrigade.Sim
             _abilities.Step(dt);
             Supply.Step(dt);
             Bosses.Step(dt);
+            Naval.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
             Gear.Step(dt);
+            Deploying.Step();
+            Domes.Step();
             Lap(7);
             _combat.Step(dt);
             Lap(8);
@@ -797,7 +838,9 @@ namespace MachineBrigade.Sim
         /// <summary>Development only (the -mb-demolish device check): blows a prop apart as a heavy shell would.</summary>
         public void DebugDestroyProp(Prop prop)
         {
-            if (prop.IsAlive) Damage.Apply(prop, prop.Hp * 10f + 10000f, DamageType.HighExplosive);
+            // Full penetration from above, so armour (prompt 15: a fortress gate is level 4) cannot shrug it off.
+            var hit = new HitInfo(null, -1, null, prop.Position, HitKind.Strike, false).WithPen(4f, true);
+            for (var i = 0; i < 8 && prop.IsAlive; i++) Damage.Apply(prop, prop.Hp * 10f + 10000f, DamageType.HighExplosive, hit);
         }
 
         /// <summary>Lets game modes report what they decide (objectives changing hands).</summary>
@@ -909,7 +952,7 @@ namespace MachineBrigade.Sim
                     if (!Map.Contains(p) || !Grid.IsWalkable(p)) continue;
                     var moved = Vector2.Distance(p, v.Position);
                     if (moved < 4f) break;
-                    var edge = Map.HalfSize - MathF.Max(MathF.Abs(p.X), MathF.Abs(p.Y));
+                    var edge = Map.EdgeDistance(p);
                     // (It stops where it lands: not in a gate or a gap, where it would close the way.)
                     var score = Vector2.Distance(p, threat) - here + moved * 0.2f - MathF.Max(0f, 10f - edge) -
                                 (!v.Flying && Lanes.NoParkAt(p) ? 8f : 0f);
@@ -1038,6 +1081,11 @@ namespace MachineBrigade.Sim
                     if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);
                     hidden = tg.Hidden;
                 }
+                var naval = target.Def.Naval != null && Map.Sea != null;
+                // Prompt 16: whoever holds the lighthouse watches the sea from its lamp.
+                if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner &&
+                    Vector2.Distance(Map.Sea!.Lamp, target.Position) <= LighthouseSight * Naval.Rules.SeaSight + target.Radius)
+                    mask |= 1 << Naval.Rules.LighthouseOwner;
                 for (var i = 0; i < _vehicleList.Count; i++)
                 {
                     var spotter = _vehicleList[i];
@@ -1048,6 +1096,8 @@ namespace MachineBrigade.Sim
                     if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
+                    // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
+                    if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
                     else
                     {
@@ -1069,6 +1119,9 @@ namespace MachineBrigade.Sim
                 target.VisibleToMask = mask | known;
             }
         }
+
+        /// <summary>Prompt 16: how far out to sea the lighthouse's holder sees ships from its lamp.</summary>
+        public const float LighthouseSight = 170f;
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;
@@ -1110,10 +1163,6 @@ namespace MachineBrigade.Sim
 
         private EntityId NextId() => new EntityId(_nextId++);
 
-        internal Vector2 ClampToMap(Vector2 p)
-        {
-            var limit = Map.HalfSize - 1f;
-            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
-        }
+        internal Vector2 ClampToMap(Vector2 p) => Map.Clamp(p, 1f);
     }
 }

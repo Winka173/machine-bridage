@@ -110,7 +110,7 @@ namespace MachineBrigade.Game.Match
                 }
                 has |= VehicleNeed.Secondary;
                 if (w.Projectile == ProjectileKind.Bullet) has |= VehicleNeed.SecondaryGun;
-                if (w.CanTarget(true) && (w.DamageType == DamageType.Flak || w.Targets == TargetLayers.Air)) has |= VehicleNeed.HitsAir;
+                if (w.CanTarget(true) && (w.DamageType == DamageType.Fragmentation || w.Targets == TargetLayers.Air)) has |= VehicleNeed.HitsAir;
             }
             return has;
         }
@@ -129,7 +129,9 @@ namespace MachineBrigade.Game.Match
             StatId.TurretRate => VehicleNeed.Turret,
             StatId.CaptureRate => VehicleNeed.Captures,
             StatId.ResistIndirect or StatId.ResistMine or StatId.ResistFrontal or StatId.ResistBlast or StatId.ReverseSpeed or StatId.LaserWarning => VehicleNeed.Ground,
-            StatId.ResistFlak => VehicleNeed.Flying,
+            StatId.ResistFragmentation or StatId.ArmourAll => VehicleNeed.Flying,
+            StatId.Penetration => VehicleNeed.Armed,
+            StatId.ArmourSide => VehicleNeed.Ground,
             StatId.DamageFlank => VehicleNeed.Direct | VehicleNeed.HitsGround | VehicleNeed.Ground,
             StatId.DamageVsDrone => VehicleNeed.Armed | VehicleNeed.Ground,
             _ => VehicleNeed.None,

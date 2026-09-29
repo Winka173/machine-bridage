@@ -116,7 +116,7 @@ namespace MachineBrigade.Tests
             var level = Campaign.HqLevelAt(mission);
             var loadout = new BaseLoadout { HqLevel = level };
             string[] large = { "artillery_emplacement", "missile_battery", "heavy_turret", "drone_hangar" };
-            string[] medium = { "gun_turret", "rocket_turret", "atgm_tower", "c_ram", "gun_pit" };
+            string[] medium = { "gun_turret", "rocket_turret", "atgm_tower", "c_ram" };
             string[] small = { "guard_tower", "aa_turret", "mg_bunker", "ew_tower", "dragons_teeth", "minefield" };
             void Fill(List<string> into, string[] order, SlotSize size)
             {
@@ -182,19 +182,20 @@ namespace MachineBrigade.Tests
         [Test]
         public void NineChaptersOfTenMainAndTwoSideMissions()
         {
-            Assert.AreEqual(108, Campaign.All.Count);
+            // 108 and chapter 4's epilogue boss, Leviathan (prompt 16).
+            Assert.AreEqual(109, Campaign.All.Count);
             Assert.AreEqual(9, Campaign.ChapterCount);
             var catalog = GameContent.LoadCatalog();
             for (var c = 1; c <= 9; c++)
             {
-                var main = Campaign.MissionsOf(c, side: false);
+                var main = Campaign.MissionsOf(c, side: false).Where(m => !m.Epilogue).ToList();
                 Assert.AreEqual(10, main.Count, $"chapter {c}");
                 Assert.AreEqual(2, Campaign.MissionsOf(c, side: true).Count, $"chapter {c} side missions");
                 Assert.IsTrue(main[4].Goal is MissionGoal.Boss or MissionGoal.Intercept, $"chapter {c}: the fifth is a boss");
                 Assert.IsTrue(main[9].Operation && main[9].Stages.Count >= 4, $"chapter {c}: the tenth is its operation");
                 Assert.IsTrue(main[9].Stages.Any(s => s.Choices.Count == 2), $"chapter {c}: its operation has a choice of two");
                 Assert.AreEqual(main[9], Campaign.OperationOf(c));
-                var cards = main.SelectMany(m => m.Unlocks).Count(id => !(catalog.Vehicles.TryGetValue(id, out var v) && v.Fort is { Kind: FortKind.Utility }));
+                var cards = main.SelectMany(m => m.Unlocks).Count(id => !id.Contains('.') && !(catalog.Vehicles.TryGetValue(id, out var v) && v.Fort is { Kind: FortKind.Utility }));
                 Assert.That(cards, Is.InRange(5, 7), $"chapter {c} unlocks {cards} cards");
             }
             Assert.AreEqual("3-5", Campaign.Label(Campaign.Get("c3m05")));

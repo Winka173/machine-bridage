@@ -24,7 +24,7 @@ namespace MachineBrigade.Tests
         {
             "armored_car", "rocket_technical", "main_battle_tank", "light_tank", "heavy_tank", "twin_tank", "elite_mbt", "elite_heavy_tank",
             "turtle_tank", "wheeled_gun", "tank_destroyer", "flame_tank", "mortar_carrier", "thermobaric_launcher", "mlrs", "artillery",
-            "ifv", "heavy_rocket_artillery", "atgm_carrier", "attack_helicopter", "scout_heli",
+            "ifv", "heavy_rocket_artillery", "attack_helicopter", "scout_heli",
         };
 
         /// <summary>
@@ -41,7 +41,6 @@ namespace MachineBrigade.Tests
             ["ballistic_launcher m0"] = "ballistic_missile: no barrel, tube or pod round its line",
             ["elite_mlrs m0"] = "mlrs_elite: flash 22 deg off the barrel",
             ["heavy_bomber m2"] = "air_cruise_missile: no barrel, tube or pod round its line",
-            ["mobile_fortress m1"] = "boss_rockets: no barrel, tube or pod round its line",
             ["mobile_fortress m2"] = "boss_rockets: no barrel, tube or pod round its line",
             ["mobile_fortress m5"] = "boss_missiles: no barrel, tube or pod round its line",
             ["silver_bug m0"] = "saucer_laser: 0.05 m off the barrel's middle",

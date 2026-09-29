@@ -85,8 +85,8 @@ namespace MachineBrigade.Sim.Movement
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
-                // Fixed defences only turn their guns (the combat system does that).
-                if (v.Def.Static) continue;
+                // Fixed defences only turn their guns (the combat system does that); ships are the naval system's.
+                if (v.Def.Static || v.Def.Naval != null) continue;
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
                 if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing)
                 {
@@ -105,6 +105,8 @@ namespace MachineBrigade.Sim.Movement
                     v.ManualOrder = false;
                     v.ManualUntil = _world.Time + ManualHoldSeconds;
                 }
+                // Prompt 17 C: a bunker vehicle digging in, dug in or packing up stays put.
+                if (DeployHeld(v)) continue;
                 Drive(v, dt);
                 // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
                 WatchRescue(v);
@@ -125,8 +127,8 @@ namespace MachineBrigade.Sim.Movement
             _maxBound = 0f;
             foreach (var v in _world.VehicleList)
             {
-                // Underground, it is in nobody's way.
-                if (!v.IsAlive || v.Flying || v.Burrowed) continue;
+                // Underground, it is in nobody's way; nor is a ship at sea.
+                if (!v.IsAlive || v.Flying || v.Burrowed || v.Def.Naval != null) continue;
                 _ground.Add(v);
                 if (v.Def.HullBound > _maxBound) _maxBound = v.Def.HullBound;
             }
@@ -310,7 +312,7 @@ namespace MachineBrigade.Sim.Movement
             if (v.Def.FixedWing)
             {
                 // Aeroplanes circle their post and pick fights from there (see DriveAeroplane).
-                var nearby = GuardThreat(v);
+                var nearby = GuardThreat(v) ?? SeadTarget(v);
                 v.Engaged = nearby?.Id ?? EntityId.None;
                 return;
             }
@@ -390,6 +392,8 @@ namespace MachineBrigade.Sim.Movement
             var enemy = v.Def.FixedWing && weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1 ? BombTarget(v)
                 : _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
                     minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
+            // Prompt 17 C: the stealth fighter with no aircraft about goes for the air defences.
+            enemy ??= SeadTarget(v);
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;
@@ -581,6 +585,8 @@ namespace MachineBrigade.Sim.Movement
             // comes in until its gun and rockets reach as well (see HoverReach).
             var clear = _world.HasLineOfFire(v, target, weapon);
             var reach = v.Flying && !v.Def.FixedWing && !v.Def.Boss ? HoverReach(v, target) : weapon.Range;
+            // Prompt 17 C: dug in, it reaches further (and does not pack up for what it can already hit).
+            if (v.Deploy == DeployState.Deployed) reach *= v.RangeFactor;
             if (distance <= reach * 0.9f && clear)
             {
                 // Never stop in the doorway, nor in the road with friends coming up behind: step
@@ -785,12 +791,16 @@ namespace MachineBrigade.Sim.Movement
             var def = v.Def;
             var turnRadius = def.Speed / def.TurnRate;
             var target = RunTarget(v);
+            // Prompt 17 C: a loyal wingman flies on its leader's wing when it has nothing of its own to attack.
+            if (target == null && def.Wingman != null && FlyWing(v, dt)) return;
             v.InAttackHold = false;
             if (target != null && def.AttackHold > 0f && !def.Orbit && AttackHold(v, target, dt)) return;
             if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;
             Vector2 goal;
             var throttle = 1f;
-            var half = _world.Map.HalfSize;
+            // The map's middle and half extents (a long battlefield's are its own, prompt 17).
+            var centre = _world.Map.Centre;
+            float halfX = _world.Map.Width * 0.5f, halfZ = _world.Map.Length * 0.5f;
             var margin = turnRadius * 1.3f + 4f;
             var circling = false;
             if (target != null && def.Orbit)
@@ -801,8 +811,10 @@ namespace MachineBrigade.Sim.Movement
                 // near the edge is circled from the inside), and its centre glides to a new target
                 // at a few metres a second, so the turn never jerks.
                 var radius = MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f);
-                var limit = MathF.Max(0f, half - radius - 4f);
-                var want = new Vector2(Math.Clamp(target.Position.X, -limit, limit), Math.Clamp(target.Position.Y, -limit, limit));
+                var limitX = MathF.Max(0f, halfX - radius - 4f);
+                var limitZ = MathF.Max(0f, halfZ - radius - 4f);
+                var want = new Vector2(Math.Clamp(target.Position.X, centre.X - limitX, centre.X + limitX),
+                    Math.Clamp(target.Position.Y, centre.Y - limitZ, centre.Y + limitZ));
                 if (!v.Orbiting)
                 {
                     v.OrbitCentre = want;
@@ -869,8 +881,9 @@ namespace MachineBrigade.Sim.Movement
             if (!circling) v.Orbiting = false;
             // Turn back towards the middle before running out of map (a pylon turn is already
             // kept inside it; turning it back as well made it jerk between the two).
-            var nearEdge = MathF.Abs(v.Position.X) > half - margin || MathF.Abs(v.Position.Y) > half - margin;
-            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), v.Position) > 0f) goal = Vector2.Zero;
+            var fromCentre = v.Position - centre;
+            var nearEdge = MathF.Abs(fromCentre.X) > halfX - margin || MathF.Abs(fromCentre.Y) > halfZ - margin;
+            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), fromCentre) > 0f) goal = centre;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
             v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);

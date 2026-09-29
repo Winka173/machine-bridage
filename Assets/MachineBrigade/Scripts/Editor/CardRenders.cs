@@ -46,6 +46,9 @@ namespace MachineBrigade.Editor
             ("elite", d => d.Elite),
             ("boss", d => d.Boss),
             ("tower", d => d.Static && d.Fort != null),
+            // The modes' and bosses' fixed defences without a base slot (the super-gun, the spawn bastion, the fallback post,
+            // the targeting station): their cards and detail pages had no picture.
+            ("structure", d => d.Static && d.Fort == null && !d.Boss),
         };
 
         /// <summary>Every card that needs a picture: (card id, kind, model id).</summary>

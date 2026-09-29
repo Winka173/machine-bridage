@@ -17,6 +17,12 @@ namespace MachineBrigade.Sim.Modes
     {
         public int HqLevel { get; set; } = 1;
 
+        /// <summary>
+        /// Laid on a long battlefield's layered base (prompt 17 B.4): the HQ level opens the long table's slots
+        /// (more of every size), and its forward strongpoints repeat the towers (<see cref="BaseRules.ForwardSlots"/>).
+        /// </summary>
+        public bool Layered { get; set; }
+
         /// <summary>Towers for the small hardpoints (light towers only).</summary>
         public List<string> Small { get; set; } = new();
 
@@ -65,7 +71,8 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var id in list)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
-                    if (k-- == 0) return id;
+                    // Prompt 17 C: a fortress repeats its towers, but raises each CP relay once (two at most).
+                    if (k-- == 0) return index >= n && IsRelay(_catalogForRelays, id) ? NextNonRelay(list, id) : id;
                 }
             }
             return null;
@@ -96,6 +103,29 @@ namespace MachineBrigade.Sim.Modes
             }
         }
 
+        /// <summary>Prompt 17 C: CP relays already in this loadout's tower lists.</summary>
+        internal int RelayCount(Catalog catalog)
+        {
+            var count = 0;
+            foreach (var id in Towers)
+                if (IsRelay(catalog, id)) count++;
+            return count;
+        }
+
+        internal static bool IsRelay(Catalog? catalog, string id) =>
+            catalog != null && !string.IsNullOrEmpty(id) && catalog.Vehicles.TryGetValue(id, out var def) && def.Relay != null;
+
+        /// <summary>The catalog the fortress lookups check relays against (set by <see cref="Fitted"/>; null: none checked).</summary>
+        private Catalog? _catalogForRelays;
+
+        /// <summary>The first tower of a list after <paramref name="relay"/> that is no relay (the relay itself when all are).</summary>
+        private string NextNonRelay(List<string> list, string relay)
+        {
+            foreach (var id in list)
+                if (!string.IsNullOrEmpty(id) && !IsRelay(_catalogForRelays, id)) return id;
+            return relay;
+        }
+
         /// <summary>An HQ with nothing round it (tests, and modes that bring no loadout).</summary>
         public static BaseLoadout HqOnly(int level = 1) => new() { HqLevel = level };
 
@@ -108,20 +138,22 @@ namespace MachineBrigade.Sim.Modes
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var fitted = new BaseLoadout { HqLevel = level, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches) };
+            var fitted = new BaseLoadout { HqLevel = level, Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
-                var open = rules.Slots(level, size);
+                var open = rules.Slots(level, size, Layered);
                 var list = fitted.Of(size);
                 foreach (var id in Of(size))
                 {
                     if (list.Count >= open) break;
                     if (string.IsNullOrEmpty(id)) list.Add(Empty);
+                    // Prompt 17 C: at most two CP relays in a base; a third slot is left empty.
+                    else if (IsRelay(catalog, id) && fitted.RelayCount(catalog) >= RelayDef.MaxPerBase) list.Add(Empty);
                     else if (IsTower(catalog, id, out var fort) && fort.Fits(size)) list.Add(id);
                 }
                 TrimGaps(list);
             }
-            var slots = rules.UtilitySlots(level);
+            var slots = rules.UtilitySlots(level, Layered);
             foreach (var id in Utilities)
             {
                 if (fitted.Utilities.Count >= slots) break;
@@ -187,11 +219,12 @@ namespace MachineBrigade.Sim.Modes
         /// Deterministic for a seed.
         /// </summary>
         /// <param name="allowed">Only towers it lets through (prompt 14's Auto-arrange: the player's own towers); null: any.</param>
+        /// <param name="layered">For a long battlefield's layered base (prompt 17 B.4): the long table's slots.</param>
         public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null,
-            Predicate<string>? allowed = null)
+            Predicate<string>? allowed = null, bool layered = false)
         {
             var rules = catalog.Base;
-            var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel) };
+            var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel), Layered = layered };
             var weights = rules.Style(style);
             var pool = new List<(string id, SlotSize size, float weight)>();
             foreach (var def in catalog.Vehicles.Values)
@@ -205,17 +238,19 @@ namespace MachineBrigade.Sim.Modes
             var random = new Random(seed * 7919 + loadout.HqLevel);
             foreach (var size in new[] { SlotSize.Large, SlotSize.Medium, SlotSize.Small })
             {
-                var open = rules.Slots(loadout.HqLevel, size);
+                var open = rules.Slots(loadout.HqLevel, size, layered);
                 for (var k = 0; k < open; k++)
                 {
                     // A slot's own size first; a smaller tower only when the style has none of it.
                     var exact = pool.Exists(p => p.size == size);
-                    var pick = Draw(pool, random, p => exact ? p.size == size : p.size <= size);
+                    // Prompt 17 C: two CP relays at most.
+                    var relays = loadout.RelayCount(catalog) >= RelayDef.MaxPerBase;
+                    var pick = Draw(pool, random, p => (exact ? p.size == size : p.size <= size) && !(relays && IsRelay(catalog, p.id)));
                     if (pick != null) loadout.Of(size).Add(pick);
                 }
             }
             // Prompt 13 F.1: its first utility slot takes a landing pad (its aircraft rearm and mend there).
-            if (catalog.Base.UtilitySlots(loadout.HqLevel) > 0 && catalog.Vehicles.ContainsKey("airfield")) loadout.Utilities.Add("airfield");
+            if (catalog.Base.UtilitySlots(loadout.HqLevel, layered) > 0 && catalog.Vehicles.ContainsKey("airfield")) loadout.Utilities.Add("airfield");
             // Anti-air: the last small slot turns into the style's best anti-air tower if there is none.
             var hasAa = false;
             foreach (var id in loadout.Towers) hasAa |= IsAntiAir(catalog, id);
@@ -246,13 +281,13 @@ namespace MachineBrigade.Sim.Modes
         internal static bool IsAntiAir(Catalog catalog, string id)
         {
             foreach (var m in catalog.Vehicles[id].Mounts)
-                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Flak || m.Weapon.Targets == TargetLayers.Air)) return true;
+                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Fragmentation || m.Weapon.Targets == TargetLayers.Air)) return true;
             return false;
         }
 
         public BaseLoadout Clone() => new()
         {
-            HqLevel = HqLevel, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
+            HqLevel = HqLevel, Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
             Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches),
         };
     }
