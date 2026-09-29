@@ -425,7 +425,8 @@ namespace MachineBrigade.Sim.Modes
             // Everything built into the fortress goes up with it at the end.
             if (Fortress is { } centre && rings.Count > 0)
                 foreach (var prop in world.Props)
-                    if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible && Chebyshev(prop.Position, centre) <= rings[0] + 4f)
+                    if (prop.IsAlive && prop.Def.BlocksMovement && !prop.Def.Indestructible &&
+                        (_fortress is { Layered: true } layered ? layered.Contains(prop.Position) : Chebyshev(prop.Position, centre) <= rings[0] + 4f))
                     {
                         _fortressProps.Add(prop.Id);
                         if (_rules.BountyBuildings.Contains(prop.Def.Id)) _bounty.Add(prop.Id);
@@ -452,6 +453,9 @@ namespace MachineBrigade.Sim.Modes
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
             DomeUp = Stage <= 2 && _generators.Count > 0;
             Shield(world);
+            // Prompt 17 B.2: on a long battlefield the attack's reinforcements land further forward once a ring has fallen.
+            if (_fortress is { Layered: true } && _fortress.ForwardDrops.Count > 0)
+                world.Bases.ForwardZone = team => team == Attacker ? ForwardDrop : null;
             // The attacker's own camp outside the walls (the map's side 0): its HQ and towers. Only
             // when the player attacks (Siege): the waves of Defend come without a camp of their own.
             if (Attacker == PlayerTeam && world.Map.BaseOf(0) != null && world.Catalog.Vehicles.ContainsKey(world.Catalog.Base.HqId))
@@ -542,7 +546,7 @@ namespace MachineBrigade.Sim.Modes
                 if (!prop.IsAlive) continue;
                 var gate = prop.Def.Id == _rules.Gate;
                 if (!gate && prop.Def.Id != _rules.Wall) continue;
-                var ring = Chebyshev(prop.Position, hq) >= split ? 2 : 3;
+                var ring = _fortress is { Layered: true } f ? Math.Max(2, f.RingOf(prop.Position)) : Chebyshev(prop.Position, hq) >= split ? 2 : 3;
                 if (ring == 3)
                 {
                     min = Vector2.Min(min, prop.Position);
@@ -553,9 +557,12 @@ namespace MachineBrigade.Sim.Modes
                     _walls.Add((prop.Id, ring));
                     continue;
                 }
-                // Outward: away from the HQ, square to the wall the gate stands in.
+                // Outward: away from the HQ, square to the wall the gate stands in (on a layered base, the wall's own
+                // run: its outer wall crosses the whole map, so the HQ's bearing does not say which wall it is).
                 var off = prop.Position - hq;
-                var outward = MathF.Abs(off.X) >= MathF.Abs(off.Y) ? new Vector2(MathF.Sign(off.X), 0f) : new Vector2(0f, MathF.Sign(off.Y));
+                var outward = _fortress is { Layered: true }
+                    ? prop.Rotation % 180 == 0 ? new Vector2(0f, MathF.Sign(off.Y)) : new Vector2(MathF.Sign(off.X), 0f)
+                    : MathF.Abs(off.X) >= MathF.Abs(off.Y) ? new Vector2(MathF.Sign(off.X), 0f) : new Vector2(0f, MathF.Sign(off.Y));
                 _gates.Add((prop.Id, ring, outward));
             }
             if (min.X <= max.X)
@@ -573,6 +580,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Which ring a point lies in: 1 outer line, 2 walls, 3 keep.</summary>
         private int RingOf(Vector2 p, IReadOnlyList<float> rings)
         {
+            if (_fortress is { Layered: true } layered) return layered.RingOf(p);
             if (Fortress is not { } centre || rings.Count < 2) return 1;
             var d = Chebyshev(p, centre);
             return d > rings[0] ? 1 : d > rings[1] ? 2 : 3;
@@ -689,6 +697,7 @@ namespace MachineBrigade.Sim.Modes
 
         private bool InsideRing(SimWorld world, Vector2 p, int ring)
         {
+            if (_fortress is { Layered: true } layered) return layered.RingOf(p) >= (ring == 2 ? 2 : 3);
             var rings = world.Map.SiegeRings;
             if (Fortress is not { } hq || rings.Count < 2) return true;
             return Chebyshev(p, hq) <= rings[ring == 2 ? 0 : 1];
@@ -1151,9 +1160,23 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>Flies in waiting wave vehicles while the attackers alive (and on their way) are under the ceiling.</summary>
+        /// <summary>
+        /// Prompt 17 B.2: where the attack's reinforcements land on a long battlefield once a ring has fallen (the
+        /// fortress's forward drops: before the buffer after stage 1, before the outer wall after stage 2); null before.
+        /// </summary>
+        public Vector2? ForwardDrop
+        {
+            get
+            {
+                if (_fortress is not { Layered: true } f || f.ForwardDrops.Count == 0 || Stage < 2) return null;
+                return f.ForwardDrops[Math.Min(Stage - 2, f.ForwardDrops.Count - 1)];
+            }
+        }
+
         private void ReleaseWaves(SimWorld world)
         {
             if (_reserve.Count == 0 || !world.TryGetRally(Attacker, out var camp)) return;
+            if (ForwardDrop is { } forward) camp = forward;
             for (var i = _inbound.Count - 1; i >= 0; i--)
                 if (_inbound[i] <= world.Time) _inbound.RemoveAt(i);
             var alive = _inbound.Count + AttackersAlive(world);

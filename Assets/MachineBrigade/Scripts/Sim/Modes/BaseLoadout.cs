@@ -17,6 +17,12 @@ namespace MachineBrigade.Sim.Modes
     {
         public int HqLevel { get; set; } = 1;
 
+        /// <summary>
+        /// Laid on a long battlefield's layered base (prompt 17 B.4): the HQ level opens the long table's slots
+        /// (more of every size), and its forward strongpoints repeat the towers (<see cref="BaseRules.ForwardSlots"/>).
+        /// </summary>
+        public bool Layered { get; set; }
+
         /// <summary>Towers for the small hardpoints (light towers only).</summary>
         public List<string> Small { get; set; } = new();
 
@@ -132,10 +138,10 @@ namespace MachineBrigade.Sim.Modes
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var fitted = new BaseLoadout { HqLevel = level, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
+            var fitted = new BaseLoadout { HqLevel = level, Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
-                var open = rules.Slots(level, size);
+                var open = rules.Slots(level, size, Layered);
                 var list = fitted.Of(size);
                 foreach (var id in Of(size))
                 {
@@ -147,7 +153,7 @@ namespace MachineBrigade.Sim.Modes
                 }
                 TrimGaps(list);
             }
-            var slots = rules.UtilitySlots(level);
+            var slots = rules.UtilitySlots(level, Layered);
             foreach (var id in Utilities)
             {
                 if (fitted.Utilities.Count >= slots) break;
@@ -213,11 +219,12 @@ namespace MachineBrigade.Sim.Modes
         /// Deterministic for a seed.
         /// </summary>
         /// <param name="allowed">Only towers it lets through (prompt 14's Auto-arrange: the player's own towers); null: any.</param>
+        /// <param name="layered">For a long battlefield's layered base (prompt 17 B.4): the long table's slots.</param>
         public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null,
-            Predicate<string>? allowed = null)
+            Predicate<string>? allowed = null, bool layered = false)
         {
             var rules = catalog.Base;
-            var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel) };
+            var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel), Layered = layered };
             var weights = rules.Style(style);
             var pool = new List<(string id, SlotSize size, float weight)>();
             foreach (var def in catalog.Vehicles.Values)
@@ -231,7 +238,7 @@ namespace MachineBrigade.Sim.Modes
             var random = new Random(seed * 7919 + loadout.HqLevel);
             foreach (var size in new[] { SlotSize.Large, SlotSize.Medium, SlotSize.Small })
             {
-                var open = rules.Slots(loadout.HqLevel, size);
+                var open = rules.Slots(loadout.HqLevel, size, layered);
                 for (var k = 0; k < open; k++)
                 {
                     // A slot's own size first; a smaller tower only when the style has none of it.
@@ -243,7 +250,7 @@ namespace MachineBrigade.Sim.Modes
                 }
             }
             // Prompt 13 F.1: its first utility slot takes a landing pad (its aircraft rearm and mend there).
-            if (catalog.Base.UtilitySlots(loadout.HqLevel) > 0 && catalog.Vehicles.ContainsKey("airfield")) loadout.Utilities.Add("airfield");
+            if (catalog.Base.UtilitySlots(loadout.HqLevel, layered) > 0 && catalog.Vehicles.ContainsKey("airfield")) loadout.Utilities.Add("airfield");
             // Anti-air: the last small slot turns into the style's best anti-air tower if there is none.
             var hasAa = false;
             foreach (var id in loadout.Towers) hasAa |= IsAntiAir(catalog, id);
@@ -280,7 +287,7 @@ namespace MachineBrigade.Sim.Modes
 
         public BaseLoadout Clone() => new()
         {
-            HqLevel = HqLevel, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
+            HqLevel = HqLevel, Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
             Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches),
         };
     }

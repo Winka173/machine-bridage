@@ -1476,10 +1476,6 @@ namespace MachineBrigade.Sim.AI
             return length > 0.01f ? d / length : Vector2.UnitX;
         }
 
-        private static Vector2 Clamp(SimWorld world, Vector2 p)
-        {
-            var limit = world.Map.HalfSize - EdgeMargin;
-            return new Vector2(Math.Clamp(p.X, -limit, limit), Math.Clamp(p.Y, -limit, limit));
-        }
+        private static Vector2 Clamp(SimWorld world, Vector2 p) => world.Map.Clamp(p, EdgeMargin);
     }
 }

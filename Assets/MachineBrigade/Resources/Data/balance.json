@@ -34,6 +34,12 @@
     "levels": [ { "small": 3, "medium": 1, "large": 0, "utility": 1 }, { "small": 4, "medium": 2, "large": 0, "utility": 1 },
                 { "small": 4, "medium": 2, "large": 1, "utility": 2 }, { "small": 5, "medium": 3, "large": 1, "utility": 2 },
                 { "small": 6, "medium": 3, "large": 2, "utility": 3 } ],
+    // Prompt 17 B.4: a long battlefield's layered base (outer wall, yard, inner wall, HQ) opens more at each level;
+    // its forward works' strongpoints ("longForward") repeat the base's towers and do not count against the level.
+    "longLevels": [ { "small": 4, "medium": 1, "large": 0, "utility": 1 }, { "small": 5, "medium": 2, "large": 1, "utility": 1 },
+                    { "small": 6, "medium": 3, "large": 1, "utility": 2 }, { "small": 7, "medium": 4, "large": 2, "utility": 3 },
+                    { "small": 8, "medium": 5, "large": 3, "utility": 4 } ],
+    "longForward": { "small": 6, "medium": 2 },
     // Flying a destroyed tower back in, by its size: light towers come back sooner and cheaper.
     "rebuild": { "small": { "cp": 2, "cooldown": 25 }, "medium": { "cp": 4, "cooldown": 40 }, "large": { "cp": 7, "cooldown": 60 }, "delay": 4 },
     "outpost": { "cp": 6, "slots": 2 },

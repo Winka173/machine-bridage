@@ -299,13 +299,17 @@ namespace MachineBrigade.Game.Match
         /// <summary>Which map file the mode plays on (objectives or the open sandbox version).</summary>
         public static string MapFile(GameModeKind kind, string mapId) => kind switch
         {
-            // Every battlefield has a fortified version; fall back to Conquest's if one is missing.
-            GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless =>
-                UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null ? mapId + "_siege" : mapId + "_conquest",
+            // Prompt 17 A.2: the long battlefield (300 x 480 m, the layered base) where the map has one; else its fortified
+            // 300 m version; else Conquest's.
+            GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless => Fortified(mapId),
             GameModeKind.BossRush => mapId + "_sandbox",
-            GameModeKind.Weekly => WeeklyFortress.MapId + "_siege",
+            GameModeKind.Weekly => Fortified(WeeklyFortress.MapId),
             _ => LegacyMapFile(kind, mapId),
         };
+
+        private static string Fortified(string mapId) =>
+            UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_long") != null ? mapId + "_long"
+            : UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/maps/" + mapId + "_siege") != null ? mapId + "_siege" : mapId + "_conquest";
 
         private static string LegacyMapFile(GameModeKind kind, string mapId) =>
             mapId + (kind is GameModeKind.Survival ? "_sandbox" : "_conquest");
@@ -583,8 +587,9 @@ namespace MachineBrigade.Game.Match
                 EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
                 // Prompt 13 H.7-H.8: the waves by the base they face, drawn against it, with siege breakers.
                 ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = 2, BreachEvery = 3,
-                // The player's fortress: exactly their own base loadout in its lines' hardpoints.
-                FortressLoadout = PlayerProfile.BaseLoadout,
+                // The player's fortress: exactly their own base loadout in its lines' hardpoints (on a long battlefield
+                // the plan laid on its layered base, prompt 17 B.5).
+                FortressLoadout = world.Map.Fortress is { Layered: true } ? PlayerProfile.BaseLoadoutOnLayered(world.Map) : PlayerProfile.BaseLoadout,
                 Attacker = attacker, Defender = defender,
             });
             Mode = _mode;
@@ -669,7 +674,8 @@ namespace MachineBrigade.Game.Match
             {
                 StartSeconds = 300f, StartStage = _startStage,
                 Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog, seed),
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week),
+                // Prompt 17 B.7: on a long battlefield the same layered plan (the long table's towers).
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true }),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -752,7 +758,8 @@ namespace MachineBrigade.Game.Match
                 Attacker = attacker, Defender = defender,
                 AttackerBase = PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam),
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
+                // (Prompt 17 B.7: a long battlefield's layered base takes the long table's towers.)
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, layered: world.Map.Fortress is { Layered: true }),
             });
             Mode = _mode;
             _mode.Setup(world);

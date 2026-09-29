@@ -5110,6 +5110,131 @@ gunship_heli, fighter_jet).
 - FPS and tick time on the heaviest boss fight with a full escort and burning parts (Low, a low-end device).
 - The escort icon and bar count on a device (and the UI agent's own escort icons, if it makes them, replacing mine).
 
+## 16A. Prompt 17: long maps and layered bases (2026-09-29)
+
+Parts A and B only (C, D and E are later agents').
+
+### A. Map size by mode
+
+- **Which modes.** Conquest, Deathmatch, King of the Hill, Assault, Survival and Boss Rush keep their 300 x 300 m files,
+  byte for byte. Siege, Defend, Endless and the weekly fortress play on `<map>_long.json` when the map has one
+  (`ModeSession.MapFile` -> `Fortified`: long, else `_siege`, else `_conquest`). Campaign missions keep their variants.
+- **The long battlefield** (`Tools/maps/longmap.py`, all 20 maps with a siege version): 300 m across, 480 m along the
+  attack (x -150..150, z -150..330; map data `bounds`, `size` 480). South of z = 118 it is the map's own Conquest
+  battlefield where it always was (ground, dressing, the attacker's camp and its hardpoints, the three objectives), so
+  campaign and camp coordinates hold; the extra 180 m run north, where the base stands, and the flanks are no wider.
+  North of the seam a new outline (the map's own strip depth and noise, capped at 12 m, blended over 30 m) replaces the
+  square's edge; the square's decor that falls inside comes back as props ("the scenery beyond the edge is played on
+  now"), and the strip beyond the new edge gets the theme's trees, rocks and a house here and there.
+  Why not grow the corner fortress: its diagonal geometry (outer line x + z = c, L-shaped walls) does not stretch along
+  one axis; a base across the full width is what the owner's "outer wall with 2-3 gates" reads as.
+- **The sim on a rectangle.** `MapDefinition` has `Min`/`Max` (a square map keeps -half..half), `Width`, `Length`,
+  `Centre`, `IsLong`, `Clamp`, `EdgeDistance`; `Contains`, `ClampToMap`, the tactical AI's clamp, the supply drops, the
+  crate drops, the aircraft's edge turn and orbit clamp, the airlift's edge and the dodge scoring use them. `NavGrid` and
+  `CoverGrid` take an origin and a width and length (the old square constructors stay). Deterministic: no float order
+  changed on the square maps (same cells, same centres).
+- **Camera, zoom, minimap** (A.4). A long map is seen looking west (`RtsCamera.LongYaw` -90 degrees, the square maps
+  -45), so its length runs across the landscape screen, attacker left as before; default zoom 21 (19) and widest 50
+  (42); the view starts 22 m ahead of the rally. The camera clamps to the map's rectangle. The minimap keeps the
+  rectangle: `Minimap.SetPicture(picture, min, max, yaw)` fits the rotated rectangle and turns with the camera; the
+  ground paint (`TerrainPainter.Canvas`), the minimap picture, `BoundaryField`, the ground mesh, the skirt, pebbles and
+  grass, the lava and river contours, the troop transports' way in (`AirDrops` Centre/HalfX/HalfZ) and the scenery ring
+  (`Surroundings.Beyond`) work on the rectangle. The ground texture keeps the square's density (1024 x 1640 on a long map).
+- **Path memory and time** (A.5), measured by `LongMapTests` (desktop, editor Mono): see the numbers below. The grid is
+  150 x 240 cells (36,000; the square 22,500, x1.6). Memory a cell: NavGrid 12 B, the path finder 16 B, lanes and unit
+  costs about 11 B, cover 4 B a square metre. No coarser cells or hierarchical search were needed; the path queue
+  (6 routes a step) is unchanged. If the testing phase's tick budget on the long Siege shows path spikes, the next step
+  is a two-level search (sector graph over 16 x 16 cell blocks) in `PathFinder`, not coarser cells (gates and sally
+  ports are 3-7 cells wide).
+- **Unit caps unchanged** (A.6): 32 vehicles + 6 aircraft a side, Siege/Defend's 48.
+- **Operations** (A.3): the mechanism is prompt 5's `Expand` and `PlayArea`; no operation expands yet (every one plays
+  the 300 m square). A later stage that needs about 500 m would use a long file as its map (`variant: "long"`) with the
+  square as the first play area; left for the campaign agent, no mission data changed here.
+
+### B. Layered bases on the long maps
+
+- **Layout (B.1)**, north of the 300 m square, from the attack: the buffer zone (z 150-190), the forward works (the
+  three relays of stage 1 and eight strongpoints: 6 small, 2 medium, behind sandbags), the outer wall along z = 218
+  across the whole width with a closed main gate on the road and two open 18 m sally ports (x -103, 101), the yard (the
+  shield generators, the super-gun, fuel and ammunition stores, hangars and barracks, the line in: a runway along the
+  east yard or a rail line down the west yard), the inner wall (the keep: x -46.6..44.6 from z = 266, a closed south gate,
+  open 18 m gateways in both side walls), the command HQ at (0, 305) and the defenders' drop zone in the keep's yard
+  (0, 284). Each layer has its own hardpoints (map data `place`: outer_gate, outer_wall, yard, inner_wall, hq_side,
+  forward).
+- **Rings.** `fortress.rings` are polygons (inside the outer wall, inside the keep); `FortressDef.RingOf` and SiegeMode
+  use them on a layered base (gates' outward from their wall's run, the fortress's props from `fortress.area`);
+  `siegeRings` stay as axial distances for older readers. Stage 1 the forward relays, 2 the generators (yard), 3 the HQ.
+- **Drops (B.2).** The defender's drop is inside the keep. The attacker's camp is the square's south-west camp; on a long
+  map the attack's reinforcements (the player's purchases in Siege, the waves in Defend and Endless) land at the
+  fortress's forward drops once a ring has fallen: (0, 128) before the buffer after stage 1, (-1, 196) before the outer
+  wall after stage 2 (`SiegeMode.ForwardDrop`, through `BaseSystem.ForwardZone`); outposts and the command vehicle still
+  win when they are further forward.
+- **Buffer zone (B.3).** Two staggered rows of dragon's teeth (z 168), anti-tank ditches (z 178, painted dug ground),
+  wire (z 185), each belt with gaps before the main gate, both sally ports and two between; shell holes; up to four
+  firing positions on the attacker's side (z 136-140: earth banks open to the south, sandbags on the lip: the high
+  ground the attack's guns fire from; `fortress.firing`). 1-4 fit per map (the square's buildings take the rest);
+  the map stays static.
+- **Slots by HQ level (B.4)**, `balance.json base.longLevels`: 4/1/0/1, 5/2/1/1, 6/3/1/2, 7/4/2/3, 8/5/3/4
+  (small/medium/large/utility); every long base has exactly 8/5/3 + 4 utility base slots, listed most important first
+  per size (outer gate, inner wall, outer wall, yard; large: yard, beside the HQ). The forward strongpoints
+  (`longForward` 6 small, 2 medium) repeat the loadout's towers and do not count against the level. 300 m camps keep
+  their table. `BaseRules.Slots/UtilitySlots(level, size, layered)`, `BaseLoadout.Layered`, `BaseLayout.Camp` read it.
+- **Labels and the one loadout (B.5).** New `SlotPlace`s OuterGate, OuterWall, Yard, InnerWall (strings "Cổng ngoài",
+  "Tường ngoài", "Sân trong", "Tường trong"). The plan keeps both kinds of places; a camp ignores the long places and a
+  layered base the camps' own (beside the HQ and utility are shared). Until the player lays a long base out, its places
+  borrow the camp counterparts' towers (outer gate <- gate, outer wall <- outer ring, yard and inner wall <- inner
+  ring, over again, then any of the size): nobody's Defend base comes up empty. The first edit on a long base makes its
+  places the plan's own; a camp's Auto-arrange keeps them. A long base can be set up on its own like a camp (key
+  `<map>_long`). No save migration: old plans simply have no long places.
+- **The Base screen** lists each map with a long battlefield twice, its camp and "<map> · dài" (the layered base),
+  and shows the long table's locks and "Lên cấp" line there (`BaseSites.LongOf`, `PlanKey`). Its picture comes from
+  `BaseMapShots` (now also `<map>_long`); until the pictures are rendered the screen draws the base without one.
+- **Strength (B.6).** `BaseStrength.Power` of a layered loadout counts the extra slots and the forward repeats; Defend
+  and Endless scale their waves on what stands (`Score(world, team)`), which already counts every tower raised.
+- **Enemy fortress (B.7).** Siege and the weekly fortress raise the enemy's layered base from `BaseLoadout.ForAi(...,
+  layered: true)` over every hardpoint (the AI fills all 28, as the corner fortress filled all of its), rings tougher
+  inward as before; Defend raises exactly the player's plan on the layered base (`PlayerProfile.BaseLoadoutOnLayered`).
+
+### Measurements
+
+- **Path memory and time** (`LongMapTests`, desktop Ryzen 7 9700X, editor Mono, gates shut, every hardpoint holding the
+  biggest tower): ashfield_long, swamp_long and metrocity_long are 150 x 240 cells; navigation memory (NavGrid, cover,
+  the path finder's arrays, lanes and unit costs) 1.9 MB a map; a full-length route (the attack's camp to the HQ, the
+  relays, the generators and the keep's drop zone, and back; 32 searches) 5.9 / 5.6 / 5.2 ms mean. Every route found.
+- **Judgement.** Memory is well inside budget. Time: on the 6x slower phone a full-length route is about 35 ms, so a step
+  that plans several of them at once would pass the 16 ms p99 step budget; most re-plans are short (the path queue's
+  6 a step is unchanged). Not changed now (the owner's minimal rule); the testing phase's `TickBudgetTests` on the long
+  Siege decides. The fix if it is over: an expansion budget per step on long maps (`PathCosts.MaxExpansions` already
+  exists), then the two-level search above.
+- **Tests run once** (EditMode: LongMap, MapConnectivity, BasePlan, BaseStrength, SiegeMode, Traffic, CheckpointReplay,
+  Navigation, TransportRoute): 104 of 122 pass. The 18 failures are `TrafficTests.EverySiegeGateLeavesThreeCells` on the
+  square `_siege` maps (not the long ones): `SimWorld.DebugDestroyProp` no longer destroys a `fortress_gate` since
+  prompt 15 gave it armour 4 (its high-explosive blow is cut to 5 %), so the doors still stand. Not caused here; the
+  lead should make DebugDestroyProp kill outright. PlaySmoke skipped (the owner's update).
+
+### Merge notes (shared files touched)
+
+Sim: MapDefinition, NavGrid, CoverGrid, JsonObject (FloatArrays), SimWorld (grids, ClampToMap, dodge edge), TacticalAi
+(Clamp), SupplySystem, EconomySystem (EdgeBehind), BattleEvents (crate area), MissionMode (flee), MovementSystem
+(aircraft edge), BaseSites, FortressDef, BaseRules, BaseLoadout, BaseLayout, BaseStrength, BaseSystem
+(EstablishFortress), SiegeModes. Game: RtsCamera, Minimap, AirDrops, EffectsDirector, MapView, TerrainPainter,
+BoundaryField, Surroundings, MatchRunner, ModeSessions (MapFile, fortress loadouts), BasePlan, PlayerProfile.BasePlans,
+BaseScreen, Strings. Editor: BaseMapShots. Data: balance.json (base.longLevels, longForward), 20 new `*_long.json`.
+Tools: longmap.py (new), build_maps.py / fortress.py / check_access.py / plot_map.py (rectangular grids; the square maps
+build unchanged). No boss code touched.
+
+**Lighthouse Bay:** once the lead merges it into `build_maps.MAPS` (with its SHAPES entry), `python Tools/maps/longmap.py
+lighthousebay` writes `lighthousebay_long.json` (and runs check_access); nothing else is needed.
+
+### For the testing phase (not run, by the token rule)
+
+- `StuckBatch` on every `_long` map, Siege, Defend, Endless, Weekly, both sides, 5 seeds.
+- `SiegeBalanceTests` and `ModeEndingTests` (they now play the long files): Siege 12-16 min with 60-75 % player wins,
+  Defend's prompt 13 targets, Endless by base strength, the weekly's last stage; tune clocks and stage bonuses for the
+  longer march there.
+- `TickBudgetTests` on the heaviest long Siege; the base map pictures for the long bases (`BaseMapShots.RenderAll`
+  with graphics, `-mbBaseMaps ashfield_long,...`); BaseScreenTests' face-spacing check on the long bases.
+
 ## 16C. Prompt 17: new units and towers (2026-09-29)
 
 Part C of prompt 17: six vehicles and two towers. Parts A-B (long maps, layered bases) are on feature/p17-longmaps and

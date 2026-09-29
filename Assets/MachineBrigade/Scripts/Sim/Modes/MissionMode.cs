@@ -761,7 +761,7 @@ namespace MachineBrigade.Sim.Modes
             v.ExpiresAt = world.Time + FleeSeconds;
             var away = world.TryGetRally(EnemyTeam, out var camp) ? camp : v.Position;
             var outward = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
-            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.HalfSize)));
+            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.Size * 0.5f)));
             world.Emit(SimEvent.RadioMessage("radio.bossFled", PlayerTeam));
         }
 

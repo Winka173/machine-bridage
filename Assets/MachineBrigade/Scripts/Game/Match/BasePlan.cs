@@ -30,6 +30,20 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>A utility module's hardpoint (tiện ích).</summary>
         Utility,
+
+        // Prompt 17 B.5: a long battlefield's layered base (its hardpoints carry these in the map data).
+
+        /// <summary>Behind the outer wall's gates (cổng ngoài).</summary>
+        OuterGate,
+
+        /// <summary>Along the outer wall, by its sally ports (tường ngoài).</summary>
+        OuterWall,
+
+        /// <summary>The yard between the two walls (sân trong).</summary>
+        Yard,
+
+        /// <summary>Behind the inner wall, the keep's (tường trong).</summary>
+        InnerWall,
     }
 
     /// <summary>A place in a loadout by position: the place, the slot's size, and which of the camp's slots of that place and size (left to right).</summary>
@@ -73,6 +87,23 @@ namespace MachineBrigade.Game.Match
         /// <summary>A slot this far round (degrees off the facing) is at the rear.</summary>
         public const float RearCone = 110f;
 
+        /// <summary>Places only a layered base has (prompt 17): a camp ignores a plan's towers for them, and the other way round.</summary>
+        public static bool LongOnly(SlotPlace place) => place is SlotPlace.OuterGate or SlotPlace.OuterWall or SlotPlace.Yard or SlotPlace.InnerWall;
+
+        /// <summary>Places only a camp has.</summary>
+        public static bool CampOnly(SlotPlace place) => place is SlotPlace.Gate or SlotPlace.Outer or SlotPlace.Inner or SlotPlace.Rear;
+
+        /// <summary>A layered base's place from the map data's label (null: work it out as on a camp).</summary>
+        public static SlotPlace? FromLabel(string label) => label switch
+        {
+            "outer_gate" => SlotPlace.OuterGate,
+            "outer_wall" => SlotPlace.OuterWall,
+            "yard" => SlotPlace.Yard,
+            "inner_wall" => SlotPlace.InnerWall,
+            "hq_side" => SlotPlace.HqSide,
+            _ => null,
+        };
+
         /// <summary>Every hardpoint's place key, in the camp's slot order.</summary>
         public static PlaceKey[] Keys(BaseSiteDef site)
         {
@@ -93,6 +124,12 @@ namespace MachineBrigade.Game.Match
                 var angle = distance < 0.01f ? 0f : MathF.Acos(Math.Clamp(along / distance, -1f, 1f)) * 180f / MathF.PI;
                 bearings[i] = MathF.Atan2(across, along);
                 var r = distance / furthest;
+                // A layered base names its places in the map data (B.5).
+                if (s.Kind != HardpointKind.Utility && s.Place != null && FromLabel(s.Place) is { } labelled)
+                {
+                    places[i] = labelled;
+                    continue;
+                }
                 places[i] = s.Kind == HardpointKind.Utility ? SlotPlace.Utility
                     : r < HqSide ? SlotPlace.HqSide
                     : angle > RearCone ? SlotPlace.Rear
@@ -119,12 +156,30 @@ namespace MachineBrigade.Game.Match
 
         private static int Rank(SlotPlace place) => place switch
         {
+            SlotPlace.OuterGate => -1,
+            SlotPlace.OuterWall => 0,
             SlotPlace.Gate => 0,
             SlotPlace.Outer => 1,
+            SlotPlace.Yard => 1,
             SlotPlace.Inner => 2,
+            SlotPlace.InnerWall => 2,
             SlotPlace.HqSide => 3,
             SlotPlace.Rear => 4,
             _ => 10,
+        };
+
+        /// <summary>
+        /// The camp place a layered base's place borrows its towers from while the plan has none of its own for the
+        /// long battlefields: the gate's for the outer gate, the outer ring's for the outer wall, the inner ring's for the
+        /// yard and the inner wall (prompt 17 B.5).
+        /// </summary>
+        internal static SlotPlace Counterpart(SlotPlace place) => place switch
+        {
+            SlotPlace.OuterGate => SlotPlace.Gate,
+            SlotPlace.OuterWall => SlotPlace.Outer,
+            SlotPlace.Yard => SlotPlace.Inner,
+            SlotPlace.InnerWall => SlotPlace.Inner,
+            _ => place,
         };
     }
 
@@ -167,6 +222,7 @@ namespace MachineBrigade.Game.Match
             {
                 var loadout = own.Clone();
                 loadout.HqLevel = hqLevel;
+                loadout.Layered = site != null && site.Layered;
                 loadout.Outpost.Clear();
                 loadout.Outpost.AddRange(Outpost);
                 return loadout;
@@ -196,18 +252,20 @@ namespace MachineBrigade.Game.Match
             var keys = SlotPlaces.Keys(site);
             var towers = new string[keys.Length];
             var used = new HashSet<PlaceKey>();
+            var places = site.Layered && !HasLong ? Borrowed(site, keys) : Places;
             for (var i = 0; i < keys.Length; i++)
-                if (Places.TryGetValue(keys[i], out var id) && !string.IsNullOrEmpty(id))
+                if (places.TryGetValue(keys[i], out var id) && !string.IsNullOrEmpty(id))
                 {
                     towers[i] = id;
                     used.Add(keys[i]);
                 }
             var left = new List<(PlaceKey key, string id)>();
-            foreach (var (key, id) in Places)
-                if (!string.IsNullOrEmpty(id) && !used.Contains(key)) left.Add((key, id));
+            // (A camp leaves the long battlefields' places alone, and a layered base every place but its own: B.5.)
+            foreach (var (key, id) in places)
+                if (!string.IsNullOrEmpty(id) && !used.Contains(key) && SlotPlaces.LongOnly(key.Place) == site.Layered) left.Add((key, id));
             left.Sort((a, b) => a.key.Place != b.key.Place ? a.key.Place.CompareTo(b.key.Place)
                 : a.key.Size != b.key.Size ? a.key.Size.CompareTo(b.key.Size) : a.key.Ordinal.CompareTo(b.key.Ordinal));
-            var ownKeyed = new HashSet<PlaceKey>(Places.Keys);
+            var ownKeyed = new HashSet<PlaceKey>(places.Keys);
             foreach (var (key, id) in left)
             {
                 misfit = true;
@@ -230,10 +288,66 @@ namespace MachineBrigade.Game.Match
             return towers;
         }
 
+        /// <summary>Whether the plan has towers of its own for a layered base's places (else it borrows the camps', <see cref="Borrowed"/>).</summary>
+        public bool HasLong
+        {
+            get
+            {
+                foreach (var key in Places.Keys)
+                    if (SlotPlaces.LongOnly(key.Place)) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// The plan as a layered base reads it while the player has laid none of the long battlefields' places out
+        /// (prompt 17 B.5): each long place takes the towers of its camp counterpart (<see cref="SlotPlaces.Counterpart"/>)
+        /// of the same size, in order and over again, then any of that size; the places both kinds share (beside the HQ,
+        /// the utility slots) are the plan's own.
+        /// </summary>
+        internal Dictionary<PlaceKey, string> Borrowed(BaseSiteDef site, PlaceKey[] keys)
+        {
+            var result = new Dictionary<PlaceKey, string>();
+            foreach (var (k, v) in Places)
+                if (!SlotPlaces.LongOnly(k.Place)) result[k] = v;
+            List<string> Towers(Func<PlaceKey, bool> which)
+            {
+                var list = new List<(PlaceKey key, string id)>();
+                foreach (var (k, v) in Places)
+                    if (!string.IsNullOrEmpty(v) && which(k)) list.Add((k, v));
+                list.Sort((a, b) => SlotPlaces.Distance(a.key.Place, SlotPlace.Gate) != SlotPlaces.Distance(b.key.Place, SlotPlace.Gate)
+                    ? SlotPlaces.Distance(a.key.Place, SlotPlace.Gate).CompareTo(SlotPlaces.Distance(b.key.Place, SlotPlace.Gate))
+                    : a.key.Ordinal.CompareTo(b.key.Ordinal));
+                return list.ConvertAll(e => e.id);
+            }
+            var seen = new Dictionary<(SlotPlace, SlotSize), int>();
+            foreach (var key in keys)
+            {
+                if (!SlotPlaces.LongOnly(key.Place)) continue;
+                var from = SlotPlaces.Counterpart(key.Place);
+                var own = Towers(k => k.Place == from && k.Size == key.Size);
+                if (own.Count == 0) own = Towers(k => SlotPlaces.CampOnly(k.Place) && k.Size == key.Size);
+                if (own.Count == 0) continue;
+                seen.TryGetValue((key.Place, key.Size), out var n);
+                seen[(key.Place, key.Size)] = n + 1;
+                result[key] = own[n % own.Count];
+            }
+            return result;
+        }
+
+        /// <summary>Lays the borrowed towers (<see cref="Borrowed"/>) into the plan as its own long places: the first edit on a layered base.</summary>
+        private void OwnLong(BaseSiteDef site)
+        {
+            if (!site.Layered || HasLong) return;
+            var keys = SlotPlaces.Keys(site);
+            foreach (var (k, v) in Borrowed(site, keys))
+                if (SlotPlaces.LongOnly(k.Place)) Places[k] = v;
+        }
+
         /// <summary>A camp's towers (in slot order) as a loadout's sized lists, in the camp's slot order.</summary>
         public static BaseLoadout FromAssignment(BaseSiteDef site, IReadOnlyList<string> towers, int hqLevel)
         {
-            var loadout = new BaseLoadout { HqLevel = hqLevel };
+            var loadout = new BaseLoadout { HqLevel = hqLevel, Layered = site.Layered };
             for (var i = 0; i < site.Slots.Count; i++)
             {
                 var slot = site.Slots[i];
@@ -288,6 +402,7 @@ namespace MachineBrigade.Game.Match
                 Custom[mapId] = FromAssignment(site, towers, level);
                 return;
             }
+            OwnLong(site);
             var key = SlotPlaces.Keys(site)[hardpoint];
             // A tower the plan had put here from a place this map lacks moves off with the edit: the slot now speaks for its own place.
             if (string.IsNullOrEmpty(id)) Places.Remove(key);
@@ -307,8 +422,18 @@ namespace MachineBrigade.Game.Match
         /// <summary>Lays the plan out from a camp's towers (in slot order): every slot's place takes its tower (Auto-arrange, the migration).</summary>
         public void FromCamp(BaseSiteDef site, IReadOnlyList<string> towers)
         {
-            Places.Clear();
             var keys = SlotPlaces.Keys(site);
+            // Laying out one kind of base keeps the other kind's own places (prompt 17 B.5): a camp's Auto-arrange
+            // keeps the long battlefields' places, a layered base's keeps the camps'.
+            if (site.Layered)
+            {
+                foreach (var k in new List<PlaceKey>(Places.Keys))
+                    if (SlotPlaces.LongOnly(k.Place)) Places.Remove(k);
+                foreach (var k in keys) Places.Remove(k);
+            }
+            else
+                foreach (var k in new List<PlaceKey>(Places.Keys))
+                    if (!SlotPlaces.LongOnly(k.Place)) Places.Remove(k);
             for (var i = 0; i < keys.Length; i++)
                 if (!string.IsNullOrEmpty(towers[i])) Places[keys[i]] = towers[i];
         }

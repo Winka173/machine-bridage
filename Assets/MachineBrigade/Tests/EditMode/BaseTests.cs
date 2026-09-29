@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
             CollectionAssert.AreEqual(new[] { 3, 4, 4, 5, 6 }, Of(SlotSize.Small));
             CollectionAssert.AreEqual(new[] { 1, 2, 2, 3, 3 }, Of(SlotSize.Medium));
             CollectionAssert.AreEqual(new[] { 0, 0, 1, 1, 2 }, Of(SlotSize.Large));
-            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, Enumerable.Range(1, 5).Select(rules.UtilitySlots).ToArray());
+            CollectionAssert.AreEqual(new[] { 1, 1, 2, 2, 3 }, Enumerable.Range(1, 5).Select(l => rules.UtilitySlots(l)).ToArray());
             var catalog = Catalog;
             var loadout = new BaseLoadout
             {
