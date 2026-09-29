@@ -102,6 +102,14 @@ namespace MachineBrigade.Game.Hud
         private readonly Label _name, _phase, _hp, _escorts;
         private readonly VisualElement _escortChip;
         private int _shownEscorts = -1;
+
+        // Prompt 18: the big attack's chip (its icon, a cooldown bar under it, lit while it charges, the seconds left).
+        private readonly VisualElement _bigChip, _bigFill;
+        private readonly Label _bigLabel;
+        private VisualElement _bigIcon;
+        private string _bigIconName;
+        private int _shownBigFill = -1, _shownBigSeconds = -2;
+        private bool _shownCharging;
         private readonly VisualElement _fill, _track;
         private string _shownName;
         private int _shownFill = -1, _shownPhase = -1, _shownHp = -1, _shownMax = -1;
@@ -141,6 +149,17 @@ namespace MachineBrigade.Game.Hud
             _escortChip.tooltip = Strings.Get("hud.bossEscorts");
             _escortChip.style.display = DisplayStyle.None;
             head.Add(_escortChip);
+            // Prompt 18 D.1: the big attack's icon with its cooldown; lit while it charges.
+            _bigChip = Kit.Box("fc-boss__big");
+            _bigChip.tooltip = Strings.Get("hud.bigAttack");
+            _bigLabel = Kit.Text("", "fc-number-small fc-boss__big-count");
+            var bigTrack = Kit.Box("fc-boss__big-track");
+            _bigFill = Kit.Box("fc-boss__big-fill");
+            bigTrack.Add(_bigFill);
+            _bigChip.Add(bigTrack);
+            _bigChip.Add(_bigLabel);
+            _bigChip.style.display = DisplayStyle.None;
+            head.Add(_bigChip);
             Root.Add(head);
             _track = Kit.Box("fc-boss__track");
             _fill = Kit.Box("fc-boss__fill");
@@ -240,6 +259,39 @@ namespace MachineBrigade.Game.Hud
             _shownEscorts = alive;
             _escortChip.style.display = alive > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             _escorts.text = alive > 0 ? "\u00d7" + alive : "";
+        }
+
+        /// <summary>
+        /// Prompt 18: the boss's big attack beside its name (null icon: none): <paramref name="ready"/> how far its
+        /// cooldown has come, <paramref name="charging"/> lit while it warns, with the seconds left (negative: unknown).
+        /// </summary>
+        public void SetBigAttack(string icon, float ready, bool charging, float seconds)
+        {
+            if (icon == null)
+            {
+                if (_bigIconName != null) _bigChip.style.display = DisplayStyle.None;
+                _bigIconName = null;
+                return;
+            }
+            if (icon != _bigIconName)
+            {
+                _bigIcon?.RemoveFromHierarchy();
+                _bigIcon = Kit.Icon(icon, "fc-boss__big-icon");
+                _bigChip.Insert(0, _bigIcon);
+                _bigIconName = icon;
+                _bigChip.style.display = DisplayStyle.Flex;
+            }
+            var fill = Mathf.RoundToInt(Mathf.Clamp01(ready) * 20f);
+            if (fill != _shownBigFill) _bigFill.style.width = Length.Percent((_shownBigFill = fill) * 5f);
+            if (charging != _shownCharging)
+            {
+                _shownCharging = charging;
+                _bigChip.EnableInClassList("fc-boss__big--charging", charging);
+            }
+            var whole = charging && seconds >= 0f ? Mathf.CeilToInt(seconds) : charging ? -1 : -2;
+            if (whole == _shownBigSeconds) return;
+            _shownBigSeconds = whole;
+            _bigLabel.text = whole >= 0 ? whole.ToString() : whole == -1 ? "!" : "";
         }
 
         /// <summary>The boss's health in numbers beside its name ("41 250 / 60 000").</summary>

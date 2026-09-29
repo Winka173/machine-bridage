@@ -1676,6 +1676,9 @@ namespace MachineBrigade.Game.Hud
             ["part.fx.stop.aura"] = ("its army loses the command aura", "quân của nó mất hào quang chỉ huy"),
             ["part.fx.stop.aps"] = ("fewer of your missiles, drones and rockets are shot down (none once every one is broken)", "ít tên lửa, drone và rốc-két của ta bị bắn hạ hơn (không còn khi phá hết)"),
             ["part.fx.stop.jammer"] = ("your guided missiles fly true near it again", "tên lửa dẫn đường của ta lại bắn trúng khi ở gần nó"),
+            ["part.fx.stop.cruise"] = ("it fires no more cruise missiles", "nó không phóng tên lửa hành trình được nữa"),
+            ["part.fx.stop.craft"] = ("it sends no more landing craft", "nó không thả tàu đổ bộ được nữa"),
+            ["part.fx.stop.radar"] = ("its salvos and missiles fall wide and its CIWS misses now and then", "loạt pháo và tên lửa của nó rơi lệch, CIWS thỉnh thoảng bắn trượt"),
             ["part.fx.stop.trail"] = ("it leaves no more fire behind it", "nó không còn để lại vệt lửa phía sau"),
             ["part.fx.speed"] = ("{0}% slower", "chậm hơn {0}%"),
             ["part.fx.turn"] = ("turns {0}% slower and tracks targets badly", "xoay chậm hơn {0}%, khó bám mục tiêu"),
@@ -2362,7 +2365,8 @@ namespace MachineBrigade.Game.Hud
         public static bool Vietnamese { get; set; } = Application.systemLanguage == SystemLanguage.Vietnamese;
 
         public static string Get(string key) =>
-            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text)
+            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
+            BigAttackText.Table.TryGetValue(key, out text)
                 ? (Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
@@ -2383,7 +2387,8 @@ namespace MachineBrigade.Game.Hud
         public static string Support(string defId) => Get("support." + defId);
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
-        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key);
+        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
+            BigAttackText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

@@ -161,6 +161,12 @@ namespace MachineBrigade.Sim
         /// </summary>
         public Content.EscortSettings? EscortSettings { get; set; }
 
+        /// <summary>
+        /// Prompt 18: the battle's big attacks (the modes set them by difficulty). Null: no big attacks (the bare
+        /// test battles).
+        /// </summary>
+        public Content.BigAttackSettings? BigAttackSettings { get; set; }
+
         /// <summary>How many escorts of this boss are alive now (the boss bar's count).</summary>
         public int EscortsAlive(EntityId boss) => Bosses.EscortsAlive(boss);
 

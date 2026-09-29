@@ -1079,6 +1079,10 @@ namespace MachineBrigade.Game.Match
                         if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.captured", letter));
                         else if (e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.lost", letter), error: true);
                         break;
+                    // Prompt 18 D.3: a short notice when the player cancels a boss's big attack (or makes the Spectre break off).
+                    case SimEventKind.BigAttack when !_menu && e.Team == EnemyTeam && e.Mount is 2 or 3 && e.DefId != null:
+                        _hud.Toast(Strings.Get("bigattack." + e.DefId + ".cancelled"));
+                        break;
                     case SimEventKind.CrateIncoming when !_menu:
                         _hud.Toast(Strings.Get("toast.crate"));
                         break;

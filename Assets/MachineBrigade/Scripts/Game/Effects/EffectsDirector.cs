@@ -141,6 +141,7 @@ namespace MachineBrigade.Game.Effects
             _lasers = new LaserBeams(materials, _emitters, _decals, _root);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
+            _bigZones = new BigAttackZones(materials, meshes, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
@@ -528,6 +529,8 @@ namespace MachineBrigade.Game.Effects
             }
             _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
+            _bigZones.Tick(views, now);
+            TickBigCharge(views, now);
             _drops.Tick(now);
             JetTrails(views, now);
             KeepBossInSight(views);

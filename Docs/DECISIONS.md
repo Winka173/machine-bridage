@@ -5642,3 +5642,167 @@ party), `CombatSystem.Launch` (one line) and `CombatSystem.P17` (`RoundFor`), `C
 (`MergeTower`), `MatchSettings.AllVehicles`, `Progression`, `MenuScreen.Shop`, `FiringRange.Abilities`, `UnitLines`/
 `UnitText`, `Strings` (five notes), `GuideText` (five cards rewritten, five dropped), Tools/campaign (act1-3, story) and
 `campaign.json`, the tests listed above.
+
+## 17A. Prompt 18: a big attack for every boss (2026-09-29)
+
+Prompt 18 on feature/p18-attacks from lead/integration 3661222 (prompts 9, 13, 15, 16 and 17 merged). The owner's
+token rule: compile, one targeted test run, no sweeps, no screenshots; the 5-seed runs are listed for the testing phase.
+
+### A. One system, data-driven (`BossSystem.BigAttacks`, `BigAttackDefs`)
+
+- Every boss names one entry of balance.json `"bigAttacks"` (`"bigAttack": "<id>"` on the boss). An entry is a list of
+  strikes, each a shape from one shared library (`BigShape`: circle, strip, line, sweep, swarm, missile, drop, buff,
+  quake) with its numbers. No class per boss: prompt 20 E.3 adds shapes to the same enum and system, prompt 19 F swaps
+  the Silver Bug's `bug_laser_sweep` for a rod-rain entry by changing one id, prompt 20 G gives a mini boss
+  `"bigAttackScale": { "damage": 0.7, "cooldown": 1.3 }` (parsed now, used by no boss yet). Damage, cooldown and warning
+  are separate fields and scale separately (`BigAttackScale`: difficulty first, then the boss's own).
+- Ids are stable and apart from display names: every name, radio line, cancel notice and guide line is a text key made
+  from the id (`bigattack.<id>`, `radio.bigattack.<id>`, `bigattack.<id>.cancelled`, `guide.bigattack.<id>.how/dodge/stop`)
+  in the new `BigAttackText` table (read by `Strings.Get/Has` and the localisation scan). No text is in code or data.
+- Rhythm: the first about 30 s after the boss appears (`bigAttackRules.first`), then one per cooldown, measured start to
+  start. Stunned, transforming, landing troops or underground (except the worm's own dive), it waits a second; with no
+  target in reach it looks again in 3 s; with every part carrying it broken it has lost it and looks again every 2 s, so
+  a self-repair (prompt 9) brings it back.
+- The warning (`BigStage.Charging`): the zones exactly as they will land (`BigZone`: circle, or rectangle along an
+  axis; a walking barrage and a missile volley also get one ring per point with its own countdown), the radio line,
+  an alarm and a whistle, and the parts that carry it: their mounts hold fire (A.2, `Vehicle.MountHeld`, also through
+  the firing), and mechanisms named in `"hold"` wait (the supergun's ordinary shell, the Leviathan's single cruise
+  missiles; if one of those is still in the air the big attack waits for it to land, so the two never stack).
+- Cancel (A.5): each strike lists its parts; with all of them broken during the warning the strike is cancelled (the
+  whole attack with all strikes gone: `SimEvent BigAttack` 2, the HUD's short notice). `"perPart"` gives each standing
+  part its own rounds, counted as it fires: a train gun car broken leaves 3 shells, a Hive rack 10 drones, an Iron Bird
+  pod 24 rockets, an Inferno flamer its half of the ring (`"sectors"`: each part covers the side it sits on). The
+  Supreme Commander's antenna carries both strikes; the hovercraft's rockets and ramp are separate strikes.
+- EMP (`"empDelay"`, Tempest 2 s, Silver Bug 2.5 s): each time the boss is stunned during the warning the charge and
+  every zone's countdown move on by that much.
+- Damage goes through the damage rules (prompt 15): blasts hit as called strikes (top face, fragments pierce level 1 at
+  most on vehicles, the strike's own level on structures, thermobaric tag, damage type table), a line or a sweep as a
+  pierce from the boss (the face turned to it, its own penetration), a drone as a direct top-attack hit. So smoke cuts
+  the laser to 20 % (the energy rule) and never the railgun, shield domes take everything but the beam, APS never sees
+  a beam. `"structure"` multiplies damage on buildings and towers; `"falloff"` is the share left at a blast's rim.
+  Everything scales with the boss (`DamageBoost`, `DamageScale`: campaign scaling, phases, elites) and the difficulty.
+- Missiles and drones fly (`BigFlyer`): every 0.25 s the other side's anti-air under one (any weapon that can target
+  aircraft, in its range) takes `aaHit` (0.5) of its paper damage a second off it, and each APS, C-RAM or
+  point-defence laser in reach spends an interceptor for `intercept` (150) health; a laser APS is blind in smoke.
+  Doomsday missile 600 health over 12 s, Leviathan missiles 250 over 8 s, Hive drones 60 at 26 m/s (they home on
+  their targets, split over at most four of the heaviest armour in the group; a jammer at the target throws half off).
+- Dodging (A.6): the other side's ground units inside a harmful zone (units that are not scripted, static or stunned)
+  make for the nearest way out, the zone's blast radius and 3 m past its edge, if they can reach it before it lands
+  and it is not inside another zone; after it has landed (and its burning ground is out) they go back to their earlier
+  order or where they stood, unless they were given another order since. All in vehicle-list order: deterministic.
+  Aircraft need no dodge: every big attack hits the ground only (as the ordinary ground blasts do).
+- Everywhere the boss appears (A.8): `SimWorld.BigAttackSettings`, set by `ModeSessions` from the session's difficulty
+  key for every mode (campaign, big campaign, Boss Rush, Operations), and by `MissionMode` and Boss Rush as Normal when
+  nothing set them; bare test battles have none (as with escorts), so older measures are unchanged.
+- Difficulty (A.7): Easy damage x0.8, cooldown x1.2, warning +1 s; Hard cooldown x0.9; Very Hard (and Heroic, Iron)
+  cooldown x0.8, damage x1.1 (`bigAttackRules.difficulty`).
+
+### B. Each boss (Normal, before armour)
+
+Numbers are the spec's except five: four set from a first estimate against our health scale before the run (Tempest,
+Inferno, Supreme Commander, Hive) and the Behemoth from the run's centre measure (section E). Aim `group` is the other side's
+densest spot of ground units and towers within the entry's reach.
+
+- Iron Train `train_broadside`: strip 60 x 12 along its heading, 6 x 330 HE (r 6), 3 a gun car; 3.5 s / 65 s.
+- Tempest `tempest_rail`: line 90 x 3 from the boss, 1 300 kinetic pen 4 (spec 1 400, which would take a battle tank at the
+  centre to 62 %; at 1 300 it measured 42 %), 15 % less each unit behind; 4 s / 60 s; EMP +2 s.
+- Behemoth `behemoth_barrage`: circle r 14, 3 pairs x 340 HE (r 8; spec 480: an IFV at the centre measured 103 %).
+- Doomsday Train `doomsday_missile`: erector 5 s, then one thermobaric missile (2 500, r 18, 30 % at the rim, 600 hp,
+  12 s) at the HQ, or at the biggest group when it holds 4 units or more; 90 s.
+- Rail Supergun `supergun_heavy`: one shell anywhere at the biggest group standing still, 1 800 (r 20), ground burning
+  8 s (25 a second, r 10); fire control broken: up to 15 m off and the ring as wide; 4 s / 60 s; ordinary shots kept.
+- Inferno `inferno_firestorm`: ring r 18 round it, 200 fire (spec 250) and the ground burning 10 s at 45 a second
+  (spec 60): burning ground is raw damage; at 200 an armoured car lost 40 % to the burst alone; 3 s / 60 s.
+- Supreme Commander `supreme_offensive`: its side within 60 m +35 % damage, +25 % fire rate for 12 s, and a bomber
+  (the neutral raid's model) lays 8 x 340 (spec 300; an IFV at the centre measured 45 %) in a 50 x 10 strip on the biggest group; 4 s / 75 s.
+- Hive `hive_swarm`: 20 drones x 180 (spec 150: four targets share the 20; at 180 a battle tank measured 32 %); 4 s / 70 s.
+- Landing Hovercraft `hover_assault`: 24 x 58 rockets on a 40 x 20 strip, then 6 vehicles off the ramp (2 battle tanks,
+  2 IFVs, 2 armoured cars, elites by the difficulty's budget; at most 6 of them alive, apart from the escort cap).
+- Ice Fortress `fortress_rocket_rain`: 32 x 58 over 4 s in r 25, 16 a box; shield domes absorb it.
+- Silver Bug `bug_laser_sweep`: 4 m beam down 120 m in 3 s, 900 energy once a unit; smoke 20 %; EMP +2.5 s.
+- Earth Worm `borer_quake`: its next dive is the big one (the burrow runs it: under the biggest group, the crack is
+  the 3 s warning), 700 (r 16, 30 % at the rim), 3 s stun on the ground; the drill broken, no dive, no quake.
+- Bastion `bastion_mortar_walk`: 6 x 460 (r 9, x2 on structures), one every 0.7 s down a 60 m line towards the target.
+- Spectre `spectre_orbit`: 8 s on one r 15 circle: 105 mm 300 every 1.5 s, each 40 mm 3 x 30 every 0.8 s, 25 mm 15
+  every 0.2 s; it takes 1.5x damage from the warning to the end (the "hit 50 % more" read as damage: only anti-air and
+  fighters reach it anyway), and breaks off after taking 8 % of its health while firing.
+- Iron Bird `ironbird_rocket_run`: 48 x 32 rockets down a 70 x 8 line, 24 a pod; 3 s / 60 s.
+- Hive Carrier `carrier_heavy_bomb`: one 850 bomb (r 14, x2 on structures) on a group within 40 m; it stops for the
+  3.5 s warning and takes 1.3x damage meanwhile.
+- Command Airship `airship_carpet`: 12 x 300 in a 70 x 12 strip along its course; 3.5 s / 70 s.
+- Leviathan `leviathan_volley`: 6 cruise missiles x 450 (r 8, x2 on structures, 250 hp, 8 s) at the HQ, the toughest
+  towers and the biggest group, in pairs; the launch cells broken in the warning cancel it. Its salvos, single cruise
+  missiles, landing craft and phase-3 volley are unchanged (the single missiles wait while the volley charges).
+
+### C. The three new parts
+
+`nuke_train.erector` (0.09, armour 2), `drone_mothership.bomb_bay` (0.09, armour 2), `command_airship.bomb_bay` (0.07,
+armour 2, no break damage like the rest of the airship's). Prompt 9's totals kept (each boss 0.70 of the body): the
+train's flak cars 0.10 to 0.08 and its rocket car 0.10 to 0.09; the carrier's gondola cannon and UAV bay 0.10 to 0.08,
+its shield 0.10 to 0.09; the airship's radar 0.08 to 0.07. Kinds `erector` (ballistic icon) and `bombbay` (bomb icon)
+on the parts row; the break effects are the generic blast and smoke at the break (prompt 9); breaking one reads "its
+big attack goes with it" in the Guide; each has a radio line. No model nodes yet (ASSET_DEBT).
+
+### D. HUD and guide
+
+- The boss bar has the attack's icon with a thin cooldown bar; it lights red with the seconds left while it charges,
+  and the part icons that carry it flash (D.1). No new frame in the middle of the screen (prompt 11).
+- Zones (`BigAttackZones`): one look for every boss, unlit HDR red outlines and strike rings whose fill runs to the
+  moment it lands, no fill over the player's units (D.2); the charging part pulses on the model (A.3).
+- A short notice when a big attack is cancelled or the Spectre breaks off (D.3). The Guide tab has a Big attack
+  section: name and numbers from the data, how it works, how to get out of it, how to stop it, who it is for (D.4).
+- Not done here: the "In action" clip with the big attack (D.5) and per-boss sounds (one alarm and whistle for all);
+  both in ASSET_DEBT.
+
+### E. Balance (first pass, one seed)
+
+`BigAttackTests.EachBigAttackAtItsCentreHurtsButNeverWipesOutAGroup` puts five of each attack's primary target (rank 1,
+standing, not dodging) at the centre and logs the share of one's health each lost. With the numbers of section B: train
+46 %, Doomsday 44 % (a gun turret), Behemoth 103 % (at 480; now 340), Tempest 42 %, Inferno 40 %, Hive 32 %, Ice Fortress 12 %,
+Bastion 19 % (a gun turret), Silver Bug 40 %, Spectre 33 %, Iron Bird 20 %, Hive Carrier 43 % (a turret), Supergun
+106 % (its ordinary shell landed with it: fixed by the hold, 60 % expected), Earth Worm 40 %, Airship 74 % (an
+armoured car; an IFV about 45 %), Hovercraft rockets 12 %, Supreme Commander 45 %, Leviathan 61 % (six missiles on one
+turret with no base on the test field). No attack wiped out the group. Still outside 40-60 % and left for the 5-seed
+tuning: the three 122/80 mm rocket attacks (Ice Fortress, Iron Bird, hovercraft: calibre-scale warheads spread over
+the spec's areas; tighten the areas or aim the rockets at units), the Bastion and the Hive Carrier on towers.
+The big attack's damage a second on paper (`BigAttackDef.Sustained`) is there for the combat-value meter (E.1); the
+kill times and win rates (E.2, E.3) need the testing phase's runs.
+
+### Tests
+
+New `BigAttackTests` (11): every boss's entry and words and the new parts; the difficulty's scales; first at 30 s then
+the cooldown; a broken part cancels it and it stays lost; each part its own rounds; EMP +2 s; every zone's shape and
+size from its data (all 18 bosses); the Doomsday missile shot down by C-RAMs; smoke cuts the beam to a fifth and not
+the slug (15 % less behind); units get out and back, twice the same; the centre measure. `BossPartsTests` updated (the
+three bosses' part counts; a part that carries the big attack does something), `LocalisationScanTests` reads the new
+table. One run of those (15 tests): 11 passed; the four failures fixed after it and not rerun (the owner's rule): the
+parts test (the new parts carry only the big attack), the guide words test (it already failed on lead: the
+Leviathan's `cruise`, `craft` and `radar` stops had no words; added), the rounds test (the Iron Train's self-repair
+put its gun car straight back: the test uses the Iron Bird now), and the dodge test (a unit that has arrived is idle,
+not on its move order: it now goes back from either).
+
+### Left for the testing phase
+
+- Rerun `BigAttackTests` and `BossPartsTests` (the four fixes above are unverified), then the suites.
+- 5 seeds at each difficulty: every boss mission of the campaign and the big campaign, Boss Rush, Operations with a
+  boss; win rates and kill times against prompts 9, 13 and 16's targets; tune the numbers in section E.
+- FPS at Low on a low-end device during the Hive's swarm, the rocket rains and the Leviathan's volley.
+- Screenshots of every big attack's warning into docs/ui-screens (F), and a look at the zones on every map and
+  weather; the missile and drone rounds keep flying on screen after the sim shoots them down (the pop shows where).
+- Whether auto-dodging suits the player's hand orders in play (it only moves units still on their earlier order).
+
+### For the prompts on hold
+
+Prompt 19 F: replace `bug_laser_sweep` with a new entry and point `silver_bug.bigAttack` at it (a rod rain is a circle
+or strip of rounds with `"top": true`). Prompt 20 E.3: new shapes go in `BigShape` and `BossSystem.BigAttacks`; G: a
+mini boss is a boss def with `"bigAttackScale"`. Prompt 23: the radio lines are one text key each.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`balance.json` (`"bigAttack"` on the 18 bosses, three new parts and the part shares above, `bigAttackRules` and
+`bigAttacks` after the escorts), `BossSystem` (Joined, Step, the burrow's crack and quake), `BossSystem.Parts` (the
+aim's danger, the fingerprint), `Vehicle.Boss` (`MountHeld`, `BigAttack`, `BigTaken`, `BigQuake`), `DamageSystem`
+(one line), `SimWorld` (`BigAttackSettings`), `SimEvent` (`BigAttack`), `VehicleDef.Extra`/`Catalog.Extra`,
+`MissionMode`, `SiegeModes`, `ModeSessions`, `MatchRunner`, `AudioDirector`, `EffectsDirector`, `BattleHud`,
+`MissionBar` (BossBar), `BossPartsRow`, `MenuScreen.BossParts`, `Strings` (the text hook, three stop words),
+`Screens.uss`, `BossPartsTests`, `LocalisationScanTests`.

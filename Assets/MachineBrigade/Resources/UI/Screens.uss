@@ -574,6 +574,16 @@
 .fc-boss-part__cross { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 2px; margin-left: -1px; background-color: var(--fc-danger); rotate: 45deg; display: none; }
 .fc-boss-part__cross--flip { rotate: -45deg; }
 .fc-boss-part--broken { opacity: 0.45; }
+/* Prompt 18 D.1: the big attack on the boss bar (its icon, a thin cooldown bar, lit while it charges) and the parts to break flashing. */
+.fc-boss__big { flex-direction: row; align-items: center; margin-left: 6px; padding: 0 4px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
+.fc-boss__big-icon { width: 20px; height: 20px; --icon-color: var(--fc-text-2); }
+.fc-boss__big-track { position: absolute; left: 2px; right: 2px; bottom: 1px; height: 2px; background-color: var(--fc-border); }
+.fc-boss__big-fill { height: 100%; width: 0; background-color: var(--fc-text-2); }
+.fc-boss__big-count { margin-left: 3px; min-width: 10px; }
+.fc-boss__big--charging { background-color: var(--fc-danger); border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger); }
+.fc-boss__big--charging .fc-boss__big-icon { --icon-color: var(--fc-text); }
+.fc-boss__big--charging .fc-boss__big-fill { background-color: var(--fc-text); }
+.fc-boss-part--charging { background-color: var(--fc-danger); border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger); }
 .fc-boss-part--broken .fc-boss-part__cross { display: flex; }
 .fc-boss-part--focused { background-color: var(--fc-panel-selected); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
 .fc-hud .fortress-panel { position: relative; top: 0; left: 0; right: 0; }

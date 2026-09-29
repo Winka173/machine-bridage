@@ -303,6 +303,11 @@ namespace MachineBrigade.Game.Audio
                             if (strike.Duration > 1.5f) Schedule(Sound.Whistle, e.Position, 0.85f, e.Value + strike.Duration * 0.5f - WhistleLead);
                         }
                         break;
+                    // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
+                    case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
+                        if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
+                        Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
+                        break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
                         // The fortress's own alarm: heard as far as the fortress is near the view.
                         var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);

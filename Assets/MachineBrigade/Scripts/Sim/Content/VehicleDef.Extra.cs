@@ -51,6 +51,15 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A landing-craft boss, or null.</summary>
         public LandingDef? Landing { get; internal set; }
 
+        /// <summary>Prompt 18: its big attack (balance.json "bigAttacks", by the id in "bigAttack"), or null.</summary>
+        public BigAttackDef? BigAttack { get; internal set; }
+
+        /// <summary>The "bigAttack" id as written (resolved once every attack is read).</summary>
+        internal string? BigAttackId { get; set; }
+
+        /// <summary>Its own scaling of its big attack on top of the difficulty's (a mini boss: less damage, a longer cooldown; data "bigAttackScale").</summary>
+        public BigAttackScale BigAttackScale { get; internal set; } = BigAttackScale.One;
+
         /// <summary>A super-heavy gun's map-wide shot, or null.</summary>
         public BombardDef? Bombard { get; internal set; }
 

@@ -401,6 +401,8 @@ namespace MachineBrigade.Sim.Combat
             // A boss's parts: a direct hit on one hurts the part; the body is shut while its lock holds;
             // a boring boss just out of the ground takes more.
             if (vehicle.ExposedUntil > now) damage *= vehicle.Def.Burrow?.ExposedTaken ?? 1f;
+            // Prompt 18: a big attack that exposes it (the Spectre low and slow, the carrier's bomb doors open).
+            damage *= vehicle.BigTaken;
             if (vehicle.HasParts)
             {
                 var part = hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !vehicle.IsPartBroken(shot.Part) ? shot.Part : -1;

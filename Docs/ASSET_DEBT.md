@@ -59,3 +59,15 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Bunker vehicle's coaxial MG | A fixed `MG_port` mesh that turns with the turret but does not elevate | A `Mount_mg` pivot if it should elevate |
 | Shield domes' emitters | Static glowing `Emitter` parts | A slow spin and a pulse on hits |
 | Laser tank's beam | The Iron Beam's red beam look | Its own colour and a ramping glow as the damage rises |
+
+## Prompt 18 (big attacks)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Doomsday Train's missile erector, the Hive Carrier's and the Command Airship's bomb bays | No model node: a hit volume on the hull at the part's place, the generic wreck piece, blast and smoke when it breaks | Model nodes (an erector that rises with a missile on it, bomb bay doors that open), named in `balance.json` "node" |
+| The charge on the part (coils brightening, launcher lids opening, bomb doors opening) | A hot pulse ring at the part twice a second (`EffectsDirector.BigAttacks`) | Animations on the models |
+| Each boss's big-attack sound | One alarm (the fortress siren) and the shell whistle for every boss | A sound per boss (the railgun's whine, the erector's hydraulics, the drone swarm's buzz...) |
+| Missiles and drones shot down in flight | The sim's intercept pop where it died; the round's own flight on screen runs on to its target | The projectile pool cancelling that round |
+| Enemy units boosted by the Supreme Commander's offensive | No mark on them | A small icon over each boosted unit |
+| The Spectre's tight, low orbit during its attack | The sim's own orbit (only the damage it takes changes) | A lower, tighter circle in its flight |
+| The "In action" clip of a boss (Guide) | Its ordinary weapons only | A clip of its big attack |

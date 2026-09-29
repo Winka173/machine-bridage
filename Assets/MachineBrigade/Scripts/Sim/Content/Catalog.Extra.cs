@@ -226,6 +226,13 @@ namespace MachineBrigade.Sim.Content
                     Warning = b.Has("warning") ? b.String("warning") : null,
                 };
             }
+            // Prompt 18: its big attack by id, and its own scaling of it.
+            if (v.Has("bigAttack")) def.BigAttackId = v.String("bigAttack");
+            if (v.Has("bigAttackScale"))
+            {
+                var s = v.Object("bigAttackScale");
+                def.BigAttackScale = new BigAttackScale(MathF.Max(0f, s.Float("damage", 1f)), MathF.Max(0.1f, s.Float("cooldown", 1f)), s.Float("warn", 0f));
+            }
             if (v.Has("fireTrail"))
             {
                 var f = v.Object("fireTrail");
@@ -368,6 +375,8 @@ namespace MachineBrigade.Sim.Content
             }
             // Prompt 16 F: every boss's escort table.
             ParseEscorts(root);
+            // Prompt 18: the big-attack library and every boss's attack.
+            ParseBigAttacks(root);
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>
