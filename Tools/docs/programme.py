@@ -351,6 +351,89 @@ def modes_and_ai(game, h):
             + h['table'](['Độ khó', 'Cách AI chơi', 'Người chơi thắng (48 trận)'], [[e(a), e(b), c] for a, b, c in ai]) + "</div>")
 
 
+def gallery(game, h, imgdir):
+    """Section 20: the picture library."""
+    from pathlib import Path
+    e, img = h['esc'], h['img']
+    imgdir = Path(imgdir)
+    cards = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'UI' / 'Cards'
+
+    def grid(items, cols=4):
+        cells = []
+        for name, path in items:
+            tag = img(path, 'gal')
+            if tag:
+                cells.append(f"<div class='galcell'>{tag}<div class='galcap'>{e(name)}</div></div>")
+        return f"<div class='grid{cols}'>" + ''.join(cells) + "</div>" if cells else ''
+
+    def renders(units):
+        seen, out = set(), []
+        for v in units:
+            model = v.get('model') or v['id']
+            path = cards / (model + '.png')
+            if not path.exists():
+                path = cards / (v['id'] + '.png')
+            if path.exists() and (v['name'], str(path)) not in seen:
+                seen.add((v['name'], str(path)))
+                out.append((v['name'], path))
+        return out
+
+    branch = {b['id'] for t in game['base']['towers'] for b in t['branches']}
+    towers = [t for t in game['towers'] if t['id'] not in branch]
+    modules = [dict(m, model=m.get('model') or m['id']) for m in game['base']['modules']]
+    out = ["<div class='section'><h2>20. Thư viện hình ảnh</h2>"
+           "<p>Ảnh render từ mô hình 3D của game (cùng ảnh dùng cho thẻ), ảnh chụp trong trận, các bảng hiệu ứng và bản đồ nhiệt.</p>"]
+    battle = sorted((imgdir / 'ui').glob('battle3d-*.png'))
+    if battle:
+        out.append("<h3>Trong trận (3D và HUD)</h3>" + ''.join(f"{img(p, 'shot')}<div class='caption'>{e(p.stem.replace('battle3d-', ''))}</div>" for p in battle))
+    out.append("<h3>Phương tiện</h3>" + grid(renders(game['vehicles'])))
+    out.append("<h3>Xe tinh nhuệ</h3>" + grid(renders(game.get('elites', []))))
+    out.append("<h3>Boss</h3>" + grid(renders(game['bosses']), 3))
+    out.append("<h3>Tháp canh và công sự</h3>" + grid(renders(towers)))
+    out.append("<h3>Công trình tiện ích</h3>" + grid(renders(modules)))
+    base = [p for p in [imgdir / 'ui' / 'basemaps-sheet.png', imgdir / 'ui' / 'screen-army-base-ranges-vi-16x9.png',
+                        imgdir / 'ui' / 'screen-army-base-picked-vi-16x9.png', imgdir / 'ui' / 'kit-tower-icons.png'] if p.exists()]
+    if base:
+        out.append("<h3>Căn cứ</h3>" + ''.join(f"{img(p, 'shot')}<div class='caption'>{e(p.stem)}</div>" for p in base))
+    fx = imgdir / 'fx'
+    sheets = [('impacts_12c.png', 'Nổ đạn tăng, bom, tên lửa hành trình và MOAB (trước / sau 12C, 0,04–3,2 s).'),
+              ('impacts_11a.png', 'Nổ trước và sau đợt 11A.'), ('supports.png', 'Hỗ trợ hỏa lực: đạn rơi và lúc chạm đất của từng thẻ.'),
+              ('flames.png', 'Xe phun lửa: trước (trên) và sau (dưới).'), ('lasers.png', 'La-de Iron Beam và tia của Bọ Bạc.'),
+              ('missiles_1.png', 'Tên lửa phòng không: lửa đuôi và vệt khói.'), ('missiles_2.png', 'Tên lửa chống tăng.'),
+              ('missiles_3.png', 'Tên lửa trực thăng và drone.'), ('missiles_4.png', 'Tên lửa máy bay.'), ('missiles_5.png', 'Rốc-két và tên lửa đạn đạo.'),
+              ('flashes_1.png', 'Chớp lửa đầu nòng ở 4 hướng (quả cầu xanh: đầu nòng thật).'), ('flashes_2.png', 'Chớp lửa: boss, máy bay, tháp.'),
+              ('air_hold.png', 'Tiêm kích dừng xả rồi bay vòng.')]
+    fx_tags = ''.join(f"{img(fx / n, 'shot')}<div class='caption'>{e(c)}</div>" for n, c in sheets if (fx / n).exists())
+    shields = ROOT / 'Docs' / 'art' / 'shields'
+    for n, c in (('shields.png', 'Khiên lưới lục giác: ta xanh, địch đỏ cam, gợn sóng khi trúng, sụp vỡ.'),
+                 ('in-game-siege-dome-down.png', 'Vòm khiên pháo đài trong Công thành.'), ('in-game-defend-low-dome-down.png', 'Vòm khiên ở đồ họa Thấp.')):
+        tag = img(shields / n, 'shot')
+        if tag:
+            fx_tags += f"{tag}<div class='caption'>{e(c)}</div>"
+    if fx_tags:
+        out.append("<h3>Hiệu ứng</h3>" + fx_tags)
+    art = ROOT / 'Docs' / 'art'
+    art_tags = ''.join(f"{img(art / n, 'shot')}<div class='caption'>{e(c)}</div>" for n, c in
+                       (('vehicles-hero.png', 'Mô hình phương tiện.'), ('vehicles2-hero.png', 'Mô hình phương tiện (2).'), ('air-hero.png', 'Mô hình máy bay và trực thăng.'),
+                        ('props-game.png', 'Vật thể trên bản đồ.'), ('terrain-game.png', 'Địa hình.'), ('terrain-props-game.png', 'Địa hình và vật thể.')) if (art / n).exists())
+    if art_tags:
+        out.append("<h3>Mô hình và địa hình</h3>" + art_tags)
+    stuck = ROOT / 'Docs' / 'stuck-report'
+    pairs = []
+    for m in ('ashfield', 'rustyard', 'capital', 'swamp'):
+        for when, label in (('before', 'trước'), ('after', 'sau')):
+            p = stuck / when / f'heatmap_{m}.png'
+            if p.exists():
+                pairs.append((f"{m} · {label}", p))
+    if pairs:
+        out.append("<h3>Bản đồ nhiệt xe kẹt (Công thành, trước và sau prompt 12)</h3>" + grid(pairs, 2))
+        top = stuck / 'after' / 'top10.png'
+        if top.exists():
+            out.append(f"{img(top, 'shot')}<div class='caption'>10 điểm kẹt nhiều nhất còn lại.</div>")
+    out.append('</div>')
+    return ''.join(out)
+
+
 def testing(game, h):
     """Section: tests and what the testing phase still has to measure."""
     items = [
