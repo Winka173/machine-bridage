@@ -487,25 +487,54 @@ namespace MachineBrigade.Sim.Movement
         /// moves round the target to the spot on that ring furthest out of such guns' reach
         /// (smallest turn first). Anti-air that reaches as far as its missiles is not avoided:
         /// there is no standing outside it.
+        /// Play-test 6 (DECISIONS 21G, the owner's call): it opens from that ring (its first missiles away,
+        /// <see cref="StandoffOpening"/> s in the band), then, while no such anti-air covers the ground at its
+        /// gun's reach from the target, it comes in and fights with the cannon and rockets as well (false:
+        /// the ordinary approach, to its gun's reach). Anti-air turning up sends it back out to the ring.
         /// </summary>
         private bool Standoff(Vehicle v, IDamageable target)
         {
             var reach = v.Def.Weapon.Range;
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
             _shortAa.Clear();
+            _airDefence.Clear();
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || !e.IsVisibleTo(v.Team)) continue;
                 var aa = 0f;
+                var made = 0f;
                 foreach (var m in e.Def.Mounts)
+                {
                     if (m.Weapon.CanTarget(true)) aa = MathF.Max(aa, m.Weapon.Range);
+                    if (m.Weapon.CanTarget(true) && (Combat.CombatSystem.IsAntiAir(m.Weapon) || m.Weapon.Penetration >= 2))
+                        made = MathF.Max(made, m.Weapon.Range);
+                }
                 if (aa > 0f && aa < reach - 2f) _shortAa.Add((e.Position, aa));
+                // Play-test 6: guns and missiles that hurt a helicopter (flak, SAMs, autocannons), not a tank's machine gun.
+                if (made > 0f) _airDefence.Add((e.Position, made));
             }
             float Exposure(Vector2 at)
             {
                 var worst = 0f;
                 foreach (var (p, r) in _shortAa) worst += MathF.Max(0f, r + StandoffMargin - Vector2.Distance(at, p));
                 return worst;
+            }
+            // A new target: the missile phase again, from the ring.
+            var targetId = target.Id;
+            if (v.StandoffTarget != targetId)
+            {
+                v.StandoffTarget = targetId;
+                v.StandoffSince = double.PositiveInfinity;
+            }
+            var gun = GunReach(v, target);
+            if (gun < reach && _world.Time - v.StandoffSince >= StandoffOpening)
+            {
+                var toward = v.Position - target.Position;
+                var close = target.Position + (toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : Vector2.UnitX) * (gun * 0.85f + target.Radius);
+                var covered = false;
+                foreach (var (p, r) in _airDefence)
+                    if (Vector2.Distance(close, p) < r + StandoffMargin || Vector2.Distance(v.Position, p) < r + StandoffMargin) covered = true;
+                if (!covered) return false;
             }
             // The best spot on two rings round the target (82 % and 95 % of reach), smallest turn first.
             var bearing = SimMath.HeadingOf(v.Position - target.Position);
@@ -530,6 +559,7 @@ namespace MachineBrigade.Sim.Movement
             if (distance <= reach * 0.97f && distance >= reach * 0.6f && Exposure(v.Position) <= bestExposure + 0.5f &&
                 _world.HasLineOfFire(v, target, v.Def.Weapon))
             {
+                if (double.IsPositiveInfinity(v.StandoffSince)) v.StandoffSince = _world.Time;
                 v.ClearPath();
                 return true;
             }
@@ -540,6 +570,25 @@ namespace MachineBrigade.Sim.Movement
         }
 
         private static readonly float[] Rings = { 0.82f, 0.95f };
+
+        /// <summary>Play-test 6: seconds a standoff helicopter fires from its ring before it comes in to its gun.</summary>
+        private const double StandoffOpening = 6.0;
+
+        /// <summary>Play-test 6: the shortest reach of the forward weapons a standoff helicopter brings in with it (its cannon's).</summary>
+        private static float GunReach(Vehicle v, IDamageable target)
+        {
+            var flying = target is Vehicle { Flying: true };
+            var reach = v.Arms[0].Range;
+            var mounts = v.Def.Mounts;
+            for (var i = 1; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim is MountAim.Left or MountAim.Right || mounts[i].ArcHalf > 0f) continue;
+                if (w.Damage <= 0f || !w.CanTarget(flying) || v.Weapons[i].Ammo == 0) continue;
+                reach = MathF.Min(reach, w.Range);
+            }
+            return reach;
+        }
 
         /// <summary>
         /// Test feedback 2 (DECISIONS 12F): the reach a helicopter hovers at to fight. Holding at its
@@ -561,13 +610,17 @@ namespace MachineBrigade.Sim.Movement
                 if (w.Damage <= 0f || !w.CanTarget(flying) || v.Weapons[i].Ammo == 0) continue;
                 reach = MathF.Min(reach, w.Range);
             }
-            return MathF.Max(reach, main * 0.6f);
+            // Play-test 6: a standoff helicopter that has come in goes all the way to its cannon's reach.
+            return v.Def.Standoff ? reach : MathF.Max(reach, main * 0.6f);
         }
 
         /// <summary>Metres a standoff helicopter keeps beyond the reach of anti-air it outranges.</summary>
         private const float StandoffMargin = 5f;
 
         private readonly List<(Vector2 at, float reach)> _shortAa = new();
+
+        /// <summary>Play-test 6: the enemy's air defence proper round a standoff helicopter's target (where it will not come in).</summary>
+        private readonly List<(Vector2 at, float reach)> _airDefence = new();
 
         /// <summary>Holds position once in range; otherwise (re)paths towards the target.</summary>
         private void CloseIn(Vehicle v, IDamageable target)

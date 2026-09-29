@@ -23,6 +23,7 @@ namespace MachineBrigade.Game.Hud
             ["armour.level.2"] = ("Medium armour", "Giáp vừa"),
             ["armour.level.3"] = ("Thick armour", "Giáp dày"),
             ["armour.level.4"] = ("Very thick armour", "Giáp rất dày"),
+            ["armour.level.5"] = ("Super-heavy armour", "Giáp siêu dày"),
             ["armour.kind.air"] = ("aircraft", "máy bay"),
             ["armour.kind.structure"] = ("structure", "công trình"),
             ["armour.face.0"] = ("front", "mặt trước"),

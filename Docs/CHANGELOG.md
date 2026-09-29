@@ -7,6 +7,29 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Boss and mode balance
+
+- Bosses are much tougher: health x1.5-2.6 for main bosses and x1.8-3 for mini bosses, the heaviest with the new
+  armour level 5 on their front (a battle tank's round is one level under it: flank them or strike the roof). They hit
+  40-50 % harder from every source (their big attacks 20 %), reload a quarter faster and their air defence hits aircraft
+  60 % harder. Four tanks in a column no longer beat a boss without losses (DECISIONS 21G).
+- One bomber's load or one barrage no longer wipes a boss: bosses take half of strikes and bombs, and at most 10 % of
+  their health (mini bosses 15 %) to them in any 10 s.
+- Escorts are vehicles, never towers; every arrival wave has one more, with air cover where it had none, and more are
+  alive at once (Normal 5 to 7). Tempest keeps its coilguns, Atlas has a guard when it arrives.
+- Armour level 5 ("Super-heavy armour") has its icons, name and a column in every effect table and the Guide legend.
+- Economy a little leaner: income -5 % everywhere; Boss Rush income 2 to 1.8 CP/s and health-step bounties 8 to 6 CP.
+- The quick modes' enemies keep pace with your card ranks and equipment by difficulty, as the campaign's do, so a
+  geared army no longer wins every difficulty.
+- Boss Rush and the Boss Hunts: every boss can come, the trains (Nemesis, Juggernaut) and Gungnir too, on their own
+  battlefields' lines; each week's hunt has bosses with air defence; after the last boss, "Endless" brings the bosses
+  again, each stronger with more escorts, until your army falls (the win is kept, every boss pays).
+- Your army's vehicles no longer stand idle for long while the fight goes on: an idle vehicle goes for the enemy after
+  12 s, and reinforcements go forward in twos.
+- The attack helicopter opens with missiles from its standoff, then comes in to use its cannon and rockets where no
+  air defence covers.
+- Icarus comes down from orbit at once (it spent 15 s off the top of the screen).
+
 ### Play-test 6: UI, camera, audio
 
 - The Gunship is a deck card: the AC-130 on call for 12 CP, circling its mark for 20 s with its 105, 40 and 25 mm

@@ -126,10 +126,10 @@ namespace MachineBrigade.Game.Hud
             return box;
         }
 
-        /// <summary>The columns of the effectiveness table (the sim's <see cref="EffectColumn"/>): armour 0-4 on the ground, aircraft, structures.</summary>
+        /// <summary>The columns of the effectiveness table (the sim's <see cref="EffectColumn"/>): armour 0-5 on the ground (5: a boss's plate), aircraft, structures.</summary>
         public static readonly (int level, ArmourKind kind)[] Columns =
         {
-            (0, ArmourKind.Ground), (1, ArmourKind.Ground), (2, ArmourKind.Ground), (3, ArmourKind.Ground), (4, ArmourKind.Ground),
+            (0, ArmourKind.Ground), (1, ArmourKind.Ground), (2, ArmourKind.Ground), (3, ArmourKind.Ground), (4, ArmourKind.Ground), (5, ArmourKind.Ground),
             (Matchup.AirLevel, ArmourKind.Air), (Matchup.StructureLevel, ArmourKind.Structure),
         };
 
@@ -231,7 +231,8 @@ namespace MachineBrigade.Game.Hud
         public static VisualElement CoverShields(Func<int, bool> covered, string tipKey)
         {
             var row = Kit.Box("fc-row fc-cover");
-            for (var level = 0; level < CombatFacts.Levels; level++)
+            // A deck's cover is against the levels units have (0-4): only bosses carry level 5, and nothing is meant to pierce it well.
+            for (var level = 0; level <= ArmourLevels.MaxUnit; level++)
             {
                 var has = covered(level);
                 var cell = Kit.Box("fc-cover__cell" + (has ? "" : " fc-cover__cell--missing"));
@@ -303,7 +304,7 @@ namespace MachineBrigade.Game.Hud
         private static readonly CustomStyleProperty<Color> IconColor = new("--icon-color");
 
         /// <summary>Border width in panel px by level: 0 dashed hairline, then 2, 4, 7, 10.</summary>
-        public static readonly float[] Widths = { 1.5f, 2f, 4f, 7f, 10f };
+        public static readonly float[] Widths = { 1.5f, 2f, 4f, 7f, 10f, 13f };
 
         private readonly ArmourFaces _armour;
         private readonly bool _structure;
@@ -332,7 +333,7 @@ namespace MachineBrigade.Game.Hud
             p.strokeColor = _colour;
             p.fillColor = _colour;
             p.lineCap = LineCap.Butt;
-            var pad = Widths[4] * 0.5f + 2f;
+            var pad = Widths[ArmourLevels.Max] * 0.5f + 2f;
             var w = _structure ? Mathf.Min(r.width, r.height) - pad * 2f : Mathf.Min(r.width - pad * 2f, (r.height - pad * 2f) * 0.62f);
             var h = _structure ? w : w / 0.62f;
             var x0 = r.center.x - w / 2f;
@@ -346,7 +347,7 @@ namespace MachineBrigade.Game.Hud
             // The roof: the turret (or the structure's gun mount) drawn as thick as the roof's armour.
             var c = new Vector2(r.center.x, r.center.y + (_structure ? 0f : h * 0.08f));
             var radius = w * (_structure ? 0.24f : 0.3f);
-            p.lineWidth = ArmourDiagram.Widths[Mathf.Clamp(_armour.Top, 0, 4)] * 0.6f + 1.2f;
+            p.lineWidth = ArmourDiagram.Widths[Mathf.Clamp(_armour.Top, 0, ArmourLevels.Max)] * 0.6f + 1.2f;
             p.BeginPath();
             p.Arc(c, radius, Angle.Degrees(0f), Angle.Degrees(360f));
             p.Stroke();
@@ -360,7 +361,7 @@ namespace MachineBrigade.Game.Hud
 
         private static void Edge(Painter2D p, Vector2 a, Vector2 b, int level)
         {
-            level = Mathf.Clamp(level, 0, 4);
+            level = Mathf.Clamp(level, 0, ArmourLevels.Max);
             p.lineWidth = Widths[level];
             if (level > 0)
             {

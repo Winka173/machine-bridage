@@ -234,6 +234,14 @@ namespace MachineBrigade.Game.Match
                 edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
+            // Play-test 6 (DECISIONS 21G): a quick mode's enemy keeps pace too, by its difficulty's share.
+            else if (!_menu && kind != GameModeKind.Sandbox)
+            {
+                var deck = new List<VehicleBoost>();
+                foreach (var id in MatchSettings.DeckVehicles)
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                ModeSession.KeepPace(_world, deck, MatchSettings.Difficulty, kind);
+            }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
             if (!_menu && kind != GameModeKind.Sandbox) ApplyRankDiscounts(catalog, mission != null);

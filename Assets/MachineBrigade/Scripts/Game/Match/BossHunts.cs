@@ -12,8 +12,11 @@ namespace MachineBrigade.Game.Match
     /// </summary>
     public static class BossHunts
     {
-        /// <summary>The week's clock (10 bosses at 2-5 minutes each and nine 20 s rests: a 30-40 minute run).</summary>
-        public const float WeeklyMinutes = 45f;
+        /// <summary>
+        /// The week's clock (10 bosses at 2-5 minutes each and nine 20 s rests: a 30-40 minute run). Play-test 6 (DECISIONS
+        /// 21G): 45 -> 50 minutes for the tougher bosses (a geared army's Normal run takes about 40).
+        /// </summary>
+        public const float WeeklyMinutes = 50f;
 
         /// <summary>The first clear of the week pays this (once a week, the Operations ledger).</summary>
         public const int WeeklyReward = 1500;
@@ -30,8 +33,8 @@ namespace MachineBrigade.Game.Match
         /// <summary>
         /// Every chapter slot of the chapters switched on, in story order: chapter by chapter, each boss where its first
         /// mission or stage fights it (a slot no mission fights, which the builder forbids, comes at its chapter's end).
-        /// The trains (Nemesis, Juggernaut) are left out, as the old Boss Rush left them: they run on their mission's rail
-        /// line, which no hunt battlefield has (DECISIONS 19N).
+        /// The trains (Nemesis, Juggernaut) are in since play-test 6 (DECISIONS 21G): the hunt switches to their line's
+        /// battlefield (Metro City, Ironport: their data's "arena" and "route") as it does for the sea and the launch site.
         /// </summary>
         public static IReadOnlyList<HuntBoss> Story
         {
@@ -47,8 +50,8 @@ namespace MachineBrigade.Game.Match
                     if (chapter.Main != null) slots.Add(chapter.Main);
                     void Add(string id)
                     {
-                        if (slots.Contains(id) && catalog.Vehicles.TryGetValue(id, out var def) && !OnRails(def) && seen.Add(id))
-                            list.Add(new HuntBoss(id, id == chapter.Main, chapter.Number));
+                        if (slots.Contains(id) && catalog.Vehicles.TryGetValue(id, out var def) && (!OnRails(def) || def.Arena != null) && seen.Add(id))
+                            list.Add(new HuntBoss(id, id == chapter.Main, chapter.Number, AirDefence(def)));
                     }
                     foreach (var m in Campaign.MissionsOf(chapter.Number))
                         foreach (var b in Campaign.BossesOf(m))
@@ -59,8 +62,21 @@ namespace MachineBrigade.Game.Match
             }
         }
 
-        /// <summary>A boss that runs on rails (the train frame): only its own mission's line suits it.</summary>
+        /// <summary>A boss that runs on rails (the train frame): only a battlefield with its line suits it.</summary>
         public static bool OnRails(VehicleDef def) => def.Frame?.Move == BossMove.Rail;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): a boss that answers aircraft itself: two or more mounts made for them (flak, SAMs,
+        /// air-burst guns). A boss that flies but has none (the gunships) does not: fighters own it. The week's draw brings
+        /// some of these every week.
+        /// </summary>
+        public static bool AirDefence(VehicleDef def)
+        {
+            var n = 0;
+            foreach (var m in def.Mounts)
+                if (m.Weapon.DamageType == DamageType.Fragmentation || m.Weapon.Targets == TargetLayers.Air) n++;
+            return n >= 2;
+        }
 
         public static IReadOnlyList<string> Weekly(int week) => BossHunt.Weekly(week, Story);
 

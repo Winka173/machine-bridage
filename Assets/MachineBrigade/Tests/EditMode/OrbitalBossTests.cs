@@ -94,27 +94,28 @@ namespace MachineBrigade.Tests
             var bug = world.SpawnVehicle("silver_bug", 1, Vector2.Zero, 0f);
             Tough(world, "main_battle_tank", new Vector2(0f, 20f));
             var t = bug.Def.Tiers;
-            Assert.AreEqual(15f, t.Opening, 1e-3f);
+            // Play-test 6 (DECISIONS 21G): half a second in orbit, then straight down (15 s up there overflowed the screen).
+            Assert.AreEqual(0.5f, t.Opening, 1e-3f);
             Assert.AreEqual(AltitudeTier.Orbit, bug.Tier);
             Assert.IsTrue(bug.Invulnerable, "untouchable in orbit");
-            var fired = Run(world, 14.5f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id);
+            var fired = Run(world, 0.4f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id);
             Assert.AreEqual(0, fired, "its guns hold in orbit");
             Assert.AreEqual(AltitudeTier.Orbit, bug.Tier);
             var seen = new List<(double at, AltitudeTier tier, bool shifting)>();
             Run(world, 110f, each: () => seen.Add((world.Time, bug.Tier, bug.Shifting)));
             Assert.IsTrue(bug.LeftOrbit && bug.HasSatellite, "down from orbit, a satellite left up there");
-            Assert.IsFalse(seen.Any(s => s.at > 15.2 && s.tier == AltitudeTier.Orbit), "never back to orbit");
+            Assert.IsFalse(seen.Any(s => s.at > 0.7 && s.tier == AltitudeTier.Orbit), "never back to orbit");
             AltitudeTier At(double time) => seen.First(s => s.at >= time).tier;
-            // 15-19 s the way down (counts as high), high to 44, the change to low (low meanwhile), low to 57.5, the
-            // change back (still low), high from 61.
-            Assert.AreEqual(AltitudeTier.High, At(16.0));
-            Assert.AreEqual(AltitudeTier.High, At(43.5));
-            Assert.AreEqual(AltitudeTier.Low, At(45.0), "during the change the lower tier counts");
-            Assert.AreEqual(AltitudeTier.Low, At(50.0));
-            Assert.AreEqual(AltitudeTier.Low, At(59.0), "climbing back it is still hit as low");
-            Assert.AreEqual(AltitudeTier.High, At(62.0));
-            Assert.AreEqual(AltitudeTier.High, At(85.0));
-            Assert.AreEqual(AltitudeTier.Low, At(88.0));
+            // 0.5-4.5 s the way down (counts as high), high to 29.5, the change to low (low meanwhile), low to 43, the
+            // change back (still low), high from 46.5.
+            Assert.AreEqual(AltitudeTier.High, At(1.5));
+            Assert.AreEqual(AltitudeTier.High, At(29.0));
+            Assert.AreEqual(AltitudeTier.Low, At(30.5), "during the change the lower tier counts");
+            Assert.AreEqual(AltitudeTier.Low, At(35.5));
+            Assert.AreEqual(AltitudeTier.Low, At(44.5), "climbing back it is still hit as low");
+            Assert.AreEqual(AltitudeTier.High, At(47.5));
+            Assert.AreEqual(AltitudeTier.High, At(70.5));
+            Assert.AreEqual(AltitudeTier.Low, At(73.5));
             Assert.IsTrue(seen.Any(s => s.shifting), "each change takes its time");
             var shots = Run(world, 1f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id);
             Assert.Greater(Run(world, 10f).Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == bug.Id) + shots, 0, "its laser fires once it is down");
@@ -198,7 +199,7 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ the rods
 
         [Test]
-        public void TheRodsFallOnFiveGroupsFirstFromTheCraftThenFromTheSatellite()
+        public void TheRodsFallOnFiveGroupsFromTheSatelliteOnceTheCraftIsDown()
         {
             var world = Field();
             var bug = world.SpawnVehicle("silver_bug", 1, new Vector2(0f, 90f), 0f);
@@ -224,9 +225,10 @@ namespace MachineBrigade.Tests
                 Run(world, 10f, () => bug.BigAttack.Stage == BigStage.Charging);
                 var big = bug.BigAttack;
                 Assert.AreEqual(BigStage.Charging, big.Stage);
-                Assert.AreEqual(5.0, big.WarnStart, 0.1, "the first in the opening");
-                Assert.AreEqual(AltitudeTier.Orbit, bug.Tier, "while still in orbit");
-                Assert.IsFalse(big.FromSatellite, "the first from the craft itself");
+                Assert.AreEqual(5.0, big.WarnStart, 0.1, "the first as it comes down");
+                Assert.AreNotEqual(AltitudeTier.Orbit, bug.Tier, "down from orbit already (play-test 6)");
+                // Play-test 6 (DECISIONS 21G): the craft is down by then, so the first already falls from the satellite it left.
+                Assert.IsTrue(big.FromSatellite, "the first from the satellite (the craft came down at once)");
                 Assert.AreEqual(4.0, big.FireAt - big.WarnStart, 1e-3, "4 s of warning");
                 Assert.AreEqual(5, big.Zones.Count, "five rings");
                 Assert.IsTrue(big.Zones.All(z => System.Math.Abs(z.Radius - 6f) < 1e-3f), "6 m each");
@@ -234,7 +236,9 @@ namespace MachineBrigade.Tests
                     Assert.IsTrue(big.Zones.Any(z => Vector2.Distance(z.Centre, list[0].Position) < 5f), "a ring on every group");
                 Run(world, 8f, () => bug.BigAttack.Stage == BigStage.Ready);
                 float Worst(List<Vehicle> list) => list.Max(v => taken.TryGetValue(v, out var d) ? d : 0f);
-                Assert.AreEqual(1600f, Worst(groups[0]), 16f, "1 600 on a heavy tank's roof at the centre (penetration 4)");
+                // Play-test 6 (DECISIONS 21G): x the main rank's damage and big-attack scale (+20 %).
+                var rank = bug.Def.DamageScale * bug.Def.BigAttackScale.Damage;
+                Assert.AreEqual(1600f * rank, Worst(groups[0]), 16f * rank, "1 600 on a heavy tank's roof at the centre (penetration 4)");
                 Assert.AreEqual(Worst(groups[0]), Worst(groups[1]), 16f, "smoke does nothing to a rod");
                 var shielded = groups[2].Sum(v => taken.TryGetValue(v, out var d) ? d : 0f);
                 var plain = groups[3].Sum(v => taken.TryGetValue(v, out var d) ? d : 0f);

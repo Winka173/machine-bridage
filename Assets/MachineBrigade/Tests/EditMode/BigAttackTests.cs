@@ -124,7 +124,8 @@ namespace MachineBrigade.Tests
             }
             Assert.That(times.Count, Is.GreaterThanOrEqualTo(2), "two big attacks in 100 s");
             Assert.AreEqual(30.0, times[0], 1.0, "the first about 30 s after it appears");
-            Assert.AreEqual(65.0, times[1] - times[0], 1.0, "then its cooldown, start to start");
+            // Play-test 6 (DECISIONS 21G): a main boss's rank brings it 15 % sooner.
+            Assert.AreEqual(65.0 * C.Vehicle("behemoth").BigAttackScale.Cooldown, times[1] - times[0], 1.0, "then its cooldown, start to start");
         }
 
         [Test]

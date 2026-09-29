@@ -424,6 +424,8 @@ namespace MachineBrigade.Sim.Combat
                 (hit.Attacker != null && _world.Strikes.InSmoke(hit.Attacker.Position)))) damage *= 1f - SmokeEnergyCut;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
+            // Play-test 6 (DECISIONS 21G): a boss's air defence hits aircraft harder (its rank's airDamage).
+            if (!raw && hit.Attacker is { Def: { RankDef: { } firing } } && target is Vehicle { Flying: true }) damage *= firing.AirDamage;
             // A gun pit down in its hole takes much less (a thermobaric blast reaches half into it).
             if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? 0.5f : 1f);
 
@@ -481,6 +483,8 @@ namespace MachineBrigade.Sim.Combat
             if (vehicle.ExposedUntil > now) damage *= vehicle.Def.Burrow?.ExposedTaken ?? 1f;
             // Prompt 18: a big attack that exposes it (the Spectre low and slow, the carrier's bomb doors open).
             damage *= vehicle.BigTaken;
+            // Play-test 6 (DECISIONS 21G): a boss takes a share of strikes and bombs, and only so much of them in a window.
+            if (vehicle.Def.RankDef is { } rank && StrikeLike(hit)) damage = CapStrike(vehicle, damage, rank, now);
             if (vehicle.HasParts)
             {
                 var part = hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !vehicle.IsPartBroken(shot.Part) ? shot.Part : -1;
@@ -513,6 +517,29 @@ namespace MachineBrigade.Sim.Combat
             _world.Emit(SimEvent.Damage(vehicle, damage));
             if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
             if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
+            return damage;
+        }
+
+        /// <summary>Play-test 6: a called strike, or a bomb (its blast too), or a strike's bomblet.</summary>
+        internal static bool StrikeLike(in HitInfo hit) =>
+            hit.Kind == HitKind.Strike || hit.Weapon is { Projectile: ProjectileKind.Bomb } || (hit.Kind == HitKind.Splash && hit.Weapon == null && hit.Attacker == null);
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): a boss's rank takes its share of a strike or a bomb; within its window at most its
+        /// cap of its health goes that way, and past the cap only a fifth (by default) gets through.
+        /// </summary>
+        internal static float CapStrike(Vehicle boss, float damage, BossRankDef rank, double now)
+        {
+            damage *= rank.StrikeTaken;
+            if (rank.StrikeCap <= 0f || !(damage > 0f)) return damage;
+            if (now - boss.StrikeWindowAt > rank.StrikeWindow)
+            {
+                boss.StrikeWindowAt = now;
+                boss.StrikeWindowTaken = 0f;
+            }
+            var room = MathF.Max(0f, rank.StrikeCap * boss.MaxHp - boss.StrikeWindowTaken);
+            if (damage > room) damage = room + (damage - room) * rank.StrikeOver;
+            boss.StrikeWindowTaken += damage;
             return damage;
         }
 

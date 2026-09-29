@@ -42,7 +42,7 @@ namespace MachineBrigade.Tests
         /// </summary>
         internal static readonly Dictionary<string, int> Expected = new()
         {
-            ["armored_train"] = 5, ["nuke_train"] = 9, ["behemoth"] = 10, ["behemoth_tempest"] = 3, ["behemoth_inferno"] = 4,
+            ["armored_train"] = 5, ["nuke_train"] = 9, ["behemoth"] = 10, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 4,
             ["fortress_hive"] = 6, ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12, ["sky_fortress"] = 8,
             ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 10,
             ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 14,
@@ -378,8 +378,8 @@ namespace MachineBrigade.Tests
             {
                 var world = Lab.Field(7);
                 boss = world.SpawnVehicle("behemoth", 1, new Vector2(0f, 20f), MathF.PI);
-                // Tough enough to live through the half minute.
-                boss.HpScale = 4f;
+                // Tough enough to live through the half minute (play-test 6 made bosses about 2.4 times as tough: 4 -> 1.7).
+                boss.HpScale = 1.7f;
                 boss.Hp = boss.MaxHp;
                 for (var i = 0; i < 5; i++) world.SpawnVehicle(i % 2 == 0 ? "main_battle_tank" : "tank_destroyer", 0, new Vector2(-16f + i * 8f, -20f), 0f);
                 return world;

@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
             {
                 var a = v.Armour;
                 foreach (ArmorFace f in System.Enum.GetValues(typeof(ArmorFace)))
-                    Assert.That(a[f], Is.InRange(0, 4), v.Id + " " + f);
+                    Assert.That(a[f], Is.InRange(0, v.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit), v.Id + " " + f);
                 Assert.AreEqual(v.Flying ? TargetKind.Air : v.Armor == ArmorClass.Structure ? TargetKind.Structure : TargetKind.Ground, v.Kind, v.Id);
                 // Towers, buildings and aircraft are the same all round, but for an embrasured front.
                 if (v.Flying || v.Kind == TargetKind.Structure)
@@ -31,7 +31,7 @@ namespace MachineBrigade.Tests
                     Assert.That(a.Front - a.Side, Is.InRange(0, 1), v.Id + ": at most an embrasured front");
                 }
                 else Assert.That(a.Front, Is.GreaterThanOrEqualTo(a.Top), v.Id + ": no roof thicker than the front");
-                foreach (var part in v.Parts) Assert.That(part.ArmourOn(v), Is.InRange(0, 4), v.Id + " part " + part.Id);
+                foreach (var part in v.Parts) Assert.That(part.ArmourOn(v), Is.InRange(0, ArmourLevels.Max), v.Id + " part " + part.Id);
                 if (v.Boss) Assert.IsTrue(v.Parts.All(p => p.Armour >= 0), v.Id + ": every part has its own level");
             }
             // Elites: a level more in front than their card (at most 4; an aircraft at most 2).

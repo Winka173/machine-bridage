@@ -315,6 +315,25 @@ namespace MachineBrigade.Game.Match
 
         protected abstract void Build(SimWorld world, int seed);
 
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): a quick mode's enemy keeps pace with the player's arsenal as the campaign's does
+        /// (EnemyScaling), with its difficulty's share (economy.enemyScalingQuick): its vehicles, bosses and towers get
+        /// that share of the deck's edge in toughness and firepower, so card ranks and equipment still tell but a geared
+        /// army no longer walks over every difficulty. Set before the forces are placed; no deck edge, no change.
+        /// </summary>
+        internal static void KeepPace(SimWorld world, IEnumerable<VehicleBoost> deck, AiDifficulty difficulty, GameModeKind kind)
+        {
+            // Boss Rush runs on a clock: its bosses keep Normal's pace at every difficulty and the difficulty is their
+            // own strength (BossRushSession.BossStrength), more in damage than in health, so a hard run is lost to the
+            // bosses rather than to the clock.
+            if (kind == GameModeKind.BossRush) difficulty = AiDifficulty.Normal;
+            var share = world.Catalog.QuickScalingFor(difficulty.ToString(), kind.ToString());
+            if (share <= 0f) return;
+            var edge = EnemyScaling.Match(deck, share);
+            if (edge.Hp <= 1f && edge.Damage <= 1f) return;
+            world.SetBoosts(EnemyTeam, _ => edge, _ => edge.Damage, everything: true);
+        }
+
         /// <summary>Which map file the mode plays on (objectives or the open sandbox version).</summary>
         public static string MapFile(GameModeKind kind, string mapId) => kind switch
         {
@@ -867,7 +886,8 @@ namespace MachineBrigade.Game.Match
         {
             // A bigger opening purse and income than the old 30 CP and 1.6: playtests found the rush too hard to win.
             // Round 6: 1.8 -> 2.0 (Hard 1.55 -> 1.75), a 45 CP bank so the start and bounties are not clipped.
-            var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.6f, AiDifficulty.Hard => 1.75f, _ => 2f });
+            // Play-test 6 (DECISIONS 21G): the economy a little leaner (2 -> 1.8, Hard 1.75 -> 1.6, Very Hard 1.6 -> 1.45).
+            var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.45f, AiDifficulty.Hard => 1.6f, _ => 1.8f });
             player.ArmyCap = 36;
             player.Bank = 45f;
             // Prompt 20 N: the week's hunt (3 main and 7 mini bosses drawn by the week, stronger down the run, 45 minutes)
@@ -877,11 +897,14 @@ namespace MachineBrigade.Game.Match
             _roster = _full ? BossHunts.Full : BossHunts.Weekly(_week);
             _mode = new BossRushMode(new BossRushRules
             {
-                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = _roster,
+                Player = player, Bounty = 12f, StepBounty = 6f, Bosses = _roster,
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
                 Checkpoints = _full ? HuntCheckpoints.EveryBoss : HuntCheckpoints.MainBosses, Supports = true,
                 Seed = _full ? BossHunts.FullSeed : _week, Ramp = !_full, RestRepair = 0.3f, Breather = 20f,
                 TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
+                // Play-test 6 (DECISIONS 21G): the endless run after the last boss, and the bosses' strength by difficulty.
+                EndlessOffer = true,
+                BossHp = BossStrength(Difficulty).hp, BossDamage = BossStrength(Difficulty).damage,
             });
             Pending = null;
             Mode = _mode;
@@ -891,6 +914,15 @@ namespace MachineBrigade.Game.Match
             Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => PlayerCentre(w) ?? home };
             AddPlayerCommander(_mode, seed).Goal = w => w.TryGetVehicle(_mode.Boss, out var b) && b.IsAlive ? b.Position : null;
         }
+
+        /// <summary>Play-test 6 (DECISIONS 21G): the bosses' health and damage by difficulty (the escorts' by the elite and cap tables).</summary>
+        internal static (float hp, float damage) BossStrength(AiDifficulty difficulty) => difficulty switch
+        {
+            AiDifficulty.Easy => (0.75f, 0.85f),
+            AiDifficulty.Hard => (0.9f, 1.05f),
+            AiDifficulty.VeryHard => (0.95f, 1.12f),
+            _ => (0.85f, 1f),
+        };
 
         private static Vector2? PlayerCentre(SimWorld world)
         {
@@ -909,18 +941,49 @@ namespace MachineBrigade.Game.Match
         {
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
-            var detail = $"{_mode.Defeated} / {_mode.Total}";
+            var detail = _mode.Endless ? Strings.Format("hunt.endless.detail", _mode.EndlessDefeated) : $"{_mode.Defeated} / {_mode.Total}";
             // The full hunt has no clock: its total time (the leaderboard's) instead.
             if (_full) detail += "  ·  " + Clock(_mode.TotalSeconds(world));
-            hud.SetMission(Strings.Get("mode.bossrush.goal"), detail, _mode.Defeated / (float)_mode.Total, _full ? -1f : _mode.SecondsLeft(world), scratch);
+            hud.SetMission(Strings.Get("mode.bossrush.goal"), detail, UnityEngine.Mathf.Min(1f, _mode.Defeated / (float)_mode.Total),
+                _full || _mode.Endless ? -1f : _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss, world: world);
             else hud.SetBoss(null, 0f);
             // Prompt 20 N/O.4: the rest between bosses, the support pick after a main boss, the checkpoint kept.
             var rest = _mode.RestLeft(world);
             hud.SetHuntRest(rest >= 0f ? Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)) : null, rest,
                 _mode.Next is { } next ? Strings.Format("hunt.next", Strings.Card(next)) : null, HeldLine());
-            ShowSupportPick(hud, world, rest);
+            if (_mode.EndlessOpen || _endlessShown) ShowEndlessPick(hud, world);
+            else ShowSupportPick(hud, world, rest);
             if (KeepCheckpoint()) hud.Toast(Strings.Get("hunt.checkpointToast"));
+        }
+
+        private bool _endlessShown;
+
+        /// <summary>Play-test 6 (DECISIONS 21G): after the last boss, end the hunt (the first card, taken when the time runs out) or go on endless.</summary>
+        private void ShowEndlessPick(BattleHud hud, SimWorld world)
+        {
+            if (!_mode.EndlessOpen)
+            {
+                if (hud.SupportPickShown) hud.HideSupportPick();
+                _endlessShown = false;
+                return;
+            }
+            if (!_endlessShown)
+            {
+                _endlessShown = true;
+                var options = new List<(string, string, string)>
+                {
+                    ("trophy", Strings.Get("hunt.endless.stop"), Strings.Get("hunt.endless.stop.info")),
+                    ("crosshair", Strings.Get("hunt.endless.go"), Strings.Get("hunt.endless.go.info")),
+                };
+                hud.ShowSupportPick(Strings.Get("hunt.endless.title"), options, index =>
+                {
+                    MatchJournal.Record(world, "endless", index == 1 ? "1" : "0");
+                    _mode.ChooseEndless(world, index == 1);
+                    hud.HideSupportPick();
+                });
+            }
+            hud.SetSupportPickTime(_mode.EndlessChoiceLeft(world), "hunt.endless.auto");
         }
 
         /// <summary>Saves the run's newest checkpoint once (each frame, and before a switch of battlefield); true when one was saved.</summary>
@@ -979,7 +1042,8 @@ namespace MachineBrigade.Game.Match
             if (_mode.Result is not { } result) return null;
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get(_full ? "hunt.full" : "mode.bossrush") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
+            outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{System.Math.Min(_mode.Defeated, _mode.Total)} / {_mode.Total}"));
+            if (_mode.Endless) outcome.Rows.Add((Strings.Get("hunt.endless.row"), Kit.Count(_mode.EndlessDefeated)));
             var total = _mode.TotalSeconds(world);
             outcome.Rows.Add((Strings.Get("hunt.time"), Clock(total)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);

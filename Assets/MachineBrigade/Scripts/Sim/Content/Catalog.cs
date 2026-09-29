@@ -54,6 +54,20 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The share of the player's arsenal edge a campaign enemy matches (balance.json economy.enemyScaling).</summary>
         public float EnemyScaling { get; internal set; } = 0.55f;
 
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): the share of the player's arsenal edge a quick mode's enemy (and its bosses and
+        /// towers) matches, by difficulty (balance.json economy.enemyScalingQuick; none there: 0, the old quick modes).
+        /// </summary>
+        internal Dictionary<string, float> QuickScaling { get; set; } = new();
+
+        /// <summary>A mode's own factor on that share (economy.enemyScalingModes: the weekly fortress's half).</summary>
+        internal Dictionary<string, float> QuickScalingModes { get; set; } = new();
+
+        /// <summary>The quick modes' share for a difficulty key (Easy .. VeryHard) in a mode, 0 when the data has none.</summary>
+        public float QuickScalingFor(string difficulty, string? mode = null) =>
+            (QuickScaling.TryGetValue(difficulty, out var share) ? share : 0f) *
+            (mode != null && QuickScalingModes.TryGetValue(mode, out var factor) ? factor : 1f);
+
         internal Dictionary<string, int> ArmyCaps { get; set; } = new();
 
         internal Dictionary<string, int> VehicleCaps { get; set; } = new();
@@ -237,6 +251,10 @@ namespace MachineBrigade.Sim.Content
                     var structure = v.Bool("structure", def.Static && !def.Boss ? true : v.Has("armor") && v.Enum<ArmorClass>("armor") == ArmorClass.Structure);
                     if (v.Has("armour")) def.SetArmour(Levels(v, "armour", def.Flying || structure), structure);
                     else def.SetArmour(structure ? ArmourLevels.Uniform(2) : def.Armour, structure);
+                    // Play-test 6 (DECISIONS 21G): level 5 is a boss's plate only.
+                    var plate = def.Armour;
+                    if (!def.Boss && Math.Max(Math.Max(plate.Front, plate.Side), Math.Max(plate.Rear, plate.Top)) > ArmourLevels.MaxUnit)
+                        throw new FormatException($"{v.Path}.armour: level 5 is for bosses (a vehicle or tower 0 to {ArmourLevels.MaxUnit}).");
                     def.Card = v.Bool("card", true);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
@@ -422,6 +440,8 @@ namespace MachineBrigade.Sim.Content
                 IncomeScale = Tune("economy", "income"),
                 SupplyScale = Tune("economy", "supply"),
                 EnemyScaling = Tune("economy", "enemyScaling"),
+                QuickScaling = ReadShares(root, "enemyScalingQuick"),
+                QuickScalingModes = ReadShares(root, "enemyScalingModes"),
                 ArmyCaps = ReadArmyCaps(root),
                 VehicleCaps = ReadCaps(root, "vehicleCap", 32),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
@@ -462,6 +482,15 @@ namespace MachineBrigade.Sim.Content
             var o = root.Object("economy").Object(key);
             foreach (var k in o.Keys) caps[k] = o.Int(k, fallback);
             return caps;
+        }
+
+        private static Dictionary<string, float> ReadShares(JsonObject root, string key)
+        {
+            var shares = new Dictionary<string, float>();
+            if (!root.Has("economy") || !root.Object("economy").Has(key)) return shares;
+            var o = root.Object("economy").Object(key);
+            foreach (var k in o.Keys) shares[k] = Math.Clamp(o.Float(k, 0f), 0f, 2f);
+            return shares;
         }
 
         private static Dictionary<string, int> ReadArmyCaps(JsonObject root)
