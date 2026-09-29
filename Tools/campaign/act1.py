@@ -89,7 +89,7 @@ add_mission(m('c1m04', 1, 'greenvale', 'Outpost', 'Overcast', points=['town'], h
              say('mai', 'Capture', 'Ground is ours. Towers coming down, keep them off my crews!', 'Đất là của ta rồi. Tháp đang thả xuống, đừng để chúng đụng vào người của tôi!', arg='town'),
              say('mai', 'Win', 'It holds. Welcome to your new HQ, Colonel. The coffee is terrible.', 'Trụ được rồi. Chào mừng tới sở chỉ huy mới, đại tá. Cà phê dở tệ.')])
 
-add_mission(m('c1m05', 1, 'landingbeach', 'Boss', 'Night', timeLimit=1140, reinforcements=2,
+add_mission(m('c6m08', 6, 'landingbeach', 'Boss', 'Night', timeLimit=1140, reinforcements=2,
               boss=scripted('landing_hovercraft', pt('landingbeach', 'east'), route=[pt('landingbeach', 'east'), (20, -45), (0, 0), (45, -30)],
                             heading=315, fallback='mobile_fortress', fallbackHealth=0.5, name='hovercraft'),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=10, enemyIncome=0.8,
@@ -525,17 +525,17 @@ add_mission(m('c3m05', 3, 'whiteout', 'Boss', 'Clear', legacy='m03', general='or
               enemyDeck=['light_tank', 'main_battle_tank', 'ifv', 'mortar_carrier', 'aa_vehicle', 'attack_helicopter'],
               playerCp=26, playerIncome=1.45, playerCap=36, playerBase='Anchor',
               hqLevel=2, unlocks=['recon_drone'], starTime=660, starLosses=10, challenge={'kind': 'NoStrikes'}),
-            ('Iron Bird', 'Chim Sắt'),
-            ('Orlov\'s Iron Bird has come down from the clouds over the pass: a gunship the size of a ship, with rockets, flares and an escort. '
+            ('Harpy', 'Harpy'),
+            ('Orlov\'s Harpy has come down from the clouds over the pass: a gunship the size of a ship, with rockets, flares and an escort. '
              'This is what the anti-air was for. Bring it down.',
-             'Chim Sắt của Orlov đã sà xuống khỏi mây trên đèo: một pháo hạm bay to như con tàu, có rocket, pháo sáng mồi bẫy và đội hộ tống. '
+             'Harpy của Orlov đã sà xuống khỏi mây trên đèo: một pháo hạm bay to như con tàu, có rocket, pháo sáng mồi bẫy và đội hộ tống. '
              'Phòng không là để dành cho lúc này. Bắn rơi nó.'),
-            (('Iron Bird', 'Chim Sắt'),
-             ('Iron Bird\'s crew manual, page one: "The aircraft cannot be shot down by ground fire." Page two was missing. So, now, is Iron Bird.',
-              'Sổ tay kíp lái Chim Sắt, trang một: "Máy bay không thể bị hỏa lực mặt đất bắn hạ." Trang hai bị mất. Giờ thì Chim Sắt cũng mất.')),
+            (('Harpy', 'Harpy'),
+             ('Harpy\'s crew manual, page one: "The aircraft cannot be shot down by ground fire." Page two was missing. So, now, is Harpy.',
+              'Sổ tay kíp lái Harpy, trang một: "Máy bay không thể bị hỏa lực mặt đất bắn hạ." Trang hai bị mất. Giờ thì Harpy cũng mất.')),
             [say('dieuhau', 'Start', 'Big bird, big target. Keep the launchers moving under it.', 'Chim to, bia to. Cho các bệ phóng di chuyển liên tục dưới nó.'),
              say('orlov', 'Boss', 'Look up, Colonel. The coordinate has arrived.', 'Nhìn lên đi, đại tá. Tọa độ đã tới.'),
-             say('dieuhau', 'Win', 'Iron Bird is down! Somebody owes me a drink.', 'Chim Sắt rơi rồi! Có ai đó nợ tôi một chầu đấy.')])
+             say('dieuhau', 'Win', 'Harpy is down! Somebody owes me a drink.', 'Harpy rơi rồi! Có ai đó nợ tôi một chầu đấy.')])
 
 add_mission(m('c3m06', 3, 'frostpeak', 'Hunt', 'Night', general='orlov', timeLimit=1100, targetHealth=2.5, reinforcements=2,
               hunt=[scripted('mlrs', (60, 70), route=[(80, 90), (40, 60), (70, 40)]),
@@ -570,12 +570,12 @@ add_mission(m('c3m07', 3, 'whiteout', 'Protect', 'Fog', targets=['log_cabin', 'b
               'Năm mươi mốt người qua đêm trong nhà kho. Sáng ra, một cô bé hỏi Diều Hâu có phải mấy chiếc máy bay ầm ĩ kia là của chú không. Anh bảo phải, và chúng đứng về phía cháu.')),
             [say('khai', 'Start', 'Civilians in the cabins. They are the objective.', 'Dân thường trong các căn nhà gỗ. Họ chính là mục tiêu.')])
 
-add_mission(m('c3m08', 3, 'whiteout', 'Boss', 'Snow', legacy='m18', general='varga', timeLimit=1200, reinforcements=3,
+add_mission(m('c6m05', 6, 'whiteout', 'Boss', 'Snow', legacy='m18', general='varga', timeLimit=1200, reinforcements=3,
               boss=scripted('behemoth', (84, 84), heading=225, health=2.2, name='frozen_behemoth'),
               enemyAi='commander', enemyStance='Attack', difficulty='Hard', enemyCp=13, enemyIncome=0.85,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'tank_destroyer', 'mlrs', 'ifv'],
               playerCp=26, playerIncome=1.45, playerCap=36, starTime=780, starLosses=12, challenge={'kind': 'NoStrikes'}),
-            ('Frozen Behemoth', 'Behemoth Băng Giá'),
+            ('Behemoth Mk.II', 'Behemoth Mk.II'),
             ('The Behemoth from Dunebreak is back: Varga had it dragged north, repaired and heated for the snow, and lent it to Orlov. '
              'Heavier than before. Stop it for good.',
              'Chiếc Behemoth ở Dunebreak đã quay lại: Varga cho kéo nó lên phía bắc, sửa chữa, lắp hệ sưởi cho tuyết, rồi cho Orlov mượn. '
@@ -620,22 +620,22 @@ add_mission(m('c3m10', 3, 'frostpeak', 'Destroy', 'Overcast', variant='siege', l
               ],
               starTime=1380, starLosses=16),
             ('The Frostpeak Line', 'Tuyến Frostpeak'),
-            ('The last station of the radar line, the fortress behind it, and the Ice Fortress guarding its gate. '
-             'Blind the hill radar, choose your second blow, destroy the Ice Fortress, and hold its gate against Orlov\'s counterattack.',
-             'Trạm cuối của tuyến radar, pháo đài phía sau nó, và Pháo Đài Băng canh cổng. '
-             'Làm mù radar trên đồi, chọn đòn thứ hai, tiêu diệt Pháo Đài Băng, rồi giữ cổng trước đợt phản kích của Orlov.'),
+            ('The last station of the radar line, the fortress behind it, and Jötunn guarding its gate. '
+             'Blind the hill radar, choose your second blow, destroy Jötunn, and hold its gate against Orlov\'s counterattack.',
+             'Trạm cuối của tuyến radar, pháo đài phía sau nó, và Jötunn canh cổng. '
+             'Làm mù radar trên đồi, chọn đòn thứ hai, tiêu diệt Jötunn, rồi giữ cổng trước đợt phản kích của Orlov.'),
             (('Spring', 'Mùa xuân'),
              ('The day the Frostpeak line fell, the thaw began. The engineers swear the two are not connected. The villagers do not believe the engineers.',
               'Ngày tuyến Frostpeak sụp đổ, băng bắt đầu tan. Công binh thề rằng hai chuyện chẳng liên quan gì nhau. Dân làng không tin công binh.')),
             [say('khai', 'Start', 'The line breaks today, or the winter wins. Move.', 'Hôm nay tuyến phải vỡ, không thì mùa đông thắng. Tiến lên.'),
              say('khai', 'Win', 'The highlands are open. Act one is done, Brigade.', 'Cao nguyên đã mở. Hồi thứ nhất khép lại rồi, Lữ đoàn.')],
             stages_text={'radar': ('Blind the Hill Radar', 'Làm mù radar trên đồi'), 'depots': ('Blow the Fuel Depots', 'Cho nổ kho nhiên liệu'),
-                         'radars': ('The Fortress Radars', 'Radar của pháo đài'), 'fortress': ('The Ice Fortress', 'Pháo Đài Băng'), 'gate': ('Hold the Gate', 'Giữ cổng')},
+                         'radars': ('The Fortress Radars', 'Radar của pháo đài'), 'fortress': ('Jötunn', 'Jötunn'), 'gate': ('Hold the Gate', 'Giữ cổng')},
             choices_text={'depots': (('Blow the fuel depots', 'Cho nổ kho nhiên liệu'), ('Orlov\'s army earns 30 % less for the rest of the battle.', 'Quân Orlov kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')),
                           'radars': (('Destroy the fortress radars', 'Phá radar của pháo đài'), ('Free airstrikes about every 50 s for the rest of the battle.', 'Không kích miễn phí khoảng mỗi 50 giây trong suốt phần còn lại của trận.'))})
 T('radio.khai.c3m10.s1', 'The hill radar first. Without it, his guns fire blind.', 'Radar trên đồi trước. Mất nó, pháo của hắn bắn mù.')
 T('radio.orlov.c3m10.s5', 'All batteries, the gate. Bury them in it.', 'Toàn bộ khẩu đội, nhắm cổng. Chôn chúng ở đó.')
-T('radio.orlov.c3m10.s4', 'The Ice Fortress will hold the gate. It always has.', 'Pháo Đài Băng sẽ giữ cổng. Xưa nay vẫn thế.')
+T('radio.orlov.c3m10.s4', 'Jötunn will hold the gate. It always has.', 'Jötunn sẽ giữ cổng. Xưa nay vẫn thế.')
 
 add_mission(m('c3s1', 3, 'frostpeak', 'Recon', 'Fog', side=True, after='c3m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=840, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.85,
@@ -648,7 +648,7 @@ add_mission(m('c3s1', 3, 'frostpeak', 'Recon', 'Fog', side=True, after='c3m03', 
               'Linh giữ bản đồ trên giấy. "Hegemon đọc được sóng vô tuyến của ta," cô nói. "Hegemon không đọc được chữ tôi. Chẳng ai đọc được."')),
             [say('linh', 'Start', 'Look and leave. The fog helps both sides.', 'Nhìn rồi rút. Sương mù giúp cả hai bên đấy.')])
 
-add_mission(m('c3s2', 3, 'whiteout', 'Escort', 'Night', side=True, after='c3m07', speaker='linh', convoyCount=5, convoyNeeded=3, reinforcements=1, timeLimit=1000,
+add_mission(m('c3m08', 3, 'whiteout', 'Escort', 'Night', side=True, after='c3m07', speaker='linh', convoyCount=5, convoyNeeded=3, reinforcements=1, timeLimit=1000,
               convoy=scripted('supply_truck', (-100, -100), route=[(-84.8, -74.2), (-53, -53), (-33, -33), (0, 0), (-40, 40), (-71.25, 71.25)], heading=45),
               units=units(0, ['main_battle_tank', 'heavy_aa', 'ifv'], (-90, -90), 6),
               enemyAi='waves', difficulty='Normal',

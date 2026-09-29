@@ -1,6 +1,6 @@
 """Draws the campaign's portraits: flat vector busts in one style, readable at 48 px.
 
-    python Tools/campaign/portraits.py [--sheet <png>]
+    python Tools/campaign/portraits.py [--sheet <png>] [--only brandt,orlov]
 
 Writes Assets/MachineBrigade/Resources/UI/Portraits/<speaker>.png (256 px, drawn at 4x and scaled
 down). Allied officers stand on a teal ground, Hegemon's on a dark red one; each has its own
@@ -239,6 +239,25 @@ def orlov(d):
     d.line([(s(204), s(210)), (s(172), s(234))], fill=BONE, width=s(5))
 
 
+def brandt(d):
+    # Prompt 20: Major Brandt, the coastal garrison: a grey peaked cap, a moustache, a fortress badge.
+    f = Face(d, SKIN['mid'])
+    f.base((70, 74, 66), collar=(52, 56, 50))
+    d.rectangle(box(128, 84, 104, 24), fill=(84, 88, 80))
+    d.chord(box(128, 76, 114, 32), 180, 360, fill=(84, 88, 80))
+    d.rectangle(box(128, 98, 106, 8), fill=INK)
+    d.chord(box(128, 103, 92, 18), 0, 180, fill=INK)
+    d.rectangle(box(128, 86, 14, 12), fill=(200, 60, 50))
+    f.eyes(brow_tilt=2)
+    f.nose()
+    d.rectangle(box(128, 146, 40, 7), fill=(70, 50, 40))
+    f.mouth(y=156, w=18)
+    # A tower with battlements.
+    d.rectangle(box(190, 224, 26, 22), fill=BONE)
+    for x in (180, 190, 200):
+        d.rectangle(box(x, 210, 6, 8), fill=BONE)
+
+
 def kessler(d):
     f = Face(d, SKIN['light'])
     f.base((30, 36, 58), collar=(236, 236, 236))
@@ -333,7 +352,7 @@ def hq(d):
 
 PORTRAITS = [
     ('khai', OURS, khai), ('mai', OURS, mai), ('dieuhau', OURS, dieuhau), ('linh', OURS, linh), ('hung', OURS, hung),
-    ('varga', THEIRS, varga), ('orlov', THEIRS, orlov), ('kessler', THEIRS, kessler), ('sen', THEIRS, sen),
+    ('brandt', THEIRS, brandt), ('varga', THEIRS, varga), ('orlov', THEIRS, orlov), ('kessler', THEIRS, kessler), ('sen', THEIRS, sen),
     ('quaden', THEIRS, quaden), ('aurel', THEIRS, aurel), ('hq', NEUTRAL, hq),
 ]
 
@@ -341,7 +360,10 @@ PORTRAITS = [
 def main():
     os.makedirs(OUT, exist_ok=True)
     tiles = []
+    only = sys.argv[sys.argv.index('--only') + 1].split(',') if '--only' in sys.argv else None
     for name, ground, draw in PORTRAITS:
+        if only and name not in only:
+            continue
         img, d = canvas(ground)
         draw(d)
         img = img.resize((256, 256), Image.LANCZOS)

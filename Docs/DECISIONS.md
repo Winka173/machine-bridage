@@ -5989,6 +5989,154 @@ The owner's doc update (Docs/prompts/doc-review-update_vi.txt). Everything is ge
   - The campaign line reads its mission and chapter counts from the data.
 - **Tests:** `ExportGameDoc.EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm` and `ExportGameDoc.NoModeLineKeepsAPlaceholder` (both languages).
 
+## 19A. Prompt 20 pass 1: twelve chapters, four acts, names, act switches, economy (2026-09-29)
+
+Parts A-D of prompt 20 on lead/integration cd87984 (branch feature/p20-pass1). Parts E-M (boss templates, the new
+bosses and mini bosses, the two new maps, the towers) are pass 2; N-P (Boss Rush for 12 chapters, the chapter screen,
+the full check) are pass 3. The owner's token rule: one targeted test run, no suites, no screenshots.
+
+### A. Names (display only; every id kept)
+
+Bosses read "Proper name · subtitle" in `unit.*` and `boss.*`; `short.*` is the proper name. Existing ids:
+fortress_bastion Bastion · Pháo đài; behemoth Behemoth · Quái vật thép; mobile_fortress Jötunn · Pháo đài di động;
+leviathan Leviathan · Tuần dương hạm; drone_mothership Matriarch · Tàu mẹ drone; nuke_train Nemesis · Đoàn tàu tên lửa;
+command_airship Roc · Khí cầu chỉ huy; silver_bug Icarus · Phi thuyền quỹ đạo; behemoth_inferno Inferno · Behemoth phun
+lửa; mega_gunship Harpy · Trực thăng khổng lồ; sky_fortress Spectre · Máy bay pháo; rail_supergun Gungnir · Pháo đường
+ray; behemoth_tempest Tempest · Behemoth pháo điện từ; armored_train Juggernaut · Đoàn tàu bọc thép; landing_hovercraft
+Charybdis · Tàu đệm khí đổ bộ; fortress_hive Hive · Pháo đài drone; supreme_command Atlas · Xe chỉ huy siêu nặng;
+earth_borer Tartarus · Máy khoan. The old c3m08 "frozen Behemoth" is Behemoth Mk.II (prompt's "Quái vật băng giá"); the
+old "Frost Monster" of c6m10 is Moloch's slot now. Generals: `char.<id>.name` and `.role` (call sign and boss theme):
+Brandt (fortresses, new, portrait drawn by `portraits.py --only brandt`), Viktor Varga "Anvil" (giant monsters), Ilya
+Orlov "Winter" (Norse winter), Magnus Kessler "Maelstrom" (sea monsters), Elara Sen "Queen" (insects, swarms), Kasimir
+Wolff "Raven" (mythic birds; `quaden` id), Lucien Aurel "Sol" (Greek sky), Lý Hàn "Titan" (the Titans; `hung` id);
+Diều Hâu "Hawk", Khải "Iron". "Silver Bug", "Bọ Bạc" and "S.B." became Icarus / Dự án Icarus.
+
+How: one script over every table (`Strings`, `CampaignText`, `GuideText`, `UnitText`, `BigAttackText`, `OrbitalText`):
+exact values for the name keys, then ordered substring swaps. "Quạ Đen" became "Wolff" except in our side's radio keys
+(`radio.khai/linh/dieuhau/mai/hq/sen.*`) and the two dossier bios that say our side calls him that. The Tools/campaign
+sources got the same swaps. The siege mode's "super-gun" is another thing and kept its name. Scan:
+`Prompt20CampaignTests.NoTextUsesAnOldBossOrGeneralName` (the old names, the allowed places, the format of every boss
+slot). Left for pass 3 (P): the design documents' boss chapters (`Docs/ASSET_DEBT.md`, `Docs/PROGRESS.md` are logs); the
+exported PDF reads the tables and is current.
+
+### B. Twelve chapters, four acts
+
+| Act | Chapter | General | Mini bosses · main boss (slot ids) |
+|---|---|---|---|
+| I Đổ bộ | 1 Bờ biển lửa | Brandt | bastion_mk0 · fortress_bastion |
+| | 2 Vàng đen | Varga | behemoth_inferno (c2m05) · behemoth (c2m10) |
+| | 3 Mùa đông dài | Orlov | mega_gunship, fenrir (side c3s2) · mobile_fortress |
+| II Phản công | 4 Cảng thép | Kessler | behemoth_tempest, armored_train, scylla (c4m06) · leviathan (c4m11) |
+| | 5 Lửa rừng | Sen | locust (c5m08), fortress_hive · drone_mothership |
+| | 6 Tổng phản công | Varga | landing_hovercraft (c6m08), behemoth_mk2 (c6m05) · moloch (c6m10) |
+| III Phản bội | 7 Thủ đô | Aurel, Lý Hàn turns | supreme_command (c7m10's last stage, fleeing) · nuke_train (c7m05) |
+| | 8 Lòng đất (new) | Lý Hàn | ixion (c8m07), earth_borer (c8m05) · kronos (c8m10) |
+| | 9 Biển động (new) | Lý Hàn | caspian (c9m05), scylla (c9m08) · typhon (c9m10) |
+| IV Bầu trời bạc | 10 Chiến tranh trên không | Wolff | sky_fortress (c10m08), icarus_mk0 (c10m05), argus (side c10s2) · command_airship |
+| | 11 Cửa ngõ quỹ đạo (new) | Aurel; Orlov's last | rail_supergun (c11m05), locust (c11m07) · daedalus (c11m10) |
+| | 12 Bãi phóng | Aurel | behemoth_mk2 (c12m10 stage), behemoth_tempest (c12m02), locust (c12m05) · silver_bug |
+
+- Data: `campaign.json` chapters carry `"main"` and `"minis"`; a mission or stage fights a slot by its id with
+  `"fallback"` (the existing `ScriptedUnitDef.Fallback`: until the def exists the stand-in is spawned, at
+  `fallbackHealth`), so pass 2 only adds the def with that id. The builder fails a chapter whose slots are not fought.
+- **Stand-ins for pass 2** (slot: stand-in, where): bastion_mk0: fortress_bastion x0.55 (c1m05); fenrir: behemoth x1.2
+  (c3s2); scylla: leviathan x0.5 / x0.6 (c4m06, c9m08); locust: drone_mothership x0.4-0.7 (c5m08, c11m07, c12m05);
+  behemoth_mk2: behemoth (c6m05 x2.2, c12m10 x1.6); moloch: mobile_fortress x1.8 (c6m10); ixion: behemoth x1.1 (c8m07);
+  kronos: mobile_fortress x1.3 (c8m10); caspian: landing_hovercraft (c9m05); typhon: behemoth_tempest x1.8 (c9m10,
+  chosen because it works on Ironport's ground; pass 2 builds the sea stage); argus: command_airship x0.45 (c10s2);
+  icarus_mk0: silver_bug x4.4 (c10m05, flees at half); daedalus: silver_bug x2.0 (c11m10). Harpy, Spectre, Gungnir,
+  Tartarus, Charybdis, Atlas, Juggernaut, Tempest, Inferno, Hive keep their defs. Pass 2 also: Locust as Icarus's escort
+  (the escort tables are `balance.json`'s), Gungnir's `general`/radio (balance.json says Kessler; the mission says Orlov).
+- **Deviations from "the tenth mission has the main boss", decided here:** chapter 4's Leviathan stays the epilogue
+  after the operation (prompt 16: it needs the sea map, and reversed maps drop the sea); chapter 7's Nemesis stays the
+  fifth mission (it needs the metro rails; the capital operation has no boss stage yet). Pass 2 can fold both in.
+- **Moves** (old id -> new; texts, radio keys and saves follow the same table, `story.MOVES`): c7* -> c10*, c8* -> c7*,
+  c9* -> c12*; c1m05 (hovercraft) -> c6m08, c6m08 (Earth Worm) -> c8m05, c4m06 (rail supergun) -> c11m05, c3m08
+  (frozen Behemoth) -> c6m05, c3s2 -> c3m08 (a main mission now), c6m05 (Spectre) -> c10m08, c7m08 -> c11m08. The ids were
+  renamed once in the sources and the table (a one-shot script, not kept: running it twice would move them again).
+- **New missions:** c1m05, c3s2, c4m06 and all of chapters 8, 9 and 11 but their moved missions (36). Each is an existing
+  mission of the same battlefield written again (`act4.clone`), so its positions, props and roads stay right; it differs
+  from every mission on that map in at least two of direction, base, weather, area and goal (prompt 4's rule, the
+  builder checks). Only Capture, Hold, Survive, Duel, Hunt, Recon, ShootDown and Relieve copies are flipped: a reversed
+  map swaps the camps but not the props or the sea, so Destroy, Protect, Escort, Intercept and Boss copies keep their
+  side and differ by weather and base (a few use `playerBase: "Defend"`). Pace: each new chapter's CP and income between
+  its neighbours'.
+- **Maps for part M:** chapter 8 stands on redrock, dunebreak and hydrodam; c8m02, c8m07 and c8m10 move to openpit.
+  Chapter 11 stands on rustyard, frostpeak and skyhold; c11m04, c11m07 and c11m10 move to orbitalgate.
+- **Story (short, in the tables for prompt 22):** chapter cards and timeline for 7-12 and 4 (Tempest is one of Varga's
+  Behemoths waiting for Kessler's ship), act III "Phản bội"/act IV "Bầu trời bạc", Lý Hàn escapes at the end of 7 and is
+  taken at the end of 9 (papers name Project Icarus), Wolff falls in 10, Orlov's last battle is Gungnir (c11m05), Varga's
+  and Kessler's are in 12 (c12m03/c12m10, c12m02), Locust is Sen's programme kept by Aurel, chapter 12's end is the game's.
+  The old c12m04 and c12m06 duels (Orlov, Wolff) are Aurel's now. Lý Hàn is a general (`hung`: his deck, Aurel's base
+  style, taunts).
+- **Texts:** `build_campaign.py` no longer rewrites `CampaignText.cs`: a key already there keeps its hand-localised words
+  unless the sources mark it fresh (`retext`, `fresh=True`); new keys come from the sources (18A's drift stays, now safe).
+
+### B.3 Save migration
+
+`PlayerProfile.MigrateCampaign`, `CampaignVersion` 2 -> 3. A version-2 save moves every mission's stars and best tier to
+its new id at once (campaign.json `"migration.moves"`), the chapter cards seen follow (7->10, 8->7, 9->12, the old
+epilogue mark 10 -> 100) and the HQ level its old HQ missions opened is kept (`hqKept`, read by `HqLevelCap`: level 3 of
+the old c5m05 now sits in chapter 6). A version 0/1 save (23 missions) goes straight to the new ids by `legacy`. Cards
+won are kept by id. The epilogue mark is 100 and "To be continued" 100 + chapter, off the chapter numbers.
+
+### C. Act switches
+
+- `Resources/Data/release.json` (`CampaignRelease`): `"acts"`, `"chaptersOff"`, `"switchedOff": "comingSoon" | "hidden"`.
+  The game has no remote config: a future one sets `Campaign.Release`; `-mb-acts=1,2` switches acts for a play test.
+  Internal and test builds: all four acts.
+- `Campaign.All` is the chapters switched on (a fresh copy when some are off); `Campaign.Everything` every mission
+  (migration, records); `Campaign.Get` still finds a mission switched off. So Operations, its weekly rotation and the
+  extra-boss mutator drop what is off. Boss Rush draws from `BossEnabled` bosses (fought in a chapter on, or in none):
+  acts I-II leave six kinds; with everything on it draws exactly as before.
+- The chapter screen shows a chapter off as a locked "Sắp ra mắt" card or hides it; the last chapter on ends with
+  "Còn tiếp" (card and dossier) instead of the epilogue; the Legend tier opens after the last operation on.
+- **Unlock sources when chapters are off:** everything a chapter off unlocks (cards, towers, modules, the tower branch)
+  and its HQ level go to the operation of the nearest chapter on before it (else after it). Acts I-II: chapter 6's
+  operation (c6m10) also gives the 24 cards of chapters 7-12 (vbied, turtle_tank, bmpt, smoke_carrier, shahed_truck,
+  counter_battery_radar, thermobaric_launcher, bunker_vehicle, wingman_drone, remote_mines, iron_beam,
+  artillery_emplacement, sead_strike, heavy_rocket_artillery, ew_jammer, gunship_heli, railgun_truck, stealth_fighter,
+  cp_relay, heavy_turret, cruise_missile, shield_tower, swarm_carrier, mine_layer) and HQ levels 4-5. Acts I-III:
+  chapter 9's operation (c9m10) gives chapters 10-12's 12 cards and HQ level 5. `HqLevelMission` finds the mission that
+  opens a level or more.
+- A save keeps the stars of missions switched off; switched back on, the campaign goes on from the first mission not won.
+
+### D. Unlock route and economy
+
+- Cards a chapter: 6, 6, 6, 5, 6, 6, 4, 4, 4, 4, 4, 4 (59; the builder's rule is now 4-7); the five modules stay in
+  acts I-II. Moved from the old route: artillery_emplacement, wingman_drone, iron_beam, remote_mines -> 9;
+  thermobaric_launcher, bunker_vehicle, shahed_truck, counter_battery_radar -> 8; railgun_truck, stealth_fighter,
+  cp_relay, heavy_turret -> 11. HQ levels: c1m04, c3m05, c6m04, c9m05, c11m04 (`act4.UNLOCKS`, `HQ_LEVELS`).
+- Pay (`build_campaign.tune`, prompt 7's model): coin scale 100, blueprint scale 1.75; the campaign-only deck (8 cards and
+  6 towers) is rank 7.14 as act IV begins and 8.14 at the end (per chapter: 3.4, 4.4, 5.1, 5.6, 6.1, 6.3, 7.0, 7.1, 7.1,
+  7.4, 8.0, 8.1). Acts I-II only: every mission pays x1.42 (`"economy.payScale"`), the deck ends at 7.0; acts I-III: x1.00
+  (7.14). A shorter release never pays less. `Campaign.ExpectedRank` (the recommended power) climbs to 7 by act IV.
+- Unit stats and mode difficulty untouched (the balance agent's).
+
+### Tests
+
+`Prompt20CampaignTests` (7): the name scan, the twelve chapters and their slots, the nine-chapter save's migration, the
+act switches in three configurations (all four acts, I-II, I-III: missions, unlock sources, HQ levels, Operations, the
+weekly draw, Boss Rush, pay, hidden/"Coming soon"), and a save going on when an act comes back. One run: 6 of 7 passed
+(`boss.landing_hovercraft` had no name); the name was added and that case passed on a rerun. `CampaignTests`' shape test
+now asks for 12 chapters (not run).
+
+### Left for the testing phase
+
+- 5-seed campaign runs of all 12 chapters at Normal (every new mission winnable with the deck open by then; the new
+  chapters' pace; the stand-ins' fight lengths); Boss Rush and Operations with acts I-II.
+- `CampaignTests` (its sweeps and the new shape), `LocalisationScanTests`, `RadioDirectorTests`, PlaySmoke (its default
+  step is `Campaign=c11m05`, the rail supergun's mission).
+- Stuck checks for bosses on their new routes: Bastion Mk.0 on Greenvale, Fenrir on Frostpeak, Scylla on Lighthouse Bay
+  with no camp, Atlas leaving the capital, Ixion/Kronos on Dunebreak.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`Tools/campaign/*` and `campaign.json`, `CampaignText.cs`, `Strings.cs` (boss and general names), `BigAttackText.cs`,
+`OrbitalText.cs`, `CampaignDefs.cs`, `Progression.cs` (`Campaign`), `PlayerProfile.cs`, `SiegeModes.cs`
+(`BossRushRules.Roster/KindsWhere`), `ModeSessions.cs` (one line), `MatchRunner.cs` (one line), `MenuScreen.Campaign/Story/
+Home/Operations.cs`, `PlaySmoke.cs`, `CampaignTests.cs`. `balance.json` is untouched.
+
 ## 19L. Prompt 20 L-M: towers, two new battlefields (2026-09-29)
 
 Parts L and M only. The boss code, the campaign's structure and chapters, and the boss and general renames are

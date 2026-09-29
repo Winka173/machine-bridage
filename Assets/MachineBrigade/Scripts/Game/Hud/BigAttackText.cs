@@ -48,7 +48,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 1 Iron Train
             ["bigattack.train_broadside"] = ("Full-Train Broadside", "Loạt pháo toàn đoàn"),
             ["bigattack.train_broadside.cancelled"] = ("Broadside cancelled", "Đã hủy loạt pháo"),
-            ["radio.bigattack.train_broadside"] = ("Command: the Iron Train is laying both gun cars on you. Get off the marked strip!", "Chỉ huy: Đoàn tàu thép đang dồn cả hai toa pháo vào ta. Ra khỏi dải đánh dấu!"),
+            ["radio.bigattack.train_broadside"] = ("Command: Juggernaut is laying both gun cars on you. Get off the marked strip!", "Chỉ huy: Juggernaut đang dồn cả hai toa pháo vào ta. Ra khỏi dải đánh dấu!"),
             ["guide.bigattack.train_broadside.how"] = ("Both gun cars fire six 152 mm HE shells into a 60 × 12 m strip along the rails.", "Hai toa pháo bắn sáu quả 152 mm nổ mạnh xuống một dải 60 × 12 m dọc đường ray."),
             ["guide.bigattack.train_broadside.dodge"] = ("Step off the strip sideways: it is only 12 m wide.", "Bước ngang ra khỏi dải: nó chỉ rộng 12 m."),
             ["guide.bigattack.train_broadside.stop"] = ("Break a gun car: each brings three of the six shells.", "Phá toa pháo: mỗi toa góp ba trong sáu phát."),
@@ -72,7 +72,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 4 Doomsday Train
             ["bigattack.doomsday_missile"] = ("Tactical Missile", "Tên lửa chiến thuật"),
             ["bigattack.doomsday_missile.cancelled"] = ("Missile launch cancelled", "Đã hủy phóng tên lửa"),
-            ["radio.bigattack.doomsday_missile"] = ("Command: the Doomsday Train is raising a missile! Break the erector or get your air defence ready!", "Chỉ huy: Đoàn tàu Tận thế đang dựng tên lửa! Phá bệ phóng hoặc sẵn sàng phòng không!"),
+            ["radio.bigattack.doomsday_missile"] = ("Command: Nemesis is raising a missile! Break the erector or get your air defence ready!", "Chỉ huy: Nemesis đang dựng tên lửa! Phá bệ phóng hoặc sẵn sàng phòng không!"),
             ["guide.bigattack.doomsday_missile.how"] = ("Five seconds to raise it, then a slow thermobaric missile flies about 12 s at your HQ or your biggest group: 2 500 at the centre, 30 % at 18 m, much more on buildings.", "Năm giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay chậm khoảng 12 giây vào HQ hoặc cụm quân lớn nhất: 2.500 ở tâm, 30 % ở rìa 18 m, mạnh hơn nhiều lên công trình."),
             ["guide.bigattack.doomsday_missile.dodge"] = ("Scatter your units away from the marked landing point before the clock runs out.", "Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ."),
             ["guide.bigattack.doomsday_missile.stop"] = ("Break the erector while it rises, or shoot the missile down in flight (600 health): anti-air, C-RAM, point-defence lasers.", "Phá bệ phóng trong 5 giây dựng bệ, hoặc bắn hạ tên lửa trên đường bay (máu 600): phòng không, C-RAM, La-de PK."),
@@ -96,7 +96,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 7 Supreme Commander
             ["bigattack.supreme_offensive"] = ("General Offensive", "Tổng tiến công"),
             ["bigattack.supreme_offensive.cancelled"] = ("Offensive cancelled", "Đã hủy tổng tiến công"),
-            ["radio.bigattack.supreme_offensive"] = ("Hùng: \"All units, general offensive! And bring the bombers in!\"", "Hùng: \"Toàn quân, tổng tiến công! Gọi máy bay ném bom vào!\""),
+            ["radio.bigattack.supreme_offensive"] = ("Lý Hàn: \"All units, general offensive! And bring the bombers in!\"", "Lý Hàn: \"Toàn quân, tổng tiến công! Gọi máy bay ném bom vào!\""),
             ["guide.bigattack.supreme_offensive.how"] = ("For 12 s every enemy within 60 m hits 35 % harder and fires 25 % faster, and a bomber lays eight 250 kg bombs in a 50 × 10 m strip on your biggest group.", "Trong 12 giây mọi quân địch trong 60 m gây thêm 35 % sát thương và bắn nhanh hơn 25 %, kèm máy bay ném tám quả bom 250 kg thành dải 50 × 10 m vào cụm quân lớn nhất."),
             ["guide.bigattack.supreme_offensive.dodge"] = ("Leave the strip; pull back from the boosted units until it wears off.", "Rời khỏi dải bom; lùi khỏi quân địch được tăng sức cho tới khi hết hiệu lực."),
             ["guide.bigattack.supreme_offensive.stop"] = ("Break the antenna: the offensive and its everyday aura go with it.", "Phá ăng-ten: mất cả tổng tiến công lẫn hào quang thường."),
@@ -120,7 +120,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 10 Ice Fortress
             ["bigattack.fortress_rocket_rain"] = ("Rocket Rain", "Mưa rốc-két"),
             ["bigattack.fortress_rocket_rain.cancelled"] = ("Rocket rain cancelled", "Đã hủy mưa rốc-két"),
-            ["radio.bigattack.fortress_rocket_rain"] = ("Command: the Ice Fortress is loading both rocket boxes. Shields up, or clear the circle!", "Chỉ huy: Pháo đài băng đang nạp cả hai hộp rốc-két. Bật khiên hoặc ra khỏi vòng!"),
+            ["radio.bigattack.fortress_rocket_rain"] = ("Command: Jötunn is loading both rocket boxes. Shields up, or clear the circle!", "Chỉ huy: Jötunn đang nạp cả hai hộp rốc-két. Bật khiên hoặc ra khỏi vòng!"),
             ["guide.bigattack.fortress_rocket_rain.how"] = ("32 rockets of 122 mm come down over 4 s in a 25 m circle.", "32 rốc-két 122 mm rơi trong 4 giây xuống vòng tròn bán kính 25 m."),
             ["guide.bigattack.fortress_rocket_rain.dodge"] = ("Leave the circle, or sit it out under a shield dome: shields take the blasts.", "Rời khỏi vòng, hoặc núp dưới vòm khiên: khiên hấp thụ được."),
             ["guide.bigattack.fortress_rocket_rain.stop"] = ("Break a rocket box: each holds 16 rockets.", "Phá hộp rốc-két: mỗi hộp 16 quả."),
@@ -160,7 +160,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 15 Iron Bird
             ["bigattack.ironbird_rocket_run"] = ("Rocket Run", "Loạt rốc-két theo đường thẳng"),
             ["bigattack.ironbird_rocket_run.cancelled"] = ("Rocket run cancelled", "Đã hủy loạt rốc-két"),
-            ["radio.bigattack.ironbird_rocket_run"] = ("Command: the Iron Bird is lining up a rocket run. Get off its line!", "Chỉ huy: Chim sắt đang lấy hướng bắn rốc-két. Ra khỏi đường bay của nó!"),
+            ["radio.bigattack.ironbird_rocket_run"] = ("Command: Harpy is lining up a rocket run. Get off its line!", "Chỉ huy: Harpy đang lấy hướng bắn rốc-két. Ra khỏi đường bay của nó!"),
             ["guide.bigattack.ironbird_rocket_run.how"] = ("48 rockets of 80 mm down a 70 × 8 m line.", "48 rốc-két 80 mm dọc đường bay dài 70 m, rộng 8 m."),
             ["guide.bigattack.ironbird_rocket_run.dodge"] = ("Step off the line sideways: it is only 8 m wide.", "Bước ngang ra khỏi đường bay: nó chỉ rộng 8 m."),
             ["guide.bigattack.ironbird_rocket_run.stop"] = ("Break a rocket pod: each holds 24.", "Phá hộp rốc-két: mỗi hộp 24 quả."),
@@ -176,7 +176,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 17 Command Airship
             ["bigattack.airship_carpet"] = ("Carpet Bombing", "Rải thảm"),
             ["bigattack.airship_carpet.cancelled"] = ("Carpet bombing cancelled", "Đã hủy rải thảm"),
-            ["radio.bigattack.airship_carpet"] = ("Quạ Đen: \"Bomb doors open. Twelve for the ground below.\"", "Quạ Đen: \"Mở khoang bom. Mười hai quả cho mặt đất bên dưới.\""),
+            ["radio.bigattack.airship_carpet"] = ("Wolff: \"Bomb doors open. Twelve for the ground below.\"", "Wolff: \"Mở khoang bom. Mười hai quả cho mặt đất bên dưới.\""),
             ["guide.bigattack.airship_carpet.how"] = ("Twelve 250 kg bombs in a 70 × 12 m strip along its course.", "Mười hai quả bom 250 kg thành dải 70 × 12 m theo đường bay."),
             ["guide.bigattack.airship_carpet.dodge"] = ("Step off the strip sideways, out from under its course.", "Bước ngang ra khỏi dải, tránh khỏi đường bay của nó."),
             ["guide.bigattack.airship_carpet.stop"] = ("Break the bomb bay.", "Phá khoang bom."),

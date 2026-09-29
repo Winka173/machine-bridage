@@ -107,8 +107,14 @@ namespace MachineBrigade.Game.Match
             public List<PlanData> basePlans = new();
             public int basePlan;
 
-            /// <summary>2: mission progress is in the story campaign's ids (see <see cref="MigrateCampaign"/>).</summary>
+            /// <summary>
+            /// 2: mission progress is in the story campaign's ids; 3: in the twelve chapters' ids (prompt 20;
+            /// see <see cref="MigrateCampaign"/>).
+            /// </summary>
             public int campaignVersion;
+
+            /// <summary>Prompt 20: the HQ level a save of the nine-chapter campaign had opened (kept when the levels moved).</summary>
+            public int hqKept;
 
             /// <summary>Chapters whose opening card (the chapter transition) has been shown.</summary>
             public List<int> chaptersSeen = new();
@@ -349,20 +355,74 @@ namespace MachineBrigade.Game.Match
             return i >= 0 && D.missionStars[i] > 0 ? Math.Max(0, D.missionTiers[i]) : -1;
         }
 
-        /// <summary>2: progress is kept under the story campaign's mission ids.</summary>
-        internal const int CampaignVersion = 2;
+        /// <summary>3: progress is kept under the twelve chapters' mission ids (prompt 20).</summary>
+        internal const int CampaignVersion = 3;
+
+        /// <summary>The HQ level a save of the nine-chapter campaign had opened (0: none kept).</summary>
+        public static int HqLevelKept => D.hqKept;
 
         /// <summary>
-        /// Moves a save's progress from the old 23-mission campaign to the story campaign, once: each
-        /// old mission's stars and best tier go to the mission it became (<see cref="Sim.Content.MissionDef.Legacy"/>),
-        /// keeping the better of the two when both were played. Cards won stay unlocked (they are
-        /// kept by id), so nothing the player had is lost; the new missions around them are open to
-        /// play (a won mission opens the one after it).
+        /// Moves a save's progress to the campaign as it is now, once. A save of the old 23-mission
+        /// campaign (version 0 or 1): each old mission's stars and best tier go to the mission it
+        /// became (<see cref="Sim.Content.MissionDef.Legacy"/>), keeping the better of the two when both
+        /// were played. A save of the nine-chapter story (version 2, prompt 20 B.3): every mission's
+        /// stars and tier follow it to its new id (campaign.json "migration", all at once), the chapter
+        /// cards seen follow their chapters, and the HQ level it had opened is kept. Cards won stay
+        /// unlocked (they are kept by id), so nothing the player had is lost; the new missions around
+        /// them are open to play (a won mission opens the one after it).
         /// </summary>
         private static void MigrateCampaign(Data d)
         {
             if (d.campaignVersion >= CampaignVersion) return;
-            foreach (var mission in Campaign.All)
+            if (d.campaignVersion == 2) MoveToTwelveChapters(d);
+            else FromOldCampaign(d);
+            d.campaignVersion = CampaignVersion;
+        }
+
+        private static void MoveToTwelveChapters(Data d)
+        {
+            var meta = Campaign.Meta;
+            foreach (var (old, level) in meta.OldHq)
+            {
+                var at = d.missionIds.IndexOf(old);
+                if (at >= 0 && d.missionStars[at] > 0) d.hqKept = Math.Max(d.hqKept, level);
+            }
+            var ids = new List<string>();
+            var stars = new List<int>();
+            var tiers = new List<int>();
+            for (var i = 0; i < d.missionIds.Count; i++)
+            {
+                var id = meta.Moves.TryGetValue(d.missionIds[i], out var moved) ? moved : d.missionIds[i];
+                var star = d.missionStars[i];
+                var tier = i < d.missionTiers.Count ? d.missionTiers[i] : 0;
+                var j = ids.IndexOf(id);
+                if (j < 0)
+                {
+                    ids.Add(id);
+                    stars.Add(star);
+                    tiers.Add(tier);
+                }
+                else
+                {
+                    stars[j] = Math.Max(stars[j], star);
+                    tiers[j] = Math.Max(tiers[j], tier);
+                }
+            }
+            d.missionIds = ids;
+            d.missionStars = stars;
+            d.missionTiers = tiers;
+            var seen = new List<int>();
+            foreach (var c in d.chaptersSeen)
+            {
+                var n = meta.ChaptersSeen.TryGetValue(c, out var to) ? to : c;
+                if (!seen.Contains(n)) seen.Add(n);
+            }
+            d.chaptersSeen = seen;
+        }
+
+        private static void FromOldCampaign(Data d)
+        {
+            foreach (var mission in Campaign.Everything)
             {
                 if (mission.Legacy == null) continue;
                 var old = d.missionIds.IndexOf(mission.Legacy);
@@ -385,8 +445,13 @@ namespace MachineBrigade.Game.Match
                     d.missionTiers[i] = Math.Max(d.missionTiers[i], tier);
                 }
             }
-            d.campaignVersion = CampaignVersion;
         }
+
+        /// <summary>The mark of the game's epilogue in the chapter cards seen (10 in the nine-chapter campaign).</summary>
+        public const int EpilogueSeen = 100;
+
+        /// <summary>The mark of the "To be continued" card after a chapter (a release that ends before the story does).</summary>
+        public static int ContinuedSeen(int chapter) => 100 + chapter;
 
         /// <summary>Whether a chapter's opening card has been shown.</summary>
         public static bool ChapterSeen(int chapter) => D.chaptersSeen.Contains(chapter);

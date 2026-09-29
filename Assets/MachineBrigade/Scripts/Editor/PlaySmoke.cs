@@ -15,7 +15,7 @@ namespace MachineBrigade.Editor
     /// with its AI battle behind it, then each listed match for a while, and writes every error,
     /// exception and failed assertion to a report. Exit code 0 when none were logged.
     /// -executeMethod MachineBrigade.Editor.PlaySmoke.Run -mbSmokeOut &lt;path&gt;
-    /// [-mbSmokeSteps "menu:20,Conquest:60,Campaign=c4m06:60"] (a mode, optionally =mission, and seconds).
+    /// [-mbSmokeSteps "menu:20,Conquest:60,Campaign=c11m05:60"] (a mode, optionally =mission, and seconds).
     /// [-mbSmokePreview &lt;png&gt;]: at the end of the first menu step, the detail page's preview texture
     /// (with -mb-detail=id -mb-detail-firing, the In action theatre) is written there and its size reported.
     /// </summary>
@@ -32,7 +32,7 @@ namespace MachineBrigade.Editor
         public static void Run()
         {
             _out = Arg("-mbSmokeOut") ?? "smoke.txt";
-            foreach (var bit in (Arg("-mbSmokeSteps") ?? "menu:20,Conquest:60,Siege:60,Defend:40,BossRush:50,Campaign=c4m06:60,Campaign=c1m10:60").Split(','))
+            foreach (var bit in (Arg("-mbSmokeSteps") ?? "menu:20,Conquest:60,Siege:60,Defend:40,BossRush:50,Campaign=c11m05:60,Campaign=c1m10:60").Split(','))
             {
                 var parts = bit.Split(':');
                 var head = parts[0].Split('=');

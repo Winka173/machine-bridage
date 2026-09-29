@@ -1289,12 +1289,31 @@ namespace MachineBrigade.Sim.Modes
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
-        public static IReadOnlyList<string> Roster(int seed)
+        public static IReadOnlyList<string> Roster(int seed) => Roster(seed, null);
+
+        /// <summary>
+        /// Prompt 20 C.3: the same with only the bosses <paramref name="allowed"/> keeps (the campaign's
+        /// chapters switched on); with every boss allowed it draws exactly as <see cref="Roster(int)"/>.
+        /// </summary>
+        public static IReadOnlyList<string> Roster(int seed, Func<string, bool>? allowed)
         {
             var random = new System.Random(seed);
             var roster = new List<string>();
-            foreach (var kind in Kinds) roster.Add(kind[random.Next(kind.Length)]);
+            foreach (var kind in KindsWhere(allowed)) roster.Add(kind[random.Next(kind.Length)]);
             return roster;
+        }
+
+        /// <summary>The kinds with the variants <paramref name="allowed"/> keeps; a kind left with none is dropped.</summary>
+        public static IReadOnlyList<string[]> KindsWhere(Func<string, bool>? allowed)
+        {
+            if (allowed == null) return Kinds;
+            var kinds = new List<string[]>();
+            foreach (var kind in Kinds)
+            {
+                var kept = System.Array.FindAll(kind, id => allowed(id));
+                if (kept.Length > 0) kinds.Add(kept.Length == kind.Length ? kind : kept);
+            }
+            return kinds;
         }
 
         /// <summary>Every boss Boss Rush may bring (for loading its models ahead).</summary>

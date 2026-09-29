@@ -12,6 +12,27 @@ its commits.
 - Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).
 - Every weapon table has penetration, form and tags. Section 10 adds a counters table and the icon legend.
 - Fixed: the combat-value table uses the current roster, Boss Rush's "{0} bosses", the HQ instead of the bastion, the map, mission and difficulty counts.
+
+### Prompt 20 pass 1: twelve chapters in four acts, new boss and general names, act switches (DECISIONS 19A)
+
+- **Names (A):** bosses read "Proper name · Vietnamese subtitle" (the Silver Bug is "Icarus · Phi thuyền quỹ đạo", its
+  project "Dự án Icarus"); generals are Brandt, Viktor Varga "Anvil", Ilya Orlov "Winter", Magnus Kessler "Maelstrom",
+  Elara Sen "Queen", Kasimir Wolff "Raven" (still "Quạ Đen" on our side's radio), Lucien Aurel "Sol", Lý Hàn "Titan";
+  Diều Hâu is "Hawk" on the radio, Khải "Iron". Every id is unchanged. Brandt has a portrait and a dossier entry.
+- **Structure (B):** 12 chapters of 10 main and 2 side missions in 4 acts (Landing, Counterattack, Betrayal, Silver Sky);
+  each chapter has its main boss and mini bosses in data (`campaign.json` "main"/"minis"); bosses pass 2 builds are
+  fought as stand-ins (`"fallback"`). New chapters 8 (Underground), 9 (Rough Seas) and 11 (The Orbital Gate): 36 new
+  missions written from existing ones on the same battlefields. The old chapters 7, 8, 9 are now 10, 7, 12.
+- **Save migration:** campaign version 3 moves a nine-chapter save's stars, tiers and chapter cards to the new ids and
+  keeps the HQ level it had; the 23-mission save still moves in one step.
+- **Act switches (C):** `Resources/Data/release.json` (or `-mb-acts=1,2`): acts and chapters on, "Coming soon" or hidden;
+  "To be continued" after the last chapter on; Operations, the weekly rotation and Boss Rush drop what is off; the
+  unlocks and HQ levels of chapters off come with the last operation on; a shorter release pays more (x1.42 for acts I-II).
+- **Economy (D):** a new unlock route (4-6 cards a chapter), HQ levels in chapters 1, 3, 6, 9 and 11, the deck at rank 7.1
+  as act IV begins and 8.1 at the end.
+- **Tools:** `Tools/campaign/act4.py` (the layout), `build_campaign.py` merges into `CampaignText.cs` (hand-localised words
+  kept) instead of rewriting it. Tests: `Prompt20CampaignTests` (7).
+
 ### Prompt 19: the Silver Bug rebuilt as Aurel's orbital spacecraft (DECISIONS 18A)
 
 - The final boss keeps its id `silver_bug` (records, progress and achievements stay) and is now a big military shuttle:
