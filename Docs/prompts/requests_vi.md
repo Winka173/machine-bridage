@@ -125,3 +125,7 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 23:45) tôi thấy từ UI boss tuần trong operation, có thê coi được thông tin boss, và cả stats, có cả next level gì luôn và cả equipment, ẩn đi các thứ như next level và equipment, và đưa các info boss về 1 nơi khác như wiki hay collection gì đó  [agent sửa lỗi, 21B]
 - (29/09 23:50) Ui sandbox quá rồi, và chiếm tùm lum diện tích, tối ưu nó  [agent Sa bàn, chờ chỗ trống]
 - (29/09 23:55) check lại các colider của boss, cảm giác tên lửa khi bắn vào boss ví dụ như matriarch nó bay vào tâm của boss mới nổ trong khi đúng là đụng là nổ  [F]
+- (30/09 00:45) nhớ ghi các thông tin như số đạn bắn mỗi giây, thời gian reload vào file pdf luôn, càng chi tiết càng tốt, kể cả các thông tin khác, để tôi đem đi review  [lead: PDF phần 10b]
+- (30/09 00:50) giáp boss lên cấp cao thì nhớ tạo icon tương ứng  [G]
+- (30/09 00:50) mọi boss đều có thể vào boss rush  [G]
+- (30/09 00:50) có bug boss phi tuyền mới vào do ở quỹ đạo thấp nên nó bị tràn, mới vào cho nó xuống luôn  [G]

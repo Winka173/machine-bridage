@@ -434,6 +434,7 @@ def build(game, imgdir):
                + (f"<h3>Icon giáp và dạng vũ khí</h3>{legend}<div class='caption'>Bộ icon trong game (prompt 15): cấp giáp, dạng vũ khí, dấu phụ.</div>" if legend else '')
                + f"<h3>Toàn bộ vũ khí ({len(wrows)})</h3>"
                + table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương', 'Loạt / băng', 'Hồi (s)', 'Tốc độ đạn', 'Tầm', 'Tối thiểu', 'Nổ lan', 'Mục tiêu', 'DPS', 'Trên xe'], wrows, 'dps') + '</div>')
+    out.append(programme.rates_and_ballistics(game, h))
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):

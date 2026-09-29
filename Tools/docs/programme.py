@@ -496,6 +496,80 @@ def late_programme(game, h, imgdir):
     return ''.join(out)
 
 
+def rates_and_ballistics(game, h):
+    """Section 10b: every weapon's rate of fire, magazine and reload, and its ballistics; every unit's movement and size."""
+    e, table = h['esc'], h['table']
+    tgt = {'Ground': 'mặt đất', 'Air': 'trên không', 'All': 'tất cả'}
+
+    def f(x, n=2):
+        if x in (None, '', 0, 0.0):
+            return '—'
+        if not isinstance(x, float):
+            return str(x)
+        t = f"{x:.{n}f}"
+        return t.rstrip('0').rstrip('.') if '.' in t else t
+
+    weapons, owners = {}, {}
+    for group in ('vehicles', 'elites', 'bosses', 'towers', 'itemVehicles'):
+        for v in game.get(group, []):
+            for w in v.get('weapons', []):
+                weapons.setdefault(w['id'], w)
+                owners.setdefault(w['id'], []).append(v.get('short') or v['name'])
+    rate_rows, ball_rows = [], []
+    for wid in sorted(weapons):
+        w = weapons[wid]
+        raw = w.get('raw', {})
+        cd = raw.get('Cooldown', w.get('cooldown') or 0) or 0
+        burst = raw.get('Burst', w.get('burst', 1)) or 1
+        gap = raw.get('BurstInterval', 0) or 0
+        clip = raw.get('Clip', w.get('clip', 0)) or 0
+        clip_reload = raw.get('ClipReload', w.get('clipReload', 0)) or 0
+        ammo = raw.get('Ammo', 0) or 0
+        reload = raw.get('Reload', 0) or 0
+        dmg = w.get('damage', 0) or 0
+        # Rounds a second while it fires: inside a burst its gap, else its cooldown.
+        rate = (1 / gap) if burst > 1 and gap > 0 else ((1 / cd) if cd > 0 else 0)
+        stream = (clip / rate) if clip and rate else ((burst * gap) if burst > 1 and gap > 0 else 0)
+        rest = clip_reload if clip else (cd if burst > 1 else 0)
+        burst_dps = dmg * rate
+        cycle = f"băng {clip}" if clip else (f"loạt {burst}" if burst > 1 else "từng phát")
+        launcher = f"{ammo} lượt, nạp {f(reload, 1)} s" if ammo else '—'
+        per_cycle, cycle_s = raw.get('RoundsPerCycle', 0) or 0, raw.get('CycleSeconds', 0) or 0
+        avg = (per_cycle / cycle_s) if per_cycle and cycle_s else 0
+        rate_rows.append([f"<code>{e(wid)}</code>", e(w.get('real') or ''), e(', '.join(sorted(set(owners[wid])))[:60]),
+                          f(rate, 2), f(rate * 60, 0) if rate else '—', f(avg, 2), e(cycle), f(stream, 2), f(rest, 2), e(launcher),
+                          f(float(dmg), 1), f(burst_dps, 0), f(float(w.get('dps', 0)), 0)])
+        speed = w.get('speed') or raw.get('ProjectileSpeed', 0) or 0
+        rng = w.get('range', 0) or 0
+        flight = (rng / speed) if speed else 0
+        tags = [t for t, on in (('dẫn đường', raw.get('Guided')), ('bắn cầu vồng', raw.get('Indirect')), ('tia', raw.get('Beam')),
+                                ('cận chiến', raw.get('Melee')), ('xuyên qua', raw.get('Pierce')), ('chùm', raw.get('Cluster')),
+                                ('chỉ đánh chặn', raw.get('InterceptOnly')), ('đánh nóc', raw.get('TopAttack'))) if on]
+        ball_rows.append([f"<code>{e(wid)}</code>", f(raw.get('Size', 0), 1), e(str(raw.get('Family', ''))), e(str(raw.get('Form', w.get('form', '')))),
+                          f(float(speed), 0), f(flight, 2), f(float(rng), 0), f(float(w.get('minRange', 0) or 0), 0),
+                          f(float(w.get('splash', 0) or 0), 1), e(tgt.get(w.get('targets'), w.get('targets', ''))), e(str(raw.get('Ceiling', '') or '—')),
+                          str(w.get('pen', '')), f(raw.get('FlareResist', 0), 2), e(', '.join(tags) or '—')])
+    move_rows = []
+    for group, label in (('vehicles', 'xe'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
+        for v in game.get(group, []):
+            raw = v.get('raw', {})
+            move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(raw.get('TurnRate', 0), 0), f(raw.get('TurretTurnRate', 0), 0),
+                              f(raw.get('Length', 0), 1), f(raw.get('Width', 0), 1), f(raw.get('HullRadius', 0), 1), f(float(v.get('vision', 0) or 0), 0),
+                              f(raw.get('Standoff', 0), 0), f(raw.get('RearmTime', 0), 1), 'có' if raw.get('Stealth') else '—',
+                              f(raw.get('MaxPerSide', 0), 0)])
+    return ("<div class='section'><h2>10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển</h2>"
+            "<p>Đọc thẳng từ dữ liệu game. <b>Viên/s</b> là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). <b>Xả</b> là thời gian hết một băng hay một loạt. "
+            "<b>Nghỉ/nạp</b> là thời gian thay băng hay nghỉ giữa hai loạt. <b>Bệ phóng</b> là số lượt bắn trước khi phải nạp lại cả bệ. "
+            "<b>TB viên/s</b> tính cả thời gian nghỉ và nạp. <b>DPS khi xả</b> là sát thương mỗi giây trong lúc bắn, trước giáp; <b>DPS duy trì</b> tính cả thời gian nạp (prompt 13).</p>"
+            f"<h3>Nhịp bắn và nạp đạn ({len(rate_rows)} vũ khí)</h3>"
+            + table(['Vũ khí', 'Tên thật', 'Trên', 'Viên/s', 'Viên/phút', 'TB viên/s cả chu kỳ', 'Loạt / băng', 'Xả (s)', 'Nghỉ/nạp (s)', 'Bệ phóng', 'Sát thương/phát', 'DPS khi xả', 'DPS duy trì'], rate_rows, 'dps')
+            + f"<h3>Đường đạn</h3>"
+            + table(['Vũ khí', 'Cỡ (mm)', 'Họ', 'Dạng', 'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
+            + f"<h3>Di chuyển và kích thước ({len(move_rows)} đơn vị)</h3>"
+            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe'], move_rows, 'dps')
+            + "</div>")
+
+
 def gallery(game, h, imgdir):
     """Section 20: the picture library."""
     from pathlib import Path

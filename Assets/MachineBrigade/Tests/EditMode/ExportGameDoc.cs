@@ -145,6 +145,29 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>A definition's public numbers, flags, enums and strings, by property name, for the document.</summary>
+        private static Dictionary<string, object> Raw(object o)
+        {
+            var d = new Dictionary<string, object>();
+            foreach (var p in o.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+            {
+                if (p.GetIndexParameters().Length > 0) continue;
+                var t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                if (!(t.IsPrimitive || t.IsEnum || t == typeof(string))) continue;
+                try
+                {
+                    var value = p.GetValue(o);
+                    if (value == null) continue;
+                    d[p.Name] = t.IsEnum ? value.ToString() : value;
+                }
+                catch (Exception)
+                {
+                    // A property that throws for this def (not set) is left out.
+                }
+            }
+            return d;
+        }
+
         /// <summary>A unit's armour by face (prompt 15 A).</summary>
         private static object Armour(ArmourLevels a) => new Dictionary<string, object>
         {
@@ -172,6 +195,8 @@ namespace MachineBrigade.Tests
                     ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
                     ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
                     ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
+                    // Every plain number, flag and name the weapon carries (rates, magazines, reloads, ceilings...).
+                    ["raw"] = Raw(w),
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
@@ -199,6 +224,7 @@ namespace MachineBrigade.Tests
                 ["strongVs"] = Matchup.Summary(catalog.Damage, v).StrongVs.Select(c => (object)c.ToString()).ToList(),
                 ["weakTo"] = Matchup.Summary(catalog.Damage, v).WeakTo.Select(t => (object)t.ToString()).ToList(),
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
+                ["raw"] = Raw(v),
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
                 ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
