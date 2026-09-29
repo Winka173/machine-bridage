@@ -461,6 +461,9 @@ namespace MachineBrigade.Game.Hud
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));
             game.Add(ToggleRow("info", "settings.fps", () => MatchSettings.ShowFps, on => MatchSettings.ShowFps = on));
+            game.Add(OptionRow("ammo", "settings.ammoIcons",
+                new[] { Strings.Get("settings.ammoIcons.all"), Strings.Get("settings.ammoIcons.air") },
+                () => MatchSettings.AmmoIcons, i => MatchSettings.AmmoIcons = i));
 
             var sound = Section(body, "settings.section.sound");
             sound.Add(Stepper("volume", Strings.Get("settings.volume"), () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",

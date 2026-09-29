@@ -1,0 +1,11 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Survival       ashfield   s1: LOST   9.8 min  kills 129 losses 89 wave 19
+Survival       ashfield   s2: LOST  14.3 min  kills 180 losses 112 wave 28
+Survival       ashfield   s11: LOST  13.3 min  kills 158 losses 121 wave 26
+Survival       ashfield   s12: LOST  12.4 min  kills 134 losses 118 wave 25
+Survival       greenvale  s1: LOST  10.4 min  kills 121 losses 95 wave 21
+Survival       greenvale  s2: LOST  11.1 min  kills 125 losses 92 wave 22
+Survival       greenvale  s11: LOST  11.8 min  kills 135 losses 109 wave 23
+Survival       greenvale  s12: LOST  12.1 min  kills 139 losses 102 wave 24
+Survival       SUMMARY (Normal): won 0/8, median 12.0 min, range 9.8-14.3
+(33 s)

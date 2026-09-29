@@ -305,7 +305,7 @@ namespace MachineBrigade.Game.Hud
                 body.Add(line);
             }
 
-            // Tiers: Heroic opens once the mission is won, Iron once Heroic is.
+            // Tiers: Hard (once Heroic) opens once the mission is won, Very hard (once Iron) once Hard is.
             var bestTier = PlayerProfile.MissionTier(m.Id);
             if (_tier > bestTier + 1) _tier = 0;
             MatchSettings.MissionTier = _tier;

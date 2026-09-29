@@ -272,6 +272,7 @@ namespace MachineBrigade.Sim.Content
                         def.Loads = loads;
                     }
                     def.RearmTime = v.Float("rearmTime", DefaultRearm(def));
+                    def.CombatValue = v.Float("value", 1f);
                     def.Kamikaze = v.Bool("kamikaze", false);
                     def.DroneArmor = v.Float("droneArmor", 1f);
                     def.MineProof = v.Bool("mineProof", false);

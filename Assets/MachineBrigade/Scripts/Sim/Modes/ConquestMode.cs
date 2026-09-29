@@ -62,6 +62,9 @@ namespace MachineBrigade.Sim.Modes
 
         public string ComebackBoss { get; set; } = "behemoth";
         public float StartCp { get; set; } = 14f;
+
+        /// <summary>After this long the side behind gets its one-off help (prompt 13 H.12); 0: the old sliding boost only (the menu battle).</summary>
+        public float UnderdogAfter { get; set; } = 240f;
         public IReadOnlyList<string> PlayerVehicles { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> PlayerSupports { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> EnemyVehicles { get; set; } = Array.Empty<string>();
@@ -107,6 +110,7 @@ namespace MachineBrigade.Sim.Modes
             world.CatchUp = true;
             world.EnableEconomy(new TeamEconomy(PlayerTeam, _rules.StartCp, vehicles: _rules.PlayerVehicles, supports: _rules.PlayerSupports));
             world.EnableEconomy(new TeamEconomy(EnemyTeam, _rules.StartCp, vehicles: _rules.EnemyVehicles, supports: _rules.EnemySupports));
+            if (_rules.UnderdogAfter > 0f) world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             if (_rules.BaseDefences) BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
             world.Bases.PointOwner = OwnerOf;

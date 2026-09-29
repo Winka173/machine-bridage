@@ -380,6 +380,12 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>
+        /// Prompt 13 I.2: the card's measured combat value per CP against the roster's middle (1), from the
+        /// combat-value measurement (data "value"): what the commander weighs a card's price by.
+        /// </summary>
+        public float CombatValue { get; internal set; } = 1f;
+
+        /// <summary>
         /// Seconds from empty to fully loaded at the holding pattern's full rate (prompt 13 C.2; data
         /// "rearmTime"): helicopters and drones about 8.5, fighters 11, attack jets 14, bombers 21.
         /// </summary>

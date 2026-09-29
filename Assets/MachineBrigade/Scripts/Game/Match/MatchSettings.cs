@@ -148,7 +148,11 @@ namespace MachineBrigade.Game.Match
         /// <summary>False shows the menu over an AI-versus-AI battle; true plays the chosen match.</summary>
         public static bool InMatch { get; set; }
 
-        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 heroic, 2 iron); not saved.</summary>
+        /// <summary>A saved difficulty's number back as the difficulty (anything unknown: Normal).</summary>
+        internal static AiDifficulty DifficultyFromSave(int saved) =>
+            System.Enum.IsDefined(typeof(AiDifficulty), saved) ? (AiDifficulty)saved : AiDifficulty.Normal;
+
+        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 hard, 2 very hard); not saved.</summary>
 
         public static int MissionTier { get; set; }
 
@@ -367,6 +371,9 @@ namespace MachineBrigade.Game.Match
             return GraphicsQuality.Low;
         }
         public static bool ShowFps { get; set; }
+
+        /// <summary>Prompt 13 C.9: the ammunition icons over units: 0 every unit (the default), 1 aircraft and helicopters only.</summary>
+        public static int AmmoIcons { get; set; }
         public static LanguageChoice Language { get; set; } = LanguageChoice.Auto;
 
         /// <summary>The commander AI buys vehicles from the deck.</summary>
@@ -430,8 +437,10 @@ namespace MachineBrigade.Game.Match
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
                 Map = PlayerPrefs.GetString("mb.map", Map);
                 ShowFps = PlayerPrefs.GetInt("mb.fps", 0) == 1;
+                AmmoIcons = Mathf.Clamp(PlayerPrefs.GetInt("mb.ammoIcons", 0), 0, 1);
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
-                Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
+                // Saved as its number: Easy 0, Normal 1, Hard 2 as before; Very Hard (3) came after them (prompt 13 I).
+                Difficulty = DifficultyFromSave(PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal));
                 Weather = (WeatherKind)PlayerPrefs.GetInt("mb.weather", (int)WeatherKind.Random);
                 var savedMode = (GameModeKind)PlayerPrefs.GetInt("mb.mode", 0);
                 Mode = System.Enum.IsDefined(typeof(GameModeKind), savedMode) && savedMode != GameModeKind.Campaign ? savedMode : GameModeKind.Conquest;
@@ -474,6 +483,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.brightness", Brightness);
                 PlayerPrefs.SetString("mb.map", Map);
                 PlayerPrefs.SetInt("mb.fps", ShowFps ? 1 : 0);
+                PlayerPrefs.SetInt("mb.ammoIcons", AmmoIcons);
                 PlayerPrefs.SetInt("mb.language", (int)Language);
                 PlayerPrefs.SetInt("mb.difficulty", (int)Difficulty);
                 PlayerPrefs.SetInt("mb.weather", (int)Weather);

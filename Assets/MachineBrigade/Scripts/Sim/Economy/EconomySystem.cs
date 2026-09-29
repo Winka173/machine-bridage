@@ -306,9 +306,13 @@ namespace MachineBrigade.Sim.Economy
                 economy.ArmyCp = ArmyCp(economy.Team);
                 economy.VehicleCount = VehicleCount(economy.Team);
             }
+            StepUnderdog();
             foreach (var economy in _teams.Values)
             {
-                var target = _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
+                // Prompt 13 H.12: a mode with the once-a-match help for the side behind gives its income
+                // boost only to the side that got it; the others keep the old sliding boost.
+                var target = Underdog != null ? (UnderdogTeam == economy.Team ? Underdog.Income : 1f)
+                    : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
                 economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }

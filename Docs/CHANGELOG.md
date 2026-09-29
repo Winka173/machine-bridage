@@ -1,5 +1,29 @@
 # Changelog
 
+## Prompt 13: combat value, ammunition, modes and difficulty
+
+- Every card measured by what it really does in a fight for its CP (Docs/COMBAT_VALUE.md), and the theoretical
+  damage a second corrected (magazines, salvos, reloads). Prices and weapons tuned by it: tank hunters, artillery,
+  helicopters, aircraft and anti-air in line with the ground units of their role.
+- Damage a round by the real calibre (a 155 mm shell hits harder and comes less often), the same weapon with the same
+  figures everywhere, ground SAMs a little slower with flare resistance.
+- Aircraft carry bombs, missiles and rockets that run out and come back on the field: they finish their attack, fly a
+  few seconds behind our line to a holding pattern, and come back; faster at the landing pad, over the HQ and (for
+  helicopters) beside the new Ammunition carrier. Bombers carry fewer bombs, go in with two thirds of them and never bomb
+  near our own units. The Sky gunship is no longer a card (the Gunship item still flies it).
+- New: the Ammunition carrier (launchers beside it reload much faster, helicopters rearm twice as fast); the engineer
+  repairs only. The landing pad's rank-7 branches: Hangar (one more aircraft up) and Fast service.
+- Ammunition icons beside the health bar (low, empty, flying out, rearming, full), holding patterns on the minimap, the
+  stores bar in the selection panel, and a setting for every unit or aircraft only.
+- Unit details: every weapon's real name, calibre, rounds, magazine or stores and how they come back ("More"), and a
+  Behaviour section, both worked out from the data; four notes corrected where they disagreed with it.
+- Every mode rebalanced: Deathmatch scored in the CP destroyed (first to 480), King of the Hill to 170, a stronger
+  Assault defender, a tougher Siege fortress, Defend and Endless waves scaled by the base and carrying siege breakers,
+  Survival waves that keep coming, and help for the side far behind after 4 minutes (more income and a free drop).
+- The AI by difficulty: Easy, Normal, Hard and the new Very Hard (it knows your deck and masses its attacks; rewards
+  x1.8); decks of 8 to 12 chosen by roles and value; it buys ammunition carriers, hunts rearming aircraft and goes for
+  landing pads. The campaign's Heroic and Iron tiers are now called Hard and Very hard.
+
 ## Prompt 12: stuck vehicles in bases
 
 - A stuck detector in the internal build (`StuckWatch`, `-mb-stuck`), batch runs and a report with

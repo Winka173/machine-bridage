@@ -3804,6 +3804,243 @@ render, In-action scene and short name come with the UI part (C.9, G).
 
 No other vehicle or building was added for the stores.
 
+### H. Every mode
+
+**How it was measured** (`ModeBalanceMeasure`, `MB_BALANCE=1`): every mode played whole by both commanders on
+two or three battlefields and two seeds (the owner's rule for this pass; the five-seed sweep is for the testing
+phase). The player's side is its auto commander (Hard) with a **sample deck**: main battle tank, IFV, tank destroyer,
+light tank, MLRS, AA vehicle, attack helicopter, engineer, rank 1, no equipment, the default base. The test build unlocks
+every card, so the enemy draws from all of them.
+
+The first measurement (H1) used the starter deck of seven against an enemy that fielded **every** card. That is
+what a quick battle did before I.2, and it made the player lose almost everywhere (Deathmatch 0/6, King of the Hill
+1/6, Endless and Survival always). With I.2's deck of eight or more chosen by roles, and the sample deck for the
+player, the modes were tuned to these results (Normal):
+
+| Mode | Target | Before (H1: starter deck, enemy with every card) | After |
+|---|---|---|---|
+| Conquest | 55-65 %, 6-10 min | 3/6, 6.2 min | 7/12 (58 %), 7.4 min (5.7-9.5) |
+| Deathmatch | 6-9 min | 0/6, 7.9 min | 2/6, 8.5 min (7.9-9.5); 8/12 on four other seeds |
+| King of the Hill | 55-65 %, 6-9 min | 1/6, 3.2 min | 8/12 (67 %), 7.4 min (4.9-8.2) |
+| Assault | 60-70 % | 5/6, 6.2 min | 8/12 (67 %), 4.7 min (2.7-12.6) |
+| Siege | 60-75 %, 10-15 min, narrower | 4/6, 14.4 min (10.9-19.3) | 6/6, 10.7 min (9.2-14.0) |
+| Weekly, from stage 1 / 2 / 3 | last stage still a challenge | 0/2 (stage 1) | 0/2 each: 17-71 %, 71-83 %, 68-70 % |
+| Defend | outer line lost 50-70 %, HQ held ~4/5 | outer line lost 6/6, HQ held 1/6 | outer line lost 6/6 (at 4.0-6.4 min, it was 1.4-2.4), HQ held 6/6 |
+| Endless | median 12-15 min | 8.3 min (8.1-10.1) | 15.1 min (14.4-15.5) |
+| Survival | median 8-12 min | 13.1 min (lost 4/4) | 12.0 min (9.8-14.3; the sample deck held 30 min before the waves' ceiling came off) |
+| Boss Rush | 15-25 min | 15.2 min | 18.7 min (15.9-20.8) |
+
+What was changed, by mode:
+
+- **H.1 Conquest:** a slower bleed (0.6 → 0.5 a second) and less CP a point (0.3 → 0.15 a second), so the side
+  ahead snowballs less, and the enemy's commander earns 18 % more here (it takes and holds points worse than the
+  player's side: 10/12 without it, 9/12 at 10 %).
+- **H.2 Deathmatch** is scored in CP now (`DeathmatchMode.Score` = the CP the other side lost, the kill ledger's
+  price, an elite counting as its base card): a swarm of cheap vehicles thrown away scores little. First to
+  **480 CP** wins (600 ran 8-9 minutes; the old target was 30 kills); the clock stays 12 minutes, and at the clock
+  the higher score wins. The enemy's income is 1.2 here (1.35 before; it won every straight fight at 1.35).
+  Saved records need nothing: the mode kept no score record, and the result screen shows the CP.
+- **H.3 King of the Hill:** 170 to win (100 before; battles ran 3-4 minutes), the enemy's income 1.2 → 1.1. The
+  hill's capture time (8 s) and the holder's rate (0.75 a second) were right; only the target was short.
+- **H.4 Assault:** the defender 26 → 32 CP and 1.05 → 1.3 income, and the attacker's CP a sector 12 → 8. Each of
+  A, B and C fell in 1-3 minutes, none stood out; the sector time bonus (240 s) was left.
+- **H.5 Siege:** a tougher fortress (towers 1.2 → 1.75 times as tough, rings 1.1 / 1.25 / 1.4, Normal mans 90 % of
+  the hardpoints, not 75 %), a bigger garrison (12 → 16 CP, Hard 22, income 0.6 → 0.8) and 300 s a ring broken
+  (360). The spread narrowed (8.6-12.9 minutes, against 9.7-17.8 before this prompt). The measured side still
+  won every siege: the clock would have to bind hard to lose one in four with this commander, and a stopwatch
+  siege is worse than a winnable one; a human's slower siege decides it (**testing phase**).
+- **H.6 Weekly fortress:** measured from each stage a week can start at. From stage 1 the 5-minute clock ends it
+  at 17 % (by design: the rings broken stay broken for the week); from stages 2 and 3 it still held against the
+  measured side after 9-14 minutes (44-68 %). The last stage is not easy once the rest is broken; if anything it is
+  hard (**testing phase**: a human's week of attempts).
+- **H.7 Defend:** the waves scale with the player's base (`BaseStrength`, below: size times
+  `WaveScale(score) = clamp((score / 100)^0.75, 0.75, 2.5)`, the attacker's income times its square root), are
+  drawn against the loadout (`SiegeRules.CounterBase`: more armour against machine-gun towers, fast light vehicles,
+  drones and long guns against anti-armour towers, no aircraft into a sky of anti-air, raiders against artillery)
+  and bring siege breakers from wave 2 (bulldozer, siege tank, heavy rocket artillery, artillery; one more every
+  three waves). The outer line is tougher and the inner ones less so (1.45 / 1.25 / 1.4, it was 1 / 1.4 / 1.8),
+  the first wave smaller and the growth steeper (4 + 1.7 a wave; Hard 5 + 1.9; Easy 3). The outer line fell in
+  every battle but later (4.0-6.4 minutes, it was 1.4-2.4 with the starter deck) and the HQ held in all six
+  (the aim is about 4 in 5; **testing phase**, with a player's own base).
+- **H.8 Endless:** the same base scaling, a smoother climb (1.2 vehicles a wave plus 6 % a wave compounded, where
+  it added 1.6 flat and hit its ceiling), its lines 1.2 / 1.3 / 1.5. The HQ fell at 11.8-16.4 minutes (median 15.3;
+  it fell at 10.3-11.7 whatever the deck). How far it moves with the base's strength is for the testing phase.
+- **H.9 Survival:** the waves by the deck's strength (`SandboxMode.DeckScale` = the deck's `EnemyScaling.Power`
+  / 100: rank and equipment), 3 + 0.9 a wave with no ceiling (it stopped at 6), up to 48 alive (14 + 1.5 a wave),
+  the heavier cards coming in as the waves go on, elites from wave 8 (6 % a wave, all of them by wave 24). The waves keep coming
+  while the field is full (only the room under the ceiling is filled; they stopped altogether before, and a deck
+  that held stood for ever), and the rally counts as overrun when the enemy holds it two to one (not only when
+  nobody is left: new vehicles arrive at the rally). Aircraft rearm at their holding patterns there (no pad, no HQ;
+  C's measurement covered it).
+- **H.10 Boss Rush:** 15.9-20.8 minutes, median 18.7 (15-25 wanted). Boss times ran 0.5-6.6 minutes; the third and
+  fourth in the order ran longest (up to 4.2 and 6.6), the last three shortest (0.5-0.6: the army is biggest by then);
+  per-boss health left as it is (**testing phase**, over more seeds and orders). The bounties (8 CP at 75 / 50 / 25 %, 12 on the kill) let the army rebuild.
+- **H.11 Campaign and Operations:** one seed over every mission (`CampaignTests.MissionPlaysToAnEnd`, before the merge of
+  prompt 12): 88 of the 90 played won; c8m08 was lost (as before part C) and c8m10 did not end in 34 minutes (its
+  last stage, hunt the rest, was unfinished once before too). The quick-mode changes do not reach missions, except
+  a mission with no enemy deck of its own now drawing eight by roles (`EnemyDeck`). Operations' mutators and the
+  15-25 minute frame: **testing phase**.
+- **H.12 Help for the side behind** (`EconomySystem.Underdog`, `UnderdogRules`): in Conquest, Deathmatch, King of
+  the Hill and Assault (each sets its own time; 0 turns it off, as the menu battle does), after 4 minutes, when
+  one side's army on the field is worth 1.6 times the other's or more (and at least 14 CP), the weaker side earns
+  25 % more for the rest of the match and is flown one free reinforcement: two or three of the deck's vehicle
+  nearest its average price (three when that is 6 CP or less). Once a match, no health or damage added, and both
+  sides are told (`assist.us` / `assist.them`). In Defend and Endless a player holding far too easily (the
+  defenders worth 1.6 times the attackers after 4 minutes) draws one extra breaching wave instead: two of every
+  breaker, elite where there is one (`assist.breach`).
+
+**BaseStrength** (`Sim/Modes/BaseStrength.cs`, commit b5e6c74; the Base screen's number): a base's towers, modules
+and HQ, each by its rank and equipment (`EnemyScaling`'s tougher-and-harder-hitting rule), against the mid-level
+mark of 100 (an HQ at level 3 with its slots filled at rank 1). `Score(catalog, loadout, boosts)` for a loadout,
+`Score(world, team)` for a base on the field, `WaveScale(score)` for the waves.
+
+### I. The AI by difficulty
+
+**I.1 Four levels.** Easy, Normal, Hard, and the new **Very Hard** above Hard (`AiDifficulty.VeryHard`, saved as 3;
+Easy 0, Normal 1 and Hard 2 keep their numbers, anything else reads as Normal). One buying profile
+(`BuyProfile`) for each:
+
+| | Easy | Normal | Hard | Very Hard |
+|---|---|---|---|---|
+| Noise (randomness of a pick) | 3 | 0.8 | 0.6 | 0.4 |
+| Counters what it has seen | 0 | 1 | 1.25 | 1.4 |
+| Keeps its role shares | 0 | 0.5 | 1 | 1 |
+| Weighs value per CP (part A) | 0 | 0.6 | 1 | 1.2 |
+| Saves for the big cards (per CP of price) | 0 | 0.04 | 0.1 | 0.12 |
+| Deck | 8 at random | 8 by roles | 10 by roles and value | 12 by roles and value, against the player's deck |
+| Income | ×0.8 | ×1 | ×1.2 | ×1.4 |
+| Decision every | 2.2 s | 1.1 s | 0.6 s | 0.45 s |
+| Elite share of its spending (cap) | 5 % (1) | 10 % (2) | 15 % (3) | 30 % (6) |
+| Rewards | ×0.7 | ×1 | ×1.45 | ×1.8 |
+| Base (HQ level) | 2 | 3 | 5 | 5 |
+
+Hard and Very Hard also: hold their strikes while the army holds back (they go in with the push), take a doctrine,
+and hunt aircraft that are flying out to rearm or circling their holding pattern (I.3). Very Hard also: knows the
+player's deck from the start (`ConquestAi.KnownDeck`, fed into what it counters at half weight until it has seen six
+enemies; **never** where anything is: fog of war holds), masses its CP (it waits until two thirds of its bank before a
+wave, then spends it all; it spends at once when under fire), and weighs the player's weakest point twice as much when
+choosing where to attack. The enemy's income multiplier is applied once for every quick mode
+(`ModeSession.Create`); Defend's attacker (it was 1.35 / 1.1 / 0.95 by hand) and the Siege garrison
+(0.85 / 0.6 / 0.45) now take one base and the multiplier.
+
+**I.2 Buying is one scoring function** (`ConquestAi` buy scoring, deterministic: every draw from the commander's seeded
+random): 1 + noise × random + (value − 1) × the value weight + the counter score × the counter weight + the role
+share gap × 5 × the mix weight + price × the saving weight. The **deck** (`ConquestAi.PickDeck`, the quick modes'
+enemy and the campaign missions with no deck of their own) is chosen by roles in order (front line, armour, anti-air,
+artillery, fast, aircraft, front, support, then again), only cards that fight filling the fighting roles (no siege
+breaker, recon drone or bulldozer), a repair or ammunition vehicle preferred for support; Hard and Very Hard add the
+value per CP; Very Hard adds weight to aircraft when the player's deck has little anti-air and to heavy armour when it
+has little anti-armour. The combat value per CP is data (`"value"` on every vehicle, per class, from the F3
+measurement, 0.5-1.5).
+
+**I.3 Stores in the AI:** it buys an ammunition carrier once it fields three launchers or helicopters (never a second);
+with the enemy flying three aircraft or more, its artillery and strike aircraft go for the enemy's landing pads and
+ammunition carriers; on Hard and Very Hard its fighters go after enemy aircraft that are flying out or holding
+(`TacticalAi.HuntSupply`).
+
+**The ladder** (the sample deck and the player's auto commander at Hard against each level; Conquest, Deathmatch,
+King of the Hill and Assault, three battlefields, four seeds each, the player's wins):
+
+| Mode | Easy | Normal | Hard | Very Hard |
+|---|---|---|---|---|
+| Conquest | 12/12 | 10/12 | 11/12 | 9/12 |
+| Deathmatch | 11/12 | 8/12 | 4/12 | 3/12 |
+| King of the Hill | 12/12 | 6/12 | 6/12 | 0/12 |
+| Assault | 12/12 | 11/12 | 8/12 | 2/12 |
+| **All** | **47/48 (98 %)** | **35/48 (73 %)** | **29/48 (60 %)** | **14/48 (29 %)** |
+
+Each level is harder than the one below over the four modes (before the merge of prompts 12 and 14 and before the
+last Conquest, Hill and Assault changes). Normal against Hard is the closest step (73 % against 60 %, and Conquest
+and the Hill on their own do not tell them apart); **testing phase**: more seeds, and a human.
+
+**I.4 One ladder of names.** The quick modes said Easy / Normal / Hard; the campaign and Operations said
+Normal / Heroic / Iron / Legend. They are one ladder now:
+
+| Where | Before (EN / VI) | Now (EN / VI) | Saved as |
+|---|---|---|---|
+| Quick modes | Easy / Dễ | Easy / Dễ | difficulty 0 |
+| Quick modes | Normal / Thường | Normal / Thường | 1 |
+| Quick modes | Hard / Khó | Hard / Khó | 2 |
+| Quick modes | (none) | **Very hard / Cực khó** | 3 (new) |
+| Campaign, Operations tier 0 | Normal / Thường | Normal / Thường | tier 0 |
+| Campaign, Operations tier 1 | Heroic / Anh hùng | **Hard / Khó** | tier 1 |
+| Campaign, Operations tier 2 | Iron / Thép | **Very hard / Cực khó** | tier 2 |
+| Operations tier 3 | Legend / Huyền thoại | Legend / Huyền thoại | tier 3 |
+
+A tier's rules stay the tier's (Hard: the enemy 30 % stronger, rewards ×1.5; Very hard: that, 20 % less income and no
+fire support, rewards ×2): they are close to the quick modes' levels, and the missions were tuned to them. Every
+record is saved by number (a mission's best tier, an Operations tier, the chosen difficulty), so the records migrate
+without a change; the internal keys (`heroic`, `iron` in operations.json, the elite budget's `Heroic` and `Iron`)
+stay as they are. The short badge reads "V. HARD" / "CỰC KHÓ".
+
+**Migration tests** (`Prompt13MigrationTests`): the sky gunship is no card and no deck or AI picks it; the engineer
+repairs and the ammunition carrier rearms; Deathmatch scores the CP of what was destroyed; saved difficulties keep their
+meaning and the tiers carry the quick modes' names in both languages.
+
+**The C-RAM test** (`TowerRosterTests.TheCRamShootsDownRocketsAndSomeShells`) failed after B: the 155 mm shell is one
+every 11 s now (7 before, for the same damage a second), so one gun sent four shells in the test's 40 s and at the
+C-RAM's 30 % share this seed took none. The C-RAM and the shells are unchanged (it takes the same share of the
+damage); the test now uses two guns and keeps the C-RAM standing (the 155 mm splash beside it destroyed it at 38 s).
+
+### C.9, G, F: the interface parts
+
+**C.9 Ammunition icons** (`VehicleView.Stores.cs`): beside the health bar, on its right so it never covers it, built
+from quads in flat single colours like the repair mark. One set for aircraft, helicopters and launchers (it replaced the
+launchers' three-shell gauge and reload bar): low (a magazine with one bar, coin yellow, under 20 %; a launcher's last
+salvo), empty (the magazine's frame red, blinking gently), flying out (a grey return arrow), rearming (the magazine in
+our green, a ring of 12 segments lit by the share of stores back, turning at 30° a second and dim at the slow rate,
+90° and bright at the full one; a launcher reloading in place counts as the full rate) and full (the ring flashes for
+0.6 s, then the icon goes). Enemy units show only empty and flying out. The health bar shows while the icon does.
+Our holding patterns are faint mint rings on the minimap. The selection panel shows the selection's biggest store
+under its health bar ("Rockets 14/22", launchers their salvos) in the `SelectionExtras` hook, yellow under 20 %, red
+when empty, dim at the slow rate. Settings, Game: "Ammo icons: All units / Aircraft only" (`MatchSettings.AmmoIcons`,
+saved; default all). The icon table is in the Guide tab of every unit that uses the icons, and c3m03 (the first
+mission after the attack helicopter unlocks) shows it as a tip (`tip.ammoIcons`, in the campaign source and the JSON).
+The icons are not in a screenshot test yet (**testing phase**: legibility at the default zoom on the smallest phone).
+
+**G Detail lines** (`UnitLines`, `UnitText`): worked out from the data, in both languages. For each weapon: the real
+name and calibre (`real`, else the kind and calibre), damage type and targets, damage a round and rounds a salvo, the
+magazine (changed in place, seconds) or the stores (N bombs / missiles / rockets when full, full in `rearmTime` at the
+holding pattern, half as fast attacking or in danger, faster at the landing pad x2 and over the HQ x1.5, beside an
+ammunition carrier x2 for helicopters) or the shots or salvos reloaded in place, range, minimum range and splash.
+Behaviour: how it moves and engages (stands and fires, stops to fire, fires on the move, keeps to the edge of its range,
+hovers, dives and comes round, circles its target, bomb runs, hunts aircraft, artillery with its ranges and sight), after
+firing (moves after N salvos, changes its magazine, comes round again), what it goes for first (its data's strong-against
+classes, aircraft for anti-air, groups and buildings for bombers), when it pulls out and where (stores spent, two thirds
+of its bombs, badly hurt to the pad or the HQ, a launcher to a carrier or home), and its skills (with their trigger and
+cooldown), APS, jammer, repair and rearm auras, mines, counter-battery radar, stealth. Modules: the landing pad's
+stores rate and mending, the hangar's extra aircraft. The weapons tab shows the old one-line figures and every line
+behind "More" / "Xem thêm"; the guide tab has the Behaviour section; module facts carry the pad lines. The design
+document export has `behavior`, `ammo` and each weapon's `name` for every vehicle, tower and module (Vietnamese).
+
+**G.3 Hand-written text against the data** (`UnitLinesTests.HandWrittenTextAgreesWithTheData`): every calibre ("N mm")
+and every "N bombs / rockets / missiles" in a unit's note or guide (its first paragraph, where it describes itself) must be
+one of its own weapons' calibres or counts. It found four, corrected to the data: the IFV's 30 mm (the note said a
+Bradley's 25 mm; the data is a 2A42 30 mm), the Ka-52's 23 mm (GSh-23V in the data), the Little Bird's 24 rockets in
+salvos of 12 (the note said a seven-rocket pod), the TOS-1A's salvos of 9 (the note said 24 rockets).
+
+**F The new cards' pictures:** the ammunition carrier's card render (`truck`, `CardRenders.RenderBatch`; the landing
+pad's branches share the pad's picture), and its In-action scene (`FiringRange` `Scene.Resupply`: two rocket launchers
+beside it, empty at the start, reloading and firing again; `SimWorld.DebugEmpty` empties them). `CardRenderTests` pass.
+
+**Shared edits:** `SimWorld.DebugEmpty` (previews only), `SupplyRules` (the stores' rates as public constants, which
+`SupplySystem` goes by), `Strings.Get`/`Has` also look in `UnitText.Table` (and the two language scans include it),
+`SelectionController.Stores()`, `Minimap.Holding`, `MaterialLibrary` (four stores colours). No pathing or traffic code.
+
+### Z. Left for the testing phase
+
+- The five-seed sweep of every mode at every difficulty (this pass: two seeds, two or three battlefields; the ladder
+  four seeds on four modes), with a human rather than the auto commander as the player's side: Siege (6/6 won by the
+  measured side), Defend (the outer line fell every time, the HQ held every time), Weekly from each stage (never won),
+  Deathmatch (2/6), and whether Normal and Hard are far enough apart (73 % against 60 %).
+- Endless and Defend by the base's strength (the waves scale with `BaseStrength`; only the default base was measured).
+- Boss Rush per boss over more seeds and orders; Operations' mutators and the 15-25 minute frame; the whole campaign on
+  more seeds (one seed: 88 of 90 won, c8m08 lost as before, c8m10's last stage unfinished once more).
+- The combat values and the aircraft's readiness over more seeds (A, C.10); the bombers' longest flight out (4.5-4.7 s,
+  C); the ammunition icons' legibility on the smallest phone and the HUD cover with an aircraft selected.
+- `CampaignText.cs` is out of step with `Tools/campaign/build_campaign.py` (hand edits since it was generated, such as
+  "Bọ Bạc"): the generator was not run over it; c3m03's changes went into both the source and `campaign.json`.
+
 ## 13D. Prompt 14: Base screen, out-of-battle sizes (2026-09-29)
 
 The owner found the menus oversized on a phone and the Base screen a diagram that did not look like the

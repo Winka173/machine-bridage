@@ -16,6 +16,57 @@ namespace MachineBrigade.Sim.AI
         Easy,
         Normal,
         Hard,
+
+        /// <summary>Prompt 13 I: above Hard (Cực khó).</summary>
+        VeryHard,
+    }
+
+    /// <summary>
+    /// Prompt 13 I.1-I.2: how well a commander buys at a difficulty. Every level scores the same things
+    /// (<see cref="ConquestAi"/>'s buy score: what answers the enemy it has seen, the roles its army lacks,
+    /// the measured combat value per CP, saving up for the big cards), weighted by the level.
+    /// </summary>
+    public readonly struct BuyProfile
+    {
+        public BuyProfile(float noise, float counter, float mix, float value, float save, bool knowsDeck, float income)
+        {
+            Noise = noise;
+            Counter = counter;
+            Mix = mix;
+            Value = value;
+            Save = save;
+            KnowsDeck = knowsDeck;
+            Income = income;
+        }
+
+        /// <summary>How random the choice is (Easy chooses almost at random).</summary>
+        public float Noise { get; }
+
+        /// <summary>Weight of answering the enemy it has seen (0: none, Easy).</summary>
+        public float Counter { get; }
+
+        /// <summary>Weight of keeping the army's role shares (front line, fast, artillery, anti-air, aircraft).</summary>
+        public float Mix { get; }
+
+        /// <summary>Weight of the card's measured combat value per CP (part A).</summary>
+        public float Value { get; }
+
+        /// <summary>Per CP of a card's price: saving up for the big ones.</summary>
+        public float Save { get; }
+
+        /// <summary>Knows the player's deck from the start (Very Hard): it counters it before it has seen it.</summary>
+        public bool KnowsDeck { get; }
+
+        /// <summary>The enemy's income against Normal's.</summary>
+        public float Income { get; }
+
+        public static BuyProfile For(AiDifficulty difficulty) => difficulty switch
+        {
+            AiDifficulty.Easy => new BuyProfile(3f, 0f, 0f, 0f, 0f, false, 0.8f),
+            AiDifficulty.Normal => new BuyProfile(0.8f, 1f, 0.5f, 0.6f, 0.04f, false, 1f),
+            AiDifficulty.Hard => new BuyProfile(0.6f, 1.25f, 1f, 1f, 0.1f, false, 1.2f),
+            _ => new BuyProfile(0.4f, 1.4f, 1f, 1.2f, 0.12f, true, 1.4f),
+        };
     }
 
     /// <summary>The commander's general intent.</summary>
@@ -134,7 +185,12 @@ namespace MachineBrigade.Sim.AI
             _enemyTeam = enemyTeam;
             _difficulty = difficulty;
             _random = new Random(seed);
-            _tactics = new TacticalAi(team, enemyTeam, seed) { Objective = ChooseObjective, FallBackTo = SafePoint, Facing = Threat };
+            _tactics = new TacticalAi(team, enemyTeam, seed)
+            {
+                Objective = ChooseObjective, FallBackTo = SafePoint, Facing = Threat,
+                // Prompt 13 I.3: hunting aircraft that are out to rearm, and the enemy's supply, from Hard up.
+                HuntSupply = difficulty >= AiDifficulty.Hard,
+            };
         }
 
         /// <summary>How far off the point it holds a defending army chases.</summary>
@@ -166,11 +222,119 @@ namespace MachineBrigade.Sim.AI
         {
             AiDifficulty.Easy => 2.2f,
             AiDifficulty.Hard => 0.6f,
+            AiDifficulty.VeryHard => 0.45f,
             _ => 1.1f,
         };
 
+        private BuyProfile Profile => BuyProfile.For(_difficulty);
+
+        /// <summary>
+        /// The player's deck, known from the start on Very Hard (prompt 13 I.1): it counts as enemy seen,
+        /// at half weight, until the real enemy shows. It never tells where anything is (no fog is lifted).
+        /// </summary>
+        public IReadOnlyList<string>? KnownDeck { get; set; }
+
+        /// <summary>
+        /// Prompt 13 I.2: a commander's deck for a quick battle, drawn deterministically from the cards it may
+        /// use (<paramref name="pool"/>): Easy eight at random; Normal eight by roles (front line, anti-armour,
+        /// fast, artillery, anti-air, aircraft, support); Hard ten by roles, the best value per CP of each
+        /// role first; Very Hard twelve, the roles the player's deck is weak against first.
+        /// </summary>
+        public static List<string> PickDeck(Catalog catalog, IEnumerable<string> pool, AiDifficulty difficulty, int seed, IReadOnlyList<string>? playerDeck = null)
+        {
+            var cards = new List<VehicleDef>();
+            foreach (var id in pool)
+                if (catalog.Vehicles.TryGetValue(id, out var def) && def.Card && def.CpCost > 0 && !def.Boss && !def.Static) cards.Add(def);
+            cards.Sort((x, y) => string.CompareOrdinal(x.Id, y.Id));
+            var random = new Random(seed * 31 + 7);
+            var size = difficulty switch { AiDifficulty.Easy => 8, AiDifficulty.Normal => 8, AiDifficulty.Hard => 10, _ => 12 };
+            var deck = new List<string>();
+            if (cards.Count <= size)
+            {
+                foreach (var c in cards) deck.Add(c.Id);
+                return deck;
+            }
+            if (difficulty == AiDifficulty.Easy)
+            {
+                while (deck.Count < size)
+                {
+                    var c = cards[random.Next(cards.Count)];
+                    if (!deck.Contains(c.Id)) deck.Add(c.Id);
+                }
+                return deck;
+            }
+            // Roles in the order they are filled, then round again.
+            var roles = new[] { "front", "armour", "aa", "artillery", "fast", "air", "front", "support", "armour", "artillery", "air", "aa" };
+            // What the player's deck cannot answer: its anti-air and anti-armour shares.
+            float playerAa = 0f, playerAt = 0f, playerCount = 0f;
+            if (playerDeck != null)
+                foreach (var id in playerDeck)
+                    if (catalog.Vehicles.TryGetValue(id, out var p))
+                    {
+                        playerCount++;
+                        if (CanHitAir(p)) playerAa++;
+                        if (KillsArmour(p)) playerAt++;
+                    }
+            float Pick(VehicleDef c, string role)
+            {
+                // Siege breakers (bulldozer, sapper) are the siege's tools, not a battle's; the fighting roles
+                // take only what fights (a recon drone is no air support, a bulldozer no front line).
+                if (c.Breacher) return float.MinValue;
+                var fights = Fights(c);
+                var fits = role switch
+                {
+                    "front" => fights && !c.Flying && c.Weapon.MinRange <= 0f && c.Armor == ArmorClass.Heavy,
+                    "armour" => !c.Flying && KillsArmour(c) && c.Class is UnitClass.TankHunter or UnitClass.Tank,
+                    "aa" => c.Class == UnitClass.AntiAir,
+                    "artillery" => fights && c.Weapon.MinRange > 0f,
+                    "fast" => fights && !c.Flying && c.Speed >= 11f && c.Class != UnitClass.Support,
+                    "air" => fights && c.Flying,
+                    _ => c.Class == UnitClass.Support,
+                };
+                if (!fits) return float.MinValue;
+                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 1f : 0.4f);
+                // The value per CP (part A): Hard and Very Hard weigh it (Normal draws any card that fits the role).
+                if (difficulty >= AiDifficulty.Hard) score += c.CombatValue * 1.5f * BuyProfile.For(difficulty).Value;
+                // The support card a battle uses: repairs or ammunition.
+                if (role == "support" && (c.RepairAura != null || c.RearmAura != null)) score += 1f;
+                // Very Hard: more of what the player's deck is short of answers to.
+                if (difficulty == AiDifficulty.VeryHard && playerCount > 0f)
+                {
+                    if (c.Flying) score += 1.5f * (1f - playerAa / playerCount);
+                    if (c.Armor == ArmorClass.Heavy && !c.Flying) score += 1f * (1f - playerAt / playerCount);
+                }
+                return score;
+            }
+            var r = 0;
+            for (var guard = 0; deck.Count < size && guard < 64; guard++, r++)
+            {
+                var role = roles[r % roles.Length];
+                VehicleDef? best = null;
+                var bestScore = float.MinValue;
+                foreach (var c in cards)
+                {
+                    if (deck.Contains(c.Id)) continue;
+                    var s = Pick(c, role);
+                    if (s <= bestScore) continue;
+                    best = c;
+                    bestScore = s;
+                }
+                if (best != null && bestScore > float.MinValue) deck.Add(best.Id);
+            }
+            // Short of a role in the pool: the rest at random.
+            while (deck.Count < size)
+            {
+                var c = cards[random.Next(cards.Count)];
+                if (!deck.Contains(c.Id)) deck.Add(c.Id);
+            }
+            return deck;
+        }
+
+        private Catalog? _catalog;
+
         public void Tick(SimWorld world, float dt)
         {
+            _catalog ??= world.Catalog;
             var defend = Stance == CommanderStance.Defend;
             world.Entrench(_team, defend);
             _tactics.HoldLeash = defend && _holding != null ? HoldReach : null;
@@ -285,7 +449,7 @@ namespace MachineBrigade.Sim.AI
                     if (ours) score += threatened ? 2.5f : -2f;
                     // Go where they are thin: every enemy seen dug in round a point (towers and
                     // defences included) counts against it, relative to our own strength.
-                    else if (choices > 1) score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * 1.2f;
+                    else if (choices > 1) score -= MathF.Min(2f, Guard(point) / MathF.Max(3f, ownPower)) * (_difficulty == AiDifficulty.VeryHard ? 2f : 1.2f);
                 }
                 score -= Vector2.Distance(front, point.Def.Position) / 60f;
                 if (score <= bestScore) continue;
@@ -358,6 +522,8 @@ namespace MachineBrigade.Sim.AI
         private bool TryStrike(SimWorld world, TeamEconomy economy)
         {
             if (_difficulty == AiDifficulty.Easy && _random.NextDouble() < 0.6) return false;
+            // Hard and Very Hard time their fire support with an attack: not while the army holds back.
+            if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < 0.7) return false;
             var supports = Cards(world, economy.Supports, world.Catalog.Supports.Keys);
             // Repair a battered group first.
             if (FindDamagedGroup(world, out var hurt))
@@ -612,6 +778,12 @@ namespace MachineBrigade.Sim.AI
 
         private void TryDeploy(SimWorld world, TeamEconomy economy)
         {
+            // Very Hard masses its CP for coordinated attack waves (prompt 13 I.1): with an army on the
+            // field and no fight on its hands it saves up to two thirds of its bank, then buys card after card.
+            if (_difficulty == AiDifficulty.VeryHard && !_massing && economy.VehicleCount >= 5 && _tactics.KnownEnemies.Count > 0 &&
+                economy.Cp < economy.Bank * 0.66f && !UnderFire(world))
+                return;
+            _massing = economy.Cp >= 6f && _difficulty == AiDifficulty.VeryHard && (_massing || economy.Cp >= economy.Bank * 0.66f);
             var cards = Cards(world, economy.Vehicles, world.Catalog.Vehicles.Keys);
             var airFull = world.Economy.AircraftCount(_team) >= world.Economy.AircraftCap(_team);
             string? best = null, bestAffordable = null;
@@ -669,11 +841,14 @@ namespace MachineBrigade.Sim.AI
                 if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
                 if (def.Flying && airFull) continue;
-                var score = 1f + (float)_random.NextDouble() * (_difficulty == AiDifficulty.Easy ? 3f : 0.8f);
+                var profile = Profile;
+                var score = 1f + (float)_random.NextDouble() * profile.Noise;
+                // Prompt 13 I.2: the card's measured combat value per CP (1: the roster's middle).
+                score += (def.CombatValue - 1f) * profile.Value;
                 if (_difficulty != AiDifficulty.Easy)
                 {
                     var main = def.Weapon;
-                    score += CounterScore(def, enemy, answer);
+                    score += CounterScore(def, enemy, answer) * profile.Counter;
                     // Keep about a seventh of the army in the air: aircraft are fast and hit hard,
                     // but dear, and anti-air is what they are for.
                     if (def.Flying) score += (ownAir * 7 < ownTotal + 2 ? 1.2f : -2f) + heavy * 0.25f - air * 0.3f;
@@ -706,11 +881,11 @@ namespace MachineBrigade.Sim.AI
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
                 if (_difficulty != AiDifficulty.Easy && armyValue > 0f)
-                    score += (mix[(int)RoleOf(def)] - _have[(int)RoleOf(def)] / armyValue) * 5f;
+                    score += (mix[(int)RoleOf(def)] - _have[(int)RoleOf(def)] / armyValue) * 5f * profile.Mix;
                 // A mixed army: each copy already fielded makes another less attractive.
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
                 // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).
-                if (_difficulty != AiDifficulty.Easy) score += def.CpCost * 0.22f;
+                score += def.CpCost * profile.Save;
                 if (score > bestScore)
                 {
                     best = id;
@@ -732,6 +907,17 @@ namespace MachineBrigade.Sim.AI
             // Save up for the best card, unless the army is thin or CP is about to overflow.
             if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
                 world.Submit(Command.Deploy(_team, bestAffordable));
+        }
+
+        /// <summary>Very Hard spending its saved CP (see <see cref="TryDeploy"/>).</summary>
+        private bool _massing;
+
+        /// <summary>One of our vehicles was hit in the last 3 s.</summary>
+        private bool UnderFire(SimWorld world)
+        {
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == _team && world.Time - v.LastHitTime < 3.0) return true;
+            return false;
         }
 
         private static bool CanHitAir(VehicleDef def)
@@ -811,6 +997,18 @@ namespace MachineBrigade.Sim.AI
         private Mix EnemyMix()
         {
             var mix = new Mix();
+            if (Profile.KnowsDeck && KnownDeck != null && _tactics.KnownEnemies.Count < 6 && _catalog != null)
+                foreach (var id in KnownDeck)
+                {
+                    if (!_catalog.Vehicles.TryGetValue(id, out var d)) continue;
+                    var value = MathF.Max(1f, d.CpCost) * 0.5f;
+                    if (d.Flying) mix.Air += value;
+                    else if (d.Weapon.MinRange > 0f) mix.Artillery += value;
+                    else if (d.Armor == ArmorClass.Heavy) mix.Heavy += value;
+                    else mix.Light += value;
+                    if (CanHitAir(d)) mix.AntiAir += value;
+                    mix.Total += value;
+                }
             foreach (var e in _tactics.KnownEnemies)
             {
                 if (e.Def.Static) continue;
@@ -842,6 +1040,14 @@ namespace MachineBrigade.Sim.AI
                 mix.Total += value;
             }
             return mix;
+        }
+
+        /// <summary>Has a weapon that does damage to ground targets (not only a scout's or a tool's).</summary>
+        private static bool Fights(VehicleDef def)
+        {
+            foreach (var m in def.Mounts)
+                if (m.Weapon.CanTarget(false) && m.Weapon.Damage > 0f) return true;
+            return false;
         }
 
         private static bool KillsArmour(VehicleDef def)

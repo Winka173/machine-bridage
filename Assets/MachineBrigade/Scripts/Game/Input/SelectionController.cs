@@ -91,6 +91,57 @@ namespace MachineBrigade.Game.Input
             return new SelectionSummary(count, mixed ? null : defId, hp, maxHp);
         }
 
+        /// <summary>
+        /// Prompt 13 C.9: what the selection carries for the panel's ammunition bar: each aircraft's biggest
+        /// store (its bombs, rockets or missiles), a launcher's salvos, summed over the selected vehicles of
+        /// that kind; slow while any of them takes its stores on at the slow rate or waits to reload.
+        /// </summary>
+        public (int left, int full, MachineBrigade.Sim.Content.ProjectileKind kind, bool slow) Stores()
+        {
+            int left = 0, full = 0;
+            var kind = MachineBrigade.Sim.Content.ProjectileKind.Bullet;
+            var slow = false;
+            var chosen = false;
+            foreach (var view in _views.All)
+            {
+                if (!_selected.Contains(view.Id)) continue;
+                var v = view.Sim;
+                var mounts = v.Def.Mounts;
+                var best = -1;
+                if (v.HasStores)
+                {
+                    for (var i = 0; i < mounts.Count; i++)
+                        if (v.Stores(i).full > 0 && (best < 0 || v.Stores(i).full > v.Stores(best).full)) best = i;
+                    if (v.RearmRate > 0f && v.RearmRate < 1f) slow = true;
+                }
+                else if (!v.Def.Static && mounts.Count > 0 && mounts[0].Weapon.Ammo > 0)
+                {
+                    best = 0;
+                    if (v.ReloadPaused) slow = true;
+                }
+                if (best < 0) continue;
+                var weapon = mounts[best].Weapon;
+                if (!chosen)
+                {
+                    kind = weapon.Projectile;
+                    chosen = true;
+                }
+                if (weapon.Projectile != kind) continue;
+                if (v.HasStores)
+                {
+                    var (l, f) = v.Stores(best);
+                    left += l;
+                    full += f;
+                }
+                else
+                {
+                    left += Math.Max(0, v.Ammo(0));
+                    full += weapon.Ammo;
+                }
+            }
+            return (left, full, kind, slow);
+        }
+
         /// <summary>Gets first refusal on taps (strike targeting); returns true when it used the tap.</summary>
         public Func<Vector2, bool> TapInterceptor { get; set; }
 

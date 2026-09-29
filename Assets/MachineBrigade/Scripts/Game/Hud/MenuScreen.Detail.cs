@@ -316,6 +316,17 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(Kit.Body(Strings.Get("note." + id)));
             }
             if (Strings.Has("guide." + id)) GuideLines(Strings.Get("guide." + id));
+            // Prompt 13 G.2: how it behaves, worked out from its data.
+            if (_catalog.Vehicles.TryGetValue(id, out var unit))
+            {
+                var behaviour = UnitLines.Behaviour(_catalog, unit);
+                if (behaviour.Count > 0)
+                {
+                    _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.behaviour")), "fc-caption fc-mt-4 fc-mb-2"));
+                    foreach (var line in behaviour) _detailBody.Add(Kit.Body("· " + line));
+                }
+                if (unit.Flying || unit.Weapon.Ammo > 0 && !unit.Static) AmmoIconTable();
+            }
             // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
             foreach (var elite in _catalog.Vehicles.Values)
             {
@@ -325,6 +336,31 @@ namespace MachineBrigade.Game.Hud
             }
             // A boss's parts and what breaking each does (prompt 9).
             if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
+        }
+
+        /// <summary>Prompt 13 C.9: what the ammunition icons over units mean, with their colours.</summary>
+        private void AmmoIconTable()
+        {
+            _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.ammoIcons")), "fc-caption fc-mt-4 fc-mb-2"));
+            foreach (var (key, colour) in new[]
+                     {
+                         ("icons.low", new Color(1f, 0.8f, 0.22f)), ("icons.empty", new Color(1f, 0.26f, 0.18f)),
+                         ("icons.leaving", new Color(0.62f, 0.66f, 0.7f)), ("icons.rearming", new Color(0.36f, 0.9f, 0.5f)),
+                         ("icons.full", new Color(0.6f, 1f, 0.7f)),
+                     })
+            {
+                var row = Kit.Box("fc-row fc-mt-2");
+                var swatch = new VisualElement();
+                swatch.style.width = 12f;
+                swatch.style.height = 12f;
+                swatch.style.flexShrink = 0f;
+                swatch.style.marginRight = 8f;
+                swatch.style.backgroundColor = colour;
+                row.Add(swatch);
+                row.Add(Kit.Body(Strings.Get(key)));
+                _detailBody.Add(row);
+            }
+            _detailBody.Add(Kit.Small(Strings.Get("icons.enemy")));
         }
 
         private void GuideLines(string text)
@@ -532,10 +568,22 @@ namespace MachineBrigade.Game.Hud
                 text.Add(Kit.Body2(Strings.Format("detail.weaponLine", w.Damage.ToString("N0") + burst, pause.ToString("0.#"), Mathf.RoundToInt(w.Range),
                     lines[i].Targets)));
                 if (lines[i].Ammo > 0) text.Add(Kit.Small(Strings.Format("detail.ammo", lines[i].Ammo)));
+                // Prompt 13 G.1: every figure (real name and calibre, rounds, magazine or stores and how they
+                // come back, faster sites, range), behind "More".
+                if (_weaponsMore && w.Damage > 0f)
+                    foreach (var line in UnitLines.Weapon(def, w)) text.Add(Kit.Small(line));
                 row.Add(text);
                 _detailBody.Add(row);
             }
+            _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get(_weaponsMore ? "detail.less" : "detail.more"), () =>
+            {
+                _weaponsMore = !_weaponsMore;
+                RefreshDetail();
+            }));
         }
+
+        /// <summary>The weapons tab shows every figure (prompt 13 G.5: "More").</summary>
+        private bool _weaponsMore;
 
         /// <summary>What a utility module does for the base, from its data (repairs, reloads, aircraft, supply, radar).</summary>
         private void ModuleFacts(VehicleDef def)
@@ -546,6 +594,8 @@ namespace MachineBrigade.Game.Hud
             if (u.Repair > 0f) facts.Add(Rule("repair", Strings.Format("detail.module.repair", (u.Repair * 100f).ToString("0.#", Kit.Culture))));
             if (u.Rearm > 1f) facts.Add(Rule("ammo", Strings.Format("detail.module.rearm", u.Rearm.ToString("0.#", Kit.Culture))));
             if (u.AirRepair > 0f) facts.Add(Rule("helicopter", Strings.Format("detail.module.air", (u.AirRepair * 100f).ToString("0.#", Kit.Culture), Mathf.RoundToInt(u.AirReach))));
+            // Prompt 13 G.4: the landing pad's stores rate, a hangar's aircraft.
+            foreach (var line in UnitLines.Module(u, false)) facts.Add(Rule("ammo", line));
             if (u.Supply > 0) facts.Add(Rule("people", Strings.Format("detail.module.supply", u.Supply)));
             if (u.RevealBase) facts.Add(Rule("eye", Strings.Get("detail.module.radar")));
             _detailBody.Add(facts);

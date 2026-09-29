@@ -175,17 +175,21 @@ namespace MachineBrigade.Tests
         public void TheCRamShootsDownRocketsAndSomeShells()
         {
             var world = Field();
-            Tower(world, "c_ram", 1, new Vector2(0f, 0f));
+            var cram = Tower(world, "c_ram", 1, new Vector2(0f, 0f));
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(8f, 0f), 0f);
             var mlrs = world.SpawnVehicle("mlrs", 0, new Vector2(0f, -80f), 0f);
+            // Two guns: since prompt 13 B a 155 mm shell is one every 11 s (it was 7), and the C-RAM takes a
+            // share of them (30 %), so one gun's four shells in 40 s were too few to count on one being taken.
+            // The C-RAM is kept standing: the 155 mm splash beside it is not what this test is about.
             var gun = world.SpawnVehicle("artillery", 0, new Vector2(20f, -80f), 0f);
+            var gun2 = world.SpawnVehicle("artillery", 0, new Vector2(-20f, -80f), 0f);
             var spotter = world.SpawnVehicle("scout_jeep", 0, new Vector2(0f, -28f), 0f);
-            world.Submit(new Command(CommandType.Attack, 0, new[] { mlrs.Id, gun.Id }, target: tank.Id));
+            world.Submit(new Command(CommandType.Attack, 0, new[] { mlrs.Id, gun.Id, gun2.Id }, target: tank.Id));
             var kinds = new HashSet<string>();
             Run(world, 40f, e =>
             {
                 if (e.Kind == SimEventKind.Intercepted && e.DefId != null) kinds.Add(e.DefId);
-            }, spotter);
+            }, spotter, cram);
             Assert.Contains("mlrs_rockets", kinds.ToList(), "rockets");
             Assert.Contains("howitzer", kinds.ToList(), "and some shells");
         }

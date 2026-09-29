@@ -235,6 +235,13 @@
             "hash": "v2:6bf757171836c3173bafc356542d9ab241f43446"
         },
         {
+            "id": "ammo_carrier",
+            "kind": "vehicle",
+            "model": "truck",
+            "source": "Models/truck",
+            "hash": "v2:ac012524e5c57ab7fbff8acbce5ff884485451ce"
+        },
+        {
             "id": "fighter_jet",
             "kind": "vehicle",
             "model": "fighter_jet",
@@ -390,6 +397,20 @@
         },
         {
             "id": "airfield",
+            "kind": "tower",
+            "model": "helipad",
+            "source": "Models/helipad",
+            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+        },
+        {
+            "id": "airfield.hangar",
+            "kind": "tower",
+            "model": "helipad",
+            "source": "Models/helipad",
+            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+        },
+        {
+            "id": "airfield.service",
             "kind": "tower",
             "model": "helipad",
             "source": "Models/helipad",

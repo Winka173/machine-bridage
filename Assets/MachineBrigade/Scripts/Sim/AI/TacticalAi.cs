@@ -157,6 +157,13 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public static bool TowerSense = true;
 
+        /// <summary>
+        /// Prompt 13 I.3 (Hard and Very Hard): fighters go after enemy aircraft seen flying out to rearm or
+        /// circling their holding pattern (their stores spent), and with the enemy flying three aircraft or
+        /// more, artillery and strike aircraft go for its landing pads and ammunition carriers.
+        /// </summary>
+        public bool HuntSupply { get; set; }
+
         /// <summary>Our strength at the edge of a defended area must be this many times the defences' there to go in.</summary>
         private const float AssaultOdds = 1.4f;
 
@@ -253,6 +260,7 @@ namespace MachineBrigade.Sim.AI
             DirectSupport(world, front, forward);
             BreachObstacles(world, front, objective);
             DirectBreachers(world, front, objective);
+            if (HuntSupply) HuntRearming(world);
             FocusBoss(world);
             FocusDemolition(world);
             ShootBuildings(world);
@@ -691,6 +699,50 @@ namespace MachineBrigade.Sim.AI
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
             }
+        }
+
+        private void HuntRearming(SimWorld world)
+        {
+            var aircraft = 0;
+            foreach (var e in _enemies)
+            {
+                if (!e.Flying) continue;
+                aircraft++;
+                if (!e.HasStores || e.Supply == SupplyState.Fighting) continue;
+                // The nearest free fighter within reach goes after it.
+                Vehicle? hunter = null;
+                var best = 150f;
+                foreach (var v in _fast)
+                {
+                    if (!v.Def.Interceptor || v.Order.Kind == OrderKind.Attack) continue;
+                    var d = Vector2.Distance(v.Position, e.Position);
+                    if (d >= best) continue;
+                    best = d;
+                    hunter = v;
+                }
+                if (hunter == null) continue;
+                _fast.Remove(hunter);
+                Issue(world, CommandType.Attack, hunter.Id, e.Position, e.Id);
+            }
+            if (aircraft < 3) return;
+            Vehicle? supply = null;
+            foreach (var e in _enemies)
+                if (e.IsAlive && (e.Def.Utility is { AirRepair: > 0f } || e.Def.AirRearm != null)) { supply = e; break; }
+            if (supply == null) return;
+            foreach (var list in new[] { _artillery, _fast })
+                for (var i = list.Count - 1; i >= 0; i--)
+                {
+                    var v = list[i];
+                    var w = v.Def.Weapon;
+                    var strike = v.Flying && v.Def.FixedWing && !v.Def.Interceptor;
+                    if (!strike && w.MinRange <= 0f) continue;
+                    if (!w.CanTarget(false)) continue;
+                    var d = Vector2.Distance(v.Position, supply.Position);
+                    if (d > w.Range + (strike ? 120f : 20f) || d < w.MinRange) continue;
+                    list.RemoveAt(i);
+                    if (v.Order.Kind == OrderKind.Attack && v.Order.Target == supply.Id) continue;
+                    Issue(world, CommandType.Attack, v.Id, supply.Position, supply.Id);
+                }
         }
 
         /// <summary>How far past its weapon's range a vehicle turns to engage a boss.</summary>
