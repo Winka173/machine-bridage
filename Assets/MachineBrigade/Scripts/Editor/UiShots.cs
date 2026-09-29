@@ -162,7 +162,7 @@ namespace MachineBrigade.Editor
         public static readonly string[] BattleScreenNames =
         {
             "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
-            "hud-enemy", "hud-commander", "hud-dialogue",
+            "hud-enemy", "hud-commander", "hud-dialogue", "hud-events",
             "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
         };
 
@@ -189,6 +189,8 @@ namespace MachineBrigade.Editor
                 yield return ("battle-" + screen + "-vi-large", Battle(screen, true, true), new[] { Shapes[0] }, 0);
                 yield return ("battle-" + screen + "-en", Battle(screen, false, false), new[] { Shapes[0] }, 0);
             }
+            // Prompt 23 F: the event markers in English too (the prompt asks for both languages).
+            yield return ("battle-hud-events-en", Battle("hud-events", false, false), new[] { Shapes[0] }, 0);
         }
 
         /// <summary>
@@ -391,7 +393,7 @@ namespace MachineBrigade.Editor
             if (full) screen = screen.Substring(0, screen.Length - "-full".Length);
             var spec = screen switch
             {
-                "hud-mission" or "hud-boss-open" or "hud-siege" or "hud-defend" or "hud-dialogue" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
+                "hud-mission" or "hud-boss-open" or "hud-siege" or "hud-defend" or "hud-dialogue" or "hud-events" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
                 "hud-waves" => new HudSpec { Mode = HudMode.Waves },
                 _ => new HudSpec { Mode = HudMode.Score, ScoreLabel = "stat.tickets" },
             };
@@ -462,6 +464,9 @@ namespace MachineBrigade.Editor
                     hud.ShowLine(DialogueRules.Line("radio.kessler.leviathan", DialoguePriority.Event, "kessler", 1));
                     break;
                 }
+                case "hud-events":
+                    ShowEvents(hud);
+                    break;
                 case "hud-waves":
                     hud.SetStats(14, 23, 6, 34f, 60f);
                     hud.SetTowers(1, 40);
@@ -482,6 +487,40 @@ namespace MachineBrigade.Editor
                     break;
             }
             return hud;
+        }
+
+        /// <summary>
+        /// Prompt 23 F (hud-events): enemy reinforcements warned from the north-east (the notice, the minimap's arrow and the
+        /// screen-edge indicator), the Accord's from the south-west, a side objective with its clock on the mission bar, and
+        /// Varga's name label with its speaking mark while his line is up. The Accord's blips on the minimap; the Accord's
+        /// sign over its units is drawn in the world (VehicleView.Accord), which a UI shot does not show.
+        /// </summary>
+        private static void ShowEvents(BattleHud hud)
+        {
+            hud.SetMission(Strings.Get("goal.capture"), Strings.Format("result.sides", ("us", 1), ("enemy", 2)), 0.35f, 540f, new List<PointInfo>());
+            hud.EventClock = 100f;
+            hud.SideObjective("demo", "goal.escort", 84f, 2, 5, announce: false);
+            hud.Toast(Strings.Get("toast.enemyReinforce"), error: true, seconds: 10f, kind: NoticeKind.Reinforce,
+                direction: System.Numerics.Vector2.Normalize(new System.Numerics.Vector2(1f, 0.35f)));
+            hud.Arrow(System.Numerics.Vector2.Normalize(new System.Numerics.Vector2(-0.3f, -1f)), 10f, enemy: false);
+            hud.ShowLine(DialogueRules.Line("radio.varga.behemoth", DialoguePriority.Event, "varga", 1));
+            var minimap = hud.Minimap;
+            minimap.Begin(80f);
+            foreach (var (x, y) in new[] { (-30f, -40f), (-24f, -44f), (-36f, -34f), (-20f, -30f) }) minimap.Blip(new UnityEngine.Vector2(x, y), 0, false);
+            foreach (var (x, y) in new[] { (-52f, -58f), (-46f, -62f), (-56f, -50f) }) minimap.Blip(new UnityEngine.Vector2(x, y), Minimap.AccordTeam, false);
+            foreach (var (x, y) in new[] { (34f, 20f), (40f, 26f), (28f, 30f), (46f, 14f) }) minimap.Blip(new UnityEngine.Vector2(x, y), 1, false);
+            minimap.Flush();
+            // Placed once the HUD is laid out (and again when the safe area moves it), as the game does every frame.
+            hud.DirectionArrows.Layer.RegisterCallback<GeometryChangedEvent>(_ =>
+            {
+                hud.EventClock = 103f;
+                hud.TickEvents();
+                var tags = hud.GeneralTags;
+                var area = tags.Layer.worldBound;
+                tags.Begin(hud.KeepOut);
+                tags.Place(new UnityEngine.Vector2(area.xMin + area.width * 0.62f, area.yMin + area.height * 0.4f), "varga", true, 0.3f);
+                tags.End();
+            });
         }
 
         private static void ShowDemoResult(Catalog catalog, ResultPanel result, string screen)
