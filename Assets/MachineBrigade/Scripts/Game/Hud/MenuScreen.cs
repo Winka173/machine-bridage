@@ -768,6 +768,13 @@ namespace MachineBrigade.Game.Hud
             "turtle_tank" => "turtle",
             "bmpt" => "bmpt",
             "sapper" => "sapper",
+            // Prompt 17 C.
+            "stealth_fighter" => "fighter",
+            "wingman_drone" => "drone",
+            "laser_tank" => "laser",
+            "shield_carrier" => "shield",
+            "bunker_vehicle" => "siegegun",
+            "swarm_carrier" => "fpvtruck",
             "napalm_strike" => "flame",
             "moab" => "bomb",
             "cluster_strike" => "airstrike",

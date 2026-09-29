@@ -19,6 +19,9 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>A leader slower than this share of the wingman's speed (a helicopter, a hovering jet) is circled instead.</summary>
         private const float CircleSlowerThan = 0.4f;
 
+        /// <summary>The share of its speed a wingman circles a slow leader at.</summary>
+        private const float SlowCircle = 0.45f;
+
         /// <summary>Seconds between a wingman's looks for its leader.</summary>
         private const double WingCheck = 1.0;
 
@@ -68,7 +71,9 @@ namespace MachineBrigade.Sim.Movement
             var want = def.Speed;
             if (leader.Speed < def.Speed * CircleSlowerThan)
             {
-                goal = OrbitAround(v, leader.Position, MathF.Max(16f, def.Speed / def.TurnRate * 1.3f));
+                // A tight circle at its slowest round a hovering or slow leader.
+                want = def.Speed * SlowCircle;
+                goal = OrbitAround(v, leader.Position, MathF.Max(12f, want / def.TurnRate * 1.3f));
             }
             else
             {

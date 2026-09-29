@@ -4946,3 +4946,129 @@ and tags, `Matchup`) is the sim agent's (14A); the UI reads it and changes none 
 
 - The Base screen's shields and the Outpost tray were checked by the layout tests, not looked at in a picture.
 - On a phone (testing phase): the icons' legibility at 18.7 pt on a real 720p screen, and a tap on a moving enemy.
+
+
+## 16C. Prompt 17: new units and towers (2026-09-29)
+
+Part C of prompt 17: six vehicles and two towers. Parts A-B (long maps, layered bases) are on feature/p17-longmaps and
+part D (the roster merges) comes after prompt 16's escorts, so this was built on lead/integration (db30d15) against the
+roster as it is. The owner's token rule applies: one behaviour test per item, one targeted run, no sweeps.
+
+### What each one is (data in balance.json)
+
+| Id | Card | CP | Armour (front/side/rear/top) | Weapons (real, damage type, pen, form) | Stores / reload |
+|---|---|---|---|---|---|
+| `stealth_fighter` | Plane, act III | 20 | 0 (air) | `air_to_air` AIM-120 (Frag, 3, Sam), `guided_bomb` GBU-39 110 kg (HE, 3, GuidedBomb), `fighter_cannon` GAU-22 25 mm (Frag, 2, BeltedAutocannon) | 4 AAM + 2 bombs, the fighters' 11 s rearm (prompt 13 C) |
+| `wingman_drone` | Plane (drone), act II | 6 | 0 (air) | `aim9` AIM-9 (Frag, 2, Sam) | 2 AAM, 11 s |
+| `laser_tank` | Tank hunter, act II | 10 | 3/2/1/1 | `focus_laser` 300 kW (Energy, 4, Energy) | a 80-pulse stream, 1.5 s between |
+| `shield_carrier` | Support, act II | 7 | 1/0/0/0 | `hmg_roof` M2 12.7 mm (K, 1, BulletBig) | magazine |
+| `bunker_vehicle` | Heavy, act II | 8 | 2/2/1/1, dug in 4/2/1/1 | `gun_105_bunker` L7 105 mm (K, 3, Dart), `mg_coax` 7.62 mm (K, 0, BulletSmall) | single shots, 4.6 s |
+| `swarm_carrier` | Plane, act III | 14 | 1 (air) | `swarm_drones` FPV 1.5 kg (SC, 3, Fpv; top attack, guided) | 8 drones a load, the bombers' 16 s rearm |
+| `shield_tower` | large tower, act III | - | 2 all round | none | - |
+| `cp_relay` | small tower, act II | - | 1 all round | none | - |
+
+No new weapon form was needed (the laser is `Energy`, the swarm `Fpv`), so `combat_icons.py` is unchanged; the towers have
+line icons of their own (`t_shieldgen`, `t_relay`) and the vehicles reuse their family's card icons.
+
+### Rules (Sim)
+
+- **Stealth fighter:** the existing aircraft stealth (seen at 0.4 of a spotter's sight, 2.5 s in plain sight after it fires,
+  shown by radar stations over their base, guard towers within their guns' reach and UAV scans). `"sead"`: with no
+  aircraft to fight and bombs left it goes for the nearest air defence it sees (`StrikeSystem.IsAirDefence`), and its
+  free bomb mount weighs air defences x3. The commander rates it higher the more anti-air the enemy shows, which offsets
+  the "interceptor with nothing to hunt" rule. Fewer stores than the fighter (4 AAM against 4 + 2) for 20 CP against 12:
+  it pays for being unseen. The brief's "4 AAM and 2 small bombs in the bay; 25 mm gun" is the data.
+- **Loyal wingman** (`"wingman"`): flies on the wing of the nearest manned aircraft of its side within 120 m (a leader with
+  wingmen already counts 40 m further per wingman; a slow leader is circled), patrols halfway to the enemy with none;
+  its own fights stay near the leader. **Decoy:** an anti-air missile fired at a manned aircraft with its wingman within
+  25 m turns onto the wingman at 40 % (one draw a missile, and only when a wingman is alive, so battles without one draw
+  the same numbers as before). **Cap:** `"airCapFree"` keeps it out of the six-aircraft count (deploy check, the AI's
+  "air full" check, `AircraftCount`), and `"maxPerSide": 4`. It is faster than the fighter (46 m/s) to hold the wing.
+- **Focused laser** (`"ramp"` on the weapon): x0.3 on a new target, rising linearly to x2 after 6 s on the same one; a new
+  target or 2 s without a pulse on it starts again (`CombatSystem.RampScale`, per mount). Energy: APS, reactive armour and
+  cages never stop it (prompt 15 C.9), smoke cuts it 80 %. Pen 4, so it pierces a heavy tank's front and a boss's hull.
+- **Shield domes** (`"dome"`: carrier 12 m, 1,000 HP, 20 s; generator 25 m, 3,000 HP, 30 s; `DomeSystem`): every hit but
+  energy (and burns, mines, redirected shares) on a ground unit or tower of its side inside is taken by the dome until its
+  HP is spent; what a breaking dome cannot take goes through to the unit, never to a second dome. **No stacking:** a unit
+  under two domes is covered by the one with most left. A shot from a ground vehicle inside the bubble passes. The dome is
+  back at full its recharge time after its last hit (or its break), and scales with the emitter's rank like its health.
+  Targeting: a covered unit is x0.3 for a weapon the dome stops, the emitter of a standing dome x2.5 (the generator first,
+  or energy), and the commander's counter score adds up to +2.5 for energy weapons against domes it has seen.
+- **Bunker vehicle** (`"deploy"`, `DeploySystem`): standing still 1 s with an enemy on the ground within its dug-in reach,
+  or 4 s on guard away from its drop zone (a point, a choke, a siege line), it digs in for 3 s (no driving, no firing,
+  moving armour); dug in: front +2 levels (4), reach x1.3 (34 → 44 m), turret all round; on its tracks the turret keeps
+  within 45 degrees of the nose. A route more than 6 m away packs it up (3 s, the same way; a route given mid-dig packs up
+  in the time it had dug), then it drives; while held it is never taken for stuck. The commander scores it up when
+  holding (Defend stance, or every point taken).
+- **Swarm carrier** (`"swarm"` on the weapon): a salvo of 8 FPV drones; each drone after the first takes the enemy on the
+  ground within 18 m of the aim with the least already coming at it for its health, and a drone whose target is gone
+  when it arrives strikes the nearest enemy within 18 m. The drones are projectiles, never aircraft (the six-aircraft cap
+  counts the carrier only). Its bay spent, it flies out to rearm like a bomber (16 s). Countered as asked: fighters and
+  SAMs shoot the carrier; APS (C-RAM, laser AA), EW towers and jammers stop or scramble its drones (the existing rules for
+  drones).
+- **Shield generator** (large slot): the dome above, two rank-7 branches by prompt 3's rule (a trade, not an upgrade):
+  **Bulwark** (19 m, 4,800 HP) and **Pulse** (25 m, 2,100 HP, back 14 s after its last hit); three equipment slots like
+  every tower (the tower gear system applies to every loadout tower). The enemy base picker draws it (default style 0.5,
+  armour style 0.8).
+- **CP relay** (small slot, `"relay"`, `EconomySystem.StepRelays`): +0.1 CP a second, the second relay +0.06, any more nothing
+  (`RelayDef.MaxPerBase` = 2: `BaseLoadout.Fitted` leaves a third slot empty, the AI's picker stops at two, a fortress
+  raises each relay once); nothing for 5 s after it is hit (the brief's "only while not under attack"); never on an outpost
+  (`BaseLayout.Fits`, `BaseSystem.CallTower`). Branches: **Hardened** (1,100 HP, level 2, 0.08/0.05) and **Express** (0.12/0.07,
+  450 HP, quiet 8 s). Attackers weigh an enemy relay x6 as a target. **Not a must-pick:** 0.16 CP a second is about 17 % of a
+  side's base income (0.95) in exchange for two defensive small slots; the AI takes it at weight 0.35 (it showed in some
+  of 40 seeded Hard bases, never in all: the test). Whether a human's optimal loadout always takes it is for the testing
+  phase (the brief's sweep was not run, the owner's rule).
+
+### AI use (both sides)
+
+The commander (`ConquestAi.NewCardScore`): a wingman only with a manned aircraft of ours up (-4 without), a shield carrier
+once the army is 5 vehicles (a second from 12), the bunker when holding, the stealth fighter by the enemy's anti-air; energy
+weapons against seen domes. Tactics: the shield carrier is a support vehicle kept 3 m behind the front line (its dome over
+the leading vehicles), the wingman is left to fly itself, the bunker digs in and packs up on its own. Counter-AI: domes pull
+fire onto their emitter and away from covered units, relays draw attackers, SEAD and anti-air answer the new aircraft
+through the existing rules (flares, SAM seekers, fighters hunting aircraft).
+
+### Interface
+
+Names, short names (15 letters at most), notes and Guide cards in both languages; the generated Behaviour lines cover the
+new rules (`ul.dome`, `ul.deploy`, `ul.wingman`, `ul.airCapFree`, `ul.sead`, `ul.relay`, the weapon lines `ul.ramp` and
+`ul.swarm`). Domes are drawn with prompt 11's shield (`EffectsDirector.Domes`: the sim's radius, follows the carrier,
+ripples on `DomeHit`, flickers when low, shatters on `DomeChanged`). The bunker shows its state left of the health bar (an
+amber bar filling while it digs in or packs up, a green bunker block dug in) and swings its spades down and raises its front
+plate. In-action clips: a `Dome` scene (two friends under the dome shelled by two tanks) and a `Wingman` scene (a friendly
+fighter and an enemy SAM vehicle); the laser, bunker, stealth fighter and swarm carrier use the plain range (their
+weapons show their behaviour). Engine plumes for the three new aircraft.
+
+### Tests
+
+`Prompt17ContentTests` (8, one per item): stealth reveal and detection (sight, after firing, UAV scan, radar station); the
+wingman on its leader's wing, pulling some SAMs, outside the cap; the laser's ramp (x0.3 to x2 within 6 s) and its reset on
+a new target; the carrier's dome (absorbs, energy through, no stacking, overflow to the unit, back after 20 s, in battle);
+the generator (covers 25 m, first target, placed by the AI, branches); the bunker's states and timings (3 s each way, armour
+2 → 4, reach x1.3, no fire while busy); the swarm carrier (8 drones spread over a group, the side at its six aircraft); the
+relay (pay, second relay, quiet after a hit, two to a base, not on outposts, the AI takes it sometimes and not always).
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`CombatSystem` (partial; the burst loop, `Launch`, target scoring, the stunned/busy check, the turret arc), `DamageSystem`
+(the dome in `HitVehicle`, the swarm retarget), `MovementSystem` (the deploy hold, the wingman's flight, SEAD, the dug-in
+reach), `EconomySystem` (relay income in `Earning`, the air cap exemption), `SimWorld` (two systems in the step),
+`BaseLoadout` (relay cap), `BaseLayout.Fits`, `BaseSystem.CallTower`, `ConquestAi` (partial; buy scoring), `TacticalAi`
+(support placement, wingmen), `WeaponDef`/`WeaponState`/`Projectile.Target` (now settable), `SimEvent` (two kinds appended),
+`Vehicle.ArmourOn`, balance.json (three weapons after `hover_ciws`, six vehicles after `long_sam`, towers after
+`guard_tower`, two base-style weights), campaign unlocks (act2.py, act3.py and campaign.json), `MatchSettings.AllVehicles`,
+`CardIcons`, `TowerIcons`, `Icons` (two SVGs), `EffectsDirector` (two cases, one tick, three engines), `VehicleView` (three
+lines), `FiringRange.Abilities` (two scenes), `UnitLines`, `Strings`/`GuideText`/`UnitText` (appended), `build_assets.py`
+(one import and builder merge).
+
+### Left (not done here, and why)
+
+- **C.9 balance with `CombatValueMeasure`:** not run (the coordinator's rule for this pass: one targeted test run). Part D
+  is not merged either, so the numbers above are starting values set by the calibre scale and by analogy (the stealth
+  fighter against the fighter at 12 CP, the laser tank against the tank destroyer, the swarm carrier against the FPV
+  carrier and the bombers). Run the measure after D, add the new ids to it, and set their `"value"` (all 1 now).
+- **Card renders** (`CardRenders.RenderBatch`, needs a batch run with graphics) for the eight new cards; `CardRenderTests`
+  will flag them until then.
+- The whole EditMode suite, `ModelTests`/`MuzzleAuditTests` on the new models, PlaySmoke, and the performance check of many
+  drone swarms (brief E): testing phase.
+- Long maps (A-B) will need the relay and the generator in their slot labels only through the existing size rules.

@@ -337,6 +337,12 @@ namespace MachineBrigade.Game.Effects
                         if (views.TryGet(e.Entity, out var shielded)) shielded.ShieldFor(e.Value, now);
                         break;
 
+                    // Prompt 17 C: the shield carrier's and generator's domes.
+                    case SimEventKind.DomeHit:
+                    case SimEventKind.DomeChanged:
+                        DomeEvent(e, views, now);
+                        break;
+
                     case SimEventKind.Damaged:
                         ShieldDamaged(e, views);
                         break;
@@ -474,6 +480,7 @@ namespace MachineBrigade.Game.Effects
         {
             var now = Time.time;
             TickShields(views, now);
+            TickUnitDomes(views, now);
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _weapons.Tick(now);
@@ -993,6 +1000,10 @@ namespace MachineBrigade.Game.Effects
             "tank_buster" => (Engine.Fan, new[] { -0.17f, 0.17f }, -0.45f, 0.55f),
             "heavy_bomber" => (Engine.Smoky, new[] { -0.62f, -0.34f, 0.34f, 0.62f }, -0.05f, -0.2f),
             "stealth_bomber" => (Engine.Fan, new[] { -0.16f, 0.16f }, -0.25f, 0.3f),
+            // Prompt 17 C.
+            "stealth_fighter" => (Engine.Afterburner, new[] { -0.09f, 0.09f }, -1f, 0f),
+            "wingman_drone" => (Engine.Hot, new[] { 0f }, -1f, 0.1f),
+            "swarm_carrier" => (Engine.Prop, new[] { -0.55f, -0.28f, 0.28f, 0.55f }, 0.05f, 0.35f),
             "sky_gunship" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
             "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),
             "strike_jet" => (Engine.Hot, new[] { 0f }, -1f, 0f),

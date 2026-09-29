@@ -175,6 +175,10 @@
     "file": "bridge_road.glb",
     "triangles": 2468
   },
+  "bunker_vehicle": {
+    "file": "bunker_vehicle.glb",
+    "triangles": 6344
+  },
   "bus": {
     "file": "bus.glb",
     "triangles": 2156
@@ -254,6 +258,10 @@
   "counter_battery_radar": {
     "file": "counter_battery_radar.glb",
     "triangles": 8216
+  },
+  "cp_relay": {
+    "file": "cp_relay.glb",
+    "triangles": 2192
   },
   "crater_large": {
     "file": "crater_large.glb",
@@ -551,6 +559,10 @@
     "file": "landing_hovercraft.glb",
     "triangles": 9216
   },
+  "laser_tank": {
+    "file": "laser_tank.glb",
+    "triangles": 6240
+  },
   "lava_vent": {
     "file": "lava_vent.glb",
     "triangles": 818
@@ -815,9 +827,17 @@
     "file": "shahed_truck.glb",
     "triangles": 10252
   },
+  "shield_carrier": {
+    "file": "shield_carrier.glb",
+    "triangles": 5320
+  },
   "shield_generator": {
     "file": "shield_generator.glb",
     "triangles": 5864
+  },
+  "shield_tower": {
+    "file": "shield_tower.glb",
+    "triangles": 5344
   },
   "shop": {
     "file": "shop.glb",
@@ -871,6 +891,10 @@
     "file": "stealth_bomber.glb",
     "triangles": 5514
   },
+  "stealth_fighter": {
+    "file": "stealth_fighter.glb",
+    "triangles": 1980
+  },
   "stilt_hut": {
     "file": "stilt_hut.glb",
     "triangles": 3308
@@ -902,6 +926,10 @@
   "supreme_command": {
     "file": "supreme_command.glb",
     "triangles": 9118
+  },
+  "swarm_carrier": {
+    "file": "swarm_carrier.glb",
+    "triangles": 7906
   },
   "tank_buster": {
     "file": "tank_buster.glb",
@@ -1018,6 +1046,10 @@
   "wheeled_gun": {
     "file": "wheeled_gun.glb",
     "triangles": 7664
+  },
+  "wingman_drone": {
+    "file": "wingman_drone.glb",
+    "triangles": 636
   },
   "wreck_barrel": {
     "file": "wreck_barrel.glb",

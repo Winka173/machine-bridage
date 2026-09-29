@@ -1,5 +1,17 @@
 # Changelog
 
+## Prompt 17 C: new units and towers
+
+- Stealth fighter (20 CP): unseen until it fires, four AIM-120s, two small guided bombs for air defences, a 25 mm gun.
+- Loyal wingman drone (6 CP): flies with your manned aircraft and may draw the missiles fired at them; outside the
+  six-aircraft cap, four a side.
+- Focused-laser tank (10 CP): its beam burns harder the longer it stays on one target (x0.3 to x2 in 6 s).
+- Shield carrier (7 CP) and shield generator (large tower): domes that take every hit but energy for the friends inside
+  until they break; domes do not add up.
+- Bunker vehicle (8 CP): digs in when it stands (3 s): thicker front, 30 % more reach, turret all round.
+- Drone mothership (14 CP): flies a swarm of eight FPV drones anywhere; the drones are not aircraft.
+- CP relay (small tower): more CP for its side, two to a base, not on outposts, silent for a while after a hit.
+
 ## Prompt 15 (battle rules): armour levels, penetration, six damage types
 
 - Every unit has armour 0-4 on its front, sides, rear and roof (towers, buildings and aircraft the same all round,

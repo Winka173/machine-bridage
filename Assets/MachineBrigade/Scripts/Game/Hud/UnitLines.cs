@@ -53,6 +53,9 @@ namespace MachineBrigade.Game.Hud
             lines.Add(F("ul.weapon", WeaponName(w), Strings.Get("ul.type." + w.DamageType), targets.ToLower(Culture)));
             lines.Add(w.Burst > 1 ? F("ul.damageBurst", N(w.Damage), w.Burst) : F("ul.damage", N(w.Damage)));
             lines.AddRange(Reload(def, w));
+            // Prompt 17 C: the focused laser's ramp, the swarm's own targets.
+            if (w.Ramp is { } ramp) lines.Add(F("ul.ramp", N(ramp.From), N(ramp.To), N(ramp.Seconds)));
+            if (w.SwarmReach > 0f) lines.Add(F("ul.swarm", N(w.SwarmReach)));
             var range = w.MinRange > 0f ? F("ul.rangeMin", N(w.Range), N(w.MinRange)) : F("ul.range", N(w.Range));
             lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", range, N(w.SplashRadius)) : range);
             return lines;
@@ -180,6 +183,21 @@ namespace MachineBrigade.Game.Hud
             if (def.CounterBattery is { } radar) lines.Add(F("ul.counterBattery", N(radar.Range)));
             if (def.Stealth) lines.Add(F("ul.stealth", N(VehicleDef.StealthSight * 100f)));
             if (def.Hidden != null) lines.Add(Strings.Get("ul.hidden"));
+            // Prompt 17 C.
+            if (def.Dome is { } dome) lines.Add(F("ul.dome", N(dome.Radius), N(dome.Hp), N(dome.Recharge)));
+            if (def.Deploy is { } dep)
+            {
+                lines.Add(F("ul.deploy", N(dep.Seconds), dep.FrontUp, N(dep.Range)));
+                lines.Add(F("ul.deploy.arc", N(dep.Arc * 180f / MathF.PI)));
+            }
+            if (def.Wingman is { } wing)
+            {
+                lines.Add(F("ul.wingman", N(wing.Follow)));
+                lines.Add(F("ul.wingman.decoy", N(wing.Pull * 100f), N(wing.Decoy)));
+            }
+            if (def.AirCapFree) lines.Add(F("ul.airCapFree", def.MaxPerSide));
+            if (def.Sead) lines.Add(Strings.Get("ul.sead"));
+            if (def.Relay is { } relay) lines.Add(F("ul.relay", N(relay.Income), N(relay.Second), N(relay.Quiet)));
             return lines;
         }
 

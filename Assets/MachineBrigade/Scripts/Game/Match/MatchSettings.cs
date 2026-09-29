@@ -122,6 +122,8 @@ namespace MachineBrigade.Game.Match
             "turtle_tank", "bmpt", "sapper",
             "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
             "armored_bulldozer",
+            // Prompt 17 C.
+            "stealth_fighter", "wingman_drone", "laser_tank", "shield_carrier", "bunker_vehicle", "swarm_carrier",
         };
 
         public static readonly string[] AllSupports =

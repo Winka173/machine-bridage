@@ -210,6 +210,9 @@ namespace MachineBrigade.Game.Hud
             // Logistics station: a fuel tank on legs, its drop.
             ["t_logistics"] = "<rect x=\"3\" y=\"6\" width=\"18\" height=\"9\" rx=\"4.5\"/><path d=\"M3 21h18M6.5 15v6M17.5 15v6M12 8c1.5 2 2 3 2 3.8a2 2 0 0 1-4 0c0-.8.5-1.8 2-3.8Z\"/>",
             // Radar station: a radome on its building, sweeping.
+            // Prompt 17 C: the shield generator (a dome over a pylon) and the CP relay (a mast with a coin).
+            ["t_shieldgen"] = "<path d=\"M3 21h18M2.5 17.5a9.5 9.5 0 0 1 19 0M9 21v-5h6v5M12 16V9.5\"/><circle cx=\"12\" cy=\"8\" r=\"1.8\"/>",
+            ["t_relay"] = "<path d=\"M3 21h10M8 21V6M5 21 8 11l3 10M5 6.5a4 4 0 0 1 6 0M3.5 4a6.5 6.5 0 0 1 9 0\"/><circle cx=\"17.5\" cy=\"15.5\" r=\"4\"/><path d=\"M17.5 13.5v4\"/>",
             ["t_radar"] = "<path d=\"M3 21h16M7 21l1-5h6l1 5M5.5 11h11\"/><circle cx=\"11\" cy=\"11\" r=\"5.5\"/><path d=\"M17.5 4a5 5 0 0 1 2.5 3M19.5 2a8 8 0 0 1 3 4.5\"/>",
             // Spawn bastion: a crenellated keep with its gate.
             ["t_bastion"] = "<path d=\"M2 21h20M5 21V8h2.5v2h3V8h3v2h3V8H19v13M10 21v-4a2 2 0 0 1 4 0v4\"/>",

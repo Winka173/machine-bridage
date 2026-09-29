@@ -202,6 +202,8 @@ namespace MachineBrigade.Game.Views
             // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
             if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
+            // Prompt 17 C: the bunker vehicle's digging-in and dug-in mark.
+            BuildDeployMark(meshes, materials);
             _bar.gameObject.SetActive(false);
 
             foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
@@ -951,6 +953,7 @@ namespace MachineBrigade.Game.Views
             Elevate();
             Spin(1f);
             AnimateParts(cameraRotation);
+            AnimateDeploy();
 
             _ring.Visible = Selected;
             if (_shadowRing != null)
@@ -966,13 +969,14 @@ namespace MachineBrigade.Game.Views
             var repairing = Time.time < _repairUntil;
             // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
             var stores = _storesMark != null && StoresWanted();
-            var showBar = Selected || health < 0.999f || stores || repairing;
+            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
             RenderStoresMark();
+            RenderDeployMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);

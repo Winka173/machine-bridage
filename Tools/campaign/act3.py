@@ -406,7 +406,7 @@ add_mission(m('c8s2', 8, 'capital', 'ShootDown', 'Storm', side=True, after='c8m0
 
 add_mission(m('c9m01', 9, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, points=['west', 'town', 'east'], enemyOwns=['town'], general='varga', reinforcements=3,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'bmpt', 'atgm_carrier', 'ifv'],
-              playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck'], starTime=720, starLosses=14),
+              playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck', 'stealth_fighter'], starTime=720, starLosses=14),
             ('Back to Dunebreak', 'Trở lại Dunebreak'),
             ('The road to the launch site runs through Dunebreak again, from the south this time. Varga\'s last armour holds the refinery. Take the oasis, the refinery and the oil field.',
              'Con đường tới bãi phóng lại đi qua Dunebreak, lần này từ phía nam. Toán thiết giáp cuối cùng của Varga giữ nhà máy lọc dầu. Chiếm ốc đảo, nhà máy và mỏ dầu.'),
@@ -429,7 +429,7 @@ add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, gener
 
 add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
-              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret'], starTime=960, starLosses=16),
+              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret', 'shield_tower'], starTime=960, starLosses=16),
             ('The Last Behemoth Yard', 'Xưởng Behemoth cuối cùng'),
             ('Varga\'s final camp, in the dunes where he first built the Behemoth. Every anti-tank gun he has left, and every tank. Level his HQ.',
              'Trại cuối cùng của Varga, giữa những đồi cát nơi hắn chế tạo chiếc Behemoth đầu tiên. Mọi khẩu pháo chống tăng còn lại, và mọi chiếc xe tăng. San phẳng sở chỉ huy của hắn.'),
@@ -441,7 +441,7 @@ add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, revers
 
 add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
-              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['tank_buster'], starTime=960, starLosses=16),
+              playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['tank_buster', 'swarm_carrier'], starTime=960, starLosses=16),
             ('Orlov\'s Last Line', 'Tuyến cuối của Orlov'),
             ('Orlov has taken the southern end of the launch site and filled it with guns. From the north this time, break his line and level his HQ.',
              'Orlov chiếm đầu nam bãi phóng và lấp kín nó bằng pháo. Lần này từ phía bắc, chọc thủng tuyến của hắn và san phẳng sở chỉ huy.'),

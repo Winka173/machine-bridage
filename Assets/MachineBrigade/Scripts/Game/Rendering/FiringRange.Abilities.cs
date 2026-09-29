@@ -38,6 +38,8 @@ namespace MachineBrigade.Game.Rendering
             Smoke,
             Recon,
             Resupply,
+            Dome,
+            Wingman,
         }
 
         private Scene _scene;
@@ -61,6 +63,9 @@ namespace MachineBrigade.Game.Rendering
 
         private static Scene SceneFor(VehicleDef def)
         {
+            // Prompt 17 C: a shield dome (carrier or generator) takes the enemy's fire on its friends; a wingman pulls SAMs off its leader.
+            if (def.Dome != null) return Scene.Dome;
+            if (def.Wingman != null) return Scene.Wingman;
             if (def.Jammer > 0f) return Scene.Jammer;
             if (def.Aps != null) return Scene.Interceptor;
             // The ammunition carrier (prompt 13 F.2): launchers beside it reload three times as fast.
@@ -187,6 +192,24 @@ namespace MachineBrigade.Game.Rendering
                     // (a smoke generator when an enemy is near, an IFV's dischargers under fire).
                     _world.MakeSparring(_shooter);
                     Attacker("armored_car", _start + new Vector2(7f, 6f), _shooter);
+                    break;
+                case Scene.Dome:
+                    // Two friends under its dome, and enemy tanks shelling them: the dome takes the hits, ripples, and breaks.
+                    var left = Friend("main_battle_tank", s + new Vector2(-5f, 4f));
+                    var right = Friend("ifv", s + new Vector2(5f, 3f));
+                    _world.MakeSparring(left);
+                    _world.MakeSparring(right);
+                    _world.MakeSparring(_shooter);
+                    Attacker("main_battle_tank", new Vector2(-9f, _far.Y + 4f), left);
+                    Attacker("main_battle_tank", new Vector2(9f, _far.Y + 6f), right);
+                    Widen(_far.Y + 10f);
+                    break;
+                case Scene.Wingman:
+                    // A friendly fighter it flies with, and an enemy SAM vehicle firing at the fighter: some missiles turn onto the drone.
+                    var leader = Friend("fighter_jet", s + new Vector2(0f, 8f));
+                    _world.MakeSparring(leader);
+                    _world.MakeSparring(_shooter);
+                    Attacker("aa_vehicle", _far + new Vector2(7f, 5f), leader);
                     break;
                 case Scene.Shield:
                     // Enemy tanks fire on the friends under the dome: the shield takes the hits.
