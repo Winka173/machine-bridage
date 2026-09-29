@@ -1179,6 +1179,11 @@
     { "id": "bridge_road",   "armor": "Structure", "hp": 1000000, "width": 8.35, "depth": 20 },
     { "id": "ruin_house", "scale": 1.49, "armor": "Structure", "hp": 650, "width": 10.14, "depth": 10.14, "blocks": true },
     { "id": "ruin_tower", "scale": 1.15, "armor": "Structure", "hp": 700, "width": 5.2, "depth": 5.6, "blocks": true },
-    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
+    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 },
+    // Prompt 16 (Lighthouse Bay): the lighthouse on the headland, the piers' wooden decks (drawn over the
+    // roads that run out over the water; nothing stops on them) and fishing boats drawn up on the beaches.
+    { "id": "lighthouse",    "armor": "Structure", "armour": 3, "hp": 3200, "width": 7.2, "depth": 7.2, "blocks": true },
+    { "id": "pier",          "armor": "Structure", "hp": 1000000, "width": 7.6, "depth": 6 },
+    { "id": "fishing_boat",  "armor": "Light",     "hp": 220,  "width": 7.4,  "depth": 2.8,  "blocks": true, "blocksFire": false }
   ]
 }

@@ -93,6 +93,7 @@ the routes are still open.
 
     python Tools/maps/build_maps.py [map ids...]   (no ids: all of them)
 """
+import functools
 import json
 import math
 import random
@@ -3272,6 +3273,297 @@ DENSIFY_4M = {
 # ------------------------------------------------------------------------ end of round 4M
 
 
+# ------------------------------------------------------------------------ prompt 16: Lighthouse Bay
+# The sea fills the south-east of the battlefield, beyond a coast running diagonally between the two
+# camps (SW and NE), so both sides meet it alike: the map is symmetric by the reflection through the
+# north-west to south-east diagonal, (x, z) -> (-z, -x), which swaps the camps. Everything here is
+# laid out in the coast's own frame: u along the coast (south-west to north-east), w out to sea
+# (towards the south-east corner), both in metres from the centre.
+LB_R = math.sqrt(0.5)
+LB_BASE = 34.0                 # the waterline along the cliffs by the camps
+LB_COVE, LB_COVE_U, LB_COVE_W = 14.0, 62.0, 34.0     # the two coves: how far the beach is set back, where, how wide
+LB_HEAD, LB_HEAD_W = 22.0, 22.0                        # the lighthouse headland on the axis: how far out, how wide
+LB_SAND = (38.0, 96.0)         # |u| of the coves' sand beaches (the cliffs elsewhere)
+LB_PIER_U, LB_PIER_HEAD = 48.0, 52.0                    # the piers: |u|, and w of their heads
+LB_JETTY_HEAD = 55.0           # the headland's tip beside the lighthouse (the third place guns reach the near lane from)
+# The sea lanes the ships run on (id, w, half the stretch they patrol): the near lane in reach of
+# guns on the pier heads, the far lane only of artillery, aircraft and the coastal batteries.
+LB_LANES = (('near', 82.0, 90.0), ('mid', 98.0, 84.0), ('far', 114.0, 78.0))
+LB_LANDINGS = (72.0, 86.0)     # |u| of the beach points landing craft run up on
+LB_BATTERY = (104.0, 16.0)     # the coastal batteries (|u|, w), on the cliff tops
+LB_POINTS = (('west', 0.0, -104.0, 13.0), ('town', 0.0, -20.0, 15.0), ('east', 0.0, 38.0, 12.0))
+
+
+def lb_uw(x, z):
+    return (x + z) * LB_R, (x - z) * LB_R
+
+
+def lb_xz(u, w):
+    return round((u + w) * LB_R, 2), round((u - w) * LB_R, 2)
+
+
+def lb_shore(u):
+    """The waterline's w at u: the cliffs, set back into the two coves, out round the headland."""
+    return (LB_BASE - LB_COVE * math.exp(-((abs(u) - LB_COVE_U) / LB_COVE_W) ** 2)
+            + LB_HEAD * math.exp(-(u / LB_HEAD_W) ** 2))
+
+
+def lb_sandy(u):
+    return LB_SAND[0] <= abs(u) <= LB_SAND[1]
+
+
+def lb_rot(rot):
+    """A prop's rotation mirrored with its position (the footprint's axes swap)."""
+    return (270 - rot) % 360
+
+
+def lb_both(L, kind, u, w, rot=0, **kw):
+    """A prop at (u, w) and its mirror image at (-u, w); returns how many went in."""
+    x, z = lb_xz(u, w)
+    placed = int(L.add(kind, x, z, rot, **kw))
+    if abs(u) > 0.01:
+        x, z = lb_xz(-u, w)
+        placed += int(L.add(kind, x, z, lb_rot(rot), **kw))
+    return placed
+
+
+def lb_road(L, width, *uw):
+    """A road through points given as (u, w) pairs, drawn on both halves (one road on the axis)."""
+    pts = [lb_xz(uw[i], uw[i + 1]) for i in range(0, len(uw), 2)]
+    L.road(width, *[v for p in pts for v in p])
+    if any(abs(uw[i]) > 0.01 for i in range(0, len(uw), 2)):
+        pts = [lb_xz(-uw[i], uw[i + 1]) for i in range(0, len(uw), 2)]
+        L.road(width, *[v for p in pts for v in p])
+
+
+def lb_sea_block():
+    """The sea as the game needs it (map data "sea"): the coast's frame, its waterline, the lanes the
+    ships run on, where landing craft beach, the pier heads, the coastal batteries, the lighthouse."""
+    shore = [[float(u), round(lb_shore(u), 2)] for u in range(-212, 213, 4)]
+    lanes = [{'id': i, 'w': w, 'patrol': p, 'end': round(212.1 - w - 4.0, 1)} for i, w, p in LB_LANES]
+    landings = []
+    for s in (-1, 1):
+        for u in LB_LANDINGS:
+            uu = s * u
+            beach = lb_shore(uu)
+            landings.append({'x': lb_xz(uu, beach + 1.5)[0], 'z': lb_xz(uu, beach + 1.5)[1],
+                             'inland': list(lb_xz(uu, beach - 9.0))})
+    piers = [list(lb_xz(s * LB_PIER_U, LB_PIER_HEAD)) for s in (-1, 1)] + [list(lb_xz(0.0, LB_JETTY_HEAD))]  # the last: the headland's tip
+    bu, bw = LB_BATTERY
+    batteries = [{'id': 'battery_' + tag, 'x': lb_xz(s * bu, bw)[0], 'z': lb_xz(s * bu, bw)[1], 'heading': 135}
+                 for tag, s in (('w', -1), ('e', 1))]
+    return {'along': [round(LB_R, 5), round(LB_R, 5)], 'shore': shore, 'lanes': lanes, 'landings': landings, 'piers': piers,
+            'batteries': batteries, 'lighthouse': 'east', 'lamp': list(lb_xz(0.0, 48.0)), 'airEntry': list(lb_xz(0.0, 205.0))}
+
+
+def lb_open_sea(poly):
+    """The outline on the sea side follows the square's edge: the sea runs on out of the battlefield
+    (the ships sail in and out there), so no carved coast is left standing in the water."""
+    out = []
+    for x, z in poly:
+        u, w = lb_uw(x, z)
+        if w > lb_shore(u) + 10.0:
+            if HALF - abs(x) < HALF - abs(z):
+                x = math.copysign(HALF, x)
+            else:
+                z = math.copysign(HALF, z)
+        out.append((x, z))
+    return out
+
+
+def lb_sea_tile(x, z):
+    """The sea's tile at a 4 m cell's centre: deep water, surf on the cove beaches, or None (land)."""
+    u, w = lb_uw(x, z)
+    line = lb_shore(u)
+    if w <= line:
+        return None
+    if lb_sandy(u) and w <= line + 6.0:
+        return 'river_ford'
+    return 'river_water'
+
+
+def lb_refill_sea(L):
+    """The classic fortress clears its ground and its approach lanes, sea and all: the sea comes back
+    wherever nothing of the fortress stands (its walls run on into the water as harbour moles). A road
+    of its that starts out at sea (the south gate's approach) starts at the waterline instead."""
+    for road in L.roads:
+        pts = road['points']
+        while len(pts) >= 4 and lb_sea_tile(pts[0], pts[1]):
+            ax, az, bx, bz = pts[0], pts[1], pts[2], pts[3]
+            length = math.hypot(bx - ax, bz - az)
+            if length <= 1.0:
+                del pts[0:2]
+                continue
+            pts[0], pts[1] = ax + (bx - ax) / length, az + (bz - az) / length
+    L.roads = [r for r in L.roads if len(r['points']) >= 4]
+    L._samples = None
+    # Wall and gate pieces the plan ran out onto the water go (the sea closes the line there).
+    def at_sea(prop):
+        if prop['def'] not in ('base_wall', 'base_gate', 'fortress_wall', 'fortress_gate'):
+            return False
+        if lb_sea_tile(prop['x'], prop['z']):
+            return True
+        if prop['def'] in ('base_gate', 'fortress_gate'):
+            # A gate that opens onto the surf is no gate: the wall ends at the shore instead.
+            dx, dz = (0.0, 6.0) if prop.get('rot', 0) % 180 == 0 else (6.0, 0.0)
+            return bool(lb_sea_tile(prop['x'] + dx, prop['z'] + dz) or lb_sea_tile(prop['x'] - dx, prop['z'] - dz))
+        return False
+    keep = [(prop, rect) for prop, rect in zip(L.props, L.rects) if not at_sea(prop)]
+    L.props, L.rects = [p for p, _ in keep], [r for _, r in keep]
+    world_tiles(L, lb_sea_tile, road_gap=1.0, camp_gap=26.0, ignore_points=True)
+    return L
+
+
+def lb_near_both(L, kind, u, w, radius=6.0, rot=0, pad=0.8, road_gap=0.5, ignore_points=False, must=False):
+    """A prop as near (u, w) as it fits, and its mirror image, both or neither (the halves stay equal)."""
+    rng = L.rng
+    for attempt in range(160):
+        r = radius * math.sqrt(attempt / 160)
+        a = rng.random() * math.tau
+        uu, ww = u + math.cos(a) * r, w + math.sin(a) * r
+        x, z = lb_xz(uu, ww)
+        x, z = round(x * 2) / 2, round(z * 2) / 2
+        mx, mz = -z, -x
+        if not L.free(kind, x, z, rot, pad, road_gap, ignore_points):
+            continue
+        if abs(uu) < 0.5:
+            L.add(kind, x, z, rot, pad=pad, road_gap=road_gap, ignore_points=ignore_points)
+            return 1
+        if not L.free(kind, mx, mz, lb_rot(rot), pad, road_gap, ignore_points):
+            continue
+        # Each must also leave room for the other (they could overlap on the axis).
+        L.add(kind, x, z, rot, pad=pad, road_gap=road_gap, ignore_points=ignore_points)
+        if L.add(kind, mx, mz, lb_rot(rot), pad=pad, road_gap=road_gap, ignore_points=ignore_points):
+            return 2
+        L.props.pop()
+        L.rects.pop()
+    if must:
+        L.failed.append((kind, *lb_xz(u, w)))
+    return 0
+
+
+def lighthousebay(seed=199, siege=False):
+    """Lighthouse Bay (temperate, prompt 16): the sea fills the south-east beyond a rocky coast. Two coves
+    with long sand beaches (where landing craft run up) and a fishing pier each; between them the
+    headland with the lighthouse and its jetty (the east objective: whoever holds it watches the sea);
+    high cliffs by the camps with an abandoned coastal battery on each; a fishing village round the
+    market at the centre; the old fort on the pine hill in the north-west (the west objective). Three
+    sea lanes run along the coast at 60, 76 and 92 m off the cove beaches: guns on the pier heads and
+    the jetty reach the near lane, artillery, aircraft and the batteries the far one. For the Siege
+    version (`siege`) the north-east camp's coast is left bare: the classic fortress stands there."""
+    points = [(*lb_xz(u, w), r) for _, u, w, r in LB_POINTS]
+    tx, tz = lb_xz(0.0, -20.0)
+    square = (tx - 12.0, tz - 12.0, tx + 12.0, tz + 12.0)
+    L = world_layout(seed, points, clear=((-6, -6, 6, 6), square))
+
+    # Roads: the coast road behind the beaches, the inland road through the village, a road up to
+    # the old fort, one down the headland to the lighthouse and on onto its jetty, tracks to the
+    # beaches, the batteries and the piers (the piers and the jetty are roads over the water: the
+    # sea keeps off them, their decks are drawn on top). lb_road draws each off-axis road on both halves.
+    lb_road(L, 6, -150.0, 2.0, -122.0, 8.0, -88.0, 4.0, -60.0, 0.0, -34.0, 10.0, 0.0, 18.0)
+    lb_road(L, 6, -152.0, -8.0, -110.0, -40.0, -52.0, -34.0, -16.0, -22.0)
+    lb_road(L, 5, 0.0, -36.0, 0.0, -70.0, 0.0, -92.0)
+    lb_road(L, 5, 0.0, -6.0, 0.0, 18.0, 0.0, 32.0)
+    lb_road(L, 7, -LB_PIER_U, lb_shore(LB_PIER_U) - 6.0, -LB_PIER_U, LB_PIER_HEAD)
+    lb_road(L, 4, -72.0, 0.0, -74.0, 12.0)
+    lb_road(L, 4, -104.0, 6.0, -104.0, 12.0)
+    lb_road(L, 4, -30.0, -60.0, -60.0, -80.0, -96.0, -84.0)
+
+    # The sea: deep water off the cliffs and the headland, two tiles of surf on the cove beaches.
+    world_tiles(L, lb_sea_tile, road_gap=1.0, camp_gap=26.0, ignore_points=True)
+
+    # The piers' and the jetty's decks, wooden on piles, over their roads.
+    for sgn in (-1, 1):
+        w = lb_shore(LB_PIER_U) - 2.0
+        while w <= LB_PIER_HEAD + 0.1:
+            x, z = lb_xz(sgn * LB_PIER_U, w)
+            L.force('pier', x, z, 45)
+            w += 5.6
+
+    # The lighthouse on the headland (the east objective), its keeper's cottage, sandbag nests and a
+    # pillbox either side at the neck.
+    lx, lz = lb_xz(0.0, 48.0)
+    L.add('lighthouse', lx, lz, 0, pad=0.4, road_gap=None, ignore_points=True, must=True)
+    lb_near_both(L, 'cottage', 14.0, 24.0, 5.0, 0, pad=0.5, road_gap=0.4, ignore_points=True)
+    lb_near_both(L, 'sandbags', 9.0, 38.0, 3.0, 45, pad=0.3, road_gap=0.3, ignore_points=True)
+    lb_near_both(L, 'garage', 24.0, 2.0, 5.0, 0, pad=0.6, road_gap=0.5)
+
+    # The cliffs: rock along the waterline by the camps and round the headland's flanks. Scree inland.
+    def cliff_line(u0, u1, step=7.5, back=5.5):
+        u = u0
+        while u <= u1:
+            w = lb_shore(u) - back
+            kind = L.rng.choice(('cliff_b', 'cliff_a', 'boulders'))
+            if siege and u > 60.0:
+                x, z = lb_xz(-u, w)
+                L.add(kind, x, z, lb_rot(0), pad=0.1, road_gap=1.0, ignore_points=True)
+            else:
+                lb_both(L, kind, u, w, L.rng.choice((0, 90)), pad=0.1, road_gap=1.0, ignore_points=True)
+            u += step
+    cliff_line(98.0, 150.0)
+    cliff_line(21.0, 34.0, step=6.5, back=3.5)
+    for u in range(100, 146, 9):
+        if L.rng.random() < 0.6 and not siege:
+            lb_both(L, 'boulders', float(u), lb_shore(u) - 14.0 - L.rng.uniform(0.0, 3.0), 0, pad=0.3, road_gap=1.0)
+
+    # The coves: sand beaches with fishing boats drawn up and net racks, a hamlet behind each, wrecks
+    # of an old landing in the surf, the coastal battery's emplacement on the cliff top beyond.
+    for u in (58.0, 66.0, 80.0, 90.0):
+        lb_near_both(L, 'fishing_boat', u, lb_shore(u) - 8.0, 3.0, L.rng.choice((0, 90)), pad=0.6, road_gap=0.6)
+    for u in (62.0, 76.0, 84.0):
+        lb_near_both(L, 'fence', u, lb_shore(u) - 14.0, 3.0, 0, pad=0.3, road_gap=0.6)
+    for u, w, kind, rot in ((56.0, -14.0, 'cottage', 0), (70.0, -18.0, 'house_small', 90), (84.0, -12.0, 'cottage', 90),
+                            (66.0, -26.0, 'barn', 0), (96.0, -18.0, 'shop', 0), (46.0, -16.0, 'stilt_hut', 0)):
+        lb_near_both(L, kind, u, w, 7.0, rot, pad=0.8, road_gap=0.5)
+    for kind, u, off, rot in (('wreck_tank', 70.0, 3.0, 45), ('wreck_truck', 88.0, 4.0, 0)):
+        lb_both(L, kind, u, lb_shore(u) + off, rot, pad=0.8, road_gap=None)
+    bu, bw = LB_BATTERY
+    for du, dw, kind, rot in ((-7.0, -3.0, 'sandbags', 45), (7.0, -3.0, 'sandbags', 45), (-9.0, 4.0, 'ammo_crate', 0),
+                              (9.0, 4.0, 'ammo_crate', 0)):
+        lb_near_both(L, kind, bu + du, bw + dw, 2.5, rot, pad=0.3, road_gap=0.3)
+
+    # The fishing village round the market square at the centre (the town objective).
+    for du, dw, kind, rot in ((-28.0, -6.0, 'townhouse', 0), (-26.0, -30.0, 'house_small', 0), (-22.0, 14.0, 'cottage', 90),
+                              (-40.0, -18.0, 'shop', 0), (-14.0, -42.0, 'house_small', 90), (-44.0, 4.0, 'cottage', 0)):
+        lb_near_both(L, kind, du, -20.0 + dw, 6.0, rot, pad=0.6, road_gap=0.4)
+    for du, dw in ((-14.0, 6.0), (-16.0, -12.0), (-6.0, -18.0)):
+        lb_near_both(L, 'market_stall', du, -20.0 + dw, 4.0, 0, pad=0.5, road_gap=0.3, ignore_points=True)
+
+    # The old fort on the pine hill (the west objective): casemates round a ruined tower, sandbag
+    # nests and a trench; the pines all round it.
+    for du, dw, kind, rot in ((-16.0, -8.0, 'garage', 0), (-12.0, 12.0, 'garage', 90), (-8.0, 4.0, 'sandbags', 45),
+                              (-6.0, -18.0, 'ruin_tower', 0), (-10.0, 20.0, 'trench_straight', 45)):
+        lb_near_both(L, kind, du, -104.0 + dw, 4.0, rot, pad=0.5, road_gap=0.4, ignore_points=True)
+    lb_near_both(L, 'watchtower', 24.0, -96.0, 5.0, 0, pad=0.6)
+
+    # Pine woods inland, thickest in the north-west round the fort; tree lines along the fields.
+    for u, w, r, d in ((-40.0, -120.0, 16.0, 0.12), (-70.0, -100.0, 14.0, 0.11), (-30.0, -150.0, 12.0, 0.12),
+                       (-110.0, -80.0, 12.0, 0.1), (-60.0, -140.0, 10.0, 0.1), (-130.0, -44.0, 8.0, 0.1)):
+        for sgn in (-1, 1):
+            x, z = lb_xz(sgn * u, w)
+            L.forest(x, z, r, d)
+    for u0, w0, u1, w1 in ((-120.0, -18.0, -84.0, -18.0), (-84.0, -18.0, -84.0, -56.0), (-50.0, -50.0, -24.0, -50.0)):
+        for sgn in (-1, 1):
+            ax, az = lb_xz(sgn * u0, w0)
+            bx, bz = lb_xz(sgn * u1, w1)
+            L.tree_line(ax, az, bx, bz, spacing=4.5)
+    return finish(L)
+
+
+MAPS_P16 = [
+    ('lighthousebay', lighthousebay, 'temperate', ('old_fort', 'fishing_village', 'lighthouse'),
+     'Lighthouse Bay for Conquest: a rocky coast on the sea, two coves with beaches and piers, the lighthouse on the headland between them.',
+     'Lighthouse Bay for Survival: the same coast, holding out against waves from the north-east.'),
+]
+WAR_P16 = {
+    # Nothing solid is dropped on the beaches, the headland or the cliff edge (the sea's side).
+    'lighthousebay': dict(pylons=False, ditch=False, where=lambda x, z: lb_uw(x, z)[1] < lb_shore(lb_uw(x, z)[0]) - 18.0),
+}
+DENSIFY_P16 = {
+    'lighthousebay': dict(clumps=16, outcrops=4, hamlets=1, where=lambda x, z: lb_uw(x, z)[1] < lb_shore(lb_uw(x, z)[0]) - 22.0),
+}
+
+
 # ---------------------------------------------------------------------------------- siege
 # The enemy fortress fills the north-east quadrant round (42, 42): a 56 m ring of wall with a
 # gate in the west and south walls (the sides facing the player), guard towers in the corners,
@@ -4197,6 +4489,10 @@ MAPS = [
 MAPS += MAPS_4M
 MAP_WAR.update(WAR_4M)
 MAP_DENSIFY.update(DENSIFY_4M)
+# Prompt 16: Lighthouse Bay.
+MAPS += MAPS_P16
+MAP_WAR.update(WAR_P16)
+MAP_DENSIFY.update(DENSIFY_P16)
 
 def plan_bases(map_id, layout, siege):
     """The bases (see hardpoints.py): both camps and the outposts on the Conquest battlefield (which
@@ -4263,7 +4559,13 @@ def plan_bases(map_id, layout, siege):
 
 # Causeway battlefields: the large fortress's walls would cut every causeway, so their Siege
 # version keeps the classic walled square in the north-east corner (fortify_corner).
+# Lighthouse Bay (prompt 16): the sea fills the south-east, where the big fortress would stand in the water.
 CLASSIC_SIEGE = {'swamp', 'coralisles'}
+
+
+def sea_meta(map_id):
+    """A map's sea (prompt 16), for every version of it: the lanes, beaches, piers and batteries."""
+    return {'sea': lb_sea_block()} if map_id == 'lighthousebay' else {}
 
 
 def main(only=()):
@@ -4275,15 +4577,22 @@ def main(only=()):
         # Conquest, Survival and Siege versions and the campaign need; then the battlefield is
         # dressed and filled inside it (the siege version the same, before its fortress).
         poly, _ = outline_tools.carve(map_id, keep_of([layout, fortify_corner(scale_layout(build()), map_id, buildings=False)], map_id), seed=len(map_id) * 31 + 7)
+        # A map on the sea keeps the square's edge on the sea's side (the ships sail in and out there).
+        if map_id == 'lighthousebay':
+            poly = lb_open_sea(poly)
         densify(warzone(layout, map_id, theme, poly), map_id, theme, poly)
         # (The outline is carved round the first fortress plan above, so the Conquest and Survival
         # versions and the campaign stay as they were; the fortress itself is built into the
         # finished siege battlefield, inside that outline: see fortress.py.)
         classic = map_id in CLASSIC_SIEGE
-        siege = densify(warzone(scale_layout(build()), map_id, theme, poly), map_id, theme, poly)
+        # Lighthouse Bay's Siege version leaves the fortress's corner of the coast bare.
+        siege_build = functools.partial(build, siege=True) if map_id == 'lighthousebay' else build
+        siege = densify(warzone(scale_layout(siege_build()), map_id, theme, poly), map_id, theme, poly)
         # The classic fortress is built before the outline is applied, as it always was.
         if classic:
             siege = fortify_corner(siege, map_id)
+            if map_id == 'lighthousebay':
+                lb_refill_sea(siege)
         dropped = apply_outline(layout, poly)
         apply_outline(siege, poly)
         missing = layout.reachable()
@@ -4298,6 +4607,11 @@ def main(only=()):
             fortress_block, siege_rings = None, SIEGE_RINGS
         else:
             fortress_block, siege_rings = fortress.fortify(siege, map_id, theme, poly)
+            if map_id == 'lighthousebay':
+                # The fortress's ground on the coast: the sea comes back round it, and a hardpoint the
+                # plan put out on the water is dropped.
+                lb_refill_sea(siege)
+                fortress_block['slots'] = [sl for sl in fortress_block['slots'] if not lb_sea_tile(sl['x'], sl['z'])]
         bases, outposts, siege_bases = plan_bases(map_id, layout, siege)
         print(f'{map_id}: outline of {len(poly)} points, {dropped} props left outside dropped')
         counts = {}
@@ -4308,9 +4622,9 @@ def main(only=()):
                   for i, (pid, name, (x, z, r)) in enumerate(zip(('west', 'town', 'east'), names, layout.points))]
         dump(DATA / 'maps' / f'{map_id}_conquest.json', conquest,
              {'id': f'{map_id}_conquest', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'points': points,
-              'units': grown(CONQUEST_UNITS), 'bases': bases}, layout)
+              'units': grown(CONQUEST_UNITS), 'bases': bases, **sea_meta(map_id)}, layout)
         dump(DATA / 'maps' / f'{map_id}_sandbox.json', survival,
-             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'units': grown(SURVIVAL_UNITS)}, layout)
+             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'units': grown(SURVIVAL_UNITS), **sea_meta(map_id)}, layout)
         # Siege: the same battlefield (built afresh, so it is identical) with the enemy fortress.
         name = conquest.split(' for ')[0]
         if classic:
@@ -4318,7 +4632,7 @@ def main(only=()):
                  f'{name} for Siege: the enemy fortress holds the north-east quadrant; destroy its command HQ.',
                  {'id': f'{map_id}_siege', 'theme': theme, 'size': SIZE,
                   'teams': [TEAMS[0], {'team': 1, 'x': siege.teams[1][0], 'z': siege.teams[1][1]}], 'points': [], 'siegeRings': siege_rings,
-                  'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0] + siege.units, 'bases': siege_bases}, siege)
+                  'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0] + siege.units, 'bases': siege_bases, **sea_meta(map_id)}, siege)
             print(f'{map_id}_siege: {len(siege.props)} props, {len(siege.units)} defences (classic fortress)')
             continue
         dump(DATA / 'maps' / f'{map_id}_siege.json',
@@ -4326,7 +4640,8 @@ def main(only=()):
              f'destroy its command HQ.',
              {'id': f'{map_id}_siege', 'theme': theme, 'size': SIZE,
               'teams': [TEAMS[0], {'team': 1, 'x': siege.teams[1][0], 'z': siege.teams[1][1]}], 'points': [], 'siegeRings': siege_rings,
-              'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0], 'bases': siege_bases, 'fortress': fortress_block}, siege)
+              'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0], 'bases': siege_bases, 'fortress': fortress_block,
+              **sea_meta(map_id)}, siege)
         print(f'{map_id}_siege: {len(siege.props)} props, {len(fortress_block["slots"])} fortress hardpoints')
 
 
