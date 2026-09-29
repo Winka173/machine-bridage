@@ -27,5 +27,11 @@ namespace MachineBrigade.Game.Rendering
         public static Color Ui(int team) => Palette == 1
             ? team == 0 ? new Color(0.45f, 0.72f, 1f) : new Color(1f, 0.62f, 0.2f)
             : team == 0 ? new Color(0.55f, 0.95f, 0.62f) : new Color(1f, 0.42f, 0.34f);
+
+        /// <summary>
+        /// Prompt 23 F.4: the Meridian Accord's units on our side (the allied AI's, not the player's): sky blue against our
+        /// green, teal against our blue in the colour-blind palette. Their health bar and their sign.
+        /// </summary>
+        public static Color Accord() => Palette == 1 ? new Color(0.25f, 0.84f, 0.78f) : new Color(0.42f, 0.78f, 1f);
     }
 }

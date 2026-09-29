@@ -224,6 +224,8 @@ namespace MachineBrigade.Game.Views
             if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
             BuildEscortMark(meshes, materials);
+            // Prompt 23 F.4: the Meridian Accord's sign on its units (VehicleView.Accord.cs).
+            BuildAccordMark(meshes, materials);
             // Prompt 17 C: the bunker vehicle's digging-in and dug-in mark.
             BuildDeployMark(meshes, materials);
             FindSideLauncher();
@@ -1035,6 +1037,7 @@ namespace MachineBrigade.Game.Views
             var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             RenderEscortMark(cameraRotation);
+            RenderAccordMark(cameraRotation);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
