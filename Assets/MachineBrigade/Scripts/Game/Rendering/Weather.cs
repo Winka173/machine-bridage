@@ -32,6 +32,9 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>How long one weather takes to turn into the next.</summary>
         public const float TransitionSeconds = 8f;
 
+        /// <summary>This weather's own roll-in time (and how long the one it replaces takes to thin out).</summary>
+        private readonly float _transition;
+
         private readonly WeatherKind _kind;
         private readonly RtsCamera _camera;
         private readonly AudioDirector _audio;
@@ -146,10 +149,12 @@ namespace MachineBrigade.Game.Rendering
         /// <param name="clearCast">The map's own light on a clear day (its theme's cast), which Clear eases back to.</param>
         /// <param name="clearHaze">The map's own haze on a clear day.</param>
         /// <param name="previous">The weather this one replaces: it rolls in from how that one looks now.</param>
+        /// <param name="seconds">How long the roll-in takes (prompt 23 D.9: a mission event's 20-30 s; 0: <see cref="TransitionSeconds"/>).</param>
         public Weather(WeatherKind kind, Atmosphere atmosphere, MaterialLibrary materials, RtsCamera camera, AudioDirector audio,
-            Transform parent, bool highQuality, Color clearCast, Color clearHaze, Weather previous = null)
+            Transform parent, bool highQuality, Color clearCast, Color clearHaze, Weather previous = null, float seconds = 0f)
         {
             _kind = kind;
+            _transition = seconds > 0f ? seconds : TransitionSeconds;
             _camera = camera;
             _audio = audio;
             _atmosphere = atmosphere;
@@ -187,8 +192,8 @@ namespace MachineBrigade.Game.Rendering
                 _rain = Keep(RainSystem(materials, rate, heavy), rate);
                 _splashes = Keep(SplashSystem(materials, rate * 0.35f), rate * 0.35f);
             }
-            if (kind == WeatherKind.Storm) _nextLightning = Time.time + Random.Range(4f, 9f) + (previous != null ? TransitionSeconds * 0.5f : 0f);
-            previous?.Retire();
+            if (kind == WeatherKind.Storm) _nextLightning = Time.time + Random.Range(4f, 9f) + (previous != null ? _transition * 0.5f : 0f);
+            previous?.Retire(_transition);
             Apply(Look.Lerp(_from, _to, Ease(_blend)));
             SetRates(_blend);
         }
@@ -323,17 +328,20 @@ namespace MachineBrigade.Game.Rendering
         }
 
         /// <summary>Replaced by the next weather: its particles thin out and it lets go of the scene.</summary>
-        private void Retire()
+        private void Retire(float seconds)
         {
+            _leavingFor = seconds;
             _retiredAt = Time.time;
             _nextLightning = float.MaxValue;
         }
+
+        private float _leavingFor = TransitionSeconds;
 
         /// <summary>A replaced weather thinning out; false once its last drops have fallen (then dispose it).</summary>
         public bool TickLeaving()
         {
             Follow();
-            var t = (Time.time - _retiredAt) / (TransitionSeconds * 0.7f);
+            var t = (Time.time - _retiredAt) / (_leavingFor * 0.7f);
             SetRates(Mathf.Clamp01(1f - t));
             return t < 1.5f;
         }
@@ -343,7 +351,7 @@ namespace MachineBrigade.Game.Rendering
             Follow();
             if (_blend < 1f)
             {
-                _blend = Mathf.Min(1f, _blend + Time.deltaTime / TransitionSeconds);
+                _blend = Mathf.Min(1f, _blend + Time.deltaTime / _transition);
                 Apply(Current);
                 SetRates(Ease(_blend));
             }

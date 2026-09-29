@@ -514,16 +514,22 @@ namespace MachineBrigade.Game.Match
             var random = new System.Random((int)_world.Tick);
             for (var i = 0; i < 8 && next == _weatherKind; i++) next = choices[random.Next(choices.Length)];
             if (next == _weatherKind) return;
-            // The new weather rolls in over a few seconds while the old one thins out (see Weather).
+            ShiftWeatherTo(next, 0f);
+            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
+        }
+
+        /// <summary>The new weather rolls in over <paramref name="seconds"/> (0: the usual few) while the old one thins out (see Weather).</summary>
+        private void ShiftWeatherTo(WeatherKind next, float seconds)
+        {
+            if (next == _weatherKind || _weather == null) return;
             _leavingWeather?.Dispose();
             _leavingWeather = _weather;
             _weatherKind = next;
             var theme = MapTheme.For(_world.Map.Theme);
-            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather);
+            _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather, seconds);
             _effects.Night = next == WeatherKind.Night;
             _session.SetNight(next == WeatherKind.Night);
             _fortress?.SetNight(next == WeatherKind.Night);
-            _hud.Toast(Strings.Format("toast.weather", Strings.Get("menu." + next.ToString().ToLowerInvariant())), seconds: 3f);
         }
 
         /// <summary>Vehicles that can appear this battle: both decks (and their elite versions), units on the
@@ -1148,6 +1154,13 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.Defected when _world.TryGetVehicle(e.Entity, out var turned):
                         _views.Rebuild(turned);
                         break;
+                    // Prompt 23: a mission event's notice, and the weather it turns.
+                    case SimEventKind.EventNotice when !_menu:
+                        MissionEventNotice(e);
+                        break;
+                    case SimEventKind.WeatherShift when !_menu:
+                        MissionWeather(e);
+                        break;
                     case SimEventKind.Radio when !_menu && e.DefId != null:
                         // In a campaign mission the radio panel speaks it (the director hears it below).
                         if (_radio == null) _hud.Toast(Strings.Get(e.DefId), error: e.DefId == "radio.betrayal", seconds: 5f);
@@ -1516,6 +1529,13 @@ namespace MachineBrigade.Game.Match
             if (minimap == null || Time.unscaledTime < _minimapAt) return;
             _minimapAt = Time.unscaledTime + MinimapInterval;
             minimap.Begin(_world.Map.HalfSize);
+            // Prompt 23 D.6: an EW blackout: the minimap is dark but for the camera's frame.
+            if (!_menu && _world.BlackedOut(PlayerTeam))
+            {
+                MinimapView(minimap);
+                minimap.Flush();
+                return;
+            }
             if (_session.Objectives != null)
                 foreach (var p in _session.Objectives.Points)
                     minimap.Point(new Vector2(p.Def.Position.X, p.Def.Position.Y), p.Def.Radius, p.Owner, p.Progress);
@@ -1544,6 +1564,13 @@ namespace MachineBrigade.Game.Match
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
             foreach (var mark in _marks) minimap.Mark(new Vector2(mark.Position.X, mark.Position.Y), (int)mark.Kind);
+            MinimapView(minimap);
+            minimap.Flush();
+        }
+
+        /// <summary>The camera's frame on the minimap.</summary>
+        private void MinimapView(Minimap minimap)
+        {
             var cam = _camera;
             var corners = new[] { new Vector2(0f, 0f), new Vector2(Screen.width, 0f), new Vector2(Screen.width, Screen.height), new Vector2(0f, Screen.height) };
             var ground = new Vector2[4];
@@ -1554,7 +1581,6 @@ namespace MachineBrigade.Game.Match
                 ground[i] = new Vector2(g.x, g.z);
             }
             if (ok) minimap.View(ground[0], ground[1], ground[2], ground[3]);
-            minimap.Flush();
         }
 
         /// <summary>Prompt 19 B.5: the tier a tapped tiered boss (or pod) of that def is at now (None: the ordinary matchup).</summary>
