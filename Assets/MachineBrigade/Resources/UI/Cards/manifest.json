@@ -172,6 +172,13 @@
             "hash": "v2:200f13f836da1e7599ad8a5161444499b4e663fe"
         },
         {
+            "id": "sky_gunship",
+            "kind": "vehicle",
+            "model": "sky_gunship",
+            "source": "Models/sky_gunship_hd",
+            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
+        },
+        {
             "id": "twin_tank",
             "kind": "vehicle",
             "model": "twin_tank",
@@ -183,7 +190,7 @@
             "kind": "vehicle",
             "model": "siege_tank",
             "source": "Models/siege_tank",
-            "hash": "v2:b6516fad572806c753917bae311eaf54244ff631"
+            "hash": "v2:37a1b57e3532ea041f6ce0fc79d888c9f2254b4a"
         },
         {
             "id": "heavy_rocket_artillery",
@@ -1115,13 +1122,6 @@
             "model": "typhon",
             "source": "Models/typhon",
             "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
-        },
-        {
-            "id": "sky_gunship",
-            "kind": "vehicle",
-            "model": "sky_gunship",
-            "source": "Models/sky_gunship_hd",
-            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
         },
         {
             "id": "gunship_support",
