@@ -74,3 +74,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 21:50) gun turret tăng tầm nổ 30%  [C]
 - (29/09 21:50) rocket battery giảm tốc độ bay tên lửa bằng như sam  [D]
 - (29/09 21:50) patriot battery giảm lửa đuôi tên lửa như trên  [C]
+- (29/09 22:00) và 1 agent nữa cân bằng game, có vẻ do giáp nên tôi thấy dame mọi thứ hơi thiếu, và toàn bộ các vụ nổ nên làm lại thêm particle cho hoành tráng  [cân bằng giáp: DECISIONS 20X; vụ nổ: agent C, 20V]
