@@ -6671,6 +6671,139 @@ mutator, no old names in any table (BossText too), the six moved missions (targe
 Story/Campaign.cs`, `Strings.cs` (Boss Hunt, the mutator), `BossText.cs`, `CampaignText.cs` (the keys above),
 `campaign.json`, `Tools/campaign/act4.py`, `campaign_kit.py`, `story.py`, two tests. balance.json untouched.
 
+## 19T. Tower branches: two real choices for every tower (2026-09-29)
+
+The owner's spec (Docs/prompts/tower-branches_vi.txt) sections A, B, D, E and F's tests, on lead bd814c9 / 2bcb306. The art (C.1,
+C.2, C.4, C.6, C.7: branch models and modules, rank details, branch icons, LOD and Low versions) is the art agent's
+(feature/tower-art, DECISIONS 19U); card renders and screenshots are the lead's after the merge. The Iron Dome (B.9) is prompt
+20 L's and stays. Damage a round keeps the calibre scale, penetration and damage types (13, 14A); strength moves with rhythm,
+magazines, reach, health and mechanisms. Raw files: `Docs/balance/*_branches*`.
+
+### The three towers left from the balance pass (19B)
+
+| Tower | Change | After (light / heavy / air DPS, or interception) | Target (19B / prompt 18 spec) |
+|---|---|---|---|
+| Rocket battery | Grad salvo 7.78 -> 3.35 s, blast 3.5 -> 4.5 m, x0.46 on heavy armour; cluster 3.2 s | 104 / 42 (cluster 107 / 44) | 110 / 45, more on groups and buildings |
+| C-RAM | 2 -> 4 interceptors, 1.5 -> 0.6 s; Centurion 5, 0.35 s; Iron Dome as prompt 20 L | two MLRS for 60 s: 60 %, Centurion 90 %, Iron Dome 48 % (it reloads its six whole every 12 s: one salvo it stops whole) | most of a medium salvo |
+| AA tower SAM post | Buk pair 5.73 -> 3.4 s at 60 m | 228 air | about 220, 60 m |
+| AA tower flak | ZSU-23-4 back on the scale, 14 a round (prompt 20 had 22), 0.0671 -> 0.0324 s (same damage a second) | 88 / 18 / 305 air | the drone and swarm killer |
+
+The Iron Dome's Tamir was sized 160 (its diameter in mm) in an AA-missile family scaled by warhead: size 1, so `CalibreTests` holds
+(110 under the Igla's 150).
+
+### A and B, what sets them apart (B)
+
+A branch's model and icon come from its data's `"art"`: the art branch's `<tower>_a` / `<tower>_b` in the spec's A/B order
+(`BranchArt`: the art's when it exists, else the tower's own, so nothing is missing before the art merge). Kept mechanisms (B.1-8)
+got only their stale texts fixed. Remade (the ids that still describe their branch were kept):
+
+| Tower | A | B |
+|---|---|---|
+| Gun turret | `gun_turret.long` Sniper gun: the 120 mm L/55 at 48 m (tank guns 32-38), 3.9 s, pen 4, x0.55 on light; no aircraft | `gun_turret.auto` 57 mm autocannon (AU-220): 70 a round (the scale), magazines of 6 at 0.5 s, pen 2, 40 m, hits the ground and the air; at an aircraft it loads its air-burst round (`"air"`: `gun_57_air`, fragmentation) |
+| Rocket battery | `.cluster` as before | `rocket_turret.guided` (was `.thermo`): two GMLRS 227 mm (100 a round), 90 m, 20 m minimum, spread 0.8, x1.5 on artillery and structures, a 3 m blast |
+| Emplacement | `.cb` counter-battery howitzer: goes for an enemy gun its radar just caught firing (a target priority x12 and a switch away from the current target, `CombatSystem.CounterBatteryTarget`), shows it 6 s, x1.25 on artillery | `artillery_emplacement.mortar` (was `.ext`): 2B8 240 mm (450 a round), 60 m, 8 m minimum, a 9 m blast, a slow high shell; lobbed, so it fires over walls |
+| Heavy fortress | `.coastal` as before (72 m, opened by Leviathan) | `.bastion` Steel fortress: 4,340 HP and two 12.7 mm machine guns turning all round (`hmg_roof`, slot `mg`) for cars and drones up close |
+| Patriot | `.pac3` interceptor: an APS of four `"heavy"` interceptors (72 m, 16 s to reload) that take only cruise and ballistic missiles (`DamageSystem.IsHeavyMissile`: their family, or a missile with a minimum range), the cruise-missile strike (`StrikeSystem.ShotDown`) and a boss's big-attack missiles (the big attacks' interception takes any APS); its SAMs slower (5.8 s: 164 air) | `.lrr` long-range radar: 100 m, 3.6 s (233 air), and every enemy aircraft within 140 m is seen by its side (`"revealAir"`, stealth too); no interceptors |
+| Shield generator | `.bulwark` Shield dome: the tower's 25 m dome, 4,200 HP (it was a smaller 19 m one) | `shield_tower.ward` Tower shields (was `.pulse`): no dome; every tower of its side within 28 m carries its own 1,200-HP shield (`"wards"`, scaled by the generator's health), back 6 s after its last hit. It stops rounds aimed at the tower (direct hits and piercing), not the blasts of shells, rockets and bombs round it; energy goes through; a tower under a dome is covered by the dome only (`DomeSystem.StepWards`, `AbsorbWard`) |
+| CP relay | `.hardened` CP relay: steady CP as before | `cp_relay.loot` Loot depot (was `.express`): no steady CP; an enemy vehicle destroyed within 40 m pays its side 20 % of the price, the kill's own refund and this together never past prompt 8's 45 % cap, the nearest depot only (`EconomySystem.PayLoot`) |
+| MG bunker (kept) | twin | flame: its blast 2.5 -> 4.5 m (a flame fills the lane; the rush below) |
+
+### Each wins somewhere, none everywhere (F.2)
+
+`TowerValueMeasure` (a tower alone against ladders of attackers of rising CP; worth in vehicle CP, three seeds; now with a
+"shelling" ladder of artillery and a "heavy" one of heavy tanks) and `BranchMeasure.PrintMechanismScenarios` (the fights a
+ladder misses). The better branch in each case, the number in brackets the other's:
+
+| Tower | A wins | B wins |
+|---|---|---|
+| Guard tower | light 5.51 (5.42), air 1.98 (1.16) | tanks 5.35 (5.17), heavy 5.70 (5.65) |
+| MG bunker | light 13.5 (1.0), air 4.0 (1.3) | a rush of six cars within 5 m: 1,770 damage (1,582) |
+| AA tower | light 13.4 (0.9) | air 19.2 (5.4) |
+| ATGM tower | heavy 7.55 (6.80) | light 5.64 (4.79), tanks 8.60 (8.02), air 2.99 (1.16) |
+| Gun turret | tanks 12.9 (11.1), heavy 9.1 (6.2) | light 13.5 (11.6), air 5.5 (1.7), the rush 1,132 (670) |
+| Rocket battery | light 12.0 (4.9), tanks 11.1 (5.5) | shelling 15.0 (10.3), guns standing at 70 m 2,400 (0) |
+| C-RAM | air 6.4 (3.2); MLRS rockets stopped 90 % (48 %) | shelling 6.46 (6.13), reach 60 m, shells 50 % |
+| Emplacement | shelling 14.6 (10.2), tanks 11.3 (10.6) | light 10.9 (10.5), over a wall into a yard (the test) |
+| Heavy fortress | guns standing at 70 m 7,040 (0) | heavy 23.1 (15.5), air 6.1 (2.1) |
+| Patriot | a base under two Iskanders: 0 damage taken (16,612) | air 19.2 (16.7), aircraft seen at 140 m |
+| Drone hangar | tanks 10.9 (7.0), shelling 47.4 (10.3) | light 4.62 (3.33) |
+| Shield generator | a barrage every 8 s: towers lost 3,735 (4,505) | three tanks, a tower each: 521 (1,281) |
+| CP relay | quiet, 3 minutes: 14 CP (0) | attacked by cars every 12 s: 50 CP (42, the kills' refunds included) |
+
+EW tower, dragon's teeth and minefield keep their mechanisms (the spec's B.4-6) and do no damage the ladder can see (a ladder's
+attackers stop short of the mines round the field); `TowerBranchTests.TheTwoBranchesOfEveryTowerDifferInTargetsReachOrMechanism`
+checks every pair differs in what it hits, its reach band or a mechanism.
+
+### The AI (A.5) and how often it picks each (F.3)
+
+`BranchChoice`: each branch scored on paper against the deck it will face: its guns' damage a second on the deck's cards
+(armour or air, the damage table, penetration), plus its mechanism against what the deck brings (interceptors by what the
+deck fires, dome against area fire, tower shields against direct fire and heavy armour, loot against cheap light vehicles, the
+radar against aircraft and stealth, counter-battery against artillery, mines by armour, jamming, obstacles), read against its
+score on "a deck like any other" (all the decks the commanders draw by roles, Normal and Hard, 16 seeds), so the pick follows
+how this deck differs from the usual one. A general's style weighs its branches (`"tower.branch"` weights in balance.json
+`base.ai.styles`: Varga the sniper gun and top attack, Orlov counter-battery and guided rockets, Sen the swarm and drone
+jammer, Quạ Đen the SAM post, radar and Iron Dome, Aurel the PAC-3, shield dome and steel fortress). The enemy's base takes it
+from Normal up (`BaseLoadout.ForAi(..., against)`, prompt 20's hook). The player's branches stay the player's paid choice:
+Auto-arrange places towers, it does not change a branch.
+
+Picks over 121 decks (the sample deck and 40 seeds of enemy decks at Normal, Hard and Very Hard, each general's style in turn),
+A / B: fortress 24 / 76, Patriot 52 / 48, ATGM 43 / 57, gun turret 39 / 61, AA 32 / 68, EW 58 / 42, teeth 28 / 72, mines 49 / 51,
+C-RAM 64 / 36, hangar 57 / 43, rocket 23 / 77, MG 49 / 51, emplacement 63 / 37, guard 52 / 48, shield 43 / 57, relay 28 / 72.
+Every branch 23 % or more (the spec's "about 25 %").
+
+### Interface (D)
+
+- `BranchLines.Picker`: the rank-7 choice on the Base screen and the detail page shows both branches side by side: the branch's
+  render (its own once the card renders exist, the tower's until then), icon, role line, "Pick it when", and the facts where
+  it differs from the other, from the data (reach, what it hits, interceptors, dome or tower shields, loot, CP, radar,
+  counter-battery, over walls, mines, jamming, health).
+- Every branch has a "when to pick it" line (`branch.<id>.when`), the role lines were rewritten where stale (the drone hangar's
+  and C-RAM's numbers after 19B), names and short names for the new branches.
+- The Guide tab of a tower has a block for each branch: role, when to pick it, what sets it apart, and its generated
+  behaviour lines (`UnitLines.Behaviour`, prompt 13 G) with its own strong / weak summary.
+
+### Migration (E)
+
+Roster version 4 (`CardMerges.RenamedBranches`): `rocket_turret.thermo` -> `rocket_turret.guided`, `artillery_emplacement.ext` ->
+`artillery_emplacement.mortar`, `shield_tower.pulse` -> `shield_tower.ward`, `cp_relay.express` -> `cp_relay.loot` (the same A/B
+slot); `gun_turret.long/.auto`, `missile_battery.pac3/.lrr`, `heavy_turret.bastion` and `artillery_emplacement.cb` kept their
+ids. A player with a branch chosen on a reworked tower (gun turret, rocket battery, emplacement, Patriot, heavy fortress,
+shield generator, CP relay) gets one free change on it (`PlayerProfile.FreeBranchSwap`, spent by `TryChooseBranch`) and a
+once-only notice on the menu listing those towers and their branches (`TakeBranchNews`). Ranks and tower equipment are
+untouched (equipment is kept by tower, not branch).
+
+### Tests
+
+`TowerBranchTests` (new): every pair differs in kind; the 57 mm hits a helicopter with its air-burst round and the sniper gun
+cannot; the mortar lands inside a walled yard where a direct-fire gun cannot; the counter-battery howitzer turns from a nearer
+tank to the gun that fired; the PAC-3 shoots down a boss's missile (the Doomsday train's) and a cruise-missile strike and no
+MLRS rockets; the long-range radar shows a jet at 130 m and the PAC-3 does not; the steel fortress's two all-round guns; tower
+shields are each tower's own, come back, let energy through and never add to a dome; the loot depot pays near kills and stays
+under the cap; the AI picks by the deck; the save migrates with one free change and one notice. The Iron Dome's rounds stay
+`Prompt20TowersMapsTests`'s. Updated: `Prompt17ContentTests` (the shield branches), `TowerIconTests` (a branch may show its own
+art's icon), `UiLanguageTests` (data placeholders are not words), `CombatValueMeasure`'s rocket list. Run once:
+`TowerBranchTests`, `Prompt20TowersMapsTests`, `Prompt17ContentTests`, `CounterTests`, `CalibreTests`, `LocalisationScanTests`,
+`UnitLinesTests`, `TowerRosterTests`, `TowerCardTests`, `BaseTests`, `BaseDefenceTests`, `ContentTests`, `ApsTests`,
+`BigAttackTests`, `StringsTests`, the migration tests, `AirAndTowerTests`, `SupportTextTests`, `BaseScreenTests`, `ArmourTests`,
+`WeaponTests`, `EconomyTests`, `BaseStrengthTests`, `MuzzleAuditTests`, `TowerIconTests`, `UiLanguageTests`, `CardRenderTests`,
+`TowerGearTests`.
+
+Failing and not from this job: `CardRenderTests` (renders to redo: the new branch ids, and boss models changed on lead),
+`MuzzleAuditTests` (boss mounts: behemoth, fenrir...), `TowerIconTests` (`coastal_battery` has no icon), `UiLanguageTests` (proper
+names such as Leviathan and Icarus), `ArmourTests` (`casemate_155`, `naval_127`, `naval_100` are written `{"id"` without the
+space its text split expects), `TowerGearTests` x3 (sabot rounds fit the Patriot; they fail on the balance pass's tree over
+319a285 too, so not from this job; not diagnosed), `BaseTests.TheAiStopsFeedingVehiclesIntoTowers` (a balance check, run
+because the measures ran with MB_BALANCE=1: 14.9 % against 12.9 %, the stronger towers of 19B and this pass).
+
+### Left
+
+- The art agent's models and icons (`<tower>_a` / `_b`, DECISIONS 19U) wire in by name; until then branches look like their
+  tower. The steel fortress's two guns share the tower model's one `mg` muzzle until its model brings two.
+- Card renders for the four new branch ids and every branch's art, and the screenshots of every branch and rank (the lead's).
+- FPS of a base full of branch towers on a low-end phone (F), the image-diff test of A against B and ranks 1/3/5/7 (F, the art).
+- A branch-pick measure against human decks, and the Guide's per-branch page as its own tab if the owner wants one.
+
 ## 19U. Tower-branch prompt C: branch models, rank details, branch icons (2026-09-29)
 
 Art side only (C.1, C.2, C.4, C.6, C.7 of `Docs/prompts/tower-branches_vi.txt`). No sim data or behaviour changed:
@@ -6787,3 +6920,6 @@ run: it will list the 32 branch cards until the card pictures are rendered again
 5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
 detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
 Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).
+
+**Lead note on the tower-branch merge (2026-09-29).** The art agent's `TowerArt` (a branch wears `<tower>_a`/`_b` by its order in balance.json, and its rank details) was kept in `VehicleView`, `TowerIcons` and `TowerIconTests`. The branch agent's `BranchArt` resolves to the same ids through each branch's `"art"` field and stays for the air-dropped towers. The flak branch is back at 14 a round with a faster rhythm, on the calibre scale. Three `TowerGearTests` fail since the balance pass (8ec75eb): ground-target gear fits the AA tower's SAM branch and the Patriot. Weapon inheritance and the roof MG (`targets: All`, which counts as air-only on a secondary mount) were checked and are not the cause. Next suspects: mount order (mount 0 counts as the main weapon in `TowerFit.Of`), and whether the AA tower now has a ground-only gun for its 45/15 ground target. If it does, the tests' "no gun for ground targets" expectation is out of date. Listed for the testing phase.
+

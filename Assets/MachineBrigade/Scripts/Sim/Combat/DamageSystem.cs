@@ -253,6 +253,10 @@ namespace MachineBrigade.Sim.Combat
         /// Prompt 20 L.1: interceptor missiles that take no direct fire (the Iron Dome) take only
         /// rounds lobbed from afar: drones, artillery rockets, long-range missiles and shells.
         /// </summary>
+        /// <summary>A cruise or ballistic missile (its family, or a missile fired from a minimum range).</summary>
+        internal static bool IsHeavyMissile(WeaponDef weapon) =>
+            weapon.Family is "cruise" or "ballistic" || (weapon.Projectile == ProjectileKind.Missile && weapon.MinRange > 0f);
+
         private bool TryIntercept(Projectile p)
         {
             var weapon = p.Weapon;
@@ -272,9 +276,11 @@ namespace MachineBrigade.Sim.Combat
             var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
             var rocket = kind == ProjectileKind.Rocket;
             var shell = kind == ProjectileKind.Shell && weapon.Indirect;
-            if (!direct && !rocket && !shell) return false;
+            if (!direct && !rocket && !shell && !IsHeavyMissile(weapon)) return false;
             // Lobbed from afar: a drone, or a rocket or missile with a minimum range (artillery, a ballistic missile).
             var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            // A heavy missile (cruise or ballistic): the only thing a PAC-3's interceptors take (DECISIONS 19T).
+            var heavy = IsHeavyMissile(weapon);
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
             foreach (var v in _world.VehicleList)
             {
@@ -285,9 +291,10 @@ namespace MachineBrigade.Sim.Combat
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
-                if (!direct && rocket && !aps.Rockets) continue;
-                if (!aps.Direct && direct && !lobbed) continue;
-                if (!direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
+                if (aps.Heavy && !heavy) continue;
+                if (!aps.Heavy && !direct && rocket && !aps.Rockets) continue;
+                if (!aps.Heavy && !aps.Direct && direct && !lobbed) continue;
+                if (!aps.Heavy && !direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
                 // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
                 if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
                 {

@@ -260,39 +260,24 @@ namespace MachineBrigade.Sim.Modes
                 var aa = Draw(pool, random, p => p.size == SlotSize.Small && IsAntiAir(catalog, p.id)) ?? (catalog.Vehicles.ContainsKey("aa_turret") ? "aa_turret" : null);
                 if (aa != null) loadout.Small[loadout.Small.Count - 1] = aa;
             }
-            if (against != null && difficulty != "Easy") ChooseAiBranches(catalog, loadout, against);
+            if (against != null && difficulty != "Easy") ChooseAiBranches(catalog, loadout, against, weights);
             return loadout;
         }
 
         /// <summary>
-        /// Prompt 20 L.1: the AI's point defence (a tower with active protection and branches, the C-RAM) takes the branch
-        /// that suits the deck it faces: against a deck whose cards mostly lob their fire from afar (artillery, rocket
-        /// artillery, mortars, drones, long-range missiles) the branch that takes no direct fire and reaches furthest (the
-        /// Iron Dome); against one that fires straight at it (ATGMs, rocket pods, helicopters' missiles) or has neither, the
-        /// close-in branch with the most interceptors (Centurion). Deterministic: the deck's cards counted by their main weapon.
+        /// The AI's rank-7 branches (prompt 20 L.1 for the C-RAM; the tower-branch rework, DECISIONS 19T A.5, for every
+        /// tower): each tower in the loadout takes the branch <see cref="BranchChoice"/> scores best against the deck it
+        /// will face, its general's style weighing the branches it likes.
         /// </summary>
-        public static void ChooseAiBranches(Catalog catalog, BaseLoadout loadout, IReadOnlyCollection<string> against)
+        public static void ChooseAiBranches(Catalog catalog, BaseLoadout loadout, IReadOnlyCollection<string> against, IReadOnlyDictionary<string, float>? style = null)
         {
-            int lobbed = 0, straight = 0;
-            foreach (var id in against)
-            {
-                if (!catalog.Vehicles.TryGetValue(id, out var card) || card.Weapon is not { } w || w.Damage <= 0f) continue;
-                if (w.Projectile == ProjectileKind.Drone || (w.MinRange > 0f && w.CanTarget(false))) lobbed++;
-                else if (w.Guided || w.Projectile == ProjectileKind.Rocket) straight++;
-            }
+            var threat = BranchChoice.Of(catalog, against);
+            var towers = System.Linq.Enumerable.Count(loadout.Towers);
             var seen = new HashSet<string>();
             foreach (var tower in loadout.Towers)
             {
-                if (!seen.Add(tower) || !catalog.Vehicles.TryGetValue(tower, out var def) || def.Aps == null) continue;
-                string? far = null, close = null;
-                foreach (var b in TowerCards.Branches(catalog, tower))
-                {
-                    var aps = catalog.Vehicles[b].Aps;
-                    if (aps == null) continue;
-                    if (!aps.Direct) { if (far == null || aps.Radius > catalog.Vehicles[far].Aps!.Radius) far = b; }
-                    else if (close == null || aps.Charges > catalog.Vehicles[close].Aps!.Charges) close = b;
-                }
-                var pick = lobbed > straight ? far ?? close : close ?? far;
+                if (!seen.Add(tower)) continue;
+                var pick = BranchChoice.Pick(catalog, tower, threat, towers, style);
                 if (pick != null) loadout.Branches[tower] = pick;
             }
         }

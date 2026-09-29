@@ -1096,6 +1096,8 @@ namespace MachineBrigade.Sim
                     if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
+                    // The Patriot's long-range radar (DECISIONS 19T): the air picture over a wide circle, stealth aircraft too.
+                    if (spotter.Def.RevealAir > 0f && target.Flying && spotter.Team != target.Team && !spotter.Stunned) range = MathF.Max(range, spotter.Def.RevealAir);
                     // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
                     if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;

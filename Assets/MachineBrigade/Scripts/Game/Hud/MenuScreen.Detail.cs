@@ -356,6 +356,22 @@ namespace MachineBrigade.Game.Hud
                 }
                 if (unit.Flying || unit.Weapon.Ammo > 0 && !unit.Static) AmmoIconTable();
             }
+            // The tower-branch rework (D.3): each rank-7 branch's page: its role, when to pick it, what sets it apart, its behaviour.
+            var towerBranches = TowerCards.Branches(_catalog, id);
+            if (towerBranches.Count > 0)
+            {
+                _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.branches")), "fc-caption fc-mt-4 fc-mb-2"));
+                for (var i = 0; i < towerBranches.Count; i++)
+                {
+                    var b = _catalog.Vehicles[towerBranches[i]];
+                    var other = _catalog.Vehicles[towerBranches[(i + 1) % towerBranches.Count]];
+                    _detailBody.Add(Kit.Text(Kit.Caps(Strings.Branch(b.Id)), "fc-panel-title fc-mt-2"));
+                    _detailBody.Add(Kit.Body(Strings.Get("branch." + b.Id + ".info")));
+                    if (BranchLines.When(b.Id) is { Length: > 0 } when) _detailBody.Add(Kit.Body(when));
+                    foreach (var fact in BranchLines.Differences(b, other)) _detailBody.Add(Kit.Body("· " + fact));
+                    foreach (var line in UnitLines.Behaviour(_catalog, b)) _detailBody.Add(Kit.Body2("· " + line));
+                }
+            }
             // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
             foreach (var elite in _catalog.Vehicles.Values)
             {
@@ -751,20 +767,11 @@ namespace MachineBrigade.Game.Hud
                 else
                 {
                     _detailBody.Add(Kit.Body2(rank < TowerCards.BranchRank ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
-                        : (chosen == null ? Strings.Get("camp.branchFree") : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0")))
+                        : (chosen == null ? Strings.Get("camp.branchFree") : PlayerProfile.FreeBranchSwap(card) ? Strings.Get("camp.branchFreeSwap")
+                            : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0")))
                           + " " + Strings.Get("detail.branchTap")));
-                    foreach (var b in branches)
-                    {
-                        var branchId = b;
-                        var row = Kit.Tappable(KitPanel.SurfaceClass + " fc-weapon" + (b == chosen ? " fc-weapon--chosen" : ""), () => ChooseTowerBranch(card, branchId));
-                        row.Add(Kit.Icon(b == chosen ? "check" : rank < TowerCards.BranchRank ? "lock" : "upgrade", "fc-weapon__icon"));
-                        var text = Kit.Box("fc-row-text fc-grow");
-                        if (TowerIcons.For(b) is { } branchIcon && branchIcon != TowerIcons.For(card)) row.Add(Kit.Icon(branchIcon, "fc-weapon__icon"));
-                        text.Add(Kit.Text(Kit.Caps(Strings.Branch(b)), "fc-panel-title"));
-                        text.Add(Kit.Body2(Strings.Get("branch." + b + ".info")));
-                        row.Add(text);
-                        _detailBody.Add(row);
-                    }
+                    // The tower-branch rework (D.1): both branches side by side, from their data.
+                    _detailBody.Add(BranchLines.Picker(_catalog, card, chosen, rank < TowerCards.BranchRank, b => ChooseTowerBranch(card, b)));
                 }
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("camp.gear")), "fc-caption fc-mt-4 fc-mb-2"));
                 _detailBody.Add(Kit.Body2(Strings.Get("detail.gearTap")));
@@ -801,7 +808,7 @@ namespace MachineBrigade.Game.Hud
             }
             var chosen = PlayerProfile.TowerBranch(card);
             if (chosen == branchId) return;
-            if (chosen == null)
+            if (chosen == null || PlayerProfile.FreeBranchSwap(card))
             {
                 ApplyTowerBranch(card, branchId);
                 return;

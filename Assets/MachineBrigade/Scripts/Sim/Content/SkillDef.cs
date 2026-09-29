@@ -160,6 +160,13 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 20 L.1: interceptor missiles (the Iron Dome), which meet a round out near its mark, not beside the launcher.</summary>
         public bool Missiles { get; internal set; }
+
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T): the Patriot PAC-3's interceptors take only heavy missiles: cruise and
+        /// ballistic missiles (their family, or a missile fired from a minimum range), the cruise-missile strike and a
+        /// boss's big-attack missiles; never rockets, shells, drones or direct fire.
+        /// </summary>
+        public bool Heavy { get; internal set; }
     }
 
     /// <summary>

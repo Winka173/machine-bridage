@@ -51,6 +51,18 @@ namespace MachineBrigade.Tests
                 new[] { "main_battle_tank", "main_battle_tank", "light_tank" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank" },
                 new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "main_battle_tank" },
             },
+            // The tower-branch rework (DECISIONS 19T): artillery shelling the point from its reach (counter-battery, guided rockets, long guns).
+            ["shelling"] = new[]
+            {
+                new[] { "mortar_carrier" }, new[] { "artillery" }, new[] { "mortar_carrier", "mortar_carrier" }, new[] { "mlrs" }, new[] { "artillery", "artillery" },
+                new[] { "mlrs", "artillery" }, new[] { "mlrs", "mlrs" }, new[] { "heavy_rocket_artillery", "mlrs" }, new[] { "heavy_rocket_artillery", "mlrs", "artillery" },
+            },
+            // Heavy armour (the top-attack and sniper branches' fight).
+            ["heavy"] = new[]
+            {
+                new[] { "heavy_tank" }, new[] { "twin_tank" }, new[] { "heavy_tank", "twin_tank" }, new[] { "titan_tank" }, new[] { "heavy_tank", "heavy_tank" },
+                new[] { "titan_tank", "heavy_tank" }, new[] { "titan_tank", "titan_tank" }, new[] { "titan_tank", "titan_tank", "heavy_tank" },
+            },
             ["air"] = new[]
             {
                 new[] { "scout_heli" }, new[] { "strike_drone" }, new[] { "scout_heli", "scout_heli" }, new[] { "attack_helicopter" },
@@ -78,7 +90,7 @@ namespace MachineBrigade.Tests
             var list = new List<string>();
             foreach (var t in TowerCards.All(catalog))
             {
-                if (!catalog.Vehicles[t].Mounts.Any(m => m.Weapon.Damage > 0f)) continue;
+                if (!catalog.Vehicles[t].Mounts.Any(m => m.Weapon.Damage > 0f) && catalog.Vehicles[t].Mines == null) continue;
                 if (filter == null || filter.Contains(t)) list.Add(t);
                 foreach (var b in TowerCards.Branches(catalog, t))
                     if (filter == null || filter.Contains(t) || filter.Contains(b)) list.Add(b);

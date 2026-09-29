@@ -190,6 +190,8 @@ namespace MachineBrigade.Sim.Combat
 
                 case OrderKind.Idle:
                     if (RunTargetInReach(v, weapon, out var runIdle)) return runIdle;
+                    // A counter-battery gun leaves what it was shelling for the enemy gun that just fired (DECISIONS 19T).
+                    if (CounterBatteryTarget(v, weapon) is { } gun) return gun;
                     if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current, weapon)) return current;
                     return BestInRange(v, weapon, EntityId.None);
 

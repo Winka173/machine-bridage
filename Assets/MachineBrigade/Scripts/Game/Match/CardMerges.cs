@@ -36,6 +36,23 @@ namespace MachineBrigade.Game.Match
         /// <summary>Tower branches gone (prompt 20 L.1: the C-RAM's Hunter made way for the Iron Dome): a choice of one is dropped.</summary>
         public static readonly string[] RetiredBranches = { "c_ram.hunter" };
 
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T): remade branches and the nearest new one a choice moves to (the same
+        /// slot, A or B; the ids that still describe their branch were kept: the gun turret's, the Patriot's, the heavy
+        /// fortress's, the counter-battery howitzer's).
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, string> RenamedBranches = new Dictionary<string, string>
+        {
+            ["rocket_turret.thermo"] = "rocket_turret.guided",
+            ["artillery_emplacement.ext"] = "artillery_emplacement.mortar",
+            ["shield_tower.pulse"] = "shield_tower.ward",
+            ["cp_relay.express"] = "cp_relay.loot",
+        };
+
+        /// <summary>The towers whose branches changed in the rework: a player's choice on one earns a free change and a news line.</summary>
+        public static readonly string[] ReworkedBranchTowers =
+            { "gun_turret", "rocket_turret", "artillery_emplacement", "missile_battery", "heavy_turret", "shield_tower", "cp_relay" };
+
         /// <summary>What the retired and merged premium cards cost: a player who bought one gets it back.</summary>
         public static readonly IReadOnlyDictionary<string, int> PremiumPrices = new Dictionary<string, int>
         {

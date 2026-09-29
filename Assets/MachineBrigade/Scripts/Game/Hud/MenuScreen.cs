@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
@@ -117,6 +118,7 @@ namespace MachineBrigade.Game.Hud
             }
             Root.Add(_nav);
             Root.Add(_note);
+            ShowBranchNews();
 
             // A language change rebuilds the menu; come back to the page the player was on.
             if (_reopenDeck) _armyView = ArmyView.Deck;
@@ -579,6 +581,20 @@ namespace MachineBrigade.Game.Hud
         private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());
 
         /// <summary>A short message along the bottom of the menu (what just happened, or why not).</summary>
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T, E.3): once, the towers whose remade branches moved the player's choice, and
+        /// that their next change is free.
+        /// </summary>
+        private void ShowBranchNews()
+        {
+            var news = PlayerProfile.TakeBranchNews();
+            if (news.Count == 0) return;
+            var names = string.Join(", ", news.Select(t => Strings.Card(t) + (PlayerProfile.TowerBranch(t) is { } b ? " (" + Strings.Branch(b) + ")" : "")));
+            VisualElement scrim = null;
+            var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.branches.title"), Strings.Format("news.branches", names), ok));
+        }
+
         private void Note(string text, bool warn = false) => KitToast.Show(_note, text, warn ? ToastKind.Alert : ToastKind.Info, 3f);
 
         private readonly VisualElement _note;

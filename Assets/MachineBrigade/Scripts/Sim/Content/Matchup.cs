@@ -154,6 +154,8 @@ namespace MachineBrigade.Sim.Content
         public static float ClassEffect(DamageTable table, WeaponDef weapon, ArmorClass armor)
         {
             if (weapon.Damage <= 0f || !weapon.CanTarget(armor == ArmorClass.Air)) return 0f;
+            // A dual-purpose gun's air-burst round against aircraft (the tower-branch rework).
+            if (armor == ArmorClass.Air && weapon.AirRound is { } air) weapon = air;
             var levels = armor == ArmorClass.Structure ? ArmourLevels.Uniform(StructureLevel) : ArmourLevels.OfClass(armor);
             var kind = armor switch { ArmorClass.Air => TargetKind.Air, ArmorClass.Structure => TargetKind.Structure, _ => TargetKind.Ground };
             var face = armor is ArmorClass.Air or ArmorClass.Structure ? ArmorFace.Front : FaceStruck(weapon);

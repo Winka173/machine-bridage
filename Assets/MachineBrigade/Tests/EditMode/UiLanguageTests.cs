@@ -42,7 +42,8 @@ namespace MachineBrigade.Tests
         /// <summary>The English words of a Vietnamese text: unmarked Latin words that are not Vietnamese syllables and not allowed names.</summary>
         private static List<string> EnglishIn(string vi, HashSet<string> allowed)
         {
-            var plain = Regex.Replace(vi, @"<[^>]+>|\{\d+[^}]*\}|\[\[|\]\]", " ");
+            // Data placeholders ({{count}}: a support's numbers, the balance pass after prompt 18) are not words.
+            var plain = Regex.Replace(vi, @"<[^>]+>|\{\{\w+\}\}|\{\d+[^}]*\}|\[\[|\]\]", " ");
             var words = new List<string>();
             foreach (Match m in Regex.Matches(plain, @"\p{L}+"))
             {

@@ -122,3 +122,13 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | Rank details (C.2) | Plain boxes laid on the tower's walls at run time (Hazard bars, Armor plates) | Per-tower rank kits modelled in Blender (stencilled bars, bolted appliqué fitted to each body) | Medium |
 | Branch firing effects and sounds (C.3): the mortar's arc, the tower shields' beams to each tower, the autocannon's bursts, the flame arc | The branch's weapon effect as the sim gives it | Effects and sounds of their own (not part of this art pass) | Medium |
 | Steel fortress's two small turrets | Stand on `Mount_gun` / `Mount_gun.001` but turn and fire only once the balance pass gives them MG mounts | The mounts (section B) | Medium |
+
+## Tower branches (DECISIONS 19T), high priority
+
+| Missing | Stand-in | Needed |
+|---|---|---|
+| Models and icons of all 32 branches (`<tower>_a` / `<tower>_b`) | The tower's own model and icon (`BranchArt` falls back) | The art branch (feature/tower-art, DECISIONS 19U) |
+| Card renders of the branches, four of them new ids (`rocket_turret.guided`, `artillery_emplacement.mortar`, `shield_tower.ward`, `cp_relay.loot`) | The tower's render in the picker | `CardRenders.RenderBatch` with graphics, after the art merge (the lead) |
+| The steel fortress's two machine-gun turrets | Both fire from the heavy turret's one `mg` muzzle | `Mount_mg` / `Mount_mg2` on `heavy_turret_b` |
+| Tower shields' beams to each tower, the loot depot's pay-out, the radar's air picture | None (the rules work) | Effects on `Vehicle.WardHp` / `WardFrom`, `EconomySystem.LootPaid`, `VehicleDef.RevealAir` |
+| Screenshots of every branch and rank in Docs/ui-screens | None | The lead, after the art merge |

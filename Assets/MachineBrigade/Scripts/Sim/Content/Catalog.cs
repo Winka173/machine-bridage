@@ -187,6 +187,7 @@ namespace MachineBrigade.Sim.Content
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
             ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
+            ResolveAirRounds(Inherited(root.Array("weapons"), model: false), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -318,7 +319,7 @@ namespace MachineBrigade.Sim.Content
                         def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), reload > 0f ? a.Float("recharge", reload) : a.Float("recharge"))
                         {
                             Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f), Laser = a.Bool("laser", false),
-                            Reload = reload, Direct = a.Bool("direct", true), Missiles = a.Bool("missiles", false),
+                            Reload = reload, Direct = a.Bool("direct", true), Missiles = a.Bool("missiles", false), Heavy = a.Bool("heavy", false),
                         };
                     }
                     if (v.Has("commandAura"))

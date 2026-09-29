@@ -88,6 +88,12 @@ namespace MachineBrigade.Game.Match
             /// <summary>Towers whose rank-7 branch was chosen, and the branch def each fights as.</summary>
             public List<string> branchTowers = new();
             public List<string> branchChoices = new();
+
+            /// <summary>The tower-branch rework (DECISIONS 19T): towers whose next branch change is free, once each.</summary>
+            public List<string> freeBranchSwaps = new();
+
+            /// <summary>The reworked towers to tell the player about once ("what's new"); empty once shown.</summary>
+            public List<string> branchNews = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
 
