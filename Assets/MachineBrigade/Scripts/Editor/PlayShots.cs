@@ -67,10 +67,17 @@ namespace MachineBrigade.Editor
                     var hq = Hq(w, 0);
                     var attacker = Nearest(w, hq, v => v.Team != 0 && !v.Def.Flying);
                     var views = new List<(string, Vector3, float)> { ("", attacker is { } a ? Vector3.Lerp(hq, a, 0.5f) : hq, 30f) };
-                    // The close views of the base: the HQ, then the two towers furthest from it (its gate and its flank).
+                    // The close views of the base: the HQ, then the two towers nearest it that stand apart from each other.
                     views.Add(("-base-hq", hq, 13f));
-                    var towers = w.Vehicles.Where(v => v.IsAlive && v.Team == 0 && v.Def.Fort != null).Select(Of).OrderByDescending(p => Vector3.Distance(p, hq)).Take(2).ToList();
-                    for (var i = 0; i < towers.Count; i++) views.Add(("-base-" + (i + 1), towers[i], 13f));
+                    var towers = new List<Vector3>();
+                    foreach (var p in w.Vehicles.Where(v => v.IsAlive && v.Team == 0 && v.Def.Fort != null && !v.Def.Boss).Select(Of)
+                                 .Where(p => Vector3.Distance(p, hq) > 10f).OrderBy(p => Vector3.Distance(p, hq)))
+                    {
+                        if (towers.Any(t => Vector3.Distance(t, p) < 22f)) continue;
+                        towers.Add(p);
+                        if (towers.Count == 2) break;
+                    }
+                    for (var i = 0; i < towers.Count; i++) views.Add(("-base-" + (i + 1), Vector3.Lerp(hq, towers[i], 0.8f), 13f));
                     return views;
                 },
             },
@@ -99,6 +106,7 @@ namespace MachineBrigade.Editor
         private static double _deadline;
         private static List<(string suffix, Vector3 focus, float zoom)> _views;
         private static RenderTexture _camTexture, _uiTexture;
+        private static SimWorld _previous;
         private static string _folder, _out;
         private static int _state; // 0 wait for the match, 1 place the camera, 2 capture
 
@@ -138,7 +146,8 @@ namespace MachineBrigade.Editor
             switch (_state)
             {
                 case 0:
-                    if (world.Tick < scene.Tick) return;
+                    // Just after the scene loads, the last match's world is still found for a frame.
+                    if (world == _previous || world.Tick < scene.Tick) return;
                     _views = scene.Views(world);
                     _view = 0;
                     _state = 1;
@@ -182,6 +191,7 @@ namespace MachineBrigade.Editor
             MatchSettings.DeckVehicles.Clear();
             MatchSettings.DeckVehicles.AddRange(s.Deck ?? StandardDeck);
             Strings.Vietnamese = true;
+            _previous = World();
             MatchSettings.InMatch = true;
             _deadline = now + s.Tick / 20.0 + 90.0;
             SceneManager.LoadScene(0);
