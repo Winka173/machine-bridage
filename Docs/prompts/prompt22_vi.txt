@@ -1,0 +1,186 @@
+Prompt 22: Hoàn thiện cốt truyện, hệ Chỉ huy, nội dung đi kèm
+
+Nhiệm vụ: hoàn thiện toàn bộ cốt truyện của chiến dịch (đổi mọi tên riêng sang tên không phải tiếng Việt, 12 chương và 3 chương xen kẽ với số nhiệm vụ linh hoạt, các cơ chế kể chuyện để giữ chân người chơi); thêm hệ Chỉ huy với kỹ năng thụ động cho 14 chỉ huy phe ta và các tướng địch; thêm 2 map, 2 mini boss và 1 đơn vị đồng minh theo kịch bản. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 20 và 21. Ở những chỗ mâu thuẫn về cốt truyện, tên nhân vật, tên địa danh và số nhiệm vụ mỗi chương, prompt này thay cho prompt 20. Giữ nguyên hệ boss, luật boss chủ lực và mini boss, hệ bật/tắt theo hồi và Săn trùm của prompt 20; giữ đa ngôn ngữ của prompt 21.
+
+Prompt này lớn. Làm theo 3 lượt, chạy đủ test và commit sau mỗi lượt:
+- Lượt 1: phần A, B, C (đổi tên, cấu trúc chiến dịch, cốt truyện từng chương).
+- Lượt 2: phần D, E (cơ chế kể chuyện, nội dung mới).
+- Lượt 3: phần F, G (hệ Chỉ huy, kiểm tra tổng).
+
+A. ĐỔI TÊN (không còn tên riêng tiếng Việt nào)
+1. Nguyên tắc:
+   - Mọi tên riêng (nhân vật, biệt danh, phe phái, địa danh, map, tên chương, tên hồi) không dùng tiếng Việt, ở cả bản tiếng Việt và tiếng Anh. Phần mô tả, dòng phụ của boss, thoại và briefing vẫn được dịch theo ngôn ngữ đang chọn.
+   - Giữ id nội bộ để save, kỷ lục và thành tích cũ vẫn đúng.
+   - Cập nhật mọi nơi: localization, thoại, radio, briefing, mẩu truyện, Hồ sơ, Hướng dẫn, màn chọn chương, màn kết quả, Săn trùm, Tác chiến, thành tích, tài liệu thiết kế, và bảng thuật ngữ docs/glossary.md của prompt 21.
+2. Phe phái và địa danh:
+   - Dải Duyên hải → Meridian Coast.
+   - Liên minh Duyên hải → Meridian Accord.
+   - Lữ đoàn Cơ giới 7 → 7th Mechanized Brigade, biệt danh "Machine Brigade".
+   - Thủ đô → Veyra.
+3. Nhân vật phe ta:
+   - Đại tá Trần Khải "Iron" → Colonel Marcus Kade, biệt danh "Iron".
+   - Kỹ sư Mai → Engineer Mara Lind.
+   - Phi công Diều Hâu "Hawk" → Lieutenant Jonah Reyes, biệt danh "Hawk".
+   - Sĩ quan tình báo Linh → Captain Nadia Kerr.
+4. Nhân vật phe địch:
+   - Tướng Lý Hàn "Titan" → General Roland Thorne, biệt danh "Titan".
+   - Tiến sĩ Elara Sen → Dr. Elara Venn, biệt danh "Queen".
+   - Kasimir Wolff: giữ tên, biệt danh "Raven"; bỏ hoàn toàn cách gọi "Quạ Đen".
+   - Brandt, Viktor Varga "Anvil", Ilya Orlov "Winter", Magnus Kessler "Maelstrom", Lucien Aurel "Sol": giữ nguyên.
+5. Bản đồ:
+   - Lũng Xanh → Greenvale. Hẻm Đá Đỏ → Red Rock. Đèo Bão Tuyết → Whiteout Pass. Bãi Sắt Gỉ → Rust Yard. Sườn Dung Nham → Emberridge. Đèo Rừng Rậm → Jungle Pass. Căn cứ Skyhold → Skyhold. Thành phố Metro → Metro City.
+   - Bãi Đổ Bộ → Stormbeach. Đập Thủy Điện → Hollow Dam. Thủ Đô → Veyra. Vịnh Hải Đăng → Beacon Bay. Quần đảo san hô → Coral Keys. Sa mạc muối → Salt Flats. Cầu biên giới → Border Crossing. Đầm lầy → Mirewood. Mỏ lộ thiên → Deepcut Mine. Cửa ngõ quỹ đạo → Skygate Array. Bãi Phóng → Helion Launch Complex.
+   - Ashfield, Dunebreak, Frostpeak, Ironport: giữ nguyên.
+   - Map mới ở phần E: Foundry, Veyra Old Quarter.
+6. Tên boss và mini boss giữ như prompt 20. Thêm 2 mini boss mới ở phần E.
+7. Viết test quét toàn bộ chuỗi (cả hai ngôn ngữ) để không còn tên riêng cũ.
+
+B. CẤU TRÚC CHIẾN DỊCH
+1. Số nhiệm vụ mỗi chương linh hoạt theo nhịp truyện, tối đa 18 nhiệm vụ chính mỗi chương. Nhiệm vụ cuối của mỗi chương chính là chiến dịch lớn có boss chủ lực (khung prompt 5). Chương xen kẽ không có boss chủ lực.
+2. Số nhiệm vụ (chính / phụ):
+   Hồi I "Landfall":
+   - Chương 1 Coast of Fire: 8 / 1.
+   - Chương 2 Black Gold: 11 / 2.
+   - Chương 3 The Long Winter: 12 / 2.
+   - Xen kẽ I "Blueprints": 4 / 0.
+   Hồi II "Counteroffensive":
+   - Chương 4 Iron Harbor: 16 / 2.
+   - Chương 5 Burning Canopy: 13 / 2.
+   - Chương 6 Counterstrike: 16 / 2.
+   - Xen kẽ II "The Queen's Choice": 4 / 0.
+   Hồi III "Betrayal":
+   - Chương 7 Veyra: 18 / 1.
+   - Chương 8 Underworld: 12 / 2.
+   - Chương 9 Rough Water: 14 / 2.
+   - Xen kẽ III "Hawk and Raven": 4 / 0.
+   Hồi IV "Silver Sky":
+   - Chương 10 War in the Sky: 14 / 2.
+   - Chương 11 Skygate: 11 / 1.
+   - Chương 12 Helion: 10 / 0.
+   Tổng khoảng 167 nhiệm vụ chính và 19 nhiệm vụ phụ. Được chỉnh số nhiệm vụ từng chương nếu nhịp truyện cần, không vượt 18; ghi lý do.
+3. Hệ bật/tắt theo hồi của prompt 20: mỗi chương xen kẽ đi cùng hồi đứng trước nó.
+4. Với số lượng nhiệm vụ này, tận dụng luật tái dùng map của prompt 4 (đổi hướng, vị trí căn cứ, thời tiết, vùng chơi, phe giữ căn cứ) và dùng mẫu nhiệm vụ để tạo nhanh các nhiệm vụ nhỏ. Không để hai nhiệm vụ liền nhau dùng cùng một map với cùng cấu hình.
+5. Nhịp trận: nhiệm vụ thường khoảng 5–10 phút; mỗi chương chính có ít nhất một nhiệm vụ set-piece nổi bật ngoài trận boss.
+6. Boss và mini boss mỗi chương theo bảng của prompt 20, cộng các mini boss mới ở phần E. Chương 7 dài hơn: thêm vài lần tái xuất trong phố của các mini boss đã có (ví dụ Inferno, Juggernaut).
+
+C. CỐT TRUYỆN
+1. Bối cảnh: tương lai gần. Meridian Coast là vùng ven biển giàu dầu mỏ và khoáng sản. Sau khi chính quyền trong vùng sụp đổ, một tập đoàn khai khoáng thuê Hegemon, tập đoàn quân sự tư nhân lớn nhất thế giới, để "giữ ổn định". Trong hai năm, Hegemon trở thành thế lực chiếm đóng và biến cả vùng thành nơi thử nghiệm vũ khí. Các tỉnh còn lại lập ra Meridian Accord; lực lượng mạnh nhất là 7th Mechanized Brigade ("Machine Brigade"), chỉ gồm phương tiện, đánh bằng thả dù và tốc độ. Người chơi là chỉ huy chiến trường của lữ đoàn. Đứng sau mọi chuyện là Dự án Icarus của Director Lucien Aurel: vũ khí quỹ đạo có thể tấn công bất kỳ điểm nào trên mặt đất.
+2. Nhân vật (cá tính và động cơ):
+   - Colonel Marcus Kade "Iron": chỉ huy trực tiếp, giọng chính trên radio; bình tĩnh, thực dụng, tin vào lữ đoàn hơn các chính trị gia.
+   - Engineer Mara Lind: phụ trách căn cứ; từng là kỹ sư chương trình Behemoth của Hegemon, bỏ đi vì mặc cảm.
+   - Lieutenant Jonah Reyes "Hawk": chỉ huy không quân; trẻ, liều, có món nợ với Raven (người đã bắn hạ đồng đội cũ của anh).
+   - Captain Nadia Kerr: sĩ quan tình báo; giao nhiệm vụ phụ, giải mã dự án địch, người đầu tiên nghi ngờ Thorne.
+   - Major Brandt: chỉ huy đồn trú ở bờ biển phía tây; tin tuyệt đối vào pháo đài; đầu hàng ở chương 1 và quay lại giúp phe ta ở chương 6.
+   - General Viktor Varga "Anvil": chỉ huy thiết giáp; già, trọng danh dự, yêu cỗ máy của mình như con; cha đẻ Behemoth; tôn trọng người chơi.
+   - Colonel Ilya Orlov "Winter": chỉ huy pháo binh; lạnh lùng, tính toán, thích thắng từ khoảng cách đối thủ không thấy mình.
+   - Admiral Magnus Kessler "Maelstrom": chỉ huy hậu cần và hải quân; coi chiến tranh là bảng cân đối lãi lỗ.
+   - Dr. Elara Venn "Queen": nhà khoa học bầy drone; thiết kế cho cứu hộ thiên tai, bị Aurel biến thành vũ khí; đào ngũ ở cuối chương 5.
+   - Kasimir Wolff "Raven": phi công át chủ bài, chỉ huy không quân của Hegemon; kiêu ngạo.
+   - Director Lucien Aurel "Sol": người đứng đầu Dự án Icarus; tin rằng ai kiểm soát bầu trời sẽ kiểm soát thế giới.
+   - General Roland Thorne "Titan": chỉ huy lực lượng đồng minh lớn nhất của Accord; phản bội ở chương 7, không vì tiền mà vì tin rằng Accord chắc chắn thua khi Icarus hoạt động; Aurel hứa trao ông quyền cai quản Meridian Coast.
+3. Mở đầu nhảy tới tương lai: trước nhiệm vụ đầu tiên, vài giây của cảnh cuối (bầu trời Helion, thanh tungsten rơi xuống, giọng Aurel: "Họ vẫn chưa hiểu."), rồi cắt về Stormbeach ba năm trước.
+4. Diễn biến từng chương (các điểm bắt buộc; tự viết chi tiết từng nhiệm vụ theo tinh thần này):
+   - Chương 1 Coast of Fire (Brandt): đổ bộ Stormbeach, chiếm làng chài, lập tiền đồn ở Greenvale, Mara dựng căn cứ dã chiến. Mini boss Bastion Mk.0. Cuối chương: công chiếm pháo đài Ashfield, hạ Bastion; Brandt đầu hàng; hồ sơ thu được nhắc nhiều lần tới Varga.
+   - Chương 2 Black Gold (Varga): sa mạc Dunebreak; Varga lần đầu lên radio (lời chào của người lính); Thorne chi viện lữ đoàn lần đầu trong một trận lớn. Tại nhà máy lọc dầu gặp Inferno; Mara nhận ra thiết kế của mình. Cuối chương: Behemoth ở Red Rock; Mara lần đầu kể quá khứ với Kade.
+   - Chương 3 The Long Winter (Orlov): tuyến radar ở Frostpeak, pháo binh vô hình. Raven lần đầu xuất hiện với Harpy, săn các đoàn tiếp tế; Hawk nhận ra ký hiệu. Nhiệm vụ phụ truy đuổi Fenrir trong bão tuyết ở Whiteout Pass. Cuối chương: hạ Jötunn; Orlov rút lui: "Mùa đông luôn quay lại."
+   - Xen kẽ I Blueprints: Mara quay lại Foundry, một nhà máy cũ của Hegemon, để lấy bản thiết kế Behemoth. Đối mặt Behemoth Mk.0, chiếc nguyên mẫu do chính bà thiết kế. Người chơi hiểu quá khứ của Mara. Major Otto Brenn "Ledger" (quân nhu của lữ đoàn) giúp lấy hồ sơ.
+   - Chương 4 Iron Harbor (Kessler): Ironport và Rust Yard; chặn Juggernaut; phát hiện Kessler vận chuyển các mẫu Behemoth của Varga qua cảng, trong đó có Tempest. Kessler rút ra biển; Scylla chặn đường ở Beacon Bay. Manh mối đầu tiên về Thorne (một cánh quân đồng minh vắng mặt đúng lúc). Captain Tomas Adler "Flag" dẫn đợt chiếm các cứ điểm ven cảng. Cuối chương: Leviathan cùng hạm đội; lữ đoàn chiếm các trận địa pháo bờ biển cũ và đánh chìm nó; Kessler sống sót nhưng mất cả hạm đội.
+   - Chương 5 Burning Canopy (Venn): Emberridge và Jungle Pass; Locust, rồi Hive. Nadia lần theo tín hiệu tới phòng thí nghiệm của Venn; Venn không khiêu khích, chỉ nói bầy drone được tạo ra để cứu người. Thêm manh mối về Thorne. Cuối chương: hạ Matriarch; Venn tự đầu hàng, mang theo dữ liệu có thư mục "Icarus", và bắt đầu làm việc cho Accord.
+   - Xen kẽ II The Queen's Choice: Venn bị cả Hegemon lẫn một phe cực đoan trong Accord săn đuổi; lữ đoàn hộ tống bà qua Mirewood và Border Crossing. Hai Locust cùng săn bà (dự án cũ của chính bà). Captain Kaia Mendez "Rush" dẫn đoàn hộ tống.
+   - Chương 6 Counterstrike (Varga): Varga tổng phản công vào Ashfield, Whiteout Pass, Hollow Dam. Charybdis đổ bộ ngược lại Stormbeach. Varga đưa ra Behemoth Mk.II. Brandt, đã đổi phe, giúp lữ đoàn dựng phòng tuyến. Nhiệm vụ đặc biệt: Mara cho chạy lại một Behemoth bị ta chiếm, lữ đoàn hộ tống nó. Nhiệm vụ ngừng bắn: Varga và Kade tạm ngừng bắn để sơ tán dân thường khỏi Hollow Dam trước khi đập vỡ; Varga và Kade nói chuyện với nhau lần duy nhất. Manh mối thứ ba về Thorne. Cuối chương: phòng thủ Hollow Dam trước Moloch; cuộc phản công bị bẻ gãy.
+   - Chương 7 Veyra (Thorne): chiến dịch giải phóng thủ đô, bắt đầu từ Metro City qua Veyra Old Quarter tới trung tâm Veyra, giải phóng từng quận. Thorne chỉ huy cánh quân đồng minh; Nadia nhiều lần cảnh báo, không ai tin. Major Piet Dahl "Longshot" chỉ huy pháo binh của lữ đoàn trong trận thủ đô. Giữa trận cuối, căn cứ đồng minh quay pháo vào lữ đoàn (cơ chế đồng minh đổi phe của prompt 5); Nadia là người phát hiện đầu tiên và cứu được một phần lữ đoàn. Thorne lên radio với giọng mệt mỏi: "Anh đã thấy thứ họ sắp phóng lên chưa? Tôi thì thấy rồi." Người chơi đánh ngược lại Atlas. Cuối chương: chặn Nemesis ngay trước trung tâm Veyra; Veyra được giải phóng; Thorne trốn thoát cùng một phần ba lực lượng đồng minh.
+   - Chương 8 Underworld (Thorne): Thorne rút về Deepcut Mine; Tartarus chui dưới lòng đất, Ixion nghiền mọi thứ trên đường lăn; nhiệm vụ phụ ở Red Rock và Dunebreak. Mara nhận ra Thorne đang biến khu mỏ thành pháo đài chờ Icarus. Captain Ines Varro "Tide" và Sergeant Major Lena Quist "Magpie" gia nhập (Tide dẫn các đơn vị địa phương đông quân, Magpie thu hồi chiến lợi phẩm trong mỏ). Cuối chương: Kronos bò về phía căn cứ lữ đoàn; phải chặn nó trước khi tới nơi. Thorne lại chạy thoát, ra biển.
+   - Chương 9 Rough Water (Thorne cùng tàn quân Kessler): Caspian lao dọc bờ; Scylla trở lại. Venn giải mã tín hiệu tàu ngầm dưới Beacon Bay và Coral Keys. Cuối chương: Typhon nổi lên giữa vịnh với Thorne chỉ huy; khi Typhon chìm, Thorne gửi tin nhắn cuối: tọa độ bãi phóng của Dự án Icarus, và câu "Đừng để tôi đã đúng." Để ngỏ việc ông còn sống hay đã chết.
+   - Xen kẽ III Hawk and Raven: Hawk bị bắn rơi sau chiến tuyến (dùng bản đảo chiều của Frostpeak và Jungle Pass); lữ đoàn đi cứu anh trong khi Morrigan, tiêm kích riêng của Raven, săn lùng. Colonel August Reyn "Crown" chỉ huy lực lượng tinh nhuệ đi cứu Hawk.
+   - Chương 10 War in the Sky (Wolff): Raven tung toàn bộ không quân từ Skyhold; Spectre bay vòng trên các con đèo trong đêm; Argus dẫn đường cho pháo binh địch. Lần đầu thấy công nghệ phi thuyền: Icarus Mk.0 hạ xuống thả quân; Venn xác nhận đó là bản thử nghiệm của thứ lớn hơn nhiều. Captain Selma Okoye "Vault" điều phối hậu cần cho chiến dịch đường không kéo dài. Nhiệm vụ đấu tay đôi Hawk với Raven (Morrigan) trên không. Cuối chương: tấn công Skyhold và hạ Roc; Hawk bắn phát cuối cùng.
+   - Chương 11 Skygate (Aurel, Orlov): Aurel lần đầu lên radio, chỉ thông báo vệ tinh đầu tiên đã lên quỹ đạo. Orlov chờ ở Skygate Array với Gungnir, trận cuối của ông. Locust bay trên đầu; Venn phát hiện Aurel đã chiếm dự án drone của bà. Cuối chương: Daedalus hạ xuống thả quân liên tục; hạ được nó thì mở đường tới bãi phóng.
+   - Chương 12 Helion (Aurel, Varga, Kessler): trận cuối ở Helion Launch Complex, với các bản đảo chiều của Salt Flats và Dunebreak làm vùng ngoại vi. Varga (Behemoth Mk.II) và Kessler (Scylla) dồn những gì còn lại; Varga ngã xuống như một người lính; Kessler cố thương lượng tới phút cuối. Behemoth do Mara sửa lại chiến đấu cùng lữ đoàn (phần E.4). Aurel phóng Icarus; thanh tungsten rơi từ quỹ đạo. Trận cuối: Icarus rơi khỏi bầu trời như chính cái tên của nó; Aurel chiến đấu tới cùng trong xác phi thuyền.
+5. Phần kết: Icarus bị hạ, Hegemon tan rã, Meridian Coast được giải phóng sau ba năm. Kade từ chối vị trí trong chính phủ mới, ở lại với lữ đoàn. Mara và Venn cùng tháo dỡ những cỗ máy họ từng góp phần tạo ra. Hawk bay lượt tuần tra cuối cùng qua Skyhold. Cảnh cuối: Nadia nhìn màn hình theo dõi quỹ đạo, vẫn còn vài chấm sáng chưa giải thích; Dự án Icarus chưa bao giờ chỉ có một phi thuyền.
+6. Móc nối cho nội dung sau này (ghi vào docs/, không làm nội dung): các phi thuyền còn lại trên quỹ đạo; tàn quân Kessler trên các con sông nội địa; tướng mới của Hegemon mỗi mùa; số phận của Thorne.
+7. Giọng văn: thoại ngắn, rõ, hợp với radio quân sự; mỗi nhân vật giữ cá tính riêng; mỗi câu radio tối đa khoảng 1–2 dòng trên điện thoại. Viết đủ cả tiếng Việt và tiếng Anh theo bảng thuật ngữ của prompt 21.
+
+D. CƠ CHẾ KỂ CHUYỆN
+1. Bản đồ mặt trận: màn chọn chương là bản đồ Meridian Coast; đường chiến tuyến dịch chuyển theo từng nhiệm vụ thắng; vùng giải phóng đổi màu; căn cứ đã chiếm hiện cờ. Ở chương 7, khi Thorne phản bội, một phần bản đồ đổi màu lại. Các chương thuộc hồi đang tắt hiện theo cấu hình của prompt 20.
+2. Cài manh mối về Thorne ở chương 4, 5 và 6 qua hồ sơ tình báo và vài câu radio của Nadia; người chơi đọc kỹ đoán trước được, người không đọc vẫn theo được truyện.
+3. Vòng truyện nhân vật và nhiệm vụ đền đáp: Mara (Behemoth của bà chiến đấu ở Helion), Hawk (đấu tay đôi với Raven ở chương 10), Nadia (phát hiện cú phản bội ở chương 7), Kade (phần kết), Varga (nhiệm vụ ngừng bắn ở chương 6 và trận cuối ở chương 12).
+4. Radio phản ứng theo cách người chơi đánh: mỗi tướng địch có vài câu theo điều kiện (người chơi thắng nhanh; mất nhiều quân; dùng nhiều máy bay; dùng nhiều drone; đánh chủ yếu bằng pháo binh; vừa ngắt được đòn lớn của boss). Chọn câu deterministic theo tình huống.
+5. Lựa chọn có hệ quả (3–4 lựa chọn, mỗi lựa chọn dẫn tới nhiệm vụ và phần thưởng khác nhau rồi quay về cùng mạch truyện):
+   - Chương 4: đuổi theo Kessler ra biển ngay, hay ở lại cứu tàu dân sự trong cảng.
+   - Chương 8: cứu thợ mỏ bị Thorne giữ (có thêm tiếp viện ở chương 9), hay đánh thẳng vào Kronos (phần thưởng xu lớn hơn).
+   - Chương 11: phá trạm radar của Skygate Array trước (địch ít tầm nhìn hơn ở chương 12), hay đi thẳng tới bãi phóng (nhanh hơn, thêm phần thưởng).
+   - Tự thêm tối đa 1 lựa chọn nếu hợp truyện; ghi lại.
+   Lưu lựa chọn trong save; mục Hồ sơ ghi lại các lựa chọn đã chọn.
+6. Chiến lợi phẩm gắn với truyện: một số thẻ mở khóa vì câu chuyện, có một câu giải thích lúc mở. Tối thiểu: hạ Tempest ở chương 4 mở Pháo điện từ; Venn đào ngũ ở chương 5 mở Máy bay mẹ thả bầy drone; hạ Moloch ở chương 6 mở Xe công sự triển khai; hạ Roc ở chương 10 mở Drone hộ vệ. Tự sắp để khớp lộ trình mở khóa chung của prompt 20.
+7. Hồ sơ tình báo: mỗi chương có vài tài liệu thu được qua mục tiêu phụ (thư của lính Hegemon, báo cáo của Aurel, nhật ký của Mara, ghi chép của Venn, manh mối về Thorne), đọc trong mục Hồ sơ. Không đọc cũng không mất gì về gameplay.
+8. Cảnh kết chương dạng tranh truyện: 3–4 khung tranh tĩnh kèm lời thoại ở cuối mỗi chương và mỗi chương xen kẽ; bỏ qua được; xem lại được trong mục Hồ sơ.
+9. Không có thẻ hoặc đơn vị nào của người chơi bị thu lại vì cốt truyện.
+
+E. NỘI DUNG MỚI
+1. Map Foundry: nhà máy cũ của Hegemon; khu công nghiệp trong nhà, nhiều lối hẹp. Dùng cho Xen kẽ I và vài nhiệm vụ phụ.
+2. Map Veyra Old Quarter: khu phố cổ của thủ đô, đường hẹp và quảng trường. Dùng cho chương 7.
+   Cả hai map: đủ các phiên bản cần cho chiến dịch, Săn trùm và Giao tranh; hardpoint và nhãn vị trí ô (prompt 14); qua bộ phát hiện xe kẹt của prompt 12; ảnh xem trước; mục Hướng dẫn; tên ở cả hai ngôn ngữ theo phần A.
+3. Mini boss mới:
+   - Behemoth Mk.0 · Behemoth nguyên mẫu (Varga): biến thể của Behemoth theo luật mini boss biến thể của prompt 20, tạo bằng dữ liệu trong hệ khuôn mẫu, không cần model mới. Dùng ở Xen kẽ I.
+   - Morrigan · Tiêm kích của Raven (Wolff; theo chủ đề chim thần thoại): model mới. Nhanh, tàng hình theo luật tàng hình của máy bay; vũ khí tên lửa không đối không và bom dẫn đường; đòn lớn là một loạt tên lửa không đối không và bom dẫn đường nhắm vào máy bay và xe phòng không của người chơi (cảnh báo, hồi chiêu, ngắt theo luật prompt 18). Có một chế độ riêng cho nhiệm vụ đấu tay đôi ở chương 10 (người chơi chỉ có máy bay). Dùng ở Xen kẽ III và chương 10. Có thẻ Hướng dẫn, clip Xem bắn, ảnh thẻ render.
+4. Behemoth của Mara (đơn vị đồng minh theo kịch bản): chỉ xuất hiện trong trận cuối ở chương 12, do AI điều khiển; dùng model Behemoth với ký hiệu của Accord; không vào bộ bài, không mở khóa được.
+5. Đưa 2 mini boss mới vào Săn trùm và Săn trùm toàn tập theo luật của prompt 20.
+
+F. HỆ CHỈ HUY (chỉ kỹ năng thụ động)
+1. Cách hoạt động:
+   - Trước trận chọn 1 chỉ huy ở màn chuẩn bị, cạnh bộ bài.
+   - Mỗi chỉ huy có một điểm mạnh và một điểm yếu nhỏ, luôn có tác dụng trong trận. Không có kỹ năng chủ động, không có thanh năng lượng.
+   - Không có hệ lên cấp riêng; chỉ huy mở theo cốt truyện.
+   - Hiệu ứng của chỉ huy tính vào trần chỉ số của cả bộ (như trang bị) và tính vào sức mạnh kho vũ khí khi scale địch trong chiến dịch.
+   - Dùng được ở mọi chế độ, trừ nhiệm vụ cốt truyện có chỉ huy bắt buộc (ví dụ đấu tay đôi ở chương 10 dùng Hawk). Sa bàn (prompt 21) cho chọn chỉ huy cho cả hai phe.
+2. 14 chỉ huy phe ta (mở ở · điểm mạnh · điểm yếu):
+   Chiến đấu:
+   - Colonel Marcus Kade "Iron" (chương 1): toàn quân +5% sát thương và +5% máu · không có.
+   - Engineer Mara Lind (chương 2): trạm sửa chữa và công binh sửa nhanh hơn 25%; công binh rẻ hơn 20% CP · máy bay và trực thăng −10% sát thương.
+   - Lieutenant Jonah Reyes "Hawk" (chương 3): máy bay và trực thăng +10% sát thương, hồi đạn nhanh hơn 15%; trần máy bay +1 · tháp −10% máu.
+   - Captain Nadia Kerr (chương 4): +15% tầm nhìn; phát hiện tàng hình từ xa hơn 25%; địch đang bị lộ nhận thêm 5% sát thương · xe hạng nặng −5% máu.
+   - Dr. Elara Venn (cuối chương 5): mọi drone (FPV, Lancet, UAV, bầy drone của máy bay mẹ, drone hộ vệ, Hangar drone) +15% máu và +10% sát thương; drone ta bị gây nhiễu ít hơn 30% · xe tăng −5% sát thương.
+   - Captain Kaia Mendez "Rush" (Xen kẽ II): xe +10% tốc độ; thả dù nhanh hơn 25% · toàn quân −5% máu.
+   - Major Brandt "Bulwark" (chương 6): tháp +15% máu và +10% sát thương; tháp thả dù rẻ hơn 20% CP · xe −5% tốc độ.
+   - Major Piet Dahl "Longshot" (chương 7): pháo binh +15% sát thương và +10% tầm · xe bắn thẳng −10% sát thương.
+   Kinh tế:
+   - Major Otto Brenn "Ledger" (Xen kẽ I): thu nhập CP +10% · toàn quân −5% sát thương.
+   - Captain Tomas Adler "Flag" (chương 4): mỗi cứ điểm cho thêm 25% CP; chiếm nhanh hơn 30% · ở chế độ không có cứ điểm, thu nhập −5%.
+   - Captain Ines Varro "Tide" (chương 8): xe giá từ 5 CP trở xuống rẻ hơn 15%; trần tiếp tế +15% · toàn quân −10% máu.
+   - Colonel August Reyn "Crown" (Xen kẽ III): xe giá từ 9 CP trở lên +15% máu và sát thương · mọi xe đắt hơn 10% CP.
+   - Sergeant Major Lena Quist "Magpie" (chương 8): hoàn CP khi hạ địch tăng từ 25% lên 35% (vẫn trong trần 45% của prompt 8) · xe ta bị hạ không được hoàn CP.
+   - Captain Selma Okoye "Vault" (chương 10): trần CP tích trữ từ 30 lên 45; khi đang có từ 20 CP trở lên, thu nhập +10% · 90 giây đầu trận thu nhập −10%.
+3. Tướng địch dùng cùng hệ (điểm mạnh · điểm yếu):
+   - Brandt (khi còn là địch, chương 1): tháp +15% máu · xe −5% tốc độ.
+   - Varga "Anvil": xe tăng và xe hạng nặng +10% máu · máy bay −10% sát thương.
+   - Orlov "Winter": pháo binh +15% tầm, tản mát ít hơn 20% · xe nhẹ −5% máu.
+   - Kessler "Maelstrom": tiếp viện rẻ hơn 10% CP; tàu +10% máu · tháp −5% máu.
+   - Venn "Queen" (khi còn là địch, chương 5): drone +15% máu · xe tăng −5% sát thương.
+   - Wolff "Raven": máy bay +10% sát thương; trần máy bay +1 · xe mặt đất −5% sát thương.
+   - Thorne "Titan": toàn quân +5% sát thương; quân dưới 50% máu được thêm 10% sát thương · không có.
+   - Aurel "Sol": vũ khí Năng lượng +15% sát thương; khiên +10% máu · xe nhẹ −5% máu.
+   Mỗi nhiệm vụ gắn với một tướng địch dùng thụ động của tướng đó; nhiệm vụ không gắn tướng thì không có.
+4. Giao diện:
+   - Màn chọn chỉ huy: chân dung, biệt danh, điểm mạnh và điểm yếu, gợi ý kiểu bộ bài hợp; chỉ huy chưa mở hiện dạng khóa với nơi mở khóa.
+   - Màn briefing hiện tướng địch cùng điểm mạnh và điểm yếu của họ.
+   - Trong trận: icon nhỏ của chỉ huy ở góc HUD gọn (prompt 11); chạm để xem điểm mạnh và điểm yếu. Chỉ huy nói vài câu radio ở đầu trận và khi trận ngã ngũ.
+   - Mục Hồ sơ có trang riêng cho mỗi chỉ huy phe ta và mỗi tướng địch.
+   - Mỗi chỉ huy mới xuất hiện trong cốt truyện ở đúng chương mở khóa (phần C.4); nếu hợp thì có một nhiệm vụ nhỏ dùng đúng chỉ huy đó.
+5. AI: chế độ Tự mua và Yểm trợ của người chơi ưu tiên thẻ hợp với chỉ huy đang chọn; AI địch chọn quân hợp với thụ động của tướng.
+6. Cân bằng:
+   - Đo tỷ lệ thắng của mọi cặp chỉ huy × kiểu bộ bài qua mô phỏng 5 seed. Mỗi chỉ huy có ít nhất một kiểu bộ bài mà nó là lựa chọn tốt nhất; không chỉ huy nào tốt nhất trên mọi kiểu bộ bài.
+   - Chỉ huy kinh tế đo cùng thu nhập bắt kịp, phạt tiếp tế, trần hoàn CP và thu nhập leo thang (nếu có).
+   - Tide: đo riêng hiệu năng khi có nhiều quân rẻ trên sân; nếu vượt ngân sách, giảm mức tăng trần tiếp tế.
+   - Vault: đo riêng ở trận ngắn và trận dài, để không quá yếu ở trận ngắn hay quá mạnh ở chiến dịch lớn.
+
+G. KIỂM TRA
+- Đổi tên: không còn tên riêng tiếng Việt ở bất kỳ chuỗi nào, ở cả hai ngôn ngữ; id không đổi; save cũ mở được.
+- Cấu trúc: đúng số chương, chương xen kẽ và số nhiệm vụ; không chương nào vượt 18 nhiệm vụ chính; không có hai nhiệm vụ liền nhau cùng map và cùng cấu hình; hệ bật/tắt theo hồi hoạt động đúng với chương xen kẽ.
+- Cốt truyện: mọi điểm bắt buộc ở phần C.4 có trong nhiệm vụ tương ứng; mọi câu radio có đủ hai ngôn ngữ; cảnh mở đầu và phần kết chạy đúng.
+- Cơ chế kể chuyện: bản đồ mặt trận cập nhật đúng (kể cả lúc Thorne phản bội); lựa chọn có hệ quả dẫn đúng nhánh và quay về đúng mạch, được lưu trong save; chiến lợi phẩm mở đúng thẻ; hồ sơ tình báo và tranh truyện hiện đúng và xem lại được; radio phản ứng chọn câu đúng điều kiện.
+- Nội dung mới: 2 map qua test xe kẹt; Behemoth Mk.0 tạo bằng dữ liệu; Morrigan có hành vi đúng, cả chế độ đấu tay đôi; Behemoth của Mara chỉ xuất hiện ở chương 12 và không vào bộ bài.
+- Hệ Chỉ huy: mọi thụ động áp đúng và đúng trần chỉ số; chỉ huy mở đúng chương; nhiệm vụ có chỉ huy bắt buộc khóa đúng; tướng địch dùng đúng thụ động; mục tiêu cân bằng ở F.6 đạt.
+- Mô phỏng 5 seed: toàn bộ chiến dịch ở độ khó Thường với chỉ huy mặc định (Kade) và với ít nhất 3 chỉ huy khác; mọi nhiệm vụ thắng được với bộ bài người chơi đã mở tới thời điểm đó.
+- Chụp ảnh tự động màn chọn chương (bản đồ mặt trận), màn chọn chỉ huy, briefing có tướng địch, và các màn Hồ sơ mới, ở cả hai ngôn ngữ; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model Morrigan, 2 map mới, tranh truyện, chân dung 14 chỉ huy) và tài liệu thiết kế (cốt truyện, nhân vật, cấu trúc chiến dịch, hệ Chỉ huy).
