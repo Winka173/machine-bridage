@@ -95,7 +95,7 @@ EVENTS = [
       notices={'start': 'event.allyWave.militia.start'}, lines={'start': 'radio.khai.ev.allyWave.militia.start'}),
     # Chapter 12's Total Offensive: every old ally at once (Brandt's armour, Venn's drones, Hawk's air wing, Mara's Behemoth), the
     # only allied wave as strong as the enemy's, under the enemy's cap instead of the allies'.
-    E('total_offensive', 'AllyWave', {'at': 4},
+    E('total_offensive', 'AllyWave', {'after': 'enemy_all_directions', 'delay': 3},
       {'share': 1.0, 'of': 'enemy_all_directions', 'cap': 16, 'max': 16, 'delivery': 'edge',
        'rosters': ['heavy_tank,tank_destroyer,main_battle_tank', 'strike_drone,fpv_carrier,lancet_truck', 'attack_jet,attack_helicopter,gunship_heli',
                    'mara_behemoth']},

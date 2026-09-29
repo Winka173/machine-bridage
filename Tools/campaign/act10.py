@@ -343,8 +343,8 @@ add_stage('c11m10', 'fortress', 'accord_artillery')
 add_stage('c11m10', 'gate', 'test_rod', 'enemy_counterattack')
 
 # ====================================================================== chapter 12: Helion (Aurel; Varga and Kessler's last)
-# Enemy reinforcements from every direction; in the operation, the Total Offensive: every old ally at once, as strong as the
-# enemy's wave from every side it answers; Varga on the field before his last battle (c12m03).
+# Enemy reinforcements from every direction; in the operation's Varga stage, the Total Offensive: every old ally at once, as
+# strong as the enemy's wave from every side it answers; Varga on the field before his last battle (c12m03).
 
 add('c12m01', sized('enemy_all_directions', 10), 'accord_wave')
 add('c12m05', 'drop_pods', 'hawk_strike')
@@ -357,7 +357,8 @@ add('c12m08', 'test_rod', 'drop_pods', 'skies_clear')
 add('c12m09', 'enemy_all_directions', 'supply_raid', 'accord_wave')
 add('c12m10', 'hawk_strike', 'ew_blackout')
 add_stage('c12m10', 'approach', 'nadia_intel')
-add_stage('c12m10', 'command', 'total_offensive', at('enemy_all_directions', 20))
+# The enemy's wave from every side is warned as the stage begins; the Total Offensive answers it a few seconds after it lands.
+add_stage('c12m10', 'command', at('enemy_all_directions', 1), 'total_offensive')
 add_stage('c12m10', 'countdown', 'drop_pods')
 
 # ====================================================================== H.8: the story moments' follow-up lines
