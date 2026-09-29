@@ -48,21 +48,26 @@ namespace MachineBrigade.Sim.Navigation
                     var candidate = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * spacing);
                     if (!grid.IsWalkable(candidate) || !IsFree(slots, candidate, spacing * 0.8f)) continue;
                     if (lanes != null && lanes.NoParkAt(candidate)) continue;
-                    if (near && !Near(grid, origin, candidate)) continue;
+                    if (near && !Near(grid, origin, candidate, ring)) continue;
                     slots.Add(candidate);
                 }
             }
             return slots;
         }
 
-        /// <summary>Reached by the last walk from the first slot, over the ground no more than half as far again as straight (plus two cells).</summary>
-        private static bool Near(NavGrid grid, Vector2 origin, Vector2 candidate)
+        /// <summary>
+        /// Reached by the last walk from the first slot, over the ground no more than half as far
+        /// again as straight (plus two cells) on the first three rings; further out (a big group in
+        /// a small yard, a garrison round the keep's HQ) up to two and a half times, so it spreads out
+        /// through a gate instead of packing the yard.
+        /// </summary>
+        private static bool Near(NavGrid grid, Vector2 origin, Vector2 candidate, int ring)
         {
             var steps = grid.StepsTo(candidate);
             if (steps < 0) return false;
             // (Four-neighbour steps: a diagonal line takes up to 1.41 times its cells.)
             var straight = Vector2.Distance(origin, candidate) / grid.CellSize;
-            return steps <= straight * 1.5f * 1.42f + 2f;
+            return steps <= straight * (ring <= 3 ? 1.5f : 2.5f) * 1.42f + 2f;
         }
 
         /// <summary>
