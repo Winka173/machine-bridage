@@ -100,7 +100,7 @@ namespace MachineBrigade.Game.Rendering
                     break;
                 case Scene.Supply:
                     if (_world.TryGetEconomy(0, out var economy))
-                        Readout = Strings.Format("range.supply", economy.Supply, _shooter.Def.Utility?.Supply ?? 0);
+                        Readout = Strings.Format("range.supply", ("supply", economy.Supply), ("amount", _shooter.Def.Utility?.Supply ?? 0));
                     ReadoutAlert = false;
                     break;
             }
@@ -117,8 +117,8 @@ namespace MachineBrigade.Game.Rendering
             _paid += economy.Relay * Step;
             var quiet = relay != null ? (float)(relay.Quiet - (_world.Time - _shooter.LastHitAt)) : 0f;
             ReadoutAlert = economy.Relay <= 0f && quiet > 0f;
-            Readout = ReadoutAlert ? Strings.Format("range.relay.quiet", Mathf.Ceil(quiet), _paid)
-                : Strings.Format("range.relay", economy.Relay, _paid);
+            Readout = ReadoutAlert ? Strings.Format("range.relay.quiet", ("seconds", Mathf.Ceil(quiet)), ("paid", _paid))
+                : Strings.Format("range.relay", ("cp", economy.Relay), ("paid", _paid));
             if (_raider == null || !_raider.IsAlive)
             {
                 foreach (var (who, _) in _attackers)

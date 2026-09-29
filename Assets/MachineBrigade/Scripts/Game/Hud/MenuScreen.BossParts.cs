@@ -63,7 +63,7 @@ namespace MachineBrigade.Game.Hud
         {
             if (def.Tiers is not { } t) return;
             _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("guide.tiers")), "fc-caption fc-mt-4"));
-            void Line(string key, params object[] args)
+            void Line(string key, params (string name, object value)[] args)
             {
                 if (!Strings.Has(key)) return;
                 _detailBody.Add(Kit.Text(args.Length > 0 ? Strings.Format(key, args) : Strings.Get(key), "fc-body fc-mt-2"));
@@ -79,7 +79,7 @@ namespace MachineBrigade.Game.Hud
                 foreach (var step in t.CycleOf(phase))
                     if (step.Tier == AltitudeTier.High) high += step.Seconds;
                     else low += step.Seconds;
-                Line("guide.tiers.phase" + (phase + 1), Mathf.RoundToInt(high), Mathf.RoundToInt(low));
+                Line("guide.tiers.phase" + (phase + 1), ("high", Mathf.RoundToInt(high)), ("low", Mathf.RoundToInt(low)));
             }
             if (def.Pods != null) Line("guide.tiers.pods");
             if (t.Armour != null) Line("guide.tiers.armour");
@@ -124,14 +124,14 @@ namespace MachineBrigade.Game.Hud
                         hits.Add(Strings.Format("guide.bigattack.drop", s.Units.Count));
                         break;
                     case BigShape.Buff:
-                        hits.Add(Strings.Format("guide.bigattack.buff", Mathf.RoundToInt(s.Damage * 100f), Mathf.RoundToInt(s.FireRate * 100f),
-                            Mathf.RoundToInt(s.Seconds), Mathf.RoundToInt(s.Reach)));
+                        hits.Add(Strings.Format("guide.bigattack.buff", ("percent", Mathf.RoundToInt(s.Damage * 100f)), ("percent2", Mathf.RoundToInt(s.FireRate * 100f)),
+                            ("seconds", Mathf.RoundToInt(s.Seconds)), ("metres", Mathf.RoundToInt(s.Reach))));
                         break;
                     default:
-                        hits.Add(Strings.Format("guide.bigattack.hits", s.FullCount, Mathf.RoundToInt(s.Damage), Strings.Get("dtype." + s.Type).ToLowerInvariant(), s.Pen));
+                        hits.Add(Strings.Format("guide.bigattack.hits", ("count", s.FullCount), ("damage", Mathf.RoundToInt(s.Damage)), ("type", Strings.Get("dtype." + s.Type).ToLowerInvariant()), ("level", s.Pen)));
                         break;
                 }
-            return Strings.Format("guide.bigattack.stats", string.Join(" + ", hits), big.Warn.ToString("0.#"), Mathf.RoundToInt(big.Cooldown));
+            return Strings.Format("guide.bigattack.stats", ("hits", string.Join(" + ", hits)), ("warning", big.Warn.ToString("0.#", Strings.Culture)), ("seconds", Mathf.RoundToInt(big.Cooldown)));
         }
 
         /// <summary>What breaking a part does, in words, from its data.</summary>

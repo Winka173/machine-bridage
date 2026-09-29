@@ -177,8 +177,8 @@ namespace MachineBrigade.Game.Hud
             progress.Add(bar);
             text.Add(progress);
             var facts = Kit.Box("fc-row fc-row--wrap fc-mt-2");
-            facts.Add(Tag("flag", Strings.Format("home.chapterProgress", won, main.Count)));
-            facts.Add(Tag("star", Strings.Format("campaign.starCount", stars, Campaign.MissionsOf(number).Count * 3)));
+            facts.Add(Tag("flag", Strings.Format("home.chapterProgress", ("count", won), ("total", main.Count))));
+            facts.Add(Tag("star", Strings.Format("campaign.starCount", ("count", stars), ("total", Campaign.MissionsOf(number).Count * 3))));
             if (ChapterBoss(number) is { } boss) facts.Add(Tag("skull", Strings.Get("boss." + boss)));
             // Prompt 20 O.1: its mini bosses (campaign.json "minis").
             if (chapter.Minis.Count > 0) facts.Add(Tag("elite", Strings.Format("campaign.minis", chapter.Minis.Count)));
@@ -276,7 +276,7 @@ namespace MachineBrigade.Game.Hud
             var art = Kit.Box("fc-campaign__art");
             if (MapArt.For(m.Map) is { } picture) art.style.backgroundImage = Background.FromTexture2D(picture);
             body.Add(art);
-            body.Add(Kit.Caption(Strings.Format("campaign.missionKicker", m.Chapter, Campaign.Label(m), Strings.Get("map." + m.Map))));
+            body.Add(Kit.Caption(Strings.Format("campaign.missionKicker", ("chapter", m.Chapter), ("mission", Campaign.Label(m)), ("map", Strings.Get("map." + m.Map)))));
             body.Add(Kit.Text(Kit.Caps(Strings.Get("mission." + m.Id + ".name")), "fc-title"));
             var tags = Kit.Box("fc-row fc-row--wrap fc-mt-2");
             tags.Add(Tag(GoalIcon(m.Goal), Strings.Get("goal." + m.Goal.ToString().ToLowerInvariant())));
@@ -349,7 +349,7 @@ namespace MachineBrigade.Game.Hud
             var ours = EnemyScaling.Power(deck);
             var wanted = Campaign.RecommendedPower(m, _tier);
             var power = Kit.Box("fc-row fc-mt-4");
-            power.Add(Kit.Text(Strings.Format("campaign.power", wanted, ours), "fc-body fc-row-text" + (ours < wanted ? " fc-danger-text" : "")));
+            power.Add(Kit.Text(Strings.Format("campaign.power", ("wanted", wanted), ("ours", ours)), "fc-body fc-row-text" + (ours < wanted ? " fc-danger-text" : "")));
             body.Add(power);
 
             // Rewards, with the cards it unlocks as cards.
@@ -411,7 +411,7 @@ namespace MachineBrigade.Game.Hud
             var maps = new List<string>();
             if (info != null)
                 foreach (var map in info.Maps) maps.Add(Strings.Get("map." + map));
-            _story.Show(Strings.Format("campaign.chapterKicker", Strings.Get("act." + (info?.Act ?? 1)), chapter), Strings.Get($"chapter.{chapter}.title"),
+            _story.Show(Strings.Format("campaign.chapterKicker", ("act", Strings.Get("act." + (info?.Act ?? 1))), ("chapter", chapter)), Strings.Get($"chapter.{chapter}.title"),
                 info?.General, Strings.Get($"chapter.{chapter}.summary"), maps, null,
                 (Strings.Get("campaign.continue"), then), null, info != null && info.Maps.Count > 0 ? info.Maps[0] : null);
         }
@@ -433,7 +433,7 @@ namespace MachineBrigade.Game.Hud
                 foreach (var c in mission.Id) n = (n * 31 + c) % 997;
                 aside = (mission.General, Strings.Get($"radio.{mission.General}.taunt.{n % 3 + 1}"));
             }
-            _story.Show(Strings.Format("campaign.missionKicker", mission.Chapter, Campaign.Label(mission), Strings.Get("map." + mission.Map)),
+            _story.Show(Strings.Format("campaign.missionKicker", ("chapter", mission.Chapter), ("mission", Campaign.Label(mission)), ("map", Strings.Get("map." + mission.Map))),
                 Strings.Get("mission." + mission.Id + ".name"), mission.Speaker, Strings.Get("mission." + mission.Id + ".brief"), chips, aside,
                 (Strings.Get("campaign.deploy"), () => Deploy(mission)), (Strings.Get("campaign.back"), null), mission.Map);
         }

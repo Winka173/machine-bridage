@@ -879,6 +879,7 @@
 
 /* pause: the commander's switches under the buttons (both layouts) */
 .fc-pause__commander { margin-top: var(--fc-space-4); padding-top: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
+.fc-pause__language { margin-top: var(--fc-space-3); padding-top: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
 
 /* ---- prompt 15: the detail page's armour and weapon icons */
 .fc-weapon__chip { margin-right: var(--fc-space-3); }

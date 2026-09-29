@@ -219,7 +219,7 @@ namespace MachineBrigade.Editor
         /// with three objectives (hud-score, a selection open), a boss with its phases and parts and an elite
         /// notice (hud-mission), the waves with the strike prompt and a tower to fly back in (hud-waves).
         /// </summary>
-        private static BattleHud BuildHud(Catalog catalog, string screen, VisualElement host)
+        public static BattleHud BuildHud(Catalog catalog, string screen, VisualElement host)
         {
             var cards = new List<CardInfo>();
             foreach (var id in MatchSettings.DeckVehicles)
@@ -255,14 +255,14 @@ namespace MachineBrigade.Editor
             switch (screen)
             {
                 case "hud-siege":
-                    hud.SetMission(Strings.Format("mode.siege.stage", 2, Strings.Get("siege.goal2")), "46%", 0.46f, 522f, new List<PointInfo>());
+                    hud.SetMission(Strings.Format("mode.siege.stage", ("stage", 2), ("name", Strings.Get("siege.goal2"))), "46%", 0.46f, 522f, new List<PointInfo>());
                     hud.SetSuperGun(38f, false, false);
                     hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(4, "siege_tank", 3100f, 3600f));
                     hud.Toast(Strings.Get("toast.raid"), error: true, seconds: 5f);
                     break;
                 case "hud-defend":
                 {
-                    hud.SetMission(Strings.Format("base.line", 1, Strings.Get("base.goal1")), Strings.Format("base.waveOf", 4) + "  ·  82%", 0.82f, 431f,
+                    hud.SetMission(Strings.Format("base.line", ("stage", 1), ("name", Strings.Get("base.goal1"))), Strings.Format("base.waveOf", 4) + "  ·  82%", 0.82f, 431f,
                         new List<PointInfo>());
                     var wave = new List<(string, int)> { ("armored_car", 4), ("rocket_technical", 3), ("light_tank", 2), ("fpv_carrier", 1) };
                     var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
@@ -275,7 +275,7 @@ namespace MachineBrigade.Editor
                 case "hud-mission":
                 case "hud-boss-open":
                 {
-                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", 2, 1), 0.45f, 312f, new List<PointInfo>());
+                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", ("us", 2), ("enemy", 1)), 0.45f, 312f, new List<PointInfo>());
                     var boss = catalog.Vehicles.Values.Where(v => v.Boss && v.Parts.Count >= 5).OrderBy(v => v.Id).First();
                     hud.SetBoss(Strings.Card(boss.Id), 0.62f, 1, new List<float> { 0.66f, 0.33f }, false);
                     hud.SetBossHp(37200f, 60000f);
@@ -348,7 +348,7 @@ namespace MachineBrigade.Editor
                     var reward = new RewardView { Coins = 180, Xp = 60, CanDouble = true, CanResume = checkpoint, Stars = checkpoint ? 0 : -1 };
                     var title = checkpoint ? Strings.Get("mission." + Campaign.All[Campaign.Next].Id + ".name") : Strings.Get("mode.conquest");
                     var rows = new List<(string, string)>();
-                    if (!checkpoint) rows.Add((Strings.Get("stat.score"), Strings.Format("result.sides", 0, 331)));
+                    if (!checkpoint) rows.Add((Strings.Get("stat.score"), Strings.Format("result.sides", ("us", 0), ("enemy", 331))));
                     rows.Add((Strings.Get("result.kills"), "18"));
                     rows.Add((Strings.Get("result.losses"), "31"));
                     rows.Add((Strings.Get("result.time"), Clock(760)));

@@ -16,10 +16,10 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack"] = ("Big attack", "Đòn lớn"),
             ["guide.bigattack.rule"] = ("One big attack, telegraphed: its zone lights up with a countdown and the part that fires it glows on the boss bar. Break that part during the warning to cancel it; your units in the zone get out on their own if they can make it in time.",
                 "Một đòn lớn có cảnh báo: vùng trúng sáng lên kèm đếm ngược và bộ phận phóng đòn nhấp nháy trên thanh máu boss. Phá bộ phận đó trong lúc cảnh báo để hủy đòn; quân ta trong vùng tự chạy ra nếu kịp."),
-            ["guide.bigattack.stats"] = ("{0} · warning {1} s · every {2} s", "{0} · cảnh báo {1} giây · hồi {2} giây"),
-            ["guide.bigattack.hits"] = ("{0} × {1} {2}, penetration {3}", "{0} × {1} {2}, xuyên cấp {3}"),
-            ["guide.bigattack.drop"] = ("{0} vehicles landed", "{0} xe đổ bộ"),
-            ["guide.bigattack.buff"] = ("+{0} % damage and +{1} % fire rate for {2} s within {3} m", "+{0} % sát thương và +{1} % tốc độ bắn trong {2} giây, bán kính {3} m"),
+            ["guide.bigattack.stats"] = ("{hits} · warning {warning} s · every {seconds} s", "{hits} · cảnh báo {warning} giây · hồi {seconds} giây"),
+            ["guide.bigattack.hits"] = ("{count} × {damage} {type}, penetration {level}", "{count} × {damage} {type}, xuyên cấp {level}"),
+            ["guide.bigattack.drop"] = ("{count|# vehicle|# vehicles} landed", "{count} xe đổ bộ"),
+            ["guide.bigattack.buff"] = ("+{percent} % damage and +{percent2} % fire rate for {seconds} s within {metres} m", "+{percent} % sát thương và +{percent2} % tốc độ bắn trong {seconds} giây, bán kính {metres} m"),
             ["guide.bigattack.how"] = ("How it works", "Cách hoạt động"),
             ["guide.bigattack.dodge"] = ("Getting out of it", "Cách né"),
             ["guide.bigattack.stop"] = ("Stopping it", "Cách ngắt"),
@@ -41,8 +41,8 @@ namespace MachineBrigade.Game.Hud
             ["part.erector"] = ("missile erector", "bệ phóng tên lửa"),
             ["part.bombbay"] = ("bomb bay", "khoang bom"),
             ["part.fx.bigattack"] = ("its big attack goes with it", "boss mất đòn lớn"),
-            ["radio.part.erector"] = ("Command: {0}'s missile erector is wrecked. No more tactical missiles!", "Chỉ huy: bệ phóng tên lửa của {0} đã bị phá. Hết tên lửa chiến thuật!"),
-            ["radio.part.bombbay"] = ("Command: {0}'s bomb bay is gone. It cannot bomb us any more!", "Chỉ huy: khoang bom của {0} đã bị phá. Nó không thả bom được nữa!"),
+            ["radio.part.erector"] = ("Command: {boss}'s missile erector is wrecked. No more tactical missiles!", "Chỉ huy: bệ phóng tên lửa của {boss} đã bị phá. Hết tên lửa chiến thuật!"),
+            ["radio.part.bombbay"] = ("Command: {boss}'s bomb bay is gone. It cannot bomb us any more!", "Chỉ huy: khoang bom của {boss} đã bị phá. Nó không thả bom được nữa!"),
             ["toast.bigattack.down"] = ("Shot down!", "Đã bắn hạ!"),
 
             // ---------------------------------------------------------------- 1 Iron Train
@@ -96,7 +96,7 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- 7 Supreme Commander
             ["bigattack.supreme_offensive"] = ("General Offensive", "Tổng tiến công"),
             ["bigattack.supreme_offensive.cancelled"] = ("Offensive cancelled", "Đã hủy tổng tiến công"),
-            ["radio.bigattack.supreme_offensive"] = ("Lý Hàn: \"All units, general offensive! And bring the bombers in!\"", "Lý Hàn: \"Toàn quân, tổng tiến công! Gọi máy bay ném bom vào!\""),
+            ["radio.bigattack.supreme_offensive"] = ("{@lyhan}: \"All units, general offensive! And bring the bombers in!\"", "{@lyhan}: \"Toàn quân, tổng tiến công! Gọi máy bay ném bom vào!\""),
             ["guide.bigattack.supreme_offensive.how"] = ("For 12 s every enemy within 60 m hits 35 % harder and fires 25 % faster, and a bomber lays eight 250 kg bombs in a 50 × 10 m strip on your biggest group.", "Trong 12 giây mọi quân địch trong 60 m gây thêm 35 % sát thương và bắn nhanh hơn 25 %, kèm máy bay ném tám quả bom 250 kg thành dải 50 × 10 m vào cụm quân lớn nhất."),
             ["guide.bigattack.supreme_offensive.dodge"] = ("Leave the strip; pull back from the boosted units until it wears off.", "Rời khỏi dải bom; lùi khỏi quân địch được tăng sức cho tới khi hết hiệu lực."),
             ["guide.bigattack.supreme_offensive.stop"] = ("Break the antenna: the offensive and its everyday aura go with it.", "Phá ăng-ten: mất cả tổng tiến công lẫn hào quang thường."),
@@ -126,12 +126,12 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.fortress_rocket_rain.stop"] = ("Break a rocket box: each holds 16 rockets.", "Phá hộp rốc-két: mỗi hộp 16 quả."),
 
             // ---------------------------------------------------------------- 11 Silver Bug (prompt 19: tungsten rods from orbit, replacing the old laser sweep)
-            ["bigattack.bug_rod_rain"] = ("Tungsten Rod Rain", "Mưa thanh tungsten"),
-            ["bigattack.bug_rod_rain.cancelled"] = ("Rod rain cancelled", "Đã hủy mưa thanh tungsten"),
-            ["radio.bigattack.bug_rod_rain"] = ("Command: rods incoming from its satellite. Get out of the rings!", "Chỉ huy: thanh tungsten đang rơi từ vệ tinh của nó. Ra khỏi các vòng tròn ngay!"),
-            ["guide.bigattack.bug_rod_rain.how"] = ("Five tungsten rods drop on your groups, heavy tanks first: 1,600 kinetic each, very high penetration, 6 m radius, with 4 s of light columns first. The first comes from the craft itself in the opening; every one after comes from the satellite it leaves in orbit. Every 60 s, in every phase and at every altitude.", "Năm thanh tungsten rơi xuống các cụm quân của bạn, ưu tiên xe tăng giáp dày: 1.600 động năng mỗi thanh, xuyên rất cao, bán kính 6 m, có 4 giây cột sáng cảnh báo trước. Thanh đầu tiên rơi từ chính phi thuyền trong đoạn mở màn; các thanh sau đều từ vệ tinh nó để lại trên quỹ đạo. Hồi chiêu 60 giây, dùng được ở mọi pha và mọi tầng độ cao."),
+            ["bigattack.bug_rod_rain"] = ("Tungsten Rod Rain", "Mưa thanh vonfram"),
+            ["bigattack.bug_rod_rain.cancelled"] = ("Rod rain cancelled", "Đã hủy mưa thanh vonfram"),
+            ["radio.bigattack.bug_rod_rain"] = ("Command: rods incoming from its satellite. Get out of the rings!", "Chỉ huy: thanh vonfram đang rơi từ vệ tinh của nó. Ra khỏi các vòng tròn ngay!"),
+            ["guide.bigattack.bug_rod_rain.how"] = ("Five tungsten rods drop on your groups, heavy tanks first: 1,600 kinetic each, very high penetration, 6 m radius, with 4 s of light columns first. The first comes from the craft itself in the opening; every one after comes from the satellite it leaves in orbit. Every 60 s, in every phase and at every altitude.", "Năm thanh vonfram rơi xuống các cụm quân của bạn, ưu tiên xe tăng giáp dày: 1.600 động năng mỗi thanh, xuyên rất cao, bán kính 6 m, có 4 giây cột sáng cảnh báo trước. Thanh đầu tiên rơi từ chính phi thuyền trong đoạn mở màn; các thanh sau đều từ vệ tinh nó để lại trên quỹ đạo. Hồi chiêu 60 giây, dùng được ở mọi pha và mọi tầng độ cao."),
             ["guide.bigattack.bug_rod_rain.dodge"] = ("Get out of the rings; smoke and APS do not stop them. Shield domes absorb part of the hit while they hold.", "Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động."),
-            ["guide.bigattack.bug_rod_rain.stop"] = ("Break the satellite uplink during the warning to cancel that rod; break it for good and no more rods fall until a self-repair puts it back. It can be hit at high or low altitude, and on the ground.", "Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh tungsten cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất."),
+            ["guide.bigattack.bug_rod_rain.stop"] = ("Break the satellite uplink during the warning to cancel that rod; break it for good and no more rods fall until a self-repair puts it back. It can be hit at high or low altitude, and on the ground.", "Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh vonfram cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất."),
 
             // ---------------------------------------------------------------- 12 Earth Worm
             ["bigattack.borer_quake"] = ("Earthquake", "Địa chấn"),

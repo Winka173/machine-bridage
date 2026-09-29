@@ -346,8 +346,8 @@ namespace MachineBrigade.Tests
         };
 
         /// <summary>
-        /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes, and in
-        /// Large text and in English at 16:9, passes every check.
+        /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes and in Large text at 16:9, and in
+        /// English at 16:9 and 4:3 and in Large text at 16:9 (prompt 21 K), passes every check.
         /// </summary>
         [Test]
         public void EveryRebuiltScreenPassesEveryCheck([ValueSource(nameof(MenuScreenNames))] string screen)
@@ -357,7 +357,7 @@ namespace MachineBrigade.Tests
             DemoProfile.Use();
             try
             {
-                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0], Shapes[3] }), (false, true, new[] { Shapes[0] }) })
                     foreach (var (name, size) in shapes)
                     {
                         Strings.Vietnamese = vietnamese;
@@ -387,7 +387,7 @@ namespace MachineBrigade.Tests
             DemoProfile.Use();
             try
             {
-                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0], Shapes[3] }), (false, true, new[] { Shapes[0] }) })
                     foreach (var (name, size) in shapes)
                     {
                         Strings.Vietnamese = vietnamese;

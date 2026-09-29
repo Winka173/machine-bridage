@@ -399,7 +399,7 @@ namespace MachineBrigade.Game.Hud
 
             // Pause holds Auto buy and Support too (prompt 11 A2), whatever the layout.
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(),
-                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke());
+                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke(), Relocalise);
             _safe.Add(_pause.Root);
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
                 () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke());
@@ -433,6 +433,22 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Null in the menu.</summary>
         public Minimap Minimap { get; }
+
+        /// <summary>
+        /// The language changed in the pause menu (prompt 21 L): every text of the HUD is read again in the new
+        /// language, in place; the battle under the pause is not reloaded.
+        /// </summary>
+        public void Relocalise(bool wasVietnamese)
+        {
+            Relabel.Apply(_root, wasVietnamese);
+            LanguageSwitched?.Invoke();
+        }
+
+        /// <summary>The HUD was relabelled in the new language.</summary>
+        public event Action LanguageSwitched;
+
+        /// <summary>The pause menu, for the checks (the language switch).</summary>
+        internal PausePanel Pause => _pause;
 
         public event Action SelectAllPressed;
         public event Action StopPressed;
@@ -469,12 +485,12 @@ namespace MachineBrigade.Game.Hud
                 _towerMini.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
                 if (count <= 0) return;
                 _towerMiniText.text = count > 1 ? $"×{count} · {cost}" : cost.ToString();
-                _towerMini.tooltip = Strings.Format("rail.towerCost", count, cost);
+                _towerMini.tooltip = Strings.Format("rail.towerCost", ("count", count), ("cp", cost));
                 return;
             }
             if (_towerButton == null) return;
             _towerButton.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            if (count > 0) _towerButton.Label = Strings.Format("rail.towerCost", count, cost);
+            if (count > 0) _towerButton.Label = Strings.Format("rail.towerCost", ("count", count), ("cp", cost));
         }
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
@@ -837,7 +853,7 @@ namespace MachineBrigade.Game.Hud
             _hpFill.style.width = Length.Percent(health * 100f);
             _hpFill.EnableInClassList("fc-hud__hp-fill--hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("fc-hud__hp-fill--critical", health < 0.3f);
-            _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
+            _hpText.text = Strings.Format("panel.hp", ("health", Mathf.CeilToInt(summary.Hp)), ("max", Mathf.CeilToInt(summary.MaxHp)));
             if (_combatFor != summary.DefId)
             {
                 _combatFor = summary.DefId;

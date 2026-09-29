@@ -26,7 +26,7 @@ namespace MachineBrigade.Game.Hud
 
         private static readonly Regex Placeholder = new(@"\{\{(\w+)\}\}");
 
-        private static CultureInfo Culture => Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture;
+        private static CultureInfo Culture => Strings.Culture;
 
         /// <summary>The support a text key belongs to: "guide.&lt;id&gt;", "support.&lt;id&gt;.info" or "support.&lt;id&gt;".</summary>
         public static string SupportOf(string key)

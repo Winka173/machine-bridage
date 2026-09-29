@@ -1042,7 +1042,7 @@ namespace MachineBrigade.Game.Match
                             // The boss transforms: the camera goes to it, its general speaks.
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(160, 255);
-                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", Strings.Card(phased.Def.Id), (int)e.Value),
+                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", ("card", Strings.Card(phased.Def.Id)), ("phase", (int)e.Value)),
                                 error: true, seconds: 5f);
                         }
                         // Its new form: drawn again with the phase's model.

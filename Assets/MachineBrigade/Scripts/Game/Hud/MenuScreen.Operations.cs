@@ -56,7 +56,7 @@ namespace MachineBrigade.Game.Hud
             var daysToMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
             if (daysToMonday == 0) daysToMonday = 7;
             var left = now.Date.AddDays(daysToMonday) - now;
-            return Strings.Format("ops.weekLeft", left.Days, left.Hours);
+            return Strings.Format("ops.weekLeft", ("days", left.Days), ("hours", left.Hours));
         }
 
         private void RefreshOperationsTab()
@@ -121,8 +121,8 @@ namespace MachineBrigade.Game.Hud
                 case OpsEntry.WeeklyOperation when Operations.ThisWeek is { } week:
                     body.Add(Kit.Caption(Strings.Get("ops.weekly")));
                     body.Add(Kit.Text(Kit.Caps(Strings.Get("mission." + week.mission.Id + ".name")), "fc-title"));
-                    body.Add(Kit.Text(Strings.Format("ops.weeklySub", Strings.Get("mutator." + week.a.Id), Strings.Get("mutator." + week.b.Id),
-                        Kit.Count(Operations.Data.WeeklyOperationReward)), "fc-body fc-mt-2"));
+                    body.Add(Kit.Text(Strings.Format("ops.weeklySub", ("mutator", Strings.Get("mutator." + week.a.Id)), ("mutator2", Strings.Get("mutator." + week.b.Id)),
+                        ("coins", Kit.Count(Operations.Data.WeeklyOperationReward))), "fc-body fc-mt-2"));
                     body.Add(Rule("restart", WeekResetText()));
                     body.Add(Rule("coin", Strings.Format("ops.reward", Kit.Count(Operations.Data.WeeklyOperationReward))));
                     OpsTiers(body);
@@ -178,14 +178,14 @@ namespace MachineBrigade.Game.Hud
             body.Add(Kit.Caption(Strings.Get(full ? "hunt.full" : "mode.bossrush")));
             body.Add(Kit.Text(Kit.Caps(Strings.Format(full ? "hunt.fullSub" : "mode.bossrushSub", run.Count)), "fc-title"));
             body.Add(Kit.Text(full ? Strings.Format("hunt.full.rules", run.Count)
-                : Strings.Format("hunt.weekly.rules", run.Count, run.Count - mains, mains, Mathf.RoundToInt(BossHunts.WeeklyMinutes)), "fc-body fc-mt-2"));
+                : Strings.Format("hunt.weekly.rules", ("count", run.Count), ("minis", run.Count - mains), ("mains", mains), ("minutes", Mathf.RoundToInt(BossHunts.WeeklyMinutes))), "fc-body fc-mt-2"));
             if (!full) body.Add(Rule("restart", WeekResetText()));
             body.Add(Rule("coin", full ? Strings.Format("hunt.full.reward", Kit.Count(BossHunts.FullReward))
                 : Strings.Format("hunt.weekly.reward", Kit.Count(BossHunts.WeeklyReward))));
             var open = !full || BossHunts.FullOpen;
             if (!open) body.Add(Rule("lock", Strings.Format("hunt.full.locked", Campaign.LastChapter)));
             var checkpoint = open ? PlayerProfile.HuntCheckpoint(key, week, run) : null;
-            if (checkpoint != null) body.Add(Rule("flag", Strings.Format("hunt.checkpoint", checkpoint.Defeated, run.Count)));
+            if (checkpoint != null) body.Add(Rule("flag", Strings.Format("hunt.checkpoint", ("defeated", checkpoint.Defeated), ("count", run.Count))));
             if (full)
             {
                 body.Add(Kit.Text(Kit.Caps(Strings.Get("hunt.best")), "fc-panel-title fc-section__title fc-mt-4"));

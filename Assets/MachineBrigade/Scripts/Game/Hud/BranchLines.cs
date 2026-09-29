@@ -16,7 +16,7 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     public static class BranchLines
     {
-        private static string N(float v) => v.ToString(v >= 10f || Math.Abs(v - MathF.Round(v)) < 0.05f ? "0" : "0.#", Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture);
+        private static string N(float v) => v.ToString(v >= 10f || Math.Abs(v - MathF.Round(v)) < 0.05f ? "0" : "0.#", Strings.Culture);
 
         /// <summary>A branch's facts, from its data.</summary>
         public static List<string> Facts(VehicleDef def)
@@ -35,13 +35,13 @@ namespace MachineBrigade.Game.Hud
             if (def.Aps is { } aps)
                 facts.Add(Strings.Format("branch.mech.intercepts", Strings.Get(aps.Heavy ? "branch.mech.heavy" : !aps.Direct ? "branch.mech.lobbed" : "branch.mech.direct")) +
                           $" · {aps.Charges} · {N(aps.Radius)} m");
-            if (def.Dome is { } dome) facts.Add(Strings.Format("branch.mech.dome", N(dome.Radius), N(dome.Hp)));
-            if (def.Wards is { } wards) facts.Add(Strings.Format("branch.mech.wards", N(wards.Radius), N(wards.Hp), N(wards.Recharge)));
-            if (def.Loot is { } loot) facts.Add(Strings.Format("branch.mech.loot", N(loot.Share * 100f), N(loot.Radius)));
+            if (def.Dome is { } dome) facts.Add(Strings.Format("branch.mech.dome", ("metres", N(dome.Radius)), ("count", N(dome.Hp))));
+            if (def.Wards is { } wards) facts.Add(Strings.Format("branch.mech.wards", ("metres", N(wards.Radius)), ("health", N(wards.Hp)), ("seconds", N(wards.Recharge))));
+            if (def.Loot is { } loot) facts.Add(Strings.Format("branch.mech.loot", ("percent", N(loot.Share * 100f)), ("metres", N(loot.Radius))));
             if (def.Relay is { } relay) facts.Add(Strings.Format("branch.mech.relay", N(relay.Income)));
             if (def.RevealAir > 0f) facts.Add(Strings.Format("branch.mech.revealAir", N(def.RevealAir)));
             if (def.CounterBattery is { } cb) facts.Add(Strings.Format("branch.mech.counterBattery", N(cb.Range)));
-            if (def.Mines is { } mines) facts.Add(Strings.Format("branch.mech.mines", mines.Max, N(mines.Blast.Damage)));
+            if (def.Mines is { } mines) facts.Add(Strings.Format("branch.mech.mines", ("count", mines.Max), ("damage", N(mines.Blast.Damage))));
             if (def.Jammer > 0f) facts.Add(Strings.Format("branch.mech.jammer", N(def.Jammer)));
             facts.Add(Strings.Format("branch.mech.hp", N(def.MaxHp)));
             return facts;

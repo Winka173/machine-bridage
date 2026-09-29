@@ -296,9 +296,17 @@ namespace MachineBrigade.Game.Hud
     internal sealed class PausePanel
     {
         private readonly KitToggle _autoDeploy, _autoStrike;
+        private readonly KitChip _english, _vietnamese;
+        private readonly Action<bool> _languageChanged;
 
-        public PausePanel(Action resume, Action restart, Action menu, Action autoDeployToggled = null, Action autoStrikeToggled = null)
+        /// <param name="languageChanged">
+        /// After the language changes here (prompt 21 L), with the old language (true: Vietnamese): the HUD relabels
+        /// itself in place, the battle is not reloaded. Without it the panel relabels itself.
+        /// </param>
+        public PausePanel(Action resume, Action restart, Action menu, Action autoDeployToggled = null, Action autoStrikeToggled = null,
+            Action<bool> languageChanged = null)
         {
+            _languageChanged = languageChanged;
             Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-pause");
             Root.pickingMode = PickingMode.Position;
             var card = Kit.Box(KitPanel.SurfaceClass + " fc-dialog fc-pause__card", PickingMode.Position);
@@ -318,8 +326,32 @@ namespace MachineBrigade.Game.Hud
             _autoStrike = new KitToggle(Strings.Get("rail.support"), Match.MatchSettings.AutoStrike, _ => autoStrikeToggled?.Invoke());
             commander.Add(_autoStrike);
             card.Add(commander);
+            // The language, as in the settings (the language names are written in their own language).
+            var language = Kit.Box("fc-pause__language");
+            language.Add(Kit.Caption(Strings.Get("settings.language")));
+            var chips = Kit.Box("fc-setting__choices");
+            _english = new KitChip("English", !Strings.Vietnamese, () => SetLanguage(false));
+            _vietnamese = new KitChip("Tiếng Việt", Strings.Vietnamese, () => SetLanguage(true));
+            chips.Add(_english);
+            chips.Add(_vietnamese);
+            language.Add(chips);
+            card.Add(language);
             Root.Add(card);
             Root.style.display = DisplayStyle.None;
+        }
+
+        /// <summary>Switches the language from the pause menu: saved like the setting, the screen relabelled in place.</summary>
+        public void SetLanguage(bool vietnamese)
+        {
+            if (Strings.Vietnamese == vietnamese) return;
+            var was = Strings.Vietnamese;
+            Match.MatchSettings.Language = vietnamese ? Match.LanguageChoice.Vietnamese : Match.LanguageChoice.English;
+            Match.MatchSettings.Save();
+            if (Strings.Vietnamese == was) return;
+            _english.Selected = !Strings.Vietnamese;
+            _vietnamese.Selected = Strings.Vietnamese;
+            if (_languageChanged != null) _languageChanged(was);
+            else Relabel.Apply(Root, was);
         }
 
         public VisualElement Root { get; }

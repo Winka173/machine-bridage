@@ -303,7 +303,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         private string TabTitle() => _tab == Tab.Campaign && _campaignChapter > 0
-            ? Strings.Format("campaign.chapterTitle", _campaignChapter, Strings.Get($"chapter.{_campaignChapter}.title"))
+            ? Strings.Format("campaign.chapterTitle", ("chapter", _campaignChapter), ("title", Strings.Get($"chapter.{_campaignChapter}.title")))
             : Strings.Get(NavKey(_tab));
 
         private static string NavKey(Tab tab)
@@ -341,7 +341,7 @@ namespace MachineBrigade.Game.Hud
             _coins.Coins = PlayerProfile.Coins;
             _rankLabel.text = Kit.Caps(Strings.Format("profile.rank", PlayerProfile.Level));
             _xpBar.Value = PlayerProfile.Xp / (float)Mathf.Max(1, PlayerProfile.XpForNext);
-            _xpLabel.text = Strings.Format("profile.xp", Kit.Count(PlayerProfile.Xp), Kit.Count(PlayerProfile.XpForNext));
+            _xpLabel.text = Strings.Format("profile.xp", ("xp", Kit.Count(PlayerProfile.Xp)), ("next", Kit.Count(PlayerProfile.XpForNext)));
             RefreshHome();
             RefreshArmy();
             RefreshShop();
@@ -561,11 +561,11 @@ namespace MachineBrigade.Game.Hud
         private string LockReason(string id)
         {
             var name = Strings.Card(id);
-            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Kit.Count(Progression.Price(id, _catalog)));
+            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
             var mission = Progression.UnlockMission(id);
             return mission != null
-                ? Strings.Format("deck.lockedMission", name, Campaign.Label(mission), Kit.Count(Progression.Price(id, _catalog)))
-                : Strings.Format("deck.lockedShop", name, Kit.Count(Progression.Price(id, _catalog)));
+                ? Strings.Format("deck.lockedMission", ("name", name), ("mission", Campaign.Label(mission)), ("coins", Kit.Count(Progression.Price(id, _catalog))))
+                : Strings.Format("deck.lockedShop", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
         }
 
         /// <summary>Where a locked card is won, in a few words ("Mở ở Chương 3").</summary>
