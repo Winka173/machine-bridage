@@ -21,7 +21,17 @@ namespace MachineBrigade.Sim.Entities
             AimPoint = aimPoint;
             Target = target;
             TimeLeft = travelTime;
+            Flight = travelTime;
         }
+
+        /// <summary>Its whole flight in seconds (where it has got to is the share of it flown).</summary>
+        public float Flight { get; }
+
+        /// <summary>Play-test 5: the gun point defence streaming at it (none: not engaged).</summary>
+        internal EntityId EngagedBy { get; set; }
+
+        /// <summary>Play-test 5: a shell outside a gun point defence's share (decided once).</summary>
+        internal bool PdPassed { get; set; }
 
         public EntityId Owner { get; }
 

@@ -42,6 +42,9 @@ namespace MachineBrigade.Game.Effects
         private readonly Dictionary<string, ChunkModel> _chunks = new();
         private readonly RtsCamera _camera;
         private readonly Dictionary<ExplosionTier, ExplosionEffect> _explosions = new();
+
+        /// <summary>Play-test 5: each gun point defence's last burst (the round's height, and when), for the air burst that ends it.</summary>
+        private readonly Dictionary<MachineBrigade.Sim.Core.EntityId, (float height, float at)> _pointBursts = new();
         private readonly List<ExplosionEffect> _blasts = new();
         private readonly BlastLayers _layers;
         private readonly Catalog _catalog;
@@ -311,6 +314,11 @@ namespace MachineBrigade.Game.Effects
                             _tracers.Launch(from, interceptAt, 0.16f, Vector3.Distance(from, interceptAt) * 0.1f, 0.3f, 3.2f, now, 0f, 0.6f);
                             _muzzle.Fire(MuzzleFx.Kind.Missile, from, interceptAt - from, now, 0.8f, guard.Position.y);
                         }
+                        else if (guard != null && guard.Def.Aps is { Burst: > 0f } && _pointBursts.TryGetValue(e.Entity, out var burst) && now - burst.at < 0.3f)
+                        {
+                            // Play-test 5 (DECISIONS 20W): the C-RAM's stream has been on the round for its burst; it bursts where it flew.
+                            interceptAt = Ground(e.Position, burst.height);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -319,6 +327,21 @@ namespace MachineBrigade.Game.Effects
                         }
                         Pop(_pop, interceptAt, now);
                         _emitters.Flak(interceptAt);
+                        break;
+
+                    case SimEventKind.PointDefenceFired:
+                        // Play-test 5 (DECISIONS 20W): a C-RAM streams at an incoming round (Mount rounds this step).
+                        if (views.TryGet(e.Entity, out var pd))
+                        {
+                            var at = Ground(e.Position, e.Value);
+                            var muzzle = pd.MuzzleOf(0);
+                            var speed = _catalog.Weapons.TryGetValue(e.DefId ?? "", out var pdGun) ? Mathf.Max(100f, pdGun.ProjectileSpeed) : 380f;
+                            var flight = Vector3.Distance(muzzle, at) / speed;
+                            for (var k = 0; k < Mathf.Max(1, e.Mount); k++)
+                                _tracers.Launch(muzzle, at + UnityEngine.Random.insideUnitSphere * 0.7f, flight, 0f, 0.07f, 1.1f, now, k * 0.016f);
+                            _muzzle.Fire(MuzzleFx.Kind.Autocannon, muzzle, at - muzzle, now, 0.75f, pd.Position.y);
+                            _pointBursts[e.Entity] = (e.Value, now);
+                        }
                         break;
 
                     case SimEventKind.GunRevealed:

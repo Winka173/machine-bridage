@@ -39,6 +39,17 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Half the turret's traverse while mobile, in radians.</summary>
         public float Arc { get; internal set; } = MathF.PI / 4f;
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): a siege tank's two modes (StarCraft 2's). The main weapon (mount 0) fires only
+        /// sieged; mount <see cref="TankMount"/> (its tank-mode gun) only on its tracks, the turret laid by it. It sieges
+        /// with an enemy between the main weapon's minimum and full reach, or on guard, and packs up to move or when
+        /// enemies close inside that minimum with nothing further to shell.
+        /// </summary>
+        public bool Siege { get; internal set; }
+
+        /// <summary>The mount that fires in tank mode (a <see cref="Siege"/> vehicle).</summary>
+        public int TankMount { get; internal set; } = 1;
     }
 
     /// <summary>

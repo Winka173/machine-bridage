@@ -23,6 +23,8 @@ namespace MachineBrigade.Sim.Content
                     FrontUp = Math.Clamp(d.Int("front", 2), 0, ArmourLevels.Max),
                     Range = Math.Clamp(d.Float("range", 1.3f), 1f, 3f),
                     Arc = Math.Clamp(d.Float("arc", 45f), 5f, 180f) * MathF.PI / 180f,
+                    Siege = d.Bool("siege", false),
+                    TankMount = d.Int("tankMount", 1),
                 };
             }
             if (v.Has("wingman"))

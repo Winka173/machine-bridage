@@ -916,6 +916,14 @@ namespace MachineBrigade.Sim.AI
                 // hovering overhead only herded it into the map's edge (its machine gun and the
                 // anti-air answer aircraft).
                 var closest = NearestGround(a.Position, out var threat);
+                // Play-test 5 (DECISIONS 20W): a siege tank does not run from what gets inside its mortar's reach: it
+                // fights it with its tank gun (it packs up for that by itself).
+                if (threat != null && closest < weapon.MinRange + 6f && a.Def.Deploy is { Siege: true } siege && siege.TankMount < a.Arms.Length &&
+                    closest <= a.Arms[siege.TankMount].Range + 4f)
+                {
+                    if (a.Order.Kind != OrderKind.Attack || a.Order.Target != threat.Id) Issue(world, CommandType.Attack, a.Id, threat.Position, threat.Id);
+                    continue;
+                }
                 if (threat != null && closest < weapon.MinRange + 6f)
                 {
                     // Too close to shoot back: open the distance, by the best way out (never into the

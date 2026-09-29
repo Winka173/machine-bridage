@@ -757,7 +757,7 @@ namespace MachineBrigade.Game.Hud
             "heavy_aa" => "heavyaa",
             "titan_tank" => "titan",
             "twin_tank" => "twintank",
-            "siege_tank" => "siegegun",
+            "siege_tank" => "siegetank",
             "atgm_carrier" => "atgm",
             "heavy_rocket_artillery" => "smerch",
             "ballistic_launcher" => "ballistic",

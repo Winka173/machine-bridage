@@ -7686,3 +7686,186 @@ this pass, left alone: `ArmourTests.EveryUnitAndWeaponHasTheNewFields` (175 weap
   level-1 aircraft take 0.85 at level instead of 0.75). Missile speeds are unaffected.
 - **Left for the testing phase:** five seeds for the combat value (the laser tank, the BMPT, the fighter's air value),
   the whole campaign and every mode, and the elites' power band with the new row.
+
+
+
+## 20W. Play-test 5, sim half: autocannon rhythm, the jets' tail chase, rocket and drone speeds, the C-RAM's bursts, the siege tank (2026-09-29)
+
+The owner's play-test 5 items marked [D] (`Docs/prompts/requests_vi.md`). Branch `feature/pt5-sim` from lead/integration
+1801822. Agent C (20V) has the visual half; nothing here touches blasts, plumes or the models C redraws.
+
+### A. Autocannons: about 5 s of fire, about 1 s to change
+
+**The rule.** Every autocannon a deployable unit carries now fires a magazine of about 5 s and changes it in 1 s:
+`(clip - 1) x cooldown` is 4.9-5.1 s and `clipReload` 1 s. The damage a round stays on prompt 13's scale and the
+penetration of prompt 15 is untouched. The owner asked to "rebalance the damage", but the scale's bands are narrow
+(35 mm 24-26, 30 mm 20-24, 25 mm 16-18, 23 mm 13-15), so a 5 s stream at 19R's real cadence would need a round 4-5 times
+under its band. **Decided:** the magazine and the cadence were solved so that `FirePower.Sustained` is unchanged (within
+1 %); the cadence over the stream is therefore the old average (the tracers a minute are as before), not 19R's real
+peak. This is 19R's own exception ("a real rate the calibre scale cannot carry"); 19R's real rates stay recorded there.
+If the owner wants the old brrrt back, the choice is a lower band for autocannon rounds (the owner's scale) or a
+higher damage a second.
+
+| Weapon (carrier) | 19R | Now: cadence x magazine / change |
+|---|---|---|
+| `flak_35` (aa_vehicle) | 1,101 rpm x16 / 3.73 s | 242 rpm x21 / 1 s |
+| `twin_30_flak` (heavy_aa) | 3,593 rpm x20 / 1.56 s | 755 rpm x64 / 1 s |
+| `twin_35_ahead` (elite_aa) | 1,000 rpm x24 / 4.79 s | 269 rpm x23 / 1 s |
+| `zu23` (zu23_technical) | 1,802 rpm x16 / 1.21 s | 662 rpm x56 / 1 s |
+| `ifv_30` (ifv) | 550 rpm x10 / 1.55 s | 272 rpm x24 / 1 s |
+| `autocannon_30` (heavy tank's secondary, elite APC, two bosses) | 300 rpm x10 / 1.74 s | 191 rpm x17 / 1 s |
+| `twin_30_bmpt` (bmpt) | 1,091 rpm x10 / 1.99 s | 278 rpm x24 / 1 s |
+| `autocannon_25` (armored_car) | 500 rpm x6 / 1.48 s | 196 rpm x17 / 1 s |
+| `heli_gun` (attack helicopters) | 625 rpm x22 / 4.6 s | 228 rpm x20 / 1 s |
+| `gsh30k` (gunship_heli) | 2,400 rpm x20 / 2.8 s | 427 rpm x37 / 1 s |
+| `jet_cannon` (attack_jet) | 3,000 rpm x30 / 1.33 s | 1,119 rpm x94 / 1 s |
+| `fighter_cannon` (fighter_jet, stealth_fighter) | 3,297 rpm x40 / 4.7 s | 521 rpm x44 / 1 s |
+| `gunship_25mm` (sky_gunship) | 1,802 rpm x45 / 3.64 s | 622 rpm x53 / 1 s |
+| `gunship_40mm` (sky_gunship) | 3-round salvos, 0.64 s | a belt: 325 rpm x28 / 1 s |
+
+**Left as they were:** the towers' guns (`tower_flak_30`, `hq_flak`, `tower_ac25` keep their own rhythm over the
+inherited one; the C-RAM's gun, section E), the bosses' and ships' (`boss_flak`, `boss_heli_gun`, `hover_ciws`,
+`airship_flak`, `mothership_cannon`), and the 57 mm guns (the light tank's is a tank gun of 2 aimed rounds, the
+tower's `gun_57_auto` a tower weapon). `gsh_23v` and `gau_gatling` have no carrier.
+
+**What moved the combat value, and the two fixes.** Against aircraft passing through, a stream at the old average
+lands about half of what the old front-loaded burst did; and an anti-air vehicle's lead gun, streaming for 5 s, held its
+SAM for all of it (the IFV rule, 11C). First measure: `aa_vehicle` -45 % and `heavy_aa` -42 % on aircraft, every
+aircraft up in the scenarios with an anti-air vehicle. Fixed by:
+- **A SHORAD's missiles fire beside its gun's stream** (`CombatSystem.AirMissileBesideFlak`): an anti-aircraft missile on
+  a vehicle whose lead gun is an anti-aircraft magazine gun takes its own turns, as a Tunguska's or a Pantsir's do.
+- **Proximity-fuzed rounds against aeroplanes:** `flak_35` and `twin_35_ahead` x1.5, `twin_30_flak` x1.25 against class
+  Plane (a data bonus, not the round's damage; helicopters, which hover in the stream, get none). An armour-Air bonus of
+  1.6 was tried first: it made the anti-air too strong on helicopters (-30 % on the attack helicopter's long run).
+  `tower_flak_30` and `hq_flak` do not take the bonus (`hq_flak` has `"bonuses": []`; the tower's own stays).
+
+### B. Jets: the rhythm and a tail chase
+
+Both fighters' `fighter_cannon` and the attack jet's `jet_cannon` have the rhythm of A. **New behaviour**
+(`MovementSystem.DriveAeroplane`): a jet whose hull-fixed magazine cannon can hit aircraft (`TailGun`: the fighter and
+the stealth fighter; the attack jet's cannon hits the ground only), chasing an enemy jet flying fast (`FastMover`), flies
+for a point behind it (its heading, 55 % of the cannon's reach astern: lag pursuit) until it is inside the jet's rear
+60-degree cone and within 1.4 x reach, then keeps its nose on the jet at the old speed match (a little over half the
+reach) and does not pull through when the jet slips across its nose. `Vehicle.OnTail` marks it (in the cone, within
+reach, nose within about 25 degrees). **Firing on the tail:** the cannon leads (`Leads`: a fixed-wing mount leads only
+then), so its 5 s streams run on; the air-to-air missiles fire beside it (the same rule as the SHORAD's). A helicopter
+target is still held on as before (12F). Test: a fighter chasing an attack jet round the field sits on its tail for 8 s
+or more of 45 and streams 3 s or more.
+
+### C. Missile, rocket and drone speeds
+
+- `thermobaric_rockets` (TOS-1A) 45 and `rockets_300mm` (Smerch) 50 → **24 m/s**, the SAM's.
+- The rocket battery tower: `turret_rockets` 55 → 24 (`turret_rockets_cluster` and `turret_thermobaric` inherit it) and
+  its guided branch's `turret_gmlrs` 55 → 24. **Coordination with 19T:** no other branch number moved; the branch tests
+  (`TowerBranchTests`) pass. `TowerValueMeasure` (the tower agent's) was not rerun: the rockets now give a moving target
+  2-3 s to drive out of the 4.5 m splash, so the tower loses some of its value against vehicles on the move.
+- The attack jet: `s8_pods` 48 → 36, `kh29` 23 → 17.25, `r60` 24 → 18 (25 % slower; only the attack jet carries them).
+  The owner's "tên lửa" covers its rockets and missiles alike, and its S-8s were the fastest thing it fired.
+- The drone mothership: `mothership_drones` (its Lancets) 26 → 15.6 (40 % slower). The strike drones its skill
+  summons are ordinary strike drones and keep their speed.
+- Unguided rockets at 24 m/s are no longer 19R's exception for these three launchers: they aim where the target was
+  (only equipment leads), so the heavy launchers lose a little against movers; the C-RAM has longer to take them.
+
+### D. The siege tank: reworked, not added
+
+**Compared.** The old `siege_tank` was an M110 203 mm gun on a 3-armour heavy hull (3.6 m/s, 2,200 HP, 62 m, no fire on
+the move, x2.4 on structures): a siege tank permanently in siege mode. The SP artillery (`artillery`) is a light-armoured
+155 mm howitzer (90 m, minimum 25 m) that shoots and scoots; the mortar carrier a 120 mm on a light hull. A second,
+StarCraft-2-style siege tank would have repeated the old one's siege mode on another armoured hull, and prompt 17 D had
+already merged the siege mortar into it (`CardMerges`). **Decided: the existing `siege_tank` is reworked** into the
+two-mode tank; id, CP 12, card merges, the Breachers list and saves stay.
+
+**Data.**
+- `siege_tank`: class **Artillery** (strong vs Defense, Heavy, Tank; by class weak vs scouts, light vehicles,
+  helicopters and planes: what gets inside its minimum reach or above it), armour by face **[3, 2, 1, 1]**, 1,500 HP,
+  5.5 m/s, vision 38, capsule 8.0 x 4.19 m (`measure_hulls.py`).
+- Main weapon (mount 0, sieged): `siege_mortar_240`, the 2S4 Tyulpan's 2B8 240 mm (inherits `mortar_240`, the same
+  450-damage bomb and pen 4 on the scale), 16-70 m (outside every tank gun's 32-34 m and most towers'), 9 m splash, a bomb
+  every 8 s, 10 then 30 s to reload, x2 on structures.
+- Tank mode (mount 1, `slot` gun, turret): `siege_gun_105`, the L7 105 mm (inherits `gun_105_bunker`, 200, pen 3), 34 m,
+  4.6 s, on the move. Roof M2 on a free mount (mount 2).
+- `"deploy": { "seconds": 2.5, "front": 0, "range": 1, "arc": 180, "siege": true, "tankMount": 1 }` (`DeployDef.Siege`,
+  `TankMount`).
+
+**Sim.** `Vehicle.MountWorks` gates the modes (`SiegeModeFires`): the mortar only sieged, the 105 mm only on its tracks,
+neither while it sieges or packs up (the bunker's rule). On its tracks the turret is laid by the 105 mm's targets
+(`SelectTarget(v, tankGun)`, which also fires on the move). `DeploySystem`: it sieges after standing 1 s with a ground
+enemy between the mortar's minimum and full reach (or on guard 4 s away from its drop zone, as the bunker), never with an
+enemy already inside the minimum; it packs up for a route more than 6 m long, or after 1 s with enemies inside the
+minimum and nothing further to shell (`Crowded`). `MovementSystem.CloseIn` does not back it off from an enemy inside
+the minimum (its gun fights it).
+
+**AI, both sides.** Its main weapon has a minimum reach, so both commanders treat it as artillery: `TacticalAi`
+stands it off behind the army outside every known gun's reach, kites what it outranges and shells defences and
+structures from spots out of their reach (the existing `DirectArtillery`; `AiReviewTests.SiegeTankShellsAKnownTurret...`
+passes), so it sieges out of the enemy's reach and packs up whenever it is sent forward. New: with a ground threat inside
+its minimum reach and within its gun's, it attacks it in tank mode instead of running. **Counter-AI:** `ConquestAi`
+counts it in the enemy's artillery and answers it with aircraft and fast hunters; its Artillery class tells the cards and
+the counter buying the same (`Counters.WeakVs`).
+
+**Model** (`Tools/blender/mb_p22_siege.py`, replacing the old builder in `build_all`): an 8 m tracked hull, a wide
+turret on a column with the 240 mm mortar in a roof cradle (the elevating barrel, `Main_cannon*`, `Muzzle_main`) and the
+105 mm on its right cheek (`Deploy_gun`, `Muzzle_gun`), a roof M2 (`Mount_mg`). Sieging (`VehicleView.AnimateSiege`, the
+data's 2.5 s, backwards to pack up): the rear spades swing down (`Deploy_spade_*`, first 40 %), the outriggers fold out
+and down 140 degrees on to their pads (`Deploy_brace_*`, 10-55 %), the 105 mm slides 0.9 m back into its sleeve (20-50 %),
+the turret rises 0.45 m (`Deploy_riser`, 45-80 %), and the mortar swings up from level to 45 degrees, then is laid by
+range to 55-72 (`VehicleView.SiegeElevation`, from 55 %). 10,704 triangles (the old model 9,608).
+
+**The rest.** Guide card, card note and behaviour lines (`ul.siege`, `ul.siege.tank`) rewritten in both languages; the
+short names stay; a new icon (`siegetank`: braces down, mortar up). **Campaign unlock:** no longer a premium card
+(`Progression.PremiumPrices`, the shop's list): won in chapter 4's first mission (`c4m01`, beside the command vehicle),
+early for 2,100 coins; anyone who bought it keeps it. The unit lines use `{0}` (the seconds) as every `ul.*` line does;
+the localisation agent's named placeholders can take it over.
+
+### E. The C-RAM: a burst at every round
+
+**Before:** a C-RAM stopped a round the moment it landed with one interceptor charge, drawn as one tracer and a pop.
+**Now** (`CombatSystem.EngageIncoming`, the data's `aps.burst`: `c_ram` 0.5 s, `c_ram.centurion` 0.3 s): the gun lays on
+the incoming round landing soonest (within its 35 m of the mark, 0.2-3 s from landing, the same kinds as before:
+rockets, guided rounds, 30-40 % of shells, decided once a shell), streams 3 rounds a step at it (60 a second,
+`SimEvent.PointDefence`: the view draws tracers to the round's place and height and turns the turret on it) and after the
+burst the round bursts in the air where it has got to, one charge spent. One round at a time; a round that would land
+before a 0.2 s burst could run is not engaged. `DamageSystem.TryIntercept` leaves burst systems out; the Iron Dome's
+missiles, the lasers and the tanks' hard-kill systems are as they were. **Rates** (`TowerValueMeasure.PrintCRamInterception`,
+two launchers for 60 s, three seeds; the heavy rockets are now slower, section C):
+
+| Guard vs | mlrs | rocket_technical | heavy_rocket_artillery |
+|---|---|---|---|
+| `c_ram` before → now | 60 → 70 % | 70 → 62 % | 35 → 48 % |
+| `c_ram.centurion` | 90 → 81 % | 100 → 90 % | 55 → 69 % |
+| `c_ram.dome` (unchanged) | 48 → 48 % | 34 → 34 % | 27 → 25 % |
+
+### F. Combat value
+
+`CombatValueMeasure`, the whole roster, seeds 13-15, before (the lead's tree) and after (`Docs/balance/combat_value_pt5_*`):
+the median cell moved **0.5 %**; 44 of 324 cells (over 20 points) moved more than 10 %. The anti-air on aircraft is back
+within 2 % (`aa_vehicle` 223 → 218, `heavy_aa` 286 → 283); the fighter -8 % and the stealth fighter -15 % on aircraft; the
+attack jet -9 % over its ground scenarios (its slower rockets and missiles); the siege tank +5 % on the ground (+9 % with
+no anti-air: stronger against light groups and artillery with its gun on the move, -13 % on defended forts).
+The larger swings are small numbers and the aircraft's 4-minute runs (the stealth fighter's +74-114 % from 20-40 points,
+the swarm carrier -41 % to +43 % by scenario, the rocket technical's long run), which 19R already found too noisy for
+three seeds: the testing phase's sweep should judge the aircraft.
+
+### G. Tests
+
+New `PlayTest5Tests` (the 5 s / 1 s rhythm on every weapon of A, the Gepard's stream at a helicopter, the tail chase,
+the speeds of C, the C-RAM's burst before every round it drops, the siege tank sieging for its mortar and firing only
+it, fighting on the move with its gun, packing up to move and when rushed, and its artillery class and campaign unlock)
+and `ModelTests.SiegeTankKeepsItsSiegePartsApart`. Run: compile; `PlayTest5Tests`, `CounterTests` (all pass: SAM beats
+jets, anti-air beats helicopters, fighters beat helicopters), `ModelTests`, `VehicleLodTests`, `AirAttackTests`,
+`AbilityTests`, `AiReviewTests`, `RosterRoleTests`, `MissileFlightTests` (the S-8's new speed pinned), `WeaponRhythmTests`,
+`ApsTests`, `RosterBalanceTests`, `RosterMergeTests`, `StuckCauseTests`, `TrafficTests`, `InActionTests`,
+`EquipmentPrompt8Tests`, `ContentTests`, `LocalisationScanTests`, `BigAttackTests`, `SiegeModeTests`, `CalibreTests`,
+`CounterBuyTests`, `AircraftTests`, `AirRealismTests`, `AirMotionTests`, `TowerBranchTests`, and the two measures.
+**Failing, already on lead** (checked on the lead's tree) and not touched: `AirAttackTests.AnAttackHelicopterComesIn...`
+(its gun never fires, before this change too), `AiReviewTests.FortressBuildingsPayABounty...` (6 buildings on
+`ashfield_siege`) and `...TheLosingSideIsReinforcedFaster...`, `MissileFlightTests` on the tower `sam_battery_lrr` (4.17 s of
+flight on its 19T 3.6 s cooldown), `ModelTests.RoundsLeave` (3), `EveryWeaponMountHasAMuzzle` (mobile_fortress),
+`GearModelTests.AnOldSave...`.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (weapon lines of A and C, the two `siege_*` weapons, the `siege_tank` entry, the C-RAM's `aps`),
+`campaign.json` (`c4m01` unlocks), `CombatSystem.cs`, `MovementSystem.cs`, `DamageSystem.cs`, `TacticalAi.cs`,
+`VehicleView.cs` / `.Deploy.cs`, `EffectsDirector.cs` (two event cases), `Strings.cs`, `GuideText.cs`, `UnitText.cs`,
+`Icons.cs`, `MenuScreen*.cs`, `Progression.cs`, `build_assets.py` and `Docs/art/models.json` (`resolve_merge.py`).

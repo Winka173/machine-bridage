@@ -267,6 +267,32 @@ namespace MachineBrigade.Sim.Combat
         internal static bool IsHeavyMissile(WeaponDef weapon) =>
             weapon.Family is "cruise" or "ballistic" || (weapon.Projectile == ProjectileKind.Missile && weapon.MinRange > 0f);
 
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): the rounds a gun point defence (<see cref="ApsDef.Burst"/>) may take, by the same
+        /// rules as <see cref="TryIntercept"/>; <paramref name="shell"/>: only its share of them (the caller rolls).
+        /// </summary>
+        internal static bool GunTakes(ApsDef aps, WeaponDef weapon, out bool shell)
+        {
+            var kind = weapon.Projectile;
+            shell = false;
+            if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
+            var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
+            var rocket = kind == ProjectileKind.Rocket;
+            var lobbedShell = kind == ProjectileKind.Shell && weapon.Indirect;
+            var heavy = IsHeavyMissile(weapon);
+            if (!direct && !rocket && !lobbedShell && !heavy) return false;
+            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            if (aps.Heavy) return heavy;
+            if (!direct && rocket && !aps.Rockets) return false;
+            if (!aps.Direct && direct && !lobbed) return false;
+            if (!direct && lobbedShell)
+            {
+                if (aps.Shells <= 0f) return false;
+                shell = true;
+            }
+            return true;
+        }
+
         private bool TryIntercept(Projectile p)
         {
             var weapon = p.Weapon;
@@ -297,6 +323,8 @@ namespace MachineBrigade.Sim.Combat
                 var aps = v.Aps;
                 // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
                 if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                // Play-test 5: a gun point defence (the C-RAM) takes rounds in flight with a burst, never as they land.
+                if (aps.Burst > 0f) continue;
                 if (guarded.IsValid && v.Id != guarded) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.

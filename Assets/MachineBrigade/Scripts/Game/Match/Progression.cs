@@ -42,7 +42,6 @@ namespace MachineBrigade.Game.Match
             ["titan_tank"] = 3000,
             ["heavy_bomber"] = 4000,
             ["stealth_bomber"] = 5000,
-            ["siege_tank"] = 4500,
             ["ballistic_launcher"] = 5000,
             ["napalm_strike"] = 1500,
         };

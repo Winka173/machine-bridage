@@ -167,6 +167,12 @@ namespace MachineBrigade.Sim.Content
         /// boss's big-attack missiles; never rockets, shells, drones or direct fire.
         /// </summary>
         public bool Heavy { get; internal set; }
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): a gun (the C-RAM): seconds of fire it streams at a round before it bursts, the
+        /// round engaged in flight (CombatSystem.EngageIncoming) instead of shot down in one go as it lands. 0: the rest.
+        /// </summary>
+        public float Burst { get; internal set; }
     }
 
     /// <summary>

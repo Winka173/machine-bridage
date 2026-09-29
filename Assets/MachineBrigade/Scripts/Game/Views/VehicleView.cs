@@ -764,6 +764,10 @@ namespace MachineBrigade.Game.Views
             else if (aiming) want = Mathf.Lerp(0.5f, 4f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range)));
             else if (_model.Barrel == BarrelKind.Mortar) want = Mathf.Max(_model.RestPitch, 40f);
             else want = indirect ? 10f : weapon.Targets == TargetLayers.Air ? 18f : 0f;
+            // Play-test 5 (DECISIONS 20W): the siege tank's mortar lies level on its tracks and swings up as it sieges.
+            if (Def.Deploy is { Siege: true })
+                want = SiegeElevation(_model.RestPitch,
+                    aiming ? Mathf.Lerp(55f, 72f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range))) : float.NaN);
             if (float.IsNaN(_elevation)) _elevation = _model.RestPitch;
             var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 150f : indirect ? 32f : 60f;
             _elevation = snap ? want : Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);

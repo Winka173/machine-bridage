@@ -616,6 +616,11 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
 
+        /// <summary>Play-test 5 (DECISIONS 20W): the round a gun point defence is streaming at, since when, and for how long.</summary>
+        internal Projectile? PdRound;
+        internal double PdSince;
+        internal float PdBurst;
+
         /// <summary>
         /// Its weapons take turns: when the last round of a main gun, missile or rocket (a salvo's
         /// rounds included) and of a machine gun left, from which mount, and when a heavy weapon

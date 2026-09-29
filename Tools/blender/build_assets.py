@@ -43,6 +43,7 @@ import mb_p16_arms  # noqa: E402
 import mb_p20_bosses  # noqa: E402
 import mb_p21_models  # noqa: E402
 import mb_pt5_models  # noqa: E402
+import mb_p22_siege  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
 import mb_phase8  # noqa: E402
@@ -90,7 +91,8 @@ def all_builders():
                 # Play-test 4 (DECISIONS 19R): the bunker vehicle's dug-in mode and the look-alike redraws.
                 **mb_p21_models.BUILDERS,
                 # Play-test 5 (DECISIONS 20V): the FPV drone, the dug-in bunker, the AC-130, its transport twin, the stealth fighter.
-                **mb_pt5_models.BUILDERS}
+                **mb_pt5_models.BUILDERS,
+                **mb_p22_siege.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

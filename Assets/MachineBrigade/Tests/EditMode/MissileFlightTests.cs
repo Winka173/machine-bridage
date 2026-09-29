@@ -77,7 +77,7 @@ namespace MachineBrigade.Tests
                 { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 24f }, { "sam_long", 24f }, { "sam_battery", 24f }, { "sam_48n6", 24f },
                 { "heli_atgm", 21f }, { "hellfire_volley", 21f }, { "drone_missile", 21f }, { "vikhr", 24f }, { "maverick", 23f },
                 { "air_to_air", 24f }, { "wvr_aam", 24f }, { "stinger_atas", 24f }, { "hellfire_standoff", 24f }, { "air_cruise_missile", 17f },
-                { "heli_rockets", 48f }, { "s8_pods", 48f },
+                { "heli_rockets", 48f }, { "s8_pods", 36f }, // play-test 5 (DECISIONS 20W): the attack jet's rockets 25 % slower
             };
             foreach (var (id, speed) in speeds)
                 Assert.AreEqual(speed, catalog.Weapons[id].ProjectileSpeed, 1e-3f, id);

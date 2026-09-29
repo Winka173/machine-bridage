@@ -321,6 +321,7 @@ namespace MachineBrigade.Sim.Content
                         {
                             Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f), Laser = a.Bool("laser", false),
                             Reload = reload, Direct = a.Bool("direct", true), Missiles = a.Bool("missiles", false), Heavy = a.Bool("heavy", false),
+                            Burst = Math.Max(0f, a.Float("burst", 0f)),
                         };
                     }
                     if (v.Has("commandAura"))

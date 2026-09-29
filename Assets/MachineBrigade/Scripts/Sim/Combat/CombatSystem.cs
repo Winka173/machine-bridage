@@ -82,7 +82,10 @@ namespace MachineBrigade.Sim.Combat
                     continue;
                 }
 
-                var target = SelectTarget(v);
+                // Play-test 5 (DECISIONS 20W): a siege tank on its tracks picks targets for its tank-mode gun.
+                var target = v.Def.Deploy is { Siege: true } siege && v.Deploy != DeployState.Deployed && siege.TankMount < mounts.Count
+                    ? SelectTarget(v, v.Arms[siege.TankMount])
+                    : SelectTarget(v);
                 v.Target = target?.Id ?? EntityId.None;
                 // Nothing on the ground for the main gun: the coaxial machine gun takes on an
                 // aircraft in reach and the turret swings after it.
@@ -171,9 +174,10 @@ namespace MachineBrigade.Sim.Combat
             }
         }
 
-        private IDamageable? SelectTarget(Vehicle v)
+        /// <param name="tankGun">Play-test 5: a siege tank on its tracks lays its turret for its tank-mode gun instead.</param>
+        private IDamageable? SelectTarget(Vehicle v, WeaponDef? tankGun = null)
         {
-            var weapon = v.Weapon;
+            var weapon = tankGun ?? v.Weapon;
             switch (v.Order.Kind)
             {
                 case OrderKind.Attack:
@@ -198,7 +202,7 @@ namespace MachineBrigade.Sim.Combat
                 case OrderKind.Move:
                 case OrderKind.Retreat:
                     // Targets of opportunity only: firing never changes the route (V2 R04).
-                    return v.Def.FiresWhileMoving ? BestInRange(v, weapon, EntityId.None) : null;
+                    return v.Def.FiresWhileMoving || tankGun != null ? BestInRange(v, weapon, EntityId.None) : null;
 
                 default:
                     return null;
@@ -590,6 +594,10 @@ namespace MachineBrigade.Sim.Combat
             // Test feedback 19P: a gunship's broadside guns each have their own crew, and the 105, the 40 and the
             // 25 mm fire together as a real AC-130's do, none waiting on another's salvo or magazine.
             if (v.Def.Orbit && IsSide(v.Def.Mounts[index])) return true;
+            // Play-test 5 (DECISIONS 20W): a short-range air defence's missiles fire on their own beside its gun's
+            // five-second streams (as a Tunguska's or a Pantsir's do), not only in the second the magazine changes;
+            // so do a fighter's on an enemy jet's tail beside its cannon.
+            if (AirMissileBesideFlak(v, index)) return !SalvoUnderWay(v, index);
             if (SalvoUnderWay(v, index) || StreamUnderWay(v, index)) return false;
             // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: an
             // armoured car's or an IFV's cannon fires on for seconds); the others wait for its magazine change.
@@ -672,7 +680,18 @@ namespace MachineBrigade.Sim.Combat
         /// secondary magazine guns (a gunship's side guns) take turns like a machine gun: an
         /// aeroplane's pass is short, and its rockets and bombs must still get their turn in it.
         /// </summary>
-        private static bool Leads(Vehicle v, int index) => index == 0 && v.Arms[index].Clip > 0 && !v.Def.FixedWing;
+        /// <summary>
+        /// An anti-aircraft missile on a vehicle whose leading gun is an anti-aircraft magazine gun (a SHORAD's), or on a
+        /// jet streaming its cannon on an enemy jet's tail: it fires beside the stream.
+        /// </summary>
+        private static bool AirMissileBesideFlak(Vehicle v, int index) =>
+            v.Arms[index].Projectile == ProjectileKind.Missile && v.Arms[index].Targets == TargetLayers.Air &&
+            (v.Def.FixedWing ? v.OnTail : index > 0 && Leads(v, 0) && IsAntiAir(v.Arms[0]));
+
+        private static bool Leads(Vehicle v, int index) => v.Def.FixedWing
+            // Play-test 5 (DECISIONS 20W): a jet on an enemy jet's tail streams its cannon on; the missiles fit round it.
+            ? v.OnTail && index == Movement.MovementSystem.TailGun(v, flying: true)
+            : index == 0 && v.Arms[index].Clip > 0;
 
         /// <summary>A heavy weapon (not a gun) could fire now or is about to: loaded, its target alive and lined up.</summary>
         private bool HeavyReady(Vehicle v, int except)
@@ -946,6 +965,7 @@ namespace MachineBrigade.Sim.Combat
 
         private void UpdateProjectiles(float dt)
         {
+            EngageIncoming(dt);
             for (var i = _projectiles.Count - 1; i >= 0; i--)
             {
                 var p = _projectiles[i];
