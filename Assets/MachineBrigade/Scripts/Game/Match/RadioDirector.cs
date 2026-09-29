@@ -59,7 +59,11 @@ namespace MachineBrigade.Game.Match
         {
             _def = def;
             _random = new Random(seed * 31 + def.Id.GetHashCode());
+            _react = new ReactiveRadio(def);
         }
+
+        /// <summary>Prompt 22 D.4: the general's answers to the way the player fights.</summary>
+        private readonly ReactiveRadio _react;
 
         /// <summary>A line to show.</summary>
         public event Action<RadioLine> Spoke;
@@ -111,8 +115,10 @@ namespace MachineBrigade.Game.Match
             if (!_ended && session.Mode.Result is { } result)
             {
                 _ended = true;
+                if (result.WinningTeam == 0 && _react.OnWin(world.Time) is { } fast) Say(fast);
                 Trigger(world, result.WinningTeam == 0 ? RadioTrigger.Win : RadioTrigger.Lose, null);
             }
+            else if (!_ended && _react.Next(world.Time) is { } answer) Say(answer);
         }
 
         /// <summary>What the battle said this step.</summary>
@@ -135,6 +141,16 @@ namespace MachineBrigade.Game.Match
                         break;
                     case SimEventKind.Radio when e.DefId != null:
                         Say(e.DefId);
+                        break;
+                    // Prompt 22 D.4: what the general answers.
+                    case SimEventKind.DeploymentQueued when e.Team == 0 && e.DefId != null && world.Catalog.Vehicles.TryGetValue(e.DefId, out var sent):
+                        _react.Deployed(sent);
+                        break;
+                    case SimEventKind.VehicleDestroyed when e.Team == 0:
+                        _react.LostOne();
+                        break;
+                    case SimEventKind.BigAttack when e.Mount == 2:
+                        _react.Interrupted();
                         break;
                 }
         }

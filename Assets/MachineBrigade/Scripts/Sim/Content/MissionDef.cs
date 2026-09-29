@@ -333,6 +333,19 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A notable story battle (a siege, a defence, a duel with a general) the Operations mode offers again once won.</summary>
         public bool Replay { get; set; }
+
+        /// <summary>
+        /// Prompt 22 D.5: the story choice offered once this mission is won (its id, "c4.pursuit"), or null. The
+        /// choice's options are the missions that name it as their <see cref="Branch"/>.
+        /// </summary>
+        public string? StoryChoice { get; set; }
+
+        /// <summary>Prompt 22 D.5: a mission of one option of a story choice (the choice's id; null: on every path).</summary>
+        public string? Branch { get; set; }
+
+        /// <summary>Prompt 22 D.5: which option of <see cref="Branch"/> this mission is ("sea", "harbour").</summary>
+        public string? Option { get; set; }
+
         public string Map { get; set; } = "ashfield";
 
         /// <summary>Which version of the map: "conquest" (objectives) or "sandbox".</summary>
@@ -614,6 +627,9 @@ namespace MachineBrigade.Sim.Content
                 Duel = m.Bool("duel", false),
                 PlayerDeck = m.Has("playerDeck") ? m.String("playerDeck") : m.Bool("duel", false) ? "air" : null,
                 Replay = m.Bool("replay", false),
+                StoryChoice = m.Has("storyChoice") ? m.String("storyChoice") : null,
+                Branch = m.Has("branch") ? m.String("branch") : null,
+                Option = m.Has("option") ? m.String("option") : null,
                 TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
                 TargetRadius = m.Float("targetRadius", 40f),
             };

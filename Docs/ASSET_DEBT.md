@@ -169,3 +169,11 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The commander's face in the HUD | The portrait, cropped into the 44 px face | A small, high-contrast icon version of each portrait if the face reads poorly at 44 px |
 | The commanders' radio lines | Text only (the radio panel, the result card's note) | Voice lines, if the game gets voice |
 | Screenshots of the picker, the briefing with its general and the dossier's commander pages in `Docs/ui-screens/` | None (`UiShots` has the screens: `commanders`, `dossier-commanders`, `briefing`, `hud-commander`) | The lead's graphics run (`-mbShotsOnly commanders,dossier-commanders,briefing,hud-commander`), both languages |
+### Prompt 22 D (DECISIONS 22D)
+
+| What | Uses now | Needs |
+|---|---|---|
+| The front map of the Meridian Coast | Drawn in code (FrontMapView): a coast polygon, grid cells coloured by side, a front line, dots, flag icons, round pins | An illustrated map (terrain, towns, roads, the sea) with the regions as shapes, and a softer front line |
+| The comic panels after each chapter (48) | A battlefield's shot and a card render, the speaker's portrait and a speech box in a black frame (ComicPage) | Drawn panels (the moment itself: the landing, the ceasefire, the turn in Veyra, Icarus falling), speech balloons |
+| Interlude I's panels | The Rust Yard's shot (the Foundry has no picture yet) | The Foundry's map shot once P22-content's map lands, then the drawn panels |
+

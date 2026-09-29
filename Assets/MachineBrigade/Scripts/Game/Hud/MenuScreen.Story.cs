@@ -9,7 +9,9 @@ namespace MachineBrigade.Game.Hud
     /// <summary>
     /// The Dossier ("Hồ sơ"): the people of the story (their bios once met), the boss files (once the
     /// boss is beaten), the timeline (a line for each chapter finished) and the story files every
-    /// won mission adds. Device checks: -mb-dossier (-mb-dossier-tab=bosses, -mb-dossier-all shows
+    /// won mission adds. Prompt 22 D: the characters' arcs so far under their bios (D.3), the choices made and a way to see
+    /// each chapter's comic panels again in the timeline (D.5, D.8), and the intel files side objectives recover (D.7).
+    /// Device checks: -mb-dossier (-mb-dossier-tab=bosses, -mb-dossier-all shows
     /// everything), -mb-chapter=3 (a chapter's opening card), -mb-brief=c3m05 (a briefing card),
     /// -mb-campaign (the campaign page; -mb-campaign=c5m10 with that mission chosen).
     /// </summary>
@@ -21,6 +23,9 @@ namespace MachineBrigade.Game.Hud
             Bosses,
             Timeline,
             Files,
+
+            /// <summary>Prompt 22 D.7: the intel files, by chapter.</summary>
+            Intel,
 
             /// <summary>Prompt 20 O.5 (DECISIONS 19L): every battlefield, its picture and its guide.</summary>
             Maps,
@@ -37,7 +42,7 @@ namespace MachineBrigade.Game.Hud
         private void BuildDossierPage()
         {
             _dossier = FullPage("fc-dossier");
-            _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files"), Strings.Get("dossier.maps"),
+            _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files"), Strings.Get("dossier.intel"), Strings.Get("dossier.maps"),
                     Strings.Get("cmdr.dossier.tab") },
                 0, i =>
                 {
@@ -71,8 +76,10 @@ namespace MachineBrigade.Game.Hud
                     {
                         if (id == "hq") continue;
                         var met = _dossierAll || Met(id);
-                        _dossierBody.Add(Entry(id, Strings.Get($"char.{id}.name"), Strings.Get($"char.{id}.role"),
-                            met ? Strings.Get($"char.{id}.bio") : Strings.Get("dossier.locked"), !met, IsEnemy(id)));
+                        var person = Entry(id, Strings.Get($"char.{id}.name"), Strings.Get($"char.{id}.role"),
+                            met ? Strings.Get($"char.{id}.bio") : Strings.Get("dossier.locked"), !met, IsEnemy(id));
+                        if (met) AddArc(person, id);
+                        _dossierBody.Add(person);
                     }
                     break;
                 case DossierTab.Bosses:
@@ -88,6 +95,7 @@ namespace MachineBrigade.Game.Hud
                     }
                     break;
                 case DossierTab.Timeline:
+                    AddChoices();
                     _dossierBody.Add(Entry(null, Strings.Get("dossier.before"), null, Strings.Get("timeline.0"), false, false));
                     // Prompt 22: the chapters and interludes in the order they are played.
                     foreach (var info in Campaign.Chapters)
@@ -95,8 +103,15 @@ namespace MachineBrigade.Game.Hud
                         var c = info.Number;
                         if (!Campaign.ChapterEnabled(c)) continue;
                         var done = _dossierAll || Campaign.ChapterDone(c);
-                        _dossierBody.Add(Entry(null, Campaign.ChapterName(c) + " · " + Strings.Get($"chapter.{c}.title"), null,
-                            done ? Strings.Get($"timeline.{c}") : Strings.Get("dossier.lockedChapter"), !done, false));
+                        var entry = Entry(null, Campaign.ChapterName(c) + " · " + Strings.Get($"chapter.{c}.title"), null,
+                            done ? Strings.Get($"timeline.{c}") : Strings.Get("dossier.lockedChapter"), !done, false);
+                        // Prompt 22 D.8: the chapter's comic panels, again.
+                        if (done && Narrative.ComicOf(c).Count > 0)
+                        {
+                            var chapterNumber = c;
+                            entry.Q(className: "fc-dossier__text")?.Add(new KitButton(ButtonTier.Text, Strings.Get("dossier.comic"), () => _comic.Show(chapterNumber, null), "eye"));
+                        }
+                        _dossierBody.Add(entry);
                     }
                     // The game's epilogue, or "To be continued" when the build ends before the story does.
                     if (_dossierAll || Campaign.ChapterDone(Campaign.FinalChapter))
@@ -121,12 +136,79 @@ namespace MachineBrigade.Game.Hud
                     }
                     if (!any) _dossierBody.Add(Kit.Body2(Strings.Get("dossier.empty")));
                     break;
+                case DossierTab.Intel:
+                    FillIntel();
+                    break;
                 case DossierTab.Maps:
                     foreach (var map in MatchSettings.AllMaps) _dossierBody.Add(MapEntry(map.Id));
                     break;
                 case DossierTab.Commanders:
                     FillCommanderFiles();
                     break;
+            }
+        }
+
+        /// <summary>Prompt 22 D.3: a character's arc so far under their bio: each beat of a mission won, the payoffs marked.</summary>
+        private void AddArc(VisualElement person, string id)
+        {
+            var beats = Narrative.ArcOf(id);
+            if (beats.Count == 0) return;
+            var text = person.Q(className: "fc-dossier__text");
+            var any = false;
+            foreach (var beat in beats)
+            {
+                if (!_dossierAll && !PlayerProfile.Completed(beat.Mission)) continue;
+                if (!any) text.Add(Kit.Caption(Strings.Get("dossier.arc")));
+                any = true;
+                var line = Strings.Get(beat.Key);
+                text.Add(Kit.Text(beat.Payoff ? Strings.Get("dossier.payoff") + " · " + line : line, "fc-body-2 fc-mt-1"));
+            }
+        }
+
+        /// <summary>Prompt 22 D.5: the choices made so far, at the head of the timeline.</summary>
+        private void AddChoices()
+        {
+            _dossierBody.Add(Kit.Caption(Strings.Get("dossier.choices")));
+            var any = false;
+            foreach (var (choice, speaker, _) in Narrative.Choices)
+            {
+                if (Campaign.Chosen(choice) is not { } option || Narrative.OfferOf(choice) is not { } offer) continue;
+                any = true;
+                _dossierBody.Add(Entry(speaker, Strings.Get($"storychoice.{choice}.title"), Campaign.ChapterName(offer.Chapter) + " · " + Strings.Get($"storychoice.{choice}.{option}"),
+                    Strings.Format($"storychoice.{choice}.{option}.info", ("cp", Narrative.MinersCp), ("share", (int)System.Math.Round((1f - Narrative.RadarVision) * 100f))), false, false));
+            }
+            if (!any) _dossierBody.Add(Kit.Body2(Strings.Get("dossier.choiceNone")));
+        }
+
+        /// <summary>Prompt 22 D.7: the intel files by chapter: a file recovered is read here; one still out says how to get it.</summary>
+        private void FillIntel()
+        {
+            int found = 0, total = 0;
+            foreach (var f in Narrative.Intel)
+            {
+                if (!Campaign.ChapterEnabled(f.Chapter)) continue;
+                total++;
+                if (_dossierAll || Narrative.Found(f)) found++;
+            }
+            _dossierBody.Add(Kit.Body2(Strings.Format("dossier.intelCount", ("found", found), ("total", total))));
+            foreach (var info in Campaign.Chapters)
+            {
+                if (!Campaign.ChapterEnabled(info.Number)) continue;
+                var files = Narrative.IntelOf(info.Number);
+                if (files.Count == 0) continue;
+                _dossierBody.Add(Kit.Caption(Campaign.ChapterName(info.Number) + " · " + Strings.Get($"chapter.{info.Number}.title")));
+                foreach (var f in files)
+                {
+                    if (_dossierAll || Narrative.Found(f))
+                    {
+                        _dossierBody.Add(Entry(f.Author, Strings.Get($"intel.{f.Id}.title"), Strings.Get($"intel.{f.Id}.from"), Strings.Get($"intel.{f.Id}.text"), false, false));
+                        continue;
+                    }
+                    var mission = Campaign.Get(f.Mission);
+                    var where = mission != null ? Campaign.Label(mission) + " " + Strings.Get($"mission.{mission.Id}.name") : f.Mission;
+                    _dossierBody.Add(Entry(null, Strings.Get("dossier.intelLocked"), null,
+                        Strings.Format(f.ThreeStars ? "dossier.intelStars" : "dossier.intelSide", ("mission", where)), true, false));
+                }
             }
         }
 

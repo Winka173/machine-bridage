@@ -337,12 +337,54 @@ namespace MachineBrigade.Game.Match
             return null;
         }
 
-        /// <summary>A chapter's missions in campaign order (its main missions, then its side missions).</summary>
+        /// <summary>
+        /// A chapter's missions in campaign order (its main missions, then its side missions). Prompt 22 D.5: the main
+        /// missions are the ones on the player's path (of a story choice's two options, the one chosen, or the first while
+        /// it is still to be made); every mission, both options among them, when <paramref name="side"/> is null.
+        /// </summary>
         public static List<MissionDef> MissionsOf(int chapter, bool? side = null)
         {
             var list = new List<MissionDef>();
             foreach (var m in All)
-                if (m.Chapter == chapter && (side == null || m.Side == side.Value)) list.Add(m);
+                if (m.Chapter == chapter && (side == null || (m.Side == side.Value && (side.Value || OnPath(m))))) list.Add(m);
+            return list;
+        }
+
+        /// <summary>Prompt 22 D.5: the option of a story choice the player took (null: not made yet).</summary>
+        public static string Chosen(string choice) => PlayerProfile.StoryChoice(choice);
+
+        /// <summary>
+        /// Prompt 22 D.5: a mission on the player's path: every mission but an option of a story choice not taken (while
+        /// the choice is still to be made, its first option holds the place of the one to come).
+        /// </summary>
+        public static bool OnPath(MissionDef m)
+        {
+            if (m?.Branch == null) return true;
+            var chosen = Chosen(m.Branch);
+            if (chosen != null) return chosen == m.Option;
+            foreach (var other in All)
+                if (other.Branch == m.Branch) return other == m;
+            return true;
+        }
+
+        /// <summary>Prompt 22 D.5: an option of a story choice the player did not take (it can never be played).</summary>
+        public static bool NotTaken(MissionDef m) => m?.Branch != null && Chosen(m.Branch) is { } chosen && chosen != m.Option;
+
+        /// <summary>Prompt 22 D.5: the choice this mission leads to that is still to be made (its offering mission won), or null.</summary>
+        public static string ChoicePending(MissionDef m)
+        {
+            if (m?.Branch == null || Chosen(m.Branch) != null) return null;
+            foreach (var offer in All)
+                if (offer.StoryChoice == m.Branch) return PlayerProfile.Completed(offer.Id) ? m.Branch : null;
+            return null;
+        }
+
+        /// <summary>Prompt 22 D.5: the options of a story choice (its missions, in order).</summary>
+        public static List<MissionDef> OptionsOf(string choice)
+        {
+            var list = new List<MissionDef>();
+            foreach (var m in All)
+                if (m.Branch == choice) list.Add(m);
             return list;
         }
 
@@ -366,14 +408,27 @@ namespace MachineBrigade.Game.Match
             if (mission == null) return "";
             if (mission.Chapter <= 0) return (IndexOf(mission.Id) + 1).ToString();
             var n = 0;
+            string letter = null;
             foreach (var m in All)
             {
                 if (m.Chapter != mission.Chapter || m.Side != mission.Side) continue;
+                // Prompt 22 D.5: a story choice's two options share one number, "4-14A" and "4-14B".
+                if (m.Branch != null)
+                {
+                    var options = OptionsOf(m.Branch);
+                    if (options.IndexOf(m) == 0) n++;
+                    if (m.Id == mission.Id)
+                    {
+                        letter = ((char)('A' + options.IndexOf(m))).ToString();
+                        break;
+                    }
+                    continue;
+                }
                 n++;
                 if (m.Id == mission.Id) break;
             }
             var chapter = ChapterShort(mission.Chapter);
-            return mission.Side ? $"{chapter}-S{n}" : $"{chapter}-{n}";
+            return mission.Side ? $"{chapter}-S{n}" : $"{chapter}-{n}{letter}";
         }
 
         /// <summary>
@@ -510,9 +565,11 @@ namespace MachineBrigade.Game.Match
             var mission = All[index];
             if (PlayerProfile.Completed(mission.Id)) return true;
             if (mission.Side) return mission.After == null || PlayerProfile.Completed(mission.After) || !MapExists(Get(mission.After));
-            // A mission whose battlefield is not in this build does not hold the ones after it back.
+            // Prompt 22 D.5: an option of a story choice once it is the one chosen (never the other).
+            if (mission.Branch != null && Chosen(mission.Branch) != mission.Option) return false;
+            // A mission whose battlefield is not in this build does not hold the ones after it back; an option not taken is not on the way.
             for (var i = index - 1; i >= 0; i--)
-                if (!All[i].Side && !All[i].Optional && MapExists(All[i])) return PlayerProfile.Completed(All[i].Id);
+                if (!All[i].Side && !All[i].Optional && MapExists(All[i]) && OnPath(All[i])) return PlayerProfile.Completed(All[i].Id);
             return true;
         }
 
@@ -533,8 +590,9 @@ namespace MachineBrigade.Game.Match
             {
                 for (var i = 0; i < All.Count; i++)
                     if (!All[i].Side && !PlayerProfile.Completed(All[i].Id) && IsOpen(i) && MapExists(All[i])) return i;
+                // Prompt 22 D.5: a story choice to make comes before what lies past it.
                 for (var i = 0; i < All.Count; i++)
-                    if (!PlayerProfile.Completed(All[i].Id)) return i;
+                    if (!PlayerProfile.Completed(All[i].Id) && OnPath(All[i])) return i;
                 return All.Count - 1;
             }
         }
@@ -547,10 +605,12 @@ namespace MachineBrigade.Game.Match
         {
             var index = IndexOf(id);
             if (index < 0) return -1;
+            // Prompt 22 D: the end of a chapter shows its comic panels, and a story choice is made, on the campaign page.
+            if (All[index] == OperationOf(All[index].Chapter) && !PlayerProfile.ChapterSeen(PlayerProfile.ComicSeen(All[index].Chapter))) return -1;
             for (var i = index + 1; i < All.Count; i++)
-                if (!All[i].Side && !PlayerProfile.Completed(All[i].Id)) return i;
+                if (!All[i].Side && !NotTaken(All[i]) && !PlayerProfile.Completed(All[i].Id)) return ChoicePending(All[i]) != null || (All[i].Branch != null && Chosen(All[i].Branch) == null) ? -1 : i;
             for (var i = index + 1; i < All.Count; i++)
-                if (!All[i].Side) return i;
+                if (!All[i].Side && OnPath(All[i])) return i;
             return -1;
         }
 

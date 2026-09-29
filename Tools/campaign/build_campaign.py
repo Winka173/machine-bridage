@@ -4,7 +4,7 @@
 
 The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
 (prompt 20), in chapters of 9-18 missions and three interludes by act5.py-act8.py (prompt 22), the
-people and chapters in story.py. This script turns reversed missions round, gives every mission its
+story's choices and story loot by act9.py (prompt 22 D), the people and chapters in story.py. This script turns reversed missions round, gives every mission its
 pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters), checks the campaign's
 rules and writes both files. --report also writes the economy table there.
 
@@ -33,6 +33,7 @@ import act5  # noqa: E402,F401
 import act6  # noqa: E402,F401
 import act7  # noqa: E402,F401
 import act8  # noqa: E402,F401
+import act9  # noqa: E402,F401
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
 TEXT_CS = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Scripts', 'Game', 'Hud', 'CampaignText.cs')
@@ -142,6 +143,11 @@ def pay_base(missions):
             base = last_main
             m['_coins'], m['_prints'] = base[0] * 1.15, base[1] * 0.6
             continue
+        # Prompt 22 D.5: an option of a story choice pays from the mission that offers it (act9.PAY) and moves nobody's pay.
+        if m.get('branch'):
+            k_coins, k_prints = m.get('_pay', (1.0, 1.0))
+            m['_coins'], m['_prints'] = last_main[0] * k_coins, last_main[1] * k_prints
+            continue
         # Prompt 22: a set piece of stages (not the chapter's operation) pays between a boss and an operation.
         kind = 2.4 if m.get('operation') else 1.8 if m.get('stages') else 1.5 if m['goal'] in ('Boss', 'Intercept') else 1.0
         coins = (1.0 + index / 30.0) * kind
@@ -167,6 +173,10 @@ def simulate(missions, coin_scale, print_scale, stars=2):
     unlocked = len(STARTERS)
     out = []
     for m in missions:
+        # Prompt 22 D.5: only one option of a choice is played; the tune leaves them out (the rest is paid as before).
+        if m.get('branch'):
+            out.append((m['id'], out[-1][1] if out else 1.0, coins, level))
+            continue
         c = round(m['_coins'] * coin_scale / 5) * 5
         p = round(m['_prints'] * print_scale)
         coins += c + 50 * stars + 300
@@ -274,8 +284,20 @@ def check(missions):
     ids = [m['id'] for m in missions]
     if len(set(ids)) != len(ids):
         fail('duplicate ids')
-    main = [m for m in missions if not m.get('side')]
+    # Prompt 22 D.5: the options of a story choice are counted apart (one of them is played; checked below).
+    main = [m for m in missions if not m.get('side') and not m.get('branch')]
     side = [m for m in missions if m.get('side')]
+    for m in missions:
+        if m.get('storyChoice'):
+            options = [b for b in missions if b.get('branch') == m['storyChoice']]
+            at = missions.index(m)
+            if len(options) != 2 or len({b['option'] for b in options}) != 2 or missions[at + 1:at + 3] != options:
+                fail(f"{m['id']}: choice {m['storyChoice']} wants two options right after it")
+            for b in options:
+                if b.get('unlocks') or b.get('side') or b.get('operation') or b['chapter'] != m['chapter']:
+                    fail(f"{b['id']}: an option of a choice unlocks no card and is a main mission of its chapter")
+    if any(b.get('branch') and not any(m.get('storyChoice') == b['branch'] for m in missions) for b in missions):
+        fail('an option of a choice no mission offers')
     # Prompt 22 B: every chapter's counts (story.COUNTS), 9-18 main missions a chapter, four an interlude.
     for c, (n_main, n_side) in story.COUNTS.items():
         ms = [m for m in main if m['chapter'] == c]
@@ -348,7 +370,7 @@ def check(missions):
     # Prompt 22 B.1: a chapter's last main mission is its operation (prompt 5's frame) and fights its main boss;
     # the only operation of the chapter. B.5: a set piece besides it in every chapter.
     for c in range(1, CHAPTERS + 1):
-        ms = [m for m in missions if m['chapter'] == c and not m.get('side')]
+        ms = [m for m in missions if m['chapter'] == c and not m.get('side') and not m.get('branch')]
         last = ms[-1]
         if not last.get('operation') or not last.get('stages'):
             fail(f'chapter {c}: the last mission is its operation')
@@ -461,10 +483,11 @@ def write_json(missions, scales):
                  **({'main': story.CHAPTER_BOSSES[n][0]} if story.CHAPTER_BOSSES[n][0] else {}), 'minis': story.CHAPTER_BOSSES[n][1], 'comic': f'comic.{n}'}
                 for n, act, il, _, maps, g, _, _ in story.CHAPTERS]
     generals = [{'id': gid, 'deck': deck, 'supports': sup, 'style': style, 'stance': stance} for gid, deck, sup, style, stance, _, _ in story.GENERALS]
-    n_main = sum(1 for m in missions if not m.get('side'))
-    out = [f'// The story campaign (prompts 4, 20 and 22): twelve chapters in four acts and three interludes, {n_main} main missions and '
-           f'{len(missions) - n_main} side missions.',
-           '// Generated by Tools/campaign/build_campaign.py from act1.py-act8.py and story.py: edit those, not this file.',
+    n_main = sum(1 for m in missions if not m.get('side') and not m.get('branch'))
+    n_branch = sum(1 for m in missions if m.get('branch'))
+    out = [f'// The story campaign (prompts 4, 20 and 22): twelve chapters in four acts and three interludes, {n_main} main missions, '
+           f'{len(missions) - n_main - n_branch} side missions and {n_branch} missions of the story choices (one of each two is played).',
+           '// Generated by Tools/campaign/build_campaign.py from act1.py-act9.py and story.py: edit those, not this file.',
            '{',
            "  // Prompt 20 B.3: where the nine-chapter campaign's missions went, for a save made before (PlayerProfile.MigrateCampaign).",
            '  "migration": ' + compact({'moves': story.MOVES, 'chaptersSeen': {str(k): v for k, v in story.CHAPTERS_SEEN.items()}, 'hq': story.OLD_HQ}) + ',',

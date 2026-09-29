@@ -1227,10 +1227,12 @@ namespace MachineBrigade.Game.Match
                     Vehicles = deck.Count > 0 ? deck.ToArray() : EnemyDeck(Difficulty, world.Catalog).vehicles, Supports = supports.ToArray(),
                 };
             }
-            var playerSide = PlayerSide(_def.PlayerCp, _def.PlayerIncome);
-            playerSide.ArmyCap = _def.PlayerCap;
             // An Operations battle: its tier (Legend too) and its mutators (null: a campaign mission).
             _run = MatchSettings.Run != null && MatchSettings.Run.Mission == _def.Id ? MatchSettings.Run : null;
+            // Prompt 22 D.5: what the story's choices so far change here (the campaign's battles only).
+            var playerSide = PlayerSide(_def.PlayerCp + (_run == null ? Narrative.PlayerCpBonus(_def) : 0f), _def.PlayerIncome);
+            playerSide.ArmyCap = _def.PlayerCap;
+            world.SetVision(EnemyTeam, _run == null ? Narrative.EnemyVision(_def) : 1f);
             // Heroic and Iron (and Legend): the enemy comes stronger; Iron and Legend also leave the
             // player poorer and without fire support (operations.json "tiers").
             _tier = System.Math.Clamp(MatchSettings.MissionTier, 0, _run != null && Operations.LegendOpen ? Operations.Legend : 2);

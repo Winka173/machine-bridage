@@ -438,6 +438,16 @@ namespace MachineBrigade.Sim
         {
             if (team >= 0 && team < _mutators.Length) _mutators[team] = strength;
         }
+        /// <summary>
+        /// Prompt 22 D.5: how far a side sees (1: as its units do; the story's choices can blind the enemy a little). Set before
+        /// the battle starts; the same for every replay of it.
+        /// </summary>
+        public void SetVision(int team, float factor)
+        {
+            if (team >= 0 && team < _teamVision.Length) _teamVision[team] = factor;
+        }
+
+        private readonly float[] _teamVision = { 1f, 1f, 1f };
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
         private readonly bool[] _boostAll = new bool[3];
 
@@ -1122,6 +1132,7 @@ namespace MachineBrigade.Sim
             foreach (var spotter in _vehicleList)
             {
                 var reach = spotter.Def.VisionRange * spotter.VisionFactor;
+                if (spotter.Team >= 0 && spotter.Team < _teamVision.Length) reach *= _teamVision[spotter.Team];
                 var thermal = 0f;
                 if (spotter.Gear is { } g)
                 {

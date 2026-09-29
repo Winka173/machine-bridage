@@ -340,7 +340,7 @@ namespace MachineBrigade.Tests
         /// <summary>The screens with one main action (the rest, lists and settings, have none).</summary>
         private static readonly HashSet<string> WithPrimary = new()
         {
-            "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
+            "home", "campaign-chapter", "briefing", "comic", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
             "detail-weapons", "detail-armour",
             "shop-skins", "shop-units", "shop-items",
         };

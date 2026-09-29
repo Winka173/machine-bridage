@@ -9430,3 +9430,85 @@ refund cap as in play; there is no escalating income anywhere in the game to mea
   lean Sandbox (its sheet has the dropdowns) pass. `L10nTests` and the Vietnamese-word scan pass.
 - Run once each, then again after the fixes. `EquipmentPrompt8Tests.RearguardCutsDamageOnlyWhileDrivingAway` fails in
   this tree (96 against 80): it sets no commander and runs through none of the changed paths; not checked on the base.
+
+## 22D. Prompt 22 pass 2, section D: narrative mechanics (2026-09-30)
+
+Section D of `Docs/prompts/prompt22_vi.txt`. The words and data outside the missions are `Tools/campaign/narrative.py`'s
+(it writes `Hud/StoryText.cs` and `Match/Narrative.Data.cs`); the choices' missions, Nadia's clue lines and the story
+loot's moves are `Tools/campaign/act9.py`'s (the campaign build). The Game layer's rules: `Narrative`, `FrontMap`,
+`ReactiveRadio`; the screens: `FrontMapView`, `ComicPage`, the campaign page and the dossier.
+
+- **D.1 The front map** heads the chapter screen (the chapter cards stay under it, so every old way in still works). Each
+  main mission on the player's path is a piece of ground round its battlefield (a spiral of pieces per battlefield, in
+  the order they are played); the land takes the state of the nearest piece within reach (a 96 x 42 grid), so a win
+  frees its piece and the front line (drawn where the brigade's ground meets the enemy's) moves with every win. Ground
+  won in an earlier chapter stays ours until a later chapter fights there again: Varga's counterstrike retakes Ashfield,
+  Greenvale and Stormbeach when chapter 6 opens. **The betrayal**: once c7m10 is won, Thorne's army holds the ground it
+  stood on with the brigade (Red Rock, Hollow Dam, Iron Harbor, Beacon Bay) in its own colour, until every chapter 8-9
+  mission there is won; the legend names Thorne's army only from then (no spoiler). A flag flies where an enemy base or
+  an operation was won, on ground still ours. Pins: one per chapter shown (done, current, open, locked, and "Coming soon"
+  or hidden per prompt 20 C), a touch target each, pushed apart where two battlefields are close; chapters switched off
+  are not on the map. Drawn in code (Painter2D) as a placeholder until an illustrated map comes (ASSET_DEBT).
+- **D.2 Clues about Thorne**: an intel file in each of chapters 4, 5 and 6 (the overwritten movement order, "Titan" in
+  Venn's traffic, his HQ on a Hegemon band) and one more Nadia line on the radio in each (c4m08, c5m07, c6m09, on top
+  of pass 1's c4m13, c5m09, c6m15). Nadia's own report after c7m10 says she had the file for six weeks.
+- **D.3 Arcs**: Mara (seven beats, payoff c12m10: her Behemoth at Helion), Hawk (payoff c10m12, the duel), Nadia (payoff
+  c7m10, she sees the turn first), Kade (payoff c12m10 and the ending), Varga (payoffs c6m14, the ceasefire, and c12m10),
+  all on pass 1's missions. The dossier shows each arc so far under the bio (a beat once its mission is won); a payoff
+  mission's page carries the character's "story" tag.
+- **D.4 Reactive radio**: every enemy general of the story (Brandt, Varga, Orlov, Kessler, Venn, Thorne, Raven, Aurel)
+  has two lines for each of six moments: a fast win (within 60% of the second star's time, else four minutes), heavy
+  losses (the third star's allowance plus two, at least eight), many aircraft (at least 4 and 35% of what was sent,
+  after 8 cards), many drones (4 and 30%; drones and their carriers), mostly artillery (4 and 40%), a boss's big attack
+  broken in time (the sim's BigAttack cancel). Each moment once a battle, 25 s apart; which of the two lines is fixed by
+  a hash of the mission and the moment, never dice. Presentation only (RadioDirector), so the sim stays deterministic.
+- **D.5 Choices** (the spec's three; no fourth: the story has no other beat where both roads rejoin as cleanly):
+  - c4m14 `c4.pursuit`: *Last Boats* (c4m17, catch Kessler's staff on the quays, 1.6x coins) or *Harbour Lights* (c4m18,
+    hold the terminal until the ferries leave, 3 rare blueprints). Both lead to Scylla at Beacon Bay.
+  - c8m09 `c8.miners`: *The Miners of Deepcut* (c8m13; +6 CP at the start of every chapter 9 battle) or *Straight at
+    Kronos* (c8m14, Thorne's pay chest, 2x coins).
+  - c11m09 `c11.radar`: *Blind the Array* (c11m12; the enemy sees 25% less in chapter 12: `SimWorld.SetVision`, set once
+    at the battle's start, so replays and checkpoints stay the same) or *The Short Road* (c11m13, a 10-minute recon, 1.5x
+    coins and 3 rare blueprints).
+  Each option is a new mission right after the one that offers the choice, made from a mission on its battlefield with
+  its set-up changed (act9 picks a set-up that passes prompt 4's rule; the harbour is a Hold, since Iron Harbor has two
+  Protect missions). The two share a number ("4-14A", "4-14B"); the one not taken shows "Not taken" and never opens;
+  the story waits for the choice, then rejoins. The choice card (the story card, two options, who asks) comes up on the
+  campaign page once its mission is won ("Next mission" leads there); it is made once and kept in the save
+  (`storyChoices`, "c4.pursuit=harbour"; an old save has none). The dossier's timeline lists the choices made. Options
+  unlock no card (the route never hangs on a choice) and are paid from the mission before them like a side mission,
+  outside the economy's tune, so no other mission's pay moves; chapters 4, 8 and 11 play one mission more (17, 13, 12).
+- **D.6 Story loot**, one-for-one swaps inside prompt 20's route (every chapter still opens 4-7 cards, the tune's card
+  counts do not move): railgun truck to c4m10 (Tempest) and the laser tank to c11m01; drone mothership (swarm carrier) to
+  c5m10 (Venn defects) and the drone hangar to c12m04; bunker vehicle to c6m10 (Moloch) and the Lancet truck to c8m04;
+  loyal wingman to c10m10 (Roc) and the jammer to c9m01. Kessler's cruise missiles at c12m02 were already his bargain's
+  and get a reason too. The reason shows on the mission's page and the result screen. Acts I-II's pay scale moves from
+  1.86 to 1.84 (the unlocks inside the cut moved).
+- **D.7 Intel files**: 33, two or three a chapter and two an interlude: letters of Hegemon soldiers, Aurel's reports,
+  Mara's diary, Venn's notes, Brenn's ledger, Kessler's sheets, Thorne's letter and the clues. A side objective recovers
+  each: a side mission won, or (where a chapter has none, or for the clues) a main mission won with three stars. The
+  dossier's new Intel tab reads them (a file still out says how to get it, "Classified file"); the result screen names
+  a file found. Nothing in play depends on them.
+- **D.8 Comic panels**: three a chapter and interlude, four for chapters 1, 7 and 12 (48). They show on the campaign page
+  after the operation (or an interlude's last mission) is won, one by one with Next, Skip closes; the dossier's timeline
+  plays them again. A save that finished several chapters before this sees the latest only (the others are marked seen,
+  in the dossier). Placeholder art: a battlefield shot with a card render in it, the speaker's portrait, in a comic frame
+  (ASSET_DEBT); interlude I uses the Rust Yard until the Foundry has a picture.
+- **D.9 Nothing is taken away**: no code path removes a card; a test plays the whole campaign both ways and checks every
+  card stays and every card of the route is owned at the end.
+- **Also**: `Campaign.OnPath`, `NotTaken`, `ChoicePending`, `OptionsOf`; `MissionsOf(c, side: false)` returns the path
+  (the option taken, or the first while the choice is open). The chapter screen's head line no longer says "nine
+  chapters". `MissionDef` reads `storyChoice`, `branch`, `option`.
+
+### Tests
+
+- `Prompt22NarrativeTests` (new, 12): the front moves with each win (each won mission's ground turns ours, the ground
+  grows, a front line and a flag), the betrayal flips Thorne's ground and chapters 8-9 take it back, the front shows only
+  the acts switched on; a choice branches, labels, waits, rejoins and is saved; every choice's options and consequences;
+  the story loot with its bosses and 4-7 cards a chapter; nothing taken away on either path; intel files by side
+  objective and the three clues; the arcs' payoffs; 3-4 comic panels a chapter with art, pending and replay; reactive
+  radio moments, spacing, once each, determinism, every general's twelve lines.
+- Updated: `Prompt22StoryTests` (counts without the options, six options), `CampaignTests` (193 missions), `UiLayoutTests`
+  (the comic page has one main action). New screens for the checks: `dossier-intel`, `comic`.
+- Runs: the new tests, 11 of 12 (the Coral Keys' site off its island, fixed); then with Prompt22Story, CampaignStart,
+  L10n, UiLayout, UiLanguage and CampaignTests' chapter test: 137 of 138 (the comic page's primary, fixed), then 138 of 138.

@@ -164,8 +164,10 @@ namespace MachineBrigade.Game.Hud
         /// <param name="speaker">A portrait id, or null for none.</param>
         /// <param name="aside">An enemy general and a line of theirs under the card, or null.</param>
         /// <param name="map">The battlefield whose picture heads the card, or null.</param>
+        /// <param name="secondaryIcon">The second button's icon (a story choice's other option is no way back).</param>
         public void Show(string kicker, string title, string speaker, string body, IReadOnlyList<string> chips,
-            (string general, string line)? aside, (string label, Action act) primary, (string label, Action act)? secondary, string map = null)
+            (string general, string line)? aside, (string label, Action act) primary, (string label, Action act)? secondary, string map = null,
+            string secondaryIcon = "retreat")
         {
             _kicker.text = Kit.Caps(kicker);
             _title.text = Kit.Caps(title);
@@ -197,7 +199,7 @@ namespace MachineBrigade.Game.Hud
             _primary = primary.act;
             _secondary = secondary?.act;
             _buttons.Clear();
-            if (secondary is { } back) _buttons.Add(new KitButton(ButtonTier.Secondary, back.label, () => Close(_secondary), "retreat"));
+            if (secondary is { } back) _buttons.Add(new KitButton(ButtonTier.Secondary, back.label, () => Close(_secondary), secondaryIcon));
             _buttons.Add(new KitButton(ButtonTier.Primary, primary.label, () => Close(_primary), "play"));
             if (Root.parent == null) _host?.Add(Root);
             Root.style.display = DisplayStyle.Flex;
