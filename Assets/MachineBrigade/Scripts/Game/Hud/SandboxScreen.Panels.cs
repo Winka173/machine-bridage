@@ -33,7 +33,6 @@ namespace MachineBrigade.Game.Hud
         {
             var e = _c.Editor;
             var s = e.Scenario;
-            body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.settings")), "fc-panel-title"));
             // B.1: every battlefield (its 300 m, long and coastal versions) and the flat test range.
             var maps = new List<string> { SandboxMaps.FlatId };
             var names = new List<string> { Strings.Get("sandbox.map.flat") };
@@ -60,7 +59,7 @@ namespace MachineBrigade.Game.Hud
             var limits = new[] { 0f, 60f, 120f, 180f, 300f, 600f };
             var limitNames = new List<string>();
             foreach (var l in limits) limitNames.Add(l <= 0f ? Strings.Get("sandbox.limit.none") : SandboxText.Format("sandbox.limit", ("seconds", (int)l)));
-            body.Add(Drop(Strings.Get("sandbox.limit.none"), limitNames, Math.Max(0, Array.IndexOf(limits, s.Limit)), i => e.Settings(x => x.Limit = limits[i])));
+            body.Add(Drop(Strings.Get("sandbox.limit.label"), limitNames, Math.Max(0, Array.IndexOf(limits, s.Limit)), i => e.Settings(x => x.Limit = limits[i])));
             var diffNames = new List<string>();
             foreach (var d in Difficulties) diffNames.Add(Strings.Get("sandbox.diff." + d));
             body.Add(Drop(Strings.Get("sandbox.boss.difficulty"), diffNames, Math.Max(0, Array.IndexOf(Difficulties, s.Difficulty)), i => e.Settings(x => x.Difficulty = Difficulties[i])));
@@ -83,10 +82,21 @@ namespace MachineBrigade.Game.Hud
                 var aiNames = new List<string>();
                 foreach (var a in ais) aiNames.Add(Strings.Get("sandbox.ai." + a));
                 body.Add(Drop(Strings.Get("sandbox.ai"), aiNames, (int)side.Ai, i => e.Settings(x => x.Sides[t].Ai = ais[i])));
-                body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), side.Cp < 0f, on => e.Settings(x => x.Sides[t].Cp = on ? -1f : 30f)));
+                body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), side.Cp < 0f, on =>
+                {
+                    e.Settings(x => x.Sides[t].Cp = on ? -1f : 30f);
+                    Reopen(BattlePanel);
+                }));
                 if (side.Cp >= 0f)
-                    body.Add(Stepper(SandboxText.Format("sandbox.cp.value", ("cp", (int)side.Cp)), () => e.Settings(x => x.Sides[t].Cp = Math.Max(0f, x.Sides[t].Cp - 10f)),
-                        () => e.Settings(x => x.Sides[t].Cp = Math.Min(200f, x.Sides[t].Cp + 10f))));
+                    body.Add(Stepper(SandboxText.Format("sandbox.cp.value", ("cp", (int)side.Cp)), () =>
+                    {
+                        e.Settings(x => x.Sides[t].Cp = Math.Max(0f, x.Sides[t].Cp - 10f));
+                        Reopen(BattlePanel);
+                    }, () =>
+                    {
+                        e.Settings(x => x.Sides[t].Cp = Math.Min(200f, x.Sides[t].Cp + 10f));
+                        Reopen(BattlePanel);
+                    }));
                 body.Add(new KitToggle(Strings.Get("sandbox.cooldowns"), side.Cooldowns, on => e.Settings(x => x.Sides[t].Cooldowns = on)));
                 body.Add(new KitToggle(Strings.Get("sandbox.sideImmortal"), side.Immortal, on => e.Settings(x => x.Sides[t].Immortal = on)));
                 body.Add(Row(new KitChip(Strings.Get("sandbox.supports.deck"), true, () => e.Settings(x =>
@@ -108,44 +118,35 @@ namespace MachineBrigade.Game.Hud
             body.Add(Kit.Text(Strings.Get("sandbox.applyOnRun"), "fc-small sb-hint"));
         }
 
-        // ------------------------------------------------------------------ overlays (E)
+        // ------------------------------------------------------------------ both sides while running (C.4, C.5)
 
-        private void LayersPanel(VisualElement body)
+        /// <summary>Each side's CP, cooldowns, immortality and a support to call on the map.</summary>
+        private void SidesPanel(VisualElement body)
         {
-            body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.layers")), "fc-panel-title"));
-            var o = _c.Overlays;
-            void Toggle(SandboxLayer layer, string key) =>
-                body.Add(new KitToggle(Strings.Get(key), o.IsOn(layer), on => o.On[layer] = on));
-            Toggle(SandboxLayer.Range, "sandbox.layer.range");
-            Toggle(SandboxLayer.Hits, "sandbox.layer.hits");
-            Toggle(SandboxLayer.Dps, "sandbox.layer.dps");
-            Toggle(SandboxLayer.Ammo, "sandbox.layer.ammo");
-            Toggle(SandboxLayer.Zones, "sandbox.layer.zones");
-            // E.6: never in the player version.
-            if (!SandboxSession.Internal) return;
-            body.Add(Caption("sandbox.layer.internal"));
-            Toggle(SandboxLayer.Hull, "sandbox.layer.hull");
-            Toggle(SandboxLayer.Route, "sandbox.layer.route");
-            Toggle(SandboxLayer.Stuck, "sandbox.layer.stuck");
-            Toggle(SandboxLayer.Buy, "sandbox.layer.buy");
-            var scores = Kit.Box("sb-scores");
-            body.Add(scores);
-            void Scores()
+            for (var team = 0; team < 2; team++)
             {
-                scores.Clear();
-                if (!o.IsOn(SandboxLayer.Buy)) return;
-                for (var team = 0; team < 2; team++)
+                var t = team;
+                body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.side." + team)), "fc-caption sb-caption sb-side--" + team));
+                body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), _c.Battle.Unlimited(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideCp, t, on ? -1 : 20))));
+                body.Add(new KitToggle(Strings.Get("sandbox.cooldowns"), _c.Battle.CooldownsOn(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.Cooldowns, t, on ? 1 : 0))));
+                body.Add(new KitToggle(Strings.Get("sandbox.sideImmortal"), _c.Battle.SideImmortal(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideImmortal, t, on ? 1 : 0))));
+                if (!_c.World.TryGetEconomy(team, out var economy) || economy.Supports.Count == 0) continue;
+                body.Add(Caption("sandbox.call"));
+                var row = Row();
+                foreach (var s in economy.Supports)
                 {
-                    if (_c.Battle.Commander(team)?.BuyScores is not { Count: > 0 } buy) continue;
-                    scores.Add(Kit.Text(SandboxText.Format("sandbox.buy.title", ("side", Strings.Get("sandbox.side." + team))), "fc-caption sb-caption"));
-                    var list = new List<KeyValuePair<string, float>>(buy);
-                    list.Sort((a, b) => b.Value.CompareTo(a.Value));
-                    for (var i = 0; i < Math.Min(8, list.Count); i++)
-                        scores.Add(Kit.Text(Strings.Short(list[i].Key) + "  " + SandboxText.Number(list[i].Value, 2), "fc-small"));
+                    var support = s;
+                    row.Add(Small(Strings.Support(s), () =>
+                    {
+                        _c.Strike = support;
+                        _c.StrikeTeam = t;
+                        _c.Picking = SandboxController.Pick.Strike;
+                        CloseSheet();
+                        Refresh();
+                    }));
                 }
+                body.Add(row);
             }
-            Scores();
-            _popupRefresh = Scores;
         }
 
         // ------------------------------------------------------------------ scenarios (F.1, F.2, F.6, F.7)
@@ -153,7 +154,6 @@ namespace MachineBrigade.Game.Hud
         private void ScenariosPanel(VisualElement body)
         {
             var e = _c.Editor;
-            body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.scenarios")), "fc-panel-title"));
             var name = new TextField(Strings.Get("sandbox.name")) { value = e.Scenario.Name, isDelayed = true };
             name.AddToClassList("sb-field");
             name.RegisterValueChangedCallback(ev => e.Settings(x => x.Name = string.IsNullOrWhiteSpace(ev.newValue) ? x.Name : ev.newValue.Trim()));
@@ -204,7 +204,7 @@ namespace MachineBrigade.Game.Hud
                     : SandboxText.Format("sandbox.removed", ("from", Strings.Unit(from))), true);
             _c.Selected.Clear();
             _c.Editor.Load(s);
-            Close();
+            CloseSheet();
             if (!_c.Editing || s.Map != SandboxSession.LoadedMap) _c.Rebuild(false);
             else Toast(Strings.Get("sandbox.opened"));
         }
@@ -262,7 +262,6 @@ namespace MachineBrigade.Game.Hud
 
         private void DuelPanel(VisualElement body)
         {
-            body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.duel")), "fc-panel-title"));
             body.Add(Small(Strings.Get("sandbox.duel.pick"), () =>
             {
                 _duelA.Clear();
@@ -351,7 +350,7 @@ namespace MachineBrigade.Game.Hud
                 else draws++;
                 _duelLine = seeds == 1 ? ResultLine(winner, r.Seconds, r.HealthLeft[0], r.HealthLeft[1])
                     : SandboxText.Format("sandbox.duel.rate", ("blue", wa), ("red", wb), ("draws", draws), ("seeds", i + 1));
-                if (_popup.style.display == DisplayStyle.Flex) Reopen(DuelPanel);
+                if (_sheet.style.display == DisplayStyle.Flex) Reopen(DuelPanel);
                 yield return null;
             }
         }
@@ -360,7 +359,6 @@ namespace MachineBrigade.Game.Hud
 
         private void AbPanel(VisualElement body)
         {
-            body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.ab")), "fc-panel-title"));
             foreach (var which in new[] { 0, 1 })
             {
                 var row = Row(Kit.Text(which == 0 ? "A" : "B", "fc-body"));
@@ -392,7 +390,7 @@ namespace MachineBrigade.Game.Hud
                 var r = SandboxLab.Run(_c.World.Catalog, _c.World.Map, s, s.Limit > 0f ? s.Limit + 1f : 120f, SandboxSession.BoostFor);
                 lines.Add(SandboxText.Format("sandbox.ab.row", ("label", label), ("line", ResultLine(r.Winner, r.Seconds, r.HealthLeft[0], r.HealthLeft[1]))));
                 _abLine = string.Join("\n", lines);
-                if (_popup.style.display == DisplayStyle.Flex) Reopen(AbPanel);
+                if (_sheet.style.display == DisplayStyle.Flex) Reopen(AbPanel);
                 yield return null;
             }
         }
@@ -404,7 +402,6 @@ namespace MachineBrigade.Game.Hud
             void Fill()
             {
                 body.Clear();
-                body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.stats.title")), "fc-panel-title"));
                 var stats = _c.Battle.Stats.Units;
                 if (_c.Editing || stats.Count == 0)
                 {
@@ -413,20 +410,20 @@ namespace MachineBrigade.Game.Hud
                 }
                 var head = Kit.Box("fc-row sb-trow sb-trow--head");
                 foreach (var key in new[] { "sandbox.stats.unit", "sandbox.stats.dealt", "sandbox.stats.taken", "sandbox.stats.ttk", "sandbox.stats.alive", "sandbox.stats.pierced", "sandbox.stats.bounced" })
-                    head.Add(Kit.Text(Strings.Get(key), "fc-small sb-cell"));
+                    head.Add(Kit.Text(Strings.Get(key), "fc-small sb-tcell"));
                 body.Add(head);
                 var now = _c.World.Time;
                 foreach (var u in stats)
                 {
                     if (u.DealtTotal <= 0f && u.TakenTotal <= 0f) continue;
                     var row = Kit.Box("fc-row sb-trow");
-                    row.Add(Kit.Text(Strings.Short(u.Def), "fc-small sb-cell sb-side--" + Mathf.Clamp(u.Team, 0, 1)));
-                    row.Add(Kit.Text(SandboxText.Number(u.DealtTotal), "fc-small sb-cell"));
-                    row.Add(Kit.Text(SandboxText.Number(u.TakenTotal), "fc-small sb-cell"));
-                    row.Add(Kit.Text(u.TimeToKill >= 0 ? SandboxText.Format("sandbox.seconds", ("seconds", SandboxText.Number(u.TimeToKill, 1))) : "—", "fc-small sb-cell"));
-                    row.Add(Kit.Text(SandboxText.Format("sandbox.seconds", ("seconds", SandboxText.Number(u.Lifetime(now), 0))), "fc-small sb-cell"));
-                    row.Add(Kit.Text((u.Pierced).ToString(), "fc-small sb-cell"));
-                    row.Add(Kit.Text((u.Bounced).ToString(), "fc-small sb-cell"));
+                    row.Add(Kit.Text(Strings.Short(u.Def), "fc-small sb-tcell sb-side--" + Mathf.Clamp(u.Team, 0, 1)));
+                    row.Add(Kit.Text(SandboxText.Number(u.DealtTotal), "fc-small sb-tcell"));
+                    row.Add(Kit.Text(SandboxText.Number(u.TakenTotal), "fc-small sb-tcell"));
+                    row.Add(Kit.Text(u.TimeToKill >= 0 ? SandboxText.Format("sandbox.seconds", ("seconds", SandboxText.Number(u.TimeToKill, 1))) : "—", "fc-small sb-tcell"));
+                    row.Add(Kit.Text(SandboxText.Format("sandbox.seconds", ("seconds", SandboxText.Number(u.Lifetime(now), 0))), "fc-small sb-tcell"));
+                    row.Add(Kit.Text((u.Pierced).ToString(), "fc-small sb-tcell"));
+                    row.Add(Kit.Text((u.Bounced).ToString(), "fc-small sb-tcell"));
                     body.Add(row);
                     var types = new List<string>();
                     var values = (DamageType[])Enum.GetValues(typeof(DamageType));
@@ -440,7 +437,7 @@ namespace MachineBrigade.Game.Hud
                 }
             }
             Fill();
-            _popupRefresh = Fill;
+            _sheetRefresh = Fill;
         }
 
         // ------------------------------------------------------------------ the first-time guide (G.3)
@@ -451,7 +448,7 @@ namespace MachineBrigade.Game.Hud
             card.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.title")), "fc-panel-title"));
             foreach (var key in new[] { "sandbox.hint.1", "sandbox.hint.2", "sandbox.hint.3" }) card.Add(Kit.Text(Strings.Get(key), "fc-body sb-guide__line"));
             card.Add(Kit.Text(Strings.Get("sandbox.noRewards"), "fc-small sb-hint"));
-            card.Add(new KitButton(ButtonTier.Primary, Strings.Get("sandbox.hint.ok"), () =>
+            card.Add(new KitButton(ButtonTier.Secondary, Strings.Get("sandbox.hint.ok"), () =>
             {
                 SandboxProfile.HintSeen = true;
                 card.RemoveFromHierarchy();

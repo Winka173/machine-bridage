@@ -1,6 +1,9 @@
-/* Prompt 21 G: the Sandbox's screen on the Field Command kit. Tokens only (colours, fonts and type sizes come
-   from Tokens.uss); every control's target is --fc-touch (44 pt). Phone: the picker 300 px (165 pt) down the left,
-   the selection 330 px down the right, the controls along the bottom. Wide (a tablet, .sb--wide): wider panels. */
+/* The Sandbox's screen (prompt 21 G), lean (DECISIONS 21S), in the compact HUD's style: every control a small drawn
+   face (44 px, the compact HUD's --hud-face) centred in a full touch target (--fc-touch, 44 pt); panels only while
+   in use. Tokens only: colours, fonts and type sizes come from Tokens.uss.
+   Phone (the 1280 x 720 reference panel): the rail at the left edge under the minimap (132 px and gaps), the bar
+   along the bottom, the card on the right under pause. Wide (a 20:9 phone or a tablet in the menus' scale,
+   .sb--wide): a wider picker, card and sheets. */
 
 .sb {
     position: absolute;
@@ -8,180 +11,187 @@
     right: 0;
     top: 0;
     bottom: 0;
+    --sb-face: 44px;
+    --sb-rail-top: 152px;        /* under the compact minimap: 12 + 132 + 8 */
+    --sb-beside: 101px;          /* beside the rail: 12 + 81 + 8 */
+    --sb-above: 101px;           /* above the bar: 8 + 81 + 12 */
+    --sb-card-top: 88px;         /* under pause, like the compact HUD's right rail */
 }
 
-.sb-labels {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
-.sb-grow { flex-grow: 1; }
-.sb-hidden { display: none; }
+.sb-labels { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.sb-grow { flex-grow: 1; flex-shrink: 1; }
 .sb-wrap { flex-wrap: wrap; }
+.sb-hint { color: var(--fc-text-2); white-space: normal; margin-top: var(--fc-space-1); }
+.sb-caption { margin-top: var(--fc-space-3); margin-bottom: var(--fc-space-1); }
 
-/* ---- the three panels */
-.sb-left {
-    position: absolute;
-    left: var(--fc-space-2);
-    top: var(--fc-topbar);
-    bottom: 190px;
-    width: 300px;
-    padding: var(--fc-space-2);
+/* ---- the compact HUD's small faces for the Sandbox's own controls */
+.sb .fc-icon-btn--plain .fc-icon-btn__face { width: var(--sb-face); height: var(--sb-face); background-color: var(--fc-panel-field); }
+/* A target never gives way to a long label beside it (English, Large text). */
+.sb .fc-icon-btn { flex-shrink: 0; }
+.sb-drawer__head, .sb-drawer__row, .sb-drawer__foot, .sb-sheet__head, .sb-card__head, .sb-step, .sb-card__icons { flex-shrink: 0; }
+.sb .fc-icon-btn--on { background-color: var(--fc-clear); }
+.sb .fc-icon-btn--on .fc-icon-btn__face {
+    background-color: var(--fc-text);
+    border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text);
+}
+.sb .fc-icon-btn--on .fc-icon-btn__face > .fc-icon { --icon-color: var(--fc-ink); }
+.sb .fc-chip { margin-right: var(--fc-space-1); }
+.sb .fc-chip__face { min-height: var(--sb-face); padding: 0 var(--fc-space-3); background-color: var(--fc-panel-field); }
+.sb .fc-chip__label { font-size: var(--fc-fs-small); letter-spacing: 0.5px; }
+.sb .fc-chip--selected .fc-chip__face { background-color: var(--fc-text); }
+.sb .fc-toggle { padding-left: var(--fc-space-2); }
+.sb .fc-dropdown {
+    min-height: var(--fc-touch); padding: 0 var(--fc-space-2) 0 0;
+    background-color: var(--fc-clear);
+    border-top-color: var(--fc-clear); border-right-color: var(--fc-clear); border-bottom-color: var(--fc-clear); border-left-color: var(--fc-clear);
+}
+.sb .fc-dropdown__text { padding-left: var(--fc-space-2); }
+.sb .fc-dropdown__value { font-size: var(--fc-fs-small); }
+.sb .fc-dropdown__caret { width: var(--fc-icon-small); height: var(--fc-icon-small); }
+.sb-drop { margin-bottom: 0; }
+
+/* A text face in a full target (the seed chip, the sheets' buttons). */
+.sb-face {
+    flex-direction: row; align-items: center; justify-content: center;
+    min-height: var(--sb-face);
+    padding: 0 var(--fc-space-3);
     background-color: var(--fc-panel-field);
-    border-color: var(--fc-border);
-    border-width: var(--fc-line);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.sb-face__icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
+.sb-face__text { color: var(--fc-text); -unity-text-align: middle-center; white-space: normal; }
+.sb-button { min-height: var(--fc-touch); min-width: var(--fc-touch); justify-content: center; margin-right: var(--fc-space-1); }
+.sb-seed { min-height: var(--fc-touch); min-width: var(--fc-touch); justify-content: center; margin: 0 var(--fc-space-1); }
+
+/* ---- the rail: at the edge with no panel behind it (taps between its buttons reach the battlefield) */
+.sb-rail { position: absolute; left: var(--fc-space-3); top: var(--sb-rail-top); flex-direction: column; }
+
+/* ---- more: a short list beside the rail */
+.sb-menu {
+    position: absolute; left: var(--sb-beside); top: var(--sb-rail-top);
+    width: 300px; padding: var(--fc-space-1) 0;
+}
+.sb-menu__row { flex-direction: row; align-items: center; min-height: var(--fc-touch); padding: 0 var(--fc-space-3); }
+.sb-menu__label { color: var(--fc-text); flex-grow: 1; }
+
+/* ---- field panels: the picker, the sheets, the card, the tray, the bar */
+.sb-menu, .sb-drawer, .sb-sheet, .sb-card, .sb-tray, .sb-seedbox, .sb-bar {
+    background-color: var(--fc-panel-field);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border);
 }
 
-.sb-left--closed { width: 150px; bottom: auto; }
-.sb-left--closed .sb-left__body { display: none; }
-.sb-left__body { flex-grow: 1; flex-shrink: 1; }
-.sb-left__head { align-items: center; }
-
-.sb-right {
-    position: absolute;
-    right: var(--fc-space-2);
-    top: var(--fc-topbar);
-    bottom: 190px;
-    width: 330px;
-    padding: var(--fc-space-2);
-    background-color: var(--fc-panel-field);
-    border-color: var(--fc-border);
-    border-width: var(--fc-line);
+/* The picker and the sheets lie over the minimap's corner while open: opaque, so nothing shows through. */
+.sb-drawer, .sb-sheet { background-color: var(--fc-panel); }
+.sb-drawer {
+    position: absolute; left: var(--sb-beside); top: var(--fc-space-3); bottom: var(--sb-above);
+    width: 440px; padding: 0 var(--fc-space-2) var(--fc-space-2) var(--fc-space-2);
 }
-
-.sb-right__scroll { flex-grow: 1; }
-
-.sb-bottom {
-    position: absolute;
-    left: var(--fc-space-2);
-    right: var(--fc-space-2);
-    bottom: var(--fc-space-2);
-    padding: var(--fc-space-2);
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    background-color: var(--fc-panel-field);
-    border-color: var(--fc-border);
-    border-width: var(--fc-line);
-}
-
-.sb-bottom > * { margin-right: var(--fc-space-2); margin-bottom: var(--fc-space-1); }
-.sb-bottom__info { min-width: 200px; }
-.sb-state { color: var(--fc-accent); -unity-font-definition: var(--fc-font-text-semi); }
-.sb-clock { color: var(--fc-text-2); }
-
-.sb--wide .sb-left { width: 420px; }
-.sb--wide .sb-right { width: 460px; }
-
-/* ---- buttons, fields, lists */
-.sb-button {
-    min-height: var(--fc-touch);
-    min-width: var(--fc-touch);
-    padding-left: var(--fc-space-3);
-    padding-right: var(--fc-space-3);
-    margin-right: var(--fc-space-1);
-    margin-bottom: var(--fc-space-1);
-    justify-content: center;
-    align-items: center;
+.sb-drawer__head { align-items: center; }
+.sb-drawer__row { margin-bottom: var(--fc-space-1); }
+.sb-drawer__grid { flex-grow: 1; flex-shrink: 1; }
+.sb-drawer__foot { border-top-width: var(--fc-line); border-top-color: var(--fc-border); padding-top: var(--fc-space-1); }
+.sb-grid { flex-direction: row; flex-wrap: wrap; }
+.sb-cell {
+    width: 132px; min-height: 100px; margin: 0 4px 4px 0;
+    align-items: center; justify-content: flex-start; padding: var(--fc-space-2) var(--fc-space-1) var(--fc-space-1) var(--fc-space-1);
     background-color: var(--fc-panel-raised);
-    border-color: var(--fc-border-strong);
-    border-width: var(--fc-line);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border);
 }
-
-.sb-button:active { background-color: var(--fc-wash); }
-.sb-button__label { color: var(--fc-text); -unity-text-align: middle-center; white-space: normal; }
-
-.sb-field { min-height: var(--fc-touch); margin-bottom: var(--fc-space-1); }
+.sb-cell--armed {
+    background-color: var(--fc-panel-selected);
+    border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent);
+}
+.sb-cell__icon { width: var(--fc-icon); height: var(--fc-icon); margin-bottom: var(--fc-space-1); }
+.sb-cell--armed .sb-cell__icon { --icon-color: var(--fc-accent); }
+.sb-cell__name { color: var(--fc-text); -unity-text-align: upper-center; white-space: normal; width: 100%; }
+.sb-cell__cost { position: absolute; top: 2px; right: 6px; color: var(--fc-text-2); }
+.sb-cell__mark { position: absolute; top: 4px; left: 4px; width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-coin); }
+.sb-field { min-height: var(--fc-touch); margin: 0; }
 .sb-field .unity-text-field__input {
     font-size: var(--fc-fs-body);
     color: var(--fc-text);
     background-color: var(--fc-panel-raised);
-    border-color: var(--fc-border-strong);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
 }
+.sb-field .unity-label { font-size: var(--fc-fs-small); color: var(--fc-text-2); min-width: 0; }
 
-.sb-drop { margin-bottom: var(--fc-space-1); }
-.sb-tabs .fc-chip, .sb-speeds .fc-chip { margin-right: var(--fc-space-1); margin-bottom: var(--fc-space-1); }
-.sb-list { flex-grow: 1; flex-shrink: 1; min-height: 160px; }
-
-.sb-unit {
-    flex-direction: row;
-    align-items: center;
-    min-height: var(--fc-touch);
-    padding-left: var(--fc-space-2);
-    padding-right: var(--fc-space-2);
-    border-bottom-width: var(--fc-line);
-    border-color: var(--fc-border);
+/* The card: the selection, small, on the right under pause. */
+.sb-card {
+    position: absolute; right: var(--fc-space-3); top: var(--sb-card-top);
+    width: 348px; max-height: 520px; padding: 0 var(--fc-space-2) var(--fc-space-2) var(--fc-space-2);
 }
+.sb-card__scroll { flex-shrink: 1; }
+.sb-card__head { align-items: center; }
+.sb-card__icon { width: var(--fc-icon); height: var(--fc-icon); margin: 0 var(--fc-space-2); }
+.sb-card__name { color: var(--fc-text); }
+.sb-card__line { color: var(--fc-text-2); margin: 0 0 var(--fc-space-1) var(--fc-space-2); white-space: normal; }
+.sb-card__icons { flex-direction: row; flex-wrap: wrap; }
+.sb-step { align-items: center; }
+.sb-step__label { flex-grow: 1; flex-shrink: 1; color: var(--fc-text); padding-left: var(--fc-space-2); white-space: normal; }
+.sb-fold { align-items: center; min-height: var(--fc-touch); padding-left: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
+.sb-fold__caret { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-3); }
+.sb-fold__caret--open { rotate: 180deg; }
 
-.sb-unit--armed { background-color: var(--fc-panel-selected); border-left-width: var(--fc-bar); border-left-color: var(--fc-accent); }
-.sb-unit__name { flex-grow: 1; margin-left: var(--fc-space-2); color: var(--fc-text); }
-.sb-unit__cost { color: var(--fc-text-2); }
-
-.sb-caption { margin-top: var(--fc-space-3); margin-bottom: var(--fc-space-1); }
-.sb-hint { color: var(--fc-text-2); white-space: normal; margin-top: var(--fc-space-1); }
-.sb-stepper { align-items: center; }
-.sb-stepper__value { min-width: 150px; -unity-text-align: middle-center; color: var(--fc-text); }
-.sb-place { margin-top: var(--fc-space-2); }
-
-/* ---- sides: our blue against their red (the kit's own ally and enemy colours) */
-.sb-side--0 { color: var(--fc-ally); }
-.sb-side--1 { color: var(--fc-enemy); }
-.cb .sb-side--1 { color: var(--fc-enemy-cb); }
-.sb-side.sb-side--0.fc-chip--selected .fc-chip__face { border-color: var(--fc-ally); }
-.sb-side.sb-side--1.fc-chip--selected .fc-chip__face { border-color: var(--fc-enemy); }
-
-/* ---- the status line, pop-ups, the guide */
-.sb-status {
-    position: absolute;
-    top: var(--fc-topbar);
-    left: 330px;
-    right: 360px;
-    align-items: center;
+/* The sheets: one at a time, beside the rail. */
+.sb-sheet {
+    position: absolute; left: var(--sb-beside); top: var(--fc-space-3); bottom: var(--sb-above);
+    width: 540px; padding: 0 var(--fc-space-3) var(--fc-space-3) var(--fc-space-3);
 }
-
-.sb-status__text {
-    color: var(--fc-text);
-    background-color: var(--fc-panel-field);
-    padding: var(--fc-space-2);
-    white-space: normal;
-    -unity-text-align: middle-center;
-}
-
-.sb-popup {
-    position: absolute;
-    left: 20%;
-    right: 20%;
-    top: var(--fc-topbar);
-    bottom: 190px;
-    padding: var(--fc-space-3);
-    background-color: var(--fc-panel-raised);
-    border-color: var(--fc-border-strong);
-    border-width: var(--fc-line);
-}
-
-.sb-popup__head { align-items: center; }
-.sb-popup__scroll { flex-grow: 1; }
+.sb-sheet__head { align-items: center; }
+.sb-sheet__scroll { flex-grow: 1; flex-shrink: 1; }
 .sb-result { color: var(--fc-accent); white-space: normal; margin-top: var(--fc-space-2); }
 .sb-types { color: var(--fc-text-2); margin-bottom: var(--fc-space-1); white-space: normal; }
 .sb-trow { border-bottom-width: var(--fc-line); border-color: var(--fc-border); }
-.sb-trow--head .sb-cell { color: var(--fc-text-2); }
-.sb-cell { width: 14%; color: var(--fc-text); white-space: normal; }
+.sb-trow--head .sb-tcell { color: var(--fc-text-2); }
+.sb-tcell { width: 14%; padding: var(--fc-space-1); color: var(--fc-text); white-space: normal; }
 
-.sb-guide {
-    position: absolute;
-    left: 25%;
-    right: 25%;
-    top: 22%;
-    padding: var(--fc-space-4);
-    background-color: var(--fc-panel-raised);
-    border-color: var(--fc-accent);
-    border-width: var(--fc-line);
+/* ---- the bar: one thin row along the bottom */
+.sb-bar {
+    position: absolute; left: var(--fc-space-3); bottom: var(--fc-space-2);
+    flex-direction: row; align-items: center; padding: 0 var(--fc-space-2);
+}
+.sb-run { min-height: var(--fc-touch); padding: 0 var(--fc-space-5); margin-right: var(--fc-space-2); }
+.sb-run .fc-btn__label { font-size: var(--fc-fs-button); letter-spacing: 1.5px; }
+.sb-run .fc-btn__icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
+.sb-bar__speed { min-width: 64px; color: var(--fc-text); -unity-text-align: middle-center; }
+.sb-bar__clock { min-width: 180px; color: var(--fc-text-2); margin: 0 var(--fc-space-2); -unity-text-align: middle-left; }
+
+.sb-seedbox { position: absolute; left: var(--fc-space-3); bottom: var(--sb-above); width: 360px; padding: var(--fc-space-2) var(--fc-space-3); }
+.sb-tray { position: absolute; left: var(--fc-space-3); bottom: var(--sb-above); max-width: 760px; padding: var(--fc-space-1) var(--fc-space-2); }
+
+/* ---- sides: our blue against their red (the kit's ally and enemy colours) */
+.sb-side--0 { color: var(--fc-ally); }
+.sb-side--1 { color: var(--fc-enemy); }
+.cb .sb-side--1 { color: var(--fc-enemy-cb); }
+.sb .sb-side--0 .fc-icon-btn__face > .fc-icon { --icon-color: var(--fc-ally); }
+.sb .sb-side--1 .fc-icon-btn__face > .fc-icon { --icon-color: var(--fc-enemy); }
+.cb .sb .sb-side--1 .fc-icon-btn__face > .fc-icon { --icon-color: var(--fc-enemy-cb); }
+
+/* ---- the status line (a pick to make, the result) under the top strip */
+.sb-status { position: absolute; top: var(--sb-card-top); left: 360px; right: 380px; align-items: center; }
+.sb-status__text {
+    color: var(--fc-text); background-color: var(--fc-panel-field);
+    padding: var(--fc-space-1) var(--fc-space-3); white-space: normal; -unity-text-align: middle-center;
 }
 
+/* ---- the first-time guide */
+.sb-guide {
+    position: absolute; left: 25%; right: 25%; top: 20%;
+    padding: var(--fc-space-4);
+    background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent);
+}
 .sb-guide__line { white-space: normal; margin-bottom: var(--fc-space-2); color: var(--fc-text); }
+
+/* ---- wider screens: more room for the picker, the card and the sheets */
+.sb--wide .sb-drawer { width: 580px; }
+.sb--wide .sb-card { width: 420px; }
+.sb--wide .sb-sheet { width: 660px; }
+.sb--wide .sb-status { left: 440px; right: 460px; }
 
 /* ---- the overlays' words over the battlefield */
 .sb-word {
@@ -194,9 +204,12 @@
     -unity-text-outline-width: 1px;
     -unity-text-outline-color: var(--fc-ink);
 }
-
 .sb-hit--good { color: var(--fc-positive); }
 .sb-hit--poor { color: var(--fc-coin); }
 .sb-hit--none { color: var(--fc-danger-text); }
 .sb-tag { background-color: var(--fc-panel-field); padding: var(--fc-space-1); }
-.sb-tag--stuck { color: var(--fc-danger-text); border-color: var(--fc-danger); border-width: var(--fc-line); }
+.sb-tag--stuck {
+    color: var(--fc-danger-text);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger);
+}

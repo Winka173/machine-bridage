@@ -71,14 +71,9 @@ namespace MachineBrigade.Game.Views
             _dome = materials.BarAlly;
             _grid = materials.BoundaryLine;
             if (SandboxMaps.IsFlat(world.Map.Id)) BuildGrid();
-            On[SandboxLayer.Range] = true;
-            On[SandboxLayer.Hits] = true;
         }
 
-        /// <summary>Which overlays are on.</summary>
-        public Dictionary<SandboxLayer, bool> On { get; } = new();
-
-        public bool IsOn(SandboxLayer layer) => On.TryGetValue(layer, out var on) && on && (!Internal(layer) || SandboxSession.Internal);
+        public bool IsOn(SandboxLayer layer) => _owner.LayerOn(layer);
 
         public static bool Internal(SandboxLayer layer) => layer >= SandboxLayer.Hull;
 

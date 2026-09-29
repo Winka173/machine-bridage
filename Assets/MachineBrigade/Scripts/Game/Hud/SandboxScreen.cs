@@ -11,11 +11,13 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// The Sandbox's screen (prompt 21 G) on the Field Command kit: the unit picker down the left (it folds away),
-    /// the selection's panel down the right, the simulation's controls along the bottom, and pop-up panels for the
-    /// battle's settings, the overlays, scenarios, the quick duel, the A/B comparison and the statistics. Every
-    /// control is at least 44 pt; a wide screen (a tablet) gets wider panels. It has its own UI document above the
-    /// battle HUD, so the HUD is left as it is.
+    /// The Sandbox's screen (prompt 21 G), rebuilt lean (DECISIONS 21S) in the compact HUD's style: small drawn faces
+    /// inside full 44 pt targets, nothing on the battlefield that is not in use. At rest: a slim icon rail on the left
+    /// under the minimap and one thin simulation bar along the bottom (run, pause, one tick, speed, seed, reset, the
+    /// overlays' tray). The unit picker (an icon grid with a category, a search chip and filters) opens beside the
+    /// rail; a selected unit's settings are a small card on the right; the battle's settings, scenarios, duel, A/B,
+    /// statistics and both sides' switches are one sheet at a time beside the rail. It has its own UI document over
+    /// the battle HUD (or a host panel, for the screenshots and the layout checks).
     /// </summary>
     internal sealed partial class SandboxScreen
     {
@@ -23,30 +25,41 @@ namespace MachineBrigade.Game.Hud
         private readonly GameObject _host;
         private readonly PanelSettings _settings;
         private readonly VisualElement _root, _frame;
-        private readonly VisualElement _left, _leftBody, _list, _right, _rightBody, _bottom, _popup, _popupBody, _status;
-        private readonly Label _clock, _state;
-        private readonly KitButton _runButton, _pauseButton;
-        private readonly List<KitChip> _speedChips = new(), _sideChips = new(), _formationChips = new();
+        private readonly VisualElement _rail, _drawer, _grid, _searchRow, _filterRow, _countRow, _card, _cardBody, _bar, _tray, _sheet, _sheetBody,
+            _menu, _status, _seedBox;
+        private readonly Label _armedLine, _countLabel, _speedLabel, _seedLabel, _clock, _sheetTitle;
+        private readonly KitIconButton _unitsButton, _sideButton, _undoButton, _redoButton, _sidesButton, _freeButton, _searchButton, _filterButton,
+            _playButton, _pauseButton, _stepButton, _slowerButton, _fasterButton, _layersButton;
+        private readonly KitButton _runButton;
+        private readonly KitDropdown _shapeDrop;
+        private static readonly List<SandboxFormation?> Shapes = new() { null, SandboxFormation.Line, SandboxFormation.Column, SandboxFormation.Cluster, SandboxFormation.Arc };
+        private readonly TextField _searchField;
+        private bool _drawerOpen, _trayOpen, _bossOpen;
         private SandboxTab _tab;
         private string _search = "";
         private ArmyBranch? _branch;
         private int? _armour;
         private DamageType? _damage;
         private float _refreshIn;
-        private Action _popupRefresh;
+        private Action _sheetRefresh;
+        private string _cardFor;
 
-        public SandboxScreen(SandboxController controller)
+        public SandboxScreen(SandboxController controller, VisualElement host = null)
         {
             _c = controller;
-            _settings = ScriptableObject.CreateInstance<PanelSettings>();
-            _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
-            _settings.scaleMode = PanelScaleMode.ConstantPixelSize;
-            _settings.scale = BattleHud.MenuScale(Screen.width, Screen.height, Screen.dpi, Application.isMobilePlatform) * MatchSettings.UiScale;
-            _settings.sortingOrder = 12;
-            _host = new GameObject("Sandbox UI");
-            var document = _host.AddComponent<UIDocument>();
-            document.panelSettings = _settings;
-            _root = document.rootVisualElement;
+            if (host != null) _root = host;
+            else
+            {
+                _settings = ScriptableObject.CreateInstance<PanelSettings>();
+                _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
+                _settings.scaleMode = PanelScaleMode.ConstantPixelSize;
+                _settings.scale = BattleHud.MenuScale(Screen.width, Screen.height, Screen.dpi, Application.isMobilePlatform) * MatchSettings.UiScale;
+                _settings.sortingOrder = 12;
+                _host = new GameObject("Sandbox UI");
+                var document = _host.AddComponent<UIDocument>();
+                document.panelSettings = _settings;
+                _root = document.rootVisualElement;
+            }
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Sandbox"));
@@ -58,124 +71,220 @@ namespace MachineBrigade.Game.Hud
             _frame = Kit.Root("sb");
             _frame.pickingMode = PickingMode.Ignore;
             _root.Add(_frame);
-            _frame.RegisterCallback<GeometryChangedEvent>(_ => _frame.EnableInClassList("sb--wide", _frame.resolvedStyle.width > 1100f));
+            // In its own document the Sandbox keeps to the safe area itself (a host panel's owner insets it).
+            if (host == null) KitSafeArea.Track(_frame);
+            _frame.RegisterCallback<GeometryChangedEvent>(_ => _frame.EnableInClassList("sb--wide", _frame.resolvedStyle.width > 1500f));
 
-            // Left: the unit picker (B.2-B.5) ---------------------------------------------------------------
-            _left = Kit.Box(KitPanel.SurfaceClass + " sb-left", PickingMode.Position);
-            var head = Kit.Box("fc-row sb-left__head");
-            head.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.units")), "fc-panel-title sb-grow"));
-            head.Add(Small(Strings.Get("sandbox.hide"), ToggleLeft));
-            _left.Add(head);
-            _leftBody = Kit.Box("sb-left__body");
-            var sides = Kit.Box("fc-row sb-wrap");
-            for (var team = 0; team < 2; team++)
+            // The rail: the picker, the side new units go to, undo and redo; running, both sides' switches; always, more.
+            _rail = Kit.Box("sb-rail");
+            _unitsButton = Icon(_rail, "sb_grid", "sandbox.units", () =>
             {
-                var t = team;
-                var chip = new KitChip(Strings.Get("sandbox.side." + team), _c.Editor.Team == team, () => SetSide(t));
-                chip.AddToClassList("sb-side sb-side--" + team);
-                _sideChips.Add(chip);
-                sides.Add(chip);
-            }
-            _leftBody.Add(sides);
-            var tabs = Kit.Box("fc-row sb-wrap sb-tabs");
-            foreach (SandboxTab tab in Enum.GetValues(typeof(SandboxTab)))
-            {
-                var tb = tab;
-                tabs.Add(new KitChip(Strings.Get("sandbox.tab." + tab), tab == _tab, () =>
-                {
-                    _tab = tb;
-                    foreach (var c in tabs.Children()) if (c is KitChip k) k.Selected = false;
-                    ((KitChip)tabs[(int)tb]).Selected = true;
-                    FillList();
-                }));
-            }
-            _leftBody.Add(tabs);
-            var search = new TextField { label = "" };
-            search.AddToClassList("sb-field");
-            search.textEdition.placeholder = Strings.Get("sandbox.search");
-            search.RegisterValueChangedCallback(e =>
-            {
-                _search = e.newValue ?? "";
-                FillList();
-            });
-            _leftBody.Add(search);
-            _leftBody.Add(Filters());
-            var listScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-list");
-            _list = listScroll.contentContainer;
-            _leftBody.Add(listScroll);
-            _leftBody.Add(PlacementOptions());
-            _left.Add(_leftBody);
-            _frame.Add(_left);
-
-            // Right: the selection (B.6, B.9, C.3, D) ------------------------------------------------------
-            _right = Kit.Box(KitPanel.SurfaceClass + " sb-right", PickingMode.Position);
-            var rightScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-right__scroll");
-            _rightBody = rightScroll.contentContainer;
-            _right.Add(rightScroll);
-            _frame.Add(_right);
-
-            // Bottom: the simulation (C.1, C.6) ------------------------------------------------------------
-            _bottom = Kit.Box(KitPanel.SurfaceClass + " sb-bottom", PickingMode.Position);
-            _runButton = new KitButton(ButtonTier.Primary, Strings.Get(_c.Editing ? "sandbox.run" : "sandbox.edit"), () => _c.Rebuild(_c.Editing), _c.Editing ? "play" : "restart");
-            _bottom.Add(_runButton);
-            _pauseButton = new KitButton(ButtonTier.Secondary, Strings.Get("sandbox.pause"), () =>
-            {
-                _c.Paused = !_c.Paused;
+                _drawerOpen = !_drawerOpen;
+                if (_drawerOpen) CloseSheet();
                 Refresh();
             });
-            _bottom.Add(_pauseButton);
-            _bottom.Add(new KitButton(ButtonTier.Secondary, Strings.Get("sandbox.step"), () =>
+            _sideButton = Icon(_rail, "flag", "sandbox.side", () =>
+            {
+                _c.Editor.Team = 1 - _c.Editor.Team;
+                Refresh();
+            });
+            _undoButton = Icon(_rail, "sb_undo", "sandbox.undo", () => _c.Editor.Undo());
+            _redoButton = Icon(_rail, "sb_redo", "sandbox.redo", () => _c.Editor.Redo());
+            _sidesButton = Icon(_rail, "cp", "sandbox.sides", () => Open("sandbox.sides", SidesPanel));
+            Icon(_rail, "sb_more", "sandbox.more", () => Show(_menu, _menu.style.display == DisplayStyle.None));
+            _frame.Add(_rail);
+
+            // More: the rest, one sheet at a time.
+            _menu = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-menu", PickingMode.Position);
+            MenuRow("settings", "sandbox.settings", () => Open("sandbox.settings", BattlePanel));
+            MenuRow("deck", "sandbox.scenarios", () => Open("sandbox.scenarios", ScenariosPanel));
+            MenuRow("swords", "sandbox.duel", () => Open("sandbox.duel", DuelPanel));
+            MenuRow("sb_ab", "sandbox.ab", () => Open("sandbox.ab", AbPanel));
+            MenuRow("sb_chart", "sandbox.stats", () => Open("sandbox.stats.title", StatsPanel));
+            MenuRow("home", "sandbox.quit", Quit);
+            _menu.style.display = DisplayStyle.None;
+            _frame.Add(_menu);
+
+            // The picker (B.2-B.5): category, search, filters, the grid, and how many at once.
+            _drawer = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-drawer", PickingMode.Position);
+            var head = Kit.Box("fc-row sb-drawer__head");
+            var tabs = new List<string>();
+            foreach (SandboxTab tab in Enum.GetValues(typeof(SandboxTab))) tabs.Add(Strings.Get("sandbox.tab." + tab));
+            var tabDrop = Drop(Strings.Get("sandbox.tab"), tabs, 0, i =>
+            {
+                _tab = (SandboxTab)i;
+                FillGrid();
+            });
+            tabDrop.AddToClassList("sb-grow");
+            head.Add(tabDrop);
+            _searchButton = Icon(head, "sb_search", "sandbox.search", () =>
+            {
+                var show = _searchRow.style.display == DisplayStyle.None;
+                Show(_searchRow, show);
+                if (show) _searchField.Focus();
+                Refresh();
+            });
+            _filterButton = Icon(head, "sb_filter", "sandbox.filter", () =>
+            {
+                Show(_filterRow, _filterRow.style.display == DisplayStyle.None);
+                Refresh();
+            });
+            _drawer.Add(head);
+            _searchRow = Kit.Box("sb-drawer__row");
+            _searchField = new TextField { label = "" };
+            _searchField.AddToClassList("sb-field");
+            _searchField.textEdition.placeholder = Strings.Get("sandbox.search");
+            _searchField.RegisterValueChangedCallback(e =>
+            {
+                _search = e.newValue ?? "";
+                FillGrid();
+            });
+            _searchRow.Add(_searchField);
+            Show(_searchRow, false);
+            _drawer.Add(_searchRow);
+            _filterRow = Filters();
+            Show(_filterRow, false);
+            _drawer.Add(_filterRow);
+            var gridScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-drawer__grid");
+            _grid = gridScroll.contentContainer;
+            _grid.AddToClassList("sb-grid");
+            _drawer.Add(gridScroll);
+            var foot = Kit.Box("sb-drawer__foot");
+            var shapeNames = new List<string>();
+            foreach (var s in Shapes) shapeNames.Add(Strings.Get("sandbox.formation." + (s?.ToString() ?? "Single")));
+            var footRow = Kit.Box("fc-row");
+            _shapeDrop = Drop(Strings.Get("sandbox.formation"), shapeNames, Math.Max(0, Shapes.IndexOf(_c.Formation)), i =>
+            {
+                _c.Formation = Shapes[i];
+                Refresh();
+            });
+            _shapeDrop.AddToClassList("sb-grow");
+            footRow.Add(_shapeDrop);
+            _freeButton = Icon(footRow, "sb_free", "sandbox.freeRotate", () =>
+            {
+                _c.Editor.FreeRotation = !_c.Editor.FreeRotation;
+                Refresh();
+            });
+            foot.Add(footRow);
+            _countRow = Kit.Box("fc-row sb-step");
+            _countLabel = Kit.Text("", "fc-body sb-step__label");
+            _countRow.Add(_countLabel);
+            Icon(_countRow, "minus", "sandbox.fewer", () =>
+            {
+                _c.FormationCount = Math.Max(2, _c.FormationCount - 1);
+                Refresh();
+            });
+            Icon(_countRow, "plus", "sandbox.more.units", () =>
+            {
+                _c.FormationCount = Math.Min(16, _c.FormationCount + 1);
+                Refresh();
+            });
+            foot.Add(_countRow);
+            _armedLine = Kit.Text("", "fc-small sb-hint");
+            foot.Add(_armedLine);
+            _drawer.Add(foot);
+            _frame.Add(_drawer);
+
+            // The selection's card (B.6, B.9, C.3, D).
+            _card = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-card", PickingMode.Position);
+            var cardScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-card__scroll");
+            _cardBody = cardScroll.contentContainer;
+            _card.Add(cardScroll);
+            _frame.Add(_card);
+
+            // One sheet at a time: settings, scenarios, duel, A/B, statistics, both sides.
+            _sheet = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-sheet", PickingMode.Position);
+            var sheetHead = Kit.Box("fc-row sb-sheet__head");
+            _sheetTitle = Kit.Text("", "fc-panel-title fc-row-text sb-grow");
+            sheetHead.Add(_sheetTitle);
+            Icon(sheetHead, "close", "sandbox.close", () =>
+            {
+                CloseSheet();
+                Refresh();
+            });
+            _sheet.Add(sheetHead);
+            var sheetScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-sheet__scroll");
+            _sheetBody = sheetScroll.contentContainer;
+            _sheet.Add(sheetScroll);
+            Show(_sheet, false);
+            _frame.Add(_sheet);
+
+            // The simulation bar (C.1, C.6): one row.
+            _bar = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-bar", PickingMode.Position);
+            // Run from set-up; Edit (stop, back to set-up) while running: the scene is built anew for each, so the icon holds.
+            _runButton = new KitButton(ButtonTier.Primary, Strings.Get(_c.Editing ? "sandbox.run" : "sandbox.edit"), () => _c.Rebuild(_c.Editing), _c.Editing ? "play" : "stop");
+            _runButton.AddToClassList("sb-run");
+            _bar.Add(_runButton);
+            _pauseButton = Icon(_bar, "pause", "sandbox.pause", () =>
+            {
+                _c.Paused = true;
+                Refresh();
+            });
+            _playButton = Icon(_bar, "play", "sandbox.resume", () =>
+            {
+                _c.Paused = false;
+                Refresh();
+            });
+            _stepButton = Icon(_bar, "sb_step", "sandbox.step", () =>
             {
                 _c.StepOnce();
                 Refresh();
-            }));
-            var speeds = Kit.Box("fc-row sb-speeds");
-            for (var i = 0; i < SandboxController.Speeds.Length; i++)
+            });
+            _slowerButton = Icon(_bar, "minus", "sandbox.slower", () =>
             {
-                var index = i;
-                var chip = new KitChip("×" + SandboxText.Number(SandboxController.Speeds[i], SandboxController.Speeds[i] < 1f ? 2 : 0), i == _c.SpeedIndex, () =>
-                {
-                    _c.SpeedIndex = index;
-                    Refresh();
-                });
-                _speedChips.Add(chip);
-                speeds.Add(chip);
-            }
-            _bottom.Add(speeds);
-            _bottom.Add(new KitButton(ButtonTier.Secondary, Strings.Get("sandbox.reset"), () => _c.Rebuild(!_c.Editing), "restart"));
-            var info = Kit.Box("sb-bottom__info");
-            _state = Kit.Text("", "fc-small sb-state");
-            _clock = Kit.Text("", "fc-small sb-clock");
-            info.Add(_state);
-            info.Add(_clock);
-            _bottom.Add(info);
-            var menus = Kit.Box("fc-row sb-wrap sb-menus");
-            menus.Add(Small(Strings.Get("sandbox.settings"), () => Open(BattlePanel)));
-            menus.Add(Small(Strings.Get("sandbox.layers"), () => Open(LayersPanel)));
-            menus.Add(Small(Strings.Get("sandbox.scenarios"), () => Open(ScenariosPanel)));
-            menus.Add(Small(Strings.Get("sandbox.duel"), () => Open(DuelPanel)));
-            menus.Add(Small(Strings.Get("sandbox.ab"), () => Open(AbPanel)));
-            menus.Add(Small(Strings.Get("sandbox.stats"), () => Open(StatsPanel)));
-            menus.Add(Small(Strings.Get("sandbox.quit"), Quit));
-            _bottom.Add(menus);
-            _frame.Add(_bottom);
+                _c.SpeedIndex = Math.Max(0, _c.SpeedIndex - 1);
+                Refresh();
+            });
+            _speedLabel = Kit.Text("", "fc-number-small sb-bar__speed");
+            _bar.Add(_speedLabel);
+            _fasterButton = Icon(_bar, "plus", "sandbox.faster", () =>
+            {
+                _c.SpeedIndex = Math.Min(SandboxController.Speeds.Length - 1, _c.SpeedIndex + 1);
+                Refresh();
+            });
+            var seed = Kit.Tappable("sb-seed", () => Show(_seedBox, _seedBox.style.display == DisplayStyle.None));
+            seed.tooltip = Strings.Get("sandbox.seed.hint");
+            var seedFace = Kit.Box("sb-face");
+            seedFace.Add(Kit.Icon("dice", "sb-face__icon"));
+            _seedLabel = Kit.Text("", "fc-small sb-face__text");
+            seedFace.Add(_seedLabel);
+            seed.Add(seedFace);
+            _bar.Add(seed);
+            _clock = Kit.Text("", "fc-small sb-bar__clock");
+            _bar.Add(_clock);
+            Icon(_bar, "restart", "sandbox.reset", () => _c.Rebuild(!_c.Editing));
+            _layersButton = Icon(_bar, "sb_layers", "sandbox.layers", () =>
+            {
+                _trayOpen = !_trayOpen;
+                FillTray();
+                Refresh();
+            });
+            _frame.Add(_bar);
+
+            // The seed (C.6), just above its chip.
+            _seedBox = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-seedbox", PickingMode.Position);
+            var seedField = new TextField(Strings.Get("sandbox.seed")) { value = _c.Editor.Scenario.Seed.ToString(), isDelayed = true };
+            seedField.AddToClassList("sb-field");
+            seedField.RegisterValueChangedCallback(e =>
+            {
+                if (int.TryParse(e.newValue, out var n)) _c.Editor.Settings(x => x.Seed = n);
+                Refresh();
+            });
+            _seedBox.Add(seedField);
+            _seedBox.Add(Kit.Text(Strings.Get("sandbox.seed.hint"), "fc-small sb-hint"));
+            Show(_seedBox, false);
+            _frame.Add(_seedBox);
+
+            // The overlays' tray (E), over the bar.
+            _tray = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field sb-tray", PickingMode.Position);
+            _frame.Add(_tray);
 
             _status = Kit.Box("sb-status");
             _frame.Add(_status);
 
-            _popup = Kit.Box(KitPanel.SurfaceClass + " sb-popup", PickingMode.Position);
-            var popupHead = Kit.Box("fc-row sb-popup__head");
-            popupHead.Add(Kit.Box("sb-grow"));
-            popupHead.Add(Small("✕", Close));
-            _popup.Add(popupHead);
-            var popupScroll = Kit.Scroll(ScrollViewMode.Vertical, "sb-popup__scroll");
-            _popupBody = popupScroll.contentContainer;
-            _popup.Add(popupScroll);
-            _popup.style.display = DisplayStyle.None;
-            _frame.Add(_popup);
-
             Kit.ApplyTextSize(_frame);
-            FillList();
+            FillGrid();
+            FillTray();
             Refresh();
         }
 
@@ -193,10 +302,37 @@ namespace MachineBrigade.Game.Hud
 
         // ------------------------------------------------------------------ small building blocks
 
+        /// <summary>A small face in a full touch target, with its words as its label (the compact HUD's icon buttons).</summary>
+        private static KitIconButton Icon(VisualElement parent, string icon, string labelKey, Action onTap)
+        {
+            var b = new KitIconButton(icon, Strings.Get(labelKey), onTap, plain: true);
+            parent.Add(b);
+            return b;
+        }
+
+        private static void On(KitIconButton b, bool on) => b.EnableInClassList("fc-icon-btn--on", on);
+
+        private static void Show(VisualElement e, bool show) => e.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+
+        private void MenuRow(string icon, string key, Action onTap)
+        {
+            var row = Kit.Tappable("sb-menu__row", () =>
+            {
+                Show(_menu, false);
+                onTap();
+            });
+            row.Add(Kit.Icon(icon, "sb-face__icon"));
+            row.Add(Kit.Text(Strings.Get(key), "fc-body fc-row-text sb-menu__label"));
+            _menu.Add(row);
+        }
+
+        /// <summary>A text button for the sheets (the card and the bars use icons).</summary>
         private static VisualElement Small(string label, Action onTap)
         {
             var b = Kit.Tappable("sb-button", onTap);
-            b.Add(Kit.Text(label, "fc-small sb-button__label"));
+            var face = Kit.Box("sb-face");
+            face.Add(Kit.Text(label, "fc-small sb-face__text"));
+            b.Add(face);
             return b;
         }
 
@@ -218,133 +354,145 @@ namespace MachineBrigade.Game.Hud
             return d;
         }
 
+        /// <summary>A number with its minus and plus: "Rank 3 [-] [+]".</summary>
         private VisualElement Stepper(string text, Action down, Action up)
         {
-            var row = Kit.Box("fc-row sb-stepper");
-            row.Add(Small("−", () =>
+            var row = Kit.Box("fc-row sb-step");
+            row.Add(Kit.Text(text, "fc-body sb-step__label"));
+            Icon(row, "minus", "sandbox.less", () =>
             {
                 down();
                 Refresh();
-            }));
-            row.Add(Kit.Text(text, "fc-body sb-stepper__value"));
-            row.Add(Small("+", () =>
+            });
+            Icon(row, "plus", "sandbox.more.value", () =>
             {
                 up();
                 Refresh();
-            }));
+            });
             return row;
+        }
+
+        /// <summary>An icon that toggles, its words as its label.</summary>
+        private KitIconButton Toggle(VisualElement parent, string icon, string labelKey, bool on, Action<bool> changed)
+        {
+            var b = Icon(parent, icon, labelKey, () => changed(!on));
+            On(b, on);
+            return b;
         }
 
         public void Toast(string text, bool error = false) => KitToast.Show(_frame, text, error ? ToastKind.Alert : ToastKind.Info, 3f);
 
-        // ------------------------------------------------------------------ left: the picker
-
-        private void ToggleLeft()
+        /// <summary>A unit's icon on the grid and the card: its card icon, a boss's skull (a mini boss's crown), a ship's anchor.</summary>
+        internal static string IconFor(VehicleDef def)
         {
-            var open = !_left.ClassListContains("sb-left--closed");
-            _left.EnableInClassList("sb-left--closed", open);
+            if (def.Naval != null) return "anchor";
+            if (def.Boss) return def.MiniBoss ? "crown" : "skull";
+            var icon = CardIcons.For(def.Elite && def.EliteOf != null ? def.EliteOf : def.Id);
+            if (icon == "tank" && def.Flying) icon = def.Class == UnitClass.Helicopter ? "helicopter" : "jet";
+            return Icons.Exists(icon) ? icon : "tank";
         }
 
-        private void SetSide(int team)
-        {
-            _c.Editor.Team = team;
-            for (var i = 0; i < _sideChips.Count; i++) _sideChips[i].Selected = i == team;
-        }
+        // ------------------------------------------------------------------ the picker
 
         private VisualElement Filters()
         {
-            var row = Kit.Box("fc-row sb-wrap sb-filters");
+            var box = Kit.Box("sb-drawer__row");
             var all = Strings.Get("sandbox.filter.all");
             var branches = new List<string> { all };
             foreach (ArmyBranch b in Enum.GetValues(typeof(ArmyBranch))) branches.Add(Strings.Get("kit.branch." + b.ToString().ToLowerInvariant()));
-            row.Add(Drop(Strings.Get("sandbox.filter.branch"), branches, 0, i =>
+            box.Add(Drop(Strings.Get("sandbox.filter.branch"), branches, 0, i =>
             {
                 _branch = i == 0 ? null : (ArmyBranch)(i - 1);
-                FillList();
+                FillGrid();
             }));
             var levels = new List<string> { all };
             for (var l = 0; l <= ArmourLevels.Max; l++) levels.Add(Strings.Get("armour.level." + l));
-            row.Add(Drop(Strings.Get("sandbox.filter.armour"), levels, 0, i =>
+            box.Add(Drop(Strings.Get("sandbox.filter.armour"), levels, 0, i =>
             {
                 _armour = i == 0 ? null : i - 1;
-                FillList();
+                FillGrid();
             }));
             var types = new List<string> { all };
             var typeValues = (DamageType[])Enum.GetValues(typeof(DamageType));
             foreach (var t in typeValues) types.Add(Strings.Get("dtype." + t));
-            row.Add(Drop(Strings.Get("sandbox.filter.weapon"), types, 0, i =>
+            box.Add(Drop(Strings.Get("sandbox.filter.weapon"), types, 0, i =>
             {
                 _damage = i == 0 ? null : typeValues[i - 1];
-                FillList();
+                FillGrid();
             }));
-            return row;
-        }
-
-        private VisualElement PlacementOptions()
-        {
-            var box = Kit.Box("sb-place");
-            box.Add(Caption("sandbox.formation"));
-            var row = Kit.Box("fc-row sb-wrap");
-            var shapes = new List<SandboxFormation?> { null, SandboxFormation.Line, SandboxFormation.Column, SandboxFormation.Cluster, SandboxFormation.Arc };
-            foreach (var shape in shapes)
-            {
-                var s = shape;
-                var chip = new KitChip(Strings.Get("sandbox.formation." + (shape?.ToString() ?? "Single")), _c.Formation == shape, () =>
-                {
-                    _c.Formation = s;
-                    for (var i = 0; i < _formationChips.Count; i++) _formationChips[i].Selected = shapes[i] == s;
-                });
-                _formationChips.Add(chip);
-                row.Add(chip);
-            }
-            box.Add(row);
-            var countLabel = Kit.Text("", "fc-body sb-stepper__value");
-            void ShowCount() => countLabel.text = SandboxText.Format("sandbox.count", ("count", _c.FormationCount));
-            ShowCount();
-            var stepper = Kit.Box("fc-row sb-stepper");
-            stepper.Add(Small("−", () =>
-            {
-                _c.FormationCount = Math.Max(2, _c.FormationCount - 1);
-                ShowCount();
-            }));
-            stepper.Add(countLabel);
-            stepper.Add(Small("+", () =>
-            {
-                _c.FormationCount = Math.Min(16, _c.FormationCount + 1);
-                ShowCount();
-            }));
-            box.Add(stepper);
-            box.Add(new KitToggle(Strings.Get("sandbox.freeRotate"), _c.Editor.FreeRotation, on => _c.Editor.FreeRotation = on));
-            box.Add(Kit.Text(Strings.Get("sandbox.place.hint"), "fc-small sb-hint"));
             return box;
         }
 
-        private void FillList()
+        private void FillGrid()
         {
-            _list.Clear();
+            _grid.Clear();
             var catalog = _c.World.Catalog;
             var list = SandboxRules.Palette(catalog, _tab, Strings.Unit, _search, _branch, _armour, _damage, def => _c.Session.Access.Allowed(catalog, def));
-            if (list.Count == 0) _list.Add(Kit.Text(Strings.Get("sandbox.empty"), "fc-small sb-hint"));
+            if (list.Count == 0) _grid.Add(Kit.Text(Strings.Get("sandbox.empty"), "fc-small sb-hint"));
             foreach (var def in list)
             {
                 var id = def.Id;
-                var row = Kit.Tappable("sb-unit" + (_c.Placing == id ? " sb-unit--armed" : ""), () =>
+                var cell = Kit.Tappable("sb-cell" + (_c.Placing == id ? " sb-cell--armed" : ""), () =>
                 {
                     _c.Placing = _c.Placing == id ? null : id;
                     _c.Picking = SandboxController.Pick.None;
-                    FillList();
+                    FillGrid();
+                    Refresh();
                 });
-                row.Add(KitCombat.ArmourIcon(def.Armour.Front, CombatFacts.KindOf(def.Kind)));
-                row.Add(Kit.Text(Strings.Short(id), "fc-body sb-unit__name"));
-                if (def.CpCost > 0) row.Add(Kit.Text(SandboxText.Format("sandbox.cp.value", ("cp", def.CpCost)), "fc-small sb-unit__cost"));
-                row.tooltip = Strings.Unit(id);
-                // Play-test 6 (DECISIONS 21B): a boss's file, the menu's boss page as a dialog (no menu in a battle).
-                if (def.Boss)
+                cell.tooltip = Strings.Unit(id);
+                cell.Add(Kit.Icon(IconFor(def), "sb-cell__icon"));
+                var name = Kit.Text(Strings.Short(id), "fc-small sb-cell__name");
+                cell.Add(name);
+                if (def.CpCost > 0) cell.Add(Kit.Text(SandboxText.Number(def.CpCost), "fc-small sb-cell__cost"));
+                if (def.Elite) cell.Add(Kit.Icon("elite", "sb-cell__mark"));
+                _grid.Add(cell);
+            }
+        }
+
+        // ------------------------------------------------------------------ the overlays' tray
+
+        private void FillTray()
+        {
+            _tray.Clear();
+            var chips = Kit.Box("fc-row sb-wrap");
+            void Chip(SandboxLayer layer, string icon, string key)
+            {
+                var chip = new KitChip(Strings.Get("sandbox.layer.short." + key), _c.LayerOn(layer), () =>
                 {
-                    var boss = def;
-                    row.Add(new KitIconButton("info", Strings.Get("guide.boss.fileButton"), () => BossFile.Show(_root, catalog, boss), plain: true));
-                }
-                _list.Add(row);
+                    _c.Layers[layer] = !_c.LayerOn(layer);
+                    FillTray();
+                }, icon);
+                chip.tooltip = Strings.Get("sandbox.layer." + key);
+                chips.Add(chip);
+            }
+            Chip(SandboxLayer.Range, "crosshair", "range");
+            Chip(SandboxLayer.Hits, "bolt", "hits");
+            Chip(SandboxLayer.Dps, "gauge", "dps");
+            Chip(SandboxLayer.Ammo, "ammo", "ammo");
+            Chip(SandboxLayer.Zones, "shield", "zones");
+            // E.6: never in the player version.
+            if (SandboxSession.Internal)
+            {
+                Chip(SandboxLayer.Hull, "expand", "hull");
+                Chip(SandboxLayer.Route, "move", "route");
+                Chip(SandboxLayer.Stuck, "lock", "stuck");
+                Chip(SandboxLayer.Buy, "cart", "buy");
+            }
+            _tray.Add(chips);
+            if (_c.LayerOn(SandboxLayer.Buy)) BuyScores(_tray);
+        }
+
+        private void BuyScores(VisualElement box)
+        {
+            for (var team = 0; team < 2; team++)
+            {
+                if (_c.Battle.Commander(team)?.BuyScores is not { Count: > 0 } buy) continue;
+                box.Add(Kit.Text(SandboxText.Format("sandbox.buy.title", ("side", Strings.Get("sandbox.side." + team))), "fc-caption sb-caption"));
+                var list = new List<KeyValuePair<string, float>>(buy);
+                list.Sort((a, b) => b.Value.CompareTo(a.Value));
+                var line = new List<string>();
+                for (var i = 0; i < Math.Min(5, list.Count); i++) line.Add(Strings.Short(list[i].Key) + " " + SandboxText.Number(list[i].Value, 1));
+                box.Add(Kit.Text(string.Join(" · ", line), "fc-small sb-hint"));
             }
         }
 
@@ -354,31 +502,67 @@ namespace MachineBrigade.Game.Hud
         {
             RunJobs();
             var w = _c.World;
-            _state.text = Strings.Get(_c.Editing ? "sandbox.editing" : _c.Paused ? "sandbox.paused" : "sandbox.running");
-            _clock.text = SandboxText.Format("sandbox.clock", ("seconds", SandboxText.Number(w.Time, 1)), ("tick", w.Tick));
+            if (!_c.Editing)
+                _clock.text = SandboxText.Format("sandbox.clock", ("seconds", SandboxText.Number(w.Time, 1)), ("tick", w.Tick.ToString()));
             _refreshIn -= Time.unscaledDeltaTime;
             if (!_c.Editing && _refreshIn <= 0f)
             {
                 _refreshIn = 0.5f;
-                FillRight();
-                ShowResult();
-                _popupRefresh?.Invoke();
+                _cardFor = null;
+                FillCard();
+                ShowStatus();
+                _sheetRefresh?.Invoke();
+                if (_trayOpen && _c.LayerOn(SandboxLayer.Buy)) FillTray();
             }
         }
 
-        /// <summary>Everything that depends on the selection and the state.</summary>
+        /// <summary>Everything that depends on the state and the selection.</summary>
         public void Refresh()
         {
-            _runButton.Label = Strings.Get(_c.Editing ? "sandbox.run" : "sandbox.edit");
-            _pauseButton.Label = Strings.Get(_c.Paused ? "sandbox.resume" : "sandbox.pause");
-            _pauseButton.EnableInClassList("sb-hidden", _c.Editing);
-            for (var i = 0; i < _speedChips.Count; i++) _speedChips[i].Selected = i == _c.SpeedIndex;
-            _left.EnableInClassList("sb-hidden", !_c.Editing);
-            FillRight();
-            ShowResult();
+            var editing = _c.Editing;
+            var e = _c.Editor;
+            Show(_unitsButton, editing);
+            Show(_sideButton, editing);
+            Show(_undoButton, editing);
+            Show(_redoButton, editing);
+            Show(_sidesButton, !editing);
+            On(_unitsButton, _drawerOpen && editing);
+            _sideButton.EnableInClassList("sb-side--0", e.Team == 0);
+            _sideButton.EnableInClassList("sb-side--1", e.Team == 1);
+            _sideButton.tooltip = SandboxText.Format("sandbox.side.pick", ("side", Strings.Get("sandbox.side." + e.Team)));
+            _undoButton.SetDisabled(!e.CanUndo);
+            _redoButton.SetDisabled(!e.CanRedo);
+            Show(_drawer, _drawerOpen && editing);
+            On(_searchButton, _searchRow.style.display != DisplayStyle.None);
+            On(_filterButton, _filterRow.style.display != DisplayStyle.None);
+            On(_freeButton, e.FreeRotation);
+            Show(_countRow, _c.Formation != null);
+            _shapeDrop.Select(Math.Max(0, Shapes.IndexOf(_c.Formation)), false);
+            _countLabel.text = SandboxText.Format("sandbox.count", ("count", _c.FormationCount));
+            _armedLine.text = _c.Placing != null ? SandboxText.Format("sandbox.place.armed", ("unit", Strings.Unit(_c.Placing))) : Strings.Get("sandbox.place.hint");
+
+            _runButton.Label = Strings.Get(editing ? "sandbox.run" : "sandbox.edit");
+            Show(_pauseButton, !editing && !_c.Paused);
+            Show(_playButton, !editing && _c.Paused);
+            Show(_stepButton, !editing);
+            Show(_slowerButton, !editing);
+            Show(_speedLabel, !editing);
+            Show(_fasterButton, !editing);
+            Show(_clock, !editing);
+            if (!editing)
+                _clock.text = SandboxText.Format("sandbox.clock", ("seconds", SandboxText.Number(_c.World.Time, 1)), ("tick", _c.World.Tick.ToString()));
+            _speedLabel.text = SandboxText.Format("sandbox.speed.value", ("speed", SandboxText.Number(_c.Speed, _c.Speed < 1f ? 2 : 0)));
+            _slowerButton.SetDisabled(_c.SpeedIndex <= 0);
+            _fasterButton.SetDisabled(_c.SpeedIndex >= SandboxController.Speeds.Length - 1);
+            _seedLabel.text = SandboxText.Format("sandbox.seed.chip", ("seed", e.Scenario.Seed.ToString()));
+            On(_layersButton, _trayOpen);
+            Show(_tray, _trayOpen);
+            _cardFor = null;
+            FillCard();
+            ShowStatus();
         }
 
-        private void ShowResult()
+        private void ShowStatus()
         {
             _status.Clear();
             var b = _c.Battle;
@@ -389,7 +573,7 @@ namespace MachineBrigade.Game.Hud
             else if (_c.Picking == SandboxController.Pick.Strike) text = Strings.Get("sandbox.call.pick");
             else if (b.Result is { } r) text = ResultLine(r.WinningTeam, b.EndedAt, SandboxBattle.HealthShare(_c.World, 0), SandboxBattle.HealthShare(_c.World, 1));
             if (text == null) return;
-            _status.Add(Kit.Text(text, "fc-body sb-status__text"));
+            _status.Add(Kit.Text(text, "fc-small sb-status__text"));
         }
 
         internal static string ResultLine(int winner, double seconds, float blue, float red) =>
@@ -397,97 +581,101 @@ namespace MachineBrigade.Game.Hud
                 ("result", Strings.Get(winner == 0 ? "sandbox.result.0" : winner == 1 ? "sandbox.result.1" : winner == -1 ? "sandbox.result.draw" : "sandbox.result.open")),
                 ("seconds", SandboxText.Number(seconds, 1)), ("blue", SandboxText.Number(blue * 100f)), ("red", SandboxText.Number(red * 100f)));
 
-        // ------------------------------------------------------------------ right: the selection
+        // ------------------------------------------------------------------ the card
 
-        private void FillRight()
+        private void FillCard()
         {
-            _rightBody.Clear();
-            var sel = _c.Selected;
-            if (sel.Count == 0)
-            {
-                _rightBody.Add(Kit.Text(Strings.Get("sandbox.none"), "fc-small sb-hint"));
-                if (_c.Editing) _rightBody.Add(Row(Small(Strings.Get("sandbox.undo"), () => _c.Editor.Undo()), Small(Strings.Get("sandbox.redo"), () => _c.Editor.Redo())));
-                else SideTools();
-                return;
-            }
-            if (_c.Editing) EditingPanel(sel);
-            else RunningPanel();
+            var key = string.Join(",", _c.Selected) + (_c.Editing ? "e" : "r") + _bossOpen;
+            if (key == _cardFor) return;
+            _cardFor = key;
+            _cardBody.Clear();
+            Show(_card, _c.Selected.Count > 0);
+            if (_c.Selected.Count == 0) return;
+            if (_c.Editing) EditingCard(_c.Selected);
+            else RunningCard();
         }
 
-        private void EditingPanel(List<int> sel)
+        private void CardHead(string defId, VehicleDef def, string line, bool delete)
+        {
+            var head = Kit.Box("fc-row sb-card__head");
+            if (def != null) head.Add(Kit.Icon(IconFor(def), "sb-card__icon"));
+            head.Add(Kit.Text(Kit.Caps(Strings.Short(defId)), "fc-caption fc-row-text sb-grow sb-card__name"));
+            if (delete)
+                Icon(head, "sb_trash", "sandbox.delete", () =>
+                {
+                    _c.Editor.Delete(new List<int>(_c.Selected));
+                    _c.Selected.Clear();
+                    Refresh();
+                });
+            Icon(head, "close", "sandbox.close", () =>
+            {
+                _c.Selected.Clear();
+                Refresh();
+            });
+            _cardBody.Add(head);
+            _cardBody.Add(Kit.Text(line, "fc-small sb-card__line"));
+        }
+
+        private void EditingCard(List<int> sel)
         {
             var e = _c.Editor;
             var catalog = _c.World.Catalog;
             var first = e.Units[sel[0]];
             catalog.Vehicles.TryGetValue(first.Def, out var def);
-            _rightBody.Add(Kit.Text(Kit.Caps(Strings.Unit(first.Def)), "fc-panel-title"));
-            _rightBody.Add(Kit.Text(SandboxText.Format("sandbox.selected", ("count", sel.Count)) + " · " + Strings.Get("sandbox.side." + first.Team) + " · " +
-                SandboxText.Format("sandbox.heading", ("degrees", SandboxText.Number(first.Heading, e.FreeRotation ? 1 : 0))), "fc-small"));
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.turnLeft"), () => e.RotateBy(sel, -SandboxRules.RotationStep)),
-                Small(Strings.Get("sandbox.turnRight"), () => e.RotateBy(sel, SandboxRules.RotationStep))));
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.side.0"), () => e.Edit(sel, u => u.Team = 0)), Small(Strings.Get("sandbox.side.1"), () => e.Edit(sel, u => u.Team = 1))));
-            _rightBody.Add(Stepper(SandboxText.Format("sandbox.rank", ("rank", first.Rank)), () => e.Edit(sel, u => u.Rank--), () => e.Edit(sel, u => u.Rank++)));
-            if (def != null && SandboxRules.IsTower(def))
+            CardHead(first.Def, def, SandboxText.Format("sandbox.selected", ("count", sel.Count)) + " · " + Strings.Get("sandbox.side." + first.Team) + " · " +
+                SandboxText.Format("sandbox.heading", ("degrees", SandboxText.Number(first.Heading, e.FreeRotation ? 1 : 0))), true);
+            var actions = Kit.Box("fc-row sb-card__icons");
+            Icon(actions, "sb_turn_left", "sandbox.turnLeft", () => e.RotateBy(sel, -SandboxRules.RotationStep));
+            Icon(actions, "sb_turn_right", "sandbox.turnRight", () => e.RotateBy(sel, SandboxRules.RotationStep));
+            Icon(actions, "move", "sandbox.move", () =>
             {
-                _rightBody.Add(Caption("sandbox.branch"));
-                var tower = def.BranchOf ?? def.Id;
-                var branches = SandboxRules.Branches(catalog, tower);
-                if (branches.Count > 0)
-                {
-                    if (first.Rank < SandboxRules.BranchRank) _rightBody.Add(Kit.Text(Strings.Get("sandbox.branch.locked"), "fc-small sb-hint"));
-                    else
-                    {
-                        var row = Row(new KitChip(Strings.Get("sandbox.branch.none"), def.BranchOf == null, () => e.SetBranch(sel[0], null)));
-                        foreach (var b in branches)
-                        {
-                            var id = b;
-                            row.Add(new KitChip(Strings.Branch(b), first.Def == b, () =>
-                            {
-                                if (!e.SetBranch(sel[0], id)) Toast(Strings.Get("sandbox.refuse.Locked"), true);
-                            }));
-                        }
-                        _rightBody.Add(row);
-                    }
-                }
-            }
-            _rightBody.Add(Caption("sandbox.gear"));
-            var gears = Row();
-            foreach (SandboxGear g in Enum.GetValues(typeof(SandboxGear)))
+                _c.Placing = null;
+                _c.Picking = SandboxController.Pick.MoveUnits;
+                FillGrid();
+                ShowStatus();
+            });
+            Icon(actions, "sb_copy", "sandbox.copy", () =>
             {
-                var gear = g;
-                gears.Add(new KitChip(Strings.Get("sandbox.gear." + g), first.Gear == g, () => e.Edit(sel, u => u.Gear = gear)));
-            }
-            _rightBody.Add(gears);
-            if (def != null && catalog.EliteVariant(def.Id) != null)
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.elite"), first.Elite, on => e.Edit(sel, u => u.Elite = on)));
-            _rightBody.Add(Stepper(SandboxText.Format("sandbox.hp", ("percent", first.Hp)), () => e.Edit(sel, u => u.Hp -= 10), () => e.Edit(sel, u => u.Hp += 10)));
-            _rightBody.Add(Stepper(SandboxText.Format("sandbox.ammo", ("percent", first.Ammo)), () => e.Edit(sel, u => u.Ammo -= 10), () => e.Edit(sel, u => u.Ammo += 10)));
-            _rightBody.Add(new KitToggle(Strings.Get("sandbox.immortal"), first.Immortal, on => e.Edit(sel, u => u.Immortal = on)));
+                var copies = e.Copy(sel, new System.Numerics.Vector2(6f, -6f));
+                sel.Clear();
+                sel.AddRange(copies);
+                Refresh();
+            });
+            _cardBody.Add(actions);
+            var toggles = Kit.Box("fc-row sb-card__icons");
+            var side = Icon(toggles, "flag", "sandbox.side.switch", () => e.Edit(sel, u => u.Team = 1 - first.Team));
+            side.AddToClassList("sb-side--" + first.Team);
+            if (def != null && catalog.EliteVariant(def.Id) != null) Toggle(toggles, "elite", "sandbox.elite", first.Elite, on => e.Edit(sel, u => u.Elite = on));
+            Toggle(toggles, "shield", "sandbox.immortal", first.Immortal, on => e.Edit(sel, u => u.Immortal = on));
+            _cardBody.Add(toggles);
+            _cardBody.Add(Stepper(SandboxText.Format("sandbox.rank", ("rank", first.Rank)), () => e.Edit(sel, u => u.Rank--), () => e.Edit(sel, u => u.Rank++)));
+            _cardBody.Add(Stepper(SandboxText.Format("sandbox.hp", ("percent", first.Hp)), () => e.Edit(sel, u => u.Hp -= 10), () => e.Edit(sel, u => u.Hp += 10)));
+            _cardBody.Add(Stepper(SandboxText.Format("sandbox.ammo", ("percent", first.Ammo)), () => e.Edit(sel, u => u.Ammo -= 10), () => e.Edit(sel, u => u.Ammo += 10)));
+            var gears = (SandboxGear[])Enum.GetValues(typeof(SandboxGear));
+            var gearNames = new List<string>();
+            foreach (var g in gears) gearNames.Add(Strings.Get("sandbox.gear." + g));
+            _cardBody.Add(Drop(Strings.Get("sandbox.gear"), gearNames, (int)first.Gear, i => e.Edit(sel, u => u.Gear = gears[i])));
+            if (def != null && SandboxRules.IsTower(def)) TowerBranch(sel[0], first, def);
             if (def is { Tiers: not null })
             {
-                _rightBody.Add(Caption("sandbox.tier"));
-                _rightBody.Add(Row(new KitChip(Strings.Get("sandbox.tier.none"), first.Tier == "", () => e.Edit(sel, u => u.Tier = "")),
-                    new KitChip(Strings.Get("sandbox.tier.low"), first.Tier == "low", () => e.Edit(sel, u => u.Tier = "low")),
-                    new KitChip(Strings.Get("sandbox.tier.high"), first.Tier == "high", () => e.Edit(sel, u => u.Tier = "high"))));
+                var tiers = new[] { "", "low", "high" };
+                _cardBody.Add(Drop(Strings.Get("sandbox.tier"), new[] { Strings.Get("sandbox.tier.none"), Strings.Get("sandbox.tier.low"), Strings.Get("sandbox.tier.high") },
+                    Math.Max(0, Array.IndexOf(tiers, first.Tier)), i => e.Edit(sel, u => u.Tier = tiers[i])));
             }
-            if (def is { Boss: true } && first.Boss is { } boss)
+            if (def is { Boss: true } && first.Boss is { } boss && BossHeader())
             {
-                _rightBody.Add(Caption("sandbox.boss"));
-                var phases = Math.Max(def.Phases.Count, def.Tiers?.Marks.Count ?? 0) + 1;
-                var row = Row();
-                for (var p = 0; p < Math.Min(3, phases); p++)
-                {
-                    var ph = p;
-                    row.Add(new KitChip(SandboxText.Format("sandbox.boss.phase", ("phase", p + 1)), boss.Phase == p, () => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).Phase = ph)));
-                }
-                _rightBody.Add(row);
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.boss.bigOff"), boss.BigOff, on => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).BigOff = on)));
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.boss.escorts"), !boss.NoEscorts, on => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).NoEscorts = !on)));
+                var phases = Math.Min(3, Math.Max(def.Phases.Count, def.Tiers?.Marks.Count ?? 0) + 1);
+                var names = new List<string>();
+                for (var p = 0; p < phases; p++) names.Add(SandboxText.Format("sandbox.boss.phase", ("phase", p + 1)));
+                _cardBody.Add(Drop(Strings.Get("sandbox.boss.startPhase"), names, boss.Phase, i => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).Phase = i)));
+                var row = Kit.Box("fc-row sb-card__icons");
+                Toggle(row, "bolt", "sandbox.boss.bigOff", boss.BigOff, on => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).BigOff = on));
+                Toggle(row, "people", "sandbox.boss.escorts", !boss.NoEscorts, on => e.Edit(sel, u => (u.Boss ??= new SandboxBossState()).NoEscorts = !on));
+                _cardBody.Add(row);
                 for (var i = 0; i < def.Parts.Count; i++)
                 {
                     var part = i;
-                    var broken = boss.Broken.Contains(i);
-                    _rightBody.Add(new KitToggle(SandboxText.Format("sandbox.boss.break", ("part", Strings.Get("part." + def.Parts[i].Kind))), broken, on => e.Edit(sel, u =>
+                    _cardBody.Add(new KitToggle(SandboxText.Format("sandbox.boss.break", ("part", Strings.Get("part." + def.Parts[i].Kind))), boss.Broken.Contains(i), on => e.Edit(sel, u =>
                     {
                         var b = u.Boss ??= new SandboxBossState();
                         b.Broken.Remove(part);
@@ -495,53 +683,74 @@ namespace MachineBrigade.Game.Hud
                     })));
                 }
             }
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.move"), () =>
-                {
-                    _c.Placing = null;
-                    _c.Picking = SandboxController.Pick.MoveUnits;
-                    FillList();
-                    ShowResult();
-                }),
-                Small(Strings.Get("sandbox.copy"), () =>
-                {
-                    var copies = e.Copy(sel, new System.Numerics.Vector2(6f, -6f));
-                    sel.Clear();
-                    sel.AddRange(copies);
-                    Refresh();
-                }),
-                Small(Strings.Get("sandbox.delete"), () =>
-                {
-                    e.Delete(new List<int>(sel));
-                    sel.Clear();
-                    Refresh();
-                })));
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.undo"), () => e.Undo()), Small(Strings.Get("sandbox.redo"), () => e.Redo())));
         }
 
-        private void RunningPanel()
+        private void TowerBranch(int index, SandboxUnit first, VehicleDef def)
+        {
+            var e = _c.Editor;
+            var tower = def.BranchOf ?? def.Id;
+            var branches = SandboxRules.Branches(_c.World.Catalog, tower);
+            if (branches.Count == 0) return;
+            if (first.Rank < SandboxRules.BranchRank)
+            {
+                _cardBody.Add(Kit.Text(Strings.Get("sandbox.branch.locked"), "fc-small sb-hint"));
+                return;
+            }
+            var names = new List<string> { Strings.Get("sandbox.branch.none") };
+            foreach (var b in branches) names.Add(Strings.Branch(b));
+            _cardBody.Add(Drop(Strings.Get("sandbox.branch"), names, def.BranchOf == null ? 0 : branches.IndexOf(first.Def) + 1, i =>
+            {
+                if (!e.SetBranch(index, i == 0 ? null : branches[i - 1])) Toast(Strings.Get("sandbox.refuse.Locked"), true);
+            }));
+        }
+
+        /// <summary>The boss section's header, folded until opened; true when open.</summary>
+        private bool BossHeader()
+        {
+            var head = Kit.Tappable("fc-row sb-fold", () =>
+            {
+                _bossOpen = !_bossOpen;
+                _cardFor = null;
+                FillCard();
+            });
+            head.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.boss")), "fc-caption fc-row-text sb-grow"));
+            var caret = Kit.Icon("caret", "sb-fold__caret" + (_bossOpen ? " sb-fold__caret--open" : ""));
+            head.Add(caret);
+            _cardBody.Add(head);
+            return _bossOpen;
+        }
+
+        private void RunningCard()
         {
             var vehicles = new List<Vehicle>(_c.SelectedVehicles());
-            if (vehicles.Count == 0) return;
+            if (vehicles.Count == 0)
+            {
+                Show(_card, false);
+                return;
+            }
             var first = vehicles[0];
-            _rightBody.Add(Kit.Text(Kit.Caps(Strings.Unit(first.Def.Id)), "fc-panel-title"));
-            _rightBody.Add(Kit.Text(SandboxText.Format("sandbox.selected", ("count", vehicles.Count)) + " · " + Strings.Get("sandbox.side." + first.Team) + " · " +
-                SandboxText.Format("sandbox.hp", ("percent", SandboxText.Number(first.Hp / Mathf.Max(1f, first.MaxHp) * 100f))), "fc-small"));
+            CardHead(first.Def.Id, first.Def, SandboxText.Format("sandbox.selected", ("count", vehicles.Count)) + " · " + Strings.Get("sandbox.side." + first.Team) + " · " +
+                SandboxText.Format("sandbox.hp", ("percent", SandboxText.Number(first.Hp / Mathf.Max(1f, first.MaxHp) * 100f))), false);
             var ids = _c.Selected.ToArray();
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.order.move"), () =>
-                {
-                    _c.Picking = SandboxController.Pick.OrderMove;
-                    ShowResult();
-                }),
-                Small(Strings.Get("sandbox.order.fire"), () =>
-                {
-                    _c.Picking = SandboxController.Pick.OrderTarget;
-                    ShowResult();
-                })));
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.order.hold"), () => _c.Queue(SandboxOp.For(SandboxOpKind.Hold, ids))),
-                Small(Strings.Get("sandbox.order.release"), () => _c.Queue(SandboxOp.For(SandboxOpKind.Release, ids)))));
-            _rightBody.Add(new KitToggle(Strings.Get("sandbox.order.holdFire"), first.HoldFire, on => _c.Queue(SandboxOp.For(SandboxOpKind.HoldFire, ids, on ? 1 : 0))));
-            _rightBody.Add(new KitToggle(Strings.Get("sandbox.immortal"), _c.Battle.IsImmortal(first.Id.Value), on => _c.Queue(SandboxOp.For(SandboxOpKind.Immortal, ids, on ? 1 : 0))));
-            if (first.Def.Boss) BossTools(first);
+            var orders = Kit.Box("fc-row sb-card__icons");
+            Icon(orders, "move", "sandbox.order.move", () =>
+            {
+                _c.Picking = SandboxController.Pick.OrderMove;
+                ShowStatus();
+            });
+            Icon(orders, "crosshair", "sandbox.order.fire", () =>
+            {
+                _c.Picking = SandboxController.Pick.OrderTarget;
+                ShowStatus();
+            });
+            Icon(orders, "anchor", "sandbox.order.hold", () => _c.Queue(SandboxOp.For(SandboxOpKind.Hold, ids)));
+            Icon(orders, "retreat", "sandbox.order.release", () => _c.Queue(SandboxOp.For(SandboxOpKind.Release, ids)));
+            _cardBody.Add(orders);
+            var toggles = Kit.Box("fc-row sb-card__icons");
+            Toggle(toggles, "stop", "sandbox.order.holdFire", first.HoldFire, on => _c.Queue(SandboxOp.For(SandboxOpKind.HoldFire, ids, on ? 1 : 0)));
+            Toggle(toggles, "shield", "sandbox.immortal", _c.Battle.IsImmortal(first.Id.Value), on => _c.Queue(SandboxOp.For(SandboxOpKind.Immortal, ids, on ? 1 : 0)));
+            _cardBody.Add(toggles);
+            if (first.Def.Boss && BossHeader()) BossTools(first);
         }
 
         /// <summary>D: the boss tools on a running boss.</summary>
@@ -549,102 +758,73 @@ namespace MachineBrigade.Game.Hud
         {
             var id = boss.Id.Value;
             var def = boss.Def;
-            _rightBody.Add(Caption("sandbox.boss"));
-            _rightBody.Add(Small(Strings.Get("guide.boss.fileButton"), () => BossFile.Show(_root, _c.World.Catalog, def)));
-            var phases = Math.Max(def.Phases.Count, def.Tiers?.Marks.Count ?? 0) + 1;
-            var row = Row();
-            for (var p = 1; p < Math.Min(3, phases); p++)
+            // Play-test 6 (DECISIONS 21B): the boss's file, the menu's boss page as a dialog.
+            var file = Kit.Box("fc-row sb-card__icons");
+            Icon(file, "info", "guide.boss.fileButton", () => BossFile.Show(_root, _c.World.Catalog, def));
+            _cardBody.Add(file);
+            var phases = Math.Min(3, Math.Max(def.Phases.Count, def.Tiers?.Marks.Count ?? 0) + 1);
+            var row = Kit.Box("fc-row sb-wrap");
+            for (var p = 1; p < phases; p++)
             {
                 var ph = p;
-                row.Add(Small(SandboxText.Format("sandbox.boss.phase", ("phase", p + 1)), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossPhase, id, ph))));
+                row.Add(new KitChip(SandboxText.Format("sandbox.boss.phase", ("phase", p + 1)), false, () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossPhase, id, ph))));
             }
-            _rightBody.Add(row);
+            _cardBody.Add(row);
+            var icons = Kit.Box("fc-row sb-card__icons");
             if (boss.BigAttack is { } big)
             {
-                _rightBody.Add(Small(Strings.Get("sandbox.boss.big"), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossBig, id))));
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.boss.bigOff"), big.Off, on => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossBigOff, id, on ? 1 : 0))));
+                Icon(icons, "airstrike", "sandbox.boss.big", () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossBig, id)));
+                Toggle(icons, "bolt", "sandbox.boss.bigOff", big.Off, on => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossBigOff, id, on ? 1 : 0)));
             }
-            for (var i = 0; i < boss.PartCount; i++)
-            {
-                var part = i;
-                var name = Strings.Get("part." + def.Parts[i].Kind);
-                _rightBody.Add(boss.IsPartBroken(i)
-                    ? Small(SandboxText.Format("sandbox.boss.restore", ("part", name)), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossRestore, id, part)))
-                    : Small(SandboxText.Format("sandbox.boss.break", ("part", name)), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossBreak, id, part))));
-            }
-            if (def.Tiers != null)
-                _rightBody.Add(Row(Small(Strings.Get("sandbox.boss.low"), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossTier, id, 1))),
-                    Small(Strings.Get("sandbox.boss.high"), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossTier, id, 2)))));
-            _rightBody.Add(Row(Small(Strings.Get("sandbox.boss.escorts") + " · " + Strings.Get("kit.on"), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossEscorts, id, 1))),
-                Small(Strings.Get("sandbox.boss.escorts") + " · " + Strings.Get("kit.off"), () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossEscorts, id, 0)))));
+            Toggle(icons, "people", "sandbox.boss.escorts", _c.World.EscortsAlive(boss.Id) > 0, on => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossEscorts, id, on ? 1 : 0)));
             if (def.MiniVariant != null || def.VariantOf != null)
-                _rightBody.Add(Small(Strings.Get("sandbox.boss.swap"), () =>
+                Icon(icons, "restart", "sandbox.boss.swap", () =>
                 {
                     _c.Queue(SandboxOp.Boss(SandboxOpKind.BossSwap, id));
                     _c.Selected.Clear();
-                }));
-            _rightBody.Add(Caption("sandbox.boss.difficulty"));
-            var diffs = Row();
-            foreach (var d in Difficulties)
+                });
+            _cardBody.Add(icons);
+            if (def.Tiers != null)
+                _cardBody.Add(Row(new KitChip(Strings.Get("sandbox.tier.low"), boss.TierFrom == AltitudeTier.Low, () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossTier, id, 1))),
+                    new KitChip(Strings.Get("sandbox.tier.high"), boss.TierFrom == AltitudeTier.High, () => _c.Queue(SandboxOp.Boss(SandboxOpKind.BossTier, id, 2)))));
+            for (var i = 0; i < boss.PartCount; i++)
             {
-                var key = d;
-                diffs.Add(Small(Strings.Get("sandbox.diff." + d), () => _c.Queue(new SandboxOp { Kind = SandboxOpKind.Difficulty, Text = key })));
+                var part = i;
+                _cardBody.Add(new KitToggle(SandboxText.Format("sandbox.boss.break", ("part", Strings.Get("part." + def.Parts[i].Kind))), boss.IsPartBroken(i),
+                    on => _c.Queue(SandboxOp.Boss(on ? SandboxOpKind.BossBreak : SandboxOpKind.BossRestore, id, part))));
             }
-            _rightBody.Add(diffs);
+            var diffNames = new List<string>();
+            foreach (var d in Difficulties) diffNames.Add(Strings.Get("sandbox.diff." + d));
+            _cardBody.Add(Drop(Strings.Get("sandbox.boss.difficulty"), diffNames, Math.Max(0, Array.IndexOf(Difficulties, _c.Battle.Scenario.Difficulty)),
+                i => _c.Queue(new SandboxOp { Kind = SandboxOpKind.Difficulty, Text = Difficulties[i] })));
         }
 
         internal static readonly string[] Difficulties = { "Easy", "Normal", "Hard", "Heroic", "Iron" };
 
-        /// <summary>C.4-C.5 while running with nothing selected: each side's CP, cooldowns, immortality and a support to call.</summary>
-        private void SideTools()
+        // ------------------------------------------------------------------ sheets
+
+        private void Open(string titleKey, Action<VisualElement> fill)
         {
-            for (var team = 0; team < 2; team++)
-            {
-                var t = team;
-                _rightBody.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.side." + team)), "fc-caption sb-caption sb-side--" + team));
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), _c.Battle.Unlimited(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideCp, t, on ? -1 : 20))));
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.cooldowns"), _c.Battle.CooldownsOn(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.Cooldowns, t, on ? 1 : 0))));
-                _rightBody.Add(new KitToggle(Strings.Get("sandbox.sideImmortal"), _c.Battle.SideImmortal(team), on => _c.Queue(SandboxOp.Side(SandboxOpKind.SideImmortal, t, on ? 1 : 0))));
-                if (_c.World.TryGetEconomy(team, out var economy) && economy.Supports.Count > 0)
-                {
-                    var row = Row();
-                    foreach (var s in economy.Supports)
-                    {
-                        var support = s;
-                        row.Add(Small(Strings.Support(s), () =>
-                        {
-                            _c.Strike = support;
-                            _c.StrikeTeam = t;
-                            _c.Picking = SandboxController.Pick.Strike;
-                            ShowResult();
-                        }));
-                    }
-                    _rightBody.Add(Caption("sandbox.call"));
-                    _rightBody.Add(row);
-                }
-            }
+            Show(_menu, false);
+            _drawerOpen = false;
+            _sheetTitle.text = Kit.Caps(Strings.Get(titleKey));
+            _sheetBody.Clear();
+            _sheetRefresh = null;
+            fill(_sheetBody);
+            Show(_sheet, true);
+            Refresh();
         }
 
-        // ------------------------------------------------------------------ pop-ups
-
-        private void Open(Action<VisualElement> fill)
+        private void CloseSheet()
         {
-            _popupBody.Clear();
-            _popupRefresh = null;
-            fill(_popupBody);
-            _popup.style.display = DisplayStyle.Flex;
-        }
-
-        private void Close()
-        {
-            _popup.style.display = DisplayStyle.None;
-            _popupRefresh = null;
+            Show(_sheet, false);
+            _sheetRefresh = null;
         }
 
         private void Reopen(Action<VisualElement> fill)
         {
-            _popupBody.Clear();
-            fill(_popupBody);
+            _sheetBody.Clear();
+            fill(_sheetBody);
         }
 
         private void Quit()
@@ -652,6 +832,30 @@ namespace MachineBrigade.Game.Hud
             SandboxSession.Scenario = _c.Editor.Scenario.Clone();
             MatchSettings.InMatch = false;
             Curtain.Close(Strings.Get("sandbox.title").ToUpperInvariant(), "", () => UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex));
+        }
+
+        /// <summary>The screenshots' and layout checks' states: a panel open, a unit armed (the selection is the caller's).</summary>
+        internal void Preview(string state)
+        {
+            switch (state)
+            {
+                case "sandbox-palette":
+                    _drawerOpen = true;
+                    var list = SandboxRules.Palette(_c.World.Catalog, _tab);
+                    if (list.Count > 1) _c.Placing = list[1].Id;
+                    _c.Formation = SandboxFormation.Line;
+                    FillGrid();
+                    break;
+                case "sandbox-sheet":
+                    Open("sandbox.settings", BattlePanel);
+                    break;
+                case "sandbox-run":
+                    _trayOpen = true;
+                    _bossOpen = true;
+                    FillTray();
+                    break;
+            }
+            Refresh();
         }
 
         public void Dispose()

@@ -265,11 +265,11 @@ namespace MachineBrigade.Game.Hud
 
         private static readonly Dictionary<string, List<Shape>> Parsed = new();
 
-        public static bool Exists(string name) => name != null && (Svg.ContainsKey(name) || CombatSvg.ContainsKey(name));
+        public static bool Exists(string name) => name != null && (Svg.ContainsKey(name) || CombatSvg.ContainsKey(name) || SandboxSvg.ContainsKey(name));
 
         /// <summary>The icon's SVG source (the path data the uniqueness test compares), or null.</summary>
         public static string Source(string name) =>
-            name == null ? null : Svg.TryGetValue(name, out var s) ? s : CombatSvg.TryGetValue(name, out var c) ? c : null;
+            name == null ? null : Svg.TryGetValue(name, out var s) ? s : CombatSvg.TryGetValue(name, out var c) ? c : SandboxSvg.TryGetValue(name, out var b) ? b : null;
 
         /// <summary>Every icon name, the kit's and the combat set's.</summary>
         public static IEnumerable<string> Names
@@ -278,6 +278,7 @@ namespace MachineBrigade.Game.Hud
             {
                 foreach (var k in Svg.Keys) yield return k;
                 foreach (var k in CombatSvg.Keys) yield return k;
+                foreach (var k in SandboxSvg.Keys) yield return k;
             }
         }
 

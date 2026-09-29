@@ -499,5 +499,45 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("1,234.5", SandboxText.Number(1234.5, 1));
             Strings.Vietnamese = was;
         }
+#if MB_UI_TEST_FRAMEWORK
+        /// <summary>
+        /// The lean screen (DECISIONS 21S) in both languages: every text and tooltip of every Sandbox screen (set-up, the
+        /// picker, a card, a sheet, a running boss with the overlays' tray) is in the screen's language; at rest only the
+        /// rail and the bar show, the picker and the tray open on demand, and the card shows only with a selection.
+        /// </summary>
+        [Test]
+        public void TheLeanScreenShowsOneLanguageAndOnlyWhatIsInUse()
+        {
+            var was = Strings.Vietnamese;
+            var bad = new List<string>();
+            DemoProfile.Use();
+            try
+            {
+                foreach (var vietnamese in new[] { true, false })
+                {
+                    Strings.Vietnamese = vietnamese;
+                    foreach (var screen in MachineBrigade.Editor.UiShots.SandboxScreenNames)
+                        bad.AddRange(L10nTests.MixedWords(MachineBrigade.Editor.UiShots.BuildSandbox(Catalog, screen, out _), (vietnamese ? "vi " : "en ") + screen));
+                }
+                Strings.Vietnamese = true;
+                bool Shown(UnityEngine.UIElements.VisualElement root, string cls) =>
+                    UnityEngine.UIElements.UQueryExtensions.Q(root, className: cls) is { } e && e.style.display != UnityEngine.UIElements.DisplayStyle.None;
+                var rest = MachineBrigade.Editor.UiShots.BuildSandbox(Catalog, "sandbox-setup", out _);
+                Assert.IsTrue(Shown(rest, "sb-rail") && Shown(rest, "sb-bar"), "the rail and the bar at rest");
+                Assert.IsFalse(Shown(rest, "sb-drawer") || Shown(rest, "sb-card") || Shown(rest, "sb-sheet") || Shown(rest, "sb-tray"), "nothing else at rest");
+                Assert.IsTrue(Shown(MachineBrigade.Editor.UiShots.BuildSandbox(Catalog, "sandbox-palette", out _), "sb-drawer"), "the picker opens beside the rail");
+                Assert.IsTrue(Shown(MachineBrigade.Editor.UiShots.BuildSandbox(Catalog, "sandbox-card", out _), "sb-card"), "a selection shows its card");
+                var run = MachineBrigade.Editor.UiShots.BuildSandbox(Catalog, "sandbox-run", out _);
+                Assert.IsTrue(Shown(run, "sb-tray") && Shown(run, "sb-card"), "the tray and the boss's card while running");
+                Assert.IsFalse(Shown(run, "sb-drawer"), "no picker while running");
+            }
+            finally
+            {
+                Strings.Vietnamese = was;
+                DemoProfile.Restore();
+            }
+            Assert.IsEmpty(bad, string.Join(Environment.NewLine, bad.Distinct().Take(60)));
+        }
+#endif
     }
 }

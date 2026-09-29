@@ -16,6 +16,12 @@ its commits.
   page links to each boss it fights, and the Sandbox shows the same file in a dialog.
 - The gunship realism test samples the orbit from its arrival (the AC-130 now kills its heavy tank in 12 s).
 - `MenuWalk`: a Play-mode walk through the real menu to a campaign battle.
+### Sandbox screen, lean (DECISIONS 21S)
+
+- The Sandbox keeps the battlefield: at rest only a slim icon rail under the minimap and one thin bar along the bottom (run, pause, one tick, speed, seed, reset, overlays). At 16:9 they cover about 6% of the screen, against three standing panels before.
+- The unit picker opens from the rail as an icon grid with a category, a search chip and filters; a selected unit's settings are a small card on the right; overlays are a tray of small toggles; settings, scenarios, duel, A/B, statistics and both sides open one sheet at a time.
+- The battle HUD in the Sandbox drops the wave counts, the commander's switches, select-all, box select and the hint.
+- Before and after shots in `Docs/art/sandbox/`.
 
 ### Play-test 6: UI, camera, audio
 

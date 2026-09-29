@@ -187,6 +187,91 @@ namespace MachineBrigade.Editor
             }
         }
 
+        /// <summary>
+        /// The Sandbox (prompt 21 G, the lean rebuild of DECISIONS 21S) over the battlefield's picture with the battle HUD
+        /// under it as the runner builds it: set-up with nothing open, the unit picker open with a unit armed, a unit's
+        /// card, the battle's settings, and a running battle with a boss selected and the overlays' tray open.
+        /// </summary>
+        public static readonly string[] SandboxScreenNames = { "sandbox-setup", "sandbox-palette", "sandbox-card", "sandbox-sheet", "sandbox-run" };
+
+        /// <summary>-mbShotsSet sandbox: the Sandbox's screens in Vietnamese at three shapes and in English at 16:9.</summary>
+        public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> SandboxScreens()
+        {
+            var catalog = GameContent.LoadCatalog();
+            Builder Sandbox(string screen, bool vi) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildSandbox(catalog, screen, out var set);
+                insets = set;
+                return host;
+            };
+            foreach (var screen in SandboxScreenNames)
+            {
+                yield return (screen + "-vi", Sandbox(screen, true), new[] { Shapes[0], Shapes[2], Shapes[3] }, 0);
+                yield return (screen + "-en", Sandbox(screen, false), new[] { Shapes[0] }, 0);
+            }
+        }
+
+        /// <summary>
+        /// A Sandbox screen on the flat test range: a sample scenario built as the runner builds it (the session, the battle,
+        /// the battle HUD in its Sandbox form), the screen in the host, in the state <paramref name="screen"/> names.
+        /// <paramref name="insets"/> puts the shape's safe area on the HUD and the Sandbox alike.
+        /// </summary>
+        public static VisualElement BuildSandbox(Catalog catalog, string screen, out Action<Vector4> insets)
+        {
+            var host = new VisualElement();
+            host.AddToClassList("hud");
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
+            host.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
+            var battle = new VisualElement();
+            battle.style.position = Position.Absolute;
+            battle.style.left = battle.style.top = battle.style.right = battle.style.bottom = 0;
+            if (MapArt.For(MatchSettings.CurrentMap.Id) is { } picture) battle.style.backgroundImage = Background.FromTexture2D(picture);
+            battle.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            host.Add(battle);
+            var run = screen == "sandbox-run";
+            var (keptScenario, keptRun) = (SandboxSession.Scenario, SandboxSession.RunOnLoad);
+            var scenario = MachineBrigade.Sim.Sandbox.SandboxSamples.Get(run ? "behemoth" : "towers");
+            SandboxSession.Scenario = scenario;
+            SandboxSession.RunOnLoad = run;
+            try
+            {
+                var world = new MachineBrigade.Sim.SimWorld(catalog, MachineBrigade.Sim.Sandbox.SandboxMaps.Flat(), scenario.Seed);
+                var session = (SandboxSession)ModeSession.Create(GameModeKind.Sandbox, false, world, scenario.Seed);
+                if (run)
+                    for (var i = 0; i < 240; i++)
+                    {
+                        session.Battle.Tick(world, 0.05f);
+                        world.Step(0.05f);
+                        world.ClearEvents();
+                    }
+                var hud = new BattleHud(session.Hud, new List<CardInfo>(), catalog, host);
+                session.UpdateHud(hud, world, new List<PointInfo>(), 60f);
+                var frame = new VisualElement { pickingMode = PickingMode.Ignore };
+                frame.style.position = Position.Absolute;
+                frame.style.left = frame.style.top = frame.style.right = frame.style.bottom = 0;
+                host.Add(frame);
+                var controller = new SandboxController(world, session, frame);
+                if (screen == "sandbox-card") controller.Selected.Add(scenario.Units.FindIndex(u => u.Team == 0));
+                if (run) controller.Selected.Add(session.Battle.Spawned[scenario.Units.FindIndex(u => u.Def == "behemoth")]);
+                controller.Screen.Preview(screen);
+                var safe = hud.SafeArea;
+                insets = v =>
+                {
+                    KitSafeArea.Apply(safe, v);
+                    KitSafeArea.Apply(frame, v);
+                };
+            }
+            finally
+            {
+                SandboxSession.Scenario = keptScenario;
+                SandboxSession.RunOnLoad = keptRun;
+            }
+            return host;
+        }
+
         /// <summary>The main screens a language check reads (prompt 21 L).</summary>
         public static readonly string[] LanguageMenuScreens =
         {
@@ -480,6 +565,7 @@ namespace MachineBrigade.Editor
             if (set is "all" or "menu") list.AddRange(MenuScreens());
             if (set is "all" or "battle") list.AddRange(BattleScreens());
             if (set is "l10n") list.AddRange(LanguageScreens());
+            if (set is "sandbox") list.AddRange(SandboxScreens());
             var only = Argument("-mbShotsOnly");
             // One name part, or several separated by commas.
             if (only != null) list = list.FindAll(s => only.Split(',').Any(o => s.file.Contains(o)));

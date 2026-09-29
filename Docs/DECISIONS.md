@@ -8539,3 +8539,88 @@ old, editor and demo profiles, with and without Back.
 Files: `MenuScreen.cs` (`Back`, the debug screens), `StoryPanels.cs`, `MenuScreen.Detail.cs` (`BossStats`, the tabs),
 `MenuScreen.BossParts.cs`, `MenuScreen.Campaign.cs` (`MissionBosses`), `BossFile.cs`, `SandboxScreen.cs`,
 `BossText.cs`, `Editor/MenuWalk.cs`, `Tests/EditMode/CampaignStartTests.cs`, `Tests/EditMode/AirRealismTests.cs`.
+
+
+## 21S. The Sandbox's screen made lean (2026-09-30)
+
+The owner: the Sandbox's screen "is too much and takes space everywhere; optimise it" (requests, 29/09 23:50). Before,
+three full panels stood on the battlefield at once (the picker 300 px down the left, the selection 330 px down the
+right, a full-width bottom bar), over a battle HUD that still showed waves, the commander's switches, select-all and
+box select. Now the battlefield keeps the screen; a panel shows only while it is used.
+
+### Layout (phone first: the 1280 x 720 reference panel)
+
+- **Rail** (left edge, under the compact minimap: 12 + 132 + 8 px): small icon faces in full 44 pt targets, with no
+  panel behind them, so taps between them reach the battlefield. Setting up: the unit picker, the side new units go to
+  (a blue or red flag), undo, redo, more. Running: both sides' switches (CP, cooldowns, immortal, a support to call),
+  more. "More" is a short list: battle settings, scenarios, duel, A/B, statistics, leave.
+- **Picker** (beside the rail, opens from it): a category dropdown (the seven tabs), a search chip that opens the
+  name field, a filter chip that opens branch, armour and weapon, then an icon grid (each unit's card icon, its short
+  name, its price; an elite's mark; bosses a skull, mini bosses a crown, ships an anchor). Its foot: the formation, how
+  many at once, free rotation, and what a tap will place.
+- **Card** (right, under pause), only with a selection: icon, name, delete and close; the count, side and heading;
+  turn left and right, move, copy; side, elite, immortal as icon toggles; rank, health and ammunition steppers;
+  equipment, a tower's rank-7 branch and a boss's starting tier as dropdowns; the boss section folded until opened.
+  Running: health, orders as icons (go to, fire at, hold, back to the AI, hold fire, immortal) and the boss tools
+  folded under their header.
+- **Bar** (bottom, one row of 81 px): Run/Edit (the one main action), pause or resume, one tick, speed as minus, the
+  value, plus (x0.25 to x4), the seed chip (tap: its field and why it matters), the clock, reset, the overlays' tray.
+  Setting up, only Run, seed, reset and the tray show.
+- **Tray** (over the bar): the overlays as small icon chips with short names (range, hits, DPS, ammo, zones; internal:
+  hit boxes, routes, stuck, AI buying with its top scores).
+- **Sheets** (beside the rail, one at a time): the battle's settings, scenarios, duel, A/B, statistics, both sides.
+- Wide screens (panel wider than 1500 px: 20:9 phones, tablets in the menus' scale): a wider picker (580), card (420)
+  and sheets (660). The frame keeps to the safe area on its own document (`KitSafeArea.Track`).
+- **The battle HUD's Sandbox form** (`HudSpec.Sandbox`): the minimap with zoom, both sides' counts and pause stay; the
+  wave and next-wave counts, the commander's switches, select-all, box select and the standing hint are left out.
+
+### Style
+
+The compact HUD's (prompt 11): `--sb-face` 44 px faces on the field panel colour, inside `--fc-touch` targets; chips
+at the small type size; dropdowns without their own frame; on-state as the text colour with ink icons. Tokens only
+(`Resources/UI/Sandbox.uss`). New line icons in the kit's Lucide style (`Icons.Sandbox.cs`: grid, search, filter,
+undo, redo, more, one tick, turn left and right, copy, delete, layers, chart, A/B, free rotation).
+
+### Strings (prompt 21's rules)
+
+New keys in `SandboxText` in both languages with named placeholders: the rail, bar and card words (more, close, both
+sides, "New units go to {side}", switch side, category, filters, "Tap the map to place: {unit}", fewer/more, lower/
+higher, slower/faster, "×{speed}", "Seed {seed}" / "Mã trận {seed}" by the glossary, starting phase) and the tray's
+short names. Every icon's words are its tooltip and screen-reader label.
+
+### For the screenshots and checks
+
+`SandboxController` has a preview constructor (no battlefield drawn), and `SandboxScreen` builds into a host panel;
+`UiShots.BuildSandbox` lays a sample scenario out as the runner does (session, battle, the HUD's Sandbox form) in the
+states `sandbox-setup`, `-palette`, `-card`, `-sheet`, `-run` (`-mbShotsSet sandbox`). The layer switches moved from
+the overlays to the controller, so the tray works without them.
+
+### Tests
+
+- `UiLayoutTests.TheSandboxIsLeanAndPassesEveryCheck` (new): the five screens pass the kit's checks (no cut text, 44 pt
+  targets, no text under the secondary size, one main action, nothing off screen or clipped) at the four shapes in
+  Vietnamese, in English and Large text at 16:9; at rest the Sandbox covers 5.6 % of a 16:9 screen (4.2-4.6 % on the
+  others), with a unit's card 27.3 % (20.5-26.2 %), under the bounds of 12 % and 30 % (prompt 11's compact HUD's).
+- `SandboxTests.TheLeanScreenShowsOneLanguageAndOnlyWhatIsInUse` (new): every text and tooltip of the five screens in
+  the screen's language (the L10n scan's rule), and only the rail and the bar at rest.
+- One run of the three filters (UiLayoutTests, L10nTests and L10nSwitchTests, SandboxTests): 108 of 109. The new
+  layout check found icon targets giving way beside long English labels and a squashed foot label in Large text
+  (targets and panel rows no longer shrink); the two new checks then passed on a second, targeted run.
+
+### Screenshots (Docs/art/sandbox/before, /after)
+
+`-mbShotsSet sandbox`: the five states in Vietnamese at 16:9, 20:9 (punch-hole) and 4:3, and in English at 16:9. The
+emulator was running, and CLAUDE.md's rule (no batch run on the GPU the emulator's OpenGL uses) stands, so the shots
+were rendered on Windows' software adapter: `-force-d3d11 -force-device-index 1` picks the Microsoft Basic Render
+Driver (DXGI lists the RTX 5070 Ti as 0 and WARP as 1; the log confirms "Renderer: Microsoft Basic Render Driver").
+Slower, but it never touches the GPU; worth keeping for UI shots while the emulator runs.
+
+### For the testing phase
+
+Tapping through every control on a phone and a tablet (the drag that turns a unit, the tray and the seed field over
+the bar, the picker over the minimap's corner), Large text in play, and the colour-blind side colours.
+
+### Shared edits (merge by hand if they conflict)
+
+`BattleHud` and `HudSpec` (`Sandbox`), `Icons` (the Sandbox set's lookup), `UiShots` (`BuildSandbox`, the sandbox
+set), `UiLayoutTests`, `SandboxTests`. New: `Game/Hud/Icons.Sandbox.cs`, `Docs/art/sandbox`.
