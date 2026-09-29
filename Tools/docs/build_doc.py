@@ -424,6 +424,7 @@ def build(game, imgdir):
     out.append(programme.bases(game, h))
     out.append(programme.siege(game, h))
     out.append(programme.late_programme(game, h, imgdir))
+    out.append(programme.mission_events(game, h))
 
     # ------------------------------------------------------------------ vehicles
     groups = {}
