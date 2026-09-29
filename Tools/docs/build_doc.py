@@ -45,6 +45,8 @@ COLUMN_VI = {'Armour0': 'giáp 0', 'Armour1': 'giáp 1', 'Armour2': 'giáp 2', '
 THREAT_VI = {'SmallArms': 'súng bộ binh', 'HeavyMachineGuns': 'súng máy hạng nặng', 'Fire': 'lửa', 'Fragmentation': 'mảnh', 'Autocannons': 'pháo tự động',
              'HighExplosive': 'nổ mạnh', 'Energy': 'năng lượng', 'TopAttack': 'đánh nóc', 'ShapedCharges': 'nổ lõm', 'TankGuns': 'pháo xe tăng'}
 GOOD_AT, POOR_AT = 0.6, 0.12   # Matchup.GoodAt / PoorAt
+# What each unit was modelled on (real systems, films or games), keyed by unit id; see unit_refs.json's "_about".
+UNIT_REFS = json.loads((Path(__file__).resolve().parent / 'unit_refs.json').read_text(encoding='utf-8'))
 
 
 def level(n):
@@ -238,6 +240,16 @@ def weapon_cycle(w):
     return f"hồi {w['cooldown']:g} s"
 
 
+def refs_text(v):
+    """'<real> · <media> — note' for a unit, found by its id, else by its model id; '' when neither has an entry."""
+    r = UNIT_REFS.get(v['id']) or UNIT_REFS.get(v.get('model', ''))
+    if not r:
+        return ''
+    parts = [', '.join(r.get('real', [])), ', '.join(r.get('media', []))]
+    text = ' · '.join(p for p in parts if p)
+    return text + (f" — {r['note']}" if r.get('note') else '')
+
+
 def vehicle_card(v, imgdir):
     weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), str(w.get('pen', 0)), form_cell(w), num(w['damage']), weapon_cycle(w),
                 f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
@@ -255,13 +267,16 @@ def vehicle_card(v, imgdir):
              f"<div>Tầm nhìn <b>{v['vision']:g} m</b></div><div>DPS vs nhẹ <b>{d['Light']:.0f}</b></div>"
              f"<div>DPS vs nặng <b>{d['Heavy']:.0f}</b></div><div>DPS vs máy bay <b>{d['Air']:.0f}</b></div></div>")
     skills = ''.join(f"<span class='chip'>{esc(s)}</span>" for s in v['skills'])
+    refs = refs_text(v)
+    ref_html = f"<div class='note'><b>Tham khảo:</b> {esc(refs)}</div>" if refs else ''
     # The game's own card render (Resources/UI/Cards, 512 px, transparent), else a hero render.
     card = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'UI' / 'Cards' / (v['model'] + '.png')
     thumb = img(card, 'thumb', v['name']) if card.exists() else img(Path(imgdir) / 'veh' / (v['model'] + '.png'), 'thumb', v['name'])
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
-            f"<div class='note'><b>Giáp:</b> {esc(armour_text(v))}</div>{matchup}"
+            f"<div class='note'><b>Giáp:</b> {esc(armour_text(v))}</div>"
+            f"{ref_html}{matchup}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
             + (table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
             + (effect_table(main) if main else '')
@@ -374,7 +389,11 @@ def build(game, imgdir):
         key = 'Không quân' if v['flying'] else CLASS_VI.get(v['class'], v['class'])
         groups.setdefault(key, []).append(v)
     out.append("<div class='section'><h2>8. Phương tiện</h2><p>Chỉ số gốc (hạng 1, chưa trang bị). DPS = sát thương mỗi loạt / chu kỳ bắn, cộng mọi vũ khí, "
-               "nhân hệ số giáp (phần 10). Hạng thẻ cộng +5% máu và sát thương mỗi hạng (tối đa hạng 10: +45%).</p>")
+               "nhân hệ số giáp (phần 10). Hạng thẻ cộng +5% máu và sát thương mỗi hạng (tối đa hạng 10: +45%).</p>"
+               "<p><b>Nguồn tham khảo.</b> Dòng \"Tham khảo\" trên mỗi thẻ (xe, xe tinh nhuệ, tháp, nhánh hạng 7, boss) ghi hệ thống ngoài đời thật "
+               "và phim hoặc game mà model được dựng theo, lấy từ Tools/docs/unit_refs.json. Tệp này tổng hợp từ các tham chiếu chủ dự án yêu cầu "
+               "trong DECISIONS.md (19R, 19U, 20V, 20Y, 21H), chú thích của các script dựng model Blender, tên thật của vũ khí trong balance.json "
+               "và kiến thức chung về khí tài; mục ghi \"ước đoán\" là suy đoán, chưa có nguồn ghi rõ.</p>")
     out.append(f"{img(imgdir / 'shots' / 'hd.png', 'shot')}<div class='caption'>Model thường và model chi tiết (đồ họa Cao) của 12 xe phổ biến nhất.</div>")
     for key, vs in groups.items():
         out.append(f"<h3>{esc(key)} ({len(vs)})</h3>")
@@ -440,8 +459,8 @@ def build(game, imgdir):
     def simple_rows(vs):
         return [[f"<b>{esc(v['name'])}</b>", esc(armour_text(v)), num(v['hp']), f"{v['speed']:g}",
                  esc(', '.join(w['id'] for w in v['weapons'])), f"{v['dpsVs']['Light']:.0f} / {v['dpsVs']['Heavy']:.0f} / {v['dpsVs']['Air']:.0f}",
-                 esc(', '.join(v['skills']))] for v in vs]
-    head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng']
+                 esc(', '.join(v['skills'])), esc(refs_text(v))] for v in vs]
+    head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng', 'Tham khảo']
 
     def tower_groups(towers):
         # A tower's branch variants (aa_turret.flak) follow their tower, named after it and the branch.
