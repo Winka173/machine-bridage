@@ -85,6 +85,7 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.settings"] = ("Battle", "Trận đấu"),
             ["sandbox.map"] = ("Map", "Bản đồ"),
             ["sandbox.map.flat"] = ("Flat test range (metre grid)", "Bãi thử phẳng (lưới mét)"),
+            ["sandbox.map.coast"] = ("Test range with sea (ships and naval bosses)", "Bãi thử có biển (tàu và trùm hải quân)"),
             ["sandbox.map.long"] = ("{map} · long", "{map} · bản dài"),
             ["sandbox.weather"] = ("Weather", "Thời tiết"),
             ["sandbox.night"] = ("Night", "Ban đêm"),

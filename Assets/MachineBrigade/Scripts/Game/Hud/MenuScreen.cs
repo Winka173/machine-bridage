@@ -655,11 +655,19 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "army-base-picked":
                 case "army-base-ranges":
-                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown.
+                case "army-base-ranges-picked":
+                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown
+                    // (play-test 8 A: both, the picked tower's range pulsing among the others).
                     _armyView = ArmyView.Base;
                     ShowTab(Tab.Army);
-                    if (screen == "army-base-ranges") _base.ToggleRanges();
-                    else _base.DebugPickFilled();
+                    if (screen != "army-base-picked") _base.ToggleRanges();
+                    if (screen != "army-base-ranges") _base.DebugPickFilled();
+                    break;
+                case "detail-armour-leviathan":
+                    // Play-test 8 A: a big boss's page (the Leviathan framed by its bounds, its armour on a ship's outline).
+                    ShowTab(Tab.Army);
+                    DebugScrollDetail(true);
+                    OpenDetail("leviathan");
                     break;
                 case "detail":
                 case "detail-action":

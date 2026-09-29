@@ -42,6 +42,13 @@ namespace MachineBrigade.Game.Hud
 
         public Tap(Action action) => _action = action;
 
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): a finger (or the mouse) is down on something that takes a tap. A screen that
+        /// rebuilds its buttons on a timer waits while this is true: a button replaced under the finger loses its tap
+        /// (the Sandbox's card, rebuilt every half second while the battle ran, swallowed about one tap in three).
+        /// </summary>
+        public static bool Pressing => _pending != null && _pending.target?.panel != null;
+
         /// <param name="hold">Called with true when a press is held, and with false when it ends; a held press fires no tap.</param>
         public Tap(Action action, Action<bool> hold)
         {

@@ -44,6 +44,9 @@ namespace MachineBrigade.Game.Hud
         private Action _sheetRefresh;
         private string _cardFor;
 
+        /// <summary>Play-test 8 A: the card wanted rebuilding while a finger was down (it is rebuilt on the release).</summary>
+        private bool _cardLater;
+
         public SandboxScreen(SandboxController controller, VisualElement host = null)
         {
             _c = controller;
@@ -505,7 +508,16 @@ namespace MachineBrigade.Game.Hud
             if (!_c.Editing)
                 _clock.text = SandboxText.Format("sandbox.clock", ("seconds", SandboxText.Number(w.Time, 1)), ("tick", w.Tick.ToString()));
             _refreshIn -= Time.unscaledDeltaTime;
-            if (!_c.Editing && _refreshIn <= 0f)
+            // Play-test 8 A: a card rebuild put off while a finger was down on it happens once the finger is up.
+            if (_cardLater && !Tap.Pressing)
+            {
+                _cardLater = false;
+                _cardFor = null;
+                FillCard();
+            }
+            // The live figures, every half second while the battle runs: never while a finger is on a button (a button
+            // replaced mid-press loses its tap; they wait for the release).
+            if (!_c.Editing && _refreshIn <= 0f && !Tap.Pressing)
             {
                 _refreshIn = 0.5f;
                 _cardFor = null;
@@ -587,6 +599,12 @@ namespace MachineBrigade.Game.Hud
         {
             var key = string.Join(",", _c.Selected) + (_c.Editing ? "e" : "r") + _bossOpen;
             if (key == _cardFor) return;
+            // Play-test 8 A: never rebuilt under a finger (see Tap.Pressing): later, on the release.
+            if (Tap.Pressing)
+            {
+                _cardLater = true;
+                return;
+            }
             _cardFor = key;
             _cardBody.Clear();
             Show(_card, _c.Selected.Count > 0);

@@ -262,7 +262,10 @@ namespace MachineBrigade.Game.Effects
                 var (at, from, to, model) = _bombs[i];
                 if (now < at) continue;
                 _bombs.RemoveAt(i);
-                if (_hasBomb) _projectiles.Launch(_models.Merged(_models.Has(model) ? model : "bomb"), from, to, BombFall, 0f, 0f, now);
+                // Play-test 8 A (DECISIONS 22Q): each falls on the curve of a bomb keeping the aircraft's speed, not a straight line.
+                if (_hasBomb)
+                    _projectiles.Launch(_models.Merged(_models.Has(model) ? model : "bomb"), from, to, BombFall, 0f, 0f, now,
+                        control: WeaponEffects.BombPath(from, to, false));
                 // The bombs leave the wings as they fall.
                 foreach (var jet in _jets)
                     if (jet.Active && jet.Bombs != null) jet.Bombs.gameObject.SetActive(false);

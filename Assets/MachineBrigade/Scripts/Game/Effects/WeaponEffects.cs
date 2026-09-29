@@ -251,8 +251,11 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 case ProjectileKind.Bomb:
-                    // Released from the wing: it keeps some forward speed and falls onto the target.
-                    if (_hasBomb) _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale);
+                    // Released from the wing: play-test 8 A (DECISIONS 22Q), it keeps the aircraft's forward speed and falls,
+                    // level at first and ever steeper (a steered bomb glides down onto its target on a flatter curve).
+                    if (_hasBomb)
+                        _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale,
+                            control: BombPath(from, to, weapon != null && weapon.GuidedBomb));
                     else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
 
@@ -423,6 +426,17 @@ namespace MachineBrigade.Game.Effects
         {
             if (float.IsNaN(pitch)) return distance * fallback;
             return distance * Mathf.Tan(Mathf.Clamp(pitch, 12f, 80f) * Mathf.Deg2Rad) * 0.25f;
+        }
+
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): the middle point of a falling bomb's curve. Level with the release point halfway
+        /// along the ground, the quadratic curve is the fall itself: the forward speed kept all the way down, no speed
+        /// downwards at first, ever steeper as it drops. A steered bomb's point is set lower, a longer glide onto its target.
+        /// </summary>
+        internal static Vector3 BombPath(Vector3 from, Vector3 to, bool steered)
+        {
+            var level = new Vector3((from.x + to.x) * 0.5f, from.y, (from.z + to.z) * 0.5f);
+            return steered ? Vector3.Lerp(level, (from + to) * 0.5f, 0.35f) : level;
         }
 
         /// <summary>

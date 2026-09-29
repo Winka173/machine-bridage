@@ -7,6 +7,22 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 8 A (DECISIONS 22Q)
+
+- Units and towers look for a better target every half second: an anti-air gun firing at a tank turns on a helicopter
+  that comes in. Each weapon goes for what it hurts most and what threatens it, without flicking between two equal
+  targets. The AI's own attack orders give way to an aircraft overhead; the player's orders never do.
+- The SAM launcher fires again in its In action clip.
+- The siege tank's sieged mortar blast is 20 % smaller. The long-range SAM's blast is twice as wide and drawn twice as big.
+- The fire support's gunship flies off the map when its time is up instead of vanishing.
+- The vehicle details page frames every model by its size, so the Leviathan fits.
+- Armour by face draws each unit's own outline: ships, aircraft, helicopters, turretless vehicles, structures and tanks.
+- Sandbox: a test range with sea for ships and naval bosses. Buttons on the unit card no longer miss taps.
+- Base screen: each tower's range is a coloured border over a clear fill, and the picked tower's range pulses.
+- Bombs fall: a bomber drops its stick bomb after bomb along its path and lets go so the stick straddles the target.
+  Unguided bombs land where their drop and fall put them, not on a target that drives away. Guided bombs glide onto
+  their target.
+
 ### Play-test 7 (DECISIONS 22P)
 
 - The AC-130 is an aircraft card again, "AC-130 Gunship" ("Pháo hạm AC-130"), listed with the aircraft (premium,

@@ -199,6 +199,15 @@ namespace MachineBrigade.Sim.Content
 
         private WeaponForm? _form;
 
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): a bomb steered onto its target (data "guided": the SDB, the JDAM; or the GuidedBomb
+        /// form): it glides down onto the target. Every other bomb falls where its drop point and its fall put it.
+        /// </summary>
+        public bool GuidedBomb => Projectile == ProjectileKind.Bomb && (Steered || _form == WeaponForm.GuidedBomb);
+
+        /// <summary>Data "guided" (see <see cref="GuidedBomb"/>).</summary>
+        internal bool Steered { get; set; }
+
         /// <summary>Its rounds burst over an area (a splash radius).</summary>
         public bool Splashes => SplashRadius > 0f || Cluster != null;
 
@@ -288,6 +297,8 @@ namespace MachineBrigade.Sim.Content
                 HeRound = HeRound,
                 // Tower branches: the air-burst round.
                 AirRound = AirRound,
+                // Play-test 8 A: a steered bomb stays steered.
+                Steered = Steered,
             };
             return copy;
         }

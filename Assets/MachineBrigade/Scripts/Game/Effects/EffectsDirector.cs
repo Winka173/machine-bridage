@@ -63,6 +63,9 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>Prompt 16: ships going down (they list, break and sink instead of leaving a wreck).</summary>
         private readonly ShipSinking _sinking = new();
+
+        /// <summary>Play-test 8 A: loaned aircraft flying off the map after their time (see <see cref="VehicleView.Depart"/>).</summary>
+        private readonly List<VehicleView> _departing = new();
         private readonly Emitters _emitters;
         private readonly TrackMarks _tracks;
         private readonly NightLights _night;
@@ -199,8 +202,12 @@ namespace MachineBrigade.Game.Effects
                             var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f
                                 : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f : 15f;
                             var burst = new Vector3(e.Position.X, height, e.Position.Y);
-                            if (e.Tier >= ExplosionTier.Medium) Airburst(burst, e.Tier, now);
-                            else Explode(e.Tier, burst, now);
+                            // Play-test 8 A (DECISIONS 22Q): an anti-aircraft missile's burst is drawn at its round's impact
+                            // scale (the S-400's 48N6 twice the size, as big as the missile); other rounds as before.
+                            var flak = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var aaRound) && aaRound.Targets == TargetLayers.Air
+                                ? Mathf.Max(1f, aaRound.ImpactScale) : 1f;
+                            if (e.Tier >= ExplosionTier.Medium) Airburst(burst, e.Tier, now, flak);
+                            else Explode(e.Tier, burst, now, flak);
                             _emitters.Flak(burst);
                             break;
                         }
@@ -435,9 +442,16 @@ namespace MachineBrigade.Game.Effects
                         break;
 
                     case SimEventKind.VehicleRetired:
-                        // A loaned escort flies home: it simply leaves, no wreck.
+                        // A loaned escort flies home: it simply leaves, no wreck. Play-test 8 A (DECISIONS 22Q): an aircraft
+                        // (the fire support's gunship) flies on off the map instead of vanishing where it was.
                         var leaving = views.Detach(e.Entity);
-                        if (leaving != null) Object.Destroy(leaving.Root.gameObject);
+                        if (leaving == null) break;
+                        if (leaving.Flying && leaving.Root != null)
+                        {
+                            leaving.Depart(now);
+                            _departing.Add(leaving);
+                        }
+                        else Object.Destroy(leaving.Root.gameObject);
                         break;
 
                     case SimEventKind.VehicleDestroyed:
@@ -594,6 +608,12 @@ namespace MachineBrigade.Game.Effects
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
             _sinking.Tick(now);
+            for (var i = _departing.Count - 1; i >= 0; i--)
+            {
+                if (_departing[i].Departing(now, Time.deltaTime)) continue;
+                if (_departing[i].Root != null) Object.Destroy(_departing[i].Root.gameObject);
+                _departing.RemoveAt(i);
+            }
             _fires.Tick(now, Time.deltaTime);
             // Secondary explosions in burning hulks: small pops around the big blast, never another big one.
             while (_wrecks.TryCookOff(now, out var cookOff, out var pop))
@@ -640,6 +660,9 @@ namespace MachineBrigade.Game.Effects
         {
             Shader.SetGlobalVector(ClearId, Vector4.zero);
             _wrecks.Clear();
+            foreach (var leaving in _departing)
+                if (leaving.Root != null) Object.Destroy(leaving.Root.gameObject);
+            _departing.Clear();
             if (_root != null) Object.Destroy(_root.gameObject);
         }
 
@@ -821,10 +844,10 @@ namespace MachineBrigade.Game.Effects
             return chunk;
         }
 
-        private void Airburst(Vector3 position, ExplosionTier tier, float now)
+        private void Airburst(Vector3 position, ExplosionTier tier, float now, float size = 1f)
         {
-            if (!_cull.Visible(position, 0.3f)) return;
-            var scale = tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f;
+            if (!_cull.Visible(position, 0.3f * size)) return;
+            var scale = (tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f) * size;
             _airburst.Play(position, now, scale, BlastSizes.Bigger);
             Shake(position, tier >= ExplosionTier.Large ? 0.3f : 0.1f);
         }

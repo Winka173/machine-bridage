@@ -149,7 +149,7 @@ namespace MachineBrigade.Sim.Content
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
-                    Laid = w.Bool("laid", false),
+                    Laid = w.Bool("laid", false), Steered = w.Bool("guided", false),
                 });
                 if (w.Has("pen"))
                 {

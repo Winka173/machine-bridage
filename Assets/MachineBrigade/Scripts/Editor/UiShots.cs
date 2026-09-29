@@ -143,6 +143,9 @@ namespace MachineBrigade.Editor
             yield return ("screen-legend-vi-full", Menu("legend", true, false), new[] { Shapes[0] }, 1);
             // Play-test 7: the deck screen's whole page with the aircraft shown, the AC-130 card bought and in the deck.
             yield return ("screen-army-deck-ac130-en-full", Gunship(), new[] { Shapes[0] }, 1);
+            // Play-test 8 A: the Leviathan's page (framed by its bounds, its armour on a ship's outline) and the base's ranges as borders.
+            yield return ("screen-detail-armour-leviathan-en", Menu("detail-armour-leviathan", false, false), new[] { Shapes[0] }, 0);
+            yield return ("screen-army-base-ranges-picked-en", Menu("army-base-ranges-picked", false, false), new[] { Shapes[0] }, 0);
             foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "army-outpost", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);

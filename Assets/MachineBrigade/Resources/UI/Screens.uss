@@ -382,6 +382,7 @@
 .fc-base-map {
     --base-arrow: var(--fc-danger); --base-range-ground: var(--fc-range-ground); --base-range-air: var(--fc-range-air);
     --base-ring: var(--fc-text); --base-drop: var(--fc-coin);
+    --base-range-ground-line: var(--fc-accent); --base-range-air-line: var(--fc-ally);
     flex-grow: 1; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
 .fc-base-map__world { -unity-background-scale-mode: stretch-to-fill; }
 .fc-base-map__scrim { background-color: var(--fc-bg); }

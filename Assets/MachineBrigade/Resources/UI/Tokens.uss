@@ -49,8 +49,8 @@
     --fc-enemy: #e0513a;                      /* their side */
     --fc-enemy-cb: #f29a3a;                   /* their side for colour-blind players (Settings: orange against our blue) */
     --fc-flash: #ffe6b8;                      /* the flash of a huge blast over the battlefield */
-    --fc-range-ground: rgba(226, 132, 48, 0.30);  /* the Base screen's ground cover: a darker orange */
-    --fc-range-air: rgba(170, 214, 255, 0.36);    /* its air cover: a light blue, lighter as well as bluer */
+    --fc-range-ground: rgba(226, 132, 48, 0.06);  /* the Base screen's ground cover: a nearly clear orange tint (play-test 8 A: ranges are borders) */
+    --fc-range-air: rgba(170, 214, 255, 0.07);    /* its air cover: a nearly clear light blue tint */
 
     /* ---- A. colour: vehicle branches (always shown with the class icon) */
     --fc-branch-armor: #8fb3d6;
