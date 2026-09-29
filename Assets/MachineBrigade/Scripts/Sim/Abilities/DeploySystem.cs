@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.Abilities
                         else if (now >= v.DeployUntil) v.Deploy = DeployState.Deployed;
                         break;
                     case DeployState.Deployed:
-                        if (Leaving(v)) Begin(v, DeployState.Packing, dep.Seconds, now);
+                        if (Leaving(v) || (dep.Siege && Crowded(v, now))) Begin(v, DeployState.Packing, dep.Seconds, now);
                         break;
                     case DeployState.Packing:
                         if (now >= v.DeployUntil) v.Deploy = DeployState.Mobile;
@@ -62,6 +62,33 @@ namespace MachineBrigade.Sim.Abilities
             v.DeployUntil = now + seconds;
         }
 
+        /// <summary>Seconds a sieged tank waits with enemies inside its mortar's minimum reach and nothing further before it packs up.</summary>
+        internal const double CrowdedBefore = 1.0;
+
+        /// <summary>A ground enemy inside the main weapon's minimum reach (and a little).</summary>
+        private bool Inside(Vehicle v) =>
+            _world.FindNearestEnemy(v, v.Def.Weapon.MinRange + 2f, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null;
+
+        /// <summary>
+        /// Sieged, with enemies inside the mortar's minimum reach and nothing between that and its full reach to shell, for
+        /// <see cref="CrowdedBefore"/>: it packs up so its tank gun can fight (StarCraft 2's unsiege against a rush).
+        /// </summary>
+        private bool Crowded(Vehicle v, double now)
+        {
+            var weapon = v.Def.Weapon;
+            var crowded = Inside(v) &&
+                          _world.FindNearestEnemy(v, weapon.Range * v.RangeFactor, requireVisible: true, minRange: weapon.MinRange, layers: TargetLayers.Ground) == null;
+            if (!crowded)
+            {
+                v.SiegeCrowdedSince = double.NaN;
+                return false;
+            }
+            if (double.IsNaN(v.SiegeCrowdedSince)) v.SiegeCrowdedSince = now;
+            if (now - v.SiegeCrowdedSince < CrowdedBefore) return false;
+            v.SiegeCrowdedSince = double.NaN;
+            return true;
+        }
+
         /// <summary>It has a route worth leaving for; a short one is dropped (it stays dug in).</summary>
         private static bool Leaving(Vehicle v)
         {
@@ -75,7 +102,15 @@ namespace MachineBrigade.Sim.Abilities
         {
             if (stillFor < StandBefore || v.Stunned) return false;
             var reach = v.Def.Weapon.Range * dep.Range + 4f;
-            if (_world.FindNearestEnemy(v, reach, requireVisible: true, layers: TargetLayers.Ground) != null) return true;
+            if (dep.Siege)
+            {
+                // Play-test 5 (DECISIONS 20W): a siege tank sieges for what its mortar can reach, never with an enemy
+                // already inside the mortar's minimum reach (its tank gun fights that one).
+                if (Inside(v)) return false;
+                if (_world.FindNearestEnemy(v, reach, requireVisible: true, minRange: v.Def.Weapon.MinRange, layers: TargetLayers.Ground) != null)
+                    return true;
+            }
+            else if (_world.FindNearestEnemy(v, reach, requireVisible: true, layers: TargetLayers.Ground) != null) return true;
             if (v.Order.Kind != OrderKind.Idle || stillFor < GuardBefore) return false;
             // Standing guard, but not at its own drop zone waiting to be sent somewhere.
             return !_world.TryGetRally(v.Team, out var rally) || Vector2.Distance(rally, v.Position) > SimWorld.HomeRadius;

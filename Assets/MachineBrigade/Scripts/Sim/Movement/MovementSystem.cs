@@ -577,6 +577,13 @@ namespace MachineBrigade.Sim.Movement
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
             if (weapon.MinRange > 0f && distance < weapon.MinRange + 1f)
             {
+                // Play-test 5 (DECISIONS 20W): a siege tank does not back off: its tank-mode gun fights it (sieged, it
+                // packs up for that once nothing else is left to shell).
+                if (v.Def.Deploy is { Siege: true } siege && siege.TankMount < v.Arms.Length && distance <= v.Arms[siege.TankMount].Range)
+                {
+                    v.ClearPath();
+                    return;
+                }
                 if (v.RepathTimer > 0f && v.HasPath) return;
                 v.RepathTimer = RepathInterval;
                 // Back off by the best way out; cornered, hold and let the machine gun fight.
@@ -797,6 +804,7 @@ namespace MachineBrigade.Sim.Movement
             // Prompt 17 C: a loyal wingman flies on its leader's wing when it has nothing of its own to attack.
             if (target == null && def.Wingman != null && FlyWing(v, dt)) return;
             v.InAttackHold = false;
+            v.OnTail = false;
             if (target != null && def.AttackHold > 0f && !def.Orbit && AttackHold(v, target, dt)) return;
             if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;
             Vector2 goal;
@@ -837,10 +845,14 @@ namespace MachineBrigade.Sim.Movement
                 var distance = toTarget.Length();
                 var ahead = Vector2.Dot(SimMath.Forward(v.Heading), toTarget);
                 var mover = FastMover(v, target);
+                // Play-test 5 (DECISIONS 20W): a jet whose cannon reaches aircraft gets on an enemy jet's tail: in its rear
+                // cone it keeps the nose on it (the cannon streams), else it flies for a point behind it (lag pursuit).
+                var tail = mover != null && TailGun(v, flying: true) >= 0 ? mover : null;
+                var behind = tail != null && Vector2.Dot(SimMath.Forward(tail.Heading), v.Position - tail.Position) < -TailCone * distance;
                 if (!v.RunExtending)
                 {
-                    // Pull through once too close to keep the nose on it, or once it slips behind.
-                    if (distance < MathF.Max(6f, range * 0.3f) || (ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
+                    // Pull through once too close to keep the nose on it, or once it slips behind (not a jet on its tail).
+                    if (distance < MathF.Max(6f, range * 0.3f) || (tail == null && ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
                 }
                 else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
                 {
@@ -849,7 +861,10 @@ namespace MachineBrigade.Sim.Movement
                 }
                 // Out of a hover it turns away first rather than fly on through its target.
                 goal = v.RunExtending ? v.Position + SimMath.Forward(v.BreakAway ? v.BreakHeading : v.Heading) * 10f : target.Position;
+                if (tail != null && !v.RunExtending && !(behind && distance < range * TailClose))
+                    goal = tail.Position - SimMath.Forward(tail.Heading) * (range * ChaseShare);
                 var gap = distance - target.Radius;
+                v.OnTail = tail != null && behind && !v.RunExtending && gap <= range && ahead > distance * 0.9f;
                 if (!v.RunExtending && mover != null && gap < range * 1.3f && ahead > distance * 0.6f)
                 {
                     // Behind a fast jet: match its speed to keep it on the nose at a little over half
@@ -907,6 +922,27 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>Share of its guns' reach a hovering jet glides in to, and a chasing one keeps behind a fast jet.</summary>
         private const float HoverShare = 0.6f, ChaseShare = 0.55f;
+
+        /// <summary>
+        /// Play-test 5: on a jet's tail within this cosine of dead astern (about 60 degrees), and closer than this share of
+        /// its guns' reach it stops flying for the point behind and keeps its nose on the jet itself.
+        /// </summary>
+        private const float TailCone = 0.5f, TailClose = 1.4f;
+
+        /// <summary>
+        /// The mount of an aeroplane's hull-fixed cannon firing from a magazine that can hit a target in the air
+        /// (<paramref name="flying"/>) or on the ground; -1 when it has none (a fighter's GAU-22, an attack jet's cannon on the ground).
+        /// </summary>
+        internal static int TailGun(Vehicle v, bool flying)
+        {
+            var mounts = v.Def.Mounts;
+            for (var i = 0; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim == MountAim.Hull && w.Projectile == ProjectileKind.Bullet && w.Clip > 0 && w.Damage > 0f && w.CanTarget(flying)) return i;
+            }
+            return -1;
+        }
 
         /// <summary>How far (radians) a jet leaving its hover turns away before it extends.</summary>
         private const float BreakTurn = 1.1f;

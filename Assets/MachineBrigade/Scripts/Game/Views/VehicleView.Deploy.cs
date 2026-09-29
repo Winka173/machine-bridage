@@ -12,13 +12,16 @@ namespace MachineBrigade.Game.Views
     /// (mb_p21_models.py) over the data's seconds: the rear spades swing down and the dozer blade bites (first
     /// third), the hull sinks 0.8 m into its scrape while the spoil bank grows round it, the side plates fold out
     /// and down over the bank, and last the turret rises on its telescopic mount. Packing up runs it backwards.
+    /// Play-test 5 (DECISIONS 20W): the siege tank (mb_p22_siege.py) sieges on the same state: the rear spades swing
+    /// down and the front braces fold out and down to the ground, the 105 mm slides back into its sleeve, the turret
+    /// rises on its column and last the 240 mm mortar swings up to its firing angle (the barrel's elevation, Elevate).
     /// </summary>
     public sealed partial class VehicleView
     {
         private Transform _deployMark, _deployFill, _deployBlock;
-        private Transform _spadeL, _spadeR, _dozer, _plateL, _plateR, _riser, _berm, _hull;
-        private Quaternion _spadeLRest, _spadeRRest, _dozerRest, _plateLRest, _plateRRest;
-        private Vector3 _riserRest, _bermRest, _bermScale, _hullRest;
+        private Transform _spadeL, _spadeR, _dozer, _plateL, _plateR, _riser, _berm, _hull, _braceL, _braceR, _tankGun;
+        private Quaternion _spadeLRest, _spadeRRest, _dozerRest, _plateLRest, _plateRRest, _braceLRest, _braceRRest;
+        private Vector3 _riserRest, _bermRest, _bermScale, _hullRest, _tankGunRest;
         private DeployState _deployShown = DeployState.Mobile;
         private float _deployChangedAt, _deployPose;
 
@@ -27,6 +30,15 @@ namespace MachineBrigade.Game.Views
         /// side plates' fold, how deep the hull sinks and how high the turret's mount rises.
         /// </summary>
         internal const float SpadeSwing = -125f, BladeBite = 6f, PlateFold = 95f, HullSink = 0.8f, MountLift = 0.75f;
+
+        /// <summary>
+        /// Play-test 5: the siege tank's sieged pose: the braces' fold (degrees), how far the 105 mm slides back, how high
+        /// the turret rises, and the mortar's angle when it has nothing to aim at (Elevate lays it on a target).
+        /// </summary>
+        internal const float BraceFold = 140f, GunRetract = 0.9f, SiegeLift = 0.45f, SiegeRestPitch = 45f;
+
+        /// <summary>The share of sieging done after which the mortar swings up (the last part of the work).</summary>
+        internal const float MortarFrom = 0.55f;
 
         private void BuildDeployMark(MeshLibrary meshes, MaterialLibrary materials)
         {
@@ -61,6 +73,9 @@ namespace MachineBrigade.Game.Views
                     case "Deploy_plate_r": _plateR = t; break;
                     case "Deploy_riser": _riser = t; break;
                     case "Deploy_berm": _berm = t; break;
+                    case "Deploy_brace_l": _braceL = t; break;
+                    case "Deploy_brace_r": _braceR = t; break;
+                    case "Deploy_gun": _tankGun = t; break;
                 }
             }
             if (_spadeL != null) _spadeLRest = _spadeL.localRotation;
@@ -69,6 +84,9 @@ namespace MachineBrigade.Game.Views
             if (_plateL != null) _plateLRest = _plateL.localRotation;
             if (_plateR != null) _plateRRest = _plateR.localRotation;
             if (_riser != null) _riserRest = _riser.localPosition;
+            if (_braceL != null) _braceLRest = _braceL.localRotation;
+            if (_braceR != null) _braceRRest = _braceR.localRotation;
+            if (_tankGun != null) _tankGunRest = _tankGun.localPosition;
             if (_berm != null)
             {
                 _bermRest = _berm.localPosition;
@@ -108,6 +126,11 @@ namespace MachineBrigade.Game.Views
             };
             if (Mathf.Approximately(target, _deployPose) && Sim.Deploy is DeployState.Mobile or DeployState.Deployed) return;
             _deployPose = target;
+            if (Def.Deploy.Siege)
+            {
+                AnimateSiege(target);
+                return;
+            }
             var spades = Stage(target, 0f, 0.35f);
             var dig = Stage(target, 0.15f, 0.7f);
             var plates = Stage(target, 0.45f, 0.85f);
@@ -128,6 +151,33 @@ namespace MachineBrigade.Game.Views
                 _berm.localPosition = _bermRest + Vector3.up * HullSink * dig;
                 _berm.localScale = shown ? new Vector3(1f, Mathf.Max(0.03f, dig), 1f) : _bermScale;
             }
+        }
+
+        /// <summary>Play-test 5: the siege tank's parts at sieging pose <paramref name="p"/> (0 on its tracks, 1 sieged).</summary>
+        private void AnimateSiege(float p)
+        {
+            var spades = Stage(p, 0f, 0.4f);
+            var braces = Stage(p, 0.1f, 0.55f);
+            var gun = Stage(p, 0.2f, 0.5f);
+            var lift = Stage(p, 0.45f, 0.8f);
+            if (_spadeL != null) _spadeL.localRotation = _spadeLRest * Quaternion.Euler(SpadeSwing * spades, 0f, 0f);
+            if (_spadeR != null) _spadeR.localRotation = _spadeRRest * Quaternion.Euler(SpadeSwing * spades, 0f, 0f);
+            // As the bunker vehicle's side plates: the left brace on the model's +X side (Unity -X) folds out on +Z.
+            if (_braceL != null) _braceL.localRotation = _braceLRest * Quaternion.Euler(0f, 0f, BraceFold * braces);
+            if (_braceR != null) _braceR.localRotation = _braceRRest * Quaternion.Euler(0f, 0f, -BraceFold * braces);
+            if (_tankGun != null) _tankGun.localPosition = _tankGunRest + Vector3.back * GunRetract * gun;
+            if (_riser != null) _riser.localPosition = _riserRest + Vector3.up * SiegeLift * lift;
+        }
+
+        /// <summary>
+        /// Play-test 5: the siege tank's mortar angle (degrees above level) at the pose shown: level on its tracks, swinging
+        /// up over the last of the work, then laid by range on a target (as a mortar's) or resting at 45 degrees.
+        /// </summary>
+        private float SiegeElevation(float rest, float aimed)
+        {
+            var up = Stage(_deployPose, MortarFrom, 1f);
+            var sieged = Sim.Deploy == DeployState.Deployed && !float.IsNaN(aimed) ? aimed : SiegeRestPitch;
+            return Mathf.Lerp(rest, sieged, up);
         }
 
         /// <summary>Draws the state mark on the health bar.</summary>

@@ -48,6 +48,12 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>When it began digging in or packing up, and when that will be done.</summary>
         internal double DeployFrom, DeployUntil;
 
+        /// <summary>Play-test 5 (DECISIONS 20W): a jet on an enemy jet's tail with its nose on it (its cannon streams on).</summary>
+        public bool OnTail { get; internal set; }
+
+        /// <summary>Play-test 5: since when a sieged tank has had enemies inside its mortar's minimum reach and nothing to shell (NaN: not).</summary>
+        internal double SiegeCrowdedSince = double.NaN;
+
         /// <summary>The share of digging in or packing up done (1 dug in or mobile).</summary>
         public float DeployProgress(double now) =>
             Deploy is DeployState.Deploying or DeployState.Packing && DeployUntil > DeployFrom

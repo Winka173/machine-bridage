@@ -190,7 +190,13 @@ namespace MachineBrigade.Game.Hud
             if (def.Hidden != null) lines.Add(Strings.Get("ul.hidden"));
             // Prompt 17 C.
             if (def.Dome is { } dome) lines.Add(F("ul.dome", N(dome.Radius), N(dome.Hp), N(dome.Recharge)));
-            if (def.Deploy is { } dep)
+            // Play-test 5 (DECISIONS 20W): the siege tank's two modes.
+            if (def.Deploy is { Siege: true } siege)
+            {
+                lines.Add(F("ul.siege", N(siege.Seconds)));
+                lines.Add(Strings.Get("ul.siege.tank"));
+            }
+            else if (def.Deploy is { } dep)
             {
                 lines.Add(F("ul.deploy", N(dep.Seconds), dep.FrontUp, N(dep.Range)));
                 lines.Add(F("ul.deploy.arc", N(dep.Arc * 180f / MathF.PI)));

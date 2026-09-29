@@ -155,6 +155,12 @@ namespace MachineBrigade.Sim.Events
         /// to; Value the seconds it takes; Position where the boss is.
         /// </summary>
         TierChanged,
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): a gun point defence (Entity, the C-RAM) streams at an incoming round this step:
+        /// Mount rounds from its gun (DefId) at the round, at Position on the ground and Value metres up.
+        /// </summary>
+        PointDefenceFired,
     }
 
     /// <summary>
@@ -310,6 +316,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent DomeSwitched(Vehicle emitter, bool up) =>
             new(SimEventKind.DomeChanged, emitter.Id, emitter.Position, default, up ? 1f : 0f, default, emitter.Def.Id, emitter.Team);
+
+        internal static SimEvent PointDefence(Vehicle gun, WeaponDef weapon, Vector2 at, float height, int rounds) =>
+            new(SimEventKind.PointDefenceFired, gun.Id, at, gun.Position, height, ExplosionTier.Small, weapon.Id, gun.Team, rounds);
 
         internal static SimEvent Intercept(Vehicle aps, WeaponDef weapon, Vector2 at, bool left) =>
             new(SimEventKind.Intercepted, aps.Id, at, aps.Position, left ? -1f : 1f, ExplosionTier.Small, weapon.Id, aps.Team);

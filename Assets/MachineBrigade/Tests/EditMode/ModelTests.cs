@@ -320,6 +320,37 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>Play-test 5 (DECISIONS 20W): the siege tank's sieging parts move on their own; the mortar elevates, the 105 mm slides.</summary>
+        [Test]
+        public void SiegeTankKeepsItsSiegePartsApart()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Siege Test").transform;
+            try
+            {
+                var tank = models.Spawn("siege_tank", 0, parent);
+                var root = tank.Root.transform;
+                foreach (var name in new[] { "Deploy_brace_l", "Deploy_brace_r", "Deploy_spade_l", "Deploy_spade_r", "Deploy_gun", "Deploy_riser" })
+                {
+                    var part = Find(root, name);
+                    Assert.IsNotNull(part, name);
+                    Assert.IsNotNull(part.GetComponentInChildren<MeshRenderer>(true), $"{name} keeps its own mesh");
+                }
+                Assert.IsTrue(tank.Turret.IsChildOf(Find(root, "Deploy_riser")), "the turret rides its column");
+                Assert.IsNotNull(tank.Elevation, "the mortar elevates");
+                Assert.IsTrue(tank.Muzzles["main"].IsChildOf(tank.Elevation), "the mortar's muzzle rides on it");
+                Assert.IsTrue(tank.Muzzles["gun"].IsChildOf(Find(root, "Deploy_gun")), "the 105 mm's muzzle slides with it");
+                Assert.IsFalse(tank.Muzzles["gun"].IsChildOf(tank.Elevation), "the 105 mm does not rise with the mortar");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         /// <summary>The high-detail variants (High graphics) keep every pivot and muzzle of the normal model, in the same place.</summary>
         [TestCase("main_battle_tank"), TestCase("light_tank"), TestCase("heavy_tank"), TestCase("apc"), TestCase("scout_jeep"),
          TestCase("aa_vehicle"), TestCase("artillery"), TestCase("tank_destroyer"), TestCase("attack_helicopter"), TestCase("attack_jet"),

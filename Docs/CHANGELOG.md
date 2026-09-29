@@ -7,6 +7,24 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 5: rhythm, behaviour, siege tank
+
+- Every vehicle, helicopter and aircraft autocannon fires about 5 s at a time and changes its magazine in about 1 s
+  (the Gepard, the Tunguska mount, the ZU-23, the IFV, BMPT and armoured car, the Apache's M230, the Mi-24P's
+  GSh-30K, the Su-25's GSh-30-2, the F-35's GAU-22, the gunship's 25 mm and 40 mm). The damage a round stays on the
+  calibre scale and the damage a second is unchanged, so the cadence over the stream is the old average; the anti-air
+  vehicles' missiles fire beside their gun's stream and their rounds hit aeroplanes harder (DECISIONS 20W).
+- Fighters and the stealth fighter get on an enemy jet's tail: they fly for a point behind it, then keep their nose on
+  it at a little over half the cannon's reach and stream the cannon, their air-to-air missiles firing beside it.
+- The TOS-1A's, the Smerch's and the rocket battery tower's rockets (both its branches) fly at the SAM's 24 m/s; the
+  attack jet's rockets and missiles are 25 % slower; the drone mothership's drones 40 % slower.
+- The C-RAM streams a burst at every round it takes down (0.5 s, the Centurion 0.3 s, tracers on the round as it
+  flies) instead of one shot; interception rates stay near their old values.
+- The siege tank is reworked into StarCraft 2's: a 105 mm tank on the move; standing with an enemy in reach, or on guard,
+  it sieges in 2.5 s (braces down, turret up, 105 mm back, the 240 mm mortar raised) and shells from 16 to 70 m; it
+  packs up to move or when enemies get inside 16 m with nothing further to shell. New model with the animated
+  deploy, armour by face, Guide card, behaviour lines, icon; now won in the campaign (chapter 4) instead of bought.
+
 ### Missile speeds, fire rates, models
 
 - No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,

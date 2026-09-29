@@ -125,6 +125,8 @@ namespace MachineBrigade.Game.Hud
             ["titan"] = "<rect x=\"1\" y=\"13\" width=\"20\" height=\"7\" rx=\"3.5\"/><path d=\"M5 13V8h11v5M16 9h7M16 11.5h7M8 8V5.5h5V8\"/>",
             ["twintank"] = "<rect x=\"3\" y=\"14\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-4h8v4M15 10.5h7M15 13h6\"/>",
             ["siegegun"] = "<rect x=\"2\" y=\"14\" width=\"16\" height=\"6\" rx=\"3\"/><path d=\"M6 14v-3h7v3M12 11l9-7M13 13l2-1.5M2 17l-1.5 3\"/>",
+            // Play-test 5: the siege tank sieged (braces down, the mortar raised over the short gun).
+            ["siegetank"] = "<rect x=\"3\" y=\"12\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M7 12V9h8v3M13 9.5l5-6.5M15 10.5h5M4 17l-2.5 4M19 17l2.5 4\"/>",
             ["apstank"] = "<rect x=\"3\" y=\"14\" width=\"18\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-4h8v4M15 11h7\"/><path d=\"M11 2.5l3 1.3v2.1c0 1.6-3 3.1-3 3.1S8 7.5 8 5.9V3.8Z\"/>",
             ["command"] = "<rect x=\"2\" y=\"13\" width=\"19\" height=\"6\" rx=\"2\"/><path d=\"M5 13V9h9v4M7 9V3M7 3l4 2-4 2M17 13V6\"/><circle cx=\"6\" cy=\"20\" r=\"1.5\"/><circle cx=\"11.5\" cy=\"20\" r=\"1.5\"/><circle cx=\"17\" cy=\"20\" r=\"1.5\"/>",
             ["wheeledgun"] = "<rect x=\"2\" y=\"13\" width=\"17\" height=\"5\" rx=\"2\"/><path d=\"M6 13l2-3h6l1 3M12 11h10\"/><circle cx=\"5\" cy=\"19\" r=\"1.5\"/><circle cx=\"10\" cy=\"19\" r=\"1.5\"/><circle cx=\"15\" cy=\"19\" r=\"1.5\"/>",
