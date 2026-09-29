@@ -79,6 +79,11 @@ namespace MachineBrigade.Game.Hud
             "antenna" => "command",
             "station" => "crosshair",
             "radar" => "cbradar",
+            // Prompt 16 E.
+            "aps" => "shield",
+            "ciws" => "aa",
+            "fuel" => "flame",
+            "ew" => "jammer",
             _ => "gear",
         };
 

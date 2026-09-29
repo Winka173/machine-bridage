@@ -151,6 +151,15 @@ namespace MachineBrigade.Sim
         /// <summary>A side's elite budget (prompt 8 H): the modes set its share, cap and general.</summary>
         public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
 
+        /// <summary>
+        /// Prompt 16 F: the battle's boss escorts (the modes set them by difficulty; Boss Rush's are
+        /// smaller). Null: no escorts (the bare test battles).
+        /// </summary>
+        public Content.EscortSettings? EscortSettings { get; set; }
+
+        /// <summary>How many escorts of this boss are alive now (the boss bar's count).</summary>
+        public int EscortsAlive(EntityId boss) => Bosses.EscortsAlive(boss);
+
         internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
 
         internal CombatSystem Combat => _combat;

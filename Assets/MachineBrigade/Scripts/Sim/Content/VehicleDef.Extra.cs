@@ -54,6 +54,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A super-heavy gun's map-wide shot, or null.</summary>
         public BombardDef? Bombard { get; internal set; }
 
+        /// <summary>Prompt 16 E: the burning fuel it leaves on the ground as it drives (the Inferno), or null.</summary>
+        public FireTrailDef? FireTrail { get; internal set; }
+
         /// <summary>Emplacements it arrives with.</summary>
         public IReadOnlyList<GuardDef> Guards { get; internal set; } = Array.Empty<GuardDef>();
 

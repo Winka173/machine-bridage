@@ -137,6 +137,7 @@ namespace MachineBrigade.Game.Rendering
             AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
             AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
             RepairMark = Unlit(unlit, "RepairMark", new Color(0.5f, 1.45f, 0.62f));
+            EscortMark = Unlit(unlit, "EscortMark", new Color(1.55f, 0.62f, 0.18f));
             // Prompt 13 C.9: the stores icons (low in the coin yellow, rearming in our side's green, bright at the
             // full rate and dim at the slow one, flying out in the secondary text grey; empty is AmmoEmpty).
             StoresLow = Unlit(unlit, "StoresLow", new Color(1f, 0.8f, 0.22f));
@@ -227,6 +228,9 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>The green wrench over something being repaired (a sapper at a tower).</summary>
         public Material RepairMark { get; }
+
+        /// <summary>Prompt 16 F: the orange diamond beside a boss escort's health bar.</summary>
+        public Material EscortMark { get; }
 
         public Material StoresLow { get; }
         public Material StoresFull { get; }

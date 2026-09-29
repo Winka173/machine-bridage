@@ -823,6 +823,8 @@ namespace MachineBrigade.Sim.Combat
             var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
+            // An escort spotter's mark (prompt 16 F): the boss's guns fall tighter on the marked target.
+            if (shooter.Def.Boss && spread > 0f && aimTarget is Vehicle spotted && Marked(spotted, shooter.Team)) spread *= _world.Catalog.EscortRules.SpotSpread;
             if (!weapon.Guided && spread > 0f && (shooter.Gear != null || aimTarget is Vehicle { Gear: not null }))
                 spread *= _world.Gear.SpreadFactor(shooter, index, aimTarget, reach);
             // Artillery brackets its target (Wargame and real gunnery): the first round lands wide,

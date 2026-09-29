@@ -45,6 +45,9 @@ namespace MachineBrigade.Sim.Bosses
             if (def.Landing is { } landing) v.LandingNext = now + landing.First;
             if (def.Bombard is { } bombard) v.BombardNext = now + bombard.First;
             if (def.RadioSpawn != null) _world.Emit(SimEvent.RadioMessage(def.RadioSpawn, v.Team));
+            // Prompt 16: its escorts (they come in on the next step) and where its fire trail starts.
+            JoinEscorts(v);
+            v.TrailFrom = v.Position;
             foreach (var guard in def.Guards)
             {
                 var forward = SimMath.Forward(v.Heading);
@@ -64,7 +67,10 @@ namespace MachineBrigade.Sim.Bosses
                 if (def.Burrow != null) Bore(v, def.Burrow, now, dt);
                 if (def.Landing != null) Land(v, def.Landing, now);
                 if (def.Bombard != null) Bombard(v, def.Bombard, now);
+                if (def.FireTrail != null) Trail(v, def.FireTrail, now);
             }
+            StepTrails(now);
+            StepEscorts(now);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }

@@ -263,6 +263,12 @@ namespace MachineBrigade.Game.Effects
                             var emitter = guard.MuzzleOf(0);
                             _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, guard.Def.Weapon, now, 0.16f);
                         }
+                        else if (guard != null && guard.Def.Aps is { Laser: true } && _catalog.Weapons.TryGetValue("hel_beam", out var pointBeam))
+                        {
+                            // Prompt 16 E: a boss's interceptor laser (the Tempest's) draws the Iron Beam's beam from its turret side.
+                            var emitter = guard.Position + Vector3.up * 3.4f + guard.Root.right * (e.Value * 1.6f);
+                            _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, pointBeam, now, 0.16f);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -293,6 +299,21 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.PartRepaired:
                         PartBack(e, views);
                         break;
+                    // Prompt 16: a patch of the Inferno's fire trail (FireSpots burns ground fires a fifth shorter).
+                    case SimEventKind.FireTrail:
+                    {
+                        var trailAt = Ground(e.Position, 0.05f);
+                        var trailRadius = e.Target.X;
+                        _fires.Ignite(trailAt, 0.9f, e.Value, now);
+                        for (var lick = 0; lick < 2; lick++)
+                        {
+                            var bearing = UnityEngine.Random.value * Mathf.PI * 2f;
+                            var reach = trailRadius * UnityEngine.Random.Range(0.35f, 0.7f);
+                            _fires.Ignite(trailAt + new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach), UnityEngine.Random.Range(0.45f, 0.7f),
+                                e.Value * UnityEngine.Random.Range(0.8f, 1f), now);
+                        }
+                        break;
+                    }
                     case SimEventKind.Explosion when _partBlasts.Remove(e.Entity):
                         break;
                     case SimEventKind.Explosion:

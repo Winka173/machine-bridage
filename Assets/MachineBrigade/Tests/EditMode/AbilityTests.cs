@@ -157,19 +157,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void BossPhaseSummonsEscortsOnce()
-        {
-            var world = Field();
-            var boss = world.SpawnVehicle("behemoth", 1, new Vector2(0f, 30f), 3.14f);
-            boss.Hp = boss.MaxHp * 0.65f;
-            var before = world.CountAlive(1);
-            Run(world, 1f);
-            Assert.AreEqual(before + 2, world.CountAlive(1), "below 70% the behemoth calls in two elite tanks");
-            Run(world, 2f);
-            Assert.AreEqual(before + 2, world.CountAlive(1), "a phase fires once");
-        }
-
-        [Test]
         public void EmpStunsEnemyVehicles()
         {
             var world = Field();

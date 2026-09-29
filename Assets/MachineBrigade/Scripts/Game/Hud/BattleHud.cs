@@ -578,6 +578,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Opens the compact boss bar as a tap does (the screenshot tool and the checks).</summary>
         internal void PreviewBossExpanded() => _boss?.Expand();
 
+        /// <summary>Prompt 16 F: the boss's escorts still alive, on its bar.</summary>
+        public void SetBossEscorts(int alive) => _boss?.SetEscorts(alive);
+
         /// <summary>The boss's health in numbers beside its name (after <see cref="SetBoss(string, float)"/>).</summary>
         public void SetBossHp(float hp, float maxHp) => _boss?.SetHp(hp, maxHp);
 

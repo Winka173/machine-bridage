@@ -128,6 +128,9 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A boss's self-repair put a part back: Entity the boss, Mount the part's index, DefId its id.</summary>
         PartRepaired,
+
+        /// <summary>Prompt 16: a patch of a boss's fire trail lit at Position (Entity the boss): Value its lit seconds, Target.X its radius.</summary>
+        FireTrail,
     }
 
     /// <summary>
@@ -290,6 +293,10 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Burrow(Vehicle boss, int stage, Vector2 at, float seconds = 0f) =>
             new(SimEventKind.Burrowing, boss.Id, at, new Vector2(seconds, 0f), stage, ExplosionTier.Ultimate, boss.Def.Id, boss.Team);
+
+        /// <summary>A patch of the Inferno's fire trail lit at Position (prompt 16): Value its lit seconds, Target.X its radius.</summary>
+        internal static SimEvent FireTrail(Vehicle boss, Vector2 at, float seconds, float radius) =>
+            new(SimEventKind.FireTrail, boss.Id, at, new Vector2(radius, 0f), seconds, ExplosionTier.Medium, boss.Def.Id, boss.Team);
 
         internal static SimEvent Landed(Vehicle boss, Vector2 at, int count) =>
             new(SimEventKind.TroopsLanding, boss.Id, at, boss.Position, count, ExplosionTier.Large, boss.Def.Id, boss.Team);

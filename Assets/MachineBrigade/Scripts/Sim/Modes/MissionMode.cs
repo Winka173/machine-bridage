@@ -200,7 +200,12 @@ namespace MachineBrigade.Sim.Modes
             return alive;
         }
 
-        public void Setup(SimWorld world) => SetupStage(world, true, null);
+        public void Setup(SimWorld world)
+        {
+            // Prompt 16 F: bosses bring their escorts (Normal's cap unless the session sets its difficulty's).
+            world.EscortSettings ??= Content.EscortSettings.For(world.Catalog.EscortRules, "Normal");
+            SetupStage(world, true, null);
+        }
 
         /// <summary>The objectives' owners now (a stage hands them to the next).</summary>
         internal Dictionary<string, int> Owners()

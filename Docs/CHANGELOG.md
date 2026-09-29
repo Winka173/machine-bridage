@@ -1,5 +1,17 @@
 # Changelog
 
+## Prompt 16 (part 2): the old bosses' new weapons, escorts for every boss
+
+- New weapons, each a part you can break: the Iron Train's mortar car (it lobs over cover), the Tempest's interceptor
+  laser and the Behemoth's protection system (they shoot down missiles, drones and rockets), the Inferno's fire trail,
+  the Hive's jamming aura, the Bastion's Kornet launcher, the Doomsday Train's rocket and long-range SAM cars, two AA
+  mounts on the Rail Supergun, and two more CIWS and two rocket launchers on the landing hovercraft. Their health was
+  retuned so the fights last about as long as before (within 10 %).
+- Every boss brings escorts: a group with it and another at each phase change, at most 4-6 alive by difficulty (fewer
+  in Boss Rush). Each group has a helper that repairs the boss, jams your missiles, covers it from the air or marks your
+  units for its guns, so you choose between the boss and its escorts. Escorts stay near their boss, pay CP when
+  destroyed, wear an orange mark, and the boss bar counts them. The old escort calls are replaced by this.
+
 ## Prompt 15 (battle rules): armour levels, penetration, six damage types
 
 - Every unit has armour 0-4 on its front, sides, rear and roof (towers, buildings and aircraft the same all round,
