@@ -991,7 +991,7 @@ namespace MachineBrigade.Game.Hud
         /// between the edge clusters; on squarer screens (16:10, 3:2, 4:3 tablets) it blends over
         /// to scaling with the width, so the deck and the side columns always fit across.
         /// </summary>
-        private static float MatchFor(int width, int height)
+        internal static float MatchFor(int width, int height)
         {
             if (width <= 0 || height <= 0) return 1f;
             var aspect = width / (float)height;
