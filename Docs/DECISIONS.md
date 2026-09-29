@@ -6121,3 +6121,92 @@ TrafficTests, MapRouteTests, whose count is now 23 with Lighthouse Bay) were not
 `Strings`, `GuideText`, `Icons`, `TowerIcons`, `BaseScreen` and `MenuScreen.Detail` (branch icon), `MatchSettings`,
 the card manifest, `FireRhythmMeasure`, `CombatValueMeasure`, the three test lists, `Tools/maps/build_maps.py` and
 `boundary.py`. No boss, campaign or rename code touched.
+
+## 19E. Prompt 20 pass 2 (E-K): the boss template system, main and mini bosses, the new bosses (2026-09-29)
+
+Prompt 20 E-K on feature/p20-pass2 from lead/integration 8ac15b8 (L-M merged). The owner's token rule: compile, one
+targeted run, no sweeps, no screenshots. Pass 1 (renames, chapters) was running beside it: no existing boss is renamed and
+no boss is placed in a chapter here (see "Campaign" below for the merge that follows).
+
+### E. The templates (`Sim/Content/BossTemplates.cs`, `Catalog.P20.cs`; docs/ADDING_A_BOSS.md)
+
+- A JSON pre-pass before the vehicles are parsed, so everything downstream is the old vehicle data: **frames**
+  (`bossFrames`: tracked, wheeled, hovercraft, train, ship, submarine, aircraft, spacecraft; "defaults" merged under the
+  boss one level deep; the catalog checks the frame's rules: a spacecraft has tiers, a ship or submarine `naval`, a
+  submarine a sea `burrow`, only aircraft and spacecraft fly), the **part and weapon library** (`bossParts`, `use`; a
+  library part with a weapon adds and carries its own mount), `dropParts`, `size`, **variants** (`variantOf` +
+  `variant`: size, keep, drop, tune, tint, mark, name; the parent's built data and model, mounts renumbered, dropped
+  weapons' nodes hidden, phases / radio / big attack never inherited), and **ranks** (`bossRanks`). Big attacks may
+  build on another (`from`, strikes merged by index). Escort templates by general (`escortTemplates`): a table with
+  `template`, or a boss with no table gets its general's; a ship never (its `fleet`); a mini's waves cut to 3.
+- The hovercraft needed an eighth frame ("hovercraft", moving as wheeled): the spec's seven have no hover.
+- Existing bosses keep their hand-tuned parts and escort tables (the library and templates are there for new ones and for
+  F.3's weapons); moving them onto frames, ranks, generals and sizes is data only.
+- Every rank rule is data: main 3 phases (0.7, 0.3; damage x1.1 then x1.2 and speed x1.1) for a boss with no phases of its
+  own, a 6 s camera pan, the "boss" track, reward 1; mini hp x0.55 (its parts' shares follow), weapons x0.8
+  (`damageScale`), big attack x0.7 damage and x1.3 cooldown with the same warning (`bigAttackScale`), 2 phases (0.5), 3
+  escorts, the compact bar, a 2.5 s look, `boss_mini` (the shared track, asset debt: it plays `boss` until it exists),
+  reward 0.45 (exposed on the rank; Boss Rush's bounties are pass 3's). A tiered boss's tier marks are its phases.
+- New mechanisms (`BossSystem.P20.cs`): `factory` (Moloch), `crush` (Kronos, Ixion: dps to what is in front of the hull,
+  towers and walls x`structure`, an HQ flattened, armour cut per level, debris from a phase), `route` (a map route the
+  boss follows unless a mission gives its own: `MissionMode` drops it), `spotAura` (Argus: its side's artillery spread
+  x0.5 while its radar stands), `wake` (mounts woken by a phase: Typhon's deck gun), sea dives in `burrow` (`sea`,
+  per-phase surface / under times, `stopPhase`; the naval system leaves a diving boss alone and it fires nothing under
+  water), skimmer passes in `naval` (`passIn` / `passOut`: Caspian), per-phase pod intervals and a halt phase (Daedalus),
+  count-based part stops for pods, doors, crushers and fire direction. Big-attack library: `arc` (a swing measured from the
+  hull front), `charge` (the boss itself down a warned line), `seats` (a circle's rounds land troops), `cut` (the share
+  left once a carrying part breaks; 0 stops it), `surface` (a diving boss comes up to launch with only its parts
+  hittable: `BodyShut`). The arc's warning is three rings (the view draws rings and strips only).
+- A ship boss's sinking line is its own (`<radioSpawn>.sunk`); Leviathan keeps Kessler's.
+
+### F, G. Main and mini rules on the existing bosses
+
+- Sizes: main x1.35 (Bastion, Behemoth, Jötunn), x1.3 (Matriarch, Roc, Nemesis), Leviathan x1.12, Icarus x1; minis x0.85.
+  The hit radius and part positions scale with the model (prompt 19 kept the radius; a boss's must follow its hull).
+- F.3 weapons, each a part: Bastion a 155 mm casemate and two ZU-23; Behemoth two 120 mm flank guns and a rocket pod;
+  Jötunn a second 203 mm and a Buk SAM; Leviathan two 127 mm; Matriarch two 30 mm belly guns and a second drone bay; Roc
+  two 105 mm pods; Nemesis a 152 mm gun car and an AA car (41.6 m now); Icarus two turrets that wake at the crash. New
+  weapons on the calibre scale: `casemate_155`, `naval_127`, `naval_100`. With more than ten parts a part is 5-6 % of the
+  body (the 70 % total holds; the parts test allows it).
+- G.3 drops: Inferno the flak, Harpy a minigun and the missile rack, Tempest both coilguns, Juggernaut the mortar car, Hive
+  the SAM, Spectre one 40 mm (its big attack loses that gun's strike), Charybdis one CIWS.
+- Roc gets a second phase mark (0.7 and 0.35); the rest take their rank's phases or keep theirs (the minis had one each).
+- HUD: "Boss" / "Mini boss" on the bar (a mini's bar at 86 %), the arrival pan by rank, the rank's or boss's own track.
+
+### H-J. The new bosses
+
+Moloch (workshop, 4 x 120 mm, flak, doors, tracks; "Workshop Dump" drop 3 a door + 8 x 152 mm), Daedalus (the Silver Bug's
+airframe, 10 s orbit then high/low, three pod bays, max 8 pod vehicles, halts low in phase 3; "Orbital Mass Drop" 6 pods,
+3 with a bay gone), Kronos (four tracks, cab, boom, bucket wheel, 2 x 30 mm, rockets; the open-pit "kronos" route, crushes
+towers and the HQ; "Bucket Sweep" 120 deg x 25 m, 1 200), Typhon (dives on a schedule, surfaces elsewhere, stays up in
+phase 3 with its deck gun; cruise missiles surfaced; "Underwater Launch" 3 x 500 at the base, rising to launch; corvette
+and missile boats), Ixion (two wheels, steering wheel armour 1, 76 mm; crushes by armour; "Crushing Charge" 80 m, 900 and
+2 s stun, a wheel broken throws it off), Caspian (passes 6 s in, 20 s out; "Anti-Ship Volley" 4 x 500); the variants
+Bastion Mk.0, Fenrir (hit and run: shoot-and-scoot), Scylla (near lane, no escape, no landing craft), Locust (armour 1),
+Behemoth Mk.II (front 4), Icarus Mk.0 (no orbit, 2 phases), Argus (fire direction). Starting numbers, unrun.
+Names follow pass 1's rule; each has a Guide card, a parts tip, a radio line, its big attack's words (`BossText`).
+Models: first passes in `Tools/blender/mb_p20_bosses.py` (Daedalus on the Silver Bug's hull builders); the variants use
+their main boss's model with a tint.
+
+### K. Generals
+
+Data `general` on every boss per the table (Brandt's id is `brandt`, new; Gungnir moves to Orlov and Tartarus to Lý Hàn,
+their radio keys with them). Each boss's arrival line speaks for its general.
+
+### Modes and the Sandbox
+
+Boss Rush gains seven kinds (the four new main bosses; the minis in three groups) and 88 minutes; pass 3 reworks it.
+Operations' "two bosses" brings the mission boss's mini version. Sandbox calls (plain `BossSystem`): `JumpPhase` (tiers or
+ordinary phases, one a call), `TriggerBig`, `SetBigOff`, `Break`, `Restore`, `ForceTier`, `SetEscorts`, `SwapRank`.
+
+### Tests
+
+New `Prompt20BossTests` (10: templates and ranks, a variant from data alone, Moloch, Kronos, Ixion, Typhon, Daedalus,
+Argus, the Sandbox calls, the words); `BossPartsTests.Expected` and its share rule, `BigAttackTests` (the part order).
+One run of that filter after a compile fix: 11/12, the old "last part" assertion fixed after (not rerun).
+
+### For the testing phase
+
+5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
+detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
+Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).

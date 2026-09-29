@@ -1113,8 +1113,8 @@
         // Prompt 18 C: the bomb bay in the gondola's belly (its big attack, the carpet of bombs).
         { "id": "bomb_bay", "breakDamage": 0, "kind": "bombbay", "hp": 0.07, "armour": 2, "wreck": "wreck_stump", "at": [0, 8.5, -3.0], "radius": 3.2, "radio": "radio.part.bombbay" },
         // Prompt 20 F.3: a new weapon, a part of its own.
-        {"use": "pod_105", "id": "pod_105_l", "breakDamage": 0, "node": "Mount_gun.001", "at": [-7.5, 0, -3.0]},
-        {"use": "pod_105", "id": "pod_105_r", "breakDamage": 0, "node": "Mount_gun.002", "at": [7.5, 0, -3.0]} ],
+        {"use": "pod_105", "id": "pod_105_l", "breakDamage": 0, "node": "Mount_gun.002", "at": [-7.5, 0, -3.0]},
+        {"use": "pod_105", "id": "pod_105_r", "breakDamage": 0, "node": "Mount_gun.003", "at": [7.5, 0, -3.0]} ],
       "partLock": { "kind": "engine", "count": 2 },
       "phases": [ { "at": 0.7, "transform": 2.5, "damage": 1.1, "radio": "radio.quaden.airship.phase2" }, { "at": 0.35, "transform": 3, "damage": 1.25, "radio": "radio.quaden.airship.half" } ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },

@@ -40,6 +40,21 @@ its commits.
   `JumpPhase`, `ForceTier`, `TriggerBig`, `SetBigOff`, `Break`.
 - Tests: `OrbitalBossTests` (10) and the boss tests it touched; the 5-seed runs, the stuck check round the crash site
   and the FPS checks wait for the testing phase.
+### Prompt 20 pass 2: boss templates, main and mini bosses, four new main bosses and nine new mini bosses (DECISIONS 19E)
+
+- Bosses are built from data templates: body frames, a shared part and weapon library, big attacks built on others,
+  escort templates by general, ranks and variants (a mini boss made from a main boss by data). How to add one:
+  docs/ADDING_A_BOSS.md.
+- Main bosses are larger, have three phases and new weapons (Bastion's casemate and ZU-23s, Behemoth's flank guns, Jötunn's
+  second howitzer and SAM, Leviathan's 127 mm guns, Matriarch's belly guns and second bay, Roc's gun pods, Nemesis's two
+  new cars, Icarus's crash turrets). Mini bosses are smaller, have half the health, lighter weapons and big attacks, two
+  phases and two or three escorts. The bar reads "Boss" or "Mini boss"; the camera pan follows the rank.
+- New: Moloch (a factory that builds tanks), Daedalus (an orbital lander raining drop pods), Kronos (a bucket-wheel
+  excavator that crushes its way to the HQ on the open-pit mine), Typhon (a missile submarine that dives), Ixion (a giant
+  wheel), Caspian (an ekranoplan) and the variants Bastion Mk.0, Fenrir, Scylla, Locust, Behemoth Mk.II, Icarus Mk.0,
+  Argus, each with parts, a big attack, escorts, a Guide card and radio lines. Every boss is tied to its general.
+- Boss Rush takes the new bosses; Operations' "two bosses" brings a mini boss.
+
 ### Prompt 20 L-M: towers (Iron Dome, rocket battery, SAM post) and two new battlefields
 
 - The C-RAM's rank-7 Iron Dome branch (it replaces the Hunter; a saved Hunter choice is dropped): interceptor missiles
