@@ -161,6 +161,18 @@ namespace MachineBrigade.Sim.Events
         /// Mount rounds from its gun (DefId) at the round, at Position on the ground and Value metres up.
         /// </summary>
         PointDefenceFired,
+
+        /// <summary>
+        /// Prompt 23 F.1: a mission event's notice for the top-edge queue. DefId its text key (placeholders {seconds} and {dir});
+        /// Position where it happens; <see cref="NoticeDirection"/> the way it comes (a unit vector from the player's side
+        /// toward the threat, zero for none) and <see cref="NoticeBearing"/> front, left, right, rear (-1: none); Value the
+        /// seconds to it or of it (a countdown); <see cref="Priority"/>; <see cref="NoticeKind"/> the event's kind (its icon);
+        /// Team 1 for bad news, 0 for good; Entity the vehicle it is about (a general on the field), if any.
+        /// </summary>
+        EventNotice,
+
+        /// <summary>Prompt 23 D.9: the weather turns to DefId (a weather name: Snow, Fog, Night ...) over Value seconds.</summary>
+        WeatherShift,
     }
 
     /// <summary>
@@ -367,8 +379,32 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent Big(Vehicle boss, string attack, int stage, Vector2 at, float value) =>
             new(SimEventKind.BigAttack, boss.Id, at, boss.Position, value, ExplosionTier.Huge, attack, boss.Team, stage);
 
-        internal static SimEvent RadioMessage(string key, int team = 0) =>
-            new(SimEventKind.Radio, EntityId.None, default, default, 0f, default, key, team);
+        /// <summary>
+        /// A line for the player (DefId its text key "radio.&lt;speaker&gt;..."), with its priority (prompt 23 H.3: Mount, see
+        /// <see cref="Priority"/>) and the vehicle speaking, if any (Entity: a general on the field, for F.5's mark).
+        /// </summary>
+        internal static SimEvent RadioMessage(string key, int team = 0, LinePriority priority = LinePriority.Event, EntityId speaker = default) =>
+            new(SimEventKind.Radio, speaker, default, default, 0f, default, key, team, (int)priority);
+
+        internal static SimEvent EventNotice(string key, MissionEventKind kind, Vector2 at, Vector2 direction, int bearing, float seconds,
+            LinePriority priority, int team, EntityId about = default) =>
+            new(SimEventKind.EventNotice, about, at, new Vector2(bearing, 0f), seconds, (ExplosionTier)(int)kind, key, team, (int)priority,
+                airborne: direction.LengthSquared() > 0.01f, offset: direction);
+
+        internal static SimEvent WeatherShifting(string weather, float seconds) =>
+            new(SimEventKind.WeatherShift, EntityId.None, default, default, seconds, default, weather, 0);
+
+        /// <summary>A Radio line's or an EventNotice's priority (prompt 23 H.3).</summary>
+        public LinePriority Priority => (LinePriority)Mount;
+
+        /// <summary>An EventNotice's event kind (the notice's icon).</summary>
+        public MissionEventKind NoticeKind => (MissionEventKind)(int)Tier;
+
+        /// <summary>An EventNotice's direction: front 0, left 1, right 2, rear 3; -1 when it has none.</summary>
+        public int NoticeBearing => Kind == SimEventKind.EventNotice && Airborne ? (int)Target.X : -1;
+
+        /// <summary>An EventNotice's way in (a unit vector toward the threat), zero when it has none (F.2's arrow).</summary>
+        public Vector2 NoticeDirection => Kind == SimEventKind.EventNotice ? Offset : default;
 
         internal static SimEvent StageBegan(string stageId, int number) =>
             new(SimEventKind.StageStarted, EntityId.None, default, default, number, default, stageId, 0);
