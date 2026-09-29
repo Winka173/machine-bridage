@@ -27,7 +27,7 @@ namespace MachineBrigade.Game.Hud
             var head = Kit.Box("fc-row fc-row--wrap");
             head.Add(Tag(boss.MiniBoss ? "elite" : "skull", Rank(boss)));
             var chapters = Chapters(boss);
-            if (chapters.Count > 0) head.Add(Tag("campaign", Strings.Format("guide.boss.chapters", string.Join(", ", chapters))));
+            if (chapters.Count > 0) head.Add(Tag("campaign", Strings.Format("guide.boss.chapters", string.Join(", ", chapters.Select(Campaign.ChapterShort)))));
             into.Add(head);
             if (boss.General is not { } general || !Strings.Has($"char.{general}.name")) return;
             var row = Kit.Box("fc-row fc-mt-2");

@@ -366,8 +366,8 @@ namespace MachineBrigade.Game.Match
             return i >= 0 && D.missionStars[i] > 0 ? Math.Max(0, D.missionTiers[i]) : -1;
         }
 
-        /// <summary>3: progress is kept under the twelve chapters' mission ids (prompt 20).</summary>
-        internal const int CampaignVersion = 3;
+        /// <summary>3: progress is kept under the twelve chapters' mission ids (prompt 20); 4: chapters of 9-18 missions and the interludes (prompt 22).</summary>
+        internal const int CampaignVersion = 4;
 
         /// <summary>The HQ level a save of the nine-chapter campaign had opened (0: none kept).</summary>
         public static int HqLevelKept => D.hqKept;
@@ -380,12 +380,19 @@ namespace MachineBrigade.Game.Match
         /// stars and tier follow it to its new id (campaign.json "migration", all at once), the chapter
         /// cards seen follow their chapters, and the HQ level it had opened is kept. Cards won stay
         /// unlocked (they are kept by id), so nothing the player had is lost; the new missions around
-        /// them are open to play (a won mission opens the one after it).
+        /// them are open to play (a won mission opens the one after it). A save of the twelve chapters of ten
+        /// (version 3, prompt 22 B): the missions that moved (a side mission made a main one, a mission moved to
+        /// another chapter) take their stars along (campaign.json "migration22"); a version 2 save takes both steps.
         /// </summary>
         private static void MigrateCampaign(Data d)
         {
             if (d.campaignVersion >= CampaignVersion) return;
-            if (d.campaignVersion == 2) MoveToTwelveChapters(d);
+            if (d.campaignVersion == 2)
+            {
+                MoveToTwelveChapters(d);
+                Move(d, Campaign.Meta.Moves22);
+            }
+            else if (d.campaignVersion == 3) Move(d, Campaign.Meta.Moves22);
             else FromOldCampaign(d);
             d.campaignVersion = CampaignVersion;
         }
@@ -398,12 +405,25 @@ namespace MachineBrigade.Game.Match
                 var at = d.missionIds.IndexOf(old);
                 if (at >= 0 && d.missionStars[at] > 0) d.hqKept = Math.Max(d.hqKept, level);
             }
+            Move(d, meta.Moves);
+            var seen = new List<int>();
+            foreach (var c in d.chaptersSeen)
+            {
+                var n = meta.ChaptersSeen.TryGetValue(c, out var to) ? to : c;
+                if (!seen.Contains(n)) seen.Add(n);
+            }
+            d.chaptersSeen = seen;
+        }
+
+        /// <summary>Every mission's stars and best tier to its new id (all at once), the better of two kept when two land on one.</summary>
+        private static void Move(Data d, IReadOnlyDictionary<string, string> moves)
+        {
             var ids = new List<string>();
             var stars = new List<int>();
             var tiers = new List<int>();
             for (var i = 0; i < d.missionIds.Count; i++)
             {
-                var id = meta.Moves.TryGetValue(d.missionIds[i], out var moved) ? moved : d.missionIds[i];
+                var id = moves.TryGetValue(d.missionIds[i], out var moved) ? moved : d.missionIds[i];
                 var star = d.missionStars[i];
                 var tier = i < d.missionTiers.Count ? d.missionTiers[i] : 0;
                 var j = ids.IndexOf(id);
@@ -422,13 +442,6 @@ namespace MachineBrigade.Game.Match
             d.missionIds = ids;
             d.missionStars = stars;
             d.missionTiers = tiers;
-            var seen = new List<int>();
-            foreach (var c in d.chaptersSeen)
-            {
-                var n = meta.ChaptersSeen.TryGetValue(c, out var to) ? to : c;
-                if (!seen.Contains(n)) seen.Add(n);
-            }
-            d.chaptersSeen = seen;
         }
 
         private static void FromOldCampaign(Data d)
@@ -460,6 +473,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The mark of the game's epilogue in the chapter cards seen (10 in the nine-chapter campaign).</summary>
         public const int EpilogueSeen = 100;
+
+        /// <summary>Prompt 22 C.3: the mark of the flash-forward shown before the first mission.</summary>
+        public const int PrologueSeen = 99;
 
         /// <summary>The mark of the "To be continued" card after a chapter (a release that ends before the story does).</summary>
         public static int ContinuedSeen(int chapter) => 100 + chapter;

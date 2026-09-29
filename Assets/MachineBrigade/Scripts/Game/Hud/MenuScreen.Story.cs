@@ -84,15 +84,17 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case DossierTab.Timeline:
                     _dossierBody.Add(Entry(null, Strings.Get("dossier.before"), null, Strings.Get("timeline.0"), false, false));
-                    for (var c = 1; c <= Campaign.LastChapter; c++)
+                    // Prompt 22: the chapters and interludes in the order they are played.
+                    foreach (var info in Campaign.Chapters)
                     {
+                        var c = info.Number;
                         if (!Campaign.ChapterEnabled(c)) continue;
                         var done = _dossierAll || Campaign.ChapterDone(c);
-                        _dossierBody.Add(Entry(null, Strings.Format("dossier.chapterFiles", c) + " · " + Strings.Get($"chapter.{c}.title"), null,
+                        _dossierBody.Add(Entry(null, Campaign.ChapterName(c) + " · " + Strings.Get($"chapter.{c}.title"), null,
                             done ? Strings.Get($"timeline.{c}") : Strings.Get("dossier.lockedChapter"), !done, false));
                     }
                     // The game's epilogue, or "To be continued" when the build ends before the story does.
-                    if (_dossierAll || Campaign.ChapterDone(Campaign.LastChapter))
+                    if (_dossierAll || Campaign.ChapterDone(Campaign.FinalChapter))
                         _dossierBody.Add(Campaign.StoryComplete
                             ? Entry(null, Strings.Get("campaign.epilogue.title"), null, Strings.Get("campaign.epilogue"), false, false)
                             : Entry(null, Strings.Get("campaign.tbc.title"), null, Strings.Get("campaign.tbc"), false, false));
@@ -106,7 +108,7 @@ namespace MachineBrigade.Game.Hud
                         if (m.Chapter != chapter)
                         {
                             chapter = m.Chapter;
-                            _dossierBody.Add(Kit.Caption(Strings.Format("dossier.chapterFiles", chapter)));
+                            _dossierBody.Add(Kit.Caption(Campaign.ChapterName(chapter)));
                         }
                         any = true;
                         _dossierBody.Add(Entry(m.Speaker, Strings.Get($"mission.{m.Id}.fragment.title"), Campaign.Label(m) + " · " + Strings.Get($"mission.{m.Id}.name"),
@@ -157,7 +159,7 @@ namespace MachineBrigade.Game.Hud
             var text = Kit.Box("fc-dossier__text");
             text.Add(Kit.Text(Kit.Caps(Strings.Get("map." + id)), "fc-panel-title"));
             var chapters = Campaign.Chapters.Where(c => Campaign.ChapterEnabled(c.Number) && Campaign.MissionsOf(c.Number).Any(m => m.Map == id))
-                .Select(c => c.Number.ToString()).ToList();
+                .Select(c => c.Short).ToList();
             var sub = Strings.Has("map." + id + ".sub") ? Strings.Get("map." + id + ".sub") + " · " : "";
             text.Add(Kit.Caption(sub + (chapters.Count > 0 ? Strings.Format("guide.map.chapters", string.Join(", ", chapters)) : Strings.Get("guide.map.skirmish"))));
             if (Strings.Has("guide.map." + id))

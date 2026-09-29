@@ -42,11 +42,23 @@ namespace MachineBrigade.Sim.Content
 
     /// <summary>
     /// A chapter of the story campaign: its act, its battlefields, and what finishing it opens
-    /// (the Game layer names it "chapter.&lt;n&gt;.*"). Its missions carry its number.
+    /// (the Game layer names it "chapter.&lt;n&gt;.*"). Its missions carry its number. Prompt 22: an
+    /// interlude is a chapter too, numbered after the twelve (13-15) and played after the chapter
+    /// before it in campaign.json's order; it goes with that chapter's act.
     /// </summary>
     public sealed class ChapterDef
     {
         public int Number { get; set; }
+
+        /// <summary>Prompt 22: 0 for one of the twelve chapters, 1-3 for an interlude (its own number).</summary>
+        public int Interlude { get; set; }
+
+        public bool IsInterlude => Interlude > 0;
+
+        /// <summary>Its number as the screens show it: "4", or an interlude's Roman numeral ("II").</summary>
+        public string Short => Interlude > 0 ? Roman(Interlude) : Number.ToString();
+
+        public static string Roman(int n) => n switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", 5 => "V", _ => n.ToString() };
 
         /// <summary>The act it belongs to (1-4).</summary>
         public int Act { get; set; }
@@ -74,6 +86,7 @@ namespace MachineBrigade.Sim.Content
                 {
                     Number = c.Int("number", list.Count + 1),
                     Act = c.Int("act", 1),
+                    Interlude = c.Int("interlude", 0),
                     Maps = c.Has("maps") ? new List<string>(c.StringArray("maps")) : Array.Empty<string>(),
                     General = c.Has("general") ? c.String("general") : null,
                     Main = c.Has("main") ? c.String("main") : null,
@@ -98,6 +111,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The old campaign's HQ-level missions (old ids) and the level each opened.</summary>
         public IReadOnlyDictionary<string, int> OldHq { get; set; } = new Dictionary<string, int>();
+
+        /// <summary>
+        /// Prompt 22 B: where the twelve-chapter campaign's missions went when the chapters grew to 9-18
+        /// missions and the interludes came in (a save of campaign version 3; old id to new, all at once).
+        /// </summary>
+        public IReadOnlyDictionary<string, string> Moves22 { get; set; } = new Dictionary<string, string>();
 
         /// <summary>Last act switched on to the pay scale of every mission (absent: 1).</summary>
         public IReadOnlyDictionary<int, float> PayScale { get; set; } = new Dictionary<int, float>();
@@ -130,6 +149,13 @@ namespace MachineBrigade.Sim.Content
                 meta.Moves = moves;
                 meta.ChaptersSeen = seen;
                 meta.OldHq = hq;
+            }
+            if (root.Has("migration22") && root.Object("migration22").Has("moves"))
+            {
+                var o = root.Object("migration22").Object("moves");
+                var moves = new Dictionary<string, string>();
+                foreach (var k in o.Keys) moves[k] = o.String(k);
+                meta.Moves22 = moves;
             }
             if (root.Has("economy") && root.Object("economy").Has("payScale"))
             {

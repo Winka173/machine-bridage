@@ -80,9 +80,13 @@ namespace MachineBrigade.Tests
             var story = BossHunts.Story;
             var full = BossHunts.Full;
             CollectionAssert.AreEqual(story.Select(b => b.Id), full);
-            Assert.That(story.Select(b => b.Chapter), Is.Ordered);
-            var slots = Campaign.Chapters.SelectMany(c => c.Minis.Append(c.Main)).Where(id => id != null).Distinct()
-                .Where(id => !BossHunts.OnRails(GameContent.LoadCatalog().Vehicles[id])).ToList();
+            // Prompt 22: in the order of play (an interlude, numbered 13-15, comes after the chapter before it).
+            var order = Campaign.Chapters.Select(c => c.Number).ToList();
+            Assert.That(story.Select(b => order.IndexOf(b.Chapter)), Is.Ordered);
+            // A slot whose boss part E has not built yet (Behemoth Mk.0, Morrigan) comes into the hunt with its def.
+            var catalog = GameContent.LoadCatalog();
+            var slots = Campaign.Chapters.SelectMany(c => c.Minis.Append(c.Main)).Where(id => id != null && catalog.Vehicles.ContainsKey(id)).Distinct()
+                .Where(id => !BossHunts.OnRails(catalog.Vehicles[id])).ToList();
             CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains aside");
             Assert.AreEqual(12 - 1, story.Count(b => b.Main), "the twelve main bosses but Nemesis");
             // It opens once the last chapter on is done.
@@ -99,10 +103,10 @@ namespace MachineBrigade.Tests
         {
             var every = BossHunts.Full.Count;
             Campaign.Release = CampaignRelease.UpTo(lastAct);
-            var last = Campaign.LastChapter;
-            Assert.IsTrue(BossHunts.Story.All(b => b.Chapter <= last));
-            var onlyOff = Campaign.Chapters.Where(c => c.Number > last).SelectMany(c => c.Minis.Append(c.Main))
-                .Except(Campaign.Chapters.Where(c => c.Number <= last).SelectMany(c => c.Minis.Append(c.Main))).ToList();
+            // Prompt 22: by act (an interlude goes with the act before it).
+            Assert.IsTrue(BossHunts.Story.All(b => Campaign.Chapter(b.Chapter).Act <= lastAct));
+            var onlyOff = Campaign.Chapters.Where(c => c.Act > lastAct).SelectMany(c => c.Minis.Append(c.Main))
+                .Except(Campaign.Chapters.Where(c => c.Act <= lastAct).SelectMany(c => c.Minis.Append(c.Main))).ToList();
             foreach (var week in new[] { 202640, 202641, 202642 })
                 foreach (var id in BossHunts.Weekly(week))
                 {
@@ -239,12 +243,14 @@ namespace MachineBrigade.Tests
         public void EveryBossHasItsRankAndGeneral()
         {
             var catalog = GameContent.LoadCatalog();
-            var mains = Campaign.Chapters.Select(c => c.Main).ToList();
-            Assert.AreEqual(12, mains.Distinct().Count(), "twelve main bosses");
-            Assert.AreEqual(19, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "nineteen mini bosses");
+            var mains = Campaign.Chapters.Select(c => c.Main).Where(id => id != null).ToList();
+            Assert.AreEqual(12, mains.Distinct().Count(), "twelve main bosses (an interlude has none)");
+            Assert.AreEqual(21, Campaign.Chapters.SelectMany(c => c.Minis).Distinct().Count(), "twenty-one mini bosses (prompt 22 E's two among them)");
             foreach (var c in Campaign.Chapters)
-                foreach (var id in c.Minis.Append(c.Main))
+                foreach (var id in c.Minis.Append(c.Main).Where(id => id != null))
                 {
+                    // Prompt 22 E: Behemoth Mk.0 and Morrigan come with P22-content (their missions fight their fallbacks until then).
+                    if (!catalog.Vehicles.ContainsKey(id) && (id == "behemoth_mk0" || id == "morrigan")) continue;
                     Assert.IsTrue(catalog.Vehicles.TryGetValue(id, out var def) && def.Boss, $"chapter {c.Number}: {id} is a boss");
                     Assert.AreEqual(id == c.Main ? BossRank.Main : BossRank.Mini, def.Rank, id);
                     Assert.AreEqual(Generals[id], def.General, id + "'s general");
@@ -273,10 +279,8 @@ namespace MachineBrigade.Tests
             "Command Airship", "Khinh Hạm", "Black Crow", "Hùng", "Quạ Đen", "Boss Rush", "Roc, Roc",
         };
 
-        /// <summary>DECISIONS 19A: our side still calls Wolff "Quạ Đen" on the radio and in its own files.</summary>
-        private static bool Allowed(string key, string name) =>
-            name == "Quạ Đen" && (key.StartsWith("radio.khai.") || key.StartsWith("radio.linh.") || key.StartsWith("radio.dieuhau.") ||
-                                  key.StartsWith("radio.mai.") || key.StartsWith("radio.hq.") || key == "char.quaden.bio" || key == "char.dieuhau.bio");
+        /// <summary>Prompt 22 A: no exception any more ("Quạ Đen" is gone; Wolff is Raven on every side).</summary>
+        private static bool Allowed(string key, string name) => false;
 
         [Test]
         public void NoTextUsesAnOldName()

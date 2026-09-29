@@ -8755,3 +8755,108 @@ removed), `CombatSystem.cs` (`InRhythm` and the turn helpers), `Vehicle.cs`, `We
 `PlayerProfile.Arsenal.cs` (`RosterVersion` 5), `Progression.cs`, `MatchSettings.cs`, `Strings.cs`, `GuideText.cs`,
 `MenuScreen.cs` / `.Shop.cs`, `UI/Cards/manifest.json`, `ModelLibrary.cs`, `TowerArt.cs`, `VehicleView.Deploy.cs`,
 `UiShots.cs`, `siege_tank.glb`, `Tools/blender/mb_p22_siege.py`, the tests above.
+
+## 22A. Prompt 22 pass 1: names, structure, story (2026-09-30)
+
+Sections A, B and C of `Docs/prompts/prompt22_vi.txt`, with the owner's note of 30/09 (a chapter runs from 9 to 18
+missions by the story's pace). The story is summed up, chapter by chapter and mission by mission, in `Docs/STORY.md`.
+
+### A. Names
+
+- **Every proper name is the spec's, the same in both languages**: the region (Meridian Coast), the faction (Meridian
+  Accord, its 7th Mechanized Brigade, "Machine Brigade"), the capital (Veyra), the people and call signs, the maps, the
+  chapters and acts. Descriptions, bosses' subtitles, radio and briefings stay translated. A proper name keeps the spelling
+  it was given ("Mechanized", "Iron Harbor") while the running English stays British (glossary).
+- **Ids stay**: saves, records, text keys and portraits keep `khai`, `hung`, `sen`, `quaden`, `landingbeach`, `capital`...
+  The tokens of prompt 21 (`{@lyhan}`...) stay in the texts and read the new names from `NameText.Table`; new texts write
+  the names as they are, and `NameText.Kept` lists every new name for the language scans.
+- **How**: the map names in `Strings.cs`; a rename pass over every table and the campaign sources (people, places, the
+  faction; "Khai" without its marks in the English texts too; "Khai hỏa", open fire, is left alone); the texts that named
+  the old story rewritten (the Night of Steel, the "Protectorate", the Northern Army are gone; Kade is Colonel Marcus Kade;
+  Bà Già, the captured Behemoth, is Matilda). Kasimir Wolff is Raven on every side: prompt 20's exception for "Quạ Đen" on
+  our radio is gone.
+- **Prompt 21's hand work kept**: prompt 21 localised in `CampaignText.cs`, by hand, words that prompt 20's sources mark
+  fresh; a rebuild would have put the sources' words back (it did, once: "rocket" for "rốc-két"). `act5.py` now clears
+  prompt 20's fresh marks, so only what prompt 22 writes (story.py, act5.py-act8.py) is fresh; `CampaignText.cs` was
+  rebuilt from the committed one. `radio.betrayal` stays in `Strings.cs` only (prompt 21 moved it).
+
+### B. Structure
+
+- **Final counts** (main / side): chapter 1 9/1, 2 11/2, 3 12/2, interlude I 4/0; 4 16/2, 5 13/2, 6 16/2, interlude II
+  4/0; 7 18/1, 8 12/2, 9 14/2, interlude III 4/0; 10 14/2, 11 11/1, 12 10/0: 168 main missions (156 in the chapters, 12
+  in the interludes) and 19 side missions, 187 in all (was 121 and 24). The spec's counts, but chapter 1 raised from 8 to
+  9 (the owner's floor); its ninth is the fishing village (c1m03 retold), so the chapter kept all its missions but one.
+- **Interludes are chapters 13-15** (`interlude` 1-3 in campaign.json), played after chapters 3, 6 and 9: no mission id of
+  the twelve moves, and `Campaign.Chapters` is the order of play. An interlude carries the act before it (its `act`), so the
+  act switches of prompt 20 C take it along with no new code. `Campaign.LastChapter` stays the last of the twelve switched
+  on (the Full Boss Hunt, the Sandbox and the Operations tiers follow it); `FinalChapter` is the last in order (an act's
+  interlude ends a release: its "To be continued" comes after it). On the screens: "Interlude II" / "Chương xen kẽ II",
+  its missions "II-3", the lock line names the chapter before ("Opens once Interlude I is finished").
+- **New missions** are copies of missions already written on the same battlefield, or of one whose goal names only the
+  map's points (capture, hold, survive, recon, outpost, a flying boss) on another, with the set-up changed (prompt 4):
+  44 new, four moved. Ids go on from a chapter's last one (c4m12...), interludes i1m01-i3m04; `act8.ORDER` sets the order
+  of play. The build checks the pairwise rule as before and adds: no two in a row alike, the counts, one operation per
+  chapter and last, the operation fights the chapter's main boss, a set piece besides it (`setPiece`), no card in an
+  interlude, every mission on a P22-content map or boss says so (`awaits`).
+- **The last mission is the operation with the main boss**: c2m10 (the refinery raid) and c4m10 (the port) are staged set
+  pieces now (still offered again in Operations as notable battles); chapter 2 ends on a new operation at Red Rock (c2m11,
+  the Behemoth, Thorne's army beside us); c4m11 (Leviathan, prompt 16's epilogue) is chapter 4's operation (the lighthouse,
+  a choice of the old coastal batteries or air cover, the fishing village, Leviathan); c7m10 ends on a new Nemesis
+  intercept, and Nemesis's old mission (c7m05) brings Juggernaut back on the city's freight line. Inferno breaks off at
+  half health in c2m05 and burns with the refinery in c2m10.
+- **Moves** (campaign version 4, `migration22`): c1m07 to c6m11 (Harvest Guard, now Varga's counterstrike in Greenvale;
+  the old campaign's m22 goes with it), c1s2 to c6m12, c7s2 and c11s2 to main missions c7m11 and c11m11. c12s1 and c12s2
+  are gone (chapter 12 has no side mission; their stars go with them) and the legendary tower piece moved to c11s1. A
+  version 2 save takes both steps. A player who had finished a chapter finds its new missions open and the campaign goes
+  on from the first of them; a chapter whose operation is new (chapter 2) is done once that is won.
+- **Where a boss had to fight**: Kessler's last stand is his Scylla (C.4), a ship, so c12m02 moved from the launch site to
+  Beacon Bay, north of Helion; chapter 12's minis are Behemoth Mk.II, Scylla and Locust (Tempest stays in chapter 4).
+  Gungnir, a gun on rails, stays on the Rust Yard's rails, called the Skygate Array's railhead. Fenrir's chase moved to the
+  Whiteout Pass blizzard (reversed), and chapter 6's Behemoth Mk.II to fog so the two differ. The two Locusts of interlude
+  II come one per battlefield (a mission fights one boss). Chapter 7's reappearances: Inferno in the Old Quarter (c7m13),
+  Juggernaut in Metro City (c7m05).
+- **Pay**: the tune is bound by blueprints (the coins of stars and crates are enough), so the coin scale stays at its
+  floor, the old campaign's pay; the blueprint scale falls from 1.00 to 0.75 for 187 missions. The deck's rank is 7.14 as
+  act IV begins and 8.00 at the end; acts I-II alone pay ×1.86, acts I-III ×1.00 (rank 7.14; a release never pays less).
+
+### C. Story
+
+- **The flash-forward** is a story card before chapter 1's card, shown once (mark 99 in the cards seen); a save that has
+  seen chapter 1 skips it. **The ending** is the epilogue card (`campaign.epilogue`); the hooks for later content are in
+  `Docs/STORY.md` (ships still in orbit, Kessler's river flotillas, a Hegemon general a season, Thorne's fate).
+- **Beats** (C.4) are in their missions, in both languages; `Prompt22StoryTests.TheStoryBeatsAreInTheirMissions` checks a
+  line of each chapter's key beat. Aurel speaks on the radio first in chapter 11: his earlier lines went to others (c7m01,
+  c7m09, c10m05); a briefing's quote card still shows the general's taunt, which is not the radio. Raven first appears with
+  the Harpy by radio (the Harpy stays Orlov's gunship and Orlov's deck); Hawk wins the duel (Morrigan breaks off at half)
+  and shoots Raven down over Skyhold (c10m10). Thorne's last line is the spec's, "Đừng để tôi đã đúng." ("Don't let me
+  have been right.").
+- **Voices**: radio lines of 100 characters at most in both languages (a test; three old lines were shortened), each
+  character in his or her own register (Varga speaks to the player as "ông", an equal; Orlov and Kessler keep "ngươi").
+  A mission's radio line no mission plays any more is dropped from `CampaignText.cs` by the build.
+- **The eight officers who join** (the commanders of prompt 22 F) speak from the chapter that brings them in, so each has a
+  flat vector portrait in `portraits.py`'s style (placeholders like the others); Nadia's insignia is a captain's now.
+
+### Waiting on the other agents (check after both merges)
+
+- **Maps** `foundry` (interlude I, i1m01-i1m04) and `veyra_old_quarter` (c7m12-c7m15): assumed in the standard frame
+  (camps in the corners, points west / town / east), weather lists assumed (`campaign_kit.WEATHER`); until the maps come,
+  their missions read "Battlefield in the next update" and do not hold the campaign back.
+- **Bosses** `behemoth_mk0` (i1m03, fought as the Behemoth at 0.9) and `morrigan` (i3m02, c10m12, as Spectre at 0.5 and
+  0.6). Their names and files are in `CampaignText.cs` (story.py's boss files): if P22-content writes them too, keep one.
+- **Mara's Behemoth** in c12m10 (`awaits: ally:mara_behemoth`; Mara's line for it already plays). **Pass 3**: c10m12 has
+  `commander: dieuhau` and awaits `mode:air_duel` (aircraft only).
+- **Pass 2 hooks**: `storyChoice` on c4m14 (`c4.pursuit`), c8m09 (`c8.miners`) and c11m09 (`c11.radar`), where D.5's
+  choices come; `comic.<n>` on every chapter and interlude (D.8).
+
+### Tests
+
+- `Prompt22StoryTests` (new): no old proper name in any table in either language, the ids and new names as expected;
+  the counts of every chapter and interlude, the operation last with the chapter's main boss; no two missions in a row
+  alike; an interlude with the act before it for acts I, I-II, I-III and all four (and its labels); a save of the twelve
+  chapters of ten moved on once; the story's beats; radio lines of 100 characters at most.
+- Updated for prompt 22: `Prompt20CampaignTests` (no "Quạ Đen" exception, interludes in the act switches),
+  `Prompt20HuntTests` (story order and act switches with interludes, 21 mini bosses, part E's two skipped until their
+  defs exist), `CampaignTests.TwelveChaptersOfNineToEighteenMissionsAndThreeInterludes`.
+- Runs: the new tests with the Prompt20Campaign, CampaignStart and L10n filters (and UiLanguage): 46 of 47
+  (a duplicate `radio.betrayal`, fixed), then 50 of 50 with RadioDirector added; CampaignTests' data and shape tests with Prompt20Hunt's: 16 of 16.
+  The 5-seed campaign runs wait for the testing phase.
