@@ -105,6 +105,8 @@ namespace MachineBrigade.Sim.Movement
                     v.ManualOrder = false;
                     v.ManualUntil = _world.Time + ManualHoldSeconds;
                 }
+                // Prompt 17 C: a bunker vehicle digging in, dug in or packing up stays put.
+                if (DeployHeld(v)) continue;
                 Drive(v, dt);
                 // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
                 WatchRescue(v);
@@ -310,7 +312,7 @@ namespace MachineBrigade.Sim.Movement
             if (v.Def.FixedWing)
             {
                 // Aeroplanes circle their post and pick fights from there (see DriveAeroplane).
-                var nearby = GuardThreat(v);
+                var nearby = GuardThreat(v) ?? SeadTarget(v);
                 v.Engaged = nearby?.Id ?? EntityId.None;
                 return;
             }
@@ -390,6 +392,8 @@ namespace MachineBrigade.Sim.Movement
             var enemy = v.Def.FixedWing && weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1 ? BombTarget(v)
                 : _world.FindNearestEnemy(v, MathF.Max(v.Def.VisionRange, weapon.Range), requireVisible: true,
                     minRange: weapon.MinRange, layers: HuntsAircraft(v) ? weapon.Targets : weapon.Targets & TargetLayers.Ground);
+            // Prompt 17 C: the stealth fighter with no aircraft about goes for the air defences.
+            enemy ??= SeadTarget(v);
             if (enemy != null)
             {
                 v.Engaged = enemy.Id;
@@ -581,6 +585,8 @@ namespace MachineBrigade.Sim.Movement
             // comes in until its gun and rockets reach as well (see HoverReach).
             var clear = _world.HasLineOfFire(v, target, weapon);
             var reach = v.Flying && !v.Def.FixedWing && !v.Def.Boss ? HoverReach(v, target) : weapon.Range;
+            // Prompt 17 C: dug in, it reaches further (and does not pack up for what it can already hit).
+            if (v.Deploy == DeployState.Deployed) reach *= v.RangeFactor;
             if (distance <= reach * 0.9f && clear)
             {
                 // Never stop in the doorway, nor in the road with friends coming up behind: step
@@ -785,6 +791,8 @@ namespace MachineBrigade.Sim.Movement
             var def = v.Def;
             var turnRadius = def.Speed / def.TurnRate;
             var target = RunTarget(v);
+            // Prompt 17 C: a loyal wingman flies on its leader's wing when it has nothing of its own to attack.
+            if (target == null && def.Wingman != null && FlyWing(v, dt)) return;
             v.InAttackHold = false;
             if (target != null && def.AttackHold > 0f && !def.Orbit && AttackHold(v, target, dt)) return;
             if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;

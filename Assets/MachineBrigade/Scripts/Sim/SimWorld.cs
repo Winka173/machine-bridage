@@ -67,6 +67,8 @@ namespace MachineBrigade.Sim
             Economy = new EconomySystem(this);
             Strikes = new StrikeSystem(this);
             Bases = new Modes.BaseSystem(this);
+            Domes = new Abilities.DomeSystem(this);
+            Deploying = new Abilities.DeploySystem(this);
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
@@ -166,6 +168,12 @@ namespace MachineBrigade.Sim
 
         /// <summary>Aircraft stores on the field and the holding pattern (prompt 13 C).</summary>
         internal Abilities.SupplySystem Supply { get; }
+
+        /// <summary>Prompt 17 C: shield domes (the shield carrier, the shield generator).</summary>
+        internal Abilities.DomeSystem Domes { get; }
+
+        /// <summary>Prompt 17 C: vehicles that dig in (the bunker vehicle).</summary>
+        internal Abilities.DeploySystem Deploying { get; }
 
         internal readonly List<Crate> CrateList = new();
 
@@ -689,6 +697,8 @@ namespace MachineBrigade.Sim
             Bosses.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
+            Deploying.Step();
+            Domes.Step();
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
@@ -732,6 +742,8 @@ namespace MachineBrigade.Sim
             Status.Step(dt);
             Lap(6);
             Gear.Step(dt);
+            Deploying.Step();
+            Domes.Step();
             Lap(7);
             _combat.Step(dt);
             Lap(8);

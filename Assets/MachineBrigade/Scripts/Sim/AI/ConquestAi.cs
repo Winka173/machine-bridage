@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.AI
     /// the objective that is worth most. Difficulty changes how often it decides and how well it
     /// picks; it never gets free units or CP.
     /// </summary>
-    public sealed class ConquestAi
+    public sealed partial class ConquestAi
     {
         private const int ClusterSize = 3;
         private const float ClusterRadius = 9f;
@@ -812,6 +812,7 @@ namespace MachineBrigade.Sim.AI
             var owned = new Dictionary<string, int>();
             var capturers = 0;
             var ownResupplied = 0;
+            var ownManned = 0;
             foreach (var v in world.Vehicles)
             {
                 if (!v.IsAlive || v.Team != _team) continue;
@@ -819,6 +820,7 @@ namespace MachineBrigade.Sim.AI
                 if (!v.Flying && v.Def.CaptureRate > 0f && !v.Def.Static) capturers++;
                 // Launchers (they run dry and reload) and helicopters (their stores): what a carrier feeds.
                 if ((!v.Flying && v.Arm(0).Ammo > 0) || (v.Flying && !v.Def.FixedWing && v.HasStores)) ownResupplied++;
+                if (v.Def.Manned) ownManned++;
             }
             // A structure to bring down (a fortress HQ, a demolition target) wants high explosive.
             var demolishing = Demolish != null && world.TryGetProp(Demolish(world), out var building) && building.IsAlive;
@@ -840,7 +842,8 @@ namespace MachineBrigade.Sim.AI
                 if (def.Boss || def.CpCost <= 0 || !def.Card) continue;
                 if (economy.VehicleCount >= economy.VehicleCap) continue;
                 if (def.MaxPerSide > 0 && world.Economy.Fielded(_team, id) >= def.MaxPerSide) continue;
-                if (def.Flying && airFull) continue;
+                // Prompt 17 C: a loyal wingman is outside the aircraft cap.
+                if (def.Flying && airFull && !def.AirCapFree) continue;
                 var profile = Profile;
                 var score = 1f + (float)_random.NextDouble() * profile.Noise;
                 // Prompt 13 I.2: the card's measured combat value per CP (1: the roster's middle).
@@ -877,6 +880,7 @@ namespace MachineBrigade.Sim.AI
                     if (def.CounterBattery != null) score += enemyGuns > 0 ? MathF.Min(2.4f, enemyGuns * 0.8f) - 0.6f : -2.5f;
                     // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
                     if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
+                    score += NewCardScore(def, owned.ContainsKey(id), ownManned, ownTotal, enemy, towers, neutral);
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
@@ -1004,6 +1008,9 @@ namespace MachineBrigade.Sim.AI
             /// <summary>The value of the enemies behind each defence: APS (and point defence), reactive armour or a cage, smoke, jammers; aircraft with flares.</summary>
             public float Aps, Reactive, Smoke, Jammers, AirFlares;
 
+            /// <summary>Prompt 17 C: shield domes seen (carriers and generators, by their worth): energy goes through them.</summary>
+            public float Domes;
+
             /// <summary>Ours: the value of our army times how well it pierces the enemy's armour (<see cref="Fit"/>).</summary>
             public float Pierce;
         }
@@ -1082,6 +1089,7 @@ namespace MachineBrigade.Sim.AI
                 if (e.Def.Static)
                 {
                     if (e.Aps != null) mix.Aps += 4f;
+                    if (e.Def.Dome != null) mix.Domes += 8f;
                     continue;
                 }
                 // A boss weighs as much as a small army of its kind.
@@ -1092,6 +1100,7 @@ namespace MachineBrigade.Sim.AI
                 else mix.Light += value;
                 if (CanHitAir(e.Def)) mix.AntiAir += value;
                 AddArmour(mix, e.Def, e, value);
+                if (e.Def.Dome != null) mix.Domes += value * 2f;
                 mix.Total += value;
             }
             return mix;
@@ -1172,6 +1181,8 @@ namespace MachineBrigade.Sim.AI
                 score -= MathF.Min(1f, enemy.Aps / ground) * 2.5f;
             if (main.DamageType == DamageType.ShapedCharge) score -= MathF.Min(1f, enemy.Reactive / ground) * 2f;
             if (main.DamageType == DamageType.Energy) score -= MathF.Min(1f, enemy.Smoke / enemy.Total) * 2f;
+            // Prompt 17 C: shield domes stop everything but energy.
+            if (main.DamageType == DamageType.Energy && main.CanTarget(false)) score += MathF.Min(1f, enemy.Domes / MathF.Max(8f, enemy.Total)) * 2.5f;
             if (main.Guided) score -= MathF.Min(1f, enemy.Jammers / enemy.Total) * 2f;
             if (antiAir && main.Projectile == ProjectileKind.Missile && enemy.Air > 0f) score -= enemy.AirFlares / enemy.Air * (1f - main.FlareResist);
             return score;

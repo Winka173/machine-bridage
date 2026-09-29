@@ -601,6 +601,15 @@ namespace MachineBrigade.Sim.AI
                     Issue(world, CommandType.Move, v.Id, at);
                     continue;
                 }
+                // Prompt 17 C: a shield carrier keeps just behind the front line, its dome over the leading vehicles.
+                if (v.Def.Dome != null)
+                {
+                    var cover = world.Lanes.OffLane(Clamp(world, front - forward * 3f), 6f);
+                    if (Vector2.Distance(v.Position, cover) < 5f) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, cover) < 4f) continue;
+                    Issue(world, CommandType.Move, v.Id, cover);
+                    continue;
+                }
                 if (Vector2.Distance(v.Position, spot) < 10f) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
                 _ids.Add(v.Id);
@@ -684,6 +693,8 @@ namespace MachineBrigade.Sim.AI
                 if (v.Team != _team || v.Scripted || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
+                // Prompt 17 C: a loyal wingman flies on its own (on a leader's wing, or over the front).
+                if (v.Def.Wingman != null) continue;
                 if (v.Flying && Refit(world, v)) continue;
                 if (v.Flying) RearmInLulls(world, v);
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
@@ -694,7 +705,8 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
                 // stand) and counter-battery radars keep a little behind the middle of the army.
-                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
+                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null ||
+                    (v.Def.Dome != null && !v.Def.Static)) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);

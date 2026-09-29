@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.Entities
         public int OwnerTeam { get; }
         public WeaponDef Weapon { get; }
         public Vector2 AimPoint { get; }
-        public EntityId Target { get; }
+        public EntityId Target { get; set; }
         public float TimeLeft { get; set; }
 
         /// <summary>Aimed at an aircraft: ground splash cannot reach it and the shot bursts in the air.</summary>

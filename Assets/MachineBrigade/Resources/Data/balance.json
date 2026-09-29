@@ -45,8 +45,8 @@
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
         "default": { "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
-                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "gun_pit": 0.7, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6 },
-        "armour": { "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
+                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "gun_pit": 0.7, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
+        "armour": { "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
         "air": { "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
         // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
@@ -301,7 +301,14 @@
     { "id": "boss_heli_gun", "real": "M230 30 mm", "family": "autocannon", "size": 30,     "pen": 2, "inherits": "heli_gun", "cooldown": 0.201, "clip": 13, "clipReload": 4.1 },
     { "id": "boss_minigun", "real": "GShG 7.62 mm", "family": "mg", "size": 7.62,      "pen": 0, "inherits": "minigun", "cooldown": 0.0611, "roundWeight": 7, "clip": 40, "clipReload": 4.38 },
     { "id": "boss_hmg", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "cooldown": 0.267, "clip": 10, "clipReload": 4.1, "roundWeight": 11 },
-    { "id": "hover_ciws", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 22, "cooldown": 0.422, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 7, "clipReload": 4.44 }
+    { "id": "hover_ciws", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 22, "cooldown": 0.422, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 7, "clipReload": 4.44 },
+    // Prompt 17 C. The focused laser's damage ramps up while it stays on one target ("ramp": x0.3 to x2 over 6 s,
+    // lost after "grace" seconds off it or on another target); the swarm carrier's FPV drones pick their own
+    // targets round the aim point ("swarm": metres) and a new one if theirs is gone when they arrive; the
+    // bunker vehicle's 105 mm is the twin tank's L7 (the calibre scale's 105 mm, 200).
+    { "id": "focus_laser", "real": "focused laser (300 kW)", "family": "laser", "size": 300, "pen": 4, "damageType": "Energy", "damage": 12, "cooldown": 0.1, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "beam": true, "clip": 80, "clipReload": 1.5, "ramp": { "from": 0.3, "to": 2.0, "seconds": 6, "grace": 2.0 } },
+    { "id": "swarm_drones", "load": 8, "real": "FPV drone (1.5 kg)", "family": "drone", "size": 1.5, "pen": 3, "topAttack": true, "piercing": true, "projectileModel": "fpv_drone", "damageType": "ShapedCharge", "damage": 140, "cooldown": 12, "range": 60, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 8, "burstInterval": 0.3, "swarm": 18, "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
+    { "id": "gun_105_bunker", "real": "L7 105 mm", "family": "tank_gun", "size": 105, "pen": 3, "piercing": true, "damageType": "Kinetic", "damage": 200, "cooldown": 4.6, "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -531,6 +538,35 @@
     { "id": "long_sam", "value": 1.5, "scale": 0.85, "class": "AntiAir", "armour": 1, "hp": 440, "speed": 6, "turnRate": 60, "turretTurnRate": 60, "radius": 2.8, "length": 11.0, "width": 3.0, "cp": 11, "vision": 80,
       "firesWhileMoving": false, "weapon": "sam_48n6", "mainSlot": "missile", "captureRate": 0,
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Huge" } },
+    // Prompt 17 C: new units. The stealth fighter is seen only close up until it fires (the stealth bomber's
+    // rule) and hunts air defences with its two bombs when no aircraft is about ("sead"). The loyal wingman flies
+    // on the wing of the nearest manned aircraft of its side (patrols the front with none), may pull a SAM aimed
+    // at its leader onto itself, and is outside the six-aircraft cap (four a side). The laser tank's beam ramps up
+    // on one target. The shield carrier's dome takes every hit but energy for the friends inside until it breaks.
+    // The bunker vehicle digs in when it stands (3 s): front armour two levels up, reach +30 %, turret all round.
+    // The swarm carrier flies its FPV drones out to anywhere and releases them over the target.
+    { "id": "stealth_fighter", "value": 1, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 0.39, "armour": 0, "hp": 480, "speed": 40, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 20, "vision": 76,
+      "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 36, "captureRate": 0, "attackHold": 4.0,
+      "secondary": [ { "weapon": "guided_bomb", "slot": "bomb", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
+      "interceptor": true, "stealth": true, "sead": true, "skills": ["jet_flares"],
+      "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
+    { "id": "wingman_drone", "value": 1, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 0.39, "drone": true, "class": "Plane", "armour": 0, "hp": 300, "speed": 40, "turnRate": 120, "turretTurnRate": 360, "radius": 2.6, "cp": 6, "vision": 56,
+      "firesWhileMoving": true, "weapon": "aim9", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 32, "captureRate": 0, "attackHold": 3.0,
+      "maxPerSide": 4, "airCapFree": true, "wingman": { "follow": 120, "decoy": 25, "pull": 0.4 },
+      "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.5, "tier": "Large" } },
+    { "id": "laser_tank", "value": 1, "scale": 0.85, "class": "TankHunter", "armour": 3, "hp": 700, "speed": 6.5, "turnRate": 65, "turretTurnRate": 55, "radius": 2.4, "length": 7.4, "width": 3.2, "cp": 10, "vision": 38,
+      "firesWhileMoving": true, "weapon": "focus_laser", "strongVs": ["Heavy", "Tank", "Boss"],
+      "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    { "id": "shield_carrier", "value": 1, "scale": 0.85, "class": "Support", "armour": 1, "hp": 480, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 7.6, "width": 3.0, "cp": 7, "vision": 36,
+      "firesWhileMoving": true, "weapon": "hmg_roof", "captureRate": 1, "dome": { "radius": 12, "hp": 1000, "recharge": 20 },
+      "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
+    { "id": "bunker_vehicle", "value": 1, "scale": 0.85, "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1300, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.2, "width": 3.7, "cp": 8, "vision": 36,
+      "firesWhileMoving": true, "weapon": "gun_105_bunker", "secondary": [ { "weapon": "mg_coax", "slot": "mg", "aim": "Turret" } ],
+      "deploy": { "seconds": 3, "front": 2, "range": 1.3, "arc": 45 },
+      "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
+    { "id": "swarm_carrier", "value": 1, "rearmTime": 16, "strongVs": ["Tank", "Heavy", "Artillery", "Light"], "scale": 1.22, "armour": 1, "hp": 1400, "speed": 18, "turnRate": 60, "turretTurnRate": 360, "radius": 7, "cp": 14, "vision": 56,
+      "firesWhileMoving": true, "weapon": "swarm_drones", "mainSlot": "drone", "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "skills": ["bomber_flares"],
+      "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armour": [4, 2, 1, 1], "hp": 1215, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
       "firesWhileMoving": true, "weapon": "gun_125_elite", "skills": ["elite_shield"],
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
@@ -685,6 +721,17 @@
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     { "id": "guard_tower",      "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60, "revealStealth": true, "towerRangeAura": { "radius": 25, "range": 0.1 },
       "weapon": "hmg_roof", "secondary": [{"weapon": "agl_40", "slot": "gun", "aim": "Free"}], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // Prompt 17 C towers. The shield generator's dome (25 m) takes every hit but energy for its side's units and
+    // towers inside until it breaks, and is back 30 s after its last hit; the CP relay pays its side CP (the second
+    // relay less, a third nothing; nothing for 5 s after it is hit), two to a base, never on an outpost.
+    { "id": "shield_tower",     "fort": { "size": "Large" }, "static": true, "armour": 2, "hp": 2000, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.2, "length": 7, "width": 7, "cp": 0, "vision": 40,
+      "weapon": "none", "dome": { "radius": 25, "hp": 3000, "recharge": 30 }, "deathExplosion": { "damage": 160, "radius": 9, "delay": 0.4, "tier": "Huge" } },
+    { "id": "cp_relay",         "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 600, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 1.8, "length": 4, "width": 4, "cp": 0, "vision": 30,
+      "weapon": "none", "relay": { "income": 0.1, "second": 0.06, "quiet": 5 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    { "id": "shield_tower.bulwark", "inherits": "shield_tower", "branchOf": "shield_tower", "dome": { "radius": 19, "hp": 4800, "recharge": 30 } },
+    { "id": "shield_tower.pulse",   "inherits": "shield_tower", "branchOf": "shield_tower", "dome": { "radius": 25, "hp": 2100, "recharge": 14 } },
+    { "id": "cp_relay.hardened",    "inherits": "cp_relay", "branchOf": "cp_relay", "armour": 2, "hp": 1100, "relay": { "income": 0.08, "second": 0.05, "quiet": 5 } },
+    { "id": "cp_relay.express",     "inherits": "cp_relay", "branchOf": "cp_relay", "hp": 450, "relay": { "income": 0.12, "second": 0.07, "quiet": 8 } },
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
     { "id": "supply_truck",     "class": "Support", "armour": 0, "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "length": 7.3, "width": 2.72, "cp": 0, "vision": 26,

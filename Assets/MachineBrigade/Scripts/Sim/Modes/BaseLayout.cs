@@ -124,6 +124,8 @@ namespace MachineBrigade.Sim.Modes
         {
             if (string.IsNullOrEmpty(id) || !catalog.Vehicles.TryGetValue(id, out var def) || def.Fort is not { } fort) return false;
             if (slot.Kind == LoadoutSlotKind.Utility) return fort.Kind == FortKind.Utility && fort.Fits(slot.Size);
+            // Prompt 17 C: a CP relay is a base's, never an outpost's.
+            if (slot.Kind == LoadoutSlotKind.Outpost && def.Relay != null) return false;
             return fort.Kind == FortKind.Tower && def.BranchOf == null && TowerCards.IsLoadoutTower(id) && fort.Fits(slot.Size);
         }
 
