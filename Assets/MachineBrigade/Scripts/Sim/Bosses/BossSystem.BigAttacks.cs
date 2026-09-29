@@ -73,6 +73,12 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>Drones and missiles are checked against the other side's anti-air this often (ticks).</summary>
         private const int FlyerTicks = 5;
 
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): a big attack's missile is never faster than the attack helicopter's Hellfire
+        /// (24 m/s); a long way off it flies longer than its entry's "flight".
+        /// </summary>
+        internal const float MissileTopSpeed = 24f;
+
         // ================================================================== joining
 
         private void JoinBig(Vehicle v)
@@ -453,7 +459,7 @@ namespace MachineBrigade.Sim.Bosses
                         for (var k = 0; k < n; k++)
                         {
                             var at = spots[k % spots.Count];
-                            var due = fire + 0.35 * k + st.Flight;
+                            var due = fire + 0.35 * k + MathF.Max(st.Flight, Vector2.Distance(v.Position, at) / MissileTopSpeed);
                             s.Points.Add((at, due));
                             // One ring a target (the second missile at the same spot shares it).
                             if (k < spots.Count) s.ZoneList.Add(new BigZone(at, st.Radius, due, true));

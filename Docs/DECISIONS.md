@@ -6787,3 +6787,223 @@ run: it will list the 32 branch cards until the card pictures are rendered again
 5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
 detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
 Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).
+
+## 19R. Play-test 4: missile speeds, fire rates, the bunker vehicle's dug-in mode, look-alike vehicles (2026-09-29)
+
+The owner's play-test 4 items for agent B (`Docs/prompts/requests_vi.md`): missiles slower than they were, except those
+already at or below the attack helicopter's, which he likes; every weapon's rate of fire researched and made
+reasonable ("like the C-RAM, whose real rate is very high"); a real second mode for the bunker vehicle once it has dug
+in, drawn anew; and the vehicles that look alike redrawn. Branch `feature/rates-models` from lead/integration 0505750.
+
+### A. Missile speeds
+
+**The reference.** The attack helicopter's missile is `hellfire_standoff` (AGM-114L Longbow) at **24 m/s**. Every
+missile faster than that now flies at 24 m/s; those at or below it keep their speed.
+
+| Weapons | Before (m/s) | Now |
+|---|---|---|
+| `sam` (SHORAD: aa_vehicle, heavy_aa) | 36 | 24 |
+| `sam_long` and its `buk_launcher` (SAM launcher), `sam_post` (tower) | 41 | 24 |
+| `sam_battery`, `patriot`, `sam_pac3`, `sam_battery_lrr` (towers) | 41 | 24 |
+| `sam_48n6` (long-range SAM) | 56 | 24 |
+| `tamir` (Iron Dome, tower) | 44 | 24 |
+| `air_to_air`, `wvr_aam`, `r60`, `aim9` (jets, wingman) | 34 | 24 |
+| `stinger_atas`, `igla_v` (helicopters' MANPADS) | 29 | 24 |
+| `ballistic_missile` (Iskander) | 45 | 24 |
+| Big attacks' missiles (Leviathan's, the Typhon's, the Caspian's, the ballistic strikes) | their `"flight"` s at any range | the entry's flight, or longer so they never pass 24 m/s (`BossSystem.MissileTopSpeed`) |
+
+**Unchanged:** every ATGM, AGM and cruise missile (17-24 m/s already); **unguided rockets** (Hydra, S-8, Grad, GMLRS,
+TOS, 300 mm, 107 mm: 45-55 m/s). The owner's "tên lửa" covers both, but the attack helicopter he picked fires Hydras
+at 48 m/s next to its Hellfires, the lead's brief lists missiles only, and a rocket is unguided: slowed to a
+missile's pace it would miss everything that moves. The player's cruise-missile support (a timed strike, not a
+weapon) is also unchanged.
+
+**Plumes follow the new speeds by construction:** a flame's length and width are in lengths of the munition as drawn
+(12B), its smoke puffs are spaced by distance flown and live a fixed time, and the boost-then-cruise curve is a share
+of the flight. A missile at 24 m/s keeps its flame on its tail and its puffs as dense per metre; its trail is shorter in
+metres because it flew less far in the same seconds. `MissileFlightTests.PlumesStayOnTheirTailsFrameByFrame` (the Buk
+missile at its new speed among the cases) passes.
+
+**Checks:** `CounterTests` all pass (SAM beats jets, anti-air beats helicopters, fighters beat helicopters included).
+`MissileFlightTests` pins the new speeds and now asserts that no missile (or the ballistic missile) flies faster than
+`hellfire_standoff`; every flight at full range is still shorter than its cooldown (the closest: the tower `sam_battery_lrr`, 4.17 s
+at 100 m on a 4.24 s cooldown, 98 %: one for the tower agent to watch; among vehicles the SAM launcher's Buk, 2.3 s on
+2.5 s). Slower missiles give flares and point defence more time (11C: a missile is decoyed by flares out
+while it flies), so missile-armed anti-air lost a little and aircraft a little more (section E); as the brief says,
+rhythm was retuned rather than the speed put back: `buk_launcher` 2.9 → 2.5 s, `sam_48n6` 8 → 7.2 s.
+
+### B. Fire rates
+
+**Method.** For every vehicle, aircraft and boss weapon: the real system's rate of fire (cyclic rounds a minute),
+its usual burst and its magazine or belt (published figures: manufacturers, Jane's, the usual references), against the
+game's cadence. The damage a round stays on prompt 13's calibre scale and the penetration levels of prompt 15 are
+untouched (`CalibreTests`). Where the game's cadence was more than about 20 % off, it moved to the real one, **up to the
+60 rounds a second the simulation carries** (three a 20 Hz step, `CombatSystem.Stream`), in the real burst, and the
+change after the burst (`clipReload`) or the salvo's cooldown was solved so that `FirePower.Sustained` (the damage a
+second over a whole cycle) is kept within 1 %. The rounds a second over time, and so the projectiles and tracers the
+view draws, are the same as before; only the peaks are real. A second pass (section E) shortened the bursts that
+front-loaded damage enough to move the combat value.
+
+**Changed (vehicles, aircraft, bosses)**, rhythm "cadence x burst / change":
+
+| Weapon (carriers) | Real system | Before | Now |
+|---|---|---|---|
+| `mg_jeep`, `hmg_roof` (M2 12.7 mm; jeeps, trucks, roof guns) | 450-600 rpm, 5-10-round bursts, 100-round belt | 423-451 rpm x20-21 / 1.2-1.4 s | 550 rpm x25 / 2.2-2.3 s |
+| `mg_coax` (PKT / M240 7.62 mm) | 650-800 rpm, 250-round belts | 631 rpm x32 / 1.2 s | 750 rpm x36 / 1.87 s |
+| `door_gun` (PKT, Mi-24 doors) | 650-800 rpm | 905 rpm x40 / 1.21 s | 750 rpm x40 / 0.68 s |
+| `ifv_30` (2A42 30 mm, IFV) | low 200-300, high 550-800 rpm | 420 rpm x10 / 1.24 s | 550 rpm x10 / 1.55 s |
+| `twin_30_bmpt` (2 x 2A42, BMPT) | 2 x 550-800 rpm | 400 rpm x15 / 1.63 s | 1,091 rpm x10 / 1.99 s |
+| `autocannon_25` (M242 25 mm, armoured car) | 200 or 500 rpm, short bursts | 300 rpm x10 / 1.67 s | 500 rpm x6 / 1.48 s |
+| `gun_57mm` (57 mm, light tank; AU-220M module) | 80-120 rpm | 1 round / 2.53 s | 2 rounds 0.5 s apart / 4.56 s |
+| `flak_35` (2 x KDA 35 mm, Gepard) | 2 x 550 = 1,100 rpm, 20-40-round bursts | 600 rpm x23 / 4.34 s | 1,101 rpm x16 / 3.73 s |
+| `twin_30_flak` (2A38M twin 30 mm, heavy AA) | 4,060-5,000 rpm a mount | 866 rpm x46 / 1.21 s | 3,593 rpm (the cap) x20 / 1.56 s |
+| `zu23` (ZU-23-2) | 2 x 800-1,000 rpm, 50-round boxes | 889 rpm x37 / 1.53 s | 1,802 rpm x16 / 1.21 s |
+| `twin_35_ahead` (Skyranger 35 mm revolver) | 1,000 rpm, 20-24-round AHEAD bursts | 670 rpm x25 / 4.28 s | 1,000 rpm x24 / 4.79 s |
+| `heli_gun`, `boss_heli_gun` (M230 30 mm) | 625 rpm, 10-50-round bursts | 541 / 299 rpm | 625 rpm (x22 / 4.6 s; the boss's x13 / 5.36 s) |
+| `minigun` (M134, scout helicopter) | 2,000-4,000 rpm (3,000 on helicopters) | 732 rpm x39 / 1.01 s | 3,000 rpm x60 / 5.17 s |
+| `gsh30k` (GSh-30K, Mi-24P) | 2,000-2,600 rpm | 556 rpm x20 / 1.22 s | 2,400 rpm x20 / 2.8 s |
+| `jet_cannon` (GSh-30-2, Su-25) | 3,000 rpm, 250 rounds, 0.5-1 s bursts | 1,200 rpm x70 / 1 s | 3,000 rpm x30 / 1.33 s |
+| `fighter_cannon` (GAU-22/A, F-35) | 3,300 rpm, 182 rounds | 566 rpm x31 / 1.01 s | 3,297 rpm x40 / 4.7 s |
+| `gunship_25mm` (GAU-12 on the AC-130U) | 1,800 rpm there | 741 rpm x35 / 1.22 s | 1,802 rpm x45 / 3.64 s |
+| `bomber_tail_guns` (4 x M3 12.7 mm) | 4 x 1,200 rpm | 642 rpm x34 / 1.48 s | 3,593 rpm (the cap) x25 / 2.96 s |
+| `boss_minigun` (GShG-7.62, mega gunship) | 3,500 or 6,000 rpm | 982 rpm x40 / 4.38 s | 3,488 rpm x40 / 6.09 s |
+| `boss_hmg` (NSV 12.7 mm, train, Supreme Command) | 700-800 rpm | 225 rpm x10 / 4.1 s | 750 rpm x10 / 5.78 s |
+| `hover_ciws`, `ciws_aa` (AK-630M, boss escorts, rail super-gun) | 4,000-5,000 rpm | 142 rpm x7 / 4.44 s | 3,593 rpm (the cap) x15 / 14.7 s |
+| `airship_flak` (S-60 57 mm, command airship) | 105-120 rpm, 4-round clips | 312 rpm x11 / 4.1 s | 120 rpm x8 / 0.88 s |
+| `mothership_cannon` (AU-220M 57 mm) | 80-120 rpm | 4 rounds 0.18 s apart / 3.75 s | 4 rounds 0.5 s apart / 2.79 s |
+| `grad_rockets`, `grad_cluster`, `boss_rockets` (BM-21 122 mm) | 40 rockets in 20 s (0.5 s apart) | 0.08 s apart | 0.5 s apart (the cooldowns 11.31, 8.44 and 2.44 s keep each cycle) |
+| `thermobaric_rockets`, `boss_thermo` (TOS-1A 220 mm) | 24 rockets in 6-12 s | 0.14 / 0.2 s apart | 0.3 s apart (cooldowns 11.52, 12.51 s) |
+| `technical_rockets` (Type 63 107 mm) | 12 rockets in 7-9 s | 0.2 s apart / 7 s | 0.5 s apart / 5.1 s (the cycle 7.8 → 7.1 s: a stretched ripple loses more of its last rockets) |
+| `gsh_23v`, `gau_gatling` (no carrier now) | 3,000-3,400; 3,900 rpm | 1,207; 1,835 rpm | 3,297; 3,593 rpm, the change solved the same way |
+
+The AK-630's damage a second on the boss escorts is small (22), so at its real rate it fires a quarter-second brrrt every
+15 s: that is how a close-in gun reads, and the escorts' strength is unchanged.
+
+**Reviewed and left alone** (within about 20 % of the real rate, or a real rate the calibre scale cannot carry):
+`autocannon_30` (2A42 on low rate, 300 rpm, which is real); `boss_flak` (GDF twin 35 mm, 1,100 real, 1,200 here);
+`autocannon_40` (Bofors L/70, 300); `agl_40` (Mk 19, 325-375 real, 300 here); `naval_76` (Super Rapido, 120);
+`gun_120mm` (6-10 rpm with a loader, 11 here); `gun_152`, `gun_152_heat` (2A83 autoloader 10-12, 9.5-10);
+`howitzer` (M109: 4 rpm for 3 minutes, 5.5 here); `mortar_120` (2B11 12-15, 9.4); `leviathan_203` (Mk 71, 12, 5 here);
+the ATGMs and SAM launchers (TOW, Kornet, Hellfire ripples, Stinger, Buk: within their real reload and salvo times);
+aircraft rocket pods (0.05-0.12 s ripples: real). **Faster than real, kept:** `gun_105_long` / `gun_105_apfsds` (the
+Sprut's 2A75: 7 rpm, 15 here), `gun_125_elite` (T-90's autoloader 7-8, 10), `gun_105_wheeled` (Centauro II, manual,
+6-8; 22 here), `gun_105_bunker` (L7, 6-10; 13), `gun_203_siege` (M110, 1.5-2; 6), `boss_howitzer` (2S7, 1.5-2.5; 6.4),
+`boss_mortar` (2S4, 1; 6), `train_gun` (B-38, 5-7.5; 12), `borer_cannon` (2A70, 10; 29), `gunship_105` (M102 aboard,
+6-10; 21), `gunship_40mm` (Bofors L/60 aboard, 100-120; about 280): a single round's damage is at the top of its
+calibre band, so the real, slower rate would cut these units' damage by half or more, which the combat value forbids.
+**Slower than real, kept:** the MLRS's and Smerch's ripples (M270: 12 rockets in 40-60 s; Smerch 12 in 38 s): at the
+real pace a salvo would take 20-35 s of a 90 s fight; the Iskander launcher's two missiles (within a minute, 1.5 s
+here).
+
+**Shared with towers.** The towers' self-defence guns that use the vehicles' own `hmg_roof` and `mg_coax`
+(headquarters, spawn bastion, missile battery, rocket battery, artillery emplacement) now fire the M2's and the PKT's
+real cadence too, at the same damage a second. Tower weapons that inherit a changed vehicle weapon keep their own
+rhythm: `tower_flak_30` (clip 46), `tower_ac25` (clip 10), `hq_flak` (change 1.21 s) and `mg_coax_ground` (cooldown,
+clip and change) got their old values written in (no value changed). The towers' missiles are slower (section A).
+
+### C. Real rates of the tower weapons (for the tower agent)
+
+Researched here, not changed (tower weapons are MachineBrigade-bal's). The simulation carries at most 60 rounds a
+second a mount; the vehicle weapons above keep their damage a second by solving the change after a real burst.
+
+| Tower weapon | Real system | Real rate, burst, magazine | Game now |
+|---|---|---|---|
+| `c_ram_gatling` (+`_long`) | Phalanx M61A1 20 mm (C-RAM LPWS) | 4,500 rpm (75/s); bursts of about 1-2 s (60-150 rounds) until the threat breaks up; 1,550-round drum | 492 rpm x23 / 1 s |
+| `tower_hmg` | M2 12.7 mm | 450-600 rpm, 5-10-round bursts, 100-round belts | 706 rpm x40 / 1.3 s |
+| `tower_ac25` | M242 25 mm | 200 or 500 rpm; 300 ready rounds (Bradley) | 462 rpm x10 / 1.3 s |
+| `tower_flak_30`, `hq_flak` | 2A38M twin 30 mm (Tunguska / Pantsir mount) | 4,060-5,000 rpm a mount; 83-150-round bursts | 667 rpm x46; 545 rpm x36 |
+| `flak_quad` | ZSU-23-4 Shilka (4 x AZP-23) | 3,400-4,000 rpm; bursts of 3-5, 10 or up to 50 rounds a barrel; 2,000 rounds | 894 rpm x54 / 1.5 s |
+| `bunker_hmg` | NSV / Kord 12.7 mm | 650-800 rpm, 50-round belt boxes | 968 rpm x39 / 1 s |
+| `bunker_hmg_twin` | twin NSV | 2 x 650-800 rpm | 1,200 rpm x44 / 1.02 s |
+| `mg_coax_ground` | PKT 7.62 mm | 700-800 rpm, 250-round belts | 631 rpm x32 / 1.2 s |
+| `tower_agl` | Mk 19 40 mm | 325-375 rpm, 3-5-round bursts, 32/48-round belts | 3 rounds 0.2 s apart / 4.3 s |
+| `turret_gun_120`, `_long` | Rh-120 L/44, L/55 with a loader | 6-10 rpm (a trained loader 6-8 s, bursts to 4-5 s) | 2.88 s; 3.31 s |
+| `turret_gun_120_auto` | 120 mm with an autoloader (Leclerc 12 rpm, K2 15 rpm) | 4-5 s a round | 2.53 s |
+| `howitzer_fixed`, `howitzer_cb`, `howitzer_ext` | M284 155 mm (M109A7); PzH 2000 for comparison | 4 rpm for 3 min, 1 rpm sustained; PzH 2000 10 rpm | 3.9 s x20 / 13 s; 5.3 s x20 / 21 s |
+| `gun_155_twin_fort`, `gun_155_coastal`, `gun_155_twin_coastlr` | twin M284 155 mm | 4 rpm a gun | 2 rounds / 5.5-8.8 s |
+| `bastion_gun` | twin 2A83 152 mm | 10-12 rpm a gun (autoloader) | 2 rounds / 5.16 s |
+| `turret_rockets`, `turret_rockets_cluster` | BM-21 Grad 122 mm | 40 rockets in 20 s (0.5 s apart); 7-10 min to reload | 6 rockets 0.12 s apart / 7.78 s |
+| `turret_thermobaric` | TOS-1A 220 mm | 24 rockets in 6-12 s (0.25-0.5 s apart) | 7 a salvo / 7.1 s |
+| `atgm_post` | 9M113 Konkurs (9P135) | 2-3 rpm (20-30 s to reload a tube) | 12.1 s |
+| `sam_post` | 9M317 Buk | salvos of 2 missiles 4-5 s apart, 4 on a launcher | 2 missiles 0.5 s apart / 5.73 s |
+| `sam_battery`, `patriot`, `sam_battery_lrr` | MIM-104 PAC-2 | 4 on a launcher; two-missile ripples a few seconds apart | 2 missiles 0.45 s apart / 4.24-10.1 s |
+| `sam_pac3` | PAC-3 MSE | 12 on a launcher; ripples a few seconds apart | 2 missiles 0.45 s apart / 3.52 s |
+| `tamir` | Iron Dome Tamir | 20 on a launcher; launches 1-2 s apart in a salvo | 1 / 3.5 s |
+
+### D. The bunker vehicle's dug-in mode
+
+**Found on the way:** the old deploy animation never showed. `Spade_L`, `Spade_R` and `Plate_front` were not moving
+parts to `ModelLibrary`, so the spawn merged their meshes into the hull (`MergeRigidParts`) and `VehicleView.Deploy`
+turned empty transforms. The same was true of the far detail level.
+
+**Model** (`Tools/blender/mb_p21_models.py`, replacing prompt 17's stand-in): a self-entrenching engineer hull (the
+Strv 103's dozer blade, an engineer vehicle's push arms) with a low wide turret, the L7 105 mm with a thermal sleeve and
+a coaxial MG. Every part that moves when it digs in is a `Deploy_*` pivot, which `ModelLibrary.DeployPattern` keeps as
+its own rigid group at every detail level (and `frontier_kit` bakes as moving, so it casts no baked shadow on the hull):
+- `Deploy_blade`: the dozer blade on its push arms; `Deploy_plate_l` / `_r`: armoured side plates hinged on the
+  sponson edges, standing up beside the turret on the move (the mobile silhouette: a box with walls);
+  `Deploy_spade_l` / `_r`: the rear earth spades; `Deploy_riser`: the turret's telescopic mount (the `Turret` rides it);
+  `Deploy_berm`: the spoil bank round the scrape (earth banks, lumps, two courses of sandbags on the front bank).
+- The bank is exported at **1 % scale**, so the cards, the impostor atlas and a vehicle on the move never show it;
+  the far level's simplifier measures it at full size (`ModelLibrary.Lod`).
+
+**Digging in** (`VehicleView.Deploy`, over the data's 3 s; packing up runs it backwards): the spades swing down and
+back 125 degrees (first 35 %); the blade bites 6 degrees while the whole model sinks 0.8 m into its scrape and the bank
+rises round it from the ground (15-70 %); the side plates fold out and down 95 degrees over the bank (45-85 %); last the
+turret rises 0.75 m on its mount (70-100 %). Dug in, only the turret on its mount shows above a bank level with the hull
+top: a low, wide pillbox where a tall walled vehicle stood. `ModelTests.BunkerVehicleKeepsItsDeployPartsApart` pins the
+parts, the turret on the riser and the hidden bank.
+
+**Footprint:** the blade and the plates make the hull 8.47 x 4.07 m (was 7.96 x 3.6), copied into `balance.json` from
+`measure_hulls.py` (the collision capsule).
+
+### E. Look-alike vehicles
+
+Compared on the card renders side by side at about the default zoom's size (43 ground cards, then a closer sheet of 14).
+The groups that read alike: the light tank and the battle tank (the same layout, smaller); the heavy tank, twin tank
+and Titan (long green tanks with long guns; the Titan and the heavy tank the same size); the laser tank on the tank
+destroyer's hull with a fat barrel; the shield carrier and the command vehicle (the same 8x8 box). Redrawn
+(`mb_p21_models.py`), each after a real-world pattern:
+- **Light tank:** an amphibious light tank (PT-76 / ZBD-05 lineage) with an unmanned 57 mm module (AU-220M) set well
+  forward, a boat bow with a trim vane folded on the glacis, stern water-jet housings and a panoramic sight mast.
+  Its `_hd` variant is the same builder. Length 4.91 → 5.17 m.
+- **Titan:** a land battleship. The twin-140 mm turret moves 1 m forward and a superfiring rear turret on a raised
+  plinth carries the heavy machine gun (`Mount_mg`, free yaw), clear of the main turret's sweep: the only tank with two
+  turrets.
+- **Laser tank:** a beam director instead of a barrel, a ball head on a yoke with a short telescope and a round window
+  (the Rheinmetall / DE M-SHORAD look), and a power and cooling module (generator, radiator banks with fans, conduits)
+  over the engine deck.
+- **Shield carrier:** its emitter on a 5.6 m lattice mast with a glowing halo ring, capacitor drums on the roof.
+- **Bunker vehicle:** section D (walls on the move, a pillbox dug in).
+The heavy tank, twin tank, battle tank, tank destroyer and command vehicle keep their models: each now differs from its
+look-alike by the other's redraw.
+
+### F. Combat value
+
+`CombatValueMeasure` on the whole roster, before and after, three seeds (13-15; one seed swung up to 50 % on the
+aircraft's 4-minute runs): the median cell moved **2.3 %**; 14 of 120 cells (over 20 points) moved more than 10 %.
+- **First pass, fixed:** at the real cadence some bursts front-loaded their damage (a whole burst lands while a target
+  is in reach): anti-air vehicles +25-33 % on aircraft, the ZU-23 +30 %, the BMPT +12 %; the armoured car's 25 mm at
+  200 rpm (a long even stream) made the light reference group weaker (the armoured car -13 %, the units fighting it
+  +15-25 %). The second pass shortened those bursts (Gepard x16, Tunguska x20, ZU-23 x16, BMPT x10, GSh-30-2 x30,
+  tail guns x25, the 25 mm at 500 rpm x6) and they came back within 10 %.
+- **Left, and why:** aircraft against aircraft and on the 4-minute runs: the attack jet +34 % on air and +50 % on the
+  long run, the fighter +18 % on air, the attack helicopter +18 % on the long run; the stealth fighter -46 %, stealth
+  bomber -27 %, swarm carrier -21 % on the long run; the Iron Beam -25 % and the heavy bomber -22 % on air (small
+  numbers). These are the slower missiles: aircraft live longer against missile anti-air and their own missiles are
+  decoyed more. The owner asked for the speed; `CounterTests` hold; the testing phase's seed sweep should judge the
+  aircraft. Also -12 % on the rocket technical's long run (its stretched ripple) and +11 % on the bunker vehicle with no
+  anti-air (its wider capsule and the stronger reference group of the first pass; within noise).
+- Towers were not measured (`TowerValueMeasure` is the tower agent's); their missiles are slower.
+
+### G. Tests
+
+Run once each: compile; `CounterTests` (15, pass); `MissileFlightTests` (pass, including the plume frames at the new
+speeds); `CalibreTests`; `ModelTests`; `VehicleLodTests` (pass); `WeaponRhythmTests`, `WeaponTests`, `BigAttackTests`,
+`ContentTests`, `Prompt17ContentTests`, `TheProcCoefficientFollowsTheWeaponsRhythm` (pass); `MuzzleAuditTests`;
+`CardRenderTests`; the combat-value measure (section F). Failing, already on lead and not touched here:
+`CalibreTests` (the towers' `flak_quad` 22 on the 23 mm band, `tamir` under `sam_pac3`), `ModelTests.RoundsLeave`
+(heavy_aa, gunship_heli, fighter_jet), `ModelTests.EveryWeaponMountHasAMuzzleOnItsModel` (mobile_fortress's
+`Muzzle_gun`), `MuzzleAuditTests` (36 tower and boss mounts; the new laser tank passes), `GearModelTests.AnOldSave...`.
+`CardRenderTests.EveryCardHasAFreshPicture` now lists bunker_vehicle, light_tank, titan_tank, laser_tank and
+shield_carrier: the lead renders the cards (ASSET_DEBT).

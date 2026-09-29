@@ -136,8 +136,9 @@ namespace MachineBrigade.Game.Rendering
             var bakeFirst = true;
             foreach (var anchor in order)
             {
-                // The error is measured in the model's units; the part may be scaled inside it.
-                var scale = Mathf.Max(1e-4f, anchor.lossyScale.x / Mathf.Max(1e-4f, root.lossyScale.x));
+                // The error is measured in the model's units; the part may be scaled inside it (not a Deploy_ part:
+                // the bunker's spoil bank is stored at 1 % and shown full size).
+                var scale = DeployPattern.IsMatch(anchor.name) ? 1f : Mathf.Max(1e-4f, anchor.lossyScale.x / Mathf.Max(1e-4f, root.lossyScale.x));
                 var mesh = SurfaceMesh($"{root.name} {anchor.name} lod1", anchor, groups[anchor], error / scale);
                 if (mesh == null) continue;
                 _ownedMeshes.Add(mesh);

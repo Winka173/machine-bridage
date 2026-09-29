@@ -19,12 +19,7 @@ recoloured per army at runtime. Touching parts overlap or stand at least 1 cm ap
   * shield_carrier: 8x8 wheeled carrier, `Turret` is the roof HMG ring (`Main_cannon` barrel,
     `Muzzle_main` at its flash hider); the shield `Emitter` (dish, ring, three prongs, glowing node) on
     a short mast is decoration.
-  * bunker_vehicle: heavy tracked hull, low wide `Turret` with a 105 mm gun (`Main_cannon`,
-    `Muzzle_main`) and a coaxial MG (`Muzzle_mg`). `Spade_L` / `Spade_R`: rear earth spades, pivots on
-    their hinge axis (along X), stowed standing up; deploying swings them back and down about local X
-    (Blender -125 degrees, Unity localEulerAngles.x = -125). `Plate_front`: the front armour plate,
-    stowed low; its pivot is the plate's bottom centre and the game raises it straight up (about
-    0.75 m keeps it under the gun).
+  * bunker_vehicle: redrawn in mb_p21_models (play-test 4).
   * swarm_carrier: high-wing four-turboprop drone carrier (C-130 lineage, heavy_bomber's size),
     origin at the fuselage centre. `Propeller` .. `Propeller_4` (left to right, as sky_gunship) spin
     about local Y; `Muzzle_drone` at the rear of the open belly bay with two rows of FPV drones.
@@ -38,13 +33,13 @@ import math
 from mathutils import Vector
 
 from frontier_kit import chamfered
-from mb_air import (ACROSS, BACKWARD, FORWARD, LEFT, R90, RIGHT, Planform, _aam, _aam_parts, _dome, _nozzle, _sec,
+from mb_air import (BACKWARD, FORWARD, LEFT, R90, RIGHT, Planform, _aam, _aam_parts, _dome, _nozzle, _sec,
                     _upright, _wing)
 from mb_air2 import _turboprop
 from mb_air3 import _fpv_drone
 from mb_siege import crate, lattice, loop_rail
 from mb_vehicles import (_antenna, _barrel, _face_box, _face_frame, _flank, _glacis, _hatch, _headlight, _periscopes,
-                         _smoke, _sponson_section, _taillight, _wheel, tracks)
+                         _sponson_section, _taillight, _wheel, tracks)
 
 
 # ----------------------------------------------------------------------------- faceted airframe kit
@@ -334,78 +329,6 @@ def shield_carrier(a):
     a.part('Emitter_core', 'TeamGlow', e).cyl(.16, .08, loc=(0, 0, .08), seg=12, bevel=0)
 
 
-# ----------------------------------------------------------------------------- bunker vehicle
-def bunker_vehicle(a):
-    """Deployable bunker vehicle, 7.9 x 3.6 m: a heavy tracked hull, a low wide turret with a 105 mm gun
-    and a coaxial MG, two rear earth spades on hinges (`Spade_L`, `Spade_R`, stowed up) and a front
-    armour plate on push arms (`Plate_front`, stowed low)."""
-    tracks(a, 1.38, 7.0, .9, .3, 7, .5, belt_width=.6, wheel_seg=12, lean=True, sprocket=1)
-    hull = a.part('Hull', 'Team')
-    armor = a.part('Armor', 'Armor')
-    steel = a.part('Steel', 'Steel')
-    deck = a.part('Deck', 'Undercarriage')
-    body = (.5, 1.08, 1.7, 1.02, 1.8, 1.4)
-    hull.loft([_sponson_section(-3.75, .62, 1.08, 1.2, 1.0, 1.72, 1.3), _sponson_section(-2.4, *body),
-               _sponson_section(3.3, *body), _sponson_section(3.55, .6, 1.08, 1.62, .98, 1.75, 1.34)], bevel=.05, seg=2)
-    x, z, lean = _flank((1.8, 1.16), (1.4, 1.7), .5, .02)
-    for s in (-1, 1):
-        for y in (-1.6, -.1, 1.4, 2.8):                                                   # bolt-on plates
-            armor.box((.07, 1.25, .36), loc=(s * x, y, z), rot=(0, -s * lean, 0), bevel=.015, seg=1)
-        _taillight(a, s * 1.5, 3.55, 1.25)
-        _hatch(a, s * .6, -2.2, 1.7, .26)
-    for xx in (-1.0, -.5, 0, .5, 1.0):                                                    # spare track links
-        gy, gz, grot = _glacis((-3.75, 1.2), (-2.4, 1.7), .5, .015)
-        deck.box((.36, .26, .05), loc=(xx, gy, gz), rot=(grot, 0, 0), bevel=.01, seg=1)
-    deck.grille(1.6, 1.0, loc=(0, 2.5, 1.71), rot=(-R90, 0, 0), slats=7, depth=.08, thickness=.04)
-    steel.cyl(1.1, .09, loc=(0, -.3, 1.705), seg=24, bevel=.03)                            # turret ring
-
-    t = a.pivot('Turret', (0, -.3, 1.76))
-    outline = [(-.8, -1.35), (.8, -1.35), (1.4, -.8), (1.45, .9), (1.1, 1.45), (-1.1, 1.45), (-1.45, .9),
-               (-1.4, -.8)]
-    a.part('Turret_body', 'Team', t).prism(outline, .62, loc=(0, 0, .31), axis='Z', bevel=.05, taper=.86)
-    tarm = a.part('Turret_armor', 'Armor', t)
-    tsteel = a.part('Turret_steel', 'Steel', t)
-    tarm.box((.8, .4, .52), loc=(0, -1.4, .34), bevel=.035, taper=(.9, .9))                # mantlet
-    tarm.box((2.0, .4, .36), loc=(0, 1.45, .3), bevel=.03, seg=1)                          # bustle bin
-    tsteel.box((.22, .26, .22), loc=(.7, -.6, .72), bevel=.03)                             # sight
-    a.part('Sight', 'Glass', t).box((.16, .04, .1), loc=(.7, -.74, .74), bevel=.01, seg=1)
-    _hatch(a, -.55, .3, .62, .3, parent=t)
-    for s in (-1, 1):
-        _smoke(a, tsteel, 1.0, -.7, .66, s, count=3, gap=.08, r=.045, depth=.16)
-    _antenna(a, t, .95, 1.0, .62, 1.2)
-    tip = _barrel(a, t, start_y=-1.58, length=4.0, radius=.075, height=.36, brake=(.24, .3, .22),
-                  sleeve=(.35, .6, .115), seg=12, style='baffle', bands=(.2, .7))
-    a.pivot('Muzzle_main', tip, t)
-    mg = a.part('MG_port', 'Steel', t)
-    mg.box((.12, .3, .12), loc=(.55, -1.35, .3), bevel=.02, seg=1)
-    mg.cyl(.025, .4, loc=(.55, -1.7, .3), rot=FORWARD, seg=8, bevel=0)
-    mg.cyl(.036, .08, loc=(.55, -1.89, .3), rot=FORWARD, seg=8, bevel=0)
-    a.pivot('Muzzle_mg', (.55, -1.94, .3), t)
-    # Rear earth spades, stowed standing up behind the tail plate; each pivot is its hinge axis (X).
-    for s, name in ((1, 'Spade_L'), (-1, 'Spade_R')):
-        x = s * .8
-        for dx in (-.38, .38):
-            armor.box((.16, .2, .22), loc=(x + dx, 3.6, .72), bevel=.02, seg=1)             # hinge lugs
-        p = a.pivot(name, (x, 3.66, .72))
-        a.part(f'{name}_blade', 'Armor', p).box((.9, .08, 1.15), loc=(0, .1, .62), bevel=.02, seg=1)
-        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, .56, rot=ACROSS, seg=10, bevel=0)
-        ribs = a.part(f'{name}_ribs', 'Armor', p)
-        for dx in (-.3, .3):
-            ribs.box((.06, .1, .9), loc=(dx, .17, .55), bevel=0)
-        teeth = a.part(f'{name}_teeth', 'Steel', p)
-        for dx in (-.33, -.11, .11, .33):
-            teeth.box((.14, .06, .16), loc=(dx, .1, 1.24), bevel=0, taper=(.4, 1))
-    # Front armour plate on two push arms, stowed low in front of the nose; the pivot is its bottom centre.
-    p = a.pivot('Plate_front', (0, -3.98, .3))
-    a.part('Plate_front_plate', 'Team', p).box((3.0, .1, .9), loc=(0, 0, .45), bevel=.03, seg=1)
-    ribs = a.part('Plate_front_ribs', 'Armor', p)
-    for dx in (-1.0, 0, 1.0):
-        ribs.box((.12, .06, .8), loc=(dx, -.07, .45), bevel=0)
-    arms = a.part('Plate_front_arms', 'Steel', p)
-    for dx in (-.9, .9):
-        arms.box((.14, .4, .14), loc=(dx, .22, .5), bevel=0)
-
-
 # ----------------------------------------------------------------------------- swarm carrier
 def swarm_carrier(a):
     """Drone-carrier transport (C-130 lineage), 15.8 x 18 m: a chunky fuselage with a glazed cockpit
@@ -573,7 +496,6 @@ BUILDERS = {
     'wingman_drone': (wingman_drone, dict(ao_distance=.5, ground=False)),
     'laser_tank': (laser_tank, dict(ao_distance=.6, grime_height=.55)),
     'shield_carrier': (shield_carrier, dict(ao_distance=.6, grime_height=.55)),
-    'bunker_vehicle': (bunker_vehicle, dict(ao_distance=.7, grime_height=.6)),
     'swarm_carrier': (swarm_carrier, dict(ao_distance=.9, ground=False)),
     'shield_tower': (shield_tower, dict(ao_distance=.9, grime_height=.6)),
     'cp_relay': (cp_relay, dict(ao_distance=.7, grime_height=.6)),

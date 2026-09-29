@@ -62,20 +62,23 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(Plume.For(catalog.Weapons["fpv_swarm"], ProjectileKind.Drone, "fpv_drone", false).Burns, "drones fly on propellers");
         }
 
-        /// <summary>The speeds after DECISIONS 12B (ground SAMs 10 % slower again in 13C, with flare-resistant seekers), and every flight at full range still shorter than its weapon's cooldown.</summary>
+        /// <summary>The speeds after DECISIONS 12B (ground SAMs 10 % slower again in 13C, with flare-resistant seekers; play-test 4, 19R: none faster than the attack helicopter's Hellfire), and every flight at full range still shorter than its weapon's cooldown.</summary>
         [Test]
         public void MissilesFlySlowerAndLandBeforeTheirCooldown()
         {
             var catalog = GameContent.LoadCatalog();
             var speeds = new Dictionary<string, float>
             {
-                { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 36f }, { "sam_long", 41f }, { "sam_battery", 41f }, { "sam_48n6", 56f },
+                { "atgm", 19f }, { "kornet_twin", 20f }, { "sam", 24f }, { "sam_long", 24f }, { "sam_battery", 24f }, { "sam_48n6", 24f },
                 { "heli_atgm", 21f }, { "hellfire_volley", 21f }, { "drone_missile", 21f }, { "vikhr", 24f }, { "maverick", 23f },
-                { "air_to_air", 34f }, { "wvr_aam", 34f }, { "stinger_atas", 29f }, { "air_cruise_missile", 17f },
+                { "air_to_air", 24f }, { "wvr_aam", 24f }, { "stinger_atas", 24f }, { "hellfire_standoff", 24f }, { "air_cruise_missile", 17f },
                 { "heli_rockets", 48f }, { "s8_pods", 48f },
             };
             foreach (var (id, speed) in speeds)
                 Assert.AreEqual(speed, catalog.Weapons[id].ProjectileSpeed, 1e-3f, id);
+            foreach (var w in catalog.Weapons.Values)
+                if (w.Projectile == ProjectileKind.Missile || w.Family == "ballistic")
+                    Assert.LessOrEqual(w.ProjectileSpeed, catalog.Weapons["hellfire_standoff"].ProjectileSpeed + 1e-3f, w.Id + ": no faster than the attack helicopter's Hellfire");
             var longest = "";
             var share = 0f;
             foreach (var w in catalog.Weapons.Values)
