@@ -458,10 +458,8 @@ namespace MachineBrigade.Game.Hud
 
             // Behemoth Mk.0: Varga's prototype Behemoth, a variant made from the Behemoth's data.
             ["unit.behemoth_mk0"] = ("Behemoth Mk.0 · Prototype Behemoth", "Behemoth Mk.0 · Behemoth nguyên mẫu"),
-            ["boss.behemoth_mk0"] = ("Behemoth Mk.0 · Prototype Behemoth", "Behemoth Mk.0 · Behemoth nguyên mẫu"),
             ["short.behemoth_mk0"] = ("Behemoth Mk.0", "Behemoth Mk.0"),
             ["note.behemoth_mk0"] = ("Varga's first Behemoth off the factory line: its main gun, two flank guns and a rocket pod; no flak, no protection system.", "Behemoth đầu tiên của Varga ra khỏi dây chuyền: pháo chính, hai pháo sườn và một giàn rốc-két; không có pháo cao xạ, không có hệ thống bảo vệ chủ động."),
-            ["bossfile.behemoth_mk0"] = ("The Behemoth before it was finished: Varga tried it out on the factory floor where it was built.", "Behemoth khi chưa hoàn thiện: Varga cho nó chạy thử ngay trên sàn nhà máy nơi nó ra đời."),
             ["guide.behemoth_mk0"] = (
                 "[[Mini boss]] · prototype Behemoth · unfinished\n" +
                 "How it fights: the Behemoth's first build, slower than the finished one: its main gun, two flank guns and a rocket pod on the same hull.\n" +
@@ -482,10 +480,8 @@ namespace MachineBrigade.Game.Hud
 
             // Morrigan: Wolff's own stealth fighter.
             ["unit.morrigan"] = ("Morrigan · Raven's Fighter", "Morrigan · Tiêm kích của Raven"),
-            ["boss.morrigan"] = ("Morrigan · Raven's Fighter", "Morrigan · Tiêm kích của Raven"),
             ["short.morrigan"] = ("Morrigan", "Morrigan"),
             ["note.morrigan"] = ("Wolff's own stealth fighter: fast, seen only close up, air-to-air missiles in two bays and a guided bomb.", "Tiêm kích tàng hình của chính Wolff: nhanh, chỉ bị phát hiện ở cự ly gần, tên lửa không đối không trong hai khoang và một quả bom dẫn đường."),
-            ["bossfile.morrigan"] = ("Named for the crow goddess of the old battlefields. Wolff flies it himself when a fight matters to him.", "Mang tên nữ thần quạ của những chiến trường xưa. Wolff tự lái nó khi trận đánh thật sự quan trọng với hắn."),
             ["guide.morrigan"] = (
                 "[[Mini boss]] · stealth fighter · Wolff's own\n" +
                 "How it fights: faster than any fighter of ours and [[stealthy]]: seen only close up, or for a moment after it fires. Air-to-air missiles from two bays hunt your aircraft; a guided bomb hunts your anti-air.\n" +
@@ -515,7 +511,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.target.aironly"] = ("your aircraft", "máy bay của bạn"),
 
             // Mara's Behemoth: a scripted ally of chapter 12's last battle (never a card).
-            ["unit.mara_behemoth"] = ("{@mai}'s Behemoth · Allied Behemoth", "Behemoth của {@mai} · Behemoth đồng minh"),
+            ["unit.mara_behemoth"] = ("{@mai}'s Behemoth · Allied Behemoth", "{@mai}'s Behemoth · Behemoth đồng minh"),
             ["short.mara_behemoth"] = ("{@mai}'s Behemoth", "Behemoth của {@mai}"),
             ["note.mara_behemoth"] = ("A Behemoth rebuilt by {@mai} in our colours, fighting beside us in the last battle.", "Một chiếc Behemoth được {@mai} dựng lại mang màu cờ của ta, chiến đấu bên ta trong trận cuối."),
         };
