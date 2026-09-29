@@ -38,55 +38,6 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheGunshipIsADeckCardFlyingTheAc130()
-        {
-            var catalog = GameContent.LoadCatalog();
-            Assert.Contains("gunship_strike", MatchSettings.AllSupports, "a card in the deck and collection lists");
-            Assert.IsTrue(catalog.TryGetSupport("gunship_strike", out var card));
-            Assert.AreEqual(SupportKind.Escort, card.Kind);
-            Assert.IsFalse(card.Consumable || card.EventOnly, "a deck card, not an item");
-            Assert.Greater(card.CpCost, 0);
-            Assert.AreEqual("sky_gunship", card.Units[0], "the AC-130");
-            Assert.IsFalse(CardMerges.IsGone("gunship_strike"));
-            Assert.IsTrue(Progression.IsPremium("gunship_strike"), "bought in the shop like the heavy bomber");
-            Assert.AreEqual("sky_gunship", CardArt.EntryFor("gunship_strike")?.model, "its card shows the AC-130");
-            var was = Strings.Vietnamese;
-            try
-            {
-                Strings.Vietnamese = false;
-                Assert.AreEqual("Gunship", Strings.Card("gunship_strike"));
-                Assert.AreEqual("Gunship", Strings.Short("gunship_strike"));
-                // One card only reads "Gunship": the heavy helicopter is the Heavy gunship now.
-                var named = MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(id => Strings.Short(id) == "Gunship").ToList();
-                CollectionAssert.AreEqual(new[] { "gunship_strike" }, named);
-                Assert.AreNotEqual(Strings.Card("heavy_bomber"), Strings.Card("gunship_strike"));
-            }
-            finally
-            {
-                Strings.Vietnamese = was;
-            }
-        }
-
-        [Test]
-        public void TheGunshipCardCallsAnAc130ThatLeavesAfterItsTime()
-        {
-            var world = Field();
-            var catalog = world.Catalog;
-            catalog.TryGetSupport("gunship_strike", out var card);
-            var economy = new TeamEconomy(0, 60f, income: 0f, bank: 60f, supports: new[] { "artillery_barrage", "gunship_strike" });
-            world.EnableEconomy(economy);
-            world.EnableEconomy(new TeamEconomy(1));
-            var before = economy.Cp;
-            Assert.IsTrue(world.Submit(Command.Strike(0, "gunship_strike", new Vector2(0f, 0f), default)).Accepted);
-            Assert.AreEqual(before - card.CpCost, economy.Cp, 0.01f, "it costs its CP");
-            Assert.IsFalse(world.Submit(Command.Strike(0, "gunship_strike", new Vector2(0f, 0f), default)).Accepted, "then waits its cooldown");
-            Run(world, card.Delay + 1f);
-            Assert.IsTrue(world.Vehicles.Any(v => v.IsAlive && v.Team == 0 && v.Def.Id == "sky_gunship"), "the AC-130 arrived");
-            Run(world, card.Duration + 1f);
-            Assert.IsFalse(world.Vehicles.Any(v => v.IsAlive && v.Team == 0 && v.Def.Id == "sky_gunship"), "and left after its time");
-        }
-
-        [Test]
         public void AFieldTowerLandsClearOfWhatStandsOnItsMark()
         {
             // A house, and a mark on the last open ground before its wall: the tower's centre fits there, its hull does not.

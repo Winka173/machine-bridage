@@ -117,6 +117,8 @@ namespace MachineBrigade.Game.Match
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
             "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber",
+            // Play-test 7 (DECISIONS 22P): the AC-130 is an aircraft card again (its support card is gone).
+            "sky_gunship",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
             // Prompt 17 D: the ATGM carrier, A-10, Ka-52 and sapper were folded into other cards (CardMerges).
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
@@ -131,7 +133,7 @@ namespace MachineBrigade.Game.Match
 
         public static readonly string[] AllSupports =
             { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike",
-              "uav_scan", "remote_mines", "field_tower", "sead_strike", "gunship_strike" };
+              "uav_scan", "remote_mines", "field_tower", "sead_strike" };
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;

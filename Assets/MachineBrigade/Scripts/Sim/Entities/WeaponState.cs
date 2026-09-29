@@ -54,11 +54,11 @@ namespace MachineBrigade.Sim.Entities
         public double LastRoundAt = double.NegativeInfinity;
 
         /// <summary>
-        /// A boss's mount held off by another mount's round (test feedback 2): when it was last held
-        /// off, and since when it has been waiting (the one waiting longest has the next step).
+        /// Play-test 7 (DECISIONS 22P): when the mount's last round left, and when it last opened fire (a single shot, the
+        /// first round of a salvo, a stream or a run): twin barrels open fire apart.
         /// </summary>
-        public double HeldAt = double.NegativeInfinity;
-        public double WaitingSince = double.NegativeInfinity;
+        public double FiredAt = double.NegativeInfinity;
+        public double OpenedAt = double.NegativeInfinity;
 
         /// <summary>Prompt 17 C: a ramping weapon (the focused laser): the target it is on, since when, and its last round on it.</summary>
         /// <summary>Play-test 6 (DECISIONS 21F): the last two targets of a swarm's single drones (the next goes to another).</summary>

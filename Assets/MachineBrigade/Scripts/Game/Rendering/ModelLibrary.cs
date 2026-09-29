@@ -242,6 +242,26 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         internal static readonly Dictionary<string, float> RestTurretYaw = new() { ["siege_tank"] = 180f };
 
+        /// <summary>A coaxial gun's parts (Coax, Coax_mount, Coax_hider, Coax_housing) and its muzzle.</summary>
+        private static readonly Regex CoaxPart = new(@"^(Coax(_[a-z]+)?|Muzzle_coax)(\.\d+)?$", RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Play-test 7 (DECISIONS 22P): a tower model's weapons that none of its towers fire (<see cref="TowerArt.Unarmed"/>)
+        /// come off the template before it is merged: a `Mount_&lt;slot&gt;` with everything on it, and the coaxial gun.
+        /// </summary>
+        private static void StripUnarmed(Transform root, string modelId)
+        {
+            var gone = new List<Transform>();
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            {
+                var mount = MountPattern.Match(t.name);
+                if (mount.Success ? TowerArt.Unarmed(modelId, mount.Groups[1].Value) : CoaxPart.IsMatch(t.name) && TowerArt.Unarmed(modelId, "coax"))
+                    gone.Add(t);
+            }
+            foreach (var t in gone)
+                if (t != null) Object.DestroyImmediate(t.gameObject);
+        }
+
         private static void TurnToRest(string modelId, Transform root)
         {
             if (!RestTurretYaw.TryGetValue(modelId, out var yaw)) return;
@@ -506,6 +526,7 @@ namespace MachineBrigade.Game.Rendering
             }
             var template = Object.Instantiate(Prefab(modelId), _templateRoot, false);
             template.name = modelId;
+            StripUnarmed(template.transform, modelId);
             AlignMuzzles(template.transform);
             var raise = AddElevation(template.transform, modelId);
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;

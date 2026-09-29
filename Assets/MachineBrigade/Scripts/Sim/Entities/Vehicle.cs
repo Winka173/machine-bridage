@@ -212,7 +212,6 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Shoot-and-scoot: rounds fired from the current spot.</summary>
         internal int ScootShots;
 
-
         /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
         internal float StunResist;
 
@@ -623,22 +622,6 @@ namespace MachineBrigade.Sim.Entities
         internal Projectile? PdRound;
         internal double PdSince;
         internal float PdBurst;
-
-        /// <summary>
-        /// Its weapons take turns: when the last round of a main gun, missile or rocket (a salvo's
-        /// rounds included) and of a machine gun left, from which mount, and when a heavy weapon
-        /// last stood ready but held off for a machine gun's run.
-        /// </summary>
-        internal double HeavyRoundAt = double.NegativeInfinity;
-        internal int HeavyMount = -1;
-        internal double GunRoundAt = double.NegativeInfinity;
-        internal int GunMount = -1;
-        internal double HeavyWaitingAt = double.NegativeInfinity;
-
-        /// <summary>When the main gun's stream last stood ready but was held off by a secondary gun's magazine (test feedback 2).</summary>
-        internal double LeadWaitingAt = double.NegativeInfinity;
-        internal double AnyRoundAt = double.NegativeInfinity;
-        internal int AnyMount = -1;
 
         /// <summary>The centre of a gunship's pylon turn: it glides after the target instead of jumping (a new target, one on the move).</summary>
         internal System.Numerics.Vector2 OrbitCentre;

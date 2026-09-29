@@ -8,7 +8,7 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Tests
 {
-    /// <summary>A vehicle's weapons take turns, machine guns fire in bursts, and guns leave aircraft to anti-aircraft.</summary>
+    /// <summary>A vehicle's weapons fire on their own timings (play-test 7), machine guns fire in bursts, and guns leave aircraft to anti-aircraft.</summary>
     public class WeaponRhythmTests
     {
         private static SimWorld Field() =>
@@ -17,7 +17,7 @@ namespace MachineBrigade.Tests
                 new List<PropPlacement>(), new List<UnitPlacement>()));
 
         [Test]
-        public void MainGunAndMachineGunTakeTurns()
+        public void MainGunAndMachineGunFireOnTheirOwnTimings()
         {
             var world = Field();
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -12f), 0f);
@@ -25,7 +25,7 @@ namespace MachineBrigade.Tests
             target.HpScale = 1000f;
             target.Hp = target.MaxHp;
             double lastMain = double.NegativeInfinity, lastGun = double.NegativeInfinity;
-            int main = 0, gun = 0, tooClose = 0, runs = 0;
+            int main = 0, gun = 0, together = 0, runs = 0;
             // 30 s (it was 20): play-test 6 (DECISIONS 21F) gave the machine guns longer streams.
             for (var t = 0f; t < 30f; t += TestWorlds.Step)
             {
@@ -41,7 +41,7 @@ namespace MachineBrigade.Tests
                     else if (e.DefId == "mg_coax")
                     {
                         gun++;
-                        if (world.Time - lastMain < 0.3) tooClose++;
+                        if (world.Time - lastMain < 0.3) together++;
                         if (world.Time - lastGun > 0.6) runs++;
                         lastGun = world.Time;
                     }
@@ -50,7 +50,7 @@ namespace MachineBrigade.Tests
             }
             Assert.Greater(main, 3, "the main gun keeps firing");
             Assert.Greater(gun, 20, "and so does the coaxial gun");
-            Assert.AreEqual(0, tooClose, "but never right on top of a main-gun shot");
+            Assert.Greater(together, 0, "play-test 7: the coaxial gun no longer waits round a main-gun shot");
             Assert.GreaterOrEqual(runs, 3, "and in separate bursts, not one endless stream");
         }
 

@@ -53,7 +53,40 @@ namespace MachineBrigade.Game.Rendering
                 var list = TowerCards.Branches(catalog, def.BranchOf);
                 for (var i = 0; i < list.Count && i < 26; i++) Branches[list[i]] = (tower.Model, (char)('a' + i));
             }
+            LearnTowerSlots(catalog);
         }
+
+        /// <summary>
+        /// Play-test 7 (DECISIONS 22P): the weapon slots fired from each model drawn only for towers and other structures
+        /// (static, not bosses), by every def that may wear it (its own model and, for a branch, its letter's model). A
+        /// weapon drawn on a slot none of them fires from (a roof machine gun, a coaxial gun, a launcher the data took away)
+        /// is left off the model: <see cref="ModelLibrary"/> strips it from the template, so no tower shows a gun it does not
+        /// have. Models also worn by a vehicle or a boss are never stripped.
+        /// </summary>
+        private static readonly Dictionary<string, HashSet<string>> TowerSlots = new();
+
+        private static void LearnTowerSlots(Catalog catalog)
+        {
+            TowerSlots.Clear();
+            var shared = new HashSet<string>();
+            foreach (var def in catalog.Vehicles.Values)
+                foreach (var model in new[] { def.Model, ModelFor(def, null) })
+                {
+                    if (model == null) continue;
+                    if (!def.Static || def.Boss)
+                    {
+                        shared.Add(model);
+                        continue;
+                    }
+                    if (!TowerSlots.TryGetValue(model, out var slots)) TowerSlots[model] = slots = new HashSet<string>();
+                    foreach (var mount in def.Mounts) slots.Add(mount.Slot.ToLowerInvariant());
+                }
+            foreach (var model in shared) TowerSlots.Remove(model);
+        }
+
+        /// <summary>Whether a tower model's weapon on <paramref name="slot"/> is fired by none of the towers that wear it.</summary>
+        public static bool Unarmed(string modelId, string slot) =>
+            modelId != null && TowerSlots.TryGetValue(modelId, out var slots) && !slots.Contains(slot.ToLowerInvariant());
 
         /// <summary>The branch's letter (a, b), or null when the id is not a learned branch.</summary>
         public static char? Letter(string branchId) =>

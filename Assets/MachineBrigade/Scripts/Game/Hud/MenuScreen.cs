@@ -604,7 +604,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
         };
@@ -647,9 +647,10 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Army);
                     break;
                 case "army-deck-supports":
-                    // Play-test 6: the collection filtered to the supports (the Gunship card among them).
+                case "army-deck-air":
+                    // Play-test 6: the collection filtered to the supports; play-test 7: to the aircraft (the AC-130 among them).
                     _armyView = ArmyView.Deck;
-                    _filter = CardFilter.Support;
+                    _filter = screen == "army-deck-air" ? CardFilter.Air : CardFilter.Support;
                     ShowTab(Tab.Army);
                     break;
                 case "army-base-picked":
@@ -816,7 +817,6 @@ namespace MachineBrigade.Game.Hud
             "emp_blast" => "bolt",
             "shield_dome" => "shield",
             "gunship_support" => "gunship",
-            "gunship_strike" => "ac130",
             "artillery_barrage" => "barrage",
             "airstrike" => "airstrike",
             "cruise_missile" => "missile",
