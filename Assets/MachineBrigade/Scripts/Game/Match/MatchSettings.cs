@@ -31,6 +31,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The player's fortress against waves that never stop, until the HQ falls.</summary>
         Endless,
+
+        /// <summary>Prompt 21: the Sandbox (a battle set up by hand; no rewards).</summary>
+        Sandbox,
     }
 
     public enum WeatherKind

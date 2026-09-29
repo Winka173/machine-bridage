@@ -61,9 +61,13 @@ namespace MachineBrigade.Game.Match
 
         public static IReadOnlyList<DailyTask> Current => For(Today);
 
+        /// <summary>Prompt 21 A.2: set during a Sandbox battle, which counts towards nothing.</summary>
+        public static bool Suspended { get; set; }
+
         /// <summary>Counts <paramref name="amount"/> towards today's challenges of this kind.</summary>
         public static void Record(string kind, int amount = 1)
         {
+            if (Suspended) return;
             var tasks = Current;
             for (var i = 0; i < tasks.Count; i++)
                 if (tasks[i].Kind == kind) PlayerProfile.AddDailyProgress(Today, i, amount, tasks[i].Target);

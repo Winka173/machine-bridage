@@ -39,6 +39,10 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         internal static Action<Vehicle?, Vehicle, float, HitKind, WeaponDef?>? DamageLog;
 
+        /// <summary>The last hit's penetration multiplier and the face it struck (prompt 21: the Sandbox's hit report).</summary>
+        private float _lastPen = 1f;
+        private ArmorFace _lastFace;
+
         public void ResolveImpact(Projectile p)
         {
             var weapon = p.Weapon;
@@ -157,13 +161,15 @@ namespace MachineBrigade.Sim.Combat
             if (target is Vehicle v)
             {
                 var part = v.HasParts && hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !v.IsPartBroken(shot.Part) ? shot.Part : -1;
-                armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(FaceOf(v, hit));
+                _lastFace = part >= 0 ? ArmorFace.Front : FaceOf(v, hit);
+                armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(_lastFace);
             }
             else armour = target.Armour[ArmorFace.Front];
             var typeMult = weapon != null ? table.TypeOf(weapon, kind)
                 : hit.Thermo && kind == TargetKind.Structure && type == DamageType.HighExplosive ? MathF.Max(table.ThermobaricStructure, table.Type(type, kind))
                 : table.Type(type, kind);
-            return (known ? table.Penetration(pen, armour) : 1f) * typeMult;
+            _lastPen = known ? table.Penetration(pen, armour) : 1f;
+            return _lastPen * typeMult;
         }
 
         /// <summary>
@@ -372,7 +378,15 @@ namespace MachineBrigade.Sim.Combat
             if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
             var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
             var damage = raw ? amount : amount * HitMultiplier(target, type, hit);
-            if (!(damage > 0f)) return 0f;
+            // Prompt 21 E.2 / F.4: the Sandbox's hit report (null in play: nothing is worked out for it).
+            var report = _world.HitLog != null && target is Vehicle;
+            var penShare = raw ? 1f : _lastPen;
+            var face = _lastFace;
+            if (!(damage > 0f))
+            {
+                if (report) _world.ReportHit((Vehicle)target, 0f, type, face, penShare, hit);
+                return 0f;
+            }
             // Prompt 15 C.6: a beam through smoke (round the target or the shooter) is mostly scattered.
             if (!raw && type == DamageType.Energy && (_world.Strikes.InSmoke(target.Position) ||
                 (hit.Attacker != null && _world.Strikes.InSmoke(hit.Attacker.Position)))) damage *= 1f - SmokeEnergyCut;
@@ -386,6 +400,7 @@ namespace MachineBrigade.Sim.Combat
                 case Vehicle vehicle:
                 {
                     var dealt = HitVehicle(vehicle, damage, type, hit);
+                    if (report) _world.ReportHit(vehicle, dealt, type, face, penShare, hit);
                     // Prompt 15 C.4: fire burns on: a share of what got through, over a few seconds (fires add up).
                     if (type == DamageType.Fire && dealt > 0f && vehicle.IsAlive && hit.Kind is HitKind.Direct or HitKind.Splash or HitKind.Strike)
                         _world.Status.Burn(vehicle, dealt * FireAfterburn / FireBurnSeconds, FireBurnSeconds, hit.Team, hit.Attacker?.Id ?? default, stack: true);

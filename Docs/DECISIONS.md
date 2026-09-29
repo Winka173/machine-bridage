@@ -7243,3 +7243,112 @@ detector round the enlarged ground bosses, Kronos on the open-pit route and Ixio
 Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).
 
 **Lead note on the tower-branch merge (2026-09-29).** The art agent's `TowerArt` (a branch wears `<tower>_a`/`_b` by its order in balance.json, and its rank details) was kept in `VehicleView`, `TowerIcons` and `TowerIconTests`. The branch agent's `BranchArt` resolves to the same ids through each branch's `"art"` field and stays for the air-dropped towers. The flak branch is back at 14 a round with a faster rhythm, on the calibre scale. Three `TowerGearTests` fail since the balance pass (8ec75eb): ground-target gear fits the AA tower's SAM branch and the Patriot. Weapon inheritance and the roof MG (`targets: All`, which counts as air-only on a secondary mount) were checked and are not the cause. Next suspects: mount order (mount 0 counts as the main weapon in `TowerFit.Of`), and whether the AA tower now has a ground-only gun for its 45/15 ground target. If it does, the tests' "no gun for ground targets" expectation is out of date. Listed for the testing phase.
+
+## 20S. Prompt 21 part 1: the Sandbox (2026-09-29)
+
+Prompt 21 sections A-G and part 3's cheap checks; part 2 (both languages for the whole game) is another agent's. The
+owner's note: towers and structures can be placed for testing, with their rank and rank-7 branch.
+
+### Shape
+
+- **The scenario is the truth.** `Sim/Sandbox/SandboxScenario` holds the map, weather, night, fog of war, the bosses'
+  difficulty, a time limit, both sides (AI, CP, cooldowns, immortal, deck, supports, base) and the units (kind, side,
+  place, heading, rank, equipment, elite, health, ammunition, altitude tier, immortal, a boss's phase, broken parts, big
+  attack off, escorts off), plus pass conditions. `SandboxBattle` (an `IGameMode`) builds the battle from it.
+- **Setting up does not step the battle.** The editor's changes are mirrored onto the standing field (everything but
+  the bases taken off and placed again, views too). **Run and Reset rebuild the scene** from the scenario, like a
+  checkpoint's replay: spawning during set-up uses entity ids and random draws that a fresh battle would not, so running
+  the mirrored field would not be the scenario's battle. The cost is a loading curtain on Run (the price of C.6-C.7).
+- **Every control is journalled.** A control (orders, immortal, CP, cooldowns, a support called, every boss tool, the
+  difficulty) is queued and takes effect at the start of the next step, stamped with it; a replay feeds the journal in
+  at the same steps. Units are named by entity id, which a rebuilt scenario gives out the same way. Speed and pause only
+  change how many steps a frame takes (`SimClock`), never a step.
+- Headings are degrees (0 north, clockwise), snapped to 15 degrees unless free; places are kept to the centimetre;
+  floats are written round-trip, so a saved scenario read back is the same scenario (`ToJson` has a fixed key order).
+- **Format version 2.** Version 1 is defined as the first draft (map, seed and units, the heading in radians under
+  "h"): it opens, upgraded, and missing fields take their defaults. A newer game's file is refused rather than misread.
+- Share codes: `MBS2.` and the JSON deflated in URL-safe base 64. An imported code (and a sample) is fitted to the
+  player: a locked unit is replaced by an allowed one from the same tab, then the same class, then the nearest price (a
+  tower by a tower of its size, an aircraft by an aircraft). If nothing of its kind is unlocked, the unit is left out.
+  Each change shows as a toast.
+- Rank and equipment reach the battle through `SimWorld.SpawnBoosted` (one unit's boost, whatever its side's): none,
+  a **suggested set** (one Epic piece a vehicle slot, rolled from the unit id, the same on every device; towers get
+  none), or the player's own loadout (it differs between players, so a shared code with "yours" fights with the
+  reader's gear).
+- The flat test range is built in code (`SandboxMaps.Flat`, 300 m, no props); its metre grid (10 m, heavier every 50 m)
+  is drawn by the overlays. Night is the game's night weather, so night replaces the weather.
+
+### Placement (B.4) and the owner's towers
+
+- Ships only on the sea: snapped onto the nearest lane (refused on land, or on a map without a sea).
+- Towers and structures: on a free hardpoint that takes their size, snapped to it and facing as it does (8 m reach);
+  anywhere on the flat test range; anywhere in the internal build. The picker lists the tower; its rank-7 branch
+  (DECISIONS 19T) is chosen on the unit from rank 7 (the unit's def becomes the branch; under rank 7 it goes back).
+- Aircraft enter at their flying height (the simulation's own). An altitude-tier boss placed at a tier is taken out of
+  its opening orbit and forced to that tier once it has left orbit.
+- The ceiling (B.10): 64 ground vehicles and 12 aircraft a side (towers count against neither). The internal build
+  only warns past it; the player version stops there. FPS at the ceiling is for the testing phase.
+
+### The two versions (A)
+
+- Internal = the editor or a development build (`-mb-sandbox-player` shows the player version there). Everything is
+  offered, towers go anywhere, and the internal overlays (hit boxes, routes, stuck vehicles, the AI's buying scores)
+  are offered. A player build is not a debug build, so they are never offered there; the code is shared.
+- Player version: open once the last chapter switched on is done (`BossHunts.FullOpen`); before that the Operations
+  tab shows it locked, with the condition. It offers unlocked cards, their elites, a tower's branch once opened, the
+  bosses and mini bosses beaten, never one of a chapter switched off, and the ships and escorts of a beaten boss.
+  Beaten bosses are recorded from now on when one dies in a campaign mission or the Boss Hunt (PlayerPrefs
+  `mb.sandbox`); every boss of a mission already won counts too.
+- **Nothing pays or counts:** the session has no outcome (so no result card, reward, crate or star), daily challenges
+  are suspended during the battle, items are neither taken into it nor used, and the player's arsenal, discounts and
+  doctrine stay out. The game has no telemetry sender yet: the battle carries `ModeTag` "Sandbox" and
+  `SandboxSession.TelemetryTag` for the day one is added (balance telemetry must drop tagged battles).
+- Entry: a card with the challenges on the Operations tab (prompt 6's grouping). The Guide (the combat legend page)
+  has a Sandbox section, and a short guide shows on the first visit.
+
+### AI and controls (C)
+
+- Full AI: the commander AI (Hard). It buys from the side's deck (or the kinds already placed when the deck is empty)
+  and calls supports. Fighting AI: the tactical AI, which buys nothing. Standing still: no AI.
+- Hold position is a Sandbox state: the unit drops any move an AI gives it each step and still turns and shoots. "Back
+  to the AI" releases it. Units of both sides take orders. Unlimited CP is topped up every step; cooldowns off clear
+  the side's ready times every step.
+- In the runner, `SandboxController` decides the steps a frame and owns taps (place, select, move, orders, a
+  support's point) and drags from a selected unit (turn). The camera no longer follows the fight on its own here.
+
+### Measuring (E, F)
+
+- `SimWorld.HitLog` (null in every other battle) reports each hit's face, penetration multiplier (the ✓ ~ ✕ mark is
+  `Matchup.Verdict` of it) and what got through. `SandboxStats` sums damage dealt and taken by type, rounds through and
+  bounced, kills and the time to make them, lifetimes, and a 5-second real DPS. Combat value is the data's (prompt 13).
+- Saved scenarios with checks ("win" within N s, "noStuck", "survive") in `Tests/EditMode/Scenarios` run in
+  `SandboxTests.SavedScenariosPassTheirChecks`; "Save as test" writes there from the editor (a development build writes
+  beside its saves). `SandboxLab.Run` is the headless runner the measures can call. The A/B screen compares Blue's
+  equipment sets; `SandboxLab.Compare` also takes two catalogs (the data before and after a change) in tests.
+- Duels over many seeds and A/B run one battle a frame so the screen keeps drawing.
+
+### Tests
+
+`SandboxTests` (13; run twice: 10/13, then 12/13. Run 1 found a bad share code throwing Mono's `IOException`, now a
+`FormatException`, and two over-strict checks; run 2's one failure read the tier before the shift ended, fixed and
+checked with a Sim-only probe, not re-run in Unity): placing and turning, with the
+heading kept into the battle and the set-up mirror; towers on hardpoints, anywhere, and their branch at rank 7;
+copy, move, delete, formations and undo; the ceiling; the same scenario and journal twice (and through the exported
+replay); the controls; save and load, a code, and a version-1 file; the boss tools (parts, big attack, phase, escorts,
+main and mini swap, tiers); overlays against the data; the player version's limits, a code's stand-ins and no pay-out;
+duel and A/B; the scenario suite; the words in both languages with named parameters.
+
+### For the testing phase
+
+FPS and tick time at the ceiling (64 + 12 a side) on a low-end phone; the screen on a phone and a tablet at both text
+sizes; a play-through of every tab, tool and overlay; how long Run takes to load.
+
+### Shared edits (merge by hand if they conflict)
+
+`SimWorld` (now partial), `DamageSystem` (the hit report), `ConquestAi` (buying scores), `Strings.Get/Has` (the
+Sandbox's table), `MatchSettings.GameModeKind` (Sandbox, last), `ModeSessions.Create`, `MatchRunner` (seed, map,
+weather, boosts, discounts, items, the controller, steps, camera, boss pan, beaten bosses, item use), `DailyMissions`
+(Suspended), `MenuScreen.Operations` and `.Legend`. New: `Sim/Sandbox/*`, `Sim/SimWorld.Sandbox.cs`,
+`Sim/AI/ConquestAi.Sandbox.cs`, `Game/Match/SandboxSession.cs`, `Game/Match/SandboxController.cs`,
+`Game/Hud/SandboxScreen*.cs`, `Game/Hud/SandboxText.cs`, `Game/Hud/MenuScreen.Sandbox.cs`,
+`Game/Views/SandboxOverlays.cs`, `Resources/UI/Sandbox.uss`, `Tests/EditMode/SandboxTests.cs`, `Tests/EditMode/Scenarios`.

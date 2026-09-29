@@ -277,12 +277,15 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
+                GameModeKind.Sandbox => new SandboxSession(),
                 GameModeKind.Campaign => new MissionSession(mission ?? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             world.ModeTag = menu ? "Menu" : kind.ToString();
             session.Build(world, seed);
+            // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events, elites or doctrines.
+            if (!menu && kind == GameModeKind.Sandbox) return session;
             // Prompt 13 I.1: the enemy's income by difficulty (Easy x0.8, Normal x1, Hard x1.2, Very Hard x1.4).
             if (!menu && kind != GameModeKind.Campaign && world.TryGetEconomy(EnemyTeam, out var enemyEconomy))
                 enemyEconomy.ScaleIncome(BuyProfile.For(session.Difficulty).Income);

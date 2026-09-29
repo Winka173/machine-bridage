@@ -22,6 +22,17 @@ its commits.
 - Look-alikes redrawn: the light tank (amphibious, a 57 mm module forward, trim vane), the Titan (a second,
   superfiring turret), the laser tank (a beam director on a yoke, a power module) and the shield carrier (a tall
   emitter mast with a halo). Card pictures to render.
+### Prompt 21: Sandbox
+
+- A Sandbox with the challenges on the Operations tab (DECISIONS 20S): set up any battle on any battlefield (the 300 m, long and coastal ones) or a flat test range with a metre grid, pick Blue or Red, place units one at a time or in a line, column, cluster or arc, and turn them by 15° (or freely) with a drag.
+- Seven tabs (vehicles, aircraft, towers and structures, bosses, mini bosses, elites, ships and escorts) with search and branch, armour and weapon filters. Towers go on hardpoints, anywhere on the test range and anywhere in the internal build, with their rank and their rank-7 branch.
+- Each unit (or a whole selection): side, rank, equipment (none, a suggested set, yours), elite, health, ammunition, immortal, and for a boss its starting phase, parts, big attack, escorts and altitude tier; copy, move, delete, undo and redo.
+- The battle: run, pause, one tick, ×0.25 to ×4, reset; full AI, fighting AI or standing still for each side; unlimited or set CP, support cooldowns on or off, a whole side immortal; orders (go to, hold, hold fire, fire at); fire support called anywhere; the seed. The same scenario, seed and controls always give the same battle.
+- Boss tools on a running boss: jump to a phase, big attack now or off, break or restore each part, change altitude tier, escorts on or off, swap between main and mini boss, and the bosses' difficulty.
+- Overlays, each on its own: range rings, hit numbers with ✓ ~ ✕ and the face struck, real DPS and combat value, magazines and reloads, big-attack zones and shields; internal only: hit boxes, routes, stuck vehicles, the AI's buying scores.
+- Scenarios save with a format version (older files still open), share as a text code (locked units swapped for unlocked ones of the same role, with a notice), export a replay with its seed, and in the internal build save as automatic tests with pass conditions; five samples; up to 20 of your own.
+- Quick duels (two units or groups, distance and facing, one seed or twenty with the win rate), A/B runs of a scenario with two equipment sets, and an after-battle table (damage dealt and taken by type, time to kill, lifetime, rounds through and bounced).
+- The player version opens once the last chapter switched on is finished, offers only unlocked units and beaten bosses, and pays nothing: no coins, rewards, records, daily progress or achievements, and no items are used.
 
 ### Tower art
 
