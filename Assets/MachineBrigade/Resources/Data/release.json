@@ -1,0 +1,13 @@
+// Prompt 20 C: which parts of the story campaign this build ships (Sim/Content/CampaignDefs.cs, CampaignRelease).
+// Internal and test builds: every act on. A release that ships less lists fewer acts ("acts": [1, 2]) and
+// may switch single chapters off ("chaptersOff": [6]); a chapter switched off shows as a locked
+// "Coming soon" card ("switchedOff": "comingSoon") or not at all ("hidden"). The last chapter switched on
+// then ends with "To be continued" instead of the game's epilogue, the modes drop its bosses and
+// operations, and what it would have unlocked comes with the last operation switched on (DECISIONS 19A).
+// A remote config, once the game has one, sets the same fields (Campaign.Release); -mb-acts=1,2 on the
+// command line does it for a play test.
+{
+  "acts": [1, 2, 3, 4],
+  "chaptersOff": [],
+  "switchedOff": "comingSoon"
+}

@@ -494,6 +494,8 @@ namespace MachineBrigade.Game.Match
             if (mission != null)
             {
                 Add(mission.Boss?.Def);
+                // Prompt 20: a boss slot pass 2 has not built is fought as its stand-in.
+                Add(mission.Boss?.Fallback);
                 Add(mission.Convoy?.Def);
                 if (mission.Waves != null) foreach (var id in mission.Waves.Roster) Add(id);
                 foreach (var u in mission.Units) Add(u.DefId);

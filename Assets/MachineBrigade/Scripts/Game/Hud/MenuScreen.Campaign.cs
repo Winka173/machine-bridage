@@ -121,7 +121,8 @@ namespace MachineBrigade.Game.Hud
             _chapterGrid.Clear();
             var act = 0;
             VisualElement row = null;
-            foreach (var chapter in Campaign.Chapters)
+            // Prompt 20 C: a chapter switched off shows as "Coming soon" or not at all (release.json).
+            foreach (var chapter in Campaign.ShownChapters)
             {
                 if (chapter.Act != act)
                 {
@@ -137,10 +138,12 @@ namespace MachineBrigade.Game.Hud
         private VisualElement ChapterCard(ChapterDef chapter)
         {
             var number = chapter.Number;
-            var open = Campaign.ChapterOpen(number);
+            var soon = !Campaign.ChapterEnabled(number);
+            var open = !soon && Campaign.ChapterOpen(number);
             var card = Kit.Tappable("fc-chapter" + (open ? "" : " fc-chapter--locked"), () =>
             {
-                if (Campaign.ChapterOpen(number)) OpenChapter(number);
+                if (Campaign.ChapterEnabled(number) && Campaign.ChapterOpen(number)) OpenChapter(number);
+                else if (!Campaign.ChapterEnabled(number)) Note(Strings.Get("campaign.comingSoonNote"), true);
                 else Note(Strings.Format("campaign.chapterLocked", number - 1), true);
             });
             var art = Kit.Box("fc-chapter__art");
@@ -155,6 +158,12 @@ namespace MachineBrigade.Game.Hud
             card.Add(art);
             var text = Kit.Box("fc-chapter__body");
             text.Add(Kit.Text(Kit.Caps(Strings.Get($"chapter.{number}.title")), "fc-panel-title"));
+            if (soon)
+            {
+                text.Add(Kit.Text(Strings.Get("campaign.comingSoon"), "fc-small"));
+                card.Add(text);
+                return card;
+            }
             var main = Campaign.MissionsOf(number, side: false);
             int won = 0, stars = 0;
             foreach (var m in Campaign.MissionsOf(number))
@@ -177,9 +186,10 @@ namespace MachineBrigade.Game.Hud
             return card;
         }
 
-        /// <summary>A chapter's boss (the dossier's key), from its missions, or null.</summary>
+        /// <summary>A chapter's boss (the dossier's key): its main boss (prompt 20), else the last boss its missions name, or null.</summary>
         private static string ChapterBoss(int chapter)
         {
+            if (Campaign.Chapter(chapter)?.Main is { } main && Strings.Has("boss." + main)) return main;
             string found = null;
             foreach (var m in Campaign.MissionsOf(chapter, side: false))
             {
@@ -435,14 +445,19 @@ namespace MachineBrigade.Game.Hud
             _play();
         }
 
-        /// <summary>Once the last operation is won: the epilogue, once.</summary>
+        /// <summary>
+        /// Once the last operation switched on is won: the game's epilogue, once, or "To be continued"
+        /// when the build ends before the story does (prompt 20 C.3).
+        /// </summary>
         private void ShowEpilogueOnce()
         {
-            const int epilogue = 10;
-            if (_story == null || _story.Visible || _tab != Tab.Campaign || !Campaign.ChapterDone(Campaign.ChapterCount) || PlayerProfile.ChapterSeen(epilogue)) return;
-            PlayerProfile.MarkChapterSeen(epilogue);
-            _story.Show(Strings.Get("campaign.story.title"), Strings.Get("campaign.epilogue.title"), "khai", Strings.Get("campaign.epilogue"), null, null,
-                (Strings.Get("campaign.epilogueGo"), null), null, null);
+            var last = Campaign.LastChapter;
+            var complete = Campaign.StoryComplete;
+            var mark = complete ? PlayerProfile.EpilogueSeen : PlayerProfile.ContinuedSeen(last);
+            if (_story == null || _story.Visible || _tab != Tab.Campaign || last <= 0 || !Campaign.ChapterDone(last) || PlayerProfile.ChapterSeen(mark)) return;
+            PlayerProfile.MarkChapterSeen(mark);
+            _story.Show(Strings.Get("campaign.story.title"), Strings.Get(complete ? "campaign.epilogue.title" : "campaign.tbc.title"), "khai",
+                Strings.Get(complete ? "campaign.epilogue" : "campaign.tbc"), null, null, (Strings.Get("campaign.epilogueGo"), null), null, null);
         }
 
         private static string GoalIcon(MissionGoal goal) => goal switch

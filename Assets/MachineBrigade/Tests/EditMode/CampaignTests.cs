@@ -180,13 +180,13 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ shape
 
         [Test]
-        public void NineChaptersOfTenMainAndTwoSideMissions()
+        public void TwelveChaptersOfTenMainAndTwoSideMissions()
         {
-            // 108 and chapter 4's epilogue boss, Leviathan (prompt 16).
-            Assert.AreEqual(109, Campaign.All.Count);
-            Assert.AreEqual(9, Campaign.ChapterCount);
+            // Prompt 20: 144 and chapter 4's epilogue boss, Leviathan (prompt 16).
+            Assert.AreEqual(145, Campaign.All.Count);
+            Assert.AreEqual(12, Campaign.ChapterCount);
             var catalog = GameContent.LoadCatalog();
-            for (var c = 1; c <= 9; c++)
+            for (var c = 1; c <= 12; c++)
             {
                 var main = Campaign.MissionsOf(c, side: false).Where(m => !m.Epilogue).ToList();
                 Assert.AreEqual(10, main.Count, $"chapter {c}");
@@ -196,12 +196,12 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(main[9].Stages.Any(s => s.Choices.Count == 2), $"chapter {c}: its operation has a choice of two");
                 Assert.AreEqual(main[9], Campaign.OperationOf(c));
                 var cards = main.SelectMany(m => m.Unlocks).Count(id => !id.Contains('.') && !(catalog.Vehicles.TryGetValue(id, out var v) && v.Fort is { Kind: FortKind.Utility }));
-                Assert.That(cards, Is.InRange(5, 7), $"chapter {c} unlocks {cards} cards");
+                Assert.That(cards, Is.InRange(4, 7), $"chapter {c} unlocks {cards} cards");
             }
             Assert.AreEqual("3-5", Campaign.Label(Campaign.Get("c3m05")));
             Assert.AreEqual("3-S1", Campaign.Label(Campaign.Get("c3s1")));
-            CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, Campaign.All.Where(m => m.HqLevel > 0).Select(m => m.HqLevel).ToArray(), "an HQ level in chapters 1, 3, 5, 7, 9");
-            CollectionAssert.AreEqual(new[] { 1, 3, 5, 7, 9 }, Campaign.All.Where(m => m.HqLevel > 0).Select(m => m.Chapter).ToArray());
+            CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, Campaign.All.Where(m => m.HqLevel > 0).Select(m => m.HqLevel).ToArray(), "an HQ level in chapters 1, 3, 6, 9, 11");
+            CollectionAssert.AreEqual(new[] { 1, 3, 6, 9, 11 }, Campaign.All.Where(m => m.HqLevel > 0).Select(m => m.Chapter).ToArray());
         }
 
         [Test]
@@ -312,7 +312,7 @@ namespace MachineBrigade.Tests
                     if (s.Mission.Boss?.Name != null) Need("boss." + s.Mission.Boss.Name);
                 }
             }
-            for (var c = 1; c <= 9; c++)
+            for (var c = 1; c <= Campaign.ChapterCount; c++)
             {
                 Need($"chapter.{c}.title");
                 Need($"chapter.{c}.summary");

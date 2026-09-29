@@ -40,7 +40,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.tiers.nohigh"] = ("No long-range anti-air? Fight it at low altitude, shoot down its pods, and finish it once it is on the ground.", "Không có phòng không tầm xa? Hãy đánh nó ở tầng thấp, bắn hạ khoang đổ bộ, và kết liễu khi nó đã rơi xuống đất."),
 
             // ---------------------------------------------------------------- radio (second word is the speaker)
-            ["radio.aurel.bug.appear"] = ("Silver Bug is in orbit, Colonel. Look up.", "Bọ Bạc đã vào quỹ đạo, đại tá. Ngẩng đầu lên mà xem."),
+            ["radio.aurel.bug.appear"] = ("Icarus is in orbit, Colonel. Look up.", "Icarus đã vào quỹ đạo, đại tá. Ngẩng đầu lên mà xem."),
             ["radio.aurel.bug.descend"] = ("Coming down to greet you personally. The satellite stays up there — insurance.", "Tôi đang hạ xuống để chào ông tận nơi. Vệ tinh ở lại trên đó — của để dành."),
             ["radio.aurel.bug.phase2"] = ("You have scratched the paintwork, Colonel. I will need more than that.", "Ông mới chỉ làm xước lớp sơn thôi, đại tá. Cần nhiều hơn thế."),
             ["radio.aurel.bug.phase3"] = ("My engine. That is not in the forecast either.", "Động cơ của tôi. Cũng không có trong dự báo."),

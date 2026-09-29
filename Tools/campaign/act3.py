@@ -19,7 +19,7 @@ AIR_WAVES = ['attack_helicopter', 'attack_jet', 'strike_drone', 'gunship_heli', 
 
 # ================================================================================ CHAPTER 7: WAR IN THE AIR
 
-add_mission(m('c7m01', 7, 'frostpeak', 'ShootDown', 'Clear', reversed=True, killsNeeded=12, timeLimit=1200, general='quaden',
+add_mission(m('c10m01', 10, 'frostpeak', 'ShootDown', 'Clear', reversed=True, killsNeeded=12, timeLimit=1200, general='quaden',
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(AIR_WAVES, first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
               unlocks=['sead_strike'], starTime=600, starLosses=10),
@@ -27,12 +27,12 @@ add_mission(m('c7m01', 7, 'frostpeak', 'ShootDown', 'Clear', reversed=True, kill
             ('With Sen\'s files in hand, the brigade turns towards Skyhold. Quạ Đen\'s air wing meets us over Frostpeak, coming from the south this time. Bring twelve of them down.',
              'Cầm trong tay hồ sơ của Sen, lữ đoàn quay mũi về Skyhold. Phi đội của Quạ Đen đón đánh ta trên Frostpeak, lần này từ phía nam. Bắn rơi mười hai chiếc.'),
             (('Sen\'s files', 'Hồ sơ của Sen'),
-             ('Sen\'s files, first page: "Project S.B. Full-scale flight article. Laser, coilguns, field shield. Target date for deployment over the capital: spring." It was already autumn.',
-              'Hồ sơ của Sen, trang đầu: "Dự án S.B. Nguyên mẫu bay cỡ thật. Laser, súng điện từ, khiên trường lực. Ngày dự kiến triển khai trên bầu trời thủ đô: mùa xuân." Lúc đó đã là mùa thu.')),
+             ('Sen\'s files, first page: "Project Icarus Full-scale flight article. Laser, coilguns, field shield. Target date for deployment over the capital: spring." It was already autumn.',
+              'Hồ sơ của Sen, trang đầu: "Dự án Icarus Nguyên mẫu bay cỡ thật. Laser, súng điện từ, khiên trường lực. Ngày dự kiến triển khai trên bầu trời thủ đô: mùa xuân." Lúc đó đã là mùa thu.')),
             [say('quaden', 'Start', 'Diều Hâu! Still flying that museum piece?', 'Diều Hâu! Vẫn lái cái đồ cổ đó à?'),
              say('dieuhau', 'Start', 'Still faster than you, Crow.', 'Vẫn nhanh hơn mày, Quạ ạ.')])
 
-add_mission(m('c7m02', 7, 'skyhold', 'Recon', 'Overcast', points=['west', 'town', 'east'], timeLimit=900, speaker='linh', general='quaden', reinforcements=2,
+add_mission(m('c10m02', 10, 'skyhold', 'Recon', 'Overcast', points=['west', 'town', 'east'], timeLimit=900, speaker='linh', general='quaden', reinforcements=2,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=QUADEN,
               playerCp=28, playerIncome=1.5, playerCap=38, unlocks=['heavy_rocket_artillery'], starTime=420, starLosses=10, challenge={'kind': 'NoAircraft'}),
             ('Eyes on Skyhold', 'Mắt nhìn Skyhold'),
@@ -43,7 +43,7 @@ add_mission(m('c7m02', 7, 'skyhold', 'Recon', 'Overcast', points=['west', 'town'
               'Tổ trinh sát chụp được một nhà chứa máy bay cửa bị hàn chết, ống làm lạnh chạy xuống lòng đất. Sen nhìn tấm ảnh rất lâu. "Chính là nó," bà nói.')),
             [say('linh', 'Start', 'Look at the hangars. All of them.', 'Nhìn các nhà chứa máy bay. Tất cả.')])
 
-add_mission(m('c7m03', 7, 'frostpeak', 'Protect', 'Snow', reversed=True, targets=['radar_station', 'church'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
+add_mission(m('c10m03', 10, 'frostpeak', 'Protect', 'Snow', reversed=True, targets=['radar_station', 'church'], protectNeeded=1, targetHealth=14, surviveSeconds=420,
               general='quaden', reinforcements=2,
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
@@ -57,7 +57,7 @@ add_mission(m('c7m03', 7, 'frostpeak', 'Protect', 'Snow', reversed=True, targets
               'Trạm radar của Orlov vẫn còn những cốc cà phê của kíp trực trên bàn điều khiển. Người của lữ đoàn cứ thế dùng tiếp. Họ gọi đó là "cốc của Orlov", với chút kính nể.')),
             [say('khai', 'Start', 'The radar is our eyes. Keep them open.', 'Radar là mắt của ta. Giữ cho mắt mở.')])
 
-add_mission(m('c7m04', 7, 'skyhold', 'Destroy', 'Night', targets=['parked_jet'], targetX=-40, targetZ=80, targetRadius=60, targetHealth=3, timeLimit=900, general='quaden', reinforcements=2, unlocks=['ew_jammer'],
+add_mission(m('c10m04', 10, 'skyhold', 'Destroy', 'Night', targets=['parked_jet'], targetX=-40, targetZ=80, targetRadius=60, targetHealth=3, timeLimit=900, general='quaden', reinforcements=2, unlocks=['ew_jammer'],
               units=units(1, ['aa_vehicle', 'main_battle_tank', 'sam_launcher'], (-30, 75), 10),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, starTime=480, starLosses=10, challenge={'kind': 'NoStrikes'}),
@@ -69,24 +69,24 @@ add_mission(m('c7m04', 7, 'skyhold', 'Destroy', 'Night', targets=['parked_jet'],
               'Quạ Đen cho đỗ máy bay sát cánh nhau, kiểu người ta vẫn làm ở các buổi trình diễn. Tổ kỹ thuật mặt đất đã cảnh báo hắn. Hắn thích trông nó như thế.')),
             [say('dieuhau', 'Start', 'They are parked in a line. He always did like to show off.', 'Chúng đỗ thành một hàng. Hắn lúc nào cũng thích khoe mẽ.')])
 
-add_mission(m('c7m05', 7, 'skyhold', 'Boss', 'Clear', general='aurel', timeLimit=1200, reinforcements=3,
+add_mission(m('c10m05', 10, 'skyhold', 'Boss', 'Clear', general='aurel', timeLimit=1200, reinforcements=3,
               boss=scripted('silver_bug', (84, 84), heading=225, route=[(45, 45), (-45, 60), (-60, -15), (0, -50), (60, -30)], fleeAt=0.5, health=4.4),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=14, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'ifv', 'tank_destroyer', 'attack_jet'],
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', hqLevel=4, unlocks=['gunship_heli'], starTime=600, starLosses=12),
-            ('Silver Bug', 'Silver Bug'),
-            ('The welded hangar opened at dawn. Silver Bug is in the air over Skyhold: Aurel\'s orbital spacecraft, silver-hulled and short-winged, with a main engine that could outrun anything we have. '
+            ('Icarus', 'Icarus'),
+            ('The welded hangar opened at dawn. Icarus is in the air over Skyhold: Aurel\'s orbital spacecraft, silver-hulled and short-winged, with a main engine that could outrun anything we have. '
              'It is not finished, Sen says. Hurt it badly enough, and it will run.',
-             'Nhà chứa bị hàn cửa đã mở lúc bình minh. Silver Bug đang ở trên không phận Skyhold: phi thuyền quỹ đạo của Aurel, vỏ bạc, cánh ngắn, với động cơ chính đủ sức bỏ xa bất cứ thứ gì ta có. '
+             'Nhà chứa bị hàn cửa đã mở lúc bình minh. Icarus đang ở trên không phận Skyhold: phi thuyền quỹ đạo của Aurel, vỏ bạc, cánh ngắn, với động cơ chính đủ sức bỏ xa bất cứ thứ gì ta có. '
              'Sen nói nó chưa hoàn thiện. Đánh nó đủ đau, nó sẽ bỏ chạy.'),
             (('It runs', 'Nó bỏ chạy'),
-             ('Silver Bug broke off at half strength and flew south at a speed nothing of ours can match. Linh tracked it until it vanished over the desert. Towards the launch site.',
-              'Silver Bug tháo chạy khi còn một nửa sức mạnh và bay về phía nam với tốc độ không thứ gì của ta đuổi kịp. Linh theo dấu nó cho tới khi nó biến mất trên sa mạc. Về phía bãi phóng.')),
+             ('Icarus broke off at half strength and flew south at a speed nothing of ours can match. Linh tracked it until it vanished over the desert. Towards the launch site.',
+              'Icarus tháo chạy khi còn một nửa sức mạnh và bay về phía nam với tốc độ không thứ gì của ta đuổi kịp. Linh theo dấu nó cho tới khi nó biến mất trên sa mạc. Về phía bãi phóng.')),
             [say('sen', 'Start', 'It is faster than anything we have. Keep up the fire before it climbs out of range.', 'Nó nhanh hơn bất cứ thứ gì ta có. Cứ bắn liên tục trước khi nó bay vượt tầm.'),
              say('aurel', 'Boss', 'A field test, Colonel. Thank you for volunteering.', 'Một cuộc thử nghiệm thực địa thôi, đại tá. Cảm ơn ông đã tình nguyện.'),
              say('khai', 'Win', 'It ran. Next time, it will not get the chance.', 'Nó chạy rồi. Lần sau, nó sẽ không có cơ hội đó.')])
 
-add_mission(m('c7m06', 7, 'frostpeak', 'Hunt', 'Fog', reversed=True, general='quaden', timeLimit=1100, targetHealth=2.5, reinforcements=2,
+add_mission(m('c10m06', 10, 'frostpeak', 'Hunt', 'Fog', reversed=True, general='quaden', timeLimit=1100, targetHealth=2.5, reinforcements=2,
               hunt=[scripted('long_sam', (60, 70), route=[(80, 90), (40, 60), (70, 40)]),
                     scripted('sam_launcher', (-20, 100), route=[(-40, 120), (0, 90), (-30, 80)]),
                     scripted('counter_battery_radar', (100, 20), route=[(110, -10), (90, 40), (120, 30)])],
@@ -101,7 +101,7 @@ add_mission(m('c7m06', 7, 'frostpeak', 'Hunt', 'Fog', reversed=True, general='qu
               'Màn tên lửa bị xóa sổ, Diều Hâu bay qua Skyhold giữa trưa và lắc cánh ngay trên tháp điều khiển. Quạ Đen không cất cánh. Điều đó khiến ai cũng lo.')),
             [say('dieuhau', 'Start', 'Get those launchers and I buy the beer.', 'Diệt được mấy bệ phóng đó thì tôi khao bia.')])
 
-add_mission(m('c7m07', 7, 'skyhold', 'ShootDown', 'Rain', legacy='m20', killsNeeded=16, timeLimit=1200, general='quaden',
+add_mission(m('c10m07', 10, 'skyhold', 'ShootDown', 'Rain', legacy='m20', killsNeeded=16, timeLimit=1200, general='quaden',
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['attack_helicopter', 'attack_jet', 'strike_drone', 'gunship_heli', 'heavy_bomber', 'elite_attack_helicopter', 'main_battle_tank'],
                           first=30, interval=45, size=3, grow=0.4, max_size=7, max_alive=14),
@@ -114,7 +114,7 @@ add_mission(m('c7m07', 7, 'skyhold', 'ShootDown', 'Rain', legacy='m20', killsNee
               'Trong mười sáu chiếc bị bắn rơi hôm đó, bốn chiếc do những phi công từng học cùng Diều Hâu lái. Anh vào bệnh viện thăm hai người còn sống sót.')),
             [say('quaden', 'Start', 'Look up, Colonel. That is where you lose.', 'Nhìn lên đi, đại tá. Ông sẽ thua ở trên đó.')])
 
-add_mission(m('c7m08', 7, 'frostpeak', 'Escort', 'Night', reversed=True, convoyCount=5, convoyNeeded=3, timeLimit=1100, reinforcements=2,
+add_mission(m('c11m08', 11, 'frostpeak', 'Escort', 'Night', reversed=True, convoyCount=5, convoyNeeded=3, timeLimit=1100, reinforcements=2,
               convoy=scripted('supply_truck', (-100, -100), route=[(-31.9, -31.9), (0, -31.9), (31.9, -31.9), (31.9, 0), (56.25, 0), (56.25, -86.25)], heading=45),
               units=units(0, ['main_battle_tank', 'long_sam', 'heavy_aa', 'ifv'], (-88, -90), 7),
               enemyAi='waves', difficulty='Normal',
@@ -129,10 +129,10 @@ add_mission(m('c7m08', 7, 'frostpeak', 'Escort', 'Night', reversed=True, convoyC
               'Đường băng ở trại gỗ dài 700 mét tuyết nén. Diều Hâu bảo đó là đường băng tốt nhất dải duyên hải. Anh cũng nói thế về mọi đường băng anh từng hạ cánh.')),
             [say('dieuhau', 'Start', 'No fuel, no air cover. Bring me my fuel.', 'Không có nhiên liệu thì không có yểm trợ trên không. Mang nhiên liệu cho tôi.')])
 
-add_mission(m('c7m09', 7, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+add_mission(m('c10m09', 10, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=12, enemyIncome=0.35,
               playerCp=32, playerIncome=2.4, playerCap=42, playerBase='Anchor', starTime=900, starLosses=14),
-            ('Black Crow\'s Nest', 'Tổ Quạ Đen'),
+            ('Raven\'s Nest', 'Tổ Quạ Đen'),
             ('Quạ Đen\'s own headquarters, at the east end of the base, ringed with missiles. Level it; the air base will fight on, but without its head.',
              'Sở chỉ huy riêng của Quạ Đen, ở đầu đông căn cứ, vây kín tên lửa. San phẳng nó; căn cứ không quân sẽ còn kháng cự, nhưng đã mất đầu.'),
             (('The photograph', 'Tấm ảnh'),
@@ -141,62 +141,62 @@ add_mission(m('c7m09', 7, 'skyhold', 'Duel', 'Overcast', targetHealth=0.3, gener
             [say('quaden', 'Start', 'The sky is mine. You can keep the mud.', 'Bầu trời là của ta. Bùn đất thì cứ giữ lấy.'),
              say('quaden', 'Win', 'Eject, eject! ...Not like this.', 'Nhảy dù, nhảy dù! ...Không phải thế này chứ.')])
 
-add_mission(m('c7m10', 7, 'skyhold', 'Destroy', 'Fog', variant='siege', operation=True, general='quaden', reinforcements=3,
+add_mission(m('c10m10', 10, 'skyhold', 'Destroy', 'Fog', variant='siege', operation=True, general='quaden', reinforcements=3,
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=1.0, enemyDeck=QUADEN,
               playerCp=32, playerIncome=2.0, playerCap=44, playerBase='Anchor', enemyHq=4, towerGear='Epic',
               waves=waves(['attack_helicopter', 'attack_jet', 'main_battle_tank', 'ifv', 'gunship_heli'], first=80, interval=60, size=2, grow=0.3, max_size=5, max_alive=12,
                           spawns=[(100, 60), (60, 100)]),
               stages=[
                   {'stage': 'radars', 'goal': 'Destroy', 'targets': ['radar_station'], 'targetX': 79, 'targetZ': 79, 'targetRadius': 46, 'targetHealth': 2, 'cp': 8,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c7m10.s1'}],
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c10m10.s1'}],
                    'choices': [{'key': 'fuel', 'next': 'fuel'}, {'key': 'tower', 'next': 'tower'}]},
                   {'stage': 'fuel', 'goal': 'Destroy', 'targets': ['fuel_tank', 'fuel_truck'], 'targetX': 30, 'targetZ': 90, 'targetRadius': 30, 'targetHealth': 2, 'cp': 6, 'next': 'airship',
                    'events': WEAKEN},
                   {'stage': 'tower', 'goal': 'Destroy', 'targets': ['control_tower', 'radar_dome'], 'targetHealth': 2, 'cp': 6, 'next': 'airship', 'events': strikes(50)},
                   {'stage': 'airship', 'goal': 'Boss', 'boss': scripted('command_airship', (90, 90), heading=225, route=[(60, 60), (0, 40), (-30, -10), (40, -20)],
                                                                        fallback='sky_fortress', fallbackHealth=0.9, name='command_airship'), 'cp': 10,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.quaden.c7m10.s3'}]},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.quaden.c10m10.s3'}]},
                   {'stage': 'crow', 'goal': 'ShootDown', 'killsNeeded': 12, 'cp': 6,
                    'waves': waves(['attack_jet', 'fighter_jet', 'gunship_heli', 'attack_helicopter'], first=8, interval=30, size=3, grow=0.4, max_size=6, max_alive=12),
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.dieuhau.c7m10.s4'}]},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.dieuhau.c10m10.s4'}]},
                   {'stage': 'counter', 'goal': 'Survive', 'surviveSeconds': 480,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c7m10.s6'},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c10m10.s6'},
                               {'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'long_sam', 'bmpt', 'attack_helicopter']},
                               {'at': '190', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'gunship_heli', 'ifv']}]},
               ],
               starTime=1440, starLosses=18),
             ('Storm Skyhold', 'Tấn công Skyhold'),
             ('The air base itself. Blind its radars, choose your second blow, bring down Quạ Đen\'s command airship, shoot his last wave out of the sky, and hold the base against the garrison\'s last push.',
-             'Chính căn cứ không quân. Làm mù radar, chọn đòn thứ hai, bắn rơi khinh hạm chỉ huy của Quạ Đen, quét sạch đợt máy bay cuối cùng của hắn, rồi giữ căn cứ trước đợt phản kích cuối của quân đồn trú.'),
+             'Chính căn cứ không quân. Làm mù radar, chọn đòn thứ hai, bắn rơi Roc của Quạ Đen, quét sạch đợt máy bay cuối cùng của hắn, rồi giữ căn cứ trước đợt phản kích cuối của quân đồn trú.'),
             (('Wingmen', 'Bay kèm'),
              ('Diều Hâu shot Quạ Đen down over the runway. He circled until he saw the parachute open, then called in the position for the medics. Quạ Đen was gone by the time they got there.',
               'Diều Hâu bắn rơi Quạ Đen ngay trên đường băng. Anh bay vòng cho tới khi thấy dù bung, rồi báo tọa độ cho quân y. Lúc họ tới nơi, Quạ Đen đã biến mất.')),
             [say('khai', 'Start', 'The last air base on the coast. Take it and the sky is ours.', 'Căn cứ không quân cuối cùng trên dải duyên hải. Chiếm nó là bầu trời thuộc về ta.'),
              say('khai', 'Win', 'Skyhold has fallen. The sky belongs to the Alliance.', 'Skyhold đã thất thủ. Bầu trời thuộc về Liên minh.')],
             stages_text={'radars': ('Blind the Radars', 'Làm mù radar'), 'fuel': ('Burn the Fuel Park', 'Đốt bãi nhiên liệu'), 'tower': ('The Control Tower', 'Tháp điều khiển'),
-                         'airship': ('The Command Airship', 'Khinh hạm chỉ huy'), 'crow': ('Black Crow\'s Last Wave', 'Đợt cuối của Quạ Đen'), 'counter': ('Hold Skyhold', 'Giữ Skyhold')},
+                         'airship': ('The Roc', 'Roc chỉ huy'), 'crow': ('Raven\'s Last Wave', 'Đợt cuối của Quạ Đen'), 'counter': ('Hold Skyhold', 'Giữ Skyhold')},
             choices_text={'fuel': choice_income('Burn the fuel park', 'Đốt bãi nhiên liệu', 'Quạ Đen', 'Quạ Đen'),
                           'tower': choice_strikes('Destroy the control tower and radome', 'Phá tháp điều khiển và vòm radar', 50)})
-T('radio.khai.c7m10.s1', 'The radars first. Blind, he cannot direct his wing.', 'Radar trước. Mù rồi, hắn không chỉ huy được phi đội.')
-T('radio.khai.c7m10.s6', 'The garrison is making its last push. Hold the base.', 'Quân đồn trú đang dốc sức lần cuối. Giữ lấy căn cứ.')
-T('radio.quaden.c7m10.s3', 'The airship sees everything, Colonel. Everything.', 'Khinh hạm nhìn thấy mọi thứ, đại tá. Mọi thứ.')
-T('radio.dieuhau.c7m10.s4', 'That\'s him in the lead jet. He\'s mine, everyone. Keep the others off me.', 'Hắn ở chiếc dẫn đầu. Hắn là của tôi, mọi người. Giữ mấy chiếc kia khỏi bám tôi.')
+T('radio.khai.c10m10.s1', 'The radars first. Blind, he cannot direct his wing.', 'Radar trước. Mù rồi, hắn không chỉ huy được phi đội.')
+T('radio.khai.c10m10.s6', 'The garrison is making its last push. Hold the base.', 'Quân đồn trú đang dốc sức lần cuối. Giữ lấy căn cứ.')
+T('radio.quaden.c10m10.s3', 'The airship sees everything, Colonel. Everything.', 'Roc nhìn thấy mọi thứ, đại tá. Mọi thứ.')
+T('radio.dieuhau.c10m10.s4', 'That\'s him in the lead jet. He\'s mine, everyone. Keep the others off me.', 'Hắn ở chiếc dẫn đầu. Hắn là của tôi, mọi người. Giữ mấy chiếc kia khỏi bám tôi.')
 
-add_mission(m('c7s1', 7, 'skyhold', 'Hunt', 'Fog', side=True, after='c7m04', speaker='linh', timeLimit=1400, targetHealth=1.5, reinforcements=1,
+add_mission(m('c10s1', 10, 'skyhold', 'Hunt', 'Fog', side=True, after='c10m04', speaker='linh', timeLimit=1400, targetHealth=1.5, reinforcements=1,
               hunt=[scripted('supply_truck', (20, 60), route=[(0, 70), (40, 40), (20, 20)]),
                     scripted('supply_truck', (60, 10), route=[(70, -20), (40, 0), (70, 30)])],
               units=units(1, ['aa_vehicle', 'main_battle_tank', 'ifv'], (20, 60), 7) + units(1, ['sam_launcher', 'heavy_tank'], (60, 10), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor', rarePrints=46, starTime=480, starLosses=8),
             ('Spare Parts', 'Phụ tùng'),
-            ('Two trucks are carrying Silver Bug\'s spare parts off the base in the fog. Sen wants them stopped before they reach the desert. They are marked.',
-             'Hai xe tải đang chở phụ tùng của Silver Bug rời căn cứ trong sương. Sen muốn chặn chúng trước khi chúng tới sa mạc. Chúng đã được đánh dấu.'),
+            ('Two trucks are carrying Icarus\'s spare parts off the base in the fog. Sen wants them stopped before they reach the desert. They are marked.',
+             'Hai xe tải đang chở phụ tùng của Icarus rời căn cứ trong sương. Sen muốn chặn chúng trước khi chúng tới sa mạc. Chúng đã được đánh dấu.'),
             (('The Engine', 'Động cơ'),
              ('The trucks carried a spare main engine casing and two point-defence laser optics. Sen turned one optic over in her hands and said, very quietly, "They fixed my mistake."',
               'Hai xe tải chở một vỏ động cơ chính dự phòng và hai thấu kính la-de phòng thủ điểm. Sen cầm một thấu kính lật qua lật lại và nói rất khẽ: "Chúng đã sửa lỗi của tôi."')),
             [say('sen', 'Start', 'Whatever is in those trucks, Aurel cannot replace it easily. Stop them.', 'Bất cứ thứ gì trong những xe đó, Aurel cũng không dễ thay thế. Chặn chúng lại.')])
 
-add_mission(m('c7s2', 7, 'frostpeak', 'Recon', 'Overcast', side=True, reversed=True, after='c7m07', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
+add_mission(m('c10s2', 10, 'frostpeak', 'Recon', 'Overcast', side=True, reversed=True, after='c10m07', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
               playerCp=28, playerIncome=1.45, playerCap=36, towerGear='Epic', starTime=420, starLosses=8, challenge={'kind': 'NoAircraft'}),
             ('The Crow\'s Trail', 'Dấu vết của Quạ'),
@@ -209,7 +209,7 @@ add_mission(m('c7s2', 7, 'frostpeak', 'Recon', 'Overcast', side=True, reversed=T
 
 # ================================================================================ CHAPTER 8: THE CAPITAL
 
-add_mission(m('c8m01', 8, 'metrocity', 'Capture', 'Fog', points=['west', 'town', 'east'], enemyOwns=['town'], general='aurel', reinforcements=3,
+add_mission(m('c7m01', 7, 'metrocity', 'Capture', 'Fog', points=['west', 'town', 'east'], enemyOwns=['town'], general='aurel', reinforcements=3,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.6, playerCap=40, playerBase='Anchor', unlocks=['vbied'], starTime=660, starLosses=12),
             ('Into the City', 'Vào thành phố'),
@@ -221,18 +221,18 @@ add_mission(m('c8m01', 8, 'metrocity', 'Capture', 'Fog', points=['west', 'town',
             [say('aurel', 'Start', 'Welcome to my city, Colonel. Please do not scratch the paintwork.', 'Chào mừng tới thành phố của tôi, đại tá. Làm ơn đừng làm xước lớp sơn.'),
              say('khai', 'Start', 'It is not your city. Move in.', 'Đây không phải thành phố của hắn. Tiến vào.')])
 
-add_mission(m('c8m02', 8, 'capital', 'Recon', 'Overcast', points=['west', 'town', 'east'], timeLimit=900, speaker='linh', general='aurel', reinforcements=2,
+add_mission(m('c7m02', 7, 'capital', 'Recon', 'Overcast', points=['west', 'town', 'east'], timeLimit=900, speaker='linh', general='aurel', reinforcements=2,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.55, playerCap=40, unlocks=['turtle_tank'], starTime=420, starLosses=10, challenge={'kind': 'NoAircraft'}),
             ('The Bridges of Lam Thành', 'Những cây cầu Lam Thành'),
-            ('The capital sits on a river island. Before General Hùng arrives, Linh wants eyes on the gardens, the palace square and the station.',
-             'Thủ đô nằm trên một hòn đảo giữa sông. Trước khi tướng Hùng tới, Linh muốn quan sát khu vườn, quảng trường cung điện và nhà ga.'),
-            (('Hùng\'s men', 'Người của Hùng'),
-             ('At the station, the recon team met a patrol of General Hùng\'s army that was not supposed to be there for three days. Its officer would not say who had sent him.',
-              'Ở nhà ga, tổ trinh sát gặp một toán tuần tra của tướng Hùng, lẽ ra ba ngày nữa mới có mặt. Viên sĩ quan chỉ huy không chịu nói ai đã phái hắn tới.')),
+            ('The capital sits on a river island. Before General Lý Hàn arrives, Linh wants eyes on the gardens, the palace square and the station.',
+             'Thủ đô nằm trên một hòn đảo giữa sông. Trước khi tướng Lý Hàn tới, Linh muốn quan sát khu vườn, quảng trường cung điện và nhà ga.'),
+            (('Lý Hàn\'s men', 'Người của Lý Hàn'),
+             ('At the station, the recon team met a patrol of General Lý Hàn\'s army that was not supposed to be there for three days. Its officer would not say who had sent him.',
+              'Ở nhà ga, tổ trinh sát gặp một toán tuần tra của tướng Lý Hàn, lẽ ra ba ngày nữa mới có mặt. Viên sĩ quan chỉ huy không chịu nói ai đã phái hắn tới.')),
             [say('linh', 'Start', 'Three looks. And note anyone else who is looking too.', 'Ba lần quan sát. Và ghi lại bất cứ ai khác cũng đang quan sát.')])
 
-add_mission(m('c8m03', 8, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, reinforcements=3, timeLimit=1000, general='aurel',
+add_mission(m('c7m03', 7, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, reinforcements=3, timeLimit=1000, general='aurel',
               ally={'x': 0, 'z': 0, 'hq': 'headquarters', 'structures': units(0, ['mg_bunker', 'gun_turret', 'aa_turret', 'atgm_tower'], (0, 0), 15),
                     'units': units(0, ['ifv', 'main_battle_tank'], (-6, -6), 4)},
               hunt=[scripted(d, p) for d, p in zip(['heavy_tank', 'bmpt', 'main_battle_tank', 'mlrs', 'ifv', 'sam_launcher', 'main_battle_tank'], ring((0, 0), 40, 7, 0.1))],
@@ -248,7 +248,7 @@ add_mission(m('c8m03', 8, 'metrocity', 'Relieve', 'Rain', targetHealth=2.2, rein
               'Trời mưa cả ngày. Người dân ở quảng trường giương ô che cho thương binh trong khi xe tăng giao chiến quanh họ. Có người chụp lại; tới chiều tối, bức ảnh đã dán trên mọi bức tường.')),
             [say('khai', 'Start', 'The city is fighting for itself. We fight with it.', 'Thành phố đang tự chiến đấu. Ta chiến đấu cùng nó.')])
 
-add_mission(m('c8m04', 8, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2, unlocks=['smoke_carrier'],
+add_mission(m('c7m04', 7, 'metrocity', 'Protect', 'Clear', reversed=True, targets=['skyscraper', 'highrise_b', 'office_block'], protectNeeded=1, targetHealth=14, surviveSeconds=360, general='aurel', reinforcements=2, unlocks=['smoke_carrier'],
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'bmpt', 'heavy_rocket_artillery', 'gunship_heli'], first=90, interval=65, size=2, grow=0.3, max_size=4, max_alive=10),
@@ -261,23 +261,23 @@ add_mission(m('c8m04', 8, 'metrocity', 'Protect', 'Clear', reversed=True, target
               'Lệnh của Aurel gửi pháo binh, thu được: "Không để địch chiếm điểm cao. Ước tính số dân thường trong tòa nhà: chấp nhận được." Linh đọc nó trên sóng phát thanh. Các pháo thủ ngừng bắn.')),
             [say('khai', 'Start', 'People live in those towers. They stand.', 'Có người sống trong những tòa tháp đó. Chúng phải đứng vững.')])
 
-add_mission(m('c8m05', 8, 'metrocity', 'Intercept', 'Night', legacy='m16', launchSeconds=60, timeLimit=1200, general='aurel', reinforcements=3,
+add_mission(m('c7m05', 7, 'metrocity', 'Intercept', 'Night', legacy='m16', launchSeconds=60, timeLimit=1200, general='aurel', reinforcements=3,
               boss=scripted('nuke_train', (128, 101.25), heading=270, route=[(75, 101.25), (0, 101.25), (-67.5, 101.25), (-101.25, 101.25), (-101.25, 33.75)]),
               units=[{'def': 'main_battle_tank', 'team': 0, 'x': -75, 'z': -18.75, 'heading': 0}, {'def': 'tank_destroyer', 'team': 0, 'x': -82.5, 'z': -11.25, 'heading': 0},
                      {'def': 'heavy_tank', 'team': 0, 'x': -67.5, 'z': -7.5, 'heading': 0}, {'def': 'mlrs', 'team': 0, 'x': -93.75, 'z': -37.5, 'heading': 0}],
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'attack_jet'],
               playerCp=30, playerIncome=1.6, playerCap=40, unlocks=['shahed_truck'], starTime=480, starLosses=12),
-            ('The Doomsday Train', 'Đoàn tàu tận thế'),
+            ('Nemesis', 'Đoàn tàu tận thế'),
             ('A missile train is crossing Metro City to its launch siding. When it gets there, a sixty-second countdown starts. Stop it first.',
              'Một đoàn tàu tên lửa đang băng qua Thành Phố Metro tới đường nhánh phóng. Tới nơi là bắt đầu đếm ngược sáu mươi giây. Phải chặn nó trước.'),
             (('The warhead', 'Đầu đạn'),
-             ('The Doomsday Train\'s missile carried no warhead. Linh found the reason in its papers: the warhead was being fitted somewhere else. On Silver Bug.',
-              'Tên lửa trên Đoàn Tàu Tận Thế không có đầu đạn. Linh tìm ra lý do trong giấy tờ của nó: đầu đạn đang được lắp ở một nơi khác. Trên Silver Bug.')),
+             ('Nemesis\'s missile carried no warhead. Linh found the reason in its papers: the warhead was being fitted somewhere else. On Icarus.',
+              'Tên lửa trên Nemesis không có đầu đạn. Linh tìm ra lý do trong giấy tờ của nó: đầu đạn đang được lắp ở một nơi khác. Trên Icarus.')),
             [say('linh', 'Start', 'The train is on the northern line. Sixty seconds once it stops.', 'Đoàn tàu đang trên tuyến phía bắc. Nó dừng là còn sáu mươi giây.'),
              say('khai', 'Boss', 'Everything on the train.', 'Dồn hết vào đoàn tàu.')])
 
-add_mission(m('c8m06', 8, 'capital', 'Hold', 'Fog', points=['town'], holdSeconds=240, general='aurel', reinforcements=3,
+add_mission(m('c7m06', 7, 'capital', 'Hold', 'Fog', points=['town'], holdSeconds=240, general='aurel', reinforcements=3,
               units=units(0, ['heavy_tank', 'main_battle_tank', 'tank_destroyer', 'heavy_aa', 'mlrs', 'ifv'], (-6, -8), 9),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.5, playerCap=44, playerBase='Anchor',
@@ -291,7 +291,7 @@ add_mission(m('c8m06', 8, 'capital', 'Hold', 'Fog', points=['town'], holdSeconds
               'Cờ Liên minh được kéo lên trên quảng trường cung điện lúc 14 giờ 10. Lá cờ Hegemon bị thay thế đã treo ở đó hai năm; chưa ai từng thấy nó được giặt.')),
             [say('khai', 'Start', 'Four minutes on the square. Nobody takes it back.', 'Bốn phút trên quảng trường. Không ai được giành lại.')])
 
-add_mission(m('c8m07', 8, 'metrocity', 'Hunt', 'Storm', general='aurel', timeLimit=1100, targetHealth=2.5, reinforcements=3,
+add_mission(m('c7m07', 7, 'metrocity', 'Hunt', 'Storm', general='aurel', timeLimit=1100, targetHealth=2.5, reinforcements=3,
               hunt=[scripted('command_vehicle', (60, 60), route=[(80, 40), (40, 80), (60, 100)]),
                     scripted('command_vehicle', (-30, 90), route=[(-60, 100), (0, 80), (-20, 60)]),
                     scripted('command_vehicle', (90, -20), route=[(110, -40), (80, 10), (110, 20)])],
@@ -306,7 +306,7 @@ add_mission(m('c8m07', 8, 'metrocity', 'Hunt', 'Storm', general='aurel', timeLim
               'Mỗi chính ủy mang theo một bản sao hợp đồng trao dải duyên hải cho Hegemon. Điều 41: "Trường hợp có bất ổn, nhà thầu được áp dụng mọi biện pháp mà mình thấy phù hợp." Aurel đã thấy phù hợp.')),
             [say('linh', 'Start', 'Three command cars. Without them, the garrison breaks.', 'Ba xe chỉ huy. Mất chúng, quân đồn trú sẽ vỡ.')])
 
-add_mission(m('c8m08', 8, 'capital', 'Evacuate', 'Night', convoyCount=6, convoyNeeded=4, convoyInterval=14, timeLimit=900, general='aurel', reinforcements=2,
+add_mission(m('c7m08', 7, 'capital', 'Evacuate', 'Night', convoyCount=6, convoyNeeded=4, convoyInterval=14, timeLimit=900, general='aurel', reinforcements=2,
               convoy=scripted('supply_truck', (0, 0), route=[(-40, 0), (-80, 0), (-110, -40), (-108, -100)], heading=270),
               units=units(0, ['heavy_tank', 'heavy_aa', 'tank_destroyer', 'ifv'], (-6, -6), 8),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=AUREL_CITY,
@@ -317,11 +317,11 @@ add_mission(m('c8m08', 8, 'capital', 'Evacuate', 'Night', convoyCount=6, convoyN
             ('The families sheltering in the palace have to get out before the final battle: six trucks across the west bridge, one every few seconds. Four must make it.',
              'Các gia đình đang trú trong cung điện phải ra ngoài trước trận quyết chiến: sáu xe tải qua cầu phía tây, cứ vài giây một chiếc. Phải thoát được bốn xe.'),
             (('The west bridge', 'Cầu phía tây'),
-             ('General Hùng offered to take the evacuees to his own camp. Colonel Khai said the trucks would go to ours. Hùng laughed, and said he understood. He did.',
-              'Tướng Hùng đề nghị đưa những người sơ tán về trại của ông. Đại tá Khải nói các xe sẽ về trại của ta. Hùng bật cười, bảo ông hiểu. Và ông hiểu thật.')),
+             ('General Lý Hàn offered to take the evacuees to his own camp. Colonel Khai said the trucks would go to ours. Lý Hàn laughed, and said he understood. He did.',
+              'Tướng Lý Hàn đề nghị đưa những người sơ tán về trại của ông. Đại tá Khải nói các xe sẽ về trại của ta. Lý Hàn bật cười, bảo ông hiểu. Và ông hiểu thật.')),
             [say('khai', 'Start', 'Nobody stays in the palace tonight. Hold the square till the last truck leaves.', 'Đêm nay không ai ở lại cung điện. Giữ quảng trường cho tới khi xe cuối cùng rời đi.')])
 
-add_mission(m('c8m09', 8, 'capital', 'Destroy', 'Clear', targets=['radar_dome'], targetHealth=4, timeLimit=900, general='aurel', reinforcements=3,
+add_mission(m('c7m09', 7, 'capital', 'Destroy', 'Clear', targets=['radar_dome'], targetHealth=4, timeLimit=900, general='aurel', reinforcements=3,
               units=units(1, ['heavy_tank', 'long_sam', 'bmpt', 'aa_vehicle'], (10, -20), 12),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor', starTime=540, starLosses=12, challenge={'kind': 'NoStrikes'}),
@@ -333,7 +333,7 @@ add_mission(m('c8m09', 8, 'capital', 'Destroy', 'Clear', targets=['radar_dome'],
               'Buổi phát sóng cuối cùng của Aurel ở thủ đô bị cắt ngang giữa câu: "Chính quyền Bảo hộ sẽ mãi mãi—" Linh giữ cuộn băng. Cô bật nó mỗi khi có ai cần vui lên.')),
             [say('aurel', 'Start', 'Everyone has a price, Colonel.', 'Ai cũng có giá, đại tá.')])
 
-add_mission(m('c8m10', 8, 'capital', 'Capture', 'Rain', operation=True, general='aurel', reinforcements=3,
+add_mission(m('c7m10', 7, 'capital', 'Capture', 'Rain', operation=True, general='aurel', reinforcements=3,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL_CITY,
               playerCp=32, playerIncome=1.8, playerCap=44, playerBase='Anchor', towerGear='Epic',
@@ -344,7 +344,7 @@ add_mission(m('c8m10', 8, 'capital', 'Capture', 'Rain', operation=True, general=
                     'reinforcements': [{'at': 240, 'units': ['main_battle_tank', 'ifv', 'mlrs']}, {'at': 480, 'units': ['heavy_tank', 'aa_vehicle', 'tank_destroyer']}]},
               stages=[
                   {'stage': 'bridgeheads', 'goal': 'Capture', 'points': ['west', 'east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.hung.c8m10.s1'}],
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.hung.c7m10.s1'}],
                    'choices': [{'key': 'ministry', 'next': 'ministry'}, {'key': 'gardens', 'next': 'gardens'}]},
                   {'stage': 'ministry', 'goal': 'Destroy', 'targets': ['office_block'], 'targetX': 100, 'targetZ': 20, 'targetRadius': 12, 'targetHealth': 2, 'cp': 6, 'next': 'palace',
                    'events': WEAKEN},
@@ -354,43 +354,43 @@ add_mission(m('c8m10', 8, 'capital', 'Capture', 'Rain', operation=True, general=
                   {'stage': 'square', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 180, 'cp': 6,
                    'events': [{'at': '30', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'gunship_heli']}]},
                   {'stage': 'betrayal', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 10,
-                   'events': [{'at': 'start', 'kind': 'Betrayal'}, {'at': '2', 'kind': 'Radio', 'key': 'radio.hung.c8m10.s4'},
-                              {'at': '6', 'kind': 'Radio', 'key': 'radio.khai.c8m10.s4'}]},
+                   'events': [{'at': 'start', 'kind': 'Betrayal'}, {'at': '2', 'kind': 'Radio', 'key': 'radio.hung.c7m10.s4'},
+                              {'at': '6', 'kind': 'Radio', 'key': 'radio.khai.c7m10.s4'}]},
                   {'stage': 'strikeback', 'goal': 'Hunt',
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c8m10.s5'}]},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c7m10.s5'}]},
               ],
               starTime=1500, starLosses=22),
             ('Liberate the Capital', 'Giải phóng thủ đô'),
-            ('Lam Thành, with General Hùng\'s army and his base beside us. Take the bridgeheads, choose your blow, storm the palace, and the capital is free. '
-             'Linh has one more thing to say before we go: watch General Hùng.',
-             'Lam Thành, với đạo quân và căn cứ của tướng Hùng bên cạnh. Chiếm các đầu cầu, chọn đòn đánh, đánh chiếm cung điện, và thủ đô sẽ được tự do. '
-             'Trước khi xuất phát, Linh còn một điều muốn nói: hãy để mắt tới tướng Hùng.'),
+            ('Lam Thành, with General Lý Hàn\'s army and his base beside us. Take the bridgeheads, choose your blow, storm the palace, and the capital is free. '
+             'Linh has one more thing to say before we go: watch General Lý Hàn.',
+             'Lam Thành, với đạo quân và căn cứ của tướng Lý Hàn bên cạnh. Chiếm các đầu cầu, chọn đòn đánh, đánh chiếm cung điện, và thủ đô sẽ được tự do. '
+             'Trước khi xuất phát, Linh còn một điều muốn nói: hãy để mắt tới tướng Lý Hàn.'),
             (('The price', 'Cái giá'),
-             ('Hùng\'s price, found in Aurel\'s safe: the capital, the ports and the title "Protector". Aurel had agreed to all three. He had no intention of honouring any of them.',
-              'Cái giá của Hùng, tìm thấy trong két sắt của Aurel: thủ đô, các bến cảng và danh hiệu "Người Bảo hộ". Aurel đồng ý cả ba. Hắn chưa từng định giữ lời điều nào.')),
+             ('Lý Hàn\'s price, found in Aurel\'s safe: the capital, the ports and the title "Protector". Aurel had agreed to all three. He had no intention of honouring any of them.',
+              'Cái giá của Lý Hàn, tìm thấy trong két sắt của Aurel: thủ đô, các bến cảng và danh hiệu "Người Bảo hộ". Aurel đồng ý cả ba. Hắn chưa từng định giữ lời điều nào.')),
             [say('khai', 'Start', 'The capital, Brigade. Together with the Northern Army.', 'Thủ đô, Lữ đoàn. Cùng Tập đoàn quân Phương Bắc.'),
              say('khai', 'Win', 'The capital is free, and the traitor\'s base is ash. Aurel ran south. We follow.', 'Thủ đô đã tự do, căn cứ của kẻ phản bội thành tro. Aurel chạy về phía nam. Ta đuổi theo.')],
             stages_text={'bridgeheads': ('The Bridgeheads', 'Các đầu cầu'), 'ministry': ('Burn the Supply Ministry', 'Đốt Bộ Hậu cần'), 'gardens': ('Hold the Gardens', 'Giữ khu vườn'),
                          'palace': ('Storm the Palace', 'Đánh chiếm cung điện'), 'square': ('Hold the Square', 'Giữ quảng trường'), 'betrayal': ('Betrayal', 'Phản bội'), 'strikeback': ('Strike Back', 'Phản đòn')},
             choices_text={'ministry': choice_income('Burn the supply ministry', 'Đốt Bộ Hậu cần', 'Aurel\'s guard', 'Vệ binh của Aurel'),
                           'gardens': choice_strikes('Hold the gardens (150 s)', 'Giữ khu vườn (150 giây)', 55)})
-T('radio.hung.c8m10.s1', 'The Northern Army takes the left. Khải, take the right, and we meet at the palace.', 'Tập đoàn quân Phương Bắc đánh cánh trái. Khải, cánh phải, ta gặp nhau ở cung điện.')
-T('radio.hung.c8m10.s4', 'I am sorry, Khải. The coast needs a protector. It was never going to be you.', 'Tôi xin lỗi, Khải. Dải duyên hải cần một người bảo hộ. Người đó chưa bao giờ là anh.')
-T('radio.khai.c8m10.s4', 'Hùng has turned! Hold the square, Brigade. Hold.', 'Hùng trở mặt rồi! Giữ quảng trường, Lữ đoàn. Trụ vững.')
-T('radio.khai.c8m10.s5', 'His base is marked. Now we strike back.', 'Căn cứ của hắn đã được đánh dấu. Giờ ta phản đòn.')
+T('radio.hung.c7m10.s1', 'The Northern Army takes the left. Khải, take the right, and we meet at the palace.', 'Tập đoàn quân Phương Bắc đánh cánh trái. Khải, cánh phải, ta gặp nhau ở cung điện.')
+T('radio.hung.c7m10.s4', 'I am sorry, Khải. The coast needs a protector. It was never going to be you.', 'Tôi xin lỗi, Khải. Dải duyên hải cần một người bảo hộ. Người đó chưa bao giờ là anh.')
+T('radio.khai.c7m10.s4', 'Lý Hàn has turned! Hold the square, Brigade. Hold.', 'Lý Hàn trở mặt rồi! Giữ quảng trường, Lữ đoàn. Trụ vững.')
+T('radio.khai.c7m10.s5', 'His base is marked. Now we strike back.', 'Căn cứ của hắn đã được đánh dấu. Giờ ta phản đòn.')
 
-add_mission(m('c8s1', 8, 'metrocity', 'Recon', 'Overcast', side=True, after='c8m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
+add_mission(m('c7s1', 7, 'metrocity', 'Recon', 'Overcast', side=True, after='c7m03', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=AUREL_CITY,
               playerCp=30, playerIncome=1.5, playerCap=38, rarePrints=52, starTime=420, starLosses=8),
             ('The Letters', 'Những bức thư'),
-            ('Linh has intercepted letters between General Hùng and someone in Metro City. She wants to see the three drop points for herself, quietly.',
-             'Linh đã chặn được những bức thư giữa tướng Hùng và một người nào đó ở Thành Phố Metro. Cô muốn tự mình xem ba điểm trao thư, một cách lặng lẽ.'),
+            ('Linh has intercepted letters between General Lý Hàn and someone in Metro City. She wants to see the three drop points for herself, quietly.',
+             'Linh đã chặn được những bức thư giữa tướng Lý Hàn và một người nào đó ở Thành Phố Metro. Cô muốn tự mình xem ba điểm trao thư, một cách lặng lẽ.'),
             (('Linh\'s report', 'Báo cáo của Linh'),
-             ('Linh\'s report to Colonel Khai, handwritten, one copy: "Hùng is talking to Aurel. I cannot prove it yet. I am sure." Khai read it twice and locked it in his desk.',
-              'Báo cáo của Linh gửi đại tá Khải, viết tay, một bản duy nhất: "Hùng đang liên lạc với Aurel. Tôi chưa chứng minh được. Nhưng tôi chắc chắn." Khải đọc hai lần rồi khóa nó vào ngăn bàn.')),
+             ('Linh\'s report to Colonel Khai, handwritten, one copy: "Lý Hàn is talking to Aurel. I cannot prove it yet. I am sure." Khai read it twice and locked it in his desk.',
+              'Báo cáo của Linh gửi đại tá Khải, viết tay, một bản duy nhất: "Lý Hàn đang liên lạc với Aurel. Tôi chưa chứng minh được. Nhưng tôi chắc chắn." Khải đọc hai lần rồi khóa nó vào ngăn bàn.')),
             [say('linh', 'Start', 'This one stays off the record, Colonel.', 'Chuyện này không ghi vào hồ sơ, đại tá.')])
 
-add_mission(m('c8s2', 8, 'capital', 'ShootDown', 'Storm', side=True, after='c8m06', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
+add_mission(m('c7s2', 7, 'capital', 'ShootDown', 'Storm', side=True, after='c7m06', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
               enemyAi='waves', difficulty='Normal', playerCp=30, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['gunship_heli', 'attack_jet', 'attack_helicopter', 'strike_drone', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=6, max_alive=14),
               towerGear='Epic', starTime=600, starLosses=10),
@@ -404,7 +404,7 @@ add_mission(m('c8s2', 8, 'capital', 'ShootDown', 'Storm', side=True, after='c8m0
 
 # ================================================================================ CHAPTER 9: THE LAUNCH SITE
 
-add_mission(m('c9m01', 9, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, points=['west', 'town', 'east'], enemyOwns=['town'], general='varga', reinforcements=3,
+add_mission(m('c12m01', 12, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, points=['west', 'town', 'east'], enemyOwns=['town'], general='varga', reinforcements=3,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'bmpt', 'fpv_carrier', 'ifv'],
               playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', unlocks=['railgun_truck', 'stealth_fighter'], starTime=720, starLosses=14),
             ('Back to Dunebreak', 'Trở lại Dunebreak'),
@@ -415,7 +415,7 @@ add_mission(m('c9m01', 9, 'dunebreak', 'Capture', 'Sandstorm', reversed=True, po
               'Nhà máy lọc dầu lữ đoàn đốt ở chương hai đã chạy lại. Hegemon dựng lại nó trong bốn tháng. Mai sửa lại: công nhân dựng lại nó. Hegemon chỉ đứng nhìn.')),
             [say('varga', 'Start', 'Colonel. We meet in the sand again. The last time, I think.', 'Đại tá. Ta lại gặp nhau trên cát. Lần cuối, ta nghĩ vậy.')])
 
-add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+add_mission(m('c12m02', 12, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, general='kessler', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['cruise_missile'], starTime=960, starLosses=16),
             ('Kessler\'s Last Timetable', 'Thời gian biểu cuối cùng của Kessler'),
@@ -427,7 +427,7 @@ add_mission(m('c9m02', 9, 'launchsite', 'Duel', 'Clear', targetHealth=0.3, gener
             [say('kessler', 'Start', 'The next train leaves on time. With or without you under it.', 'Chuyến tàu sau sẽ chạy đúng giờ. Dù có ngươi nằm dưới bánh hay không.'),
              say('kessler', 'Win', 'Cancel the timetable. All of it.', 'Hủy lịch trình. Toàn bộ.')])
 
-add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+add_mission(m('c12m03', 12, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', hqLevel=5, unlocks=['heavy_turret', 'shield_tower'], starTime=960, starLosses=16),
             ('The Last Behemoth Yard', 'Xưởng Behemoth cuối cùng'),
@@ -439,7 +439,7 @@ add_mission(m('c9m03', 9, 'dunebreak', 'Duel', 'Night', targetHealth=0.3, revers
             [say('varga', 'Start', 'Steel does not negotiate. But it can be tired, Colonel.', 'Thép không biết thương lượng. Nhưng thép cũng biết mệt, đại tá ạ.'),
              say('varga', 'Win', 'Enough. Let the machines rest.', 'Đủ rồi. Để những cỗ máy được nghỉ.')])
 
-add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+add_mission(m('c12m04', 12, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, reversed=True, general='orlov', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['swarm_carrier'], starTime=960, starLosses=16),
             ('Orlov\'s Last Line', 'Tuyến cuối của Orlov'),
@@ -451,21 +451,21 @@ add_mission(m('c9m04', 9, 'launchsite', 'Duel', 'Overcast', targetHealth=0.3, re
             [say('orlov', 'Start', 'Fire mission. The last one. All batteries.', 'Nhiệm vụ bắn. Lần cuối. Toàn bộ khẩu đội.'),
              say('orlov', 'Win', 'Cease fire. ...Cease fire.', 'Ngừng bắn. ...Ngừng bắn.')])
 
-add_mission(m('c9m05', 9, 'dunebreak', 'Boss', 'Clear', reversed=True, legacy='m21', general='aurel', timeLimit=1260, reinforcements=3,
+add_mission(m('c12m05', 12, 'dunebreak', 'Boss', 'Clear', reversed=True, legacy='m21', general='aurel', timeLimit=1260, reinforcements=3,
               boss=scripted('silver_bug', (84, 84), heading=225, route=[(45, 45), (-45, 67.5), (-67.5, -15), (0, -52.5), (67.5, -30)], health=2.4),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=16, enemyIncome=1.0,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'ifv', 'tank_destroyer', 'mortar_carrier'],
               playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', starTime=840, starLosses=16, challenge={'kind': 'Kills', 'value': 35}),
             ('Silver Sky', 'Bầu trời bạc'),
-            ('The second Silver Bug, the one that ran from Skyhold, repaired and rearmed, is circling low over Dunebreak. This time it does not run. Bring it down.',
-             'Chiếc Silver Bug thứ hai, chiếc từng chạy khỏi Skyhold, đã được sửa và vũ trang lại, đang bay vòng thấp trên Dunebreak. Lần này nó không chạy. Bắn rơi nó.'),
+            ('The second Icarus, the one that ran from Skyhold, repaired and rearmed, is circling low over Dunebreak. This time it does not run. Bring it down.',
+             'Chiếc Icarus thứ hai, chiếc từng chạy khỏi Skyhold, đã được sửa và vũ trang lại, đang bay vòng thấp trên Dunebreak. Lần này nó không chạy. Bắn rơi nó.'),
             (('Two', 'Hai chiếc'),
              ('In the wreck, Sen found the serial plate: "S.B. 02." "Then there is a 01," she said. "And 01 is the complete one."',
               'Trong xác máy, Sen tìm thấy tấm biển số hiệu: "S.B. 02." "Vậy là còn một chiếc 01," bà nói. "Và 01 là chiếc hoàn chỉnh."')),
             [say('sen', 'Start', 'That is the one from Skyhold, repaired and stronger. Watch its altitude: it is easiest to hit when it comes down low.', 'Chính là chiếc ở Skyhold, đã sửa xong và mạnh hơn. Theo dõi tầng độ cao của nó: nó dễ bắn nhất khi hạ xuống thấp.'),
-             say('aurel', 'Boss', 'Silver Bug is not a weapon, Colonel. It is a contract nobody can refuse.', 'Silver Bug không phải vũ khí, đại tá. Nó là một bản hợp đồng không ai từ chối nổi.')])
+             say('aurel', 'Boss', 'Icarus is not a weapon, Colonel. It is a contract nobody can refuse.', 'Icarus không phải vũ khí, đại tá. Nó là một bản hợp đồng không ai từ chối nổi.')])
 
-add_mission(m('c9m06', 9, 'launchsite', 'Duel', 'Night', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
+add_mission(m('c12m06', 12, 'launchsite', 'Duel', 'Night', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               units=units(0, ['artillery', 'artillery', 'mlrs'], (-86, -86), 6), enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=13, enemyIncome=0.37,
               playerCp=34, playerIncome=2.5, playerCap=44, playerBase='Anchor', unlocks=['mine_layer'], starTime=960, starLosses=16),
@@ -478,34 +478,34 @@ add_mission(m('c9m06', 9, 'launchsite', 'Duel', 'Night', targetHealth=0.3, gener
             [say('quaden', 'Start', 'One more time, Diều Hâu. For the old days.', 'Thêm một lần nữa, Diều Hâu. Vì ngày xưa.'),
              say('dieuhau', 'Start', 'For the old days, Crow.', 'Vì ngày xưa, Quạ ạ.')])
 
-add_mission(m('c9m07', 9, 'dunebreak', 'Hunt', 'Overcast', reversed=True, general='aurel', timeLimit=1100, targetHealth=2.5, reinforcements=3,
+add_mission(m('c12m07', 12, 'dunebreak', 'Hunt', 'Overcast', reversed=True, general='aurel', timeLimit=1100, targetHealth=2.5, reinforcements=3,
               hunt=[scripted('supply_truck', (60, 70), route=[(80, 90), (40, 60), (70, 40)]),
                     scripted('supply_truck', (-20, 100), route=[(-40, 120), (0, 90), (-30, 80)]),
                     scripted('supply_truck', (100, 20), route=[(110, -10), (90, 40), (120, 30)])],
               units=units(1, ['heavy_tank', 'long_sam'], (60, 70), 7) + units(1, ['bmpt', 'aa_vehicle'], (-20, 100), 6) + units(1, ['railgun_truck', 'main_battle_tank'], (100, 20), 6),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.75, playerCap=42, playerBase='Anchor', starTime=660, starLosses=12, challenge={'kind': 'Kills', 'value': 30}),
-            ('Fuel for the Bug', 'Nhiên liệu cho Silver Bug'),
-            ('Silver Bug\'s reactor fuel is travelling to the launch site in three guarded trucks. Linh has marked them. Stop every one.',
-             'Nhiên liệu lò phản ứng của Silver Bug đang được chở tới bãi phóng trên ba xe tải có hộ tống. Linh đã đánh dấu chúng. Chặn từng chiếc.'),
+            ('Fuel for the Bug', 'Nhiên liệu cho Icarus'),
+            ('Icarus\'s reactor fuel is travelling to the launch site in three guarded trucks. Linh has marked them. Stop every one.',
+             'Nhiên liệu lò phản ứng của Icarus đang được chở tới bãi phóng trên ba xe tải có hộ tống. Linh đã đánh dấu chúng. Chặn từng chiếc.'),
             (('Reactor', 'Lò phản ứng'),
              ('Sen, on the reactor fuel: "Without it, the complete Bug can fly for an hour. With it, for a year." After this afternoon, it had an hour.',
-              'Sen nói về nhiên liệu lò phản ứng: "Không có nó, Silver Bug hoàn chỉnh bay được một giờ. Có nó, bay được một năm." Sau buổi chiều hôm đó, nó chỉ còn một giờ.')),
+              'Sen nói về nhiên liệu lò phản ứng: "Không có nó, Icarus hoàn chỉnh bay được một giờ. Có nó, bay được một năm." Sau buổi chiều hôm đó, nó chỉ còn một giờ.')),
             [say('linh', 'Start', 'Three trucks. Every one of them counts.', 'Ba xe tải. Chiếc nào cũng quan trọng.')])
 
-add_mission(m('c9m08', 9, 'launchsite', 'Destroy', 'Sandstorm', targets=['radar_station'], targetHealth=3, timeLimit=1000, general='aurel', reinforcements=3,
+add_mission(m('c12m08', 12, 'launchsite', 'Destroy', 'Sandstorm', targets=['radar_station'], targetHealth=3, timeLimit=1000, general='aurel', reinforcements=3,
               units=units(1, ['long_sam', 'heavy_tank'], (74, 16), 8) + units(1, ['aa_vehicle', 'bmpt'], (-74, -16), 8),
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.75, playerCap=42, playerBase='Anchor', starTime=600, starLosses=12, challenge={'kind': 'NoStrikes'}),
             ('Blind the Launch Site', 'Làm mù bãi phóng'),
-            ('Four radar stations guide Silver Bug off its pad. In the sandstorm, destroy all four.',
-             'Bốn trạm radar dẫn đường cho Silver Bug rời bệ phóng. Giữa cơn bão cát, phá hủy cả bốn.'),
+            ('Four radar stations guide Icarus off its pad. In the sandstorm, destroy all four.',
+             'Bốn trạm radar dẫn đường cho Icarus rời bệ phóng. Giữa cơn bão cát, phá hủy cả bốn.'),
             (('Manual', 'Điều khiển tay'),
              ('With its radars gone, the complete Bug would have to be launched by hand. Sen knew the one man at the site who could do it: Aurel.',
-              'Mất hết radar, chiếc Silver Bug hoàn chỉnh sẽ phải phóng bằng tay. Sen biết người duy nhất ở bãi phóng làm được việc đó: Aurel.')),
+              'Mất hết radar, chiếc Icarus hoàn chỉnh sẽ phải phóng bằng tay. Sen biết người duy nhất ở bãi phóng làm được việc đó: Aurel.')),
             [say('linh', 'Start', 'Four radars. The storm hides you as much as them.', 'Bốn trạm radar. Bão cát che các anh cũng như che chúng.')])
 
-add_mission(m('c9m09', 9, 'dunebreak', 'Hold', 'Clear', reversed=True, points=['town'], holdSeconds=240, general='aurel', reinforcements=3,
+add_mission(m('c12m09', 12, 'dunebreak', 'Hold', 'Clear', reversed=True, points=['town'], holdSeconds=240, general='aurel', reinforcements=3,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               units=units(0, ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam', 'heavy_rocket_artillery'], (-6, -8), 9),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.95, enemyDeck=AUREL,
@@ -520,14 +520,14 @@ add_mission(m('c9m09', 9, 'dunebreak', 'Hold', 'Clear', reversed=True, points=['
               'Đêm trước trận cuối, đại tá Khải đi dọc trận tuyến và nói chuyện với từng kíp xe. Ông nói với ai cũng một câu: "Ngày mai, ta về nhà."')),
             [say('khai', 'Start', 'Hold the refinery. Tomorrow we finish this.', 'Giữ nhà máy lọc dầu. Ngày mai ta kết thúc chuyện này.')])
 
-add_mission(m('c9m10', 9, 'launchsite', 'Capture', 'Clear', operation=True, general='aurel', reinforcements=3,
+add_mission(m('c12m10', 12, 'launchsite', 'Capture', 'Clear', operation=True, general='aurel', reinforcements=3,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=18, enemyIncome=1.05, enemyDeck=AUREL,
               playerCp=34, playerIncome=1.9, playerCap=46, playerBase='Anchor', towerGear='Legendary',
               waves=waves(['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'main_battle_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
               stages=[
                   {'stage': 'approach', 'goal': 'Capture', 'points': ['east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c9m10.s1'}],
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c12m10.s1'}],
                    'choices': [{'key': 'propellant', 'next': 'propellant'}, {'key': 'radars', 'next': 'radars'}]},
                   {'stage': 'propellant', 'goal': 'Destroy', 'targets': ['storage_tank'], 'targetX': 68, 'targetZ': -54, 'targetRadius': 15, 'targetHealth': 2, 'cp': 6, 'next': 'assembly',
                    'events': WEAKEN},
@@ -537,40 +537,40 @@ add_mission(m('c9m10', 9, 'launchsite', 'Capture', 'Clear', operation=True, gene
                    'events': [{'at': 'start', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'long_sam', 'railgun_truck']}]},
                   {'stage': 'command', 'goal': 'Boss', 'boss': scripted('supreme_command', (60, 60), heading=225, route=[(40, 40), (10, 20), (30, -10)],
                                                                        fallback='fortress_bastion', fallbackHealth=1.0, name='supreme_command'), 'cp': 10,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c9m10.s4'}]},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c12m10.s4'}]},
                   {'stage': 'countdown', 'goal': 'Survive', 'surviveSeconds': 300, 'cp': 8,
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.linh.c9m10.s5'},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.linh.c12m10.s5'},
                               {'at': '40', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'bmpt', 'railgun_truck', 'long_sam']},
                               {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['attack_helicopter', 'heavy_tank', 'bmpt']}]},
                   {'stage': 'pad', 'goal': 'Survive', 'points': ['town'], 'surviveSeconds': 180, 'cp': 10,
                    'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'attack_helicopter', 'bmpt', 'titan_tank']},
                               {'at': '100', 'kind': 'Reinforce', 'team': 1, 'units': ['railgun_truck', 'long_sam', 'heavy_tank']}]},
                   {'stage': 'bug', 'goal': 'Boss', 'boss': scripted('silver_bug', (0, 30), heading=180, route=[(0, 30), (-40, 0), (0, -40), (40, 0)], health=2.2, name='silver_bug_complete'),
-                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c9m10.s6'}, {'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c9m10.s6'}]},
+                   'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.aurel.c12m10.s6'}, {'at': 'start', 'kind': 'Radio', 'key': 'radio.sen.c12m10.s6'}]},
               ],
               starTime=1680, starLosses=26),
             ('Silver Sky Falls', 'Bầu trời bạc sụp đổ'),
             ('The last battle. Take the propellant farm, choose your blow, take the assembly building, destroy Aurel\'s command vehicle, hold the launch pad, '
-             'and when Silver Bug lifts off for orbit in its complete form, turn it back and bring it down.',
+             'and when Icarus lifts off for orbit in its complete form, turn it back and bring it down.',
              'Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, tiêu diệt xe chỉ huy của Aurel, giữ bệ phóng, '
-             'và khi Silver Bug rời bệ phóng lên quỹ đạo trong hình dạng hoàn chỉnh, buộc nó quay lại và bắn hạ.'),
+             'và khi Icarus rời bệ phóng lên quỹ đạo trong hình dạng hoàn chỉnh, buộc nó quay lại và bắn hạ.'),
             (('Clear sky', 'Bầu trời trong'),
-             ('Silver Bug never reached orbit: it came down burning a kilometre short, out past the dunes, at 17:42. The brigade\'s radio log for the next minute holds no orders, only people cheering, and one voice, Colonel Khai\'s, saying "Thank you."',
-              'Silver Bug không bao giờ tới được quỹ đạo: nó rơi xuống bốc cháy cách đích chưa đầy một cây số, ngoài rặng đồi cát, lúc 17 giờ 42. Sổ ghi bộ đàm của lữ đoàn trong phút tiếp theo không có mệnh lệnh nào, chỉ có tiếng người reo hò, và một giọng nói, của đại tá Khải: "Cảm ơn."')),
+             ('Icarus never reached orbit: it came down burning a kilometre short, out past the dunes, at 17:42. The brigade\'s radio log for the next minute holds no orders, only people cheering, and one voice, Colonel Khai\'s, saying "Thank you."',
+              'Icarus không bao giờ tới được quỹ đạo: nó rơi xuống bốc cháy cách đích chưa đầy một cây số, ngoài rặng đồi cát, lúc 17 giờ 42. Sổ ghi bộ đàm của lữ đoàn trong phút tiếp theo không có mệnh lệnh nào, chỉ có tiếng người reo hò, và một giọng nói, của đại tá Khải: "Cảm ơn."')),
             [say('khai', 'Start', 'This is it, Brigade. Everything we have, one more time.', 'Là lúc này đây, Lữ đoàn. Tất cả những gì ta có, thêm một lần nữa.'),
              say('khai', 'Win', 'It is over. Brigade, stand down. We go home.', 'Kết thúc rồi. Lữ đoàn, nghỉ. Ta về nhà.')],
             stages_text={'approach': ('The Propellant Farm', 'Khu nhiên liệu đẩy'), 'propellant': ('Burn the Propellant', 'Đốt nhiên liệu đẩy'),
                          'radars': ('Blind the West Radars', 'Làm mù radar phía tây'), 'assembly': ('The Assembly Building', 'Nhà lắp ráp'),
-                         'command': ('Tổng Tư Lệnh', 'Tổng Tư Lệnh'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Silver Bug, Complete', 'Bọ Bạc hoàn chỉnh')},
+                         'command': ('Atlas', 'Atlas'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Icarus', 'Icarus')},
             choices_text={'propellant': choice_income('Burn the propellant tanks', 'Đốt các bồn nhiên liệu đẩy', 'Aurel', 'Aurel'),
                           'radars': choice_strikes('Destroy the west radars', 'Phá radar phía tây', 50)})
-T('radio.khai.c9m10.s1', 'The propellant farm first. Then we choose.', 'Khu nhiên liệu đẩy trước. Rồi ta sẽ chọn.')
-T('radio.aurel.c9m10.s4', 'You are standing on my balance sheet, Colonel.', 'Ông đang đứng trên bảng cân đối của tôi đấy, đại tá.')
-T('radio.linh.c9m10.s5', 'The launch countdown has started. Everything Aurel has left is coming at us. Hold!', 'Đếm ngược phóng đã bắt đầu. Mọi thứ Aurel còn lại đang dồn vào ta. Trụ vững!')
-T('radio.aurel.c9m10.s6', 'Launch. Manually, since you insist. Try to follow me to orbit, Colonel.', 'Phóng. Bằng tay, vì ông cứ nhất định như thế. Cứ thử theo tôi lên quỹ đạo mà xem, đại tá.')
-T('radio.sen.c9m10.s6', 'That is 01, complete. It will climb past what most of you can reach. Watch the altitude, and do not let it level out.', 'Đó là chiếc 01, hoàn chỉnh. Nó sẽ bay lên qua tầm với của phần lớn vũ khí các anh có. Theo dõi tầng độ cao, đừng để nó bay ổn định.')
+T('radio.khai.c12m10.s1', 'The propellant farm first. Then we choose.', 'Khu nhiên liệu đẩy trước. Rồi ta sẽ chọn.')
+T('radio.aurel.c12m10.s4', 'You are standing on my balance sheet, Colonel.', 'Ông đang đứng trên bảng cân đối của tôi đấy, đại tá.')
+T('radio.linh.c12m10.s5', 'The launch countdown has started. Everything Aurel has left is coming at us. Hold!', 'Đếm ngược phóng đã bắt đầu. Mọi thứ Aurel còn lại đang dồn vào ta. Trụ vững!')
+T('radio.aurel.c12m10.s6', 'Launch. Manually, since you insist. Try to follow me to orbit, Colonel.', 'Phóng. Bằng tay, vì ông cứ nhất định như thế. Cứ thử theo tôi lên quỹ đạo mà xem, đại tá.')
+T('radio.sen.c12m10.s6', 'That is 01, complete. It will climb past what most of you can reach. Watch the altitude, and do not let it level out.', 'Đó là chiếc 01, hoàn chỉnh. Nó sẽ bay lên qua tầm với của phần lớn vũ khí các anh có. Theo dõi tầng độ cao, đừng để nó bay ổn định.')
 
-add_mission(m('c9s1', 9, 'launchsite', 'Recon', 'Sandstorm', side=True, reversed=True, after='c9m02', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
+add_mission(m('c12s1', 12, 'launchsite', 'Recon', 'Sandstorm', side=True, reversed=True, after='c12m02', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,
               playerCp=32, playerIncome=1.6, playerCap=40, rarePrints=60, starTime=420, starLosses=8),
             ('The Pad', 'Bệ phóng'),
@@ -581,7 +581,7 @@ add_mission(m('c9s1', 9, 'launchsite', 'Recon', 'Sandstorm', side=True, reversed
               'Sen vẽ sơ đồ bãi phóng theo trí nhớ lên mặt sau một tấm bản đồ. Linh đối chiếu với ảnh trinh sát. Nó chính xác tới từng mét.')),
             [say('sen', 'Start', 'I built half of what you will see. Look closely.', 'Một nửa những gì các anh sắp thấy là do tôi chế tạo. Nhìn cho kỹ.')])
 
-add_mission(m('c9s2', 9, 'dunebreak', 'ShootDown', 'Sandstorm', side=True, reversed=True, after='c9m05', speaker='dieuhau', killsNeeded=16, timeLimit=1200,
+add_mission(m('c12s2', 12, 'dunebreak', 'ShootDown', 'Sandstorm', side=True, reversed=True, after='c12m05', speaker='dieuhau', killsNeeded=16, timeLimit=1200,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
               enemyAi='waves', difficulty='Normal', playerCp=32, playerIncome=1.6, playerCap=40, playerBase='Anchor',
               waves=waves(['attack_helicopter', 'attack_jet', 'fighter_jet', 'strike_drone', 'gunship_heli', 'heavy_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),

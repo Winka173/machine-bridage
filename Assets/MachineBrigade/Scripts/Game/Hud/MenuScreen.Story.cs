@@ -76,14 +76,18 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case DossierTab.Timeline:
                     _dossierBody.Add(Entry(null, Strings.Get("dossier.before"), null, Strings.Get("timeline.0"), false, false));
-                    for (var c = 1; c <= Campaign.ChapterCount; c++)
+                    for (var c = 1; c <= Campaign.LastChapter; c++)
                     {
+                        if (!Campaign.ChapterEnabled(c)) continue;
                         var done = _dossierAll || Campaign.ChapterDone(c);
                         _dossierBody.Add(Entry(null, Strings.Format("dossier.chapterFiles", c) + " · " + Strings.Get($"chapter.{c}.title"), null,
                             done ? Strings.Get($"timeline.{c}") : Strings.Get("dossier.lockedChapter"), !done, false));
                     }
-                    if (_dossierAll || Campaign.ChapterDone(Campaign.ChapterCount))
-                        _dossierBody.Add(Entry(null, Strings.Get("campaign.epilogue.title"), null, Strings.Get("campaign.epilogue"), false, false));
+                    // The game's epilogue, or "To be continued" when the build ends before the story does.
+                    if (_dossierAll || Campaign.ChapterDone(Campaign.LastChapter))
+                        _dossierBody.Add(Campaign.StoryComplete
+                            ? Entry(null, Strings.Get("campaign.epilogue.title"), null, Strings.Get("campaign.epilogue"), false, false)
+                            : Entry(null, Strings.Get("campaign.tbc.title"), null, Strings.Get("campaign.tbc"), false, false));
                     break;
                 case DossierTab.Files:
                     var any = false;

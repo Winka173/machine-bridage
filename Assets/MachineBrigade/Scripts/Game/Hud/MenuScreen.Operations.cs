@@ -72,7 +72,7 @@ namespace MachineBrigade.Game.Hud
             _opsEntries.Add(OpsCard(OpsEntry.WeeklyFortress, MapArt.For(WeeklyFortress.MapId), Strings.Get("mode.weekly"),
                 Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week)), true));
             _opsEntries.Add(OpsCard(OpsEntry.BossRush, CardArt.For("behemoth"), Strings.Get("mode.bossrush"),
-                Strings.Format("mode.bossrushSub", BossRushRules.Kinds.Count), false));
+                Strings.Format("mode.bossrushSub", Campaign.BossRushKinds.Count), false));
             var dailyCard = OpsCard(OpsEntry.Daily, null, Strings.Get("daily.titleShort"), DailyResetText(), false);
             KitDot.Attach(dailyCard, DailyClaimable());
             _opsEntries.Add(dailyCard);
@@ -139,10 +139,10 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case OpsEntry.BossRush:
                     body.Add(Kit.Caption(Strings.Get("mode.bossrush")));
-                    body.Add(Kit.Text(Kit.Caps(Strings.Format("mode.bossrushSub", BossRushRules.Kinds.Count)), "fc-title"));
-                    body.Add(Kit.Text(Strings.Format("ops.bossRushRules", BossRushRules.Kinds.Count, Mathf.RoundToInt(new BossRushRules().TimeLimit / 60f)), "fc-body fc-mt-2"));
+                    body.Add(Kit.Text(Kit.Caps(Strings.Format("mode.bossrushSub", Campaign.BossRushKinds.Count)), "fc-title"));
+                    body.Add(Kit.Text(Strings.Format("ops.bossRushRules", Campaign.BossRushKinds.Count, Mathf.RoundToInt(new BossRushRules().TimeLimit / 60f)), "fc-body fc-mt-2"));
                     var bosses = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-3");
-                    foreach (var kind in BossRushRules.Kinds)
+                    foreach (var kind in Campaign.BossRushKinds)
                     {
                         var id = kind[0];
                         bosses.Add(new KitVehicleCard(new VehicleCardData

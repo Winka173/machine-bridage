@@ -78,11 +78,11 @@ add_mission(m('c4m04', 4, 'rustyard', 'Recon', 'Fog', legacy='m19', points=['wes
               enemyDeck=['light_tank', 'ifv', 'main_battle_tank', 'aa_vehicle', 'tank_destroyer', 'mortar_carrier'],
               playerCp=24, playerIncome=1.35, playerCap=36, unlocks=['logistics_station'], starTime=420, starLosses=10, challenge={'kind': 'NoAircraft'}),
             ('Eyes on the Yard', 'Mắt nhìn Bãi Sắt'),
-            ('Linh needs to know where the steel train is being put together. Get a vehicle onto each of the three objectives and look, before Kessler digs in.',
-             'Linh cần biết đoàn tàu thép đang được lắp ráp ở đâu. Đưa xe tới từng cứ điểm trong ba cứ điểm để quan sát, trước khi Kessler kịp cố thủ.'),
+            ('Linh needs to know where Juggernaut is being put together. Get a vehicle onto each of the three objectives and look, before Kessler digs in.',
+             'Linh cần biết Juggernaut đang được lắp ráp ở đâu. Đưa xe tới từng cứ điểm trong ba cứ điểm để quan sát, trước khi Kessler kịp cố thủ.'),
             (('Wagon numbers', 'Số hiệu toa'),
-             ('Linh copied the numbers off every wagon in the yard. Eleven of them came up twice in Kessler\'s own lists: the steel train, hiding in plain sight.',
-              'Linh chép lại số hiệu của mọi toa tàu trong bãi. Mười một số xuất hiện hai lần trong chính danh sách của Kessler: đoàn tàu thép, trốn ngay trước mắt.')),
+             ('Linh copied the numbers off every wagon in the yard. Eleven of them came up twice in Kessler\'s own lists: Juggernaut, hiding in plain sight.',
+              'Linh chép lại số hiệu của mọi toa tàu trong bãi. Mười một số xuất hiện hai lần trong chính danh sách của Kessler: Juggernaut, trốn ngay trước mắt.')),
             [say('linh', 'Start', 'Three looks. Count the wagons if you can.', 'Ba lần quan sát. Đếm được toa tàu thì càng tốt.')])
 
 add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLimit=1200, general='kessler', reinforcements=3,
@@ -94,22 +94,22 @@ add_mission(m('c4m05', 4, 'ironport', 'Intercept', 'Night', legacy='m12', timeLi
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=10, enemyIncome=0.85,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'sam_launcher', 'gunship_heli', 'attack_jet'],
               playerCp=28, playerIncome=1.4, playerCap=36, unlocks=['thermobaric_launcher', 'field_tower'], starTime=480, starLosses=8, challenge={'kind': 'NoStrikes'}),
-            ('The Steel Train', 'Đoàn tàu thép'),
+            ('The Steel Train', 'Juggernaut'),
             ('Kessler\'s armoured train is running for the docks with a cargo Linh does not like the sound of. Destroy it before it arrives.',
              'Đoàn tàu bọc thép của Kessler đang lao về bến tàu với một chuyến hàng mà Linh nghe tên đã thấy không ổn. Phá hủy nó trước khi nó tới nơi.'),
             (('The cargo', 'Chuyến hàng'),
-             ('The train\'s manifest, recovered from the wreck: forty tons of "laboratory equipment" addressed to "Project S.B., Skyhold". The first time anyone read those two letters.',
-              'Bản kê hàng của đoàn tàu, tìm thấy trong xác tàu: bốn mươi tấn "thiết bị phòng thí nghiệm" gửi tới "Dự án S.B., Skyhold". Lần đầu tiên có người đọc thấy hai chữ cái đó.')),
+             ('The train\'s manifest, recovered from the wreck: forty tons of "laboratory equipment" addressed to "Project Icarus, Skyhold". The first time anyone read those two letters.',
+              'Bản kê hàng của đoàn tàu, tìm thấy trong xác tàu: bốn mươi tấn "thiết bị phòng thí nghiệm" gửi tới "Dự án Icarus, Skyhold". Lần đầu tiên có người đọc thấy hai chữ cái đó.')),
             [say('kessler', 'Start', 'The train leaves on time, Colonel. It always does.', 'Tàu chạy đúng giờ, đại tá. Xưa nay vẫn thế.'),
              say('khai', 'Boss', 'Everything on the train. Now.', 'Dồn hết vào đoàn tàu. Ngay.'),
              say('kessler', 'Win', 'Cancel the timetable.', 'Hủy lịch trình.')])
 
-add_mission(m('c4m06', 4, 'rustyard', 'Boss', 'Clear', timeLimit=1200, general='kessler', reinforcements=3,
+add_mission(m('c11m05', 11, 'rustyard', 'Boss', 'Clear', timeLimit=1200, general='kessler', reinforcements=3,
               boss=scripted('rail_supergun', (140, 11.25), heading=270, name='rail_supergun'),
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_tank', 'wheeled_gun'], (-70, -40), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85, enemyDeck=KESSLER,
               playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor', starTime=540, starLosses=10),
-            ('The Rail Supergun', 'Siêu pháo đường ray'),
+            ('The Gungnir', 'Gungnir'),
             ('Kessler has a gun too big for any road, parked on the rails at the edge of the Rust Yard. Every twenty seconds it drops a shell on us, and the ground warns us three seconds before. Fight through its guard and destroy it.',
              'Kessler có một khẩu pháo quá to cho mọi con đường, đậu trên đường ray ở rìa Bãi Sắt Gỉ. Cứ hai mươi giây nó lại nã một phát vào ta, và mặt đất báo trước ba giây. Đánh xuyên qua đội canh gác và phá hủy nó.'),
             (('Forty kilometres', 'Bốn mươi cây số'),
@@ -258,8 +258,8 @@ add_mission(m('c4s2', 4, 'ironport', 'Hunt', 'Clear', side=True, reversed=True, 
             ('Two of Kessler\'s harbour masters are still running the smuggling routes from command cars. Linh has marked them. Bring them in, the hard way.',
              'Hai viên cảng vụ của Kessler vẫn đang điều hành các tuyến buôn lậu từ xe chỉ huy. Linh đã đánh dấu họ. Bắt họ về, bằng cách khó.'),
             (('The smugglers\' ledger', 'Sổ sách buôn lậu'),
-             ('The harbour masters\' ledger listed every buyer of Hegemon weapons on the coast. One name had been crossed out and written again in ink: Hùng.',
-              'Sổ sách của các viên cảng vụ ghi tên mọi kẻ mua vũ khí Hegemon trên dải duyên hải. Một cái tên bị gạch đi rồi viết lại bằng mực: Hùng.')),
+             ('The harbour masters\' ledger listed every buyer of Hegemon weapons on the coast. One name had been crossed out and written again in ink: Lý Hàn.',
+              'Sổ sách của các viên cảng vụ ghi tên mọi kẻ mua vũ khí Hegemon trên dải duyên hải. Một cái tên bị gạch đi rồi viết lại bằng mực: Lý Hàn.')),
             [say('linh', 'Start', 'Two command cars, marked. They talk a lot; that is how I found them.', 'Hai xe chỉ huy, đã đánh dấu. Chúng nói nhiều lắm; tôi tìm ra chúng là nhờ thế.')])
 
 # ================================================================================ CHAPTER 5: JUNGLE FIRE
@@ -327,12 +327,12 @@ add_mission(m('c5m05', 5, 'junglepass', 'Boss', 'Storm', general='sen', timeLimi
               boss=scripted('fortress_hive', (84, 84), heading=225, route=[(60, 60), (20, 30), (-20, 10), (30, -20)], health=1.1),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.85, enemyDeck=SEN,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor', hqLevel=3, unlocks=['long_sam'], starTime=780, starLosses=12, challenge={'kind': 'NoAircraft'}),
-            ('The Hive', 'Tổ Ong'),
+            ('The Hive', 'Hive'),
             ('Sen\'s drone fortress is crawling down the pass in the storm, swarms rising from its racks. It has no main gun and fears no aircraft. Break it with tanks and artillery.',
              'Pháo đài drone của Sen đang bò xuống con đèo trong cơn bão, bầy drone bốc lên từ các giàn phóng. Nó không có pháo chính và chẳng sợ máy bay nào. Đập vỡ nó bằng xe tăng và pháo binh.'),
             (('Rescue system', 'Hệ thống cứu hộ'),
              ('The Hive\'s original design document, found in its wreck: "Autonomous swarm for search and rescue in disaster zones." The word "rescue" had been crossed out, by someone else.',
-              'Tài liệu thiết kế gốc của Tổ Ong, tìm thấy trong xác nó: "Bầy drone tự hành phục vụ tìm kiếm cứu nạn ở vùng thảm họa." Chữ "cứu nạn" đã bị gạch đi, bởi một người khác.')),
+              'Tài liệu thiết kế gốc của Hive, tìm thấy trong xác nó: "Bầy drone tự hành phục vụ tìm kiếm cứu nạn ở vùng thảm họa." Chữ "cứu nạn" đã bị gạch đi, bởi một người khác.')),
             [say('sen', 'Start', 'Seven hundred drones in the air. Count them if you like.', 'Bảy trăm drone đang trên trời. Các anh cứ đếm nếu thích.'),
              say('khai', 'Boss', 'Ground guns on it. Keep the aircraft home.', 'Pháo mặt đất dồn vào nó. Máy bay ở nhà.'),
              say('sen', 'Win', 'Enough. Stand the swarm down.', 'Đủ rồi. Cho bầy drone hạ cánh.')])
@@ -415,11 +415,11 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
             ('The Mothership', 'Tàu mẹ'),
             ('The Hive\'s mothership is over Ember Ridge, feeding swarms to every Hegemon unit in the jungle. Take the causeways, choose your next blow, '
              'survive the swarm it throws at you, then bring the mothership down.',
-             'Tàu mẹ của Tổ Ong đang lơ lửng trên Sườn Dung Nham, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, '
+             'Tàu mẹ của Hive đang lơ lửng trên Sườn Dung Nham, tiếp bầy drone cho mọi đơn vị Hegemon trong rừng. Chiếm các đường đắp, chọn đòn kế tiếp, '
              'trụ vững trước bầy drone nó tung ra, rồi bắn rơi tàu mẹ.'),
             (('Sen', 'Sen'),
-             ('Dr Sen walked out of the burning works with her hands up and a hard drive in each. "Silver Bug," she said. "You need to see this. Now."',
-              'Tiến sĩ Sen bước ra khỏi xưởng đang cháy, hai tay giơ cao, mỗi tay cầm một ổ cứng. "Silver Bug," bà nói. "Các anh cần xem cái này. Ngay bây giờ."')),
+             ('Dr Sen walked out of the burning works with her hands up and a hard drive in each. "Icarus," she said. "You need to see this. Now."',
+              'Tiến sĩ Sen bước ra khỏi xưởng đang cháy, hai tay giơ cao, mỗi tay cầm một ổ cứng. "Icarus," bà nói. "Các anh cần xem cái này. Ngay bây giờ."')),
             [say('khai', 'Start', 'The mothership falls today. Everything else is on the way to it.', 'Hôm nay tàu mẹ phải rơi. Mọi thứ khác chỉ là đường tới nó.'),
              say('khai', 'Win', 'Sen is surrendering, Colonel? ...Bring her in. Carefully.', 'Sen ra hàng à? ...Đưa bà ấy về. Cẩn thận.')],
             stages_text={'causeways': ('The Causeways', 'Các đường đắp'), 'fuel': ('Burn the Drone Fuel', 'Đốt nhiên liệu drone'), 'relay': ('Hold the Relay', 'Giữ trạm tiếp sóng'),
@@ -438,7 +438,7 @@ add_mission(m('c5s1', 5, 'junglepass', 'Recon', 'Overcast', side=True, after='c5
              'Đâu đó trên đèo, Sen có một phòng thí nghiệm không có trong sổ sách của Hegemon. Linh muốn tìm ra nó trước. Quan sát cả ba cứ điểm.'),
             (('The second lab', 'Phòng thí nghiệm thứ hai'),
              ('In Sen\'s hidden lab: rescue drones, painted orange, with medical kits in their bays. Hundreds of them, never armed. She had been building the Hive she wanted.',
-              'Trong phòng thí nghiệm bí mật của Sen: drone cứu hộ, sơn màu cam, trong khoang chứa túi cứu thương. Hàng trăm chiếc, chưa bao giờ gắn vũ khí. Bà vẫn đang chế tạo Tổ Ong mà bà mong muốn.')),
+              'Trong phòng thí nghiệm bí mật của Sen: drone cứu hộ, sơn màu cam, trong khoang chứa túi cứu thương. Hàng trăm chiếc, chưa bao giờ gắn vũ khí. Bà vẫn đang chế tạo Hive mà bà mong muốn.')),
             [say('linh', 'Start', 'Look for anything painted orange.', 'Tìm bất cứ thứ gì sơn màu cam.')])
 
 add_mission(m('c5s2', 5, 'emberridge', 'Relieve', 'Fog', targetHealth=3.0, side=True, after='c5m07', speaker='linh', reinforcements=2, timeLimit=1000,
@@ -507,7 +507,7 @@ add_mission(m('c6m03', 6, 'ashfield', 'Escort', 'Clear', reversed=True, convoyCo
             ('Our Behemoth', 'Behemoth của ta'),
             ('Mai has done it: the Behemoth from the Ashfield yard runs, and it is ours. Escort it from the fortress across Ashfield to the front. '
              'Varga will do anything to stop his own machine.',
-             'Mai đã làm được: chiếc Behemoth trong sân pháo đài Ashfield đã chạy, và nó là của ta. Hộ tống nó từ pháo đài băng qua Ashfield ra tiền tuyến. '
+             'Mai đã làm được: chiếc Behemoth trong sân pháo đài Ashfield đã chạy, và nó là của ta. Hộ tống nó từ Jötunn qua Ashfield ra tiền tuyến. '
              'Varga sẽ làm mọi cách để chặn chính cỗ máy của hắn.'),
             (('Mai\'s Behemoth', 'Behemoth của Mai'),
              ('Mai named the captured Behemoth "Bà Già" (the Old Lady). Its crew painted a flower on the rear plates, over the weld she had never told anyone about.',
@@ -527,7 +527,7 @@ add_mission(m('c6m04', 6, 'hydrodam', 'Capture', 'Rain', points=['west', 'town',
               'Tua-bin của Đập Thủy Điện thắp sáng mọi thị trấn từ Lũng Xanh tới Ironport. Khi Hegemon chiếm dải duyên hải, con đập là thứ duy nhất các kỹ sư của chúng xin được giữ cho chạy.')),
             [say('linh', 'Start', 'Varga\'s scouts are at the power station already.', 'Trinh sát của Varga đã tới trạm phát điện rồi.')])
 
-add_mission(m('c6m05', 6, 'whiteout', 'Boss', 'Night', reversed=True, general='varga', timeLimit=1200, reinforcements=3,
+add_mission(m('c10m08', 10, 'whiteout', 'Boss', 'Night', reversed=True, general='varga', timeLimit=1200, reinforcements=3,
               boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=3.5),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer'],
@@ -573,18 +573,18 @@ add_mission(m('c6m07', 6, 'ashfield', 'Relieve', 'Overcast', targetHealth=3.0, r
               'Dân quân đã xây lại quảng trường bằng gạch từ những lò nung cũ. Pháo của Varga bắn sập một nửa. Khói chưa tan, họ đã bắt đầu xây lại.')),
             [say('khai', 'Start', 'Break the ring. Their HQ first, everything else second.', 'Phá vòng vây. Sở chỉ huy của họ trước tiên, mọi thứ khác tính sau.')])
 
-add_mission(m('c6m08', 6, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, general='varga', reinforcements=3,
+add_mission(m('c8m05', 8, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, general='varga', reinforcements=3,
               boss=scripted('earth_borer', (100, 60), heading=270, route=[(60, 40), (20, 50), (-20, 60), (-40, 64)], fallback='behemoth', fallbackHealth=1.4, name='earth_borer'),
               units=units(0, ['heavy_tank', 'tank_destroyer', 'fpv_carrier', 'main_battle_tank'], (-50, 20), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=30, playerIncome=1.5, playerCap=40, playerBase='Anchor', starTime=600, starLosses=10, challenge={'kind': 'NoStrikes'}),
-            ('Sâu Đất', 'Sâu Đất'),
+            ('Tartarus', 'Tartarus'),
             ('Varga\'s tunnelling machine is grinding under the valley towards the power station. If it gets there, the dam loses its heart. Stop it on the way.',
              'Cỗ máy khoan của Varga đang nghiến xuyên dưới thung lũng hướng về trạm phát điện. Nó mà tới nơi, con đập mất trái tim. Chặn nó giữa đường.'),
             (('The earthworm', 'Con giun đất'),
-             ('Sâu Đất was built to dig mines. Varga fitted it with guns and a battering head. Its original crew, miners from Red Rock, refused to drive it. He found another crew.',
-              'Sâu Đất được chế tạo để đào mỏ. Varga gắn thêm pháo và một đầu húc. Kíp lái cũ, thợ mỏ ở Hẻm Đá Đỏ, từ chối lái nó. Hắn tìm kíp khác.')),
-            [say('linh', 'Start', 'Seismic contact under the valley, moving west. That is Sâu Đất.', 'Tín hiệu địa chấn dưới thung lũng, đang di chuyển về phía tây. Đó là Sâu Đất.'),
+             ('Tartarus was built to dig mines. Varga fitted it with guns and a battering head. Its original crew, miners from Red Rock, refused to drive it. He found another crew.',
+              'Tartarus được chế tạo để đào mỏ. Varga gắn thêm pháo và một đầu húc. Kíp lái cũ, thợ mỏ ở Hẻm Đá Đỏ, từ chối lái nó. Hắn tìm kíp khác.')),
+            [say('linh', 'Start', 'Seismic contact under the valley, moving west. That is Tartarus.', 'Tín hiệu địa chấn dưới thung lũng, đang di chuyển về phía tây. Đó là Tartarus.'),
              say('mai', 'Boss', 'Hit it when it surfaces. The drill head is armour; the back is not.', 'Đánh nó khi nó trồi lên. Đầu khoan là giáp; phía sau thì không.')])
 
 add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', targetHealth=0.3, reversed=True, general='varga', enemyBase='Target', enemyHq=2, replay=True, reinforcements=1, timeLimit=1800,
@@ -597,7 +597,7 @@ add_mission(m('c6m09', 6, 'whiteout', 'Duel', 'Fog', targetHealth=0.3, reversed=
              ('Varga\'s supply officer, captured at the camp: "He said he would build two tanks for every one you burned. He stopped saying it in November."',
               'Sĩ quan hậu cần của Varga, bị bắt tại trại: "Ông ấy nói cứ ta mất một chiếc là ông ấy đóng hai. Ông ấy thôi nói câu đó từ tháng Mười Một."')),
             [say('varga', 'Start', 'Every tank you burn, I build two.', 'Ngươi đốt một chiếc, ta đóng hai chiếc.'),
-             say('varga', 'Win', 'Fall back to the dam. The Frost Monster will finish this.', 'Rút về con đập. Quái Vật Băng sẽ kết thúc chuyện này.')])
+             say('varga', 'Win', 'Fall back to the dam. Moloch will finish this.', 'Rút về con đập. Moloch sẽ kết thúc chuyện này.')])
 
 add_mission(m('c6m10', 6, 'hydrodam', 'Hold', 'Storm', operation=True, replay=True, general='varga', reinforcements=3,
               playArea={'minX': -146, 'minZ': -146, 'maxX': 146, 'maxZ': 146},
@@ -622,22 +622,22 @@ add_mission(m('c6m10', 6, 'hydrodam', 'Hold', 'Storm', operation=True, replay=Tr
               ],
               starTime=1440, starLosses=20),
             ('Defend the Dam', 'Bảo vệ con đập'),
-            ('Varga\'s last card is the Frost Monster, a Behemoth bigger than any before, and it is coming for the dam. The brigade must hold the crest, choose its blow, '
-             'kill the monster, and hold until General Hùng\'s relief army arrives. The base here must not fall.',
-             'Lá bài cuối của Varga là Quái Vật Băng, chiếc Behemoth lớn hơn mọi chiếc trước đó, và nó đang tiến về con đập. Lữ đoàn phải giữ mặt đập, chọn đòn đánh, '
-             'hạ con quái vật, và trụ cho tới khi đạo quân cứu viện của tướng Hùng tới nơi. Căn cứ ở đây không được thất thủ.'),
+            ('Varga\'s last card is Moloch, a Behemoth bigger than any before, and it is coming for the dam. The brigade must hold the crest, choose its blow, '
+             'kill the monster, and hold until General Lý Hàn\'s relief army arrives. The base here must not fall.',
+             'Lá bài cuối của Varga là Moloch, chiếc Behemoth lớn hơn mọi chiếc trước đó, và nó đang tiến về con đập. Lữ đoàn phải giữ mặt đập, chọn đòn đánh, '
+             'hạ con quái vật, và trụ cho tới khi đạo quân cứu viện của tướng Lý Hàn tới nơi. Căn cứ ở đây không được thất thủ.'),
             (('Relief', 'Cứu viện'),
-             ('General Hùng\'s first words on arrival, broadcast to his whole army: "The Northern Army has saved the dam." Colonel Khai\'s staff heard it too. Nobody said anything.',
-              'Câu đầu tiên của tướng Hùng khi tới nơi, phát cho toàn quân của ông: "Tập đoàn quân Phương Bắc đã cứu con đập." Ban tham mưu của đại tá Khải cũng nghe thấy. Không ai nói gì.')),
+             ('General Lý Hàn\'s first words on arrival, broadcast to his whole army: "The Northern Army has saved the dam." Colonel Khai\'s staff heard it too. Nobody said anything.',
+              'Câu đầu tiên của tướng Lý Hàn khi tới nơi, phát cho toàn quân của ông: "Tập đoàn quân Phương Bắc đã cứu con đập." Ban tham mưu của đại tá Khải cũng nghe thấy. Không ai nói gì.')),
             [say('khai', 'Start', 'The dam, the base, the monster. In that order. Hold.', 'Con đập, căn cứ, con quái vật. Theo đúng thứ tự đó. Trụ vững.'),
              say('khai', 'Win', 'The dam holds. Act two is done, Brigade.', 'Con đập trụ vững. Hồi thứ hai khép lại rồi, Lữ đoàn.')],
             stages_text={'crest': ('Hold the Crest', 'Giữ mặt đập'), 'spillway': ('Burn Varga\'s Depot', 'Đốt kho của Varga'), 'station': ('Hold the Power Station', 'Giữ trạm phát điện'),
-                         'monster': ('The Frost Monster', 'Quái Vật Băng'), 'relief': ('Until Relief Arrives', 'Chờ cứu viện')},
+                         'monster': ('Moloch', 'Moloch'), 'relief': ('Until Relief Arrives', 'Chờ cứu viện')},
             choices_text={'spillway': choice_income('Burn Varga\'s depot at the ford', 'Đốt kho của Varga ở bến lội', 'Varga', 'Varga'),
                           'station': choice_strikes('Hold the power station (150 s)', 'Giữ trạm phát điện (150 giây)', 55)})
 T('radio.khai.c6m10.s1', 'The crest first. Whoever holds the dam holds the valley.', 'Mặt đập trước. Ai giữ con đập thì giữ cả thung lũng.')
 T('radio.varga.c6m10.s3', 'Meet my masterpiece, Colonel.', 'Chào kiệt tác của ta đi, đại tá.')
-T('radio.hung.c6m10.s4', 'Khải! Hùng here, the Northern Army is on the road. Hold on, we are coming.', 'Khải! Hùng đây, Tập đoàn quân Phương Bắc đang trên đường. Cố lên, chúng tôi đang tới.')
+T('radio.hung.c6m10.s4', 'Khải! Lý Hàn here, the Northern Army is on the road. Hold on, we are coming.', 'Khải! Lý Hàn đây, Tập đoàn quân Phương Bắc đang trên đường. Cố lên, chúng tôi đang tới.')
 
 add_mission(m('c6s1', 6, 'ashfield', 'ShootDown', 'Night', side=True, reversed=True, after='c6m03', speaker='dieuhau', killsNeeded=14, timeLimit=1200,
               enemyAi='waves', difficulty='Normal', playerCp=28, playerIncome=1.45, playerCap=36, playerBase='Anchor',

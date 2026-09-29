@@ -848,7 +848,7 @@ namespace MachineBrigade.Game.Match
             // The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
             _mode = new BossRushMode(new BossRushRules
             {
-                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed),
+                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed, Campaign.BossEnabled),
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
             });
             Pending = null;
