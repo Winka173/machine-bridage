@@ -71,6 +71,9 @@ namespace MachineBrigade.Game.Views
         private readonly Transform _erector, _searchlight;
         private readonly Quaternion _erectorRest, _searchlightRest;
 
+        /// <summary>A tower's rank details (TowerRankDetails); null on everything else.</summary>
+        private readonly MeshRenderer _rankDetails;
+
         /// <summary>Its side is the player's (its shield is drawn blue, else red-orange).</summary>
         private readonly bool _ours;
 
@@ -84,7 +87,12 @@ namespace MachineBrigade.Game.Views
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
             // A boss in a later form wears that form's model.
-            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body, lod: VehicleLod.Enabled);
+            // A tower's rank-7 branch wears its own model (TowerArt).
+            var modelId = vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : TowerArt.ModelFor(vehicle.Def, models.Has);
+            _model = models.Spawn(modelId, vehicle.Team, _body, lod: VehicleLod.Enabled);
+            // Tower-branch C.2: its card's rank on its body (bars, plates from rank 3, thicker from 5).
+            if (TowerArt.WearsRank(vehicle.Def))
+                _rankDetails = TowerRankDetails.Attach(_model.Root.transform, modelId, TowerArt.RankOf(vehicle.Team, vehicle.Def), vehicle.Team, materials);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
             _body.localScale = Vector3.one * vehicle.Def.Scale;
             ModelBounds = Measure(_model.Root.transform, _body);
@@ -292,6 +300,7 @@ namespace MachineBrigade.Game.Views
             var simple = level == VehicleLod.Simple;
             foreach (var r in _model.Renderers) r.enabled = full;
             foreach (var r in _model.Lod1Renderers) r.gameObject.SetActive(simple);
+            if (_rankDetails != null) _rankDetails.enabled = level != VehicleLod.Impostor && !_wreck;
             _level = level;
             if (VehicleLod.Colours) ApplyTint();
         }
@@ -1103,6 +1112,7 @@ namespace MachineBrigade.Game.Views
             Selected = false;
             HideShield();
             _wreck = true;
+            if (_rankDetails != null) _rankDetails.enabled = false;
             if (Flying)
             {
                 // Keep some of the momentum it had when it was hit.

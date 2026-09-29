@@ -186,6 +186,8 @@ namespace MachineBrigade.Game.Match
             var options = MatchSettings.Options;
             // High graphics draws the most-seen vehicles with their high-detail models.
             ModelLibrary.HighDetail = options.Shadows == ShadowLevel.High && options.RichScenery;
+            // Low graphics: the towers' rank details come without bolts or a second plate layer (tower-branch C.6).
+            TowerArt.Lean = options.Shadows <= ShadowLevel.Low && !options.RichScenery;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
             _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
@@ -203,6 +205,11 @@ namespace MachineBrigade.Game.Match
             // A mission that returns to a map from the other side plays it reversed.
             var map = mission != null ? Campaign.LoadMap(mission) : GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
+            // Tower-branch C.2: towers show their card's rank, the player's from the profile and the other
+            // side's from its HQ level (1, 3, 5 ...); the menu's backdrop battle shows none.
+            var ranked = _world;
+            TowerArt.Ranks = _menu ? null : (team, card) => team == PlayerTeam ? PlayerProfile.Rank(card)
+                : Mathf.Clamp(2 * (ranked.Bases.Of(team)?.Loadout.HqLevel ?? 1) - 1, 1, TowerArt.MaxBars);
             Curtain.Progress(0.1f);
             yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.

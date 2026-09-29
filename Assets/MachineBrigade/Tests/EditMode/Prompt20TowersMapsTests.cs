@@ -63,8 +63,9 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(60f, dome.Weapon.Range, 0.01f);
             Assert.IsTrue(dome.Weapon.Guided && dome.Weapon.Ammo > 0, "its launcher's missiles run on prompt 13's magazine");
             // The branch icon, the generated behaviour lines and the base screen's cover and reach.
-            Assert.AreEqual("t_irondome", TowerIcons.For("c_ram.dome"));
-            Assert.IsTrue(Icons.Exists("t_irondome"));
+            // The C-RAM's second branch: its icon is t_cram_b (tower-branch prompt C.4 names branch icons by letter).
+            Assert.AreEqual("t_cram_b", TowerIcons.For("c_ram.dome"));
+            Assert.IsTrue(Icons.Exists("t_cram_b"));
             var lines = UnitLines.Behaviour(catalog, dome);
             Assert.Contains(Strings.Get("ul.apsLobbed"), lines);
             Assert.IsTrue(Strings.Has("branch.c_ram.dome") && Strings.Has("branch.c_ram.dome.info") && Strings.Has("short.c_ram.dome"));

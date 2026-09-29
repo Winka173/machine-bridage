@@ -7,6 +7,18 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Tower art
+
+- Every tower's two rank-7 branches have models of their own (32, named `<tower>_a` / `_b` in the spec's order): the
+  gun turret's very long 120 mm with a scope or twin short 57 mm barrels with a radar, the rocket battery's open rack
+  or closed pod, a counter-battery radar beside the long howitzer or a squat 240 mm mortar, the fortress's long twin
+  guns or armour plates and two small turrets, a radar mast on the watchtower or a low sandbagged gun nest, and so on
+  for all sixteen towers. The data picks the model by the branch's order, or by a `"model"` on the branch entry.
+- Ranks 1-6 show on the tower: a bar a rank on its walls, add-on plates from rank 3, thicker ones from rank 5 (the
+  player's towers by card rank, the enemy's by HQ level; lighter on Low graphics).
+- A line icon for every branch in the tower icons' style, shown wherever a branch's icon is (the branch choice first).
+- The branch models use the shared far level and impostors; card pictures and clips are rendered after the merge.
+
 ### Design document: armour, penetration and weapon forms
 
 - Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).

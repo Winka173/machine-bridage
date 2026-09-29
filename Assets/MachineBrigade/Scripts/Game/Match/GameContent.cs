@@ -7,7 +7,13 @@ namespace MachineBrigade.Game.Match
     /// <summary>Loads the JSON data files shipped under Resources/Data.</summary>
     public static class GameContent
     {
-        public static Catalog LoadCatalog() => Catalog.FromJson(Load("Data/balance"));
+        public static Catalog LoadCatalog()
+        {
+            var catalog = Catalog.FromJson(Load("Data/balance"));
+            // Which model and icon each tower branch wears follows the data (tower-branch prompt C).
+            Rendering.TowerArt.Learn(catalog);
+            return catalog;
+        }
 
         public static MapDefinition LoadMap(string id) => MapDefinition.FromJson(Load("Data/maps/" + id));
 

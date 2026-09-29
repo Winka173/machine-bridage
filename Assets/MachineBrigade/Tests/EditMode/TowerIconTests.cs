@@ -43,7 +43,10 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(Icons.Exists(icon), $"{v.Id}: icon {icon} is not drawn");
                 Assert.IsFalse(taken.TryGetValue(icon, out var owner), $"{v.Id}: {icon} is {owner}'s icon");
                 Assert.AreEqual(icon, CardIcons.For(v.Id), v.Id + ": CardIcons");
-                if (v.BranchOf != null) Assert.AreEqual(TowerIcons.For(v.BranchOf), icon, v.Id + ": a branch shows its tower's icon");
+                // A branch shows its own icon by its letter (tower-branch C.4) where one is drawn, else its tower's.
+                if (v.BranchOf != null)
+                    Assert.AreEqual(MachineBrigade.Game.Rendering.TowerArt.BranchIcon(v.Id, TowerIcons.For(v.BranchOf), Icons.Exists) ?? TowerIcons.For(v.BranchOf),
+                        icon, v.Id + ": a branch's icon");
                 if (v.Fort != null) Assert.AreEqual(icon, VehicleCardData.From(v).ClassIcon, v.Id + ": the card's corner icon");
                 // One icon a structure; the rail supergun is the fortress super gun on rails.
                 if (v.BranchOf == null && v.Id != "rail_supergun")

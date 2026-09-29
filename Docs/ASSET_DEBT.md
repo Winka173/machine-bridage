@@ -92,3 +92,18 @@ node), `silver_bug_wreck` (its crashed form for phase 3, 27.8k, with the six deb
 | The drone seizure (Very Hard) | The drones change colour (the ordinary side change) | A hacked-glitch shader and a sound while they are seized |
 | Boss bar: altitude chip icons | `cbradar`, `sam`, `aa` from the HUD set | Icons of their own for orbit, high and low |
 
+## Tower branches (tower-branch prompt C, DECISIONS 19U)
+
+Built in `Tools/blender/mb_tower_branches.py`: 32 branch models `<tower>_a` / `_b` (1.3k to 11.7k triangles), each on
+its tower's builder with the branch's module swapped or added; 31 new branch icons (`t_<tower>_a` / `_b`, the Iron
+Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). LODs are the runtime's.
+
+| What | Uses now | Needs | Priority |
+|---|---|---|---|
+| Card pictures of the 32 branches and of the rank milestones (C.5) | The tower's card picture (`CardRenderTests` lists the 32 until they are rendered) | The lead's graphics run after the merge (`CardRenders.RenderBatch`) | High |
+| "In action" clips of every branch | The tower's clip | A clip a branch (the lead) | High |
+| Screenshots of every tower at every branch and at ranks 1, 3, 5, 7 (F), the image comparison at the default zoom and on Low | None | A graphics run into `Docs/ui-screens/`; the tower icon sheet shot again (`IconSheet.Towers` shows the branch icons) | High |
+| Branches that are the tower's model plus one module (C.7): `aa_turret_a` (two more barrels), `c_ram_a` (ball radome), `atgm_tower_a` (raised launcher), `mg_bunker_a` (twin barrels and mantlet), `rocket_turret_b` (covered box), `missile_battery_b` (bigger radar), `shield_tower_a` (glowing dome cage), `cp_relay_a` (comms container) | The tower's model with that module; readable at the default zoom | A fuller rebuild of each where a closer look is wanted | High |
+| Rank details (C.2) | Plain boxes laid on the tower's walls at run time (Hazard bars, Armor plates) | Per-tower rank kits modelled in Blender (stencilled bars, bolted appliqué fitted to each body) | Medium |
+| Branch firing effects and sounds (C.3): the mortar's arc, the tower shields' beams to each tower, the autocannon's bursts, the flame arc | The branch's weapon effect as the sim gives it | Effects and sounds of their own (not part of this art pass) | Medium |
+| Steel fortress's two small turrets | Stand on `Mount_gun` / `Mount_gun.001` but turn and fire only once the balance pass gives them MG mounts | The mounts (section B) | Medium |
