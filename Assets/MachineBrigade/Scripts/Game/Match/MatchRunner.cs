@@ -467,6 +467,14 @@ namespace MachineBrigade.Game.Match
                 // A boss's guards and the troops it lands (prompt 8).
                 foreach (var guard in def.Guards) Add(guard.Def);
                 if (def.Landing != null) foreach (var unit in def.Landing.Units) Add(unit);
+                // A flagship's fleet, its landing craft and what they carry, its aircraft (prompt 16).
+                foreach (var ship in def.Fleet) Add(ship.Unit);
+                foreach (var wave in def.AirWaves) foreach (var unit in wave.Units) Add(unit);
+                if (def.Craft != null)
+                {
+                    Add(def.Craft.Unit);
+                    foreach (var unit in def.Craft.Carries) Add(unit);
+                }
                 // Its escorts (prompt 16 F).
                 if (catalog.Escorts.TryGetValue(id, out var escort))
                 {
@@ -687,6 +695,12 @@ namespace MachineBrigade.Game.Match
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            // Prompt 16: ships' wakes (and a ship that got away, hidden).
+            if (_world.Map.Sea != null)
+            {
+                _wakes ??= new WakeView(_materials, null, MatchSettings.Options.Shadows <= ShadowLevel.Low);
+                _wakes.Update(_world, _views);
+            }
             // Rounds leave from the barrels as they have just been drawn.
             _effects.LaunchShots(_views);
             _perf?.End(PerfProbe.Section.Views);
@@ -1402,9 +1416,25 @@ namespace MachineBrigade.Game.Match
             minimap.Flush();
         }
 
+        private bool _switching;
+        private WakeView _wakes;
+
+        /// <summary>
+        /// Prompt 16 D.2: Boss Rush's sea boss is fought on Lighthouse Bay and the next boss back on the rush's
+        /// own battlefield: the battle so far is carried over and the scene rebuilt behind the curtain.
+        /// </summary>
+        private void CheckBattlefieldSwitch()
+        {
+            if (_menu || _switching || _session is not BossRushSession rush || rush.SwitchTo is not { } carry) return;
+            _switching = true;
+            BossRushSession.Pending = carry;
+            Reload(carry.Map == BossRushSession.SeaMap ? "loading.toSea" : "loading.backAshore", Strings.Get("map." + carry.Map));
+        }
+
         private void CheckResult()
         {
-            if (_menu || _resultShown || _session == null) return;
+            CheckBattlefieldSwitch();
+            if (_menu || _resultShown || _session == null || _switching) return;
             // Let a boss's death play out in slow motion before the result card covers it.
             if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);

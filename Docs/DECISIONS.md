@@ -4826,6 +4826,154 @@ K kinetic, SC shaped charge, HE high explosive, Frag fragmentation, En energy; "
 | boss_hmg | NSV 12.7 mm | K | 1 | BulletBig |  |
 | hover_ciws | AK-630 30 mm | K | 2 | BeltedAutocannon |  |
 
+
+## 15A. Prompt 16: Lighthouse Bay, Leviathan and its fleet (2026-09-29)
+
+Part 1 of prompt 16 (A, B, C, D, G); E (the old bosses' new weapons) and F (one escort system for every boss) are the
+escort agent's (feature/p16-escorts). Leviathan's fleet is self-contained here, in the naval system; once both branches
+are in, it can move onto F's `escorts` data (corvettes as `cover` with their own `aps` and `slot: "screen"`, attack boats
+as `raid`, the jets as `drop: "edge"`). The fast attack boat's model id is `missile_boat` (for the hovercraft's escort
+in E). The owner's rule on test time: one small new suite, no sweeps (Z).
+
+### A. Lighthouse Bay (`lighthousebay`, Vịnh Hải Đăng)
+
+**A.1 Layout** (`build_maps.py` `lighthousebay`, world layout). The sea fills the south-east beyond a coast that runs
+diagonally between the two camps, so both sides meet it alike: the map is symmetric by the reflection through the
+north-west to south-east diagonal ((x, z) -> (-z, -x), which swaps the camps), not by the usual half-turn. Everything is
+laid out in the coast's frame (u along the coast, w out to sea). The sea is 36 % of the square (the brief's 35-40 %).
+The outline keeps the square's edge on the sea's side (`lb_open_sea`): ships sail in and out there.
+
+**A.2-A.3 Ground.** Two coves with sand beaches (surf tiles, fishing boats, net racks, a hamlet behind each, wrecks of
+an old landing) and a wooden pier each; between them the rocky headland with the lighthouse (the east objective); high
+cliffs by the camps with an abandoned coastal battery on each; a fishing village round the market (the town objective);
+the old fort on the pine hill (the west objective); pine woods, bunkers and trenches on the cliff tops.
+
+**A.2 Sea lanes** (map data `sea`, `SeaDef`): near, mid and far at w 92, 106 and 120 (70, 84 and 98 m off the cove
+beaches). Ships never touch the ground's grid: the naval system steers them in the coast's frame. The brief's "reuse the
+train's and hovercraft's fixed routes" is met by the same idea (a scripted line, never pathfinding), in the sea's own
+frame rather than as waypoints, because the ships need lanes, stations and a run for the edge, not one route.
+
+**A.4 Reach** (`Prompt16NavalTests.TheSeaLanesAreInReachAsDesigned`): a battle tank on a pier head (w 52) reaches a ship
+on the near lane (40 m less its 12 m hull); off the pier heads and the headland's tip no short-range direct fire
+(tanks, IFVs, armoured cars: 28-34 m) does; artillery on the shore, aircraft and the coastal batteries (135 m) reach the
+far lane. Decided: the headland's tip beside the lighthouse counts as a third pier head, and medium-range tank hunters
+(38-42 m) also reach the near lane from the headland's rocky flanks: the lighthouse point is the fight's centre.
+
+**A.3 The coastal batteries** (`NavalSystem.Batteries`): abandoned until a side's ground vehicles hold one alone for 10 s;
+then a `coastal_battery` (the heavy fortress's model and twin 155 mm, reach 135 m, `navalOnly`: it fires on ships only)
+stands there for that side; destroyed, the battery stands abandoned again after 60 s. **The lighthouse**: whoever holds
+it (the mode's point, else ground vehicles holding it alone) sees every ship within 170 m of its lamp. Ships show from
+further off than other vehicles (their hull's size is added to the spotter's reach).
+
+**A.5 Versions.** Conquest, Survival and Siege, with sized hardpoints and slot labels by hardpoints.py as every map. The
+Siege version keeps the big fortress (the classic walled square was tried first and walled the attacker out of its own
+coast); the sea comes back round the fortress's ground (`lb_refill_sea`) and walls, gates and hardpoints it put on the
+water are dropped. `check_access.py` passes both versions. Campaign: 4-11 (D). Skirmish: in `MatchSettings.AllMaps`.
+
+### B. Leviathan (`leviathan`)
+
+**B.1** A battleship hull with a missile cruiser's cells, 64 x 11 m (the biggest model; its LOD is ModelLibrary's
+automatic one): two twin 203 mm turrets, launch cells, a stepped superstructure with phased-array panels, a lattice mast
+with a spinning radar, a raked funnel, two CIWS, a hangar and helicopter deck, a well-deck gate (`mb_naval.py`, 5.4 k
+triangles). HP 11 000 (a starting point for the testing phase's kill-time measure).
+
+**B.2 Parts** (9; each 7-9 % of the body, prompt 9's band): the turrets (`maingun`, each one lays half the salvo), the
+launch cells (`vls`, stops the cruise missiles), two CIWS (`ciws`: a gun each, on part 2's `aps` mechanism: fewer interceptors with one broken, none with both),
+the radar (`radar`: salvos and cruise missiles fall 2.2 times as wide, the CIWS guns spread twice as wide and the APS
+misses 35 % of its interceptions), the flight deck (`flightdeck`: its helicopter launches), the well deck (`welldeck`:
+the landing craft), the engine room and funnel as one part (`engine`: 65 % speed, so its run is slower). New mechanisms
+`cruise`, `craft`, `radar` in `BossPartDef.Mechanisms` (the CIWS use part 2's `aps`).
+
+**B.3 Armour** `[4, 4, 3, 2]`: sides 4, deck 2. Bombs, shells, artillery rockets and top attacks strike the deck by
+prompt 15's rules; direct fire strikes the side. Decided: a pen-3 round on the side keeps prompt 15's 0.4 (weak, not
+nothing); pen 2 and less are 0.15 and 0.05 ("almost nothing"). Parts have their own levels (turrets and the engine room
+3, cells, CIWS and decks 2, the radar 1).
+
+**CIWS** (the ship's APS, radius 26, 3 interceptors, 2.2 s): missiles, rockets and drones, never shells, bullets or beams
+(prompt 15's APS rule). Phase 2: 5 interceptors, 1.3 s. Its salvo turrets are `"laid": true` weapons: the combat system
+never fires them; the naval system lays and fires them.
+
+**B.4 Phases** (marks 0.7 and 0.4, prompt 8's transformation): phase 1 on the far lane, salvos sweeping along the shore
+18 m a salvo the way it sails (a group of enemies within 24 m of the sweep draws it), marked 2.8 s ahead, every 12 s, two
+203 mm shells a turret (420 damage, the calibre scale). Phase 2 on the near lane: the well deck opens (3 landing craft,
+two tanks each, every 40 s), the flight deck launches an attack helicopter every 55 s, two attack jets fly in off the sea,
+cruise missiles at the biggest group every 50 s (marked 5 s ahead), the CIWS at its strongest; the salvos go for the
+biggest group in reach. Phase 3: four cruise missiles at the player's HQ and towers at once, smoke, and a run along the
+far lane to its farther end. **The clock**: set as the run begins from the route and the turn about (about 60-100 s),
+shown on the boss bar ("Escaping 1:24"); it gets away at the edge once the clock is out, later if it was slowed (engine
+room). Escaped: invulnerable, silent, hidden; the mission is lost (Boss Rush: it pays nothing and the rush goes on).
+
+**B.5 Sinking** (`ShipSinking`, view only): it lists for 5 s, then the big ship breaks its back (a second copy of the
+model is the stern half; the halves rear up and sink below the water, which hides what is under); smaller ships roll
+over. Prompt 9's fires on the broken parts and five magazine blasts along the hull (the sim's, 0.8-3.6 s) play meanwhile.
+
+**B.6 Radio**: Kessler on arrival, at each phase, when it runs, when it gets away and when it sinks; the part lines for
+the cells, the last CIWS, the radar, the flight deck, the well deck and the engine room; the batteries and the lighthouse.
+
+**B.7** Guide entries and part tips (GuideText, Strings), boss files for the dossier with the fleet under it, the boss bar
+with the part icons (their armour chips are prompt 15's). Not done: the card render and the In-action clip (Z).
+
+### C. The fleet
+
+`sea_corvette` (2): HP 1600, armour [3, 3, 3, 1], a 76 mm (OTO Melara, 95 m) on the shore, a CIWS whose APS (32 m) covers
+Leviathan while it keeps station 26 m off it on the same lane; in phase 3 it steams between Leviathan and the shore.
+`missile_boat` (3): HP 420, armour [1, 1, 1, 0], 12 m/s: waits on the mid lane, dashes to the pier head nearest it, holds
+8 s firing 80 mm rockets (55 m), runs back out: anything on the pier heads hits it there. `landing_craft`: runs two
+tanks up a cove beach, lands them, goes back and is hoisted in. The phase 2 aircraft: the existing attack helicopter
+(flight deck) and attack jet (two, off the sea). The fleet's ships are not bosses, cost nothing and are no cards; they
+show in the dossier under Leviathan.
+
+### D. Campaign and modes
+
+**D.1 Chapter 4.** Decided: an **epilogue** boss mission after the operation, 4-11 "Leviathan" at Lighthouse Bay
+(Overcast, Kessler, 25 min). The story is the brief's (the port lost, Kessler puts to sea), and the chapter already has
+two boss fights (4-5, 4-6) before its operation, so a second boss mission in the middle would crowd it, and the
+operation's final stage cannot change battlefield. The chapter's shape holds: an epilogue (`"epilogue": true`) is left
+out of "ten main missions, the tenth the operation" (build_campaign.py, CampaignTests, `Campaign.OperationOf` now takes
+the operation, not the last main mission); it pays like the chapter's boss and moves nobody else's pay (the economy tune
+is unchanged: 100 / 3.00). It opens after 4-10 and chapter 5 waits for it. CampaignText.cs keeps its hand edits: only
+the 16 new keys were added.
+
+**D.2 Boss Rush**: Leviathan is its own kind (eleven bosses, 57 minutes). On a battlefield without a sea the rush goes to
+Lighthouse Bay for it (the curtain: "Setting out to sea"), carrying the bosses beaten, the clock, the CP and the army
+(each vehicle's health share, landed at the drop zone), and back to its own battlefield for the next boss. Half the
+fleet sails there. The switch is a scene rebuild (`BossRushSession.Pending`); Boss Rush has no checkpoint replay, so
+determinism is per battlefield.
+
+**D.3 Operations**: 4-11 is replayable; two mutators in the rotation: **Sea storm** (the storm, and ships seen from 55 %
+as far) and **Fleet** (a flagship brings one more escort and two more attack boats; off the sea, and on it, the enemy
+earns 10 % more, so it means something on every battlefield the rotation draws).
+
+**D.4 Rewards**: 4-11 opens the heavy fortress's coastal branch, now **Long-range coastal battery** (72 m instead of
+60 m): a campaign-opened branch (`PlayerProfile.BranchOpen`) waits for its mission. A branch opened is not counted as a
+card in the chapter's 5-7. The boss file and the mission's fragment go in the dossier.
+
+**D.5** Lighthouse Bay is in the skirmish map list.
+
+### G. Performance
+
+Low graphics (shadows Low or Off) draws the water unlit and the wakes short (6 foam patches, no bow waves; 22 and bow
+waves otherwise; `WakeView`). The naval system's step with the whole fleet: 0.03 ms (EditMode, the fleet test). The FPS
+measure on a low-end phone in phase 2 is for the testing phase.
+
+### T. Tests
+
+`Prompt16NavalTests` (5, all pass): the lanes' reach (A.4); Leviathan and its fleet on the water, its armour by face and
+its parts; the CIWS takes missiles and never shells, and stops with both CIWS; phase 2 on the near lane, phase 3's clock
+runs down and it gets away; Boss Rush goes to sea and back with the army and the clock. `BossPartsTests.Expected` has
+Leviathan (9). Nothing else was run (the owner's rule).
+
+### Z. Left for the testing phase
+
+- The stuck detector on Lighthouse Bay (every version, 5 seeds, both sides); 5-seed runs of 4-11, Boss Rush with the
+  switch, and Operations with Sea storm and Fleet; Leviathan's kill time against prompt 9 and 13's band (HP 11 000 is a
+  first figure).
+- The suites this touches, not run: CampaignTests (the shape, 4-11 plays to an end), BossPartsTests, CalibreTests,
+  OperationsModeTests (the rotation with 20 mutators), TowerRosterTests, ContentTests; PlaySmoke (the owner said none).
+- The Base screen's map picture for Lighthouse Bay (`BaseMapShots`, graphics batch), Leviathan's and the fleet's card
+  renders and In-action clip, screenshots of the map and of Leviathan in each phase for Docs/ui-screens.
+- FPS on a low-end phone in phase 2 with the whole fleet, the helicopters, the landing craft and parts burning.
+- Moving the fleet onto prompt 16 F's escort data once both branches are in.
 ## 14B. Prompt 15: armour and weapon icons, where they show (2026-09-29)
 
 The UI half of prompt 15 (D and E). The data (armour levels by face, penetration, the six damage types, weapon forms

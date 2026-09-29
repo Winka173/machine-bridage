@@ -78,7 +78,9 @@ namespace MachineBrigade.Sim.Content
         /// Earth Worm's dives), "landing" (the hovercraft's troops), "aura" (the Supreme Commander's
         /// command aura); prompt 16: "aps" (its protection system: the interceptors shrink with each part
         /// carrying it broken, and stop with the last), "jammer" (its jamming aura) and "trail" (the
-        /// Inferno's fire trail), each stopped once every part carrying it is broken.
+        /// Inferno's fire trail), each stopped once every part carrying it is broken; the ships' "cruise" (the
+        /// launch cells), "craft" (the well deck's landing craft) and "radar" (fire control: salvos and cruise
+        /// missiles fall wide, the CIWS misses now and then).
         /// </summary>
         public IReadOnlyList<string> Stops { get; internal set; } = Array.Empty<string>();
 
@@ -98,7 +100,7 @@ namespace MachineBrigade.Sim.Content
         public int Attachment { get; internal set; } = -1;
 
         /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
-        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail" };
+        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar" };
 
         /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
         public static string FxFor(string kind) => kind switch

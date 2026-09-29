@@ -308,6 +308,15 @@
     { "id": "boss_minigun", "real": "GShG 7.62 mm", "family": "mg", "size": 7.62,      "pen": 0, "inherits": "minigun", "cooldown": 0.0611, "roundWeight": 7, "clip": 40, "clipReload": 4.38 },
     { "id": "boss_hmg", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "cooldown": 0.267, "clip": 10, "clipReload": 4.1, "roundWeight": 11 },
     { "id": "hover_ciws", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 22, "cooldown": 0.422, "range": 34, "projectileSpeed": 300, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 7, "clipReload": 4.44 },
+    // Prompt 16: Leviathan's main battery (its salvos are the naval system's: "laid", the turrets never pick a
+    // target of their own), its cruise missiles (drawn only), the corvettes' 76 mm, the attack boats'
+    // rockets, the coastal battery's long 155 mm (ships only) and the heavy fortress's long-range coastal branch.
+    { "id": "leviathan_203", "real": "Mk 71 203 mm (twin)", "family": "howitzer", "size": 203, "pen": 4, "projectileModel": "shell_155", "projectileScale": 1.3, "damageType": "HighExplosive", "damage": 420, "cooldown": 12, "range": 160, "projectileSpeed": 60, "splash": 6, "spread": 3, "impactTier": "Huge", "laid": true },
+    { "id": "leviathan_cruise", "real": "3M-54 Kalibr", "family": "cruise", "size": 500, "pen": 3, "projectileModel": "cruise_missile", "damageType": "HighExplosive", "damage": 520, "cooldown": 50, "range": 400, "projectileSpeed": 24, "splash": 15, "impactTier": "Ultimate", "projectile": "Missile", "laid": true },
+    { "id": "naval_76", "real": "OTO Melara 76/62", "family": "howitzer", "size": 76, "pen": 3, "damageType": "HighExplosive", "damage": 120, "cooldown": 2.6, "range": 95, "projectileSpeed": 110, "splash": 3, "spread": 2.2, "impactTier": "Medium", "burst": 2, "burstInterval": 0.5 },
+    { "id": "boat_rockets", "real": "S-8 80 mm", "family": "rocket", "size": 80, "pen": 2, "projectileModel": "s8", "projectileScale": 0.9, "damageType": "HighExplosive", "damage": 32, "cooldown": 7, "range": 55, "projectileSpeed": 48, "splash": 3, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 10, "burstInterval": 0.12 },
+    { "id": "gun_155_coastal", "real": "M284 155 mm (coastal battery)", "family": "howitzer", "size": 155, "pen": 3, "inherits": "gun_155_twin", "range": 135 },
+    { "id": "gun_155_twin_coastlr", "real": "M284 155 mm (twin, long-range coastal)", "family": "howitzer", "size": 155, "pen": 3, "inherits": "gun_155_twin", "range": 72 },
     // Prompt 16 E: the old bosses' new weapons. The Iron Train's mortar car lobs over cover; the landing
     // hovercraft's two 140 mm rocket launchers (Zubr's A-22 Ogon).
     // Point-defence and anti-aircraft AK-630s (the supergun's AA mounts, the hovercraft's extra CIWS): at aircraft only.
@@ -696,7 +705,7 @@
     { "id": "missile_battery.lrr", "inherits": "missile_battery", "branchOf": "missile_battery", "weapon": "sam_battery_lrr", "vision": 110 },
     { "id": "drone_hangar.lancet", "inherits": "drone_hangar", "branchOf": "drone_hangar", "weapon": "lancet_hangar" },
     { "id": "drone_hangar.swarm", "inherits": "drone_hangar", "branchOf": "drone_hangar", "weapon": "fpv_hangar_swarm" },
-    { "id": "heavy_turret.coastal", "inherits": "heavy_turret", "branchOf": "heavy_turret", "weapon": "gun_155_twin_long" },
+    { "id": "heavy_turret.coastal", "inherits": "heavy_turret", "branchOf": "heavy_turret", "weapon": "gun_155_twin_coastlr" },
     { "id": "heavy_turret.bastion", "inherits": "heavy_turret", "branchOf": "heavy_turret", "hp": 4340 },
     // Utility modules (a base's utility slots): a repair bay (1.5 % a second to vehicles in the
     // base), an ammunition depot (reloads twice as fast there), an airfield (aircraft come back to
@@ -1036,7 +1045,69 @@
         {"id": "engine_2", "kind": "engine", "hp": 0.07, "armour": 2, "node": "Propeller_2", "wreck": "wreck_engine", "at": [3.12, 3.6, 1.2], "radius": 1.8, "speed": 0.85},
         {"id": "engine_3", "kind": "engine", "hp": 0.07, "armour": 2, "node": "Propeller_3", "wreck": "wreck_engine", "at": [-3.12, 3.6, 1.2], "radius": 1.8, "speed": 0.85},
         {"id": "engine_4", "kind": "engine", "hp": 0.07, "armour": 2, "node": "Propeller_4", "wreck": "wreck_engine", "at": [-5.85, 3.5, 1.2], "radius": 1.8, "speed": 0.85} ],
-      "deathExplosion": { "damage": 350, "radius": 16, "delay": 2.6, "tier": "Ultimate" } }
+      "deathExplosion": { "damage": 350, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
+    // ----------------------------------------------------------------------------------------------------
+    // Prompt 16 (DECISIONS 15A). Kessler's Leviathan: a battleship-and-missile-cruiser hybrid, the biggest model in
+    // the game, only on a battlefield with a sea (Lighthouse Bay). The naval system sails it on the map's lanes
+    // (the far lane in phase 1, the near one in phase 2, and in phase 3 it runs for the far end: the countdown),
+    // lays its two turrets' salvos on the shore (marked, sweeping along it), fires cruise missiles from its launch
+    // cells (a volley at the base as phase 3 begins), sends landing craft in phase 2, launches attack helicopters
+    // from its flight deck and calls two attack jets in off the sea. Its sides are level 4, its deck 2: bombs,
+    // shells, artillery rockets and top attacks strike the deck. Its CIWS (the APS) takes missiles, rockets and
+    // drones, never shells, bullets or beams; strongest in phase 2, gone with both CIWS parts.
+    { "id": "leviathan", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.leviathan", "armour": [4, 4, 3, 2], "hp": 11000, "speed": 2.6,
+      "turnRate": 8, "turretTurnRate": 30, "radius": 12, "length": 64, "width": 11, "scale": 1.0, "cp": 0, "vision": 120, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "leviathan_203", "mainSlot": "gun", "mainAim": "Free",
+      "secondary": [ { "weapon": "leviathan_203", "slot": "gun", "aim": "Free" }, { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" },
+                     { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" } ],
+      "aps": { "radius": 26, "charges": 3, "recharge": 2.2, "rockets": true },
+      "naval": { "role": "Flagship", "lanes": ["far", "near", "far"], "escapePhase": 2, "escapeSpeed": 0.75 },
+      "salvo": { "every": 12, "first": 8, "warn": 2.8, "shells": 2, "damage": 420, "radius": 6, "spread": 14, "range": 160, "sweep": 18,
+                 "blindScatter": 2.2, "weapon": "leviathan_203", "warning": "leviathan_shell" },
+      "cruise": { "every": 50, "first": 20, "phase": 1, "warn": 5, "damage": 520, "radius": 15, "final": 4, "weapon": "leviathan_cruise",
+                  "warning": "leviathan_cruise_mark" },
+      "craft": { "unit": "landing_craft", "carries": ["main_battle_tank", "ifv", "main_battle_tank", "tank_destroyer"], "per": 2, "every": 40,
+                 "first": 5, "phase": 1, "max": 3 },
+      "fleet": [ { "unit": "sea_corvette", "count": 2, "at": 26 }, { "unit": "missile_boat", "count": 3 } ],
+      "air": [ { "phase": 1, "units": ["attack_jet", "attack_jet"] } ],
+      "skills": ["leviathan_helos"],
+      "phases": [ { "at": 0.7, "transform": 2.5, "radio": "radio.kessler.leviathan.phase2" },
+                  { "at": 0.4, "transform": 3, "radio": "radio.kessler.leviathan.phase3" } ],
+      "parts": [
+        {"id": "turret_fore", "kind": "maingun", "hp": 0.09, "armour": 3, "node": "Part_gun", "wreck": "wreck_turret", "at": [0, 19, 5.6], "radius": 3.6, "mounts": [0], "radio": "radio.part.maingun"},
+        {"id": "turret_aft", "kind": "maingun", "hp": 0.09, "armour": 3, "node": "Part_gun.001", "wreck": "wreck_turret", "at": [0, -16, 5.6], "radius": 3.6, "mounts": [1]},
+        {"id": "vls", "kind": "vls", "hp": 0.07, "armour": 2, "node": "Part_vls", "wreck": "wreck_launcher", "at": [0, 11.5, 4.3], "radius": 3.0, "stops": ["cruise"], "radio": "radio.part.vls"},
+        {"id": "ciws_fore", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg", "wreck": "wreck_turret", "at": [3.0, 6.0, 10.2], "radius": 2.2, "mounts": [2], "stops": ["aps"]},
+        {"id": "ciws_aft", "kind": "ciws", "hp": 0.07, "armour": 2, "node": "Part_mg.001", "wreck": "wreck_turret", "at": [-3.0, -8.5, 9.0], "radius": 2.2, "mounts": [3], "stops": ["aps"], "radio": "radio.part.ciws"},
+        {"id": "radar", "kind": "radar", "hp": 0.07, "armour": 1, "node": "Part_radar", "wreck": "wreck_stump", "at": [0, 1.5, 17.5], "radius": 2.4, "stops": ["radar"], "spread": 2, "affects": [2, 3], "fx": "energy", "radio": "radio.part.radar"},
+        {"id": "flight_deck", "kind": "flightdeck", "hp": 0.07, "armour": 2, "node": "Part_deck", "wreck": "wreck_stump", "at": [0, -24.5, 3.4], "radius": 4.5, "skills": ["leviathan_helos"], "radio": "radio.part.flightdeck"},
+        {"id": "well_deck", "kind": "welldeck", "hp": 0.07, "armour": 2, "node": "Part_welldeck", "wreck": "wreck_stump", "at": [0, -30.5, 2.2], "radius": 3.5, "stops": ["craft"], "radio": "radio.part.welldeck"},
+        {"id": "machinery", "kind": "engine", "hp": 0.07, "armour": 3, "node": "Part_engine", "wreck": "wreck_engine", "at": [0, -2.5, 11.5], "radius": 3.0, "speed": 0.65, "radio": "radio.part.machinery"} ],
+      "deathExplosion": { "damage": 500, "radius": 22, "delay": 3.5, "tier": "Ultimate" } },
+    // Its fleet (not bosses: no bar, no card). Corvettes keep station on it (their CIWS covers it within 32 m);
+    // attack boats dash in to the pier heads and out; landing craft run tanks up the beaches. Thick sides, thin decks.
+    { "id": "sea_corvette", "class": "Heavy", "card": false, "armour": [3, 3, 3, 1], "hp": 1600, "speed": 3.4, "turnRate": 14, "turretTurnRate": 60, "radius": 5.5,
+      "length": 30, "width": 5.6, "cp": 0, "vision": 90, "captureRate": 0, "firesWhileMoving": true, "weapon": "naval_76", "mainSlot": "gun", "mainAim": "Free",
+      "secondary": [ { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" } ], "aps": { "radius": 32, "charges": 2, "recharge": 2.5, "rockets": true },
+      "naval": { "role": "Escort", "station": 26 },
+      "parts": [
+        {"id": "gun", "kind": "gun", "hp": 0.14, "armour": 2, "node": "Part_gun", "wreck": "wreck_turret", "at": [0, 9, 4.2], "radius": 2.2, "mounts": [0]},
+        {"id": "ciws", "kind": "ciws", "hp": 0.12, "armour": 2, "node": "Part_mg", "wreck": "wreck_turret", "at": [0, -6.5, 7.0], "radius": 1.8, "mounts": [1], "stops": ["aps"]} ],
+      "deathExplosion": { "damage": 200, "radius": 12, "delay": 1.2, "tier": "Ultimate" } },
+    { "id": "missile_boat", "class": "Light", "card": false, "armour": [1, 1, 1, 0], "hp": 420, "speed": 12, "turnRate": 70, "turretTurnRate": 120, "radius": 3.2,
+      "length": 14, "width": 3.8, "cp": 0, "vision": 70, "captureRate": 0, "firesWhileMoving": true, "weapon": "boat_rockets", "mainSlot": "rocket", "mainAim": "Free",
+      "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
+      "naval": { "role": "Raider", "dashW": 20, "dashEvery": 26, "dashHold": 8 },
+      "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    { "id": "landing_craft", "class": "Support", "card": false, "armour": [2, 2, 2, 1], "hp": 1000, "speed": 5.5, "turnRate": 30, "turretTurnRate": 120, "radius": 4.5,
+      "length": 17, "width": 7, "cp": 0, "vision": 50, "captureRate": 0, "firesWhileMoving": true, "weapon": "hmg_roof", "mainSlot": "mg", "mainAim": "Free",
+      "naval": { "role": "Lander" },
+      "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.5, "tier": "Huge" } },
+    // An abandoned coastal battery taken by a side (Lighthouse Bay): the heavy fortress's twin 155 mm, reaching the
+    // far sea lane, firing on ships only.
+    { "id": "coastal_battery", "class": "Defense", "static": true, "model": "heavy_turret", "armour": [4, 3, 3, 3], "hp": 3000, "speed": 0, "turnRate": 1, "turretTurnRate": 18,
+      "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 130, "weapon": "gun_155_coastal", "navalOnly": true,
+      "deathExplosion": { "damage": 220, "radius": 12, "delay": 0.5, "tier": "Ultimate" } }
   ],
 
   // Skills of elite units and bosses, used automatically when the trigger is met (see SkillDef).
@@ -1070,7 +1141,9 @@
     // Prompt 16 F: the old escort calls (behemoth_escort, fortress_escort, gunship_escort, nuke_escort,
     // supreme_guard) are gone: every boss's escorts are the general system's, "escorts" below.
     { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
-    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" }
+    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
+    // Prompt 16: Leviathan's flight deck launches an attack helicopter from phase 2 (its deck broken, no more).
+    { "id": "leviathan_helos",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.7, "cooldown": 55, "count": 1, "unit": "attack_helicopter" }
   ],
 
   // Prompt 16 F: escorts for every boss (BossSystem.Escorts, DECISIONS 15B). A wave comes in with the boss
@@ -1168,6 +1241,9 @@
     // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).
     { "id": "super_gun_shell",   "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 450, "blast": 15, "tier": "Ultimate" },
     { "id": "air_raid",          "kind": "Airstrike",     "pen": 3, "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 10, "duration": 2.4, "damage": 200, "blast": 8, "tier": "Huge", "length": 70 },
+    // Prompt 16: where Leviathan's shells and cruise missiles land, marked ahead (event-only: the naval system calls them).
+    { "id": "leviathan_shell",   "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 2.8, "radius": 8, "count": 1, "duration": 0, "damage": 0, "blast": 6, "tier": "Huge" },
+    { "id": "leviathan_cruise_mark", "kind": "Barrage",   "pen": 3, "event": true, "cooldown": 0, "delay": 5.0, "radius": 16, "count": 1, "duration": 0, "damage": 0, "blast": 15, "tier": "Ultimate" },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "pen": 4, "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },
     { "id": "cluster_strike",    "kind": "Airstrike",     "pen": 2, "consumable": true, "cooldown": 15, "delay": 2.5, "radius": 10, "count": 30, "duration": 2.2, "damage": 90, "blast": 5.5, "tier": "Large", "length": 60 },
@@ -1343,6 +1419,11 @@
     { "id": "bridge_road",   "armor": "Structure", "hp": 1000000, "width": 8.35, "depth": 20 },
     { "id": "ruin_house", "scale": 1.49, "armor": "Structure", "hp": 650, "width": 10.14, "depth": 10.14, "blocks": true },
     { "id": "ruin_tower", "scale": 1.15, "armor": "Structure", "hp": 700, "width": 5.2, "depth": 5.6, "blocks": true },
-    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 }
+    { "id": "dead_tree", "crush": true,     "armor": "Light",     "hp": 30,   "width": 1.9,  "depth": 2.3 },
+    // Prompt 16 (Lighthouse Bay): the lighthouse on the headland, the piers' wooden decks (drawn over the
+    // roads that run out over the water; nothing stops on them) and fishing boats drawn up on the beaches.
+    { "id": "lighthouse",    "armor": "Structure", "armour": 3, "hp": 3200, "width": 7.2, "depth": 7.2, "blocks": true },
+    { "id": "pier",          "armor": "Structure", "hp": 1000000, "width": 7.6, "depth": 6 },
+    { "id": "fishing_boat",  "armor": "Light",     "hp": 220,  "width": 7.4,  "depth": 2.8,  "blocks": true, "blocksFire": false }
   ]
 }

@@ -349,7 +349,10 @@ namespace MachineBrigade.Sim.Modes
             MissionGoal.Hold => _points.Count > 0 ? _points[0].Def.Position : null,
             MissionGoal.Destroy => NearestTarget(world),
             MissionGoal.Escort => ConvoyFront(world),
-            MissionGoal.Boss or MissionGoal.Intercept => world.TryGetVehicle(_boss, out var b) && b.IsAlive ? b.Position : null,
+            // A ship at sea (prompt 16): the pier head or the headland nearest it, as near as the land comes.
+            MissionGoal.Boss or MissionGoal.Intercept => world.TryGetVehicle(_boss, out var b) && b.IsAlive
+                ? b.Def.Naval != null && world.Map.Sea is { } sea ? sea.Approach(b.Position) : b.Position
+                : null,
             MissionGoal.Hunt => NearestHunted(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Recon => NextSpot(world, PlayerCentre(world) ?? Vector2.Zero),
             MissionGoal.Protect => Threatened(world),
@@ -416,6 +419,8 @@ namespace MachineBrigade.Sim.Modes
             if (_def.Goal == MissionGoal.Relieve && AllyHq.IsValid &&
                 (!world.TryGetVehicle(AllyHq, out var allyHq) || !allyHq.IsAlive || allyHq.Team != PlayerTeam))
                 return true;
+            // Prompt 16: a ship boss that gets away over the edge (Leviathan in its last phase) loses the mission.
+            if (_boss.IsValid && world.TryGetVehicle(_boss, out var fled) && fled.Escaped) return true;
             // A base to defend (its role Defend): losing its HQ loses the mission, whatever the goal.
             if (world.Bases.Of(PlayerTeam) is { Role: BaseRole.Defend, HqFallen: true }) return true;
             if (_def.Goal == MissionGoal.Intercept && world.TryGetVehicle(_boss, out var train) && train.IsAlive &&

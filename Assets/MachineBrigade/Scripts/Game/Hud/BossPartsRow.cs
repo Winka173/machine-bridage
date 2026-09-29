@@ -59,7 +59,10 @@ namespace MachineBrigade.Game.Hud
         {
             "maingun" or "gun" or "turret" or "cannon" => "cannon",
             "flak" => "aa",
-            "missiles" => "missile",
+            "missiles" or "vls" => "missile",
+            "ciws" => "aa",
+            "flightdeck" => "helicopter",
+            "welldeck" => "reinforce",
             "rockets" => "mlrs",
             "thermo" => "thermo",
             "railgun" => "railgun",
@@ -81,7 +84,6 @@ namespace MachineBrigade.Game.Hud
             "radar" => "cbradar",
             // Prompt 16 E.
             "aps" => "shield",
-            "ciws" => "aa",
             "fuel" => "flame",
             "ew" => "jammer",
             _ => "gear",

@@ -131,6 +131,9 @@ namespace MachineBrigade.Game.Match
             var focused = world != null && world.TryGetPartFocus(PlayerTeam, out var focusBoss, out var focusPart) && focusBoss == boss.Id ? focusPart : -1;
             hud.SetBossParts(boss, focused);
             hud.SetBossHp(boss.Hp, boss.MaxHp);
+            // Prompt 16: a ship running for the edge shows how long until it gets away.
+            if (boss.Escaping && boss.EscapeSeconds >= 0f)
+                name += "  ·  " + Strings.Format("boss.escaping", $"{(int)boss.EscapeSeconds / 60}:{(int)boss.EscapeSeconds % 60:00}");
             hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
             if (phases.Count == 0)
             {
@@ -302,7 +305,8 @@ namespace MachineBrigade.Game.Match
             // Prompt 17 A.2: the long battlefield (300 x 480 m, the layered base) where the map has one; else its fortified
             // 300 m version; else Conquest's.
             GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless => Fortified(mapId),
-            GameModeKind.BossRush => mapId + "_sandbox",
+            // Prompt 16: part way through, the rush may be at sea (Lighthouse Bay) for its ship.
+            GameModeKind.BossRush => (BossRushSession.Pending?.Map ?? mapId) + "_sandbox",
             GameModeKind.Weekly => Fortified(WeeklyFortress.MapId),
             _ => LegacyMapFile(kind, mapId),
         };
@@ -809,6 +813,15 @@ namespace MachineBrigade.Game.Match
     {
         private BossRushMode _mode;
 
+        /// <summary>Prompt 16: the battlefield the rush fights its sea boss on.</summary>
+        public const string SeaMap = "lighthousebay";
+
+        /// <summary>The rush carried over from the last battlefield (set before the scene is rebuilt, taken up by the next session).</summary>
+        internal static BossRushCarry Pending;
+
+        /// <summary>Where the rush must go before its next boss, or null.</summary>
+        public BossRushCarry SwitchTo => _mode?.SwitchTo;
+
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
         public override string Kicker => Strings.Get("mode.bossrush.kicker");
         public override string Subtitle => Strings.Get("mode.bossrush.sub");
@@ -823,7 +836,12 @@ namespace MachineBrigade.Game.Match
             player.Bank = 45f;
             // One boss of each kind, which variant drawn by the battle's seed.
             // The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
-            _mode = new BossRushMode(new BossRushRules { Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed) });
+            _mode = new BossRushMode(new BossRushRules
+            {
+                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed),
+                SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
+            });
+            Pending = null;
             Mode = _mode;
             _mode.Setup(world);
             world.TryGetRally(PlayerTeam, out var home);
@@ -1047,6 +1065,7 @@ namespace MachineBrigade.Game.Match
                 def = Mutators.Apply(def, _run.Mutators, world.Catalog);
                 world.SetMutators(PlayerTeam, Mutators.Strength(_run.Mutators, PlayerTeam));
                 world.SetMutators(EnemyTeam, Mutators.Strength(_run.Mutators, EnemyTeam));
+                Mutators.ApplySea(world.SeaRules, _run.Mutators);
                 foreach (var m in _run.Mutators)
                     if (m.Raids) Events = new BattleEvents(seed, raids: true);
             }

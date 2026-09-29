@@ -1283,6 +1283,8 @@ namespace MachineBrigade.Sim.Modes
             new[] { "earth_borer" },
             new[] { "command_airship" },
             new[] { "landing_hovercraft" },
+            // Prompt 16: Kessler's Leviathan, on the sea (Boss Rush switches to Lighthouse Bay for it).
+            new[] { "leviathan" },
             new[] { "supreme_command" },
         };
 
@@ -1313,8 +1315,8 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
 
-        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five).</summary>
-        public float TimeLimit { get; set; } = 52 * 60f;
+        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five); eleven with Leviathan (prompt 16).</summary>
+        public float TimeLimit { get; set; } = 57 * 60f;
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;
@@ -1326,6 +1328,32 @@ namespace MachineBrigade.Sim.Modes
         public float PartBounty { get; set; } = 2f;
 
         public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
+
+        /// <summary>Prompt 16: the battlefield a boss that sails is fought on when the rush's own has no sea.</summary>
+        public string SeaMap { get; set; } = "lighthousebay";
+
+        /// <summary>The rush's own battlefield (the one chosen), to go back to after a sea boss; null: stay.</summary>
+        public string? HomeMap { get; set; }
+
+        /// <summary>Picked up again after a switch of battlefield: the bosses beaten, the seconds used, the army and CP carried over.</summary>
+        public BossRushCarry? Resume { get; set; }
+
+        /// <summary>The share of a flagship's fleet that sails with it here (fewer, so the fight stays short).</summary>
+        public float FleetShare { get; set; } = 0.5f;
+    }
+
+    /// <summary>What Boss Rush carries from one battlefield to the next (prompt 16 D.2): progress, time, army, CP.</summary>
+    public sealed class BossRushCarry
+    {
+        /// <summary>The battlefield to go to (a map id, without its version).</summary>
+        public string Map { get; set; } = "";
+
+        public int Defeated { get; set; }
+        public double TimeUsed { get; set; }
+        public float Cp { get; set; }
+
+        /// <summary>The player's vehicles (def, health share), landed again at the drop zone.</summary>
+        public List<(string def, float health)> Army { get; } = new();
     }
 
     /// <summary>
@@ -1358,16 +1386,58 @@ namespace MachineBrigade.Sim.Modes
         public int Kills => _ledger.Kills(PlayerTeam);
         public int Losses => _ledger.Losses(PlayerTeam);
 
-        public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)world.Time);
+        public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)(world.Time + TimeUsed));
+
+        /// <summary>Seconds of the rush played on earlier battlefields (prompt 16's switch).</summary>
+        public double TimeUsed { get; private set; }
+
+        /// <summary>The battlefield the rush must go to before its next boss (prompt 16), or null: the session switches and carries on.</summary>
+        public BossRushCarry? SwitchTo { get; private set; }
+
+        /// <summary>Sea bosses that got away (no bounty for them).</summary>
+        public int Escapes { get; private set; }
 
         public void Setup(SimWorld world)
         {
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(new SideSetup { StartCp = 0f, Income = 0.01f }.Build(EnemyTeam));
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
-            _ledger.Ignore = v => v.Def.Boss;
+            world.SeaRules.FleetShare = _rules.FleetShare;
+            _ledger.Ignore = v => v.Def.Boss || v.Def.Naval != null;
             _nextBossAt = 10.0;
             world.EscortSettings ??= _rules.EscortSettings ?? EscortSettings.For(world.Catalog.EscortRules, "Normal", bossRush: true);
+            if (_rules.Resume is { } resume)
+            {
+                // Carried over from the last battlefield: the army lands at the drop zone, the bosses and the clock go on.
+                Defeated = resume.Defeated;
+                TimeUsed = resume.TimeUsed;
+                if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, resume.Cp);
+                world.TryGetRally(PlayerTeam, out var rally);
+                for (var i = 0; i < resume.Army.Count; i++)
+                {
+                    var (def, health) = resume.Army[i];
+                    if (!world.Catalog.Vehicles.ContainsKey(def)) continue;
+                    var angle = i * 2.4f;
+                    var v = world.SpawnVehicle(def, PlayerTeam, rally + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (4f + 1.2f * i), SimMath.DegToRad(45f));
+                    v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(health, 0.05f, 1f));
+                }
+                _nextBossAt = 6.0;
+                return;
+            }
+            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+        }
+
+        /// <summary>A boss that sails (prompt 16) needs a battlefield with a sea.</summary>
+        private static bool Sails(SimWorld world, string id) => world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Naval != null;
+
+        /// <summary>What the rush carries to the next battlefield: the bosses beaten, the time used, the army standing, the CP.</summary>
+        private BossRushCarry Carry(SimWorld world, string map)
+        {
+            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time };
+            if (world.TryGetEconomy(PlayerTeam, out var economy)) carry.Cp = economy.Cp;
+            foreach (var v in world.VehicleList)
+                if (v.IsAlive && v.Team == PlayerTeam && !v.Def.Static && !v.Scripted && v.Def.CpCost > 0)
+                    carry.Army.Add((v.Def.Id, v.Hp / v.MaxHp));
+            return carry;
         }
 
         /// <summary>Health steps of the boss on the field already paid for (75, 50, 25 %).</summary>
@@ -1393,11 +1463,15 @@ namespace MachineBrigade.Sim.Modes
                     _partsPaid |= 1UL << i;
                     if (world.TryGetEconomy(PlayerTeam, out var bounty)) bounty.Cp = MathF.Min(bounty.Bank, bounty.Cp + _rules.PartBounty);
                 }
-            if (Boss.IsValid && (!world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
+            if (SwitchTo != null) return;
+            var escaped = Boss.IsValid && world.TryGetVehicle(Boss, out var sailed) && sailed.IsAlive && sailed.Escaped;
+            if (Boss.IsValid && (escaped || !world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
             {
                 Boss = EntityId.None;
                 Defeated++;
-                if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty);
+                // A ship that got away pays nothing (prompt 16); the rush goes on.
+                if (escaped) Escapes++;
+                else if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty);
                 if (Defeated >= Total)
                 {
                     Finish(world, PlayerTeam);
@@ -1405,8 +1479,16 @@ namespace MachineBrigade.Sim.Modes
                 }
                 _nextBossAt = world.Time + _rules.Breather;
             }
-            if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total) Spawn(world);
-            if (world.Time >= _rules.TimeLimit)
+            if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total)
+            {
+                // Prompt 16: a boss that sails is fought at sea; the next one back on the rush's own battlefield.
+                var sails = Sails(world, _rules.Bosses[Defeated]);
+                if (sails && world.Map.Sea == null) SwitchTo = Carry(world, _rules.SeaMap);
+                else if (!sails && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
+                else Spawn(world);
+                if (SwitchTo != null) return;
+            }
+            if (world.Time + TimeUsed >= _rules.TimeLimit)
             {
                 Finish(world, EnemyTeam);
                 return;
@@ -1422,6 +1504,12 @@ namespace MachineBrigade.Sim.Modes
             var id = _rules.Bosses[Defeated];
             var home = world.TryGetRally(PlayerTeam, out var h) ? h : Vector2.Zero;
             var heading = SimMath.HeadingOf(home - rally);
+            // A ship comes in on the far lane, from the end away from the player's camp.
+            if (world.Map.Sea is { } sea && Sails(world, id) && sea.Lane("far") is { } far)
+            {
+                var side = sea.Frame(home).X <= 0f ? 1f : -1f;
+                rally = sea.At(side * far.Patrol, far.W);
+            }
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
             _partsPaid = 0;

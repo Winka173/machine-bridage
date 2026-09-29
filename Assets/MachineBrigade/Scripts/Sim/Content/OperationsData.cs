@@ -68,6 +68,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>No repair bay, no repair drops.</summary>
         public bool NoRepair { get; set; }
 
+        /// <summary>Prompt 16: sight out onto the sea (the "Sea storm": fog on the water).</summary>
+        public float SeaSight { get; set; } = 1f;
+
+        /// <summary>Prompt 16: escorts and attack boats added to a flagship's fleet (the "Fleet").</summary>
+        public int ExtraEscorts { get; set; }
+        public int ExtraRaiders { get; set; }
+
         public bool Clashes(MutatorDef other) => Contains(Excludes, other.Id) || Contains(other.Excludes, Id) || other.Id == Id ||
                                                    (Weather != null && other.Weather != null);
 
@@ -210,6 +217,7 @@ namespace MachineBrigade.Sim.Content
                     BothDamage = m.Float("bothDamage", 1f), BothHp = m.Float("bothHp", 1f), TimeScale = m.Float("timeScale", 1f),
                     Raids = m.Bool("raids", false), Swarm = m.Bool("swarm", false), EmptyBase = m.Bool("emptyBase", false),
                     NoRepair = m.Bool("noRepair", false),
+                    SeaSight = Math.Clamp(m.Float("seaSight", 1f), 0.1f, 1f), ExtraEscorts = m.Int("extraEscorts", 0), ExtraRaiders = m.Int("extraRaiders", 0),
                 });
             var data = new OperationsData { Tiers = tiers, Mutators = mutators };
             if (root.Has("score"))
@@ -309,6 +317,17 @@ namespace MachineBrigade.Sim.Content
                         if (!list.Contains(id) && catalog.Vehicles.ContainsKey(id)) list.Add(id);
                     enemy.Vehicles = list;
                 }
+            }
+        }
+
+        /// <summary>Prompt 16: what the mutators do at sea (the sight over the water, the flagship's fleet).</summary>
+        public static void ApplySea(Bosses.NavalRules rules, IReadOnlyList<MutatorDef> mutators)
+        {
+            foreach (var m in mutators)
+            {
+                rules.SeaSight *= m.SeaSight;
+                rules.ExtraEscorts += m.ExtraEscorts;
+                rules.ExtraRaiders += m.ExtraRaiders;
             }
         }
 

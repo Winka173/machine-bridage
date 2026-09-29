@@ -288,6 +288,7 @@ namespace MachineBrigade.Sim.Bosses
             boss.TrailOff = trailParts > 0 && trailStanding == 0;
             boss.ApsMax = boss.Aps == null || apsParts == 0 ? int.MaxValue : (int)MathF.Ceiling(boss.Aps.Charges * apsStanding / (float)apsParts);
             if (boss.ApsCharges > boss.ApsMax) boss.ApsCharges = boss.ApsMax;
+            boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (!boss.PartBroken[i]) continue;
@@ -310,8 +311,12 @@ namespace MachineBrigade.Sim.Bosses
                         case "burrow": boss.BurrowOff = true; break;
                         case "landing": boss.LandingOff = true; break;
                         case "aura": boss.AuraOff = true; break;
+                        case "cruise": boss.CruiseOff = true; break;
+                        case "craft": boss.CraftOff = true; break;
+                        case "radar": boss.RadarOff = true; break;
                     }
             }
+
             boss.PartSpeed = speed;
             boss.TurnFactor = boss.TurnFactor / boss.PartTurn * turn;
             boss.TurretFactor = boss.TurretFactor / boss.PartTurn * turn;

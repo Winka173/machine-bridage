@@ -85,8 +85,8 @@ namespace MachineBrigade.Sim.Movement
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
-                // Fixed defences only turn their guns (the combat system does that).
-                if (v.Def.Static) continue;
+                // Fixed defences only turn their guns (the combat system does that); ships are the naval system's.
+                if (v.Def.Static || v.Def.Naval != null) continue;
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
                 if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing)
                 {
@@ -127,8 +127,8 @@ namespace MachineBrigade.Sim.Movement
             _maxBound = 0f;
             foreach (var v in _world.VehicleList)
             {
-                // Underground, it is in nobody's way.
-                if (!v.IsAlive || v.Flying || v.Burrowed) continue;
+                // Underground, it is in nobody's way; nor is a ship at sea.
+                if (!v.IsAlive || v.Flying || v.Burrowed || v.Def.Naval != null) continue;
                 _ground.Add(v);
                 if (v.Def.HullBound > _maxBound) _maxBound = v.Def.HullBound;
             }

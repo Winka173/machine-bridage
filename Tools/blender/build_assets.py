@@ -30,6 +30,7 @@ import mb_boss_saucer  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
 import mb_munitions  # noqa: E402
+import mb_naval  # noqa: E402
 import mb_round6  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
@@ -72,6 +73,8 @@ def all_builders():
                 **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
                 **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS,
+                # Prompt 16: Leviathan, its fleet and Lighthouse Bay's props.
+                **mb_naval.BUILDERS,
                 # Prompt 16: new weapon parts on five bosses; they wrap the builders above.
                 **mb_p16_arms.BUILDERS,
                 # Prompt 17's temporary stand-ins for the new units (asset debt).

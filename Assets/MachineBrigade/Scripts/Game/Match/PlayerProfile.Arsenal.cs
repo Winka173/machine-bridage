@@ -462,6 +462,9 @@ namespace MachineBrigade.Game.Match
             return A.branchChoices[i];
         }
 
+        /// <summary>A tower branch may be chosen: no campaign mission opens it, or it has been won.</summary>
+        public static bool BranchOpen(string branchId) => Progression.UnlockMission(branchId) == null || IsUnlocked(branchId);
+
         /// <summary>Coins to change a tower's branch once one was chosen (the first choice is free).</summary>
         public const int BranchSwapCoins = 800;
 
@@ -469,6 +472,8 @@ namespace MachineBrigade.Game.Match
         public static bool TryChooseBranch(string towerId, string branchId)
         {
             if (Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return false;
+            // A branch the campaign opens (prompt 16: the long-range coastal battery, from Leviathan) waits for it.
+            if (!BranchOpen(branchId)) return false;
             var d = A;
             var i = d.branchTowers.IndexOf(towerId);
             if (i >= 0 && d.branchChoices[i] == branchId) return true;

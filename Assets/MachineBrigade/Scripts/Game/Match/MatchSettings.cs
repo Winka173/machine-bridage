@@ -212,6 +212,9 @@ namespace MachineBrigade.Game.Match
                 new[] { WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Overcast, WeatherKind.Storm, WeatherKind.Clear, WeatherKind.Night }),
             new("coralisles", "desert", "sun",
                 new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Storm, WeatherKind.Overcast, WeatherKind.Night }),
+            // Prompt 16: a rocky coast on the sea (Leviathan's battlefield), in the skirmish rotation too.
+            new("lighthousebay", "temperate", "anchor",
+                new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Night }),
         };
 
         public static string Map { get; set; } = "ashfield";

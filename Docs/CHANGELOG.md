@@ -1,5 +1,17 @@
 # Changelog
 
+## Prompt 16 (part 1): Lighthouse Bay, Leviathan and its fleet
+
+- New battlefield, Lighthouse Bay: a rocky coast on the sea, two coves with beaches and piers, the lighthouse on its
+  headland (hold it to see the fleet), abandoned coastal batteries to take (their guns fire on ships), a fishing
+  village and an old fort. Conquest, Survival and Siege, and in the skirmish list.
+- New boss, Kessler's Leviathan: a battleship at sea that shells the coast (marked, sweeping along it), fires cruise
+  missiles, lands tanks, launches helicopters and calls jets; its CIWS shoots down missiles and drones, its sides shrug
+  off direct fire but its deck does not. Below 40 % it runs for open sea on a clock. It lists, breaks in two and sinks.
+- Its fleet: escort corvettes (their CIWS covers it), fast missile boats that raid the pier heads, landing craft.
+- Chapter 4 ends with "Leviathan" (4-11); it opens the heavy fortress's Long-range coastal battery. Boss Rush sails to
+  Lighthouse Bay for it and back; Operations adds the Sea storm and Fleet mutators.
+- Low graphics: simpler water and wakes.
 ## Prompt 16 (part 2): the old bosses' new weapons, escorts for every boss
 
 - New weapons, each a part you can break: the Iron Train's mortar car (it lobs over cover), the Tempest's interceptor

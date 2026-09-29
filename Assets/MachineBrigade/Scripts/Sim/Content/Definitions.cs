@@ -173,6 +173,12 @@ namespace MachineBrigade.Sim.Content
         public bool TopAttack { get; internal set; }
 
         /// <summary>
+        /// Prompt 16: laid and fired by the boss system (a ship's main battery, its cruise missiles): the combat
+        /// system never picks a target for it, and its mount keeps the heading it was given (data "laid").
+        /// </summary>
+        public bool Laid { get; internal set; }
+
+        /// <summary>
         /// Prompt 15 C.3: high explosive with the thermobaric tag (the TOS, thermobaric rockets): more against
         /// structures and dug-in targets, its blast falls off less, and cages do not stop it.
         /// </summary>

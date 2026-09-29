@@ -57,6 +57,9 @@ namespace MachineBrigade.Game.Effects
         private readonly DecalPool _decals;
         private readonly DebrisPool _debris;
         private readonly WreckManager _wrecks;
+
+        /// <summary>Prompt 16: ships going down (they list, break and sink instead of leaving a wreck).</summary>
+        private readonly ShipSinking _sinking = new();
         private readonly Emitters _emitters;
         private readonly TrackMarks _tracks;
         private readonly NightLights _night;
@@ -396,7 +399,9 @@ namespace MachineBrigade.Game.Effects
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
                         // Aircraft burst into flames in the air, then fall (see Crash).
                         else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
-                        _wrecks.Add(view, now);
+                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck.
+                        if (view.Def.Naval != null) _sinking.Add(view, now);
+                        else _wrecks.Add(view, now);
                         break;
 
                     case SimEventKind.PropDestroyed when e.Tier == ExplosionTier.Small && e.Target != default:
@@ -531,6 +536,7 @@ namespace MachineBrigade.Game.Effects
             _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
             _wrecks.Tick(now, Time.deltaTime);
+            _sinking.Tick(now);
             _fires.Tick(now, Time.deltaTime);
             // Secondary explosions in burning hulks: small pops around the big blast, never another big one.
             while (_wrecks.TryCookOff(now, out var cookOff, out var pop))

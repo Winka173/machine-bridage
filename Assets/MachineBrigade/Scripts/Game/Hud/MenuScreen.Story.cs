@@ -149,6 +149,12 @@ namespace MachineBrigade.Game.Hud
                 var key = boss.Name ?? boss.Def;
                 if (!Strings.Has("bossfile." + key) || !seen.Add(key)) return;
                 list.Add((key, PlayerProfile.Completed(mission.Id)));
+                // Prompt 16: a flagship's fleet has its own files, under the flagship's.
+                if (GameContent.LoadCatalog().Vehicles.TryGetValue(boss.Def, out var flagship))
+                    foreach (var ship in flagship.Fleet)
+                        if (Strings.Has("bossfile." + ship.Unit) && seen.Add(ship.Unit)) list.Add((ship.Unit, PlayerProfile.Completed(mission.Id)));
+                if (flagship?.Craft is { } craft && Strings.Has("bossfile." + craft.Unit) && seen.Add(craft.Unit))
+                    list.Add((craft.Unit, PlayerProfile.Completed(mission.Id)));
             }
             foreach (var m in Campaign.All)
             {

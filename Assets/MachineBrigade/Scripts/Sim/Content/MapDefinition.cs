@@ -224,6 +224,8 @@ namespace MachineBrigade.Sim.Content
                 bounds: IsSquare ? null : (Min, Max));
         }
 
+        /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
+        public SeaDef? Sea { get; internal set; }
         /// <summary>Whether the map is the plain square centred on the origin.</summary>
         private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
 
@@ -308,7 +310,11 @@ namespace MachineBrigade.Sim.Content
                     bases.Add(BaseSiteDef.Parse(b));
             var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor, bases, fortress, bounds);
+                boundary, rings, decor, bases, fortress, bounds)
+            {
+                // Prompt 16: a battlefield on the sea (Lighthouse Bay): its lanes, beaches and batteries.
+                Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,
+            };
         }
     }
 }

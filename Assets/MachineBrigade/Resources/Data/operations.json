@@ -40,6 +40,10 @@
     { "id": "iron_rain",      "score": 0.10, "raids": true },
     { "id": "swarm",          "score": 0.20, "swarm": true },
     { "id": "empty_base",     "score": 0.25, "emptyBase": true, "excludes": ["towers_x2"] },
-    { "id": "night_ops",      "score": 0.05, "weather": "Night", "excludes": ["storm"] }
+    { "id": "night_ops",      "score": 0.05, "weather": "Night", "excludes": ["storm"] },
+    // Prompt 16: at sea, fog on the water (ships seen from 55 % as far) in a storm; a flagship's fleet grows by
+    // an escort and two attack boats (and the enemy earns 10 % more, on any battlefield).
+    { "id": "sea_storm",      "score": 0.15, "weather": "Storm", "seaSight": 0.55, "excludes": ["storm"] },
+    { "id": "fleet",          "score": 0.20, "extraEscorts": 1, "extraRaiders": 2, "enemyIncome": 1.1 }
   ]
 }
