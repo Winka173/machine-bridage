@@ -132,6 +132,12 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .guide { font-size: 9pt; margin-top: 3pt; border-left: 2px solid #f2a33a; padding-left: 5pt; }
 .guide div { margin: 1pt 0; }
 .guide .hl { color: #b86e0b; font-weight: 700; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5pt; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5pt; }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5pt; }
+.galcell { break-inside: avoid; background: #fff; border: 1px solid #ddd; padding: 3pt; text-align: center; }
+.galcell img.gal { width: 100%; height: 110pt; object-fit: contain; }
+.galcap { font-size: 8pt; margin-top: 2pt; }
 .behav { font-size: 8.5pt; margin-top: 4pt; border-left: 2px solid #5b7fa6; padding-left: 5pt; }
 .behav ul { margin: 2pt 0 0 0; padding-left: 12pt; }
 .behav li { margin: 1pt 0; }
@@ -587,7 +593,9 @@ def build(game, imgdir):
         tag = img(r6 / name, 'shot')
         if tag:
             out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
-    out.append('</div></body></html>')
+    out.append('</div>')
+    out.append(programme.gallery(game, h, imgdir))
+    out.append('</body></html>')
     return '\n'.join(out)
 
 
