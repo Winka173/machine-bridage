@@ -7,6 +7,16 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Boss redesigns and death smoke
+
+- Ixion is a Tsar Tank war machine now: 10 m spiked wheels with scythe hubs, slab armour, chains, a spiked roller across
+  the front, exhausts and rust (DECISIONS 20Y). Icarus is a wedge warship in the Star Destroyer and Venator mould, with a
+  stepped superstructure, a command tower, an engine bank and a ventral hangar; its wreck follows; every node, the
+  altitude tiers and the crash work as before.
+- The boss review redrew Typhon (Typhoon-class lines), Caspian (the Lun ekranoplan) and Daedalus (an Acclamator-style
+  assault ship); the others were kept.
+- A boss's death fires keep their flames but smoke a third as much, lighter, and clear within seconds.
+
 ### Leviathan as a battleship
 
 - Kessler's Leviathan is a battleship on the Yamato's lines (DECISIONS 20Y): 96 x 16 m, a flush deck with a strong bow

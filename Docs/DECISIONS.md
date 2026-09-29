@@ -7417,10 +7417,11 @@ Sections H to L of `Docs/prompts/prompt21_vi.txt`. The audit is `Docs/localizati
   `StringsTests`, `SupportTextTests`, `UiLayoutTests`, `BaseScreenTests`, `BaseLayoutTests`, `KitInteractionTests`,
   `Prompt20CampaignTests`, `InActionTests.RangeReadoutsAreInBothLanguages`.
 
-## 20Y. Boss redesigns: Leviathan as a battleship (2026-09-29)
+## 20Y. Boss redesigns: Leviathan as a battleship, Ixion, Icarus, the boss review, death smoke (2026-09-29)
 
 The owner's requests (29/09): make Kessler's Leviathan a real battleship on the Yamato's lines, bigger if needed and with
-more guns, and shrink the old model into an escort. On feature/leviathan-yamato from lead/integration 5ba05ab. Every
+more guns, and shrink the old model into an escort; then redesign Ixion (ugly, not scary) and Icarus (a shuttle, not a
+warship), review the other bosses at the default zoom, and thin the boss death smoke. On feature/leviathan-yamato from lead/integration 5ba05ab. Every
 redesign starts from outside references, listed per boss.
 
 ### A. Leviathan (`leviathan`, `Tools/blender/mb_naval.py`)
@@ -7512,3 +7513,64 @@ Boss Hunt's trip to sea (`BossRushGoesToSeaForLeviathanAndBack`), the run and th
 `GearModelTests.AnOldSaveMigratesWithNothingLost`, `ModelTests.EveryWeaponMountHasAMuzzleOnItsModel` (the mobile
 fortress's `boss_howitzer`), `ModelTests.RoundsLeave...` (3), `MuzzleAuditTests` (33 tower and boss mounts, none of them
 the ships'). Captures: `Docs/art/leviathan/` (Blender's preview with the turrets trained, the fleet side by side).
+
+### D. Ixion (`ixion`, `Tools/blender/mb_redesign_20y.py`)
+
+The owner found it ugly and not scary. **References**: the Lebedenko "Tsar Tank" (1915: two 9 m spoked wheels on one axle,
+the cabin slung between them, a trailing roller), the Ork "deff rolla" and battlewagon plating (Warhammer 40,000), the
+Locust war machines' riveted slab armour and exhausts (Gears of War), the Shagohod's brute scale (Metal Gear Solid 3),
+and scythed-chariot hub spikes. The model: two 10 m wheels with hollow studded treads, two rows of spikes, rusted rims,
+eight I-beam spokes, an armoured disc and a 2.4 m scythe spike out of each hub; a war cabin in slab armour with rivet
+rows, rust streaks, chains slung across the glacis, raked roof plates and red vision slits on the cupola; a spiked
+roller drum on two arms across the front (the Crushing Charge's look); exhaust stacks with glowing mouths and soot; a
+tail boom with a counterweight and the spiked steering roller. 21 x 12.7 m (17.5 m across the hub spikes), 22 k
+triangles. Nodes and parts kept (`Part_wheel_l` / `_r`, `Part_steer`, `Turret` / `Muzzle_main`); data: length 21, width
+12.7, radius 8.5, the parts' positions and radii moved with the model (wheels 5.0, the roller aft at 10.4 m).
+
+### E. Icarus (`silver_bug`, `silver_bug_wreck`)
+
+It looked like a space shuttle; the owner wants a film warship. **References**: the Imperial-class Star Destroyer (the
+dagger plan, the side trench with its lit windows, the stepped superstructure, the command tower with its two shield
+domes; Star Wars, 1977-83) and the Republic Venator (the dorsal flight-deck doors and its red stripes, drawn in the side's
+colour; Revenge of the Sith). The model: a wedge hull (33.5 x 22 m) with greebles on its upper hull, three stepped tiers
+with window bands, the tower, a seven-nozzle engine bank across the stern (`Thruster_main`), manoeuvring pods on struts,
+a lit ventral hangar round the pod bay. **Kept**: every node's name and place (`mb_orbital.NODES`: the ventral laser
+`Turret`, the coilguns `Mount_gun` / `.001`, the flak `Mount_mg` / `.001`, `Pd_laser_l` / `_r`, the five thrusters,
+`Pod_bay`, `Uplink`) and the prompt 20 crash turrets `Mount_gun.002` / `.003` (now on the wreck too, which lacked them),
+so the data, the altitude tiers, the crash (the `silver_bug_wreck` form, raised by `LIFT` onto its crater and debris) and
+the parts are unchanged. The wreck: the same ship in dark plate, its back cracked, scorched, the tower broken off and
+lying beside it. 14-16 k triangles. The Silver Bug's muzzle findings (m0-m2) are the same turrets' as on lead.
+
+### F. The other bosses at the default zoom
+
+Rendered one by one and judged side by side. Redrawn, each from its references, keeping every node's name and place:
+- **Typhon**: the Project 941 Akula ("Typhoon"; The Hunt for Red October, 1990): a broad flattened hull in a dark
+  anechoic coat with a waterline band in the side's colour, the missile hump, a long streamlined sail with its planes
+  and masts, bow planes, a cruciform tail with twin shrouded screws, a dark sonar dome (was a glowing orange ball).
+- **Caspian**: the Lun-class ekranoplan MD-160 ("the Caspian Sea Monster"): a flying-boat hull with chines and a planing
+  step, a radome nose and glazing, the canard pylon with eight turbofans on it, the canister fairing, stub wings with
+  flaps and endplate floats, the tall fin under its T-tail.
+- **Daedalus**: it was the shuttle Icarus no longer is. Now Aurel's assault ship on the Republic Acclamator's lines
+  (Attack of the Clones): a blunter wedge of the Icarus family with a spine, a bridge tower aft, six turbolaser turrets
+  drawn along it, a five-nozzle engine bank, the three pod bays and the two hanging 30 mm guns as before.
+Looked at and kept: Behemoth (and Tempest), Bastion, the mobile fortress, Hive, the mothership, Roc, the Earth Worm,
+Charybdis, the supergun, both trains, the sky fortress, the gunship and Atlas are round 6 / prompt 16-19 builds with their
+detail; Moloch and Kronos are plain first passes but read as what they are (a workshop, a bucket-wheel excavator) and are
+left to the asset-debt list. The variants take their main boss's new model (Icarus Mk.0 the new Icarus).
+
+### G. Boss death smoke
+
+The owner: the smoke of a boss's death lasts too long and covers everything. It came from the fires, not the blasts: the
+great blast lit a size-2 ground fire for 40 s, every part's fire relit for 25-35 s riding the wreck (14 of them on
+Leviathan), and a boss's ruin burned like a tower's (45 s and 72 s), each then smouldering up to 45 s more under the
+full black column. Now (`FireSpots.Ignite(..., smoke)`, `BossSmoke` = 0.35) those fires keep their size and flames but
+smoke at a third of the rate, from a lighter, more transparent system (`Light Smoke`), and smoulder a tenth as long; they
+burn shorter too (the great blast's 24 s, the parts' 14-20 s, a boss ruin's 20 s and 32 s). The finale's lingering puffs
+are three lighter ones. The explosions themselves are unchanged (their own smoke lasts 5-8 s).
+
+### Tests (the redesigns)
+
+`OrbitalBossTests`, `Prompt20BossTests` (Ixion, Typhon, Daedalus), `BossPartsTests`, `BigAttackTests`, `ModelTests`,
+`VehicleLodTests`, `MuzzleAuditTests`, `EffectsTests`, `FlashTests`, `Prompt16NavalTests`, `ExportGameDoc`: nothing new
+fails (the lead's failures listed in C). Captures: `Docs/art/bosses_20y/redesigns.jpg` (Blender's preview). Card renders
+are the lead's.

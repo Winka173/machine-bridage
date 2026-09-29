@@ -41,7 +41,16 @@ namespace MachineBrigade.Game.Effects
             public float Size, Start, Until, SmokeUntil;
             public float FlameDebt, SmokeDebt, EmberDebt, GlowDebt;
             public int Id;
+
+            /// <summary>Its smoke's share (1: the full black column; less: a boss's death fires, thinner and lighter).</summary>
+            public float Smoke;
         }
+
+        /// <summary>
+        /// DECISIONS 20Y: a boss's death fires smoke at this share, lighter and for a fraction of the smoulder (the owner:
+        /// "the smoke lasts too long and covers everything"; the flames stay as big).
+        /// </summary>
+        internal const float BossSmoke = 0.35f;
 
         private int _nextId = 1;
 
@@ -70,6 +79,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _flames;
         private readonly ParticleSystem _embers;
         private readonly ParticleSystem _smoke;
+
+        /// <summary>Thinner, greyer smoke for the fires lit with less than the full smoke (a boss's death, DECISIONS 20Y).</summary>
+        private readonly ParticleSystem _lightSmoke;
         private readonly ParticleSystem _glow;
 
         /// <summary>The flames and firelight of fires burning on the ground: under the vehicles in them.</summary>
@@ -107,6 +119,11 @@ namespace MachineBrigade.Game.Effects
             PB.Colors(_smoke, PB.Hold(new Color(0.09f, 0.085f, 0.08f), new Color(0.42f, 0.41f, 0.4f), 0.1f, 0.5f, 0.92f));
             PB.Grow(_smoke, 0.6f, 2.5f);
             PB.Rise(_smoke, 1.8f, 2.9f);
+            _lightSmoke = Shared(root, "Light Smoke", fx.Smoke, 900);
+            PB.Flipbook(_lightSmoke, loop: false, tilt: 20f);
+            PB.Colors(_lightSmoke, PB.Hold(new Color(0.3f, 0.29f, 0.28f), new Color(0.58f, 0.57f, 0.56f), 0.1f, 0.4f, 0.55f));
+            PB.Grow(_lightSmoke, 0.6f, 2.1f);
+            PB.Rise(_lightSmoke, 1.8f, 2.9f);
 
             // Firelight flickering on the ground around each fire.
             _glow = Shared(root, "Fire Glow", m.Fire, 800, ParticleSystemRenderMode.HorizontalBillboard);
@@ -133,10 +150,12 @@ namespace MachineBrigade.Game.Effects
         /// <summary>
         /// Starts a fire of <paramref name="size"/> (1 is a car-sized blaze) burning for
         /// <paramref name="seconds"/>. With an anchor it follows that transform (a falling wreck).
+        /// <paramref name="smoke"/> below 1 thins, lightens and shortens its smoke (a boss's death fires).
         /// </summary>
         /// <returns>A handle for <see cref="Extinguish"/>.</returns>
-        public int Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null, bool napalm = false)
+        public int Ignite(Vector3 position, float size, float seconds, float now, Transform anchor = null, bool napalm = false, float smoke = 1f)
         {
+            smoke = Mathf.Clamp(smoke, 0.05f, 1f);
             // Ground fires burn a fifth shorter (the owner's second play test); napalm keeps its time.
             if (anchor == null && position.y < GroundHeight && !napalm) seconds *= GroundBurn;
             if (_fires.Count >= MaxFires)
@@ -155,7 +174,8 @@ namespace MachineBrigade.Game.Effects
                 Size = size,
                 Start = now,
                 Until = now + seconds,
-                SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f),
+                SmokeUntil = now + seconds + Mathf.Min(45f, 8f + seconds * 0.8f) * smoke * smoke,
+                Smoke = smoke,
                 // Start part way through a flame, so a new fire shows at once.
                 FlameDebt = 0.8f,
                 Id = _nextId,
@@ -207,7 +227,7 @@ namespace MachineBrigade.Game.Effects
 
                 f.FlameDebt += dt * FlameRate * intensity * flame;
                 f.EmberDebt += dt * EmberRate * intensity * flame * (f.Size >= 0.7f ? 1f : 0.3f);
-                f.SmokeDebt += dt * SmokeRate * intensity * smoke;
+                f.SmokeDebt += dt * SmokeRate * intensity * smoke * f.Smoke;
                 f.GlowDebt += dt * GlowRate * flame;
                 for (; f.FlameDebt >= 1f; f.FlameDebt -= 1f) EmitFlame(f, flame);
                 for (; f.EmberDebt >= 1f; f.EmberDebt -= 1f) EmitEmber(f);
@@ -259,6 +279,7 @@ namespace MachineBrigade.Game.Effects
             _flames.Clear();
             _embers.Clear();
             _smoke.Clear();
+            _lightSmoke.Clear();
             _glow.Clear();
             _groundFlames.Clear();
             _groundGlow.Clear();
@@ -291,7 +312,7 @@ namespace MachineBrigade.Game.Effects
         private void EmitSmoke(in Fire f, float thickness)
         {
             var disc = Random.insideUnitCircle * 0.5f * f.Size;
-            _smoke.Emit(new ParticleSystem.EmitParams
+            (f.Smoke < 1f ? _lightSmoke : _smoke).Emit(new ParticleSystem.EmitParams
             {
                 position = f.Position + new Vector3(disc.x, 1.5f * f.Size, disc.y),
                 velocity = new Vector3(0f, Random.Range(0.3f, 0.7f), 0f),
