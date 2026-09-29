@@ -88,6 +88,8 @@ namespace MachineBrigade.Game.Match
 
         private void ScanEvents()
         {
+            // 23A's events feed the markers once a mission has any (the lead's adapter, MissionEventHud).
+            if (_eventHudSource == null && _world.MissionEvents.Count > 0) _eventHudSource = new MissionEventHud(_world);
             _generalsOnField.Clear();
             foreach (var v in _world.Vehicles)
             {
@@ -125,8 +127,8 @@ namespace MachineBrigade.Game.Match
                 foreach (var s in _sideObjectives)
                 {
                     if (s.Id != shown) continue;
-                    if (s.Outcome == SideObjectiveOutcome.Running) _hud.SideObjective(s.Id, s.Text, s.SecondsLeft, s.Count, s.Needed);
-                    else _hud.SideObjectiveDone(s.Id, s.Outcome == SideObjectiveOutcome.Succeeded);
+                    if (s.Outcome == SideObjectiveOutcome.Running) _hud.SideObjective(s.Id, s.Text, s.SecondsLeft, s.Count, s.Needed, announce: false);
+                    else _hud.SideObjectiveDone(s.Id, s.Outcome == SideObjectiveOutcome.Succeeded, announce: false);
                     return;
                 }
                 // Gone without an outcome: the row goes quietly.
@@ -135,7 +137,7 @@ namespace MachineBrigade.Game.Match
             foreach (var s in _sideObjectives)
                 if (s.Outcome == SideObjectiveOutcome.Running)
                 {
-                    _hud.SideObjective(s.Id, s.Text, s.SecondsLeft, s.Count, s.Needed);
+                    _hud.SideObjective(s.Id, s.Text, s.SecondsLeft, s.Count, s.Needed, announce: false);
                     return;
                 }
         }

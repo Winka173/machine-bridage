@@ -59,6 +59,10 @@ namespace MachineBrigade.Game.Hud
             ["radio.aurel.ev.generalField.retreat"] = ("An acceptable loss. Withdraw my vehicle.", "Một tổn thất chấp nhận được. Rút xe của tôi về."),
 
             // D.3: side objectives.
+            // F.3: the side objective's row on the mission bar (short: the clock and the count show beside it).
+            ["event.sideObjective.intercept.row"] = ("Stop the files convoy", "Chặn đoàn xe hồ sơ"),
+            ["event.sideObjective.rescue.row"] = ("Rescue the allied column", "Cứu đoàn xe đồng minh"),
+            ["event.sideObjective.protect.row"] = ("See the civilians through", "Hộ tống đoàn xe dân sự"),
             ["event.sideObjective.intercept.start"] = ("Side objective: stop the convoy with the files before it leaves ({seconds} s)", "Mục tiêu phụ: chặn đoàn xe chở hồ sơ trước khi nó rời đi ({seconds} giây)"),
             ["event.sideObjective.intercept.done"] = ("The files are ours", "Hồ sơ đã về tay ta"),
             ["event.sideObjective.intercept.fail"] = ("The convoy with the files got away", "Đoàn xe chở hồ sơ đã thoát"),

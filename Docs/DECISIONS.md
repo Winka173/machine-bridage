@@ -10219,3 +10219,13 @@ line up, a notice and the boss bar: indicators in all eight directions find a pl
 line, the notices, the mission or boss bar, the tray or its chip; the side row is one line and clear of the notices; a
 label over any of them is hidden. The battle screens gain `hud-events` (the UiShots battle set, vi at the four shapes
 and en at 16:9, and `UiLayoutTests.EveryBattleScreenPassesEveryCheck`).
+
+### Lead note at the merge (the adapter)
+
+`MissionEventHud` (Game/Match) fills `IEventHudSource` from 23A: the Accord mark and the general's label from
+`Vehicle.Accord` and `Vehicle.General`; an arrow for each direction of a warned event (`EventState.Arrows`, pointing
+`-inward`) until it starts, red for everything but an Accord wave; the side-objective row from each side objective's
+clock and count, done and failed from its phase. The runner sets it once a mission has events. The row does not announce
+(`announce: false`): 23A already sends the start, done and fail notices and lines. The row's short texts are new
+`event.sideObjective.<type>.row` keys. Untested beyond compiling and the HUD tests; the testing phase plays one mission
+with each event and looks at the markers.
