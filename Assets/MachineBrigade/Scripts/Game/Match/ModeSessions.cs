@@ -1510,7 +1510,7 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>
         /// Prompt 23 D.3: what the side objectives paid (coins and blueprints on top of the mission's, won or lost: they are
-        /// optional), and how many were done. Intel files are part E's (the event names one; the dossier opens it).
+        /// optional), and how many were done; prompt 23 E: the intel file an interception names, for the dossier (paid on the claim).
         /// </summary>
         private static void EventRewards(MatchOutcome outcome, SimWorld world)
         {
@@ -1524,9 +1524,10 @@ namespace MachineBrigade.Game.Match
                         if (s.Phase == EventPhase.Done) done++;
                     }
                 if (outcome.Reward == null) continue;
-                foreach (var (kind, amount, _) in events.Earned)
+                foreach (var (kind, amount, id) in events.Earned)
                     if (kind == "coins") outcome.Reward.Coins += amount;
                     else if (kind == "prints") outcome.Reward.RarePrints += amount;
+                    else if (kind == "intel" && id != null && !outcome.Reward.Intel.Contains(id)) outcome.Reward.Intel.Add(id);
             }
             if (offered > 0) outcome.Rows.Add((Strings.Get("result.sideObjectives"), $"{done} / {offered}"));
         }

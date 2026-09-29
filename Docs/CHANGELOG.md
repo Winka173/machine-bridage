@@ -19,6 +19,30 @@ its commits.
   while that general's line is on show. No speech bubbles.
 - A side objective has its own row on the mission bar (what to do, 2/5, a clock that turns red in the last ten seconds)
   and a short notice when it starts, is completed or fails.
+### Prompt 23 E: events in the campaign (DECISIONS 23E)
+
+- Every campaign mission now plays mission events, side missions included (534 in all): 2-4 in a mission, 5-8 in a
+  chapter's operation, 2-3 in an interlude. Each chapter has its own:
+  - Chapters 1-4: landing craft striking back from the sea and the Accord's second landing wave; oil convoys and
+    Thorne's first support; Orlov's massed guns and snowstorms; landing ships, Kessler's trains and the families' ferries.
+  - Chapters 5-8: drone swarms and Venn's electronic storms; counterattacks from every side, Brandt's lines of towers and
+    the Hollow Dam's ceasefire; Veyra's militia and Thorne's turned columns; Tartarus surfacing and the held miners.
+  - Chapters 9-12: landings and sea fog; Raven's raids again and again, Hawk's strikes and nightfall; drop pods and the
+    satellite's test rod; reinforcements from every side and the Total Offensive.
+  - Interlude II: Locust's hunting packs. Interlude III: Morrigan hunting Hawk.
+- The Hollow Dam's ceasefire: Varga's column holds its fire until noon and nothing of ours shoots it unless ordered to.
+  Whoever fires first loses the reward.
+- Chapter 12's Total Offensive: Brandt's armour, Venn's drones, Hawk's air wing and Mara's Behemoth come in at once, as
+  strong as the enemy's wave from every side.
+- The satellite's test rod follows the big-attack rules at a small size: a warning, a ring on the ground, a kinetic hit
+  from above.
+- The ferries and the held miners come in the option of their chapter's story choice that has them.
+- Every chapter with an enemy general has the general take the field in one of its missions (Brandt in chapter 1, Thorne
+  when he turns in Veyra, Raven in Morrigan in interlude III).
+- No two missions in a row play the same events. The campaign build checks this, the counts and each chapter's set pieces.
+- Six story moments slow the battle while their lines play: Varga's word at the Hollow Dam, Venn losing her swarm,
+  Thorne's betrayal, Thorne on Typhon's bridge, Varga's fall and Icarus falling.
+- An intercepted convoy of files now recovers one of the dossier's intel files, won or lost; the result card lists it.
 
 ### Prompt 23 H: in-battle dialogue (DECISIONS 23H)
 

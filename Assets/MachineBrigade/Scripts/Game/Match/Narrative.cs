@@ -154,14 +154,31 @@ namespace MachineBrigade.Game.Match
 
         // ------------------------------------------------------------------ D.7 intel files
 
-        /// <summary>A file is recovered once its side objective is met (a side mission won, or its mission won with three stars).</summary>
-        public static bool Found(IntelFile f) => f.ThreeStars ? PlayerProfile.Stars(f.Mission) >= 3 : PlayerProfile.Completed(f.Mission);
+        /// <summary>
+        /// A file is recovered once its side objective is met (a side mission won, or its mission won with three stars), or
+        /// (prompt 23 E) once a mission event has recovered it: an intercepted convoy carrying it.
+        /// </summary>
+        public static bool Found(IntelFile f) =>
+            PlayerProfile.IntelRecovered(f.Id) || (f.ThreeStars ? PlayerProfile.Stars(f.Mission) >= 3 : PlayerProfile.Completed(f.Mission));
 
         public static List<IntelFile> IntelOf(int chapter)
         {
             var list = new List<IntelFile>();
             foreach (var f in Intel)
                 if (f.Chapter == chapter) list.Add(f);
+            return list;
+        }
+
+        /// <summary>
+        /// Prompt 23 E: the files a battle's reward recovers now: its interceptions' (won or lost) and, for a win, the files its
+        /// mission and stars open; none it had already, each once.
+        /// </summary>
+        public static List<IntelFile> FoundBy(MatchReward reward, bool won)
+        {
+            var list = won && reward.MissionId != null ? FoundBy(reward.MissionId, reward.Stars) : new List<IntelFile>();
+            foreach (var id in reward.Intel)
+                foreach (var f in Intel)
+                    if (f.Id == id && !Found(f) && !list.Exists(x => x.Id == id)) list.Add(f);
             return list;
         }
 

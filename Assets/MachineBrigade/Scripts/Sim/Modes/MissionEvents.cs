@@ -166,6 +166,7 @@ namespace MachineBrigade.Sim.Modes
             Spawns ??= SpawnPoints.Build(world, MissionMode.PlayerTeam, MissionMode.EnemyTeam);
             StepDrops(world);
             StepStrikes(world);
+            StepRods(world);
             foreach (var s in _states)
             {
                 switch (s.Phase)
@@ -251,7 +252,7 @@ namespace MachineBrigade.Sim.Modes
             return s.Def.Kind switch
             {
                 MissionEventKind.EnemyWave or MissionEventKind.GeneralField or MissionEventKind.MiniBoss or MissionEventKind.SupplyRaid
-                    or MissionEventKind.Barrage or MissionEventKind.Blackout or MissionEventKind.WeatherShift => table,
+                    or MissionEventKind.Barrage or MissionEventKind.Blackout or MissionEventKind.WeatherShift or MissionEventKind.OrbitalStrike => table,
                 MissionEventKind.AirRaid => MathF.Min(table, 6f),
                 _ => 0f,
             };
@@ -333,8 +334,9 @@ namespace MachineBrigade.Sim.Modes
         public static string[] NoticeMoments(MissionEventKind kind) => kind switch
         {
             MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid or MissionEventKind.CounterBattery
-                or MissionEventKind.MiniBoss or MissionEventKind.WeatherShift => new[] { "warn" },
+                or MissionEventKind.MiniBoss or MissionEventKind.WeatherShift or MissionEventKind.OrbitalStrike => new[] { "warn" },
             MissionEventKind.GeneralField => new[] { "warn", "start", "retreat", "done" },
+            MissionEventKind.Ceasefire => new[] { "start", "end", "broken", "betrayed" },
             MissionEventKind.SideObjective or MissionEventKind.LootDrop => new[] { "start", "done", "fail" },
             MissionEventKind.SupplyRaid => new[] { "warn", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "start", "end" },
@@ -345,8 +347,9 @@ namespace MachineBrigade.Sim.Modes
         public static string[] LineMoments(MissionEventKind kind) => kind switch
         {
             MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid or MissionEventKind.CounterBattery
-                or MissionEventKind.SupplyRaid or MissionEventKind.WeatherShift => new[] { "warn" },
+                or MissionEventKind.SupplyRaid or MissionEventKind.WeatherShift or MissionEventKind.OrbitalStrike => new[] { "warn" },
             MissionEventKind.GeneralField => new[] { "warn", "start", "retreat" },
+            MissionEventKind.Ceasefire => new[] { "start", "end", "broken", "betrayed" },
             MissionEventKind.MiniBoss => new[] { "warn", "start" },
             MissionEventKind.SideObjective => new[] { "start", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "end" },
@@ -361,8 +364,11 @@ namespace MachineBrigade.Sim.Modes
             switch (e.Kind)
             {
                 case MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid or MissionEventKind.CounterBattery
-                    or MissionEventKind.SupplyRaid or MissionEventKind.WeatherShift:
+                    or MissionEventKind.SupplyRaid or MissionEventKind.WeatherShift or MissionEventKind.OrbitalStrike:
                     return moment == "warn" ? "linh" : null;
+                case MissionEventKind.Ceasefire:
+                    // Kade calls it and answers a broken word; the general keeps it or answers ours being broken.
+                    return moment is "start" or "betrayed" ? "khai" : moment is "end" or "broken" ? general : null;
                 case MissionEventKind.Blackout:
                     return moment is "warn" or "end" ? "linh" : null;
                 case MissionEventKind.GeneralField:
@@ -389,7 +395,7 @@ namespace MachineBrigade.Sim.Modes
         private void Notice(SimWorld world, EventState s, string moment, float seconds, EntityId entity = default)
         {
             var e = s.Def;
-            var bad = Bad(e.Kind) && moment is not ("done" or "end" or "retreat");
+            var bad = (Bad(e.Kind) && moment is not ("done" or "end" or "retreat")) || (e.Kind == MissionEventKind.Ceasefire && moment is "broken" or "betrayed");
             var priority = e.Priority ?? (moment == "warn" ? LinePriority.Warning : LinePriority.Event);
             Vector2 dir = default;
             var bearing = -1;
@@ -403,21 +409,27 @@ namespace MachineBrigade.Sim.Modes
 
         private void Line(SimWorld world, EventState s, string moment, EntityId speaker = default)
         {
-            var who = DefaultSpeaker(s.Def, moment, General);
+            // Prompt 23 E: the event's own general (a general the mission is not tied to: Brandt in chapter 1, Thorne turning in
+            // chapter 7, Orlov at Skygate) speaks for the enemy as the mission's does.
+            var general = GeneralOf(s.Def);
+            var who = DefaultSpeaker(s.Def, moment, general);
             if (who == null) return;
             var priority = s.Def.Priority ?? (moment == "warn" ? LinePriority.Warning : LinePriority.Event);
-            var team = who == General ? MissionMode.EnemyTeam : MissionMode.PlayerTeam;
+            var team = who == general || who == General ? MissionMode.EnemyTeam : MissionMode.PlayerTeam;
             world.Emit(SimEvent.RadioMessage(LineKey(s.Def, moment, who, s.Variant), team, priority, speaker));
         }
 
         private static bool Bad(MissionEventKind kind) => kind is MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid
             or MissionEventKind.CounterBattery or MissionEventKind.GeneralField or MissionEventKind.SupplyRaid or MissionEventKind.Blackout
-            or MissionEventKind.MiniBoss;
+            or MissionEventKind.MiniBoss or MissionEventKind.OrbitalStrike;
 
         // ------------------------------------------------------------------ the battlefield
 
         /// <summary>The mission's general (its id), or null.</summary>
         private string? General => _host.Def.General;
+
+        /// <summary>The general an event is about: its own ("general" in its params), else the mission's.</summary>
+        private string? GeneralOf(MissionEventDef e) => e.Word("general") ?? General;
 
         private static int Field(SimWorld world, int team)
         {
@@ -496,8 +508,10 @@ namespace MachineBrigade.Sim.Modes
             return n;
         }
 
-        private int Room(SimWorld world, int team) =>
-            Math.Max(0, (team == MissionMode.PlayerTeam ? Rules.AllyCap : Rules.EnemyCap) - Reinforcements(world, team) - Pending(team));
+        private int Room(SimWorld world, int team) => Room(world, team, team == MissionMode.PlayerTeam ? Rules.AllyCap : Rules.EnemyCap);
+
+        /// <summary>Room under a cap of the event's own (chapter 12's Total Offensive matches the enemy's cap).</summary>
+        private int Room(SimWorld world, int team, int cap) => Math.Max(0, cap - Reinforcements(world, team) - Pending(team));
 
         /// <summary>Whether a vehicle of the player's side would see a spawn at this spot (its allies and scripted trucks aside).</summary>
         private bool Seen(SimWorld world, Vector2 at)
@@ -519,6 +533,7 @@ namespace MachineBrigade.Sim.Modes
             }
             mix(_drops.Count);
             mix(_strikes.Count);
+            mix(_rods.Count);
         }
 
         /// <summary>A stable hash of a text (string.GetHashCode differs between runs of .NET).</summary>
@@ -607,8 +622,10 @@ namespace MachineBrigade.Sim.Modes
             v.Reinforcement = true;
             if (ally) v.Ally = true;
             s.Units.Add(v.Id);
-            Push(world, v, team == MissionMode.PlayerTeam ? _host.PlayerGoal(world) ?? Centre(world, MissionMode.EnemyTeam)
-                : _host.EnemyGoal(world) ?? Centre(world, MissionMode.PlayerTeam));
+            // A tower (Brandt's line) stands where it lands.
+            if (!v.Def.Static)
+                Push(world, v, team == MissionMode.PlayerTeam ? _host.PlayerGoal(world) ?? Centre(world, MissionMode.EnemyTeam)
+                    : _host.EnemyGoal(world) ?? Centre(world, MissionMode.PlayerTeam));
             return v;
         }
 

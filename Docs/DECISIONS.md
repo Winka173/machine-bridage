@@ -10229,3 +10229,265 @@ clock and count, done and failed from its phase. The runner sets it once a missi
 (`announce: false`): 23A already sends the start, done and fail notices and lines. The row's short texts are new
 `event.sideObjective.<type>.row` keys. Untested beyond compiling and the HUD tests; the testing phase plays one mission
 with each event and looks at the markers.
+
+## 23E. Events in the campaign (2026-09-30)
+
+Prompt 23 E (putting the events into every mission), H.8 (the story moments) and the hook 23A left (an interception's
+intel file). Branch `feature/p23-campaign` from lead 6511dc2. The HUD markers (F.2-F.5) are another agent's.
+
+### E.1: every mission's events
+
+**Where.** `Tools/campaign/act10.py` writes them chapter by chapter with `events.add(mid, ...)` and a new
+`events.add_stage(mid, stage, ...)` for a stage of a staged mission. The new library entries are in `events.py`.
+campaign.json is rebuilt from the scripts. The new words are in `CampaignText.cs`, added by hand in their sorted place:
+a regeneration would also have put back five lines someone had edited by hand, so none of the existing lines was touched.
+The words are registered in act10.py as well, so a later build writes the same text.
+
+**How many.** 534 events over all 193 missions. E.1 says every mission, so side missions have events too, and they count as
+ordinary missions (2 each). Most main missions have 3. Short or simple ones (Recon, a boss fight, the first missions of a
+chapter) have 2. The chapter operations have 6, and c10m10 has 7. Each interlude mission has 2-3. The count check is on
+(`COUNT_CHECK`).
+
+**Operations.** Events go on the first stage and on the stages after the choice, never on the two stages the player
+chooses between, so every play meets them. The check counts what one play meets (the larger of the two alternatives, should
+one ever get events). An operation has one weather shift at most, because the operation's event system and each stage's
+track their own weather.
+
+**The signature events** (checked by the build, `events.SIGNATURES`):
+
+| Chapter | Signature | Where |
+|---|---|---|
+| 1 Coast of Fire | the enemy's landing craft from the sea; the Accord's second landing wave | c1m01, c1m02; c1m01, c1m10 (the counterattack) |
+| 2 Black Gold | neutral oil convoys; Thorne's first support | c2m01, c2m04, c2m10, c2m11; c2m06 (then c2m08, c2m11) |
+| 3 The Long Winter | Orlov's massed barrage; snowstorms | most of the chapter |
+| 4 Iron Harbor | landing ships; Kessler's trains; the families' column to the ferries | ironport and Beacon Bay; rustyard; c4m18 |
+| 5 Burning Canopy | drone swarms from several directions; Venn's electronic storm | most of the chapter |
+| 6 Counterstrike | counterattacks from every direction; the Hollow Dam's ceasefire; Brandt's line | c6m01, c6m11, c6m15, c6m10; c6m14; five missions |
+| 7 Veyra | Thorne's turned columns; the city's militia | c7m10 (the betrayal stage); 15 missions |
+| 8 Underworld | Tartarus surfacing; the held miners | c8m02, c8m11; c8m13 |
+| 9 Rough Water | landings from the sea; sea fog | most of the chapter |
+| 10 War in the Sky | Raven's raids again and again; Hawk's strikes; nightfall | most of the chapter |
+| 11 Skygate | drop pods from orbit; the satellite's test rod | most of the chapter; c11m04, c11m06, c11m13, c11m10 |
+| 12 Helion | reinforcements from every direction; the Total Offensive | six missions; c12m10 |
+| II | Locust's hunting packs from several sides | every mission |
+| III | Morrigan hunting Hawk; nightfall | i3m04 (and Raven flying it in i3m03); i3m02, i3m04 |
+
+**New kinds.** There are two, and the library now has 20 kinds and 53 entries.
+
+- **Ceasefire** (`ceasefire`, the Hollow Dam, c6m14, from 3 s):
+  - The general's sworn column (4 of Varga's vehicles) comes in at an edge on the enemy's front. It holds its fire, and
+    neither commander moves it.
+  - It carries `Vehicle.Truce`, and `CombatSystem.IsValidAutoTarget` skips such vehicles. No weapon of ours picks it on
+    its own, not even a tower beside it. An ordered attack still can, and a strike on it counts too.
+  - Whoever fires first loses their reward:
+    - We hit the column first: the enemy is paid (20 CP) and ours is lost.
+    - The column fires first (`breakAt`; nothing in the campaign uses it): ours is paid at once and theirs is lost.
+    - The clock runs out (150 s) with no shot fired: both sides are paid (20 CP and 150 coins for us, 20 CP for them), and
+      the column is let go against us.
+  - Drones sent by Aurel still attack during the ceasefire; the story's line at 45 s says they are not Varga's. The event
+    is a story event (priority 0), so its lines queue in the story moment.
+- **OrbitalStrike** (`test_rod`, chapter 11):
+  - It uses prompt 18's big-attack rules at a small size.
+  - It aims at the player's biggest group when it is warned. The warning is the C.3 table's notice and Nadia's warning
+    line, then a ring on the ground for the rod's 4 s fall (the Silver Bug rods' warning).
+  - The rod is a kinetic penetrator from above: 900 damage, penetration 4 on the roof, a 6 m radius falling off to the rim.
+    It hits every side but the enemy's. The Silver Bug's rods are five of 1600.
+
+**New options on existing kinds.**
+
+- **Any event** can take `general`, which names the general it is about. The general's roster, the way they come in, and
+  who speaks for the enemy then follow that general, not the mission's. This is how Brandt comes out in chapter 1, Thorne
+  turns in chapter 7, and Orlov takes the field at Skygate.
+- **AllyWave** takes several new options:
+  - `count`: a fixed squad.
+  - `scatter`: any allied point at random.
+  - `line`: towers raised in a row 16 m in front of the player's biggest group, facing the enemy. They come down as a
+    dropped tower does and stand where they land.
+  - `cap` and `max`: a cap of its own.
+  - `rosters`: groups, each coming in at its own allied point. The strength is shared by the groups that are filled to it,
+    and a group of one names one unit.
+- **MiniBoss** takes `surface`, which brings the boss up out of the ground between the player's biggest group and the
+  enemy's camp. The spot is on open ground, out of the player's close sight, and under a ring for the whole warning.
+- **SideObjective**: a rescue takes `column` for the vehicles it holds, apart from the besiegers' roster.
+
+**The set pieces.**
+
+- *Veyra's militia* (`militia`):
+  - Two vehicles at a time (rocket and ZU-23 technicals, jeeps, armoured cars) from anywhere on our side of the city.
+  - They come every 75 s, four times. Very Hard keeps its one allied wave a mission.
+- *Brandt's line* (`brandt_line`): two gun turrets, a machine-gun bunker and an AA turret, in five missions of chapter 6.
+- *Tartarus* surfaces in c8m02 and c8m11. It is hunted down as the boss of c8m05, and after that it never surfaces again.
+- *Thorne's turn* (c7m10's betrayal stage):
+  - At 25 s his columns come at us under the enemy's flag (his roster and ways in).
+  - At 40 % of the stage Thorne takes the field in the elite of his card, carrying his passive. He breaks off at 30 %
+    ("Not here. Not yet.").
+  - The stage's own lines and the betrayal were already there.
+- *The Total Offensive* (c12m10, the Varga stage):
+  - The enemy's wave from every side is warned 1 s into the stage and lands after the table's warning (10 s on Normal).
+    Three seconds later every old ally comes at once: Brandt's armour, Venn's drones, Hawk's air wing and Mara's
+    Behemoth, each group from its own allied point.
+  - Its strength is set to all of that wave's (share 1). This is the one time allied reinforcements match the enemy's.
+  - It has the enemy's cap (16 alive) and takes the place of the one wave Very Hard allows.
+  - The C.3 table's allied shares do not apply to it.
+  - Mara's line at the stage's start ("Matilda is in the fight") comes a few seconds before her Behemoth arrives.
+  - The first version sent the Offensive 4 s into the stage and the enemy's wave at 20 s. In the one-seed smoke run the
+    auto commanders reached the Varga stage within the first 190 s of the operation, and Behemoth Mk.2 fell before the
+    enemy's wave had come, so the enemy's wave now comes first.
+
+**The story choices (prompt 22 D.5).**
+
+- The families' column to the ferries (`ferries`, a protect objective) is in the harbour option (c4m18).
+- In the pursuit option (c4m17), Kessler takes the field instead.
+- The held miners (`miners_held`, a rescue whose column joins the Accord's reinforcements) are in the rescue option
+  (c8m13).
+- The build checks that each of these stays in its option (`CHOICE_EVENTS`).
+
+**D.8, once.** D.8 asks for plan changes to be rare. The operations' stages already carry the story's turns, so the
+campaign has one mission event plan change. It comes in c4m14, as the chapter's choice comes up: at 60 % Kade sends the
+brigade after the rail yard (Capture `town`), because Kessler is running for the harbour.
+
+**Interceptions.** Thirteen missions intercept a convoy of files, and each convoy carries one of prompt 22's intel files:
+
+| Mission | Intel file |
+|---|---|
+| c1m08 | Brandt's inspection report |
+| c2m04 | Varga's order of the day |
+| c3m06 | Orlov's firing tables |
+| i1m01 | Mara's initials |
+| c4m12 | Kessler's balance sheet |
+| c5m11 | Venn's notes |
+| c6m16 | Aurel's report to the board |
+| c7m02 | the letters from Veyra |
+| c8m12 | Thorne's letter |
+| c9m11 | Kessler's last timetable |
+| c10m02 | the Icarus Mk.0 report |
+| c11m02 | Aurel's memo |
+| c12m06 | the last letter |
+
+### E.2: the general on the field
+
+| Chapter | Mission | Form |
+|---|---|---|
+| 1 | c1m08 (Brandt) | elite; breaks off |
+| 2 | c2m04 (Varga shows himself at Dunebreak) | elite; breaks off |
+| 3 | c3m09 (Orlov) | elite; breaks off |
+| I | i1m04 (Varga) | elite; breaks off |
+| 4 | c4m09 (Kessler), and c4m17 in the pursuit option | by rule; breaks off |
+| 5 | c5m09 (Venn) | by rule; breaks off |
+| 6 | c6m06 (Varga at the dam) | by rule; breaks off |
+| 7 | c7m10 (Thorne, turned) | elite; breaks off |
+| 8 | c8m03 (Thorne) | by rule; breaks off |
+| 9 | c9m06 (Thorne) | by rule; breaks off |
+| III | i3m03 (Raven) | in Morrigan; breaks off ("Raven lets him go, this time") |
+| 10 | c10m09 (Raven) | elite jet, since Morrigan fell in c10m12; breaks off |
+| 11 | c11m03 (Orlov) | by rule; breaks off before his last battle (c11m05) |
+| 12 | c12m03 (Varga) | by rule; breaks off; his fall is c12m10's |
+
+- *By rule* is D.2's rule: an elite while act + the difficulty's step is under 4, else a mini boss of the general's own.
+- A general never breaks off in their last battle, which is the last chapter's operation. None of the missions above is one.
+- Interlude II has none: the story names no general for it (the Locusts hunt on their own).
+- Brandt has a row in the rules now: his garrison's roster, the elite of the main battle tank, and chapter 1's operation as
+  his last battle.
+- Raven's row names Morrigan as his mini boss.
+- The build checks a general on the field in every chapter that has one, in a mission every play meets. A story choice's
+  option does not count.
+- A general's lines come from the event's general. When that is not the mission's general, the general still speaks for
+  the enemy (`MissionEventSystem.Line`).
+
+### E.3: no two in a row
+
+**Decided.** An event set is the sorted list of library ids a mission names, its own and all of its stages'. No two
+missions next to each other in the order of play have the same set. This includes the two options of a choice, and a side
+mission and the mission it follows. The build checks it (`events.check`), and so does the test.
+
+### The other build checks
+
+Each event must be able to happen where it is put:
+
+- a general for a GeneralField;
+- a mini boss or a general for a MiniBoss, and never the mission's own boss;
+- a base the player has for a supply raid;
+- the electronic storm only in Venn's and Aurel's missions (D.6);
+- a weather shift only to a weather the battlefield can show and that differs from the mission's own;
+- every roster, column and boss a real vehicle.
+
+### H.8: six story moments
+
+`DialogueRules.MomentKeys` (by line) and `StoryKeys` (so the lines after the moment's first line queue in it as story
+lines):
+
+1. **The Hollow Dam** (c6m14, at the start): Varga's word, Kade's answer (moved from 8 s to 2 s so it is in the moment),
+   and Kade calling the ceasefire.
+2. **Venn loses her swarm** (c5m10, the swarm stage): "Aurel has taken the swarm from me", then Kade's new answer.
+3. **Thorne's betrayal** (c7m10): Nadia's warning, the betrayal and Thorne's first words.
+4. **Thorne on Typhon's bridge** (c9m10, the Typhon stage): "Typhon, surface. Fire everything.", then Nadia's new line.
+5. **Varga falls** (c12m10, the end of the Varga stage): "Well fought, Colonel. Look after my machines.", then the
+   countdown.
+6. **Icarus falls** (c12m10, the Silver Bug's crash): Aurel's crash line, then his "down" line.
+
+The ends of battles were left out: the result card covers them.
+
+### The intel hook (prompt 22 D.7)
+
+1. An interception's `reward.intel` lands in `MissionEventSystem.Earned`.
+2. `MissionSession.EventRewards` puts it in `MatchReward.Intel`. This happens won or lost, because the files were taken
+   either way.
+3. `MatchReward.Claim` records it (`PlayerProfile.RecoverIntel`, a new list `intelFiles` in the save).
+4. `Narrative.Found` counts a recovered file as found, whatever its own way of being found.
+5. The result card lists it with the mission's own files (`Narrative.FoundBy(reward, won)`, each file once).
+6. The dossier's Intel tab shows it as recovered. Its locked hint is unchanged: that is a UI text.
+
+### Found, not changed (for the F agent)
+
+`MatchRunner.MissionEvents.NoticeKindOf` switches on `enemy`, `ally`, `air`... but the keys' group is the kind's full name
+(`enemyWave`, `allyWave`, `airRaid`...). So every event notice gets the Info icon. The notice's own `Kind` (the sim event)
+is the better source.
+
+### For the testing phase (five seeds, a low-end phone)
+
+- **Winnable on Normal:** every mission with its new events, the chapter 6 missions with Brandt's line and the
+  all-directions waves (size 9) first among them, and the weather-shift missions (A.5, D.9).
+- **Difficulty before and after the events, mission by mission (G):** the 534 events are starting points.
+- **c12m10's Varga stage** is the heaviest battle: the Total Offensive (up to 16 allied) against the all-directions wave
+  (12, and 16 on the cap) plus Behemoth Mk.2 and the stage's own units. Measure FPS and tick time on a low-end phone, and
+  the C.4 caps (16 enemy, and 16 allied for this wave only). Measure how long the stage lasts too: in the one-seed smoke
+  run the auto commanders were past it and into the countdown 250 s into the operation.
+- **c6m14:** how often the player's side breaks the ceasefire by accident (strikes, ordered attacks), and the column's
+  weight after noon (4 vehicles).
+- **The test rod:** 900 damage and 6 m, and its 4 s ring after the lead.
+- **The militia:** squad size 2, every 75 s, four times.
+- **Tartarus surfacing:** at 45 % progress; check the spot is never in the player's close sight.
+- **c4m14's plan change:** whether it stays winnable.
+- **The ceasefire's CP and coins, and the interceptions' coins.**
+
+### Tests
+
+New `Prompt23CampaignEventTests`, 4 tests:
+
+- **The build's rules:** A.2's counts, the signatures, E.2, E.3, and every kind played somewhere.
+- **The ceasefire:** kept (nothing of ours fires on the column unordered, both sides are paid, the column is let go), broken
+  by an ordered attack, and broken by the enemy.
+- **The intel file:** the event, the reward, the claim, the dossier, shown once.
+- **One seed of three missions** with the auto commanders:
+  - c2m01: the oil convoy, Varga's wave, the sandstorm.
+  - c6m14: the ceasefire called and over by noon.
+  - c12m10: its first stage's and its own events; then the Varga stage (reached by the battle, or moved on to when it
+    has not been), with the Total Offensive and Mara's Behemoth against the enemy's wave from every side, at least 60 %
+    of its strength.
+
+Results: 4 of 4 pass. `Prompt23EventTests` (21 of its 22, without the 1:45 spawn probe) and `DialogueTests` (5) were run
+too, and all pass. No five-seed sweeps and no FPS runs.
+
+### Shared edits (merge by hand if they conflict)
+
+- **Sim:**
+  - `EventDefs.cs`: the two kinds, and Brandt's and Raven's rows.
+  - `MissionEvents.cs` and `MissionEvents.Kinds.cs`.
+  - `Vehicle.cs` (`Truce`) and `CombatSystem.cs` (one condition in `IsValidAutoTarget`).
+- **Game:**
+  - `Dialogue.cs` (`MomentKeys`, `StoryKeys`).
+  - `MatchRunner.cs` (one line: the result card's intel files).
+  - `ModeSessions.cs` (`EventRewards`).
+  - `Rewards.cs`, `Narrative.cs`, `PlayerProfile.cs` and `PlayerProfile.Story.cs`.
+  - `CampaignText.cs`: 62 keys added.
+- **Data and tools:** `build_campaign.py`, `events.py`, `act10.py` (new) and `campaign.json`.

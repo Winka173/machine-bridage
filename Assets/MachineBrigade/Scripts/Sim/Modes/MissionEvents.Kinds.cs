@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Commands;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Core;
@@ -67,6 +68,35 @@ namespace MachineBrigade.Sim.Modes
             public float From = 1f, Target = 1f;
         }
 
+        /// <summary>E.1: the Hollow Dam's ceasefire: the sworn column, where it stands, whether it has been let go.</summary>
+        private sealed class CeasefirePlan
+        {
+            public SpawnPoint Point = null!;
+            public readonly List<string> Column = new();
+
+            /// <summary>When the sworn side breaks its word ("breakAt"; -1: it keeps it).</summary>
+            public double BreakAt = -1;
+
+            public bool Released;
+        }
+
+        /// <summary>E.1: Brandt's line: the towers and where each goes up.</summary>
+        private sealed class LinePlan
+        {
+            public readonly List<(string def, Vector2 at)> Towers = new();
+            public Vector2 Facing;
+        }
+
+        /// <summary>E.1: a mini boss that comes up out of the ground (Tartarus) at a spot, not over an edge.</summary>
+        private sealed class SurfacePlan
+        {
+            public string Def = "";
+            public Vector2 At, Facing;
+        }
+
+        /// <summary>E.1: the satellite's test rods on their way down: when, where, how big, the look, the event.</summary>
+        private readonly List<(double due, Vector2 at, float radius, float damage, string look, int state)> _rods = new();
+
         /// <summary>Fire support on its way: when, which support, whose, where and which way.</summary>
         private readonly List<(double due, string support, int team, Vector2 at, Vector2 towards)> _strikes = new();
 
@@ -93,6 +123,7 @@ namespace MachineBrigade.Sim.Modes
                     return PrepareMini(world, s);
                 case MissionEventKind.Barrage:
                 case MissionEventKind.AirRaid:
+                case MissionEventKind.OrbitalStrike:
                     if (Group(world, Player) is not { } mark) return false;
                     s.Where = mark;
                     return true;
@@ -122,17 +153,20 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.CounterBattery:
                     s.Plan = new CounterPlan();
                     return true;
+                case MissionEventKind.Ceasefire:
+                    return PrepareCeasefire(world, s);
                 default:
                     return true;
             }
         }
 
         /// <summary>The roster a wave draws from: the event's own, else the mission's general's (C.1), else the common one.</summary>
-        private IReadOnlyList<string> RosterFor(SimWorld world, MissionEventDef e, bool groundOnly = false)
+        private IReadOnlyList<string> RosterFor(SimWorld world, MissionEventDef e, bool groundOnly = false, bool own = true)
         {
-            var named = e.Words("roster");
+            var named = own ? e.Words("roster") : Array.Empty<string>();
+            var general = GeneralOf(e);
             IReadOnlyList<string> source = named.Count > 0 ? named
-                : General != null && Rules.Generals.TryGetValue(General, out var g) && g.Roster.Count > 0 ? g.Roster : Rules.GenericRoster;
+                : general != null && Rules.Generals.TryGetValue(general, out var g) && g.Roster.Count > 0 ? g.Roster : Rules.GenericRoster;
             var list = new List<string>();
             foreach (var id in source)
                 if (world.Catalog.Vehicles.TryGetValue(id, out var def) && !def.Static && !def.Boss && (!groundOnly || !def.Flying)) list.Add(id);
@@ -194,7 +228,8 @@ namespace MachineBrigade.Sim.Modes
         {
             var own = e.Words("delivery");
             if (own.Count > 0) return own;
-            return General != null && Rules.Generals.TryGetValue(General, out var g) ? g.Delivery : new[] { "edge" };
+            var general = GeneralOf(e);
+            return general != null && Rules.Generals.TryGetValue(general, out var g) ? g.Delivery : new[] { "edge" };
         }
 
         /// <summary>A spawn point in a direction by the first way of coming in that it has (else over the edge).</summary>
@@ -270,23 +305,125 @@ namespace MachineBrigade.Sim.Modes
             var e = s.Def;
             var d = Difficulty;
             if (d.AllyWaves >= 0 && AllyWaves >= d.AllyWaves) return false;
-            // "share" sets its own (chapter 12's Total Offensive: as strong as the enemy's wave).
+            // E.1: chapter 12's Total Offensive has a cap of its own (the enemy's); every other wave the allies' one.
+            var room = Math.Min(e.Whole("max", 12), Room(world, Player, e.Whole("cap", Rules.AllyCap)));
+            if (e.Flag("line", false)) return PrepareLine(world, s, room);
+            // Its rosters: "rosters" (one group each: the Total Offensive's old allies), else "roster", else the Accord's.
+            var rosters = new List<List<string>>();
+            foreach (var list in e.Words("rosters"))
+            {
+                var r = new List<string>();
+                foreach (var id in list.Split(','))
+                    if (world.Catalog.Vehicles.ContainsKey(id.Trim())) r.Add(id.Trim());
+                if (r.Count > 0) rosters.Add(r);
+            }
+            if (rosters.Count == 0)
+            {
+                var r = new List<string>();
+                var named = e.Words("roster");
+                foreach (var id in named.Count > 0 ? named : Rules.AccordRoster)
+                    if (world.Catalog.Vehicles.ContainsKey(id)) r.Add(id);
+                if (r.Count == 0) return false;
+                rosters.Add(r);
+            }
+            // "share" sets its own (chapter 12's Total Offensive: as strong as the enemy's wave); "count" is a squad of that
+            // many whatever the table (E.1: Veyra's militia, a few at a time).
             var target = (e.Has("share") ? e.Number("share", 1f) : d.AllyShare) * ReferenceStrength(world, e) * e.Number("scale", 1f);
-            var named = e.Words("roster");
-            var roster = new List<string>();
-            foreach (var id in named.Count > 0 ? named : Rules.AccordRoster)
-                if (world.Catalog.Vehicles.ContainsKey(id)) roster.Add(id);
-            var units = Fill(world, roster, target, Math.Min(12, Room(world, Player)));
-            if (units.Count == 0) return false;
-            var point = Pick(SpawnSide.Ally, null, SpawnKind.Behind) ?? Pick(SpawnSide.Ally, null, SpawnKind.Drop) ?? Pick(SpawnSide.Ally, null, SpawnKind.Outpost);
-            if (point == null) return false;
+            var squad = e.Whole("count", 0);
+            var points = AllyPoints(e.Flag("scatter", false), rosters.Count);
+            if (points.Count == 0) return false;
             var plan = new WavePlan();
-            var g = new SpawnGroup { Point = point, Kind = e.Word("delivery") == "edge" ? SpawnKind.Edge : SpawnKind.Drop };
-            g.Units.AddRange(units);
-            plan.Groups.Add(g);
+            var all = new List<string>();
+            var kind = e.Word("delivery") == "edge" ? SpawnKind.Edge : SpawnKind.Drop;
+            // The strength is shared by the groups filled to it (a named unit comes on top).
+            var shares = 0;
+            foreach (var r in rosters)
+                if (r.Count > 1) shares++;
+            shares = Math.Max(1, shares);
+            for (var i = 0; i < rosters.Count && room > 0; i++)
+            {
+                var roster = rosters[i];
+                List<string> units;
+                if (squad > 0)
+                {
+                    units = new List<string>();
+                    for (var k = 0; k < Math.Min(squad, room); k++) units.Add(roster[(s.Fired * squad + k) % roster.Count]);
+                }
+                // A group of one (a named unit: Mara's Behemoth) brings that one.
+                else if (roster.Count == 1) units = new List<string> { roster[0] };
+                else units = Fill(world, roster, target / shares, Math.Max(1, room / (rosters.Count - i)));
+                if (units.Count == 0) continue;
+                room -= units.Count;
+                var g = new SpawnGroup { Point = points[i % points.Count], Kind = kind };
+                g.Units.AddRange(units);
+                plan.Groups.Add(g);
+                all.AddRange(units);
+            }
+            if (plan.Groups.Count == 0) return false;
             s.Plan = plan;
-            s.Where = point.Position;
-            s.Strength = Strength(world.Catalog, units);
+            s.Where = plan.Groups[0].Point.Position;
+            s.Strength = Strength(world.Catalog, all);
+            return true;
+        }
+
+        /// <summary>
+        /// Where allied groups come in: behind the player's area first, then the drop zone, then the player's objectives, one
+        /// point a group while there are enough (one group: the first kind that has a point, at random among them); scattered
+        /// (the militia): any allied point at random.
+        /// </summary>
+        private List<SpawnPoint> AllyPoints(bool scatter, int groups)
+        {
+            var list = new List<SpawnPoint>();
+            if (scatter)
+            {
+                var any = new List<SpawnPoint>();
+                foreach (var p in Spawns!.All)
+                    if (p.Side == SpawnSide.Ally) any.Add(p);
+                if (any.Count > 0) list.Add(any[_random.Next(any.Count)]);
+                return list;
+            }
+            if (groups <= 1)
+            {
+                if ((Pick(SpawnSide.Ally, null, SpawnKind.Behind) ?? Pick(SpawnSide.Ally, null, SpawnKind.Drop) ?? Pick(SpawnSide.Ally, null, SpawnKind.Outpost)) is { } one)
+                    list.Add(one);
+                return list;
+            }
+            foreach (var kind in new[] { SpawnKind.Behind, SpawnKind.Drop, SpawnKind.Outpost })
+                foreach (var p in Spawns!.All)
+                    if (p.Side == SpawnSide.Ally && p.Kind == kind && list.Count < groups) list.Add(p);
+            return list;
+        }
+
+        /// <summary>
+        /// E.1 (chapter 6): Brandt raises a line of towers in front of the player's biggest group, facing the enemy; they come
+        /// down as a dropped tower does and stand there with the Accord's mark.
+        /// </summary>
+        private bool PrepareLine(SimWorld world, EventState s, int room)
+        {
+            var e = s.Def;
+            var towers = new List<string>();
+            foreach (var id in e.Words("roster"))
+                if (world.Catalog.Vehicles.ContainsKey(id) && towers.Count < room) towers.Add(id);
+            if (towers.Count == 0) return false;
+            Vector2 centre;
+            if (Group(world, Player) is { } group) centre = group;
+            else if (world.TryGetRally(Player, out var home)) centre = home;
+            else return false;
+            var foe = _host.EnemyGoal(world) ?? (world.TryGetRally(Enemy, out var camp) ? camp : world.Map.Centre);
+            var ahead = foe - centre;
+            ahead = ahead.LengthSquared() > 1f ? Vector2.Normalize(ahead) : Vector2.UnitY;
+            var across = new Vector2(-ahead.Y, ahead.X);
+            var line = world.ClampToMap(centre + ahead * e.Number("ahead", 16f));
+            var plan = new LinePlan { Facing = ahead };
+            var spacing = e.Number("spacing", 10f);
+            for (var k = 0; k < towers.Count; k++)
+            {
+                var spot = world.ClampToMap(line + across * ((k - (towers.Count - 1) * 0.5f) * spacing));
+                plan.Towers.Add((towers[k], world.ClearSpot(world.Catalog.Vehicle(towers[k]), spot, Player)));
+            }
+            s.Plan = plan;
+            s.Where = line;
+            s.Strength = Strength(world.Catalog, towers);
             return true;
         }
 
@@ -407,12 +544,55 @@ namespace MachineBrigade.Sim.Modes
             if (pick == null && (e.Word("general") ?? General) is { } general)
                 pick = MiniOf(world, general, Rules.Generals.TryGetValue(general, out var gd) ? gd : new GeneralEventDef { Id = general });
             if (pick == null) return false;
+            if (e.Flag("surface", false))
+            {
+                // E.1 (chapter 8): Tartarus comes up out of the ground between the front and the player's biggest group, never
+                // in their close sight (B.3), under a ring on the ground for the whole warning.
+                if (SurfaceSpot(world) is not { } up) return false;
+                var toward = (Group(world, Player) ?? world.Map.Centre) - up;
+                s.Plan = new SurfacePlan { Def = pick, At = up, Facing = toward.LengthSquared() > 1f ? Vector2.Normalize(toward) : Vector2.UnitY };
+                s.Where = up;
+                if (world.Catalog.TryGetSupport(e.Word("look") ?? "pod_drop", out var ring))
+                    world.Emit(SimEvent.StrikeWarning(Enemy, ring, up, up, MathF.Max(1f, Lead(s))));
+                s.Strength = Strength(world.Catalog, new[] { pick });
+                return true;
+            }
             if (PickPoint(SpawnBearing.Front, new[] { "edge" }) is not { } g) return false;
             g.Units.Add(pick);
             var plan = new WavePlan();
             plan.Groups.Add(g);
             Arrange(s, plan);
             s.Strength = Strength(world.Catalog, g.Units);
+            return true;
+        }
+
+        /// <summary>A spot on the open ground between the player's biggest group and the enemy's camp, out of the player's close sight.</summary>
+        private Vector2? SurfaceSpot(SimWorld world)
+        {
+            if ((Group(world, Player) ?? Centre(world, Player)) is not { } to) return null;
+            var from = world.TryGetRally(Enemy, out var camp) ? camp : world.Map.Centre;
+            for (var k = 3; k <= 9; k++)
+            {
+                if (!SpawnPoints.Snap(world, Vector2.Lerp(to, from, k * 0.1f), world.Grid.MainRegion, out var spot)) continue;
+                if (!Seen(world, spot)) return spot;
+            }
+            return null;
+        }
+
+        /// <summary>E.1 (chapter 6): the general's sworn column for a ceasefire, at an edge on the enemy's front.</summary>
+        private bool PrepareCeasefire(SimWorld world, EventState s)
+        {
+            var e = s.Def;
+            var roster = RosterFor(world, e, groundOnly: true);
+            var size = Math.Min(Math.Max(1, e.Whole("size", 4)), Room(world, Enemy));
+            if (roster.Count == 0 || size <= 0) return false;
+            var point = PickPoint(SpawnBearing.Front, new[] { "edge" })?.Point ?? PickPoint(SpawnBearing.Left, new[] { "edge" })?.Point;
+            if (point == null) return false;
+            var plan = new CeasefirePlan { Point = point };
+            plan.Column.AddRange(Compose(world, s, roster, size));
+            s.Plan = plan;
+            s.Where = point.Position;
+            s.Strength = Strength(world.Catalog, plan.Column);
             return true;
         }
 
@@ -479,6 +659,13 @@ namespace MachineBrigade.Sim.Modes
             var e = s.Def;
             switch (e.Kind)
             {
+                case MissionEventKind.MiniBoss when s.Plan is SurfacePlan up:
+                {
+                    if (Seen(world, up.At) && s.Tries < 5) return Outcome.Retry;
+                    var boss = Arrive(world, s, up.Def, Enemy, up.At, up.Facing, false);
+                    Line(world, s, "start", boss.Id);
+                    return Outcome.Done;
+                }
                 case MissionEventKind.EnemyWave:
                 case MissionEventKind.SupplyRaid:
                 case MissionEventKind.MiniBoss:
@@ -506,9 +693,18 @@ namespace MachineBrigade.Sim.Modes
                 }
                 case MissionEventKind.AllyWave:
                 {
-                    var plan = (WavePlan)s.Plan!;
-                    var g = plan.Groups[0];
-                    Deliver(world, s, g.Units, Player, g.Point.Position, g.Point.Inward, g.Kind, true);
+                    if (s.Plan is LinePlan line)
+                    {
+                        // Brandt's towers come down as a dropped tower does, where the line runs.
+                        foreach (var (def, at) in line.Towers)
+                        {
+                            world.Emit(SimEvent.DeploymentQueued(Player, def, at, -line.Facing, EconomySystemDelivery));
+                            _drops.Add((world.Time + EconomySystemDelivery, def, Player, at, line.Facing, s.Index, true));
+                        }
+                    }
+                    else
+                        foreach (var g in ((WavePlan)s.Plan!).Groups)
+                            Deliver(world, s, g.Units, Player, g.Point.Position, g.Point.Inward, g.Kind, true);
                     AllyWaves++;
                     Notice(world, s, "start", 0f);
                     Line(world, s, "start");
@@ -610,6 +806,17 @@ namespace MachineBrigade.Sim.Modes
                     if (!_host.ChangePlan(world, e)) Record(world, s, "unplanned");
                     return Outcome.Done;
                 }
+                case MissionEventKind.Ceasefire:
+                    return StartCeasefire(world, s);
+                case MissionEventKind.OrbitalStrike:
+                {
+                    // Prompt 18's big-attack rules, small: the ring on the ground for the rod's fall, then one kinetic hit.
+                    var look = e.Word("look") ?? "leviathan_shell";
+                    var fall = MathF.Max(0.5f, e.Number("fall", 4f));
+                    if (world.Catalog.TryGetSupport(look, out var ring)) world.Emit(SimEvent.StrikeWarning(Enemy, ring, s.Where, s.Where, fall));
+                    _rods.Add((world.Time + fall, s.Where, e.Number("radius", 6f), e.Number("damage", 900f), look, s.Index));
+                    return Outcome.Done;
+                }
                 case MissionEventKind.WeatherShift:
                 {
                     var plan = (WeatherPlan)s.Plan!;
@@ -669,7 +876,9 @@ namespace MachineBrigade.Sim.Modes
                 {
                     // The allied column, halted and holding, and the enemy group round it on the enemy's side.
                     if (Seen(world, plan.From) && s.Tries < 5) return Outcome.Retry;
-                    var roster = e.Words("roster").Count > 0 ? e.Words("roster") : new[] { "ifv", "armored_car", "main_battle_tank" };
+                    // The held column: "column" (E.1: chapter 8's miners), else "roster", else an Accord column.
+                    var roster = e.Words("column").Count > 0 ? e.Words("column")
+                        : e.Words("roster").Count > 0 ? e.Words("roster") : new[] { "ifv", "armored_car", "main_battle_tank" };
                     for (var k = 0; k < count; k++)
                     {
                         var id = roster[k % roster.Count];
@@ -678,7 +887,7 @@ namespace MachineBrigade.Sim.Modes
                         v.Scripted = true;
                         s.Units.Add(v.Id);
                     }
-                    var foes = RosterFor(world, e, groundOnly: true);
+                    var foes = e.Words("column").Count > 0 ? RosterFor(world, e, groundOnly: true, own: false) : RosterFor(world, e, groundOnly: true);
                     var size = Math.Min(WaveSize(e, 4f), Room(world, Enemy));
                     var away = world.TryGetRally(Enemy, out var camp) ? camp - plan.From : Vector2.UnitY;
                     away = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
@@ -754,6 +963,9 @@ namespace MachineBrigade.Sim.Modes
                 }
                 case MissionEventKind.LootDrop:
                     WatchCrates(world, s, dt);
+                    break;
+                case MissionEventKind.Ceasefire:
+                    WatchCeasefire(world, s);
                     break;
                 case MissionEventKind.SupplyDrop:
                     if (world.Time < s.EndsAt) break;
@@ -1028,6 +1240,111 @@ namespace MachineBrigade.Sim.Modes
                     break;
                 }
             return true;
+        }
+
+        /// <summary>E.1: a test rod lands: a kinetic penetrator from above (prompt 19 F's rods), on every side but the enemy's.</summary>
+        private void StepRods(SimWorld world)
+        {
+            for (var i = 0; i < _rods.Count; i++)
+            {
+                var r = _rods[i];
+                if (world.Time < r.due) continue;
+                _rods.RemoveAt(i--);
+                if (world.Catalog.TryGetSupport(r.look, out var look)) world.Emit(SimEvent.StrikeImpact(Enemy, look, r.at));
+                world.Damage.Splash(r.at, r.radius, r.damage, DamageType.Kinetic, Enemy, EntityId.None,
+                    info: new HitInfo(null, Enemy, null, r.at, HitKind.Direct, true).WithPen(4f, true));
+                Record(world, _states[r.state], "impact");
+            }
+        }
+
+        // ================================================================== the ceasefire (E.1, chapter 6)
+
+        private Outcome StartCeasefire(SimWorld world, EventState s)
+        {
+            var e = s.Def;
+            var plan = (CeasefirePlan)s.Plan!;
+            if (!Spawns!.TryPlace(world, plan.Point, Rules.NearSight, Player, out var at) && s.Tries < 5) return Outcome.Retry;
+            // The sworn column: its fire held, out of both commanders' hands and of every weapon's own choice of target.
+            var across = new Vector2(-plan.Point.Inward.Y, plan.Point.Inward.X);
+            for (var k = 0; k < plan.Column.Count; k++)
+            {
+                var spot = world.ClampToMap(at + across * ((k % 3) - 1f) * 7f - plan.Point.Inward * (k / 3) * 7f);
+                var v = world.SpawnVehicle(world.Economy.ForWave(Enemy, plan.Column[k]), Enemy, spot, SimMath.HeadingOf(plan.Point.Inward));
+                v.Reinforcement = true;
+                v.Scripted = true;
+                v.Truce = true;
+                world.HoldFire(v, true);
+                s.Units.Add(v.Id);
+            }
+            var seconds = e.Number("seconds", 150f);
+            s.EndsAt = world.Time + seconds;
+            if (e.Has("breakAt")) plan.BreakAt = world.Time + e.Number("breakAt", 0f);
+            s.Where = at;
+            Notice(world, s, "start", seconds);
+            Line(world, s, "start");
+            return Outcome.Running;
+        }
+
+        /// <summary>
+        /// Who fires first loses their reward: our side hitting the sworn column (only an ordered attack or a strike can), or
+        /// the column opening fire. Kept to the end, both sides are paid and the column joins the fight.
+        /// </summary>
+        private void WatchCeasefire(SimWorld world, EventState s)
+        {
+            var plan = (CeasefirePlan)s.Plan!;
+            if (plan.Released) return;
+            var ours = false;
+            var theirs = plan.BreakAt >= 0 && world.Time >= plan.BreakAt;
+            foreach (var id in s.Units)
+            {
+                if (!world.TryGetVehicle(id, out var v)) continue;
+                if (v.LastAttackerTeam == Player) ours = true;
+                if (v.LastFiredAt >= s.StartAt) theirs = true;
+            }
+            if (ours)
+            {
+                // We fired first: the enemy keeps its reward and ours is lost.
+                PayEnemy(world, s);
+                Release(world, s, plan);
+                Notice(world, s, "broken", 0f);
+                Line(world, s, "broken");
+                Finish(world, s, false, "broken");
+            }
+            else if (theirs)
+            {
+                // They fired first: their reward is lost and ours paid now.
+                Release(world, s, plan);
+                Notice(world, s, "betrayed", 0f);
+                Line(world, s, "betrayed");
+                Finish(world, s, true, "betrayed");
+            }
+            else if (world.Time >= s.EndsAt)
+            {
+                PayEnemy(world, s);
+                Release(world, s, plan);
+                Notice(world, s, "end", 0f);
+                Line(world, s, "end");
+                Finish(world, s, true, "end");
+            }
+        }
+
+        private void PayEnemy(SimWorld world, EventState s)
+        {
+            if (world.TryGetEconomy(Enemy, out var foe)) foe.Cp = MathF.Min(foe.Bank, foe.Cp + s.Def.Whole("enemyCp", 20));
+        }
+
+        /// <summary>The ceasefire is over: the column is the enemy's to command again and goes for our side.</summary>
+        private void Release(SimWorld world, EventState s, CeasefirePlan plan)
+        {
+            plan.Released = true;
+            foreach (var id in s.Units)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive)
+                {
+                    v.Truce = false;
+                    v.Scripted = false;
+                    world.HoldFire(v, false);
+                    Push(world, v, _host.EnemyGoal(world) ?? Centre(world, Player));
+                }
         }
 
         private void StepStrikes(SimWorld world)
