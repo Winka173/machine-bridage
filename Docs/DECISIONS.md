@@ -7352,3 +7352,131 @@ weather, boosts, discounts, items, the controller, steps, camera, boss pan, beat
 `Sim/AI/ConquestAi.Sandbox.cs`, `Game/Match/SandboxSession.cs`, `Game/Match/SandboxController.cs`,
 `Game/Hud/SandboxScreen*.cs`, `Game/Hud/SandboxText.cs`, `Game/Hud/MenuScreen.Sandbox.cs`,
 `Game/Views/SandboxOverlays.cs`, `Resources/UI/Sandbox.uss`, `Tests/EditMode/SandboxTests.cs`, `Tests/EditMode/Scenarios`.
+
+## 20X. Armour and damage balance: punchier fights after prompt 15 (2026-09-29)
+
+The owner found damage too low across the board after the armour and penetration system (14A). Measured first, then
+the global knobs: the penetration row, the faces hit, toughness, and one over-armoured unit. No weapon row changed
+(agent D is changing the autocannons, jet cannons, missile speeds and the C-RAM; notes for the lead are at the end).
+
+### Measured
+
+New `ArmourBalanceMeasure.MeasureTimeToKill` (MB_BALANCE=1, 3 seeds, about 20 s): a shooter group against a target group
+that holds its fire on the Sandbox's flat range; direct-fire shooters stand in reach so the face struck is the one set,
+artillery and aircraft use the fighting AI, helicopter targets hover. Time to kill runs from the first hit to the last
+target's end. It files every hit (`SimWorld.HitLog`) by its penetration step and face, and nets what armour took off
+(1 - dealt / (dealt / multiplier)). A mixed battle (the same ten-vehicle army each side, both fighting) gives a whole
+fight's spread. Files: `Docs/balance/armour_ttk_20x_{before,after}.tsv`.
+
+Before the pass: 35 % of the matchups' hits landed two levels under (x0.15) and 21 % three or more under (x0.05), and
+armour took 34 % of their damage; in the mixed battle 21 % landed at x0.15, none at x0.05, and armour took 17 %. The
+x0.15 and x0.05 hits are mostly machine guns and autocannons on tanks and bunkers: many hits, little damage. The
+prompt 13 comparison (`combat_value_F3` against today's run) shows why it felt weaker: damage against light vehicles and
+tanks was where prompt 13 had it (x1.04, x1.07 median), against the fort group x0.66 and from non-AA weapons at the air
+group x0.56; and the facing factors (side x1.25, rear x1.6) were gone, so a 120 mm dart did the same to a battle tank's
+front, side and rear (all one level above: x1).
+
+### Changed
+
+| Knob | Before | After | Why |
+|---|---|---|---|
+| Penetration row (`damageTable.penetration`) | 1, 0.75, 0.4, 0.15, 0.05 | 1.2 (two or more above), 1, 0.85 (level), 0.5, 0.25, 0.1 | level-matched rounds lose less; the x0.15 and x0.05 hits do something; a new overmatch step makes a flank shot beat a front shot for the guns that pierce both |
+| Overmatch where | | front, side and rear only: never a roof (top attacks, everything lobbed or dropped, an aeroplane's fire) nor an aircraft | with it on roofs every artillery shell, bomb, drone and jet gained a fifth everywhere (combat value: artillery and aircraft +15-35 % against the median, the fighter's air value -39 % over 3 seeds) |
+| Front arc (`Armour.FrontArc`) | 50° | 40° (rear 50° kept) | more rounds from off the nose strike the thinner side (mixed battle: two-under hits 21 % → 16 %) |
+| Toughness (`toughness.vehicles`) | 2.5 | 2.2 (bosses 0.85 kept) | every fight about an eighth shorter; the penetration row alone left light fights at 14-15 s and tank duels at 40 s |
+| Turtle tank armour | 4/3/3/3 | 3/3/2/3 | its shed stops drones and rockets, not a dart; it had a heavy tank's front at 7 CP (tanks value 423 against the battle tank's 335; now 349) |
+
+The row takes five values still (prompt 15's, no overmatch step); `DamageTable.Penetration(pen, armour, overmatch)` and
+`DamageTable.Overmatches(kind, roof)` carry the rule, and every caller passes the face: the hit (`HitMultiplier`),
+targeting (`Estimate`), the interface's helpers (`Matchup`) and the commander's counter score (`ConquestAi.Fit`, now 0-1.2).
+The ✓ ~ ✕ thresholds (0.6, 0.12) keep every verdict they gave. The plunder check (`TacticalAi.PlunderWith`) needs 0.35
+on a level-2 structure (was 0.25) so a heavy machine gun (now 0.3) still does not go plundering; the artillery check keeps
+0.2. Damage per round is untouched: the calibre scale stands; the most a hit gains is x1.2 (the old side factor was x1.25).
+The firepower knobs (strikes 2.0, blasts) stay, so strikes and blasts count a little more against the lower health.
+
+### Time to kill, before and after (seconds, 3 seeds; "flank" is the target side on)
+
+| Matchup | Before | After |
+|---|---|---|
+| 2 armoured cars vs 2 armoured cars | 15.2 | 13.2 |
+| IFV vs 2 armoured cars | 15.0 | 13.1 |
+| 2 IFVs vs 2 IFVs | 15.6 | 13.1 |
+| 2 jeeps vs 2 armoured cars | 22.2 | 17.4 |
+| MBT vs MBT, front | 45.9 | 34.9 |
+| MBT vs MBT, flank | 34.9 | 25.6 |
+| MBT vs heavy tank, front | 111.7 | 84.6 |
+| MBT vs heavy tank, flank | 79.3 | 62.9 |
+| light tank vs IFV, front | 48.4 | 34.3 |
+| light tank vs MBT, flank | 84.1 | 59.4 |
+| IFV vs MBT, front / flank | 46.4 / 28.7 | 34.0 / 21.1 |
+| tank destroyer vs MBT, front | 32.7 | 25.1 |
+| 2 armoured cars vs MBT, front (the wrong tool) | 57.7 | 39.4 |
+| FPV carrier vs MBT | 51.3 | 36.0 |
+| Lancet truck vs heavy tank | 97.1 | 75.1 |
+| AA vehicle vs attack helicopter | 23.7 | 20.1 |
+| SAM launcher vs attack jet | 10.7 | 8.8 |
+| heavy AA vs attack jet | 13.5 | 9.3 |
+| 2 SP howitzers vs 4 armoured cars | 57.2 | 49.7 |
+| 2 MLRS vs 2 MBTs | 55.5 | 39.4 |
+| 2 SP howitzers vs 2 MBTs | 86.5 | 74.4 |
+| gun turret vs 2 MBTs | 57.4 | 48.7 |
+| MG bunker vs 3 armoured cars | 25.7 | 19.6 |
+| ATGM tower vs MBT | 25.7 | 23.7 |
+| AA turret vs attack helicopter | 18.3 | 17.7 |
+| 2 MBTs vs gun turret | 73.5 | 61.4 |
+| 3 armoured cars vs MG bunker | 109.0 | 75.9 |
+
+Fights are 10-35 % shorter. A flank shot beats a front shot everywhere (MBT on MBT 26 s against 35; the tank gun
+x1.2 on the side against x1 on the front). The right counter wins: the tank destroyer kills a battle tank in 25 s, two
+armoured cars (a CP less) in 39 s.
+
+| Hit spread | Before | After |
+|---|---|---|
+| Matchups: one or more above / level / one / two / three under | 6 / 13 / 25 / 35 / 21 % | 7 / 13 / 24 / 36 / 20 % (two above: 0 %) |
+| Matchups: net damage armour takes | 34 % | 27 % |
+| Mixed battle: one or more above / level / one / two / three under | 22 / 39 / 18 / 21 / 0 % | 31 / 40 / 14 / 16 / 0 % |
+| Mixed battle: net damage armour takes | 17 % | 5 % |
+| Mixed battle: faces front / side / rear / top | 79 / 17 / 3 / 1 % | 79 / 12 / 9 / 1 % |
+
+The share of hits at two and three under hardly moves in the placed duels (the same faces); what changes is what they do
+(x0.25 and x0.1).
+
+### Re-measured
+
+- **Combat value** (`CombatValueMeasure`, one seed; `Docs/balance/combat_value_20x_*`): first kills sooner (tanks 42 →
+  38 s, fort 58 → 51 s, tanks+AA 55 → 43 s median), per-CP values a little lower as enemies die sooner (median ground
+  x0.94, air x0.95, fort x1.0). Outside ±20 % of the median: the turtle tank (intended), the IFV against tanks (73 from
+  113: the tanks now kill it faster, x1.2 on its level-2 hull), the BMPT (ground 335 → 243: its level 3 now takes x0.5
+  from autocannons; still the best tank-class value against light groups after the MBT), the laser tank against tanks
+  (277 → 186, one seed), helicopters against tanks (+15-50 %: their missiles overmatch sides). By class the bands hold:
+  heavy 174-510, tank hunters 311-425, artillery 182-461, helicopters 330-390, aircraft 55-463, anti-air in the air 58-565.
+- **Towers** (`TowerValueMeasure`; `tower_value_20x_*`): medians after/before, the CP columns light 1.02, tanks 1.06,
+  shelling 1.03, heavy 0.99, air 1.15; the worth columns 0.99-1.00: towers keep their worth.
+- **Counters** (`CounterTests`): 12 of 12, faster and with the same margins (heavy tanks beat medium tanks in 35 s, was
+  48; helicopters beat tanks 43 s, was 52; FPV drones beat heavy tanks in 79 s, was a 150 s time-out on points).
+- **Sweep, 3 seeds, before → after** (`campaign_20x_*`, `modes_20x_*`): campaign c1m03, c2m05, c4m06, c5m06, c7m05,
+  c8m07, c10m05, c11m03, c12m05: 27/27 → 27/27 (c5m06 15.3 → 13.4 min, c7m05 9.6 → 8.5); Conquest 6/9 → 5/9 (median 6.6
+  → 6.7 min); Siege 7/9 → 8/9; Defend 9/9 → 9/9; Boss Rush 0/6 → 0/6 (both stop at 9 of 10 bosses in the 30-minute cap,
+  a limit of the measure before this pass; the bosses' minutes each hardly move).
+
+### Tests
+
+`ArmourTests` (the six-step row, the five-value row still read, part levels between one and two above, no overmatch on a
+roof or an aircraft, the 40-degree front, the hit expectations read from the table), `CalibreTests` (an autocannon x0.5
+on a battle tank's front), `GearSimTests` (the ricochet's side and rear hits read from the table), `Prompt8ContentTests`
+(the bulldozer's 2,860 health in game, the turtle's). Run: Counter, Armour, Calibre, Prompt8Content, GearSim, GearTrait,
+Combat, CounterBuy, SandboxBattle and the measures, then again after the fixes: all pass but two failures older than
+this pass, left alone: `ArmourTests.EveryUnitAndWeaponHasTheNewFields` (175 weapons, 172 found by its text scan: the rows
+`casemate_155`, `naval_127` and `naval_100` are not written `{ "id":`) and `ElitePrompt8Tests.EveryEliteIsOnTheSameFooting`
+(the elite attack helicopter's 675 health is under its card's 800 since prompt 17 D).
+
+### For the lead (weapon rows not touched)
+
+- **Autocannons** (agent D's 5 s bursts and 1 s reload): one level under is now x0.5 (was 0.4), so a 25-30 mm on a
+  battle tank's front does a quarter more. Re-run `ArmourBalanceMeasure` after the rhythm change: if two armoured cars
+  come within a quarter of the tank destroyer's time on a battle tank (now 39 against 25 s) or the IFV beats the MBT's
+  own time on it (34 against 35 s), hold the 25/30 mm damage a second.
+- **Jet cannons, missiles, C-RAM**: nothing moves for them from this pass on the roof or in the air (no overmatch there;
+  level-1 aircraft take 0.85 at level instead of 0.75). Missile speeds are unaffected.
+- **Left for the testing phase:** five seeds for the combat value (the laser tank, the BMPT, the fighter's air value),
+  the whole campaign and every mode, and the elites' power band with the new row.

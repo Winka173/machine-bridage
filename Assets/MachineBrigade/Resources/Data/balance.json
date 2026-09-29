@@ -7,7 +7,9 @@
   // burning props, vehicles blowing up and mines, so they still matter against tougher vehicles. economy: every
   // side's CP income (objective bonuses included) and supply line, so fewer, longer-lived vehicles take the field.
   // Income was 0.65 and supply 0.8 until playtests found CP coming in too slowly (2026-09-27).
-  "toughness": { "vehicles": 2.5, "bosses": 0.85 },
+  // Vehicles' toughness was 2.5 until the armour and damage balance pass (DECISIONS 20X): fights ran long after
+  // prompt 15's armour, so 2.2 shortens every fight by about an eighth (bosses keep theirs).
+  "toughness": { "vehicles": 2.2, "bosses": 0.85 },
   "firepower": { "strikes": 2.0, "propBlasts": 1.5, "vehicleBlasts": 2.0 },
   "economy": { "income": 0.95, "supply": 1.05,
     // Army supply per mode, in CP: upkeep starts at 1.5x it (40 x 1.05 x 1.5: about 63 CP, eight
@@ -101,7 +103,9 @@
 
   // Prompt 15 C.7: what a damage type does to each kind of target (armour itself is the penetration row).
   // penetration: the multiplier by how far a round's penetration level is above or below the armour level of the
-  // face it strikes: one level or more above, level, one under, two under, three or more under (prompt 15 B.2).
+  // face it strikes: two levels or more above (the round overmatches the face), one above, level, one under, two
+  // under, three or more under. DECISIONS 20X: was 1, 0.75, 0.4, 0.15, 0.05 (prompt 15 B.2, no overmatch step);
+  // the overmatch step makes a flank shot beat a front shot for the guns that pierce both.
   // thermobaric: high explosive with the thermobaric tag against structures.
   "damageTable": {
     "Kinetic":       { "Ground": 1.00, "Air": 0.30, "Structure": 0.60 },
@@ -110,7 +114,7 @@
     "Fire":          { "Ground": 1.50, "Air": 0.00, "Structure": 1.00 },
     "Fragmentation": { "Ground": 0.50, "Air": 1.30, "Structure": 0.10 },
     "Energy":        { "Ground": 1.00, "Air": 1.50, "Structure": 0.50 },
-    "penetration": [1.0, 0.75, 0.4, 0.15, 0.05],
+    "penetration": [1.2, 1.0, 0.85, 0.5, 0.25, 0.1],
     "thermobaric": 2.0
   },
 
@@ -640,7 +644,7 @@
     { "id": "railgun_truck", "value": 1.26, "scale": 0.85,    "class": "TankHunter", "armour": 1, "hp": 420, "speed": 6.5, "turnRate": 60, "turretTurnRate": 45, "radius": 2.7, "length": 11.38, "width": 3.06, "cp": 9, "vision": 40,
       "firesWhileMoving": false, "weapon": "railgun", "captureRate": 1,
       "deathExplosion": { "damage": 120, "radius": 7, "delay": 0.3, "tier": "Huge" } },
-    { "id": "turtle_tank", "value": 1.11, "scale": 0.85,      "class": "Tank", "armour": [4, 3, 3, 3], "hp": 1300, "speed": 4.5, "turnRate": 50, "turretTurnRate": 40, "radius": 2.7, "length": 9.2, "width": 3.87, "cp": 7, "vision": 26,
+    { "id": "turtle_tank", "value": 1.11, "scale": 0.85,      "class": "Tank", "armour": [3, 3, 2, 3], "hp": 1300, "speed": 4.5, "turnRate": 50, "turretTurnRate": 40, "radius": 2.7, "length": 9.2, "width": 3.87, "cp": 7, "vision": 26,
       "firesWhileMoving": true, "weapon": "gun_120mm", "mainAim": "Hull", "droneArmor": 0.2, "mineProof": true, "captureRate": 1,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },

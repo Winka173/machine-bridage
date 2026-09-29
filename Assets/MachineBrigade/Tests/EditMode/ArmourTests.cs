@@ -58,15 +58,28 @@ namespace MachineBrigade.Tests
         [Test]
         public void PenetrationAgainstArmourFollowsTheTable()
         {
+            // DECISIONS 20X: the six steps, overmatch first.
             var table = GameContent.LoadCatalog().Damage;
+            Assert.AreEqual(1.2f, table.Penetration(4, 2), 1e-5f, "two levels above: the round overmatches the face");
+            Assert.AreEqual(1.2f, table.Penetration(4, 0), 1e-5f);
             Assert.AreEqual(1f, table.Penetration(4, 3), 1e-5f, "a level above: all of it");
-            Assert.AreEqual(1f, table.Penetration(4, 0), 1e-5f);
-            Assert.AreEqual(0.75f, table.Penetration(3, 3), 1e-5f, "level");
-            Assert.AreEqual(0.4f, table.Penetration(2, 3), 1e-5f, "one under");
-            Assert.AreEqual(0.15f, table.Penetration(1, 3), 1e-5f, "two under");
-            Assert.AreEqual(0.05f, table.Penetration(0, 3), 1e-5f, "three under");
-            Assert.AreEqual(0.05f, table.Penetration(0, 4), 1e-5f, "four under");
-            Assert.AreEqual((0.75f + 0.4f) / 2f, table.Penetration(2.5f, 3), 1e-5f, "a part level lies between");
+            Assert.AreEqual(0.85f, table.Penetration(3, 3), 1e-5f, "level");
+            Assert.AreEqual(0.5f, table.Penetration(2, 3), 1e-5f, "one under");
+            Assert.AreEqual(0.25f, table.Penetration(1, 3), 1e-5f, "two under");
+            Assert.AreEqual(0.1f, table.Penetration(0, 3), 1e-5f, "three under");
+            Assert.AreEqual(0.1f, table.Penetration(0, 4), 1e-5f, "four under");
+            Assert.AreEqual((0.85f + 0.5f) / 2f, table.Penetration(2.5f, 3), 1e-5f, "a part level lies between");
+            Assert.AreEqual((1.2f + 1f) / 2f, table.Penetration(4.5f, 3), 1e-5f, "and between one and two above");
+            // A flank shot beats a front shot for a gun that pierces both (a battle tank's 3 front, 2 side).
+            Assert.Greater(table.Penetration(4, 2), table.Penetration(4, 3));
+            // No overmatch on a roof or an aircraft: one level above is the most.
+            Assert.AreEqual(1f, table.Penetration(4, 1, overmatch: false), 1e-5f, "a roof");
+            Assert.AreEqual(table.Type(DamageType.Fragmentation, TargetKind.Air), table.Effective(DamageType.Fragmentation, 4, 0, TargetKind.Air), 1e-5f, "an aircraft");
+            // Prompt 15's five-value row (no overmatch step) still reads: two above is one above.
+            var old = new DamageTable(new float[6, 3], new[] { 1f, 0.75f, 0.4f, 0.15f, 0.05f });
+            Assert.AreEqual(1f, old.Penetration(4, 0), 1e-5f);
+            Assert.AreEqual(0.75f, old.Penetration(3, 3), 1e-5f);
+            Assert.AreEqual(0.05f, old.Penetration(0, 4), 1e-5f);
             Assert.AreEqual(1.5f, table.Type(DamageType.HighExplosive, TargetKind.Structure), 1e-5f, "high explosive's extra on structures");
             Assert.Greater(table.ThermobaricStructure, 1.5f, "more with the thermobaric tag");
             Assert.AreEqual(0f, table.Type(DamageType.HighExplosive, TargetKind.Air));
@@ -81,19 +94,22 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(new ArmourLevels(3, 2, 1, 1), tank.Armour);
             Assert.AreEqual(ArmorFace.Front, DamageSystem.FaceFrom(tank, new Vector2(0f, 20f)), "heading 0 faces +Y");
             Assert.AreEqual(ArmorFace.Front, DamageSystem.FaceFrom(tank, new Vector2(10f, 20f)), "a little off the nose");
+            Assert.AreEqual(ArmorFace.Side, DamageSystem.FaceFrom(tank, new Vector2(20f, 20f)), "45 degrees off the nose: the side (a 40-degree front, DECISIONS 20X)");
             Assert.AreEqual(ArmorFace.Side, DamageSystem.FaceFrom(tank, new Vector2(20f, 0f)));
             Assert.AreEqual(ArmorFace.Rear, DamageSystem.FaceFrom(tank, new Vector2(0f, -20f)));
 
-            // A 12.7 mm-like round (kinetic, penetration 1) from the front, the side and behind: 0.15, 0.4, 0.75.
+            // A 12.7 mm-like round (kinetic, penetration 1) from the front, the side and behind: two under, one under, level.
+            var table = world.Catalog.Damage;
             var hmg = new WeaponDef("hmg_test", DamageType.Kinetic, 100f, 1f, 30f, 0f, 200f, 0f, 0f, ExplosionTier.Small, ProjectileKind.Bullet) { Penetration = 1 };
             float Hit(WeaponDef w, Vector2 from)
             {
                 tank.Hp = tank.MaxHp;
                 return world.Damage.Apply(tank, 100f, w.DamageType, new HitInfo(null, 0, w, from, HitKind.Direct, w.Indirect));
             }
-            Assert.AreEqual(15f, Hit(hmg, new Vector2(0f, 20f)), 1e-3f, "front: two levels under");
-            Assert.AreEqual(40f, Hit(hmg, new Vector2(20f, 0f)), 1e-3f, "side: one under");
-            Assert.AreEqual(75f, Hit(hmg, new Vector2(0f, -20f)), 1e-3f, "rear: level");
+            Assert.AreEqual(100f * table.Penetration(1, 3), Hit(hmg, new Vector2(0f, 20f)), 1e-3f, "front: two levels under");
+            Assert.AreEqual(100f * table.Penetration(1, 2), Hit(hmg, new Vector2(20f, 0f)), 1e-3f, "side: one under");
+            Assert.AreEqual(100f * table.Penetration(1, 1), Hit(hmg, new Vector2(0f, -20f)), 1e-3f, "rear: level");
+            Assert.Less(Hit(hmg, new Vector2(0f, 20f)), Hit(hmg, new Vector2(20f, 0f)), "a flank shot beats a front shot");
 
             // A top-attack missile strikes the roof (level 1) wherever it comes from; the same missile without the
             // tag the front. Penetration 1 on both keeps the difference visible.
@@ -101,8 +117,8 @@ namespace MachineBrigade.Tests
                 { Penetration = 1, TopAttack = true };
             var direct = new WeaponDef("direct_test", DamageType.ShapedCharge, 100f, 1f, 30f, 0f, 20f, 0f, 0f, ExplosionTier.Small, ProjectileKind.Missile)
                 { Penetration = 1 };
-            Assert.AreEqual(75f, Hit(javelin, new Vector2(0f, 20f)), 1e-3f, "top attack: the roof's level 1");
-            Assert.AreEqual(15f, Hit(direct, new Vector2(0f, 20f)), 1e-3f, "direct: the front's level 3");
+            Assert.AreEqual(100f * table.Penetration(1, 1), Hit(javelin, new Vector2(0f, 20f)), 1e-3f, "top attack: the roof's level 1");
+            Assert.AreEqual(100f * table.Penetration(1, 3), Hit(direct, new Vector2(0f, 20f)), 1e-3f, "direct: the front's level 3");
             // Everything lobbed or dropped comes down on the roof too.
             Assert.AreEqual(ArmorFace.Top, DamageSystem.FaceOf(tank, new HitInfo(null, 0, TestWorlds.Howitzer, new Vector2(0f, 60f), HitKind.Direct, true)));
 
@@ -119,7 +135,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(MatchVerdict.None, Matchup.Verdict(catalog.Damage, catalog.Vehicle("sam_launcher"), mbt), "a SAM cannot reach the ground");
             var row = Matchup.EffectRow(catalog.Damage, catalog.Weapons["gun_120mm"]);
             Assert.AreEqual(1f, row[(int)EffectColumn.Armour3], 1e-5f);
-            Assert.AreEqual(0.75f, row[(int)EffectColumn.Armour4], 1e-5f);
+            Assert.AreEqual(0.85f, row[(int)EffectColumn.Armour4], 1e-5f);
+            Assert.AreEqual(1.2f, row[(int)EffectColumn.Armour2], 1e-5f, "it overmatches level 2");
             Assert.AreEqual(0f, row[(int)EffectColumn.Air], "a tank gun cannot reach aircraft");
             var summary = Matchup.Summary(catalog.Damage, catalog.Vehicle("scout_jeep"));
             Assert.AreEqual(Threat.SmallArms, summary.WeakTo[0], "a jeep falls to anything");
@@ -170,7 +187,9 @@ namespace MachineBrigade.Tests
             tank.Gear = new MachineBrigade.Sim.Entities.GearState();
             tank.Gear.Stats[(int)StatId.ResistRocket] = 0.3f;
             Assert.AreEqual(70f, Hit(rocket), 1e-3f, "the cage stops part of a shaped-charge rocket");
-            Assert.AreEqual(70f, Hit(drone), 1e-3f, "and of a drone");
+            // A drone dives on the roof (level 1): a roof is never overmatched, one level above is the most (DECISIONS 20X).
+            Assert.AreEqual(70f * world.Catalog.Damage.Penetration(4, 1, overmatch: false), Hit(drone), 1e-3f, "and of a drone");
+            Assert.AreEqual(70f, Hit(drone), 1e-3f);
             Assert.AreEqual(100f, Hit(kinetic), 1e-3f, "not a kinetic round");
             Assert.AreEqual(100f, Hit(thermo), 1e-3f, "not a thermobaric blast");
             tank.Gear = null;

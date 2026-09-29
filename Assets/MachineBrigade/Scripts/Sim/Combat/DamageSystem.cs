@@ -108,9 +108,9 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// Prompt 15 A.2: the face a direct-fire round from <paramref name="from"/> strikes (within 50 degrees of
-        /// the nose the front, of the tail the rear, else the side). Aircraft are the same all round and count as
-        /// the front; a fixed defence's faces follow its heading (a bunker's embrasured front).
+        /// Prompt 15 A.2: the face a direct-fire round from <paramref name="from"/> strikes (within 40 degrees of
+        /// the nose the front, DECISIONS 20X; within 50 of the tail the rear; else the side). Aircraft are the same
+        /// all round and count as the front; a fixed defence's faces follow its heading (a bunker's embrasured front).
         /// </summary>
         internal static ArmorFace FaceFrom(Vehicle target, Vector2 from) =>
             target.Flying ? ArmorFace.Front : Armour.FaceFrom(target.Position, target.Heading, from);
@@ -158,17 +158,19 @@ namespace MachineBrigade.Sim.Combat
             // A blast's fragments (a round's splash, a called strike, a cook-off) pierce as a heavy machine gun against vehicles.
             if (hit.Kind is HitKind.Splash or HitKind.Strike || (hit.HasBlast && weapon == null)) pen = Armour.SplashPenetration(pen, kind);
             float armour;
+            var face = ArmorFace.Front;
             if (target is Vehicle v)
             {
                 var part = v.HasParts && hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !v.IsPartBroken(shot.Part) ? shot.Part : -1;
-                _lastFace = part >= 0 ? ArmorFace.Front : FaceOf(v, hit);
+                _lastFace = face = part >= 0 ? ArmorFace.Front : FaceOf(v, hit);
                 armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(_lastFace);
             }
             else armour = target.Armour[ArmorFace.Front];
             var typeMult = weapon != null ? table.TypeOf(weapon, kind)
                 : hit.Thermo && kind == TargetKind.Structure && type == DamageType.HighExplosive ? MathF.Max(table.ThermobaricStructure, table.Type(type, kind))
                 : table.Type(type, kind);
-            _lastPen = known ? table.Penetration(pen, armour) : 1f;
+            // DECISIONS 20X: a round overmatches a face it meets side on, not the roof and not an aircraft.
+            _lastPen = known ? table.Penetration(pen, armour, DamageTable.Overmatches(kind, face == ArmorFace.Top)) : 1f;
             return _lastPen * typeMult;
         }
 
@@ -179,10 +181,12 @@ namespace MachineBrigade.Sim.Combat
         internal float Estimate(WeaponDef weapon, Vehicle shooter, IDamageable target)
         {
             var table = _world.Catalog.Damage;
-            var armour = target is Vehicle v
-                ? v.ArmourOn(v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position))
-                : target.Armour[ArmorFace.Front];
-            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour) * table.TypeOf(weapon, target.Kind);
+            var face = target is Vehicle v
+                ? v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position)
+                : ArmorFace.Front;
+            var armour = target is Vehicle tv ? tv.ArmourOn(face) : target.Armour[ArmorFace.Front];
+            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour, DamageTable.Overmatches(target.Kind, face == ArmorFace.Top)) *
+                   table.TypeOf(weapon, target.Kind);
         }
 
         /// <summary>Whether a hit is thermobaric (its weapon, or a thermobaric strike).</summary>

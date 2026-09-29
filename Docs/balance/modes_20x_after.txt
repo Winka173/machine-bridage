@@ -1,0 +1,39 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Conquest       ashfield   s1: LOST   6.0 min  kills 39 losses 50 tickets 0:282
+Conquest       ashfield   s2: WON    7.4 min  kills 60 losses 69 tickets 26:0
+Conquest       ashfield   s3: WON    5.8 min  kills 37 losses 41 tickets 268:0
+Conquest       dunebreak  s1: LOST   8.9 min  kills 62 losses 81 tickets 0:13
+Conquest       dunebreak  s2: WON    7.3 min  kills 64 losses 53 tickets 13:0
+Conquest       dunebreak  s3: LOST   8.0 min  kills 57 losses 68 tickets 0:52
+Conquest       ironport   s1: LOST   6.7 min  kills 60 losses 50 tickets 0:148
+Conquest       ironport   s2: WON    6.7 min  kills 47 losses 47 tickets 251:0
+Conquest       ironport   s3: WON    5.3 min  kills 33 losses 44 tickets 251:0
+Conquest       SUMMARY (Normal): won 5/9, median 6.7 min, range 5.3-8.9
+Siege          ashfield   s1: WON   14.5 min  kills 73 losses 175 stages 2@2.3 3@9.3 4@14.4 waves 0 progress 100 %
+Siege          ashfield   s2: LOST  18.0 min  kills 76 losses 300 stages 2@1.7 3@4.6 waves 0 progress 95 %
+Siege          ashfield   s3: WON    9.5 min  kills 40 losses 91 stages 2@2.4 3@5.9 4@9.5 waves 0 progress 100 %
+Siege          dunebreak  s1: WON   13.3 min  kills 69 losses 145 stages 2@2.2 3@9.9 4@13.2 waves 0 progress 100 %
+Siege          dunebreak  s2: WON   12.7 min  kills 68 losses 132 stages 2@1.8 3@4.6 4@12.7 waves 0 progress 100 %
+Siege          dunebreak  s3: WON    9.9 min  kills 54 losses 92 stages 2@2.5 3@5.6 4@9.8 waves 0 progress 100 %
+Siege          ironport   s1: WON    9.8 min  kills 55 losses 80 stages 2@2.3 3@6.4 4@9.7 waves 0 progress 100 %
+Siege          ironport   s2: WON   10.2 min  kills 55 losses 132 stages 2@1.7 3@4.7 4@10.2 waves 0 progress 100 %
+Siege          ironport   s3: WON   13.0 min  kills 40 losses 130 stages 2@2.3 3@7.5 4@12.9 waves 0 progress 100 %
+Siege          SUMMARY (Normal): won 8/9, median 12.7 min, range 9.5-18.0
+Defend         ashfield   s1: WON    9.0 min  kills 148 losses 65 stages 2@4.1 waves 7 progress 44 % outer line lost at 4.1
+Defend         ashfield   s2: WON    9.0 min  kills 157 losses 72 stages 2@2.3 waves 7 progress 44 % outer line lost at 2.3
+Defend         ashfield   s3: WON    9.0 min  kills 145 losses 68 stages 2@4.1 waves 7 progress 44 % outer line lost at 4.1
+Defend         dunebreak  s1: WON    9.0 min  kills 152 losses 61 stages 2@4.3 waves 7 progress 33 % outer line lost at 4.3
+Defend         dunebreak  s2: WON    9.0 min  kills 154 losses 74 stages 2@2.7 waves 7 progress 44 % outer line lost at 2.7
+Defend         dunebreak  s3: WON    9.0 min  kills 149 losses 74 stages 2@3.4 waves 7 progress 44 % outer line lost at 3.4
+Defend         ironport   s1: WON    9.0 min  kills 149 losses 56 stages 2@4.5 waves 7 progress 33 % outer line lost at 4.5
+Defend         ironport   s2: WON    9.0 min  kills 149 losses 65 stages 2@2.5 waves 7 progress 44 % outer line lost at 2.5
+Defend         ironport   s3: WON    9.0 min  kills 149 losses 79 stages 2@4.0 waves 7 progress 44 % outer line lost at 4.0
+Defend         SUMMARY (Normal): won 9/9, median 9.0 min, range 9.0-9.0
+BossRush       ashfield   s1: open  30.0 min  kills 50 losses 54 bosses 9/10, minutes each 1.1 0.7 1.2 0.4 0.4 2.0 0.6 0.7 0.6
+BossRush       ashfield   s2: open  30.0 min  kills 52 losses 39 bosses 9/10, minutes each 1.2 0.6 0.6 0.4 0.4 2.1 0.4 0.8 0.5
+BossRush       ashfield   s3: open  30.0 min  kills 51 losses 57 bosses 9/10, minutes each 1.2 0.6 0.6 0.4 0.4 2.0 0.6 0.7 0.5
+BossRush       dunebreak  s1: open  30.0 min  kills 56 losses 58 bosses 9/10, minutes each 1.1 0.6 0.6 0.5 0.4 3.2 0.5 0.5 0.5
+BossRush       dunebreak  s2: open  30.0 min  kills 48 losses 50 bosses 9/10, minutes each 1.2 0.9 0.6 0.4 0.4 1.9 0.4 0.8 0.5
+BossRush       dunebreak  s3: open  30.0 min  kills 50 losses 53 bosses 9/10, minutes each 1.1 0.7 0.6 0.5 0.4 2.4 0.4 0.8 0.5
+BossRush       SUMMARY (Normal): won 0/6, median 30.0 min, range 30.0-30.0
+(265 s)

@@ -7,6 +7,17 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Armour and damage balance
+
+- Fights are 10-35 % shorter and armour costs less (DECISIONS 20X): the penetration row is 1.2 (two or more levels
+  above: the round overmatches the face), 1, 0.85 (level), 0.5, 0.25, 0.1 (was 1, 0.75, 0.4, 0.15, 0.05); overmatch
+  counts on a front, side or rear, never on a roof or an aircraft; the front arc is 40 degrees (was 50); vehicles'
+  toughness 2.2 (was 2.5; bosses unchanged); the turtle tank's front 3 (its shed stops drones, not darts).
+- A flank shot beats a front shot for every gun (battle tank on battle tank: 26 s side on, 35 s front on; were 35 and
+  46); the right counter still wins (the tank destroyer 25 s on a battle tank, two armoured cars 39 s). `CounterTests`
+  hold; campaign, Conquest, Siege and Defend win rates hold on a 3-seed sweep. New measure `ArmourBalanceMeasure`
+  (time to kill, hits by penetration step and face); tables in `Docs/balance/*_20x_*`.
+
 ### Missile speeds, fire rates, models
 
 - No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,

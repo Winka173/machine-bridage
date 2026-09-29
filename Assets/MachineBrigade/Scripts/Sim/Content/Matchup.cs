@@ -143,7 +143,7 @@ namespace MachineBrigade.Sim.Content
         {
             if (weapon.Damage <= 0f || !weapon.CanTarget(target.Flying)) return 0f;
             var face = fromAbove && !target.Flying ? ArmorFace.Top : FaceStruck(weapon);
-            return table.Effective(weapon, target.Armour[face], target.Kind);
+            return table.Effective(weapon, target.Armour[face], target.Kind, face == ArmorFace.Top);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace MachineBrigade.Sim.Content
             // Aircraft are hit by what can shoot upwards: guns, flak, anti-air missiles, beams; roof hits do not apply.
             if (target.Flying && (top || type is DamageType.HighExplosive or DamageType.Fire or DamageType.ShapedCharge)) return 0f;
             var armour = target.Armour[top ? ArmorFace.Top : ArmorFace.Front];
-            return table.Effective(type, pen, armour, target.Kind);
+            return table.Effective(type, pen, armour, target.Kind, top);
         }
 
         /// <summary>Prompt 15 E.2: a unit's strong / weak summary, from its armour and its weapons (main first).</summary>

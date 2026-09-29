@@ -1048,7 +1048,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
-        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1: its main weapon's penetration against
+        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1.2 (1.2: it overmatches them all, DECISIONS 20X): its main weapon's penetration against
         /// the armour each shows (its roof to a weapon that strikes the roof) times the damage type, weighted by their
         /// value; a secondary counts at half.
         /// </summary>
@@ -1065,7 +1065,8 @@ namespace MachineBrigade.Sim.AI
                 {
                     var w = def.Mounts[k].Weapon;
                     if (w.Damage <= 0f || !w.CanTarget(false)) continue;
-                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % 5 : i / 5, TargetKind.Ground);
+                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % 5 : i / 5, TargetKind.Ground,
+                        def.Flying && def.FixedWing);
                     best = MathF.Max(best, k == 0 ? effect : effect * 0.5f);
                 }
                 sum += value * best;

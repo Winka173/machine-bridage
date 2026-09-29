@@ -48,7 +48,9 @@ namespace MachineBrigade.Tests
             var d = catalog.Vehicle("armored_bulldozer");
             Assert.AreEqual(7, d.CpCost);
             // The brief asked for 3,500; 3,250 (the turtle tank's) keeps the turtle the better sponge (see DECISIONS).
-            Assert.AreEqual(3250f, d.MaxHp, 1f, "3,250 health in game");
+            // DECISIONS 20X: toughness 2.2 (was 2.5), so 1,300 in the data is 2,860 in game; the turtle's the same.
+            Assert.AreEqual(2860f, d.MaxHp, 1f, "2,860 health in game");
+            Assert.AreEqual(catalog.Vehicle("turtle_tank").MaxHp, d.MaxHp, 1f, "the turtle tank's health");
             Assert.AreEqual(ArmorClass.Heavy, d.Armor);
             Assert.AreEqual(5f, d.Speed, 1e-3f);
             Assert.AreEqual(UnitClass.Heavy, d.Class);

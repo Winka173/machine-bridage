@@ -1,0 +1,9 @@
+SEEDS c1m03: 3/3 mean 2.2m s1:W1.8m/100 %/peak 24 s2:W1.8m/100 %/peak 23 s3:W3.1m/100 %/peak 31
+SEEDS c2m05: 3/3 mean 1.6m s1:W1.1m/100 %/peak 13 s2:W2.0m/100 %/peak 20 s3:W1.6m/100 %/peak 17
+SEEDS c4m06: 3/3 mean 0.8m s1:W0.6m/100 %/peak 13 s2:W0.9m/100 %/peak 13 s3:W0.9m/100 %/peak 14
+SEEDS c5m06: 3/3 mean 13.4m s1:W10.5m/100 %/peak 15 s2:W15.8m/100 %/peak 15 s3:W13.8m/100 %/peak 15
+SEEDS c7m05: 3/3 mean 8.5m s1:W8.2m/100 %/peak 12 s2:W9.4m/100 %/peak 12 s3:W8.0m/100 %/peak 14
+SEEDS c8m07: 3/3 mean 0.6m s1:W0.7m/100 %/peak 9 s2:W0.6m/100 %/peak 9 s3:W0.6m/100 %/peak 9
+SEEDS c10m05: 3/3 mean 1.1m s1:W0.7m/100 %/peak 9 s2:W0.9m/100 %/peak 10 s3:W1.7m/100 %/peak 11
+SEEDS c11m03: 3/3 mean 0.5m s1:W0.5m/100 %/peak 10 s2:W0.5m/100 %/peak 9 s3:W0.5m/100 %/peak 10
+SEEDS c12m05: 3/3 mean 1.6m s1:W2.4m/100 %/peak 13 s2:W1.1m/100 %/peak 11 s3:W1.2m/100 %/peak 12
