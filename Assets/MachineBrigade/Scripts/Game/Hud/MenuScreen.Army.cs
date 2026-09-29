@@ -83,6 +83,9 @@ namespace MachineBrigade.Game.Hud
             deckBody.Add(deckStrip);
             _deckOverview = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-army__overview");
             deckBody.Add(_deckOverview);
+            // Prompt 22 F.1: the commander for the next battle, beside the deck (its own row under the overview).
+            _deckCommander = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-mb-2");
+            deckBody.Add(_deckCommander);
             var chips = new List<VisualElement>();
             foreach (CardFilter filter in Enum.GetValues(typeof(CardFilter)))
             {
@@ -314,6 +317,8 @@ namespace MachineBrigade.Game.Hud
             });
             doctrine.AddToClassList("fc-army__doctrine");
             _deckOverview.Add(doctrine);
+            _deckCommander.Clear();
+            _deckCommander.Add(CommanderSlot());
 
             foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
             _sortButton.Value = SortName(_sort);

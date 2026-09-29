@@ -30,7 +30,7 @@ namespace MachineBrigade.Sim.Economy
             Team = team;
             Cp = startCp;
             _income = income;
-            Bank = bank;
+            _bank = bank;
             _armyCap = armyCap;
             Vehicles = vehicles ?? Array.Empty<string>();
             Supports = supports ?? Array.Empty<string>();
@@ -67,13 +67,25 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>The commander's doctrine for this battle, or none.</summary>
         public Content.Doctrine? Doctrine { get; set; }
 
+        /// <summary>Prompt 22 F: the side's commander (or enemy general), or none (SimWorld.SetCommander).</summary>
+        public CommanderDef? Commander { get; internal set; }
+
+        /// <summary>Prompt 22 F: the commander's price change by card id (absent: the card's own price).</summary>
+        internal Dictionary<string, float> PriceScales { get; } = new();
+
+        /// <summary>Prompt 22 F: the commander's income multiplier now (its flat rate, a battle without points, a full purse, the opening).</summary>
+        public float CommanderIncome { get; internal set; } = 1f;
+
         /// <summary>Extra CP per second, set by the game mode (for example per held objective).</summary>
         public float Bonus { get; set; }
 
-        public float Bank { get; }
+        private readonly float _bank;
+
+        /// <summary>The most CP the side can hold (a commander may raise it: Vault's 30 to 45).</summary>
+        public float Bank => _bank + (Commander?.BankBonus ?? 0f);
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0) + SupplyBonus) * SupplyScale);
+        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0) + SupplyBonus) * SupplyScale * (Commander?.Supply ?? 1f));
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
         public const int MaxVehicles = 32;
@@ -115,7 +127,7 @@ namespace MachineBrigade.Sim.Economy
         public float CatchUp { get; internal set; } = 1f;
 
         /// <summary>CP per second actually earned now: income and bonuses after upkeep, and the underdog's boost.</summary>
-        public float Earning => (Income + (Bonus + Relay) * IncomeScale) * Upkeep * CatchUp;
+        public float Earning => (Income + (Bonus * (Commander?.PointIncome ?? 1f) + Relay) * IncomeScale) * Upkeep * CatchUp * CommanderIncome;
 
         /// <summary>Prompt 17 C: CP per second its base's CP relays pay now (before the economy's pace, upkeep and the underdog's boost).</summary>
         public float Relay { get; internal set; }
@@ -143,8 +155,19 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>Scales this side's income (the campaign enemy keeping pace with a discounted deck).</summary>
         public void ScaleIncome(float factor) => IncomeScale *= factor;
 
-        /// <summary>What calling this card costs this side: its price less its rank's cut, never below 1.</summary>
-        public int CostOf(string id, int price) => Discounts.TryGetValue(id, out var cut) ? Math.Max(1, price - cut) : price;
+        /// <summary>What calling this card costs this side, to the whole CP (shown on the cards): see <see cref="PriceOf"/>.</summary>
+        public int CostOf(string id, int price) => PriceScales.Count == 0 ? (Discounts.TryGetValue(id, out var cut) ? Math.Max(1, price - cut) : price)
+            : Math.Max(1, (int)MathF.Round(PriceOf(id, price), MidpointRounding.AwayFromZero));
+
+        /// <summary>
+        /// What calling this card costs this side: its price times the commander's change (prompt 22 F; CP are fractional,
+        /// so a 15 % cut on a 3 CP card is worth its 0.45 CP), less its rank's cut, never below 1.
+        /// </summary>
+        public float PriceOf(string id, int price)
+        {
+            var scaled = PriceScales.TryGetValue(id, out var scale) ? price * scale : price;
+            return Discounts.TryGetValue(id, out var cut) ? MathF.Max(1f, scaled - cut) : MathF.Max(MathF.Min(1f, price), scaled);
+        }
 
         public float CooldownLeft(string supportId, double now) =>
             ReadyAt.TryGetValue(supportId, out var ready) ? (float)Math.Max(0.0, ready - now) : 0f;
@@ -231,7 +254,7 @@ namespace MachineBrigade.Sim.Economy
             // The drop zone: round the HQ, or a forward one (an outpost, a command vehicle).
             if (!_world.Bases.TryGetDropZone(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
             // A ranked card costs less to call (the army's value, upkeep and refunds keep its full price).
-            var price = economy.CostOf(defId, def.CpCost);
+            var price = economy.PriceOf(defId, def.CpCost);
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
@@ -257,10 +280,12 @@ namespace MachineBrigade.Sim.Economy
             }
             var angle = index * 2.39996f;
             var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
-            _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
+            // Prompt 22 F: Rush's drops come down faster.
+            var delivery = DeliverySeconds * (economy.Commander?.Delivery ?? 1f);
+            _pending.Add((team, defId, _world.Time + delivery, landing));
             economy.ArmyCp = ArmyCp(team);
             economy.VehicleCount = VehicleCount(team);
-            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), DeliverySeconds));
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), delivery));
             return CommandResult.Ok;
         }
 
@@ -298,7 +323,10 @@ namespace MachineBrigade.Sim.Economy
         }
 
         /// <summary>Spends CP for a strike; the caller has already validated everything else.</summary>
-        public bool TrySpend(int team, int cost)
+        public bool TrySpend(int team, int cost) => TrySpend(team, (float)cost);
+
+        /// <summary>Spends a fractional price (a commander's cut on a support).</summary>
+        public bool TrySpend(int team, float cost)
         {
             if (!_teams.TryGetValue(team, out var economy)) return true; // modes without an economy call strikes freely
             if (economy.Cp < cost) return false;
@@ -322,6 +350,7 @@ namespace MachineBrigade.Sim.Economy
                 var target = Underdog != null ? (UnderdogTeam == economy.Team ? Underdog.Income : 1f)
                     : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
                 economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
+                economy.CommanderIncome = CommanderIncome(economy);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }
 
@@ -343,13 +372,13 @@ namespace MachineBrigade.Sim.Economy
         public void OnVehicleDestroyed(Vehicle victim, Vehicle? killer = null)
         {
             // Quartermaster's four-piece: part of its own cost comes back when it falls.
-            if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own))
+            if (victim.Gear != null && victim.Gear.Has(TraitId.SetSalvageRights) && _teams.TryGetValue(victim.Team, out var own) && own.Commander?.LossRefund != false)
                 own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             var paid = 0f;
             if (team >= 0 && team != victim.Team && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
             {
-                paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team));
+                paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
             }
             else team = -1;
@@ -392,7 +421,21 @@ namespace MachineBrigade.Sim.Economy
         internal const float LossRefundCap = 0.15f;
 
         /// <summary>A kill's refund as a share of the victim's price: the base quarter, the odds, the killer's equipment, capped.</summary>
-        internal static float KillShare(float bounty, float killerBonus) => MathF.Min(KillRefundCap, KillReward * bounty * killerBonus);
+        internal static float KillShare(float bounty, float killerBonus, float reward = KillReward) => MathF.Min(KillRefundCap, reward * bounty * killerBonus);
+
+        /// <summary>
+        /// Prompt 22 F: the commander's income multiplier now: its flat rate (Ledger's), a battle without capture points
+        /// (Flag's), a full purse and the opening seconds (Vault's).
+        /// </summary>
+        internal float CommanderIncome(TeamEconomy economy)
+        {
+            if (economy.Commander is not { } c) return 1f;
+            var f = c.Income;
+            if (c.NoPointsIncome != 1f && !_world.PointsInPlay) f *= c.NoPointsIncome;
+            if (c.RichIncome != 1f && economy.Cp >= c.RichAt) f *= c.RichIncome;
+            if (c.EarlyIncome != 1f && _world.Time < c.EarlySeconds) f *= c.EarlyIncome;
+            return f;
+        }
 
         /// <summary>A killer's equipment that pays more for its kills (War Profiteer, Quartermaster's four-piece).</summary>
         private static float KillerBonus(Vehicle? killer, int team)
@@ -484,7 +527,7 @@ namespace MachineBrigade.Sim.Economy
         /// </summary>
         public int AircraftCap(int team)
         {
-            var cap = TeamEconomy.MaxAircraft;
+            var cap = TeamEconomy.MaxAircraft + _world.CommanderAirCap(team);
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Team == team && v.Def.Utility is { AirCap: > 0 } u) cap += u.AirCap;
             return cap;

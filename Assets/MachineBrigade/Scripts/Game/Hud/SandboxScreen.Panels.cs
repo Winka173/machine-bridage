@@ -82,6 +82,12 @@ namespace MachineBrigade.Game.Hud
                 var aiNames = new List<string>();
                 foreach (var a in ais) aiNames.Add(Strings.Get("sandbox.ai." + a));
                 body.Add(Drop(Strings.Get("sandbox.ai"), aiNames, (int)side.Ai, i => e.Settings(x => x.Sides[t].Ai = ais[i])));
+                // Prompt 22 F.1: each side's commander or general.
+                var commanders = CommanderPick.SandboxChoices(SandboxSession.Internal);
+                var commanderNames = new List<string>();
+                foreach (var c in commanders) commanderNames.Add(c == null ? Strings.Get("cmdr.sandbox.none") : CommanderText.Call(c) + " · " + CommanderText.Name(c));
+                var picked = commanders.FindIndex(c => (c?.Id ?? "") == side.Commander);
+                body.Add(Drop(Strings.Get("cmdr.sandbox"), commanderNames, Math.Max(0, picked), i => e.Settings(x => x.Sides[t].Commander = commanders[i]?.Id ?? "")));
                 body.Add(new KitToggle(Strings.Get("sandbox.cp.unlimited"), side.Cp < 0f, on =>
                 {
                     e.Settings(x => x.Sides[t].Cp = on ? -1f : 30f);

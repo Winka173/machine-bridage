@@ -128,10 +128,13 @@ namespace MachineBrigade.Sim.Sandbox
         /// <summary>The AI base's difficulty (Easy, Normal, Hard).</summary>
         public string BaseLevel = "Normal";
 
+        /// <summary>Prompt 22 F.1: the side's commander or general ("kade", "gen.varga"; empty: none).</summary>
+        public string Commander = "";
+
         public SandboxSide Clone() => new()
         {
             Ai = Ai, Cp = Cp, Income = Income, Cooldowns = Cooldowns, Immortal = Immortal, Deck = new List<string>(Deck),
-            Supports = new List<string>(Supports), Base = Base, BaseLevel = BaseLevel,
+            Supports = new List<string>(Supports), Base = Base, BaseLevel = BaseLevel, Commander = Commander,
         };
     }
 
@@ -262,7 +265,9 @@ namespace MachineBrigade.Sim.Sandbox
                 b.Append("{\"ai\":").Append(Q(s.Ai.ToString())).Append(",\"cp\":").Append(F(s.Cp)).Append(",\"income\":").Append(F(s.Income));
                 b.Append(",\"cooldowns\":").Append(B(s.Cooldowns)).Append(",\"immortal\":").Append(B(s.Immortal));
                 b.Append(",\"deck\":").Append(List(s.Deck)).Append(",\"supports\":").Append(List(s.Supports));
-                b.Append(",\"base\":").Append(Q(s.Base.ToString())).Append(",\"baseLevel\":").Append(Q(s.BaseLevel)).Append('}');
+                b.Append(",\"base\":").Append(Q(s.Base.ToString())).Append(",\"baseLevel\":").Append(Q(s.BaseLevel));
+                if (!string.IsNullOrEmpty(s.Commander)) b.Append(",\"commander\":").Append(Q(s.Commander));
+                b.Append('}');
             }
             b.Append("],\"units\":[");
             for (var i = 0; i < Units.Count; i++)
@@ -353,6 +358,7 @@ namespace MachineBrigade.Sim.Sandbox
                         if (so.IsArray("supports")) side.Supports.AddRange(so.StringArray("supports"));
                         side.Base = so.Enum("base", SandboxBase.None);
                         side.BaseLevel = Str(so, "baseLevel", "Normal");
+                        side.Commander = Str(so, "commander", "");
                     }
                 }
                 if (o.IsArray("checks"))

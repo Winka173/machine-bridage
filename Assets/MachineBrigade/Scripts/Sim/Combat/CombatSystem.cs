@@ -760,7 +760,8 @@ namespace MachineBrigade.Sim.Combat
             // Guided rounds are reliable up close; at the edge of their range one in ten loses lock.
             var fail = index < shooter.MountFail.Length ? shooter.MountFail[index] : 0f;
             if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
-            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)))
+            // Prompt 22 F: Dr. Venn's drones shrug off part of the jamming.
+            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon))
                 projectile.Jammed = true;
             if (weapon.Guided)
             {

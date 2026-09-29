@@ -607,6 +607,8 @@ namespace MachineBrigade.Game.Hud
             "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
+            // Prompt 22 F.4: the commander picker and the dossier's commander pages.
+            "commanders", "dossier-commanders",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -629,6 +631,15 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "dossier":
                     ShowTab(Tab.Campaign);
+                    OpenDossier();
+                    break;
+                case "commanders":
+                    ShowTab(Tab.Army);
+                    OpenCommanders();
+                    break;
+                case "dossier-commanders":
+                    ShowTab(Tab.Campaign);
+                    _dossierTab = DossierTab.Commanders;
                     OpenDossier();
                     break;
                 case "operations":

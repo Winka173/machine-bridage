@@ -191,6 +191,8 @@ namespace MachineBrigade.Sim.Sandbox
                 world.EnableEconomy(economy);
                 _cooldowns[team] = side.Cooldowns;
                 _sideImmortal[team] = side.Immortal;
+                // Prompt 22 F.1: each side's commander, before anything of it is placed.
+                world.SetCommander(team, Commanders.Get(side.Commander));
             }
             // Bases (B.7): a side's HQ and towers where the map has a camp for it.
             var bases = new BaseSetup();

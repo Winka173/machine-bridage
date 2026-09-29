@@ -160,3 +160,12 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | Foundry's roofs and hall walls | Walls of the plain `wall` prop (low, fire passes over) round open floors | A factory-hall wall and a roof-truss prop (tall, blocks fire), glass skylights, furnaces with glow |
 | Veyra Old Quarter's old town | The kit's townhouses, cottages, offices and shops; a church as the cathedral | Old-town facades, a cathedral, a clock tower, cobbles, fountains and awnings |
 | Base map pictures of both maps (`BaseMapShots`) | None | A run with graphics |
+## Prompt 22 F: commanders (DECISIONS 22F)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Portraits of the eight new commanders: Kaia Mendez (Rush), Piet Dahl (Longshot), Otto Brenn (Ledger), Tomas Adler (Flag), Ines Varro (Tide), August Reyn (Crown), Lena Quist (Magpie), Selma Okoye (Vault) | The HQ's placeholder portrait (`UI/Portraits/hq`: `Portraits.Get` falls back to it for `UI/Portraits/<id>`) | A portrait each, `Resources/UI/Portraits/<id>.png` (mendez, dahl, brenn, adler, varro, reyn, quist, okoye), in the story portraits' style |
+| Portraits of the six story commanders (Kade, Lind, Reyes, Kerr, Venn, Brandt) and the eight generals | The story's portraits (`khai`, `mai`, `dieuhau`, `linh`, `sen`, `brandt`, the generals' own) | New ones only if the story's renames (prompt 22 A) change a character's look |
+| The commander's face in the HUD | The portrait, cropped into the 44 px face | A small, high-contrast icon version of each portrait if the face reads poorly at 44 px |
+| The commanders' radio lines | Text only (the radio panel, the result card's note) | Voice lines, if the game gets voice |
+| Screenshots of the picker, the briefing with its general and the dossier's commander pages in `Docs/ui-screens/` | None (`UiShots` has the screens: `commanders`, `dossier-commanders`, `briefing`, `hud-commander`) | The lead's graphics run (`-mbShotsOnly commanders,dossier-commanders,briefing,hud-commander`), both languages |

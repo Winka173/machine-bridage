@@ -223,12 +223,22 @@ namespace MachineBrigade.Game.Match
             yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
             if (!_menu && kind != GameModeKind.Sandbox) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
+            // Prompt 22 F: the player's commander (a story mission's own, else the one picked; every mode) and the passive of
+            // the general a mission is tied to, through the loadout's caps. The Sandbox sets each side's from its scenario.
+            _world.SetStatCaps(GearCatalog.StatCap, GearCatalog.TowerStatCap);
+            _playerCommander = _menu || kind == GameModeKind.Sandbox ? null : CommanderPick.ForBattle(mission);
+            if (!_menu && kind != GameModeKind.Sandbox)
+            {
+                _world.SetCommander(PlayerTeam, _playerCommander);
+                _world.SetCommander(EnemyTeam, CommanderPick.EnemyFor(mission));
+            }
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
             if (mission != null)
             {
                 var deck = new List<VehicleBoost>();
+                // The commander's lines count towards the army's strength like its equipment (prompt 22 F.1).
                 foreach (var id in MatchSettings.DeckVehicles)
-                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(PlayerProfile.BoostFor(def), _playerCommander, def, GearCatalog.StatCap));
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 // The elite budget is part of that pace, not on top of it (prompt 8 H).
                 edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
@@ -453,6 +463,12 @@ namespace MachineBrigade.Game.Match
                 if (isActiveAndEnabled) _gestures.Enable();
             }
             Wire();
+            // Prompt 22 F.4: the commander's face beside pause, and its first words on the radio.
+            if (!_menu && _playerCommander != null && _hud != null)
+            {
+                _hud.ShowCommanderBadge(_playerCommander);
+                if (!_resumed) _hud.Radio(new RadioLine(_playerCommander.Portrait, "cmdr." + _playerCommander.Id + ".radio.start"));
+            }
 
             DispatchEvents();
             // Built: lift the curtain once this scene has drawn a few frames.
@@ -460,6 +476,9 @@ namespace MachineBrigade.Game.Match
             Curtain.Progress(1f);
             Curtain.Open();
         }
+
+        /// <summary>Prompt 22 F: the player's commander in this battle (null in the menu and the Sandbox).</summary>
+        private CommanderDef _playerCommander;
 
         /// <summary>-mb-killboss: when each boss was first seen.</summary>
         private readonly Dictionary<MachineBrigade.Sim.Core.EntityId, float> _bossSeen = new();
@@ -1608,7 +1627,12 @@ namespace MachineBrigade.Game.Match
             if (outcome.Result <= 0)
                 outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,
                     MatchSettings.DeckVehicleSlots, _kills, _losses, _session is SiegeSession or AssaultSession or WeeklySession));
-            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, outcome.Note, outcome.Hints);
+            // Prompt 22 F.4: the commander's word as the battle is decided, on the result card (a checkpoint's note comes first).
+            var note = outcome.Note;
+            if (note == null && _playerCommander != null && outcome.Result != 0 && !(outcome.Result < 0 && view is { CanResume: true }))
+                note = Strings.Format("cmdr.quote", ("name", CommanderText.Call(_playerCommander)),
+                    ("line", Strings.Get("cmdr." + _playerCommander.Id + (outcome.Result > 0 ? ".radio.win" : ".radio.loss"))));
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, note, outcome.Hints);
             _music?.Result(outcome.Result > 0);
         }
 

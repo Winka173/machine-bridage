@@ -27,6 +27,8 @@ namespace MachineBrigade.Sim.Modes
 
         public static void Tick(SimWorld world, ObjectiveState point, float dt, float captureSeconds)
         {
+            // Prompt 22 F: the battle has capture points (Flag's weakness is for a battle without them).
+            world.PointsInPlay = true;
             var power0 = 0f;
             var power1 = 0f;
             var r = point.Def.Radius;

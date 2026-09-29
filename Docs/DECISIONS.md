@@ -9252,3 +9252,181 @@ a `routes` line), `Tools/maps/build_maps.py` (`FIXED_ROUTES`), `Tools/art/combat
 `SiegeModes.cs` (Boss Rush), `TacticalAi.cs`, `ConquestAi.cs`, `MovementSystem.cs` (the standoff), `DamageSystem.cs`,
 `CombatSystem.cs`, `Vehicle.cs`, `Vehicle.Boss.cs`, `Armour.cs`, `Matchup.cs`, `Catalog.cs`, `Catalog.P20.cs`,
 `BossSystem.P20.cs`, `BossSystem.BigAttacks.cs` (a comment), the tests above.
+
+## 22F. Prompt 22 part 3: the Commander system (2026-09-30)
+
+Prompt 22 F with its checks from G: a commander picked before a battle, beside the deck, with one passive strength and one
+small weakness that are on for the whole battle. No active skill, no gauge, no levels; commanders open with the story. The
+enemy generals play by the same rules. Numbers are the spec's (F.2, F.3) unless the balance section below says otherwise.
+
+### Data and where it lives
+
+- `Sim/Content/CommanderDefs.cs` (the shape) and `Sim/Content/Commanders.cs` (the 14 commanders, the 8 generals, the
+  rules). In code like the doctrines, not in balance.json: the numbers are few, one file is tuned, and balance.json is being
+  edited by the boss and mode balance at the same time.
+- Ids: the player's `kade`, `lind`, `reyes`, `kerr`, `venn`, `mendez`, `brandt`, `dahl`, `brenn`, `adler`, `varro`, `reyn`,
+  `quist`, `okoye`; the generals `gen.<campaign general id>`: `gen.brandt`, `gen.varga`, `gen.orlov`, `gen.kessler`, `gen.sen`
+  (Venn "Queen"), `gen.quaden` (Wolff "Raven"), `gen.hung` (Thorne "Titan"), `gen.aurel`. The internal general ids stay (A.1).
+- A commander has unit lines (a stat, a value, a reach) and side-wide numbers (income, prices, bank, supply, air cap, refunds,
+  drop time, repair, rearm, stealth sight, damage on exposed enemies, drone jamming, the wounded's damage), neutral by default.
+
+### How each passive works
+
+- **Unit lines go through the loadout's caps** (F.1 "like gear"): `CommanderRules.Merge` puts the commander's lines on the
+  unit's equipment boost as it enters the battle (`SimWorld.SpawnVehicle`), after its card rank and equipment. A strength
+  counts towards the cap like a piece of equipment: gear and commander together never pass it. A commander alone always
+  gives its listed value: where a line is above the cap (Winter's +15 % range against the 12 % range cap) the line is its
+  own cap. A weakness comes off after the cap, like a trade-off's drawback. Health, damage, rate of fire and speed are folded
+  into the boost's multipliers; range, sight, spread, reload, capture rate and summon power go to the stat lines the
+  simulation reads. Vehicles use the vehicle caps, towers the tower caps (`SimWorld.SetStatCaps`, the Game's gear tables;
+  `CommanderRules.DefaultCaps` mirrors them for battles without the Game, and a test keeps the two equal).
+- **Reach**: every unit the side fields ("Army": vehicles, aircraft, ships and towers), never a boss or an HQ.
+  "Aircraft" are planes and helicopters, not drones; "Drones" (damage) are drone units and launchers whose main round is a
+  drone (FPV, Lancet, the swarm carrier), "DroneUnits" (health) the drones themselves (a UAV, a strike drone, a carrier's
+  or a hangar's drone as it is spawned); "Tanks" the Tank class, "heavy" the Heavy class, "light" the Scout and Light
+  classes; "artillery" the Artillery branch on the ground; "direct fire" the other ground vehicles whose main round is not
+  lobbed or a drone; "towers" every fixed tower; "cheap" 5 CP or less and "dear" 9 CP or more by the card's price;
+  "Energy weapons" a main gun of energy damage; "shields" a unit with a dome, wards or a shield skill (the dome's and
+  wards' health follow the unit's).
+- **Side-wide**:
+  - Lind: the engineers' repair aura and the base's repair bay ×1.25; engineers (a repair aura) 20 % cheaper.
+  - Hawk: +15 % magazine reload and 15 % faster rearming for aircraft (at home, from a carrier, over an airfield); air cap +1.
+  - Kerr: sees stealthy, camouflaged and hidden enemies and gun pits 25 % farther; +5 % damage on an enemy the side has
+    marked or revealed (a laser mark, a counter-battery reveal, a UAV scan). "Exposed" is read as marked: every enemy
+    being shot is visible, so "visible" would be a flat +5 %.
+  - Venn: drones jammed 30 % less often (a jammed drone round keeps its lock with a 30 % chance, drawn from the world's
+    random stream only when there is jamming to shrug off); the equipment's escort drones +10 % (summon power).
+  - Rush: a parachute delivery lands in 2.6 s instead of 3.5 s (trains and runways keep their own timetable).
+  - Bulwark: the field tower (a support of the Tower kind, the only tower dropped by parachute) 20 % cheaper.
+  - Ledger: all income ×1.1 (the base rate, points and relays).
+  - Flag: a held point pays 75 % more (the spec's 25 %, raised by the balance below); capture 30 % faster (the capture-rate line, towards its 50 % cap); in a battle where
+    no capture point is fought over (the point rules flag the battle as they run), income −5 %.
+  - Tide: vehicles of 5 CP or less 15 % cheaper; supply ×1.15; −5 % health (the spec's −10 %, see the balance below).
+  - Crown: vehicles of 9 CP or more +15 % health and damage; every vehicle 10 % dearer.
+  - Magpie: a kill refunds 35 % instead of 25 % (the odds and equipment on top, the 45 % cap on every refund holds). Own
+    losses refund nothing: the only loss refund is the Quartermaster set's 10 % (prompt 8 I.6), so that is what it turns off.
+  - Vault: bank cap +15 (30 to 45); income +10 % while 20 CP or more are banked; −10 % in the first 90 s.
+  - Kessler: every vehicle card 10 % cheaper ("reinforcements"); Titan: +10 % damage from a unit under half health.
+- **Prices are fractional**: the economy's CP are fractional already, so a 15 % cut on a 3 CP card is its 0.45 CP
+  (`TeamEconomy.PriceOf`); a card shows its price to the whole CP (`CostOf`), and lights up when the exact price is
+  there (`PlayerCommander.Price`). Deployment, supports and the AI pay the exact price.
+
+### Where it applies
+
+- The player's commander in every mode (`MatchRunner`): quick modes, the campaign, Operations, Boss Hunt, the weekly
+  fortress. A story mission may set its own: campaign.json `"commander"` (`MissionDef.Commander`, `CommanderPick.Forced`);
+  the story places it (chapter 10's duel: `"commander": "reyes"`). The briefing then says who leads and has no Change.
+- The enemy: a campaign mission tied to a general (`"general"`) carries `gen.<general>`; an untied mission and every other
+  mode have none (F.3).
+- The Sandbox: each side's commander or general is part of its scenario (`SandboxSide.Commander`, saved with it) and is set
+  before anything of the side is placed; the battle sheet has a dropdown per side: none, the player's open commanders (all
+  of them in the internal build) and every general.
+- The doctrines (bought with coins) stay as they are and stack with the commander: they are an older, separate choice with
+  their own shop page. Folding them into the commanders is for the lead to decide.
+
+### Army strength and the campaign's enemies
+
+- The deck's boosts the campaign's enemy keeps pace with (`EnemyScaling.Match`) are the boosts with the commander on top
+  (`MatchRunner`, the mission page's recommended power). Only health and damage lines count there, as for equipment; an
+  economy commander's edge does not show in the power number.
+
+### Unlocks
+
+- Each commander has the spec's chapter id: `c1` Kade, `c2` Lind, `c3` Hawk, `c4` Kerr and Flag, `c5+` Venn (once chapter 5
+  is done), `i2` Rush, `c6` Bulwark, `c7` Longshot, `i1` Ledger, `c8` Tide and Magpie, `i3` Crown, `c10` Vault.
+- `CommanderPick.Reached`: `cN` once chapter N opens (or chapter N−1 is done), `cN+` once chapter N is done, `iK` once the
+  main chapter before interlude K is done (`InterludeAfter`: 3, 6, 9, where B.2 puts the interludes). When the story gives
+  the interludes chapter entries of their own, `InterludeAfter` (or the ids) is the one place to change.
+- The test build (`Progression.TestUnlockAll`) opens every commander.
+
+### Save and migration
+
+- The pick is `"mb.commander"` in the settings (like the doctrine), not in the profile file: no profile version bump while
+  the story's own save state is being added. A save from before commanders, an unknown id, a general's id or a commander not
+  open yet reads as Kade (`CommanderPick.Resolve`).
+
+### Names and words
+
+- Names are tokens (`{@kade}`, `{@tide}`...) in `NameText.Commanders.cs` (NameText is now partial), added only where the
+  story's table has no entry, so the story's own names win. A story character's display name is the story's own
+  (`char.<portrait>.name`: Kade `khai`, Lind `mai`, Hawk `dieuhau`, Kerr `linh`, Venn `sen`, Brandt `brandt`, the generals'
+  ids), so the renames of part A flow into the commanders. The eight new people have `cmdr.<id>.name`, `.role` and `.bio`.
+- `CommanderText`: every text in both languages with named placeholders. A strength's and weakness's numbers are filled
+  from the data (`CommanderText.Values`), so the texts follow the balance.
+
+### Screens
+
+- **Picker** (`MenuScreen.Commanders.cs`, a full page from the deck screen and the briefing): combat, then economy; each row
+  a portrait, name, call sign, strength, weakness and the deck it suits; a locked one says where it opens; Take command on
+  the open ones (secondary buttons: the page has no main action). Device check: `-mb-commanders`.
+- **Deck screen**: the commander's row under the overview band, with Change.
+- **Briefing**: the mission page shows the enemy general's strength and weakness under the opponent line, and the player's
+  commander (the story's own, noted, for a forced one); the briefing card has a "Your commander" chip, and the general's
+  line carries their strength and weakness.
+- **HUD**: the commander's face (the compact HUD's 44 px face in a 44 pt target) beside pause; a tap opens a small card
+  with the call sign, strength and weakness for 8 s (`CommanderBadge`).
+- **Radio**: the commander's line as the battle starts (the radio panel now shows in every battle but the menu's and the
+  Sandbox's), and its win or loss line on the result card's note as the battle is decided (a checkpoint's note first).
+- **Dossier**: a Commanders tab, a page for each of the fourteen (their bio once open, where they open until then) and the
+  eight generals (once faced).
+- Styles in `Resources/UI/Commanders.uss` (tokens only). Portraits: the eight new commanders use the HQ's placeholder
+  (ASSET_DEBT).
+
+### AI (F.5)
+
+- Buying: `ConquestAi` adds `CommanderRules.Fit(commander, card) × 4` to a card's score (about half a point for a card a
+  commander clearly favours, less for one it weakens): the player's Auto-buy under its commander, an enemy general's army
+  under the general's passive.
+- Support: the strike picked for a cluster is the dearest with up to a third more for one that suits the commander's arm
+  (Hawk's airstrikes, Longshot's barrages, Bulwark's field towers); Bulwark drops a field tower at the first sign of a
+  threat to a held point instead of the second.
+
+### Balance (F.6): the measure and what it changed
+
+`CommanderMeasure.EveryCommanderAgainstEveryDeckStyle` (MB_BALANCE=1): each of the 14 commanders leads a deck style (the
+player's side by its auto commander) against the mode's own enemy for the seed, three seeds (the owner's rule; five in the
+testing phase), ashfield. 15 styles: Balanced, Sustain, Air, Recon, Drones, Blitz, Artillery, Points, Swarm, Heavy,
+Attrition (Conquest, 6 min), LongGame and Hoard (Conquest, 12 min), NoPoints (Deathmatch), Fortress (Defend). The score is
+the ticket or kill-score margin at the end (Defend: 1 − 2 × the base taken), −1 to 1; a style's best is the highest mean,
+or within 0.03 of it. About 37 min a sweep. Conquest has the catch-up income and bounties, upkeep over supply and the 45 %
+refund cap as in play; there is no escalating income anywhere in the game to measure with.
+
+- **First sweep** (the spec's numbers, AI fit weight 10): no commander was best of every style; Lind, Hawk, Kerr, Rush
+  (Swarm), Longshot, Ledger, Crown, Magpie, Vault, Iron best of at least one; Venn, Bulwark, Flag and Tide of none. Two
+  causes stood out: the AI's fit weight of 10 made a commander's army one-note (Longshot's artillery army lost its own
+  style at −0.55, Venn's drones −0.51), and Flag's +25 % on what a point pays is about 2 % of the income in Conquest (a
+  point pays 0.15 CP a second). Tide lost every Swarm battle (−0.44): cheap units and −10 % health.
+- **Changes**: fit weight 10 → 4 (`ConquestAi.CommanderFitWeight`: a clear fit is now about half a point, a nudge, not the
+  whole army); Flag's point pay +25 % → +75 %; Tide's weakness −10 % → −5 % health. The rest as the spec has them.
+- **Second sweep**: best of no style: Venn, Rush, Bulwark, Longshot, Tide, Magpie; best of every style: none. Best of at
+  least one: Iron (Balanced, Recon, Blitz, LongGame, Points, Attrition), Lind (Sustain, Hoard), Hawk (NoPoints), Kerr
+  (Drones, Fortress, Artillery, Points, Swarm, Hoard), Ledger (Balanced, Air, Heavy), Flag (Hoard), Crown (Balanced,
+  LongGame, Heavy), Vault (Air). F.6's first goal is not met at three seeds.
+- **Why it is left there**: the sweep's noise is larger than most passives. A commander changes the battle's random stream,
+  so one seed swings ±0.3 either way, and several rows are the same battle to the hundredth (Fortress in Defend scores
+  +0.26 for ten commanders: the attackers take the same share in 6 min, the metric is saturated there). Three seeds cannot
+  rank a 5 % passive. The owner's rule is one run and one after fixes; the testing phase's five seeds are the place to tune
+  further. What to look at then, in order: Iron's flat +5 %/+5 % is best of six styles (a flat edge beats a narrow one in
+  mixed decks: +3 %/+3 % if it still tops five seeds); style decks that lean harder on their arm (an all-drone deck for
+  Venn, all-artillery for Longshot); Fortress on a longer Defend or a base that falls; Magpie against a deck that trades.
+- **Vault, short and long** (against Iron, the Short Conquest at 3 min and Hoard at 12): Vault +0.12 short and −0.55 long,
+  Iron +0.26 and −0.50. Not too strong in a long battle; weaker in a short one, as its opening −10 % says. Kept.
+- **Tide's cost with many cheap units** (the Swarm style at its peak, 73 units on the field against Iron's 72): 0.46 ms a
+  simulation step against 0.50 (the vehicle cap of 32 a side bounds the swarm whatever the supply). Within the budget: the
+  supply stays +15 %.
+- Output: `commanders_<tag>.md` in MB_CV_OUT (the table, the style lengths and step costs, the checks above).
+
+### Tests
+
+- `CommanderPassiveTests` (new, 15): the roster as the spec lists it; the caps are the loadout's; every unit line reaches
+  its units and no others; a strength counts towards the cap and a weakness comes off after it (Winter's range above the
+  cap); units enter with their side's lines (a boss does not); income, points, the bank, prices, supply; a fractional price
+  charged exactly and Rush's faster drop; Magpie's refunds within the cap; air cap, rearm, repair, stealth sight, Titan's
+  wounded, Kerr's marked enemies, Venn's jamming; locked and forced commanders and a mission's general; every campaign
+  mission's general has its passive; the AI's buying scores move by the fit; the Sandbox's sides (saved and applied);
+  the pick saved and an old, unknown or general's id read as Kade; every text in both languages, filled.
+- UI (the kit's checks, both languages, the four shapes, Large text): `commanders`, `dossier-commanders`, `army-deck`,
+  `campaign-chapter`, `briefing` and every battle screen with the new `hud-commander`; the compact HUD's cover and the
+  lean Sandbox (its sheet has the dropdowns) pass. `L10nTests` and the Vietnamese-word scan pass.
+- Run once each, then again after the fixes. `EquipmentPrompt8Tests.RearguardCutsDamageOnlyWhileDrivingAway` fails in
+  this tree (96 against 80): it sets no commander and runs through none of the changed paths; not checked on the base.

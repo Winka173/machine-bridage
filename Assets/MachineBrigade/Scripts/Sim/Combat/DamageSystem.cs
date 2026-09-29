@@ -432,6 +432,8 @@ namespace MachineBrigade.Sim.Combat
             if (!raw && type == DamageType.Energy && (_world.Strikes.InSmoke(target.Position) ||
                 (hit.Attacker != null && _world.Strikes.InSmoke(hit.Attacker.Position)))) damage *= 1f - SmokeEnergyCut;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
+            // Prompt 22 F: the attacking side's commander (Titan's wounded, Captain Kerr's exposed targets).
+            if (!raw) damage *= _world.CommanderOutgoing(hit.Attacker, hit.Team, target);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
             // Play-test 6 (DECISIONS 21G): a boss's air defence hits aircraft harder (its rank's airDamage).
             if (!raw && hit.Attacker is { Def: { RankDef: { } firing } } && target is Vehicle { Flying: true }) damage *= firing.AirDamage;

@@ -54,6 +54,15 @@ its commits.
   where you fly aircraft only: no escorts, and it goes dark now and then.
 - Mara's Behemoth: an allied Behemoth for the campaign's last battle, never a card.
 - Both new mini bosses are in the Boss Hunt and the full Boss Hunt.
+### Prompt 22 F: Commanders
+
+- Pick one of 14 commanders before a battle, beside the deck: one passive strength and one small weakness, on for the whole battle; no active skill, gauge or levels. They open with the story; a locked one says where.
+- The eight enemy generals play by the same rules: a mission tied to a general carries their passive, and its briefing shows their strength and weakness.
+- A commander's unit bonuses count towards the loadout's stat caps like equipment, and towards the army strength the campaign's enemies keep pace with.
+- Every mode takes the player's commander; a story mission may set its own (chapter 10's duel is Hawk's); in the Sandbox each side picks one.
+- Screens: the picker, a commander row on the deck screen and the briefing, a small face beside pause (tap for the strength and weakness), a radio line at the start and on the result, a Commanders tab in the dossier. New portraits are placeholders.
+- Auto-buy and Support favour the cards and strikes that suit the commander; an enemy general's army favours what suits its passive.
+- Balance: every commander against every deck style (DECISIONS 22F).
 
 ### Play-test 6 bugs (DECISIONS 21B)
 

@@ -126,7 +126,7 @@ namespace MachineBrigade.Sim.Strikes
                 if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
                     return CommandResult.Rejected(CommandError.UnknownCard);
                 if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
-                if (!_world.Economy.TrySpend(command.Team, economy?.CostOf(support.Id, support.CpCost) ?? support.CpCost))
+                if (!_world.Economy.TrySpend(command.Team, economy?.PriceOf(support.Id, support.CpCost) ?? support.CpCost))
                     return CommandResult.Rejected(CommandError.NotEnoughCp);
             }
             if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f) * economy.StrikeScale;

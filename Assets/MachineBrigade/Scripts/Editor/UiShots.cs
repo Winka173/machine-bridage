@@ -159,7 +159,7 @@ namespace MachineBrigade.Editor
         public static readonly string[] BattleScreenNames =
         {
             "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
-            "hud-enemy",
+            "hud-enemy", "hud-commander",
             "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
         };
 
@@ -406,6 +406,9 @@ namespace MachineBrigade.Editor
             }
             hud.SetDeck(cp, 20f, 2.4f, 0.71f, states);
             hud.SetCommander(false, true, false, "town");
+            // Prompt 22 F.4: the commander's face beside pause; hud-commander with its card open.
+            var badge = hud.ShowCommanderBadge(Commanders.Get(Commanders.Default));
+            if (screen == "hud-commander") badge?.Show();
             var points = new List<PointInfo> { new("west", 0, 1f, false), new("town", -1, 0.35f, true), new("east", 1, -1f, false) };
             switch (screen)
             {
