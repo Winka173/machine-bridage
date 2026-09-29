@@ -438,6 +438,13 @@
             "hash": "v2:e06ac5b4ce0a619e553d5cf64eb70d17a36e4519"
         },
         {
+            "id": "argus",
+            "kind": "boss",
+            "model": "command_airship",
+            "source": "Models/command_airship",
+            "hash": "v2:814b7bdf7fa45a0657329f44ce7a3e2e96df9ea7"
+        },
+        {
             "id": "armored_train",
             "kind": "boss",
             "model": "armored_train",
@@ -487,11 +494,18 @@
             "hash": "v2:ba6fb238cd82f5fb7a5200897f367757651c8a69"
         },
         {
+            "id": "bastion_mk0",
+            "kind": "boss",
+            "model": "fortress_bastion",
+            "source": "Models/fortress_bastion",
+            "hash": "v2:d11bb5c02067bd87db54de71704c8b3ef3a6a2cf"
+        },
+        {
             "id": "behemoth",
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:95fc96505bbacb0378b2127e1edc8531ea506c88"
+            "hash": "v2:cd661154de72b137bf2ea334ae88443216a2b82a"
         },
         {
             "id": "behemoth_inferno",
@@ -499,6 +513,13 @@
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
             "hash": "v2:0754f5db36eeee24e32aaeab5957da0713bbf624"
+        },
+        {
+            "id": "behemoth_mk2",
+            "kind": "boss",
+            "model": "behemoth",
+            "source": "Models/behemoth",
+            "hash": "v2:cd661154de72b137bf2ea334ae88443216a2b82a"
         },
         {
             "id": "behemoth_tempest",
@@ -536,6 +557,13 @@
             "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
         },
         {
+            "id": "caspian",
+            "kind": "boss",
+            "model": "caspian",
+            "source": "Models/caspian",
+            "hash": "v2:d1fb0d9e242a3590c2e118456aa37362e852161c"
+        },
+        {
             "id": "coastal_battery",
             "kind": "structure",
             "model": "heavy_turret",
@@ -547,7 +575,7 @@
             "kind": "boss",
             "model": "command_airship",
             "source": "Models/command_airship",
-            "hash": "v2:49647ed5d17c45801ef0f14181e4628f76cfcfdb"
+            "hash": "v2:814b7bdf7fa45a0657329f44ce7a3e2e96df9ea7"
         },
         {
             "id": "cp_relay",
@@ -569,6 +597,13 @@
             "model": "cp_relay",
             "source": "Models/cp_relay",
             "hash": "v2:d6bc51c9b6e1eb8cbce42838558e98096dc15b09"
+        },
+        {
+            "id": "daedalus",
+            "kind": "boss",
+            "model": "daedalus",
+            "source": "Models/daedalus",
+            "hash": "v2:36cfb16cea5ed76490f356d992204011e014f575"
         },
         {
             "id": "dragons_teeth",
@@ -617,7 +652,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:e610aebe31fe660237a9884b8177379b6579b5f0"
+            "hash": "v2:a885addb9b9b4bbfd23a5b1709548ba9bb6d5bb1"
         },
         {
             "id": "earth_borer",
@@ -732,11 +767,18 @@
             "hash": "v2:36b5768494a46676e0682c48cc71303ea1a3eeb6"
         },
         {
+            "id": "fenrir",
+            "kind": "boss",
+            "model": "mobile_fortress",
+            "source": "Models/mobile_fortress",
+            "hash": "v2:f7f01b0236b251df01687ca7565932112d5af156"
+        },
+        {
             "id": "fortress_bastion",
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:e1b4b006c1afe9ae2cda3b86b7b1c87fa79437bd"
+            "hash": "v2:d11bb5c02067bd87db54de71704c8b3ef3a6a2cf"
         },
         {
             "id": "fortress_hive",
@@ -816,6 +858,27 @@
             "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
         },
         {
+            "id": "icarus_mk0",
+            "kind": "boss",
+            "model": "silver_bug",
+            "source": "Models/silver_bug",
+            "hash": "v2:602756b7e99cfdde03dd2e931d0451e6d3f9a065"
+        },
+        {
+            "id": "ixion",
+            "kind": "boss",
+            "model": "ixion",
+            "source": "Models/ixion",
+            "hash": "v2:18fc837daca7a2af4a8c5a31b042c123f4ea3da0"
+        },
+        {
+            "id": "kronos",
+            "kind": "boss",
+            "model": "kronos",
+            "source": "Models/kronos",
+            "hash": "v2:f13e003c3839d6bcdaceea1c97ea6a5f05459fea"
+        },
+        {
             "id": "landing_hovercraft",
             "kind": "boss",
             "model": "landing_hovercraft",
@@ -827,7 +890,14 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:7407fd566f9842db1c0888772dfdff860bd29cbc"
+            "hash": "v2:e44d3d3611058ff1da9c6dc262e2f67474b0e3c7"
+        },
+        {
+            "id": "locust",
+            "kind": "boss",
+            "model": "drone_mothership",
+            "source": "Models/drone_mothership",
+            "hash": "v2:a885addb9b9b4bbfd23a5b1709548ba9bb6d5bb1"
         },
         {
             "id": "logistics_station",
@@ -914,11 +984,18 @@
             "hash": "v2:f7f01b0236b251df01687ca7565932112d5af156"
         },
         {
+            "id": "moloch",
+            "kind": "boss",
+            "model": "moloch",
+            "source": "Models/moloch",
+            "hash": "v2:32ef53dfba7682421c722c3c690146c56287a8a5"
+        },
+        {
             "id": "nuke_train",
             "kind": "boss",
             "model": "nuke_train",
             "source": "Models/nuke_train",
-            "hash": "v2:fb84a1903bd86206e99bf431d7fb72049a240c81"
+            "hash": "v2:4be2f54c6028f9cc6287f99cafa51b393e2e62f6"
         },
         {
             "id": "radar_station",
@@ -963,6 +1040,13 @@
             "hash": "v2:4947e60170193cd9250b3ced07ea3e4669a7317d"
         },
         {
+            "id": "scylla",
+            "kind": "boss",
+            "model": "leviathan",
+            "source": "Models/leviathan",
+            "hash": "v2:e44d3d3611058ff1da9c6dc262e2f67474b0e3c7"
+        },
+        {
             "id": "shield_tower",
             "kind": "tower",
             "model": "shield_tower",
@@ -988,7 +1072,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:f421376471867418fe8dcce0a187d4982fa3c3f2"
+            "hash": "v2:602756b7e99cfdde03dd2e931d0451e6d3f9a065"
         },
         {
             "id": "sky_fortress",
@@ -1024,6 +1108,13 @@
             "model": "targeting_station",
             "source": "Models/targeting_station",
             "hash": "v2:2c7ff704a8052f55781e2bf618625963bab99ad9"
+        },
+        {
+            "id": "typhon",
+            "kind": "boss",
+            "model": "typhon",
+            "source": "Models/typhon",
+            "hash": "v2:670322a3fb47c7cbc2913c2f0a499798ccec9958"
         }
     ]
 }
