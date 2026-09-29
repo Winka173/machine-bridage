@@ -135,11 +135,15 @@ namespace MachineBrigade.Sim.Content
             return row;
         }
 
-        /// <summary>A weapon's multiplier against a unit facing it (its front, or its roof for rounds that strike the roof); 0 when it cannot reach it.</summary>
-        public static float Against(DamageTable table, WeaponDef weapon, VehicleDef target)
+        /// <summary>
+        /// A weapon's multiplier against a unit facing it (its front, or its roof for rounds that strike the roof and
+        /// for an aeroplane's fire, <paramref name="fromAbove"/>); 0 when it cannot reach it.
+        /// </summary>
+        public static float Against(DamageTable table, WeaponDef weapon, VehicleDef target, bool fromAbove = false)
         {
             if (weapon.Damage <= 0f || !weapon.CanTarget(target.Flying)) return 0f;
-            return table.Effective(weapon, target.Armour[FaceStruck(weapon)], target.Kind);
+            var face = fromAbove && !target.Flying ? ArmorFace.Top : FaceStruck(weapon);
+            return table.Effective(weapon, target.Armour[face], target.Kind);
         }
 
         /// <summary>
@@ -159,7 +163,8 @@ namespace MachineBrigade.Sim.Content
         public static MatchVerdict Verdict(float effect) => effect >= GoodAt ? MatchVerdict.Good : effect >= PoorAt ? MatchVerdict.Poor : MatchVerdict.None;
 
         /// <summary>Prompt 15 E.5: ✓ ~ ✕ for our unit's main weapon against an enemy facing it.</summary>
-        public static MatchVerdict Verdict(DamageTable table, VehicleDef ours, VehicleDef theirs) => Verdict(Against(table, ours.Weapon, theirs));
+        public static MatchVerdict Verdict(DamageTable table, VehicleDef ours, VehicleDef theirs) =>
+            Verdict(Against(table, ours.Weapon, theirs, ours.Flying && ours.FixedWing));
 
         /// <summary>The typical weapon a threat stands for: its damage type, penetration and whether it strikes the roof.</summary>
         public static (DamageType type, int pen, bool top) ThreatProfile(Threat threat) => threat switch

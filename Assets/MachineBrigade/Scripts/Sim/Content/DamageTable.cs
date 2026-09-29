@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.Content
             { 1.00f, 0.30f, 0.60f }, // Kinetic
             { 1.00f, 0.30f, 0.60f }, // ShapedCharge
             { 1.00f, 0.00f, 1.50f }, // HighExplosive
-            { 1.25f, 0.00f, 1.00f }, // Fire
+            { 1.50f, 0.00f, 1.00f }, // Fire
             { 0.50f, 1.50f, 0.10f }, // Fragmentation
             { 1.00f, 1.50f, 0.50f }, // Energy
         });

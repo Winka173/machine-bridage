@@ -124,7 +124,10 @@ namespace MachineBrigade.Tests
             var plain = world.SpawnVehicle("decoy", 1, new Vector2(20f, 0f), 0f);
             float Ratio(WeaponDef w, HitKind kind = HitKind.Direct, bool indirect = false) =>
                 Hit(world, armoured, 100f, w, kind, indirect) / Hit(world, plain, 100f, w, kind, indirect);
-            Assert.AreEqual(0.8f, Ratio(TestWorlds.Gun), 1e-3f, "armour-piercing resistance");
+            // Prompt 15: shaped-charge resistance (a HEAT shell: no cage for a shell); a kinetic dart is not resisted.
+            var heat = new WeaponDef("heat_test", DamageType.ShapedCharge, 100f, 1f, 20f, 0f, 100f, 0f, 0f, ExplosionTier.Medium) { Penetration = 4 };
+            Assert.AreEqual(0.8f, Ratio(heat), 1e-3f, "shaped-charge resistance");
+            Assert.AreEqual(1f, Ratio(TestWorlds.Gun), 1e-3f, "not against a kinetic dart");
             Assert.AreEqual(0.7f, Ratio(TestWorlds.Missile), 1e-3f, "and the slat cage against missiles on top");
             Assert.AreEqual(0.85f, Ratio(TestWorlds.Howitzer, HitKind.Splash, true), 1e-3f, "the overhead screen against artillery");
             Assert.AreEqual(0.5f, Ratio(TestWorlds.Shell, HitKind.Mine), 1e-3f, "mine rollers");
@@ -352,7 +355,8 @@ namespace MachineBrigade.Tests
                 new GearTrait(TraitId.Unbreakable, 2f)));
             var tank = world.SpawnVehicle("decoy", 0, new Vector2(0f, 0f), 0f);
             var hits = new List<float>();
-            for (var i = 0; i < 5; i++) hits.Add(Hit(world, tank, 100f, TestWorlds.Gun));
+            // Prompt 15: reactive blocks take shaped charges only (a missile); the glacis bounces kinetic and shaped charges.
+            for (var i = 0; i < 5; i++) hits.Add(Hit(world, tank, 100f, TestWorlds.Missile));
             Assert.AreEqual(50f, hits[0], 1e-3f, "a reactive block halves the hit");
             Assert.AreEqual(50f, hits[1], 1e-3f);
             Assert.AreEqual(100f, hits[2], 1e-3f, "until the blocks are used up");
@@ -380,9 +384,12 @@ namespace MachineBrigade.Tests
             var light = world.SpawnVehicle("mortar", 0, new Vector2(5f, 0f), 0f);
             light.Gear = null;
             Run(world, 0.1f);
+            // Prompt 15: of what gets through its armour (the shell's penetration against its front).
+            var m = world.Damage.HitMultiplier(light, DamageType.HighExplosive,
+                new HitInfo(null, 1, TestWorlds.Shell, light.Position + new Vector2(0f, 5f), HitKind.Direct, false));
             var taken = Hit(world, light, 100f, TestWorlds.Shell);
-            Assert.AreEqual(75f, taken, 1e-3f, "the light vehicle takes three quarters");
-            Assert.AreEqual(guardian.MaxHp - 25f, guardian.Hp, 1e-3f, "the guardian the rest");
+            Assert.AreEqual(75f * m, taken, 1e-3f, "the light vehicle takes three quarters");
+            Assert.AreEqual(guardian.MaxHp - 25f * m, guardian.Hp, 1e-3f, "the guardian the rest");
         }
 
         // ------------------------------------------------------------------ set behaviours

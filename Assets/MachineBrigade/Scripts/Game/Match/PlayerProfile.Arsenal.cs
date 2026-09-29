@@ -118,8 +118,13 @@ namespace MachineBrigade.Game.Match
             return true;
         }
 
-        /// <summary>The equipment model the save is in (see <see cref="Data.gearVersion"/>; 3: prompt 8's cleanup and fit matrix).</summary>
-        internal const int GearVersion = 3;
+        /// <summary>
+        /// The equipment model the save is in (see <see cref="Data.gearVersion"/>; 3: prompt 8's cleanup and fit matrix;
+        /// 4: prompt 15's lines by armour and penetration level: every piece keeps its id, slot, rarity and level, its
+        /// base type reads its new line, and a piece a branch wears that no longer fits it, such as reactive armour on
+        /// aircraft, becomes one that does in the same slot, of the same rarity and level).
+        /// </summary>
+        internal const int GearVersion = 4;
 
         /// <summary>
         /// Prompt 8 (I.1, I.8): pieces of a retired or merged base type become their replacement (same

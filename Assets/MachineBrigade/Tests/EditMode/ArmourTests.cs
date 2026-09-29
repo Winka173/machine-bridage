@@ -125,5 +125,107 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(Threat.SmallArms, summary.WeakTo[0], "a jeep falls to anything");
             Assert.IsFalse(Matchup.Summary(catalog.Damage, catalog.Vehicle("heavy_tank")).WeakTo.Contains(Threat.HeavyMachineGuns));
         }
+
+        private static WeaponDef Round(string id, DamageType type, ProjectileKind kind, int pen, TargetLayers targets = TargetLayers.Ground) =>
+            new(id, type, 100f, 1f, 40f, 0f, 60f, 0f, 0f, ExplosionTier.Small, kind, targets: targets) { Penetration = pen };
+
+        /// <summary>
+        /// Prompt 15 C (the counter table): reactive armour and cages cut shaped charges, not kinetic rounds (nor a
+        /// thermobaric blast, for the cage); APS shoots down missiles, rockets and drones, never shells, bullets or
+        /// beams; flares fool missiles only; smoke scatters beams (and blinds a point-defence laser).
+        /// </summary>
+        [Test]
+        public void CountersFollowTheTable()
+        {
+            var kinetic = TestWorlds.Gun;
+            var missile = TestWorlds.Missile;
+            var rocket = Round("rpg_test", DamageType.ShapedCharge, ProjectileKind.Rocket, 4);
+            var thermo = Round("tos_test", DamageType.HighExplosive, ProjectileKind.Rocket, 4);
+            thermo.Thermobaric = true;
+            var drone = Round("fpv_test", DamageType.ShapedCharge, ProjectileKind.Drone, 4);
+            var bullet = Round("bullet_test", DamageType.Kinetic, ProjectileKind.Bullet, 4);
+            var beam = Round("beam_test", DamageType.Energy, ProjectileKind.Bullet, 4, TargetLayers.All);
+            beam.Beam = true;
+
+            var world = TestWorlds.World();
+            var tank = world.SpawnVehicle("tank", 1, Vector2.Zero, 0f);
+            var shooter = world.SpawnVehicle("tank", 0, new Vector2(0f, 20f), 0f);
+            float Hit(WeaponDef w)
+            {
+                tank.Hp = tank.MaxHp;
+                return world.Damage.Apply(tank, 100f, w.DamageType, new HitInfo(shooter, 0, w, shooter.Position, HitKind.Direct, false));
+            }
+            Assert.AreEqual(100f, Hit(kinetic), 1e-3f, "pen 4 on a level-3 front");
+            Assert.AreEqual(100f, Hit(missile), 1e-3f);
+
+            // Reactive armour: shaped charges only.
+            tank.Special = SpecialModule.ReactiveArmor;
+            tank.SpecialPower = 0.5f;
+            Assert.AreEqual(50f, Hit(missile), 1e-3f, "reactive armour cuts a shaped charge");
+            Assert.AreEqual(50f, Hit(rocket), 1e-3f);
+            Assert.AreEqual(100f, Hit(kinetic), 1e-3f, "not a kinetic dart");
+            tank.Special = SpecialModule.None;
+
+            // A cage: shaped charges on rockets, missiles and drones; not kinetic rounds, not a thermobaric blast.
+            tank.Gear = new MachineBrigade.Sim.Entities.GearState();
+            tank.Gear.Stats[(int)StatId.ResistRocket] = 0.3f;
+            Assert.AreEqual(70f, Hit(rocket), 1e-3f, "the cage stops part of a shaped-charge rocket");
+            Assert.AreEqual(70f, Hit(drone), 1e-3f, "and of a drone");
+            Assert.AreEqual(100f, Hit(kinetic), 1e-3f, "not a kinetic round");
+            Assert.AreEqual(100f, Hit(thermo), 1e-3f, "not a thermobaric blast");
+            tank.Gear = null;
+
+            // APS: missiles, rockets and drones are shot down; shells, bullets and beams land.
+            tank.Aps = new ApsDef(12f, 99, 1f);
+            tank.ApsCharges = 99;
+            bool Lands(WeaponDef w)
+            {
+                tank.Hp = tank.MaxHp;
+                var p = new MachineBrigade.Sim.Entities.Projectile(shooter.Id, 0, w, tank.Position, tank.Id, 0f)
+                    { Origin = shooter.Position, Shooter = shooter, Main = true };
+                world.Damage.ResolveImpact(p);
+                return tank.Hp < tank.MaxHp;
+            }
+            Assert.IsFalse(Lands(missile), "APS shoots down a missile");
+            Assert.IsFalse(Lands(rocket), "a rocket");
+            Assert.IsFalse(Lands(drone), "a drone");
+            Assert.IsTrue(Lands(kinetic), "not a tank shell");
+            Assert.IsTrue(Lands(bullet), "not a bullet");
+            Assert.IsTrue(Lands(beam), "not a beam");
+            // A point-defence laser is blinded by smoke round it.
+            tank.Aps = new ApsDef(12f, 99, 1f) { Laser = true };
+            Assert.IsFalse(Lands(missile), "the laser takes the missile in clear air");
+            world.Strikes.AddSmoke(1, tank.Position, 8f, 60f);
+            Assert.IsTrue(Lands(missile), "not through smoke");
+            tank.Aps = null;
+
+            // Smoke scatters a beam (round the target or the shooter), nothing else.
+            Assert.AreEqual(100f * (1f - DamageSystem.SmokeEnergyCut), Hit(beam), 1e-3f, "a beam into smoke");
+            Assert.AreEqual(100f, Hit(kinetic), 1e-3f, "a shell through smoke");
+
+            // Flares fool missiles only: at a flaring helicopter some missiles go wide, every flak round and beam lands.
+            var air = TestWorlds.World();
+            var heli = air.SpawnVehicle("heli", 1, Vector2.Zero, 0f);
+            var aa = air.SpawnVehicle("aa", 0, new Vector2(0f, 30f), 0f);
+            heli.FlaresUntil = 1e9;
+            var sam = Round("sam_test", DamageType.Fragmentation, ProjectileKind.Missile, 3, TargetLayers.Air);
+            int Landed(WeaponDef w)
+            {
+                var landed = 0;
+                for (var i = 0; i < 60; i++)
+                {
+                    heli.Hp = heli.MaxHp;
+                    var p = new MachineBrigade.Sim.Entities.Projectile(aa.Id, 0, w, heli.Position, heli.Id, 0f, targetFlying: true)
+                        { Origin = aa.Position, Shooter = aa, Main = true, LaunchedAt = 0.0 };
+                    air.Damage.ResolveImpact(p);
+                    if (heli.Hp < heli.MaxHp) landed++;
+                }
+                return landed;
+            }
+            var sams = Landed(sam);
+            Assert.That(sams, Is.InRange(1, 59), "flares pull some missiles off");
+            Assert.AreEqual(60, Landed(TestWorlds.Flak), "flak ignores flares");
+            Assert.AreEqual(60, Landed(beam), "so does a beam");
+        }
     }
 }

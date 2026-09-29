@@ -109,19 +109,26 @@ namespace MachineBrigade.Sim.Combat
         internal static ArmorFace FaceFrom(Vehicle target, Vector2 from) =>
             target.Flying ? ArmorFace.Front : Armour.FaceFrom(target.Position, target.Heading, from);
 
+        /// <summary>
+        /// An aeroplane fires down on its target in its dive: its direct fire strikes the roof. A helicopter fires
+        /// from low and stand-off, at the face turned to it.
+        /// </summary>
+        internal static bool FromAbove(Vehicle? shooter) => shooter != null && shooter.Flying && shooter.Def.FixedWing;
+
         /// <summary>A direct-fire hit from <paramref name="from"/> takes the vehicle in the side or the rear (flanking rounds, the wheeled gun's bonus).</summary>
         internal static bool Flanked(Vehicle target, Vector2 from) =>
             !target.Flying && !target.Def.Static && FaceFrom(target, from) != ArmorFace.Front;
 
         /// <summary>
         /// Prompt 15 B.3: the face a hit strikes. Rounds that come down on the roof (top-attack weapons, bomblets,
-        /// everything lobbed or dropped, called strikes, a mine under the belly) strike the top; a direct hit the
-        /// face turned to the shooter; a blast the face turned to it.
+        /// everything lobbed or dropped, called strikes, a mine under the belly, an aeroplane's guns and rockets in
+        /// its dive) strike the top; a direct hit the face turned to the shooter; a blast the face turned to it.
         /// </summary>
         internal static ArmorFace FaceOf(IDamageable target, in HitInfo hit)
         {
             if (target is not Vehicle v || v.Flying) return ArmorFace.Front;
             if (hit.Top || (hit.Weapon != null && Armour.StrikesTop(hit.Weapon)) || hit.Kind is HitKind.Strike or HitKind.Mine) return ArmorFace.Top;
+            if (hit.Kind is HitKind.Direct or HitKind.Pierce && FromAbove(hit.Attacker)) return ArmorFace.Top;
             if (hit.Kind == HitKind.Splash || hit.HasBlast) return hit.HasBlast ? FaceFrom(v, hit.Blast) : ArmorFace.Top;
             return hit.Kind is HitKind.Direct or HitKind.Pierce ? FaceFrom(v, hit.Origin) : ArmorFace.Front;
         }
@@ -161,13 +168,13 @@ namespace MachineBrigade.Sim.Combat
         /// What one of a weapon's rounds is expected to do, as a multiplier, to a target from <paramref name="from"/>
         /// (targeting and the overkill check): penetration against the face it would strike, times the damage type.
         /// </summary>
-        internal float Estimate(WeaponDef weapon, Vector2 from, IDamageable target, float penetrationUp = 0f)
+        internal float Estimate(WeaponDef weapon, Vehicle shooter, IDamageable target)
         {
             var table = _world.Catalog.Damage;
             var armour = target is Vehicle v
-                ? v.ArmourOn(v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) ? ArmorFace.Top : FaceFrom(v, from))
+                ? v.ArmourOn(v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position))
                 : target.Armour[ArmorFace.Front];
-            return table.Penetration(weapon.Penetration + penetrationUp, armour) * table.TypeOf(weapon, target.Kind);
+            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour) * table.TypeOf(weapon, target.Kind);
         }
 
         /// <summary>Whether a hit is thermobaric (its weapon, or a thermobaric strike).</summary>
@@ -320,7 +327,13 @@ namespace MachineBrigade.Sim.Combat
             switch (target)
             {
                 case Vehicle vehicle:
-                    return HitVehicle(vehicle, damage, type, hit);
+                {
+                    var dealt = HitVehicle(vehicle, damage, type, hit);
+                    // Prompt 15 C.4: fire burns on: a share of what got through, over a few seconds (fires add up).
+                    if (type == DamageType.Fire && dealt > 0f && vehicle.IsAlive && hit.Kind is HitKind.Direct or HitKind.Splash or HitKind.Strike)
+                        _world.Status.Burn(vehicle, dealt * FireAfterburn / FireBurnSeconds, FireBurnSeconds, hit.Team, hit.Attacker?.Id ?? default, stack: true);
+                    return dealt;
+                }
                 case Prop prop:
                     prop.Hp = MathF.Max(0f, prop.Hp - damage);
                     _world.Emit(SimEvent.Damage(prop, damage));
@@ -426,7 +439,7 @@ namespace MachineBrigade.Sim.Combat
                     : new HitInfo(pending.Attacker, pending.Team, null, pending.Position, pending.Kind, true);
                 // Prompt 15 B.3: a bomblet comes down on the roof with its own penetration; any other blast (a
                 // cook-off, a fuel tank, equipment's) throws fragments at the face turned to it.
-                info = pending.Pen >= 0f ? info.WithPen(pending.Pen, top: true) : info.WithPen(Armour.FragmentPenetration, top: false);
+                info = pending.Pen >= 0f ? info.WithPen(pending.Pen, pending.Top) : info.WithPen(Armour.FragmentPenetration, top: false);
                 Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
                     pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info);
             }
@@ -457,7 +470,8 @@ namespace MachineBrigade.Sim.Combat
         {
             if (!car.IsAlive) return;
             _pending.Add(new PendingExplosion(_world.Time, car.Position,
-                new ExplosionDef(charge.Damage, MathF.Max(1f, charge.SplashRadius), 0f, charge.ImpactTier), car.Id, car.Team));
+                new ExplosionDef(charge.Damage, MathF.Max(1f, charge.SplashRadius), 0f, charge.ImpactTier), car.Id, car.Team,
+                pen: charge.Penetration, top: false));
             car.Detonated = true;
             Apply(car, car.Hp + car.MaxHp, DamageType.HighExplosive);
             car.Hp = 0f;
@@ -493,6 +507,9 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
         private const double FlareDecoy = 0.35;
+
+        /// <summary>Prompt 15 C.4: the share of a fire hit's damage that burns on afterwards, and over how long.</summary>
+        internal const float FireAfterburn = 0.3f, FireBurnSeconds = 3f;
 
         /// <summary>Prompt 15 C.6: the share of a beam's damage smoke scatters.</summary>
         internal const float SmokeEnergyCut = 0.8f;
@@ -563,9 +580,10 @@ namespace MachineBrigade.Sim.Combat
         private readonly struct PendingExplosion
         {
             public PendingExplosion(double due, Vector2 position, ExplosionDef explosion, EntityId source, int team = Teams.Environment,
-                Vehicle? attacker = null, HitKind kind = HitKind.None, float pen = -1f)
+                Vehicle? attacker = null, HitKind kind = HitKind.None, float pen = -1f, bool top = true)
             {
                 Pen = pen;
+                Top = top;
                 Team = team;
                 Due = due;
                 Position = position;
@@ -588,8 +606,11 @@ namespace MachineBrigade.Sim.Combat
 
             public HitKind Kind { get; }
 
-            /// <summary>A bomblet's penetration (it comes down on the roof); -1 for an ordinary blast.</summary>
+            /// <summary>A bomblet's penetration (it comes down on the roof), a car bomb's charge's; -1 for an ordinary blast.</summary>
             public float Pen { get; }
+
+            /// <summary>It comes down on the roof (a bomblet), else it strikes the face turned to it.</summary>
+            public bool Top { get; }
         }
     }
 }
