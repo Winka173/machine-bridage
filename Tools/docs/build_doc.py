@@ -27,7 +27,8 @@ CLASS_VI = {'Scout': 'Trinh sát', 'Light': 'Xe nhẹ', 'Tank': 'Xe tăng', 'Hea
             'Artillery': 'Pháo binh', 'AntiAir': 'Phòng không', 'Support': 'Hỗ trợ', 'Aircraft': 'Không quân', 'Helicopter': 'Trực thăng',
             'Plane': 'Máy bay', 'Defense': 'Công sự', 'Boss': 'Boss'}
 ARMOR_VI = {'Light': 'Nhẹ', 'Heavy': 'Nặng', 'Air': 'Máy bay', 'Structure': 'Công trình'}
-TYPE_VI = {'Kinetic': 'Động năng', 'ArmorPiercing': 'Xuyên giáp', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa', 'Flak': 'Phòng không'}
+TYPE_VI = {'Kinetic': 'Động năng', 'ArmorPiercing': 'Xuyên giáp', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa', 'Flak': 'Phòng không',
+           'ShapedCharge': 'Nổ lõm', 'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
 TARGET_VI = {'Ground': 'Mặt đất', 'Air': 'Trên không', 'All': 'Tất cả'}
 SLOT_VI = {'Weapon': 'Vũ khí', 'Loader': 'Nạp đạn', 'Armor': 'Giáp', 'Optics': 'Quang học', 'Engine': 'Động cơ', 'Repair': 'Sửa chữa',
            'Special': 'Đặc biệt'}
@@ -266,6 +267,7 @@ def build(game, imgdir):
     out.append(programme.operations(game, h))
     out.append(programme.bases(game, h))
     out.append(programme.siege(game, h))
+    out.append(programme.late_programme(game, h, imgdir))
 
     # ------------------------------------------------------------------ vehicles
     groups = {}
@@ -292,8 +294,9 @@ def build(game, imgdir):
 
     # ------------------------------------------------------------------ weapons
     dt = game['damageTable']
-    armors = ['Light', 'Heavy', 'Air', 'Structure']
-    rows = [[TYPE_VI.get(t, t)] + [f"×{dt[t][a]:g}" for a in armors] for t in dt]
+    armors = ['Ground', 'Air', 'Structure']
+    rows = [[TYPE_VI.get(t, t)] + [f"×{dt[t][a]:g}" for a in armors] for t in dt if isinstance(dt[t], dict)]
+    pens = dt.get('penetration', [])
     weapons = {}
     branch_names = {b['id']: f"{t['name']} · {b['name']}" for t in game['base']['towers'] for b in t['branches']}
     for group in ('vehicles', 'elites', 'bosses', 'towers'):
@@ -308,7 +311,10 @@ def build(game, imgdir):
               f"{w['range']:g}", f"{w['minRange']:g}" if w['minRange'] else '', f"{w['splash']:g}" if w['splash'] else '',
               TARGET_VI.get(w['targets'], w['targets']), w['projectile'], f"{w['dps']:.0f}", esc(owner)] for w, owner in sorted(weapons.values(), key=lambda x: x[0]['id'])]
     out.append("<div class='section'><h2>10. Vũ khí và bảng sát thương</h2><h3>Hệ số sát thương theo loại đạn và loại giáp</h3>"
-               + table(['Loại đạn'] + [ARMOR_VI[a] for a in armors], rows)
+               + table(['Loại đạn'] + [{'Ground': 'Mặt đất', 'Air': 'Trên không', 'Structure': 'Công trình'}[a] for a in armors], rows)
+               + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4, mỗi vũ khí có cấp xuyên 0–4. Sát thương nhân theo số cấp xuyên còn thiếu: "
+               + esc(', '.join(f"thiếu {i} cấp ×{m:g}" for i, m in enumerate(pens)))
+               + f"; đầu nổ nhiệt áp ×{dt.get('thermobaric', 1):g} (xem DECISIONS 14A). Bảng hiệu quả và ký hiệu ✓ ~ ✕ của từng xe nằm ở thẻ xe (phần 8).</p>"
                + "<p>Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch theo tầm và chuyển động, pháo có tầm tối thiểu. Máy bay có pháo sáng, "
                "xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn.</p>"
                f"<h3>Toàn bộ vũ khí ({len(wrows)})</h3>"

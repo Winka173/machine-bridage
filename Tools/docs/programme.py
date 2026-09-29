@@ -351,6 +351,138 @@ def modes_and_ai(game, h):
             + h['table'](['Độ khó', 'Cách AI chơi', 'Người chơi thắng (48 trận)'], [[e(a), e(b), c] for a, b, c in ai]) + "</div>")
 
 
+def late_programme(game, h, imgdir):
+    """Section 7b: prompts 16-18, read from balance.json."""
+    import json as _json
+    from pathlib import Path
+    e, img, table = h['esc'], h['img'], h['table']
+    imgdir = Path(imgdir)
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    names = {v['id']: v.get('name', v['id']) for v in game['vehicles'] + game.get('bosses', []) + game.get('elites', [])}
+    name = lambda i: names.get(i, i)
+    dtype = {'Kinetic': 'Động năng', 'ShapedCharge': 'Nổ lõm', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa',
+             'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
+    shape = {'circle': 'vùng tròn', 'strip': 'dải', 'line': 'đường thẳng', 'sweep': 'đường quét', 'missile': 'tên lửa bắn hạ được',
+             'swarm': 'bầy drone', 'drop': 'thả quân', 'quake': 'rung chấn', 'buff': 'tăng lực phe mình'}
+    role = {'guard': 'bảo vệ', 'repair': 'sửa boss', 'jam': 'gây nhiễu tên lửa ta', 'cover': 'phòng không che boss',
+            'spot': 'đánh dấu quân ta', 'smoke': 'thả khói', 'raid': 'đột kích'}
+    cards = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'UI' / 'Cards'
+    out = ["<div class='section'><h2>7b. Biển, hộ tống, bản đồ dài, roster mới và đòn lớn (prompt 16–18)</h2>"]
+
+    # 16 A-D: the sea.
+    out.append("<h3>Lighthouse Bay và hải chiến (prompt 16 A–D)</h3><ul>"
+               "<li><b>Lighthouse Bay:</b> bờ biển đá, 2 vịnh có bãi và cầu tàu, hải đăng trên mũi đất (giữ nó thì thấy hạm đội), "
+               "2 trận địa pháo bờ biển chiếm được (chỉ bắn tàu), làng chài và pháo đài cũ. Biển chiếm 36% map, 3 tuyến biển. "
+               "Có bản Giữ cứ điểm, Sinh tồn, Công thành và bản dài.</li>"
+               "<li><b>Tàu chạy trên tuyến biển:</b> xe tăng chỉ bắn tới tuyến gần từ đầu cầu tàu và mũi đất; xe săn tăng tầm trung (38–42 m) bắn được từ sườn đá.</li>"
+               "<li><b>Leviathan (Kessler):</b> 9 bộ phận, giáp hông cấp 4, boong cấp 2; 3 pha: loạt pháo có cảnh báo, tên lửa hành trình, đổ tăng, "
+               "trực thăng và gọi jet; pha 3 chạy ra biển theo đồng hồ, thoát được thì thua nhiệm vụ. Chết thì nghiêng, gãy đôi và chìm.</li>"
+               "<li><b>Hạm đội:</b> 2 tàu hộ vệ (CIWS che Leviathan), 3 xuồng tên lửa đánh đầu cầu tàu, tàu đổ bộ.</li>"
+               "<li><b>Chiến dịch và chế độ:</b> nhiệm vụ 4-11 \"Leviathan\" cuối chương 4 (mở nhánh Pháo bờ biển tầm xa của Pháo đài hạng nặng); "
+               "Săn trùm tự chuyển sang Lighthouse Bay cho Leviathan rồi quay lại, mang theo quân, CP và đồng hồ; Tác chiến có mutator Bão biển và Hạm đội.</li></ul>")
+    pics = [(imgdir / 'maps' / 'lighthousebay.png', 'Lighthouse Bay (Giữ cứ điểm).'),
+            (imgdir / 'maps' / 'lighthousebay_siege.png', 'Lighthouse Bay, bản Công thành.'),
+            (cards / 'leviathan.png', 'Leviathan.')]
+    out.append(''.join(f"{img(p, 'shot')}<div class='caption'>{e(c)}</div>" for p, c in pics if p.exists()))
+
+    # 16 E-F: escorts.
+    rules = data.get('escortRules', {})
+    cap = rules.get('cap', {})
+    out.append("<h3>Hộ tống cho mọi boss (prompt 16 E–F)</h3><p>Mỗi boss mang một nhóm đi cùng và thêm một nhóm ở mỗi lần đổi pha; "
+               f"số hộ tống còn sống tối đa theo độ khó: {e(', '.join(f'{k} {v}' for k, v in cap.items()))} (Săn trùm ít hơn). "
+               "Mỗi nhóm có một xe phụ trợ (sửa boss, gây nhiễu tên lửa ta, phòng không che boss, đánh dấu quân ta) nên người chơi phải chọn đánh boss hay hộ tống trước. "
+               f"Hộ tống không rời boss quá {rules.get('leash', 28)} m, hạ được thì thưởng CP, có dấu cam, và thanh máu boss đếm số hộ tống.</p>")
+
+    def units(block):
+        if not block:
+            return []
+        if isinstance(block, dict):
+            block = block.get('units', [])
+        if block and isinstance(block[0], list):
+            block = [u for g in block for u in g]
+        return block
+
+    def fmt(block):
+        rows = units(block)
+        return ', '.join(e(name(u['unit'])) + (' ★' if u.get('elite') else '') + (f" ({role.get(u['role'], u['role'])})" if u.get('role') and u['role'] != 'guard' else '')
+                         + (f" ×{u['count']}" if u.get('count', 1) > 1 else '') for u in rows)
+
+    rows = []
+    for x in data.get('escorts', []):
+        phase = x.get('phases') or x.get('phase')
+        if isinstance(phase, list) and phase and isinstance(phase[0], dict) and 'units' in phase[0]:
+            phase_txt = ' / '.join(fmt(p) for p in phase)
+        else:
+            phase_txt = fmt(phase)
+        rows.append([e(name(x['boss'])), fmt(x.get('arrive')), phase_txt])
+    out.append(table(['Boss', 'Đi cùng', 'Khi đổi pha'], rows))
+
+    # 17 A-B: long maps.
+    out.append("<h3>Bản đồ dài và căn cứ nhiều lớp (prompt 17 A–B)</h3><ul>"
+               "<li>Công thành, Phòng thủ, Vô tận và Pháo đài tuần chơi trên bản dài: 300 m ngang, 480 m dọc theo hướng tấn công (đủ cho 20 map có bản công thành, "
+               "cộng Lighthouse Bay); các chế độ khác giữ map 300 × 300 m.</li>"
+               "<li>Căn cứ nhiều lớp: vùng đệm (răng rồng, hào, dây thép gai, 1–4 ụ bắn), trạm tiền tiêu và 8 cứ điểm, tường ngoài có cổng chính và 2 cửa phụ, sân trong, thành trong, rồi HQ. "
+               "Quân phòng thủ thả xuống trong thành; quân tấn công thả dù xa dần lên sau mỗi vòng tường bị phá.</li>"
+               "<li>Ô theo cấp HQ từ 4/1/0/1 (nhỏ/vừa/lớn/tiện ích) tới 8/5/3/4; nhãn ô mới: cổng ngoài, tường ngoài, sân trong, tường trong. "
+               "Một loadout dùng cho cả trại và căn cứ dài: căn cứ dài chưa chỉnh thì mượn tháp của trại.</li>"
+               "<li>Camera nhìn về phía tây trên map dài (zoom mặc định 21, xa nhất 50); bản đồ nhỏ giữ hình chữ nhật.</li>"
+               "<li>Tìm đường: 150 × 240 ô, 1,9 MB; một đường hết chiều dài mất 5–6 ms trên máy bàn, khoảng 35 ms trên điện thoại (đo lại ở phase kiểm tra).</li></ul>")
+    pics = [(imgdir / 'maps' / 'ashfield_long.png', 'Ashfield, bản dài (Công thành).'),
+            (imgdir / 'maps' / 'ashfield_long_bases.png', 'Ashfield bản dài: các ô công sự theo cỡ.'),
+            (imgdir / 'maps' / 'swamp_long.png', 'Đầm lầy, bản dài.'), (imgdir / 'maps' / 'lighthousebay_long.png', 'Lighthouse Bay, bản dài.')]
+    out.append(''.join(f"{img(p, 'shot')}<div class='caption'>{e(c)}</div>" for p, c in pics if p.exists()))
+
+    # 17 C-D: roster.
+    out.append("<h3>Đơn vị mới và rà soát roster (prompt 17 C–D)</h3><ul>"
+               "<li><b>Mới:</b> tiêm kích tàng hình (14 CP), drone yểm trợ (6 CP, bay theo máy bay có người lái và hút tên lửa bắn vào chúng), xe tăng laser (10 CP, tia mạnh dần ×0,3 → ×2 trong 6 giây), "
+               "xe mang khiên (7 CP) và tháp khiên (ô lớn), xe lô cốt (6 CP, đứng yên 3 giây thì đào hầm: giáp trước dày hơn, tầm +30%), "
+               "máy bay mẹ thả 8 drone FPV (8 CP), tháp tiếp sóng CP (ô nhỏ, tối đa 2 mỗi căn cứ). Giá đo bằng bộ đo giá trị thực chiến.</li>"
+               "<li><b>Gộp:</b> A-10 vào Cường kích (model Su-25, cả hai bộ vũ khí và 2 Kh-29, 15 CP); Ka-52 vào Trực thăng tấn công (giữ Hellfire tầm 55 m và Stinger, 11 CP); "
+               "xe ATGM vào xe phóng drone FPV; công binh phá mìn vào Công binh; ụ súng vào tháp pháo. Model cũ giữ làm mẫu phụ.</li>"
+               "<li><b>Tăng hai nòng và tăng hạng nặng:</b> tăng hai nòng bắn 2 phát 120 mm một lượt, nạp 7 giây, hạ xe tăng nhanh nhất (37,9 s); "
+               "tăng hạng nặng đổi sang đạn nổ khi bắn công trình và xe nhẹ, 12 CP, sống dai và phá công trình tốt nhất theo CP.</li>"
+               "<li><b>Save:</b> giữ hạng cao hơn, hoàn xu và bản thiết kế của thẻ hạng thấp; Ka-52 đã mua được hoàn 3.500 xu; ụ súng trong loadout thành tháp pháo.</li></ul>")
+
+    # 18: big attacks.
+    br = data.get('bigAttackRules', {})
+    diff = br.get('difficulty', {})
+    out.append("<h3>Đòn lớn của mọi boss (prompt 18)</h3><p>Mỗi boss có một đòn lớn lấy từ cùng một hệ dữ liệu (mẫu hình dạng + tham số). "
+               f"Đòn đầu tiên khoảng {br.get('first', 30)} giây sau khi boss xuất hiện; luôn có cảnh báo trên mặt đất; phá bộ phận mang đòn trong lúc cảnh báo thì đòn yếu đi hoặc bị hủy; "
+               "quân ta biết né khỏi vùng cảnh báo. Theo độ khó: "
+               + e('; '.join(f"{k} sát thương ×{v.get('damage', 1)}, hồi ×{v.get('cooldown', 1)}" + (f", cảnh báo +{v['warn']} s" if v.get('warn') else '') for k, v in diff.items()))
+               + ".</p>")
+    owner = {v['bigAttack']: v['id'] for v in data['vehicles'] if v.get('bigAttack')}
+    rows = []
+    for a in data.get('bigAttacks', []):
+        parts, strikes = set(), []
+        for s in a['strikes']:
+            parts |= set(s.get('parts', []))
+            bits = [shape.get(s.get('shape'), s.get('shape', ''))]
+            if s.get('count', 1) > 1:
+                bits.append(f"{s['count']} phát")
+            if s.get('damage'):
+                bits.append(f"{s['damage']:g} {dtype.get(s.get('type'), s.get('type', ''))}" + (f", xuyên {s['pen']}" if 'pen' in s else ''))
+            if s.get('radius'):
+                bits.append(f"bán kính {s['radius']:g} m")
+            if s.get('length'):
+                bits.append(f"dài {s['length']:g} m")
+            if s.get('hp'):
+                bits.append(f"{s['hp']:g} máu, bắn hạ được")
+            if s.get('stun'):
+                bits.append(f"choáng {s['stun']:g} s")
+            if s.get('units'):
+                bits.append(f"{len(s['units']) if isinstance(s['units'], list) else s['units']} xe")
+            strikes.append(', '.join(bits))
+        rows.append([e(name(owner.get(a['id'], ''))), e(a['id']), e('; '.join(strikes)), f"{a.get('warn', '')} s", f"{a.get('cooldown', '')} s",
+                     e(', '.join(sorted(parts)) or '—')])
+    out.append(table(['Boss', 'Đòn', 'Gồm', 'Cảnh báo', 'Hồi', 'Bộ phận ngắt'], rows))
+    out.append("<p>Bộ phận mới: bệ dựng tên lửa của Doomsday Train, khoang bom của Hive Carrier và của Khí cầu chỉ huy. "
+               "Đòn của Bọ Bạc (tia laser quét) là một mục dữ liệu riêng để prompt 19 thay bằng mưa thanh tungsten.</p>")
+    out.append('</div>')
+    return ''.join(out)
+
+
 def gallery(game, h, imgdir):
     """Section 20: the picture library."""
     from pathlib import Path
