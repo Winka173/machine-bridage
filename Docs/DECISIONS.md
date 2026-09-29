@@ -8984,6 +8984,9 @@ and `BossPartsTests`' Behemoth share and shooter tests (the Behemoth's own parts
 - `StuckBatch` on both maps, every version (conquest, sandbox, siege, long), both sides, 5 seeds; `BaseSiteTests`,
   `TrafficTests`, `MapRouteTests` with the two maps added to their lists; `ConquestBattleTests` on them.
 - With graphics: card renders and in-action clips of the two bosses, `BaseMapShots`, a look at both maps' density.
+- Lead note after the merge: the agent's targeted run had 7 failures outside 22E, not yet rerun on the base (`ModelTests`
+  muzzle counts for mobile_fortress, heavy_aa, gunship_heli, fighter_jet; `GearModelTests` save migration; two
+  `BossPartsTests` on the Behemoth). The Morrigan card is rendered; Mk.0 and Mara's Behemoth share `behemoth.png`.
 
 ### Shared edits (merge by hand if they conflict)
 
