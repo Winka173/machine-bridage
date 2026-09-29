@@ -8474,3 +8474,68 @@ HurtsTheBodyByAThirdOfIt` and `...ShootersGoForThePartMostDangerousToThem`, `Gea
 `CombatSystem.cs` / `.P17.cs`, `DamageSystem.cs`, the new `HullContact.cs`, `Definitions.cs`, `Catalog.cs`,
 `Vehicle.P17.cs`, `WeaponState.cs`, `ProjectilePool.cs`, `WeaponEffects.cs`, `GuideText.cs`, `Strings.cs`, and the tests
 above.
+
+## 21B. Play-test 6 bugs: mission 1-1's Start, the gunship test, the boss page (2026-09-30)
+
+On feature/pt6-bugs from lead/integration 84d4069.
+
+### Mission 1-1's Start did nothing
+
+- **Reproduced in Play mode** with a new tool, `MachineBrigade.Editor.MenuWalk.Run` (`-mbWalkProfile fresh|old|demo|prefs`,
+  `-mbWalkMission c1m01|next`, `-mbWalkBack <n>`). It taps the real menu through the panel at each element's centre
+  (Campaign, the chapter, the mission row, Start, each story card's main button), reports what was on top at each tap,
+  and waits for the battle. The profile is loaded in memory with saving off, because the editor's prefs are shared by
+  every tree. A new profile, an old save of the nine-chapter story (roster 1, gear 4) and the editor's own profile all
+  reached the battle, with no exceptions and nothing covering a button. **One Back first broke it**: Start then showed
+  nothing, and the chapter card's "seen" mark was used up.
+- **Cause**: `MenuScreen.Back` closed "the dialog" with `Root.Q(className: "fc-scrim")`. The story card (chapter
+  openings, briefings, epilogue) is a scrim too, is built once and stays in the menu hidden, and was added before every
+  later page, so the query found it first. The first Back with no dialog open took it out of the menu for good (the
+  top bar's Back, Android's back button or Escape: going from a chapter's missions back to the chapters is enough).
+  Start then filled and "showed" a detached card. A Back with a real dialog open also took the story card and left
+  the dialog. It was always wrong (Field Command 2.0), and it shows at 1-1 because that is where a new player first
+  sees a story card.
+- **Fix**: Back closes the topmost scrim that is open (the last in the tree), treating the story card as open only when
+  it shows, and hides the story card instead of removing it. `StoryCard` also keeps its host and goes back into it if
+  something took it out. The chapter's "seen" mark stays where it was (set when the card opens).
+- **Test**: `CampaignStartTests` walks the same taps with the UI test framework's clicks for c1m01 (new profile, with
+  and without a Back first, and the old save) and the demo profile's next mission (3-4), to the play callback, with
+  Campaign mode and the mission set. It also checks that Back closes a real dialog and keeps the story card.
+
+### The gunship test (AirRealismTests, 0/0)
+
+The game was fine and the test broke. A trace over 13 s: the AC-130 reaches its 22 m orbit in 2 s, keeps the target on
+its left every sample after that, fires its 105, 40 and 25 mm guns and the Griffin, and kills the heavy tank (3,520
+health since the armour pass's toughness 2.2) in 12.5 s. The test waited 12 s before sampling, found the tank dead and
+sampled nothing. It now samples from 3 s until the kill, needs at least 8 samples, and checks the farthest distance
+while circling. The id is still `sky_gunship`, which the `gunship_strike` card calls; that card's own test is in
+`PlayTest6UiTests`.
+
+### The boss page (the owner: a boss detail shows "next level" and equipment)
+
+- **One home, the detail page of a boss** (the boss wiki). Prompt 20 pass 3 made it the Guide page (19N), with the
+  dock already empty, but the Stats tab still showed the card's gear and next-level gains, the class average and the CP
+  cost, and the Equipment tab offered gear. Now, for a boss: no Equipment tab (hidden, and a page left on it opens on
+  the file); Stats shows its numbers at campaign strength without gear, next level, average or cost, with a line saying
+  a boss is no card, its armour on each face and its part count; the file (Guide) shows the name and subtitle (the
+  title), rank, chapters, general, variant links, escorts (the wave that arrives with it and how many come at phase
+  changes), each part with its armour and health, its altitude tiers and its big attack (these two were shown only for
+  bosses with parts before).
+- **`BossFile`** (Game/Hud) builds those facts, so the Sandbox shows the same file. **Every way in**: the week's Boss
+  Hunt and the full hunt on Operations (already `OpenBossGuide`), the dossier's boss files (already), the campaign's
+  mission page (new: a "Boss file: <name>" link for each boss the mission or its stages fight), and the Sandbox.
+  Decision: the Sandbox runs inside a battle with no menu, so its boss entries (an info button on each boss in the
+  unit list, and a "Boss file" button in the selected boss's tools) open the file as a dialog, not the menu page.
+- The story card's briefing keeps its two buttons. The link sits on the mission page, next to the briefing it repeats.
+- Strings (both languages, named placeholders, "boss" in Vietnamese as 20L says) are in `BossText` under "the boss
+  file". `detail-boss` and `detail-boss-stats` join `MenuScreen.ScreenNames` for UiShots and the layout checks.
+  `CampaignStartTests` checks that a boss page has no Equipment tab, no level, blueprint, deck or upgrade controls and
+  no gains, and that the Sandbox's card carries the facts.
+
+Tests run: CampaignStartTests, AirRealismTests, CampaignTests, KitInteractionTests, UiLayoutTests, PlayTest6UiTests,
+L10nTests, Prompt20CampaignTests: 279 passed, 0 failed (145 of CampaignTests are explicit). Play mode: MenuWalk on new,
+old, editor and demo profiles, with and without Back.
+
+Files: `MenuScreen.cs` (`Back`, the debug screens), `StoryPanels.cs`, `MenuScreen.Detail.cs` (`BossStats`, the tabs),
+`MenuScreen.BossParts.cs`, `MenuScreen.Campaign.cs` (`MissionBosses`), `BossFile.cs`, `SandboxScreen.cs`,
+`BossText.cs`, `Editor/MenuWalk.cs`, `Tests/EditMode/CampaignStartTests.cs`, `Tests/EditMode/AirRealismTests.cs`.

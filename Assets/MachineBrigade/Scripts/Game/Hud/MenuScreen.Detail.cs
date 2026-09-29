@@ -245,6 +245,10 @@ namespace MachineBrigade.Game.Hud
             // Every tower and module stands in the base from the start: nothing to unlock.
             var unlocked = structure || PlayerProfile.IsUnlocked(id);
             var rank = PlayerProfile.Rank(structure ? vehicle.CardId : id);
+            // A boss is no card (play-test 6, DECISIONS 21B): its page has no Equipment tab.
+            var bossPage = IsBoss(id);
+            _detailTabs.Tabs[(int)DetailTab.Equipment].style.display = bossPage ? DisplayStyle.None : DisplayStyle.Flex;
+            if (bossPage && _detailTab == DetailTab.Equipment) _detailTab = DetailTab.Guide;
             _detailTabs.Select((int)_detailTab, false);
             ArrangeDetail();
 
@@ -282,7 +286,8 @@ namespace MachineBrigade.Game.Hud
             switch (_detailTab)
             {
                 case DetailTab.Stats:
-                    if (vehicle != null) VehicleStats(vehicle, rank);
+                    if (bossPage) BossStats(vehicle);
+                    else if (vehicle != null) VehicleStats(vehicle, rank);
                     else StrikeStats(id, rank);
                     if (module) ModuleFacts(vehicle);
                     break;
@@ -356,7 +361,11 @@ namespace MachineBrigade.Game.Hud
             _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("combat.legend.open"), OpenLegend, "info"));
             // Prompt 20 O.5: the battlefields' guide (the dossier's tab).
             _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("guide.maps.open"), OpenBattlefields, "globe"));
-            if (_catalog.Vehicles.TryGetValue(id, out var bossDef) && bossDef.Boss) BossFacts(bossDef);
+            if (_catalog.Vehicles.TryGetValue(id, out var bossDef) && bossDef.Boss)
+            {
+                BossFacts(bossDef);
+                BossFile.Escorts(_detailBody, _catalog, bossDef);
+            }
             if (Strings.Has("note." + id))
             {
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.notes")), "fc-caption fc-mb-2"));
@@ -397,8 +406,13 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.eliteVersion")), "fc-caption fc-mt-4"));
                 GuideLines(Strings.Get("guide." + elite.Id));
             }
-            // A boss's parts and what breaking each does (prompt 9).
-            if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
+            // A boss's parts and what breaking each does (prompt 9), its altitude tiers and its big attack.
+            if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Boss)
+            {
+                BossPartsGuide(boss);
+                TiersGuide(boss);
+                BigAttackGuide(boss);
+            }
         }
 
         /// <summary>
@@ -408,21 +422,7 @@ namespace MachineBrigade.Game.Hud
         private void BossFacts(VehicleDef boss)
         {
             var box = Kit.Box(KitPanel.SurfaceClass + " fc-boss-facts fc-mt-2");
-            var head = Kit.Box("fc-row fc-row--wrap");
-            head.Add(Tag(boss.MiniBoss ? "elite" : "skull", Strings.Get(boss.RankDef?.Label ?? (boss.MiniBoss ? "boss.rank.mini" : "boss.rank.main"))));
-            var chapters = Campaign.Chapters.Where(c => Campaign.ChapterEnabled(c.Number) && (c.Main == boss.Id || c.Minis.Contains(boss.Id))).Select(c => c.Number.ToString()).ToList();
-            if (chapters.Count > 0) head.Add(Tag("campaign", Strings.Format("guide.boss.chapters", string.Join(", ", chapters))));
-            box.Add(head);
-            if (boss.General is { } general && Strings.Has($"char.{general}.name"))
-            {
-                var row = Kit.Box("fc-row fc-mt-2");
-                row.Add(Portraits.Element(general, "fc-portrait"));
-                var text = Kit.Box("fc-dossier__text");
-                text.Add(Kit.Text(Kit.Caps(Strings.Format("guide.boss.general", Strings.Get($"char.{general}.name"))), "fc-panel-title"));
-                if (Strings.Has($"char.{general}.role")) text.Add(Kit.Caption(Strings.Get($"char.{general}.role")));
-                row.Add(text);
-                box.Add(row);
-            }
+            BossFile.Head(box, boss);
             if (boss.VariantOf is { } parent && _catalog.Vehicles.ContainsKey(parent))
                 box.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.variantOf", Strings.Unit(parent)), () => OpenBossGuide(parent), "arrow"));
             var variants = _catalog.Vehicles.Values.Where(v => v.VariantOf == boss.Id).OrderBy(v => v.Id, System.StringComparer.Ordinal).ToList();
@@ -595,6 +595,21 @@ namespace MachineBrigade.Game.Hud
             if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             if (def.Weapon.MinRange > 0f) facts.Add(Rule("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
             if (now.Special != SpecialModule.None) facts.Add(Rule("star", Strings.Get("special." + GearKeys.Module(now.Special))));
+            _detailBody.Add(facts);
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21B): a boss's numbers at campaign strength, without the card's equipment, next level
+        /// and cost (a boss is no card), and its armour on each face.
+        /// </summary>
+        private void BossStats(VehicleDef def)
+        {
+            _detailBody.Add(Kit.Body2(Strings.Get("guide.boss.noCard")));
+            foreach (var stat in UnitStats.For(_catalog, def, VehicleBoost.None)) StatRow(stat, stat.Boosted, stat.Boosted, -1f);
+            var facts = Kit.Box("fc-mt-3");
+            facts.Add(Rule("shield", BossFile.Armour(def.Armour)));
+            if (def.Parts.Count > 0) facts.Add(Rule("crosshair", Strings.Format("guide.boss.partCount", def.Parts.Count)));
+            if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             _detailBody.Add(facts);
         }
 

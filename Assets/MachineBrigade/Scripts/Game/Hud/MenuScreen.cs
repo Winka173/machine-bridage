@@ -261,15 +261,15 @@ namespace MachineBrigade.Game.Hud
         /// </summary>
         public bool Back()
         {
-            var dialog = Root.Q(className: KitDialog.ScrimClass);
+            // The topmost dialog closes. The story card is a scrim too and stays in the menu while hidden:
+            // it hides, never leaves (a Back that took it out left Start with nothing to show, DECISIONS 21B).
+            VisualElement dialog = null;
+            foreach (var scrim in Root.Query(className: KitDialog.ScrimClass).ToList())
+                if (_story == null || scrim != _story.Root || _story.Visible) dialog = scrim;
             if (dialog != null)
             {
-                dialog.RemoveFromHierarchy();
-                return true;
-            }
-            if (_story != null && _story.Visible)
-            {
-                _story.Hide();
+                if (_story != null && dialog == _story.Root) _story.Hide();
+                else dialog.RemoveFromHierarchy();
                 return true;
             }
             if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Base && _base.Back()) return true;
@@ -606,7 +606,7 @@ namespace MachineBrigade.Game.Hud
         {
             "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
-            "legend", "detail-weapons", "detail-armour",
+            "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -680,6 +680,17 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Army);
                     _detailTab = screen.EndsWith("-action") ? DetailTab.Firing : screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
                     OpenDetail(screen.StartsWith("detail-tower") ? "aa_turret" : "repair_bay");
+                    break;
+                case "detail-boss":
+                case "detail-boss-stats":
+                    // Play-test 6 (DECISIONS 21B): a boss's page as the Boss Hunt's list opens it: its file, or its numbers.
+                    ShowTab(Tab.Operations);
+                    OpenBossGuide("behemoth");
+                    if (screen == "detail-boss-stats")
+                    {
+                        _detailTab = DetailTab.Stats;
+                        Refresh();
+                    }
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));

@@ -16,6 +16,21 @@ namespace MachineBrigade.Game.Hud
             ["boss.rank.main"] = ("Boss", "Boss"),
             ["boss.rank.mini"] = ("Mini boss", "Mini boss"),
 
+            // ---------------------------------------------------------------- the boss file (play-test 6, DECISIONS 21B)
+            ["guide.boss.file"] = ("Boss file: {boss}", "Hồ sơ boss: {boss}"),
+            ["guide.boss.fileButton"] = ("Boss file", "Hồ sơ boss"),
+            ["guide.boss.close"] = ("Close", "Đóng"),
+            ["guide.boss.noCard"] = ("A boss is no card: no level, equipment or CP cost. Its numbers at campaign strength.",
+                "Boss không phải thẻ: không có cấp, trang bị hay giá CP. Chỉ số ở sức mạnh chiến dịch."),
+            ["guide.boss.numbers"] = ("Numbers", "Chỉ số"),
+            ["guide.boss.armour"] = ("Armour: front {front}, side {side}, rear {rear}, top {top}", "Giáp: trước {front}, hông {side}, sau {rear}, nóc {top}"),
+            ["guide.boss.partStats"] = ("armour {armour} · {hp} health", "giáp {armour} · {hp} máu"),
+            ["guide.boss.partCount"] = ("{count|# part|# parts} to break", "{count} bộ phận có thể phá"),
+            ["guide.boss.escorts"] = ("Escorts", "Hộ tống"),
+            ["guide.boss.escorts.none"] = ("It fights alone.", "Boss chiến đấu một mình."),
+            ["guide.boss.escorts.arrive"] = ("Arriving with it: {units}", "Đến cùng boss: {units}"),
+            ["guide.boss.escorts.phases"] = ("{count|# more wave|# more waves} at its phase changes", "Thêm {count} đợt khi boss đổi pha"),
+
             // ---------------------------------------------------------------- names
             ["unit.moloch"] = ("Moloch · Mobile Factory", "Moloch · Nhà máy di động"),
             ["unit.daedalus"] = ("Daedalus · Orbital Lander", "Daedalus · Tàu đổ bộ quỹ đạo"),

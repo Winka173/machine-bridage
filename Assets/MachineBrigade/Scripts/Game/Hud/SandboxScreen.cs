@@ -338,6 +338,12 @@ namespace MachineBrigade.Game.Hud
                 row.Add(Kit.Text(Strings.Short(id), "fc-body sb-unit__name"));
                 if (def.CpCost > 0) row.Add(Kit.Text(SandboxText.Format("sandbox.cp.value", ("cp", def.CpCost)), "fc-small sb-unit__cost"));
                 row.tooltip = Strings.Unit(id);
+                // Play-test 6 (DECISIONS 21B): a boss's file, the menu's boss page as a dialog (no menu in a battle).
+                if (def.Boss)
+                {
+                    var boss = def;
+                    row.Add(new KitIconButton("info", Strings.Get("guide.boss.fileButton"), () => BossFile.Show(_root, catalog, boss), plain: true));
+                }
                 _list.Add(row);
             }
         }
@@ -544,6 +550,7 @@ namespace MachineBrigade.Game.Hud
             var id = boss.Id.Value;
             var def = boss.Def;
             _rightBody.Add(Caption("sandbox.boss"));
+            _rightBody.Add(Small(Strings.Get("guide.boss.fileButton"), () => BossFile.Show(_root, _c.World.Catalog, def)));
             var phases = Math.Max(def.Phases.Count, def.Tiers?.Marks.Count ?? 0) + 1;
             var row = Row();
             for (var p = 1; p < Math.Min(3, phases); p++)
