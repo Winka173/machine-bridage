@@ -60,6 +60,18 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>D.9: the weather or the time of day turns over 20-30 s (the existing weather and night factors).</summary>
         WeatherShift,
+
+        /// <summary>
+        /// E.1 (chapter 6, the Hollow Dam): a ceasefire on a clock. The general's sworn column holds its fire and no weapon of
+        /// ours picks it on its own; the side that fires first loses its reward; when the clock runs out both fight again.
+        /// </summary>
+        Ceasefire,
+
+        /// <summary>
+        /// E.1 (chapter 11, Skygate): the satellite test-fires one small tungsten rod on the player's biggest group, warned as
+        /// prompt 18's big attacks are (a notice and a line, then a ring on the ground), kinetic from above.
+        /// </summary>
+        OrbitalStrike,
     }
 
     /// <summary>The C.3 difficulty an event plays at: the mission's own, one step up per tier (Heroic, Iron).</summary>
@@ -365,11 +377,17 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The generals (the built-in rows are campaign.json's starting points; its library's rows replace them).</summary>
         public Dictionary<string, GeneralEventDef> Generals { get; } = new()
         {
+            // Prompt 23 E.2: Brandt holds chapter 1's coast (his last battle as the enemy is its operation).
+            ["brandt"] = G("brandt", 1, "main_battle_tank", new[] { "edge" }, "armored_car", "ifv", "main_battle_tank", "wheeled_gun", "light_tank"),
             ["varga"] = G("varga", 12, "heavy_tank", new[] { "edge" }, "light_tank", "main_battle_tank", "heavy_tank", "tank_destroyer", "twin_tank"),
             ["orlov"] = G("orlov", 11, "mlrs", new[] { "edge" }, "mlrs", "artillery", "mortar_carrier", "heavy_rocket_artillery", "aa_vehicle"),
             ["kessler"] = G("kessler", 12, "main_battle_tank", new[] { "sea", "rail", "landing", "edge" }, "ifv", "wheeled_gun", "main_battle_tank", "mine_layer", "sam_launcher"),
             ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "lancet_truck", "recon_drone", "ew_jammer"),
-            ["quaden"] = G("quaden", 10, "attack_jet", new[] { "edge" }, "attack_helicopter", "gunship_heli", "attack_jet", "strike_drone"),
+            ["quaden"] = new GeneralEventDef
+            {
+                Id = "quaden", LastChapter = 10, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "morrigan" },
+                Roster = new[] { "attack_helicopter", "gunship_heli", "attack_jet", "strike_drone" },
+            },
             ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "bmpt", "aa_vehicle"),
             ["aurel"] = G("aurel", 12, "heavy_tank", new[] { "pods", "air", "edge" }, "strike_drone", "fpv_carrier", "heavy_tank", "bmpt", "railgun_truck"),
         };
