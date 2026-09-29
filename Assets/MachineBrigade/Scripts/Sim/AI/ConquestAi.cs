@@ -895,6 +895,7 @@ namespace MachineBrigade.Sim.AI
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
                 // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).
                 score += def.CpCost * profile.Save;
+                if (BuyScores != null) BuyScores[id] = score;
                 if (score > bestScore)
                 {
                     best = id;

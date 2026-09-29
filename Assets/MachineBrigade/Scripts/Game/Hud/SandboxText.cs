@@ -1,0 +1,288 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+
+namespace MachineBrigade.Game.Hud
+{
+    /// <summary>
+    /// Prompt 21 part 1: the Sandbox's words in English and Vietnamese. Parameters are named ({count}, {seconds}),
+    /// filled by <see cref="Format"/>, so a translator sees what each one is and a test catches one left over.
+    /// Unit, boss and support names come from the game's own tables.
+    /// </summary>
+    public static class SandboxText
+    {
+        public static readonly Dictionary<string, (string en, string vi)> Table = new()
+        {
+            // ---------------------------------------------------------------- entry, versions
+            ["sandbox.title"] = ("Sandbox", "Sa bàn"),
+            ["sandbox.sub"] = ("Build any battle, run it and measure it.", "Tự dựng trận, chạy và đo đạc."),
+            ["sandbox.locked"] = ("Opens once you finish chapter {chapter} of the campaign.", "Mở sau khi phá đảo chương {chapter} của chiến dịch."),
+            ["sandbox.internal"] = ("Internal build: every unit, boss and tool.", "Bản nội bộ: đủ mọi đơn vị, boss và công cụ."),
+            ["sandbox.player"] = ("Your unlocked units and the bosses you have beaten.", "Các đơn vị đã mở và các boss bạn đã hạ."),
+            ["sandbox.noRewards"] = ("No rewards, coins, records or achievements in the Sandbox.", "Sa bàn không có phần thưởng, xu, kỷ lục hay thành tích."),
+            ["sandbox.open"] = ("Open the Sandbox", "Vào Sa bàn"),
+            ["sandbox.quit"] = ("Leave", "Rời Sa bàn"),
+
+            // ---------------------------------------------------------------- the unit picker (B.2-B.5)
+            ["sandbox.tab.Vehicles"] = ("Vehicles", "Xe"),
+            ["sandbox.tab.Air"] = ("Aircraft", "Máy bay"),
+            ["sandbox.tab.Towers"] = ("Towers", "Tháp & công trình"),
+            ["sandbox.tab.Bosses"] = ("Bosses", "Boss chủ lực"),
+            ["sandbox.tab.MiniBosses"] = ("Mini bosses", "Mini boss"),
+            ["sandbox.tab.Elites"] = ("Elites", "Xe tinh nhuệ"),
+            ["sandbox.tab.Ships"] = ("Ships", "Tàu & hộ tống"),
+            ["sandbox.search"] = ("Search by name", "Tìm theo tên"),
+            ["sandbox.filter.branch"] = ("Branch", "Nhánh"),
+            ["sandbox.filter.armour"] = ("Armour", "Cấp giáp"),
+            ["sandbox.filter.weapon"] = ("Weapon", "Vũ khí"),
+            ["sandbox.filter.all"] = ("All", "Tất cả"),
+            ["sandbox.side"] = ("Side", "Phe"),
+            ["sandbox.side.0"] = ("Blue", "Xanh"),
+            ["sandbox.side.1"] = ("Red", "Đỏ"),
+            ["sandbox.units"] = ("Units", "Đơn vị"),
+            ["sandbox.hide"] = ("Hide", "Thu gọn"),
+            ["sandbox.empty"] = ("Nothing here.", "Không có đơn vị nào."),
+            ["sandbox.place.hint"] = ("Tap the map to place it. Drag from a unit to turn it.", "Chạm bản đồ để đặt. Kéo từ đơn vị ra để xoay hướng."),
+            ["sandbox.freeRotate"] = ("Free rotation", "Xoay tự do"),
+            ["sandbox.formation"] = ("Formation", "Đội hình"),
+            ["sandbox.formation.Single"] = ("One", "Một chiếc"),
+            ["sandbox.formation.Line"] = ("Line", "Hàng ngang"),
+            ["sandbox.formation.Column"] = ("Column", "Hàng dọc"),
+            ["sandbox.formation.Cluster"] = ("Cluster", "Cụm"),
+            ["sandbox.formation.Arc"] = ("Arc", "Vòng cung"),
+            ["sandbox.count"] = ("{count} at once", "{count} chiếc một lần"),
+
+            // ---------------------------------------------------------------- the inspector (B.6, B.9)
+            ["sandbox.selected"] = ("{count} selected", "Đã chọn {count}"),
+            ["sandbox.none"] = ("Tap a unit to change it.", "Chạm một đơn vị để chỉnh."),
+            ["sandbox.rank"] = ("Rank {rank}", "Hạng {rank}"),
+            ["sandbox.branch"] = ("Rank-7 branch", "Nhánh hạng 7"),
+            ["sandbox.branch.none"] = ("None", "Không nhánh"),
+            ["sandbox.branch.locked"] = ("Branches open at rank 7.", "Nhánh mở từ hạng 7."),
+            ["sandbox.gear"] = ("Equipment", "Trang bị"),
+            ["sandbox.gear.None"] = ("None", "Không đồ"),
+            ["sandbox.gear.Suggested"] = ("Suggested", "Bộ gợi ý"),
+            ["sandbox.gear.Player"] = ("Yours", "Bộ của bạn"),
+            ["sandbox.elite"] = ("Elite version", "Bản tinh nhuệ"),
+            ["sandbox.hp"] = ("Health {percent} %", "Máu {percent} %"),
+            ["sandbox.ammo"] = ("Ammunition {percent} %", "Đạn {percent} %"),
+            ["sandbox.tier"] = ("Starting altitude", "Tầng độ cao ban đầu"),
+            ["sandbox.tier.none"] = ("Its own opening", "Theo màn mở đầu"),
+            ["sandbox.tier.low"] = ("Low", "Tầng thấp"),
+            ["sandbox.tier.high"] = ("High", "Tầng cao"),
+            ["sandbox.immortal"] = ("Immortal", "Bất tử"),
+            ["sandbox.turnLeft"] = ("Turn left", "Xoay trái"),
+            ["sandbox.turnRight"] = ("Turn right", "Xoay phải"),
+            ["sandbox.copy"] = ("Copy", "Sao chép"),
+            ["sandbox.delete"] = ("Delete", "Xóa"),
+            ["sandbox.move"] = ("Move", "Di chuyển"),
+            ["sandbox.move.hint"] = ("Tap where the selection should go.", "Chạm nơi cần chuyển các đơn vị đang chọn tới."),
+            ["sandbox.undo"] = ("Undo", "Hoàn tác"),
+            ["sandbox.redo"] = ("Redo", "Làm lại"),
+            ["sandbox.heading"] = ("Facing {degrees}°", "Hướng {degrees}°"),
+
+            // ---------------------------------------------------------------- the battle's settings (B.1, B.7, B.8, C.2, C.4, C.5)
+            ["sandbox.settings"] = ("Battle", "Trận đấu"),
+            ["sandbox.map"] = ("Map", "Bản đồ"),
+            ["sandbox.map.flat"] = ("Flat test range (metre grid)", "Bãi thử phẳng (lưới mét)"),
+            ["sandbox.map.long"] = ("{map} · long", "{map} · bản dài"),
+            ["sandbox.weather"] = ("Weather", "Thời tiết"),
+            ["sandbox.night"] = ("Night", "Ban đêm"),
+            ["sandbox.fog"] = ("Fog of war", "Sương mù chiến tranh"),
+            ["sandbox.base"] = ("Base", "Căn cứ"),
+            ["sandbox.base.None"] = ("None", "Không có"),
+            ["sandbox.base.Ai"] = ("AI base", "Căn cứ AI"),
+            ["sandbox.base.Player"] = ("Your saved base", "Căn cứ đã lưu của bạn"),
+            ["sandbox.ai"] = ("Commander", "Chỉ huy"),
+            ["sandbox.ai.Full"] = ("Full AI", "AI đầy đủ"),
+            ["sandbox.ai.Combat"] = ("Combat only", "Chỉ chiến đấu"),
+            ["sandbox.ai.Idle"] = ("Stand still", "Đứng yên"),
+            ["sandbox.cp"] = ("CP", "CP"),
+            ["sandbox.cp.unlimited"] = ("Unlimited CP", "CP vô hạn"),
+            ["sandbox.cp.value"] = ("{cp} CP", "{cp} CP"),
+            ["sandbox.cooldowns"] = ("Support cooldowns", "Hồi chiêu thẻ hỗ trợ"),
+            ["sandbox.supports"] = ("Supports", "Thẻ hỗ trợ"),
+            ["sandbox.supports.deck"] = ("From your deck", "Từ bộ bài của bạn"),
+            ["sandbox.supports.free"] = ("Every support", "Chọn tự do"),
+            ["sandbox.sideImmortal"] = ("Whole side immortal", "Cả phe bất tử"),
+            ["sandbox.limit"] = ("Called after {seconds} s", "Kết thúc sau {seconds} giây"),
+            ["sandbox.limit.none"] = ("No time limit", "Không giới hạn thời gian"),
+            ["sandbox.applyOnRun"] = ("Map, weather and bases change when the battle is run or reset.", "Bản đồ, thời tiết và căn cứ đổi khi chạy hoặc đặt lại trận."),
+
+            // ---------------------------------------------------------------- simulation controls (C)
+            ["sandbox.run"] = ("Run", "Chạy"),
+            ["sandbox.edit"] = ("Edit", "Chỉnh sửa"),
+            ["sandbox.pause"] = ("Pause", "Tạm dừng"),
+            ["sandbox.resume"] = ("Resume", "Tiếp tục"),
+            ["sandbox.step"] = ("One tick", "Từng tick"),
+            ["sandbox.reset"] = ("Reset", "Đặt lại"),
+            ["sandbox.speed"] = ("Speed", "Tốc độ"),
+            ["sandbox.seed"] = ("Seed", "Seed"),
+            ["sandbox.seed.hint"] = ("The same seed and controls give the same battle.", "Cùng seed và cùng chuỗi lệnh cho cùng một trận."),
+            ["sandbox.clock"] = ("{seconds} s · tick {tick}", "{seconds} giây · tick {tick}"),
+            ["sandbox.editing"] = ("Setting up", "Đang dựng trận"),
+            ["sandbox.running"] = ("Running", "Đang chạy"),
+            ["sandbox.paused"] = ("Paused", "Đang tạm dừng"),
+            ["sandbox.order.move"] = ("Go to", "Đi tới"),
+            ["sandbox.order.hold"] = ("Hold position", "Giữ vị trí"),
+            ["sandbox.order.release"] = ("Back to the AI", "Trả cho AI"),
+            ["sandbox.order.holdFire"] = ("Hold fire", "Ngừng bắn"),
+            ["sandbox.order.fire"] = ("Fire at", "Bắn mục tiêu"),
+            ["sandbox.order.pickPoint"] = ("Tap where to go.", "Chạm nơi cần đến."),
+            ["sandbox.order.pickTarget"] = ("Tap the target.", "Chạm mục tiêu cần bắn."),
+            ["sandbox.call"] = ("Call support", "Gọi hỗ trợ"),
+            ["sandbox.call.pick"] = ("Tap where to call it.", "Chạm nơi cần gọi hỗ trợ."),
+
+            // ---------------------------------------------------------------- boss tools (D)
+            ["sandbox.boss"] = ("Boss tools", "Công cụ boss"),
+            ["sandbox.boss.phase"] = ("Phase {phase}", "Pha {phase}"),
+            ["sandbox.boss.big"] = ("Big attack now", "Kích hoạt đòn lớn"),
+            ["sandbox.boss.bigOff"] = ("Big attack off", "Tắt đòn lớn"),
+            ["sandbox.boss.break"] = ("Break {part}", "Phá {part}"),
+            ["sandbox.boss.restore"] = ("Restore {part}", "Khôi phục {part}"),
+            ["sandbox.boss.low"] = ("To low altitude", "Xuống tầng thấp"),
+            ["sandbox.boss.high"] = ("To high altitude", "Lên tầng cao"),
+            ["sandbox.boss.escorts"] = ("Escorts", "Hộ tống"),
+            ["sandbox.boss.swap"] = ("Main ↔ mini boss", "Chủ lực ↔ mini boss"),
+            ["sandbox.boss.difficulty"] = ("Boss difficulty", "Độ khó boss"),
+            ["sandbox.diff.Easy"] = ("Easy", "Dễ"),
+            ["sandbox.diff.Normal"] = ("Normal", "Thường"),
+            ["sandbox.diff.Hard"] = ("Hard", "Khó"),
+            ["sandbox.diff.Heroic"] = ("Heroic", "Anh hùng"),
+            ["sandbox.diff.Iron"] = ("Iron", "Thép"),
+            ["sandbox.boss.start"] = ("Starts in phase {phase}", "Bắt đầu ở pha {phase}"),
+
+            // ---------------------------------------------------------------- overlays (E)
+            ["sandbox.layers"] = ("Overlays", "Lớp kiểm tra"),
+            ["sandbox.layer.range"] = ("Range rings", "Vòng tầm bắn"),
+            ["sandbox.layer.hits"] = ("Hit numbers ✓ ~ ✕", "Số sát thương ✓ ~ ✕"),
+            ["sandbox.layer.dps"] = ("Real DPS and combat value", "DPS thực và giá trị thực chiến"),
+            ["sandbox.layer.ammo"] = ("Ammunition detail", "Chi tiết đạn"),
+            ["sandbox.layer.zones"] = ("Big-attack zones and shields", "Vùng đòn lớn và vùng khiên"),
+            ["sandbox.layer.internal"] = ("Internal only", "Chỉ bản nội bộ"),
+            ["sandbox.layer.hull"] = ("Hit boxes", "Vùng va chạm"),
+            ["sandbox.layer.route"] = ("Routes", "Đường đi đang tính"),
+            ["sandbox.layer.stuck"] = ("Stuck vehicles", "Xe bị kẹt"),
+            ["sandbox.layer.buy"] = ("AI buying scores", "Điểm chọn quân của AI"),
+            ["sandbox.hit"] = ("{damage} {mark} {face}", "{damage} {mark} {face}"),
+            ["sandbox.dps.line"] = ("{dps} DPS · value {value}", "{dps} DPS · giá trị {value}"),
+            ["sandbox.ammo.line"] = ("{ammo}/{full}", "{ammo}/{full}"),
+            ["sandbox.ammo.reload"] = ("reloading {seconds} s", "đang nạp {seconds} giây"),
+            ["sandbox.ammo.unlimited"] = ("unlimited", "không giới hạn"),
+            ["sandbox.stuck"] = ("STUCK", "KẸT"),
+            ["sandbox.buy.title"] = ("AI buying ({side})", "AI chọn quân ({side})"),
+
+            // ---------------------------------------------------------------- scenarios, replays and tests (F.1, F.2, F.6, F.7)
+            ["sandbox.scenarios"] = ("Scenarios", "Kịch bản"),
+            ["sandbox.save"] = ("Save", "Lưu"),
+            ["sandbox.saveAs"] = ("Save as new", "Lưu thành bản mới"),
+            ["sandbox.open.one"] = ("Open", "Mở"),
+            ["sandbox.name"] = ("Scenario name", "Tên kịch bản"),
+            ["sandbox.name.default"] = ("Scenario {number}", "Kịch bản {number}"),
+            ["sandbox.samples"] = ("Samples", "Kịch bản mẫu"),
+            ["sandbox.mine"] = ("Your scenarios ({count}/{max})", "Kịch bản của bạn ({count}/{max})"),
+            ["sandbox.full"] = ("You have {max} scenarios: delete one first.", "Đã đủ {max} kịch bản: hãy xóa bớt một."),
+            ["sandbox.saved"] = ("Scenario saved", "Đã lưu kịch bản"),
+            ["sandbox.code.copy"] = ("Copy share code", "Sao chép mã chia sẻ"),
+            ["sandbox.code.paste"] = ("Open a share code", "Mở mã chia sẻ"),
+            ["sandbox.code.field"] = ("Paste the code here", "Dán mã vào đây"),
+            ["sandbox.code.copied"] = ("Code copied", "Đã sao chép mã"),
+            ["sandbox.code.bad"] = ("That is not a scenario code.", "Đây không phải mã kịch bản."),
+            ["sandbox.code.newer"] = ("That scenario is from a newer version of the game.", "Kịch bản này từ phiên bản game mới hơn."),
+            ["sandbox.opened"] = ("Scenario opened", "Đã mở kịch bản"),
+            ["sandbox.replaced"] = ("{from} → {to} (not unlocked)", "{from} → {to} (chưa mở khóa)"),
+            ["sandbox.removed"] = ("{from} left out (nothing like it unlocked)", "Bỏ {from} (chưa mở đơn vị tương tự)"),
+            ["sandbox.replay"] = ("Export replay and seed", "Xuất replay và seed"),
+            ["sandbox.replay.saved"] = ("Replay saved: {path}", "Đã lưu replay: {path}"),
+            ["sandbox.test"] = ("Save as test", "Lưu thành test"),
+            ["sandbox.test.saved"] = ("Test saved: {path}", "Đã lưu test: {path}"),
+            ["sandbox.check.win"] = ("Blue wins within {seconds} s", "Phe Xanh thắng trong {seconds} giây"),
+            ["sandbox.check.noStuck"] = ("No vehicle stuck", "Không xe nào kẹt"),
+            ["sandbox.sample.flank"] = ("Tanks on the flank", "Xe tăng đấu hông"),
+            ["sandbox.sample.airdefence"] = ("Anti-air stops an air strike", "Phòng không chặn không kích"),
+            ["sandbox.sample.behemoth"] = ("Bring down Behemoth with 8 vehicles", "Hạ Behemoth bằng 8 xe"),
+            ["sandbox.sample.towers"] = ("Tanks against a tower line", "Xe tăng đánh tuyến tháp"),
+            ["sandbox.sample.artillery"] = ("Artillery against a rush", "Pháo binh chặn đợt tràn"),
+
+            // ---------------------------------------------------------------- statistics, duel, A/B (F.3-F.5)
+            ["sandbox.stats"] = ("Statistics", "Thống kê"),
+            ["sandbox.stats.title"] = ("After-battle statistics", "Thống kê sau trận"),
+            ["sandbox.stats.unit"] = ("Unit", "Đơn vị"),
+            ["sandbox.stats.dealt"] = ("Dealt", "Gây ra"),
+            ["sandbox.stats.taken"] = ("Taken", "Nhận vào"),
+            ["sandbox.stats.ttk"] = ("Time to kill", "Thời gian hạ mục tiêu"),
+            ["sandbox.stats.alive"] = ("Survived", "Thời gian sống"),
+            ["sandbox.stats.pierced"] = ("Pierced ✓~", "Xuyên ✓~"),
+            ["sandbox.stats.bounced"] = ("Bounced ✕", "Không xuyên ✕"),
+            ["sandbox.stats.byType"] = ("By damage type", "Theo loại sát thương"),
+            ["sandbox.stats.none"] = ("Run the battle to see its numbers.", "Chạy trận để xem số liệu."),
+            ["sandbox.seconds"] = ("{seconds} s", "{seconds} giây"),
+            ["sandbox.result.0"] = ("Blue wins", "Phe Xanh thắng"),
+            ["sandbox.result.1"] = ("Red wins", "Phe Đỏ thắng"),
+            ["sandbox.result.draw"] = ("Draw", "Hòa"),
+            ["sandbox.result.open"] = ("Undecided", "Chưa phân thắng bại"),
+            ["sandbox.result.line"] = ("{result} after {seconds} s · health left Blue {blue} % · Red {red} %", "{result} sau {seconds} giây · máu còn lại Xanh {blue} % · Đỏ {red} %"),
+            ["sandbox.duel"] = ("Quick duel", "Đấu tay đôi nhanh"),
+            ["sandbox.duel.a"] = ("Blue: {units}", "Xanh: {units}"),
+            ["sandbox.duel.b"] = ("Red: {units}", "Đỏ: {units}"),
+            ["sandbox.duel.pick"] = ("Take Blue and Red from the selection", "Lấy Xanh và Đỏ từ các đơn vị đang chọn"),
+            ["sandbox.duel.distance"] = ("{metres} m apart", "Cách nhau {metres} m"),
+            ["sandbox.duel.facing.Front"] = ("Front to front", "Đối đầu"),
+            ["sandbox.duel.facing.Side"] = ("Into the flank", "Bắn vào hông"),
+            ["sandbox.duel.facing.Rear"] = ("From behind", "Bắn từ phía sau"),
+            ["sandbox.duel.run"] = ("Run the duel", "Chạy trận đấu"),
+            ["sandbox.duel.many"] = ("Run {seeds} seeds", "Chạy {seeds} seed"),
+            ["sandbox.duel.rate"] = ("Blue {blue} · Red {red} · draws {draws} of {seeds}", "Xanh {blue} · Đỏ {red} · hòa {draws} trên {seeds}"),
+            ["sandbox.duel.need"] = ("Select at least one Blue and one Red unit first.", "Hãy chọn ít nhất một đơn vị Xanh và một đơn vị Đỏ."),
+            ["sandbox.ab"] = ("A/B comparison", "So sánh A/B"),
+            ["sandbox.ab.gear"] = ("Blue's equipment: A {a} · B {b}", "Trang bị phe Xanh: A {a} · B {b}"),
+            ["sandbox.ab.run"] = ("Run A and B", "Chạy A và B"),
+            ["sandbox.ab.row"] = ("{label}: {line}", "{label}: {line}"),
+
+            // ---------------------------------------------------------------- the ceiling (B.10) and refusals (B.4)
+            ["sandbox.cap.warn"] = ("Over {vehicles} vehicles or {aircraft} aircraft a side: low-end phones may slow down.", "Vượt {vehicles} xe hoặc {aircraft} máy bay mỗi phe: máy yếu có thể bị chậm."),
+            ["sandbox.refuse.CapReached"] = ("A side can have {vehicles} vehicles and {aircraft} aircraft.", "Mỗi phe tối đa {vehicles} xe và {aircraft} máy bay."),
+            ["sandbox.refuse.OffMap"] = ("That is outside the map.", "Chỗ đó nằm ngoài bản đồ."),
+            ["sandbox.refuse.NotOnSea"] = ("Ships go on a sea lane.", "Tàu chỉ đặt được trên tuyến biển."),
+            ["sandbox.refuse.NoSea"] = ("This map has no sea.", "Bản đồ này không có biển."),
+            ["sandbox.refuse.NotOnHardpoint"] = ("Towers go on a hardpoint here (anywhere on the test range).", "Ở đây tháp chỉ đặt được ở ô hardpoint (trên bãi thử thì đặt đâu cũng được)."),
+            ["sandbox.refuse.HardpointTaken"] = ("That hardpoint already has a tower.", "Ô hardpoint này đã có tháp."),
+            ["sandbox.refuse.Locked"] = ("Not unlocked yet.", "Chưa mở khóa."),
+            ["sandbox.refuse.Unknown"] = ("Unknown unit.", "Đơn vị không xác định."),
+
+            // ---------------------------------------------------------------- first-time guide (G.3)
+            ["sandbox.hint.1"] = ("Pick a unit on the left, choose Blue or Red, and tap the map to place it. Drag from it to turn it.", "Chọn đơn vị ở bảng trái, chọn phe Xanh hoặc Đỏ rồi chạm bản đồ để đặt. Kéo từ đơn vị ra để xoay hướng."),
+            ["sandbox.hint.2"] = ("Tap units to change them on the right: rank, equipment, health, ammunition. Undo is always there.", "Chạm đơn vị để chỉnh ở bảng phải: hạng, trang bị, máu, đạn. Luôn có nút hoàn tác."),
+            ["sandbox.hint.3"] = ("Run, pause, step and change the speed along the bottom. Overlays show ranges, hits and DPS.", "Chạy, tạm dừng, chạy từng tick và đổi tốc độ ở thanh dưới. Lớp kiểm tra hiện tầm bắn, sát thương và DPS."),
+            ["sandbox.hint.ok"] = ("Got it", "Đã hiểu"),
+            ["sandbox.guide.title"] = ("Sandbox", "Sa bàn"),
+            ["sandbox.guide.body"] = (
+                "Set up any battle: pick units for Blue and Red, place them one at a time or in a formation, and turn them to face where they should. Change each one's rank, equipment, health and ammunition; give a tower its rank-7 branch. " +
+                "Run it, pause it, go a tick at a time or up to four times as fast; give orders, make a side immortal, and try the boss tools. The same seed and controls always give the same battle. " +
+                "Save your scenarios (up to 20) and share them as a text code. Nothing in the Sandbox pays out: no coins, rewards, records or achievements.",
+                "Tự dựng mọi trận đánh: chọn quân cho phe Xanh và phe Đỏ, đặt từng chiếc hoặc cả đội hình, xoay về hướng mong muốn. Chỉnh hạng, trang bị, máu và đạn của từng đơn vị; chọn nhánh hạng 7 cho tháp. " +
+                "Chạy, tạm dừng, chạy từng tick hoặc tăng tốc tới ×4; ra lệnh, cho một phe bất tử và thử các công cụ boss. Cùng seed và cùng chuỗi lệnh luôn cho cùng một trận. " +
+                "Lưu tối đa 20 kịch bản và chia sẻ bằng mã chữ. Sa bàn không trả gì: không xu, phần thưởng, kỷ lục hay thành tích."),
+        };
+
+        /// <summary>The text of <paramref name="key"/> in the current language (the key itself when it is missing).</summary>
+        public static string Get(string key) => Strings.Get(key);
+
+        /// <summary>The text with its named parameters filled in: Format("sandbox.count", ("count", 4)).</summary>
+        public static string Format(string key, params (string name, object value)[] args)
+        {
+            var text = Get(key);
+            foreach (var (name, value) in args)
+                text = text.Replace("{" + name + "}", value is IFormattable f ? f.ToString(null, Numbers) : value?.ToString() ?? "");
+            return text;
+        }
+
+        /// <summary>Numbers as the language writes them (Vietnamese 0,75; English 0.75).</summary>
+        public static IFormatProvider Numbers => Strings.Vietnamese ? ViNumbers : CultureInfo.InvariantCulture;
+
+        private static readonly NumberFormatInfo ViNumbers = new() { NumberDecimalSeparator = ",", NumberGroupSeparator = ".", PercentDecimalSeparator = ",", PercentGroupSeparator = "." };
+
+        /// <summary>A number with <paramref name="decimals"/> decimals as the language writes it.</summary>
+        public static string Number(double value, int decimals = 0) => value.ToString("N" + decimals, Numbers);
+    }
+}

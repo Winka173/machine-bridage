@@ -1,0 +1,202 @@
+/* Prompt 21 G: the Sandbox's screen on the Field Command kit. Tokens only (colours, fonts and type sizes come
+   from Tokens.uss); every control's target is --fc-touch (44 pt). Phone: the picker 300 px (165 pt) down the left,
+   the selection 330 px down the right, the controls along the bottom. Wide (a tablet, .sb--wide): wider panels. */
+
+.sb {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sb-labels {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sb-grow { flex-grow: 1; }
+.sb-hidden { display: none; }
+.sb-wrap { flex-wrap: wrap; }
+
+/* ---- the three panels */
+.sb-left {
+    position: absolute;
+    left: var(--fc-space-2);
+    top: var(--fc-topbar);
+    bottom: 190px;
+    width: 300px;
+    padding: var(--fc-space-2);
+    background-color: var(--fc-panel-field);
+    border-color: var(--fc-border);
+    border-width: var(--fc-line);
+}
+
+.sb-left--closed { width: 150px; bottom: auto; }
+.sb-left--closed .sb-left__body { display: none; }
+.sb-left__body { flex-grow: 1; flex-shrink: 1; }
+.sb-left__head { align-items: center; }
+
+.sb-right {
+    position: absolute;
+    right: var(--fc-space-2);
+    top: var(--fc-topbar);
+    bottom: 190px;
+    width: 330px;
+    padding: var(--fc-space-2);
+    background-color: var(--fc-panel-field);
+    border-color: var(--fc-border);
+    border-width: var(--fc-line);
+}
+
+.sb-right__scroll { flex-grow: 1; }
+
+.sb-bottom {
+    position: absolute;
+    left: var(--fc-space-2);
+    right: var(--fc-space-2);
+    bottom: var(--fc-space-2);
+    padding: var(--fc-space-2);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: var(--fc-panel-field);
+    border-color: var(--fc-border);
+    border-width: var(--fc-line);
+}
+
+.sb-bottom > * { margin-right: var(--fc-space-2); margin-bottom: var(--fc-space-1); }
+.sb-bottom__info { min-width: 200px; }
+.sb-state { color: var(--fc-accent); -unity-font-definition: var(--fc-font-text-semi); }
+.sb-clock { color: var(--fc-text-2); }
+
+.sb--wide .sb-left { width: 420px; }
+.sb--wide .sb-right { width: 460px; }
+
+/* ---- buttons, fields, lists */
+.sb-button {
+    min-height: var(--fc-touch);
+    min-width: var(--fc-touch);
+    padding-left: var(--fc-space-3);
+    padding-right: var(--fc-space-3);
+    margin-right: var(--fc-space-1);
+    margin-bottom: var(--fc-space-1);
+    justify-content: center;
+    align-items: center;
+    background-color: var(--fc-panel-raised);
+    border-color: var(--fc-border-strong);
+    border-width: var(--fc-line);
+}
+
+.sb-button:active { background-color: var(--fc-wash); }
+.sb-button__label { color: var(--fc-text); -unity-text-align: middle-center; white-space: normal; }
+
+.sb-field { min-height: var(--fc-touch); margin-bottom: var(--fc-space-1); }
+.sb-field .unity-text-field__input {
+    font-size: var(--fc-fs-body);
+    color: var(--fc-text);
+    background-color: var(--fc-panel-raised);
+    border-color: var(--fc-border-strong);
+}
+
+.sb-drop { margin-bottom: var(--fc-space-1); }
+.sb-tabs .fc-chip, .sb-speeds .fc-chip { margin-right: var(--fc-space-1); margin-bottom: var(--fc-space-1); }
+.sb-list { flex-grow: 1; flex-shrink: 1; min-height: 160px; }
+
+.sb-unit {
+    flex-direction: row;
+    align-items: center;
+    min-height: var(--fc-touch);
+    padding-left: var(--fc-space-2);
+    padding-right: var(--fc-space-2);
+    border-bottom-width: var(--fc-line);
+    border-color: var(--fc-border);
+}
+
+.sb-unit--armed { background-color: var(--fc-panel-selected); border-left-width: var(--fc-bar); border-left-color: var(--fc-accent); }
+.sb-unit__name { flex-grow: 1; margin-left: var(--fc-space-2); color: var(--fc-text); }
+.sb-unit__cost { color: var(--fc-text-2); }
+
+.sb-caption { margin-top: var(--fc-space-3); margin-bottom: var(--fc-space-1); }
+.sb-hint { color: var(--fc-text-2); white-space: normal; margin-top: var(--fc-space-1); }
+.sb-stepper { align-items: center; }
+.sb-stepper__value { min-width: 150px; -unity-text-align: middle-center; color: var(--fc-text); }
+.sb-place { margin-top: var(--fc-space-2); }
+
+/* ---- sides: our blue against their red (the kit's own ally and enemy colours) */
+.sb-side--0 { color: var(--fc-ally); }
+.sb-side--1 { color: var(--fc-enemy); }
+.cb .sb-side--1 { color: var(--fc-enemy-cb); }
+.sb-side.sb-side--0.fc-chip--selected .fc-chip__face { border-color: var(--fc-ally); }
+.sb-side.sb-side--1.fc-chip--selected .fc-chip__face { border-color: var(--fc-enemy); }
+
+/* ---- the status line, pop-ups, the guide */
+.sb-status {
+    position: absolute;
+    top: var(--fc-topbar);
+    left: 330px;
+    right: 360px;
+    align-items: center;
+}
+
+.sb-status__text {
+    color: var(--fc-text);
+    background-color: var(--fc-panel-field);
+    padding: var(--fc-space-2);
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.sb-popup {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: var(--fc-topbar);
+    bottom: 190px;
+    padding: var(--fc-space-3);
+    background-color: var(--fc-panel-raised);
+    border-color: var(--fc-border-strong);
+    border-width: var(--fc-line);
+}
+
+.sb-popup__head { align-items: center; }
+.sb-popup__scroll { flex-grow: 1; }
+.sb-result { color: var(--fc-accent); white-space: normal; margin-top: var(--fc-space-2); }
+.sb-types { color: var(--fc-text-2); margin-bottom: var(--fc-space-1); white-space: normal; }
+.sb-trow { border-bottom-width: var(--fc-line); border-color: var(--fc-border); }
+.sb-trow--head .sb-cell { color: var(--fc-text-2); }
+.sb-cell { width: 14%; color: var(--fc-text); white-space: normal; }
+
+.sb-guide {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 22%;
+    padding: var(--fc-space-4);
+    background-color: var(--fc-panel-raised);
+    border-color: var(--fc-accent);
+    border-width: var(--fc-line);
+}
+
+.sb-guide__line { white-space: normal; margin-bottom: var(--fc-space-2); color: var(--fc-text); }
+
+/* ---- the overlays' words over the battlefield */
+.sb-word {
+    position: absolute;
+    translate: -50% -100%;
+    font-size: var(--fc-fs-small);
+    -unity-font-definition: var(--fc-font-text-semi);
+    color: var(--fc-text);
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: var(--fc-ink);
+}
+
+.sb-hit--good { color: var(--fc-positive); }
+.sb-hit--poor { color: var(--fc-coin); }
+.sb-hit--none { color: var(--fc-danger-text); }
+.sb-tag { background-color: var(--fc-panel-field); padding: var(--fc-space-1); }
+.sb-tag--stuck { color: var(--fc-danger-text); border-color: var(--fc-danger); border-width: var(--fc-line); }

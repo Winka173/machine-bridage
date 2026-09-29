@@ -28,6 +28,9 @@ namespace MachineBrigade.Game.Hud
             BossRush,
             FullHunt,
             Daily,
+
+            /// <summary>Prompt 21: the Sandbox (with the challenges; locked until the story is done).</summary>
+            Sandbox,
         }
 
         private VisualElement _opsEntries, _opsDetail;
@@ -77,6 +80,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 20 N.2: every boss in story order, once the last chapter switched on is done.
             _opsEntries.Add(OpsCard(OpsEntry.FullHunt, CardArt.For("silver_bug"), Strings.Get("hunt.full"),
                 BossHunts.FullOpen ? Strings.Format("hunt.fullSub", BossHunts.Full.Count) : Strings.Format("hunt.full.locked", Campaign.LastChapter), false));
+            _opsEntries.Add(SandboxCard());
             var dailyCard = OpsCard(OpsEntry.Daily, null, Strings.Get("daily.titleShort"), DailyResetText(), false);
             KitDot.Attach(dailyCard, DailyClaimable());
             _opsEntries.Add(dailyCard);
@@ -143,6 +147,9 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case OpsEntry.BossRush:
                     start = HuntDetail(body, false);
+                    break;
+                case OpsEntry.Sandbox:
+                    start = SandboxDetail(body);
                     break;
                 case OpsEntry.FullHunt:
                     start = HuntDetail(body, true);

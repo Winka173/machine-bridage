@@ -2468,7 +2468,8 @@ namespace MachineBrigade.Game.Hud
 
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
-            BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text) || BossText.Table.TryGetValue(key, out text)
+            BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text) || BossText.Table.TryGetValue(key, out text) ||
+            SandboxText.Table.TryGetValue(key, out text)
                 // A support card's numbers come from its data (the balance pass after prompt 18, C.3).
                 ? SupportLines.Fill(key, Vietnamese ? text.vi : text.en) : key;
 
@@ -2501,7 +2502,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
-            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key);
+            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key) || SandboxText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

@@ -20,7 +20,7 @@ namespace MachineBrigade.Sim
     /// <see cref="Submit"/> and reports what happened through <see cref="Events"/>.
     /// Contains no engine types, so it runs identically in tests and in the game.
     /// </summary>
-    public sealed class SimWorld
+    public sealed partial class SimWorld
     {
         /// <summary>Extra margin around blocking props so hulls stay out of walls.</summary>
         public const float ObstacleClearance = 1.5f;
