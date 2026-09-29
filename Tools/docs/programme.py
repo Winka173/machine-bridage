@@ -21,7 +21,7 @@ def campaign(game, h):
     goal_vi = dict(h['GOAL_VI'], **GOAL_VI_EXTRA)
     out = ["<div class='section'><h2>3. Chiến dịch</h2>"
            "<p><b>Bối cảnh:</b> tương lai gần, một vùng duyên hải hư cấu. Tập đoàn quân sự tư nhân <b>Hegemon</b> chiếm vùng này và chạy các chương trình "
-           "vũ khí thử nghiệm: Behemoth, Tổ Ong và dự án Bọ Bạc. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
+           "vũ khí thử nghiệm: Behemoth, bầy drone và Dự án Icarus. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
            f"<p><b>Cấu trúc:</b> {len(game['chapters'])} chương trong 3 hồi, {len(game['campaign'])} nhiệm vụ "
            f"({sum(1 for m in game['campaign'] if not m['side'])} chính, {sum(1 for m in game['campaign'] if m['side'])} phụ). Mỗi chương có 10 nhiệm vụ chính "
            "và 2 nhiệm vụ phụ; nhiệm vụ 5 là boss giữa chương, nhiệm vụ 10 là chiến dịch lớn nhiều giai đoạn (15–25 phút, riêng trận cuối game tới 30 phút). "
@@ -491,7 +491,7 @@ def late_programme(game, h, imgdir):
                      e(', '.join(sorted(parts)) or '—')])
     out.append(table(['Boss', 'Đòn', 'Gồm', 'Cảnh báo', 'Hồi', 'Bộ phận ngắt'], rows))
     out.append("<p>Bộ phận mới: bệ dựng tên lửa của Doomsday Train, khoang bom của Hive Carrier và của Khí cầu chỉ huy. "
-               "Đòn của Bọ Bạc (tia laser quét) là một mục dữ liệu riêng để prompt 19 thay bằng mưa thanh tungsten.</p>")
+               "Prompt 19: đòn của Icarus là mưa thanh tungsten từ vệ tinh (thay cho tia laser quét); từ prompt 20 mini boss dùng đòn lớn thu nhỏ (sát thương ×0,7, hồi chiêu ×1,3).</p>")
     out.append('</div>')
     return ''.join(out)
 
@@ -550,7 +550,7 @@ def gallery(game, h, imgdir):
     fx = imgdir / 'fx'
     sheets = [('impacts_12c.png', 'Nổ đạn tăng, bom, tên lửa hành trình và MOAB (trước / sau 12C, 0,04–3,2 s).'),
               ('impacts_11a.png', 'Nổ trước và sau đợt 11A.'), ('supports.png', 'Hỗ trợ hỏa lực: đạn rơi và lúc chạm đất của từng thẻ.'),
-              ('flames.png', 'Xe phun lửa: trước (trên) và sau (dưới).'), ('lasers.png', 'La-de Iron Beam và tia của Bọ Bạc.'),
+              ('flames.png', 'Xe phun lửa: trước (trên) và sau (dưới).'), ('lasers.png', 'La-de Iron Beam và tia laser của Icarus (trước prompt 19).'),
               ('missiles_1.png', 'Tên lửa phòng không: lửa đuôi và vệt khói.'), ('missiles_2.png', 'Tên lửa chống tăng.'),
               ('missiles_3.png', 'Tên lửa trực thăng và drone.'), ('missiles_4.png', 'Tên lửa máy bay.'), ('missiles_5.png', 'Rốc-két và tên lửa đạn đạo.'),
               ('flashes_1.png', 'Chớp lửa đầu nòng ở 4 hướng (quả cầu xanh: đầu nòng thật).'), ('flashes_2.png', 'Chớp lửa: boss, máy bay, tháp.'),

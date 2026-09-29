@@ -643,7 +643,7 @@ def build(game, imgdir):
                + pair('screen-setup-mode-vi-16x9.png', 'Chọn chế độ: tên đầy đủ và mô tả một dòng.',
                       'screen-setup-map-vi-16x9.png', 'Chọn chiến trường: có ảnh xem trước.'))
     out.append("<h3>Chiến dịch</h3>"
-               + pair('screen-campaign-vi-16x9.png', 'Chiến dịch: 9 chương.', 'screen-campaign-chapter-vi-16x9.png', 'Một chương: nhiệm vụ, tướng địch, phần thưởng.')
+               + pair('screen-campaign-vi-16x9.png', f"Chiến dịch: {len(game['chapters'])} chương (ảnh chụp trước prompt 20).", 'screen-campaign-chapter-vi-16x9.png', 'Một chương: nhiệm vụ, tướng địch, phần thưởng.')
                + pair('screen-briefing-vi-16x9.png', 'Briefing trước nhiệm vụ.', 'screen-dossier-vi-16x9.png', 'Hồ sơ nhân vật.'))
     out.append("<h3>Tác chiến</h3>" + one('screen-operations-vi-16x9.png', 'Tác chiến: chiến dịch của tuần (mutator), chiến dịch lớn chơi lại, Pháo đài tuần, Săn trùm, thử thách; '
                                                                                 'mỗi mục có ảnh, luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'))
