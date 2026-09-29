@@ -484,6 +484,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
 
+        /// <summary>Seconds until mount <paramref name="index"/> may fire again (read by the view: a launcher raised to fire).</summary>
+        public float MountCooldown(int index) => Weapons[index].Cooldown;
+
         public Order Order { get; internal set; }
 
         /// <summary>What the main weapon is aimed at this step: the ordered target or an automatic one.</summary>

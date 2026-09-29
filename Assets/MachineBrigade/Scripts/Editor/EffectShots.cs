@@ -616,9 +616,10 @@ namespace MachineBrigade.Editor
         }
 
         /// <summary>
-        /// Play-test 5 (DECISIONS 20V): the new hull fire on battle tanks at 28 %, 15 % and 4 % health (High), the
-        /// same 4 % on Low, and a railgun's burn on a fifth, 0.6 s after the hit; 2.5 s into the fire. Batch mode
-        /// (with graphics): -executeMethod MachineBrigade.Editor.EffectShots.HullFires -mbShotsOut &lt;png&gt;.
+        /// Play-test 6 (DECISIONS 21H): the burning-vehicle fire on battle tanks at 28 %, 15 % and 4 % health (High), the
+        /// same 4 % on Low, and a fifth at 10 % driving left at 6 m/s (its fire on the hull, its smoke streaming behind);
+        /// 2.5 s into the fire. Batch mode (with graphics):
+        /// -executeMethod MachineBrigade.Editor.EffectShots.HullFires -mbShotsOut &lt;png&gt;.
         /// </summary>
         [MenuItem("Machine Brigade/Render Hull Fire Shots")]
         public static void HullFires()
@@ -634,12 +635,10 @@ namespace MachineBrigade.Editor
             var camera = Camera(root);
             camera.orthographicSize = 7.5f;
             var fire = new HullFire(materials, root);
-            var emitters = new Emitters(materials, root);
-            var lasers = new LaserBeams(materials, emitters, null, root);
             var right = camera.transform.right;
             right.y = 0f;
             right.Normalize();
-            var healths = new[] { 0.28f, 0.15f, 0.04f, 0.04f, 1f };
+            var healths = new[] { 0.28f, 0.15f, 0.04f, 0.04f, 0.1f };
             var tanks = new Transform[healths.Length];
             for (var i = 0; i < tanks.Length; i++)
             {
@@ -647,10 +646,13 @@ namespace MachineBrigade.Editor
                 tanks[i].position = right * ((i - 2) * 8f);
                 tanks[i].rotation = Quaternion.Euler(0f, 30f + i * 20f, 0f);
             }
+            // The fifth drives towards the fourth (the fire rides it; the smoke trails): it ends where it is placed.
+            var drive = -right * 6f;
+            tanks[4].rotation = Quaternion.LookRotation(drive.normalized);
+            tanks[4].position -= drive * 2.5f;
             const float step = 1f / 60f;
             float time = 0f, next = 0f, nextLow = 0f;
             var beat = 0;
-            var seared = false;
             var systems = root.GetComponentsInChildren<ParticleSystem>(true);
             while (time < 2.5f)
             {
@@ -660,6 +662,7 @@ namespace MachineBrigade.Editor
                     next += HullFire.Beat;
                     Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
                     for (var i = 0; i < 3; i++) fire.Feed(tanks[i], 2.2f, 2.4f, false, i, healths[i], beat);
+                    fire.Feed(tanks[4], 2.2f, 2.4f, false, 4, healths[4], beat, drive, tanks[4].Find("Turret"));
                     beat++;
                 }
                 if (time >= nextLow)
@@ -669,12 +672,7 @@ namespace MachineBrigade.Editor
                     fire.Feed(tanks[3], 2.2f, 2.4f, false, 3, healths[3], beat);
                     Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
                 }
-                if (!seared && time >= 1.9f)
-                {
-                    seared = true;
-                    lasers.Sear(tanks[4].position + Vector3.up * 1.3f + tanks[4].forward * 1.2f, Sim.Core.EntityId.None, null, 1.3f, 2.6f, time);
-                }
-                lasers.Tick(time, step, null);
+                tanks[4].position += drive * step;
                 foreach (var ps in systems) ps.Simulate(step, false, false, false);
             }
             Game.Match.MatchSettings.Graphics = graphics;

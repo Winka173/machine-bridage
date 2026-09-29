@@ -260,6 +260,7 @@ namespace MachineBrigade.Game.Effects
                         var missileGrow = matched && strike.Id != "moab" ? BlastSizes.MissileGrow : 1f;
                         Explode(e.Tier, hit, now, strikeScale, grow: strikeGrow * missileGrow, exact: matched, ring: matched ? strikeGrow : 0f);
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow));
+                        if (strike != null && strike.Kind == SupportKind.Sead) SeadKill(hit, views, now);
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
                         {
@@ -604,6 +605,8 @@ namespace MachineBrigade.Game.Effects
             KickUpDust(views, now);
             PrintTracks(views);
             ShowDamage(views, now);
+            ShowStunned(views, now);
+            WarnLaunchers(views, now);
             TickBossParts(views, now, Time.deltaTime);
 
             var markerAge = Time.unscaledTime - _markerStart;
@@ -679,6 +682,98 @@ namespace MachineBrigade.Game.Effects
 
         private int _fireBeat;
 
+        private static readonly Color KillBlue = new(0.55f, 0.85f, 1f, 1f);
+
+        private float _warnAt;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): launchers (VehicleView.Launchers) with an enemy of a layer they fire at inside a
+        /// quarter past their reach are marked, five times a second, so they raise their launcher before the sim fires.
+        /// </summary>
+        private void WarnLaunchers(ViewRegistry views, float now)
+        {
+            if (now < _warnAt) return;
+            _warnAt = now + 0.2f;
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var launcher = all[i];
+                var reach = launcher.LauncherReach(out var layers);
+                if (reach <= 0f || !launcher.Sim.IsAlive) continue;
+                var at = launcher.Position;
+                for (var j = 0; j < all.Count; j++)
+                {
+                    var enemy = all[j];
+                    if (enemy.Sim.Team == launcher.Sim.Team || !enemy.Sim.IsAlive) continue;
+                    if ((layers & (enemy.Flying ? TargetLayers.Air : TargetLayers.Ground)) == 0) continue;
+                    var d = enemy.Position - at;
+                    d.y = 0f;
+                    if (d.sqrMagnitude > reach * reach) continue;
+                    launcher.ThreatAt = Time.time;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): the SEAD strike's anti-radiation missile strikes its air defence: on top of the
+        /// warhead's blast, an electronic kill (after the HARM hits of Battlefield and Wargame): a white-blue flash and
+        /// two electric shock rings, arcs crawling over the vehicle, a shower of hot and blue sparks and the smoke of
+        /// burnt-out electronics; the radar stops dead and slumps (VehicleView.Spin) while it is knocked out.
+        /// </summary>
+        private void SeadKill(Vector3 at, ViewRegistry views, float now)
+        {
+            VehicleView victim = null;
+            var best = 16f;
+            foreach (var view in views.All)
+            {
+                var d = (view.Position - at).sqrMagnitude;
+                if (d < best && view.Sim.IsAlive) (best, victim) = (d, view);
+            }
+            var top = victim != null ? victim.Position + Vector3.up * victim.Top * 0.8f : at + Vector3.up * 1.6f;
+            var reach = victim != null ? Mathf.Max(1.6f, victim.Sim.Radius) : 2f;
+            _emitters.Charge(top, 5f);
+            _emitters.Charge(top, 3f);
+            Ring(at, 10f, new Color(0.45f, 0.8f, 2.6f, 1f));
+            Ring(at, 6f, new Color(0.9f, 1.4f, 3f, 1f));
+            for (var k = 0; k < (Low ? 3 : 7); k++) Arcs(top + UnityEngine.Random.insideUnitSphere * reach * 0.5f, reach * 1.4f, 5);
+            for (var k = 0; k < (Low ? 20 : 48); k++)
+                _layers.Sparks.Emit(new ParticleSystem.EmitParams
+                {
+                    position = top, velocity = (UnityEngine.Random.onUnitSphere + Vector3.up * 0.6f) * UnityEngine.Random.Range(5f, 14f),
+                    startSize = UnityEngine.Random.Range(0.08f, 0.16f), startLifetime = UnityEngine.Random.Range(0.3f, 0.8f),
+                    startColor = k % 3 == 0 ? KillBlue : new Color(1f, 0.8f, 0.45f, 1f), applyShapeToPosition = false,
+                }, 1);
+            _emitters.DamageSmoke(top, reach * 1.1f, 0.25f);
+            _night.Blast(top, 9f, 0.5f);
+        }
+
+        /// <summary>
+        /// Play-test 6: a vehicle knocked out (an EMP's or a SEAD strike's stun) shows it for as long as it lasts: electric
+        /// arcs crackle over the hull, blue sparks spit off it and burnt electronics smoke; its radar hangs dead
+        /// (VehicleView.Spin). Low: a glow point for the arcs, fewer sparks.
+        /// </summary>
+        private void ShowStunned(ViewRegistry views, float now)
+        {
+            var all = views.All;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var view = all[i];
+                if (!view.Sim.Stunned || !view.Sim.IsAlive || now < view.StunFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
+                view.StunFxAt = now + (Low ? 0.34f : 0.18f) * UnityEngine.Random.Range(0.8f, 1.3f);
+                var r = Mathf.Max(1f, view.Sim.Radius * 0.6f);
+                var top = view.Position + Vector3.up * view.Top * 0.75f + UnityEngine.Random.insideUnitSphere * r * 0.5f;
+                if (Low) _emitters.Charge(top, 0.4f);
+                else Arcs(top, r, 4);
+                _layers.Sparks.Emit(new ParticleSystem.EmitParams
+                {
+                    position = top, velocity = Vector3.up * 3f + UnityEngine.Random.insideUnitSphere * 3.5f, startSize = 0.1f,
+                    startLifetime = 0.45f, startColor = KillBlue, applyShapeToPosition = false,
+                }, Low ? 2 : 4);
+                if (UnityEngine.Random.value < 0.25f) _emitters.DamageSmoke(top, r * 0.7f, 0.5f);
+            }
+        }
+
         /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>
         private void KickUpDust(ViewRegistry views, float now)
         {
@@ -712,8 +807,8 @@ namespace MachineBrigade.Game.Effects
                 view.TrackAt = at;
                 if (!_cull.Visible(at, 0.1f)) continue;
                 var root = view.Root;
-                var gauge = view.Def.Width * view.Def.Scale * 0.36f;
-                var width = Mathf.Clamp(view.Def.Width * view.Def.Scale * 0.2f, 0.28f, 0.75f);
+                var gauge = view.Def.Width * view.DrawScale * 0.36f;
+                var width = Mathf.Clamp(view.Def.Width * view.DrawScale * 0.2f, 0.28f, 0.75f);
                 var heading = root.eulerAngles.y;
                 _tracks.Print(at + root.right * gauge, heading, width);
                 _tracks.Print(at - root.right * gauge, heading, width);
@@ -1136,7 +1231,7 @@ namespace MachineBrigade.Game.Effects
                 if (at.y < 3f || !_cull.Visible(at, 0.5f)) continue;
                 var forward = body.forward;
                 var b = view.ModelBounds;
-                var scale = view.Def.Scale;
+                var scale = view.DrawScale;
                 var (kind, xs, z, y) = EnginesOf(view.Def.Model);
                 var speed = view.Sim.Speed / Mathf.Max(1f, view.Def.Speed);
                 // Vapour trails where the air is cold enough: long ones at bomber heights, none low down.

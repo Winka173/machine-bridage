@@ -118,6 +118,7 @@ namespace MachineBrigade.Game.Effects
                     pitch = shooter.LayForShot();
                     barrel = shooter.BarrelDirectionOf(0);
                 }
+                if (e.Mount != 0) shooter.LaySideLauncher(e.Mount);
                 from = shooter.MuzzleOf(e.Mount);
                 _shotNode = shooter.LastMuzzleNode;
                 _shotBarrel = shooter.DrawnBarrelOf(e.Mount);

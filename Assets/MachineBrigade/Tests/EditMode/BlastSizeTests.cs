@@ -46,8 +46,10 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1.4f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_120mm"]), 1e-4f, "main battle tank");
             Assert.AreEqual(1.5f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_152"]), 1e-4f, "heavy tank");
             Assert.AreEqual(1.5f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_140_twin"]), 1e-4f, "super-heavy tank");
-            Assert.AreEqual(1.4f * 1.3f, BlastSizes.TankShell(catalog.Weapons["turret_gun_120"]), 1e-4f, "the gun turret +30 %");
-            Assert.AreEqual(1.3f, BlastSizes.Round(catalog.Weapons["gun_57_auto"]), 1e-4f, "the gun turret's autocannon branch +30 %");
+            Assert.AreEqual(1.4f * 1.3f * 1.2f, BlastSizes.TankShell(catalog.Weapons["turret_gun_120"]), 1e-4f, "the gun turret +30 %, then +20 % (play-test 6)");
+            Assert.AreEqual(0.8f, BlastSizes.Round(catalog.Weapons["gun_155_twin_fort"]) / (catalog.Weapons["gun_155_twin_fort"].Indirect ? 1.2f : 1f), 1e-4f,
+                "the heavy fortress's blasts 20 % smaller (play-test 6)");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.Round(catalog.Weapons["gun_57_auto"]), 1e-4f, "the gun turret's autocannon branch +30 %, then +20 % (play-test 6)");
             Assert.AreEqual(1.5f * 1.2f, BlastSizes.Ground(catalog.Weapons["gun_203_siege"]), 1e-4f, "siege tank");
             Assert.AreEqual(1f, BlastSizes.Ground(catalog.Weapons["howitzer"]), 1e-4f, "other artillery: not a bomb");
             Assert.AreEqual(1.2f, BlastSizes.Artillery(catalog.Weapons["howitzer"]), 1e-4f, "artillery +20 %");

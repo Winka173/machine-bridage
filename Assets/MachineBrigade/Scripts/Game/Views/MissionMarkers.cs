@@ -50,7 +50,7 @@ namespace MachineBrigade.Game.Views
                 Vector3 at;
                 if (mark.Prop) at = new Vector3(mark.Position.X, Top(mark.Entity, map) + 3.2f, mark.Position.Y);
                 else if (mark.Entity.IsValid && views.TryGet(mark.Entity, out var view))
-                    at = view.Position + Vector3.up * (view.ModelBounds.max.y * view.Def.Scale + 4.4f);
+                    at = view.Position + Vector3.up * (view.ModelBounds.max.y * view.DrawScale + 4.4f);
                 else at = new Vector3(mark.Position.X, 5f, mark.Position.Y);
                 var marker = Take(shown++);
                 Dress(marker, mark.Kind);

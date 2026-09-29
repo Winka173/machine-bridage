@@ -46,6 +46,15 @@ namespace MachineBrigade.Game.Effects
             TurretGrow = 1.3f;
 
         /// <summary>
+        /// Play-test 6 (DECISIONS 21H), the owner's asks, multiplied onto the above: the gun turret's blasts 20 % bigger
+        /// again (1.56 over the 11A size; 2.18 on its 120 mm), the heavy fortress's twin 155 mm blasts 20 % smaller.
+        /// </summary>
+        public const float TurretBigger = 1.2f, FortressSmaller = 0.8f;
+
+        /// <summary>The heavy fortress's guns (its twin 155 mm and the coastal branch's long-range pair).</summary>
+        public static bool FortressGun(WeaponDef w) => w != null && w.Id.StartsWith("gun_155_twin");
+
+        /// <summary>
         /// How far out the Ultimate recipe's ground shockwave ring reaches at scale 1, in metres:
         /// the ring is drawn at 0.82 of its quad's half size, 16 x 1.6 m (x 1.04 on average) across.
         /// </summary>
@@ -90,7 +99,7 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>A tank gun's round, by the class of tank that fires it (others by their damage); the gun turret's +30 %.</summary>
         public static float TankShell(WeaponDef w) => TurretGun(w)
-            ? MainTank * TurretGrow
+            ? MainTank * TurretGrow * TurretBigger
             : ClassOf(w) switch
             {
                 Class.Light => LightTank,
@@ -136,13 +145,15 @@ namespace MachineBrigade.Game.Effects
             if (w == null) return 1f;
             if (w.Projectile == ProjectileKind.Drone) return Drone(w);
             if (w.Projectile is ProjectileKind.Missile or ProjectileKind.Rocket) return MissileGrow;
-            if (TurretGun(w)) return TurretGrow;
+            if (TurretGun(w)) return TurretGrow * TurretBigger;
             if (w.Projectile == ProjectileKind.Shell && w.Indirect) return Artillery(w);
+            if (FortressGun(w)) return FortressSmaller;
             return w.Family == "tank_gun" ? TankGrow : 1f;
         }
 
         /// <summary>An artillery or mortar shell +20 %; the siege tank's 203 mm as a heavy tank's round (+20 % as a tank's).</summary>
-        public static float Artillery(WeaponDef w) => w != null && w.Id == "gun_203_siege" ? HeavyTank * TankGrow : ArtilleryGrow;
+        public static float Artillery(WeaponDef w) => w != null && w.Id == "gun_203_siege" ? HeavyTank * TankGrow
+            : FortressGun(w) ? ArtilleryGrow * FortressSmaller : ArtilleryGrow;
 
         /// <summary>A bomb, by weapon or fire-support id: small guided bombs and bomblets least, the heavy iron bombs most.</summary>
         public static float Bomb(string id) => id switch

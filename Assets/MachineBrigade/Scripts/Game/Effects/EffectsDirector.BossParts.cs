@@ -22,7 +22,8 @@ namespace MachineBrigade.Game.Effects
     /// <item>The body burns too: two small fires under two thirds of its health, a big one and thick
     /// smoke under a third.</item>
     /// <item>The fires ride on the boss (on the part's turret, where it has one), so they follow it and
-    /// its smoke streams out behind a boss on the move.</item>
+    /// its smoke streams out behind a boss on the move. Play-test 6 (DECISIONS 21H): they burn as a burning
+    /// vehicle does (HullFire: tongues, glow, sparks, flare-ups and black smoke), no longer as ground fire.</item>
     /// <item>At most <see cref="FireBudget.Cap"/> fire points per boss (<see cref="FireBudget.LowCap"/>
     /// on Low): nearby ones are merged. Low also emits half the smoke and no arcs; High throws debris.</item>
     /// <item>When the boss dies every fire flares up before the death blasts, and the wreck burns on.</item>
@@ -37,6 +38,8 @@ namespace MachineBrigade.Game.Effects
             public int Signature = int.MinValue;
             public float PuffAt;
             public float ArcAt;
+            public float FireAt;
+            public int Beat;
         }
 
         private readonly Dictionary<EntityId, BossFx> _bossFx = new();
@@ -47,6 +50,9 @@ namespace MachineBrigade.Game.Effects
         private static readonly Color ArcBlue = new(0.55f, 1.4f, 2.6f, 1f);
 
         private static bool Low => MatchSettings.Tier == GraphicsQuality.Low;
+
+        /// <summary>A boss's fire point's flames against a burning tank's (its fire sizes run 0.35 to 1.4).</summary>
+        private const float PartFireSize = 2.2f;
 
         /// <summary>A part broke (its PartBroken event): the blast by what it is, at the part itself.</summary>
         private void PartBroke(in SimEvent e, ViewRegistry views, float now)
@@ -103,6 +109,14 @@ namespace MachineBrigade.Game.Effects
                     Rebuild(fx, now);
                 }
                 if (!_cull.Visible(view.Position, 0.3f)) continue;
+                if (now >= fx.FireAt)
+                {
+                    // Play-test 6 (DECISIONS 21H): the part fires burn as a burning vehicle's (HullFire), riding the boss.
+                    fx.FireAt = now + HullFire.Next;
+                    var velocity = view.Root.forward * view.Speed;
+                    foreach (var (point, _, size) in fx.Fires)
+                        if (point != null) _hullFire.FeedPoint(point.position, size * PartFireSize, Mathf.Clamp01(size), velocity, fx.Beat++);
+                }
                 Trails(view);
                 if (now < fx.PuffAt) continue;
                 fx.PuffAt = now + (Low ? 0.45f : 0.22f);
@@ -160,11 +174,8 @@ namespace MachineBrigade.Game.Effects
             if (health < 0.33f) points.Add(new FireBudget.Point(model.TransformPoint(new Vector3(0f, top, -r * 0.1f)), 1.4f, AnchorOf(model)));
 
             var merged = FireBudget.Merge(points, Low ? FireBudget.LowCap : FireBudget.Cap);
-            foreach (var (point, fire, _) in fx.Fires)
-            {
-                _fires.Extinguish(fire, now);
+            foreach (var (point, _, _) in fx.Fires)
                 if (point != null) Object.Destroy(point.gameObject);
-            }
             fx.Fires.Clear();
             foreach (var m in merged)
             {
@@ -173,8 +184,8 @@ namespace MachineBrigade.Game.Effects
                 var point = new GameObject("Boss fire").transform;
                 point.SetParent(anchor, false);
                 point.position = m.At;
-                // Burns until the battle is over (or the part is patched, or the boss dies).
-                fx.Fires.Add((point, _fires.Ignite(m.At, m.Size, 1e6f, now, point), m.Size));
+                // Burns until the battle is over (or the part is patched, or the boss dies): fed in TickBossParts.
+                fx.Fires.Add((point, -1, m.Size));
             }
         }
 
@@ -240,10 +251,10 @@ namespace MachineBrigade.Game.Effects
         {
             if (!_bossFx.TryGetValue(view.Id, out var fx)) return;
             _bossFx.Remove(view.Id);
-            foreach (var (point, fire, size) in fx.Fires)
+            foreach (var (point, _, size) in fx.Fires)
             {
-                _fires.Extinguish(fire, now);
                 if (point == null) continue;
+                _hullFire.FeedPoint(point.position, size * PartFireSize * 1.8f, 1f, Vector3.zero, 0);
                 var at = point.position;
                 Explode(ExplosionTier.Medium, at, now, 0.8f + size * 0.3f, flash: false);
                 _fires.Ignite(at, size * 1.5f, Random.Range(25f, 35f), now, view.Root);
