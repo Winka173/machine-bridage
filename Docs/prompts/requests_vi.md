@@ -142,3 +142,20 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 01:20) và các tháp canh vẫn chưa bỏ vũ khí phụ cho hợp lý, như gun turret và heavy fortress
 - (30/09 01:20) ưu tiên sửa các cái này để test tiếp
 - (30/09 01:30) file pdf từng phương tiện nhớ ghi thêm là lấy ref từ cái gì ngoài đời thật / game luôn, toàn bộ từ phương tiện tới tháp canh tới boss  [agent tham khảo, chờ chỗ trống]
+
+## Play-test 8, 30/09 (agent A: hành vi, dữ liệu, giao diện; agent B: hình ảnh, model; G: Bastion gọi tháp)
+
+- (30/09 02:13) lửa do hư hại trên các phương tiện vẫn chưa đẹp, tham khảo bên ngoài và vẽ lại
+- (30/09 02:13) anti air đang bắn xe tank thì sẽ không thay đổi mục tiêu qua máy bay nếu có máy bay vào range, rà lại toàn bộ phương tiện AI để bắn đúng mục tiêu nào tốt nhất
+- (30/09 02:13) sam launcer trong in action preview không bắn gì, lúc trước bắn bình thường
+- (30/09 02:13) siege tank sau chuyển dạng giảm tầm vụ nổ 20%
+- (30/09 02:13) các vụ nổ như của heavy fortress xuất hiện khói hơi lâu, vụ nổ của boss khi chết cũng vậy, cho khói tan nhanh hơn 30-50%, tương tự cho các vũ khí khác nếu xài chung loại khói này
+- (30/09 02:13) chỉnh lại model vũ khí cho gunship ac 130, súng lòi ra hơi dài quá, và xóa tên lửa khỏi gunship
+- (30/09 02:13) boss bastion vẫn gọi triệu hồi chi viện ra 1 tháp súng, không được chi viện tháp canh
+- (30/09 02:13) fire support gọi gunship sao tới 1 lúc nó biến mất , nếu có thời gian thì cho tự bay ra khỏi map
+- (30/09 02:13) phần vehicle details của boss battleship không hiện đủ trong khung hình
+- (30/09 02:13) phần armour by face, khi xem battleship nó lại hiện của tank
+- (30/09 02:13) sandbox nên có cả biển để gọi boss biển, đôi khi các button như xóa đi 1 xe không ăn
+- (30/09 02:13) long range sam, vụ nổ do tên lửa quá nhỏ so với hình dáng tên lửa, nên x2 radius và vụ nổ lên
+- (30/09 02:13) trong base, chọn range, nó bị collapse rất nhiều không nhìn được, nên để border có màu, background thì transparent và chớp chớp khi ta select cụ thể để xem range
+- (30/09 02:13) icarus đừng dùng copy theo 100% design của starwar, chỉ lấy ý tưởng sửa lại toàn bộ từ màu tới model ...
