@@ -1,0 +1,110 @@
+Prompt 15: Cấp giáp và cấp xuyên, bộ loại đạn mới, bộ icon giáp và vũ khí
+
+Nhiệm vụ: thay hệ 3 loại giáp (Nhẹ / Nặng / Máy bay, cộng Công trình) bằng hệ cấp giáp và cấp xuyên cho mọi đơn vị, gồm cả tháp, công trình, máy bay và bộ phận boss; thay bộ loại đạn bằng bộ 6 loại mới; và thêm bộ icon (không dùng số) cho giáp, loại sát thương và dạng vũ khí. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Thứ tự: nếu prompt 13 chưa chạy, chạy prompt này trước phần A của prompt 13. Nếu prompt 13 đã chạy, sau khi xong prompt này phải chạy lại toàn bộ bộ đo giá trị thực chiến (phần A của prompt 13) và cân bằng lại theo kết quả mới. Thang sát thương theo cỡ nòng của prompt 13 (phần B) vẫn giữ nguyên.
+
+A. CẤP GIÁP
+1. Mọi đơn vị có cấp giáp từ 0 tới 4:
+   - 0 Không giáp: xe trinh sát, bán tải, xe bom, xe tiếp tế, xe tiếp đạn.
+   - 1 Mỏng: xe bọc thép, xe khói, xe gây nhiễu, radar, xe SAM, pháo phản lực.
+   - 2 Vừa: xe bộ binh, tăng nhẹ, pháo bánh lốp, xe chỉ huy, xe công binh.
+   - 3 Dày: tăng chủ lực, hai nòng, BMPT, pháo chống tăng, xe ủi.
+   - 4 Rất dày: tăng nặng, siêu tăng, xe rùa, phần lớn boss mặt đất.
+   Tự xếp cấp cho mọi xe còn lại theo cùng tinh thần (tham khảo xe thật tương ứng) và ghi bảng vào DECISIONS.md.
+2. Giáp có hướng: mỗi xe có cấp giáp cho mặt trước; mặc định hông = trước − 1, sau = trước − 2, nóc = trước − 2, không thấp hơn 0. Được đặt riêng cho từng xe nếu xe thật khác (ví dụ xe có giáp hông dày). Thay cơ chế giáp có hướng hiện có bằng cách tính này.
+3. Tháp và công trình:
+   - Phần lớn tháp có một cấp giáp chung cho mọi hướng.
+   - Tháp có lỗ châu mai (Lô cốt, Ụ pháo ẩn, Pháo đài hạng nặng, và các tháp tương tự) có mặt trước dày hơn một cấp.
+   - Khởi điểm: công sự nhẹ (bao cát, khung thép, tháp canh) cấp 1; tháp bê tông thường cấp 2–3; tường pháo đài, cổng và HQ cấp 4.
+   - Tháp và công trình vẫn giữ nhãn "công trình" để đạn Nổ mạnh (và nhãn Nhiệt áp) có thêm sát thương như hiện tại.
+4. Máy bay và trực thăng: vẫn là loại mục tiêu "trên không" riêng, nhưng cũng có cấp giáp. Phần lớn là 0; máy bay và trực thăng có giáp thật (Su-25, A-10, Mi-24, Ka-52 và tương tự) cấp 1–2, chịu được súng máy nhỏ.
+5. Bộ phận boss (prompt 9) mỗi bộ phận có cấp giáp riêng.
+6. Xe tinh nhuệ: được +1 cấp giáp ở mặt trước (tối đa 4), thay cho một phần mức tăng máu; chỉnh lại để vẫn nằm trong khung sức mạnh ×1,8–2,2 của prompt 8.
+
+B. CẤP XUYÊN VÀ CÁCH TÍNH SÁT THƯƠNG
+1. Mọi vũ khí có cấp xuyên từ 0 tới 4, gắn với vũ khí thật:
+   - 0: súng máy 7,62 mm.
+   - 1: súng máy 12,7–14,5 mm; mảnh của đạn nổ mạnh.
+   - 2: pháo tự động 20–40 mm; rốc-két không điều khiển loại nổ mạnh.
+   - 3: pháo xe tăng 100–105 mm; tên lửa chống tăng nhẹ.
+   - 4: pháo 120 mm trở lên bắn đạn xuyên; Kornet, Hellfire, Vikhr, Maverick; pháo điện từ.
+   Đạn Nổ lõm (phần C) có cấp xuyên theo loại đầu nổ, không theo cỡ nòng: phần lớn từ 3 trở lên kể cả đầu nổ nhỏ (drone FPV, rốc-két chống tăng).
+2. Hệ số sát thương theo chênh lệch cấp xuyên so với cấp giáp của mặt bị trúng (khởi điểm):
+   - Cao hơn từ 1 cấp trở lên: ×1.
+   - Bằng nhau: ×0,75.
+   - Thấp hơn 1 cấp: ×0,4.
+   - Thấp hơn 2 cấp: ×0,15.
+   - Thấp hơn từ 3 cấp trở lên: ×0,05.
+3. Đòn đánh nóc (tên lửa đánh nóc, drone lao xuống, bom con) dùng cấp giáp nóc.
+4. Bỏ hệ số riêng cho pháo tự động (×0,35–0,4 lên giáp nặng) nếu prompt 13 đã thêm; cấp xuyên đã thay việc đó.
+5. Sát thương cuối = sát thương mỗi phát (theo thang cỡ nòng của prompt 13) × hệ số xuyên × hệ số loại sát thương với loại mục tiêu (phần C) × các hiệu ứng khác (trang bị, module, tinh nhuệ...).
+
+C. BỘ LOẠI SÁT THƯƠNG MỚI
+Thay bộ 5 loại hiện tại (Động năng, Xuyên giáp, Nổ mạnh, Lửa, Phòng không) bằng 6 loại:
+1. Động năng: súng máy, pháo tự động, đạn xuyên của pháo xe tăng, pháo điện từ. Xuyên theo cỡ nòng và tốc độ đạn. APS, giáp phản ứng nổ và lồng chắn không chặn được.
+2. Nổ lõm (tách từ Xuyên giáp): tên lửa chống tăng, rốc-két chống tăng, drone FPV, Lancet, bom con chống tăng. Xuyên cao dù đầu nổ nhỏ. Bị giảm mạnh bởi giáp phản ứng nổ và lồng chắn; tên lửa, rốc-két và drone bị APS đánh chặn.
+3. Nổ mạnh: lựu pháo, cối, rốc-két pháo phản lực, bom. Xuyên thấp, nổ lan, thêm sát thương lên công trình.
+   Nhãn phụ Nhiệt áp (cho TOS, rốc-két nhiệt áp và vũ khí tương tự): nổ lan to hơn, thêm sát thương lớn hơn lên công trình và công sự, không bị lồng chắn giảm.
+4. Lửa: napalm, xe phun lửa. Cháy theo thời gian, mạnh với cấp giáp 0–1, yếu với giáp dày.
+5. Mảnh (thay cho Phòng không): cao xạ, đạn nổ trên không, C-RAM, tên lửa phòng không có ngòi cận đích. Mạnh với máy bay, trực thăng, drone và đơn vị không giáp; yếu với đơn vị có giáp. Tên lửa phòng không vẫn bị pháo sáng đánh lừa.
+6. Năng lượng (mới): La-de PK, laser của Bọ Bạc, tia năng lượng của boss. Trúng ngay lập tức; APS và pháo sáng không chặn được; bị màn khói chặn hoặc giảm mạnh.
+7. Bảng hệ số loại sát thương với loại mục tiêu (mặt đất / trên không / công trình) được làm lại cho bộ mới; độ xuyên giáp không còn nằm trong bảng này mà do cấp xuyên lo.
+8. Phân loại lại toàn bộ 132 vũ khí theo bộ mới và theo vũ khí thật; ghi bảng vào DECISIONS.md.
+9. Rà lại mọi module và trang bị có liên quan tới loại đạn hoặc loại giáp:
+   - Giáp phản ứng nổ, Lồng chống rocket, APS, pháo sáng, màn khói, gây nhiễu: tác dụng theo đúng bảng khắc chế ở trên.
+   - Đồ ghi theo "xe nặng / xe nhẹ / máy bay" (ví dụ Lõi xuyên vonfram, Thép ốp tăng cường, Ngòi nổ cận đích, Đạn nổ trên không, Buồng lái bọc giáp) đổi sang dạng theo cấp: "+1 cấp xuyên", "+1 cấp giáp hông", "+% sát thương lên giáp cấp 3–4", "+% sát thương Mảnh lên máy bay"...
+   - Đồ người chơi đang có được migrate sang loại mới tương ứng, cùng ô, cùng bậc, cùng cấp. Viết test migration.
+10. AI khắc chế (cả AI mua quân của prompt 13) chọn quân theo cấp xuyên so với cấp giáp và theo loại sát thương so với phòng vệ của quân địch đang thấy.
+
+D. BỘ ICON (không dùng số; dùng token và phong cách icon nét của Field Command 2.0; không dựa vào màu để truyền nghĩa)
+1. Icon giáp: 5 hình khiên "đầy dần" như icon pin.
+   - Không giáp: khiên nét đứt, rỗng.
+   - Mỏng: khiên viền mảnh, rỗng.
+   - Vừa: khiên viền đôi.
+   - Dày: khiên tô đặc nửa dưới.
+   - Rất dày: khiên tô đặc toàn bộ, có đinh tán.
+   Máy bay dùng biểu tượng cánh với cùng kiểu "đầy dần"; công trình dùng khiên có vân gạch.
+2. Sơ đồ giáp theo hướng (màn chi tiết): hình đơn vị nhìn từ trên xuống, mỗi mặt có đường viền dày mỏng theo cấp giáp của mặt đó. Tháp có mặt trước dày hơn thì dùng cùng kiểu.
+3. Icon dạng vũ khí: mỗi vũ khí có một icon theo dạng đạn thật. Hình khác nhau cho từng dạng, và với đạn động năng thì hình thể hiện luôn độ xuyên:
+   - Đạn súng và đạn pháo động năng: viên tròn nhỏ (súng máy nhỏ), viên đạn (súng máy lớn), viên đạn có đai (pháo tự động), mũi tên xuyên (pháo xe tăng cỡ vừa), mũi tên xuyên đầu kép (pháo 120 mm trở lên), mũi tên có vòng điện (pháo điện từ).
+   - Đạn pháo nổ mạnh: quả đạn pháo (lựu pháo), quả đạn cối có cánh (cối).
+   - Đạn nổ trên không: viên đạn có chùm chấm tỏa ra (cao xạ, C-RAM).
+   - Rốc-két: ống ngắn có cánh đuôi (rốc-két nhỏ), ống dài có cánh (rốc-két pháo phản lực cỡ lớn).
+   - Tên lửa, mỗi loại một hình: tên lửa chống tăng (thân ngắn, đầu nón), tên lửa phòng không (thân mảnh, cánh giữa), tên lửa hành trình (có cánh ngang), tên lửa đạn đạo (thân lớn, đầu nhọn).
+   - Bom, mỗi loại một hình: bom thường (hình giọt có đuôi), bom dẫn đường (bom có đường cong), bom chùm (bom tách ra thành chấm), bom hạng nặng (bom to, dùng cho MOAB và bom 900 kg).
+   - Drone: drone FPV (bốn cánh quạt), drone cảm tử kiểu Shahed (cánh tam giác), Lancet (cánh chữ X).
+   - Lửa: vòi lửa (xe phun lửa); napalm dùng hình bom với dấu lửa.
+   - Năng lượng: tia thẳng có đầu phát sáng.
+   - Vũ khí boss và vũ khí đặc biệt còn lại: tự vẽ theo cùng tinh thần.
+4. Dấu loại sát thương: góc icon dạng vũ khí có một dấu nhỏ cho loại sát thương (nón lõm có tia cho Nổ lõm, hình nổ cho Nổ mạnh, ngọn lửa cho Lửa, chùm chấm cho Mảnh, tia cho Năng lượng; Động năng không cần dấu vì hình viên đạn đã rõ). Nhãn Nhiệt áp có dấu riêng.
+5. Dấu phụ (chỉ hiện ở màn chi tiết và tooltip, không hiện ở chỗ chật): mũi tên chỉ xuống (đánh nóc), đường cong (dẫn đường), vòng tròn nhỏ (nổ lan).
+6. Mỗi vũ khí là một "chip" gồm icon dạng vũ khí và dấu loại sát thương. Đơn vị có nhiều vũ khí thì có nhiều chip, xếp theo thứ tự vũ khí chính trước. Ở chỗ chật chỉ hiện 2 chip đầu, kèm "+1" hoặc "+2" nếu còn nữa.
+7. Kích thước: chip và icon giáp cao khoảng 18–20 pt ở chỗ chật; lớn hơn ở màn chi tiết. Phải phân biệt được các hình ở cỡ nhỏ nhất trên màn nhỏ nhất đang hỗ trợ.
+8. Chạm vào bất kỳ icon nào thì hiện tooltip bằng chữ (ví dụ "Giáp dày · mặt trước", "Tên lửa chống tăng · Nổ lõm · Xuyên rất cao · Đánh nóc · Dẫn đường").
+9. Tùy chọn "Hiện số chi tiết" trong Cài đặt (mặc định tắt): khi bật, tooltip và màn chi tiết hiện thêm số cấp giáp, số cấp xuyên và hệ số.
+
+E. HIỆN ICON Ở ĐÂU
+1. Thẻ xe, thẻ tháp và thẻ công trình ở Bộ bài, bộ sưu tập, khay tháp màn Căn cứ và Tiền đồn: một hàng dưới thẻ gồm icon giáp (mặt trước) và tối đa 2 chip vũ khí. Không làm lệch bố cục thẻ (chạy lại test căn chỉnh của prompt 11 và 14).
+2. Màn chi tiết xe, tháp và công trình:
+   - Sơ đồ giáp theo hướng.
+   - Tab Vũ khí: mỗi vũ khí có chip riêng cạnh tên vũ khí, cùng với thông số đạn và nạp đạn của prompt 13.
+   - Bảng hiệu quả tạo tự động: tiêu đề các cột là 5 hình khiên (và biểu tượng trên không, công trình), mỗi ô là một thanh dài ngắn theo hệ số sát thương thực của vũ khí đó.
+   - Mục "Mạnh với / Yếu trước" tạo tự động từ cấp giáp, cấp xuyên và loại sát thương.
+3. Khay thẻ trong trận: không hiện, để giữ HUD gọn. Nhấn giữ thẻ thì hiện icon giáp và các chip.
+4. Bảng xe đang chọn trong trận: icon giáp và chip vũ khí cạnh thanh máu và thanh đạn.
+5. Chạm vào đơn vị địch hoặc tháp địch trong trận: tooltip nhỏ gồm icon giáp của nó và danh sách xe trong bộ bài của ta, mỗi xe có ký hiệu ✓ (xuyên tốt), ~ (xuyên kém) hoặc ✕ (không xuyên), tính theo vũ khí chính của xe ta và mặt giáp trước của đơn vị địch.
+6. Bộ phận boss: mỗi icon bộ phận trên thanh máu boss có icon giáp nhỏ.
+7. Độ phủ vai trò ở Bộ bài: thêm hàng 5 hình khiên; khiên nào bộ bài đã có vũ khí xuyên tốt thì sáng, chưa có thì mờ kèm màu cảnh báo. Độ phủ căn cứ (prompt 14) thêm hàng tương tự cho tháp.
+8. Tab Hướng dẫn: trang chú thích đầy đủ mọi icon giáp, dạng vũ khí, dấu loại sát thương và dấu phụ, kèm bảng khắc chế (phòng vệ nào chặn loại sát thương nào).
+
+F. KIỂM TRA
+- Mọi đơn vị (xe, xe tinh nhuệ, tháp, công trình, máy bay, trực thăng, boss và bộ phận boss) có cấp giáp cho đủ các mặt; mọi vũ khí có cấp xuyên, loại sát thương và icon dạng vũ khí. Test báo lỗi nếu thiếu.
+- Test cách tính: hệ số xuyên đúng theo bảng; đòn đánh nóc dùng giáp nóc; bắn hông và sau dùng đúng cấp.
+- Test khắc chế: giáp phản ứng nổ và lồng chắn giảm Nổ lõm nhưng không giảm Động năng; APS chặn tên lửa, rốc-két và drone nhưng không chặn đạn pháo, đạn súng và Năng lượng; pháo sáng chỉ đánh lừa tên lửa; màn khói chặn Năng lượng.
+- Test trực quan: 5 hình khiên và mọi icon dạng vũ khí phân biệt được ở cỡ nhỏ nhất (so sánh ảnh chụp tự động ở màn nhỏ nhất); không icon nào trùng hình với icon khác; không icon nào dùng số khi "Hiện số chi tiết" tắt.
+- Test tự động: bảng hiệu quả và mục "Mạnh với / Yếu trước" khớp với dữ liệu; ký hiệu ✓ ~ ✕ khớp với hệ số thực.
+- Migration: trang bị và module theo loại cũ chuyển đúng sang loại mới; save cũ mở được.
+- Chạy lại mô phỏng 5 seed toàn bộ chiến dịch, chiến dịch lớn và các chế độ; chạy lại bộ đo giá trị thực chiến của prompt 13 nếu prompt 13 đã chạy, và cân bằng lại theo kết quả.
+- Chụp ảnh tự động các màn có icon mới (thẻ, chi tiết, tooltip địch, Độ phủ vai trò, Căn cứ, Hướng dẫn) ở 4 tỷ lệ màn hình; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (bảng giáp, bảng xuyên, bảng loại sát thương, bảng khắc chế, bộ icon).

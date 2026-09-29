@@ -1,0 +1,78 @@
+Prompt 9: Bộ phận riêng cho boss, kèm cháy và khói ở chỗ vỡ
+
+Nhiệm vụ: áp hệ bộ phận cho mọi boss, dùng lại cơ chế tổng quát đã làm cho Khí cầu chỉ huy ở prompt 8. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số dưới đây là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+A. LUẬT CHUNG
+
+1. Mỗi boss gồm một thân chính và các bộ phận. Mỗi bộ phận có máu riêng, vị trí gắn trên model, và liên kết với một vũ khí hoặc kỹ năng của boss.
+2. Thân chính luôn nhận sát thương. Riêng Khí cầu chỉ huy giữ đúng thiết kế ở prompt 8 (thân chỉ nhận sát thương khi đã phá ít nhất 2 động cơ). Các boss khác không được khóa thân, để mỗi trận boss vẫn có cách đánh riêng.
+3. Phá một bộ phận thì:
+   - Vũ khí hoặc kỹ năng liên kết với nó ngừng hoạt động cho tới hết trận (trừ khi boss có kỹ năng tự vá, xem mục 6).
+   - Thân chính nhận thêm sát thương bằng 30% máu tối đa của bộ phận đó.
+4. Máu bộ phận: mỗi bộ phận khoảng 8–15% máu thân, tổng các bộ phận khoảng 50–70% máu thân. Chỉnh lại máu thân sao cho thời gian hạ boss với một bộ bài tiêu chuẩn chỉ dài hơn hiện tại tối đa khoảng 10–15%. Bộ phận được scale cùng boss theo cơ chế scale chiến dịch và độ khó.
+5. Sát thương nổ lan chỉ tính vào thân chính. Chỉ phát trúng trực tiếp mới gây sát thương lên bộ phận. Như vậy pháo binh không nhận sát thương nhân lên nhiều lần khi đánh boss.
+6. Kỹ năng tự vá (train_patch, tự vá giáp của Bastion) giờ vá lại 1 bộ phận đã bị phá với 50% máu, thay vì hồi máu thân. Chọn bộ phận có vũ khí mạnh nhất.
+7. Các mốc máu hiện có (gọi hộ tống, nổi điên, bật khiên) vẫn tính theo máu thân chính.
+8. Chọn mục tiêu:
+   - Mặc định, xe tự ưu tiên bộ phận đe dọa nó nhất mà nó bắn tới được. Ví dụ: xe tăng ưu tiên pháo chính của boss, phòng không ưu tiên cao xạ của boss bay, xe diệt tăng ưu tiên bộ phận máu cao.
+   - Thêm lệnh "Ưu tiên bộ phận": người chơi chạm vào một bộ phận trên boss hoặc trên thanh máu, toàn quân trong tầm ưu tiên bắn bộ phận đó cho tới khi nó vỡ hoặc người chơi hủy lệnh.
+   - AI Yểm trợ không gọi hỏa lực vào bộ phận (vì nổ lan chỉ tính vào thân), mà vào thân và hộ tống.
+9. Thưởng trong chế độ Săn trùm: giữ các mốc CP theo máu thân, thêm 2 CP cho mỗi bộ phận bị phá.
+10. Checkpoint ở prompt 5 phải lưu trạng thái từng bộ phận (máu, đã vỡ, đã được vá).
+
+B. BỘ PHẬN CỦA TỪNG BOSS (khởi điểm; chỉnh theo model và vũ khí thực tế trong dữ liệu)
+- Đoàn tàu thép: đầu máy, 2 toa pháo, toa rocket, toa cao xạ. Phá đầu máy làm tàu chậm 50% (không dừng hẳn, để nhiệm vụ chặn tàu vẫn đúng nghĩa). train_smoke giữ trên thân.
+- Đoàn tàu Tận thế: đầu máy, toa pháo hai nòng, 2 toa cao xạ. Toa tên lửa là thân chính. Phá đầu máy làm tàu chậm 50%.
+- Behemoth: pháo chính hai nòng, pháo 120 mm, 2 cao xạ, 2 hộp tên lửa.
+- Tempest: railgun (với cuộn dây nạp năng lượng), 2 pháo điện từ, máy phát khiên. Phá máy phát khiên thì mất kỹ năng khiên.
+- Inferno: 2 súng phun lửa, hộp rocket nhiệt áp, cao xạ.
+- Hive: 2 giàn phóng drone, dàn tên lửa phòng không, 2 cao xạ, bộ phát EMP.
+- Pháo đài băng: lựu pháo, 2 hộp rocket, 2 cao xạ, bệ tên lửa, bộ phát EMP.
+- Bastion: khẩu cối, 4 tháp pháo tự động 40 mm (mỗi tháp một bộ phận, mỗi tháp phủ một hướng).
+- Silver Bug: bộ phát laser, pháo điện từ, cao xạ, cửa thả drone, máy phát khiên, bộ phát EMP.
+- Spectre: pháo 105 mm, 2 pháo 40 mm, pháo 25 mm, bệ tên lửa Griffin, 4 động cơ. Mỗi động cơ bị phá làm vòng bay chậm 15%.
+- Chim sắt: 2 pháo 30 mm, 2 minigun, 2 hộp rocket, bệ tên lửa, cánh quạt đuôi. Phá cánh quạt đuôi làm nó xoay chậm, khó bám mục tiêu.
+- Tàu mẹ Tổ Ong: 2 pháo, cửa thả drone, khoang phóng UAV, 2 cao xạ, máy phát khiên.
+- Boss từ prompt 8:
+  - Pháo đường ray siêu nặng: khẩu pháo, 2 đầu máy kéo, trạm chỉ thị mục tiêu. Phá trạm chỉ thị thì vùng rơi rộng và kém chính xác hơn.
+  - Máy khoan Sâu Đất: mũi khoan, 2 pháo bên hông. Phá mũi khoan thì nó không chui xuống đất được nữa.
+  - Khí cầu chỉ huy: giữ nguyên thiết kế ở prompt 8.
+  - Tàu đệm khí đổ bộ: 2 quạt đẩy, cửa đổ bộ, 2 súng. Phá cửa đổ bộ thì ngừng thả quân; mỗi quạt bị phá làm tàu chậm 30%.
+  - Tổng Tư Lệnh: ăng-ten chỉ huy, 2 súng. Phá ăng-ten thì mất hào quang tăng sức mạnh cho quân địch.
+
+C. HIỆU ỨNG HÌNH ẢNH: CHÁY VÀ KHÓI Ở CHỖ VỠ (chỉ thuộc lớp hình ảnh, không ảnh hưởng mô phỏng)
+
+1. Trạng thái hư hại trước khi vỡ:
+   - Bộ phận dưới 50% máu: khói mỏng và tia lửa lách tách tại vị trí gắn.
+   - Dưới 25% máu: khói dày hơn, lửa nhỏ bắt đầu cháy.
+2. Khi bộ phận vỡ:
+   - Vụ nổ theo loại bộ phận, dùng hệ vụ nổ hiện có (pháo và toa đạn nổ lớn kèm mảnh văng; bộ phận năng lượng như laser, railgun, máy phát khiên thì nổ chớp sáng kèm tia điện).
+   - Đổi model bộ phận sang bản vỡ: nòng cong, tháp pháo bật nắp, giàn phóng méo, hoặc ẩn bộ phận và để lại gốc cháy đen.
+   - Để lại lửa và cột khói đen cháy liên tục tại chỗ vỡ cho tới hết trận. Bộ phận năng lượng có thêm tia điện chập chờn.
+   - Rung camera nhẹ và âm thanh vụ nổ; sau đó có tiếng lửa cháy lách tách, âm lượng nhỏ.
+3. Khói và lửa phải bám theo boss khi boss di chuyển. Boss di chuyển nhanh hoặc boss bay kéo theo vệt khói phía sau. Động cơ của boss bay bị phá tạo vệt khói dài.
+4. Thân chính cũng có trạng thái hư hại: dưới 66% máu thêm vài đám cháy nhỏ trên thân, dưới 33% thêm lửa lớn và khói dày.
+5. Khi boss chết: mọi đám cháy bùng lên trước chuỗi nổ nhiều đợt hiện có, và xác boss còn cháy và bốc khói một lúc sau trận.
+6. Khói hiệu ứng này chỉ để nhìn: tuyệt đối không chặn tầm nhìn hay đường ngắm trong mô phỏng, để không nhầm với màn khói chiến thuật. Viết test xác nhận.
+7. Hiệu năng:
+   - Dùng pool cho particle.
+   - Trần số điểm cháy và khói liên tục trên mỗi boss (khởi điểm 8); vượt trần thì gộp các điểm gần nhau.
+   - Mức đồ họa Thấp giảm số particle và bỏ tia điện; mức Cao được thêm biến dạng nhiệt quanh lửa và mảnh văng vật lý.
+   - Đo FPS ở trận boss nặng nhất (nhiều bộ phận vỡ cùng lúc, có hộ tống, mức Thấp) và ghi lại.
+
+D. GIAO DIỆN
+- Dưới thanh máu boss có hàng icon nhỏ cho từng bộ phận (icon theo loại vũ khí) kèm thanh máu mỏng. Bộ phận vỡ thì icon xám và gạch chéo.
+- Chạm vào icon hoặc vào bộ phận trên boss để ra lệnh "Ưu tiên bộ phận". Bộ phận đang được ưu tiên có viền sáng trên model.
+- Một dòng radio khi bộ phận quan trọng vỡ (pháo chính, máy phát khiên, cửa thả drone, đầu máy).
+- Tab Hướng dẫn của mỗi boss thêm danh sách bộ phận và tác dụng khi phá từng bộ phận. Cập nhật mẹo đánh boss theo cơ chế mới.
+
+E. KIỂM TRA
+- Mỗi boss có đủ bộ phận theo dữ liệu. Phá từng bộ phận thì vũ khí hoặc kỹ năng liên kết ngừng hoạt động (đo số phát bắn sau khi vỡ bằng 0).
+- Thân chính luôn nhận sát thương, trừ Khí cầu chỉ huy.
+- Sát thương nổ lan không trúng bộ phận.
+- Kỹ năng tự vá vá đúng 1 bộ phận.
+- Thời gian hạ từng boss với bộ bài tiêu chuẩn nằm trong khoảng hiện tại đến +15%, qua 5 seed. Mọi nhiệm vụ boss trong chiến dịch và mọi trận trong Săn trùm vẫn thắng được ở độ khó Thường.
+- Lệnh "Ưu tiên bộ phận" hoạt động và hủy được.
+- Checkpoint khôi phục đúng trạng thái bộ phận, replay deterministic khớp.
+- Khói hiệu ứng không ảnh hưởng tầm nhìn trong mô phỏng; số điểm cháy không vượt trần.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model bản vỡ của từng bộ phận nếu còn dùng tạm) và tài liệu thiết kế (mục boss).

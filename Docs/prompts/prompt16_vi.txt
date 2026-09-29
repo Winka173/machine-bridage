@@ -1,0 +1,113 @@
+Prompt 16: Map Vịnh Hải Đăng, boss Leviathan cùng hạm đội, vũ khí thêm cho boss cũ, hệ hộ tống cho mọi boss
+
+Nhiệm vụ: thêm một map ven biển và một boss chiến hạm mới vào chương 4, thêm vũ khí cho các boss cũ còn mỏng, và làm hệ hộ tống thống nhất cho mọi boss. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 9 (bộ phận boss, cháy khói ở chỗ vỡ), prompt 15 (cấp giáp, cấp xuyên, 6 loại sát thương) và prompt 13 (thang cỡ nòng, giá trị thực chiến, hệ đạn). Mọi vũ khí mới theo thang cỡ nòng của prompt 13 và bộ loại sát thương của prompt 15; mọi đơn vị mới có cấp giáp theo prompt 15.
+
+Phạm vi: không thêm đơn vị hải quân cho người chơi điều khiển. Tàu chỉ là boss, hộ tống và quân địch.
+
+A. MAP VỊNH HẢI ĐĂNG
+1. Kích thước 300×300 m như các map khác, là map tĩnh. Khoảng 35–40% diện tích là biển ở một phía.
+2. Tuyến biển: 2–3 tuyến chạy song song bờ ở các khoảng cách khác nhau, dùng lại logic chạy theo đường cố định của đoàn tàu và tàu đệm khí. Tàu chỉ đi trên các tuyến này.
+3. Địa hình trên bờ:
+   - Bãi cát dài, là nơi tàu đổ bộ của địch cập bờ.
+   - 2–3 cầu tàu và đê chắn sóng vươn ra biển: điểm nghẽn hẹp, cho xe mặt đất tiến gần tàu hơn nhưng dễ bị pháo tàu bắn trúng.
+   - Ngọn hải đăng trên mũi đá: cứ điểm chiếm được; bên giữ được nhìn rõ mặt biển và thấy các bộ phận của tàu.
+   - 2–3 trận địa pháo bờ biển bỏ hoang, trung lập, chiếm được. Khi chiếm, chúng bắn vào tàu địch. Dùng lại Pháo đài hạng nặng với nhánh pháo bờ biển có sẵn.
+   - Vách đá cao, làng chài, boongke cũ làm vật che và chỗ đặt pháo binh.
+4. Tầm bắn: đặt các tuyến biển sao cho pháo binh, pháo phản lực, máy bay, trực thăng, trận địa pháo bờ biển và tháp tầm xa với tới tàu ở tuyến xa nhất; xe tầm ngắn chỉ với tới tuyến gần khi đứng ở đầu cầu tàu. Tàu không được ở ngoài tầm mọi vũ khí của người chơi, cũng không được gần tới mức xe tăng đứng trên bãi cát bắn thẳng là xong.
+5. Làm đủ các phiên bản: chiến dịch, cứ điểm, sinh tồn, công thành; có hardpoint cho HQ và tiền đồn theo hệ ô có cỡ (prompt 14); có nhãn vị trí ô theo prompt 14.
+6. Chạy bộ phát hiện xe kẹt của prompt 12 trên map này (mọi phiên bản, 5 seed, cả hai phe) trước khi đưa vào game; không xe nào kẹt quá 10 giây.
+7. Có ảnh xem trước, ảnh bản đồ căn cứ cho màn Căn cứ, tên tiếng Việt thống nhất, và mục trong tab Hướng dẫn.
+
+B. BOSS TUẦN DƯƠNG HẠM LEVIATHAN (của Kessler)
+1. Chiến hạm lai giữa thiết giáp hạm và tuần dương hạm tên lửa hiện đại, là model lớn nhất game. Có LOD riêng.
+2. Bộ phận (theo hệ của prompt 9):
+   - 2 tháp pháo chính (mũi và đuôi): bắn loạt vào bờ, vùng rơi có cảnh báo trước. Phá thì mất loạt pháo từ tháp đó.
+   - Ống phóng tên lửa hành trình: bắn tên lửa vào căn cứ và cụm quân, có cảnh báo. Phá thì ngừng.
+   - 2 cụm CIWS: đánh chặn tên lửa, rốc-két và drone bay vào (Nổ lõm và các tên lửa, rốc-két khác); không chặn được đạn pháo, đạn súng và Năng lượng. Phá thì tên lửa và drone của người chơi trúng được.
+   - Cột radar: phá thì pháo tàu tản mát hơn và CIWS kém chính xác.
+   - Sàn đáp trực thăng: định kỳ thả trực thăng tấn công. Phá thì ngừng thả.
+   - Khoang đổ bộ: thả tàu đổ bộ chở xe tăng vào bãi cát. Phá thì ngừng đổ bộ.
+   - Buồng máy và ống khói: phá thì tàu chạy chậm lại.
+3. Giáp (theo prompt 15): hông tàu cấp 4; boong mỏng (khởi điểm cấp 2). Bom, pháo lựu, pháo phản lực và đòn đánh nóc đánh vào boong. Đạn bắn thẳng vào hông gần như không hiệu quả trừ đạn có cấp xuyên cao nhất. Bộ phận có cấp giáp riêng.
+4. Các pha:
+   - Pha 1 (100–70% máu): tàu ở tuyến xa, chạy dọc bờ, bắn phá bờ bằng tháp pháo chính; vùng rơi có cảnh báo và quét dần dọc bờ.
+   - Pha 2 (70–40%): tàu chuyển vào tuyến gần; mở khoang đổ bộ; sàn đáp thả trực thăng; CIWS hoạt động mạnh nhất.
+   - Pha 3 (dưới 40%): bắn loạt tên lửa hành trình vào căn cứ người chơi, thả màn khói, và tìm cách chạy ra mép map. Hiện đồng hồ đếm ngược; tàu thoát được thì nhiệm vụ thất bại (hoặc mất sao, tùy nhiệm vụ).
+5. Khi chìm: tàu nghiêng dần; lửa và khói bốc lên từ mọi chỗ vỡ theo hiệu ứng prompt 9; kho đạn phát nổ; tàu gãy đôi và chìm.
+6. Radio chatter của Kessler ở lúc xuất hiện, mỗi lần chuyển pha, khi tàu tìm cách thoát, và khi chìm.
+7. Có thẻ trong tab Hướng dẫn, clip Xem bắn, ảnh thẻ render, thanh máu nhiều pha với hàng icon bộ phận (có icon giáp theo prompt 15).
+
+C. HẠM ĐỘI HỘ TỐNG CỦA LEVIATHAN (model tàu nhỏ mới; dùng chung hệ bộ phận, cháy khói và cấp giáp; hông dày, boong mỏng)
+1. 2 tàu hộ vệ: chạy cùng tuyến biển với Leviathan; pháo 76 mm bắn vào bờ; CIWS. CIWS của tàu hộ vệ bảo vệ luôn cả Leviathan khi ở gần; phá tàu hộ vệ trước thì máy bay và tên lửa của người chơi đánh tàu chính hiệu quả hơn.
+2. 3 xuồng tên lửa cao tốc: lao sát bờ, bắn rốc-két rồi quay ra; nhanh và giáp mỏng, xe mặt đất bắn trúng được; là mối đe dọa cho quân đứng ở đầu cầu tàu.
+3. Tàu đổ bộ: chở xe tăng vào bãi cát ở pha 2.
+4. Máy bay: trực thăng tấn công từ sàn đáp của Leviathan; ở pha 2 có thêm 2 cường kích bay vào từ mép biển (như xuất phát từ tàu sân bay ở xa).
+5. Pha 3: tàu hộ vệ còn sống chạy chắn giữa Leviathan và bờ, che cho nó rút.
+6. Model xuồng cao tốc dùng chung với phần hộ tống của Tàu đệm khí (phần E).
+7. Mọi tàu nhỏ có thẻ Hướng dẫn và ảnh render (hiện trong mục boss, không vào bộ sưu tập của người chơi).
+
+D. ĐƯA VÀO CHIẾN DỊCH VÀ CÁC CHẾ ĐỘ
+1. Chiến dịch chương 4 "Cảng thép": sau khi mất cảng, Kessler rút ra biển trên Leviathan. Thêm Leviathan thành nhiệm vụ boss thứ hai của chương, hoặc thành giai đoạn cuối của chiến dịch lớn cuối chương; tự chọn cách hợp lý hơn theo nhịp chương và ghi lại. Viết briefing, thoại và mẩu truyện cho khớp cốt truyện đã có.
+2. Săn trùm: thêm Leviathan vào chuỗi boss. Nếu Săn trùm đánh mọi boss trên cùng một map, màn Leviathan tự chuyển sang Vịnh Hải Đăng (có màn chuyển cảnh ngắn), rồi chuyển lại map cũ cho boss tiếp theo.
+3. Tác chiến: thêm vào danh sách chơi lại; thêm mutator riêng "Bão biển" (sương mù dày trên mặt biển, tầm nhìn ra biển giảm) và "Hạm đội" (thêm tàu hộ vệ và xuồng); thêm cả hai vào bảng xoay vòng mutator.
+4. Phần thưởng: mở nhánh "Pháo bờ biển tầm xa" cho Pháo đài hạng nặng; thêm mẩu truyện và hồ sơ boss vào mục Hồ sơ.
+5. Map Vịnh Hải Đăng cũng vào xoay vòng của chế độ Giao tranh.
+
+E. VŨ KHÍ THÊM CHO BOSS CŨ (theo thang cỡ nòng và loại sát thương mới; thêm thành bộ phận nếu hợp với hệ bộ phận của prompt 9)
+- Đoàn tàu thép: thêm toa cối (đánh được quân nấp sau vật che).
+- Tempest: thêm laser đánh chặn (Năng lượng) chặn tên lửa và drone bay vào.
+- Behemoth: thêm APS chặn tên lửa chống tăng.
+- Inferno: để lại vệt lửa trên mặt đất khi di chuyển (theo thời gian cháy đã giảm 20%).
+- Hive: thêm hào quang gây nhiễu, tên lửa dẫn đường của người chơi kém chính xác khi ở gần nó.
+- Bastion: thêm bệ tên lửa chống tăng (kiểu Kornet).
+- Đoàn tàu Tận thế: thêm toa SAM tầm xa và toa rốc-két.
+- Pháo đường ray siêu nặng: thêm 2 bệ phòng không trên bệ pháo.
+- Tàu đệm khí: thêm 2 CIWS và 2 dàn rốc-két.
+- Giữ nguyên vũ khí: Chim sắt, Spectre, Pháo đài băng, Tàu mẹ Tổ Ong, Bọ Bạc, Sâu Đất, Khí cầu chỉ huy. Tổng Tư Lệnh giữ không có vũ khí (điểm yếu có chủ ý).
+Sau khi thêm vũ khí, chỉnh máu và bộ phận để thời gian hạ từng boss vẫn trong khoảng mục tiêu của prompt 9 và prompt 13.
+
+F. HỆ HỘ TỐNG CHO MỌI BOSS
+1. Luật chung:
+   - Hộ tống xuất hiện theo 2 đợt: một nhóm vào cùng boss (lúc camera lia tới boss), và một nhóm ở mỗi lần boss chuyển pha.
+   - Dùng xe có sẵn, bản thường hoặc tinh nhuệ (theo ngân sách tinh nhuệ của prompt 8). Không cần model mới, trừ tàu nhỏ ở phần C.
+   - Mỗi nhóm hộ tống có ít nhất một đơn vị giúp boss (sửa chữa boss, gây nhiễu, che phòng không, đánh dấu mục tiêu), để người chơi phải chọn đánh boss hay hạ hộ tống trước.
+   - Hộ tống luôn ở trong một bán kính quanh boss, không tản ra khắp map.
+   - Tối đa khoảng 4–6 hộ tống còn sống cùng lúc. Số lượng và độ mạnh theo độ khó; ở Săn trùm ít hơn để trận không quá dài.
+   - Hạ hộ tống cho CP. Hộ tống có icon riêng trên đơn vị và hiện số lượng còn lại trên thanh máu boss.
+   - Hộ tống dùng dữ liệu, cấu hình theo từng boss; thay thế các kỹ năng gọi hộ tống cũ (behemoth_escort, fortress_escort, gunship_escort, nuke_escort, supreme_guard) bằng hệ chung này mà vẫn giữ tinh thần của từng kỹ năng.
+2. Từng boss (hộ tống khi xuất hiện · thêm ở mỗi lần chuyển pha):
+   - Đoàn tàu thép: 2 xe bọc thép chạy song song đường ray · dừng ở ga thả 2 tăng nhẹ.
+   - Tempest: 2 xe gây nhiễu, 1 SAM · 2 xe gây nhiễu thay chỗ xe bị hạ.
+   - Behemoth: 2 tăng chủ lực, 1 phòng không · 1 tăng nặng tinh nhuệ.
+   - Inferno: 2 xe phun lửa, 1 xe khói · 2 xe phun lửa.
+   - Chim sắt: 2 trực thăng tấn công · 1 trực thăng trinh sát đánh dấu mục tiêu.
+   - Spectre: 2 tiêm kích bay kèm, 1 UAV trinh sát đánh dấu mục tiêu (làm pháo của Spectre chính xác hơn) · thêm 2 tiêm kích.
+   - Pháo đài băng: 2 tăng nặng, 1 xe công binh sửa chữa pháo đài · thêm 1 xe công binh.
+   - Hive: 2 PK hỗn hợp · bầy drone FPV.
+   - Bastion: thả dù 2–3 tháp quanh nó · thả dù thêm tháp.
+   - Tàu mẹ Tổ Ong: 2 UAV tấn công · 1 trực thăng.
+   - Bọ Bạc: tinh nhuệ đặc trưng của các tướng đã hạ trong chiến dịch · mỗi pha thêm tinh nhuệ của một tướng.
+   - Đoàn tàu Tận thế: 2 xe bọc thép chạy dọc đường ray, 1 trực thăng · 2 xe bọc thép.
+   - Pháo đường ray siêu nặng: 2 tháp pháo cố định, 2 tăng tuần tra · 2 tăng tuần tra.
+   - Sâu Đất: không có hộ tống lúc xuất hiện · mỗi lần trồi lên, 2 xe bọc thép được thả dù xuống cạnh nó.
+   - Khí cầu chỉ huy: 2 tiêm kích · 2 trực thăng.
+   - Tàu đệm khí: 2 xuồng cao tốc · 1 xuồng cao tốc.
+   - Tổng Tư Lệnh: giữ như hiện tại.
+   - Leviathan: như phần C.
+3. AI hộ tống: ưu tiên bảo vệ boss (đánh đơn vị đang tấn công boss), không đuổi theo mục tiêu ra xa khỏi bán kính. Đơn vị hỗ trợ (công binh, gây nhiễu, SAM, UAV đánh dấu) đứng sau boss so với hướng người chơi.
+
+G. HIỆU NĂNG
+- Đo FPS ở trận Leviathan nặng nhất (pha 2, đủ hạm đội, trực thăng, tàu đổ bộ, nhiều bộ phận đang cháy) ở đồ họa Thấp trên cấu hình máy tầm thấp. Mặt nước và vệt sóng sau tàu có bản rút gọn cho đồ họa Thấp.
+- Đo thời gian tick với trận boss có đủ hộ tống; không vượt ngân sách.
+
+H. KIỂM TRA
+- Map: không xe kẹt (bộ phát hiện của prompt 12); đường đi từ mọi bãi thả tới mọi cứ điểm; tầm bắn tới tàu đúng theo mục A.4 (test: ít nhất pháo binh, máy bay và trận địa pháo bờ biển trúng được tàu ở tuyến xa; xe tầm ngắn chỉ trúng tuyến gần từ đầu cầu tàu).
+- Leviathan: mỗi bộ phận khi vỡ tắt đúng chức năng; CIWS chặn đúng loại đạn theo prompt 15; giáp boong và giáp hông đúng cấp; pha 3 và đồng hồ thoát hoạt động đúng; hiệu ứng chìm chạy đúng.
+- Hạm đội: tàu hộ vệ che CIWS cho Leviathan khi ở gần; xuồng cao tốc bắn trúng được bằng xe mặt đất; tàu đổ bộ thả xe đúng ở bãi cát.
+- Vũ khí thêm cho boss cũ: mỗi vũ khí có test hành vi; thời gian hạ mỗi boss trong khoảng mục tiêu.
+- Hộ tống: xuất hiện đúng lúc (vào trận và mỗi lần chuyển pha); không vượt trần số hộ tống; ở trong bán kính quanh boss; đơn vị hỗ trợ tác dụng đúng (sửa chữa boss, gây nhiễu, đánh dấu).
+- Mô phỏng 5 seed: nhiệm vụ Leviathan ở chương 4, mọi nhiệm vụ boss của chiến dịch sau khi thêm hộ tống, Săn trùm (có chuyển map cho Leviathan), Tác chiến với hai mutator mới; tất cả thắng được ở độ khó Thường và nằm trong khung thời lượng mục tiêu.
+- Chụp ảnh tự động map mới, trận Leviathan ở mỗi pha, và thanh máu boss có hộ tống; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model tàu, bản vỡ của bộ phận, mặt nước) và tài liệu thiết kế (map, boss, hộ tống, chiến dịch chương 4).

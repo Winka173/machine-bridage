@@ -1,0 +1,111 @@
+Prompt 21: Chế độ Sa bàn và hoàn thiện đa ngôn ngữ Việt – Anh
+
+Nhiệm vụ: (1) thêm chế độ Sa bàn để tự dựng trận, chọn quân và boss cho cả hai phe, xoay hướng đơn vị, điều khiển mô phỏng và đo đạc; có bản đầy đủ cho nội bộ và bản mở cho người chơi sau khi phá đảo. (2) Rà soát và hoàn thiện đa ngôn ngữ tiếng Việt và tiếng Anh cho toàn bộ game. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Phụ thuộc: chạy sau prompt 20. Dùng token và thành phần giao diện của prompt 10, HUD gọn của prompt 11, bộ đo giá trị thực chiến của prompt 13, bộ phát hiện xe kẹt của prompt 12, icon giáp và vũ khí của prompt 15, hệ boss dạng khuôn mẫu và hệ bật/tắt theo hồi của prompt 20.
+
+PHẦN 1: CHẾ ĐỘ SA BÀN
+
+A. HAI BẢN
+1. Bản nội bộ (build dev và test): mở từ đầu, có mọi đơn vị, mọi boss, mọi công cụ ở phần B–F.
+2. Bản người chơi:
+   - Mở sau khi phá đảo chương cuối đang bật (theo hệ bật/tắt theo hồi của prompt 20).
+   - Chỉ dùng được đơn vị, tháp và công trình người chơi đã mở khóa, và boss, mini boss người chơi đã hạ ít nhất một lần trong chiến dịch hoặc Săn trùm. Không hiện boss thuộc chương đang tắt.
+   - Có phần B, C, D, phần E (trừ các lớp chỉ dành cho nội bộ ghi rõ bên dưới) và phần F.
+   - Không cho bất kỳ phần thưởng, xu, bản thiết kế, kinh nghiệm, kỷ lục, bảng xếp hạng hay thành tích nào từ Sa bàn. Trận trong Sa bàn không tính vào telemetry cân bằng (có đánh dấu riêng nếu vẫn gửi).
+3. Vào Sa bàn từ màn chọn chế độ, nhóm Thử thách (theo nhóm menu của prompt 6); bản người chơi hiện dạng khóa với điều kiện mở trước khi phá đảo.
+
+B. DỰNG TRẬN
+1. Chọn map: mọi map có sẵn (map 300×300, map dài, map ven biển), cộng một map thử nghiệm phẳng có lưới kẻ theo mét để đo tầm bắn và khoảng cách.
+2. Chọn phe khi đặt: phe Xanh hoặc phe Đỏ. Hai phe có màu nhận diện rõ theo token của prompt 10.
+3. Bảng chọn đơn vị, chia tab: xe; máy bay và trực thăng; tháp và công trình; boss chủ lực; mini boss; xe tinh nhuệ; tàu và hộ tống. Có ô tìm kiếm theo tên và lọc theo nhánh, cấp giáp, loại vũ khí.
+4. Đặt đơn vị: chạm để đặt; kéo từ đơn vị ra để xoay hướng (bước xoay khoảng 15°, có tùy chọn xoay tự do). Đơn vị bay đặt được ở độ cao bay mặc định; boss có tầng độ cao đặt được ở tầng chọn sẵn. Tàu chỉ đặt được trên tuyến biển. Tháp chỉ đặt được ở ô hardpoint hoặc, trên map thử nghiệm, ở bất kỳ đâu.
+5. Đặt nhanh theo đội hình: hàng ngang, hàng dọc, cụm, vòng cung; chọn số lượng rồi đặt một lần; cả đội hình xoay chung một hướng.
+6. Chỉnh từng đơn vị (hoặc nhiều đơn vị đang chọn cùng lúc): hạng thẻ; trang bị (không đồ, bộ đồ gợi ý, hoặc bộ đồ của người chơi); bản thường hay tinh nhuệ; máu hiện tại (phần trăm); lượng đạn hiện tại.
+7. Căn cứ: đặt HQ và loadout tháp cho từng phe, hoặc dùng loadout đã lưu của người chơi (màn Căn cứ của prompt 14).
+8. Môi trường: thời tiết, ngày đêm, bật/tắt sương mù chiến tranh.
+9. Sao chép, xóa, di chuyển đơn vị đã đặt; hoàn tác và làm lại.
+10. Trần số đơn vị trong Sa bàn: khởi điểm 64 xe và 12 máy bay mỗi phe. Khi vượt trần hiệu năng đã đo trên máy tầm thấp thì hiện cảnh báo, không chặn cứng trong bản nội bộ.
+
+C. ĐIỀU KHIỂN MÔ PHỎNG
+1. Tạm dừng; chạy từng tick; tốc độ ×0,25, ×0,5, ×1, ×2, ×4.
+2. AI cho từng phe: AI đầy đủ (mua quân, gọi hỏa lực, dùng lệnh); chỉ AI chiến đấu (không mua thêm); đứng yên.
+3. Lệnh cho đơn vị đang chọn: đi tới, giữ vị trí, ngừng bắn, bắn mục tiêu chỉ định.
+4. CP vô hạn hoặc CP tùy chỉnh cho mỗi phe; bật/tắt hồi chiêu thẻ hỗ trợ; dùng thẻ hỗ trợ của bộ bài người chơi hoặc chọn tự do.
+5. Bất tử cho một phe hoặc một đơn vị.
+6. Nhập seed để chạy lại đúng một trận; đặt lại trận về trạng thái lúc bắt đầu.
+7. Mọi điều khiển giữ tính deterministic: cùng kịch bản, cùng seed, cùng chuỗi lệnh thì cùng kết quả.
+
+D. CÔNG CỤ CHO BOSS
+1. Nhảy tới pha 1, 2 hoặc 3.
+2. Kích hoạt đòn lớn ngay, hoặc tắt đòn lớn.
+3. Phá hoặc khôi phục từng bộ phận.
+4. Ép đổi tầng độ cao (Icarus, Daedalus, Icarus Mk.0, Typhon).
+5. Bật/tắt hộ tống.
+6. Đổi giữa bản boss chủ lực và mini boss khi có (qua hệ khuôn mẫu của prompt 20), và giữa các độ khó.
+
+E. LỚP HIỂN THỊ KIỂM TRA (mỗi lớp bật/tắt riêng)
+1. Vòng tầm bắn: tầm tối đa và tầm tối thiểu của đơn vị đang chọn.
+2. Số sát thương nổi lên khi trúng, kèm ký hiệu xuyên ✓ ~ ✕ và mặt giáp bị trúng (trước, hông, sau, nóc).
+3. Đồng hồ DPS thực và giá trị thực chiến của từng đơn vị (bộ đo của prompt 13).
+4. Trạng thái đạn chi tiết: số đạn, thời gian nạp còn lại, trạng thái hồi đạn.
+5. Vùng cảnh báo đòn lớn và vùng khiên.
+6. Chỉ bản nội bộ: vùng va chạm; đường đi đang tính; bộ phát hiện xe kẹt của prompt 12 đánh dấu xe kẹt ngay trên màn hình; điểm số chọn quân của AI mua quân.
+
+F. KỊCH BẢN VÀ ĐO ĐẠC
+1. Lưu và nạp kịch bản ra file: map, môi trường, đơn vị (loại, phe, vị trí, hướng, hạng, trang bị, tinh nhuệ, máu, đạn), căn cứ, trạng thái boss, cấu hình AI, seed. Có phiên bản định dạng để kịch bản cũ vẫn mở được sau các lần cập nhật.
+2. Bản nội bộ: kịch bản lưu từ Sa bàn chạy được trực tiếp trong bộ test tự động và trong bộ đo giá trị thực chiến; thêm lệnh để biến một kịch bản thành test với điều kiện đạt (ví dụ "phe Xanh thắng trong 60 giây", "không xe nào kẹt").
+3. So sánh A/B: cùng một kịch bản chạy với hai cấu hình dữ liệu hoặc hai bộ trang bị, hiện kết quả cạnh nhau.
+4. Bảng thống kê sau trận: sát thương gây ra và nhận vào của từng đơn vị (theo loại sát thương), thời gian hạ mục tiêu, thời gian sống sót, số lần bị xuyên và không xuyên.
+5. Đấu tay đôi nhanh: chọn 2 đơn vị hoặc 2 nhóm, khoảng cách và hướng ban đầu, bấm chạy; hiện bên thắng, thời gian, máu còn lại. Có nút chạy lặp nhiều seed và hiện tỷ lệ thắng.
+6. Xuất replay và seed để đính kèm báo lỗi.
+7. Bản người chơi: có 5 kịch bản mẫu (ví dụ "Xe tăng đấu hông", "Phòng không chặn không kích", "Hạ Behemoth bằng 8 xe"), lưu được tối đa khoảng 20 kịch bản riêng, và xuất/nhập kịch bản dưới dạng mã chữ để chia sẻ. Kịch bản nhập vào chỉ được dùng các đơn vị người chơi đã mở; đơn vị chưa mở bị thay bằng đơn vị cùng vai trò đã mở, kèm thông báo.
+
+G. GIAO DIỆN SA BÀN
+1. Bảng chọn đơn vị ở cạnh trái, thu gọn được; bảng chỉnh đơn vị đang chọn ở cạnh phải; thanh điều khiển mô phỏng ở mép dưới.
+2. Dùng token, thành phần, icon giáp và vũ khí đã có; vùng chạm tối thiểu 44 pt; dùng được trên điện thoại, bố cục rộng hơn trên tablet.
+3. Có hướng dẫn ngắn lần đầu vào Sa bàn và mục riêng trong tab Hướng dẫn.
+
+PHẦN 2: ĐA NGÔN NGỮ VIỆT – ANH
+
+H. RÀ SOÁT HIỆN TRẠNG
+1. Kiểm tra game hiện có những ngôn ngữ nào, chỗ nào đang lẫn hai ngôn ngữ (ví dụ màn Căn cứ đang hiện toàn tiếng Anh trong khi phần lớn game là tiếng Việt), key nào chỉ có ở một ngôn ngữ. Ghi báo cáo vào docs/localization-report.md.
+2. Mục tiêu: toàn bộ game có đủ tiếng Việt và tiếng Anh, không màn nào lẫn hai ngôn ngữ (trừ tên riêng có chủ đích).
+
+I. HỆ THỐNG
+1. Chọn ngôn ngữ trong Cài đặt; mặc định theo ngôn ngữ của máy (máy tiếng Việt → tiếng Việt; còn lại → tiếng Anh). Đổi ngôn ngữ không cần khởi động lại game.
+2. Mọi chuỗi hiển thị đi qua hệ localization, gồm cả:
+   - Chuỗi tạo tự động: mục Hành vi và thông số đạn (prompt 13), bảng hiệu quả và "Mạnh với / Yếu trước" (prompt 15), tooltip icon, thông báo trong trận, radio chatter, màn kết quả, gợi ý khi thua.
+   - Dữ liệu: tên và mô tả xe, tháp, công trình, trang bị, dòng unique, thương hiệu, boss, tướng, map, chế độ, nhiệm vụ, mutator, hỗ trợ tác chiến của Săn trùm.
+   - Cốt truyện: briefing, thoại, mẩu truyện, mục Hồ sơ, phần kết.
+   - Cửa hàng, thẻ mùa, thông báo cục bộ, chính sách và điều khoản trong game.
+3. Chuỗi có tham số dùng placeholder có tên (không dùng {0}, {1} không rõ nghĩa), để người dịch hiểu và để test bắt được placeholder sót.
+4. Định dạng số theo ngôn ngữ: tiếng Việt dùng dấu chấm cho hàng nghìn và dấu phẩy cho thập phân (184.172; 0,75); tiếng Anh ngược lại (184,172; 0.75). Đơn vị đo (m, giây, CP) theo từng ngôn ngữ.
+5. Số nhiều trong tiếng Anh (1 tank / 2 tanks) xử lý đúng.
+6. Font: kiểm tra đủ dấu tiếng Việt ở mọi cỡ và mọi độ đậm đang dùng; không có ký tự bị thay bằng ô vuông.
+
+J. NỘI DUNG
+1. Tên riêng giữ nguyên ở cả hai ngôn ngữ: tên boss (Behemoth, Icarus...), tên và biệt danh tướng, tên mẫu xe thật (T-90, Ka-52...). Dòng phụ mô tả boss được dịch (ví dụ "Icarus · Phi thuyền quỹ đạo" / "Icarus · Orbital Spacecraft").
+2. Lập bảng thuật ngữ thống nhất hai ngôn ngữ trong docs/glossary.md: loại giáp và cấp giáp, loại sát thương, cấp xuyên, nhánh xe, lớp xe, cỡ ô công sự, chế độ chơi, độ khó, các trạng thái (hết đạn, đang nạp...), tên chương và hồi. Mọi bản dịch dùng đúng bảng này.
+3. Viết đủ bản tiếng Anh cho mọi nội dung đang chỉ có tiếng Việt, và ngược lại. Giữ giọng văn quân sự gọn và rõ ở cả hai ngôn ngữ; thoại của mỗi tướng giữ cá tính riêng.
+4. Tên map: mỗi map có một tên cho mỗi ngôn ngữ, thống nhất ở mọi màn (theo bảng tên map của prompt 10).
+
+K. BỐ CỤC
+1. Chuỗi tiếng Anh thường dài hơn hoặc ngắn hơn tiếng Việt. Chạy lại toàn bộ test chữ bị cắt, test căn chỉnh và test vùng chạm (prompt 10, 11, 14) ở cả hai ngôn ngữ và cả cỡ chữ Lớn.
+2. Dùng tên ngắn (prompt 11) cho cả hai ngôn ngữ ở các chỗ chật.
+
+L. KIỂM TRA ĐA NGÔN NGỮ
+- Test quét: không key nào thiếu ở một trong hai ngôn ngữ; không key thô; không placeholder sót; không chuỗi tiếng Việt trong bản tiếng Anh và ngược lại (trừ tên riêng trong danh sách ngoại lệ).
+- Test định dạng số và số nhiều.
+- Chụp ảnh tự động mọi màn (kể cả Sa bàn, màn Căn cứ, màn chi tiết, HUD trong trận, màn kết quả) ở cả hai ngôn ngữ và 4 tỷ lệ màn hình; lưu vào docs/ui-screens/.
+- Đổi ngôn ngữ giữa chừng (ở menu và trong trận đang tạm dừng) không làm lỗi giao diện.
+
+PHẦN 3: KIỂM TRA SA BÀN
+- Đặt, xoay, sao chép, xóa, hoàn tác đơn vị hoạt động đúng; hướng đặt được giữ khi bắt đầu mô phỏng.
+- Mọi điều khiển mô phỏng hoạt động đúng; chạy lại cùng kịch bản và seed cho cùng kết quả.
+- Công cụ boss: nhảy pha, kích hoạt đòn lớn, phá bộ phận, đổi tầng độ cao, bật/tắt hộ tống đều đúng.
+- Lớp hiển thị khớp dữ liệu thật (tầm bắn, sát thương, kết quả xuyên, mặt giáp bị trúng).
+- Kịch bản lưu và nạp đúng; kịch bản từ bản trước vẫn mở được; kịch bản nội bộ chạy được trong bộ test; so sánh A/B và đấu tay đôi cho kết quả đúng.
+- Bản người chơi: chỉ có đơn vị đã mở và boss đã hạ; không có lớp chỉ dành cho nội bộ; không nhận bất kỳ phần thưởng, kỷ lục hay thành tích nào; mã kịch bản xuất và nhập đúng, đơn vị chưa mở được thay đúng.
+- Hiệu năng: đo FPS và tick ở trần đơn vị của Sa bàn trên máy tầm thấp.
+- Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (chế độ Sa bàn, đa ngôn ngữ).

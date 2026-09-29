@@ -1,0 +1,201 @@
+Prompt 18: Đòn lớn cho mọi boss
+
+Nhiệm vụ: thêm cho mỗi boss một đòn lớn có cảnh báo, có cách đối phó riêng và ngắt được bằng cách phá bộ phận. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 9 (bộ phận boss, cháy khói ở chỗ vỡ), prompt 13 (thang cỡ nòng, giá trị thực chiến, hệ đạn), prompt 15 (cấp giáp, cấp xuyên, 6 loại sát thương, icon), prompt 16 (Leviathan, vũ khí thêm, hộ tống) và prompt 17 (khiên, roster mới). Mọi sát thương dưới đây là con số trước hệ số giáp, theo thang cỡ nòng và loại sát thương đã có, và tăng theo cùng hệ số scale của boss trong chiến dịch và độ khó.
+
+A. LUẬT CHUNG
+1. Mỗi boss có đúng một đòn lớn. 15 boss dùng chế độ quá tải của vũ khí đã có; 3 boss (Đoàn tàu Tận thế, Tàu mẹ Tổ Ong, Khí cầu chỉ huy) có bộ phận mới dành cho đòn lớn (phần C).
+2. Nhịp: đòn lớn đầu tiên sau khoảng 30 giây kể từ khi boss xuất hiện; sau đó theo hồi chiêu riêng của từng boss (phần B). Trong lúc nạp đòn lớn, vũ khí dùng cho đòn đó ngừng bắn thường.
+3. Cảnh báo:
+   - Vùng trúng đòn hiện viền sáng kèm vòng đếm ngược, đúng hình dạng thật (vùng tròn, dải, đường thẳng, đường quét, đường rơi nhiều điểm).
+   - Có hiệu ứng nạp trên bộ phận liên quan (ví dụ cuộn dây sáng dần, nắp giàn phóng mở, khoang bom mở).
+   - Có một dòng radio và âm thanh riêng cho từng boss (dùng tướng tương ứng nếu có).
+4. Mức sát thương: đơn vị thuộc "mục tiêu chính" của đòn (phần B) đứng ở tâm vùng mất khoảng 40–60% máu ở hạng 1. Đơn vị giáp dày hơn mục tiêu chính mất ít hơn nhiều, đó là chủ ý. Không đòn nào được xóa sổ cả một đội quân còn đầy máu. Kiểm tra bằng mô phỏng và chỉnh con số cho đạt.
+5. Ngắt: phá bộ phận gắn với đòn lớn trong lúc đang cảnh báo thì đòn bị hủy (hoặc giảm theo mô tả riêng ở phần B). Bộ phận đó bị phá hẳn thì boss mất đòn lớn cho tới khi được vá (theo luật tự vá của prompt 9). EMP làm chậm thời gian nạp nếu phần B có ghi.
+6. Quân ta tự né: khi có vùng cảnh báo, đơn vị mặt đất của phe ta nằm trong vùng tự tìm đường ra gần nhất nếu kịp trong thời gian cảnh báo; máy bay và trực thăng cũng tránh. Đơn vị chậm có thể không kịp; người chơi dùng khói, khiên hoặc lệnh Rút. Việc tự né không được làm hỏng đội hình quá mức (quay lại vị trí cũ sau khi đòn kết thúc) và phải deterministic.
+7. Theo độ khó:
+   - Dễ: sát thương ×0,8, hồi chiêu ×1,2, cảnh báo lâu hơn 1 giây.
+   - Thường: như phần B.
+   - Khó: hồi chiêu ×0,9.
+   - Cực khó: hồi chiêu ×0,8, sát thương ×1,1.
+8. Đòn lớn áp dụng ở mọi nơi boss xuất hiện: chiến dịch, chiến dịch lớn, Săn trùm, Tác chiến.
+
+B. ĐÒN LỚN CỦA TỪNG BOSS
+Mỗi mục ghi: vũ khí, loại sát thương, cấp xuyên, sát thương, vùng, cảnh báo, hồi chiêu, cách ngắt, mục tiêu chính.
+
+1. Đoàn tàu thép · Loạt pháo toàn đoàn
+   - Dùng lại 2 toa pháo, bắn đạn nổ mạnh 152 mm. Nổ mạnh, xuyên thấp.
+   - 6 phát × 330, nổ lan 6 m, rải trong một dải 60 × 12 m chạy song song đường ray.
+   - Cảnh báo 3,5 giây; hồi 65 giây.
+   - Ngắt: phá toa pháo (mỗi toa góp 3 phát; phá một toa thì loạt còn 3 phát).
+   - Mục tiêu chính: xe giáp không có tới vừa, và tháp.
+
+2. Tempest · Phát pháo điện từ nạp đầy
+   - Dùng lại pháo điện từ, nạp qua bộ phận cuộn dây. Động năng, xuyên rất cao.
+   - 1 phát 1.400, xuyên qua mọi đơn vị trên đường đi; mỗi đơn vị phía sau nhận ít hơn 15% so với đơn vị trước.
+   - Vùng: đường thẳng dài 90 m, rộng 3 m; tia ngắm đỏ hiện trong lúc cảnh báo.
+   - Cảnh báo 4 giây; hồi 60 giây.
+   - Ngắt: phá cuộn dây; EMP làm chậm nạp thêm 2 giây.
+   - Khói không chặn được (đạn động năng).
+   - Mục tiêu chính: xe tăng giáp dày.
+
+3. Behemoth · Loạt pháo chính
+   - Dùng lại pháo chính, bắn đạn nổ mạnh 203 mm. Nổ mạnh, xuyên trung bình.
+   - 3 loạt × 2 phát = 6 phát × 480, nổ lan 8 m, rơi rải trong vùng tròn bán kính 14 m.
+   - Cảnh báo 3,5 giây; hồi 65 giây.
+   - Ngắt: phá pháo chính.
+   - Mục tiêu chính: cụm quân hỗn hợp và tháp.
+
+4. Đoàn tàu Tận thế · Tên lửa chiến thuật
+   - Bộ phận mới: bệ phóng tên lửa dựng đứng (phần C). Nổ mạnh, nhãn Nhiệt áp, xuyên trung bình.
+   - 1 quả: 2.500 ở tâm, giảm dần còn 30% ở rìa, nổ lan 18 m; thêm sát thương lên công trình theo nhãn Nhiệt áp.
+   - Nhắm vào HQ của người chơi hoặc cụm quân lớn nhất.
+   - Cảnh báo: 5 giây dựng bệ phóng; sau khi phóng, tên lửa bay chậm khoảng 12 giây với đồng hồ đếm ngược và vùng rơi hiện trên map. Hồi 90 giây.
+   - Ngắt: phá bệ phóng trong 5 giây dựng bệ; hoặc bắn hạ tên lửa trên đường bay (máu khoảng 600) bằng phòng không, C-RAM hoặc La-de PK.
+   - Mục tiêu chính: căn cứ và HQ.
+
+5. Pháo đường ray siêu nặng · Phát đạn siêu nặng
+   - Dùng lại khẩu pháo chính. Nổ mạnh, xuyên cao.
+   - 1 phát: 1.800 ở tâm, giảm dần tới rìa, nổ lan 20 m; để lại lửa trên mặt đất 8 giây. Tầm bao cả map.
+   - Cảnh báo 4 giây; hồi 60 giây. Các phát bắn thường (khoảng 20 giây một lần) vẫn giữ.
+   - Ngắt: phá trạm chỉ thị mục tiêu thì phát bắn lệch tới khoảng 15 m (vùng cảnh báo vẫn hiện, nhưng rộng hơn tương ứng).
+   - Mục tiêu chính: cụm quân đứng yên và tháp.
+
+6. Inferno · Biển lửa
+   - Dùng lại 2 súng phun lửa. Lửa, xuyên thấp.
+   - 250 ngay lập tức, cộng mặt đất cháy 10 giây, mỗi giây 60.
+   - Vùng: vòng tròn bán kính 18 m quanh boss.
+   - Cảnh báo 3 giây; hồi 60 giây.
+   - Ngắt: phá súng phun lửa (mỗi súng phụ trách một nửa vòng; phá một súng thì chỉ cháy nửa vòng).
+   - Mục tiêu chính: xe giáp không có và mỏng đứng gần boss.
+
+7. Tổng Tư Lệnh · Tổng tiến công
+   - Dùng lại ăng-ten chỉ huy.
+   - Tăng sức mạnh: mọi quân địch trong 60 m được +35% sát thương và +25% tốc độ bắn trong 12 giây.
+   - Kèm một đợt không kích: 8 bom khoảng 250 kg, Nổ mạnh, xuyên thấp, mỗi quả 300, nổ lan 7 m, rải thành dải 50 × 10 m vào cụm quân ta lớn nhất.
+   - Cảnh báo 4 giây (radio, icon hiện trên quân địch được tăng sức mạnh, dải không kích hiện trên map); hồi 75 giây.
+   - Ngắt: phá ăng-ten (mất luôn hào quang thường của nó, như prompt 16).
+   - Mục tiêu chính: cả đội quân của người chơi.
+
+8. Hive · Bầy drone tổng lực
+   - Dùng lại giàn phóng drone. Nổ lõm, xuyên cao, đánh nóc.
+   - 20 drone × 150; mỗi drone máu 60, tốc độ 26 m/s; các drone chia nhau nhiều mục tiêu trong cụm quân lớn nhất.
+   - Cảnh báo 4 giây (giàn phóng mở nắp, vùng mục tiêu hiện); hồi 70 giây.
+   - Ngắt: phá giàn phóng (mỗi giàn 10 drone).
+   - Bị khắc chế bởi APS, C-RAM, La-de PK, gây nhiễu, pháo phòng không.
+   - Mục tiêu chính: xe tăng và xe có giáp, đánh vào nóc.
+
+9. Tàu đệm khí · Đổ bộ ồ ạt
+   - Dùng lại dàn rốc-két và cửa đổ bộ.
+   - Phần 1: 24 rốc-két 122 mm, Nổ mạnh, xuyên trung bình, mỗi quả 58, nổ lan 4 m, rải trên vùng bãi cát 40 × 20 m.
+   - Phần 2: thả 6 xe lên bãi (2 tăng chủ lực, 2 xe bộ binh, 2 xe bọc thép; có tinh nhuệ theo ngân sách tinh nhuệ của độ khó). Tối đa 6 xe từ đòn này còn sống cùng lúc, tính riêng ngoài trần hộ tống của prompt 16.
+   - Cảnh báo 4 giây; hồi 80 giây.
+   - Ngắt: phá dàn rốc-két thì mất phần 1; phá cửa đổ bộ thì mất phần 2.
+   - Mục tiêu chính: quân giữ bãi cát.
+
+10. Pháo đài băng · Mưa rốc-két
+    - Dùng lại 2 hộp rốc-két. Nổ mạnh, xuyên trung bình.
+    - 32 rốc-két 122 mm × 58, nổ lan 4 m, rơi trong khoảng 4 giây trong vùng tròn bán kính 25 m.
+    - Cảnh báo 3,5 giây; hồi 65 giây.
+    - Ngắt: phá hộp rốc-két (mỗi hộp 16 quả).
+    - Khiên (xe phát khiên, máy phát khiên) hấp thụ được.
+    - Mục tiêu chính: cụm xe nhẹ và tháp.
+
+11. Bọ Bạc · Tia laser quét
+    - Dùng lại bộ phát laser. Năng lượng, xuyên rất cao.
+    - 900 cho mỗi đơn vị bị tia quét qua (mỗi đơn vị chỉ trúng một lần mỗi đòn).
+    - Vùng: tia rộng 4 m quét dọc một đường dài 120 m trong 3 giây; đường quét hiện trước.
+    - Cảnh báo 4 giây; hồi 60 giây.
+    - Ngắt: phá bộ phát laser; EMP làm chậm nạp thêm vài giây.
+    - Đơn vị đứng trong màn khói chỉ nhận 20%. Khiên và APS không chặn được.
+    - Mục tiêu chính: xe tăng.
+
+12. Sâu Đất · Địa chấn
+    - Dùng lại mũi khoan. Nổ mạnh, xuyên trung bình.
+    - 700 ở tâm, giảm dần còn 30% ở rìa, bán kính 16 m; cộng choáng 3 giây cho xe mặt đất trong vùng. Không tác dụng lên máy bay và trực thăng.
+    - Cảnh báo 3 giây: vết nứt lan trên mặt đất quanh cụm quân lớn nhất, trong lúc boss đã lặn xuống.
+    - Hồi 60 giây.
+    - Ngắt: phá mũi khoan từ trước thì boss không lặn được và mất đòn này.
+    - Mục tiêu chính: cụm quân đứng dồn.
+
+13. Bastion · Pháo cối tổng lực
+    - Dùng lại khẩu cối 240 mm. Nổ mạnh, xuyên trung bình.
+    - 6 phát × 460, nổ lan 9 m; thêm sát thương lên công trình.
+    - Vùng: các phát rơi lần lượt mỗi 0,7 giây, tiến dần theo một đường dài 60 m về phía cổng, căn cứ hoặc cụm quân. Cả đường rơi hiện trước, từng điểm có đếm ngược riêng.
+    - Cảnh báo 3,5 giây; hồi 65 giây.
+    - Ngắt: phá khẩu cối.
+    - Mục tiêu chính: tháp, cổng và quân đang tiến vào.
+
+14. Spectre · Vòng bắn tổng lực
+    - Dùng lại toàn bộ pháo:
+      - Pháo 105 mm: Nổ mạnh, xuyên trung bình, 300 mỗi 1,5 giây.
+      - 2 pháo 40 mm: Nổ mạnh, xuyên thấp, 3 × 30 mỗi 0,8 giây.
+      - Pháo 25 mm: Động năng, xuyên trung bình, bắn liên tục.
+    - Vùng: vùng tròn bán kính 15 m, bắn liên tục trong 8 giây.
+    - Cảnh báo 3 giây (Spectre chuyển sang bay vòng hẹp, vùng sáng lên); hồi 70 giây.
+    - Trong 8 giây đó Spectre bay thấp và vòng hẹp: phòng không của phe ta bắn trúng nó nhiều hơn 50%.
+    - Ngắt: phá pháo 105 mm để giảm mạnh sát thương; hoặc gây đủ khoảng 8% máu Spectre trong lúc nó bay vòng hẹp thì nó bỏ dở đòn và bay lên.
+    - Mục tiêu chính: xe nhẹ và phòng không.
+
+15. Chim sắt · Loạt rốc-két theo đường thẳng
+    - Dùng lại 2 hộp rốc-két. Nổ mạnh, xuyên trung bình.
+    - 48 rốc-két 80 mm × 32, nổ lan 3 m.
+    - Vùng: đường bay dài 70 m, rộng 8 m, hiện trước.
+    - Cảnh báo 3 giây; hồi 60 giây.
+    - Ngắt: phá hộp rốc-két (mỗi hộp 24 quả).
+    - Mục tiêu chính: cụm xe nhẹ và phòng không.
+
+16. Tàu mẹ Tổ Ong · Bom xuyên phá
+    - Bộ phận mới: khoang bom (phần C). Nổ mạnh, xuyên cao.
+    - 1 quả bom khoảng 900 kg: 850 ở tâm, giảm dần tới rìa, nổ lan 14 m; thêm sát thương lên công trình.
+    - Cảnh báo 3,5 giây: khoang bom mở, tàu dừng lại phía trên mục tiêu; trong lúc này phòng không của phe ta bắn trúng nó nhiều hơn 30%.
+    - Hồi 70 giây.
+    - Ngắt: phá khoang bom.
+    - Mục tiêu chính: tháp, công trình và cụm quân.
+
+17. Khí cầu chỉ huy · Rải thảm
+    - Bộ phận mới: khoang bom (phần C). Nổ mạnh, xuyên thấp.
+    - 12 bom khoảng 250 kg × 300, nổ lan 7 m, rải thành dải 70 × 12 m theo đường bay của khí cầu.
+    - Cảnh báo 3,5 giây; hồi 70 giây.
+    - Ngắt: phá khoang bom.
+    - Mục tiêu chính: xe giáp không có tới vừa và tháp.
+
+18. Leviathan · Loạt tên lửa hành trình
+    - Dùng lại ống phóng tên lửa hành trình. Nổ mạnh, xuyên trung bình.
+    - 6 tên lửa × 450, nổ lan 8 m; thêm sát thương lên công trình.
+    - Nhắm vào HQ, tháp và cụm quân trong căn cứ người chơi. Mỗi tên lửa máu khoảng 250, bay khoảng 8 giây, vùng rơi hiện trên map.
+    - Cảnh báo 4 giây (ống phóng mở), sau đó có đồng hồ bay; hồi 75 giây.
+    - Ngắt: phá ống phóng trong lúc cảnh báo để hủy cả loạt; hoặc bắn hạ từng tên lửa trên đường bay bằng phòng không, C-RAM hoặc La-de PK.
+    - Mục tiêu chính: căn cứ.
+
+C. BỘ PHẬN MỚI
+1. Bệ phóng tên lửa dựng đứng (Đoàn tàu Tận thế), khoang bom (Tàu mẹ Tổ Ong), khoang bom (Khí cầu chỉ huy).
+2. Mỗi bộ phận có máu riêng, cấp giáp riêng (prompt 15), icon trên thanh máu boss, và hiệu ứng cháy khói ở chỗ vỡ (prompt 9).
+3. Chỉnh lại tổng máu bộ phận của 3 boss này theo luật tổng máu bộ phận của prompt 9.
+4. Model tạm nếu chưa có; ghi vào docs/ASSET_DEBT.md.
+
+D. GIAO DIỆN VÀ HƯỚNG DẪN
+1. Trên thanh máu boss: icon đòn lớn kèm vòng hồi chiêu; khi đang nạp, icon sáng lên và bộ phận liên quan nhấp nháy trong hàng icon bộ phận, để người chơi biết phải phá bộ phận nào.
+2. Vùng cảnh báo dùng một bộ màu và hình thống nhất cho mọi boss, dễ thấy trên mọi map và mọi thời tiết, kể cả đồ họa Thấp; không che khuất quân của người chơi.
+3. Thông báo ngắn khi ngắt thành công ("Đã hủy loạt pháo").
+4. Tab Hướng dẫn của mỗi boss thêm mục Đòn lớn: tên, cách hoạt động, cách né, cách ngắt, mục tiêu chính; thông số tạo tự động từ dữ liệu (theo luật của prompt 13).
+5. Clip Xem bắn có đòn lớn.
+6. Tuân thủ HUD gọn của prompt 11: không thêm khung lớn mới vào giữa màn hình.
+
+E. CÂN BẰNG
+1. Tính đòn lớn vào thời gian hạ boss và sát thương của boss trong bộ đo giá trị thực chiến của prompt 13.
+2. Sau khi thêm đòn lớn, chỉnh máu boss hoặc sát thương đòn lớn để thời gian hạ từng boss và tỷ lệ thắng các nhiệm vụ boss vẫn trong mục tiêu của prompt 9, 13 và 16.
+3. Không đòn lớn nào trở thành cách thua chắc chắn: với bộ bài tiêu chuẩn và AI phe ta tự né, người chơi vẫn thắng mọi nhiệm vụ boss ở độ khó Thường.
+
+F. KIỂM TRA
+- Mỗi boss: đòn lớn kích hoạt đúng nhịp (lần đầu khoảng 30 giây, sau đó theo hồi chiêu); vùng trúng đúng hình và kích thước; sát thương đúng loại và cấp xuyên; mục tiêu chính mất khoảng 40–60% máu ở tâm vùng (hạng 1).
+- Ngắt: phá đúng bộ phận trong lúc cảnh báo thì đòn bị hủy hoặc giảm đúng theo mô tả; bộ phận bị phá hẳn thì boss mất đòn; EMP làm chậm nạp ở các boss có ghi.
+- Bắn hạ trên đường bay: tên lửa của Đoàn tàu Tận thế và Leviathan bắn hạ được bằng phòng không, C-RAM và La-de PK.
+- Khói giảm tia laser của Bọ Bạc đúng mức; khiên hấp thụ Mưa rốc-két; khói không chặn phát pháo điện từ của Tempest.
+- Tự né: đơn vị phe ta trong vùng cảnh báo tìm đường ra; không kẹt; quay lại vị trí sau đòn; deterministic.
+- Theo độ khó: hệ số sát thương, hồi chiêu và thời gian cảnh báo đúng cho Dễ, Thường, Khó, Cực khó.
+- Mô phỏng 5 seed: mọi nhiệm vụ boss trong chiến dịch, chiến dịch lớn có boss, Săn trùm và Tác chiến có boss, ở các độ khó; báo cáo tỷ lệ thắng và thời gian hạ boss so với mục tiêu.
+- Hiệu năng: đo FPS ở các đòn nặng nhất (bầy drone của Hive, mưa rốc-két, loạt tên lửa của Leviathan) ở đồ họa Thấp trên máy tầm thấp.
+- Chụp ảnh tự động từng đòn lớn lúc đang cảnh báo; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và tài liệu thiết kế (mục boss).

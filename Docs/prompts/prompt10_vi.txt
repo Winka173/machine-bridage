@@ -1,0 +1,163 @@
+phase 10:
+
+<pasted_content id="428f">
+Prompt 10: Làm lại giao diện theo hướng "Field Command 2.0"
+
+Nhiệm vụ: áp một hệ giao diện thống nhất cho toàn bộ game, gồm mọi màn ngoài trận và HUD trong trận, theo hướng "Field Command 2.0": giữ tinh thần hiện tại (nền xám thép, góc vuông, chữ in hoa hẹp) nhưng chuẩn hóa màu, chữ, kích thước, nút và thành phần. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Cách làm chung:
+- Mọi màu, cỡ chữ, khoảng cách, viền và kích thước nút nằm trong MỘT file theme dùng chung (token). Không màn nào được hardcode màu hay cỡ chữ.
+- Làm thư viện thành phần trước (phần C), rồi mới dựng lại từng màn bằng các thành phần đó (phần E).
+- Không thay đổi logic game hay dữ liệu cân bằng trong prompt này.
+
+A. TOKEN MÀU
+Nền và bề mặt:
+- nền: #101317
+- nền phụ: #121519
+- panel: #171b20
+- panel nổi: #1b2026
+- panel được chọn: #1f252c
+- panel trên chiến trường: #12161b với độ mờ 92–94%
+- viền: #2c333b
+- viền đậm: #3a424b
+
+Chữ:
+- chữ chính: #e9e6df
+- chữ phụ: #aab2ba
+- chữ mờ: #8a939b (chỉ dùng cho chữ từ 18 px trở lên; kiểm tra tương phản)
+
+Màu nhấn và ngữ nghĩa:
+- nhấn: #f2a33a. CHỈ dùng cho nút chính, mục đang chọn trên thanh điều hướng và tab đang chọn. Không dùng để trang trí.
+- nhấn khi nhấn: #d88a22
+- xu và phần thưởng: #e8c15a
+- nguy hiểm, thông báo, thua: #e0513a
+- phe ta trên bản đồ nhỏ và HUD: xanh dương sáng; phe địch: đỏ. Hai màu phải khác nhau cả về độ sáng, không chỉ về màu.
+
+Màu nhánh xe (luôn đi kèm icon lớp xe, không bao giờ dùng màu một mình):
+- Thiết giáp: #8fb3d6
+- Xe nhẹ: #a9cf7a
+- Pháo binh: #e0956a
+- Không quân: #bba6e6
+- Hỗ trợ: #cfc8b8
+
+Màu độ hiếm: Thường xám, Khá xanh lá, Hiếm xanh dương, Sử thi tím, Huyền thoại cam. Cam của Huyền thoại phải đủ khác với màu nhấn #f2a33a (đỏ hơn, ví dụ khoảng #ff7a2e) để không nhầm với nút chính.
+
+Kiểm tra tương phản: mọi chữ trên nền phải đạt 4,5:1 (chữ từ 24 px trở lên: 3:1). Nếu một cặp màu trên không đạt, chỉnh token và ghi lại.
+
+B. CHỮ, KÍCH THƯỚC, VÙNG CHẠM
+1. Font:
+   - Tiêu đề, nhãn nút, số lớn: Barlow Condensed (600, 700).
+   - Chữ thường: Barlow (400, 500, 600).
+   Cả hai là font giấy phép OFL. Đóng gói file font vào game (không tải qua mạng), kiểm tra đủ dấu tiếng Việt, và thêm file giấy phép vào thư mục bản quyền.
+2. Thang chữ (tính ở chiều rộng tham chiếu 1400 px; tự quy đổi theo reference resolution của canvas UI trong game):
+   - Nút chính: 36–40.
+   - Tiêu đề màn: 26–30.
+   - Tiêu đề panel: 20–22.
+   - Chữ thường: 18–20.
+   - Chữ phụ: tối thiểu 16. Không có chữ nào nhỏ hơn mức này.
+   Mục tiêu trên máy thật: chữ thường khoảng 11–12 pt, chữ phụ không dưới 10 pt.
+3. Vùng chạm: mọi phần tử bấm được tối thiểu tương đương 44 pt trên máy thật (khoảng 72 px ở 1400 px), kể cả nút "+" mua xu, chip lọc, link chữ và nút icon.
+4. Vùng an toàn: mọi màn tôn trọng safe area khi xoay ngang (tai thỏ, camera đục lỗ, thanh điều hướng hệ thống). Thanh điều hướng trái và các nút ở mép phải nằm trong safe area.
+5. Góc và viền: góc vuông, viền 1 px. Chỉ nút chính có góc vát (vát hai góc đối nhau, khoảng 18 px ở 1400 px).
+6. Khoảng cách dùng thang 4 / 8 / 12 / 16 / 20 / 24 / 32.
+
+C. THƯ VIỆN THÀNH PHẦN (làm xong và có màn xem thử nội bộ trước khi dựng lại các màn)
+1. Nút, 5 cấp:
+   - Chính: nền nhấn, chữ tối, góc vát. Mỗi màn tối đa MỘT nút chính.
+   - Phụ: viền chữ chính, không nền.
+   - Nhận thưởng: nền vàng xu #e8c15a, chữ tối, icon xu, hiệu ứng nhấp nháy nhẹ. Chỉ dùng khi có thưởng để nhận.
+   - Chỉ chữ: chữ màu nhấn, không nền, vùng chạm vẫn đủ 44 pt.
+   - Nguy hiểm: viền đỏ; luôn mở hộp xác nhận (Ghép tất cả, Bán, Đổi nhánh tháp, Đặt lại).
+   Mỗi nút có đủ trạng thái: thường, nhấn (tối hơn và lún 2 px; mobile không có hover), vô hiệu (kèm lý do ngắn, ví dụ "Thiếu 320 xu" hoặc "Cần cấp HQ 3"), đang tải.
+2. Nút icon: khung vuông cố định, luôn có nhãn trợ năng.
+3. Tab: nền panel, tab đang chọn có gạch dưới màu nhấn 2 px.
+4. Chip lọc: chip đang chọn nền chữ chính với chữ tối; chip thường chỉ có viền. Chip lọc nhánh có ô màu nhánh và icon lớp xe. Tách riêng nút "Sắp xếp ▾" khỏi hàng chip lọc.
+5. Ô chọn (dropdown): nhãn, giá trị hiện tại, mũi tên ▾, ảnh nhỏ nếu có (ví dụ ảnh map). Dùng cho chọn chế độ, map, độ khó.
+6. Thẻ xe:
+   - Ảnh render 3D của xe (phần F), vạch màu nhánh 3 px ở mép trên, icon lớp xe, giá CP trong ô tối ở góc, tên xe đầy đủ (xuống dòng khi cần, không bao giờ cắt bằng "...").
+   - Chỉ hiện dấu nâng cấp khi thật sự đủ bản thiết kế và xu để lên cấp.
+   - Thẻ chưa mở: mờ 45%, ghi nơi mở khóa ("Mở ở Chương 3").
+7. Thẻ đồ trang bị: icon RIÊNG theo loại đồ (Nòng dài khác Lõi xuyên vonfram), khung màu độ hiếm, chỉ số chính rút gọn trên thẻ (ví dụ "+15% xe nặng"), cấp của món. Có sắp xếp và lọc theo ô, độ hiếm, thương hiệu, và so sánh với món đang gắn.
+8. Thanh tiến độ: cao 3–4 px, nền viền, phần đầy màu chữ phụ; màu nhấn chỉ khi đã đủ để làm gì đó.
+9. Chấm thông báo: đỏ #e0513a, vuông 8 px. Chỉ hiện khi có việc người chơi cần làm ngay (thưởng chưa nhận, nâng cấp làm được, quà miễn phí). Không hiện chấm chỉ vì có nội dung mới.
+10. Panel, hộp thoại, toast, tooltip dùng chung một kiểu viền và nền.
+11. Mọi chuỗi hiển thị đầy đủ: không cắt chữ bằng "...". Nếu không vừa, xuống dòng hoặc đổi bố cục.
+
+D. ĐIỀU HƯỚNG
+Thanh điều hướng trái (5 mục, mỗi mục có icon và nhãn): Trang chủ, Chiến dịch, Tác chiến, Quân đội, Cửa hàng.
+- Mục đang chọn: nền panel được chọn, vạch nhấn 3 px bên trái, icon và chữ màu nhấn.
+- Quân đội có 3 tab: Bộ bài, Trang bị, Căn cứ.
+- Tác chiến gom: chiến dịch lớn chơi lại, Pháo đài tuần, Săn trùm, thử thách hằng ngày.
+- Giao tranh và Thử thách (Sinh tồn, Vô tận) chọn từ ô chọn chế độ ở Trang chủ.
+- Thanh trên cùng: tên màn (hoặc logo ở Trang chủ), cấp bậc có huy hiệu và thanh XP rõ ràng, số xu với nút "+", nút cài đặt. Chỉ có MỘT nút bánh răng cho cài đặt game; cài đặt trận dùng ô chọn, không dùng bánh răng.
+Cập nhật điều hướng khớp với việc gộp chế độ ở prompt 6.
+
+E. TỪNG MÀN (sửa theo các lỗi đã thấy trong bản hiện tại)
+1. Trang chủ:
+   - Nền là cảnh chiến trường chạy thật, phủ lớp tối khoảng 38%.
+   - Bên phải: thẻ chiến dịch hiện tại (chương, tên nhiệm vụ, map, thẻ sẽ mở, tiến độ chương) — cả thẻ bấm được, KHÔNG có nút chính riêng; bên dưới là thử thách hằng ngày với đồng hồ đếm ngược tới lúc đổi mới, thử thách xong dùng nút Nhận thưởng.
+   - Dưới trái: dải bộ bài 8 xe + 2 hỗ trợ với ảnh render, tên và CP; link "Chỉnh bộ bài".
+   - Dưới phải: ô chọn chế độ (chế độ, map, độ khó, thời tiết) và nút chính XUẤT KÍCH.
+   - Bộ bài chưa đủ 8 xe thì hiện nhắc nhở trên dải bộ bài; vẫn cho xuất kích.
+2. Chiến dịch:
+   - Màn chọn chương: 9 chương theo 3 hồi, mỗi chương có ảnh map, tiến độ, số sao, boss chương, trạng thái khóa.
+   - Màn nhiệm vụ trong chương: danh sách nhiệm vụ đánh dấu boss giữa chương, chiến dịch lớn và nhiệm vụ phụ; panel chi tiết có briefing, mục tiêu, 3 sao, cấp độ Thường/Anh hùng/Thép, "sức mạnh đề nghị" (prompt 2), phần thưởng gồm cả thẻ mở khóa, và nút chính BẮT ĐẦU.
+   - Không để panel chi tiết trống nửa màn: dùng chỗ đó cho briefing và thẻ mở khóa.
+3. Quân đội › Bộ bài:
+   - Hàng bộ bài 8 + 2 với thẻ xe đầy đủ (ảnh, tên, CP, cấp).
+   - Bên cạnh: tổng quan bộ bài (số xe, giá trung bình) và "Độ phủ vai trò": có hay thiếu diệt tăng, phòng không, pháo binh, sửa chữa, trinh sát; thiếu thì tô màu cảnh báo.
+   - Bộ bài mẫu có nhãn chữ, không chỉ có icon.
+   - Hàng chip lọc theo nhánh + nút sắp xếp riêng; lưới bộ sưu tập dùng thẻ xe (C.6).
+4. Chi tiết phương tiện:
+   - Mọi xe có cùng một bộ tab: Chỉ số, Hướng dẫn, Vũ khí, Xem bắn, Trang bị.
+   - Mỗi thanh chỉ số có mốc so sánh (trung bình của lớp xe đó).
+   - Tách rõ và chú thích hai phần cộng thêm: từ trang bị, và khi lên cấp tiếp theo.
+   - Bản thiết kế hiện "đã có / cần" và đủ thì ghi "Đủ để lên cấp".
+   - Không để nội dung bị cắt ở mép dưới; bỏ phần mô tả vai trò lặp lại giữa tab Hướng dẫn và Chỉ số.
+   - Thêm hàng tag loại giáp, nhánh và CP ngay dưới tên xe.
+5. Quân đội › Trang bị: dùng thẻ đồ (C.7). Chọn một ô thì panel bên phải hiện ngay danh sách món hợp lệ cho ô đó và so sánh chỉ số với món đang gắn, không để trống. Tên các ô thống nhất với tài liệu thiết kế (dùng "Quang học", không dùng "Lớp phủ").
+6. Quân đội › Căn cứ: sơ đồ HQ với ô nhỏ/vừa/lớn (khung to nhỏ khác nhau và icon cỡ), kéo tháp vào ô, chỉ sáng các ô hợp lệ; panel tháp có hạng, nhánh và 3 ô đồ của loại tháp.
+7. Thiết lập trận: dùng ô chọn thay cho lưới ô cắt chữ. Chế độ hiện đủ tên và mô tả một dòng; map có ảnh xem trước; độ khó và thời tiết cùng một màn, không phải cuộn mới thấy.
+8. Tác chiến và Sự kiện: mỗi mục có ảnh, mô tả đúng luật hiện tại (sửa "Bốn trùm liên tiếp" thành đúng số boss), đồng hồ đếm ngược nếu có hạn, và phần thưởng.
+9. Cửa hàng: thay icon tạm bằng ảnh hòm và ảnh gói; mỗi ô ghi rõ giá, nội dung và tỷ lệ; không để khoảng trống lớn. Tab "Skin" đổi thành "Ngụy trang".
+10. Kết quả trận:
+   - Tiêu đề ghi tên nhiệm vụ hoặc chế độ, không trộn cả hai ("Chiến dịch 02 / Giữ cứ điểm").
+   - Điểm số ghi rõ bên nào ("Ta 0 · Địch 331").
+   - Khi thua: 1–2 gợi ý cụ thể dựa trên trận vừa đánh (ví dụ "Địch dùng nhiều máy bay: thêm phòng không vào bộ bài"), và nút mở thẳng màn bộ bài.
+   - Nút chính là CHƠI LẠI (thua) hoặc TIẾP TỤC (thắng); nút phụ là về menu; nút nhân đôi thưởng bằng quảng cáo dùng kiểu nút Nhận thưởng.
+11. Cài đặt: dùng thành phần chung; thêm tùy chọn cỡ chữ (Thường / Lớn).
+
+F. ẢNH THẺ TỪ MODEL 3D
+- Viết công cụ render ảnh thẻ tự động từ model chi tiết (đồ họa Cao): cùng một góc camera 3/4, cùng ánh sáng, nền trong suốt, có bóng mềm dưới xe, kích thước 512 px.
+- Render cho mọi xe, xe tinh nhuệ, tháp và boss. Ảnh render lại tự động khi model đổi.
+- Dùng ảnh này cho thẻ xe ở mọi màn (Trang chủ, Quân đội, khay thẻ trong trận, kết quả trận).
+- Giữ icon lớp xe dạng nét đơn sắc để dùng ở chỗ nhỏ (chip lọc, bản đồ nhỏ, tag).
+
+G. HUD TRONG TRẬN (cùng hệ token)
+- Panel trên chiến trường dùng nền "panel trên chiến trường", viền 1 px.
+- Nút lệnh Tấn công / Phòng thủ: nhãn đầy đủ, không cắt chữ; lệnh đang bật dùng nền chữ chính với chữ tối.
+- Tự mua / Yểm trợ: công tắc bật/tắt rõ trạng thái, dùng kiểu tắt/bật chung, không dùng màu xanh lá riêng.
+- Khay thẻ: ảnh render, tên đầy đủ, CP; thẻ đủ CP sáng, thiếu CP mờ và hiện số CP còn thiếu; hồi chiêu dùng vòng quét tròn kèm số giây.
+- Ô CP: số CP lớn, thu nhập mỗi giây, và phần phạt tiếp tế ghi rõ bằng chữ (ví dụ "Quá tiếp tế −29%"); chạm vào để xem giải thích.
+- Thanh máu boss: tên, số máu, vạch mốc pha, và hàng icon bộ phận theo prompt 9.
+- Thanh nhiệm vụ: mục tiêu hiện tại, tiến độ, đồng hồ.
+- Radio chatter, cảnh báo không kích, thông báo tinh nhuệ dùng chung một kiểu toast.
+
+H. NGÔN NGỮ VÀ TÊN GỌI
+- Bỏ mọi từ tiếng Anh còn sót trong giao diện: "coin" → "xu", "Nhân đôi coin" → "Nhân đôi xu", "Skin" → "Ngụy trang".
+- Mỗi map chỉ có MỘT tên hiển thị tiếng Việt, dùng thống nhất ở mọi màn và mọi tài liệu (ví dụ Greenvale / Lũng Xanh → chỉ dùng "Lũng Xanh"). Lập bảng tên map trong DECISIONS.md.
+- Tên xe, tháp, chế độ, nhánh và ô trang bị thống nhất giữa UI và tài liệu thiết kế.
+
+I. KIỂM TRA
+- Chụp ảnh tự động mọi màn ở 4 tỷ lệ: 16:9, 19.5:9, 20:9 và máy tính bảng 4:3; lưu vào docs/ui-screens/ để tôi xem.
+- Test tự động:
+  - Không có chuỗi nào bị cắt bằng "..." ở bất kỳ màn nào, ở cả cỡ chữ Thường và Lớn.
+  - Mọi phần tử bấm được đạt vùng chạm tối thiểu.
+  - Mọi cặp màu chữ/nền đạt ngưỡng tương phản.
+  - Không có màu hay cỡ chữ hardcode ngoài file theme.
+  - Mỗi màn có tối đa một nút chính.
+  - Không còn chuỗi tiếng Anh trong localization tiếng Việt (trừ tên riêng có chủ ý, liệt kê trong DECISIONS.md).
+- Kiểm tra safe area trên ít nhất một cấu hình có tai thỏ và một cấu hình camera đục lỗ.
+- Đo FPS HUD trong trận không giảm so với trước ở mức đồ họa Thấp.
+- Cập nhật docs/CHANGELOG.md và mục Giao diện trong tài liệu thiết kế (token, thành phần, ảnh các màn).
+</pasted_content id="428f">
