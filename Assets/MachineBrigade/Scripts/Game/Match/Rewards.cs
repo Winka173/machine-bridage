@@ -80,6 +80,7 @@ namespace MachineBrigade.Game.Match
         {
             AiDifficulty.Easy => 0.7f,
             AiDifficulty.Hard => 1.45f,
+            AiDifficulty.VeryHard => 1.8f,
             _ => 1f,
         };
 

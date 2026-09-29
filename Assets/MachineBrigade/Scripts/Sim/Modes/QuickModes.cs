@@ -11,8 +11,14 @@ namespace MachineBrigade.Sim.Modes
 {
     public sealed class DeathmatchRules
     {
-        /// <summary>Vehicles to destroy to win outright.</summary>
-        public int KillTarget { get; set; } = 100;
+        /// <summary>
+        /// Prompt 13 H.2: the CP worth of enemy vehicles to destroy to win outright (a kill scores its price,
+        /// so a swarm of cheap vehicles thrown away scores little for the enemy; it counted kills before).
+        /// </summary>
+        public int ScoreTarget { get; set; } = 480;
+
+        /// <summary>After this long the side behind gets its one-off help (prompt 13 H.12).</summary>
+        public float UnderdogAfter { get; set; } = 240f;
 
         /// <summary>Seconds; when time runs out the side with more kills wins.</summary>
         public float TimeLimit { get; set; } = 12 * 60f;
@@ -26,8 +32,8 @@ namespace MachineBrigade.Sim.Modes
 
     /// <summary>
     /// Deathmatch (tử chiến): no objectives, just destruction. Command Points flow faster, and
-    /// the first side to destroy the target number of enemy vehicles wins; at the time limit the
-    /// side with more kills does.
+    /// the first side to destroy the target CP worth of enemy vehicles wins; at the time limit the
+    /// side with the higher score does.
     /// </summary>
     public sealed class DeathmatchMode : IGameMode
     {
@@ -41,9 +47,12 @@ namespace MachineBrigade.Sim.Modes
 
         public MatchResult? Result { get; private set; }
 
-        public int KillTarget => _rules.KillTarget;
+        public int ScoreTarget => _rules.ScoreTarget;
 
         public int Kills(int team) => _ledger.Kills(team);
+
+        /// <summary>The CP worth of what the side has destroyed.</summary>
+        public int Score(int team) => _ledger.LostCp(1 - team);
 
         public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)world.Time);
 
@@ -52,6 +61,7 @@ namespace MachineBrigade.Sim.Modes
             world.CatchUp = true;
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
+            world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
         }
@@ -60,9 +70,9 @@ namespace MachineBrigade.Sim.Modes
         {
             if (Result != null) return;
             _ledger.Update(world);
-            var ours = Kills(PlayerTeam);
-            var theirs = Kills(EnemyTeam);
-            var winner = ours >= _rules.KillTarget ? PlayerTeam : theirs >= _rules.KillTarget ? EnemyTeam : (int?)null;
+            var ours = Score(PlayerTeam);
+            var theirs = Score(EnemyTeam);
+            var winner = ours >= _rules.ScoreTarget ? PlayerTeam : theirs >= _rules.ScoreTarget ? EnemyTeam : (int?)null;
             if (winner == null && world.Time >= _rules.TimeLimit) winner = ours == theirs ? -1 : ours > theirs ? PlayerTeam : EnemyTeam;
             if (winner == null) return;
             Result = new MatchResult(winner.Value);
@@ -74,6 +84,9 @@ namespace MachineBrigade.Sim.Modes
     {
         /// <summary>Score to win; the sole holder of the hill scores <see cref="ScorePerSecond"/>.</summary>
         public float ScoreTarget { get; set; } = 100f;
+
+        /// <summary>After this long the side behind gets its one-off help (prompt 13 H.12).</summary>
+        public float UnderdogAfter { get; set; } = 240f;
 
         public float ScorePerSecond { get; set; } = 0.75f;
         public float CaptureSeconds { get; set; } = 8f;
@@ -127,6 +140,7 @@ namespace MachineBrigade.Sim.Modes
             world.CatchUp = true;
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
+            world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
             _outposts = new Outposts(world, _points, neutral: true);
@@ -169,6 +183,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>CP the attacker gets for each sector taken.</summary>
         public float SectorCp { get; set; } = 12f;
+
+        /// <summary>After this long the side behind gets its one-off help (prompt 13 H.12).</summary>
+        public float UnderdogAfter { get; set; } = 240f;
 
         /// <summary>Fixed defences dug in round each sector (bunkers, towers, guns, flak).</summary>
         public bool Defences { get; set; } = true;
@@ -241,6 +258,7 @@ namespace MachineBrigade.Sim.Modes
             world.CatchUp = true;
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
+            world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
             foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BuildSectors(world);
             _deadline = _rules.StartSeconds;

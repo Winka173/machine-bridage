@@ -17,7 +17,9 @@ namespace MachineBrigade.Sim.Modes
 
         private const float FirstWaveDelay = 20f;
         private const float WaveInterval = 30f;
-        private const int MaxEnemies = 14;
+
+        /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 40 (prompt 13 H.9).</summary>
+        private int MaxEnemies => Math.Min(40, 14 + Wave * 3 / 2);
         public const float ReinforceCooldownSeconds = 12f;
 
         private static readonly string[] WaveRoster =
@@ -34,6 +36,12 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Scales wave size and pace (difficulty): 0.75 easy, 1 normal, 1.35 hard.</summary>
         public float Intensity { get; set; } = 1f;
+
+        /// <summary>
+        /// Prompt 13 H.9: the waves by the player's deck (its cards' rank and equipment: 1 for rank 1 with
+        /// nothing; a deck 20 % tougher and harder-hitting 1.2).
+        /// </summary>
+        public float DeckScale { get; set; } = 1f;
 
         public float SecondsToNextWave => MathF.Max(0f, _waveTimer);
 
@@ -52,7 +60,10 @@ namespace MachineBrigade.Sim.Modes
             _waveTimer -= dt;
             if (_waveTimer > 0f) return;
             _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
-            if (world.CountAlive(EnemyTeam) < MaxEnemies) SpawnWave(world);
+            // Prompt 13 H.9: the waves keep coming (heavier, more of them elite) while the field is full; only
+            // the room left under the ceiling is filled. They stopped altogether before, and a deck that held
+            // the line stood for ever.
+            SpawnWave(world, MaxEnemies - world.CountAlive(EnemyTeam));
         }
 
         /// <summary>Calls two vehicles to the player's rally point. Returns false while on cooldown.</summary>
@@ -68,14 +79,20 @@ namespace MachineBrigade.Sim.Modes
             return true;
         }
 
-        private void SpawnWave(SimWorld world)
+        private void SpawnWave(SimWorld world, int room)
         {
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
             Wave++;
-            var count = Math.Max(1, (int)MathF.Round(Math.Min(2 + Wave, 6) * Intensity));
+            // Prompt 13 H.9: waves that keep growing (they stopped at six before, and a deck outgrew them for
+            // ever), by the difficulty and the deck; the heavier cards come in as the waves go on, and from
+            // wave 8 more and more of them as their elite versions.
+            var count = Math.Min(room, Math.Max(1, (int)MathF.Round(MathF.Min(3f + 0.8f * (Wave - 1), 24f) * Intensity * DeckScale)));
+            var reach = Math.Clamp(4 + Wave, 4, WaveRoster.Length);
+            var elite = MathF.Min(0.6f, (Wave - 7) * 0.06f);
             for (var i = 0; i < count; i++)
             {
-                var def = WaveRoster[(Wave + i) % WaveRoster.Length];
+                var def = WaveRoster[(Wave * 3 + i) % reach];
+                if (elite > 0f && (Wave + i) % 10 < elite * 10f && world.Catalog.EliteVariant(def) is { } better) def = better;
                 world.SpawnVehicle(def, EnemyTeam, rally + Offset(i, count, 9f), SimMath.DegToRad(225f));
             }
         }

@@ -148,7 +148,11 @@ namespace MachineBrigade.Game.Match
         /// <summary>False shows the menu over an AI-versus-AI battle; true plays the chosen match.</summary>
         public static bool InMatch { get; set; }
 
-        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 heroic, 2 iron); not saved.</summary>
+        /// <summary>A saved difficulty's number back as the difficulty (anything unknown: Normal).</summary>
+        internal static AiDifficulty DifficultyFromSave(int saved) =>
+            System.Enum.IsDefined(typeof(AiDifficulty), saved) ? (AiDifficulty)saved : AiDifficulty.Normal;
+
+        /// <summary>The tier the next campaign mission is fought at (0 normal, 1 hard, 2 very hard); not saved.</summary>
 
         public static int MissionTier { get; set; }
 
@@ -400,7 +404,8 @@ namespace MachineBrigade.Game.Match
                 Map = PlayerPrefs.GetString("mb.map", Map);
                 ShowFps = PlayerPrefs.GetInt("mb.fps", 0) == 1;
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
-                Difficulty = (AiDifficulty)PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal);
+                // Saved as its number: Easy 0, Normal 1, Hard 2 as before; Very Hard (3) came after them (prompt 13 I).
+                Difficulty = DifficultyFromSave(PlayerPrefs.GetInt("mb.difficulty", (int)AiDifficulty.Normal));
                 Weather = (WeatherKind)PlayerPrefs.GetInt("mb.weather", (int)WeatherKind.Random);
                 var savedMode = (GameModeKind)PlayerPrefs.GetInt("mb.mode", 0);
                 Mode = System.Enum.IsDefined(typeof(GameModeKind), savedMode) && savedMode != GameModeKind.Campaign ? savedMode : GameModeKind.Conquest;

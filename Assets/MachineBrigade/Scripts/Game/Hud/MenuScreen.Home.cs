@@ -45,7 +45,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         private static readonly (AiDifficulty level, string key)[] Difficulties =
-            { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard") };
+            { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard"), (AiDifficulty.VeryHard, "menu.veryhard") };
 
         private static readonly (WeatherKind kind, string key)[] Weathers =
         {
