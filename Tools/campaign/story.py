@@ -100,12 +100,12 @@ CHAPTERS = [
     (9, 3, ('The Launch Site', 'Bãi phóng'), ['launchsite', 'dunebreak'], 'aurel',
      ('Everything Hegemon has left is at the Silver Bug launch site in the southern desert: every general still standing, every gun, and the Bug itself, being finished on its pad. '
       'One by one the generals come out to meet the brigade. One by one they have to be beaten. '
-      'At the end of the road Aurel waits, and Silver Bug in its complete form.',
+      'At the end of the road Aurel waits, ready to launch Silver Bug into orbit and leave the war behind him.',
       'Tất cả những gì Hegemon còn lại đều dồn về bãi phóng Silver Bug giữa sa mạc phía nam: mọi viên tướng còn đứng vững, mọi khẩu pháo, và chính Silver Bug đang được hoàn thiện trên bệ phóng. '
       'Từng viên tướng một ra nghênh chiến lữ đoàn. Từng người một phải bị đánh bại. '
-      'Ở cuối con đường, Aurel đang chờ, cùng Silver Bug trong hình dạng hoàn chỉnh.'),
-     ('Silver Bug falls on its own pad. Hegemon is finished, and the Lam Hai coast is free.',
-      'Silver Bug rơi xuống ngay trên bệ phóng của nó. Hegemon sụp đổ, dải duyên hải Lam Hải được tự do.')),
+      'Ở cuối con đường, Aurel đang chờ, sẵn sàng phóng Silver Bug lên quỹ đạo và bỏ lại cuộc chiến phía sau.'),
+     ('Silver Bug turns back from orbit and crashes in the desert. Hegemon is finished, and the Lam Hai coast is free.',
+      'Silver Bug quay lại từ quỹ đạo và rơi xuống sa mạc. Hegemon sụp đổ, dải duyên hải Lam Hải được tự do.')),
 ]
 
 for n, act, title, maps, general, card, done in CHAPTERS:
@@ -288,12 +288,12 @@ BOSS_FILES = [
     ('frost_monster', ('Frost Monster', 'Quái Vật Băng'),
      ('Varga\'s answer to losing the first Behemoth: a bigger one, armoured for the winter, with twice the escort. He calls it his masterpiece.',
       'Câu trả lời của Varga sau khi mất chiếc Behemoth đầu tiên: một chiếc lớn hơn, bọc giáp cho mùa đông, đội hộ tống gấp đôi. Hắn gọi nó là kiệt tác của đời mình.')),
-    ('silver_bug', ('Silver Bug', 'Silver Bug'),
-     ('Aurel\'s saucer: a laser, coilguns, a shield, an EMP and drones of its own. The first one seen breaks off and runs when hurt. The one on the launch pad is complete.',
-      'Chiếc đĩa bay của Aurel: laser, súng điện từ, khiên, xung EMP và cả bầy drone riêng. Chiếc đầu tiên xuất hiện bị thương là bỏ chạy. Chiếc trên bệ phóng đã hoàn chỉnh.')),
-    ('silver_bug_complete', ('Silver Bug, Complete', 'Silver Bug hoàn chỉnh'),
-     ('S.B. 01, the first and only finished Silver Bug: a second shield layer, a reactor that lets it hang over a city for a year, and the warhead from the Doomsday Train. It never left its pad.',
-      'S.B. 01, chiếc Silver Bug đầu tiên và duy nhất được hoàn thiện: lớp khiên thứ hai, lò phản ứng cho phép nó lơ lửng trên một thành phố suốt một năm, và đầu đạn lấy từ Đoàn Tàu Tận Thế. Nó chưa bao giờ rời được bệ phóng.')),
+    ('silver_bug', ('Silver Bug', 'Bọ Bạc'),
+     ('Aurel\'s orbital spacecraft: a big military shuttle with short wings, a silver hull and a huge main engine, meant to strike from orbit and put Aurel beyond anyone\'s reach. The first one seen runs when it is hurt badly enough. The one on the launch pad is complete.',
+      'Phi thuyền quỹ đạo của Aurel: một tàu con thoi quân sự cỡ lớn, cánh ngắn, vỏ bạc, với động cơ chính khổng lồ, được chế tạo để tấn công từ quỹ đạo và đưa Aurel ra ngoài tầm với của mọi người. Chiếc đầu tiên xuất hiện sẽ bỏ chạy khi bị thương đủ nặng. Chiếc trên bệ phóng đã hoàn chỉnh.')),
+    ('silver_bug_complete', ('Silver Bug, Complete', 'Bọ Bạc hoàn chỉnh'),
+     ('S.B. 01, the first and only finished Silver Bug: a reactor that could keep it in orbit for a year, a main engine built to outrun anything that flies, and the warhead from the Doomsday Train. It never reached orbit.',
+      'S.B. 01, chiếc Bọ Bạc đầu tiên và duy nhất được hoàn thiện: lò phản ứng đủ sức giữ nó trên quỹ đạo suốt một năm, động cơ chính đủ sức bỏ xa mọi thứ biết bay, và đầu đạn lấy từ Đoàn Tàu Tận Thế. Nó chưa bao giờ tới được quỹ đạo.')),
     ('command_airship', ('Command Airship', 'Khinh Hạm Chỉ Huy'),
      ('Quạ Đen\'s flying headquarters over Skyhold: radar, missiles and a hangar for drones. It directs every Hegemon aircraft on the coast.',
       'Sở chỉ huy bay của Quạ Đen trên Skyhold: radar, tên lửa và một khoang chứa drone. Nó điều khiển mọi máy bay Hegemon trên dải duyên hải.')),

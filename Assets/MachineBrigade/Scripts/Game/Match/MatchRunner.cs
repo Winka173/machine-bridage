@@ -1083,6 +1083,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.BigAttack when !_menu && e.Team == EnemyTeam && e.Mount is 2 or 3 && e.DefId != null:
                         _hud.Toast(Strings.Get("bigattack." + e.DefId + ".cancelled"));
                         break;
+                    // Prompt 19: a tiered boss leaves orbit, sends pods down, warns of its drone seizure.
+                    case SimEventKind.TierChanged when !_menu && e.Team == EnemyTeam && e.DefId is "descend" or "pods" || e.DefId == "hijack" && e.Mount == 0:
+                        if (_menu || e.Team != EnemyTeam) break;
+                        _hud.Toast(Strings.Get(e.DefId == "descend" ? "toast.tier.descend" : e.DefId == "pods" ? "toast.pods" : "toast.hijack"),
+                            error: e.DefId != "pods", seconds: 3f);
+                        break;
                     case SimEventKind.CrateIncoming when !_menu:
                         _hud.Toast(Strings.Get("toast.crate"));
                         break;
@@ -1240,7 +1246,7 @@ namespace MachineBrigade.Game.Match
             };
             _selection.Rejected += _hud.ShowError;
             _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
-                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null));
+                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
             WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
@@ -1420,6 +1426,14 @@ namespace MachineBrigade.Game.Match
             minimap.Flush();
         }
 
+        /// <summary>Prompt 19 B.5: the tier a tapped tiered boss (or pod) of that def is at now (None: the ordinary matchup).</summary>
+        private MachineBrigade.Sim.Content.AltitudeTier TierOf(VehicleDef def)
+        {
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Def == def && v.Tier != MachineBrigade.Sim.Content.AltitudeTier.None) return v.Tier;
+            return MachineBrigade.Sim.Content.AltitudeTier.None;
+        }
+
         private bool _switching;
         private WakeView _wakes;
 
@@ -1432,7 +1446,9 @@ namespace MachineBrigade.Game.Match
             if (_menu || _switching || _session is not BossRushSession rush || rush.SwitchTo is not { } carry) return;
             _switching = true;
             BossRushSession.Pending = carry;
-            Reload(carry.Map == BossRushSession.SeaMap ? "loading.toSea" : "loading.backAshore", Strings.Get("map." + carry.Map));
+            // Prompt 19 G.2: a boss's own battlefield (the Silver Bug's Launch Site) reads as a redeployment, not "back to the front".
+            var home = MatchSettings.CurrentMap.Id;
+            Reload(carry.Map == BossRushSession.SeaMap ? "loading.toSea" : carry.Map == home ? "loading.backAshore" : "loading.toArena", Strings.Get("map." + carry.Map));
         }
 
         private void CheckResult()

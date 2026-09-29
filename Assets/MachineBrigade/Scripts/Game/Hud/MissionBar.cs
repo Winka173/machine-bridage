@@ -160,6 +160,15 @@ namespace MachineBrigade.Game.Hud
             _bigChip.Add(_bigLabel);
             _bigChip.style.display = DisplayStyle.None;
             head.Add(_bigChip);
+            // Prompt 19 B.5: a tiered boss's altitude now and the seconds to its next change (hidden for other bosses).
+            _tierChip = Kit.Box("fc-boss__tier");
+            _tierChip.style.flexDirection = FlexDirection.Row;
+            _tierChip.style.alignItems = Align.Center;
+            _tierChip.style.marginLeft = 6;
+            _tierLabel = Kit.Text("", "fc-number-small fc-boss__tier-label");
+            _tierChip.Add(_tierLabel);
+            _tierChip.style.display = DisplayStyle.None;
+            head.Add(_tierChip);
             Root.Add(head);
             _track = Kit.Box("fc-boss__track");
             _fill = Kit.Box("fc-boss__fill");
@@ -292,6 +301,33 @@ namespace MachineBrigade.Game.Hud
             if (whole == _shownBigSeconds) return;
             _shownBigSeconds = whole;
             _bigLabel.text = whole >= 0 ? whole.ToString() : whole == -1 ? "!" : "";
+        }
+
+        // Prompt 19 B.5: the altitude chip.
+        private readonly VisualElement _tierChip;
+        private readonly Label _tierLabel;
+        private VisualElement _tierIcon;
+        private string _tierIconName, _shownTier;
+
+        /// <summary>Prompt 19: the boss's altitude tier beside its name (null icon: none), with the seconds to its next change in the text.</summary>
+        public void SetTier(string icon, string text, string tooltip)
+        {
+            if (icon == null)
+            {
+                if (_tierIconName != null) _tierChip.style.display = DisplayStyle.None;
+                _tierIconName = null;
+                return;
+            }
+            if (icon != _tierIconName)
+            {
+                _tierIcon?.RemoveFromHierarchy();
+                _tierIcon = Kit.Icon(icon, "fc-boss__tier-icon");
+                _tierChip.Insert(0, _tierIcon);
+                _tierIconName = icon;
+                _tierChip.style.display = DisplayStyle.Flex;
+                _tierChip.tooltip = tooltip;
+            }
+            if (text != _shownTier) _tierLabel.text = _shownTier = text;
         }
 
         /// <summary>The boss's health in numbers beside its name ("41 250 / 60 000").</summary>

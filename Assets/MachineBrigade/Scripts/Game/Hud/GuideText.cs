@@ -953,14 +953,16 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: nhấn chìm mặt đất bằng drone; chỉ phòng không và tiêm kích gây sát thương được, còn nửa máu thì bật khiên.\n" +
                 "Mẹo: dồn pháo cao xạ và tên lửa phòng không bên dưới, tăng APS hoặc la-de chặn drone, tiêm kích dọn UAV tấn công."),
             ["guide.silver_bug"] = (
-                "[[Boss]] · flying saucer · laser and coilguns\n" +
-                "How it fights: a [[laser]] burns a line on the ground (36 m); charged coilguns hit ground and air (55 m); flak, drones and an [[EMP]] within 12 m.\n" +
-                "Strong / weak: only anti-air and fighters damage it; it shields itself at half health and calls four strike drones at 66%.\n" +
-                "Tip: keep ground units spread and more than 12 m away; mass flak and SAMs, and fire fighters' missiles from beyond 55 m.",
-                "[[Trùm]] · đĩa bay · la-de và pháo điện từ\n" +
-                "Cách đánh: tia [[la-de]] thiêu một đường trên mặt đất (36 m); pháo điện từ bắn cả đất lẫn trời (55 m); pháo cao xạ, drone, [[EMP]] trong 12 m.\n" +
-                "Mạnh / yếu: chỉ phòng không và tiêm kích gây sát thương được; còn nửa máu thì bật khiên, 66% máu gọi 4 UAV tấn công.\n" +
-                "Mẹo: dàn quân mặt đất, đứng cách nó hơn 12 m; dồn cao xạ và tên lửa phòng không, tiêm kích bắn từ ngoài 55 m."),
+                "[[Boss]] · orbital spacecraft · tungsten rods from orbit\n" +
+                "How it fights: a main laser turret hits the ground from high or low altitude; drop pods land vehicles; every 60 s five [[tungsten rods]] fall from its satellite (the first from the craft itself, in the opening).\n" +
+                "Altitude: it opens in low orbit, out of reach, then keeps to a fixed schedule of high-altitude phases (only long-range SAMs, Patriot batteries and fighters reach it) and low-altitude phases (anything that hits aircraft, plus railguns); below 30% health it crashes and fights on as a ground fortress.\n" +
+                "Strong / weak: its belly (armour 2) is exposed at low altitude; its two point-defence lasers pick off some of your SAMs and missiles.\n" +
+                "Tip: keep long-range anti-air ready for its high passes, mass everything else for the low ones, shoot down its drop pods before they land, and break its satellite uplink to cancel a rod rain.",
+                "[[Trùm]] · phi thuyền quỹ đạo · thanh tungsten từ quỹ đạo\n" +
+                "Cách đánh: tháp la-de chính bắn xuống mặt đất ở cả tầng cao lẫn tầng thấp; khoang đổ bộ thả xe xuống; cứ 60 giây có 5 [[thanh tungsten]] rơi từ vệ tinh của nó (thanh đầu tiên rơi từ chính phi thuyền, lúc mở màn).\n" +
+                "Tầng độ cao: mở màn ở quỹ đạo thấp, ngoài tầm bắn; sau đó lặp cố định tầng cao (chỉ SAM tầm xa, dàn Patriot và tiêm kích bắn tới) và tầng thấp (mọi vũ khí bắn được máy bay, cộng pháo điện từ); dưới 30% máu nó rơi xuống thành pháo đài mặt đất.\n" +
+                "Mạnh / yếu: bụng nó (giáp cấp 2) lộ ra ở tầng thấp; hai tháp la-de phòng thủ điểm của nó bắn hạ bớt SAM và tên lửa của ta.\n" +
+                "Mẹo: giữ phòng không tầm xa sẵn sàng cho các đợt tầng cao, dồn mọi vũ khí khác vào các đợt tầng thấp, bắn hạ khoang đổ bộ trước khi chúng chạm đất, và phá ăng-ten liên kết vệ tinh để hủy một đợt mưa thanh tungsten."),
             ["guide.sky_fortress"] = (
                 "[[Boss]] · AC-130 gunship · circles high\n" +
                 "How it fights: [[orbits]] its prey, a 105 mm, two 40 mm and a 25 mm firing from its left side (50–58 m), plus Griffins; nothing for aircraft.\n" +

@@ -180,10 +180,10 @@
     { "id": "ballistic_missile", "real": "9M723 Iskander (700 kg)", "family": "ballistic", "size": 700, "pen": 4, "projectileScale": 0.85, "damageType": "HighExplosive", "damage": 600, "cooldown": 21.21,   "range": 180, "minRange": 40, "projectileSpeed": 45, "splash": 12, "spread": 5, "impactTier": "Ultimate", "projectile": "Rocket", "burst": 2, "burstInterval": 1.5, "ammo": 2, "roundWeight": 700 },
     { "id": "mortar_240", "real": "2B8 240 mm", "family": "mortar", "size": 240,        "pen": 4, "projectileModel": "mortar_bomb", "projectileScale": 1.8, "damageType": "HighExplosive", "damage": 450, "cooldown": 14.2,   "range": 85, "minRange": 20, "projectileSpeed": 38, "splash": 10, "spread": 5, "impactTier": "Ultimate", "ammo": 8, "reload": 23.2, "roundWeight": 543 },
     { "id": "fpv_swarm", "real": "FPV drone (1.5 kg)", "family": "drone", "size": 1.5,         "pen": 3, "topAttack": true, "piercing": true, "damageType": "ShapedCharge", "damage": 140, "cooldown": 10,   "range": 75, "minRange": 12, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 4, "burstInterval": 0.35, "ammo": 4, "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
-    { "id": "air_to_air", "load": 4, "real": "AIM-120 AMRAAM", "family": "aa_missile", "size": 20,        "pen": 3, "projectileModel": "aim120", "projectileScale": 0.85, "damageType": "Fragmentation",          "damage": 280, "cooldown": 3.99,    "range": 60, "projectileSpeed": 34, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 351 },
+    { "id": "air_to_air", "ceiling": "high", "load": 4, "real": "AIM-120 AMRAAM", "family": "aa_missile", "size": 20,        "pen": 3, "projectileModel": "aim120", "projectileScale": 0.85, "damageType": "Fragmentation",          "damage": 280, "cooldown": 3.99,    "range": 60, "projectileSpeed": 34, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 351 },
     // Real armament (Docs research 2026-09-27): dogfight and self-defence air-to-air missiles,
     // stand-off missiles for the bombers, the Mi-24P's fixed cannon and door guns, AC-130J missiles.
-    { "id": "wvr_aam", "load": 2, "real": "AIM-9X Sidewinder", "family": "aa_missile", "size": 9.4,           "pen": 2, "projectileModel": "aim9", "projectileScale": 0.8, "damageType": "Fragmentation",          "damage": 220, "cooldown": 2.12,  "range": 30, "projectileSpeed": 34, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 260 },
+    { "id": "wvr_aam", "ceiling": "high", "load": 2, "real": "AIM-9X Sidewinder", "family": "aa_missile", "size": 9.4,           "pen": 2, "projectileModel": "aim9", "projectileScale": 0.8, "damageType": "Fragmentation",          "damage": 220, "cooldown": 2.12,  "range": 30, "projectileSpeed": 34, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 260 },
     { "id": "stinger_atas", "load": 2, "real": "FIM-92 Stinger (ATAS)", "family": "aa_missile", "size": 3,      "pen": 2, "projectileModel": "stinger", "projectileScale": 0.7, "damageType": "Fragmentation",          "damage": 170, "cooldown": 9.07,    "range": 30, "projectileSpeed": 29, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air" },
     { "id": "igla_v", "load": 2, "real": "9K38 Igla-V", "family": "aa_missile", "size": 1.2,            "pen": 2, "projectileModel": "igla", "projectileScale": 0.78, "damageType": "Fragmentation",          "damage": 150, "cooldown": 8.33,   "range": 32, "projectileSpeed": 29, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 180 },
     { "id": "r60", "load": 2, "real": "R-60", "family": "aa_missile", "size": 3.5,               "pen": 2, "projectileModel": "r60", "projectileScale": 0.65, "damageType": "Fragmentation",          "damage": 175, "cooldown": 7,    "range": 28, "projectileSpeed": 34, "splash": 1.5, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "roundWeight": 200 },
@@ -204,7 +204,7 @@
       "bonuses": [ { "class": "Artillery", "mult": 2 }, { "still": 3, "mult": 2 }, { "armor": "Structure", "mult": 1.5 } ] },
     { "id": "shahed", "real": "Shahed-136 (50 kg)", "family": "drone", "size": 50,            "pen": 3, "topAttack": true, "projectileModel": "shahed", "damageType": "HighExplosive", "damage": 320, "cooldown": 30,   "range": 150, "minRange": 20, "projectileSpeed": 20, "splash": 6, "impactTier": "Huge", "projectile": "Drone", "burst": 5, "burstInterval": 1.0, "ammo": 1 },
     { "id": "hel_beam", "real": "Iron Beam laser (100 kW)", "family": "laser", "size": 100,          "pen": 2, "damageType": "Energy",          "damage": 7,   "cooldown": 0.1,  "range": 45, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true },
-    { "id": "railgun", "real": "railgun (32 MJ)", "family": "railgun", "size": 32,           "pen": 4, "piercing": true, "charge": 0.9, "projectileModel": "rail_slug", "damageType": "Kinetic", "damage": 474, "cooldown": 7,    "range": 90, "projectileSpeed": 700, "spread": 0.4, "impactTier": "Large", "projectile": "Bullet", "pierce": true, "impactScale": 1.4 },
+    { "id": "railgun", "ceiling": "low", "real": "railgun (32 MJ)", "family": "railgun", "size": 32,           "pen": 4, "piercing": true, "charge": 0.9, "projectileModel": "rail_slug", "damageType": "Kinetic", "damage": 474, "cooldown": 7,    "range": 90, "projectileSpeed": 700, "spread": 0.4, "impactTier": "Large", "projectile": "Bullet", "pierce": true, "impactScale": 1.4 },
     { "id": "twin_30_bmpt", "real": "2A42 30 mm (twin)", "family": "autocannon", "size": 30,      "pen": 2, "damageType": "Kinetic",       "damage": 22,  "cooldown": 0.15,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 15, "clipReload": 1.63, "roundWeight": 30 },
     { "id": "ataka", "real": "9M120 Ataka", "family": "atgm", "size": 42,             "pen": 4, "piercing": true, "projectileModel": "atgm_ataka", "projectileScale": 0.88, "damageType": "ShapedCharge", "damage": 230, "cooldown": 10.42,    "range": 40, "projectileSpeed": 19, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.5 },
     // The Ka-52's Vikhr: laser-guided, supersonic, fired in pairs from long range (at the ground: its Igla-V takes the aircraft).
@@ -218,7 +218,7 @@
     // Elite weapons. Cluster rockets scatter bomblets that each go off as a small blast.
     { "id": "gun_155_twin", "real": "M284 155 mm (twin)", "family": "howitzer", "size": 155,      "pen": 3, "projectileModel": "shell_155", "damageType": "HighExplosive", "damage": 320, "cooldown": 8.79,  "range": 50, "projectileSpeed": 150, "splash": 4.5, "spread": 0.9, "impactTier": "Huge", "burst": 2, "burstInterval": 0.05, "impactScale": 1.3 },
     { "id": "flak_quad", "real": "ZSU-23-4 23 mm (quad)", "family": "autocannon", "size": 23,         "pen": 1, "damageType": "Fragmentation",          "damage": 14,  "cooldown": 0.0671,  "range": 46, "projectileSpeed": 300, "splash": 3.5, "spread": 1.6, "impactTier": "Medium", "projectile": "Bullet", "targets": "All", "clip": 54, "clipReload": 1.5, "roundWeight": 22 },
-    { "id": "sam_battery", "real": "MIM-104 Patriot PAC-2", "family": "aa_missile", "size": 90,       "pen": 3, "projectileModel": "patriot", "projectileScale": 0.92, "damageType": "Fragmentation",          "damage": 340, "cooldown": 10.1,  "range": 90, "minRange": 20, "projectileSpeed": 41, "splash": 2.5, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.45, "flareResist": 0.85 },
+    { "id": "sam_battery", "ceiling": "high", "real": "MIM-104 Patriot PAC-2", "family": "aa_missile", "size": 90,       "pen": 3, "projectileModel": "patriot", "projectileScale": 0.92, "damageType": "Fragmentation",          "damage": 340, "cooldown": 10.1,  "range": 90, "minRange": 20, "projectileSpeed": 41, "splash": 2.5, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.45, "flareResist": 0.85 },
     { "id": "bastion_gun", "real": "2A83 152 mm (twin)", "family": "tank_gun", "size": 152,       "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 320, "cooldown": 5.16,  "range": 40, "projectileSpeed": 200, "splash": 2.5, "spread": 0.3, "impactTier": "Large", "burst": 2, "burstInterval": 0.05, "impactScale": 1.5 },
     { "id": "gun_152_heat", "real": "2A83 152 mm HEAT", "family": "tank_gun", "size": 152,      "pen": 4, "form": "DoubleDart", "piercing": true, "damageType": "ShapedCharge", "damage": 320, "cooldown": 6.33,  "range": 36, "projectileSpeed": 170, "splash": 3.5, "spread": 0.6, "impactTier": "Large", "roundWeight": 325 },
     { "id": "gun_105_apfsds", "real": "2A75 125 mm APFSDS", "family": "tank_gun", "size": 125,    "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 250, "cooldown": 4.04,  "range": 46, "projectileSpeed": 260, "spread": 0.3, "impactTier": "Medium", "roundWeight": 345 },
@@ -234,7 +234,7 @@
     // long-range SAM's big missile, the ATGM tower's twin launcher.
     { "id": "gun_105_wheeled", "real": "Centauro II 120 mm", "family": "tank_gun", "size": 120, "pen": 4, "piercing": true, "roundWeight": 300,   "damageType": "Kinetic", "damage": 240, "cooldown": 3.3,  "range": 38, "projectileSpeed": 230, "spread": 0.4, "impactTier": "Medium",
       "bonuses": [ { "flank": true, "mult": 1.25 } ] },
-    { "id": "sam_48n6", "real": "S-400 48N6", "family": "aa_missile", "size": 180,          "pen": 3, "projectileModel": "patriot", "projectileScale": 1.3, "damageType": "Fragmentation", "damage": 600, "cooldown": 8, "range": 95, "minRange": 20, "projectileSpeed": 56, "splash": 3, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "flareResist": 0.85 },
+    { "id": "sam_48n6", "ceiling": "high", "real": "S-400 48N6", "family": "aa_missile", "size": 180,          "pen": 3, "projectileModel": "patriot", "projectileScale": 1.3, "damageType": "Fragmentation", "damage": 600, "cooldown": 8, "range": 95, "minRange": 20, "projectileSpeed": 56, "splash": 3, "impactTier": "Large", "projectile": "Missile", "targets": "Air", "flareResist": 0.85 },
     { "id": "kornet_twin", "real": "9M133 Kornet", "family": "atgm", "size": 29,       "pen": 4, "piercing": true, "projectileModel": "atgm_kornet", "damageType": "ShapedCharge", "damage": 230, "cooldown": 9.91, "range": 50, "projectileSpeed": 20, "impactTier": "Medium", "projectile": "Missile", "burst": 2, "burstInterval": 0.6 },
     // Prompt 8: the armoured bulldozer's blade, a blow at 4.5 m (no round flies): three times as hard on
     // structures (towers, bunkers, buildings, obstacles), weak on vehicles.
@@ -268,7 +268,8 @@
     { "id": "turret_rockets", "real": "BM-21 Grad 122 mm", "family": "rocket", "size": 122,    "pen": 2, "projectileModel": "grad", "damageType": "HighExplosive", "damage": 57,  "cooldown": 7.78,    "range": 55, "minRange": 8, "projectileSpeed": 55, "splash": 3.5, "spread": 4, "impactTier": "Medium", "projectile": "Rocket", "burst": 6, "burstInterval": 0.12, "impactScale": 1.3 },
     { "id": "bunker_hmg", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,        "pen": 1, "damageType": "Kinetic",       "damage": 9.5,  "cooldown": 0.08, "range": 32, "projectileSpeed": 240, "spread": 1.4, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "roundWeight": 14, "clip": 39, "clipReload": 1.22 },
     // New bosses.
-    { "id": "saucer_laser", "real": "laser (150 kW)", "family": "laser", "size": 150,      "pen": 3, "damageType": "Energy",          "damage": 9,   "cooldown": 0.1,  "range": 36, "projectileSpeed": 3000, "splash": 1.5, "impactTier": "Small", "projectile": "Bullet", "beam": true },
+    // Prompt 19: the Silver Bug's ventral laser turret, fired down at the ground; very high penetration.
+    { "id": "orbital_laser", "real": "laser (150 kW)", "family": "laser", "size": 150,      "pen": 4, "damageType": "Energy",          "damage": 9,   "cooldown": 0.1,  "range": 36, "projectileSpeed": 3000, "splash": 1.5, "impactTier": "Small", "projectile": "Bullet", "beam": true },
     { "id": "coilgun", "real": "coilgun (10 MJ)", "family": "railgun", "size": 10,           "pen": 4, "piercing": true, "charge": 0.5, "damageType": "Kinetic", "damage": 250, "cooldown": 4.29,    "range": 55, "projectileSpeed": 420, "spread": 0.6, "impactTier": "Large", "projectile": "Bullet", "targets": "All", "burst": 2, "burstInterval": 0.25 },
     { "id": "mothership_cannon", "real": "AU-220 57 mm", "family": "autocannon", "size": 57, "pen": 2, "form": "BeltedAutocannon", "damageType": "HighExplosive", "damage": 70,  "cooldown": 3.75,  "range": 45, "projectileSpeed": 150, "splash": 3.5, "spread": 2.5, "impactTier": "Large", "burst": 4, "burstInterval": 0.18 },
     { "id": "mothership_drones", "real": "ZALA Lancet-3 (3 kg)", "family": "drone", "size": 3, "pen": 4, "topAttack": true, "piercing": true, "damageType": "ShapedCharge", "damage": 240, "cooldown": 8.17,    "range": 70, "projectileSpeed": 26, "splash": 3, "impactTier": "Large", "projectile": "Drone", "burst": 4, "burstInterval": 0.3 },
@@ -492,7 +493,7 @@
     { "id": "mine_layer", "value": 1, "scale": 0.85,       "class": "Support", "armour": 1, "hp": 420, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.73, "width": 3.02, "cp": 5, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_roof", "mines": { "interval": 6, "max": 8, "damage": 450, "radius": 5, "tier": "Large", "trigger": 2.2 },
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.35, "tier": "Huge" } },
-    { "id": "fighter_jet", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 0.39,      "armour": 0,  "hp": 520, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 12, "vision": 72,
+    { "id": "fighter_jet", "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 0.39,      "armour": 0,  "hp": 520, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 12, "vision": 72,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "wvr_aam", "slot": "aam", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "vtol": true, "skills": ["jet_flares"],
@@ -568,7 +569,7 @@
     // on one target. The shield carrier's dome takes every hit but energy for the friends inside until it breaks.
     // The bunker vehicle digs in when it stands (3 s): front armour two levels up, reach +30 %, turret all round.
     // The swarm carrier flies its FPV drones out to anywhere and releases them over the target.
-    { "id": "stealth_fighter", "value": 0.88, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 0.39, "armour": 0, "hp": 480, "speed": 40, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 14, "vision": 76,
+    { "id": "stealth_fighter", "ceiling": "high", "value": 0.88, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 0.39, "armour": 0, "hp": 480, "speed": 40, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 14, "vision": 76,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 36, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "guided_bomb", "slot": "bomb", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "stealth": true, "sead": true, "skills": ["jet_flares"],
@@ -847,21 +848,51 @@
         // Prompt 18 C: the erector that raises its tactical missile (its big attack), mid-train on the missile car.
         {"id": "erector", "kind": "erector", "hp": 0.09, "armour": 2, "wreck": "wreck_launcher", "at": [0, -4.5, 3.6], "radius": 2.6, "radio": "radio.part.erector"} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
-    // "Silver Bug": what if the USAF had built Project 1794 (Avro VZ-9 Avrocar's big brother). A laser
-    // that burns a line across the ground, rim coilguns, point-defence flak, drones from its bay, EMP.
-    { "id": "silver_bug", "boss": true, "bigAttack": "bug_laser_sweep", "armour": 2, "hp": 7150, "speed": 5, "turnRate": 30, "turretTurnRate": 120, "radius": 10, "cp": 0, "vision": 72,
-      "firesWhileMoving": true, "weapon": "saucer_laser", "flying": true, "altitude": 24, "captureRate": 0,
-      "skills": ["saucer_emp", "mothership_shield", "saucer_drones", "boss_rage"],
-      "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
-                     { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" } ],
+    // "Silver Bug" (prompt 19, DECISIONS 18A): Aurel's orbital spacecraft, a big military shuttle with short wings, a
+    // silver hull and a huge main engine. It opens in low orbit (out of reach), comes down leaving a satellite up there,
+    // then keeps a fixed schedule of high and low altitude per phase ("tiers"), drops pods ("pods"), calls tungsten rods
+    // down from the satellite (its big attack) and in phase 3 crashes mid-map to fight on as a ground fortress.
+    // Mounts: 0 the ventral laser turret; 1-4 the guns all round that wake once it has crashed (the calibre scale's
+    // 120 mm guns and twin 35 mm flak, as the other bosses carry). Its point-defence lasers are its APS (they take the
+    // SAMs and fighters' missiles flying at it). Parts: prompt 9's 70 % of the body, 7 % each.
+    { "id": "silver_bug", "boss": true, "bigAttack": "bug_rod_rain", "arena": "launchsite", "armour": 4, "hp": 7150, "speed": 5, "turnRate": 30, "turretTurnRate": 120,
+      "radius": 10, "length": 34, "width": 22, "cp": 0, "vision": 80,
+      "firesWhileMoving": true, "weapon": "orbital_laser", "flying": true, "altitude": 22, "captureRate": 0,
+      "skills": ["boss_rage"],
+      "aps": { "radius": 30, "charges": 3, "recharge": 1.4, "rockets": true, "laser": true },
+      "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" },
+                     { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
+      "tiers": {
+        "opening": 15, "descend": 4, "shift": 3.5,
+        "heights": { "orbit": 150, "high": 60, "low": 22 },
+        "marks": [0.7, 0.3],
+        "schedule": [ { "steps": [ { "tier": "high", "seconds": 25 }, { "tier": "low", "seconds": 10 } ] },
+                      { "steps": [ { "tier": "high", "seconds": 15 }, { "tier": "low", "seconds": 20 } ] } ],
+        "armour": { "hull": 4, "belly": 2, "grounded": 3 },
+        "crash": { "fall": 6, "at": [0, 0], "damage": 500, "radius": 16, "form": "silver_bug_wreck", "warning": "bug_crash", "guns": [1, 2, 3, 4],
+                   "debris": "crash_debris", "debrisAt": [[-14, 10], [15, 6], [-17, -8], [13, -14], [0, 22], [-4, -24]] },
+        "hijack": { "first": 10, "every": 40, "warn": 4, "seconds": 6, "difficulties": ["VeryHard", "Heroic", "Iron"] },
+        "radio": { "appear": "radio.aurel.bug.appear", "descend": "radio.aurel.bug.descend", "phase2": "radio.aurel.bug.phase2",
+                   "phase3": "radio.aurel.bug.phase3", "crash": "radio.aurel.bug.crash", "down": "radio.aurel.bug.down", "hijack": "radio.aurel.bug.hijack", "hijackWarn": "radio.hq.bug.hijack" } },
+      "pods": { "unit": "drop_pod", "first": 4, "every": 14, "count": 2, "min": 1, "perPod": 2, "fall": 6, "max": 6, "offset": 30, "spread": 12,
+                "tiers": ["orbit", "high"], "warning": "pod_drop",
+                "units": ["main_battle_tank", "ifv", "heavy_tank", "armored_car", "bmpt", "main_battle_tank", "ifv", "armored_car"] },
       "parts": [
-        {"id": "laser", "kind": "laser", "hp": 0.13, "armour": 2, "node": "Turret", "wreck": "wreck_stump", "at": [0, 0, -2.8], "radius": 2.5, "mounts": [0], "radio": "radio.part.maingun"},
-        {"id": "coilgun", "kind": "coilgun", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, 0, 1.8], "radius": 3.0, "mounts": [1]},
-        {"id": "flak", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0, -6.4, 2.8], "radius": 1.8, "mounts": [2]},
-        {"id": "bay", "kind": "bay", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -7.7, -2.2], "radius": 2.4, "mounts": [3], "skills": ["saucer_drones"], "radio": "radio.part.bay"},
-        {"id": "shield", "kind": "shield", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, 4.0, 2.2], "radius": 2.4, "skills": ["mothership_shield"], "radio": "radio.part.shield"},
-        {"id": "emp", "kind": "emp", "hp": 0.09, "armour": 1, "wreck": "wreck_stump", "at": [0, -3.0, 2.4], "radius": 2.2, "skills": ["saucer_emp"]} ],
+        {"id": "main_laser", "kind": "laser", "hp": 0.07, "armour": 3, "node": "Turret", "wreck": "wreck_stump", "at": [0, 7, -2.8], "radius": 2.4, "mounts": [0], "radio": "radio.part.maingun", "fx": "energy"},
+        {"id": "main_engine", "kind": "mainengine", "hp": 0.07, "armour": 2, "node": "Thruster_main", "wreck": "wreck_stump", "at": [0, -15.5, 0.6], "radius": 3.4, "stops": ["thrust"], "radio": "radio.part.mainengine"},
+        {"id": "thruster_fl", "kind": "thruster", "hp": 0.07, "armour": 1, "node": "Thruster_fl", "wreck": "wreck_stump", "at": [-4.5, 11, 0.8], "radius": 1.6, "speed": 0.88},
+        {"id": "thruster_fr", "kind": "thruster", "hp": 0.07, "armour": 1, "node": "Thruster_fr", "wreck": "wreck_stump", "at": [4.5, 11, 0.8], "radius": 1.6, "speed": 0.88},
+        {"id": "thruster_rl", "kind": "thruster", "hp": 0.07, "armour": 1, "node": "Thruster_rl", "wreck": "wreck_stump", "at": [-8, -11, 0.4], "radius": 1.6, "speed": 0.88},
+        {"id": "thruster_rr", "kind": "thruster", "hp": 0.07, "armour": 1, "node": "Thruster_rr", "wreck": "wreck_stump", "at": [8, -11, 0.4], "radius": 1.6, "speed": 0.88},
+        {"id": "pd_laser_l", "kind": "pdlaser", "hp": 0.07, "armour": 2, "node": "Pd_laser_l", "wreck": "wreck_turret", "at": [-3.2, 5, 3.2], "radius": 1.6, "stops": ["aps"], "fx": "energy"},
+        {"id": "pd_laser_r", "kind": "pdlaser", "hp": 0.07, "armour": 2, "node": "Pd_laser_r", "wreck": "wreck_turret", "at": [3.2, 5, 3.2], "radius": 1.6, "stops": ["aps"], "fx": "energy"},
+        {"id": "pod_bay", "kind": "podbay", "hp": 0.07, "armour": 2, "node": "Pod_bay", "wreck": "wreck_stump", "at": [0, -4, -2.6], "radius": 2.8, "stops": ["pods"], "radio": "radio.part.podbay"},
+        {"id": "uplink", "kind": "uplink", "hp": 0.07, "armour": 1, "node": "Uplink", "wreck": "wreck_stump", "at": [0, -3, 4.2], "radius": 2.0, "radio": "radio.part.uplink", "fx": "energy"} ],
       "deathExplosion": { "damage": 420, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
+    // Prompt 19 D: the Silver Bug's drop pod: a low-altitude target while it falls (the boss system drops it and lands
+    // what it carries; the movement system leaves it alone); no card, no weapon, no CP.
+    { "id": "drop_pod", "card": false, "armour": 1, "hp": 160, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 1.8, "cp": 0, "vision": 12,
+      "firesWhileMoving": true, "weapon": "none", "flying": true, "altitude": 30, "captureRate": 0 },
     // Round 6 bosses: variants of the super-heavy tank, the mobile fortress and the gunship.
     // "Inferno": burns everything near it and lays the ground on fire; weak against aircraft.
     { "id": "behemoth_inferno", "scale": 1.2, "armour": 4, "hp": 6300, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
@@ -1137,8 +1168,6 @@
     { "id": "train_patch",      "kind": "Patch",     "trigger": "PartBroken",      "once": true, "amount": 0.5 },
     { "id": "mothership_launch", "kind": "Summon",   "trigger": "EnemyInRange",    "radius": 70, "cooldown": 30, "count": 3, "unit": "strike_drone" },
     { "id": "mothership_shield", "kind": "Shield",   "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.5 },
-    { "id": "saucer_emp",       "kind": "Emp",       "trigger": "EnemyInRange",    "radius": 12, "cooldown": 24, "duration": 2.5 },
-    { "id": "saucer_drones",    "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.66, "once": true, "count": 4, "unit": "strike_drone" },
     // Prompt 8 bosses: the airship's two drone bays launch a strike drone each (a bay broken, its launches stop).
     // Prompt 16 F: the old escort calls (behemoth_escort, fortress_escort, gunship_escort, nuke_escort,
     // supreme_guard) are gone: every boss's escorts are the general system's, "escorts" below.
@@ -1195,8 +1224,10 @@
     { "boss": "drone_mothership",
       "arrive": [ { "unit": "strike_drone" }, { "unit": "strike_drone" }, { "unit": "recon_drone", "role": "spot" } ],
       "phase": [ { "unit": "scout_heli", "role": "spot" } ] },
-    { "boss": "silver_bug", "marks": [0.66, 0.33],
-      "arrive": [ { "unit": "elite_heavy_tank" }, { "unit": "elite_grad" }, { "unit": "recon_drone", "role": "spot" } ],
+    // Prompt 19 D.3: the generals' elites as before, the phases at its own marks, and two fighters round it (they come as it leaves orbit).
+    { "boss": "silver_bug", "marks": [0.7, 0.3],
+      "arrive": [ { "unit": "elite_heavy_tank" }, { "unit": "elite_grad" }, { "unit": "recon_drone", "role": "spot" },
+                  { "unit": "fighter_jet", "role": "cover" }, { "unit": "fighter_jet", "role": "cover" } ],
       "phases": [ { "units": [ { "unit": "elite_fpv_carrier" }, { "unit": "ew_jammer", "role": "jam" } ] },
                   { "units": [ { "unit": "elite_attack_helicopter" }, { "unit": "engineer_vehicle", "role": "repair" } ] } ] },
     { "boss": "nuke_train",
@@ -1291,9 +1322,12 @@
     { "id": "fortress_rocket_rain", "icon": "mlrs", "warn": 3.5, "cooldown": 65, "aim": "group", "reach": 70, "target": "light",
       "strikes": [ { "shape": "circle", "parts": ["rockets_l", "rockets_r"], "perPart": 16, "damage": 58, "type": "HighExplosive", "pen": 2, "radius": 4,
                      "area": 25, "duration": 4 } ] },
-    // 11 Silver Bug: its laser swept down a line (prompt 19 F swaps this entry for its rod rain).
-    { "id": "bug_laser_sweep", "icon": "laser", "warn": 4, "cooldown": 60, "aim": "group", "reach": 80, "target": "tanks", "empDelay": 2.5,
-      "strikes": [ { "shape": "sweep", "parts": ["laser"], "damage": 900, "type": "Energy", "pen": 4, "length": 120, "width": 4, "axis": "across", "duration": 3 } ] },
+    // 11 Silver Bug (prompt 19 F): five tungsten rods on the other side's groups, heavy armour first; the first from the
+    // craft itself in its opening in orbit, the rest from the satellite it leaves there. Kinetic, penetration 4 on the
+    // roof (a penetrator, not fragments); smoke and APS do nothing, shield domes absorb it while they hold. The uplink
+    // carries it: broken during the warning it is cancelled, broken for good the rods are gone until a self-repair.
+    { "id": "bug_rod_rain", "icon": "ballistic", "warn": 4, "cooldown": 60, "first": 5, "aim": "group", "target": "tanks",
+      "strikes": [ { "shape": "rods", "parts": ["uplink"], "count": 5, "damage": 1600, "type": "Kinetic", "pen": 4, "top": true, "radius": 6, "falloff": 0.3 } ] },
     // 12 Earth Worm: a big dive under the biggest group and a quake that stuns.
     { "id": "borer_quake", "icon": "dune", "warn": 3, "cooldown": 60, "aim": "group", "target": "packed",
       "strikes": [ { "shape": "quake", "parts": ["drill"], "damage": 700, "type": "HighExplosive", "pen": 2, "radius": 16, "falloff": 0.3, "stun": 3 } ] },
@@ -1345,6 +1379,9 @@
     { "id": "escort_drop.aa_turret",        "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["aa_turret"] },
     { "id": "escort_drop.ifv",              "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["ifv"] },
     { "id": "escort_drop.engineer_vehicle", "kind": "Reinforce", "event": true, "cooldown": 0, "delay": 3.0, "radius": 5, "count": 1, "tier": "Large", "units": ["engineer_vehicle"] },
+    // Prompt 19: the warning rings of a drop pod's landing and of the Silver Bug's crash (the look only; no damage of their own).
+    { "id": "pod_drop",          "kind": "Barrage",       "pen": 0, "event": true, "cooldown": 0, "delay": 6.0, "radius": 5, "count": 1, "duration": 0, "damage": 0, "blast": 4, "tier": "Large" },
+    { "id": "bug_crash",         "kind": "Barrage",       "pen": 0, "event": true, "cooldown": 0, "delay": 6.0, "radius": 18, "count": 1, "duration": 0, "damage": 0, "blast": 16, "tier": "Ultimate" },
     { "id": "supergun_shell",    "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 3.0, "radius": 16, "count": 1, "duration": 0, "damage": 0, "blast": 14, "tier": "Ultimate" },
     // Battle events: a neutral bomber raid on the busiest fight (hurts both sides).
     // The fortress super-gun's shell (Siege): one huge round on the attackers, fired on a countdown (SiegeMode).
@@ -1386,6 +1423,8 @@
     { "id": "cliff_a",     "armor": "Structure", "hp": 1000000, "width": 13, "depth": 10,  "blocks": true },
     { "id": "cliff_b",     "armor": "Structure", "hp": 1000000, "width": 10,  "depth": 9.5,  "blocks": true },
     { "id": "boulders",    "armor": "Structure", "hp": 1000000, "width": 4,  "depth": 4,  "blocks": true },
+    // Prompt 19 E.5: the debris round the Silver Bug's crash site: cover (it blocks direct fire) that vehicles drive over.
+    { "id": "crash_debris", "armor": "Structure", "hp": 1000000, "width": 4, "depth": 2.5, "blocks": false, "blocksFire": true },
     { "id": "dirt_mound",  "armor": "Structure", "hp": 1000000, "width": 6,  "depth": 3 },
     { "id": "sandbags",    "armor": "Structure", "hp": 260,  "width": 4,   "depth": 1.2, "blocks": true, "blocksFire": false },
     { "id": "tank_trap",   "armor": "Heavy",     "hp": 300,  "width": 1.6, "depth": 1.6, "blocks": true, "blocksFire": false },

@@ -76,7 +76,9 @@ namespace MachineBrigade.Sim.Entities
         }
 
         /// <summary>Whether mount <paramref name="index"/> still fires (its part, if any, stands).</summary>
-        public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || (!MountOff[index] && !(index < MountHeld.Length && MountHeld[index]));
+        public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || (!MountOff[index] && !(index < MountHeld.Length && MountHeld[index]) &&
+            // Prompt 19 E.5: guns that wake only once it has crashed.
+            !(index < MountDormant.Length && MountDormant[index]));
 
         /// <summary>Prompt 18: mounts holding their fire while the big attack they carry charges and fires.</summary>
         internal bool[] MountHeld = Array.Empty<bool>();
@@ -123,6 +125,10 @@ namespace MachineBrigade.Sim.Entities
             MountSpread = new float[Def.Mounts.Count];
             MountFail = new float[Def.Mounts.Count];
             MountHeld = new bool[Def.Mounts.Count];
+            MountDormant = new bool[Def.Mounts.Count];
+            if (Def.Tiers?.Crash is { } crash)
+                foreach (var m in crash.Guns)
+                    if (m > 0 && m < MountDormant.Length) MountDormant[m] = true;
             for (var i = 0; i < MountSpread.Length; i++) MountSpread[i] = 1f;
             SkillOff = new bool[Def.Skills.Count];
             if (parts.Count == 0) return;

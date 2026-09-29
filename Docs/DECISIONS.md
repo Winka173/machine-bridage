@@ -5806,3 +5806,168 @@ aim's danger, the fingerprint), `Vehicle.Boss` (`MountHeld`, `BigAttack`, `BigTa
 `MissionMode`, `SiegeModes`, `ModeSessions`, `MatchRunner`, `AudioDirector`, `EffectsDirector`, `BattleHud`,
 `MissionBar` (BossBar), `BossPartsRow`, `MenuScreen.BossParts`, `Strings` (the text hook, three stop words),
 `Screens.uss`, `BossPartsTests`, `LocalisationScanTests`.
+
+## 18A. Prompt 19: the Silver Bug as an orbital spacecraft (2026-09-29)
+
+Prompt 19 on feature/p19-orbital from lead/integration 2226d83 (main v0.29.0; prompts 9, 13, 15-18 merged). The owner's
+token rule: compile, one targeted test run, no sweeps, no screenshots; the 5-seed runs are listed for the testing phase.
+The id stays `silver_bug` (records, progress, achievements); "Icarus" (prompt 20) will be a display name only.
+
+### A. Altitude tiers, data any boss opts into (`TierDef`, `BossSystem.Tiers`, `Vehicle.Tiers`)
+
+- `AltitudeTier`: None (every unit that does not opt in: the ordinary air/ground rules, unchanged), Low, High, Orbit
+  (nothing reaches it; prompt 20's submerged Typhon can reuse it). Ordered from the lowest: a change counts as the lower
+  of its two tiers (B.4), the descent from orbit as high.
+- A boss's `"tiers"`: `opening` s in orbit (untouchable: `Invulnerable`, its guns held by the combat system's orbit
+  gate; its big attack and first pods still come), `descend` s down (a satellite stays at `SatelliteAt`), then per
+  phase (`marks`, 0.7 and 0.3) its `schedule` of steps repeated; `shift` s a change (3.5), longer by the speed its broken
+  manoeuvring thrusters took (`shift / PartSpeed`); drawn `heights` (orbit 150, high 60, low 22 m, eased in the view).
+  Never back to orbit: a schedule may only hold high and low (the parser refuses orbit there).
+- Reach (`TierRules`, one rule for the sim and the HUD): a weapon's `"ceiling"` (railgun: low; the long-range SAM's
+  48N6 and the Patriot family's missiles: high, the Patriot branches inherit it), a carrier's `"ceiling"` for its
+  anti-air weapons (fighter and stealth fighter: high, so their AMRAAM, Sidewinder and gun), any weapon that can hit
+  aircraft reaches low, and a helicopter's weapons reach low (the spec's "helicopters", read as the helicopters'
+  own weapons). `CombatSystem.InReach` asks it for a tiered target; the air-versus-ground targeting penalty is off
+  for one. The railgun's exception is for tiered targets only: an ordinary aircraft is still out of its reach.
+- Opening 15 s; phase 1 high 25 / low 10, phase 2 high 15 / low 20 (the spec's starting points, kept for the testing
+  phase's 5-seed tuning). Phase 3 is the crash (E). The main engine broken, it comes down and holds low (the HUD
+  countdown goes); the schedule's timing runs on underneath.
+
+### B. Parts and armour (C)
+
+Ten parts, 7 % of the body each (prompt 9: 0.70 in all, 7-15 % each; the four thrusters and two lasers the spec asks for
+leave no room above 7 %): `main_laser` (mount 0, the ventral `orbital_laser`: the saucer's 150 kW laser renamed, pen 4),
+`main_engine` (stops `thrust`), four `thruster_*` (speed 0.88 each), `pd_laser_l/r` (stop `aps`: the boss's APS, 3
+charges, laser, radius 30; in the air only a tiered craft's own APS intercepts rounds aimed at it, so the lasers take the
+SAMs' and fighters' missiles, and smoke blinds them), `pod_bay` (stops `pods`), `uplink` (carries the big attack). New
+kinds `mainengine`, `thruster`, `pdlaser`, `podbay`, `uplink` (words, icons, radio lines for three). Armour (`tiers.armour`):
+upper hull 4 at high, belly 2 at low and during the fall (what faces the ground), 3 crashed; engines 1-2 as parts.
+Removed from it: `saucer_laser` (renamed), the coilgun, flak and drone mounts, `saucer_emp`, `saucer_drones` (gone from the
+data: nothing else used them), `mothership_shield` (kept for the bosses that still use it). `boss_rage` kept.
+
+### C. Drop pods and escorts (D)
+
+- `"pods"`: `count` 2 pods every 14 s (first at 4 s) while it is settled at a tier in `tiers` (orbit, high); each
+  carries 1-2 of its `units` in turn (tanks, IFVs, a heavy tank, armoured cars, a BMPT; elites by the side's budget via
+  `Economy.ForWave`). A pod is a real vehicle (`drop_pod`: flying, 400 health after the toughness scale, no weapon, no
+  card, scripted so no AI orders it, the movement system leaves it alone) at tier low, so every weapon that reaches low
+  can target it and the player can order fire on it; it falls 6 s onto a spot 30 m short of the other side's biggest
+  group towards the boss (12 m scatter, open ground), under a `pod_drop` warning ring. Landed, it retires (no kill) and
+  its vehicles come out; shot down, it falls as any aircraft and they are lost. At most 6 of the pods' vehicles alive
+  and on the way at once (`PodLoad`), apart from the escort cap. A real vehicle rather than prompt 18's abstract flyer:
+  the player sees their anti-air fire at it and can tap it; the cost is a unit on the list for 6 s.
+- Escorts (prompt 16): the table's marks now 0.7 and 0.3 (the phase changes); arrive wave as before plus two
+  `fighter_jet` on cover; it comes as the craft leaves orbit (`escortsOnDescend`), not while it is out of reach. The
+  phase 2 and phase 3 waves stay (Sen's elite FPV carrier and a jammer; the elite attack helicopter and an engineer,
+  the last wave at the crash).
+
+### D. The big attack: tungsten rod rain (F)
+
+`bug_rod_rain` replaces `bug_laser_sweep` on the prompt 18 system with a new shape `rods`: up to `count` 5 rings of 6 m,
+one on each of the densest groups of the other side's ground units and towers anywhere (each unit weighing (1 + front
+armour)^2: heavy tanks first), no two overlapping much; fewer groups than rods, the rest ring the first spot. 1 600
+kinetic, penetration 4 on the roof (a penetrator, not a blast's fragments: `HitKind.Direct` top, so heavy armour takes it
+in full), 30 % at the rim; 4 s warning, 60 s cooldown (difficulty scales as prompt 18), first 5 s after it appears, so
+the first falls in the opening from the craft itself (`FromSatellite` false) and the rest from the satellite. Every
+phase, every tier, and crashed. Smoke does nothing (not energy) and APS never sees it (no round in flight); shield domes
+absorb it while their health holds (the dome rule). The uplink carries it: broken during the warning, cancelled; broken
+for good, gone (it has no self-repair). Prompt 18's counter groups: the Silver Bug moves from "use smoke" to "get out of
+the ring"; **no boss's big attack is stopped by smoke now** (the `sweep` shape stays in the library, used by none), to
+weigh later. The Guide's who-for stays "heavily armoured tanks".
+
+### E. Phase 3: the crash and the fortress (E.5, E.6)
+
+- Below 30 %: it falls 6 s on a slope to `crash.at` (the map's centre, the nearest open ground; a mission could set its
+  own later), under a `bug_crash` ring, hit as low meanwhile. Down: no longer a flier (`Vehicle.Flying` and `Kind` are
+  per unit now: a crashed tiered boss is a ground target for every weapon), its tier None, the `silver_bug_wreck` form,
+  mounts 1-4 awake (two 120 mm guns and two twin 35 mm flak all round, the calibre scale's boss guns), a 500 blast (r 16)
+  on the other side, its ground closed to routes like a fixed defence's (`AnchorCrash`: the same square, opened when it
+  dies) and any unit on it put off (prompt 12's `ClearGround`), and six `crash_debris` props round it: passable, blocking
+  direct fire (cover without a stuck risk). Its remaining parts and the rods go on.
+- The drone seizure: difficulties `VeryHard` and above (Heroic, Iron: the spec's "Very Hard only" read as not easier than
+  it), 10 s after the landing then every 40 s: a 4 s warning (HQ and Aurel on the radio, a toast), then for 6 s the other
+  side's drone aircraft and drone launchers (FPV carriers, Lancet trucks, the swarm carrier: whatever fires drones)
+  change sides (`SimWorld.Defect`, and back), except those under their own side's jammer or EW tower
+  (`Abilities.Jammed`). Drone rounds already in the air are not turned (their owner is fixed).
+
+### F. Campaign and modes (G)
+
+- The words are the campaign sources' (`Tools/campaign/act3.py`, `story.py`), regenerated. The generated
+  `CampaignText.cs` had drifted from its sources (the checked-in table has later Vietnamese localisation the sources
+  lack): only the 15 keys this prompt changed were taken from the regeneration, with the Vietnamese names the table
+  uses (Bọ Bạc, Tầng Mây, Đồi Cát); the rest of the table is untouched. Porting that drift back into the sources is
+  left for whoever next regenerates (flagged here). Mission data is unchanged (`campaign.json` identical).
+- Boss Rush: a boss's `"arena"` is its battlefield; the Silver Bug's is the Launch Site, switched to and back like the
+  sea boss (prompt 16 D.2), the curtain reading "Redeploying to its battlefield".
+- Operations: no mutator names the Silver Bug. "Grounded" (no aircraft) leaves the boss's own escort fighters and pods
+  (they are its, not bought); with no fighters and no long-range SAMs it is H.4's case.
+
+### G. HUD, Guide, texts (B.5, A.4, E.7)
+
+- Boss bar: an altitude chip (icon, tier, seconds to the next change; none crashed or stuck low) and the phase marks
+  with "Phase n/3". Tapping the boss (or a pod): the deck ✓ its main weapon reaches the tier now, ~ only another weapon
+  (a tank's roof gun at low), ✕ none, and a line when nothing reaches it. Toasts: leaving orbit, pods, the seizure; the
+  crash through the boss-phase cinematic.
+- Guide: an "Altitude tiers" section on the boss page (the rule, what reaches each tier, each phase's numbers from the
+  data, pods, armour, crash, seizure, how to win without long-range anti-air), the rewritten card and parts tip.
+- Every new word is a key (`OrbitalText`, a table hooked like prompt 18's, with the part words in `Strings`); radio lines
+  are named in the data (`tiers.radio`: appear, descend, phase2, phase3, crash, down, hijack, hijackWarn): Aurel's keys
+  are `radio.aurel.bug.*`, HQ's `radio.hq.bug.hijack`, so prompt 23's one subtitle line is a lookup. No saucer is left
+  in data, words or tests.
+
+### H. Balance (first pass, no runs)
+
+Exposure over a phase's cycle (`TierDef.LowShare`, for the combat value meter): phase 1 low 17 of 42 s (40 %, the two
+changes count as low), phase 2 27 of 42 s (64 %), phase 3 all; the opening's 15 s nothing. With long-range SAMs, a
+Patriot or fighters it can be hit all the time after the opening (their missiles meet its point-defence lasers first:
+break those). Paper numbers: the laser as the saucer's; the rods 8 000 over 60 s (`Sustained` 133/s, prompt 13 A).
+Health unchanged (7 150, campaign scaling kept). Without high-reach weapons (H.4) the low windows, the pods (400 each)
+and the crash (every weapon, belly-to-ground 3) are the way; that case and the 50-65 % first-try win rate on Normal
+are for the 5-seed runs.
+
+### Tests
+
+New `OrbitalBossTests` (10): the reach rules per weapon; the opening out of reach, guns held, never back to orbit and the
+phase 1 cycle to the second; phase 2's own cycle, the main engine holding it low, thrusters slowing the change; anti-air
+and a railgun hit it low and not high while the long-range SAM does (point-defence lasers broken), the belly and hull
+armour; five rod rings on five groups, the first from the craft in orbit, 1 600 on a heavy tank's roof, smoke no help,
+a dome absorbing part, the next from the satellite; the uplink cancelling and ending the rods, the pod bay stopping the
+pods; pods shot down in the air losing their load, never more than six; the crash at its point as a ground fortress
+(wreck, guns, cover, the tank under it put off, a tank's gun reaching it, never moving); the seizure only at Very Hard
+with the jammer's cover; no saucer in the words and every new key there. Updated: `BigAttackTests` (the entry id; the
+zone test reads an attack's own first; the smoke test keeps the railgun half; a rods case), `BossPartsTests` (ten parts;
+the body test brings a boss out of orbit first), `MuzzleAuditTests` (the saucer's two known rows gone). One run of the
+filter (those and the localisation scan, 17): after two runs stopped at the catalog (a pod needs a positive speed, the
+new stops needed listing) and one test fix (the railgun shot the pods' tanks: the test breaks the pod bay), 17/17 passed.
+
+### Left for the testing phase
+
+- The suites (the muzzle audit and model tests will see the new models' muzzles; card and model counts).
+- 5 seeds at each difficulty: the big campaign's c9m10 "bug" stage, c7m05 and c9m05, Boss Rush, Operations with the
+  Silver Bug; win rate (Normal first try 50-65 % with the standard end-of-campaign deck), fight length inside prompt 5's
+  big-campaign frame, the share of time at each tier; the same with no long-range SAM, Patriot or fighter (H.4).
+- The stuck check (prompt 12's `StuckWatch`) round the crash site on the Launch Site and on Skyhold and Dunebreak (the
+  27 m square it closes at the map centre, the debris ring).
+- FPS at Low on a low-end device: the descent from orbit, the rod rain, the crash.
+- Screenshots at each tier and phase into docs/ui-screens (not taken, by the token rule).
+
+### For the prompts on hold
+
+Prompt 20: Daedalus, Icarus Mk.0 and Typhon are data (`"tiers"` without `opening` for Icarus Mk.0, without `crash` for
+Daedalus, whose phase 3 holds low with a one-step schedule; `"pods"` with `max` 8); Typhon's dive is `Orbit` under another
+name or a new tier value the same rules read. "Icarus" is `unit.silver_bug`'s text. Prompt 21's Sandbox: `JumpPhase`,
+`ForceTier` (low or high), `TriggerBig`, `SetBigOff`, `Break` are plain `BossSystem` calls the tests use. Prompts 22-23:
+every name and line is a key.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`balance.json` (the Silver Bug, `drop_pod`, `orbital_laser`, ceilings on five weapons and two fighters, two skills gone,
+two supports, the `crash_debris` prop, its escorts, `bug_rod_rain`), `Vehicle` (`Flying`, `Kind`, `ArmourOn`), `Vehicle.Boss`
+(`MountWorks`, `InitParts`), `BossSystem` (Joined, Step), `BossSystem.Parts` (two stops, the fingerprint),
+`BossSystem.BigAttacks` (the `rods` shape, the off switch), `BigAttackDefs` (`Rods`, `Difficulty`), `BigAttackState`,
+`BossDefs` (two mechanisms), `CombatSystem` (reach, the orbit gate, aim height), `DamageSystem` (the APS in the air, the
+crash fall height, the last radio line), `MovementSystem` (pods, the fall, the crashed hull), `SimWorld` (`AnchorCrash`,
+`AddCover`), `SimEvent` (`TierChanged`), `Catalog`/`Catalog.Extra`/`Definitions` (hooks, `TryGetProp`, `Tuned`), `SiegeModes`
+(Boss Rush arena), `MatchRunner`, `ModeSessions`, `BattleHud`, `MissionBar`, `KitCombat`, `BossPartsRow`,
+`MenuScreen.BossParts`, `VehicleView`, `EffectsDirector.BigAttacks`, `LaserBeams`, `EffectShots`, `Strings`, `GuideText`,
+`BigAttackText`, `CampaignText` (15 keys), `Tools/campaign/act3.py`, `story.py`, `Tools/blender/build_assets.py`.

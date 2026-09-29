@@ -863,6 +863,9 @@ namespace MachineBrigade.Game.Views
             _climbRate = dt > 0f ? (_climb - climbed) / dt : 0f;
         }
 
+        /// <summary>Prompt 19: the drawn height of a tiered boss or pod, eased toward the sim's (-1 before the first frame).</summary>
+        private float _tierHeight = -1f;
+
         public void Render(float alpha, Quaternion cameraRotation)
         {
             if (_wreck)
@@ -881,12 +884,19 @@ namespace MachineBrigade.Game.Views
             {
                 // Fly in from behind (never out of the ground), then hover with a slow bob, nose
                 // down when speeding up and bank into turns.
-                var arrive = ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                // Prompt 19: a boss on altitude tiers and a falling drop pod are drawn at the sim's height (no fly-in).
+                var tiered = Sim.Def.Tiers != null || Sim.IsPod;
+                var arrive = tiered || ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
                 var above = 1f - arrive;
                 if (Def.FixedWing) HoldPose();
                 // A jet hanging on its target bobs a little more than one flying level.
                 var bob = Mathf.Sin(FrameTime * 1.3f + Id.Value) * 0.25f + Mathf.Sin(FrameTime * 2.3f + Id.Value * 0.7f) * 0.2f * _hold;
-                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
+                if (tiered)
+                {
+                    _tierHeight = _tierHeight < 0f ? Sim.Height : Mathf.Lerp(_tierHeight, Sim.Height, 1f - Mathf.Exp(-FrameStep * 10f));
+                    Altitude = _tierHeight + (Sim.Crashed || Sim.IsPod ? 0f : bob);
+                }
+                else Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
                 if (above > 0f)
                 {
                     // It flies in along its heading from behind, dropping to its height as it comes.

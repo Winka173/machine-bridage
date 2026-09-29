@@ -85,7 +85,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("erector", C.Vehicle("nuke_train").Parts.Last().Kind);
             Assert.AreEqual("bombbay", C.Vehicle("drone_mothership").Parts.Last().Kind);
             Assert.AreEqual("bombbay", C.Vehicle("command_airship").Parts.Last().Kind);
-            Assert.AreEqual("bug_laser_sweep", C.Vehicle("silver_bug").BigAttack.Id, "the Silver Bug's entry is its own, swappable (prompt 19 F)");
+            Assert.AreEqual("bug_rod_rain", C.Vehicle("silver_bug").BigAttack.Id, "prompt 19 F swapped the Silver Bug's entry for its rod rain");
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace MachineBrigade.Tests
                 Run(world, 70f, () => boss.BigAttack.Stage != BigStage.Ready && boss.BigAttack.Zones.Count > 0);
                 var big = boss.BigAttack;
                 Assert.IsTrue(big.Stage != BigStage.Ready && big.Zones.Count > 0, id + ": it warned within 70 s");
-                Assert.AreEqual(30.0, big.WarnStart, id.Contains("borer") ? 12.0 : id.Contains("supergun") ? 5.0 : 1.0, id + ": about 30 s in (the borer waits for its dive, the supergun for its own shell in flight)");
+                Assert.AreEqual(big.Def.First ?? 30.0, big.WarnStart, id.Contains("borer") ? 12.0 : id.Contains("supergun") ? 5.0 : 1.0, id + ": about 30 s in, or its own first (the borer waits for its dive, the supergun for its own shell in flight)");
                 var zone = big.Zones[0];
                 var s = big.Def.Strikes[0];
                 switch (s.Shape)
@@ -208,6 +208,10 @@ namespace MachineBrigade.Tests
                         break;
                     case BigShape.Quake:
                         Assert.AreEqual(s.Radius, zone.Radius, 1e-3f, id + ": the quake's circle");
+                        break;
+                    case BigShape.Rods:
+                        Assert.AreEqual(s.Count, big.Zones.Count, id + ": one ring a rod");
+                        Assert.IsTrue(big.Zones.All(z => !z.Rect && System.Math.Abs(z.Radius - s.Radius) < 1e-3f), id + ": each its rod's radius");
                         break;
                     default:
                         Assert.IsFalse(zone.Rect, id);
@@ -244,19 +248,13 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Prompt 19 F moved the Silver Bug off its laser sweep (the one big attack smoke cut), so no boss's big attack is
+        /// stopped by smoke now (DECISIONS 18A); the railgun's slug still is not.
+        /// </summary>
         [Test]
-        public void SmokeCutsTheLaserToAFifthButNotTheRailgun()
+        public void SmokeDoesNothingToTheRailgun()
         {
-            var world = Field();
-            var bug = world.SpawnVehicle("silver_bug", 1, Vector2.Zero, 0f);
-            var clear = world.SpawnVehicle("main_battle_tank", 0, new Vector2(6f, 40f), SimMath.HeadingOf(new Vector2(0f, -1f)));
-            var smoked = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-6f, 40f), SimMath.HeadingOf(new Vector2(0f, -1f)));
-            foreach (var v in new[] { clear, smoked })
-            {
-                v.HpScale = 60f;
-                v.Hp = v.MaxHp;
-                v.Scripted = true;
-            }
             var dealt = new Dictionary<Vehicle, float>();
             DamageSystem.DamageLog = (attacker, victim, damage, kind, weapon) =>
             {
@@ -264,13 +262,7 @@ namespace MachineBrigade.Tests
             };
             try
             {
-                Run(world, 40f, () => bug.BigAttack.Stage == BigStage.Charging);
-                world.Strikes.AddSmoke(0, smoked.Position, 4f, 30f);
-                Run(world, 12f, () => bug.BigAttack.Stage == BigStage.Ready);
-                Assert.IsTrue(dealt.ContainsKey(clear) && dealt.ContainsKey(smoked), "the beam crossed both");
-                Assert.AreEqual(0.2f, dealt[smoked] / dealt[clear], 0.02f, "smoke leaves a fifth of the beam");
-
-                world = Field();
+                var world = Field();
                 var tempest = world.SpawnVehicle("behemoth_tempest", 1, Vector2.Zero, 0f);
                 var front = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 30f), SimMath.HeadingOf(new Vector2(0f, -1f)));
                 var back = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 42f), SimMath.HeadingOf(new Vector2(0f, -1f)));

@@ -100,7 +100,7 @@ namespace MachineBrigade.Sim.Content
         public int Attachment { get; internal set; } = -1;
 
         /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
-        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar" };
+        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar", "thrust", "pods" };
 
         /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
         public static string FxFor(string kind) => kind switch

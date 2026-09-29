@@ -41,6 +41,8 @@ namespace MachineBrigade.Sim.Bosses
             v.InitParts();
             // Prompt 18: its big attack's clock.
             JoinBig(v);
+            // Prompt 19: altitude tiers (the opening in orbit, its schedule) and its pods' clock.
+            JoinTiers(v);
             var now = _world.Time;
             var def = v.Def;
             if (def.Burrow is { } burrow) v.BurrowNext = now + burrow.First;
@@ -48,7 +50,7 @@ namespace MachineBrigade.Sim.Bosses
             if (def.Bombard is { } bombard) v.BombardNext = now + bombard.First;
             if (def.RadioSpawn != null) _world.Emit(SimEvent.RadioMessage(def.RadioSpawn, v.Team));
             // Prompt 16: its escorts (they come in on the next step) and where its fire trail starts.
-            JoinEscorts(v);
+            if (!EscortsLater(v)) JoinEscorts(v);
             v.TrailFrom = v.Position;
             foreach (var guard in def.Guards)
             {
@@ -74,6 +76,7 @@ namespace MachineBrigade.Sim.Bosses
             StepTrails(now);
             StepEscorts(now);
             StepBig(now, dt);
+            StepTiers(now);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }

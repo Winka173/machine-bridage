@@ -170,6 +170,8 @@ namespace MachineBrigade.Sim.Bosses
             mix(_trails.Count);
             // Prompt 18: big attacks.
             MixBig(mix);
+            // Prompt 19: tiers, pods, seized drones.
+            MixTiers(mix);
         }
 
         // ================================================================== damage, breaking, patching
@@ -293,6 +295,8 @@ namespace MachineBrigade.Sim.Bosses
             boss.ApsMax = boss.Aps == null || apsParts == 0 ? int.MaxValue : (int)MathF.Ceiling(boss.Aps.Charges * apsStanding / (float)apsParts);
             if (boss.ApsCharges > boss.ApsMax) boss.ApsCharges = boss.ApsMax;
             boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
+            // Prompt 19: a tiered boss's main engine (it cannot climb) and pod bay.
+            boss.ThrustOff = boss.PodsOff = false;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (!boss.PartBroken[i]) continue;
@@ -318,6 +322,8 @@ namespace MachineBrigade.Sim.Bosses
                         case "cruise": boss.CruiseOff = true; break;
                         case "craft": boss.CraftOff = true; break;
                         case "radar": boss.RadarOff = true; break;
+                        case "thrust": boss.ThrustOff = true; break;
+                        case "pods": boss.PodsOff = true; break;
                     }
             }
 

@@ -22,6 +22,9 @@ namespace MachineBrigade.Sim.Content
         Drop,
         Buff,
         Quake,
+
+        /// <summary>Prompt 19 F: rods from orbit, one on each of the other side's densest groups (the heaviest armour first), each its own ring.</summary>
+        Rods,
     }
 
     /// <summary>Where a big attack is laid: the enemy's biggest group (towers count), the biggest group standing still, the HQ (else the biggest group), the base's HQ and towers, or round the boss.</summary>
@@ -295,7 +298,10 @@ namespace MachineBrigade.Sim.Content
     {
         public BigAttackScale Scale { get; set; } = BigAttackScale.One;
 
-        public static BigAttackSettings For(BigAttackRules rules, string? difficulty) => new() { Scale = rules.For(difficulty) };
+        /// <summary>Prompt 19 E.6: the battle's difficulty key (the drone seizure is only at the hardest).</summary>
+        public string? Difficulty { get; set; }
+
+        public static BigAttackSettings For(BigAttackRules rules, string? difficulty) => new() { Scale = rules.For(difficulty), Difficulty = difficulty };
     }
 
     public sealed partial class Catalog

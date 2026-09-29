@@ -51,7 +51,41 @@ namespace MachineBrigade.Game.Hud
                 tip.enableRichText = true;
                 _detailBody.Add(tip);
             }
+            TiersGuide(def);
             BigAttackGuide(def);
+        }
+
+        /// <summary>
+        /// Prompt 19 B.5: a boss on altitude tiers: the rule, what reaches each tier, each phase's schedule (its numbers from
+        /// the data), the drop pods, the armour, the crash, the drone seizure, and how to win with no long-range anti-air.
+        /// </summary>
+        private void TiersGuide(VehicleDef def)
+        {
+            if (def.Tiers is not { } t) return;
+            _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("guide.tiers")), "fc-caption fc-mt-4"));
+            void Line(string key, params object[] args)
+            {
+                if (!Strings.Has(key)) return;
+                _detailBody.Add(Kit.Text(args.Length > 0 ? Strings.Format(key, args) : Strings.Get(key), "fc-body fc-mt-2"));
+            }
+            Line("guide.tiers.rule");
+            if (t.Opening > 0f) Line("guide.tiers.orbit");
+            Line("guide.tiers.high");
+            Line("guide.tiers.low");
+            Line("guide.tiers.shift");
+            for (var phase = 0; phase < t.Schedule.Count && phase < 2; phase++)
+            {
+                float high = 0f, low = 0f;
+                foreach (var step in t.CycleOf(phase))
+                    if (step.Tier == AltitudeTier.High) high += step.Seconds;
+                    else low += step.Seconds;
+                Line("guide.tiers.phase" + (phase + 1), Mathf.RoundToInt(high), Mathf.RoundToInt(low));
+            }
+            if (def.Pods != null) Line("guide.tiers.pods");
+            if (t.Armour != null) Line("guide.tiers.armour");
+            if (t.Crash != null) Line("guide.tiers.crash");
+            if (t.Hijack != null) Line("guide.tiers.hijack");
+            Line("guide.tiers.nohigh");
         }
 
         /// <summary>

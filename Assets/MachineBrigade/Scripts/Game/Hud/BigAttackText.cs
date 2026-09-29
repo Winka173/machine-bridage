@@ -125,13 +125,13 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.fortress_rocket_rain.dodge"] = ("Leave the circle, or sit it out under a shield dome: shields take the blasts.", "Rời khỏi vòng, hoặc núp dưới vòm khiên: khiên hấp thụ được."),
             ["guide.bigattack.fortress_rocket_rain.stop"] = ("Break a rocket box: each holds 16 rockets.", "Phá hộp rốc-két: mỗi hộp 16 quả."),
 
-            // ---------------------------------------------------------------- 11 Silver Bug
-            ["bigattack.bug_laser_sweep"] = ("Laser Sweep", "Tia laser quét"),
-            ["bigattack.bug_laser_sweep.cancelled"] = ("Laser sweep cancelled", "Đã hủy tia laser quét"),
-            ["radio.bigattack.bug_laser_sweep"] = ("Command: the Silver Bug's emitter is heating up. Smoke, now, or get off the line!", "Chỉ huy: bộ phát laser của Bọ Bạc đang nóng lên. Thả khói ngay, hoặc ra khỏi đường quét!"),
-            ["guide.bigattack.bug_laser_sweep.how"] = ("A 4 m beam runs down a 120 m line in 3 s: 900 to each vehicle it crosses, once. Shields and APS do not stop it.", "Tia rộng 4 m quét dọc đường dài 120 m trong 3 giây: 900 cho mỗi xe bị quét qua, mỗi xe một lần. Khiên và APS không chặn được."),
-            ["guide.bigattack.bug_laser_sweep.dodge"] = ("Get off the line, or into smoke: a unit in smoke takes only 20 %.", "Rời khỏi đường quét, hoặc vào màn khói: đơn vị trong khói chỉ nhận 20 %."),
-            ["guide.bigattack.bug_laser_sweep.stop"] = ("Break the laser emitter; an EMP delays the charge.", "Phá bộ phát laser; EMP làm chậm thời gian nạp."),
+            // ---------------------------------------------------------------- 11 Silver Bug (prompt 19: tungsten rods from orbit, replacing the old laser sweep)
+            ["bigattack.bug_rod_rain"] = ("Tungsten Rod Rain", "Mưa thanh tungsten"),
+            ["bigattack.bug_rod_rain.cancelled"] = ("Rod rain cancelled", "Đã hủy mưa thanh tungsten"),
+            ["radio.bigattack.bug_rod_rain"] = ("Command: rods incoming from its satellite. Get out of the rings!", "Chỉ huy: thanh tungsten đang rơi từ vệ tinh của nó. Ra khỏi các vòng tròn ngay!"),
+            ["guide.bigattack.bug_rod_rain.how"] = ("Five tungsten rods drop on your groups, heavy tanks first: 1,600 kinetic each, very high penetration, 6 m radius, with 4 s of light columns first. The first comes from the craft itself in the opening; every one after comes from the satellite it leaves in orbit. Every 60 s, in every phase and at every altitude.", "Năm thanh tungsten rơi xuống các cụm quân của bạn, ưu tiên xe tăng giáp dày: 1.600 động năng mỗi thanh, xuyên rất cao, bán kính 6 m, có 4 giây cột sáng cảnh báo trước. Thanh đầu tiên rơi từ chính phi thuyền trong đoạn mở màn; các thanh sau đều từ vệ tinh nó để lại trên quỹ đạo. Hồi chiêu 60 giây, dùng được ở mọi pha và mọi tầng độ cao."),
+            ["guide.bigattack.bug_rod_rain.dodge"] = ("Get out of the rings; smoke and APS do not stop them. Shield domes absorb part of the hit while they hold.", "Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động."),
+            ["guide.bigattack.bug_rod_rain.stop"] = ("Break the satellite uplink during the warning to cancel that rod; break it for good and no more rods fall until a self-repair puts it back. It can be hit at high or low altitude, and on the ground.", "Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh tungsten cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất."),
 
             // ---------------------------------------------------------------- 12 Earth Worm
             ["bigattack.borer_quake"] = ("Earthquake", "Địa chấn"),

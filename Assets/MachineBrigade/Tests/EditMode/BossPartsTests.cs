@@ -40,7 +40,7 @@ namespace MachineBrigade.Tests
         internal static readonly Dictionary<string, int> Expected = new()
         {
             ["armored_train"] = 6, ["nuke_train"] = 7, ["behemoth"] = 7, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 5,
-            ["fortress_hive"] = 7, ["mobile_fortress"] = 7, ["fortress_bastion"] = 6, ["silver_bug"] = 6, ["sky_fortress"] = 9,
+            ["fortress_hive"] = 7, ["mobile_fortress"] = 7, ["fortress_bastion"] = 6, ["silver_bug"] = 10, ["sky_fortress"] = 9,
             ["mega_gunship"] = 8, ["drone_mothership"] = 8, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 8,
             ["landing_hovercraft"] = 9, ["supreme_command"] = 3, ["leviathan"] = 9,
         };
@@ -123,6 +123,15 @@ namespace MachineBrigade.Tests
             {
                 var world = Lab.Field(2);
                 var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
+                // Prompt 19: a boss in its opening in orbit is out of reach; down from there its body takes damage as any.
+                if (boss.Tier == Sim.Content.AltitudeTier.Orbit)
+                {
+                    var high = boss.Hp;
+                    world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
+                    Assert.AreEqual(high, boss.Hp, 1e-3f, id + ": untouchable in orbit");
+                    world.Bosses.JumpPhase(boss, 0);
+                    world.Step(0.05f);
+                }
                 var before = boss.Hp;
                 world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
                 if (id == "command_airship") Assert.AreEqual(before, boss.Hp, 1e-3f, "the airship's hull is shut until two engines are down");

@@ -126,6 +126,12 @@ namespace MachineBrigade.Sim.Entities
 
         public BigStage Stage { get; internal set; }
 
+        /// <summary>Prompt 21's Sandbox (and tests): the big attack is switched off (it waits while it is).</summary>
+        public bool Off { get; internal set; }
+
+        /// <summary>Prompt 19 F: this one comes from the boss's satellite (the Silver Bug's rods after its first).</summary>
+        public bool FromSatellite { get; internal set; }
+
         /// <summary>When the next one may begin, and when the last began (the cooldown ring).</summary>
         public double Next { get; internal set; }
 

@@ -275,6 +275,8 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 17 C.
                 Ramp = Ramp,
                 SwarmReach = SwarmReach,
+                // Prompt 19: the tier it reaches goes with it.
+                Ceiling = Ceiling,
                 // Prompt 17 D.
                 HeRound = HeRound,
             };

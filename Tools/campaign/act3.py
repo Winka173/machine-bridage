@@ -75,14 +75,14 @@ add_mission(m('c7m05', 7, 'skyhold', 'Boss', 'Clear', general='aurel', timeLimit
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'ifv', 'tank_destroyer', 'attack_jet'],
               playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', hqLevel=4, unlocks=['gunship_heli'], starTime=600, starLosses=12),
             ('Silver Bug', 'Silver Bug'),
-            ('The welded hangar opened at dawn. Silver Bug is in the air over Skyhold: a saucer with a laser, coilguns and a shield. '
+            ('The welded hangar opened at dawn. Silver Bug is in the air over Skyhold: Aurel\'s orbital spacecraft, silver-hulled and short-winged, with a main engine that could outrun anything we have. '
              'It is not finished, Sen says. Hurt it badly enough, and it will run.',
-             'Nhà chứa bị hàn cửa đã mở lúc bình minh. Silver Bug đang ở trên không phận Skyhold: một chiếc đĩa bay mang laser, súng điện từ và khiên. '
+             'Nhà chứa bị hàn cửa đã mở lúc bình minh. Silver Bug đang ở trên không phận Skyhold: phi thuyền quỹ đạo của Aurel, vỏ bạc, cánh ngắn, với động cơ chính đủ sức bỏ xa bất cứ thứ gì ta có. '
              'Sen nói nó chưa hoàn thiện. Đánh nó đủ đau, nó sẽ bỏ chạy.'),
             (('It runs', 'Nó bỏ chạy'),
              ('Silver Bug broke off at half strength and flew south at a speed nothing of ours can match. Linh tracked it until it vanished over the desert. Towards the launch site.',
               'Silver Bug tháo chạy khi còn một nửa sức mạnh và bay về phía nam với tốc độ không thứ gì của ta đuổi kịp. Linh theo dấu nó cho tới khi nó biến mất trên sa mạc. Về phía bãi phóng.')),
-            [say('sen', 'Start', 'The shield regenerates. Keep up the fire, do not let it rest.', 'Khiên của nó tự hồi phục. Cứ bắn liên tục, đừng để nó nghỉ.'),
+            [say('sen', 'Start', 'It is faster than anything we have. Keep up the fire before it climbs out of range.', 'Nó nhanh hơn bất cứ thứ gì ta có. Cứ bắn liên tục trước khi nó bay vượt tầm.'),
              say('aurel', 'Boss', 'A field test, Colonel. Thank you for volunteering.', 'Một cuộc thử nghiệm thực địa thôi, đại tá. Cảm ơn ông đã tình nguyện.'),
              say('khai', 'Win', 'It ran. Next time, it will not get the chance.', 'Nó chạy rồi. Lần sau, nó sẽ không có cơ hội đó.')])
 
@@ -191,10 +191,10 @@ add_mission(m('c7s1', 7, 'skyhold', 'Hunt', 'Fog', side=True, after='c7m04', spe
             ('Spare Parts', 'Phụ tùng'),
             ('Two trucks are carrying Silver Bug\'s spare parts off the base in the fog. Sen wants them stopped before they reach the desert. They are marked.',
              'Hai xe tải đang chở phụ tùng của Silver Bug rời căn cứ trong sương. Sen muốn chặn chúng trước khi chúng tới sa mạc. Chúng đã được đánh dấu.'),
-            (('Coils', 'Cuộn dây'),
-             ('The trucks carried six coilgun barrels and a shield emitter. Sen took the emitter apart on the workshop floor and said, very quietly, "They fixed my mistake."',
-              'Các xe tải chở sáu nòng súng điện từ và một bộ phát khiên. Sen tháo bộ phát khiên ra trên sàn xưởng và nói rất khẽ: "Chúng đã sửa lỗi của tôi."')),
-            [say('sen', 'Start', 'The coils in those trucks are irreplaceable. Stop them.', 'Những cuộn dây trên các xe đó không thể thay thế được. Chặn chúng lại.')])
+            (('The Engine', 'Động cơ'),
+             ('The trucks carried a spare main engine casing and two point-defence laser optics. Sen turned one optic over in her hands and said, very quietly, "They fixed my mistake."',
+              'Hai xe tải chở một vỏ động cơ chính dự phòng và hai thấu kính la-de phòng thủ điểm. Sen cầm một thấu kính lật qua lật lại và nói rất khẽ: "Chúng đã sửa lỗi của tôi."')),
+            [say('sen', 'Start', 'Whatever is in those trucks, Aurel cannot replace it easily. Stop them.', 'Bất cứ thứ gì trong những xe đó, Aurel cũng không dễ thay thế. Chặn chúng lại.')])
 
 add_mission(m('c7s2', 7, 'frostpeak', 'Recon', 'Overcast', side=True, reversed=True, after='c7m07', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.9, enemyDeck=QUADEN,
@@ -457,12 +457,12 @@ add_mission(m('c9m05', 9, 'dunebreak', 'Boss', 'Clear', reversed=True, legacy='m
               enemyDeck=['main_battle_tank', 'heavy_tank', 'aa_vehicle', 'ifv', 'tank_destroyer', 'mortar_carrier'],
               playerCp=32, playerIncome=1.7, playerCap=42, playerBase='Anchor', starTime=840, starLosses=16, challenge={'kind': 'Kills', 'value': 35}),
             ('Silver Sky', 'Bầu trời bạc'),
-            ('The second Silver Bug, the one that ran from Skyhold, repaired and armed, is over Dunebreak. This time it does not run. Bring it down.',
-             'Chiếc Silver Bug thứ hai, chiếc từng chạy khỏi Skyhold, đã được sửa và vũ trang, đang lơ lửng trên Dunebreak. Lần này nó không chạy. Bắn rơi nó.'),
+            ('The second Silver Bug, the one that ran from Skyhold, repaired and rearmed, is circling low over Dunebreak. This time it does not run. Bring it down.',
+             'Chiếc Silver Bug thứ hai, chiếc từng chạy khỏi Skyhold, đã được sửa và vũ trang lại, đang bay vòng thấp trên Dunebreak. Lần này nó không chạy. Bắn rơi nó.'),
             (('Two', 'Hai chiếc'),
              ('In the wreck, Sen found the serial plate: "S.B. 02." "Then there is a 01," she said. "And 01 is the complete one."',
               'Trong xác máy, Sen tìm thấy tấm biển số hiệu: "S.B. 02." "Vậy là còn một chiếc 01," bà nói. "Và 01 là chiếc hoàn chỉnh."')),
-            [say('sen', 'Start', 'That is the one from Skyhold. They have fixed the shield. Keep hitting it.', 'Chính là chiếc ở Skyhold. Chúng đã sửa khiên. Cứ tiếp tục nện.'),
+            [say('sen', 'Start', 'That is the one from Skyhold, repaired and stronger. Watch its altitude: it is easiest to hit when it comes down low.', 'Chính là chiếc ở Skyhold, đã sửa xong và mạnh hơn. Theo dõi tầng độ cao của nó: nó dễ bắn nhất khi hạ xuống thấp.'),
              say('aurel', 'Boss', 'Silver Bug is not a weapon, Colonel. It is a contract nobody can refuse.', 'Silver Bug không phải vũ khí, đại tá. Nó là một bản hợp đồng không ai từ chối nổi.')])
 
 add_mission(m('c9m06', 9, 'launchsite', 'Duel', 'Night', targetHealth=0.3, general='quaden', enemyBase='Target', enemyHq=3, replay=True, reinforcements=1, timeLimit=1800,
@@ -551,24 +551,24 @@ add_mission(m('c9m10', 9, 'launchsite', 'Capture', 'Clear', operation=True, gene
               starTime=1680, starLosses=26),
             ('Silver Sky Falls', 'Bầu trời bạc sụp đổ'),
             ('The last battle. Take the propellant farm, choose your blow, take the assembly building, destroy Aurel\'s command vehicle, hold the launch pad, '
-             'and when Silver Bug rises in its complete form, bring it down on its own pad.',
+             'and when Silver Bug lifts off for orbit in its complete form, turn it back and bring it down.',
              'Trận cuối cùng. Chiếm khu nhiên liệu, chọn đòn đánh, chiếm nhà lắp ráp, tiêu diệt xe chỉ huy của Aurel, giữ bệ phóng, '
-             'và khi Silver Bug cất cánh trong hình dạng hoàn chỉnh, bắn rơi nó ngay trên bệ phóng của nó.'),
+             'và khi Silver Bug rời bệ phóng lên quỹ đạo trong hình dạng hoàn chỉnh, buộc nó quay lại và bắn hạ.'),
             (('Clear sky', 'Bầu trời trong'),
-             ('Silver Bug came down on its own pad at 17:42. The brigade\'s radio log for the next minute holds no orders, only people cheering, and one voice, Colonel Khai\'s, saying "Thank you."',
-              'Silver Bug rơi xuống ngay trên bệ phóng lúc 17 giờ 42. Sổ ghi bộ đàm của lữ đoàn trong phút tiếp theo không có mệnh lệnh nào, chỉ có tiếng người reo hò, và một giọng nói, của đại tá Khải: "Cảm ơn."')),
+             ('Silver Bug never reached orbit: it came down burning a kilometre short, out past the dunes, at 17:42. The brigade\'s radio log for the next minute holds no orders, only people cheering, and one voice, Colonel Khai\'s, saying "Thank you."',
+              'Silver Bug không bao giờ tới được quỹ đạo: nó rơi xuống bốc cháy cách đích chưa đầy một cây số, ngoài rặng đồi cát, lúc 17 giờ 42. Sổ ghi bộ đàm của lữ đoàn trong phút tiếp theo không có mệnh lệnh nào, chỉ có tiếng người reo hò, và một giọng nói, của đại tá Khải: "Cảm ơn."')),
             [say('khai', 'Start', 'This is it, Brigade. Everything we have, one more time.', 'Là lúc này đây, Lữ đoàn. Tất cả những gì ta có, thêm một lần nữa.'),
              say('khai', 'Win', 'It is over. Brigade, stand down. We go home.', 'Kết thúc rồi. Lữ đoàn, nghỉ. Ta về nhà.')],
             stages_text={'approach': ('The Propellant Farm', 'Khu nhiên liệu đẩy'), 'propellant': ('Burn the Propellant', 'Đốt nhiên liệu đẩy'),
                          'radars': ('Blind the West Radars', 'Làm mù radar phía tây'), 'assembly': ('The Assembly Building', 'Nhà lắp ráp'),
-                         'command': ('Tổng Tư Lệnh', 'Tổng Tư Lệnh'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Silver Bug, Complete', 'Silver Bug hoàn chỉnh')},
+                         'command': ('Tổng Tư Lệnh', 'Tổng Tư Lệnh'), 'countdown': ('The Countdown', 'Đếm ngược'), 'pad': ('Hold the Launch Pad', 'Giữ bệ phóng'), 'bug': ('Silver Bug, Complete', 'Bọ Bạc hoàn chỉnh')},
             choices_text={'propellant': choice_income('Burn the propellant tanks', 'Đốt các bồn nhiên liệu đẩy', 'Aurel', 'Aurel'),
                           'radars': choice_strikes('Destroy the west radars', 'Phá radar phía tây', 50)})
 T('radio.khai.c9m10.s1', 'The propellant farm first. Then we choose.', 'Khu nhiên liệu đẩy trước. Rồi ta sẽ chọn.')
 T('radio.aurel.c9m10.s4', 'You are standing on my balance sheet, Colonel.', 'Ông đang đứng trên bảng cân đối của tôi đấy, đại tá.')
 T('radio.linh.c9m10.s5', 'The launch countdown has started. Everything Aurel has left is coming at us. Hold!', 'Đếm ngược phóng đã bắt đầu. Mọi thứ Aurel còn lại đang dồn vào ta. Trụ vững!')
-T('radio.aurel.c9m10.s6', 'Launch. Manually, since you insist.', 'Phóng. Bằng tay, vì ông cứ nhất định như thế.')
-T('radio.sen.c9m10.s6', 'That is 01, complete. Its shield has a second layer. Do not stop firing, not for a second.', 'Đó là chiếc 01, hoàn chỉnh. Khiên của nó có hai lớp. Đừng ngừng bắn, dù một giây.')
+T('radio.aurel.c9m10.s6', 'Launch. Manually, since you insist. Try to follow me to orbit, Colonel.', 'Phóng. Bằng tay, vì ông cứ nhất định như thế. Cứ thử theo tôi lên quỹ đạo mà xem, đại tá.')
+T('radio.sen.c9m10.s6', 'That is 01, complete. It will climb past what most of you can reach. Watch the altitude, and do not let it level out.', 'Đó là chiếc 01, hoàn chỉnh. Nó sẽ bay lên qua tầm với của phần lớn vũ khí các anh có. Theo dõi tầng độ cao, đừng để nó bay ổn định.')
 
 add_mission(m('c9s1', 9, 'launchsite', 'Recon', 'Sandstorm', side=True, reversed=True, after='c9m02', speaker='linh', points=['west', 'town', 'east'], timeLimit=900, reinforcements=1,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=17, enemyIncome=1.0, enemyDeck=AUREL,

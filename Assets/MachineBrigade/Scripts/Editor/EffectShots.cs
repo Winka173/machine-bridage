@@ -477,9 +477,9 @@ namespace MachineBrigade.Editor
             var lasers = new LaserBeams(materials, emitters, decals, root);
             var catalog = MachineBrigade.Game.Match.GameContent.LoadCatalog();
             var ironBeam = catalog.Weapons["hel_beam"];
-            var saucer = catalog.Weapons["saucer_laser"];
+            var orbital = catalog.Weapons["orbital_laser"];
 
-            // Row 1: the Iron Beam on a helicopter 12 m up. Row 2: the saucer's beam from 20 m up into the ground.
+            // Row 1: the Iron Beam on a helicopter 12 m up. Row 2: the Silver Bug's orbital laser from 20 m up into the ground.
             var focusA = new Vector3(0f, 4f, 0f);
             var launcher = models.Spawn(models.Has("iron_beam") ? "iron_beam" : "sam_launcher", 0, root);
             launcher.Root.transform.SetPositionAndRotation(new Vector3(-8f, 0f, -8f), Quaternion.Euler(0f, 45f, 0f));
@@ -517,7 +517,7 @@ namespace MachineBrigade.Editor
                         heli.Root.transform.position = hit - Vector3.up * 0.4f;
                         lasers.Fire(null, 0, emitterA, hit, MachineBrigade.Sim.Core.EntityId.None, true, ironBeam, time, 0.16f);
                         var sweep = groundAt + new Vector3(Mathf.Sin(time * 2f) * 1.5f, 0f, -Mathf.Sin(time * 2f) * 1.5f);
-                        lasers.Fire(null, 0, emitterB, sweep, MachineBrigade.Sim.Core.EntityId.None, false, saucer, time, 0.16f);
+                        lasers.Fire(null, 0, emitterB, sweep, MachineBrigade.Sim.Core.EntityId.None, false, orbital, time, 0.16f);
                     }
                     lasers.Tick(time, step, null);
                     emitters.Tick(time, step);

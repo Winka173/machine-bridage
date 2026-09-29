@@ -265,6 +265,8 @@ namespace MachineBrigade.Sim.Content
             }
             // Prompt 17 C: domes, deploying, wingmen, relays.
             ParseP17(v, def);
+            // Prompt 19: altitude tiers, drop pods, weapon ceilings, a Boss Rush arena.
+            ParseP19(v, def);
         }
 
         /// <summary>
@@ -377,6 +379,8 @@ namespace MachineBrigade.Sim.Content
             ParseEscorts(root);
             // Prompt 18: the big-attack library and every boss's attack.
             ParseBigAttacks(root);
+            // Prompt 19: the tiered bosses' pods and crash.
+            CheckTiers();
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>
