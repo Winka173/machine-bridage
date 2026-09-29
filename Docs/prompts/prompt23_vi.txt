@@ -1,0 +1,124 @@
+Prompt 23: Hệ sự kiện trong nhiệm vụ và thoại dạng chữ
+
+Nhiệm vụ: thêm hệ sự kiện dạng dữ liệu cho các nhiệm vụ: viện quân địch từ nhiều hướng và tiếp viện phe ta ít hơn (theo độ khó), cùng các nhóm sự kiện khác (hỏa lực, tướng địch ra trận, mục tiêu phụ giữa trận, kinh tế, hậu cần, thông tin, mini boss giữa trận, đổi kế hoạch, thời tiết và ngày đêm thay đổi). Gắn sự kiện vào toàn bộ chiến dịch. Đồng thời thống nhất mọi lời thoại trong trận thành một hệ thoại dạng chữ gọn, dễ đọc, không chiếm diện tích. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 22 (cốt truyện, tên mới, hệ Chỉ huy). Dùng hệ boss và mini boss của prompt 20, hệ tinh nhuệ của prompt 8, hệ hỗ trợ bên đang thua của prompt 13, cơ chế máy bay chở quân địch đã có, HUD gọn của prompt 11, đa ngôn ngữ của prompt 21.
+
+A. LUẬT CHUNG
+1. Thư viện sự kiện dạng dữ liệu: mỗi sự kiện có loại, điều kiện kích hoạt (mốc thời gian, mốc tiến độ nhiệm vụ, máu boss, số quân trên sân, sự kiện khác), tham số, cảnh báo, câu thoại đi kèm và phần thưởng nếu có. Mỗi nhiệm vụ ghép từ các sự kiện trong thư viện.
+2. Số lượng: nhiệm vụ thường khoảng 2–4 sự kiện; chiến dịch lớn khoảng 5–8 sự kiện; chương xen kẽ khoảng 2–3 sự kiện.
+3. Mọi sự kiện deterministic theo seed và ghi vào chuỗi lệnh của trận (replay và checkpoint của prompt 5 khôi phục đúng).
+4. Cảnh báo: mọi sự kiện có ảnh hưởng lớn đều được báo trước bằng một thông báo sự kiện (phần F.1), kèm một câu thoại (phần H), và nếu có hướng thì kèm mũi tên trên bản đồ nhỏ. Không bao giờ để quân địch xuất hiện ngay cạnh hoặc sau lưng quân người chơi mà không báo trước.
+5. Sự kiện được tính vào độ khó nhiệm vụ khi cân bằng bằng mô phỏng 5 seed; mọi nhiệm vụ vẫn thắng được ở độ khó Thường với bộ bài người chơi đã mở tới thời điểm đó.
+6. Mọi câu thoại và thông báo có đủ tiếng Việt và tiếng Anh, dùng tên theo prompt 22.
+
+B. ĐIỂM XUẤT HIỆN TRÊN MAP
+1. Mỗi map có dữ liệu điểm xuất hiện cho viện quân địch: mép map theo từng hướng, đầu đường ray, tuyến biển và điểm đổ bộ, bãi đáp của địch, và đường bay của máy bay vận tải thả dù.
+2. Mỗi map có điểm xuất hiện cho tiếp viện của ta: phía sau vùng của người chơi, bãi thả và tiền đồn của ta.
+3. Điểm xuất hiện không được nằm trong tầm nhìn gần của quân người chơi lúc xuất hiện; nếu có quân ta đứng ở đó, chọn điểm dự phòng cùng hướng.
+4. Làm đủ cho mọi map (kể cả map dài, map ven biển, Foundry và Veyra Old Quarter); chạy bộ phát hiện xe kẹt của prompt 12 cho đường từ mọi điểm xuất hiện vào trận.
+
+C. VIỆN QUÂN
+1. Viện quân địch:
+   - Tới từ nhiều hướng theo điểm xuất hiện ở phần B; thành phần theo tướng của nhiệm vụ (Varga: xe tăng; Orlov: pháo binh; Kessler: tàu đổ bộ, tàu hỏa; Venn khi còn là địch: drone; Wolff: máy bay; Thorne: lực lượng đồng minh cũ đã đổi phe; Aurel: khoang đổ bộ và drone). Nhiệm vụ không gắn tướng dùng thành phần chung.
+   - Cảnh báo trước theo bảng độ khó ở C.3.
+2. Tiếp viện của ta:
+   - Lực lượng Meridian Accord do AI đồng minh điều khiển; không phải thẻ, không vào bộ bài; người chơi không mất gì khi không có nó.
+   - Tới theo mốc kịch bản, hoặc khi phe ta đang bị áp đảo.
+   - Không cộng dồn với cơ chế hỗ trợ bên đang thua của prompt 13: khi cơ chế đó kích hoạt trong nhiệm vụ có tiếp viện theo kịch bản, dùng đợt tiếp viện này thay cho đợt thả tiếp viện miễn phí.
+3. Theo độ khó (khởi điểm):
+   - Dễ: viện quân địch 1–2 hướng, đợt nhỏ, cảnh báo 15 giây; tiếp viện ta khoảng 70% sức mạnh một đợt viện quân địch.
+   - Thường: 2 hướng, cảnh báo 10 giây; tiếp viện ta khoảng 50%.
+   - Khó: 2–3 hướng, cảnh báo 8 giây; tiếp viện ta khoảng 30%.
+   - Cực khó: 3–4 hướng, có tinh nhuệ, cảnh báo 6 giây; tiếp viện ta khoảng 15%, hoặc chỉ một đợt mỗi nhiệm vụ.
+   "Sức mạnh" tính theo tổng giá trị thực chiến của đợt quân (bộ đo của prompt 13).
+4. Viện quân tính riêng ngoài trần quân thường, nhưng có trần riêng theo ngân sách hiệu năng; đo trên máy tầm thấp.
+
+D. CÁC NHÓM SỰ KIỆN KHÁC
+1. Hỏa lực:
+   - Địch: không kích bất ngờ (sự kiện đã có), pháo kích dồn vào một vùng có cảnh báo, phản pháo khi pháo của ta đứng bắn quá lâu ở một chỗ.
+   - Ta: Hawk gọi một đợt không kích đồng minh; pháo binh Accord bắn yểm trợ theo kịch bản.
+2. Tướng địch ra trận:
+   - Tướng của nhiệm vụ xuất hiện trực tiếp trên chiến trường, dùng một xe tinh nhuệ (hệ tinh nhuệ của prompt 8) hoặc một mini boss của chính tướng đó (theo bảng tướng và boss của prompt 20 và 22), kèm hộ tống và thoại của tướng.
+   - Chọn tinh nhuệ hay mini boss theo chương và độ khó: các chương đầu và độ khó thấp dùng xe tinh nhuệ; chương sau và độ khó cao dùng mini boss. Không dùng mini boss đã là boss chính của cùng nhiệm vụ đó.
+   - Tướng mang thụ động của mình (hệ Chỉ huy của prompt 22) khi đang ở trên sân.
+   - Nếu cốt truyện cần tướng sống sót tới chương sau, xe của tướng rút lui khi còn khoảng 30% máu (có hoạt cảnh rút và một câu thoại); người chơi vẫn nhận phần thưởng cho việc đẩy lui tướng. Tướng đã tới trận cuối của mình thì không rút lui.
+3. Mục tiêu phụ giữa trận (luôn là tùy chọn, có thời hạn, bỏ qua không thua):
+   - Chặn một đoàn xe chở hồ sơ trước khi nó ra khỏi map (thưởng: hồ sơ tình báo của prompt 22).
+   - Cứu một đoàn xe đồng minh đang bị vây (thưởng: đoàn xe gia nhập tiếp viện).
+   - Bảo vệ một đoàn xe dân sự đi qua map (thưởng: xu hoặc bản thiết kế).
+4. Kinh tế:
+   - Đoàn tiếp tế trung lập đi ngang map: bên hạ được nhận CP.
+   - Kho chiến lợi phẩm thả dù xuống giữa map: bên chiếm được nhận CP hoặc một đợt sửa chữa.
+   - Địch cướp tiếp tế: một nhóm địch nhắm vào Trạm tiếp tế CP hoặc kho của người chơi.
+5. Hậu cần của ta: đợt thả dù tiếp tế theo mốc, sửa chữa và nạp đạn cho quân ta trong một vùng.
+6. Thông tin:
+   - Nadia báo vị trí: lộ một vùng có quân địch trong vài giây.
+   - Bão nhiễu điện tử (nhiệm vụ của Venn khi còn là địch, và của Aurel): bản đồ nhỏ và radar tắt khoảng 20 giây; người chơi chỉ thấy những gì quân mình nhìn thấy trực tiếp. Có cảnh báo trước và đồng hồ đếm ngược tới khi hết.
+7. Mini boss giữa trận: một mini boss xuất hiện ở một giai đoạn của nhiệm vụ theo luật mini boss của prompt 20.
+8. Đổi kế hoạch: Kade đổi mục tiêu giữa trận bằng một câu thoại. Dùng ít, chỉ ở những bước ngoặt của cốt truyện; mục tiêu mới hiện rõ trên thanh nhiệm vụ và bản đồ nhỏ.
+9. Thời tiết và ngày đêm thay đổi giữa trận:
+   - Chuyển dần trong khoảng 20–30 giây, có thông báo và một câu thoại (ví dụ "bão tuyết đang kéo tới").
+   - Dùng đúng các hệ số thời tiết và ban đêm đã có (tầm nhìn, hiệu ứng lên đơn vị); không thêm cơ chế đổi địa hình.
+   - Hiệu ứng hình ảnh và âm thanh chuyển mượt; ở đồ họa Thấp dùng bản rút gọn.
+   - Kiểm tra lại các nhiệm vụ có thời tiết thay đổi vẫn thắng được ở độ khó Thường.
+
+E. GẮN SỰ KIỆN VÀO CHIẾN DỊCH
+1. Tự gắn sự kiện cho mọi nhiệm vụ theo tinh thần từng chương. Bắt buộc có các sự kiện tiêu biểu sau:
+   - Chương 1 Coast of Fire: xuồng đổ bộ địch đánh ngược từ biển; đợt đổ bộ thứ hai của Accord tới tiếp viện.
+   - Chương 2 Black Gold: đoàn xe chở dầu trung lập; Thorne chi viện lần đầu.
+   - Chương 3 The Long Winter: pháo dồn của Orlov; bão tuyết kéo tới giữa trận.
+   - Chương 4 Iron Harbor: tàu đổ bộ địch từ biển; tàu hỏa tiếp viện của Kessler; tàu dân sự chạy khỏi cảng (gắn với lựa chọn của chương ở prompt 22).
+   - Chương 5 Burning Canopy: bầy drone ập tới từ nhiều hướng; bão nhiễu điện tử của Venn.
+   - Chương 6 Counterstrike: phản công từ mọi hướng; đồng hồ ngừng bắn trong nhiệm vụ sơ tán Hollow Dam (hai bên ngừng bắn cho tới khi hết giờ; bên nào bắn trước thì mất thưởng); Brandt dựng phòng tuyến giúp lữ đoàn.
+   - Chương 7 Veyra: đồng minh đổi phe; dân quân trong thành phố xuất hiện lẻ tẻ giúp phe ta.
+   - Chương 8 Underworld: Tartarus trồi lên giữa trận; thợ mỏ bị giữ (gắn với lựa chọn của chương).
+   - Chương 9 Rough Water: đổ bộ từ biển; sương mù biển kéo tới.
+   - Chương 10 War in the Sky: không kích địch liên tục; Hawk yểm trợ; trời tối dần.
+   - Chương 11 Skygate: khoang đổ bộ rơi từ trời; vệ tinh bắn thử một thanh tungsten nhỏ (cảnh báo và sát thương theo luật đòn lớn của prompt 18, ở mức nhỏ).
+   - Chương 12 Helion: viện quân địch từ mọi hướng; và đợt "Tổng tấn công" của mọi đồng minh cũ cùng lúc (lực lượng của Brandt, drone của Venn, không quân của Hawk, Behemoth của Mara). Đây là lần duy nhất tiếp viện của ta đông ngang phe địch.
+   - Chương xen kẽ: Xen kẽ II có Locust săn Venn từ nhiều hướng; Xen kẽ III có Morrigan săn Hawk, kèm trời tối dần.
+2. Mỗi chương có ít nhất một nhiệm vụ có tướng địch ra trận (phần D.2).
+3. Không để hai nhiệm vụ liền nhau dùng cùng một bộ sự kiện.
+
+F. GIAO DIỆN SỰ KIỆN
+1. Thông báo sự kiện theo HUD gọn của prompt 11: icon theo loại sự kiện, một dòng chữ, ở mép trên, tự tắt; xếp hàng đợi nếu nhiều.
+2. Mũi tên hướng viện quân trên bản đồ nhỏ, và một chỉ báo nhỏ ở mép màn hình theo đúng hướng.
+3. Mục tiêu phụ giữa trận hiện trên thanh nhiệm vụ với đồng hồ; hoàn thành hoặc hết giờ thì có thông báo ngắn.
+4. Đơn vị tiếp viện của ta có ký hiệu Accord để phân biệt với quân người chơi.
+5. Xe của tướng địch đang ở trên sân có nhãn tên nhỏ trên xe.
+
+H. THOẠI TRONG TRẬN (chỉ chữ, không khung radio, không chân dung)
+1. Thống nhất mọi lời nói của nhân vật trong trận thành một hệ thoại dạng chữ, thay cho mọi chỗ gọi là "radio" hoặc "radio chatter" ở các prompt trước (prompt 4, 5, 9, 16, 18, 19, 20, 22). Áp hệ này cho toàn bộ thoại đã viết, không viết lại nội dung trừ khi cần rút gọn.
+2. Hình thức:
+   - Một dòng chữ kiểu phụ đề, ở giữa phía dưới màn hình, ngay trên khay thẻ; không đè lên thông báo sự kiện ở mép trên và không che khay thẻ.
+   - Định dạng: tên người nói in đậm, rồi câu thoại. Ví dụ "VARGA: Một khởi đầu đáng nể, chỉ huy."
+   - Tên người nói có màu theo phe (địch và ta khác nhau cả về màu lẫn độ sáng); câu thoại dùng màu chữ chính. Không có chân dung, không có khung lớn.
+   - Nền chỉ là một dải tối mờ ôm sát chữ, không phải panel.
+   - Chiều rộng tối đa khoảng một nửa màn hình; tối đa 2 dòng; cỡ chữ theo thang chữ thường của prompt 14 (khoảng 13–14 pt trên máy thật).
+   - Câu nào dài quá 2 dòng thì rút gọn câu thoại, không thu nhỏ chữ.
+3. Chỉ một câu cùng lúc, có mức ưu tiên:
+   - Cao nhất: thoại cốt truyện bắt buộc (ví dụ Thorne phản bội, Venn đầu hàng).
+   - Cao: thoại đi kèm cảnh báo (ví dụ ngay trước pháo kích, trước đòn lớn của boss).
+   - Thường: thoại khi sự kiện xảy ra (tướng ra trận, boss chuyển pha, viện quân tới).
+   - Thấp: thoại phản ứng theo cách người chơi đánh (prompt 22).
+   Câu mức thấp bị bỏ luôn nếu đang có câu mức cao hơn, không xếp hàng chờ tới lúc không còn liên quan. Câu mức cao và cao nhất được xếp hàng.
+4. Tần suất: thoại mức thường và mức thấp cách nhau tối thiểu khoảng 8–10 giây. Trong trận boss, giảm tần suất thoại mức thấp.
+5. Thời gian hiện: tự tắt theo độ dài câu, khoảng 3–6 giây; hiện và tắt bằng hiệu ứng mờ dần ngắn. Không bao giờ dừng trận để chờ người chơi bấm.
+6. Nhật ký thoại: khoảng 20 câu gần nhất, mở từ menu tạm dừng (không mở bằng cách chạm vào HUD, để tránh chạm nhầm trong lúc chơi).
+7. Tùy chọn trong Cài đặt: "Thoại trong trận: Đầy đủ / Chỉ quan trọng / Tắt". "Chỉ quan trọng" giữ thoại cốt truyện bắt buộc và thoại đi kèm cảnh báo. Ở chế độ "Tắt", thoại cốt truyện bắt buộc vẫn hiện.
+8. Khoảnh khắc cốt truyện (dùng rất ít, khoảng 5–6 lần cả chiến dịch, ví dụ Thorne phản bội, Varga ngã xuống, Icarus rơi): trận chậm lại khoảng 0,5 lần trong vài giây để 2–3 câu thoại liên tiếp có sức nặng; dòng thoại giữ đúng hình thức ở H.2.
+9. Xe của tướng đang nói có một dấu nhỏ trên nhãn tên (phần F.5) trong lúc câu thoại hiện; không dùng bong bóng thoại trên đơn vị.
+10. Thoại chỉ là chữ, không lồng tiếng.
+
+G. KIỂM TRA
+- Mỗi loại sự kiện có test hành vi riêng: kích hoạt đúng điều kiện; cảnh báo đúng thời gian theo độ khó; viện quân tới đúng hướng và đúng thành phần theo tướng; tiếp viện ta đúng tỷ lệ theo độ khó và không cộng dồn với cơ chế hỗ trợ bên đang thua.
+- Không có quân địch nào xuất hiện trong tầm nhìn gần của quân người chơi mà không có cảnh báo; không xe nào kẹt từ điểm xuất hiện.
+- Tướng địch ra trận: đúng loại (tinh nhuệ hoặc mini boss) theo chương và độ khó; mang đúng thụ động; rút lui đúng lúc khi cốt truyện cần; không rút lui ở trận cuối của tướng đó.
+- Thời tiết và ngày đêm: chuyển mượt, đúng thời gian, hệ số tầm nhìn đúng; không giảm FPS quá ngân sách ở đồ họa Thấp.
+- Thoại: đúng vị trí, không đè lên thông báo sự kiện và khay thẻ; tối đa 2 dòng ở cả hai ngôn ngữ và cỡ chữ Lớn; đúng thứ tự ưu tiên và giới hạn tần suất; câu mức thấp bị bỏ đúng lúc; nhật ký thoại đúng; tùy chọn trong Cài đặt đúng; khoảnh khắc cốt truyện chạy đúng. Test quét toàn bộ thoại để không câu nào vượt 2 dòng ở màn nhỏ nhất đang hỗ trợ.
+- Deterministic: replay và checkpoint khôi phục đúng mọi sự kiện và thoại đã và đang diễn ra.
+- Mô phỏng 5 seed: toàn bộ chiến dịch ở các độ khó; mọi nhiệm vụ thắng được ở độ khó Thường; báo cáo độ khó từng nhiệm vụ trước và sau khi thêm sự kiện.
+- Hiệu năng: đo FPS và tick ở nhiệm vụ nặng nhất (chiến dịch lớn chương 12 với viện quân mọi hướng và đợt Tổng tấn công) trên máy tầm thấp.
+- Chụp ảnh tự động thông báo sự kiện, mũi tên hướng, thoại đang hiện, tướng địch ra trận và thời tiết đang đổi, ở cả hai ngôn ngữ; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (hệ sự kiện, luật viện quân theo độ khó, hệ thoại trong trận).
