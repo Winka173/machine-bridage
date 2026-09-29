@@ -570,11 +570,11 @@ def boss_summary(game, h):
                      f"{a.get('front', 0)}/{a.get('side', 0)}/{a.get('rear', 0)}/{a.get('top', 0)}",
                      f"{len(parts)} ({sum(p.get('hp', 0) for p in parts) * 100:.0f}%)",
                      f"{float(d.get('Light', 0)):.0f}", f"{float(d.get('Heavy', 0)):.0f}", f"{float(d.get('Air', 0)):.0f}", f"{float(d.get('Structure', 0)):.0f}",
-                     e(big_txt), str(escort_count(escorts[v['id']])) if v['id'] in escorts else '—'])
+                     *unit_reach(v)[:3], e(big_txt), str(escort_count(escorts[v['id']])) if v['id'] in escorts else '—'])
     return ("<div class='section'><h2>10d. Tổng hợp boss</h2>"
             "<p>Mọi boss và mini boss cạnh nhau, đọc từ dữ liệu hiện tại: máu thân (trước hệ số độ khó), giáp trước/hông/sau/nóc, số bộ phận và phần máu của chúng, "
             "DPS duy trì lên xe nhẹ, xe nặng, máy bay và công trình (trước giáp), đòn lớn đầu tiên và số hộ tống trong mọi đợt.</p>"
-            + table(['Boss', 'Cấp', 'Tướng', 'Máu', 'Giáp T/H/S/N', 'Bộ phận', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'Đòn lớn', 'Hộ tống'], rows, 'dps')
+            + table(['Boss', 'Cấp', 'Tướng', 'Máu', 'Giáp T/H/S/N', 'Bộ phận', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'Tầm xa nhất', 'Tầm mặt đất', 'Tầm máy bay', 'Đòn lớn', 'Hộ tống'], rows, 'dps')
             + "</div>")
 
 
@@ -637,6 +637,17 @@ def blast_radii(game, h):
             + f"<h3>Vụ nổ khi bị phá ({len(death_rows)})</h3>"
             + table(['Đơn vị', 'Loại', 'Sát thương', 'Bán kính (m)'], [r for _, r in death_rows], 'dps')
             + "</div>")
+
+
+def unit_reach(v):
+    """A unit's reach: its longest weapon, its longest against ground and against air, and its shortest minimum range."""
+    ws = [w for w in v.get('weapons', []) if (w.get('damage') or 0) > 0]
+    far = max((float(w.get('range', 0) or 0) for w in ws), default=0)
+    ground = max((float(w.get('range', 0) or 0) for w in ws if w.get('targets') in ('Ground', 'All')), default=0)
+    air = max((float(w.get('range', 0) or 0) for w in ws if w.get('targets') in ('Air', 'All')), default=0)
+    mins = [float(w.get('minRange', 0) or 0) for w in ws if (w.get('minRange') or 0) > 0]
+    fmt = lambda x: f"{x:g}" if x else '—'
+    return fmt(round(far, 1)), fmt(round(ground, 1)), fmt(round(air, 1)), fmt(round(min(mins), 1)) if mins else '—'
 
 
 def rates_and_ballistics(game, h):
@@ -711,7 +722,7 @@ def rates_and_ballistics(game, h):
             move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(raw.get('TurnRate', 0), 0), f(raw.get('TurretTurnRate', 0), 0),
                               f(raw.get('Length', 0), 1), f(raw.get('Width', 0), 1), f(raw.get('HullRadius', 0), 1), f(float(v.get('vision', 0) or 0), 0),
                               f(raw.get('Standoff', 0), 0), f(raw.get('RearmTime', 0), 1), 'có' if raw.get('Stealth') else '—',
-                              f(raw.get('MaxPerSide', 0), 0), drawn(v.get('model'), scale)])
+                              f(raw.get('MaxPerSide', 0), 0), *unit_reach(v), drawn(v.get('model'), scale)])
     return ("<div class='section'><h2>10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển</h2>"
             "<p>Đọc thẳng từ dữ liệu game. <b>Viên/s</b> là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). <b>Xả</b> là thời gian hết một băng hay một loạt. "
             "<b>Nghỉ/nạp</b> là thời gian thay băng hay nghỉ giữa hai loạt. <b>Bệ phóng</b> là số lượt bắn trước khi phải nạp lại cả bệ. "
@@ -720,8 +731,8 @@ def rates_and_ballistics(game, h):
             + table(['Vũ khí', 'Tên thật', 'Trên', 'Viên/s', 'Viên/phút', 'TB viên/s cả chu kỳ', 'Loạt / băng', 'Xả (s)', 'Nghỉ/nạp (s)', 'Bệ phóng', 'Sát thương/phát', 'DPS khi xả', 'DPS duy trì'], rate_rows, 'dps')
             + f"<h3>Đường đạn</h3>"
             + table(['Vũ khí', 'Cỡ (mm)', 'Họ', 'Dạng', 'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
-            + f"<h3>Di chuyển và kích thước ({len(move_rows)} đơn vị)</h3>"
-            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe', 'Model vẽ: dài × rộng × cao (m)'], move_rows, 'dps')
+            + f"<h3>Di chuyển, tầm bắn và kích thước ({len(move_rows)} đơn vị)</h3>"
+            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe', 'Tầm xa nhất (m)', 'Tầm mặt đất', 'Tầm bắn máy bay', 'Tầm tối thiểu', 'Model vẽ: dài × rộng × cao (m)'], move_rows, 'dps')
             + props_and_rounds(game, h, sizes, weapons, owners)
             + "</div>")
 
