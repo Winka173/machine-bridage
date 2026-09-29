@@ -652,6 +652,8 @@
 .fc-hud__weapons { margin-top: var(--fc-space-2); }
 .fc-hud__counter { margin-top: var(--fc-space-1); }
 .fc-hud__orders { flex-direction: row; margin-top: var(--fc-space-2); }
+/* Play-test 6: Deselect, a close mark just over the selection panel's right-hand corner (it does not widen the panel). */
+.fc-hud__deselect { position: absolute; right: 0; top: -81px; }
 .fc-hud__order {
     flex-grow: 1; flex-basis: 0; min-height: var(--fc-touch); margin-right: var(--fc-space-1);
     align-items: center; justify-content: center; background-color: var(--fc-panel-raised);
@@ -787,7 +789,8 @@
 /* left: the minimap, and select-all and box-select as small faces on its right-hand corners */
 .fc-hud--compact .fc-hud__left { left: var(--fc-space-3); top: var(--fc-space-3); width: auto; flex-direction: row; align-items: flex-start; }
 .fc-hud--compact .minimap { width: var(--hud-minimap); height: var(--hud-minimap); }
-.fc-hud--compact .fc-hud__tools { flex-direction: column; margin: 0; }
+/* Two touch targets high, so select-all and box-select stand in the first column and zoom in and out in the second (play-test 6). */
+.fc-hud--compact .fc-hud__tools { flex-direction: column; flex-wrap: wrap; height: 164px; margin: 0; }
 .fc-hud--compact .fc-hud__tools > .fc-icon-btn { margin: 0; background-color: var(--fc-clear); align-items: flex-start; justify-content: flex-start; padding-left: var(--fc-space-1); }
 .fc-hud--compact .item-strip { top: 184px; width: 180px; }
 
@@ -862,6 +865,8 @@
 
 /* under the top strip: the boss, the fortress pieces, notices and radio, small */
 .fc-hud--compact .fc-hud__under { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
+/* Play-test 6: while the boss bar shows in the top row, the column under the row starts below it. */
+.fc-hud--compact .fc-hud--boss-top > .fc-hud__under { top: 96px; }
 .fc-boss--compact { width: 640px; margin-bottom: var(--fc-space-1); min-height: var(--fc-touch); }
 .fc-boss--collapsed { width: 340px; padding: var(--fc-space-1) var(--fc-space-2); }
 .fc-boss--collapsed .fc-boss__name, .fc-boss--collapsed .fc-boss__phase { font-size: var(--fc-fs-small); }
@@ -874,6 +879,18 @@
 .fc-boss-parts--mini .fc-boss-part__icon { width: 20px; height: 20px; }
 .fc-boss-parts--mini .fc-boss-part__cross { top: 3px; bottom: 3px; }
 .fc-root .fc-boss--compact.pressed { background-color: var(--fc-panel-selected); }
+/* Play-test 6: the compact boss bar shares the top row with the goal or the bosses destroyed count (it sat under them and
+   took too much room): one line of call sign, phase and chips over the bar, and smaller part icons. Opened by a tap it takes
+   a line of its own under the row. */
+.fc-hud--compact .fc-hud__top { flex-wrap: wrap; }
+.fc-hud__top > .fc-boss--compact { margin: 0 0 0 var(--fc-space-2); }
+.fc-hud__top > .fc-boss--collapsed { width: 300px; justify-content: center; }
+.fc-boss--collapsed .fc-boss__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+.fc-boss--collapsed .fc-boss__icon { width: 16px; height: 16px; margin-right: var(--fc-space-1); }
+.fc-boss--collapsed .fc-boss__big-icon { width: 16px; height: 16px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part { width: 26px; height: 22px; padding: 1px 3px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part__icon { width: 14px; height: 14px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part__cross { top: 2px; bottom: 2px; }
 .fc-hud--compact .gun-timer { height: auto; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
 .fc-hud--compact .fc-hud__toast { margin-top: var(--fc-space-1); }
 .fc-hud--compact .fc-hud__toast-face { max-width: 600px; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }

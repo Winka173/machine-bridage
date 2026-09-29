@@ -290,8 +290,11 @@ namespace MachineBrigade.Game.Hud
             return tag;
         }
 
-        /// <summary>A deck card: the render, name, cost and level; an empty slot is a plus that opens the deck.</summary>
-        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false, bool combat = false)
+        /// <summary>
+        /// A deck card: the render, name, cost and level; an empty slot is a plus that opens the deck. On the deck
+        /// screen (<paramref name="removable"/>) a tap takes the card out of the deck (play-test 6); elsewhere it opens its page.
+        /// </summary>
+        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false, bool combat = false, bool removable = false)
         {
             if (id == null)
             {
@@ -305,6 +308,7 @@ namespace MachineBrigade.Game.Hud
             }
             var data = CardData(id);
             data.Combat = combat;
+            if (removable) return new KitVehicleCard(data, () => ToggleInDeck(id), compact, showLevel) { Removable = true, name = "deck-card-" + id };
             return new KitVehicleCard(data, () => OpenDetail(id), compact, showLevel);
         }
 

@@ -141,6 +141,9 @@ namespace MachineBrigade.Sim.Strikes
         {
             var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
+            // Play-test 6: a dropped tower comes down on open ground near the mark, clear of what stands there.
+            if (support.Kind == SupportKind.Tower && TowerOf(support, team) is { } dropped && _world.Catalog.Vehicles.TryGetValue(dropped, out var droppedDef))
+                point = _world.ClearSpot(droppedDef, point, team);
             var line = support.LineRank > 0 && _world.StrikeRank(team, support.Id) >= support.LineRank ? support.LineScale : 1f;
             var strike = new Strike
             {

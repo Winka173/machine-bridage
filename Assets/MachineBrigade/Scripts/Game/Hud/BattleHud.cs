@@ -201,7 +201,8 @@ namespace MachineBrigade.Game.Hud
             {
                 _boss = new BossBar(Compact);
                 _boss.Parts.Tapped += (boss, part) => BossPartTapped?.Invoke(boss, part);
-                under.Add(_boss.Root);
+                // Play-test 6: the compact bar shares the top row with the goal (or the bosses destroyed count), smaller.
+                (Compact ? top : under).Add(_boss.Root);
                 var fortress = UiKit.Box("fortress-panel");
                 _superGun = new SuperGunTimer();
                 fortress.Add(_superGun.Root);
@@ -215,8 +216,8 @@ namespace MachineBrigade.Game.Hud
             _safe.Add(under);
 
             // Left column: the minimap and the map tools ---------------------------------------------
-            // Compact: a smaller minimap, no zoom buttons (pinch zooms), select-all and box-select as small
-            // icons on its right-hand corners (prompt 11 A1).
+            // Compact: a smaller minimap, select-all and box-select as small icons on its right-hand corners (prompt 11 A1),
+            // and beside them zoom in and out (play-test 6: the owner looked for them; pinch and the wheel zoom too).
             var left = Kit.Box("fc-hud__left");
             Minimap = new Minimap();
             Minimap.Clicked += p => MinimapClicked?.Invoke(p);
@@ -225,11 +226,8 @@ namespace MachineBrigade.Game.Hud
             tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke(), plain: Compact));
             _boxTool = new KitIconButton("expand", Strings.Get("hud.boxSelect"), () => BoxModeToggled?.Invoke(), plain: Compact);
             tools.Add(_boxTool);
-            if (!Compact)
-            {
-                tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f)));
-                tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f)));
-            }
+            tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f), plain: Compact) { name = "zoom-in" });
+            tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f), plain: Compact) { name = "zoom-out" });
             left.Add(tools);
             _safe.Add(left);
 
@@ -341,6 +339,11 @@ namespace MachineBrigade.Game.Hud
             Order(buttons, "stop", Strings.Get("cmd.stopShort"), () => StopPressed?.Invoke());
             Order(buttons, "retreat", Strings.Get("cmd.retreatShort"), () => RetreatPressed?.Invoke());
             (Compact ? details : command).Add(buttons);
+            // Play-test 6: a close mark over the panel's corner lets the group go (a tap on a selected unit does the same;
+            // a tap on the ground stays a move order). Over the corner, so the panel does not grow over the battlefield.
+            var deselect = new KitIconButton("close", Strings.Get("cmd.deselectShort"), () => DeselectPressed?.Invoke(), plain: true) { name = "deselect" };
+            deselect.AddToClassList("fc-hud__deselect");
+            command.Add(deselect);
             _safe.Add(command);
 
             // Deck -------------------------------------------------------------------------------------------
@@ -451,13 +454,16 @@ namespace MachineBrigade.Game.Hud
         internal PausePanel Pause => _pause;
 
         public event Action SelectAllPressed;
+
+        /// <summary>The selection panel's Deselect order (play-test 6).</summary>
+        public event Action DeselectPressed;
         public event Action StopPressed;
         public event Action RetreatPressed;
         public event Action AttackMovePressed;
         public event Action RestartPressed;
         public event Action BoxModeToggled;
 
-        /// <summary>The full HUD's zoom buttons (the compact HUD has none: pinch zooms).</summary>
+        /// <summary>The zoom buttons beside the minimap (both HUDs since play-test 6): the factor to zoom by.</summary>
         public event Action<float> ZoomPressed;
         public event Action<int> CardPressed;
         public event Action TargetCancelled;
@@ -599,11 +605,21 @@ namespace MachineBrigade.Game.Hud
         public void SetBossParts(MachineBrigade.Sim.Entities.Vehicle boss, int focused) => _boss?.Parts.Set(boss, focused);
 
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
-        public void SetBoss(string name, float health) => _boss?.Set(name, health);
+        public void SetBoss(string name, float health)
+        {
+            _boss?.Set(name, health);
+            BossOnTop(name);
+        }
+
+        /// <summary>The compact HUD's boss bar is in the top row: the column under the row makes room while it shows.</summary>
+        private void BossOnTop(string name) => _safe?.EnableInClassList("fc-hud--boss-top", Compact && _boss != null && name != null);
 
         /// <summary>A multi-phase boss: its bar marked at each phase, the phase it is in, and whether it is transforming.</summary>
-        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming) =>
+        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming)
+        {
             _boss?.Set(name, health, phase, marks, transforming);
+            BossOnTop(name);
+        }
         /// <summary>The safe area the controls sit in (the screenshot tool sets its insets).</summary>
         internal VisualElement SafeArea => _safe;
 

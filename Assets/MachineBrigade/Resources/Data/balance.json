@@ -1618,7 +1618,10 @@
     { "id": "uav_scan",          "kind": "Scan",          "cp": 2,  "cooldown": 45,  "delay": 2.0, "radius": 30, "count": 1, "duration": 10, "tier": "Small" },
     { "id": "remote_mines",      "kind": "Minefield",     "pen": 4, "cp": 5,  "cooldown": 60,  "delay": 2.0, "radius": 12, "count": 8, "duration": 60, "damage": 300, "blast": 4, "tier": "Large", "damageType": "ShapedCharge" },
     { "id": "field_tower",       "kind": "Tower",         "cp": 6,  "cooldown": 90,  "delay": 4.0, "radius": 4,  "count": 1, "duration": 60, "tier": "Small", "units": ["guard_tower", "atgm_tower"], "unitRank": 5 },
-    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" }
+    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" },
+    // Play-test 6 (DECISIONS 21E): the Gunship as a deck card: the AC-130 (sky_gunship) called for CP, orbiting its mark
+    // for 20 s (the Gunship item keeps 30 s and costs no CP).
+    { "id": "gunship_strike",    "kind": "Escort",        "cp": 12, "cooldown": 120, "delay": 3.0, "radius": 20, "count": 1, "duration": 20, "tier": "Large", "units": ["sky_gunship"] }
   ],
 
   "props": [

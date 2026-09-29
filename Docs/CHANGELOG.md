@@ -7,6 +7,25 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 6: UI, camera, audio
+
+- The Gunship is a deck card: the AC-130 on call for 12 CP, circling its mark for 20 s with its 105, 40 and 25 mm
+  guns (120 s cooldown), with the AC-130's picture on its card. Sold in the shop for 4,500 coins like the heavy
+  bomber (unlocked in test builds); the one-use Gunship item stays. The Mi-24 now reads "Heavy gunship" on its
+  cards, so only the AC-130 reads Gunship (DECISIONS 21E).
+- Deck: a tap on a card in the deck strip takes it out (the strip's cards carry a remove mark); cards in the deck
+  have a thick accent outline, an accent name and a check on their picture.
+- Battle camera: zoom buttons in the compact HUD beside select-all and box-select; a close mark over the
+  selection panel's corner, and a tap on a selected unit, let the selection go; one mouse-wheel notch now zooms 15 % (it
+  zoomed 0.1 %); a boss's entrance, phase change and fall keep the player's zoom and ease back to where the view
+  was, and a pan or zoom during the shot hands the view back at once.
+- Boss HUD (compact): the boss bar shares the top row with the goal or the bosses destroyed count, one line of call
+  sign and phase over the bar, with smaller part icons; a tap still opens it at full size.
+- Field tower: it lands on open ground near the mark, clear of houses, vehicles and towers, and its parachute
+  canopy rides over the tower's top instead of through its middle.
+- Sound: rain and wind well under the music (rain 0.15-0.18, from 0.35-0.5), softer thunder; the music ducks only
+  under alerts (a boss's big attack, a fortress's alarm) for a moment.
+
 ### Play-test 5: visuals
 
 - Every explosion is layered and grander, by calibre and tier: a white-hot core in the fireball, secondary fire

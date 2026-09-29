@@ -113,9 +113,35 @@ namespace MachineBrigade.Editor
                 insets = v => KitSafeArea.Apply(safe, v);
                 return host;
             };
+            Builder Gunship() => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = false;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                PlayerProfile.Unlock("gunship_strike");
+                var kept = new List<string>(MatchSettings.DeckSupports);
+                // The Gunship in the first support slot (in view on the strip), the barrage beside it.
+                MatchSettings.DeckSupports.Clear();
+                MatchSettings.DeckSupports.Add("gunship_strike");
+                MatchSettings.DeckLayout(true);
+                MatchSettings.DeckSupports.Add("artillery_barrage");
+                try
+                {
+                    var host = BuildMenu(catalog, "army-deck-supports", out var safe);
+                    insets = v => KitSafeArea.Apply(safe, v);
+                    return host;
+                }
+                finally
+                {
+                    MatchSettings.DeckSupports.Clear();
+                    MatchSettings.DeckSupports.AddRange(kept);
+                }
+            };
             foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
             // Prompt 15 E8: the icon legend is a long page; read at once.
             yield return ("screen-legend-vi-full", Menu("legend", true, false), new[] { Shapes[0] }, 1);
+            // Play-test 6: the deck screen's whole page with the supports shown, the Gunship card bought and in the deck.
+            yield return ("screen-army-deck-gunship-en-full", Gunship(), new[] { Shapes[0] }, 1);
             foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "army-outpost", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);
@@ -320,7 +346,7 @@ namespace MachineBrigade.Editor
                 {
                     hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", ("us", 2), ("enemy", 1)), 0.45f, 312f, new List<PointInfo>());
                     var boss = catalog.Vehicles.Values.Where(v => v.Boss && v.Parts.Count >= 5).OrderBy(v => v.Id).First();
-                    hud.SetBoss(Strings.Card(boss.Id), 0.62f, 1, new List<float> { 0.66f, 0.33f }, false);
+                    hud.SetBoss(hud.Compact ? BossBar.CallSign(Strings.Card(boss.Id)) : Strings.Card(boss.Id), 0.62f, 1, new List<float> { 0.66f, 0.33f }, false);
                     hud.SetBossHp(37200f, 60000f);
                     var shares = new List<float>();
                     var broken = new List<bool>();
@@ -528,9 +554,15 @@ namespace MachineBrigade.Editor
             setInsets?.Invoke(KitSafeArea.Insets(shape.SafeArea, new Vector2(shape.Width, shape.Height), panelSize));
             for (var i = 0; i < 3; i++) simulator.FrameUpdate();
             contentHeight = 0f;
-            var scroll = root.Q<ScrollView>();
-            if (scroll != null)
-                contentHeight = panelSize.y + Mathf.Max(0f, scroll.contentContainer.layout.height - scroll.contentViewport.layout.height) + 8f;
+            // The page's own scroll: the vertical one shown with the most below its fold (play-test 6: the deck page's first
+            // scroll view is its horizontal deck strip).
+            var overflow = 0f;
+            root.Query<ScrollView>().ForEach(scroll =>
+            {
+                if (scroll.mode == ScrollViewMode.Horizontal) return;
+                overflow = Mathf.Max(overflow, scroll.contentContainer.layout.height - scroll.contentViewport.layout.height);
+            });
+            if (root.Q<ScrollView>() != null) contentHeight = panelSize.y + overflow + 8f;
             Texture2D shot = null;
             if (!measureOnly)
             {

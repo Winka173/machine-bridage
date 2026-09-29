@@ -131,7 +131,7 @@ namespace MachineBrigade.Game.Match
 
         public static readonly string[] AllSupports =
             { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike",
-              "uav_scan", "remote_mines", "field_tower", "sead_strike" };
+              "uav_scan", "remote_mines", "field_tower", "sead_strike", "gunship_strike" };
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;
@@ -480,8 +480,12 @@ namespace MachineBrigade.Game.Match
             ApplyLanguage();
         }
 
+        /// <summary>Checks that tap through the screens turn saving off, so they never write the player's saved settings.</summary>
+        internal static bool SaveSuspended { get; set; }
+
         public static void Save()
         {
+            if (SaveSuspended) return;
             // An empty deck would mean "anything" to the simulation; refill it instead.
             if (DeckVehicles.Count == 0) DeckVehicles.AddRange(DefaultVehicles);
             if (DeckSupports.Count == 0) DeckSupports.AddRange(DefaultSupports);

@@ -7869,3 +7869,113 @@ flight on its 19T 3.6 s cooldown), `ModelTests.RoundsLeave` (3), `EveryWeaponMou
 `campaign.json` (`c4m01` unlocks), `CombatSystem.cs`, `MovementSystem.cs`, `DamageSystem.cs`, `TacticalAi.cs`,
 `VehicleView.cs` / `.Deploy.cs`, `EffectsDirector.cs` (two event cases), `Strings.cs`, `GuideText.cs`, `UnitText.cs`,
 `Icons.cs`, `MenuScreen*.cs`, `Progression.cs`, `build_assets.py` and `Docs/art/models.json` (`resolve_merge.py`).
+
+## 21E. Play-test 6: the Gunship card, deck taps, the battle camera, the boss bar, the field tower, the mix (2026-09-29)
+
+The owner's play-test 6 items marked [E] (`Docs/prompts/requests_vi.md`). Branch `feature/pt6-ui` from lead/integration
+a864c3f. Agents F (behaviour, rates), H (effects, models, sizes), L (the bosses) and G (boss balance, economy, Boss Hunt)
+do the other items.
+
+### A. The Gunship (the owner's top item)
+
+**Why it could not be found.** The sky gunship's card was retired in prompt 2 (`CardMerges.Retired`, its 4,500 coins
+refunded) and 19B E.3 made `sky_gunship` `"card": false`: the AC-130 only flew for the one-use Gunship item
+(`gunship_support`), bought in the shop's Items tab and called from the item strip. No card in the deck lists
+(`MatchSettings.AllSupports`, `AllVehicles`) flew it. The deck screen's only "Gunship" was the short name of the Mi-24
+(`gunship_heli`), a helicopter.
+
+**Decision: a support card, not a vehicle.** `gunship_strike` (Escort, like the item): 12 CP, 120 s cooldown, 3 s
+delay, the `sky_gunship` orbiting its mark for 20 s within 20 m (the item keeps its 30 s, no CP, one use). A support
+because the design keeps the AC-130 a called aircraft (19B E.3: owned for a whole battle it would outclass every ground
+unit, and neither the AI's buying nor the balance tables were built for it), the Escort kind already calls, posts and
+times it (`StrikeSystem`, the `GuardPoint` of 19P), and "call it in battle" is what a support card does. Names: "Gunship"
+in English, "Pháo hạm AC-130" in Vietnamese (short "Pháo hạm": prompt 21's scan keeps English words off the Vietnamese
+screens); the Mi-24's English short name is now "Heavy
+gunship" (its full name already was) so only the AC-130 reads Gunship. Route: premium, 4,500 coins in the shop's cards
+(the old card's price; the heavy bomber is 4,000); unlocked in the test builds (`Progression.TestUnlockAll`). Its card
+picture is the AC-130's render (`sky_gunship.png`, a manifest entry with the model's hash, no new render), its icon
+`ac130`, its guide and info in both languages. The numbers are a first placing for G's balance pass.
+
+**Proof:** `Docs/art/pt6/deck-gunship.png` (UiShots `screen-army-deck-gunship-en-full`: the demo profile with the card
+bought and put in the deck: first support slot of the deck strip, and in the collection filtered to the supports, with
+the new in-deck outline). The capture's debug screen `army-deck-supports` (the deck view with the Support filter) is in
+`MenuScreen.ScreenNames`, so `UiLayoutTests` check it. Tall captures now measure the page's vertical scroll (the deck
+page's first scroll view is its horizontal strip, which gave a 728 px "full" page).
+
+### B. Deck
+
+- **A tap on a card in the deck strip takes it out** (`DeckCard(..., removable: true)` → `ToggleInDeck`; the last card
+  of a kind stays, with its note, as before). The strip's cards carry a remove mark (a cross on a dark square on the
+  picture). The detail page stays a tap away from the collection card (its dialog: Info / Remove) and from the home
+  screen's strip.
+- **In-deck highlight:** a 3-4 px outline in the accent (`--fc-accent`) all round instead of a 1 px light line on three
+  sides, the name in the accent, and a check on an accent square on the picture. The outline is drawn over the card
+  (`fc-vcard__outline`), so the card's parts stay in line with its row's (`UiLayoutTests.CardsInARowLineUp`).
+
+### C. Battle camera
+
+- **Zoom buttons** in the compact HUD too (prompt 11 A1 had left them out: pinch only): plain faces in a second column
+  beside select-all and box-select (the column wraps at two targets), ±25 % a tap about the screen's centre.
+- **Deselect:** a close mark just over the selection panel's right-hand corner (compact and full; a fourth order widened
+  the compact strip past the HUD's 30 % cover limit and broke "DESELECT" in large text), and a tap on a unit already
+  selected clears the selection. A tap on empty ground stays a move order (it is
+  the game's main order), so it does not deselect.
+- **Mouse wheel:** Input System 1.20's default (uniform scroll) reports a notch as 1; the code divided by 120, so a notch
+  zoomed 0.1 %. `TouchGestures.WheelZoom`: a notch is 15 % whether the system reports 1 or 120, at most three a frame.
+- **Boss shots give the view back.** A boss's entrance (`StoryPan`) and the slow-motion shots of its phase change and
+  fall (`StartCinematic`) hold the player's view (`RtsCamera.Hold`) and ease back to it when they end (`ReturnHeld`,
+  about a second, exactly there after two). The slow-motion shot no longer closes in (it went to 82 % zoom). A pan,
+  pinch, wheel, zoom button or minimap tap during a shot hands the view over at once and nothing is pulled back
+  (`MatchRunner.TakeTheView`; the story pan used to keep pulling against the player's pan).
+
+### D. Boss bar (compact HUD, prompt 11's)
+
+The bar moves into the top row beside the goal or the bosses destroyed count (it sat in the column under them, two
+lines of name and a row of 20 px part icons). Collapsed: 300 px wide (340), one line of call sign (the name before
+" · ", `BossBar.CallSign`: "Juggernaut" of "Juggernaut · Armoured Train"), phase and chips over the bar, 16 px skull and
+big-attack icons, parts 26 × 22 with 14 px icons (36 × 30 and 20 px). A tap opens it at full size on a line of its own
+under the row (the row wraps). The column under the row starts at 96 px while the bar shows there (64 otherwise). The full HUD is unchanged.
+
+### E. Field tower fire support
+
+Two faults. The simulation put the tower exactly on the mark, checking only that the mark's centre was walkable, so its
+hull could stand in a house's wall, on a tank or in another tower. And the parachute's canopy hung 5 m (scaled) over the
+model's origin, through the middle of the taller watchtower. Now `SimWorld.ClearSpot` picks where it lands when it is
+called (`StrikeSystem.Launch`, so the warning ring and the parachute use the same spot): the nearest spot to the mark,
+in rings 2 m apart out to 16 m, whose whole footprint is open (the centre and eight points at the hull + 0.5 m), clear
+of every ground vehicle by both hulls + 0.5 m, not in a gate or lane gap, and never in the enemy's camp; the mark itself
+on open ground. `AirDrops`: the canopy rides 2 m over the model's own top (its meshes' bounds) and the cords meet the
+top, for every airdropped vehicle.
+
+### F. Sound
+
+At the default settings the battle music plays at about 0.34 (bus 0.55 × music 0.7 × the track's trim); the rain loop
+was 0.35 (rain) and 0.5 (storm) with the wind at 0.24 and 0.4 on top. Now rain 0.15, storm 0.18, sandstorm 0.1; wind
+0.1 in clear weather, 0.12 rain, 0.14 storm, 0.2 sandstorm, 0.1 snow, 0.07 night (the lobby's 45 % as before): rain and
+wind together stay under the music. Thunder 0.55 (0.85). **Ducking:** the music ducks only under alerts
+(`MusicDirector.Alert`: to 60 % for 2.5 s when a boss's big attack sounds the siren or a fortress's alarm is heard);
+nothing else ducks it in battle (the menu's In action range keeps its own duck).
+
+### G. Tests
+
+New `PlayTest6UiTests` (the Gunship card's data, name, route and picture, and only it reads Gunship; the card called
+for its CP, cooldown, arrival and leaving; a field tower beside a house's wall and beside a parked tank, and on the
+mark on open ground; the wheel's step at 1 and 120 a notch; a boss shot giving the view and zoom back and not after a
+hand move; the call sign; the weather under the music and the alert's duck) and
+`KitInteractionTests.ATapOnACardInTheDeckStripTakesItOut` (with `MatchSettings.SaveSuspended`, so the tap does not write
+the player's saved settings). Captures: `Docs/art/pt6/deck-gunship.png`, `hud-boss-top-row.png`, `hud-deselect.png`.
+Compact HUD cover (16:9): Conquest 29.2 % (28.5), a boss mission 26.1 % (27.1), Siege 29.6 % (28.9).
+
+Run once each: compile; `UiLayoutTests`, `KitInteractionTests`, `L10nTests`, `L10nSwitchTests`,
+`LocalisationScanTests`, `InActionTests`, `PlayTest6UiTests`, `SupportTextTests`, `CardRenderTests`, `RosterMergeTests`,
+`RosterRoleTests`, `PlayTest5VisualTests`, `StringsTests`: 158 of 159 pass. **Failing, already on lead** (checked on
+a864c3f with this work stashed): `RosterRoleTests.TheRadarRevealsGunsThatFireAndOurArtilleryHitsThemHarder`.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (one support line after `sead_strike`), `Strings.cs`, `GuideText.cs`, `MenuScreen.cs` / `.Army.cs` /
+`.Home.cs` / `.Shop.cs`, `MatchSettings.cs` (`AllSupports`, `SaveSuspended`), `Progression.cs`, `UI/Cards/manifest.json`,
+`Tokens.uss`, `Screens.uss`, `KitCards.cs`, `BattleHud.cs`, `MissionBar.cs`, `ModeSessions.cs` (`ShowBoss`),
+`MatchRunner.cs` (the camera's update and the HUD's wiring), `SelectionController.cs`, `TouchGestures.cs`,
+`RtsCamera.cs`, `StrikeSystem.cs` (`Launch`), `SimWorld.cs` (`ClearSpot`), `AirDrops.cs`, `Weather.cs`,
+`AudioDirector.cs`, `MusicDirector.cs`, `UiShots.cs`.

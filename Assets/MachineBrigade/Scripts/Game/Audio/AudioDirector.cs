@@ -113,6 +113,9 @@ namespace MachineBrigade.Game.Audio
         /// <summary>The lobby's wind against a battle's.</summary>
         private const float LobbyAmbience = 0.45f;
 
+        /// <summary>A thunderclap's level (0.85 before play-test 6, when the storm drowned the music).</summary>
+        internal const float ThunderLevel = 0.55f;
+
         /// <summary>The In action range's shots and blasts against a battle's (the menu music is ducked under them).</summary>
         public const float RangeGain = 0.6f;
 
@@ -177,7 +180,8 @@ namespace MachineBrigade.Game.Audio
                 _voices[i] = new Voice { Source = source, Filter = filter };
             }
             _ambient = Loop("Wind", "wind_loop", () => SoundSynth.Wind(9));
-            _ambient.volume = _lobby ? 0.16f * LobbyAmbience : 0.16f;
+            // Play-test 6: the wind sits under the music (0.16 before).
+            _ambient.volume = _lobby ? 0.1f * LobbyAmbience : 0.1f;
             _ambient.Play();
             _rotor = Loop("Rotors", "rotor_loop", () => SoundSynth.Rotor(3));
             _rotor.volume = 0f;
@@ -326,12 +330,17 @@ namespace MachineBrigade.Game.Audio
                     // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
                     case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
                         if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
+                        MusicDirector.Current?.Alert();
                         Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
                         break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
                         // The fortress's own alarm: heard as far as the fortress is near the view.
                         var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);
-                        if (alarm < 120f) _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
+                        if (alarm < 120f)
+                        {
+                            _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
+                            MusicDirector.Current?.Alert();
+                        }
                         break;
                     case SimEventKind.StageCleared when _playerTeam >= 0:
                         _ui.PlayOneShot(_captured, 0.6f);
@@ -426,7 +435,7 @@ namespace MachineBrigade.Game.Audio
             {
                 if (now < _thunderAt[i]) continue;
                 _thunderAt.RemoveAt(i);
-                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], 0.85f);
+                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], ThunderLevel);
             }
             for (var i = _delayed.Count - 1; i >= 0; i--)
             {
