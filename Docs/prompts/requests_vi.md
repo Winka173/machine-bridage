@@ -51,3 +51,26 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 19:40) tôi không thấy máy bay gunship của tôi, nó phải có đại bác và súng trường như ngoài đời
 - (29/09 19:40) 1 số phương tiện trong khá giống nhau, vẽ lại cho khác  [agent B]
 
+## Play-test 5, 29/09 (agent C: hình ảnh và model, DECISIONS 20V; agent D: nhịp bắn, hành vi, tốc độ, siege tank, 20W)
+
+- (29/09 21:50) trong inaction preview thì đừng cho địch là các xe tạo khói, nên chọn các xe đủ loại giáp  [C]
+- (29/09 21:50) hiệu ứng cháy các phương tiện khi máu thấp khá xấu, hãy tạo mới  [C]
+- (29/09 21:50) các hiệu ứng nổ từ đạn xe tank bắn tăng tầm nổ lên 20%, và thời gian tồn tại lên 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các artillery / motart đạn bắn xa tăng tầm nổ thêm 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các tên lửa tăng thêm 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các drone thêm 20%  [C]
+- (29/09 21:50) anti air, tăng thời gian bắn và giảm thời gian nạp đạn, bắn 5s liên tục chỉ nạp khoảng 1s, cân bằng lại damage, nên áp dụng chung cho các xe có autocanon  [D]
+- (29/09 21:50) sam launcher, thermobaric launcher, heavy rocket artillery, ballistic missle laucher, long range sam: tên lửa bay giảm bớt độ dài lửa sau đuôi, thermobaric launcher và heavy rocket artillery giảm tốc tên lửa bằng với sam  [C: lửa đuôi; D: tốc độ]
+- (29/09 21:50) attack jet: tên lửa bay đang quá nhanh. giảm 25%  [D]
+- (29/09 21:50) fpv drone carrier giảm size drone 20%, và nhìn drone có vẻ hơi low quality, nâng lên  [C]
+- (29/09 21:50) jet và steath jet có auto canon update tương tự như trên, và nên có hành vi mới là bay theo đuôi xả auto canon liên tục, steath jet nên update lại model, nhìn ở giữa quá ít chi tiết  [D: nhịp bắn, hành vi; C: model]
+- (29/09 21:50) railgun truck nên có hiệu ứng cháy khi bắn bên kia như focused laser tank  [C]
+- (29/09 21:50) bunker vehicle: model sau khi biến hình còn quá xấu  [C]
+- (29/09 21:50) thêm 1 xe tank như thành siege tank như starcraft 2, khi vào siege mode sẽ thành mortar  [D]
+- (29/09 21:50) tôi không thấy gunship, nó không phải là heavy bomber, nếu thiếu thì làm mới gunship lại, xem các design ngoài đời, có gắn auto canon và đại bác  [C]
+- (29/09 21:50) drone mothership, giảm tốc độ drone bay 40%  [D]
+- (29/09 21:50) airstrike: zoom bự ra ngoài do tôi ko thấy máy bay, tất cả fire support cũng nên zoom ra ngoài  [C]
+- (29/09 21:50) cram phải luôn bắn nhiều chứ không phải bắn 1 cái là rụng tên lửa  [D]
+- (29/09 21:50) gun turret tăng tầm nổ 30%  [C]
+- (29/09 21:50) rocket battery giảm tốc độ bay tên lửa bằng như sam  [D]
+- (29/09 21:50) patriot battery giảm lửa đuôi tên lửa như trên  [C]
