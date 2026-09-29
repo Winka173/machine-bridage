@@ -7,6 +7,16 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.30.0: Prompts 19-22 (the Silver Bug as an orbital spacecraft; twelve chapters in four acts, boss templates, Boss Hunt; the Sandbox and bilingual text; the story rewrite, Commanders, narrative mechanics, new maps and bosses), play-tests 4-8, the boss and mode balance, and the 261-page design review
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.29.0 (newest first): 21c00bf design review PDF (261 pages: rates, reloads and
+ballistics, sizes, blast radii, reach, boss health and DPS, prices, commanders, a reference for every unit); 393cb34 play-test 8 B;
+be456db play-test 8 A; 4f10422 prompt 22 D; 7904d73 prompt 22 F; 2f45a5d boss and mode balance; e5ad3c7 prompt 22 E; prompt 22
+pass 1, play-tests 4-7, prompts 19-21 and the balance passes below.
+
+
 ### Play-test 8 B (DECISIONS 22R)
 
 - Burning vehicles burn in three stages (catching, burning, ablaze): broad flames over the engine deck with taller
