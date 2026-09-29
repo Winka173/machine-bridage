@@ -7,6 +7,22 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Missile speeds, fire rates, models
+
+- No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,
+  the Iskander, the towers' SAMs and Iron Dome, and the bosses' big-attack missiles. Rockets keep their speed; plumes
+  follow the new speeds. `CounterTests` hold (DECISIONS 19R).
+- Guns fire at their real rate (up to 60 rounds a second): the Gepard 1,100 rpm, the Tunguska mount at the cap, the
+  ZU-23 1,800, the minigun and the Su-25's GSh-30-2 3,000, the F-35's GAU-22 3,300, the Mi-24P's GSh-30K 2,400, the
+  M2 550, the PKT 750, the AK-630 at the cap, and so on, in real bursts; the pause after a burst keeps each weapon's
+  damage a second. Grad and TOS ripples at their real interval. The towers' real rates are listed for the tower pass.
+- The bunker vehicle is redrawn: on the move a walled engineer hull with a dozer blade; digging in, the spades and
+  blade bite, the hull sinks into a spoil bank with sandbags, the side plates fold down over it and the turret rises
+  on its telescopic mount. (The old spades and plate had never moved: the spawn merged them into the hull.)
+- Look-alikes redrawn: the light tank (amphibious, a 57 mm module forward, trim vane), the Titan (a second,
+  superfiring turret), the laser tank (a beam director on a yoke, a power module) and the shield carrier (a tall
+  emitter mast with a halo). Card pictures to render.
+
 ### Tower art
 
 - Every tower's two rank-7 branches have models of their own (32, named `<tower>_a` / `_b` in the spec's order): the

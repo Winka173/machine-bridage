@@ -162,6 +162,12 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         internal static readonly Regex PartPattern = new(@"^Part_[a-z]+(\.\d+)?$", RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): the bunker vehicle's digging-in parts (Deploy_blade, Deploy_plate_l, Deploy_berm
+        /// ...), each its own rigid group so VehicleView.Deploy can swing, raise or grow it at every detail level.
+        /// </summary>
+        internal static readonly Regex DeployPattern = new(@"^Deploy_[a-z]+(_[lr])?(\.\d+)?$", RegexOptions.IgnoreCase);
+
         /// <summary>Models whose radar turns slower than the usual 120 degrees a second (an EW tower's jammer head).</summary>
         private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f };
 
@@ -1152,7 +1158,8 @@ namespace MachineBrigade.Game.Rendering
         private static bool IsMovingPart(Transform t)
         {
             var name = t.name;
-            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name)) return true;
+            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name) ||
+                DeployPattern.IsMatch(name)) return true;
             if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
             if (RecoilPattern.IsMatch(name) && t.parent != null &&
                 (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;

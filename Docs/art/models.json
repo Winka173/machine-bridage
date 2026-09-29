@@ -205,7 +205,7 @@
   },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
-    "triangles": 6344
+    "triangles": 9564
   },
   "bus": {
     "file": "bus.glb",
@@ -685,7 +685,7 @@
   },
   "laser_tank": {
     "file": "laser_tank.glb",
-    "triangles": 6240
+    "triangles": 7268
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -697,11 +697,11 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 7080
+    "triangles": 6748
   },
   "light_tank_hd": {
     "file": "light_tank_hd.glb",
-    "triangles": 16606
+    "triangles": 15078
   },
   "lighthouse": {
     "file": "lighthouse.glb",
@@ -1009,7 +1009,7 @@
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
-    "triangles": 5320
+    "triangles": 7380
   },
   "shield_generator": {
     "file": "shield_generator.glb",
@@ -1161,7 +1161,7 @@
   },
   "titan_tank": {
     "file": "titan_tank.glb",
-    "triangles": 9768
+    "triangles": 11144
   },
   "townhouse": {
     "file": "townhouse.glb",

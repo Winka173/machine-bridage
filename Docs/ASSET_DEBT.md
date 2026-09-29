@@ -132,3 +132,12 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The steel fortress's two machine-gun turrets | Both fire from the heavy turret's one `mg` muzzle | `Mount_mg` / `Mount_mg2` on `heavy_turret_b` |
 | Tower shields' beams to each tower, the loot depot's pay-out, the radar's air picture | None (the rules work) | Effects on `Vehicle.WardHp` / `WardFrom`, `EconomySystem.LootPaid`, `VehicleDef.RevealAir` |
 | Screenshots of every branch and rank in Docs/ui-screens | None | The lead, after the art merge |
+## Play-test 4 (DECISIONS 19R)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Card pictures of bunker_vehicle, light_tank (from light_tank_hd), titan_tank, laser_tank, shield_carrier (and the elites that wear them) | The old pictures (`CardRenderTests` lists the five) | The lead's graphics run (`CardRenders.RenderBatch`) |
+| "In action" clips of the five | The old models' clips | New clips; the bunker vehicle's should show it digging in |
+| The bunker vehicle digging in | Parts swing, sink and grow (VehicleView.Deploy); no dust | Earth spray from the blade and spades, dust as the hull sinks, a dig sound |
+| The bunker's spoil bank | One shared shape round the hull | A few shapes for variety, snow and sand tints on those battlefields |
+| Laser tank, shield carrier | Redrawn silhouettes on the prompt-17 hulls (still simple parts) | The full 3d_astra detail pass (panel lines, bolts) |

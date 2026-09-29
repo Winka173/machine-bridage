@@ -289,6 +289,37 @@ namespace MachineBrigade.Tests
             }
         }
 
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): the bunker vehicle's digging-in parts survive the spawn's merge as their own
+        /// groups with their meshes (the old spades and plate were merged into the hull and never moved), the turret
+        /// rides its telescopic mount, and the spoil bank is stored at 1 % so it never shows on the move.
+        /// </summary>
+        [Test]
+        public void BunkerVehicleKeepsItsDeployPartsApart()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Deploy Test").transform;
+            try
+            {
+                var bunker = models.Spawn("bunker_vehicle", 0, parent);
+                foreach (var name in new[] { "Deploy_blade", "Deploy_plate_l", "Deploy_plate_r", "Deploy_spade_l", "Deploy_spade_r", "Deploy_riser", "Deploy_berm" })
+                {
+                    var part = Find(bunker.Root.transform, name);
+                    Assert.IsNotNull(part, name);
+                    Assert.IsNotNull(part.GetComponentInChildren<MeshRenderer>(true), $"{name} keeps its own mesh");
+                }
+                Assert.IsTrue(bunker.Turret.IsChildOf(Find(bunker.Root.transform, "Deploy_riser")), "the turret rides its mount");
+                Assert.Less(Find(bunker.Root.transform, "Deploy_berm").localScale.y, 0.05f, "the bank is hidden on the move");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
         /// <summary>The high-detail variants (High graphics) keep every pivot and muzzle of the normal model, in the same place.</summary>
         [TestCase("main_battle_tank"), TestCase("light_tank"), TestCase("heavy_tank"), TestCase("apc"), TestCase("scout_jeep"),
          TestCase("aa_vehicle"), TestCase("artillery"), TestCase("tank_destroyer"), TestCase("attack_helicopter"), TestCase("attack_jet"),
