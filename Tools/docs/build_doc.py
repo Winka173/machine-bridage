@@ -254,6 +254,7 @@ def build(game, imgdir):
 
     # ------------------------------------------------------------------ campaign and the programme (prompts 1-6)
     h = {'esc': esc, 'table': table, 'img': img, 'num': num, 'guide_html': guide_html, 'GOAL_VI': GOAL_VI}
+    out.append(programme.modes_and_ai(game, h))
     out.append(programme.campaign(game, h))
     out.append(programme.multistage(game, h))
     out.append(programme.operations(game, h))
@@ -280,6 +281,8 @@ def build(game, imgdir):
              f"{(v['dpsVs']['Heavy'] / max(1, v['cost'])):.1f}"] for v in game['vehicles']]
     out.append("<div class='section'><h2>9. Bảng DPS tổng hợp</h2>"
                + table(['Xe', 'Lớp', 'Giáp', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
+
+    out.append(programme.combat_value(game, h))
 
     # ------------------------------------------------------------------ weapons
     dt = game['damageTable']
@@ -352,6 +355,8 @@ def build(game, imgdir):
                + table(['Hỗ trợ', 'Loại', 'CP', 'Hồi', 'Sát thương', 'Bán kính', 'Số lượng', 'Thời gian'], rows)
                + f"{img(imgdir / 'r6' / 'supports.png', 'shot')}<div class='caption'>Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên lửa hành trình, napalm, "
                "ném bom rải thảm, MOAB, bom chùm, máy bay pháo, EMP, khói, tiếp tế, chi viện).</div></div>")
+
+    out.append(programme.ammo_system(game, h))
 
     # ------------------------------------------------------------------ gear
     g = game['gear']
