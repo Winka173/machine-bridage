@@ -9801,3 +9801,138 @@ touch: 32 of 32.
 balance.json (the sky_gunship row), Strings.cs (`note.sky_gunship`), GuideText.cs (`guide.sky_gunship`),
 EffectsDirector.cs (`ShowDamage`, `Dispose`), Lit.shader, build_assets.py and Docs/art/models.json (as always:
 `Tools/art/resolve_merge.py`), the card manifest.
+
+## 23H. In-battle dialogue: one subtitle line instead of the radio (2026-09-30)
+
+Prompt 23 H and F.1 (`Docs/prompts/prompt23_vi.txt`). Branch `feature/p23-dialogue` from lead 8e3af97. The mission
+event system (A-D) is built in parallel; it feeds this system through the contract below.
+
+### H.1: one system for every line
+
+**Decided.** Every character's line in a battle goes through one `DialogueDirector` (`Game/Match/Dialogue.cs`), owned
+by `MatchRunner` (`MatchRunner.Dialogue.cs`): the campaign's lines (`RadioDirector`: a mission's own lines, the usual
+ones, the general's reactions of prompt 22 D.4), the Radio events of every mode (a boss arriving, its tiers and escorts,
+naval events, the betrayal, a boss fleeing), a boss's general at a phase change, Command's report on a broken part,
+Recon's report on an elite, and the player's commander's first words (prompt 22 F.4). The old `RadioPanel` (portrait,
+frame, tap to skip) is gone; the portraits stay on the menu cards. The commander's win and loss words stay on the
+result card: they are said after the battle, not in it.
+
+**The texts are kept.** Older texts carry their speaker in the text (`Kessler: "…"`, `Command: …`, `Chỉ huy: …`);
+`DialogueText.Split` takes a known prefix off (and the quotes round the words) and uses it as the speaker, so the line
+reads `KESSLER: Stand still for me.` The speaker's name on the subtitle is one short name per character
+(`dialogue.name.<id>`: Command, Recon, Kade, Nadia, Mara, Hawk, Thorne, Wolff, Venn; the others their surname), so a
+character is not "Raven" in one line and "Wolff" in the next. 24 texts (20 keys) passed two lines at Large text on the
+narrowest screen and were shortened in the language that did (words cut, the meaning kept): Recon's elite report,
+Command's drone-hijack warning (Icarus), three of Kessler's Leviathan lines and his super-gun line, four part reports
+(main engine, CIWS, engine room, uplink) and ten mission lines. A broken part's report names the boss by its call sign (`Atlas`, not `Atlas · Super-Heavy
+Command Vehicle`), which is how the lines read anyway.
+
+**Priorities of today's lines** (`DialogueRules.PriorityOf`, `RadioDirector.PriorityOf`): the betrayal (`radio.betrayal`)
+is a story beat (0); a mission's own lines at the start, at a time, at a stage and at the end tell the mission's story
+(0); a boss's big-attack warnings (`radio.bigattack.*`, and any key with `.warn`) are warnings (1); a boss arriving, a
+phase, a tier, a broken part, an elite, naval events, a mission's lines on a capture or a loss, the usual lines and the
+commander's first words are event lines (2); the general's reactions are reactions (3). A Radio event's own priority
+wins.
+
+**Sides.** Command and Recon speak for us whatever the event's team. Varga, Orlov, Kessler, Aurel and Wolff are always
+the enemy; Brandt, Venn and Thorne are when they lead the mission's enemy (`MissionDef.General`) or the event is the
+enemy's (team 1): they change sides in the story. The player's commander is always ours, a general commander too.
+
+### The event system's contract
+
+- Game side: `MatchRunner.Say(key, priority, team, moment, unit, arg)` or `Say(DialogueLine)`; `MatchRunner.Dialogue`
+  is the director.
+- Sim side (no engine code needed): emit a `SimEventKind.Radio` event with `DefId` = the text key, `Team` = the side,
+  `Value` = priority + 1 (1 story, 2 warning, 3 event, 4 reaction; 0 lets the key decide), `Mount` = 1 to open a story
+  moment, `Entity` = the unit that speaks (optional). `DialogueRules.FromEvent` reads it; `RadioDirector` passes it on in
+  a campaign mission, `MatchRunner` in the other modes. A factory for it goes in `SimEvent.cs` with the event system
+  (that file is theirs).
+
+### H.2: the subtitle
+
+**Decided (`DialogueStrip`, `Screens.uss .fc-dialogue`).** One centred label just above the tray, in a box half the safe
+area wide (`left/right: 25%`), on a dim strip that hugs the text (`--fc-dialogue-strip`, rgba 8,10,12 at 62 %, 4 px
+corners, 4 x 12 px padding): no panel, no portrait, no border, no touch. Rich text: the name in capitals and bold in the
+side's colour, then the words in the main text colour. Side colours are new tokens: ours `--fc-dialogue-ally` #9ad4ff (a
+light blue, luminance about 0.6), theirs `--fc-dialogue-enemy` #ea6a55 (a darker red, about 0.25); colour-blind players
+get `--fc-dialogue-enemy-cb` #d9802a (a darker orange). The strip reads the colours from two hidden probe labels, so the
+stylesheet and the colour-blind class decide them. Type: `--fc-fs-dialogue`, the menus' body size of prompt 14 (24 px,
+13.2 pt; Large 29 px), not the HUD's smaller body (21 px); the HUD's own sizes are for labels read at a glance, a
+sentence needs the reading size.
+
+**Where.** Compact HUD: 12 px above the tray (`--hud-dialogue` 124 px from the bottom). While the selection strip is up
+it rises above it (`--hud-above-orders` 214 px), while the strike prompt is up above that (`--hud-above-prompt` 262 px).
+At Large text the full HUD's Large rules (a 196 px tray, the orders at 216 px) win over the compact ones, so the
+dialogue sits at 216, 320 and 320 px there. The top-edge notices end far above it. Full HUD (optional): above the tray;
+while its large selection panel is open the line moves beside it on the left (it may take a third line there, the one
+known limit), and above the strike prompt while aiming. It sits under the pause, result and choice overlays.
+
+**Two lines.** `DialogueLayoutTests.NoLineTakesMoreThanTwoLines` lays the HUD out on a real panel at 1280 x 720 (the
+narrowest the game supports: 16:9 and 4:3 are both 1280 panel px wide) and measures every in-battle line (every
+`radio.*` key but the briefing taunts, and the commanders' first words) in both languages, at Normal and Large text,
+with the longest boss call sign or elite name in its placeholder: none passes two lines. Long lines are shortened,
+never shrunk.
+
+### H.3-H.5: one line at a time
+
+**Decided (`DialogueDirector`).**
+- Story and warning lines queue, story first; a full queue (6) drops its newest warning, never a story line. A waiting
+  warning cuts an event or reaction line short once it has shown 1 s (a warning is time-bound; a story line waits for
+  the line on show to end). A warning that could not start within 12 s is stale and dropped.
+- Event and reaction lines are now or never: shown only when nothing is up or waiting and at least 9 s after the last
+  event or reaction line started; otherwise dropped, never queued until they no longer fit. In a boss battle (a boss on
+  the field) reactions wait 20 s. The campaign's own rationing (35 s for the usual lines, 25 s for reactions) stays on
+  top.
+- A line stays `1.75 + 0.05 x letters` seconds, 3 to 6 s (6 s from about 85 letters); it fades in and out in 0.25 s
+  (USS transition) and the next line starts after the fade. The clock is the runner's: real seconds that stop under
+  the pause and the result, so a line is read at the same pace in a story moment. Nothing waits for a tap.
+
+### H.6: the log
+
+The last 20 lines shown, oldest first in `DialogueDirector.Log`, newest first in the pause menu's **Dialogue log** (a
+secondary button under Main menu; `DialogueLogPanel` over the pause card, Back returns). Only from pause: nothing on
+the HUD opens it. Entries keep the key and value, so they read in the language on show.
+
+### H.7: the setting
+
+Settings, Game: **In-battle dialogue: Full / Important only / Off** (`MatchSettings.Dialogue`, `mb.dialogue`). Important
+only keeps story and warning lines; Off keeps story lines (always shown). Hidden lines are not logged. What the setting
+hides the notices still say: a boss's phase, a broken part and an elite each have their notice as well as their line.
+
+### H.8: story moments
+
+**Decided.** A line with `Moment` set slows the battle to 0.5x (eased in over 0.4 s, back over 0.6 s) while it and the
+story lines queued right after it play, three lines or 14 s at most (`DialogueDirector.TimeScale`). The hooks: by line,
+`DialogueRules.MomentKeys` (today the betrayal; the owner's other moments come with the event system's data), by event,
+`Mount` = 1 on the Radio event. **Sim-safe:** the runner applies it as Unity's time scale (the slower of it and a boss
+kill's cinematic), which only changes how many fixed 20 Hz steps run each real second (`SimClock.Advance`); the step
+length, the command journal and the checkpoint replay are untouched, so replays stay deterministic.
+
+### H.9: who is speaking
+
+`DialogueDirector.Speaker`, `IsSpeaking(speakerId)`, `IsSpeaking(EntityId)` and `SpeakingChanged(speaker, unit, on)`.
+F.5's name label on a general's vehicle asks `IsSpeaking(general)` (or the unit, when the event names it) and shows its
+small mark; no bubble on the unit.
+
+### H.10
+
+Text only: no voice and no radio sound. The capture and loss chimes (`SoundSynth.Radio`) are notices' sounds, not
+voices, and stay.
+
+### F.1: notices
+
+**Decided (`HudNotice`, `NoticeKind`, `BattleHud.Notice`).** The top-edge notice keeps prompt 11's compact form (a
+small field surface, one line, about 3 s) and now takes its icon from its kind: flag (captured, lost, objectives), jet
+(enemy aircraft), airstrike (air raid), barrage (enemy strike), reinforce, anchor (landing), skull (boss moments),
+elite, crosshair (parts), cloud (weather), crate, expand (play area), people (wave), coin (bounty), command (stance),
+check (a big attack broken), info otherwise. Alerts keep the red bar and icon and go straight up; others queue (4 at
+most, each up at least 1.2 s). `HudNotice.Direction` (a ground-plane unit vector, x east, y north) is carried for F.2's
+arrows and `BattleHud.NoticeShown` fires with every notice; nothing draws it yet. `Toast(...)` stays as the short form.
+New notice: `toast.elite` ("Enemy elite on the field: {card}").
+
+### Checks
+
+`DialogueTests` (the priorities, the drops and the gap, the log, the setting, a story moment, the event flags, the
+prefixes and sides) and `DialogueLayoutTests` (the two-line scan; the line above the tray, centred, clear of the
+notices, the selection strip and the strike prompt, at Normal and Large). The battle screens gain `hud-dialogue`
+(UiShots and the battle layout checks).

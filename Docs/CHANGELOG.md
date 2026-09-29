@@ -7,6 +7,21 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 23 H: in-battle dialogue (DECISIONS 23H)
+
+- Every line a character says in battle is now one subtitle just above the card tray: the speaker's short name in bold
+  (ours light blue, the enemy's darker red), then the words, on a dim strip that hugs the text, at most half the screen
+  wide and two lines. The radio panel with its portrait and frame is gone.
+- One line at a time: story lines and warnings wait their turn (a warning cuts chatter short), other lines show only
+  when the strip is free and at least 9 s after the last (20 s for a general's reactions in a boss battle). A line stays
+  3-6 s by its length and fades; nothing waits for a tap.
+- Pause has a Dialogue log with the battle's last 20 lines. Settings, Game: In-battle dialogue (Full, Important only,
+  Off); story lines always show.
+- Story moments slow the battle to half speed while their lines play (the betrayal today; replays are unaffected).
+- Notices at the top edge have an icon by kind (a point, an air raid, a strike, a boss, an elite, the weather...) and
+  queue one after another; an elite's arrival has a short notice of its own.
+- Twenty lines that ran past two lines at Large text were shortened.
+
 ## v0.30.0: Prompts 19-22 (the Silver Bug as an orbital spacecraft; twelve chapters in four acts, boss templates, Boss Hunt; the Sandbox and bilingual text; the story rewrite, Commanders, narrative mechanics, new maps and bosses), play-tests 4-8, the boss and mode balance, and the 261-page design review
 
 2026-09-30 · merged into main

@@ -5,8 +5,8 @@ using MachineBrigade.Sim.Entities;
 namespace MachineBrigade.Game.Match
 {
     /// <summary>
-    /// The enemy's elites in a battle (prompt 8 H.6): a radio line when the first elite of a wave
-    /// turns up (the first of the battle, of a new numbered wave, or after a quiet spell with none),
+    /// The enemy's elites in a battle (prompt 8 H.6): a notice and Recon's report (a dialogue line, prompt 23 H) when the
+    /// first elite of a wave turns up (the first of the battle, of a new numbered wave, or after a quiet spell with none),
     /// and the base cards of the elites destroyed, for the bounty and blueprints at the end.
     /// Kept apart from MatchRunner.cs so the two change independently.
     /// </summary>
@@ -27,7 +27,9 @@ namespace MachineBrigade.Game.Match
             _eliteRadioAt = now;
             if (!first) return;
             _eliteRadioWave = _announcedWave;
-            _hud.Toast(Strings.Format("radio.elite", Strings.Card(vehicle.Def.Id)), error: true, seconds: 4.5f);
+            var card = Strings.Card(vehicle.Def.Id);
+            _hud.Toast(Strings.Format("toast.elite", card), error: true, seconds: 3f, kind: NoticeKind.Elite);
+            Say("radio.elite", DialoguePriority.Event, EnemyTeam, arg: card);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace MachineBrigade.Game.Hud
             ["radio.aurel.bug.crash"] = ("Brace, Colonel. I intend to land on someone's paperwork.", "Bám chắc vào, đại tá. Tôi định rơi thẳng xuống đống giấy tờ của ai đó."),
             ["radio.aurel.bug.down"] = ("Well. The forecast was wrong about you, Colonel.", "À. Dự báo đã sai về ông, đại tá."),
             ["radio.aurel.bug.hijack"] = ("Those drones are mine now, Colonel. Borrowed, with interest.", "Đám drone đó giờ là của tôi, đại tá. Mượn tạm, có lãi."),
-            ["radio.hq.bug.hijack"] = ("Command: it is seizing our drones! Get them under jammer cover, now!", "Chỉ huy: nó đang chiếm quyền điều khiển drone của ta! Đưa chúng vào vùng che của xe gây nhiễu ngay!"),
+            ["radio.hq.bug.hijack"] = ("Command: it is seizing our drones! Get them under jammer cover, now!", "Chỉ huy: nó đang chiếm drone của ta! Đưa chúng vào vùng che của xe gây nhiễu ngay!"),
 
             // ---------------------------------------------------------------- toasts
             ["toast.tier.descend"] = ("It is leaving orbit!", "Nó đang rời quỹ đạo!"),

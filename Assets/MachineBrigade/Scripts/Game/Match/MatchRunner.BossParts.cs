@@ -31,7 +31,7 @@ namespace MachineBrigade.Game.Match
             var result = _world.SubmitPlayer(Command.FocusPart(PlayerTeam, boss, cancel ? null : b.Def.Parts[part].Id));
             if (!result.Accepted) return;
             _hud.Toast(cancel ? Strings.Get("toast.partFocusOff") : Strings.Format("toast.partFocus", Strings.Get("part." + b.Def.Parts[part].Kind)),
-                seconds: 2.5f);
+                seconds: 2.5f, kind: NoticeKind.Part);
             Haptics.Pulse(40, 160);
         }
 
@@ -44,14 +44,18 @@ namespace MachineBrigade.Game.Match
             if (has && _views.TryGet(boss, out var view)) view.SetOutlinedPart(part);
         }
 
-        /// <summary>A part broke: a radio line if it was an important one (a main gun, a shield generator, a drone bay, a locomotive), else a toast.</summary>
+        /// <summary>
+        /// A part broke: the notice, and for an important one (a main gun, a shield generator, a drone bay, a locomotive)
+        /// Command's report as an event line of the dialogue, naming the boss by its call sign (prompt 23 H; the setting may hide
+        /// the line, the notice stays).
+        /// </summary>
         private void PartBrokenToast(in SimEvent e)
         {
             if (!_world.TryGetVehicle(e.Entity, out var broken) || e.Mount < 0 || e.Mount >= broken.Def.Parts.Count) return;
             var part = broken.Def.Parts[e.Mount];
             var name = Strings.Card(broken.Def.Id);
-            if (part.Radio != null && Strings.Has(part.Radio)) _hud.Toast(Strings.Format(part.Radio, name), seconds: 4.5f);
-            else _hud.Toast(Strings.Format("toast.partBroken", ("kills", Strings.Get("part." + part.Kind)), ("name", name)), seconds: 3f);
+            if (part.Radio != null && Strings.Has(part.Radio)) Say(part.Radio, DialoguePriority.Event, arg: BossBar.CallSign(name));
+            _hud.Toast(Strings.Format("toast.partBroken", ("kills", Strings.Get("part." + part.Kind)), ("name", name)), seconds: 3f, kind: NoticeKind.Part);
             Haptics.Pulse(90, 220);
         }
 
@@ -59,7 +63,7 @@ namespace MachineBrigade.Game.Match
         {
             if (!_world.TryGetVehicle(e.Entity, out var mended) || e.Mount < 0 || e.Mount >= mended.Def.Parts.Count) return;
             _hud.Toast(Strings.Format("toast.partRepaired", ("part", Strings.Get("part." + mended.Def.Parts[e.Mount].Kind)), ("card", Strings.Card(mended.Def.Id))),
-                error: true, seconds: 3f);
+                error: true, seconds: 3f, kind: NoticeKind.Part);
         }
     }
 }
