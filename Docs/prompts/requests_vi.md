@@ -159,3 +159,6 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 02:13) long range sam, vụ nổ do tên lửa quá nhỏ so với hình dáng tên lửa, nên x2 radius và vụ nổ lên
 - (30/09 02:13) trong base, chọn range, nó bị collapse rất nhiều không nhìn được, nên để border có màu, background thì transparent và chớp chớp khi ta select cụ thể để xem range
 - (30/09 02:13) icarus đừng dùng copy theo 100% design của starwar, chỉ lấy ý tưởng sửa lại toàn bộ từ màu tới model ...
+- (30/09 02:29) file pdf nhiều cái còn thiếu giá tiền  [lead, khi làm lại pdf]
+- (30/09 02:29) logic bom bị ném còn sai,như bomber không thể thả 1 phát toàn bộ mà phải thả như bom rải thảm, bom không tự động bay thẳng vào kẻ thù mà phải có logic rơi bom  [agent A]
+- (30/09 02:29) xong hết hãy update pdf
