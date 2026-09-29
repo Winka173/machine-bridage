@@ -72,7 +72,7 @@ namespace MachineBrigade.Tests
         public void TheEnemyTooltipsMarksFollowTheRealMultipliers()
         {
             var catalog = GameContent.LoadCatalog();
-            var deck = new[] { "scout_jeep", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "artillery", "atgm_carrier", "flame_tank" }
+            var deck = new[] { "scout_jeep", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "artillery", "atgm_carrier", "flame_tank", "attack_jet" }
                 .Select(id => catalog.Vehicles[id]).ToList();
             var enemies = new[] { "scout_jeep", "light_tank", "main_battle_tank", "heavy_tank", "attack_helicopter", "attack_jet", "gun_turret", "headquarters" }
                 .Where(catalog.Vehicles.ContainsKey).Select(id => catalog.Vehicles[id]).ToList();
@@ -85,9 +85,10 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(deck.Count, marks.Count, enemy.Id + ": one mark per deck vehicle");
                 for (var i = 0; i < deck.Count; i++)
                 {
-                    // The sim's own multiplier: the main weapon against the enemy's front (or roof for rounds from above).
-                    var m = Matchup.Against(catalog.Damage, deck[i].Weapon, enemy);
-                    var expected = m >= Matchup.GoodAt ? Verdict.Good : m >= Matchup.PoorAt ? Verdict.Poor : Verdict.None;
+                    // The sim's own verdict and multiplier: the main weapon against the enemy's front (or roof for rounds from above).
+                    var m = Matchup.Against(catalog.Damage, deck[i].Weapon, enemy, deck[i].Flying && deck[i].FixedWing);
+                    var expected = (Verdict)(int)Matchup.Verdict(catalog.Damage, deck[i], enemy);
+                    Assert.AreEqual(expected, m >= Matchup.GoodAt ? Verdict.Good : m >= Matchup.PoorAt ? Verdict.Poor : Verdict.None, "thresholds");
                     seen.Add(expected);
                     Assert.AreEqual(CombatIcons.Verdict(expected), marks[i].Name, $"{deck[i].Id} against {enemy.Id} (x{m:0.###})");
                 }

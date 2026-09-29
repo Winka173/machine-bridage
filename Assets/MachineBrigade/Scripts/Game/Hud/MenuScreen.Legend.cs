@@ -24,7 +24,12 @@ namespace MachineBrigade.Game.Hud
             ("legend.other", new[] { "Flame", "Energy", "Blade", "Drill", "CarBomb" }),
         };
 
-        /// <summary>The counter table: rows are defences, columns the six damage types; "block", "cut", "part" or empty.</summary>
+        /// <summary>
+        /// The counter table (the sim's, DECISIONS 14A C.9): rows are defences, columns the six damage types; "block", "cut",
+        /// "part" or empty. Reactive armour and cages cut shaped charges; APS stops missiles, drones and direct-fire rockets
+        /// (a point-defence laser and the C-RAM also artillery rockets); flares fool missiles; smoke takes 80 % off a beam;
+        /// a jammer sends guided rounds wide.
+        /// </summary>
         internal static readonly (string defence, string[] cells)[] CounterTable =
         {
             // Kinetic, ShapedCharge, HighExplosive, Fire, Fragmentation, Energy
@@ -32,7 +37,8 @@ namespace MachineBrigade.Game.Hud
             ("cage", new[] { "", "cut", "", "", "", "" }),
             ("aps", new[] { "", "block", "part", "", "", "" }),
             ("flares", new[] { "", "", "", "", "part", "" }),
-            ("smoke", new[] { "", "", "", "", "", "block" }),
+            ("smoke", new[] { "", "", "", "", "", "cut" }),
+            ("jammer", new[] { "", "part", "part", "", "part", "" }),
         };
 
         internal static readonly string[] DamageOrder = { "Kinetic", "ShapedCharge", "HighExplosive", "Fire", "Fragmentation", "Energy" };

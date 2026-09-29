@@ -152,7 +152,7 @@ namespace MachineBrigade.Game.Hud
         public static Verdict Judge(VehicleDef ours, VehicleDef theirs) => (Verdict)(int)Matchup.Verdict(Table, ours, theirs);
 
         /// <summary>The multiplier behind <see cref="Judge(VehicleDef, VehicleDef)"/>.</summary>
-        public static float Against(VehicleDef ours, VehicleDef theirs) => Matchup.Against(Table, ours.Weapon, theirs);
+        public static float Against(VehicleDef ours, VehicleDef theirs) => Matchup.Against(Table, ours.Weapon, theirs, ours.Flying && ours.FixedWing);
 
         public static StrengthSummary Summary(VehicleDef def) => Matchup.Summary(Table, def);
 

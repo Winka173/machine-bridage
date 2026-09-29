@@ -4829,7 +4829,7 @@ K kinetic, SC shaped charge, HE high explosive, Frag fragmentation, En energy; "
 ## 14B. Prompt 15: armour and weapon icons, where they show (2026-09-29)
 
 The UI half of prompt 15 (D and E). The data (armour levels by face, penetration, the six damage types, weapon forms
-and tags, `Matchup`) is the sim agent's (its own section); the UI reads it and changes none of it.
+and tags, `Matchup`) is the sim agent's (14A); the UI reads it and changes none of it.
 
 ### D. The icon set
 
@@ -4906,8 +4906,9 @@ and tags, `Matchup`) is the sim agent's (its own section); the UI reads it and c
 - **Legend** (E8): there is no menu-level Guide tab, so the legend is a page of its own, opened from every detail page's
   Guide tab ("Biểu tượng giáp và vũ khí") and from Settings: the three armour families, the diagram, every form grouped
   (kinetic from least to most piercing), the marks, the extra marks, the verdicts and the counter table (reactive armour
-  and cages cut shaped charges, APS stops them and partly HE rockets, flares partly fragmentation missiles, smoke stops
-  energy; a note on thermobaric and cages). Screen `legend`, shot tall as `screen-legend-vi-full.png`.
+  and cages cut shaped charges, APS stops them and partly artillery rockets, flares partly fragmentation missiles, smoke cuts
+  a beam by 80 %, a jammer sends guided rounds wide: the sim's table, 14A C.9; a note on thermobaric and cages). Screen
+  `legend`, shot tall as `screen-legend-vi-full.png`.
 - **Words.** Every new text has both languages; "icon" and "tooltip" are "biểu tượng" and "ô chú thích" in Vietnamese
   (`UiLanguageTests`).
 
