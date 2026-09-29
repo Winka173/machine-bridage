@@ -45,6 +45,10 @@ namespace MachineBrigade.Tests
             return events;
         }
 
+        /// <summary>Prompt 15: what a hit from in front is multiplied by for its penetration against the armour and its damage type.</summary>
+        private static float M(SimWorld world, Vehicle target, WeaponDef weapon, HitKind kind = HitKind.Direct) =>
+            world.Damage.HitMultiplier(target, weapon.DamageType, new HitInfo(null, 1, weapon, target.Position + new Vector2(0f, 5f), kind, false));
+
         private static float Hit(SimWorld world, Vehicle target, float amount, WeaponDef weapon, HitKind kind = HitKind.Direct, bool indirect = false,
             Vehicle attacker = null)
         {
@@ -64,6 +68,8 @@ namespace MachineBrigade.Tests
                 new GearTrait(TraitId.TandemWarhead, 0.1f), new GearTrait(TraitId.SetDeepStrike, 0.15f)));
             var shooter = world.SpawnVehicle("tank", 0, new Vector2(0f, 0f), 0f);
             var target = world.SpawnVehicle("decoy", 1, new Vector2(40f, 0f), 0f);
+            // Nose on to the shooter: its front (level 3) is the heavy armour the tandem warhead is for (prompt 15).
+            target.Heading = MachineBrigade.Sim.Core.SimMath.HeadingOf(shooter.Position - target.Position);
             Assert.AreEqual(1f, world.Gear.Outgoing(shooter, target, Direct(shooter, shooter.Weapon)), 1e-5f);
             target.Hp = target.MaxHp * 0.25f;
             Assert.AreEqual(1.4f, world.Gear.Outgoing(shooter, target, Direct(shooter, shooter.Weapon)), 1e-5f, "Executioner below 30 % health");
@@ -149,8 +155,9 @@ namespace MachineBrigade.Tests
             var world = World(Traits(new GearTrait(TraitId.AdaptivePlating, 0.05f)));
             var tank = world.SpawnVehicle("decoy", 0, new Vector2(0f, 0f), 0f);
             for (var i = 0; i < 4; i++) Hit(world, tank, 10f, TestWorlds.Gun);
-            Assert.AreEqual(80f, Hit(world, tank, 100f, TestWorlds.Gun), 1e-3f, "four stacks against armour-piercing");
-            Assert.AreEqual(60f, Hit(world, tank, 100f, TestWorlds.Shell), 1e-3f, "high explosive is not resisted yet (0.6 against heavy)");
+            Assert.AreEqual(80f, Hit(world, tank, 100f, TestWorlds.Gun), 1e-3f, "four stacks against the kinetic dart");
+            Assert.AreEqual(100f * M(world, tank, TestWorlds.Shell), Hit(world, tank, 100f, TestWorlds.Shell), 1e-3f,
+                "high explosive is not resisted yet (only its penetration against the front)");
             Run(world, 6.5f);
             Assert.AreEqual(100f, Hit(world, tank, 100f, TestWorlds.Gun), 1e-3f, "and it fades after 6 s");
         }
@@ -400,7 +407,8 @@ namespace MachineBrigade.Tests
                 new[] { new GearTrait(TraitId.MineSweep, 1f) }));
             var sweeper = roller.SpawnVehicle("decoy", 0, new Vector2(0f, 0f), 0f);
             Assert.AreEqual(0f, Hit(roller, sweeper, 100f, TestWorlds.Shell, HitKind.Mine));
-            Assert.AreEqual(30f, Hit(roller, sweeper, 100f, TestWorlds.Shell, HitKind.Mine), 1e-3f, "then half (HE is 0.6 against heavy)");
+            Assert.AreEqual(50f * M(roller, sweeper, TestWorlds.Shell, HitKind.Mine), Hit(roller, sweeper, 100f, TestWorlds.Shell, HitKind.Mine), 1e-3f,
+                "then half (of what its penetration puts through the roof)");
         }
 
         private static float[] Stats(StatId stat, float value)

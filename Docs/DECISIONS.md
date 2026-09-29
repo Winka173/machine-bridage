@@ -4431,3 +4431,397 @@ them in the Blender builders (`Tools/blender`) and re-exports the models; 12 sta
     at which surfaces the face rays meet.
 - **Tests.** `MuzzleAuditTests.Known` is down to 12, and `TiltedLauncherFacesLaunchAlongTheirTubes` no longer skips
   the SAM launcher. The cards of every re-exported model were rendered again.
+
+## 14A. Prompt 15: armour levels, penetration, damage types (sim) (2026-09-29)
+
+The simulation and data half of prompt 15 (parts A, B, C, C.9, C.10 and the combat-value re-run); the icons and
+screens (D, E) are the interface half and are recorded on their own. The owner's rule on test time wins over the brief's
+"5 seeds for everything": the combat-value measure ran on one seed (13) and a campaign spot check on a few missions; the
+rest is listed for the testing phase (14A.Z). The pure helpers the interface reads are `Sim.Content.Matchup` and
+`Sim.Content.Armour`; `ExportGameDoc` carries every new field for the PDF.
+
+### A. Armour levels
+
+**A.1 The model.** Every unit has an armour level 0-4 on each face (`ArmourLevels`: front, side, rear, top). Data
+`"armour"`: one number, the front (a vehicle's side one less, rear and roof two less, never under 0; a tower, a building,
+an aircraft or a boss part the same all round), or four `[front, side, rear, top]` where the real vehicle differs. The
+old `"armor": "Light/Heavy/Air"` is gone from the vehicles; `ArmorClass` stays as a broad class the roles, the commander
+and the cards read, now worked out: Air (flying), Structure (a fixed defence that is no boss, unless `"structure": false`),
+Heavy from front level 3, Light for 0-2. The light tank, which the class inference would have turned Light, keeps
+`"class": "Tank"`. Props keep their class (Structure or a wreck's Heavy) with a level: 1 by default, `"armour"` for the few
+that differ.
+
+**A.1 table (front / side / rear / top; one number = the vehicle default or all round):**
+
+| Level | Vehicles |
+|---|---|
+| 0 | scout jeep, rocket technical, ZU-23 technical, car bomb, ammunition carrier, supply truck |
+| 1 | armoured car, SP artillery (an M109: aluminium), MLRS, heavy rocket artillery, ballistic launcher, mortar carrier, anti-air (Gepard), gun-missile AA, SAM launcher, long-range SAM, Iron Beam, ATGM carrier, FPV carrier, Lancet truck, Shahed truck, railgun truck, mine layer, smoke carrier, EW jammer, counter-battery radar |
+| 2 | light tank, IFV, wheeled gun, command vehicle, engineer vehicle, sapper |
+| 3 | battle tank, twin-barrel tank, BMPT, tank destroyer, flame tank (a tank hull), thermobaric launcher (a TOS-1A on a T-72 hull), siege tank; armoured bulldozer 3/3/2/2 (a D9R's cab is armoured all round) |
+| 4 | heavy tank, Titan; turtle tank 4/3/3/3 (its shed covers the sides and the roof) |
+
+| | Aircraft (all round) |
+|---|---|
+| 2 | A-10 (the "flying tank") |
+| 1 | Su-25 (attack jet), Mi-24 (heavy gunship), Ka-52, AH-64 (attack helicopter) |
+| 0 | scout helicopter, fighter, bombers, AC-130, drones |
+
+| | Towers and structures (all round; an embrasured front one more) |
+|---|---|
+| 4 | HQ; heavy fortress and camp bastion 4/3/3/3 (embrasured concrete) |
+| 3 | gun turret, super-gun, dragon's teeth |
+| 2 | ATGM tower, AA turret, drone hangar, repair bay, ammunition depot, airfield hangar; MG bunker and hidden gun pit 3/2/2/2 (embrasured) |
+| 1 | guard tower, fallback post (sandbags), artillery emplacement, rocket battery, C-RAM, Patriot battery, EW tower, airfield, logistics station, radar station, fire-control post |
+| 0 | minefield |
+
+Props: 1 (houses, walls, sandbags); a fortress gate, the base wall, the base gate and the command HQ 4 (the brief's
+"fortress walls, gates and HQ"); a tank or artillery wreck 3. A tower keeps the structure kind, so high explosive keeps its
+extra on it (C).
+
+**A.4 Aircraft** stay their own kind of target (air) and have a level. The brief's 1-2 for the armoured ones went in at 2
+first; the re-run (Z) showed every anti-air vehicle losing a fifth of its value per CP in the air group, so the Su-25, Mi-24
+and Ka-52 are 1 (they still shrug off rifle-calibre fire and much of the 23 mm) and only the A-10 keeps 2.
+
+**A.5 Boss parts** have their own level (data `"armour"` on each part), by kind, never more than the boss's front:
+drill and locomotive 4; guns, main guns, turrets, coilguns, railguns, mortars, howitzers, engines, tractors and ramps 3;
+flak, rockets, missiles, launchers, bays, hangars, shields, flamers, lasers, SAMs, stations 2; radars, antennas, fans,
+rotors, EMP emitters and UAV bays 1. Ground bosses are 4 (the trains 4/3/3/2, the hovercraft 3, the rail supergun 3 after
+the spot check, Z); air bosses 2.
+
+**A.6 Elites** are a level thicker in front than their card (at most 4; an aircraft at most 2) and take 1.35 times their
+card's health instead of 1.6. The power band of prompt 8 (1.8-2.2) holds: 1.35 health x about 1.25 for the thicker front
+(a gun that pierced by a level now does 0.75) x 1.25 damage is about 2.1. The elite heavy tank, already at 4, keeps 1.6.
+
+### B. Penetration and the damage a hit does
+
+**B.1 Penetration levels** (`WeaponDef.Penetration`, data `"pen"` on every weapon; `Armour.DefaultPenetration` gives the same
+by family and size for hand-built weapons): 0 a 7.62 mm machine gun; 1 12.7-14.5 mm, flamethrowers, 20-23 mm flak; 2
+autocannons 20-40 mm (and the 57 mm), 30-57 mm flak, unguided rockets 70-122 mm, 105-120 mm shells, 120 mm mortars, 110-250
+kg bombs, short-range anti-air missiles, the Iron Beam; 3 76-105 mm guns, light ATGMs (Konkurs, Griffin, MAM-L), FPV drones,
+the GAU-8's depleted uranium, 152-155 mm shells, 220-300 mm rockets, 500 kg bombs, the Shahed, cruise missiles, medium and
+long-range SAMs, the GBU-39 (a penetrator); 4 120 mm and up (darts), heavy ATGMs (TOW-2, Kornet, Ataka, Hellfire, Vikhr,
+Maverick, Kh-29), the Lancet, railguns, 203 mm shells, 240 mm mortars, 900 kg and up, the Iskander. Shaped charges pierce by
+their warhead, not their size.
+
+**B.2 The multiplier** by the round's level against the level of the face it strikes: a level or more above 1; level
+0.75; one under 0.4; two under 0.15; three or more under 0.05 (data `damageTable.penetration`). Equipment adds part
+levels (C.9): a part level lies between its two neighbours.
+
+**B.3 The face struck** (`DamageSystem.FaceOf`): direct fire by the shooter's bearing (within 50 degrees of the nose the
+front, of the tail the rear, else the side: the old arcs); the **roof** for top-attack weapons (`"topAttack"`: the
+top-attack Kornet, every diving drone), for bomblets, for everything lobbed or dropped (shells with a minimum range,
+artillery rockets, bombs), for called strikes and mines (under the belly), and for an aeroplane's direct fire (it dives on
+its target; a helicopter fires from low and stand-off and takes the face turned to it); a blast the face turned to it. The
+old facing factors (side x1.25, rear x1.6) are gone: the levels do it (the brief's A.2). Kept on purpose: the aeroplane's
+roof hit keeps the jets' cannons at what prompt 13 measured (the GAU-8 and the GSh-30 were armour-piercing, x1 on heavy;
+now pen 3 and 2 against a battle tank's roof, 1).
+
+**B.3 Blasts.** A blast's fragments pierce as a heavy machine gun (level 1, the brief's "fragments of high explosive")
+against vehicles on the ground, whatever made it: a shell's splash, a called strike, a cook-off. Against structures and
+aircraft a blast keeps its round's level (it is the blast that knocks a bunker down). A car bomb's blast carries its
+charge's level (4) for the same reason. Damage that says nothing of its round (no weapon, no level, no kind: a scripted
+kill, the firing range's damage, a test) meets the damage type's table only.
+
+**B.4 Prompt 13's autocannon row is gone** (penetration does it: a 30 mm is 2, 0.4 on a battle tank's front, 0.75 on its
+side). Prompt 13's calibre damage scale is kept as it was: no round's damage changed.
+
+**B.5 The damage a hit does** = the round's damage (the calibre scale) x the penetration multiplier x the damage type
+against the kind of target (C.7) x equipment, modules, elites, weapon bonuses and the rest as before. Targeting and the
+overkill check estimate the same way from where the shooter stands (`DamageSystem.Estimate`), so a gun prefers a target it
+pierces.
+
+### C. The six damage types
+
+**C.1-C.6** `DamageType`: Kinetic 0, ShapedCharge 1 (was ArmorPiercing), HighExplosive 2, Fire 3, Fragmentation 4 (was
+Flak), Energy 5 (new). The numbers stay where the meaning carried over because saved resistance lines are numbers
+(`StatId.ResistKinetic + type`; energy's resistance is appended, `Stats.Resist`).
+
+**C.7 The damage-type table** (data `damageTable`; armour is no longer in it):
+
+| Type | Ground | Air | Structure |
+|---|---|---|---|
+| Kinetic | 1.0 | 0.3 | 0.6 |
+| Shaped charge | 1.0 | 0.3 | 0.6 |
+| High explosive | 1.0 | 0 | 1.5 (thermobaric 2.0) |
+| Fire | 1.5 | 0 | 1.0 |
+| Fragmentation | 0.5 | 1.5 | 0.1 |
+| Energy | 1.0 | 1.5 | 0.5 |
+
+Reasons: kinetic and shaped charges on structures 0.6 keep a tank gun on a level-2 tower where the old AP row had it
+(0.6) and put a 12.7 mm (0.24) and a 30 mm (0.45) either side of the old 0.3 and 0.4; air 0.3 as before. Fragmentation on
+the ground 0.5 keeps flak where the old row was against armour (a Gepard 0.2 on a battle tank's front against 0.1, 0.5 on
+the unarmoured against 0.4) while level 0-1 targets are what it is strong against. Fire went in at 1.25 and is 1.5 after
+the re-run (its penetration of 1 makes it weak on thick armour, the brief's point; 1.5 makes it strong on 0-1). Energy 1.5
+in the air keeps the Iron Beam's damage.
+
+**C.3 The thermobaric tag** (`"thermobaric"`: the TOS-1A's rockets, the 122 mm thermobaric battery, the Inferno's): 2.0
+instead of 1.5 on structures; its blast falls off half as much (0.625 at the edge instead of 0.25); it reaches half into a
+gun pit's hole; cages do not stop it. The 122 mm battery's own x1.3 on structures was dropped (the tag gives x1.33).
+
+**C.4 Fire burns on:** a fire hit sets its target burning for 30 % of what got through, over 3 s (fires add up, as
+Incendiary Rounds do). It is worked out after armour, so it is weak on thick armour too.
+
+**C.8 Every weapon reclassified** (the full table is 14A.W): kinetic for machine guns, autocannons, every tank gun's dart
+(the old armour-piercing shells), the jets' cannons, railguns and the blows (blade, drill); shaped charge for anti-tank
+missiles, air-to-ground missiles, FPV drones, Lancets, the elite heavy tank's HEAT round and mines; high explosive for
+howitzers, mortars, rockets, bombs, cruise and ballistic missiles, the Shahed, the 40 mm grenade and the AC-130's and
+the Hive Carrier's HE cannons; fire for the flamethrowers; fragmentation for flak, airburst, C-RAM, the fighter's cannon and
+every anti-air missile; energy for the Iron Beam and the Silver Bug's laser (fire before). The view keeps the old looks:
+`"piercing"` marks the rounds that were armour-piercing (sparks on impact), and the Iron Beam keeps its flak sound.
+
+**C.9 The counters** (the brief's table, `ArmourTests.CountersFollowTheTable`):
+
+| Defence | Stops | Does not stop |
+|---|---|---|
+| Reactive armour (module) | 40 % (Epic) / 55 % (Legendary) of a shaped-charge hit; a tandem warhead defeats it | kinetic, high explosive, anything else; mines |
+| Reactive blocks (trait) | half a shaped-charge hit, a block at a time | kinetic rounds (they were "armour-piercing" before) |
+| Cage (Slat Cage, Slat Screens; the turtle tank's shed against drones) | its share of shaped charges on rockets, missiles and drones | kinetic rounds, a HEAT shell, thermobaric blasts, mines |
+| APS (Trophy, point defence) | missiles, drones, direct-fire rockets (a point-defence laser and the C-RAM also artillery rockets; the C-RAM a share of the shells) | tank shells, bullets, beams (energy); a point-defence laser in smoke, or aimed into it |
+| Flares | missiles (by their seeker's flare resistance) | drones, bullets, flak, beams |
+| Smoke | 80 % of a beam's damage into it or out of it | everything else |
+| Jammer | guided rounds (missiles and drones) go wide | unguided rounds, beams |
+
+The reactive armour module was 12-18 % off every hit; against shaped charges only it had to be stronger to be worth a
+slot, and it fits ground vehicles only now (there is nothing to stop on an aircraft).
+
+### C.9 Equipment by level, and the migration
+
+| Piece | Before | Now |
+|---|---|---|
+| Tungsten Penetrator (vehicles), Sabot Rounds (towers) | +4-15 % damage on heavy vehicles | +0.4-1 penetration level (a whole level at Legendary's top), all its weapons |
+| Appliqué Steel | -5-18 % kinetic damage | +0.4-1 armour level on the sides and rear |
+| Armoured Tub (aircraft) | -6-22 % flak damage | +0.4-1 armour level all round |
+| Composite Add-on, Composite Casemate | -4-15 % armour-piercing | -4-15 % shaped charges |
+| damage vs light / heavy vehicles (sub-stat) | by class | against a face of level 0-2 / 3-4 |
+| armour-piercing / flak resistance (sub-stat, brand) | | shaped-charge / fragmentation resistance (same saved numbers) |
+| Slat Cage (Resist Rocket) | rockets, missiles, drones | their shaped charges only, not thermobaric |
+| Tandem Warhead | +10-15 % on heavy vehicles | on a face of level 3-4 |
+| Reactive armour module | -12-18 % of everything, any vehicle | -40/55 % of shaped charges, ground vehicles |
+
+The Proximity Fuze and the Airburst Rounds keep "against aircraft" and "against drones": aircraft are still a kind of
+target. Levels print as levels ("+0.72 penetration level"). **Migration** (gear version 3 to 4,
+`Prompt15MigrationTests`): the base types and stat numbers keep their ids, so every piece keeps its id, slot, rarity and
+level and reads its new line; a piece a branch wears that no longer fits it (reactive armour on the Air branch) becomes one
+that fits in the same slot, of the same rarity and level, and stays on; a second load changes nothing.
+
+### C.10 The commander counter-picks by penetration and damage type
+
+`ConquestAi`'s counter score, for every AI with a counter weight (Normal and up; the prompt 13 buy scoring otherwise
+unchanged): the ground enemies it has seen (and the player's deck on Very Hard, at half weight) are counted by the armour
+they show, front x roof. A card's fit is its main weapon's penetration multiplier times the type against each of them
+(the roof for a weapon that strikes it and for an aeroplane), weighted by their value, a secondary at half; it scores
+(the ground share) x (its fit - 0.85 x the fit our army already has) x 8, which replaces the old "heavy" and "light"
+answers. Against the defences seen: APS cuts the missiles', rockets' and drones' cards (-2.5 at full cover), reactive armour
+or a cage the shaped charges' (-2), smoke the beams' (-2), jammers the guided (-2), flares the anti-air missiles' (by their
+seeker). The old class-based rules for aircraft, artillery raiders and anti-air stay. `CounterBuyTests` pass on it (against
+heavy tanks it buys tank destroyers and battle tanks, no anti-air).
+
+### R. The combat-value re-run and the rebalance
+
+Prompt 13's measure (`CombatValueMeasure.MeasureTheRoster`, `MB_BALANCE=1`), one seed (13), the whole roster, before and
+after: "Prompt 13" is its shipped F3 file, "first" the new rules on prompt 13's roster, "shipped" after the changes below.
+Ground value per CP unless marked "air" (raw files: `Docs/balance/combat_value_p15*.tsv`; the table in
+`Docs/COMBAT_VALUE.md` section 4).
+
+The mechanisms that moved things, measured: tank guns and cannons now do all their damage to the unarmoured and lightly
+armoured (the old AP row had 0.75 on light); 7.62 mm fire does a third of what it did to armoured cars; autocannons hit a
+tank's side three quarters and its front 0.4; fire is weak on thick armour; a blast's fragments pierce one level; armoured
+aircraft shrug off machine guns.
+
+| Changed | Why (first → shipped, value per CP) |
+|---|---|
+| IFV 5 → 6 CP | its 30 mm now pierces light armour and tank sides, and its level 2 shrugs off machine guns: 188 → 118 (+52 % → -4 %) |
+| light tank 4 → 3 CP, 400 → 460 HP | its 57 mm lost the old armour-piercing row (0.4 on a battle tank's front): 62 → 150 (-61 % → -6 %) |
+| flame tank 5 → 4 CP; fire on the ground 1.25 → 1.5; fire burns on (C.4) | fire of level 1 on thick armour: 190 → 289 (-47 % → -19 %; an anti-light specialist: light group 743) |
+| scout helicopter 5 → 4 CP | its 7.62 mm on armoured cars: 197 → 243 (-38 % → -23 %) |
+| car bomb 3 → 2 CP; its blast carries the charge's penetration (B.3) | fragments of level 1 on tanks and towers: 48 → 87 (-47 % → -4 %) |
+| rocket technical 190 → 230 HP | 192 → 209 (-21 % → -15 %) |
+| SAM launcher 400 → 460 HP | aeroplanes now hit its roof (level 0): air 150 → 155; `CounterTests` "SAM beats jets" failed at 400 and passes at 460 |
+| Su-25, Mi-24, Ka-52 armour 2 → 1 (A.4) | anti-air lost a fifth in the air: AA vehicle air 189 → 252 |
+| rail supergun armour 4 → 3 | the spot check lost its mission (c4m06) at 4: the player's army could not get through a level-4 front in 20 minutes; won at 3 (16.9 min) |
+| every card's `"value"` (the commander's weight) | recomputed from the shipped run the way prompt 13 did (per CP over its class's median, 0.5-1.5; anti-air and the fighter on air) |
+
+Tried and put back: the fighter at 14 CP and the long-range SAM at 13 (they rose +25 % and +33 % in the air on this seed with
+no mechanism behind it; the measure's groups are lumpy, 18 CP rounded to whole vehicles, and a CP step halved their groups).
+Left for a multi-seed look (Z): the long-range SAM (air +33 %), the fighter (+25 %), the gunship helicopter (-21 %, inside
+the helicopters' band), the wheeled gun (+27 %, now mid-band after being left under it on purpose), the sapper (-50 %:
+a support, judged by its aura) and the scout jeep (-26 %: a scout).
+
+After it, per role (value per CP): light 105-118; tanks and heavy 289-525; tank hunters 278-461; artillery 209-446;
+helicopters 243-415; aircraft 325-439 (the recon drone apart); mobile anti-air in the air 155-252, the long-range SAM 545.
+
+**The campaign spot check** (`CampaignTests.WinRateOverFiveSeeds`, `MB_SEEDS=1`): c1m02, c2m05 (Behemoth), c3m05 (Iron
+Bird), c5m06, c7m05 (Silver Bug), c8m05 (Doomsday Train) won; c4m06 (rail supergun) lost at level 4 and won at 3.
+**Siege** (`ModeBalanceMeasure`, `MB_MODES=Siege`, one seed): won 3 of 3, 7.1 / 16.2 / 9.4 min (prompt 13: 13.3 / 14.0 / 9.2).
+
+### T. Tests
+
+New: `ArmourTests` (every unit and weapon has the new fields and the data states each weapon's `"pen"`; the multiplier
+row, part levels, the high-explosive and thermobaric structure values; faces, top attack, the roof for lobbed rounds,
+round x penetration x type in battle, and the pure helpers against the battle; the counter table),
+`Prompt15MigrationTests` (an old save's pieces, lines and loadouts). Updated for the new rules: `CalibreTests` (the
+autocannon test reads penetration), `GearSimTests` (reactive blocks on a missile, shaped-charge resistance on a HEAT shell,
+the guardian's share of what gets through), `GearTraitTests` (the tandem target nose-on; expectations from the multiplier),
+`ElitePrompt8Tests` (1.35 or 1.6 health), and the compile-only renames in a dozen more. Run: Weapon, Combat, Calibre,
+Counter (and CounterBuy), Aps, Content, Stores, CheckpointReplay, Armour, Prompt15, GearSim, GearTrait, ElitePrompt8:
+all green. The full suite was not run (the owner's rule).
+
+### Z. Left for the testing phase
+
+- The full EditMode suite: suites that set exact damage numbers by the old table may need their expectations read from
+  the multiplier (as `GearTraitTests` now does); not run.
+- Five seeds for the combat value (the fighter, the long-range SAM, the gunship helicopter and the wheeled gun above), the
+  whole campaign, the big campaign and every mode; the rail supergun's mission at level 3 (won in 16.9 of 20 minutes).
+- Walls, gates and the HQ at level 4 in Siege and Defend (Siege won 3 of 3 on one seed; Defend not run).
+- The equipment lab (`EquipmentLab`) with the level lines, and the elites' power band measured rather than reasoned.
+- The design document export (`ExportGameDoc`) run for the PDF.
+
+### W. Every weapon (type, was, penetration, form, tags)
+
+K kinetic, SC shaped charge, HE high explosive, Frag fragmentation, En energy; "(was)" when it changed (AP armour-piercing). Tags: top (strikes the roof), guided, splash, cluster, thermobaric. Forms are `WeaponForm` (the icon's shape).
+
+| Weapon | Real weapon | Type (was) | Pen | Form | Tags |
+|---|---|---|---|---|---|
+| mg_jeep | M2 Browning 12.7 mm | K | 1 | BulletBig |  |
+| mg_coax | PKT / M240 7.62 mm | K | 0 | BulletSmall |  |
+| hmg_roof | M2 Browning 12.7 mm | K | 1 | BulletBig |  |
+| autocannon_30 | 2A42 30 mm | K | 2 | BeltedAutocannon |  |
+| gun_57mm | S-60 57 mm (2A91) | K (AP) | 2 | Dart |  |
+| gun_120mm | Rh-120 L/44 120 mm | K (AP) | 4 | DoubleDart | splash |
+| turret_gun_120 | Rh-120 L/44 120 mm | K (AP) | 4 | DoubleDart | splash |
+| atgm | BGM-71 TOW-2 | SC (AP) | 4 | Atgm | guided |
+| flamethrower | flamethrower | Fire | 1 | Flame | splash |
+| howitzer | M284 155 mm | HE | 3 | HeShell | splash |
+| mlrs_rockets | M31 GMLRS 227 mm | HE | 3 | RocketBig | splash |
+| flak_35 | Oerlikon KDA 35 mm (Gepard) | Frag (Flak) | 2 | Airburst | splash |
+| sam | Starstreak / Stinger SHORAD | Frag (Flak) | 2 | Sam | guided, splash |
+| heli_atgm | AGM-114 Hellfire | SC (AP) | 4 | Atgm | guided |
+| heli_gun | M230 30 mm | K | 2 | BeltedAutocannon |  |
+| heli_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| autocannon_25 | M242 Bushmaster 25 mm | K | 2 | BeltedAutocannon |  |
+| gun_105_long | 2A75 125 mm (2S25 Sprut) | K (AP) | 4 | DoubleDart |  |
+| gun_152 | 2A83 152 mm | K (AP) | 4 | DoubleDart | splash |
+| sam_long | 9M317 Buk | Frag (Flak) | 3 | Sam | guided, splash |
+| mortar_120 | 2B11 120 mm | HE | 2 | MortarBomb | splash |
+| technical_rockets | Type 63 107 mm | HE | 2 | RocketSmall | splash |
+| grad_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| atgm_heavy | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| gunship_rockets | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| minigun | M134 Minigun 7.62 mm | K | 0 | BulletSmall |  |
+| scout_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| jet_cannon | GSh-30-2 30 mm | K (AP) | 2 | BeltedAutocannon |  |
+| jet_rockets | Hydra 70 mm | HE | 2 | RocketSmall | splash |
+| jet_bombs | FAB-250 (250 kg) | HE | 2 | Bomb | splash |
+| drone_missile | AGM-114 Hellfire | SC (AP) | 4 | Atgm | guided |
+| gun_155_sph | M284 155 mm | HE | 3 | HeShell | splash |
+| thermobaric_rockets | TOS-1A 220 mm thermobaric | HE | 3 | RocketBig | thermobaric, splash |
+| twin_30_flak | 2A38 30 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| hq_flak | 2A38 30 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| gun_140_twin | NPzK 140 mm (twin) | K (AP) | 4 | DoubleDart | splash |
+| bomber_payload | FAB-500 (500 kg) | HE | 3 | Bomb | splash |
+| bomber_tail_guns | M3 12.7 mm (quad tail) | K | 1 | BulletBig |  |
+| stealth_payload | GBU-31 JDAM (907 kg) | HE | 4 | HeavyBomb | splash |
+| gunship_105 | M102 105 mm | HE | 2 | HeShell | splash |
+| gunship_40mm | Bofors L/60 40 mm | HE | 2 | BeltedAutocannon | splash |
+| gunship_25mm | GAU-12 Equalizer 25 mm | K | 2 | BeltedAutocannon |  |
+| gun_105_twin | L7 105 mm (twin) | K (AP) | 3 | Dart | splash |
+| gun_203_siege | M110 203 mm | HE | 4 | HeShell | splash |
+| rockets_300mm | 9M55 Smerch 300 mm | HE | 3 | RocketBig | splash |
+| ballistic_missile | 9M723 Iskander (700 kg) | HE | 4 | Ballistic | splash |
+| mortar_240 | 2B8 240 mm | HE | 4 | MortarBomb | splash |
+| fpv_swarm | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| air_to_air | AIM-120 AMRAAM | Frag (Flak) | 3 | Sam | guided, splash |
+| wvr_aam | AIM-9X Sidewinder | Frag (Flak) | 2 | Sam | guided, splash |
+| stinger_atas | FIM-92 Stinger (ATAS) | Frag (Flak) | 2 | Sam | guided, splash |
+| igla_v | 9K38 Igla-V | Frag (Flak) | 2 | Sam | guided, splash |
+| r60 | R-60 | Frag (Flak) | 2 | Sam | guided, splash |
+| aim9 | AIM-9 Sidewinder | Frag (Flak) | 2 | Sam | guided, splash |
+| jassm | AGM-158 JASSM (450 kg) | HE | 3 | Cruise | guided, splash |
+| air_cruise_missile | Kh-101 (400 kg) | HE | 3 | Cruise | guided, splash |
+| griffin | AGM-176 Griffin | SC (AP) | 3 | Atgm | guided |
+| kh29 | Kh-29 | SC (AP) | 4 | Atgm | guided |
+| s8_pods | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| gsh30k | GSh-30K 30 mm | K (AP) | 2 | BeltedAutocannon |  |
+| gsh_23v | GSh-23V 23 mm | K | 2 | BeltedAutocannon |  |
+| door_gun | PKT 7.62 mm | K | 0 | BulletSmall |  |
+| detonator | car bomb (900 kg) | HE | 4 | CarBomb | splash |
+| zu23 | ZU-23-2 23 mm | Frag (Flak) | 1 | Airburst |  |
+| lancet | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided |
+| shahed | Shahed-136 (50 kg) | HE | 3 | Shahed | top, guided, splash |
+| hel_beam | Iron Beam laser (100 kW) | En (Flak) | 2 | Energy |  |
+| railgun | railgun (32 MJ) | K (AP) | 4 | Rail |  |
+| twin_30_bmpt | 2A42 30 mm (twin) | K | 2 | BeltedAutocannon |  |
+| ataka | 9M120 Ataka | SC (AP) | 4 | Atgm | guided |
+| vikhr | 9K121 Vikhr | SC (AP) | 4 | Atgm | guided |
+| fighter_cannon | GAU-22/A 25 mm | Frag (Flak) | 2 | BeltedAutocannon |  |
+| gau_gatling | GAU-8 Avenger 30 mm | K (AP) | 3 | BeltedAutocannon |  |
+| maverick | AGM-65 Maverick | SC (AP) | 4 | Atgm | guided |
+| recon_missile | MAM-L | SC (AP) | 3 | Atgm | guided |
+| hind_rockets | S-8 80 mm | HE | 2 | RocketSmall | splash |
+| gun_155_twin | M284 155 mm (twin) | HE | 3 | HeShell | splash |
+| flak_quad | ZSU-23-4 23 mm (quad) | Frag (Flak) | 1 | Airburst | splash |
+| sam_battery | MIM-104 Patriot PAC-2 | Frag (Flak) | 3 | Sam | guided, splash |
+| bastion_gun | 2A83 152 mm (twin) | K (AP) | 4 | DoubleDart | splash |
+| gun_152_heat | 2A83 152 mm HEAT | SC (AP) | 4 | DoubleDart | splash |
+| gun_105_apfsds | 2A75 125 mm APFSDS | K (AP) | 4 | DoubleDart |  |
+| hellfire_volley | AGM-114L Hellfire Longbow | SC (AP) | 4 | Atgm | guided |
+| twin_35_ahead | Skyranger 35 mm AHEAD | Frag (Flak) | 2 | Airburst | splash |
+| grad_cluster | BM-21 Grad 122 mm (cluster) | HE | 2 | Cluster | splash, cluster |
+| gun_125_elite | 2A46M-5 125 mm | K (AP) | 4 | DoubleDart | splash |
+| mlrs_elite | M30 GMLRS 227 mm (cluster) | HE | 3 | Cluster | splash, cluster |
+| autocannon_40 | Bofors 40 mm | K | 2 | BeltedAutocannon | splash |
+| gun_105_wheeled | Centauro II 120 mm | K (AP) | 4 | DoubleDart |  |
+| sam_48n6 | S-400 48N6 | Frag (Flak) | 3 | Sam | guided, splash |
+| kornet_twin | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| dozer_blade | dozer blade | K (AP) | 3 | Blade |  |
+| none |  | K | 0 | None |  |
+| mg_coax_ground | PKT / M240 7.62 mm | K | 0 | BulletSmall |  |
+| c_ram_gatling | Phalanx M61 20 mm | Frag (Flak) | 1 | Airburst | splash |
+| gun_pit_105 | Rh-120 L/44 120 mm (dug in) | K (AP) | 4 | DoubleDart |  |
+| fpv_hangar | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| bunker_hmg_twin | NSV 12.7 mm (twin) | K | 1 | BulletBig |  |
+| bunker_flame | flamethrower (bunker) | Fire | 1 | Flame | splash |
+| turret_gun_120_long | Rh-120 L/55 120 mm | K (AP) | 4 | DoubleDart | splash |
+| turret_gun_120_auto | Rh-120 L/44 120 mm (autoloader) | K (AP) | 4 | DoubleDart | splash |
+| kornet_top | 9M133 Kornet | SC (AP) | 4 | Atgm | top, guided |
+| kornet_multi | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| turret_rockets_cluster | BM-21 Grad 122 mm (cluster) | HE | 2 | Cluster | splash, cluster |
+| turret_thermobaric | 122 mm thermobaric | HE | 2 | RocketSmall | thermobaric, splash |
+| c_ram_gatling_long | Phalanx M61 20 mm | Frag (Flak) | 1 | Airburst | splash |
+| howitzer_cb | M284 155 mm | HE | 3 | HeShell | splash |
+| howitzer_ext | M284 155 mm (base bleed) | HE | 3 | HeShell | splash |
+| sam_pac3 | Patriot PAC-3 MSE | Frag (Flak) | 3 | Sam | guided, splash |
+| sam_battery_lrr | MIM-104 Patriot PAC-2 | Frag (Flak) | 3 | Sam | guided, splash |
+| lancet_hangar | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided |
+| fpv_hangar_swarm | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| gun_155_twin_long | M284 155 mm (twin, long) | HE | 3 | HeShell | splash |
+| turret_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| bunker_hmg | NSV 12.7 mm | K | 1 | BulletBig |  |
+| saucer_laser | laser (150 kW) | En (Fire) | 3 | Energy | splash |
+| coilgun | coilgun (10 MJ) | K (AP) | 4 | Rail |  |
+| mothership_cannon | AU-220 57 mm | HE | 2 | BeltedAutocannon | splash |
+| mothership_drones | ZALA Lancet-3 (3 kg) | SC (AP) | 4 | Lancet | top, guided, splash |
+| gun_behemoth | 2A65 152 mm (twin) | HE | 3 | HeShell | splash |
+| boss_howitzer | 2A44 203 mm | HE | 4 | HeShell | splash |
+| boss_rockets | BM-21 Grad 122 mm | HE | 2 | RocketSmall | splash |
+| boss_missiles | 9M133 Kornet | SC (AP) | 4 | Atgm | guided |
+| boss_flak | Oerlikon 35 mm (twin) | Frag (Flak) | 2 | Airburst | splash |
+| train_gun | B-38 152 mm | K (AP) | 4 | DoubleDart | splash |
+| agl_40 | Mk 19 40 mm | HE | 2 | Grenade | splash |
+| guided_bomb | GBU-39 SDB (110 kg) | HE | 3 | GuidedBomb | splash |
+| atgm_post | 9M113 Konkurs | SC (AP) | 3 | Atgm | guided |
+| drone_gun | M3P 12.7 mm | K | 1 | BulletBig |  |
+| boss_flamer | flamethrower (heavy) | Fire | 2 | Flame | splash |
+| boss_thermo | TOS-1A 220 mm thermobaric | HE | 3 | RocketBig | thermobaric, splash |
+| boss_railgun | railgun (64 MJ) | K (AP) | 4 | Rail |  |
+| boss_mortar | 2B8 240 mm | HE | 4 | MortarBomb | splash |
+| supergun_800 | super-gun 800 mm | HE | 4 | SuperShell | splash |
+| borer_drill | drill head | K (AP) | 4 | Drill |  |
+| borer_cannon | 2A70 100/76 mm | K (AP) | 3 | Dart | splash |
+| airship_flak | S-60 57 mm | Frag (Flak) | 2 | Airburst | splash |
+| airship_drones | FPV drone (1.5 kg) | SC (AP) | 3 | Fpv | top, guided, splash |
+| boss_heli_gun | M230 30 mm | K | 2 | BeltedAutocannon |  |
+| boss_minigun | GShG 7.62 mm | K | 0 | BulletSmall |  |
+| boss_hmg | NSV 12.7 mm | K | 1 | BulletBig |  |
+| hover_ciws | AK-630 30 mm | K | 2 | BeltedAutocannon |  |

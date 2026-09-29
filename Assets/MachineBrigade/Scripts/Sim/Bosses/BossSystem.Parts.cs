@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.Bosses
                 all += dps;
                 if (w.CanTarget(true)) toAir += dps;
                 if (w.CanTarget(shooter.Flying) && reach <= w.Range + boss.Radius)
-                    toShooter += dps * _world.Damage.Estimate(w, boss.Position, shooter);
+                    toShooter += dps * _world.Damage.Estimate(w, boss, shooter);
             }
             var score = (antiAir ? toAir : toShooter) + all * 0.15f;
             if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;

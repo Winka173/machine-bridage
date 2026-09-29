@@ -1,5 +1,19 @@
 # Changelog
 
+## Prompt 15 (battle rules): armour levels, penetration, six damage types
+
+- Every unit has armour 0-4 on its front, sides, rear and roof (towers, buildings and aircraft the same all round,
+  bunkers thicker in front, boss parts their own); every weapon a penetration 0-4 from the real weapon. A round a level
+  above the armour does all its damage, level three quarters, then 0.4, 0.15 and 0.05. Top-attack missiles, drones,
+  bomblets, artillery, bombs and diving aeroplanes hit the roof.
+- Six damage types: kinetic, shaped charge, high explosive (thermobaric harder on buildings), fire (burns on),
+  fragmentation (flak and anti-air missiles), energy (lasers). Reactive armour and cages stop shaped charges, APS shoots
+  down missiles, rockets and drones, flares fool missiles, smoke scatters lasers.
+- Equipment reads by level (+penetration, +side armour, damage against heavy armour 3-4); old pieces keep their slot,
+  rarity and level. Elites are a level thicker in front. The commander picks what pierces the armour it sees.
+- Rebalanced from the combat-value re-run: IFV 6 CP, light tank 3 CP, flame tank 4 CP, scout helicopter 4 CP, car bomb
+  2 CP, sturdier SAM launcher and rocket technical.
+
 ## Prompt 13: combat value, ammunition, modes and difficulty
 
 - Every card measured by what it really does in a fight for its CP (Docs/COMBAT_VALUE.md), and the theoretical
