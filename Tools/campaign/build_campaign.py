@@ -2,7 +2,7 @@
 
     python Tools/campaign/build_campaign.py [--report <dir>]
 
-The mission events' library is events.py (prompt 23). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
+The mission events' library is events.py (prompt 23), the events each mission plays act10.py (prompt 23 E). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
 (prompt 20), in chapters of 9-18 missions and three interludes by act5.py-act8.py (prompt 22), the
 story's choices and story loot by act9.py (prompt 22 D), the people and chapters in story.py. This script turns reversed missions round, gives every mission its
 pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters), checks the campaign's
@@ -34,6 +34,7 @@ import act6  # noqa: E402,F401
 import act7  # noqa: E402,F401
 import act8  # noqa: E402,F401
 import act9  # noqa: E402,F401
+import act10  # noqa: E402,F401
 import events  # noqa: E402
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
@@ -410,8 +411,13 @@ def check(missions):
     for s in side:
         if s.get('after') not in ids or next(m for m in missions if m['id'] == s['after']).get('side'):
             fail(f"{s['id']}: after {s.get('after')}")
-    # Prompt 23 A: the events a mission plays come from the library.
-    events.check(missions, VEHICLES, fail, story.INTERLUDES)
+    # Prompt 23 A and E: the events a mission plays come from the library; A.2's counts, E.1's signatures, E.2's generals, E.3.
+    def bosses(m):
+        found = set()
+        for b in [m.get('boss', {})] + [s.get('boss', {}) for s in m.get('stages', [])]:
+            found |= {b[k] for k in ('def', 'fallback') if b.get(k)}
+        return found
+    events.check(missions, VEHICLES, fail, story.INTERLUDES, chapters={c[0]: c[5] for c in story.CHAPTERS}, weather=kit.WEATHER, boss_of=bosses)
     # Prompt 22 B: a moved mission lands on one that exists, and no id is moved twice.
     for old, new in story.MOVES22.items():
         if new not in ids or old in ids:
