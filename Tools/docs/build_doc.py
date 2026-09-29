@@ -454,6 +454,7 @@ def build(game, imgdir):
                + f"<h3>Toàn bộ vũ khí ({len(wrows)})</h3>"
                + table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương', 'Loạt / băng', 'Hồi (s)', 'Tốc độ đạn', 'Tầm', 'Tối thiểu', 'Nổ lan', 'Mục tiêu', 'DPS', 'Trên xe'], wrows, 'dps') + '</div>')
     out.append(programme.rates_and_ballistics(game, h))
+    out.append(programme.blast_radii(game, h))
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):

@@ -272,6 +272,7 @@ namespace MachineBrigade.Tests
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["raw"] = Raw(v),
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
+                ["deathRadius"] = v.DeathExplosion?.Radius ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
                 ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
                 ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",

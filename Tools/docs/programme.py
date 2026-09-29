@@ -534,6 +534,67 @@ def props_and_rounds(game, h, sizes, weapons, owners):
     return out
 
 
+def blast_radii(game, h):
+    """Section 10c: every blast radius in the game."""
+    import json as _json
+    e, table = h['esc'], h['table']
+    ordnance = {'Bomb', 'GuidedBomb', 'Cluster', 'HeavyBomb', 'CarBomb', 'Napalm', 'Atgm', 'Sam', 'Cruise', 'Ballistic', 'RocketSmall', 'RocketBig',
+                'HeShell', 'MortarBomb', 'SuperShell', 'Airburst', 'Grenade', 'Fpv', 'Shahed', 'Lancet', 'Rail', 'Dart', 'DoubleDart'}
+    dtype = {'Kinetic': 'Động năng', 'ShapedCharge': 'Nổ lõm', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa', 'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
+    weapons, owners = {}, {}
+    for group in ('vehicles', 'elites', 'bosses', 'towers', 'itemVehicles'):
+        for v in game.get(group, []):
+            for w in v.get('weapons', []):
+                weapons.setdefault(w['id'], w)
+                owners.setdefault(w['id'], []).append(v.get('short') or v['name'])
+    rows = []
+    for wid, w in weapons.items():
+        raw = w.get('raw', {})
+        form = str(raw.get('Form', w.get('form', '')))
+        splash = float(w.get('splash', 0) or raw.get('SplashRadius', 0) or 0)
+        if form not in ordnance and splash <= 0:
+            continue
+        rows.append((splash, [f"<code>{e(wid)}</code>", e(w.get('real') or ''), e(form), e(', '.join(sorted(set(owners[wid])))[:50]),
+                              f"{round(splash, 1):g}" if splash > 0 else 'trúng trực tiếp', f"{float(w.get('damage', 0) or 0):g}", e(dtype.get(w.get('type'), w.get('type', ''))),
+                              str(w.get('pen', '')), 'có' if raw.get('Thermobaric') else '—', 'có' if raw.get('Splashes') else '—', 'có' if raw.get('Cluster') else '—']))
+    rows.sort(key=lambda r: -r[0])
+    sup_rows = []
+    for s in sorted(game.get('supports', []), key=lambda s: -(s.get('radius') or 0)):
+        if not s.get('radius') and not s.get('damage'):
+            continue
+        sup_rows.append([e(s.get('name') or s['id']), f"<code>{e(s['id'])}</code>", f"{s.get('count', 1) or 1}", f"{float(s.get('damage', 0) or 0):g}",
+                         f"{round(float(s.get('radius', 0) or 0), 1):g}", e(dtype.get(s.get('type'), s.get('type', '') or '')), f"{s.get('cost', '')}", f"{s.get('cooldown', '')}"])
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    owner = {v.get('bigAttack'): v['id'] for v in data['vehicles'] if v.get('bigAttack')}
+    names = {v['id']: v.get('name', v['id']) for v in game.get('bosses', []) + game.get('vehicles', [])}
+    big_rows = []
+    for a in data.get('bigAttacks', []):
+        for st in a.get('strikes', []):
+            r = st.get('radius') or st.get('area') or 0
+            big_rows.append([e(names.get(owner.get(a['id'], ''), owner.get(a['id'], ''))), f"<code>{e(a['id'])}</code>", e(st.get('shape', '')), f"{st.get('count', 1)}",
+                             f"{st.get('damage', 0):g}" if st.get('damage') else '—', f"{r:g}" if r else '—',
+                             f"{st.get('length'):g} × {st.get('width', 0):g}" if st.get('length') else '—', e(dtype.get(st.get('type'), st.get('type', '') or ''))])
+    death_rows = []
+    for group, label in (('vehicles', 'xe'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
+        for v in game.get(group, []):
+            if v.get('death'):
+                death_rows.append((float(v.get('deathRadius', 0) or 0), [e(v['name']), label, f"{float(v['death']):g}", f"{round(float(v.get('deathRadius', 0) or 0), 1):g}"]))
+    death_rows.sort(key=lambda r: -r[0])
+    return ("<div class='section'><h2>10c. Tầm nổ</h2>"
+            "<p>Bán kính nổ lan (m) của mọi bom, tên lửa, rốc-két, đạn pháo và drone; của các thẻ hỗ trợ hỏa lực; của đòn lớn của boss; và của vụ nổ khi xe, tháp, boss bị phá. "
+            "\"Trúng trực tiếp\" là quả chỉ gây sát thương cho mục tiêu nó trúng. Sát thương là mỗi phát, trước giáp.</p>"
+            f"<h3>Bom, tên lửa, rốc-két, đạn pháo, drone ({len(rows)})</h3>"
+            + table(['Vũ khí', 'Tên thật', 'Dạng', 'Trên', 'Bán kính nổ (m)', 'Sát thương', 'Loại', 'Xuyên', 'Nhiệt áp', 'Nổ lan', 'Chùm'], [r for _, r in rows], 'dps')
+            + f"<h3>Hỗ trợ hỏa lực ({len(sup_rows)})</h3>"
+            + table(['Thẻ', 'Id', 'Số quả', 'Sát thương mỗi quả', 'Bán kính (m)', 'Loại', 'CP', 'Hồi (s)'], sup_rows, 'dps')
+            + f"<h3>Đòn lớn của boss ({len(big_rows)} đợt)</h3>"
+            + table(['Boss', 'Đòn', 'Dạng', 'Số phát', 'Sát thương', 'Bán kính (m)', 'Dải dài × rộng (m)', 'Loại'], big_rows, 'dps')
+            + f"<h3>Vụ nổ khi bị phá ({len(death_rows)})</h3>"
+            + table(['Đơn vị', 'Loại', 'Sát thương', 'Bán kính (m)'], [r for _, r in death_rows], 'dps')
+            + "</div>")
+
+
 def rates_and_ballistics(game, h):
     """Section 10b: every weapon's rate of fire, magazine and reload, and its ballistics; every unit's movement and size."""
     e, table = h['esc'], h['table']
