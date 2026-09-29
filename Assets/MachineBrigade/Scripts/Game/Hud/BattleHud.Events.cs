@@ -21,6 +21,7 @@ namespace MachineBrigade.Game.Hud
         private GeneralTags _generalTags;
         private readonly List<Rect> _keepOut = new();
         private VisualElement _keepTop, _keepUnder, _keepLeft, _keepRail;
+        private readonly List<VisualElement> _keepDeckExtras = new();
         private float? _eventClock;
 
         /// <summary>F.2: the direction arrows (null in the menu).</summary>
@@ -55,6 +56,9 @@ namespace MachineBrigade.Game.Hud
             _keepUnder = _safe.Q(className: "fc-hud__under");
             _keepLeft = _safe.Q(className: "fc-hud__left");
             _keepRail = _safe.Q(className: "fc-hud__rail");
+            // The tray's supply chip and a held card's tip stand above the tray, outside its box.
+            _deck?.Root.Query(className: "fc-deck__chip").ForEach(_keepDeckExtras.Add);
+            _deck?.Root.Query(className: "fc-deck__tip").ForEach(_keepDeckExtras.Add);
             if (Minimap != null) Minimap.Arrows = _arrows.Marks;
             LanguageSwitched += RefreshSideObjective;
         }
@@ -121,6 +125,7 @@ namespace MachineBrigade.Game.Hud
             Keep(_keepRail);
             Keep(_command);
             Keep(_deck?.Root);
+            foreach (var extra in _keepDeckExtras) Keep(extra);
             Keep(_items?.Root);
             Keep(_hintBar);
             Keep(_targeting);

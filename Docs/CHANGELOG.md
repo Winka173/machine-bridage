@@ -7,6 +7,19 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 23 F: event HUD markers (DECISIONS 23F)
+
+- Reinforcements show where they come from for as long as their warning runs: an arrow at that side of the minimap and a
+  small round indicator at the screen's edge pointing towards them (red: the enemy's; sky blue: the Meridian Accord's),
+  up to four at once, kept clear of the notices, the dialogue line and the card tray.
+- The Accord's reinforcements (and the other allied-AI units) read apart from the player's own: a sky-blue health bar
+  with the Accord's sign beside it (teal for colour-blind players), sky-blue ringed blips on the minimap; the player
+  cannot select them.
+- An enemy general's vehicle on the field has a small name label (VARGA, KESSLER...) above it, with a small speaking mark
+  while that general's line is on show. No speech bubbles.
+- A side objective has its own row on the mission bar (what to do, 2/5, a clock that turns red in the last ten seconds)
+  and a short notice when it starts, is completed or fails.
+
 ### Prompt 23 H: in-battle dialogue (DECISIONS 23H)
 
 - Every line a character says in battle is now one subtitle just above the card tray: the speaker's short name in bold

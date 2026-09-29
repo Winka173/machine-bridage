@@ -259,6 +259,7 @@ namespace MachineBrigade.Tests
                      {
                          ("hud-dialogue", false, false), ("hud-dialogue", false, true), ("hud-dialogue", true, false), ("hud-dialogue", true, true),
                          ("hud-dialogue-full", false, false), ("hud-dialogue-full", true, false), ("hud-mission", false, false), ("hud-mission", true, false),
+                         ("hud-siege", false, false), ("hud-siege", true, false),
                      })
             {
                 var (hud, host) = Build(screen, vietnamese: true, large: large);
@@ -274,6 +275,7 @@ namespace MachineBrigade.Tests
                 var boss = Of("fc-boss");
                 var strip = hud.Dialogue.Label.parent.worldBound;
                 var keep = new List<(string what, Rect r)> { ("the dialogue line", strip), ("the notice", notice), ("the mission bar", bar), ("the boss bar", boss), ("the tray", deck) };
+                host.Query(className: "fc-deck__chip").ForEach(chip => keep.Add(("the tray's chip", chip.worldBound)));
 
                 // Every direction round the compass, four at a time (the most at once).
                 for (var batch = 0; batch < 2; batch++)
@@ -312,8 +314,16 @@ namespace MachineBrigade.Tests
                     tags.End();
                 }
                 tags.Begin(hud.KeepOut);
-                var open = new Vector2(Narrowest.x * 0.55f, (notice.yMax + strip.yMin) * 0.5f + 15f);
-                if (!tags.Place(open, "kessler", false, 0f)) failures.Add($"{tag}: no label on the open field at {open}");
+                // Wherever the HUD leaves room on the field, the label shows.
+                Vector2? open = null;
+                for (var y = Narrowest.y * 0.2f; y < Narrowest.y * 0.8f && open == null; y += 10f)
+                    for (var x = Narrowest.x * 0.3f; x < Narrowest.x * 0.7f && open == null; x += 20f)
+                    {
+                        var room = new Rect(x - 70f, y - 36f, 140f, 36f);
+                        if (!hud.KeepOut.Any(k => k.Overlaps(room))) open = new Vector2(x, y);
+                    }
+                if (open == null) failures.Add($"{tag}: no open field at all");
+                else if (!tags.Place(open.Value, "kessler", false, 0f)) failures.Add($"{tag}: no label on the open field at {open}");
                 tags.End();
             }
             Assert.IsEmpty(failures, string.Join("\n", failures));
