@@ -119,3 +119,6 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 22:55) đây là tôi đánh chưa có đồ và chưa lên cấp, nếu có đồ vô boss  sẽ dễ nữa, hãy cân bằng lại toàn bộ mode  [G]
 - (29/09 22:55) các redesign các model phải ref từ các phim / game bên ngoài khác  [L, H]
 - (29/09 23:00) các tháp canh không cần rule phải có 1 cây súng máy, nhìn khá lạ  [F]
+- (29/09 23:30) khi bấm start mission 1 1 không ăn  [agent sửa lỗi, 21B]
+- (29/09 23:30) sandbox cách vào như thế nào  [trả lời: tab Tác chiến → thẻ Sa bàn]
+- (29/09 23:35) giảm thời gian nạp đạn chung của các boss luôn, đang khá là lâu  [G]
