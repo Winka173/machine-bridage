@@ -158,5 +158,30 @@ namespace MachineBrigade.Sim.Entities
         // ------------------------------------------------------------ the supergun's shot
 
         internal double BombardNext;
+
+        // ------------------------------------------------------------ prompt 16: extra boss weapons and escorts
+
+        /// <summary>Its protection system's interceptors stopped (every part carrying "aps" broken).</summary>
+        internal bool ApsOff;
+
+        /// <summary>Its jamming aura stopped (every part carrying "jammer" broken).</summary>
+        internal bool JammerOff;
+
+        /// <summary>Its fire trail stopped (the part carrying "trail" broken).</summary>
+        internal bool TrailOff;
+
+        /// <summary>Interceptors it can hold now: the def's, cut in proportion to the "aps" parts broken.</summary>
+        internal int ApsMax = int.MaxValue;
+
+        /// <summary>Where it last dropped a patch of burning fuel (its fire trail).</summary>
+        internal Vector2 TrailFrom;
+
+        /// <summary>The boss it escorts (prompt 16 F), or none: the commander AI leaves escorts alone.</summary>
+        public EntityId EscortOf { get; internal set; }
+
+        /// <summary>What it does for its boss while it escorts one.</summary>
+        public EscortRole EscortRole { get; internal set; }
+
+        public bool IsEscort => EscortOf.IsValid;
     }
 }

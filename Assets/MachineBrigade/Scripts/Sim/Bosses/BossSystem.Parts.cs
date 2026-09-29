@@ -163,6 +163,9 @@ namespace MachineBrigade.Sim.Bosses
         {
             for (var team = 0; team <= 2; team++)
                 if (_focus.TryGetValue(team, out var f) && FocusOf(team, f.boss) >= 0) mix(f.boss.Value * 64 + f.part);
+            // Prompt 16: the escorts and the fire trails.
+            MixEscorts(mix);
+            mix(_trails.Count);
         }
 
         // ================================================================== damage, breaking, patching
@@ -269,6 +272,22 @@ namespace MachineBrigade.Sim.Bosses
             var turn = 1f;
             var cadence = 1f;
             boss.BombardOff = boss.SpotterOff = boss.BurrowOff = boss.LandingOff = boss.AuraOff = false;
+            // Prompt 16: mechanisms that several parts may carry (the hovercraft's two CIWS) stop with the
+            // last of them; a protection system holds fewer interceptors with each one broken.
+            int apsParts = 0, apsStanding = 0, jamParts = 0, jamStanding = 0, trailParts = 0, trailStanding = 0;
+            for (var i = 0; i < parts.Count; i++)
+                foreach (var stop in parts[i].Stops)
+                    switch (stop)
+                    {
+                        case "aps": apsParts++; if (!boss.PartBroken[i]) apsStanding++; break;
+                        case "jammer": jamParts++; if (!boss.PartBroken[i]) jamStanding++; break;
+                        case "trail": trailParts++; if (!boss.PartBroken[i]) trailStanding++; break;
+                    }
+            boss.ApsOff = apsParts > 0 && apsStanding == 0;
+            boss.JammerOff = jamParts > 0 && jamStanding == 0;
+            boss.TrailOff = trailParts > 0 && trailStanding == 0;
+            boss.ApsMax = boss.Aps == null || apsParts == 0 ? int.MaxValue : (int)MathF.Ceiling(boss.Aps.Charges * apsStanding / (float)apsParts);
+            if (boss.ApsCharges > boss.ApsMax) boss.ApsCharges = boss.ApsMax;
             boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
             for (var i = 0; i < parts.Count; i++)
             {
@@ -297,16 +316,7 @@ namespace MachineBrigade.Sim.Bosses
                         case "radar": boss.RadarOff = true; break;
                     }
             }
-            // Prompt 16: point defence stops only once every part that carries it is broken.
-            var ciwsCarried = 0;
-            var ciwsBroken = 0;
-            for (var i = 0; i < parts.Count; i++)
-                if (Contains(parts[i].Stops, "ciws"))
-                {
-                    ciwsCarried++;
-                    if (boss.PartBroken[i]) ciwsBroken++;
-                }
-            boss.CiwsOff = ciwsCarried > 0 && ciwsBroken == ciwsCarried;
+
             boss.PartSpeed = speed;
             boss.TurnFactor = boss.TurnFactor / boss.PartTurn * turn;
             boss.TurretFactor = boss.TurretFactor / boss.PartTurn * turn;

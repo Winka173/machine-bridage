@@ -53,10 +53,6 @@ namespace MachineBrigade.Sim.Content
         public float Heading { get; }
     }
 
-    /// <summary>
-    /// A battlefield as data. The map is a square of <see cref="Size"/> metres centred on the
-    /// origin, so coordinates run from -HalfSize to +HalfSize on both axes.
-    /// </summary>
     /// <summary>A road drawn on the ground (presentation only; the simulation ignores it).</summary>
     public sealed class RoadDef
     {
@@ -70,13 +66,20 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<Vector2> Points { get; }
     }
 
+    /// <summary>
+    /// A battlefield as data. A map is a square of <see cref="Size"/> metres centred on the origin
+    /// (coordinates from -HalfSize to +HalfSize on both axes), or (prompt 17's long battlefields) a
+    /// rectangle given by its <see cref="Min"/> and <see cref="Max"/> corners: 300 m across and 480 m
+    /// along the attack, the square's own ground where it always was and the rest to the north.
+    /// Everything that keeps to the map uses the corners (<see cref="Contains"/>, <see cref="Clamp"/>).
+    /// </summary>
     public sealed class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
             IReadOnlyList<CapturePointDef>? points = null, IReadOnlyList<RoadDef>? roads = null, string theme = "temperate",
             IReadOnlyList<Vector2>? boundary = null, IReadOnlyList<float>? siegeRings = null, IReadOnlyList<PropPlacement>? decor = null,
-            IReadOnlyList<BaseSiteDef>? bases = null, FortressDef? fortress = null)
+            IReadOnlyList<BaseSiteDef>? bases = null, FortressDef? fortress = null, (Vector2 min, Vector2 max)? bounds = null)
         {
             Fortress = fortress;
             Bases = bases ?? Array.Empty<BaseSiteDef>();
@@ -88,14 +91,56 @@ namespace MachineBrigade.Sim.Content
             Roads = roads ?? Array.Empty<RoadDef>();
             Id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentException("Map id must not be empty.") : id;
             Size = float.IsFinite(size) && size > 0 ? size : throw new ArgumentException($"Map '{id}': size must be positive.");
+            if (bounds is { } b)
+            {
+                if (!(b.max.X > b.min.X) || !(b.max.Y > b.min.Y)) throw new ArgumentException($"Map '{id}': bounds must have a positive area.");
+                Min = b.min;
+                Max = b.max;
+                Size = MathF.Max(b.max.X - b.min.X, b.max.Y - b.min.Y);
+            }
+            else
+            {
+                Min = new Vector2(-Size * 0.5f);
+                Max = new Vector2(Size * 0.5f);
+            }
             Teams = teams;
             Props = props;
             Units = units;
         }
 
         public string Id { get; }
+
+        /// <summary>The longer side in metres (the square's side on a square map).</summary>
         public float Size { get; }
+
+        /// <summary>Half the longer side. A square map runs from -HalfSize to +HalfSize; keep to the map with <see cref="Min"/> and <see cref="Max"/>.</summary>
         public float HalfSize => Size * 0.5f;
+
+        /// <summary>The south-west corner (lowest x and z).</summary>
+        public Vector2 Min { get; }
+
+        /// <summary>The north-east corner (highest x and z).</summary>
+        public Vector2 Max { get; }
+
+        /// <summary>Metres across (along x).</summary>
+        public float Width => Max.X - Min.X;
+
+        /// <summary>Metres along (z).</summary>
+        public float Length => Max.Y - Min.Y;
+
+        /// <summary>The map's middle (the origin on a square map).</summary>
+        public Vector2 Centre => (Min + Max) * 0.5f;
+
+        /// <summary>A long battlefield (prompt 17): noticeably longer than wide.</summary>
+        public bool IsLong => Length > Width * 1.2f;
+
+        /// <summary>The point kept at least <paramref name="margin"/> inside the map's edges.</summary>
+        public Vector2 Clamp(Vector2 p, float margin = 0f) =>
+            new(Math.Clamp(p.X, MathF.Min(Min.X + margin, Centre.X), MathF.Max(Max.X - margin, Centre.X)),
+                Math.Clamp(p.Y, MathF.Min(Min.Y + margin, Centre.Y), MathF.Max(Max.Y - margin, Centre.Y)));
+
+        /// <summary>How far inside the nearest edge a point is (negative outside).</summary>
+        public float EdgeDistance(Vector2 p) => MathF.Min(MathF.Min(p.X - Min.X, Max.X - p.X), MathF.Min(p.Y - Min.Y, Max.Y - p.Y));
         public IReadOnlyList<TeamStart> Teams { get; }
         public IReadOnlyList<PropPlacement> Props { get; }
         public IReadOnlyList<UnitPlacement> Units { get; }
@@ -130,7 +175,7 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<RoadDef> Roads { get; }
 
         public bool Contains(Vector2 point) =>
-            MathF.Abs(point.X) <= HalfSize && MathF.Abs(point.Y) <= HalfSize;
+            point.X >= Min.X && point.X <= Max.X && point.Y >= Min.Y && point.Y <= Max.Y;
 
         /// <summary>
         /// The battlefield's outline inside the square (counter-clockwise), or empty for a plain
@@ -175,17 +220,27 @@ namespace MachineBrigade.Sim.Content
             foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading));
             var bases = new List<BaseSiteDef>();
             foreach (var b in Bases) bases.Add(new BaseSiteDef(Swap(b.Team), b.Hq, b.Heading, b.Slots));
-            return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases);
+            return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
+                bounds: IsSquare ? null : (Min, Max));
         }
 
         /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
         public SeaDef? Sea { get; internal set; }
+        /// <summary>Whether the map is the plain square centred on the origin.</summary>
+        private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
 
         public static MapDefinition FromJson(string json)
         {
             var root = new JsonObject(MiniJson.Parse(json), "map");
             var id = root.String("id");
             var size = root.Float("size");
+            (Vector2, Vector2)? bounds = null;
+            if (root.Has("bounds"))
+            {
+                var b = root.FloatArray("bounds");
+                if (b.Count != 4) throw new FormatException("map.bounds: needs min x, min z, max x, max z.");
+                bounds = (new Vector2(b[0], b[1]), new Vector2(b[2], b[3]));
+            }
 
             var teams = new List<TeamStart>();
             foreach (var t in root.Array("teams"))
@@ -255,7 +310,7 @@ namespace MachineBrigade.Sim.Content
                     bases.Add(BaseSiteDef.Parse(b));
             var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor, bases, fortress)
+                boundary, rings, decor, bases, fortress, bounds)
             {
                 // Prompt 16: a battlefield on the sea (Lighthouse Bay): its lanes, beaches and batteries.
                 Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,

@@ -6,7 +6,7 @@ using MachineBrigade.Sim.Core;
 namespace MachineBrigade.Sim.Content
 {
     /// <summary>A weapon's tuning. Loaded from the balance catalog; immutable during a match.</summary>
-    public sealed class WeaponDef
+    public sealed partial class WeaponDef
     {
         public WeaponDef(string id, DamageType damageType, float damage, float cooldown, float range,
             float minRange, float projectileSpeed, float splashRadius, float spread, ExplosionTier impactTier,
@@ -272,6 +272,9 @@ namespace MachineBrigade.Sim.Content
                 Clip = Clip,
                 ClipReload = ClipReload,
                 _roundWeight = _roundWeight,
+                // Prompt 17 C.
+                Ramp = Ramp,
+                SwarmReach = SwarmReach,
             };
             return copy;
         }

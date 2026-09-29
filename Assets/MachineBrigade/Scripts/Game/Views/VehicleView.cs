@@ -202,6 +202,9 @@ namespace MachineBrigade.Game.Views
             // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
             if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
+            BuildEscortMark(meshes, materials);
+            // Prompt 17 C: the bunker vehicle's digging-in and dug-in mark.
+            BuildDeployMark(meshes, materials);
             _bar.gameObject.SetActive(false);
 
             foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
@@ -951,6 +954,7 @@ namespace MachineBrigade.Game.Views
             Elevate();
             Spin(1f);
             AnimateParts(cameraRotation);
+            AnimateDeploy();
 
             _ring.Visible = Selected;
             if (_shadowRing != null)
@@ -966,13 +970,15 @@ namespace MachineBrigade.Game.Views
             var repairing = Time.time < _repairUntil;
             // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
             var stores = _storesMark != null && StoresWanted();
-            var showBar = Selected || health < 0.999f || stores || repairing;
+            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
+            RenderEscortMark(cameraRotation);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
             RenderStoresMark();
+            RenderDeployMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);
@@ -981,6 +987,37 @@ namespace MachineBrigade.Game.Views
 
         private Transform _repairMark;
         private float _repairUntil = -1f;
+
+        /// <summary>Prompt 16 F: a boss escort's mark, left of where its health bar is (shown whether the bar is or not).</summary>
+        private Transform _escortMark;
+
+        /// <summary>An orange diamond with a dark pip on a dark disc: this vehicle escorts a boss.</summary>
+        private void BuildEscortMark(MeshLibrary meshes, MaterialLibrary materials)
+        {
+            _escortMark = new GameObject("EscortMark").transform;
+            _escortMark.SetParent(Root, false);
+            var back = CreateMesh("Back", _escortMark, meshes.Quad, materials.BarBack, false);
+            back.localScale = new Vector3(0.8f, 0.8f, 1f);
+            back.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            var diamond = CreateMesh("Diamond", _escortMark, meshes.Quad, materials.EscortMark, false);
+            diamond.localScale = new Vector3(0.5f, 0.5f, 1f);
+            diamond.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            diamond.localPosition = new Vector3(0f, 0f, -0.01f);
+            var pip = CreateMesh("Pip", _escortMark, meshes.Quad, materials.BarBack, false);
+            pip.localScale = new Vector3(0.16f, 0.16f, 1f);
+            pip.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            pip.localPosition = new Vector3(0f, 0f, -0.02f);
+            _escortMark.gameObject.SetActive(false);
+        }
+
+        private void RenderEscortMark(Quaternion cameraRotation)
+        {
+            var escort = Sim.IsEscort && Sim.IsAlive;
+            if (_escortMark.gameObject.activeSelf != escort) _escortMark.gameObject.SetActive(escort);
+            if (!escort) return;
+            _escortMark.rotation = cameraRotation;
+            _escortMark.position = _bar.parent.TransformPoint(_bar.localPosition) + cameraRotation * new Vector3(-(BarWidth * 0.5f + 0.6f), 0f, 0f);
+        }
 
         /// <summary>Something is repairing this vehicle or defence: the wrench shows over its health bar for a moment.</summary>
         public void ShowRepair() => _repairUntil = Time.time + 1.4f;

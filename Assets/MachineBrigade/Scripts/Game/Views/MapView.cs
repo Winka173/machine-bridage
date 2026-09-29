@@ -685,11 +685,11 @@ namespace MachineBrigade.Game.Views
                 else water.Add(t);
                 if (t.Def.Id == "river_water") deep.Add(t);
             }
-            var half = world.Map.HalfSize;
+            var bounds = (world.Map.Min, world.Map.Max);
             if (lava.Count > 0)
             {
                 var crust = _theme.LavaCrust;
-                var (mesh, verts, fields) = Contour("Lava", lava, null, half);
+                var (mesh, verts, fields) = Contour("Lava", lava, null, bounds);
                 _lavaBase = new Color[verts.Count];
                 _lavaPhase = new float[verts.Count];
                 _lavaColours = new Color32[verts.Count];
@@ -721,7 +721,7 @@ namespace MachineBrigade.Game.Views
                 var ratio = new Color(Mathf.Clamp01(_theme.WaterColour.r / Mathf.Max(0.01f, shallow.r)),
                     Mathf.Clamp01(_theme.WaterColour.g / Mathf.Max(0.01f, shallow.g)),
                     Mathf.Clamp01(_theme.WaterColour.b / Mathf.Max(0.01f, shallow.b)));
-                var (mesh, verts, fields) = Contour("River", water, deep, half);
+                var (mesh, verts, fields) = Contour("River", water, deep, bounds);
                 var colours = new Color32[verts.Count];
                 for (var i = 0; i < verts.Count; i++)
                 {
@@ -751,7 +751,7 @@ namespace MachineBrigade.Game.Views
         /// vertices and, per vertex, the smoothed coverage of all tiles (x) and of `deep` tiles (y).
         /// </summary>
         private (Mesh mesh, List<Vector3> vertices, List<UnityEngine.Vector2> fields) Contour(string name, List<Prop> tiles,
-            List<Prop> deep, float half)
+            List<Prop> deep, (System.Numerics.Vector2 min, System.Numerics.Vector2 max) edge)
         {
             const float cell = 1f;
             const float iso = 0.5f;
@@ -763,10 +763,10 @@ namespace MachineBrigade.Game.Views
                 minZ = Mathf.Min(minZ, t.Position.Y - t.Depth * 0.5f);
                 maxZ = Mathf.Max(maxZ, t.Position.Y + t.Depth * 0.5f);
             }
-            minX = Mathf.Max(-half, Mathf.Floor(minX) - 3f);
-            minZ = Mathf.Max(-half, Mathf.Floor(minZ) - 3f);
-            maxX = Mathf.Min(half, Mathf.Ceil(maxX) + 3f);
-            maxZ = Mathf.Min(half, Mathf.Ceil(maxZ) + 3f);
+            minX = Mathf.Max(edge.min.X, Mathf.Floor(minX) - 3f);
+            minZ = Mathf.Max(edge.min.Y, Mathf.Floor(minZ) - 3f);
+            maxX = Mathf.Min(edge.max.X, Mathf.Ceil(maxX) + 3f);
+            maxZ = Mathf.Min(edge.max.Y, Mathf.Ceil(maxZ) + 3f);
             var nx = Mathf.CeilToInt((maxX - minX) / cell);
             var nz = Mathf.CeilToInt((maxZ - minZ) / cell);
             var stride = nx + 1;
@@ -970,11 +970,13 @@ namespace MachineBrigade.Game.Views
         private void ScatterBushes(SimWorld world, Random rng)
         {
             if (_theme.Bush == null) return;
-            var half = world.Map.HalfSize - 4f;
+            var map = world.Map;
+            float halfX = map.Width * 0.5f - 4f, halfZ = map.Length * 0.5f - 4f;
+            var budget = (int)(70 * map.Width * map.Length / (300f * 300f));
             var placed = 0;
-            for (var attempt = 0; attempt < 400 && placed < 70; attempt++)
+            for (var attempt = 0; attempt < 400 * budget / 70 && placed < budget; attempt++)
             {
-                var p = new Vector2((float)(rng.NextDouble() * 2 - 1) * half, (float)(rng.NextDouble() * 2 - 1) * half);
+                var p = map.Centre + new Vector2((float)(rng.NextDouble() * 2 - 1) * halfX, (float)(rng.NextDouble() * 2 - 1) * halfZ);
                 var clear = true;
                 foreach (var prop in world.Props)
                     if (prop.Contains(p, 3f)) { clear = false; break; }
@@ -990,30 +992,34 @@ namespace MachineBrigade.Game.Views
 
         private void BuildGround(SimWorld world, MaterialLibrary materials)
         {
-            var size = world.Map.Size;
+            var map = world.Map;
+            var size = map.Size;
+            var centre = new Vector3(map.Centre.X, 0f, map.Centre.Y);
             _groundTexture = TerrainPainter.Paint(world, _theme, out var minimap);
             MinimapTexture = minimap;
             materials.Ground.SetTexture("_BaseMap", _groundTexture);
             materials.Pebble.SetColor("_BaseColor", _theme.Pebble);
             materials.GrassTuft.SetColor("_BaseColor", _theme.GrassTuft);
 
-            var groundObject = Place("Ground", Own(GroundMesh(size, 64)), materials.Ground, castShadows: false);
+            // (The map's rectangle: a long battlefield is 300 x 480 m and not centred on the origin, prompt 17.)
+            var groundObject = Place("Ground", Own(GroundMesh(map.Width, map.Length, 64)), materials.Ground, castShadows: false);
+            groundObject.transform.position = centre;
             var collider = groundObject.AddComponent<BoxCollider>();
             collider.center = new Vector3(0f, -0.5f, 0f);
             collider.size = new Vector3(size * 3f, 1f, size * 3f);
 
             // A dark earth block under the map, as in the reference: nothing is drawn beyond the edge.
             var skirt = Place("Skirt", Own(Primitives.Box()), materials.Skirt, castShadows: false);
-            skirt.transform.position = new Vector3(0f, -1.27f, 0f);
-            skirt.transform.localScale = new Vector3(size, 2.5f, size);
+            skirt.transform.position = centre + new Vector3(0f, -1.27f, 0f);
+            skirt.transform.localScale = new Vector3(map.Width, 2.5f, map.Length);
 
             var rng = new Random(1482);
-            var spread = size - 6f;
-            var density = (size / 96f) * (size / 96f) * 0.7f;
-            Place("Pebbles", Own(Scatter(Pebble(), (int)(500 * density), spread, rng, world, 0.06f, 0.5f, 1.5f, tilt: true)),
+            var spread = new Vector2(map.Width - 6f, map.Length - 6f);
+            var density = (map.Width / 96f) * (map.Length / 96f) * 0.7f;
+            Place("Pebbles", Own(Scatter(Pebble(), (int)(500 * density), spread, map.Centre, rng, world, 0.06f, 0.5f, 1.5f, tilt: true)),
                 materials.Pebble, castShadows: false);
             if (_theme.Tufts > 0f)
-                Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density * _theme.Tufts), spread, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
+                Place("Grass", Own(Scatter(GrassTuft(), (int)(850 * density * _theme.Tufts), spread, map.Centre, rng, world, 0f, 0.4f, 1.1f, tilt: false)),
                     materials.GrassTuft, castShadows: false);
         }
 
@@ -1081,13 +1087,13 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Many copies of a small mesh merged into one static mesh: one draw call for all.</summary>
-        private static Mesh Scatter(Mesh source, int count, float spread, Random rng, SimWorld world, float lift,
+        private static Mesh Scatter(Mesh source, int count, Vector2 spread, Vector2 centre, Random rng, SimWorld world, float lift,
             float minScale, float maxScale, bool tilt)
         {
             var instances = new List<CombineInstance>(count);
             for (var i = 0; i < count; i++)
             {
-                var p = new Vector2((float)(rng.NextDouble() - 0.5) * spread, (float)(rng.NextDouble() - 0.5) * spread);
+                var p = centre + new Vector2((float)(rng.NextDouble() - 0.5) * spread.X, (float)(rng.NextDouble() - 0.5) * spread.Y);
                 var scale = minScale + (float)rng.NextDouble() * (maxScale - minScale);
                 var rotation = tilt
                     ? Quaternion.Euler((float)rng.NextDouble() * 60f, (float)rng.NextDouble() * 360f, (float)rng.NextDouble() * 40f)
@@ -1182,7 +1188,7 @@ namespace MachineBrigade.Game.Views
         }
 
         /// <summary>Flat grid with UVs spanning the painted ground texture.</summary>
-        private static Mesh GroundMesh(float size, int cells)
+        private static Mesh GroundMesh(float width, float length, int cells)
         {
             var count = cells + 1;
             var vertices = new Vector3[count * count];
@@ -1193,7 +1199,7 @@ namespace MachineBrigade.Game.Views
             for (var x = 0; x < count; x++)
             {
                 var i = z * count + x;
-                vertices[i] = new Vector3((x / (float)cells - 0.5f) * size, 0f, (z / (float)cells - 0.5f) * size);
+                vertices[i] = new Vector3((x / (float)cells - 0.5f) * width, 0f, (z / (float)cells - 0.5f) * length);
                 uvs[i] = new UnityEngine.Vector2(x / (float)cells, z / (float)cells);
                 colors[i] = Color.white;
                 normals[i] = Vector3.up;

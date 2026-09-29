@@ -124,6 +124,15 @@
     --fc-switch-height: 34px;
     --fc-knob: 24px;
 
+    /* ---- prompt 15: armour and weapon icons (KitCombat) */
+    --fc-cicon: 34px;                         /* an armour icon or a weapon chip in tight places: 18.7 pt (18-20) */
+    --fc-cicon-large: 52px;                   /* on the detail page: 28.5 pt */
+    --fc-cmark: 17px;                         /* the damage-type mark in a chip's corner */
+    --fc-cmark-large: 24px;
+    --fc-chip-bg: var(--fc-panel-raised);     /* under the corner mark: the surface the chip sits on */
+    --fc-effect-weapon: 60px;                 /* the effectiveness table's first column */
+    --fc-armour-diagram: 150px;
+
     /* ---- screen layout (Screens.uss) */
     --fc-topbar: 81px;                        /* the top bar: 44.4 pt (44-48) */
     --fc-home-column: 440px;
@@ -709,3 +718,64 @@
 .fc-stars { flex-direction: row; }
 .fc-rule-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text-2); }
 .fc-paint { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+
+/* ---- prompt 15: armour and weapon icons (KitCombat) ------------------------------------------------ */
+.fc-cicon { width: var(--fc-cicon); height: var(--fc-cicon); --icon-color: var(--fc-text); }
+.fc-cicon--large { width: var(--fc-cicon-large); height: var(--fc-cicon-large); }
+.fc-crow { flex-direction: row; align-items: center; height: var(--fc-cicon); flex-shrink: 0; margin-top: var(--fc-space-1); }
+.fc-crow > .fc-cicon, .fc-crow > .fc-wchip { margin-right: 2px; }
+.fc-vcard__combat { margin-left: -4px; margin-right: -4px; }
+.fc-vcard--compact .fc-vcard__combat { margin-left: -2px; margin-right: -2px; }
+.fc-crow__more { flex-shrink: 0; white-space: nowrap; padding: 0 2px; }
+.fc-wchip { width: var(--fc-cicon); height: var(--fc-cicon); flex-shrink: 0; }
+.fc-wchip--large { width: var(--fc-cicon-large); height: var(--fc-cicon-large); }
+.fc-wchip__form { position: absolute; left: 0; top: 0; right: 0; bottom: 0; --icon-color: var(--fc-text); }
+.fc-wchip__mark {
+    position: absolute; right: -3px; bottom: -3px; width: var(--fc-cmark); height: var(--fc-cmark);
+    background-color: var(--fc-chip-bg); padding: 1px;
+}
+.fc-wchip--large > .fc-wchip__mark { width: var(--fc-cmark-large); height: var(--fc-cmark-large); right: -4px; bottom: -4px; }
+.fc-wchip__mark-icon { flex-grow: 1; --icon-color: var(--fc-text); }
+.fc-wchip-group { align-items: center; flex-shrink: 0; }
+.fc-wchip-group > .fc-wchip { margin-right: var(--fc-space-2); }
+.fc-xmark { width: var(--fc-cmark-large); height: var(--fc-cmark-large); margin-right: var(--fc-space-1); --icon-color: var(--fc-text-2); }
+.fc-xmark--large { width: var(--fc-cicon); height: var(--fc-cicon); }
+
+.fc-armour { flex-direction: row; align-items: center; flex-shrink: 0; margin-bottom: var(--fc-space-3); }
+.fc-armour__diagram { width: var(--fc-armour-diagram); height: var(--fc-armour-diagram); flex-shrink: 0; margin-right: var(--fc-space-4); --icon-color: var(--fc-text); }
+.fc-armour__legend { flex-grow: 1; flex-shrink: 1; }
+.fc-armour__line { align-items: center; margin-bottom: var(--fc-space-1); }
+.fc-armour__line > .fc-cicon { margin-right: var(--fc-space-2); }
+.fc-armour__words { flex-shrink: 1; }
+
+.fc-effect { flex-shrink: 0; margin-top: var(--fc-space-3); }
+.fc-effect__row { align-items: center; min-height: var(--fc-cicon); margin-bottom: var(--fc-space-2); }
+.fc-effect__head { margin-bottom: var(--fc-space-2); }
+.fc-effect__weapon { width: var(--fc-effect-weapon); flex-shrink: 0; }
+.fc-effect__cell { flex-grow: 1; flex-basis: 0; align-items: center; justify-content: center; padding: 0 var(--fc-space-1); }
+.fc-effect__track { width: 100%; height: 10px; background-color: var(--fc-border); }
+.fc-effect__bar { height: 100%; background-color: var(--fc-text); }
+.fc-effect__num { margin-top: 2px; }
+
+.fc-strongweak { flex-shrink: 0; margin-top: var(--fc-space-2); }
+.fc-strongweak__line { align-items: center; flex-wrap: wrap; margin-bottom: var(--fc-space-2); }
+.fc-strongweak__line > .fc-cicon, .fc-strongweak__line > .fc-wchip { margin-right: var(--fc-space-2); }
+.fc-strongweak__label { width: 130px; flex-shrink: 0; }
+
+.fc-cover { align-items: center; flex-shrink: 0; }
+.fc-cover__cell { margin-right: var(--fc-space-1); }
+.fc-cover__cell--missing > .fc-cicon { --icon-color: var(--fc-danger); opacity: 0.55; }
+.fc-cover__strike {
+    position: absolute; left: 2px; right: 2px; top: 50%; height: 2px; margin-top: -1px;
+    background-color: var(--fc-danger); rotate: -35deg;
+}
+
+.fc-verdict { width: var(--fc-cmark-large); height: var(--fc-cmark-large); margin-right: var(--fc-space-1); --icon-color: var(--fc-text); }
+.fc-verdict--poor { --icon-color: var(--fc-text-2); }
+.fc-verdict--none { --icon-color: var(--fc-danger); }
+
+.fc-enemytip { padding: var(--fc-space-2) var(--fc-space-3); width: 300px; }
+.fc-enemytip__head { align-items: center; margin-bottom: var(--fc-space-1); }
+.fc-enemytip__head > .fc-cicon { margin-right: var(--fc-space-2); }
+.fc-enemytip__grid { flex-direction: row; flex-wrap: wrap; }
+.fc-enemytip__cell { width: 100%; align-items: center; min-height: 28px; }

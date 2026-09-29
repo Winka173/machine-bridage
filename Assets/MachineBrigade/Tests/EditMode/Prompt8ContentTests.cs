@@ -378,7 +378,7 @@ namespace MachineBrigade.Tests
             foreach (var id in new[] { "rail_supergun", "earth_borer", "command_airship", "landing_hovercraft", "supreme_command" })
             {
                 CollectionAssert.Contains(all, id);
-                Assert.IsTrue(new BossRushRules().Escorts.ContainsKey(id), id + " has its escort");
+                Assert.IsTrue(GameContent.LoadCatalog().Escorts.ContainsKey(id), id + " has its escort table (prompt 16 F)");
                 Assert.IsTrue(Game.Hud.Strings.Has("guide." + id), id + " has a guide card");
                 Assert.IsTrue(Game.Hud.Strings.Has("unit." + id), id + " has a name");
                 var def = GameContent.LoadCatalog().Vehicle(id);

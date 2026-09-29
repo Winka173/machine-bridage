@@ -99,7 +99,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>How long the compact bar stays open after a tap.</summary>
         private const float OpenSeconds = 6f;
 
-        private readonly Label _name, _phase, _hp;
+        private readonly Label _name, _phase, _hp, _escorts;
+        private readonly VisualElement _escortChip;
+        private int _shownEscorts = -1;
         private readonly VisualElement _fill, _track;
         private string _shownName;
         private int _shownFill = -1, _shownPhase = -1, _shownHp = -1, _shownMax = -1;
@@ -128,6 +130,17 @@ namespace MachineBrigade.Game.Hud
             head.Add(_phase);
             _hp = Kit.Text("", "fc-number-small fc-boss__hp");
             head.Add(_hp);
+            // Prompt 16 F: how many of its escorts are still alive (hidden at none).
+            _escortChip = Kit.Box("fc-boss__escorts");
+            _escortChip.style.flexDirection = FlexDirection.Row;
+            _escortChip.style.alignItems = Align.Center;
+            _escortChip.style.marginLeft = 6;
+            _escortChip.Add(Kit.Icon("shield", "fc-boss__escorts-icon"));
+            _escorts = Kit.Text("", "fc-number-small fc-boss__escorts-count");
+            _escortChip.Add(_escorts);
+            _escortChip.tooltip = Strings.Get("hud.bossEscorts");
+            _escortChip.style.display = DisplayStyle.None;
+            head.Add(_escortChip);
             Root.Add(head);
             _track = Kit.Box("fc-boss__track");
             _fill = Kit.Box("fc-boss__fill");
@@ -218,6 +231,15 @@ namespace MachineBrigade.Game.Hud
             }
             var fill = Mathf.RoundToInt(Mathf.Clamp01(health) * 1000f);
             if (fill != _shownFill) _fill.style.width = Length.Percent((_shownFill = fill) / 10f);
+        }
+
+        /// <summary>Prompt 16 F: its escorts still alive, beside its health (none: hidden).</summary>
+        public void SetEscorts(int alive)
+        {
+            if (alive == _shownEscorts) return;
+            _shownEscorts = alive;
+            _escortChip.style.display = alive > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _escorts.text = alive > 0 ? "\u00d7" + alive : "";
         }
 
         /// <summary>The boss's health in numbers beside its name ("41 250 / 60 000").</summary>

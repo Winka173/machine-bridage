@@ -136,7 +136,7 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Blender may suffix duplicate names (Turret.001); accept those too.</summary>
         private static readonly Regex TurretPattern = new(@"^Turret(\.\d+)?$");
 
-        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r)(\.\d+)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r|mortar)(\.\d+)?$", RegexOptions.IgnoreCase);
         private static readonly Regex MountPattern = new(@"^Mount_([a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
 
         /// <summary>Spinning parts: (name, local axis, degrees per second). Blender Z (up) is Unity Y.</summary>
@@ -479,10 +479,13 @@ namespace MachineBrigade.Game.Rendering
                 list.Add(filter);
             }
             var muzzles = new Dictionary<string, Transform>();
+            var every = new List<(string slot, Transform muzzle)>();
             foreach (var t in root.GetComponentsInChildren<Transform>(true))
             {
                 var m = MuzzlePattern.Match(t.name);
-                if (m.Success) muzzles[m.Groups[1].Value.ToLowerInvariant()] = t;
+                if (!m.Success) continue;
+                muzzles[m.Groups[1].Value.ToLowerInvariant()] = t;
+                every.Add((m.Groups[1].Value.ToLowerInvariant(), t));
             }
             foreach (var (slot, pairs, faces) in Launchers)
             {
@@ -523,6 +526,50 @@ namespace MachineBrigade.Game.Rendering
                     launch.Measured = measured || Aligned(muzzle);
                 }
             }
+            // Prompt 16: a second launcher of a slot on its own trainable mount (the hovercraft's two rocket
+            // boxes): its face of tubes, found among the meshes on that mount alone, gets launch points of its own.
+            foreach (var (slot, faces) in LauncherFaces())
+                foreach (var (muzzleSlot, muzzle) in every)
+                {
+                    // Only a muzzle on its own Mount_<slot> pivot beside another of the slot's (not a pod pair on one airframe).
+                    if (muzzleSlot != slot || muzzles[slot] == muzzle || !(MountOf(muzzle) is { } mount) || MountSlot(mount) != slot ||
+                        MountOf(muzzles[slot]) is not { } primary || primary == mount || MountSlot(primary) != slot) continue;
+                    if (mount.GetComponentsInChildren<LaunchPoint>(true).Length > 0) continue;
+                    var at = root.InverseTransformPoint(muzzle.position);
+                    var hint = root.InverseTransformDirection(muzzle.forward);
+                    foreach (var part in faces)
+                    {
+                        if (!byName.TryGetValue(part, out var filters)) continue;
+                        var own = filters.FindAll(f => f.transform.IsChildOf(mount));
+                        if (own.Count == 0) continue;
+                        var (front, half, axis, measured) = WholeFace(root, own, hint);
+                        if (Vector3.Distance(front, at) >= 1.6f) continue;
+                        var point = new GameObject($"Launch_{slot}_x").transform;
+                        point.SetParent(muzzle.parent, false);
+                        point.position = root.TransformPoint(front);
+                        point.rotation = measured ? root.rotation * Quaternion.LookRotation(axis, Vector3.up) : muzzle.rotation;
+                        var launch = point.gameObject.AddComponent<LaunchPoint>();
+                        launch.Slot = slot;
+                        launch.Spread = half * 0.8f;
+                        launch.Measured = measured || Aligned(muzzle);
+                        break;
+                    }
+                }
+        }
+
+        private static IEnumerable<(string slot, string[] faces)> LauncherFaces()
+        {
+            foreach (var (slot, _, faces) in Launchers) yield return (slot, faces);
+        }
+
+        private static string MountSlot(Transform mount) => MountPattern.Match(mount.name).Groups[1].Value.ToLowerInvariant();
+
+        /// <summary>The weapon mount pivot (Mount_*) a muzzle turns with, or null.</summary>
+        private static Transform MountOf(Transform muzzle)
+        {
+            for (var t = muzzle.parent; t != null; t = t.parent)
+                if (MountPattern.IsMatch(t.name)) return t;
+            return null;
         }
 
         /// <summary>Whether a row of launchers is the one a muzzle stands for: level with it, and spread either side of it.</summary>

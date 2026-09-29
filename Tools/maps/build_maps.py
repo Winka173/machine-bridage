@@ -231,7 +231,7 @@ class Layout:
     def free(self, def_id, x, z, rot, pad, road_gap, ignore_points=False):
         w, d = self.size(def_id, rot)
         x0, z0, x1, z1 = x - w / 2, z - d / 2, x + w / 2, z + d / 2
-        if x0 < -self.half + 2 or z0 < -self.half + 2 or x1 > self.half - 2 or z1 > self.half - 2:
+        if x0 < -self.half + 2 or z0 < -self.half + 2 or x1 > self.half - 2 or z1 > self.top() - 2:
             return False
         blocks = PROPS[def_id].get('blocks', False)
         for team in self.teams:
@@ -268,7 +268,7 @@ class Layout:
         w, d = self.size(def_id, rot)
         x0, z0, x1, z1 = x - w / 2, z - d / 2, x + w / 2, z + d / 2
         h = self.half
-        if x0 < -h + 1 or z0 < -h + 1 or x1 > h - 1 or z1 > h - 1 or not self.fits(x0, z0, x1, z1, pad):
+        if x0 < -h + 1 or z0 < -h + 1 or x1 > h - 1 or z1 > self.top() - 1 or not self.fits(x0, z0, x1, z1, pad):
             self.failed.append((def_id, x, z))
             return False
         self.force(def_id, x, z, rot)
@@ -447,13 +447,24 @@ class Layout:
         return getattr(self, 'grid_origin', None) if getattr(self, 'grid_origin', None) is not None else -self.half
 
     def grid_n(self):
-        """Cells along a side of the nav grid."""
+        """Cells along a side of the nav grid (along x on a long battlefield)."""
         return int(getattr(self, 'grid_side', None) or self.half * 2) // int(CELL)
+
+    def top(self):
+        """The battlefield's north edge: the square's, or a long battlefield's (prompt 17, longmap.py)."""
+        north = getattr(self, 'north', None)
+        return north if north is not None else self.half
+
+    def grid_nz(self):
+        """Cells along z of the nav grid: a long battlefield runs on north of the square."""
+        if getattr(self, 'north', None) is None:
+            return self.grid_n()
+        return int(round(self.north - self.grid_lo())) // int(CELL)
 
     def reachable(self, targets=None):
         """Flood fill on the nav grid from the first camp; returns the unreachable targets
         (by default the other camps and every objective)."""
-        n = self.grid_n()
+        n, nz = self.grid_n(), self.grid_nz()
         blocked = self.blocked_grid()
 
         def cell(x, z):
@@ -466,7 +477,7 @@ class Layout:
             gx, gz = todo.pop()
             for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 c = (gx + dx, gz + dz)
-                if 0 <= c[0] < n and 0 <= c[1] < n and c not in seen and not blocked[c[1]][c[0]]:
+                if 0 <= c[0] < n and 0 <= c[1] < nz and c not in seen and not blocked[c[1]][c[0]]:
                     seen.add(c)
                     todo.append(c)
         if targets is None:
@@ -494,8 +505,8 @@ class Layout:
         that a blocking footprint, grown by the obstacle clearance, touches at all. Fixed defences
         placed as map units block their ground too (SimWorld anchors every one as it spawns: a
         square of 0.8 times its longer side)."""
-        n = self.grid_n()
-        blocked = [[False] * n for _ in range(n)]
+        n, nz = self.grid_n(), self.grid_nz()
+        blocked = [[False] * n for _ in range(nz)]
         rects = [r for prop, r in zip(self.props, self.rects) if PROPS[prop['def']].get('blocks', False)]
         if units:
             for u in self.units:
@@ -508,11 +519,11 @@ class Layout:
             b0 = int(math.floor((z0 - CLEARANCE - self.grid_lo()) / CELL))
             b1 = int(math.floor((z1 + CLEARANCE - 1e-4 - self.grid_lo()) / CELL))
             for gx in range(max(0, a0), min(n, a1 + 1)):
-                for gz in range(max(0, b0), min(n, b1 + 1)):
+                for gz in range(max(0, b0), min(nz, b1 + 1)):
                     blocked[gz][gx] = True
         if self.boundary:
             # Outside the outline is terrain, blocked like SimWorld does: by the cell centre.
-            for gz in range(n):
+            for gz in range(nz):
                 for gx in range(n):
                     cx, cz = gx * CELL + self.grid_lo() + CELL / 2, gz * CELL + self.grid_lo() + CELL / 2
                     if not outline_tools.inside(self.boundary, cx, cz):

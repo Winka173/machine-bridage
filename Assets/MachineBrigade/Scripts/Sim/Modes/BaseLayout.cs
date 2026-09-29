@@ -92,12 +92,12 @@ namespace MachineBrigade.Sim.Modes
                 var def = site.Slots[i];
                 if (def.Kind == HardpointKind.Utility)
                 {
-                    list.Add(new CampSlot(i, def, LoadoutSlot.Utility(utility, def.Class), utility < rules.UtilitySlots(level)));
+                    list.Add(new CampSlot(i, def, LoadoutSlot.Utility(utility, def.Class), utility < rules.UtilitySlots(level, site.Layered)));
                     utility++;
                     continue;
                 }
                 var k = seen[(int)def.Class]++;
-                list.Add(new CampSlot(i, def, LoadoutSlot.Tower(def.Class, k), k < rules.Slots(level, def.Class)));
+                list.Add(new CampSlot(i, def, LoadoutSlot.Tower(def.Class, k), k < rules.Slots(level, def.Class, site.Layered)));
             }
             return list;
         }
@@ -124,6 +124,8 @@ namespace MachineBrigade.Sim.Modes
         {
             if (string.IsNullOrEmpty(id) || !catalog.Vehicles.TryGetValue(id, out var def) || def.Fort is not { } fort) return false;
             if (slot.Kind == LoadoutSlotKind.Utility) return fort.Kind == FortKind.Utility && fort.Fits(slot.Size);
+            // Prompt 17 C: a CP relay is a base's, never an outpost's.
+            if (slot.Kind == LoadoutSlotKind.Outpost && def.Relay != null) return false;
             return fort.Kind == FortKind.Tower && def.BranchOf == null && TowerCards.IsLoadoutTower(id) && fort.Fits(slot.Size);
         }
 

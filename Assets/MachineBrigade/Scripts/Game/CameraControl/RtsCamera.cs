@@ -12,7 +12,20 @@ namespace MachineBrigade.Game.CameraControl
     public sealed class RtsCamera
     {
         private const float Pitch = 52f;
-        private const float Yaw = -45f;
+
+        /// <summary>The square maps' yaw: their south-west to north-east battle axis across the screen.</summary>
+        public const float SquareYaw = -45f;
+
+        /// <summary>
+        /// A long battlefield's (prompt 17 A.4): looking west, so its south-to-north axis runs across the landscape
+        /// screen, the attacker on the left as on the square maps.
+        /// </summary>
+        public const float LongYaw = -90f;
+
+        private readonly float _yaw = SquareYaw;
+
+        /// <summary>The camera's yaw in degrees (the minimap turns with it).</summary>
+        public float Yaw => _yaw;
         /// <summary>
         /// How far back along its view the camera sits. The view is orthographic, so this changes
         /// nothing on screen; it only has to clear the highest thing drawn. At 60 m, aircraft near the
@@ -32,7 +45,9 @@ namespace MachineBrigade.Game.CameraControl
         private const float TraumaDecay = 1.4f;
 
         private readonly Camera _camera;
-        private readonly float _halfSize;
+
+        /// <summary>The map's own rectangle (a long battlefield's is not centred on the origin).</summary>
+        private readonly Vector2 _mapMin, _mapMax;
 
         /// <summary>Where the view may centre (the play area and a margin; the whole map by default).</summary>
         private Vector2 _min, _max;
@@ -45,13 +60,13 @@ namespace MachineBrigade.Game.CameraControl
         {
             if (min is { } a && max is { } b)
             {
-                _min = new Vector2(Mathf.Max(-_halfSize, a.x - AreaMargin), Mathf.Max(-_halfSize, a.y - AreaMargin));
-                _max = new Vector2(Mathf.Min(_halfSize, b.x + AreaMargin), Mathf.Min(_halfSize, b.y + AreaMargin));
+                _min = new Vector2(Mathf.Max(_mapMin.x, a.x - AreaMargin), Mathf.Max(_mapMin.y, a.y - AreaMargin));
+                _max = new Vector2(Mathf.Min(_mapMax.x, b.x + AreaMargin), Mathf.Min(_mapMax.y, b.y + AreaMargin));
             }
             else
             {
-                _min = new Vector2(-_halfSize, -_halfSize);
-                _max = new Vector2(_halfSize, _halfSize);
+                _min = _mapMin;
+                _max = _mapMax;
             }
             Clamp();
         }
@@ -59,11 +74,19 @@ namespace MachineBrigade.Game.CameraControl
         private float _noiseTime;
 
         public RtsCamera(Camera camera, float halfSize, Vector3 focus, float zoom = 19f)
+            : this(camera, new Vector2(-halfSize, -halfSize), new Vector2(halfSize, halfSize), focus, zoom)
+        {
+        }
+
+        /// <summary>Over a map's rectangle (<paramref name="mapMin"/> to <paramref name="mapMax"/>), looking along <paramref name="yaw"/>.</summary>
+        public RtsCamera(Camera camera, Vector2 mapMin, Vector2 mapMax, Vector3 focus, float zoom = 19f, float yaw = SquareYaw)
         {
             _camera = camera;
-            _halfSize = halfSize;
-            _min = new Vector2(-halfSize, -halfSize);
-            _max = new Vector2(halfSize, halfSize);
+            _yaw = yaw;
+            _mapMin = mapMin;
+            _mapMax = mapMax;
+            _min = mapMin;
+            _max = mapMax;
             _camera.orthographic = true;
             _camera.nearClipPlane = 1f;
             _camera.farClipPlane = 320f + DepthShift;
@@ -177,7 +200,7 @@ namespace MachineBrigade.Game.CameraControl
 
         private void Place()
         {
-            var rotation = Quaternion.Euler(Pitch, Yaw, 0f);
+            var rotation = Quaternion.Euler(Pitch, _yaw, 0f);
             _camera.orthographicSize = Zoom;
             _camera.transform.SetPositionAndRotation(Focus - rotation * Vector3.forward * Distance, rotation);
         }

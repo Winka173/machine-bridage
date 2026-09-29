@@ -12,6 +12,39 @@
 - Chapter 4 ends with "Leviathan" (4-11); it opens the heavy fortress's Long-range coastal battery. Boss Rush sails to
   Lighthouse Bay for it and back; Operations adds the Sea storm and Fleet mutators.
 - Low graphics: simpler water and wakes.
+## Prompt 16 (part 2): the old bosses' new weapons, escorts for every boss
+
+- New weapons, each a part you can break: the Iron Train's mortar car (it lobs over cover), the Tempest's interceptor
+  laser and the Behemoth's protection system (they shoot down missiles, drones and rockets), the Inferno's fire trail,
+  the Hive's jamming aura, the Bastion's Kornet launcher, the Doomsday Train's rocket and long-range SAM cars, two AA
+  mounts on the Rail Supergun, and two more CIWS and two rocket launchers on the landing hovercraft. Their health was
+  retuned so the fights last about as long as before (within 10 %).
+- Every boss brings escorts: a group with it and another at each phase change, at most 4-6 alive by difficulty (fewer
+  in Boss Rush). Each group has a helper that repairs the boss, jams your missiles, covers it from the air or marks your
+  units for its guns, so you choose between the boss and its escorts. Escorts stay near their boss, pay CP when
+  destroyed, wear an orange mark, and the boss bar counts them. The old escort calls are replaced by this.
+## Prompt 17 C: new units and towers
+
+- Stealth fighter (20 CP): unseen until it fires, four AIM-120s, two small guided bombs for air defences, a 25 mm gun.
+- Loyal wingman drone (6 CP): flies with your manned aircraft and may draw the missiles fired at them; outside the
+  six-aircraft cap, four a side.
+- Focused-laser tank (10 CP): its beam burns harder the longer it stays on one target (x0.3 to x2 in 6 s).
+- Shield carrier (7 CP) and shield generator (large tower): domes that take every hit but energy for the friends inside
+  until they break; domes do not add up.
+- Bunker vehicle (8 CP): digs in when it stands (3 s): thicker front, 30 % more reach, turret all round.
+- Drone mothership (14 CP): flies a swarm of eight FPV drones anywhere; the drones are not aircraft.
+- CP relay (small tower): more CP for its side, two to a base, not on outposts, silent for a while after a hit.
+## Prompt 17 A-B: long maps and layered bases
+
+- Siege, Defend, Endless and the weekly fortress play on long battlefields: 300 m across and 480 m along the attack, the
+  map's own battlefield in front and a layered base behind it (all 20 maps; the other modes keep their 300 m maps).
+- The layered base: a buffer zone of dragon's teeth, ditches, wire and firing positions, forward works with the relays,
+  an outer wall with a main gate and two sally ports, a yard, an inner wall (the keep) and the HQ; the defenders land in
+  the keep, the attack's reinforcements land further forward as each ring falls.
+- More slots on a long base: HQ level 1 to 5 open 4/1/0/1 up to 8/5/3/4 (small/medium/large/utility), plus forward
+  strongpoints. New slot places (outer gate, outer wall, yard, inner wall); one base plan fits both kinds of base, and
+  the Base screen shows each map's long base as its own entry.
+- The camera looks along a long map's length, zooms out further, and the minimap keeps its rectangle.
 
 ## Prompt 15 (battle rules): armour levels, penetration, six damage types
 

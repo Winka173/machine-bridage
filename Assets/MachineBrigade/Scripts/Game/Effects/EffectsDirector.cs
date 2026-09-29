@@ -85,6 +85,14 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Half the map's side, for the troop transports' way in and out.</summary>
         public float MapHalfSize { set => _drops.HalfSize = value; }
 
+        /// <summary>The map's rectangle, for the troop transports' way in and out (a long battlefield's, prompt 17).</summary>
+        public void SetMapBounds(Vector3 centre, float halfX, float halfZ)
+        {
+            _drops.Centre = centre;
+            _drops.HalfX = halfX;
+            _drops.HalfZ = halfZ;
+        }
+
         public EffectsDirector(Catalog catalog, MaterialLibrary materials, MeshLibrary meshes, ModelLibrary models, RtsCamera camera,
             Transform parent, EffectBudget budget)
         {
@@ -266,6 +274,12 @@ namespace MachineBrigade.Game.Effects
                             var emitter = guard.MuzzleOf(0);
                             _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, guard.Def.Weapon, now, 0.16f);
                         }
+                        else if (guard != null && guard.Def.Aps is { Laser: true } && _catalog.Weapons.TryGetValue("hel_beam", out var pointBeam))
+                        {
+                            // Prompt 16 E: a boss's interceptor laser (the Tempest's) draws the Iron Beam's beam from its turret side.
+                            var emitter = guard.Position + Vector3.up * 3.4f + guard.Root.right * (e.Value * 1.6f);
+                            _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, pointBeam, now, 0.16f);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -296,6 +310,21 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.PartRepaired:
                         PartBack(e, views);
                         break;
+                    // Prompt 16: a patch of the Inferno's fire trail (FireSpots burns ground fires a fifth shorter).
+                    case SimEventKind.FireTrail:
+                    {
+                        var trailAt = Ground(e.Position, 0.05f);
+                        var trailRadius = e.Target.X;
+                        _fires.Ignite(trailAt, 0.9f, e.Value, now);
+                        for (var lick = 0; lick < 2; lick++)
+                        {
+                            var bearing = UnityEngine.Random.value * Mathf.PI * 2f;
+                            var reach = trailRadius * UnityEngine.Random.Range(0.35f, 0.7f);
+                            _fires.Ignite(trailAt + new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach), UnityEngine.Random.Range(0.45f, 0.7f),
+                                e.Value * UnityEngine.Random.Range(0.8f, 1f), now);
+                        }
+                        break;
+                    }
                     case SimEventKind.Explosion when _partBlasts.Remove(e.Entity):
                         break;
                     case SimEventKind.Explosion:
@@ -338,6 +367,12 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Shield:
                         // A shield skill: how long it lasts, so it flickers out in its last second.
                         if (views.TryGet(e.Entity, out var shielded)) shielded.ShieldFor(e.Value, now);
+                        break;
+
+                    // Prompt 17 C: the shield carrier's and generator's domes.
+                    case SimEventKind.DomeHit:
+                    case SimEventKind.DomeChanged:
+                        DomeEvent(e, views, now);
                         break;
 
                     case SimEventKind.Damaged:
@@ -479,6 +514,7 @@ namespace MachineBrigade.Game.Effects
         {
             var now = Time.time;
             TickShields(views, now);
+            TickUnitDomes(views, now);
             _tracers.Tick(now, _emitters);
             _projectiles.Tick(now, _emitters);
             _weapons.Tick(now);
@@ -999,6 +1035,10 @@ namespace MachineBrigade.Game.Effects
             "tank_buster" => (Engine.Fan, new[] { -0.17f, 0.17f }, -0.45f, 0.55f),
             "heavy_bomber" => (Engine.Smoky, new[] { -0.62f, -0.34f, 0.34f, 0.62f }, -0.05f, -0.2f),
             "stealth_bomber" => (Engine.Fan, new[] { -0.16f, 0.16f }, -0.25f, 0.3f),
+            // Prompt 17 C.
+            "stealth_fighter" => (Engine.Afterburner, new[] { -0.09f, 0.09f }, -1f, 0f),
+            "wingman_drone" => (Engine.Hot, new[] { 0f }, -1f, 0.1f),
+            "swarm_carrier" => (Engine.Prop, new[] { -0.55f, -0.28f, 0.28f, 0.55f }, 0.05f, 0.35f),
             "sky_gunship" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
             "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),
             "strike_jet" => (Engine.Hot, new[] { 0f }, -1f, 0f),

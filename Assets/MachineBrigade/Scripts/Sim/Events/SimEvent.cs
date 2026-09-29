@@ -128,6 +128,14 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>A boss's self-repair put a part back: Entity the boss, Mount the part's index, DefId its id.</summary>
         PartRepaired,
+
+        /// <summary>Prompt 16: a patch of a boss's fire trail lit at Position (Entity the boss): Value its lit seconds, Target.X its radius.</summary>
+        FireTrail,
+        /// <summary>Prompt 17 C: a shield dome (Entity: its emitter) took Value damage off a hit on a unit at Position.</summary>
+        DomeHit,
+
+        /// <summary>Prompt 17 C: a shield dome (Entity: its emitter) broke (Value 0) or came back up (Value 1) at Position.</summary>
+        DomeChanged,
     }
 
     /// <summary>
@@ -266,6 +274,12 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent CrateIncoming(Crate c, float seconds) =>
             new(SimEventKind.CrateIncoming, c.Id, c.Position, default, seconds, default, null, Teams.Neutral);
 
+        internal static SimEvent DomeStruck(Vehicle emitter, Vector2 at, float taken) =>
+            new(SimEventKind.DomeHit, emitter.Id, at, emitter.Position, taken, default, emitter.Def.Id, emitter.Team);
+
+        internal static SimEvent DomeSwitched(Vehicle emitter, bool up) =>
+            new(SimEventKind.DomeChanged, emitter.Id, emitter.Position, default, up ? 1f : 0f, default, emitter.Def.Id, emitter.Team);
+
         internal static SimEvent Intercept(Vehicle aps, WeaponDef weapon, Vector2 at, bool left) =>
             new(SimEventKind.Intercepted, aps.Id, at, aps.Position, left ? -1f : 1f, ExplosionTier.Small, weapon.Id, aps.Team);
 
@@ -290,6 +304,10 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Burrow(Vehicle boss, int stage, Vector2 at, float seconds = 0f) =>
             new(SimEventKind.Burrowing, boss.Id, at, new Vector2(seconds, 0f), stage, ExplosionTier.Ultimate, boss.Def.Id, boss.Team);
+
+        /// <summary>A patch of the Inferno's fire trail lit at Position (prompt 16): Value its lit seconds, Target.X its radius.</summary>
+        internal static SimEvent FireTrail(Vehicle boss, Vector2 at, float seconds, float radius) =>
+            new(SimEventKind.FireTrail, boss.Id, at, new Vector2(radius, 0f), seconds, ExplosionTier.Medium, boss.Def.Id, boss.Team);
 
         internal static SimEvent Landed(Vehicle boss, Vector2 at, int count) =>
             new(SimEventKind.TroopsLanding, boss.Id, at, boss.Position, count, ExplosionTier.Large, boss.Def.Id, boss.Team);

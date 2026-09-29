@@ -33,8 +33,8 @@ namespace MachineBrigade.Sim.Entities
         internal bool SweepSet;
         internal int NavalPhaseSeen = -1;
 
-        /// <summary>Mechanisms its broken parts have stopped (prompt 16): cruise missiles, landing craft, CIWS (every one), fire-control radar.</summary>
-        internal bool CruiseOff, CraftOff, CiwsOff, RadarOff;
+        /// <summary>Mechanisms its broken parts have stopped (prompt 16): cruise missiles, landing craft, fire-control radar (its CIWS is part 2's "aps").</summary>
+        internal bool CruiseOff, CraftOff, RadarOff;
 
         /// <summary>The share of interceptions its point defence misses (a broken radar).</summary>
         internal float ApsMiss;

@@ -44,6 +44,8 @@ namespace MachineBrigade.Sim.Combat
             var weapon = p.Weapon;
             var hit = EntityId.None;
             var at = p.AimPoint;
+            // Prompt 17 C: a swarm drone whose target is gone strikes another round where it arrives.
+            if (weapon.SwarmReach > 0f) RetargetSwarm(p);
             if (!p.Tandem && TryIntercept(p)) return;
             // Airburst Rounds: the target's own airburst fire takes down some of what is flying at it.
             if (!p.Tandem && !p.TargetFlying && p.Target.IsValid && _world.TryGetVehicle(p.Target, out var shooting) && shooting.Gear != null &&
@@ -227,6 +229,23 @@ namespace MachineBrigade.Sim.Combat
             }
         }
 
+        /// <summary>Prompt 17 C: a swarm drone arriving over a target that is gone takes the nearest enemy on the ground its side sees within the swarm's reach.</summary>
+        private void RetargetSwarm(Projectile p)
+        {
+            if (_world.TryGetTarget(p.Target, out var aimed) && aimed.IsAlive) return;
+            Vehicle? best = null;
+            var bestD2 = p.Weapon.SwarmReach * p.Weapon.SwarmReach;
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Team < 0 || v.Invulnerable || v.Def.Untargetable || !v.IsVisibleTo(p.OwnerTeam)) continue;
+                var d2 = Vector2.DistanceSquared(v.Position, p.AimPoint);
+                if (d2 >= bestD2) continue;
+                best = v;
+                bestD2 = d2;
+            }
+            if (best != null) p.Target = best.Id;
+        }
+
         /// <summary>
         /// An active protection system of the target's side shoots the round down short of its
         /// mark: missiles, drones and direct-fire rockets only (not shells, bullets, bombs or
@@ -249,7 +268,8 @@ namespace MachineBrigade.Sim.Combat
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
-                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned) continue;
+                // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
+                if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
@@ -368,6 +388,9 @@ namespace MachineBrigade.Sim.Combat
                 if (type is DamageType.Kinetic or DamageType.ShapedCharge && !hit.Indirect && _world.IsEntrenched(vehicle))
                     damage *= 1f - SimWorld.EntrenchReduction;
                 damage *= _world.Gear.Incoming(vehicle, type, hit);
+                if (!(damage > 0f)) return 0f;
+                // Prompt 17 C: a shield dome over it takes the hit first (not energy, not a mine; one dome at a time).
+                damage = _world.Domes.Absorb(vehicle, damage, type, hit);
                 if (!(damage > 0f)) return 0f;
                 if (!(hit.Projectile?.Tandem ?? false)) damage = _world.Status.Absorb(vehicle, damage);
                 damage = _world.Gear.AbsorbOverheal(vehicle, damage);

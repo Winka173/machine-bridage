@@ -313,7 +313,7 @@ add_mission(m('c5m04', 5, 'emberridge', 'Outpost', 'Clear', points=['town'], hol
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.85, enemyDeck=SEN,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['strike_drone', 'ifv', 'main_battle_tank', 'fpv_carrier'], first=70, interval=55, size=2, grow=0.3, max_size=4, max_alive=12),
-              unlocks=['twin_tank', 'airfield'], starTime=600, starLosses=10),
+              unlocks=['twin_tank', 'airfield', 'laser_tank'], starTime=600, starLosses=10),
             ('The Geothermal Plant', 'Nhà máy địa nhiệt'),
             ('Mai wants the geothermal plant in the middle of Ember Ridge: free power for a forward base. Take it, set up an outpost, keep it three minutes.',
              'Mai muốn lấy nhà máy địa nhiệt giữa Sườn Dung Nham: điện miễn phí cho một căn cứ tiền phương. Chiếm nó, lập tiền đồn, giữ ba phút.'),
@@ -379,7 +379,7 @@ add_mission(m('c5m08', 5, 'emberridge', 'Protect', 'Overcast', reversed=True, ta
 
 add_mission(m('c5m09', 5, 'junglepass', 'Duel', 'Night', targetHealth=0.4, general='sen', enemyBase='Target', enemyHq=2, replay=True, reinforcements=3, timeLimit=1500,
               enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=11, enemyIncome=0.56,
-              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet'], starTime=900, starLosses=14),
+              playerCp=30, playerIncome=2.3, playerCap=40, playerBase='Anchor', unlocks=['fighter_jet', 'wingman_drone'], starTime=900, starLosses=14),
             ('The Hangars of the Pass', 'Những nhà chứa trên đèo'),
             ('Sen\'s field headquarters is ringed with drone hangars and jammers. Break it at night and level her HQ. Linh thinks she may not fight to the end.',
              'Sở chỉ huy dã chiến của Sen được bao quanh bởi những nhà chứa drone và xe gây nhiễu. Phá nó trong đêm và san phẳng sở chỉ huy. Linh nghĩ bà ấy có thể sẽ không đánh tới cùng.'),
@@ -394,7 +394,7 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.95, enemyDeck=SEN,
               playerCp=30, playerIncome=1.7, playerCap=42, playerBase='Anchor',
               waves=waves(['strike_drone', 'fpv_carrier', 'ifv', 'main_battle_tank', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
-              unlocks=['drone_hangar'],
+              unlocks=['drone_hangar', 'cp_relay'],
               stages=[
                   {'stage': 'causeways', 'goal': 'Capture', 'points': ['west', 'east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c5m10.s1'}],
@@ -484,7 +484,7 @@ add_mission(m('c6m02', 6, 'whiteout', 'Evacuate', 'Snow', reversed=True, convoyC
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'flame_tank', 'mortar_carrier'], first=50, interval=50, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(80, 60), (40, 100), (100, 10)]),
-              unlocks=['armored_bulldozer', 'c_ram'], starTime=600, starLosses=10),
+              unlocks=['armored_bulldozer', 'c_ram', 'bunker_vehicle'], starTime=600, starLosses=10),
             ('Evacuate Whiteout', 'Sơ tán Đèo Bão Tuyết'),
             ('Varga\'s counterstrike is pouring over the pass. The villagers at the frozen lake have to get out: six trucks, one every few seconds, down the road to our camp. '
              'Hold the lake until the last one leaves, then cover the road. Four must get through.',
@@ -503,7 +503,7 @@ add_mission(m('c6m03', 6, 'ashfield', 'Escort', 'Clear', reversed=True, convoyCo
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['tank_destroyer', 'atgm_carrier', 'main_battle_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 90), (90, 60), (100, 100)]),
-              unlocks=['ew_tower'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
+              unlocks=['ew_tower', 'shield_carrier'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
             ('Our Behemoth', 'Behemoth của ta'),
             ('Mai has done it: the Behemoth from the Ashfield yard runs, and it is ours. Escort it from the fortress across Ashfield to the front. '
              'Varga will do anything to stop his own machine.',

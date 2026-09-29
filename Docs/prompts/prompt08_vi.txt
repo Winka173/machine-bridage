@@ -1,0 +1,190 @@
+phase 8: Nội dung mới, cân bằng xe tinh nhuệ và sửa hệ trang bị
+
+Nhiệm vụ: thêm nội dung mới vào game đã hoàn thành prompt 1–7, cân bằng lại xe tinh nhuệ của địch, và sửa hệ trang bị. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số dưới đây là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Nguyên tắc chung:
+- Không gắn chỉ số hay cơ chế vào thời tiết, biome hay loại map. Mọi thứ phải có ích ở mọi map và mọi chế độ.
+- Không thêm thẻ anh hùng hay ô bộ bài đặc biệt.
+- Không thêm cơ chế map động. Bản đồ mới là bản đồ tĩnh như các map hiện có.
+- Mọi thứ mới phải được so sánh với thứ đã có trước khi thêm:
+  - Xe mới: so với mọi xe cùng vai trò và mọi xe trong khoảng ±2 CP. Nếu bị một xe có sẵn lấn át (thua về chỉ số mà không có cơ chế riêng bù lại), hoặc trùng vai trò, thì bỏ hoặc đổi thiết kế.
+  - Đồ, dòng unique, thương hiệu: kiểm tra từng nhánh xe và từng lớp xe xem có dùng được không (ma trận phù hợp ở phần I.1). Món chỉ có ích cho 1 lớp xe, hoặc trùng tác dụng với món có sẵn, thì bỏ, gộp hoặc đổi.
+  - Ghi kết quả so sánh vào DECISIONS.md, kể cả những thứ bị bỏ và lý do.
+
+A. PHƯƠNG TIỆN
+
+1. Xe ủi bọc thép (Hạng nặng), xe mới: 7 CP, 3.500 máu, giáp nặng, 5 m/s, chỉ có súng máy.
+   - +200% sát thương cận chiến lên công trình (húc và ủi, tầm 4 m).
+   - Ủi phá răng rồng khi đi qua. Không gỡ mìn (việc đó là của Công binh CT); bản thân chỉ nhận 50% sát thương mìn.
+   - AI dùng nó để mở đường vào căn cứ địch, đi trước đội hình.
+   - So sánh bắt buộc: Xe rùa (8 CP, chịu đòn), Pháo công thành (phá công trình từ xa), Công binh CT (gỡ mìn, sửa tháp). Xe ủi phải là lựa chọn tốt nhất để phá công trình ở cự ly gần, nhưng không được tốt hơn Xe rùa ở vai trò chịu đòn cho đội hình.
+   Mở khóa ở hồi II. Thêm vào bộ bài của Varga.
+
+2. Pháo tự hành (xe có sẵn, đã gộp với Lựu pháo ở prompt 2): thêm cơ chế, không tạo xe mới.
+   - Bắn loạt 3 phát rồi tự dời 15–20 m sang vị trí mới.
+   - Bắn vào mục tiêu đang bị đánh dấu (radar, UAV, dòng unique Chỉ thị laser) thì gần như không tản mát.
+   - Mục đích: khắc chế radar phản pháo và tạo combo với trinh sát.
+   - Nếu DPS có hiệu lực tăng quá nhiều sau khi thêm cơ chế, chỉnh sát thương hoặc giá.
+
+3. Không thêm Tăng tấn công nhanh và Pháo diệt tăng không tháp. Lý do để ghi vào DECISIONS.md:
+   - Tăng tấn công nhanh bị Pháo chống tăng (cùng 6 CP, 78 DPS lên xe nặng) lấn át, và vai trò xe nhanh đã có Xe pháo bánh lốp.
+   - Pháo không tháp trùng với Tăng hai nòng (cùng 9 CP, DPS tương đương, có tháp xoay) và Pháo chống tăng.
+
+Xe ủi cần có đủ: dữ liệu trong balance.json, AI biết dùng (cả phe ta ở chế độ Tự mua lẫn phe địch), AI khắc chế biết mua để đối phó, thẻ trong tab Hướng dẫn (vai trò, cách đánh, mạnh/yếu, mẹo), và clip Xem bắn. Nếu chưa có model riêng thì dùng tạm mesh gần nhất, đổi màu, và thêm vào docs/ASSET_DEBT.md. Cập nhật thẻ Hướng dẫn của Pháo tự hành theo cơ chế mới.
+
+B. TRANG BỊ: LOẠI ĐỒ MỚI (giá trị ở mức Huyền thoại cấp tối đa; tự chia bậc Thường → Huyền thoại theo tỷ lệ các loại đồ hiện có)
+- Đạn đánh hông (Vũ khí): +20% sát thương vào hông và sau. Nhánh hợp lệ: Thiết giáp, Xe nhẹ.
+- Đạn nổ trên không (Vũ khí): +30% sát thương lên drone, rocket và tên lửa. Thay chỗ Liều phóng siêu tốc (bị bỏ ở phần I). Không trùng vai trò với Ngòi nổ cận đích: món này cho drone và đạn bay, món kia cho máy bay. Nhánh hợp lệ: Thiết giáp, Xe nhẹ.
+- Băng đạn dự phòng (Nạp đạn): bệ phóng hết đạn thì tự nạp 1 lần miễn phí mỗi mạng. Nhánh hợp lệ: nhánh nào có xe dùng bệ phóng hoặc băng đạn (tự xác định theo dữ liệu vũ khí).
+- Lớp phủ chống radar (Giáp): tên lửa địch phải lại gần hơn 20% mới khóa được. Nhánh hợp lệ: tất cả.
+- Cảnh báo laser (Quang học): khi bị tên lửa chống tăng khóa thì tự thả khói 8 m (mỗi 20 giây). Nhánh hợp lệ: Thiết giáp, Xe nhẹ.
+- Hộp số lùi (Động cơ): +40% tốc độ lùi. AI của xe có món này biết lùi mà vẫn giữ mặt trước hướng về địch khi bị áp sát. Nhánh hợp lệ: Thiết giáp, Xe nhẹ.
+
+C. TRANG BỊ: DÒNG UNIQUE MỚI (Sử thi / Huyền thoại)
+- Trả thù: đồng minh chết trong 15 m thì +15% / +20% sát thương trong 5 giây. Không cộng dồn với chính nó. Kiểm tra để không trùng tác dụng với Vương miện bóng tối.
+- Hỏa lực chế áp: trúng đích làm mục tiêu giảm 10% / 15% tốc độ bắn trong 3 giây.
+- Chặn hậu: khi đang di chuyển ra xa địch, nhận ít hơn 15% / 20% sát thương.
+Móc các dòng này vào hệ sự kiện hiện có. Hiện chữ nhỏ trên xe khi dòng kích hoạt, như các dòng unique cũ. Các dòng kích hoạt theo phát trúng dùng hệ số kích hoạt ở phần I.3.
+
+D. TRANG BỊ: THƯƠNG HIỆU MỚI
+- Phoenix Recovery. Bộ 2: +10% lượng hồi máu nhận được. Bộ 4: lượng hồi máu vượt quá máu tối đa được chuyển thành khiên, tối đa 10% máu tối đa, tồn tại 8 giây.
+- Wolfpack Tactics. Bộ 2: +4% sát thương cho mỗi đồng minh trong 15 m, tối đa 3 đồng minh. Bộ 4: khi 3 xe trở lên cùng bắn một mục tiêu, cả nhóm +15% tốc độ bắn.
+- Bulwark Engineering (chỉ dành cho tháp). Bộ 2: +10% máu tháp. Bộ 4: tháp bị phá để lại ụ tạm 20 giây, bắn bằng súng máy.
+Áp trần chỉ số cho cả bộ như hệ hiện tại. Thêm toàn bộ đồ mới vào bảng rơi của hòm và cập nhật tỷ lệ công khai trong game.
+
+Không thêm các món sau (ghi lý do vào DECISIONS.md):
+- Giáp lồng mái: trùng với Lồng chống rocket (đã giảm sát thương drone) và Mái che chống pháo (đã giảm sát thương bom).
+- Thợ săn trực thăng: chỉ Xe nhẹ dùng được, trùng với Ngòi nổ cận đích và Giá súng phòng không.
+- Talon Precision: trên pháo binh trùng với Máy tính điều khiển hỏa lực.
+- Kỵ binh: yếu hơn Triển khai nhanh đã có.
+- Đánh dấu mục tiêu và Liên kết dữ liệu: trùng với Chỉ thị laser.
+- Bộ sơ cứu khẩn cấp: trùng với Bộ sửa khẩn cấp.
+
+E. BOSS MỚI (gắn vào chiến dịch 9 chương: thay hoặc bổ sung boss giữa chương, nhiệm vụ phụ, hoặc giai đoạn của chiến dịch lớn; ghi vị trí đã chọn vào DECISIONS.md)
+1. Pháo đường ray siêu nặng (của Kessler):
+   - Đứng yên ở mép map trên đường ray.
+   - Cứ 20 giây bắn một phát, có cảnh báo vùng rơi 3 giây trước, tầm bao cả map.
+   - Có hộ tống và công sự quanh bệ pháo. Người chơi phải vừa né vừa đẩy quân tới nó.
+2. Máy khoan Sâu Đất (của Varga):
+   - Chui xuống đất (không thể bị nhắm), rồi trồi lên ngay dưới cụm quân đông nhất của người chơi.
+   - Khi trồi lên gây rung chấn làm choáng xe mặt đất trong 15 m; có cảnh báo mặt đất nứt 2 giây trước.
+   - Dễ bị đánh nhất trong vài giây ngay sau khi trồi lên.
+3. Khí cầu chỉ huy (của Quạ Đen): boss nhiều bộ phận. Làm cơ chế này tổng quát để dùng lại cho boss khác về sau.
+   - Bộ phận: 4 động cơ, 2 hangar drone, 1 radar; mỗi bộ phận có máu riêng.
+   - Thân chính chỉ nhận sát thương khi đã phá ít nhất 2 động cơ.
+   - Phá hangar thì ngừng thả drone; phá radar thì phòng không của nó mất chính xác.
+   - Chỉ phòng không và tiêm kích bắn được, như các boss bay khác.
+4. Tàu đệm khí đổ bộ:
+   - Chạy theo lộ trình cố định dọc bờ biển (dùng lại logic chạy theo đường của tàu hỏa).
+   - Định kỳ thả 3–4 xe địch lên bờ tại các điểm đổ bộ.
+   - Mục tiêu là chặn nó trước khi đổ bộ hết.
+5. Tổng Tư Lệnh (của Tướng Hùng sau khi phản bội, chương 8):
+   - Xe chỉ huy siêu nặng, bản thân yếu về hỏa lực.
+   - Mọi quân địch trong 40 m quanh nó +20% sát thương và +20% tốc độ bắn.
+   - Có hộ tống tinh nhuệ đi kèm.
+So sánh bắt buộc: mỗi boss mới phải có cách đánh khác các boss hiện có (Behemoth, Inferno, Tempest, Chim sắt, Spectre, Pháo đài băng, Hive, Bastion, Tàu mẹ Tổ Ong, Silver Bug, hai đoàn tàu). Nếu trùng cơ chế chính, đổi thiết kế.
+Mỗi boss mới cần có: thẻ trong tab Hướng dẫn, clip Xem bắn, thanh máu nhiều pha nếu là boss cuối chương, và radio chatter của tướng tương ứng. Thêm cả 5 boss vào chế độ Săn trùm.
+
+F. BẢN ĐỒ MỚI (300×300 m, bản đồ tĩnh; đầy đủ các phiên bản cứ điểm / sinh tồn / công thành; có hardpoint HQ và tiền đồn)
+- Sa mạc muối: trống trải, ít vật che, tầm nhìn xa; lợi thế cho pháo và tên lửa tầm xa, nhưng có vài cụm đá để xe cận chiến tiếp cận.
+- Cầu biên giới: một cây cầu lớn ở giữa làm điểm nghẽn, thêm hai lối vòng xa hai bên.
+- Đầm lầy: các đường đắp cao hẹp nối những gò đất; nhiều lối hẹp và cầu gỗ.
+- Quần đảo san hô: các đảo nối với nhau bằng đường đắp và cầu cố định.
+Dùng lại asset của các biome có sẵn. Đưa 4 map này vào chiến dịch (nhiệm vụ phụ, hoặc thay cho những lần quay lại một map cũ quá nhiều) và vào xoay vòng của chế độ Giao tranh. Kiểm tra bản đồ làn, cổng và lối hẹp theo đúng hệ giao thông hiện có; viết test đường đi từ mọi bãi thả tới mọi cứ điểm.
+
+H. CÂN BẰNG XE TINH NHUỆ CỦA ĐỊCH (không làm hệ affix; giữ các kỹ năng tinh nhuệ hiện có gắn cố định cho từng xe)
+
+1. Chuẩn hóa mức tăng. Hiện mức tăng lệch rất mạnh:
+   - Bọc thép tinh nhuệ: máu ×2,7, DPS lên xe nặng ×3,9, thêm khói và EMP, từ một xe 3 CP.
+   - Tăng hạng nặng tinh nhuệ: máu ×1,6, DPS lên xe nặng chỉ ×1,06.
+   - Trực thăng tinh nhuệ: máu ×1,7, DPS gần như không đổi.
+   Đưa mọi xe tinh nhuệ về cùng khung khởi điểm: +60% máu, +25% sát thương, và 1–2 kỹ năng tinh nhuệ hiện có (elite_overdrive, elite_smoke, elite_emp, elite_flares, elite_barrage, elite_repair, elite_shield). Giữ nguyên bộ kỹ năng đang gắn cho từng xe, trừ khi cần bớt để về đúng khung (ví dụ Bọc thép tinh nhuệ chỉ giữ 1 trong 2 kỹ năng).
+   Mục tiêu đo được: sức mạnh thực của mỗi xe tinh nhuệ (máu × DPS có hiệu lực, cộng giá trị kỹ năng) nằm trong khoảng ×1,8 đến ×2,2 so với bản thường. Xe nào ra ngoài khoảng này phải chỉnh, hoặc ghi lý do.
+
+2. Phủ thêm lớp xe. Hiện chỉ có 8 xe tinh nhuệ (Phòng không, Bọc thép, Trực thăng, Grad, Tăng hạng nặng, Tăng chủ lực, Pháo phản lực, Pháo chống tăng). Trước khi thêm, kiểm tra các lớp xe nào xuất hiện nhiều trong bộ bài địch mà chưa có bản tinh nhuệ. Khởi điểm đề xuất:
+   - Drone FPV tinh nhuệ: elite_barrage.
+   - Cường kích tinh nhuệ: elite_flares.
+   - Tên lửa phòng không tinh nhuệ: elite_overdrive.
+   - Pháo tự hành tinh nhuệ: elite_barrage.
+   Kỹ năng gắn cho mỗi bản mới phải hợp với lớp xe đó (không gắn pháo sáng cho xe mặt đất, không gắn loạt bắn cho xe không có vũ khí bắn loạt). Grad tinh nhuệ vẫn giữ làm xe của địch dù Grad đã bỏ khỏi roster người chơi. Mỗi xe tinh nhuệ mới dùng model của xe gốc với thanh máu vàng và một chi tiết nhận diện (đổi màu, thêm giáp ốp).
+
+3. Ngân sách thay cho xác suất. Bỏ tỷ lệ 10–25% ngẫu nhiên.
+   - Tinh nhuệ tốn CP của địch bằng khoảng 1,6 lần giá gốc.
+   - Phần ngân sách địch được chi cho tinh nhuệ theo độ khó (khởi điểm): Dễ 5%, Thường 10%, Khó 15%, Anh hùng 20%, Thép 25%.
+   - Trần số tinh nhuệ cùng lúc trên sân: Dễ 1, Thường 2, Khó 3, Anh hùng 4, Thép 5. Chiến dịch lớn và boss có thể cấu hình riêng.
+   - Ngân sách tinh nhuệ phải được tính vào cơ chế scale địch theo kho vũ khí người chơi, để độ khó không bị cộng dồn ngoài tầm kiểm soát.
+   - AI địch chọn xe nào để nâng thành tinh nhuệ theo bộ bài của tướng: Varga ưu tiên xe tăng, Orlov ưu tiên pháo binh, Tiến sĩ Sen ưu tiên drone, Quạ Đen ưu tiên máy bay và trực thăng.
+
+4. Hoàn CP: khi hạ tinh nhuệ, hoàn CP theo giá tinh nhuệ thực tế (1,6 lần giá gốc), không theo giá gốc.
+
+5. Thưởng sau trận: thêm một ít xu cho mỗi tinh nhuệ bị hạ, và tỷ lệ nhỏ rơi bản thiết kế của xe gốc. Điều chỉnh tổng thưởng để không làm lệch đường cong kinh tế đã chỉnh ở prompt 7.
+
+6. Dễ đọc:
+   - Đánh dấu tinh nhuệ trên bản đồ nhỏ bằng ký hiệu riêng.
+   - Một dòng radio khi tinh nhuệ đầu tiên của một đợt xuất hiện.
+   - Tab Hướng dẫn có mục riêng cho từng xe tinh nhuệ và kỹ năng của nó.
+
+I. SỬA HỆ TRANG BỊ
+
+1. Ma trận phù hợp (làm đầu tiên, các mục sau dựa vào nó):
+   - Ghi rõ trong dữ liệu và trong UI mỗi lớp xe thuộc nhánh nào (Thiết giáp, Xe nhẹ, Pháo binh, Không quân), gồm cả phòng không, diệt tăng, trinh sát, hỗ trợ và trực thăng.
+   - Với mọi loại đồ, dòng unique, module và thương hiệu (cũ và mới), đo giá trị có hiệu lực trên từng lớp xe trong từng nhánh. Xuất ra docs/EQUIPMENT_FIT.md.
+   - Món nào không có tác dụng với một nhánh thì đánh dấu không hợp lệ cho nhánh đó. Ví dụ: Ngòi nổ cận đích không hợp lệ cho Pháo binh vì pháo không bắn được máy bay; Buồng lái bọc giáp chỉ hợp lệ cho Không quân; Giá súng phòng không và Giáp gầm không hợp lệ cho Không quân.
+   - Hòm chỉ rơi đồ hợp lệ cho ít nhất một nhánh, và màn trang bị chỉ cho gắn đồ hợp lệ.
+   - Món chỉ có ích cho đúng 1 lớp xe trong cả game: bỏ, gộp, hoặc đổi để phủ rộng hơn.
+   - Hai món có trên khoảng 70% tác dụng trùng nhau trên cùng các lớp xe: gộp hoặc đổi một món.
+   - Đồ người chơi đang có nhưng không còn hợp lệ ở ô đang gắn: tháo ra và chuyển thành loại hợp lệ cùng ô, cùng bậc, cùng cấp. Viết test migration.
+
+2. Nạp kép: hiện "bắn thêm một viên mỗi loạt, +12% cả loạt" cho khoảng +18% trên loạt 16 rocket nhưng +50% tới +124% DPS trên pháo và tên lửa loạt 1–2 viên.
+   Đổi thành: vũ khí có loạt từ 3 viên trở lên được thêm viên như cũ; vũ khí loạt 1–2 viên được +X% sát thương mỗi phát thay vì thêm viên. Chỉnh X để mọi loại vũ khí nhận cùng mức tăng DPS có hiệu lực, khởi điểm khoảng +15% (Sử thi) / +20% (Huyền thoại).
+
+3. Hệ số kích hoạt theo vũ khí: áp cho mọi dòng kích hoạt theo phát trúng (Đạn nảy, Đạn cháy, Đạn xé giáp, Đạn áp chế, Pháo tích đà, Hỏa lực chế áp, và các dòng tương tự).
+   - Mỗi vũ khí có một hệ số dựa trên sát thương mỗi phát và tốc độ bắn. Vũ khí bắn rất nhanh (pháo cao xạ, minigun, súng máy) có hệ số thấp; pháo và tên lửa bắn chậm có hệ số cao.
+   - Hệ số nhân vào xác suất hoặc cường độ của hiệu ứng. Riêng Đạn xé giáp: vũ khí bắn nhanh phải cần nhiều phát hơn để lên 1 lớp.
+   - Mục tiêu đo được: với mỗi dòng unique, chênh lệch mức tăng DPS có hiệu lực giữa loại vũ khí có lợi nhất và bất lợi nhất không quá khoảng 1,5 lần.
+
+4. Đầu đạn chùm: giới hạn số bom con mỗi loạt, hoặc chỉ áp cho vài quả đầu của loạt, để oanh tạc cơ và pháo phản lực không nhận mức tăng vượt trội. Mục tiêu khoảng +20–30% DPS lên công trình và cụm địch, như trên pháo bắn từng phát.
+
+5. Module và dòng cộng hiệu ứng cố định (Drone hộ tống, Pháo kích vệ tinh, Máy rải mìn, Đầu nổ EMP, Bình xăng dễ nổ):
+   - Nhân hiệu ứng theo giá CP của xe, khởi điểm hệ số = clamp(CP / 7; 0,4; 1,3). Như vậy spam xe rẻ gắn các module này không còn là tối ưu.
+   - Bình xăng dễ nổ: thêm trần sát thương khoảng 1.500, kể cả trên xe nhiều máu.
+
+6. Hoàn CP chồng nhau: đặt trần tổng mức hoàn CP khi hạ địch là 45% giá xe bị hạ, tính cả mức gốc 25%, Kẻ trục lợi chiến tranh và bộ 4 Quartermaster. Giữ phần hoàn 10% khi xe mình bị hạ nhưng không để cộng dồn với nguồn khác vượt 15%. Đo lại tốc độ lăn cầu tuyết trong mô phỏng: bên đang thắng không được tăng tốc thắng quá rõ.
+
+7. Đồ đánh đổi (Nòng nặng, Cò nhạy, Động cơ độ quá mức, Tấm giáp nguyên khối): hiện bậc Thường và Khá cho +0% chỉ số chính nhưng vẫn chịu đủ phần bất lợi. Cho phần bất lợi tăng theo bậc cùng với phần lợi, sao cho bậc nào cũng có giá trị ròng dương, hoặc chỉ cho rơi từ bậc Hiếm trở lên. Tự chọn cách hợp lý hơn và ghi lại.
+
+8. Dọn loại đồ:
+   - Bỏ Liều phóng siêu tốc (tác dụng khó cảm nhận); chỗ của nó dành cho Đạn nổ trên không ở phần B.
+   - Gộp Bộ tăng áp và Mô-tơ tháp pháo thành một loại "Hệ truyền động": +tốc độ xoay thân và +tốc độ xoay tháp.
+   - Đổi Trục lăn phá mìn thành "Giáp gầm": giảm sát thương mìn và sát thương nổ lan (không phải trúng trực tiếp), để có tác dụng ở mọi trận.
+   - Trạm chuyển tiếp tín hiệu: giữ tốc độ chiếm cứ điểm, thêm +10% tầm nhìn để vẫn có ích ở chế độ không có cứ điểm.
+   - Sửa hiển thị Tấm giáp nguyên khối (đang hiện key thô "stat.line.count") và làm rõ chỉ số chính của nó.
+   - Đồ người chơi đang có thuộc loại bị bỏ hoặc gộp: chuyển sang loại thay thế cùng ô, cùng bậc, cùng cấp.
+
+9. Trang bị tháp: giữ đúng thiết kế ở prompt 3, mỗi loại tháp có 3 ô đồ (Vũ khí, Kết cấu, Hệ thống).
+   - Một căn cứ được đặt nhiều tháp cùng loại; mọi tháp cùng loại trong căn cứ dùng chung 3 món đồ của loại đó.
+   - Áp ma trận phù hợp ở mục 1 cho đồ tháp: mỗi món chỉ hợp lệ cho các loại tháp mà nó có tác dụng (ví dụ Ngòi nổ cận đích chỉ cho tháp có vũ khí bắn máy bay; Bulwark Engineering cho mọi tháp).
+   - Đo trường hợp dồn toàn bộ điểm công sự vào một loại tháp (ví dụ toàn bộ là Tháp phòng không hoặc toàn bộ là Tháp ATGM) với đồ Huyền thoại, so với căn cứ phối hợp nhiều loại. Căn cứ một loại tháp được phép mạnh trước đúng loại địch mà nó khắc chế, nhưng không được là lựa chọn tốt nhất trước mọi loại địch. Nếu có, chỉnh chỉ số đồ tháp hoặc điểm công sự.
+
+10. Không để các dòng hồi sinh, bất tử và khiên chồng nhau vô hạn: Bất khuất, Vòm Aegis và bộ 4 Phoenix Recovery không được kích hoạt liên tiếp trên cùng một đòn kết liễu.
+
+11. Bảng giá trị: tạo docs/EQUIPMENT_VALUES.md, ghi mức tăng sức mạnh có hiệu lực (DPS có hiệu lực, máu có hiệu lực, hoặc giá trị tương đương) của từng dòng unique và module ở mức Huyền thoại, trên từng nhóm vũ khí và nhánh. Mục tiêu: phần lớn các dòng nằm trong khoảng +10% đến +25%. Dòng nào vượt khoảng thì chỉnh, dòng nào quá thấp thì tăng. Ghi các ngoại lệ có chủ ý.
+
+J. KIỂM TRA
+- Xe ủi, cơ chế mới của Pháo tự hành, mỗi loại đồ, dòng unique, thương hiệu, boss, bản đồ và xe tinh nhuệ mới có test riêng.
+- Cân bằng: bảng DPS theo CP trước/sau cho toàn roster; mô phỏng 5 seed cho mọi nhiệm vụ chiến dịch bị ảnh hưởng; không nhiệm vụ nào trở nên không thắng được hoặc quá dễ, nhất là sau khi đổi tinh nhuệ từ xác suất sang ngân sách.
+- Đo riêng các tổ hợp có nguy cơ quá mạnh:
+  - Nạp kép trên pháo xe tăng và railgun, trước và sau khi sửa.
+  - Đạn nảy và Đạn xé giáp trên pháo cao xạ.
+  - Đầu đạn chùm trên oanh tạc cơ.
+  - Module cộng hiệu ứng cố định trên bầy xe rẻ.
+  - Kẻ trục lợi chiến tranh cùng bộ 4 Quartermaster.
+  - Wolfpack Tactics trên bầy xe rẻ.
+  - Pháo tự hành với cơ chế mới cùng Chỉ thị laser và Radar phản pháo.
+  - Phoenix Recovery cùng Bất khuất và Bộ sửa khẩn cấp trên xe nặng.
+  - Căn cứ một loại tháp với đồ tháp Huyền thoại.
+  Nếu tỷ lệ thắng lệch quá rõ, giảm chỉ số và ghi lại.
+- Test migration: đồ bị bỏ, gộp hoặc không còn hợp lệ theo nhánh.
+- Quét localization không còn key thô hoặc placeholder.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md, docs/EQUIPMENT_FIT.md, docs/EQUIPMENT_VALUES.md và tài liệu thiết kế (roster, bảng DPS, trang bị, xe tinh nhuệ, boss, bản đồ).
+

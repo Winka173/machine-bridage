@@ -109,7 +109,7 @@ namespace MachineBrigade.Sim.Bosses
             {
                 if (!v.IsAlive || v.Def.Naval is not { } naval || v.Escaped) continue;
                 // Its CIWS all broken: no more point defence; its radar broken: it misses now and then.
-                if (v.CiwsOff) v.Aps = null;
+                if (v.ApsOff) v.Aps = null;
                 v.ApsMiss = v.RadarOff ? 0.35f : 0f;
                 switch (naval.Role)
                 {
@@ -256,7 +256,9 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Def.Aps is { } own)
                 v.Aps = phase == 1 ? new ApsDef(own.Radius, own.Charges + 2, own.Recharge * 0.6f) { Rockets = own.Rockets, Shells = own.Shells } : own;
             v.ApsCharges = Math.Min(v.ApsCharges, v.Aps?.Charges ?? 0);
-            if (v.CiwsOff) v.Aps = null;
+            // The interceptors its standing CIWS hold (part 2's cap) follow the new system.
+            BossSystem.Recompute(v);
+            if (v.ApsOff) v.Aps = null;
             if (v.Def.Craft is { } craft && phase >= craft.Phase && double.IsPositiveInfinity(v.CraftNext)) v.CraftNext = now + craft.First;
             if (v.Def.Cruise is { } cruise && phase == cruise.Phase) v.CruiseNext = Math.Max(v.CruiseNext, now + cruise.First * 0.5);
             foreach (var wave in v.Def.AirWaves)

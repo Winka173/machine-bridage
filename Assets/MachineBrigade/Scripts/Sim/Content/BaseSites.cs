@@ -26,14 +26,27 @@ namespace MachineBrigade.Sim.Content
     /// </summary>
     public readonly struct HardpointDef
     {
-        public HardpointDef(Vector2 position, HardpointKind kind, float size, float facing, SlotSize sizeClass = SlotSize.Large)
+        public HardpointDef(Vector2 position, HardpointKind kind, float size, float facing, SlotSize sizeClass = SlotSize.Large, string? place = null)
         {
             Position = position;
             Kind = kind;
             Size = size;
             Facing = facing;
             Class = sizeClass;
+            Place = place;
         }
+
+        /// <summary>
+        /// Where it stands in a layered base (prompt 17 B.5, map data "place"): "outer_gate", "outer_wall", "yard",
+        /// "inner_wall", "hq_side" or "forward" (the forward works' strongpoints); null on a camp, whose places the
+        /// game works out from its geometry.
+        /// </summary>
+        public string? Place { get; }
+
+        /// <summary>A forward works' strongpoint of a layered base: filled from the loadout over again, not counted by the HQ level.</summary>
+        public bool Forward => Place == ForwardPlace;
+
+        public const string ForwardPlace = "forward";
 
         /// <summary>Its size class (what towers it takes).</summary>
         public SlotSize Class { get; }
@@ -60,13 +73,17 @@ namespace MachineBrigade.Sim.Content
     /// </summary>
     public sealed class BaseSiteDef
     {
-        public BaseSiteDef(int team, Vector2 hq, float heading, IReadOnlyList<HardpointDef> slots)
+        public BaseSiteDef(int team, Vector2 hq, float heading, IReadOnlyList<HardpointDef> slots, bool layered = false)
         {
             Team = team;
             Hq = hq;
             Heading = heading;
             Slots = slots;
+            Layered = layered;
         }
+
+        /// <summary>A long battlefield's layered base (prompt 17 B): its HQ levels open the long table's slots (balance.json base.longLevels).</summary>
+        public bool Layered { get; }
 
         public int Team { get; }
         public Vector2 Hq { get; }
@@ -84,7 +101,8 @@ namespace MachineBrigade.Sim.Content
             if (!s.Has("size")) size = SlotSize.Large;
             else if (s.IsString("size")) size = Enum.TryParse<SlotSize>(s.String("size"), true, out var c) ? c : throw new FormatException($"{s.Path}.size: small, medium or large");
             else size = HardpointDef.ClassOf(s.Float("size"));
-            return new HardpointDef(new Vector2(s.Float("x"), s.Float("z")), kind, HardpointDef.Across(size), Core.SimMath.DegToRad(s.Float("facing", 0f)), size);
+            return new HardpointDef(new Vector2(s.Float("x"), s.Float("z")), kind, HardpointDef.Across(size), Core.SimMath.DegToRad(s.Float("facing", 0f)), size,
+                s.Has("place") ? s.String("place") : null);
         }
 
         internal static BaseSiteDef Parse(JsonObject b)

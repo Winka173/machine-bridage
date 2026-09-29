@@ -6,27 +6,38 @@ using System.Numerics;
 namespace MachineBrigade.Sim.Navigation
 {
     /// <summary>
-    /// Walkability of the battlefield on a square grid centred on the origin. Blockers are
-    /// reference-counted per cell, so removing one building never unblocks a neighbour that
-    /// overlaps the same cells.
+    /// Walkability of the battlefield on a grid over the map's rectangle (a square centred on the
+    /// origin, or a long battlefield's own corners). Blockers are reference-counted per cell, so
+    /// removing one building never unblocks a neighbour that overlaps the same cells.
     /// </summary>
     public sealed class NavGrid
     {
         private readonly int[] _blockers;
 
-        public NavGrid(float worldSize, float cellSize)
+        public NavGrid(float worldSize, float cellSize) : this(new Vector2(-(int)MathF.Ceiling(worldSize / cellSize) * cellSize * 0.5f), worldSize, worldSize, cellSize)
         {
-            if (!(worldSize > 0f) || !(cellSize > 0f)) throw new ArgumentException("Grid sizes must be positive.");
+        }
+
+        /// <summary>A grid from the south-west corner <paramref name="origin"/>, <paramref name="width"/> along x and <paramref name="length"/> along z.</summary>
+        public NavGrid(Vector2 origin, float width, float length, float cellSize)
+        {
+            if (!(width > 0f) || !(length > 0f) || !(cellSize > 0f)) throw new ArgumentException("Grid sizes must be positive.");
             CellSize = cellSize;
-            Width = Height = (int)MathF.Ceiling(worldSize / cellSize);
-            HalfExtent = Width * cellSize * 0.5f;
+            Width = (int)MathF.Ceiling(width / cellSize);
+            Height = (int)MathF.Ceiling(length / cellSize);
+            Origin = origin;
             _blockers = new int[Width * Height];
         }
 
         public int Width { get; }
         public int Height { get; }
         public float CellSize { get; }
-        public float HalfExtent { get; }
+
+        /// <summary>The south-west corner of cell (0, 0).</summary>
+        public Vector2 Origin { get; }
+
+        /// <summary>Bytes the grid's own arrays hold (blockers and regions), for the path-memory budget (prompt 17 A.5).</summary>
+        public long MemoryBytes => (_blockers.Length + _region.Length + _queue.Length) * 4L;
 
         /// <summary>Increments whenever walkability changes, so cached paths can be revalidated.</summary>
         public int Version { get; private set; }
@@ -36,10 +47,10 @@ namespace MachineBrigade.Sim.Navigation
         public int Index(int x, int y) => y * Width + x;
 
         public (int x, int y) CellOf(Vector2 p) =>
-            ((int)MathF.Floor((p.X + HalfExtent) / CellSize), (int)MathF.Floor((p.Y + HalfExtent) / CellSize));
+            ((int)MathF.Floor((p.X - Origin.X) / CellSize), (int)MathF.Floor((p.Y - Origin.Y) / CellSize));
 
         public Vector2 CellCenter(int x, int y) =>
-            new Vector2((x + 0.5f) * CellSize - HalfExtent, (y + 0.5f) * CellSize - HalfExtent);
+            new Vector2(Origin.X + (x + 0.5f) * CellSize, Origin.Y + (y + 0.5f) * CellSize);
 
         public bool IsWalkable(int x, int y) => InBounds(x, y) && _blockers[Index(x, y)] == 0;
 

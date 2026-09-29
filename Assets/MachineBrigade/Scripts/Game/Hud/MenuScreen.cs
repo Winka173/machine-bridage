@@ -70,6 +70,7 @@ namespace MachineBrigade.Game.Hud
             BuildShopPage();
             BuildDetailPage();
             BuildSettingsPage();
+            BuildLegendPage();
 
             // Top bar: the logo at home, the screen's title elsewhere, Back on a full page; the rank,
             // the coins and the one settings gear on the right.
@@ -407,6 +408,12 @@ namespace MachineBrigade.Game.Hud
                 }));
             // Prompt 11 A9: the compact battle HUD, on by default; off shows the full one.
             display.Add(ToggleRow("expand", "settings.compactHud", () => MatchSettings.CompactHud, on => MatchSettings.CompactHud = on));
+            display.Add(ToggleRow("a_g3", "settings.showNumbers", () => MatchSettings.ShowCombatNumbers, on => MatchSettings.ShowCombatNumbers = on));
+            var legendRow = Kit.Box("fc-setting");
+            legendRow.Add(Kit.Icon("info"));
+            legendRow.Add(Kit.Text(Strings.Get("combat.legend.open"), "fc-body fc-setting__label"));
+            legendRow.Add(new KitButton(ButtonTier.Text, Strings.Get("combat.legend"), OpenLegend));
+            display.Add(legendRow);
             display.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
                 () => MatchSettings.ColorBlind ? 1 : 0, i => MatchSettings.ColorBlind = i == 1));
 
@@ -583,6 +590,7 @@ namespace MachineBrigade.Game.Hud
         {
             "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
+            "legend", "detail-weapons", "detail-armour",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -632,9 +640,13 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "detail":
                 case "detail-action":
+                case "detail-weapons":
+                case "detail-armour":
                     ShowTab(Tab.Army);
-                    // The In action tab: the theatre (DECISIONS 12E).
+                    // The In action tab: the theatre (DECISIONS 12E); the Weapons tab with its chips and effectiveness table (prompt 15 E2).
                     if (screen == "detail-action") _detailTab = DetailTab.Firing;
+                    if (screen == "detail-weapons") _detailTab = DetailTab.Weapons;
+                    if (screen is "detail-weapons" or "detail-armour") DebugScrollDetail(screen == "detail-armour");
                     OpenDetail("main_battle_tank");
                     break;
                 case "detail-tower":
@@ -649,6 +661,9 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));
+                    break;
+                case "legend":
+                    OpenLegend();
                     break;
                 case "setup-mode":
                 case "setup-map":
@@ -753,6 +768,13 @@ namespace MachineBrigade.Game.Hud
             "turtle_tank" => "turtle",
             "bmpt" => "bmpt",
             "sapper" => "sapper",
+            // Prompt 17 C.
+            "stealth_fighter" => "fighter",
+            "wingman_drone" => "drone",
+            "laser_tank" => "laser",
+            "shield_carrier" => "shield",
+            "bunker_vehicle" => "siegegun",
+            "swarm_carrier" => "fpvtruck",
             "napalm_strike" => "flame",
             "moab" => "bomb",
             "cluster_strike" => "airstrike",

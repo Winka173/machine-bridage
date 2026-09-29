@@ -23,6 +23,14 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Fire crackle | The shared fire loop, louder near a burning boss | Its own crackle for a boss's fires |
 | Rail Supergun's tractors | Their broken piece is a stump on their deck | A burnt-out tractor model |
 
+## Prompt 16 (old bosses' weapons, escorts)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Hover gunboat (`hover_gunboat`, the landing hovercraft's escort) | The landing hovercraft's model at 0.34 scale | The fleet's fast attack craft model (prompt 16 C) once it lands, or its own small air-cushion gunboat |
+| The Behemoth's protection system, the Hive's jamming mast | Places on the hull (no node) | Their own nodes (`Part_aps`, `Part_ew`) with a broken piece |
+| The trains' new cars | Rigid with the train, like its other cars (as the models always were) | Articulated cars that follow the rails' curves |
+
 ## Prompt 13
 
 | What | Uses now | Needs |
@@ -42,3 +50,12 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Lighthouse, pier, fishing boat | Simple models (`mb_naval.py`) | The lamp's turning beam at night, a stone jetty, net racks |
 | Coastal battery | The heavy fortress's model | A casemated coastal gun |
 | Lighthouse Bay's Base-screen picture | None (the map is left out of the Base screen's list until it exists) | `BaseMapShots.RenderAll -mbBaseMaps lighthousebay` |
+## Prompt 17 C
+
+| What | Uses now | Needs |
+|---|---|---|
+| Stealth fighter, loyal wingman, laser tank, shield carrier, bunker vehicle, drone mothership, shield generator, CP relay | Simple temporary models (`Tools/blender/mb_p17_temp.py`): faceted airframes, kit tracks and wheels, emitter and mast parts | Detailed models to the 3d_astra bar (panel lines, decals, HD variants) |
+| Their card pictures | Not rendered yet (needs `CardRenders.RenderBatch` in a batch run with graphics) | The renders |
+| Bunker vehicle's coaxial MG | A fixed `MG_port` mesh that turns with the turret but does not elevate | A `Mount_mg` pivot if it should elevate |
+| Shield domes' emitters | Static glowing `Emitter` parts | A slow spin and a pulse on hits |
+| Laser tank's beam | The Iron Beam's red beam look | Its own colour and a ramping glow as the damage rises |

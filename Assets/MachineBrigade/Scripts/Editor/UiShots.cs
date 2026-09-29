@@ -114,6 +114,8 @@ namespace MachineBrigade.Editor
                 return host;
             };
             foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
+            // Prompt 15 E8: the icon legend is a long page; read at once.
+            yield return ("screen-legend-vi-full", Menu("legend", true, false), new[] { Shapes[0] }, 1);
             foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "army-outpost", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);
@@ -130,6 +132,7 @@ namespace MachineBrigade.Editor
         public static readonly string[] BattleScreenNames =
         {
             "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
+            "hud-enemy",
             "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
         };
 
@@ -299,6 +302,13 @@ namespace MachineBrigade.Editor
                     hud.SetScore(412, 356, 600, points);
                     hud.SetTimer(245f);
                     hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(3, "main_battle_tank", 1450f, 2000f));
+                    if (screen == "hud-enemy")
+                    {
+                        // Prompt 15 E3 and E5: an enemy heavy tank tapped (our deck against it), and a tray card held.
+                        hud.ShowEnemyTip(catalog.Vehicles["heavy_tank"],
+                            MatchSettings.DeckVehicles.Where(catalog.Vehicles.ContainsKey).Select(id => catalog.Vehicles[id]));
+                        hud.PreviewHeld(1);
+                    }
                     break;
             }
             return hud;
@@ -401,7 +411,8 @@ namespace MachineBrigade.Editor
             if (set is "all" or "menu") list.AddRange(MenuScreens());
             if (set is "all" or "battle") list.AddRange(BattleScreens());
             var only = Argument("-mbShotsOnly");
-            if (only != null) list = list.FindAll(s => s.file.Contains(only));
+            // One name part, or several separated by commas.
+            if (only != null) list = list.FindAll(s => only.Split(',').Any(o => s.file.Contains(o)));
             var count = 0;
             try
             {

@@ -2,6 +2,7 @@ using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim;
+using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Events;
 using UnityEngine;
@@ -16,6 +17,10 @@ namespace MachineBrigade.Tests
     public class BossPhaseTests
     {
         private const float Step = 0.05f;
+
+        /// <summary>A scripted blow that says nothing of its round (the armour table stays out of it): a default HitInfo
+        /// carries penetration 0 since prompt 15, where the constructors' is -1 (unknown).</summary>
+        private static readonly HitInfo Blow = new(null, -1, null, default, HitKind.None, false);
 
         private static (SimWorld world, Sim.Entities.Vehicle boss) Boss()
         {
@@ -54,7 +59,7 @@ namespace MachineBrigade.Tests
         public void AHugeBlowStopsAtTheMarkAndTheBossTransformsUntouchable()
         {
             var (world, boss) = Boss();
-            world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge);
+            world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge, Blow);
             Assert.AreEqual(0.66f, boss.Hp / boss.MaxHp, 1e-3f, "what went past the mark is lost");
             Assert.IsTrue(boss.IsAlive && boss.Transforming);
             var events = world.Events.Where(e => e.Kind == SimEventKind.BossPhase).ToList();
@@ -63,7 +68,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1, events[0].Mount, "its transformation");
             Assert.AreEqual("radio.test.second", events[0].DefId, "its general's line");
             world.ClearEvents();
-            Assert.AreEqual(0f, world.Damage.Apply(boss, 1000f, DamageType.ShapedCharge), "untouchable while it changes");
+            Assert.AreEqual(0f, world.Damage.Apply(boss, 1000f, DamageType.ShapedCharge, Blow), "untouchable while it changes");
         }
 
         [Test]
@@ -71,7 +76,7 @@ namespace MachineBrigade.Tests
         {
             var (world, boss) = Boss();
             var damage = boss.DamageBoost;
-            world.Damage.Apply(boss, boss.MaxHp, DamageType.ShapedCharge);
+            world.Damage.Apply(boss, boss.MaxHp, DamageType.ShapedCharge, Blow);
             Run(world, 2.2f);
             Assert.IsFalse(boss.Transforming);
             Assert.AreEqual(1, boss.Phase);
@@ -79,7 +84,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(damage * 1.2f, boss.DamageBoost, 1e-4f);
             Assert.AreEqual("behemoth_inferno", boss.Form, "its new form");
             var before = boss.Hp;
-            var lost = world.Damage.Apply(boss, 100f, DamageType.ShapedCharge);
+            var lost = world.Damage.Apply(boss, 100f, DamageType.ShapedCharge, Blow);
             Assert.Greater(lost, 0f, "it can be hurt again");
             Assert.Less(lost, 100f * 0.81f, "and takes a fifth less");
             Assert.AreEqual(before - lost, boss.Hp, 1e-3f);
@@ -91,7 +96,7 @@ namespace MachineBrigade.Tests
             var (world, boss) = Boss();
             for (var i = 0; i < 6 && boss.IsAlive; i++)
             {
-                world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge);
+                world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge, Blow);
                 Run(world, 2.2f);
             }
             Assert.IsFalse(boss.IsAlive, "down after its last phase");

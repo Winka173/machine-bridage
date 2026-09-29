@@ -226,6 +226,15 @@ namespace MachineBrigade.Sim.Content
                     Warning = b.Has("warning") ? b.String("warning") : null,
                 };
             }
+            if (v.Has("fireTrail"))
+            {
+                var f = v.Object("fireTrail");
+                def.FireTrail = new FireTrailDef
+                {
+                    Every = MathF.Max(0.5f, f.Float("every", 4f)), Seconds = MathF.Max(0.5f, f.Float("seconds", 10f)),
+                    Radius = MathF.Max(0.5f, f.Float("radius", 3.5f)), Dps = MathF.Max(0f, f.Float("dps", 18f)),
+                };
+            }
             if (v.Has("guards"))
             {
                 var guards = new List<GuardDef>();
@@ -247,6 +256,8 @@ namespace MachineBrigade.Sim.Content
                 }
                 def.Attachments = list;
             }
+            // Prompt 17 C: domes, deploying, wingmen, relays.
+            ParseP17(v, def);
         }
 
         /// <summary>
@@ -355,6 +366,8 @@ namespace MachineBrigade.Sim.Content
                     if (bombard.Spotter != null && !_vehicles.ContainsKey(bombard.Spotter)) throw new FormatException($"{def.Id}.bombard.spotter: unknown vehicle '{bombard.Spotter}'.");
                 }
             }
+            // Prompt 16 F: every boss's escort table.
+            ParseEscorts(root);
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>

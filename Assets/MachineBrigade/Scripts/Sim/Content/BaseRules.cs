@@ -61,17 +61,32 @@ namespace MachineBrigade.Sim.Content
 
         private readonly List<(int small, int medium, int large, int utility)> _levels = new()
             { (3, 1, 0, 1), (4, 2, 0, 1), (4, 2, 1, 2), (5, 3, 1, 2), (6, 3, 2, 3) };
+
+        // Prompt 17 B.4: a long battlefield's layered base opens more (balance.json "longLevels").
+        private readonly List<(int small, int medium, int large, int utility)> _longLevels = new()
+            { (4, 1, 0, 1), (5, 2, 1, 1), (6, 3, 1, 2), (7, 4, 2, 3), (8, 5, 3, 4) };
         public int MaxLevel => _levels.Count;
 
-        /// <summary>Tower hardpoints of a size an HQ of this level (1-5) opens.</summary>
-        public int Slots(int level, SlotSize size)
+        /// <summary>Tower hardpoints of a size an HQ of this level (1-5) opens (<paramref name="layered"/>: on a long battlefield's layered base).</summary>
+        public int Slots(int level, SlotSize size, bool layered = false)
         {
-            var l = _levels[Math.Clamp(level, 1, _levels.Count) - 1];
+            var table = layered ? _longLevels : _levels;
+            var l = table[Math.Clamp(level, 1, table.Count) - 1];
             return size switch { SlotSize.Small => l.small, SlotSize.Medium => l.medium, _ => l.large };
         }
 
-        /// <summary>Utility modules an HQ of this level allows.</summary>
-        public int UtilitySlots(int level) => _levels[Math.Clamp(level, 1, _levels.Count) - 1].utility;
+        /// <summary>Utility modules an HQ of this level allows (<paramref name="layered"/>: on a layered base).</summary>
+        public int UtilitySlots(int level, bool layered = false)
+        {
+            var table = layered ? _longLevels : _levels;
+            return table[Math.Clamp(level, 1, table.Count) - 1].utility;
+        }
+
+        /// <summary>A layered base's forward strongpoints of a size (balance.json "longForward"): the loadout's towers over again.</summary>
+        public int ForwardSlots(SlotSize size) => size switch { SlotSize.Small => LongForwardSmall, SlotSize.Medium => LongForwardMedium, _ => 0 };
+
+        public int LongForwardSmall { get; internal set; } = 6;
+        public int LongForwardMedium { get; internal set; } = 2;
 
         private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };
         public float RebuildDelay { get; internal set; } = 4f;
@@ -110,6 +125,18 @@ namespace MachineBrigade.Sim.Content
             {
                 rules._levels.Clear();
                 foreach (var l in b.Array("levels")) rules._levels.Add((l.Int("small", 3), l.Int("medium", 1), l.Int("large", 0), l.Int("utility", 1)));
+            }
+            if (b.Has("longLevels"))
+            {
+                rules._longLevels.Clear();
+                foreach (var l in b.Array("longLevels")) rules._longLevels.Add((l.Int("small", 4), l.Int("medium", 1), l.Int("large", 0), l.Int("utility", 1)));
+                while (rules._longLevels.Count < rules._levels.Count) rules._longLevels.Add(rules._longLevels[rules._longLevels.Count - 1]);
+            }
+            if (b.Has("longForward"))
+            {
+                var f = b.Object("longForward");
+                rules.LongForwardSmall = f.Int("small", 6);
+                rules.LongForwardMedium = f.Int("medium", 2);
             }
             if (b.Has("rebuild"))
             {

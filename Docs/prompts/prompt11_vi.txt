@@ -1,0 +1,40 @@
+Prompt 11: HUD trong trận gọn hơn, căn chỉnh toàn bộ giao diện, vẽ lại khiên
+
+Nhiệm vụ: thu gọn HUD trong trận, sửa lỗi lệch bố cục trên mọi màn, và thiết kế lại hiệu ứng khiên. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Dùng token và thư viện thành phần của prompt 10; không thay đổi logic game hay dữ liệu cân bằng.
+
+A. THU GỌN HUD TRONG TRẬN
+Mục tiêu đo được: khi đang giao tranh, HUD chiếm không quá 25–30% diện tích màn hình ở tỷ lệ 16:9 và 20:9. Viết test tự động đo tổng diện tích các khung HUD đang hiện.
+1. Bản đồ nhỏ: thu nhỏ khoảng 40%. Bỏ nút +/− (đã có pinch zoom). Các nút còn lại thu thành icon nhỏ ở góc bản đồ nhỏ.
+2. Bảng lệnh bên phải:
+   - Tấn công / Phòng thủ gộp thành một nút gạt nhỏ, chỉ có icon.
+   - Tự mua và Yểm trợ thành hai icon bật/tắt nhỏ, có trạng thái rõ; đồng thời có trong menu tạm dừng.
+3. Khay thẻ: giảm chiều cao khoảng 35%.
+   - Thẻ chỉ hiện ảnh render và CP, cộng tên ngắn một dòng (phần B). Nhấn giữ thẻ để xem tên đầy đủ.
+   - Ô CP thu gọn. Dòng phạt tiếp tế chỉ hiện khi đang bị phạt, dạng chip nhỏ.
+4. Thanh máu boss: hẹp lại khoảng một nửa, hàng bộ phận thu nhỏ; chạm vào thanh để mở rộng tạm thời. Vẫn giữ chạm bộ phận để bắn tập trung.
+5. Thanh nhiệm vụ và đồng hồ gộp thành một dải nhỏ ở giữa mép trên.
+6. Thông báo (toast, radio, cảnh báo): dời lên sát mép trên, nhỏ hơn, tự tắt sau khoảng 3 giây, xếp hàng đợi khi có nhiều thông báo; không che giữa màn hình.
+7. Hộp gợi ý "Quân ta tự chiến đấu · Chạm A B C..." chỉ hiện ở vài trận đầu tiên của người chơi, sau đó không hiện nữa.
+8. Bảng xe đang chọn: chỉ giữ ảnh, tên, thanh máu và 3 nút Tiến / Dừng / Rút. Bỏ phần mô tả vũ khí và "Mạnh với / Yếu trước" (đã có trong màn chi tiết xe). Đặt bảng sát phía trên khay thẻ, không che giữa màn.
+9. Thêm tùy chọn "HUD gọn" trong Cài đặt, mặc định bật. Tắt thì dùng HUD đầy đủ như hiện tại.
+10. Vẫn giữ đủ vùng chạm tối thiểu (44 pt) và safe area sau khi thu gọn.
+
+B. CĂN CHỈNH TOÀN BỘ GIAO DIỆN
+1. Thêm trường "tên ngắn" (tối đa khoảng 14 ký tự) cho mọi xe, tháp, công trình, thẻ hỗ trợ và vật phẩm. Dùng tên ngắn ở mọi chỗ chật: khay thẻ trong trận, dải bộ bài, chip, danh sách hẹp. Ví dụ: "Xe bộ binh", "Tăng nhẹ", "Pháo tự hành". Ghi bảng tên ngắn vào DECISIONS.md.
+2. Mọi thẻ có vùng tên cao cố định 2 dòng, căn trên. Ảnh, CP, cấp và các nhãn khác luôn ở cùng vị trí trên mọi thẻ cùng loại, bất kể tên dài hay ngắn.
+3. Quét toàn bộ các màn, gồm cả các màn tháp và công trình mới được xếp cạnh phương tiện: không có thẻ, dòng hay nút nào bị lệch so với các phần tử cùng hàng.
+4. Sửa các chuỗi còn lỗi: "{0} trùm liên tiếp" ở Săn trùm; mọi key thô dạng "support.xxx" còn hiện ra ở UI (ví dụ tên nhánh tháp). Mở rộng test quét localization để bắt được các lỗi dạng này.
+5. Test tự động: trong cùng một hàng hoặc lưới, khung ảnh, CP và tên của mọi thẻ có cùng tọa độ tương đối; chạy ở 4 tỷ lệ màn hình và cả cỡ chữ Lớn.
+
+C. VẼ LẠI KHIÊN (vòm khiên pháo đài trong Công thành và Phòng thủ, vật phẩm Khiên vòm, khiên của boss Tempest; mọi khiên khác nếu có)
+1. Dùng chung một thiết kế: vòm năng lượng dạng lưới lục giác, chỉ sáng ở viền (hiệu ứng fresnel), phần giữa gần như trong suốt để vẫn thấy rõ xe và công trình bên trong.
+2. Gợn sóng tại điểm trúng đạn. Chập chờn khi máy phát khiên bị hư. Khi khiên tắt thì có hoạt cảnh sụp vỡ ngắn.
+3. Màu theo phe: khiên địch đỏ cam, khiên ta xanh dương.
+4. Làm bằng một shader, ít hạt; có bản rút gọn cho đồ họa Thấp.
+5. Chỉ là hình ảnh: không đổi kích thước hay luật của khiên trong mô phỏng.
+
+D. KIỂM TRA
+- Chụp ảnh tự động HUD ở các trận: boss, chiếm cứ điểm, công thành, phòng thủ; ở 4 tỷ lệ màn hình; lưu vào docs/ui-screens/.
+- Test diện tích HUD, test căn chỉnh, test localization như trên.
+- Đo FPS trận nặng nhất ở đồ họa Thấp trước và sau khi đổi khiên.
+- Cập nhật docs/CHANGELOG.md và mục Giao diện trong tài liệu thiết kế.

@@ -366,10 +366,17 @@ def gallery(game, h, imgdir):
                 cells.append(f"<div class='galcell'>{tag}<div class='galcap'>{e(name)}</div></div>")
         return f"<div class='grid{cols}'>" + ''.join(cells) + "</div>" if cells else ''
 
+    # A card's picture is named after its model (Resources/UI/Cards/manifest.json maps the card id to it).
+    try:
+        import json as _json
+        manifest = {x['id']: x['model'] for x in _json.loads((cards / 'manifest.json').read_text(encoding='utf-8'))['entries']}
+    except (OSError, ValueError, KeyError):
+        manifest = {}
+
     def renders(units):
         seen, out = set(), []
         for v in units:
-            model = v.get('model') or v['id']
+            model = manifest.get(v['id']) or v.get('model') or v['id']
             path = cards / (model + '.png')
             if not path.exists():
                 path = cards / (v['id'] + '.png')

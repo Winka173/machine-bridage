@@ -23,26 +23,35 @@ namespace MachineBrigade.Sim.Navigation
         private const float Step = 0.5f;
 
         private readonly int[] _count;
-        private readonly int _size;
-        private readonly float _half;
+        private readonly int _width, _height;
+        private readonly Vector2 _origin;
 
-        public CoverGrid(float worldSize)
+        public CoverGrid(float worldSize) : this(new Vector2(-(int)MathF.Ceiling(worldSize / CellSize) * CellSize * 0.5f), worldSize, worldSize)
         {
-            _size = (int)MathF.Ceiling(worldSize / CellSize);
-            _half = _size * CellSize * 0.5f;
-            _count = new int[_size * _size];
         }
+
+        /// <summary>Over a rectangle from its south-west corner (a long battlefield, prompt 17).</summary>
+        public CoverGrid(Vector2 origin, float width, float length)
+        {
+            _width = (int)MathF.Ceiling(width / CellSize);
+            _height = (int)MathF.Ceiling(length / CellSize);
+            _origin = origin;
+            _count = new int[_width * _height];
+        }
+
+        /// <summary>Bytes the grid holds (prompt 17 A.5's measurement).</summary>
+        public long MemoryBytes => _count.Length * 4L;
 
         public void Add(Prop prop) => Change(prop, +1);
 
         /// <summary>Makes every cell whose centre fails <paramref name="open"/> stop fire for good (terrain beyond the outline).</summary>
         public void BlockWhere(Func<Vector2, bool> open)
         {
-            for (var y = 0; y < _size; y++)
-            for (var x = 0; x < _size; x++)
+            for (var y = 0; y < _height; y++)
+            for (var x = 0; x < _width; x++)
             {
-                var centre = new Vector2((x + 0.5f) * CellSize - _half, (y + 0.5f) * CellSize - _half);
-                if (!open(centre)) _count[y * _size + x]++;
+                var centre = new Vector2(_origin.X + (x + 0.5f) * CellSize, _origin.Y + (y + 0.5f) * CellSize);
+                if (!open(centre)) _count[y * _width + x]++;
             }
         }
 
@@ -50,9 +59,9 @@ namespace MachineBrigade.Sim.Navigation
 
         public bool IsBlocked(Vector2 p)
         {
-            var x = (int)MathF.Floor((p.X + _half) / CellSize);
-            var y = (int)MathF.Floor((p.Y + _half) / CellSize);
-            return x >= 0 && y >= 0 && x < _size && y < _size && _count[y * _size + x] > 0;
+            var x = (int)MathF.Floor((p.X - _origin.X) / CellSize);
+            var y = (int)MathF.Floor((p.Y - _origin.Y) / CellSize);
+            return x >= 0 && y >= 0 && x < _width && y < _height && _count[y * _width + x] > 0;
         }
 
         /// <summary>
@@ -88,14 +97,14 @@ namespace MachineBrigade.Sim.Navigation
         {
             var hw = MathF.Max(0.1f, prop.Width * 0.5f - Inset);
             var hd = MathF.Max(0.1f, prop.Depth * 0.5f - Inset);
-            var minX = (int)MathF.Floor((prop.Position.X - hw + _half) / CellSize);
-            var maxX = (int)MathF.Floor((prop.Position.X + hw + _half) / CellSize);
-            var minY = (int)MathF.Floor((prop.Position.Y - hd + _half) / CellSize);
-            var maxY = (int)MathF.Floor((prop.Position.Y + hd + _half) / CellSize);
-            for (var y = Math.Max(0, minY); y <= Math.Min(_size - 1, maxY); y++)
-            for (var x = Math.Max(0, minX); x <= Math.Min(_size - 1, maxX); x++)
+            var minX = (int)MathF.Floor((prop.Position.X - hw - _origin.X) / CellSize);
+            var maxX = (int)MathF.Floor((prop.Position.X + hw - _origin.X) / CellSize);
+            var minY = (int)MathF.Floor((prop.Position.Y - hd - _origin.Y) / CellSize);
+            var maxY = (int)MathF.Floor((prop.Position.Y + hd - _origin.Y) / CellSize);
+            for (var y = Math.Max(0, minY); y <= Math.Min(_height - 1, maxY); y++)
+            for (var x = Math.Max(0, minX); x <= Math.Min(_width - 1, maxX); x++)
             {
-                var i = y * _size + x;
+                var i = y * _width + x;
                 _count[i] = Math.Max(0, _count[i] + delta);
             }
         }

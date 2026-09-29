@@ -89,13 +89,23 @@ namespace MachineBrigade.Game.Match
         /// the map's camp (or the map's own set-up), at the HQ level the campaign has opened, a card not unlocked yet
         /// leaving its slot empty, each tower as its chosen branch.
         /// </summary>
-        public static BaseLoadout BaseLoadoutFor(string mapId) => BaseLoadoutOn(BaseSites.MapKey(mapId), BaseSites.CampOf(mapId));
+        public static BaseLoadout BaseLoadoutFor(string mapId) => BaseLoadoutOn(BaseSites.PlanKey(mapId), BaseSites.CampOf(mapId));
 
         /// <summary>The base on a match's own camp for a side (a siege's attacker camp, a mission's), the plan laid on that camp.</summary>
         public static BaseLoadout BaseLoadoutOn(MapDefinition map, int team)
         {
             var site = map?.BaseOf(team);
-            return BaseLoadoutOn(BaseSites.MapKey(map?.Id), site ?? BaseSites.CampOf(map?.Id));
+            return BaseLoadoutOn(BaseSites.MapKey(map?.Id), site ?? BaseSites.CampOf(BaseSites.MapKey(map?.Id)));
+        }
+
+        /// <summary>
+        /// Prompt 17 B.5: the player's base on a long battlefield's layered base (Defend, Endless): the plan laid on its
+        /// layered hardpoints (or that map's own set-up), the long table's slots open at the player's HQ level.
+        /// </summary>
+        public static BaseLoadout BaseLoadoutOnLayered(MapDefinition map)
+        {
+            var site = map?.Fortress?.Site(0);
+            return site == null ? BaseLoadout : BaseLoadoutOn(BaseSites.PlanKey(map.Id), site);
         }
 
         private static BaseLoadout BaseLoadoutOn(string mapKey, BaseSiteDef site)
@@ -281,20 +291,61 @@ namespace MachineBrigade.Game.Match
         private static readonly Dictionary<string, BaseSiteDef> Camps = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => Camps.Clear();
+        private static void ResetStatics()
+        {
+            Camps.Clear();
+            Layered.Clear();
+        }
 
-        /// <summary>A map's id without the mode's suffix ("ashfield_conquest" is "ashfield").</summary>
+        /// <summary>A long battlefield's file and plan suffix (prompt 17): "ashfield_long".</summary>
+        public const string LongSuffix = "_long";
+
+        /// <summary>A map's id without the mode's suffix ("ashfield_conquest" and "ashfield_long" are "ashfield").</summary>
         public static string MapKey(string mapId)
         {
             if (string.IsNullOrEmpty(mapId)) return mapId;
-            foreach (var suffix in new[] { "_conquest", "_sandbox", "_siege" })
+            foreach (var suffix in new[] { "_conquest", "_sandbox", "_siege", LongSuffix })
                 if (mapId.EndsWith(suffix, StringComparison.Ordinal)) return mapId.Substring(0, mapId.Length - suffix.Length);
             return mapId;
         }
 
-        /// <summary>The player's camp on a map (null when it has none).</summary>
+        /// <summary>Whether an id names a long battlefield ("ashfield_long").</summary>
+        public static bool IsLong(string mapId) => !string.IsNullOrEmpty(mapId) && mapId.EndsWith(LongSuffix, StringComparison.Ordinal);
+
+        /// <summary>
+        /// The key a plan's own set-up and the Base screen use for a map: the map's key ("ashfield"), and for a long
+        /// battlefield's layered base the long one ("ashfield_long"): the two are different bases.
+        /// </summary>
+        public static string PlanKey(string mapId) => IsLong(mapId) ? MapKey(mapId) + LongSuffix : MapKey(mapId);
+
+        /// <summary>Whether a map has a long battlefield (a layered base for Siege, Defend, Endless and the weekly fortress).</summary>
+        public static bool HasLong(string mapId) => LongOf(mapId) != null;
+
+        private static readonly Dictionary<string, BaseSiteDef> Layered = new();
+
+        /// <summary>A map's long battlefield's layered base as a camp (prompt 17 B.5; null when it has none).</summary>
+        public static BaseSiteDef LongOf(string mapId)
+        {
+            var key = MapKey(mapId);
+            if (string.IsNullOrEmpty(key)) return null;
+            if (Layered.TryGetValue(key, out var site)) return site;
+            try
+            {
+                site = Resources.Load<TextAsset>("Data/maps/" + key + LongSuffix) != null ? GameContent.LoadMap(key + LongSuffix)?.Fortress?.Site(0) : null;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[BaseSites] No long battlefield for {key}: {e.Message}");
+                site = null;
+            }
+            Layered[key] = site;
+            return site;
+        }
+
+        /// <summary>The player's camp on a map (null when it has none); on a long battlefield's id, its layered base.</summary>
         public static BaseSiteDef CampOf(string mapId)
         {
+            if (IsLong(mapId)) return LongOf(mapId);
             var key = MapKey(mapId);
             if (string.IsNullOrEmpty(key)) return null;
             if (Camps.TryGetValue(key, out var site)) return site;

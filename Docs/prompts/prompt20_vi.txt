@@ -1,0 +1,263 @@
+Prompt 20: Chiến dịch 12 chương, hệ boss chủ lực và mini boss, đổi tên boss và tướng, Săn trùm mở rộng, chỉnh tháp
+
+Nhiệm vụ: tái cấu trúc chiến dịch thành 12 chương chia 4 hồi; làm đủ cả 12 chương để test, kèm hệ bật/tắt theo hồi để sau này thu bớt cho bản phát hành; chia boss thành boss chủ lực và mini boss; thêm boss và mini boss mới; đổi tên boss và tướng theo chủ đề; gắn mỗi boss với một tướng; mở rộng Săn trùm; thêm lại nhánh Vòm Sắt và chỉnh hai tháp cũ. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 9, 13, 15, 16, 17, 18 và 19. Mọi vũ khí mới theo thang cỡ nòng của prompt 13 và loại sát thương của prompt 15; mọi boss mới có bộ phận (prompt 9), đòn lớn (prompt 18), hộ tống (prompt 16).
+
+Prompt này rất lớn. Làm theo 3 lượt, chạy đủ test và commit sau mỗi lượt:
+- Lượt 1: phần A, B, C, D (đổi tên, cấu trúc 12 chương, bật/tắt theo hồi, tiến độ và kinh tế).
+- Lượt 2: phần E đến M (hệ boss, boss mới, map mới, chỉnh tháp).
+- Lượt 3: phần N, O, P (Săn trùm, giao diện, kiểm tra tổng).
+
+A. ĐỔI TÊN TƯỚNG VÀ BOSS
+1. Nguyên tắc:
+   - Giữ id nội bộ của mọi boss và nhân vật để save, kỷ lục và thành tích cũ vẫn đúng; chỉ đổi tên hiển thị và mọi chuỗi liên quan.
+   - Boss hiển thị theo dạng "Tên riêng · dòng phụ tiếng Việt", ví dụ "Icarus · Phi thuyền quỹ đạo". Tên riêng không dịch.
+   - Mini boss biến thể: "Mk.0" là bản nguyên mẫu xuất hiện trước boss lớn; "Mk.II" là bản nâng cấp xuất hiện sau. Biến thể có vai trò khác hẳn boss lớn thì có tên riêng.
+   - Mỗi tướng đặt tên boss theo một chủ đề thần thoại riêng, ghi trong mục Hồ sơ của tướng.
+2. Tướng (tên mới, biệt danh, chủ đề tên boss):
+   - Chỉ huy đồn trú → Thiếu tá Brandt · chủ đề pháo đài.
+   - Varga → Tướng Viktor Varga, biệt danh "Anvil" · quái vật khổng lồ.
+   - Orlov → Đại tá Ilya Orlov, biệt danh "Winter" · thần thoại Bắc Âu, mùa đông.
+   - Kessler → Đô đốc Magnus Kessler, biệt danh "Maelstrom" · quái vật biển.
+   - Tiến sĩ Sen → Tiến sĩ Elara Sen, biệt danh "Queen" · côn trùng, bầy đàn.
+   - Quạ Đen → Kasimir Wolff, biệt danh "Raven"; phe ta vẫn gọi là "Quạ Đen" trong thoại · chim thần thoại.
+   - Aurel → Giám đốc Lucien Aurel, biệt danh "Sol" · thần thoại Hy Lạp về bầu trời.
+   - Tướng Hùng → Tướng Lý Hàn, biệt danh "Titan" · các Titan Hy Lạp.
+   - Phe ta: phi công Diều Hâu dùng biệt danh "Hawk" trên radio; Đại tá Trần Khải có biệt danh chỉ huy "Iron".
+3. Boss chủ lực (tên cũ → tên mới · dòng phụ):
+   - Bastion → Bastion · Pháo đài.
+   - Behemoth → Behemoth · Quái vật thép.
+   - Pháo đài băng → Jötunn · Pháo đài di động.
+   - Leviathan → Leviathan · Tuần dương hạm.
+   - Tàu mẹ Tổ Ong → Matriarch · Tàu mẹ drone.
+   - Nhà máy di động → Moloch · Nhà máy di động.
+   - Đoàn tàu Tận thế → Nemesis · Đoàn tàu tên lửa.
+   - Máy xúc bánh gầu → Kronos · Máy xúc mỏ.
+   - Tàu ngầm tên lửa → Typhon · Tàu ngầm tên lửa.
+   - Khí cầu chỉ huy → Roc · Khí cầu chỉ huy.
+   - Tàu đổ bộ quỹ đạo → Daedalus · Tàu đổ bộ quỹ đạo.
+   - Bọ Bạc → Icarus · Phi thuyền quỹ đạo.
+4. Mini boss (tên cũ → tên mới · dòng phụ):
+   - Bastion cơ động → Bastion Mk.0 · Pháo đài nguyên mẫu.
+   - Inferno → Inferno · Behemoth phun lửa.
+   - Quái vật băng giá → Behemoth Mk.II · Behemoth nâng cấp.
+   - Chim sắt → Harpy · Trực thăng khổng lồ.
+   - Spectre → Spectre · Máy bay pháo.
+   - Khí cầu trinh sát bọc giáp → Argus · Khí cầu trinh sát.
+   - Xe tiên phong băng giá → Fenrir · Xe tiên phong.
+   - Pháo đường ray siêu nặng → Gungnir · Pháo đường ray.
+   - Tempest → Tempest · Behemoth pháo điện từ.
+   - Đoàn tàu thép → Juggernaut · Đoàn tàu bọc thép.
+   - Tàu khu trục chỉ huy → Scylla · Tàu khu trục.
+   - Tàu đệm khí → Charybdis · Tàu đệm khí đổ bộ.
+   - Hive → Hive · Pháo đài drone.
+   - Tàu con Tổ Ong → Locust · Tàu con drone.
+   - Tổng Tư Lệnh → Atlas · Xe chỉ huy siêu nặng.
+   - Sâu Đất → Tartarus · Máy khoan.
+   - Xe bánh khổng lồ → Ixion · Xe bánh khổng lồ.
+   - Ekranoplan → Caspian · Ekranoplan.
+   - Phi thuyền trinh sát → Icarus Mk.0 · Phi thuyền nguyên mẫu.
+5. Dự án của Aurel trong cốt truyện đổi tên thành "Dự án Icarus" (thay mọi chỗ nhắc "Silver Bug" hoặc "Bọ Bạc").
+6. Cập nhật mọi nơi: localization, thoại và radio chatter, briefing, mẩu truyện, mục Hồ sơ, tab Hướng dẫn, thanh máu boss, màn kết quả, Săn trùm, Tác chiến, mutator, thành tích, tài liệu thiết kế. Viết test quét toàn bộ chuỗi để không còn tên cũ (trừ nơi có chủ đích, ví dụ biệt danh "Quạ Đen" trong thoại phe ta).
+
+B. CẤU TRÚC 12 CHƯƠNG, 4 HỒI
+1. Mỗi chương khoảng 10 nhiệm vụ chính và 2 nhiệm vụ phụ; nhiệm vụ 10 là chiến dịch lớn cuối chương (khung prompt 5), có boss chủ lực.
+2. Các hồi và chương (mini boss · boss chủ lực):
+   Hồi I "Đổ bộ":
+   - Chương 1 Bờ biển lửa (Brandt): Bastion Mk.0 · Bastion.
+   - Chương 2 Vàng đen (Varga): Inferno · Behemoth.
+   - Chương 3 Mùa đông dài (Orlov): Harpy; Fenrir ở nhiệm vụ phụ · Jötunn.
+   Hồi II "Phản công":
+   - Chương 4 Cảng thép (Kessler): Tempest, Juggernaut, Scylla · Leviathan.
+   - Chương 5 Lửa rừng (Sen, đào ngũ ở cuối chương): Locust, Hive · Matriarch.
+   - Chương 6 Tổng phản công (Varga): Charybdis, Behemoth Mk.II · Moloch.
+   Hồi III "Phản bội":
+   - Chương 7 Thủ đô: giải phóng thủ đô; Lý Hàn phản bội giữa trận (căn cứ đồng minh đổi phe, theo prompt 5) rồi trốn thoát. Atlas · Nemesis.
+   - Chương 8 Lòng đất (Lý Hàn): đuổi theo Lý Hàn về khu mỏ. Ixion, Tartarus · Kronos.
+   - Chương 9 Biển động (Lý Hàn cùng tàn quân của Kessler): Caspian, Scylla (tái đấu) · Typhon. Lý Hàn bị hạ ở cuối chương.
+   Hồi IV "Bầu trời bạc":
+   - Chương 10 Chiến tranh trên không (Wolff): Spectre, Icarus Mk.0; Argus ở nhiệm vụ phụ · Roc. Wolff bị hạ ở cuối chương.
+   - Chương 11 Cửa ngõ quỹ đạo: Gungnir (trận cuối của Orlov), Locust · Daedalus.
+   - Chương 12 Bãi phóng (Aurel): tái đấu 2–3 mini boss của các tướng chưa có trận cuối (ví dụ Behemoth Mk.II của Varga, Scylla của Kessler), Locust làm hộ tống · Icarus.
+3. Chuyển nhiệm vụ cũ: chương thủ đô cũ (chương 8) lên chương 7; các chương 7 và 9 cũ (không quân, bãi phóng) sang chương 10 và 12; tự sắp các nhiệm vụ còn lại cho khớp. Người chơi đã hoàn thành nhiệm vụ cũ giữ sao và phần mở khóa. Viết test migration tiến độ chiến dịch.
+4. Cốt truyện: viết lại briefing, thoại, mẩu truyện, phần nối giữa các hồi và mục Hồ sơ cho khớp, gồm:
+   - Tempest xuất hiện ở cảng của Kessler vì Kessler đang vận chuyển các mẫu Behemoth của Varga qua cảng.
+   - Locust ở Hồi IV: Aurel đã chiếm lấy dự án drone của Sen sau khi bà đào ngũ.
+   - Kết chương 7: Lý Hàn trốn thoát. Hồi III kết thúc khi Lý Hàn bị hạ; Hồi IV mở ra khi Dự án Icarus của Aurel lộ diện.
+   - Mỗi tướng có trận cuối rõ ràng: Lý Hàn (chương 9), Wolff (chương 10), Orlov (chương 11), Varga và Kessler (tái đấu ở chương 12), Aurel (chương 12).
+   - Phần kết của chương 12 là phần kết của cả game.
+5. Map: dùng lại các map có sẵn với bản đảo chiều và cấu hình khác theo luật tái dùng map của prompt 4; thêm map mới ở phần M.
+
+C. BẬT/TẮT THEO HỒI (để test đủ 12 chương, sau này thu bớt cho bản phát hành)
+1. Thêm cấu hình bật/tắt cho từng hồi (và từng chương nếu cần), đọc được từ cấu hình từ xa nếu game đã có.
+2. Bản build nội bộ và test: bật cả 12 chương.
+3. Khi một hồi bị tắt:
+   - Các chương của hồi đó không hiện, hoặc hiện dạng khóa với nhãn "Sắp ra mắt" (chọn bằng cấu hình).
+   - Chương cuối cùng đang bật có phần kết tạm ("Còn tiếp"), không dùng phần kết của cả game.
+   - Săn trùm, Săn trùm toàn tập, Tác chiến và mọi bảng xoay vòng (mutator, boss tuần) tự bỏ các boss và chiến dịch lớn thuộc chương đang tắt.
+   - Thẻ, tháp và công trình chỉ mở ở chương đang tắt phải có nguồn mở khóa khác (chuyển sang chương đang bật gần nhất), để roster không bị thiếu. Ghi bảng chuyển nguồn vào DECISIONS.md.
+   - Save của người chơi vẫn đúng khi hồi được bật lại sau này (tiến độ tiếp tục từ chỗ dừng).
+4. Test tự động với ít nhất 3 cấu hình: bật cả 4 hồi; chỉ Hồi I–II; chỉ Hồi I–III.
+
+D. TIẾN ĐỘ VÀ KINH TẾ
+1. Trải lại lộ trình mở khóa thẻ, tháp, công trình và module trên 12 chương; mỗi chương có phần thưởng đáng kể.
+2. Cấp HQ mở ở các chương 1, 3, 6, 9 và 11.
+3. Tính lại đường cong kinh tế (prompt 7) cho 12 chương: người chơi chuyên chơi chiến dịch đưa bộ bài chính (8 thẻ và 6 tháp) lên khoảng hạng 7 khi vào Hồi IV. Tính riêng cho cấu hình chỉ bật Hồi I–II, để bản phát hành rút gọn vẫn có đường cong hợp lý.
+4. Độ khó tăng đều qua 12 chương; mọi nhiệm vụ thắng được ở độ khó Thường với bộ bài người chơi đã mở tới thời điểm đó.
+
+E. HỆ BOSS DẠNG KHUÔN MẪU (để thêm boss sau này chủ yếu bằng dữ liệu)
+1. Khung thân: xe xích, xe bánh, tàu hỏa, tàu nổi, tàu ngầm, máy bay, phi thuyền; mỗi khung có sẵn cách di chuyển và luật tầng độ cao (prompt 19).
+2. Thư viện bộ phận và vũ khí dùng chung.
+3. Thư viện đòn lớn: loạt vào vùng tròn, dải, đường thẳng, đường quét, bầy drone, tên lửa bắn hạ được, thả quân, sinh quân.
+4. Mẫu hộ tống theo từng tướng.
+5. Trường "cấp boss" (chủ lực / mini) và luật biến thể: từ một boss chủ lực bất kỳ tạo được mini boss biến thể bằng dữ liệu (tỷ lệ thu nhỏ, danh sách vũ khí giữ lại, đòn lớn thu nhỏ, màu và ký hiệu, tên theo quy tắc Mk.0 / Mk.II).
+6. Chuyển mọi boss hiện có sang hệ này. Ghi hướng dẫn thêm boss mới vào docs/.
+
+F. LUẬT BOSS CHỦ LỰC (12 boss: Bastion, Behemoth, Jötunn, Leviathan, Matriarch, Moloch, Nemesis, Kronos, Typhon, Roc, Daedalus, Icarus)
+1. Kích thước model khoảng ×1,3–1,5 so với hiện tại; Leviathan khoảng ×1,1–1,15; Icarus giữ theo prompt 19. Chỉnh vùng va chạm, điểm gắn bộ phận, hiệu ứng và camera; chạy bộ phát hiện xe kẹt của prompt 12 quanh mọi boss chủ lực mặt đất.
+2. Đủ 3 pha, có đòn lớn và hộ tống đầy đủ.
+3. Vũ khí thêm (mỗi vũ khí là một bộ phận mới):
+   - Bastion: pháo 155 mm trong lô cốt; 2 bệ ZU-23.
+   - Behemoth: 2 pháo 120 mm hai bên hông; bệ rốc-két trên lưng.
+   - Jötunn: pháo 203 mm thứ hai; bệ SAM tầm trung.
+   - Leviathan: 2 pháo phụ 127 mm hai bên mạn.
+   - Matriarch: 2 pháo 30 mm dưới bụng; thêm một khoang drone.
+   - Roc: 2 khoang pháo 105 mm treo hai bên.
+   - Nemesis: thêm 2 toa, một toa pháo 152 mm và một toa phòng không.
+   - Icarus: thêm tháp pháo phụ quanh thân ở pha 3.
+   - Moloch, Kronos, Typhon, Daedalus: theo phần H và J.
+4. Trình diễn: camera lia giới thiệu, nhạc nền riêng, thanh máu lớn có nhãn "Boss".
+5. Thời lượng mục tiêu: khoảng 5–8 phút mỗi trận ở độ khó Thường.
+
+G. LUẬT MINI BOSS (19 mini boss)
+1. Chỉ số: máu khoảng ×0,5–0,6 (máu bộ phận giảm theo cùng tỷ lệ); sát thương vũ khí thường khoảng ×0,8; đòn lớn sát thương khoảng ×0,7, hồi chiêu dài hơn khoảng 30%, cảnh báo giữ nguyên.
+2. Kích thước: mini boss xuống từ boss cũ khoảng ×0,75–0,9 so với hiện tại; mini boss biến thể dùng model boss lớn thu nhỏ khoảng ×0,6–0,75, đổi màu hoặc thêm ký hiệu để phân biệt rõ. Chỉnh vùng va chạm, điểm gắn bộ phận và hiệu ứng.
+3. Vũ khí: bỏ bớt ở các boss nhiều vũ khí (bộ phận gắn với vũ khí bị bỏ cũng bỏ theo; giữ lại mọi thứ đòn lớn cần):
+   - Inferno: bỏ cao xạ.
+   - Harpy: bỏ 1 minigun và bệ tên lửa.
+   - Tempest: bỏ 2 pháo điện từ nhỏ.
+   - Juggernaut: bỏ toa cối.
+   - Hive: bỏ dàn SAM.
+   - Spectre: bỏ 1 pháo 40 mm.
+   - Charybdis: bỏ 1 CIWS.
+   - Gungnir, Tartarus, Atlas: giữ nguyên (đã ít).
+   - Mini boss biến thể và mini boss mới: chỉ có vũ khí ghi ở phần I và J.
+4. 2 pha; hộ tống 2–3 đơn vị; thanh máu nhỏ có nhãn "Mini boss"; chỉ lia camera ngắn; nhạc chung của mini boss.
+5. Thời lượng mục tiêu: khoảng 1,5–3 phút; thưởng thấp hơn boss chủ lực.
+6. Có thể dùng mini boss làm mối đe dọa giữa trận trong chiến dịch lớn, và thỉnh thoảng trong nhiệm vụ thường; từ Hồi III trở đi, cho phép 2 mini boss cùng lúc ở một vài nhiệm vụ.
+
+H. BOSS CHỦ LỰC MỚI
+1. Moloch · Nhà máy di động (chương 6, Varga):
+   - Pháo đài bánh xích khổng lồ có xưởng bên trong; tiến chậm theo đường của nhiệm vụ.
+   - Vũ khí và bộ phận: 4 tháp pháo 120 mm ở bốn góc; cao xạ; 2 cửa xưởng phía sau định kỳ sinh xe (khởi điểm mỗi 20 giây 1–2 xe, tăng nhẹ và xe bộ binh ở pha 1, thêm tăng chủ lực từ pha 2; mỗi 60 giây số xe mỗi lượt tăng thêm 1; tối đa 6 xe do Moloch sinh ra còn sống cùng lúc, ngoài trần hộ tống); các cụm xích (phá thì chậm lại).
+   - Giáp: trước cấp 4, hông cấp 3, sau cấp 2.
+   - Đòn lớn "Xả xưởng": mở toàn bộ cửa thả 6 xe cùng lúc, kèm 8 phát pháo 152 mm nổ mạnh × 300, nổ lan 6 m vào cụm quân ta gần nhất. Cảnh báo 4 giây; hồi 75 giây. Phá một cửa trong lúc cảnh báo thì chỉ thả một nửa; phá cả hai cửa thì ngừng sinh xe và đòn lớn chỉ còn loạt pháo.
+2. Daedalus · Tàu đổ bộ quỹ đạo (chương 11, Aurel):
+   - Phi thuyền chở quân, dùng cơ chế tầng độ cao của prompt 19: mở màn ở quỹ đạo khoảng 10 giây, sau đó chỉ đổi giữa tầng cao và tầng thấp theo lịch cố định, không lên lại quỹ đạo. Không có mục tiêu phụ trên mặt đất.
+   - Cơ chế chính: thả khoang đổ bộ liên tục (mỗi khoang 1–2 xe, bắn hạ được khi đang rơi như prompt 19); tối đa 8 xe từ khoang đổ bộ còn sống cùng lúc. Bản thân tàu bắn yếu hơn Icarus.
+   - Vũ khí và bộ phận: 3 khoang đổ bộ, 2 pháo 30 mm dưới bụng, 2 tháp laser phòng thủ điểm (dùng chung với Icarus), động cơ điều hướng. Dùng chung một số bộ phận với model Icarus để giảm công.
+   - Giáp: thân trên cấp 3, bụng cấp 2.
+   - Pha 3: tàu dừng hẳn ở tầng thấp, mở toàn bộ khoang và thả liên tục (không có pha rơi xuống, để khác Icarus).
+   - Đòn lớn "Đổ bộ ồ ạt từ quỹ đạo": 6 khoang rơi cùng lúc vào một cụm quân ta; mỗi khoang khi chạm đất gây 400 (Động năng, xuyên cao, bán kính 5 m) rồi thả xe. Cảnh báo 4 giây; hồi 70 giây. Ngắt: phá một khoang đổ bộ của tàu trong lúc cảnh báo thì chỉ rơi 3 khoang.
+3. Kronos (chương 8) và Typhon (chương 9): theo phần J.
+
+I. MINI BOSS BIẾN THỂ (theo luật phần G; dùng lại model boss lớn; có thẻ Hướng dẫn, clip Xem bắn, ảnh thẻ render và một câu radio riêng)
+1. Bastion Mk.0 (từ Bastion): nguyên mẫu gắn xích, bò chậm về phía căn cứ người chơi. Cối, 2 pháo 40 mm. Đòn lớn: Pháo cối tổng lực 3 phát.
+2. Fenrir (từ Jötunn): nhanh, lao vào bắn rồi rút. 2 hộp rốc-két, cao xạ. Đòn lớn: Mưa rốc-két 16 quả.
+3. Scylla (từ Leviathan): nhanh hơn Leviathan, chạy trên tuyến biển gần bờ để xe mặt đất ở đầu cầu tàu bắn tới được. 1 tháp pháo chính, 2 ống phóng tên lửa, CIWS. Đòn lớn: Tên lửa hành trình 3 quả.
+4. Locust (từ Matriarch): thả drone liên tục, thân rất mỏng. Khoang drone, cao xạ. Đòn lớn: Bầy drone 10 drone.
+5. Behemoth Mk.II (từ Behemoth): bản nâng cấp của Varga, giáp phủ băng (mặt trước cấp 4). Pháo chính, 2 cao xạ, APS. Đòn lớn: Loạt pháo chính 4 phát.
+6. Icarus Mk.0 (từ Icarus): không lên quỹ đạo, chỉ đổi giữa tầng cao và tầng thấp theo lịch cố định. Tháp laser, khoang đổ bộ. Đòn lớn: Mưa thanh tungsten 3 thanh. Là lần đầu người chơi thấy công nghệ phi thuyền.
+7. Argus (từ Roc): khi còn sống, pháo binh địch bắn chính xác hơn (giảm tản mát khoảng 50%). Cao xạ, radar. Đòn lớn: gọi một loạt pháo của pháo binh địch vào một vùng có cảnh báo.
+
+J. BOSS VÀ MINI BOSS CỦA HỒI III
+1. Kronos · Máy xúc mỏ (boss chủ lực, chương 8):
+   - Máy xúc mỏ lộ thiên khổng lồ (theo Bagger 288), bọc giáp và gắn vũ khí. Chạy rất chậm theo đường cố định về phía căn cứ người chơi, nghiền mọi thứ phía trước kể cả tường và tháp. Tới được HQ thì nhiệm vụ thất bại.
+   - Bộ phận: bánh gầu (nghiền cận chiến), cần gầu, 4 cụm xích (phá thì chậm lại), buồng điều khiển, 2 tháp pháo 30 mm, bệ rốc-két.
+   - Giáp: bánh gầu cấp 4, thân cấp 3, cụm xích cấp 2.
+   - Pha 2 tiến nhanh hơn; pha 3 bánh gầu quay nhanh hơn và hất đá vụn ra xung quanh.
+   - Đòn lớn "Quét gầu": cung khoảng 120°, bán kính khoảng 25 m phía trước; Động năng, xuyên cao, khoảng 1.200 mỗi đơn vị, thêm sát thương lên công trình. Cảnh báo 4 giây; hồi 60 giây. Ngắt: phá cần gầu.
+2. Ixion · Xe bánh khổng lồ (mini boss, chương 8):
+   - Theo Tsar Tank năm 1915. Lăn nhanh theo đường thẳng, nghiền xe trên đường đi theo cấp giáp, xoay rất chậm.
+   - Bộ phận: 2 bánh lớn (phá một bánh thì quay vòng và chậm lại), bánh lái sau (giáp cấp 1, điểm yếu), bệ pháo 76 mm.
+   - Đòn lớn "Lao nghiền": lao thẳng qua map theo đường có cảnh báo; khoảng 900 mỗi đơn vị trên đường, choáng 2 giây. Cảnh báo 3,5 giây. Phá một bánh lớn trong lúc cảnh báo thì cú lao bị chệch và dừng.
+3. Tartarus · Máy khoan (mini boss, chuyển sang chương 8): giữ thiết kế hiện có theo luật mini boss.
+4. Typhon · Tàu ngầm tên lửa (boss chủ lực, chương 9):
+   - Tàu ngầm mang tên lửa cỡ lớn (kiểu Typhoon). Hai trạng thái lặn (không bắn được) và nổi (bắn được bằng vũ khí mặt đất và phòng không như mục tiêu trên mặt nước), đổi theo lịch cố định của từng pha; mỗi lần nổi lên ở một điểm khác trên các tuyến biển, có cảnh báo trước (bong bóng, vệt nước).
+   - Bộ phận: tháp chỉ huy, 2 cụm cửa ống phóng, bánh lái, sonar, bệ tên lửa phòng không tự vệ khi nổi; tên lửa hành trình tầm ngắn bắn thường.
+   - Giáp: thân cấp 4, tháp chỉ huy và boong cấp 2.
+   - Pha 3: nổi hẳn, không lặn được nữa; thêm pháo boong 100 mm.
+   - Đòn lớn "Phóng tên lửa từ dưới nước": 3 tên lửa vào căn cứ người chơi; Nổ mạnh, xuyên trung bình, khoảng 500 mỗi quả, nổ lan 8 m, thêm sát thương lên công trình. Cảnh báo 4 giây, sau đó có đồng hồ bay. Ngắt: phá cửa ống phóng (bắn được cả khi tàu đang lặn, vì cửa mở trên mặt nước trong lúc cảnh báo), hoặc bắn hạ tên lửa trên đường bay.
+   - Hộ tống: tàu hộ vệ và xuồng tên lửa (dùng lại model hạm đội Leviathan).
+5. Caspian · Ekranoplan (mini boss, chương 9):
+   - Theo Lun-class "Quái vật biển Caspi". Lao dọc bờ thành từng lượt nhanh (khoảng 6 giây trong tầm mỗi lượt), rồi vòng ra xa (khoảng 20 giây). Là mục tiêu trên mặt nước.
+   - Bộ phận: cụm động cơ phản lực ở mũi (phá thì chậm lại), bệ tên lửa chống hạm trên lưng, cánh.
+   - Đòn lớn "Loạt tên lửa chống hạm": 4 tên lửa vào bờ và căn cứ; Nổ mạnh, xuyên cao, khoảng 500 mỗi quả; bắn hạ được trên đường bay. Cảnh báo 4 giây. Ngắt: phá bệ tên lửa.
+6. Atlas và Scylla (tái đấu) theo thiết kế đã có và luật mini boss.
+
+K. GẮN BOSS VỚI TƯỚNG
+Cập nhật dữ liệu, hộ tống, radio chatter và mục Hồ sơ theo bảng:
+- Brandt: Bastion, Bastion Mk.0.
+- Varga: Behemoth, Moloch, Inferno, Behemoth Mk.II.
+- Orlov: Jötunn, Fenrir, Gungnir.
+- Kessler: Leviathan, Tempest, Juggernaut, Scylla, Charybdis.
+- Sen: Matriarch, Hive, Locust (ở Hồi IV thuộc Aurel).
+- Lý Hàn: Nemesis, Atlas, Kronos, Ixion, Tartarus, Typhon, Caspian.
+- Wolff: Roc, Harpy, Spectre, Argus.
+- Aurel: Icarus, Daedalus, Icarus Mk.0.
+
+L. CHỈNH THÁP
+1. Thêm lại nhánh "Vòm Sắt" cho Trạm C-RAM (nhánh hạng 7):
+   - Thay súng đánh chặn bằng tên lửa đánh chặn tầm xa hơn (khoảng 60 m), ít phát hơn (có băng và thời gian nạp theo hệ đạn của prompt 13).
+   - Đánh chặn rốc-két, tên lửa, đạn pháo và drone. Không chặn được đạn bắn thẳng và Năng lượng.
+   - Nhánh còn lại giữ vai trò C-RAM tầm gần bắn nhanh.
+   - Có icon nhánh, mục Hành vi tự động, clip Xem bắn; AI địch biết chọn nhánh theo loadout.
+2. Dàn rốc-két: rốc-két bay theo đường cầu vồng, bắn được vào sân trong từ phía sau tường và vào mục tiêu nấp sau vật che; giữ tầm tối thiểu khoảng 8 m. Để tháp này lo vai trò đánh địch đã áp sát tường trong căn cứ nhiều lớp (prompt 17). Kiểm tra đường đạn không bị tường chặn vô lý.
+3. Tháp phòng không, nhánh tên lửa: tăng tầm tên lửa lên khoảng 60 m để lấp khoảng giữa tháp phòng không tầm gần và Patriot tầm xa. Nhánh cao xạ giữ tầm gần, mạnh với drone và bầy nhỏ. Kết quả mong muốn:
+   - Nhánh cao xạ: tầm gần, chống drone.
+   - Nhánh tên lửa: tầm trung, chống máy bay và trực thăng.
+   - Patriot: tầm xa, ô lớn.
+4. Đưa cả ba thay đổi vào bộ đo giá trị thực chiến của prompt 13 và kiểm tra lại độ phủ căn cứ (prompt 14).
+
+M. MAP MỚI
+1. Mỏ lộ thiên (chương 8): hố mỏ bậc thang, đường vận chuyển quặng, đường cố định cho Kronos tiến về căn cứ người chơi.
+2. Cửa ngõ quỹ đạo (chương 11): trạm radar, bệ phóng phụ, vùng trống rộng cho khoang đổ bộ rơi.
+3. Cả hai: đủ các phiên bản cần cho chiến dịch, Săn trùm và Giao tranh; hardpoint và nhãn vị trí ô (prompt 14); qua bộ phát hiện xe kẹt của prompt 12; có ảnh xem trước và mục Hướng dẫn.
+
+N. SĂN TRÙM
+1. Săn trùm (xoay vòng theo tuần):
+   - Mỗi lượt 10 boss: 7 mini boss và 3 boss chủ lực, đi theo dạng vài mini boss dẫn tới một boss chủ lực. Bộ boss chọn deterministic theo số tuần, chỉ từ các chương đang bật.
+   - Thời lượng mục tiêu khoảng 30–40 phút.
+   - Checkpoint sau mỗi boss chủ lực (dùng cơ chế snapshot của prompt 5).
+   - Nghỉ khoảng 20 giây giữa các boss: quân được sửa một phần.
+   - Sau mỗi boss chủ lực, người chơi chọn 1 trong 3 hỗ trợ tác chiến cho phần còn lại của lượt (ví dụ: +15% máu toàn quân; hồi chiêu thẻ hỗ trợ nhanh hơn; thêm 1 lần thả tiếp viện miễn phí). Tự thiết kế khoảng 12 hỗ trợ; không cái nào bắt buộc phải chọn.
+   - Boss mạnh dần theo thứ tự trong lượt.
+   - Boss cần map riêng tự chuyển map như prompt 16 và 19.
+2. Săn trùm toàn tập (mở sau khi phá đảo chương cuối đang bật):
+   - Toàn bộ boss và mini boss của các chương đang bật, theo đúng thứ tự cốt truyện.
+   - Checkpoint sau mỗi boss; chơi dần qua nhiều lần được.
+   - Cũng có lựa chọn hỗ trợ tác chiến sau mỗi boss chủ lực.
+   - Bảng xếp hạng theo tổng thời gian; phần thưởng lớn khi hoàn thành.
+   - Tự dài thêm khi có boss mới hoặc khi một hồi được bật.
+3. Tác chiến: rà mọi mutator có nhắc tới boss cho khớp tên mới, cấp boss và vị trí chương mới; thêm các chiến dịch lớn của chương mới vào danh sách chơi lại.
+
+O. GIAO DIỆN
+1. Màn chọn chương hiển thị 4 hồi, 12 chương; chương thuộc hồi đang tắt hiện theo cấu hình ở C.3.
+2. Thanh máu: bản lớn cho boss chủ lực, bản nhỏ cho mini boss (theo HUD gọn của prompt 11); hiện tên theo dạng "Tên riêng · dòng phụ".
+3. Mục Hồ sơ và tab Hướng dẫn: tên mới, biệt danh tướng, chủ đề tên boss của tướng, nhãn cấp boss, tướng sở hữu; mini boss biến thể có dòng "Biến thể của ..." và liên kết tới boss lớn.
+4. Săn trùm: màn nghỉ giữa boss và màn chọn hỗ trợ tác chiến dùng thành phần của prompt 10, gọn trên điện thoại.
+
+P. KIỂM TRA
+- Đổi tên: không còn tên cũ ở bất kỳ chuỗi nào (trừ ngoại lệ có chủ đích ghi trong DECISIONS.md); id không đổi; save, kỷ lục và thành tích cũ vẫn đúng.
+- Cấu trúc: 12 chương, mỗi chương có đúng boss theo bảng; migration tiến độ cũ đúng.
+- Bật/tắt theo hồi: test cả 3 cấu hình ở C.4; phần kết tạm đúng; Săn trùm, Tác chiến và bảng xoay vòng bỏ đúng nội dung đang tắt; mọi thẻ đều có nguồn mở khóa; save tiếp tục đúng khi bật lại.
+- Kinh tế: đường cong tiến độ đạt mục tiêu ở D.3, cho cả cấu hình đầy đủ và cấu hình chỉ Hồi I–II.
+- Boss: mọi boss có đúng cấp và tướng; luật chủ lực và mini áp đúng (kích thước, máu, sát thương, vũ khí, số pha, hộ tống, đòn lớn, trình diễn); vũ khí bị bỏ không còn bắn; boss mới và mini boss mới có hành vi đúng mô tả.
+- Hệ khuôn mẫu: tạo thử một mini boss biến thể mới chỉ bằng dữ liệu, không sửa code.
+- Tháp: nhánh Vòm Sắt đánh chặn đúng loại đạn và đúng tầm; Dàn rốc-két bắn được qua tường vào sân trong; nhánh tên lửa của Tháp phòng không đạt tầm khoảng 60 m; giá trị thực chiến của ba tháp nằm trong mục tiêu.
+- Không xe nào kẹt quanh boss chủ lực sau khi tăng kích thước, và trên 2 map mới.
+- Mô phỏng 5 seed: toàn bộ 12 chương ở độ khó Thường; thời lượng mini boss khoảng 1,5–3 phút, boss chủ lực khoảng 5–8 phút; Săn trùm 30–40 phút; Săn trùm toàn tập chạy trọn được với checkpoint.
+- Hiệu năng: đo FPS ở boss chủ lực lớn nhất, nhiệm vụ có 2 mini boss cùng lúc, và Daedalus pha 3, ở đồ họa Thấp trên máy tầm thấp.
+- Chụp ảnh tự động mọi boss, mini boss, màn chọn chương và màn Săn trùm; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và tài liệu thiết kế (cấu trúc chiến dịch, boss, tướng, tên, map, tháp, Săn trùm).

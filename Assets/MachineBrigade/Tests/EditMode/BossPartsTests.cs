@@ -36,13 +36,13 @@ namespace MachineBrigade.Tests
             return events;
         }
 
-        /// <summary>Every boss and how many parts it has (prompt 9 B, fitted to each model's guns).</summary>
+        /// <summary>Every boss and how many parts it has (prompt 9 B, fitted to each model's guns; prompt 16 E's new weapons are parts too).</summary>
         internal static readonly Dictionary<string, int> Expected = new()
         {
-            ["armored_train"] = 5, ["nuke_train"] = 4, ["behemoth"] = 6, ["behemoth_tempest"] = 4, ["behemoth_inferno"] = 4,
-            ["fortress_hive"] = 6, ["mobile_fortress"] = 7, ["fortress_bastion"] = 5, ["silver_bug"] = 6, ["sky_fortress"] = 9,
-            ["mega_gunship"] = 8, ["drone_mothership"] = 7, ["rail_supergun"] = 6, ["earth_borer"] = 4, ["command_airship"] = 7,
-            ["landing_hovercraft"] = 5, ["supreme_command"] = 3, ["leviathan"] = 9,
+            ["armored_train"] = 6, ["nuke_train"] = 6, ["behemoth"] = 7, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 5,
+            ["fortress_hive"] = 7, ["mobile_fortress"] = 7, ["fortress_bastion"] = 6, ["silver_bug"] = 6, ["sky_fortress"] = 9,
+            ["mega_gunship"] = 8, ["drone_mothership"] = 7, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 7,
+            ["landing_hovercraft"] = 9, ["supreme_command"] = 3, ["leviathan"] = 9,
         };
 
         private static Catalog C => GameContent.LoadCatalog();

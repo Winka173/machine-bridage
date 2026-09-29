@@ -76,9 +76,11 @@ namespace MachineBrigade.Sim.Content
         /// Boss mechanisms it drives, stopped once it breaks (see <see cref="Mechanisms"/>): "bombard"
         /// (the supergun's shot), "spotter" (the shot's fire control: it falls wide), "burrow" (the
         /// Earth Worm's dives), "landing" (the hovercraft's troops), "aura" (the Supreme Commander's
-        /// command aura); prompt 16's ships: "cruise" (the launch cells), "craft" (the well deck's landing
-        /// craft), "ciws" (point defence, off once every part carrying it is broken), "radar" (fire
-        /// control: salvos and cruise missiles fall wide, the CIWS misses now and then).
+        /// command aura); prompt 16: "aps" (its protection system: the interceptors shrink with each part
+        /// carrying it broken, and stop with the last), "jammer" (its jamming aura) and "trail" (the
+        /// Inferno's fire trail), each stopped once every part carrying it is broken; the ships' "cruise" (the
+        /// launch cells), "craft" (the well deck's landing craft) and "radar" (fire control: salvos and cruise
+        /// missiles fall wide, the CIWS misses now and then).
         /// </summary>
         public IReadOnlyList<string> Stops { get; internal set; } = Array.Empty<string>();
 
@@ -98,7 +100,7 @@ namespace MachineBrigade.Sim.Content
         public int Attachment { get; internal set; } = -1;
 
         /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
-        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "cruise", "craft", "ciws", "radar" };
+        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar" };
 
         /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
         public static string FxFor(string kind) => kind switch
@@ -190,6 +192,26 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The fire support whose warning marks the landing (an event-only support).</summary>
         public string? Warning { get; internal set; }
+    }
+
+    /// <summary>
+    /// A fire trail (prompt 16 E, the Inferno): every <see cref="Every"/> metres it drives it leaves a patch
+    /// of burning fuel <see cref="Radius"/> m across that sets enemy ground vehicles in it on fire
+    /// (<see cref="Dps"/> a second, the Burn status). A patch is lit for <see cref="Seconds"/> and burns
+    /// <see cref="GroundBurn"/> of that, the ground fires' time since the view cut it by a fifth (12A).
+    /// </summary>
+    public sealed class FireTrailDef
+    {
+        /// <summary>The share of its lit time a ground fire burns (DECISIONS 12A: a fifth shorter).</summary>
+        public const float GroundBurn = 0.8f;
+
+        public float Every { get; internal set; } = 4f;
+        public float Seconds { get; internal set; } = 10f;
+        public float Radius { get; internal set; } = 3.5f;
+        public float Dps { get; internal set; } = 18f;
+
+        /// <summary>How long a patch burns in the battle.</summary>
+        public float Burns => Seconds * GroundBurn;
     }
 
     /// <summary>An emplacement a boss arrives with (the supergun's guns and walls), at an offset in its frame (X right, Y forward).</summary>

@@ -22,8 +22,17 @@ namespace MachineBrigade.Game.Views
     /// </summary>
     public sealed class Surroundings : IDisposable
     {
-        /// <summary>Half-size of the decorated area: 130 m past the battlefield's edge.</summary>
+        /// <summary>
+        /// Half-size of the decorated area round the map's middle: 130 m past the battlefield's edge (its longer side's,
+        /// on a long battlefield; the scenery itself keeps to <see cref="Beyond"/> the map's own edges).
+        /// </summary>
         private float Extent => _half + 130f;
+
+        /// <summary>
+        /// How far a point is outside the map's rectangle (negative inside): its larger overshoot along x and z. On a square
+        /// map it is the old max(|x|, |z|) - half.
+        /// </summary>
+        private float Beyond(Vector2 p) => Mathf.Max(Mathf.Abs(p.x - _centre.x) - _halfX, Mathf.Abs(p.y - _centre.y) - _halfZ);
 
         private readonly GameObject _root;
         private readonly List<Mesh> _meshes = new();
@@ -38,12 +47,19 @@ namespace MachineBrigade.Game.Views
         private readonly List<(Mesh mesh, int submesh, Matrix4x4[] matrices, RenderParams parameters)> _draws = new();
         private readonly Texture2D _texture;
         private readonly float _half;
+
+        // The map's middle and half extents (a long battlefield is 300 x 480 m, prompt 17).
+        private readonly Vector2 _centre;
+        private readonly float _halfX, _halfZ;
         private readonly Random _rng = new(97);
 
         public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
             Match.GraphicsOptions options = null)
         {
             _half = world.Map.HalfSize;
+            _centre = new Vector2(world.Map.Centre.X, world.Map.Centre.Y);
+            _halfX = world.Map.Width * 0.5f;
+            _halfZ = world.Map.Length * 0.5f;
             _field = BoundaryField.For(world.Map);
             _theme = theme;
             options ??= Match.GraphicsOptions.For(Match.GraphicsQuality.High);
@@ -63,10 +79,10 @@ namespace MachineBrigade.Game.Views
             _texture = PaintOuter(theme, fields);
             materials.OuterGround.SetTexture("_BaseMap", _texture);
             var ground = Place("Outer Ground", Own(Plane(Extent * 2f, 16)), materials.OuterGround);
-            ground.transform.position = new Vector3(0f, -0.03f, 0f);
+            ground.transform.position = new Vector3(_centre.x, -0.03f, _centre.y);
             // Ground beyond the decorated area, out to the fog, so no view ever ends in a void.
             var horizon = Place("Horizon Ground", Own(Plane(Extent * 6f, 4)), materials.Skirt);
-            horizon.transform.position = new Vector3(0f, -0.3f, 0f);
+            horizon.transform.position = new Vector3(_centre.x, -0.3f, _centre.y);
 
             _palette = TerrainPalette(theme);
             materials.Skirt.SetColor("_BaseColor", theme.Skirt);
@@ -79,7 +95,7 @@ namespace MachineBrigade.Game.Views
             if (theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Canal)
             {
                 var river = Place("River", Own(Plane(1f, 1)), materials.Water);
-                river.transform.position = new Vector3(0f, -0.01f, RiverZ);
+                river.transform.position = new Vector3(_centre.x, -0.01f, RiverZ);
                 river.transform.localScale = new Vector3(Extent * 2f, 1f, RiverWidth);
             }
             else if (theme.Water == ThemeWater.Lava)
@@ -88,13 +104,13 @@ namespace MachineBrigade.Game.Views
                 _lavaMaterial = new Material(Shader.Find("MachineBrigade/Unlit")) { name = "Lava River" };
                 _lavaMaterial.SetColor("_Color", theme.LavaHot);
                 var lava = Place("Lava River", Own(LavaRiver()), _lavaMaterial);
-                lava.transform.position = new Vector3(0f, -0.01f, RiverZ);
+                lava.transform.position = new Vector3(_centre.x, -0.01f, RiverZ);
             }
             else if (theme.Water == ThemeWater.Sea)
             {
                 // The sea fills everything beyond the north edge, out past the fog.
                 var sea = Place("Sea", Own(Plane(1f, 1)), materials.Water);
-                sea.transform.position = new Vector3(0f, -0.02f, SeaShore + Extent * 1.5f);
+                sea.transform.position = new Vector3(_centre.x, -0.02f, SeaShore + Extent * 1.5f);
                 sea.transform.localScale = new Vector3(Extent * 6f, 1f, Extent * 3f);
             }
 
@@ -113,7 +129,7 @@ namespace MachineBrigade.Game.Views
                 bounds.Expand(new Vector3(14f, 0f, 14f));
                 bounds.SetMinMax(new Vector3(bounds.min.x, bounds.min.y - 1f, bounds.min.z), new Vector3(bounds.max.x, bounds.max.y + 16f, bounds.max.z));
                 var edge = cell >= ShadowlessCells ? float.MaxValue
-                    : Mathf.Max(Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.z)) - CellSize * 0.5f - _half;
+                    : Beyond(new Vector2(bounds.center.x, bounds.center.z)) - CellSize * 0.5f;
                 var parameters = new RenderParams(material)
                 {
                     shadowCastingMode = edge < _shadowReach ? ShadowCastingMode.On : ShadowCastingMode.Off,
@@ -140,7 +156,7 @@ namespace MachineBrigade.Game.Views
         private readonly float _density, _shadowReach;
         private Material _lavaMaterial;
 
-        private float RiverZ => _half + 62f;
+        private float RiverZ => _centre.y + _halfZ + 62f;
 
         /// <summary>A city canal is narrow; rivers of water or lava are wide.</summary>
         private float RiverWidth => _theme.Water == ThemeWater.Canal ? 9f : 16f;
@@ -153,10 +169,10 @@ namespace MachineBrigade.Game.Views
 
         /// <summary>Inside the city that surrounds an urban map (it ends where the hills begin).</summary>
         private bool InCity(Vector2 p) =>
-            _theme.Skyline != null && Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half < _theme.RangeStart - 6f;
+            _theme.Skyline != null && Beyond(p) < _theme.RangeStart - 6f;
 
         /// <summary>The quay line of a harbour map: the sea starts just past the north edge.</summary>
-        private float SeaShore => _half + 5f;
+        private float SeaShore => _centre.y + _halfZ + 5f;
 
         private bool HasRiver => _theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Lava or ThemeWater.Canal;
 
@@ -203,7 +219,7 @@ namespace MachineBrigade.Game.Views
         /// stays out there; the bays carved inside the square get their own, budgeted dressing
         /// (<see cref="ScatterBays"/>), since everything in them is in the middle of the view.
         /// </summary>
-        private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x) > _half + margin || Mathf.Abs(p.y) > _half + margin;
+        private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x - _centre.x) > _halfX + margin || Mathf.Abs(p.y - _centre.y) > _halfZ + margin;
 
         private bool NearRiver(Vector2 p, float margin) =>
             (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin);
@@ -219,7 +235,7 @@ namespace MachineBrigade.Game.Views
         private float BayHeight(Vector2 p)
         {
             if (!_field.HasOutline) return 0f;
-            var square = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
+            var square = Beyond(p);
             if (square > 14f) return 0f;
             var d = _field.Distance(p);
             if (d < 0.8f) return 0f;
@@ -234,13 +250,13 @@ namespace MachineBrigade.Game.Views
         /// <summary>The mountain range out in the countryside, rising some way past the square.</summary>
         private float RangeHeight(Vector2 p)
         {
-            var outside = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
+            var outside = Beyond(p);
             var start = Mathf.Max(MountainStart, _theme.RangeStart);
             if (outside < start || InSea(p, 0f)) return 0f;
             var ramp = Mathf.SmoothStep(0f, 1f, (outside - start) / 70f);
             // Tall along the far (top of the screen) sides, rolling hills on the near ones, so
             // the range frames the battle without hiding it.
-            var back = Mathf.Clamp01(0.5f + 0.65f * Vector2.Dot(p.normalized, new Vector2(-0.7071f, 0.7071f)));
+            var back = Mathf.Clamp01(0.5f + 0.65f * Vector2.Dot((p - _centre).normalized, new Vector2(-0.7071f, 0.7071f)));
             var n = Mathf.PerlinNoise(p.x * 0.011f + 13.7f, p.y * 0.011f + 4.1f);
             var ridge = 1f - Mathf.Abs(n * 2f - 1f);
             ridge *= ridge;
@@ -286,7 +302,7 @@ namespace MachineBrigade.Game.Views
             var heights = new float[(cells + 1) * (cells + 1)];
             for (var z = 0; z <= cells; z++)
             for (var x = 0; x <= cells; x++)
-                heights[z * (cells + 1) + x] = Height(new Vector2(x * RangeCell - Extent, z * RangeCell - Extent));
+                heights[z * (cells + 1) + x] = Height(new Vector2(x * RangeCell - Extent + _centre.x, z * RangeCell - Extent + _centre.y));
 
             void Triangle(Vector3 a, Vector3 b, Vector3 c)
             {
@@ -321,8 +337,8 @@ namespace MachineBrigade.Game.Views
                 if (h00 < 0.05f && h10 < 0.05f && h01 < 0.05f && h11 < 0.05f) continue;
                 // Flat corners dip under the ground plane so the seam never flickers.
                 float Y(float h) => h < 0.05f ? -0.25f : h;
-                var x0 = x * RangeCell - Extent;
-                var z0 = z * RangeCell - Extent;
+                var x0 = x * RangeCell - Extent + _centre.x;
+                var z0 = z * RangeCell - Extent + _centre.y;
                 var p00 = new Vector3(x0, Y(h00), z0);
                 var p10 = new Vector3(x0 + RangeCell, Y(h10), z0);
                 var p01 = new Vector3(x0, Y(h01), z0 + RangeCell);
@@ -402,7 +418,7 @@ namespace MachineBrigade.Game.Views
                 if (InCity(p)) continue;
                 var height = Height(p);
                 if (height > TreeLine) continue;
-                var distance = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
+                var distance = Beyond(p);
                 var noise = Mathf.PerlinNoise(p.x * 0.035f + 5f, p.y * 0.035f + 9f);
                 // A thick tree line along the map edge, then whole forests on the lower slopes,
                 // thinning out towards the tree line.
@@ -433,17 +449,17 @@ namespace MachineBrigade.Game.Views
         /// </summary>
         private void ScatterBays(ModelLibrary models)
         {
-            var reach = _half + 10f;
+            float reachX = _halfX + 10f, reachZ = _halfZ + 10f;
             // A budget, not a fill: the bays sit in the middle of every view, so each tree there is
-            // drawn (and shadowed) every frame.
-            var budget = (int)(240 * _density);
+            // drawn (and shadowed) every frame (a long battlefield has more edge: more of it).
+            var budget = (int)(240 * _density * (_halfX + _halfZ) / (_halfX * 2f));
             var placed = 0;
             var trees = 0;
             for (var attempt = 0; attempt < 12000 && placed < budget; attempt++)
             {
-                var p = new Vector2((float)(_rng.NextDouble() * 2 - 1) * reach, (float)(_rng.NextDouble() * 2 - 1) * reach);
+                var p = _centre + new Vector2((float)(_rng.NextDouble() * 2 - 1) * reachX, (float)(_rng.NextDouble() * 2 - 1) * reachZ);
                 var d = _field.Distance(p);
-                if (d < 2.2f || Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) > _half + 8f || InCity(p) || NearRiver(p, 1f)) continue;
+                if (d < 2.2f || Beyond(p) > 8f || InCity(p) || NearRiver(p, 1f)) continue;
                 var height = Height(p);
                 var roll = _rng.NextDouble();
                 if (roll < 0.14 && _theme.Crags.Length > 0 && height > 2f)
@@ -510,15 +526,18 @@ namespace MachineBrigade.Game.Views
         private void BuildSkyline(ModelLibrary models)
         {
             var kinds = _theme.Skyline;
-            var reach = _half + _theme.RangeStart - 6f;
+            var reach = _theme.RangeStart - 6f;
+            // (The grid stays on the map's own avenues: its origin the pitch nearest the map's middle.)
+            var gx = Mathf.Round(_centre.x / BlockPitch) * BlockPitch;
+            var gz = Mathf.Round(_centre.y / BlockPitch) * BlockPitch;
             var first = -Mathf.Floor(Extent / BlockPitch) * BlockPitch;
-            for (var cx = first; cx <= Extent; cx += BlockPitch)
-            for (var cz = first; cz <= Extent; cz += BlockPitch)
+            for (var cx = gx + first; cx <= gx + Extent; cx += BlockPitch)
+            for (var cz = gz + first; cz <= gz + Extent; cz += BlockPitch)
             {
                 // Block centres sit half a pitch off the avenues: 0, +-36, +-72, ...
                 var centre = new Vector2(cx, cz);
-                var outside = Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) - _half;
-                if (outside < 18f || Mathf.Max(Mathf.Abs(cx), Mathf.Abs(cz)) > reach || NearRiver(centre, 11f)) continue;
+                var outside = Beyond(centre);
+                if (outside < 18f || outside > reach || NearRiver(centre, 11f)) continue;
                 // Towers only in the ring the camera can see; a tower is thousands of triangles in a
                 // dozen materials, and a city of them out to the horizon cost more than the battle.
                 if (outside > 62f) continue;
@@ -527,7 +546,7 @@ namespace MachineBrigade.Game.Views
                     Add(models, _rng.Next(2) == 0 ? "office_block" : "apartment", centre, _rng.Next(4) * 90f, 1f + (float)_rng.NextDouble() * 0.2f);
                     continue;
                 }
-                var back = Mathf.Clamp01(0.5f + 0.5f * Vector2.Dot(centre.normalized, new Vector2(-0.7071f, 0.7071f)));
+                var back = Mathf.Clamp01(0.5f + 0.5f * Vector2.Dot((centre - _centre).normalized, new Vector2(-0.7071f, 0.7071f)));
                 if (_rng.Next(4) == 0)
                 {
                     // Two mid-size towers side by side.
@@ -591,6 +610,7 @@ namespace MachineBrigade.Game.Views
             {
                 var x = i * cell - Extent;
                 var z = j * cell - RiverWidth * 0.5f;
+                // (The strip is placed at the map's middle in x: see the lava river's object.)
                 // A wavy bank.
                 var bank = Mathf.Abs(z) / (RiverWidth * 0.5f);
                 z += Mathf.Sin(x * 0.07f) * 1.2f * (1f - bank * 0.3f);
@@ -667,7 +687,7 @@ namespace MachineBrigade.Game.Views
             for (var y = 0; y < size; y++)
             for (var x = 0; x < size; x++)
             {
-                var p = new Vector2((x + 0.5f) * worldPerPixel - Extent, (y + 0.5f) * worldPerPixel - Extent);
+                var p = new Vector2((x + 0.5f) * worldPerPixel - Extent + _centre.x, (y + 0.5f) * worldPerPixel - Extent + _centre.y);
                 var n = Mathf.PerlinNoise(p.x * 0.03f + 3f, p.y * 0.03f + 1f);
                 var colour = Color.Lerp(theme.Grass, n > 0.62f ? theme.Dirt : theme.Grass * 0.92f, Mathf.Abs(n - 0.5f) * 1.6f);
                 for (var f = 0; f < fields.Count; f++)
@@ -683,7 +703,7 @@ namespace MachineBrigade.Game.Views
                     : mapTheme.Water == ThemeWater.Sea ? SeaShore - p.y : 99f;
                 if (riverDistance < 4f) colour = Color.Lerp(colour, bank, Mathf.Clamp01(1f - riverDistance / 4f));
                 // Out of bounds reads a little darker and duller, which marks the playable edge.
-                var edge = Mathf.Max(Mathf.Abs(p.x), Mathf.Abs(p.y)) - _half;
+                var edge = Beyond(p);
                 var shade = Mathf.Lerp(0.9f, 0.74f, Mathf.Clamp01(edge / 40f));
                 var grey = colour.grayscale;
                 pixels[y * size + x] = Color.Lerp(colour, new Color(grey, grey, grey), 0.15f) * shade;
@@ -701,7 +721,7 @@ namespace MachineBrigade.Game.Views
         }
 
         private Vector2 RandomPoint() =>
-            new((float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f, (float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f);
+            _centre + new Vector2((float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f, (float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f);
 
         /// <summary>Cell ids from here up hold the bays' dressing, which casts no shadow.</summary>
         private const int ShadowlessCells = 100000;
@@ -710,7 +730,7 @@ namespace MachineBrigade.Game.Views
             bool shadowless = false)
         {
             var placement = Matrix4x4.TRS(new Vector3(position.x, height, position.y), Quaternion.Euler(0f, yaw, 0f), Vector3.one * scale);
-            var cell = Mathf.FloorToInt((position.x + Extent) / CellSize) * 64 + Mathf.FloorToInt((position.y + Extent) / CellSize);
+            var cell = Mathf.FloorToInt((position.x - _centre.x + Extent) / CellSize) * 64 + Mathf.FloorToInt((position.y - _centre.y + Extent) / CellSize);
             if (shadowless) cell += ShadowlessCells;
             var at = new Vector3(position.x, height, position.y);
             if (_cellBounds.TryGetValue(cell, out var cellBounds))

@@ -16,7 +16,7 @@ namespace MachineBrigade.Sim.Combat
     /// orders allow it. Secondary weapons (coaxial and roof guns, missile pods) choose their own
     /// targets, favouring the main weapon's.
     /// </summary>
-    internal sealed class CombatSystem
+    internal sealed partial class CombatSystem
     {
         private static readonly float TurretTolerance = SimMath.DegToRad(4f);
         private static readonly float FreeTolerance = SimMath.DegToRad(6f);
@@ -58,6 +58,7 @@ namespace MachineBrigade.Sim.Combat
                 if (p.Weapon.Projectile == ProjectileKind.Missile && !p.TargetFlying) _atgmTargets.Add(p.Target);
             }
             _focus.Clear();
+            CountWingmen();
             foreach (var v in _world.VehicleList)
                 if (v.IsAlive && v.Target.IsValid) _focus.Add((v.Team, v.Target));
 
@@ -73,7 +74,8 @@ namespace MachineBrigade.Sim.Combat
                 ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
-                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed)
+                // Prompt 17 C: a bunker vehicle digging in or packing up does not fire either.
+                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy)
                 {
                     v.Target = EntityId.None;
                     continue;
@@ -93,6 +95,7 @@ namespace MachineBrigade.Sim.Combat
                 {
                     var desired = laid != null ? SimMath.HeadingOf(laid.Position - v.Position) : v.Heading;
                     v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * v.TurretFactor * dt);
+                    KeepToArc(v);
                 }
                 else
                 {
@@ -261,6 +264,8 @@ namespace MachineBrigade.Sim.Combat
                 if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
                 // A stick of bombs (prompt 13 D.2): the group or the structure, not the lone light car beside it.
                 if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
+                // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
+                score *= NewContentWorth(v, other, weapon);
                 score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
                 if (score <= bestScore) continue;
                 best = other;
@@ -400,8 +405,14 @@ namespace MachineBrigade.Sim.Combat
                 state.BurstTimer -= dt;
                 while (state.BurstLeft > 0 && state.BurstTimer <= 0f)
                 {
-                    var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
-                    Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
+                    // Prompt 17 C: each drone of a swarm picks its own target round the salvo's aim.
+                    if (weapon.SwarmReach > 0f && !state.BurstFlying && SwarmTarget(v, weapon, state.BurstAim) is { } next)
+                        Launch(v, index, next.Position, next.Id, false, state.BurstScale, false, next);
+                    else
+                    {
+                        var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
+                        Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
+                    }
                     state.BurstLeft--;
                     state.BurstTimer += weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
                 }
@@ -816,6 +827,15 @@ namespace MachineBrigade.Sim.Combat
                 damageScale *= mods.Scale * _world.Gear.PintleScale(shooter, index, targetFlying);
             }
             if (pull) _world.Gear.Fired(shooter, weapon);
+            // Prompt 17 C: a wingman may pull an anti-air missile onto itself; the laser's damage ramps up on one target.
+            var pulled = WingmanPull(shooter, weapon, target, targetFlying);
+            if (pulled != target && _world.TryGetVehicle(pulled, out var wingman))
+            {
+                target = pulled;
+                aimAt = wingman.Position;
+                aimTarget = wingman;
+            }
+            if (weapon.Ramp != null) damageScale *= RampScale(shooter, index, target);
             // A boss with parts: the round goes at one of them (or at the body).
             var part = aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
             if (part >= 0 && aimTarget is Vehicle partOf) aimAt = partOf.PartPosition(part);
@@ -826,6 +846,8 @@ namespace MachineBrigade.Sim.Combat
             var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
+            // An escort spotter's mark (prompt 16 F): the boss's guns fall tighter on the marked target.
+            if (shooter.Def.Boss && spread > 0f && aimTarget is Vehicle spotted && Marked(spotted, shooter.Team)) spread *= _world.Catalog.EscortRules.SpotSpread;
             if (!weapon.Guided && spread > 0f && (shooter.Gear != null || aimTarget is Vehicle { Gear: not null }))
                 spread *= _world.Gear.SpreadFactor(shooter, index, aimTarget, reach);
             // Artillery brackets its target (Wargame and real gunnery): the first round lands wide,

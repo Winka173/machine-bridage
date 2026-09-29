@@ -4,6 +4,7 @@ using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.Commands;
+using MachineBrigade.Sim.Content;
 using EntityId = MachineBrigade.Sim.Core.EntityId;
 using UnityEngine;
 using SimVector2 = System.Numerics.Vector2;
@@ -57,6 +58,9 @@ namespace MachineBrigade.Game.Input
 
         /// <summary>A tap landed on a part of an enemy boss (prompt 9): the boss and the part's index.</summary>
         public event Action<EntityId, int> PartTapped;
+
+        /// <summary>An enemy unit or tower was tapped (prompt 15 E5: its armour against our deck, in a small tooltip).</summary>
+        public event Action<VehicleDef> EnemyTapped;
 
         /// <summary>Raised when a command is refused, so the HUD can say why.</summary>
         public event Action<CommandError> Rejected;
@@ -174,6 +178,7 @@ namespace MachineBrigade.Game.Input
                 var part = PartUnder(picked, screen);
                 if (part >= 0) PartTapped(picked.Id, part);
             }
+            if (picked != null && picked.Team != _team) EnemyTapped?.Invoke(picked.Sim.Def);
             if (_selected.Count == 0 || (picked != null && picked.Team == _team)) return;
 
             if (picked != null)
